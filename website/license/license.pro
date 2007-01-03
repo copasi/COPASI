@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.2 $ $Author: shoops $ $Date: 2006/12/21 18:28:55 $  
+# $Revision: 1.3 $ $Author: shoops $ $Date: 2007/01/03 14:16:50 $  
 ######################################################################
 
 CONFIG -= qt
@@ -8,13 +8,17 @@ CONFIG += debug
 
 QMAKE_QMAKE = $(QTDIR)/bin/qmake
 
+DEFINES += LICENSE_CREATE
+INCLUDEPATH += ../../copasi/commercial
 #Input
 HEADERS += COptions.h \
+           ../../copasi/commercial/FlexibleInt.h \
            ../../copasi/commercial/BigInt.h \
            ../../copasi/commercial/GenericDecode.h
 
-SOURCES += COptions.cpp \
-           license.cpp \
+SOURCES += license.cpp \
+           COptions.cpp \
+           ../../copasi/commercial/FlexibleInt.c \
            ../../copasi/commercial/BigInt.c \
            ../../copasi/commercial/GenericDecode.c
 

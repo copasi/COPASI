@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/website/license/Attic/license.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/12/21 18:28:55 $
+   $Date: 2007/01/03 14:16:50 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -12,10 +12,12 @@
 
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <time.h>
 
 #include "COptions.h"
-#include "../../copasi/commercial/GenericDecode.h"
+#include "GenericDecode.h"
+#include "FlexibleInt.h"
 
 license::options Options;
 std::ostream * pOutput = NULL;
@@ -34,6 +36,17 @@ int check();
 
 int main(int argc, char *argv[])
 {
+  int X[] = {12, 6, -13, 0};
+  FlexibleInt null, one, x;
+  FIinit(&null, 0);
+  FIinit(&one, 1);
+  *one.pVal = 1;
+  x.pVal = X;
+  x.len = 4;
+
+  FIcarryOver(&x, 10);
+  FIcarryOver(&x, 2);
+
   int retcode = 0;
 
   if (!init(argc, argv)) return 1;
@@ -100,6 +113,65 @@ bool init(int argc, char *argv[])
 
 int create()
 {
+  std::string Constant;
+  if (Options.Type == license::Type_Trial)
+    Constant = 'T';
+  else
+    Constant = 'F';
+
+  std::stringstream Tmp;
+  tm *pDate;
+  std::string StartDate;
+  if (Options.StartDate != "")
+    {
+      // Check date format:
+
+      if (Options.StartDate.length() != 10)
+        return 1;
+
+      if (Options.StartDate.find_first_not_of("0123456789-") != std::string::npos)
+        return 1;
+
+      for (int i = 0; i < 10; i++)
+        if (Options.StartDate[i] == '-' && i != 4 && i != 7)
+          return 1;
+
+      tm VerifyDate;
+      VerifyDate.tm_sec = 0;
+      VerifyDate.tm_min = 0;
+      VerifyDate.tm_hour = 0;
+      VerifyDate.tm_isdst = -1;
+      VerifyDate.tm_year = strtol(Options.StartDate.c_str(), NULL, 10) - 1900;
+      VerifyDate.tm_mon = strtol(Options.StartDate.c_str() + 5, NULL, 10) - 1;
+      VerifyDate.tm_mday = strtol(Options.StartDate.c_str() + 8, NULL, 10);
+
+      time_t Tmp = mktime(&VerifyDate);
+      pDate = localtime(&Tmp);
+
+      if (pDate == NULL ||
+          VerifyDate.tm_year != pDate->tm_year ||
+          VerifyDate.tm_mon != pDate->tm_mon ||
+          VerifyDate.tm_mday != pDate->tm_mday)
+        return 1;
+    }
+  else
+    {
+      time_t CurrentTime = time(NULL);
+      pDate = localtime(&CurrentTime);
+    }
+
+  Tmp << "00" << pDate->tm_yday + 1 << pDate->tm_year % 10;
+  StartDate = Tmp.str();
+  StartDate = StartDate.substr(StartDate.length() - 4);
+
+  const char * RegCode =
+    createGenericRegCode(config,
+                         Options.RegisteredUser.c_str(),
+                         Options.RegisteredEmail.c_str(),
+                         Constant.c_str(),
+                         "000",
+                         StartDate.c_str());
+
   return 1;
 }
 

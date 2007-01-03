@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commercial/Attic/GenericDecode.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/12/15 16:21:08 $
+   $Date: 2007/01/03 14:16:49 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -71,12 +71,14 @@ extern "C"
      * the registration code was successfully decoded.
      */
     int decodeGenericRegCode(const char * , const char *);
-    /**
-     * This method decodes the registration code into seed, constant
-     * sequence number and  the registration date. It returns 1 if
-     * the registration code was successfully decoded.
-     */
-    int decodeGenericRegCode2(char*);
+
+    const char * createGenericRegCode(const char * pConfig,
+                                      const char * pName,
+                                      const char * pEmail,
+                                      const char * pConstant,
+                                      const char * pSequence,
+                                      const char * pDate);
+
     /**
      * This method parses the configuration data and uses
      * it to initialize the variables.The configuration data consist of name
@@ -85,6 +87,7 @@ extern "C"
      * decode the registration code.
      */
     void initializeConfigData(char* config);
+
     /** This tores the parsed configuration data. Depending on the value
      * of type , various variables are intialized.
      */
@@ -114,35 +117,39 @@ extern "C"
      * 10 if the charcter is 'A' and base is 16.
      */
     int getDigitValue(char);
+
     /**
      * Returns the charcter for the digit character
      * (so in base 16 char 'A' has value 10).This method would return
      * 'A' for the digit value 10 and base is 16.
      */
     char getDigit(int);
+
     /**
      * This method converts the registration code from base xx to base ten
      * This method uses the operations of the BigInt to convert the long
      * registration code to base ten number.
      */
     void convertToBaseTen(void); //converts the number to base ten.
+
     /**
      * This method groups the base ten number digits into groups of
      * '2' or '3' depending on how the character to number conversion
      * was represented.
      */
-    void undoarithmetic(const char *);
+    void undoArithmetic(const char *);
 
     /**
      * This method parses the the string containing math operations.
      */
     void parseMathOperations(void);
+
     /**
       * This method performs the arithmetic operation on the two
       * integers  and returns the result. The result represents a ASCII
       * character.
       */
-    int domath(int, int);
+    int undoMath(int, int);
 
     /**
      *This method parses the string containing scramble sequence
@@ -164,10 +171,12 @@ extern "C"
      *This method returns the user seed part of the seed
      */
     char * getUserSeed(void);
+
     /**
      * This method returns the constant part of the seed
      */
     char * getConstant(void);
+
     /**
      * This method returns the sequence number
      */
@@ -186,7 +195,7 @@ extern "C"
     /**
      * This method stores the debug message
      */
-    void setDebugMessage(int size, const char *);
+    void setDebugMessage(int size, char *);
 
     /**
      *This method returns all the debug output
@@ -203,6 +212,7 @@ extern "C"
      *This method sets the user name
      */
     void setUserName(const char * name);
+
     /**
      *This method sets the user email
      */

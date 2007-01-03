@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commercial/Attic/GenericDecode.c,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/12/15 16:21:08 $
+   $Date: 2007/01/03 14:16:49 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -73,6 +73,8 @@
 #include <stdlib.h>
 #include <ctype.h>
 
+void calculateCheckDigit();
+
 int regcodelength; //length of unformatted regcode
 int namelength; //length of name seed
 int emaillength; //length of email seed
@@ -90,6 +92,7 @@ char* base; //the base into which the number was converted
 char* basedigit; //the base character set
 char* regformat; //the format of the registration code
 char checkdigit; // the check digit received with the registration code
+char calculatedcheckdigit; // the check digit calculated from the regcode
 char* regcode; // the unformatted registration code
 char* operations[40]; // stores the arithmetic operation for the seed characters
 char* scrambleOrder[40]; //stores the scramble order information about the seed characters
@@ -113,7 +116,6 @@ char createdUserSeed[31];
 /** Decodes the registration code */
 int decodeGenericRegCode(const char * c , const char * r)
 {
-
   int size = strlen(c);
   configuration = (char *)allocateMemory(size, CHAR_TYPE);
   strncpy(configuration , c , size);
@@ -132,7 +134,7 @@ int decodeGenericRegCode(const char * c , const char * r)
   if (verifyCheckDigit() == 1)
     {
       convertToBaseTen();
-      undoarithmetic(baseTenNumber);
+      undoArithmetic(baseTenNumber);
       unScrambleSeed();
       return 0;
     }
@@ -428,7 +430,18 @@ void unformat()
   */
 int verifyCheckDigit()
 {
+  calculateCheckDigit();
 
+  // verify the calculated check digit matches
+  // the one received wit the registration code
+  if (calculatedcheckdigit == checkdigit)
+    return 1;
+  else    //checkdigit could not be verified so return false
+    return 0;
+}
+
+void calculateCheckDigit()
+{
   int i = regcodelength - 1; //account fro start index of 0
   int weight = 2;  //  weight to multiply each charcter with
   int sum = 0;   // hold the addition of the charcter values
@@ -464,12 +477,8 @@ int verifyCheckDigit()
                               sum, numberBase, temp, (char)getDigit(temp));
   setDebugMessage(debugBufferCount, debugBuffer);
 #endif
-  // verify the calculated check digit matches
-  // the one received wit the registration code
-  if (getDigit(temp) == checkdigit)
-    return 1;
-  else    //checkdigit could not be verified so return false
-    return 0;
+
+  calculatedcheckdigit = getDigit(temp);
 }
 
 /**This function returns the value for a given base character
@@ -619,9 +628,8 @@ void convertToBaseTen()
  It then undoes the arithmetic operation performed while generatig the registration
  code
  */
-void undoarithmetic(const char * baseten)
+void undoArithmetic(const char * baseten)
 {
-
   int ascii ; //number of digit for text to number conversion
   int i = 0;
   int number;
@@ -656,7 +664,7 @@ void undoarithmetic(const char * baseten)
           //convert ascii to number
           number = atoi(two);
           //undo the arithmetic operation
-          number = domath(number, charposn);
+          number = undoMath(number, charposn);
           //this gives the seed as an integer
           seedasinteger[charposn] = number;
         }
@@ -679,7 +687,7 @@ void undoarithmetic(const char * baseten)
           three[3] = '\0';
           number = atoi(three);
           //undo arithmetic operations
-          number = domath(number, charposn);
+          number = undoMath(number, charposn);
           //this number represents the seed character
           // as integer value
           seedasinteger[charposn] = number;
@@ -698,7 +706,7 @@ void undoarithmetic(const char * baseten)
 /**This function performs the oppposite  math operation on
  a number which represents a character in the seed
  */
-int domath(int number, int position)
+int undoMath(int number, int position)
 {
   char *operation;
   char* operand;
@@ -730,7 +738,6 @@ int domath(int number, int position)
       //undo the arithmetic operations
       if (math == 'A')
         {
-
           number = number - ioperand;
         }
       else if (math == 'S')
@@ -815,11 +822,11 @@ void unScrambleSeed()
 }
 
 /*This function returns the user seed */
-
 char * getUserSeed()
 {
   return seed;
 }
+
 /* This function returns the constant value  */
 char * getConstant()
 {
@@ -875,7 +882,7 @@ void * allocateMemory(int size, int dataType)
 }
 
 /*This method stores the debug message in a buffer */
-void setDebugMessage(int size, const char * msg)
+void setDebugMessage(int size, char * msg)
 {
 
   int msgLength;
@@ -1015,3 +1022,314 @@ char* getCreatedUserSeed()
 {
   return createdUserSeed;
 }
+
+#ifdef LICENSE_CREATE
+#include "FlexibleInt.h"
+
+void scrambleSeed();
+void doArithmetic();
+int doMath(int number, int position);
+void convertFromBaseTen();
+void format(char * regCode);
+
+const char * createGenericRegCode(const char * pConfig,
+                                  const char * pName,
+                                  const char * pEmail,
+                                  const char * pConstant,
+                                  const char * pSequence,
+                                  const char * pDate)
+{
+  static char RegCode[100];
+
+  int i;
+
+  int size = strlen(pConfig);
+  configuration = (char *) allocateMemory(size, CHAR_TYPE);
+  strncpy(configuration , pConfig , size);
+
+  //parse the configuration data and intialize the global variables
+  initializeConfigData(configuration);
+
+  setUserName(pName);
+  setUserEmail(pEmail);
+  createUserSeed();
+
+  strncpy(seed, createdUserSeed, userseedlength);
+
+  // Set the constant
+  if (constlength > 3) constlength = 3;
+  for (i = 0; i < constlength && pConstant[i] != 0; i++)
+    constant[i] = pConstant[i];
+  for (; i < 4; i++)
+    constant[i] = 0;
+
+  // Set the sequence
+  if (seqlength > 3) seqlength = 3;
+  for (i = 0; i < seqlength && pSequence[i] != 0; i++)
+    sequence[i] = pSequence[i];
+  for (; i < 4; i++)
+    sequence[i] = 0;
+
+  // Set the date;
+  for (i = 0; i < 5 && pDate[i] != 0; i++)
+    date[i] = pDate[i];
+  for (; i < 5; i++)
+    date[i] = 0;
+
+  scrambleSeed();
+  doArithmetic();
+
+  convertFromBaseTen();
+
+  calculateCheckDigit();
+
+  format(RegCode);
+
+  return RegCode;
+}
+
+void scrambleSeed()
+{
+  int x , charposn;
+  char* scrambletoken;
+
+  for (x = 0 ; x < seedlength ;++x)
+    {
+      scrambletoken = scrambleOrder[x];
+      charposn = atoi(scrambletoken + 1);
+
+      switch (*scrambletoken)
+        {
+        case 'U':
+          seedasinteger[x] = (int) seed[charposn];
+          break;
+
+        case 'S':
+          seedasinteger[x] = (int) sequence[charposn];
+          break;
+
+        case 'D':
+          seedasinteger[x] = (int) date[charposn];
+          break;
+
+        case 'C':
+          seedasinteger[x] = (int) constant[charposn];
+          break;
+        }
+    }
+}
+
+void doArithmetic()
+{
+  int x;
+  char * pDigit = baseTenNumber;
+
+  // First we do the mathematical operations;
+  for (x = 0 ; x < seedlength ;++x)
+    seedasinteger[x] = doMath(seedasinteger[x], x);
+
+  // Now we encode the numbers in either two or three characters using "0123456789"
+  for (x = 0 ; x < seedlength ;++x)
+    {
+      switch (asciidigit[0])
+        {
+        case '2':
+          if (x != 0 || seedasinteger[x] / 10 != 0)
+            *pDigit++ = '0' + seedasinteger[x] / 10;
+          *pDigit++ = '0' + seedasinteger[x] % 10;
+          break;
+
+        case '3':
+          if (x != 0 || seedasinteger[x] / 100 != 0)
+            *pDigit++ = '0' + seedasinteger[x] / 100;
+          *pDigit++ = '0' + (seedasinteger[x] % 100) / 10;
+          *pDigit++ = '0' + seedasinteger[x] % 10;
+          break;
+        }
+    }
+
+  pDigit = 0;
+}
+
+int doMath(int number, int position)
+{
+  char * operation;
+  int len;
+  char token[] = " ";
+  int ioperand;
+
+  operation = operations[position];
+  len = strlen(operation);
+
+  if (len > 1)
+    {
+      token[0] = *(operation + len - 1);
+
+      ioperand = atoi(strtok(operation, token));
+
+      switch (token[0])
+        {
+        case 'A':
+          number = number + ioperand;
+          break;
+
+        case 'S':
+          number = number - ioperand;
+          break;
+
+        case 'M':
+          number = number * ioperand;
+          break;
+        }
+    }
+  else
+    {
+      number = 10 * (number % 10) + (number / 10);
+    }
+
+  return number;
+}
+
+void convertFromBaseTen()
+{
+  char * pDigit;
+  int len;
+  int count;
+  int i;
+
+  FlexibleInt BaseTen;
+  FlexibleInt Base;
+  FlexibleInt BaseNew;
+  FlexibleInt Power;
+  FlexibleInt Delta;
+
+  // Convert the base ten string into a FlexibleInt
+  pDigit = baseTenNumber;
+  len = strlen(pDigit);
+  FIinit(&BaseTen, len);
+  for (i = len - 1; i >= 0 ; i--, pDigit++)
+    BaseTen.pVal[i] = *pDigit - '0';
+
+  FIinit(&Delta, len);
+
+  // Convert the new base string into a FlexibleInt
+  pDigit = base;
+  len = strlen(pDigit);
+  FIinit(&Base, len);
+  for (i = len - 1; i >= 0 ; i--, pDigit++)
+    Base.pVal[i] = *pDigit - '0';
+
+  FIinit(&Power, len);
+  FIcopy(&Base, &Power);
+
+  // Determine the needed number of digits in the new base
+  count = 1;
+  while (FIcompare(&BaseTen, &Power) > 0)
+    FIpower(&Base, ++count, &Power, 10);
+
+  FIinit(&BaseNew, count);
+
+  // Convert to the new base
+  while (count)
+    {
+      FIpower(&Base, --count, &Power, 10);
+      while (FIcompare(&BaseTen, &Power) >= 0)
+        {
+          BaseNew.pVal[count]++;
+
+          FIminus(&BaseTen, &Power, &Delta, 10);
+          FIcopy(&Delta, &BaseTen);
+        }
+    }
+
+  // Encode the new base as a string;
+  regcode = (char *) allocateMemory(BaseNew.len + 1 , CHAR_TYPE);
+  regcodelength = BaseNew.len;
+
+  for (count = 0; count < regcodelength; count++)
+    regcode[count] = getDigit(BaseNew.pVal[BaseNew.len - count - 1]);
+
+  regcode[count] = 0x00;
+}
+
+void format(char * regCode)
+{
+  int longformat = 0;
+  int optional = 0;
+  int offset = 0;
+  int i = 0;
+
+  char * pUnformated = regcode;
+  char * pFormat;
+  char * pFormated = regCode;
+  char zero = getDigit(0);
+
+  // First we determine whether we need the optional part;
+  for (pFormat = regformat; *pFormat != 0x00; ++pFormat)
+    {
+      switch (*pFormat)
+        {
+        case '#':
+          if (optional == 0)
+            i++;
+          break;
+
+        case '[':
+          optional = 1;
+          break;
+
+        case ']':
+          optional = 0;
+          break;
+
+        default:
+          break;
+        }
+    }
+
+  offset = i - regcodelength;
+  if (offset > 0)
+    longformat = 1;
+
+  for (pFormat = regformat; *pFormat != 0x00; ++pFormat)
+    {
+      switch (*pFormat)
+        {
+        case '#':
+          if (offset < 0)
+            {
+              *pFormated++ = zero;
+              offset++;
+            }
+          else if (*pUnformated != 0x00)
+            *pFormated++ = *pUnformated++;
+
+          break;
+
+        case '^':
+          *pFormated++ = calculatedcheckdigit;
+          break;
+
+        case '[':
+          optional = 1;
+          break;
+
+        case ']':
+          optional = 0;
+          break;
+
+        default:
+          if (optional == 0 || longformat == 1)
+            *pFormated++ = *pFormat;
+          break;
+        }
+    }
+
+  // Save the remaining reg code unformated
+  while (*pUnformated != 0x00)
+    *pFormated++ = *pUnformated++;
+
+  *pFormated = 0x00;
+}
+
+#endif

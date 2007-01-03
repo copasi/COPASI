@@ -28,7 +28,7 @@ CFG=license - Win32 Debug
 
 !IF  "$(CFG)" == "license - Win32 Release"
 
-# PROP BASE Use_MFC
+# PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
 # PROP BASE Output_Dir "Release"
 # PROP BASE Intermediate_Dir "Release"
@@ -37,7 +37,7 @@ CFG=license - Win32 Debug
 # PROP BASE Target_File "license.exe"
 # PROP BASE Bsc_Name "license.bsc"
 # PROP BASE Target_Dir ""
-# PROP Use_MFC
+# PROP Use_MFC 0
 # PROP Use_Debug_Libraries 0
 # PROP Output_Dir "Release"
 # PROP Intermediate_Dir "Release"
@@ -49,7 +49,7 @@ CFG=license - Win32 Debug
 
 !ELSEIF  "$(CFG)" == "license - Win32 Debug"
 
-# PROP BASE Use_MFC
+# PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
 # PROP BASE Output_Dir "Debug"
 # PROP BASE Intermediate_Dir "Debug"
@@ -58,7 +58,7 @@ CFG=license - Win32 Debug
 # PROP BASE Target_File "license.exe"
 # PROP BASE Bsc_Name "license.bsc"
 # PROP BASE Target_Dir ""
-# PROP Use_MFC
+# PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
 # PROP Output_Dir "Debug"
 # PROP Intermediate_Dir "Debug"
@@ -84,14 +84,46 @@ CFG=license - Win32 Debug
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
+# Begin Source File
+
+SOURCE=.\COptions.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\copasi\commercial\FlexibleInt.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\license.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
+# Begin Source File
+
+SOURCE=.\COptions.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\copasi\commercial\FlexibleInt.h
+# End Source File
 # End Group
 # Begin Group "Resource Files"
 
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
 # End Group
+# Begin Source File
+
+SOURCE=.\COptions.xml
+# End Source File
+# Begin Source File
+
+SOURCE=.\input.txt
+# End Source File
+# Begin Source File
+
+SOURCE=.\license.pro
+# End Source File
 # End Target
 # End Project
