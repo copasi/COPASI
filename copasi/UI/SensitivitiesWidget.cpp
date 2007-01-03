@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SensitivitiesWidget.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2007/01/02 12:01:46 $
+   $Author: shoops $
+   $Date: 2007/01/03 14:25:51 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -443,7 +443,7 @@ void SensitivitiesWidget::updateLineeditEnable(const QComboBox* box, QWidget* w1
   if (!box) return;
   bool enable = false;
 
-  if (box->currentText() == CObjectLists::ListTypeName[CObjectLists::SINGLE_OBJECT])
+  if (box->currentText() == FROM_UTF8(CObjectLists::ListTypeName[CObjectLists::SINGLE_OBJECT]))
     enable = true;
 
   if (w1) w1->setEnabled(enable);
@@ -459,7 +459,7 @@ void SensitivitiesWidget::updateAllLineditEnable()
 
 bool SensitivitiesWidget::checkSingleObject(const QComboBox* box, CCopasiObject * object)
 {
-  if (box->currentText() != CObjectLists::ListTypeName[CObjectLists::SINGLE_OBJECT])
+  if (box->currentText() != FROM_UTF8(CObjectLists::ListTypeName[CObjectLists::SINGLE_OBJECT]))
     return true;
 
   if (object) return true;
@@ -471,7 +471,7 @@ void SensitivitiesWidget::updateRunButton()
 {
   bool enable = true;
 
-  if (VariableChooser->currentText() == CObjectLists::ListTypeName[CObjectLists::EMPTY_LIST])
+  if (VariableChooser->currentText() == FROM_UTF8(CObjectLists::ListTypeName[CObjectLists::EMPTY_LIST]))
     enable = false;
 
   //single object case
