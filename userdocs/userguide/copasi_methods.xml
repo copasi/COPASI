@@ -493,7 +493,7 @@ solver (<xref linkend="LSODA">LSODA</xref>) to follow the time course
 defined by the differential equations until a steady state is
 reached. If at 
 <mml:math>
-<mml:msup><mml:mn>10</mml:mn><mml:mn>10</mml:mn></mml:msup></mml:math>.
+<mml:msup><mml:mn>10</mml:mn><mml:mn>10</mml:mn></mml:msup></mml:math>
 units of time no steady state has been reached the method halts with
 no solution. If Use Newton is '1' an attempt to find the steady-state
 via the damped Newton method is made at each intermediate time point.
@@ -510,7 +510,7 @@ solver (<xref linkend="LSODA">LSODA</xref>) to reverse the time course
 (going backwards in time) defined by the differential equations until
 a steady state is reached. If at 
 <mml:math><mml:mn>-1</mml:mn><mml:mo>*</mml:mo>
-<mml:msup><mml:mn>10</mml:mn><mml:mn>10</mml:mn></mml:msup></mml:math>.
+<mml:msup><mml:mn>10</mml:mn><mml:mn>10</mml:mn></mml:msup></mml:math>
 units of time no steady state has been reached the method halts with
 no solution. If Use Newton is '1' an attempt to find the steady-state
 via the damped Newton method is made at each intermediate time point.
