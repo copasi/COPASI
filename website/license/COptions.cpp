@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/website/license/Attic/COptions.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/12/21 18:28:55 $
+   $Date: 2007/01/04 17:42:00 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -74,9 +74,14 @@ void license::COptions::parse(int argc, char *argv[], bool call_finalize)
     }
 #endif // Darwin
 
-  for (; i < argc; ++i) parse_element(argv[i], i, source_cl);
+  for (; i < argc; ++i)
+    parse_element(argv[i], i, source_cl);
 
-  if (call_finalize) finalize();
+  if (call_finalize)
+    {
+      state_ = state_finalize;
+      finalize();
+    }
 }
 //#########################################################################
 void license::COptions::parse(const char * fileName, bool call_finalize)
@@ -140,12 +145,21 @@ void license::COptions::parse(const char * fileName, bool call_finalize)
               Value = Line.substr(pos + 1);
               Value.erase(0, Value.find_first_not_of(' '));
               Value.erase(Value.find_last_not_of(' ') + 1);
-
-              if (Value.length()) parse_element(Value.c_str(), 0, source_cf);
             }
+          else
+            Value = "";
+
+          if (Value.length())
+            parse_element(Value.c_str(), 0, source_cf);
+
+          finalize();
         }
 
-      if (call_finalize) finalize();
+      if (call_finalize)
+        {
+          state_ = state_finalize;
+          finalize();
+        }
     }
 
   catch (license::option_error &e)
@@ -163,8 +177,9 @@ void license::COptions::parse(const char * fileName, bool call_finalize)
 //#########################################################################
 void license::COptions::finalize (void)
 {
-  if (state_ == state_value)
+  switch (state_)
     {
+    case state_value:
       switch (openum_)
         {
         case option_Create:
@@ -184,13 +199,17 @@ void license::COptions::finalize (void)
         case option_Type:
           throw option_error("missing value for 't' option");
         }
+      break;
+
+    case state_finalize:
+      if (!locations_.RegisteredEmail)
+        throw option_error("the 'e' option is mandatory");
+
+      if (!locations_.RegisteredUser)
+        throw option_error("the 'u' option is mandatory");
+
+      break;
     }
-
-  if (!locations_.RegisteredEmail)
-    throw option_error("the 'e' option is mandatory");
-
-  if (!locations_.RegisteredUser)
-    throw option_error("the 'u' option is mandatory");
 }
 //#########################################################################
 void license::COptions::parse_element (const char *element, int position, opsource source)

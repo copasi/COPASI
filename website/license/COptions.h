@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/website/license/Attic/COptions.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/12/21 18:07:25 $
+   $Date: 2007/01/04 17:42:00 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -171,7 +171,7 @@ namespace license
         option_Output
       } openum_;
 
-      enum parser_state {state_option, state_value, state_consume } state_;
+      enum parser_state {state_option, state_value, state_consume, state_finalize } state_;
       std::vector<std::string> non_options_;
 
       enum opsource
