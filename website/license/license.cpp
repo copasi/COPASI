@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/website/license/Attic/license.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $
-   $Date: 2007/01/03 14:16:50 $
+   $Date: 2007/01/04 17:42:17 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,17 +36,6 @@ int check();
 
 int main(int argc, char *argv[])
 {
-  int X[] = {12, 6, -13, 0};
-  FlexibleInt null, one, x;
-  FIinit(&null, 0);
-  FIinit(&one, 1);
-  *one.pVal = 1;
-  x.pVal = X;
-  x.len = 4;
-
-  FIcarryOver(&x, 10);
-  FIcarryOver(&x, 2);
-
   int retcode = 0;
 
   if (!init(argc, argv)) return 1;
@@ -108,6 +97,7 @@ bool init(int argc, char *argv[])
 
       return false;
     }
+
   return true;
 }
 
