@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensTask.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/09/08 00:55:56 $
+   $Date: 2007/01/04 14:30:02 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -68,7 +68,7 @@ bool CSensTask::initialize(const OutputFlag & of, std::ostream * pOstream)
 
   bool success = true;
 
-  if (CCopasiTask::initialize(of, pOstream)) success = false;
+  if (!CCopasiTask::initialize(of, pOstream)) success = false;
 
   if (!pProblem->getModel()->compileIfNecessary()) success = false;
   //pProblem->setInitialState(pProblem->getModel()->getInitialState());
