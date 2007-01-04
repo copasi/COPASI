@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SensitivitiesWidget.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2007/01/03 14:25:51 $
+   $Author: ssahle $
+   $Date: 2007/01/04 14:29:02 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,7 +14,7 @@
 
 #include <qvariant.h>
 #include <qcheckbox.h>
-#include <qcombobox.h>
+//#include <qcombobox.h>
 #include <qframe.h>
 #include <qlabel.h>
 #include <qlineedit.h>
@@ -48,6 +48,52 @@
 #include "report/CKeyFactory.h"
 //#include "parametertable.h"
 #include "CQSensResultWidget.h"
+
+SensWidgetComboBox::SensWidgetComboBox(QWidget * parent, const char * name)
+    : QComboBox(FALSE, parent, name)
+{}
+
+void SensWidgetComboBox::fillFromList(const std::vector<CObjectLists::ListType> & list)
+{
+  //store old selection
+  CObjectLists::ListType oldItem = getCurrentObjectList();
+
+  mIndexTable = list;
+
+  //fill combobox
+  clear();
+  std::vector<CObjectLists::ListType>::const_iterator it, itEnd = mIndexTable.end();
+  for (it = mIndexTable.begin(); it != itEnd; ++it)
+    insertItem(FROM_UTF8(CObjectLists::ListTypeName[*it]));
+
+  //restore old selection, if possible
+  if (!setCurrentObjectList(oldItem))
+    setCurrentItem(0);
+}
+
+CObjectLists::ListType SensWidgetComboBox::getCurrentObjectList() const
+  {
+    int index = currentItem();
+    if (index < mIndexTable.size())
+      return mIndexTable[currentItem()];
+    else
+      return CObjectLists::EMPTY_LIST;
+  }
+
+bool SensWidgetComboBox::setCurrentObjectList(CObjectLists::ListType lt)
+{
+  std::vector<CObjectLists::ListType>::const_iterator it;
+  it = std::find(mIndexTable.begin(),
+                 mIndexTable.end(),
+                 lt);
+
+  if (it == mIndexTable.end()) return false;
+
+  setCurrentItem(it - mIndexTable.begin());
+  return true;
+}
+
+//**************** SensitivitiesWidget *********************************
 
 static const unsigned char button_image_data[] =
   {
@@ -167,7 +213,7 @@ SensitivitiesWidget::SensitivitiesWidget(QWidget* parent, const char* name, WFla
                                | QLabel::AlignRight));
   mpMethodLayout->addWidget(TextLabel2, fieldStart + 4, 0);
 
-  FunctionChooser = new QComboBox(FALSE, this, "TargetFunctionChooser");
+  FunctionChooser = new SensWidgetComboBox(this, "TargetFunctionChooser");
   //  FunctionChooser->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)1, (QSizePolicy::SizeType)0, 0, 0, FunctionChooser->sizePolicy().hasHeightForWidth()));
   mpMethodLayout->addMultiCellWidget(FunctionChooser, fieldStart + 4, fieldStart + 4, 1, 1);
 
@@ -194,7 +240,7 @@ SensitivitiesWidget::SensitivitiesWidget(QWidget* parent, const char* name, WFla
                                | QLabel::AlignRight));
   mpMethodLayout->addWidget(TextLabel3, fieldStart + 6, 0);
 
-  VariableChooser = new QComboBox(FALSE, this, "VariableChooser");
+  VariableChooser = new SensWidgetComboBox(this, "VariableChooser");
 
   mpMethodLayout->addMultiCellWidget(VariableChooser, fieldStart + 6, fieldStart + 6, 1, 1);
 
@@ -220,7 +266,7 @@ SensitivitiesWidget::SensitivitiesWidget(QWidget* parent, const char* name, WFla
                                | QLabel::AlignRight));
   mpMethodLayout->addWidget(TextLabel4, fieldStart + 8, 0);
 
-  Variable2Chooser = new QComboBox(FALSE, this, "Variable2Chooser");
+  Variable2Chooser = new SensWidgetComboBox(this, "Variable2Chooser");
   //  Variable2Chooser->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)1, (QSizePolicy::SizeType)0, 0, 0, Variable2Chooser->sizePolicy().hasHeightForWidth()));
   mpMethodLayout->addMultiCellWidget(Variable2Chooser, fieldStart + 8, fieldStart + 8, 1, 1);
 
@@ -296,61 +342,58 @@ bool SensitivitiesWidget::saveTask()
     dynamic_cast<CSensMethod *>(sensTask->getMethod());
   assert(method);
 
-  problem->setSubTaskType(mSubTaskType);
+  // subtask
+  problem->setSubTaskType((CSensProblem::SubTaskType)SubTaskChooser->currentItem());
 
   CSensItem tmp;
 
-  // set the function type
-  if (mFunction == CObjectLists::SINGLE_OBJECT)
+  // target function
+  if (FunctionChooser->getCurrentObjectList() == CObjectLists::SINGLE_OBJECT)
     {
       if (mpSingleFunction)
         tmp.setSingleObjectCN(mpSingleFunction->getCN());
     }
   else
-    tmp.setListType(mFunction);
+    tmp.setListType(FunctionChooser->getCurrentObjectList());
 
-  if (tmp != problem->getTargetFunctions())
-    {
-      mChanged = true;
-      problem->changeTargetFunctions(tmp);
-    }
+  problem->changeTargetFunctions(tmp);
 
-  if (mVariable == CObjectLists::SINGLE_OBJECT)
+  // variables 1
+  if (VariableChooser->getCurrentObjectList() == CObjectLists::SINGLE_OBJECT)
     {
       if (mpSingleVariable)
         tmp.setSingleObjectCN(mpSingleVariable->getCN());
     }
   else
-    tmp.setListType(mVariable);
+    tmp.setListType(VariableChooser->getCurrentObjectList());
 
-  if (tmp != problem->getVariables(0))
-    mChanged = true;
-
-  CSensItem tmp2;
-  if (mVariable2) // if Variable2 is set
-    {
-      if (mVariable2 == CObjectLists::SINGLE_OBJECT)
-        {
-          if (mpSingleVariable2)
-            tmp2.setSingleObjectCN(mpSingleVariable2->getCN());
-        }
-      else
-        tmp2.setListType(mVariable2);
-
-      if (problem->getNumberOfVariables() < 2)
-        mChanged = true;
-      else
-        if (tmp2 != problem->getVariables(1))
-          mChanged = true;
-    }
-
-  // delete saved variables:
   problem->removeVariables();
 
-  problem->addVariables(tmp);
+  if (tmp.getListType() != CObjectLists::EMPTY_LIST)
+    problem->addVariables(tmp);
+  else
+    return true;
 
-  if (mVariable2)
-    problem->addVariables(tmp2);
+  //variables 2
+  CSensItem tmp2;
+  if (Variable2Chooser->getCurrentObjectList() == CObjectLists::SINGLE_OBJECT)
+    {
+      if (mpSingleVariable2)
+        tmp2.setSingleObjectCN(mpSingleVariable2->getCN());
+    }
+  else
+    tmp2.setListType(Variable2Chooser->getCurrentObjectList());
+
+  // write variables to problem
+  problem->removeVariables();
+
+  if (tmp.getListType() != CObjectLists::EMPTY_LIST)
+    {
+      problem->addVariables(tmp);
+
+      if (tmp2.getListType() != CObjectLists::EMPTY_LIST)
+        problem->addVariables(tmp2);
+    }
 
   // :TODO Bug 322: This should only be called when actual changes have been saved.
   if (mChanged) CCopasiDataModel::Global->changed();
@@ -397,37 +440,48 @@ bool SensitivitiesWidget::loadTask()
     dynamic_cast<CSensMethod *>(sensTask->getMethod());
   assert(method);
 
-  mSubTaskType = problem->getSubTaskType();
+  //mSubTaskType = problem->getSubTaskType();
+  SubTaskChooser->setCurrentItem((int)problem->getSubTaskType());
+  updateComboBoxes(problem->getSubTaskType());
 
   CSensItem tmp = problem->getTargetFunctions();
 
+  //target function
   if (tmp.isSingleObject())
     {
-      mFunction = CObjectLists::SINGLE_OBJECT;
+      FunctionChooser->setCurrentObjectList(CObjectLists::SINGLE_OBJECT);
       mpSingleFunction = CCopasiContainer::ObjectFromName(tmp.getSingleObjectCN());
     }
+  else
+    FunctionChooser->setCurrentObjectList(tmp.getListType());
 
+  //variables 1
   if (problem->getNumberOfVariables() > 0)
     {
       tmp = problem->getVariables(0);
       if (tmp.isSingleObject())
         {
-          mVariable = CObjectLists::SINGLE_OBJECT;
+          VariableChooser->setCurrentObjectList(CObjectLists::SINGLE_OBJECT);
           mpSingleVariable = CCopasiContainer::ObjectFromName(tmp.getSingleObjectCN());
         }
+      else
+        VariableChooser->setCurrentObjectList(tmp.getListType());
     }
 
+  //variables 2
   if (problem->getNumberOfVariables() > 1)
     {
       tmp = problem->getVariables(1);
       if (tmp.isSingleObject())
         {
-          mVariable2 = CObjectLists::SINGLE_OBJECT;
+          Variable2Chooser->setCurrentObjectList(CObjectLists::SINGLE_OBJECT);
           mpSingleVariable2 = CCopasiContainer::ObjectFromName(tmp.getSingleObjectCN());
         }
+      else
+        Variable2Chooser->setCurrentObjectList(tmp.getListType());
     }
 
-  initCombos(problem);
+  //  initCombos(problem);
 
   mChanged = false;
 
@@ -438,12 +492,12 @@ bool SensitivitiesWidget::loadTask()
 
 //**************************************************************************
 
-void SensitivitiesWidget::updateLineeditEnable(const QComboBox* box, QWidget* w1, QWidget* w2)
+void SensitivitiesWidget::updateLineeditEnable(const SensWidgetComboBox* box, QWidget* w1, QWidget* w2)
 {
   if (!box) return;
   bool enable = false;
 
-  if (box->currentText() == FROM_UTF8(CObjectLists::ListTypeName[CObjectLists::SINGLE_OBJECT]))
+  if (box->getCurrentObjectList() == CObjectLists::SINGLE_OBJECT)
     enable = true;
 
   if (w1) w1->setEnabled(enable);
@@ -457,9 +511,9 @@ void SensitivitiesWidget::updateAllLineditEnable()
   updateLineeditEnable(Variable2Chooser, Variable2LineEdit, SingleVariable2Chooser);
 }
 
-bool SensitivitiesWidget::checkSingleObject(const QComboBox* box, CCopasiObject * object)
+bool SensitivitiesWidget::checkSingleObject(const SensWidgetComboBox* box, CCopasiObject * object)
 {
-  if (box->currentText() != FROM_UTF8(CObjectLists::ListTypeName[CObjectLists::SINGLE_OBJECT]))
+  if (box->getCurrentObjectList() != CObjectLists::SINGLE_OBJECT)
     return true;
 
   if (object) return true;
@@ -502,205 +556,46 @@ SensitivitiesWidget::initCombos()
     }
 
   SubTaskChooser->insertStringList(StringList);
-  StringList.clear();
-
-  // FunctionChooser combo
-  updateFunctionsStringList(CSensProblem::Evaluation);
-  FunctionChooser->insertStringList(mFunctionsStringList);
-
-  // VariableChooser combo
-  updateVariablesStringList(CSensProblem::Evaluation);
-  VariableChooser->insertStringList(mVariablesStringList);
-  Variable2Chooser->insertStringList(mVariablesStringList);
+  SubTaskChooser->setCurrentItem(0);
+  updateComboBoxes((CSensProblem::SubTaskType)0);
 }
 
-void
-SensitivitiesWidget::initCombos(CSensProblem * problem)
+void SensitivitiesWidget::updateComboBoxes(CSensProblem::SubTaskType type)
 {
-  SubTaskChooser->setCurrentItem((int)problem->getSubTaskType());
-  on_SubTaskChooser_activated(problem->getSubTaskType());
-
-  // add assertions of return values here with an error message box...
-  CSensItem tmp = problem->getTargetFunctions();
-  initCombos(&tmp , SensitivitiesWidget::Function);
-
-  tmp = problem->getVariables(0);
-  initCombos(&tmp, SensitivitiesWidget::Variable);
-
-  if (problem->getNumberOfVariables() > 1)
-    tmp = problem->getVariables(1);
-  else
-    tmp.setListType(CObjectLists::EMPTY_LIST);
-  initCombos(&tmp, SensitivitiesWidget::SecondVariable);
-}
-
-bool
-SensitivitiesWidget::initCombos(CSensItem * item, SensitivitiesWidget::ChoiceType type)
-{
-  std::vector<CObjectLists::ListType> listType;
-  std::vector<CObjectLists::ListType>::iterator liter;
-
-  if (type == SensitivitiesWidget::SubTask)
-    return false;
-
-  listType = mVariablesIndexTable;
-
-  if (type == SensitivitiesWidget::Function)
-    listType = mFunctionsIndexTable;
-
-  liter = std::find(listType.begin(), listType.end(), item->getListType());
-  int index = std::distance(listType.begin(), liter);
-
-  QLineEdit *lineEdit;
-  if (liter != listType.end())
-    {
-      switch (type)
-        {
-        case (SensitivitiesWidget::Function):
-                FunctionChooser->setCurrentItem(index);
-          on_FunctionChooser_activated(index);
-          lineEdit = FunctionLineEdit;
-          break;
-
-        case (SensitivitiesWidget::Variable):
-                VariableChooser->setCurrentItem(index);
-          on_VariableChooser_activated(index);
-          lineEdit = VariableLineEdit;
-          break;
-
-        case (SensitivitiesWidget::SecondVariable):
-                Variable2Chooser->setCurrentItem(index);
-          on_Variable2Chooser_activated(index);
-          lineEdit = Variable2LineEdit;
-        }
-
-      if (item->isSingleObject())
-        lineEdit->setText(FROM_UTF8(item->getSingleObjectDisplayName()));
-    }
-  else
-    return false;
-
-  return true;
-}
-
-void
-SensitivitiesWidget::updateFunctionsStringList(CSensProblem::SubTaskType type)
-{
-  std::vector<CObjectLists::ListType> functions;
-  std::vector<CObjectLists::ListType>::iterator fiter;
-
-  mFunctionsIndexTable.clear();
-  mFunctionsStringList.clear();
-
-  functions = CSensProblem::getPossibleTargetFunctions(type);
-
-  for (fiter = functions.begin(); fiter != functions.end(); ++fiter)
-    {
-      mFunctionsStringList.append(FROM_UTF8(CObjectLists::ListTypeName[*fiter]));
-      mFunctionsIndexTable.push_back(*fiter);
-    }
-}
-
-void
-SensitivitiesWidget::updateVariablesStringList(CSensProblem::SubTaskType type)
-{
-  std::vector<CObjectLists::ListType> variables;
-  std::vector<CObjectLists::ListType>::iterator viter;
-
-  mVariablesIndexTable.clear();
-  mVariablesStringList.clear();
-
-  variables = CSensProblem::getPossibleVariables(type);
-
-  for (viter = variables.begin(); viter != variables.end(); ++viter)
-    {
-      mVariablesStringList.append(FROM_UTF8(CObjectLists::ListTypeName[*viter]));
-      mVariablesIndexTable.push_back(*viter);
-    }
+  FunctionChooser->fillFromList(CSensProblem::getPossibleTargetFunctions(type));
+  VariableChooser->fillFromList(CSensProblem::getPossibleVariables(type));
+  Variable2Chooser->fillFromList(CSensProblem::getPossibleVariables(type));
 }
 
 // ******************* SLOTs *******************************+
 
 void
-SensitivitiesWidget::on_SubTaskChooser_activated(int index)
+SensitivitiesWidget::on_SubTaskChooser_activated(int)
 {
-  QStringList list;
-  std::vector<CObjectLists::ListType>::iterator iter;
-
-  // memorise the state of the other combo boxes:
-  CObjectLists::ListType oldChoiceFunc =
-    (CObjectLists::ListType)mFunctionsIndexTable[ FunctionChooser->currentItem() ];
-  CObjectLists::ListType oldChoiceVar =
-    mVariablesIndexTable[ VariableChooser->currentItem() ];
-
-  FunctionChooser->clear();
-  updateFunctionsStringList((CSensProblem::SubTaskType)index);
-  FunctionChooser->insertStringList(mFunctionsStringList);
-
-  // if valid, set current item to oldChoiceFunc
-  iter = std::find(mFunctionsIndexTable.begin(),
-                   mFunctionsIndexTable.end(),
-                   oldChoiceFunc);
-  if (iter != mFunctionsIndexTable.end())
-    FunctionChooser->setCurrentItem(std::distance(mFunctionsIndexTable.begin(), iter));
-  else
-    on_FunctionChooser_activated(0);
-
-  list.clear();
-
-  VariableChooser->clear();
-  updateVariablesStringList((CSensProblem::SubTaskType)index);
-  VariableChooser->insertStringList(mVariablesStringList);
-
-  // if valid, set current item to oldChoiceVar
-  iter = std::find(mVariablesIndexTable.begin(),
-                   mVariablesIndexTable.end(),
-                   oldChoiceVar);
-  if (iter != mVariablesIndexTable.end())
-    VariableChooser->setCurrentItem(std::distance(mVariablesIndexTable.begin(), iter));
-  else
-    {
-      on_VariableChooser_activated(0);
-      on_Variable2Chooser_activated(0);
-    }
-
-  mSubTaskType = (CSensProblem::SubTaskType)index;
+  CSensProblem::SubTaskType subTaskType = (CSensProblem::SubTaskType)SubTaskChooser->currentItem();
+  updateComboBoxes(subTaskType);
 
   updateAllLineditEnable();
   updateRunButton();
 }
 
 void
-SensitivitiesWidget::on_FunctionChooser_activated(int index)
+SensitivitiesWidget::on_FunctionChooser_activated(int)
 {
-
-  mFunction = mFunctionsIndexTable[index];
-
   updateAllLineditEnable();
   updateRunButton();
 }
 
 void
-SensitivitiesWidget::on_VariableChooser_activated(int index)
+SensitivitiesWidget::on_VariableChooser_activated(int)
 {
-  mVariable = mVariablesIndexTable[index];
-
   updateAllLineditEnable();
   updateRunButton();
 }
 
 void
-SensitivitiesWidget::on_Variable2Chooser_activated(int index)
+SensitivitiesWidget::on_Variable2Chooser_activated(int)
 {
-  if (index == 1) // Single Object:  handled in the slots of LineEdit.
-    {
-      //  editenabled = true;
-      if (!mpSingleVariable2)
-        index = 0;  // see on_SingleVariable2Chooser_clicked()
-    }
-
-  mVariable2 = mVariablesIndexTable[index];
-
   updateAllLineditEnable();
   updateRunButton();
 }
@@ -712,7 +607,6 @@ SensitivitiesWidget::on_SingleFunctionChooser_clicked()
   CCopasiSelectionDialog* browseDialog = new CCopasiSelectionDialog(this);
 
   browseDialog->setModel(CCopasiDataModel::Global->getModel());
-
   browseDialog->setSingleSelection(true);
 
   std::vector<CCopasiObject*>* selection = new std::vector<CCopasiObject*>();
@@ -723,10 +617,9 @@ SensitivitiesWidget::on_SingleFunctionChooser_clicked()
       chosenObject = selection->at(0);
       if (chosenObject)
         {
-          //          mChoicesDone |= Choice_Function;
           FunctionLineEdit->setText(FROM_UTF8(chosenObject->getObjectDisplayName()));
           mpSingleFunction = chosenObject;
-          mFunction = CObjectLists::SINGLE_OBJECT;
+          FunctionChooser->setCurrentObjectList(CObjectLists::SINGLE_OBJECT);
         }
     }
 
@@ -740,7 +633,6 @@ SensitivitiesWidget::on_SingleVariableChooser_clicked()
   CCopasiSelectionDialog* browseDialog = new CCopasiSelectionDialog(this);
 
   browseDialog->setModel(CCopasiDataModel::Global->getModel());
-
   browseDialog->setSingleSelection(true);
 
   std::vector<CCopasiObject*>* selection = new std::vector<CCopasiObject*>();
@@ -753,7 +645,7 @@ SensitivitiesWidget::on_SingleVariableChooser_clicked()
         {
           VariableLineEdit->setText(FROM_UTF8(chosenObject->getObjectDisplayName()));
           mpSingleVariable = chosenObject;
-          mVariable = CObjectLists::SINGLE_OBJECT;
+          VariableChooser->setCurrentObjectList(CObjectLists::SINGLE_OBJECT);
         }
     }
 
@@ -767,7 +659,6 @@ SensitivitiesWidget::on_SingleVariable2Chooser_clicked()
   CCopasiSelectionDialog* browseDialog = new CCopasiSelectionDialog(this);
 
   browseDialog->setModel(CCopasiDataModel::Global->getModel());
-
   browseDialog->setSingleSelection(true);
 
   std::vector<CCopasiObject*>* selection = new std::vector<CCopasiObject*>();
@@ -780,7 +671,7 @@ SensitivitiesWidget::on_SingleVariable2Chooser_clicked()
         {
           Variable2LineEdit->setText(FROM_UTF8(chosenObject->getObjectDisplayName()));
           mpSingleVariable2 = chosenObject;
-          mVariable2 = CObjectLists::SINGLE_OBJECT;
+          Variable2Chooser->setCurrentObjectList(CObjectLists::SINGLE_OBJECT);
         }
     }
 
