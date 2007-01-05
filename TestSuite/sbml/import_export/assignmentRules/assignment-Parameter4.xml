@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created by COPASI version 4.0 (Debug 18++) on 2006-08-31 11:54 with libsbml version 2.3.4. -->
+<sbml xmlns="http://www.sbml.org/sbml/level2" level="2" version="1">
+  <model id="Model_1" name="New Model">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml"></body>
+    </notes>
+    <listOfFunctionDefinitions>
+      <functionDefinition id="function_0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> v </ci>
+            </bvar>
+            <ci> v </ci>
+          </lambda>
+        </math>
+      </functionDefinition>
+    </listOfFunctionDefinitions>
+    <listOfUnitDefinitions>
+      <unitDefinition id="volume">
+        <listOfUnits>
+          <unit kind="litre" scale="-3" multiplier="1" offset="0"/>
+        </listOfUnits>
+      </unitDefinition>
+      <unitDefinition id="substance">
+        <listOfUnits>
+          <unit kind="mole" scale="-3" multiplier="1" offset="0"/>
+        </listOfUnits>
+      </unitDefinition>
+    </listOfUnitDefinitions>
+    <listOfCompartments>
+      <compartment id="compartment_0" name="compartment" size="1"/>
+    </listOfCompartments>
+    <listOfSpecies>
+      <species id="species_0" name="A" compartment="compartment_0" initialConcentration="0.1"/>
+      <species id="species_1" name="B" compartment="compartment_0" initialConcentration="5"/>
+      <species id="species_2" name="C" compartment="compartment_0" initialConcentration="0"/>
+    </listOfSpecies>
+    <listOfParameters>
+      <parameter id="parameter_0" name="K1" value="0" constant="false"/>
+    </listOfParameters>
+    <listOfRules>
+      <assignmentRule variable="parameter_0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 2 </cn>
+            <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+    <listOfReactions>
+      <reaction id="reaction_0" name="reaction" reversible="false">
+        <listOfProducts>
+          <speciesReference species="species_0"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment_0 </ci>
+              <apply>
+                <ci> function_0 </ci>
+                <ci> parameter_0 </ci>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="reaction_1" name="reaction_1" reversible="false">
+        <listOfReactants>
+          <speciesReference species="species_1"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="species_2"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment_0 </ci>
+              <ci> k1 </ci>
+              <ci> species_1 </ci>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="k1" value="0.1"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+    </listOfReactions>
+  </model>
+</sbml>

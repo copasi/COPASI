@@ -1,0 +1,178 @@
+           Non-Exclusive Software License Agreement
+
+Virginia Tech Intellectual Properties, Inc (VTIP) and EML Research
+gGmbH (EML) (referred to collectively as "Owners") own the COPASI
+software and its associated documentation ("Software"). For the
+purpose of this license VTIP functions as the point of contact to the
+Owners. You should carefully read the following terms and conditions
+before using this Software. Your use of this Software indicates your
+acceptance of this license agreement and all terms and conditions.
+
+1) Background 
+
+    The Owners desire to distribute research software in furtherance
+    of their public interest mission.  Licensee desires to use the
+    Software only at its own company or at its facilities for internal
+    business purposes or for performing its own - including commercial
+    - research. In particular, Licensee shall not allow any third
+    party access to the Software for business or research purposes of
+    third parties.  The Software is licensed, not sold.
+
+2) Definitions 
+
+    "Agreement" means this Non-Exclusive Software License Agreement
+    and attachments.
+
+    "Effective Date" means the latest date upon which this Agreement
+    is executed.
+
+    "License Fee" means the amounts due by Licensee to owners under
+    Attachment A.
+
+    "Modifications" mean any changes or extensions introduced into the
+    Software or otherwise based on or derived from the Software source
+    statements. Modifications may include, but are not limited to,
+    corrections of program errors, translations and stylistic
+    restructuring of the Software, addition or deletion of functions
+    or enhancement of existing functions of the Software, and changes
+    or additions required to integrate the Software into other
+    applications.
+
+    "Technical Contact" means the individual authorized by Licensee to
+    receive the Software and conduct all technical correspondence with
+    the Owners.
+
+2) Grant 
+
+    Commencing on the Effective Date, and subject to the provisions
+    herein, the Owners hereby grants to Licensee, and Licensee
+    accepts, a limited, non-exclusive license to install and use the
+    software on any single computer, provided the Software is in use
+    on only one computer at any time. If the Software is permanently
+    installed on the hard disk or other storage device of a computer
+    (other than a network server) and one person uses that computer
+    more than 80% of the time, then that person may also use the
+    Software on a portable or home computer.  In the event the
+    Software is loaded into a server computer, a separate license must
+    be acquired for each user of the server who has access to the
+    software, whether or not the server has been programmed or
+    otherwise set up to only allow access to one or other limited
+    numbers of users at a time. The license granted herein allows the
+    Licensee access to enhancements or updates of the Software by the
+    Owners for a period of 12 month starting at the Effective.  All
+    rights not expressly granted herein are reserved by the Owners.
+    Licensee shall not distribute or otherwise transfer or allow to be
+    transferred, the Software or any Modifications or copies thereof,
+    in whole or in part, without prior written permission of the
+    Owners.
+
+3) Use of Names
+
+    Users will not use the name of the Virginia Polytechnic Institute
+    and State University, Virginia Bioinformatics Institute, Virginia
+    Tech Intellectual Properties, Inc., EML Research, and COPASI nor
+    any adaptation thereof in any publicity or advertising, without
+    the prior written consent from the Owners in each case.
+
+4) Attribution
+
+    Licensee shall cite the COPASI program when Licensee publishes
+    research utilizing or based on the Software.
+
+5) Payment 
+
+    Licensee shall pay to Owners the License Fee, due and payable upon
+    execution of this Agreement
+
+6) Delivery
+
+    Owners shall provide Licensee access to the Software by means of
+    internet transmission following execution of this Agreement and
+    receipt of payment specified herein.
+
+7) Term 
+
+    This Agreement shall remain effective until terminated as set
+    forth herein.
+
+8) Termination 
+
+    Licensee may terminate this Agreement at any time upon written
+    notice to the Owners. The Owners may terminate this Agreement upon
+    notice if Licensee is in material breach of this Agreement and
+    fails within thirty (30) days of a written demand for performance
+    to cure such breach.  The provisions under which this Agreement
+    may be terminated will be in addition to any and all other legal
+    remedies which either party may have for the enforcement of any
+    and all terms hereof, and do not in any way limit any other legal
+    remedy such party may have.  Termination of this Agreement will
+    terminate all rights and licenses granted to Licensee relating to
+    the Software and Restricted Patent Rights. Licensee shall certify
+    in writing to the Owners within ten (10) days after termination
+    that the Software and all copies thereof have been destroyed.
+
+9) Disclaimers 
+
+    The Software has been developed as part of research conducted at
+    the Virginia Polytechnic Institute and State University and EML
+    Research and is provided as a research courtesy. The Software is
+    experimental in nature and is available "AS IS", without
+    obligation by the Owners to provide Licensee services or support
+    except as specified in this Agreement. The entire risk as to the
+    quality and performance of the Software is with Licensee.
+
+    THE OWNERS EXPRESSLY DISCLAIM ANY AND ALL WARRANTIES, WHETHER
+    EXPRESS OR IMPLIED, PERTAINING TO THE MERCHANTABILITY,
+    NON-INFRINGEMENT OR FITNESS FOR A PARTICULAR PURPOSE OF THE
+    SOFTWARE DISCLOSED OR OTHERWISE PROVIDED TO LICENSEE UNDER THIS
+    AGREEMENT.
+
+10) Indemnification
+
+    Licensee shall indemnify and hold harmless the Owners, and their
+    officers, Software developers, employees, students and agents,
+    against any and all claims, suits, losses, damages, costs, fees
+    and expenses resulting from Licensee’s possession and/or use of
+    the Software, including but not limited to any damages, losses or
+    liabilities whatsoever with respect to death or injury to any
+    person and damage to any property. This indemnification clause
+    shall survive the termination of this Agreement.
+
+11) General 
+
+    This agreement shall be governed by the laws of the Commonwealth
+    of Virginia.  
+
+    No omission or delay of either party hereto in requiring due and
+    punctual fulfillment of the obligations of any other party hereto
+    shall be deemed to constitute a waiver by such party of its rights
+    to require such due and punctual fulfillment, or of any other of
+    its remedies hereunder. Amendments to this Agreement must be in
+    writing, reference this Agreement, and must be signed by duly
+    authorized representatives of the Owners and Licensee.
+
+    If any provision of this Agreement shall be held to be invalid,
+    illegal or unenforceable, the validity, legality, and
+    enforceability of the remaining provisions will not be in any way
+    affected or impaired thereby.
+
+    This Agreement and the rights and benefits conferred upon Licensee
+    hereunder may not be assigned or otherwise transferred by Licensee
+    without the prior written consent of the Owners.  In the event
+    either party hereto is prevented from or delayed in the
+    performance of any of its obligations hereunder by reason of acts
+    of God, war, strikes, riots, storms, fires or any other cause
+    whatsoever beyond the reasonable control of the non-performing
+    party, the non-performing party shall be excused from the
+    performance of any such obligation to the extent and during the
+    period of such prevention or delay.
+
+    This Agreement embodies the entire understanding of the parties
+    and supersedes all previous communications, representations, or
+    understandings, either oral or written, between the parties
+    relating to the subject matter hereof.
+
+END OF TERMS AND CONDITIONS
+
+    Address all correspondence regarding this license to electronic
+    mail address: license@copasi.org
