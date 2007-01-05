@@ -59,7 +59,7 @@ acceptance of this license agreement and all terms and conditions.
     otherwise set up to only allow access to one or other limited
     numbers of users at a time. The license granted herein allows the
     Licensee access to enhancements or updates of the Software by the
-    Owners for a period of 12 month starting at the Effective.  All
+    Owners for a period of 12 month starting at the Effective Date.  All
     rights not expressly granted herein are reserved by the Owners.
     Licensee shall not distribute or otherwise transfer or allow to be
     transferred, the Software or any Modifications or copies thereof,

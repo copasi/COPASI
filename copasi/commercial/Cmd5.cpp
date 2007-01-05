@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commercial/Attic/Cmd5.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.1.4.1 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/12/12 21:22:08 $
+   $Date: 2007/01/05 21:43:19 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -351,29 +351,29 @@ void Cmd5::decode(unsigned C_INT32 *output,
 
 // ROTATE_LEFT rotates x left n bits.
 
-inline unsigned int Cmd5::rotate_left (unsigned C_INT32 x, unsigned C_INT32 n)
+inline unsigned C_INT32 Cmd5::rotate_left (unsigned C_INT32 x, unsigned C_INT32 n)
 {return (x << n) | (x >> (32 - n));}
 
 // F, G, H and I are basic Cmd5 functions.
 
-inline unsigned int Cmd5::F(unsigned C_INT32 x,
-                            unsigned C_INT32 y,
-                            unsigned C_INT32 z)
+inline unsigned C_INT32 Cmd5::F(unsigned C_INT32 x,
+                                unsigned C_INT32 y,
+                                unsigned C_INT32 z)
 {return (x & y) | (~x & z);}
 
-inline unsigned int Cmd5::G(unsigned C_INT32 x,
-                            unsigned C_INT32 y,
-                            unsigned C_INT32 z)
+inline unsigned C_INT32 Cmd5::G(unsigned C_INT32 x,
+                                unsigned C_INT32 y,
+                                unsigned C_INT32 z)
 {return (x & z) | (y & ~z);}
 
-inline unsigned int Cmd5::H(unsigned C_INT32 x,
-                            unsigned C_INT32 y,
-                            unsigned C_INT32 z)
+inline unsigned C_INT32 Cmd5::H(unsigned C_INT32 x,
+                                unsigned C_INT32 y,
+                                unsigned C_INT32 z)
 {return x ^ y ^ z;}
 
-inline unsigned int Cmd5::I(unsigned C_INT32 x,
-                            unsigned C_INT32 y,
-                            unsigned C_INT32 z)
+inline unsigned C_INT32 Cmd5::I(unsigned C_INT32 x,
+                                unsigned C_INT32 y,
+                                unsigned C_INT32 z)
 {return y ^ (x | ~z);}
 
 // FF, GG, HH, and II transformations for rounds 1, 2, 3, and 4.

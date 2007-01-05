@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.50 $ $Author: shoops $ $Date: 2006/06/20 13:16:12 $  
+# $Revision: 1.50.4.1 $ $Author: shoops $ $Date: 2007/01/05 21:42:59 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -21,12 +21,10 @@ CONFIG += rtti
 CONFIG += thread
 
 # COPASI License to use
-DEFINES += COPASI_LICENSE_US
+DEFINES -= COPASI_LICENSE_US
 DEFINES -= COPASI_LICENSE_DE
-contains(USE_LICENSE, DE) {
-  DEFINES += COPASI_LICENSE_DE
-  DEFINES -= COPASI_LICENSE_US
-}
+DEFINES -= COPASI_LICENSE_COM
+DEFINES += COPASI_LICENSE_$$USE_LICENSE
 
 debug {
   DEFINES += COPASI_DEBUG

@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.133 $ $Author: ssahle $ $Date: 2006/09/18 13:40:16 $  
+# $Revision: 1.133.2.1 $ $Author: shoops $ $Date: 2007/01/05 21:43:20 $  
 ######################################################################
 
 TEMPLATE = app
@@ -10,6 +10,10 @@ include(../common.pri)
 
 DEPENDPATH += .. 
 INCLUDEPATH += ..
+
+contains(DEFINES, COPASI_LICENSE_COM) {
+  COPASI_LIBS += commercial
+}
 
 COPASI_LIBS += copasiDM
 COPASI_LIBS += copasiXML
@@ -410,11 +414,21 @@ SOURCES += \
            StateSubwidget.cpp \
            TimeSeriesSubwidget.cpp 
 
+contains(USE_LICENSE, COM) {
+# FORMS += CQRegistrationDialog.ui
+
+HEADERS += CQRegistrationDialog.h \
+           CQRegistrationDialog.ui.h
+
+SOURCES += CQRegistrationDialog.cpp
+}
+
 release {
   distribution.path = .
   distribution.file = CopasiUI
 
   INSTALLS += distribution
+}
 
 release {
   HEADERS -= \

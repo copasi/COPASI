@@ -85,8 +85,8 @@ if test "x$prefix" = "xNONE"; then
   ac_configure_args="$ac_configure_args --prefix $prefix"
 fi
 
-if test x"${COPASI_LICENSE}" = x"DE" -o x"${COPASI_LICENSE}" = x"US"; then
-  QMAKE_ARG="USE_LICENSE=$COPASI_LICENSE"
+if test x"${COPASI_LICENSE}" = x"DE" -o x"${COPASI_LICENSE}" = x"US" -o x"${COPASI_LICENSE}" = x"COM"; then
+  QMAKE_ARG="$QMAKE_ARG USE_LICENSE=$COPASI_LICENSE"
 fi
 
 if test x"$BUILD_PARSER" = x"yes"; then
@@ -155,7 +155,7 @@ dnl to prevent calling aclocal, automake and configure again
  mv $$.tmp Makefile && \
  echo depend:  >> Makefile && \
  echo "	touch Makefile" >> Makefile && \
- rm -f CopasiSE/CopasiSE.o CopasiUI/main.o && \ 
+ rm -f CopasiSE/CopasiSE.o CopasiUI/main.o CopasiUI/copasiui3window.o && \ 
  cd ..
  cd semantic-test-suite && \
  echo executing in `pwd`: && \

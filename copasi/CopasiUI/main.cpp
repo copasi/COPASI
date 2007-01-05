@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/main.cpp,v $
-   $Revision: 1.27 $
+   $Revision: 1.27.2.1 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/05 15:26:02 $
+   $Date: 2007/01/05 21:43:20 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,8 +33,6 @@
 
 int main(int argc, char **argv)
 {
-  QApplication a(argc, argv);
-
   // Parse the commandline options
   try
     {
@@ -55,18 +53,22 @@ int main(int argc, char **argv)
   // Create the global data model.
   CCopasiDataModel::Global = new CCopasiDataModel(true);
 
-  CopasiUI3Window window;
-  a.setMainWidget(&window);
+  QApplication a(argc, argv);
 
-  window.getDataModel()->setQApp(&a);
+  // Create the main application window.
+  CopasiUI3Window *pWindow = CopasiUI3Window::create();
 
-  //  window.resize(800, 600);
-  //  window.show();
+  if (pWindow != NULL)
+    {
+      a.setMainWidget(pWindow);
 
-  //  ObjectDebug objwindow;
-  //  objwindow.show();
+      pWindow->getDataModel()->setQApp(&a);
 
-  a.exec();
+      //  ObjectDebug objwindow;
+      //  objwindow.show();
+
+      a.exec();
+    }
 
   pdelete(CCopasiDataModel::Global);
   pdelete(CCopasiContainer::Root);

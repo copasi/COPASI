@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.18 $ $Author: shoops $ $Date: 2006/06/20 13:16:12 $  
+# $Revision: 1.18.4.1 $ $Author: shoops $ $Date: 2007/01/05 21:42:59 $  
 ######################################################################
 
 TEMPLATE = subdirs
@@ -8,6 +8,9 @@ include(common.pri)
 
 # First build the libs
 SUBDIRS =  commandline
+contains(USE_LICENSE, COM) {
+  SUBDIRS += commercial
+}
 SUBDIRS += CopasiDataModel
 SUBDIRS += elementaryFluxModes
 SUBDIRS += function

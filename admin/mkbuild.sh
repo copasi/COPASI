@@ -8,7 +8,7 @@ if [ x"$#" = x1 ]; then
   minor=`gawk -- '$2 ~ "VERSION_MINOR" {print $3}' copasi/copasiversion.h`
   build=`gawk -- '$2 ~ "VERSION_BUILD" {print $3}' copasi/copasiversion.h`
 
-  license=`gawk -- ' BEGIN {license = "US"} $0 ~ "USE_LICENSE=DE" {license = "DE"} END {print license} ' copasi/Makefile`
+  license=`gawk -- ' BEGIN {license = "US"} $0 ~ "USE_LICENSE=DE" {license = "DE"} $0 ~ "USE_LICENSE=COM" {license = "COM"} END {print license} ' copasi/Makefile`
 
   case x"$1" in 
   xWIN32)
@@ -180,6 +180,7 @@ echo "Set the icon in the Info.plist file."
     sleep 10
     hdiutil eject ${drive} || (sleep 10; hdiutil eject ${drive} -force)
 
+    [ -e Copasi-$build-$1.dmg ] && rm -rf Copasi-$build-$1.dmg
     hdiutil convert -format UDCO Copasi-tmp.dmg -o Copasi-$build-$1.dmg
     rm -rf Copasi-tmp.dmg
     ;;

@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.30 $ $Author: shoops $ $Date: 2006/06/20 13:17:03 $  
+# $Revision: 1.30.4.1 $ $Author: shoops $ $Date: 2007/01/05 21:43:20 $  
 ######################################################################
 
 TEMPLATE = app
@@ -12,6 +12,10 @@ include(../common.pri)
 
 DEPENDPATH += .. 
 INCLUDEPATH += ..
+
+contains(DEFINES, COPASI_LICENSE_COM) {
+  COPASI_LIBS += commercial
+}
 
 COPASI_LIBS += copasiDM
 COPASI_LIBS += copasiXML

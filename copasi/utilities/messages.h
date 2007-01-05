@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.78.2.4 $
+   $Revision: 1.78.2.5 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/10/03 13:46:45 $
+   $Date: 2007/01/05 21:43:29 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -228,6 +228,10 @@ const MESSAGES Messages[] =
     {MCLyap + 3, "CLyapMethod (3): Only %d exponents can be calculated for this model because the model has only %d independent variables."},
     {MCLyap + 4, "CLyapMethod (4): Transient time is larger than overall time."},
     {MCLyap + 5, "CLyapMethod (5): Orthonormalization interval is larger than overall time."},
+
+    {MCRegistration + 1, "CRegistration (1): Invalid registration code."},
+    {MCRegistration + 2, "CRegistration (2): Email and/or user name do not match registration code."},
+    {MCRegistration + 3, "CRegistration (3): Trial license expired on: '%s'."},
 
     // This must be the last element of the message list! Do not delete!
     {0, NULL}
