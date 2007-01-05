@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.3 $ $Author: shoops $ $Date: 2007/01/03 14:16:50 $  
+# $Revision: 1.4 $ $Author: shoops $ $Date: 2007/01/05 14:57:12 $  
 ######################################################################
 
 CONFIG -= qt
@@ -10,6 +10,9 @@ QMAKE_QMAKE = $(QTDIR)/bin/qmake
 
 DEFINES += LICENSE_CREATE
 INCLUDEPATH += ../../copasi/commercial
+
+QMAKE_LFLAGS += -static
+
 #Input
 HEADERS += COptions.h \
            ../../copasi/commercial/FlexibleInt.h \
