@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSensResultWidget.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2007/01/02 12:02:13 $
+   $Date: 2007/01/05 16:35:01 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,8 +36,126 @@
 //#include "report/CKeyFactory.h"
 //#include "model/CModel.h"
 
+CColorScale1::CColorScale1()
+    : m1(1e-4)
+{}
+
+//virtual
+QColor CColorScale1::getColor(const C_FLOAT64 & number)
+{
+  QColor color;
+  if (fabs(number) < m1)
+    color = QColor(250, 250, 250);
+  else if (number > 0)
+    color = QColor(200, 255, 200);
+  else
+    color = QColor(255, 200, 200);
+  return color;
+}
+
+//**************************
+
+CColorScaleSimple::CColorScaleSimple()
+    : mMin(0.0),
+    mMax(1.0),
+    mLog(false),
+    mSym(false)
+{}
+
+//virtual
+QColor CColorScaleSimple::getColor(const C_FLOAT64 & number)
+{
+  C_FLOAT64 tmp = (number - mMin) / (mMax - mMin); //scale to 0..1
+  if (tmp > 1) tmp = 1;
+  if (tmp < 0) tmp = 0;
+
+  int r = 0;
+  int g = 0;
+  int b = 0;
+
+  if (tmp < 0.5)
+    {
+      r = 255;
+      g = 255 + (tmp - 0.5) * 220;
+      b = 255 + (tmp - 0.5) * 220;
+    }
+  else
+    {
+      r = 255 - (tmp - 0.5) * 220;
+      g = 255;
+      b = 255 - (tmp - 0.5) * 220;
+    }
+
+  QColor color(r, g, b);
+  return color;
+}
+
+//virtual
+void CColorScaleSimple::startAutomaticParameterCalculation()
+{
+  mMin = DBL_MAX;
+  mMax = -DBL_MAX;
+}
+
+//virtual
+void CColorScaleSimple::passValue(const C_FLOAT64 & number)
+{
+  if (number > mMax) mMax = number;
+  if (number < mMin) mMin = number;
+}
+
+//virtual
+void CColorScaleSimple::finishAutomaticParameterCalculation()
+{
+  if (mSym)
+    {
+      C_FLOAT64 tmp;
+      if (fabs(mMax) > fabs(mMin))
+        tmp = fabs(mMax);
+      else
+        tmp = fabs(mMin);
+
+      mMin = - tmp;
+      mMax = tmp;
+    }
+}
+
+//**************************
+
+CColorScaleAverage::CColorScaleAverage()
+    : CColorScaleSimple(),
+    mFactor(3.0),
+    mFloat(0.0),
+    mInt(0)
+{}
+
+//virtual
+void CColorScaleAverage::startAutomaticParameterCalculation()
+{
+  mInt = 0;
+  mFloat = 0;
+}
+
+//virtual
+void CColorScaleAverage::passValue(const C_FLOAT64 & number)
+{
+  ++mInt;
+  mFloat += fabs(number);
+}
+
+//virtual
+void CColorScaleAverage::finishAutomaticParameterCalculation()
+{
+  mMax = mFactor * mFloat / mInt;
+  mMin = -mMax;
+}
+
+//******************************************************************
+//******************************************************************
+
 ArrayAnnotationsWidget::ArrayAnnotationsWidget(QWidget* parent, const char* name, WFlags fl)
-    : QVBox(parent, name, fl)
+    : QVBox(parent, name, fl),
+    mpColorScale(NULL)
 {
   mpSelectionTable = new QTable(this);
   mpSelectionTable->verticalHeader()->hide();
@@ -57,7 +175,10 @@ ArrayAnnotationsWidget::ArrayAnnotationsWidget(QWidget* parent, const char* name
 }
 
 ArrayAnnotationsWidget::~ArrayAnnotationsWidget()
-{}
+{
+  if (mpColorScale)
+    delete mpColorScale;
+}
 
 void ArrayAnnotationsWidget::setArrayAnnotation(const CArrayAnnotation * pArray)
 {
@@ -260,27 +381,6 @@ finish:
   storeCurrentCombos();
 }
 
-QColor ArrayAnnotationsWidget::getColor(const C_FLOAT64 & number)
-{
-  QColor color;
-  switch (mColorCoding)
-    {
-    case NOCODING:
-      color = QColor(250, 250, 250);
-      break;
-
-    case CODING1:
-      if (fabs(number) < 1e-10)
-        color = QColor(250, 250, 250);
-      else if (number > 0)
-        color = QColor(200, 255, 200);
-      else
-        color = QColor(255, 200, 200);
-      break;
-    }
-  return color;
-}
-
 void ArrayAnnotationsWidget::fillTable(unsigned C_INT32 rowIndex, unsigned C_INT32 colIndex,
                                        CCopasiAbstractArray::index_type & index)
 {
@@ -307,21 +407,37 @@ void ArrayAnnotationsWidget::fillTable(unsigned C_INT32 rowIndex, unsigned C_INT
       mpContentTable->horizontalHeader()->setLabel(j, FROM_UTF8(coldescr[j]));
     }
 
-  //
+  //automatic color scaling
+  if (mAutomaticColorScaling)
+    {
+      mpColorScale->startAutomaticParameterCalculation();
+
+      for (i = 0; i < imax; ++i)
+        for (j = 0; j < jmax; ++j)
+          {
+            index[rowIndex] = i;
+            index[colIndex] = j;
+            mpColorScale->passValue((*mpArray->array())[index]);
+          }
+
+      mpColorScale->finishAutomaticParameterCalculation();
+    }
+
+  //table contents
   for (i = 0; i < imax; ++i)
     for (j = 0; j < jmax; ++j)
       {
         index[rowIndex] = i;
         index[colIndex] = j;
 
-        if (mColorCoding == NOCODING)
+        if (!mpColorScale)
           {
             mpContentTable->setText(i, j, QString::number((*mpArray->array())[index]));
           }
         else
           {
             C_FLOAT64 number = (*mpArray->array())[index];
-            QColor color = getColor(number);
+            QColor color = mpColorScale->getColor(number);
             mpContentTable->setItem(i, j, new ColorTableItem(mpContentTable, QTableItem::Never, color,
                                     QString::number(number)));
           }
@@ -380,37 +496,25 @@ CQSensResultWidget::CQSensResultWidget(QWidget* parent, const char* name, WFlags
 
   // unscaled array
   mArrayWidget = new ArrayAnnotationsWidget(mpTab, "ArrayWidget");
-  mArrayWidget->setColorCoding(ArrayAnnotationsWidget::CODING1);
-  //mWidgetLayout->addMultiCellWidget(mArrayWidget, 1, 2, 0, 2);
+  //mArrayWidget->setColorCoding(new CColorScale1());
+  CColorScaleAverage * tcs = new CColorScaleAverage();
+  mArrayWidget->setColorCoding(tcs);
+  //tcs->setMinMax(-1,1);
+  //tcs->setSymmetric(true);
+  tcs->setFactor(3.0);
+  mArrayWidget->setColorScalingAutomatic(true);
   mpTab->addTab(mArrayWidget, "unscaled");
 
   //scaled array
   mArrayWidgetScaled = new ArrayAnnotationsWidget(mpTab, "ArrayWidget2");
-  mArrayWidgetScaled->setColorCoding(ArrayAnnotationsWidget::CODING1);
-  //mWidgetLayout->addMultiCellWidget(mArrayWidget, 1, 2, 0, 2);
+  //mArrayWidgetScaled->setColorCoding(new CColorScale1());
+  tcs = new CColorScaleAverage();
+  mArrayWidgetScaled->setColorCoding(tcs);
+  //tcs->setMinMax(-1,1);
+  //tcs->setSymmetric(true);
+  tcs->setFactor(3.0);
+  mArrayWidgetScaled->setColorScalingAutomatic(true);
   mpTab->addTab(mArrayWidgetScaled, "scaled");
-
-  /*  QSpacerItem* spacer = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
-    mWidgetLayout->addItem(spacer, 5, 0);
-
-    mTableExponents = new QTable(this, "mTableExponents");
-    mWidgetLayout->addMultiCellWidget(mTableExponents, 4, 5, 1, 2);
-    mTableExponents->setNumRows(0);
-    mTableExponents->setNumCols(1);
-    QHeader *colHeader = mTableExponents->horizontalHeader();
-    colHeader->setLabel(0, tr("Exponent"));
-    mTableExponents->setColumnStretchable(0, true);
-    mTableExponents->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-
-    // ************* comment ******************
-    mLabelComment = new QLabel(this, "mLabelComment");
-    mLabelComment->setAlignment(int(QLabel::WordBreak));
-    mLabelComment->setText("");
-
-    mWidgetLayout->addWidget(mLabelComment, 8, 1);
-
-    spacer = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
-    mWidgetLayout->addItem(spacer, 9, 0);*/
 }
 
 /*
