@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.127.2.6 $ $Author: shoops $ $Date: 2007/01/05 18:32:15 $  
+# $Revision: 1.127.2.7 $ $Author: shoops $ $Date: 2007/01/05 19:09:32 $  
 ######################################################################
 
 TEMPLATE = app
@@ -410,7 +410,11 @@ HEADERS += CQRegistrationDialog.h \
 SOURCES += CQRegistrationDialog.cpp
 }
 
+release {
+  distribution.path = .
+  distribution.file = CopasiUI
   INSTALLS += distribution
+}
 
 release {
   HEADERS -= \
