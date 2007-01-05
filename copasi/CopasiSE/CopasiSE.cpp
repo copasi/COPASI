@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
-   $Revision: 1.30.2.1 $
+   $Revision: 1.30.2.2 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/22 15:03:24 $
+   $Date: 2007/01/05 18:32:15 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -45,6 +45,11 @@
 #include "utilities/CDirEntry.h"
 #include "utilities/CSparseMatrix.h"
 
+#ifdef COPASI_LICENSE_COM
+# include "commandline/CConfigurationFile.h"
+# include "commercial/CRegistration.h"
+#endif
+
 int main(int argc, char *argv[])
 {
 #ifdef XXXX
@@ -68,6 +73,9 @@ int main(int argc, char *argv[])
                      COPASI_VERSION_BUILD);
 
   std::cout << "COPASI "
+#ifdef COPASI_LICENSE_COM
+  << "(commercial) "
+#endif
   << Version.getVersion()
   << std::endl << std::endl;
 
@@ -113,6 +121,60 @@ int main(int argc, char *argv[])
 
       // Create the global data model.
       CCopasiDataModel::Global = new CCopasiDataModel;
+
+#ifdef COPASI_LICENSE_COM
+      CRegistration * pRegistration =
+        elevate< CRegistration, CCopasiParameterGroup >(CCopasiDataModel::Global->getConfiguration()->assertGroup("Registration"));
+
+      bool RegistrationChanged = false;
+      std::string RegistrationValue;
+
+      if (!COptions::compareValue("RegistrationCode", std::string("")))
+        {
+          COptions::getValue("RegistrationCode", RegistrationValue);
+          pRegistration->setRegistrationCode(RegistrationValue);
+          RegistrationChanged = true;
+        }
+
+      if (!COptions::compareValue("RegisteredEmail", std::string("")))
+        {
+          COptions::getValue("RegisteredEmail", RegistrationValue);
+          pRegistration->setRegisteredEmail(RegistrationValue);
+          RegistrationChanged = true;
+        }
+
+      if (!COptions::compareValue("RegisteredUser", std::string("")))
+        {
+          COptions::getValue("RegisteredUser", RegistrationValue);
+          pRegistration->setRegisteredUser(RegistrationValue);
+          RegistrationChanged = true;
+        }
+
+      if (!RegistrationChanged && !pRegistration->isValidSignature())
+        {
+          std::cerr << "No license registration." << std::endl;
+          std::cerr << "Please add the following arguments to CopasiSE:" << std::endl;
+          std::cerr << "   --rUser <Your Name as in registration.>" << std::endl;
+          std::cerr << "   --rEmail <Your Email as in registration.>" << std::endl;
+          std::cerr << "   --rCode <Your Registration Code.>" << std::endl;
+
+          return 1;
+        }
+
+      if (!pRegistration->isValidRegistration())
+        {
+          std::cerr << "Invalid license registration." << std::endl;
+          std::cerr << CCopasiMessage::getLastMessage().getText() << std::endl;
+          std::cerr << "To correct the problem please add one or more of the" << std::endl;
+          std::cerr << "following arguments to CopasiSE:" << std::endl;
+          std::cerr << "   --rUser <Your Name as in registration.>" << std::endl;
+          std::cerr << "   --rEmail <Your Email as in registration.>" << std::endl;
+          std::cerr << "   --rCode <Your Registration Code.>" << std::endl;
+
+          return 1;
+        }
+
+#endif // COPASI_LICENSE_COM
 
 #ifdef XXXX
       CCallParameters<C_FLOAT64> Variables(20);

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/main.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.26.2.1 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/01 14:22:18 $
+   $Date: 2007/01/05 18:32:15 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -51,17 +51,20 @@ int main(int argc, char **argv)
 
   QApplication a(argc, argv);
 
-  CopasiUI3Window window;
-  a.setMainWidget(&window);
-  window.getDataModel()->setQApp(&a);
+  // Create the main application window.
+  CopasiUI3Window *pWindow = CopasiUI3Window::create();
 
-  //  window.resize(800, 600);
-  //  window.show();
+  if (pWindow != NULL)
+    {
+      a.setMainWidget(pWindow);
 
-  //  ObjectDebug objwindow;
-  //  objwindow.show();
+      pWindow->getDataModel()->setQApp(&a);
 
-  a.exec();
+      //  ObjectDebug objwindow;
+      //  objwindow.show();
+
+      a.exec();
+    }
 
   pdelete(CCopasiDataModel::Global);
   pdelete(CCopasiContainer::Root);

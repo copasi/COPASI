@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptionParser.cpp,v $
-   $Revision: 1.19 $
+   $Revision: 1.19.2.1 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/28 14:40:33 $
+   $Date: 2007/01/05 18:32:04 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -192,6 +192,12 @@ void copasi::COptionParser::finalize (void)
           throw option_error("missing value for 'importSBML' option");
         case option_License:
           throw option_error("missing value for 'license' option");
+        case option_RegisteredEmail:
+          throw option_error("missing value for 'rEmail' option");
+        case option_RegisteredUser:
+          throw option_error("missing value for 'rUser' option");
+        case option_RegistrationCode:
+          throw option_error("missing value for 'rCode' option");
         case option_Save:
           throw option_error("missing value for 'save' option");
         case option_Tmp:
@@ -452,6 +458,42 @@ void copasi::COptionParser::parse_long_option (const char *option, int position,
       options_.License = !options_.License;
       return;
     }
+  else if (strcmp(option, "rCode") == 0)
+    {
+      if (source != source_cl) throw option_error("the 'rCode' option is only allowed on the command line");
+      if (locations_.RegistrationCode)
+        {
+          throw option_error("the 'rCode' option is only allowed once");
+        }
+      openum_ = option_RegistrationCode;
+      locations_.RegistrationCode = position;
+      state_ = state_value;
+      return;
+    }
+  else if (strcmp(option, "rEmail") == 0)
+    {
+      if (source != source_cl) throw option_error("the 'rEmail' option is only allowed on the command line");
+      if (locations_.RegisteredEmail)
+        {
+          throw option_error("the 'rEmail' option is only allowed once");
+        }
+      openum_ = option_RegisteredEmail;
+      locations_.RegisteredEmail = position;
+      state_ = state_value;
+      return;
+    }
+  else if (strcmp(option, "rUser") == 0)
+    {
+      if (source != source_cl) throw option_error("the 'rUser' option is only allowed on the command line");
+      if (locations_.RegisteredUser)
+        {
+          throw option_error("the 'rUser' option is only allowed once");
+        }
+      openum_ = option_RegisteredUser;
+      locations_.RegisteredUser = position;
+      state_ = state_value;
+      return;
+    }
   else if (strcmp(option, "save") == 0)
     {
       source = source; // kill compiler unused variable warning
@@ -543,6 +585,21 @@ void copasi::COptionParser::parse_value (const char *value)
       break;
     case option_License:
       break;
+    case option_RegisteredEmail:
+      {
+        options_.RegisteredEmail = value;
+      }
+      break;
+    case option_RegisteredUser:
+      {
+        options_.RegisteredUser = value;
+      }
+      break;
+    case option_RegistrationCode:
+      {
+        options_.RegistrationCode = value;
+      }
+      break;
     case option_Save:
       {
         options_.Save = value;
@@ -596,6 +653,15 @@ namespace
 
     if (name_size <= 7 && name.compare("license") == 0)
       matches.push_back("license");
+
+    if (name_size <= 5 && name.compare("rCode") == 0)
+      matches.push_back("rCode");
+
+    if (name_size <= 6 && name.compare("rEmail") == 0)
+      matches.push_back("rEmail");
+
+    if (name_size <= 5 && name.compare("rUser") == 0)
+      matches.push_back("rUser");
 
     if (name_size <= 4 && name.compare("save") == 0)
       matches.push_back("save");

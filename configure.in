@@ -70,7 +70,7 @@ AC_ARG_WITH([qwt],
 
 AC_ARG_WITH([copasi-license],
   AS_HELP_STRING([--with-copasi-license],
-                 [Specify whether to use the German (DE) or US (US) license.]),
+                 [Specify whether to use the German (DE), US (US) or Commercial (COM) license.]),
   [COPASI_LICENSE=$withval])
 
 AC_ARG_WITH([build-parser],
@@ -78,15 +78,14 @@ AC_ARG_WITH([build-parser],
                  [Specify whether to build lex and yacc sources.]),
   [BUILD_PARSER=$withval])
 
-QMAKE_ARG=""
 
 if test "x$prefix" = "xNONE"; then
   prefix=$ac_default_prefix
   ac_configure_args="$ac_configure_args --prefix $prefix"
 fi
 
-if test x"${COPASI_LICENSE}" = x"DE" -o x"${COPASI_LICENSE}" = x"US"; then
-  QMAKE_ARG="USE_LICENSE=$COPASI_LICENSE"
+if test x"${COPASI_LICENSE}" = x"DE" -o x"${COPASI_LICENSE}" = x"US" -o x"${COPASI_LICENSE}" = x"COM"; then
+  QMAKE_ARG="$QMAKE_ARG USE_LICENSE=$COPASI_LICENSE"
 fi
 
 if test x"$BUILD_PARSER" = x"yes"; then
@@ -155,7 +154,7 @@ dnl to prevent calling aclocal, automake and configure again
  mv $$.tmp Makefile && \
  echo depend:  >> Makefile && \
  echo "	touch Makefile" >> Makefile && \
- rm -f CopasiSE/CopasiSE.o CopasiUI/main.o && \ 
+ rm -f CopasiSE/CopasiSE.o CopasiUI/main.o CopasiUI/copasiui3window.o && \ 
  cd ..
  cd semantic-test-suite && \
  echo executing in `pwd`: && \
