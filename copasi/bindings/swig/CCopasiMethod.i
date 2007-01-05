@@ -85,6 +85,13 @@ class CCopasiMethod : public CCopasiParameterGroup
      */
     const CCopasiMethod::SubType & getSubType() const;
 
+%extend{
+  static const std::string& getSubTypeName(const int& subType)
+  {
+    return CCopasiMethod::SubTypeName[subType];
+  }
+}
+
 };
 
 

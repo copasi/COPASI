@@ -49,20 +49,20 @@ class CTrajectoryTask : public CCopasiTask
 
     %extend{
     
-      bool process(bool useInitialValues)
+ 
+    std::vector<int> getValidMethods() const
+    {
+      std::vector<int> validMethods;
+      unsigned int i=0;
+      while(self->ValidMethods[i]!=CCopasiMethod::unset)
       {
-        bool result=self->initialize(CCopasiTask::OUTPUT_COMPLETE,NULL);
-        if(result)
-        {
-          result=self->process(useInitialValues);
-        }
-        if(result)
-        {
-          result=self->restore();
-        }
-        return result;
-      }  
-    
+        validMethods.push_back(self->ValidMethods[i]);
+        i++;
+      }
+      return validMethods;
+    } 
+
+  
     }
 
 };

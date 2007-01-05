@@ -12,6 +12,9 @@
                                            const unsigned C_INT32 & flag);
 %immutable CCopasiContainer::Root;
 
+
+%immutable CCopasiContainer::Root;
+
 class CCopasiContainer: public CCopasiObject
 {
   private:

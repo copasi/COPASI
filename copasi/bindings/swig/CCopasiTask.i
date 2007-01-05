@@ -35,6 +35,9 @@ class CCopasiTask : public CCopasiContainer
       OUTPUT,                              //do output, but do not initialize/finish
       OUTPUT_COMPLETE          //do output, including initialization and closing
     };
+
+
+
     /**
      * Default constructor
      */
@@ -118,10 +121,47 @@ class CCopasiTask : public CCopasiContainer
      */
     CCopasiMethod * getMethod();
 
-    
+     /**
+     * Set the method type applied to solve the task
+     * @param const CCopasiMethod::SubType & type
+     * @return bool success
+     */
+    virtual bool setMethodType(const int & type);
+
+
+
+%extend {
+  std::vector<int> getValidMethods() const
+    {
+      std::vector<int> validMethods;
+      unsigned int i=0;
+      while(self->ValidMethods[i]!=CCopasiMethod::unset)
+      {
+        validMethods.push_back(self->ValidMethods[i]);
+        i++;
+      }
+      return validMethods;
+    } 
+
+    virtual  bool process(bool useInitialValues)
+      {
+        bool result=self->initialize(CCopasiTask::OUTPUT_COMPLETE,NULL);
+        if(result)
+        {
+          result=self->process(useInitialValues);
+        }
+        if(result)
+        {
+          result=self->restore();
+        }
+        return result;
+      }  
+   
+}  
 
 };
 
+%template(MethodTypeStdVector) std::vector<int>;
 
 
 
