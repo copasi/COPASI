@@ -180,6 +180,7 @@ echo "Set the icon in the Info.plist file."
     sleep 10
     hdiutil eject ${drive} || (sleep 10; hdiutil eject ${drive} -force)
 
+    [ -e Copasi-$build-$1.dmg ] && rm -rf Copasi-$build-$1.dmg
     hdiutil convert -format UDCO Copasi-tmp.dmg -o Copasi-$build-$1.dmg
     rm -rf Copasi-tmp.dmg
     ;;
