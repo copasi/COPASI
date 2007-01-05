@@ -86,11 +86,19 @@ CFG=license - Win32 Debug
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
+SOURCE=..\..\copasi\commercial\BigInt.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\COptions.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\copasi\commercial\FlexibleInt.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\copasi\commercial\GenericDecode.c
 # End Source File
 # Begin Source File
 
@@ -102,11 +110,19 @@ SOURCE=.\license.cpp
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
+SOURCE=..\..\copasi\commercial\BigInt.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\COptions.h
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\copasi\commercial\FlexibleInt.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\copasi\commercial\GenericDecode.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"
