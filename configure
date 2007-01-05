@@ -803,8 +803,8 @@ Optional Packages:
   --with-lapack=PATH      Path to LAPACK Library
   --with-mkl=PATH         Path to MKL Library
   --with-qwt=PATH         Path to QWT Library
-  --with-copasi-license   Specify whether to use the German (DE) or US (US)
-                          license.
+  --with-copasi-license   Specify whether to use the German (DE), US (US) or
+                          Commercial (COM) license.
   --with-build-parser     Specify whether to build lex and yacc sources.
 
 _ACEOF
@@ -1798,15 +1798,14 @@ if test "${with_build_parser+set}" = set; then
   BUILD_PARSER=$withval
 fi;
 
-QMAKE_ARG=""
 
 if test "x$prefix" = "xNONE"; then
   prefix=$ac_default_prefix
   ac_configure_args="$ac_configure_args --prefix $prefix"
 fi
 
-if test x"${COPASI_LICENSE}" = x"DE" -o x"${COPASI_LICENSE}" = x"US"; then
-  QMAKE_ARG="USE_LICENSE=$COPASI_LICENSE"
+if test x"${COPASI_LICENSE}" = x"DE" -o x"${COPASI_LICENSE}" = x"US" -o x"${COPASI_LICENSE}" = x"COM"; then
+  QMAKE_ARG="$QMAKE_ARG USE_LICENSE=$COPASI_LICENSE"
 fi
 
 if test x"$BUILD_PARSER" = x"yes"; then
@@ -1869,7 +1868,7 @@ fi
  mv $$.tmp Makefile && \
  echo depend:  >> Makefile && \
  echo "	touch Makefile" >> Makefile && \
- rm -f CopasiSE/CopasiSE.o CopasiUI/main.o && \
+ rm -f CopasiSE/CopasiSE.o CopasiUI/main.o CopasiUI/copasiui3window.o && \
  cd ..
  cd semantic-test-suite && \
  echo executing in `pwd`: && \
