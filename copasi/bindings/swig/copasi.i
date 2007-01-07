@@ -40,6 +40,8 @@
 %include "CVersion.i"
 %include "CCopasiMethod.i"
 %include "CCopasiProblem.i"
+%include "COutputHandler.i"
+%include "CReport.i"
 %include "CCopasiTask.i"
 %include "CReportDefinition.i"
 %include "CReportDefinitionVector.i"

@@ -128,6 +128,11 @@ class CCopasiTask : public CCopasiContainer
      */
     virtual bool setMethodType(const int & type);
 
+    /**
+     * Retrieve the report
+     */
+    CReport & getReport();
+
 
 
 %extend {
