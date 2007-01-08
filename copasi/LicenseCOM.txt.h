@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/Attic/LicenseCOM.txt.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/12/08 17:44:32 $
+   $Date: 2007/01/08 15:27:21 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -77,7 +77,7 @@ extern const char * CopasiLicense =
     "    otherwise set up to only allow access to one or other limited\n"
     "    numbers of users at a time. The license granted herein allows the\n"
     "    Licensee access to enhancements or updates of the Software by the\n"
-    "    Owners for a period of 12 month starting at the Effective.  All\n"
+    "    Owners for a period of 12 month starting at the Effective Date.  All\n"
     "    rights not expressly granted herein are reserved by the Owners.\n"
     "    Licensee shall not distribute or otherwise transfer or allow to be\n"
     "    transferred, the Software or any Modifications or copies thereof,\n"
