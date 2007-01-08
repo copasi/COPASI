@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-   $Revision: 1.52 $
+   $Revision: 1.53 $
    $Name:  $
-   $Author: tjohann $
-   $Date: 2006/09/12 15:16:20 $
+   $Author: ssahle $
+   $Date: 2007/01/08 14:45:39 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -43,8 +43,8 @@ const std::string CCopasiTask::TypeName[] =
     "Lyapunov Exponents",
 #ifdef COPASI_DEBUG
     "Time Scale Separation",
-    "Sensitivities",
 #endif // COPASI_DEBUG
+    "Sensitivities",
 #ifdef COPASI_SSA
     "Stoichiometric Stability Analysis",
 #endif // COPASI_SSA
@@ -63,8 +63,8 @@ const char* CCopasiTask::XMLType[] =
     "lyapunovExponents",
 #ifdef COPASI_DEBUG
     "timeScaleSeparation",
-    "sensitivities",
 #endif // COPASI_DEBUG
+    "sensitivities",
 #ifdef COPASI_SSA
     "stoichiometricStabilityAnalysis",
 #endif // COPASI_SSA

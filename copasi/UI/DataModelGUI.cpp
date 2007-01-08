@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-   $Revision: 1.64 $
+   $Revision: 1.65 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/28 00:18:41 $
+   $Author: ssahle $
+   $Date: 2007/01/08 14:50:04 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -83,9 +83,7 @@ void DataModelGUI::linkDataModelToGUI()
   mTree.findNodeFromId(32)->setObjectKey((*CCopasiDataModel::Global->getTaskList())["Optimization"]->getKey());
   mTree.findNodeFromId(33)->setObjectKey((*CCopasiDataModel::Global->getTaskList())["Parameter Estimation"]->getKey());
 
-#ifdef COPASI_SENS
   mTree.findNodeFromId(34)->setObjectKey((*CCopasiDataModel::Global->getTaskList())["Sensitivities"]->getKey());
-#endif
 
   mTree.findNodeFromId(116)->setObjectKey(CCopasiDataModel::Global->getModel()->getKey()); //parameters
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.87 $
+   $Revision: 1.88 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2007/01/02 12:05:35 $
+   $Date: 2007/01/08 14:54:41 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,9 +35,7 @@
 #ifdef COPASI_TSS
 # include "tss/CTSSTask.h"
 #endif
-#ifdef COPASI_SENS
-# include "sensitivities/CSensTask.h"
-#endif
+#include "sensitivities/CSensTask.h"
 #ifdef COPASI_SSA
 # include "ssa/CSSATask.h"
 #endif
@@ -686,6 +684,8 @@ bool CCopasiDataModel::exportMathModel(const std::string & fileName, const std::
 
       return exporter.exportMathModel(mpModel, fileName.c_str(), filter.c_str(), overwriteFile);
     }
+
+  return false;
 }
 
 const CModel * CCopasiDataModel::getModel() const
@@ -742,11 +742,9 @@ CCopasiTask * CCopasiDataModel::addTask(const CCopasiTask::Type & taskType)
       break;
 #endif
 
-#ifdef COPASI_SENS
     case CCopasiTask::sens:
       pTask = new CSensTask(mpTaskList);
       break;
-#endif
 
 #ifdef COPASI_SSA
     case CCopasiTask::ssa:
@@ -914,7 +912,6 @@ CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskTy
       break;
 
       //**************************************************************************
-#ifdef COPASI_SENS
     case CCopasiTask::sens:
       pReport = new CReportDefinition(CCopasiTask::TypeName[taskType]);
       pReport->setTaskType(taskType);
@@ -930,7 +927,6 @@ CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskTy
       pReport->getFooterAddr()->push_back(CCopasiObjectName("String=\n"));
       pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Sensitivities],Object=Result"));
       break;
-#endif
     default:
       return pReport;
     }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.h,v $
-   $Revision: 1.38 $
+   $Revision: 1.39 $
    $Name:  $
-   $Author: gauges $
-   $Date: 2006/10/15 08:31:12 $
+   $Author: ssahle $
+   $Date: 2007/01/08 14:45:39 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,8 +52,8 @@ class CCopasiTask : public CCopasiContainer
       lyap,
 #ifdef COPASI_DEBUG
       tss,
-      sens,
 #endif // COPASI_DEBUG
+      sens,
 #ifdef COPASI_SSA
       ssa,
 #endif // COPASI_SSA
@@ -265,18 +265,6 @@ class CCopasiTask : public CCopasiContainer
      * Destructor
      */
     virtual ~CCopasiTask();
-
-    /**
-     * Retrieve the name of the task
-     * @return " const string &" name
-     */
-    //    const std::string & getName() const;
-
-    /**
-     * Set the name of the task
-     * @param "const string &" name
-     */
-    //bool setName(const std::string & name);
 
     /**
      * Retrieve the type of the task

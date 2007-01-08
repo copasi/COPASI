@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-   $Revision: 1.207 $
+   $Revision: 1.208 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/12/13 18:20:08 $
+   $Author: ssahle $
+   $Date: 2007/01/08 14:53:33 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -53,10 +53,8 @@
 #include "SteadyStateWidget.h"
 #include "StateWidget.h"
 #include "ScanWidget.h"
-#ifdef COPASI_SENS
-# include "SensitivitiesWidget.h"
-# include "CQSensResultWidget.h"
-#endif
+#include "SensitivitiesWidget.h"
+#include "CQSensResultWidget.h"
 #include "CQOptimizationWidget.h"
 #include "OptimizationResultWidget.h"
 #include "TableDefinition.h"
@@ -448,13 +446,11 @@ void ListViews::ConstructNodeWidgets()
   tssWidget->hide();
 #endif
 
-#ifdef COPASI_SENS
   if (!sensWidget) sensWidget = new SensitivitiesWidget(this);
   sensWidget->hide();
 
   if (!sensResultWidget) sensResultWidget = new CQSensResultWidget(this);
   sensResultWidget->hide();
-#endif
 
   if (!timeSeriesWidget) timeSeriesWidget = new TimeSeriesWidget(this);
   timeSeriesWidget->hide();
@@ -611,14 +607,12 @@ CopasiWidget* ListViews::findWidgetFromId(const C_INT32 & id) const
       case 331:
         return mpFittingResultWidget;
         break;
-#ifdef COPASI_SENS
       case 34:
         return sensWidget;
         break;
       case 341:
         return sensResultWidget;
         break;
-#endif
       case 43:                                        //Report
         return tableDefinition;
         break;

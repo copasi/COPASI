@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModel.txt.h,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/09/18 13:04:58 $
+   $Date: 2007/01/08 14:50:05 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,10 +48,8 @@ static char DataModeltxt[] =
   "32:321:Result\n"
   "3:33:Parameter Estimation\n"
   "33:331:Result\n"
-#ifdef COPASI_SENS
   "3:34:Sensitivities\n"
   "34:341:Result\n"
-#endif
   "0:4:Output\n"
   "4:42:Plots\n"
   "4:43:Reports\n"
