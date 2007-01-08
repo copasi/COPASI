@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSensResultWidget.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2007/01/05 16:35:01 $
+   $Date: 2007/01/08 14:49:21 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -76,14 +76,14 @@ QColor CColorScaleSimple::getColor(const C_FLOAT64 & number)
   if (tmp < 0.5)
     {
       r = 255;
-      g = 255 + (tmp - 0.5) * 220;
-      b = 255 + (tmp - 0.5) * 220;
+      g = 255 + (tmp - 0.5) * 260;
+      b = 255 + (tmp - 0.5) * 260;
     }
   else
     {
-      r = 255 - (tmp - 0.5) * 220;
+      r = 255 - (tmp - 0.5) * 260;
       g = 255;
-      b = 255 - (tmp - 0.5) * 220;
+      b = 255 - (tmp - 0.5) * 260;
     }
 
   QColor color(r, g, b);
@@ -118,6 +118,12 @@ void CColorScaleSimple::finishAutomaticParameterCalculation()
       mMin = - tmp;
       mMax = tmp;
     }
+
+  if (mMin == mMax)
+    {
+      mMin -= 1e-5;
+      mMax += 1e-5;
+    }
 }
 
 //**************************
@@ -148,6 +154,91 @@ void CColorScaleAverage::finishAutomaticParameterCalculation()
 {
   mMax = mFactor * mFloat / mInt;
   mMin = -mMax;
+
+  if (mMin == mMax)
+    {
+      mMin -= 1e-5;
+      mMax += 1e-5;
+    }
+}
+
+//**************************
+
+CColorScaleBiLog::CColorScaleBiLog()
+    : m1(-6.0),
+    m2(2.0),
+    mFloat(0.0),
+    mInt(0)
+{}
+
+//virtual
+QColor CColorScaleBiLog::getColor(const C_FLOAT64 & number)
+{
+  C_FLOAT64 logtmp = log(fabs(number));
+
+  C_FLOAT64 tmp = (logtmp - m1) / (m2 - m1); //scale to 0..1
+  if (tmp > 1) tmp = 1;
+  if (tmp < 0) tmp = 0;
+
+  if (number > 0)
+    tmp = 0.5 + tmp * 0.5;
+  else
+    tmp = 0.5 - tmp * 0.5;
+
+  int r = 0;
+  int g = 0;
+  int b = 0;
+
+  if (tmp < 0.5)
+    {
+      r = 255;
+      g = 255 + (tmp - 0.5) * 260;
+      b = 255 + (tmp - 0.5) * 260;
+    }
+  else
+    {
+      r = 255 - (tmp - 0.5) * 260;
+      g = 255;
+      b = 255 - (tmp - 0.5) * 260;
+    }
+
+  QColor color(r, g, b);
+  return color;
+}
+
+//virtual
+void CColorScaleBiLog::startAutomaticParameterCalculation()
+{
+  m1 = DBL_MAX;
+  m2 = -DBL_MAX;
+  mFloat = 0.0;
+  mInt = 0;
+}
+
+//virtual
+void CColorScaleBiLog::passValue(const C_FLOAT64 & number)
+{
+  if (number == 0.0) return;
+
+  C_FLOAT64 tmp = log(fabs(number));
+
+  //minmax
+  if (tmp > m2) m2 = tmp;
+  if (tmp < m1) m1 = tmp;
+
+  //average
+  ++mInt;
+  mFloat += tmp;
+}
+
+//virtual
+void CColorScaleBiLog::finishAutomaticParameterCalculation()
+{
+  if (mInt != 0)
+    m1 = (mFloat / mInt) - 4;
+  else
+    m1 = -4.0;
+  m2 -= 1.0;
 }
 
 //******************************************************************
@@ -193,10 +284,15 @@ void ArrayAnnotationsWidget::setArrayAnnotation(const CArrayAnnotation * pArray)
   CCopasiAbstractArray::index_type index; index.resize(mpArray->dimensionality());
 
   if (mpArray->dimensionality() == 0)
-  {}
+    {
+      mpSelectionTable->setReadOnly(true);
+      mpSelectionTable->setNumRows(0);
+      fillTable();
+    }
   else if (mpArray->dimensionality() == 1)
     {
       mpSelectionTable->setReadOnly(true);
+      mpSelectionTable->setNumRows(0);
       mpSelectionTable->setNumRows(1);
       mpSelectionTable->setText(0, 0, "Rows: ");
       mpSelectionTable->setText(0, 1, FROM_UTF8(mpArray->getDimensionDescription(0)));
@@ -207,6 +303,7 @@ void ArrayAnnotationsWidget::setArrayAnnotation(const CArrayAnnotation * pArray)
   else if (mpArray->dimensionality() == 2)
     {
       mpSelectionTable->setReadOnly(true);
+      mpSelectionTable->setNumRows(0);
       mpSelectionTable->setNumRows(2);
       mpSelectionTable->setText(0, 0, "Rows: ");
       mpSelectionTable->setText(0, 1, FROM_UTF8(mpArray->getDimensionDescription(0)));
@@ -453,15 +550,59 @@ void ArrayAnnotationsWidget::fillTable(unsigned C_INT32 rowIndex,
   mpContentTable->setNumCols(1);
   mpContentTable->setNumRows(mpArray->size()[rowIndex]);
 
-  const std::vector<std::string> & rowdescr = mpArray->getAnnotationsDisplay(rowIndex);
+  mpContentTable->horizontalHeader()->setLabel(0, "");
 
   unsigned C_INT32 i, imax = mpArray->size()[rowIndex];
+
+  //automatic color scaling
+  if (mAutomaticColorScaling)
+    {
+      mpColorScale->startAutomaticParameterCalculation();
+
+      for (i = 0; i < imax; ++i)
+        {
+          index[rowIndex] = i;
+          mpColorScale->passValue((*mpArray->array())[index]);
+        }
+
+      mpColorScale->finishAutomaticParameterCalculation();
+    }
+
+  //table contents and annotations
+  const std::vector<std::string> & rowdescr = mpArray->getAnnotationsDisplay(rowIndex);
   for (i = 0; i < imax; ++i)
     {
       index[rowIndex] = i;
       mpContentTable->verticalHeader()->setLabel(i, FROM_UTF8(rowdescr[i]));
-      mpContentTable->setText(i, 0, QString::number((*mpArray->array())[index]));
+      if (!mpColorScale)
+        {
+          mpContentTable->setText(i, 0, QString::number((*mpArray->array())[index]));
+        }
+      else
+        {
+          C_FLOAT64 number = (*mpArray->array())[index];
+          QColor color = mpColorScale->getColor(number);
+          mpContentTable->setItem(i, 0, new ColorTableItem(mpContentTable, QTableItem::Never, color,
+                                  QString::number(number)));
+        }
     }
+}
+
+void ArrayAnnotationsWidget::fillTable()
+{
+  if (!mpArray) return;
+
+  mpContentTable->setNumCols(0);
+  mpContentTable->setNumRows(0);
+  mpContentTable->setNumCols(1);
+  mpContentTable->setNumRows(1);
+
+  mpContentTable->horizontalHeader()->setLabel(0, "");
+  mpContentTable->verticalHeader()->setLabel(0, "");
+
+  CCopasiAbstractArray::index_type index; index.resize(0);
+  //mpContentTable->verticalHeader()->setLabel(i, FROM_UTF8(rowdescr[i]));
+  mpContentTable->setText(0, 0, QString::number((*mpArray->array())[index]));
 }
 
 //*******************************************************************************************
@@ -497,22 +638,23 @@ CQSensResultWidget::CQSensResultWidget(QWidget* parent, const char* name, WFlags
   // unscaled array
   mArrayWidget = new ArrayAnnotationsWidget(mpTab, "ArrayWidget");
   //mArrayWidget->setColorCoding(new CColorScale1());
-  CColorScaleAverage * tcs = new CColorScaleAverage();
+  //CColorScaleAverage * tcs = new CColorScaleAverage();
+  CColorScaleBiLog * tcs = new CColorScaleBiLog();
   mArrayWidget->setColorCoding(tcs);
   //tcs->setMinMax(-1,1);
   //tcs->setSymmetric(true);
-  tcs->setFactor(3.0);
+  //tcs->setFactor(3.0);
   mArrayWidget->setColorScalingAutomatic(true);
   mpTab->addTab(mArrayWidget, "unscaled");
 
   //scaled array
   mArrayWidgetScaled = new ArrayAnnotationsWidget(mpTab, "ArrayWidget2");
   //mArrayWidgetScaled->setColorCoding(new CColorScale1());
-  tcs = new CColorScaleAverage();
-  mArrayWidgetScaled->setColorCoding(tcs);
-  //tcs->setMinMax(-1,1);
-  //tcs->setSymmetric(true);
-  tcs->setFactor(3.0);
+  CColorScaleAverage* tcs2 = new CColorScaleAverage();
+  mArrayWidgetScaled->setColorCoding(tcs2);
+  //tcs2->setMinMax(-1,1);
+  //tcs2->setSymmetric(true);
+  tcs2->setFactor(3.0);
   mArrayWidgetScaled->setColorScalingAutomatic(true);
   mpTab->addTab(mArrayWidgetScaled, "scaled");
 }
