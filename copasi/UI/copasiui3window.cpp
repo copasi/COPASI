@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-   $Revision: 1.187 $
+   $Revision: 1.188 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/12/15 21:39:04 $
+   $Date: 2007/01/08 17:05:09 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -249,7 +249,7 @@ CopasiUI3Window::CopasiUI3Window():
   FixedTitle = "COPASI ";
 #ifdef COPASI_LICENSE_COM
   FixedTitle += "(commercial) ";
-#endif
+#endif // COPASI_LICENSE_COM
   FixedTitle += FROM_UTF8(CCopasiDataModel::Global->getVersion()->getVersion());
   updateTitle();
   createToolBar(); // creates a tool bar

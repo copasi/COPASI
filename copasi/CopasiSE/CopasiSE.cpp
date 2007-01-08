@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/12/15 21:26:14 $
+   $Date: 2007/01/08 17:05:09 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,7 +48,7 @@
 #ifdef COPASI_LICENSE_COM
 # include "commandline/CConfigurationFile.h"
 # include "commercial/CRegistration.h"
-#endif
+#endif // COPASI_LICENSE_COM
 
 int main(int argc, char *argv[])
 {
@@ -77,7 +77,7 @@ int main(int argc, char *argv[])
   std::cout << "COPASI "
 #ifdef COPASI_LICENSE_COM
   << "(commercial) "
-#endif
+#endif // COPASI_LICENSE_COM
   << Version.getVersion()
   << std::endl << std::endl;
 
