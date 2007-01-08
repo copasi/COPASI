@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensMethod.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2007/01/02 12:03:21 $
+   $Date: 2007/01/08 14:47:28 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -99,6 +99,12 @@ class CSensMethod : public CCopasiMethod
      */
     virtual bool isValidProblem(const CCopasiProblem * pProblem);
 
+    /**
+     * estimate how many calls to the subtask are necessary. Works only after
+     * initialize() was called.
+     */
+    C_INT32 getNumberOfSubtaskCalculations();
+
   protected:
 
     std::vector<CSensMethodLocalData> mLocalData;
@@ -107,8 +113,8 @@ class CSensMethod : public CCopasiMethod
 
     CCopasiTask * mpSubTask;
 
-    void calculate_one_level(unsigned C_INT32 level, CCopasiArray & result);
-    void do_target_calculation(CCopasiArray & result);
+    bool calculate_one_level(unsigned C_INT32 level, CCopasiArray & result);
+    bool do_target_calculation(CCopasiArray & result);
 
     C_FLOAT64 do_variation(CCopasiObject* variable);
 
@@ -134,6 +140,11 @@ class CSensMethod : public CCopasiMethod
      */
     void scaling_variables(C_INT32 level, const C_FLOAT64 & factor,
                            CCopasiArray::index_type & resultindex);
+
+    CProcessReport * mpProgressBar;
+    unsigned C_INT32 mProgressHandler;
+    C_INT32 mProgress;
+    //bool mContinue;
   };
 
 #endif

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensMethod.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2007/01/02 12:03:21 $
+   $Date: 2007/01/08 14:47:28 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,6 +23,7 @@
 
 #include "model/CModel.h"
 #include "model/CState.h"
+#include "utilities/CProcessReport.h"
 
 CSensMethod *
 CSensMethod::createSensMethod(CCopasiMethod::SubType subType)
@@ -70,7 +71,7 @@ CSensMethod::~CSensMethod()
 
 //***********************************************************************************
 
-void CSensMethod::do_target_calculation(CCopasiArray & result)
+bool CSensMethod::do_target_calculation(CCopasiArray & result)
 {
   //****** do subtask ******************
   if (mpSubTask)
@@ -96,8 +97,15 @@ void CSensMethod::do_target_calculation(CCopasiArray & result)
       if (imax > 1)
         resultindex[0] = i;
       result[resultindex] = *(C_FLOAT64*)mTargetfunctionPointers[i]->getValuePointer();
-      std::cout << *(C_FLOAT64*)mTargetfunctionPointers[i]->getValuePointer() << std::endl;
+      //std::cout << *(C_FLOAT64*)mTargetfunctionPointers[i]->getValuePointer() << std::endl;
     }
+
+  //progress bar
+  ++mProgress;
+  bool tmp = mpProgressBar->progress(mProgressHandler);
+  if (!tmp)
+    std::cout << "STOP!" << std::endl;
+  return tmp;
 }
 
 C_FLOAT64 CSensMethod::do_variation(CCopasiObject* variable)
@@ -111,9 +119,9 @@ C_FLOAT64 CSensMethod::do_variation(CCopasiObject* variable)
   variable->setObjectValue(delta + value);
 
   //debug
-  std::cout << variable->getObjectDisplayName() << "  " << value << " -> ";
-  value = *(C_FLOAT64*)variable->getValuePointer();
-  std::cout << value << std::endl;
+  //std::cout << variable->getObjectDisplayName() << "  " << value << " -> ";
+  //value = *(C_FLOAT64*)variable->getValuePointer();
+  //std::cout << value << std::endl;
 
   return delta;
 }
@@ -171,16 +179,16 @@ void CSensMethod::calculate_difference(unsigned C_INT32 level, const C_FLOAT64 &
     }
 }
 
-void CSensMethod::calculate_one_level(unsigned C_INT32 level, CCopasiArray & result)
+bool CSensMethod::calculate_one_level(unsigned C_INT32 level, CCopasiArray & result)
 {
   //do first calculation
   if (level == 0)
     {
-      do_target_calculation(mLocalData[level].tmp1);
+      if (!do_target_calculation(mLocalData[level].tmp1)) return false;
     }
   else
     {
-      calculate_one_level(level - 1, mLocalData[level].tmp1);
+      if (!calculate_one_level(level - 1, mLocalData[level].tmp1)) return false;
     }
 
   //resize results array
@@ -202,11 +210,11 @@ void CSensMethod::calculate_one_level(unsigned C_INT32 level, CCopasiArray & res
       //do second calculation
       if (level == 0)
         {
-          do_target_calculation(mLocalData[level].tmp2);
+          if (!do_target_calculation(mLocalData[level].tmp2)) return false;
         }
       else
         {
-          calculate_one_level(level - 1, mLocalData[level].tmp2);
+          if (!calculate_one_level(level - 1, mLocalData[level].tmp2)) return false;
         }
 
       //restore variable
@@ -217,6 +225,7 @@ void CSensMethod::calculate_one_level(unsigned C_INT32 level, CCopasiArray & res
         resultindex[resultindex.size() - 1] = i;
       calculate_difference(level, delta, result, resultindex);
     }
+  return true;
 }
 
 //********** SCALING *************************************************************
@@ -415,10 +424,35 @@ bool CSensMethod::initialize(CSensProblem* problem)
   return true;
 }
 
+C_INT32 CSensMethod::getNumberOfSubtaskCalculations()
+{
+  C_INT32 ret = 1;
+  C_INT32 i;
+  for (i = 0; i < mLocalData.size(); ++i)
+    {
+      ret *= mLocalData[i].variables.size() + 1;
+    }
+
+  return ret;
+}
+
 bool CSensMethod::process(CProcessReport * handler)
 {
   if (!mLocalData.size()) return false;
-  calculate_one_level(mLocalData.size() - 1, mpProblem->getResult());
+
+  //initialize progress bar
+  mpProgressBar = handler;
+  if (mpProgressBar)
+    {
+      mpProgressBar->setName("performing sensitivities calculation...");
+      C_INT32 max = getNumberOfSubtaskCalculations();
+      mProgress = 0;
+      mProgressHandler = mpProgressBar->addItem("Completion",
+                         CCopasiParameter::INT,
+                         &mProgress, &max);
+    }
+
+  if (!calculate_one_level(mLocalData.size() - 1, mpProblem->getResult())) return false;
 
   do_scaling();
   return true;
