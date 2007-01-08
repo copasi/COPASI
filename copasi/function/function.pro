@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.23 $ $Author: shoops $ $Date: 2006/10/30 21:12:18 $  
+# $Revision: 1.24 $ $Author: shoops $ $Date: 2007/01/08 17:29:01 $  
 ######################################################################
 
 LIB = function
@@ -24,6 +24,7 @@ HEADERS += \
            CEvaluationNodeVariable.h \
            CEvaluationNodeVector.h \
            CEvaluationNodeWhiteSpace.h \
+           CEvaluationParser_yacc.h \
            CEvaluationTree.h \
            CExpression.h \
            CFunction.h \
@@ -50,6 +51,8 @@ SOURCES += \
            CEvaluationNodeVariable.cpp \
            CEvaluationNodeVector.cpp \
            CEvaluationNodeWhiteSpace.cpp \
+           CEvaluationLexer_lex.cpp \
+           CEvaluationParser_yacc.cpp \
            CEvaluationTree.cpp \
            CExpression.cpp \
            CFunction.cpp \
@@ -60,14 +63,13 @@ SOURCES += \
            CMassAction.cpp \
            CNodeK.cpp 
 
+
 contains(BUILD_PARSER, yes) {
   YACCSOURCES += CEvaluationParser.ypp
+  SOURCES -= CEvaluationParser_yacc.cpp
+
   LEXSOURCES += CEvaluationLexer.lpp  
-}
-else {
-  HEADERS += CEvaluationParser_yacc.h
-  SOURCES += CEvaluationLexer_lex.cpp \
-             CEvaluationParser_yacc.cpp
+  SOURCES -= CEvaluationLexer_lex.cpp
 }
 
 

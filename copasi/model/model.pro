@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.17 $ $Author: shoops $ $Date: 2006/10/30 21:12:16 $  
+# $Revision: 1.18 $ $Author: shoops $ $Date: 2007/01/08 17:29:01 $  
 ######################################################################
 
 LIB = model
@@ -12,6 +12,7 @@ HEADERS += CChemEq.h \
            CChemEqElement.h \
            CChemEqInterface.h \
            CChemEqParser.h \
+           CChemEqParser_yacc.h \
            CCompartment.h \
            CMetab.h \
            CMetabNameInterface.h \
@@ -41,14 +42,13 @@ SOURCES += CChemEq.cpp \
 #           CScanInputFlexLexer.cpp \
            CState.cpp
 
+
 contains(BUILD_PARSER, yes) {
   YACCSOURCES += CChemEqParser.ypp
+  SOURCES -= CChemEqParser_yacc.cpp
+
   LEXSOURCES += CChemEqParser.lpp  
-}
-else {
-  HEADERS += CChemEqParser_yacc.h
-  SOURCES += CChemEqParser_yacc.cpp \
-             CChemEqParser_lex.cpp
+  SOURCES -= CChemEqParser_lex.cpp
 }
 
 
