@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
-   $Author: nsimus $
-   $Date: 2006/11/23 10:19:29 $
+   $Author: shoops $
+   $Date: 2007/01/08 15:56:33 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -104,7 +104,7 @@ bool CExpression::updateInfix()
 const std::string & CExpression::getDisplayString() const
 {return mDisplayString;}
 
-const std::string & CExpression::getDisplay_C_String() const
+std::string CExpression::getDisplay_C_String() const
   {
     std::string str1;
 
@@ -116,7 +116,7 @@ const std::string & CExpression::getDisplay_C_String() const
     return str1;
   }
 
-const std::string & CExpression::getDisplay_MMD_String() const
+std::string CExpression::getDisplay_MMD_String() const
   {
     std::string str1;
 
@@ -128,7 +128,7 @@ const std::string & CExpression::getDisplay_MMD_String() const
     return str1;
   }
 
-const std::string & CExpression::getDisplay_XPP_String() const
+std::string CExpression::getDisplay_XPP_String() const
   {
     std::string str1;
 

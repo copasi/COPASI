@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
-   $Author: nsimus $
-   $Date: 2006/11/23 10:19:29 $
+   $Author: shoops $
+   $Date: 2007/01/08 15:56:33 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -120,17 +120,17 @@ class CExpression:
     /**
      * Retrieve the display string in C syntax.
      */
-    const std::string & getDisplay_C_String() const;
+    std::string getDisplay_C_String() const;
 
     /**
      * Retrieve the display string in Berkeley Madonna  syntax.
      */
-    const std::string & getDisplay_MMD_String() const;
+    std::string getDisplay_MMD_String() const;
 
     /**
      * Retrieve the display string in XPPAUT  syntax.
      */
-    const std::string & getDisplay_XPP_String() const;
+    std::string getDisplay_XPP_String() const;
 
     // Attribute
   protected:
