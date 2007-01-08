@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeConstant.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
-   $Author: nsimus $
-   $Date: 2006/08/15 11:39:31 $
+   $Author: ssahle $
+   $Date: 2007/01/08 14:57:08 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -77,7 +77,7 @@ CEvaluationNodeConstant::CEvaluationNodeConstant(const CEvaluationNodeConstant &
 
 CEvaluationNodeConstant::~CEvaluationNodeConstant() {}
 
-std::string CEvaluationNodeConstant::getDisplay_C_String(const CEvaluationTree * pTree) const
+std::string CEvaluationNodeConstant::getDisplay_C_String(const CEvaluationTree * /*pTree*/) const
   {
     std::string data = "";
 
@@ -110,7 +110,7 @@ std::string CEvaluationNodeConstant::getDisplay_C_String(const CEvaluationTree *
     return data;
   }
 
-std::string CEvaluationNodeConstant::getDisplay_MMD_String(const CEvaluationTree * pTree) const
+std::string CEvaluationNodeConstant::getDisplay_MMD_String(const CEvaluationTree * /*pTree*/) const
   {
     std::ostringstream DisplayString;
     std::string data = "";
@@ -137,7 +137,7 @@ std::string CEvaluationNodeConstant::getDisplay_MMD_String(const CEvaluationTree
     return data;
   }
 
-std::string CEvaluationNodeConstant::getDisplay_XPP_String(const CEvaluationTree * pTree) const
+std::string CEvaluationNodeConstant::getDisplay_XPP_String(const CEvaluationTree * /*pTree*/) const
   {
     std::ostringstream DisplayString;
     std::string data = "";
