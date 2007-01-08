@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.18 $ $Author: shoops $ $Date: 2007/01/08 17:29:01 $  
+# $Revision: 1.19 $ $Author: shoops $ $Date: 2007/01/08 17:55:44 $  
 ######################################################################
 
 LIB = model
@@ -30,6 +30,8 @@ SOURCES += CChemEq.cpp \
            CChemEqElement.cpp \
            CChemEqInterface.cpp \
            CChemEqParser.cpp \
+           CChemEqParser_lex.cpp \
+           CChemEqParser_yacc.cpp \
            CCompartment.cpp \
            CMetab.cpp \
            CMetabNameInterface.cpp \
