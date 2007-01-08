@@ -793,12 +793,14 @@ Optional Features:
   --enable-release        enable release build (disables debug, default:
                           disabled)
   --enable-static         enable static linkage (default: disabled)
+  --enable-gui            enable build of GUI (default: enabled)
   --enable-python         build python wrappers (default: disabled)
   --enable-java           build java wrappers (default: disabled)
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
+  --with-qwt=PATH         Path to QWT Library
   --with-expat=PATH       Path to Expat XML Library
   --with-sbml=PATH        Path to SBML Library
   --with-clapack=PATH     Path to CLAPACK Library
@@ -806,14 +808,13 @@ Optional Packages:
   --with-mkl=PATH         Path to MKL Library
   --with-swig=PATH        Path to swig
   --with-python=PATH      Path to python
-  --with-python-libs=PATH Path to python library files
   --with-python-includes=PATH
                           Path to python include files
+  --with-python-libs=PATH Path to python library files
   --with-java=PATH        Path to Java
   --with-java-includes=PATH
                           Path to Java include files
   --with-java-libs=PATH   Path to Java libraries
-  --with-qwt=PATH         Path to QWT Library
   --with-copasi-license   Specify whether to use the German (DE), US (US) or
                           Commercial (COM) license.
   --with-build-parser     Specify whether to build lex and yacc sources.
@@ -1595,7 +1596,7 @@ fi
 
 # Define the identity of the package.
  PACKAGE=copasi
- VERSION=4.0.18
+ VERSION=4.0.20
 
 
 cat >>confdefs.h <<_ACEOF
@@ -1733,7 +1734,7 @@ if test "${enable_debug+set}" = set; then
   enableval="$enable_debug"
   ENABLE_DEBUG=$enable_debug
 else
-  ENABLE_DEBUG="no"
+  ENABLE_DEBUG="yes"
 fi;
 
 # Check whether --enable-release or --disable-release was given.
@@ -1744,6 +1745,13 @@ else
   ENABLE_RELEASE="no"
 fi;
 
+if test x"${ENABLE_RELEASE}" != x"yes" -a x"${ENABLE_DEBUG}" != x"no"; then
+  QMAKE_ARG="$QMAKE_ARG CONFIG+=debug CONFIG-=release"
+else
+  QMAKE_ARG="$QMAKE_ARG CONFIG+=release CONFIG-=debug"
+fi
+
+
 # Check whether --enable-static or --disable-static was given.
 if test "${enable_static+set}" = set; then
   enableval="$enable_static"
@@ -1752,12 +1760,45 @@ else
   ENABLE_STATIC="no"
 fi;
 
+if test x"${ENABLE_STATIC}" != x"yes"; then
+  QMAKE_ARG="$QMAKE_ARG STATIC_LINKAGE=no"
+else
+  QMAKE_ARG="$QMAKE_ARG STATIC_LINKAGE=yes"
+fi
+
+# Check whether --enable-gui or --disable-gui was given.
+if test "${enable_gui+set}" = set; then
+  enableval="$enable_gui"
+  ENABLE_GUI=$enable_gui
+else
+  ENABLE_GUI="yes"
+fi;
+QMAKE_ARG="$QMAKE_ARG BUILD_GUI=$ENABLE_GUI"
+
+
+
+# Check whether --with-qwt or --without-qwt was given.
+if test "${with_qwt+set}" = set; then
+  withval="$with_qwt"
+  QWT_PATH=$withval
+fi;
+
+if test x"${QWT_PATH}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG QWT_PATH=$QWT_PATH"
+fi
+
+
 
 # Check whether --with-expat or --without-expat was given.
 if test "${with_expat+set}" = set; then
   withval="$with_expat"
   EXPAT_PATH=$withval
 fi;
+
+if test x"${EXPAT_PATH}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG EXPAT_PATH=$EXPAT_PATH"
+fi
+
 
 
 # Check whether --with-sbml or --without-sbml was given.
@@ -1766,12 +1807,22 @@ if test "${with_sbml+set}" = set; then
   SBML_PATH=$withval
 fi;
 
+if test x"${SBML_PATH}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG SBML_PATH=$SBML_PATH"
+fi
+
+
 
 # Check whether --with-clapack or --without-clapack was given.
 if test "${with_clapack+set}" = set; then
   withval="$with_clapack"
   CLAPACK_PATH=$withval
 fi;
+
+if test x"${CLAPACK_PATH}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG CLAPACK_PATH=$CLAPACK_PATH"
+fi
+
 
 
 # Check whether --with-lapack or --without-lapack was given.
@@ -1780,12 +1831,21 @@ if test "${with_lapack+set}" = set; then
   LAPACK_PATH=$withval
 fi;
 
+if test x"${LAPACK_PATH}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG LAPACK_PATH=$LAPACK_PATH"
+fi
+
+
 
 # Check whether --with-mkl or --without-mkl was given.
 if test "${with_mkl+set}" = set; then
   withval="$with_mkl"
   MKL_PATH=$withval
 fi;
+
+if test x"${MKL_PATH}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG MKL_PATH=$MKL_PATH"
+fi
 
 
 
@@ -1795,6 +1855,11 @@ if test "${with_swig+set}" = set; then
   SWIG_PATH=$withval
 fi;
 
+if test x"${SWIG_PATH}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG SWIG_PATH=$SWIG_PATH"
+fi
+
+
 # Check whether --enable-python or --disable-python was given.
 if test "${enable_python+set}" = set; then
   enableval="$enable_python"
@@ -1802,6 +1867,11 @@ if test "${enable_python+set}" = set; then
 else
   ENABLE_PYTHON="no"
 fi;
+
+if test x"${ENABLE_PYTHON}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG ENABLE_PYTHON=$ENABLE_PYTHON"
+fi
+
 
 
 # Check whether --with-python or --without-python was given.
@@ -1811,18 +1881,29 @@ if test "${with_python+set}" = set; then
 fi;
 
 
-# Check whether --with-python-libs or --without-python-libs was given.
-if test "${with_python_libs+set}" = set; then
-  withval="$with_python_libs"
-  PYTHON_LIB_PATH=$withval
-fi;
-
 
 # Check whether --with-python-includes or --without-python-includes was given.
 if test "${with_python_includes+set}" = set; then
   withval="$with_python_includes"
   PYTHON_INCLUDE_PATH=$withval
 fi;
+
+if test x"${PYTHON_INCLUDE_PATH}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG PYTHON_INCLUDE_PATH=$PYTHON_INCLUDE_PATH"
+fi
+
+
+
+# Check whether --with-python-libs or --without-python-libs was given.
+if test "${with_python_libs+set}" = set; then
+  withval="$with_python_libs"
+  PYTHON_LIB_PATH=$withval
+fi;
+
+if test x"${PYTHON_LIB_PATH}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG PYTHON_LIB_PATH=$PYTHON_LIB_PATH"
+fi
+
 
 # Check whether --enable-java or --disable-java was given.
 if test "${enable_java+set}" = set; then
@@ -1832,6 +1913,11 @@ else
   ENABLE_JAVA="no"
 fi;
 
+if test x"${ENABLE_JAVA}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG ENABLE_JAVA=$ENABLE_JAVA"
+fi
+
+
 
 # Check whether --with-java or --without-java was given.
 if test "${with_java+set}" = set; then
@@ -1840,11 +1926,17 @@ if test "${with_java+set}" = set; then
 fi;
 
 
+
 # Check whether --with-java-includes or --without-java-includes was given.
 if test "${with_java_includes+set}" = set; then
   withval="$with_java_includes"
   JAVA_INCLUDE_PATH=$withval
 fi;
+
+if test x"${JAVA_INCLUDE_PATH}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG JAVA_INCLUDE_PATH=$JAVA_INCLUDE_PATH"
+fi
+
 
 
 # Check whether --with-java-libs or --without-java-libs was given.
@@ -1853,12 +1945,10 @@ if test "${with_java_libs+set}" = set; then
   JAVA_LIB_PATH=$withval
 fi;
 
+if test x"${JAVA_LIB_PATH}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG JAVA_LIB_PATH=$JAVA_LIB_PATH"
+fi
 
-# Check whether --with-qwt or --without-qwt was given.
-if test "${with_qwt+set}" = set; then
-  withval="$with_qwt"
-  QWT_PATH=$withval
-fi;
 
 
 # Check whether --with-copasi-license or --without-copasi-license was given.
@@ -1867,6 +1957,11 @@ if test "${with_copasi_license+set}" = set; then
   COPASI_LICENSE=$withval
 fi;
 
+if test x"${COPASI_LICENSE}" = x"DE" -o x"${COPASI_LICENSE}" = x"US" -o x"${COPASI_LICENSE}" = x"COM"; then
+  QMAKE_ARG="$QMAKE_ARG USE_LICENSE=$COPASI_LICENSE"
+fi
+
+
 
 # Check whether --with-build-parser or --without-build-parser was given.
 if test "${with_build_parser+set}" = set; then
@@ -1874,84 +1969,16 @@ if test "${with_build_parser+set}" = set; then
   BUILD_PARSER=$withval
 fi;
 
+if test x"$BUILD_PARSER" = x"yes"; then
+  QMAKE_ARG="$QMAKE_ARG BUILD_PARSER=yes"
+fi
+
 
 if test "x$prefix" = "xNONE"; then
   prefix=$ac_default_prefix
   ac_configure_args="$ac_configure_args --prefix $prefix"
 fi
 
-if test x"${COPASI_LICENSE}" = x"DE" -o x"${COPASI_LICENSE}" = x"US" -o x"${COPASI_LICENSE}" = x"COM"; then
-  QMAKE_ARG="$QMAKE_ARG USE_LICENSE=$COPASI_LICENSE"
-fi
-
-if test x"$BUILD_PARSER" = x"yes"; then
-  QMAKE_ARG="$QMAKE_ARG BUILD_PARSER=yes"
-fi
-
-if test x"${ENABLE_RELEASE}" != x"yes" -a x"${ENABLE_DEBUG}" != x"no"; then
-  QMAKE_ARG="$QMAKE_ARG CONFIG+=debug CONFIG-=release"
-else
-  QMAKE_ARG="$QMAKE_ARG CONFIG+=release CONFIG-=debug"
-fi
-
-if test x"${ENABLE_STATIC}" != x"yes"; then
-  QMAKE_ARG="$QMAKE_ARG STATIC_LINKAGE=no"
-else
-  QMAKE_ARG="$QMAKE_ARG STATIC_LINKAGE=yes"
-fi
-
-
-if test x"${MKL_PATH}" != x""; then
-  QMAKE_ARG="$QMAKE_ARG MKL_PATH=$MKL_PATH"
-fi
-
-if test x"${CLAPACK_PATH}" != x""; then
-  QMAKE_ARG="$QMAKE_ARG CLAPACK_PATH=$CLAPACK_PATH"
-fi
-
-if test x"${LAPACK_PATH}" != x""; then
-  QMAKE_ARG="$QMAKE_ARG LAPACK_PATH=$LAPACK_PATH"
-fi
-
-if test x"${EXPAT_PATH}" != x""; then
-  QMAKE_ARG="$QMAKE_ARG EXPAT_PATH=$EXPAT_PATH"
-fi
-
-if test x"${QWT_PATH}" != x""; then
-  QMAKE_ARG="$QMAKE_ARG QWT_PATH=$QWT_PATH"
-fi
-
-if test x"${SWIG_PATH}" != x""; then
-  QMAKE_ARG="$QMAKE_ARG SWIG_PATH=$SWIG_PATH"
-fi
-
-if test x"${ENABLE_JAVA}" != x""; then
-  QMAKE_ARG="$QMAKE_ARG ENABLE_JAVA=$ENABLE_JAVA"
-fi
-
-if test x"${ENABLE_PYTHON}" != x""; then
-  QMAKE_ARG="$QMAKE_ARG ENABLE_PYTHON=$ENABLE_PYTHON"
-fi
-
-if test x"${SBML_PATH}" != x""; then
-  QMAKE_ARG="$QMAKE_ARG SBML_PATH=$SBML_PATH"
-fi
-
-if test x"${PYTHON_INCLUDE_PATH}" != x""; then
-  QMAKE_ARG="$QMAKE_ARG PYTHON_INCLUDE_PATH=$PYTHON_INCLUDE_PATH"
-fi
-
-if test x"${PYTHON_LIB_PATH}" != x""; then
-  QMAKE_ARG="$QMAKE_ARG PYTHON_LIB_PATH=$PYTHON_LIB_PATH"
-fi
-
-if test x"${JAVA_INCLUDE_PATH}" != x""; then
-  QMAKE_ARG="$QMAKE_ARG JAVA_INCLUDE_PATH=$JAVA_INCLUDE_PATH"
-fi
-
-if test x"${JAVA_LIB_PATH}" != x""; then
-  QMAKE_ARG="$QMAKE_ARG JAVA_LIB_PATH=$JAVA_LIB_PATH"
-fi
 
 
 (

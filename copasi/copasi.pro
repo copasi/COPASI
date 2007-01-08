@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.24 $ $Author: shoops $ $Date: 2006/12/13 18:45:19 $  
+# $Revision: 1.25 $ $Author: shoops $ $Date: 2007/01/08 15:55:33 $  
 ######################################################################
 
 TEMPLATE = subdirs
@@ -34,19 +34,23 @@ SUBDIRS += utilities
 SUBDIRS += xml
 
 # Now the UI libraries
-contains(DEFINES, HAVE_MML) {
-  SUBDIRS += mml
+!contains(BUILD_GUI, no) {
+  contains(DEFINES, HAVE_MML) {
+    SUBDIRS += mml
+  }
+  SUBDIRS += plotUI
+  SUBDIRS += UI
+  SUBDIRS += wizard
 }
-SUBDIRS += plotUI
-SUBDIRS += UI
-SUBDIRS += wizard
 
 # Now build the libs
 SUBDIRS += libs
 
 # Now the excecutables
 SUBDIRS += CopasiSE
-SUBDIRS += CopasiUI
+!contains(BUILD_GUI, no) {
+  SUBDIRS += CopasiUI
+}
 
 # Finally the bindings
 isEmpty(COPASI_SRC_PACKAGE) {

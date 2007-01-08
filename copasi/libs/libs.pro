@@ -8,7 +8,9 @@ include(../common.pri)
 
 # Directories
 SUBDIRS += COPASISE
-SUBDIRS += COPASIUI
+!contains(BUILD_GUI, no) {
+  SUBDIRS += COPASIUI
+}
 
 DISTDIRS = $${SUBDIRS}
 
