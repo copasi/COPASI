@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQFittingResult.ui.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/11/20 16:39:12 $
+   $Date: 2007/01/09 14:25:14 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -138,11 +138,12 @@ void CQFittingResult::init()
 
   for (i = 0, imax = mpValues->numCols(); i != imax; i++)
     mpCrossValidationValues->adjustColumn(i);
+#endif // COPASI_CROSSVALIDATION
 
-#else
+#ifndef COPASI_CROSSVALIDATION
   pdelete(mpCrossValidations);
   pdelete(mpCrossValidationValues);
-#endif // COPASI_CROSSVALIDATION
+#endif // not COPASI_CROSSVALIDATION
 }
 
 bool CQFittingResult::update(ListViews::ObjectType /* objectType */,

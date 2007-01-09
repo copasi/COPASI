@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQFittingItemWidget.ui.h,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/12/08 17:01:16 $
+   $Date: 2007/01/09 14:25:14 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -67,7 +67,7 @@ void CQFittingItemWidget::init()
   mpCheckCrossValidationsAll->hide();
   mpBoxCrossValidations->hide();
   mpLblCrossValidations->hide();
-#endif // COPASI_CROSSVALIDATION
+#endif // not COPASI_CROSSVALIDATION
 }
 
 void CQFittingItemWidget::destroy()

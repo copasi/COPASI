@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQFittingResultTab1.ui.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/11/20 16:39:13 $
+   $Date: 2007/01/09 14:25:14 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -59,14 +59,16 @@ void CQFittingResultTab1::load(const CFitProblem * pProblem)
       mpEditCVRMS->setText("");
       mpEditCVStdDeviation->setText("");
     }
-#else
+#endif // COPASI_CROSSVALIDATION
+
+#ifndef COPASI_CROSSVALIDATION
   mpLblCVObjectiveValue->hide();
   mpEditCVObjectiveValue->hide();
   mpLblCVRMS->hide();
   mpEditCVRMS->hide();
   mpLblCVStdDeviation->hide();
   mpEditCVStdDeviation->hide();
-#endif // COPASI_CROSSVALIDATION
+#endif // not COPASI_CROSSVALIDATION
 
   const unsigned C_INT32 & FunctionEvaluations = pProblem->getFunctionEvaluations();
   mpEditEvaluations->setText(QString::number(FunctionEvaluations));
