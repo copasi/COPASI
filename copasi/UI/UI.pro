@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.138 $ $Author: shoops $ $Date: 2007/01/09 14:28:21 $  
+# $Revision: 1.139 $ $Author: shoops $ $Date: 2007/01/09 15:37:36 $  
 ######################################################################
 
 LIB = UI
@@ -146,7 +146,7 @@ SOURCES += \
 }
 
 !contains(DEFINES, COPASI_TSS) {
-  HEADERS -= SensitivitiesWidget.h
+  HEADERS -= TSSWidget.h
   SOURCES -= TSSWidget.cpp
 }
 
