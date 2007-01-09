@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.25 $ $Author: shoops $ $Date: 2007/01/08 15:55:33 $  
+# $Revision: 1.26 $ $Author: ssahle $ $Date: 2007/01/09 10:43:03 $  
 ######################################################################
 
 TEMPLATE = subdirs
@@ -24,9 +24,7 @@ SUBDIRS += randomGenerator
 SUBDIRS += report
 SUBDIRS += sbml
 SUBDIRS += scan
-contains(DEFINES, COPASI_SENS) {
-  SUBDIRS += sensitivities
-}
+SUBDIRS += sensitivities
 SUBDIRS += steadystate
 SUBDIRS += trajectory
 SUBDIRS += tss
