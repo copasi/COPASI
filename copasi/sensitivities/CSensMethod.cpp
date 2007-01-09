@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensMethod.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2007/01/08 14:47:28 $
+   $Date: 2007/01/09 13:45:12 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -51,7 +51,17 @@ CSensMethod::CSensMethod(CCopasiMethod::SubType subType,
                          const CCopasiContainer * pParent):
     CCopasiMethod(CCopasiTask::sens, subType, pParent),
     mpProblem(NULL)
-{CONSTRUCTOR_TRACE;}
+{
+  addParameter("Delta factor",
+               CCopasiParameter::UDOUBLE, (C_FLOAT64) 1e-6);
+  mpDeltaFactor = (C_FLOAT64*)getValue("Delta factor").pUDOUBLE;
+
+  addParameter("Delta minimum",
+               CCopasiParameter::UDOUBLE, (C_FLOAT64) 1e-12);
+  mpMinDelta = (C_FLOAT64*)getValue("Delta minimum").pUDOUBLE;
+
+  CONSTRUCTOR_TRACE;
+}
 
 /**
  *  Copy constructor.
@@ -113,8 +123,8 @@ C_FLOAT64 CSensMethod::do_variation(CCopasiObject* variable)
   C_FLOAT64 value;
   value = *(C_FLOAT64*)variable->getValuePointer();
   C_FLOAT64 delta;
-  delta = fabs(value) * 1e-4;
-  if (delta < 1e-12) delta = 1e-12;
+  delta = fabs(value) * *mpDeltaFactor;
+  if (delta < *mpMinDelta) delta = *mpMinDelta;
 
   variable->setObjectValue(delta + value);
 
@@ -427,7 +437,7 @@ bool CSensMethod::initialize(CSensProblem* problem)
 C_INT32 CSensMethod::getNumberOfSubtaskCalculations()
 {
   C_INT32 ret = 1;
-  C_INT32 i;
+  unsigned C_INT32 i;
   for (i = 0; i < mLocalData.size(); ++i)
     {
       ret *= mLocalData[i].variables.size() + 1;
