@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/local.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/11/22 14:45:58 $
+   $Date: 2007/01/09 16:33:06 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,6 +25,8 @@
 #include "model/CChemEqElement.h"
 #include "model/CReaction.h"
 #include "model/CMoiety.h"
+#include "report/CCopasiStaticString.h"
+#include "report/CReportDefinition.h"
 
 //#include <iostream>
 
@@ -458,6 +460,38 @@ struct swig_type_info*
     else if (dynamic_cast<CReaction*>(container))
       {
         pInfo = SWIGTYPE_p_CReaction;
+      }
+    else if (dynamic_cast<CReport*>(container))
+      {
+        pInfo = SWIGTYPE_p_CReport;
+      }
+    return pInfo;
+  }
+
+struct swig_type_info*
+      GetDowncastSwigTypeForCCopasiObject (CCopasiObject* object)
+  {
+    if (object == NULL) return SWIGTYPE_p_CCopasiObject;
+
+    struct swig_type_info* pInfo = SWIGTYPE_p_CCopasiObject;
+    if (dynamic_cast<CCopasiContainer*>(object))
+      {
+        pInfo = GetDowncastSwigTypeForCCopasiContainer(static_cast<CCopasiContainer*>(object));
+      }
+    else if (dynamic_cast<CReportDefinition*>(object))
+      {
+        pInfo = SWIGTYPE_p_CReportDefinition;
+      }
+    else if (dynamic_cast<CCopasiStaticString*>(object))
+      {
+        if (dynamic_cast<CCopasiReportSeparator*>(object))
+          {
+            pInfo = SWIGTYPE_p_CCopasiReportSeparator;
+          }
+        else
+          {
+            pInfo = SWIGTYPE_p_CCopasiStaticString;
+          }
       }
     return pInfo;
   }

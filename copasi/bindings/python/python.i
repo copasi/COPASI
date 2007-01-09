@@ -34,7 +34,7 @@
 }
 
 /**
- * Convert Method objects into the most specific type possible.
+ * Convert parametergroup objects into the most specific type possible.
  */
 %typemap(out) CCopasiParameterGroup*
 {
@@ -43,7 +43,7 @@
 
 
 /**
- * Convert Method objects into the most specific type possible.
+ * Convert parameter objects into the most specific type possible.
  */
 %typemap(out) CCopasiParameter*
 {
@@ -51,11 +51,19 @@
 }
 
 /**
- * Convert Method objects into the most specific type possible.
+ * Convert container objects into the most specific type possible.
  */
 %typemap(out) CCopasiContainer*
 {
   $result = SWIG_NewPointerObj($1, GetDowncastSwigTypeForCCopasiContainer($1), 0);
+}
+
+/**
+ * Convert object objects into the most specific type possible.
+ */
+%typemap(out) CCopasiObject*
+{
+  $result = SWIG_NewPointerObj($1, GetDowncastSwigTypeForCCopasiObject($1), 0);
 }
 
 
@@ -97,6 +105,12 @@ CCopasiContainer.ObjectFromName=_COPASI.CCopasiContainer_ObjectFromName
 
 CEvaluationTree.create=_COPASI.CEvaluationTree_create
 CEvaluationTree.copy=_COPASI.CEvaluationTree_copy
+
+COutputAssistant.getListOfDefaultOutputDescriptions=_COPASI.COutputAssistant_getListOfDefaultOutputDescriptions
+COutputAssistant.getDefaultReportIndex=_COPASI.COutputAssistant_getDefaultReportIndex
+COutputAssistant.getItemName=_COPASI.COutputAssistant_getItemName
+COutputAssistant.getItem=_COPASI.COutputAssistant_getItem
+COutputAssistant.createDefaultOutput=_COPASI.COutputAssistant_createDefaultOutput
 
 %}
 

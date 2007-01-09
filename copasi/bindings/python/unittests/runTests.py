@@ -26,8 +26,10 @@ import Test_CMetab
 import Test_CModel
 import Test_CModelValue
 import Test_CMoiety
+import Test_COutputAssistant
 import Test_CReaction
 import Test_CreateSimpleModel
+import Test_CReport
 import Test_CReportDefinition
 import Test_CReportDefinitionVector
 import Test_RunSimulations
@@ -37,7 +39,6 @@ import Test_CTrajectoryMethod
 import Test_CTrajectoryProblem
 import Test_CTrajectoryTask
 import Test_CVersion
-import Test_CReport
 
 suites=[
           Test_CVersion.suite()
@@ -73,6 +74,7 @@ suites=[
 	       ,Test_CFunctionParameters.suite()
 	       ,Test_CFunctionParameter.suite()
          ,Test_CReport.suite()
+         ,Test_COutputAssistant.suite()
          ,Test_CreateSimpleModel.suite()
          ,Test_RunSimulations.suite()
        ]

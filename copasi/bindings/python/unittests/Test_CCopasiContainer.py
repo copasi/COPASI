@@ -12,7 +12,7 @@ class Test_CCopasiContainer(unittest.TestCase):
     metab=self.datamodel.getModel().getMetabolite(1)
     object=COPASI.CCopasiContainer.ObjectFromName(metab.getCN())
     self.assert_(object!=None)
-    self.assert_(object.__class__==COPASI.CCopasiObject)
+    self.assert_(object.__class__==COPASI.CMetab)
     self.assert_(metab.getCN().getString()==object.getCN().getString())
 
 
