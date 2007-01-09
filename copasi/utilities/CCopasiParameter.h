@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.h,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:32:42 $
+   $Author: ssahle $
+   $Date: 2007/01/09 13:43:23 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -262,6 +262,12 @@ class CCopasiParameter: public CCopasiContainer
     friend bool operator==(const CCopasiParameter & lhs, const CCopasiParameter & rhs);
 
     virtual void * getValuePointer() const;
+
+    /**
+     *  Overload display name. Special treatment for reaction parameters
+     *  to provide a shorter display.
+     */
+    virtual std::string getObjectDisplayName(bool regular = true, bool richtext = false) const;
 
   private:
     /**

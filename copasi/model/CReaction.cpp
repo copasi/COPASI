@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.163 $
+   $Revision: 1.164 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/25 15:09:38 $
+   $Author: ssahle $
+   $Date: 2007/01/09 13:44:15 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1388,6 +1388,17 @@ std::string CReaction::escapeId(const std::string& id)
     }
   return s;
 }
+
+std::string CReaction::getObjectDisplayName(bool regular, bool richtext) const
+  {
+    CModel* tmp = dynamic_cast<CModel*>(this->getObjectAncestor("Model"));
+    if (tmp)
+      {
+        return "(" + getObjectName() + ")";
+      }
+
+    return CCopasiObject::getObjectDisplayName(regular, richtext);
+  }
 
 void CReaction::printDebug() const
   {std::cout << *this;}

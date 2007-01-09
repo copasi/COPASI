@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.cpp,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:32:42 $
+   $Author: ssahle $
+   $Date: 2007/01/09 13:43:23 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -409,3 +409,18 @@ void CCopasiParameter::deleteValue()
   mValue.pVOID = NULL;
   return;
 }
+
+std::string CCopasiParameter::getObjectDisplayName(bool regular, bool richtext) const
+  {
+    // if one of the ancestors is a reaction and the parameter is not a group
+    // it is (hopefully) a kinetic parameter
+
+    CCopasiObject* tmp = /*dynamic_cast<CModel*>*/(this->getObjectAncestor("Reaction"));
+    if (tmp)
+      if (getType() != GROUP)
+        {
+          return tmp->getObjectDisplayName() + "." + getObjectName();
+        }
+
+    return CCopasiObject::getObjectDisplayName(regular, richtext);
+  }
