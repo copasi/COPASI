@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-   $Revision: 1.188 $
+   $Revision: 1.189 $
    $Name:  $
    $Author: shoops $
-   $Date: 2007/01/08 17:05:09 $
+   $Date: 2007/01/09 14:26:50 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -1600,9 +1600,9 @@ bool CopasiUI3Window::slotRegistration()
   else
     return false;
 }
-#else
+#endif // COPASI_LICENSE_COM
 
+#ifndef COPASI_LICENSE_COM
 bool CopasiUI3Window::slotRegistration()
 {return true;}
-
-#endif // COPASI_LICENSE_COM
+#endif // not COPASI_LICENSE_COM
