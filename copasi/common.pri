@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.54 $ $Author: shoops $ $Date: 2006/12/08 17:23:33 $  
+# $Revision: 1.55 $ $Author: shoops $ $Date: 2007/01/09 14:22:47 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -20,11 +20,13 @@ CONFIG += exceptions
 CONFIG += rtti
 CONFIG += thread
 
+#ifdef COPASI_LICENSE_COM
 # COPASI License to use
 DEFINES -= COPASI_LICENSE_US
 DEFINES -= COPASI_LICENSE_DE
 DEFINES -= COPASI_LICENSE_COM
 DEFINES += COPASI_LICENSE_$$USE_LICENSE
+#endif // COPASI_LICENSE_COM
 
 QMAKE_CFLAGS   += $$(CFLAGS)
 QMAKE_CXXFLAGS += $$(CXXFLAGS)
@@ -35,7 +37,6 @@ debug {
 
   isEmpty(COPASI_SRC_PACKAGE) {
     DEFINES += COPASI_TSS
-    DEFINES += COPASI_SENS
   }
 }
 
