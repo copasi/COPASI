@@ -37,7 +37,9 @@ SWIG_INTERFACE_FILES=../swig/CChemEq.i \
                      ../swig/CModel.i \
                      ../swig/CModelValue.i \
                      ../swig/CMoiety.i \
+                     ../swig/COutputAssistant.i \
                      ../swig/CReaction.i \
+                     ../swig/CReport.i \
                      ../swig/CReportDefinition.i \
                      ../swig/CReportDefinitionVector.i \
                      ../swig/CState.i \

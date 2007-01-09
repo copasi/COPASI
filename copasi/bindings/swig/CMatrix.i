@@ -62,9 +62,9 @@ class CMatrix
     }
   };
 
-
 %template(FloatMatrix) CMatrix<C_FLOAT64>;
 
 typedef CMatrix<C_FLOAT64> FloatMatrix;
+
 
 

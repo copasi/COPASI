@@ -46,6 +46,18 @@ class Test_CCopasiTask(unittest.TestCase):
     v=self.task.isUpdateModel()
     self.assert_(type(v)==BooleanType)
 
+  def test_getValidMethods(self):
+    task=COPASI.CCopasiTask();
+    self.assert_(task!=None)
+    validMethods=task.getValidMethods();
+    self.assert_(type(validMethods)==TupleType);
+    self.assert_(len(validMethods)==0)
+
+  def test_getReport(self):
+    report=self.task.getReport()
+    self.assert_(report!=None)
+    self.assert_(report.__class__==COPASI.CReport)
+
 
 def suite():
   tests=[
@@ -56,6 +68,8 @@ def suite():
          ,'test_setScheduled'
          ,'test_isUpdateModel'
          ,'test_setUpdateModel'
+         ,'test_getValidMethods'
+         ,'test_getReport'                       
         ]
   return unittest.TestSuite(map(Test_CCopasiTask,tests))
 

@@ -37,7 +37,7 @@ import Test_CTrajectoryMethod
 import Test_CTrajectoryProblem
 import Test_CTrajectoryTask
 import Test_CVersion
-
+import Test_CReport
 
 suites=[
           Test_CVersion.suite()
@@ -48,8 +48,8 @@ suites=[
          ,Test_CMoiety.suite()
          ,Test_CModelValue.suite()
          ,Test_CMetab.suite()
-	 ,Test_CChemEq.suite()
-	 ,Test_CChemEqElement.suite()
+	       ,Test_CChemEq.suite()
+	       ,Test_CChemEqElement.suite()
          ,Test_CCopasiVector.suite()
          ,Test_CMatrix.suite()
          ,Test_CCopasiStaticString.suite()
@@ -67,11 +67,12 @@ suites=[
          ,Test_CTrajectoryMethod.suite()
          ,Test_CTrajectoryTask.suite()
          ,Test_CCopasiDataModel.suite()
-	 ,Test_CFunctionDB.suite()
-	 ,Test_CEvaluationTree.suite()
-	 ,Test_CFunction.suite()
-	 ,Test_CFunctionParameters.suite()
-	 ,Test_CFunctionParameter.suite()
+	       ,Test_CFunctionDB.suite()
+	       ,Test_CEvaluationTree.suite()
+	       ,Test_CFunction.suite()
+	       ,Test_CFunctionParameters.suite()
+	       ,Test_CFunctionParameter.suite()
+         ,Test_CReport.suite()
          ,Test_CreateSimpleModel.suite()
          ,Test_RunSimulations.suite()
        ]

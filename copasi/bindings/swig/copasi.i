@@ -50,5 +50,5 @@
 %include "CTrajectoryProblem.i"
 %include "CTrajectoryMethod.i"
 %include "CTrajectoryTask.i"
-
+%include "COutputAssistant.i"
 

@@ -3,6 +3,8 @@
 #include "utilities/CCopasiTask.h"
 %}
 
+%template(MethodTypeStdVector) std::vector<int>;
+
 class CCopasiTask : public CCopasiContainer
 {
   public:
@@ -166,7 +168,6 @@ class CCopasiTask : public CCopasiContainer
 
 };
 
-%template(MethodTypeStdVector) std::vector<int>;
 
 
 

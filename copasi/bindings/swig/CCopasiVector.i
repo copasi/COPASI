@@ -99,7 +99,6 @@ template < class CType > class CCopasiVectorNS: public CCopasiVectorN < CType >
 
 };
 
-
 %template(TaskStdVector) std::vector<CCopasiTask*>;
 %template(TaskVector) CCopasiVector<CCopasiTask>;
 %template(TaskVectorN) CCopasiVectorN<CCopasiTask>;
@@ -164,4 +163,5 @@ typedef CCopasiVectorN<CEvaluationTree> CEvaluationTreeVectorN;
 typedef std::vector<CFunction> CFunctionStdVector;
 
 typedef CCopasiVector<CChemEqElement> CChemEqElementVector;
+
 

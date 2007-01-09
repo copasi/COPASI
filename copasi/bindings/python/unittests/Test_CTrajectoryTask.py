@@ -34,6 +34,11 @@ class Test_CTrajectoryTask(unittest.TestCase):
     timeseries=self.task.getTimeSeries()
     self.assert_(timeseries.__class__==COPASI.CTimeSeries)
 
+  def test_getValidMethods(self):
+    validMethods=self.task.getValidMethods();
+    self.assert_(len(validMethods)!=0)
+
+
 def suite():
   tests=[
           'test_setUp'
@@ -41,6 +46,7 @@ def suite():
          ,'test_getState'
          ,'test_getTimeSeries'
          ,'test_setMethodType'
+         ,'test_getValidMethods'
         ]
   return unittest.TestSuite(map(Test_CTrajectoryTask,tests))
 
