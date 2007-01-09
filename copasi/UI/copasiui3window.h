@@ -1,14 +1,15 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-   $Revision: 1.61 $
+   $Revision: 1.62 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/12/19 17:31:04 $
+   $Date: 2007/01/09 14:27:14 $
    End CVS Header */
 
-// Copyright ï¿½ 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+
 #include <string>
 
 #include <qmainwindow.h>
