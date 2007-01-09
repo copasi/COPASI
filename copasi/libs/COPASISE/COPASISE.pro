@@ -26,9 +26,7 @@ COPASI_LIBS += randomGenerator
 COPASI_LIBS += report
 COPASI_LIBS += sbmlimport
 COPASI_LIBS += scan
-contains(DEFINES, COPASI_SENS) {
-  COPASI_LIBS += sensitivities
-}
+COPASI_LIBS += sensitivities
 COPASI_LIBS += steadystate
 COPASI_LIBS += trajectory
 COPASI_LIBS += tss

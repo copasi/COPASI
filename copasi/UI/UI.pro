@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.137 $ $Author: shoops $ $Date: 2006/12/15 21:26:32 $  
+# $Revision: 1.138 $ $Author: shoops $ $Date: 2007/01/09 14:28:21 $  
 ######################################################################
 
 LIB = UI
@@ -145,17 +145,11 @@ SOURCES += \
   SOURCES -= DifferentialEquations.cpp
 }
 
-!contains(DEFINES, COPASI_SENS) {
-  SOURCES -= SensitivitiesWidget.cpp
-  HEADERS -= SensitivitiesWidget.h
-  SOURCES -= CQSensResultWidget.cpp
-  HEADERS -= CQSensResultWidget.h
-}
-
 !contains(DEFINES, COPASI_TSS) {
   HEADERS -= SensitivitiesWidget.h
   SOURCES -= TSSWidget.cpp
 }
+
 # FORMS += TimeSeriesSubwidget.ui
 # FORMS += StateSubwidget.ui
 # FORMS += CMCAResultSubwidget.ui
