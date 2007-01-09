@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.139 $ $Author: shoops $ $Date: 2007/01/09 15:37:36 $  
+# $Revision: 1.140 $ $Author: shoops $ $Date: 2007/01/09 16:18:09 $  
 ######################################################################
 
 LIB = UI
@@ -294,16 +294,6 @@ HEADERS += CQRegistrationDialog.h \
            CQRegistrationDialog.ui.h
 
 SOURCES += CQRegistrationDialog.cpp
-}
-
-release {
-  HEADERS -= \
-           SensitivitiesWidget.h \
-           TSSWidget.h
-
-  SOURCES -= \
-           SensitivitiesWidget.cpp \
-           TSSWidget.cpp
 }
 
 DISTFILES += UI.dsp \
