@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/COutputAssistant.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/11/16 15:37:51 $
+   $Author: ssahle $
+   $Date: 2007/01/09 13:38:51 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -70,6 +70,55 @@ std::vector<C_INT32> COutputAssistant::getListOfDefaultOutputDescriptions(const 
     }
 
   return ret;
+}
+
+//static
+C_INT32 COutputAssistant::getDefaultReportIndex(const CCopasiProblem * problem)
+{
+  if (!problem) return - 1;
+
+  switch (problem->getType())
+    {
+    case CCopasiTask::steadyState:
+      return 1000;
+    case CCopasiTask::timeCourse:
+      return 1000;
+    default:
+      return - 1;
+    }
+}
+
+//       steadyState = 0,
+//       timeCourse,
+//       scan,
+//       fluxMode,
+//       optimization,
+//       parameterFitting,
+//       mca,
+//       lyap,
+// #ifdef COPASI_DEBUG
+//       tss,
+// #endif // COPASI_DEBUG
+//       sens,
+// #ifdef COPASI_SSA
+//       ssa,
+// #endif // COPASI_SSA
+//       unset,
+
+//static
+C_INT32 COutputAssistant::getDefaultPlotIndex(const CCopasiProblem * problem)
+{
+  if (!problem) return - 1;
+
+  switch (problem->getType())
+    {
+    case CCopasiTask::steadyState:
+      return 0;
+    case CCopasiTask::timeCourse:
+      return 0;
+    default:
+      return - 1;
+    }
 }
 
 //static

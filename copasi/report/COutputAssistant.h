@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/COutputAssistant.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/06/20 13:19:50 $
+   $Author: ssahle $
+   $Date: 2007/01/09 13:38:51 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -44,12 +44,28 @@ class COutputAssistant
   public:
 
     /**
-     *  get a list of indices of default output definitions that are
+     *  get a list of indices of output definitions that are
      *  suitable for the problem.
      *  If problem=NULL (default) all indices in the map are returned.
      */
     static
     std::vector<C_INT32> getListOfDefaultOutputDescriptions(const CCopasiProblem * problem = NULL);
+
+    /**
+     *  get an index of a default output report that is
+     *  recommended  for the given problem.
+     *  If no such report exists, -1 is returned
+     */
+    static
+    C_INT32 getDefaultReportIndex(const CCopasiProblem * problem);
+
+    /**
+     *  get an index of a default plot that is
+     *  recommended  for the given problem.
+     *  If no such plot exists, -1 is returned
+     */
+    static
+    C_INT32 getDefaultPlotIndex(const CCopasiProblem * problem);
 
     /**
      *  get title of output definition with index id.
