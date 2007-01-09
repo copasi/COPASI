@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SensitivitiesWidget.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2007/01/04 14:29:02 $
+   $Date: 2007/01/09 13:46:19 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -451,6 +451,8 @@ bool SensitivitiesWidget::loadTask()
     {
       FunctionChooser->setCurrentObjectList(CObjectLists::SINGLE_OBJECT);
       mpSingleFunction = CCopasiContainer::ObjectFromName(tmp.getSingleObjectCN());
+      if (mpSingleFunction)
+        FunctionLineEdit->setText(FROM_UTF8(mpSingleFunction->getObjectDisplayName()));
     }
   else
     FunctionChooser->setCurrentObjectList(tmp.getListType());
@@ -463,6 +465,8 @@ bool SensitivitiesWidget::loadTask()
         {
           VariableChooser->setCurrentObjectList(CObjectLists::SINGLE_OBJECT);
           mpSingleVariable = CCopasiContainer::ObjectFromName(tmp.getSingleObjectCN());
+          if (mpSingleVariable)
+            VariableLineEdit->setText(FROM_UTF8(mpSingleVariable->getObjectDisplayName()));
         }
       else
         VariableChooser->setCurrentObjectList(tmp.getListType());
@@ -476,6 +480,8 @@ bool SensitivitiesWidget::loadTask()
         {
           Variable2Chooser->setCurrentObjectList(CObjectLists::SINGLE_OBJECT);
           mpSingleVariable2 = CCopasiContainer::ObjectFromName(tmp.getSingleObjectCN());
+          if (mpSingleVariable2)
+            Variable2LineEdit->setText(FROM_UTF8(mpSingleVariable2->getObjectDisplayName()));
         }
       else
         Variable2Chooser->setCurrentObjectList(tmp.getListType());
