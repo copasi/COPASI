@@ -1,10 +1,10 @@
-package org.eml.COPASI.unittests;
+package org.COPASI.unittests;
 
 import java.lang.Math;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.Iterator;
-import org.eml.COPASI.*;
+import org.COPASI.*;
 import junit.framework.*;
 
 public class Test_RunSimulations extends TestCase
@@ -144,10 +144,10 @@ public class Test_RunSimulations extends TestCase
     {
       CTrajectoryTask task=runStochasticSimulation();
       assertTrue(task!=null);
-      assertTrue(task.getClass().getName().equals("org.eml.COPASI.CTrajectoryTask"));
+      assertTrue(task.getClass().getName().equals("org.COPASI.CTrajectoryTask"));
       CTimeSeries timeseries=task.getTimeSeries();
       assertTrue(timeseries!=null);
-      assertTrue(timeseries.getClass().getName().equals("org.eml.COPASI.CTimeSeries"));
+      assertTrue(timeseries.getClass().getName().equals("org.COPASI.CTimeSeries"));
       assertTrue(timeseries.getNumSteps()==10001);
       assertTrue(timeseries.getNumVariables()==3);
       values[x][0]=timeseries.getConcentrationData(1386,0);
@@ -176,10 +176,10 @@ public class Test_RunSimulations extends TestCase
     {
       CTrajectoryTask task=runHybridSimulation();
       assertTrue(task!=null);
-      assertTrue(task.getClass().getName().equals("org.eml.COPASI.CTrajectoryTask"));
+      assertTrue(task.getClass().getName().equals("org.COPASI.CTrajectoryTask"));
       CTimeSeries timeseries=task.getTimeSeries();
       assertTrue(timeseries!=null);
-      assertTrue(timeseries.getClass().getName().equals("org.eml.COPASI.CTimeSeries"));
+      assertTrue(timeseries.getClass().getName().equals("org.COPASI.CTimeSeries"));
       assertTrue(timeseries.getNumSteps()==10001);
       assertTrue(timeseries.getNumVariables()==3);
       values[x][0]=timeseries.getConcentrationData(1386,0);
@@ -205,10 +205,10 @@ public class Test_RunSimulations extends TestCase
    {
     CTrajectoryTask task=runDeterministicSimulation();
     assertTrue(task!=null);
-    assertTrue(task.getClass().getName().equals("org.eml.COPASI.CTrajectoryTask"));
+    assertTrue(task.getClass().getName().equals("org.COPASI.CTrajectoryTask"));
     CTimeSeries timeseries=task.getTimeSeries();
     assertTrue(timeseries!=null);
-    assertTrue(timeseries.getClass().getName().equals("org.eml.COPASI.CTimeSeries"));
+    assertTrue(timeseries.getClass().getName().equals("org.COPASI.CTimeSeries"));
     assertTrue(timeseries.getNumSteps()==10001);
     assertTrue(timeseries.getNumVariables()==3);
     double value=timeseries.getConcentrationData(1386,0);
@@ -227,10 +227,10 @@ public class Test_RunSimulations extends TestCase
     {
       CTrajectoryTask task=runStochasticSimulation();
       assertTrue(task!=null);
-      assertTrue(task.getClass().getName().equals("org.eml.COPASI.CTrajectoryTask"));
+      assertTrue(task.getClass().getName().equals("org.COPASI.CTrajectoryTask"));
       CTimeSeries timeseries=task.getTimeSeries();
       assertTrue(timeseries!=null);
-      assertTrue(timeseries.getClass().getName().equals("org.eml.COPASI.CTimeSeries"));
+      assertTrue(timeseries.getClass().getName().equals("org.COPASI.CTimeSeries"));
       assertTrue(timeseries.getNumSteps()==10001);
       assertTrue(timeseries.getNumVariables()==4);
       values[x][0]=timeseries.getConcentrationData(3574,0);
@@ -259,10 +259,10 @@ public class Test_RunSimulations extends TestCase
     {
       CTrajectoryTask task=runHybridSimulation();
       assertTrue(task!=null);
-      assertTrue(task.getClass().getName().equals("org.eml.COPASI.CTrajectoryTask"));
+      assertTrue(task.getClass().getName().equals("org.COPASI.CTrajectoryTask"));
       CTimeSeries timeseries=task.getTimeSeries();
       assertTrue(timeseries!=null);
-      assertTrue(timeseries.getClass().getName().equals("org.eml.COPASI.CTimeSeries"));
+      assertTrue(timeseries.getClass().getName().equals("org.COPASI.CTimeSeries"));
       assertTrue(timeseries.getNumSteps()==10001);
       assertTrue(timeseries.getNumVariables()==4);
       values[x][0]=timeseries.getConcentrationData(3574,0);
@@ -288,10 +288,10 @@ public class Test_RunSimulations extends TestCase
     Test_CreateSimpleModel.extendModel(this.model);
     CTrajectoryTask task=runDeterministicSimulation();
     assertTrue(task!=null);
-    assertTrue(task.getClass().getName().equals("org.eml.COPASI.CTrajectoryTask"));
+    assertTrue(task.getClass().getName().equals("org.COPASI.CTrajectoryTask"));
     CTimeSeries timeseries=task.getTimeSeries();
     assertTrue(timeseries!=null);
-    assertTrue(timeseries.getClass().getName().equals("org.eml.COPASI.CTimeSeries"));
+    assertTrue(timeseries.getClass().getName().equals("org.COPASI.CTimeSeries"));
     assertTrue(timeseries.getNumSteps()==10001);
     assertTrue(timeseries.getNumVariables()==4);
     double value=timeseries.getConcentrationData(3574,0);

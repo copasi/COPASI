@@ -1,6 +1,6 @@
-package org.eml.COPASI.unittests;
+package org.COPASI.unittests;
 
-import org.eml.COPASI.*;
+import org.COPASI.*;
 import junit.framework.*;
 
 public class Test_CreateSimpleModel extends TestCase
@@ -63,7 +63,7 @@ public class Test_CreateSimpleModel extends TestCase
   public void test_createModel()
   {
      assertFalse(this.model==null);
-     assertTrue(this.model.getClass().getName().equals("org.eml.COPASI.CModel"));
+     assertTrue(this.model.getClass().getName().equals("org.COPASI.CModel"));
      assertTrue(this.model.getCompartments().size()==1);
      assertTrue(this.model.getCompartment(0).getObjectName().equals("CompartmentA"));
      assertTrue(this.model.getMetabolites().size()==2);
