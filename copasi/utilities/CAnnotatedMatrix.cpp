@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CAnnotatedMatrix.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/09/18 12:53:54 $
+   $Date: 2007/01/10 10:38:59 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -247,35 +247,36 @@ void CArrayAnnotation::print(std::ostream * ostream) const
 #define SPC(level) std::string(level, ' ')
 
 void CArrayAnnotation::printRecursively(std::ostream & ostream, C_INT32 level,
-                                        CCopasiAbstractArray::index_type & index) const
+                                        CCopasiAbstractArray::index_type & index,
+                                        const std::vector<std::vector<std::string> > & display) const
   {
     unsigned C_INT32 indent = 2 * (dimensionality() - 1 - level);
 
     if (level == 0) //only vector
       {
-        ostream << SPC(indent) << "Rows: " << getDimensionDescription(level) << std::endl;
+        ostream << SPC(indent) << "Rows: " << getDimensionDescription(level) << "\n";
 
         unsigned C_INT32 imax = size()[0];
         for (index[0] = 0; index[0] < imax; ++index[0])
-          ostream << SPC(indent) << getAnnotationsDisplay(0)[index[0]] << "\t" << (*array())[index] << std::endl;
+          ostream << SPC(indent) << display[0][index[0]] << "\t" << (*array())[index] << "\n";
       }
     else if (level == 1) //matrix
       {
-        ostream << SPC(indent) << "Rows:    " << getDimensionDescription(level - 1) << std::endl;
-        ostream << SPC(indent) << "Columns: " << getDimensionDescription(level) << std::endl;
+        ostream << SPC(indent) << "Rows:    " << getDimensionDescription(level - 1) << "\n";
+        ostream << SPC(indent) << "Columns: " << getDimensionDescription(level) << "\n";
 
         unsigned C_INT32 imax = size()[0];
         unsigned C_INT32 jmax = size()[1];
         ostream << SPC(indent);
         for (index[1] = 0; index[1] < jmax; ++index[1])
-          ostream << "\t" << getAnnotationsDisplay(1)[index[1]];
-        ostream << std::endl;
+          ostream << "\t" << display[1][index[1]];
+        ostream << "\n";
         for (index[0] = 0; index[0] < imax; ++index[0])
           {
-            ostream << SPC(indent) << getAnnotationsDisplay(0)[index[0]];
+            ostream << SPC(indent) << display[0][index[0]];
             for (index[1] = 0; index[1] < jmax; ++index[1])
               ostream << "\t" << (*array())[index];
-            ostream << std::endl;
+            ostream << "\n";
           }
       }
     else //dimensionality > 2
@@ -283,9 +284,10 @@ void CArrayAnnotation::printRecursively(std::ostream & ostream, C_INT32 level,
         unsigned C_INT32 i, imax = size()[level];
         for (i = 0; i < imax; ++i)
           {
-            ostream << SPC(indent) << getDimensionDescription(level) << ": " << getAnnotationsDisplay(level)[i] << std::endl;
+            //std::cout << "*" << i << std::endl;
+            ostream << SPC(indent) << getDimensionDescription(level) << ": " << display[level][i] << "\n";
             index[level] = i;
-            printRecursively(ostream, level - 1, index);
+            printRecursively(ostream, level - 1, index, display);
           }
       }
   }
@@ -296,6 +298,12 @@ std::ostream &operator<<(std::ostream &os, const CArrayAnnotation & o)
 
   if (o.mOnTheFly)
     const_cast<CArrayAnnotation*>(&o)->updateAnnotations();
+
+  //cache the display names
+  std::vector<std::vector<std::string> > displaynames;
+  unsigned C_INT32 i;
+  for (i = 0; i < o.dimensionality(); ++i)
+    displaynames.push_back(o.getAnnotationsDisplay(i));
 
   os << o.getObjectName() << std::endl;
   os << o.getDescription() << std::endl;
@@ -308,7 +316,7 @@ std::ostream &operator<<(std::ostream &os, const CArrayAnnotation & o)
     }
   else
     {
-      o.printRecursively(os, o.dimensionality() - 1, arraysize);
+      o.printRecursively(os, o.dimensionality() - 1, arraysize, displaynames);
     }
 
   return os;

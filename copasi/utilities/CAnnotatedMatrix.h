@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CAnnotatedMatrix.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/09/18 12:53:54 $
+   $Date: 2007/01/10 10:38:59 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -208,7 +208,8 @@ class CArrayAnnotation: public CCopasiContainer
     void printDebug(std::ostream & out) const;
 
     void printRecursively(std::ostream & ostream, C_INT32 level,
-                          CCopasiAbstractArray::index_type & index) const;
+                          CCopasiAbstractArray::index_type & index,
+                          const std::vector<std::vector<std::string> > & display) const;
 
   public:
     virtual void print(std::ostream * ostream) const;
