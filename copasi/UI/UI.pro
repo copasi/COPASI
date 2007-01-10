@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.140 $ $Author: shoops $ $Date: 2007/01/09 16:18:09 $  
+# $Revision: 1.141 $ $Author: ssahle $ $Date: 2007/01/10 17:08:39 $  
 ######################################################################
 
 LIB = UI
@@ -31,6 +31,7 @@ HEADERS += \
            copasiWidget.h \
            copasiui3window.h \
            CProgressBar.h \
+           CQArrayAnnotationsWidget.h \
            CQExpressionWidget.h \
            CQLyapWidget.h \
            CQLyapResultWidget.h \
@@ -96,6 +97,7 @@ SOURCES += \
            copasiui3window.cpp \
            CProgressBar.cpp \
            OptimizationResultWidget.cpp \
+           CQArrayAnnotationsWidget.cpp \
            CQExpressionWidget.cpp \
            CQLyapWidget.cpp \
            CQLyapResultWidget.cpp \
