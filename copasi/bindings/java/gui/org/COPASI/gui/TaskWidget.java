@@ -1,3 +1,7 @@
+//  © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// , Inc. and EML Research, gGmbH.
+//  rights reserved.
+
 package org.COPASI.gui;
 
 import javax.swing.BorderFactory;

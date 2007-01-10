@@ -1,3 +1,7 @@
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
+
 /**
  * Make COPASI and wrapper constants Java compile-time
  * constants so they may be used in switch statements.

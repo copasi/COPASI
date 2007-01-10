@@ -1,7 +1,10 @@
+# Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+# Properties, Inc. and EML Research, gGmbH.
+# All rights reserved.
+
 import COPASI
 import unittest
 from types import *
-
 
 class Test_CChemEqElement(unittest.TestCase):
   def setUp(self):
