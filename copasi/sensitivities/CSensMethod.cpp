@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensMethod.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2007/01/09 13:45:12 $
+   $Date: 2007/01/10 12:07:34 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -81,11 +81,18 @@ CSensMethod::~CSensMethod()
 
 //***********************************************************************************
 
-bool CSensMethod::do_target_calculation(CCopasiArray & result)
+bool CSensMethod::do_target_calculation(CCopasiArray & result, bool first)
 {
   //****** do subtask ******************
   if (mpSubTask)
-    mpSubTask->process(true);
+    {
+      if (mpProblem->getSubTaskType() == CSensProblem::SteadyState)
+        mpSubTask->process(first);
+      else
+        mpSubTask->process(true);
+      //only for steady state calculation the first calculation is done from
+      //initial state, the remaining from the current state
+    }
   else
     {
       mpProblem->getModel()->applyAssignments();
@@ -194,7 +201,7 @@ bool CSensMethod::calculate_one_level(unsigned C_INT32 level, CCopasiArray & res
   //do first calculation
   if (level == 0)
     {
-      if (!do_target_calculation(mLocalData[level].tmp1)) return false;
+      if (!do_target_calculation(mLocalData[level].tmp1, true)) return false;
     }
   else
     {
@@ -220,7 +227,7 @@ bool CSensMethod::calculate_one_level(unsigned C_INT32 level, CCopasiArray & res
       //do second calculation
       if (level == 0)
         {
-          if (!do_target_calculation(mLocalData[level].tmp2)) return false;
+          if (!do_target_calculation(mLocalData[level].tmp2, false)) return false;
         }
       else
         {
@@ -460,6 +467,8 @@ bool CSensMethod::process(CProcessReport * handler)
       mProgressHandler = mpProgressBar->addItem("Completion",
                          CCopasiParameter::INT,
                          &mProgress, &max);
+      if (mpSubTask)
+        mpSubTask->setCallBack(mpProgressBar);
     }
 
   if (!calculate_one_level(mLocalData.size() - 1, mpProblem->getResult())) return false;
