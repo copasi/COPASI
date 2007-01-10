@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensProblem.cpp,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2007/01/02 12:03:21 $
+   $Date: 2007/01/10 12:08:27 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -231,6 +231,10 @@ void CSensProblem::initObjects()
   mpScaledResultAnnotation = new CArrayAnnotation("Scaled sensitivities array", this, &mScaledResult);
   mpScaledResultAnnotation->setOnTheFly(false);
   mpScaledResultAnnotation->setDescription("");
+
+  mpCollapsedResultAnnotation = new CArrayAnnotation("Summarized sensitivities array", this, &mCollapsedResult);
+  mpCollapsedResultAnnotation->setOnTheFly(false);
+  mpCollapsedResultAnnotation->setDescription("");
 }
 
 /**
@@ -374,6 +378,26 @@ CArrayAnnotation * CSensProblem::getScaledResultAnnotated()
 const CArrayAnnotation * CSensProblem::getScaledResultAnnotated() const
   {
     return mpScaledResultAnnotation;
+  }
+
+CCopasiArray & CSensProblem::getCollapsedResult()
+{
+  return mCollapsedResult;
+}
+
+const CCopasiArray & CSensProblem::getCollapsedResult() const
+  {
+    return mCollapsedResult;
+  }
+
+CArrayAnnotation * CSensProblem::getCollapsedResultAnnotated()
+{
+  return mpCollapsedResultAnnotation;
+}
+
+const CArrayAnnotation * CSensProblem::getCollapsedResultAnnotated() const
+  {
+    return mpCollapsedResultAnnotation;
   }
 
 //static

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensProblem.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2007/01/02 12:03:21 $
+   $Date: 2007/01/10 12:08:27 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -131,6 +131,11 @@ class CSensProblem: public CCopasiProblem
     CArrayAnnotation * getScaledResultAnnotated();
     const CArrayAnnotation * getScaledResultAnnotated() const;
 
+    CCopasiArray & getCollapsedResult();
+    const CCopasiArray & getCollapsedResult() const;
+    CArrayAnnotation * getCollapsedResultAnnotated();
+    const CArrayAnnotation * getCollapsedResultAnnotated() const;
+
     /**
      * This is the output method for any result of a problem. The default implementation
      * provided with CCopasiProblem. Does only print "Not implemented." To overide this
@@ -195,6 +200,13 @@ class CSensProblem: public CCopasiProblem
     CCopasiArray mScaledResult;
 
     CArrayAnnotation * mpScaledResultAnnotation;
+
+    /**
+     *  This holds the collapsed result
+     */
+    CCopasiArray mCollapsedResult;
+
+    CArrayAnnotation * mpCollapsedResultAnnotation;
   };
 
 #endif // COPASI_CSensProblem
