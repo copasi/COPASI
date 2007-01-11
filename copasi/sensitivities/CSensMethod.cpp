@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensMethod.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2007/01/10 12:07:34 $
+   $Date: 2007/01/11 09:34:26 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -330,6 +330,16 @@ void CSensMethod::do_scaling()
 
 //****************************************************************************
 
+void CSensMethod::do_collapsing()
+{
+  if (mpProblem->collapsRequested())
+  {}
+  else
+  {}
+}
+
+//****************************************************************************
+
 bool CSensMethod::initialize(CSensProblem* problem)
 {
   mpProblem = problem; assert(mpProblem);
@@ -381,6 +391,7 @@ bool CSensMethod::initialize(CSensProblem* problem)
 
   //determine dimensions of result
   CCopasiArray::index_type s;
+  CCopasiArray::index_type sc; //size of collapsed result
   if (mTargetfunctionPointers.size() > 1)
     {
       s.push_back(mTargetfunctionPointers.size());
@@ -391,6 +402,7 @@ bool CSensMethod::initialize(CSensProblem* problem)
         {
           mLocalData[i].index = s.size();
           s.push_back(mLocalData[i].variables.size());
+          sc.push_back(mLocalData[i].variables.size());
         }
       else
         mLocalData[i].index = -1;
@@ -402,6 +414,12 @@ bool CSensMethod::initialize(CSensProblem* problem)
 
   mpProblem->getScaledResult().resize(s);
   mpProblem->getScaledResultAnnotated()->resize();
+
+  if (mpProblem->collapsRequested())
+    {
+      mpProblem->getCollapsedResult().resize(sc);
+      mpProblem->getCollapsedResultAnnotated()->resize();
+    }
 
   unsigned C_INT32 dim = 0;
   unsigned C_INT32 j;
@@ -421,6 +439,7 @@ bool CSensMethod::initialize(CSensProblem* problem)
     }
 
   //variables annotiation
+  unsigned C_INT32 dim2 = 0; //for collapsed result
   for (i = 0; i < imax; ++i)
     {
       if (mLocalData[i].variables.size() > 1)
@@ -429,12 +448,17 @@ bool CSensMethod::initialize(CSensProblem* problem)
           tmp << "Variables " << i + 1 << ", " << mpProblem->getVariables(i).getListTypeDisplayName();
           mpProblem->getResultAnnotated()->setDimensionDescription(dim, tmp.str());
           mpProblem->getScaledResultAnnotated()->setDimensionDescription(dim, tmp.str());
+          if (mpProblem->collapsRequested())
+            mpProblem->getCollapsedResultAnnotated()->setDimensionDescription(dim2, tmp.str());
           for (j = 0; j < mLocalData[i].variables.size(); ++j)
             {
               mpProblem->getResultAnnotated()->setAnnotation(dim, j, mLocalData[i].variables[j]->getCN());
               mpProblem->getScaledResultAnnotated()->setAnnotation(dim, j, mLocalData[i].variables[j]->getCN());
+              if (mpProblem->collapsRequested())
+                mpProblem->getCollapsedResultAnnotated()->setAnnotation(dim2, j, mLocalData[i].variables[j]->getCN());
             }
           ++dim;
+          ++dim2;
         }
     }
 
@@ -474,6 +498,9 @@ bool CSensMethod::process(CProcessReport * handler)
   if (!calculate_one_level(mLocalData.size() - 1, mpProblem->getResult())) return false;
 
   do_scaling();
+
+  do_collapsing();
+
   return true;
 }
 

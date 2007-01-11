@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensProblem.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2007/01/10 12:08:27 $
+   $Date: 2007/01/11 09:33:59 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -398,6 +398,11 @@ CArrayAnnotation * CSensProblem::getCollapsedResultAnnotated()
 const CArrayAnnotation * CSensProblem::getCollapsedResultAnnotated() const
   {
     return mpCollapsedResultAnnotation;
+  }
+
+bool CSensProblem::collapsRequested() const
+  {
+    return !getTargetFunctions().isSingleObject();
   }
 
 //static

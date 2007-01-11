@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensProblem.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2007/01/10 12:08:27 $
+   $Date: 2007/01/11 09:33:59 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -135,6 +135,8 @@ class CSensProblem: public CCopasiProblem
     const CCopasiArray & getCollapsedResult() const;
     CArrayAnnotation * getCollapsedResultAnnotated();
     const CArrayAnnotation * getCollapsedResultAnnotated() const;
+
+    bool collapsRequested() const;
 
     /**
      * This is the output method for any result of a problem. The default implementation
