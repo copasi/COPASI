@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensMethod.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2007/01/10 12:07:34 $
+   $Date: 2007/01/11 15:02:27 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -149,6 +149,8 @@ class CSensMethod : public CCopasiMethod
      * calculating the 2-norm over the target functions)
      */
     void do_collapsing();
+
+    C_FLOAT64 do_collapsing_innerloop(CCopasiArray::index_type & fullindex);
 
     CProcessReport * mpProgressBar;
     unsigned C_INT32 mProgressHandler;

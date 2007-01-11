@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensMethod.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2007/01/11 09:34:26 $
+   $Date: 2007/01/11 15:02:27 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -330,10 +330,76 @@ void CSensMethod::do_scaling()
 
 //****************************************************************************
 
+C_FLOAT64 CSensMethod::do_collapsing_innerloop(CCopasiArray::index_type & fullindex)
+{
+  //fullindex[0]=0;
+  //return mpProblem->getScaledResult()[fullindex];
+
+  //assumes the sum is to be taken over the first dim of the scaled result array
+  C_FLOAT64 tmpSum = 0;
+  unsigned C_INT32 i, imax = mpProblem->getScaledResult().size()[0];
+  for (i = 0; i < imax; ++i)
+    {
+      fullindex[0] = i;
+      tmpSum += mpProblem->getScaledResult()[fullindex] * mpProblem->getScaledResult()[fullindex];
+    }
+  return sqrt(tmpSum);
+}
+
 void CSensMethod::do_collapsing()
 {
   if (mpProblem->collapsRequested())
-  {}
+    {
+      CCopasiArray::index_type fullresultindex = mpProblem->getScaledResult().size();
+      CCopasiArray::index_type collapsedresultindex = mpProblem->getCollapsedResult().size();
+
+      C_INT32 shift = fullresultindex.size() - collapsedresultindex.size();
+      if (shift != 1) return; //only supported if target functions list is 1D
+
+      //***** skalar ********
+      if (collapsedresultindex.size() == 0)
+        {
+          mpProblem->getCollapsedResult()[collapsedresultindex] =
+            do_collapsing_innerloop(fullresultindex);
+          return;
+        }
+
+      //***** higher dimensions *********
+      unsigned C_INT32 i, dim = collapsedresultindex.size();
+      CCopasiArray::index_type indexmax = mpProblem->getCollapsedResult().size();
+
+      //set index to zero
+      for (i = 0; i < dim; ++i) collapsedresultindex[i] = 0;
+
+      for (;;)
+        {
+          fullresultindex[0] = 0;
+          for (i = 0; i < dim; ++i)
+            fullresultindex[i + shift] = collapsedresultindex[i];
+
+          mpProblem->getCollapsedResult()[collapsedresultindex] =
+            do_collapsing_innerloop(fullresultindex);
+
+          //increase index
+          ++collapsedresultindex[dim - 1];
+
+          //check overflow
+          C_INT32 j;
+          for (j = dim - 1; j >= 0; --j)
+            {
+              if (collapsedresultindex[j] >= indexmax[j])
+                {
+                  collapsedresultindex[j] = 0;
+                  if (j > 0)
+                    ++collapsedresultindex[j - 1];
+                  else
+                    return;
+                }
+              else
+                break;
+            }
+        }
+    }
   else
   {}
 }
