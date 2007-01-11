@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-   $Revision: 1.45 $
+   $Revision: 1.46 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/28 00:31:05 $
+   $Author: ssahle $
+   $Date: 2007/01/11 12:43:43 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -132,16 +132,16 @@ C_FLOAT64 CopasiPlot::MissingValue = std::numeric_limits<C_FLOAT64>::quiet_NaN()
 
 CopasiPlot::CopasiPlot(QWidget* parent):
     QwtPlot(parent),
+    mCurveMap(),
     mpPlotSpecification(NULL),
-    mpZoomer(NULL),
-    mCurveMap()
+    mpZoomer(NULL)
 {}
 
 CopasiPlot::CopasiPlot(const CPlotSpecification* plotspec, QWidget* parent):
     QwtPlot(parent),
+    mCurveMap(),
     mpPlotSpecification(NULL),
-    mpZoomer(NULL),
-    mCurveMap()
+    mpZoomer(NULL)
 {
   QwtLegend *legend = new QwtLegend;
   legend->setItemMode(QwtLegend::CheckableItem);
