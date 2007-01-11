@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.cpp,v $
-   $Revision: 1.63 $
+   $Revision: 1.64 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/06/20 13:19:52 $
+   $Author: ssahle $
+   $Date: 2007/01/11 09:33:15 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -117,6 +117,8 @@ bool CScanTask::process(const bool & /* useInitialValues */)
                           CCopasiParameter::UINT,
                           &mProgress,
                           &totalSteps);
+      if (mpSubtask)
+        mpSubtask->setCallBack(mpCallBack);
     }
 
   //init output handler (plotting)
