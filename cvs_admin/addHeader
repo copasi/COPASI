@@ -1,0 +1,104 @@
+# ASTYLE=/export/home/shoops/projects/copasi_dev/cvs_admin/astyle
+# GAWK=gawk
+# MV=mv
+
+GAWK=/usr/bin/gawk
+MV=/bin/mv
+DATE=`date -u +%Y`
+
+CommentStart=''
+CommentEnd=''
+PrologEnd=0
+
+if [ "`basename $1`" != "`basename $1 .h`" -o \
+     "`basename $1`" != "`basename $1 .c`" -o \
+     "`basename $1`" != "`basename $1 .cpp`" -o \
+     "`basename $1`" != "`basename $1 .hpp`" -o \
+     "`basename $1`" != "`basename $1 .i`" -o \
+     "`basename $1`" != "`basename $1 .java`" ]; then
+  CommentStart='//'
+else 
+  if [ "`basename $1`" != "`basename $1 .py`" -o \
+       "`basename $1`" != "`basename $1 .pro`" -o \
+       "`basename $1`" != "`basename $1 .pri`" ]; then
+    CommentStart=#
+  else 
+    if [ "`basename $1`" != "`basename $1 .xsd`" ]; then
+      CommentStart='<!--'
+      CommentEnd='-->'
+      PrologEnd='>'
+    else 
+      if [ "`basename $1`" != "`basename $1 .ui`" ]; then
+        CommentStart='<comment>'
+        CommentEnd='</comment>'
+        PrologEnd='>'
+      fi
+    fi
+  fi
+fi
+
+if [ x$CommentStart != x"" ]; then
+$GAWK -- '
+BEGIN {
+  CVSHeader = 0
+  Copyright = 0
+  Prolog = "'$PrologEnd'"
+}
+
+{
+  if (Prolog == 0) {      
+  if (CVSHeader == 0) {
+    if ($0 !~ ".*Begin CVS Header.*") {
+      printf "'$CommentStart' Begin CVS Header '$CommentEnd'\n"
+      printf "'$CommentStart'   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/cvs_admin/addHeader,v $ '$CommentEnd'\n"
+      printf "'$CommentStart'   $Revision: 1.1 $ '$CommentEnd'\n"
+      printf "'$CommentStart'   $Name:  $ '$CommentEnd'\n"
+      printf "'$CommentStart'   $Author: shoops $ '$CommentEnd'\n"
+      printf "'$CommentStart'   $Date: 2007/01/11 21:14:12 $ '$CommentEnd'\n"
+      printf "'$CommentStart' End CVS Header '$CommentEnd'\n"
+      printf "\n"
+      printf "'$CommentStart' Copyright (C) '$DATE' by Pedro Mendes, Virginia Tech Intellectual '$CommentEnd'\n"
+      printf "'$CommentStart' Properties, Inc. and EML Research, gGmbH. '$CommentEnd'\n"
+      printf "'$CommentStart' All rights reserved. '$CommentEnd'\n"
+      if ($0 !~ "^$") {
+        printf "\n"
+      }
+      CVSHeader = 2
+      Copyright = 2
+    } else {
+      CVSHeader = 1
+    }
+    printf "%s\n", $0
+  } else if (CVSHeader == 1) {
+    if ($0 ~ ".* End CVS Header.*") {
+      CVSHeader = 2
+    }
+    print $0
+  } else if (Copyright == 0) {
+    if ($0 ~ "Copyright.*by Pedro Mendes") {
+      printf "'$CommentStart' Copyright (C) '$DATE' by Pedro Mendes, Virginia Tech Intellectual '$CommentEnd'\n"
+      Copyright = 2
+    } else if ($0 !~ "^$") {
+      printf "'$CommentStart' Copyright (C) '$DATE' by Pedro Mendes, Virginia Tech Intellectual '$CommentEnd'\n"
+      printf "'$CommentStart' Properties, Inc. and EML Research, gGmbH. '$CommentEnd'\n"
+      printf "'$CommentStart' All rights reserved. '$CommentEnd'\n"
+      printf "\n"
+      Copyright = 2
+    } else {     
+      print $0
+    }
+  } else {
+    print $0
+  }
+  } else {
+    print $0
+  }
+}
+
+$0 ~ Prolog {
+  Prolog = 0
+}
+' $1 > $1.tmp && \
+less $1.tmp
+# $MV -f $1.tmp $1
+fi
