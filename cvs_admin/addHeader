@@ -1,10 +1,12 @@
-# ASTYLE=/export/home/shoops/projects/copasi_dev/cvs_admin/astyle
-# GAWK=gawk
-# MV=mv
+#!/bin/bash
 
-GAWK=/usr/bin/gawk
-MV=/bin/mv
-DATE=`date -u +%Y`
+GAWK=gawk
+MV=mv
+
+# GAWK=/usr/bin/gawk
+# MV=/bin/mv
+
+Date=`date -u +%Y`
 
 CommentStart=''
 CommentEnd=''
@@ -51,13 +53,13 @@ BEGIN {
     if ($0 !~ ".*Begin CVS Header.*") {
       printf "'$CommentStart' Begin CVS Header '$CommentEnd'\n"
       printf "'$CommentStart'   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/cvs_admin/addHeader,v $ '$CommentEnd'\n"
-      printf "'$CommentStart'   $Revision: 1.1 $ '$CommentEnd'\n"
+      printf "'$CommentStart'   $Revision: 1.2 $ '$CommentEnd'\n"
       printf "'$CommentStart'   $Name:  $ '$CommentEnd'\n"
       printf "'$CommentStart'   $Author: shoops $ '$CommentEnd'\n"
-      printf "'$CommentStart'   $Date: 2007/01/11 21:14:12 $ '$CommentEnd'\n"
+      printf "'$CommentStart'   $Date: 2007/01/11 21:50:15 $ '$CommentEnd'\n"
       printf "'$CommentStart' End CVS Header '$CommentEnd'\n"
       printf "\n"
-      printf "'$CommentStart' Copyright (C) '$DATE' by Pedro Mendes, Virginia Tech Intellectual '$CommentEnd'\n"
+      printf "'$CommentStart' Copyright (C) '$Date' by Pedro Mendes, Virginia Tech Intellectual '$CommentEnd'\n"
       printf "'$CommentStart' Properties, Inc. and EML Research, gGmbH. '$CommentEnd'\n"
       printf "'$CommentStart' All rights reserved. '$CommentEnd'\n"
       if ($0 !~ "^$") {
@@ -76,10 +78,10 @@ BEGIN {
     print $0
   } else if (Copyright == 0) {
     if ($0 ~ "Copyright.*by Pedro Mendes") {
-      printf "'$CommentStart' Copyright (C) '$DATE' by Pedro Mendes, Virginia Tech Intellectual '$CommentEnd'\n"
+      printf "'$CommentStart' Copyright (C) '$Date' by Pedro Mendes, Virginia Tech Intellectual '$CommentEnd'\n"
       Copyright = 2
     } else if ($0 !~ "^$") {
-      printf "'$CommentStart' Copyright (C) '$DATE' by Pedro Mendes, Virginia Tech Intellectual '$CommentEnd'\n"
+      printf "'$CommentStart' Copyright (C) '$Date' by Pedro Mendes, Virginia Tech Intellectual '$CommentEnd'\n"
       printf "'$CommentStart' Properties, Inc. and EML Research, gGmbH. '$CommentEnd'\n"
       printf "'$CommentStart' All rights reserved. '$CommentEnd'\n"
       printf "\n"
@@ -99,6 +101,5 @@ $0 ~ Prolog {
   Prolog = 0
 }
 ' $1 > $1.tmp && \
-less $1.tmp
-# $MV -f $1.tmp $1
+$MV -f $1.tmp $1
 fi
