@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.h,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/18 18:33:24 $
+   $Date: 2007/01/11 17:32:39 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -85,6 +85,12 @@ class COptItem: public CCopasiParameterGroup
      * @return const CCopasiObjectName objectCN
      */
     const CCopasiObjectName getObjectCN() const;
+
+    /**
+     * Retrieve the item object. This may only be called after compile
+     * @return const CCopasiObject *
+     */
+    const CCopasiObject * getObject() const;
 
     /**
      * Retrieve the display name of the optimization item.

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.86 $
+   $Revision: 1.87 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/11/15 15:57:16 $
+   $Date: 2007/01/11 17:32:39 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -63,6 +63,7 @@ COptProblem::COptProblem(const CCopasiTask::Type & type,
     mpFunction(NULL),
     mUpdateMethods(),
     mRefreshMethods(),
+    mRefreshConstraints(),
     mCalculateValue(0),
     mSolutionVariables(),
     mOriginalVariables(),
@@ -94,6 +95,7 @@ COptProblem::COptProblem(const COptProblem& src,
     mpFunction(NULL),
     mUpdateMethods(),
     mRefreshMethods(),
+    mRefreshConstraints(),
     mCalculateValue(src.mCalculateValue),
     mSolutionVariables(src.mSolutionVariables),
     mOriginalVariables(src.mOriginalVariables),
@@ -308,8 +310,17 @@ bool COptProblem::initialize()
   it = mpConstraintItems->begin();
   end = mpConstraintItems->end();
 
+  // We need to build a refresh sequence so the constraint values are updated
+  std::set< const CCopasiObject * > Objects;
+
   for (i = 0; it != end; ++it, i++)
-    if (!(*it)->compile(ContainerList)) return false;
+    {
+      if (!(*it)->compile(ContainerList)) return false;
+
+      Objects.insert((*it)->getObject());
+    }
+
+  mRefreshConstraints = CCopasiObject::buildUpdateSequence(Objects, mpModel);
 
   createObjectiveFunction();
 
@@ -386,6 +397,12 @@ bool COptProblem::checkParametricConstraints()
 
 bool COptProblem::checkFunctionalConstraints()
 {
+  // Make sure the constraint values are up to date.
+  std::vector< Refresh *>::const_iterator itRefresh = mRefreshConstraints.begin();
+  std::vector< Refresh *>::const_iterator endRefresh = mRefreshConstraints.end();
+  for (; itRefresh != endRefresh; ++itRefresh)
+    (**itRefresh)();
+
   std::vector< COptItem * >::const_iterator it = mpConstraintItems->begin();
   std::vector< COptItem * >::const_iterator end = mpConstraintItems->end();
 

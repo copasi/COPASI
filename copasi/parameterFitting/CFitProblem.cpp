@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-   $Revision: 1.43 $
+   $Revision: 1.44 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/12/19 20:41:44 $
+   $Date: 2007/01/11 17:32:38 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -523,6 +523,9 @@ bool CFitProblem::calculate()
   std::vector<COptItem *>::iterator itConstraint;
   std::vector<COptItem *>::iterator endConstraint = mpConstraintItems->end();
 
+  std::vector< Refresh *>::const_iterator itRefresh;
+  std::vector< Refresh *>::const_iterator endRefresh = mRefreshConstraints.end();
+
   // Reset the constraints memory
   for (itConstraint = mpConstraintItems->begin(); itConstraint != endConstraint; ++itConstraint)
     static_cast<CFitConstraint *>(*itConstraint)->setLocalValue(0.0);
@@ -561,6 +564,10 @@ bool CFitProblem::calculate()
                     }
 
                   // We check after each simulation whether the constraints are violated.
+                  // Make sure the constraint values are up to date.
+                  for (itRefresh = mRefreshConstraints.begin(); itRefresh != endRefresh; ++itRefresh)
+                    (**itRefresh)();
+
                   ppConstraint = mExperimentConstraints[i];
                   ppConstraintEnd = ppConstraint + mExperimentConstraints.numCols();
                   for (; ppConstraint != ppConstraintEnd; ++ppConstraint)
@@ -599,6 +606,10 @@ bool CFitProblem::calculate()
                 }
 
               // We check after each simulation whether the constraints are violated.
+              // Make sure the constraint values are up to date.
+              for (itRefresh = mRefreshConstraints.begin(); itRefresh != endRefresh; ++itRefresh)
+                (**itRefresh)();
+
               ppConstraintEnd = ppConstraint + mExperimentConstraints.numCols();
               for (; ppConstraint != ppConstraintEnd; ++ppConstraint)
                 if (*ppConstraint) (*ppConstraint)->checkConstraint();
@@ -1485,6 +1496,9 @@ bool CFitProblem::calculateCrossValidation()
   std::vector<COptItem *>::iterator itConstraint;
   std::vector<COptItem *>::iterator endConstraint = mpConstraintItems->end();
 
+  std::vector< Refresh *>::const_iterator itRefresh;
+  std::vector< Refresh *>::const_iterator endRefresh = mRefreshConstraints.end();
+
   // Reset the constraints memory
   for (itConstraint = mpConstraintItems->begin(); itConstraint != endConstraint; ++itConstraint)
     static_cast<CFitConstraint *>(*itConstraint)->setLocalValue(0.0);
@@ -1523,6 +1537,10 @@ bool CFitProblem::calculateCrossValidation()
                     }
 
                   // We check after each simulation whether the constraints are violated.
+                  // Make sure the constraint values are up to date.
+                  for (itRefresh = mRefreshConstraints.begin(); itRefresh != endRefresh; ++itRefresh)
+                    (**itRefresh)();
+
                   ppConstraint = mCrossValidationConstraints[i];
                   ppConstraintEnd = ppConstraint + mCrossValidationConstraints.numCols();
                   for (; ppConstraint != ppConstraintEnd; ++ppConstraint)
@@ -1561,6 +1579,10 @@ bool CFitProblem::calculateCrossValidation()
                 }
 
               // We check after each simulation whether the constraints are violated.
+              // Make sure the constraint values are up to date.
+              for (itRefresh = mRefreshConstraints.begin(); itRefresh != endRefresh; ++itRefresh)
+                (**itRefresh)();
+
               ppConstraintEnd = ppConstraint + mCrossValidationConstraints.numCols();
               for (; ppConstraint != ppConstraintEnd; ++ppConstraint)
                 if (*ppConstraint) (*ppConstraint)->checkConstraint();

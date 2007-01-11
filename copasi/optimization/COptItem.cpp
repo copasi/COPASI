@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.cpp,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/12/08 17:01:16 $
+   $Date: 2007/01/11 17:32:39 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -112,6 +112,9 @@ bool COptItem::setObjectCN(const CCopasiObjectName & objectCN)
   *mpParmObjectCN = objectCN;
   return true;
 }
+
+const CCopasiObject * COptItem::getObject() const
+  {return mpObject;}
 
 const CCopasiObjectName COptItem::getObjectCN() const
   {return *mpParmObjectCN;}

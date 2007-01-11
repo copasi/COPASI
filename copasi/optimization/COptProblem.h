@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.h,v $
-   $Revision: 1.52 $
+   $Revision: 1.53 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/11/16 15:45:13 $
+   $Date: 2007/01/11 17:32:39 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -362,6 +362,12 @@ class COptProblem : public CCopasiProblem
      * of the objective function.
      */
     std::vector< Refresh * > mRefreshMethods;
+
+    /**
+     * A vector of refresh methods which need to be called retreive the values
+     * of constraints.
+     */
+    std::vector< Refresh * > mRefreshConstraints;
 
     /**
      * A vector of results for calculate
