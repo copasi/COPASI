@@ -41,6 +41,7 @@ SWIG_INTERFACE_FILES=../swig/CChemEq.i \
                      ../swig/CModelValue.i \
                      ../swig/CMoiety.i \
                      ../swig/COutputAssistant.i \
+                     ../swig/COutputHandler.i \
                      ../swig/CReaction.i \
                      ../swig/CReport.i \
                      ../swig/CReportDefinition.i \
@@ -53,6 +54,52 @@ SWIG_INTERFACE_FILES=../swig/CChemEq.i \
                      ../swig/CVersion.i \
                      ../swig/copasi.i 
 
+
+UNITTEST_FILES = unittests/Test_CChemEq.py \
+                 unittests/Test_CChemEqElement.py \
+                 unittests/Test_CCompartment.py \
+                 unittests/Test_CCopasiContainer.py \
+                 unittests/Test_CCopasiDataModel.py \
+                 unittests/Test_CCopasiMethod.py \
+                 unittests/Test_CCopasiObject.py \
+                 unittests/Test_CCopasiObjectName.py \
+                 unittests/Test_CCopasiParameter.py \
+                 unittests/Test_CCopasiParameterGroup.py \
+                 unittests/Test_CCopasiProblem.py \
+                 unittests/Test_CCopasiStaticString.py \
+                 unittests/Test_CCopasiTask.py \
+                 unittests/Test_CCopasiVector.py \
+                 unittests/Test_CEvaluationTree.py \
+                 unittests/Test_CFunction.py \
+                 unittests/Test_CFunctionDB.py \
+                 unittests/Test_CFunctionParameter.py \
+                 unittests/Test_CFunctionParameters.py \
+                 unittests/Test_CMatrix.py \
+                 unittests/Test_CMetab.py \
+                 unittests/Test_CModel.py \
+                 unittests/Test_CModelValue.py \
+                 unittests/Test_CMoiety.py \
+                 unittests/Test_COutputAssistant.py \
+                 unittests/Test_CReaction.py \
+                 unittests/Test_CReport.py \
+                 unittests/Test_CReportDefinition.py \
+                 unittests/Test_CReportDefinitionVector.py \
+                 unittests/Test_CState.py \
+                 unittests/Test_CTimeSeries.py \
+                 unittests/Test_CTrajectoryMethod.py \
+                 unittests/Test_CTrajectoryProblem.py \
+                 unittests/Test_CTrajectoryTask.py \
+                 unittests/Test_CVersion.py \
+                 unittests/Test_CreateSimpleModel.py \
+                 unittests/Test_RunSimulations.py \
+                 unittests/runTests.py 
+ 
+
+
+#DISTFILE   = $$SWIG_INTERFACE_FILES
+#DISTFILES += local.cpp
+#DISTFILES += python.i
+#DISTFILES += $$UNITTEST_FILES
 
 isEmpty(SWIG_PATH){
     # check if the wrapper file is there

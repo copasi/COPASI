@@ -10,7 +10,6 @@ COPASI_LIBS += -lCOPASISE
 
 LIBS = $$COPASI_LIBS $$LIBS
 
-
 INCLUDEPATH += ../..
 
 SWIG_INTERFACE_FILES=../swig/CChemEq.i \
@@ -38,6 +37,7 @@ SWIG_INTERFACE_FILES=../swig/CChemEq.i \
                      ../swig/CModelValue.i \
                      ../swig/CMoiety.i \
                      ../swig/COutputAssistant.i \
+                     ../swig/COutputHandler.i \
                      ../swig/CReaction.i \
                      ../swig/CReport.i \
                      ../swig/CReportDefinition.i \
@@ -51,7 +51,17 @@ SWIG_INTERFACE_FILES=../swig/CChemEq.i \
                      ../swig/copasi.i 
 
 
-
+#DISTFILE   = $$SWIG_INTERFACE_FILES
+#DISTFILES += local.cpp
+#DISTFILES += java.i
+#DISTFILES += gui/org/COPASI/gui/TaskWidget.java
+#DISTFILES += gui/org/COPASI/gui/TrajectoryTaskWidget.java
+#DISTFILES += gui/org/COPASI/gui/PositiveIntegerVerifier.java
+#DISTFILES += gui/org/COPASI/gui/IntegerVerifier.java
+#DISTFILES += gui/org/COPASI/gui/PositiveFloatVerifier.java
+#DISTFILES += gui/org/COPASI/gui/FloatVerifier.java
+#DISTFILES += unittests/Test_CreateSimpleModel.java 
+#DISTFILES += unittests/Test_RunSimulations.java
 
 isEmpty(SWIG_PATH){
     # check if the wrapper file is there
