@@ -1,20 +1,19 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSplashWidget.h,v $
-   $Revision: 1.2 $
-   $Name:  $
-   $Author: ssahle $
-   $Date: 2006/12/01 16:09:09 $
-   End CVS Header */
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSplashWidget.h,v $
+//   $Revision: 1.3 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/01/12 18:01:13 $
+// End CVS Header
 
-// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQSplashWidget.ui'
  **
- ** Created: Fr Dez 1 17:03:33 2006
- **      by: The User Interface Compiler ($Id: CQSplashWidget.h,v 1.2 2006/12/01 16:09:09 ssahle Exp $)
+ ** Created: Fri Jan 12 13:00:50 2007
+ **      by: The User Interface Compiler ($Id: CQSplashWidget.h,v 1.3 2007/01/12 18:01:13 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -31,6 +30,7 @@ class QHBoxLayout;
 class QGridLayout;
 class QSpacerItem;
 class QLabel;
+class QPushButton;
 
 class CQSplashWidget : public CopasiWidget
   {
@@ -42,10 +42,13 @@ class CQSplashWidget : public CopasiWidget
 
     QLabel* mpPixmap;
     QLabel* mpLblVersion;
+    QLabel* mpLblLicense;
+    QPushButton* mpBtnLicense;
 
   protected:
     QVBoxLayout* CQSplashWidgetLayout;
     QSpacerItem* mpSpacer;
+    QHBoxLayout* mpLayoutLicense;
 
   protected slots:
     virtual void languageChange();
@@ -54,6 +57,9 @@ class CQSplashWidget : public CopasiWidget
     QPixmap image0;
 
     void init();
+
+  private slots:
+    void slotViewLicense();
   };
 
 #endif // CQSPLASHWIDGET_H
