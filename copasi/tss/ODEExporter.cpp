@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/ODEExporter.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/11/27 15:23:09 $
+   $Author: nsimus $
+   $Date: 2007/01/12 09:48:12 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -203,6 +203,7 @@ bool ODEExporter::exportMetabolites(const CModel* copasiModel)
   for (i = 0; i < metabs_size; i++)
     {
       std::ostringstream expression;
+      std::ostringstream more;
       std::ostringstream comments;
 
       const CMetab * metab;
@@ -235,12 +236,13 @@ bool ODEExporter::exportMetabolites(const CModel* copasiModel)
 
             comments << "dependent ";
           }
-        else expression << value;
+
+        more << value;
 
         comments << "metabolite \'" << CMetabNameInterface::getDisplayName(copasiModel, *metab)
         << "\': " << CModelEntity::StatusName[metab->getStatus()];
 
-        std::string str1 = expression.str();
+        std::string str1 = more.str() + expression.str();
         std::string str2 = comments.str();
 
         if (!exportSingleMetabolite(metab, str1, str2)) return false;
