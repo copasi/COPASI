@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/ODEExporter.cpp,v $
-   $Revision: 1.4 $
-   $Name:  $
-   $Author: nsimus $
-   $Date: 2007/01/12 12:02:36 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/ODEExporter.cpp,v $
+//   $Revision: 1.5 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/01/12 14:39:03 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -238,7 +238,8 @@ bool ODEExporter::exportMetabolites(const CModel* copasiModel)
             comments << "dependent ";
           }
 
-        more << std::setprecision(16) << value;
+        more.precision(16);
+        more << value;
 
         comments << "metabolite \'" << CMetabNameInterface::getDisplayName(copasiModel, *metab)
         << "\': " << CModelEntity::StatusName[metab->getStatus()];
