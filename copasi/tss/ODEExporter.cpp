@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/ODEExporter.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: nsimus $
-   $Date: 2007/01/12 09:48:12 $
+   $Date: 2007/01/12 12:02:36 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,6 +13,7 @@
 #include <locale>
 #include <math.h>
 #include "copasi.h"
+#include <iomanip.h>
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 
@@ -237,7 +238,7 @@ bool ODEExporter::exportMetabolites(const CModel* copasiModel)
             comments << "dependent ";
           }
 
-        more << value;
+        more << std::setprecision(16) << value;
 
         comments << "metabolite \'" << CMetabNameInterface::getDisplayName(copasiModel, *metab)
         << "\': " << CModelEntity::StatusName[metab->getStatus()];
