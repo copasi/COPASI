@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
-   $Revision: 1.37 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2007/01/08 17:05:09 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
+//   $Revision: 1.38 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/01/12 16:44:25 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -78,8 +78,10 @@ int main(int argc, char *argv[])
 #ifdef COPASI_LICENSE_COM
   << "(commercial) "
 #endif // COPASI_LICENSE_COM
-  << Version.getVersion()
-  << std::endl << std::endl;
+  << Version.getVersion() << std::endl
+  << "The use of this software indicates the acceptance of the attached license." << std::endl
+  << "To view the license please use the option: --license" << std::endl
+  << std::endl;
 
   try
     {
