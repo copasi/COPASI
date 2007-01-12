@@ -2081,9 +2081,12 @@ In addition to parameters COPASI knows also about
 constraints. Constraints are applied to the solution. i.e., they are
 evaluated after the simulation which can currently be either a time
 course or a steady state calculation. A possible constraint could be
-that the steady state concentration of a metabolite is bounded. These
-constraints are modified in the GUI in the same way as the parameters
-by selection the <guilabel>Constraints</guilabel> tab.
+that the steady state concentration of a metabolite has to be within a certain range that can b specified
+by the user. The widget for specifying these constraints can be found under the tab called
+ <guilabel>Constraints</guilabel> and the constraints are specified in the same way as the parameters 
+ to be scanned. Each constrained consists of an object that is to be constrained and an upper
+ and lower bound that define the constraint for the object. Just like for the parameters, several constraints
+  can be specified.
 </para>
 
 <para>
