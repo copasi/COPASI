@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ASTYLE=/export/home/shoops/projects/copasi_dev/cvs_admin/astyle
+ASTYLE=/home/shoops/projects/copasi_dev/cvs_admin/astyle
 GAWK=gawk
 MV=mv
 
@@ -18,10 +18,10 @@ BEGIN {
     if ($0 ~ "/\\* Begin CVS Header.*") {
       printf "// Begin CVS Header \n"
       printf "//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/cvs_admin/c++style,v $ \n"
-      printf "//   $Revision: 1.26 $ \n"
+      printf "//   $Revision: 1.27 $ \n"
       printf "//   $Name:  $ \n"
       printf "//   $Author: shoops $ \n"
-      printf "//   $Date: 2007/01/11 21:50:15 $ \n"
+      printf "//   $Date: 2007/01/12 14:09:35 $ \n"
       printf "// End CVS Header \n"
       CVSHeader = 1
     }
