@@ -95,6 +95,10 @@ SOURCE=.\CTauLeapMethod.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CTimeScaleSeparationMethod.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CTimeSeries.cpp
 # End Source File
 # Begin Source File
@@ -152,6 +156,10 @@ SOURCE=.\CStochNextReactionMethod.h
 # Begin Source File
 
 SOURCE=.\CTauLeapMethod.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CTimeScaleSeparationMethod.h
 # End Source File
 # Begin Source File
 
