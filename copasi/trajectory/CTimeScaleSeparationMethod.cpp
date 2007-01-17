@@ -1,9 +1,8 @@
-// Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/Attic/CTimeScaleSeparationMethod.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2007/01/15 12:04:11 $
+//   $Author: shoops $
+//   $Date: 2007/01/17 13:39:06 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1420,7 +1419,7 @@ void CTimeScaleSeparationMethod::map_index(C_FLOAT64 *eval_r, C_INT *index, cons
   C_INT i, j, count;
   C_INT max;
 
-  C_FLOAT64 abs_eval_r[dim];
+  CVector< C_FLOAT64 > abs_eval_r(dim);
 
   for (i = 0; i < dim; i++)
     {
