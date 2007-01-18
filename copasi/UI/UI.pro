@@ -1,5 +1,17 @@
+# Begin CVS Header 
+#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $ 
+#   $Revision: 1.142 $ 
+#   $Name:  $ 
+#   $Author: shoops $ 
+#   $Date: 2007/01/18 20:46:21 $ 
+# End CVS Header 
+
+# Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc. and EML Research, gGmbH. 
+# All rights reserved. 
+
 ######################################################################
-# $Revision: 1.141 $ $Author: ssahle $ $Date: 2007/01/10 17:08:39 $  
+# $Revision: 1.142 $ $Author: shoops $ $Date: 2007/01/18 20:46:21 $  
 ######################################################################
 
 LIB = UI
@@ -152,39 +164,39 @@ SOURCES += \
   SOURCES -= TSSWidget.cpp
 }
 
-# FORMS += TimeSeriesSubwidget.ui
-# FORMS += StateSubwidget.ui
 # FORMS += CMCAResultSubwidget.ui
-# FORMS += SliderSettingsDialog.ui 
-# FORMS += objectdebug.ui
-# FORMS += CUpDownSubwidget.ui
+# FORMS += CQEFMWidget.ui
+# FORMS += CQExperimentData.ui
+# FORMS += CQExperimentSelection.ui
+# FORMS += CQFileDialogBtnGrp.ui
+# FORMS += CQFittingItemWidget.ui
+# FORMS += CQFittingResult.ui
+# FORMS += CQFittingResultTab1.ui
+# FORMS += CQFittingWidget.ui
+# FORMS += CQModelValue.ui
+# FORMS += CQOptimizationWidget.ui
+# FORMS += CQProgressDialog.ui
+# FORMS += CQProgressItem.ui
+# FORMS += CQProgressItemBar.ui
+# FORMS += CQProgressItemText.ui
+# FORMS += CQReportDefinition.ui
+# FORMS += CQSplashWidget.ui
+# FORMS += CQStartValueReset.ui
+# FORMS += CQTaskBtnWidget.ui
+# FORMS += CQTaskHeaderWidget.ui
+# FORMS += CQTextDialog.ui
+# FORMS += CQTrajectoryWidget.ui
 # FORMS += CScanWidgetBreak.ui
 # FORMS += CScanWidgetRandom.ui
 # FORMS += CScanWidgetRepeat.ui
 # FORMS += CScanWidgetScan.ui
 # FORMS += CScanWidgetTask.ui
+# FORMS += CUpDownSubwidget.ui
 # FORMS += DefaultplotDialog.ui
-# FORMS += CQProgressItem.ui
-# FORMS += CQProgressItemBar.ui
-# FORMS += CQProgressItemText.ui
-# FORMS += CQProgressDialog.ui
-# FORMS += CQReportDefinition.ui
-# FORMS += CQTextDialog.ui
-# FORMS += CQExperimentData.ui
-# FORMS += CQExperimentSelection.ui
-# FORMS += CQFileDialogBtnGrp.ui
-# FORMS += CQFittingResultTab1.ui
-# FORMS += CQFittingResult.ui
-# FORMS += CQFittingItemWidget.ui
-# FORMS += CQFittingWidget.ui
-# FORMS += CQOptimizationWidget.ui
-# FORMS += CQSplashWidget.ui
-# FORMS += CQTaskHeaderWidget.ui
-# FORMS += CQTaskBtnWidget.ui
-# FORMS += CQTrajectoryWidget.ui
-# FORMS += CQModelValue.ui
-# FORMS += CQStartValueReset.ui
-# FORMS += CQEFMWidget.ui
+# FORMS += SliderSettingsDialog.ui 
+# FORMS += StateSubwidget.ui
+# FORMS += TimeSeriesSubwidget.ui
+# FORMS += objectdebug.ui
 
 # headers generated from .ui files   
 HEADERS += \
@@ -289,6 +301,7 @@ SOURCES += \
            StateSubwidget.cpp \
            TimeSeriesSubwidget.cpp 
 
+#ifdef COPASI_LICENSE_COM
 contains(USE_LICENSE, COM) {
 # FORMS += CQRegistrationDialog.ui
 
@@ -297,6 +310,7 @@ HEADERS += CQRegistrationDialog.h \
 
 SOURCES += CQRegistrationDialog.cpp
 }
+#endif // COPAS_LICENSE_COM
 
 DISTFILES += UI.dsp \
              icons/Copasi.ico \
