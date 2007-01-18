@@ -1987,10 +1987,11 @@ fi
  touch Makefile.in
  touch configure
 
+ find . -type f -name Makefile -exec rm {} \;
+
  cd copasi && \
  echo executing in `pwd`: && \
  rm -f .qmake.internal.cache */.qmake.internal.cache && \
- rm -f Makefile */Makefile && \
  echo "  qmake $QMAKE_ARG" && \
  $QTDIR/bin/qmake $QMAKE_ARG && \
  cat Makefile | \
@@ -1999,13 +2000,12 @@ fi
  mv $$.tmp Makefile && \
  echo depend:  >> Makefile && \
  echo "	touch Makefile" >> Makefile && \
- rm -f UI/copasiui3window.o CopasiSE/CopasiSE.o CopasiUI/main.o && \
+ rm -f UI/copasiui3window.o UI/CQSplashWidget.o CopasiSE/CopasiSE.o CopasiUI/main.o && \
  cd ..
  cd semantic-test-suite && \
  echo executing in `pwd`: && \
  echo "  rm .qmake.internal.cache */.qmake.internal.cache" && \
  rm -f .qmake.internal.cache */.qmake.internal.cache && \
- rm -f Makefile */Makefile && \
  echo "  qmake $QMAKE_ARG" && \
  $QTDIR/bin/qmake $QMAKE_ARG && \
  cat Makefile | \
@@ -2019,7 +2019,6 @@ fi
  echo executing in `pwd`: && \
  echo "  rm .qmake.internal.cache */.qmake.internal.cache" && \
  rm -f .qmake.internal.cache */.qmake.internal.cache && \
- rm -f Makefile */Makefile && \
  echo "  qmake $QMAKE_ARG" && \
  $QTDIR/bin/qmake $QMAKE_ARG && \
  cat Makefile | \
