@@ -25,37 +25,19 @@ set cps_minus=debug
 
 :QMAKE
 cd copasi
-
-rem set subdirs=.
-rem set subdirs=%subdirs% commandline
-rem set subdirs=%subdirs% elementaryFluxModes
-rem set subdirs=%subdirs% function
-rem set subdirs=%subdirs% mathmodel
-rem set subdirs=%subdirs% model
-rem set subdirs=%subdirs% optimization
-rem set subdirs=%subdirs% output
-rem set subdirs=%subdirs% randomGenerator
-rem set subdirs=%subdirs% report
-rem set subdirs=%subdirs% scan
-rem set subdirs=%subdirs% steadystate
-rem set subdirs=%subdirs% trajectory
-rem set subdirs=%subdirs% utilities
-rem set subdirs=%subdirs% xml
-rem set subdirs=%subdirs% CopasiUI
-rem set subdirs=%subdirs% CopasiSE
-rem set subdirs=%subdirs% test
+del /S Makefile
+del UI\copasiui3window.obj 
+del UI\CQSplashWidget.obj 
+del CopasiUI\main.obj 
+del CopasiSE\CopasiSE.obj
 
 echo executing in copasi:
-rem  echo   for %%d in (%subdirs%) do del %%d\.qmake.internal.cache
-for %%d in (%subdirs%) do del %%d\.qmake.internal.cache
 echo   qmake "CONFIG+=%cps_plus%" "CONFIG-=%cps_minus%" %1 %2 %3 %4 %5 %6 %7 %8 %9
 %QTDIR%\bin\qmake "CONFIG+=%cps_plus%" "CONFIG-=%cps_minus%" %1 %2 %3 %4 %5 %6 %7 %8 %9
 
 nmake qmake_all
 
 rem force relink
-del UI\copasiui3window.obj UI\CQSplashWidget.obj CopasiUI\main.obj CopasiSE\CopasiSE.obj
-
 
 cd ..
 
