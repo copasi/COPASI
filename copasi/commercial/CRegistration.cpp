@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commercial/Attic/CRegistration.cpp,v $
-   $Revision: 1.3 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/12/15 21:25:34 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commercial/Attic/CRegistration.cpp,v $
+//   $Revision: 1.4 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/01/18 20:51:53 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -39,17 +39,12 @@ Registration code format(^ is place holder for check digit) : COPASI-####-####-#
  */
 
 const char config[] =
-  "SUPPLIERID:VTIP%E:1%N:1%H:1%COMBO:en%SDLGTH:13%CONSTLGTH:1%CONSTVAL:T%SEQL:3%"
+  "SUPPLIERID:VTIP%E:1%N:1%H:1%COMBO:en%SDLGTH:13%CONSTLGTH:1%CONSTVAL:F%SEQL:3%"
   "ALTTEXT:Contact support@copasi.org to obtain your registration code.%"
   "SCRMBL:U7,,S0,,U0,,U8,,S2,,U3,,U12,,U1,,U11,,D3,,C0,,U5,,D2,,D0,,S1,,D1,,U4,,U10,,U2,,U6,,U9,,%"
   "ASCDIG:2%MATH:23S,,5A,,R,,37S,,1A,,R,,7A,,13S,,R,,29S,,17S,,R,,8A,,R,,4A,,7S,,R,,R,,3A,,11S,,19S,,%"
   "BASE:52%BASEMAP:dAK0QyEfTD2UkGM3aehxYRi48uz19Wb7qgFJCtXNH65ncrwmpPLj%"
   "REGFRMT:COPASI-####-####-#^####-####-####-####[-#G3Q]";
-
-// email: shoops@vbi.vt.edu
-// name:  Stefan Hoops
-// day:   20061213
-// code:  COPASI-KcTF-kdiU-Ftf4mc-TDfr-XfG3-Qhk7
 
 CRegistration::CRegistration(const std::string & name,
                              const CCopasiContainer * pParent):
