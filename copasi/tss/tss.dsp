@@ -55,15 +55,15 @@ CFG=tss - Win32 Build
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=.\_BM_ODEExporter.cpp
+SOURCE=.\CODEExporterBM.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\_C_ODEExporter.cpp
+SOURCE=.\CODEExporterC.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\_XPPAUT_ODEExporter.cpp
+SOURCE=.\CODEExporterXPPAUT.cpp
 # End Source File
 # Begin Source File
 
@@ -79,7 +79,7 @@ SOURCE=.\CTSSTask.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ODEExporter.cpp
+SOURCE=.\CODEExporter.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -87,15 +87,15 @@ SOURCE=.\ODEExporter.cpp
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
-SOURCE=.\_BM_ODEExporter.h
+SOURCE=.\CODEExporterBM.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\_C_ODEExporter.h
+SOURCE=.\CODEExporterC.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\_XPPAUT_ODEExporter.h
+SOURCE=.\CODEExporterXPPAUT.h
 # End Source File
 # Begin Source File
 
@@ -111,7 +111,7 @@ SOURCE=.\CTSSTask.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\ODEExporter.h
+SOURCE=.\CODEExporter.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

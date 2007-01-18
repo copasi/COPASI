@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.81 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/12/15 16:20:31 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
+//   $Revision: 1.82 $
+//   $Name:  $
+//   $Author: nsimus $
+//   $Date: 2007/01/18 12:11:58 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -229,8 +229,8 @@ const MESSAGES Messages[] =
     {MCLyap + 4, "CLyapMethod (4): Transient time is larger than overall time."},
     {MCLyap + 5, "CLyapMethod (5): Orthonormalization interval is larger than overall time."},
 
-    // ODEExporter
-    {MCODEExporter + 1, "_XPPAUT_ODEExporter (1): Length of exporting line exeeds 1000 characters."},
+    // CODEExporter
+    {MCODEExporter + 1, "CODEExporterXPPAUT (1): Length of exporting line exeeds 1000 characters."},
 
     {MCRegistration + 1, "CRegistration (1): Invalid registration code."},
     {MCRegistration + 2, "CRegistration (2): Email and/or user name do not match registration code."},

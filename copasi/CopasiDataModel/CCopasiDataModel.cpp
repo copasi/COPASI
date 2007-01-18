@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.90 $
-   $Name:  $
-   $Author: ssahle $
-   $Date: 2007/01/09 14:12:42 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
+//   $Revision: 1.91 $
+//   $Name:  $
+//   $Author: nsimus $
+//   $Date: 2007/01/18 12:11:30 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -40,10 +40,10 @@
 # include "ssa/CSSATask.h"
 #endif
 #include "lyap/CLyapTask.h"
-#include "tss/ODEExporter.h"
-#include "tss/_C_ODEExporter.h"
-#include "tss/_BM_ODEExporter.h"
-#include "tss/_XPPAUT_ODEExporter.h"
+#include "tss/CODEExporter.h"
+#include "tss/CODEExporterC.h"
+#include "tss/CODEExporterBM.h"
+#include "tss/CODEExporterXPPAUT.h"
 
 #include "utilities/CCopasiException.h"
 #include "utilities/CCopasiProblem.h"
@@ -668,19 +668,19 @@ bool CCopasiDataModel::exportMathModel(const std::string & fileName, const std::
 
   if (filter == "C Files (*.c)")
     {
-      _C_ODEExporter exporter;
+      CODEExporterC exporter;
 
       return exporter.exportMathModel(mpModel, fileName.c_str(), filter.c_str(), overwriteFile);
     }
   if (filter == "Berkeley Madonna Files (*.mmd)")
     {
-      _BM_ODEExporter exporter;
+      CODEExporterBM exporter;
 
       return exporter.exportMathModel(mpModel, fileName.c_str(), filter.c_str(), overwriteFile);
     }
   if (filter == "XPPAUT (*.ode)")
     {
-      _XPPAUT_ODEExporter exporter;
+      CODEExporterXPPAUT exporter;
 
       return exporter.exportMathModel(mpModel, fileName.c_str(), filter.c_str(), overwriteFile);
     }
