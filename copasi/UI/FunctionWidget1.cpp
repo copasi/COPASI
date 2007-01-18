@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-   $Revision: 1.144 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/11/06 14:29:47 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
+//   $Revision: 1.145 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/01/18 13:03:14 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -83,7 +83,7 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
   if (!name)
     setName("FunctionWidget1");
   setCaption(trUtf8("FunctionWidget1"));
-  FunctionWidget1Layout = new QGridLayout(this, 1, 1, 11, 6, "FunctionWidget1Layout");
+  FunctionWidget1Layout = new QGridLayout(this, 1, 1, 6, 6, "FunctionWidget1Layout");
 
   //******** name *************
 
@@ -106,6 +106,7 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
 
   //the stack
   mStack = new QWidgetStack(this, "Stack");
+  mStack->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 
   textBrowser = new QTextEdit(mStack, "Text Browser");
   textBrowser->setTabChangesFocus(true);
@@ -118,8 +119,10 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
   //  and - if not ReadOnly -
   //   a button to switch to (editable) plain text view.
   mMmlViewBox = new QVBox(mStack, "Formula View");
+  mMmlViewBox->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 
   mScrollView = new QScrollView(mMmlViewBox, "mmlScrollView");
+  mScrollView->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 
   mStack->addWidget(mMmlViewBox, 1);
 
@@ -150,12 +153,12 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
   FunctionWidget1Layout->addWidget(TextLabel3, 3, 0);
 
   ButtonGroup1 = new QHButtonGroup(this, "ButtonGroup1");
-  //ButtonGroup1->setFrameShape(QButtonGroup::NoFrame);
-  //ButtonGroup1->setMinimumHeight(30);
-  //ButtonGroup1->setMaximumHeight(30);
+  ButtonGroup1->setFlat(true);
+  ButtonGroup1->setInsideMargin(0);
+  ButtonGroup1->setLineWidth(0);
   ButtonGroup1->setTitle(trUtf8(""));
-  ButtonGroup1->setExclusive(TRUE);
-  ButtonGroup1->setRadioButtonExclusive(TRUE);
+  ButtonGroup1->setExclusive(true);
+  ButtonGroup1->setRadioButtonExclusive(true);
 
   RadioButton1 = new QRadioButton(ButtonGroup1, "RadioButton1");
   RadioButton1->setText(trUtf8("reversible"));
@@ -170,11 +173,9 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
 
   //***************************************
 
-  Line2 = new QFrame(this, "Line2");
-  Line2->setFrameShape(QFrame::HLine);
-  //Line2->setFrameShadow(QFrame::Sunken);
-  //Line2->setFrameShape(QFrame::HLine);
-  FunctionWidget1Layout->addMultiCellWidget(Line2, 4, 4, 0, 1);
+  // Line2 = new QFrame(this, "Line2");
+  // Line2->setFrameShape(QFrame::HLine);
+  // FunctionWidget1Layout->addMultiCellWidget(Line2, 4, 4, 0, 1);
 
   //******* parameters table ********************************
 
@@ -183,9 +184,6 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
   TextLabel4->setAlignment(int(QLabel::AlignTop
                                | QLabel::AlignRight));
   FunctionWidget1Layout->addWidget(TextLabel4, 5, 0);
-
-  //QSpacerItem* spacer_2 = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
-  //FunctionWidget1Layout->addItem(spacer_2, 6, 0);
 
   Table1 = new QTable(this, "Table1");
   Table1->setNumCols(3);
@@ -198,11 +196,8 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
   Table1->verticalHeader()->hide();
   Table1->setLeftMargin(0);
   Table1->setColumnStretchable(COL_NAME, true);
-  Table1->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
+  Table1->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
   FunctionWidget1Layout->addMultiCellWidget(Table1, 5, 5, 1, 1);
-
-  QSpacerItem* spacer3 = new QSpacerItem(0, 15, QSizePolicy::Minimum, QSizePolicy::Maximum);
-  FunctionWidget1Layout->addItem(spacer3, 6, 1);
 
   //******** applications table *******************************
 
@@ -211,9 +206,6 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
   TextLabel5->setAlignment(int(QLabel::AlignTop
                                | QLabel::AlignRight));
   FunctionWidget1Layout->addWidget(TextLabel5, 7, 0);
-
-  //QSpacerItem* spacer = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
-  //FunctionWidget1Layout->addItem(spacer, 8, 0);
 
   Table2 = new QTable(this, "Table2");
   Table2->setNumCols(2);
@@ -231,7 +223,7 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
   Table2->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Fixed);
   FunctionWidget1Layout->addMultiCellWidget(Table2, 7, 7, 1, 1);
 
-  QSpacerItem* spacer2 = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
+  QSpacerItem* spacer2 = new QSpacerItem(0, 0, QSizePolicy::Preferred, QSizePolicy::Expanding);
   FunctionWidget1Layout->addItem(spacer2, 10, 1);
 
   //***************************************
@@ -414,6 +406,7 @@ bool FunctionWidget1::loadParameterTable()
                       FROM_UTF8(units[j])));
     }
   Table1->adjustColumn(COL_UNIT);
+
   return true;
 }
 
@@ -1305,6 +1298,8 @@ void FunctionWidget1::updateMmlWidget()
   mMmlWidget->setContent(FROM_UTF8(mml.str()));
 
   mScrollView->resizeContents(mMmlWidget->sizeHint().width(), mMmlWidget->sizeHint().height());
+  mScrollView->setMinimumHeight(mMmlWidget->sizeHint().height() + 30);
+
 #endif // HAVE_MML
 }
 
