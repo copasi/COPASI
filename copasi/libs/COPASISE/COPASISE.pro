@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/libs/COPASISE/COPASISE.pro,v $ 
-#   $Revision: 1.15 $ 
+#   $Revision: 1.15.2.1 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2007/01/17 13:41:53 $ 
+#   $Date: 2007/01/19 18:34:59 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -20,13 +20,12 @@ SRC_TARGET = COPASISE
 
 include(../../common.pri)
 
-#ifdef COPASI_LICENSE_COM
 COPASI_LIBS += commandline
+#ifdef COPASI_LICENSE_COM
 contains(USE_LICENSE, COM) {
   COPASI_LIBS += commercial
 }
 #endif // COPASI_LICENSE_COM
-
 COPASI_LIBS += copasiDM
 COPASI_LIBS += copasiXML
 COPASI_LIBS += elementaryFluxModes
