@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.cpp,v $
-   $Revision: 1.44 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/11/13 14:50:36 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.cpp,v $
+//   $Revision: 1.44.2.1 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/01/19 21:18:58 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -241,6 +241,8 @@ void CLsodaMethod::initializeAtol()
   mAtol.resize(mData.dim);
   C_FLOAT64 * pAtol = mAtol.array();
   C_FLOAT64 * pEnd = pAtol + mAtol.size();
+  C_FLOAT64 InitialValue;
+  C_FLOAT64 Limit;
 
   CModelEntity **ppEntity = mpModel->getStateTemplate().beginIndependent();
   CMetab * pMetab;
@@ -249,12 +251,20 @@ void CLsodaMethod::initializeAtol()
     {
       *pAtol = *pTolerance;
 
-      // Rescale for metabolites as we are using particle numbers
+      InitialValue = fabs((*ppEntity)->getInitialValue());
+
       if ((pMetab = dynamic_cast< CMetab * >(*ppEntity)) != NULL)
         {
-          *pAtol *=
-            pMetab->getCompartment()->getValue() * mpModel->getQuantity2NumberFactor();
+          Limit =
+            fabs(pMetab->getCompartment()->getInitialValue()) * mpModel->getQuantity2NumberFactor();
+
+          if (InitialValue != 0.0)
+            *pAtol *= std::min(Limit, InitialValue);
+          else
+            *pAtol *= std::max(1.0, Limit);
         }
+      else if (InitialValue != 0.0)
+        *pAtol *= std::min(1.0, InitialValue);
     }
 }
 
