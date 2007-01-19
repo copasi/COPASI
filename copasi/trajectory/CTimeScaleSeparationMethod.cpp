@@ -1,8 +1,19 @@
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/Attic/CTimeScaleSeparationMethod.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.2.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/01/17 13:39:06 $
+//   $Date: 2007/01/19 16:21:01 $
+// End CVS Header
+
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
+
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/Attic/CTimeScaleSeparationMethod.cpp,v $
+//   $Revision: 1.2.2.1 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/01/19 16:21:01 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -481,7 +492,6 @@ void CTimeScaleSeparationMethod::schur()
 
   char V = 'V';
   char N = 'N';
-  L_fp select;
   C_INT dim = mData.dim;
   C_INT SDIM = 0;
 
@@ -505,12 +515,12 @@ void CTimeScaleSeparationMethod::schur()
   CVector< C_FLOAT64 > work;
   work.resize(3*dim);
 
-  CVector< logical > Bwork;
+  CVector< C_INT > Bwork;
   Bwork.resize(dim);
 
   C_INT info;
 
-  dgees_(&V, &N, select, &dim, R.array(), &dim, &SDIM, eval_r.array(), eval_i.array(), Q.array(), &dim, work.array(), &lwork, Bwork.array(), &info);
+  dgees_(&V, &N, NULL, &dim, R.array(), &dim, &SDIM, eval_r.array(), eval_i.array(), Q.array(), &dim, work.array(), &lwork, Bwork.array(), &info);
 
   if (info)
     {
