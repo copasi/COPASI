@@ -1,5 +1,17 @@
+# Begin CVS Header 
+#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
+#   $Revision: 1.56 $ 
+#   $Name:  $ 
+#   $Author: ssahle $ 
+#   $Date: 2007/01/19 12:49:18 $ 
+# End CVS Header 
+
+# Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc. and EML Research, gGmbH. 
+# All rights reserved. 
+
 ######################################################################
-# $Revision: 1.55 $ $Author: shoops $ $Date: 2007/01/09 14:22:47 $  
+# $Revision: 1.56 $ $Author: ssahle $ $Date: 2007/01/19 12:49:18 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -253,6 +265,7 @@ contains(BUILD_OS, Linux) {
   !isEmpty(SBML_PATH){
     LIBS+=  -L$${SBML_PATH}/lib
     INCLUDEPATH += $${SBML_PATH}/include
+    INCLUDEPATH += $${SBML_PATH}/include/sbml
   }
   LIBS += -lsbml
 
