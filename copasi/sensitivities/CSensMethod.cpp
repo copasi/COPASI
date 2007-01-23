@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensMethod.cpp,v $
-   $Revision: 1.17 $
-   $Name:  $
-   $Author: ssahle $
-   $Date: 2007/01/11 15:02:27 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensMethod.cpp,v $
+//   $Revision: 1.17.2.1 $
+//   $Name:  $
+//   $Author: ssahle $
+//   $Date: 2007/01/23 15:14:27 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -119,10 +119,15 @@ bool CSensMethod::do_target_calculation(CCopasiArray & result, bool first)
 
   //progress bar
   ++mProgress;
-  bool tmp = mpProgressBar->progress(mProgressHandler);
-  if (!tmp)
-    std::cout << "STOP!" << std::endl;
-  return tmp;
+  if (mpProgressBar)
+    {
+      bool tmp = mpProgressBar->progress(mProgressHandler);
+      //if (!tmp)
+      //  std::cout << "STOP!" << std::endl;
+      return tmp;
+    }
+
+  return true;
 }
 
 C_FLOAT64 CSensMethod::do_variation(CCopasiObject* variable)
@@ -401,8 +406,7 @@ void CSensMethod::do_collapsing()
         }
     }
   else
-  {}
-}
+    {}}
 
 //****************************************************************************
 
