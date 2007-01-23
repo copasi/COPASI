@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExperimentData.ui.h,v $
-   $Revision: 1.26 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/12/07 16:09:36 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExperimentData.ui.h,v $
+//   $Revision: 1.26.2.1 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/01/23 20:55:06 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -471,14 +471,14 @@ void CQExperimentData::slotFileAdd()
         return;
       }
 
-  std::string baseName = CDirEntry::baseName((const char *) File.utf8());
+  std::string FileName = CDirEntry::fileName((const char *) File.utf8());
 
   i = 0;
-  while (mFileMap.find(baseName) != mFileMap.end())
-    baseName = StringPrint("%s_%d", CDirEntry::baseName((const char *) File.utf8()).c_str(), i++);
+  while (mFileMap.find(FileName) != mFileMap.end())
+    FileName = StringPrint("%s_%d", CDirEntry::fileName((const char *) File.utf8()).c_str(), i++);
 
-  mFileMap[baseName] = (const char *) File.utf8();
-  mpBoxFile->insertItem(FROM_UTF8(baseName));
+  mFileMap[FileName] = (const char *) File.utf8();
+  mpBoxFile->insertItem(FROM_UTF8(FileName));
 
   mpBoxFile->setSelected(mpBoxFile->count() - 1, true);
 
@@ -676,19 +676,19 @@ bool CQExperimentData::load(CExperimentSet * pExperimentSet)
   std::vector< std::string >::const_iterator it = FileNames.begin();
   std::vector< std::string >::const_iterator end = FileNames.end();
 
-  std::string baseName;
+  std::string FileName;
   i = 0;
 
   mFileMap.clear();
   for (; it != end; ++it)
     {
-      baseName = CDirEntry::baseName(*it);
+      FileName = CDirEntry::fileName(*it);
 
-      while (mFileMap.find(baseName) != mFileMap.end())
-        baseName = StringPrint("%s_%d", CDirEntry::baseName(*it).c_str(), i++);
+      while (mFileMap.find(FileName) != mFileMap.end())
+        FileName = StringPrint("%s_%d", CDirEntry::fileName(*it).c_str(), i++);
 
-      mFileMap[baseName] = *it;
-      mpBoxFile->insertItem(FROM_UTF8(baseName));
+      mFileMap[FileName] = *it;
+      mpBoxFile->insertItem(FROM_UTF8(FileName));
     }
 
   if (mpBoxFile->count())
