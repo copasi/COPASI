@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-   $Revision: 1.78 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/25 15:04:50 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
+//   $Revision: 1.78.2.1 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/01/24 13:57:10 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -254,6 +254,7 @@ CNewtonMethod::processInternal()
 
           if (isSteadyState(targetFunction(mdxdt)))
             {
+              if (mpProgressHandler) mpProgressHandler->finish(hProcess);
               return returnProcess(true, mFactor, mResolution);
             }
 
@@ -317,6 +318,7 @@ CNewtonMethod::processInternal()
           calculateDerivativesX();
           if (isSteadyState(targetFunction(mdxdt)))
             {
+              if (mpProgressHandler) mpProgressHandler->finish(hProcess);
               return returnProcess(true, mFactor, mResolution);
             }
 
@@ -339,7 +341,7 @@ CNewtonMethod::processInternal()
       if (mpProgressHandler) mpProgressHandler->finish(hProcess);
     }
 
-  if (mpProgressHandler) mpProgressHandler->finish();
+  //if (mpProgressHandler) mpProgressHandler->finish();
 
   return returnProcess(false, mFactor, mResolution);
 }
