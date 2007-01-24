@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.cpp,v $
-   $Revision: 1.20 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2007/01/11 17:32:39 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.cpp,v $
+//   $Revision: 1.20.2.1 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/01/24 16:39:35 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -400,7 +400,7 @@ bool COptItem::compile(const std::vector< CCopasiContainer * > listOfContainer)
     }
 
   if (isnan(*mpParmStartValue))
-    *mpParmStartValue = *COptItem::getObjectValue();
+    *mpParmStartValue = *mpObjectValue;
 
   return true;
 }
@@ -450,7 +450,7 @@ bool COptItem::lessOrEqual(const C_FLOAT64 & val1, const C_FLOAT64 & val2)
 {return (val1 <= val2);}
 
 const C_FLOAT64 * COptItem::getObjectValue() const
-  {return mpObjectValue;}
+  {return mpParmStartValue;}
 
 std::ostream &operator<<(std::ostream &os, const COptItem & o)
 {
