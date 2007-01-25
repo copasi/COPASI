@@ -1,8 +1,19 @@
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-//   $Revision: 1.78.2.2 $
+//   $Revision: 1.78.2.3 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/01/25 13:58:17 $
+//   $Date: 2007/01/25 14:02:33 $
+// End CVS Header
+
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
+
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
+//   $Revision: 1.78.2.3 $
+//   $Name:  $
+//   $Author: ssahle $
+//   $Date: 2007/01/25 14:02:33 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -255,7 +266,7 @@ CNewtonMethod::processInternal()
           if (isSteadyState(targetFunction(mdxdt)))
             {
               if (mpProgressHandler) mpProgressHandler->finish(hProcess);
-              return returnProcess(true, mFactor, mResolution);
+              return returnProcess(true);
             }
 
           if (mUseNewton)
@@ -319,7 +330,7 @@ CNewtonMethod::processInternal()
           if (isSteadyState(targetFunction(mdxdt)))
             {
               if (mpProgressHandler) mpProgressHandler->finish(hProcess);
-              return returnProcess(true, mFactor, mResolution);
+              return returnProcess(true);
             }
 
           //try Newton
