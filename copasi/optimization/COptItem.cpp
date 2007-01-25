@@ -1,19 +1,9 @@
+// Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.cpp,v $
-//   $Revision: 1.20.2.3 $
+//   $Revision: 1.20.2.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/01/25 17:07:57 $
-// End CVS Header
-
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
-
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.cpp,v $
-//   $Revision: 1.20.2.3 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/01/25 17:07:57 $
+//   $Date: 2007/01/25 17:44:29 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
