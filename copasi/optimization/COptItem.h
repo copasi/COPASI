@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.h,v $
-   $Revision: 1.19 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2007/01/11 17:32:39 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.h,v $
+//   $Revision: 1.19.2.1 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/01/25 16:00:54 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -26,23 +26,6 @@ class CRandom;
 class COptItem: public CCopasiParameterGroup
   {
     //Operations
-  protected:
-    /**
-     * Checks whether val1 < val2
-     * @param const C_FLOAT64 & val1
-     * @param const C_FLOAT64 & val2
-     * @return bool fulfills
-     */
-    static bool less(const C_FLOAT64 & val1, const C_FLOAT64 & val2);
-
-    /**
-     * Checks whether val1 <= val2
-     * @param const C_FLOAT64 & val1
-     * @param const C_FLOAT64 & val2
-     * @return bool fulfills
-     */
-    static bool lessOrEqual(const C_FLOAT64 & val1, const C_FLOAT64 & val2);
-
   public:
     /**
      * Default constructor

@@ -1,9 +1,8 @@
-// Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.cpp,v $
-//   $Revision: 1.20.2.1 $
+//   $Revision: 1.20.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/01/24 16:39:35 $
+//   $Date: 2007/01/25 16:00:54 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -442,12 +441,6 @@ bool COptItem::checkLowerBound(const C_FLOAT64 & value) const
 
 bool COptItem::checkUpperBound(const C_FLOAT64 & value) const
   {return value <= *mpUpperBound;}
-
-bool COptItem::less(const C_FLOAT64 & val1, const C_FLOAT64 & val2)
-{return (val1 < val2);}
-
-bool COptItem::lessOrEqual(const C_FLOAT64 & val1, const C_FLOAT64 & val2)
-{return (val1 <= val2);}
 
 const C_FLOAT64 * COptItem::getObjectValue() const
   {return mpParmStartValue;}
