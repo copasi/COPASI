@@ -1,8 +1,9 @@
+// Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.h,v $
-//   $Revision: 1.19.2.2 $
+//   $Revision: 1.19.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/01/25 17:07:57 $
+//   $Date: 2007/01/25 17:51:26 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual

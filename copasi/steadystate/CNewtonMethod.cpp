@@ -1,19 +1,9 @@
+// Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-//   $Revision: 1.78.2.3 $
+//   $Revision: 1.78.2.4 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/01/25 14:02:33 $
-// End CVS Header
-
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
-
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-//   $Revision: 1.78.2.3 $
-//   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/01/25 14:02:33 $
+//   $Author: shoops $
+//   $Date: 2007/01/25 17:51:26 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
