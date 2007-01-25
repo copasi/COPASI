@@ -14,13 +14,14 @@ BEGIN {
     if ($0 ~ "/\\* Begin CVS Header.*") {
       printf "// Begin CVS Header \n"
       printf "//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/cvs_admin/c++style,v $ \n"
-      printf "//   $Revision: 1.28.2.1 $ \n"
+      printf "//   $Revision: 1.28.2.2 $ \n"
       printf "//   $Name:  $ \n"
       printf "//   $Author: shoops $ \n"
-      printf "//   $Date: 2007/01/19 20:14:49 $ \n"
+      printf "//   $Date: 2007/01/25 17:38:14 $ \n"
       printf "// End CVS Header \n"
       CVSHeader = 1
     } else if ($0 ~ "// Begin CVS Header.*") {
+      print $0
       CVSHeader = 2
     }
   } else if (CVSHeader == 1) {
