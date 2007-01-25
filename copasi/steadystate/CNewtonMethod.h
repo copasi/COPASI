@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.h,v $
-   $Revision: 1.25 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/05/04 19:20:15 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.h,v $
+//   $Revision: 1.25.8.1 $
+//   $Name:  $
+//   $Author: ssahle $
+//   $Date: 2007/01/25 13:58:17 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -49,9 +49,9 @@ class CNewtonMethod : public CSteadyStateMethod
     bool mAcceptNegative;
     C_INT32 mIterationLimit;
 
-    C_FLOAT64 mFactor;
-    C_FLOAT64 mResolution;
-    C_FLOAT64 mScaledResolution;
+    //C_FLOAT64 mFactor;
+    //C_FLOAT64 mSSResolution;
+    //C_FLOAT64 mScaledResolution;
     C_INT mDimension;
     //C_FLOAT64 mMaxrate;
     C_FLOAT64 * mX;
@@ -152,7 +152,7 @@ class CNewtonMethod : public CSteadyStateMethod
     CNewtonMethod::NewtonReturnCode processNewton();
 
     void calculateDerivativesX();
-    void calculateJacobianX(const C_FLOAT64 & oldMaxRate);
+    //void calculateJacobianX(const C_FLOAT64 & oldMaxRate);
 
     bool allPositive();
     bool containsNaN() const;

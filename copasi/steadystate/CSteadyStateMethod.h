@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateMethod.h,v $
-   $Revision: 1.19 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:31:49 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateMethod.h,v $
+//   $Revision: 1.19.8.1 $
+//   $Name:  $
+//   $Author: ssahle $
+//   $Date: 2007/01/25 13:58:17 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -79,17 +79,32 @@ class CSteadyStateMethod : public CCopasiMethod
     /**
      * A pointer to a CEigen object
      */
-    CEigen * mpEigenValues;
+    //CEigen * mpEigenValues;
 
     /**
      * A pointer to a CEigen object
      */
-    CEigen * mpEigenValuesX;
+    //CEigen * mpEigenValuesX;
 
     /**
      * A pointer to the progress bar handler
      */
     CProcessReport * mpProgressHandler;
+
+    /**
+     * The concentration rate that is considered zero
+     */
+    C_FLOAT64* mpSSResolution;
+
+    /**
+     * The factor for numerical derivation
+     */
+    C_FLOAT64* mpDerivationFactor;
+
+    /**
+     * The resolution of the variable of numerical derivation
+     */
+    C_FLOAT64* mpDerivationResolution;
 
     // Operations
   private:
@@ -106,6 +121,11 @@ class CSteadyStateMethod : public CCopasiMethod
      */
     CSteadyStateMethod(CCopasiMethod::SubType subType,
                        const CCopasiContainer * pParent = NULL);
+
+    /**
+     * initialize parameters and handle parameters of old copasi files
+     */
+    void initializeParameter();
 
   public:
     /**
@@ -129,12 +149,7 @@ class CSteadyStateMethod : public CCopasiMethod
      */
     ~CSteadyStateMethod();
 
-    /**
-     *  Set a pointer to the problem.
-     *  This method is used by CSteadyState
-     *  @param "CSteadyStateProblem *" problem
-     */
-    //void setProblem(CSteadyStateProblem * problem);
+    bool elevateChildren();
 
     /**
      * This instructs the method to calculate a the steady state
@@ -151,8 +166,8 @@ class CSteadyStateMethod : public CCopasiMethod
     CSteadyStateMethod::ReturnCode process(CState * pState,
                                            CMatrix< C_FLOAT64 > & jacobian,
                                            CMatrix< C_FLOAT64 > & jacobianX,
-                                           CEigen & EigenValues,
-                                           CEigen & EigenValuesX,
+                                           //CEigen & EigenValues,
+                                           //CEigen & EigenValuesX,
                                            CProcessReport * handler);
 
     /**
@@ -167,6 +182,19 @@ class CSteadyStateMethod : public CCopasiMethod
      * @return bool success
      */
     virtual bool initialize(const CSteadyStateProblem * pProblem);
+
+    /**
+     * calls the CModel methods to calculate the jacobians (at the steady state).
+     * This trivial method is implemented in the method
+     * because it may need to know about some method parameters
+     */
+    void doJacobian(CMatrix< C_FLOAT64 > & jacobian,
+                    CMatrix< C_FLOAT64 > & jacobianX);
+
+    /**
+     * returns the resolution for stability analysis
+     */
+    C_FLOAT64 getStabilityResolution();
 
   protected:
 
@@ -188,9 +216,7 @@ class CSteadyStateMethod : public CCopasiMethod
      * @return CSteadyStateMethod::ReturnCode returnCode
      */
     virtual CSteadyStateMethod::ReturnCode
-    returnProcess(bool steadyStateFound,
-                  const C_FLOAT64 & factor,
-                  const C_FLOAT64 & resolution);
+    returnProcess(bool steadyStateFound);
 
     /**
      * Check whether the steady state is chemical equilibrium
@@ -200,6 +226,8 @@ class CSteadyStateMethod : public CCopasiMethod
     bool isEquilibrium(const C_FLOAT64 & resolution) const;
 
     bool hasNegativeConcentrations(const C_FLOAT64 & resolution) const;
+
+    void calculateJacobianX(const C_FLOAT64 & oldMaxRate);
   };
 
 #include "CNewtonMethod.h"

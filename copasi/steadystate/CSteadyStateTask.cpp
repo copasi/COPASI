@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-   $Revision: 1.63 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/11/03 19:49:49 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
+//   $Revision: 1.63.2.1 $
+//   $Name:  $
+//   $Author: ssahle $
+//   $Date: 2007/01/25 13:58:17 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -165,14 +165,39 @@ bool CSteadyStateTask::process(const bool & useInitialValues)
     dynamic_cast<CSteadyStateMethod *>(mpMethod);
   assert(pMethod);
 
+  CSteadyStateProblem* pProblem =
+    dynamic_cast<CSteadyStateProblem *>(mpProblem);
+  assert(pMethod);
+
   output(COutputInterface::BEFORE);
 
+  //call the method
   mResult = pMethod->process(mpSteadyState,
                              mJacobian,
                              mJacobianX,
-                             mEigenValues,
-                             mEigenValuesX,
+                             //mEigenValues,
+                             //mEigenValuesX,
                              mpCallBack);
+
+  //update jacobian
+  if (pProblem->isJacobianRequested() ||
+      pProblem->isStabilityAnalysisRequested())
+    {
+      pMethod->doJacobian(mJacobian, mJacobianX);
+    }
+
+  //mpProblem->getModel()->setState(mpSteadyState);
+  //mpProblem->getModel()->updateRates();
+
+  //calculate eigenvalues
+  if (pProblem->isStabilityAnalysisRequested())
+    {
+      mEigenValues.calcEigenValues(mJacobian);
+      mEigenValuesX.calcEigenValues(mJacobianX);
+
+      mEigenValues.stabilityAnalysis(pMethod->getStabilityResolution());
+      mEigenValuesX.stabilityAnalysis(pMethod->getStabilityResolution());
+    }
 
   // Reset the time.
   mpSteadyState->setTime(InitialTime);

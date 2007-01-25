@@ -1,9 +1,8 @@
-// Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-//   $Revision: 1.78.2.1 $
+//   $Revision: 1.78.2.2 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/01/24 13:57:10 $
+//   $Author: ssahle $
+//   $Date: 2007/01/25 13:58:17 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -60,8 +59,8 @@ void CNewtonMethod::initializeParameter()
   assertParameter("Use Back Integration", CCopasiParameter::BOOL, true);
   assertParameter("Accept Negative Concentrations", CCopasiParameter::BOOL, false);
   assertParameter("Iteration Limit", CCopasiParameter::UINT, (unsigned C_INT32) 50);
-  assertParameter("Derivation Factor", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-003);
-  assertParameter("Resolution", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-009);
+  //assertParameter("Derivation Factor", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-003);
+  //assertParameter("Resolution", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-009);
 
   // Check whether we have a method with the old parameter names
   if ((pParm = getParameter("Newton.UseNewton")) != NULL)
@@ -93,17 +92,17 @@ void CNewtonMethod::initializeParameter()
           removeParameter("Newton.IterationLimit");
         }
 
-      if ((pParm = getParameter("Newton.DerivationFactor")) != NULL)
-        {
-          setValue("Derivation Factor", *pParm->getValue().pUDOUBLE);
-          removeParameter("Newton.DerivationFactor");
-        }
-
-      if ((pParm = getParameter("Newton.Resolution")) != NULL)
-        {
-          setValue("Resolution", *pParm->getValue().pUDOUBLE);
-          removeParameter("Newton.Resolution");
-        }
+      //       if ((pParm = getParameter("Newton.DerivationFactor")) != NULL)
+      //         {
+      //           setValue("Derivation Factor", *pParm->getValue().pUDOUBLE);
+      //           removeParameter("Newton.DerivationFactor");
+      //}
+      //
+      //       if ((pParm = getParameter("Newton.Resolution")) != NULL)
+      //         {
+      //           setValue("Resolution", *pParm->getValue().pUDOUBLE);
+      //           removeParameter("Newton.Resolution");
+      //}
 
       removeParameter("Newton.LSODA.RelativeTolerance");
       removeParameter("Newton.LSODA.AbsoluteTolerance");
@@ -115,6 +114,7 @@ void CNewtonMethod::initializeParameter()
 
 bool CNewtonMethod::elevateChildren()
 {
+  CSteadyStateMethod::initializeParameter();
   initializeParameter();
   return true;
 }
@@ -194,7 +194,7 @@ CNewtonMethod::processInternal()
       // mpParentTask->separate(COutputInterface::DURING);
 
       if (returnCode == CNewtonMethod::found)
-        return returnProcess(true, mFactor, mResolution);
+        return returnProcess(true);
     }
 
   bool stepLimitReached = false;
@@ -264,7 +264,7 @@ CNewtonMethod::processInternal()
               // mpParentTask->separate(COutputInterface::DURING);
 
               if (returnCode == CNewtonMethod::found)
-              {return returnProcess(true, mFactor, mResolution);}
+              {return returnProcess(true);}
             }
 
           if (stepLimitReached)
@@ -330,7 +330,7 @@ CNewtonMethod::processInternal()
               // mpParentTask->separate(COutputInterface::DURING);
 
               if (returnCode == CNewtonMethod::found)
-              {return returnProcess(true, mFactor, mResolution);}
+              {return returnProcess(true);}
             }
           if (stepLimitReached)
             {
@@ -343,7 +343,7 @@ CNewtonMethod::processInternal()
 
   //if (mpProgressHandler) mpProgressHandler->finish();
 
-  return returnProcess(false, mFactor, mResolution);
+  return returnProcess(false);
 }
 
 CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
@@ -354,8 +354,8 @@ CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
 
   calculateDerivativesX();
   oldMaxRate = targetFunction(mdxdt);
-  if (isSteadyState(oldMaxRate))
-    return returnNewton(CNewtonMethod::found);
+  //  if (isSteadyState(oldMaxRate))
+  //    return returnNewton(CNewtonMethod::found);
 
   //std::cout << "Before: " << oldMaxRate << std::endl;
 
@@ -375,7 +375,7 @@ CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
                                           & k,
                                           & mIterationLimit);
 
-  for (k = 0; k < mIterationLimit && oldMaxRate > mScaledResolution; k++)
+  for (k = 0; k < mIterationLimit && oldMaxRate > *mpSSResolution; k++)
     {
       if (mpProgressHandler && !mpProgressHandler->progress(hProcess)) break;
 
@@ -551,7 +551,7 @@ CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
 
           if (isSteadyState(oldMaxRate) && (mAcceptNegative || allPositive()))
             ReturnCode = CNewtonMethod::found;
-          else if (oldMaxRate < mScaledResolution)
+          else if (oldMaxRate < *mpSSResolution)
             ReturnCode = CNewtonMethod::notFound;
           else
             ReturnCode = CNewtonMethod::dampingLimitExceeded;
@@ -568,7 +568,7 @@ CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
 
   if (isSteadyState(oldMaxRate))
     ReturnCode = CNewtonMethod::found;
-  else if (oldMaxRate < mScaledResolution)
+  else if (oldMaxRate < *mpSSResolution)
     ReturnCode = CNewtonMethod::notFound;
   else
     ReturnCode = CNewtonMethod::iterationLimitExceeded;
@@ -587,21 +587,21 @@ void CNewtonMethod::calculateDerivativesX()
   // DebugFile << mdxdt << std::endl;
 }
 
-void CNewtonMethod::calculateJacobianX(const C_FLOAT64 & oldMaxRate)
-{
-  mpModel->setState(*mpSteadyState);
-  mpModel->applyAssignments();
-  mpModel->calculateJacobianX(*mpJacobianX,
-                              std::min(mFactor, oldMaxRate),
-                              mResolution);
-}
+// void CNewtonMethod::calculateJacobianX(const C_FLOAT64 & oldMaxRate)
+// {
+//   mpModel->setState(*mpSteadyState);
+//   mpModel->applyAssignments();
+//   mpModel->calculateJacobianX(*mpJacobianX,
+//                               std::min(mFactor, oldMaxRate),
+//                               mResolution);
+//}
 
 bool CNewtonMethod::allPositive()
 {
   // We need to check that all metabolites have positive particle numbers
   // with respect to the given resolution.
   C_FLOAT64 ParticleResolution =
-    - mResolution * mpModel->getQuantity2NumberFactor();
+    - *mpDerivationResolution * mpModel->getQuantity2NumberFactor();
 
   const C_FLOAT64 * pEnd = mpSteadyState->endIndependent();
   const C_FLOAT64 * pIt = pEnd - mpModel->getNumIndependentMetabs() - mpModel->getNumODEMetabs();
@@ -664,7 +664,7 @@ CNewtonMethod::returnNewton(const CNewtonMethod::NewtonReturnCode & returnCode)
 
 bool CNewtonMethod::isSteadyState(C_FLOAT64 value)
 {
-  if (value > mScaledResolution)
+  if (value > *mpSSResolution)
     return false;
 
   if (containsNaN())
@@ -756,10 +756,10 @@ bool CNewtonMethod::initialize(const CSteadyStateProblem * pProblem)
     mAcceptNegative = true;
 
   mIterationLimit = * getValue("Iteration Limit").pUINT;
-  mFactor = * getValue("Derivation Factor").pUDOUBLE;
-  mResolution = * getValue("Resolution").pUDOUBLE;
-  mScaledResolution =
-    mResolution; // * initialState.getModel()->getQuantity2NumberFactor();
+  //mFactor = * getValue("Derivation Factor").pUDOUBLE;
+  //mSSResolution = * getValue("Steady State Resolution").pUDOUBLE;
+  //mScaledResolution =
+  //  mSSResolution; // * initialState.getModel()->getQuantity2NumberFactor();
   // :TODO: discuss scaling
 
   // convert CState to CStateX
