@@ -1,8 +1,19 @@
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.cpp,v $
-//   $Revision: 1.20.2.2 $
+//   $Revision: 1.20.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/01/25 16:00:54 $
+//   $Date: 2007/01/25 17:07:57 $
+// End CVS Header
+
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
+
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.cpp,v $
+//   $Revision: 1.20.2.3 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/01/25 17:07:57 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -231,20 +242,26 @@ const C_FLOAT64 & COptItem::getStartValue() const
     return *mpObjectValue;
   }
 
-void COptItem::randomizeStartValue()
+C_FLOAT64 COptItem::getRandomValue(CRandom * pRandom)
 {
+  C_FLOAT64 RandomValue;
+
   if (mpLowerBound == NULL ||
       mpUpperBound == NULL) compile();
 
   if (mpLowerBound == NULL ||
       mpUpperBound == NULL)
     {
-      *mpParmStartValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
-      return;
+      RandomValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+      return RandomValue;
     }
 
-  if (mpRandom == NULL)
-    mpRandom = CRandom::createGenerator();
+  if (pRandom == NULL)
+    {
+      if (mpRandom == NULL)
+        mpRandom = CRandom::createGenerator();
+      pRandom = mpRandom;
+    }
 
   C_FLOAT64 mn = *mpLowerBound;
   C_FLOAT64 mx = *mpUpperBound;
@@ -261,25 +278,25 @@ void COptItem::randomizeStartValue()
           la = log10(mx) - log10(std::max(mn, DBL_MIN));
 
           if (la < 1.8 || !(mn > 0.0)) // linear
-            *mpParmStartValue = mn + mpRandom->getRandomCC() * (mx - mn);
+            RandomValue = mn + pRandom->getRandomCC() * (mx - mn);
           else
-            *mpParmStartValue = pow(10, log10(std::max(mn, DBL_MIN)) + la * mpRandom->getRandomCC());
+            RandomValue = pow(10, log10(std::max(mn, DBL_MIN)) + la * pRandom->getRandomCC());
         }
       else if (mx > 0) // 0 is in the interval (mn, mx)
         {
           la = log10(mx) + log10(-mn);
 
           if (la < 3.6) // linear
-            *mpParmStartValue = mn + mpRandom->getRandomCC() * (mx - mn);
+            RandomValue = mn + pRandom->getRandomCC() * (mx - mn);
           else
             {
               C_FLOAT64 mean = (mx + mn) * 0.5;
               C_FLOAT64 sigma = mean * 0.01;
               do
                 {
-                  *mpParmStartValue = mpRandom->getRandomNormal(mean, sigma);
+                  RandomValue = pRandom->getRandomNormal(mean, sigma);
                 }
-              while ((*mpParmStartValue < mn) || (*mpParmStartValue > mx));
+              while ((RandomValue < mn) || (RandomValue > mx));
             }
         }
       else // the interval (mn, mx] is in (-inf, 0]
@@ -292,18 +309,18 @@ void COptItem::randomizeStartValue()
           la = log10(mx) - log10(std::max(mn, DBL_MIN));
 
           if (la < 1.8 || !(mn > 0.0)) // linear
-            *mpParmStartValue = - (mn + mpRandom->getRandomCC() * (mx - mn));
+            RandomValue = - (mn + pRandom->getRandomCC() * (mx - mn));
           else
-            *mpParmStartValue = - pow(10, log10(std::max(mn, DBL_MIN)) + la * mpRandom->getRandomCC());
+            RandomValue = - pow(10, log10(std::max(mn, DBL_MIN)) + la * pRandom->getRandomCC());
         }
     }
 
   catch (...)
     {
-      *mpParmStartValue = (mx + mn) * 0.5;
+      RandomValue = (mx + mn) * 0.5;
     }
 
-  return;
+  return RandomValue;
 }
 
 UpdateMethod * COptItem::getUpdateMethod() const

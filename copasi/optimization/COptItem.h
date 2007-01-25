@@ -1,9 +1,8 @@
-// Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.h,v $
-//   $Revision: 1.19.2.1 $
+//   $Revision: 1.19.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/01/25 16:00:54 $
+//   $Date: 2007/01/25 17:07:57 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -205,9 +204,13 @@ class COptItem: public CCopasiParameterGroup
     const C_FLOAT64 & getStartValue() const;
 
     /**
-     * Randomize the start value;
+     * Retrieve a random value in the interval (lower bound, upper bound).
+     * Optionally one may provide a random number generator to be used
+     * to create the random value.
+     * @param CRandom * pRandom (default: NULL)
+     * @return C_FLOAT64 randomValue
      */
-    void randomizeStartValue();
+    C_FLOAT64 getRandomValue(CRandom * pRandom = NULL);
 
     /**
      * Output stream operator
