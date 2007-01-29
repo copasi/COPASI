@@ -1,8 +1,20 @@
+// Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/Attic/CTimeScaleSeparationMethod.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/01/17 13:39:06 $
+//   $Author: nsimus $
+//   $Date: 2007/01/29 09:46:17 $
+// End CVS Header
+
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
+
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/Attic/CTimeScaleSeparationMethod.cpp,v $
+//   $Revision: 1.3 $
+//   $Name:  $
+//   $Author: nsimus $
+//   $Date: 2007/01/29 09:46:17 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -224,6 +236,12 @@ void CTimeScaleSeparationMethod::step(const double & deltaT)
   mpModel->applyAssignments();
   mpModel->calculateJacobianX(mJacobian, 1e-6, 1e-12);
 
+  std::cout << "*****************************" << std::endl;
+  std::cout << "Next step t=: " << mTime << std::endl;
+  /**
+   Schur  Decomposition of Jacobian (reordered).  Output:  mQ - transformation matrix
+   mR - block upper triangular matrix (with ordered eigenvalues)
+  */
   schur();
 
   /* If complex eigenvalues */
@@ -240,24 +258,36 @@ void CTimeScaleSeparationMethod::step(const double & deltaT)
 
   while (slow > 0)
     {
+
+      /**
+      Solution of Sylvester equation for given slow, mQ,mR
+      Output: mTd, mTdinverse and mQz (mQz is used later for newton iterations)
+      */
       sylvester (slow);
 
       /* Check real parts of eigenvalues of Jacobian */
 
       for (i = slow ; i < dim; i++)
-        if (mR(i, i) >= 0)
+        if (mR(i - 1, i - 1) >= 0)
           {
             failed = 1;
             goto integration;
           }
 
       if (fast > 0)
-        mEPS = 1 / abs(mR(slow, slow));
+        mEPS = 1 / abs(mR(slow , slow));
 
       C_INT info;
 
       mCfast.resize(fast);
 
+      /**
+        Deuflhard Iteration:  Prove Deuflhard criteria, find consistent
+      initial value for DAE
+        output:  info - if Deuflhard is satisfied for this slow;
+        transformation matrices
+        mTd and mTdinverse
+      */
       deuflhard(slow, info);
 
       /* If the Deuflhard criterion is not satisfied, return to smaller fast */
@@ -265,7 +295,7 @@ void CTimeScaleSeparationMethod::step(const double & deltaT)
       if (info)
         {
           fast = fast - 1;
-          if (mR(slow - 1, slow - 1) == mR(slow, slow))
+          if (mR(slow - 1, slow - 1) == mR(slow - 2 , slow - 2))
             fast = fast - 1;
           slow = dim - fast;
           std::cout << "deuflhard not work" << std::endl;
@@ -276,10 +306,22 @@ void CTimeScaleSeparationMethod::step(const double & deltaT)
       fast = fast + 1;
 
       if (fast < dim)
-        if (mR(dim - fast - 1, dim - fast - 1) == mR(dim - fast, dim - fast))
+        if (mR(dim - fast - 1, dim - fast - 1) == mR(dim - fast - 2 , dim - fast - 2))
           fast = fast + 1;
 
       slow = dim - fast;
+
+      //test to be removed
+
+      mat_anal_mod(slow);
+
+      std::cout << " Analysis of Td" << std::endl;
+      for (i = 0 ; i < dim; i++)
+        std::cout << mpModel->getMetabolitesX()[i]->getObjectName() << "      mVslow " << mVslow[i] << std::endl;
+
+      std::cout << std::endl;
+
+      // end of test
     }
 
 integration:
@@ -290,14 +332,17 @@ integration:
 
   std::cout << std::endl;
   for (i = 0 ; i < dim; i++)
-    std::cout << "mVslow " << mVslow[i] << std::endl;
+    std::cout << mpModel->getMetabolitesX()[i]->getObjectName() << "      mVslow " << mVslow[i] << std::endl;
   mSlow = slow;
+
+  std::cout << std::endl;
 
   integrationStep(deltaT);
 
   return;
 }
 
+/** MAT_ANAL_MOD:  mathematical analysis of matrices mTdInverse for post-analysis  */
 void CTimeScaleSeparationMethod::mat_anal_mod(C_INT & slow)
 {
   C_FLOAT64 denom, length;
@@ -315,11 +360,11 @@ void CTimeScaleSeparationMethod::mat_anal_mod(C_INT & slow)
       length = 0;
       for (i = 0; i < dim; i++)
         {
-          length = length + mTd(i, j) * mTd(i, j);
+          length = length + mTdInverse(i, j) * mTdInverse(i, j);
         }
       length = sqrt(length);
       for (i = 0; i < dim; i++)
-        Matrix_anal (i, j) = mTd(i, j) / length;
+        Matrix_anal (i, j) = mTdInverse(i, j) / length;
     }
 
   if (slow > 0)
@@ -347,6 +392,11 @@ void CTimeScaleSeparationMethod::mat_anal_mod(C_INT & slow)
       mVslow[i] = 0;
   return;
 }
+
+/** SCHUR:  Schur  Decomposition of Jacobian (reordered).
+ Output:  mQ - transformation matrix
+ mR - block upper triangular matrix (with ordered eigenvalues)
+ */
 
 void CTimeScaleSeparationMethod::schur()
 {
@@ -481,7 +531,7 @@ void CTimeScaleSeparationMethod::schur()
 
   char V = 'V';
   char N = 'N';
-  L_fp select;
+
   C_INT dim = mData.dim;
   C_INT SDIM = 0;
 
@@ -501,20 +551,20 @@ void CTimeScaleSeparationMethod::schur()
   CVector<C_FLOAT64> Q;
   Q.resize(dim*dim);
 
-  C_INT lwork = 3 * dim;
+  C_INT lwork = 10 * dim;
   CVector< C_FLOAT64 > work;
-  work.resize(3*dim);
+  work.resize(10*dim);
 
-  CVector< logical > Bwork;
+  CVector< C_INT > Bwork;
   Bwork.resize(dim);
 
   C_INT info;
 
-  dgees_(&V, &N, select, &dim, R.array(), &dim, &SDIM, eval_r.array(), eval_i.array(), Q.array(), &dim, work.array(), &lwork, Bwork.array(), &info);
+  dgees_(&V, &N, NULL, &dim, R.array(), &dim, &SDIM, eval_r.array(), eval_i.array(), Q.array(), &dim, work.array(), &lwork, Bwork.array(), &info);
 
   if (info)
     {
-      /* TODO */
+      std::cout << "Problems with schur decomposition " << std::endl;
 
       return;
     }
@@ -745,6 +795,11 @@ void CTimeScaleSeparationMethod::schur()
 
   return;
 }
+/**
+SYLVESTER:
+Solution of Sylvester equation for given slow, mQ,mR
+Output: mTd, mTdinverse,  mQz (is used later for newton iterations)
+ */
 
 void CTimeScaleSeparationMethod::sylvester(C_INT slow)
 {
@@ -759,7 +814,7 @@ void CTimeScaleSeparationMethod::sylvester(C_INT slow)
 
   C_INT i, j, k;
 
-  C_FLOAT64 scale;
+  C_FLOAT64 scale = -1;
 
   CVector<C_FLOAT64> st_slow;
   st_slow.resize(slow*slow);
@@ -787,7 +842,7 @@ void CTimeScaleSeparationMethod::sylvester(C_INT slow)
 
   for (j = 0; j < fast; j++)
     for (i = 0; i < slow; i++)
-      st_coup[i + slow*j] = - S_coup(i, j);
+      st_coup[i + slow*j] = S_coup(i, j);
 
   /*     int dtrsyl_(char *trana, char *tranb, integer *isgn, integer
    *     *m, integer *n, doublereal *a, integer *lda, doublereal *b, integer *
@@ -878,6 +933,11 @@ void CTimeScaleSeparationMethod::sylvester(C_INT slow)
   dtrsyl_(&N1, &N2, &isgn, &slow, &fast, st_slow.array(), &slow, st_fast.array(), &fast, st_coup.array(), &slow, &scale, &info);
 
   /*  if (info) TODO*/
+  if (info)
+    {
+      std::cout << "Problems with the solution of sylvester equation" << std::endl;
+      return;
+    }
 
   CMatrix<C_FLOAT64> Cmat;
   Cmat.resize(dim, dim);
@@ -993,6 +1053,11 @@ void CTimeScaleSeparationMethod::evalsort(C_FLOAT64 *reval, const C_INT & dim)
   return;
 }
 
+/**
+  Deuflhard Iteration:  Prove Deuflhard criteria, find consistent initial value for DAE
+  output:  info - if Deuflhard is satisfied for given slow; transformation matrices
+  mTd and mTdinverse
+ */
 void CTimeScaleSeparationMethod::deuflhard(C_INT & slow, C_INT & info)
 {
 
@@ -1067,13 +1132,17 @@ void CTimeScaleSeparationMethod::deuflhard(C_INT & slow, C_INT & info)
       std::cout << "g_full: " << g_full[i] << std::endl;
     }
 
-  std::cout << "mTdInverse: " << mTdInverse << std::endl;
+  // std::cout << "mTdInverse: " << mTdInverse << std::endl;
 
   for (j = 0; j < slow; j++)
     g_slow[j] = g_full[j];
 
   info = 0;
 
+  /**
+  NEWTON: Looking for consistent initial value for DAE system
+  Output:  mCfast, info
+  */
   newton(c_slow.array(), slow, info);
 
   if (info)
@@ -1151,6 +1220,8 @@ void CTimeScaleSeparationMethod::deuflhard(C_INT & slow, C_INT & info)
   std::cout << "max1: " << max << std::endl;
   std::cout << "mEPS: " << mEPS << std::endl;
   std::cout << "mDtol: " << mDtol << std::endl;
+  std::cout << "***Next ILDM iterations " << std::endl;
+  std::cout << std::endl;
 
   if (max >= mDtol)
     info = 1;
@@ -1159,6 +1230,11 @@ void CTimeScaleSeparationMethod::deuflhard(C_INT & slow, C_INT & info)
 
   return;
 }
+
+/**
+NEWTON: Looking for consistent initial value for DAE system
+Output:  mCfast, info
+ */
 
 void CTimeScaleSeparationMethod::newton(C_FLOAT64 *ys, C_INT & slow, C_INT & info)
 {
@@ -1414,6 +1490,10 @@ void CTimeScaleSeparationMethod::calculateDerivativesX(C_FLOAT64 * X1, C_FLOAT64
   return;
 }
 
+/**
+MAP_INDEX used for sorting of SchurDecompostion
+ */
+
 void CTimeScaleSeparationMethod::map_index(C_FLOAT64 *eval_r, C_INT *index, const C_INT & dim)
 {
   C_INT i, j, count;
@@ -1451,7 +1531,9 @@ void CTimeScaleSeparationMethod::map_index(C_FLOAT64 *eval_r, C_INT *index, cons
 
   return;
 }
-
+/**
+UPDATE_NID: used for sorting of SchurDecompostion
+ */
 void CTimeScaleSeparationMethod::update_nid(C_INT *index, C_INT *nid, const C_INT & dim)
 {
   C_INT k;
@@ -1464,6 +1546,9 @@ void CTimeScaleSeparationMethod::update_nid(C_INT *index, C_INT *nid, const C_IN
   return;
 }
 
+/**
+UPDATE_PID: used for sorting of SchurDecompostion
+ */
 void CTimeScaleSeparationMethod::update_pid(C_INT *index, C_INT *pid, const C_INT & dim)
 {
   C_INT k;
