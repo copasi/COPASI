@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.h,v $
-//   $Revision: 1.25.8.1 $
+//   $Revision: 1.25.8.2 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/01/25 13:58:17 $
+//   $Date: 2007/01/30 23:28:29 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,19 +34,21 @@ class CNewtonMethod : public CSteadyStateMethod
 
     // Attributes
   private:
-    enum NewtonReturnCode
+    enum NewtonResultCode
     {
       found = 0,
       notFound,
       iterationLimitExceeded,
       dampingLimitExceeded,
-      singularJacobian
+      singularJacobian,
+      stepSuccesful
     };
 
     bool mUseNewton;
     bool mUseIntegration;
     bool mUseBackIntegration;
     bool mAcceptNegative;
+    bool mForceNewton;
     C_INT32 mIterationLimit;
 
     //C_FLOAT64 mFactor;
@@ -54,7 +56,7 @@ class CNewtonMethod : public CSteadyStateMethod
     //C_FLOAT64 mScaledResolution;
     C_INT mDimension;
     //C_FLOAT64 mMaxrate;
-    C_FLOAT64 * mX;
+    C_FLOAT64 * mpX;
     CVector< C_FLOAT64 > mH;
     CVector< C_FLOAT64 > mXold;
     CVector< C_FLOAT64 > mdxdt;
@@ -149,7 +151,18 @@ class CNewtonMethod : public CSteadyStateMethod
      * @param const CState * initialState
      * @return CNewtonMethod::NewtonReturnCode newtonReturnCode
      */
-    CNewtonMethod::NewtonReturnCode processNewton();
+    CNewtonMethod::NewtonResultCode processNewton();
+
+    /**
+     * Do one newton step and subsequent damping. The value of the targetfunction
+     * before the step is provided by the calling method in currentValue, the value after the step
+     * is returned in currentValue.
+     * The step starts from the state in mpX (pointing to the independent variables of mpSteadyState).
+     * After the method returns mpX contains either the old state or the state after the step
+     * (if the step was succesful). mdxdt can be expected to be up to date.
+     * Possible return values are:  dampingLimitExceeded, singularJacobian, stepSuccesful
+     */
+    CNewtonMethod::NewtonResultCode doNewtonStep(C_FLOAT64 & currentValue);
 
     void calculateDerivativesX();
     //void calculateJacobianX(const C_FLOAT64 & oldMaxRate);
@@ -157,8 +170,8 @@ class CNewtonMethod : public CSteadyStateMethod
     bool allPositive();
     bool containsNaN() const;
 
-    CNewtonMethod::NewtonReturnCode
-    returnNewton(const CNewtonMethod::NewtonReturnCode & returnCode);
+    //CNewtonMethod::NewtonResultCode
+    //returnNewton(const CNewtonMethod::NewtonResultCode & returnCode);
 
     void cleanup();
   };

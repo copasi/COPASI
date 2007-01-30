@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-//   $Revision: 1.78.2.4 $
+//   $Revision: 1.78.2.5 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/01/25 17:51:26 $
+//   $Author: ssahle $
+//   $Date: 2007/01/30 23:28:29 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,12 +25,13 @@
 #include "model/CCompartment.h"
 #include "trajectory/CTrajectoryTask.h"
 #include "trajectory/CTrajectoryProblem.h"
-#include "trajectory/CTrajectoryMethod.h"
+//#include "trajectory/CTrajectoryMethod.h"
 #include "utilities/CCopasiException.h"
 #include "utilities/utility.h"
 #include "utilities/CProcessReport.h"
 
 #include "clapackwrap.h"        //use CLAPACK
+
 CNewtonMethod::CNewtonMethod(const CCopasiContainer * pParent):
     CSteadyStateMethod(CCopasiMethod::Newton, pParent),
     mIpiv(NULL),
@@ -60,8 +61,7 @@ void CNewtonMethod::initializeParameter()
   assertParameter("Use Back Integration", CCopasiParameter::BOOL, true);
   assertParameter("Accept Negative Concentrations", CCopasiParameter::BOOL, false);
   assertParameter("Iteration Limit", CCopasiParameter::UINT, (unsigned C_INT32) 50);
-  //assertParameter("Derivation Factor", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-003);
-  //assertParameter("Resolution", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-009);
+  assertParameter("Force additional Newton step", CCopasiParameter::BOOL, true);
 
   // Check whether we have a method with the old parameter names
   if ((pParm = getParameter("Newton.UseNewton")) != NULL)
@@ -92,18 +92,6 @@ void CNewtonMethod::initializeParameter()
           setValue("Iteration Limit", *pParm->getValue().pUINT);
           removeParameter("Newton.IterationLimit");
         }
-
-      //       if ((pParm = getParameter("Newton.DerivationFactor")) != NULL)
-      //         {
-      //           setValue("Derivation Factor", *pParm->getValue().pUDOUBLE);
-      //           removeParameter("Newton.DerivationFactor");
-      //}
-      //
-      //       if ((pParm = getParameter("Newton.Resolution")) != NULL)
-      //         {
-      //           setValue("Resolution", *pParm->getValue().pUDOUBLE);
-      //           removeParameter("Newton.Resolution");
-      //}
 
       removeParameter("Newton.LSODA.RelativeTolerance");
       removeParameter("Newton.LSODA.AbsoluteTolerance");
@@ -175,24 +163,26 @@ void CNewtonMethod::load(CReadConfig & configBuffer,
       setValue("Iteration Limit", Int);
 
       configBuffer.getVariable("SSResoltion", "C_FLOAT64", &Dbl); //typo is necessary!!
-      setValue("Resolution", Dbl);
+      setValue("Steady State Resolution", Dbl);
+      setValue("Derivation Resolution", Dbl);
+      setValue("Stability Resolution", Dbl);
     }
 }
 
-CSteadyStateMethod::ReturnCode
-CNewtonMethod::processInternal()
+//**********************************************************************************
+
+CSteadyStateMethod::ReturnCode CNewtonMethod::processInternal()
 {
   if (mpProgressHandler)
     mpProgressHandler->setName("performing steady state calculation...");
 
   mpSteadyState->setUpdateDependentRequired(true);
-  mX = mpSteadyState->beginIndependent();
+  mpX = mpSteadyState->beginIndependent();
 
-  CNewtonMethod::NewtonReturnCode returnCode;
+  NewtonResultCode returnCode;
   if (mUseNewton)
     {
       returnCode = processNewton();
-      // mpParentTask->separate(COutputInterface::DURING);
 
       if (returnCode == CNewtonMethod::found)
         return returnProcess(true);
@@ -347,235 +337,259 @@ CNewtonMethod::processInternal()
   return returnProcess(false);
 }
 
-CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
+//**************************************************************
+
+CNewtonMethod::NewtonResultCode CNewtonMethod::doNewtonStep(C_FLOAT64 & currentValue)
 {
-  CNewtonMethod::NewtonReturnCode ReturnCode = CNewtonMethod::notFound;
-  C_INT32 i, k;
-  C_FLOAT64 oldMaxRate, newMaxRate;
-
-  calculateDerivativesX();
-  oldMaxRate = targetFunction(mdxdt);
-  //  if (isSteadyState(oldMaxRate))
-  //    return returnNewton(CNewtonMethod::found);
-
-  //std::cout << "Before: " << oldMaxRate << std::endl;
-
-  // Start the iterations
   C_INT info = 0;
   char T = 'T'; /* difference between fortran's and c's matrix storrage */
   C_INT one = 1;
 
-  //std::cout << "processNewton called" << std::endl;
+  memcpy(mXold.array(), mpX, mDimension * sizeof(C_FLOAT64));
 
-  unsigned C_INT32 hProcess;
+  // DebugFile << "Iteration: " << k << std::endl;
+
+  calculateJacobianX(currentValue);
+
+  // DebugFile << "Jacobian: " << *mpJacobianX << std::endl;
+
+  /* We use dgetrf_ and dgetrs_ to solve
+      mJacobian * b = mH for b (the result is in mdxdt) */
+
+  /* int dgetrf_(integer *m,
+    *             integer *n,
+    *             doublereal *a,
+    *             integer * lda,
+    *             integer *ipiv,
+    *             integer *info)
+    *
+    *  Purpose
+    *  =======
+    *
+    *  DGETRF computes an LU factorization of a general M-by-N matrix A
+    *  using partial pivoting with row interchanges.
+    *
+    *  The factorization has the form
+    *     A = P * L * U
+    *  where P is a permutation matrix, L is lower triangular with unit
+    *  diagonal elements (lower trapezoidal if m > n), and U is upper
+    *  triangular (upper trapezoidal if m < n).
+    *
+    *  This is the right-looking Level 3 BLAS version of the algorithm.
+    *
+    *  Arguments
+    *  =========
+    *
+    *  m       (input) INTEGER
+    *          The number of rows of the matrix A.  m >= 0.
+    *
+    *  n       (input) INTEGER
+    *          The number of columns of the matrix A.  n >= 0.
+    *
+    *  a       (input/output) DOUBLE PRECISION array, dimension (lda,n)
+    *          On entry, the m by n matrix to be factored.
+    *          On exit, the factors L and U from the factorization
+    *          A = P*L*U; the unit diagonal elements of L are not stored.
+    *
+    *  lda     (input) INTEGER
+    *          The leading dimension of the array A.  lda >= max(1,m).
+    *
+    *  ipiv    (output) INTEGER array, dimension (min(m,n))
+    *          The pivot indices; for 1 <= i <= min(m,n), row i of the
+    *          matrix was interchanged with row ipiv(i).
+    *
+    *  info    (output) INTEGER
+    *          = 0: successful exit
+    *          < 0: if info = -k, the k-th argument had an illegal value
+    *          > 0: if info = k, U(k,k) is exactly zero. The factorization
+    *               has been completed, but the factor U is exactly
+    *               singular, and division by zero will occur if it is used
+    *               to solve a system of equations.
+    */
+  dgetrf_(&mDimension, &mDimension, mpJacobianX->array(),
+          &mDimension, mIpiv, &info);
+
+  //std::cout << "Jacobian: " << mJacobianX << std::endl;
+
+  if (info)
+    {
+      if (info > 0)
+        {
+          //if (mpProgressHandler) mpProgressHandler->finish(hProcess);
+          return CNewtonMethod::singularJacobian;
+        }
+      fatalError();
+    }
+
+  /* int dgetrs_(char *trans,
+    *             integer *n,
+    *             integer *nrhs,
+    *             doublereal *a,
+    *             integer *lda,
+    *             integer *ipiv,
+    *             doublereal *b,
+    *             integer * ldb,
+    *             integer *info)
+    *  Arguments
+    *  =========
+    *
+    *  trans   (input) CHARACTER*1
+    *          Specifies the form of the system of equations:
+    *          = 'N':  a * x = b  (No transpose)
+    *          = 'T':  a'* x = b  (Transpose)
+    *          = 'C':  a'* x = b  (Conjugate transpose = Transpose)
+    *
+    *  n       (input) INTEGER
+    *          The order of the matrix a.  n >= 0.
+    *
+    *  nrhs    (input) INTEGER
+    *          The number of right hand sides, i.e., the number of columns
+    *          of the matrix b.  nrhs >= 0.
+    *
+    *  a       (input) DOUBLE PRECISION array, dimension (lda,n)
+    *          The factors L and U from the factorization a = P*L*U
+    *          as computed by DGETRF.
+    *
+    *  lda     (input) INTEGER
+    *          The leading dimension of the array a.  lda >= max(1,n).
+    *
+    *  ipiv    (input) INTEGER array, dimension (n)
+    *          The pivot indices from DGETRF; for 1<=i<=n, row i of the
+    *          matrix was interchanged with row ipiv(i).
+    *
+    *  b       (input/output) DOUBLE PRECISION array, dimension (ldb,nrhs)
+    *          On entry, the right hand side matrix b.
+    *          On exit, the solution matrix x.
+    *
+    *  ldb     (input) INTEGER
+    *          The leading dimension of the array b.  ldb >= max(1,n).
+    *
+    *  info    (output) INTEGER
+    *          = 0:  successful exit
+    *          < 0:  if info = -i, the i-th argument had an illegal value
+    */
+  //std::cout << "b: " << mdxdt << std::endl;
+  dgetrs_(&T, &mDimension, &one, mpJacobianX->array(),
+          &mDimension, mIpiv, mdxdt.array(), &mDimension, &info);
+  //std::cout << "a: " << mdxdt << std::endl << std::endl;
+
+  if (info)
+    fatalError();
+
+  C_FLOAT64 newValue = currentValue * 1.001;
+
+  // copy values of increment to h
+  mH = mdxdt;
+
+  //repeat till the new max rate is smaller than the old and all concentrations are positive.
+  //max 32 times
+  unsigned C_INT32 i;
+  for (i = 0; (i < 32) && !((newValue < currentValue) && (mAcceptNegative || allPositive())); i++)
+    {
+      C_FLOAT64 * pXit = mpX;
+      C_FLOAT64 * pXoldIt = mXold.array();
+      C_FLOAT64 * pHit = mH.array();
+      C_FLOAT64 * pEnd = pHit + mDimension;
+
+      for (; pHit != pEnd; ++pHit, ++pXit, ++pXoldIt)
+        {
+          *pXit = *pXoldIt - *pHit;
+          (*pHit) *= 0.5;
+        }
+
+      calculateDerivativesX();
+      newValue = targetFunction(mdxdt);
+
+      // mpParentTask->output(COutputInterface::DURING);
+      //std::cout << "k: " << k << " i: " << i << " target: " << newMaxRate << std::endl;
+    }
+
+  //      std::cout << k << "th Newton Step. i = " << i << " maxRate = " << newMaxRate << std::endl;
+
+  if (i == 32)
+    {
+      //std::cout << "a newton step did not improve the target function" << std::endl;
+
+      //discard the step
+      memcpy(mpX, mXold.array(), mDimension * sizeof(C_FLOAT64));
+
+      calculateDerivativesX();
+      currentValue = targetFunction(mdxdt);
+
+      return CNewtonMethod::dampingLimitExceeded;
+
+      //       if (isSteadyState(oldMaxRate) && (mAcceptNegative || allPositive()))
+      //         ReturnCode = CNewtonMethod::found;
+      //       else if (oldMaxRate < *mpSSResolution)
+      //         ReturnCode = CNewtonMethod::notFound;
+      //       else
+      //         ReturnCode = CNewtonMethod::dampingLimitExceeded;
+
+      //if (mpProgressHandler) mpProgressHandler->finish(hProcess);
+    }
+
+  currentValue = newValue; //return the new target value
+  return CNewtonMethod::stepSuccesful;
+}
+
+//************************************************************
+
+CNewtonMethod::NewtonResultCode CNewtonMethod::processNewton()
+{
+  NewtonResultCode result = CNewtonMethod::notFound;
+  C_INT32 k;
+
   k = 0;
-
+  //start progress bar
+  unsigned C_INT32 hProcess;
   if (mpProgressHandler)
     hProcess = mpProgressHandler->addItem("newton method...",
                                           CCopasiParameter::UINT,
                                           & k,
                                           & mIterationLimit);
 
-  for (k = 0; k < mIterationLimit && oldMaxRate > *mpSSResolution; k++)
+  C_FLOAT64 targetValue;
+
+  calculateDerivativesX();
+  targetValue = targetFunction(mdxdt);
+
+  if (!isSteadyState(targetValue))
     {
-      if (mpProgressHandler && !mpProgressHandler->progress(hProcess)) break;
 
-      memcpy(mXold.array(), mX, mDimension * sizeof(C_FLOAT64));
-
-      // DebugFile << "Iteration: " << k << std::endl;
-
-      calculateJacobianX(oldMaxRate);
-
-      // DebugFile << "Jacobian: " << *mpJacobianX << std::endl;
-
-      /* We use dgetrf_ and dgetrs_ to solve
-         mJacobian * b = mH for b (the result is in mdxdt) */
-
-      /* int dgetrf_(integer *m,
-       *             integer *n,
-       *             doublereal *a,
-       *             integer * lda,
-       *             integer *ipiv,
-       *             integer *info)
-       *
-       *  Purpose
-       *  =======
-       *
-       *  DGETRF computes an LU factorization of a general M-by-N matrix A
-       *  using partial pivoting with row interchanges.
-       *
-       *  The factorization has the form
-       *     A = P * L * U
-       *  where P is a permutation matrix, L is lower triangular with unit
-       *  diagonal elements (lower trapezoidal if m > n), and U is upper
-       *  triangular (upper trapezoidal if m < n).
-       *
-       *  This is the right-looking Level 3 BLAS version of the algorithm.
-       *
-       *  Arguments
-       *  =========
-       *
-       *  m       (input) INTEGER
-       *          The number of rows of the matrix A.  m >= 0.
-       *
-       *  n       (input) INTEGER
-       *          The number of columns of the matrix A.  n >= 0.
-       *
-       *  a       (input/output) DOUBLE PRECISION array, dimension (lda,n)
-       *          On entry, the m by n matrix to be factored.
-       *          On exit, the factors L and U from the factorization
-       *          A = P*L*U; the unit diagonal elements of L are not stored.
-       *
-       *  lda     (input) INTEGER
-       *          The leading dimension of the array A.  lda >= max(1,m).
-       *
-       *  ipiv    (output) INTEGER array, dimension (min(m,n))
-       *          The pivot indices; for 1 <= i <= min(m,n), row i of the
-       *          matrix was interchanged with row ipiv(i).
-       *
-       *  info    (output) INTEGER
-       *          = 0: successful exit
-       *          < 0: if info = -k, the k-th argument had an illegal value
-       *          > 0: if info = k, U(k,k) is exactly zero. The factorization
-       *               has been completed, but the factor U is exactly
-       *               singular, and division by zero will occur if it is used
-       *               to solve a system of equations.
-       */
-      dgetrf_(&mDimension, &mDimension, mpJacobianX->array(),
-              &mDimension, mIpiv, &info);
-
-      //std::cout << "Jacobian: " << mJacobianX << std::endl;
-
-      if (info)
+      for (k = 0; k < mIterationLimit && !isSteadyState(targetValue); k++)
         {
-          if (info > 0)
-            {
-              if (mpProgressHandler) mpProgressHandler->finish(hProcess);
-              return returnNewton(CNewtonMethod::singularJacobian);
-            }
-          fatalError();
+          if (mpProgressHandler && !mpProgressHandler->progress(hProcess)) break;
+
+          result = doNewtonStep(targetValue);
+
+          if (singularJacobian == result) break;
+          if (dampingLimitExceeded == result) break;
         }
-
-      /* int dgetrs_(char *trans,
-       *             integer *n,
-       *             integer *nrhs,
-       *             doublereal *a,
-       *             integer *lda,
-       *             integer *ipiv,
-       *             doublereal *b,
-       *             integer * ldb,
-       *             integer *info)
-       *  Arguments
-       *  =========
-       *
-       *  trans   (input) CHARACTER*1
-       *          Specifies the form of the system of equations:
-       *          = 'N':  a * x = b  (No transpose)
-       *          = 'T':  a'* x = b  (Transpose)
-       *          = 'C':  a'* x = b  (Conjugate transpose = Transpose)
-       *
-       *  n       (input) INTEGER
-       *          The order of the matrix a.  n >= 0.
-       *
-       *  nrhs    (input) INTEGER
-       *          The number of right hand sides, i.e., the number of columns
-       *          of the matrix b.  nrhs >= 0.
-       *
-       *  a       (input) DOUBLE PRECISION array, dimension (lda,n)
-       *          The factors L and U from the factorization a = P*L*U
-       *          as computed by DGETRF.
-       *
-       *  lda     (input) INTEGER
-       *          The leading dimension of the array a.  lda >= max(1,n).
-       *
-       *  ipiv    (input) INTEGER array, dimension (n)
-       *          The pivot indices from DGETRF; for 1<=i<=n, row i of the
-       *          matrix was interchanged with row ipiv(i).
-       *
-       *  b       (input/output) DOUBLE PRECISION array, dimension (ldb,nrhs)
-       *          On entry, the right hand side matrix b.
-       *          On exit, the solution matrix x.
-       *
-       *  ldb     (input) INTEGER
-       *          The leading dimension of the array b.  ldb >= max(1,n).
-       *
-       *  info    (output) INTEGER
-       *          = 0:  successful exit
-       *          < 0:  if info = -i, the i-th argument had an illegal value
-       */
-      //std::cout << "b: " << mdxdt << std::endl;
-      dgetrs_(&T, &mDimension, &one, mpJacobianX->array(),
-              &mDimension, mIpiv, mdxdt.array(), &mDimension, &info);
-      //std::cout << "a: " << mdxdt << std::endl << std::endl;
-
-      if (info)
-        fatalError();
-
-      newMaxRate = oldMaxRate * 1.001;
-
-      // copy values of increment to h
-      mH = mdxdt;
-
-      //repeat till the new max rate is smaller than the old and all concentrations are positive.
-      //max 32 times
-      for (i = 0; (i < 32) && !((newMaxRate < oldMaxRate) && (mAcceptNegative || allPositive())); i++)
-        {
-          C_FLOAT64 * pX = mX;
-          C_FLOAT64 * pXold = mXold.array();
-          C_FLOAT64 * pH = mH.array();
-          C_FLOAT64 * pEnd = pH + mDimension;
-
-          for (; pH != pEnd; ++pH, ++pX, ++pXold)
-            {
-              *pX = *pXold - *pH;
-              (*pH) *= 0.5;
-            }
-
-          calculateDerivativesX();
-          newMaxRate = targetFunction(mdxdt);
-
-          // mpParentTask->output(COutputInterface::DURING);
-          //std::cout << "k: " << k << " i: " << i << " target: " << newMaxRate << std::endl;
-        }
-
-      //      std::cout << k << "th Newton Step. i = " << i << " maxRate = " << newMaxRate << std::endl;
-
-      if (i == 32)
-        {
-          //std::cout << "a newton step did not improve the target function" << std::endl;
-
-          //discard the step
-          memcpy(mX, mXold.array(), mDimension * sizeof(C_FLOAT64));
-
-          calculateDerivativesX();
-          oldMaxRate = targetFunction(mdxdt);
-
-          if (isSteadyState(oldMaxRate) && (mAcceptNegative || allPositive()))
-            ReturnCode = CNewtonMethod::found;
-          else if (oldMaxRate < *mpSSResolution)
-            ReturnCode = CNewtonMethod::notFound;
-          else
-            ReturnCode = CNewtonMethod::dampingLimitExceeded;
-
-          if (mpProgressHandler) mpProgressHandler->finish(hProcess);
-          return returnNewton(ReturnCode);
-        }
-
-      //      for (i = 0; i < mDimension; i++)
-      //        mSs_x[i] = mSs_xnew[i];
-
-      oldMaxRate = newMaxRate;
     }
 
-  if (isSteadyState(oldMaxRate))
-    ReturnCode = CNewtonMethod::found;
-  else if (oldMaxRate < *mpSSResolution)
-    ReturnCode = CNewtonMethod::notFound;
-  else
-    ReturnCode = CNewtonMethod::iterationLimitExceeded;
+  //check if ss was found. If not make sure the correct return value is set
+  if (isSteadyState(targetValue))
+    result = CNewtonMethod::found;
+  else if (CNewtonMethod::stepSuccesful == result)
+    result = CNewtonMethod::iterationLimitExceeded;
 
+  //do an additional newton step to refine the result
+  if ((CNewtonMethod::found == result) && mForceNewton)
+    {
+      bool tmp = true;
+      ++k; if (mpProgressHandler && !mpProgressHandler->progress(hProcess)) tmp = false;
+
+      if (tmp)
+        {
+          result = doNewtonStep(targetValue);
+          if (CNewtonMethod::stepSuccesful == result)
+            result = CNewtonMethod::found;
+        }
+    }
+
+  //end progress bar
   if (mpProgressHandler) mpProgressHandler->finish(hProcess);
-  return returnNewton(ReturnCode);
+  return result;
 }
 
 void CNewtonMethod::calculateDerivativesX()
@@ -652,16 +666,15 @@ bool CNewtonMethod::containsNaN() const
     return false;
   }
 
-CNewtonMethod::NewtonReturnCode
-CNewtonMethod::returnNewton(const CNewtonMethod::NewtonReturnCode & returnCode)
-{
-  mpProblem->getModel()->setState(*mpSteadyState);
-  mpProblem->getModel()->applyAssignments();
-
-  // This is necessarry since the dependent numbers are ignored during calculation.
-
-  return returnCode;
-}
+// CNewtonMethod::NewtonResultCode CNewtonMethod::returnNewton(const NewtonResultCode & returnCode)
+// {
+//   mpProblem->getModel()->setState(*mpSteadyState);
+//   mpProblem->getModel()->applyAssignments();
+//
+//   // This is necessarry since the dependent numbers are ignored during calculation.
+//
+//   return returnCode;
+//}
 
 bool CNewtonMethod::isSteadyState(C_FLOAT64 value)
 {
@@ -745,7 +758,7 @@ bool CNewtonMethod::initialize(const CSteadyStateProblem * pProblem)
   cleanup();
 
   /* Configure Newton */
-  mUseNewton = mUseIntegration = mUseBackIntegration = mAcceptNegative = false;
+  mUseNewton = mUseIntegration = mUseBackIntegration = mAcceptNegative = mForceNewton = false;
 
   if (* getValue("Use Newton").pBOOL)
     mUseNewton = true;
@@ -755,6 +768,8 @@ bool CNewtonMethod::initialize(const CSteadyStateProblem * pProblem)
     mUseBackIntegration = true;
   if (* getValue("Accept Negative Concentrations").pBOOL)
     mAcceptNegative = true;
+  if (* getValue("Force additional Newton step").pBOOL)
+    mForceNewton = true;
 
   mIterationLimit = * getValue("Iteration Limit").pUINT;
   //mFactor = * getValue("Derivation Factor").pUDOUBLE;
