@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.133 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/09/05 17:23:19 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget.cpp,v $
+//   $Revision: 1.133.4.1 $
+//   $Name:  $
+//   $Author: ssahle $
+//   $Date: 2007/01/30 00:13:01 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -61,7 +61,7 @@ void MetabolitesWidget::init()
   connect(btnToggle, SIGNAL(clicked ()), this,
           SLOT(slotBtnToggleClicked()));
 
-  numCols = 12 + 1; //+1 for sbml id
+  numCols = 12; //+ 1; //+1 for sbml id
   table->setNumCols(numCols);
   //table->QTable::setNumRows(1);
 
@@ -112,8 +112,8 @@ void MetabolitesWidget::init()
   table->setColumnReadOnly (COL_NRATE, true);
 
   //for sbml ids
-  tableHeader->setLabel(numCols - 1, "SBML ID");
-  table->setColumnReadOnly(numCols - 1, true);
+  //tableHeader->setLabel(numCols - 1, "SBML ID");
+  //table->setColumnReadOnly(numCols - 1, true);
 
   showHeaders(); //add the units to the headers
 
@@ -174,6 +174,12 @@ void MetabolitesWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C
   table->setText(row, COL_OLDCOMPARTMENT,
                  FROM_UTF8(pMetab->getCompartment()->getObjectName()));
 
+  /*  std::string tmp;
+    if (pMetab->isUsed()) tmp += "Used ";
+    if (pMetab->isUsedOnce()) tmp += "UsedOnce ";
+
+    table->setText(row, COL_CRATE, tmp);
+    table->setText(row, COL_NRATE, tmp);*/
   table->setText(row, COL_CRATE, QString::number(pMetab->getConcentrationRate()));
   table->setText(row, COL_NRATE, QString::number(pMetab->getRate()));
 

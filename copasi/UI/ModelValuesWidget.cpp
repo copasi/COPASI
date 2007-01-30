@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModelValuesWidget.cpp,v $
-   $Revision: 1.10 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/09/12 14:26:37 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModelValuesWidget.cpp,v $
+//   $Revision: 1.10.4.1 $
+//   $Name:  $
+//   $Author: ssahle $
+//   $Date: 2007/01/30 00:13:01 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -50,7 +50,7 @@ std::vector<const CCopasiObject*> ModelValuesWidget::getObjects() const
 void ModelValuesWidget::init()
 {
   mOT = ListViews::MODELVALUE;
-  numCols = 6 + 1;
+  numCols = 6; // + 1;
   table->setNumCols(numCols);
   table->setColumnReadOnly (COL_TRANSIENT, true);
   table->setColumnReadOnly (COL_EXPRESSION, true);
@@ -68,8 +68,8 @@ void ModelValuesWidget::init()
   tableHeader->setLabel(COL_EXPRESSION, "Expression");
 
   //for sbml ids
-  tableHeader->setLabel(numCols - 1, "SBML ID");
-  table->setColumnReadOnly(numCols - 1, true);
+  //tableHeader->setLabel(numCols - 1, "SBML ID");
+  //table->setColumnReadOnly(numCols - 1, true);
 
   mTypes.push_back(FROM_UTF8(CModelEntity::StatusName[CModelEntity::FIXED]));
   mTypes.push_back(FROM_UTF8(CModelEntity::StatusName[CModelEntity::ASSIGNMENT]));

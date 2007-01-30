@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.cpp,v $
-//   $Revision: 1.43.4.1 $
+//   $Revision: 1.43.4.2 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/01/23 15:17:45 $
+//   $Author: ssahle $
+//   $Date: 2007/01/30 00:13:01 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -164,7 +164,7 @@ void CopasiTableWidget::fillTable()
     {
       mFlagRO[j] = false;
       tableLineFromObject(objects[j], j);
-      handleSBMLId(objects[j], j);
+      //handleSBMLId(objects[j], j);
       mKeys[j] = objects[j]->getKey();
       mFlagChanged[j] = false;
       mFlagDelete[j] = false;
