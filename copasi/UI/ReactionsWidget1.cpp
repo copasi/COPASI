@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-   $Revision: 1.184 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/06 16:03:42 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
+//   $Revision: 1.184.2.1 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/01 18:56:30 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -374,22 +374,17 @@ void ReactionsWidget1::slotBtnDeleteClicked()
         {
         case 0:                                      // Yes or Enter
           {
-            //unsigned C_INT32 size = CCopasiDataModel::Global->pFunctionDB->loadedFunctions().size();
-            unsigned C_INT32 size = CCopasiDataModel::Global->getModel()->getReactions().size();
-            //unsigned C_INT32 index = CCopasiDataModel::Global->pFunctionDB->loadedFunctions().getIndex(pFunction->getObjectName());
             unsigned C_INT32 index = CCopasiDataModel::Global->getModel()->getReactions().getIndex(mpRi->getReactionName());
-            //CCopasiDataModel::Global->getModel()->removeReaction(mKeys[ToBeDeleted[i]]);
-            CCopasiDataModel::Global->getModel()->removeReaction(objKey);
-            //enter(CCopasiDataModel::Global->pFunctionDB->loadedFunctions()[std::min(index, size - 1)]->getKey());
 
-            // this invalidates the reaction interface
-            // so that the writeBackToReactionFunction is not called
-            // after deleting a reaction.
+            CCopasiDataModel::Global->getModel()->removeReaction(objKey);
+            unsigned C_INT32 size = CCopasiDataModel::Global->getModel()->getReactions().size();
+
             mpRi->setFunctionWithEmptyMapping("");
-            if (size > 1)
-              {
-                enter(CCopasiDataModel::Global->getModel()->getReactions()[std::min(index, size - 2)]->getKey());
-              }
+
+            if (size > 0)
+              enter(CCopasiDataModel::Global->getModel()->getReactions()[std::min(index, size - 1)]->getKey());
+            else
+              enter("");
 
             protectedNotify(ListViews::REACTION, ListViews::DELETE, objKey);
 

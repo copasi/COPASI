@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-//   $Revision: 1.145 $
+//   $Revision: 1.145.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/01/18 13:03:14 $
+//   $Date: 2007/02/01 18:56:30 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1252,12 +1252,15 @@ void FunctionWidget1::slotDeleteButtonClicked()
     {
     case 0:                                                    // Yes or Enter
       {
-        unsigned C_INT32 size = CCopasiDataModel::Global->getFunctionList()->loadedFunctions().size();
-        unsigned C_INT32 index = CCopasiDataModel::Global->getFunctionList()->loadedFunctions().getIndex(mpFunction->getObjectName());
+        unsigned C_INT32 index =
+          CCopasiDataModel::Global->getFunctionList()->loadedFunctions().getIndex(mpFunction->getObjectName());
 
         CCopasiDataModel::Global->getFunctionList()->removeFunction(objKey);
 
-        enter(CCopasiDataModel::Global->getFunctionList()->loadedFunctions()[std::min(index, size - 2)]->getKey());
+        unsigned C_INT32 size =
+          CCopasiDataModel::Global->getFunctionList()->loadedFunctions().size();
+
+        enter(CCopasiDataModel::Global->getFunctionList()->loadedFunctions()[std::min(index, size - 1)]->getKey());
 
         protectedNotify(ListViews::FUNCTION, ListViews::DELETE, objKey);
 
