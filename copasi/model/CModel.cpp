@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.294.2.1 $
+//   $Revision: 1.294.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/01 16:34:41 $
+//   $Date: 2007/02/02 14:03:26 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -491,7 +491,7 @@ bool CModel::handleUnusedMetabolites()
   C_FLOAT64 tmp;
   std::vector< unsigned C_INT32 > Unused;
 
-  for (i = 0; pStoi < pStoiEnd; i++)
+  for (i = 0; i < numRows; i++)
     {
       tmp = 0;
 
@@ -1272,7 +1272,8 @@ bool CModel::buildApplySequence()
     Objects.insert((*ppEntity)->getRateReference());
 
   // For CMetab REACTIONs we currently do not need to add anything as these
-  // changes are calculated with dgemm in caculateDerivatives for perfromance reasons.
+  // changes are calculated with dgemm in caculateDerivatives for performance reasons,
+  // i.e., it suffices to add all reaction rates.
 
   // For CMetab ASSIGNMENTs we need to add the Concentration
   // For CModelValues and CCompartment ASSIGNMENTs we need to add the Value
@@ -1282,7 +1283,7 @@ bool CModel::buildApplySequence()
   for (; ppEntity != ppEntityEnd; ++ppEntity)
     Objects.insert((*ppEntity)->getValueReference());
 
-  // Further more all reaction fluxes have to be calculated too
+  // Further more all reaction fluxes have to be calculated too (see CMetab REACTION above)
   CCopasiVector< CReaction >::iterator itReaction = mSteps.begin();
   CCopasiVector< CReaction >::iterator endReaction = mSteps.end();
   for (; itReaction != endReaction; ++itReaction)
