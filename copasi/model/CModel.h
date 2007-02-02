@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.138 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/11/23 03:00:59 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
+//   $Revision: 1.138.2.1 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/02 16:07:56 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -333,6 +333,12 @@ class CModel : public CModelEntity
      * to update values which stay constant during simulation.
      */
     std::vector< Refresh * > mConstantRefreshes;
+
+    /**
+     * An ordered list of refresh methods needed to update all model values
+     * which are not calculated during simulation
+     */
+    std::vector< Refresh * > mNonSimulatedRefreshes;
 
     /**
      * A flag indicating whether the state template has to be reordered
@@ -692,6 +698,12 @@ class CModel : public CModelEntity
     void applyAssignments(void);
 
     /**
+     * Calling this method after applyAssignments assure that all model values
+     * even those not needed for simulation are consistent with the current state
+     */
+    void updateNonSimulatedValues(void);
+
+    /**
      * Calculate the changes of all model quantities determined by ODEs
      * for the model in the current state.
      * The parameter derivatives must at least provide space for
@@ -951,13 +963,6 @@ class CModel : public CModelEntity
      */
     CReaction* createReaction(const std::string &name);
 
-    /**
-     * Add a new rection to the model
-     * @param const CReaction & reaction
-     * @return bool success (false if failed)
-     */
-    //bool addReaction(const CReaction & reaction);
-
     /* Remove a reaction from the model*/
     bool removeReaction(const std::string & key,
                         const bool & recursive = true);
@@ -1060,6 +1065,12 @@ class CModel : public CModelEntity
      * @return bool success
      */
     bool buildApplySequence();
+
+    /**
+     * Build the update sequence used by updateNonSimulatedValues.
+     * @return bool success
+     */
+    bool buildNonSimulatedSequence();
 
     /**
      * Build the user order for the state template

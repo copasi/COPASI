@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-//   $Revision: 1.63.2.1 $
+//   $Revision: 1.63.2.2 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/01/25 13:58:17 $
+//   $Author: shoops $
+//   $Date: 2007/02/02 16:11:27 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -254,8 +254,7 @@ std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
 
   pModel->setState(*pState);
   pModel->applyAssignments();
-  pModel->refreshRates();
-  pModel->setTransitionTimes();
+  pModel->updateNonSimulatedValues();
 
   // Metabolite Info: Name, Concentration, Concentration Rate, Particle Number, Particle Rate, Transition Time
   const CCopasiVector<CMetab> & Metabolites = pModel->getMetabolites();

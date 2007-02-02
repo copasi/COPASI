@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/StateSubwidget.ui.h,v $
-   $Revision: 1.30 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/28 00:24:53 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/StateSubwidget.ui.h,v $
+//   $Revision: 1.30.2.1 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/02 16:07:57 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -269,8 +269,8 @@ bool StateSubwidget::loadAll(const CSteadyStateTask * task)
 
   pModel->setState(*pState);
   pModel->applyAssignments();
-  pModel->refreshRates();
-  pModel->setTransitionTimes();
+
+  pModel->updateNonSimulatedValues();
 
   // editing units here
 

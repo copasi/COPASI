@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.294.2.2 $
+//   $Revision: 1.294.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/02 14:03:26 $
+//   $Date: 2007/02/02 16:07:56 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -103,7 +103,11 @@ CModel::CModel():
     mLView(mL, mNumMetabolitesIndependent),
     mQuantity2NumberFactor(1.0),
     mNumber2QuantityFactor(1.0),
-    mpCompileHandler(NULL)
+    mpCompileHandler(NULL),
+    mApplyRefreshes(),
+    mConstantRefreshes(),
+    mNonSimulatedRefreshes(),
+    mReorderNeeded(false)
 {
   initObjects();
 
@@ -160,7 +164,11 @@ CModel::CModel(const CModel & src):
     mLView(mL, mNumMetabolitesIndependent),
     mQuantity2NumberFactor(src.mQuantity2NumberFactor),
     mNumber2QuantityFactor(src.mNumber2QuantityFactor),
-    mpCompileHandler(NULL)
+    mpCompileHandler(NULL),
+    mApplyRefreshes(),
+    mConstantRefreshes(),
+    mNonSimulatedRefreshes(),
+    mReorderNeeded(false)
 {
   CONSTRUCTOR_TRACE;
   initObjects();
@@ -365,6 +373,7 @@ bool CModel::compile()
 
   buildConstantSequence();
   buildApplySequence();
+  buildNonSimulatedSequence();
   CompileStep = 6;
   if (mpCompileHandler && !mpCompileHandler->progress(hCompileStep)) return false;
 
@@ -1436,6 +1445,90 @@ bool CModel::buildConstantSequence()
   return true;
 }
 
+bool CModel::buildNonSimulatedSequence()
+{
+  std::set< const CCopasiObject * > Objects;
+
+  // Compartments
+  CCopasiVector< CCompartment >::iterator itComp = mCompartments.begin();
+  CCopasiVector< CCompartment >::iterator endComp = mCompartments.end();
+
+  for (; itComp != endComp; ++itComp)
+    {
+      Objects.insert((*itComp)->getValueReference());
+
+      switch ((*itComp)->getStatus())
+        {
+        case ODE:
+          Objects.insert((*itComp)->getRateReference());
+          break;
+
+        default:
+          break;
+        }
+    }
+
+  // Metabolites
+  CCopasiVector< CMetab >::iterator itMetab = mMetabolites.begin();
+  CCopasiVector< CMetab >::iterator endMetab = mMetabolites.end();
+
+  for (; itMetab != endMetab; ++itMetab)
+    {
+      Objects.insert((*itMetab)->getObject(CCopasiObjectName("Reference=Concentration")));
+      Objects.insert((*itMetab)->CModelEntity::getValueReference());
+
+      switch ((*itMetab)->getStatus())
+        {
+        case REACTIONS:
+          Objects.insert((*itMetab)->getObject(CCopasiObjectName("Reference=TransitionTime")));
+          Objects.insert((*itMetab)->getObject(CCopasiObjectName("Reference=Rate")));
+          Objects.insert((*itMetab)->CModelEntity::getRateReference());
+          break;
+
+        case ODE:
+          Objects.insert((*itMetab)->getObject(CCopasiObjectName("Reference=Rate")));
+          Objects.insert((*itMetab)->CModelEntity::getRateReference());
+          break;
+
+        default:
+          break;
+        }
+    }
+
+  // Reactions
+  CCopasiVector< CReaction >::iterator itStep = mSteps.begin();
+  CCopasiVector< CReaction >::iterator endStep = mSteps.end();
+
+  for (; itStep != endStep; ++itStep)
+    {
+      Objects.insert((*itStep)->getObject(CCopasiObjectName("Reference=Flux")));
+      Objects.insert((*itStep)->getObject(CCopasiObjectName("Reference=ParticleFlux")));
+    }
+
+  // Model Values
+  CCopasiVector< CModelValue >::iterator itValue = mValues.begin();
+  CCopasiVector< CModelValue >::iterator endValue = mValues.end();
+
+  for (; itValue != endValue; ++itValue)
+    {
+      Objects.insert((*itValue)->getValueReference());
+
+      switch ((*itValue)->getStatus())
+        {
+        case ODE:
+          Objects.insert((*itValue)->getRateReference());
+          break;
+
+        default:
+          break;
+        }
+    }
+
+  mNonSimulatedRefreshes = CCopasiObject::buildUpdateSequence(Objects, this);
+
+  return true;
+}
+
 const CState & CModel::getInitialState() const
 {return mInitialState;}
 
@@ -1513,6 +1606,17 @@ void CModel::applyAssignments(void)
 
   for (;it != end; ++it, ++pFlux)
     *pFlux = (*it)->getParticleFlux();
+}
+
+void CModel::updateNonSimulatedValues(void)
+{
+  std::vector< Refresh * >::const_iterator itRefresh = mNonSimulatedRefreshes.begin();
+  std::vector< Refresh * >::const_iterator endRefresh = mNonSimulatedRefreshes.end();
+
+  while (itRefresh != endRefresh)
+    (**itRefresh++)();
+
+  return;
 }
 
 void CModel::calculateDerivatives(C_FLOAT64 * derivatives)
