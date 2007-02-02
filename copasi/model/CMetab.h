@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.h,v $
-   $Revision: 1.77 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/25 15:09:37 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.h,v $
+//   $Revision: 1.77.2.1 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/02 20:30:45 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -107,6 +107,7 @@ class CMetab : public CModelEntity
     CCopasiObjectReference<C_FLOAT64> *mpIConcReference;
     CCopasiObjectReference<C_FLOAT64> *mpConcReference;
     CCopasiObjectReference<C_FLOAT64> *mpConcRateReference;
+    CCopasiObjectReference<C_FLOAT64> *mpTTReference;
 
     // Operations
   public:
@@ -251,9 +252,14 @@ class CMetab : public CModelEntity
     void refreshConcentrationRate();
 
     /**
-     * Calculate the conctration rate.
+     * Calculate the particle rate.
      */
     void refreshRate();
+
+    /**
+     * Calculate the transition time.
+     */
+    void refreshTransitionTime();
 
     /**
      * Set whether the metabolite is dependent, i.e., calculated
