@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapWolfMethod.cpp,v $
-   $Revision: 1.9 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/08/09 21:07:18 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapWolfMethod.cpp,v $
+//   $Revision: 1.9.4.1 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/05 18:12:38 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -238,7 +238,7 @@ void CLyapWolfMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 
   //copy state to model
   CModel * pModel = mpProblem->getModel();
   pModel->setState(*mpState);
-  pModel->applyAssignments();
+  pModel->updateSimulatedValues();
 
   //the model
   if (mReducedModel)
@@ -360,7 +360,7 @@ bool CLyapWolfMethod::calculate()
       while (true);
 
       //mpLyapProblem->getModel()->setState(*mpCurrentState);
-      //mpLyapProblem->getModel()->applyAssignments();
+      //mpLyapProblem->getModel()->updateSimulatedValues();
     }
   else
     {
@@ -372,7 +372,7 @@ bool CLyapWolfMethod::calculate()
   mpState->setTime(mTime);
   //copy state to model
   mpProblem->getModel()->setState(*mpState);
-  mpProblem->getModel()->applyAssignments();
+  mpProblem->getModel()->updateSimulatedValues();
   mpTask->methodCallback((mTime - transientTime) * handlerFactor);
   //********
 
@@ -417,7 +417,7 @@ bool CLyapWolfMethod::calculate()
       mpState->setTime(mTime);
       //copy state to model
       mpProblem->getModel()->setState(*mpState);
-      mpProblem->getModel()->applyAssignments();
+      mpProblem->getModel()->updateSimulatedValues();
       flagProceed &= mpTask->methodCallback((mTime - transientTime) * handlerFactor);
     }
   while ((mTime < endTime) && flagProceed);

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.294.2.3 $
+//   $Revision: 1.294.2.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/02 16:07:56 $
+//   $Date: 2007/02/05 18:12:38 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -104,7 +104,7 @@ CModel::CModel():
     mQuantity2NumberFactor(1.0),
     mNumber2QuantityFactor(1.0),
     mpCompileHandler(NULL),
-    mApplyRefreshes(),
+    mSimulatedRefreshes(),
     mConstantRefreshes(),
     mNonSimulatedRefreshes(),
     mReorderNeeded(false)
@@ -165,7 +165,7 @@ CModel::CModel(const CModel & src):
     mQuantity2NumberFactor(src.mQuantity2NumberFactor),
     mNumber2QuantityFactor(src.mNumber2QuantityFactor),
     mpCompileHandler(NULL),
-    mApplyRefreshes(),
+    mSimulatedRefreshes(),
     mConstantRefreshes(),
     mNonSimulatedRefreshes(),
     mReorderNeeded(false)
@@ -372,7 +372,7 @@ bool CModel::compile()
   if (mpCompileHandler && !mpCompileHandler->progress(hCompileStep)) return false;
 
   buildConstantSequence();
-  buildApplySequence();
+  buildSimulatedSequence();
   buildNonSimulatedSequence();
   CompileStep = 6;
   if (mpCompileHandler && !mpCompileHandler->progress(hCompileStep)) return false;
@@ -1042,7 +1042,7 @@ CStateTemplate & CModel::getStateTemplate()
 {CCHECK return mStateTemplate;}
 
 std::set< const CCopasiObject * > & CModel::getUpToDateObjects()
-{CCHECK return mApplyUpToDateObjects;}
+{CCHECK return mSimulatedUpToDateObjects;}
 
 bool CModel::setTitle(const std::string &title)
 {
@@ -1122,7 +1122,7 @@ void CModel::applyInitialValues()
     (**itRefresh++)();
 
   // Update all dependend objects needed for simulation.
-  applyAssignments();
+  updateSimulatedValues();
 }
 
 void CModel::clearMoieties()
@@ -1267,7 +1267,7 @@ bool CModel::buildUserOrder()
   return true;
 }
 
-bool CModel::buildApplySequence()
+bool CModel::buildSimulatedSequence()
 {
   // We need to add each used model entity to the objects which need to be updated.
   std::set< const CCopasiObject * > Objects;
@@ -1299,7 +1299,7 @@ bool CModel::buildApplySequence()
     Objects.insert((*itReaction)->getParticleFluxReference());
 
   // We now detect unused assignments, i.e., the result of an assignment is not
-  // used during applyAssignments except for itself or another unused assignment.
+  // used during updateSimulatedValues except for itself or another unused assignment.
   bool UnusedFound = true;
 
   std::set<const CCopasiObject * > Candidate;
@@ -1374,8 +1374,8 @@ bool CModel::buildApplySequence()
         (*itReaction)->compile();
     }
 
-  mApplyUpToDateObjects.clear();
-  mApplyRefreshes = CCopasiObject::buildUpdateSequence(Objects, this);
+  mSimulatedUpToDateObjects.clear();
+  mSimulatedRefreshes = CCopasiObject::buildUpdateSequence(Objects, this);
 
   // We have to remove the refresh calls already covered by mConstantRefreshes
   std::vector< Refresh * >::const_iterator itInitialRefresh = mConstantRefreshes.begin();
@@ -1386,13 +1386,13 @@ bool CModel::buildApplySequence()
 
   for (; itInitialRefresh != endInitialRefresh; ++itInitialRefresh)
     {
-      itRefresh = mApplyRefreshes.begin();
-      endRefresh = mApplyRefreshes.end();
+      itRefresh = mSimulatedRefreshes.begin();
+      endRefresh = mSimulatedRefreshes.end();
 
       for (; itRefresh != endRefresh; ++itRefresh)
         if ((*itRefresh)->isEqual(*itInitialRefresh))
           {
-            mApplyRefreshes.erase(itRefresh);
+            mSimulatedRefreshes.erase(itRefresh);
             break;
           }
     }
@@ -1439,7 +1439,7 @@ bool CModel::buildConstantSequence()
         (*ppEntity)->setUsedOnce(false);
     }
 
-  mApplyUpToDateObjects.clear();
+  mSimulatedUpToDateObjects.clear();
   mConstantRefreshes = CCopasiObject::buildUpdateSequence(Objects, this);
 
   return true;
@@ -1537,14 +1537,14 @@ const CState & CModel::getState() const
 
 void CModel::setInitialState(const CState & state)
 {
-  // The situation where the state has the updateDependentRequired flag
+  // The situation where the initial state has the updateDependentRequired flag
   // set is currently not handled.
 
   assert (!state.isUpdateDependentRequired());
 
   // To prevent triggering the above assertion please use:
   //   setState(state);
-  //   applyAssignements();
+  //   updateSimulatedValues();
   //   setInititalState(getState());
   //
   // This is not done automatically since it changes the current state of
@@ -1576,7 +1576,7 @@ void CModel::setState(const CState & state)
   return;
 }
 
-void CModel::applyAssignments(void)
+void CModel::updateSimulatedValues(void)
 {
   // Depending on which model we are using we need to update
   // the particle numbers for the dependent metabolites.
@@ -1592,8 +1592,8 @@ void CModel::applyAssignments(void)
       mCurrentState.setUpdateDependentRequired(false);
     }
 
-  std::vector< Refresh * >::const_iterator itRefresh = mApplyRefreshes.begin();
-  std::vector< Refresh * >::const_iterator endRefresh = mApplyRefreshes.end();
+  std::vector< Refresh * >::const_iterator itRefresh = mSimulatedRefreshes.begin();
+  std::vector< Refresh * >::const_iterator endRefresh = mSimulatedRefreshes.end();
 
   while (itRefresh != endRefresh)
     (**itRefresh++)();
@@ -1786,11 +1786,11 @@ void CModel::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
       InvDelta = 1.0 / (X2 - X1);
 
       *pX = X1;
-      applyAssignments();
+      updateSimulatedValues();
       calculateDerivatives(Y1.array());
 
       *pX = X2;
-      applyAssignments();
+      updateSimulatedValues();
       calculateDerivatives(Y2.array());
 
       *pX = Store;
@@ -1803,7 +1803,7 @@ void CModel::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
         * pJacobian = (*pY2 - *pY1) * InvDelta;
     }
 
-  applyAssignments();
+  updateSimulatedValues();
 
   //  jacobian = Jacobian;
   //  return;
@@ -1874,12 +1874,12 @@ void CModel::calculateJacobianX(CMatrix< C_FLOAT64 > & jacobianX,
 
       *pX = X1;
       mCurrentState.setUpdateDependentRequired(true);
-      applyAssignments();
+      updateSimulatedValues();
       calculateDerivativesX(Y1.array());
 
       *pX = X2;
       mCurrentState.setUpdateDependentRequired(true);
-      applyAssignments();
+      updateSimulatedValues();
       calculateDerivativesX(Y2.array());
 
       *pX = Store;
@@ -1893,7 +1893,7 @@ void CModel::calculateJacobianX(CMatrix< C_FLOAT64 > & jacobianX,
     }
 
   mCurrentState.setUpdateDependentRequired(true);
-  applyAssignments();
+  updateSimulatedValues();
 }
 
 C_FLOAT64 CModel::calculateDivergence() const

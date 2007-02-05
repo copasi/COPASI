@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.138.2.1 $
+//   $Revision: 1.138.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/02 16:07:56 $
+//   $Date: 2007/02/05 18:12:38 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -165,9 +165,9 @@ class CModel : public CModelEntity
 
     /**
      * This is the list of objects which contains all objects which
-     * are up to date after a call to applyAssignments
+     * are up to date after a call to updateSimulatedValues
      */
-    std::set< const CCopasiObject * > mApplyUpToDateObjects;
+    std::set< const CCopasiObject * > mSimulatedUpToDateObjects;
 
     /**
      *  Comments
@@ -324,9 +324,9 @@ class CModel : public CModelEntity
     CProcessReport * mpCompileHandler;
 
     /**
-     * An ordered list of refresh methods needed by the applyAssignments
+     * An ordered list of refresh methods needed by the updateSimulatedValues
      */
-    std::vector< Refresh * > mApplyRefreshes;
+    std::vector< Refresh * > mSimulatedRefreshes;
 
     /**
      * An ordered list of refresh methods needed by the applyInitialValues
@@ -689,16 +689,13 @@ class CModel : public CModelEntity
     void setState(const CState & state);
 
     /**
-     * This method applies all assignments, which currently includes:
-     * i) calculating and assigning the particle numbers for dependent
-     *    metabolites (only if updateDependent is set in current state)
-     * ii) updating all concentrations
-     * iii) calculating the reaction fluxes
+     * This method calculates all values needed for simulation based on the current
+     * current state.
      */
-    void applyAssignments(void);
+    void updateSimulatedValues(void);
 
     /**
-     * Calling this method after applyAssignments assure that all model values
+     * Calling this method after updateSimulatedValues assure that all model values
      * even those not needed for simulation are consistent with the current state
      */
     void updateNonSimulatedValues(void);
@@ -1061,10 +1058,10 @@ class CModel : public CModelEntity
     bool buildConstantSequence();
 
     /**
-     * Build the update sequence used by applyAssignments.
+     * Build the update sequence used by updateSimulatedValues.
      * @return bool success
      */
-    bool buildApplySequence();
+    bool buildSimulatedSequence();
 
     /**
      * Build the update sequence used by updateNonSimulatedValues.

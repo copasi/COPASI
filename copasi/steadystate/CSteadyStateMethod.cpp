@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateMethod.cpp,v $
-//   $Revision: 1.27.4.1 $
+//   $Revision: 1.27.4.2 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/01/25 13:58:17 $
+//   $Author: shoops $
+//   $Date: 2007/02/05 18:12:39 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -168,30 +168,6 @@ CSteadyStateMethod::process(CState * pState,
 CSteadyStateMethod::ReturnCode
 CSteadyStateMethod::returnProcess(bool steadyStateFound)
 {
-  //mpProblem->getModel()->setTransitionTimes();
-
-  //   if (mpProblem->isJacobianRequested() ||
-  //       mpProblem->isStabilityAnalysisRequested())
-  //     {
-  //       mpModel->setState(*mpSteadyState);
-  //       mpModel->applyAssignments();
-  //
-  //       mpModel->calculateJacobian(*mpJacobian, factor, resolution);
-  //       mpModel->calculateJacobianX(*mpJacobianX, factor, resolution);
-  //}
-
-  //mpProblem->getModel()->setState(mpSteadyState);
-  //mpProblem->getModel()->updateRates();
-
-  //   if (mpProblem->isStabilityAnalysisRequested())
-  //     {
-  //       mpEigenValues->calcEigenValues(*mpJacobian);
-  //       mpEigenValuesX->calcEigenValues(*mpJacobianX);
-  //
-  //       mpEigenValues->stabilityAnalysis(resolution);
-  //       mpEigenValuesX->stabilityAnalysis(resolution);
-  //}
-
   if (!steadyStateFound)
     return CSteadyStateMethod::notFound;
 
@@ -266,7 +242,7 @@ void CSteadyStateMethod::doJacobian(CMatrix< C_FLOAT64 > & jacobian,
                                     CMatrix< C_FLOAT64 > & jacobianX)
 {
   mpModel->setState(*mpSteadyState);
-  mpModel->applyAssignments();
+  mpModel->updateSimulatedValues();
 
   mpModel->calculateJacobian(jacobian, *mpDerivationFactor, *mpDerivationResolution);
   mpModel->calculateJacobianX(jacobianX, *mpDerivationFactor, *mpDerivationResolution);
@@ -282,7 +258,7 @@ C_FLOAT64 CSteadyStateMethod::getStabilityResolution()
 void CSteadyStateMethod::calculateJacobianX(const C_FLOAT64 & oldMaxRate)
 {
   mpModel->setState(*mpSteadyState);
-  mpModel->applyAssignments();
+  mpModel->updateSimulatedValues();
   mpModel->calculateJacobianX(*mpJacobianX,
                               std::min(*mpDerivationFactor, oldMaxRate),
                               *mpDerivationResolution);

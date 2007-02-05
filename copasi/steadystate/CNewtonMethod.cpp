@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-//   $Revision: 1.78.2.5 $
+//   $Revision: 1.78.2.6 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/01/30 23:28:29 $
+//   $Author: shoops $
+//   $Date: 2007/02/05 18:12:39 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -553,18 +553,14 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::processNewton()
   calculateDerivativesX();
   targetValue = targetFunction(mdxdt);
 
-  if (!isSteadyState(targetValue))
+  for (k = 0; k < mIterationLimit && !isSteadyState(targetValue); k++)
     {
+      if (mpProgressHandler && !mpProgressHandler->progress(hProcess)) break;
 
-      for (k = 0; k < mIterationLimit && !isSteadyState(targetValue); k++)
-        {
-          if (mpProgressHandler && !mpProgressHandler->progress(hProcess)) break;
+      result = doNewtonStep(targetValue);
 
-          result = doNewtonStep(targetValue);
-
-          if (singularJacobian == result) break;
-          if (dampingLimitExceeded == result) break;
-        }
+      if (singularJacobian == result) break;
+      if (dampingLimitExceeded == result) break;
     }
 
   //check if ss was found. If not make sure the correct return value is set
@@ -595,21 +591,12 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::processNewton()
 void CNewtonMethod::calculateDerivativesX()
 {
   mpModel->setState(*mpSteadyState);
-  mpModel->applyAssignments();
+  mpModel->updateSimulatedValues();
   mpModel->calculateDerivativesX(mdxdt.array());
 
   // DebugFile << "CNewtonMethod::calculateDerivativesX" << std::endl;
   // DebugFile << mdxdt << std::endl;
 }
-
-// void CNewtonMethod::calculateJacobianX(const C_FLOAT64 & oldMaxRate)
-// {
-//   mpModel->setState(*mpSteadyState);
-//   mpModel->applyAssignments();
-//   mpModel->calculateJacobianX(*mpJacobianX,
-//                               std::min(mFactor, oldMaxRate),
-//                               mResolution);
-//}
 
 bool CNewtonMethod::allPositive()
 {
@@ -665,16 +652,6 @@ bool CNewtonMethod::containsNaN() const
 
     return false;
   }
-
-// CNewtonMethod::NewtonResultCode CNewtonMethod::returnNewton(const NewtonResultCode & returnCode)
-// {
-//   mpProblem->getModel()->setState(*mpSteadyState);
-//   mpProblem->getModel()->applyAssignments();
-//
-//   // This is necessarry since the dependent numbers are ignored during calculation.
-//
-//   return returnCode;
-//}
 
 bool CNewtonMethod::isSteadyState(C_FLOAT64 value)
 {

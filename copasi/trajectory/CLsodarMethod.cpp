@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/Attic/CLsodarMethod.cpp,v $
-   $Revision: 1.4 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/11/13 14:50:36 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/Attic/CLsodarMethod.cpp,v $
+//   $Revision: 1.4.4.1 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/05 18:12:39 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -274,7 +274,7 @@ void CLsodarMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * 
   mpState->setTime(*t);
 
   mpModel->setState(*mpState);
-  mpModel->applyAssignments();
+  mpModel->updateSimulatedValues();
 
   if (mReducedModel)
     mpModel->calculateDerivativesX(ydot);

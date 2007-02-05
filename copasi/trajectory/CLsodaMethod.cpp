@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.cpp,v $
-//   $Revision: 1.44.2.1 $
+//   $Revision: 1.44.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/01/19 21:18:58 $
+//   $Date: 2007/02/05 18:12:39 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -278,7 +278,7 @@ void CLsodaMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * y
   mpState->setTime(*t);
 
   mpModel->setState(*mpState);
-  mpModel->applyAssignments();
+  mpModel->updateSimulatedValues();
 
   if (mReducedModel)
     mpModel->calculateDerivativesX(ydot);

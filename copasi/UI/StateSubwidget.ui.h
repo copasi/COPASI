@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/StateSubwidget.ui.h,v $
-//   $Revision: 1.30.2.1 $
+//   $Revision: 1.30.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/02 16:07:57 $
+//   $Date: 2007/02/05 18:12:40 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -268,7 +268,7 @@ bool StateSubwidget::loadAll(const CSteadyStateTask * task)
   CModel * pModel = task->getProblem()->getModel();
 
   pModel->setState(*pState);
-  pModel->applyAssignments();
+  pModel->updateSimulatedValues();
 
   pModel->updateNonSimulatedValues();
 
