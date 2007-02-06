@@ -1,20 +1,20 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTaskBtnWidget.h,v $
-   $Revision: 1.5 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:42 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTaskBtnWidget.h,v $
+//   $Revision: 1.5.8.1 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/06 16:23:47 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQTaskBtnWidget.ui'
  **
- ** Created: Fri Oct 7 14:23:55 2005
- **      by: The User Interface Compiler ($Id: CQTaskBtnWidget.h,v 1.5 2006/04/27 01:27:42 shoops Exp $)
+ ** Created: Tue Feb 6 11:11:39 2007
+ **      by: The User Interface Compiler ($Id: CQTaskBtnWidget.h,v 1.5.8.1 2007/02/06 16:23:47 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -40,14 +40,15 @@ class CQTaskBtnWidget : public QWidget
     ~CQTaskBtnWidget();
 
     QPushButton* mpBtnRun;
-    QPushButton* mpBtnAssistant;
     QPushButton* mpBtnRevert;
     QPushButton* mpBtnReport;
+    QPushButton* mpBtnAssistant;
 
   protected:
     QVBoxLayout* CQTaskBtnWidgetLayout;
-    QSpacerItem* mpSpacer;
-    QGridLayout* mpGridLayout;
+    QSpacerItem* mpSpacerVertical;
+    QHBoxLayout* mpBtnLayout;
+    QSpacerItem* mpSpacerHorizontal;
 
   protected slots:
     virtual void languageChange();
