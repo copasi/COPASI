@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-//   $Revision: 1.78.2.6 $
+//   $Revision: 1.78.2.7 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/02/05 18:12:39 $
+//   $Author: ssahle $
+//   $Date: 2007/02/06 15:29:57 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -61,7 +61,8 @@ void CNewtonMethod::initializeParameter()
   assertParameter("Use Back Integration", CCopasiParameter::BOOL, true);
   assertParameter("Accept Negative Concentrations", CCopasiParameter::BOOL, false);
   assertParameter("Iteration Limit", CCopasiParameter::UINT, (unsigned C_INT32) 50);
-  assertParameter("Force additional Newton step", CCopasiParameter::BOOL, true);
+  //assertParameter("Force additional Newton step", CCopasiParameter::BOOL, true);
+  //assertParameter("Keep Protocol", CCopasiParameter::BOOL, true);
 
   // Check whether we have a method with the old parameter names
   if ((pParm = getParameter("Newton.UseNewton")) != NULL)
@@ -163,36 +164,36 @@ void CNewtonMethod::load(CReadConfig & configBuffer,
       setValue("Iteration Limit", Int);
 
       configBuffer.getVariable("SSResoltion", "C_FLOAT64", &Dbl); //typo is necessary!!
-      setValue("Steady State Resolution", Dbl);
-      setValue("Derivation Resolution", Dbl);
-      setValue("Stability Resolution", Dbl);
+      //setValue("Steady State Resolution", Dbl);
+      //setValue("Derivation Resolution", Dbl);
+      //setValue("Stability Resolution", Dbl);
+      setValue("Resolution", Dbl);
     }
 }
 
 //**********************************************************************************
 
-CSteadyStateMethod::ReturnCode CNewtonMethod::processInternal()
+CNewtonMethod::NewtonResultCode CNewtonMethod::doIntegration(bool forward)
 {
+  C_FLOAT64 iterationFactor = forward ? 10.0 : 2.0;
+  C_FLOAT64 maxDuration = forward ? 1e10 : -1e8;
+  C_FLOAT64 minDuration = forward ? 1e-1 : -1e-2;
+
+  //progress bar
+  unsigned C_INT32 hProcess;
+  unsigned C_INT32 Step = 0;
+  unsigned C_INT32 MaxSteps;
+  MaxSteps = (unsigned C_INT32) ceil(log(maxDuration / minDuration) / log(iterationFactor));
+
+  std::string tmpstring = forward ? "forward integrating..." : "backward integrating...";
   if (mpProgressHandler)
-    mpProgressHandler->setName("performing steady state calculation...");
+    hProcess = mpProgressHandler->addItem(tmpstring,
+                                          CCopasiParameter::UINT,
+                                          & Step,
+                                          & MaxSteps);
 
-  mpSteadyState->setUpdateDependentRequired(true);
-  mpX = mpSteadyState->beginIndependent();
-
-  NewtonResultCode returnCode;
-  if (mUseNewton)
-    {
-      returnCode = processNewton();
-
-      if (returnCode == CNewtonMethod::found)
-        return returnProcess(true);
-    }
-
-  bool stepLimitReached = false;
-  C_FLOAT64 Duration;
-
+  //setup trajectory
   CTrajectoryProblem * pTrajectoryProblem;
-
   if (mpTrajectory)
     {
       pTrajectoryProblem =
@@ -201,138 +202,147 @@ CSteadyStateMethod::ReturnCode CNewtonMethod::processInternal()
       pTrajectoryProblem->setStepNumber(1);
     }
 
+  bool stepLimitReached;
+  C_FLOAT64 duration;
+
+  for (duration = minDuration; fabs(duration) < fabs(maxDuration); duration *= iterationFactor, Step++)
+    {
+      if (mpProgressHandler && !mpProgressHandler->progress(hProcess)) break;
+
+      pTrajectoryProblem->setDuration(duration);
+      try
+        {
+          stepLimitReached = !mpTrajectory->process(true); //single step
+        }
+      catch (CCopasiException Exception)
+        {
+          //std::cout << std::endl << "exception in trajectory task" << std::endl;
+          *mpSteadyState = *mpTrajectory->getState();
+          if (mKeepProtocol)
+            mMethodLog << "  Integration with duration " << duration << " failed (Exception).\n\n";
+          break;
+        }
+
+      // mpParentTask->output(COutputInterface::DURING);
+
+      *mpSteadyState = *mpTrajectory->getState();
+
+      if (containsNaN())
+        {
+          if (mKeepProtocol)
+            mMethodLog << "  Integration with duration " << duration << " failed (NaN).\n\n";
+          break;
+        }
+
+      if (!(mAcceptNegative || allPositive()))
+        {
+          if (mKeepProtocol)
+            mMethodLog << "  Integration with duration " << duration
+            << " resulted in negative concentrations.\n\n";
+          break;
+        }
+
+      calculateDerivativesX();
+      C_FLOAT64 value = targetFunction(mdxdt);
+      if (isSteadyState(value))
+        {
+          if (mpProgressHandler) mpProgressHandler->finish(hProcess);
+          if (mKeepProtocol)
+            mMethodLog << "  Integration with duration " << duration
+            << ". Criterium matched by " << value << ".\n\n";
+          return CNewtonMethod::found;
+        }
+      else
+        {
+          if (mKeepProtocol)
+            mMethodLog << "  Integration with duration " << duration
+            << ". Criterium not matched by " << value << ".\n\n";
+        }
+
+      if (mUseNewton)
+        {
+          if (mKeepProtocol) mMethodLog << "  Try Newton's method from this starting point. \n";
+          NewtonResultCode returnCode = processNewton();
+          if (mKeepProtocol) mMethodLog << "\n";
+          // mpParentTask->separate(COutputInterface::DURING);
+
+          if (returnCode == CNewtonMethod::found)
+            {
+              if (mpProgressHandler) mpProgressHandler->finish(hProcess);
+              return CNewtonMethod::found;
+            }
+        }
+
+      if (stepLimitReached)
+        {
+          if (mKeepProtocol)
+            mMethodLog << "  Integration with duration " << duration
+            << " reached internal step limit.\n";
+          break;
+        }
+    }
+  if (mpProgressHandler) mpProgressHandler->finish(hProcess);
+  return CNewtonMethod::notFound;
+}
+
+//**********************************************************************************
+
+CSteadyStateMethod::ReturnCode CNewtonMethod::processInternal()
+{
+  //clear log
+  mMethodLog.str("");
+
+  if (mpProgressHandler)
+    mpProgressHandler->setName("performing steady state calculation...");
+
+  mpSteadyState->setUpdateDependentRequired(true);
+  mpX = mpSteadyState->beginIndependent();
+
+  NewtonResultCode returnCode;
+
+  // Newton
+  if (mUseNewton)
+    {
+      if (mKeepProtocol) mMethodLog << "Try Newton's method. \n";
+
+      returnCode = processNewton();
+
+      if (returnCode == CNewtonMethod::found)
+        return returnProcess(true);
+    }
+
+  // forward integration
   if (mUseIntegration)
     {
-      //std::cout << "Try integrating ..." << std::endl;
+      if (mKeepProtocol) mMethodLog << "\nTry forward integration. \n";
+      returnCode = doIntegration(true); //true means forward
 
-      unsigned C_INT32 hProcess;
-      unsigned C_INT32 Step = 0;
-      unsigned C_INT32 MaxSteps = (unsigned C_INT32) ceil(log(1.0e10) / log(10.0));
-
-      if (mpProgressHandler)
-        hProcess = mpProgressHandler->addItem("forward integrating...",
-                                              CCopasiParameter::UINT,
-                                              & Step,
-                                              & MaxSteps);
-
-      for (Duration = 1.0; Duration < 1.0e10; Duration *= 10.0, Step++)
-        {
-          if (mpProgressHandler && !mpProgressHandler->progress(hProcess)) break;
-
-          pTrajectoryProblem->setDuration(Duration);
-          try
-            {
-              stepLimitReached = !mpTrajectory->process(true); //single step
-            }
-          catch (CCopasiException Exception)
-            {
-              //std::cout << std::endl << "exception in trajectory task" << std::endl;
-              *mpSteadyState = *mpTrajectory->getState();
-              break;
-            }
-
-          // mpParentTask->output(COutputInterface::DURING);
-
-          *mpSteadyState = *mpTrajectory->getState();
-
-          if (containsNaN())
-            break;
-
-          if (!(mAcceptNegative || allPositive()))
-            break;
-
-          calculateDerivativesX();
-
-          if (isSteadyState(targetFunction(mdxdt)))
-            {
-              if (mpProgressHandler) mpProgressHandler->finish(hProcess);
-              return returnProcess(true);
-            }
-
-          if (mUseNewton)
-            {
-              returnCode = processNewton();
-              // mpParentTask->separate(COutputInterface::DURING);
-
-              if (returnCode == CNewtonMethod::found)
-              {return returnProcess(true);}
-            }
-
-          if (stepLimitReached)
-            {
-              //std::cout << "Step limit reached at Endtime " << Duration << std::endl;
-              break;
-            }
-        }
-      if (mpProgressHandler) mpProgressHandler->finish(hProcess);
+      if (returnCode == CNewtonMethod::found)
+        return returnProcess(true);
     }
 
+  /*  bool stepLimitReached = false;
+    C_FLOAT64 Duration;
+
+    CTrajectoryProblem * pTrajectoryProblem;
+
+    if (mpTrajectory)
+      {
+        pTrajectoryProblem =
+          dynamic_cast<CTrajectoryProblem *>(mpTrajectory->getProblem());
+        assert(pTrajectoryProblem);
+        pTrajectoryProblem->setStepNumber(1);
+      }*/
+
+  // backward integration
   if (mUseBackIntegration)
     {
-      unsigned C_INT32 hProcess;
-      unsigned C_INT32 Step = 0;
-      unsigned C_INT32 MaxSteps = (unsigned C_INT32) ceil(log(1.0e12) / log(2.0));
+      if (mKeepProtocol) mMethodLog << "\nTry backward integration. \n";
+      returnCode = doIntegration(false); //false means backwards
 
-      if (mpProgressHandler)
-        hProcess = mpProgressHandler->addItem("backward integrating...",
-                                              CCopasiParameter::UINT,
-                                              & Step,
-                                              & MaxSteps);
-
-      for (Duration = -0.01; Duration > -1.0e10; Duration *= 2, Step++)
-        {
-          if (mpProgressHandler && !mpProgressHandler->progress(hProcess)) break;
-
-          pTrajectoryProblem->setDuration(Duration);
-
-          try
-            {
-              stepLimitReached = !mpTrajectory->process(true); //single step
-            }
-          catch (CCopasiException Exception)
-            {
-              //std::cout << std::endl << "exception in trajectory task" << std::endl;
-              *mpSteadyState = *mpTrajectory->getState();
-              break;
-            }
-
-          // mpParentTask->output(COutputInterface::DURING);
-
-          *mpSteadyState = *mpTrajectory->getState();
-
-          if (containsNaN())
-            break;
-
-          if (!(mAcceptNegative || allPositive()))
-            break;
-
-          calculateDerivativesX();
-          if (isSteadyState(targetFunction(mdxdt)))
-            {
-              if (mpProgressHandler) mpProgressHandler->finish(hProcess);
-              return returnProcess(true);
-            }
-
-          //try Newton
-          //mInitialStateX = mStateX;
-          if (mUseNewton)
-            {
-              returnCode = processNewton();
-              // mpParentTask->separate(COutputInterface::DURING);
-
-              if (returnCode == CNewtonMethod::found)
-              {return returnProcess(true);}
-            }
-          if (stepLimitReached)
-            {
-              //std::cout << "Step limit reached at Endtime " << Duration << std::endl;
-              break;
-            }
-        }
-      if (mpProgressHandler) mpProgressHandler->finish(hProcess);
+      if (returnCode == CNewtonMethod::found)
+        return returnProcess(true);
     }
-
-  //if (mpProgressHandler) mpProgressHandler->finish();
 
   return returnProcess(false);
 }
@@ -416,6 +426,8 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doNewtonStep(C_FLOAT64 & currentV
       if (info > 0)
         {
           //if (mpProgressHandler) mpProgressHandler->finish(hProcess);
+          if (mKeepProtocol)
+            mMethodLog << "    Newton step failed. Jacobian could not be inverted.\n";
           return CNewtonMethod::singularJacobian;
         }
       fatalError();
@@ -516,6 +528,7 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doNewtonStep(C_FLOAT64 & currentV
       calculateDerivativesX();
       currentValue = targetFunction(mdxdt);
 
+      if (mKeepProtocol) mMethodLog << "    Newton step failed. Damping limit exceeded.\n";
       return CNewtonMethod::dampingLimitExceeded;
 
       //       if (isSteadyState(oldMaxRate) && (mAcceptNegative || allPositive()))
@@ -529,6 +542,15 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doNewtonStep(C_FLOAT64 & currentV
     }
 
   currentValue = newValue; //return the new target value
+
+  if (mKeepProtocol)
+    {
+      if (i <= 1)
+        mMethodLog << "    Regular Newton step.      New value: " << currentValue << "\n";
+      else
+        mMethodLog << "    Newton step with damping. New value: " << currentValue
+        << " (" << i - 1 << " damping iteration(s))\n";
+    }
   return CNewtonMethod::stepSuccesful;
 }
 
@@ -553,21 +575,34 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::processNewton()
   calculateDerivativesX();
   targetValue = targetFunction(mdxdt);
 
-  for (k = 0; k < mIterationLimit && !isSteadyState(targetValue); k++)
-    {
-      if (mpProgressHandler && !mpProgressHandler->progress(hProcess)) break;
+  {
+    if (mKeepProtocol) mMethodLog << "   Starting Newton Iterations...\n";
 
-      result = doNewtonStep(targetValue);
+    for (k = 0; k < mIterationLimit && !isSteadyState(targetValue); k++)
+      {
+        if (mpProgressHandler && !mpProgressHandler->progress(hProcess)) break;
 
-      if (singularJacobian == result) break;
-      if (dampingLimitExceeded == result) break;
-    }
+        result = doNewtonStep(targetValue);
+
+        if (singularJacobian == result) break;
+        if (dampingLimitExceeded == result) break;
+      }
+  }
 
   //check if ss was found. If not make sure the correct return value is set
   if (isSteadyState(targetValue))
     result = CNewtonMethod::found;
   else if (CNewtonMethod::stepSuccesful == result)
     result = CNewtonMethod::iterationLimitExceeded;
+
+  //log
+  if (mKeepProtocol)
+    {
+      if (CNewtonMethod::found == result)
+        mMethodLog << "   Success: Target criterium matched by " << targetValue << ".\n";
+      else if (CNewtonMethod::dampingLimitExceeded == result)
+        mMethodLog << "   Failed: Target criterium not matched after reaching iteration limit. " << targetValue << "\n";
+    }
 
   //do an additional newton step to refine the result
   if ((CNewtonMethod::found == result) && mForceNewton)
@@ -577,6 +612,8 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::processNewton()
 
       if (tmp)
         {
+          if (mKeepProtocol) mMethodLog << "   Do additional step to refine result...\n";
+
           result = doNewtonStep(targetValue);
           if (CNewtonMethod::stepSuccesful == result)
             result = CNewtonMethod::found;
@@ -593,9 +630,6 @@ void CNewtonMethod::calculateDerivativesX()
   mpModel->setState(*mpSteadyState);
   mpModel->updateSimulatedValues();
   mpModel->calculateDerivativesX(mdxdt.array());
-
-  // DebugFile << "CNewtonMethod::calculateDerivativesX" << std::endl;
-  // DebugFile << mdxdt << std::endl;
 }
 
 bool CNewtonMethod::allPositive()
@@ -735,7 +769,8 @@ bool CNewtonMethod::initialize(const CSteadyStateProblem * pProblem)
   cleanup();
 
   /* Configure Newton */
-  mUseNewton = mUseIntegration = mUseBackIntegration = mAcceptNegative = mForceNewton = false;
+  mUseNewton = mUseIntegration = mUseBackIntegration = mAcceptNegative
+                                 = mForceNewton = mKeepProtocol = false;
 
   if (* getValue("Use Newton").pBOOL)
     mUseNewton = true;
@@ -745,8 +780,10 @@ bool CNewtonMethod::initialize(const CSteadyStateProblem * pProblem)
     mUseBackIntegration = true;
   if (* getValue("Accept Negative Concentrations").pBOOL)
     mAcceptNegative = true;
-  if (* getValue("Force additional Newton step").pBOOL)
-    mForceNewton = true;
+  //if (* getValue("Force additional Newton step").pBOOL)
+  mForceNewton = true;
+  //if (* getValue("Keep Protocol").pBOOL)
+  mKeepProtocol = true;
 
   mIterationLimit = * getValue("Iteration Limit").pUINT;
   //mFactor = * getValue("Derivation Factor").pUDOUBLE;

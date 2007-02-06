@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateMethod.h,v $
-//   $Revision: 1.19.8.1 $
+//   $Revision: 1.19.8.2 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/01/25 13:58:17 $
+//   $Date: 2007/02/06 15:29:57 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,6 +23,7 @@
 #define COPASI_CSteadyStateMethod
 
 #include <string>
+#include <sstream>
 
 #include "utilities/CCopasiMethod.h"
 #include "utilities/CMatrix.h"
@@ -69,7 +70,7 @@ class CSteadyStateMethod : public CCopasiMethod
     /**
      * The jacobian of the steadystate
      */
-    CMatrix< C_FLOAT64 > * mpJacobian;
+    //CMatrix< C_FLOAT64 > * mpJacobian;
 
     /**
      * The jacobian of the steadystate
@@ -105,6 +106,8 @@ class CSteadyStateMethod : public CCopasiMethod
      * The resolution of the variable of numerical derivation
      */
     C_FLOAT64* mpDerivationResolution;
+
+    std::ostringstream mMethodLog;
 
     // Operations
   private:
@@ -164,7 +167,7 @@ class CSteadyStateMethod : public CCopasiMethod
      * @return CSteadyStateMethod::ReturnCode returnCode
      */
     CSteadyStateMethod::ReturnCode process(CState * pState,
-                                           CMatrix< C_FLOAT64 > & jacobian,
+                                           //CMatrix< C_FLOAT64 > & jacobian,
                                            CMatrix< C_FLOAT64 > & jacobianX,
                                            //CEigen & EigenValues,
                                            //CEigen & EigenValuesX,
@@ -195,6 +198,8 @@ class CSteadyStateMethod : public CCopasiMethod
      * returns the resolution for stability analysis
      */
     C_FLOAT64 getStabilityResolution();
+
+    std::string getMethodLog();
 
   protected:
 

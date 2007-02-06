@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.h,v $
-//   $Revision: 1.25.8.2 $
+//   $Revision: 1.25.8.3 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/01/30 23:28:29 $
+//   $Date: 2007/02/06 15:29:57 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -49,6 +49,7 @@ class CNewtonMethod : public CSteadyStateMethod
     bool mUseBackIntegration;
     bool mAcceptNegative;
     bool mForceNewton;
+    bool mKeepProtocol;
     C_INT32 mIterationLimit;
 
     //C_FLOAT64 mFactor;
@@ -64,9 +65,6 @@ class CNewtonMethod : public CSteadyStateMethod
     C_INT * mIpiv;
 
     CTrajectoryTask * mpTrajectory;
-
-    //CStateX mStateX;
-    //CStateX mInitialStateX;
 
     // Operations
   private:
@@ -163,6 +161,8 @@ class CNewtonMethod : public CSteadyStateMethod
      * Possible return values are:  dampingLimitExceeded, singularJacobian, stepSuccesful
      */
     CNewtonMethod::NewtonResultCode doNewtonStep(C_FLOAT64 & currentValue);
+
+    CNewtonMethod::NewtonResultCode doIntegration(bool forward);
 
     void calculateDerivativesX();
     //void calculateJacobianX(const C_FLOAT64 & oldMaxRate);

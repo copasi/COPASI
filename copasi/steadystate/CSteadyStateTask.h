@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.h,v $
-   $Revision: 1.29 $
-   $Name:  $
-   $Author: gauges $
-   $Date: 2006/10/15 08:31:13 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.h,v $
+//   $Revision: 1.29.2.1 $
+//   $Name:  $
+//   $Author: ssahle $
+//   $Date: 2007/02/06 15:29:57 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -27,6 +27,7 @@
 
 #include "utilities/CCopasiTask.h"
 #include "utilities/CMatrix.h"
+#include "utilities/CAnnotatedMatrix.h"
 #include "utilities/CReadConfig.h"
 #include "steadystate/CSteadyStateMethod.h"
 #include "steadystate/CEigen.h"
@@ -53,6 +54,9 @@ class CSteadyStateTask : public CCopasiTask
      * The jacobian of the steady state.
      */
     CMatrix< C_FLOAT64 > mJacobianX;
+
+    CArrayAnnotation * mpJacobianAnn;
+    CArrayAnnotation * mpJacobianXAnn;
 
     /**
      * Whether the model is actually reducable and calculating
@@ -177,6 +181,8 @@ class CSteadyStateTask : public CCopasiTask
      * cleanup()
      */
     void cleanup();
+
+    void initObjects();
   };
 
 #endif // COPASI_CSteadyStateTask

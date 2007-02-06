@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-//   $Revision: 1.63.2.3 $
+//   $Revision: 1.63.2.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/02/05 18:12:39 $
+//   $Author: ssahle $
+//   $Date: 2007/02/06 15:29:57 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -38,6 +38,8 @@ CSteadyStateTask::CSteadyStateTask(const CCopasiContainer * pParent):
     mpSteadyState(NULL),
     mJacobian(),
     mJacobianX(),
+    mpJacobianAnn(NULL),
+    mpJacobianXAnn(NULL),
     mEigenValues("Eigenvalues of Jacobian", this),
     mEigenValuesX("Eigenvalues of reduced system Jacobian", this)
 {
@@ -47,6 +49,7 @@ CSteadyStateTask::CSteadyStateTask(const CCopasiContainer * pParent):
   this->add(mpMethod, true);
   //mpMethod->setObjectParent(this);
   //((CSteadyStateMethod *) mpMethod)->setProblem((CSteadyStateProblem *) mpProblem);
+  initObjects();
 }
 
 CSteadyStateTask::CSteadyStateTask(const CSteadyStateTask & src,
@@ -55,6 +58,8 @@ CSteadyStateTask::CSteadyStateTask(const CSteadyStateTask & src,
     mpSteadyState(src.mpSteadyState),
     mJacobian(src.mJacobian),
     mJacobianX(src.mJacobianX),
+    mpJacobianAnn(NULL),
+    mpJacobianXAnn(NULL),
     mEigenValues(src.mEigenValues, this),
     mEigenValuesX(src.mEigenValuesX, this)
 {
@@ -65,6 +70,7 @@ CSteadyStateTask::CSteadyStateTask(const CSteadyStateTask & src,
   this->add(mpMethod, true);
   //mpMethod->setObjectParent(this);
   //((CSteadyStateMethod *) mpMethod)->setProblem((CSteadyStateProblem *) mpProblem);
+  initObjects();
 }
 
 CSteadyStateTask::~CSteadyStateTask()
@@ -74,6 +80,23 @@ CSteadyStateTask::~CSteadyStateTask()
 
 void CSteadyStateTask::cleanup()
 {}
+
+void CSteadyStateTask::initObjects()
+{
+  mpJacobianAnn = new CArrayAnnotation("Jacobian", this,
+                                       new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mJacobian));
+  mpJacobianAnn->setOnTheFly(false);
+  mpJacobianAnn->setDescription("");
+  mpJacobianAnn->setDimensionDescription(0, "Variables of the system, including dependent metabolites");
+  mpJacobianAnn->setDimensionDescription(1, "Variables of the system, including dependent metabolites");
+
+  mpJacobianXAnn = new CArrayAnnotation("Jacobian (reduced system)", this,
+                                        new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mJacobianX));
+  mpJacobianXAnn->setOnTheFly(false);
+  mpJacobianXAnn->setDescription("");
+  mpJacobianXAnn->setDimensionDescription(0, "Independent variables of the system");
+  mpJacobianXAnn->setDimensionDescription(1, "Independent variables of the system");
+}
 
 void CSteadyStateTask::print(std::ostream * ostream) const {(*ostream) << (*this);}
 
@@ -173,11 +196,14 @@ bool CSteadyStateTask::process(const bool & useInitialValues)
 
   //call the method
   mResult = pMethod->process(mpSteadyState,
-                             mJacobian,
+                             //mJacobian,
                              mJacobianX,
                              //mEigenValues,
                              //mEigenValuesX,
                              mpCallBack);
+
+  //debug
+  std::cout << pMethod->getMethodLog() << std::endl;
 
   //update jacobian
   if (pProblem->isJacobianRequested() ||

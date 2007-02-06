@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateMethod.cpp,v $
-//   $Revision: 1.27.4.2 $
+//   $Revision: 1.27.4.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/02/05 18:12:39 $
+//   $Author: ssahle $
+//   $Date: 2007/02/06 15:29:57 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -85,16 +85,20 @@ void CSteadyStateMethod::initializeParameter()
 {
   CCopasiParameter *pParm;
 
-  assertParameter("Steady State Resolution", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-009);
-  mpSSResolution = (C_FLOAT64*)getValue("Steady State Resolution").pUDOUBLE;
+  assertParameter("Resolution", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-009);
+  mpSSResolution = (C_FLOAT64*)getValue("Resolution").pUDOUBLE;
+  mpDerivationResolution = (C_FLOAT64*)getValue("Resolution").pUDOUBLE;
+
+  //assertParameter("Steady State Resolution", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-009);
+  //mpSSResolution = (C_FLOAT64*)getValue("Steady State Resolution").pUDOUBLE;
 
   assertParameter("Derivation Factor", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-003);
   mpDerivationFactor = (C_FLOAT64*)getValue("Derivation Factor").pUDOUBLE;
 
-  assertParameter("Derivation Resolution", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-009);
-  mpDerivationResolution = (C_FLOAT64*)getValue("Derivation Resolution").pUDOUBLE;
+  //assertParameter("Derivation Resolution", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-009);
+  //mpDerivationResolution = (C_FLOAT64*)getValue("Derivation Resolution").pUDOUBLE;
 
-  assertParameter("Stability Resolution", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-009);
+  //assertParameter("Stability Resolution", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-009);
 
   // Check whether we have a method with the old parameter names
   if ((pParm = getParameter("Newton.DerivationFactor")) != NULL)
@@ -105,19 +109,20 @@ void CSteadyStateMethod::initializeParameter()
 
   if ((pParm = getParameter("Newton.Resolution")) != NULL)
     {
-      setValue("Steady State Resolution", *pParm->getValue().pUDOUBLE);
-      setValue("Derivation Resolution", *pParm->getValue().pUDOUBLE);
-      setValue("Stability Resolution", *pParm->getValue().pUDOUBLE);
+      setValue("Resolution", *pParm->getValue().pUDOUBLE);
+      //setValue("Steady State Resolution", *pParm->getValue().pUDOUBLE);
+      //setValue("Derivation Resolution", *pParm->getValue().pUDOUBLE);
+      //setValue("Stability Resolution", *pParm->getValue().pUDOUBLE);
       removeParameter("Newton.Resolution");
     }
 
-  if ((pParm = getParameter("Resolution")) != NULL)
-    {
-      setValue("Steady State Resolution", *pParm->getValue().pUDOUBLE);
-      setValue("Derivation Resolution", *pParm->getValue().pUDOUBLE);
-      setValue("Stability Resolution", *pParm->getValue().pUDOUBLE);
-      removeParameter("Resolution");
-    }
+  //if ((pParm = getParameter("Resolution")) != NULL)
+  //  {
+  //    setValue("Steady State Resolution", *pParm->getValue().pUDOUBLE);
+  //    setValue("Derivation Resolution", *pParm->getValue().pUDOUBLE);
+  //    setValue("Stability Resolution", *pParm->getValue().pUDOUBLE);
+  //    removeParameter("Resolution");
+  //}
 }
 
 bool CSteadyStateMethod::elevateChildren()
@@ -138,7 +143,7 @@ bool CSteadyStateMethod::elevateChildren()
  */
 CSteadyStateMethod::ReturnCode
 CSteadyStateMethod::process(CState * pState,
-                            CMatrix< C_FLOAT64 > & jacobian,
+                            //CMatrix< C_FLOAT64 > & jacobian,
                             CMatrix< C_FLOAT64 > & jacobianX,
                             //CEigen & EigenValues,
                             //CEigen & EigenValuesX,
@@ -148,7 +153,7 @@ CSteadyStateMethod::process(CState * pState,
   assert(mpParentTask);
 
   mpSteadyState = pState;
-  mpJacobian = & jacobian;
+  //mpJacobian = & jacobian;
   mpJacobianX = & jacobianX;
   //mpEigenValues = & EigenValues;
   //mpEigenValuesX = & EigenValuesX;
@@ -250,7 +255,8 @@ void CSteadyStateMethod::doJacobian(CMatrix< C_FLOAT64 > & jacobian,
 
 C_FLOAT64 CSteadyStateMethod::getStabilityResolution()
 {
-  C_FLOAT64* pTmp = (C_FLOAT64*)getValue("Stability Resolution").pUDOUBLE;
+  //C_FLOAT64* pTmp = (C_FLOAT64*)getValue("Stability Resolution").pUDOUBLE;
+  C_FLOAT64* pTmp = (C_FLOAT64*)getValue("Resolution").pUDOUBLE;
   assert(pTmp);
   return *pTmp;
 }
@@ -262,4 +268,9 @@ void CSteadyStateMethod::calculateJacobianX(const C_FLOAT64 & oldMaxRate)
   mpModel->calculateJacobianX(*mpJacobianX,
                               std::min(*mpDerivationFactor, oldMaxRate),
                               *mpDerivationResolution);
+}
+
+std::string CSteadyStateMethod::getMethodLog()
+{
+  return mMethodLog.str();
 }
