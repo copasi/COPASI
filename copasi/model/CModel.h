@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.138.2.2 $
+//   $Revision: 1.138.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/05 18:12:38 $
+//   $Date: 2007/02/06 15:07:19 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -225,11 +225,6 @@ class CModel : public CModelEntity
      *  vector of non concentration values in the model
      */
     CCopasiVectorN< CModelValue > mValues;
-
-    /**
-     *  Transition time
-     */
-    C_FLOAT64 mTransitionTime;
 
     /**
      *  for array of conserved moieties
@@ -510,12 +505,6 @@ class CModel : public CModelEntity
 
     //********** TT *****************************
 
-    /**
-     *  Set the transition times for all internal metabolites and the
-     *  transistion time of the model.
-     */
-    void setTransitionTimes();
-
   public:
     //********** Reactions *****************************
 
@@ -717,11 +706,6 @@ class CModel : public CModelEntity
      * &param C_FLOAT64 * derivatives (output)
      */
     void calculateDerivativesX(C_FLOAT64 * derivativesX);
-
-    /**
-     * Calculates and assignes the rates for all model entitities if possible
-     */
-    void refreshRates();
 
     /**
      * Calculates the elasticity matrix of the model for the current

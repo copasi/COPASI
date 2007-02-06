@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.294.2.4 $
+//   $Revision: 1.294.2.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/05 18:12:38 $
+//   $Date: 2007/02/06 15:07:19 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -89,7 +89,6 @@ CModel::CModel():
     mSteps("Reactions", this),
     mParticleFluxes(),
     mValues("Values", this),
-    mTransitionTime(0.0),
     mMoieties("Moieties", this),
     mStoi(),
     mStoiReordered(),
@@ -150,7 +149,6 @@ CModel::CModel(const CModel & src):
     mSteps(src.mSteps, this),
     mParticleFluxes(src.mParticleFluxes),
     mValues(src.mValues, this),
-    mTransitionTime(src.mTransitionTime),
     mMoieties(src.mMoieties, this),
     mStoi(src.mStoi),
     mStoiReordered(src.mStoiReordered),
@@ -786,75 +784,6 @@ void CModel::buildMoieties()
   updateMoietyValues();
   return;
 }
-
-#ifdef WIN32
-// warning C4056: overflow in floating-point constant arithmetic
-// warning C4756: overflow in constant arithmetic
-# pragma warning (disable: 4056 4756)
-#endif
-
-void CModel::setTransitionTimes()
-{
-  unsigned C_INT32 i, imax = mMetabolites.size();
-  unsigned C_INT32 j, jmax = mSteps.size();
-
-  // Since some metabolites are unused we need to keep track of
-  // the row of the stoichiometry matrix intependently.
-  unsigned C_INT32 k;
-
-  C_FLOAT64 TotalFlux_p, TotalFlux_n, min_flux, PartialFlux;
-  C_FLOAT64 TransitionTime;
-
-  mTransitionTime = 0.0;
-
-  for (i = 0, k = 0; i < imax; i++)
-    {
-      if (mMetabolites[i]->isFixed() ||
-          !mMetabolites[i]->isUsed())
-        {
-          mMetabolites[i]->setTransitionTime(2 * DBL_MAX);
-        }
-      else
-        {
-          TotalFlux_p = 0.0;
-          TotalFlux_n = 0.0;
-
-          for (j = 0; j < jmax; j++)
-            {
-              PartialFlux = mStoi(k, j) * mParticleFluxes[j];
-
-              if (PartialFlux > 0.0)
-                TotalFlux_p += PartialFlux;
-              else
-                TotalFlux_n -= PartialFlux;
-            }
-
-          k++; // The next row in the stoichiometry matrix;
-
-          if (TotalFlux_p < TotalFlux_n)
-            min_flux = TotalFlux_p;
-          else
-            min_flux = TotalFlux_n;
-
-          if (min_flux == 0.0)
-            TransitionTime = 2 * DBL_MAX;
-          else
-            TransitionTime = mMetabolites[i]->getValue() / min_flux;
-
-          mMetabolites[i]->setTransitionTime(TransitionTime);
-          //mMetabolites[i]->setNumberRate(TotalFlux);
-
-          if (!finite(TransitionTime))
-            mTransitionTime = TransitionTime;
-          else
-            mTransitionTime += TransitionTime;
-        }
-    }
-}
-
-#ifdef WIN32
-# pragma warning (default: 4056 4756)
-#endif
 
 //this is supposed to be so fast it can be called often to be kept up to date
 //all the time. At the moment it creates the mMetabolites and sorts the fixed
@@ -1671,24 +1600,6 @@ void CModel::calculateDerivativesX(C_FLOAT64 * derivativesX)
   if (K != 0)
     dgemm_(&T, &T, &M, &N, &K, &Alpha, mParticleFluxes.array(), &M,
            mRedStoi.array(), &K, &Beta, pTmp, &M);
-}
-
-void CModel::refreshRates()
-{
-  CVector< C_FLOAT64 > Rates(mStateTemplate.getNumIndependent() - mNumMetabolitesIndependent + mNumMetabolitesReaction);
-  C_FLOAT64 * pRate = Rates.array();
-  calculateDerivatives(pRate);
-
-  // The offset 1 is for the model time which is always the first
-  // state variable.
-  CModelEntity ** ppIt =
-    mStateTemplate.getEntities() + 1 + mStateTemplate.getNumIndependent() - mNumMetabolitesIndependent;
-
-  CModelEntity ** ppEnd = ppIt + mNumMetabolitesReaction;
-  pRate += mStateTemplate.getNumIndependent() - mNumMetabolitesIndependent;
-
-  for (; ppIt != ppEnd; ++ppIt, ++pRate)
-    (*ppIt)->setRate(*pRate);
 }
 
 void CModel::calculateElasticityMatrix(const C_FLOAT64 & factor,
