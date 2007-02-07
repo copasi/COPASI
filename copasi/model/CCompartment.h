@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CCompartment.h,v $
-   $Revision: 1.46 $
-   $Name:  $
-   $Author: gauges $
-   $Date: 2006/10/15 07:32:22 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CCompartment.h,v $
+//   $Revision: 1.46.2.1 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/07 16:55:09 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -62,12 +62,18 @@ class CCompartment : public CModelEntity
      *  Destructor.
      *  The destructor does nothing.
      */
-    ~CCompartment();
+    virtual ~CCompartment();
 
     /**
      *  Cleanup
      */
     void cleanup();
+
+    /**
+     * Retreive the list of deleted numeric child objects;
+     * @return std::set< const CCopasiObject * > deletedObjects
+     */
+    virtual std::set< const CCopasiObject * > getDeletedObjects() const;
 
     /**
      *  Loads an object with data coming from a CReadConfig object.

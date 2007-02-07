@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-//   $Revision: 1.164.2.1 $
+//   $Revision: 1.164.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/07 14:53:17 $
+//   $Date: 2007/02/07 16:55:09 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -473,49 +473,23 @@ void CReaction::compile()
         }
     }
 
-  const CMetab * pMetab;
-  std::set< const CCopasiObject * > Deleted;
-  std::set< const CCopasiObject * >::const_iterator itDeleted;
-  std::set< const CCopasiObject * >::const_iterator endDeleted;
-
   CCopasiVector < CChemEqElement >::const_iterator it = mChemEq.getSubstrates().begin();
   CCopasiVector < CChemEqElement >::const_iterator end = mChemEq.getSubstrates().end();
 
   for (; it != end; ++it)
-    {
-      Deleted = (*it)->getMetabolite()->getDeletedObjects();
-      itDeleted = Deleted.begin();
-      endDeleted = Deleted.end();
-
-      for (; itDeleted != endDeleted; ++itDeleted)
-        mDependencies.insert(*itDeleted);
-    }
+    mDependencies.insert((*it)->getMetabolite());
 
   it = mChemEq.getProducts().begin();
   end = mChemEq.getProducts().end();
 
   for (; it != end; ++it)
-    {
-      Deleted = (*it)->getMetabolite()->getDeletedObjects();
-      itDeleted = Deleted.begin();
-      endDeleted = Deleted.end();
-
-      for (; itDeleted != endDeleted; ++itDeleted)
-        mDependencies.insert(*itDeleted);
-    }
+    mDependencies.insert((*it)->getMetabolite());
 
   it = mChemEq.getModifiers().begin();
   end = mChemEq.getModifiers().end();
 
   for (; it != end; ++it)
-    {
-      Deleted = (*it)->getMetabolite()->getDeletedObjects();
-      itDeleted = Deleted.begin();
-      endDeleted = Deleted.end();
-
-      for (; itDeleted != endDeleted; ++itDeleted)
-        mDependencies.insert(*itDeleted);
-    }
+    mDependencies.insert((*it)->getMetabolite());
 
   mpFluxReference->setDirectDependencies(Dependencies);
   mpParticleFluxReference->setDirectDependencies(Dependencies);

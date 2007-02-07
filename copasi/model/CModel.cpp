@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.294.2.6 $
+//   $Revision: 1.294.2.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/07 14:44:32 $
+//   $Date: 2007/02/07 16:55:09 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -2043,7 +2043,9 @@ void CModel::appendDependentMetabolites(std::set< const CCopasiObject * > candid
         end = (*itComp)->getMetabolites().end();
 
         for (; it != end; ++it)
-          if (candidates.find(*it) == candidates.end())
+          if (candidates.find((*it)->getCompartment()) != candidates.end())
+            dependentMetabolites.insert((*it));
+          else if (candidates.find(*it) == candidates.end())
             {
               if (candidates.find((*it)->getCompartment()->getObject(CCopasiObjectName("Reference=Volume"))) != candidates.end() ||
                   (*it)->hasCircularDependencies(candidates))
