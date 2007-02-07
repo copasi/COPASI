@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $ 
-#   $Revision: 1.142.2.2 $ 
+#   $Revision: 1.142.2.3 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2007/02/07 17:41:12 $ 
+#   $Date: 2007/02/07 20:49:58 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -11,7 +11,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.142.2.2 $ $Author: shoops $ $Date: 2007/02/07 17:41:12 $  
+# $Revision: 1.142.2.3 $ $Author: shoops $ $Date: 2007/02/07 20:49:58 $  
 ######################################################################
 
 LIB = UI
@@ -32,7 +32,6 @@ HEADERS += \
            CCopasiSelectionWidget.h \
            CCopasiSimpleSelectionTree.h \
            ChemEqValidator.h \
-           CMCAWidget.h \
            CMCAResultWidget.h \
            CReportDefinitionSelect.h \
            CompartmentsWidget.h \
@@ -96,7 +95,6 @@ SOURCES += \
            CCopasiSelectionDialog.cpp \
            CCopasiSelectionWidget.cpp \
            CCopasiSimpleSelectionTree.cpp \
-           CMCAWidget.cpp \
            CMCAResultWidget.cpp \
            CReportDefinitionSelect.cpp \
            CompartmentsWidget.cpp \
@@ -172,6 +170,7 @@ SOURCES += \
 # FORMS += CQFittingResultTab1.ui
 # FORMS += CQFittingWidget.ui
 # FORMS += CQLyapWidget.ui
+FORMS += CQMCAWidget.ui
 # FORMS += CQModelValue.ui
 # FORMS += CQOptimizationWidget.ui
 # FORMS += CQProgressDialog.ui
@@ -218,6 +217,8 @@ HEADERS += \
            CQFittingWidget.ui.h \
            CQLyapWidget.h \
            CQLyapWidget.ui.h \
+           CQMCAWidget.h \
+           CQMCAWidget.ui.h \
            CQOptimizationWidget.h \
            CQOptimizationWidget.ui.h \
            CQProgressDialog.h \
@@ -278,6 +279,7 @@ SOURCES += \
            CQFittingResultTab1.cpp \
            CQFittingWidget.cpp \
            CQLyapWidget.cpp \
+           CQMCAWidget.cpp \
            CQModelValue.cpp \
            CQOptimizationWidget.cpp \
            CQProgressItem.cpp \

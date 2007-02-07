@@ -83,10 +83,6 @@ SOURCE=.\CMCAResultWidget.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\CMCAWidget.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\CompartmentsWidget.cpp
 # End Source File
 # Begin Source File
@@ -172,6 +168,10 @@ SOURCE=.\CQLyapResultWidget.cpp
 # Begin Source File
 
 SOURCE=.\CQLyapWidget.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQMCAWidget.cpp
 # End Source File
 # Begin Source File
 
@@ -495,10 +495,6 @@ SOURCE=.\CMCAResultWidget.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\CMCAWidget.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\CompartmentsWidget.h
 # End Source File
 # Begin Source File
@@ -616,6 +612,14 @@ SOURCE=.\CQLyapWidget.h
 # Begin Source File
 
 SOURCE=.\CQLyapWidget.ui.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQMCAWidget.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQMCAWidget.ui.h
 # End Source File
 # Begin Source File
 
@@ -1049,6 +1053,10 @@ SOURCE=.\CQFittingWidget.ui
 # Begin Source File
 
 SOURCE=.\CQLyapWidget.ui
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQMCAWidget.ui
 # End Source File
 # Begin Source File
 

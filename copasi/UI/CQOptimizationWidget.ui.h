@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQOptimizationWidget.ui.h,v $
-   $Revision: 1.16 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/11/16 15:45:13 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQOptimizationWidget.ui.h,v $
+//   $Revision: 1.16.2.1 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/07 20:49:58 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -218,7 +218,6 @@ finish:
     }
 
   commonAfterRunTask();
-  loadTask();
 
   return success;
 }

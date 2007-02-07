@@ -1,0 +1,114 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<comment> Begin CVS Header </comment>
+<comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMCAWidget.ui,v $ </comment>
+<comment>   $Revision: 1.1.2.1 $ </comment>
+<comment>   $Name:  $ </comment>
+<comment>   $Author: shoops $ </comment>
+<comment>   $Date: 2007/02/07 20:49:58 $ </comment>
+<comment> End CVS Header </comment>
+
+<comment> Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc. and EML Research, gGmbH. </comment>
+<comment> All rights reserved. </comment>
+
+<class>CQMCAWidget</class>
+<comment> All rights reserved. </comment>
+<widget class="TaskWidget">
+    <property name="name">
+        <cstring>CQMCAWidget</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>293</width>
+            <height>53</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>CQMCAWidget</string>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>mpGridLayout</cstring>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <spacer row="0" column="0">
+                    <property name="name">
+                        <cstring>mpSacer</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Fixed</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>100</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QCheckBox" row="0" column="1">
+                    <property name="name">
+                        <cstring>mpCheckSteadyState</cstring>
+                    </property>
+                    <property name="text">
+                        <string>perform Steady State Analysis</string>
+                    </property>
+                </widget>
+                <widget class="Line" row="1" column="0" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>mpLine</cstring>
+                    </property>
+                    <property name="frameShape">
+                        <enum>HLine</enum>
+                    </property>
+                    <property name="frameShadow">
+                        <enum>Sunken</enum>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+    </vbox>
+</widget>
+<connections>
+    <connection>
+        <sender>mpCheckSteadyState</sender>
+        <signal>clicked()</signal>
+        <receiver>CQMCAWidget</receiver>
+        <slot>slotSteadyStateChecked()</slot>
+    </connection>
+</connections>
+<tabstops>
+    <tabstop>mpCheckSteadyState</tabstop>
+</tabstops>
+<includes>
+    <include location="local" impldecl="in declaration">TaskWidget.h</include>
+    <include location="local" impldecl="in implementation">CQMCAWidget.ui.h</include>
+</includes>
+<slots>
+    <slot>slotSteadyStateChecked()</slot>
+</slots>
+<functions>
+    <function returnType="bool">runTask()</function>
+    <function access="protected" returnType="CCopasiMethod *">createMethod( const CCopasiMethod::SubType &amp; type )</function>
+    <function access="protected" returnType="bool">loadTask()</function>
+    <function access="protected" returnType="bool">saveTask()</function>
+    <function access="private" specifier="non virtual">init()</function>
+    <function access="private" specifier="non virtual" returnType="bool">loadParameterTable()</function>
+    <function access="private" specifier="non virtual" returnType="bool">saveParameterTable()</function>
+</functions>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>
