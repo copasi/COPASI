@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $ 
-#   $Revision: 1.142.2.3 $ 
+#   $Revision: 1.142.2.4 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2007/02/07 20:49:58 $ 
+#   $Date: 2007/02/07 21:28:39 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -11,7 +11,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.142.2.3 $ $Author: shoops $ $Date: 2007/02/07 20:49:58 $  
+# $Revision: 1.142.2.4 $ $Author: shoops $ $Date: 2007/02/07 21:28:39 $  
 ######################################################################
 
 LIB = UI
@@ -170,7 +170,7 @@ SOURCES += \
 # FORMS += CQFittingResultTab1.ui
 # FORMS += CQFittingWidget.ui
 # FORMS += CQLyapWidget.ui
-FORMS += CQMCAWidget.ui
+# FORMS += CQMCAWidget.ui
 # FORMS += CQModelValue.ui
 # FORMS += CQOptimizationWidget.ui
 # FORMS += CQProgressDialog.ui
