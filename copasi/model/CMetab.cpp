@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-//   $Revision: 1.111.2.1 $
+//   $Revision: 1.111.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/02 20:30:45 $
+//   $Date: 2007/02/07 14:53:17 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -475,6 +475,7 @@ std::set< const CCopasiObject * > CMetab::getDeletedObjects() const
   {
     std::set< const CCopasiObject * > Deleted = CModelEntity::getDeletedObjects();
 
+    Deleted.insert(this);
     Deleted.insert(mpIConcReference);
     Deleted.insert(mpConcReference);
     Deleted.insert(mpConcRateReference);

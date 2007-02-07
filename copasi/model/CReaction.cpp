@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.164 $
-   $Name:  $
-   $Author: ssahle $
-   $Date: 2007/01/09 13:44:15 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
+//   $Revision: 1.164.2.1 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/07 14:53:17 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -473,17 +473,49 @@ void CReaction::compile()
         }
     }
 
+  const CMetab * pMetab;
+  std::set< const CCopasiObject * > Deleted;
+  std::set< const CCopasiObject * >::const_iterator itDeleted;
+  std::set< const CCopasiObject * >::const_iterator endDeleted;
+
   CCopasiVector < CChemEqElement >::const_iterator it = mChemEq.getSubstrates().begin();
   CCopasiVector < CChemEqElement >::const_iterator end = mChemEq.getSubstrates().end();
 
   for (; it != end; ++it)
-    mDependencies.insert((*it)->getMetabolite());
+    {
+      Deleted = (*it)->getMetabolite()->getDeletedObjects();
+      itDeleted = Deleted.begin();
+      endDeleted = Deleted.end();
+
+      for (; itDeleted != endDeleted; ++itDeleted)
+        mDependencies.insert(*itDeleted);
+    }
 
   it = mChemEq.getProducts().begin();
   end = mChemEq.getProducts().end();
 
   for (; it != end; ++it)
-    mDependencies.insert((*it)->getMetabolite());
+    {
+      Deleted = (*it)->getMetabolite()->getDeletedObjects();
+      itDeleted = Deleted.begin();
+      endDeleted = Deleted.end();
+
+      for (; itDeleted != endDeleted; ++itDeleted)
+        mDependencies.insert(*itDeleted);
+    }
+
+  it = mChemEq.getModifiers().begin();
+  end = mChemEq.getModifiers().end();
+
+  for (; it != end; ++it)
+    {
+      Deleted = (*it)->getMetabolite()->getDeletedObjects();
+      itDeleted = Deleted.begin();
+      endDeleted = Deleted.end();
+
+      for (; itDeleted != endDeleted; ++itDeleted)
+        mDependencies.insert(*itDeleted);
+    }
 
   mpFluxReference->setDirectDependencies(Dependencies);
   mpParticleFluxReference->setDirectDependencies(Dependencies);
