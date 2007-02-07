@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $ 
-#   $Revision: 1.142.2.1 $ 
+#   $Revision: 1.142.2.2 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2007/02/07 15:28:56 $ 
+#   $Date: 2007/02/07 17:41:12 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -11,7 +11,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.142.2.1 $ $Author: shoops $ $Date: 2007/02/07 15:28:56 $  
+# $Revision: 1.142.2.2 $ $Author: shoops $ $Date: 2007/02/07 17:41:12 $  
 ######################################################################
 
 LIB = UI
@@ -45,7 +45,6 @@ HEADERS += \
            CProgressBar.h \
            CQArrayAnnotationsWidget.h \
            CQExpressionWidget.h \
-           CQLyapWidget.h \
            CQLyapResultWidget.h \
            CQReportListItem.h \
            CQSensResultWidget.h \
@@ -111,7 +110,6 @@ SOURCES += \
            OptimizationResultWidget.cpp \
            CQArrayAnnotationsWidget.cpp \
            CQExpressionWidget.cpp \
-           CQLyapWidget.cpp \
            CQLyapResultWidget.cpp \
            CQReportListItem.cpp \
            CQSensResultWidget.cpp \
