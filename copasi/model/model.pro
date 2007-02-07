@@ -1,5 +1,17 @@
+# Begin CVS Header 
+#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/model.pro,v $ 
+#   $Revision: 1.20 $ 
+#   $Name:  $ 
+#   $Author: ssahle $ 
+#   $Date: 2007/02/07 14:25:31 $ 
+# End CVS Header 
+
+# Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc. and EML Research, gGmbH. 
+# All rights reserved. 
+
 ######################################################################
-# $Revision: 1.19 $ $Author: shoops $ $Date: 2007/01/08 17:55:44 $  
+# $Revision: 1.20 $ $Author: ssahle $ $Date: 2007/02/07 14:25:31 $  
 ######################################################################
 
 LIB = model
@@ -22,7 +34,6 @@ HEADERS += CChemEq.h \
            CObjectLists.h \
            CReaction.h \
            CReactionInterface.h \
-#           CScanInputFlexLexer.h \
            CState.h \
            model.h
            
@@ -41,7 +52,6 @@ SOURCES += CChemEq.cpp \
            CObjectLists.cpp \
            CReaction.cpp \
            CReactionInterface.cpp \
-#           CScanInputFlexLexer.cpp \
            CState.cpp
 
 
