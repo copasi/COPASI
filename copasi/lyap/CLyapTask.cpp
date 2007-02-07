@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapTask.cpp,v $
-//   $Revision: 1.9.4.1 $
+//   $Revision: 1.9.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/05 18:12:38 $
+//   $Date: 2007/02/07 15:28:56 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -56,8 +56,7 @@ CLyapTask::CLyapTask(const CCopasiContainer * pParent):
 {
   mpProblem = new CLyapProblem(this);
   mpMethod =
-    CLyapMethod::createLyapMethod(CCopasiMethod::lyapWolf,
-                                  (CLyapProblem *) mpProblem);
+    CLyapMethod::createMethod(CCopasiMethod::lyapWolf);
   this->add(mpMethod, true);
 
   initObjects();
@@ -224,8 +223,7 @@ bool CLyapTask::setMethodType(const int & type)
 
   pdelete (mpMethod);
   mpMethod =
-    CLyapMethod::createLyapMethod(Type,
-                                  (CLyapProblem *) mpProblem);
+    CLyapMethod::createMethod(Type);
   this->add(mpMethod, true);
 
   return true;

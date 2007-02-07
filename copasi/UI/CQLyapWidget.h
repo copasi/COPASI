@@ -1,105 +1,72 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLyapWidget.h,v $
-   $Revision: 1.5 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/28 00:20:16 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLyapWidget.h,v $
+//   $Revision: 1.5.2.1 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/07 15:28:56 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#ifndef LYAPWIDGET_H
-#define LYAPWIDGET_H
+/****************************************************************************
+ ** Form interface generated from reading ui file 'CQLyapWidget.ui'
+ **
+ ** Created: Tue Feb 6 14:32:59 2007
+ **      by: The User Interface Compiler ($Id: CQLyapWidget.h,v 1.5.2.1 2007/02/07 15:28:56 shoops Exp $)
+ **
+ ** WARNING! All changes made in this file will be lost!
+ ****************************************************************************/
 
-#include "copasi.h"
+#ifndef CQLYAPWIDGET_H
+#define CQLYAPWIDGET_H
+
 #include <qvariant.h>
-#include <qwidget.h>
-#include "UI/copasiWidget.h"
+#include "TaskWidget.h"
 
 class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
-class QCheckBox;
-class QComboBox;
+class QSpacerItem;
 class QFrame;
-class QLabel;
+class QCheckBox;
 class QLineEdit;
-class QPushButton;
-class QTable;
-class CLyapTask;
-class CLyapProblem;
-class CLyapMethod;
-class CModel;
+class QLabel;
 
-class CQLyapWidget : public CopasiWidget
+class CQLyapWidget : public TaskWidget
   {
     Q_OBJECT
 
   public:
-    CQLyapWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+    CQLyapWidget(QWidget* parent = 0, const char* name = 0);
     ~CQLyapWidget();
 
-    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
-    virtual bool leave();
-    virtual bool enter(const std::string & key = "");
+    QFrame* mpLine;
+    QCheckBox* mpCheckDelay;
+    QLineEdit* mpEditDelay;
+    QLineEdit* mpEditExponent;
+    QCheckBox* mpCheckDivergence;
+    QLabel* mpLblExponents;
 
-  signals:
+    virtual bool runTask();
+
+  protected:
+    virtual CCopasiMethod * createMethod(const CCopasiMethod::SubType & type);
+    virtual bool loadTask();
+    virtual bool saveTask();
+
+    QVBoxLayout* CQLyapWidgetLayout;
+    QGridLayout* mpGridLayout;
+    QHBoxLayout* mpLayoutDelay;
 
   protected slots:
-    virtual void CancelChange();
-    virtual void CommitChange();
-    virtual void UpdateMethod(const bool & update = true);
-    virtual void ReportDefinitionClicked();
-    virtual void outputDefinitionClicked();
+    virtual void languageChange();
 
-    //virtual void DurationSlot();
-    //virtual void StepsizeSlot();
-    //virtual void NumStepsSlot();
-
-    //checks whether the time series will be too huge
-    //void checkTimeSeries();
-
-  public slots:
-    virtual void runLyapTask();
+    void slotDelayChecked();
 
   private:
-
-    std::string objKey;
-    void loadLyapTask();
-    void saveLyapTask();
-    void loadMethodParameters();
-
-    //QWidget* pParent;
-    QGridLayout* CQLyapWidgetLayout;
-    QHBoxLayout* Layout2;
-    QFrame* line8;
-    QTable* parameterTable;
-    QLabel* taskNameLabel;
-    QFrame* line7;
-    QFrame* line7_2;
-    QComboBox* ComboBox1;
-    QCheckBox* bExecutable, *setInitialState;
-    //QCheckBox* bStoreTimeSeries;
-    QCheckBox* bDivergence;
-    QLabel* parameterValueLabel;
-    QLabel* TextLabel1;
-    QLabel* TextLabel1_3_2;
-    //QLineEdit* nStepSize;
-    QLabel* TextLabelNum;
-    QLineEdit* lineNum;
-    //QLineEdit* nStepNumber;
-    QLabel* TextLabel1_2;
-    QFrame* line6;
-    QPushButton* bRunTask;
-    QPushButton* cancelChange;
-    QPushButton* reportDefinitionButton;
-    QPushButton* outputDefinitionButton;
-    QLineEdit* mLineEditStartOutput;
-    QCheckBox* mCheckBoxStartOutput;
-
-    //CLyapProblem * mpProblem;
+    void init();
   };
 
-#endif // TRAJECTORYWIDGET_H
+#endif // CQLYAPWIDGET_H

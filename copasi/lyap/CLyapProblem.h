@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapProblem.h,v $
-   $Revision: 1.4 $
-   $Name:  $
-   $Author: ssahle $
-   $Date: 2006/05/14 16:52:24 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapProblem.h,v $
+//   $Revision: 1.4.8.1 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/07 15:28:56 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -137,8 +137,11 @@ class CLyapProblem : public CCopasiProblem
     //              CReadConfig::Mode mode = CReadConfig::NEXT);
 
   private:
-
-    void initObjects();
+    /**
+     * Allocates all group parameters and assures that they are
+     * properly initialized.
+     */
+    void initializeParameter();
   };
 
 #endif

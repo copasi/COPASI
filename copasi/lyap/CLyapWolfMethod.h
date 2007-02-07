@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapWolfMethod.h,v $
-   $Revision: 1.6 $
-   $Name:  $
-   $Author: ssahle $
-   $Date: 2006/06/21 11:51:38 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapWolfMethod.h,v $
+//   $Revision: 1.6.6.1 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/07 15:28:56 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -26,8 +26,14 @@ class CLyapTask;
 class CLyapWolfMethod : public CLyapMethod
   {
     friend CLyapMethod *
-    CLyapMethod::createLyapMethod(CCopasiMethod::SubType subType,
-                                  CLyapProblem * pProblem);
+    CLyapMethod::createMethod(CCopasiMethod::SubType subType);
+
+  public:
+    struct Data
+      {
+        C_INT dim;
+        CLyapWolfMethod * pMethod;
+      };
 
   public:
     /**
@@ -43,11 +49,10 @@ class CLyapWolfMethod : public CLyapMethod
     CState * mpState;
 
     /**
-     * mDim[0] is the dimension of the system LSODA has to integrate.
-     * mDim[1] contains CLsodaMethod * this to be used in the static method EvalF
-     * Note: this works only if sizeof(C_INT) == ptr_size;
+     * mData.dim is the dimension of the ODE system.
+     * mData.pMethod contains CLsodaMethod * this to be used in the static method EvalF
      */
-    C_INT mDim[2];
+    Data mData;
 
     /**
      *  Number of variables in the model
@@ -214,6 +219,11 @@ class CLyapWolfMethod : public CLyapMethod
     virtual bool isValidProblem(const CCopasiProblem * pProblem);
 
   private:
+    /**
+     * Intialize the method parameter
+     */
+    void initializeParameter();
+
     void orthonormalize();
 
     static C_FLOAT64 norm(const C_FLOAT64* dbl1, const C_FLOAT64 * dbl2);

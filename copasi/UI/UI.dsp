@@ -615,6 +615,10 @@ SOURCE=.\CQLyapWidget.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\CQLyapWidget.ui.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\CQModelValue.h
 # End Source File
 # Begin Source File
@@ -1041,6 +1045,10 @@ SOURCE=.\CQFittingResultTab1.ui
 # Begin Source File
 
 SOURCE=.\CQFittingWidget.ui
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQLyapWidget.ui
 # End Source File
 # Begin Source File
 
