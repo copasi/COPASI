@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.294.2.5 $
+//   $Revision: 1.294.2.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/06 15:07:19 $
+//   $Date: 2007/02/07 14:44:32 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -2058,6 +2058,7 @@ void CModel::appendDependentMetabolites(std::set< const CCopasiObject * > candid
                 {
                   DeletedObjects.erase((*it)->getObject(CCopasiObjectName("Reference=Rate")));
                   DeletedObjects.erase((*it)->getObject(CCopasiObjectName("Reference=ParticleNumberRate")));
+                  DeletedObjects.erase((*it)->getObject(CCopasiObjectName("Reference=TransitionTime")));
                 }
 
               itSet = DeletedObjects.begin();
