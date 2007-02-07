@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-//   $Revision: 1.78.2.7 $
+//   $Revision: 1.78.2.8 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/02/06 15:29:57 $
+//   $Author: shoops $
+//   $Date: 2007/02/07 20:43:56 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -605,7 +605,7 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::processNewton()
     }
 
   //do an additional newton step to refine the result
-  if ((CNewtonMethod::found == result) && mForceNewton)
+  if ((CNewtonMethod::found == result) && mForceNewton && targetValue > 0.0)
     {
       bool tmp = true;
       ++k; if (mpProgressHandler && !mpProgressHandler->progress(hProcess)) tmp = false;
