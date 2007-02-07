@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQLyapWidget.ui.h,v $
-//   $Revision: 1.1.2.1 $
+//   $Revision: 1.1.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/07 15:28:56 $
+//   $Date: 2007/02/07 20:48:52 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -43,101 +43,9 @@ bool CQLyapWidget::runTask()
 
   if (!commonBeforeRunTask()) return false;
 
-  bool success = true;
-
-  // Initialize the task
-  try
-    {
-      if (!pTask->initialize(CCopasiTask::OUTPUT_COMPLETE, NULL))
-        throw CCopasiException(CCopasiMessage::peekLastMessage());
-    }
-
-  catch (CCopasiException Exception)
-    {
-      if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
-        {
-          mProgressBar->finish();
-          QMessageBox::critical(this, "Initialization Error",
-                                CCopasiMessage::getAllMessageText().c_str(),
-                                QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
-          CCopasiMessage::clearDeque();
-
-          success = false;
-          goto finish;
-        }
-    }
-
-  if (CCopasiMessage::getHighestSeverity() > CCopasiMessage::COMMANDLINE)
-    {
-      C_INT Result =
-        QMessageBox::warning(this, "Initialization Warning",
-                             CCopasiMessage::getAllMessageText().c_str(),
-                             QMessageBox::Ignore | QMessageBox::Default,
-                             QMessageBox::Abort);
-      CCopasiMessage::clearDeque();
-
-      if (Result == QMessageBox::Abort)
-        {
-          success = false;
-          goto finish;
-        }
-    }
-
-  // Execute the task
-  try
-    {
-      if (!pTask->process(true))
-        throw CCopasiException(CCopasiMessage::peekLastMessage());
-    }
-
-  catch (CCopasiException Exception)
-    {
-      if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
-        {
-          mProgressBar->finish();
-          QMessageBox::critical(this, "Calculation Error", CCopasiMessage::getAllMessageText().c_str(), QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
-          CCopasiMessage::clearDeque();
-        }
-
-      success = false;
-      goto finish;
-    }
-
-  if (CCopasiMessage::getHighestSeverity() > CCopasiMessage::COMMANDLINE)
-    {
-      C_INT Result =
-        QMessageBox::warning(this, "Calculation Warning",
-                             CCopasiMessage::getAllMessageText().c_str(),
-                             QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
-      CCopasiMessage::clearDeque();
-    }
-
-finish:
-  try {pTask->restore();}
-
-  catch (CCopasiException Exception)
-    {
-      if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
-        {
-          mProgressBar->finish();
-          QMessageBox::critical(this, "Calculation Error", CCopasiMessage::getAllMessageText().c_str(), QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
-          CCopasiMessage::clearDeque();
-        }
-    }
-
-  catch (...) {}
-
-  if (CCopasiMessage::getHighestSeverity() > CCopasiMessage::COMMANDLINE)
-    {
-      C_INT Result =
-        QMessageBox::warning(this, "Calculation Warning",
-                             CCopasiMessage::getAllMessageText().c_str(),
-                             QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
-      CCopasiMessage::clearDeque();
-    }
+  bool success = commonRunTask();
 
   commonAfterRunTask();
-  loadTask();
 
   if (success)
     pListView->switchToOtherWidget(261, ""); //change to the results window
