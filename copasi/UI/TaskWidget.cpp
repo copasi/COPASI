@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.cpp,v $
-//   $Revision: 1.25.2.1 $
+//   $Revision: 1.25.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/01/23 15:17:45 $
+//   $Date: 2007/02/07 20:45:46 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -394,7 +394,7 @@ bool TaskWidget::commonAfterRunTask()
   unsetCursor();
   static_cast<CopasiUI3Window *>(qApp->mainWidget())->suspendAutoSave(false);
 
-  return true;
+  return loadTask();
 }
 
 bool TaskWidget::commonRunTask()
