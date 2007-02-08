@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensMethod.cpp,v $
-//   $Revision: 1.17.2.3 $
+//   $Revision: 1.17.2.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/02/06 15:07:19 $
+//   $Author: ssahle $
+//   $Date: 2007/02/08 16:33:36 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -341,12 +341,15 @@ C_FLOAT64 CSensMethod::do_collapsing_innerloop(CCopasiArray::index_type & fullin
   //return mpProblem->getScaledResult()[fullindex];
 
   //assumes the sum is to be taken over the first dim of the scaled result array
-  C_FLOAT64 tmpSum = 0;
+  C_FLOAT64 tmpFloat, tmpSum = 0;
   unsigned C_INT32 i, imax = mpProblem->getScaledResult().size()[0];
   for (i = 0; i < imax; ++i)
     {
       fullindex[0] = i;
-      tmpSum += mpProblem->getScaledResult()[fullindex] * mpProblem->getScaledResult()[fullindex];
+      tmpFloat = mpProblem->getScaledResult()[fullindex];
+      if (tmpFloat != tmpFloat) continue;
+      if (fabs(tmpFloat) >= DBL_MAX) continue;
+      tmpSum += tmpFloat * tmpFloat;
     }
   return sqrt(tmpSum);
 }
