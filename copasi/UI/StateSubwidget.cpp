@@ -1,20 +1,20 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/StateSubwidget.cpp,v $
-   $Revision: 1.12 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/08/25 18:19:25 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/StateSubwidget.cpp,v $
+//   $Revision: 1.12.4.1 $
+//   $Name:  $
+//   $Author: ssahle $
+//   $Date: 2007/02/08 14:39:47 $
+// End CVS Header
 
-// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'StateSubwidget.ui'
  **
- ** Created: Fri Aug 25 08:28:23 2006
- **      by: The User Interface Compiler ($Id: StateSubwidget.cpp,v 1.12 2006/08/25 18:19:25 shoops Exp $)
+ ** Created: Do Feb 8 15:27:06 2007
+ **      by: The User Interface Compiler ($Id: StateSubwidget.cpp,v 1.12.4.1 2007/02/08 14:39:47 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -31,9 +31,6 @@
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
-#include <qimage.h>
-#include <qpixmap.h>
-
 #include "StateSubwidget.ui.h"
 
 /*
@@ -109,12 +106,6 @@ StateSubwidget::StateSubwidget(QWidget* parent, const char* name, WFlags fl)
   mpModelValueTable->horizontalHeader()->setLabel(mpModelValueTable->numCols() - 1, tr("Value"));
   mpModelValueTable->setNumCols(mpModelValueTable->numCols() + 1);
   mpModelValueTable->horizontalHeader()->setLabel(mpModelValueTable->numCols() - 1, tr("Rate"));
-  mpModelValueTable->setNumRows(mpModelValueTable->numRows() + 1);
-  mpModelValueTable->verticalHeader()->setLabel(mpModelValueTable->numRows() - 1, tr("1"));
-  mpModelValueTable->setNumRows(mpModelValueTable->numRows() + 1);
-  mpModelValueTable->verticalHeader()->setLabel(mpModelValueTable->numRows() - 1, tr("2"));
-  mpModelValueTable->setNumRows(mpModelValueTable->numRows() + 1);
-  mpModelValueTable->verticalHeader()->setLabel(mpModelValueTable->numRows() - 1, tr("3"));
   mpModelValueTable->setNumRows(3);
   mpModelValueTable->setNumCols(4);
   TabPageLayout_2->addWidget(mpModelValueTable);
@@ -235,6 +226,17 @@ StateSubwidget::StateSubwidget(QWidget* parent, const char* name, WFlags fl)
   stabilityTextEdit->setReadOnly(TRUE);
   TabPageLayout_6->addWidget(stabilityTextEdit);
   tabWidget->insertTab(TabPage_6, QString::fromLatin1(""));
+
+  TabPage_7 = new QWidget(tabWidget, "TabPage_7");
+  TabPageLayout_7 = new QGridLayout(TabPage_7, 1, 1, 11, 6, "TabPageLayout_7");
+
+  protocolTextEdit = new QTextEdit(TabPage_7, "protocolTextEdit");
+  protocolTextEdit->setReadOnly(TRUE);
+  protocolTextEdit->setUndoRedoEnabled(FALSE);
+  protocolTextEdit->setAutoFormatting(int(QTextEdit::AutoAll));
+
+  TabPageLayout_7->addWidget(protocolTextEdit, 0, 0);
+  tabWidget->insertTab(TabPage_7, QString::fromLatin1(""));
   StateSubwidgetLayout->addWidget(tabWidget);
   languageChange();
   resize(QSize(600, 497).expandedTo(minimumSizeHint()));
@@ -273,9 +275,6 @@ void StateSubwidget::languageChange()
   mpModelValueTable->horizontalHeader()->setLabel(1, tr("Type"));
   mpModelValueTable->horizontalHeader()->setLabel(2, tr("Value"));
   mpModelValueTable->horizontalHeader()->setLabel(3, tr("Rate"));
-  mpModelValueTable->verticalHeader()->setLabel(0, tr("1"));
-  mpModelValueTable->verticalHeader()->setLabel(1, tr("2"));
-  mpModelValueTable->verticalHeader()->setLabel(2, tr("3"));
   tabWidget->changeTab(TabPage_2, tr("Model Quantities"));
   tableFlux->horizontalHeader()->setLabel(0, tr("Reaction name"));
   tableFlux->horizontalHeader()->setLabel(1, tr("Flux"));
@@ -293,4 +292,5 @@ void StateSubwidget::languageChange()
   textLabelEigenvaluesX->setText(tr("Eigenvalues (Reduced System)"));
   tabWidget->changeTab(TabPage_5, tr("Jacobian (Reduced System)"));
   tabWidget->changeTab(TabPage_6, tr("Stability"));
+  tabWidget->changeTab(TabPage_7, tr("Protocol"));
 }

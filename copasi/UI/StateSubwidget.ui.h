@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/StateSubwidget.ui.h,v $
-//   $Revision: 1.30.2.2 $
+//   $Revision: 1.30.2.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/02/05 18:12:40 $
+//   $Author: ssahle $
+//   $Date: 2007/02/08 14:39:47 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -297,19 +297,41 @@ bool StateSubwidget::loadAll(const CSteadyStateTask * task)
 
   int Last = tabWidget->count() - 1;
 
+  // jacobian and stability
   if (pProblem->isJacobianRequested() ||
       pProblem->isStabilityAnalysisRequested())
     {
+      tabWidget->setTabEnabled(tabWidget->page(Last - 3), true);
       tabWidget->setTabEnabled(tabWidget->page(Last - 2), true);
       tabWidget->setTabEnabled(tabWidget->page(Last - 1), true);
-      tabWidget->setTabEnabled(tabWidget->page(Last), true);
       loadJacobian(task);
     }
 
   else
     {
+      tabWidget->setTabEnabled(tabWidget->page(Last - 3), false);
       tabWidget->setTabEnabled(tabWidget->page(Last - 2), false);
       tabWidget->setTabEnabled(tabWidget->page(Last - 1), false);
+    }
+
+  // protocol
+  if (true /*pProblem->isJacobianRequested() ||
+            pProblem->isStabilityAnalysisRequested()*/)
+    {
+      tabWidget->setTabEnabled(tabWidget->page(Last), true);
+
+      //stabilityTextEdit->setReadOnly(true);
+
+      //std::ostringstream ss;
+      //ss << task->getEigenValuesReduced();
+      const CSteadyStateMethod * pMethod =
+        dynamic_cast<const CSteadyStateMethod *>(task->getMethod());
+      assert(pMethod);
+      protocolTextEdit->setText(FROM_UTF8(pMethod->getMethodLog()));
+    }
+
+  else
+    {
       tabWidget->setTabEnabled(tabWidget->page(Last), false);
     }
 
