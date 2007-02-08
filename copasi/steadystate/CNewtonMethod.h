@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.h,v $
-//   $Revision: 1.25.8.3 $
+//   $Revision: 1.25.8.4 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/06 15:29:57 $
+//   $Date: 2007/02/08 13:53:48 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,16 +52,11 @@ class CNewtonMethod : public CSteadyStateMethod
     bool mKeepProtocol;
     C_INT32 mIterationLimit;
 
-    //C_FLOAT64 mFactor;
-    //C_FLOAT64 mSSResolution;
-    //C_FLOAT64 mScaledResolution;
     C_INT mDimension;
-    //C_FLOAT64 mMaxrate;
     C_FLOAT64 * mpX;
     CVector< C_FLOAT64 > mH;
     CVector< C_FLOAT64 > mXold;
     CVector< C_FLOAT64 > mdxdt;
-    //CMatrix< C_FLOAT64 > mJacobianX;
     C_INT * mIpiv;
 
     CTrajectoryTask * mpTrajectory;
@@ -165,13 +160,9 @@ class CNewtonMethod : public CSteadyStateMethod
     CNewtonMethod::NewtonResultCode doIntegration(bool forward);
 
     void calculateDerivativesX();
-    //void calculateJacobianX(const C_FLOAT64 & oldMaxRate);
 
     bool allPositive();
     bool containsNaN() const;
-
-    //CNewtonMethod::NewtonResultCode
-    //returnNewton(const CNewtonMethod::NewtonResultCode & returnCode);
 
     void cleanup();
   };

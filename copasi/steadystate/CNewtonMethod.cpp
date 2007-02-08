@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-//   $Revision: 1.78.2.8 $
+//   $Revision: 1.78.2.9 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/02/07 20:43:56 $
+//   $Author: ssahle $
+//   $Date: 2007/02/08 13:53:48 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -321,19 +321,6 @@ CSteadyStateMethod::ReturnCode CNewtonMethod::processInternal()
         return returnProcess(true);
     }
 
-  /*  bool stepLimitReached = false;
-    C_FLOAT64 Duration;
-
-    CTrajectoryProblem * pTrajectoryProblem;
-
-    if (mpTrajectory)
-      {
-        pTrajectoryProblem =
-          dynamic_cast<CTrajectoryProblem *>(mpTrajectory->getProblem());
-        assert(pTrajectoryProblem);
-        pTrajectoryProblem->setStepNumber(1);
-      }*/
-
   // backward integration
   if (mUseBackIntegration)
     {
@@ -615,8 +602,21 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::processNewton()
           if (mKeepProtocol) mMethodLog << "   Do additional step to refine result...\n";
 
           result = doNewtonStep(targetValue);
+
           if (CNewtonMethod::stepSuccesful == result)
             result = CNewtonMethod::found;
+
+          if (CNewtonMethod::singularJacobian == result)
+            {
+              if (mKeepProtocol) mMethodLog << "   Additional step failed. Old values restored.\n";
+              result = CNewtonMethod::found;
+            }
+
+          if (CNewtonMethod::dampingLimitExceeded == result)
+            {
+              if (mKeepProtocol) mMethodLog << "   Additional step failed. Old values restored.\n";
+              result = CNewtonMethod::found;
+            }
         }
     }
 
