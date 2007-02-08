@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateMethod.h,v $
-//   $Revision: 1.19.8.2 $
+//   $Revision: 1.19.8.3 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/06 15:29:57 $
+//   $Date: 2007/02/08 14:00:17 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -70,22 +70,7 @@ class CSteadyStateMethod : public CCopasiMethod
     /**
      * The jacobian of the steadystate
      */
-    //CMatrix< C_FLOAT64 > * mpJacobian;
-
-    /**
-     * The jacobian of the steadystate
-     */
     CMatrix< C_FLOAT64 > * mpJacobianX;
-
-    /**
-     * A pointer to a CEigen object
-     */
-    //CEigen * mpEigenValues;
-
-    /**
-     * A pointer to a CEigen object
-     */
-    //CEigen * mpEigenValuesX;
 
     /**
      * A pointer to the progress bar handler
@@ -159,18 +144,12 @@ class CSteadyStateMethod : public CCopasiMethod
      * starting with the initialState given.
      * The steady state is returned in the object pointed to by steadyState.
      * @param CState * steadyState
-     * @param CMatrix< C_FLOAT64 > & jacobian
      * @param CMatrix< C_FLOAT64 > & jacobianX
-     * @param CEigen & EigenValues
-     * @param CEigen & EigenValuesX
      * @param CProcessReport * handler
      * @return CSteadyStateMethod::ReturnCode returnCode
      */
     CSteadyStateMethod::ReturnCode process(CState * pState,
-                                           //CMatrix< C_FLOAT64 > & jacobian,
                                            CMatrix< C_FLOAT64 > & jacobianX,
-                                           //CEigen & EigenValues,
-                                           //CEigen & EigenValuesX,
                                            CProcessReport * handler);
 
     /**
@@ -215,9 +194,6 @@ class CSteadyStateMethod : public CCopasiMethod
     /**
      * This function has to be called at the return of any implementation
      * of the protected function process()
-     * @param bool steadyStateFound
-     * @param const C_FLOAT64 & factor
-     * @param const C_FLOAT64 & resolution
      * @return CSteadyStateMethod::ReturnCode returnCode
      */
     virtual CSteadyStateMethod::ReturnCode

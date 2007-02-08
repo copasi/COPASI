@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateMethod.cpp,v $
-//   $Revision: 1.27.4.3 $
+//   $Revision: 1.27.4.4 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/06 15:29:57 $
+//   $Date: 2007/02/08 14:00:17 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -143,20 +143,14 @@ bool CSteadyStateMethod::elevateChildren()
  */
 CSteadyStateMethod::ReturnCode
 CSteadyStateMethod::process(CState * pState,
-                            //CMatrix< C_FLOAT64 > & jacobian,
                             CMatrix< C_FLOAT64 > & jacobianX,
-                            //CEigen & EigenValues,
-                            //CEigen & EigenValuesX,
                             CProcessReport * handler)
 {
   mpParentTask = dynamic_cast<CSteadyStateTask *>(getObjectParent());
   assert(mpParentTask);
 
   mpSteadyState = pState;
-  //mpJacobian = & jacobian;
   mpJacobianX = & jacobianX;
-  //mpEigenValues = & EigenValues;
-  //mpEigenValuesX = & EigenValuesX;
   mpProgressHandler = handler;
 
   return processInternal();
