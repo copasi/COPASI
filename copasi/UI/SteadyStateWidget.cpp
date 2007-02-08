@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SteadyStateWidget.cpp,v $
-//   $Revision: 1.111.2.1 $
+//   $Revision: 1.111.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/07 18:12:55 $
+//   $Date: 2007/02/08 16:25:48 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -57,7 +57,7 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
   SteadyStateWidgetLayout = new QVBoxLayout(this, 11, 6, "SteadyStateWidgetLayout");
 
   //if a mpMethodLayout is created here, it will be used by addMethodXXX() below.
-  mpLayoutProblem = new QGridLayout(this, 1, 1, 11, 6, "mpLayoutProblem");
+  mpLayoutProblem = new QGridLayout(0, 1, 1, 11, 6, "mpLayoutProblem");
 
   //*************************
 
