@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateMethod.cpp,v $
-//   $Revision: 1.27.4.4 $
+//   $Revision: 1.27.4.5 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/08 14:00:17 $
+//   $Date: 2007/02/08 14:34:55 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -264,7 +264,7 @@ void CSteadyStateMethod::calculateJacobianX(const C_FLOAT64 & oldMaxRate)
                               *mpDerivationResolution);
 }
 
-std::string CSteadyStateMethod::getMethodLog()
-{
-  return mMethodLog.str();
-}
+std::string CSteadyStateMethod::getMethodLog() const
+  {
+    return mMethodLog.str();
+  }

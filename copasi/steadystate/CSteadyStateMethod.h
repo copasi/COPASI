@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateMethod.h,v $
-//   $Revision: 1.19.8.3 $
+//   $Revision: 1.19.8.4 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/08 14:00:17 $
+//   $Date: 2007/02/08 14:34:55 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -178,7 +178,7 @@ class CSteadyStateMethod : public CCopasiMethod
      */
     C_FLOAT64 getStabilityResolution();
 
-    std::string getMethodLog();
+    std::string getMethodLog() const;
 
   protected:
 
