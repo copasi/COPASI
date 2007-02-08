@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-//   $Revision: 1.63.2.4 $
+//   $Revision: 1.63.2.5 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/06 15:29:57 $
+//   $Date: 2007/02/08 11:49:45 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -150,10 +150,51 @@ bool CSteadyStateTask::initialize(const OutputFlag & of,
   mCalculateReducedSystem = (mpProblem->getModel()->getNumDependentMetabs() != 0);
 
   //init jacobians
-  unsigned C_INT32 size = mpSteadyState->getNumIndependent();
-  mJacobianX.resize(size, size);
-  size += mpSteadyState->getNumDependent();
+  unsigned C_INT32 sizeX = mpSteadyState->getNumIndependent();
+  mJacobianX.resize(sizeX, sizeX);
+  unsigned C_INT32 size = sizeX + mpSteadyState->getNumDependent();
   mJacobian.resize(size, size);
+
+  //jacobian annotations
+  CStateTemplate & StateTemplate = mpProblem->getModel()->getStateTemplate();
+
+  mpJacobianAnn->resize();
+  CModelEntity **ppEntities = StateTemplate.getEntities();
+  const unsigned C_INT32 * pUserOrder = StateTemplate.getUserOrder().array();
+  const unsigned C_INT32 * pUserOrderEnd = pUserOrder + StateTemplate.getUserOrder().size();
+  CMetab * pMetab;
+
+  pUserOrder++; // We skip the time which is the first.
+
+  unsigned C_INT32 i, imax = size;
+  for (i = 0; i < imax && pUserOrder != pUserOrderEnd; pUserOrder++)
+    {
+      const CModelEntity::Status & Status = ppEntities[*pUserOrder]->getStatus();
+      if (Status == CModelEntity::ODE || Status == CModelEntity::REACTIONS)
+        {
+          mpJacobianAnn->setAnnotation(0 , i, ppEntities[*pUserOrder]->getCN());
+          mpJacobianAnn->setAnnotation(1 , i, ppEntities[*pUserOrder]->getCN());
+
+          i++;
+        }
+    }
+
+  mpJacobianXAnn->resize();
+
+  ppEntities = StateTemplate.beginIndependent();
+  imax = sizeX;
+  for (i = 0; i < imax; ++i, ++ppEntities)
+    {
+      /*      if ((pMetab = dynamic_cast<CMetab *>(*ppEntities)) != NULL)
+              name = FROM_UTF8(CMetabNameInterface::getDisplayName(task->getProblem()->getModel(), *pMetab));
+            else
+              name = FROM_UTF8((*ppEntities)->getObjectDisplayName());
+
+            tableJacobianX->horizontalHeader()->setLabel(i, name);
+            tableJacobianX->verticalHeader()->setLabel(i, name);*/
+      mpJacobianXAnn->setAnnotation(0 , i, (*ppEntities)->getCN());
+      mpJacobianXAnn->setAnnotation(1 , i, (*ppEntities)->getCN());
+    }
 
   CSteadyStateProblem* pProblem =
     dynamic_cast<CSteadyStateProblem *>(mpProblem);
@@ -332,7 +373,8 @@ std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
   if (static_cast<CSteadyStateProblem *>(A.mpProblem)->isJacobianRequested())
     {
       os << "Jacobian of the Complete System" << std::endl;
-      os << A.mJacobian << std::endl;
+      //os << A.mJacobian << std::endl;
+      os << *A.mpJacobianAnn << std::endl;
       if (static_cast<CSteadyStateProblem *>(A.mpProblem)->isStabilityAnalysisRequested())
         {
           os << "Eigenvalues\treal\timaginary" << std::endl;
@@ -343,7 +385,8 @@ std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
         }
 
       os << "Jacobian of the Reduced System" << std::endl;
-      os << A.mJacobianX << std::endl;
+      //os << A.mJacobianX << std::endl;
+      os << *A.mpJacobianXAnn << std::endl;
       if (static_cast<CSteadyStateProblem *>(A.mpProblem)->isStabilityAnalysisRequested())
         {
           os << "Eigenvalues\treal\timaginary" << std::endl;
