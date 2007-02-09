@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-   $Revision: 1.208 $
-   $Name:  $
-   $Author: ssahle $
-   $Date: 2007/01/08 14:53:33 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
+//   $Revision: 1.209 $
+//   $Name:  $
+//   $Author: ssahle $
+//   $Date: 2007/02/09 16:50:57 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -73,6 +73,7 @@
 #include "CMCAResultWidget.h"
 #include "CQReportDefinition.h"
 #include "PlotWidget.h"
+#include "CQMathMatrixWidget.h"
 
 #include "copasi.h"
 
@@ -81,14 +82,6 @@
 #include "plot/COutputDefinitionVector.h"
 #include "plotUI/plotwidget1.h"
 #include "model/CModel.h"
-
-//QPixmap *folderLocked = 0;   // to store the image of locked icon folder
-//QPixmap *folderClosed = 0;   // to store the image of closed icon folder
-//QPixmap *folderOpen = 0;     // to store the image of open icon folder
-
-//#include "./icons/folderclosed.xpm"
-//#include "./icons/folderopen.xpm"
-//#include "./icons/folderlocked.xpm"
 
 /**------FolderListItem::FolderListItem(QListView *parent, Folder *f)---->
  **
@@ -238,10 +231,11 @@ ListViews::ListViews(QWidget *parent, const char *name):
     tableDefinition1(NULL),
     tssWidget(NULL),
     timeSeriesWidget(NULL),
-    trajectoryWidget(NULL)
+    trajectoryWidget(NULL),
 #ifdef COPASI_SSA
-    , mSSAWidget(NULL)
+    mSSAWidget(NULL),
 #endif
+    mpMathMatrixWidget(NULL)
 {
   this->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred, 1, 1));
   setChildrenCollapsible(false);
@@ -457,6 +451,9 @@ void ListViews::ConstructNodeWidgets()
 
   if (!trajectoryWidget) trajectoryWidget = new CQTrajectoryWidget(this);
   trajectoryWidget->hide();
+
+  if (!mpMathMatrixWidget) mpMathMatrixWidget = new CQMathMatrixWidget(this);
+  mpMathMatrixWidget->hide();
 }
 
 /**
@@ -549,6 +546,9 @@ CopasiWidget* ListViews::findWidgetFromId(const C_INT32 & id) const
         return differentialEquations;
         break;
 #endif // HAVE_MML
+      case 127:
+        return mpMathMatrixWidget;
+        break;
       case 21:
         return steadystateWidget;
         break;

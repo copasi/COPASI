@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-   $Revision: 1.115 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/12/01 15:24:00 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
+//   $Revision: 1.116 $
+//   $Name:  $
+//   $Author: ssahle $
+//   $Date: 2007/02/09 16:50:57 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -66,6 +66,7 @@ class CQReportDefinition;
 class CQLyapWidget;
 class CQLyapResultWidget;
 class CQModelValue;
+class CQMathMatrixWidget;
 #ifdef COPASI_SSA
 class SSAWidget;
 #endif
@@ -199,6 +200,7 @@ class ListViews : public QSplitter
 #ifdef COPASI_SSA
     SSAWidget * mSSAWidget;
 #endif // COPASI_SSA
+    CQMathMatrixWidget * mpMathMatrixWidget;
   };
 
 #endif
