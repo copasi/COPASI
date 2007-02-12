@@ -1,3 +1,15 @@
+// Begin CVS Header 
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/gui/org/COPASI/gui/TaskWidget.java,v $ 
+//   $Revision: 1.3 $ 
+//   $Name:  $ 
+//   $Author: gauges $ 
+//   $Date: 2007/02/12 15:26:46 $ 
+// End CVS Header 
+
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
+
 //  © 2005 by Pedro Mendes, Virginia Tech Intellectual
 // , Inc. and EML Research, gGmbH.
 //  rights reserved.
@@ -24,7 +36,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.DefaultTableColumnModel;
-
+import javax.swing.JOptionPane;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Window;
@@ -347,49 +359,52 @@ public class TaskWidget extends JPanel implements ActionListener, TableModelList
 			for(int i=0;i<method.size();i++)
 			{
 				CCopasiParameter p=method.getParameter(i);
-				String parameterName=p.getObjectName();
-				this.mParameterTable.setValueAt(parameterName,i,0);
-				switch(p.getType())
-				{
-				  case CCopasiParameter.BOOL:
-					  Boolean b=new Boolean(p.getBoolValue());
-					  this.mParameterTable.setValueAt(b,i,1);
-					  break;
-				  case CCopasiParameter.CN:
-					  String cn=new String(p.getCNValue().getString());
-					  this.mParameterTable.setValueAt(cn,i,1);
-					  break;
-				  case CCopasiParameter.KEY:
-					  String key=new String(p.getCNValue().getString());
-					  this.mParameterTable.setValueAt(key,i,1);
-					  break;
-				  case CCopasiParameter.STRING:
-					  String s=new String(p.getStringValue());
-					  this.mParameterTable.setValueAt(s,i,1);
-					  break;
-				  case CCopasiParameter.FILE:
-					  String f=new String(p.getFileValue());
-					  this.mParameterTable.setValueAt(f,i,1);
-					  break;
-				  case CCopasiParameter.DOUBLE:
-					  Double d=new Double(p.getDblValue());
-					  this.mParameterTable.setValueAt(d,i,1);
-					  break;
-				  case CCopasiParameter.UDOUBLE:
-					  Double ud=new Double(p.getUDblValue());
-					  this.mParameterTable.setValueAt(ud,i,1);
-					  break;
-				  case CCopasiParameter.INT:
-					  Long in=new Long(p.getIntValue());
-					  this.mParameterTable.setValueAt(in,i,1);
-					  break;
-				  case CCopasiParameter.UINT:
-					  Long uin=new Long(p.getUIntValue());
-					  this.mParameterTable.setValueAt(uin,i,1);
-					  break;
-				  default:
-					  break;
-				}
+			  if(p!=null)
+        {
+				  String parameterName=p.getObjectName();
+				  this.mParameterTable.setValueAt(parameterName,i,0);
+				  switch(p.getType())
+				  {
+				    case CCopasiParameter.BOOL:
+					    Boolean b=new Boolean(p.getBoolValue());
+					    this.mParameterTable.setValueAt(b,i,1);
+					    break;
+				    case CCopasiParameter.CN:
+					    String cn=new String(p.getCNValue().getString());
+					    this.mParameterTable.setValueAt(cn,i,1);
+				  	  break;
+				    case CCopasiParameter.KEY:
+			  		  String key=new String(p.getCNValue().getString());
+		  			  this.mParameterTable.setValueAt(key,i,1);
+	  				  break;
+	  			  case CCopasiParameter.STRING:
+  					  String s=new String(p.getStringValue());
+  					  this.mParameterTable.setValueAt(s,i,1);
+  					  break;
+  				  case CCopasiParameter.FILE:
+  					  String f=new String(p.getFileValue());
+  					  this.mParameterTable.setValueAt(f,i,1);
+  					  break;
+  				  case CCopasiParameter.DOUBLE:
+  					  Double d=new Double(p.getDblValue());
+  					  this.mParameterTable.setValueAt(d,i,1);
+  					  break;
+  				  case CCopasiParameter.UDOUBLE:
+  					  Double ud=new Double(p.getUDblValue());
+  					  this.mParameterTable.setValueAt(ud,i,1);
+  					  break;
+  				  case CCopasiParameter.INT:
+  					  Long in=new Long(p.getIntValue());
+  					  this.mParameterTable.setValueAt(in,i,1);
+  					  break;
+  				  case CCopasiParameter.UINT:
+  					  Long uin=new Long(p.getUIntValue());
+  					  this.mParameterTable.setValueAt(uin,i,1);
+  					  break;
+  				  default:
+  					  break;
+	  			}
+        }
 			}
 			if(method.size()==0)
 			{
@@ -500,9 +515,9 @@ public class TaskWidget extends JPanel implements ActionListener, TableModelList
 		  this.mDefaultReportCreated=false;
 		  this.mMethodWidget.fillMethodDropdown(this.mTask);
 		  if(this.mTask!=null)
-	      {
-			this.mButtonWidget.mReportButton.setEnabled(true);
-			this.mButtonWidget.mRunButton.setEnabled(true);
+	    {
+			  this.mButtonWidget.mReportButton.setEnabled(true);
+			  this.mButtonWidget.mRunButton.setEnabled(true);
 		  }
 		}
 	}
@@ -514,9 +529,18 @@ public class TaskWidget extends JPanel implements ActionListener, TableModelList
 	{
 		if(e.getSource()==this.mButtonWidget.mRunButton)
 		{
-    	  System.out.println("Saving results to \""+this.mTask.getReport().getTarget()+"\".");
-		  this.mTask.process(true);	
-		}
+    	//System.out.println("Saving results to \""+this.mTask.getReport().getTarget()+"\".");
+		  try
+      {
+        this.mTask.process(true);	
+		  }
+      catch(java.lang.Exception ex)
+      {
+        // show an error dialog.
+				String message=ex.getMessage();
+			  JOptionPane.showMessageDialog(null, message , "Error", JOptionPane.ERROR_MESSAGE);
+      }
+    }
 		else if(e.getSource()==this.mMethodWidget.mMethodDropdown)
 		{
 			String s=(String)((JComboBox)e.getSource()).getSelectedItem();
@@ -559,83 +583,86 @@ public class TaskWidget extends JPanel implements ActionListener, TableModelList
 		// check if the value is valid for that type of parameter
 		// set the value of the parameter if it is valid
 		CCopasiParameter p=this.mTask.getMethod().getParameter(e.getFirstRow());
-		String value=this.mMethodWidget.mParameterTable.getValueAt(e.getFirstRow(),e.getColumn()).toString();
-		int row=e.getFirstRow();
-		int column=e.getColumn();
-		switch(p.getType())
-		{
-		  case CCopasiParameter.BOOL:
-			  String s=value.toLowerCase();
-			  if(s.equals("true") || s.equals("yes") || s.equals("1"))
-			  {
-				  p.setBoolValue(true);
-			  }
-			  else if(s.equals("false") || s.equals("no") || s.equals("0"))
-			  {
-				  p.setBoolValue(false);
-			  }
-			  else
-			  {
-				  this.mMethodWidget.mParameterTable.setValueAt(new Boolean(p.getBoolValue()).toString(),row,column);
-			  }
-			  break;
-		  case CCopasiParameter.CN:
-			  CRegisteredObjectName on=new CRegisteredObjectName(value);
-			  p.setCNValue(on);
-			  break;
-		  case CCopasiParameter.KEY:
-			  p.setKeyValue(value);
-			  break;
-		  case CCopasiParameter.STRING:
-			  p.setStringValue(value);
-			  break;
-		  case CCopasiParameter.FILE:
-			  p.setFileValue(value);
-			  break;
-		  case CCopasiParameter.DOUBLE:
-			  try
-			  {
-			    Double d=new Double(value);
-			    p.setDblValue(d.doubleValue());
-			  }
-			  catch(NumberFormatException e1)
-			  {
-				this.mMethodWidget.mParameterTable.setValueAt(p.getDblValue(), row, column);  
-			  }
-			  break;
-		  case CCopasiParameter.UDOUBLE:
-			  try
-			  {
-			    Double d=new Double(value);
-			    if(d.doubleValue()>0.0)
-			    {
-				    p.setUDblValue(d.doubleValue());			    	
-			    }
-			    else
-			    {
-					this.mMethodWidget.mParameterTable.setValueAt(p.getUDblValue(), row, column); 			    	
-			    }
-			  }
-			  catch(NumberFormatException e2)
-			  {
-				this.mMethodWidget.mParameterTable.setValueAt(p.getDblValue(), row, column); 
-			  }
-			  break;
-		  case CCopasiParameter.INT:
-			  try
-			  {
-			    Integer i=new Integer(value);
-			    p.setIntValue(i.intValue());
-			  }
-			  catch(NumberFormatException e3)
-			  {
-				this.mMethodWidget.mParameterTable.setValueAt(p.getIntValue(), row, column);  
-			  }
-			  break;
-		  case CCopasiParameter.UINT:
-			  try
-			  {
-				    Integer ui=new Integer(value);
+		if(p!=null)
+    {
+      String value=this.mMethodWidget.mParameterTable.getValueAt(e.getFirstRow(),e.getColumn()).toString();
+		  int row=e.getFirstRow();
+		  int column=e.getColumn();
+		
+      switch(p.getType())
+	  	{
+		    case CCopasiParameter.BOOL:
+		  	  String s=value.toLowerCase();
+		  	  if(s.equals("true") || s.equals("yes") || s.equals("1"))
+	  		  {
+  				  p.setBoolValue(true);
+  			  }
+  			  else if(s.equals("false") || s.equals("no") || s.equals("0"))
+  			  {
+  				  p.setBoolValue(false);
+  			  }
+  			  else
+  			  {
+  				  this.mMethodWidget.mParameterTable.setValueAt(new Boolean(p.getBoolValue()).toString(),row,column);
+  			  }
+  			  break;
+  		  case CCopasiParameter.CN:
+  			  CRegisteredObjectName on=new CRegisteredObjectName(value);
+  			  p.setCNValue(on);
+  			  break;
+  		  case CCopasiParameter.KEY:
+  			  p.setKeyValue(value);
+  			  break;
+   		  case CCopasiParameter.STRING:
+	  		  p.setStringValue(value);
+  			  break;
+  		  case CCopasiParameter.FILE:
+  			  p.setFileValue(value);
+  			  break;
+  		  case CCopasiParameter.DOUBLE:
+  			  try
+  			  {
+  			    Double d=new Double(value);
+  			    p.setDblValue(d.doubleValue());
+  			  }
+  			  catch(NumberFormatException e1)
+  			  {
+    				this.mMethodWidget.mParameterTable.setValueAt(p.getDblValue(), row, column);  
+  			  }
+	  		  break;
+	  	  case CCopasiParameter.UDOUBLE:
+	  		  try
+	  		  {
+	  		    Double d=new Double(value);
+	  		    if(d.doubleValue()>0.0)
+	  		    {
+	  			    p.setUDblValue(d.doubleValue());			    	
+	  		    }
+	  		    else
+	  		    {
+	    				this.mMethodWidget.mParameterTable.setValueAt(p.getUDblValue(), row, column); 			    	
+	  		    }
+	  		  }
+	  		  catch(NumberFormatException e2)
+	  		  {
+	    			this.mMethodWidget.mParameterTable.setValueAt(p.getDblValue(), row, column); 
+	  		  }
+			    break;
+	  	  case CCopasiParameter.INT:
+	  		  try
+	  		  {
+	  		    Integer i=new Integer(value);
+	  		    p.setIntValue(i.intValue());
+	  		  }
+	  		  catch(NumberFormatException e3)
+	  		  {
+	    			this.mMethodWidget.mParameterTable.setValueAt(p.getIntValue(), row, column);  
+	  		  }
+	  		  break;
+		    case CCopasiParameter.UINT:
+		  	  try
+		  	  {
+		 		    Integer ui=new Integer(value);
 				    if(ui.intValue()>0)
 				    {
 					    p.setUDblValue(ui.intValue());			    	
@@ -644,17 +671,18 @@ public class TaskWidget extends JPanel implements ActionListener, TableModelList
 				    {
 						this.mMethodWidget.mParameterTable.setValueAt(p.getUIntValue(), row, column);  			    	
 				    }
-			  }
-			  catch(NumberFormatException e4)
-			  {
-				this.mMethodWidget.mParameterTable.setValueAt(p.getUIntValue(), row, column);  
-			  }
-			  break;
-		  default:
-			  break;
-		}		
+		  	  }
+			    catch(NumberFormatException e4)
+			    {
+				    this.mMethodWidget.mParameterTable.setValueAt(p.getUIntValue(), row, column);  
+			    }
+			    break;
+		    default:
+			    break;
+		  }		
+	  }
 		this.mMethodWidget.mParameterTable.getModel().addTableModelListener(this);
-	}
+}
 	
 	/**
 	 * This can be called to enable or disable the button that lets the user create the default report.

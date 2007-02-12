@@ -1,7 +1,21 @@
+// Begin CVS Header 
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/java.i,v $ 
+//   $Revision: 1.12 $ 
+//   $Name:  $ 
+//   $Author: gauges $ 
+//   $Date: 2007/02/12 15:26:45 $ 
+// End CVS Header 
+
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
+
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
+
+%include exception.i
 /**
  * Make COPASI and wrapper constants Java compile-time
  * constants so they may be used in switch statements.
@@ -339,6 +353,26 @@ void initCopasi();
 }
 */
 
+
+
+%javaexception("java.lang.Exception") CCopasiTask::process {
+   try 
+   {
+     $action
+   } 
+   catch (std::exception &e) 
+   {
+     jclass clazz = jenv->FindClass("java/lang/Exception");
+     jenv->ThrowNew(clazz, e.what());
+     return $null;
+   }
+   catch(CCopasiException& e)
+   {
+     jclass clazz = jenv->FindClass("java/lang/Exception");
+     jenv->ThrowNew(clazz, e.getMessage().getText().c_str());
+     return $null;
+   }
+}
 
 %include "../swig/copasi.i"
 

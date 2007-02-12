@@ -1,3 +1,15 @@
+// Begin CVS Header 
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/unittests/Test_RunSimulations.java,v $ 
+//   $Revision: 1.7 $ 
+//   $Name:  $ 
+//   $Author: gauges $ 
+//   $Date: 2007/02/12 15:26:46 $ 
+// End CVS Header 
+
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
+
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
@@ -94,7 +106,16 @@ public class Test_RunSimulations extends TestCase
         System.err.println("Error. Unknown parameter type.");
       }
     }
-    if(!task.process(true))
+    boolean result=false;
+    try
+    {
+       result=task.process(true);
+    }
+    catch(Exception e)
+    {
+       System.err.println("ERROR: "+e.getMessage());
+    }
+    if(!result)
     {
       return null;
     }

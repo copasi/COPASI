@@ -1,10 +1,25 @@
+// Begin CVS Header 
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiTask.i,v $ 
+//   $Revision: 1.10 $ 
+//   $Name:  $ 
+//   $Author: gauges $ 
+//   $Date: 2007/02/12 15:26:46 $ 
+// End CVS Header 
+
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
+
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
+%include exception.i
 
 %{
+#include <exception>
 #include "utilities/CCopasiTask.h"
+#include "utilities/CCopasiException.h"
 %}
 
 %template(MethodTypeStdVector) std::vector<int>;
@@ -154,7 +169,7 @@ class CCopasiTask : public CCopasiContainer
       return validMethods;
     } 
 
-    virtual  bool process(bool useInitialValues)
+    virtual  bool process(bool useInitialValues) 
       {
         bool result=self->initialize(CCopasiTask::OUTPUT_COMPLETE,NULL);
         if(result)

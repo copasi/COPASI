@@ -1,3 +1,15 @@
+// Begin CVS Header 
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/gui/org/COPASI/gui/TrajectoryTaskWidget.java,v $ 
+//   $Revision: 1.3 $ 
+//   $Name:  $ 
+//   $Author: gauges $ 
+//   $Date: 2007/02/12 15:26:46 $ 
+// End CVS Header 
+
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
+
 //  © 2005 by Pedro Mendes, Virginia Tech Intellectual
 // , Inc. and EML Research, gGmbH.
 //  rights reserved.
@@ -136,20 +148,23 @@ public class TrajectoryTaskWidget extends TaskWidget  implements FocusListener{
 	{
 		CCopasiDataModel m=CCopasiDataModel.getGlobal();
 		CCopasiTask t=null;
-		long size=m.getTaskList().size();
-		long i=0;
-		while(t==null && i < size)
-		{
-			if(m.getTask(i).getType()==CCopasiTask.timeCourse)
-			{
-				t=m.getTask(i);
-			}
-			i++;
-		}
-		if(t!=null)
-		{
-			this.setTask(t);
-		}
+		if(m!=null)
+    {
+      long size=m.getTaskList().size();
+		  long i=0;
+		  while(t==null && i < size)
+		  {
+		  	if(m.getTask(i).getType()==CCopasiTask.timeCourse)
+		  	{
+		  		t=m.getTask(i);
+		  	}
+		  	i++;
+		  }
+		  if(t!=null)
+		  {
+	  		this.setTask(t);
+	  	}
+    }
 	}
 	
 	public void setTask(CCopasiTask task)
@@ -162,23 +177,27 @@ public class TrajectoryTaskWidget extends TaskWidget  implements FocusListener{
 	{
 		// set duration, interval size , interval number and output start time in the gui		
 		CCopasiProblem problem=this.mTask.getProblem();
-		for(int i=0;i<problem.size();i++)
+		if(problem==null) return;
+    for(int i=0;i<problem.size();i++)
 		{
 			CCopasiParameter p=problem.getParameter(i);
-			String parameterName=p.getObjectName();
-			if(parameterName.equals("Duration"))
-			{
-				this.mProblemWidgetContent.mDurationInput.setText(new Double(p.getDblValue()).toString());
-			}
-			else if(parameterName.equals("OutputStartTime"))
-			{
-				this.mProblemWidgetContent.mStartOutputTimeInput.setText(new Double(p.getDblValue()).toString());
-			}
-			else if(parameterName.equals("StepSize"))
-			{
-				// step number is calculated from the step size and the duration
-				this.mProblemWidgetContent.mIntervalSizeInput.setText(new Double(p.getDblValue()).toString());			
-			}
+      if(p!=null)
+		  {
+			  String parameterName=p.getObjectName();
+			  if(parameterName.equals("Duration"))
+			  {
+			  	this.mProblemWidgetContent.mDurationInput.setText(new Double(p.getDblValue()).toString());
+			  }
+			  else if(parameterName.equals("OutputStartTime"))
+			  {
+			  	this.mProblemWidgetContent.mStartOutputTimeInput.setText(new Double(p.getDblValue()).toString());
+			  }
+			  else if(parameterName.equals("StepSize"))
+			  {
+			  	// step number is calculated from the step size and the duration
+			  	this.mProblemWidgetContent.mIntervalSizeInput.setText(new Double(p.getDblValue()).toString());			
+			  }
+      }
 		}
 	}
 
