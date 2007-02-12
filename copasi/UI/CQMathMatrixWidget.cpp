@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMathMatrixWidget.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/09 16:49:41 $
+//   $Date: 2007/02/12 00:04:23 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -59,34 +59,37 @@ CQMathMatrixWidget::CQMathMatrixWidget(QWidget* parent, const char* name, WFlags
   mArrayWidget1 = new CQArrayAnnotationsWidget(mpTab, "ArrayWidget1");
   //mArrayWidget1->setColorCoding(new CColorScale1());
   //CColorScaleAverage * tcs = new CColorScaleAverage();
-  CColorScaleBiLog * tcs = new CColorScaleBiLog();
+  CColorScaleSimple * tcs = new CColorScaleSimple();
   mArrayWidget1->setColorCoding(tcs);
+  tcs->setMinMax(-1.5, 1.5);
   //tcs->setMinMax(-1,1);
   //tcs->setSymmetric(true);
   //tcs->setFactor(3.0);
-  mArrayWidget1->setColorScalingAutomatic(true);
+  mArrayWidget1->setColorScalingAutomatic(false);
   mpTab->addTab(mArrayWidget1, "Stoichiometry Matrix");
 
   // 2
   mArrayWidget2 = new CQArrayAnnotationsWidget(mpTab, "ArrayWidget2");
   //mArrayWidge2->setColorCoding(new CColorScale1());
-  tcs = new CColorScaleBiLog();
+  tcs = new CColorScaleSimple();
   mArrayWidget2->setColorCoding(tcs);
+  tcs->setMinMax(-1.5, 1.5);
   //tcs2->setMinMax(-1,1);
   //tcs2->setSymmetric(true);
   //tcs2->setFactor(3.0);
-  mArrayWidget2->setColorScalingAutomatic(true);
+  mArrayWidget2->setColorScalingAutomatic(false);
   mpTab->addTab(mArrayWidget2, "Reduced Stoichiometry Matrix");
 
   // 3
   mArrayWidget3 = new CQArrayAnnotationsWidget(mpTab, "ArrayWidget3");
   //mArrayWidge2->setColorCoding(new CColorScale1());
-  tcs = new CColorScaleBiLog();
+  tcs = new CColorScaleSimple();
   mArrayWidget3->setColorCoding(tcs);
+  tcs->setMinMax(-1.5, 1.5);
   //tcs2->setMinMax(-1,1);
   //tcs2->setSymmetric(true);
   //tcs2->setFactor(3.0);
-  mArrayWidget3->setColorScalingAutomatic(true);
+  mArrayWidget3->setColorScalingAutomatic(false);
   mpTab->addTab(mArrayWidget3, "Link Matrix");
 }
 
