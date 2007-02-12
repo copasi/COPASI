@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/FminBrent.cpp,v $
-   $Revision: 1.3 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:29:53 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/FminBrent.cpp,v $
+//   $Revision: 1.4 $
+//   $Name:  $
+//   $Author: gauges $
+//   $Date: 2007/02/12 20:56:08 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -91,8 +91,8 @@ int FminBrent(double a,                 /* Left border      */
           new_step = -tol_act;
       /* Obtain the next approximation to */
       {/* min & reduce the enveloping range*/
-        register double t = x + new_step;  /* Tentative point for the min  */
-        register double ft = (*pF)(t);
+        double t = x + new_step;  /* Tentative point for the min  */
+        double ft = (*pF)(t);
         if (ft <= fx)
           {/* t is a better approximation  */
             if (t < x)                /* Reduce the range so that   */
