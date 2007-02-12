@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSort.h,v $
-   $Revision: 1.12 $
-   $Name:  $
-   $Author: gauges $
-   $Date: 2006/10/15 08:31:12 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSort.h,v $
+//   $Revision: 1.13 $
+//   $Name:  $
+//   $Author: gauges $
+//   $Date: 2007/02/12 20:57:40 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -27,6 +27,10 @@ template <typename RandomAccessIterator>
 class FCompareBase
   {
   public:
+    /**
+     * Virtual desctructor
+     */
+    virtual ~FCompareBase(){};
     /**
      * Operator wrapping the comparison operator <
      * @param const std::pair<RandomAccessIterator, unsigned C_INT32> & lhs
@@ -54,9 +58,14 @@ class FCompare : FCompareBase<RandomAccessIterator>
     /**
      * Default constructor
      */
-    FCompare() {}
+    FCompare() {};
 
   public:
+    /**
+     * Virtual desctructor
+     */
+    virtual ~FCompare(){};
+
     /**
      * Specific constructor
      * @param LessThanCompare method
@@ -293,6 +302,11 @@ class FSwapBase
     {}
 
     /**
+     * Virtual destructor
+     */
+    virtual ~FSwapBase(){};
+
+    /**
      * Operator wrapping the provided swap method
      * @param IndexType to
      * @param IndexType from
@@ -335,6 +349,11 @@ class FSwapClass : public FSwapBase<IndexType, ReturnType>
         mpType(pType),
         mpSwap(swap)
     {}
+
+    /**
+     * Virtual destructor
+     */
+    virtual ~FSwapClass(){};
 
     /**
      * Operator wrapping the provided class member swap method
