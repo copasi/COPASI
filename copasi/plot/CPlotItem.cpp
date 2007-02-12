@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/CPlotItem.cpp,v $
-   $Revision: 1.16 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:30:41 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/CPlotItem.cpp,v $
+//   $Revision: 1.17 $
+//   $Name:  $
+//   $Author: gauges $
+//   $Date: 2007/02/12 20:54:09 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -70,9 +70,9 @@ CPlotItem::CPlotItem(const std::string & name,
                      const CCopasiContainer * pParent,
                      const CPlotItem::Type & type):
     CCopasiParameterGroup(TypeName[type], pParent, "PlotItem"),
+    mType(unset),
     mActivity(),
-    mpXMLActivity(NULL),
-    mType(unset)
+    mpXMLActivity(NULL)
 {
   //setObjectName(TypeName[mType]); //TODO
   setObjectName(name);
