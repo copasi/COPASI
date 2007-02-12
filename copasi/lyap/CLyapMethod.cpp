@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapMethod.cpp,v $
-   $Revision: 1.3 $
-   $Name:  $
-   $Author: ssahle $
-   $Date: 2006/09/08 00:52:04 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapMethod.cpp,v $
+//   $Revision: 1.4 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/12 14:27:06 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -45,9 +45,7 @@ bool CLyapMethod::isValidSubType(const CCopasiMethod::SubType & subType)
   return false;
 }
 
-CLyapMethod *
-CLyapMethod::createLyapMethod(CCopasiMethod::SubType subType,
-                              CLyapProblem * pProblem)
+CLyapMethod * CLyapMethod::createMethod(CCopasiMethod::SubType subType)
 {
   CLyapMethod * pMethod = NULL;
 
@@ -61,6 +59,7 @@ CLyapMethod::createLyapMethod(CCopasiMethod::SubType subType,
     default:
       fatalError();
     }
+
   return pMethod;
 }
 

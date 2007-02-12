@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-//   $Revision: 1.116 $
+//   $Revision: 1.117 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/02/09 16:50:57 $
+//   $Author: shoops $
+//   $Date: 2007/02/12 14:29:14 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -60,7 +60,7 @@ class CQSplashWidget;
 class TimeSeriesWidget;
 class CQFittingWidget;
 class CQFittingResult;
-class CMCAWidget;
+class CQMCAWidget;
 class CMCAResultWidget;
 class CQReportDefinition;
 class CQLyapWidget;
@@ -159,7 +159,7 @@ class ListViews : public QSplitter
     //    ConstantSymbols *constantSymbols;
     //    FixedMetaboliteSymbols *fixedMetaboliteSymbols;
     CMCAResultWidget* mpCMCAResultWidget;
-    CMCAWidget* mpCMCAWidget;
+    CQMCAWidget* mpCQMCAWidget;
     CompartmentsWidget *compartmentsWidget;
     CompartmentsWidget1 *compartmentsWidget1;
     CQSplashWidget *defaultWidget;

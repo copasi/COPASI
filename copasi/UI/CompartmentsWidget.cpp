@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget.cpp,v $
-   $Revision: 1.105 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/09/05 17:23:19 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget.cpp,v $
+//   $Revision: 1.106 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/12 14:29:14 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -52,7 +52,7 @@ std::vector<const CCopasiObject*> CompartmentsWidget::getObjects() const
 void CompartmentsWidget::init()
 {
   mOT = ListViews::COMPARTMENT;
-  numCols = 3 + 1;
+  numCols = 3; //+ 1;
   table->setNumCols(numCols);
   //table->QTable::setNumRows(1);
 
@@ -65,8 +65,8 @@ void CompartmentsWidget::init()
   tableHeader->setLabel(2, "Volume");
 
   //for sbml ids
-  tableHeader->setLabel(numCols - 1, "SBML ID");
-  table->setColumnReadOnly(numCols - 1, true);
+  //tableHeader->setLabel(numCols - 1, "SBML ID");
+  //table->setColumnReadOnly(numCols - 1, true);
 }
 
 void CompartmentsWidget::showHeaders()

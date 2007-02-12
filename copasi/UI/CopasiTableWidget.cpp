@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.cpp,v $
-   $Revision: 1.43 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/07/07 18:37:12 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.cpp,v $
+//   $Revision: 1.44 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/12 14:29:14 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -164,7 +164,7 @@ void CopasiTableWidget::fillTable()
     {
       mFlagRO[j] = false;
       tableLineFromObject(objects[j], j);
-      handleSBMLId(objects[j], j);
+      //handleSBMLId(objects[j], j);
       mKeys[j] = objects[j]->getKey();
       mFlagChanged[j] = false;
       mFlagDelete[j] = false;
@@ -435,9 +435,11 @@ QString CopasiTableWidget::createNewName(const QString name)
 
 void CopasiTableWidget::slotBtnOKClicked()
 {
+  // Assure that the changes to the current cell get commited.
+  btnOK->setFocus();
+
   saveTable();
   fillTable();
-  //TODO save current cell
 }
 
 void CopasiTableWidget::slotBtnCancelClicked()

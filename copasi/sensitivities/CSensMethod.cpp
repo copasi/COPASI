@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensMethod.cpp,v $
-   $Revision: 1.17 $
-   $Name:  $
-   $Author: ssahle $
-   $Date: 2007/01/11 15:02:27 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensMethod.cpp,v $
+//   $Revision: 1.18 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/12 14:28:48 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -95,8 +95,8 @@ bool CSensMethod::do_target_calculation(CCopasiArray & result, bool first)
     }
   else
     {
-      mpProblem->getModel()->applyAssignments();
-      mpProblem->getModel()->refreshRates();
+      mpProblem->getModel()->updateSimulatedValues();
+      mpProblem->getModel()->updateNonSimulatedValues();
     }
 
   //****** retrieve results ************
@@ -119,10 +119,15 @@ bool CSensMethod::do_target_calculation(CCopasiArray & result, bool first)
 
   //progress bar
   ++mProgress;
-  bool tmp = mpProgressBar->progress(mProgressHandler);
-  if (!tmp)
-    std::cout << "STOP!" << std::endl;
-  return tmp;
+  if (mpProgressBar)
+    {
+      bool tmp = mpProgressBar->progress(mProgressHandler);
+      //if (!tmp)
+      //  std::cout << "STOP!" << std::endl;
+      return tmp;
+    }
+
+  return true;
 }
 
 C_FLOAT64 CSensMethod::do_variation(CCopasiObject* variable)
@@ -336,12 +341,15 @@ C_FLOAT64 CSensMethod::do_collapsing_innerloop(CCopasiArray::index_type & fullin
   //return mpProblem->getScaledResult()[fullindex];
 
   //assumes the sum is to be taken over the first dim of the scaled result array
-  C_FLOAT64 tmpSum = 0;
+  C_FLOAT64 tmpFloat, tmpSum = 0;
   unsigned C_INT32 i, imax = mpProblem->getScaledResult().size()[0];
   for (i = 0; i < imax; ++i)
     {
       fullindex[0] = i;
-      tmpSum += mpProblem->getScaledResult()[fullindex] * mpProblem->getScaledResult()[fullindex];
+      tmpFloat = mpProblem->getScaledResult()[fullindex];
+      if (tmpFloat != tmpFloat) continue;
+      if (fabs(tmpFloat) >= DBL_MAX) continue;
+      tmpSum += tmpFloat * tmpFloat;
     }
   return sqrt(tmpSum);
 }
@@ -401,8 +409,7 @@ void CSensMethod::do_collapsing()
         }
     }
   else
-  {}
-}
+    {}}
 
 //****************************************************************************
 

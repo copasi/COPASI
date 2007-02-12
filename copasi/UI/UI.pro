@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $ 
-#   $Revision: 1.143 $ 
+#   $Revision: 1.144 $ 
 #   $Name:  $ 
-#   $Author: ssahle $ 
-#   $Date: 2007/02/09 16:50:57 $ 
+#   $Author: shoops $ 
+#   $Date: 2007/02/12 14:29:14 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -11,7 +11,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.143 $ $Author: ssahle $ $Date: 2007/02/09 16:50:57 $  
+# $Revision: 1.144 $ $Author: shoops $ $Date: 2007/02/12 14:29:14 $  
 ######################################################################
 
 LIB = UI
@@ -32,7 +32,6 @@ HEADERS += \
            CCopasiSelectionWidget.h \
            CCopasiSimpleSelectionTree.h \
            ChemEqValidator.h \
-           CMCAWidget.h \
            CMCAResultWidget.h \
            CReportDefinitionSelect.h \
            CompartmentsWidget.h \
@@ -45,7 +44,6 @@ HEADERS += \
            CProgressBar.h \
            CQArrayAnnotationsWidget.h \
            CQExpressionWidget.h \
-           CQLyapWidget.h \
            CQLyapResultWidget.h \
            CQMathMatrixWidget.h \
            CQReportListItem.h \
@@ -98,7 +96,6 @@ SOURCES += \
            CCopasiSelectionDialog.cpp \
            CCopasiSelectionWidget.cpp \
            CCopasiSimpleSelectionTree.cpp \
-           CMCAWidget.cpp \
            CMCAResultWidget.cpp \
            CReportDefinitionSelect.cpp \
            CompartmentsWidget.cpp \
@@ -112,7 +109,6 @@ SOURCES += \
            OptimizationResultWidget.cpp \
            CQArrayAnnotationsWidget.cpp \
            CQExpressionWidget.cpp \
-           CQLyapWidget.cpp \
            CQLyapResultWidget.cpp \
            CQMathMatrixWidget.cpp \
            CQReportListItem.cpp \
@@ -175,6 +171,8 @@ SOURCES += \
 # FORMS += CQFittingResult.ui
 # FORMS += CQFittingResultTab1.ui
 # FORMS += CQFittingWidget.ui
+# FORMS += CQLyapWidget.ui
+# FORMS += CQMCAWidget.ui
 # FORMS += CQModelValue.ui
 # FORMS += CQOptimizationWidget.ui
 # FORMS += CQProgressDialog.ui
@@ -219,6 +217,10 @@ HEADERS += \
            CQFittingResultTab1.ui.h \
            CQFittingWidget.h \
            CQFittingWidget.ui.h \
+           CQLyapWidget.h \
+           CQLyapWidget.ui.h \
+           CQMCAWidget.h \
+           CQMCAWidget.ui.h \
            CQOptimizationWidget.h \
            CQOptimizationWidget.ui.h \
            CQProgressDialog.h \
@@ -278,6 +280,8 @@ SOURCES += \
            CQFittingResult.cpp \
            CQFittingResultTab1.cpp \
            CQFittingWidget.cpp \
+           CQLyapWidget.cpp \
+           CQMCAWidget.cpp \
            CQModelValue.cpp \
            CQOptimizationWidget.cpp \
            CQProgressItem.cpp \

@@ -1,4 +1,16 @@
 <!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<comment> Begin CVS Header </comment>
+<comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/StateSubwidget.ui,v $ </comment>
+<comment>   $Revision: 1.9 $ </comment>
+<comment>   $Name:  $ </comment>
+<comment>   $Author: shoops $ </comment>
+<comment>   $Date: 2007/02/12 14:29:14 $ </comment>
+<comment> End CVS Header </comment>
+
+<comment> Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc. and EML Research, gGmbH. </comment>
+<comment> All rights reserved. </comment>
+
 <class>StateSubwidget</class>
 <widget class="QWidget">
     <property name="name">
@@ -170,58 +182,22 @@
                             <property name="text">
                                 <string>Name</string>
                             </property>
-                            <property name="pixmap">
-                                <pixmap></pixmap>
-                            </property>
                         </column>
                         <column>
                             <property name="text">
                                 <string>Type</string>
-                            </property>
-                            <property name="pixmap">
-                                <pixmap></pixmap>
                             </property>
                         </column>
                         <column>
                             <property name="text">
                                 <string>Value</string>
                             </property>
-                            <property name="pixmap">
-                                <pixmap></pixmap>
-                            </property>
                         </column>
                         <column>
                             <property name="text">
                                 <string>Rate</string>
                             </property>
-                            <property name="pixmap">
-                                <pixmap></pixmap>
-                            </property>
                         </column>
-                        <row>
-                            <property name="text">
-                                <string>1</string>
-                            </property>
-                            <property name="pixmap">
-                                <pixmap></pixmap>
-                            </property>
-                        </row>
-                        <row>
-                            <property name="text">
-                                <string>2</string>
-                            </property>
-                            <property name="pixmap">
-                                <pixmap></pixmap>
-                            </property>
-                        </row>
-                        <row>
-                            <property name="text">
-                                <string>3</string>
-                            </property>
-                            <property name="pixmap">
-                                <pixmap></pixmap>
-                            </property>
-                        </row>
                         <property name="name">
                             <cstring>mpModelValueTable</cstring>
                         </property>
@@ -565,6 +541,33 @@
                         </property>
                     </widget>
                 </vbox>
+            </widget>
+            <widget class="QWidget">
+                <property name="name">
+                    <cstring>TabPage</cstring>
+                </property>
+                <attribute name="title">
+                    <string>Protocol</string>
+                </attribute>
+                <grid>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QTextEdit" row="0" column="0">
+                        <property name="name">
+                            <cstring>protocolTextEdit</cstring>
+                        </property>
+                        <property name="readOnly">
+                            <bool>true</bool>
+                        </property>
+                        <property name="undoRedoEnabled">
+                            <bool>false</bool>
+                        </property>
+                        <property name="autoFormatting">
+                            <set>AutoAll</set>
+                        </property>
+                    </widget>
+                </grid>
             </widget>
         </widget>
     </vbox>

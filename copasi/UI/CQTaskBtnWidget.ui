@@ -1,4 +1,16 @@
 <!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<comment> Begin CVS Header </comment>
+<comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTaskBtnWidget.ui,v $ </comment>
+<comment>   $Revision: 1.5 $ </comment>
+<comment>   $Name:  $ </comment>
+<comment>   $Author: shoops $ </comment>
+<comment>   $Date: 2007/02/12 14:29:14 $ </comment>
+<comment> End CVS Header </comment>
+
+<comment> Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc. and EML Research, gGmbH. </comment>
+<comment> All rights reserved. </comment>
+
 <class>CQTaskBtnWidget</class>
 <widget class="QWidget">
     <property name="name">
@@ -8,7 +20,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>367</width>
+            <width>356</width>
             <height>35</height>
         </rect>
     </property>
@@ -24,7 +36,7 @@
         </property>
         <spacer>
             <property name="name">
-                <cstring>mpSpacer</cstring>
+                <cstring>mpSpacerVertical</cstring>
             </property>
             <property name="orientation">
                 <enum>Vertical</enum>
@@ -35,19 +47,19 @@
             <property name="sizeHint">
                 <size>
                     <width>20</width>
-                    <height>1</height>
+                    <height>16</height>
                 </size>
             </property>
         </spacer>
         <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>mpGridLayout</cstring>
+                <cstring>mpBtnLayout</cstring>
             </property>
-            <grid>
+            <hbox>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QPushButton" row="1" column="0">
+                <widget class="QPushButton">
                     <property name="name">
                         <cstring>mpBtnRun</cstring>
                     </property>
@@ -55,15 +67,7 @@
                         <string>Run</string>
                     </property>
                 </widget>
-                <widget class="QPushButton" row="1" column="3">
-                    <property name="name">
-                        <cstring>mpBtnAssistant</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Output Assistant</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton" row="1" column="1">
+                <widget class="QPushButton">
                     <property name="name">
                         <cstring>mpBtnRevert</cstring>
                     </property>
@@ -71,7 +75,24 @@
                         <string>Revert</string>
                     </property>
                 </widget>
-                <widget class="QPushButton" row="1" column="2">
+                <spacer>
+                    <property name="name">
+                        <cstring>mpSpacerHorizontal</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QPushButton">
                     <property name="name">
                         <cstring>mpBtnReport</cstring>
                     </property>
@@ -79,7 +100,15 @@
                         <string>Report</string>
                     </property>
                 </widget>
-            </grid>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>mpBtnAssistant</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Output Assistant</string>
+                    </property>
+                </widget>
+            </hbox>
         </widget>
     </vbox>
 </widget>

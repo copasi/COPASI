@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.138 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/11/23 03:00:59 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
+//   $Revision: 1.139 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/12 14:27:07 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -165,9 +165,9 @@ class CModel : public CModelEntity
 
     /**
      * This is the list of objects which contains all objects which
-     * are up to date after a call to applyAssignments
+     * are up to date after a call to updateSimulatedValues
      */
-    std::set< const CCopasiObject * > mApplyUpToDateObjects;
+    std::set< const CCopasiObject * > mSimulatedUpToDateObjects;
 
     /**
      *  Comments
@@ -225,11 +225,6 @@ class CModel : public CModelEntity
      *  vector of non concentration values in the model
      */
     CCopasiVectorN< CModelValue > mValues;
-
-    /**
-     *  Transition time
-     */
-    C_FLOAT64 mTransitionTime;
 
     /**
      *  for array of conserved moieties
@@ -324,15 +319,21 @@ class CModel : public CModelEntity
     CProcessReport * mpCompileHandler;
 
     /**
-     * An ordered list of refresh methods needed by the applyAssignments
+     * An ordered list of refresh methods needed by the updateSimulatedValues
      */
-    std::vector< Refresh * > mApplyRefreshes;
+    std::vector< Refresh * > mSimulatedRefreshes;
 
     /**
      * An ordered list of refresh methods needed by the applyInitialValues
      * to update values which stay constant during simulation.
      */
     std::vector< Refresh * > mConstantRefreshes;
+
+    /**
+     * An ordered list of refresh methods needed to update all model values
+     * which are not calculated during simulation
+     */
+    std::vector< Refresh * > mNonSimulatedRefreshes;
 
     /**
      * A flag indicating whether the state template has to be reordered
@@ -503,12 +504,6 @@ class CModel : public CModelEntity
     unsigned C_INT32 getNumModelValues() const;
 
     //********** TT *****************************
-
-    /**
-     *  Set the transition times for all internal metabolites and the
-     *  transistion time of the model.
-     */
-    void setTransitionTimes();
 
   public:
     //********** Reactions *****************************
@@ -683,13 +678,16 @@ class CModel : public CModelEntity
     void setState(const CState & state);
 
     /**
-     * This method applies all assignments, which currently includes:
-     * i) calculating and assigning the particle numbers for dependent
-     *    metabolites (only if updateDependent is set in current state)
-     * ii) updating all concentrations
-     * iii) calculating the reaction fluxes
+     * This method calculates all values needed for simulation based on the current
+     * current state.
      */
-    void applyAssignments(void);
+    void updateSimulatedValues(void);
+
+    /**
+     * Calling this method after updateSimulatedValues assure that all model values
+     * even those not needed for simulation are consistent with the current state
+     */
+    void updateNonSimulatedValues(void);
 
     /**
      * Calculate the changes of all model quantities determined by ODEs
@@ -708,11 +706,6 @@ class CModel : public CModelEntity
      * &param C_FLOAT64 * derivatives (output)
      */
     void calculateDerivativesX(C_FLOAT64 * derivativesX);
-
-    /**
-     * Calculates and assignes the rates for all model entitities if possible
-     */
-    void refreshRates();
 
     /**
      * Calculates the elasticity matrix of the model for the current
@@ -951,13 +944,6 @@ class CModel : public CModelEntity
      */
     CReaction* createReaction(const std::string &name);
 
-    /**
-     * Add a new rection to the model
-     * @param const CReaction & reaction
-     * @return bool success (false if failed)
-     */
-    //bool addReaction(const CReaction & reaction);
-
     /* Remove a reaction from the model*/
     bool removeReaction(const std::string & key,
                         const bool & recursive = true);
@@ -1056,10 +1042,16 @@ class CModel : public CModelEntity
     bool buildConstantSequence();
 
     /**
-     * Build the update sequence used by applyAssignments.
+     * Build the update sequence used by updateSimulatedValues.
      * @return bool success
      */
-    bool buildApplySequence();
+    bool buildSimulatedSequence();
+
+    /**
+     * Build the update sequence used by updateNonSimulatedValues.
+     * @return bool success
+     */
+    bool buildNonSimulatedSequence();
 
     /**
      * Build the user order for the state template

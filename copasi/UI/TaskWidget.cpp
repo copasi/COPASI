@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.cpp,v $
-   $Revision: 1.25 $
-   $Name:  $
-   $Author: tjohann $
-   $Date: 2006/11/10 17:26:46 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.cpp,v $
+//   $Revision: 1.26 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/12 14:29:14 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -192,6 +192,9 @@ void TaskWidget::revertBtnClicked()
 
 void TaskWidget::runBtnClicked()
 {
+  // Assure that all edits to the current widget are commited.
+  mpBtnWidget->mpBtnRun->setFocus();
+
   runTask();
 }
 
@@ -391,7 +394,7 @@ bool TaskWidget::commonAfterRunTask()
   unsetCursor();
   static_cast<CopasiUI3Window *>(qApp->mainWidget())->suspendAutoSave(false);
 
-  return true;
+  return loadTask();
 }
 
 bool TaskWidget::commonRunTask()

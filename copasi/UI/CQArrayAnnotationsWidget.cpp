@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.cpp,v $
-   $Revision: 1.1 $
-   $Name:  $
-   $Author: ssahle $
-   $Date: 2007/01/10 17:07:44 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.cpp,v $
+//   $Revision: 1.2 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/12 14:29:14 $
+// End CVS Header
 
-// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -61,7 +61,13 @@ QColor CColorScaleSimple::getColor(const C_FLOAT64 & number)
   int g = 0;
   int b = 0;
 
-  if (tmp < 0.5)
+  if (tmp != tmp)
+    {
+      r = 85;
+      g = 85;
+      b = 135;
+    }
+  else if (tmp < 0.5)
     {
       r = 255;
       g = 255 + (tmp - 0.5) * 260;
@@ -133,6 +139,9 @@ void CColorScaleAverage::startAutomaticParameterCalculation()
 //virtual
 void CColorScaleAverage::passValue(const C_FLOAT64 & number)
 {
+  if (number != number) return; //NaN
+  if (fabs(number) >= DBL_MAX) return; //Inf
+
   ++mInt;
   mFloat += fabs(number);
 }
@@ -140,7 +149,10 @@ void CColorScaleAverage::passValue(const C_FLOAT64 & number)
 //virtual
 void CColorScaleAverage::finishAutomaticParameterCalculation()
 {
-  mMax = mFactor * mFloat / mInt;
+  if (mInt)
+    mMax = mFactor * mFloat / mInt;
+  else
+    mMax = mFactor;
   mMin = -mMax;
 
   if (mMin == mMax)

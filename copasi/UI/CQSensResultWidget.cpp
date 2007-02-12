@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSensResultWidget.cpp,v $
-   $Revision: 1.7 $
-   $Name:  $
-   $Author: ssahle $
-   $Date: 2007/01/10 17:08:16 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSensResultWidget.cpp,v $
+//   $Revision: 1.8 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/12 14:29:14 $
+// End CVS Header
 
-// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -78,6 +78,17 @@ CQSensResultWidget::CQSensResultWidget(QWidget* parent, const char* name, WFlags
   tcs2->setFactor(3.0);
   mArrayWidgetScaled->setColorScalingAutomatic(true);
   mpTab->addTab(mArrayWidgetScaled, "scaled");
+
+  //scaled array
+  mArrayWidgetCollapsed = new CQArrayAnnotationsWidget(mpTab, "ArrayWidget3");
+  //mArrayWidgetScaled->setColorCoding(new CColorScale1());
+  CColorScaleAverage* tcs3 = new CColorScaleAverage();
+  mArrayWidgetCollapsed->setColorCoding(tcs3);
+  //tcs3->setMinMax(-1,1);
+  //tcs3->setSymmetric(true);
+  tcs3->setFactor(3.0);
+  mArrayWidgetCollapsed->setColorScalingAutomatic(true);
+  mpTab->addTab(mArrayWidgetCollapsed, "summarized");
 }
 
 /*
@@ -108,6 +119,19 @@ void CQSensResultWidget::newResult()
 
   mArrayWidget->setArrayAnnotation(mpResult);
   mArrayWidgetScaled->setArrayAnnotation(mpScaledResult);
+
+  //tab for collapsed result
+  if (pProblem->collapsRequested())
+    {
+      mpCollapsedResult = pProblem->getCollapsedResultAnnotated();
+      mpTab->setTabEnabled(mArrayWidgetCollapsed, true);
+    }
+  else
+    {
+      mpCollapsedResult = NULL;
+      mpTab->setTabEnabled(mArrayWidgetCollapsed, false);
+    }
+  mArrayWidgetCollapsed->setArrayAnnotation(mpCollapsedResult);
 }
 
 void CQSensResultWidget::clearArrays()

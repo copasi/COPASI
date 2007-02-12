@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapTask.cpp,v $
-   $Revision: 1.9 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/08/08 21:30:20 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapTask.cpp,v $
+//   $Revision: 1.10 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/12 14:27:06 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -56,8 +56,7 @@ CLyapTask::CLyapTask(const CCopasiContainer * pParent):
 {
   mpProblem = new CLyapProblem(this);
   mpMethod =
-    CLyapMethod::createLyapMethod(CCopasiMethod::lyapWolf,
-                                  (CLyapProblem *) mpProblem);
+    CLyapMethod::createMethod(CCopasiMethod::lyapWolf);
   this->add(mpMethod, true);
 
   initObjects();
@@ -174,7 +173,7 @@ bool CLyapTask::process(const bool & useInitialValues)
   catch (CCopasiException Exception)
     {
       //mpLyapProblem->getModel()->setState(*mpCurrentState);
-      mpLyapProblem->getModel()->applyAssignments();
+      mpLyapProblem->getModel()->updateSimulatedValues();
 
       calculationsBeforeOutput();
       output(COutputInterface::DURING);
@@ -208,7 +207,7 @@ bool CLyapTask::restore()
 
       //TODO
       //pModel->setState(*mpCurrentState);
-      pModel->applyAssignments();
+      pModel->updateSimulatedValues();
       pModel->setInitialState(pModel->getState());
     }
 
@@ -224,8 +223,7 @@ bool CLyapTask::setMethodType(const int & type)
 
   pdelete (mpMethod);
   mpMethod =
-    CLyapMethod::createLyapMethod(Type,
-                                  (CLyapProblem *) mpProblem);
+    CLyapMethod::createMethod(Type);
   this->add(mpMethod, true);
 
   return true;

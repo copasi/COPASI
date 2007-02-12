@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-   $Revision: 1.111 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/25 15:09:37 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
+//   $Revision: 1.112 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/12 14:27:07 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -137,14 +137,6 @@ bool CMetab::setObjectParent(const CCopasiContainer * pParent)
   initCompartment(NULL);
 
   setStatus(getStatus());
-
-  CCopasiObject * pObject =
-    const_cast< CCopasiObject * >(getObject(CCopasiObjectName("Reference=TransitionTime")));
-
-  if (mpModel)
-    pObject->setRefresh(mpModel, &CModel::setTransitionTimes);
-  else
-    pObject->clearRefresh();
 
   return true;
 }
@@ -285,11 +277,27 @@ void CMetab::setStatus(const CModelEntity::Status & status)
   if (mpModel && mpCompartment) refreshConcentration();
 }
 
+#ifdef WIN32
+// warning C4056: overflow in floating-point constant arithmetic
+// warning C4756: overflow in constant arithmetic
+# pragma warning (disable: 4056 4756)
+#endif
+
 bool CMetab::compile()
 {
+  std::set<const CCopasiObject *> Dependencies;
+
   switch (getStatus())
     {
     case FIXED:
+      mRateVector.clear();
+      mpRateReference->setDirectDependencies(Dependencies);
+      mpRateReference->clearRefresh();
+      mRate = 0.0;
+
+      mpTTReference->setDirectDependencies(Dependencies);
+      mpTTReference->clearRefresh();
+      mTT = 2 * DBL_MAX;
       break;
 
     case ASSIGNMENT:
@@ -301,10 +309,7 @@ bool CMetab::compile()
       break;
 
     case REACTIONS:
-      mDependencies.clear();
       mRateVector.clear();
-
-      std::set< const CCopasiObject * > Dependencies;
 
       CCopasiVectorN< CReaction >::const_iterator it = mpModel->getReactions().begin();
       CCopasiVectorN< CReaction >::const_iterator end = mpModel->getReactions().end();
@@ -334,6 +339,9 @@ bool CMetab::compile()
 
       mpRateReference->setRefresh(this, &CMetab::refreshRate);
       mpRateReference->setDirectDependencies(Dependencies);
+
+      mpTTReference->setRefresh(this, &CMetab::refreshTransitionTime);
+      mpTTReference->setDirectDependencies(Dependencies);
     }
 
   return true;
@@ -392,10 +400,59 @@ void CMetab::refreshRate()
     }
 }
 
+void CMetab::refreshTransitionTime()
+{
+  switch (getStatus())
+    {
+    case FIXED:
+      break;
+
+    case ASSIGNMENT:
+      // :TODO: This needs to be implemented when this status becomes available
+      break;
+
+    case ODE:
+      // :TODO: This needs to be implemented when this status becomes available
+      break;
+
+    case REACTIONS:
+      {
+        C_FLOAT64 PositiveFlux = 0;
+        C_FLOAT64 NegativeFlux = 0;
+        C_FLOAT64 Flux;
+
+        std::vector< std::pair< C_FLOAT64, const C_FLOAT64 * > >::const_iterator it =
+          mRateVector.begin();
+        std::vector< std::pair< C_FLOAT64, const C_FLOAT64 * > >::const_iterator end =
+          mRateVector.end();
+
+        for (; it != end; ++it)
+          {
+            Flux = it->first * *it->second;
+
+            if (Flux > 0.0)
+              PositiveFlux += Flux;
+            else
+              NegativeFlux -= Flux;
+          }
+
+        Flux = std::min(PositiveFlux, NegativeFlux);
+
+        if (Flux == 0.0)
+          mTT = 2 * DBL_MAX;
+        else
+          mTT = *mpValueData / Flux;
+      }
+      break;
+    }
+}
+
+#ifdef WIN32
+# pragma warning (default: 4056 4756)
+#endif
+
 void CMetab::initObjects()
 {
-  // pObject->setRefresh(this, &CMetab::refreshInitialConcentration);
-
   mpValueReference->setObjectName("ParticleNumber");
   mpIValueReference->setObjectName("InitialParticleNumber");
   mpIValueReference->setUpdateMethod(this, &CMetab::setInitialValue);
@@ -410,14 +467,8 @@ void CMetab::initObjects()
   mpConcRateReference =
     static_cast<CCopasiObjectReference<C_FLOAT64> *>(addObjectReference("Rate", mConcRate, CCopasiObject::ValueDbl));
 
-  // :TODO: This will have to be replaced when ASSIGNMENTS and ODE are implemented
-  CCopasiObject * pObject;
-  std::set<const CCopasiObject *> NoDependencies;
-
-  pObject = addObjectReference("TransitionTime", mTT, CCopasiObject::ValueDbl);
-  pObject->setDirectDependencies(NoDependencies);
-  if (mpModel)
-    pObject->setRefresh(mpModel, &CModel::setTransitionTimes);
+  mpTTReference =
+    static_cast<CCopasiObjectReference<C_FLOAT64> *>(addObjectReference("TransitionTime", mTT, CCopasiObject::ValueDbl));
 }
 
 std::set< const CCopasiObject * > CMetab::getDeletedObjects() const
@@ -427,7 +478,7 @@ std::set< const CCopasiObject * > CMetab::getDeletedObjects() const
     Deleted.insert(mpIConcReference);
     Deleted.insert(mpConcReference);
     Deleted.insert(mpConcRateReference);
-    Deleted.insert(getObject(CCopasiObjectName("Reference=TransitionTime")));
+    Deleted.insert(mpTTReference);
 
     return Deleted;
   }

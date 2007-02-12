@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commercial/Attic/GenericDecode.c,v $
-   $Revision: 1.3 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2007/01/03 14:16:49 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commercial/Attic/GenericDecode.c,v $
+//   $Revision: 1.4 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/12 14:27:05 $
+// End CVS Header
 
-// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -518,7 +518,7 @@ char getDigit(int value)
  */
 void convertToBaseTen()
 {
-  char buffer[1];
+  char buffer[2];
   int index = regcodelength - 1;
   int pow, x;
   int resultlength;

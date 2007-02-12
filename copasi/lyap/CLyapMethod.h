@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapMethod.h,v $
-   $Revision: 1.1 $
-   $Name:  $
-   $Author: ssahle $
-   $Date: 2006/05/04 10:54:43 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapMethod.h,v $
+//   $Revision: 1.2 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/12 14:27:06 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -92,10 +92,8 @@ class CLyapMethod : public CCopasiMethod
      * a problem is also passed so that the method has a chance to choose an
      * appropriate simulation method.
      */
-    static CLyapMethod *
-    createLyapMethod(CCopasiMethod::SubType subType
-                     = CCopasiMethod::lyapWolf,
-                     CLyapProblem * pProblem = NULL);
+    static CLyapMethod * createMethod(CCopasiMethod::SubType subType
+                                      = CCopasiMethod::lyapWolf);
 
     /**
      * Copy constructor.

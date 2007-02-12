@@ -258,7 +258,12 @@ dnl to prevent calling aclocal, automake and configure again
  mv $$.tmp Makefile && \
  echo depend:  >> Makefile && \
  echo "	touch Makefile" >> Makefile && \
- rm -f UI/copasiui3window.o UI/CQSplashWidget.o CopasiSE/CopasiSE.o CopasiUI/main.o && \ 
+ rm -f \
+       commandline/CConfigurationFile.o \
+       UI/copasiui3window.o \
+       UI/CQSplashWidget.o \
+       CopasiSE/CopasiSE.o \
+       CopasiUI/main.o && \ 
  cd ..
  cd semantic-test-suite && \
  echo executing in `pwd`: && \

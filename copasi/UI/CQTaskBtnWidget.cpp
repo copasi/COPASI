@@ -1,20 +1,20 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTaskBtnWidget.cpp,v $
-   $Revision: 1.5 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:42 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTaskBtnWidget.cpp,v $
+//   $Revision: 1.6 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/12 14:29:14 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQTaskBtnWidget.ui'
  **
- ** Created: Fri Oct 7 14:23:55 2005
- **      by: The User Interface Compiler ($Id: CQTaskBtnWidget.cpp,v 1.5 2006/04/27 01:27:42 shoops Exp $)
+ ** Created: Tue Feb 6 11:11:40 2007
+ **      by: The User Interface Compiler ($Id: CQTaskBtnWidget.cpp,v 1.6 2007/02/12 14:29:14 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -37,29 +37,27 @@ CQTaskBtnWidget::CQTaskBtnWidget(QWidget* parent, const char* name, WFlags fl)
   if (!name)
     setName("CQTaskBtnWidget");
   CQTaskBtnWidgetLayout = new QVBoxLayout(this, 0, 6, "CQTaskBtnWidgetLayout");
-  mpSpacer = new QSpacerItem(20, 1, QSizePolicy::Minimum, QSizePolicy::Preferred);
-  CQTaskBtnWidgetLayout->addItem(mpSpacer);
+  mpSpacerVertical = new QSpacerItem(20, 16, QSizePolicy::Minimum, QSizePolicy::Preferred);
+  CQTaskBtnWidgetLayout->addItem(mpSpacerVertical);
 
-  mpGridLayout = new QGridLayout(0, 1, 1, 0, 6, "mpGridLayout");
+  mpBtnLayout = new QHBoxLayout(0, 0, 6, "mpBtnLayout");
 
   mpBtnRun = new QPushButton(this, "mpBtnRun");
-
-  mpGridLayout->addWidget(mpBtnRun, 1, 0);
-
-  mpBtnAssistant = new QPushButton(this, "mpBtnAssistant");
-
-  mpGridLayout->addWidget(mpBtnAssistant, 1, 3);
+  mpBtnLayout->addWidget(mpBtnRun);
 
   mpBtnRevert = new QPushButton(this, "mpBtnRevert");
-
-  mpGridLayout->addWidget(mpBtnRevert, 1, 1);
+  mpBtnLayout->addWidget(mpBtnRevert);
+  mpSpacerHorizontal = new QSpacerItem(20, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+  mpBtnLayout->addItem(mpSpacerHorizontal);
 
   mpBtnReport = new QPushButton(this, "mpBtnReport");
+  mpBtnLayout->addWidget(mpBtnReport);
 
-  mpGridLayout->addWidget(mpBtnReport, 1, 2);
-  CQTaskBtnWidgetLayout->addLayout(mpGridLayout);
+  mpBtnAssistant = new QPushButton(this, "mpBtnAssistant");
+  mpBtnLayout->addWidget(mpBtnAssistant);
+  CQTaskBtnWidgetLayout->addLayout(mpBtnLayout);
   languageChange();
-  resize(QSize(367, 35).expandedTo(minimumSizeHint()));
+  resize(QSize(372, 35).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
 
   // tab order
@@ -84,7 +82,7 @@ void CQTaskBtnWidget::languageChange()
 {
   setCaption(tr("CQTaskBtnWidget"));
   mpBtnRun->setText(tr("Run"));
-  mpBtnAssistant->setText(tr("Output Assistant"));
   mpBtnRevert->setText(tr("Revert"));
   mpBtnReport->setText(tr("Report"));
+  mpBtnAssistant->setText(tr("Output Assistant"));
 }

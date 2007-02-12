@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget1.cpp,v $
-   $Revision: 1.135 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/11/23 00:39:24 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget1.cpp,v $
+//   $Revision: 1.136 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/12 14:29:14 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -666,23 +666,19 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
     {
     case 0:                                                     // Yes or Enter
       {
-        unsigned C_INT32 size = CCopasiDataModel::Global->getModel()->getMetabolites().size();
-        //unsigned C_INT32 index = Copasi->pFunctionDB->loadedFunctions().getIndex(pFunction->getObjectName());
-        unsigned C_INT32 index = CCopasiDataModel::Global->getModel()->getMetabolites().getIndex(GlobalKeys.get(objKey));
-        /*for (i = 0; i < imax; i++)
-               {
-                 CCopasiDataModel::Global->getModel()->removeMetabolite(keys[i]);
-               }*/
+        unsigned C_INT32 index =
+          CCopasiDataModel::Global->getModel()->getMetabolites().getIndex(GlobalKeys.get(objKey));
+
         CCopasiDataModel::Global->getModel()->removeMetabolite(objKey);
-        if (size > 1)
-          {
-            enter(CCopasiDataModel::Global->getModel()->getMetabolites()[std::min(index, size - 2)]->getKey());
-            //for (i = 0; i < imax; i++)
-          }
+
+        unsigned C_INT32 size =
+          CCopasiDataModel::Global->getModel()->getMetabolites().size();
+
+        if (size > 0)
+          enter(CCopasiDataModel::Global->getModel()->getMetabolites()[std::min(index, size - 1)]->getKey());
         else
-          {
-            enter("");
-          }
+          enter("");
+
 #undef DELETE
         protectedNotify(ListViews::METABOLITE, ListViews::DELETE, objKey);
         //TODO notify about reactions

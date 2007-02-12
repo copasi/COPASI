@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-//   $Revision: 1.85 $
+//   $Revision: 1.86 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2007/01/15 12:03:18 $
+//   $Author: shoops $
+//   $Date: 2007/02/12 14:28:49 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -246,7 +246,7 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
   catch (int)
     {
       mpTrajectoryProblem->getModel()->setState(*mpCurrentState);
-      mpTrajectoryProblem->getModel()->applyAssignments();
+      mpTrajectoryProblem->getModel()->updateSimulatedValues();
 
       if ((*LE)(outputStartTime, *mpCurrentTime))
         {
@@ -262,7 +262,7 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
   catch (CCopasiException Exception)
     {
       mpTrajectoryProblem->getModel()->setState(*mpCurrentState);
-      mpTrajectoryProblem->getModel()->applyAssignments();
+      mpTrajectoryProblem->getModel()->updateSimulatedValues();
 
       if ((*LE)(outputStartTime, *mpCurrentTime))
         {
@@ -315,7 +315,7 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & nextTime)
       while (true);
 
       mpTrajectoryProblem->getModel()->setState(*mpCurrentState);
-      mpTrajectoryProblem->getModel()->applyAssignments();
+      mpTrajectoryProblem->getModel()->updateSimulatedValues();
 
       return true;
     }
@@ -337,7 +337,7 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & nextTime)
       while (true);
 
       mpTrajectoryProblem->getModel()->setState(*mpCurrentState);
-      mpTrajectoryProblem->getModel()->applyAssignments();
+      mpTrajectoryProblem->getModel()->updateSimulatedValues();
 
       return true;
     }
@@ -355,7 +355,7 @@ bool CTrajectoryTask::restore()
       CModel * pModel = mpProblem->getModel();
 
       pModel->setState(*mpCurrentState);
-      pModel->applyAssignments();
+      pModel->updateSimulatedValues();
       pModel->setInitialState(pModel->getState());
     }
 

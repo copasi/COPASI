@@ -26,6 +26,7 @@ set cps_minus=debug
 :QMAKE
 cd copasi
 del /S Makefile
+del commandline\CConfigurationFile.obj
 del UI\copasiui3window.obj 
 del UI\CQSplashWidget.obj 
 del CopasiUI\main.obj 

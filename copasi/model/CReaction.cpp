@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.164 $
-   $Name:  $
-   $Author: ssahle $
-   $Date: 2007/01/09 13:44:15 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
+//   $Revision: 1.165 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/12 14:27:07 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -481,6 +481,12 @@ void CReaction::compile()
 
   it = mChemEq.getProducts().begin();
   end = mChemEq.getProducts().end();
+
+  for (; it != end; ++it)
+    mDependencies.insert((*it)->getMetabolite());
+
+  it = mChemEq.getModifiers().begin();
+  end = mChemEq.getModifiers().end();
 
   for (; it != end; ++it)
     mDependencies.insert((*it)->getMetabolite());

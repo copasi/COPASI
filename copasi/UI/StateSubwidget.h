@@ -1,20 +1,20 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/StateSubwidget.h,v $
-   $Revision: 1.12 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/08/25 18:19:25 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/StateSubwidget.h,v $
+//   $Revision: 1.13 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/12 14:29:14 $
+// End CVS Header
 
-// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'StateSubwidget.ui'
  **
- ** Created: Fri Aug 25 08:28:22 2006
- **      by: The User Interface Compiler ($Id: StateSubwidget.h,v 1.12 2006/08/25 18:19:25 shoops Exp $)
+ ** Created: Do Feb 8 15:15:25 2007
+ **      by: The User Interface Compiler ($Id: StateSubwidget.h,v 1.13 2007/02/12 14:29:14 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -71,6 +71,8 @@ class StateSubwidget : public QWidget
     QLabel* textLabelEigenvaluesX;
     QWidget* TabPage_6;
     QTextEdit* stabilityTextEdit;
+    QWidget* TabPage_7;
+    QTextEdit* protocolTextEdit;
 
     void displayOptimizationTab(bool display);
     virtual bool loadMetabolites(const CModel * model);
@@ -101,6 +103,7 @@ class StateSubwidget : public QWidget
     QGridLayout* layoutEigenvaluesX;
     QSpacerItem* spacer4_2;
     QVBoxLayout* TabPageLayout_6;
+    QGridLayout* TabPageLayout_7;
 
   protected slots:
     virtual void languageChange();

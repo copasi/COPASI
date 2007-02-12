@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.pro,v $ 
-#   $Revision: 1.28 $ 
+#   $Revision: 1.29 $ 
 #   $Name:  $ 
-#   $Author: ssahle $ 
-#   $Date: 2007/02/12 00:06:47 $ 
+#   $Author: shoops $ 
+#   $Date: 2007/02/12 14:27:04 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -11,7 +11,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.28 $ $Author: ssahle $ $Date: 2007/02/12 00:06:47 $  
+# $Revision: 1.29 $ $Author: shoops $ $Date: 2007/02/12 14:27:04 $  
 ######################################################################
 
 TEMPLATE = subdirs
@@ -20,13 +20,12 @@ include(common.pri)
 
 # First build the SE libs
 
-#ifdef COPASI_LICENSE_COM
 SUBDIRS =  commandline
+#ifdef COPASI_LICENSE_COM
 contains(USE_LICENSE, COM) {
   SUBDIRS += commercial
 }
 #endif // COPASI_LICENSE_COM
-
 SUBDIRS += CopasiDataModel
 SUBDIRS += elementaryFluxModes
 SUBDIRS += function

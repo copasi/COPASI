@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapWolfMethod.cpp,v $
-   $Revision: 1.9 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/08/09 21:07:18 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapWolfMethod.cpp,v $
+//   $Revision: 1.10 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/12 14:27:06 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -15,6 +15,8 @@
 #include "CLyapMethod.h"
 #include "CLyapProblem.h"
 #include "CLyapTask.h"
+
+#include "CopasiDataModel/CCopasiDataModel.h"
 #include "model/CModel.h"
 #include "model/CState.h"
 #include "blaswrap.h"
@@ -24,26 +26,10 @@ CLyapWolfMethod::CLyapWolfMethod(const CCopasiContainer * pParent):
     mpState(NULL)
     //mY(NULL)
 {
-  mDim[1] = (C_INT) (void *) this;
+  assert((void *) &mData == (void *) &mData.dim);
 
-  addParameter("Orthonormalization Interval",
-               CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0);
-  addParameter("Overall time",
-               CCopasiParameter::UDOUBLE, (C_FLOAT64) 1000.0);
-  //addParameter("Integrate Reduced Model",
-  //             CCopasiParameter::BOOL, (bool) true);
-  addParameter("Relative Tolerance",
-               CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-006);
-  addParameter("Use Default Absolute Tolerance",
-               CCopasiParameter::BOOL, (bool) true);
-  addParameter("Absolute Tolerance",
-               CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e009);
-  addParameter("Adams Max Order",
-               CCopasiParameter::UINT, (unsigned C_INT32) 12);
-  addParameter("BDF Max Order",
-               CCopasiParameter::UINT, (unsigned C_INT32) 5);
-  addParameter("Max Internal Steps",
-               CCopasiParameter::UINT, (unsigned C_INT32) 10000);
+  mData.pMethod = this;
+  initializeParameter();
 }
 
 CLyapWolfMethod::CLyapWolfMethod(const CLyapWolfMethod & src,
@@ -51,16 +37,35 @@ CLyapWolfMethod::CLyapWolfMethod(const CLyapWolfMethod & src,
     CLyapMethod(src, pParent),
     mpState(NULL)
     //mY(NULL)
-{}
+{
+  assert((void *) &mData == (void *) &mData.dim);
+
+  mData.pMethod = this;
+  initializeParameter();
+}
 
 CLyapWolfMethod::~CLyapWolfMethod()
 {
   pdelete(mpState);
 }
 
+void CLyapWolfMethod::initializeParameter()
+{
+  CCopasiParameter *pParm;
+
+  assertParameter("Orthonormalization Interval", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0);
+  assertParameter("Overall time", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1000.0);
+  assertParameter("Relative Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-6);
+  assertParameter("Use Default Absolute Tolerance", CCopasiParameter::BOOL, (bool) true);
+  assertParameter("Absolute Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-12);
+  assertParameter("Adams Max Order", CCopasiParameter::UINT, (unsigned C_INT32) 12);
+  assertParameter("BDF Max Order", CCopasiParameter::UINT, (unsigned C_INT32) 5);
+  assertParameter("Max Internal Steps", CCopasiParameter::UINT, (unsigned C_INT32) 10000);
+}
+
 void CLyapWolfMethod::step(const double & deltaT)
 {
-  if (!mDim[0]) //just do nothing if there are no variables
+  if (!mData.dim) //just do nothing if there are no variables
     {
       mTime = mTime + deltaT;
       mpState->setTime(mTime);
@@ -75,23 +80,23 @@ void CLyapWolfMethod::step(const double & deltaT)
   C_INT DSize = mDWork.size();
   C_INT ISize = mIWork.size();
 
-  mLSODA(&EvalF ,          //  1. evaluate F
-         mDim ,            //  2. number of variables
+  mLSODA(&EvalF ,            //  1. evaluate F
+         &mData.dim ,        //  2. number of variables
          mVariables.array(), //  3. the array of current concentrations
-         &mTime ,          //  4. the current time
-         &EndTime ,        //  5. the final time
-         &two ,            //  6. vector absolute error, scalar relative error
-         &mRtol ,          //  7. relative tolerance array
-         mAtol.array() ,          //  8. absolute tolerance array
-         &mState ,         //  9. output by overshoot & interpolatation
-         &mLsodaStatus ,   // 10. the state control variable
-         &one ,            // 11. futher options (one)
-         mDWork.array() ,  // 12. the double work array
-         &DSize ,          // 13. the double work array size
-         mIWork.array() ,  // 14. the int work array
-         &ISize ,          // 15. the int work array size
-         NULL ,            // 16. evaluate J (not given)
-         &mJType);        // 17. the type of jacobian calculate (2)
+         &mTime ,            //  4. the current time
+         &EndTime ,          //  5. the final time
+         &two ,              //  6. vector absolute error, scalar relative error
+         &mRtol ,            //  7. relative tolerance array
+         mAtol.array() ,     //  8. absolute tolerance array
+         &mState ,           //  9. output by overshoot & interpolatation
+         &mLsodaStatus ,     // 10. the state control variable
+         &one ,              // 11. futher options (one)
+         mDWork.array() ,    // 12. the double work array
+         &DSize ,            // 13. the double work array size
+         mIWork.array() ,    // 14. the int work array
+         &ISize ,            // 15. the int work array size
+         NULL ,              // 16. evaluate J (not given)
+         &mJType);           // 17. the type of jacobian calculate (2)
 
   if (mLsodaStatus == -1) mLsodaStatus = 2;
 
@@ -139,18 +144,18 @@ void CLyapWolfMethod::start(/*const CState * initialState*/)
 
   //calculate the number of variables for lsoda integration
   if (mDoDivergence)
-    mDim[0] = mSystemSize * (1 + mNumExp) + 1;
+    mData.dim = mSystemSize * (1 + mNumExp) + 1;
   else
-    mDim[0] = mSystemSize * (1 + mNumExp);
+    mData.dim = mSystemSize * (1 + mNumExp);
 
-  //std::cout << "lyap: " << mSystemSize << " " << mNumExp << " " << mDim[0] << std::endl;
+  //std::cout << "lyap: " << mSystemSize << " " << mNumExp << " " << mData.dim << std::endl;
 
   //initialize the vector on which lsoda will work
-  mVariables.resize(mDim[0]);
+  mVariables.resize(mData.dim);
   memcpy(mVariables.array(), mpState->beginIndependent(), mSystemSize * sizeof(C_FLOAT64));
 
   //generate base vectors; first fill the array with 0
-  C_FLOAT64 *dbl, *dblEnd = mVariables.array() + mDim[0];
+  C_FLOAT64 *dbl, *dblEnd = mVariables.array() + mData.dim;
   for (dbl = mVariables.array() + mSystemSize; dbl != dblEnd; ++dbl)
     *dbl = 0.0;
   //now add 1.0
@@ -189,15 +194,15 @@ void CLyapWolfMethod::start(/*const CState * initialState*/)
   else
     tmpATol = * getValue("Absolute Tolerance").pUDOUBLE;
 
-  mAtol.resize(mDim[0]);
+  mAtol.resize(mData.dim);
   for (i = 0; i < mSystemSize; ++i)
     mAtol[i] = tmpATol;
-  for (; i < mDim[0]; ++i)
+  for (; i < mData.dim; ++i)
     mAtol[i] = 1e-25;
 
-  mDWork.resize(22 + mDim[0] * std::max<C_INT>(16, mDim[0] + 9));
+  mDWork.resize(22 + mData.dim * std::max<C_INT>(16, mData.dim + 9));
   mDWork[4] = mDWork[5] = mDWork[6] = mDWork[7] = mDWork[8] = mDWork[9] = 0.0;
-  mIWork.resize(20 + mDim[0]);
+  mIWork.resize(20 + mData.dim);
   mIWork[4] = mIWork[6] = mIWork[9] = 0;
 
   mIWork[5] = * getValue("Max Internal Steps").pUINT;
@@ -223,7 +228,7 @@ C_FLOAT64 CLyapWolfMethod::getDefaultAtol(const CModel * pModel) const
   }
 
 void CLyapWolfMethod::EvalF(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot)
-{static_cast<CLyapWolfMethod *>((void *) n[1])->evalF(t, y, ydot);}
+{static_cast<Data *>((void *) n)->pMethod->evalF(t, y, ydot);}
 
 void CLyapWolfMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot)
 {
@@ -238,7 +243,7 @@ void CLyapWolfMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 
   //copy state to model
   CModel * pModel = mpProblem->getModel();
   pModel->setState(*mpState);
-  pModel->applyAssignments();
+  pModel->updateSimulatedValues();
 
   //the model
   if (mReducedModel)
@@ -252,7 +257,7 @@ void CLyapWolfMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 
   pModel->calculateJacobianX(mJacobian, 1e-6, 1e-12);
 
   //empty dummy entries... to be removed later
-  //C_FLOAT64 *dbl, *dblEnd = ydot + mDim[0];
+  //C_FLOAT64 *dbl, *dblEnd = ydot + mData.dim;
   //for (dbl = ydot + mSystemSize; dbl != dblEnd; ++dbl)
   //  *dbl = 0;
 
@@ -360,7 +365,7 @@ bool CLyapWolfMethod::calculate()
       while (true);
 
       //mpLyapProblem->getModel()->setState(*mpCurrentState);
-      //mpLyapProblem->getModel()->applyAssignments();
+      //mpLyapProblem->getModel()->updateSimulatedValues();
     }
   else
     {
@@ -372,7 +377,7 @@ bool CLyapWolfMethod::calculate()
   mpState->setTime(mTime);
   //copy state to model
   mpProblem->getModel()->setState(*mpState);
-  mpProblem->getModel()->applyAssignments();
+  mpProblem->getModel()->updateSimulatedValues();
   mpTask->methodCallback((mTime - transientTime) * handlerFactor);
   //********
 
@@ -417,7 +422,7 @@ bool CLyapWolfMethod::calculate()
       mpState->setTime(mTime);
       //copy state to model
       mpProblem->getModel()->setState(*mpState);
-      mpProblem->getModel()->applyAssignments();
+      mpProblem->getModel()->updateSimulatedValues();
       flagProceed &= mpTask->methodCallback((mTime - transientTime) * handlerFactor);
     }
   while ((mTime < endTime) && flagProceed);

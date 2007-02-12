@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-   $Revision: 1.63 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/11/03 19:49:49 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
+//   $Revision: 1.64 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/12 14:28:48 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -38,6 +38,8 @@ CSteadyStateTask::CSteadyStateTask(const CCopasiContainer * pParent):
     mpSteadyState(NULL),
     mJacobian(),
     mJacobianX(),
+    mpJacobianAnn(NULL),
+    mpJacobianXAnn(NULL),
     mEigenValues("Eigenvalues of Jacobian", this),
     mEigenValuesX("Eigenvalues of reduced system Jacobian", this)
 {
@@ -47,6 +49,7 @@ CSteadyStateTask::CSteadyStateTask(const CCopasiContainer * pParent):
   this->add(mpMethod, true);
   //mpMethod->setObjectParent(this);
   //((CSteadyStateMethod *) mpMethod)->setProblem((CSteadyStateProblem *) mpProblem);
+  initObjects();
 }
 
 CSteadyStateTask::CSteadyStateTask(const CSteadyStateTask & src,
@@ -55,6 +58,8 @@ CSteadyStateTask::CSteadyStateTask(const CSteadyStateTask & src,
     mpSteadyState(src.mpSteadyState),
     mJacobian(src.mJacobian),
     mJacobianX(src.mJacobianX),
+    mpJacobianAnn(NULL),
+    mpJacobianXAnn(NULL),
     mEigenValues(src.mEigenValues, this),
     mEigenValuesX(src.mEigenValuesX, this)
 {
@@ -65,6 +70,7 @@ CSteadyStateTask::CSteadyStateTask(const CSteadyStateTask & src,
   this->add(mpMethod, true);
   //mpMethod->setObjectParent(this);
   //((CSteadyStateMethod *) mpMethod)->setProblem((CSteadyStateProblem *) mpProblem);
+  initObjects();
 }
 
 CSteadyStateTask::~CSteadyStateTask()
@@ -74,6 +80,23 @@ CSteadyStateTask::~CSteadyStateTask()
 
 void CSteadyStateTask::cleanup()
 {}
+
+void CSteadyStateTask::initObjects()
+{
+  mpJacobianAnn = new CArrayAnnotation("Jacobian (complete system)", this,
+                                       new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mJacobian));
+  mpJacobianAnn->setOnTheFly(false);
+  mpJacobianAnn->setDescription("");
+  mpJacobianAnn->setDimensionDescription(0, "Variables of the system, including dependent metabolites");
+  mpJacobianAnn->setDimensionDescription(1, "Variables of the system, including dependent metabolites");
+
+  mpJacobianXAnn = new CArrayAnnotation("Jacobian (reduced system)", this,
+                                        new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mJacobianX));
+  mpJacobianXAnn->setOnTheFly(false);
+  mpJacobianXAnn->setDescription("");
+  mpJacobianXAnn->setDimensionDescription(0, "Independent variables of the system");
+  mpJacobianXAnn->setDimensionDescription(1, "Independent variables of the system");
+}
 
 void CSteadyStateTask::print(std::ostream * ostream) const {(*ostream) << (*this);}
 
@@ -86,9 +109,6 @@ void CSteadyStateTask::load(CReadConfig & configBuffer)
 
   ((CSteadyStateMethod *) mpMethod)->load(configBuffer);
 }
-
-//CState * CSteadyStateTask::getState()
-//{return mpSteadyState;}
 
 const CState * CSteadyStateTask::getState() const
   {return mpSteadyState;}
@@ -127,10 +147,43 @@ bool CSteadyStateTask::initialize(const OutputFlag & of,
   mCalculateReducedSystem = (mpProblem->getModel()->getNumDependentMetabs() != 0);
 
   //init jacobians
-  unsigned C_INT32 size = mpSteadyState->getNumIndependent();
-  mJacobianX.resize(size, size);
-  size += mpSteadyState->getNumDependent();
+  unsigned C_INT32 sizeX = mpSteadyState->getNumIndependent();
+  mJacobianX.resize(sizeX, sizeX);
+  unsigned C_INT32 size = sizeX + mpSteadyState->getNumDependent();
   mJacobian.resize(size, size);
+
+  //jacobian annotations
+  CStateTemplate & StateTemplate = mpProblem->getModel()->getStateTemplate();
+
+  mpJacobianAnn->resize();
+  CModelEntity **ppEntities = StateTemplate.getEntities();
+  const unsigned C_INT32 * pUserOrder = StateTemplate.getUserOrder().array();
+  const unsigned C_INT32 * pUserOrderEnd = pUserOrder + StateTemplate.getUserOrder().size();
+
+  pUserOrder++; // We skip the time which is the first.
+
+  unsigned C_INT32 i, imax = size;
+  for (i = 0; i < imax && pUserOrder != pUserOrderEnd; pUserOrder++)
+    {
+      const CModelEntity::Status & Status = ppEntities[*pUserOrder]->getStatus();
+      if (Status == CModelEntity::ODE || Status == CModelEntity::REACTIONS)
+        {
+          mpJacobianAnn->setAnnotation(0 , i, ppEntities[*pUserOrder]->getCN());
+          mpJacobianAnn->setAnnotation(1 , i, ppEntities[*pUserOrder]->getCN());
+
+          i++;
+        }
+    }
+
+  mpJacobianXAnn->resize();
+
+  ppEntities = StateTemplate.beginIndependent();
+  imax = sizeX;
+  for (i = 0; i < imax; ++i, ++ppEntities)
+    {
+      mpJacobianXAnn->setAnnotation(0 , i, (*ppEntities)->getCN());
+      mpJacobianXAnn->setAnnotation(1 , i, (*ppEntities)->getCN());
+    }
 
   CSteadyStateProblem* pProblem =
     dynamic_cast<CSteadyStateProblem *>(mpProblem);
@@ -165,14 +218,39 @@ bool CSteadyStateTask::process(const bool & useInitialValues)
     dynamic_cast<CSteadyStateMethod *>(mpMethod);
   assert(pMethod);
 
+  CSteadyStateProblem* pProblem =
+    dynamic_cast<CSteadyStateProblem *>(mpProblem);
+  assert(pMethod);
+
   output(COutputInterface::BEFORE);
 
+  //call the method
   mResult = pMethod->process(mpSteadyState,
-                             mJacobian,
                              mJacobianX,
-                             mEigenValues,
-                             mEigenValuesX,
                              mpCallBack);
+
+  //debug
+  //std::cout << pMethod->getMethodLog() << std::endl;
+
+  //update jacobian
+  if (pProblem->isJacobianRequested() ||
+      pProblem->isStabilityAnalysisRequested())
+    {
+      pMethod->doJacobian(mJacobian, mJacobianX);
+    }
+
+  //mpProblem->getModel()->setState(mpSteadyState);
+  //mpProblem->getModel()->updateRates();
+
+  //calculate eigenvalues
+  if (pProblem->isStabilityAnalysisRequested())
+    {
+      mEigenValues.calcEigenValues(mJacobian);
+      mEigenValuesX.calcEigenValues(mJacobianX);
+
+      mEigenValues.stabilityAnalysis(pMethod->getStabilityResolution());
+      mEigenValuesX.stabilityAnalysis(pMethod->getStabilityResolution());
+    }
 
   // Reset the time.
   mpSteadyState->setTime(InitialTime);
@@ -191,7 +269,7 @@ bool CSteadyStateTask::restore()
       CModel * pModel = mpProblem->getModel();
 
       pModel->setState(*mpSteadyState);
-      pModel->applyAssignments();
+      pModel->updateSimulatedValues();
       pModel->setInitialState(pModel->getState());
     }
 
@@ -228,9 +306,8 @@ std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
   if (!pModel) return os;
 
   pModel->setState(*pState);
-  pModel->applyAssignments();
-  pModel->refreshRates();
-  pModel->setTransitionTimes();
+  pModel->updateSimulatedValues();
+  pModel->updateNonSimulatedValues();
 
   // Metabolite Info: Name, Concentration, Concentration Rate, Particle Number, Particle Rate, Transition Time
   const CCopasiVector<CMetab> & Metabolites = pModel->getMetabolites();
@@ -281,8 +358,9 @@ std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
   //    Jacobian Reduced System
   if (static_cast<CSteadyStateProblem *>(A.mpProblem)->isJacobianRequested())
     {
-      os << "Jacobian of the Complete System" << std::endl;
-      os << A.mJacobian << std::endl;
+      //os << "Jacobian of the Complete System" << std::endl;
+      //os << A.mJacobian << std::endl;
+      os << *A.mpJacobianAnn << std::endl;
       if (static_cast<CSteadyStateProblem *>(A.mpProblem)->isStabilityAnalysisRequested())
         {
           os << "Eigenvalues\treal\timaginary" << std::endl;
@@ -292,8 +370,9 @@ std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
           os << std::endl;
         }
 
-      os << "Jacobian of the Reduced System" << std::endl;
-      os << A.mJacobianX << std::endl;
+      //os << "Jacobian of the Reduced System" << std::endl;
+      //os << A.mJacobianX << std::endl;
+      os << *A.mpJacobianXAnn << std::endl;
       if (static_cast<CSteadyStateProblem *>(A.mpProblem)->isStabilityAnalysisRequested())
         {
           os << "Eigenvalues\treal\timaginary" << std::endl;

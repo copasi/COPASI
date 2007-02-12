@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQModelValue.ui.h,v $
-   $Revision: 1.8 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/28 00:18:41 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQModelValue.ui.h,v $
+//   $Revision: 1.9 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/12 14:29:14 $
+// End CVS Header
 
-// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -198,23 +198,20 @@ void CQModelValue::slotBtnDelete()
     {
     case 0:                                                     // Yes or Enter
       {
-        unsigned C_INT32 size =
-          CCopasiDataModel::Global->getModel()->getModelValues().size();
         unsigned C_INT32 index =
           static_cast<CCopasiVector< CModelValue > *>(&CCopasiDataModel::Global->getModel()->getModelValues())->getIndex(GlobalKeys.get(mKey));
 
         CCopasiDataModel::Global->getModel()->removeModelValue(mKey);
+        unsigned C_INT32 size =
+          CCopasiDataModel::Global->getModel()->getModelValues().size();
+
         mpModelValue = NULL;
 
-        if (size > 1)
-          {
-            enter(CCopasiDataModel::Global->getModel()->getModelValues()[std::min(index, size - 2)]->getKey());
-            //for (i = 0; i < imax; i++)
-          }
+        if (size > 0)
+          enter(CCopasiDataModel::Global->getModel()->getModelValues()[std::min(index, size - 1)]->getKey());
         else
-          {
-            enter("");
-          }
+          enter("");
+
 #undef DELETE
         protectedNotify(ListViews::MODELVALUE, ListViews::DELETE, mKey);
         break;

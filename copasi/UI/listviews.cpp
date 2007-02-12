@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.209 $
+//   $Revision: 1.210 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/02/09 16:50:57 $
+//   $Author: shoops $
+//   $Date: 2007/02/12 14:29:14 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -69,7 +69,7 @@
 #include "qtUtilities.h"
 #include "CQFittingWidget.h"
 #include "CQFittingResult.h"
-#include "CMCAWidget.h"
+#include "CQMCAWidget.h"
 #include "CMCAResultWidget.h"
 #include "CQReportDefinition.h"
 #include "PlotWidget.h"
@@ -194,7 +194,7 @@ ListViews::ListViews(QWidget *parent, const char *name):
     QSplitter(Qt::Horizontal, parent, name),
     mpMathModel(NULL),
     mpCMCAResultWidget(NULL),
-    mpCMCAWidget(NULL),
+    mpCQMCAWidget(NULL),
     compartmentsWidget(NULL),
     compartmentsWidget1(NULL),
     defaultWidget(NULL),
@@ -390,8 +390,8 @@ void ListViews::ConstructNodeWidgets()
   if (!mpCMCAResultWidget) mpCMCAResultWidget = new CMCAResultWidget(this);
   mpCMCAResultWidget->hide();
 
-  if (!mpCMCAWidget) mpCMCAWidget = new CMCAWidget(this);
-  mpCMCAWidget->hide();
+  if (!mpCQMCAWidget) mpCQMCAWidget = new CQMCAWidget(this);
+  mpCQMCAWidget->hide();
 
   if (!optimizationWidget) optimizationWidget = new CQOptimizationWidget(this);
   optimizationWidget->hide();
@@ -573,7 +573,7 @@ CopasiWidget* ListViews::findWidgetFromId(const C_INT32 & id) const
         return timeSeriesWidget;
         break;
       case 24:
-        return mpCMCAWidget;
+        return mpCQMCAWidget;
         break;
       case 241:
         return mpCMCAResultWidget;

@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethodLSODA.cpp,v $
-   $Revision: 1.5 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/06 16:03:47 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethodLSODA.cpp,v $
+//   $Revision: 1.6 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/12 14:28:49 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -391,7 +391,7 @@ void CHybridMethodLSODA::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT
 
   pModel->setState(*mpState);
 
-  pModel->applyAssignments();
+  pModel->updateSimulatedValues();
 
   calculateDerivative(temp);
 

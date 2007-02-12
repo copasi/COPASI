@@ -1,20 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/Attic/CTimeScaleSeparationMethod.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2007/01/29 09:46:17 $
-// End CVS Header
-
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
-
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/Attic/CTimeScaleSeparationMethod.cpp,v $
-//   $Revision: 1.3 $
-//   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2007/01/29 09:46:17 $
+//   $Author: shoops $
+//   $Date: 2007/02/12 14:28:49 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -233,7 +222,7 @@ void CTimeScaleSeparationMethod::step(const double & deltaT)
   mTdInverse.resize(dim, dim);
   mQz.resize(dim, dim);
 
-  mpModel->applyAssignments();
+  mpModel->updateSimulatedValues();
   mpModel->calculateJacobianX(mJacobian, 1e-6, 1e-12);
 
   std::cout << "*****************************" << std::endl;
@@ -1113,7 +1102,7 @@ void CTimeScaleSeparationMethod::deuflhard(C_INT & slow, C_INT & info)
   CVector<C_FLOAT64> dxdt;
   dxdt.resize(dim);
 
-  mpModel->applyAssignments();
+  mpModel->updateSimulatedValues();
 
   for (j = 0; j < dim; j++)
     dxdt[j] = 0.;
@@ -1472,7 +1461,7 @@ void CTimeScaleSeparationMethod::calculateDerivativesX(C_FLOAT64 * X1, C_FLOAT64
     mpModel->getMetabolitesX()[i]->setConcentration(X1[i]);
 
   mpState->setUpdateDependentRequired(true);
-  mpModel->applyAssignments();
+  mpModel->updateSimulatedValues();
   mpModel->calculateDerivativesX(Y1);
 
   C_FLOAT64 number2conc = mpModel->getNumber2QuantityFactor()
@@ -1485,7 +1474,7 @@ void CTimeScaleSeparationMethod::calculateDerivativesX(C_FLOAT64 * X1, C_FLOAT64
     mpModel->getMetabolitesX()[i]->setValue(tmp[i]);
 
   mpState->setUpdateDependentRequired(true);
-  mpModel->applyAssignments();
+  mpModel->updateSimulatedValues();
 
   return;
 }
@@ -1652,7 +1641,7 @@ void CTimeScaleSeparationMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y,
   mpState->setTime(*t);
 
   mpModel->setState(*mpState);
-  mpModel->applyAssignments();
+  mpModel->updateSimulatedValues();
 
   if (mReducedModel)
     mpModel->calculateDerivativesX(ydot);

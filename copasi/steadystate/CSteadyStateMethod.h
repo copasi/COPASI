@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateMethod.h,v $
-   $Revision: 1.19 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:31:49 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateMethod.h,v $
+//   $Revision: 1.20 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/12 14:28:48 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -23,6 +23,7 @@
 #define COPASI_CSteadyStateMethod
 
 #include <string>
+#include <sstream>
 
 #include "utilities/CCopasiMethod.h"
 #include "utilities/CMatrix.h"
@@ -69,27 +70,29 @@ class CSteadyStateMethod : public CCopasiMethod
     /**
      * The jacobian of the steadystate
      */
-    CMatrix< C_FLOAT64 > * mpJacobian;
-
-    /**
-     * The jacobian of the steadystate
-     */
     CMatrix< C_FLOAT64 > * mpJacobianX;
-
-    /**
-     * A pointer to a CEigen object
-     */
-    CEigen * mpEigenValues;
-
-    /**
-     * A pointer to a CEigen object
-     */
-    CEigen * mpEigenValuesX;
 
     /**
      * A pointer to the progress bar handler
      */
     CProcessReport * mpProgressHandler;
+
+    /**
+     * The concentration rate that is considered zero
+     */
+    C_FLOAT64* mpSSResolution;
+
+    /**
+     * The factor for numerical derivation
+     */
+    C_FLOAT64* mpDerivationFactor;
+
+    /**
+     * The resolution of the variable of numerical derivation
+     */
+    C_FLOAT64* mpDerivationResolution;
+
+    std::ostringstream mMethodLog;
 
     // Operations
   private:
@@ -106,6 +109,11 @@ class CSteadyStateMethod : public CCopasiMethod
      */
     CSteadyStateMethod(CCopasiMethod::SubType subType,
                        const CCopasiContainer * pParent = NULL);
+
+    /**
+     * initialize parameters and handle parameters of old copasi files
+     */
+    void initializeParameter();
 
   public:
     /**
@@ -129,30 +137,19 @@ class CSteadyStateMethod : public CCopasiMethod
      */
     ~CSteadyStateMethod();
 
-    /**
-     *  Set a pointer to the problem.
-     *  This method is used by CSteadyState
-     *  @param "CSteadyStateProblem *" problem
-     */
-    //void setProblem(CSteadyStateProblem * problem);
+    bool elevateChildren();
 
     /**
      * This instructs the method to calculate a the steady state
      * starting with the initialState given.
      * The steady state is returned in the object pointed to by steadyState.
      * @param CState * steadyState
-     * @param CMatrix< C_FLOAT64 > & jacobian
      * @param CMatrix< C_FLOAT64 > & jacobianX
-     * @param CEigen & EigenValues
-     * @param CEigen & EigenValuesX
      * @param CProcessReport * handler
      * @return CSteadyStateMethod::ReturnCode returnCode
      */
     CSteadyStateMethod::ReturnCode process(CState * pState,
-                                           CMatrix< C_FLOAT64 > & jacobian,
                                            CMatrix< C_FLOAT64 > & jacobianX,
-                                           CEigen & EigenValues,
-                                           CEigen & EigenValuesX,
                                            CProcessReport * handler);
 
     /**
@@ -168,6 +165,21 @@ class CSteadyStateMethod : public CCopasiMethod
      */
     virtual bool initialize(const CSteadyStateProblem * pProblem);
 
+    /**
+     * calls the CModel methods to calculate the jacobians (at the steady state).
+     * This trivial method is implemented in the method
+     * because it may need to know about some method parameters
+     */
+    void doJacobian(CMatrix< C_FLOAT64 > & jacobian,
+                    CMatrix< C_FLOAT64 > & jacobianX);
+
+    /**
+     * returns the resolution for stability analysis
+     */
+    C_FLOAT64 getStabilityResolution();
+
+    std::string getMethodLog() const;
+
   protected:
 
     /**
@@ -182,15 +194,10 @@ class CSteadyStateMethod : public CCopasiMethod
     /**
      * This function has to be called at the return of any implementation
      * of the protected function process()
-     * @param bool steadyStateFound
-     * @param const C_FLOAT64 & factor
-     * @param const C_FLOAT64 & resolution
      * @return CSteadyStateMethod::ReturnCode returnCode
      */
     virtual CSteadyStateMethod::ReturnCode
-    returnProcess(bool steadyStateFound,
-                  const C_FLOAT64 & factor,
-                  const C_FLOAT64 & resolution);
+    returnProcess(bool steadyStateFound);
 
     /**
      * Check whether the steady state is chemical equilibrium
@@ -200,6 +207,8 @@ class CSteadyStateMethod : public CCopasiMethod
     bool isEquilibrium(const C_FLOAT64 & resolution) const;
 
     bool hasNegativeConcentrations(const C_FLOAT64 & resolution) const;
+
+    void calculateJacobianX(const C_FLOAT64 & oldMaxRate);
   };
 
 #include "CNewtonMethod.h"

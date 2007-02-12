@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapProblem.cpp,v $
-   $Revision: 1.4 $
-   $Name:  $
-   $Author: ssahle $
-   $Date: 2006/05/14 16:52:24 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapProblem.cpp,v $
+//   $Revision: 1.5 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/12 14:27:06 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -34,17 +34,7 @@ CLyapProblem::CLyapProblem(const CCopasiContainer * pParent):
     mpDivergenceRequested(NULL),
     mpTransientTime(NULL)
 {
-  addParameter("ExponentNumber", CCopasiParameter::UINT, (unsigned C_INT32) 3);
-  //addParameter("TimeSeriesRequested", CCopasiParameter::BOOL, (bool) true);
-  addParameter("DivergenceRequested", CCopasiParameter::BOOL, (bool) true);
-  addParameter("TransientTime", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.0);
-
-  mpExponentNumber = getValue("ExponentNumber").pUINT;
-  //mpTimeSeriesRequested = getValue("TimeSeriesRequested").pBOOL;
-  mpDivergenceRequested = getValue("DivergenceRequested").pBOOL;
-  mpTransientTime = getValue("TransientTime").pDOUBLE;
-
-  initObjects();
+  initializeParameter();
   CONSTRUCTOR_TRACE;
 }
 
@@ -60,12 +50,7 @@ CLyapProblem::CLyapProblem(const CLyapProblem & src,
     mpDivergenceRequested(NULL),
     mpTransientTime(NULL)
 {
-  mpExponentNumber = getValue("ExponentNumber").pUINT;
-  //mpTimeSeriesRequested = getValue("TimeSeriesRequested").pBOOL;
-  mpDivergenceRequested = getValue("DivergenceRequested").pBOOL;
-  mpTransientTime = getValue("TransientTime").pDOUBLE;
-
-  initObjects();
+  initializeParameter();
   CONSTRUCTOR_TRACE;
 }
 
@@ -80,20 +65,16 @@ bool CLyapProblem::elevateChildren()
   return true;
 }
 
-void CLyapProblem::initObjects()
+void CLyapProblem::initializeParameter()
 {
-  //   const_cast<CCopasiObject *>(getParameter("StepNumber")
-  //                               ->getObject(CCopasiObjectName("Reference=Value")))
-  //   ->setUpdateMethod(this,
-  //                     (void (CLyapProblem::*)(const C_INT32 &)) &CLyapProblem::setStepNumber);
+  mpExponentNumber =
+    assertParameter("ExponentNumber", CCopasiParameter::UINT, (unsigned C_INT32) 3)->getValue().pUINT;
+  mpDivergenceRequested =
+    assertParameter("DivergenceRequested", CCopasiParameter::BOOL, (bool) true)->getValue().pBOOL;
+  mpTransientTime =
+    assertParameter("TransientTime", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.0)->getValue().pDOUBLE;
 
-  /*  const_cast<CCopasiObject *>(getParameter("StepSize")
-                                ->getObject(CCopasiObjectName("Reference=Value")))
-    ->setUpdateMethod(this, &CLyapProblem::setStepSize);
-
-    const_cast<CCopasiObject *>(getParameter("Duration")
-                                ->getObject(CCopasiObjectName("Reference=Value")))
-    ->setUpdateMethod(this, &CLyapProblem::setDuration);*/
+  elevateChildren();
 }
 
 void CLyapProblem::setExponentNumber(const unsigned C_INT32 & number)
@@ -116,7 +97,6 @@ const C_FLOAT64 & CLyapProblem::getTransientTime() const
 {
   *mpTimeSeriesRequested = flag;
 }
-
 
 bool CLyapProblem::timeSeriesRequested() const
   {return *mpTimeSeriesRequested;}

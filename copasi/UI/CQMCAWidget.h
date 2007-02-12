@@ -1,6 +1,6 @@
 // Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLyapWidget.h,v $
-//   $Revision: 1.6 $
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMCAWidget.h,v $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
 //   $Date: 2007/02/12 14:29:14 $
@@ -11,16 +11,16 @@
 // All rights reserved.
 
 /****************************************************************************
- ** Form interface generated from reading ui file 'CQLyapWidget.ui'
+ ** Form interface generated from reading ui file 'CQMCAWidget.ui'
  **
- ** Created: Tue Feb 6 14:32:59 2007
- **      by: The User Interface Compiler ($Id: CQLyapWidget.h,v 1.6 2007/02/12 14:29:14 shoops Exp $)
+ ** Created: Wed Feb 7 14:54:17 2007
+ **      by: The User Interface Compiler ($Id: CQMCAWidget.h,v 1.2 2007/02/12 14:29:14 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
 
-#ifndef CQLYAPWIDGET_H
-#define CQLYAPWIDGET_H
+#ifndef CQMCAWIDGET_H
+#define CQMCAWIDGET_H
 
 #include <qvariant.h>
 #include "TaskWidget.h"
@@ -29,44 +29,41 @@ class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
 class QSpacerItem;
-class QFrame;
 class QCheckBox;
-class QLineEdit;
-class QLabel;
+class QFrame;
 
-class CQLyapWidget : public TaskWidget
+class CQMCAWidget : public TaskWidget
   {
     Q_OBJECT
 
   public:
-    CQLyapWidget(QWidget* parent = 0, const char* name = 0);
-    ~CQLyapWidget();
+    CQMCAWidget(QWidget* parent = 0, const char* name = 0);
+    ~CQMCAWidget();
 
+    QCheckBox* mpCheckSteadyState;
     QFrame* mpLine;
-    QCheckBox* mpCheckDelay;
-    QLineEdit* mpEditDelay;
-    QLineEdit* mpEditExponent;
-    QCheckBox* mpCheckDivergence;
-    QLabel* mpLblExponents;
 
     virtual bool runTask();
+
+  public slots:
+    virtual void slotSteadyStateChecked();
 
   protected:
     virtual CCopasiMethod * createMethod(const CCopasiMethod::SubType & type);
     virtual bool loadTask();
     virtual bool saveTask();
 
-    QVBoxLayout* CQLyapWidgetLayout;
+    QVBoxLayout* CQMCAWidgetLayout;
     QGridLayout* mpGridLayout;
-    QHBoxLayout* mpLayoutDelay;
+    QSpacerItem* mpSacer;
 
   protected slots:
     virtual void languageChange();
 
-    void slotDelayChecked();
-
   private:
     void init();
+    bool loadParameterTable();
+    bool saveParameterTable();
   };
 
-#endif // CQLYAPWIDGET_H
+#endif // CQMCAWIDGET_H

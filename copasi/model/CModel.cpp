@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.294 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/11/27 16:10:22 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
+//   $Revision: 1.295 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/12 14:27:07 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -89,7 +89,6 @@ CModel::CModel():
     mSteps("Reactions", this),
     mParticleFluxes(),
     mValues("Values", this),
-    mTransitionTime(0.0),
     mMoieties("Moieties", this),
     mStoi(),
     mStoiReordered(),
@@ -103,7 +102,11 @@ CModel::CModel():
     mLView(mL, mNumMetabolitesIndependent),
     mQuantity2NumberFactor(1.0),
     mNumber2QuantityFactor(1.0),
-    mpCompileHandler(NULL)
+    mpCompileHandler(NULL),
+    mSimulatedRefreshes(),
+    mConstantRefreshes(),
+    mNonSimulatedRefreshes(),
+    mReorderNeeded(false)
 {
   initObjects();
 
@@ -146,7 +149,6 @@ CModel::CModel(const CModel & src):
     mSteps(src.mSteps, this),
     mParticleFluxes(src.mParticleFluxes),
     mValues(src.mValues, this),
-    mTransitionTime(src.mTransitionTime),
     mMoieties(src.mMoieties, this),
     mStoi(src.mStoi),
     mStoiReordered(src.mStoiReordered),
@@ -160,7 +162,11 @@ CModel::CModel(const CModel & src):
     mLView(mL, mNumMetabolitesIndependent),
     mQuantity2NumberFactor(src.mQuantity2NumberFactor),
     mNumber2QuantityFactor(src.mNumber2QuantityFactor),
-    mpCompileHandler(NULL)
+    mpCompileHandler(NULL),
+    mSimulatedRefreshes(),
+    mConstantRefreshes(),
+    mNonSimulatedRefreshes(),
+    mReorderNeeded(false)
 {
   CONSTRUCTOR_TRACE;
   initObjects();
@@ -364,7 +370,8 @@ bool CModel::compile()
   if (mpCompileHandler && !mpCompileHandler->progress(hCompileStep)) return false;
 
   buildConstantSequence();
-  buildApplySequence();
+  buildSimulatedSequence();
+  buildNonSimulatedSequence();
   CompileStep = 6;
   if (mpCompileHandler && !mpCompileHandler->progress(hCompileStep)) return false;
 
@@ -491,7 +498,7 @@ bool CModel::handleUnusedMetabolites()
   C_FLOAT64 tmp;
   std::vector< unsigned C_INT32 > Unused;
 
-  for (i = 0; pStoi < pStoiEnd; i++)
+  for (i = 0; i < numRows; i++)
     {
       tmp = 0;
 
@@ -778,75 +785,6 @@ void CModel::buildMoieties()
   return;
 }
 
-#ifdef WIN32
-// warning C4056: overflow in floating-point constant arithmetic
-// warning C4756: overflow in constant arithmetic
-# pragma warning (disable: 4056 4756)
-#endif
-
-void CModel::setTransitionTimes()
-{
-  unsigned C_INT32 i, imax = mMetabolites.size();
-  unsigned C_INT32 j, jmax = mSteps.size();
-
-  // Since some metabolites are unused we need to keep track of
-  // the row of the stoichiometry matrix intependently.
-  unsigned C_INT32 k;
-
-  C_FLOAT64 TotalFlux_p, TotalFlux_n, min_flux, PartialFlux;
-  C_FLOAT64 TransitionTime;
-
-  mTransitionTime = 0.0;
-
-  for (i = 0, k = 0; i < imax; i++)
-    {
-      if (mMetabolites[i]->isFixed() ||
-          !mMetabolites[i]->isUsed())
-        {
-          mMetabolites[i]->setTransitionTime(2 * DBL_MAX);
-        }
-      else
-        {
-          TotalFlux_p = 0.0;
-          TotalFlux_n = 0.0;
-
-          for (j = 0; j < jmax; j++)
-            {
-              PartialFlux = mStoi(k, j) * mParticleFluxes[j];
-
-              if (PartialFlux > 0.0)
-                TotalFlux_p += PartialFlux;
-              else
-                TotalFlux_n -= PartialFlux;
-            }
-
-          k++; // The next row in the stoichiometry matrix;
-
-          if (TotalFlux_p < TotalFlux_n)
-            min_flux = TotalFlux_p;
-          else
-            min_flux = TotalFlux_n;
-
-          if (min_flux == 0.0)
-            TransitionTime = 2 * DBL_MAX;
-          else
-            TransitionTime = mMetabolites[i]->getValue() / min_flux;
-
-          mMetabolites[i]->setTransitionTime(TransitionTime);
-          //mMetabolites[i]->setNumberRate(TotalFlux);
-
-          if (!finite(TransitionTime))
-            mTransitionTime = TransitionTime;
-          else
-            mTransitionTime += TransitionTime;
-        }
-    }
-}
-
-#ifdef WIN32
-# pragma warning (default: 4056 4756)
-#endif
-
 //this is supposed to be so fast it can be called often to be kept up to date
 //all the time. At the moment it creates the mMetabolites and sorts the fixed
 //metabs to the end
@@ -1033,7 +971,7 @@ CStateTemplate & CModel::getStateTemplate()
 {CCHECK return mStateTemplate;}
 
 std::set< const CCopasiObject * > & CModel::getUpToDateObjects()
-{CCHECK return mApplyUpToDateObjects;}
+{CCHECK return mSimulatedUpToDateObjects;}
 
 bool CModel::setTitle(const std::string &title)
 {
@@ -1113,7 +1051,7 @@ void CModel::applyInitialValues()
     (**itRefresh++)();
 
   // Update all dependend objects needed for simulation.
-  applyAssignments();
+  updateSimulatedValues();
 }
 
 void CModel::clearMoieties()
@@ -1258,7 +1196,7 @@ bool CModel::buildUserOrder()
   return true;
 }
 
-bool CModel::buildApplySequence()
+bool CModel::buildSimulatedSequence()
 {
   // We need to add each used model entity to the objects which need to be updated.
   std::set< const CCopasiObject * > Objects;
@@ -1272,7 +1210,8 @@ bool CModel::buildApplySequence()
     Objects.insert((*ppEntity)->getRateReference());
 
   // For CMetab REACTIONs we currently do not need to add anything as these
-  // changes are calculated with dgemm in caculateDerivatives for perfromance reasons.
+  // changes are calculated with dgemm in caculateDerivatives for performance reasons,
+  // i.e., it suffices to add all reaction rates.
 
   // For CMetab ASSIGNMENTs we need to add the Concentration
   // For CModelValues and CCompartment ASSIGNMENTs we need to add the Value
@@ -1282,14 +1221,14 @@ bool CModel::buildApplySequence()
   for (; ppEntity != ppEntityEnd; ++ppEntity)
     Objects.insert((*ppEntity)->getValueReference());
 
-  // Further more all reaction fluxes have to be calculated too
+  // Further more all reaction fluxes have to be calculated too (see CMetab REACTION above)
   CCopasiVector< CReaction >::iterator itReaction = mSteps.begin();
   CCopasiVector< CReaction >::iterator endReaction = mSteps.end();
   for (; itReaction != endReaction; ++itReaction)
     Objects.insert((*itReaction)->getParticleFluxReference());
 
   // We now detect unused assignments, i.e., the result of an assignment is not
-  // used during applyAssignments except for itself or another unused assignment.
+  // used during updateSimulatedValues except for itself or another unused assignment.
   bool UnusedFound = true;
 
   std::set<const CCopasiObject * > Candidate;
@@ -1364,8 +1303,8 @@ bool CModel::buildApplySequence()
         (*itReaction)->compile();
     }
 
-  mApplyUpToDateObjects.clear();
-  mApplyRefreshes = CCopasiObject::buildUpdateSequence(Objects, this);
+  mSimulatedUpToDateObjects.clear();
+  mSimulatedRefreshes = CCopasiObject::buildUpdateSequence(Objects, this);
 
   // We have to remove the refresh calls already covered by mConstantRefreshes
   std::vector< Refresh * >::const_iterator itInitialRefresh = mConstantRefreshes.begin();
@@ -1376,13 +1315,13 @@ bool CModel::buildApplySequence()
 
   for (; itInitialRefresh != endInitialRefresh; ++itInitialRefresh)
     {
-      itRefresh = mApplyRefreshes.begin();
-      endRefresh = mApplyRefreshes.end();
+      itRefresh = mSimulatedRefreshes.begin();
+      endRefresh = mSimulatedRefreshes.end();
 
       for (; itRefresh != endRefresh; ++itRefresh)
         if ((*itRefresh)->isEqual(*itInitialRefresh))
           {
-            mApplyRefreshes.erase(itRefresh);
+            mSimulatedRefreshes.erase(itRefresh);
             break;
           }
     }
@@ -1429,8 +1368,92 @@ bool CModel::buildConstantSequence()
         (*ppEntity)->setUsedOnce(false);
     }
 
-  mApplyUpToDateObjects.clear();
+  mSimulatedUpToDateObjects.clear();
   mConstantRefreshes = CCopasiObject::buildUpdateSequence(Objects, this);
+
+  return true;
+}
+
+bool CModel::buildNonSimulatedSequence()
+{
+  std::set< const CCopasiObject * > Objects;
+
+  // Compartments
+  CCopasiVector< CCompartment >::iterator itComp = mCompartments.begin();
+  CCopasiVector< CCompartment >::iterator endComp = mCompartments.end();
+
+  for (; itComp != endComp; ++itComp)
+    {
+      Objects.insert((*itComp)->getValueReference());
+
+      switch ((*itComp)->getStatus())
+        {
+        case ODE:
+          Objects.insert((*itComp)->getRateReference());
+          break;
+
+        default:
+          break;
+        }
+    }
+
+  // Metabolites
+  CCopasiVector< CMetab >::iterator itMetab = mMetabolites.begin();
+  CCopasiVector< CMetab >::iterator endMetab = mMetabolites.end();
+
+  for (; itMetab != endMetab; ++itMetab)
+    {
+      Objects.insert((*itMetab)->getObject(CCopasiObjectName("Reference=Concentration")));
+      Objects.insert((*itMetab)->CModelEntity::getValueReference());
+
+      switch ((*itMetab)->getStatus())
+        {
+        case REACTIONS:
+          Objects.insert((*itMetab)->getObject(CCopasiObjectName("Reference=TransitionTime")));
+          Objects.insert((*itMetab)->getObject(CCopasiObjectName("Reference=Rate")));
+          Objects.insert((*itMetab)->CModelEntity::getRateReference());
+          break;
+
+        case ODE:
+          Objects.insert((*itMetab)->getObject(CCopasiObjectName("Reference=Rate")));
+          Objects.insert((*itMetab)->CModelEntity::getRateReference());
+          break;
+
+        default:
+          break;
+        }
+    }
+
+  // Reactions
+  CCopasiVector< CReaction >::iterator itStep = mSteps.begin();
+  CCopasiVector< CReaction >::iterator endStep = mSteps.end();
+
+  for (; itStep != endStep; ++itStep)
+    {
+      Objects.insert((*itStep)->getObject(CCopasiObjectName("Reference=Flux")));
+      Objects.insert((*itStep)->getObject(CCopasiObjectName("Reference=ParticleFlux")));
+    }
+
+  // Model Values
+  CCopasiVector< CModelValue >::iterator itValue = mValues.begin();
+  CCopasiVector< CModelValue >::iterator endValue = mValues.end();
+
+  for (; itValue != endValue; ++itValue)
+    {
+      Objects.insert((*itValue)->getValueReference());
+
+      switch ((*itValue)->getStatus())
+        {
+        case ODE:
+          Objects.insert((*itValue)->getRateReference());
+          break;
+
+        default:
+          break;
+        }
+    }
+
+  mNonSimulatedRefreshes = CCopasiObject::buildUpdateSequence(Objects, this);
 
   return true;
 }
@@ -1443,14 +1466,14 @@ const CState & CModel::getState() const
 
 void CModel::setInitialState(const CState & state)
 {
-  // The situation where the state has the updateDependentRequired flag
+  // The situation where the initial state has the updateDependentRequired flag
   // set is currently not handled.
 
   assert (!state.isUpdateDependentRequired());
 
   // To prevent triggering the above assertion please use:
   //   setState(state);
-  //   applyAssignements();
+  //   updateSimulatedValues();
   //   setInititalState(getState());
   //
   // This is not done automatically since it changes the current state of
@@ -1482,7 +1505,7 @@ void CModel::setState(const CState & state)
   return;
 }
 
-void CModel::applyAssignments(void)
+void CModel::updateSimulatedValues(void)
 {
   // Depending on which model we are using we need to update
   // the particle numbers for the dependent metabolites.
@@ -1498,8 +1521,8 @@ void CModel::applyAssignments(void)
       mCurrentState.setUpdateDependentRequired(false);
     }
 
-  std::vector< Refresh * >::const_iterator itRefresh = mApplyRefreshes.begin();
-  std::vector< Refresh * >::const_iterator endRefresh = mApplyRefreshes.end();
+  std::vector< Refresh * >::const_iterator itRefresh = mSimulatedRefreshes.begin();
+  std::vector< Refresh * >::const_iterator endRefresh = mSimulatedRefreshes.end();
 
   while (itRefresh != endRefresh)
     (**itRefresh++)();
@@ -1512,6 +1535,17 @@ void CModel::applyAssignments(void)
 
   for (;it != end; ++it, ++pFlux)
     *pFlux = (*it)->getParticleFlux();
+}
+
+void CModel::updateNonSimulatedValues(void)
+{
+  std::vector< Refresh * >::const_iterator itRefresh = mNonSimulatedRefreshes.begin();
+  std::vector< Refresh * >::const_iterator endRefresh = mNonSimulatedRefreshes.end();
+
+  while (itRefresh != endRefresh)
+    (**itRefresh++)();
+
+  return;
 }
 
 void CModel::calculateDerivatives(C_FLOAT64 * derivatives)
@@ -1566,24 +1600,6 @@ void CModel::calculateDerivativesX(C_FLOAT64 * derivativesX)
   if (K != 0)
     dgemm_(&T, &T, &M, &N, &K, &Alpha, mParticleFluxes.array(), &M,
            mRedStoi.array(), &K, &Beta, pTmp, &M);
-}
-
-void CModel::refreshRates()
-{
-  CVector< C_FLOAT64 > Rates(mStateTemplate.getNumIndependent() - mNumMetabolitesIndependent + mNumMetabolitesReaction);
-  C_FLOAT64 * pRate = Rates.array();
-  calculateDerivatives(pRate);
-
-  // The offset 1 is for the model time which is always the first
-  // state variable.
-  CModelEntity ** ppIt =
-    mStateTemplate.getEntities() + 1 + mStateTemplate.getNumIndependent() - mNumMetabolitesIndependent;
-
-  CModelEntity ** ppEnd = ppIt + mNumMetabolitesReaction;
-  pRate += mStateTemplate.getNumIndependent() - mNumMetabolitesIndependent;
-
-  for (; ppIt != ppEnd; ++ppIt, ++pRate)
-    (*ppIt)->setRate(*pRate);
 }
 
 void CModel::calculateElasticityMatrix(const C_FLOAT64 & factor,
@@ -1681,11 +1697,11 @@ void CModel::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
       InvDelta = 1.0 / (X2 - X1);
 
       *pX = X1;
-      applyAssignments();
+      updateSimulatedValues();
       calculateDerivatives(Y1.array());
 
       *pX = X2;
-      applyAssignments();
+      updateSimulatedValues();
       calculateDerivatives(Y2.array());
 
       *pX = Store;
@@ -1698,7 +1714,7 @@ void CModel::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
         * pJacobian = (*pY2 - *pY1) * InvDelta;
     }
 
-  applyAssignments();
+  updateSimulatedValues();
 
   //  jacobian = Jacobian;
   //  return;
@@ -1769,12 +1785,12 @@ void CModel::calculateJacobianX(CMatrix< C_FLOAT64 > & jacobianX,
 
       *pX = X1;
       mCurrentState.setUpdateDependentRequired(true);
-      applyAssignments();
+      updateSimulatedValues();
       calculateDerivativesX(Y1.array());
 
       *pX = X2;
       mCurrentState.setUpdateDependentRequired(true);
-      applyAssignments();
+      updateSimulatedValues();
       calculateDerivativesX(Y2.array());
 
       *pX = Store;
@@ -1788,7 +1804,7 @@ void CModel::calculateJacobianX(CMatrix< C_FLOAT64 > & jacobianX,
     }
 
   mCurrentState.setUpdateDependentRequired(true);
-  applyAssignments();
+  updateSimulatedValues();
 }
 
 C_FLOAT64 CModel::calculateDivergence() const
@@ -2027,7 +2043,9 @@ void CModel::appendDependentMetabolites(std::set< const CCopasiObject * > candid
         end = (*itComp)->getMetabolites().end();
 
         for (; it != end; ++it)
-          if (candidates.find(*it) == candidates.end())
+          if (candidates.find((*it)->getCompartment()) != candidates.end())
+            dependentMetabolites.insert((*it));
+          else if (candidates.find(*it) == candidates.end())
             {
               if (candidates.find((*it)->getCompartment()->getObject(CCopasiObjectName("Reference=Volume"))) != candidates.end() ||
                   (*it)->hasCircularDependencies(candidates))
@@ -2037,6 +2055,14 @@ void CModel::appendDependentMetabolites(std::set< const CCopasiObject * > candid
                 }
 
               std::set< const CCopasiObject * > DeletedObjects = (*it)->getDeletedObjects();
+
+              if ((*it)->getStatus() == REACTIONS)
+                {
+                  DeletedObjects.erase((*it)->getObject(CCopasiObjectName("Reference=Rate")));
+                  DeletedObjects.erase((*it)->getObject(CCopasiObjectName("Reference=ParticleNumberRate")));
+                  DeletedObjects.erase((*it)->getObject(CCopasiObjectName("Reference=TransitionTime")));
+                }
+
               itSet = DeletedObjects.begin();
               endSet = DeletedObjects.end();
 

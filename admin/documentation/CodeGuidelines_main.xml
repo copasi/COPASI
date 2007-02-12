@@ -1,10 +1,10 @@
 <chapter id="NamingConventions" xreflabel="Naming Conventions">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/admin/documentation/CodeGuidelines_main.xml,v $ -->
-<!--   $Revision: 1.5 $ -->
+<!--   $Revision: 1.6 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: shoops $ -->
-<!--   $Date: 2007/01/19 20:04:47 $ -->
+<!--   $Date: 2007/02/12 14:27:04 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -125,7 +125,7 @@ In addition the following standards should be followed:
 <title>COPASI Object Structure</title>
 <para>
 COPASI has an object structure which is used to access all objects
-which can be calculated, ploted, or printed. Objects can be grouped to
+which can be calculated, plotted, or printed. Objects can be grouped to
 larger objects called containers. COPASI itself functions as a root
 container, i.e., it contains all objects which might be of interest
 for calculation or output. The access to any object is provided with
@@ -221,7 +221,7 @@ the specified type.
 <sect1 id="State Template Order" xreflable="State Template Order">
 <title>State Template Order</title>
 <para>
-This section decribes whether and in which order the above calculated
+This section describes whether and in which order the above calculated
 simulation objects appear in the initial and current state of the
 model. The order is described by the class CStateTemplate. Please note
 that all objects with the type "Fixed" are marked "Unused" as there is
@@ -272,17 +272,17 @@ no need to calculate them during simulation.
  </row>
  <row>
    <entry>Metabolite</entry>
-   <entry>Assignement</entry>
+   <entry>Assignment</entry>
    <entry>Used</entry>
  </row>
  <row>
    <entry>Compartment</entry>
-   <entry>Assignement</entry>
+   <entry>Assignment</entry>
    <entry>Used</entry>
  </row>
  <row>
    <entry>Model Value</entry>
-   <entry>Assignement</entry>
+   <entry>Assignment</entry>
    <entry>Used</entry>
  </row>
  <row>
@@ -300,7 +300,7 @@ no need to calculate them during simulation.
 </sect1>
 
 <sect1 id="Applying Assignemets" xreflabel="Applying Assignemets">
-<title>Applying Assignemets</title>
+<title>Applying Assignments</title>
 </sect1>
 
 <sect1 id="Calculating Current Values" xreflabel="Calculating Current Values">
@@ -310,9 +310,12 @@ no need to calculate them during simulation.
 <sect1 id="Dependency Specifications" xreflabel="Dependency Specifications">
 <title>Dependency Specifications</title>
 
-<sect2 id="Metabolite Independent" xreflabel="Metabolite Independent">
-<title>Metabolite Independent</title>
-<table frame="all"><title>Metabolite Independent</title>
+<sect2 id="Transient Values" xreflabel="Transient Values">
+<title>Transient Values</title>
+
+<sect3 id="Metabolite Reaction" xreflabel="Metabolite Reaction">
+<title>Metabolite Reaction</title>
+<table frame="all"><title>Metabolite Reaction</title>
 <tgroup cols="3" align="left" colsep="1" rowsep="1">
 <colspec colwidth="2*" />
 <colspec colwidth="6*" />
@@ -350,12 +353,18 @@ no need to calculate them during simulation.
    <entry>Particle Rate, parent compartment Volume</entry>
    <entry>refreshConcentrationRate</entry>
  </row>
+ <row>
+   <entry>Transition Time</entry>
+   <entry>All particle fluxes of reactions the metabolites participates in</entry>
+   <entry>refreshTransitionTime</entry>
+ </row>
 </tbody>
 </tgroup>
 </table>
-</sect2>
+</sect3>
 
-<sect2 id="Metabolite Dependent" xreflabel="Metabolite Dependent">
+<!--
+<sect3 id="Metabolite Dependent" xreflabel="Metabolite Dependent">
 <title>Metabolite Dependent</title>
 <table frame="all"><title>Metabolite Dependent</title>
 <tgroup cols="3" align="left" colsep="1" rowsep="1">
@@ -387,7 +396,7 @@ no need to calculate them during simulation.
  </row>
  <row>
    <entry>Particle Rate</entry>
-   <entry>All particle fluxes of reactions the metabolites paricipates in</entry>
+   <entry>All particle fluxes of reactions the metabolites participates in</entry>
    <entry>refreshRate</entry>
  </row>
  <row>
@@ -395,13 +404,18 @@ no need to calculate them during simulation.
    <entry>Particle Rate, parent compartment Volume</entry>
    <entry>refreshConcentrationRate</entry>
  </row>
+ <row>
+   <entry>Transition Time</entry>
+   <entry>All particle fluxes of reactions the metabolites participates in</entry>
+   <entry>refreshTransitionTime</entry>
+ </row>
 </tbody>
 </tgroup>
 </table>
-</sect2>
+</sect3>
+-->
 
-<!--
-<sect2 id="Metabolite Assignment (Particle Number)" xreflabel="Metabolite Assignment (Particle Number)">
+<sect3 id="Metabolite Assignment (Particle Number)" xreflabel="Metabolite Assignment (Particle Number)">
 <title>Metabolite Assignment (Particle Number)</title>
 <table frame="all"><title>Metabolite Assignment (Particle Number)</title>
 <tgroup cols="3" align="left" colsep="1" rowsep="1">
@@ -445,10 +459,9 @@ no need to calculate them during simulation.
 </tgroup>
 </table>
 <para>This will not be implemented</para>
-</sect2>
--->
+</sect3>
 
-<sect2 id="Metabolite Assignment (Concentration)" xreflabel="Metabolite Assignment (Concentration)">
+<sect3 id="Metabolite Assignment (Concentration)" xreflabel="Metabolite Assignment (Concentration)">
 <title>Metabolite Assignment (Concentration)</title>
 <table frame="all"><title>Metabolite Assignment (Concentration)</title>
 <tgroup cols="3" align="left" colsep="1" rowsep="1">
@@ -492,10 +505,9 @@ no need to calculate them during simulation.
 </tgroup>
 </table>
 <para>This will be implemented later</para>
-</sect2>
+</sect3>
 
-<!--
-<sect2 id="Metabolite ODE (Particle Number)" xreflabel="Metabolite ODE (Particle Number)">
+<sect3 id="Metabolite ODE (Particle Number)" xreflabel="Metabolite ODE (Particle Number)">
 <title>Metabolite ODE (Particle Number)</title>
 <table frame="all"><title>Metabolite ODE (Particle Number)</title>
 <tgroup cols="3" align="left" colsep="1" rowsep="1">
@@ -539,10 +551,9 @@ no need to calculate them during simulation.
 </tgroup>
 </table>
 <para>This will not be implemented</para>
-</sect2>
--->
+</sect3>
 
-<sect2 id="Metabolite ODE (Concentration)" xreflabel="Metabolite ODE (Concentration)">
+<sect3 id="Metabolite ODE (Concentration)" xreflabel="Metabolite ODE (Concentration)">
 <title>Metabolite ODE (Concentration)</title>
 <table frame="all"><title>Metabolite ODE (Concentration)</title>
 <tgroup cols="3" align="left" colsep="1" rowsep="1">
@@ -586,9 +597,9 @@ no need to calculate them during simulation.
 </tgroup>
 </table>
 <para>This will be implemented later</para>
-</sect2>
+</sect3>
 
-<sect2 id="Moiety" xreflabel="Moiety">
+<sect3 id="Moiety" xreflabel="Moiety">
 <title>Moiety</title>
 <table frame="all"><title>Moiety</title>
 <tgroup cols="3" align="left" colsep="1" rowsep="1">
@@ -621,9 +632,9 @@ no need to calculate them during simulation.
 </tbody>
 </tgroup>
 </table>
-</sect2>
+</sect3>
 
-<sect2 id="Reaction" xreflabel="Reaction">
+<sect3 id="Reaction" xreflabel="Reaction">
 <title>Reaction</title>
 <table frame="all"><title>Reaction</title>
 <tgroup cols="3" align="left" colsep="1" rowsep="1">
@@ -640,8 +651,12 @@ no need to calculate them during simulation.
 <tbody>
  <row>
    <entry>Self</entry>
-   <entry>all substrates, products, kinetic function</entry>
-   <entry>none</entry>
+   <entry>
+    all variables of the kinetic function,
+    associated compartment Volume, kinetic function, 
+    all metabolites involved
+   </entry>
+   <entry>calculate</entry>
  </row>
  <row>
    <entry>ParticleFlux</entry>
@@ -658,9 +673,9 @@ no need to calculate them during simulation.
 </tbody>
 </tgroup>
 </table>
-</sect2>
+</sect3>
 
-<sect2 id="Model Value Assignment" xreflabel="Model Value Assignment">
+<sect3 id="Model Value Assignment" xreflabel="Model Value Assignment">
 <title>Model Value Assignment</title>
 <table frame="all"><title>Model Value Assignment</title>
 <tgroup cols="3" align="left" colsep="1" rowsep="1">
@@ -693,9 +708,9 @@ no need to calculate them during simulation.
 </tbody>
 </tgroup>
 </table>
-</sect2>
+</sect3>
 
-<sect2 id="Model Value ODE" xreflabel="Model Value ODE">
+<sect3 id="Model Value ODE" xreflabel="Model Value ODE">
 <title>Model Value ODE</title>
 <table frame="all"><title>Model Value ODE</title>
 <tgroup cols="3" align="left" colsep="1" rowsep="1">
@@ -728,9 +743,9 @@ no need to calculate them during simulation.
 </tbody>
 </tgroup>
 </table>
-</sect2>
+</sect3>
 
-<sect2 id="Compartment Assignment" xreflabel="Compartment Assignment">
+<sect3 id="Compartment Assignment" xreflabel="Compartment Assignment">
 <title>Compartment Assignment</title>
 <table frame="all"><title>Compartment Assignment</title>
 <tgroup cols="3" align="left" colsep="1" rowsep="1">
@@ -764,9 +779,9 @@ no need to calculate them during simulation.
 </tgroup>
 </table>
 <para>This will be implemented later</para>
-</sect2>
+</sect3>
 
-<sect2 id="Compartment ODE" xreflabel="Compartment ODE">
+<sect3 id="Compartment ODE" xreflabel="Compartment ODE">
 <title>Compartment ODE</title>
 <table frame="all"><title>Compartment ODE</title>
 <tgroup cols="3" align="left" colsep="1" rowsep="1">
@@ -800,8 +815,8 @@ no need to calculate them during simulation.
 </tgroup>
 </table>
 <para>This will be implemented later</para>
+</sect3>
 </sect2>
-
 </sect1>
 
 </chapter>
@@ -977,7 +992,7 @@ the class <literal>COptions</literal>. In this class the method:
 provides access to common options within COPASI. The following values
 will deal with installation dependent settings:
 <literal>CopasiDir</literal>, <literal>TempDir</literal>, <literal>ExampleDir</literal>, and <literal>WizardDir</literal>. The following code
-shows howe to retrieve the location of the examples files for COPASI: 
+shows how to retrieve the location of the examples files for COPASI: 
 <literallayout>
    std::string ExampleDir;
    COptions::getValue(``ExampleDir'', ExampleDir); 

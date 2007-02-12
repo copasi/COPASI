@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ReactionsWidget.cpp,v $
-   $Revision: 1.92 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/08/25 18:19:25 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ReactionsWidget.cpp,v $
+//   $Revision: 1.93 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/12 14:29:14 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -46,7 +46,7 @@ std::vector<const CCopasiObject*> ReactionsWidget::getObjects() const
 void ReactionsWidget::init()
 {
   mOT = ListViews::REACTION;
-  numCols = 5 + 1;
+  numCols = 5; // + 1;
   table->setNumCols(numCols);
   std::vector<const CCopasiObject*> objectstemp;
   //table->QTable::setNumRows(1);
@@ -60,8 +60,8 @@ void ReactionsWidget::init()
   tableHeader->setLabel(4, "Flux");
 
   //for sbml ids
-  tableHeader->setLabel(numCols - 1, "SBML ID");
-  table->setColumnReadOnly(numCols - 1, true);
+  //tableHeader->setLabel(numCols - 1, "SBML ID");
+  //table->setColumnReadOnly(numCols - 1, true);
 
   //this restricts users from editing function names
   table->setColumnReadOnly (3, true);
