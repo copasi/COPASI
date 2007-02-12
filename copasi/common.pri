@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.56 $ 
+#   $Revision: 1.57 $ 
 #   $Name:  $ 
 #   $Author: ssahle $ 
-#   $Date: 2007/01/19 12:49:18 $ 
+#   $Date: 2007/02/12 00:07:28 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -11,7 +11,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.56 $ $Author: ssahle $ $Date: 2007/01/19 12:49:18 $  
+# $Revision: 1.57 $ $Author: ssahle $ $Date: 2007/02/12 00:07:28 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -46,6 +46,7 @@ QMAKE_LFLAGS  += $$(LDFLAGS)
 
 debug {
   DEFINES += COPASI_DEBUG
+  #DEFINES += WITH_LAYOUT
 
   isEmpty(COPASI_SRC_PACKAGE) {
     DEFINES += COPASI_TSS
@@ -60,6 +61,7 @@ contains(STATIC_LINKAGE, yes) {
   DEFINES+=XML_STATIC
   DEFINES+=LIBSBML_STATIC
 }
+
 
 !contains(BUILD_OS, WIN32) {
   #Release code optimization

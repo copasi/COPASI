@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/libs/COPASISE/COPASISE.pro,v $ 
-#   $Revision: 1.15 $ 
+#   $Revision: 1.16 $ 
 #   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2007/01/17 13:41:53 $ 
+#   $Author: ssahle $ 
+#   $Date: 2007/02/12 00:09:42 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -45,6 +45,10 @@ COPASI_LIBS += sensitivities
 COPASI_LIBS += steadystate
 COPASI_LIBS += trajectory
 COPASI_LIBS += tss
-COPASI_LIBS += utilities                   
+COPASI_LIBS += utilities
+contains(DEFINES, WITH_LAYOUT) {
+  COPASI_LIBS += layout
+}
+
 
 include(../lib.pri)

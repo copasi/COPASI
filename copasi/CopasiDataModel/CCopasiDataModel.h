@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.h,v $
-   $Revision: 1.26 $
-   $Name:  $
-   $Author: gauges $
-   $Date: 2006/10/16 11:04:02 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.h,v $
+//   $Revision: 1.27 $
+//   $Name:  $
+//   $Author: ssahle $
+//   $Date: 2007/02/12 00:09:03 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -29,6 +29,10 @@ class SBMLDocument;
 class SBase;
 class CProcessReport;
 class CConfigurationFile;
+
+#ifdef WITH_LAYOUT
+class CListOfLayouts;
+#endif
 
 // :TODO: remove
 class CMetabOld;
@@ -90,6 +94,10 @@ class CCopasiDataModel: public COutputHandler
 
     COutputDefinitionVector * getPlotDefinitionList();
 
+#ifdef WITH_LAYOUT
+    CListOfLayouts * getListOfLayouts();
+#endif
+
     CFunctionDB * getFunctionList();
     SCopasiXMLGUI * getGUI();
     CConfigurationFile * getConfiguration();
@@ -120,8 +128,11 @@ class CCopasiDataModel: public COutputHandler
     CCopasiVectorN< CCopasiTask > * mpTaskList;
     CReportDefinitionVector * mpReportDefinitionList;
 
-    //CCopasiVectorN<CPlotSpecification> * mpPlotDefinitionList;
     COutputDefinitionVector * mpPlotDefinitionList;
+
+#ifdef WITH_LAYOUT
+    CListOfLayouts * mpListOfLayouts;
+#endif
 
     bool mWithGUI;
     SCopasiXMLGUI * mpGUI;

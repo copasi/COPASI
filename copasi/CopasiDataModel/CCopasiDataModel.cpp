@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.91 $
+//   $Revision: 1.92 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2007/01/18 12:11:30 $
+//   $Author: ssahle $
+//   $Date: 2007/02/12 00:09:03 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,6 +52,11 @@
 #include "utilities/CDirEntry.h"
 #include "xml/CCopasiXML.h"
 
+#ifdef WITH_LAYOUT
+# include "layout/CListOfLayouts.h"
+# include "layout/CLayoutInitializer.h"
+#endif
+
 CDataModelRenameHandler::CDataModelRenameHandler(CCopasiDataModel* dm)
     : mpDataModel(dm)
 {}
@@ -96,6 +101,9 @@ CCopasiDataModel::CCopasiDataModel(const bool withGUI):
     mpTaskList(NULL),
     mpReportDefinitionList(NULL),
     mpPlotDefinitionList(NULL),
+#ifdef WITH_LAYOUT
+    mpListOfLayouts(NULL),
+#endif
     mWithGUI(withGUI),
     mpGUI(NULL),
     mpConfiguration(new CConfigurationFile),
@@ -138,6 +146,9 @@ CCopasiDataModel::~CCopasiDataModel()
   pdelete(mpTaskList);
   pdelete(mpReportDefinitionList);
   pdelete(mpPlotDefinitionList);
+#ifdef WITH_LAYOUT
+  pdelete(mpListOfLayouts);
+#endif
   pdelete(mpGUI);
   pdelete(mpCurrentSBMLDocument);
   pdelete(pOldMetabolites);
@@ -257,6 +268,12 @@ bool CCopasiDataModel::loadModel(const std::string & fileName)
           mpPlotDefinitionList = XML.getPlotList();
         }
 
+      //TODO: layouts
+#ifdef WITH_LAYOUT
+      // for debugging create a template layout
+      mpListOfLayouts->add(CLayoutInitializer::createLayoutFromCModel(mpModel), true);
+#endif
+
       if (mWithGUI)
         {
           pdelete(mpGUI);
@@ -323,6 +340,7 @@ bool CCopasiDataModel::saveModel(const std::string & fileName, bool overwriteFil
   XML.setTaskList(*mpTaskList);
   XML.setReportList(*mpReportDefinitionList);
   XML.setPlotList(*mpPlotDefinitionList);
+  //TODO: layouts
   XML.setGUI(*mpGUI);
 
   bool success = true;
@@ -440,6 +458,11 @@ bool CCopasiDataModel::newModel(CModel * pModel)
 
   pdelete(mpPlotDefinitionList);
   mpPlotDefinitionList = new COutputDefinitionVector;
+
+#ifdef WITH_LAYOUT
+  pdelete(mpListOfLayouts);
+  mpListOfLayouts = new CListOfLayouts;
+#endif
 
   if (mWithGUI)
     {
@@ -977,6 +1000,11 @@ CReportDefinitionVector * CCopasiDataModel::getReportDefinitionList()
 
 COutputDefinitionVector * CCopasiDataModel::getPlotDefinitionList()
 {return mpPlotDefinitionList;}
+
+#ifdef WITH_LAYOUT
+CListOfLayouts * CCopasiDataModel::getListOfLayouts()
+{return mpListOfLayouts;}
+#endif
 
 CFunctionDB * CCopasiDataModel::getFunctionList()
 {return mpFunctionList;}
