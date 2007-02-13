@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/layout.pro,v $ 
-#   $Revision: 1.1 $ 
+#   $Revision: 1.2 $ 
 #   $Name:  $ 
 #   $Author: ssahle $ 
-#   $Date: 2007/02/12 00:03:13 $ 
+#   $Date: 2007/02/13 17:13:21 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -26,7 +26,8 @@ HEADERS += CLayout.h \
            CLGraphicalObject.h \
            CLGlyphs.h \
            CListOfLayouts.h \
-           CLReactionGlyph.h
+           CLReactionGlyph.h \
+           SBMLDocumentLoader.h
 
 
 SOURCES += CLayout.cpp \
@@ -35,7 +36,8 @@ SOURCES += CLayout.cpp \
            CLGraphicalObject.cpp \
            CLGlyphs.cpp \
            CListOfLayouts.cpp \
-           CLReactionGlyph.cpp
+           CLReactionGlyph.cpp \
+           SBMLDocumentLoader.cpp
 
 
 DISTFILES += layout.dsp
