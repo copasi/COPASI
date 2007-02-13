@@ -1,3 +1,14 @@
+# Begin CVS Header 
+#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/sbml.pro,v $ 
+#   $Revision: 1.13 $ 
+#   $Name:  $ 
+#   $Author: ssahle $ 
+#   $Date: 2007/02/13 16:46:18 $ 
+# End CVS Header 
+
+# Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc. and EML Research, gGmbH. 
+# All rights reserved. 
 
 LIB = sbmlimport
 SRC_TARGET = sbml
@@ -15,7 +26,8 @@ HEADERS += StdException.h \
            SBMLImporter.h \
            SBMLExporter.h \
            SBMLReference.h \
-           UnitConversionFactory.hpp
+           UnitConversionFactory.hpp \
+           SBMLUtils.h
            
            
            
@@ -24,7 +36,8 @@ SOURCES += StdException.cpp \
            SBMLImporter.cpp \
            SBMLExporter.cpp \
            SBMLReference.cpp \
-           UnitConversionFactory.cpp
+           UnitConversionFactory.cpp \
+           SBMLUtils.cpp
 
 
 DISTFILES += sbml.dsp
