@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLayout.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/12 00:03:12 $
+//   $Date: 2007/02/13 17:14:30 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -12,10 +12,12 @@
 
 #include "copasi.h"
 #include "CLayout.h"
+#include "sbml/layout/Layout.h"
 
 CLayout::CLayout(const std::string & name,
                  const CCopasiContainer * pParent)
-    : CCopasiContainer(name, pParent, "Layout"),
+    : CLBase(),
+    CCopasiContainer(name, pParent, "Layout"),
     mDimensions(),
     mvCompartments("ListOfCompartmentGlyphs", this),
     mvMetabs("ListOfMetaboliteGlyphs", this),
@@ -26,7 +28,8 @@ CLayout::CLayout(const std::string & name,
 
 CLayout::CLayout(const CLayout & src,
                  const CCopasiContainer * pParent)
-    : CCopasiContainer(src, pParent),
+    : CLBase(src),
+    CCopasiContainer(src, pParent),
     mDimensions(src.mDimensions),
     mvCompartments(src.mvCompartments, this),
     mvMetabs(src.mvMetabs, this),
@@ -34,6 +37,21 @@ CLayout::CLayout(const CLayout & src,
     mvLabels(src.mvLabels, this),
     mvGraphicalObjects(src.mvGraphicalObjects, this)
 {}
+
+CLayout::CLayout(const Layout & sbml,
+                 std::map<std::string, std::string> & layoutmap,
+                 const CCopasiContainer * pParent)
+    : CLBase(sbml),
+    CCopasiContainer("Layout", pParent, "Layout"),
+    mDimensions(), //TODO
+    mvCompartments("ListOfCompartmentGlyphs", this),
+    mvMetabs("ListOfMetaboliteGlyphs", this),
+    mvReactions("ListOfReactionGlyphs", this),
+    mvLabels("ListOfTextGlyphs", this),
+    mvGraphicalObjects("ListOfGraphicalObjects", this)
+{
+  //TODO add to map
+}
 
 void CLayout::addCompartmentGlyph(CLCompartmentGlyph * glyph)
 {

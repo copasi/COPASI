@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGraphicalObject.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/12 00:03:12 $
+//   $Date: 2007/02/13 17:14:30 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,6 +17,8 @@
 #include "report/CCopasiContainer.h"
 
 #include "CLBase.h"
+
+class GraphicalObject;
 
 /**
  * This is the base class for the layout objects in copasi.
@@ -58,6 +60,13 @@ class CLGraphicalObject : public CLBase, public CCopasiContainer
                       const CCopasiContainer * pParent = NULL);
 
     CLGraphicalObject(const CLGraphicalObject & src,
+                      const CCopasiContainer * pParent = NULL);
+
+    /**
+     * constructor from libsbml object
+     */
+    CLGraphicalObject(const GraphicalObject & sbml,
+                      std::map<std::string, std::string> & layoutmap,
                       const CCopasiContainer * pParent = NULL);
 
     ~CLGraphicalObject();

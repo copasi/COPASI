@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGlyphs.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/12 00:03:12 $
+//   $Date: 2007/02/13 17:14:30 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -12,6 +12,10 @@
 
 //#include<iostream>
 #include<CLGlyphs.h>
+
+#include "sbml/layout/SpeciesGlyph.h"
+#include "sbml/layout/CompartmentGlyph.h"
+#include "sbml/layout/TextGlyph.h"
 
 // void node::markAsCopy(){
 //  this->id = this->id + "_copy";
@@ -73,6 +77,21 @@ CLMetabGlyph::CLMetabGlyph(const CLMetabGlyph & src,
     : CLGraphicalObject(src, pParent)
 {}
 
+CLMetabGlyph::CLMetabGlyph(const SpeciesGlyph & sbml,
+                           const std::map<std::string, std::string> & modelmap,
+                           std::map<std::string, std::string> & layoutmap,
+                           const CCopasiContainer * pParent)
+    : CLGraphicalObject(sbml, layoutmap, pParent)
+{
+  //get the copasi key corresponding to the sbml id for the species
+  if (sbml.getSpeciesId() != "")
+    {
+      std::map<std::string, std::string>::const_iterator it = modelmap.find(sbml.getSpeciesId());
+      if (it != modelmap.end())
+        setModelObjectKey(it->second);
+    }
+}
+
 std::ostream & operator<<(std::ostream &os, const CLMetabGlyph & g)
 {
   os << "MetabGlyph: " << dynamic_cast<const CLGraphicalObject&>(g);
@@ -91,6 +110,21 @@ CLCompartmentGlyph::CLCompartmentGlyph(const CLCompartmentGlyph & src,
     : CLGraphicalObject(src, pParent)
 {}
 
+CLCompartmentGlyph::CLCompartmentGlyph(const CompartmentGlyph & sbml,
+                                       const std::map<std::string, std::string> & modelmap,
+                                       std::map<std::string, std::string> & layoutmap,
+                                       const CCopasiContainer * pParent)
+    : CLGraphicalObject(sbml, layoutmap, pParent)
+{
+  //get the copasi key corresponding to the sbml id for the compartment
+  if (sbml.getCompartmentId() != "")
+    {
+      std::map<std::string, std::string>::const_iterator it = modelmap.find(sbml.getCompartmentId());
+      if (it != modelmap.end())
+        setModelObjectKey(it->second);
+    }
+}
+
 std::ostream & operator<<(std::ostream &os, const CLCompartmentGlyph & g)
 {
   os << "CompartmentGlyph: " << dynamic_cast<const CLGraphicalObject&>(g);
@@ -101,13 +135,45 @@ std::ostream & operator<<(std::ostream &os, const CLCompartmentGlyph & g)
 
 CLTextGlyph::CLTextGlyph(const std::string & name,
                          const CCopasiContainer * pParent)
-    : CLGraphicalObject(name, pParent)
+    : CLGraphicalObject(name, pParent),
+    mIsTextSet(false),
+    mText(""),
+    mGraphicalObjectKey("")
 {}
 
 CLTextGlyph::CLTextGlyph(const CLTextGlyph & src,
                          const CCopasiContainer * pParent)
-    : CLGraphicalObject(src, pParent)
+    : CLGraphicalObject(src, pParent),
+    mIsTextSet(src.mIsTextSet),
+    mText(src.mText),
+    mGraphicalObjectKey(src.mGraphicalObjectKey)
 {}
+
+CLTextGlyph::CLTextGlyph(const TextGlyph & sbml,
+                         const std::map<std::string, std::string> & modelmap,
+                         std::map<std::string, std::string> & layoutmap,
+                         const CCopasiContainer * pParent)
+    : CLGraphicalObject(sbml, layoutmap, pParent),
+    mIsTextSet(sbml.isSetText()),
+    mText(sbml.getText()),
+    mGraphicalObjectKey("")
+{
+  //get the copasi key corresponding to the sbml id for the graphical object
+  /*  if (sbml.getGraphicalObjectId() != "")
+      {
+        std::map<std::string, std::string>::const_iterator it = m.find(sbml.getGraphicalObjectId());
+        if (it != m.end())
+          mGraphicalObjectKey = it->second;
+      }*/
+
+  //get the copasi key corresponding to the sbml id for the model element (OriginOfText)
+  if (sbml.getOriginOfTextId() != "")
+    {
+      std::map<std::string, std::string>::const_iterator it = modelmap.find(sbml.getOriginOfTextId());
+      if (it != modelmap.end())
+        setModelObjectKey(it->second);
+    }
+}
 
 std::string CLTextGlyph::text() const
   {

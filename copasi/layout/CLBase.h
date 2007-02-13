@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLBase.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/12 00:03:12 $
+//   $Date: 2007/02/13 17:14:30 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,13 +15,20 @@
 
 #include <copasi.h>
 
+class SBase;
+
 /**
  * This class does nothing at all at the moment.
  * Is is the base of all classes that have an equivalent in the
  * libsbml layout extension
  */
 class CLBase
-  {};
+  {
+  public:
+    CLBase() {};
+    CLBase(const CLBase &) {};
+    CLBase(const SBase &) {};
+  };
 
 /**
  * This class describes a Point in a layout

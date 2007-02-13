@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLReactionGlyph.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/12 00:03:12 $
+//   $Date: 2007/02/13 17:14:30 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -12,7 +12,10 @@
 
 //#include<iostream>
 #include "report/CKeyFactory.h"
-#include<CLReactionGlyph.h>
+#include "CLReactionGlyph.h"
+
+#include "sbml/layout/ReactionGlyph.h"
+#include "sbml/layout/SpeciesReferenceGlyph.h"
 
 CLMetabReferenceGlyph::CLMetabReferenceGlyph(const std::string & name,
     const CCopasiContainer * pParent)
@@ -25,6 +28,24 @@ CLMetabReferenceGlyph::CLMetabReferenceGlyph(const CLMetabReferenceGlyph & src,
     : CLGraphicalObject(src, pParent),
     mMetabGlyphKey(src.mMetabGlyphKey)
 {}
+
+CLMetabReferenceGlyph::CLMetabReferenceGlyph(const SpeciesReferenceGlyph & sbml,
+    const std::map<std::string, std::string> & /*modelmap*/,
+    std::map<std::string, std::string> & layoutmap,
+    const CCopasiContainer * pParent)
+    : CLGraphicalObject(sbml, layoutmap, pParent),
+    mMetabGlyphKey()
+{
+  //TODO problem: how to translate the sbml species reference id to a copasi key
+
+  //get the copasi key corresponding to the sbml id for the species glyph
+  if (sbml.getSpeciesGlyphId() != "")
+    {
+      std::map<std::string, std::string>::const_iterator it = layoutmap.find(sbml.getSpeciesGlyphId());
+      if (it != layoutmap.end())
+        mMetabGlyphKey = it->second;
+    }
+}
 
 CLMetabGlyph* CLMetabReferenceGlyph::metabGlyph() const
   {
@@ -55,6 +76,21 @@ CLReactionGlyph::CLReactionGlyph(const CLReactionGlyph & src,
                                  const CCopasiContainer * pParent)
     : CLGraphicalObject(src, pParent)
 {}
+
+CLReactionGlyph::CLReactionGlyph(const ReactionGlyph & sbml,
+                                 const std::map<std::string, std::string> & modelmap,
+                                 std::map<std::string, std::string> & layoutmap,
+                                 const CCopasiContainer * pParent)
+    : CLGraphicalObject(sbml, layoutmap, pParent)
+{
+  //get the copasi key corresponding to the sbml id for the reaction
+  if (sbml.getReactionId() != "")
+    {
+      std::map<std::string, std::string>::const_iterator it = modelmap.find(sbml.getReactionId());
+      if (it != modelmap.end())
+        setModelObjectKey(it->second);
+    }
+}
 
 void CLReactionGlyph::addMetabReferenceGlyph(CLMetabReferenceGlyph * glyph)
 {

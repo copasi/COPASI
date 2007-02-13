@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLReactionGlyph.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/12 00:03:12 $
+//   $Date: 2007/02/13 17:14:30 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,6 +20,9 @@
 
 #include "CLGraphicalObject.h"
 #include "CLGlyphs.h"
+
+class SpeciesReferenceGlyph;
+class ReactionGlyph;
 
 /**
  * Graphical representation of a CChemEqElement. This correspondents to
@@ -40,6 +43,14 @@ class CLMetabReferenceGlyph : public CLGraphicalObject
                           const CCopasiContainer * pParent = NULL);
 
     CLMetabReferenceGlyph(const CLMetabReferenceGlyph & src,
+                          const CCopasiContainer * pParent = NULL);
+
+    /**
+     * constructor from libsbml object
+     */
+    CLMetabReferenceGlyph(const SpeciesReferenceGlyph & sbml,
+                          const std::map<std::string, std::string> & modelmap,
+                          std::map<std::string, std::string> & layoutmap,
                           const CCopasiContainer * pParent = NULL);
 
     const std::string & metabGlyphKey() const {return mMetabGlyphKey;};
@@ -65,6 +76,14 @@ class CLReactionGlyph : public CLGraphicalObject
                     const CCopasiContainer * pParent = NULL);
 
     CLReactionGlyph(const CLReactionGlyph & src,
+                    const CCopasiContainer * pParent = NULL);
+
+    /**
+     * constructor from libsbml object
+     */
+    CLReactionGlyph(const ReactionGlyph & sbml,
+                    const std::map<std::string, std::string> & modelmap,
+                    std::map<std::string, std::string> & layoutmap,
                     const CCopasiContainer * pParent = NULL);
 
     const CCopasiVector<CLMetabReferenceGlyph> & getListOfMetabReferenceGlyphs() const

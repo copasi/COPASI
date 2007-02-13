@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGlyphs.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/12 00:03:12 $
+//   $Date: 2007/02/13 17:14:30 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,6 +18,10 @@
 
 #include "CLGraphicalObject.h"
 
+class SpeciesGlyph;
+class CompartmentGlyph;
+class TextGlyph;
+
 /**
  * Graphical representation of a metabolite
  */
@@ -28,6 +32,14 @@ class CLMetabGlyph : public CLGraphicalObject
                  const CCopasiContainer * pParent = NULL);
 
     CLMetabGlyph(const CLMetabGlyph & src,
+                 const CCopasiContainer * pParent = NULL);
+
+    /**
+     * constructor from libsbml object
+     */
+    CLMetabGlyph(const SpeciesGlyph & sbml,
+                 const std::map<std::string, std::string> & modelmap,
+                 std::map<std::string, std::string> & layoutmap,
                  const CCopasiContainer * pParent = NULL);
 
     /**
@@ -56,6 +68,14 @@ class CLCompartmentGlyph : public CLGraphicalObject
                        const CCopasiContainer * pParent = NULL);
 
     CLCompartmentGlyph(const CLCompartmentGlyph & src,
+                       const CCopasiContainer * pParent = NULL);
+
+    /**
+     * constructor from libsbml object
+     */
+    CLCompartmentGlyph(const CompartmentGlyph & sbml,
+                       const std::map<std::string, std::string> & modelmap,
+                       std::map<std::string, std::string> & layoutmap,
                        const CCopasiContainer * pParent = NULL);
 
     /**
@@ -89,6 +109,14 @@ class CLTextGlyph : public CLGraphicalObject
                 const CCopasiContainer * pParent = NULL);
 
     CLTextGlyph(const CLTextGlyph & src,
+                const CCopasiContainer * pParent = NULL);
+
+    /**
+     * constructor from libsbml object
+     */
+    CLTextGlyph(const TextGlyph & sbml,
+                const std::map<std::string, std::string> & modelmap,
+                std::map<std::string, std::string> & layoutmap,
                 const CCopasiContainer * pParent = NULL);
 
     std::string text() const;

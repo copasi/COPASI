@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLayout.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/12 00:03:12 $
+//   $Date: 2007/02/13 17:14:30 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,6 +25,8 @@
 //#include "node.h"
 //#include "reaction.h"
 //#include "label.h"
+
+class Layout;
 
 /**
  * This class describes a reaction network layout. Its structure
@@ -50,6 +52,15 @@ class CLayout : public CLBase, public CCopasiContainer
             const CCopasiContainer * pParent = NULL);
 
     CLayout(const CLayout & src,
+            const CCopasiContainer * pParent = NULL);
+
+    /**
+     * constructor from libsbml object.
+     * Does not read the whole libsbml tree. Additional
+     * work is done in SBMLDocumentLoader
+     */
+    CLayout(const Layout & sbml,
+            std::map<std::string, std::string> & layoutmap,
             const CCopasiContainer * pParent = NULL);
 
     /*    CLayout(const CLDimensions & dim)
