@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLUtils.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/13 16:46:05 $
+//   $Date: 2007/02/13 16:58:53 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -11,12 +11,6 @@
 // All rights reserved.
 
 //#include "copasi.h"
-
-//#include <iostream>
-//#include <vector>
-//#include <sstream>
-//#include <map>
-//#include <limits>
 
 //#include "mathematics.h"
 
@@ -100,5 +94,3 @@ std::string SBMLUtils::getId(const CType * pA, C_INT32 level)
   else
     return pA->getId();
 }
-
-//************************************************
