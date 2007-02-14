@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.92 $
+//   $Revision: 1.93 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/12 00:09:03 $
+//   $Date: 2007/02/14 17:31:37 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -427,8 +427,13 @@ bool CCopasiDataModel::autoSave()
   return true;
 }
 
-bool CCopasiDataModel::newModel(CModel * pModel)
+bool CCopasiDataModel::newModel(CModel * pModel
+#ifdef WITH_LAYOUT
+                                , CListOfLayouts * pLol
+#endif
+)
 {
+  //deal with the CModel
   pdelete(mpModel);
 
   if (pModel)
@@ -446,6 +451,16 @@ bool CCopasiDataModel::newModel(CModel * pModel)
       this->mCopasi2SBMLMap.clear();
     }
 
+#ifdef WITH_LAYOUT
+  //now do the same for the ListOfLayouts
+  pdelete(mpListOfLayouts);
+
+  if (pLol)
+    mpListOfLayouts = pLol;
+  else
+    mpListOfLayouts = new CListOfLayouts();
+#endif
+
   pdelete(mpTaskList);
   mpTaskList = new CCopasiVectorN< CCopasiTask >("TaskList", CCopasiContainer::Root);
 
@@ -458,11 +473,6 @@ bool CCopasiDataModel::newModel(CModel * pModel)
 
   pdelete(mpPlotDefinitionList);
   mpPlotDefinitionList = new COutputDefinitionVector;
-
-#ifdef WITH_LAYOUT
-  pdelete(mpListOfLayouts);
-  mpListOfLayouts = new CListOfLayouts;
-#endif
 
   if (mWithGUI)
     {
@@ -483,7 +493,7 @@ bool CCopasiDataModel::importSBMLFromString(const std::string& sbmlDocumentText,
 
   SBMLImporter importer;
   importer.setImportHandler(pImportHandler);
-  mCopasi2SBMLMap.clear();
+  //mCopasi2SBMLMap.clear();
   CModel* pModel = NULL;
 
   SBMLDocument * pSBMLDocument = NULL;
@@ -491,7 +501,12 @@ bool CCopasiDataModel::importSBMLFromString(const std::string& sbmlDocumentText,
 
   try
     {
-      pModel = importer.parseSBML(sbmlDocumentText, mpFunctionList, pSBMLDocument, Copasi2SBMLMap);
+      pModel = importer.parseSBML(sbmlDocumentText, mpFunctionList,
+                                  pSBMLDocument, Copasi2SBMLMap
+#ifdef WITH_LAYOUT
+                                  , mpListOfLayouts
+#endif
+);
     }
   catch (CCopasiException except)
     {
@@ -538,15 +553,26 @@ bool CCopasiDataModel::importSBML(const std::string & fileName, CProcessReport* 
 
   SBMLImporter importer;
   importer.setImportHandler(pImportHandler);
-  mCopasi2SBMLMap.clear();
+  //mCopasi2SBMLMap.clear();
   CModel* pModel = NULL;
 
   SBMLDocument * pSBMLDocument = NULL;
   std::map<CCopasiObject*, SBase*> Copasi2SBMLMap;
 
+#ifdef WITH_LAYOUT
+  CListOfLayouts * pLol = NULL; //
+#endif
+
   try
     {
-      pModel = importer.readSBML(FileName, mpFunctionList, pSBMLDocument, Copasi2SBMLMap);
+      pModel = importer.readSBML(FileName, mpFunctionList,
+                                 pSBMLDocument, Copasi2SBMLMap
+#ifdef WITH_LAYOUT
+                                 , pLol
+#endif
+);
+
+      //pModel = importer.readSBML(FileName, mpFunctionList, pSBMLDocument, Copasi2SBMLMap);
     }
   catch (CCopasiException except)
     {
@@ -576,7 +602,11 @@ bool CCopasiDataModel::importSBML(const std::string & fileName, CProcessReport* 
   mpCurrentSBMLDocument = pSBMLDocument;
   mCopasi2SBMLMap = Copasi2SBMLMap;
 
-  return newModel(pModel);
+  return newModel(pModel
+#ifdef WITH_LAYOUT
+                  , pLol
+#endif
+);
 }
 
 std::string CCopasiDataModel::exportSBMLToString(CProcessReport* pExportHandler)

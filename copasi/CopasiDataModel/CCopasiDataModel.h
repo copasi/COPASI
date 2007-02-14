@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.h,v $
-//   $Revision: 1.27 $
+//   $Revision: 1.28 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/12 00:09:03 $
+//   $Date: 2007/02/14 17:31:37 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -73,7 +73,11 @@ class CCopasiDataModel: public COutputHandler
                    const bool & autoSave = false);
     bool autoSave();
 
-    bool newModel(CModel * pModel = NULL);
+    bool newModel(CModel * pModel = NULL
+#ifdef WITH_LAYOUT
+                                    , CListOfLayouts * pLol = NULL
+#endif
+);
 
     bool importSBMLFromString(const std::string & sbmlDocumentText, CProcessReport* pImportHandler = NULL);
     bool importSBML(const std::string & fileName, CProcessReport* pImportHandler = NULL);
