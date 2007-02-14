@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/SBMLDocumentLoader.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/13 17:13:01 $
+//   $Date: 2007/02/14 17:32:39 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -54,11 +54,11 @@ class SBMLDocumentLoader
     //SBMLDocumentLoader():layoutList(0){};
     CLayout* loadDocument(const char *filename);
 
-  protected:
-
     static void readListOfLayouts(CListOfLayouts & lol,
                                   const ListOf & sbmlList,
                                   const std::map<CCopasiObject*, SBase*> & copasimodelmap);
+
+  protected:
 
     static CLayout * createLayout(const Layout & sbmlLayout,
                                   const std::map<std::string, std::string> & modelmap,

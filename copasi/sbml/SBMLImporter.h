@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-   $Revision: 1.54 $
-   $Name:  $
-   $Author: gauges $
-   $Date: 2006/10/16 11:04:02 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
+//   $Revision: 1.55 $
+//   $Name:  $
+//   $Author: ssahle $
+//   $Date: 2007/02/14 17:33:53 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -295,9 +295,28 @@ class SBMLImporter
   public:
     SBMLImporter();
     ~SBMLImporter();
-    CModel* readSBML(std::string filename, CFunctionDB* funDB, SBMLDocument *& pSBMLDocument, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
 
-    CModel* parseSBML(const std::string& sbmlDocumentText, CFunctionDB* funDB, SBMLDocument*& pSBMLDocument, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+    CModel* readSBML(std::string filename,
+                     CFunctionDB* funDB,
+                     SBMLDocument*& pSBMLDocument,
+                     std::map<CCopasiObject*, SBase*>& copasi2sbmlmap
+#ifdef WITH_LAYOUT
+                     , CListOfLayouts *& prLol
+#endif
+);
+
+    //CModel* readSBML(std::string filename, CFunctionDB* funDB, SBMLDocument *& pSBMLDocument, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+
+    CModel* parseSBML(const std::string& sbmlDocumentText,
+                      CFunctionDB* funDB,
+                      SBMLDocument *& pSBMLDocument,
+                      std::map<CCopasiObject*, SBase*>& copasi2sbmlmap
+#ifdef WITH_LAYOUT
+                      , CListOfLayouts *& prLol
+#endif
+);
+
+    //CModel* parseSBML(const std::string& sbmlDocumentText, CFunctionDB* funDB, SBMLDocument*& pSBMLDocument, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
 
     static void printMap(const std::map<CCopasiObject*, SBase*>& map);
 

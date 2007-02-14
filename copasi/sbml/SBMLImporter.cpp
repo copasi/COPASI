@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.161 $
-   $Name:  $
-   $Author: gauges $
-   $Date: 2006/10/24 14:58:04 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
+//   $Revision: 1.162 $
+//   $Name:  $
+//   $Author: ssahle $
+//   $Date: 2007/02/14 17:33:53 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -56,6 +56,11 @@
 #include "SBMLImporter.h"
 #include "ConverterASTNode.h"
 #include "utilities/CProcessReport.h"
+
+#ifdef WITH_LAYOUT
+# include "layout/SBMLDocumentLoader.h"
+# include "layout/CListOfLayouts.h"
+#endif
 
 #include "utilities/CCopasiMessage.h"
 
@@ -1258,7 +1263,14 @@ void SBMLImporter::replaceSubstanceOnlySpeciesNodes(ConverterASTNode* node, cons
 /**
  * Function reads an SBML file with libsbml and converts it to a Copasi CModel
  */
-CModel* SBMLImporter::readSBML(std::string filename, CFunctionDB* funDB, SBMLDocument*& pSBMLDocument, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
+CModel* SBMLImporter::readSBML(std::string filename,
+                               CFunctionDB* funDB,
+                               SBMLDocument*& pSBMLDocument,
+                               std::map<CCopasiObject*, SBase*>& copasi2sbmlmap
+#ifdef WITH_LAYOUT
+                               , CListOfLayouts *& prLol
+#endif
+)
 {
   // convert filename to the locale encoding
   std::ifstream file(utf8ToLocale(filename).c_str());
@@ -1274,7 +1286,12 @@ CModel* SBMLImporter::readSBML(std::string filename, CFunctionDB* funDB, SBMLDoc
     }
   file.clear();
   file.close();
-  return this->parseSBML(stringStream.str(), funDB, pSBMLDocument, copasi2sbmlmap);
+  return this->parseSBML(stringStream.str(), funDB,
+                         pSBMLDocument, copasi2sbmlmap
+#ifdef WITH_LAYOUT
+                         , prLol
+#endif
+);
 }
 
 /**
@@ -1283,7 +1300,14 @@ CModel* SBMLImporter::readSBML(std::string filename, CFunctionDB* funDB, SBMLDoc
  * caller.
  */
 CModel*
-SBMLImporter::parseSBML(const std::string& sbmlDocumentText, CFunctionDB* funDB, SBMLDocument *& pSBMLDocument, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
+SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
+                        CFunctionDB* funDB,
+                        SBMLDocument *& pSBMLDocument,
+                        std::map<CCopasiObject*, SBase*>& copasi2sbmlmap
+#ifdef WITH_LAYOUT
+                        , CListOfLayouts *& prLol
+#endif
+)
 {
   this->mFastReactionsEncountered = false;
   this->mpCopasiModel = NULL;
@@ -1371,6 +1395,15 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText, CFunctionDB* funDB,
         }
 
       this->mpCopasiModel = this->createCModelFromSBMLDocument(sbmlDoc, copasi2sbmlmap);
+
+#ifdef WITH_LAYOUT
+      prLol = new CListOfLayouts();
+      Model* sbmlmodel = pSBMLDocument->getModel();
+      if (sbmlmodel && prLol)
+        SBMLDocumentLoader::readListOfLayouts(*prLol,
+                                              sbmlmodel->getListOfLayouts(),
+                                              copasi2sbmlmap);
+#endif
     }
   else
     {

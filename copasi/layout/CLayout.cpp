@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLayout.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/13 17:14:30 $
+//   $Date: 2007/02/14 17:32:39 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,7 +36,10 @@ CLayout::CLayout(const CLayout & src,
     mvReactions(src.mvReactions, this),
     mvLabels(src.mvLabels, this),
     mvGraphicalObjects(src.mvGraphicalObjects, this)
-{}
+{
+  //TODO references from one glyph to another have to be reconstructed after
+  //     copying. This applies to Labels and metab reference glyphs
+}
 
 CLayout::CLayout(const Layout & sbml,
                  std::map<std::string, std::string> & layoutmap,
