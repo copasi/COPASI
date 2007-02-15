@@ -1,14 +1,14 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.139 $
+//   $Revision: 1.140 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/12 14:27:07 $
+//   $Date: 2007/02/15 17:30:49 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// All rights reserved.f
 
 #ifndef COPASI_CModel
 #define COPASI_CModel
@@ -138,9 +138,9 @@ class CModel : public CModelEntity
             if (row >= mNumIndependent)
               return const_cast< elementType & >(mA(row - mNumIndependent, col));
             else if (row != col)
-              return const_cast< elementType & >(mZero);
+              return * const_cast< elementType * >(&mZero);
             else
-              return const_cast< elementType & >(mUnit);
+              return * const_cast< elementType * >(&mUnit);
           }
 
         /**

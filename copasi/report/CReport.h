@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReport.h,v $
-   $Revision: 1.37 $
-   $Name:  $
-   $Author: gauges $
-   $Date: 2006/10/15 08:00:56 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReport.h,v $
+//   $Revision: 1.38 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/15 17:30:50 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -50,7 +50,7 @@ class CReport : public CCopasiContainer, public COutputInterface
       BodyFooter,
       FooterHeader,
       FooterBody,
-      FooterFooter,
+      FooterFooter
     };
 
   private:

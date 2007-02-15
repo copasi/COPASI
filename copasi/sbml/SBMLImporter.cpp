@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.162 $
+//   $Revision: 1.163 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/02/14 17:33:53 $
+//   $Author: shoops $
+//   $Date: 2007/02/15 17:30:50 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -398,7 +398,7 @@ CFunction* SBMLImporter::createCFunctionFromFunctionDefinition(const FunctionDef
     }
   else
     {
-      CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 14, sbmlFunction->getId().c_str());
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 14, sbmlFunction->getId().c_str());
     }
   return pTmpFunction;
 }
@@ -423,7 +423,7 @@ CFunction* SBMLImporter::createCFunctionFromFunctionTree(const FunctionDefinitio
               if (pVarNode->getType() != AST_NAME)
                 {
                   delete pFun;
-                  CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 12, pSBMLFunction->getId().c_str());
+                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 12, pSBMLFunction->getId().c_str());
                 }
               pFun->addVariable(pVarNode->getName());
             }
@@ -457,17 +457,17 @@ CFunction* SBMLImporter::createCFunctionFromFunctionTree(const FunctionDefinitio
           if (!pFun->compile())
             {
               delete pFun;
-              CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 28, pSBMLFunction->getId().c_str());
+              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 28, pSBMLFunction->getId().c_str());
             }
           if (pFun->getRoot() == NULL)
             {
               delete pFun;
-              CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 13, pSBMLFunction->getId().c_str());
+              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 13, pSBMLFunction->getId().c_str());
             }
         }
       else
         {
-          CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 11, pSBMLFunction->getId().c_str());
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 11, pSBMLFunction->getId().c_str());
         }
     }
   return pFun;
@@ -718,7 +718,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
       if (!this->mFastReactionsEncountered)
         {
           this->mFastReactionsEncountered = true;
-          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 29);
+          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 29);
         }
     }
   /* Add all substrates to the reaction */
@@ -736,7 +736,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
       if (sr->isSetStoichiometryMath())
         {
           delete copasiReaction;
-          CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 10);
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 10);
         }
       float stoich = sr->getStoichiometry() / sr->getDenominator();
       std::map<std::string, CMetab*>::iterator pos;
@@ -773,7 +773,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
       if (sr->isSetStoichiometryMath())
         {
           delete copasiReaction;
-          CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 10);
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 10);
         }
       float stoich = sr->getStoichiometry() / sr->getDenominator();
       std::map<std::string, CMetab*>::iterator pos;
@@ -974,7 +974,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
               std::vector<CEvaluationNodeObject*>* v = this->isMassAction(tree, copasiReaction->getChemEq(), static_cast<const CEvaluationNodeCall*>(pExpressionTreeRoot));
               if (!v)
                 {
-                  CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 27, copasiReaction->getObjectName().c_str());
+                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 27, copasiReaction->getObjectName().c_str());
                 }
               if (!v->empty())
                 {
@@ -1048,7 +1048,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
               std::vector<CEvaluationNodeObject*>* v = this->isMassAction(pTmpTree, copasiReaction->getChemEq());
               if (!v)
                 {
-                  CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 27, copasiReaction->getObjectName().c_str());
+                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 27, copasiReaction->getObjectName().c_str());
                 }
               if (!v->empty())
                 {
@@ -1083,7 +1083,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                   if (!copasiReaction->setFunctionFromExpressionTree(pTmpTree, copasi2sbmlmap, this->functionDB))
                     {
                       // error message
-                      CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 9, copasiReaction->getObjectName().c_str());
+                      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 9, copasiReaction->getObjectName().c_str());
                     }
                   else
                     {
@@ -1102,7 +1102,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
       else
         {
           // error message
-          CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 8, copasiReaction->getObjectName().c_str());
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 8, copasiReaction->getObjectName().c_str());
         }
     }
   else
@@ -1952,8 +1952,8 @@ void SBMLImporter::replaceCallNodeNames(ConverterASTNode* pNode)
           if (pos == this->mFunctionNameMapping.end())
             {
               //TODO: implement a specific check for "delay"
-              CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION,
-                                             "An undefined function was used in a MathML expression. This could also mean \nthat the SBML model contains delay terms which copasi doesn't support yet.");
+              CCopasiMessage(CCopasiMessage::EXCEPTION,
+                             "An undefined function was used in a MathML expression. This could also mean \nthat the SBML model contains delay terms which copasi doesn't support yet.");
             }
           std::string newName = pos->second;
           pNode->setName(newName.c_str());

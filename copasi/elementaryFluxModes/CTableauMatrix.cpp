@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CTableauMatrix.cpp,v $
-   $Revision: 1.12 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/09/12 20:02:43 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CTableauMatrix.cpp,v $
+//   $Revision: 1.13 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/15 17:27:11 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -130,7 +130,8 @@ bool CTableauMatrix::isValid(const CTableauLine * src)
 
   /* Check whether we have already better lines */
   for (i = mLine.begin(); i != mLine.end(); i++)
-    if ((*i)->getScore() < src->getScore()) return false;
+    if ((*i)->getScore() < src->getScore())
+      return false;
 
   i = mLine.begin();
   /* Check whether the new line scores better than existing lines */

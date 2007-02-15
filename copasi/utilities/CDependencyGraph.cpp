@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDependencyGraph.cpp,v $
-   $Revision: 1.17 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:32:42 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDependencyGraph.cpp,v $
+//   $Revision: 1.18 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/15 17:30:51 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -60,7 +60,7 @@ void CDependencyGraph::addDependent(const C_INT32 node, const C_INT32 dependent)
   mNodes[node].addDependent(dependent);
 }
 
-const std::set <C_INT32> & CDependencyGraph::getDependents(C_INT32 node) const
+const std::set <C_INT32> & CDependencyGraph::getDependents(const C_INT32 node) const
   {
     return mNodes[node].getDependents();
   }

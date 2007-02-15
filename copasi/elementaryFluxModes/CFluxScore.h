@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CFluxScore.h,v $
-   $Revision: 1.6 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/09/12 17:10:22 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CFluxScore.h,v $
+//   $Revision: 1.7 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/15 17:27:11 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -33,7 +33,7 @@ class CFluxScore
     /**
      *  The score of a flux mode
      */
-    CVector< unsigned C_INT32 > mScore;
+    CVector< unsigned char > mScore;
 
     // Operations
 
@@ -62,6 +62,8 @@ class CFluxScore
      *  @return "bool"
      */
     bool operator < (const CFluxScore & rhs) const;
+
+    friend std::ostream & operator << (std::ostream & os, const CFluxScore & A);
   };
 
 #endif // COPASI_CFluxScore

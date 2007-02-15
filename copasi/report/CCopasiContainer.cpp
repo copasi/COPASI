@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiContainer.cpp,v $
-   $Revision: 1.43 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/08/07 19:27:10 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiContainer.cpp,v $
+//   $Revision: 1.44 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/15 17:30:50 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -230,7 +230,7 @@ bool CCopasiContainer::add(CCopasiObject * pObject,
 
   /* This object is not contained, so we can add it. */
   mObjects.insert
-  (std::pair<std::string, CCopasiObject * >(pObject->getObjectName(),
+  (std::pair<const std::string, CCopasiObject * >(pObject->getObjectName(),
       pObject));
 
   if (adopt) pObject->setObjectParent(this);

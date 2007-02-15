@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethodLSODA.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/12 14:28:49 $
+//   $Date: 2007/02/15 17:30:50 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -58,6 +58,10 @@
 CHybridMethodLSODA::CHybridMethodLSODA(const CCopasiContainer * pParent):
     CTrajectoryMethod(CCopasiMethod::hybridLSODA, pParent)
 {
+  assert((void *) &mData == (void *) &mData.dim);
+
+  mData.pMethod = this;
+
   /* Set version number */
   mVersion.setVersion(1, 0, 102, "");
   mpRandomGenerator = CRandom::createGenerator(CRandom::mt19937);
@@ -68,6 +72,10 @@ CHybridMethodLSODA::CHybridMethodLSODA(const CHybridMethodLSODA & src,
                                        const CCopasiContainer * pParent):
     CTrajectoryMethod(src, pParent)
 {
+  assert((void *) &mData == (void *) &mData.dim);
+
+  mData.pMethod = this;
+
   /* Set version number */
   mVersion.setVersion(1, 0, 102, "");
   mpRandomGenerator = CRandom::createGenerator(CRandom::mt19937);
@@ -133,8 +141,6 @@ void CHybridMethodLSODA::initializeParameter()
     }
 
   /* LSODA ****************************************************************************/
-
-  mDim[1] = (C_INT) (void *) this;
 
   addParameter("Partitioning Stepsize",
                CCopasiParameter::DOUBLE, (C_FLOAT64) PARTITIONING_STEPSIZE);
@@ -316,9 +322,9 @@ void CHybridMethodLSODA::initMethod(C_FLOAT64 start_time)
 
   /* CONFIGURE LSODA ***********************************************************************/
 
-  mDim[0] = mNumVariableMetabs;
+  mData.dim = mNumVariableMetabs;
 
-  mYdot.resize(mDim[0]);
+  mYdot.resize(mData.dim);
 
   mRtol = * getValue("Relative Tolerance").pUDOUBLE;
 
@@ -332,9 +338,9 @@ void CHybridMethodLSODA::initMethod(C_FLOAT64 start_time)
   else
     mAtol = * getValue("Absolute Tolerance").pUDOUBLE;
 
-  mDWork.resize(22 + mDim[0] * std::max<C_INT>(16, mDim[0] + 9));
+  mDWork.resize(22 + mData.dim * std::max<C_INT>(16, mData.dim + 9));
   mDWork[4] = mDWork[5] = mDWork[6] = mDWork[7] = mDWork[8] = mDWork[9] = 0.0;
-  mIWork.resize(20 + mDim[0]);
+  mIWork.resize(20 + mData.dim);
 
   mIWork[4] = mIWork[6] = mIWork[9] = 0;
   mIWork[5] = * getValue("Max Internal Steps (LSODA)").pUINT;
@@ -378,7 +384,7 @@ void CHybridMethodLSODA::cleanup()
 /* DETERMINISTIC STUFF *******************************************************/
 
 void CHybridMethodLSODA::EvalF(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot)
-{static_cast<CHybridMethodLSODA *>((void *) n[1])->evalF(t, y, ydot);}
+{static_cast<Data *>((void *) n)->pMethod->evalF(t, y, ydot);}
 
 void CHybridMethodLSODA::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot)
 {
@@ -455,7 +461,7 @@ void CHybridMethodLSODA::integrateDeterministicPart(C_FLOAT64 deltaT)
       return;
     }
 
-  if (!mDim[0]) //just do nothing if there are no variables
+  if (!mData.dim) //just do nothing if there are no variables
     {
       //mTime = mTime + deltaT;
       mpProblem->getModel()->setTime(EndTime);
@@ -466,8 +472,8 @@ void CHybridMethodLSODA::integrateDeterministicPart(C_FLOAT64 deltaT)
     }
 
   mLSODA(&EvalF ,          //  1. evaluate F
-         mDim ,            //  2. number of variables
-         mY ,             //  3. the array of current concentrations
+         &mData.dim,       //  2. number of variables
+         mY ,              //  3. the array of current concentrations
          &mTime ,          //  4. the current time
          &EndTime ,        //  5. the final time
          &one ,            //  6. scalar error control

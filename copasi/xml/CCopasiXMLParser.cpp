@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.146 $
-   $Name:  $
-   $Author: ssahle $
-   $Date: 2007/01/09 14:11:39 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
+//   $Revision: 1.147 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/15 17:30:51 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -5206,9 +5206,9 @@ void CCopasiXMLParser::ListOfReportsElement::end(const XML_Char *pszName)
 
   CReportDefinition* reportDefinition;
 
-  std::map<std::string , std::vector < std::pair < std::vector <CRegisteredObjectName >*, unsigned int > > >::iterator outerIt;
+  std::map<std::string , std::vector < std::pair < std::vector <CRegisteredObjectName >*, unsigned C_INT32 > > >::iterator outerIt;
 
-  std::vector<std::pair < std::vector <CRegisteredObjectName >*, unsigned int > >::iterator innerIt2;
+  std::vector<std::pair < std::vector <CRegisteredObjectName >*, unsigned C_INT32 > >::iterator innerIt2;
 
   std::vector<CRegisteredObjectName>* nameVector;
 
@@ -5582,7 +5582,7 @@ void CCopasiXMLParser::HeaderElement::end(const XML_Char *pszName)
       // add the key that is stored in mCommon.Comment to the map
       if (mCommon.reportReferenceMap.find(mCommon.Comment) == mCommon.reportReferenceMap.end())
         {
-          mCommon.reportReferenceMap[mCommon.Comment] = std::vector<std::pair <std::vector<CRegisteredObjectName>*, unsigned int> >();
+          mCommon.reportReferenceMap[mCommon.Comment] = std::vector<std::pair <std::vector<CRegisteredObjectName>*, unsigned C_INT32> >();
         }
       mCommon.reportReferenceMap[mCommon.Comment].push_back(std::make_pair(mCommon.pReport->getHeaderAddr(), mCommon.pReport->getHeaderAddr()->size()));
       mCommon.pReport->getHeaderAddr()->push_back(CCopasiObjectName(""));
@@ -5708,7 +5708,7 @@ void CCopasiXMLParser::BodyElement::end(const XML_Char *pszName)
       // add the key that is stored in mCommon.Comment to the map
       if (mCommon.reportReferenceMap.find(mCommon.Comment) == mCommon.reportReferenceMap.end())
         {
-          mCommon.reportReferenceMap[mCommon.Comment] = std::vector<std::pair <std::vector<CRegisteredObjectName>*, unsigned int> >();
+          mCommon.reportReferenceMap[mCommon.Comment] = std::vector<std::pair <std::vector<CRegisteredObjectName>*, unsigned C_INT32> >();
         }
       mCommon.reportReferenceMap[mCommon.Comment].push_back(std::make_pair(mCommon.pReport->getBodyAddr(), mCommon.pReport->getBodyAddr()->size()));
       mCommon.pReport->getBodyAddr()->push_back(CCopasiObjectName(""));
@@ -5834,7 +5834,7 @@ void CCopasiXMLParser::FooterElement::end(const XML_Char *pszName)
       // add the key that is stored in mCommon.Comment to the map
       if (mCommon.reportReferenceMap.find(mCommon.Comment) == mCommon.reportReferenceMap.end())
         {
-          mCommon.reportReferenceMap[mCommon.Comment] = std::vector<std::pair <std::vector<CRegisteredObjectName>*, unsigned int> >();
+          mCommon.reportReferenceMap[mCommon.Comment] = std::vector<std::pair <std::vector<CRegisteredObjectName>*, unsigned C_INT32> >();
         }
       mCommon.reportReferenceMap[mCommon.Comment].push_back(std::make_pair(mCommon.pReport->getFooterAddr(), mCommon.pReport->getFooterAddr()->size()));
       mCommon.pReport->getFooterAddr()->push_back(CCopasiObjectName(""));

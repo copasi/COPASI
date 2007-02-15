@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethodLSODA.h,v $
-   $Revision: 1.3 $
-   $Name:  $
-   $Author: gauges $
-   $Date: 2006/10/15 08:31:13 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethodLSODA.h,v $
+//   $Revision: 1.4 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/15 17:30:50 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -118,6 +118,13 @@ class CHybridMethodLSODA : public CTrajectoryMethod
         CTrajectoryProblem * pProblem);
 
     /* PUBLIC METHODS **********************************************************/
+
+  public:
+    struct Data
+      {
+        C_INT dim;
+        CHybridMethodLSODA * pMethod;
+      };
 
   public:
     /**
@@ -601,11 +608,10 @@ class CHybridMethodLSODA : public CTrajectoryMethod
     CState * mpState;
 
     /**
-     *  mDim[0] is the dimension of the ODE system.
-     * mDim[1] contains CLsodaMethod * this to be used in the static method EvalF
-     * Note: this works only if sizeof(C_INT) == ptr_size;
+     * mData.dim is the dimension of the ODE system.
+     * mData.pMethod contains CLsodaMethod * this to be used in the static method EvalF
      */
-    C_INT mDim[2];
+    Data mData;
 
     /**
      *  Pointer to the array with left hand side values.

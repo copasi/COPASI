@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.cpp,v $
-   $Revision: 1.26 $
-   $Name:  $
-   $Author: nsimus $
-   $Date: 2006/11/23 10:16:22 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.cpp,v $
+//   $Revision: 1.27 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/15 17:30:49 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -172,11 +172,11 @@ ASTNode* CEvaluationNodeObject::toAST() const
               }
             if (pModel->getInitialTime() != 0.0)
               {
-                CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 1);
+                CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 1);
               }
             break;
           default:
-            CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCEvaluationNodeObject + 1);
+            CCopasiMessage(CCopasiMessage::EXCEPTION, MCEvaluationNodeObject + 1);
             break;
           }
       }

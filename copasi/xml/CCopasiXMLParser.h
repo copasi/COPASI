@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-   $Revision: 1.44 $
-   $Name:  $
-   $Author: gauges $
-   $Date: 2006/10/15 08:31:12 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
+//   $Revision: 1.45 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/15 17:30:51 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -177,7 +177,7 @@ struct SCopasiXMLParserCommon
      * A map that stores a vector of pairs of header,body or footer adresses
      *  with the index together with the key to the reference.
      */
-    std::map<std::string , std::vector < std::pair < std::vector <CRegisteredObjectName >*, unsigned int > > > reportReferenceMap;
+    std::map<std::string , std::vector < std::pair < std::vector <CRegisteredObjectName >*, unsigned C_INT32 > > > reportReferenceMap;
 
     SCopasiXMLGUI * pGUI;
   };

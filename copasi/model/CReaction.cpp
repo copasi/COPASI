@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-//   $Revision: 1.165 $
+//   $Revision: 1.166 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/12 14:27:07 $
+//   $Date: 2007/02/15 17:30:49 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -905,7 +905,7 @@ CEvaluationNodeVariable* CReaction::object2variable(CEvaluationNodeObject* objec
                                   //CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCReaction + 7, id.c_str(), this->getSBMLId().c_str());
                                   delete pVariableNode;
                                   pVariableNode = NULL;
-                                  CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCReaction + 7, id.c_str(), this->getSBMLId().c_str());
+                                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCReaction + 7, id.c_str(), this->getSBMLId().c_str());
                                 }
                             }
                         }
@@ -985,13 +985,13 @@ CEvaluationNode* CReaction::objects2variables(CEvaluationNode* expression, std::
   switch (CEvaluationNode::type(expression->getType()))
     {
     case CEvaluationNode::NUMBER:
-      pTmpNode = new CEvaluationNodeNumber(static_cast<CEvaluationNodeNumber::SubType>(CEvaluationNode::subType(expression->getType())), expression->getData());
+      pTmpNode = new CEvaluationNodeNumber(static_cast<CEvaluationNodeNumber::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
       break;
     case CEvaluationNode::CONSTANT:
-      pTmpNode = new CEvaluationNodeConstant(static_cast<CEvaluationNodeConstant::SubType>(CEvaluationNode::subType(expression->getType())), expression->getData());
+      pTmpNode = new CEvaluationNodeConstant(static_cast<CEvaluationNodeConstant::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
       break;
     case CEvaluationNode::OPERATOR:
-      pTmpNode = new CEvaluationNodeOperator(static_cast<CEvaluationNodeOperator::SubType>(CEvaluationNode::subType(expression->getType())), expression->getData());
+      pTmpNode = new CEvaluationNodeOperator(static_cast<CEvaluationNodeOperator::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
       // convert the two children as well
       pChildNode = this->objects2variables(static_cast<CEvaluationNode*>(expression->getChild()), replacementMap, copasi2sbmlmap);
       if (pChildNode)
@@ -1019,7 +1019,7 @@ CEvaluationNode* CReaction::objects2variables(CEvaluationNode* expression, std::
       pTmpNode = this->object2variable(static_cast<CEvaluationNodeObject*>(expression), replacementMap, copasi2sbmlmap);
       break;
     case CEvaluationNode::FUNCTION:
-      pTmpNode = new CEvaluationNodeFunction(static_cast<CEvaluationNodeFunction::SubType>(CEvaluationNode::subType(expression->getType())), expression->getData());
+      pTmpNode = new CEvaluationNodeFunction(static_cast<CEvaluationNodeFunction::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
       // convert the only child as well
       pChildNode = this->objects2variables(static_cast<CEvaluationNode*>(expression->getChild()), replacementMap, copasi2sbmlmap);
       if (pChildNode)
@@ -1033,7 +1033,7 @@ CEvaluationNode* CReaction::objects2variables(CEvaluationNode* expression, std::
         }
       break;
     case CEvaluationNode::CALL:
-      pTmpNode = new CEvaluationNodeCall(static_cast<CEvaluationNodeCall::SubType>(CEvaluationNode::subType(expression->getType())), expression->getData());
+      pTmpNode = new CEvaluationNodeCall(static_cast<CEvaluationNodeCall::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
       // convert all children
       pOldChildNode = static_cast<CEvaluationNode*>(expression->getChild());
       while (pOldChildNode)
@@ -1051,7 +1051,7 @@ CEvaluationNode* CReaction::objects2variables(CEvaluationNode* expression, std::
       fatalError();
       break;
     case CEvaluationNode::CHOICE:
-      pTmpNode = new CEvaluationNodeChoice(static_cast<CEvaluationNodeChoice::SubType>(CEvaluationNode::subType(expression->getType())), expression->getData());
+      pTmpNode = new CEvaluationNodeChoice(static_cast<CEvaluationNodeChoice::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
       // convert the two children as well
       pChildNode = this->objects2variables(static_cast<CEvaluationNode*>(expression->getChild()), replacementMap, copasi2sbmlmap);
       if (pChildNode)
@@ -1079,10 +1079,10 @@ CEvaluationNode* CReaction::objects2variables(CEvaluationNode* expression, std::
       CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 6);
       break;
     case CEvaluationNode::WHITESPACE:
-      pTmpNode = new CEvaluationNodeWhiteSpace(static_cast<CEvaluationNodeWhiteSpace::SubType>(CEvaluationNode::subType(expression->getType())), expression->getData());
+      pTmpNode = new CEvaluationNodeWhiteSpace(static_cast<CEvaluationNodeWhiteSpace::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
       break;
     case CEvaluationNode::LOGICAL:
-      pTmpNode = new CEvaluationNodeLogical(static_cast<CEvaluationNodeLogical::SubType>(CEvaluationNode::subType(expression->getType())), expression->getData());
+      pTmpNode = new CEvaluationNodeLogical(static_cast<CEvaluationNodeLogical::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
       // convert the two children as well
       pChildNode = this->objects2variables(static_cast<CEvaluationNode*>(expression->getChild()), replacementMap, copasi2sbmlmap);
       if (pChildNode)
@@ -1195,13 +1195,13 @@ CEvaluationNode* CReaction::variables2objects(CEvaluationNode* expression)
   switch (CEvaluationNode::type(expression->getType()))
     {
     case CEvaluationNode::NUMBER:
-      pTmpNode = new CEvaluationNodeNumber(static_cast<CEvaluationNodeNumber::SubType>(CEvaluationNode::subType(expression->getType())), expression->getData());
+      pTmpNode = new CEvaluationNodeNumber(static_cast<CEvaluationNodeNumber::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
       break;
     case CEvaluationNode::CONSTANT:
-      pTmpNode = new CEvaluationNodeConstant(static_cast<CEvaluationNodeConstant::SubType>(CEvaluationNode::subType(expression->getType())), expression->getData());
+      pTmpNode = new CEvaluationNodeConstant(static_cast<CEvaluationNodeConstant::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
       break;
     case CEvaluationNode::OPERATOR:
-      pTmpNode = new CEvaluationNodeOperator(static_cast<CEvaluationNodeOperator::SubType>(CEvaluationNode::subType(expression->getType())), expression->getData());
+      pTmpNode = new CEvaluationNodeOperator(static_cast<CEvaluationNodeOperator::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
       // convert the two children as well
       pChildNode = this->variables2objects(static_cast<CEvaluationNode*>(expression->getChild()));
       if (pChildNode)
@@ -1225,10 +1225,10 @@ CEvaluationNode* CReaction::variables2objects(CEvaluationNode* expression)
         }
       break;
     case CEvaluationNode::OBJECT:
-      pTmpNode = new CEvaluationNodeObject(static_cast<CEvaluationNodeObject::SubType>(CEvaluationNode::subType(expression->getType())), expression->getData());
+      pTmpNode = new CEvaluationNodeObject(static_cast<CEvaluationNodeObject::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
       break;
     case CEvaluationNode::FUNCTION:
-      pTmpNode = new CEvaluationNodeFunction(static_cast<CEvaluationNodeFunction::SubType>(CEvaluationNode::subType(expression->getType())), expression->getData());
+      pTmpNode = new CEvaluationNodeFunction(static_cast<CEvaluationNodeFunction::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
       // convert the only child as well
       pChildNode = this->variables2objects(static_cast<CEvaluationNode*>(expression->getChild()));
       if (pChildNode)
@@ -1242,7 +1242,7 @@ CEvaluationNode* CReaction::variables2objects(CEvaluationNode* expression)
         }
       break;
     case CEvaluationNode::CALL:
-      pTmpNode = new CEvaluationNodeCall(static_cast<CEvaluationNodeCall::SubType>(CEvaluationNode::subType(expression->getType())), expression->getData());
+      pTmpNode = new CEvaluationNodeCall(static_cast<CEvaluationNodeCall::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
       // convert all children
       pChildNode2 = static_cast<CEvaluationNode*>(expression->getChild());
       while (pChildNode2)
@@ -1261,10 +1261,10 @@ CEvaluationNode* CReaction::variables2objects(CEvaluationNode* expression)
         }
       break;
     case CEvaluationNode::STRUCTURE:
-      pTmpNode = new CEvaluationNodeStructure(static_cast<CEvaluationNodeStructure::SubType>(CEvaluationNode::subType(expression->getType())), expression->getData());
+      pTmpNode = new CEvaluationNodeStructure(static_cast<CEvaluationNodeStructure::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
       break;
     case CEvaluationNode::CHOICE:
-      pTmpNode = new CEvaluationNodeChoice(static_cast<CEvaluationNodeChoice::SubType>(CEvaluationNode::subType(expression->getType())), expression->getData());
+      pTmpNode = new CEvaluationNodeChoice(static_cast<CEvaluationNodeChoice::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
       // convert the two children as well
       pChildNode = this->variables2objects(static_cast<CEvaluationNode*>(expression->getChild()));
       if (pChildNode)
@@ -1291,10 +1291,10 @@ CEvaluationNode* CReaction::variables2objects(CEvaluationNode* expression)
       pTmpNode = this->variable2object(static_cast<CEvaluationNodeVariable*>(expression));
       break;
     case CEvaluationNode::WHITESPACE:
-      pTmpNode = new CEvaluationNodeWhiteSpace(static_cast<CEvaluationNodeWhiteSpace::SubType>(CEvaluationNode::subType(expression->getType())), expression->getData());
+      pTmpNode = new CEvaluationNodeWhiteSpace(static_cast<CEvaluationNodeWhiteSpace::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
       break;
     case CEvaluationNode::LOGICAL:
-      pTmpNode = new CEvaluationNodeLogical(static_cast<CEvaluationNodeLogical::SubType>(CEvaluationNode::subType(expression->getType())), expression->getData());
+      pTmpNode = new CEvaluationNodeLogical(static_cast<CEvaluationNodeLogical::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
       // convert the two children as well
       pChildNode = this->variables2objects(static_cast<CEvaluationNode*>(expression->getChild()));
       if (pChildNode)

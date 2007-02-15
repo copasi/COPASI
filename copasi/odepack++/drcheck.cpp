@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/odepack++/drcheck.cpp,v $
-   $Revision: 1.3 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/07/06 15:55:41 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/odepack++/drcheck.cpp,v $
+//   $Revision: 1.4 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/15 17:30:49 $
+// End CVS Header
 
-// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 //
@@ -14,11 +14,13 @@
 // library ODEPACK available at: http://www.netlib.org/odepack/
 
 #include <math.h>
+#include <algorithm>
 
 #include "copasi.h"
-#include "blaswrap.h"
 
 #include "CInternalSolver.h"
+
+#include "blaswrap.h"
 
 #define dls001_1 (mpdls001_->_1)
 #define dls001_2 (mpdls001_->_2)

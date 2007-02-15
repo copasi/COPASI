@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.98 $
-   $Name:  $
-   $Author: gauges $
-   $Date: 2006/10/16 11:04:02 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
+//   $Revision: 1.99 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/15 17:30:50 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -491,7 +491,7 @@ UnitDefinition* SBMLExporter::createSBMLTimeUnitDefinitionFromCopasiTimeUnit(CMo
       unit = new Unit(UNIT_KIND_SECOND, 1, -15);
       break;
     default:
-      CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, "SBMLExporter Error: Unknown copasi time unit.");
+      CCopasiMessage(CCopasiMessage::EXCEPTION, "SBMLExporter Error: Unknown copasi time unit.");
       break;
     }
 
@@ -530,7 +530,7 @@ UnitDefinition* SBMLExporter::createSBMLSubstanceUnitDefinitionFromCopasiQuantit
       unit = new Unit(UNIT_KIND_ITEM, 1, 0);
       break;
     default:
-      CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, "SBMLExporter Error: Unknown copasi quantity unit.");
+      CCopasiMessage(CCopasiMessage::EXCEPTION, "SBMLExporter Error: Unknown copasi quantity unit.");
       break;
     }
   uDef->addUnit(*unit);
@@ -568,7 +568,7 @@ UnitDefinition* SBMLExporter::createSBMLVolumeUnitDefinitionFromCopasiVolumeUnit
       unit = new Unit(UNIT_KIND_METRE, 3, 0);
       break;
     default:
-      CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, "SBMLExporter Error: Unknown copasi volume unit.");
+      CCopasiMessage(CCopasiMessage::EXCEPTION, "SBMLExporter Error: Unknown copasi volume unit.");
       break;
     }
   uDef->addUnit(*unit);
@@ -1361,12 +1361,12 @@ void SBMLExporter::findUsedFunctions(CEvaluationNode* pNode, std::list<const CEv
           CEvaluationTree* pFun = pFunDB->findFunction((*treeIt).getData());
           if (!pFun)
             {
-              CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 15, (*treeIt).getData().c_str());
+              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 15, (*treeIt).getData().c_str());
             }
           if (this->existsInList(pFun, usedFunctionList))
             {
               // we have a loop
-              CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 16);
+              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 16);
             }
           // if the function is already in the list of used functions, we don't have
           // to go through it again.
@@ -1482,7 +1482,7 @@ FunctionDefinition* SBMLExporter::createSBMLFunctionDefinitionFromCEvaluationTre
       std::string errorMessage = std::string("Can not export function");
       errorMessage += tree->getObjectName();
       errorMessage += std::string(". Function does not have a valid root node.");
-      CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, errorMessage.c_str());
+      CCopasiMessage(CCopasiMessage::EXCEPTION, errorMessage.c_str());
     }
   ASTNode* pFunNode = tree->getRoot()->toAST();
   // go through the AST tree and replace all function call nodes with with a call to the sbml id
