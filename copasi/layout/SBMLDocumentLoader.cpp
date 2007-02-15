@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/SBMLDocumentLoader.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/13 17:13:01 $
+//   $Date: 2007/02/15 08:44:35 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -140,13 +140,34 @@ CLayout * SBMLDocumentLoader::createLayout(const Layout & sbmlLayout,
     }
 
   //reactions
-  //TODO
+  imax = sbmlLayout.getListOfReactionGlyphs().getNumItems();
+  for (i = 0; i < imax; ++i)
+    {
+      const ReactionGlyph* tmp
+      = dynamic_cast<const ReactionGlyph*>(sbmlLayout.getListOfReactionGlyphs().get(i));
+      if (tmp)
+        layout->addReactionGlyph(new CLReactionGlyph(*tmp, modelmap, layoutmap));
+    }
 
   //text
-  //TODO
+  imax = sbmlLayout.getListOfTextGlyphs().getNumItems();
+  for (i = 0; i < imax; ++i)
+    {
+      const TextGlyph* tmp
+      = dynamic_cast<const TextGlyph*>(sbmlLayout.getListOfTextGlyphs().get(i));
+      if (tmp)
+        layout->addTextGlyph(new CLTextGlyph(*tmp, modelmap, layoutmap));
+    }
 
   //additional
-  //TODO
+  imax = sbmlLayout.getListOfAdditionalGraphicalObjects().getNumItems();
+  for (i = 0; i < imax; ++i)
+    {
+      const GraphicalObject* tmp
+      = dynamic_cast<const GraphicalObject*>(sbmlLayout.getListOfAdditionalGraphicalObjects().get(i));
+      if (tmp)
+        layout->addGraphicalObject(new CLGraphicalObject(*tmp, layoutmap));
+    }
 
   //second pass text
   //TODO

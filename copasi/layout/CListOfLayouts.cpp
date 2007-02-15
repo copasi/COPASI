@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CListOfLayouts.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/13 17:14:30 $
+//   $Date: 2007/02/15 08:44:35 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,4 +33,6 @@ void CListOfLayouts::addLayout(CLayout * layout, const std::map<std::string, std
 {
   if (layout)
     add(layout, true);
+
+  //TODO: store map
 }

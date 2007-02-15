@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLBase.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/12 00:03:12 $
+//   $Date: 2007/02/15 08:44:35 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -11,6 +11,25 @@
 // All rights reserved.
 
 #include "CLBase.h"
+
+#include "sbml/layout/BoundingBox.h"
+
+//sbml constructors
+
+CLPoint::CLPoint(const Point& p)
+    : mX(p.getXOffset()),
+    mY(p.getYOffset())
+{}
+
+CLDimensions::CLDimensions(const Dimensions& d)
+    : mWidth(d.getWidth()),
+    mHeight(d.getHeight())
+{}
+
+CLBoundingBox::CLBoundingBox(const BoundingBox & bb)
+    : mPosition(bb.getPosition()),
+    mDimensions(bb.getDimensions())
+{}
 
 std::ostream & operator<<(std::ostream &os, const CLPoint & p)
 {

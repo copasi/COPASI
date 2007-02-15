@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLayout.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/14 17:32:39 $
+//   $Date: 2007/02/15 08:44:35 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -45,8 +45,8 @@ CLayout::CLayout(const Layout & sbml,
                  std::map<std::string, std::string> & layoutmap,
                  const CCopasiContainer * pParent)
     : CLBase(sbml),
-    CCopasiContainer("Layout", pParent, "Layout"),
-    mDimensions(), //TODO
+    CCopasiContainer(sbml.getId(), pParent, "Layout"),
+    mDimensions(sbml.getDimensions()),
     mvCompartments("ListOfCompartmentGlyphs", this),
     mvMetabs("ListOfMetaboliteGlyphs", this),
     mvReactions("ListOfReactionGlyphs", this),
@@ -74,11 +74,23 @@ void CLayout::addReactionGlyph(CLReactionGlyph * glyph)
     mvReactions.add(glyph, true); //true means vector takes ownership
 }
 
+void CLayout::addTextGlyph(CLTextGlyph * glyph)
+{
+  if (glyph)
+    mvLabels.add(glyph, true); //true means vector takes ownership
+}
+
+void CLayout::addGraphicalObject(CLGraphicalObject * glyph)
+{
+  if (glyph)
+    mvGraphicalObjects.add(glyph, true); //true means vector takes ownership
+}
+
 std::ostream & operator<<(std::ostream &os, const CLayout & l)
 {
   C_INT32 i, imax;
 
-  os << "Layout  " << l.mDimensions << "\n\n";
+  os << "Layout  \"" << l.getObjectName() << "\" " << l.mDimensions << "\n\n";
 
   imax = l.mvCompartments.size();
   if (imax)

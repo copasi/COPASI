@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGraphicalObject.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/13 17:14:30 $
+//   $Date: 2007/02/15 08:44:35 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -37,10 +37,10 @@ CLGraphicalObject::CLGraphicalObject(const GraphicalObject & sbml,
                                      std::map<std::string, std::string> & layoutmap,
                                      const CCopasiContainer * pParent)
     : CLBase(sbml),
-    CCopasiContainer("Graphical object", pParent, "LayoutElement"),
+    CCopasiContainer(sbml.getId(), pParent, "LayoutElement"),
     mKey(GlobalKeys.add("Layout", this)),
     mModelObjectKey(""),
-    mBBox()
+    mBBox(sbml.getBoundingBox())
 {
   //add the copasi key to the map
   layoutmap[sbml.getId()] = mKey;
@@ -76,7 +76,7 @@ std::string CLGraphicalObject::modelObjectDisplayName(bool regular, bool richtex
 
 std::ostream & operator<<(std::ostream &os, const CLGraphicalObject & g)
 {
-  os << "GraphicalObject " << g.mBBox << std::endl;
+  os << "GraphicalObject \"" << g.getObjectName() << "\" " << g.mBBox << std::endl;
   std::string tmp = g.modelObjectDisplayName();
   if (tmp != "")
     os << "  refers to " << tmp << std::endl;

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLBase.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/13 17:14:30 $
+//   $Date: 2007/02/15 08:44:35 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,6 +16,10 @@
 #include <copasi.h>
 
 class SBase;
+
+class BoundingBox;
+class Dimensions;
+class Point;
 
 /**
  * This class does nothing at all at the moment.
@@ -47,6 +51,11 @@ class CLPoint : public CLBase
 
     CLPoint(const C_FLOAT64 & x, const C_FLOAT64 & y)
         : mX(x), mY(y) {};
+
+    /**
+     * constructor from libsbml object
+     */
+    CLPoint(const Point& p);
 
     const C_FLOAT64 & X() const {return mX;};
     const C_FLOAT64 & Y() const {return mY;};
@@ -81,6 +90,11 @@ class CLDimensions : public CLBase
     CLDimensions(const C_FLOAT64 & w, const C_FLOAT64 & h)
         : mWidth(w), mHeight(h) {};
 
+    /**
+     * constructor from libsbml object
+     */
+    CLDimensions(const Dimensions& d);
+
     const C_FLOAT64 & width() const {return mWidth;};
     const C_FLOAT64 & height() const {return mHeight;};
 
@@ -114,6 +128,11 @@ class CLBoundingBox : public CLBase
 
     CLBoundingBox(const CLPoint & p, const CLDimensions & d)
         : mPosition(p), mDimensions(d) {};
+
+    /**
+     * constructor from libsbml object
+     */
+    CLBoundingBox(const BoundingBox & bb);
 
     const CLPoint & position() const {return mPosition;};
     const CLDimensions & dimensions() const {return mDimensions;};
