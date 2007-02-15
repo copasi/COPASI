@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/blaswrap.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/12 14:27:04 $
+//   $Date: 2007/02/15 17:08:52 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -45,6 +45,10 @@ extern "C"
 # include "f2c.h"
 # include "blas.h"
 #endif // USE_CLAPACK || USE_LAPACK
+
+#ifdef USE_SUNPERF
+# include "sunperf.h"
+#endif // USE_SUNPERF
 
 #ifdef Darwin
 # define vector

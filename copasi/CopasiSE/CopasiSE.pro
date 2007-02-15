@@ -1,5 +1,17 @@
+# Begin CVS Header 
+#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.pro,v $ 
+#   $Revision: 1.35 $ 
+#   $Name:  $ 
+#   $Author: shoops $ 
+#   $Date: 2007/02/15 17:08:54 $ 
+# End CVS Header 
+
+# Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc. and EML Research, gGmbH. 
+# All rights reserved. 
+
 ######################################################################
-# $Revision: 1.34 $ $Author: shoops $ $Date: 2006/10/30 20:35:05 $  
+# $Revision: 1.35 $ $Author: shoops $ $Date: 2007/02/15 17:08:54 $  
 ######################################################################
 
 TEMPLATE = app
@@ -53,8 +65,6 @@ contains(BUILD_OS, Linux) {
 }
 
 contains(BUILD_OS, SunOS) {
-  QMAKE_LFLAGS += -z rescan
-
   LIBS = -L../lib \
          $$join(COPASI_LIBS, " -l", -l) \
          $${LIBS}

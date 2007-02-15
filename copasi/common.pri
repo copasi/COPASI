@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.57 $ 
+#   $Revision: 1.58 $ 
 #   $Name:  $ 
-#   $Author: ssahle $ 
-#   $Date: 2007/02/12 00:07:28 $ 
+#   $Author: shoops $ 
+#   $Date: 2007/02/15 17:08:52 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -11,7 +11,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.57 $ $Author: ssahle $ $Date: 2007/02/12 00:07:28 $  
+# $Revision: 1.58 $ $Author: shoops $ $Date: 2007/02/15 17:08:52 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -228,7 +228,11 @@ contains(STATIC_LINKAGE, yes) {
       LIBS += -llapack -lblas  -lg2c
       LIBS += -L$${LAPACK_PATH}/lib
     } else {
-      error( "Either CLAPACK_PATH or LAPACK_PATH must be specified" )
+      message("Using sunperf.")
+      DEFINES += USE_SUNPERF
+      LIBS += -lsunperf
+      QMAKE_CFLAGS   += -dalign
+      QMAKE_CXXFLAGS   += -dalign
     }
   }
   !isEmpty(EXPAT_PATH){
@@ -248,9 +252,11 @@ contains(STATIC_LINKAGE, yes) {
        INCLUDEPATH += $${QWT_PATH}/include
     }
     LIBS += -lqwt
+    LIBS += -lSM
+  } else {
+    QMAKE_LIBS_THREAD -= -lpthread
+    QMAKE_LIBS_THREAD -= -lrt
   }
-
-  LIBS += -lSM
 }
  
 contains(BUILD_OS, Linux) {

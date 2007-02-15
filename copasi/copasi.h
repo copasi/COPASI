@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.h,v $
-   $Revision: 1.53 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/09/08 20:17:47 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.h,v $
+//   $Revision: 1.54 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/15 17:08:52 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -96,13 +96,13 @@
 # define ios_base ios
 #endif
 
-#ifdef USE_MKL
+#if (defined USE_MKL || defined USE_SUNPERF)
 # define C_INT int
 #else
 # if (defined USE_CLAPACK || defined USE_LAPACK || defined Darwin)
 #  define C_INT long
 # else
-#  error Neither USE_CLAPACK, USE_LAPACK, or USE_MKL is defined!
+#  error Neither USE_CLAPACK, USE_LAPACK, USE_SUNPERF, or USE_MKL is defined!
 # endif
 #endif
 
