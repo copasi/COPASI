@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionDB.cpp,v $
-   $Revision: 1.73 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/06 16:03:46 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionDB.cpp,v $
+//   $Revision: 1.74 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/16 21:47:54 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -21,12 +21,14 @@
 
 #include "CFunctionDB.h"
 #include "CFunction.h"
+#include "FunctionDB.xml.h"
 
 #include "utilities/CCopasiException.h"
 #include "report/CCopasiObjectReference.h"
-#include "xml/CCopasiXML.h"
 #include "report/CKeyFactory.h"
-#include "FunctionDB.xml.h"
+#include "xml/CCopasiXML.h"
+#include "model/CModel.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 
 CFunctionDB::CFunctionDB(const std::string & name,
                          const CCopasiContainer * pParent):
@@ -332,4 +334,63 @@ CFunctionDB::listDependentTrees(const std::string & name) const
         List.insert((*it)->getObjectName());
 
     return List;
+  }
+
+const CCopasiVectorN< CEvaluationTree > & CFunctionDB::getUsedFunctions() const
+  {
+    static CCopasiVectorN< CEvaluationTree > UsedFunctions;
+    UsedFunctions.cleanup();
+
+    CModel * pModel = CCopasiDataModel::Global->getModel();
+
+    CCopasiVectorN < CEvaluationTree >::const_iterator it = mLoadedFunctions.begin();
+    CCopasiVectorN < CEvaluationTree >::const_iterator end = mLoadedFunctions.end();
+
+    for (; it != end; ++it)
+      {
+        // :TODO: Bug 719
+        // This will have to be modified as soon as the optimization problem stores its on expression
+        if ((*it)->getType() == CEvaluationTree::Expression)
+          {
+            UsedFunctions.add(*it, false);
+            continue;
+          }
+
+        std::set< const CCopasiObject * > Function;
+        Function.insert(*it);
+
+        std::set< const CCopasiObject * > Dependent;
+
+        pModel->appendDependentReactions(Function, Dependent);
+        if (Dependent.size() != 0)
+          {
+            UsedFunctions.add(*it, false);
+            continue;
+          }
+
+        pModel->appendDependentModelValues(Function, Dependent);
+        if (Dependent.size() != 0)
+          {
+            UsedFunctions.add(*it, false);
+            continue;
+          }
+
+        pModel->appendDependentCompartments(Function, Dependent);
+        if (Dependent.size() != 0)
+          {
+            UsedFunctions.add(*it, false);
+            continue;
+          }
+
+        pModel->appendDependentMetabolites(Function, Dependent);
+        if (Dependent.size() != 0)
+          {
+            UsedFunctions.add(*it, false);
+            continue;
+          }
+      }
+
+    CEvaluationTree::completeEvaluationTreeList(UsedFunctions);
+
+    return UsedFunctions;
   }

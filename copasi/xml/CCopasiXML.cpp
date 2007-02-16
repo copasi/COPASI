@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.88 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/06 16:03:45 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
+//   $Revision: 1.89 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/16 21:47:55 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -378,7 +378,7 @@ bool CCopasiXML::saveModel()
       Attributes.add("name", "");
       Attributes.add("status", "");
       // This is now optional.
-      Attributes.add("stateVariable", "");
+      // Attributes.add("stateVariable", "");
 
       for (i = 0; i < imax; i++)
         {
@@ -1045,41 +1045,11 @@ bool CCopasiXML::saveSBMLReference()
 bool CCopasiXML::buildFunctionList()
 {
   bool success = true;
-  CEvaluationTree * pFunction;
 
-  std::map< std::string, CEvaluationTree * > FunctionMap;
+  CCopasiVectorN< CEvaluationTree > * pFunctionList
+  = new CCopasiVectorN< CEvaluationTree >;
 
-  unsigned C_INT32 i, imax = mpModel->getReactions().size();
-
-  for (i = 0; i < imax; i++)
-    {
-      pFunction =
-        const_cast< CFunction * >(mpModel->getReactions()[i]->getFunction());
-      if (pFunction &&
-          pFunction != GlobalKeys.get("UndefinedFunction_0"))
-        FunctionMap[pFunction->getKey()] = pFunction;
-    }
-
-  CCopasiVectorN < CEvaluationTree > & loadedFunctions =
-    CCopasiDataModel::Global->getFunctionList()->loadedFunctions();
-
-  for (i = 0, imax = loadedFunctions.size(); i < imax; i++)
-    {
-      pFunction = loadedFunctions[i];
-      if (pFunction->getType() == CEvaluationTree::Expression)
-        FunctionMap[pFunction->getKey()] = pFunction;
-    }
-
-  CCopasiVectorN< CEvaluationTree > * pFunctionList = new CCopasiVectorN< CEvaluationTree >;
-  pFunctionList->resize(FunctionMap.size(), false);
-
-  std::map< std::string, CEvaluationTree * >::iterator it = FunctionMap.begin();
-  std::map< std::string, CEvaluationTree * >::iterator End = FunctionMap.end();
-
-  for (i = 0; it != End; ++it, i++)
-    (*pFunctionList)[i] = it->second;
-
-  if (!CEvaluationTree::completeEvaluationTreeList(*pFunctionList)) success = false;
+  *pFunctionList = CCopasiDataModel::Global->getFunctionList()->getUsedFunctions();
 
   if (!setFunctionList(*pFunctionList)) success = false;
 

@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiVector.h,v $
-   $Revision: 1.68 $
-   $Name:  $
-   $Author: gauges $
-   $Date: 2006/10/15 08:31:12 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiVector.h,v $
+//   $Revision: 1.69 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/16 21:47:55 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -86,8 +86,21 @@ template < class CType > class CCopasiVector:
         DESTRUCTOR_TRACE;
       }
 
+      CCopasiVector< CType > & operator = (const CCopasiVector< CType > & rhs)
+      {
+        this->cleanup();
+
+        const_iterator it = rhs.begin();
+        const_iterator end = rhs.end();
+
+        for (;it != end; ++it)
+          add(*it, false);
+
+        return *this;
+      }
+
       iterator begin()
-      {return static_cast< std::vector< CType * > *>(this)->begin();}
+    {return static_cast< std::vector< CType * > *>(this)->begin();}
 
       const_iterator begin() const
         {return static_cast<const std::vector< CType * > *>(this)->begin();}
