@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGlyphs.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/16 00:09:33 $
+//   $Date: 2007/02/16 10:13:26 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -119,7 +119,7 @@ class CLTextGlyph : public CLGraphicalObject
                 std::map<std::string, std::string> & layoutmap,
                 const CCopasiContainer * pParent = NULL);
 
-    std::string text() const;
+    std::string getText() const;
 
     void setText(const std::string & t);
 

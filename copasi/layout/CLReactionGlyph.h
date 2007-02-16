@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLReactionGlyph.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/16 00:09:33 $
+//   $Date: 2007/02/16 10:13:26 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -59,6 +59,10 @@ class CLMetabReferenceGlyph : public CLGraphicalObject
     const std::string & getMetabGlyphKey() const {return mMetabGlyphKey;};
     CLMetabGlyph* getMetabGlyph() const;
     void setMetabGlyphKey(const std::string & k) {mMetabGlyphKey = k;};
+
+    const CLCurve & getCurve() const {return mCurve;};
+    CLCurve & getCurve() {return mCurve;};
+    void setCurve(const CLCurve & c) {mCurve = c;};
 
     /**
      * insert operator

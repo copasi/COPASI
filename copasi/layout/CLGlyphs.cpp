@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGlyphs.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/16 00:09:33 $
+//   $Date: 2007/02/16 10:13:26 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -177,7 +177,7 @@ CLTextGlyph::CLTextGlyph(const TextGlyph & sbml,
     }
 }
 
-std::string CLTextGlyph::text() const
+std::string CLTextGlyph::getText() const
   {
     if (mIsTextSet)
       return mText;

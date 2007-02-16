@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLReactionGlyph.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/16 00:09:33 $
+//   $Date: 2007/02/16 10:13:26 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -37,7 +37,7 @@ CLMetabReferenceGlyph::CLMetabReferenceGlyph(const SpeciesReferenceGlyph & sbml,
     const CCopasiContainer * pParent)
     : CLGraphicalObject(sbml, layoutmap, pParent),
     mMetabGlyphKey(), //initialized in the body below
-    mCurve(sbml.getCurve())
+    mCurve() //initialized in the body below
 {
   //TODO problem: how to translate the sbml species reference id to a copasi key
 
@@ -48,6 +48,10 @@ CLMetabReferenceGlyph::CLMetabReferenceGlyph(const SpeciesReferenceGlyph & sbml,
       if (it != layoutmap.end())
         mMetabGlyphKey = it->second;
     }
+
+  //curve
+  if (sbml.getCurve())
+    mCurve = CLCurve(*sbml.getCurve());
 }
 
 CLMetabGlyph* CLMetabReferenceGlyph::getMetabGlyph() const
