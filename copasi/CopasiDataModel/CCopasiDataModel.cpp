@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.93 $
+//   $Revision: 1.94 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/14 17:31:37 $
+//   $Date: 2007/02/16 00:07:10 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -499,12 +499,16 @@ bool CCopasiDataModel::importSBMLFromString(const std::string& sbmlDocumentText,
   SBMLDocument * pSBMLDocument = NULL;
   std::map<CCopasiObject*, SBase*> Copasi2SBMLMap;
 
+#ifdef WITH_LAYOUT
+  CListOfLayouts * pLol = NULL; //
+#endif
+
   try
     {
       pModel = importer.parseSBML(sbmlDocumentText, mpFunctionList,
                                   pSBMLDocument, Copasi2SBMLMap
 #ifdef WITH_LAYOUT
-                                  , mpListOfLayouts
+                                  , pLol
 #endif
 );
     }
@@ -525,7 +529,11 @@ bool CCopasiDataModel::importSBMLFromString(const std::string& sbmlDocumentText,
   mpCurrentSBMLDocument = pSBMLDocument;
   mCopasi2SBMLMap = Copasi2SBMLMap;
 
-  return newModel(pModel);
+  return newModel(pModel
+#ifdef WITH_LAYOUT
+                  , pLol
+#endif
+);
 }
 
 bool CCopasiDataModel::importSBML(const std::string & fileName, CProcessReport* pImportHandler)
