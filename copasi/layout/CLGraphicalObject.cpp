@@ -1,19 +1,22 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGraphicalObject.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/02/16 00:09:33 $
+//   $Author: shoops $
+//   $Date: 2007/02/16 16:56:07 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include "report/CKeyFactory.h"
+#define USE_LAYOUT 1
+
+#include <sbml/layout/GraphicalObject.h>
+
 #include "CLGraphicalObject.h"
 
-#include "sbml/layout/GraphicalObject.h"
+#include "report/CKeyFactory.h"
 
 CLGraphicalObject::CLGraphicalObject(const std::string & name,
                                      const CCopasiContainer * pParent)

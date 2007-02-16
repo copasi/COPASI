@@ -1,18 +1,20 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLBase.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/02/15 08:44:35 $
+//   $Author: shoops $
+//   $Date: 2007/02/16 16:56:07 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include "CLBase.h"
+#define USE_LAYOUT 1
 
-#include "sbml/layout/BoundingBox.h"
+#include <sbml/layout/BoundingBox.h>
+
+#include "CLBase.h"
 
 //sbml constructors
 

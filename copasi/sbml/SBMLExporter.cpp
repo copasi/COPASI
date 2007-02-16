@@ -1,53 +1,61 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-//   $Revision: 1.99 $
+//   $Revision: 1.100 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/15 17:30:50 $
+//   $Date: 2007/02/16 16:56:08 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
+#ifdef WITH_LAYOUT
+# define USE_LAYOUT 1
+#endif // WITH_LAYOUT
+
 #include <math.h>
 #include <list>
-
+#include <fstream>
+#include <sstream>
 #include <algorithm>
 
-#include "copasi.h"
-#include "report/CKeyFactory.h"
+#include <sbml/Unit.h>
+#include <sbml/UnitDefinition.h>
+#include <sbml/UnitKind.h>
+#include <sbml/SBMLDocument.h>
+#include <sbml/SBMLWriter.h>
+#include <sbml/ModifierSpeciesReference.h>
+#include <sbml/SpeciesReference.h>
+#include <sbml/Rule.h>
+#include <sbml/RateRule.h>
+#include <sbml/AssignmentRule.h>
+#include <sbml/FunctionDefinition.h>
+#include <sbml/Event.h>
+#include <sbml/Model.h>
+#include <sbml/Compartment.h>
+#include <sbml/Species.h>
+#include <sbml/Reaction.h>
+#include <sbml/KineticLaw.h>
+#include <sbml/math/ASTNode.h>
+#include <sbml/Parameter.h>
 
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "utilities/CVersion.h"
-#include "utilities/CProcessReport.h"
+#include "copasi.h"
 
 #include "SBMLExporter.h"
+
 #include "ConverterASTNode.h"
 #include "UnitConversionFactory.hpp"
 
+#include "report/CKeyFactory.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
+#include "utilities/CVersion.h"
+#include "utilities/CProcessReport.h"
 #include "utilities/CCopasiTree.h"
-
 #include "function/CFunctionDB.h"
 #include "function/CExpression.h"
 
-#include "sbml/Unit.h"
-#include "sbml/UnitDefinition.h"
-#include "sbml/UnitKind.h"
-#include "sbml/SBMLDocument.h"
-#include "sbml/SBMLWriter.h"
-
-#include "sbml/ModifierSpeciesReference.h"
-#include "sbml/SpeciesReference.h"
-#include "sbml/Rule.h"
-#include "sbml/RateRule.h"
-#include "sbml/AssignmentRule.h"
-#include "sbml/FunctionDefinition.h"
-#include "sbml/Event.h"
 #include "xml/CCopasiXMLInterface.h"
-
-#include <fstream>
-#include <sstream>
 
 const char* SBMLExporter::HTML_HEADER = "<body xmlns=\"http://www.w3.org/1999/xhtml\">";
 

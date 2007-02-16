@@ -1,20 +1,23 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLayout.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/02/16 00:08:07 $
+//   $Author: shoops $
+//   $Date: 2007/02/16 16:56:07 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
+#define USE_LAYOUT 1
+
+#include "sbml/layout/Layout.h"
+
 #include "copasi.h"
 #include "report/CKeyFactory.h"
 
 #include "CLayout.h"
-#include "sbml/layout/Layout.h"
 
 CLayout::CLayout(const std::string & name,
                  const CCopasiContainer * pParent)

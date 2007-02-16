@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/layout.pro,v $ 
-#   $Revision: 1.3 $ 
+#   $Revision: 1.4 $ 
 #   $Name:  $ 
-#   $Author: ssahle $ 
-#   $Date: 2007/02/16 00:10:13 $ 
+#   $Author: shoops $ 
+#   $Date: 2007/02/16 16:56:07 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -14,10 +14,6 @@ LIB = layout
 
 include(../lib.pri)
 include(../common.pri)
-
-contains(BUILD_OS, WIN32) {
-  DEFINES += LIBSBML_STATIC
-}
 
 # Input
 HEADERS += CLayout.h \

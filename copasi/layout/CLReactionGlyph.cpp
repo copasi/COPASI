@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLReactionGlyph.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/02/16 12:53:15 $
+//   $Author: shoops $
+//   $Date: 2007/02/16 16:56:07 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -11,11 +11,14 @@
 // All rights reserved.
 
 //#include<iostream>
-#include "report/CKeyFactory.h"
-#include "CLReactionGlyph.h"
+
+#define USE_LAYOUT 1
 
 #include "sbml/layout/ReactionGlyph.h"
 #include "sbml/layout/SpeciesReferenceGlyph.h"
+
+#include "CLReactionGlyph.h"
+#include "report/CKeyFactory.h"
 
 CLMetabReferenceGlyph::CLMetabReferenceGlyph(const std::string & name,
     const CCopasiContainer * pParent)

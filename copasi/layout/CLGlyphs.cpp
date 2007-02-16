@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGlyphs.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/02/16 10:13:26 $
+//   $Author: shoops $
+//   $Date: 2007/02/16 16:56:07 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -11,13 +11,16 @@
 // All rights reserved.
 
 //#include<iostream>
+
+#define USE_LAYOUT 1
+
+#include <sbml/layout/SpeciesGlyph.h>
+#include <sbml/layout/CompartmentGlyph.h>
+#include <sbml/layout/TextGlyph.h>
+
+#include "CLGlyphs.h"
+
 #include "report/CKeyFactory.h"
-
-#include<CLGlyphs.h>
-
-#include "sbml/layout/SpeciesGlyph.h"
-#include "sbml/layout/CompartmentGlyph.h"
-#include "sbml/layout/TextGlyph.h"
 
 // void node::markAsCopy(){
 //  this->id = this->id + "_copy";

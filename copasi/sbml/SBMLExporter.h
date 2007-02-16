@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.h,v $
-   $Revision: 1.39 $
-   $Name:  $
-   $Author: gauges $
-   $Date: 2006/10/16 11:04:02 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.h,v $
+//   $Revision: 1.40 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/16 16:56:08 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -15,24 +15,24 @@
 
 #include <set>
 #include <string>
+#include <vector>
 
 #include "model/CModel.h"
-#include "model/CCompartment.h"
-#include "model/CMetab.h"
-#include "model/CReaction.h"
-//#include "function/CKinFunction.h"
 
-#include "sbml/SBMLDocument.h"
-#include "sbml/Model.h"
-#include "sbml/Compartment.h"
-#include "sbml/Species.h"
-#include "sbml/Reaction.h"
-#include "sbml/KineticLaw.h"
-#include "sbml/math/ASTNode.h"
-#include "sbml/Parameter.h"
+// SBML Classes:
+class Model;
+class Compartment;
+class FunctionDefinition;
+class Species;
+class Parameter;
+class Reaction;
+class KineticLaw;
+class UnitDefinition;
+class Rule;
+class SBase;
 
-class CProcessReport;
-class CModelEntity;
+// COPASI Classes:
+class CCopasiDataModel;
 
 class SBMLExporter
   {

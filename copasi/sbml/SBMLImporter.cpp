@@ -1,22 +1,52 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.163 $
+//   $Revision: 1.164 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/15 17:30:50 $
+//   $Date: 2007/02/16 16:56:08 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include "copasi.h"
+#ifdef WIN32
+# pragma warning (disable: 4786)
+# pragma warning (disable: 4243)
+// warning C4355: 'this' : used in base member initializer list
+# pragma warning (disable: 4355)
+#endif  // WIN32
+
+#ifdef WITH_LAYOUT
+# define USE_LAYOUT 1
+#endif // WITH_LAYOUT
 
 #include <iostream>
 #include <vector>
 #include <sstream>
 #include <map>
 #include <limits>
+
+#include <sbml/SBMLReader.h>
+#include <sbml/SBMLDocument.h>
+#include <sbml/Compartment.h>
+#include <sbml/Species.h>
+#include <sbml/SpeciesReference.h>
+#include <sbml/ModifierSpeciesReference.h>
+#include <sbml/Reaction.h>
+#include <sbml/KineticLaw.h>
+#include <sbml/math/FormulaFormatter.h>
+#include <sbml/Model.h>
+#include <sbml/UnitKind.h>
+#include <sbml/Unit.h>
+#include <sbml/Parameter.h>
+#include <sbml/Rule.h>
+#include <sbml/RateRule.h>
+#include <sbml/AssignmentRule.h>
+#include <sbml/FunctionDefinition.h>
+#include <sbml/xml/ParseMessage.h>
+
+#include "copasi.h"
 
 #include "mathematics.h"
 
@@ -33,25 +63,6 @@
 #include "report/CCopasiObjectReference.h"
 #include "utilities/CCopasiTree.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
-
-#include "sbml/SBMLReader.h"
-#include "sbml/SBMLDocument.h"
-#include "sbml/Compartment.h"
-#include "sbml/Species.h"
-#include "sbml/SpeciesReference.h"
-#include "sbml/ModifierSpeciesReference.h"
-#include "sbml/Reaction.h"
-#include "sbml/KineticLaw.h"
-#include "sbml/math/FormulaFormatter.h"
-#include "sbml/Model.h"
-#include "sbml/UnitKind.h"
-#include "sbml/Unit.h"
-#include "sbml/Parameter.h"
-#include "sbml/Rule.h"
-#include "sbml/RateRule.h"
-#include "sbml/AssignmentRule.h"
-#include "sbml/FunctionDefinition.h"
-#include "sbml/xml/ParseMessage.h"
 
 #include "SBMLImporter.h"
 #include "ConverterASTNode.h"

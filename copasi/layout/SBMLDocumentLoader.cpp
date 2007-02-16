@@ -1,29 +1,32 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/SBMLDocumentLoader.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/02/16 00:09:33 $
+//   $Author: shoops $
+//   $Date: 2007/02/16 16:56:07 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
+#include <iostream>
+
+#define USE_LAYOUT 1
+
+#include <sbml/xml/ParseMessage.h>
+#include <sbml/layout/SpeciesGlyph.h>
+#include <sbml/layout/ReactionGlyph.h>
+#include <sbml/layout/SpeciesReferenceGlyph.h>
+#include <sbml/layout/TextGlyph.h>
+#include <sbml/layout/BoundingBox.h>
+#include <sbml/layout/Point.h>
+#include <sbml/layout/Dimensions.h>
+
 #include "SBMLDocumentLoader.h"
 #include "report/CKeyFactory.h"
 
-#include "sbml/xml/ParseMessage.h"
-
-#include "sbml/layout/SpeciesGlyph.h"
-#include "sbml/layout/ReactionGlyph.h"
-#include "sbml/layout/SpeciesReferenceGlyph.h"
-#include "sbml/layout/TextGlyph.h"
-#include "sbml/layout/BoundingBox.h"
-#include "sbml/layout/Point.h"
-#include "sbml/layout/Dimensions.h"
 //#include "myTypes.h"
-#include <iostream>
 
 #include "CListOfLayouts.h"
 #include "CLayout.h"
