@@ -69,6 +69,18 @@ SOURCE=.\SBMLImporter.cpp
 
 SOURCE=.\SBMLReference.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=.\SBMLUtils.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\StdException.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\UnitConversionFactory.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -88,6 +100,14 @@ SOURCE=.\SBMLImporter.h
 # Begin Source File
 
 SOURCE=.\SBMLReference.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\SBMLUtils.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\StdException.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"
