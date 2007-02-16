@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLayout.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/15 08:44:35 $
+//   $Date: 2007/02/16 00:08:07 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -11,6 +11,8 @@
 // All rights reserved.
 
 #include "copasi.h"
+#include "report/CKeyFactory.h"
+
 #include "CLayout.h"
 #include "sbml/layout/Layout.h"
 
@@ -18,6 +20,7 @@ CLayout::CLayout(const std::string & name,
                  const CCopasiContainer * pParent)
     : CLBase(),
     CCopasiContainer(name, pParent, "Layout"),
+    mKey(GlobalKeys.add("Layout", this)),
     mDimensions(),
     mvCompartments("ListOfCompartmentGlyphs", this),
     mvMetabs("ListOfMetaboliteGlyphs", this),
@@ -30,6 +33,7 @@ CLayout::CLayout(const CLayout & src,
                  const CCopasiContainer * pParent)
     : CLBase(src),
     CCopasiContainer(src, pParent),
+    mKey(GlobalKeys.add("Layout", this)),
     mDimensions(src.mDimensions),
     mvCompartments(src.mvCompartments, this),
     mvMetabs(src.mvMetabs, this),
@@ -46,6 +50,7 @@ CLayout::CLayout(const Layout & sbml,
                  const CCopasiContainer * pParent)
     : CLBase(sbml),
     CCopasiContainer(sbml.getId(), pParent, "Layout"),
+    mKey(GlobalKeys.add("Layout", this)),
     mDimensions(sbml.getDimensions()),
     mvCompartments("ListOfCompartmentGlyphs", this),
     mvMetabs("ListOfMetaboliteGlyphs", this),
@@ -53,7 +58,13 @@ CLayout::CLayout(const Layout & sbml,
     mvLabels("ListOfTextGlyphs", this),
     mvGraphicalObjects("ListOfGraphicalObjects", this)
 {
-  //TODO add to map
+  //add the copasi key to the map
+  layoutmap[sbml.getId()] = mKey;
+}
+
+CLayout::~CLayout()
+{
+  GlobalKeys.remove(mKey);
 }
 
 void CLayout::addCompartmentGlyph(CLCompartmentGlyph * glyph)

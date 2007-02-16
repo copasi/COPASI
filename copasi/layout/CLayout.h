@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLayout.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/15 08:44:35 $
+//   $Date: 2007/02/16 00:08:07 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,7 +13,7 @@
 #ifndef CLAYOUT_H_
 #define CLAYOUT_H_
 
-//#include <string>
+#include <string>
 //#include <vector>
 
 #include "utilities/CCopasiVector.h"
@@ -36,7 +36,8 @@ class CLayout : public CLBase, public CCopasiContainer
   {
   protected:
 
-    //TODO: key!
+    std::string mKey;
+
     CLDimensions mDimensions;
 
     CCopasiVector<CLCompartmentGlyph> mvCompartments;
@@ -65,6 +66,14 @@ class CLayout : public CLBase, public CCopasiContainer
             std::map<std::string, std::string> & layoutmap,
             const CCopasiContainer * pParent = NULL);
 
+    ~CLayout();
+
+    /**
+     *  Retrieves the key of the layout
+     */
+    virtual const std::string & getKey() const
+      {return mKey;};
+
     /*    CLayout(const CLDimensions & dim)
           :mDimensions(dim)
           {};*/
@@ -76,12 +85,13 @@ class CLayout : public CLBase, public CCopasiContainer
             labelPVec = vector<label*>(lPVec);
             }*/
 
-    CLDimensions & dimensions() {return mDimensions;};
-    const CLDimensions & dimensions() const {return mDimensions;};
+    //CLDimensions & dimensions() {return mDimensions;};
+    const CLDimensions & getDimensions() const {return mDimensions;};
+    void setDimensions(const CLDimensions & d) {mDimensions = d;};
 
     //*******************
 
-    const CCopasiVector<CLCompartmentGlyph> & listOfCompartmentGlyphs() const
+    const CCopasiVector<CLCompartmentGlyph> & getListOfCompartmentGlyphs() const
       {return mvCompartments;};
 
     /**
@@ -91,7 +101,7 @@ class CLayout : public CLBase, public CCopasiContainer
 
     //*******************
 
-    const CCopasiVector<CLMetabGlyph> & listOfMetaboliteGlyphs() const
+    const CCopasiVector<CLMetabGlyph> & getListOfMetaboliteGlyphs() const
       {return mvMetabs;};
 
     /**
@@ -101,7 +111,7 @@ class CLayout : public CLBase, public CCopasiContainer
 
     //*******************
 
-    const CCopasiVector<CLReactionGlyph> & listOfReactionGlyphs() const
+    const CCopasiVector<CLReactionGlyph> & getListOfReactionGlyphs() const
       {return mvReactions;};
 
     /**
@@ -111,7 +121,7 @@ class CLayout : public CLBase, public CCopasiContainer
 
     //*******************
 
-    const CCopasiVector<CLTextGlyph> & listOfTextGlyphs() const
+    const CCopasiVector<CLTextGlyph> & getListOfTextGlyphs() const
       {return mvLabels;};
 
     /**
@@ -121,7 +131,7 @@ class CLayout : public CLBase, public CCopasiContainer
 
     //*******************
 
-    const CCopasiVector<CLGraphicalObject> & listOfGraphicalObjects() const
+    const CCopasiVector<CLGraphicalObject> & getListOfGraphicalObjects() const
       {return mvGraphicalObjects;};
 
     /**
