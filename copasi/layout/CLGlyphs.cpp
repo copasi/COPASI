@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGlyphs.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/15 08:44:35 $
+//   $Date: 2007/02/16 00:09:33 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -11,6 +11,8 @@
 // All rights reserved.
 
 //#include<iostream>
+#include "report/CKeyFactory.h"
+
 #include<CLGlyphs.h>
 
 #include "sbml/layout/SpeciesGlyph.h"
@@ -180,7 +182,7 @@ std::string CLTextGlyph::text() const
     if (mIsTextSet)
       return mText;
     else
-      return modelObjectDisplayName();
+      return getModelObjectDisplayName();
   }
 
 void CLTextGlyph::setText(const std::string & t)
@@ -195,10 +197,19 @@ void CLTextGlyph::clearText()
   mText = "";
 }
 
+CLGraphicalObject* CLTextGlyph::getGraphicalObject() const
+  {
+    return dynamic_cast<CLGraphicalObject*>(GlobalKeys.get(mGraphicalObjectKey));
+  }
+
 std::ostream & operator<<(std::ostream &os, const CLTextGlyph & g)
 {
   os << "TextGlyph: " << dynamic_cast<const CLGraphicalObject&>(g);
   if (g.mIsTextSet)
     os << "  Explicit text is: \"" << g.mText << "\"\n";
+
+  CLGraphicalObject* tmp = g.getGraphicalObject();
+  if (tmp)
+    os << "  Label for: \"" << tmp->getObjectName() << "\"\n";
   return os;
 }

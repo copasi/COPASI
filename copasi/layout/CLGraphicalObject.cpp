@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGraphicalObject.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/15 08:44:35 $
+//   $Date: 2007/02/16 00:09:33 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -51,23 +51,23 @@ CLGraphicalObject::~CLGraphicalObject()
   GlobalKeys.remove(mKey);
 }
 
-CCopasiObject * CLGraphicalObject::modelObject() const
+CCopasiObject * CLGraphicalObject::getModelObject() const
   {
     return GlobalKeys.get(mModelObjectKey);
   }
 
-std::string CLGraphicalObject::modelObjectName() const
+std::string CLGraphicalObject::getModelObjectName() const
   {
-    CCopasiObject * tmp = modelObject();
+    CCopasiObject * tmp = getModelObject();
     if (tmp)
       return tmp->getObjectName();
     else
       return "";
   }
 
-std::string CLGraphicalObject::modelObjectDisplayName(bool regular, bool richtext) const
+std::string CLGraphicalObject::getModelObjectDisplayName(bool regular, bool richtext) const
   {
-    CCopasiObject * tmp = modelObject();
+    CCopasiObject * tmp = getModelObject();
     if (tmp)
       return tmp->getObjectDisplayName(regular, richtext);
     else
@@ -77,7 +77,7 @@ std::string CLGraphicalObject::modelObjectDisplayName(bool regular, bool richtex
 std::ostream & operator<<(std::ostream &os, const CLGraphicalObject & g)
 {
   os << "GraphicalObject \"" << g.getObjectName() << "\" " << g.mBBox << std::endl;
-  std::string tmp = g.modelObjectDisplayName();
+  std::string tmp = g.getModelObjectDisplayName();
   if (tmp != "")
     os << "  refers to " << tmp << std::endl;
   return os;

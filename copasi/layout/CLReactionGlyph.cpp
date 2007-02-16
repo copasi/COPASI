@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLReactionGlyph.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/13 17:14:30 $
+//   $Date: 2007/02/16 00:09:33 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,13 +20,15 @@
 CLMetabReferenceGlyph::CLMetabReferenceGlyph(const std::string & name,
     const CCopasiContainer * pParent)
     : CLGraphicalObject(name, pParent),
-    mMetabGlyphKey()
+    mMetabGlyphKey(),
+    mCurve()
 {}
 
 CLMetabReferenceGlyph::CLMetabReferenceGlyph(const CLMetabReferenceGlyph & src,
     const CCopasiContainer * pParent)
     : CLGraphicalObject(src, pParent),
-    mMetabGlyphKey(src.mMetabGlyphKey)
+    mMetabGlyphKey(src.mMetabGlyphKey),
+    mCurve(src.mCurve)
 {}
 
 CLMetabReferenceGlyph::CLMetabReferenceGlyph(const SpeciesReferenceGlyph & sbml,
@@ -34,7 +36,8 @@ CLMetabReferenceGlyph::CLMetabReferenceGlyph(const SpeciesReferenceGlyph & sbml,
     std::map<std::string, std::string> & layoutmap,
     const CCopasiContainer * pParent)
     : CLGraphicalObject(sbml, layoutmap, pParent),
-    mMetabGlyphKey()
+    mMetabGlyphKey(), //initialized in the body below
+    mCurve(sbml.getCurve())
 {
   //TODO problem: how to translate the sbml species reference id to a copasi key
 
@@ -47,7 +50,7 @@ CLMetabReferenceGlyph::CLMetabReferenceGlyph(const SpeciesReferenceGlyph & sbml,
     }
 }
 
-CLMetabGlyph* CLMetabReferenceGlyph::metabGlyph() const
+CLMetabGlyph* CLMetabReferenceGlyph::getMetabGlyph() const
   {
     CCopasiObject* tmp = GlobalKeys.get(mMetabGlyphKey);
     return dynamic_cast<CLMetabGlyph*>(tmp);
@@ -57,10 +60,10 @@ std::ostream & operator<<(std::ostream &os, const CLMetabReferenceGlyph & g)
 {
   os << "    MetabReferenceGlyph: " << dynamic_cast<const CLGraphicalObject&>(g);
 
-  const CLMetabGlyph* tmp = g.metabGlyph();
+  const CLMetabGlyph* tmp = g.getMetabGlyph();
   if (tmp)
     os << "      refers to a MetabGlyph that refers to "
-    << tmp->modelObjectDisplayName() << std::endl;
+    << tmp->getModelObjectDisplayName() << std::endl;
 
   return os;
 }
@@ -89,6 +92,16 @@ CLReactionGlyph::CLReactionGlyph(const ReactionGlyph & sbml,
       std::map<std::string, std::string>::const_iterator it = modelmap.find(sbml.getReactionId());
       if (it != modelmap.end())
         setModelObjectKey(it->second);
+    }
+
+  //species reference glyphs
+  C_INT32 i, imax = sbml.getListOfSpeciesReferenceGlyphs().getNumItems();
+  for (i = 0; i < imax; ++i)
+    {
+      const SpeciesReferenceGlyph* tmp
+      = dynamic_cast<const SpeciesReferenceGlyph*>(sbml.getListOfSpeciesReferenceGlyphs().get(i));
+      if (tmp)
+        addMetabReferenceGlyph(new CLMetabReferenceGlyph(*tmp, modelmap, layoutmap));
     }
 }
 

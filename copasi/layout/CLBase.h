@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLBase.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/15 08:44:35 $
+//   $Date: 2007/02/16 00:09:33 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -57,14 +57,14 @@ class CLPoint : public CLBase
      */
     CLPoint(const Point& p);
 
-    const C_FLOAT64 & X() const {return mX;};
-    const C_FLOAT64 & Y() const {return mY;};
+    const C_FLOAT64 & getX() const {return mX;};
+    const C_FLOAT64 & getY() const {return mY;};
 
-    C_FLOAT64 & X() {return mX;};
-    C_FLOAT64 & Y() {return mY;};
+    C_FLOAT64 & getX() {return mX;};
+    C_FLOAT64 & getY() {return mY;};
 
-    //void setX(const C_FLOAT64 & x) {mX = x;};
-    //void setY(const C_FLOAT64 & y) {mY = y;};
+    void setX(const C_FLOAT64 & x) {mX = x;};
+    void setY(const C_FLOAT64 & y) {mY = y;};
 
     /**
       * insert operator
@@ -95,14 +95,14 @@ class CLDimensions : public CLBase
      */
     CLDimensions(const Dimensions& d);
 
-    const C_FLOAT64 & width() const {return mWidth;};
-    const C_FLOAT64 & height() const {return mHeight;};
+    const C_FLOAT64 & getWidth() const {return mWidth;};
+    const C_FLOAT64 & getHeight() const {return mHeight;};
 
-    C_FLOAT64 & width() {return mWidth;};
-    C_FLOAT64 & height() {return mHeight;};
+    C_FLOAT64 & getWidth() {return mWidth;};
+    C_FLOAT64 & getHeight() {return mHeight;};
 
-    //void setWidth(const C_FLOAT64 & w) {mWidth = w;};
-    //void setHeight(const C_FLOAT64 & h) {mHeight = h;};
+    void setWidth(const C_FLOAT64 & w) {mWidth = w;};
+    void setHeight(const C_FLOAT64 & h) {mHeight = h;};
 
     /**
       * insert operator
@@ -134,14 +134,14 @@ class CLBoundingBox : public CLBase
      */
     CLBoundingBox(const BoundingBox & bb);
 
-    const CLPoint & position() const {return mPosition;};
-    const CLDimensions & dimensions() const {return mDimensions;};
+    const CLPoint & getPosition() const {return mPosition;};
+    const CLDimensions & getDimensions() const {return mDimensions;};
 
-    CLPoint & position() {return mPosition;};
-    CLDimensions & dimensions() {return mDimensions;};
+    CLPoint & getPosition() {return mPosition;};
+    CLDimensions & getDimensions() {return mDimensions;};
 
-    //void setPosition(const CLPoint & p) {mPosition = p;};
-    //void setDimensions(const CLDimensions & d) {mDimensions = d;};
+    void setPosition(const CLPoint & p) {mPosition = p;};
+    void setDimensions(const CLDimensions & d) {mDimensions = d;};
 
     /**
       * insert operator

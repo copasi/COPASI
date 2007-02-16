@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGraphicalObject.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/13 17:14:30 $
+//   $Date: 2007/02/16 00:09:33 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -77,18 +77,37 @@ class CLGraphicalObject : public CLBase, public CCopasiContainer
     virtual const std::string & getKey() const
       {return mKey;};
 
-    const CLBoundingBox & boundingBox() const {return mBBox;};
-    CLBoundingBox & boundingBox() {return mBBox;};
+    const CLBoundingBox & getBoundingBox() const {return mBBox;};
+    CLBoundingBox & getBoundingBox() {return mBBox;};
+    void setBoundingBox(const CLBoundingBox & bb) {mBBox = bb;};
 
-    const std::string & modelObjectKey() const {return mModelObjectKey;};
+    const CLPoint & getPosition() const {return mBBox.getPosition();};
+    void setPosition(const CLPoint & p) {mBBox.setPosition(p);};
+
+    const C_FLOAT64 & getX() const {return mBBox.getPosition().getX();};
+    void setX(const C_FLOAT64 & x) {mBBox.getPosition().setX(x);};
+
+    const C_FLOAT64 & getY() const {return mBBox.getPosition().getY();};
+    void setY(const C_FLOAT64 & y) {mBBox.getPosition().setY(y);};
+
+    const CLDimensions & getDimensions() const {return mBBox.getDimensions();};
+    void setDimensions(const CLDimensions & d) {mBBox.setDimensions(d);};
+
+    const C_FLOAT64 & getWidth() const {return mBBox.getDimensions().getWidth();};
+    void setWidth(const C_FLOAT64 & w) {mBBox.getDimensions().setWidth(w);};
+
+    const C_FLOAT64 & getHeigth() const {return mBBox.getDimensions().getHeight();};
+    void setHeight(const C_FLOAT64 & h) {mBBox.getDimensions().setHeight(h);};
+
+    const std::string & getModelObjectKey() const {return mModelObjectKey;};
 
     void setModelObjectKey(const std::string & k) {mModelObjectKey = k;};
 
-    CCopasiObject * modelObject() const;
+    CCopasiObject * getModelObject() const;
 
-    std::string modelObjectName() const;
+    std::string getModelObjectName() const;
 
-    std::string modelObjectDisplayName(bool regular = true, bool richtext = false) const;
+    std::string getModelObjectDisplayName(bool regular = true, bool richtext = false) const;
 
     /**
       * insert operator

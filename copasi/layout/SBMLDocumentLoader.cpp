@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/SBMLDocumentLoader.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/15 08:44:35 $
+//   $Date: 2007/02/16 00:09:33 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -11,6 +11,7 @@
 // All rights reserved.
 
 #include "SBMLDocumentLoader.h"
+#include "report/CKeyFactory.h"
 
 #include "sbml/xml/ParseMessage.h"
 
@@ -169,12 +170,52 @@ CLayout * SBMLDocumentLoader::createLayout(const Layout & sbmlLayout,
         layout->addGraphicalObject(new CLGraphicalObject(*tmp, layoutmap));
     }
 
-  //second pass text
-  //TODO
+  //second pass text (the text glyph can refer to other glyphs. These references can)
+  //only be resolved after all glyphs are created).
+  imax = sbmlLayout.getListOfTextGlyphs().getNumItems();
+  for (i = 0; i < imax; ++i)
+    {
+      const TextGlyph* tmp
+      = dynamic_cast<const TextGlyph*>(sbmlLayout.getListOfTextGlyphs().get(i));
+      if (tmp)
+        postprocessTextGlyph(*tmp, layoutmap);
+    }
 
   return layout;
 }
 
+//static
+void SBMLDocumentLoader::postprocessTextGlyph(const TextGlyph & sbml,
+    const std::map<std::string, std::string> & layoutmap)
+{
+  //the corresponding CLTextGlyph should already exist. Let's find it...
+  CLTextGlyph * pTg;
+  if (sbml.getId() != "")
+    {
+      std::map<std::string, std::string>::const_iterator it = layoutmap.find(sbml.getId());
+      if (it != layoutmap.end())
+        pTg = dynamic_cast<CLTextGlyph *>(GlobalKeys.get(it->second));
+      if (!pTg)
+        {
+          //error?
+          return;
+        }
+    }
+  else
+    {
+      //error?
+      return;
+    }
+
+  //resolve the graphical object reference
+  assert(pTg);
+  if (sbml.getGraphicalObjectId() != "")
+    {
+      std::map<std::string, std::string>::const_iterator it = layoutmap.find(sbml.getGraphicalObjectId());
+      if (it != layoutmap.end())
+        pTg->setGraphicalObjectKey(it->second);
+    }
+}
 // for the moment just create a vector of pointers to the nodes that are represented by the SpeciesGlyph
 /*  network* SBMLDocumentLoader::mapLayoutToGraph(Model *model,Layout *layout){
     // check size of graph

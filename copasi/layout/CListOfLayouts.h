@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CListOfLayouts.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/13 17:14:30 $
+//   $Date: 2007/02/16 00:09:33 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,6 +16,10 @@
 #include "utilities/CCopasiVector.h"
 #include "CLayout.h"
 
+/**
+ * this class stores a list of layouts. It should also keep the maps
+ * that translate from sbml IDs to copas keys
+ */
 class CListOfLayouts : public CCopasiVector<CLayout>
   {
   private:
@@ -26,9 +30,6 @@ class CListOfLayouts : public CCopasiVector<CLayout>
                    const CCopasiContainer* pParent = &RootContainer);
 
     ~CListOfLayouts();
-
-    //CReportDefinition* createReportDefinition(const std::string & name, const std::string & comment);
-    //bool removeReportDefinition(const std::string & key);
 
     const std::string& getKey();
 

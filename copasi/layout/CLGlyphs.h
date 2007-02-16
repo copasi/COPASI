@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGlyphs.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/13 17:14:30 $
+//   $Date: 2007/02/16 00:09:33 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -126,6 +126,10 @@ class CLTextGlyph : public CLGraphicalObject
     void clearText();
 
     bool isTextSet() const {return mIsTextSet;};
+
+    const std::string & getGraphicalObjectKey() const {return mGraphicalObjectKey;};
+    CLGraphicalObject* getGraphicalObject() const;
+    void setGraphicalObjectKey(const std::string & k) {mGraphicalObjectKey = k;};
 
     /**
      * insert operator

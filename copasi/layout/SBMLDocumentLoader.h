@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/SBMLDocumentLoader.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/14 17:32:39 $
+//   $Date: 2007/02/16 00:09:33 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -65,11 +65,17 @@ class SBMLDocumentLoader
                                   std::map<std::string, std::string> & layoutmap,
                                   const CCopasiContainer * pParent = NULL);
 
-    static void loadSBase(CLBase*, const SBase*) {};
+    /**
+     * resolves the graphical object reference of the text glyph
+     */
+    static void postprocessTextGlyph(const TextGlyph & sbml,
+                                     const std::map<std::string, std::string> & layoutmap);
 
-    static void loadGraphicalObject(CLGraphicalObject* c, const GraphicalObject *s);
+    //static void loadSBase(CLBase*, const SBase*) {};
 
-    static CLGraphicalObject* createGraphicalObject(const GraphicalObject *s);
+    //static void loadGraphicalObject(CLGraphicalObject* c, const GraphicalObject *s);
+
+    //static CLGraphicalObject* createGraphicalObject(const GraphicalObject *s);
   };
 
 #endif /*SBMLDOCUMENTLOADER_H_*/
