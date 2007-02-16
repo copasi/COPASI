@@ -38,6 +38,10 @@ echo   qmake "CONFIG+=%cps_plus%" "CONFIG-=%cps_minus%" %1 %2 %3 %4 %5 %6 %7 %8 
 
 nmake qmake_all
 
+cd libs
+nmake qmake_all
+cd ..
+
 rem force relink
 
 cd ..
