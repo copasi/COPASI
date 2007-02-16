@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLReactionGlyph.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/16 10:13:26 $
+//   $Date: 2007/02/16 12:53:15 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -68,6 +68,7 @@ std::ostream & operator<<(std::ostream &os, const CLMetabReferenceGlyph & g)
   if (tmp)
     os << "      refers to a MetabGlyph that refers to "
     << tmp->getModelObjectDisplayName() << std::endl;
+  os << g.mCurve;
 
   return os;
 }
@@ -76,19 +77,22 @@ std::ostream & operator<<(std::ostream &os, const CLMetabReferenceGlyph & g)
 
 CLReactionGlyph::CLReactionGlyph(const std::string & name,
                                  const CCopasiContainer * pParent)
-    : CLGraphicalObject(name, pParent)
+    : CLGraphicalObject(name, pParent),
+    mCurve()
 {}
 
 CLReactionGlyph::CLReactionGlyph(const CLReactionGlyph & src,
                                  const CCopasiContainer * pParent)
-    : CLGraphicalObject(src, pParent)
+    : CLGraphicalObject(src, pParent),
+    mCurve(src.mCurve)
 {}
 
 CLReactionGlyph::CLReactionGlyph(const ReactionGlyph & sbml,
                                  const std::map<std::string, std::string> & modelmap,
                                  std::map<std::string, std::string> & layoutmap,
                                  const CCopasiContainer * pParent)
-    : CLGraphicalObject(sbml, layoutmap, pParent)
+    : CLGraphicalObject(sbml, layoutmap, pParent),
+    mCurve()
 {
   //get the copasi key corresponding to the sbml id for the reaction
   if (sbml.getReactionId() != "")
@@ -107,6 +111,10 @@ CLReactionGlyph::CLReactionGlyph(const ReactionGlyph & sbml,
       if (tmp)
         addMetabReferenceGlyph(new CLMetabReferenceGlyph(*tmp, modelmap, layoutmap));
     }
+
+  //curve
+  if (sbml.getCurve())
+    mCurve = CLCurve(*sbml.getCurve());
 }
 
 void CLReactionGlyph::addMetabReferenceGlyph(CLMetabReferenceGlyph * glyph)
@@ -118,6 +126,7 @@ void CLReactionGlyph::addMetabReferenceGlyph(CLMetabReferenceGlyph * glyph)
 std::ostream & operator<<(std::ostream &os, const CLReactionGlyph & g)
 {
   os << "ReactionGlyph: " << dynamic_cast<const CLGraphicalObject&>(g);
+  os << g.mCurve;
 
   C_INT32 i, imax = g.mvMetabReferences.size();
   if (imax)

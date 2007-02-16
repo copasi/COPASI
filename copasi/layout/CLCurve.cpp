@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLCurve.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/16 10:13:26 $
+//   $Date: 2007/02/16 12:53:15 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,6 +13,22 @@
 #include "CLCurve.h"
 
 #include "sbml/layout/Curve.h"
+
+CLLineSegment::CLLineSegment(const LineSegment & ls)
+    : CLBase(ls),
+    mStart(ls.getStart()),
+    mEnd(ls.getEnd())
+{
+  //TODO handle bezier
+}
+
+std::ostream & operator<<(std::ostream &os, const CLLineSegment & ls)
+{
+  os << "[" << ls.mStart << "->" << ls.mEnd << "]";
+  return os;
+}
+
+//****************************************************
 
 CLCurve::CLCurve(const CLCurve & c)
     : CLBase(c),
@@ -24,6 +40,14 @@ CLCurve::CLCurve(const Curve & sbmlcurve)
     mCurveSegments()
 {
   //TODO
+  C_INT32 i, imax = sbmlcurve.getListOfCurveSegments().getNumItems();
+  for (i = 0; i < imax; ++i)
+    {
+      const LineSegment* tmp
+      = dynamic_cast<const LineSegment*>(sbmlcurve.getListOfCurveSegments().get(i));
+      if (tmp)
+        addCurveSegment(new CLLineSegment(*tmp));
+    }
 }
 
 std::vector<CLLineSegment*> mCurveSegments;
@@ -34,4 +58,22 @@ CLCurve::~CLCurve()
 void CLCurve::addCurveSegment(CLLineSegment & ls)
 {
   mCurveSegments.push_back(ls);
+}
+
+void CLCurve::addCurveSegment(CLLineSegment * pLs)
+{
+  if (pLs)
+    mCurveSegments.push_back(*pLs);
+}
+
+std::ostream & operator<<(std::ostream &os, const CLCurve & c)
+{
+  if (c.getNumCurveSegments())
+    {
+      os << "      Curve:\n";
+      C_INT32 i, imax = c.getNumCurveSegments();
+      for (i = 0; i < imax; ++i)
+        os << "        " << c.getCurveSegments()[i] << "\n";
+    }
+  return os;
 }

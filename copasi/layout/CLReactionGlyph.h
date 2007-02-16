@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLReactionGlyph.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/16 10:13:26 $
+//   $Date: 2007/02/16 12:53:15 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -76,6 +76,8 @@ class CLMetabReferenceGlyph : public CLGraphicalObject
 class CLReactionGlyph : public CLGraphicalObject
   {
   private:
+    CLCurve mCurve;
+
     CCopasiVector<CLMetabReferenceGlyph> mvMetabReferences;
 
   public:
@@ -100,6 +102,10 @@ class CLReactionGlyph : public CLGraphicalObject
      *  add Glyph to layout. The layout takes ownership of the glyph.
      */
     void addMetabReferenceGlyph(CLMetabReferenceGlyph * glyph);
+
+    const CLCurve & getCurve() const {return mCurve;};
+    CLCurve & getCurve() {return mCurve;};
+    void setCurve(const CLCurve & c) {mCurve = c;};
 
     /**
      * insert operator
