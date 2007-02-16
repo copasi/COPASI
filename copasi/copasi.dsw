@@ -156,6 +156,18 @@ Package=<4>
 
 ###############################################################################
 
+Project: "layout"=.\layout\layout.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
 Project: "libSE"=.\LIBS\COPASISE\libSE.dsp - Package Owner=<4>
 
 Package=<5>
@@ -225,7 +237,7 @@ Package=<4>
     Project_Dep_Name function
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name commercial
+    Project_Dep_Name layout
     End Project Dependency
 }}}
 
@@ -256,18 +268,6 @@ Package=<4>
 ###############################################################################
 
 Project: "lyaponov"=.\lyap\lyaponov.dsp - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-}}}
-
-###############################################################################
-
-Project: "mathmodel"=.\mathmodel\mathmodel.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
