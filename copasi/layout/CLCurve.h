@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLCurve.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/16 12:53:15 $
+//   $Date: 2007/02/18 23:02:43 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -85,6 +85,21 @@ class CLCurve : public CLBase
 
     void addCurveSegment(CLLineSegment & ls);
     void addCurveSegment(CLLineSegment * pLs);
+
+    /**
+     * this method tells whether the curve is a continuous
+     * set of line segments, i.e. if the end point of one
+     * line segment is identical to the starting point of the
+     * following one.
+     */
+    bool isContinuous() const;
+
+    /**
+     * This method should only be called if isContinuous() is true.
+     * It returns the curve as a list of points rather than a list
+     * of line segments.
+     */
+    std::vector <CLPoint> getListOfPoints() const;
 
     /**
       * insert operator
