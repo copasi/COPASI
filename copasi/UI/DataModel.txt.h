@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModel.txt.h,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.34 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/09 16:50:57 $
+//   $Date: 2007/02/18 23:07:45 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,6 +25,10 @@ static char DataModeltxt[] =
   "12:126:Differential Equations\n"
 #endif // HAVE_MML
   "12:127:Matrices\n"
+#ifdef WITH_LAYOUT
+  "1:13:Graphical\n"
+  "13:131:Layout\n"
+#endif
   "0:2:Tasks\n"
   "2:21:Steady-State\n"
   "21:211:Result\n"
