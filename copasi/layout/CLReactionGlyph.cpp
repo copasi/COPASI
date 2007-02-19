@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLReactionGlyph.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/02/16 16:56:07 $
+//   $Author: ssahle $
+//   $Date: 2007/02/19 14:08:26 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,18 +20,33 @@
 #include "CLReactionGlyph.h"
 #include "report/CKeyFactory.h"
 
+const std::string CLMetabReferenceGlyph::RoleName[] =
+  {
+    "undefined role",
+    "substrate",
+    "product",
+    "side substrade",
+    "side product",
+    "modifier",
+    "activator",
+    "inhibitor"
+    ""
+  };
+
 CLMetabReferenceGlyph::CLMetabReferenceGlyph(const std::string & name,
     const CCopasiContainer * pParent)
     : CLGraphicalObject(name, pParent),
     mMetabGlyphKey(),
-    mCurve()
+    mCurve(),
+    mRole(UNDEFINED)
 {}
 
 CLMetabReferenceGlyph::CLMetabReferenceGlyph(const CLMetabReferenceGlyph & src,
     const CCopasiContainer * pParent)
     : CLGraphicalObject(src, pParent),
     mMetabGlyphKey(src.mMetabGlyphKey),
-    mCurve(src.mCurve)
+    mCurve(src.mCurve),
+    mRole(src.mRole)
 {}
 
 CLMetabReferenceGlyph::CLMetabReferenceGlyph(const SpeciesReferenceGlyph & sbml,
@@ -40,7 +55,8 @@ CLMetabReferenceGlyph::CLMetabReferenceGlyph(const SpeciesReferenceGlyph & sbml,
     const CCopasiContainer * pParent)
     : CLGraphicalObject(sbml, layoutmap, pParent),
     mMetabGlyphKey(), //initialized in the body below
-    mCurve() //initialized in the body below
+    mCurve(), //initialized in the body below
+    mRole((Role)sbml.getRole())
 {
   //TODO problem: how to translate the sbml species reference id to a copasi key
 
@@ -66,6 +82,8 @@ CLMetabGlyph* CLMetabReferenceGlyph::getMetabGlyph() const
 std::ostream & operator<<(std::ostream &os, const CLMetabReferenceGlyph & g)
 {
   os << "    MetabReferenceGlyph: " << dynamic_cast<const CLGraphicalObject&>(g);
+
+  os << "      Role: " << CLMetabReferenceGlyph::RoleName[g.getRole()] << "\n";
 
   const CLMetabGlyph* tmp = g.getMetabGlyph();
   if (tmp)
