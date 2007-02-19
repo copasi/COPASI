@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/Attic/CTimeScaleSeparationMethod.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2007/01/15 12:04:38 $
+//   $Author: isurovts $
+//   $Date: 2007/02/19 13:47:34 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -102,7 +102,17 @@ class CTimeScaleSeparationMethod : public CTrajectoryMethod
     /**
      *
      */
-    CVector<C_FLOAT64> mVslow;
+    CMatrix<C_FLOAT64> mVslow;
+
+    /**
+     *
+     */
+    CMatrix<C_FLOAT64> mVslow_metab;
+
+    /**
+     *
+     */
+    CVector<C_FLOAT64> mVslow_space;
 
     /**
      *
@@ -244,7 +254,7 @@ class CTimeScaleSeparationMethod : public CTrajectoryMethod
     /**
      *
      */
-    void sylvester (C_INT slow);
+    void sylvester (C_INT slow, C_INT & info);
 
     /**
      *
@@ -279,12 +289,23 @@ class CTimeScaleSeparationMethod : public CTrajectoryMethod
     /**
      *
      **/
+
     void deuflhard(C_INT & slow, C_INT & info);
 
     /**
      *
      **/
     void mat_anal_mod(C_INT & slow);
+
+    /**
+     *
+     **/
+    void mat_anal_metab(C_INT & slow);
+
+    /**
+     *
+     **/
+    void mat_anal_mod_space(C_INT & slow);
 
   private:
     /**
