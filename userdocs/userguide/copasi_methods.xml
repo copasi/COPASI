@@ -1,4 +1,16 @@
 <chapter id="methods" xreflabel="Methods">
+<!-- Begin CVS Header -->
+<!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_methods.xml,v $ -->
+<!--   $Revision: 1.10 $ -->
+<!--   $Name:  $ -->
+<!--   $Author: ssahle $ -->
+<!--   $Date: 2007/02/19 15:49:10 $ -->
+<!-- End CVS Header -->
+
+<!-- Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Properties, Inc. and EML Research, gGmbH. -->
+<!-- All rights reserved. -->
+
 <title>Methods</title>
 
 <sect1 id="methodTimeCourse" xreflabel="Time Course">
@@ -2206,6 +2218,43 @@ steps is less than the tolerance the algorithm stops. The default is
     The rest of the options apply for the LSODA numerical integrator that is used for the calculation. They are described in the section for <xref linkend="LSODA">LSODA deterministic simulation</xref>.
   </para>
 </sect1>
+
+
+<sect1 id="sensitivitiesMethod" xreflabel="Sensitivities">
+  <title>Sensitivities Calculation</title>
+  <para>
+    Copasi allows the calculation of generalized sensitivities of a model. This is done by numerical differentiation using finite differences. The user specifies a list of functions to be differentiated and one or two lists of variables. The differentiation is performed with respect to these variables. Since every function in the list is differentiated with respect to every variable in the list the result will generally be a two-dimensional matrix. If also a list of variables for second derivatives is given then all the first derivatives are again differentiated with respect to all the variables in the second list. The result will be a three-dimensional array of second derivatives. 
+  </para>
+
+  <sect2 id="sensitivitiesUnscaled" xreflabel="Unscaled Sensitivities">
+  <title>The "unscaled" result matrix</title>
+  <para>
+  </para>
+</sect2>
+  <variablelist><title>Options for sensitivities calculation</title>
+    <varlistentry><term>Delta factor</term>
+      <listitem>
+        <para>
+          This is used to determine the delta value for the finite difference numerical differentiation. The delta is calculated as the product of the delta factor and the current absolute value of the variable. If the resulting value is smaller than the "Delta minimum" parameter, it is discarded and the "Delta minimum" value is used instead. Default value is 
+          <mml:math>
+            <mml:mn>1.0</mml:mn><mml:mo>*</mml:mo><mml:msup><mml:mn>10</mml:mn><mml:mn>-6</mml:mn></mml:msup>
+          </mml:math>. 
+        </para>
+      </listitem>
+    </varlistentry>
+    <varlistentry><term>Delta minimum</term>
+      <listitem>
+        <para>
+          The minimal delta for numerical differentiation. Default value is 
+          <mml:math>
+            <mml:mn>1.0</mml:mn><mml:mo>*</mml:mo><mml:msup><mml:mn>10</mml:mn><mml:mn>-12</mml:mn></mml:msup>
+          </mml:math>. 
+        </para>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+</sect1>
+
 
 </chapter>
 
