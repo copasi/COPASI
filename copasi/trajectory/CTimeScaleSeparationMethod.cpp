@@ -1,9 +1,20 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/Attic/CTimeScaleSeparationMethod.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/02/12 14:28:49 $
+//   $Author: isurovts $
+//   $Date: 2007/02/19 13:11:12 $
+// End CVS Header
+
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
+
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/Attic/CTimeScaleSeparationMethod.cpp,v $
+//   $Revision: 1.5 $
+//   $Name:  $
+//   $Author: isurovts $
+//   $Date: 2007/02/19 13:11:12 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,7 +45,7 @@ CTimeScaleSeparationMethod::CTimeScaleSeparationMethod(const CCopasiContainer * 
   assert((void *) &mData == (void *) &mData.dim);
 
   addObjectReference("Number of slow variables", mSlow, CCopasiObject::ValueInt);
-  addVectorReference("Contribution of Metabolites to Slow Space", mVslow, CCopasiObject::ValueDbl);
+  addMatrixReference("Contribution of Metabolites to Slow Space", mVslow, CCopasiObject::ValueDbl);
 
   mData.pMethod = this;
   initializeParameter();
@@ -211,10 +222,10 @@ void CTimeScaleSeparationMethod::step(const double & deltaT)
 {
 
   C_INT dim = mData.dim;
-  C_INT fast = 1;
+  C_INT fast = 0;
   C_INT slow = dim - fast;
 
-  C_INT i;
+  C_INT i, j;
 
   mQ.resize(dim, dim);
   mR.resize(dim, dim);
@@ -223,6 +234,7 @@ void CTimeScaleSeparationMethod::step(const double & deltaT)
   mQz.resize(dim, dim);
 
   mpModel->updateSimulatedValues();
+  // TO REMOVE : mpModel->applyAssignments();
   mpModel->calculateJacobianX(mJacobian, 1e-6, 1e-12);
 
   std::cout << "*****************************" << std::endl;
@@ -237,7 +249,7 @@ void CTimeScaleSeparationMethod::step(const double & deltaT)
 
   if (mR(dim - 1, dim - 1) == mR(dim - 2 , dim - 2))
     {
-      fast = 2;
+      fast = fast + 1;
       slow = dim - fast;
     }
 
@@ -245,14 +257,38 @@ void CTimeScaleSeparationMethod::step(const double & deltaT)
 
   /*  do START slow iterations */
 
-  while (slow > 0)
+  while (slow > 1)
     {
+
+      fast = fast + 1;
+      slow = dim - fast;
+
+      if (fast < dim)
+        if (mR(slow, slow) == mR(slow - 1 , slow - 1))
+          fast = fast + 1;
+
+      slow = dim - fast;
 
       /**
       Solution of Sylvester equation for given slow, mQ,mR
       Output: mTd, mTdinverse and mQz (mQz is used later for newton iterations)
       */
-      sylvester (slow);
+
+      C_INT info = 0;
+
+      sylvester (slow, info);
+      if (info)
+        {
+          fast = fast - 1;
+          if (mR(slow - 1, slow - 1) == mR(slow , slow))
+            fast = fast - 1;
+          std::cout << " slow_if " << slow << std::endl;
+          slow = dim - fast;
+          std::cout << " slow_after_if " << slow << std::endl;
+          std::cout << "sylvester not work" << std::endl;
+
+          goto integration;
+        }
 
       /* Check real parts of eigenvalues of Jacobian */
 
@@ -266,8 +302,6 @@ void CTimeScaleSeparationMethod::step(const double & deltaT)
       if (fast > 0)
         mEPS = 1 / abs(mR(slow , slow));
 
-      C_INT info;
-
       mCfast.resize(fast);
 
       /**
@@ -277,6 +311,7 @@ void CTimeScaleSeparationMethod::step(const double & deltaT)
         transformation matrices
         mTd and mTdinverse
       */
+      info = 0;
       deuflhard(slow, info);
 
       /* If the Deuflhard criterion is not satisfied, return to smaller fast */
@@ -284,7 +319,7 @@ void CTimeScaleSeparationMethod::step(const double & deltaT)
       if (info)
         {
           fast = fast - 1;
-          if (mR(slow - 1, slow - 1) == mR(slow - 2 , slow - 2))
+          if (mR(slow - 1, slow - 1) == mR(slow , slow))
             fast = fast - 1;
           slow = dim - fast;
           std::cout << "deuflhard not work" << std::endl;
@@ -292,39 +327,43 @@ void CTimeScaleSeparationMethod::step(const double & deltaT)
           goto integration;
         }
 
-      fast = fast + 1;
-
-      if (fast < dim)
-        if (mR(dim - fast - 1, dim - fast - 1) == mR(dim - fast - 2 , dim - fast - 2))
-          fast = fast + 1;
-
-      slow = dim - fast;
-
-      //test to be removed
-
-      mat_anal_mod(slow);
-
-      std::cout << " Analysis of Td" << std::endl;
-      for (i = 0 ; i < dim; i++)
-        std::cout << mpModel->getMetabolitesX()[i]->getObjectName() << "      mVslow " << mVslow[i] << std::endl;
-
+      std::cout << " mEPS " << mEPS << std::endl;
+      std::cout << "slow " << slow << std::endl;
       std::cout << std::endl;
-
-      // end of test
     }
 
 integration:
 
-  std::cout << "slow " << slow << std::endl;
-
   mat_anal_mod(slow);
+  mat_anal_metab(slow);
+  mat_anal_mod_space(slow);
 
+  std::cout << "slow " << slow << std::endl;
   std::cout << std::endl;
+
   for (i = 0 ; i < dim; i++)
-    std::cout << mpModel->getMetabolitesX()[i]->getObjectName() << "      mVslow " << mVslow[i] << std::endl;
-  mSlow = slow;
+    {
+      std::cout << "Contribution to slow space:" << mpModel->getMetabolitesX()[i]->getObjectName() << "  " << mVslow_space[i] << std::endl;
+    }
+  std::cout << std::endl;
+
+  for (i = 0 ; i < dim; i++)
+    {
+      std::cout << "Contribution to mode number " << i + 1 << ". Time scale: " << abs(1 / mR(i, i)) << std::endl;
+      for (j = 0; j < dim; j++)
+        std::cout << mpModel->getMetabolitesX()[j]->getObjectName() << "  " << mVslow(i, j) << std::endl;
+      std::cout << std::endl;
+    }
 
   std::cout << std::endl;
+
+  for (i = 0 ; i < dim; i++)
+    {
+      std::cout << "Metabolite: " << mpModel->getMetabolitesX()[i]->getObjectName() << std::endl;
+      for (j = 0; j < dim; j++)
+        std::cout << "Mode number" << j + 1 << ": " << mVslow_metab(i, j) << std::endl;
+      std::cout << std::endl;
+    }
 
   integrationStep(deltaT);
 
@@ -333,6 +372,98 @@ integration:
 
 /** MAT_ANAL_MOD:  mathematical analysis of matrices mTdInverse for post-analysis  */
 void CTimeScaleSeparationMethod::mat_anal_mod(C_INT & slow)
+{
+
+  C_INT i, j, dim;
+
+  dim = mData.dim;
+
+  CVector<C_FLOAT64> denom;
+  denom.resize(dim);
+
+  CMatrix<C_FLOAT64> Matrix_anal;
+  Matrix_anal.resize(dim, dim);
+
+  // norm  of mTd
+
+  if (slow > 0)
+    {
+      for (j = 0; j < dim; j++)
+        denom[j] = 0;
+
+      for (i = 0; i < dim; i++)
+        {
+          for (j = 0; j < dim; j++)
+            denom[i] = denom[i] + abs(mTdInverse(i, j));
+          // denom = denom + Matrix_anal(i, j) * Matrix_anal(i,j);
+        }
+      // denom=sqrt(denom);
+
+      /*for (i = 0; i < dim; i++)
+      for (j = 0; j < dim; j++)
+        mVslow(i,j) = 0.0; */
+
+      for (i = 0; i < dim; i++)
+        {
+          for (j = 0; j < dim; j++)
+            mVslow(i, j) = abs(mTdInverse(i, j)) / denom[i] * 100;
+
+          // mVslow(i,j) = (mVslow(i,j) / denom[i]) * 100;
+        }
+    }
+  else
+    for (i = 0; i < dim; i++)
+      for (j = 0; j < dim; j++)
+        mVslow(i, j) = 0;
+  return;
+}
+
+/** MAT_ANAL_METAB:  mathematical analysis of matrices mTd for post-analysis  */
+void CTimeScaleSeparationMethod::mat_anal_metab(C_INT & slow)
+{
+
+  C_INT i, j, dim;
+
+  dim = mData.dim;
+
+  CVector<C_FLOAT64> denom;
+  denom.resize(dim);
+
+  if (slow > 0)
+    {
+      for (j = 0; j < dim; j++)
+        denom[j] = 0;
+
+      for (i = 0; i < dim; i++)
+        {
+          for (j = 0; j < dim; j++)
+            denom[i] = denom[i] + abs(mTd(i, j));
+          // denom = denom + Matrix_anal(i, j) * Matrix_anal(i,j);
+        }
+      // denom=sqrt(denom);
+
+      /*for (i = 0; i < dim; i++)
+      for (j = 0; j < dim; j++)
+        mVslow(i,j) = 0.0; */
+
+      for (i = 0; i < dim; i++)
+        {
+          for (j = 0; j < dim; j++)
+            mVslow_metab(i, j) = abs(mTd(i, j)) / denom[i] * 100;
+
+          // mVslow(i,j) = (mVslow(i,j) / denom[i]) * 100;
+        }
+    }
+  else
+    for (i = 0; i < dim; i++)
+      for (j = 0; j < dim; j++)
+        mVslow_metab(i, j) = 0;
+  return;
+}
+
+/** MAT_ANAL_MOD_space:  mathematical analysis of matrices mTdInverse for post-analysis  */
+
+void CTimeScaleSeparationMethod::mat_anal_mod_space(C_INT & slow)
 {
   C_FLOAT64 denom, length;
   C_INT i, j, dim;
@@ -363,22 +494,24 @@ void CTimeScaleSeparationMethod::mat_anal_mod(C_INT & slow)
         {
           for (j = 0; j < slow; j++)
             denom = denom + abs(Matrix_anal(i, j));
+          // denom = denom + Matrix_anal(i, j) * Matrix_anal(i,j);
         }
+      // denom=sqrt(denom);
 
       for (i = 0; i < dim; i++)
-        mVslow[i] = 0.0;
+        mVslow_space[i] = 0.0;
 
       for (i = 0; i < dim; i++)
         {
           for (j = 0; j < slow; j++)
-            mVslow[i] = mVslow[i] + abs(Matrix_anal(i, j));
+            mVslow_space[i] = mVslow_space[i] + abs(Matrix_anal(i, j));
 
-          mVslow[i] = (mVslow[i] / denom) * 100;
+          mVslow_space[i] = (mVslow_space[i] / denom) * 100;
         }
     }
   else
     for (i = 0; i < dim; i++)
-      mVslow[i] = 0;
+      mVslow_space[i] = 0;
   return;
 }
 
@@ -520,7 +653,7 @@ void CTimeScaleSeparationMethod::schur()
 
   char V = 'V';
   char N = 'N';
-
+  // TO REMOVE : L_fp select;
   C_INT dim = mData.dim;
   C_INT SDIM = 0;
 
@@ -790,7 +923,7 @@ Solution of Sylvester equation for given slow, mQ,mR
 Output: mTd, mTdinverse,  mQz (is used later for newton iterations)
  */
 
-void CTimeScaleSeparationMethod::sylvester(C_INT slow)
+void CTimeScaleSeparationMethod::sylvester(C_INT slow, C_INT & info)
 {
   char N1 = 'N';
   char N2 = 'N';
@@ -799,7 +932,7 @@ void CTimeScaleSeparationMethod::sylvester(C_INT slow)
   C_INT dim = mData.dim;
 
   C_INT fast = dim - slow;
-  C_INT info;
+  //  C_INT info;
 
   C_INT i, j, k;
 
@@ -1102,6 +1235,7 @@ void CTimeScaleSeparationMethod::deuflhard(C_INT & slow, C_INT & info)
   CVector<C_FLOAT64> dxdt;
   dxdt.resize(dim);
 
+  // TO REMOVE: mpModel->applyAssignments();
   mpModel->updateSimulatedValues();
 
   for (j = 0; j < dim; j++)
@@ -1118,10 +1252,8 @@ void CTimeScaleSeparationMethod::deuflhard(C_INT & slow, C_INT & info)
       g_full[i] = 0.0;
       for (j = 0; j < dim; j++)
         g_full[i] = g_full[i] + mTdInverse(i, j) * dxdt[j];
-      std::cout << "g_full: " << g_full[i] << std::endl;
+      // std::cout << "g_full: " << g_full[i] << std::endl;
     }
-
-  // std::cout << "mTdInverse: " << mTdInverse << std::endl;
 
   for (j = 0; j < slow; j++)
     g_slow[j] = g_full[j];
@@ -1161,7 +1293,10 @@ void CTimeScaleSeparationMethod::deuflhard(C_INT & slow, C_INT & info)
     c_relax[i] = c_slow[i];
 
   for (i = slow; i < dim; i++)
-    c_relax[i] = mCfast[i - slow];
+    {
+      c_relax[i] = mCfast[i - slow];
+      // std::cout << "mCfast: " << mCfast[i] << std::endl;
+    }
 
   for (i = 0; i < dim; i++)
     {
@@ -1177,7 +1312,8 @@ void CTimeScaleSeparationMethod::deuflhard(C_INT & slow, C_INT & info)
       g_relax[i] = 0.0;
       for (j = 0; j < dim; j++)
         g_relax[i] = g_relax[i] + mTdInverse(i, j) * dxdt_relax[j];
-      std::cout << "g_relax: " << g_relax[i] << std::endl;
+      //   std::cout << "g_full: " << g_full[i] << std::endl;
+      //   std::cout << "g_relax: " << g_relax[i] << std::endl;
     }
 
   CVector<C_FLOAT64> re;
@@ -1204,13 +1340,6 @@ void CTimeScaleSeparationMethod::deuflhard(C_INT & slow, C_INT & info)
     norm = norm + fabs(g_relax[i] - g_slow[i]);
 
   max1 = norm * mEPS;
-
-  std::cout << "max: " << max << std::endl;
-  std::cout << "max1: " << max << std::endl;
-  std::cout << "mEPS: " << mEPS << std::endl;
-  std::cout << "mDtol: " << mDtol << std::endl;
-  std::cout << "***Next ILDM iterations " << std::endl;
-  std::cout << std::endl;
 
   if (max >= mDtol)
     info = 1;
@@ -1294,6 +1423,7 @@ void CTimeScaleSeparationMethod::newton(C_FLOAT64 *ys, C_INT & slow, C_INT & inf
   while (err > tol)
     {
       iter ++;
+
       if (iter > itermax)
         {
           info = 1;
@@ -1310,7 +1440,10 @@ void CTimeScaleSeparationMethod::newton(C_FLOAT64 *ys, C_INT & slow, C_INT & inf
         y_newton[i] = ys[i];
 
       for (i = slow; i < dim; i++)
-        y_newton[i] = yf_newton[i - slow];
+        {
+          y_newton[i] = yf_newton[i - slow];
+          //   std::cout << "y_newton_partII: " << y_newton[i] << std::endl;
+        }
 
       for (i = 0; i < dim; i++)
         {
@@ -1407,13 +1540,14 @@ void CTimeScaleSeparationMethod::newton(C_FLOAT64 *ys, C_INT & slow, C_INT & inf
       for (i = 0; i < fast; i++)
         {
           d_yf[i] = gf_newton[i];
+          // std::cout << "d_yf: " << d_yf[i] << std::endl;
         }
 
-      // err = -10.;
+      err = -10.;
       for (i = 0; i < fast; i++)
         {
           gf_newton[i] = abs(gf_newton[i]);
-          if (err > gf_newton[i])
+          if (err < gf_newton[i])
             err = gf_newton[i];
         }
 
@@ -1421,19 +1555,20 @@ void CTimeScaleSeparationMethod::newton(C_FLOAT64 *ys, C_INT & slow, C_INT & inf
 
       /* stop criterion of newton method */
 
-      /* if (iter == 1)
-       g1 = 3.0 * err;
+      C_FLOAT64 g1, g2;
+      if (iter == 1)
+        g1 = 3.0 * err;
       else
-       g1 = g2;
+        g1 = g2;
 
       g2 = err;
 
-      if (g2/g1 > 1.0)
-      {
-       info =1;
-       std::cout << "info : stop criterion" << std::endl;
-       break;
-      } */
+      if (g2 / g1 > 1.0)
+        {
+          info = 1;
+          std::cout << "info : stop criterion" << std::endl;
+          break;
+        }
     } /* end while */
 
   for (i = 0; i < fast; i++)
@@ -1462,6 +1597,7 @@ void CTimeScaleSeparationMethod::calculateDerivativesX(C_FLOAT64 * X1, C_FLOAT64
 
   mpState->setUpdateDependentRequired(true);
   mpModel->updateSimulatedValues();
+  // TO REMOVE:  mpModel->applyAssignments();
   mpModel->calculateDerivativesX(Y1);
 
   C_FLOAT64 number2conc = mpModel->getNumber2QuantityFactor()
@@ -1475,6 +1611,7 @@ void CTimeScaleSeparationMethod::calculateDerivativesX(C_FLOAT64 * X1, C_FLOAT64
 
   mpState->setUpdateDependentRequired(true);
   mpModel->updateSimulatedValues();
+  // TO REMOVE: mpModel->applyAssignments();
 
   return;
 }
@@ -1589,7 +1726,9 @@ void CTimeScaleSeparationMethod::start(const CState * initialState)
 
   mDtol = * getValue("Deuflhard Tolerance").pUDOUBLE;
 
-  mVslow.resize(mData.dim);
+  mVslow.resize(mData.dim, mData.dim);
+  mVslow_metab.resize(mData.dim, mData.dim);
+  mVslow_space.resize(mData.dim);
 
   /* Configure lsoda */
   mRtol = * getValue("Relative Tolerance").pUDOUBLE;
@@ -1641,6 +1780,7 @@ void CTimeScaleSeparationMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y,
   mpState->setTime(*t);
 
   mpModel->setState(*mpState);
+  // TO REMOVE : mpModel->applyAssignments();
   mpModel->updateSimulatedValues();
 
   if (mReducedModel)
