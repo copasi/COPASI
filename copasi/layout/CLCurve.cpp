@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLCurve.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/18 23:02:43 $
+//   $Date: 2007/02/20 11:17:26 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -70,7 +70,27 @@ void CLCurve::addCurveSegment(CLLineSegment * pLs)
 
 bool CLCurve::isContinuous() const
   {
-    //TODO
+    if (mCurveSegments.size() <= 1) return true;
+
+    C_INT32 i, imax = mCurveSegments.size() - 1;
+    for (i = 0; i < imax; ++i)
+      if (!(mCurveSegments[i].getEnd() == mCurveSegments[i + 1].getStart()))
+        return false;
+    return true;
+  }
+
+std::vector <CLPoint> CLCurve::getListOfPoints() const
+  {
+    std::vector <CLPoint> ret;
+    if (mCurveSegments.size() == 0) return ret;
+    if (!isContinuous()) return ret;
+
+    C_INT32 i, imax = mCurveSegments.size();
+    for (i = 0; i < imax; ++i)
+      ret.push_back(mCurveSegments[i].getStart());
+    ret.push_back(mCurveSegments[i - 1].getEnd());
+
+    return ret;
   }
 
 std::ostream & operator<<(std::ostream &os, const CLCurve & c)

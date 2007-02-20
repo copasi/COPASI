@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLBase.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/16 00:09:33 $
+//   $Date: 2007/02/20 11:17:26 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -65,6 +65,9 @@ class CLPoint : public CLBase
 
     void setX(const C_FLOAT64 & x) {mX = x;};
     void setY(const C_FLOAT64 & y) {mY = y;};
+
+    bool operator==(const CLPoint & rhs) const
+      {return (mX == rhs.mX) && (mY == rhs.mY);};
 
     /**
       * insert operator
