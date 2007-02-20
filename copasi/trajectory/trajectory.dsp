@@ -95,7 +95,11 @@ SOURCE=.\CTauLeapMethod.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\CTimeScaleSeparationMethod.cpp
+SOURCE=.\CTimeScaleSeparationILDM.cpp
+# End Source File
+# Begin Source File
+
+#SOURCE=.\CTimeScaleSeparationCSP.cpp
 # End Source File
 # Begin Source File
 
@@ -159,7 +163,11 @@ SOURCE=.\CTauLeapMethod.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\CTimeScaleSeparationMethod.h
+#SOURCE=.\CTimeScaleSeparationILDM.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CTimeScaleSeparationCSP.h
 # End Source File
 # Begin Source File
 

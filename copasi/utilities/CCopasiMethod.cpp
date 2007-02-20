@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.cpp,v $
-//   $Revision: 1.40 $
+//   $Revision: 1.41 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2007/01/15 12:02:16 $
+//   $Date: 2007/02/20 09:48:39 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -47,7 +47,8 @@ const std::string CCopasiMethod::SubTypeName[] =
     "Stochastic (Gibson + Bruck)",
     "Hybrid (Runge-Kutta)",
     "Hybrid (LSODA)",
-    "Time Scale Separation Development",
+    "Time Scale Separation (ILDM)",
+    //    "Time Scale Separation (CSP)",
     "Stochastic (\xcf\x84-Leap)",
     "MCA Method (Reder)",
     "Scan Framework",
@@ -87,7 +88,8 @@ const char* CCopasiMethod::XMLSubType[] =
     "Stochastic",
     "Hybrid",
     "Hybrid (LSODA)",
-    "TimeScaleSeparationDevelopment",
+    "TimeScaleSeparation(ILDM)",
+    //    "TimeScaleSeparation(CSP)",
     "TauLeap",
     "MCAMethod(Reder)",
     "ScanFramework",
