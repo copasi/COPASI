@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapWolfMethod.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/02/12 14:27:06 $
+//   $Author: ssahle $
+//   $Date: 2007/02/20 23:54:21 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -51,8 +51,6 @@ CLyapWolfMethod::~CLyapWolfMethod()
 
 void CLyapWolfMethod::initializeParameter()
 {
-  CCopasiParameter *pParm;
-
   assertParameter("Orthonormalization Interval", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0);
   assertParameter("Overall time", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1000.0);
   assertParameter("Relative Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-6);
@@ -170,7 +168,7 @@ void CLyapWolfMethod::start(/*const CState * initialState*/)
   mSumExponents.resize(mNumExp);
   mNorms.resize(mNumExp);
   //pTask->mExponents.resize(mNumExp);
-  C_INT32 i, imax = mNumExp;
+  unsigned C_INT32 i, imax = mNumExp;
   for (i = 0; i < imax; ++i)
     {
       mpTask->mLocalExponents[i] = 0;
@@ -197,7 +195,7 @@ void CLyapWolfMethod::start(/*const CState * initialState*/)
   mAtol.resize(mData.dim);
   for (i = 0; i < mSystemSize; ++i)
     mAtol[i] = tmpATol;
-  for (; i < mData.dim; ++i)
+  for (; (int)i < mData.dim; ++i)
     mAtol[i] = 1e-25;
 
   mDWork.resize(22 + mData.dim * std::max<C_INT>(16, mData.dim + 9));
@@ -336,7 +334,7 @@ bool CLyapWolfMethod::calculate()
   C_FLOAT64 stepSize = *getValue("Orthonormalization Interval").pUDOUBLE;
   C_FLOAT64 transientTime = mpProblem->getTransientTime() + mTime;
   C_FLOAT64 endTime = mTime + *getValue("Overall time").pUDOUBLE;
-  C_FLOAT64 startTime = mTime;
+  //C_FLOAT64 startTime = mTime;
 
   //unsigned C_INT32 StepCounter = 1;
 

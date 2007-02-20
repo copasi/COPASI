@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethodLSODA.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/02/15 17:30:50 $
+//   $Author: ssahle $
+//   $Date: 2007/02/20 23:51:28 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -314,8 +314,8 @@ void CHybridMethodLSODA::initMethod(C_FLOAT64 start_time)
   setupPartition(); // initialize mReactionFlags
   setupPriorityQueue(start_time); // initialize mPQ
 
-  //deprecated:  mOutputFileName = string(DEFAULT_OUTPUT_FILE);
-  //deprecated:  mOutputFile.open(DEFAULT_OUTPUT_FILE); // DEFAULT_OUTPUT_FILE in CHybridMethod.h
+  //deprecated:  mOutputFileName = string(DEFAULT_OUTPUT_FILE_LSODA);
+  //deprecated:  mOutputFile.open(DEFAULT_OUTPUT_FILE_LSODA); // DEFAULT_OUTPUT_FILE in CHybridMethod.h
   //deprecated:  mOutputCounter = OUTPUT_COUNTER; // OUTPUT_COUNTER in CHybridMethod.h
 
   //deprecated:  outputDebug(std::cout, 0); // DEBUG

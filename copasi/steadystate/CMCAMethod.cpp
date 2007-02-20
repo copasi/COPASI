@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.cpp,v $
-//   $Revision: 1.37 $
+//   $Revision: 1.38 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/02/20 15:03:04 $
+//   $Author: ssahle $
+//   $Date: 2007/02/20 23:49:53 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,8 +35,8 @@ CMCAMethod::CMCAMethod(const CCopasiContainer* pParent):
     CCopasiMethod(CCopasiTask::mca, CCopasiMethod::mcaMethodReder, pParent),
     mpModel(NULL),
     mFactor(1.0e-9),
-    mSSStatus(CSteadyStateMethod::notFound),
-    mSteadyStateResolution(1.0e-9)
+    mSteadyStateResolution(1.0e-9),
+    mSSStatus(CSteadyStateMethod::notFound)
 {
   initializeParameter();
   initObjects();
@@ -47,8 +47,8 @@ CMCAMethod::CMCAMethod(const CMCAMethod & src,
     CCopasiMethod(src, pParent),
     mpModel(NULL),
     mFactor(src.mFactor),
-    mSSStatus(CSteadyStateMethod::notFound),
-    mSteadyStateResolution(src.mSteadyStateResolution)
+    mSteadyStateResolution(src.mSteadyStateResolution),
+    mSSStatus(CSteadyStateMethod::notFound)
 {
   initializeParameter();
   initObjects();
@@ -214,8 +214,8 @@ int CMCAMethod::calculateUnscaledConcentrationCC()
 {
   assert(mpModel);
 
-  unsigned C_INT32 i, j, k;
-  unsigned C_INT32 dim;
+  C_INT32 i, j, k;
+  //unsigned C_INT32 dim;
   C_INT info;
 
   CMatrix<C_FLOAT64> aux1, aux2;
@@ -276,7 +276,7 @@ int CMCAMethod::calculateUnscaledConcentrationCC()
     for (j = 0; j < M; j++)
       aux1[i][j] = - aux2[i][j];
 
-  for (i = M ; i < mpModel->getNumVariableMetabs(); i++)
+  for (i = M ; i < (C_INT32)mpModel->getNumVariableMetabs(); i++)
     for (j = 0; j < M; j++)
       {
         aux1[i][j] = 0.0;
@@ -287,7 +287,7 @@ int CMCAMethod::calculateUnscaledConcentrationCC()
   // mGamma = aux1 * RedStoi
   // :TODO: use dgemm
   mUnscaledConcCC.resize(mpModel->getNumVariableMetabs(), N);
-  for (i = 0; i < mpModel->getNumVariableMetabs(); i++)
+  for (i = 0; i < (C_INT32)mpModel->getNumVariableMetabs(); i++)
     for (j = 0; j < N; j++)
       {
         mUnscaledConcCC[i][j] = 0;

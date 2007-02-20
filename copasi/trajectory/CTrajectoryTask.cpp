@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-//   $Revision: 1.87 $
+//   $Revision: 1.88 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2007/02/20 09:50:17 $
+//   $Author: ssahle $
+//   $Date: 2007/02/20 23:51:50 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -166,7 +166,7 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
 
   //*****
 
-  unsigned C_INT32 FailCounter = 0;
+  //unsigned C_INT32 FailCounter = 0;
 
   C_FLOAT64 StepSize = mpTrajectoryProblem->getStepSize();
   C_FLOAT64 NextTimeToReport;

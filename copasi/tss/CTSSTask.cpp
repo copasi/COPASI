@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/CTSSTask.cpp,v $
-   $Revision: 1.7 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:32:27 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/CTSSTask.cpp,v $
+//   $Revision: 1.8 $
+//   $Name:  $
+//   $Author: ssahle $
+//   $Date: 2007/02/20 23:50:33 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -100,7 +100,7 @@ bool CTSSTask::process(const bool & /* useInitialValues */)
   return (success);
 }
 
-bool CTSSTask::processForScan(bool useInitialConditions, bool doOutput)
+bool CTSSTask::processForScan(bool /*useInitialConditions*/, bool /*doOutput*/)
 {
   assert(/*mpProblem && */mpMethod);
   mpMethod->isValidProblem(mpProblem);
@@ -118,7 +118,7 @@ bool CTSSTask::processForScan(bool useInitialConditions, bool doOutput)
   return success;
 }
 
-std::ostream &operator<<(std::ostream &os, const CTSSTask &A)
+std::ostream &operator<<(std::ostream &os, const CTSSTask & /*A*/)
 {
   return os;
 }

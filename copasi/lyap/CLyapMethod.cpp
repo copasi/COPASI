@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapMethod.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/02/12 14:27:06 $
+//   $Author: ssahle $
+//   $Date: 2007/02/20 23:54:21 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -146,7 +146,7 @@ bool CLyapMethod::isValidProblem(const CCopasiProblem * pProblem)
       return false;
     }
 
-  C_INT32 tmp = pLP->getModel()->getState().getNumIndependent();
+  unsigned C_INT32 tmp = pLP->getModel()->getState().getNumIndependent();
   if (pLP->getExponentNumber() > tmp)
     {
       //to few exponents

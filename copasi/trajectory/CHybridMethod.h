@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.h,v $
-   $Revision: 1.23 $
-   $Name:  $
-   $Author: gauges $
-   $Date: 2006/10/15 08:31:13 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.h,v $
+//   $Revision: 1.24 $
+//   $Name:  $
+//   $Author: ssahle $
+//   $Date: 2007/02/20 23:51:28 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -60,7 +60,7 @@
 #define RUNGE_KUTTA_STEPSIZE         0.001
 #define PARTITIONING_INTERVAL        1
 #define OUTPUT_COUNTER               100
-#define DEFAULT_OUTPUT_FILE          "hybrid.output"
+//#define DEFAULT_OUTPUT_FILE          "hybrid.output"
 #define SUBTYPE                      1
 #define USE_RANDOM_SEED              false
 #define RANDOM_SEED                  1

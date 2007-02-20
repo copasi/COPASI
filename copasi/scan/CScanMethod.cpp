@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanMethod.cpp,v $
-   $Revision: 1.47 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/08/25 21:41:23 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanMethod.cpp,v $
+//   $Revision: 1.48 $
+//   $Name:  $
+//   $Author: ssahle $
+//   $Date: 2007/02/20 23:53:19 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -43,7 +43,7 @@
 //static
 CScanItem* CScanItem::createScanItemFromParameterGroup(const CCopasiParameterGroup* si,
     CRandom* rg,
-    CScanTask* st)
+    CScanTask* /*st*/)
 {
   if (!si) return NULL;
 
@@ -236,9 +236,6 @@ void CScanItemRandom::step()
   mNumSteps = 0;
 }
 
-
-
-
 void CScanItemBreak::step()
 {
   //the index
@@ -249,9 +246,6 @@ void CScanItemBreak::step()
       //TODO: tell the task what exactly to do...
       mST->outputSeparatorCallback();
     }
-
-
-
 
   ++mIndex;
 }*/
@@ -389,7 +383,7 @@ bool CScanMethod::loop(unsigned C_INT32 level)
 
       //separator needs to be handled slightly differently if we are at the last item
       if (currentSI->isNesting())
-        ((CScanTask*)(getObjectParent()))->outputSeparatorCallback(level == mLastNestingItem);
+        ((CScanTask*)(getObjectParent()))->outputSeparatorCallback((C_INT32)level == mLastNestingItem);
     }
 
   return true;

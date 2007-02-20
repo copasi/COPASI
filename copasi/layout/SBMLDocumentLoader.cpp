@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/SBMLDocumentLoader.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/02/16 16:56:07 $
+//   $Author: ssahle $
+//   $Date: 2007/02/20 23:52:33 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -54,7 +54,7 @@ CLayout* SBMLDocumentLoader::loadDocument(const char *filename)
           std::cout << "number of layouts: " << numberOfLayouts << "  " << std::endl;
           if (numberOfLayouts > 0)
             {
-              Layout *layout = modelP->getLayout(0); // take first layout stored
+              //Layout *layout = modelP->getLayout(0); // take first layout stored
               //        pLayout = mapLayoutToGraph(modelP,layout);
             }
         }
