@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.cpp,v $
-   $Revision: 1.36 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/07/19 20:57:04 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.cpp,v $
+//   $Revision: 1.37 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/20 15:03:04 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -33,25 +33,23 @@
  */
 CMCAMethod::CMCAMethod(const CCopasiContainer* pParent):
     CCopasiMethod(CCopasiTask::mca, CCopasiMethod::mcaMethodReder, pParent),
-    mpModel(NULL)
+    mpModel(NULL),
+    mFactor(1.0e-9),
+    mSSStatus(CSteadyStateMethod::notFound),
+    mSteadyStateResolution(1.0e-9)
 {
-  mFactor = 1.0e-9;
-  mSSStatus = CSteadyStateMethod::notFound;
-  mSteadyStateResolution = mFactor;
-
   initializeParameter();
   initObjects();
 }
 
 CMCAMethod::CMCAMethod(const CMCAMethod & src,
                        const CCopasiContainer * pParent):
-    CCopasiMethod(CCopasiTask::mca, CCopasiMethod::mcaMethodReder, pParent),
-    mpModel(NULL)
+    CCopasiMethod(src, pParent),
+    mpModel(NULL),
+    mFactor(src.mFactor),
+    mSSStatus(CSteadyStateMethod::notFound),
+    mSteadyStateResolution(src.mSteadyStateResolution)
 {
-  mFactor = 1.0e-9;
-  mSSStatus = CSteadyStateMethod::notFound;
-  mSteadyStateResolution = mFactor;
-
   initializeParameter();
   initObjects();
 }
