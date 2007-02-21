@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/copasi.xsd,v $ -->
-<!--   $Revision: 1.38 $ -->
+<!--   $Revision: 1.39 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: shoops $ -->
-<!--   $Date: 2007/02/21 16:38:13 $ -->
+<!--   $Date: 2007/02/21 17:03:10 $ -->
 <!-- End CVS Header -->
 <!-- Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual -->
 <!-- Properties, Inc. and EML Research, gGmbH. -->
@@ -327,8 +327,8 @@
     <xs:complexContent>
       <xs:restriction base="cMODEL_ENTITY">
         <xs:sequence>
-          <xs:element name="Expression" type="sINFIX" minOccurs="0"/>
-          <xs:element name="InitialExpression" type="sINFIX" minOccurs="0"/>
+          <xs:element name="Expression" type="sEXPRESSION" minOccurs="0"/>
+          <xs:element name="InitialExpression" type="sEXPRESSION" minOccurs="0"/>
         </xs:sequence>
         <xs:attribute name="key" type="cCOMPARTMENT_KEY" use="required"/>
         <xs:attribute name="simulationType" type="sSIMULATION_TYPE_COMPARTMENT" use="required"/>
@@ -346,7 +346,7 @@
   </xs:complexType>
   <xs:complexType name="cFUNCTION" id="copasi.FUNCTION">
     <xs:sequence>
-      <xs:element name="Expression" type="sINFIX"/>
+      <xs:element name="Expression" type="sEXPRESSION"/>
       <xs:element name="ListOfParameterDescriptions" id="copasi.FUNCTION.ListOfParameterDescriptions" minOccurs="0">
         <xs:complexType mixed="true">
           <xs:sequence>
@@ -446,32 +446,12 @@
     </xs:sequence>
     <xs:attribute name="functionParameter" type="cFUNCTION_PARAMETER_KEYREF" use="required" id="copasi.FUNCTION_CALL_PARAMETER.functionParameter"/>
   </xs:complexType>
-  <xs:complexType name="cGLOBAL_QUANTITY">
-    <xs:complexContent>
-      <xs:restriction base="cMODEL_ENTITY">
-        <xs:sequence>
-          <xs:choice minOccurs="0">
-            <xs:element name="Expression" type="sINFIX"/>
-            <xs:element name="MathML" type="cMATH"/>
-          </xs:choice>
-          <xs:element name="InitialExpression" type="sINFIX" minOccurs="0"/>
-        </xs:sequence>
-        <xs:attribute name="key" type="cMODELVALUE_KEY" use="required"/>
-        <xs:attribute name="simulationType" type="sSIMULATION_TYPE_GLOBAL_QUANTITY" use="required"/>
-      </xs:restriction>
-    </xs:complexContent>
-  </xs:complexType>
-  <xs:complexType name="cMATH">
-    <xs:sequence>
-      <xs:element name="Text" type="sINFIX"/>
-    </xs:sequence>
-  </xs:complexType>
   <xs:complexType name="cMETABOLITE">
     <xs:complexContent>
       <xs:restriction base="cMODEL_ENTITY">
         <xs:sequence>
-          <xs:element name="Expression" type="sINFIX" minOccurs="0"/>
-          <xs:element name="InitialExpression" type="sINFIX" minOccurs="0"/>
+          <xs:element name="Expression" type="sEXPRESSION" minOccurs="0"/>
+          <xs:element name="InitialExpression" type="sEXPRESSION" minOccurs="0"/>
         </xs:sequence>
         <xs:attribute name="key" type="cMETABOLITE_KEY" use="required"/>
         <xs:attribute name="simulationType" type="sSIMULATION_TYPE_METABOLITE" use="required"/>
@@ -483,8 +463,8 @@
       <xs:restriction base="cMODEL_ENTITY">
         <xs:sequence>
           <xs:element name="Comment" type="cCOMMENT" id="copasi.Model.Comment" minOccurs="0"/>
-          <xs:element name="Expression" type="sINFIX" minOccurs="0"/>
-          <xs:element name="InitialExpression" type="sINFIX" minOccurs="0"/>
+          <xs:element name="Expression" type="sEXPRESSION" minOccurs="0"/>
+          <xs:element name="InitialExpression" type="sEXPRESSION" minOccurs="0"/>
           <xs:element name="ListOfCompartments" id="copasi.Model.ListOfCompartments" minOccurs="0">
             <xs:complexType mixed="true">
               <xs:sequence>
@@ -519,7 +499,7 @@
           <xs:element name="ListOfModelValues" id="copasi.Model.ListOfModelValues" minOccurs="0">
             <xs:complexType mixed="true">
               <xs:sequence>
-                <xs:element name="ModelValue" type="cGLOBAL_QUANTITY" id="copasi.Model.ModelValue" maxOccurs="unbounded"/>
+                <xs:element name="ModelValue" type="cMODELVALUE" id="copasi.Model.ModelValue" maxOccurs="unbounded"/>
               </xs:sequence>
             </xs:complexType>
             <xs:unique name="ModelValueName">
@@ -623,10 +603,22 @@
       </xs:restriction>
     </xs:complexContent>
   </xs:complexType>
+  <xs:complexType name="cMODELVALUE">
+    <xs:complexContent>
+      <xs:restriction base="cMODEL_ENTITY">
+        <xs:sequence>
+          <xs:element name="Expression" type="sEXPRESSION" minOccurs="0"/>
+          <xs:element name="InitialExpression" type="sEXPRESSION" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="key" type="cMODELVALUE_KEY" use="required"/>
+        <xs:attribute name="simulationType" type="sSIMULATION_TYPE_MODELVALUE" use="required"/>
+      </xs:restriction>
+    </xs:complexContent>
+  </xs:complexType>
   <xs:complexType name="cMODEL_ENTITY" abstract="true">
     <xs:sequence>
-      <xs:element name="Expression" type="sINFIX" minOccurs="0"/>
-      <xs:element name="InitialExpression" type="sINFIX" minOccurs="0"/>
+      <xs:element name="Expression" type="sEXPRESSION" minOccurs="0"/>
+      <xs:element name="InitialExpression" type="sEXPRESSION" minOccurs="0"/>
     </xs:sequence>
     <xs:attribute name="key" type="cKEY" use="required"/>
     <xs:attribute name="name" type="cNAME" use="required"/>
@@ -874,7 +866,7 @@
       <xs:pattern value="[^\t\r\n]+"/>
     </xs:restriction>
   </xs:simpleType>
-  <xs:simpleType name="sINFIX" final="restriction">
+  <xs:simpleType name="sEXPRESSION" final="restriction">
     <xs:restriction base="xs:string">
       <xs:whiteSpace value="preserve"/>
     </xs:restriction>
@@ -903,7 +895,7 @@
       <xs:pattern value="time"/>
     </xs:restriction>
   </xs:simpleType>
-  <xs:simpleType name="sSIMULATION_TYPE_GLOBAL_QUANTITY">
+  <xs:simpleType name="sSIMULATION_TYPE_MODELVALUE">
     <xs:restriction base="sSIMULATION_TYPE">
       <xs:pattern value="ode|assignment|fixed"/>
     </xs:restriction>
