@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.cpp,v $
-   $Revision: 1.12 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/09/04 21:11:21 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.cpp,v $
+//   $Revision: 1.13 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/21 15:58:37 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -68,7 +68,8 @@ CQValidatorExpression::CQValidatorExpression(QTextEdit * parent, const char * na
 
 QValidator::State CQValidatorExpression::validate(QString & input, int & pos) const
   {
-    if (const_cast< CExpression * >(&mExpression)->setInfix((const char *) input.utf8()))
+    if (const_cast< CExpression * >(&mExpression)->setInfix((const char *) input.utf8()) &&
+        const_cast< CExpression * >(&mExpression)->compile())
       {
         QString Input = mpLineEdit->text();
         return CQValidator< QTextEdit >::validate(Input, pos);
