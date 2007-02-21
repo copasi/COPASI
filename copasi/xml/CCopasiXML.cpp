@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-//   $Revision: 1.89 $
+//   $Revision: 1.90 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/16 21:47:55 $
+//   $Date: 2007/02/21 16:04:58 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -316,8 +316,7 @@ bool CCopasiXML::saveModel()
       Attributes.erase();
       Attributes.add("key", "");
       Attributes.add("name", "");
-      // This is now optional.
-      // Attributes.add("stateVariable", "");
+      Attributes.add("simulationType", "");
 
       unsigned C_INT32 i, imax = mpModel->getCompartments().size();
       for (i = 0; i < imax; i++)
@@ -326,12 +325,27 @@ bool CCopasiXML::saveModel()
 
           Attributes.setValue(0, pComp->getKey());
           Attributes.setValue(1, pComp->getObjectName());
-          // Attributes.setValue(2,
-          //                     mpModel->getStateTemplate().getKey(pComp->getKey()));
-          if (pComp->getSBMLId() != "")
-            mSBMLReference[pComp->getSBMLId()] = pComp->getKey();
+          CModelEntity::Status SimulationType = pComp->getStatus();
+          Attributes.setValue(2, CModelEntity::XMLStatus[SimulationType]);
 
-          saveElement("Compartment", Attributes);
+          startSaveElement("Compartment", Attributes);
+
+          if (SimulationType != CModelEntity::FIXED &&
+              pComp->getExpression() != "")
+            {
+              startSaveElement("Expression");
+              saveData(pComp->getExpression());
+              endSaveElement("Expression");
+            }
+
+          if (pComp->getInitialExpression() != "")
+            {
+              startSaveElement("InitialExpression");
+              saveData(pComp->getInitialExpression());
+              endSaveElement("InitialExpression");
+            }
+
+          endSaveElement("Compartment");
         }
 
       endSaveElement("ListOfCompartments");
@@ -344,10 +358,8 @@ bool CCopasiXML::saveModel()
       Attributes.erase();
       Attributes.add("key", "");
       Attributes.add("name", "");
+      Attributes.add("simulationType", "");
       Attributes.add("compartment", "");
-      Attributes.add("status", "");
-      // This is now optional.
-      // Attributes.add("stateVariable", "");
 
       for (i = 0; i < imax; i++)
         {
@@ -355,15 +367,28 @@ bool CCopasiXML::saveModel()
 
           Attributes.setValue(0, pMetab->getKey());
           Attributes.setValue(1, pMetab->getObjectName());
-          Attributes.setValue(2, pMetab->getCompartment()->getKey());
-          Attributes.setValue(3, CMetab::XMLStatus[pMetab->getStatus()]);
-          // Attributes.setValue(4,
-          //                     mpModel->getStateTemplate().getKey(pMetab->getKey()));
+          CModelEntity::Status SimulationType = pMetab->getStatus();
+          Attributes.setValue(2, CModelEntity::XMLStatus[SimulationType]);
+          Attributes.setValue(3, pMetab->getCompartment()->getKey());
 
-          if (pMetab->getSBMLId() != "")
-            mSBMLReference[pMetab->getSBMLId()] = pMetab->getKey();
+          startSaveElement("Metabolite", Attributes);
 
-          saveElement("Metabolite", Attributes);
+          if (SimulationType != CModelEntity::FIXED &&
+              pMetab->getExpression() != "")
+            {
+              startSaveElement("Expression");
+              saveData(pMetab->getExpression());
+              endSaveElement("Expression");
+            }
+
+          if (pMetab->getInitialExpression() != "")
+            {
+              startSaveElement("InitialExpression");
+              saveData(pMetab->getInitialExpression());
+              endSaveElement("InitialExpression");
+            }
+
+          endSaveElement("Metabolite");
         }
 
       endSaveElement("ListOfMetabolites");
@@ -376,9 +401,7 @@ bool CCopasiXML::saveModel()
       Attributes.erase();
       Attributes.add("key", "");
       Attributes.add("name", "");
-      Attributes.add("status", "");
-      // This is now optional.
-      // Attributes.add("stateVariable", "");
+      Attributes.add("simulationType", "");
 
       for (i = 0; i < imax; i++)
         {
@@ -386,29 +409,27 @@ bool CCopasiXML::saveModel()
 
           Attributes.setValue(0, pMV->getKey());
           Attributes.setValue(1, pMV->getObjectName());
-          Attributes.setValue(2, CModelValue::XMLStatus[pMV->getStatus()]);
-          // Attributes.setValue(3, mpModel->getStateTemplate().getKey(pMV->getKey()));
-          if (pMV->getSBMLId() != "")
-            mSBMLReference[pMV->getSBMLId()] = pMV->getKey();
+          CModelEntity::Status SimulationType = pMV->getStatus();
+          Attributes.setValue(2, CModelEntity::XMLStatus[SimulationType]);
 
-          if (pMV->isFixed())
+          startSaveElement("ModelValue", Attributes);
+
+          if (SimulationType != CModelEntity::FIXED &&
+              pMV->getExpression() != "")
             {
-              saveElement("ModelValue", Attributes);
-            }
-          else
-            {
-              startSaveElement("ModelValue", Attributes);
-
-              startSaveElement("MathML");
-
-              startSaveElement("Text");
+              startSaveElement("Expression");
               saveData(pMV->getExpression());
-              endSaveElement("Text");
-
-              endSaveElement("MathML");
-
-              endSaveElement("ModelValue");
+              endSaveElement("Expression");
             }
+
+          if (pMV->getInitialExpression() != "")
+            {
+              startSaveElement("InitialExpression");
+              saveData(pMV->getInitialExpression());
+              endSaveElement("InitialExpression");
+            }
+
+          endSaveElement("ModelValue");
         }
 
       endSaveElement("ListOfModelValues");
@@ -651,13 +672,9 @@ bool CCopasiXML::saveFunctionList()
 
       startSaveElement("Function", Attributes);
 
-      startSaveElement("MathML");
-
-      startSaveElement("Text");
+      startSaveElement("Expression");
       saveData(pEvaluationTree->getInfix());
-      endSaveElement("Text");
-
-      endSaveElement("MathML");
+      endSaveElement("Expression");
 
       if (pFunction)
         {

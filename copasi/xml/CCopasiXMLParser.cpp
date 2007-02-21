@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.147 $
+//   $Revision: 1.148 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/15 17:30:51 $
+//   $Date: 2007/02/21 16:04:58 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -141,7 +141,8 @@ CCopasiXMLParser::CCopasiXMLParser(CVersion & version) :
     CExpat(),
     mCommon(),
     mElementHandlerStack(),
-    mUnknownElement(*this, this->mCommon)
+    mUnknownElement(*this, this->mCommon),
+    mCharacterDataElement(*this, this->mCommon)
 {
   create();
 
@@ -558,12 +559,11 @@ void CCopasiXMLParser::FunctionElement::start(const XML_Char *pszName,
   const char * type;
   CEvaluationTree::Type Type;
   const char * Name;
-  const char * Positive;
   const char * Reversible;
   unsigned C_INT32 index;
   CFunction * pFunction;
-  const char* SBMLId;
 
+  mpCurrentHandler = NULL;
   mCurrentElement++; /* We should always be on the next element */
 
   switch (mCurrentElement)
@@ -575,21 +575,15 @@ void CCopasiXMLParser::FunctionElement::start(const XML_Char *pszName,
       Name = mParser.getAttributeValue("name", papszAttrs);
       type = mParser.getAttributeValue("type", papszAttrs);
       Type = (CEvaluationTree::Type)toEnum(type, CEvaluationTree::XMLType);
-      // This is only here to load incorrect old files. The attribute
-      // positive no longer exists.
-      Positive = mParser.getAttributeValue("positive", papszAttrs, "unspecified");
-      Reversible = mParser.getAttributeValue("reversible", papszAttrs, "unspecified");
+      Reversible = mParser.getAttributeValue("reversible", papszAttrs, false);
+      if (!Reversible) // We may have an old file format using positive
+        Reversible = mParser.getAttributeValue("positive", papszAttrs, false);
 
       mCommon.mExistingFunction = false;
       mCommon.pFunction = CEvaluationTree::create(Type);
       pFunction = dynamic_cast<CFunction *>(mCommon.pFunction);
 
       mCommon.pFunction->setObjectName(Name);
-      SBMLId = mParser.getAttributeValue("sbmlid", papszAttrs, "");
-      if (SBMLId != "")
-        {
-          mCommon.pFunction->setSBMLId(SBMLId);
-        }
 
       if (pFunction)
         {
@@ -598,14 +592,7 @@ void CCopasiXMLParser::FunctionElement::start(const XML_Char *pszName,
           else if (!strcmp(Reversible, "false"))
             pFunction->setReversible(TriFalse);
           else
-            {
-              if (!strcmp(Positive, "true"))
-                pFunction->setReversible(TriTrue);
-              else if (!strcmp(Positive, "false"))
-                pFunction->setReversible(TriFalse);
-              else
-                pFunction->setReversible(TriUnspecified);
-            }
+            pFunction->setReversible(TriUnspecified);
         }
 
       /* We have a new function and add it to the list */
@@ -666,20 +653,21 @@ void CCopasiXMLParser::FunctionElement::start(const XML_Char *pszName,
         mCommon.pFunctionList->add(mCommon.pFunction, true);
 
       mCommon.KeyMap.addFix(Key , mCommon.pFunction);
+      return;
 
-      break;
+    case Expression:
+      if (!strcmp(pszName, "Expression"))
+        mpCurrentHandler = &mParser.mCharacterDataElement;
+      else if (!strcmp(pszName, "MathML"))
+        {
+          /* If we do not have a MathML element handler we create one. */
+          if (!mpMathMLElement)
+            mpMathMLElement = new MathMLElement(mParser, mCommon);
 
-    case MathML:
-      if (strcmp(pszName, "MathML")) fatalError();
-
-      /* If we do not have a MathML element handler we create one. */
-      if (!mpMathMLElement)
-        mpMathMLElement = new MathMLElement(mParser, mCommon);
-
-      /* Push the MathML element handler on the stack and call it. */
-      mpCurrentHandler = mpMathMLElement;
-      mParser.pushElementHandler(mpCurrentHandler);
-      mpCurrentHandler->start(pszName, papszAttrs);
+          mCurrentElement = MathML;
+          mpCurrentHandler = mpMathMLElement;
+        }
+      else fatalError();
       break;
 
     case ListOfParameterDescriptions:
@@ -691,25 +679,30 @@ void CCopasiXMLParser::FunctionElement::start(const XML_Char *pszName,
 
       /* Push the ListOfParameterDescriptions element handler on the stack and call it. */
       mpCurrentHandler = mpListOfParameterDescriptionsElement;
-      mParser.pushElementHandler(mpCurrentHandler);
-      mpCurrentHandler->start(pszName, papszAttrs);
       break;
 
     default:
       mLastKnownElement = mCurrentElement - 1;
       mCurrentElement = UNKNOWN_ELEMENT;
-      mParser.pushElementHandler(&mParser.mUnknownElement);
-      mParser.onStartElement(pszName, papszAttrs);
+      mpCurrentHandler = &mParser.mUnknownElement;
       break;
     }
 
-  return;
+  if (mpCurrentHandler)
+    mParser.pushElementHandler(mpCurrentHandler);
+
+  mParser.onStartElement(pszName, papszAttrs);
 }
 
 void CCopasiXMLParser::FunctionElement::end(const XML_Char *pszName)
 {
-  if (mCurrentElement == MathML &&
-      !strcmp(pszName, "Function"))
+  // It is possible that we have an Expression but no ListOfParameterDescriptions,
+  // i.e., mCurrentElement = Expression and pszName = Function may occur
+  // and is valid.
+  if (mCurrentElement == Expression && !strcmp(pszName, "Function"))
+    mCurrentElement = Function;
+
+  if (mCurrentElement == MathML && !strcmp(pszName, "Function"))
     mCurrentElement = Function;
 
   switch (mCurrentElement)
@@ -724,16 +717,25 @@ void CCopasiXMLParser::FunctionElement::end(const XML_Char *pszName)
       mParser.onEndElement(pszName);
       break;
 
-    case MathML:
-      if (strcmp(pszName, "MathML")) fatalError();
+    case Expression:
+      if (strcmp(pszName, "Expression")) fatalError();
       if (!mCommon.mExistingFunction)
-        mCommon.pFunction->setInfix(mCommon.FunctionDescription);
+        mCommon.pFunction->setInfix(mCommon.CharacterData);
 
+      mCurrentElement = Expression;
       break;
 
     case ListOfParameterDescriptions:
       if (strcmp(pszName, "ListOfParameterDescriptions")) fatalError();
       mCurrentElement = Function;
+      break;
+
+    case MathML:
+      if (strcmp(pszName, "MathML")) fatalError();
+      if (!mCommon.mExistingFunction)
+        mCommon.pFunction->setInfix(mCommon.FunctionDescription);
+
+      mCurrentElement = Expression;
       break;
 
     case UNKNOWN_ELEMENT:
@@ -772,7 +774,7 @@ void CCopasiXMLParser::MathMLElement::start(const XML_Char *pszName,
 
       /* If we do not have a function element handler we create one. */
       if (!mpCurrentHandler)
-        mpCurrentHandler = new TextElement(mParser, mCommon);
+        mpCurrentHandler = new CharacterDataElement(mParser, mCommon);
 
       /* Push the Function element handler on the stack and call it. */
       mParser.pushElementHandler(mpCurrentHandler);
@@ -805,8 +807,8 @@ void CCopasiXMLParser::MathMLElement::end(const XML_Char *pszName)
 
     case Text:
       if (strcmp(pszName, "Text")) fatalError();
-      mCommon.FunctionDescription = mCommon.Comment;
-      mCommon.Comment = "";
+      mCommon.FunctionDescription = mCommon.CharacterData;
+      mCommon.CharacterData = "";
       mCurrentElement = MathML;
 
       break;
@@ -821,24 +823,23 @@ void CCopasiXMLParser::MathMLElement::end(const XML_Char *pszName)
     }
 }
 
-CCopasiXMLParser::TextElement::TextElement(CCopasiXMLParser & parser,
+CCopasiXMLParser::CharacterDataElement::CharacterDataElement(CCopasiXMLParser & parser,
     SCopasiXMLParserCommon & common):
     CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
 {}
 
-CCopasiXMLParser::TextElement::~TextElement()
+CCopasiXMLParser::CharacterDataElement::~CharacterDataElement()
 {}
 
-void CCopasiXMLParser::TextElement::start(const XML_Char *pszName,
+void CCopasiXMLParser::CharacterDataElement::start(const XML_Char *pszName,
     const XML_Char ** papszAttrs)
 {
   mCurrentElement++; /* We should always be on the next element */
 
   switch (mCurrentElement)
     {
-    case Text:
-      if (strcmp(pszName, "Text")) fatalError();
-
+    case CharacterData:
+      mCurrentElementName = pszName;
       mParser.enableCharacterDataHandler(true);
       break;
 
@@ -853,26 +854,26 @@ void CCopasiXMLParser::TextElement::start(const XML_Char *pszName,
   return;
 }
 
-void CCopasiXMLParser::TextElement::end(const XML_Char *pszName)
+void CCopasiXMLParser::CharacterDataElement::end(const XML_Char *pszName)
 {
   switch (mCurrentElement)
     {
-    case Text:
-      if (strcmp(pszName, "Text")) fatalError();
+    case CharacterData:
+      if (strcmp(pszName, mCurrentElementName.c_str())) fatalError();
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
-      mCommon.Comment = mParser.getCharacterData("\x0a\x0d\t", "");
+      mCommon.CharacterData = mParser.getCharacterData("\x0a\x0d\t", "");
       {
-        std::string::size_type Start = mCommon.Comment.find_first_not_of(" ");
+        std::string::size_type Start = mCommon.CharacterData.find_first_not_of(" ");
         if (Start == std::string::npos)
-          mCommon.Comment = "";
+          mCommon.CharacterData = "";
         else
           {
-            std::string::size_type End = mCommon.Comment.find_last_not_of(" ");
+            std::string::size_type End = mCommon.CharacterData.find_last_not_of(" ");
             if (End == std::string::npos)
-              mCommon.Comment = mCommon.Comment.substr(Start);
+              mCommon.CharacterData = mCommon.CharacterData.substr(Start);
             else
-              mCommon.Comment = mCommon.Comment.substr(Start, End - Start + 1);
+              mCommon.CharacterData = mCommon.CharacterData.substr(Start, End - Start + 1);
           }
       }
       /* Tell the parent element we are done. */
@@ -1228,8 +1229,8 @@ void CCopasiXMLParser::ModelElement::end(const XML_Char *pszName)
     case Comment:
       if (strcmp(pszName, "Comment")) fatalError();
 
-      mCommon.pModel->setComments(mCommon.Comment);
-      mCommon.Comment = "";
+      mCommon.pModel->setComments(mCommon.CharacterData);
+      mCommon.CharacterData = "";
 
       pdelete(mpCurrentHandler);
       break;
@@ -1340,17 +1341,17 @@ void CCopasiXMLParser::CommentElement::end(const XML_Char *pszName)
       else
         mXhtml << mParser.getCharacterData();
 
-      mCommon.Comment = mXhtml.str();
+      mCommon.CharacterData = mXhtml.str();
 
       {
         // remove leading whitepsaces
-        std::string::size_type pos = mCommon.Comment.find_first_not_of("\x0a\x0d\t ");
-        if (pos != 0) mCommon.Comment.erase(0, pos);
+        std::string::size_type pos = mCommon.CharacterData.find_first_not_of("\x0a\x0d\t ");
+        if (pos != 0) mCommon.CharacterData.erase(0, pos);
 
         // remove trailing whitepsace
-        pos = mCommon.Comment.find_last_not_of("\x0a\x0d\t ");
-        if (pos < mCommon.Comment.length())
-          mCommon.Comment = mCommon.Comment.substr(0, pos + 1);
+        pos = mCommon.CharacterData.find_last_not_of("\x0a\x0d\t ");
+        if (pos < mCommon.CharacterData.length())
+          mCommon.CharacterData = mCommon.CharacterData.substr(0, pos + 1);
       }
 
       mParser.popElementHandler();
@@ -1460,22 +1461,20 @@ void CCopasiXMLParser::ListOfCompartmentsElement::end(const XML_Char *pszName)
 
 CCopasiXMLParser::CompartmentElement::CompartmentElement(CCopasiXMLParser & parser,
     SCopasiXMLParserCommon & common):
-    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common),
+    mpCompartment(NULL)
 {}
 
 CCopasiXMLParser::CompartmentElement::~CompartmentElement()
-{
-  pdelete(mpCurrentHandler);
-}
+{}
 
 void CCopasiXMLParser::CompartmentElement::start(const XML_Char *pszName,
     const XML_Char **papszAttrs)
 {
-  CCompartment * pCompartment;
   const char * Key;
   const char * Name;
-  const char * StateVariable;
-  const char * SBMLId;
+  const char * simulationType;
+  CModelEntity::Status SimulationType;
 
   mCurrentElement++; /* We should always be on the next element */
 
@@ -1486,33 +1485,51 @@ void CCopasiXMLParser::CompartmentElement::start(const XML_Char *pszName,
 
       Key = mParser.getAttributeValue("key", papszAttrs);
       Name = mParser.getAttributeValue("name", papszAttrs);
-      StateVariable = mParser.getAttributeValue("stateVariable", papszAttrs, "");
+      simulationType = mParser.getAttributeValue("simulationType", papszAttrs, "fixed");
+      SimulationType = (CModelEntity::Status)toEnum(simulationType, CModelEntity::XMLStatus);
 
-      pCompartment = new CCompartment();
-      mCommon.KeyMap.addFix(Key, pCompartment);
-      pCompartment->setObjectName(Name);
-      SBMLId = mParser.getAttributeValue("sbmlid", papszAttrs, "");
-      if (SBMLId != "")
-        {
-          pCompartment->setSBMLId(SBMLId);
-        }
+      mpCompartment = new CCompartment();
+      mCommon.KeyMap.addFix(Key, mpCompartment);
 
-      mCommon.pModel->getCompartments().add(pCompartment, true);
+      mpCompartment->setObjectName(Name);
+      mpCompartment->setStatus(SimulationType);
+
+      mCommon.pModel->getCompartments().add(mpCompartment, true);
+      return;
+
+    case Expression:
+      if (!strcmp(pszName, "Expression"))
+        mpCurrentHandler = &mParser.mCharacterDataElement;
+      break;
+
+    case InitialExpression:
+      if (!strcmp(pszName, "InitialExpression"))
+        mpCurrentHandler = &mParser.mCharacterDataElement;
       break;
 
     default:
       mLastKnownElement = mCurrentElement - 1;
       mCurrentElement = UNKNOWN_ELEMENT;
-      mParser.pushElementHandler(&mParser.mUnknownElement);
-      mParser.onStartElement(pszName, papszAttrs);
+      mpCurrentHandler = &mParser.mUnknownElement;
       break;
     }
+
+  if (mpCurrentHandler)
+    mParser.pushElementHandler(mpCurrentHandler);
+
+  mParser.onStartElement(pszName, papszAttrs);
 
   return;
 }
 
 void CCopasiXMLParser::CompartmentElement::end(const XML_Char *pszName)
 {
+  // It is possible that we have an Expression but no InitialAssignment,
+  // i.e., mCurrentElement = Expression and pszName = Compartment may occur
+  // and is valid.
+  if (mCurrentElement == Expression && !strcmp(pszName, "Compartment"))
+    mCurrentElement = Compartment;
+
   switch (mCurrentElement)
     {
     case Compartment:
@@ -1522,6 +1539,28 @@ void CCopasiXMLParser::CompartmentElement::end(const XML_Char *pszName)
 
       /* Tell the parent element we are done. */
       mParser.onEndElement(pszName);
+      break;
+
+    case Expression:
+      if (strcmp(pszName, "Expression")) fatalError();
+      mpCompartment->setExpression(mCommon.CharacterData);
+
+      // Remove error messages created by setExpression as this may fail
+      // due to incomplete model specification at this time.
+      if (CCopasiMessage::peekLastMessage().getNumber() == MCFunction + 3)
+        CCopasiMessage::getLastMessage();
+      break;
+
+    case InitialExpression:
+      if (strcmp(pszName, "InitialAssignment")) fatalError();
+      mpCompartment->setInitialExpression(mCommon.CharacterData);
+
+      // Remove error messages created by setExpression as this may fail
+      // due to incomplete model specification at this time.
+      if (CCopasiMessage::peekLastMessage().getNumber() == MCFunction + 3)
+        CCopasiMessage::getLastMessage();
+
+      mCurrentElement = Compartment;
       break;
 
     case UNKNOWN_ELEMENT:
@@ -1612,7 +1651,8 @@ void CCopasiXMLParser::ListOfMetabolitesElement::end(const XML_Char *pszName)
 
 CCopasiXMLParser::MetaboliteElement::MetaboliteElement(CCopasiXMLParser & parser,
     SCopasiXMLParserCommon & common):
-    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common),
+    mpMetabolite(NULL)
 {}
 
 CCopasiXMLParser::MetaboliteElement::~MetaboliteElement()
@@ -1623,15 +1663,13 @@ CCopasiXMLParser::MetaboliteElement::~MetaboliteElement()
 void CCopasiXMLParser::MetaboliteElement::start(const XML_Char *pszName,
     const XML_Char **papszAttrs)
 {
-  CMetab * pMetabolite;
   CCompartment * pCompartment = NULL;
   const char * Key;
   const char * Name;
+  const char * simulationType;
+  CModelEntity::Status SimulationType;
+  const char reactions[] = "reactions";
   const char * Compartment;
-  const char * status;
-  CMetab::Status Status;
-  const char * StateVariable;
-  const char * SBMLId;
 
   mCurrentElement++; /* We should always be on the next element */
 
@@ -1642,45 +1680,69 @@ void CCopasiXMLParser::MetaboliteElement::start(const XML_Char *pszName,
 
       Key = mParser.getAttributeValue("key", papszAttrs);
       Name = mParser.getAttributeValue("name", papszAttrs);
-      Compartment = mParser.getAttributeValue("compartment", papszAttrs);
-      status = mParser.getAttributeValue("status", papszAttrs);
-      if (strcmp(status, "variable"))
-        Status = (CMetab::Status) toEnum(status, CMetab::XMLStatus);
-      else
-        Status = CMetab::REACTIONS;
-      StateVariable = mParser.getAttributeValue("stateVariable", papszAttrs, "");
 
-      pMetabolite = new CMetab();
-      mCommon.KeyMap.addFix(Key, pMetabolite);
-      pMetabolite->setObjectName(Name);
-      pMetabolite->setStatus(Status);
-      SBMLId = mParser.getAttributeValue("sbmlid", papszAttrs, "");
-      if (SBMLId != "")
+      simulationType = mParser.getAttributeValue("simulationType", papszAttrs, false);
+
+      // We need to handle old files which used the attribute status.
+      if (!simulationType)
         {
-          pMetabolite->setSBMLId(SBMLId);
+          simulationType = mParser.getAttributeValue("status", papszAttrs, false);
+          if (!simulationType) // status and simulationType are both missing
+            simulationType = mParser.getAttributeValue("simulationType", papszAttrs);
+          else if (!strcmp(simulationType, "variable")) // reactions was named variable
+            simulationType = reactions;
         }
+
+      SimulationType = (CModelEntity::Status)toEnum(simulationType, CModelEntity::XMLStatus);
+      Compartment = mParser.getAttributeValue("compartment", papszAttrs);
+
+      mpMetabolite = new CMetab();
+      mCommon.KeyMap.addFix(Key, mpMetabolite);
+      mpMetabolite->setObjectName(Name);
+      mpMetabolite->setStatus(SimulationType);
 
       pCompartment =
         dynamic_cast< CCompartment* >(mCommon.KeyMap.get(Compartment));
+
       if (!pCompartment) fatalError();
 
-      pCompartment->addMetabolite(pMetabolite);
-      mCommon.pModel->getMetabolites().add(pMetabolite);
+      pCompartment->addMetabolite(mpMetabolite);
+      mCommon.pModel->getMetabolites().add(mpMetabolite);
+      return;
+
+    case Expression:
+      if (!strcmp(pszName, "Expression"))
+        mpCurrentHandler = &mParser.mCharacterDataElement;
+      break;
+
+    case InitialExpression:
+      if (!strcmp(pszName, "InitialExpression"))
+        mpCurrentHandler = &mParser.mCharacterDataElement;
       break;
 
     default:
       mLastKnownElement = mCurrentElement - 1;
       mCurrentElement = UNKNOWN_ELEMENT;
-      mParser.pushElementHandler(&mParser.mUnknownElement);
-      mParser.onStartElement(pszName, papszAttrs);
+      mpCurrentHandler = &mParser.mUnknownElement;
       break;
     }
+
+  if (mpCurrentHandler)
+    mParser.pushElementHandler(mpCurrentHandler);
+
+  mParser.onStartElement(pszName, papszAttrs);
 
   return;
 }
 
 void CCopasiXMLParser::MetaboliteElement::end(const XML_Char *pszName)
 {
+  // It is possible that we have an Expression but no InitialAssignment,
+  // i.e., mCurrentElement = Expression and pszName = Metabolite may occur
+  // and is valid.
+  if (mCurrentElement == Expression && !strcmp(pszName, "Metabolite"))
+    mCurrentElement = Metabolite;
+
   switch (mCurrentElement)
     {
     case Metabolite:
@@ -1690,6 +1752,28 @@ void CCopasiXMLParser::MetaboliteElement::end(const XML_Char *pszName)
 
       /* Tell the parent element we are done. */
       mParser.onEndElement(pszName);
+      break;
+
+    case Expression:
+      if (strcmp(pszName, "Expression")) fatalError();
+      mpMetabolite->setExpression(mCommon.CharacterData);
+
+      // Remove error messages created by setExpression as this may fail
+      // due to incomplete model specification at this time.
+      if (CCopasiMessage::peekLastMessage().getNumber() == MCFunction + 3)
+        CCopasiMessage::getLastMessage();
+      break;
+
+    case InitialExpression:
+      if (strcmp(pszName, "InitialAssignment")) fatalError();
+      mpMetabolite->setInitialExpression(mCommon.CharacterData);
+
+      // Remove error messages created by setExpression as this may fail
+      // due to incomplete model specification at this time.
+      if (CCopasiMessage::peekLastMessage().getNumber() == MCFunction + 3)
+        CCopasiMessage::getLastMessage();
+
+      mCurrentElement = Metabolite;
       break;
 
     case UNKNOWN_ELEMENT:
@@ -1796,11 +1880,10 @@ void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
 {
   const char * Key;
   const char * Name;
-  const char * status;
-  CModelEntity::Status Status;
-  const char * StateVariable;
-  const char * SBMLId;
+  const char * simulationType;
+  CModelEntity::Status SimulationType;
 
+  mpCurrentHandler = NULL;
   mCurrentElement++; /* We should always be on the next element */
 
   switch (mCurrentElement)
@@ -1810,49 +1893,70 @@ void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
 
       Key = mParser.getAttributeValue("key", papszAttrs);
       Name = mParser.getAttributeValue("name", papszAttrs);
-      status = mParser.getAttributeValue("status", papszAttrs);
-      Status = (CMetab::Status) toEnum(status, CModelEntity::XMLStatus);
-      StateVariable = mParser.getAttributeValue("stateVariable", papszAttrs, "");
+      simulationType = mParser.getAttributeValue("simulationType", papszAttrs, false);
+
+      // We need to handle old files which used the attribute status.
+      if (!simulationType)
+        {
+          simulationType = mParser.getAttributeValue("status", papszAttrs, false);
+          if (!simulationType) // status and simulationType are both missing
+            simulationType = mParser.getAttributeValue("simulationType", papszAttrs);
+        }
+
+      SimulationType = (CModelEntity::Status)toEnum(simulationType, CModelEntity::XMLStatus);
 
       mpMV = new CModelValue();
       mCommon.KeyMap.addFix(Key, mpMV);
       mpMV->setObjectName(Name);
-      mpMV->setStatus(Status);
-      SBMLId = mParser.getAttributeValue("sbmlid", papszAttrs, "");
-      if (SBMLId != "")
-        {
-          mpMV->setSBMLId(SBMLId);
-        }
+      mpMV->setStatus(SimulationType);
 
       mCommon.pModel->getModelValues().add(mpMV, true);
+      return;
+
+    case Expression:
+      if (!strcmp(pszName, "Expression"))
+        mpCurrentHandler = &mParser.mCharacterDataElement;
       break;
 
-    case MathML:
-      if (strcmp(pszName, "MathML")) fatalError();
+    case InitialExpression:
+      if (!strcmp(pszName, "InitialExpression"))
+        mpCurrentHandler = &mParser.mCharacterDataElement;
+      break;
 
-      /* If we do not have a MathML element handler we create one. */
-      if (!mpMathMLElement)
-        mpMathMLElement = new MathMLElement(mParser, mCommon);
+    case MathML:  // Old file format support
+      if (!strcmp(pszName, "MathML"))
+        {
+          /* If we do not have a MathML element handler we create one. */
+          if (!mpMathMLElement)
+            mpMathMLElement = new MathMLElement(mParser, mCommon);
 
-      /* Push the MathML element handler on the stack and call it. */
-      mpCurrentHandler = mpMathMLElement;
-      mParser.pushElementHandler(mpCurrentHandler);
-      mpCurrentHandler->start(pszName, papszAttrs);
+          mpCurrentHandler = mpMathMLElement;
+        }
       break;
 
     default:
       mLastKnownElement = mCurrentElement - 1;
       mCurrentElement = UNKNOWN_ELEMENT;
-      mParser.pushElementHandler(&mParser.mUnknownElement);
-      mParser.onStartElement(pszName, papszAttrs);
+      mpCurrentHandler = &mParser.mUnknownElement;
       break;
     }
+
+  if (mpCurrentHandler)
+    mParser.pushElementHandler(mpCurrentHandler);
+
+  mParser.onStartElement(pszName, papszAttrs);
 
   return;
 }
 
 void CCopasiXMLParser::ModelValueElement::end(const XML_Char *pszName)
 {
+  // It is possible that we have an Expression but no InitialAssignment,
+  // i.e., mCurrentElement = Expression and pszName = ModelValue may occur
+  // and is valid.
+  if (mCurrentElement == Expression && !strcmp(pszName, "ModelValue"))
+    mCurrentElement = ModelValue;
+
   switch (mCurrentElement)
     {
     case ModelValue:
@@ -1864,14 +1968,38 @@ void CCopasiXMLParser::ModelValueElement::end(const XML_Char *pszName)
       mParser.onEndElement(pszName);
       break;
 
-    case MathML:
-      if (strcmp(pszName, "MathML")) fatalError();
-      mpMV->setExpression(mCommon.FunctionDescription);
+    case Expression:
+      if (strcmp(pszName, "Expression")) fatalError();
+      mpMV->setExpression(mCommon.CharacterData);
+
       // Remove error messages created by setExpression as this may fail
       // due to incomplete model specification at this time.
       if (CCopasiMessage::peekLastMessage().getNumber() == MCFunction + 3)
         CCopasiMessage::getLastMessage();
-      mCurrentElement--;
+      break;
+
+    case InitialExpression:
+      if (strcmp(pszName, "InitialAssignment")) fatalError();
+      mpMV->setInitialExpression(mCommon.CharacterData);
+
+      // Remove error messages created by setExpression as this may fail
+      // due to incomplete model specification at this time.
+      if (CCopasiMessage::peekLastMessage().getNumber() == MCFunction + 3)
+        CCopasiMessage::getLastMessage();
+
+      mCurrentElement = ModelValue;
+      break;
+
+    case MathML:  // Old file format support
+      if (strcmp(pszName, "MathML")) fatalError();
+      mpMV->setExpression(mCommon.FunctionDescription);
+
+      // Remove error messages created by setExpression as this may fail
+      // due to incomplete model specification at this time.
+      if (CCopasiMessage::peekLastMessage().getNumber() == MCFunction + 3)
+        CCopasiMessage::getLastMessage();
+
+      mCurrentElement = ModelValue;
       break;
 
     case UNKNOWN_ELEMENT:
@@ -4629,7 +4757,7 @@ void CCopasiXMLParser::ProblemElement::end(const XML_Char *pszName)
       // mComon.Comment, parse it to get the individual values and set
       // the values.
       // !!!!!!!!!!!!!!!!
-      mCommon.Comment = "";
+      mCommon.CharacterData = "";
       mCurrentElement = Problem;
       break;
 
@@ -4682,7 +4810,7 @@ void CCopasiXMLParser::ProblemInitialStateElement::end(const XML_Char* pszName)
     {
     case InitialState:
       if (strcmp(pszName, "InitialState")) fatalError();
-      mCommon.Comment = mParser.getCharacterData("\x0a\x0d\t ", "");
+      mCommon.CharacterData = mParser.getCharacterData("\x0a\x0d\t ", "");
       mCurrentElement = START_ELEMENT;
       mParser.popElementHandler();
       mParser.onEndElement(pszName);
@@ -5441,8 +5569,8 @@ void CCopasiXMLParser::ReportElement::end(const XML_Char *pszName)
     case Comment:
       if (strcmp(pszName, "Comment")) fatalError();
       // check parameter type CCopasiStaticString
-      mCommon.pReport->setComment(mCommon.Comment);
-      mCommon.Comment = "";
+      mCommon.pReport->setComment(mCommon.CharacterData);
+      mCommon.CharacterData = "";
       break;
 
     case Header:
@@ -5477,15 +5605,13 @@ CCopasiXMLParser::HeaderElement::HeaderElement(CCopasiXMLParser & parser,
     SCopasiXMLParserCommon & common):
     CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common),
     mpCommentElement(NULL),
-    mpObjectElement(NULL),
-    mpTextElement(NULL)
+    mpObjectElement(NULL)
 {}
 
 CCopasiXMLParser::HeaderElement::~HeaderElement()
 {
   pdelete(mpCommentElement);
   pdelete(mpObjectElement);
-  pdelete(mpTextElement);
 }
 
 void CCopasiXMLParser::HeaderElement::start(const XML_Char *pszName,
@@ -5525,13 +5651,7 @@ void CCopasiXMLParser::HeaderElement::start(const XML_Char *pszName,
 
     case Report:
       if (!strcmp(pszName, "Report"))
-        {
-          /* If we do not have an text element handler we create one. */
-          if (!mpTextElement)
-            mpTextElement = new TextElement(mParser, mCommon);
-
-          mpCurrentHandler = mpTextElement;
-        }
+        mpCurrentHandler = &mParser.mCharacterDataElement;
       break;
 
     default:
@@ -5567,24 +5687,24 @@ void CCopasiXMLParser::HeaderElement::end(const XML_Char *pszName)
 
     case Text:
       if (strcmp(pszName, "html")) fatalError();
-      mCommon.pReport->getHeaderAddr()->push_back(CCopasiStaticString(mCommon.Comment).getCN());
+      mCommon.pReport->getHeaderAddr()->push_back(CCopasiStaticString(mCommon.CharacterData).getCN());
       mCurrentElement = Header;
       break;
 
     case Object:
       if (strcmp(pszName, "Object")) fatalError();
-      mCommon.pReport->getHeaderAddr()->push_back(CCopasiObjectName(mCommon.Comment));
+      mCommon.pReport->getHeaderAddr()->push_back(CCopasiObjectName(mCommon.CharacterData));
       mCurrentElement = Header;
       break;
 
     case Report:
       if (strcmp(pszName, "Report")) fatalError();
-      // add the key that is stored in mCommon.Comment to the map
-      if (mCommon.reportReferenceMap.find(mCommon.Comment) == mCommon.reportReferenceMap.end())
+      // add the key that is stored in mCommon.CharacterData to the map
+      if (mCommon.reportReferenceMap.find(mCommon.CharacterData) == mCommon.reportReferenceMap.end())
         {
-          mCommon.reportReferenceMap[mCommon.Comment] = std::vector<std::pair <std::vector<CRegisteredObjectName>*, unsigned C_INT32> >();
+          mCommon.reportReferenceMap[mCommon.CharacterData] = std::vector<std::pair <std::vector<CRegisteredObjectName>*, unsigned C_INT32> >();
         }
-      mCommon.reportReferenceMap[mCommon.Comment].push_back(std::make_pair(mCommon.pReport->getHeaderAddr(), mCommon.pReport->getHeaderAddr()->size()));
+      mCommon.reportReferenceMap[mCommon.CharacterData].push_back(std::make_pair(mCommon.pReport->getHeaderAddr(), mCommon.pReport->getHeaderAddr()->size()));
       mCommon.pReport->getHeaderAddr()->push_back(CCopasiObjectName(""));
       mCurrentElement = Header;
       break;
@@ -5603,15 +5723,13 @@ CCopasiXMLParser::BodyElement::BodyElement(CCopasiXMLParser & parser,
     SCopasiXMLParserCommon & common):
     CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common),
     mpCommentElement(NULL),
-    mpObjectElement(NULL),
-    mpTextElement(NULL)
+    mpObjectElement(NULL)
 {}
 
 CCopasiXMLParser::BodyElement::~BodyElement()
 {
   pdelete(mpCommentElement);
   pdelete(mpObjectElement);
-  pdelete(mpTextElement);
 }
 
 void CCopasiXMLParser::BodyElement::start(const XML_Char *pszName,
@@ -5651,13 +5769,7 @@ void CCopasiXMLParser::BodyElement::start(const XML_Char *pszName,
 
     case Report:
       if (!strcmp(pszName, "Report"))
-        {
-          /* If we do not have an text element handler we create one. */
-          if (!mpTextElement)
-            mpTextElement = new TextElement(mParser, mCommon);
-
-          mpCurrentHandler = mpTextElement;
-        }
+        mpCurrentHandler = &mParser.mCharacterDataElement;
       break;
 
     default:
@@ -5693,24 +5805,24 @@ void CCopasiXMLParser::BodyElement::end(const XML_Char *pszName)
 
     case Text:
       if (strcmp(pszName, "html")) fatalError();
-      mCommon.pReport->getBodyAddr()->push_back(CCopasiStaticString(mCommon.Comment).getCN());
+      mCommon.pReport->getBodyAddr()->push_back(CCopasiStaticString(mCommon.CharacterData).getCN());
       mCurrentElement = Body;
       break;
 
     case Object:
       if (strcmp(pszName, "Object")) fatalError();
-      mCommon.pReport->getBodyAddr()->push_back(CCopasiObjectName(mCommon.Comment));
+      mCommon.pReport->getBodyAddr()->push_back(CCopasiObjectName(mCommon.CharacterData));
       mCurrentElement = Body;
       break;
 
     case Report:
       if (strcmp(pszName, "Report")) fatalError();
-      // add the key that is stored in mCommon.Comment to the map
-      if (mCommon.reportReferenceMap.find(mCommon.Comment) == mCommon.reportReferenceMap.end())
+      // add the key that is stored in mCommon.CharacterData to the map
+      if (mCommon.reportReferenceMap.find(mCommon.CharacterData) == mCommon.reportReferenceMap.end())
         {
-          mCommon.reportReferenceMap[mCommon.Comment] = std::vector<std::pair <std::vector<CRegisteredObjectName>*, unsigned C_INT32> >();
+          mCommon.reportReferenceMap[mCommon.CharacterData] = std::vector<std::pair <std::vector<CRegisteredObjectName>*, unsigned C_INT32> >();
         }
-      mCommon.reportReferenceMap[mCommon.Comment].push_back(std::make_pair(mCommon.pReport->getBodyAddr(), mCommon.pReport->getBodyAddr()->size()));
+      mCommon.reportReferenceMap[mCommon.CharacterData].push_back(std::make_pair(mCommon.pReport->getBodyAddr(), mCommon.pReport->getBodyAddr()->size()));
       mCommon.pReport->getBodyAddr()->push_back(CCopasiObjectName(""));
       mCurrentElement = Body;
       break;
@@ -5729,15 +5841,13 @@ CCopasiXMLParser::FooterElement::FooterElement(CCopasiXMLParser & parser,
     SCopasiXMLParserCommon & common):
     CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common),
     mpCommentElement(NULL),
-    mpObjectElement(NULL),
-    mpTextElement(NULL)
+    mpObjectElement(NULL)
 {}
 
 CCopasiXMLParser::FooterElement::~FooterElement()
 {
   pdelete(mpCommentElement);
   pdelete(mpObjectElement);
-  pdelete(mpTextElement);
 }
 
 void CCopasiXMLParser::FooterElement::start(const XML_Char *pszName,
@@ -5777,13 +5887,7 @@ void CCopasiXMLParser::FooterElement::start(const XML_Char *pszName,
 
     case Report:
       if (!strcmp(pszName, "Report"))
-        {
-          /* If we do not have an text element handler we create one. */
-          if (!mpTextElement)
-            mpTextElement = new TextElement(mParser, mCommon);
-
-          mpCurrentHandler = mpTextElement;
-        }
+        mpCurrentHandler = &mParser.mCharacterDataElement;
       break;
 
     default:
@@ -5819,24 +5923,24 @@ void CCopasiXMLParser::FooterElement::end(const XML_Char *pszName)
 
     case Text:
       if (strcmp(pszName, "html")) fatalError();
-      mCommon.pReport->getFooterAddr()->push_back(CCopasiStaticString(mCommon.Comment).getCN());
+      mCommon.pReport->getFooterAddr()->push_back(CCopasiStaticString(mCommon.CharacterData).getCN());
       mCurrentElement = Footer;
       break;
 
     case Object:
       if (strcmp(pszName, "Object")) fatalError();
-      mCommon.pReport->getFooterAddr()->push_back(CCopasiObjectName(mCommon.Comment));
+      mCommon.pReport->getFooterAddr()->push_back(CCopasiObjectName(mCommon.CharacterData));
       mCurrentElement = Footer;
       break;
 
     case Report:
       if (strcmp(pszName, "Report")) fatalError();
-      // add the key that is stored in mCommon.Comment to the map
-      if (mCommon.reportReferenceMap.find(mCommon.Comment) == mCommon.reportReferenceMap.end())
+      // add the key that is stored in mCommon.CharacterData to the map
+      if (mCommon.reportReferenceMap.find(mCommon.CharacterData) == mCommon.reportReferenceMap.end())
         {
-          mCommon.reportReferenceMap[mCommon.Comment] = std::vector<std::pair <std::vector<CRegisteredObjectName>*, unsigned C_INT32> >();
+          mCommon.reportReferenceMap[mCommon.CharacterData] = std::vector<std::pair <std::vector<CRegisteredObjectName>*, unsigned C_INT32> >();
         }
-      mCommon.reportReferenceMap[mCommon.Comment].push_back(std::make_pair(mCommon.pReport->getFooterAddr(), mCommon.pReport->getFooterAddr()->size()));
+      mCommon.reportReferenceMap[mCommon.CharacterData].push_back(std::make_pair(mCommon.pReport->getFooterAddr(), mCommon.pReport->getFooterAddr()->size()));
       mCommon.pReport->getFooterAddr()->push_back(CCopasiObjectName(""));
       mCurrentElement = Footer;
       break;
@@ -5911,8 +6015,8 @@ void CCopasiXMLParser::TableElement::end(const XML_Char *pszName)
 
     case Object:
       if (strcmp(pszName, "Object")) fatalError();
-      mCommon.pReport->getTableAddr()->push_back(mCommon.Comment);
-      mCommon.Comment = "";
+      mCommon.pReport->getTableAddr()->push_back(mCommon.CharacterData);
+      mCommon.CharacterData = "";
       mCurrentElement = Table;
       break;
 
@@ -5949,7 +6053,7 @@ void CCopasiXMLParser::ObjectElement::start(const XML_Char *pszName,
       if (strcmp(pszName, "Object")) fatalError();
 
       cn = mParser.getAttributeValue("cn", papszAttrs);
-      mCommon.Comment = cn;
+      mCommon.CharacterData = cn;
       break;
 
     default:
