@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLCurve.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/20 11:17:26 $
+//   $Date: 2007/02/21 18:52:26 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,20 +13,33 @@
 #define USE_LAYOUT 1
 
 #include <sbml/layout/Curve.h>
+#include <sbml/layout/CubicBezier.h>
 
 #include "CLCurve.h"
 
 CLLineSegment::CLLineSegment(const LineSegment & ls)
     : CLBase(ls),
     mStart(ls.getStart()),
-    mEnd(ls.getEnd())
+    mEnd(ls.getEnd()),
+    mBase1(),
+    mBase2(),
+    mIsBezier(false)
 {
-  //TODO handle bezier
+  //handle bezier
+  const CubicBezier * cb = dynamic_cast<const CubicBezier *>(&ls);
+  if (cb)
+    {
+      mIsBezier = true;
+      mBase1 = CLPoint(cb->getBasePoint1());
+      mBase2 = CLPoint(cb->getBasePoint2());
+    }
 }
 
 std::ostream & operator<<(std::ostream &os, const CLLineSegment & ls)
 {
   os << "[" << ls.mStart << "->" << ls.mEnd << "]";
+  if (ls.mIsBezier)
+    os << "  " << ls.mBase1 << ", " << ls.mBase2;
   return os;
 }
 

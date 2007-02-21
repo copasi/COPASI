@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLCurve.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/18 23:02:43 $
+//   $Date: 2007/02/21 18:52:26 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,16 +28,36 @@ class CLLineSegment : public CLBase
   protected:
 
     CLPoint mStart;
-
     CLPoint mEnd;
+
+    CLPoint mBase1;
+    CLPoint mBase2;
+
+    bool mIsBezier;
 
   public:
 
     CLLineSegment()
-        : mStart(), mEnd() {};
+        : mStart(), mEnd(),
+        mBase1(), mBase2(),
+    mIsBezier(false) {};
 
+    /**
+     * Constructor for a straight line segment
+     */
     CLLineSegment(const CLPoint & s, const CLPoint & e)
-        : mStart(s), mEnd(e) {};
+        : mStart(s), mEnd(e),
+        mBase1(), mBase2(),
+    mIsBezier(false) {};
+
+    /**
+     * Constructor for a bezier segment
+     */
+    CLLineSegment(const CLPoint & s, const CLPoint & e,
+                  const CLPoint & b1, const CLPoint & b2)
+        : mStart(s), mEnd(e),
+        mBase1(b1), mBase2(b2),
+    mIsBezier(true) {};
 
     /**
      * constructor from libsbml object
@@ -49,6 +69,15 @@ class CLLineSegment : public CLBase
 
     void setStart(const CLPoint & p) {mStart = p;};
     void setEnd(const CLPoint & p) {mEnd = p;};
+
+    const CLPoint & getBase1() const {return mBase1;};
+    const CLPoint & getBase2() const {return mBase2;};
+
+    void setBase1(const CLPoint & p) {mBase1 = p;};
+    void setBase2(const CLPoint & p) {mBase2 = p;};
+
+    bool isBezier() const {return mIsBezier;};
+    void setIsBezier(bool b) {mIsBezier = b;};
 
     /**
       * insert operator
