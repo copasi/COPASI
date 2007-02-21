@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.148 $
+//   $Revision: 1.149 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/21 16:04:58 $
+//   $Date: 2007/02/21 18:21:23 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -66,7 +66,7 @@ CCopasiXMLParser::TEMPLATEElement::TEMPLATEElement(CCopasiXMLParser & parser,
 
 CCopasiXMLParser::TEMPLATEElement::~TEMPLATEElement()
 {
-  pdelete(mpCurrentHandler);
+  pdelete(mpetcElement);
 }
 
 void CCopasiXMLParser::TEMPLATEElement::start(const XML_Char *pszName,
@@ -77,30 +77,34 @@ void CCopasiXMLParser::TEMPLATEElement::start(const XML_Char *pszName,
   switch (mCurrentElement)
     {
     case TEMPLATE:
-      if (strcmp(pszName, "TEMPLATE")) fatalError();
-      break;
+      if (strcmp(pszName, "TEMPLATE"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "TEMPLATE", mParser.getCurrentLineNumber());
+      return;
 
-#ifdef XXXX
     case etc:
-      if (strcmp(pszName, "etc")) fatalError();
+      if (strcmp(pszName, "etc"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "etc", mParser.getCurrentLineNumber());
 
       /* If we do not have a etc element handler we create one. */
       if (!mpCurrentHandler)
-        mpCurrentHandler = new etcElement(mParser, mCommon);
+        mpetcElement = new etcElement(mParser, mCommon);
 
-      /* Push the etc element handler on the stack and call it. */
-      mParser.pushElementHandler(mpCurrentHandler);
-      mpCurrentHandler->start(pszName, papszAttrs);
+      mpCurrentHandler = mpetcElement;
       break;
-#endif // XXXX
 
     default:
       mLastKnownElement = mCurrentElement - 1;
       mCurrentElement = UNKNOWN_ELEMENT;
-      mParser.pushElementHandler(&mParser.mUnknownElement);
-      mParser.onStartElement(pszName, papszAttrs);
+      mpCurrentHandler = &mParser.mUnknownElement;
       break;
     }
+
+  if (mpCurrentHandler)
+    mParser.pushElementHandler(mpCurrentHandler);
+
+  mParser.onStartElement(pszName, papszAttrs);
 
   return;
 }
@@ -110,7 +114,9 @@ void CCopasiXMLParser::TEMPLATEElement::end(const XML_Char *pszName)
   switch (mCurrentElement)
     {
     case TEMPLATE:
-      if (strcmp(pszName, "TEMPLATE")) fatalError();
+      if (strcmp(pszName, "TEMPLATE"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "TEMPLATE", mParser.getCurrentLineNumber());
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
 
@@ -119,7 +125,10 @@ void CCopasiXMLParser::TEMPLATEElement::end(const XML_Char *pszName)
       break;
 
     case etc:
-      if (strcmp(pszName, "etc")) fatalError();
+      if (strcmp(pszName, "etc"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "etc", mParser.getCurrentLineNumber());
+
       mCurrentElement = TEMPLATE;
       break;
 
@@ -128,7 +137,8 @@ void CCopasiXMLParser::TEMPLATEElement::end(const XML_Char *pszName)
       break;
 
     default:
-      fatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                     pszName, "TEMPLATE", mParser.getCurrentLineNumber());
       break;
     }
 
@@ -322,8 +332,8 @@ void CCopasiXMLParser::UnknownElement::end(const XML_Char *pszName)
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
       {
-        CCopasiMessage Message(CCopasiMessage::RAW, MCXML + 3,
-                               pszName, mLineNumber);
+        CCopasiMessage(CCopasiMessage::RAW, MCXML + 3,
+                       pszName, mLineNumber);
       }
 
       /* Tell the parent element we are done. */
@@ -364,9 +374,8 @@ void CCopasiXMLParser::COPASIElement::start(const XML_Char *pszName,
         {
           // We may have a configuration file which starts with a parameter group
           if (strcmp(pszName, "ParameterGroup"))
-            {
-              fatalError();
-            }
+            CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                           pszName, "COPASI", mParser.getCurrentLineNumber());
 
           mpCurrentHandler = new ParameterGroupElement(mParser, mCommon);
           break;
@@ -465,13 +474,17 @@ void CCopasiXMLParser::ListOfFunctionsElement::start(const XML_Char *pszName,
   switch (mCurrentElement)
     {
     case ListOfFunctions:
-      if (strcmp(pszName, "ListOfFunctions")) fatalError();
+      if (strcmp(pszName, "ListOfFunctions"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "ListOfFunctions", mParser.getCurrentLineNumber());
       if (!mCommon.pFunctionList)
         mCommon.pFunctionList = new CCopasiVectorN< CEvaluationTree >;
       break;
 
     case Function:
-      if (strcmp(pszName, "Function")) fatalError();
+      if (strcmp(pszName, "Function"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "Function", mParser.getCurrentLineNumber());
 
       /* If we do not have a function element handler we create one. */
       if (!mpCurrentHandler)
@@ -498,7 +511,9 @@ void CCopasiXMLParser::ListOfFunctionsElement::end(const XML_Char *pszName)
   switch (mCurrentElement)
     {
     case ListOfFunctions:
-      if (strcmp(pszName, "ListOfFunctions")) fatalError();
+      if (strcmp(pszName, "ListOfFunctions"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "ListOfFunctions", mParser.getCurrentLineNumber());
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
       {
@@ -510,9 +525,9 @@ void CCopasiXMLParser::ListOfFunctionsElement::end(const XML_Char *pszName)
 
             if (pFunction && !pFunction->compile())
               {
-                CCopasiMessage Message(CCopasiMessage::RAW, MCXML + 6,
-                                       pFunction->getObjectName().c_str(),
-                                       mParser.getCurrentLineNumber());
+                CCopasiMessage(CCopasiMessage::RAW, MCXML + 6,
+                               pFunction->getObjectName().c_str(),
+                               mParser.getCurrentLineNumber());
                 mCommon.pFunctionList->CCopasiVector< CEvaluationTree >::remove(i);
               }
           }
@@ -523,7 +538,9 @@ void CCopasiXMLParser::ListOfFunctionsElement::end(const XML_Char *pszName)
       break;
 
     case Function:
-      if (strcmp(pszName, "Function")) fatalError();
+      if (strcmp(pszName, "Function"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "Function", mParser.getCurrentLineNumber());
       mCurrentElement = ListOfFunctions;
       break;
 
@@ -532,7 +549,8 @@ void CCopasiXMLParser::ListOfFunctionsElement::end(const XML_Char *pszName)
       break;
 
     default:
-      fatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                     pszName, "???", mParser.getCurrentLineNumber());
       break;
     }
 
@@ -569,7 +587,9 @@ void CCopasiXMLParser::FunctionElement::start(const XML_Char *pszName,
   switch (mCurrentElement)
     {
     case Function:
-      if (strcmp(pszName, "Function")) fatalError();
+      if (strcmp(pszName, "Function"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "Function", mParser.getCurrentLineNumber());
 
       Key = mParser.getAttributeValue("key", papszAttrs);
       Name = mParser.getAttributeValue("name", papszAttrs);
@@ -667,11 +687,15 @@ void CCopasiXMLParser::FunctionElement::start(const XML_Char *pszName,
           mCurrentElement = MathML;
           mpCurrentHandler = mpMathMLElement;
         }
-      else fatalError();
+      else
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "Expression", mParser.getCurrentLineNumber());
       break;
 
     case ListOfParameterDescriptions:
-      if (strcmp(pszName, "ListOfParameterDescriptions")) fatalError();
+      if (strcmp(pszName, "ListOfParameterDescriptions"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "ListOfParameterDescriptions", mParser.getCurrentLineNumber());
 
       /* If we do not have a ListOfParameterDescriptions element handler we create one. */
       if (!mpListOfParameterDescriptionsElement)
@@ -708,7 +732,9 @@ void CCopasiXMLParser::FunctionElement::end(const XML_Char *pszName)
   switch (mCurrentElement)
     {
     case Function:
-      if (strcmp(pszName, "Function")) fatalError();
+      if (strcmp(pszName, "Function"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "Function", mParser.getCurrentLineNumber());
 
       mCurrentElement = START_ELEMENT;
       mParser.popElementHandler();
@@ -718,7 +744,9 @@ void CCopasiXMLParser::FunctionElement::end(const XML_Char *pszName)
       break;
 
     case Expression:
-      if (strcmp(pszName, "Expression")) fatalError();
+      if (strcmp(pszName, "Expression"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "Expression", mParser.getCurrentLineNumber());
       if (!mCommon.mExistingFunction)
         mCommon.pFunction->setInfix(mCommon.CharacterData);
 
@@ -726,12 +754,16 @@ void CCopasiXMLParser::FunctionElement::end(const XML_Char *pszName)
       break;
 
     case ListOfParameterDescriptions:
-      if (strcmp(pszName, "ListOfParameterDescriptions")) fatalError();
+      if (strcmp(pszName, "ListOfParameterDescriptions"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "ListOfParameterDescriptions", mParser.getCurrentLineNumber());
       mCurrentElement = Function;
       break;
 
     case MathML:
-      if (strcmp(pszName, "MathML")) fatalError();
+      if (strcmp(pszName, "MathML"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "MathML", mParser.getCurrentLineNumber());
       if (!mCommon.mExistingFunction)
         mCommon.pFunction->setInfix(mCommon.FunctionDescription);
 
@@ -743,7 +775,8 @@ void CCopasiXMLParser::FunctionElement::end(const XML_Char *pszName)
       break;
 
     default:
-      fatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                     pszName, "???", mParser.getCurrentLineNumber());
       break;
     }
 }
@@ -766,11 +799,15 @@ void CCopasiXMLParser::MathMLElement::start(const XML_Char *pszName,
   switch (mCurrentElement)
     {
     case MathML:
-      if (strcmp(pszName, "MathML")) fatalError();
+      if (strcmp(pszName, "MathML"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "MathML", mParser.getCurrentLineNumber());
       break;
 
     case Text:
-      if (strcmp(pszName, "Text")) fatalError();
+      if (strcmp(pszName, "Text"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "Text", mParser.getCurrentLineNumber());
 
       /* If we do not have a function element handler we create one. */
       if (!mpCurrentHandler)
@@ -797,7 +834,9 @@ void CCopasiXMLParser::MathMLElement::end(const XML_Char *pszName)
   switch (mCurrentElement)
     {
     case MathML:
-      if (strcmp(pszName, "MathML")) fatalError();
+      if (strcmp(pszName, "MathML"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "MathML", mParser.getCurrentLineNumber());
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
 
@@ -806,7 +845,9 @@ void CCopasiXMLParser::MathMLElement::end(const XML_Char *pszName)
       break;
 
     case Text:
-      if (strcmp(pszName, "Text")) fatalError();
+      if (strcmp(pszName, "Text"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "Text", mParser.getCurrentLineNumber());
       mCommon.FunctionDescription = mCommon.CharacterData;
       mCommon.CharacterData = "";
       mCurrentElement = MathML;
@@ -818,7 +859,8 @@ void CCopasiXMLParser::MathMLElement::end(const XML_Char *pszName)
       break;
 
     default:
-      fatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                     pszName, "???", mParser.getCurrentLineNumber());
       break;
     }
 }
@@ -859,7 +901,9 @@ void CCopasiXMLParser::CharacterDataElement::end(const XML_Char *pszName)
   switch (mCurrentElement)
     {
     case CharacterData:
-      if (strcmp(pszName, mCurrentElementName.c_str())) fatalError();
+      if (strcmp(pszName, mCurrentElementName.c_str()))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, mCurrentElementName.c_str(), mParser.getCurrentLineNumber());
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
       mCommon.CharacterData = mParser.getCharacterData("\x0a\x0d\t", "");
@@ -885,7 +929,8 @@ void CCopasiXMLParser::CharacterDataElement::end(const XML_Char *pszName)
       break;
 
     default:
-      fatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                     pszName, "???", mParser.getCurrentLineNumber());
       break;
     }
 }
@@ -908,13 +953,17 @@ void CCopasiXMLParser::ListOfParameterDescriptionsElement::start(const XML_Char 
   switch (mCurrentElement)
     {
     case ListOfParameterDescriptions:
-      if (strcmp(pszName, "ListOfParameterDescriptions")) fatalError();
+      if (strcmp(pszName, "ListOfParameterDescriptions"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "ListOfParameterDescriptions", mParser.getCurrentLineNumber());
       if (mpCurrentHandler) mpCurrentHandler->reset();
 
       break;
 
     case ParameterDescription:
-      if (strcmp(pszName, "ParameterDescription")) fatalError();
+      if (strcmp(pszName, "ParameterDescription"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "ParameterDescription", mParser.getCurrentLineNumber());
 
       /* If we do not have a ParameterDescription element handler we create one. */
       if (!mpCurrentHandler)
@@ -941,7 +990,9 @@ void CCopasiXMLParser::ListOfParameterDescriptionsElement::end(const XML_Char *p
   switch (mCurrentElement)
     {
     case ListOfParameterDescriptions:
-      if (strcmp(pszName, "ListOfParameterDescriptions")) fatalError();
+      if (strcmp(pszName, "ListOfParameterDescriptions"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "ListOfParameterDescriptions", mParser.getCurrentLineNumber());
 
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
@@ -951,7 +1002,9 @@ void CCopasiXMLParser::ListOfParameterDescriptionsElement::end(const XML_Char *p
       break;
 
     case ParameterDescription:
-      if (strcmp(pszName, "ParameterDescription")) fatalError();
+      if (strcmp(pszName, "ParameterDescription"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "ParameterDescription", mParser.getCurrentLineNumber());
       mCurrentElement = ListOfParameterDescriptions;
       break;
 
@@ -960,7 +1013,8 @@ void CCopasiXMLParser::ListOfParameterDescriptionsElement::end(const XML_Char *p
       break;
 
     default:
-      fatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                     pszName, "???", mParser.getCurrentLineNumber());
       break;
     }
 
@@ -1001,7 +1055,9 @@ void CCopasiXMLParser::ParameterDescriptionElement::start(const XML_Char *pszNam
   switch (mCurrentElement)
     {
     case ParameterDescription:
-      if (strcmp(pszName, "ParameterDescription")) fatalError();
+      if (strcmp(pszName, "ParameterDescription"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "ParameterDescription", mParser.getCurrentLineNumber());
       Key = mParser.getAttributeValue("key", papszAttrs);
       Name = mParser.getAttributeValue("name", papszAttrs);
 
@@ -1066,7 +1122,9 @@ void CCopasiXMLParser::ParameterDescriptionElement::end(const XML_Char *pszName)
   switch (mCurrentElement)
     {
     case ParameterDescription:
-      if (strcmp(pszName, "ParameterDescription")) fatalError();
+      if (strcmp(pszName, "ParameterDescription"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "ParameterDescription", mParser.getCurrentLineNumber());
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
 
@@ -1079,7 +1137,8 @@ void CCopasiXMLParser::ParameterDescriptionElement::end(const XML_Char *pszName)
       break;
 
     default:
-      fatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                     pszName, "???", mParser.getCurrentLineNumber());
       break;
     }
 
@@ -1117,7 +1176,9 @@ void CCopasiXMLParser::ModelElement::start(const XML_Char *pszName,
   switch (mCurrentElement)
     {
     case Model:
-      if (strcmp(pszName, "Model")) fatalError();
+      if (strcmp(pszName, "Model"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "Model", mParser.getCurrentLineNumber());
 
       Key = mParser.getAttributeValue("key", papszAttrs);
       Name = mParser.getAttributeValue("name", papszAttrs);
@@ -1218,7 +1279,9 @@ void CCopasiXMLParser::ModelElement::end(const XML_Char *pszName)
   switch (mCurrentElement)
     {
     case Model:
-      if (strcmp(pszName, "Model")) fatalError();
+      if (strcmp(pszName, "Model"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "Model", mParser.getCurrentLineNumber());
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
 
@@ -1227,7 +1290,9 @@ void CCopasiXMLParser::ModelElement::end(const XML_Char *pszName)
       break;
 
     case Comment:
-      if (strcmp(pszName, "Comment")) fatalError();
+      if (strcmp(pszName, "Comment"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "Comment", mParser.getCurrentLineNumber());
 
       mCommon.pModel->setComments(mCommon.CharacterData);
       mCommon.CharacterData = "";
@@ -1236,32 +1301,44 @@ void CCopasiXMLParser::ModelElement::end(const XML_Char *pszName)
       break;
 
     case ListOfCompartments:
-      if (strcmp(pszName, "ListOfCompartments")) fatalError();
+      if (strcmp(pszName, "ListOfCompartments"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "ListOfCompartments", mParser.getCurrentLineNumber());
       pdelete(mpCurrentHandler);
       break;
 
     case ListOfMetabolites:
-      if (strcmp(pszName, "ListOfMetabolites")) fatalError();
+      if (strcmp(pszName, "ListOfMetabolites"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "ListOfMetabolites", mParser.getCurrentLineNumber());
       pdelete(mpCurrentHandler);
       break;
 
     case ListOfModelValues:
-      if (strcmp(pszName, "ListOfModelValues")) fatalError();
+      if (strcmp(pszName, "ListOfModelValues"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "ListOfModelValues", mParser.getCurrentLineNumber());
       pdelete(mpCurrentHandler);
       break;
 
     case ListOfReactions:
-      if (strcmp(pszName, "ListOfReactions")) fatalError();
+      if (strcmp(pszName, "ListOfReactions"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "ListOfReactions", mParser.getCurrentLineNumber());
       pdelete(mpCurrentHandler);
       break;
 
     case StateTemplate:
-      if (strcmp(pszName, "StateTemplate")) fatalError();
+      if (strcmp(pszName, "StateTemplate"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "StateTemplate", mParser.getCurrentLineNumber());
       pdelete(mpCurrentHandler);
       break;
 
     case InitialState:
-      if (strcmp(pszName, "InitialState")) fatalError();
+      if (strcmp(pszName, "InitialState"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "InitialState", mParser.getCurrentLineNumber());
       pdelete(mpCurrentHandler);
       mCurrentElement = Model;
       break;
@@ -1271,7 +1348,8 @@ void CCopasiXMLParser::ModelElement::end(const XML_Char *pszName)
       break;
 
     default:
-      fatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                     pszName, "???", mParser.getCurrentLineNumber());
       break;
     }
 
@@ -1301,7 +1379,9 @@ void CCopasiXMLParser::CommentElement::start(const XML_Char *pszName,
   switch (mCurrentElement)
     {
     case Comment:
-      if (strcmp(pszName, "Comment")) fatalError();
+      if (strcmp(pszName, "Comment"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "Comment", mParser.getCurrentLineNumber());
       mXhtml.str("");
       mLevel = 0;
       mParser.enableCharacterDataHandler();
@@ -1335,7 +1415,9 @@ void CCopasiXMLParser::CommentElement::end(const XML_Char *pszName)
   switch (mCurrentElement)
     {
     case Comment:
-      if (strcmp(pszName, "Comment")) fatalError();
+      if (strcmp(pszName, "Comment"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "Comment", mParser.getCurrentLineNumber());
       if (mXhtml.str() != "")
         mXhtml << CCopasiXMLInterface::encode(mParser.getCharacterData());
       else
@@ -1377,7 +1459,8 @@ void CCopasiXMLParser::CommentElement::end(const XML_Char *pszName)
       break;
 
     default:
-      fatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                     pszName, "???", mParser.getCurrentLineNumber());
       break;
     }
 
@@ -1402,12 +1485,16 @@ void CCopasiXMLParser::ListOfCompartmentsElement::start(const XML_Char *pszName,
   switch (mCurrentElement)
     {
     case ListOfCompartments:
-      if (strcmp(pszName, "ListOfCompartments")) fatalError();
+      if (strcmp(pszName, "ListOfCompartments"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "ListOfCompartments", mParser.getCurrentLineNumber());
       mCommon.pModel->getCompartments().resize(0);
       break;
 
     case Compartment:
-      if (strcmp(pszName, "Compartment")) fatalError();
+      if (strcmp(pszName, "Compartment"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "Compartment", mParser.getCurrentLineNumber());
 
       /* If we do not have a function element handler we create one. */
       if (!mpCurrentHandler)
@@ -1434,7 +1521,9 @@ void CCopasiXMLParser::ListOfCompartmentsElement::end(const XML_Char *pszName)
   switch (mCurrentElement)
     {
     case ListOfCompartments:
-      if (strcmp(pszName, "ListOfCompartments")) fatalError();
+      if (strcmp(pszName, "ListOfCompartments"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "ListOfCompartments", mParser.getCurrentLineNumber());
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
 
@@ -1443,7 +1532,9 @@ void CCopasiXMLParser::ListOfCompartmentsElement::end(const XML_Char *pszName)
       break;
 
     case Compartment:
-      if (strcmp(pszName, "Compartment")) fatalError();
+      if (strcmp(pszName, "Compartment"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "Compartment", mParser.getCurrentLineNumber());
       mCurrentElement = ListOfCompartments;
       break;
 
@@ -1452,7 +1543,8 @@ void CCopasiXMLParser::ListOfCompartmentsElement::end(const XML_Char *pszName)
       break;
 
     default:
-      fatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                     pszName, "???", mParser.getCurrentLineNumber());
       break;
     }
 
@@ -1481,7 +1573,9 @@ void CCopasiXMLParser::CompartmentElement::start(const XML_Char *pszName,
   switch (mCurrentElement)
     {
     case Compartment:
-      if (strcmp(pszName, "Compartment")) fatalError();
+      if (strcmp(pszName, "Compartment"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "Compartment", mParser.getCurrentLineNumber());
 
       Key = mParser.getAttributeValue("key", papszAttrs);
       Name = mParser.getAttributeValue("name", papszAttrs);
@@ -1524,7 +1618,7 @@ void CCopasiXMLParser::CompartmentElement::start(const XML_Char *pszName,
 
 void CCopasiXMLParser::CompartmentElement::end(const XML_Char *pszName)
 {
-  // It is possible that we have an Expression but no InitialAssignment,
+  // It is possible that we have an Expression but no InitialExpression,
   // i.e., mCurrentElement = Expression and pszName = Compartment may occur
   // and is valid.
   if (mCurrentElement == Expression && !strcmp(pszName, "Compartment"))
@@ -1533,7 +1627,9 @@ void CCopasiXMLParser::CompartmentElement::end(const XML_Char *pszName)
   switch (mCurrentElement)
     {
     case Compartment:
-      if (strcmp(pszName, "Compartment")) fatalError();
+      if (strcmp(pszName, "Compartment"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "Compartment", mParser.getCurrentLineNumber());
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
 
@@ -1542,7 +1638,9 @@ void CCopasiXMLParser::CompartmentElement::end(const XML_Char *pszName)
       break;
 
     case Expression:
-      if (strcmp(pszName, "Expression")) fatalError();
+      if (strcmp(pszName, "Expression"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "Expression", mParser.getCurrentLineNumber());
       mpCompartment->setExpression(mCommon.CharacterData);
 
       // Remove error messages created by setExpression as this may fail
@@ -1552,7 +1650,9 @@ void CCopasiXMLParser::CompartmentElement::end(const XML_Char *pszName)
       break;
 
     case InitialExpression:
-      if (strcmp(pszName, "InitialAssignment")) fatalError();
+      if (strcmp(pszName, "InitialExpression"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "InitialExpression", mParser.getCurrentLineNumber());
       mpCompartment->setInitialExpression(mCommon.CharacterData);
 
       // Remove error messages created by setExpression as this may fail
@@ -1568,7 +1668,8 @@ void CCopasiXMLParser::CompartmentElement::end(const XML_Char *pszName)
       break;
 
     default:
-      fatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                     pszName, "???", mParser.getCurrentLineNumber());
       break;
     }
 
@@ -1593,11 +1694,15 @@ void CCopasiXMLParser::ListOfMetabolitesElement::start(const XML_Char *pszName,
   switch (mCurrentElement)
     {
     case ListOfMetabolites:
-      if (strcmp(pszName, "ListOfMetabolites")) fatalError();
+      if (strcmp(pszName, "ListOfMetabolites"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "ListOfMetabolites", mParser.getCurrentLineNumber());
       break;
 
     case Metabolite:
-      if (strcmp(pszName, "Metabolite")) fatalError();
+      if (strcmp(pszName, "Metabolite"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "Metabolite", mParser.getCurrentLineNumber());
 
       /* If we do not have a function element handler we create one. */
       if (!mpCurrentHandler)
@@ -1624,7 +1729,9 @@ void CCopasiXMLParser::ListOfMetabolitesElement::end(const XML_Char *pszName)
   switch (mCurrentElement)
     {
     case ListOfMetabolites:
-      if (strcmp(pszName, "ListOfMetabolites")) fatalError();
+      if (strcmp(pszName, "ListOfMetabolites"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "ListOfMetabolites", mParser.getCurrentLineNumber());
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
 
@@ -1633,7 +1740,9 @@ void CCopasiXMLParser::ListOfMetabolitesElement::end(const XML_Char *pszName)
       break;
 
     case Metabolite:
-      if (strcmp(pszName, "Metabolite")) fatalError();
+      if (strcmp(pszName, "Metabolite"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "Metabolite", mParser.getCurrentLineNumber());
       mCurrentElement = ListOfMetabolites;
       break;
 
@@ -1642,7 +1751,8 @@ void CCopasiXMLParser::ListOfMetabolitesElement::end(const XML_Char *pszName)
       break;
 
     default:
-      fatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                     pszName, "???", mParser.getCurrentLineNumber());
       break;
     }
 
@@ -1676,7 +1786,9 @@ void CCopasiXMLParser::MetaboliteElement::start(const XML_Char *pszName,
   switch (mCurrentElement)
     {
     case Metabolite:
-      if (strcmp(pszName, "Metabolite")) fatalError();
+      if (strcmp(pszName, "Metabolite"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "Metabolite", mParser.getCurrentLineNumber());
 
       Key = mParser.getAttributeValue("key", papszAttrs);
       Name = mParser.getAttributeValue("name", papszAttrs);
@@ -1737,7 +1849,7 @@ void CCopasiXMLParser::MetaboliteElement::start(const XML_Char *pszName,
 
 void CCopasiXMLParser::MetaboliteElement::end(const XML_Char *pszName)
 {
-  // It is possible that we have an Expression but no InitialAssignment,
+  // It is possible that we have an Expression but no InitialExpression,
   // i.e., mCurrentElement = Expression and pszName = Metabolite may occur
   // and is valid.
   if (mCurrentElement == Expression && !strcmp(pszName, "Metabolite"))
@@ -1746,7 +1858,9 @@ void CCopasiXMLParser::MetaboliteElement::end(const XML_Char *pszName)
   switch (mCurrentElement)
     {
     case Metabolite:
-      if (strcmp(pszName, "Metabolite")) fatalError();
+      if (strcmp(pszName, "Metabolite"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "Metabolite", mParser.getCurrentLineNumber());
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
 
@@ -1755,7 +1869,9 @@ void CCopasiXMLParser::MetaboliteElement::end(const XML_Char *pszName)
       break;
 
     case Expression:
-      if (strcmp(pszName, "Expression")) fatalError();
+      if (strcmp(pszName, "Expression"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "Expression", mParser.getCurrentLineNumber());
       mpMetabolite->setExpression(mCommon.CharacterData);
 
       // Remove error messages created by setExpression as this may fail
@@ -1765,7 +1881,9 @@ void CCopasiXMLParser::MetaboliteElement::end(const XML_Char *pszName)
       break;
 
     case InitialExpression:
-      if (strcmp(pszName, "InitialAssignment")) fatalError();
+      if (strcmp(pszName, "InitialExpression"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "InitialExpression", mParser.getCurrentLineNumber());
       mpMetabolite->setInitialExpression(mCommon.CharacterData);
 
       // Remove error messages created by setExpression as this may fail
@@ -1781,7 +1899,8 @@ void CCopasiXMLParser::MetaboliteElement::end(const XML_Char *pszName)
       break;
 
     default:
-      fatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                     pszName, "???", mParser.getCurrentLineNumber());
       break;
     }
 
@@ -1808,11 +1927,15 @@ void CCopasiXMLParser::ListOfModelValuesElement::start(const XML_Char *pszName,
   switch (mCurrentElement)
     {
     case ListOfModelValues:
-      if (strcmp(pszName, "ListOfModelValues")) fatalError();
+      if (strcmp(pszName, "ListOfModelValues"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "ListOfModelValues", mParser.getCurrentLineNumber());
       break;
 
     case ModelValue:
-      if (strcmp(pszName, "ModelValue")) fatalError();
+      if (strcmp(pszName, "ModelValue"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "ModelValue", mParser.getCurrentLineNumber());
 
       /* If we do not have a function element handler we create one. */
       if (!mpCurrentHandler)
@@ -1839,7 +1962,9 @@ void CCopasiXMLParser::ListOfModelValuesElement::end(const XML_Char *pszName)
   switch (mCurrentElement)
     {
     case ListOfModelValues:
-      if (strcmp(pszName, "ListOfModelValues")) fatalError();
+      if (strcmp(pszName, "ListOfModelValues"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "ListOfModelValues", mParser.getCurrentLineNumber());
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
 
@@ -1848,7 +1973,9 @@ void CCopasiXMLParser::ListOfModelValuesElement::end(const XML_Char *pszName)
       break;
 
     case ModelValue:
-      if (strcmp(pszName, "ModelValue")) fatalError();
+      if (strcmp(pszName, "ModelValue"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "ModelValue", mParser.getCurrentLineNumber());
       mCurrentElement = ListOfModelValues;
       break;
 
@@ -1857,7 +1984,8 @@ void CCopasiXMLParser::ListOfModelValuesElement::end(const XML_Char *pszName)
       break;
 
     default:
-      fatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                     pszName, "???", mParser.getCurrentLineNumber());
       break;
     }
 
@@ -1889,7 +2017,9 @@ void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
   switch (mCurrentElement)
     {
     case ModelValue:
-      if (strcmp(pszName, "ModelValue")) fatalError();
+      if (strcmp(pszName, "ModelValue"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "ModelValue", mParser.getCurrentLineNumber());
 
       Key = mParser.getAttributeValue("key", papszAttrs);
       Name = mParser.getAttributeValue("name", papszAttrs);
@@ -1923,7 +2053,7 @@ void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
         mpCurrentHandler = &mParser.mCharacterDataElement;
       break;
 
-    case MathML:  // Old file format support
+    case MathML:   // Old file format support
       if (!strcmp(pszName, "MathML"))
         {
           /* If we do not have a MathML element handler we create one. */
@@ -1951,7 +2081,7 @@ void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
 
 void CCopasiXMLParser::ModelValueElement::end(const XML_Char *pszName)
 {
-  // It is possible that we have an Expression but no InitialAssignment,
+  // It is possible that we have an Expression but no InitialExpression,
   // i.e., mCurrentElement = Expression and pszName = ModelValue may occur
   // and is valid.
   if (mCurrentElement == Expression && !strcmp(pszName, "ModelValue"))
@@ -1960,7 +2090,9 @@ void CCopasiXMLParser::ModelValueElement::end(const XML_Char *pszName)
   switch (mCurrentElement)
     {
     case ModelValue:
-      if (strcmp(pszName, "ModelValue")) fatalError();
+      if (strcmp(pszName, "ModelValue"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "ModelValue", mParser.getCurrentLineNumber());
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
 
@@ -1969,7 +2101,9 @@ void CCopasiXMLParser::ModelValueElement::end(const XML_Char *pszName)
       break;
 
     case Expression:
-      if (strcmp(pszName, "Expression")) fatalError();
+      if (strcmp(pszName, "Expression"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "Expression", mParser.getCurrentLineNumber());
       mpMV->setExpression(mCommon.CharacterData);
 
       // Remove error messages created by setExpression as this may fail
@@ -1979,7 +2113,9 @@ void CCopasiXMLParser::ModelValueElement::end(const XML_Char *pszName)
       break;
 
     case InitialExpression:
-      if (strcmp(pszName, "InitialAssignment")) fatalError();
+      if (strcmp(pszName, "InitialExpression"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "InitialExpression", mParser.getCurrentLineNumber());
       mpMV->setInitialExpression(mCommon.CharacterData);
 
       // Remove error messages created by setExpression as this may fail
@@ -1990,8 +2126,10 @@ void CCopasiXMLParser::ModelValueElement::end(const XML_Char *pszName)
       mCurrentElement = ModelValue;
       break;
 
-    case MathML:  // Old file format support
-      if (strcmp(pszName, "MathML")) fatalError();
+    case MathML:   // Old file format support
+      if (strcmp(pszName, "MathML"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "MathML", mParser.getCurrentLineNumber());
       mpMV->setExpression(mCommon.FunctionDescription);
 
       // Remove error messages created by setExpression as this may fail
@@ -2007,7 +2145,8 @@ void CCopasiXMLParser::ModelValueElement::end(const XML_Char *pszName)
       break;
 
     default:
-      fatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                     pszName, "???", mParser.getCurrentLineNumber());
       break;
     }
 
@@ -2034,12 +2173,16 @@ void CCopasiXMLParser::ListOfReactionsElement::start(const XML_Char *pszName,
   switch (mCurrentElement)
     {
     case ListOfReactions:
-      if (strcmp(pszName, "ListOfReactions")) fatalError();
+      if (strcmp(pszName, "ListOfReactions"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "ListOfReactions", mParser.getCurrentLineNumber());
       mCommon.pModel->getReactions().resize(0);
       break;
 
     case Reaction:
-      if (strcmp(pszName, "Reaction")) fatalError();
+      if (strcmp(pszName, "Reaction"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "Reaction", mParser.getCurrentLineNumber());
 
       /* If we do not have a function element handler we create one. */
       if (!mpCurrentHandler)
@@ -2066,7 +2209,9 @@ void CCopasiXMLParser::ListOfReactionsElement::end(const XML_Char *pszName)
   switch (mCurrentElement)
     {
     case ListOfReactions:
-      if (strcmp(pszName, "ListOfReactions")) fatalError();
+      if (strcmp(pszName, "ListOfReactions"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "ListOfReactions", mParser.getCurrentLineNumber());
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
 
@@ -2075,7 +2220,9 @@ void CCopasiXMLParser::ListOfReactionsElement::end(const XML_Char *pszName)
       break;
 
     case Reaction:
-      if (strcmp(pszName, "Reaction")) fatalError();
+      if (strcmp(pszName, "Reaction"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "Reaction", mParser.getCurrentLineNumber());
       mCurrentElement = ListOfReactions;
       break;
 
@@ -2084,7 +2231,8 @@ void CCopasiXMLParser::ListOfReactionsElement::end(const XML_Char *pszName)
       break;
 
     default:
-      fatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                     pszName, "???", mParser.getCurrentLineNumber());
       break;
     }
 
@@ -2127,7 +2275,9 @@ void CCopasiXMLParser::ReactionElement::start(const XML_Char *pszName,
   switch (mCurrentElement)
     {
     case Reaction:
-      if (strcmp(pszName, "Reaction")) fatalError();
+      if (strcmp(pszName, "Reaction"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "Reaction", mParser.getCurrentLineNumber());
       Key = mParser.getAttributeValue("key", papszAttrs);
       Name = mParser.getAttributeValue("name", papszAttrs);
       Compartment = mParser.getAttributeValue("compartment", papszAttrs,
@@ -2239,7 +2389,9 @@ void CCopasiXMLParser::ReactionElement::end(const XML_Char *pszName)
   switch (mCurrentElement)
     {
     case Reaction:
-      if (strcmp(pszName, "Reaction")) fatalError();
+      if (strcmp(pszName, "Reaction"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "Reaction", mParser.getCurrentLineNumber());
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
 
@@ -2248,23 +2400,33 @@ void CCopasiXMLParser::ReactionElement::end(const XML_Char *pszName)
       break;
 
     case ListOfSubstrates:
-      if (strcmp(pszName, "ListOfSubstrates")) fatalError();
+      if (strcmp(pszName, "ListOfSubstrates"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "ListOfSubstrates", mParser.getCurrentLineNumber());
       break;
 
     case ListOfProducts:
-      if (strcmp(pszName, "ListOfProducts")) fatalError();
+      if (strcmp(pszName, "ListOfProducts"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "ListOfProducts", mParser.getCurrentLineNumber());
       break;
 
     case ListOfModifiers:
-      if (strcmp(pszName, "ListOfModifiers")) fatalError();
+      if (strcmp(pszName, "ListOfModifiers"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "ListOfModifiers", mParser.getCurrentLineNumber());
       break;
 
     case ListOfConstants:
-      if (strcmp(pszName, "ListOfConstants")) fatalError();
+      if (strcmp(pszName, "ListOfConstants"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "ListOfConstants", mParser.getCurrentLineNumber());
       break;
 
     case KineticLaw:
-      if (strcmp(pszName, "KineticLaw")) fatalError();
+      if (strcmp(pszName, "KineticLaw"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "KineticLaw", mParser.getCurrentLineNumber());
       mCurrentElement = Reaction;
       break;
 
@@ -2273,7 +2435,8 @@ void CCopasiXMLParser::ReactionElement::end(const XML_Char *pszName)
       break;
 
     default:
-      fatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                     pszName, "???", mParser.getCurrentLineNumber());
       break;
     }
 
@@ -2298,11 +2461,15 @@ void CCopasiXMLParser::ListOfSubstratesElement::start(const XML_Char *pszName,
   switch (mCurrentElement)
     {
     case ListOfSubstrates:
-      if (strcmp(pszName, "ListOfSubstrates")) fatalError();
+      if (strcmp(pszName, "ListOfSubstrates"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "ListOfSubstrates", mParser.getCurrentLineNumber());
       break;
 
     case Substrate:
-      if (strcmp(pszName, "Substrate")) fatalError();
+      if (strcmp(pszName, "Substrate"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "Substrate", mParser.getCurrentLineNumber());
 
       /* If we do not have a Substrate element handler we create one. */
       if (!mpCurrentHandler)
@@ -2329,7 +2496,9 @@ void CCopasiXMLParser::ListOfSubstratesElement::end(const XML_Char *pszName)
   switch (mCurrentElement)
     {
     case ListOfSubstrates:
-      if (strcmp(pszName, "ListOfSubstrates")) fatalError();
+      if (strcmp(pszName, "ListOfSubstrates"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "ListOfSubstrates", mParser.getCurrentLineNumber());
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
 
@@ -2338,7 +2507,9 @@ void CCopasiXMLParser::ListOfSubstratesElement::end(const XML_Char *pszName)
       break;
 
     case Substrate:
-      if (strcmp(pszName, "Substrate")) fatalError();
+      if (strcmp(pszName, "Substrate"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "Substrate", mParser.getCurrentLineNumber());
       mCurrentElement = ListOfSubstrates;
       break;
 
@@ -2347,7 +2518,8 @@ void CCopasiXMLParser::ListOfSubstratesElement::end(const XML_Char *pszName)
       break;
 
     default:
-      fatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                     pszName, "???", mParser.getCurrentLineNumber());
       break;
     }
 
@@ -2377,7 +2549,9 @@ void CCopasiXMLParser::SubstrateElement::start(const XML_Char *pszName,
   switch (mCurrentElement)
     {
     case Substrate:
-      if (strcmp(pszName, "Substrate")) fatalError();
+      if (strcmp(pszName, "Substrate"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "Substrate", mParser.getCurrentLineNumber());
       Metabolite = mParser.getAttributeValue("metabolite", papszAttrs);
       Stoichiometry = mParser.getAttributeValue("stoichiometry", papszAttrs);
 
@@ -2404,7 +2578,9 @@ void CCopasiXMLParser::SubstrateElement::end(const XML_Char *pszName)
   switch (mCurrentElement)
     {
     case Substrate:
-      if (strcmp(pszName, "Substrate")) fatalError();
+      if (strcmp(pszName, "Substrate"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "Substrate", mParser.getCurrentLineNumber());
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
 
@@ -2417,7 +2593,8 @@ void CCopasiXMLParser::SubstrateElement::end(const XML_Char *pszName)
       break;
 
     default:
-      fatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                     pszName, "???", mParser.getCurrentLineNumber());
       break;
     }
 
@@ -2442,11 +2619,15 @@ void CCopasiXMLParser::ListOfProductsElement::start(const XML_Char *pszName,
   switch (mCurrentElement)
     {
     case ListOfProducts:
-      if (strcmp(pszName, "ListOfProducts")) fatalError();
+      if (strcmp(pszName, "ListOfProducts"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "ListOfProducts", mParser.getCurrentLineNumber());
       break;
 
     case Product:
-      if (strcmp(pszName, "Product")) fatalError();
+      if (strcmp(pszName, "Product"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "Product", mParser.getCurrentLineNumber());
 
       /* If we do not have a Product element handler we create one. */
       if (!mpCurrentHandler)
@@ -2473,7 +2654,9 @@ void CCopasiXMLParser::ListOfProductsElement::end(const XML_Char *pszName)
   switch (mCurrentElement)
     {
     case ListOfProducts:
-      if (strcmp(pszName, "ListOfProducts")) fatalError();
+      if (strcmp(pszName, "ListOfProducts"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "ListOfProducts", mParser.getCurrentLineNumber());
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
 
@@ -2482,7 +2665,9 @@ void CCopasiXMLParser::ListOfProductsElement::end(const XML_Char *pszName)
       break;
 
     case Product:
-      if (strcmp(pszName, "Product")) fatalError();
+      if (strcmp(pszName, "Product"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "Product", mParser.getCurrentLineNumber());
       mCurrentElement = ListOfProducts;
       break;
 
@@ -2491,7 +2676,8 @@ void CCopasiXMLParser::ListOfProductsElement::end(const XML_Char *pszName)
       break;
 
     default:
-      fatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                     pszName, "???", mParser.getCurrentLineNumber());
       break;
     }
 
@@ -2521,7 +2707,9 @@ void CCopasiXMLParser::ProductElement::start(const XML_Char *pszName,
   switch (mCurrentElement)
     {
     case Product:
-      if (strcmp(pszName, "Product")) fatalError();
+      if (strcmp(pszName, "Product"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "Product", mParser.getCurrentLineNumber());
       Metabolite = mParser.getAttributeValue("metabolite", papszAttrs);
       Stoichiometry = mParser.getAttributeValue("stoichiometry", papszAttrs);
 
@@ -2548,7 +2736,9 @@ void CCopasiXMLParser::ProductElement::end(const XML_Char *pszName)
   switch (mCurrentElement)
     {
     case Product:
-      if (strcmp(pszName, "Product")) fatalError();
+      if (strcmp(pszName, "Product"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "Product", mParser.getCurrentLineNumber());
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
 
@@ -2561,7 +2751,8 @@ void CCopasiXMLParser::ProductElement::end(const XML_Char *pszName)
       break;
 
     default:
-      fatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                     pszName, "???", mParser.getCurrentLineNumber());
       break;
     }
 
@@ -2586,11 +2777,15 @@ void CCopasiXMLParser::ListOfModifiersElement::start(const XML_Char *pszName,
   switch (mCurrentElement)
     {
     case ListOfModifiers:
-      if (strcmp(pszName, "ListOfModifiers")) fatalError();
+      if (strcmp(pszName, "ListOfModifiers"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "ListOfModifiers", mParser.getCurrentLineNumber());
       break;
 
     case Modifier:
-      if (strcmp(pszName, "Modifier")) fatalError();
+      if (strcmp(pszName, "Modifier"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "Modifier", mParser.getCurrentLineNumber());
 
       /* If we do not have a Modifier element handler we create one. */
       if (!mpCurrentHandler)
@@ -2617,7 +2812,9 @@ void CCopasiXMLParser::ListOfModifiersElement::end(const XML_Char *pszName)
   switch (mCurrentElement)
     {
     case ListOfModifiers:
-      if (strcmp(pszName, "ListOfModifiers")) fatalError();
+      if (strcmp(pszName, "ListOfModifiers"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "ListOfModifiers", mParser.getCurrentLineNumber());
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
 
@@ -2626,7 +2823,9 @@ void CCopasiXMLParser::ListOfModifiersElement::end(const XML_Char *pszName)
       break;
 
     case Modifier:
-      if (strcmp(pszName, "Modifier")) fatalError();
+      if (strcmp(pszName, "Modifier"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "Modifier", mParser.getCurrentLineNumber());
       mCurrentElement = ListOfModifiers;
       break;
 
@@ -2635,7 +2834,8 @@ void CCopasiXMLParser::ListOfModifiersElement::end(const XML_Char *pszName)
       break;
 
     default:
-      fatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                     pszName, "???", mParser.getCurrentLineNumber());
       break;
     }
 
@@ -2665,7 +2865,9 @@ void CCopasiXMLParser::ModifierElement::start(const XML_Char *pszName,
   switch (mCurrentElement)
     {
     case Modifier:
-      if (strcmp(pszName, "Modifier")) fatalError();
+      if (strcmp(pszName, "Modifier"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "Modifier", mParser.getCurrentLineNumber());
       Metabolite = mParser.getAttributeValue("metabolite", papszAttrs);
       Stoichiometry = mParser.getAttributeValue("stoichiometry", papszAttrs);
 
@@ -2692,7 +2894,9 @@ void CCopasiXMLParser::ModifierElement::end(const XML_Char *pszName)
   switch (mCurrentElement)
     {
     case Modifier:
-      if (strcmp(pszName, "Modifier")) fatalError();
+      if (strcmp(pszName, "Modifier"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "Modifier", mParser.getCurrentLineNumber());
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
 
@@ -2705,7 +2909,8 @@ void CCopasiXMLParser::ModifierElement::end(const XML_Char *pszName)
       break;
 
     default:
-      fatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                     pszName, "???", mParser.getCurrentLineNumber());
       break;
     }
 
@@ -2730,12 +2935,16 @@ void CCopasiXMLParser::ListOfConstantsElement::start(const XML_Char *pszName,
   switch (mCurrentElement)
     {
     case ListOfConstants:
-      if (strcmp(pszName, "ListOfConstants")) fatalError();
+      if (strcmp(pszName, "ListOfConstants"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "ListOfConstants", mParser.getCurrentLineNumber());
       mCommon.pReaction->getParameters().clear();
       break;
 
     case Constant:
-      if (strcmp(pszName, "Constant")) fatalError();
+      if (strcmp(pszName, "Constant"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "Constant", mParser.getCurrentLineNumber());
 
       /* If we do not have a Constant element handler we create one. */
       if (!mpCurrentHandler)
@@ -2762,7 +2971,9 @@ void CCopasiXMLParser::ListOfConstantsElement::end(const XML_Char *pszName)
   switch (mCurrentElement)
     {
     case ListOfConstants:
-      if (strcmp(pszName, "ListOfConstants")) fatalError();
+      if (strcmp(pszName, "ListOfConstants"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "ListOfConstants", mParser.getCurrentLineNumber());
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
 
@@ -2771,7 +2982,9 @@ void CCopasiXMLParser::ListOfConstantsElement::end(const XML_Char *pszName)
       break;
 
     case Constant:
-      if (strcmp(pszName, "Constant")) fatalError();
+      if (strcmp(pszName, "Constant"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "Constant", mParser.getCurrentLineNumber());
       mCurrentElement = ListOfConstants;
       break;
 
@@ -2780,7 +2993,8 @@ void CCopasiXMLParser::ListOfConstantsElement::end(const XML_Char *pszName)
       break;
 
     default:
-      fatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                     pszName, "???", mParser.getCurrentLineNumber());
       break;
     }
 
@@ -2809,7 +3023,9 @@ void CCopasiXMLParser::ConstantElement::start(const XML_Char *pszName,
   switch (mCurrentElement)
     {
     case Constant:
-      if (strcmp(pszName, "Constant")) fatalError();
+      if (strcmp(pszName, "Constant"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "Constant", mParser.getCurrentLineNumber());
 
       Key = mParser.getAttributeValue("key", papszAttrs);
       Name = mParser.getAttributeValue("name", papszAttrs);
@@ -2841,7 +3057,9 @@ void CCopasiXMLParser::ConstantElement::end(const XML_Char *pszName)
   switch (mCurrentElement)
     {
     case Constant:
-      if (strcmp(pszName, "Constant")) fatalError();
+      if (strcmp(pszName, "Constant"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "Constant", mParser.getCurrentLineNumber());
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
 
@@ -2854,7 +3072,8 @@ void CCopasiXMLParser::ConstantElement::end(const XML_Char *pszName)
       break;
 
     default:
-      fatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                     pszName, "???", mParser.getCurrentLineNumber());
       break;
     }
 
@@ -2882,7 +3101,9 @@ void CCopasiXMLParser::KineticLawElement::start(const XML_Char *pszName,
   switch (mCurrentElement)
     {
     case KineticLaw:
-      if (strcmp(pszName, "KineticLaw")) fatalError();
+      if (strcmp(pszName, "KineticLaw"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "KineticLaw", mParser.getCurrentLineNumber());
 
       Function = mParser.getAttributeValue("function", papszAttrs);
 
@@ -2891,9 +3112,9 @@ void CCopasiXMLParser::KineticLawElement::start(const XML_Char *pszName,
 
       if (!pFunction)
         {
-          CCopasiMessage Message(CCopasiMessage::RAW, MCXML + 7, Function,
-                                 mCommon.pReaction->getObjectName().c_str(),
-                                 mParser.getCurrentLineNumber());
+          CCopasiMessage(CCopasiMessage::RAW, MCXML + 7, Function,
+                         mCommon.pReaction->getObjectName().c_str(),
+                         mParser.getCurrentLineNumber());
           pFunction = CCopasiDataModel::Global->mpUndefined;
         }
 
@@ -2901,7 +3122,9 @@ void CCopasiXMLParser::KineticLawElement::start(const XML_Char *pszName,
       break;
 
     case ListOfCallParameters:
-      if (strcmp(pszName, "ListOfCallParameters")) fatalError();
+      if (strcmp(pszName, "ListOfCallParameters"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "ListOfCallParameters", mParser.getCurrentLineNumber());
 
       if (mCommon.pReaction->getFunction() == CCopasiDataModel::Global->mpUndefined)
         mParser.onStartElement(pszName, papszAttrs);
@@ -2931,7 +3154,9 @@ void CCopasiXMLParser::KineticLawElement::end(const XML_Char *pszName)
   switch (mCurrentElement)
     {
     case KineticLaw:
-      if (strcmp(pszName, "KineticLaw")) fatalError();
+      if (strcmp(pszName, "KineticLaw"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "KineticLaw", mParser.getCurrentLineNumber());
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
 
@@ -2940,7 +3165,9 @@ void CCopasiXMLParser::KineticLawElement::end(const XML_Char *pszName)
       break;
 
     case ListOfCallParameters:
-      if (strcmp(pszName, "ListOfCallParameters")) fatalError();
+      if (strcmp(pszName, "ListOfCallParameters"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "ListOfCallParameters", mParser.getCurrentLineNumber());
       mCurrentElement = KineticLaw;
       break;
 
@@ -2953,7 +3180,8 @@ void CCopasiXMLParser::KineticLawElement::end(const XML_Char *pszName)
       break;
 
     default:
-      fatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                     pszName, "???", mParser.getCurrentLineNumber());
       break;
     }
 
@@ -2978,11 +3206,15 @@ void CCopasiXMLParser::ListOfCallParametersElement::start(const XML_Char *pszNam
   switch (mCurrentElement)
     {
     case ListOfCallParameters:
-      if (strcmp(pszName, "ListOfCallParameters")) fatalError();
+      if (strcmp(pszName, "ListOfCallParameters"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "ListOfCallParameters", mParser.getCurrentLineNumber());
       break;
 
     case CallParameter:
-      if (strcmp(pszName, "CallParameter")) fatalError();
+      if (strcmp(pszName, "CallParameter"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "CallParameter", mParser.getCurrentLineNumber());
 
       /* If we do not have a CallParameter element handler we create one. */
       if (!mpCurrentHandler)
@@ -3009,7 +3241,9 @@ void CCopasiXMLParser::ListOfCallParametersElement::end(const XML_Char *pszName)
   switch (mCurrentElement)
     {
     case ListOfCallParameters:
-      if (strcmp(pszName, "ListOfCallParameters")) fatalError();
+      if (strcmp(pszName, "ListOfCallParameters"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "ListOfCallParameters", mParser.getCurrentLineNumber());
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
 
@@ -3018,7 +3252,9 @@ void CCopasiXMLParser::ListOfCallParametersElement::end(const XML_Char *pszName)
       break;
 
     case CallParameter:
-      if (strcmp(pszName, "CallParameter")) fatalError();
+      if (strcmp(pszName, "CallParameter"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "CallParameter", mParser.getCurrentLineNumber());
       mCurrentElement = ListOfCallParameters;
       break;
 
@@ -3027,7 +3263,8 @@ void CCopasiXMLParser::ListOfCallParametersElement::end(const XML_Char *pszName)
       break;
 
     default:
-      fatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                     pszName, "???", mParser.getCurrentLineNumber());
       break;
     }
 
@@ -3054,7 +3291,9 @@ void CCopasiXMLParser::CallParameterElement::start(const XML_Char *pszName,
   switch (mCurrentElement)
     {
     case CallParameter:
-      if (strcmp(pszName, "CallParameter")) fatalError();
+      if (strcmp(pszName, "CallParameter"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "CallParameter", mParser.getCurrentLineNumber());
 
       FunctionParameter =
         mParser.getAttributeValue("functionParameter", papszAttrs);
@@ -3067,7 +3306,9 @@ void CCopasiXMLParser::CallParameterElement::start(const XML_Char *pszName,
       break;
 
     case SourceParameter:
-      if (strcmp(pszName, "SourceParameter")) fatalError();
+      if (strcmp(pszName, "SourceParameter"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "SourceParameter", mParser.getCurrentLineNumber());
 
       /* If we do not have a SourceParameter element handler we create one. */
       if (!mpCurrentHandler)
@@ -3094,7 +3335,9 @@ void CCopasiXMLParser::CallParameterElement::end(const XML_Char *pszName)
   switch (mCurrentElement)
     {
     case CallParameter:
-      if (strcmp(pszName, "CallParameter")) fatalError();
+      if (strcmp(pszName, "CallParameter"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "CallParameter", mParser.getCurrentLineNumber());
       if (mCommon.SourceParameterKeys.size() > 0)
         {
           mCommon.pReaction->
@@ -3111,7 +3354,9 @@ void CCopasiXMLParser::CallParameterElement::end(const XML_Char *pszName)
       break;
 
     case SourceParameter:
-      if (strcmp(pszName, "SourceParameter")) fatalError();
+      if (strcmp(pszName, "SourceParameter"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "SourceParameter", mParser.getCurrentLineNumber());
       mCurrentElement = CallParameter;
       break;
 
@@ -3120,7 +3365,8 @@ void CCopasiXMLParser::CallParameterElement::end(const XML_Char *pszName)
       break;
 
     default:
-      fatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                     pszName, "???", mParser.getCurrentLineNumber());
       break;
     }
 
@@ -3151,7 +3397,9 @@ void CCopasiXMLParser::SourceParameterElement::start(const XML_Char *pszName,
   switch (mCurrentElement)
     {
     case SourceParameter:
-      if (strcmp(pszName, "SourceParameter")) fatalError();
+      if (strcmp(pszName, "SourceParameter"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "SourceParameter", mParser.getCurrentLineNumber());
 
       Reference =
         mParser.getAttributeValue("reference", papszAttrs);
@@ -3185,7 +3433,9 @@ void CCopasiXMLParser::SourceParameterElement::end(const XML_Char *pszName)
   switch (mCurrentElement)
     {
     case SourceParameter:
-      if (strcmp(pszName, "SourceParameter")) fatalError();
+      if (strcmp(pszName, "SourceParameter"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "SourceParameter", mParser.getCurrentLineNumber());
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
 
@@ -3198,7 +3448,8 @@ void CCopasiXMLParser::SourceParameterElement::end(const XML_Char *pszName)
       break;
 
     default:
-      fatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                     pszName, "???", mParser.getCurrentLineNumber());
       break;
     }
 
@@ -3223,13 +3474,17 @@ void CCopasiXMLParser::StateTemplateElement::start(const XML_Char *pszName,
   switch (mCurrentElement)
     {
     case StateTemplate:
-      if (strcmp(pszName, "StateTemplate")) fatalError();
+      if (strcmp(pszName, "StateTemplate"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "StateTemplate", mParser.getCurrentLineNumber());
 
       mCommon.StateVariableList.clear();
       break;
 
     case StateTemplateVariable:
-      if (strcmp(pszName, "StateTemplateVariable")) fatalError();
+      if (strcmp(pszName, "StateTemplateVariable"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "StateTemplateVariable", mParser.getCurrentLineNumber());
 
       /* If we do not have a StateTemplateVariable element handler we create one. */
       if (!mpCurrentHandler)
@@ -3256,7 +3511,9 @@ void CCopasiXMLParser::StateTemplateElement::end(const XML_Char *pszName)
   switch (mCurrentElement)
     {
     case StateTemplate:
-      if (strcmp(pszName, "StateTemplate")) fatalError();
+      if (strcmp(pszName, "StateTemplate"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "StateTemplate", mParser.getCurrentLineNumber());
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
 
@@ -3265,7 +3522,9 @@ void CCopasiXMLParser::StateTemplateElement::end(const XML_Char *pszName)
       break;
 
     case StateTemplateVariable:
-      if (strcmp(pszName, "StateTemplateVariable")) fatalError();
+      if (strcmp(pszName, "StateTemplateVariable"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "StateTemplateVariable", mParser.getCurrentLineNumber());
       mCurrentElement = StateTemplate;
       break;
 
@@ -3274,7 +3533,8 @@ void CCopasiXMLParser::StateTemplateElement::end(const XML_Char *pszName)
       break;
 
     default:
-      fatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                     pszName, "???", mParser.getCurrentLineNumber());
       break;
     }
 
@@ -3311,13 +3571,12 @@ void CCopasiXMLParser::StateTemplateVariableElement::start(const XML_Char *pszNa
   switch (mCurrentElement)
     {
     case StateTemplateVariable:
-      if (strcmp(pszName, "StateTemplateVariable")) fatalError();
+      if (strcmp(pszName, "StateTemplateVariable"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "StateTemplateVariable", mParser.getCurrentLineNumber());
 
-      // This is now optional.
-      // Key = mParser.getAttributeValue("key", papszAttrs);
       ObjectReference = mParser.getAttributeValue("objectReference",
                         papszAttrs);
-
       pObject = mCommon.KeyMap.get(ObjectReference);
 
       /*if ((pMetabolite = dynamic_cast< CMetab * >(pObject)))
@@ -3354,7 +3613,9 @@ void CCopasiXMLParser::StateTemplateVariableElement::end(const XML_Char *pszName
   switch (mCurrentElement)
     {
     case StateTemplateVariable:
-      if (strcmp(pszName, "StateTemplateVariable")) fatalError();
+      if (strcmp(pszName, "StateTemplateVariable"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "StateTemplateVariable", mParser.getCurrentLineNumber());
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
 
@@ -3367,7 +3628,8 @@ void CCopasiXMLParser::StateTemplateVariableElement::end(const XML_Char *pszName
       break;
 
     default:
-      fatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                     pszName, "???", mParser.getCurrentLineNumber());
       break;
     }
 
@@ -3394,7 +3656,9 @@ void CCopasiXMLParser::InitialStateElement::start(const XML_Char *pszName,
   switch (mCurrentElement)
     {
     case InitialState:
-      if (strcmp(pszName, "InitialState")) fatalError();
+      if (strcmp(pszName, "InitialState"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "InitialState", mParser.getCurrentLineNumber());
 
       Type = mParser.getAttributeValue("type", papszAttrs, "initialState");
       if (strcmp(Type, "initialState")) fatalError();
@@ -3430,7 +3694,9 @@ void CCopasiXMLParser::InitialStateElement::end(const XML_Char *pszName)
   switch (mCurrentElement)
     {
     case InitialState:
-      if (strcmp(pszName, "InitialState")) fatalError();
+      if (strcmp(pszName, "InitialState"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "InitialState", mParser.getCurrentLineNumber());
 
       Values.str(mParser.getCharacterData("\x0a\x0d\t ", " "));
 
@@ -3472,7 +3738,8 @@ void CCopasiXMLParser::InitialStateElement::end(const XML_Char *pszName)
       break;
 
     default:
-      fatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                     pszName, "???", mParser.getCurrentLineNumber());
       break;
     }
 
@@ -3497,11 +3764,15 @@ void CCopasiXMLParser::ListOfPlotItemsElement::start(const XML_Char * pszName,
   switch (mCurrentElement)
     {
     case ListOfPlotItems:
-      if (strcmp(pszName, "ListOfPlotItems")) fatalError();
+      if (strcmp(pszName, "ListOfPlotItems"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "ListOfPlotItems", mParser.getCurrentLineNumber());
       break;
 
     case PlotItem:
-      if (strcmp(pszName, "PlotItem")) fatalError();
+      if (strcmp(pszName, "PlotItem"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "PlotItem", mParser.getCurrentLineNumber());
       // If we do not have a plot specification element handler, we create one
       if (!mpCurrentHandler)
         {
@@ -3526,14 +3797,18 @@ void CCopasiXMLParser::ListOfPlotItemsElement::end(const XML_Char * pszName)
   switch (mCurrentElement)
     {
     case ListOfPlotItems:
-      if (strcmp(pszName, "ListOfPlotItems")) fatalError();
+      if (strcmp(pszName, "ListOfPlotItems"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "ListOfPlotItems", mParser.getCurrentLineNumber());
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
       mParser.onEndElement(pszName);
       break;
 
     case PlotItem:
-      if (strcmp(pszName, "PlotItem")) fatalError();
+      if (strcmp(pszName, "PlotItem"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "PlotItem", mParser.getCurrentLineNumber());
       /*std::cout << "Number of Channels in current plot item: " << mCommon.pCurrentPlotItem->getChannels().size() << std::endl;
       unsigned int counter;
       for(counter=0; counter <  mCommon.pCurrentPlotItem->getChannels().size(); counter++){
@@ -3548,7 +3823,8 @@ void CCopasiXMLParser::ListOfPlotItemsElement::end(const XML_Char * pszName)
       break;
 
     default:
-      fatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                     pszName, "???", mParser.getCurrentLineNumber());
       break;
     }
   return;
@@ -3572,11 +3848,15 @@ void CCopasiXMLParser::ListOfChannelsElement::start(const XML_Char * pszName,
   switch (mCurrentElement)
     {
     case ListOfChannels:
-      if (strcmp(pszName, "ListOfChannels")) fatalError();
+      if (strcmp(pszName, "ListOfChannels"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "ListOfChannels", mParser.getCurrentLineNumber());
       break;
 
     case ChannelSpec:
-      if (strcmp(pszName, "ChannelSpec")) fatalError();
+      if (strcmp(pszName, "ChannelSpec"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "ChannelSpec", mParser.getCurrentLineNumber());
       if (!mpCurrentHandler)
         {
           mpCurrentHandler = new ChannelSpecElement(mParser, mCommon);
@@ -3600,14 +3880,18 @@ void CCopasiXMLParser::ListOfChannelsElement::end(const XML_Char * pszName)
   switch (mCurrentElement)
     {
     case ListOfChannels:
-      if (strcmp(pszName, "ListOfChannels")) fatalError();
+      if (strcmp(pszName, "ListOfChannels"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "ListOfChannels", mParser.getCurrentLineNumber());
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
       mParser.onEndElement(pszName);
       break;
 
     case ChannelSpec:
-      if (strcmp(pszName, "ChannelSpec")) fatalError();
+      if (strcmp(pszName, "ChannelSpec"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "ChannelSpec", mParser.getCurrentLineNumber());
       mCommon.pCurrentPlotItem->getChannels().push_back(*(mCommon.pCurrentChannelSpec));
       //std::cout << "Adding new Channel to PlotItem: " << mCommon.pCurrentChannelSpec << std::endl;
       delete mCommon.pCurrentChannelSpec;
@@ -3620,7 +3904,8 @@ void CCopasiXMLParser::ListOfChannelsElement::end(const XML_Char * pszName)
       break;
 
     default:
-      fatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                     pszName, "???", mParser.getCurrentLineNumber());
       break;
     }
   return;
@@ -3644,7 +3929,9 @@ void CCopasiXMLParser::ListOfPlotsElement::start(const XML_Char * pszName,
   switch (mCurrentElement)
     {
     case ListOfPlots:
-      if (strcmp(pszName, "ListOfPlots")) fatalError();
+      if (strcmp(pszName, "ListOfPlots"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "ListOfPlots", mParser.getCurrentLineNumber());
       if (!mCommon.pPlotList)
         {
           mCommon.pPlotList = new COutputDefinitionVector;
@@ -3652,7 +3939,9 @@ void CCopasiXMLParser::ListOfPlotsElement::start(const XML_Char * pszName,
       break;
 
     case PlotSpecification:
-      if (strcmp(pszName, "PlotSpecification")) fatalError();
+      if (strcmp(pszName, "PlotSpecification"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "PlotSpecification", mParser.getCurrentLineNumber());
       // If we do not have a plot specification element handler, we create one
       if (!mpCurrentHandler)
         {
@@ -3677,14 +3966,18 @@ void CCopasiXMLParser::ListOfPlotsElement::end(const XML_Char * pszName)
   switch (mCurrentElement)
     {
     case ListOfPlots:
-      if (strcmp(pszName, "ListOfPlots")) fatalError();
+      if (strcmp(pszName, "ListOfPlots"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "ListOfPlots", mParser.getCurrentLineNumber());
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
       mParser.onEndElement(pszName);
       break;
 
     case PlotSpecification:
-      if (strcmp(pszName, "PlotSpecification")) fatalError();
+      if (strcmp(pszName, "PlotSpecification"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "PlotSpecification", mParser.getCurrentLineNumber());
       // add mCommon.pCurrentPlot to the listOfPlots and set
       // mCommon.pCurrentPlot to NULL
       mCommon.pPlotList->add(*mCommon.pCurrentPlot);
@@ -3699,7 +3992,8 @@ void CCopasiXMLParser::ListOfPlotsElement::end(const XML_Char * pszName)
       break;
 
     default:
-      fatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                     pszName, "???", mParser.getCurrentLineNumber());
       break;
     }
   return;
@@ -3724,7 +4018,9 @@ void CCopasiXMLParser::ChannelSpecElement::start(const XML_Char *pszName, const 
   switch (mCurrentElement)
     {
     case ChannelSpec:
-      if (strcmp(pszName, "ChannelSpec")) fatalError();
+      if (strcmp(pszName, "ChannelSpec"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "ChannelSpec", mParser.getCurrentLineNumber());
       // create a new CPlotSpecification element depending on the type
       name = mParser.getAttributeValue("cn", papszAttrs);
       //std::cout << "Creating new DataChannelSpec with name: " << name << std::endl;
@@ -3773,7 +4069,9 @@ void CCopasiXMLParser::ChannelSpecElement::end(const XML_Char *pszName)
   switch (mCurrentElement)
     {
     case ChannelSpec:
-      if (strcmp(pszName, "ChannelSpec")) fatalError();
+      if (strcmp(pszName, "ChannelSpec"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "ChannelSpec", mParser.getCurrentLineNumber());
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
       mParser.onEndElement(pszName);
@@ -3784,7 +4082,8 @@ void CCopasiXMLParser::ChannelSpecElement::end(const XML_Char *pszName)
       break;
 
     default:
-      fatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                     pszName, "???", mParser.getCurrentLineNumber());
       break;
     }
   return;
@@ -3808,7 +4107,9 @@ void CCopasiXMLParser::PlotItemElement::start(const XML_Char *pszName, const XML
   switch (mCurrentElement)
     {
     case PlotItem:
-      if (strcmp(pszName, "PlotItem")) fatalError();
+      if (strcmp(pszName, "PlotItem"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "PlotItem", mParser.getCurrentLineNumber());
       // create a new CPlotSpecification element depending on the type
       name = mParser.getAttributeValue("name", papszAttrs);
       sType = mParser.getAttributeValue("type", papszAttrs);
@@ -3872,7 +4173,9 @@ void CCopasiXMLParser::PlotItemElement::end(const XML_Char *pszName)
   switch (mCurrentElement)
     {
     case PlotItem:
-      if (strcmp(pszName, "PlotItem")) fatalError();
+      if (strcmp(pszName, "PlotItem"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "PlotItem", mParser.getCurrentLineNumber());
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
       mParser.onEndElement(pszName);
@@ -3940,9 +4243,9 @@ void CCopasiXMLParser::PlotItemElement::end(const XML_Char *pszName)
             }
           else
             {
-              CCopasiMessage Message(CCopasiMessage::RAW, MCXML + 4,
-                                     mCommon.pCurrentParameter->getObjectName().c_str(),
-                                     mLineNumber);
+              CCopasiMessage(CCopasiMessage::RAW, MCXML + 4,
+                             mCommon.pCurrentParameter->getObjectName().c_str(),
+                             mLineNumber);
             }
           pdelete(mCommon.pCurrentParameter);
           mCurrentElement = PlotItem;
@@ -3968,7 +4271,8 @@ void CCopasiXMLParser::PlotItemElement::end(const XML_Char *pszName)
       break;
 
     default:
-      fatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                     pszName, "???", mParser.getCurrentLineNumber());
       break;
     }
   return;
@@ -3993,7 +4297,9 @@ void CCopasiXMLParser::PlotSpecificationElement::start(const XML_Char *pszName, 
   switch (mCurrentElement)
     {
     case PlotSpecification:
-      if (strcmp(pszName, "PlotSpecification")) fatalError();
+      if (strcmp(pszName, "PlotSpecification"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "PlotSpecification", mParser.getCurrentLineNumber());
       // create a new CPlotSpecification element depending on the type
       mCommon.pCurrentPlot = new CPlotSpecification();
       mCommon.pCurrentPlotItem = mCommon.pCurrentPlot;
@@ -4141,9 +4447,9 @@ void CCopasiXMLParser::PlotSpecificationElement::end(const XML_Char *pszName)
             }
           else
             {
-              CCopasiMessage Message(CCopasiMessage::RAW, MCXML + 4,
-                                     mCommon.pCurrentParameter->getObjectName().c_str(),
-                                     mLineNumber);
+              CCopasiMessage(CCopasiMessage::RAW, MCXML + 4,
+                             mCommon.pCurrentParameter->getObjectName().c_str(),
+                             mLineNumber);
             }
           pdelete(mCommon.pCurrentParameter);
           mCurrentElement = PlotSpecification;
@@ -4182,9 +4488,9 @@ void CCopasiXMLParser::PlotSpecificationElement::end(const XML_Char *pszName)
             }
           else
             {
-              CCopasiMessage Message(CCopasiMessage::RAW, MCXML + 4,
-                                     mCommon.pCurrentParameter->getObjectName().c_str(),
-                                     mLineNumber);
+              CCopasiMessage(CCopasiMessage::RAW, MCXML + 4,
+                             mCommon.pCurrentParameter->getObjectName().c_str(),
+                             mLineNumber);
             }
           pdelete(mCommon.pCurrentParameter);
           mCurrentElement = PlotSpecification;
@@ -4210,7 +4516,8 @@ void CCopasiXMLParser::PlotSpecificationElement::end(const XML_Char *pszName)
       break;
 
     default:
-      fatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                     pszName, "???", mParser.getCurrentLineNumber());
       break;
     }
 
@@ -4236,7 +4543,9 @@ void CCopasiXMLParser::ListOfTasksElement::start(const XML_Char * pszName,
   switch (mCurrentElement)
     {
     case ListOfTasks:
-      if (strcmp(pszName, "ListOfTasks")) fatalError();
+      if (strcmp(pszName, "ListOfTasks"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "ListOfTasks", mParser.getCurrentLineNumber());
       if (!mCommon.pTaskList)
         {
           mCommon.pTaskList = new CCopasiVectorN<CCopasiTask>;
@@ -4244,7 +4553,9 @@ void CCopasiXMLParser::ListOfTasksElement::start(const XML_Char * pszName,
       break;
 
     case Task:
-      if (strcmp(pszName, "Task")) fatalError();
+      if (strcmp(pszName, "Task"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "Task", mParser.getCurrentLineNumber());
       /* If we do not have a task element handler, we create one */
       if (!mpCurrentHandler)
         {
@@ -4269,14 +4580,18 @@ void CCopasiXMLParser::ListOfTasksElement::end(const XML_Char * pszName)
   switch (mCurrentElement)
     {
     case ListOfTasks:
-      if (strcmp(pszName, "ListOfTasks")) fatalError();
+      if (strcmp(pszName, "ListOfTasks"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "ListOfTasks", mParser.getCurrentLineNumber());
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
       mParser.onEndElement(pszName);
       break;
 
     case Task:
-      if (strcmp(pszName, "Task")) fatalError();
+      if (strcmp(pszName, "Task"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "Task", mParser.getCurrentLineNumber());
 
       if (mCommon.pCurrentTask)
         {
@@ -4292,7 +4607,8 @@ void CCopasiXMLParser::ListOfTasksElement::end(const XML_Char * pszName)
       break;
 
     default:
-      fatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                     pszName, "???", mParser.getCurrentLineNumber());
       break;
     }
   return;
@@ -4322,7 +4638,9 @@ void CCopasiXMLParser::TaskElement::start(const XML_Char *pszName, const XML_Cha
   switch (mCurrentElement)
     {
     case Task:
-      if (strcmp(pszName, "Task")) fatalError();
+      if (strcmp(pszName, "Task"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "Task", mParser.getCurrentLineNumber());
 
       mCommon.pCurrentTask = NULL;
 
@@ -4376,8 +4694,8 @@ void CCopasiXMLParser::TaskElement::start(const XML_Char *pszName, const XML_Cha
           mParser.pushElementHandler(&mParser.mUnknownElement);
           mParser.onStartElement(pszName, papszAttrs);
 
-          CCopasiMessage Message(CCopasiMessage::RAW, MCXML + 5,
-                                 type, mParser.getCurrentLineNumber());
+          CCopasiMessage(CCopasiMessage::RAW, MCXML + 5,
+                         type, mParser.getCurrentLineNumber());
           break;
         }
 
@@ -4449,7 +4767,9 @@ void CCopasiXMLParser::TaskElement::end(const XML_Char *pszName)
   switch (mCurrentElement)
     {
     case Task:
-      if (strcmp(pszName, "Task")) fatalError();
+      if (strcmp(pszName, "Task"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "Task", mParser.getCurrentLineNumber());
       if (!mCommon.pCurrentTask)
         CCopasiMessage::getLastMessage();
 
@@ -4459,18 +4779,24 @@ void CCopasiXMLParser::TaskElement::end(const XML_Char *pszName)
       break;
 
     case Report:
-      if (strcmp(pszName, "Report")) fatalError();
+      if (strcmp(pszName, "Report"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "Report", mParser.getCurrentLineNumber());
       // do nothing, the pointer to the correct report definition can
       // only be set after the report definitions have been read.
       break;
 
     case Problem:
-      if (strcmp(pszName, "Problem")) fatalError();
+      if (strcmp(pszName, "Problem"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "Problem", mParser.getCurrentLineNumber());
       mCommon.pCurrentTask->getProblem()->elevateChildren();
       break;
 
     case Method:
-      if (strcmp(pszName, "Method")) fatalError();
+      if (strcmp(pszName, "Method"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "Method", mParser.getCurrentLineNumber());
       mCommon.pCurrentTask->getMethod()->elevateChildren();
       mCurrentElement = Task;
       break;
@@ -4480,7 +4806,8 @@ void CCopasiXMLParser::TaskElement::end(const XML_Char *pszName)
       break;
 
     default:
-      fatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                     pszName, "???", mParser.getCurrentLineNumber());
       break;
     }
   return;
@@ -4505,7 +4832,9 @@ void CCopasiXMLParser::ReportInstanceElement::start(const XML_Char* pszName, con
   switch (mCurrentElement)
     {
     case Report:
-      if (strcmp(pszName, "Report")) fatalError();
+      if (strcmp(pszName, "Report"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "Report", mParser.getCurrentLineNumber());
       reference = mParser.getAttributeValue("reference", papszAttrs);
       target = mParser.getAttributeValue("target", papszAttrs);
 
@@ -4533,7 +4862,9 @@ void CCopasiXMLParser::ReportInstanceElement::end(const XML_Char* pszName)
   switch (mCurrentElement)
     {
     case Report:
-      if (strcmp(pszName, "Report")) fatalError();
+      if (strcmp(pszName, "Report"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "Report", mParser.getCurrentLineNumber());
       mCurrentElement = START_ELEMENT;
       mParser.popElementHandler();
       mParser.onEndElement(pszName);
@@ -4544,7 +4875,8 @@ void CCopasiXMLParser::ReportInstanceElement::end(const XML_Char* pszName)
       break;
 
     default:
-      fatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                     pszName, "???", mParser.getCurrentLineNumber());
       break;
     }
 }
@@ -4633,14 +4965,18 @@ void CCopasiXMLParser::ProblemElement::end(const XML_Char *pszName)
   switch (mCurrentElement)
     {
     case Problem:
-      if (strcmp(pszName, "Problem")) fatalError();
+      if (strcmp(pszName, "Problem"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "Problem", mParser.getCurrentLineNumber());
       mCurrentElement = START_ELEMENT;
       mParser.popElementHandler();
       mParser.onEndElement(pszName);
       break;
 
     case Parameter:
-      if (strcmp(pszName, "Parameter")) fatalError();
+      if (strcmp(pszName, "Parameter"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "Parameter", mParser.getCurrentLineNumber());
       // add the parameter in mCommon.pCurrentParameter to the Problem of
       // the current task.
       p = mCommon.pCurrentTask->getProblem()->getParameter(mCommon.pCurrentParameter->getObjectName());
@@ -4702,16 +5038,18 @@ void CCopasiXMLParser::ProblemElement::end(const XML_Char *pszName)
         }
       else
         {
-          CCopasiMessage Message(CCopasiMessage::RAW, MCXML + 4,
-                                 mCommon.pCurrentParameter->getObjectName().c_str(),
-                                 mLineNumber);
+          CCopasiMessage(CCopasiMessage::RAW, MCXML + 4,
+                         mCommon.pCurrentParameter->getObjectName().c_str(),
+                         mLineNumber);
         }
       pdelete(mCommon.pCurrentParameter);
       mCurrentElement = Problem;
       break;
 
     case ParameterGroup:
-      if (strcmp(pszName, "ParameterGroup")) fatalError();
+      if (strcmp(pszName, "ParameterGroup"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "ParameterGroup", mParser.getCurrentLineNumber());
       // add the parameter in mCommon.pCurrentParameter to the Problem of
       // the current task.
       p = mCommon.pCurrentTask->getProblem()->getParameter(mCommon.pCurrentParameter->getObjectName());
@@ -4743,16 +5081,18 @@ void CCopasiXMLParser::ProblemElement::end(const XML_Char *pszName)
         }
       else
         {
-          CCopasiMessage Message(CCopasiMessage::RAW, MCXML + 4,
-                                 mCommon.pCurrentParameter->getObjectName().c_str(),
-                                 mLineNumber);
+          CCopasiMessage(CCopasiMessage::RAW, MCXML + 4,
+                         mCommon.pCurrentParameter->getObjectName().c_str(),
+                         mLineNumber);
         }
       pdelete(mCommon.pCurrentParameter);
       mCurrentElement = Problem;
       break;
 
     case InitialState:
-      if (strcmp(pszName, "InitialState")) fatalError();
+      if (strcmp(pszName, "InitialState"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "InitialState", mParser.getCurrentLineNumber());
       // get the string that corresponds to initial state from
       // mComon.Comment, parse it to get the individual values and set
       // the values.
@@ -4766,7 +5106,8 @@ void CCopasiXMLParser::ProblemElement::end(const XML_Char *pszName)
       break;
 
     default:
-      fatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                     pszName, "???", mParser.getCurrentLineNumber());
       break;
     }
 
@@ -4789,7 +5130,9 @@ void CCopasiXMLParser::ProblemInitialStateElement::start(const XML_Char* pszName
   switch (mCurrentElement)
     {
     case InitialState:
-      if (strcmp(pszName, "InitialState")) fatalError();
+      if (strcmp(pszName, "InitialState"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "InitialState", mParser.getCurrentLineNumber());
       mParser.enableCharacterDataHandler(true);
       break;
 
@@ -4809,7 +5152,9 @@ void CCopasiXMLParser::ProblemInitialStateElement::end(const XML_Char* pszName)
   switch (mCurrentElement)
     {
     case InitialState:
-      if (strcmp(pszName, "InitialState")) fatalError();
+      if (strcmp(pszName, "InitialState"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "InitialState", mParser.getCurrentLineNumber());
       mCommon.CharacterData = mParser.getCharacterData("\x0a\x0d\t ", "");
       mCurrentElement = START_ELEMENT;
       mParser.popElementHandler();
@@ -4821,7 +5166,8 @@ void CCopasiXMLParser::ProblemInitialStateElement::end(const XML_Char* pszName)
       break;
 
     default:
-      fatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                     pszName, "???", mParser.getCurrentLineNumber());
       break;
     }
   return;
@@ -4898,7 +5244,9 @@ void CCopasiXMLParser::ParameterGroupElement::end(const XML_Char *pszName)
   switch (mCurrentElement)
     {
     case ParameterGroup:
-      if (strcmp(pszName, "ParameterGroup")) fatalError();
+      if (strcmp(pszName, "ParameterGroup"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "ParameterGroup", mParser.getCurrentLineNumber());
 
       mCommon.pCurrentParameter = mCommon.ParameterGroupStack.top();
       mCommon.ParameterGroupStack.pop();
@@ -4910,7 +5258,9 @@ void CCopasiXMLParser::ParameterGroupElement::end(const XML_Char *pszName)
       break;
 
     case Parameter:
-      if (!strcmp(pszName, "Parameter") && !strcmp(pszName, "ParameterGroup")) fatalError();
+      if (!strcmp(pszName, "Parameter") && !strcmp(pszName, "ParameterGroup"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "Parameter", mParser.getCurrentLineNumber());
 
       mCommon.ParameterGroupStack.top()->addParameter(* mCommon.pCurrentParameter);
       pdelete(mCommon.pCurrentParameter);
@@ -4923,7 +5273,8 @@ void CCopasiXMLParser::ParameterGroupElement::end(const XML_Char *pszName)
       break;
 
     default:
-      fatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                     pszName, "???", mParser.getCurrentLineNumber());
       break;
     }
   return;
@@ -4957,7 +5308,9 @@ void CCopasiXMLParser::ParameterElement::start(const XML_Char *pszName,
   switch (mCurrentElement)
     {
     case Parameter:
-      if (strcmp(pszName, "Parameter")) fatalError();
+      if (strcmp(pszName, "Parameter"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "Parameter", mParser.getCurrentLineNumber());
       // Parameter has attributes name, type and value
       name = mParser.getAttributeValue("name", papszAttrs);
       sType = mParser.getAttributeValue("type", papszAttrs);
@@ -5041,7 +5394,9 @@ void CCopasiXMLParser::ParameterElement::end(const XML_Char *pszName)
   switch (mCurrentElement)
     {
     case Parameter:
-      if (strcmp(pszName, "Parameter")) fatalError();
+      if (strcmp(pszName, "Parameter"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "Parameter", mParser.getCurrentLineNumber());
       mCurrentElement = START_ELEMENT;
       mParser.popElementHandler();
       mParser.onEndElement(pszName);
@@ -5052,7 +5407,8 @@ void CCopasiXMLParser::ParameterElement::end(const XML_Char *pszName)
       break;
 
     default:
-      fatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                     pszName, "???", mParser.getCurrentLineNumber());
       break;
     }
   return;
@@ -5150,14 +5506,18 @@ void CCopasiXMLParser::MethodElement::end(const XML_Char *pszName)
   switch (mCurrentElement)
     {
     case Method:
-      if (strcmp(pszName, "Method")) fatalError();
+      if (strcmp(pszName, "Method"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "Method", mParser.getCurrentLineNumber());
       mCurrentElement = START_ELEMENT;
       mParser.popElementHandler();
       mParser.onEndElement(pszName);
       break;
 
     case Parameter:
-      if (strcmp(pszName, "Parameter")) fatalError();
+      if (strcmp(pszName, "Parameter"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "Parameter", mParser.getCurrentLineNumber());
       // add the parameter in mCommon.pCurrentParameter to the Problem of
       // the current task.
 
@@ -5228,7 +5588,9 @@ void CCopasiXMLParser::MethodElement::end(const XML_Char *pszName)
       break;
 
     case ParameterGroup:
-      if (strcmp(pszName, "ParameterGroup")) fatalError();
+      if (strcmp(pszName, "ParameterGroup"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "ParameterGroup", mParser.getCurrentLineNumber());
       // add the parameter in mCommon.pCurrentParameter to the Problem of
       // the current task.
       p = mCommon.pCurrentTask->getProblem()->getParameter(mCommon.pCurrentParameter->getObjectName());
@@ -5260,9 +5622,9 @@ void CCopasiXMLParser::MethodElement::end(const XML_Char *pszName)
         }
       else
         {
-          CCopasiMessage Message(CCopasiMessage::RAW, MCXML + 4,
-                                 mCommon.pCurrentParameter->getObjectName().c_str(),
-                                 mLineNumber);
+          CCopasiMessage(CCopasiMessage::RAW, MCXML + 4,
+                         mCommon.pCurrentParameter->getObjectName().c_str(),
+                         mLineNumber);
         }
       pdelete(mCommon.pCurrentParameter);
       mCurrentElement = Method;
@@ -5273,7 +5635,8 @@ void CCopasiXMLParser::MethodElement::end(const XML_Char *pszName)
       break;
 
     default:
-      fatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                     pszName, "???", mParser.getCurrentLineNumber());
       break;
     }
   return;
@@ -5298,13 +5661,17 @@ void CCopasiXMLParser::ListOfReportsElement::start(const XML_Char *pszName,
   switch (mCurrentElement)
     {
     case ListOfReports:
-      if (strcmp(pszName, "ListOfReports")) fatalError();
+      if (strcmp(pszName, "ListOfReports"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "ListOfReports", mParser.getCurrentLineNumber());
       if (!mCommon.pReportList)
         mCommon.pReportList = new CReportDefinitionVector;
       break;
 
     case Report:
-      if (strcmp(pszName, "Report")) fatalError();
+      if (strcmp(pszName, "Report"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "Report", mParser.getCurrentLineNumber());
 
       /* If we do not have a report element handler we create one. */
       if (!mpCurrentHandler)
@@ -5345,7 +5712,9 @@ void CCopasiXMLParser::ListOfReportsElement::end(const XML_Char *pszName)
   switch (mCurrentElement)
     {
     case ListOfReports:
-      if (strcmp(pszName, "ListOfReports")) fatalError();
+      if (strcmp(pszName, "ListOfReports"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "ListOfReports", mParser.getCurrentLineNumber());
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
       // here would be a good place to resolve the report reference
@@ -5390,7 +5759,8 @@ void CCopasiXMLParser::ListOfReportsElement::end(const XML_Char *pszName)
       break;
 
     default:
-      fatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                     pszName, "???", mParser.getCurrentLineNumber());
       break;
     }
 
@@ -5433,7 +5803,9 @@ void CCopasiXMLParser::ReportElement::start(const XML_Char *pszName,
   switch (mCurrentElement)
     {
     case Report:
-      if (strcmp(pszName, "Report")) fatalError();
+      if (strcmp(pszName, "Report"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "Report", mParser.getCurrentLineNumber());
 
       // We have not found anything yet.
       tableFound = false;
@@ -5558,7 +5930,9 @@ void CCopasiXMLParser::ReportElement::end(const XML_Char *pszName)
   switch (mCurrentElement)
     {
     case Report:
-      if (strcmp(pszName, "Report")) fatalError();
+      if (strcmp(pszName, "Report"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "Report", mParser.getCurrentLineNumber());
       mCurrentElement = START_ELEMENT;
       mParser.popElementHandler();
 
@@ -5567,27 +5941,37 @@ void CCopasiXMLParser::ReportElement::end(const XML_Char *pszName)
       break;
 
     case Comment:
-      if (strcmp(pszName, "Comment")) fatalError();
+      if (strcmp(pszName, "Comment"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "Comment", mParser.getCurrentLineNumber());
       // check parameter type CCopasiStaticString
       mCommon.pReport->setComment(mCommon.CharacterData);
       mCommon.CharacterData = "";
       break;
 
     case Header:
-      if (strcmp(pszName, "Header")) fatalError();
+      if (strcmp(pszName, "Header"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "Header", mParser.getCurrentLineNumber());
       break;
 
     case Body:
-      if (strcmp(pszName, "Body")) fatalError();
+      if (strcmp(pszName, "Body"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "Body", mParser.getCurrentLineNumber());
       break;
 
     case Footer:
-      if (strcmp(pszName, "Footer")) fatalError();
+      if (strcmp(pszName, "Footer"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "Footer", mParser.getCurrentLineNumber());
       mCurrentElement = Report;
       break;
 
     case Table:
-      if (strcmp(pszName, "Table")) fatalError();
+      if (strcmp(pszName, "Table"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "Table", mParser.getCurrentLineNumber());
       mCurrentElement = Report;
       break;
 
@@ -5596,7 +5980,8 @@ void CCopasiXMLParser::ReportElement::end(const XML_Char *pszName)
       break;
 
     default:
-      fatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                     pszName, "???", mParser.getCurrentLineNumber());
       break;
     }
 }
@@ -5623,7 +6008,9 @@ void CCopasiXMLParser::HeaderElement::start(const XML_Char *pszName,
   switch (mCurrentElement)
     {
     case Header:
-      if (strcmp(pszName, "Header")) fatalError();
+      if (strcmp(pszName, "Header"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "Header", mParser.getCurrentLineNumber());
       return;
       break;
 
@@ -5677,7 +6064,9 @@ void CCopasiXMLParser::HeaderElement::end(const XML_Char *pszName)
   switch (mCurrentElement)
     {
     case Header:
-      if (strcmp(pszName, "Header")) fatalError();
+      if (strcmp(pszName, "Header"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "Header", mParser.getCurrentLineNumber());
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
 
@@ -5686,19 +6075,25 @@ void CCopasiXMLParser::HeaderElement::end(const XML_Char *pszName)
       break;
 
     case Text:
-      if (strcmp(pszName, "html")) fatalError();
+      if (strcmp(pszName, "html"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "html", mParser.getCurrentLineNumber());
       mCommon.pReport->getHeaderAddr()->push_back(CCopasiStaticString(mCommon.CharacterData).getCN());
       mCurrentElement = Header;
       break;
 
     case Object:
-      if (strcmp(pszName, "Object")) fatalError();
+      if (strcmp(pszName, "Object"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "Object", mParser.getCurrentLineNumber());
       mCommon.pReport->getHeaderAddr()->push_back(CCopasiObjectName(mCommon.CharacterData));
       mCurrentElement = Header;
       break;
 
     case Report:
-      if (strcmp(pszName, "Report")) fatalError();
+      if (strcmp(pszName, "Report"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "Report", mParser.getCurrentLineNumber());
       // add the key that is stored in mCommon.CharacterData to the map
       if (mCommon.reportReferenceMap.find(mCommon.CharacterData) == mCommon.reportReferenceMap.end())
         {
@@ -5714,7 +6109,8 @@ void CCopasiXMLParser::HeaderElement::end(const XML_Char *pszName)
       break;
 
     default:
-      fatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                     pszName, "???", mParser.getCurrentLineNumber());
       break;
     }
 }
@@ -5741,7 +6137,9 @@ void CCopasiXMLParser::BodyElement::start(const XML_Char *pszName,
   switch (mCurrentElement)
     {
     case Body:
-      if (strcmp(pszName, "Body")) fatalError();
+      if (strcmp(pszName, "Body"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "Body", mParser.getCurrentLineNumber());
       return;
       break;
 
@@ -5795,7 +6193,9 @@ void CCopasiXMLParser::BodyElement::end(const XML_Char *pszName)
   switch (mCurrentElement)
     {
     case Body:
-      if (strcmp(pszName, "Body")) fatalError();
+      if (strcmp(pszName, "Body"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "Body", mParser.getCurrentLineNumber());
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
 
@@ -5804,19 +6204,25 @@ void CCopasiXMLParser::BodyElement::end(const XML_Char *pszName)
       break;
 
     case Text:
-      if (strcmp(pszName, "html")) fatalError();
+      if (strcmp(pszName, "html"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "html", mParser.getCurrentLineNumber());
       mCommon.pReport->getBodyAddr()->push_back(CCopasiStaticString(mCommon.CharacterData).getCN());
       mCurrentElement = Body;
       break;
 
     case Object:
-      if (strcmp(pszName, "Object")) fatalError();
+      if (strcmp(pszName, "Object"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "Object", mParser.getCurrentLineNumber());
       mCommon.pReport->getBodyAddr()->push_back(CCopasiObjectName(mCommon.CharacterData));
       mCurrentElement = Body;
       break;
 
     case Report:
-      if (strcmp(pszName, "Report")) fatalError();
+      if (strcmp(pszName, "Report"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "Report", mParser.getCurrentLineNumber());
       // add the key that is stored in mCommon.CharacterData to the map
       if (mCommon.reportReferenceMap.find(mCommon.CharacterData) == mCommon.reportReferenceMap.end())
         {
@@ -5832,7 +6238,8 @@ void CCopasiXMLParser::BodyElement::end(const XML_Char *pszName)
       break;
 
     default:
-      fatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                     pszName, "???", mParser.getCurrentLineNumber());
       break;
     }
 }
@@ -5859,7 +6266,9 @@ void CCopasiXMLParser::FooterElement::start(const XML_Char *pszName,
   switch (mCurrentElement)
     {
     case Footer:
-      if (strcmp(pszName, "Footer")) fatalError();
+      if (strcmp(pszName, "Footer"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "Footer", mParser.getCurrentLineNumber());
       return;
       break;
 
@@ -5913,7 +6322,9 @@ void CCopasiXMLParser::FooterElement::end(const XML_Char *pszName)
   switch (mCurrentElement)
     {
     case Footer:
-      if (strcmp(pszName, "Footer")) fatalError();
+      if (strcmp(pszName, "Footer"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "Footer", mParser.getCurrentLineNumber());
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
 
@@ -5922,19 +6333,25 @@ void CCopasiXMLParser::FooterElement::end(const XML_Char *pszName)
       break;
 
     case Text:
-      if (strcmp(pszName, "html")) fatalError();
+      if (strcmp(pszName, "html"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "html", mParser.getCurrentLineNumber());
       mCommon.pReport->getFooterAddr()->push_back(CCopasiStaticString(mCommon.CharacterData).getCN());
       mCurrentElement = Footer;
       break;
 
     case Object:
-      if (strcmp(pszName, "Object")) fatalError();
+      if (strcmp(pszName, "Object"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "Object", mParser.getCurrentLineNumber());
       mCommon.pReport->getFooterAddr()->push_back(CCopasiObjectName(mCommon.CharacterData));
       mCurrentElement = Footer;
       break;
 
     case Report:
-      if (strcmp(pszName, "Report")) fatalError();
+      if (strcmp(pszName, "Report"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "Object", mParser.getCurrentLineNumber());
       // add the key that is stored in mCommon.CharacterData to the map
       if (mCommon.reportReferenceMap.find(mCommon.CharacterData) == mCommon.reportReferenceMap.end())
         {
@@ -5950,7 +6367,8 @@ void CCopasiXMLParser::FooterElement::end(const XML_Char *pszName)
       break;
 
     default:
-      fatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                     pszName, "???", mParser.getCurrentLineNumber());
       break;
     }
 }
@@ -5975,13 +6393,17 @@ void CCopasiXMLParser::TableElement::start(const XML_Char *pszName,
   switch (mCurrentElement)
     {
     case Table:
-      if (strcmp(pszName, "Table")) fatalError();
+      if (strcmp(pszName, "Table"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "Table", mParser.getCurrentLineNumber());
       printTitle = mParser.getAttributeValue("printTitle", papszAttrs, "false");
       mCommon.pReport->setTitle(mParser.toBool(printTitle));
       break;
 
     case Object:
-      if (strcmp(pszName, "Object")) fatalError();
+      if (strcmp(pszName, "Object"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "Object", mParser.getCurrentLineNumber());
       if (!mpCurrentHandler)
         {
           mpCurrentHandler = new ObjectElement(mParser, mCommon);
@@ -6005,7 +6427,9 @@ void CCopasiXMLParser::TableElement::end(const XML_Char *pszName)
   switch (mCurrentElement)
     {
     case Table:
-      if (strcmp(pszName, "Table")) fatalError();
+      if (strcmp(pszName, "Table"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "Table", mParser.getCurrentLineNumber());
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
 
@@ -6014,7 +6438,9 @@ void CCopasiXMLParser::TableElement::end(const XML_Char *pszName)
       break;
 
     case Object:
-      if (strcmp(pszName, "Object")) fatalError();
+      if (strcmp(pszName, "Object"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "Object", mParser.getCurrentLineNumber());
       mCommon.pReport->getTableAddr()->push_back(mCommon.CharacterData);
       mCommon.CharacterData = "";
       mCurrentElement = Table;
@@ -6025,7 +6451,8 @@ void CCopasiXMLParser::TableElement::end(const XML_Char *pszName)
       break;
 
     default:
-      fatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                     pszName, "???", mParser.getCurrentLineNumber());
       break;
     }
   return;
@@ -6050,7 +6477,9 @@ void CCopasiXMLParser::ObjectElement::start(const XML_Char *pszName,
   switch (mCurrentElement)
     {
     case Object:
-      if (strcmp(pszName, "Object")) fatalError();
+      if (strcmp(pszName, "Object"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "Object", mParser.getCurrentLineNumber());
 
       cn = mParser.getAttributeValue("cn", papszAttrs);
       mCommon.CharacterData = cn;
@@ -6072,7 +6501,9 @@ void CCopasiXMLParser::ObjectElement::end(const XML_Char *pszName)
   switch (mCurrentElement)
     {
     case Object:
-      if (strcmp(pszName, "Object")) fatalError();
+      if (strcmp(pszName, "Object"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "Object", mParser.getCurrentLineNumber());
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
 
@@ -6085,7 +6516,8 @@ void CCopasiXMLParser::ObjectElement::end(const XML_Char *pszName)
       break;
 
     default:
-      fatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                     pszName, "???", mParser.getCurrentLineNumber());
       break;
     }
 }
@@ -6108,7 +6540,9 @@ void CCopasiXMLParser::GUIElement::start(const XML_Char *pszName,
   switch (mCurrentElement)
     {
     case GUI:
-      if (strcmp(pszName, "GUI")) fatalError();
+      if (strcmp(pszName, "GUI"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "GUI", mParser.getCurrentLineNumber());
       return;
       break;
 
@@ -6166,13 +6600,17 @@ void CCopasiXMLParser::ListOfSlidersElement::start(const XML_Char *pszName,
   switch (mCurrentElement)
     {
     case ListOfSliders:
-      if (strcmp(pszName, "ListOfSliders")) fatalError();
+      if (strcmp(pszName, "ListOfSliders"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "ListOfSliders", mParser.getCurrentLineNumber());
       if (!mCommon.pGUI->pSliderList)
         mCommon.pGUI->pSliderList = new CCopasiVector< CSlider >;
       break;
 
     case Slider:
-      if (strcmp(pszName, "Slider")) fatalError();
+      if (strcmp(pszName, "Slider"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "Slider", mParser.getCurrentLineNumber());
 
       /* If we do not have a Slider element handler we create one. */
       if (!mpCurrentHandler)
@@ -6199,7 +6637,9 @@ void CCopasiXMLParser::ListOfSlidersElement::end(const XML_Char *pszName)
   switch (mCurrentElement)
     {
     case ListOfSliders:
-      if (strcmp(pszName, "ListOfSliders")) fatalError();
+      if (strcmp(pszName, "ListOfSliders"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "ListOfSliders", mParser.getCurrentLineNumber());
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
 
@@ -6208,7 +6648,9 @@ void CCopasiXMLParser::ListOfSlidersElement::end(const XML_Char *pszName)
       break;
 
     case Slider:
-      if (strcmp(pszName, "Slider")) fatalError();
+      if (strcmp(pszName, "Slider"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "Slider", mParser.getCurrentLineNumber());
       mCurrentElement = ListOfSliders;
       break;
 
@@ -6217,7 +6659,8 @@ void CCopasiXMLParser::ListOfSlidersElement::end(const XML_Char *pszName)
       break;
 
     default:
-      fatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                     pszName, "???", mParser.getCurrentLineNumber());
       break;
     }
 
@@ -6256,7 +6699,9 @@ void CCopasiXMLParser::SliderElement::start(const XML_Char *pszName,
   switch (mCurrentElement)
     {
     case Slider:
-      if (strcmp(pszName, "Slider")) fatalError();
+      if (strcmp(pszName, "Slider"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "Slider", mParser.getCurrentLineNumber());
       Key = mParser.getAttributeValue("key", papszAttrs);
       AssociatedEntityKey = mParser.getAttributeValue("associatedEntityKey", papszAttrs);
       ObjectCN = mParser.getAttributeValue("objectCN", papszAttrs);
@@ -6317,7 +6762,9 @@ void CCopasiXMLParser::SliderElement::end(const XML_Char *pszName)
   switch (mCurrentElement)
     {
     case Slider:
-      if (strcmp(pszName, "Slider")) fatalError();
+      if (strcmp(pszName, "Slider"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "Slider", mParser.getCurrentLineNumber());
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
 
@@ -6330,7 +6777,8 @@ void CCopasiXMLParser::SliderElement::end(const XML_Char *pszName)
       break;
 
     default:
-      fatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                     pszName, "???", mParser.getCurrentLineNumber());
       break;
     }
 
@@ -6357,7 +6805,9 @@ void CCopasiXMLParser::SBMLReferenceElement::start(const XML_Char *pszName,
   switch (mCurrentElement)
     {
     case SBMLReference:
-      if (strcmp(pszName, "SBMLReference")) fatalError();
+      if (strcmp(pszName, "SBMLReference"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "SBMLReference", mParser.getCurrentLineNumber());
 
       File = mParser.getAttributeValue("file", papszAttrs);
       if (CCopasiDataModel::Global)
@@ -6366,7 +6816,9 @@ void CCopasiXMLParser::SBMLReferenceElement::start(const XML_Char *pszName,
       break;
 
     case SBMLMap:
-      if (strcmp(pszName, "SBMLMap")) fatalError();
+      if (strcmp(pszName, "SBMLMap"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "SBMLMap", mParser.getCurrentLineNumber());
 
       /* If we do not have a etc element handler we create one. */
       if (!mpCurrentHandler)
@@ -6393,7 +6845,9 @@ void CCopasiXMLParser::SBMLReferenceElement::end(const XML_Char *pszName)
   switch (mCurrentElement)
     {
     case SBMLReference:
-      if (strcmp(pszName, "SBMLReference")) fatalError();
+      if (strcmp(pszName, "SBMLReference"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "SBMLReference", mParser.getCurrentLineNumber());
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
 
@@ -6402,7 +6856,9 @@ void CCopasiXMLParser::SBMLReferenceElement::end(const XML_Char *pszName)
       break;
 
     case SBMLMap:
-      if (strcmp(pszName, "SBMLMap")) fatalError();
+      if (strcmp(pszName, "SBMLMap"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "SBMLMap", mParser.getCurrentLineNumber());
       mCurrentElement = SBMLReference;
       break;
 
@@ -6411,7 +6867,8 @@ void CCopasiXMLParser::SBMLReferenceElement::end(const XML_Char *pszName)
       break;
 
     default:
-      fatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                     pszName, "???", mParser.getCurrentLineNumber());
       break;
     }
 
@@ -6440,7 +6897,9 @@ void CCopasiXMLParser::SBMLMapElement::start(const XML_Char *pszName,
   switch (mCurrentElement)
     {
     case SBMLMap:
-      if (strcmp(pszName, "SBMLMap")) fatalError();
+      if (strcmp(pszName, "SBMLMap"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "SBMLMap", mParser.getCurrentLineNumber());
 
       SBMLid = mParser.getAttributeValue("SBMLid", papszAttrs);
       COPASIkey = mParser.getAttributeValue("COPASIkey", papszAttrs);
@@ -6482,7 +6941,9 @@ void CCopasiXMLParser::SBMLMapElement::end(const XML_Char *pszName)
   switch (mCurrentElement)
     {
     case SBMLMap:
-      if (strcmp(pszName, "SBMLMap")) fatalError();
+      if (strcmp(pszName, "SBMLMap"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "SBMLMap", mParser.getCurrentLineNumber());
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
 
@@ -6495,7 +6956,8 @@ void CCopasiXMLParser::SBMLMapElement::end(const XML_Char *pszName)
       break;
 
     default:
-      fatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                     pszName, "???", mParser.getCurrentLineNumber());
       break;
     }
 

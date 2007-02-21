@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-//   $Revision: 1.46 $
+//   $Revision: 1.47 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/21 16:04:58 $
+//   $Date: 2007/02/21 18:21:23 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -244,6 +244,12 @@ class CCopasiXMLParser : public CExpat
          * @param const XML_Char *pszName
          */
         virtual void end(const XML_Char *pszName);
+
+      private:
+        /**
+         * A pointer to the etcElement handler
+         */
+        etcElement * mpetcElement;
       };
 
 #endif // COPASI_TEMPLATE

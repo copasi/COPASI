@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.82 $
+//   $Revision: 1.83 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2007/01/18 12:11:58 $
+//   $Author: shoops $
+//   $Date: 2007/02/21 18:21:21 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -109,6 +109,8 @@ const MESSAGES Messages[] =
     {MCXML + 9, "XML (9): The file '%s'\nis written in a newer version '%s' of the COPASI file format.\n"
      "This file might include features your version of COPASI does not support.\n"
      "To assure full compatibility please download the newest version at http://www.copasi.org."},
+    {MCXML + 10, "XML (10): Invalid element '<%s>' expecting '<%s>' encountered at line '%d'."},
+    {MCXML + 11, "XML (11): Invalid closing element '</%s>' expecting '</%s>' encountered at line '%d'."},
 
     // CCopasiMessage
     {MCCopasiMessage + 1, "Message (1): No more messages."},
