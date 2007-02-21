@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-   $Revision: 1.36 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/25 15:09:38 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
+//   $Revision: 1.37 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/21 16:00:22 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -33,6 +33,7 @@ const std::string CModelEntity::StatusName[] =
     "assignment",
     "determined by reactions",
     "ode",
+    "time",
     ""
   };
 
@@ -43,6 +44,7 @@ const char * CModelEntity::XMLStatus[] =
     "assignment",
     "reactions",
     "ode",
+    "time",
     NULL
   };
 
