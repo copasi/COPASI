@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.164 $
+//   $Revision: 1.165 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/02/16 16:56:08 $
+//   $Author: gauges $
+//   $Date: 2007/02/22 15:36:09 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -641,7 +641,14 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
     }
   if (sbmlSpecies->isSetInitialAmount() && sbmlSpecies->getInitialAmount() == sbmlSpecies->getInitialAmount()) // make sure it's not set to NaN
     {
-      copasiMetabolite->setInitialValue(sbmlSpecies->getInitialAmount()*copasiModel->getQuantity2NumberFactor()); // CHECK UNITS !!!
+      if (sbmlSpecies->getInitialAmount() != 0.0)
+        {
+          copasiMetabolite->setInitialValue(sbmlSpecies->getInitialAmount()*copasiModel->getQuantity2NumberFactor()); // CHECK UNITS !!!
+        }
+      else
+        {
+          copasiMetabolite->setInitialConcentration(0.0);
+        }
     }
   else if (sbmlSpecies->isSetInitialConcentration() && sbmlSpecies->getInitialConcentration() == sbmlSpecies->getInitialConcentration()) // make sure it is not set to NaN
     {
