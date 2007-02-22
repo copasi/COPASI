@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGraphicalObject.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/02/16 00:09:33 $
+//   $Author: urost $
+//   $Date: 2007/02/22 17:30:45 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -96,7 +96,7 @@ class CLGraphicalObject : public CLBase, public CCopasiContainer
     const C_FLOAT64 & getWidth() const {return mBBox.getDimensions().getWidth();};
     void setWidth(const C_FLOAT64 & w) {mBBox.getDimensions().setWidth(w);};
 
-    const C_FLOAT64 & getHeigth() const {return mBBox.getDimensions().getHeight();};
+    const C_FLOAT64 & getHeight() const {return mBBox.getDimensions().getHeight();};
     void setHeight(const C_FLOAT64 & h) {mBBox.getDimensions().setHeight(h);};
 
     const std::string & getModelObjectKey() const {return mModelObjectKey;};
