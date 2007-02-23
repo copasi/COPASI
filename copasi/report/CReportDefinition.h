@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportDefinition.h,v $
-   $Revision: 1.39 $
-   $Name:  $
-   $Author: gauges $
-   $Date: 2006/10/15 08:00:56 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportDefinition.h,v $
+//   $Revision: 1.40 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/23 18:51:39 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -184,9 +184,8 @@ class CReportDefinition : public CCopasiObject
      * This adds header and body entries for one table element
      * (including separator if necessary)
      * @param const CCopasiObject * pObject
-     * @return bool success
      */
-    bool addTableElement(const CCopasiObject * pObject);
+    void addTableElement(const CCopasiObject * pObject);
   };
 
 #endif
