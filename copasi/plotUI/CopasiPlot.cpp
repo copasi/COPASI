@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-   $Revision: 1.46 $
-   $Name:  $
-   $Author: ssahle $
-   $Date: 2007/01/11 12:43:43 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
+//   $Revision: 1.47 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/23 18:49:06 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -327,6 +327,9 @@ bool CopasiPlot::compile(std::vector< CCopasiContainer * > listOfContainer)
 
           if (pObj)
             mObjects.insert(pObj);
+          else
+            CCopasiMessage(CCopasiMessage::WARNING, MCCopasiTask + 6,
+                           pItem->getChannels()[j].c_str());
 
           Inserted = ActivityObjects[ItemActivity].insert(pObj);
 
