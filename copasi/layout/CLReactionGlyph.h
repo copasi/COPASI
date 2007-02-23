@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLReactionGlyph.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/23 16:15:46 $
+//   $Date: 2007/02/23 16:17:34 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -154,6 +154,7 @@ class CLReactionGlyph : public CLGraphicalObject
 
     /**
      * assignment operator.
+     * makes a deep copy
      */
     CLReactionGlyph & operator= (const CLReactionGlyph & rhs);
 
