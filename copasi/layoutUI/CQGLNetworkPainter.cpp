@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/02/22 17:30:44 $
+//   $Date: 2007/02/23 21:02:41 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -83,7 +83,7 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
       for (j2 = 0;j2 < edgesToNodesOfReaction.size();j2++)
         {
           const CLCurve curve = edgesToNodesOfReaction[j2]->getCurve();
-          unsigned int k;
+          int k;
           std::vector<CLLineSegment> segments = curve.getCurveSegments();
           for (k = 0;k < curve.getNumCurveSegments();k++)
             {
@@ -338,17 +338,18 @@ void CQGLNetworkPainter::zoom(C_FLOAT64 zoomFactor)
   unsigned int i;
   for (i = 0;i < this->viewerNodes.size();i++)
     {
-      this->viewerNodes[i].setX(this->viewerNodes[i].getX() * zoomFactor);
-      this->viewerNodes[i].setY(this->viewerNodes[i].getY() * zoomFactor);
+      //this->viewerNodes[i].setX(this->viewerNodes[i].getX() * zoomFactor);
+      //this->viewerNodes[i].setY(this->viewerNodes[i].getY() * zoomFactor);
+      this->viewerNodes[i].scale(zoomFactor);
     }
 
   for (i = 0; i < viewerCurves.size();i++)
     {
-      // this->viewerCurves[i].zoom(zoomFactor);
+      this->viewerCurves[i].scale(zoomFactor);
     }
   for (i = 0;i < viewerLabels.size();i++)
     {
-      // this->viewerLabels[i].zoom(zoomFactor);
+      this->viewerLabels[i].scale(zoomFactor);
     }
   for (i = 0;i < viewerArrows.size();i++)
     {
