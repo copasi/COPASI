@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGlyphs.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/02/23 20:47:18 $
+//   $Date: 2007/02/23 20:54:56 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -47,6 +47,7 @@ class CLMetabGlyph : public CLGraphicalObject
      */
     CLMetabGlyph & operator= (const CLMetabGlyph & rhs);
 
+    virtual void scale (const double & scaleFactor){this->mBBox.scale(scaleFactor);}
     /**
      * insert operator
      */
