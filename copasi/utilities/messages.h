@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.84 $
+//   $Revision: 1.85 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/23 18:50:04 $
+//   $Date: 2007/02/23 20:08:19 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -202,7 +202,7 @@ const MESSAGES Messages[] =
     {MCCopasiTask + 3, "CCopasiTask (3): No method defined for Task '%s'."},
     {MCCopasiTask + 4, "CCopasiTask (4): Error compiling Model '%s'."},
     {MCCopasiTask + 5, "CCopasiTask (5): No output file defined for report."},
-    {MCCopasiTask + 6, "CCopasiTask (6): Output Object'%s' not found."},
+    {MCCopasiTask + 6, "CCopasiTask (6): Requested output Object:\n '%s'\n not found. It will be ignored."},
     {MCCopasiTask + 7, "CCopasiTask (7): Problems compiling Output."},
 
     {MCSteadyState + 1, "CSteadyState (1): The model is explicitly time dependent. "
