@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportDefinition.cpp,v $
-   $Revision: 1.39 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/06/20 13:19:50 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportDefinition.cpp,v $
+//   $Revision: 1.40 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/23 18:52:49 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -22,6 +22,8 @@
 #include "CKeyFactory.h"
 #include "CReportDefinition.h"
 #include "CReport.h"
+
+#include "utilities/CCopasiMessage.h"
 
 //////////////////////////////////////////////////
 //
@@ -75,9 +77,17 @@ bool CReportDefinition::preCompileTable(const std::vector< CCopasiContainer * > 
   std::vector<CRegisteredObjectName>::const_iterator it = mTableVector.begin();
   std::vector<CRegisteredObjectName>::const_iterator end = mTableVector.end();
 
+  CCopasiObject * pObject;
+
   for (; it != end; ++it)
-    if (!addTableElement(CCopasiContainer::ObjectFromName(listOfContainer, *it)))
-      success = false;
+    {
+      pObject = CCopasiContainer::ObjectFromName(listOfContainer, *it);
+
+      if (!pObject)
+        CCopasiMessage(CCopasiMessage::WARNING, MCCopasiTask + 6, it->c_str());
+      else
+        addTableElement(CCopasiContainer::ObjectFromName(listOfContainer, *it));
+    }
 
   return success;
 }
@@ -127,7 +137,7 @@ const unsigned C_INT32 & CReportDefinition::getPrecision() const
 const std::string & CReportDefinition::getKey() const
   {return mKey;}
 
-bool CReportDefinition::addTableElement(const CCopasiObject * pSelectedObject)
+void CReportDefinition::addTableElement(const CCopasiObject * pObject)
 {
   bool isFirst = false;
   if ((mHeaderVector.size() == 0) && (mBodyVector.size() == 0))
@@ -136,7 +146,7 @@ bool CReportDefinition::addTableElement(const CCopasiObject * pSelectedObject)
   CCopasiObjectName SeparatorCN(mSeparator.getCN());
   CCopasiObjectName Title;
 
-  if (!pSelectedObject) return false;
+  if (!pObject) return;
 
   if (!isFirst)
     {
@@ -144,22 +154,22 @@ bool CReportDefinition::addTableElement(const CCopasiObject * pSelectedObject)
       mBodyVector.push_back(SeparatorCN);
     }
 
-  if (pSelectedObject->getObjectParent())
+  if (pObject->getObjectParent())
     {
       Title =
-        pSelectedObject->getObjectParent()->getCN();
+        pObject->getObjectParent()->getCN();
       Title += ",Reference=Name";
       getHeaderAddr()->push_back(Title);
 
       Title =
-        CCopasiStaticString("[" + pSelectedObject->getObjectName() + "]").getCN();
+        CCopasiStaticString("[" + pObject->getObjectName() + "]").getCN();
     }
   else
     Title =
-      CCopasiStaticString(pSelectedObject->getObjectName()).getCN();
+      CCopasiStaticString(pObject->getObjectName()).getCN();
 
   mHeaderVector.push_back(Title);
-  mBodyVector.push_back(pSelectedObject->getCN());
+  mBodyVector.push_back(pObject->getCN());
 
-  return true;
+  return;
 }

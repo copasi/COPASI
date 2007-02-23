@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReport.cpp,v $
-   $Revision: 1.56 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/11/06 16:35:18 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReport.cpp,v $
+//   $Revision: 1.57 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/23 18:53:42 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -18,6 +18,7 @@
 #include "CCopasiTimer.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "utilities/CCopasiMessage.h"
 #include "utilities/CDirEntry.h"
 #include "utilities/utility.h"
 
@@ -362,6 +363,12 @@ void CReport::generateObjectsFromName(const std::vector< CCopasiContainer * > * 
       pSelected = CCopasiContainer::ObjectFromName(*pListOfContainer,
                   (*nameVector)[i]);
 
+      if (!pSelected)
+        {
+          CCopasiMessage(CCopasiMessage::WARNING, MCCopasiTask + 6, (*nameVector)[i].c_str());
+          continue;
+        }
+
       if (!i && (pReportDefinition = dynamic_cast< CReportDefinition * >(pSelected)) != NULL)
         {
           pReport = new CReport();
@@ -370,12 +377,8 @@ void CReport::generateObjectsFromName(const std::vector< CCopasiContainer * > * 
           return;
         }
 
-      if (pSelected)
-        {
-          COutputInterface::mObjects.insert(pSelected);
-
-          objectList.push_back(pSelected);
-        }
+      COutputInterface::mObjects.insert(pSelected);
+      objectList.push_back(pSelected);
     }
 }
 
