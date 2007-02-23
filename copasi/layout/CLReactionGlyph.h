@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLReactionGlyph.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/19 14:08:26 $
+//   $Date: 2007/02/23 16:15:46 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -101,6 +101,11 @@ class CLMetabReferenceGlyph : public CLGraphicalObject
                           std::map<std::string, std::string> & layoutmap,
                           const CCopasiContainer * pParent = NULL);
 
+    /**
+     * assignment operator.
+     */
+    CLMetabReferenceGlyph & operator= (const CLMetabReferenceGlyph & rhs);
+
     const std::string & getMetabGlyphKey() const {return mMetabGlyphKey;};
     CLMetabGlyph* getMetabGlyph() const;
     void setMetabGlyphKey(const std::string & k) {mMetabGlyphKey = k;};
@@ -146,6 +151,11 @@ class CLReactionGlyph : public CLGraphicalObject
                     const std::map<std::string, std::string> & modelmap,
                     std::map<std::string, std::string> & layoutmap,
                     const CCopasiContainer * pParent = NULL);
+
+    /**
+     * assignment operator.
+     */
+    CLReactionGlyph & operator= (const CLReactionGlyph & rhs);
 
     const CCopasiVector<CLMetabReferenceGlyph> & getListOfMetabReferenceGlyphs() const
       {return mvMetabReferences;};

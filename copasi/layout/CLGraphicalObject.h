@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGraphicalObject.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: urost $
-//   $Date: 2007/02/22 17:30:45 $
+//   $Author: ssahle $
+//   $Date: 2007/02/23 16:15:46 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -44,12 +44,6 @@ class CLGraphicalObject : public CLBase, public CCopasiContainer
      */
     std::string mModelObjectKey;
 
-    /**
-     * The assignment operator is private and not implemented. Just to
-     * make sure it is not used.
-     */
-    CLGraphicalObject & operator= (const CLGraphicalObject &);
-
   protected:
 
     CLBoundingBox mBBox;
@@ -70,6 +64,11 @@ class CLGraphicalObject : public CLBase, public CCopasiContainer
                       const CCopasiContainer * pParent = NULL);
 
     ~CLGraphicalObject();
+
+    /**
+     * The assignment operator does not copy the key.
+     */
+    CLGraphicalObject & operator= (const CLGraphicalObject & rhs);
 
     /**
      *  Retrieves the key of the layout object

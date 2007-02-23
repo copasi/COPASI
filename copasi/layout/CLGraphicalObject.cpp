@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGraphicalObject.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/02/16 16:56:07 $
+//   $Author: ssahle $
+//   $Date: 2007/02/23 16:15:46 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,6 +52,24 @@ CLGraphicalObject::CLGraphicalObject(const GraphicalObject & sbml,
 CLGraphicalObject::~CLGraphicalObject()
 {
   GlobalKeys.remove(mKey);
+}
+
+CLGraphicalObject & CLGraphicalObject::operator= (const CLGraphicalObject & rhs)
+{
+  if (this == &rhs) return * this; //do nothing if lhs and rhs are the same
+
+  CLBase::operator=(rhs);
+
+  //warning: in this place we should call the assignment operator of
+  //CCopasiContainer (which does not exist).
+  //We handle this explicitly instead.(common_0)
+  setObjectName(rhs.getObjectName());
+  //object flag cannot be accessed, it is private.
+
+  mModelObjectKey = rhs.mModelObjectKey;
+  mBBox = rhs.mBBox;
+
+  return *this;
 }
 
 CCopasiObject * CLGraphicalObject::getModelObject() const

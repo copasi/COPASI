@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLReactionGlyph.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/19 14:08:26 $
+//   $Date: 2007/02/23 16:15:46 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -73,6 +73,20 @@ CLMetabReferenceGlyph::CLMetabReferenceGlyph(const SpeciesReferenceGlyph & sbml,
     mCurve = CLCurve(*sbml.getCurve());
 }
 
+CLMetabReferenceGlyph & CLMetabReferenceGlyph::operator= (const CLMetabReferenceGlyph & rhs)
+{
+  if (this == &rhs) return * this; //do nothing if lhs and rhs are the same
+
+  CLGraphicalObject::operator=(rhs);
+
+  //handle the specific glyph stuff:
+  mMetabGlyphKey = rhs.mMetabGlyphKey;
+  mCurve = rhs.mCurve;
+  mRole = rhs.mRole;
+
+  return *this;
+}
+
 CLMetabGlyph* CLMetabReferenceGlyph::getMetabGlyph() const
   {
     CCopasiObject* tmp = GlobalKeys.get(mMetabGlyphKey);
@@ -136,6 +150,22 @@ CLReactionGlyph::CLReactionGlyph(const ReactionGlyph & sbml,
   //curve
   if (sbml.getCurve())
     mCurve = CLCurve(*sbml.getCurve());
+}
+
+CLReactionGlyph & CLReactionGlyph::operator= (const CLReactionGlyph & rhs)
+{
+  if (this == &rhs) return * this; //do nothing if lhs and rhs are the same
+
+  CLGraphicalObject::operator=(rhs);
+
+  //handle the specific glyph stuff:
+  mCurve = rhs.mCurve;
+
+  unsigned C_INT32 i, imax = rhs.mvMetabReferences.size();
+  for (i = 0; i < imax; ++i)
+    addMetabReferenceGlyph(new CLMetabReferenceGlyph(*rhs.mvMetabReferences[i]));
+
+  return *this;
 }
 
 void CLReactionGlyph::addMetabReferenceGlyph(CLMetabReferenceGlyph * glyph)

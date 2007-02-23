@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGlyphs.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/02/16 16:56:07 $
+//   $Author: ssahle $
+//   $Date: 2007/02/23 16:15:46 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,56 +21,6 @@
 #include "CLGlyphs.h"
 
 #include "report/CKeyFactory.h"
-
-// void node::markAsCopy(){
-//  this->id = this->id + "_copy";
-//}
-
-// bool node::hasID(string s){
-//  string idstring = id.substr(3); // get rid of trailing "nd_"
-//
-//  //cout << idstring << "  :  " << s << endl;
-//  //cout << "result compare: " << idstring.compare(s) << endl;
-//  //cout << "result find: " << s.find(idstring) << endl;
-//  if (((idstring.compare(s)) == 0) ||
-//   ((s.find(idstring)) != string::npos)) // find id (only number, do not compare with "nd_xxx"
-//   return true;
-//  else
-//   return false;
-//}
-
-//bool node::hasID(){
-// string s = "abc";
-// string idstring = id;
-// if (((idstring.compare(s)) == 0) ||
-//  ((idstring.find(s)) == string::npos))
-//  return true;
-// else
-//  return false;
-//}
-
-// void node::printObject(){
-//  cout << "x: "
-//       << this->getX()
-//       << "  y: "
-//       << this->getY()
-//       << "  id:  "
-//       << this->getID()
-//       << endl;
-//}
-
-//   int testNode ()
-//   {
-//    node n1,n2;
-//
-//    node *n3 = new node(100.0,100.0);
-//
-//     n1.printObject();
-//     n2.printObject();
-//     n3->printObject();
-//
-//     return 0;
-//}
 
 CLMetabGlyph::CLMetabGlyph(const std::string & name,
                            const CCopasiContainer * pParent)
@@ -95,6 +45,17 @@ CLMetabGlyph::CLMetabGlyph(const SpeciesGlyph & sbml,
       if (it != modelmap.end())
         setModelObjectKey(it->second);
     }
+}
+
+CLMetabGlyph & CLMetabGlyph::operator= (const CLMetabGlyph & rhs)
+{
+  if (this == &rhs) return * this; //do nothing if lhs and rhs are the same
+
+  CLGraphicalObject::operator=(rhs);
+
+  //nothing to be done here
+
+  return *this;
 }
 
 std::ostream & operator<<(std::ostream &os, const CLMetabGlyph & g)
@@ -128,6 +89,17 @@ CLCompartmentGlyph::CLCompartmentGlyph(const CompartmentGlyph & sbml,
       if (it != modelmap.end())
         setModelObjectKey(it->second);
     }
+}
+
+CLCompartmentGlyph & CLCompartmentGlyph::operator= (const CLCompartmentGlyph & rhs)
+{
+  if (this == &rhs) return * this; //do nothing if lhs and rhs are the same
+
+  CLGraphicalObject::operator=(rhs);
+
+  //nothing to be done here
+
+  return *this;
 }
 
 std::ostream & operator<<(std::ostream &os, const CLCompartmentGlyph & g)
@@ -178,6 +150,21 @@ CLTextGlyph::CLTextGlyph(const TextGlyph & sbml,
       if (it != modelmap.end())
         setModelObjectKey(it->second);
     }
+}
+
+CLTextGlyph & CLTextGlyph::operator= (const CLTextGlyph & rhs)
+{
+  if (this == &rhs) return * this; //do nothing if lhs and rhs are the same
+
+  CLGraphicalObject::operator=(rhs);
+
+  //handle the specific text glyph stuff:
+  mIsTextSet = rhs.mIsTextSet;
+  mText = rhs.mText;
+
+  mGraphicalObjectKey = rhs.mGraphicalObjectKey;
+
+  return *this;
 }
 
 std::string CLTextGlyph::getText() const

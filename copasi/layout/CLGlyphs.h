@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGlyphs.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/16 10:13:26 $
+//   $Date: 2007/02/23 16:15:46 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -43,19 +43,14 @@ class CLMetabGlyph : public CLGraphicalObject
                  const CCopasiContainer * pParent = NULL);
 
     /**
+     * assignment operator
+     */
+    CLMetabGlyph & operator= (const CLMetabGlyph & rhs);
+
+    /**
      * insert operator
      */
     friend std::ostream & operator<<(std::ostream &os, const CLMetabGlyph & g);
-
-    //          (double a, double b) {id = utils::createID("nd_");x=a;y=b;}
-    //node (){id = "empty"; x=0.0;y=0.0;} // no unique id when using empty constructor
-    //~node(){utils::removeID("nd_",id);}
-
-    //string getID(){return id;}
-    //bool hasID(string);
-    //bool hasID();
-    //void printObject();
-    //void markAsCopy();
   };
 
 /**
@@ -77,6 +72,11 @@ class CLCompartmentGlyph : public CLGraphicalObject
                        const std::map<std::string, std::string> & modelmap,
                        std::map<std::string, std::string> & layoutmap,
                        const CCopasiContainer * pParent = NULL);
+
+    /**
+     * assignment operator
+     */
+    CLCompartmentGlyph & operator= (const CLCompartmentGlyph & rhs);
 
     /**
      * insert operator
@@ -118,6 +118,11 @@ class CLTextGlyph : public CLGraphicalObject
                 const std::map<std::string, std::string> & modelmap,
                 std::map<std::string, std::string> & layoutmap,
                 const CCopasiContainer * pParent = NULL);
+
+    /**
+     * assignment operator.
+     */
+    CLTextGlyph & operator= (const CLTextGlyph & rhs);
 
     std::string getText() const;
 
