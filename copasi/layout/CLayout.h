@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLayout.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/02/16 00:08:07 $
+//   $Author: urost $
+//   $Date: 2007/02/23 20:47:18 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -139,6 +139,7 @@ class CLayout : public CLBase, public CCopasiContainer
      */
     void addGraphicalObject(CLGraphicalObject * glyph);
 
+    virtual void scale (const double & scaleFactor){this->mDimensions.scale(scaleFactor);}
     /**
       * insert operator
       */

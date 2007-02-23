@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLCurve.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/02/21 18:52:26 $
+//   $Author: urost $
+//   $Date: 2007/02/23 20:47:18 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -79,6 +79,11 @@ class CLLineSegment : public CLBase
     bool isBezier() const {return mIsBezier;};
     void setIsBezier(bool b) {mIsBezier = b;};
 
+    void scale (const double & scaleFactor)
+    {
+      mStart.scale(scaleFactor);mEnd.scale(scaleFactor);
+      if (mIsBezier) {mBase1.scale(scaleFactor);mBase2.scale(scaleFactor);}
+    }
     /**
       * insert operator
       */
@@ -130,6 +135,14 @@ class CLCurve : public CLBase
      */
     std::vector <CLPoint> getListOfPoints() const;
 
+    void scale (const double & scaleFactor)
+    {
+      unsigned int i; // scale all segments
+      for (i = 0;i < mCurveSegments.size();i++)
+        {
+          mCurveSegments[i].scale(scaleFactor);
+        }
+    }
     /**
       * insert operator
       */

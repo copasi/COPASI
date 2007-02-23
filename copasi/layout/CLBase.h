@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLBase.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/02/20 11:17:26 $
+//   $Author: urost $
+//   $Date: 2007/02/23 20:47:18 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -66,6 +66,8 @@ class CLPoint : public CLBase
     void setX(const C_FLOAT64 & x) {mX = x;};
     void setY(const C_FLOAT64 & y) {mY = y;};
 
+    void scale (const double & scaleFactor){mX *= scaleFactor;mY *= scaleFactor;}
+
     bool operator==(const CLPoint & rhs) const
       {return (mX == rhs.mX) && (mY == rhs.mY);};
 
@@ -107,6 +109,8 @@ class CLDimensions : public CLBase
     void setWidth(const C_FLOAT64 & w) {mWidth = w;};
     void setHeight(const C_FLOAT64 & h) {mHeight = h;};
 
+    void scale (const double & scaleFactor){mWidth *= scaleFactor;mHeight *= scaleFactor;}
+
     /**
       * insert operator
       */
@@ -145,6 +149,8 @@ class CLBoundingBox : public CLBase
 
     void setPosition(const CLPoint & p) {mPosition = p;};
     void setDimensions(const CLDimensions & d) {mDimensions = d;};
+
+    void scale (const double & scaleFactor){mPosition.scale(scaleFactor);mDimensions.scale(scaleFactor);}
 
     /**
       * insert operator

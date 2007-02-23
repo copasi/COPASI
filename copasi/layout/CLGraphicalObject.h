@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGraphicalObject.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/02/23 16:15:46 $
+//   $Author: urost $
+//   $Date: 2007/02/23 20:47:18 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -108,6 +108,7 @@ class CLGraphicalObject : public CLBase, public CCopasiContainer
 
     std::string getModelObjectDisplayName(bool regular = true, bool richtext = false) const;
 
+    virtual void scale (const double & scaleFactor){mBBox.scale(scaleFactor);}
     /**
       * insert operator
       */

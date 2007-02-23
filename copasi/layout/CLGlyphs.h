@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGlyphs.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/02/23 16:15:46 $
+//   $Author: urost $
+//   $Date: 2007/02/23 20:47:18 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -73,6 +73,8 @@ class CLCompartmentGlyph : public CLGraphicalObject
                        std::map<std::string, std::string> & layoutmap,
                        const CCopasiContainer * pParent = NULL);
 
+    virtual void scale (const double & scaleFactor){this->mBBox.scale(scaleFactor);}
+
     /**
      * assignment operator
      */
@@ -135,6 +137,8 @@ class CLTextGlyph : public CLGraphicalObject
     const std::string & getGraphicalObjectKey() const {return mGraphicalObjectKey;};
     CLGraphicalObject* getGraphicalObject() const;
     void setGraphicalObjectKey(const std::string & k) {mGraphicalObjectKey = k;};
+
+    virtual void scale (const double & scaleFactor){this->mBBox.scale(scaleFactor);}
 
     /**
      * insert operator
