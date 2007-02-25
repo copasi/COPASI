@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/FunctionWidget.cpp,v $
-   $Revision: 1.67 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/06 16:03:42 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/FunctionWidget.cpp,v $
+//   $Revision: 1.68 $
+//   $Name:  $
+//   $Author: ssahle $
+//   $Date: 2007/02/25 22:12:36 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -346,7 +346,7 @@ void FunctionWidget::deleteObjects(const std::vector<std::string> & keys)
         for (i = 0; i < imax; i++)
           {
             CCopasiDataModel::Global->getFunctionList()->removeFunction(keys[i]);
-            ListViews::notify(ListViews::FUNCTION, ListViews::DELETE, keys[i]);
+            protectedNotify(ListViews::FUNCTION, ListViews::DELETE, keys[i]);
           }
 
         break;

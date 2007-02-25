@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/PlotWidget.cpp,v $
-   $Revision: 1.21 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/05/10 15:37:12 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/PlotWidget.cpp,v $
+//   $Revision: 1.22 $
+//   $Name:  $
+//   $Author: ssahle $
+//   $Date: 2007/02/25 22:12:36 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -143,6 +143,6 @@ void PlotWidget::deleteObjects(const std::vector<std::string> & keys)
   for (i = 0; i < imax; i++)
     {
       CCopasiDataModel::Global->getPlotDefinitionList()->removePlotSpec(keys[i]);
-      ListViews::notify(ListViews::PLOT, ListViews::DELETE, keys[i]);
+      protectedNotify(ListViews::PLOT, ListViews::DELETE, keys[i]);
     }
 }

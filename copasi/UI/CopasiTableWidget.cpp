@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.cpp,v $
-//   $Revision: 1.44 $
+//   $Revision: 1.45 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/02/12 14:29:14 $
+//   $Author: ssahle $
+//   $Date: 2007/02/25 22:12:36 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -218,7 +218,7 @@ void CopasiTableWidget::saveTable()
   bool flagDelete = false;
   std::vector<std::string> delKeys;
 
-  mIgnoreUpdates = true; //to avoid recursive calls
+  //mIgnoreUpdates = true; //to avoid recursive calls
 
   C_INT32 j, jmax = table->numRows() - 1;
   for (j = 0; j < jmax; ++j)
@@ -256,7 +256,7 @@ void CopasiTableWidget::saveTable()
           if (mFlagChanged[j])
             {
               tableLineToObject(j, GlobalKeys.get(mKeys[j]));
-              ListViews::notify(mOT, ListViews::CHANGE, mKeys[j]);
+              protectedNotify(mOT, ListViews::CHANGE, mKeys[j]);
             }
           if (mFlagRenamed[j])
             {
@@ -274,14 +274,14 @@ void CopasiTableWidget::saveTable()
                   table->setCurrentCell(j, 1);
                 }
               else
-                ListViews::notify(mOT, ListViews::RENAME, mKeys[j]);
+                protectedNotify(mOT, ListViews::RENAME, mKeys[j]);
             }
         }
     }
 
   if (flagDelete) deleteObjects(delKeys);
 
-  mIgnoreUpdates = false;
+  //mIgnoreUpdates = false;
 
   return;
 }

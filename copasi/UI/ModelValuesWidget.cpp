@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModelValuesWidget.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/02/12 14:29:14 $
+//   $Author: ssahle $
+//   $Date: 2007/02/25 22:12:36 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -373,7 +373,7 @@ void ModelValuesWidget::deleteObjects(const std::vector<std::string> & keys)
           }
 
         for (i = 0; i < imax; i++)
-          ListViews::notify(ListViews::MODELVALUE, ListViews::DELETE, keys[i]);
+          protectedNotify(ListViews::MODELVALUE, ListViews::DELETE, keys[i]);
         //TODO notify about metabs and reactions
         break;
       }

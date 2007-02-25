@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget.cpp,v $
-//   $Revision: 1.134 $
+//   $Revision: 1.135 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/02/12 14:29:14 $
+//   $Author: ssahle $
+//   $Date: 2007/02/25 22:12:36 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -217,8 +217,8 @@ void MetabolitesWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* o
           CCopasiDataModel::Global->getModel()->setCompileFlag();
           CCopasiDataModel::Global->getModel()->initializeMetabolites();
           //protectedNotify(ListViews::MODEL, ListViews::CHANGE, "");
-          ListViews::notify(ListViews::METABOLITE, ListViews::CHANGE, "");
-          ListViews::notify(ListViews::COMPARTMENT, ListViews::CHANGE, "");
+          protectedNotify(ListViews::METABOLITE, ListViews::CHANGE, "");
+          protectedNotify(ListViews::COMPARTMENT, ListViews::CHANGE, "");
         }
       /*unsigned C_INT32 index = CCopasiDataModel::Global->getModel()->
                                getCompartments().getIndex((const char *)Compartment.utf8());
@@ -476,7 +476,7 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
           }
 
         for (i = 0; i < imax; i++)
-          ListViews::notify(ListViews::METABOLITE, ListViews::DELETE, keys[i]);
+          protectedNotify(ListViews::METABOLITE, ListViews::DELETE, keys[i]);
         //TODO notify about reactions
         break;
       }

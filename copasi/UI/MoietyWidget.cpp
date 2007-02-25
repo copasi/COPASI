@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MoietyWidget.cpp,v $
-   $Revision: 1.71 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:44 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MoietyWidget.cpp,v $
+//   $Revision: 1.72 $
+//   $Name:  $
+//   $Author: ssahle $
+//   $Date: 2007/02/25 22:12:36 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -96,9 +96,9 @@ void MoietyWidget::slotBtnRunClicked()
   CCopasiDataModel::Global->getModel()->compileIfNecessary();
   fillTable();
 
-  mIgnoreUpdates = true; //to avoid recursive calls
-  ListViews::notify(ListViews::MODEL, ListViews::CHANGE);
-  mIgnoreUpdates = false; //to avoid recursive calls
+  //mIgnoreUpdates = true; //to avoid recursive calls
+  protectedNotify(ListViews::MODEL, ListViews::CHANGE);
+  //mIgnoreUpdates = false; //to avoid recursive calls
 
   static_cast<CopasiUI3Window *>(qApp->mainWidget())->suspendAutoSave(false);
 }
