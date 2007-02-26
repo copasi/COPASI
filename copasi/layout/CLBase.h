@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLBase.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/02/23 20:54:56 $
+//   $Date: 2007/02/26 10:31:09 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -66,7 +66,7 @@ class CLPoint : public CLBase
     void setX(const C_FLOAT64 & x) {mX = x;};
     void setY(const C_FLOAT64 & y) {mY = y;};
 
-    virtual void scale (const double & scaleFactor){mX *= scaleFactor;mY *= scaleFactor;}
+    void scale (const double & scaleFactor){mX *= scaleFactor;mY *= scaleFactor;}
 
     bool operator==(const CLPoint & rhs) const
       {return (mX == rhs.mX) && (mY == rhs.mY);};

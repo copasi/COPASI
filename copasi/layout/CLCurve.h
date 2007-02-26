@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLCurve.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/02/23 20:54:56 $
+//   $Date: 2007/02/26 10:31:09 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -135,7 +135,7 @@ class CLCurve : public CLBase
      */
     std::vector <CLPoint> getListOfPoints() const;
 
-    virtual void scale (const double & scaleFactor)
+    void scale (const double & scaleFactor)
     {
       unsigned int i; // scale all segments
       for (i = 0;i < mCurveSegments.size();i++)

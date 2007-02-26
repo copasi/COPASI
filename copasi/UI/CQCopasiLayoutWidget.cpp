@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQCopasiLayoutWidget.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/02/18 23:07:45 $
+//   $Author: urost $
+//   $Date: 2007/02/26 10:31:08 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -39,15 +39,26 @@ CQCopasiLayoutWidget::CQCopasiLayoutWidget(QWidget* parent, const char* name, WF
     setName("CQCopasiLayoutWidget");
   setCaption("CQCopasiLayoutWidget");
 
-  mWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "CQCopasiLayoutWidgetLayout");
+  mWidgetLayout = new QGridLayout(this, 1, 2, 11, 6, "CQCopasiLayoutWidgetLayout");
 
   // **********  Label **************
-  mLabelTitle = new QLabel(this, "SensLabel");
-  mLabelTitle->setText("Sensitivities");
+  mLabelTitle = new QLabel(this, "ShowNetLabel");
+  mLabelTitle->setText("Reaction network");
   mLabelTitle->setAlignment(int(QLabel::AlignVCenter
                                 | QLabel::AlignLeft));
   mLabelTitle->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
   mWidgetLayout->addWidget(mLabelTitle, 0, 0);
+
+  // ********** Button ***************
+
+  mShowNetworkButton = new QPushButton("show", this);
+  mDisplayNetwork = new QAction("displayNetwork",
+                                "Show reaction network",
+                                CTRL + Key_D,
+                                this);
+  //mShowNetworkButton->setStatusTip("Show reaction network as graph");
+  connect(mShowNetworkButton, SIGNAL(clicked()), this, SLOT(displayNetworkWidget()));
+  mWidgetLayout->addWidget(mShowNetworkButton, 0, 1);
 
   // tab widget
   mpTab = new QTabWidget(this, "TabWidget");
@@ -67,6 +78,17 @@ void CQCopasiLayoutWidget::loadFromBackend()
 }
 
 //*************************************
+
+void CQCopasiLayoutWidget::displayNetworkWidget()
+{
+  //QApplication app(argc,argv);
+  //mWin(this, "Reaction Network");
+  pWin = new CQLayoutMainWindow(this, "Reaction Network");
+  //mWin((QWidget *)this,"Reaction Network");
+  //app.setMainWidget(&gui);
+  pWin->resize(400, 230);
+  pWin->show();
+}
 
 bool CQCopasiLayoutWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action
                                   C_UNUSED(action), const std::string & C_UNUSED(key))

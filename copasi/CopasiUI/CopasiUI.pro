@@ -1,5 +1,17 @@
+# Begin CVS Header 
+#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/CopasiUI.pro,v $ 
+#   $Revision: 1.137 $ 
+#   $Name:  $ 
+#   $Author: urost $ 
+#   $Date: 2007/02/26 10:31:09 $ 
+# End CVS Header 
+
+# Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc. and EML Research, gGmbH. 
+# All rights reserved. 
+
 ######################################################################
-# $Revision: 1.136 $ $Author: shoops $ $Date: 2006/10/30 20:16:03 $  
+# $Revision: 1.137 $ $Author: urost $ $Date: 2007/02/26 10:31:09 $  
 ######################################################################
 
 TEMPLATE = app
@@ -27,6 +39,10 @@ contains(BUILD_OS, WIN32) {
 } 
 
 contains(BUILD_OS, Linux) {
+contains(DEFINES, WITH_LAYOUT) {
+  CONFIG += opengl
+  LIBS += -lfreetype -lglut
+}
   LIBS = -L../lib \
          $$join(COPASI_LIBS, " -l", -l) \
          $${LIBS}

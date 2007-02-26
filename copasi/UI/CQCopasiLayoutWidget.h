@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQCopasiLayoutWidget.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/02/18 23:07:45 $
+//   $Author: urost $
+//   $Date: 2007/02/26 10:31:08 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,9 +13,13 @@
 #ifndef CQCLAYOUTW_H
 #define CQCLAYOUTW_H
 
+#include <qaction.h>
+#include <qpushbutton.h>
+
 //#include <qvbox.h>
 #include "UI/copasiWidget.h"
 //#include "mathematics.h"
+#include "layoutUI/CQLayoutMainWindow.h"
 
 class QGridLayout;
 //class QLineEdit;
@@ -35,6 +39,7 @@ class CQCopasiLayoutWidget : public CopasiWidget
     virtual bool enter(const std::string & key = "");
 
   protected slots:
+    void displayNetworkWidget();
 
   protected:
 
@@ -44,8 +49,13 @@ class CQCopasiLayoutWidget : public CopasiWidget
     QGridLayout* mWidgetLayout;
 
     QLabel* mLabelTitle;
+    QPushButton* mShowNetworkButton;
 
     QTabWidget* mpTab;
+
+  private:
+    QAction *mDisplayNetwork;
+    CQLayoutMainWindow *pWin;
   };
 
 #endif

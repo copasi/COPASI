@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.58 $ 
+#   $Revision: 1.59 $ 
 #   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2007/02/15 17:08:52 $ 
+#   $Author: urost $ 
+#   $Date: 2007/02/26 10:31:08 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -11,7 +11,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.58 $ $Author: shoops $ $Date: 2007/02/15 17:08:52 $  
+# $Revision: 1.59 $ $Author: urost $ $Date: 2007/02/26 10:31:08 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -46,7 +46,7 @@ QMAKE_LFLAGS  += $$(LDFLAGS)
 
 debug {
   DEFINES += COPASI_DEBUG
-  #DEFINES += WITH_LAYOUT
+  DEFINES += WITH_LAYOUT
 
   isEmpty(COPASI_SRC_PACKAGE) {
     DEFINES += COPASI_TSS

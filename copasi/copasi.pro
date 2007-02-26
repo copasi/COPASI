@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.pro,v $ 
-#   $Revision: 1.29 $ 
+#   $Revision: 1.30 $ 
 #   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2007/02/12 14:27:04 $ 
+#   $Author: urost $ 
+#   $Date: 2007/02/26 10:31:08 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -11,7 +11,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.29 $ $Author: shoops $ $Date: 2007/02/12 14:27:04 $  
+# $Revision: 1.30 $ $Author: urost $ $Date: 2007/02/26 10:31:08 $  
 ######################################################################
 
 TEMPLATE = subdirs
@@ -48,6 +48,7 @@ SUBDIRS += xml
 
 contains(DEFINES, WITH_LAYOUT) {
   SUBDIRS += layout
+  SUBDIRS += layoutUI
 }
 
 # Now the UI libraries

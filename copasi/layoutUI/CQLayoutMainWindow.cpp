@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/02/22 17:30:44 $
+//   $Date: 2007/02/26 10:31:07 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,7 +17,7 @@
 
 using namespace std;
 
-SimWizGUI::SimWizGUI(QWidget *parent, const char *name) : QMainWindow(parent, name)
+CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMainWindow(parent, name)
 {
   setCaption(tr("Reaction network graph"));
   createActions();
@@ -39,7 +39,7 @@ SimWizGUI::SimWizGUI(QWidget *parent, const char *name) : QMainWindow(parent, na
   scrollView->show();
 }
 
-void SimWizGUI::createActions()
+void CQLayoutMainWindow::createActions()
 {
   openSBMLFile = new QAction("SBML",
                              "Load SBML file",
@@ -63,7 +63,7 @@ void SimWizGUI::createActions()
   connect(exitAction, SIGNAL(activated()), this, SLOT(exitApplication()));
 }
 
-void SimWizGUI::createMenus()
+void CQLayoutMainWindow::createMenus()
 {
   fileMenu = new QPopupMenu(this);
   openSBMLFile->addTo(fileMenu);
@@ -74,13 +74,13 @@ void SimWizGUI::createMenus()
   menuBar()->insertItem("File", fileMenu);
 }
 
-//void SimWizGUI::contextMenuEvent(QContextMenuEvent *cme){
+//void CQLayoutMainWindow::contextMenuEvent(QContextMenuEvent *cme){
 // QPopupMenu *contextMenu = new QPopupMenu(this);
 // exitAction->addTo(contextMenu);
 // contextMenu->exec(cme->globalPos());
 //}
 
-void SimWizGUI::loadSBMLFile()
+void CQLayoutMainWindow::loadSBMLFile()
 {
   string filename = "/localhome/ulla/project/data/peroxiShortNew.xml"; // test file
   //string filename = "/home/ulla/project/simulation/data/peroxiShortNew.xml";
@@ -90,15 +90,15 @@ void SimWizGUI::loadSBMLFile()
   //glPainter->createGraph(networkP);
 }
 
-void SimWizGUI::loadDataFile()
+void CQLayoutMainWindow::loadDataFile()
 {}
 
-void SimWizGUI::exitApplication()
+void CQLayoutMainWindow::exitApplication()
 {
   close();
 }
 
-void SimWizGUI::closeEvent(QCloseEvent *event)
+void CQLayoutMainWindow::closeEvent(QCloseEvent *event)
 {
   if (maybeSave())
     {
@@ -111,7 +111,7 @@ void SimWizGUI::closeEvent(QCloseEvent *event)
     }
 }
 
-bool SimWizGUI::maybeSave()
+bool CQLayoutMainWindow::maybeSave()
 {
   //   if (modified) {
   int ret = QMessageBox::warning(this, "SimWiz",

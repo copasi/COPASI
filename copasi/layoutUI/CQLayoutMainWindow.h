@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/02/22 17:30:44 $
+//   $Date: 2007/02/26 10:31:07 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,16 +24,18 @@
 #include <qlayout.h>
 #include <qscrollview.h>
 
-#include <CQGLNetworkPainter.h>
+#include "CQGLNetworkPainter.h"
 
-class SimWizGUI : public QMainWindow
+#include "CopasiDataModel/CCopasiDataModel.h"
+
+class CQLayoutMainWindow : public QMainWindow
   {
 
     Q_OBJECT
 
   public:
-    SimWizGUI(QWidget *parent = 0, const char *name = 0);
-
+    CQLayoutMainWindow(QWidget *parent = 0, const char *name = 0);
+    //CQLayoutMainWindow();
   protected:
     void closeEvent(QCloseEvent *event);
     //void contextMenuEvent(QContextMenuEvent *event);
