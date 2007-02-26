@@ -1,19 +1,19 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: urost $
-//   $Date: 2007/02/23 21:02:41 $
+//   $Author: ssahle $
+//   $Date: 2007/02/26 16:19:20 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#import <CQGLNetworkPainter.h>
+#include <CQGLNetworkPainter.h>
 #include <iostream>
-#import <qfont.h>
-#import <qstring.h>
+#include <qfont.h>
+#include <qstring.h>
 //#include "FTFont.h"
 //#include "FTGLPixmapFont.h"
 //#include "FTGLPolygonFont.h"
