@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/libs/COPASIUI/COPASIUI.pro,v $ 
-#   $Revision: 1.13 $ 
+#   $Revision: 1.14 $ 
 #   $Name:  $ 
-#   $Author: urost $ 
-#   $Date: 2007/02/26 10:31:09 $ 
+#   $Author: ssahle $ 
+#   $Date: 2007/02/26 13:50:05 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -28,8 +28,9 @@ contains(DEFINES, HAVE_MML) {
 COPASI_LIBS += plotUI
 COPASI_LIBS += UI
 COPASI_LIBS += wizard
+
+contains(DEFINES, WITH_LAYOUT) {
 COPASI_LIBS += layoutUI
+}
 
 include(../lib.pri)
-
-
