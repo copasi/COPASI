@@ -168,6 +168,18 @@ Package=<4>
 
 ###############################################################################
 
+Project: "layoutUI"=.\layoutUI\layoutUI.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
 Project: "libSE"=.\LIBS\COPASISE\libSE.dsp - Package Owner=<4>
 
 Package=<5>
@@ -262,6 +274,9 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name wizard
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name layoutUI
     End Project Dependency
 }}}
 
