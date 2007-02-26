@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/layoutUI.pro,v $ 
-#   $Revision: 1.1 $ 
+#   $Revision: 1.2 $ 
 #   $Name:  $ 
-#   $Author: urost $ 
-#   $Date: 2007/02/22 17:30:44 $ 
+#   $Author: shoops $ 
+#   $Date: 2007/02/26 18:13:10 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -25,13 +25,6 @@ SOURCES = CQLayoutMainWindow.cpp \
  CQGLNetworkPainter.cpp
 
 
-INCLUDEPATH += /usr/local/include/freetype2
-INCLUDEPATH += /usr/local/include/freetype2/freetype
-INCLUDEPATH += /usr/local/include/freetype2/freetype/config
-LIBS += -L /usr/lib -L/usr/local/lib  -lfreetype -lglut
-
-
-CONFIG += qt opengl freetype
-DEFINES += GL_GLEXT_PROTOTYPES
+CONFIG += qt
 
 

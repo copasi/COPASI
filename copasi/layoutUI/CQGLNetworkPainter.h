@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/02/26 16:19:20 $
+//   $Author: shoops $
+//   $Date: 2007/02/26 18:13:10 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,18 +15,20 @@
 
 //#include<iostream>
 #include <qgl.h>
-#include <GL/glut.h>
+// #include <GL/glut.h>
 // #include <GL/gl.h>
 #include <qpopupmenu.h>
 #include <qaction.h>
 #include <qevent.h>
-#include "CArrow.h"
-#include "layout/CLBase.h"
-#include "layout/CLGlyphs.h"
-#include "layout/CLCurve.h"
-#include "layout/CLayout.h"
 #include <vector>
 #include <string>
+
+#include "copasi/layout/CLBase.h"
+#include "copasi/layout/CLGlyphs.h"
+#include "copasi/layout/CLCurve.h"
+#include "copasi/layoutUI/CArrow.h"
+
+class CLayout;
 
 class CQGLNetworkPainter : public QGLWidget
   {
@@ -34,8 +36,7 @@ class CQGLNetworkPainter : public QGLWidget
     Q_OBJECT        // must include this if you use Qt signals/slots
 
   public:
-    CQGLNetworkPainter(QWidget *parent = 0, const char *name = 0)
-        : QGLWidget(parent, name) {initializeGraphPainter();}
+    CQGLNetworkPainter(QWidget *parent = 0, const char *name = 0);
 
     void setGraphSize(const CLPoint & min, const CLPoint & max);
     void createGraph(CLayout *lP); // create local data structures
@@ -66,60 +67,16 @@ class CQGLNetworkPainter : public QGLWidget
 
   protected:
 
-    void initializeGraphPainter()
-    {
-      mgraphMin = CLPoint(0.0, 0.0);
-      mgraphMax = CLPoint(250.0, 250.0);
-      createActions();
-    }
+    void initializeGraphPainter();
     void draw();
     void contextMenuEvent(QContextMenuEvent *event);
     void testOpenGL();
 
-    void initializeGL()
-    {
-      // Set up the rendering context, define display lists etc.:
+    void initializeGL();
 
-      glClearColor(1.0, 1.0, 0.94, 0.0);  // background ivory
-      //glEnable(GL_DEPTH_TEST);
-      glShadeModel(GL_SMOOTH);
-      //glClearDepth(1.0f);           // Depth Buffer Setup
-      //glDepthFunc(GL_LEQUAL);       // The Type Of Depth Test To Do
-      //glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST); // Really Nice Perspective Calculation
+    void resizeGL(int w, int h);
 
-      graphObjList = glGenLists(1);
-      glNewList(graphObjList, GL_COMPILE);
-      glEndList();
-      int argc = 1;
-      char *argv = "SimWiz";
-      glutInit(&argc, &argv);
-      glutInitDisplayMode(GLUT_RGBA | GLUT_SINGLE);
-    }
-
-    void resizeGL(int w, int h)
-    {
-      // setup viewport, projection etc.:
-      glViewport(0, 0, (GLint)w, (GLint)h);
-
-      glMatrixMode(GL_PROJECTION);    // Select The Projection Matrix
-      glLoadIdentity();             // Reset The Projection Matrix
-      //gluOrtho2D(0.0,(GLdouble)w,0.0,(GLdouble)h);
-      // Calculate The Aspect Ratio Of The Window
-      //gluPerspective(45.0f,(GLfloat)w/(GLfloat)h,0.1f,100.0f);
-      //GLfloat x = (GLfloat)w / h;
-      //glFrustum(-x, x, -1.0, 1.0, 4.0, 15.0);
-      gluOrtho2D((GLdouble)mgraphMin.getX(),
-                 (GLdouble)mgraphMax.getX(),
-                 (GLdouble)mgraphMax.getY(),
-                 (GLdouble)mgraphMin.getY()); // y: 0.0 is bottom left instead of top left as in SBML
-      glMatrixMode(GL_MODELVIEW);  // Select The Modelview Matrix
-    }
-
-    void paintGL()
-    {
-      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear The Screen And The Depth Buffer
-      draw();
-    }
+    void paintGL();
   };
 
 #endif /*GLGRAPHPAINTER_H_*/

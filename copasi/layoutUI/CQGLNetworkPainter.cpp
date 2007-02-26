@@ -1,23 +1,33 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/02/26 16:19:20 $
+//   $Author: shoops $
+//   $Date: 2007/02/26 18:13:10 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include <CQGLNetworkPainter.h>
 #include <iostream>
+#include <math.h>
+
 #include <qfont.h>
 #include <qstring.h>
+
 //#include "FTFont.h"
 //#include "FTGLPixmapFont.h"
 //#include "FTGLPolygonFont.h"
-#include <math.h>
+#include "copasi.h"
+
+#include "CQGLNetworkPainter.h"
+#include "layout/CLayout.h"
+#include "utilities/CCopasiVector.h"
+
+CQGLNetworkPainter::CQGLNetworkPainter(QWidget *parent, const char *name)
+    : QGLWidget(parent, name)
+{initializeGraphPainter();}
 
 // set graph size and reset projection to fit new size
 void CQGLNetworkPainter::setGraphSize(const CLPoint & min, const CLPoint & max)
@@ -248,7 +258,8 @@ void CQGLNetworkPainter::renderBitmapString(C_FLOAT64 x, C_FLOAT64 y, std::strin
   glColor3f(0.0f, 0.0f, 0.0f); // black
   glPushMatrix();
   const char *cStr = text.c_str();
-  int strLen = glutBitmapLength(GLUT_BITMAP_HELVETICA_12, (const unsigned char*)cStr);
+  int strLen;
+  //  strlen = glutBitmapLength(GLUT_BITMAP_HELVETICA_12, (const unsigned char*)cStr);
   C_FLOAT64 offsetX = (w - (C_FLOAT64)strLen) / 2.0;
   C_FLOAT64 offsetY = (h + 12) / 2.0; // depend on used font size (here 12 pt)
   glRasterPos2d(x + offsetX, y + offsetY - 2.0);
@@ -258,7 +269,7 @@ void CQGLNetworkPainter::renderBitmapString(C_FLOAT64 x, C_FLOAT64 y, std::strin
   unsigned int i;
   for (i = 0;i < text.size();i++)
     {
-      glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, text[i]);
+      //      glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, text[i]);
       //glutStrokeCharacter(GLUT_BITMAP_HELVETICA_18, text[i]);
     }
   glPopMatrix();
@@ -405,4 +416,56 @@ void CQGLNetworkPainter::testOpenGL()
   glVertex3f(-1.5f, -0.5f, 0.0f); // linke Ecke unten
   glVertex3f(-1.5f, 0.5f, 0.0f); // linke Ecke oben
   glEnd(); // Zeichenaktion beenden
+}
+
+void CQGLNetworkPainter::initializeGraphPainter()
+{
+  mgraphMin = CLPoint(0.0, 0.0);
+  mgraphMax = CLPoint(250.0, 250.0);
+  createActions();
+}
+
+void CQGLNetworkPainter::initializeGL()
+{
+  // Set up the rendering context, define display lists etc.:
+
+  glClearColor(1.0, 1.0, 0.94, 0.0);  // background ivory
+  //glEnable(GL_DEPTH_TEST);
+  glShadeModel(GL_SMOOTH);
+  //glClearDepth(1.0f);           // Depth Buffer Setup
+  //glDepthFunc(GL_LEQUAL);       // The Type Of Depth Test To Do
+  //glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST); // Really Nice Perspective Calculation
+
+  graphObjList = glGenLists(1);
+  glNewList(graphObjList, GL_COMPILE);
+  glEndList();
+  int argc = 1;
+  char *argv = "SimWiz";
+  //      glutInit(&argc, &argv);
+  //      glutInitDisplayMode(GLUT_RGBA | GLUT_SINGLE);
+}
+
+void CQGLNetworkPainter::resizeGL(int w, int h)
+{
+  // setup viewport, projection etc.:
+  glViewport(0, 0, (GLint)w, (GLint)h);
+
+  glMatrixMode(GL_PROJECTION);    // Select The Projection Matrix
+  glLoadIdentity();             // Reset The Projection Matrix
+  //gluOrtho2D(0.0,(GLdouble)w,0.0,(GLdouble)h);
+  // Calculate The Aspect Ratio Of The Window
+  //gluPerspective(45.0f,(GLfloat)w/(GLfloat)h,0.1f,100.0f);
+  //GLfloat x = (GLfloat)w / h;
+  //glFrustum(-x, x, -1.0, 1.0, 4.0, 15.0);
+  gluOrtho2D((GLdouble)mgraphMin.getX(),
+             (GLdouble)mgraphMax.getX(),
+             (GLdouble)mgraphMax.getY(),
+             (GLdouble)mgraphMin.getY()); // y: 0.0 is bottom left instead of top left as in SBML
+  glMatrixMode(GL_MODELVIEW);  // Select The Modelview Matrix
+}
+
+void CQGLNetworkPainter::paintGL()
+{
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear The Screen And The Depth Buffer
+  draw();
 }
