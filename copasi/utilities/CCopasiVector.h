@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiVector.h,v $
-//   $Revision: 1.69 $
+//   $Revision: 1.70 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/16 21:47:55 $
+//   $Date: 2007/02/26 18:10:48 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,7 +23,6 @@
 #include <assert.h>
 
 #include "utilities/CCopasiMessage.h"
-#include "utilities/CCopasiTask.h"
 #include "utilities/utility.h"
 
 #include "report/CCopasiObjectName.h"

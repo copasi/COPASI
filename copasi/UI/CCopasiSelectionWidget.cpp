@@ -1,22 +1,22 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionWidget.cpp,v $
-   $Revision: 1.10 $
-   $Name:  $
-   $Author: gauges $
-   $Date: 2006/08/31 15:45:46 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionWidget.cpp,v $
+//   $Revision: 1.11 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/26 18:10:48 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #include <iostream>
 
+#include "copasi.h"
+
 #include "CCopasiSelectionWidget.h"
 #include "ObjectBrowserWidget.h"
 #include "CCopasiSimpleSelectionTree.h"
-
-#include "copasi.h"
 
 CCopasiSelectionWidget::CCopasiSelectionWidget(QWidget* parent , const char* name , WFlags fl): QWidgetStack(parent, name, fl), mpSimpleTree(NULL), mpObjectBrowser(NULL), mpOutputVector(NULL),
     mSingleSelect(false), mExpertMode(false)

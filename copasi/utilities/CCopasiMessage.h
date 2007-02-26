@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMessage.h,v $
-   $Revision: 1.46 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/12/15 16:20:31 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMessage.h,v $
+//   $Revision: 1.47 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/26 18:10:48 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -20,8 +20,6 @@
 
 #include <string>
 #include <deque>
-
-#include "copasi.h"
 
 typedef struct MESSAGES {unsigned C_INT32 No; const char * Text;}
 Message;
@@ -78,11 +76,11 @@ class CCopasiMessage
 #ifdef ERROR
 # define COPASI_ERROR_BACKUP ERROR
 # undef ERROR
-#endif
       ERROR,
-#ifdef COPASI_ERROR_BACKUP
 # define ERROR COPASI_ERROR_BACKUP
 # undef COPASI_ERROR_BACKUP
+#else
+      ERROR,
 #endif
       EXCEPTION
     };

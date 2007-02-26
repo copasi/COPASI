@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CCopasiSimpleSelectionTree.h,v $
-   $Revision: 1.9 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/09/04 21:24:06 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CCopasiSimpleSelectionTree.h,v $
+//   $Revision: 1.10 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/26 18:10:48 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -17,7 +17,8 @@
 #include <vector>
 #include <map>
 #include <string>
-#include "utilities/CCopasiVector.h"
+
+template <class CType> class CCopasiVector;
 
 class CCopasiObject;
 class QListViewItem;

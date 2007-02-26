@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserWidget.h,v $
-   $Revision: 1.7 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:45 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserWidget.h,v $
+//   $Revision: 1.8 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/26 18:10:48 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -25,7 +25,8 @@ Contact: Please contact lixu1@vt.edu.
 #include <qvariant.h>
 #include <qwidget.h>
 #include <vector>
-#include "utilities/CCopasiVector.h"
+
+template <class CType> class CCopasiVector;
 
 class QVBoxLayout;
 class QHBoxLayout;

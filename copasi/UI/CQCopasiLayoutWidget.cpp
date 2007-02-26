@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQCopasiLayoutWidget.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: urost $
-//   $Date: 2007/02/26 10:31:08 $
+//   $Author: shoops $
+//   $Date: 2007/02/26 18:10:48 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,19 +14,11 @@
 #include <qlayout.h>
 #include <qlineedit.h>
 #include <qlabel.h>
-//#include <qtable.h>
+#include <qtabwidget.h>
 
 #include "copasi.h"
 
 #include "CQCopasiLayoutWidget.h"
-#include "qtUtilities.h"
-
-#include "CopasiDataModel/CCopasiDataModel.h"
-//#include "utilities/CCopasiVector.h"
-
-#include "model/CModel.h"
-
-#include <qtabwidget.h>
 
 /**
  *  Constructs a CQCopasiLayoutWidget which is a child of 'parent', with the

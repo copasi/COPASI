@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-//   $Revision: 1.47 $
+//   $Revision: 1.48 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/21 18:21:23 $
+//   $Date: 2007/02/26 18:10:49 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -49,6 +49,8 @@ class CCopasiParameterGroup;
 class CVersion;
 class CSlider;
 class SCopasiXMLGUI;
+class CReportDefinition;
+class CCopasiTask;
 
 struct SCopasiXMLParserCommon
   {
