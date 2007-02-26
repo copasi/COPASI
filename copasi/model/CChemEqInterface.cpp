@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqInterface.cpp,v $
-   $Revision: 1.35 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/11/21 16:49:58 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqInterface.cpp,v $
+//   $Revision: 1.36 $
+//   $Name:  $
+//   $Author: ssahle $
+//   $Date: 2007/02/26 13:53:17 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -505,10 +505,19 @@ void CChemEqInterface::reverse()
 {
   std::vector<std::string> dummyNames;
   std::vector<C_FLOAT64> dummyMults;
+  std::vector<std::string> dummyCompartments;
 
-  dummyNames = mSubstrateNames; dummyMults = mSubstrateMult;
-  mSubstrateNames = mProductNames; mSubstrateMult = mProductMult;
-  mProductNames = dummyNames; mProductMult = dummyMults;
+  dummyNames = mSubstrateNames;
+  dummyMults = mSubstrateMult;
+  dummyCompartments = mSubstrateCompartments;
+
+  mSubstrateNames = mProductNames;
+  mSubstrateMult = mProductMult;
+  mSubstrateCompartments = mProductCompartments;
+
+  mProductNames = dummyNames;
+  mProductMult = dummyMults;
+  mProductCompartments = dummyCompartments;
 }
 
 std::set<std::string> CChemEqInterface::listOfNonUniqueMetabNames() const
