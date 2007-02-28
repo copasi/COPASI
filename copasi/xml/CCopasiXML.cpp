@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-//   $Revision: 1.90 $
+//   $Revision: 1.91 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/02/21 16:04:58 $
+//   $Author: gauges $
+//   $Date: 2007/02/28 10:34:39 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -346,6 +346,8 @@ bool CCopasiXML::saveModel()
             }
 
           endSaveElement("Compartment");
+          if (pComp->getSBMLId() != "")
+            mSBMLReference[pComp->getSBMLId()] = pComp->getKey();
         }
 
       endSaveElement("ListOfCompartments");
@@ -389,6 +391,8 @@ bool CCopasiXML::saveModel()
             }
 
           endSaveElement("Metabolite");
+          if (pMetab->getSBMLId() != "")
+            mSBMLReference[pMetab->getSBMLId()] = pMetab->getKey();
         }
 
       endSaveElement("ListOfMetabolites");
@@ -430,6 +434,8 @@ bool CCopasiXML::saveModel()
             }
 
           endSaveElement("ModelValue");
+          if (pMV->getSBMLId() != "")
+            mSBMLReference[pMV->getSBMLId()] = pMV->getKey();
         }
 
       endSaveElement("ListOfModelValues");
