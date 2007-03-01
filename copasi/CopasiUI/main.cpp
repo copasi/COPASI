@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/main.cpp,v $
-   $Revision: 1.29 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/12/15 21:25:53 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/main.cpp,v $
+//   $Revision: 1.30 $
+//   $Name:  $
+//   $Author: urost $
+//   $Date: 2007/03/01 18:15:23 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -64,8 +64,8 @@ int main(int argc, char **argv)
 
       pWindow->getDataModel()->setQApp(&a);
 
-      //  ObjectDebug objwindow;
-      //  objwindow.show();
+      ObjectDebug objwindow;
+      objwindow.show();
 
       a.exec();
     }

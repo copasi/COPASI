@@ -1,15 +1,19 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/02/26 10:31:07 $
+//   $Date: 2007/03/01 18:15:23 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
+#include "CopasiDataModel/CCopasiDataModel.h"
+#include "layout/CListOfLayouts.h"
+#include "layout/CLayout.h"
+#include "layout/CLBase.h"
 #include"CQLayoutMainWindow.h"
 //#include "sbmlDocumentLoader.h"
 #include <string>
@@ -31,12 +35,34 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
   //scrollView->viewport()->setMouseTracking(TRUE);
   // Create OpenGL widget
   //cout << "viewport: " << scrollView.viewport() << endl;
-  glPainter = new CQGLNetworkPainter(scrollView->viewport());
+  CListOfLayouts *pLayoutList;
+  if (CCopasiDataModel::Global != NULL)
+    {
+      pLayoutList = CCopasiDataModel::Global->getListOfLayouts();
+    }
+  else
+    pLayoutList = NULL;
 
+  glPainter = new CQGLNetworkPainter(scrollView->viewport());
+  if (pLayoutList != NULL)
+    {
+      CLayout * pLayout;
+      if (pLayoutList->size() > 0)
+        {
+          pLayout = (*pLayoutList)[0];
+          CLDimensions dim = pLayout->getDimensions();
+          CLPoint c1;
+          CLPoint c2(dim.getWidth(), dim.getHeight());
+          glPainter->setGraphSize(c1, c2);
+          glPainter->createGraph(pLayout);
+          glPainter->drawGraph();
+        }
+    }
   // put OpenGL widget into scrollView
   scrollView->addChild(glPainter);
   setCentralWidget(scrollView);
   scrollView->show();
+  glPainter->drawGraph();
 }
 
 void CQLayoutMainWindow::createActions()
@@ -82,12 +108,36 @@ void CQLayoutMainWindow::createMenus()
 
 void CQLayoutMainWindow::loadSBMLFile()
 {
-  string filename = "/localhome/ulla/project/data/peroxiShortNew.xml"; // test file
+  //string filename = "/localhome/ulla/project/data/peroxiShortNew.xml"; // test file
   //string filename = "/home/ulla/project/simulation/data/peroxiShortNew.xml";
   //SBMLDocumentLoader docLoader;
   //network *networkP = docLoader.loadDocument(filename.c_str());
 
   //glPainter->createGraph(networkP);
+  std::cout << "load SBMLfile" << std::endl;
+  CListOfLayouts *pLayoutList;
+  if (CCopasiDataModel::Global != NULL)
+    {
+      pLayoutList = CCopasiDataModel::Global->getListOfLayouts();
+    }
+  else
+    pLayoutList = NULL;
+
+  glPainter = new CQGLNetworkPainter(scrollView->viewport());
+  if (pLayoutList != NULL)
+    {
+      CLayout * pLayout;
+      if (pLayoutList->size() > 0)
+        {
+          pLayout = (*pLayoutList)[0];
+          CLDimensions dim = pLayout->getDimensions();
+          CLPoint c1;
+          CLPoint c2(dim.getWidth(), dim.getHeight());
+          glPainter->setGraphSize(c1, c2);
+          glPainter->createGraph(pLayout);
+          glPainter->drawGraph();
+        }
+    }
 }
 
 void CQLayoutMainWindow::loadDataFile()

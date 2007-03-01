@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/02/26 18:13:10 $
+//   $Author: urost $
+//   $Date: 2007/03/01 18:15:23 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -70,7 +70,10 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
       viewerNodes.push_back(*nodes[i]); // local vector of nodes contains objects, not pointers
       //viewerNodes[i].printObject();
     }
-  CCopasiVector<CLReactionGlyph> reactions = lP->getListOfReactionGlyphs();
+  CCopasiVector<CLReactionGlyph> reactions;
+  reactions = lP->getListOfReactionGlyphs();
+
+  std::cout << "number of reactions: " << reactions.size() << std::endl;
 
   //now extract curves to draw from reaction
   viewerCurves = std::vector<CLLineSegment>();
@@ -87,8 +90,11 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
         }
 
       // now get curves to reactants
+      //std::cout << *reactions[i];
 
-      CCopasiVector<CLMetabReferenceGlyph> edgesToNodesOfReaction = reactions[i]->getListOfMetabReferenceGlyphs();
+      CCopasiVector<CLMetabReferenceGlyph> edgesToNodesOfReaction;
+      edgesToNodesOfReaction = reactions[i]->getListOfMetabReferenceGlyphs();
+      //std::cout << "number of edges in reaction " << i << ": "<< edgesToNodesOfReaction.size() << std::endl;
       unsigned int j2;
       for (j2 = 0;j2 < edgesToNodesOfReaction.size();j2++)
         {
@@ -111,6 +117,8 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
         } // end j
     } // end i (reactions)
 
+  std::cout << "number of curves: " << viewerCurves.size() << std::endl;
+
   CCopasiVector<CLTextGlyph> labels = lP->getListOfTextGlyphs();
   std::cout << "number of labels " << labels.size() << std::endl;
   viewerLabels = std::vector<CLTextGlyph>();
@@ -123,7 +131,7 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
   CLPoint p1 = CLPoint(0.0, 0.0);
   CLPoint p2 = CLPoint(lP->getDimensions().getWidth(), lP->getDimensions().getHeight());
   this->setGraphSize(p1, p2);
-  CQGLNetworkPainter::drawGraph();
+  //CQGLNetworkPainter::drawGraph();
 }
 
 void CQGLNetworkPainter::drawGraph()
@@ -139,7 +147,7 @@ void CQGLNetworkPainter::drawGraph()
     {
       drawEdge(viewerCurves[i]);
     }
-  std::cout << "number of arrows: " << viewerArrows.size() << std::endl;
+  //std::cout << "number of arrows: " << viewerArrows.size() << std::endl;
   for (i = 0;i < viewerArrows.size();i++)
     drawArrow(viewerArrows[i]);
   for (i = 0;i < viewerLabels.size();i++)
@@ -153,6 +161,7 @@ void CQGLNetworkPainter::drawGraph()
 // draw node as circle
 void CQGLNetworkPainter::drawNode(CLMetabGlyph &n)
 {
+  glColor3f(1.0f, 0.0f, 0.0f); // red
   GLUquadricObj *qobj;
   qobj = gluNewQuadric();
   //cout << "draw node at: " << n.getX() <<  "  " << n.getY() << std::endl;
@@ -247,9 +256,10 @@ void CQGLNetworkPainter::drawLabel(CLTextGlyph l)
   glVertex2d(l.getX() + l.getWidth(), l.getY() + l.getHeight());
   glVertex2d(l.getX(), l.getY() + l.getHeight());
   glEnd();
+  //std::cout << "X: " << l.getX() << "  y: " << l.getY() << "  w: " << l.getWidth() << "  h: " << l.getHeight() << std::endl;
   // now draw text
   //drawStringAt(l.getText(),l.getX(),l.getY());
-  renderBitmapString(l.getX(), l.getY(), l.getText(), l.getWidth(), l.getHeight());
+  //renderBitmapString(l.getX(), l.getY(), l.getText(), l.getWidth(), l.getHeight());
 }
 
 void CQGLNetworkPainter::renderBitmapString(C_FLOAT64 x, C_FLOAT64 y, std::string text, C_FLOAT64 w, C_FLOAT64 h)
@@ -439,10 +449,11 @@ void CQGLNetworkPainter::initializeGL()
   graphObjList = glGenLists(1);
   glNewList(graphObjList, GL_COMPILE);
   glEndList();
-  int argc = 1;
-  char *argv = "SimWiz";
+  //int argc = 1;
+  //char *argv = "SimWiz";
   //      glutInit(&argc, &argv);
   //      glutInitDisplayMode(GLUT_RGBA | GLUT_SINGLE);
+  std::cout << "initialize GL" << std::endl;
 }
 
 void CQGLNetworkPainter::resizeGL(int w, int h)
