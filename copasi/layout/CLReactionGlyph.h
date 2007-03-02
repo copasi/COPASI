@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLReactionGlyph.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: urost $
-//   $Date: 2007/02/23 20:47:18 $
+//   $Author: ssahle $
+//   $Date: 2007/03/02 14:51:32 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,18 +24,6 @@
 
 class SpeciesReferenceGlyph;
 class ReactionGlyph;
-
-typedef enum roleType
-{
-  undefined,
-  substrate,
-  product,
-  sidesubstrate,
-  sideproduct,
-  modifier,
-  activator,
-  inhibitor
-};
 
 /**
  * Graphical representation of a CChemEqElement. This correspondents to
@@ -130,6 +118,7 @@ class CLMetabReferenceGlyph : public CLGraphicalObject
      * insert operator
      */
     friend std::ostream & operator<<(std::ostream &os, const CLMetabReferenceGlyph & g);
+    void print(std::ostream * ostream) const;
   };
 
 /**
@@ -190,6 +179,7 @@ class CLReactionGlyph : public CLGraphicalObject
      * insert operator
      */
     friend std::ostream & operator<<(std::ostream &os, const CLReactionGlyph & g);
+    void print(std::ostream * ostream) const;
   };
 
 #endif

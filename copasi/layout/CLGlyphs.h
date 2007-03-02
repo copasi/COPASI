@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGlyphs.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
-//   $Author: urost $
-//   $Date: 2007/02/23 20:54:56 $
+//   $Author: ssahle $
+//   $Date: 2007/03/02 14:51:32 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,6 +52,7 @@ class CLMetabGlyph : public CLGraphicalObject
      * insert operator
      */
     friend std::ostream & operator<<(std::ostream &os, const CLMetabGlyph & g);
+    void print(std::ostream * ostream) const;
   };
 
 /**
@@ -85,6 +86,7 @@ class CLCompartmentGlyph : public CLGraphicalObject
      * insert operator
      */
     friend std::ostream & operator<<(std::ostream &os, const CLCompartmentGlyph & g);
+    void print(std::ostream * ostream) const;
   };
 
 /**
@@ -145,6 +147,7 @@ class CLTextGlyph : public CLGraphicalObject
      * insert operator
      */
     friend std::ostream & operator<<(std::ostream &os, const CLTextGlyph & g);
+    void print(std::ostream * ostream) const;
   };
 
 #endif

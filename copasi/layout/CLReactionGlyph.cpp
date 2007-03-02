@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLReactionGlyph.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
-//   $Author: urost $
-//   $Date: 2007/03/02 10:56:34 $
+//   $Author: ssahle $
+//   $Date: 2007/03/02 14:51:32 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -110,6 +110,9 @@ std::ostream & operator<<(std::ostream &os, const CLMetabReferenceGlyph & g)
   return os;
 }
 
+void CLMetabReferenceGlyph::print(std::ostream * ostream) const
+{*ostream << *this;}
+
 //*********** CLReactionGlyph ****************************************
 
 CLReactionGlyph::CLReactionGlyph(const std::string & name,
@@ -191,3 +194,6 @@ std::ostream & operator<<(std::ostream &os, const CLReactionGlyph & g)
 
   return os;
 }
+
+void CLReactionGlyph::print(std::ostream * ostream) const
+{*ostream << *this;}

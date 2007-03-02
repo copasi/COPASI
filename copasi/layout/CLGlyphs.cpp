@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGlyphs.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/23 16:15:46 $
+//   $Date: 2007/03/02 14:51:32 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -64,6 +64,9 @@ std::ostream & operator<<(std::ostream &os, const CLMetabGlyph & g)
   return os;
 }
 
+void CLMetabGlyph::print(std::ostream * ostream) const
+  {*ostream << *this;}
+
 //********* CLCompartmentGlyph ************************************************
 
 CLCompartmentGlyph::CLCompartmentGlyph(const std::string & name,
@@ -107,6 +110,9 @@ std::ostream & operator<<(std::ostream &os, const CLCompartmentGlyph & g)
   os << "CompartmentGlyph: " << dynamic_cast<const CLGraphicalObject&>(g);
   return os;
 }
+
+void CLCompartmentGlyph::print(std::ostream * ostream) const
+  {*ostream << *this;}
 
 //********** CLTextGlyph ******************************************************
 
@@ -203,3 +209,6 @@ std::ostream & operator<<(std::ostream &os, const CLTextGlyph & g)
     os << "  Label for: \"" << tmp->getObjectName() << "\"\n";
   return os;
 }
+
+void CLTextGlyph::print(std::ostream * ostream) const
+{*ostream << *this;}
