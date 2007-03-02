@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLReactionGlyph.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/03/02 14:51:32 $
+//   $Date: 2007/03/02 15:12:37 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -118,14 +118,18 @@ void CLMetabReferenceGlyph::print(std::ostream * ostream) const
 CLReactionGlyph::CLReactionGlyph(const std::string & name,
                                  const CCopasiContainer * pParent)
     : CLGraphicalObject(name, pParent),
-    mCurve()
+    mCurve(),
+    mvMetabReferences("ListOfMetabReferenceGlyphs", this)
 {}
 
 CLReactionGlyph::CLReactionGlyph(const CLReactionGlyph & src,
                                  const CCopasiContainer * pParent)
     : CLGraphicalObject(src, pParent),
-    mCurve(src.mCurve)
-{}
+    mCurve(src.mCurve),
+    mvMetabReferences(src.mvMetabReferences, this)
+{
+  //TODO
+}
 
 CLReactionGlyph::CLReactionGlyph(const ReactionGlyph & sbml,
                                  const std::map<std::string, std::string> & modelmap,
