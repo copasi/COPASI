@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLReactionGlyph.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/03/02 15:12:37 $
+//   $Date: 2007/03/02 15:22:21 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -136,7 +136,8 @@ CLReactionGlyph::CLReactionGlyph(const ReactionGlyph & sbml,
                                  std::map<std::string, std::string> & layoutmap,
                                  const CCopasiContainer * pParent)
     : CLGraphicalObject(sbml, layoutmap, pParent),
-    mCurve()
+    mCurve(),
+    mvMetabReferences("ListOfMetabReferenceGlyphs", this)
 {
   //get the copasi key corresponding to the sbml id for the reaction
   if (sbml.getReactionId() != "")
