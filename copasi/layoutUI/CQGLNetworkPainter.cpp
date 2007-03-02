@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/03/01 18:15:23 $
+//   $Date: 2007/03/02 10:56:33 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -51,8 +51,19 @@ void CQGLNetworkPainter::setGraphSize(const CLPoint & min, const CLPoint & max)
 
 void CQGLNetworkPainter::draw()
 {
+  //std::cout << "draw" << std::endl;
   glLoadIdentity();
+
   glCallList(graphObjList);
+
+  //  ******* test object *******
+  //  glTranslatef(10.0f, 10.0f, 0.0f);
+  //  glBegin(GL_TRIANGLES);          // Drawing Using Triangles
+  //  glColor3f(0.0f, 0.0f, 1.0f);
+  //  glVertex3f(100.0f, 100.0f, 0.0f);    // Top
+  //  glVertex3f(0.0f, 0.0f, 0.0f);    // Bottom Left
+  //  glVertex3f(200.0f, 0.0f, 0.0f);    // Bottom Right
+  //  glEnd();
   //testOpenGL();
 }
 
@@ -61,7 +72,8 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
 {
   // copy graph to local variables
   //cout << "now create graph" << endl;
-  CCopasiVector<CLMetabGlyph> nodes = lP->getListOfMetaboliteGlyphs();
+  CCopasiVector<CLMetabGlyph> nodes;
+  nodes = lP->getListOfMetaboliteGlyphs();
   //viewerNodes.resize (nodes.size());
   viewerNodes = std::vector<CLMetabGlyph>();
   unsigned int i;
@@ -85,7 +97,8 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
       std::vector<CLLineSegment> segments = curve.getCurveSegments();
       for (j = 0;j < curve.getNumCurveSegments();j++)
         {
-          CLLineSegment seg = segments[i];
+          CLLineSegment seg = segments[j];
+          //std::cout << segments[i] << std::endl;
           viewerCurves.push_back(seg); // add copy of segment to vector
         }
 
@@ -106,12 +119,17 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
               CLLineSegment seg = segments[k];
               viewerCurves.push_back(seg); // add copy of segment to vector
             }
-          CLMetabReferenceGlyph::Role r = edgesToNodesOfReaction[j]->getRole();
+          CLMetabReferenceGlyph::Role r = edgesToNodesOfReaction[j2]->getRole();
+          //std::cout << "role : " << r << std::endl;
           if ((r == CLMetabReferenceGlyph::PRODUCT) || (r == CLMetabReferenceGlyph::SIDEPRODUCT))
             {// create arrows just for edges to products or sideproducts
               CLLineSegment lastSeg = segments[curve.getNumCurveSegments() - 1];
+              //std::cout << "number of segments in curve: " << curve.getNumCurveSegments() << std::endl;
+              //CLPoint p = lastSeg.getStart();
+              //std::cout << "start: " << p << std::endl;
               CLPoint p = lastSeg.getEnd();
-              arrow *ar = new arrow(lastSeg, p.getX(), p.getY());
+              std::cout << "end:   " << p << std::endl;
+              CArrow *ar = new CArrow(lastSeg, p.getX(), p.getY());
               viewerArrows.push_back(*ar);
             }
         } // end j
@@ -119,7 +137,8 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
 
   std::cout << "number of curves: " << viewerCurves.size() << std::endl;
 
-  CCopasiVector<CLTextGlyph> labels = lP->getListOfTextGlyphs();
+  CCopasiVector<CLTextGlyph> labels;
+  labels = lP->getListOfTextGlyphs();
   std::cout << "number of labels " << labels.size() << std::endl;
   viewerLabels = std::vector<CLTextGlyph>();
   for (i = 0;i < labels.size();i++)
@@ -136,6 +155,7 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
 
 void CQGLNetworkPainter::drawGraph()
 {
+  //std::cout << "draw graph" << std::endl;
   // create OpenGL display list
   glNewList(graphObjList, GL_COMPILE);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -143,17 +163,20 @@ void CQGLNetworkPainter::drawGraph()
   unsigned int i;
   //for (i=0;i<viewerNodes.size();i++)
   // drawNode(viewerNodes[i]);
+  glColor3f(0.0f, 0.0f, 0.5f); // edges in dark blue
   for (i = 0;i < viewerCurves.size();i++)
     {
       drawEdge(viewerCurves[i]);
     }
   //std::cout << "number of arrows: " << viewerArrows.size() << std::endl;
+
+  //glColor3f(0.0f,0.0f,0.5f); // arrows in dark blue
   for (i = 0;i < viewerArrows.size();i++)
     drawArrow(viewerArrows[i]);
+
   for (i = 0;i < viewerLabels.size();i++)
     drawLabel(viewerLabels[i]);
-  //for (unsigned int i=0;i<edges.size();i++)
-  // drawEdge(edges[i]);
+
   glEndList();
   //this->updateGL();
 }
@@ -203,11 +226,11 @@ void CQGLNetworkPainter::drawEdge(CLLineSegment c)
   //cout << e.getRole() << std::endl;
 }
 
-void CQGLNetworkPainter::drawArrow(arrow a)
+void CQGLNetworkPainter::drawArrow(CArrow a)
 {
   // first get the two points defining the line segment (curve)
-  CLPoint p1 = a.getStartOfLine();
-  CLPoint p2 = a.getEndOfLine();
+  CLPoint p2 = a.getStartOfLine();
+  CLPoint p1 = a.getEndOfLine();
   // p1 and p2 define a line where the arrow peak can be placed onto
   // peak should be at p1, the arrow peak is just a triangle
 
@@ -233,7 +256,7 @@ void CQGLNetworkPainter::drawArrow(arrow a)
   C_FLOAT64 p4X = qX - (unX * a.getArrowWidth());
   C_FLOAT64 p4Y = qY - (unY * a.getArrowWidth());
   // now draw polygon, using vertices from triangle
-  glColor3f(0.0f, 0.0f, 1.0f); // set arrow color: blue
+  //glColor3f(0.0f, 0.0f, 1.0f); // set arrow color: blue
   // now create triangle;
   //cout << "arrow triangle: " << std::endl;
   //cout << qX << "  " << qY << std::endl;
@@ -248,9 +271,18 @@ void CQGLNetworkPainter::drawArrow(arrow a)
 
 void CQGLNetworkPainter::drawLabel(CLTextGlyph l)
 {
-  glColor3f(0.7f, 0.7f, 1.0f); // light blue
+  //glColor3f(0.5f, 1.0f, 0.69f); // label background color somehow green
+  glColor3f(0.23f, 0.92f, 0.7f); // label background color
   // draw rectangle as background for text
   glBegin(GL_POLYGON);
+  glVertex2d(l.getX(), l.getY());
+  glVertex2d(l.getX() + l.getWidth(), l.getY());
+  glVertex2d(l.getX() + l.getWidth(), l.getY() + l.getHeight());
+  glVertex2d(l.getX(), l.getY() + l.getHeight());
+  glEnd();
+  // draw frame for rectangle
+  glColor3f(0.0f, 0.0f, 0.3f);
+  glBegin(GL_LINE_LOOP);
   glVertex2d(l.getX(), l.getY());
   glVertex2d(l.getX() + l.getWidth(), l.getY());
   glVertex2d(l.getX() + l.getWidth(), l.getY() + l.getHeight());
@@ -374,7 +406,7 @@ void CQGLNetworkPainter::zoom(C_FLOAT64 zoomFactor)
     }
   for (i = 0;i < viewerArrows.size();i++)
     {
-      this->viewerArrows[i].zoom(zoomFactor);
+      this->viewerArrows[i].scale(zoomFactor);
     }
   this->drawGraph();
 }
@@ -437,6 +469,7 @@ void CQGLNetworkPainter::initializeGraphPainter()
 
 void CQGLNetworkPainter::initializeGL()
 {
+  //std::cout << "initialize GL" << std::endl;
   // Set up the rendering context, define display lists etc.:
 
   glClearColor(1.0, 1.0, 0.94, 0.0);  // background ivory
@@ -447,17 +480,21 @@ void CQGLNetworkPainter::initializeGL()
   //glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST); // Really Nice Perspective Calculation
 
   graphObjList = glGenLists(1);
-  glNewList(graphObjList, GL_COMPILE);
-  glEndList();
+  drawGraph(); // create display list with graph objects
+  //glNewList(graphObjList, GL_COMPILE);
+  //glEndList();
+
+  // now init glut
+
   //int argc = 1;
   //char *argv = "SimWiz";
   //      glutInit(&argc, &argv);
   //      glutInitDisplayMode(GLUT_RGBA | GLUT_SINGLE);
-  std::cout << "initialize GL" << std::endl;
 }
 
 void CQGLNetworkPainter::resizeGL(int w, int h)
 {
+  //std::cout << "resize GL" << std::endl;
   // setup viewport, projection etc.:
   glViewport(0, 0, (GLint)w, (GLint)h);
 
@@ -477,6 +514,7 @@ void CQGLNetworkPainter::resizeGL(int w, int h)
 
 void CQGLNetworkPainter::paintGL()
 {
+  //std::cout << "paint GL" << std::endl;
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear The Screen And The Depth Buffer
   draw();
 }

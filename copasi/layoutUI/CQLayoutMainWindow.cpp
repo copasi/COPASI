@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/03/01 18:15:23 $
+//   $Date: 2007/03/02 10:56:33 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -54,15 +54,15 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
           CLPoint c1;
           CLPoint c2(dim.getWidth(), dim.getHeight());
           glPainter->setGraphSize(c1, c2);
-          glPainter->createGraph(pLayout);
-          glPainter->drawGraph();
+          glPainter->createGraph(pLayout); // create local data structures
+          //glPainter->drawGraph(); // create display list
         }
     }
   // put OpenGL widget into scrollView
   scrollView->addChild(glPainter);
   setCentralWidget(scrollView);
   scrollView->show();
-  glPainter->drawGraph();
+  //glPainter->drawGraph();
 }
 
 void CQLayoutMainWindow::createActions()
@@ -134,8 +134,8 @@ void CQLayoutMainWindow::loadSBMLFile()
           CLPoint c1;
           CLPoint c2(dim.getWidth(), dim.getHeight());
           glPainter->setGraphSize(c1, c2);
-          glPainter->createGraph(pLayout);
-          glPainter->drawGraph();
+          glPainter->createGraph(pLayout); // create local data structures
+          //glPainter->drawGraph(); // create display list
         }
     }
 }

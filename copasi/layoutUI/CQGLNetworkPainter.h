@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/02/26 18:13:10 $
+//   $Author: urost $
+//   $Date: 2007/03/02 10:56:33 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -45,7 +45,7 @@ class CQGLNetworkPainter : public QGLWidget
     void drawEdge(CLLineSegment c);
     void drawLabel(CLTextGlyph l);
     // void drawStringAt(string s, double x, double y);
-    void drawArrow(arrow a);
+    void drawArrow(CArrow a);
 
   private slots:
     void zoomIn();
@@ -56,7 +56,7 @@ class CQGLNetworkPainter : public QGLWidget
     CLPoint mgraphMax;
     std::vector<CLMetabGlyph> viewerNodes;
     std::vector<CLLineSegment> viewerCurves;
-    std::vector<arrow> viewerArrows;
+    std::vector<CArrow> viewerArrows;
     std::vector<CLTextGlyph> viewerLabels;
     GLuint graphObjList;
     QAction *zoomInAction;
