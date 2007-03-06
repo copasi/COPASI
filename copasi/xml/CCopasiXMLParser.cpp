@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.150 $
+//   $Revision: 1.151 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/21 18:23:23 $
+//   $Date: 2007/03/06 17:30:12 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1037,7 +1037,8 @@ void CCopasiXMLParser::ParameterDescriptionElement::start(const XML_Char *pszNam
 {
   const char * Key;
   const char * Name;
-  const char * Order;
+  const char * order;
+  unsigned C_INT32 Order;
   const char * role; /*substrate, product, modifier, constant, other*/
   CFunctionParameter::Role Role;
   const char * minOccurs;
@@ -1061,9 +1062,8 @@ void CCopasiXMLParser::ParameterDescriptionElement::start(const XML_Char *pszNam
       Key = mParser.getAttributeValue("key", papszAttrs);
       Name = mParser.getAttributeValue("name", papszAttrs);
 
-      Order = mParser.getAttributeValue("order", papszAttrs);
-      if ((unsigned C_INT32) atoi(Order) != mOrder) fatalError();
-      mOrder++;
+      order = mParser.getAttributeValue("order", papszAttrs);
+      Order = (unsigned C_INT32) atoi(order);
 
       role = mParser.getAttributeValue("role", papszAttrs);
       Role = CFunctionParameter::xmlRole2Enum(role);
@@ -1093,7 +1093,16 @@ void CCopasiXMLParser::ParameterDescriptionElement::start(const XML_Char *pszNam
                            pFunction->getObjectName().c_str(),
                            mParser.getCurrentLineNumber());
 
-          pParm = pFunction->getVariables()[Index];
+          if (Order >= pFunction->getVariables().size())
+            CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 12, Order, Name,
+                           pFunction->getObjectName().c_str(),
+                           mParser.getCurrentLineNumber());
+
+          // Assure that the order is correct
+          if (Order != Index)
+            pFunction->getVariables().swap(Order, Index);
+
+          pParm = pFunction->getVariables()[Order];
           pParm->setObjectName(Name);
           pParm->setUsage(Role);
 
@@ -2053,7 +2062,7 @@ void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
         mpCurrentHandler = &mParser.mCharacterDataElement;
       break;
 
-    case MathML:    // Old file format support
+    case MathML:     // Old file format support
       if (!strcmp(pszName, "MathML"))
         {
           /* If we do not have a MathML element handler we create one. */
@@ -2126,7 +2135,7 @@ void CCopasiXMLParser::ModelValueElement::end(const XML_Char *pszName)
       mCurrentElement = ModelValue;
       break;
 
-    case MathML:    // Old file format support
+    case MathML:     // Old file format support
       if (strcmp(pszName, "MathML"))
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                        pszName, "MathML", mParser.getCurrentLineNumber());

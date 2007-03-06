@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionParameters.h,v $
-   $Revision: 1.28 $
-   $Name:  $
-   $Author: gauges $
-   $Date: 2006/10/15 07:16:08 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionParameters.h,v $
+//   $Revision: 1.29 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/03/06 17:30:10 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -114,6 +114,13 @@ class CFunctionParameters : public CCopasiContainer
      * number of parameters
      */
     unsigned C_INT32 size() const;
+
+    /**
+     * Swap parameters
+     * @param const unsigned C_INT32 & from
+     * @param const unsigned C_INT32 & to
+     */
+    void swap(const unsigned C_INT32 & from, const unsigned C_INT32 & to);
 
     /**
      * tells whether there is a parameter with vector type and the given role

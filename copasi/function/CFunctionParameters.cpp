@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionParameters.cpp,v $
-   $Revision: 1.39 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:28:26 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionParameters.cpp,v $
+//   $Revision: 1.40 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/03/06 17:30:10 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -87,6 +87,9 @@ const CFunctionParameter * CFunctionParameters::operator[](const std::string &na
   {return mParameters[name];}
 
 unsigned C_INT32 CFunctionParameters::size() const {return mParameters.size();}
+
+void CFunctionParameters::swap(const unsigned C_INT32 & from, const unsigned C_INT32 & to)
+{mParameters.swap(from, to);}
 
 const CFunctionParameter *
 CFunctionParameters::getParameterByUsage(CFunctionParameter::Role usage,
