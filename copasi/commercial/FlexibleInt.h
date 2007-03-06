@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commercial/Attic/FlexibleInt.h,v $
-   $Revision: 1.1 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2007/01/03 14:16:49 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commercial/Attic/FlexibleInt.h,v $
+//   $Revision: 1.2 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/03/06 17:12:17 $
+// End CVS Header
 
-// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -40,7 +40,7 @@ extern "C"
 
     void FIminus(FlexibleInt * pX, FlexibleInt * pY, FlexibleInt * pResult, int base);
 
-    void mFIultiply(FlexibleInt * pX, FlexibleInt * pY, FlexibleInt * pResult, int base);
+    void FImultiply(FlexibleInt * pX, FlexibleInt * pY, FlexibleInt * pResult, int base);
 
     void FIpower(FlexibleInt *pX, unsigned int power, FlexibleInt *pResult, int base);
 
