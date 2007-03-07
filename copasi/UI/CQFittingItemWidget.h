@@ -1,20 +1,20 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingItemWidget.h,v $
-   $Revision: 1.20 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/11/16 15:45:13 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingItemWidget.h,v $
+//   $Revision: 1.21 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/03/07 20:28:20 $
+// End CVS Header
 
-// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQFittingItemWidget.ui'
  **
- ** Created: Tue Nov 14 11:17:23 2006
- **      by: The User Interface Compiler ($Id: CQFittingItemWidget.h,v 1.20 2006/11/16 15:45:13 shoops Exp $)
+ ** Created: Wed Mar 7 15:22:38 2007
+ **      by: The User Interface Compiler ($Id: CQFittingItemWidget.h,v 1.21 2007/03/07 20:28:20 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -47,7 +47,6 @@ class CQValidatorNotEmpty;
 class QColor;
 class CExperimentSet;
 class CCopasiParameterGroup;
-enum ItemType {OPT_ITEM = 0, OPT_CONSTRAINT, FIT_ITEM, FIT_CONSTRAINT};
 class CCrossValidationSet;
 
 class CQFittingItemWidget : public QWidget
@@ -87,6 +86,8 @@ class CQFittingItemWidget : public QWidget
     QLineEdit* mpEditObject;
     QToolButton* mpBtnObject;
     QPushButton* mpBtnPerExperiment;
+
+    enum ItemType {OPT_ITEM = 0, OPT_CONSTRAINT, FIT_ITEM, FIT_CONSTRAINT};
 
     virtual bool load(CCopasiParameterGroup * pItems, const std::map<std::string, std::string> * pExperimentMap, const std::map<std::string, std::string> * pCrossValidationMap);
     virtual bool save(const std::map<std::string, std::string> * pExperimentMap, const std::map<std::string, std::string> * pCrossValidationMap);

@@ -1,4 +1,16 @@
 <!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<comment> Begin CVS Header </comment>
+<comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingItemWidget.ui,v $ </comment>
+<comment>   $Revision: 1.17 $ </comment>
+<comment>   $Name:  $ </comment>
+<comment>   $Author: shoops $ </comment>
+<comment>   $Date: 2007/03/07 20:28:20 $ </comment>
+<comment> End CVS Header </comment>
+
+<comment> Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc. and EML Research, gGmbH. </comment>
+<comment> All rights reserved. </comment>
+
 <class>CQFittingItemWidget</class>
 <widget class="QWidget">
     <property name="name">
@@ -771,7 +783,6 @@
     <forward>class QColor</forward>
     <forward>class CExperimentSet</forward>
     <forward>class CCopasiParameterGroup</forward>
-    <forward>enum ItemType {OPT_ITEM =  0, OPT_CONSTRAINT, FIT_ITEM, FIT_CONSTRAINT}</forward>
     <forward>class CCrossValidationSet</forward>
 </forwards>
 <variables>
@@ -792,6 +803,7 @@
     <variable>CCopasiObjectName* mpObjectCN;</variable>
     <variable>const CExperimentSet ** mppExperimentSet;</variable>
     <variable>CCopasiParameterGroup * mpItems;</variable>
+    <variable access="public">enum ItemType {OPT_ITEM = 0, OPT_CONSTRAINT, FIT_ITEM, FIT_CONSTRAINT};</variable>
 </variables>
 <signals>
     <signal>numberChanged( int )</signal>
