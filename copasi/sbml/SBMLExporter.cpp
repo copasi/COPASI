@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-//   $Revision: 1.100 $
+//   $Revision: 1.101 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/02/16 16:56:08 $
+//   $Author: gauges $
+//   $Date: 2007/03/07 13:07:46 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -2226,24 +2226,24 @@ std::vector<std::string> SBMLExporter::isRuleSBMLL2V1Compatible(const CModelEnti
               std::string typeString = pObjectParent->getObjectType();
               if (typeString == "Compartment")
                 {
-                  // must be a reference to the (transient) volume
-                  if (pObject->getObjectName() != "Volume")
+                  // must be a reference to the (transient) or initial volume
+                  if (pObject->getObjectName() != "Volume" && pObject->getObjectName() != "InitialVolume")
                     {
                       result.push_back("Error. Reference to property other than transient volume for compartment \"" + pObjectParent->getObjectName() + "\" in rule for \"" + pME->getObjectType() + "\" \"" + pME->getObjectName() + "\".");
                     }
                 }
               else if (typeString == "Metabolite")
                 {
-                  // must be a reference to the transient concentration
-                  if (pObject->getObjectName() != "Concentration")
+                  // must be a reference to the transient or initial concentration
+                  if (pObject->getObjectName() != "Concentration" && pObject->getObjectName() != "InitialConcentration")
                     {
                       result.push_back("Error. Reference to property other than transient concentration for metabolite \"" + pObjectParent->getObjectName() + "\" in rule for \"" + pME->getObjectType() + "\" \"" + pME->getObjectName() + "\".");
                     }
                 }
               else if (typeString == "ModelValue")
                 {
-                  // must be a reference to the transient value
-                  if (pObject->getObjectName() != "Value")
+                  // must be a reference to the transient or initial value
+                  if (pObject->getObjectName() != "Value" && pObject->getObjectName() != "InitialValue")
                     {
                       result.push_back("Error. Reference to property other than transient value for \"" + typeString + "\" \"" + pObjectParent->getObjectName() + "\" in rule for \"" + pME->getObjectType() + "\" \"" + pME->getObjectName() + "\".");
                     }
