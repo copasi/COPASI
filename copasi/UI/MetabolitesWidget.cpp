@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget.cpp,v $
-//   $Revision: 1.135 $
+//   $Revision: 1.136 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/02/25 22:12:36 $
+//   $Author: shoops $
+//   $Date: 2007/03/07 14:25:37 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -478,6 +478,8 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
         for (i = 0; i < imax; i++)
           protectedNotify(ListViews::METABOLITE, ListViews::DELETE, keys[i]);
         //TODO notify about reactions
+
+        mChanged = true;
         break;
       }
     case 1:                                           // No or Escape

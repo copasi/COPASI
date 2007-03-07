@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.cpp,v $
-//   $Revision: 1.45 $
+//   $Revision: 1.46 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/02/25 22:12:36 $
+//   $Author: shoops $
+//   $Date: 2007/03/07 14:25:37 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -215,6 +215,7 @@ void CopasiTableWidget::saveTable()
   if (!CCopasiDataModel::Global->getModel())
     return;
 
+  mChanged = false;
   bool flagDelete = false;
   std::vector<std::string> delKeys;
 
@@ -244,6 +245,7 @@ void CopasiTableWidget::saveTable()
               tableLineToObject(j, pObj);
               // ListViews::notify(mOT, ListViews::ADD, pObj->getKey());
               protectedNotify(mOT, ListViews::ADD, pObj->getKey());
+              mChanged = true;
             }
         }
       else if (mFlagDelete[j])
@@ -257,6 +259,7 @@ void CopasiTableWidget::saveTable()
             {
               tableLineToObject(j, GlobalKeys.get(mKeys[j]));
               protectedNotify(mOT, ListViews::CHANGE, mKeys[j]);
+              mChanged = true;
             }
           if (mFlagRenamed[j])
             {
@@ -274,12 +277,17 @@ void CopasiTableWidget::saveTable()
                   table->setCurrentCell(j, 1);
                 }
               else
-                protectedNotify(mOT, ListViews::RENAME, mKeys[j]);
+                {
+                  protectedNotify(mOT, ListViews::RENAME, mKeys[j]);
+                  mChanged = true;
+                }
             }
         }
     }
 
   if (flagDelete) deleteObjects(delKeys);
+
+  if (mChanged) CCopasiDataModel::Global->changed();
 
   //mIgnoreUpdates = false;
 
@@ -544,20 +552,3 @@ void CopasiTableWidget::keyPressEvent (QKeyEvent * e)
       slotTableDelKey();
     }
 }
-
-void CopasiTableWidget::init()
-{std::cout << "**** init: method of CopasiTableWidget should never be called ****" << std::endl;}
-// std::vector<const CCopasiObject*> CopasiTableWidget::getObjects() const
-//  {std::cout << "**** method of CopasiTableWidget should never be called ****" << std::endl;}
-void CopasiTableWidget::tableLineFromObject(const CCopasiObject* , unsigned C_INT32)
-{std::cout << "**** method of CopasiTableWidget should never be called ****" << std::endl;}
-void CopasiTableWidget::tableLineToObject(unsigned C_INT32, CCopasiObject*)
-{std::cout << "**** method of CopasiTableWidget should never be called ****" << std::endl;}
-// CCopasiObject* CopasiTableWidget::createNewObject(const std::string &)
-//  {std::cout << "**** method of CopasiTableWidget should never be called ****" << std::endl;}
-void CopasiTableWidget::deleteObjects(const std::vector<std::string> &)
-{std::cout << "**** method of CopasiTableWidget should never be called ****" << std::endl;}
-void CopasiTableWidget::defaultTableLineContent(unsigned C_INT32, unsigned C_INT32)
-{std::cout << "**** method of CopasiTableWidget should never be called ****" << std::endl;}
-// QString CopasiTableWidget::defaultObjectName() const
-//  {std::cout << "**** method of CopasiTableWidget should never be called ****" << std::endl;}

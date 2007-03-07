@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ReactionsWidget.cpp,v $
-//   $Revision: 1.94 $
+//   $Revision: 1.95 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/02/25 22:12:36 $
+//   $Author: shoops $
+//   $Date: 2007/03/07 14:25:37 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -173,4 +173,6 @@ void ReactionsWidget::deleteObjects(const std::vector<std::string> & keys)
       CCopasiDataModel::Global->getModel()->removeReaction(keys[i]);
       protectedNotify(ListViews::REACTION, ListViews::DELETE, keys[i]);
     }
+
+  mChanged = true;
 }

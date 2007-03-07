@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TableDefinition.cpp,v $
-//   $Revision: 1.54 $
+//   $Revision: 1.55 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/02/25 22:12:36 $
+//   $Author: shoops $
+//   $Date: 2007/03/07 14:25:37 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -158,4 +158,6 @@ void TableDefinition::deleteObjects(const std::vector<std::string> & keys)
       CCopasiDataModel::Global->getReportDefinitionList()->removeReportDefinition(keys[i]);
       protectedNotify(ListViews::REPORT, ListViews::DELETE, keys[i]);
     }
+
+  mChanged = true;
 }
