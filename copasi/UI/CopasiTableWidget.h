@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.h,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/03/07 14:25:37 $
+//   $Author: ssahle $
+//   $Date: 2007/03/08 10:55:36 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -104,43 +104,43 @@ class CopasiTableWidget : public CopasiWidget
     /**
      * This initializes the widget
      */
-    virtual void init() = NULL;
+    virtual void init() = 0;
 
     /**
      * returns a list of objects that should be displayed
      */
-    virtual std::vector<const CCopasiObject*> getObjects() const = NULL;
+    virtual std::vector<const CCopasiObject*> getObjects() const = 0;
 
     /**
      * fills one table row with the data from one object
      */
-    virtual void tableLineFromObject(const CCopasiObject* obj, unsigned C_INT32 row) = NULL;
+    virtual void tableLineFromObject(const CCopasiObject* obj, unsigned C_INT32 row) = 0;
 
     /**
      * reads the contents of one row of the table and writes it to the object
      */
-    virtual void tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj) = NULL;
+    virtual void tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj) = 0;
 
     /**
      * creates a new object
      */
-    virtual CCopasiObject* createNewObject(const std::string & name) = NULL;
+    virtual CCopasiObject* createNewObject(const std::string & name) = 0;
 
     /**
      * deletes objects. Performs all additional tasks, like asking the user, ...
      */
-    virtual void deleteObjects(const std::vector<std::string> & keys) = NULL;
+    virtual void deleteObjects(const std::vector<std::string> & keys) = 0;
 
     /**
      * this is used to fill a row of the table when a new object is added to the table.
      * it fills only the data columns, not the name. It should not fill column exc.
      */
-    virtual void defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT32 exc) = NULL;
+    virtual void defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT32 exc) = 0;
 
     /**
      * the prefix that is used to construct new object names
      */
-    virtual QString defaultObjectName() const = NULL;
+    virtual QString defaultObjectName() const = 0;
 
     /**
      * This method provides a hook for derived classes to act on changes in
