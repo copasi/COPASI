@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/03/08 16:26:09 $
+//   $Date: 2007/03/08 20:52:40 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -344,26 +344,28 @@ void CQGLNetworkPainter::drawStringAt(std::string s, C_FLOAT64 x, C_FLOAT64 y, C
 
   int w2 = round2powN(bbox.width()); // look for smallest w2 = 2^^k with n > w2
   int h2 = round2powN(bbox.height()); // look for smallest h2 = 2^^k with n > h2
-  std::cout << "bbox w:" << w << "  h: " << h << std::endl;
-  std::cout << "bbox w2:" << w2 << "  h2: " << h2 << std::endl;
+  //std::cout << "bbox w:" << w << "  h: " << h << std::endl;
+  //std::cout << "bbox w2:" << w2 << "  h2: " << h2 << std::endl;
   QRect c(0, 0, w2, h2);
-  // QBitmap bm(w2,h2);
-  // QPainter painter(&bm);
-  // painter.setPen(Qt::black);
-  // painter.setFont(f);
-  // //std::cout << "X: " << c.x() << "  y: " << c.y() << "  w: " << c.width() << "  h: " << c.height() << std::endl;
-  // painter.drawText(c,Qt::AlignCenter,s);
-  // painter.end();
+
+  //  QBitmap bm(w2,h2);
+  //  QPainter painter(&bm);
+  //  bm.fill(color0);
+  //  painter.setPen(color1);
+  //  painter.setFont(f);
+  //  // //std::cout << "X: " << c.x() << "  y: " << c.y() << "  w: " << c.width() << "  h: " << c.height() << std::endl;
+  //  painter.drawText(c,Qt::AlignCenter,s);
+  //  painter.end();
 
   QPixmap pm(w2, h2);
   //pm.setMask(bm);
-  //pm.fill(QColor(61,237,181));
-  pm.fill(QColor(255, 0, 0));
+  pm.fill(QColor(61, 237, 181));
   QPainter painter2(&pm);
+  //p.setBrush(QColor(197, 197, 197, 127));
+  //p.drawRect(QRect(0, 0, width(), 50));
   painter2.setPen(Qt::black);
   painter2.setFont(f);
   painter2.drawText(c, Qt::AlignCenter, s);
-  //painter2.drawText((int)((w2-w)/2.0),(int)((h2-h)/2.0),s);
   painter2.end();
 
   QImage img = pm.convertToImage();
@@ -375,7 +377,7 @@ void CQGLNetworkPainter::drawStringAt(std::string s, C_FLOAT64 x, C_FLOAT64 y, C
   double yoff = (h - h2) / 2.0;
   //std::cout << "w: " << w << "   xoff: " << xoff << std::endl;
   //std::cout << "h: " << h << "   yoff: " << yoff << std::endl;
-  glRasterPos2f(x + xoff, y + h + yoff);
+  glRasterPos2f(x + xoff, y + h - yoff);
   glDrawPixels((int)w2, (int)h2, GL_RGBA, GL_UNSIGNED_BYTE, timg.bits());
 }
 
