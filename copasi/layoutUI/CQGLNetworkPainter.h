@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/03/02 10:56:33 $
+//   $Date: 2007/03/08 16:26:09 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -59,12 +59,17 @@ class CQGLNetworkPainter : public QGLWidget
     std::vector<CArrow> viewerArrows;
     std::vector<CLTextGlyph> viewerLabels;
     GLuint graphObjList;
+    std::string mFontname;
+    int mFontsize;
+    double mFontsizeDouble;
+
     QAction *zoomInAction;
     QAction *zoomOutAction;
     void createActions();
     void zoom(double zoomFactor);
-    void renderBitmapString(double x, double y, std::string s, double w, double h);
-
+    //void renderBitmapString(double x, double y, std::string s, double w, double h);
+    void drawStringAt(std::string s, C_FLOAT64 x, C_FLOAT64 y, C_FLOAT64 w, C_FLOAT64 h);
+    int round2powN(double d);
   protected:
 
     void initializeGraphPainter();

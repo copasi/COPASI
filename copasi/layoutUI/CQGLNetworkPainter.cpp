@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/03/02 10:56:33 $
+//   $Date: 2007/03/08 16:26:09 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,6 +15,14 @@
 
 #include <qfont.h>
 #include <qstring.h>
+#include <qfontmetrics.h>
+#include <qbitmap.h>
+#include <qpainter.h>
+#include <qrect.h>
+#include <qpoint.h>
+#include <qpixmap.h>
+#include <qimage.h>
+#include <qcolor.h>
 
 //#include "FTFont.h"
 //#include "FTGLPixmapFont.h"
@@ -128,7 +136,7 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
               //CLPoint p = lastSeg.getStart();
               //std::cout << "start: " << p << std::endl;
               CLPoint p = lastSeg.getEnd();
-              std::cout << "end:   " << p << std::endl;
+              //std::cout << "end:   " << p << std::endl;
               CArrow *ar = new CArrow(lastSeg, p.getX(), p.getY());
               viewerArrows.push_back(*ar);
             }
@@ -272,7 +280,7 @@ void CQGLNetworkPainter::drawArrow(CArrow a)
 void CQGLNetworkPainter::drawLabel(CLTextGlyph l)
 {
   //glColor3f(0.5f, 1.0f, 0.69f); // label background color somehow green
-  glColor3f(0.23f, 0.92f, 0.7f); // label background color
+  glColor3f(0.23f, 0.92f, 0.7f); // label background color (61,237,181)
   // draw rectangle as background for text
   glBegin(GL_POLYGON);
   glVertex2d(l.getX(), l.getY());
@@ -290,33 +298,99 @@ void CQGLNetworkPainter::drawLabel(CLTextGlyph l)
   glEnd();
   //std::cout << "X: " << l.getX() << "  y: " << l.getY() << "  w: " << l.getWidth() << "  h: " << l.getHeight() << std::endl;
   // now draw text
-  //drawStringAt(l.getText(),l.getX(),l.getY());
+  drawStringAt(l.getText(), l.getX(), l.getY(), l.getWidth(), l.getHeight());
   //renderBitmapString(l.getX(), l.getY(), l.getText(), l.getWidth(), l.getHeight());
 }
 
-void CQGLNetworkPainter::renderBitmapString(C_FLOAT64 x, C_FLOAT64 y, std::string text, C_FLOAT64 w, C_FLOAT64 h)
-{
-  //gl.glMaterialfv(GL.GL_FRONT_AND_BACK, GL.GL_AMBIENT_AND_DIFFUSE, fontColor, 0);
-  glColor3f(0.0f, 0.0f, 0.0f); // black
-  glPushMatrix();
-  const char *cStr = text.c_str();
-  int strLen;
-  //  strlen = glutBitmapLength(GLUT_BITMAP_HELVETICA_12, (const unsigned char*)cStr);
-  C_FLOAT64 offsetX = (w - (C_FLOAT64)strLen) / 2.0;
-  C_FLOAT64 offsetY = (h + 12) / 2.0; // depend on used font size (here 12 pt)
-  glRasterPos2d(x + offsetX, y + offsetY - 2.0);
-  //cout << "h: " << h << std::endl;
-  //cout << "length of " << text << ":  " << strLen << std::endl;
+// uses GLUT to render string
+//void CQGLNetworkPainter::renderBitmapString(C_FLOAT64 x, C_FLOAT64 y, std::string text, C_FLOAT64 w, C_FLOAT64 h)
+//{
+//  //gl.glMaterialfv(GL.GL_FRONT_AND_BACK, GL.GL_AMBIENT_AND_DIFFUSE, fontColor, 0);
+//  glColor3f(0.0f, 0.0f, 0.0f); // black
+//  glPushMatrix();
+//  const char *cStr = text.c_str();
+//  int strLen;
+//  //  strlen = glutBitmapLength(GLUT_BITMAP_HELVETICA_12, (const unsigned char*)cStr);
+//  C_FLOAT64 offsetX = (w - (C_FLOAT64)strLen) / 2.0;
+//  C_FLOAT64 offsetY = (h + 12) / 2.0; // depend on used font size (here 12 pt)
+//  glRasterPos2d(x + offsetX, y + offsetY - 2.0);
+//  //cout << "h: " << h << std::endl;
+//  //cout << "length of " << text << ":  " << strLen << std::endl;
+//
+//  unsigned int i;
+//  for (i = 0;i < text.size();i++)
+//    {
+//      //      glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, text[i]);
+//      //glutStrokeCharacter(GLUT_BITMAP_HELVETICA_18, text[i]);
+//}
+//  glPopMatrix();
+//}
 
-  unsigned int i;
-  for (i = 0;i < text.size();i++)
-    {
-      //      glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, text[i]);
-      //glutStrokeCharacter(GLUT_BITMAP_HELVETICA_18, text[i]);
-    }
-  glPopMatrix();
+// uses QT
+
+void CQGLNetworkPainter::drawStringAt(std::string s, C_FLOAT64 x, C_FLOAT64 y, C_FLOAT64 w, C_FLOAT64 h)
+{
+  glColor3f(0.0f, 0.0f, 0.0f); // black
+  //this->drawText((int)x,(int)y,QString(s));
+
+  QFont f(this->mFontname);
+  f.setPointSize(this->mFontsize);
+  QFontMetrics fm(f);
+  QString str(s);
+  //QRect c((int)x,(int)y,(int)w,(int)h);
+
+  //QRect bbox = fm.boundingRect((int)x,(int)y,(int)w,(int)h,Qt::AlignCenter,s);
+  QRect bbox = fm.boundingRect(s); // bounding rectangle for text in certain size
+
+  int w2 = round2powN(bbox.width()); // look for smallest w2 = 2^^k with n > w2
+  int h2 = round2powN(bbox.height()); // look for smallest h2 = 2^^k with n > h2
+  std::cout << "bbox w:" << w << "  h: " << h << std::endl;
+  std::cout << "bbox w2:" << w2 << "  h2: " << h2 << std::endl;
+  QRect c(0, 0, w2, h2);
+  // QBitmap bm(w2,h2);
+  // QPainter painter(&bm);
+  // painter.setPen(Qt::black);
+  // painter.setFont(f);
+  // //std::cout << "X: " << c.x() << "  y: " << c.y() << "  w: " << c.width() << "  h: " << c.height() << std::endl;
+  // painter.drawText(c,Qt::AlignCenter,s);
+  // painter.end();
+
+  QPixmap pm(w2, h2);
+  //pm.setMask(bm);
+  //pm.fill(QColor(61,237,181));
+  pm.fill(QColor(255, 0, 0));
+  QPainter painter2(&pm);
+  painter2.setPen(Qt::black);
+  painter2.setFont(f);
+  painter2.drawText(c, Qt::AlignCenter, s);
+  //painter2.drawText((int)((w2-w)/2.0),(int)((h2-h)/2.0),s);
+  painter2.end();
+
+  QImage img = pm.convertToImage();
+  QImage timg = QGLWidget::convertToGLFormat(img);
+
+  //glTexImage2D(GL_TEXTURE_2D, 0, 3, timg.width(), timg.height(), 0,
+  //                  GL_RGBA, GL_UNSIGNED_BYTE, timg.bits());
+  double xoff = (w - w2) / 2.0;
+  double yoff = (h - h2) / 2.0;
+  //std::cout << "w: " << w << "   xoff: " << xoff << std::endl;
+  //std::cout << "h: " << h << "   yoff: " << yoff << std::endl;
+  glRasterPos2f(x + xoff, y + h + yoff);
+  glDrawPixels((int)w2, (int)h2, GL_RGBA, GL_UNSIGNED_BYTE, timg.bits());
 }
 
+int CQGLNetworkPainter::round2powN(double d)
+{
+  int n = (int)(ceil(d));
+  int p = 1;
+  int maxP = 12; // max size of images 2*12
+  while ((p <= maxP) && (n > pow(2, p)))
+    p++;
+  //std::cout << "d: " << d << " p: " << p << std::endl;
+  return (int)pow(2, p);
+}
+
+// uses FTGL
 // void CQGLNetworkPainter::drawStringAt(string s, C_FLOAT64 x, C_FLOAT64 y){
 //  glColor3f(0.0f,0.0f,0.0f); // black
 // // QFont font = QFont(family,20);
@@ -400,6 +474,9 @@ void CQGLNetworkPainter::zoom(C_FLOAT64 zoomFactor)
     {
       this->viewerCurves[i].scale(zoomFactor);
     }
+  // common fontname and size for all labels are stored in this class
+  this->mFontsizeDouble = this->mFontsizeDouble * zoomFactor;
+  this->mFontsize = (int)this->mFontsizeDouble;
   for (i = 0;i < viewerLabels.size();i++)
     {
       this->viewerLabels[i].scale(zoomFactor);
@@ -464,6 +541,9 @@ void CQGLNetworkPainter::initializeGraphPainter()
 {
   mgraphMin = CLPoint(0.0, 0.0);
   mgraphMax = CLPoint(250.0, 250.0);
+  mFontname = "Helvetica";
+  mFontsize = 12;
+  mFontsizeDouble = 12.0; // to avoid rounding errors due to zooming in and out
   createActions();
 }
 
