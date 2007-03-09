@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.295 $
+//   $Revision: 1.296 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/02/12 14:27:07 $
+//   $Author: ssahle $
+//   $Date: 2007/03/09 10:22:25 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -2440,54 +2440,31 @@ bool CModel::convert2NonReversible()
       {
         ret = false;
         reac0 = steps[i];
-        //std::cout << i << "  ";
-
-        //create the two new reactions
         rn1 = reac0->getObjectName() + " (forward)";
-        reac1 = createReaction(rn1);
-        //reac1 = new CReaction(/* *reac0, &steps*/);
-        //reac1->setObjectName(rn1);
-        //steps.add(reac1);
-
         rn2 = reac0->getObjectName() + " (backward)";
-        reac2 = createReaction(rn2);
-        //reac2 = new CReaction(/* *reac0, &steps*/);
-        //reac2->setObjectName(rn2);
-        //steps.add(reac2);
-
-        ri1.initFromReaction(reac0->getKey());
-        ri1.setReactionName(rn1);
-
-        ri2.initFromReaction(reac0->getKey());
-        ri2.setReactionName(rn2);
-
-        //set the new function
+        //std::cout << i << "  ";
         fn = reac0->getFunction()->getObjectName();
-        //std::cout << fn << "  " << std::endl;
 
-        if (fn == "Mass action (reversible)")
+        if (/*fn == "Mass action (reversible)"*/false) //obsolete
           {
+            //create the two new reactions
+            reac1 = createReaction(rn1);
+            reac2 = createReaction(rn2);
+
+            ri1.initFromReaction(reac0->getKey());
+            ri1.setReactionName(rn1);
+
+            ri2.initFromReaction(reac0->getKey());
+            ri2.setReactionName(rn2);
+
+            //set the new function
             ri1.setReversibility(false, "Mass action (irreversible)");
             ri2.reverse(false, "Mass action (irreversible)");
-          }
-        else if (fn == "Constant flux (reversible)")
-          {
-            ri1.setReversibility(false, "Constant flux (irreversible)");
-            ri2.reverse(false, "Constant flux (irreversible)");
-          }
-        else
-          {
-            //ri1.setReversibility(false);
-            ri2.reverse(false, "Mass action (irreversible)");
-          }
 
-        ri1.writeBackToReaction(reac1);
-        ri2.writeBackToReaction(reac2);
+            ri1.writeBackToReaction(reac1);
+            ri2.writeBackToReaction(reac2);
 
-        //set the kinetic parameters
-
-        if (fn == "Mass action (reversible)")
-          {
+            //set the kinetic parameters
             if (reac0->isLocalParameter("k1"))
               reac1->setParameterValue("k1", reac0->getParameterValue("k1"));
             else
@@ -2498,22 +2475,154 @@ bool CModel::convert2NonReversible()
             else
               reac2->setParameterMapping("k1", reac0->getParameterMapping("k2")[0]);
 
+            //remove the old reaction
+            reactionsToDelete.push_back(reac0->getObjectName());
             ret = true;
           }
-        else
+        else  //new implementation
           {
-            reac2->setParameterValue("k1", 0);
-          }
+            const CFunction* pFunc = reac0->getFunction();
 
-        //remove the old reaction
-        reactionsToDelete.push_back(reac0->getObjectName());
+            bool massaction = (fn == "Mass action (reversible)");
+
+            std::pair<CFunction *, CFunction *> tmp;
+
+            if (massaction)
+              {
+                //set functions to mass action (irrev)
+                tmp.first = dynamic_cast<CFunction*>
+                            (CCopasiDataModel::Global->getFunctionList()-> findFunction("Mass action (irreversible)"));
+                assert(tmp.first);
+                tmp.second = tmp.first;
+              }
+            else //not mass action
+              {
+                //try splitting
+                tmp = pFunc->splitFunction(NULL, pFunc->getObjectName() + " (forward part)",
+                                           pFunc->getObjectName() + " (backward part)");
+
+                if ((tmp.first == NULL) || (tmp.second == NULL))
+                  {
+                    pdelete(tmp.first);
+                    pdelete(tmp.second);
+                    continue;
+                  }
+
+                //if (tmp.first) std::cout << *tmp.first << "\n\n";
+                //if (tmp.second) std::cout << *tmp.second;
+
+                if (tmp.first) CCopasiDataModel::Global->getFunctionList()->addAndAdaptName(tmp.first);
+                if (tmp.second) CCopasiDataModel::Global->getFunctionList()->addAndAdaptName(tmp.second);
+              }
+
+            C_INT32 i, imax;
+
+            //**** create 1st reaction.
+            reac1 = createReaction(rn1);
+            reac1->setReversible(false);
+            //substrates
+            imax = reac0->getChemEq().getSubstrates().size();
+            for (i = 0; i < imax; ++i)
+              reac1->addSubstrate(reac0->getChemEq().getSubstrates()[i]->getMetaboliteKey(),
+                                  reac0->getChemEq().getSubstrates()[i]->getMultiplicity());
+            //products
+            imax = reac0->getChemEq().getProducts().size();
+            for (i = 0; i < imax; ++i)
+              reac1->addProduct(reac0->getChemEq().getProducts()[i]->getMetaboliteKey(),
+                                reac0->getChemEq().getProducts()[i]->getMultiplicity());
+            //function
+            reac1->setFunction(tmp.first);
+
+            //**** create 2nd reaction.
+            reac2 = createReaction(rn2);
+            reac2->setReversible(false);
+            //substrates -> products
+            imax = reac0->getChemEq().getSubstrates().size();
+            for (i = 0; i < imax; ++i)
+              reac2->addProduct(reac0->getChemEq().getSubstrates()[i]->getMetaboliteKey(),
+                                reac0->getChemEq().getSubstrates()[i]->getMultiplicity());
+            //products -> substrates
+            imax = reac0->getChemEq().getProducts().size();
+            for (i = 0; i < imax; ++i)
+              reac2->addSubstrate(reac0->getChemEq().getProducts()[i]->getMetaboliteKey(),
+                                  reac0->getChemEq().getProducts()[i]->getMultiplicity());
+            //function
+            reac2->setFunction(tmp.second);
+
+            //mapping for both reactions
+            if (massaction)
+              {
+                // the parameter names of the massaction kinetics are hardcoded here.
+                if (reac0->isLocalParameter("k1"))
+                  reac1->setParameterValue("k1", reac0->getParameterValue("k1"));
+                else
+                  reac1->setParameterMapping("k1", reac0->getParameterMapping("k1")[0]);
+
+                reac1->setParameterMappingVector("substrate", reac0->getParameterMapping("substrate"));
+
+                if (reac0->isLocalParameter("k2"))
+                  reac2->setParameterValue("k1", reac0->getParameterValue("k2"));
+                else
+                  reac2->setParameterMapping("k1", reac0->getParameterMapping("k2")[0]);
+
+                reac2->setParameterMappingVector("substrate", reac0->getParameterMapping("product"));
+              }
+            else //not mass action
+              {
+                const CFunctionParameters & fps = reac0->getFunctionParameters();
+                imax = fps.size();
+                for (i = 0; i < imax; ++i)
+                  {
+                    const CFunctionParameter * fp = fps[i];
+                    assert(fp);
+                    assert(fp->getType() == CFunctionParameter::FLOAT64);
+
+                    switch (fp->getUsage())
+                      {
+                      case CFunctionParameter::SUBSTRATE:
+                      case CFunctionParameter::PRODUCT:
+                      case CFunctionParameter::MODIFIER:
+                        reac1->setParameterMapping(fp->getObjectName(),
+                                                   reac0->getParameterMapping(fp->getObjectName())[0]);
+                        reac2->setParameterMapping(fp->getObjectName(),
+                                                   reac0->getParameterMapping(fp->getObjectName())[0]);
+                        break;
+
+                      case CFunctionParameter::PARAMETER:
+                        if (reac0->isLocalParameter(fp->getObjectName()))
+                          {
+                            reac1->setParameterValue(fp->getObjectName(),
+                                                     reac0->getParameterValue(fp->getObjectName()));
+                            reac2->setParameterValue(fp->getObjectName(),
+                                                     reac0->getParameterValue(fp->getObjectName()));
+                          }
+                        else
+                          {
+                            reac1->setParameterMapping(fp->getObjectName(),
+                                                       reac0->getParameterMapping(fp->getObjectName())[0]);
+                            reac2->setParameterMapping(fp->getObjectName(),
+                                                       reac0->getParameterMapping(fp->getObjectName())[0]);
+                          }
+                        break;
+
+                      default:
+                        continue;
+                      }
+                  }
+              }
+
+            reac1->compile();
+            reac2->compile();
+
+            //remove the old reaction
+            reactionsToDelete.push_back(reac0->getObjectName());
+            ret = true;
+          }
       }
 
   imax = reactionsToDelete.size();
   for (i = 0; i < imax; ++i)
     steps.remove(reactionsToDelete[i]);
-
-  //protectedNotify(ListViews::MODEL, ListViews::CHANGE, objKey);
 
   return ret;
 }
