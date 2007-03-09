@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: urost $
-//   $Date: 2007/03/09 11:10:12 $
+//   $Author: shoops $
+//   $Date: 2007/03/09 18:33:30 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,6 +30,7 @@
 #include "copasi.h"
 
 #include "CQGLNetworkPainter.h"
+#include "UI/qtUtilities.h"
 #include "layout/CLayout.h"
 #include "utilities/CCopasiVector.h"
 
@@ -333,14 +334,14 @@ void CQGLNetworkPainter::drawStringAt(std::string s, C_FLOAT64 x, C_FLOAT64 y, C
   glColor3f(0.0f, 0.0f, 0.0f); // black
   //this->drawText((int)x,(int)y,QString(s));
 
-  QFont f(this->mFontname);
+  QFont f(FROM_UTF8(this->mFontname));
   f.setPointSize(this->mFontsize);
   QFontMetrics fm(f);
-  QString str(s);
+  QString str(FROM_UTF8(s));
   //QRect c((int)x,(int)y,(int)w,(int)h);
 
   //QRect bbox = fm.boundingRect((int)x,(int)y,(int)w,(int)h,Qt::AlignCenter,s);
-  QRect bbox = fm.boundingRect(s); // bounding rectangle for text in certain size
+  QRect bbox = fm.boundingRect(FROM_UTF8(s)); // bounding rectangle for text in certain size
 
   int w2 = round2powN(bbox.width()); // look for smallest w2 = 2^^k with n > w2
   int h2 = round2powN(bbox.height() + 2); // look for smallest h2 = 2^^k with n > h2
@@ -351,7 +352,7 @@ void CQGLNetworkPainter::drawStringAt(std::string s, C_FLOAT64 x, C_FLOAT64 y, C
       this->mFontsize--;
       f.setPointSize(this->mFontsize);
       fm = QFontMetrics(f);
-      bbox = fm.boundingRect(s);
+      bbox = fm.boundingRect(FROM_UTF8(s));
       w2 = round2powN(bbox.width());
       h2 = round2powN(bbox.height() + 2);
     }
@@ -372,7 +373,7 @@ void CQGLNetworkPainter::drawStringAt(std::string s, C_FLOAT64 x, C_FLOAT64 y, C
   QPainter painter2(&pm);
   painter2.setPen(Qt::black);
   painter2.setFont(f);
-  painter2.drawText(c, Qt::AlignCenter, s);
+  painter2.drawText(c, Qt::AlignCenter, FROM_UTF8(s));
   painter2.end();
 
   QImage img = pm.convertToImage();
