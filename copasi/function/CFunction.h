@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.h,v $
-   $Revision: 1.45 $
-   $Name:  $
-   $Author: gauges $
-   $Date: 2006/10/15 07:16:08 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.h,v $
+//   $Revision: 1.46 $
+//   $Name:  $
+//   $Author: ssahle $
+//   $Date: 2007/03/09 09:53:08 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -177,6 +177,17 @@ class CFunction:
      *  this list can be passed as the env argument to the writeMathML() method
      */
     void createListOfParametersForMathML(std::vector<std::vector<std::string> > & env);
+
+    /**
+     * insert operator
+     */
+    friend std::ostream& operator<<(std::ostream &os, const CFunction & f);
+
+    CFunction * createCopy() const;
+
+    std::pair<CFunction *, CFunction *> splitFunction(const CEvaluationNode* node,
+        const std::string & name1,
+        const std::string & name2) const;
   };
 
 #include "CKinFunction.h"

@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.cpp,v $
-   $Revision: 1.72 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/08/17 14:11:45 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.cpp,v $
+//   $Revision: 1.73 $
+//   $Name:  $
+//   $Author: ssahle $
+//   $Date: 2007/03/09 09:53:08 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -29,7 +29,9 @@ CFunction::CFunction(const CFunction & src,
     mVariables(src.mVariables, this),
     mpCallParameters(NULL),
     mReversible(src.mReversible)
-{}
+{
+  compile();
+}
 
 CFunction::~CFunction()
 {}
@@ -276,4 +278,97 @@ void CFunction::writeMathML(std::ostream & out, unsigned C_INT32 l) const
     out << SPC(l) << "</mrow>" << std::endl;
 
     //out << "</math>" << std::endl;
+  }
+
+std::ostream& operator<<(std::ostream &os, const CFunction & f)
+{
+  os << "CFunction: " << f.getObjectName() << "   ";
+  if (f.mReversible == TriUnspecified)
+    os << "(general)";
+  else if (f.mReversible == TriFalse)
+    os << "(irreversible)";
+  else
+    os << "(reversible)";
+
+  os << std::endl;
+  os << f.mVariables;
+  os << f.getInfix() << std::endl;
+
+  return os;
+}
+
+CFunction * CFunction::createCopy() const
+  {
+    CFunction* newFunction = new CFunction();
+
+    //newFunction->mVariables = this->mVariables; //WRONG! only shallow copy!!
+    newFunction->mReversible = this->mReversible;
+
+    if (this->mpRoot)
+      newFunction->setRoot(this->mpRoot->copyBranch());
+
+    //newFunction->mInfix = newFunction->mpRoot->getInfix();
+
+    return newFunction;
+  }
+
+std::pair<CFunction *, CFunction *> CFunction::splitFunction(const CEvaluationNode* node,
+    const std::string & name1,
+    const std::string & name2) const
+  {
+    if (!this->mpRoot) return std::pair<CFunction *, CFunction *>(NULL, NULL);
+    if (this->mReversible != TriTrue) return std::pair<CFunction *, CFunction *>(NULL, NULL);
+
+    //create 2 new functions
+    CFunction* newFunction1 = new CFunction();
+    newFunction1->setObjectName(name1);
+
+    CFunction* newFunction2 = new CFunction();
+    newFunction2->setObjectName(name2);
+
+    // find the split point
+    const CEvaluationNode* splitnode = this->mpRoot->findTopMinus();
+    if (!splitnode) return std::pair<CFunction *, CFunction *>(NULL, NULL);
+
+    //std::cout << splitnode << std::endl;
+
+    //create the 2 split trees
+    CEvaluationNode* tmpRoots1 = this->mpRoot->splitBranch(splitnode, true); //left side
+    CEvaluationNode* tmpRoots2 = this->mpRoot->splitBranch(splitnode, false); //right side
+
+    if (tmpRoots1)
+      newFunction1->setRoot(tmpRoots1);
+    if (tmpRoots2)
+      newFunction2->setRoot(tmpRoots2);
+
+    newFunction1->mVariables = this->mVariables; //copy the parameter list
+    newFunction1->initVariables(); //remove unused parameters
+    newFunction1->mReversible = TriFalse;
+
+    newFunction2->mVariables = this->mVariables; //copy the parameter list
+    newFunction2->initVariables(); //remove unused parameters
+    newFunction2->mReversible = TriFalse;
+
+    //update the roles
+    C_INT32 i, imax;
+
+    imax = newFunction1->mVariables.size();
+    for (i = 0; i < imax; ++i)
+      {
+        if (newFunction1->mVariables[i]->getUsage() == CFunctionParameter::PRODUCT)
+          newFunction1->mVariables[i]->setUsage(CFunctionParameter::MODIFIER);
+      }
+
+    imax = newFunction2->mVariables.size();
+    for (i = 0; i < imax; ++i)
+      {
+        if (newFunction2->mVariables[i]->getUsage() == CFunctionParameter::PRODUCT)
+          newFunction2->mVariables[i]->setUsage(CFunctionParameter::SUBSTRATE);
+        else if (newFunction2->mVariables[i]->getUsage() == CFunctionParameter::SUBSTRATE)
+          newFunction2->mVariables[i]->setUsage(CFunctionParameter::MODIFIER);
+      }
+
+    newFunction1->compile();
+    newFunction2->compile();
+    return std::pair<CFunction *, CFunction *>(newFunction1, newFunction2);
   }
