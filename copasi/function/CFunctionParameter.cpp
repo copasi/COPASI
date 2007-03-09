@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionParameter.cpp,v $
-   $Revision: 1.32 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:28:26 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionParameter.cpp,v $
+//   $Revision: 1.33 $
+//   $Name:  $
+//   $Author: ssahle $
+//   $Date: 2007/03/09 09:54:42 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -104,3 +104,13 @@ CFunctionParameter::getType() const
   {
     return mType;
   }
+
+std::ostream& operator<<(std::ostream &os, const CFunctionParameter & d)
+{
+  //os << "CFunctionParameter: "
+  os << d.getObjectName();
+  if (d.mType != 1) os << " mType " << d.mType;
+  os << " [" << CFunctionParameter::RoleNameDisplay[d.mUsage] << "]";
+
+  return os;
+}
