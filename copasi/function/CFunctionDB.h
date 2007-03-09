@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionDB.h,v $
-//   $Revision: 1.48 $
+//   $Revision: 1.49 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/02/16 21:47:55 $
+//   $Author: ssahle $
+//   $Date: 2007/03/09 09:54:01 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -106,6 +106,12 @@ class CFunctionDB : public CCopasiContainer
      * @return bool success
      */
     bool add(CEvaluationTree * pFunction, const bool & adopt);
+
+    /**
+     * Add the function to the database, if necessary adapt the name so it
+     * is unique.
+     */
+    void addAndAdaptName(CEvaluationTree * pFunction);
 
 #ifdef FFFF
     /**

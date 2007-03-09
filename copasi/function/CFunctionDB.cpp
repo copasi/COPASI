@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionDB.cpp,v $
-//   $Revision: 1.74 $
+//   $Revision: 1.75 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/02/16 21:47:54 $
+//   $Author: ssahle $
+//   $Date: 2007/03/09 09:54:01 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -227,6 +227,28 @@ CEvaluationTree * CFunctionDB::createFunction(const std::string & name, const CE
 bool CFunctionDB::add(CEvaluationTree * pFunction,
                       const bool & adopt)
 {return mLoadedFunctions.add(pFunction, adopt);}
+
+void CFunctionDB::addAndAdaptName(CEvaluationTree * pFunction)
+{
+  if (!pFunction) return;
+
+  std::string basename = pFunction->getObjectName();
+  std::string name = basename;
+  //CFunction* pFunc;
+  //CCopasiVectorN<CEvaluationTree>& FunctionList
+  //= this->loadedFunctions();
+  int i = 0;
+
+  while (mLoadedFunctions.getIndex(name) != C_INVALID_INDEX)
+    {
+      i++;
+      std::ostringstream ss; ss << "_" << i;
+      name = basename + ss.str();
+    }
+  pFunction->setObjectName(name);
+
+  this->add(pFunction, true);
+}
 
 bool CFunctionDB::removeFunction(const std::string &key)
 {
