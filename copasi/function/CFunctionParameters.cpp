@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionParameters.cpp,v $
-//   $Revision: 1.40 $
+//   $Revision: 1.41 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/03/06 17:30:10 $
+//   $Author: ssahle $
+//   $Date: 2007/03/09 09:56:18 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -38,6 +38,12 @@ CFunctionParameters::~CFunctionParameters() {DESTRUCTOR_TRACE;}
 void CFunctionParameters::cleanup()
 {
   mParameters.cleanup();
+}
+
+CFunctionParameters & CFunctionParameters::operator=(const CFunctionParameters & src)
+{
+  mParameters.deepCopy(src.mParameters);
+  return *this;
 }
 
 void CFunctionParameters::add(const CFunctionParameter & parameter)
@@ -168,3 +174,28 @@ bool CFunctionParameters::operator==(const CFunctionParameters & rhs) const
       }
     return true;
   }
+
+std::ostream & operator<<(std::ostream &os, const CFunctionParameters & d)
+{
+  //os << "++++CFunctionParameters: " << std::endl;
+  //os << "    CFunctionParameters.mParameters " << std::endl << d.mParameters;
+  //os << "----CFunctionParameters " << std::endl;
+
+  C_INT32 i, imax = d.mParameters.size();
+  for (i = 0; i < imax; ++i)
+    {
+      if (0 == i)
+        os << "  (";
+      else
+        os << "    ";
+
+      os << *d.mParameters[i];
+
+      if (imax - 1 == i)
+        os << ")\n";
+      else
+        os << ",\n";
+    }
+
+  return os;
+}

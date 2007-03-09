@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionParameters.h,v $
-//   $Revision: 1.29 $
+//   $Revision: 1.30 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/03/06 17:30:10 $
+//   $Author: ssahle $
+//   $Date: 2007/03/09 09:56:18 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -65,6 +65,11 @@ class CFunctionParameters : public CCopasiContainer
      *  Cleanup
      */
     void cleanup();
+
+    /**
+     *  Assignment operator. Performs deep copy.
+     */
+    CFunctionParameters & operator=(const CFunctionParameters & src);
 
     /**
      *  Add a parameter to the parameter list
@@ -157,15 +162,7 @@ class CFunctionParameters : public CCopasiContainer
     /**
      * insert operator
      */
-    friend std::ostream & operator<<(std::ostream &os, const CFunctionParameters & d)
-    {
-      os << "++++CFunctionParameters: " << std::endl;
-      os << "    CFunctionParameters.mParameters " << std::endl << d.mParameters;
-      //os << "    CFunctionParameters.mUsageRanges " << std::endl << d.mUsageRanges;
-      os << "----CFunctionParameters " << std::endl;
-
-      return os;
-    }
+    friend std::ostream & operator<<(std::ostream &os, const CFunctionParameters & d);
   };
 
 #endif // COPASI_CFunctionParameters
