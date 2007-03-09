@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-//   $Revision: 1.166 $
+//   $Revision: 1.167 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/02/15 17:30:49 $
+//   $Author: ssahle $
+//   $Date: 2007/03/09 10:03:22 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -291,6 +291,8 @@ void CReaction::setParameterMapping(const std::string & parameterName, const std
   CFunctionParameter::DataType type;
   unsigned C_INT32 index;
   index = mMap.findParameterByName(parameterName, type);
+  if (C_INVALID_INDEX == index)
+    return;
   if (type != CFunctionParameter::FLOAT64) fatalError();
 
   mMetabKeyMap[index][0] = key;
@@ -303,6 +305,8 @@ void CReaction::addParameterMapping(const std::string & parameterName, const std
   CFunctionParameter::DataType type;
   unsigned C_INT32 index;
   index = mMap.findParameterByName(parameterName, type);
+  if (C_INVALID_INDEX == index)
+    return;
   if (type != CFunctionParameter::VFLOAT64) fatalError();
 
   mMetabKeyMap[index].push_back(key);
@@ -316,6 +320,8 @@ void CReaction::setParameterMappingVector(const std::string & parameterName,
   CFunctionParameter::DataType type;
   unsigned C_INT32 index;
   index = mMap.findParameterByName(parameterName, type);
+  if (C_INVALID_INDEX == index)
+    return;
   if ((type == CFunctionParameter::FLOAT64) && (keys.size() != 1)) fatalError();
 
   mMetabKeyMap[index] = keys;
@@ -327,6 +333,8 @@ void CReaction::clearParameterMapping(const std::string & parameterName)
   CFunctionParameter::DataType type;
   unsigned C_INT32 index;
   index = mMap.findParameterByName(parameterName, type);
+  if (C_INVALID_INDEX == index)
+    return;
   if (type != CFunctionParameter::VFLOAT64) fatalError(); //wrong data type
   mMetabKeyMap[index].clear();
 }
@@ -344,6 +352,8 @@ const std::vector<std::string> & CReaction::getParameterMapping(const std::strin
     CFunctionParameter::DataType type;
     unsigned C_INT32 index;
     index = mMap.findParameterByName(parameterName, type);
+    if (C_INVALID_INDEX == index)
+      return mMetabKeyMap[0]; //TODO this is kind of ugly!
     //if (type != CFunctionParameter::FLOAT64) fatalError();
 
     return mMetabKeyMap[index];
@@ -366,6 +376,8 @@ bool CReaction::isLocalParameter(const std::string & parameterName) const
     CFunctionParameter::DataType type;
     unsigned C_INT32 index;
     index = mMap.findParameterByName(parameterName, type);
+    if (C_INVALID_INDEX == index)
+      return false;
     if (type != CFunctionParameter::FLOAT64) fatalError();
 
     return isLocalParameter(index);
