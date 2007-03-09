@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiVector.h,v $
-//   $Revision: 1.70 $
+//   $Revision: 1.71 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/02/26 18:10:48 $
+//   $Author: ssahle $
+//   $Date: 2007/03/09 09:58:54 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -96,6 +96,19 @@ template < class CType > class CCopasiVector:
           add(*it, false);
 
         return *this;
+      }
+
+      void deepCopy(const CCopasiVector< CType > & source)
+      {
+        this->cleanup();
+        this->resize(source.size());
+
+        unsigned C_INT32 i, imax = ((std::vector< CType * > *)this)->size();
+        iterator Target = this->begin();
+        const_iterator Source = source.begin();
+
+        for (i = 0; i < imax; i++, Target++, Source++)
+          *Target = new CType(**Source, this);
       }
 
       iterator begin()
