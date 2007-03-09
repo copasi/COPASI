@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.cpp,v $
-   $Revision: 1.29 $
-   $Name:  $
-   $Author: nsimus $
-   $Date: 2006/08/15 11:39:31 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.cpp,v $
+//   $Revision: 1.30 $
+//   $Name:  $
+//   $Author: ssahle $
+//   $Date: 2007/03/09 09:51:20 $
+// End CVS Header
 
-// Copyright � 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -311,3 +311,70 @@ void CEvaluationNode::replaceRoot(ConverterASTNode* sourceNode)
       sourceNode->setType(AST_POWER);
     }
 }
+
+CEvaluationNode* CEvaluationNode::splitBranch(const CEvaluationNode* splitnode, bool left) const
+  {
+    if (splitnode == this)
+      {
+        const CEvaluationNode *child = dynamic_cast<const CEvaluationNode*>(this->getChild());
+        if (!child) return NULL;
+        if (left)
+          {
+            return child->copyBranch();
+          }
+        else
+          {
+            child = dynamic_cast<const CEvaluationNode*>(child->getSibling());
+            if (!child) return NULL;
+            return child->copyBranch();
+          }
+      }
+    else
+      {
+        const CEvaluationNode *child1 = dynamic_cast<const CEvaluationNode*>(getChild());
+        CEvaluationNode *newchild1 = NULL;
+        CEvaluationNode *newchild2 = NULL;
+        if (child1 != NULL)
+          {
+            newchild1 = child1->splitBranch(splitnode, left);
+            const CEvaluationNode *child2 = dynamic_cast<const CEvaluationNode*>(child1->getSibling());
+            if (child2 != NULL)
+              {
+                newchild2 = child2->splitBranch(splitnode, left);
+              }
+          }
+        CEvaluationNode *newnode = copyNode(newchild1, newchild2);
+        return newnode;
+      }
+  }
+
+const CEvaluationNode* CEvaluationNode::findTopMinus() const
+  {
+    if (getType() == (OPERATOR | CEvaluationNodeOperator::MINUS))
+      return this;
+
+    if (getType() == (OPERATOR | CEvaluationNodeOperator::MULTIPLY))
+      {
+        //look at left child recursively
+        const CEvaluationNode *child = dynamic_cast<const CEvaluationNode*>(this->getChild());
+        const CEvaluationNode *tmp = NULL;
+        if (child) tmp = child->findTopMinus();
+        if (tmp) return tmp;
+
+        //otherwise look at right child
+        child = dynamic_cast<const CEvaluationNode*>(child->getSibling());
+        if (child) tmp = child->findTopMinus();
+        if (tmp) return tmp;
+      }
+
+    if (getType() == (OPERATOR | CEvaluationNodeOperator::DIVIDE))
+      {
+        //look at left child only (recursively)
+        const CEvaluationNode *child = dynamic_cast<const CEvaluationNode*>(this->getChild());
+        const CEvaluationNode *tmp = NULL;
+        if (child) tmp = child->findTopMinus();
+        if (tmp) return tmp;
+      }
+
+    return NULL;
+  }

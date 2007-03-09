@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.h,v $
-   $Revision: 1.28 $
-   $Name:  $
-   $Author: nsimus $
-   $Date: 2006/08/15 11:39:31 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.h,v $
+//   $Revision: 1.29 $
+//   $Name:  $
+//   $Author: ssahle $
+//   $Date: 2007/03/09 09:51:20 $
+// End CVS Header
 
-// Copyright � 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -232,6 +232,23 @@ class CEvaluationNode : public CCopasiNode< std::string >
     void printRecursively(std::ostream & os = std::cout, int indent = 0) const;
 
     void printRecursively() const;
+
+    /**
+     * Split the tree in two parts at the given splitnode, starting from *this.
+     * Returned is the root node of a copy of the tree, including everything above
+     * the split node and either the branch below the left child of the split node
+     * or the branch below the right child of the split node. The split node itself
+     * is not included either case.
+     */
+    CEvaluationNode* splitBranch(const CEvaluationNode* splitnode, bool left) const;
+
+    /**
+     * Find a minus operator in the tree that is suitable for splitting with splitBranch().
+     * Specifically it is a minus operator that is connected with the root node by
+     * multiplication or division nodes only. For the division nodes only the
+     * left child is considered.
+     */
+    const CEvaluationNode* findTopMinus() const;
 
     // Attributes
   protected:
