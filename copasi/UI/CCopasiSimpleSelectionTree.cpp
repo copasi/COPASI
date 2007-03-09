@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CCopasiSimpleSelectionTree.cpp,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/26 18:10:48 $
+//   $Date: 2007/03/09 21:16:51 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -80,17 +80,18 @@ CCopasiSimpleSelectionTree::CCopasiSimpleSelectionTree(QWidget* parent, const ch
 CCopasiSimpleSelectionTree::~CCopasiSimpleSelectionTree()
 {}
 
-void CCopasiSimpleSelectionTree::populateTree(const CModel * model)
+void CCopasiSimpleSelectionTree::populateTree(const CModel * pModel,
+    const SelectionFlag & flag)
 {
-  if (!model) return;
+  if (!pModel) return;
 
   QListViewItem* item = new QListViewItem(this->mpTimeSubtree, "Model Time");
   this->treeItems[item] =
-    const_cast< CCopasiObject * >(model->getObject(CCopasiObjectName("Reference=Time")));
+    const_cast< CCopasiObject * >(pModel->getObject(CCopasiObjectName("Reference=Time")));
 
   item = new QListViewItem(this->mpTimeSubtree, "Model Initial Time");
   this->treeItems[item] =
-    const_cast< CCopasiObject * >(model->getObject(CCopasiObjectName("Reference=Initial Time")));
+    const_cast< CCopasiObject * >(pModel->getObject(CCopasiObjectName("Reference=Initial Time")));
 
   item = new QListViewItem(this->mpTimeSubtree, "cpu time");
   CCopasiObject* obj =
@@ -103,7 +104,7 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * model)
   this->treeItems[item] = obj;
 
   // find all metabolites and create items in the metabolite subtree
-  const CCopasiVector<CMetab>& metabolites = model->getMetabolites();
+  const CCopasiVector<CMetab>& metabolites = pModel->getMetabolites();
   unsigned int counter;
   unsigned int maxCount = metabolites.size();
   for (counter = maxCount; counter != 0;--counter)
@@ -146,7 +147,7 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * model)
     }
 
   // find all reactions and create items in the reaction subtree
-  const CCopasiVectorNS<CReaction>& reactions = model->getReactions();
+  const CCopasiVectorNS<CReaction>& reactions = pModel->getReactions();
   maxCount = reactions.size();
   for (counter = maxCount; counter != 0; --counter)
     {
@@ -175,8 +176,8 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * model)
         }
     }
 
-  // find all global parameters aka model variables
-  const CCopasiVector<CModelValue>& objects = model->getModelValues();
+  // find all global parameters aka pModel variables
+  const CCopasiVector<CModelValue>& objects = pModel->getModelValues();
   maxCount = objects.size();
   for (counter = maxCount; counter != 0;--counter)
     {
@@ -214,7 +215,7 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * model)
     }
 
   // find all compartments
-  const CCopasiVector<CCompartment>& objects2 = model->getCompartments();
+  const CCopasiVector<CCompartment>& objects2 = pModel->getCompartments();
   maxCount = objects2.size();
   for (counter = maxCount; counter != 0;--counter)
     {
@@ -238,7 +239,7 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * model)
 
   // experimental annotated matrix
   item = new QListViewItem(this->matrixSubtree, "stoichiometric matrix");
-  CCopasiObject* object = (CCopasiObject*)model->getObject(CCopasiObjectName("Array=Stoichiometry(ann)"));
+  CCopasiObject* object = (CCopasiObject*)pModel->getObject(CCopasiObjectName("Array=Stoichiometry(ann)"));
   treeItems[item] = object;
 #endif // COPASI_DEBUG
 
@@ -443,122 +444,5 @@ void CCopasiSimpleSelectionTree::setOutputVector(std::vector<CCopasiObject*>* ou
   if (this->mpOutputVector)
     {
       this->selectObjects(this->mpOutputVector);
-    }
-}
-
-CCopasiRuleExpressionSelectionTree::CCopasiRuleExpressionSelectionTree(QWidget* parent, const char* name, WFlags fl): CCopasiSimpleSelectionTree(parent, name, fl)
-{
-  this->takeItem(this->mpExpertSubtree);
-  pdelete(this->mpExpertSubtree);
-#ifdef COPASI_DEBUG
-  this->takeItem(this->matrixSubtree);
-  pdelete(this->matrixSubtree);
-#endif
-  this->takeItem(this->mpReactionSubtree);
-  pdelete(this->mpReactionSubtree);
-  this->mpMetaboliteSubtree->takeItem(this->mpMetaboliteInitialNumberSubtree);
-  pdelete(this->mpMetaboliteInitialNumberSubtree);
-  this->mpMetaboliteSubtree->takeItem(this->mpMetaboliteInitialConcentrationSubtree);
-  pdelete(this->mpMetaboliteInitialConcentrationSubtree);
-  this->mpMetaboliteSubtree->takeItem(this->mpMetaboliteTransientNumberSubtree);
-  pdelete(this->mpMetaboliteTransientNumberSubtree);
-  this->mpModelQuantitySubtree->takeItem(this->mpModelQuantityInitialValueSubtree);
-  pdelete(this->mpModelQuantityInitialValueSubtree);
-}
-
-void CCopasiRuleExpressionSelectionTree::populateTree(const CModel* model)
-{
-  if (!model) return;
-
-  QListViewItem* item = new QListViewItem(this->mpTimeSubtree, "Model Time");
-  this->treeItems[item] =
-    const_cast< CCopasiObject * >(model->getObject(CCopasiObjectName("Reference=Time")));
-
-  // find all metabolites and create items in the metabolite subtree
-  const CCopasiVector<CMetab>& metabolites = model->getMetabolites();
-  unsigned int counter;
-  unsigned int maxCount = metabolites.size();
-  for (counter = maxCount; counter != 0;--counter)
-    {
-      const CMetab* metab = metabolites[counter - 1];
-      std::string name = metab->getObjectName();
-      bool unique = this->isMetaboliteNameUnique(name, metabolites);
-      if (!unique)
-        {
-          const CCompartment* comp = metab->getCompartment();
-          if (comp)
-            {
-              name = name + "(" + comp->getObjectName() + ")";
-            }
-        }
-      name = "[" + name + "]";
-      item = new QListViewItem(this->mpMetaboliteTransientConcentrationSubtree,
-                               FROM_UTF8((name + "(t)")));
-      treeItems[item] = (CCopasiObject*)metab->getObject(CCopasiObjectName("Reference=Concentration"));
-    }
-
-  // find all reactions and create items in the reaction subtree
-  /*
-  const CCopasiVectorNS<CReaction>& reactions = model->getReactions();
-  maxCount = reactions.size();
-  for (counter = maxCount; counter != 0; --counter)
-    {
-      const CReaction* react = reactions[counter - 1];
-      std::string name = react->getObjectName();
-      name = "flux(" + name + ")";
-      item = new QListViewItem(this->mpReactionFluxConcentrationSubtree,
-                               FROM_UTF8(name));
-      treeItems[item] = (CCopasiObject*)react->getObject(CCopasiObjectName("Reference=Flux"));
-      item = new QListViewItem(this->mpReactionFluxNumberSubtree,
-                               FROM_UTF8(("particle_" + name)));
-    }
-  */
-  // find all global parameters aka model variables
-  const CCopasiVector<CModelValue>& objects = model->getModelValues();
-  maxCount = objects.size();
-  for (counter = maxCount; counter != 0;--counter)
-    {
-      const CModelEntity* object = objects[counter - 1];
-      std::string name = object->getObjectName();
-
-      item = new QListViewItem(this->mpModelQuantityTransientValueSubtree,
-                               FROM_UTF8(name + "(t)"));
-      treeItems[item] = (CCopasiObject*)object->getObject(CCopasiObjectName("Reference=Value"));
-    }
-
-  // find all compartments
-  const CCopasiVector<CCompartment>& objects2 = model->getCompartments();
-  maxCount = objects2.size();
-  for (counter = maxCount; counter != 0;--counter)
-    {
-      const CModelEntity* object = objects2[counter - 1];
-      std::string name = object->getObjectName();
-
-      item = new QListViewItem(this->mpCompartmentVolumeSubtree,
-                               FROM_UTF8(name /*+ "(t)"*/));
-      treeItems[item] = (CCopasiObject*)object->getObject(CCopasiObjectName("Reference=Volume"));
-    }
-
-  if (this->selectionMode() == QListView::NoSelection)
-    {
-      // see if some objects are there, if yes set to single selection
-      QListViewItemIterator it = QListViewItemIterator(this);
-      while (it.current())
-        {
-          if (this->treeItems.find(it.current()) != this->treeItems.end())
-            {
-              this->setSelectionMode(QListView::Single);
-              this->setCurrentItem(it.current());
-              it.current()->setSelected(true);
-              QListViewItem* parent = it.current()->parent();
-              while (parent)
-                {
-                  parent->setOpen(true);
-                  parent = parent->parent();
-                }
-              break;
-            }
-          ++it;
-        }
     }
 }

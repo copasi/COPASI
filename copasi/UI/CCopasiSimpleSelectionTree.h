@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CCopasiSimpleSelectionTree.h,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/26 18:10:48 $
+//   $Date: 2007/03/09 21:16:51 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,11 +31,18 @@ class CCopasiSimpleSelectionTree: public QListView
     Q_OBJECT
 
   public:
+    enum SelectionFlag {
+      NO_RESTRICTION = -1,
+      NUMERIC = 1,
+      TRANSIENT = 2,
+      INITIAL = 4
+    };
+
     CCopasiSimpleSelectionTree(QWidget* parent, const char* name = 0, WFlags fl = 0);
     ~CCopasiSimpleSelectionTree();
 
-    virtual void populateTree(const CModel * model);
-    virtual void setOutputVector(std::vector<CCopasiObject*>* outputVector);
+    void populateTree(const CModel * pModel, const SelectionFlag & flag);
+    void setOutputVector(std::vector<CCopasiObject*>* outputVector);
 
   public slots:
     virtual void commitClicked();
@@ -67,21 +74,11 @@ class CCopasiSimpleSelectionTree: public QListView
     std::map<QListViewItem*, CCopasiObject*> treeItems;
     std::vector<CCopasiObject*>* mpOutputVector;
 
-    virtual bool treeHasSelection();
-    virtual bool isMetaboliteNameUnique(const std::string & name, const CCopasiVector<CMetab> & metabolites);
-    virtual QListViewItem * findListViewItem(const CCopasiObject * object);
-    virtual void selectObjects(std::vector<CCopasiObject *> * objects);
-    virtual std::vector<CCopasiObject*>* getTreeSelection();
-  };
-
-class CCopasiRuleExpressionSelectionTree: public CCopasiSimpleSelectionTree
-  {
-    Q_OBJECT
-
-  public:
-    CCopasiRuleExpressionSelectionTree(QWidget* parent, const char* name = 0, WFlags fl = 0);
-    virtual ~CCopasiRuleExpressionSelectionTree(){};
-    virtual void populateTree(const CModel * model);
+    bool treeHasSelection();
+    bool isMetaboliteNameUnique(const std::string & name, const CCopasiVector<CMetab> & metabolites);
+    QListViewItem * findListViewItem(const CCopasiObject * object);
+    void selectObjects(std::vector<CCopasiObject *> * objects);
+    std::vector<CCopasiObject*>* getTreeSelection();
   };
 
 #endif

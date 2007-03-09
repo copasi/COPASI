@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQFittingItemWidget.ui.h,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.27 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/12 14:29:14 $
+//   $Date: 2007/03/09 21:16:51 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -151,14 +151,10 @@ void CQFittingItemWidget::slotCheckUpperInf(bool checked)
 
 void CQFittingItemWidget::slotLowerEdit()
 {
-  std::vector<CCopasiObject*> Selection;
+  CCopasiObject * pObject =
+    CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::NUMERIC);
 
-  CCopasiSelectionDialog * pBrowseDialog = new CCopasiSelectionDialog(this);
-  pBrowseDialog->setModel(CCopasiDataModel::Global->getModel());
-  pBrowseDialog->setSingleSelection(true);
-  pBrowseDialog->setOutputVector(&Selection);
-
-  if (pBrowseDialog->exec () == QDialog::Accepted && Selection.size() != 0)
+  if (pObject)
     {
       mpCheckLowerInf->setChecked(false);
       mpEditLower->setEnabled(true);
@@ -169,7 +165,7 @@ void CQFittingItemWidget::slotLowerEdit()
       std::set< unsigned int >::const_iterator it = mSelection.begin();
       std::set< unsigned int >::const_iterator end = mSelection.end();
 
-      mpLowerObject = Selection[0];
+      mpLowerObject = pObject;
       CCopasiObjectName CN = mpLowerObject->getCN();
 
       for (; it != end; ++it)
@@ -180,7 +176,7 @@ void CQFittingItemWidget::slotLowerEdit()
 
       mpTable->adjustColumn(0);
 
-      QString Value = FROM_UTF8(Selection[0]->getObjectDisplayName());
+      QString Value = FROM_UTF8(pObject->getObjectDisplayName());
       mpLowerValidator->force(Value);
       mpEditLower->setText(Value);
     }
@@ -188,14 +184,10 @@ void CQFittingItemWidget::slotLowerEdit()
 
 void CQFittingItemWidget::slotUpperEdit()
 {
-  std::vector<CCopasiObject*> Selection;
+  CCopasiObject * pObject =
+    CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::NUMERIC);
 
-  CCopasiSelectionDialog * pBrowseDialog = new CCopasiSelectionDialog(this);
-  pBrowseDialog->setModel(CCopasiDataModel::Global->getModel());
-  pBrowseDialog->setSingleSelection(true);
-  pBrowseDialog->setOutputVector(&Selection);
-
-  if (pBrowseDialog->exec () == QDialog::Accepted && Selection.size() != 0)
+  if (pObject)
     {
       mpCheckUpperInf->setChecked(false);
       mpEditUpper->setEnabled(true);
@@ -206,7 +198,7 @@ void CQFittingItemWidget::slotUpperEdit()
       std::set< unsigned int >::const_iterator it = mSelection.begin();
       std::set< unsigned int >::const_iterator end = mSelection.end();
 
-      mpUpperObject = Selection[0];
+      mpUpperObject = pObject;
       CCopasiObjectName CN = mpUpperObject->getCN();
 
       for (; it != end; ++it)
@@ -217,7 +209,7 @@ void CQFittingItemWidget::slotUpperEdit()
 
       mpTable->adjustColumn(0);
 
-      QString Value = FROM_UTF8(Selection[0]->getObjectDisplayName());
+      QString Value = FROM_UTF8(pObject->getObjectDisplayName());
       mpUpperValidator->force(Value);
       mpEditUpper->setText(Value);
     }
@@ -227,12 +219,18 @@ void CQFittingItemWidget::slotParamEdit()
 {
   std::vector<CCopasiObject*> Selection;
 
-  CCopasiSelectionDialog * pBrowseDialog = new CCopasiSelectionDialog(this);
-  pBrowseDialog->setModel(CCopasiDataModel::Global->getModel());
-  pBrowseDialog->setSingleSelection(mSelection.size() > 1);
-  pBrowseDialog->setOutputVector(&Selection);
+  if (mSelection.size() > 1)
+    {
+      CCopasiObject * pObject =
+        CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::NUMERIC);
+      if (pObject)
+        Selection.push_back(pObject);
+    }
+  else
+    Selection =
+      CCopasiSelectionDialog::getObjectVector(this, CCopasiSimpleSelectionTree::NUMERIC);
 
-  if (pBrowseDialog->exec () == QDialog::Accepted && Selection.size() != 0)
+  if (Selection.size() != 0)
     {
       // We need to loop through the selection.
       unsigned C_INT32 current = currentRow();

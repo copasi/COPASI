@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SensitivitiesWidget.cpp,v $
-   $Revision: 1.19 $
-   $Name:  $
-   $Author: ssahle $
-   $Date: 2007/01/09 13:46:19 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SensitivitiesWidget.cpp,v $
+//   $Revision: 1.20 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/03/09 21:16:51 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -609,24 +609,14 @@ SensitivitiesWidget::on_Variable2Chooser_activated(int)
 void
 SensitivitiesWidget::on_SingleFunctionChooser_clicked()
 {
-  CCopasiObject* chosenObject;
-  CCopasiSelectionDialog* browseDialog = new CCopasiSelectionDialog(this);
+  CCopasiObject * pObject =
+    CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::NUMERIC);
 
-  browseDialog->setModel(CCopasiDataModel::Global->getModel());
-  browseDialog->setSingleSelection(true);
-
-  std::vector<CCopasiObject*>* selection = new std::vector<CCopasiObject*>();
-  browseDialog->setOutputVector(selection);
-
-  if (browseDialog->exec() == QDialog::Accepted && selection->size() != 0)
+  if (pObject)
     {
-      chosenObject = selection->at(0);
-      if (chosenObject)
-        {
-          FunctionLineEdit->setText(FROM_UTF8(chosenObject->getObjectDisplayName()));
-          mpSingleFunction = chosenObject;
-          FunctionChooser->setCurrentObjectList(CObjectLists::SINGLE_OBJECT);
-        }
+      FunctionLineEdit->setText(FROM_UTF8(pObject->getObjectDisplayName()));
+      mpSingleFunction = pObject;
+      FunctionChooser->setCurrentObjectList(CObjectLists::SINGLE_OBJECT);
     }
 
   updateRunButton();
@@ -635,24 +625,14 @@ SensitivitiesWidget::on_SingleFunctionChooser_clicked()
 void
 SensitivitiesWidget::on_SingleVariableChooser_clicked()
 {
-  CCopasiObject* chosenObject;
-  CCopasiSelectionDialog* browseDialog = new CCopasiSelectionDialog(this);
+  CCopasiObject * pObject =
+    CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::NUMERIC);
 
-  browseDialog->setModel(CCopasiDataModel::Global->getModel());
-  browseDialog->setSingleSelection(true);
-
-  std::vector<CCopasiObject*>* selection = new std::vector<CCopasiObject*>();
-  browseDialog->setOutputVector(selection);
-
-  if (browseDialog->exec() == QDialog::Accepted && selection->size() != 0)
+  if (pObject)
     {
-      chosenObject = selection->at(0);
-      if (chosenObject)
-        {
-          VariableLineEdit->setText(FROM_UTF8(chosenObject->getObjectDisplayName()));
-          mpSingleVariable = chosenObject;
-          VariableChooser->setCurrentObjectList(CObjectLists::SINGLE_OBJECT);
-        }
+      VariableLineEdit->setText(FROM_UTF8(pObject->getObjectDisplayName()));
+      mpSingleVariable = pObject;
+      VariableChooser->setCurrentObjectList(CObjectLists::SINGLE_OBJECT);
     }
 
   updateRunButton();
@@ -661,24 +641,14 @@ SensitivitiesWidget::on_SingleVariableChooser_clicked()
 void
 SensitivitiesWidget::on_SingleVariable2Chooser_clicked()
 {
-  CCopasiObject* chosenObject;
-  CCopasiSelectionDialog* browseDialog = new CCopasiSelectionDialog(this);
+  CCopasiObject * pObject =
+    CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::NUMERIC);
 
-  browseDialog->setModel(CCopasiDataModel::Global->getModel());
-  browseDialog->setSingleSelection(true);
-
-  std::vector<CCopasiObject*>* selection = new std::vector<CCopasiObject*>();
-  browseDialog->setOutputVector(selection);
-
-  if (browseDialog->exec() == QDialog::Accepted && selection->size() != 0)
+  if (pObject)
     {
-      chosenObject = selection->at(0);
-      if (chosenObject)
-        {
-          Variable2LineEdit->setText(FROM_UTF8(chosenObject->getObjectDisplayName()));
-          mpSingleVariable2 = chosenObject;
-          Variable2Chooser->setCurrentObjectList(CObjectLists::SINGLE_OBJECT);
-        }
+      Variable2LineEdit->setText(FROM_UTF8(pObject->getObjectDisplayName()));
+      mpSingleVariable2 = pObject;
+      Variable2Chooser->setCurrentObjectList(CObjectLists::SINGLE_OBJECT);
     }
 
   updateRunButton();

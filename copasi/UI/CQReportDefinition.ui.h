@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportDefinition.ui.h,v $
-   $Revision: 1.15 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/28 00:18:41 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportDefinition.ui.h,v $
+//   $Revision: 1.16 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/03/09 21:16:51 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -113,13 +113,10 @@ void CQReportDefinition::btnItemClicked()
   CModel* pModel = CCopasiDataModel::Global->getModel();
   if (!pModel) return;
 
-  CCopasiSelectionDialog* pBrowseDialog = new CCopasiSelectionDialog(this);
-  pBrowseDialog->setModel(pModel);
-  std::vector<CCopasiObject *> SelectedVector;
-  pBrowseDialog->setOutputVector(&SelectedVector);
+  std::vector<CCopasiObject *> SelectedVector =
+    CCopasiSelectionDialog::getObjectVector(this, CCopasiSimpleSelectionTree::NO_RESTRICTION);
 
-  if (pBrowseDialog->exec () != QDialog::Rejected &&
-      SelectedVector.size() != 0)
+  if (SelectedVector.size() != 0)
     {
       QListBox * pList = static_cast<QListBox *>(mpReportSectionTab->currentPage());
       std::vector<CCopasiObject *>::const_iterator it = SelectedVector.begin();
@@ -131,8 +128,6 @@ void CQReportDefinition::btnItemClicked()
       mChanged = true;
     }
 
-  //delete pBrowseDialog;
-  //it seems that exec() automatically deletes the dialog (at least in this case)
   return;
 }
 

@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TableDefinition1.cpp,v $
-   $Revision: 1.51 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:46 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TableDefinition1.cpp,v $
+//   $Revision: 1.52 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/03/09 21:16:51 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -14,7 +14,7 @@
  ** Form implementation generated from reading ui file '.\TableDefinition1.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.51 2006/04/27 01:27:46 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.52 2007/03/09 21:16:51 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -440,48 +440,34 @@ void TableDefinition1::tabButtonClicked()
 
 void TableDefinition1::addButtonClicked()
 {
-  CModel* pModel = CCopasiDataModel::Global->getModel();
-  if (!pModel) return;
-  CCopasiSelectionDialog* pBrowseDialog = new CCopasiSelectionDialog(this);
-  pBrowseDialog->setModel(pModel);
-  std::vector<CCopasiObject*>* pSelectedVector = new std::vector<CCopasiObject*>();
-  pBrowseDialog->setOutputVector(pSelectedVector);
+  std::vector<CCopasiObject *> SelectedVector =
+    CCopasiSelectionDialog::getObjectVector(this,
+                                            CCopasiSimpleSelectionTree::NO_RESTRICTION);
 
-  if (pBrowseDialog->exec () == QDialog::Rejected)
-    {
-      pdelete(pSelectedVector);
-      return;
-    }
-
-  if (pSelectedVector->size() == 0)
-    {
-      pdelete(pSelectedVector);
-      return;
-    }
+  if (SelectedVector.size() == 0)
+    return;
 
   bool found;
   std::vector< CCopasiContainer * > ListOfContainer; //dummy
-  unsigned C_INT32 i = 0;
-  for (; i < pSelectedVector->size(); i++)
-    if ((*pSelectedVector)[i])
+  unsigned C_INT32 i;
+
+  for (i = 0; i < SelectedVector.size(); i++)
+    if (SelectedVector[i])
       {
         found = false;
         unsigned C_INT32 counter, cmax = itemsTable->count();
         for (counter = 0; counter < cmax; ++counter)
-          if (((MyListBoxItem*)(itemsTable->item(counter)))->getCN() == (*pSelectedVector)[i]->getCN())
+          if (((MyListBoxItem*)(itemsTable->item(counter)))->getCN() == SelectedVector[i]->getCN())
             found = true;
 
         if (!found)
           {
             new MyListBoxItem(itemsTable,
-                              FROM_UTF8((*pSelectedVector)[i]->getObjectDisplayName()),
-                              //FROM_UTF8((*pSelectedVector)[i]->getCN()),
-                              (*pSelectedVector)[i]->getCN());
-            //FROM_UTF8(CCopasiContainer::ObjectFromName(ListOfContainer, (*pSelectedVector)[i]->getCN())->getObjectUniqueName()),
+                              FROM_UTF8(SelectedVector[i]->getObjectDisplayName()),
+                              SelectedVector[i]->getCN());
             bUpdated = true;
           }
       }
-  pdelete(pSelectedVector);
 }
 
 void TableDefinition1::deleteButtonClicked()

@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionDialog.cpp,v $
-   $Revision: 1.9 $
-   $Name:  $
-   $Author: gauges $
-   $Date: 2006/08/31 15:45:45 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionDialog.cpp,v $
+//   $Revision: 1.10 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/03/09 21:16:51 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -77,9 +77,10 @@ CCopasiSelectionDialog::~CCopasiSelectionDialog()
   delete mpTmpVector;
 }
 
-void CCopasiSelectionDialog::setModel(const CModel* model)
+void CCopasiSelectionDialog::setModel(const CModel* pModel,
+                                      const CCopasiSimpleSelectionTree::SelectionFlag & flag)
 {
-  this->mpSelectionWidget->populateTree(model);
+  this->mpSelectionWidget->populateTree(pModel, flag);
 }
 
 void CCopasiSelectionDialog::setOutputVector(std::vector<CCopasiObject*>* outputVector)
@@ -124,43 +125,47 @@ void CCopasiSelectionDialog::enableExpertMode(bool enable)
     }
 }
 
-CCopasiObject * CCopasiSelectionDialog::getObjectSingle(QWidget * parent)
+CCopasiObject *
+CCopasiSelectionDialog::getObjectSingle(QWidget * parent,
+                                        const CCopasiSimpleSelectionTree::SelectionFlag & flag,
+                                        CCopasiObject * pCurrentObject)
 {
   std::vector<CCopasiObject *> Selection;
 
+  if (pCurrentObject != NULL)
+    Selection.push_back(pCurrentObject);
+
   CCopasiSelectionDialog * pDialog = new CCopasiSelectionDialog(parent);
-  pDialog->setModel(CCopasiDataModel::Global->getModel());
+  pDialog->setModel(CCopasiDataModel::Global->getModel(), flag);
   pDialog->setSingleSelection(true);
   pDialog->setOutputVector(&Selection);
 
-  if (pDialog->exec () == QDialog::Accepted && Selection.size() != 0)
+  int Result = pDialog->exec();
+
+  if (Result == QDialog::Accepted && Selection.size() != 0)
     return Selection[0];
-  else
-    return NULL;
+
+  if (Result == QDialog::Rejected && pCurrentObject != NULL)
+    return pCurrentObject;
+
+  return NULL;
 }
 
-std::vector<CCopasiObject *> CCopasiSelectionDialog::getObjectVector(QWidget * parent)
+std::vector<CCopasiObject *> CCopasiSelectionDialog::getObjectVector(QWidget * parent,
+    const CCopasiSimpleSelectionTree::SelectionFlag & flag,
+    const std::vector<CCopasiObject *> * pCurrentSelection)
 {
   std::vector<CCopasiObject *> Selection;
+  if (pCurrentSelection)
+    Selection = *pCurrentSelection;
 
   CCopasiSelectionDialog * pDialog = new CCopasiSelectionDialog(parent);
-  pDialog->setModel(CCopasiDataModel::Global->getModel());
+  pDialog->setModel(CCopasiDataModel::Global->getModel(), flag);
   pDialog->setSingleSelection(false);
   pDialog->setOutputVector(&Selection);
 
-  if (pDialog->exec () == QDialog::Rejected)
-    Selection.clear();
-
-  return Selection;
+  if (pDialog->exec() == QDialog::Rejected)
+    return *pCurrentSelection;
+  else
+    return Selection;
 }
-
-CCopasiRuleExpressionSelectionDialog::CCopasiRuleExpressionSelectionDialog(QWidget * parent, const char* name, bool modal): CCopasiSelectionDialog(parent, name, modal)
-{
-  this->mpModeCheckBox->hide();
-  pdelete(this->mpSelectionWidget);
-  this->mpSelectionWidget = new CCopasiRuleExpressionSelectionWidget(this);
-  mpMainLayout->insertWidget(0, this->mpSelectionWidget);
-}
-
-CCopasiRuleExpressionSelectionDialog::~CCopasiRuleExpressionSelectionDialog()
-{}

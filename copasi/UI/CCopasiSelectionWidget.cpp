@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionWidget.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/26 18:10:48 $
+//   $Date: 2007/03/09 21:16:51 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,9 +33,10 @@ CCopasiSelectionWidget::~CCopasiSelectionWidget()
   delete mpSimpleTree;
 }
 
-void CCopasiSelectionWidget::populateTree(const CModel * model)
+void CCopasiSelectionWidget::populateTree(const CModel * model,
+    const CCopasiSimpleSelectionTree::SelectionFlag & flag)
 {
-  this->mpSimpleTree->populateTree(model);
+  this->mpSimpleTree->populateTree(model, flag);
 }
 
 void CCopasiSelectionWidget::setOutputVector(std::vector<CCopasiObject *> * outputVector)
@@ -142,13 +143,4 @@ void CCopasiSelectionWidget::commit()
           this->mpSimpleTree->commitClicked();
         }
     }
-}
-
-CCopasiRuleExpressionSelectionWidget::CCopasiRuleExpressionSelectionWidget(QWidget* parent, const char* name, WFlags fl): CCopasiSelectionWidget(parent, name, fl)
-{
-  this->CCopasiSelectionWidget::setSingleSelection(true);
-  this->removeWidget(this->mpSimpleTree);
-  pdelete(this->mpSimpleTree);
-  this->mpSimpleTree = new CCopasiRuleExpressionSelectionTree(this);
-  this->addWidget(this->mpSimpleTree);
 }

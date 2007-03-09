@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/21 15:58:37 $
+//   $Date: 2007/03/09 21:16:51 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -399,23 +399,14 @@ std::string CQExpressionWidget::getExpression() const
 
 void CQExpressionWidget::slotSelectObject()
 {
-  std::vector<CCopasiObject*> Selection;
+  CCopasiObject * pObject =
+    CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::NUMERIC);
 
-  CCopasiSelectionDialog * pBrowseDialog = new CCopasiSelectionDialog(this);
-  pBrowseDialog->setModel(CCopasiDataModel::Global->getModel());
-  pBrowseDialog->setSingleSelection(true);
-  pBrowseDialog->setOutputVector(&Selection);
-
-  if (pBrowseDialog->exec () == QDialog::Accepted && Selection.size() != 0)
+  if (pObject)
     {
-      CCopasiObject * pObject = Selection[0];
-
-      if (pObject)
-        {
-          std::string Insert = pObject->getObjectDisplayName();
-          mParseList[Insert] = pObject;
-          insert(FROM_UTF8("<" + Insert + ">"));
-        }
+      std::string Insert = pObject->getObjectDisplayName();
+      mParseList[Insert] = pObject;
+      insert(FROM_UTF8("<" + Insert + ">"));
     }
 }
 

@@ -1,20 +1,23 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiPlotSelectionDialog.h,v $
-   $Revision: 1.4 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/06/20 13:18:05 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiPlotSelectionDialog.h,v $
+//   $Revision: 1.5 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/03/09 21:16:51 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #ifndef CCopasiPlotSelectionDialog_H__
 #define CCopasiPlotSelectionDialog_H__
 
-#include "qdialog.h"
 #include <vector>
+
+#include <qdialog.h>
+
+#include "UI/CCopasiSimpleSelectionTree.h"
 
 class QWidget;
 class QPushButton;
@@ -34,9 +37,10 @@ class CCopasiPlotSelectionDialog: public QDialog
 
   public:
     CCopasiPlotSelectionDialog(QWidget * parent = 0, const char * name = 0, bool modal = FALSE, WFlags f = 0);
-    virtual ~CCopasiPlotSelectionDialog();
+    ~CCopasiPlotSelectionDialog();
     void setOutputVectors(std::vector<CCopasiObject*>* outputVector1, std::vector<CCopasiObject*>* outputVector2);
-    void setModel(CModel* model);
+    void setModel(CModel* model,
+                  const CCopasiSimpleSelectionTree::SelectionFlag & flag);
 
   protected slots:
     void slotOKButtonClicked();

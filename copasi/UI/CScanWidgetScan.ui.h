@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CScanWidgetScan.ui.h,v $
-   $Revision: 1.10 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/28 00:26:44 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CScanWidgetScan.ui.h,v $
+//   $Revision: 1.11 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/03/09 21:16:51 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -45,40 +45,33 @@ void CScanWidgetScan::init()
 
 void CScanWidgetScan::slotChooseObject()
 {
-  CCopasiObject* tmpObject = mpObject;
-  // open a selection dialog with single selection mode
-  CCopasiSelectionDialog* browseDialog = new CCopasiSelectionDialog(this);
-  browseDialog->setModel(mpModel);
-  browseDialog->setSingleSelection(true);
-  //browseDialog->enableExpertMode(false);
-  std::vector<CCopasiObject*>* selection = new std::vector<CCopasiObject*>();
-  if (mpObject)
-    selection->push_back(mpObject);
-  browseDialog->setOutputVector(selection);
+  CCopasiObject * pObject =
+    CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::NUMERIC,
+                                            mpObject);
 
-  if (browseDialog->exec() == QDialog::Accepted && selection->size() != 0)
+  if (mpObject != pObject) // Object selection changed.
     {
-      mpObject = selection->at(0);
+      mpObject = pObject;
+
       if (mpObject)
         {
           lineEditObject->setText(FROM_UTF8(mpObject->getObjectDisplayName()));
 
-          if (mpObject != tmpObject)
+          if (mpObject->isValueDbl())
             {
-              //TODO: init min and max
-              if (mpObject->isValueDbl())
-                {
-                  C_FLOAT64 value = *(C_FLOAT64*)mpObject->getValuePointer();
-                  lineEditMin->setText(QString::number(value*0.5));
-                  lineEditMax->setText(QString::number(value*2));
-                }
+              C_FLOAT64 value = *(C_FLOAT64*)mpObject->getValuePointer();
+              lineEditMin->setText(QString::number(value*0.5));
+              lineEditMax->setText(QString::number(value*2));
             }
         }
       else
-        lineEditObject->setText("");
+        {
+          lineEditObject->setText("");
+          lineEditMin->setText("");
+          lineEditMax->setText("");
+        }
     }
-  else
-    {}}
+}
 
 #include "report/CCopasiObjectName.h"
 bool CScanWidgetScan::initFromScanItem(CCopasiParameterGroup * pg, const CModel* model)

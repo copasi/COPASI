@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExperimentData.ui.h,v $
-//   $Revision: 1.27 $
+//   $Revision: 1.28 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/12 14:29:14 $
+//   $Date: 2007/03/09 21:16:51 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -956,7 +956,7 @@ void CQExperimentData::slotModelObject(int row)
 {
   // :TODO: Implement object browser and update of column 'Model Object'.
   CCopasiObject * pObject =
-    CCopasiSelectionDialog::getObjectSingle(this);
+    CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::NUMERIC);
 
   if (pObject)
     {

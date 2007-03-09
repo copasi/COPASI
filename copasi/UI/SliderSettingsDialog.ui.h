@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/SliderSettingsDialog.ui.h,v $
-   $Revision: 1.26 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/28 00:24:53 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/SliderSettingsDialog.ui.h,v $
+//   $Revision: 1.27 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/03/09 21:16:51 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -318,26 +318,22 @@ void SliderSettingsDialog::init()
 
 void SliderSettingsDialog::browseButtonPressed()
 {
-  // open a selection dialog with single selection mode
-  CCopasiSelectionDialog* browseDialog = new CCopasiSelectionDialog(this);
-  browseDialog->setModel(mpModel);
-  browseDialog->setSingleSelection(true);
-  //browseDialog->enableExpertMode(false);
-  std::vector<CCopasiObject*>* selection = new std::vector<CCopasiObject*>();
-  browseDialog->setOutputVector(selection);
-  if (browseDialog->exec() == QDialog::Accepted && selection->size() != 0)
+  CCopasiObject * pObject =
+    CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::NUMERIC);
+
+  if (pObject)
     {
-      CCopasiObject* object = selection->at(0);
-      if (object && !object->isValueDbl() && !object->isValueInt())
+      if (!pObject->isValueDbl() && !pObject->isValueInt())
         {
           QMessageBox::critical(this, "Invalid Object", "You chose an object that\ndoes not correspond to an integer or float value.\nPlease choose an object that corresponds to an integet or float value.", QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
           this->mpSlider = NULL;
           this->mpObjectNameLineEdit->setText("");
           return;
         }
+
       /* Determine the associated entity key */
-      CCopasiContainer * pAncestor = object->getObjectAncestor("Task");
-      if (!pAncestor) pAncestor = object->getObjectAncestor("Model");
+      CCopasiContainer * pAncestor = pObject->getObjectAncestor("Task");
+      if (!pAncestor) pAncestor = pObject->getObjectAncestor("Model");
 
       if (!pAncestor)
         {
@@ -350,14 +346,14 @@ void SliderSettingsDialog::browseButtonPressed()
       // check if this object already has a slider object
       // if yes, call setSlider with the correct slider object
       // else create a new slider object for this object and add it to the sliders
-      if (this->mpSlider && this->mpSlider->getSliderObject() == object) return;
+      if (this->mpSlider && this->mpSlider->getSliderObject() == pObject) return;
       unsigned C_INT32 i;
       unsigned C_INT32 iMax = this->mDefinedSliders.size();
       unsigned C_INT32 found = iMax;
       unsigned C_INT32 sliderFound = iMax;
       for (i = 0; i < iMax;++i)
         {
-          if (this->mDefinedSliders[i]->getSliderObject() == object)
+          if (this->mDefinedSliders[i]->getSliderObject() == pObject)
             {
               found = i;
               if (sliderFound)
@@ -386,7 +382,7 @@ void SliderSettingsDialog::browseButtonPressed()
       else
         {
           this->mpSlider = new CSlider();
-          this->mpSlider->setSliderObject(object);
+          this->mpSlider->setSliderObject(pObject);
 
           if (pAncestor)
             this->mpSlider->setAssociatedEntityKey(pAncestor->getKey());
@@ -396,11 +392,6 @@ void SliderSettingsDialog::browseButtonPressed()
           this->updateInputFieldsValues();
         }
       this->mpObjectNameLineEdit->setText(FROM_UTF8(this->mpSlider->getSliderObject()->getObjectDisplayName()));
-    }
-  else
-    {
-      this->mpSlider = NULL;
-      this->mpObjectNameLineEdit->setText("");
     }
 }
 
