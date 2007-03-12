@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
-//   $Author: urost $
-//   $Date: 2007/03/12 12:05:37 $
+//   $Author: shoops $
+//   $Date: 2007/03/12 16:22:52 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -602,8 +602,9 @@ void CQGLNetworkPainter::initializeGL()
   //std::cout << "initialize GL" << std::endl;
   // Set up the rendering context, define display lists etc.:
 
-  glClearColor(1.0, 1.0, 0.94, 0.0);  // background ivory
+  glClearColor(1.0f, 1.0f, 0.94f, 0.0f);  // background ivory
   //glClearColor(QColor(255,255,240,QColor::Rgb);
+
   //glEnable(GL_DEPTH_TEST);
   glShadeModel(GL_SMOOTH);
   //glClearDepth(1.0f);           // Depth Buffer Setup
