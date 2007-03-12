@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/03/08 16:26:09 $
+//   $Date: 2007/03/12 12:05:37 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,6 +20,7 @@
 #include <qpopupmenu.h>
 #include <qaction.h>
 #include <qevent.h>
+#include <qcolor.h>
 #include <vector>
 #include <string>
 
@@ -47,6 +48,9 @@ class CQGLNetworkPainter : public QGLWidget
     // void drawStringAt(string s, double x, double y);
     void drawArrow(CArrow a);
 
+    void mapLabelsToRectangles();
+    void mapLabelsToCircles();
+
   private slots:
     void zoomIn();
     void zoomOut();
@@ -68,8 +72,11 @@ class CQGLNetworkPainter : public QGLWidget
     void createActions();
     void zoom(double zoomFactor);
     //void renderBitmapString(double x, double y, std::string s, double w, double h);
-    void drawStringAt(std::string s, C_FLOAT64 x, C_FLOAT64 y, C_FLOAT64 w, C_FLOAT64 h);
+    void drawStringAt(std::string s, C_FLOAT64 x, C_FLOAT64 y, C_FLOAT64 w, C_FLOAT64 h, QColor bgCol);
     int round2powN(double d);
+
+    enum shapeOfLabels {CIRCLE, RECTANGLE};
+    shapeOfLabels mLabelShape;
   protected:
 
     void initializeGraphPainter();

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/03/02 10:56:33 $
+//   $Date: 2007/03/12 12:05:37 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -81,12 +81,26 @@ void CQLayoutMainWindow::createActions()
   openDataFile->setStatusTip("Load simulation data file");
   connect(openDataFile, SIGNAL(activated()), this, SLOT(loadDataFile()));
 
-  exitAction = new QAction ("exit",
-                            "Exit SimWiz",
-                            CTRL + Key_Q ,
-                            this);
-  exitAction->setStatusTip("Exit SimWiz");
-  connect(exitAction, SIGNAL(activated()), this, SLOT(exitApplication()));
+  closeAction = new QAction ("close",
+                             "Close Window",
+                             CTRL + Key_Q ,
+                             this);
+  closeAction->setStatusTip("Close Layout Window");
+  connect(closeAction, SIGNAL(activated()), this, SLOT(closeApplication()));
+
+  rectangularShape = new QAction ("rectangle",
+                                  "rectangle",
+                                  CTRL + Key_R ,
+                                  this);
+  rectangularShape->setStatusTip("Show labels as rectangles");
+  connect(rectangularShape, SIGNAL(activated()), this, SLOT(mapLabelsToRectangles()));
+
+  circularShape = new QAction ("circle",
+                               "circle",
+                               CTRL + Key_C ,
+                               this);
+  connect(circularShape, SIGNAL(activated()), this, SLOT(mapLabelsToCircles()));
+  circularShape->setStatusTip("Show labels as circles");
 }
 
 void CQLayoutMainWindow::createMenus()
@@ -95,9 +109,18 @@ void CQLayoutMainWindow::createMenus()
   openSBMLFile->addTo(fileMenu);
   openDataFile->addTo(fileMenu);
   fileMenu->insertSeparator();
-  exitAction->addTo(fileMenu);
+  closeAction->addTo(fileMenu);
+
+  labelShapeMenu = new QPopupMenu(this);
+
+  rectangularShape->addTo(labelShapeMenu);
+  circularShape->addTo(labelShapeMenu);
+
+  optionsMenu = new QPopupMenu(this);
+  optionsMenu->insertItem("Shape of Label", labelShapeMenu);
 
   menuBar()->insertItem("File", fileMenu);
+  menuBar()->insertItem("Options", optionsMenu);
 }
 
 //void CQLayoutMainWindow::contextMenuEvent(QContextMenuEvent *cme){
@@ -140,10 +163,26 @@ void CQLayoutMainWindow::loadSBMLFile()
     }
 }
 
+void CQLayoutMainWindow::mapLabelsToCircles()
+{
+  if (glPainter != NULL)
+    {
+      glPainter->mapLabelsToCircles();
+    }
+}
+
+void CQLayoutMainWindow::mapLabelsToRectangles()
+{
+  if (glPainter != NULL)
+    {
+      glPainter->mapLabelsToRectangles();
+    }
+}
+
 void CQLayoutMainWindow::loadDataFile()
 {}
 
-void CQLayoutMainWindow::exitApplication()
+void CQLayoutMainWindow::closeApplication()
 {
   close();
 }
@@ -161,22 +200,22 @@ void CQLayoutMainWindow::closeEvent(QCloseEvent *event)
     }
 }
 
+// returns true because window is opened from Copasi and can be easily reopened
 bool CQLayoutMainWindow::maybeSave()
 {
-  //   if (modified) {
-  int ret = QMessageBox::warning(this, "SimWiz",
-                                 "Do you really want to quit?",
-                                 //                   tr("Do you really want to quit?\n"
-                                 //                      "XXXXXXXX"),
-                                 QMessageBox::Yes | QMessageBox::Default,
-                                 QMessageBox::No,
-                                 QMessageBox::Cancel | QMessageBox::Escape);
-  if (ret == QMessageBox::Yes)
-    return true;
-  else if (ret == QMessageBox::Cancel)
-    return false;
+  //  int ret = QMessageBox::warning(this, "SimWiz",
+  //                                 "Do you really want to quit?",
+  //                                 //                   tr("Do you really want to quit?\n"
+  //                                 //                      "XXXXXXXX"),
+  //                                 QMessageBox::Yes | QMessageBox::Default,
+  //                                 QMessageBox::No,
+  //                                 QMessageBox::Cancel | QMessageBox::Escape);
+  //  if (ret == QMessageBox::Yes)
+  //    return true;
+  //  else if (ret == QMessageBox::Cancel)
+  //    return false;
 
-  //   return true;
+  return true;
 }
 
 //int main(int argc, char *argv[]) {

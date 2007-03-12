@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/03/09 18:33:30 $
+//   $Author: urost $
+//   $Date: 2007/03/12 12:05:37 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,7 +22,6 @@
 #include <qpoint.h>
 #include <qpixmap.h>
 #include <qimage.h>
-#include <qcolor.h>
 
 //#include "FTFont.h"
 //#include "FTGLPixmapFont.h"
@@ -170,8 +169,11 @@ void CQGLNetworkPainter::drawGraph()
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glLoadIdentity();
   unsigned int i;
-  //for (i=0;i<viewerNodes.size();i++)
-  // drawNode(viewerNodes[i]);
+  if (this->mLabelShape == CIRCLE)
+    {
+      for (i = 0;i < viewerNodes.size();i++)
+        drawNode(viewerNodes[i]);
+    }
   glColor3f(0.0f, 0.0f, 0.5f); // edges in dark blue
   for (i = 0;i < viewerCurves.size();i++)
     {
@@ -183,8 +185,21 @@ void CQGLNetworkPainter::drawGraph()
   for (i = 0;i < viewerArrows.size();i++)
     drawArrow(viewerArrows[i]);
 
-  for (i = 0;i < viewerLabels.size();i++)
-    drawLabel(viewerLabels[i]);
+  if (this->mLabelShape == RECTANGLE)
+    {
+      for (i = 0;i < viewerLabels.size();i++)
+        drawLabel(viewerLabels[i]);
+    }
+  else
+    {// draw string next to circle (to the right)
+      for (i = 0;i < viewerLabels.size();i++)
+        {
+          // xPosition of text: start from middle of label and advance to the right by the assumed size of the corresponding circle
+          C_FLOAT64 x = viewerLabels[i].getX() + (viewerLabels[i].getWidth() / 2.0) + (viewerLabels[i].getHeight() / 2.0);
+          C_FLOAT64 y = viewerLabels[i].getY();
+          drawStringAt(viewerLabels[i].getText(), x, y, viewerLabels[i].getWidth(), viewerLabels[i].getHeight(), QColor(219, 235, 255));
+        }
+    }
 
   glEndList();
   //this->updateGL();
@@ -193,14 +208,19 @@ void CQGLNetworkPainter::drawGraph()
 // draw node as circle
 void CQGLNetworkPainter::drawNode(CLMetabGlyph &n)
 {
-  glColor3f(1.0f, 0.0f, 0.0f); // red
+
   GLUquadricObj *qobj;
   qobj = gluNewQuadric();
   //cout << "draw node at: " << n.getX() <<  "  " << n.getY() << std::endl;
-  glColor3f(0.0f, 0.0f, 1.0f); // blue
-  glTranslatef((float)n.getX(), (float)n.getY(), 0.0f);
-  gluDisk(qobj, 0.0, 10.0, 25, 2);
-  glTranslatef(-(float)n.getX(), -(float)n.getY(), 0.0f);
+
+  double tx = n.getX() + (n.getWidth() / 2.0);
+  double ty = n.getY() + (n.getHeight() / 2.0);
+  glTranslatef((float)tx, (float)ty, 0.0f);
+  glColor3f(1.0f, 0.0f, 0.0f); // red
+  gluDisk(qobj, 0.0, n.getHeight() / 2.0, 25, 2);
+  glColor3f(0.0f, 0.0f, 0.0f); // black
+  gluDisk(qobj, n.getHeight() / 2.0 - 1.0, n.getHeight() / 2.0, 25, 2);
+  glTranslatef(-(float)tx, -(float)ty, 0.0f);
 }
 
 void CQGLNetworkPainter::drawEdge(CLLineSegment c)
@@ -299,7 +319,7 @@ void CQGLNetworkPainter::drawLabel(CLTextGlyph l)
   glEnd();
   //std::cout << "X: " << l.getX() << "  y: " << l.getY() << "  w: " << l.getWidth() << "  h: " << l.getHeight() << std::endl;
   // now draw text
-  drawStringAt(l.getText(), l.getX(), l.getY(), l.getWidth(), l.getHeight());
+  drawStringAt(l.getText(), l.getX(), l.getY(), l.getWidth(), l.getHeight(), QColor(61, 237, 181));
   //renderBitmapString(l.getX(), l.getY(), l.getText(), l.getWidth(), l.getHeight());
 }
 
@@ -329,7 +349,7 @@ void CQGLNetworkPainter::drawLabel(CLTextGlyph l)
 
 // uses QT
 
-void CQGLNetworkPainter::drawStringAt(std::string s, C_FLOAT64 x, C_FLOAT64 y, C_FLOAT64 w, C_FLOAT64 h)
+void CQGLNetworkPainter::drawStringAt(std::string s, C_FLOAT64 x, C_FLOAT64 y, C_FLOAT64 w, C_FLOAT64 h, QColor bgCol)
 {
   glColor3f(0.0f, 0.0f, 0.0f); // black
   //this->drawText((int)x,(int)y,QString(s));
@@ -357,7 +377,7 @@ void CQGLNetworkPainter::drawStringAt(std::string s, C_FLOAT64 x, C_FLOAT64 y, C
       h2 = round2powN(bbox.height() + 2);
     }
 
-  QRect c(0, -2, w2, h2);
+  QRect c(0, -3, w2, h2);
 
   //  QBitmap bm(w2,h2,true);
   //  QPainter painter(&bm);
@@ -369,7 +389,7 @@ void CQGLNetworkPainter::drawStringAt(std::string s, C_FLOAT64 x, C_FLOAT64 y, C
   QPixmap pm(w2, h2);
   //pm.setMask(bm);
   //pm.fill(QColor(255, 0, 0));
-  pm.fill(QColor(61, 237, 181));
+  pm.fill(bgCol);
   QPainter painter2(&pm);
   painter2.setPen(Qt::black);
   painter2.setFont(f);
@@ -442,6 +462,22 @@ int CQGLNetworkPainter::round2powN(double d)
 //     glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, cStr[i]);
 //}
 //}
+
+void CQGLNetworkPainter::mapLabelsToRectangles()
+{
+  std::cout << "rectangle mode" << std::endl;
+  this->mLabelShape = RECTANGLE;
+  this->drawGraph();
+  //this->draw();
+}
+
+void CQGLNetworkPainter::mapLabelsToCircles()
+{
+  std::cout << "circle mode" << std::endl;
+  this->mLabelShape = CIRCLE;
+  this->drawGraph();
+  //this->draw();
+}
 
 void CQGLNetworkPainter::createActions()
 {
@@ -557,6 +593,7 @@ void CQGLNetworkPainter::initializeGraphPainter()
   mFontname = "Helvetica";
   mFontsize = 12;
   mFontsizeDouble = 12.0; // to avoid rounding errors due to zooming in and out
+  mLabelShape = RECTANGLE;
   createActions();
 }
 
@@ -566,6 +603,7 @@ void CQGLNetworkPainter::initializeGL()
   // Set up the rendering context, define display lists etc.:
 
   glClearColor(1.0, 1.0, 0.94, 0.0);  // background ivory
+  //glClearColor(QColor(255,255,240,QColor::Rgb);
   //glEnable(GL_DEPTH_TEST);
   glShadeModel(GL_SMOOTH);
   //glClearDepth(1.0f);           // Depth Buffer Setup
