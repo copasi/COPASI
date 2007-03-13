@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserWidget.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/26 18:10:48 $
+//   $Date: 2007/03/13 19:56:56 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -66,7 +66,7 @@ class ObjectBrowserWidget : public QWidget
     QSpacerItem* spacer;
     QTextEdit* ObjectItemText;
 
-    void eXport(ObjectBrowserItem* pCurrent, std::vector<CCopasiObject*>* outputVector);
+    void eXport(ObjectBrowserItem* pCurrent, std::vector< const CCopasiObject * > * outputVector);
     void removeDuplicate(ObjectList* objectItemList);
     void setCheck(ObjectBrowserItem* pCurrent);
     void setUncheck(ObjectBrowserItem* pCurrent);
@@ -78,8 +78,8 @@ class ObjectBrowserWidget : public QWidget
     void loadField(ObjectBrowserItem* parent, CCopasiVector<CCopasiObject>* copaParent);
 
     CCopasiObject* getFieldCopasiObject(CCopasiContainer * pCurrent, const char* name);
-    void setOutputVector(std::vector<CCopasiObject*>* pObjectVector);
-    void selectObjects(std::vector<CCopasiObject*>* pObjectVector);
+    void setOutputVector(std::vector< const CCopasiObject * > * pObjectVector);
+    void selectObjects(std::vector< const CCopasiObject * > * pObjectVector);
     void updateUI();
     void loadUI();
 
@@ -94,9 +94,9 @@ class ObjectBrowserWidget : public QWidget
     virtual void listviewChecked(QListViewItem*);
 
   private:
-    std::vector<CCopasiObject*>* mOutputObjectVector;
+    std::vector< const CCopasiObject * > * mOutputObjectVector;
     pageIndex currentPage;
-    void selectObjects(ObjectBrowserItem* browserItem, CCopasiObject* selectObject);
+    void selectObjects(ObjectBrowserItem* browserItem, const CCopasiObject * selectObject);
     void updateSelectedItemsView();
     void cleanup();
   };

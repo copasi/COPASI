@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiPlotSelectionDialog.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/09 21:16:51 $
+//   $Date: 2007/03/13 19:56:56 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -153,7 +153,8 @@ void CCopasiPlotSelectionDialog::slotExpertCheckBoxToggled(bool checked)
   this->mpYAxisSelectionWidget->setExpertMode(checked);
 }
 
-void CCopasiPlotSelectionDialog::setOutputVectors(std::vector<CCopasiObject*>* outputVector1, std::vector<CCopasiObject*>* outputVector2)
+void CCopasiPlotSelectionDialog::setOutputVectors(std::vector< const CCopasiObject * > * outputVector1,
+    std::vector< const CCopasiObject * > * outputVector2)
 {
   this->mpXAxisOutputVector = outputVector1;
   this->mpXAxisSelectionWidget->setOutputVector(this->mpXAxisOutputVector);

@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/plotwidget1.cpp,v $
-   $Revision: 1.46 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/28 00:31:05 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/plotwidget1.cpp,v $
+//   $Revision: 1.47 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/03/13 19:59:11 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -14,7 +14,7 @@
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.46 2006/10/28 00:31:05 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.47 2007/03/13 19:59:11 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -242,10 +242,11 @@ void PlotWidget1::addCurveTab(const std::string & title,
 void PlotWidget1::addCurve2D()
 {
   CCopasiPlotSelectionDialog* pBrowser = new CCopasiPlotSelectionDialog();
-  std::vector<CCopasiObject*>* pVector1 = new std::vector<CCopasiObject*>();
-  std::vector<CCopasiObject*>* pVector2 = new std::vector<CCopasiObject*>();
+  std::vector< const CCopasiObject * > * pVector1 = new std::vector< const CCopasiObject * >();
+  std::vector< const CCopasiObject * > * pVector2 = new std::vector< const CCopasiObject * >();
   pBrowser->setOutputVectors(pVector1, pVector2);
-  pBrowser->setModel(CCopasiDataModel::Global->getModel());
+  pBrowser->setModel(CCopasiDataModel::Global->getModel(),
+                     CCopasiSimpleSelectionTree::NUMERIC);
 
   if (pBrowser->exec () == QDialog::Rejected)
     {

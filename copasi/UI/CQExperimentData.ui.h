@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExperimentData.ui.h,v $
-//   $Revision: 1.28 $
+//   $Revision: 1.29 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/09 21:16:51 $
+//   $Date: 2007/03/13 19:56:56 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -955,8 +955,18 @@ void CQExperimentData::slotUpdateTable()
 void CQExperimentData::slotModelObject(int row)
 {
   // :TODO: Implement object browser and update of column 'Model Object'.
-  CCopasiObject * pObject =
-    CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::NUMERIC);
+
+  CCopasiSimpleSelectionTree::SelectionFlag Flag;
+  CExperiment::Type Type =
+    static_cast<CExperiment::Type>(static_cast<QComboBox *>(mpTable->cellWidget(row, COL_TYPE))->currentItem());
+
+  if (Type == CExperiment::independent)
+    Flag = CCopasiSimpleSelectionTree::INITIAL_VALUE;
+  else
+    Flag = CCopasiSimpleSelectionTree::TRANSIENT_VALUE;
+
+  const CCopasiObject * pObject =
+    CCopasiSelectionDialog::getObjectSingle(this, Flag);
 
   if (pObject)
     {
@@ -1107,6 +1117,8 @@ void CQExperimentData::slotTypeChanged(int row)
   bool BtnEnabled = true;
   unsigned C_INT32 i, imax = mpTable->numRows();
 
+  CCopasiObjectName CN = (const char *) mpTable->text(row, COL_OBJECT_HIDDEN).utf8();
+
   switch (NewType)
     {
     case CExperiment::ignore:
@@ -1114,7 +1126,16 @@ void CQExperimentData::slotTypeChanged(int row)
       break;
 
     case CExperiment::independent:
+      if (!CCopasiSimpleSelectionTree::filter(CCopasiSimpleSelectionTree::INITIAL_VALUE,
+                                              CCopasiContainer::ObjectFromName(CN)))
+        slotModelObject(row);
+      BtnEnabled = true;
+      break;
+
     case CExperiment::dependent:
+      if (!CCopasiSimpleSelectionTree::filter(CCopasiSimpleSelectionTree::TRANSIENT_VALUE,
+                                              CCopasiContainer::ObjectFromName(CN)))
+        slotModelObject(row);
       BtnEnabled = true;
       break;
 

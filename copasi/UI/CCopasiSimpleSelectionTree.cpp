@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CCopasiSimpleSelectionTree.cpp,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/09 21:16:51 $
+//   $Date: 2007/03/13 19:56:56 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,6 +20,7 @@
 #include "utilities/CCopasiParameterGroup.h"
 #include "report/CCopasiObject.h"
 #include "report/CCopasiContainer.h"
+#include "report/CCopasiTimer.h"
 #include "report/CCopasiObjectName.h"
 #include "qtUtilities.h"
 
@@ -67,10 +68,12 @@ CCopasiSimpleSelectionTree::CCopasiSimpleSelectionTree(QWidget* parent, const ch
     new QListViewItem(this->mpMetaboliteSubtree, "initial concentrations");
 
   this->mpCompartmentSubtree = new QListViewItem(this, "compartments");
-  this->mpCompartmentVolumeSubtree =
-    new QListViewItem(this->mpCompartmentSubtree, "volumes");
-  // this->mpCompartmentVolumeSubtree = new QListViewItem(this->mpCompartmentSubtree, "transient volumes");
-  // this->mpCompartmentInitialVolumeSubtree = new QListViewItem(this->mpCompartmentSubtree, "initial volumes");
+  this->mpCompartmentRateSubtree =
+    new QListViewItem(this->mpCompartmentSubtree, "rates");
+  this->mpCompartmentTransientVolumeSubtree =
+    new QListViewItem(this->mpCompartmentSubtree, "transient volumes");
+  this->mpCompartmentInitialVolumeSubtree =
+    new QListViewItem(this->mpCompartmentSubtree, "initial volumes");
 
   this->mpTimeSubtree = new QListViewItem(this, "time");
 
@@ -85,23 +88,38 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * pModel,
 {
   if (!pModel) return;
 
-  QListViewItem* item = new QListViewItem(this->mpTimeSubtree, "Model Time");
-  this->treeItems[item] =
-    const_cast< CCopasiObject * >(pModel->getObject(CCopasiObjectName("Reference=Time")));
+  const CCopasiObject * pObject;
+  QListViewItem * pItem;
 
-  item = new QListViewItem(this->mpTimeSubtree, "Model Initial Time");
-  this->treeItems[item] =
-    const_cast< CCopasiObject * >(pModel->getObject(CCopasiObjectName("Reference=Initial Time")));
+  pObject = pModel->getObject(CCopasiObjectName("Reference=Time"));
+  if (filter(flag, pObject))
+    {
+      pItem = new QListViewItem(this->mpTimeSubtree, "Model Time");
+      treeItems[pItem] = pObject;
+    }
 
-  item = new QListViewItem(this->mpTimeSubtree, "cpu time");
-  CCopasiObject* obj =
-    const_cast< CCopasiObject * >(CCopasiContainer::Root->getObject(CCopasiObjectName("Timer=CPU Time")));
-  this->treeItems[item] = obj;
+  pObject = pModel->getObject(CCopasiObjectName("Reference=Initial Time"));
+  if (filter(flag, pObject))
+    {
+      pItem = new QListViewItem(this->mpTimeSubtree, "Model Initial Time");
+      treeItems[pItem] = pObject;
+    }
 
-  item = new QListViewItem(this->mpTimeSubtree, "real time");
-  obj =
-    const_cast< CCopasiObject * >(CCopasiContainer::Root->getObject(CCopasiObjectName("Timer=Wall Clock Time")));
-  this->treeItems[item] = obj;
+  pObject = CCopasiContainer::Root->getObject(CCopasiObjectName("Timer=CPU Time"));
+  if (filter(flag, pObject))
+    {
+      pItem = new QListViewItem(this->mpTimeSubtree, "cpu time");
+      treeItems[pItem] = pObject;
+    }
+
+  pObject = CCopasiContainer::Root->getObject(CCopasiObjectName("Timer=Wall Clock Time"));
+  if (filter(flag, pObject))
+    {
+      pItem = new QListViewItem(this->mpTimeSubtree, "real time");
+      treeItems[pItem] = pObject;
+    }
+
+  removeEmptySubTree(&mpTimeSubtree);
 
   // find all metabolites and create items in the metabolite subtree
   const CCopasiVector<CMetab>& metabolites = pModel->getMetabolites();
@@ -120,31 +138,58 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * pModel,
               name = name + "(" + comp->getObjectName() + ")";
             }
         }
-      item = new QListViewItem(mpMetaboliteInitialNumberSubtree,
-                               FROM_UTF8((name + "(t=0)")));
-      treeItems[item] = (CCopasiObject*)metab->getObject(CCopasiObjectName("Reference=InitialParticleNumber"));
 
-      item = new QListViewItem(this->mpMetaboliteTransientNumberSubtree,
-                               FROM_UTF8((name + "(t)")));
-      treeItems[item] = (CCopasiObject*)metab->getObject(CCopasiObjectName("Reference=ParticleNumber"));
+      pObject = metab->getObject(CCopasiObjectName("Reference=InitialParticleNumber"));
+      if (filter(flag, pObject))
+        {
+          pItem = new QListViewItem(mpMetaboliteInitialNumberSubtree, FROM_UTF8(name + "(t=0)"));
+          treeItems[pItem] = pObject;
+        }
 
-      item = new QListViewItem(this->mpMetaboliteRateNumberSubtree,
-                               FROM_UTF8(("d(" + name + ")/dt")));
-      treeItems[item] = (CCopasiObject*)metab->getObject(CCopasiObjectName("Reference=ParticleNumberRate"));
+      pObject = metab->getObject(CCopasiObjectName("Reference=ParticleNumber"));
+      if (filter(flag, pObject))
+        {
+          pItem = new QListViewItem(mpMetaboliteTransientNumberSubtree, FROM_UTF8(name + "(t)"));
+          treeItems[pItem] = pObject;
+        }
 
-      name = "[" + name + "]"; // Concetration
-      item = new QListViewItem(this->mpMetaboliteInitialConcentrationSubtree,
-                               FROM_UTF8((name + "(t=0)")));
-      treeItems[item] = (CCopasiObject*)metab->getObject(CCopasiObjectName("Reference=InitialConcentration"));
+      pObject = metab->getObject(CCopasiObjectName("Reference=ParticleNumberRate"));
+      if (filter(flag, pObject))
+        {
+          pItem = new QListViewItem(mpMetaboliteRateNumberSubtree, FROM_UTF8("d(" + name + ")/dt"));
+          treeItems[pItem] = pObject;
+        }
 
-      item = new QListViewItem(this->mpMetaboliteTransientConcentrationSubtree,
-                               FROM_UTF8((name + "(t)")));
-      treeItems[item] = (CCopasiObject*)metab->getObject(CCopasiObjectName("Reference=Concentration"));
+      name = "[" + name + "]"; // Concentration
+      pObject = metab->getObject(CCopasiObjectName("Reference=InitialConcentration"));
+      if (filter(flag, pObject))
+        {
+          pItem = new QListViewItem(mpMetaboliteInitialConcentrationSubtree, FROM_UTF8(name + "(t=0)"));
+          treeItems[pItem] = pObject;
+        }
 
-      item = new QListViewItem(this->mpMetaboliteRateConcentrationSubtree,
-                               FROM_UTF8(("d(" + name + ")/dt")));
-      treeItems[item] = (CCopasiObject*)metab->getObject(CCopasiObjectName("Reference=Rate"));
+      pObject = metab->getObject(CCopasiObjectName("Reference=Concentration"));
+      if (filter(flag, pObject))
+        {
+          pItem = new QListViewItem(mpMetaboliteTransientConcentrationSubtree, FROM_UTF8(name + "(t)"));
+          treeItems[pItem] = pObject;
+        }
+
+      pObject = metab->getObject(CCopasiObjectName("Reference=Rate"));
+      if (filter(flag, pObject))
+        {
+          pItem = new QListViewItem(mpMetaboliteRateConcentrationSubtree, FROM_UTF8("d(" + name + ")/dt"));
+          treeItems[pItem] = pObject;
+        }
     }
+
+  removeEmptySubTree(&mpMetaboliteInitialNumberSubtree);
+  removeEmptySubTree(&mpMetaboliteTransientNumberSubtree);
+  removeEmptySubTree(&mpMetaboliteRateNumberSubtree);
+  removeEmptySubTree(&mpMetaboliteInitialConcentrationSubtree);
+  removeEmptySubTree(&mpMetaboliteTransientConcentrationSubtree);
+  removeEmptySubTree(&mpMetaboliteRateConcentrationSubtree);
+  removeEmptySubTree(&mpMetaboliteSubtree);
 
   // find all reactions and create items in the reaction subtree
   const CCopasiVectorNS<CReaction>& reactions = pModel->getReactions();
@@ -152,29 +197,53 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * pModel,
   for (counter = maxCount; counter != 0; --counter)
     {
       const CReaction* react = reactions[counter - 1];
-      std::string name = react->getObjectName();
-      name = "flux(" + name + ")";
-      item = new QListViewItem(this->mpReactionFluxConcentrationSubtree,
-                               FROM_UTF8(name));
-      treeItems[item] = (CCopasiObject*)react->getObject(CCopasiObjectName("Reference=Flux"));
-      item = new QListViewItem(this->mpReactionFluxNumberSubtree,
-                               FROM_UTF8(("particle_" + name)));
-      treeItems[item] = (CCopasiObject*)react->getObject(CCopasiObjectName("Reference=ParticleFlux"));
+      std::string name = "flux(" + react->getObjectName() + ")";
+
+      pObject = react->getObject(CCopasiObjectName("Reference=Flux"));
+      if (filter(flag, pObject))
+        {
+          pItem = new QListViewItem(mpReactionFluxConcentrationSubtree, FROM_UTF8(name));
+          treeItems[pItem] = pObject;
+        }
+
+      pObject = react->getObject(CCopasiObjectName("Reference=ParticleFlux"));
+      if (filter(flag, pObject))
+        {
+          pItem = new QListViewItem(mpReactionFluxNumberSubtree, FROM_UTF8("particle " + name));
+          treeItems[pItem] = pObject;
+        }
+
       // create items for the reaction parameters
-      item = new QListViewItem(this->mpReactionParameterSubtree,
-                               FROM_UTF8(react->getObjectName()));
-      const CCopasiParameterGroup& parameters = react->getParameters();
+
+      pItem = new QListViewItem(this->mpReactionParameterSubtree,
+                                FROM_UTF8(react->getObjectName()));
+      const CCopasiParameterGroup & Parameters = react->getParameters();
       unsigned int j;
-      unsigned int numParameters = parameters.size();
+      unsigned int numParameters = Parameters.size();
       for (j = numParameters; j != 0; --j)
         {
-          CCopasiParameter* parameter = ((CCopasiParameterGroup&)parameters).getParameter(j - 1);
-          QListViewItem* parameterItem =
-            new QListViewItem(item,
-                              FROM_UTF8(parameter->getObjectName()));
-          treeItems[parameterItem] = (CCopasiObject*)(parameter->getObject(CCopasiObjectName("Reference=Value")));
+          const CCopasiParameter * pParameter = Parameters.getParameter(j - 1);
+
+          // We skip local parameters which ar covered by global parameters
+          if (!react->isLocalParameter(pParameter->getObjectName()))
+            continue;
+
+          pObject = pParameter->getObject(CCopasiObjectName("Reference=Value"));
+          if (filter(flag, pObject))
+            {
+              QListViewItem * pParameterItem =
+                new QListViewItem(pItem, FROM_UTF8(pParameter->getObjectName()));
+              treeItems[pParameterItem] = pObject;
+            }
         }
+
+      removeEmptySubTree(&pItem);
     }
+
+  removeEmptySubTree(&mpReactionFluxNumberSubtree);
+  removeEmptySubTree(&mpReactionFluxConcentrationSubtree);
+  removeEmptySubTree(&mpReactionParameterSubtree);
+  removeEmptySubTree(&mpReactionSubtree);
 
   // find all global parameters aka pModel variables
   const CCopasiVector<CModelValue>& objects = pModel->getModelValues();
@@ -184,35 +253,35 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * pModel,
       const CModelEntity* object = objects[counter - 1];
       std::string name = object->getObjectName();
 
-      switch (object->getStatus())
+      pObject = object->getObject(CCopasiObjectName("Reference=InitialValue"));
+      if (filter(flag, pObject))
         {
-        case CModelEntity::ODE:
-          item = new QListViewItem(this->mpModelQuantityInitialValueSubtree,
-                                   FROM_UTF8((name + "(t=0)")));
-          treeItems[item] = (CCopasiObject*)object->getObject(CCopasiObjectName("Reference=InitialValue"));
+          pItem = new QListViewItem(mpModelQuantityInitialValueSubtree, FROM_UTF8(name + "(t=0)"));
+          treeItems[pItem] = pObject;
+        }
 
-          item = new QListViewItem(this->mpModelQuantityTransientValueSubtree,
-                                   FROM_UTF8(name + "(t)"));
-          treeItems[item] = (CCopasiObject*)object->getObject(CCopasiObjectName("Reference=Value"));
+      pObject = object->getObject(CCopasiObjectName("Reference=Value"));
+      if (filter(flag, pObject))
+        {
+          pItem = new QListViewItem(mpModelQuantityTransientValueSubtree, FROM_UTF8(name + "(t)"));
+          treeItems[pItem] = pObject;
+        }
 
-          item = new QListViewItem(this->mpModelQuantityRateSubtree,
-                                   FROM_UTF8(("d(" + name + ")/dt")));
-          treeItems[item] = (CCopasiObject*)object->getObject(CCopasiObjectName("Reference=Rate"));
-          break;
-
-        case CModelEntity::ASSIGNMENT:
-          item = new QListViewItem(this->mpModelQuantityTransientValueSubtree,
-                                   FROM_UTF8(name + "(t)"));
-          treeItems[item] = (CCopasiObject*)object->getObject(CCopasiObjectName("Reference=Value"));
-          break;
-
-        default:
-          item = new QListViewItem(this->mpModelQuantityInitialValueSubtree,
-                                   FROM_UTF8((name + "(t=0)")));
-          treeItems[item] = (CCopasiObject*)object->getObject(CCopasiObjectName("Reference=InitialValue"));
-          break;
+      if (object->getStatus() == CModelEntity::ODE)
+        {
+          pObject = object->getObject(CCopasiObjectName("Reference=Rate"));
+          if (filter(flag, pObject))
+            {
+              pItem = new QListViewItem(mpModelQuantityRateSubtree, FROM_UTF8("d(" + name + ")/dt"));
+              treeItems[pItem] = pObject;
+            }
         }
     }
+
+  removeEmptySubTree(&mpModelQuantityRateSubtree);
+  removeEmptySubTree(&mpModelQuantityInitialValueSubtree);
+  removeEmptySubTree(&mpModelQuantityTransientValueSubtree);
+  removeEmptySubTree(&mpModelQuantitySubtree);
 
   // find all compartments
   const CCopasiVector<CCompartment>& objects2 = pModel->getCompartments();
@@ -222,25 +291,42 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * pModel,
       const CModelEntity* object = objects2[counter - 1];
       std::string name = object->getObjectName();
 
-      //item = new QListViewItem(this->mpCompartmentInitialVolumeSubtree,
-      //                         FROM_UTF8((name + "(t=0)")));
-      //treeItems[item] = (CCopasiObject*)object->getObject(CCopasiObjectName("Reference=InitialVolume"));
+      pObject = object->getObject(CCopasiObjectName("Reference=InitialVolume"));
+      if (filter(flag, pObject))
+        {
+          pItem = new QListViewItem(mpCompartmentInitialVolumeSubtree, FROM_UTF8(name + "(t=0)"));
+          treeItems[pItem] = pObject;
+        }
 
-      item = new QListViewItem(this->mpCompartmentVolumeSubtree,
-                               FROM_UTF8(name /*+ "(t)"*/));
-      treeItems[item] = (CCopasiObject*)object->getObject(CCopasiObjectName("Reference=Volume"));
+      pObject = object->getObject(CCopasiObjectName("Reference=Volume"));
+      if (filter(flag, pObject))
+        {
+          pItem = new QListViewItem(mpCompartmentTransientVolumeSubtree, FROM_UTF8(name + "(t)"));
+          treeItems[pItem] = pObject;
+        }
 
-      //item = new QListViewItem(this->volumempModelValueRate,
-      //                         FROM_UTF8(("d(" + name + ")/dt")));
-      //treeItems[item] = (CCopasiObject*)object->getObject(CCopasiObjectName("Reference=Rate"));
+      if (object->getStatus() == CModelEntity::ODE)
+        {
+          pObject = object->getObject(CCopasiObjectName("Reference=Rate"));
+          if (filter(flag, pObject))
+            {
+              pItem = new QListViewItem(mpCompartmentRateSubtree, FROM_UTF8("d(" + name + ")/dt"));
+              treeItems[pItem] = pObject;
+            }
+        }
     }
+
+  removeEmptySubTree(&mpCompartmentRateSubtree);
+  removeEmptySubTree(&mpCompartmentInitialVolumeSubtree);
+  removeEmptySubTree(&mpCompartmentTransientVolumeSubtree);
+  removeEmptySubTree(&mpCompartmentSubtree);
 
 #ifdef COPASI_DEBUG
 
   // experimental annotated matrix
-  item = new QListViewItem(this->matrixSubtree, "stoichiometric matrix");
+  pItem = new QListViewItem(this->matrixSubtree, "stoichiometric matrix");
   CCopasiObject* object = (CCopasiObject*)pModel->getObject(CCopasiObjectName("Array=Stoichiometry(ann)"));
-  treeItems[item] = object;
+  treeItems[pItem] = object;
 #endif // COPASI_DEBUG
 
   if (this->selectionMode() == QListView::NoSelection)
@@ -283,9 +369,9 @@ bool CCopasiSimpleSelectionTree::treeHasSelection()
   return hasSelection;
 }
 
-std::vector<CCopasiObject*>* CCopasiSimpleSelectionTree::getTreeSelection()
+std::vector<const CCopasiObject * > * CCopasiSimpleSelectionTree::getTreeSelection()
 {
-  std::vector<CCopasiObject*>* selection = new std::vector<CCopasiObject*>();
+  std::vector<const CCopasiObject * > * selection = new std::vector<const CCopasiObject * >();
   if (this->selectionMode() == QListView::Single && this->selectedItem())
     {
       selection->push_back(this->treeItems[this->selectedItem()]);
@@ -367,8 +453,8 @@ bool CCopasiSimpleSelectionTree::isMetaboliteNameUnique(const std::string & name
 QListViewItem * CCopasiSimpleSelectionTree::findListViewItem(const CCopasiObject * object)
 {
   QListViewItem* item = NULL;
-  std::map<QListViewItem*, CCopasiObject*>::iterator it = this->treeItems.begin();
-  std::map<QListViewItem*, CCopasiObject*>::iterator endPos = this->treeItems.end();
+  std::map< QListViewItem *, const CCopasiObject * >::iterator it = this->treeItems.begin();
+  std::map< QListViewItem *, const CCopasiObject * >::iterator endPos = this->treeItems.end();
   while (it != endPos)
     {
       if (it->second == object)
@@ -381,7 +467,7 @@ QListViewItem * CCopasiSimpleSelectionTree::findListViewItem(const CCopasiObject
   return item;
 }
 
-void CCopasiSimpleSelectionTree::selectObjects(std::vector<CCopasiObject *> * objects)
+void CCopasiSimpleSelectionTree::selectObjects(std::vector< const CCopasiObject * > * objects)
 {
   // clear selection on tree and select new objects
   this->clearSelection();
@@ -393,7 +479,7 @@ void CCopasiSimpleSelectionTree::selectObjects(std::vector<CCopasiObject *> * ob
     }
   for (i = 0; i < iMax;++i)
     {
-      CCopasiObject* object = objects->at(i);
+      const CCopasiObject * object = objects->at(i);
       QListViewItem* item = this->findListViewItem(object);
       if (!item && this->mpExpertSubtree)
         {
@@ -420,9 +506,9 @@ void CCopasiSimpleSelectionTree::commitClicked()
 {
   if (this->mpOutputVector)
     {
-      std::vector<CCopasiObject*>* treeSelection = this->getTreeSelection();
+      std::vector< const CCopasiObject * >* treeSelection = this->getTreeSelection();
       this->mpOutputVector->assign(treeSelection->begin(), treeSelection->end());
-      std::vector<CCopasiObject*>::iterator it = this->mpOutputVector->begin();
+      std::vector< const CCopasiObject * >::iterator it = this->mpOutputVector->begin();
       while (it != this->mpOutputVector->end())
         {
           if (*it == NULL)
@@ -438,11 +524,125 @@ void CCopasiSimpleSelectionTree::commitClicked()
     }
 }
 
-void CCopasiSimpleSelectionTree::setOutputVector(std::vector<CCopasiObject*>* outputVector)
+void CCopasiSimpleSelectionTree::setOutputVector(std::vector< const CCopasiObject * > * outputVector)
 {
   this->mpOutputVector = outputVector;
   if (this->mpOutputVector)
     {
       this->selectObjects(this->mpOutputVector);
     }
+}
+
+// static
+bool CCopasiSimpleSelectionTree::filter(const SelectionFlag & flag, const CCopasiObject * pObject)
+{
+  if (pObject == NULL)
+    return false;
+
+  if (flag == NO_RESTRICTION)
+    return true;
+
+  // Check whether the value is of the desired numeric type.
+  if (flag & NUMERIC)
+    {
+      if (!pObject->isValueDbl() && !pObject->isValueInt())
+        return false;
+    }
+  else if ((flag & DOUBLE) && !pObject->isValueDbl())
+    return false;
+  else if ((flag & INTEGER) && !pObject->isValueInt())
+    return false;
+
+  if (pObject->isReference())
+    {
+      // CModelEntity needs to be check more thoroughly
+      const CModelEntity * pEntity =
+        dynamic_cast< const CModelEntity * >(pObject->getObjectParent());
+
+      if (pEntity)
+        {
+          // CModelEntity::ASSIGNMENT may have no intitial value
+          if (pEntity->getStatus() == CModelEntity::ASSIGNMENT &&
+              pObject->getObjectName().compare(0, 7, "Initial") == 0)
+            return false;
+
+          // CModelEntity are handled differently dependent on the type
+          // of EXPRESSION.
+          if (flag & EXPRESSION)
+            {
+              // TRANSIENT_EXPRESSION
+              if (flag & TRANSIENT)
+                {
+                  if (pEntity->getStatus() == CModelEntity::FIXED &&
+                      pObject->getObjectName().compare(0, 7, "Initial") == 0)
+                    return false;
+                }
+              // INITIAL_EXPRESSION
+              else if (flag & INITIAL)
+                {
+                  if (pEntity->getStatus() != CModelEntity::ASSIGNMENT &&
+                      pObject->getObjectName().compare(0, 7, "Initial") != 0)
+                    return false;
+                }
+
+              // Everything else is allowed in EXPRESSION
+              return true;
+            }
+
+          // INITIAL_VALUE
+          if ((flag & INITIAL)
+              && pObject->getObjectName().compare(0, 7, "Initial") != 0)
+            return false;
+
+          // TRANSIENT_VALUE
+          if ((flag & TRANSIENT)
+              && pObject->getObjectName().compare(0, 7, "Initial") == 0)
+            return false;
+
+          // This CModelEntity is valid.
+          return true;
+        }
+
+      // CReaction needs to be check more thoroughly
+      const CReaction * pReaction =
+        dynamic_cast< const CReaction * >(pObject->getObjectParent());
+
+      if (pReaction)
+        {
+          // INITIAL_VALUE
+          if ((flag & INITIAL) &&
+              !(flag & EXPRESSION))
+            return false;
+
+          // Every other value of CReaction is valid.
+          return true;
+        }
+
+      // Reaction Parameters
+      pReaction =
+        dynamic_cast< const CReaction * >(pObject->getObjectAncestor("Reaction"));
+
+      if (pReaction)
+        {
+          if (!(flag & EXPRESSION) &&
+              (flag & TRANSIENT))
+            return false;
+
+          return true;
+        }
+    }
+  // CCopasiTimer may not be used for initial or transient values.
+  else if (dynamic_cast< const CCopasiTimer * >(pObject) &&
+           !(flag & EXPRESSION) &&
+           ((flag & INITIAL) || (flag & TRANSIENT)))
+    return false;
+
+  // All tests passed :)
+  return true;
+}
+
+void CCopasiSimpleSelectionTree::removeEmptySubTree(QListViewItem ** ppSubTree)
+{
+  if ((*ppSubTree)->childCount() == 0)
+    pdelete(*ppSubTree);
 }

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SensitivitiesWidget.cpp,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/09 21:16:51 $
+//   $Date: 2007/03/13 19:56:56 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -517,7 +517,7 @@ void SensitivitiesWidget::updateAllLineditEnable()
   updateLineeditEnable(Variable2Chooser, Variable2LineEdit, SingleVariable2Chooser);
 }
 
-bool SensitivitiesWidget::checkSingleObject(const SensWidgetComboBox* box, CCopasiObject * object)
+bool SensitivitiesWidget::checkSingleObject(const SensWidgetComboBox* box, const CCopasiObject * object)
 {
   if (box->getCurrentObjectList() != CObjectLists::SINGLE_OBJECT)
     return true;
@@ -609,8 +609,8 @@ SensitivitiesWidget::on_Variable2Chooser_activated(int)
 void
 SensitivitiesWidget::on_SingleFunctionChooser_clicked()
 {
-  CCopasiObject * pObject =
-    CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::NUMERIC);
+  const CCopasiObject * pObject =
+    CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::TRANSIENT_VALUE);
 
   if (pObject)
     {
@@ -625,8 +625,8 @@ SensitivitiesWidget::on_SingleFunctionChooser_clicked()
 void
 SensitivitiesWidget::on_SingleVariableChooser_clicked()
 {
-  CCopasiObject * pObject =
-    CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::NUMERIC);
+  const CCopasiObject * pObject =
+    CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::INITIAL_VALUE);
 
   if (pObject)
     {
@@ -641,8 +641,8 @@ SensitivitiesWidget::on_SingleVariableChooser_clicked()
 void
 SensitivitiesWidget::on_SingleVariable2Chooser_clicked()
 {
-  CCopasiObject * pObject =
-    CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::NUMERIC);
+  const CCopasiObject * pObject =
+    CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::INITIAL_VALUE);
 
   if (pObject)
     {

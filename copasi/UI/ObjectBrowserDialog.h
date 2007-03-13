@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserDialog.h,v $
-   $Revision: 1.6 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:44 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserDialog.h,v $
+//   $Revision: 1.7 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/03/13 19:56:56 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -31,8 +31,8 @@ class ObjectBrowserDialog : public QDialog
   public:
     ObjectBrowserDialog(QWidget* parent = 0, const char* name = 0, bool modal = true, int state = 0);
     virtual ~ObjectBrowserDialog();
-    void setOutputVector(std::vector<CCopasiObject*>* pObjectVector);
-    void selectObjects(std::vector<CCopasiObject*>* pObjectVector);
+    void setOutputVector(std::vector< const CCopasiObject * > * pObjectVector);
+    void selectObjects(std::vector< const CCopasiObject * > * pObjectVector);
 
   protected:
     QPushButton* clearButton;

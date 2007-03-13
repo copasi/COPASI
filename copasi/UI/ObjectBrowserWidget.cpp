@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserWidget.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/26 18:10:48 $
+//   $Date: 2007/03/13 19:56:56 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -256,11 +256,11 @@ void ObjectBrowserWidget::toggleViewClicked()
 
 void ObjectBrowserWidget::updateSelectedItemsView()
 {
-  std::vector<CCopasiObject*>* outputVector;
+  std::vector< const CCopasiObject * > * outputVector;
   ObjectBrowserItem* rootItem;
   unsigned C_INT32 i;
   rootItem = objectItemList->getRoot()->pItem;
-  outputVector = new std::vector<CCopasiObject*>();
+  outputVector = new std::vector< const CCopasiObject * >();
   eXport(rootItem, outputVector);
   //      QMessageBox::information(this, "Output object list done!", "Selected CopasiObject list done!");
   //   ObjectListItem* pHead;
@@ -297,7 +297,7 @@ void ObjectBrowserWidget::updateSelectedItemsView()
   pdelete(outputVector);
 }
 
-void ObjectBrowserWidget::setOutputVector(std::vector<CCopasiObject*>* pObjectVector)
+void ObjectBrowserWidget::setOutputVector(std::vector< const CCopasiObject * > * pObjectVector)
 {
   mOutputObjectVector = pObjectVector;
   this->clearClicked();
@@ -313,7 +313,7 @@ void ObjectBrowserWidget::commitClicked()
   return;
 }
 
-void ObjectBrowserWidget::eXport(ObjectBrowserItem* pCurrent, std::vector<CCopasiObject*>* outputVector)
+void ObjectBrowserWidget::eXport(ObjectBrowserItem* pCurrent, std::vector< const CCopasiObject * > * outputVector)
 {
   if (!outputVector) return;
   if (pCurrent->firstChild())
@@ -667,7 +667,7 @@ CCopasiObject* ObjectBrowserWidget::getFieldCopasiObject(CCopasiContainer * pCur
   return NULL;
 }
 
-void ObjectBrowserWidget::selectObjects(std::vector<CCopasiObject*>* pObjectVector)
+void ObjectBrowserWidget::selectObjects(std::vector< const CCopasiObject * > * pObjectVector)
 {
   unsigned int i;
   ObjectBrowserItem* rootItem;
@@ -680,7 +680,8 @@ void ObjectBrowserWidget::selectObjects(std::vector<CCopasiObject*>* pObjectVect
   updateUI();
 }
 
-void ObjectBrowserWidget::selectObjects(ObjectBrowserItem* browserItem, CCopasiObject* selectObject)
+void ObjectBrowserWidget::selectObjects(ObjectBrowserItem* browserItem,
+                                        const CCopasiObject * selectObject)
 {
   ObjectBrowserItem* pCurrent;
   pCurrent = browserItem;

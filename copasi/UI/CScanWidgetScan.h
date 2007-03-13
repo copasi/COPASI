@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanWidgetScan.h,v $
-   $Revision: 1.5 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:42 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanWidgetScan.h,v $
+//   $Revision: 1.6 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/03/13 19:56:56 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -14,7 +14,7 @@
  ** Form interface generated from reading ui file 'CScanWidgetScan.ui'
  **
  ** Created: Tue Mar 28 14:27:57 2006
- **      by: The User Interface Compiler ($Id: CScanWidgetScan.h,v 1.5 2006/04/27 01:27:42 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: CScanWidgetScan.h,v 1.6 2007/03/13 19:56:56 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -64,7 +64,7 @@ class CScanWidgetScan : public QWidget
     virtual bool saveToScanItem(CScanProblem * pg) const;
 
   protected:
-    CCopasiObject* mpObject;
+    const CCopasiObject* mpObject;
     const CModel* mpModel;
 
     QGridLayout* CScanWidgetScanLayout;

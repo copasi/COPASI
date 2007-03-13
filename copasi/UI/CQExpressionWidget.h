@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.h,v $
-   $Revision: 1.7 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/28 00:20:16 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.h,v $
+//   $Revision: 1.8 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/03/13 19:56:56 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -19,6 +19,7 @@
 #include <vector>
 
 #include "UI/CQValidator.h"
+#include "UI/CCopasiSimpleSelectionTree.h"
 
 #include "function/CExpression.h"
 
@@ -63,6 +64,13 @@ class CQExpressionWidget: public QTextEdit
     int mOldPos1;
     int mOldPar2;
     int mOldPos2;
+
+    /**
+     * Indecates whether we are dealing with an INITIAL or TRANSIENT expression
+     */
+    CCopasiSimpleSelectionTree::SelectionFlag mExpressionType;
+
+    void setExpressionType(const CCopasiSimpleSelectionTree::SelectionFlag & expressionType);
 
     std::map< std::string, const CCopasiObject * > mParseList;
     const CCopasiObject * mpCurrentObject;

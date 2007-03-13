@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionWidget.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/09 21:16:51 $
+//   $Date: 2007/03/13 19:56:56 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,7 +33,7 @@ class CCopasiSelectionWidget: public QWidgetStack
 
     void populateTree(const CModel * model,
                       const CCopasiSimpleSelectionTree::SelectionFlag & flag);
-    void setOutputVector(std::vector<CCopasiObject *> * outputVector);
+    void setOutputVector(std::vector< const CCopasiObject * > * outputVector);
     void setSingleSelection(bool singleSelection);
     bool isSingleSelection() const;
     void setExpertMode(bool expertMode);
@@ -43,7 +43,7 @@ class CCopasiSelectionWidget: public QWidgetStack
   protected:
     CCopasiSimpleSelectionTree* mpSimpleTree;
     ObjectBrowserWidget* mpObjectBrowser;
-    std::vector<CCopasiObject*>* mpOutputVector;
+    std::vector< const CCopasiObject * > * mpOutputVector;
     bool mSingleSelect;
     bool mExpertMode;
   };

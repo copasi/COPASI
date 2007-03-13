@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TableDefinition1.cpp,v $
-//   $Revision: 1.52 $
+//   $Revision: 1.53 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/09 21:16:51 $
+//   $Date: 2007/03/13 19:56:56 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,7 +14,7 @@
  ** Form implementation generated from reading ui file '.\TableDefinition1.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.52 2007/03/09 21:16:51 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.53 2007/03/13 19:56:56 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -440,7 +440,7 @@ void TableDefinition1::tabButtonClicked()
 
 void TableDefinition1::addButtonClicked()
 {
-  std::vector<CCopasiObject *> SelectedVector =
+  std::vector< const CCopasiObject * > SelectedVector =
     CCopasiSelectionDialog::getObjectVector(this,
                                             CCopasiSimpleSelectionTree::NO_RESTRICTION);
 

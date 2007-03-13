@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SensitivitiesWidget.h,v $
-   $Revision: 1.10 $
-   $Name:  $
-   $Author: ssahle $
-   $Date: 2007/01/04 14:29:02 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SensitivitiesWidget.h,v $
+//   $Revision: 1.11 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/03/13 19:56:56 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -143,7 +143,7 @@ class SensitivitiesWidget : public TaskWidget
      * if the combo box is set to "single object" check if the lineedit
      * contains a valid CN. Returns FALSE if invalid
      */
-    bool checkSingleObject(const SensWidgetComboBox* box, CCopasiObject * object);
+    bool checkSingleObject(const SensWidgetComboBox* box, const CCopasiObject * object);
 
     /**
      * enables the run button if the contents of the widget is valid
@@ -169,9 +169,9 @@ class SensitivitiesWidget : public TaskWidget
     //CObjectLists::ListType mVariable;
     //CObjectLists::ListType mVariable2;
 
-    CCopasiObject * mpSingleFunction;
-    CCopasiObject * mpSingleVariable;
-    CCopasiObject * mpSingleVariable2;
+    const CCopasiObject * mpSingleFunction;
+    const CCopasiObject * mpSingleVariable;
+    const CCopasiObject * mpSingleVariable2;
 
     //CSensProblem::SubTaskType mSubTaskType;
 

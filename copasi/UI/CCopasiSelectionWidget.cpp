@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionWidget.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/09 21:16:51 $
+//   $Date: 2007/03/13 19:56:56 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -39,7 +39,7 @@ void CCopasiSelectionWidget::populateTree(const CModel * model,
   this->mpSimpleTree->populateTree(model, flag);
 }
 
-void CCopasiSelectionWidget::setOutputVector(std::vector<CCopasiObject *> * outputVector)
+void CCopasiSelectionWidget::setOutputVector(std::vector< const CCopasiObject * > * outputVector)
 {
   this->mpOutputVector = outputVector;
   if (this->mExpertMode)
@@ -133,7 +133,7 @@ void CCopasiSelectionWidget::commit()
           this->mpObjectBrowser->commitClicked();
           if (this->mSingleSelect && this->mpOutputVector->size() > 1)
             {
-              CCopasiObject* object = this->mpOutputVector->at(0);
+              const CCopasiObject * object = this->mpOutputVector->at(0);
               this->mpOutputVector->clear();
               this->mpOutputVector->push_back(object);
             }

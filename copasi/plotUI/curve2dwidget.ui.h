@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/curve2dwidget.ui.h,v $
-   $Revision: 1.20 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/28 00:31:05 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/curve2dwidget.ui.h,v $
+//   $Revision: 1.21 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/03/13 19:59:11 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -96,57 +96,41 @@ bool Curve2DWidget::SaveToCurveSpec(CPlotItem * curve) const
 void Curve2DWidget::buttonPressedX()
 {
   if (!mpModel) return;
-  CCopasiSelectionDialog* browseDialog = new CCopasiSelectionDialog(this);
-  browseDialog->setModel(mpModel);
-  browseDialog->setSingleSelection(true);
-  std::vector<CCopasiObject*>* selection = new std::vector<CCopasiObject*>();
+
+  mpObjectX = CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::NUMERIC, mpObjectX);
+
   if (mpObjectX)
-    selection->push_back(mpObjectX);
-  browseDialog->setOutputVector(selection);
-
-  if (browseDialog->exec() == QDialog::Accepted && selection->size() != 0)
     {
-      if (mpObjectX == selection->at(0)) return; //nothing to be done
-      mpObjectX = selection->at(0);
-      if (mpObjectX)
-        mpEditX->setText(FROM_UTF8(mpObjectX->getObjectDisplayName()));
-      else
-        mpEditX->setText("");
+      mpEditX->setText(FROM_UTF8(mpObjectX->getObjectDisplayName()));
 
-      if (mpObjectX && mpObjectY)
+      if (mpObjectY)
         mpEditTitle->setText(FROM_UTF8(mpObjectY->getObjectDisplayName()
                                        + "|"
                                        + mpObjectX->getObjectDisplayName()));
       //TODO update tab title
     }
+  else
+    mpEditX->setText("");
 }
 
 void Curve2DWidget::buttonPressedY()
 {
   if (!mpModel) return;
-  CCopasiSelectionDialog* browseDialog = new CCopasiSelectionDialog(this);
-  browseDialog->setModel(mpModel);
-  browseDialog->setSingleSelection(true);
-  std::vector<CCopasiObject*>* selection = new std::vector<CCopasiObject*>();
+
+  mpObjectY = CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::NUMERIC, mpObjectY);
+
   if (mpObjectY)
-    selection->push_back(mpObjectY);
-  browseDialog->setOutputVector(selection);
-
-  if (browseDialog->exec() == QDialog::Accepted && selection->size() != 0)
     {
-      if (mpObjectY == selection->at(0)) return; //nothing to be done
-      mpObjectY = selection->at(0);
-      if (mpObjectY)
-        mpEditY->setText(FROM_UTF8(mpObjectY->getObjectDisplayName()));
-      else
-        mpEditY->setText("");
+      mpEditY->setText(FROM_UTF8(mpObjectY->getObjectDisplayName()));
 
-      if (mpObjectX && mpObjectY)
+      if (mpObjectX)
         mpEditTitle->setText(FROM_UTF8(mpObjectY->getObjectDisplayName()
                                        + "|"
                                        + mpObjectX->getObjectDisplayName()));
       //TODO update tab title
     }
+  else
+    mpEditY->setText("");
 }
 
 void Curve2DWidget::setModel(const CModel * model)

@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/FunctionItemWidget.cpp,v $
-   $Revision: 1.16 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:43 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/FunctionItemWidget.cpp,v $
+//   $Revision: 1.17 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/03/13 19:56:56 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -368,7 +368,7 @@ void FunctionItemWidget::slotButton1()
 void FunctionItemWidget::slotButtonItems()
 {
   ObjectBrowserDialog* pSelectedObjects = new ObjectBrowserDialog();
-  std::vector<CCopasiObject*>* pSelectedVector = new std::vector<CCopasiObject*>();
+  std::vector< const CCopasiObject * > * pSelectedVector = new std::vector< const CCopasiObject * >();
   pSelectedObjects->setOutputVector(pSelectedVector);
 
   if (pSelectedObjects->exec () == QDialog::Rejected)
@@ -522,7 +522,6 @@ void FunctionItemWidget::slotButtonSign()
   /* here is the sign function that makes to change only the first sign of the function;
       like a -> +a
        +/-a -> -/+a
-
 
     if (((textFunction->text().utf8())[0] != '+') && ((textFunction->text().utf8())[0] != '-'))
       // add a '+' or a '-' in front of the expression
@@ -697,7 +696,7 @@ void FunctionItemWidget::setStrFunction(std::string * targetFunctionPtr)
   textFunction->moveCursor(QTextEdit::MoveEnd, false);
 }
 
-void FunctionItemWidget::objectLinkWrapper(CCopasiObject * pObject)
+void FunctionItemWidget::objectLinkWrapper(const CCopasiObject * pObject)
 {
   std::string lnk;
   lnk = "<";

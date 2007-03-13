@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/SliderSettingsDialog.ui.h,v $
-//   $Revision: 1.27 $
+//   $Revision: 1.28 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/09 21:16:51 $
+//   $Date: 2007/03/13 19:56:56 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -318,7 +318,7 @@ void SliderSettingsDialog::init()
 
 void SliderSettingsDialog::browseButtonPressed()
 {
-  CCopasiObject * pObject =
+  const CCopasiObject * pObject =
     CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::NUMERIC);
 
   if (pObject)
@@ -382,7 +382,7 @@ void SliderSettingsDialog::browseButtonPressed()
       else
         {
           this->mpSlider = new CSlider();
-          this->mpSlider->setSliderObject(pObject);
+          this->mpSlider->setSliderObject(const_cast< CCopasiObject * >(pObject));
 
           if (pAncestor)
             this->mpSlider->setAssociatedEntityKey(pAncestor->getKey());

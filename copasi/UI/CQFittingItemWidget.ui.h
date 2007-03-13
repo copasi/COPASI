@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQFittingItemWidget.ui.h,v $
-//   $Revision: 1.27 $
+//   $Revision: 1.28 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/09 21:16:51 $
+//   $Date: 2007/03/13 19:56:56 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -151,8 +151,8 @@ void CQFittingItemWidget::slotCheckUpperInf(bool checked)
 
 void CQFittingItemWidget::slotLowerEdit()
 {
-  CCopasiObject * pObject =
-    CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::NUMERIC);
+  const CCopasiObject * pObject =
+    CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::TRANSIENT_EXPRESSION);
 
   if (pObject)
     {
@@ -184,8 +184,8 @@ void CQFittingItemWidget::slotLowerEdit()
 
 void CQFittingItemWidget::slotUpperEdit()
 {
-  CCopasiObject * pObject =
-    CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::NUMERIC);
+  const CCopasiObject * pObject =
+    CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::TRANSIENT_EXPRESSION);
 
   if (pObject)
     {
@@ -217,18 +217,18 @@ void CQFittingItemWidget::slotUpperEdit()
 
 void CQFittingItemWidget::slotParamEdit()
 {
-  std::vector<CCopasiObject*> Selection;
+  std::vector< const CCopasiObject * > Selection;
 
   if (mSelection.size() > 1)
     {
-      CCopasiObject * pObject =
-        CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::NUMERIC);
+      const CCopasiObject * pObject =
+        CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::INITIAL_VALUE);
       if (pObject)
         Selection.push_back(pObject);
     }
   else
     Selection =
-      CCopasiSelectionDialog::getObjectVector(this, CCopasiSimpleSelectionTree::NUMERIC);
+      CCopasiSelectionDialog::getObjectVector(this, CCopasiSimpleSelectionTree::INITIAL_VALUE);
 
   if (Selection.size() != 0)
     {

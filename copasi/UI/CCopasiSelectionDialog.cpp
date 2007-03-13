@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionDialog.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/09 21:16:51 $
+//   $Date: 2007/03/13 19:56:56 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,7 +31,7 @@ CCopasiSelectionDialog::CCopasiSelectionDialog(QWidget * parent , const char * n
     mpButtonBox(NULL),
     mpMainWidget(NULL),
     mpMainLayout(NULL),
-    mpTmpVector(new std::vector<CCopasiObject*>()),
+    mpTmpVector(new std::vector< const CCopasiObject * >()),
     mpOutputVector(NULL),
     mExpertMode(false),
     mExpertModeEnabled(true)
@@ -83,7 +83,7 @@ void CCopasiSelectionDialog::setModel(const CModel* pModel,
   this->mpSelectionWidget->populateTree(pModel, flag);
 }
 
-void CCopasiSelectionDialog::setOutputVector(std::vector<CCopasiObject*>* outputVector)
+void CCopasiSelectionDialog::setOutputVector(std::vector< const CCopasiObject * > * outputVector)
 {
   this->mpSelectionWidget->setOutputVector(outputVector);
 }
@@ -125,12 +125,12 @@ void CCopasiSelectionDialog::enableExpertMode(bool enable)
     }
 }
 
-CCopasiObject *
+const CCopasiObject *
 CCopasiSelectionDialog::getObjectSingle(QWidget * parent,
                                         const CCopasiSimpleSelectionTree::SelectionFlag & flag,
-                                        CCopasiObject * pCurrentObject)
+                                        const CCopasiObject * pCurrentObject)
 {
-  std::vector<CCopasiObject *> Selection;
+  std::vector< const CCopasiObject * > Selection;
 
   if (pCurrentObject != NULL)
     Selection.push_back(pCurrentObject);
@@ -151,11 +151,11 @@ CCopasiSelectionDialog::getObjectSingle(QWidget * parent,
   return NULL;
 }
 
-std::vector<CCopasiObject *> CCopasiSelectionDialog::getObjectVector(QWidget * parent,
+std::vector< const CCopasiObject * > CCopasiSelectionDialog::getObjectVector(QWidget * parent,
     const CCopasiSimpleSelectionTree::SelectionFlag & flag,
-    const std::vector<CCopasiObject *> * pCurrentSelection)
+    const std::vector< const CCopasiObject * > * pCurrentSelection)
 {
-  std::vector<CCopasiObject *> Selection;
+  std::vector< const CCopasiObject * > Selection;
   if (pCurrentSelection)
     Selection = *pCurrentSelection;
 
@@ -164,7 +164,7 @@ std::vector<CCopasiObject *> CCopasiSelectionDialog::getObjectVector(QWidget * p
   pDialog->setSingleSelection(false);
   pDialog->setOutputVector(&Selection);
 
-  if (pDialog->exec() == QDialog::Rejected)
+  if (pDialog->exec() == QDialog::Rejected && pCurrentSelection)
     return *pCurrentSelection;
   else
     return Selection;

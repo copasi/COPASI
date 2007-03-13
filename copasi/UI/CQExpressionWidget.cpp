@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/09 21:16:51 $
+//   $Date: 2007/03/13 19:56:56 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -85,6 +85,7 @@ CQExpressionWidget::CQExpressionWidget(QWidget * parent, const char * name)
     : QTextEdit(parent, name),
     mOldPar(0),
     mOldPos(0),
+    mExpressionType(CCopasiSimpleSelectionTree::TRANSIENT_EXPRESSION),
     mpCurrentObject(NULL),
     mNewName("")
 {
@@ -397,10 +398,18 @@ std::string CQExpressionWidget::getExpression() const
     return InfixCN;
   }
 
+void CQExpressionWidget::setExpressionType(const CCopasiSimpleSelectionTree::SelectionFlag & expressionType)
+{
+  if (expressionType & CCopasiSimpleSelectionTree::INITIAL)
+    mExpressionType = CCopasiSimpleSelectionTree::INITIAL_EXPRESSION;
+  else
+    mExpressionType = CCopasiSimpleSelectionTree::TRANSIENT_EXPRESSION;
+}
+
 void CQExpressionWidget::slotSelectObject()
 {
-  CCopasiObject * pObject =
-    CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::NUMERIC);
+  const CCopasiObject * pObject =
+    CCopasiSelectionDialog::getObjectSingle(this, mExpressionType);
 
   if (pObject)
     {

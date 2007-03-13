@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportDefinition.ui.h,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/09 21:16:51 $
+//   $Date: 2007/03/13 19:56:56 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -113,14 +113,14 @@ void CQReportDefinition::btnItemClicked()
   CModel* pModel = CCopasiDataModel::Global->getModel();
   if (!pModel) return;
 
-  std::vector<CCopasiObject *> SelectedVector =
+  std::vector< const CCopasiObject * > SelectedVector =
     CCopasiSelectionDialog::getObjectVector(this, CCopasiSimpleSelectionTree::NO_RESTRICTION);
 
   if (SelectedVector.size() != 0)
     {
       QListBox * pList = static_cast<QListBox *>(mpReportSectionTab->currentPage());
-      std::vector<CCopasiObject *>::const_iterator it = SelectedVector.begin();
-      std::vector<CCopasiObject *>::const_iterator end = SelectedVector.end();
+      std::vector< const CCopasiObject * >::const_iterator it = SelectedVector.begin();
+      std::vector< const CCopasiObject * >::const_iterator end = SelectedVector.end();
 
       for (; it != end; ++it)
         new CQReportListItem(pList, *it);
