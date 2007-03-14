@@ -1,8 +1,20 @@
+// Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporter.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2007/01/18 12:13:48 $
+//   $Author: shoops $
+//   $Date: 2007/03/14 15:58:10 $
+// End CVS Header
+
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
+
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporter.cpp,v $
+//   $Revision: 1.2 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/03/14 15:58:10 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -11,8 +23,12 @@
 
 #include <locale>
 #include <math.h>
-#include "copasi.h"
 #include <iomanip.h>
+#include <iostream>
+#include <fstream>
+#include <ctype.h>
+
+#include "copasi.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 
@@ -35,14 +51,10 @@
 #include "function/CEvaluationNodeOperator.h"
 #include "function/CEvaluationNodeFunction.h"
 #include "utilities/CCopasiTree.h"
-#include "utilities/messages.h"
+#include "utilities/CCopasiMessage.h"
 
 #include "trajectory/CTrajectoryTask.h"
 #include "trajectory/CTrajectoryProblem.h"
-
-#include <iostream>
-#include <fstream>
-#include <ctype.h>
 
 /**
  ** Constructor for the exporter.
