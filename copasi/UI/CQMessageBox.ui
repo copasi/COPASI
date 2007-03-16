@@ -1,0 +1,222 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<comment> Begin CVS Header </comment>
+<comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMessageBox.ui,v $ </comment>
+<comment>   $Revision: 1.1 $ </comment>
+<comment>   $Name:  $ </comment>
+<comment>   $Author: shoops $ </comment>
+<comment>   $Date: 2007/03/16 16:40:24 $ </comment>
+<comment> End CVS Header </comment>
+
+<comment> Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc. and EML Research, gGmbH. </comment>
+<comment> All rights reserved. </comment>
+
+<class>CQMessageBox</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>CQMessageBox</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>384</width>
+            <height>235</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>MyDialog</string>
+    </property>
+    <property name="sizeGripEnabled">
+        <bool>true</bool>
+    </property>
+    <grid>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QLayoutWidget" row="1" column="0" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>mpLayoutBtn</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>mpBtn0</cstring>
+                    </property>
+                    <property name="text">
+                        <string>0</string>
+                    </property>
+                    <property name="accel">
+                        <string></string>
+                    </property>
+                    <property name="autoDefault">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>mpBtn1</cstring>
+                    </property>
+                    <property name="text">
+                        <string>1</string>
+                    </property>
+                    <property name="accel">
+                        <string></string>
+                    </property>
+                    <property name="autoDefault">
+                        <bool>true</bool>
+                    </property>
+                    <property name="default">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>mpBtn2</cstring>
+                    </property>
+                    <property name="text">
+                        <string>2</string>
+                    </property>
+                    <property name="accel">
+                        <string></string>
+                    </property>
+                    <property name="autoDefault">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>mpBtn3</cstring>
+                    </property>
+                    <property name="text">
+                        <string>3</string>
+                    </property>
+                    <property name="accel">
+                        <string></string>
+                    </property>
+                    <property name="autoDefault">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="QLayoutWidget" row="0" column="0">
+            <property name="name">
+                <cstring>mpLayoutIcon</cstring>
+            </property>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>mpLblIcon</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>0</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string></string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignTop</set>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>mpSpacerIcon</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Vertical</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>0</width>
+                            <height>40</height>
+                        </size>
+                    </property>
+                </spacer>
+            </vbox>
+        </widget>
+        <widget class="QTextEdit" row="0" column="1">
+            <property name="name">
+                <cstring>mpMessage</cstring>
+            </property>
+            <property name="readOnly">
+                <bool>true</bool>
+            </property>
+        </widget>
+    </grid>
+</widget>
+<connections>
+    <connection>
+        <sender>mpBtn0</sender>
+        <signal>clicked()</signal>
+        <receiver>CQMessageBox</receiver>
+        <slot>slotBtn0()</slot>
+    </connection>
+    <connection>
+        <sender>mpBtn1</sender>
+        <signal>clicked()</signal>
+        <receiver>CQMessageBox</receiver>
+        <slot>slotBtn1()</slot>
+    </connection>
+    <connection>
+        <sender>mpBtn2</sender>
+        <signal>clicked()</signal>
+        <receiver>CQMessageBox</receiver>
+        <slot>slotBtn2()</slot>
+    </connection>
+    <connection>
+        <sender>mpBtn3</sender>
+        <signal>clicked()</signal>
+        <receiver>CQMessageBox</receiver>
+        <slot>slotBtn3()</slot>
+    </connection>
+</connections>
+<includes>
+    <include location="global" impldecl="in declaration">qmessagebox.h</include>
+    <include location="local" impldecl="in implementation">CQMessageBox.ui.h</include>
+</includes>
+<variables>
+    <variable access="provate">QPushButton * mBtn[4];</variable>
+    <variable access="private">int mBtnDefault;</variable>
+    <variable access="private">int mBtnEscape;</variable>
+    <variable access="private">bool mBtnFinished;</variable>
+</variables>
+<slots>
+    <slot access="private" specifier="non virtual">slotBtn0()</slot>
+    <slot access="private" specifier="non virtual">slotBtn1()</slot>
+    <slot access="private" specifier="non virtual">slotBtn2()</slot>
+    <slot access="private" specifier="non virtual">slotBtn3()</slot>
+</slots>
+<functions>
+    <function access="private" specifier="non virtual">configure( const QString &amp; caption, const QString &amp; text, QMessageBox::Icon icon, int btn0, int btn1, int btn2, int btn3 )</function>
+    <function access="private" specifier="non virtual">configureBtn(int index, int type)</function>
+    <function access="private" specifier="non virtual">configure( const QString &amp; caption, const QString &amp; text, QMessageBox::Icon icon, const QString &amp; text0, const QString &amp; text1, const QString &amp; text2, const QString &amp; text3, int btnDefault, int btnEscape )</function>
+    <function access="private" specifier="non virtual">configureBtn(int index, const QString &amp; text, int btnDefault, int btnEscape )</function>
+    <function access="private" specifier="non virtual">init()</function>
+    <function access="protected">keyPressEvent( QKeyEvent * e )</function>
+    <function access="protected">closeEvent( QCloseEvent * e )</function>
+    <function specifier="static" returnType="int">critical( QWidget * parent, const QString &amp; caption, const QString &amp; message, int btn0, int btn1, int btn2 = 0)</function>
+    <function specifier="static" returnType="int">critical( QWidget * parent, const QString &amp; caption, const QString &amp; message, const QString &amp; text0 = QString::null, const QString &amp; text1 = QString::null, const QString &amp; text2 = QString::null, int btnDefault = 0, int btnEscape = -1 )</function>
+    <function specifier="static" returnType="int">warning( QWidget * parent, const QString &amp; caption, const QString &amp; message, int btn0, int btn1, int btn2 = 0)</function>
+    <function specifier="static" returnType="int">warning( QWidget * parent, const QString &amp; caption, const QString &amp; message, const QString &amp; text0 = QString::null, const QString &amp; text1 = QString::null, const QString &amp; text2 = QString::null, int btnDefault = 0, int btnEscape = -1 )</function>
+    <function specifier="static" returnType="int">question( QWidget * parent, const QString &amp; caption, const QString &amp; message, int btn0, int btn1, int btn2 = 0)</function>
+    <function specifier="static" returnType="int">question( QWidget * parent, const QString &amp; caption, const QString &amp; message, const QString &amp; text0 = QString::null, const QString &amp; text1 = QString::null, const QString &amp; text2 = QString::null, int btnDefault = 0, int btnEscape = -1 )</function>
+    <function specifier="static" returnType="int">information( QWidget * parent, const QString &amp; caption, const QString &amp; message, int btn0, int btn1, int btn2 = 0)</function>
+    <function specifier="static" returnType="int">information( QWidget * parent, const QString &amp; caption, const QString &amp; message, const QString &amp; text0 = QString::null, const QString &amp; text1 = QString::null, const QString &amp; text2 = QString::null, int btnDefault = 0, int btnEscape = -1 )</function>
+</functions>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>
