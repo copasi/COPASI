@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget.cpp,v $
-//   $Revision: 1.108 $
+//   $Revision: 1.109 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/07 14:25:37 $
+//   $Date: 2007/03/16 19:55:37 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,7 +22,7 @@
 
 #include <qlayout.h>
 #include <qwidget.h>
-#include <qmessagebox.h>
+// #include <qmessagebox.h>
 #include <qfont.h>
 #include <qpushbutton.h>
 #include <qaction.h>
@@ -30,11 +30,12 @@
 #include <qvalidator.h>
 
 //#include "MyTable.h"
+#include "CQMessageBox.h"
+#include "listviews.h"
+#include "qtUtilities.h"
 #include "model/CModel.h"
 #include "model/CCompartment.h"
-#include "listviews.h"
 #include "report/CKeyFactory.h"
-#include "qtUtilities.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 
 std::vector<const CCopasiObject*> CompartmentsWidget::getObjects() const
@@ -99,9 +100,9 @@ void CompartmentsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* 
   if ((v.validate(tmpstring, pos) == QValidator::Intermediate) ||
       (v.validate(tmpstring, pos) == QValidator::Invalid))
     {
-      QMessageBox::warning(this, "Parent Compartment Widget::Invalid Input!!!",
-                           "The volume must be given",
-                           QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+      CQMessageBox::information(this, "Invalid Input!",
+                                "The volume must be specified.",
+                                QMessageBox::Ok, QMessageBox::NoButton);
       return;
     }
   CCompartment* pComp = (CCompartment*)obj;
@@ -284,14 +285,12 @@ void CompartmentsWidget::deleteObjects(const std::vector<std::string> & keys)
       msg.append(effectedValueList);
     }
 
-  C_INT32 choice;
+  C_INT32 choice = 0;
   if (metabFound || reacFound || valueFound || valueFound)
-    choice = QMessageBox::warning(this,
-                                  "CONFIRM DELETE",
-                                  msg,
-                                  "Continue", "Cancel", 0, 0, 1);
-  else
-    choice = 0;
+    choice = CQMessageBox::question(this,
+                                    "CONFIRM DELETE",
+                                    msg,
+                                    "Continue", "Cancel", 0, 1, 1);
 
   switch (choice)
     {
@@ -309,7 +308,8 @@ void CompartmentsWidget::deleteObjects(const std::vector<std::string> & keys)
         mChanged = true;
         break;
       }
-    case 1:                    // No or Escape
+
+    default:                    // No or Escape
       break;
     }
 }

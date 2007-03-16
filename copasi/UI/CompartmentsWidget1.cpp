@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget1.cpp,v $
-   $Revision: 1.91 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/09/05 17:23:19 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget1.cpp,v $
+//   $Revision: 1.92 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/03/16 19:55:37 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -28,18 +28,20 @@
 #include <qframe.h>
 #include <qlistbox.h>
 #include <qvalidator.h>
-#include <qmessagebox.h>
 #include <qhbox.h>
+
 #include "copasi.h"
-#include "utilities/CCopasiVector.h"
+
 #include "CompartmentsWidget1.h"
+#include "listviews.h"
+#include "CQMessageBox.h"
+#include "qtUtilities.h"
 #include "model/CModel.h"
 #include "model/CCompartment.h"
 #include "model/CMetab.h"
-#include "listviews.h"
-#include "report/CKeyFactory.h"
-#include "qtUtilities.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "utilities/CCopasiVector.h"
+#include "report/CKeyFactory.h"
 
 /*
  *  Constructs a CompartmentsWidget1 which is a child of 'parent', with the
@@ -225,8 +227,8 @@ bool CompartmentsWidget1::saveToCompartment()
   QString tmpstring = LineEdit3->text();
   if (LineEdit3->validator()->validate(tmpstring, cursor) == QValidator::Intermediate)
     {
-      QMessageBox::warning(this, "Compartment Widget::Invalid Input!!!", "Please check Initial Volume. It can not be empty.",
-                           QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+      CQMessageBox::information(this, "Invalid Input", "Please check Initial Volume. It must be specified.",
+                                QMessageBox::Ok, QMessageBox::NoButton);
       return false;
     }
 
@@ -240,10 +242,10 @@ bool CompartmentsWidget1::saveToCompartment()
           msg = "Unable to rename compartment '" + FROM_UTF8(comp->getObjectName()) + "'\n"
                 + "to '" + name + "' since a compartment with that name already exists.";
 
-          QMessageBox::warning(this,
-                               "Unable to rename Compartment",
-                               msg,
-                               QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+          CQMessageBox::information(this,
+                                    "Unable to rename Compartment",
+                                    msg,
+                                    QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
 
           LineEdit1->setText(FROM_UTF8(comp->getObjectName()));
         }
@@ -422,14 +424,12 @@ void CompartmentsWidget1::slotBtnDeleteClicked()
       msg.append(effectedValueList);
     }
 
-  C_INT32 choice;
+  C_INT32 choice = 0;
   if (metabFound || reacFound || valueFound || valueFound)
-    choice = QMessageBox::warning(this,
-                                  "CONFIRM DELETE",
-                                  msg,
-                                  "Continue", "Cancel", 0, 0, 1);
-  else
-    choice = 0;
+    choice = CQMessageBox::question(this,
+                                    "CONFIRM DELETE",
+                                    msg,
+                                    "Continue", "Cancel", 0, 1, 1);
 
   switch (choice)
     {
@@ -450,7 +450,7 @@ void CompartmentsWidget1::slotBtnDeleteClicked()
         //TODO notify about metabs and reactions
         break;
       }
-    case 1:                                 // No or Escape
+    default:                                 // No or Escape
       break;
     }
 }

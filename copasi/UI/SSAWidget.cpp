@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/SSAWidget.cpp,v $
-   $Revision: 1.1 $
-   $Name:  $
-   $Author: tjohann $
-   $Date: 2006/09/12 15:16:20 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/SSAWidget.cpp,v $
+//   $Revision: 1.2 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/03/16 19:55:37 $
+// End CVS Header
 
-// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -55,62 +55,7 @@ SSAWidget::runTask()
     dynamic_cast<CSSATask *>(GlobalKeys.get(mObjectKey));
   assert(mSSATask);
 
-  try
-    {
-      success = mSSATask->initialize(CCopasiTask::OUTPUT_COMPLETE, NULL);
-    }
-  catch (CCopasiException)
-    {
-      success = false;
-    }
-
-  if (!success &&
-      CCopasiMessage::getHighestSeverity() > CCopasiMessage::WARNING)
-    {
-      mProgressBar->finish();
-      QMessageBox::warning(this, "Simulation Error",
-                           CCopasiMessage::getAllMessageText().c_str(),
-                           QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
-      commonAfterRunTask();
-
-      return success;
-    }
-
-  if (CCopasiMessage::getHighestSeverity() >= CCopasiMessage::WARNING &&
-      QMessageBox::warning (this, "Simulation Warning",
-                            CCopasiMessage::getAllMessageText().c_str(),
-                            "Continue", "Stop", NULL,
-                            0, 1) == 1)
-    {
-      // mProgressBar->finish();
-      commonAfterRunTask();
-
-      return success;
-    }
-
-  CCopasiMessage::clearDeque();
-  success = true;
-
-  try
-    {
-      if (!mSSATask->process(true))
-        throw CCopasiException(CCopasiMessage::peekLastMessage());
-    }
-
-  catch (CCopasiException Exception)
-    {
-      success = false;
-      mProgressBar->finish();
-      if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
-        {
-          mProgressBar->finish();
-          QMessageBox::warning(this, "Calculation Error", CCopasiMessage::getAllMessageText().c_str(),
-                               QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
-          CCopasiMessage::clearDeque();
-        }
-    }
-
-  //mSteadyStateTask->restore();
+  success = commonRunTask();
 
   commonAfterRunTask();
 

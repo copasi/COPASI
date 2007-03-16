@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CReportDefinitionSelect.cpp,v $
-   $Revision: 1.43 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:42 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CReportDefinitionSelect.cpp,v $
+//   $Revision: 1.44 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/03/16 19:55:37 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -30,10 +30,10 @@ Contact: Please contact lixu1@vt.edu.
 #include <qtooltip.h>
 #include <qwhatsthis.h>
 #include <qfiledialog.h>
-#include <qmessagebox.h>
 
 #include "copasi.h"
 #include "qtUtilities.h"
+#include "CQMessageBox.h"
 #include "CReportDefinitionSelect.h"
 #include "listviews.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
@@ -161,9 +161,9 @@ void CReportDefinitionSelect::loadReportDefinitionVector()
       mpReport->setAppend(appendChecked->isChecked());
       mpReport->setTarget((const char *)targetEdit->text().utf8());
       ListViews::notify(ListViews::REPORT, ListViews::CHANGE, ""); //notify Table Definition to
-      if (QMessageBox::information (NULL, "No Report Definition Defined",
-                                    "No report definition defined, Copasi has already created a new one for you.\n Do you want to switch to the GUI to edit it?",
-                                    QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes)
+      if (QMessageBox::question(NULL, "No Report Definition Defined",
+                                "No report definition defined, Copasi has already created a new one for you.\n Do you want to switch to the GUI to edit it?",
+                                QMessageBox::Yes | QMessageBox::Default | QMessageBox::Escape, QMessageBox::No) == QMessageBox::Yes)
         jumpToReportDefinitionEdit();
       return;
     }

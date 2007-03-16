@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQModelValue.ui.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/12 14:29:14 $
+//   $Date: 2007/03/16 19:55:37 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,8 +22,7 @@
  ** destructor.
  *****************************************************************************/
 
-#include <qmessagebox.h>
-
+#include "UI/CQMessageBox.h"
 #include "UI/qtUtilities.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
@@ -185,18 +184,16 @@ void CQModelValue::slotBtnDelete()
       msg.append(effectedValueList);
     }
 
-  C_INT32 choice;
+  C_INT32 choice = 0;
   if (metabFound || reacFound || valueFound || valueFound)
-    choice = QMessageBox::warning(this,
-                                  "CONFIRM DELETE",
-                                  msg,
-                                  "Continue", "Cancel", 0, 0, 1);
-  else
-    choice = 0;
+    choice = CQMessageBox::question(this,
+                                    "CONFIRM DELETE",
+                                    msg,
+                                    "Continue", "Cancel", 0, 1, 1);
 
   switch (choice)
     {
-    case 0:                                                     // Yes or Enter
+    case 0:  // Yes or Enter
       {
         unsigned C_INT32 index =
           static_cast<CCopasiVector< CModelValue > *>(&CCopasiDataModel::Global->getModel()->getModelValues())->getIndex(GlobalKeys.get(mKey));
@@ -216,7 +213,8 @@ void CQModelValue::slotBtnDelete()
         protectedNotify(ListViews::MODELVALUE, ListViews::DELETE, mKey);
         break;
       }
-    case 1:                                                     // No or Escape
+
+    default:  // No or Escape
       break;
     }
 }
@@ -327,10 +325,10 @@ void CQModelValue::save()
           msg = "Unable to rename quantity '" + FROM_UTF8(mpModelValue->getObjectName()) + "'\n"
                 + "to '" + mpEditName->text() + "' since a quantity with that name already exists.\n";
 
-          QMessageBox::warning(this,
-                               "Unable to rename Quantity",
-                               msg,
-                               QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+          QMessageBox::information(this,
+                                   "Unable to rename Quantity",
+                                   msg,
+                                   QMessageBox::Ok | QMessageBox::Default | QMessageBox::Escape, QMessageBox::NoButton, QMessageBox::NoButton);
 
           mpEditName->setText(FROM_UTF8(mpModelValue->getObjectName()));
         }

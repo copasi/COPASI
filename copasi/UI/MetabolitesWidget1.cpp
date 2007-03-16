@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget1.cpp,v $
-//   $Revision: 1.136 $
+//   $Revision: 1.137 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/12 14:29:14 $
+//   $Date: 2007/03/16 19:55:37 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,20 +32,22 @@
 #include <qframe.h>
 #include <qbuttongroup.h>
 #include <qcheckbox.h>
-#include <qmessagebox.h>
 #include <qvalidator.h>
 #include <qtable.h>
 #include <qhbox.h>
 #include <qpoint.h>
+
 #include "copasi.h"
 #include "MetabolitesWidget1.h"
-#include "model/CModel.h"
-#include "model/CChemEqInterface.h"
 #include "listviews.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CKeyFactory.h"
 #include "qtUtilities.h"
 #include "MyLineEdit.h"
+#include "CQMessageBox.h"
+
+#include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CKeyFactory.h"
+#include "model/CModel.h"
+#include "model/CChemEqInterface.h"
 
 /*
  *  Constructs a MetabolitesWidget1 which is a child of 'parent', with the
@@ -339,10 +341,10 @@ bool MetabolitesWidget1::saveToMetabolite()
                 + "to '" + name + "' since a metabolite with that name already exists\n"
                 + "in the compartment '" + FROM_UTF8(mpMetab->getCompartment()->getObjectName()) + "'.";
 
-          QMessageBox::warning(this,
-                               "Unable to rename Metabolite",
-                               msg,
-                               QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+          CQMessageBox::information(this,
+                                    "Unable to rename Metabolite",
+                                    msg,
+                                    QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
 
           mEditName->setText(FROM_UTF8(mpMetab->getObjectName()));
         }
@@ -362,10 +364,10 @@ bool MetabolitesWidget1::saveToMetabolite()
                 + "from compartment '" + FROM_UTF8(CompartmentToRemove) + "' to compartment '" + Compartment + "'\n"
                 + "since a metabolite with that name already exist in the target compartment.";
 
-          QMessageBox::warning(this,
-                               "Unable to move Metabolite",
-                               msg,
-                               QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+          CQMessageBox::information(this,
+                                    "Unable to move Metabolite",
+                                    msg,
+                                    QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
 
           mComboCompartment->setCurrentText(FROM_UTF8(CompartmentToRemove));
         }
@@ -653,14 +655,12 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
       msg.append(effectedValueList);
     }
 
-  C_INT32 choice;
+  C_INT32 choice = 0;
   if (metabFound || reacFound || valueFound || valueFound)
-    choice = QMessageBox::warning(this,
-                                  "CONFIRM DELETE",
-                                  msg,
-                                  "Continue", "Cancel", 0, 0, 1);
-  else
-    choice = 0;
+    choice = CQMessageBox::question(this,
+                                    "CONFIRM DELETE",
+                                    msg,
+                                    "Continue", "Cancel", 0, 1, 1);
 
   switch (choice)
     {
@@ -684,7 +684,7 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
         //TODO notify about reactions
         break;
       }
-    case 1:                                                     // No or Escape
+    default:                                                     // No or Escape
       break;
     }
 }

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/main.cpp,v $
-//   $Revision: 1.31 $
+//   $Revision: 1.32 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/03/01 22:56:07 $
+//   $Author: shoops $
+//   $Date: 2007/03/16 19:57:57 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,7 +13,6 @@
 #include <stdexcept>
 
 #include <qapplication.h>
-#include <qmessagebox.h>
 
 #define COPASI_MAIN
 
@@ -24,6 +23,7 @@
 #include "UI/copasiui3window.h"
 #include "UI/objectdebug.h"
 #include "UI/DataModelGUI.h"
+#include "UI/CQMessageBox.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "function/CFunctionDB.h"
@@ -42,9 +42,9 @@ int main(int argc, char **argv)
     }
   catch (copasi::option_error & msg)
     {
-      QMessageBox::critical(NULL, "Initialization Error",
-                            msg.what(),
-                            QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+      CQMessageBox::critical(NULL, "Initialization Error",
+                             msg.what(),
+                             QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
 
       return 1;
     }

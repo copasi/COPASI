@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-//   $Revision: 1.185 $
+//   $Revision: 1.186 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/12 14:29:14 $
+//   $Date: 2007/03/16 19:55:37 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,25 +30,25 @@
 #include <qframe.h>
 #include <qcheckbox.h>
 #include <qlineedit.h>
-#include <qmessagebox.h>
 #include <qtooltip.h>
 
 #include "copasi.h"
-#include "utilities/CCopasiVector.h"
 #include "ReactionsWidget1.h"
 #include "listviews.h"
+#include "parametertable.h"
+#include "MyLineEdit.h"
+#include "qtUtilities.h"
+#include "ChemEqValidator.h"
+#include "FunctionWidget1.h"
+#include "CQMessageBox.h"
+#include "utilities/CCopasiVector.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "model/CModel.h"
 #include "function/CFunctionDB.h"
 #include "function/CFunctionParameters.h"
 #include "function/CFunctionParameter.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
-#include "parametertable.h"
 #include "report/CKeyFactory.h"
-#include "MyLineEdit.h"
-#include "qtUtilities.h"
-#include "ChemEqValidator.h"
-#include "FunctionWidget1.h"
 
 /*
  *  Constructs a ReactionsWidget which is a child of 'parent', with the
@@ -252,10 +252,10 @@ bool ReactionsWidget1::saveToReaction()
           msg = "Unable to rename reaction '" + FROM_UTF8(pReaction->getObjectName()) + "'\n"
                 + "to '" + FROM_UTF8(mpRi->getReactionName()) + "' since a reation with that name already exists.";
 
-          QMessageBox::warning(this,
-                               "Unable to rename Reaction",
-                               msg,
-                               QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+          CQMessageBox::information(this,
+                                    "Unable to rename Reaction",
+                                    msg,
+                                    QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
 
           mpRi->setReactionName(pReaction->getObjectName());
           LineEdit1->setText(FROM_UTF8(mpRi->getReactionName()));
@@ -366,9 +366,9 @@ void ReactionsWidget1::slotBtnDeleteClicked()
       QString reacList = "Are you sure you want to delete the reaction?\n";
       reacList.append(FROM_UTF8(mpRi->getReactionName()));
 
-      int choice = QMessageBox::warning(this, "CONFIRM DELETE",
-                                        reacList,
-                                        "Continue", "Cancel", 0, 0, 1);
+      int choice = CQMessageBox::warning(this, "CONFIRM DELETE",
+                                         reacList,
+                                         "Continue", "Cancel", 0, 1, 1);
 
       switch (choice)
         {

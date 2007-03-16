@@ -1,22 +1,24 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CopasiFileDialog.cpp,v $
-   $Revision: 1.12 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:43 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CopasiFileDialog.cpp,v $
+//   $Revision: 1.13 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/03/16 19:55:37 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #include <qapplication.h>
 #include <qlayout.h>
 #include <qtoolbutton.h>
+
 #include "copasi.h"
 
 #include "CopasiFileDialog.h"
 #include "qtUtilities.h"
+#include "CQMessageBox.h"
 
 #include "commandline/COptions.h"
 #include "utilities/CDirEntry.h"
@@ -100,8 +102,8 @@ void CopasiFileDialog::slotExampleDir()
     }
   else
     {
-      QMessageBox::warning(this, "Directory Not Found", FROM_UTF8(ExampleDir),
-                           QMessageBox::Ok, 0);
+      CQMessageBox::information(this, "Directory Not Found", FROM_UTF8(ExampleDir),
+                                QMessageBox::Ok, 0);
       mpGrp->mpBtnExamples->setDown(false);
     }
 }
@@ -117,8 +119,8 @@ void CopasiFileDialog::slotHomeDir()
     }
   else
     {
-      QMessageBox::warning(this, "Directory Not Found", FROM_UTF8(homeDir),
-                           QMessageBox::Ok, 0);
+      CQMessageBox::information(this, "Directory Not Found", FROM_UTF8(homeDir),
+                                QMessageBox::Ok, 0);
       mpGrp->mpBtnHome->setDown(false);
     }
 }

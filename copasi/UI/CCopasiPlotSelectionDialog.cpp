@@ -1,30 +1,32 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiPlotSelectionDialog.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/13 19:56:56 $
+//   $Date: 2007/03/16 19:55:37 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
+#include <qlayout.h>
+#include <qwidget.h>
+#include <qpushbutton.h>
+#include <qcheckbox.h>
+#include <qlabel.h>
+#include <qsplitter.h>
+#include <qhbox.h>
+#include <qvbox.h>
+
+#include "copasi.h"
+
 #include "CCopasiPlotSelectionDialog.h"
 #include "CCopasiSelectionWidget.h"
-#include "qwidget.h"
-#include "qpushbutton.h"
-#include "qcheckbox.h"
-#include "qlabel.h"
-#include "qsplitter.h"
-#include "qhbox.h"
-#include "qvbox.h"
+#include "qtUtilities.h"
+#include "CQMessageBox.h"
 #include "model/CModel.h"
 #include "report/CCopasiObject.h"
-#include "copasi.h"
-#include "qlayout.h"
-#include "qmessagebox.h"
-#include "qtUtilities.h"
 
 CCopasiPlotSelectionDialog::CCopasiPlotSelectionDialog(QWidget* parent, const char* name, bool modal, WFlags f):
     QDialog(parent, name, modal, f)
@@ -134,7 +136,7 @@ void CCopasiPlotSelectionDialog::slotOKButtonClicked()
   if (showWarning)
     {
       message = "You did not select anything for the " + message + "!\nDo you want to procceed anyway?";
-      if (QMessageBox::warning(this, "Empty Selection", FROM_UTF8(message), QMessageBox::Yes | QMessageBox::Escape, QMessageBox::No | QMessageBox::Default) == QMessageBox::No)
+      if (CQMessageBox::question(this, "Empty Selection", FROM_UTF8(message), QMessageBox::Yes | QMessageBox::Escape | QMessageBox::Default, QMessageBox::No) == 1)
         {
           return;
         }

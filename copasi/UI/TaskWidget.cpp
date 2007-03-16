@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.cpp,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.27 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/12 14:29:14 $
+//   $Date: 2007/03/16 19:55:37 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,7 +21,6 @@
 #include <qwhatsthis.h>
 #include <qvalidator.h>
 #include <qhbox.h>
-#include <qmessagebox.h>
 #include <qapplication.h>
 #include <qcombobox.h>
 
@@ -30,19 +29,20 @@
 
 #include "listviews.h"
 #include "DataModelGUI.h"
-#include "utilities/CCopasiTask.h"
-#include "utilities/CCopasiMethod.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "model/CModel.h"
-#include "report/CKeyFactory.h"
+#include "CQMessageBox.h"
 #include "MyLineEdit.h"
-#include "utilities/CCopasiException.h"
 #include "CProgressBar.h"
 #include "copasiui3window.h"
 #include "CReportDefinitionSelect.h"
 #include "DefaultplotDialog.h"
 #include "CQTaskHeaderWidget.h"
 #include "CQTaskBtnWidget.h"
+#include "utilities/CCopasiTask.h"
+#include "utilities/CCopasiMethod.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
+#include "model/CModel.h"
+#include "report/CKeyFactory.h"
+#include "utilities/CCopasiException.h"
 
 /*
  *  Constructs a TaskWidget which is a child of 'parent', with the
@@ -353,9 +353,9 @@ bool TaskWidget::commonBeforeRunTask()
   // save the state of the widget
   if (!saveTask())
     {
-      QMessageBox::warning(this, "Simulation Error",
-                           CCopasiMessage::getAllMessageText().c_str(),
-                           QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+      CQMessageBox::critical(this, "Simulation Error",
+                             CCopasiMessage::getAllMessageText().c_str(),
+                             QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
       return false;
     }
 
@@ -413,9 +413,9 @@ bool TaskWidget::commonRunTask()
       if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
         {
           mProgressBar->finish();
-          QMessageBox::critical(this, "Initialization Error",
-                                CCopasiMessage::getAllMessageText().c_str(),
-                                QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+          CQMessageBox::critical(this, "Initialization Error",
+                                 CCopasiMessage::getAllMessageText().c_str(),
+                                 QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
 
           success = false;
           goto finish;
@@ -425,12 +425,12 @@ bool TaskWidget::commonRunTask()
   if (CCopasiMessage::getHighestSeverity() > CCopasiMessage::COMMANDLINE)
     {
       C_INT Result =
-        QMessageBox::warning(this, "Initialization Warning",
-                             CCopasiMessage::getAllMessageText().c_str(),
-                             QMessageBox::Ignore | QMessageBox::Default,
-                             QMessageBox::Abort);
+        CQMessageBox::question(this, "Initialization Warning",
+                               CCopasiMessage::getAllMessageText().c_str(),
+                               QMessageBox::Ignore | QMessageBox::Default,
+                               QMessageBox::Abort | QMessageBox::Escape);
 
-      if (Result == QMessageBox::Abort)
+      if (Result == 1)
         {
           success = false;
           goto finish;
@@ -451,7 +451,8 @@ bool TaskWidget::commonRunTask()
       if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
         {
           mProgressBar->finish();
-          QMessageBox::critical(this, "Calculation Error", CCopasiMessage::getAllMessageText().c_str(), QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+          CQMessageBox::critical(this, "Calculation Error", CCopasiMessage::getAllMessageText().c_str(),
+                                 QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
         }
 
       success = false;
@@ -460,10 +461,9 @@ bool TaskWidget::commonRunTask()
 
   if (CCopasiMessage::getHighestSeverity() > CCopasiMessage::COMMANDLINE)
     {
-      C_INT Result =
-        QMessageBox::warning(this, "Calculation Warning",
-                             CCopasiMessage::getAllMessageText().c_str(),
-                             QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+      CQMessageBox::information(this, "Calculation Warning",
+                                CCopasiMessage::getAllMessageText().c_str(),
+                                QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
     }
 
 finish:
@@ -477,7 +477,8 @@ finish:
       if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
         {
           mProgressBar->finish();
-          QMessageBox::critical(this, "Calculation Error", CCopasiMessage::getAllMessageText().c_str(), QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+          CQMessageBox::critical(this, "Calculation Error", CCopasiMessage::getAllMessageText().c_str(),
+                                 QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
           CCopasiMessage::clearDeque();
         }
     }
@@ -487,9 +488,9 @@ finish:
   if (CCopasiMessage::getHighestSeverity() > CCopasiMessage::COMMANDLINE)
     {
       C_INT Result =
-        QMessageBox::warning(this, "Calculation Warning",
-                             CCopasiMessage::getAllMessageText().c_str(),
-                             QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+        CQMessageBox::information(this, "Calculation Warning",
+                                  CCopasiMessage::getAllMessageText().c_str(),
+                                  QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
     }
 
   CCopasiMessage::clearDeque();

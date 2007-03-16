@@ -1,20 +1,19 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportDefinition.ui.h,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/13 19:56:56 $
+//   $Date: 2007/03/16 19:55:37 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include <qmessagebox.h>
-
 #include "UI/CQReportListItem.h"
 #include "UI/CCopasiSelectionDialog.h"
 #include "UI/CQTextDialog.h"
+#include "UI/CQMessageBox.h"
 #include "UI/qtUtilities.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
@@ -52,13 +51,12 @@ void CQReportDefinition::btnAdvancedClicked()
 {
   if (mAdvanced)
     {
-      if (QMessageBox::Ok ==
-          QMessageBox::question(NULL, "Report Conversion",
-                                "Converting an advanced report to a table may result in loss of customization.\n"
-                                "Do you want to proceed?",
-                                QMessageBox::Ok,
-                                QMessageBox::Cancel | QMessageBox::Default | QMessageBox::Escape,
-                                QMessageBox::NoButton))
+      if (CQMessageBox::question(NULL, "Report Conversion",
+                                 "Converting an advanced report to a table may result in loss of customization.\n"
+                                 "Do you want to proceed?",
+                                 QMessageBox::Ok,
+                                 QMessageBox::Cancel | QMessageBox::Default | QMessageBox::Escape,
+                                 QMessageBox::NoButton) == 0)
         {
           // We convert the body without the separators to a table.
           mpTableList->clear();
@@ -293,12 +291,12 @@ void CQReportDefinition::btnDeleteReportClicked()
 
       msg = msg.remove(msg.length() - 2, 2);
 
-      if (QMessageBox::question(this,
-                                "CONFIRM DELETE",
-                                msg,
-                                QMessageBox::Ok,
-                                QMessageBox::Cancel | QMessageBox::Default | QMessageBox::Escape,
-                                QMessageBox::NoButton) == QMessageBox::Cancel)
+      if (CQMessageBox::question(this,
+                                 "CONFIRM DELETE",
+                                 msg,
+                                 QMessageBox::Ok,
+                                 QMessageBox::Cancel | QMessageBox::Default | QMessageBox::Escape,
+                                 QMessageBox::NoButton) == 1)
         return;
 
       for (it = TaskKeys.begin(); it != end; ++it)
@@ -463,10 +461,10 @@ bool CQReportDefinition::save()
           msg = "Unable to rename report '" + FROM_UTF8(mpReportDefinition->getObjectName()) + "'\n"
                 + "to '" + mpName->text() + "' since a report with that name already exists.";
 
-          QMessageBox::warning(this,
-                               "Unable to rename Report",
-                               msg,
-                               QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+          CQMessageBox::information(this,
+                                    "Unable to rename Report",
+                                    msg,
+                                    QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
 
           mpName->setText(FROM_UTF8(mpReportDefinition->getObjectName()));
         }

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModelValuesWidget.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/07 14:25:37 $
+//   $Date: 2007/03/16 19:55:37 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,20 +14,20 @@
 
 #include <qlayout.h>
 #include <qwidget.h>
-#include <qmessagebox.h>
 #include <qfont.h>
 #include <qpushbutton.h>
 #include <qaction.h>
 #include <qstringlist.h>
 
 //#include "MyTable.h"
-#include "model/CModel.h"
-#include "model/CModelValue.h"
 #include "listviews.h"
-#include "report/CKeyFactory.h"
 #include "qtUtilities.h"
+#include "CQMessageBox.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "function/CExpression.h"
+#include "model/CModel.h"
+#include "model/CModelValue.h"
+#include "report/CKeyFactory.h"
 
 #define COL_NAME 1
 #define COL_TYPE 2
@@ -354,14 +354,12 @@ void ModelValuesWidget::deleteObjects(const std::vector<std::string> & keys)
       msg.append(effectedValueList);
     }
 
-  C_INT32 choice;
+  C_INT32 choice = 0;
   if (metabFound || reacFound || valueFound || valueFound)
-    choice = QMessageBox::warning(this,
-                                  "CONFIRM DELETE",
-                                  msg,
-                                  "Continue", "Cancel", 0, 0, 1);
-  else
-    choice = 0;
+    choice = CQMessageBox::warning(this,
+                                   "CONFIRM DELETE",
+                                   msg,
+                                   "Continue", "Cancel", 0, 1, 1);
 
   switch (choice)
     {
@@ -379,7 +377,8 @@ void ModelValuesWidget::deleteObjects(const std::vector<std::string> & keys)
         mChanged = true;
         break;
       }
-    case 1:                     // No or Escape
+
+    default:                     // No or Escape
       break;
     }
 }

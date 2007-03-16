@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/wizard/Attic/wizard.ui.h,v $
-   $Revision: 1.13 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:32:54 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/wizard/Attic/wizard.ui.h,v $
+//   $Revision: 1.14 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/03/16 19:57:14 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -23,7 +23,7 @@
  *****************************************************************************/
 
 #include "commandline/COptions.h"
-
+#include "UI/CQMessageBox.h"
 char* WizardDialog::texts[6] = {"TutWiz-Step1.html", "TutWiz-Step2.html", "TutWiz-Step3.html", "TutWiz-Step4.html", "TutWiz-Step5.html", "TutWiz-Step6.html"};
 
 char* WizardDialog::Error = "<html><head><title>Error</title></head><body><h1>Could not find help files.<br><br>Please set the COPASI_HELP_PATH environment variable to the absolute path that contains the html help files!</h1></body></html>";
@@ -133,8 +133,8 @@ void WizardDialog::textBrowser_anchorClicked(const QString &name, const QString 
     }
   else
     {
-      QMessageBox::warning(this, "Error", "Sorry. I don't know this link!", QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
-      std::cerr << "Unknown anchor: " << name << std::endl;
+      CQMessageBox::information(this, "Error", "Link not found",
+                                QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
     }
 }
 

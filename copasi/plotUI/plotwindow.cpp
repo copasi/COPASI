@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotwindow.cpp,v $
-   $Revision: 1.30 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/28 00:31:05 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotwindow.cpp,v $
+//   $Revision: 1.31 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/03/16 19:56:35 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -15,7 +15,6 @@
 #include <qtoolbar.h>
 #include <qprinter.h>
 #include <qfiledialog.h>
-#include <qmessagebox.h>
 #include <qcursor.h>
 #include <qregexp.h>
 
@@ -24,6 +23,7 @@
 #include "plot/CPlotSpecification.h"
 #include "COutputHandlerPlot.h"
 
+#include "UI/CQMessageBox.h"
 #include "UI/qtUtilities.h"
 
 // taken from qwt examples/bode
@@ -157,7 +157,7 @@ void PlotWindow::slotSaveData()
     {
       std::string s = "Could not save data to ";
       s += fileName.utf8();
-      QMessageBox::critical(this, "Save Error", FROM_UTF8(s), QMessageBox::Ok, QMessageBox::Cancel);
+      CQMessageBox::critical(this, "Save Error", FROM_UTF8(s), QMessageBox::Ok, QMessageBox::NoButton);
     }
 }
 

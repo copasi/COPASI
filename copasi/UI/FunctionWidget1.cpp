@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-//   $Revision: 1.146 $
+//   $Revision: 1.147 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/12 14:29:14 $
+//   $Date: 2007/03/16 19:55:37 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,7 +35,6 @@
 #include <qwidget.h>
 #include <qframe.h>
 #include <qtextbrowser.h>
-#include <qmessagebox.h>
 #include <qwidgetstack.h>
 #include <qvbox.h>
 
@@ -45,6 +44,7 @@
 
 #include "copasi.h"
 #include "listviews.h"
+#include "CQMessageBox.h"
 #include "FunctionWidget1.h"
 #include "qtUtilities.h"
 #include "parametertable.h" // just for the table item widgets
@@ -705,8 +705,8 @@ bool FunctionWidget1::saveToFunction()
           msg1.append("Following dependencies with listed Function(s) exist:\n");
           msg1.append(trees);
 
-          QMessageBox::warning(this, "Sorry, Cannot Change",
-                               msg1, "OK", 0, 0, 0, 1);
+          CQMessageBox::information(this, "Delete not possible",
+                                    msg1, "OK", 0, 0, 0, 1);
           return false;
         }
 
@@ -716,10 +716,10 @@ bool FunctionWidget1::saveToFunction()
           msg = "Unable to rename function '" + FROM_UTF8(func->getObjectName()) + "'\n"
                 + "to '" + name + "' since a function with that name already exists.";
 
-          QMessageBox::warning(this,
-                               "Unable to rename Function",
-                               msg,
-                               QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+          CQMessageBox::information(this,
+                                    "Unable to rename Function",
+                                    msg,
+                                    QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
 
           LineEdit1->setText(FROM_UTF8(func->getObjectName()));
         }
@@ -794,10 +794,10 @@ void FunctionWidget1::slotFcnDescriptionChanged()
     {
       if (CCopasiMessage::peekLastMessage().getNumber() == MCFunction + 4)
         {
-          QMessageBox::critical(this, "Function Error",
-                                CCopasiMessage::getLastMessage().getText().c_str(),
-                                QMessageBox::Ok | QMessageBox::Default,
-                                QMessageBox::NoButton);
+          CQMessageBox::critical(this, "Function Error",
+                                 CCopasiMessage::getLastMessage().getText().c_str(),
+                                 QMessageBox::Ok | QMessageBox::Default,
+                                 QMessageBox::NoButton);
           CCopasiMessage::clearDeque();
         }
 
@@ -1016,8 +1016,8 @@ void FunctionWidget1::slotCommitButtonClicked()
               msg.append(effectedValueList);
             }
 
-          QMessageBox::warning(this, "Sorry, Cannot Modify",
-                               msg, "OK", 0, 0, 0, 1);
+          CQMessageBox::information(this, "Modification not possible",
+                                    msg, "OK", 0, 0, 0, 1);
 
           return;
         }
@@ -1234,18 +1234,18 @@ void FunctionWidget1::slotDeleteButtonClicked()
           msg.append(effectedValueList);
         }
 
-      QMessageBox::warning(this, "Sorry, Cannot Delete",
-                           msg, "OK", 0, 0, 0, 1);
+      CQMessageBox::information(this, "Delete not possible",
+                                msg, "OK", 0, 0, 0, 1);
 
       return;
     }
 
   msg = "Are you sure to delete listed Function(s)?\n" + functionList;
 
-  int choice = QMessageBox::warning(this,
-                                    "CONFIRM DELETE",
-                                    msg,
-                                    "Continue", "Cancel", 0, 0, 1);
+  int choice = CQMessageBox::question(this,
+                                      "CONFIRM DELETE",
+                                      msg,
+                                      "Continue", "Cancel", 0, 1, 1);
 
   /* Check if user chooses to deleted Functions */
   switch (choice)
@@ -1267,7 +1267,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
         break;
       }
 
-    case 1:                                                    // No or Escape
+    default:                                                    // No or Escape
       break;
     }
 }

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TableDefinition.cpp,v $
-//   $Revision: 1.55 $
+//   $Revision: 1.56 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/07 14:25:37 $
+//   $Date: 2007/03/16 19:55:37 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,19 +14,19 @@
 
 #include <qlayout.h>
 #include <qwidget.h>
-#include <qmessagebox.h>
 #include <qfont.h>
 #include <qpushbutton.h>
 #include <qaction.h>
 
 //#include "MyTable.h"
-#include "model/CModel.h"
 #include "listviews.h"
+#include "CQMessageBox.h"
+#include "qtUtilities.h"
+#include "model/CModel.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CKeyFactory.h"
 #include "report/CReportDefinitionVector.h"
 #include "report/CCopasiStaticString.h"
-#include "qtUtilities.h"
 
 #include "trajectory/CTrajectoryTask.h"
 #include "steadystate/CSteadyStateTask.h"
@@ -139,12 +139,12 @@ void TableDefinition::deleteObjects(const std::vector<std::string> & keys)
 
       msg = msg.remove(msg.length() - 2, 2);
 
-      if (QMessageBox::question(this,
-                                "CONFIRM DELETE",
-                                msg,
-                                QMessageBox::Ok,
-                                QMessageBox::Cancel | QMessageBox::Default | QMessageBox::Escape,
-                                QMessageBox::NoButton) == QMessageBox::Cancel)
+      if (CQMessageBox::question(this,
+                                 "CONFIRM DELETE",
+                                 msg,
+                                 QMessageBox::Ok,
+                                 QMessageBox::Cancel | QMessageBox::Default | QMessageBox::Escape,
+                                 QMessageBox::NoButton) == 1)
         return;
 
       for (it = TaskKeys.begin(); it != end; ++it)

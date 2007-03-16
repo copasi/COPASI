@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExperimentData.ui.h,v $
-//   $Revision: 1.29 $
+//   $Revision: 1.30 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/13 19:56:56 $
+//   $Date: 2007/03/16 19:55:37 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,6 +23,7 @@
 #include "UI/CopasiFileDialog.h"
 #include "UI/CQValidator.h"
 #include "UI/qtUtilities.h"
+#include "UI/CQMessageBox.h"
 
 #include "parameterFitting/CExperimentSet.h"
 #include "parameterFitting/CExperiment.h"
@@ -1240,7 +1241,7 @@ bool CQExperimentData::saveTable(CExperiment * pExperiment)
     {
       CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 3);
 
-      QMessageBox::warning(this, "Calculation Error", CCopasiMessage::getAllMessageText().c_str(), QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+      CQMessageBox::information(this, "Specification Error", CCopasiMessage::getAllMessageText().c_str(), QMessageBox::Ok | QMessageBox::Default | QMessageBox::Escape, QMessageBox::NoButton);
       CCopasiMessage::clearDeque();
     }
 

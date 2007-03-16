@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-   $Revision: 1.65 $
-   $Name:  $
-   $Author: gauges $
-   $Date: 2006/10/08 10:25:01 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
+//   $Revision: 1.66 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/03/16 19:55:37 $
+// End CVS Header
 
-// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -14,20 +14,19 @@
 #include <sstream>
 #include <mathematics.h>
 
-#include "qhbox.h"
-#include "qvbox.h"
-#include "qlistbox.h"
-#include "qcheckbox.h"
-#include "qpushbutton.h"
-#include "qstring.h"
-#include "qslider.h"
-#include "qlayout.h"
-#include "qlabel.h"
-#include "qobjectlist.h"
-#include "qtooltip.h"
-#include "qpopupmenu.h"
-#include "qlayout.h"
-#include "qmessagebox.h"
+#include <qhbox.h>
+#include <qvbox.h>
+#include <qlistbox.h>
+#include <qcheckbox.h>
+#include <qpushbutton.h>
+#include <qstring.h>
+#include <qslider.h>
+#include <qlayout.h>
+#include <qlabel.h>
+#include <qobjectlist.h>
+#include <qtooltip.h>
+#include <qpopupmenu.h>
+#include <qlayout.h>
 
 #include "SliderDialog.h"
 #include "copasiui3window.h"
@@ -35,14 +34,15 @@
 #include "SteadyStateWidget.h"
 #include "ScanWidget.h"
 #include "SliderSettingsDialog.h"
-#include "xml/CCopasiXMLInterface.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
+#include "CQMessageBox.h"
 #include "CopasiSlider.h"
 #include "mathematics.h"
+#include "qtUtilities.h"
+#include "xml/CCopasiXMLInterface.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 #include "utilities/CCopasiTask.h"
 #include "utilities/CCopasiProblem.h"
 #include "report/CCopasiObjectName.h"
-#include "qtUtilities.h"
 #include "trajectory/CTrajectoryTask.h"
 #include "steadystate/CSteadyStateTask.h"
 #include "steadystate/CMCATask.h"
@@ -204,7 +204,9 @@ void SliderDialog::createNewSlider()
           else
             {
               // show a message dialog
-              if (QMessageBox::information(NULL, "Slider Exists", "A slider for this object already exists.\nDo you want to update this slider?", QMessageBox::Yes | QMessageBox::Default, QMessageBox::No | QMessageBox::Escape, QMessageBox::NoButton) == QMessageBox::Yes)
+              if (CQMessageBox::question(NULL, "Slider Exists",
+                                         "A slider for this object already exists. Do you want to update this slider?",
+                                         QMessageBox::Yes | QMessageBox::Default, QMessageBox::No | QMessageBox::Escape, QMessageBox::NoButton) == 0)
                 {
                   // update the slider
                   this->currSlider->update();
@@ -468,7 +470,9 @@ void SliderDialog::fillSliderBox()
         }
       if (issueWarning)
         {
-          QMessageBox::warning(NULL, "Invalid Slider", "One or more sliders are invalid\n and have been disabled!", QMessageBox::Ok, QMessageBox::NoButton);
+          CQMessageBox::information(NULL, "Invalid Slider",
+                                    "One or more sliders are invalid and have been disabled!",
+                                    QMessageBox::Ok, QMessageBox::NoButton);
         }
 
       delete pVector;
@@ -647,7 +651,9 @@ std::vector<CSlider*>* SliderDialog::getCSlidersForObject(CCopasiObject* pObject
           {
             if (!sliderDeleted)
               {
-                QMessageBox::information(NULL, "Missing slider objects", "One or more objects that had\nsliders defined have been\ndeleted. Sliders will therefore\nbe deleted as well.", QMessageBox::Ok | QMessageBox::Default);
+                CQMessageBox::information(NULL, "Missing slider objects",
+                                          "One or more objects that had sliders defined have been deleted. Sliders will therefore be deleted as well.",
+                                          QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
               }
             pSliderList->remove(i - 1);
             sliderDeleted = true;

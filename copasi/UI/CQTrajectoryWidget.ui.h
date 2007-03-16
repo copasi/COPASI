@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQTrajectoryWidget.ui.h,v $
-   $Revision: 1.10 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/11/03 19:48:48 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQTrajectoryWidget.ui.h,v $
+//   $Revision: 1.11 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/03/16 19:55:37 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -22,14 +22,13 @@
  ** destructor.
  *****************************************************************************/
 
-#include <qmessagebox.h>
-
 #include "copasi.h"
 
 #include "UI/CQTaskBtnWidget.h"
 #include "UI/CQTaskHeaderWidget.h"
 #include "UI/CProgressBar.h"
 #include "UI/CQValidator.h"
+#include "UI/CQMessageBox.h"
 #include "UI/qtUtilities.h"
 
 #include "trajectory/CTrajectoryTask.h"
@@ -83,11 +82,11 @@ void CQTrajectoryWidget::slotDuration()
     }
   catch (...)
     {
-      QMessageBox::warning(this, QString("File Warning"),
-                           FROM_UTF8(CCopasiMessage::getAllMessageText()),
-                           QMessageBox::Ok,
-                           QMessageBox::NoButton,
-                           QMessageBox::NoButton);
+      CQMessageBox::information(this, QString("Information"),
+                                FROM_UTF8(CCopasiMessage::getAllMessageText()),
+                                QMessageBox::Ok,
+                                QMessageBox::NoButton,
+                                QMessageBox::NoButton);
     }
 
   mpEditIntervalSize->setText(QString::number(mpTrajectoryProblem->getStepSize()));
@@ -107,11 +106,11 @@ void CQTrajectoryWidget::slotIntervalSize()
 
   catch (...)
     {
-      QMessageBox::warning(this, QString("File Warning"),
-                           FROM_UTF8(CCopasiMessage::getAllMessageText()),
-                           QMessageBox::Ok,
-                           QMessageBox::NoButton,
-                           QMessageBox::NoButton);
+      CQMessageBox::information(this, QString("Information"),
+                                FROM_UTF8(CCopasiMessage::getAllMessageText()),
+                                QMessageBox::Ok,
+                                QMessageBox::NoButton,
+                                QMessageBox::NoButton);
     }
 
   mpEditIntervalSize->setText(QString::number(mpTrajectoryProblem->getStepSize()));
@@ -130,11 +129,11 @@ void CQTrajectoryWidget::slotIntervals()
     }
   catch (...)
     {
-      QMessageBox::warning(this, QString("File Warning"),
-                           FROM_UTF8(CCopasiMessage::getAllMessageText()),
-                           QMessageBox::Ok,
-                           QMessageBox::NoButton,
-                           QMessageBox::NoButton);
+      CQMessageBox::information(this, QString("Information"),
+                                FROM_UTF8(CCopasiMessage::getAllMessageText()),
+                                QMessageBox::Ok,
+                                QMessageBox::NoButton,
+                                QMessageBox::NoButton);
     }
 
   mpEditIntervalSize->setText(QString::number(mpTrajectoryProblem->getStepSize()));

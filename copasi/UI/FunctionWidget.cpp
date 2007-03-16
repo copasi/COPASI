@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/FunctionWidget.cpp,v $
-//   $Revision: 1.69 $
+//   $Revision: 1.70 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/07 14:25:37 $
+//   $Date: 2007/03/16 19:55:37 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,18 +14,18 @@
 
 #include <qlayout.h>
 #include <qwidget.h>
-#include <qmessagebox.h>
 #include <qfont.h>
 #include <qpushbutton.h>
 #include <qaction.h>
 
 //#include "MyTable.h"
-#include "function/CFunctionDB.h"
 #include "listviews.h"
 #include "DataModelGUI.h"
-#include "report/CKeyFactory.h"
+#include "CQMessageBox.h"
 #include "qtUtilities.h"
+#include "report/CKeyFactory.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "function/CFunctionDB.h"
 #include "model/CModel.h"
 
 std::vector<const CCopasiObject*> FunctionWidget::getObjects() const
@@ -96,10 +96,10 @@ void FunctionWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj)
       QString msg;
       msg = "Type must not be changed for '" + FROM_UTF8(pFunc->getObjectName()) + "'.\n";
 
-      QMessageBox::warning(this,
-                           "Unable to change Function Type",
-                           msg,
-                           QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+      CQMessageBox::information(this,
+                                "Unable to change Function Type",
+                                msg,
+                                QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
     }
   if (pFunc->getInfix() != (const char *) table->text(row, 3).utf8())
     {
@@ -108,10 +108,10 @@ void FunctionWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj)
           QString msg;
           msg = "Incorrect  mathematical description'" + FROM_UTF8(pFunc->getObjectName()) + "'.\n";
 
-          QMessageBox::warning(this,
-                               "Unable to change mathematical description",
-                               msg,
-                               QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+          CQMessageBox::information(this,
+                                    "Unable to change mathematical description",
+                                    msg,
+                                    QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
         }
     }
 }
@@ -325,18 +325,18 @@ void FunctionWidget::deleteObjects(const std::vector<std::string> & keys)
           msg.append(effectedValueList);
         }
 
-      QMessageBox::warning(this, "Sorry, Cannot Delete",
-                           msg, "OK", 0, 0, 0, 1);
+      CQMessageBox::information(this, "Delete not possible",
+                                msg, "OK", 0, 0, 0, 1);
 
       return;
     }
 
   msg = "Are you sure to delete listed Function(s)?\n" + functionList;
 
-  int choice = QMessageBox::warning(this,
-                                    "CONFIRM DELETE",
-                                    msg,
-                                    "Continue", "Cancel", 0, 0, 1);
+  int choice = CQMessageBox::question(this,
+                                      "CONFIRM DELETE",
+                                      msg,
+                                      "Continue", "Cancel", 0, 1, 1);
 
   switch (choice)
     {
@@ -352,7 +352,7 @@ void FunctionWidget::deleteObjects(const std::vector<std::string> & keys)
         mChanged = true;
         break;
       }
-    case 1:                          // No or Escape
+    default:                          // No or Escape
       break;
     }
 }

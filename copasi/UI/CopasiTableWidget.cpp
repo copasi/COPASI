@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.cpp,v $
-//   $Revision: 1.46 $
+//   $Revision: 1.47 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/07 14:25:37 $
+//   $Date: 2007/03/16 19:55:37 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,17 +14,17 @@
 
 #include <qlayout.h>
 #include <qwidget.h>
-#include <qmessagebox.h>
 #include <qfont.h>
 #include <qpushbutton.h>
 #include <qaction.h>
 #include <qtable.h>
 
-#include "model/CModel.h"
 #include "listviews.h"
+#include "qtUtilities.h"
+#include "CQMessageBox.h"
+#include "model/CModel.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CKeyFactory.h"
-#include "qtUtilities.h"
 
 CopasiTableWidget::CopasiTableWidget(QWidget *parent, bool ro, const char * name, WFlags f)
     : CopasiWidget(parent, name, f)
@@ -237,10 +237,10 @@ void CopasiTableWidget::saveTable()
                         + "New object renamed to '"
                         + FROM_UTF8(pObj->getObjectName()) + "'.";
 
-                  QMessageBox::warning(this,
-                                       "Unable to create",
-                                       msg,
-                                       QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+                  CQMessageBox::information(this,
+                                            "Unable to create",
+                                            msg,
+                                            QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
                 }
               tableLineToObject(j, pObj);
               // ListViews::notify(mOT, ListViews::ADD, pObj->getKey());
@@ -270,10 +270,10 @@ void CopasiTableWidget::saveTable()
                         + "to '" + table->text(j, 1)
                         + "' since an object with that name already exists.";
 
-                  QMessageBox::warning(this,
-                                       "Unable to rename",
-                                       msg,
-                                       QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+                  CQMessageBox::information(this,
+                                            "Unable to rename",
+                                            msg,
+                                            QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
                   table->setCurrentCell(j, 1);
                 }
               else

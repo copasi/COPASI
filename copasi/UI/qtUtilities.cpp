@@ -1,21 +1,21 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/qtUtilities.cpp,v $
-   $Revision: 1.11 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/06 16:03:42 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/qtUtilities.cpp,v $
+//   $Revision: 1.12 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/03/16 19:55:37 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #include <qstring.h>
 #include <qfileinfo.h>
-#include <qmessagebox.h>
 
 #include "copasi.h"
 #include "qtUtilities.h"
+#include "CQMessageBox.h"
 #include "utilities/CCopasiParameterGroup.h"
 #include "utilities/CDirEntry.h"
 
@@ -162,18 +162,18 @@ C_INT32 checkSelection(const QString & file)
   if (QFileInfo(file).exists())
     {
       if (CDirEntry::isWritable((const char *)file.utf8()))
-        return QMessageBox::question(NULL, "File exists!",
-                                     "Overwrite existing file " + file + "?",
-                                     QMessageBox::Yes,
-                                     QMessageBox::No | QMessageBox::Default,
-                                     QMessageBox::Cancel | QMessageBox::Escape);
+        return CQMessageBox::question(NULL, "File exists!",
+                                      "Overwrite existing file " + file + "?",
+                                      QMessageBox::Yes,
+                                      QMessageBox::No | QMessageBox::Default,
+                                      QMessageBox::Cancel | QMessageBox::Escape);
       else
         {
-          QMessageBox::information(NULL, "File read-only",
-                                   "The file is read-only. Please select another file!",
-                                   QMessageBox::Ok | QMessageBox::Default | QMessageBox::Escape,
-                                   QMessageBox::NoButton,
-                                   QMessageBox::NoButton);
+          CQMessageBox::information(NULL, "File read-only",
+                                    "The file is read-only. Please select another file!",
+                                    QMessageBox::Ok | QMessageBox::Default | QMessageBox::Escape,
+                                    QMessageBox::NoButton,
+                                    QMessageBox::NoButton);
           return QMessageBox::No;
         }
     }
