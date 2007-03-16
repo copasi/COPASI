@@ -179,6 +179,10 @@ SOURCE=.\CQMCAWidget.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CQMessageBox.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CQModelValue.cpp
 # End Source File
 # Begin Source File
@@ -631,6 +635,14 @@ SOURCE=.\CQMCAWidget.ui.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\CQMessageBox.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQMessageBox.ui.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\CQModelValue.h
 # End Source File
 # Begin Source File
@@ -1065,6 +1077,10 @@ SOURCE=.\CQLyapWidget.ui
 # Begin Source File
 
 SOURCE=.\CQMCAWidget.ui
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQMessageBox.ui
 # End Source File
 # Begin Source File
 
