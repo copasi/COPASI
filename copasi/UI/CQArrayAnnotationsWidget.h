@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.h,v $
-   $Revision: 1.1 $
-   $Name:  $
-   $Author: ssahle $
-   $Date: 2007/01/10 17:07:44 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.h,v $
+//   $Revision: 1.2 $
+//   $Name:  $
+//   $Author: ssahle $
+//   $Date: 2007/03/17 22:12:47 $
+// End CVS Header
 
-// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -190,7 +190,7 @@ class CQArrayAnnotationsWidget : public QVBox
     /**
      * set an algorithm for color coding. If cs=NULL no color coding is performed
      */
-    void setColorCoding(CColorScale * cs) {mpColorScale = cs;};
+    void setColorCoding(CColorScale * cs);
 
     /**
      * returns the color coding algorithm

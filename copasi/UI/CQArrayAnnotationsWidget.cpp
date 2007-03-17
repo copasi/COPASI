@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/02/12 14:29:14 $
+//   $Author: ssahle $
+//   $Date: 2007/03/17 22:12:47 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -271,6 +271,13 @@ CQArrayAnnotationsWidget::~CQArrayAnnotationsWidget()
     delete mpColorScale;
 }
 
+void CQArrayAnnotationsWidget::setColorCoding(CColorScale * cs)
+{
+  if (mpColorScale)
+    delete mpColorScale;
+  mpColorScale = cs;
+}
+
 void CQArrayAnnotationsWidget::setArrayAnnotation(const CArrayAnnotation * pArray)
 {
   mpArray = pArray;
@@ -310,6 +317,12 @@ void CQArrayAnnotationsWidget::setArrayAnnotation(const CArrayAnnotation * pArra
       mpSelectionTable->setText(1, 0, "Columns: ");
       mpSelectionTable->setText(1, 1, FROM_UTF8(mpArray->getDimensionDescription(1)));
       mpSelectionTable->adjustColumn(0);
+      //mpSelectionTable->adjustRow(0);
+      //mpSelectionTable->adjustRow(1);
+
+      //std::cout << "width: " << mpSelectionTable->width()<< " height: " <<mpSelectionTable->height() << std::endl;
+      //std::cout << "cwidth: " << mpSelectionTable->contentsWidth()<< " cheight: " <<mpSelectionTable->contentsHeight() << std::endl;
+      //mpSelectionTable->resize(5, 5);
 
       fillTable(0, 1, index);
     }
@@ -327,6 +340,7 @@ void CQArrayAnnotationsWidget::initSelectionTable()
   mpSelectionTable->setColumnReadOnly(1, false);
 
   C_INT32 i, imax = mpArray->dimensionality();
+  mpSelectionTable->setNumRows(0);
   mpSelectionTable->setNumRows(imax);
 
   for (i = 0; i < imax; ++i)
@@ -340,6 +354,7 @@ void CQArrayAnnotationsWidget::initSelectionTable()
       combolist.prepend("In rows");
 
       mpSelectionTable->setItem(i, 1, new QComboTableItem(mpSelectionTable, combolist));
+      //mpSelectionTable->adjustRow(i);
 
       //set first combobox to "In rows", second to "In colums" and all other to the
       //first object in the annotations list
