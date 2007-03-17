@@ -1,20 +1,20 @@
-/* Begin CVS Header
-   $Source: /home/cvs/copasi_dev/copasi/CopasiUI/CMCAResultSubwidget.h,v $
-   $Revision: 1.7 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/03/02 02:21:43 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /home/cvs/copasi_dev/cvs_admin/addHeader,v $
+//   $Revision: 1.3 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/01/12 14:07:01 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CMCAResultSubwidget.ui'
  **
- ** Created: Thu Feb 23 13:33:29 2006
- **      by: The User Interface Compiler ($Id: CMCAResultSubwidget.h,v 1.7 2006/03/02 02:21:43 shoops Exp $)
+ ** Created: Sa MÃ¤r 17 22:03:57 2007
+ **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.5   edited Aug 31 12:13 $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -23,17 +23,18 @@
 #define CMCARESULTSUBWIDGET_H
 
 #include <qvariant.h>
+#include <qpixmap.h>
 #include <qwidget.h>
 
 class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
 class QSpacerItem;
+class CQArrayAnnotationsWidget;
 class QLabel;
 class QComboBox;
 class QPushButton;
 class QTabWidget;
-class QTable;
 class CMCAMethod;
 
 class CMCAResultSubwidget : public QWidget
@@ -49,11 +50,11 @@ class CMCAResultSubwidget : public QWidget
     QPushButton* mSaveButton;
     QTabWidget* mTabWidget;
     QWidget* tab;
-    QTable* mTableElasticities;
+    CQArrayAnnotationsWidget* mpArrayElasticities;
     QWidget* tab_2;
-    QTable* mTableFCC;
+    CQArrayAnnotationsWidget* mpArrayFCC;
     QWidget* TabPage;
-    QTable* mTableCCC;
+    CQArrayAnnotationsWidget* mpArrayCCC;
 
   public slots:
     virtual void loadAll(const CMCAMethod * mcaMethod);
@@ -65,9 +66,9 @@ class CMCAResultSubwidget : public QWidget
   protected:
     QVBoxLayout* CMCAResultSubwidgetLayout;
     QHBoxLayout* layout3;
-    QVBoxLayout* tabLayout;
-    QVBoxLayout* tabLayout_2;
-    QVBoxLayout* TabPageLayout;
+    QHBoxLayout* tabLayout;
+    QGridLayout* tabLayout_2;
+    QGridLayout* TabPageLayout;
 
   protected slots:
     virtual void languageChange();
@@ -78,6 +79,8 @@ class CMCAResultSubwidget : public QWidget
 
   private:
     const CMCAMethod * mMCAMethod;
+
+    QPixmap image0;
   };
 
 #endif // CMCARESULTSUBWIDGET_H

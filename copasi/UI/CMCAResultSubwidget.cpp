@@ -1,20 +1,20 @@
-/* Begin CVS Header
-   $Source: /home/cvs/copasi_dev/copasi/CopasiUI/CMCAResultSubwidget.cpp,v $
-   $Revision: 1.6 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/03/02 02:21:43 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /home/cvs/copasi_dev/cvs_admin/addHeader,v $
+//   $Revision: 1.3 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/01/12 14:07:01 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CMCAResultSubwidget.ui'
  **
- ** Created: Thu Feb 23 13:33:29 2006
- **      by: The User Interface Compiler ($Id: CMCAResultSubwidget.cpp,v 1.6 2006/03/02 02:21:43 shoops Exp $)
+ ** Created: Sa MÃ¤r 17 22:06:35 2007
+ **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.5   edited Aug 31 12:13 $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -26,10 +26,10 @@
 #include <qlabel.h>
 #include <qcombobox.h>
 #include <qtabwidget.h>
-#include <qtable.h>
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
+#include "CQArrayAnnotationsWidget.h"
 #include "CMCAResultSubwidget.ui.h"
 
 /*
@@ -60,34 +60,27 @@ CMCAResultSubwidget::CMCAResultSubwidget(QWidget* parent, const char* name, WFla
   mTabWidget = new QTabWidget(this, "mTabWidget");
 
   tab = new QWidget(mTabWidget, "tab");
-  tabLayout = new QVBoxLayout(tab, 11, 6, "tabLayout");
+  tabLayout = new QHBoxLayout(tab, 11, 6, "tabLayout");
 
-  mTableElasticities = new QTable(tab, "mTableElasticities");
-  mTableElasticities->setNumRows(0);
-  mTableElasticities->setNumCols(0);
-  mTableElasticities->setReadOnly(TRUE);
-  tabLayout->addWidget(mTableElasticities);
-  mTabWidget->insertTab(tab, QString(""));
+  mpArrayElasticities = new CQArrayAnnotationsWidget(tab, "mpArrayElasticities");
+  tabLayout->addWidget(mpArrayElasticities);
+  mTabWidget->insertTab(tab, QString::fromLatin1(""));
 
   tab_2 = new QWidget(mTabWidget, "tab_2");
-  tabLayout_2 = new QVBoxLayout(tab_2, 11, 6, "tabLayout_2");
+  tabLayout_2 = new QGridLayout(tab_2, 1, 1, 11, 6, "tabLayout_2");
 
-  mTableFCC = new QTable(tab_2, "mTableFCC");
-  mTableFCC->setNumRows(0);
-  mTableFCC->setNumCols(0);
-  mTableFCC->setReadOnly(TRUE);
-  tabLayout_2->addWidget(mTableFCC);
-  mTabWidget->insertTab(tab_2, QString(""));
+  mpArrayFCC = new CQArrayAnnotationsWidget(tab_2, "mpArrayFCC");
+
+  tabLayout_2->addWidget(mpArrayFCC, 0, 0);
+  mTabWidget->insertTab(tab_2, QString::fromLatin1(""));
 
   TabPage = new QWidget(mTabWidget, "TabPage");
-  TabPageLayout = new QVBoxLayout(TabPage, 11, 6, "TabPageLayout");
+  TabPageLayout = new QGridLayout(TabPage, 1, 1, 11, 6, "TabPageLayout");
 
-  mTableCCC = new QTable(TabPage, "mTableCCC");
-  mTableCCC->setNumRows(0);
-  mTableCCC->setNumCols(0);
-  mTableCCC->setReadOnly(TRUE);
-  TabPageLayout->addWidget(mTableCCC);
-  mTabWidget->insertTab(TabPage, QString(""));
+  mpArrayCCC = new CQArrayAnnotationsWidget(TabPage, "mpArrayCCC");
+
+  TabPageLayout->addWidget(mpArrayCCC, 0, 0);
+  mTabWidget->insertTab(TabPage, QString::fromLatin1(""));
   CMCAResultSubwidgetLayout->addWidget(mTabWidget);
   languageChange();
   resize(QSize(580, 422).expandedTo(minimumSizeHint()));
