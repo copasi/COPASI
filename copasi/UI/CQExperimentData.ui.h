@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExperimentData.ui.h,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.31 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/03/16 19:55:37 $
+//   $Author: ssahle $
+//   $Date: 2007/03/17 22:01:12 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1118,7 +1118,7 @@ void CQExperimentData::slotTypeChanged(int row)
   bool BtnEnabled = true;
   unsigned C_INT32 i, imax = mpTable->numRows();
 
-  CCopasiObjectName CN = (const char *) mpTable->text(row, COL_OBJECT_HIDDEN).utf8();
+  CCopasiObjectName CN = CCopasiObjectName((const char *) mpTable->text(row, COL_OBJECT_HIDDEN).utf8());
 
   switch (NewType)
     {
