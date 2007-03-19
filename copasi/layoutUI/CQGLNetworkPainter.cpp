@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/03/12 16:22:52 $
+//   $Author: urost $
+//   $Date: 2007/03/19 09:22:19 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,6 +22,7 @@
 #include <qpoint.h>
 #include <qpixmap.h>
 #include <qimage.h>
+#include <qcolor.h>
 
 //#include "FTFont.h"
 //#include "FTGLPixmapFont.h"
@@ -208,7 +209,7 @@ void CQGLNetworkPainter::drawGraph()
 // draw node as circle
 void CQGLNetworkPainter::drawNode(CLMetabGlyph &n)
 {
-
+  glColor3f(1.0f, 0.0f, 0.0f); // red
   GLUquadricObj *qobj;
   qobj = gluNewQuadric();
   //cout << "draw node at: " << n.getX() <<  "  " << n.getY() << std::endl;
@@ -593,7 +594,6 @@ void CQGLNetworkPainter::initializeGraphPainter()
   mFontname = "Helvetica";
   mFontsize = 12;
   mFontsizeDouble = 12.0; // to avoid rounding errors due to zooming in and out
-  mLabelShape = RECTANGLE;
   createActions();
 }
 
@@ -602,6 +602,8 @@ void CQGLNetworkPainter::initializeGL()
   //std::cout << "initialize GL" << std::endl;
   // Set up the rendering context, define display lists etc.:
 
+  glClearColor(1.0, 1.0, 0.94, 0.0);  // background ivory
+  //glClearColor(QColor(255,255,240));
   glClearColor(1.0f, 1.0f, 0.94f, 0.0f);  // background ivory
   //glClearColor(QColor(255,255,240,QColor::Rgb);
 
