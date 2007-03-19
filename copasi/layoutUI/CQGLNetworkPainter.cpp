@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/03/19 09:22:19 $
+//   $Date: 2007/03/19 10:01:20 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -378,7 +378,7 @@ void CQGLNetworkPainter::drawStringAt(std::string s, C_FLOAT64 x, C_FLOAT64 y, C
       h2 = round2powN(bbox.height() + 2);
     }
 
-  QRect c(0, -3, w2, h2);
+  QRect c(0, 0, w2, h2);
 
   //  QBitmap bm(w2,h2,true);
   //  QPainter painter(&bm);
@@ -589,6 +589,7 @@ void CQGLNetworkPainter::testOpenGL()
 
 void CQGLNetworkPainter::initializeGraphPainter()
 {
+  mLabelShape = RECTANGLE;
   mgraphMin = CLPoint(0.0, 0.0);
   mgraphMax = CLPoint(250.0, 250.0);
   mFontname = "Helvetica";
@@ -602,7 +603,7 @@ void CQGLNetworkPainter::initializeGL()
   //std::cout << "initialize GL" << std::endl;
   // Set up the rendering context, define display lists etc.:
 
-  glClearColor(1.0, 1.0, 0.94, 0.0);  // background ivory
+  //glClearColor(1.0, 1.0, 0.94, 0.0);  // background ivory
   //glClearColor(QColor(255,255,240));
   glClearColor(1.0f, 1.0f, 0.94f, 0.0f);  // background ivory
   //glClearColor(QColor(255,255,240,QColor::Rgb);
