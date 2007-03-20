@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-//   $Revision: 1.47 $
+//   $Revision: 1.48 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/23 18:49:06 $
+//   $Date: 2007/03/20 13:35:56 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,6 +21,7 @@
 
 #include <float.h>
 #include <limits>
+#include <algorithm>
 
 #include "scrollzoomer.h"
 
@@ -310,6 +311,8 @@ bool CopasiPlot::compile(std::vector< CCopasiContainer * > listOfContainer)
   imax = mpPlotSpecification->getItems().size();
   mDataIndex.resize(imax);
 
+  std::vector< std::vector < const CCopasiObject * > >::iterator itX;
+
   for (i = 0; i < imax; ++i)
     {
       CPlotItem * pItem = mpPlotSpecification->getItems()[i];
@@ -330,6 +333,31 @@ bool CopasiPlot::compile(std::vector< CCopasiContainer * > listOfContainer)
           else
             CCopasiMessage(CCopasiMessage::WARNING, MCCopasiTask + 6,
                            pItem->getChannels()[j].c_str());
+
+          // Remember the actual order for saving the data.
+          // Note, we are currently only dealing with 2D curves and histograms.
+          // In addition the data is not normallized. The same data column may appear
+          // multiple times, e.g. as X value and as Y value for another curve.
+          if (j == 0)
+            {
+              // We have an X value
+              for (itX = mSaveCurveObjects.begin(); itX != mSaveCurveObjects.end(); ++itX)
+                if (*itX->begin() == pObj) break;
+
+              if (itX == mSaveCurveObjects.end())
+                {
+                  std::vector < const CCopasiObject * > NewX;
+                  NewX.push_back(pObj);
+
+                  mSaveCurveObjects.push_back(NewX);
+                  itX = mSaveCurveObjects.end() - 1;
+                }
+
+              if (mCurveTypes[i] == CPlotItem::histoItem1d)
+                mSaveHistogramObjects.push_back(pObj);
+            }
+          else
+            itX->push_back(pObj);
 
           Inserted = ActivityObjects[ItemActivity].insert(pObj);
 
@@ -583,11 +611,19 @@ bool CopasiPlot::saveData(const std::string & filename)
   // Write the table header
   fs << "# ";
 
-  std::set< const CCopasiObject * >::iterator it = mObjects.begin();
-  std::set< const CCopasiObject * >::iterator end = mObjects.end();
+  std::vector< std::vector < const CCopasiObject * > >::const_iterator itX;
+  std::vector< std::vector < const CCopasiObject * > >::const_iterator endX =
+    mSaveCurveObjects.end();
 
-  for (; it != end; ++it)
-    fs << (*it)->getObjectDisplayName() << "\t";
+  std::vector < const CCopasiObject * >::const_iterator it;
+  std::vector < const CCopasiObject * >::const_iterator end;
+
+  for (itX = mSaveCurveObjects.begin(); itX != endX; ++itX)
+    for (it = itX->begin(), end = itX->end(); it != end; ++it)
+      if (*it != NULL)
+        fs << (*it)->getObjectDisplayName() << "\t";
+      else
+        fs << "Not found\t";
 
   fs << "\n";
 
@@ -608,35 +644,36 @@ bool CopasiPlot::saveData(const std::string & filename)
 
   if (mDataBefore)
     {
-      for (i = 0, it = mObjects.begin(); it != end; ++it, i++)
-        {
-          if ((itActivity = mObjectIndex.find(COutputInterface::BEFORE)) != mObjectIndex.end() &&
-              (itObject = itActivity->second.find(*it)) != itActivity->second.end())
-            {
-              Data[i] = mData[COutputInterface::BEFORE][itObject->second];
-              continue;
-            }
-          if ((itActivity = mObjectIndex.find((COutputInterface::Activity) (COutputInterface::BEFORE | COutputInterface::DURING))) != mObjectIndex.end() &&
-              (itObject = itActivity->second.find(*it)) != itActivity->second.end())
-            {
-              Data[i] = mData[COutputInterface::BEFORE | COutputInterface::DURING][itObject->second];
-              continue;
-            }
-          if ((itActivity = mObjectIndex.find((COutputInterface::Activity) (COutputInterface::BEFORE | COutputInterface::AFTER))) != mObjectIndex.end() &&
-              (itObject = itActivity->second.find(*it)) != itActivity->second.end())
-            {
-              Data[i] = mData[COutputInterface::BEFORE | COutputInterface::AFTER][itObject->second];
-              continue;
-            }
-          if ((itActivity = mObjectIndex.find((COutputInterface::Activity) (COutputInterface::BEFORE | COutputInterface::DURING | COutputInterface::AFTER))) != mObjectIndex.end() &&
-              (itObject = itActivity->second.find(*it)) != itActivity->second.end())
-            {
-              Data[i] = mData[COutputInterface::BEFORE | COutputInterface::DURING | COutputInterface::AFTER][itObject->second];
-              continue;
-            }
+      for (itX = mSaveCurveObjects.begin(), i = 0; itX != endX; ++itX)
+        for (it = itX->begin(), end = itX->end(); it != end; ++it, ++i)
+          {
+            if ((itActivity = mObjectIndex.find(COutputInterface::BEFORE)) != mObjectIndex.end() &&
+                (itObject = itActivity->second.find(*it)) != itActivity->second.end())
+              {
+                Data[i] = mData[COutputInterface::BEFORE][itObject->second];
+                continue;
+              }
+            if ((itActivity = mObjectIndex.find((COutputInterface::Activity) (COutputInterface::BEFORE | COutputInterface::DURING))) != mObjectIndex.end() &&
+                (itObject = itActivity->second.find(*it)) != itActivity->second.end())
+              {
+                Data[i] = mData[COutputInterface::BEFORE | COutputInterface::DURING][itObject->second];
+                continue;
+              }
+            if ((itActivity = mObjectIndex.find((COutputInterface::Activity) (COutputInterface::BEFORE | COutputInterface::AFTER))) != mObjectIndex.end() &&
+                (itObject = itActivity->second.find(*it)) != itActivity->second.end())
+              {
+                Data[i] = mData[COutputInterface::BEFORE | COutputInterface::AFTER][itObject->second];
+                continue;
+              }
+            if ((itActivity = mObjectIndex.find((COutputInterface::Activity) (COutputInterface::BEFORE | COutputInterface::DURING | COutputInterface::AFTER))) != mObjectIndex.end() &&
+                (itObject = itActivity->second.find(*it)) != itActivity->second.end())
+              {
+                Data[i] = mData[COutputInterface::BEFORE | COutputInterface::DURING | COutputInterface::AFTER][itObject->second];
+                continue;
+              }
 
-          Data[i] = NULL;
-        }
+            Data[i] = NULL;
+          }
 
       for (i = 0; i < mDataBefore; i++)
         {
@@ -652,39 +689,40 @@ bool CopasiPlot::saveData(const std::string & filename)
 
   if (mDataDuring)
     {
-      for (i = 0, it = mObjects.begin(); it != end; ++it, i++)
-        {
-          if ((itActivity = mObjectIndex.find(COutputInterface::DURING)) != mObjectIndex.end() &&
-              (itObject = itActivity->second.find(*it)) != itActivity->second.end())
-            {
-              Data[i] = mData[COutputInterface::DURING][itObject->second];
-              Offset[i] = 0;
-              continue;
-            }
-          if ((itActivity = mObjectIndex.find((COutputInterface::Activity) (COutputInterface::BEFORE | COutputInterface::DURING))) != mObjectIndex.end() &&
-              (itObject = itActivity->second.find(*it)) != itActivity->second.end())
-            {
-              Data[i] = mData[COutputInterface::BEFORE | COutputInterface::DURING][itObject->second];
-              Offset[i] = mDataBefore;
-              continue;
-            }
-          if ((itActivity = mObjectIndex.find((COutputInterface::Activity) (COutputInterface::DURING | COutputInterface::AFTER))) != mObjectIndex.end() &&
-              (itObject = itActivity->second.find(*it)) != itActivity->second.end())
-            {
-              Data[i] = mData[COutputInterface::DURING | COutputInterface::AFTER][itObject->second];
-              Offset[i] = 0;
-              continue;
-            }
-          if ((itActivity = mObjectIndex.find((COutputInterface::Activity) (COutputInterface::BEFORE | COutputInterface::DURING | COutputInterface::AFTER))) != mObjectIndex.end() &&
-              (itObject = itActivity->second.find(*it)) != itActivity->second.end())
-            {
-              Data[i] = mData[COutputInterface::BEFORE | COutputInterface::DURING | COutputInterface::AFTER][itObject->second];
-              Offset[i] = mDataBefore;
-              continue;
-            }
+      for (itX = mSaveCurveObjects.begin(), i = 0; itX != endX; ++itX)
+        for (it = itX->begin(), end = itX->end(); it != end; ++it, ++i)
+          {
+            if ((itActivity = mObjectIndex.find(COutputInterface::DURING)) != mObjectIndex.end() &&
+                (itObject = itActivity->second.find(*it)) != itActivity->second.end())
+              {
+                Data[i] = mData[COutputInterface::DURING][itObject->second];
+                Offset[i] = 0;
+                continue;
+              }
+            if ((itActivity = mObjectIndex.find((COutputInterface::Activity) (COutputInterface::BEFORE | COutputInterface::DURING))) != mObjectIndex.end() &&
+                (itObject = itActivity->second.find(*it)) != itActivity->second.end())
+              {
+                Data[i] = mData[COutputInterface::BEFORE | COutputInterface::DURING][itObject->second];
+                Offset[i] = mDataBefore;
+                continue;
+              }
+            if ((itActivity = mObjectIndex.find((COutputInterface::Activity) (COutputInterface::DURING | COutputInterface::AFTER))) != mObjectIndex.end() &&
+                (itObject = itActivity->second.find(*it)) != itActivity->second.end())
+              {
+                Data[i] = mData[COutputInterface::DURING | COutputInterface::AFTER][itObject->second];
+                Offset[i] = 0;
+                continue;
+              }
+            if ((itActivity = mObjectIndex.find((COutputInterface::Activity) (COutputInterface::BEFORE | COutputInterface::DURING | COutputInterface::AFTER))) != mObjectIndex.end() &&
+                (itObject = itActivity->second.find(*it)) != itActivity->second.end())
+              {
+                Data[i] = mData[COutputInterface::BEFORE | COutputInterface::DURING | COutputInterface::AFTER][itObject->second];
+                Offset[i] = mDataBefore;
+                continue;
+              }
 
-          Data[i] = NULL;
-        }
+            Data[i] = NULL;
+          }
 
       for (i = 0; i < mDataDuring; i++)
         {
@@ -700,39 +738,40 @@ bool CopasiPlot::saveData(const std::string & filename)
 
   if (mDataAfter)
     {
-      for (i = 0, it = mObjects.begin(); it != end; ++it, i++)
-        {
-          if ((itActivity = mObjectIndex.find(COutputInterface::AFTER)) != mObjectIndex.end() &&
-              (itObject = itActivity->second.find(*it)) != itActivity->second.end())
-            {
-              Data[i] = mData[COutputInterface::AFTER][itObject->second];
-              Offset[i] = 0;
-              continue;
-            }
-          if ((itActivity = mObjectIndex.find((COutputInterface::Activity) (COutputInterface::BEFORE | COutputInterface::AFTER))) != mObjectIndex.end() &&
-              (itObject = itActivity->second.find(*it)) != itActivity->second.end())
-            {
-              Data[i] = mData[COutputInterface::BEFORE | COutputInterface::AFTER][itObject->second];
-              Offset[i] = mDataBefore;
-              continue;
-            }
-          if ((itActivity = mObjectIndex.find((COutputInterface::Activity) (COutputInterface::DURING | COutputInterface::AFTER))) != mObjectIndex.end() &&
-              (itObject = itActivity->second.find(*it)) != itActivity->second.end())
-            {
-              Data[i] = mData[COutputInterface::DURING | COutputInterface::AFTER][itObject->second];
-              Offset[i] = mDataDuring;
-              continue;
-            }
-          if ((itActivity = mObjectIndex.find((COutputInterface::Activity) (COutputInterface::BEFORE | COutputInterface::DURING | COutputInterface::AFTER))) != mObjectIndex.end() &&
-              (itObject = itActivity->second.find(*it)) != itActivity->second.end())
-            {
-              Data[i] = mData[COutputInterface::BEFORE | COutputInterface::DURING | COutputInterface::AFTER][itObject->second];
-              Offset[i] = mDataBefore + mDataDuring;
-              continue;
-            }
+      for (itX = mSaveCurveObjects.begin(), i = 0; itX != endX; ++itX)
+        for (it = itX->begin(), end = itX->end(); it != end; ++it, ++i)
+          {
+            if ((itActivity = mObjectIndex.find(COutputInterface::AFTER)) != mObjectIndex.end() &&
+                (itObject = itActivity->second.find(*it)) != itActivity->second.end())
+              {
+                Data[i] = mData[COutputInterface::AFTER][itObject->second];
+                Offset[i] = 0;
+                continue;
+              }
+            if ((itActivity = mObjectIndex.find((COutputInterface::Activity) (COutputInterface::BEFORE | COutputInterface::AFTER))) != mObjectIndex.end() &&
+                (itObject = itActivity->second.find(*it)) != itActivity->second.end())
+              {
+                Data[i] = mData[COutputInterface::BEFORE | COutputInterface::AFTER][itObject->second];
+                Offset[i] = mDataBefore;
+                continue;
+              }
+            if ((itActivity = mObjectIndex.find((COutputInterface::Activity) (COutputInterface::DURING | COutputInterface::AFTER))) != mObjectIndex.end() &&
+                (itObject = itActivity->second.find(*it)) != itActivity->second.end())
+              {
+                Data[i] = mData[COutputInterface::DURING | COutputInterface::AFTER][itObject->second];
+                Offset[i] = mDataDuring;
+                continue;
+              }
+            if ((itActivity = mObjectIndex.find((COutputInterface::Activity) (COutputInterface::BEFORE | COutputInterface::DURING | COutputInterface::AFTER))) != mObjectIndex.end() &&
+                (itObject = itActivity->second.find(*it)) != itActivity->second.end())
+              {
+                Data[i] = mData[COutputInterface::BEFORE | COutputInterface::DURING | COutputInterface::AFTER][itObject->second];
+                Offset[i] = mDataBefore + mDataDuring;
+                continue;
+              }
 
-          Data[i] = NULL;
-        }
+            Data[i] = NULL;
+          }
 
       for (i = 0; i < mDataAfter; i++)
         {
@@ -755,7 +794,12 @@ bool CopasiPlot::saveData(const std::string & filename)
       C_INT32 j, jmax = mHistograms.size();
       for (j = 0; j < jmax; ++j)
         {
-          fs << "\n";
+          if (mSaveHistogramObjects[j] != NULL)
+            fs << mSaveHistogramObjects[j]->getObjectDisplayName();
+          else
+            fs << "Not found";
+
+          fs << std::endl;
 
           imax = mHistograms[j].size();
           const double* x = mHistograms[j].getXArray();
@@ -808,6 +852,9 @@ void CopasiPlot::clearBuffers()
 
   mDataIndex.clear();
   mObjectIndex.clear();
+
+  mSaveCurveObjects.clear();
+  mSaveHistogramObjects.clear();
 
   mDataBefore = 0;
   mDataDuring = 0;

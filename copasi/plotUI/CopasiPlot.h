@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.h,v $
-   $Revision: 1.29 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/31 16:06:03 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.h,v $
+//   $Revision: 1.30 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/03/20 13:35:56 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -179,6 +179,17 @@ class CopasiPlot : public QwtPlot, public COutputInterface
      * Vector of bool indicating whether the current object value is integer
      */
     std::vector< std::vector< bool > > mObjectInteger;
+
+    /**
+     * The order of 2d curve objects used when the data is saved.
+     * The first object in each vector is the object for the X axis.
+     */
+    std::vector< std::vector < const CCopasiObject * > > mSaveCurveObjects;
+
+    /**
+     * The order of histogram objects used when the data is saved.
+     */
+    std::vector< const CCopasiObject * > mSaveHistogramObjects;
 
     /**
      * Vector of actual data lines in the local buffers
