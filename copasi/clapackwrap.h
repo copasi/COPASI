@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/clapackwrap.h,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/15 17:08:52 $
+//   $Date: 2007/03/22 19:57:23 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1249,11 +1249,12 @@ extern "C"
 #ifdef USE_SUNPERF
 # include "sunperf.h"
 #endif // USE_SUNPERF
+  }
 
 #ifdef Darwin
-# include "clapack.h"
+# include "Accelerate.h"
+using std::isnan;
 #endif
-  }
 
 #ifdef min
 # undef min

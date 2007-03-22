@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/blaswrap.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/15 17:08:52 $
+//   $Date: 2007/03/22 19:57:23 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -49,10 +49,11 @@ extern "C"
 #ifdef USE_SUNPERF
 # include "sunperf.h"
 #endif // USE_SUNPERF
+  }
 
 #ifdef Darwin
 # define vector
-# include "cblas.h"
+# include "Accelerate.h"
 # define daxpy_(N, ALPHA, X, INCX, Y, INCY) \
     cblas_daxpy(*N, *ALPHA, X, *INCX, Y, *INCY)
 # define dcopy_(N, X, INCX, Y, INCY) \
@@ -69,8 +70,8 @@ extern "C"
     cblas_idamax(*N, X, *INCX)
 # undef vector
 # define vector vector
+using std::isnan;
 #endif // Darwin
-  }
 
 #ifdef min
 # undef min
