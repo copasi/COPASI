@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.h,v $
-//   $Revision: 1.54 $
+//   $Revision: 1.55 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/15 17:08:52 $
+//   $Date: 2007/03/22 19:55:55 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -88,7 +88,7 @@
 #endif
 #endif
 
-#ifdef Darwin
+#if (defined Darwin && not defined isnan)
 # define isnan(__x) ((__x == __x) != true)
 #endif
 
