@@ -1,3 +1,15 @@
+# Begin CVS Header 
+#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/python.pro,v $ 
+#   $Revision: 1.12 $ 
+#   $Name:  $ 
+#   $Author: shoops $ 
+#   $Date: 2007/03/22 17:02:14 $ 
+# End CVS Header 
+
+# Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc. and EML Research, gGmbH. 
+# All rights reserved. 
+
 TEMPLATE = lib
 
 include(../../common.pri)
@@ -157,7 +169,7 @@ contains(BUILD_OS, Darwin) {
     LIBS += -framework Python
     LIBS += -framework Quicktime
     LIBS += -framework Carbon
-    LIBS += -framework vecLib
+    LIBS += -framework Accelerate
 
   !isEmpty(PYTHON_INCLUDE_PATH){
     INCLUDEPATH += $$PYTHON_INCLUDE_PATH

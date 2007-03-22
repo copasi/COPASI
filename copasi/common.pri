@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.61 $ 
+#   $Revision: 1.62 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2007/02/26 18:09:49 $ 
+#   $Date: 2007/03/22 17:02:13 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -11,7 +11,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.61 $ $Author: shoops $ $Date: 2007/02/26 18:09:49 $  
+# $Revision: 1.62 $ $Author: shoops $ $Date: 2007/03/22 17:02:13 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -102,7 +102,7 @@ contains(BUILD_OS, Darwin) {
     }
   }
  
-  INCLUDEPATH += /System/Library/Frameworks/vecLib.framework/Headers
+  INCLUDEPATH += /System/Library/Frameworks/Accelerate.framework/Headers
   INCLUDEPATH += /System/Library/Frameworks/Carbon.framework/Headers
 
   !isEmpty(SBML_PATH){
@@ -133,7 +133,7 @@ contains(BUILD_OS, Darwin) {
     QMAKE_LIBS_QT_THREAD = 
   }
 
-  LIBS += -framework vecLib
+  LIBS += -framework Accelerate
   LIBS += -framework Carbon
   LIBS += -framework QuickTime
   LIBS += -lz
