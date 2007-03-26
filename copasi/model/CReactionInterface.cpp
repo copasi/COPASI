@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.cpp,v $
-   $Revision: 1.27 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/06 16:03:44 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.cpp,v $
+//   $Revision: 1.28 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/03/26 14:11:00 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -350,6 +350,18 @@ void CReactionInterface::findAndSetFunction(const std::string & newFunction)
         //if (fl[i].find(s) >= 0) - for some reason this doesn't work
         {
           setFunctionAndDoMapping(fl[i]);
+
+          // If we have a reaction of the type X + Y = and the function
+          // is Constant flux (reversible) we need to set the parameter v to
+          // be negative to avoid negative concentrations during time course simulations.
+          // Note, this fix is only done when we are assigning a default rate law.
+          if (mChemEqI.getReversibility() == true &&
+              mChemEqI.getListOfDisplayNames(CFunctionParameter::PRODUCT).size() == 0)
+            {
+              C_FLOAT64 v = - fabs(getLocalValue(0));
+              setLocalValue(0, v);
+            }
+
           return;
         }
     }
