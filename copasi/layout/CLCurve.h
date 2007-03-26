@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLCurve.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/02/26 10:31:09 $
+//   $Date: 2007/03/26 10:55:06 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -78,6 +78,17 @@ class CLLineSegment : public CLBase
 
     bool isBezier() const {return mIsBezier;};
     void setIsBezier(bool b) {mIsBezier = b;};
+
+    // if two lines are congruent, they are supposed to be ==
+    bool operator==(const CLLineSegment & rhs) const
+      {
+        if (mIsBezier) return((mStart == rhs.mStart) && (mEnd == rhs.mEnd) && (mBase1 == rhs.mBase1) && (mBase2 == rhs.mBase2));
+        else return ((mStart == rhs.mStart) && (mEnd == rhs.mEnd));
+      };
+
+    // compare two line segments according to their start point (needed for use of line segment as a key in a map)
+    bool operator<(const CLLineSegment & rhs) const
+    {return (mStart < rhs.mStart);};
 
     void scale (const double & scaleFactor)
     {

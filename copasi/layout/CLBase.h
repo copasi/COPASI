@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLBase.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/02/26 10:31:09 $
+//   $Date: 2007/03/26 10:55:06 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -70,6 +70,15 @@ class CLPoint : public CLBase
 
     bool operator==(const CLPoint & rhs) const
       {return (mX == rhs.mX) && (mY == rhs.mY);};
+
+    // sort columnwise, point p1 is < point p2 if x-component is <, if x es are equal, check for y
+    bool operator<(const CLPoint & rhs) const
+      {
+        if (mX == rhs.mX)
+          return (mY < rhs.mY);
+        else
+          return (mX < rhs.mX);
+      };
 
     /**
       * insert operator
