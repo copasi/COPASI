@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.165 $
+//   $Revision: 1.166 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/02/22 15:36:09 $
+//   $Date: 2007/03/27 10:47:55 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -361,7 +361,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       if (!mpImportHandler->progress(mhImportStep)) return false;
     }
 
-  this->removeUnusedFunctions(pTmpFunctionDB);
+  this->removeUnusedFunctions(pTmpFunctionDB, copasi2sbmlmap);
 
   // unset the hasOnlySubstanceUnits flag on all such species
   //if (!this->mSubstanceOnlySpecies.empty())
@@ -2738,7 +2738,7 @@ void SBMLImporter::setImportHandler(CProcessReport* pHandler)
 CProcessReport* SBMLImporter::getImportHandlerAddr()
 {return mpImportHandler;}
 
-bool SBMLImporter::removeUnusedFunctions(CFunctionDB* pTmpFunctionDB)
+bool SBMLImporter::removeUnusedFunctions(CFunctionDB* pTmpFunctionDB, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
 {
   if (pTmpFunctionDB)
     {
@@ -2794,6 +2794,10 @@ bool SBMLImporter::removeUnusedFunctions(CFunctionDB* pTmpFunctionDB)
               this->mUsedFunctions.erase(pTree->getObjectName());
               //std::cout << "removing " << pTree->getObjectName() << std::endl;
               pFunctionDB->removeFunction(pTree->getKey());
+              // delete the entry from the copasi2sbmlmap.
+              std::map<CCopasiObject*, SBase*>::iterator pos = copasi2sbmlmap.find(pTree);
+              assert(pos != copasi2sbmlmap.end());
+              copasi2sbmlmap.erase(pos);
             }
           ++step;
           if (mpImportHandler && !mpImportHandler->progress(hStep)) return false;

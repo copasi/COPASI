@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-//   $Revision: 1.55 $
+//   $Revision: 1.56 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/02/14 17:33:53 $
+//   $Author: gauges $
+//   $Date: 2007/03/27 10:47:56 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -275,7 +275,7 @@ class SBMLImporter
     /**
      * Finds all functions that are used and removes those that are not.
      */
-    bool removeUnusedFunctions(CFunctionDB* pTmpFunctionDB);
+    bool removeUnusedFunctions(CFunctionDB* pTmpFunctionDB, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
 
     /**
      * Finds all functions calls directly or indirectly used in a function
