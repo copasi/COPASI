@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-//   $Revision: 1.101 $
+//   $Revision: 1.102 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/03/07 13:07:46 $
+//   $Date: 2007/03/27 10:52:27 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1485,6 +1485,7 @@ FunctionDefinition* SBMLExporter::createSBMLFunctionDefinitionFromCEvaluationTre
   // convert the tree root to an AST tree.
   FunctionDefinition& pFunDef = this->sbmlDocument->getModel()->createFunctionDefinition();
   pFunDef.setId(tree->getSBMLId());
+  pFunDef.setName(tree->getObjectName());
   if (!tree->getRoot())
     {
       std::string errorMessage = std::string("Can not export function");
