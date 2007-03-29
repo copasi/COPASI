@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/03/19 10:01:20 $
+//   $Date: 2007/03/29 17:56:40 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -12,6 +12,7 @@
 
 #include <iostream>
 #include <math.h>
+#include <utility>
 
 #include <qfont.h>
 #include <qstring.h>
@@ -97,19 +98,20 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
   std::cout << "number of reactions: " << reactions.size() << std::endl;
 
   //now extract curves to draw from reaction
-  viewerCurves = std::vector<CLLineSegment>();
+  viewerCurves = std::vector<CLCurve>();
   //first get reaction arrow
   for (i = 0;i < reactions.size();i++)
     {
       CLCurve curve = (reactions[i])->getCurve();
-      int j;
-      std::vector<CLLineSegment> segments = curve.getCurveSegments();
-      for (j = 0;j < curve.getNumCurveSegments();j++)
-        {
-          CLLineSegment seg = segments[j];
-          //std::cout << segments[i] << std::endl;
-          viewerCurves.push_back(seg); // add copy of segment to vector
-        }
+      viewerCurves.push_back(curve);
+      //     int j;
+      //      std::vector<CLLineSegment> segments = curve.getCurveSegments();
+      //      for (j = 0;j < curve.getNumCurveSegments();j++)
+      //        {
+      //          CLLineSegment seg = segments[j];
+      //          //std::cout << segments[i] << std::endl;
+      //          viewerCurves.push_back(seg); // add copy of segment to vector
+      //}
 
       // now get curves to reactants
       //std::cout << *reactions[i];
@@ -121,17 +123,26 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
       for (j2 = 0;j2 < edgesToNodesOfReaction.size();j2++)
         {
           const CLCurve curve = edgesToNodesOfReaction[j2]->getCurve();
-          int k;
-          std::vector<CLLineSegment> segments = curve.getCurveSegments();
-          for (k = 0;k < curve.getNumCurveSegments();k++)
-            {
-              CLLineSegment seg = segments[k];
-              viewerCurves.push_back(seg); // add copy of segment to vector
-            }
+
+          viewerCurves.push_back(curve);
+          //           int k;
+          //         std::vector<CLLineSegment> segments = curve.getCurveSegments();
+          //          for (k = 0;k < curve.getNumCurveSegments();k++)
+          //            {
+          //              CLLineSegment seg = segments[k];
+          //              viewerCurves.push_back(seg); // add copy of segment to vector
+          //}
           CLMetabReferenceGlyph::Role r = edgesToNodesOfReaction[j2]->getRole();
+          nodeMap.insert(std::pair<std::string, std::string>
+                         (std::string(edgesToNodesOfReaction[j2]->getMetabGlyph()->getKey()),
+                          std::string(edgesToNodesOfReaction[j2]->getMetabGlyphKey()))); // map viewer node key to key of CLMetabRefeerenceGlyph
+          curveMap.insert(std::pair<std::string, CLCurve>
+                          (std::string(edgesToNodesOfReaction[j2]->getMetabGlyphKey()),
+                           CLCurve(curve)));
           //std::cout << "role : " << r << std::endl;
           if ((r == CLMetabReferenceGlyph::PRODUCT) || (r == CLMetabReferenceGlyph::SIDEPRODUCT))
             {// create arrows just for edges to products or sideproducts
+              std::vector<CLLineSegment> segments = curve.getCurveSegments();
               CLLineSegment lastSeg = segments[curve.getNumCurveSegments() - 1];
               //std::cout << "number of segments in curve: " << curve.getNumCurveSegments() << std::endl;
               //CLPoint p = lastSeg.getStart();
@@ -224,36 +235,30 @@ void CQGLNetworkPainter::drawNode(CLMetabGlyph &n)
   glTranslatef(-(float)tx, -(float)ty, 0.0f);
 }
 
-void CQGLNetworkPainter::drawEdge(CLLineSegment c)
+void CQGLNetworkPainter::drawEdge(CLCurve c)
 {
-  //coordList *coordListP = c.getPoints();
-  CLPoint startPoint = c.getStart();
-  CLPoint endPoint = c.getEnd();
-  // for the moment do not take type of curve into account
+  std::vector<CLLineSegment> segments = c.getCurveSegments();
+  for (int k = 0;k < c.getNumCurveSegments();k++)
+    {
+      CLLineSegment seg = segments[k];
 
-  //unsigned int numberOfPoints = c.getNumberOfPoints();
-  //unsigned int i;
-  C_FLOAT64 x, y;
-  //glColor3f(0.0f,0.0f,1.0f); // blue
-  //x = (*coordListP)[0].first;
-  //y = (*coordListP)[0].second;
-  glBegin(GL_LINE_STRIP);
-  //cout << "number of points: " <<  numberOfPoints << endl;
-  //  for (i=0;i<numberOfPoints;i++){
-  //   x = (*coordListP)[i].first;
-  //   y = (*coordListP)[i].second;
-  //   glVertex2d(x,y);
-  //}
-  x = startPoint.getX();
-  y = startPoint.getY();
-  glVertex2d(x, y);
-  x = endPoint.getX();
-  y = endPoint.getY();
-  glVertex2d(x, y);
-  glEnd();
-  // now draw edge arows to products
+      CLPoint startPoint = seg.getStart();
+      CLPoint endPoint = seg.getEnd();
+      // for the moment do not take type of curve into account
 
-  //cout << e.getRole() << std::endl;
+      C_FLOAT64 x, y;
+      //glColor3f(0.0f,0.0f,1.0f); // blue
+
+      glBegin(GL_LINE_STRIP);
+
+      x = startPoint.getX();
+      y = startPoint.getY();
+      glVertex2d(x, y);
+      x = endPoint.getX();
+      y = endPoint.getY();
+      glVertex2d(x, y);
+      glEnd();
+    }
 }
 
 void CQGLNetworkPainter::drawArrow(CArrow a)
@@ -466,7 +471,6 @@ int CQGLNetworkPainter::round2powN(double d)
 
 void CQGLNetworkPainter::mapLabelsToRectangles()
 {
-  std::cout << "rectangle mode" << std::endl;
   this->mLabelShape = RECTANGLE;
   this->drawGraph();
   //this->draw();
@@ -474,7 +478,6 @@ void CQGLNetworkPainter::mapLabelsToRectangles()
 
 void CQGLNetworkPainter::mapLabelsToCircles()
 {
-  std::cout << "circle mode" << std::endl;
   this->mLabelShape = CIRCLE;
   this->drawGraph();
   //this->draw();
@@ -522,7 +525,16 @@ void CQGLNetworkPainter::zoom(C_FLOAT64 zoomFactor)
 
   for (i = 0; i < viewerCurves.size();i++)
     {
-      this->viewerCurves[i].scale(zoomFactor);
+      //std::vector<CLLineSegment> segments = viewerCurves[i].getCurveSegments();
+      CLLineSegment *seg;
+      int numSegs = viewerCurves[i].getNumCurveSegments();
+
+      for (int k = 0;k < numSegs;k++)
+        {
+          seg = viewerCurves[i].getSegmentAt(k);
+          if (seg != NULL)
+            seg->scale(zoomFactor);
+        }
     }
   // common fontname and size for all labels are stored in this class
   this->mFontsizeDouble = this->mFontsizeDouble * zoomFactor;
@@ -605,8 +617,8 @@ void CQGLNetworkPainter::initializeGL()
 
   //glClearColor(1.0, 1.0, 0.94, 0.0);  // background ivory
   //glClearColor(QColor(255,255,240));
-  glClearColor(1.0f, 1.0f, 0.94f, 0.0f);  // background ivory
-  //glClearColor(QColor(255,255,240,QColor::Rgb);
+  //glClearColor(1.0f, 1.0f, 0.94f, 0.0f);  // background ivory
+  qglClearColor(QColor(255, 255, 240, QColor::Rgb));
 
   //glEnable(GL_DEPTH_TEST);
   glShadeModel(GL_SMOOTH);
