@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLCurve.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/03/26 10:55:06 $
+//   $Date: 2007/03/29 17:53:56 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -125,8 +125,13 @@ class CLCurve : public CLBase
     ~CLCurve();
 
     const std::vector<CLLineSegment> getCurveSegments() const {return mCurveSegments;};
+    CLLineSegment* getSegmentAt(int i)
+    {
+      if ((i >= 0) && (i < mCurveSegments.size()))return &(mCurveSegments[i]);
+      else return NULL;
+    }
 
-    C_INT32 getNumCurveSegments() const {return mCurveSegments.size();};
+  C_INT32 getNumCurveSegments() const {return mCurveSegments.size();};
 
     void addCurveSegment(CLLineSegment & ls);
     void addCurveSegment(CLLineSegment * pLs);
