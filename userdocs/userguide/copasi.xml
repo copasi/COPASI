@@ -1,7 +1,18 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
+<!-- Begin CVS Header -->
+<!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi.xml,v $ -->
+<!--   $Revision: 1.10 $ -->
+<!--   $Name:  $ -->
+<!--   $Author: shoops $ -->
+<!--   $Date: 2007/03/30 14:01:13 $ -->
+<!-- End CVS Header -->
+
+<!-- Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Properties, Inc. and EML Research, gGmbH. -->
+<!-- All rights reserved. -->
 
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook EBNF Module V1.1CR1//EN"
-        "http://www.oasis-open.org/docbook/xml/mathml/1.1CR1/dbmathml.dtd" 
+               "http://www.oasis-open.org/docbook/xml/mathml/1.1CR1/dbmathml.dtd"
 [
  <!ENTITY gui SYSTEM "copasi_GUI.xml" >  
  <!ENTITY commandLine SYSTEM "copasi_commandLine.xml" >
@@ -12,10 +23,10 @@
  <!ENTITY errors SYSTEM "copasi_errorMessages.xml" >  
 ]> 
 
-<book id="book" xmlns:mml="http://www.w3.org/1998/Math/MathML">
+<book id="book">
 <bookinfo>
   <title>COPASI Documentation</title>
-  <subtitle>Version 4.1 (Build 19 Feature Preview)</subtitle>
+  <subtitle>Version 4.0.20 (development)</subtitle>
   <author>
     <surname>COPASI Development Team</surname>
   </author>

@@ -1,4 +1,16 @@
 <chapter id="modelCreation" xreflabel="Model Creation">
+<!-- Begin CVS Header -->
+<!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_GUI.xml,v $ -->
+<!--   $Revision: 1.43 $ -->
+<!--   $Name:  $ -->
+<!--   $Author: shoops $ -->
+<!--   $Date: 2007/03/30 14:01:13 $ -->
+<!-- End CVS Header -->
+
+<!-- Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Properties, Inc. and EML Research, gGmbH. -->
+<!-- All rights reserved. -->
+
 <title>Model Creation</title>
 <sect1 id="introduction" xreflabel="introduction"><title>Introduction</title>
     <para>The COPASI graphical user interface has been written using the <ulink url="http://www.trolltech.com">Qt toolkit</ulink>. This allows us to release COPASI on all platforms that Qt supports.</para>
@@ -191,8 +203,8 @@ On the top of the main window, you have the menu bar (on the Mac, the menu bar i
 </caution>
 </para>
 <para>
-COPASI internally represents amounts of species by particle numbers. If a concentration has to be displayed or is needed for some output this is calculated from the particle number, the volume of the compartment the species belongs to and Avogadro's number (<mml:math><mml:mrow><mml:mn>6.0221415</mml:mn><mml:mo>*</mml:mo><mml:msup><mml:mn>10</mml:mn><mml:mn>23</mml:mn></mml:msup> <mml:mfrac> <mml:mi>particles</mml:mi><mml:mi>Mole</mml:mi></mml:mfrac></mml:mrow></mml:math>). Lets assume that you have set your default volume units to fl and your default substance units to nMol and species A is present in the amount of <mml:math><mml:mrow><mml:mn>1.0</mml:mn><mml:mo>*</mml:mo><mml:msup><mml:mn>10</mml:mn><mml:mn>15</mml:mn></mml:msup><mml:mi> </mml:mi><mml:mi>particles</mml:mi></mml:mrow></mml:math>. Further assuming that the volume of the compartment containing A is set to <mml:math><mml:mn>1.0</mml:mn></mml:math> (fl), A would be present in a concentration of 
-<mml:math>
+COPASI internally represents amounts of species by particle numbers. If a concentration has to be displayed or is needed for some output this is calculated from the particle number, the volume of the compartment the species belongs to and Avogadro's number (<inlineequation><mml:math><mml:mrow><mml:mn>6.0221415</mml:mn><mml:mo>*</mml:mo><mml:msup><mml:mn>10</mml:mn><mml:mn>23</mml:mn></mml:msup> <mml:mfrac> <mml:mi>particles</mml:mi><mml:mi>Mole</mml:mi></mml:mfrac></mml:mrow></mml:math></inlineequation>). Lets assume that you have set your default volume units to fl and your default substance units to nMol and species A is present in the amount of <inlineequation><mml:math><mml:mrow><mml:mn>1.0</mml:mn><mml:mo>*</mml:mo><mml:msup><mml:mn>10</mml:mn><mml:mn>15</mml:mn></mml:msup><mml:mi> </mml:mi><mml:mi>particles</mml:mi></mml:mrow></mml:math></inlineequation>. Further assuming that the volume of the compartment containing A is set to <inlineequation><mml:math><mml:mn>1.0</mml:mn></mml:math></inlineequation> (fl), A would be present in a concentration of 
+<inlineequation><mml:math>
   <mml:mfrac>
     <mml:mrow>
       <mml:mn>1.0</mml:mn><mml:mo>*</mml:mo><mml:msup><mml:mn>10</mml:mn><mml:mn>15</mml:mn></mml:msup><mml:mi> </mml:mi><mml:mi>particles</mml:mi>
@@ -203,8 +215,8 @@ COPASI internally represents amounts of species by particle numbers. If a concen
       <mml:mn>1.0</mml:mn><mml:mi> </mml:mi><mml:mi> fl</mml:mi>
     </mml:mrow>
   </mml:mfrac>
-</mml:math>
-. Since the default substance unit is set to nMol instead of Mole we have to multiply the result by <mml:math><mml:mrow><mml:mn>1.0</mml:mn><mml:mo>*</mml:mo><mml:msup><mml:mn>10</mml:mn><mml:mn>9</mml:mn></mml:msup></mml:mrow></mml:math>. So COPASI would display a concentration of <mml:math><mml:mn>1.661</mml:mn><mml:mrow><mml:mi> </mml:mi><mml:mfrac><mml:mi>nMol</mml:mi><mml:mi>fl</mml:mi></mml:mfrac></mml:mrow></mml:math>.       
+</mml:math></inlineequation>
+. Since the default substance unit is set to nMol instead of Mole we have to multiply the result by <inlineequation><mml:math><mml:mrow><mml:mn>1.0</mml:mn><mml:mo>*</mml:mo><mml:msup><mml:mn>10</mml:mn><mml:mn>9</mml:mn></mml:msup></mml:mrow></mml:math></inlineequation>. So COPASI would display a concentration of <inlineequation><mml:math><mml:mn>1.661</mml:mn><mml:mrow><mml:mi> </mml:mi><mml:mfrac><mml:mi>nMol</mml:mi><mml:mi>fl</mml:mi></mml:mfrac></mml:mrow></mml:math></inlineequation>.       
 </para>
 <para>
 With the dropdown list labeled <guilabel>Rate Law Interpretation</guilabel> you can specify how Copasi should interpret the kinetic rate laws you specify for your reactions. Per default, Copasi will interpret all rate laws as deterministic rate laws. Since Copasi allows the user to simulate a model either deterministically or stochastically, Copasi has to make some corrections to determinisitic rate laws when using them for a stochastic simulation. This functionality sometimes interferes with rate laws that have been written for stochastic simulation and where the before mentioned corrections have already been made by the modeler. So if you have a model with rate laws that have been written be used in a stochastic simulation, you have to specify this by selecting stochastic from this dropdown list. If you do this, Copasi will not apply any corrections to the rate laws specified in the model when doing stochastic simulation.
@@ -424,7 +436,7 @@ When typing reaction equations you should keep in mind that metabolite names in 
     Double clicking on an entry in the table will bring you to another dialog that lets you change certain parameters of the reaction. You can change the name of the reaction, the chemical equation and whether the reaction is reversible or not. Changing the chemical equation and the reversibility of a reaction influences the type of kinetics you can choose for the reaction. Each kinetic function defines how many substrates, products and modifiers it expects. Additionally it defines whether it can be used for reversible or irreversible reactions only or if it can be used on either. So depending on how many substrates, products and modifiers your kinetic equation has and whether it is reversible or not, only a subset of the defined kinetic functions will be available in the <guilabel>Kinetics</guilabel> combo box.
     If the kinetic function you want to assign to the reaction is not available yet, you can add it by clicking on the <guibutton>New Rate Law</guibutton> button (see also <xref linkend="addingFunctions" />). 
     Depending on the kinetic function you chose, you get a selection of parameters in the table named <guilabel>Symbol Definition</guilabel>, all functions parameters get a default value of 0.1 which can be changed by clicking into the corresponding cell and typing a new value.</para>
-<para>Per default all parameters to a kinetic function are local parameters and they exist only in the scope of the rate law of one reaction. Sometimes it is of advantage to use the same parameter in the rate laws for several reactions. This way if you want to change to value of this parameter, you only have to change it in once instead of having to change it in every reaction it occurs in individually. Parameters that can be used in more then one reaction are called global parameters in Copasi. How you add a global parameter to your model is described in the section called <xref link="globalParameters" />. Let us for the moment assume you already added such a global parameter to your model and now want to use it in a rate law. Each parameter in the <guilabel>Symbol Definition</guilabel> table has a checkbox labeled <guilabel>global</guilabel>. When you check this box, Copasi knows that the parameter that belongs to it is a global parameter and lets you select a global parameter from a list of global parameters that have been defined in the model. If none have been defined yet, the list contains only an entry termed <guilabel>unknown</guilabel>. In this case, you will have to define one or more global parameters first and then come back to the reaction where you want to use it. If the name of the global parameter is set to the <emphasis>unknown</emphasis> term, Copasi will reset the type of parameter to local if you leave the reaction widget.</para>
+<para>Per default all parameters to a kinetic function are local parameters and they exist only in the scope of the rate law of one reaction. Sometimes it is of advantage to use the same parameter in the rate laws for several reactions. This way if you want to change to value of this parameter, you only have to change it in once instead of having to change it in every reaction it occurs in individually. Parameters that can be used in more then one reaction are called global parameters in Copasi. How you add a global parameter to your model is described in the section called <xref linkend="globalParameters" />. Let us for the moment assume you already added such a global parameter to your model and now want to use it in a rate law. Each parameter in the <guilabel>Symbol Definition</guilabel> table has a checkbox labeled <guilabel>global</guilabel>. When you check this box, Copasi knows that the parameter that belongs to it is a global parameter and lets you select a global parameter from a list of global parameters that have been defined in the model. If none have been defined yet, the list contains only an entry termed <guilabel>unknown</guilabel>. In this case, you will have to define one or more global parameters first and then come back to the reaction where you want to use it. If the name of the global parameter is set to the <emphasis>unknown</emphasis> term, Copasi will reset the type of parameter to local if you leave the reaction widget.</para>
 <para>So far we did not go into the details of how chemical equations are to be specified. Chemical equations have a simple schema. First you state all the substrates separated by  "+" characters. Please make sure that you separate the name of the substrate and the "+" character by at least one space character, otherwise COPASI will interpret the "+" sign as belonging to the metabolites name. (Having the "+" character as part of a metabolites name is allowed in COPASI!) after the list of substrates, you specify either an equals ("=") character if the reaction is reversible or the character combination "-&gt;" if the reaction is irreversible. This is followed by the list of products which must also be separated by the "+" character. Again make sure you have spaces around the separating "+" characters. Optionally this term can be followed by a semicolon and a list of modifiers which are separated by spaces. Either the list of substrates or the list of products may also be empty, but at least one of them must be present. Lets look at two examples:
 <orderedlist numeration="loweralpha" >
 <listitem><para>Metabolite A is irreversibly converted into Metabolite B. The chemical equation you would type is "A -&gt; B".</para></listitem>
@@ -542,8 +554,7 @@ Contrary to all other model elements we have created so far, selecting the newly
 <para>
 You can add a new function either by double clicking on an empty table row or by clicking on the <guibutton>New</guibutton> button on the bottom of the screen.
 In the function definition dialog, you give your function a name in the <guilabel>Function Name</guilabel> field. This name has to be unique within the list of defined functions. Next, you have to specify a formula that defines the reaction rate of your kinetic function in the <guilabel>Formula</guilabel> field. The function string only covers the right side of the rate function. So for Michaelis-Menten which is defined as <!-- <phrase role="math">v=V*(S/(Km+S))</phrase> --> 
-<!-- <inlineequation> -->
-  <mml:math>
+  <inlineequation><mml:math>
     <mml:mrow>
       <mml:mi>v</mml:mi>
       <mml:mo>=</mml:mo>
@@ -572,11 +583,9 @@ In the function definition dialog, you give your function a name in the <guilabe
         </mml:mrow>
       </mml:mrow>
     </mml:mrow>
-  </mml:math>
-<!-- </inlineequation> -->
+  </mml:math></inlineequation>
  you would enter <!-- <phrase role="math">V*(S/Km+S))</phrase> -->
-<!-- <inlineequation> -->
-  <mml:math>
+  <inlineequation><mml:math>
     <mml:mrow>
       <mml:mi>V</mml:mi>
       <mml:mo>*</mml:mo>
@@ -601,19 +610,16 @@ In the function definition dialog, you give your function a name in the <guilabe
         <mml:mo>)</mml:mo>
       </mml:mrow>
     </mml:mrow>
-  </mml:math>
-<!-- </inlineequation>  -->
+  </mml:math></inlineequation>
 into the <guilabel>Formula</guilabel> field. While you are typing the formula, COPASI already tries to parse the equation and extract the parameters. All parameters COPASI finds are listed in the <guilabel>Parameters</guilabel> table below the <guilabel>Formula</guilabel> field. In COPASI parameters can have arbitrary names, there are only a few rules that one has to be aware of. If a parameter starts with a letter or underscore character and contains only letters, digits and underscore characters all is well, if however the parameter name contains other characters, the whole parameter name has to be enclosed in double quotes. If the parameter name contains double quotes or backslashes those have to be escaped by a backslash.
 Per default, all variables found are defined as being <emphasis>Parameters</emphasis>. You have to specify which of them really are parameters and which are substrates, products or modifiers. This mapping of variable names to a specific function within the equation also defines the type of reactions this function can be used for. E.g. if you define your function to contain two substrates and a modifier, you can later only use it for reactions that really do have two substrates. <note><para>The restrictions on the number of modifiers is not as strict since substrates and reactants could act as modifiers. So the above mentioned rate law could be used on reactions that do not explicitly specify a modifier.</para></note> You can also see this in the <guilabel>Application restrictions</guilabel> table below the <guilabel>Parameters</guilabel> table. Let's say you define the function <!-- <phrase role="math">A*B</phrase> -->
-<!-- <inlineequation> -->
-  <mml:math>
+  <inlineequation><mml:math>
     <mml:mrow>
       <mml:mi>A</mml:mi>
       <mml:mo>*</mml:mo>
       <mml:mi>B</mml:mi>
     </mml:mrow>
-  </mml:math>  
-<!-- </inlineequation> -->
+  </mml:math></inlineequation>  
  and define <emphasis>A</emphasis> and <emphasis>B</emphasis> to be substrates, you will see that the <guilabel>Application restrictions</guilabel> say that there must be exactly two substrates in the reaction for that kinetics to be applicable. After defining this function, you will be able to use it for all chemical reaction that have exactly two substrates. Last, but not least, you have to define whether this function can be applied to reversible, irreversible or both reaction types by selecting the <guilabel>reversible</guilabel>, <guilabel>irreversible</guilabel> or <guilabel>General</guilabel> radio button respectively. 
 You can also call other functions from function definitions. There are four things you have to watch out for when you call a function within another function.
 <orderedlist>
@@ -635,7 +641,7 @@ You have to specify the correct argument types to the function call. I.e. if you
 <listitem>
 <para>
 Which brings me to the last point. The built in function names in COPASI often use characters like "-" or even spaces, so if you want to call one of those functions, you have to quote this function name. So calling "Henry-Michaelis-Menten (irreversible)" from another function would look like this:
- <mml:math display="block">
+<equation><mml:math display="block">
     <mml:mrow>
       <mml:mi>"Henry-Michaelis-Menten (irreversible)"</mml:mi>
       <mml:mo> &ApplyFunction; </mml:mo>
@@ -647,7 +653,7 @@ Which brings me to the last point. The built in function names in COPASI often u
       <mml:mi>V</mml:mi>
       <mml:mo> ) </mml:mo>
     </mml:mrow>
-  </mml:math>  
+  </mml:math></equation>
 </para>
 </listitem>
 </orderedlist>
@@ -967,7 +973,7 @@ In addition to the function above, COPASI knows some predefined constant names:
 </para>
 <para>
 In addition to defining "normal" functions, COPASI allows the definition of piecewise defined functions. Piecewise defined functions are constructed with the IF statement. The IF statement in COPASI is used like a function with three arguments. The first argument is a conditional expression that evaluates to either TRUE or FALSE, the second argument is an expression that is evaluated if the condition evaluates to TRUE otherwise the third argument, which can also be an expression, determines the value of the function. The second and third argument to the IF statement must evaluate to a double value, that means it can not be a conditional expression like the first argument. On the other hand, the second and third arguments themselves can be IF statements. So in order to make this a little more clear, we will look at how one would implement the Heaviside step function in COPASI:
-<mml:math display="block">
+ <equation><mml:math display="block">
     <mml:mrow>
       <mml:mi>if</mml:mi>
       <mml:mo>(</mml:mo>
@@ -993,7 +999,7 @@ In addition to defining "normal" functions, COPASI allows the definition of piec
       <mml:mo>)</mml:mo>
       <mml:mo>)</mml:mo>
     </mml:mrow>
-  </mml:math>  
+  </mml:math></equation>
 </para>
 </sect1>
 
@@ -1047,7 +1053,7 @@ Alternatively you can now add and modify existing sliders via a context menu. Th
 <para>
 Once you are in the dialog for the definition of a new slider, you have to choose an object to manipulate via the slider. This object can be selected from the selection dialog that pops up when you click on the <guibutton>choose object</guibutton> button. The selection tree is the same as the ones you get when <link linkend="plotDefinitions">selecting objects for a report definition</link>. The selection dialog also offers an expert mode in case the object you want to manipulate with the slider is not present in the simplified tree. Usually the objects that you want to modify in  the time course simulation are one or several of the reaction parameters. This way you can interactively see how the behavior of your model changes when you change a specific parameter. In combination with plots this is a very powerful way to examine the behavior of your model.</para>
 <para>After you have selected an object, you can set the parameters for the slider. You specify the range the slider has to cover in the <guilabel>Minimum Value</guilabel> and <guilabel>Maximum Value</guilabel> fields. Additionally you can specify if the slider shall have a logarithmic or a linear scale<!-- and if the slider should be used for all tasks that support sliders or only for the task the slider was defined in-->. Per default sliders have a linear scale<!-- and are only defined for the task in which the you create them-->. Normally a slider will be available for all tasks that support sliders. An exception to this are slider for objects that are directly associated with a specific task, e.g. the number of steps in a time series, if you choose such an object for a slider, the slider will only be available for this task.  
-<para>
+</para><para>
 <screenshot>
 <screeninfo>Produced with COPASI CVS on Mac OS X on 05/19/2006</screeninfo>
 <mediaobject>
@@ -1065,12 +1071,11 @@ Once you are in the dialog for the definition of a new slider, you have to choos
  </caption> 
 </mediaobject>
 </screenshot>
-</para>
+</para><para>
 At the bottom of the dialog there is a button labeled <guilabel>Advanced</guilabel>. If you click on this button more options that influence the sliders behavior will show up. Clicking the button a second time will hide these options again.
 The advanced options contain mostly fields that let you modify how many steps the slider has (see explanation below).
 The <guilabel>Object Value</guilabel> field determines the current value of the object that is associated with the slider. In the <guilabel>Number of minor ticks</guilabel> field you specify how many minor ticks your slider will have. And in the <guilabel>Tick-size factor</guilabel> field you specify how many minor ticks make a major tick. Major ticks can be used to coarsely go through the range of the slider whereas minor ticks allow you to step through the range in a more fine grained fashion. Instead of specifying the number of minor ticks, you can specify the size of a minor tick. If you change either of those two values, the other one will be adjusted accordingly. The formula is <!-- <phrase role="math">(Maximum Value - Minimum Value) / number of minor ticks = minor tick size</phrase> -->
-<!-- <inlineequation> -->
-  <mml:math>
+  <inlineequation><mml:math>
     <mml:mrow>
       <mml:mi>minor tick size</mml:mi>
       <mml:mo>=</mml:mo>
@@ -1086,8 +1091,7 @@ The <guilabel>Object Value</guilabel> field determines the current value of the 
         <mml:mi>number of minor ticks</mml:mi>
       </mml:mrow>
     </mml:mrow>
-  </mml:math>
-<!-- </inlineequation> -->
+  </mml:math></inlineequation>
 .
 Once you have made all the settings, you confirm the slider definition with the <guibutton>OK</guibutton> button. A new slider will appear in the slider dialog.
 </para>
@@ -1112,8 +1116,8 @@ Once you have made all the settings, you confirm the slider definition with the 
 </para>
 <para>
 Each slider shows the name of the object, the current value and the range in its label. If the current value of the slider is outside of the defined range, a corresponding warning will be shown.
-The slider dialog has a check box called <guilabel>update automatically</guilabel> if this box is checked, COPASI will run the corresponding task each time you release a slider handle after moving it. If you don't want COPASI to automatically run the task each time you change a sliders value, you can uncheck this box and run the task manually by clicking on the <guibutton>run task</guibutton> button.</para>
-If the value of an object for which a slider has been defined changes when a task is run, the slider will automatically show the new value. If the check box called <guilabel>update ranges</guilabel> is checked, the sliders will automatically adjust their range if the value falls outside of the defined range. If the new value is larger than the old maximum value, the new maximum will be set to twice the new value. Likewise if the new value falls below the old minimum value, the new minimum will be set to half the current value.
+The slider dialog has a check box called <guilabel>update automatically</guilabel> if this box is checked, COPASI will run the corresponding task each time you release a slider handle after moving it. If you don't want COPASI to automatically run the task each time you change a sliders value, you can uncheck this box and run the task manually by clicking on the <guibutton>run task</guibutton> button.</para><para>
+If the value of an object for which a slider has been defined changes when a task is run, the slider will automatically show the new value. If the check box called <guilabel>update ranges</guilabel> is checked, the sliders will automatically adjust their range if the value falls outside of the defined range. If the new value is larger than the old maximum value, the new maximum will be set to twice the new value. Likewise if the new value falls below the old minimum value, the new minimum will be set to half the current value.</para>
 <para>Modifying a slider is essentially the same as defining a slider. The only difference being that you can not change the object the slider is connected to. In order to do that, you have to delete the slider and define a new slider for the new object.
 </para>
 <para>
@@ -1178,6 +1182,7 @@ If you want to use the predefined reports you have to make sure that the report 
 <para>
 The output assistant presents the easiest way to generate your own output definitions which you can later adapt to your wishes using the techniques described in <xref linkend="manualOutputDefinitions" />.
 Almost all task dialogs in COPASI have a button at the lower right that is labeled <guibutton>Output Assistant</guibutton>. If you click on this button, a new dialog will open that presents you with a list of predefined output definitions on the left. If you select one of the output definitions from the list, you will get a short description of what the output does on the right side of the dialog. Above the description is the title of the output definition. This title can be changed in order to be able to identify the different output definitions in case you are planning on creating more than one output definition of a certain type. Using this dialog both plots and reports can be created. 
+</para>
 <para>
 <screenshot>
 <screeninfo>Produced with COPASI Build 18 on MacOS X on 05/19/2006</screeninfo>
@@ -1197,6 +1202,7 @@ Almost all task dialogs in COPASI have a button at the lower right that is label
 </mediaobject>
 </screenshot>
 </para>
+<para>
 Creating an instance of the selected output objects is as easy a clicking on <guibutton>Create!</guibutton> at the bottom of the dialog. Once you clicked this button, a new report or plot, depending on what you selected in the dialog, will appear in the corresponding branch of the <guilabel>Output</guilabel> section of the model tree. The Output branch is the second to last branch in the tree on the left. The name of the output definitions will be the title of the object which you selected from the list. If another output definition in this section already has the same name, a postfix will be appended to the name. The so created output can now be edited or deleted. If the newly created output is a report it will automatically be selected as the active report for the current task. You then still have to select a filename for the output using the "report" button. This is described in the sections about the specific calculation tasks below. 
 How output definitions are created, edit and deleted manually is the topic of the next sections.
 </para>
@@ -1228,12 +1234,12 @@ This section describes how to create or edit a report definition. Keep in mind t
 </screenshot>
 </para>
 <para>
-The dialog for defining report definitions is located under the <guibutton>Output-&gt;Reports</guibutton> branch in the object tree. Double clicking on an empty row in the table creates a new report object and opens the dialog for modifying the report definition. In this dialog, you can specify a name for the report in the <guilabel>Name</guilabel> field. From the <guilabel>Task</guilabel> drop-down list, you can choose for which kind of task this report should be written, so if you want to store the result of a time course, you choose <emphasis>Time-Course</emphasis> here. The report usually stores the results of its task as a table; the standard separator character for elements in this table is the tab character (\t). If you want to have another character as the separator field, you have to uncheck the <guilabel>&lt;tab&gt;</guilabel> check box and specify the separator character or string you want in the <guilabel>Separator</guilabel> field.
+The dialog for defining report definitions is located under the <guibutton>Output-&gt;Reports</guibutton> branch in the object tree. Double clicking on an empty row in the table creates a new report object and opens the dialog for modifying the report definition. In this dialog, you can specify a name for the report in the <guilabel>Name</guilabel> field. From the <guilabel>Task</guilabel> drop-down list, you can choose for which kind of task this report should be written, so if you want to store the result of a time course, you choose <emphasis>Time-Course</emphasis> here. The report usually stores the results of its task as a table; the standard separator character for elements in this table is the tab character (\t). If you want to have another character as the separator field, you have to uncheck the <guilabel>&lt;tab&gt;</guilabel> check box and specify the separator character or string you want in the <guilabel>Separator</guilabel> field.</para>
 <para>Beside the <guilabel>&lt;tab&gt;</guilabel> check box there is another input field labeled <guilabel>Precision</guilabel> with this field you can specify how many significant digits are used for numerical output. The default value is 6.
 </para>
 <para>
 If you want to, you can also add a comment for the report, e.g. you could state what this report is supposed to represent.  
-</para>
+</para><para>
 Next you have to define the objects that you want to appear in the report. There are two modes to define a report definition. Per default, the report is laid out as a table. E.g. the report for a time course simulation will write one line per time step and each line will typically contain the time followed by one or more metabolite concentrations. In the advanced mode, which you enter by clicking on the button labeled <guibutton>Advanced</guibutton>, the report is split up into three sections, a header, a body and a footer. You can define the output for each of the sections separately by clicking on the corresponding tab. In order to get back to the standard table layout, you have to click on the <guibutton>Advanced</guibutton> again. COPASI will warn you that you might loose some information by converting from the advanced report definition format to the table format.
 </para>
 <para>
@@ -1572,14 +1578,14 @@ Every mass conservation relation also has a separate leave in the object tree be
 In the Time-Course widget you can change several parameters for the time course, e.g. the duration of the simulation and the number of intervals that are being calculated in the time range. Alternatively to setting the number of intervals, you can also set the size of the interval. If you set either one, the other will be updated accordingly. Also if you change the duration the number of intervals will stay the same, which means that the interval size will be adjusted. The checkbox labeled <guilabel>store time series in memory</guilabel> tells Copasi to keep the result of the time series calculation in memory in order to display it in a result dialog. Since this can be a large amount of data depending on the size of your model and/or the number of intervals you want Copasi to calculate, you should disable this if you think the result might not fit into memory. The consequence of disabling this checkbox is that you need to <link linkend="reportDefinitions">define a report</link> in order to store the results of the time course simulation.</para>
 <para>Another thing that you can adjust in this dialog is the time at which Copasi starts to record the output. Normally Copasi will store all output and display it in the plot and reports if there are any or in the results dialog if that feature was not disabled (see above). With the <guilabel>Start Output Delayed</guilabel> checkbox and input field, you can specify that Copasi shall drop all results prior to a certain timepoint. E.g. you could decide that you want to run a time course simulation for 100 seconds but that you are only interested in the last 50 seconds of the simulation. In this case you would activate the <guilabel>Start Output Delayed</guilabel> checkbox and specify a delay of lets say 50. This delay will be used for all kinds of output.</para>
 <para>The time course simulation does not necessarily start with 
-<mml:math>
+<inlineequation><mml:math>
   <mml:msub>
     <mml:mi>t</mml:mi>
     <mml:mn>0</mml:mn>
   </mml:msub>
   <mml:mo>=</mml:mo>
   <mml:mn>0</mml:mn>
-</mml:math>
+</mml:math></inlineequation>
 . The start time of the time couse simulation depends on the initial model time which can be specified in the <link linkend="generalSettings">general model settings dialog</link>.</para>
 <para>Copasi supports four different methods for calculating time course simulations. Copasi can use the LSODA solver to calculate the time course deterministically or it can use a stochastic solver which uses the method described by <emphasis>Gibson and Bruck</emphasis> to calculate the time course stochastically. Depending on the solver you have chosen, you can set several parameters in the <guilabel>Parameter value</guilabel> table that influence the way the method works. A detailed explanation of those parameters will follow in the <!-- <xref linkend=" -->methods<!-- " /> --> part of this document.</para>
 <para>In addition to purely deterministic or purely stochastic time course simulations, Copasi can also use a so called hybrid method to calculate a trajectory. This hybrid method splits the model in two segments according to the number of particles participating in a reaction. Reactions with many particles are simulated deterministically and those reactions with only a few particles are simulated stochastically. The boundaries of what is considered many or few particles can be set by the user. Depending on the nature of  the model, the hybrid simulation can lead to significant simulation speedup compared to purely stochastic simulation while still being more accurate than purely deterministic simulation for small particle numbers. However, the method should still be considered experimental. For a more detailed description of the method and the attributes that you can set see the <!--<link linkend="">-->methods section<!--</link>-->.</para>
@@ -1729,7 +1735,7 @@ If you want to have output from the MCA, you have to create a report as describe
 </sect1>
 
 
-<sect1 id="lyapunovExponents" xrefLabel="Calculating Lyapunov Exponents">
+<sect1 id="lyapunovExponents" xreflabel="Calculating Lyapunov Exponents">
 <title>Calculating Lyapunov Exponents</title>
 <para>The widget to calculate Lyapunov exponents in COPASI is located in the <guibutton>Task</guibutton> branch of COPASI's tree view. If you select the <guibutton>Lyapunov Exponents</guibutton> item in the tree, the corresponding widget will be displayed. The first input field in the widget labeled <guilabel>Number of exponents</guilabel> lets you specify how many Lyapunov Exponents are to be calculated. This number should be between 1 and the number of independent variables in the system (that is the number of metabolites that are not constant minus the number of mass conservation relations). If you specify a number that is higher than the number of independent variables in the system, COPASI will issue a warning telling you to lower the number and it will also tell what the maximal number should be. During the calculation of the Lyapunov Exponents, a time course simulation is carried out. If your model shows a long transient, you might want to exclude the beginning of the trajectory from the calculation of the Lyapunov exponents. For this, COPASI lets you specify at which time point the averaging for the Lyapunov exponents should start. You can specify this delay in the field labeled <guilabel>"Start averaging after t= "</guilabel>. If you check the <guibutton>Use result as new initial state</guibutton> check box, COPASI will use the state of the model after the simulation as the new initial state for all following calculation. Please note that all old model values are replaced. </para>
 <para>With the check box labeled <guilabel>calculate Divergence</guilabel> you can activate the calculation of the average divergence. The divergence is calculated as the average over the trace of the Jacobian (see <!--<link linkend="">-->Lyapunov calculation method<!--</link>-->).  
@@ -2193,24 +2199,24 @@ Once COPASI has read a file, you have to specify some information for each exper
 It is mandatory that COPASI knows about the meaning of each data column. The data in a column can have four different types, which are:
 <variablelist>
  <varlistentry><term>ignored</term>
-  <listitem>
+  <listitem><para>
 Values in columns marked ignored are not taken into account during parameter fitting. Columns of this type may not be associated with elements of the model.
-  </listitem>
+  </para></listitem>
  </varlistentry>
  <varlistentry><term>independent</term>
-  <listitem>
+  <listitem><para>
 Independent data is data which needs to be set for the correct simulation of the experiment row. Possible model elements are initial concentrations or kinetic parameters. Note, for a time course experiment only the independent data in the first data row is set before the start of the simulation. Columns of this type must be associated with elements of the model.
-  </listitem>
+  </para></listitem>
  </varlistentry>
  <varlistentry><term>dependent</term>
-  <listitem>
+  <listitem><para>
 The dependent data is the data, which COPASI tries to fit by minimizing the sum of squares between the simulated data and the experimental data. Columns of this type must be associated with elements of the model.
-  </listitem>
+  </para></listitem>
  </varlistentry>
  <varlistentry><term>Time</term>
-  <listitem>
+  <listitem><para>
 This column type is only available for time course experiments. Obviously only one column with this data type may exist. COPASI attempts to automatically identify the column containing the time by looking at the column headers. You may correct COPASI's guess. This column may not be mapped to any model elements.
-  </listitem>
+  </para></listitem>
  </varlistentry>
 </variablelist>
 </para>
@@ -2275,11 +2281,11 @@ parameters.
 <title>Importing and Exporting models</title>
 <para>COPASI is one modeling and simulation tool among many and often people use more than one tool to create, investigate and simulate their models. In order to make it easier to exchange model files with other programs, COPASI supports reading and writing of several model file formats. Naturally COPASI can read and write it's own file format and it can read Gepasi files just as well although it will not write Gepasi files.
 </para>
-<sect1 id="sbmlImportExport" xrefLabel="Importing and Exporting SBML files">
+<sect1 id="sbmlImportExport" xreflabel="Importing and Exporting SBML files">
+<title>Importing and Exporting SBML files</title>
 <para>
 In addition to those two file formats, COPASI can import SBML Level 1 and 2 files and it can export models as SBML Level 2 files as well as C source code or Berkeley Madonna files.</para>
 <para>We hope that we will be able to support even more different file formats in the future.</para>
-<title>Importing and Exporting SBML files</title>
 <para>COPASI is able to import <ulink url="http://www.sbml.org">SBML</ulink> level 1 and level 2 files as well as export SBML level 2 files through the corresponding entries in the <guimenu>File</guimenu> menu. For the import and export the SBML Model is read with <ulink url="http://www.sbml.org/libsbml.html">libsbml</ulink> and converted to the COPASI model structure and vice versa.</para>
 <para>On exporting, COPASI converts its native model structure to an SBML model that is again written out using libsbml. Since the SBML model structure is converted into the COPASI model structure upon import, some of the information in the SBML file gets lost because COPASI does not support the corresponding model elements. Examples of data that gets lost are rules and events.</para>
 <para>
