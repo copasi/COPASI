@@ -80,7 +80,7 @@ COPASI_TEXINPUTS=.:$(COPASI_DBLATEX):$(DBLATEX_TEXINPUTS):$(TEXINPUTS)
 all: copasi.pdf copasi.xhtml 
 
 copasi.tex: $(SOURCES)
-	SGML_CATALOG_FILES=$(DBLATEX_SGML_CATALOG_FILES) $(DBLATEX) -p $(COPASI_DBLATEX)/copasi.xsl --style $(COPASI_DBLATEX)/copasi.sty -t tex copasi.xml
+	SGML_CATALOG_FILES=$(DBLATEX_SGML_CATALOG_FILES) $(DBLATEX) -p $(COPASI_DBLATEX)/copasi.xsl -t tex copasi.xml
 
 copasi.pdf: copasi.tex $(IMAGES)
 	TEXINPUTS=$(COPASI_TEXINPUTS) pdflatex $< 
@@ -88,8 +88,9 @@ copasi.pdf: copasi.tex $(IMAGES)
 	TEXINPUTS=$(COPASI_TEXINPUTS) pdflatex $<
 
 copasi.xhtml: $(SOURCES) $(IMAGES) copasi_xhtml.xsl
-	[ -d $@ ] || mkdir $@
-	[ -d $@/images ] || cp -r images $@/
+	@[ -d $@ ] || mkdir $@
+	@[ -d $@/images ] || mkdir $@/images
+	@cp images/*.png $@/images
 	(cd $@; \
 	xsltproc ../copasi_xhtml.xsl ../copasi.xml; \
 	cd ..)
