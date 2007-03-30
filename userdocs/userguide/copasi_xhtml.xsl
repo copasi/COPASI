@@ -9,11 +9,12 @@
 <xsl:import href="/sw/share/xml/xsl/docbook-xsl/xhtml/profile-docbook.xsl"/>
 -->
 
-<xsl:import href="file:///C:/cygwin/usr/share/docbook-xsl/xhtml/docbook.xsl"/>
+<xsl:import href="/usr/share/docbook-xsl/xhtml/chunk.xsl"/>
 
-<xsl:param name="use.extensions" select="1" />
+<xsl:param name="html.ext" select="'.xhtml'"/>
+<!-- <xsl:param name="use.extensions" select="1" />
 <xsl:param name="tablecolumns.extension" select="1" />
-<xsl:param name="graphicsize.extension" select="1" />
+<xsl:param name="graphicsize.extension" select="1" /> -->
 <xsl:param name="ignore.image.scaling" select="1" />
 <xsl:param name="default.image.width" select="50" />
 <xsl:param name="nominal.image.width" select="50" />
