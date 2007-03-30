@@ -14,6 +14,18 @@ publisher, pubdate, pagenums, isbn, issn, pubsnumber
 
 This may be used as a template:
   <biblioentry id="" xreflabel="">
+<!-- Begin CVS Header -->
+<!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_bibliography.xml,v $ -->
+<!--   $Revision: 1.4 $ -->
+<!--   $Name:  $ -->
+<!--   $Author: shoops $ -->
+<!--   $Date: 2007/03/30 14:43:31 $ -->
+<!-- End CVS Header -->
+
+<!-- Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Properties, Inc. and EML Research, gGmbH. -->
+<!-- All rights reserved. -->
+
    <authorgroup>
     <author>
      <firstname></firstname>
@@ -23,8 +35,8 @@ This may be used as a template:
    <title>
    </title>
    <edition></edition>
-   <publisher>
-   </publisher>
+   <publisher><publishername>
+   </publishername></publisher>
    <volumenum></volumenum>
    <pagenums></pagenums>
    <pubdate></pubdate>
@@ -50,7 +62,7 @@ This may be used as a template:
    <title>
    An overview of evolutionary algorithms for parameter optimization
    </title>
-   <publisher> Evolutionary Computation </publisher>
+   <publisher><publishername> Evolutionary Computation </publishername></publisher>
    <volumenum>1</volumenum>
    <pagenums>1 - 23</pagenums>
    <pubdate>1997</pubdate>
@@ -74,7 +86,7 @@ This may be used as a template:
    <title>
    Handbook of evolutionary computation
    </title>
-   <publisher>Oxford: IOP Publishing/Oxford University Press </publisher>
+   <publisher><publishername>Oxford: IOP Publishing/Oxford University Press </publishername></publisher>
    <pubdate>1997</pubdate>
   </biblioentry>
 
@@ -90,8 +102,8 @@ This may be used as a template:
     </author>
    </authorgroup>
    <title>Remark on algorithm 178 direct search</title>
-   <publisher>
-   Communications of the Association for Computing Machinery </publisher>
+   <publisher><publishername>
+   Communications of the Association for Computing Machinery </publishername></publisher>
    <volumenum>9</volumenum>
    <pagenums>684 - 685</pagenums>
    <pubdate>1966</pubdate>
@@ -150,8 +162,8 @@ This may be used as a template:
    </authorgroup>
    <title>Control of metabolic systems
    </title>
-   <publisher>Trends Biochem. Sci. 
-   </publisher>
+   <publisher><publishername>Trends Biochem. Sci. 
+   </publishername></publisher>
    <volumenum>10</volumenum>
    <pagenums>16</pagenums>
    <pubdate>1985</pubdate>
@@ -180,9 +192,9 @@ This may be used as a template:
    Minimizing multimodal functions of continuous variables with the
   &quot;simulated annealing&quot; algorithm 
    </title>
-   <publisher>
+   <publisher><publishername>
    ACM Trans. Math. Softw.
-   </publisher>
+   </publishername></publisher>
    <volumenum>13</volumenum>
    <pagenums>262 - 280</pagenums>
    <pubdate>1987</pubdate>
@@ -197,8 +209,8 @@ This may be used as a template:
    Practical methods of optimization
    </title>
    <edition>2nd Edition</edition>
-   <publisher>
-   Chichester: John Wiley &amp; Sons </publisher>
+   <publisher><publishername>
+   Chichester: John Wiley &amp; Sons </publishername></publisher>
    <pubdate>1987</pubdate>
   </biblioentry>
 
@@ -220,10 +232,10 @@ This may be used as a template:
    <title>
    Meta-evolutionary programming
    </title>
-   <publisher>
+   <publisher><publishername>
    25th Asiloma Conference on Signals, Systems and Computers. IEEE
    Computer Society, Asilomar
-   </publisher>
+   </publishername></publisher>
    <pagenums>540 - 545</pagenums>
    <pubdate>1992</pubdate>
   </biblioentry>
@@ -243,7 +255,7 @@ This may be used as a template:
     Efficient Exact Stochastic Simulation of Chemical Systems with
  Many Species and Many Channels
    </title>
-   <publisher>J. Phys. Chem. </publisher>
+   <publisher><publishername>J. Phys. Chem. </publishername></publisher>
    <volumenum>A104(9)</volumenum>
    <pagenums>1876-1889</pagenums>
    <pubdate>2000</pubdate>
@@ -256,7 +268,7 @@ This may be used as a template:
    </author>
    <title>Control analysis of metabolic networks. 1. Homogeneous functions and the summation theorems for control coefficients</title>
    <edition></edition>
-   <publisher>Eur. J. Biochem </publisher>
+   <publisher><publishername>Eur. J. Biochem </publishername></publisher>
    <volumenum>174</volumenum>
    <pagenums>509 - 513</pagenums>
    <pubdate>1988</pubdate>
@@ -271,7 +283,7 @@ This may be used as a template:
     A General Method for Numerically Simulating the Stochastic Time
  Evolution of Coupled Chemical Reactions
    </title>
-   <publisher>J. Comp. Phys. </publisher>
+   <publisher><publishername>J. Comp. Phys. </publishername></publisher>
    <volumenum>22</volumenum>
    <pagenums>403 - 434</pagenums>
    <pubdate>1976</pubdate>
@@ -285,7 +297,7 @@ This may be used as a template:
    <title>
     Genetic algorithms in search, optimization and machine learning
    </title>
-   <publisher>Addison-Wesley, Reading, Mass. </publisher>
+   <publisher><publishername>Addison-Wesley, Reading, Mass. </publishername></publisher>
    <pubdate>1989</pubdate>
   </biblioentry>
 
@@ -307,7 +319,7 @@ This may be used as a template:
    <title>
    Maximisation by quadratic hill-climbing
    </title>
-   <publisher>Econometrica </publisher>
+   <publisher><publishername>Econometrica </publishername></publisher>
    <volumenum>34</volumenum>
    <pagenums>541 - 555</pagenums>
    <pubdate>1966</pubdate>
@@ -325,7 +337,7 @@ This may be used as a template:
     </author>
    </authorgroup>
    <title>A linear steady-state treatment of enzymatic chains. General properties, control and effector strength</title>
-   <publisher>Eur. J. Biochem. </publisher>
+   <publisher><publishername>Eur. J. Biochem. </publishername></publisher>
    <volumenum>42</volumenum>
    <pagenums>89 - 95</pagenums>
    <pubdate>1974</pubdate>
@@ -344,7 +356,7 @@ This may be used as a template:
    </authorgroup>
    <title>Mathematical analysis of multienzyme systems.
     II. Steady-state and transient control</title>
-   <publisher>BioSystems </publisher>
+   <publisher><publishername>BioSystems </publishername></publisher>
    <volumenum>7</volumenum>
    <pagenums>130 - 136</pagenums>
    <pubdate>1975</pubdate>
@@ -359,9 +371,9 @@ This may be used as a template:
    <title>
     ODEPACK, A Systematized Collection of ODE Solvers
    </title>
-   <publisher>Scientific Computing, R. S. Stepleman et al. (eds.),
+   <publisher><publishername>Scientific Computing, R. S. Stepleman et al. (eds.),
     North-Holland, Amsterdam, IMACS Transactions on Scientific
-    Computation </publisher>
+    Computation </publishername></publisher>
    <volumenum>1</volumenum>
    <pagenums>55 - 64</pagenums>
    <pubdate>1983</pubdate>
@@ -381,7 +393,7 @@ This may be used as a template:
    <title>
     "Direct search" solution of numerical and statistical problems
    </title>
-   <publisher>Journal of the Association for Computing Machinery </publisher>
+   <publisher><publishername>Journal of the Association for Computing Machinery </publishername></publisher>
    <volumenum>8</volumenum>
    <pagenums>212 - 229</pagenums>
    <pubdate>1961</pubdate>
@@ -399,7 +411,7 @@ This may be used as a template:
     </author>
    </authorgroup>
    <title>The control of flux.</title>
-   <publisher>Symp. Soc. Exp. Biol. </publisher>
+   <publisher><publishername>Symp. Soc. Exp. Biol. </publishername></publisher>
    <volumenum>27</volumenum>
    <pagenums>65 - 104</pagenums>
    <pubdate>1973</pubdate>
@@ -411,9 +423,9 @@ This may be used as a template:
     <surname>Kaupe</surname>
    </author>
    <title>Algorithm 178 direct search</title>
-   <publisher>
+   <publisher><publishername>
    Communications of the Association of Computing Machinery 
-   </publisher>
+   </publishername></publisher>
    <volumenum>6</volumenum>
    <pagenums>313 - 314</pagenums>
    <pubdate>1963</pubdate>
@@ -437,7 +449,7 @@ This may be used as a template:
    <title>
    Optimization by simulated annealing
    </title>
-   <publisher>Science</publisher>
+   <publisher><publishername>Science</publishername></publisher>
    <volumenum>220</volumenum>
    <pagenums>671 - 680</pagenums>
    <pubdate>1983</pubdate>
@@ -451,7 +463,7 @@ This may be used as a template:
    <title>
    A method for the solution of certain nonlinear problems in least squares
    </title>
-   <publisher>Quart. Appl. Math. </publisher>
+   <publisher><publishername>Quart. Appl. Math. </publishername></publisher>
    <volumenum>2</volumenum>
    <pagenums>164 - 168</pagenums>
    <pubdate>1944</pubdate>
@@ -465,7 +477,7 @@ This may be used as a template:
    <title>
     A Fast Pseudo Random Number Generator
    </title>
-   <publisher>Dr. Dobb's Journal </publisher>
+   <publisher><publishername>Dr. Dobb's Journal </publishername></publisher>
    <volumenum>May</volumenum>
    <pagenums>152 - 157</pagenums>
    <pubdate>1991</pubdate>
@@ -479,7 +491,7 @@ This may be used as a template:
    <title>
     An algorithm for least squares estimation of nonlinear parameters
    </title>
-   <publisher>SIAM Journal </publisher>
+   <publisher><publishername>SIAM Journal </publishername></publisher>
    <volumenum>11</volumenum>
    <pagenums>431 - 441</pagenums>
    <pubdate>1963</pubdate>
@@ -500,7 +512,7 @@ This may be used as a template:
     Mersenne twister: A 623-dimensionally equidistributed uniform
      pseudorandom number generator
    </title>
-   <publisher>ACM Trans. on Modeling and Computer Simulations </publisher>
+   <publisher><publishername>ACM Trans. on Modeling and Computer Simulations </publishername></publisher>
    <volumenum>8</volumenum>
    <pagenums>3 - 30</pagenums>
    <pubdate>1998</pubdate>
@@ -515,7 +527,7 @@ This may be used as a template:
    Genetic algorithms + data structures = evolution programs
    </title>
    <edition>3rd Edition</edition>
-   <publisher>Springer-Verlag, Berlin. </publisher>
+   <publisher><publishername>Springer-Verlag, Berlin. </publishername></publisher>
    <pubdate>1994</pubdate>
   </biblioentry>
 
@@ -527,7 +539,7 @@ This may be used as a template:
    <title>
     An Introduction to Genetic Algorithms
    </title>
-   <publisher>MIT Press, Boston. </publisher>
+   <publisher><publishername>MIT Press, Boston. </publishername></publisher>
    <pubdate>1995</pubdate>
   </biblioentry>
 
@@ -540,7 +552,7 @@ This may be used as a template:
     Automatic selection of methods for solving stiff and nonstiff
      systems of ordinary differential equations. 
    </title>
-   <publisher>SIAM J. Sci. Stat. Comput. </publisher>
+   <publisher><publishername>SIAM J. Sci. Stat. Comput. </publishername></publisher>
    <volumenum>4</volumenum>
    <pagenums>136 - 148</pagenums>
    <pubdate>1983</pubdate>
@@ -554,7 +566,7 @@ This may be used as a template:
     <title>
       Metabolic control theory: a structural approach
     </title>
-    <publisher>J. Theor. Biol.</publisher>
+    <publisher><publishername>J. Theor. Biol.</publishername></publisher>
     <volumenum>135</volumenum>
     <pagenums>175 - 201</pagenums>
     <pubdate>1988</pubdate>
@@ -575,7 +587,7 @@ This may be used as a template:
    <title>
    Stochastic ranking for constrained evolutionary optimization
    </title>
-   <publisher>EEE Transactions on Evolutionary Computation </publisher>
+   <publisher><publishername>EEE Transactions on Evolutionary Computation </publishername></publisher>
    <volumenum>4</volumenum>
    <pagenums>284 - 294</pagenums>
    <pubdate>2000</pubdate>
@@ -587,10 +599,10 @@ This may be used as a template:
     <surname>Swann</surname>
    </author>
    <title>Direct search methods</title>
-   <publisher>
+   <publisher><publishername>
    Numerical methods for unconstrained optimization., W. Murray, ed.
    (London &amp; New York: Academic Press)
-   </publisher>
+   </publishername></publisher>
    <pagenums>13 - 28</pagenums>
    <pubdate>1972</pubdate>
   </biblioentry>
@@ -613,9 +625,9 @@ This may be used as a template:
     <title>
       Conservation analysis of large biochemical networks
     </title>
-    <publisher>
+    <publisher><publishername>
       Bioinformatics
-    </publisher>
+    </publishername></publisher>
     <volumenum>22(3)</volumenum>
     <pagenums>346 - 353</pagenums>
     <pubdate>2006</pubdate>
@@ -633,7 +645,7 @@ This may be used as a template:
     </author>
    </authorgroup>
    <title>How do enzyme activities control metabolite concentrations? An additional theorem in the theory of metabolic control</title>
-   <publisher>Eur. J. Biochem. </publisher>
+   <publisher><publishername>Eur. J. Biochem. </publishername></publisher>
    <volumenum>142</volumenum>
    <pagenums>425 - 430</pagenums>
    <pubdate>1984</pubdate>
@@ -661,9 +673,9 @@ This may be used as a template:
     <title>
       Determining Lyapunov exponents from a time series
     </title>
-    <publisher>
+    <publisher><publishername>
       Physika
-    </publisher>
+    </publishername></publisher>
     <volumenum>16D</volumenum>
     <pagenums>285 - 317</pagenums>
     <pubdate>1985</pubdate>

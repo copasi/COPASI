@@ -1,10 +1,10 @@
 <chapter id="methods" xreflabel="Methods">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_methods.xml,v $ -->
-<!--   $Revision: 1.10 $ -->
+<!--   $Revision: 1.11 $ -->
 <!--   $Name:  $ -->
-<!--   $Author: ssahle $ -->
-<!--   $Date: 2007/02/19 15:49:10 $ -->
+<!--   $Author: shoops $ -->
+<!--   $Date: 2007/03/30 14:43:31 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -66,8 +66,8 @@ LSODA was written by Linda R. Petzold and Alan C. Hindmarsh.
 	Lawrence Livermore National Laboratory,
 	Livermore, CA 94550, U.S.A.
 -->
-It solves systems <mml:math><mml:mi>dy</mml:mi><mml:mo>/</mml:mo>
-<mml:mi>dt</mml:mi><mml:mo> = </mml:mo><mml:mi>f </mml:mi></mml:math> 
+It solves systems <inlineequation><mml:math><mml:mi>dy</mml:mi><mml:mo>/</mml:mo>
+<mml:mi>dt</mml:mi><mml:mo> = </mml:mo><mml:mi>f </mml:mi></mml:math></inlineequation> 
 with a dense or banded Jacobian when the problem is stiff, but it
 automatically selects between non-stiff (Adams) and stiff (BDF)
 methods.  It uses the non-stiff method initially, and dynamically
@@ -93,11 +93,11 @@ determine all variables through ODEs.
 This parameter is a numeric value specifying the desired relative
 tolerance the user wants to achieve. A smaller value means that the
 trajectory is calculated more accurate. The default value is
-<mml:math><mml:mn>1.0</mml:mn><mml:mo>*</mml:mo>
-<mml:msup><mml:mn>10</mml:mn><mml:mn>-6</mml:mn></mml:msup></mml:math>.
+<inlineequation><mml:math><mml:mn>1.0</mml:mn><mml:mo>*</mml:mo>
+<mml:msup><mml:mn>10</mml:mn><mml:mn>-6</mml:mn></mml:msup></mml:math></inlineequation>.
 Please note that best achievable relative tolerance is approximately 
-<mml:math><mml:mn>2.22</mml:mn><mml:mo>*</mml:mo>
-<mml:msup><mml:mn>10</mml:mn><mml:mn>-16</mml:mn></mml:msup></mml:math>.
+<inlineequation><mml:math><mml:mn>2.22</mml:mn><mml:mo>*</mml:mo>
+<mml:msup><mml:mn>10</mml:mn><mml:mn>-16</mml:mn></mml:msup></mml:math></inlineequation>.
 </para>
 </listitem>
 </varlistentry>
@@ -122,11 +122,11 @@ This parameter is a numeric value specifying the desired absolute
 tolerance the user wants to achieve or if Use Default Absolute
 Tolerance parameter is set '1' the value COPASI selected. Please note
 that COPASI internally calculates with particle numbers which might be
-quite large (<mml:math><mml:mn>1.0</mml:mn><mml:mo>*</mml:mo>
-<mml:msup><mml:mn>10</mml:mn><mml:mn>23</mml:mn></mml:msup></mml:math>)
+quite large (<inlineequation><mml:math><mml:mn>1.0</mml:mn><mml:mo>*</mml:mo>
+<mml:msup><mml:mn>10</mml:mn><mml:mn>23</mml:mn></mml:msup></mml:math></inlineequation>)
 and therefore an absolute tolerance of 
-<mml:math><mml:mn>1.0</mml:mn><mml:mo>*</mml:mo>
-<mml:msup><mml:mn>10</mml:mn><mml:mn>9</mml:mn></mml:msup></mml:math>
+<inlineequation><mml:math><mml:mn>1.0</mml:mn><mml:mo>*</mml:mo>
+<mml:msup><mml:mn>10</mml:mn><mml:mn>9</mml:mn></mml:msup></mml:math></inlineequation>
 is already small.
 </para>
 </listitem>
@@ -167,7 +167,7 @@ next desired reporting time. The default value is '10000'.
 <sect3 id="NextReactionMethod" xreflabel="Next Reaction Method">
 <title>The Next-Reaction-Method</title>
 <para>
-This stochastic simulation method utilizes the algorithm developed by Gibson and Bruck (see <citation>Gibson00</citation> for details). For each reaction a putative stochastic reaction time is calculated and the reaction with the shortest reaction time will be realized. The set of reactions is organized in a priority queue to allow for the efficient search for the fastest reaction. In addition, by using a so-called dependency graph only those reaction times are recalculated in each step, that are dependent on the reaction, which has been realized. This simulation method requires all the reactions to be irreversibe. However, Copasi provides a tool, that converts all reversible reactions into irreversible ones. Because the algorithm internally works on discrete particle numbers rather than concentrations, the particle numbers in the system must not exceed a value of approximately <mml:math><mml:msup><mml:mn>2</mml:mn><mml:mn>64</mml:mn></mml:msup></mml:math>.
+This stochastic simulation method utilizes the algorithm developed by Gibson and Bruck (see <citation>Gibson00</citation> for details). For each reaction a putative stochastic reaction time is calculated and the reaction with the shortest reaction time will be realized. The set of reactions is organized in a priority queue to allow for the efficient search for the fastest reaction. In addition, by using a so-called dependency graph only those reaction times are recalculated in each step, that are dependent on the reaction, which has been realized. This simulation method requires all the reactions to be irreversibe. However, Copasi provides a tool, that converts all reversible reactions into irreversible ones. Because the algorithm internally works on discrete particle numbers rather than concentrations, the particle numbers in the system must not exceed a value of approximately <inlineequation><mml:math><mml:msup><mml:mn>2</mml:mn><mml:mn>64</mml:mn></mml:msup></mml:math></inlineequation>.
 </para>
 
 <variablelist><title>Options for Stochastic (Gibson + Bruck)</title>
@@ -346,7 +346,7 @@ halts without a solution.
 </para>
 <para>
 The iteration of the plain Newton  method is:
-<mml:math display="block">
+<equation><mml:math display="block">
  <mml:mrow>
   <mml:msub>
    <mml:mi>x</mml:mi>
@@ -398,9 +398,9 @@ The iteration of the plain Newton  method is:
    </mml:mfrac>
   </mml:mrow>
  </mml:mrow>
-</mml:math>
+</mml:math></equation>
 In the damped method if 
-<mml:math>
+<inlineequation><mml:math>
  <mml:msub>
   <mml:mi>x</mml:mi>
   <mml:mrow>
@@ -409,15 +409,15 @@ In the damped method if
    <mml:mn>1</mml:mn>
   </mml:mrow>
  </mml:msub>
-</mml:math> 
+</mml:math></inlineequation> 
 has a larger residual error than
-<mml:math>
+<inlineequation><mml:math>
  <mml:msub>
   <mml:mi>x</mml:mi>
   <mml:mi>i</mml:mi>
  </mml:msub>
-</mml:math> one looks at
-<mml:math display="block">
+</mml:math></inlineequation> one looks at
+<equation><mml:math display="block">
  <mml:mrow>
   <mml:msub>
    <mml:mi>x</mml:mi>
@@ -484,15 +484,15 @@ has a larger residual error than
  <mml:mn>...</mml:mn>
  <mml:mi>, </mml:mi>
  <mml:mn>32</mml:mn>
-</mml:math>
+</mml:math></equation>
 and accepts the first such value that has a smaller residual
 error than
-<mml:math>
+<inlineequation><mml:math>
  <mml:msub>
   <mml:mi>x</mml:mi>
   <mml:mi>i</mml:mi>
  </mml:msub>
-</mml:math>. If none is found, the procedure halts without a
+</mml:math></inlineequation>. If none is found, the procedure halts without a
 solution (because it is at a local minimum). 
 </para>
 </listitem>
@@ -501,11 +501,11 @@ solution (because it is at a local minimum).
 <listitem>
 <para>
 This parameter is a boolean value to determine whether to use the ODE
-solver (<xref linkend="LSODA">LSODA</xref>) to follow the time course
+solver (<xref linkend="LSODA"/>) to follow the time course
 defined by the differential equations until a steady state is
 reached. If at 
-<mml:math>
-<mml:msup><mml:mn>10</mml:mn><mml:mn>10</mml:mn></mml:msup></mml:math>
+<inlineequation><mml:math>
+<mml:msup><mml:mn>10</mml:mn><mml:mn>10</mml:mn></mml:msup></mml:math></inlineequation>
 units of time no steady state has been reached the method halts with
 no solution. If Use Newton is '1' an attempt to find the steady-state
 via the damped Newton method is made at each intermediate time point.
@@ -518,11 +518,11 @@ integration.
 <listitem>
 <para>
 This parameter is a boolean value to determine whether to use the ODE
-solver (<xref linkend="LSODA">LSODA</xref>) to reverse the time course
+solver (<xref linkend="LSODA"/>) to reverse the time course
 (going backwards in time) defined by the differential equations until
 a steady state is reached. If at 
-<mml:math><mml:mn>-1</mml:mn><mml:mo>*</mml:mo>
-<mml:msup><mml:mn>10</mml:mn><mml:mn>10</mml:mn></mml:msup></mml:math>
+<inlineequation><mml:math><mml:mn>-1</mml:mn><mml:mo>*</mml:mo>
+<mml:msup><mml:mn>10</mml:mn><mml:mn>10</mml:mn></mml:msup></mml:math></inlineequation>
 units of time no steady state has been reached the method halts with
 no solution. If Use Newton is '1' an attempt to find the steady-state
 via the damped Newton method is made at each intermediate time point.
@@ -554,7 +554,7 @@ default is '50'.
 <listitem>
 <para>
 This is a numeric value to determine the step size used to calculate
-<mml:math> 
+<inlineequation><mml:math> 
  <mml:mi>f</mml:mi>
  <mml:mi>&apos;</mml:mi>
  <mml:mrow>
@@ -569,7 +569,7 @@ This is a numeric value to determine the step size used to calculate
   </mml:msub>
   <mml:mo>)</mml:mo>
  </mml:mrow>
-</mml:math>. The default is '0.001'.
+</mml:math></inlineequation>. The default is '0.001'.
 </para>
 </listitem>
 </varlistentry>
@@ -579,8 +579,8 @@ This is a numeric value to determine the step size used to calculate
 This is a positive numeric value to determine the resolution used to
 decide whether the current state is acceptable as a steady-state. If
 the absolute change of each state variable is smaller than the
-resolutions the state is accepted. The default is <mml:math>
-<mml:msup><mml:mn>10</mml:mn><mml:mn>-9</mml:mn></mml:msup></mml:math>.
+resolutions the state is accepted. The default is <inlineequation><mml:math>
+<mml:msup><mml:mn>10</mml:mn><mml:mn>-9</mml:mn></mml:msup></mml:math></inlineequation>.
 Note that this value is interpreted as a concentration value, even though the calculation internally uses particle numbers. The reason for that is purely heuristical: In many cases the modeler will choose the units in a way that concentration values are neither extremely large not extremely small numerically so that the default value for this parameter leads to useful results. However generally it is not save to just keep the default value without checking. 
 </para>
 </listitem>
@@ -608,7 +608,7 @@ on a parameter affects a system variable (e.g. fluxes or
 concentrations). It is defined <citation>Kacser73</citation>
 <citation>Heinrich74</citation>
 <citation>Burns85</citation> as: 
- <mml:math display="block">
+ <equation><mml:math display="block">
   <mml:mrow>
    <mml:mrow>
     <mml:msubsup>
@@ -642,7 +642,7 @@ concentrations). It is defined <citation>Kacser73</citation>
     <mml:mi>A</mml:mi>
    </mml:mfrac>
   </mml:mrow>
- </mml:math>
+ </mml:math></equation>
 where A is the variable, i the step (enzyme) and v the steady-state
 rate of the perturbed step. The most common control coefficients are
 those for fluxes and metabolite concentrations, but any variable of
@@ -667,7 +667,7 @@ the flux control coefficients of a pathway. By various procedures
 <citation>Reder88</citation> it
  can be demonstrated that for a given reference flux the sum 
 of all flux-control coefficients (of all steps) is equal to unity: 
- <mml:math display="block">
+ <equation><mml:math display="block">
   <mml:mrow>
    <mml:msub>
     <mml:mo>&sum;</mml:mo>
@@ -686,10 +686,10 @@ of all flux-control coefficients (of all steps) is equal to unity:
     <mml:mn>1</mml:mn>
    </mml:mrow>
   </mml:mrow>
- </mml:math>
+ </mml:math></equation>
 For a given reference metabolite concentration the sum of all
 concentration-control coefficients is zero: 
- <mml:math display="block">
+ <equation><mml:math display="block">
   <mml:mrow>
    <mml:msub>
     <mml:mo>&sum;</mml:mo>
@@ -708,7 +708,7 @@ concentration-control coefficients is zero:
     <mml:mn>0</mml:mn>
    </mml:mrow>
   </mml:mrow>
- </mml:math>
+ </mml:math></equation>
 where the summations are over all the steps of the system.
 </para>
 
@@ -751,7 +751,7 @@ interest. The elasticity coefficients are defined as the ratio of
 relative change in local rate to the relative change in one parameter
 (normally the concentration of an effector). Infinitesimally, this is
 written as:  
- <mml:math display="block">
+ <equation><mml:math display="block">
   <mml:mrow>
    <mml:mrow>
     <mml:msubsup>
@@ -785,7 +785,7 @@ written as:
     </mml:msub>
    </mml:mfrac>
   </mml:mrow>
- </mml:math>
+ </mml:math></equation>
 where v is the rate of the enzyme in question and p is the parameter
 of the perturbation. Each enzyme has as many elasticity coefficients
 as the number of parameters that affect it. One can immediately
@@ -819,7 +819,7 @@ The connectivity theorem for flux-control coefficients
 the sum of the 
 products of the flux-control coefficient of all (i) steps affected by
 S and its elasticity coefficients towards S, is zero: 
- <mml:math display="block">
+ <equation><mml:math display="block">
   <mml:mrow>
    <mml:msub>
     <mml:mo>&sum;</mml:mo>
@@ -846,10 +846,10 @@ S and its elasticity coefficients towards S, is zero:
     <mml:mn>0</mml:mn>
    </mml:mrow>
   </mml:mrow>
- </mml:math>
+ </mml:math></equation>
 For the concentration-control coefficients, the following two
 equations apply <citation>Westerhoff84</citation>: 
- <mml:math display="block">
+ <equation><mml:math display="block">
   <mml:mrow>
    <mml:msub>
     <mml:mo>&sum;</mml:mo>
@@ -880,9 +880,9 @@ equations apply <citation>Westerhoff84</citation>:
     <mml:mi>S</mml:mi>
    </mml:mrow>
   </mml:mrow>
- </mml:math>
+ </mml:math></equation>
 
- <mml:math display="block">
+ <equation><mml:math display="block">
   <mml:mrow>
    <mml:msub>
     <mml:mo>&sum;</mml:mo>
@@ -909,7 +909,7 @@ equations apply <citation>Westerhoff84</citation>:
     <mml:mn>-1</mml:mn>
    </mml:mrow>
   </mml:mrow>
- </mml:math>
+ </mml:math></equation>
 The first equation applies to the case in which the reference metabolite (A)
 is different from the perturbed metabolite (S). Whereas the second applies to
 the case in which the reference metabolite is the same as the
@@ -924,6 +924,8 @@ perturbation to and from its immediate neighbours.
 </para>
 </sect2>
 
+<sect2 id="MCAScaling">
+<title>Scaling</title>
 <para>
 COPASI calculates (non-normalised) elasticity coefficients by
 numerical derivation with finite differences. To calculate control
@@ -947,15 +949,14 @@ This parameter is ignored in the current version of COPASI.
 </varlistentry>
 </variablelist>
 
-<para>The rest of the options is described in the sections for <xref linkend="methodSteadyState">Steady State Analysis</xref> and <xref linkend="methodTimeCourse">Time Course Simulation</xref>.</para>
-
+<para>The rest of the options is described in the sections for <xref linkend="methodSteadyState" /> and <xref linkend="methodTimeCourse" />.</para>
+</sect2>
 </sect1>
 
 
 <sect1 id="optimizationMethod" xreflabel="Optimization Method">
 <title>Optimization Methods</title>
-<para>The optimization method as described in <xref
-linkend="optimization">this chapter</xref> tries to minimize a given
+<para>The optimization methods described in this chapter attempt to minimize a given
 objective function. There are several ways to do this and COPASI
 supports many different methods for the minimization of an objective
 function.</para>
@@ -1120,7 +1121,7 @@ from a normal distribution with zero mean and a standard deviation of
 10% of the parameter value. Parameters may exceed boundaries. Whenever
 this happens or a constraint to the solution is violated the square of
 the size of the violation is summed up, i.e., we calculate 
-<mml:math display="block">
+<equation><mml:math display="block">
  <mml:mrow>
   <mml:mo>&phi;</mml:mo>
   <mml:mo>=</mml:mo>
@@ -1294,9 +1295,9 @@ the size of the violation is summed up, i.e., we calculate
    </mml:mrow>
   </mml:mrow>
  </mml:mrow>
-</mml:math>
+</mml:math></equation>
 where the parameters are given by 
-<mml:math>
+<inlineequation><mml:math>
   <mml:mrow>
    <mml:msub>
     <mml:mi>p</mml:mi>
@@ -1326,9 +1327,9 @@ where the parameters are given by
     <mml:mo>)</mml:mo>
    </mml:mrow>
   </mml:mrow>
-</mml:math> 
+</mml:math></inlineequation> 
 and the constraints by
-<mml:math>
+<inlineequation><mml:math>
   <mml:mrow>
    <mml:msub>
     <mml:mi>c</mml:mi>
@@ -1358,8 +1359,8 @@ and the constraints by
     <mml:mo>)</mml:mo>
    </mml:mrow>
   </mml:mrow>
-</mml:math>.
-The value <mml:math><mml:mo>&phi;</mml:mo></mml:math> is used within
+</mml:math></inlineequation>.
+The value <inlineequation><mml:math><mml:mo>&phi;</mml:mo></mml:math></inlineequation> is used within
 the selection.
 </para>
 </listitem>
@@ -1380,11 +1381,11 @@ Selection is done by the bubble sort described in
 <citation>Runarsson00</citation>.
 This sort incorporates a probability to compare
 objective values for individuals with a 
-<mml:math>
+<inlineequation><mml:math>
  <mml:mo>&phi;</mml:mo>
  <mml:mo>&ne;</mml:mo>
  <mml:mn>0</mml:mn>
-</mml:math>. The pseudo code for the sort
+</mml:math></inlineequation>. The pseudo code for the sort
 is: <literallayout>  // Here sweepNum is optimal number of sweeps from paper, i.e., TotalPopulation
   for (i = 0; i &lt; sweepNum; i++)
     {
@@ -1527,12 +1528,12 @@ iterations the algorithm Sharl perform. The default is '50'.
 This parameter is a positive value determining the tolerance with
 which the solution shall be determined. If the improvement between two
 steps is less than the tolerance the algorithm stops. The default is
-'<mml:math>
+'<inlineequation><mml:math>
  <mml:msup>
   <mml:mn>10</mml:mn>
   <mml:mn>-5</mml:mn>
  </mml:msup>
-</mml:math>'. 
+</mml:math></inlineequation>'. 
 </para>
 </listitem>
 </varlistentry>
@@ -1609,12 +1610,12 @@ iterations the algorithm shall perform. The default is '200'.
 This parameter is a positive value determining the tolerance with
 which the solution shall be determined. If the improvement between two
 steps is less than the tolerance the algorithm stops. The default is
-'<mml:math>
+'<inlineequation><mml:math>
  <mml:msup>
   <mml:mn>10</mml:mn>
   <mml:mn>-5</mml:mn>
  </mml:msup>
-</mml:math>'. 
+</mml:math></inlineequation>'. 
 </para>
 </listitem>
 </varlistentry>
@@ -1757,7 +1758,7 @@ mutations. The algorithm assures that each parameter value will be
 within its boundaries. But constraints to the solutions may be
 violated. Whenever this happens the square of the size of the
 violation is summed up, i.e., we calculate  
-<mml:math display="block">
+<equation><mml:math display="block">
  <mml:mrow>
   <mml:mo>&phi;</mml:mo>
   <mml:mo>=</mml:mo>
@@ -1847,9 +1848,9 @@ violation is summed up, i.e., we calculate
    </mml:mrow>
   </mml:mrow>
  </mml:mrow>
-</mml:math>
+</mml:math></equation>
 where the constraints are given by
-<mml:math>
+<inlineequation><mml:math>
   <mml:mrow>
    <mml:msub>
     <mml:mi>c</mml:mi>
@@ -1879,8 +1880,8 @@ where the constraints are given by
     <mml:mo>)</mml:mo>
    </mml:mrow>
   </mml:mrow>
-</mml:math>.
-The value <mml:math><mml:mo>&phi;</mml:mo></mml:math> is used within
+</mml:math></inlineequation>.
+The value <inlineequation><mml:math><mml:mo>&phi;</mml:mo></mml:math></inlineequation> is used within
 the selection, which is perfomred as described in <xref
 linkend="GeneticAlgorithmSR"/> 
 </para>
@@ -1987,12 +1988,12 @@ follows:
 <listitem>
 <para>
 Each temperature cycle takes 
-<mml:math>
+<inlineequation><mml:math>
   <mml:mrow>
    <mml:mrow>
     <mml:mn>10</mml:mn>
     <mml:mo>*</mml:mo>
-    <mml:mi mml:fontstyle="italic">max</mml:mi>
+    <mml:mi>max</mml:mi>
    </mml:mrow>
    <mml:mrow>
     <mml:mrow>
@@ -2012,9 +2013,9 @@ Each temperature cycle takes
     <mml:mi>p</mml:mi>
    </mml:mrow>
   </mml:mrow>
-</mml:math>
+</mml:math></inlineequation>
  random steps, with
- <mml:math><mml:mi>p</mml:mi></mml:math> being the number of
+ <inlineequation><mml:math><mml:mi>p</mml:mi></mml:math></inlineequation> being the number of
  optimization parameters.  
 </para>
 </listitem>
@@ -2023,7 +2024,7 @@ Each temperature cycle takes
 <para>
 At each step, a new candidate solution is accepted if: a) it reduced
 the objective function value, or b) with a probability equal to
-<mml:math>
+<inlineequation><mml:math>
   <mml:msup>
    <mml:mo>e</mml:mo>
    <mml:mrow>
@@ -2037,10 +2038,10 @@ the objective function value, or b) with a probability equal to
     </mml:mfrac>
    </mml:mrow>
   </mml:msup>
-</mml:math>,
-where <mml:math><mml:mo>&Delta;</mml:mo><mml:mi>f</mml:mi>
-</mml:math> is the increase in objective function value, and
-<mml:math><mml:mi>T</mml:mi></mml:math> is the current temperature.
+</mml:math></inlineequation>,
+where <inlineequation><mml:math><mml:mo>&Delta;</mml:mo><mml:mi>f</mml:mi>
+</mml:math></inlineequation> is the increase in objective function value, and
+<inlineequation><mml:math><mml:mi>T</mml:mi></mml:math></inlineequation> is the current temperature.
 </para>
 </listitem>
 
@@ -2075,7 +2076,7 @@ has the same units as the objective function, so what represents
 <para>
 Rate by which the temperature is reduced from one cycle to the next,
 given by the formula:
-<mml:math>
+<inlineequation><mml:math>
  <mml:msub>
   <mml:mi>T</mml:mi>
   <mml:mi>new</mml:mi>
@@ -2087,7 +2088,7 @@ given by the formula:
  </mml:msub>
  <mml:mo>*</mml:mo> 
  <mml:mtext>"Cooling Factor"</mml:mtext> 
-</mml:math>.
+</mml:math></inlineequation>.
 The simulated annealing algorithm works best if the temperature is
 reduced at a slow rate, so this value should be close to 1. (but
 values closer to 1 will also cause the algorithm to run longer). The
@@ -2102,12 +2103,12 @@ default is '0.85'.
 Convergence stopping criterium: the method stops when the change in
 the objective function has been smaller than this value in the last
 two temperature steps. The default is
-'<mml:math>
+'<inlineequation><mml:math>
  <mml:msup>
   <mml:mn>10</mml:mn>
   <mml:mn>-6</mml:mn>
  </mml:msup>
-</mml:math>'. (This is an absolute tolerance)
+</mml:math></inlineequation>'. (This is an absolute tolerance)
 </para>
 </listitem>
 </varlistentry>
@@ -2166,12 +2167,12 @@ iterations the algorithm shall perform. The default is '100'.
 This parameter is a positive value determining the tolerance with
 which the solution shall be determined. If the improvement between two
 steps is less than the tolerance the algorithm stops. The default is
-'<mml:math>
+'<inlineequation><mml:math>
  <mml:msup>
   <mml:mn>10</mml:mn>
   <mml:mn>-6</mml:mn>
  </mml:msup>
-</mml:math>'. 
+</mml:math></inlineequation>'. 
 </para>
 </listitem>
 </varlistentry>
@@ -2184,7 +2185,7 @@ steps is less than the tolerance the algorithm stops. The default is
   <title>Lyapunov Exponents Calculation</title>
   <para>
     Copasi allows the calculation of lyapunov exponents of a trajectory as well as the average divergence of the system. The exponents are calculated for the reduced system (see <xref linkend="deterministicModel" />), so the maximum number of exponents that can be calculated is the number of independent variables. If less than this number of exponents is requested, the largest exponents are calculated.
-    Copasi uses the well known algorithm proposed by Wolf et al. (<citation>Wolf85</citation>). This algorithm integrates one reference trajectory and simultanously <mml:math><mml:mi>N</mml:mi></mml:math> difference trajectories (if <mml:math><mml:mi>N</mml:mi></mml:math> is the number of exponents requested) in a system linearized around the reference trajectory. This integration is carried out for a short time interval (the "Orthonormalization interval", see below) and then the difference vectors are reorthonormalized. The exponents for this time interval are calculated from how much each of the difference trajectories converged or diverged from the reference trajectory during the interval. This calculation is repeated and the "local" exponents are averaged over the the whole trajectory.
+    Copasi uses the well known algorithm proposed by Wolf et al. (<citation>Wolf85</citation>). This algorithm integrates one reference trajectory and simultanously <inlineequation><mml:math><mml:mi>N</mml:mi></mml:math></inlineequation> difference trajectories (if <inlineequation><mml:math><mml:mi>N</mml:mi></mml:math></inlineequation> is the number of exponents requested) in a system linearized around the reference trajectory. This integration is carried out for a short time interval (the "Orthonormalization interval", see below) and then the difference vectors are reorthonormalized. The exponents for this time interval are calculated from how much each of the difference trajectories converged or diverged from the reference trajectory during the interval. This calculation is repeated and the "local" exponents are averaged over the the whole trajectory.
   </para>
   <para>
     The divergence is calculated (if requested) as the average of the trace of the jacobian. Although it is not numerically necessary the divergence is also calculated for the same short intervals that are used for the lyapunov exponents. This allows comparing the local values of the divergence with the local exponents.
@@ -2201,7 +2202,7 @@ steps is less than the tolerance the algorithm stops. The default is
         <para>
           This is the time interval after which an orthonormalization of the difference trajectories takes place. This parameter is critical for the accuracy of the lyapunov exponents. Smaller values generally lead to more accurate results, but take longer time (since the numerical integration needs to be restarted for many short calculations).
           One way to judge the adequacy of this parameter is to compare the sum of exponents with the divergence of the system. Those two values should be the same (only if you request the calculation of all exponents), and since the calculation of the divergence is very robust, a mismatch would typically mean that the orthonormalization interval needs to be smaller.
-          Note that this parameter mostly affects the accuracy of the exponents with the largest absolute values. Since large positive exponents are unusual, this means that the largest negative exponents suffer from accuracy problems related to this parameter. If you don't need the exact values of the stronly negative exponents you can chose a larger value for this parameter and enjoy a much faster calculation. The default value is <mml:math><mml:mn>1.0</mml:mn></mml:math>.
+          Note that this parameter mostly affects the accuracy of the exponents with the largest absolute values. Since large positive exponents are unusual, this means that the largest negative exponents suffer from accuracy problems related to this parameter. If you don't need the exact values of the stronly negative exponents you can chose a larger value for this parameter and enjoy a much faster calculation. The default value is <inlineequation><mml:math><mml:mn>1.0</mml:mn></mml:math></inlineequation>.
         </para>
       </listitem>
     </varlistentry>
@@ -2209,13 +2210,13 @@ steps is less than the tolerance the algorithm stops. The default is
       <listitem>
         <para>
           This parameter specifies the overall time of the calculation. The integration will be repeated in small steps given by the "Orthonormalization interval" parameter until the overall time is reached.
-          This value is also critical for the accuracy of the exponents. Since copasi cannot guess how fast the exponents converge, no save default value can be given for this parameter. One indication would be that if the system does not run into a steady state one of the exponents should be zero. If this is not the case in the result, probably the overal time was to short to allow the exponents to converge to their average value. The default value is <mml:math><mml:mn>1000</mml:mn></mml:math>.
+          This value is also critical for the accuracy of the exponents. Since copasi cannot guess how fast the exponents converge, no save default value can be given for this parameter. One indication would be that if the system does not run into a steady state one of the exponents should be zero. If this is not the case in the result, probably the overal time was to short to allow the exponents to converge to their average value. The default value is <inlineequation><mml:math><mml:mn>1000</mml:mn></mml:math></inlineequation>.
         </para>
       </listitem>
     </varlistentry>
   </variablelist>
   <para>
-    The rest of the options apply for the LSODA numerical integrator that is used for the calculation. They are described in the section for <xref linkend="LSODA">LSODA deterministic simulation</xref>.
+    The rest of the options apply for the LSODA numerical integrator that is used for the calculation. They are described in the section for <xref linkend="LSODA" />
   </para>
 </sect1>
 
@@ -2230,15 +2231,14 @@ steps is less than the tolerance the algorithm stops. The default is
   <title>The "unscaled" result matrix</title>
   <para>
   </para>
-</sect2>
   <variablelist><title>Options for sensitivities calculation</title>
     <varlistentry><term>Delta factor</term>
       <listitem>
         <para>
           This is used to determine the delta value for the finite difference numerical differentiation. The delta is calculated as the product of the delta factor and the current absolute value of the variable. If the resulting value is smaller than the "Delta minimum" parameter, it is discarded and the "Delta minimum" value is used instead. Default value is 
-          <mml:math>
+          <inlineequation><mml:math>
             <mml:mn>1.0</mml:mn><mml:mo>*</mml:mo><mml:msup><mml:mn>10</mml:mn><mml:mn>-6</mml:mn></mml:msup>
-          </mml:math>. 
+          </mml:math></inlineequation>. 
         </para>
       </listitem>
     </varlistentry>
@@ -2246,13 +2246,14 @@ steps is less than the tolerance the algorithm stops. The default is
       <listitem>
         <para>
           The minimal delta for numerical differentiation. Default value is 
-          <mml:math>
+          <inlineequation><mml:math>
             <mml:mn>1.0</mml:mn><mml:mo>*</mml:mo><mml:msup><mml:mn>10</mml:mn><mml:mn>-12</mml:mn></mml:msup>
-          </mml:math>. 
+          </mml:math></inlineequation>. 
         </para>
       </listitem>
     </varlistentry>
   </variablelist>
+</sect2>
 </sect1>
 
 
