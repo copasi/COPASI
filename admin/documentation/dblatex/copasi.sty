@@ -1,0 +1,267 @@
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{docbook}[2001/05/11 DocBook Style]
+
+% The defined options
+\DeclareOption{hyperlink}{ \def\DBKhyperlink{yes} }
+\DeclareOption{nohyperlink}{ \def\DBKhyperlink{no} }
+\DeclareOption{article}{ \def\DBKisarticle{yes} }
+\DeclareOption{report}{ \def\DBKisarticle{no} }
+
+% Default values
+\ExecuteOptions{nohyperlink,report}
+
+% If defined, process the options
+\ProcessOptions\relax
+
+% ##############################################################################
+% ### DocBook and local commands
+% ##############################################################################
+% Default DocBook Parameters
+\newcommand{\DBKreference}{}
+\newcommand{\DBKtitle}{Main Title}
+\newcommand{\DBKsubtitle}{}
+\newcommand{\DBKdate}{\today}
+\newcommand{\DBKsite}{}
+\newcommand{\DBKedition}{}
+\newcommand{\DBKreleaseinfo}{Working Paper}
+\newcommand{\DBKpubdate}{}
+\newcommand{\DBKlegalblock}{}
+\newcommand{\DBKlegaltitle}{}
+\newcommand{\DBKcopyright}{}
+
+% Local commands
+\newcommand{\DBKtoclof}{true}
+\newcommand{\DBKauthor}{}
+
+% Adaptation...
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{4}
+
+\setlength\parskip{\medskipamount}
+\setlength\parindent{0pt}
+
+% Don't want paragraph indentation in abstract
+\let\stdabstract=\abstract
+\let\endstdabstract=\endabstract
+\renewenvironment{abstract}{
+  \begin{stdabstract}%
+  \noindent%
+  \setlength\parskip{\medskipamount}%
+  \setlength\parindent{0pt}%
+}{
+  \end{stdabstract}
+}
+
+% We want paragraph + subparagraph headers like the others
+\renewcommand\paragraph{\@startsection{paragraph}{4}{\z@}%
+                                     {-3.25ex\@plus -1ex \@minus -.2ex}%
+                                     {1ex \@plus .2ex}%
+                                     {\normalfont\normalsize\bfseries}}
+
+\renewcommand\subparagraph{\@startsection{subparagraph}{5}{\z@}%
+                                     {-3.25ex\@plus -1ex \@minus -.2ex}%
+                                     {1ex \@plus .2ex}%
+                                     {\normalfont\normalsize\bfseries}}
+
+% To have title rendering changed
+\usepackage[sf,bf]{titlesec}
+
+
+% ##############################################################################
+% ### Page Parameters
+% ##############################################################################
+\setlength{\paperwidth}{21cm}
+\setlength{\paperheight}{29.7cm}
+\setlength{\hoffset}{-1in}
+\setlength{\voffset}{-1in}
+\setlength{\oddsidemargin}{2cm}
+\setlength{\marginparsep}{0cm}
+\setlength{\marginparwidth}{0cm}
+\setlength{\textwidth}{18cm}
+\setlength{\topmargin}{0.5cm}
+\setlength{\headsep}{2cm}
+
+\setlength{\textheight}{24cm}
+\setlength{\footskip}{1.5cm}
+
+
+% ##############################################################################
+% ### Used Packages
+% ##############################################################################
+\makeatletter
+% Postscript Graphics
+\usepackage{graphicx}
+
+% Miscellaneous
+\usepackage{calc}
+\usepackage{multirow}
+\usepackage{subfigure}
+\usepackage{ifthen}
+\usepackage{tabularx}
+
+\usepackage{dbk_fonts}
+\usepackage{dbk_hyper}
+
+\usepackage{fancyhdr}
+
+% To have fancy <programlisting>
+\usepackage{fancyvrb}
+
+% ##############################################################################
+% ### Some DocBook floats and environments
+% ##############################################################################
+
+%% Inclusion of float package after hyperref to have its definitions!
+\usepackage{float}
+
+\ifthenelse{\equal{\DBKisarticle}{yes}}{
+
+\floatstyle{ruled}
+\newfloat{example}{htb}{loe}[section]
+\floatname{example}{\examplename}
+
+\floatstyle{plain}
+\newfloat{dbequation}{htb}{loe}[section]
+\floatname{dbequation}{{\scshape Equation }}
+
+% Redefinition of tableofcontent, to have it in separate pages
+\let\stdtoc=\tableofcontents
+\def\tableofcontents{ \newpage \stdtoc{} \newpage} 
+
+}{
+
+\floatstyle{ruled}
+\newfloat{example}{htb}{loe}[chapter]
+\floatname{example}{\examplename}
+
+\floatstyle{plain}
+\newfloat{dbequation}{htb}{loe}[chapter]
+\floatname{dbequation}{{\scshape Equation }}
+
+}
+
+% Sidebar is a boxed minipage that can contain verbatim
+\newenvironment{sidebar}[1][0.95\textwidth]{
+  \hspace{0mm}\newline%
+  \noindent\begin{Sbox}\begin{minipage}{#1}%
+  \setlength\parskip{\medskipamount}%
+}{
+  \end{minipage}\end{Sbox}\shadowbox{\TheSbox}%
+}
+
+
+% ##############################################################################
+% ### Title and Bookinfo display
+% ##############################################################################
+\def\title#1{\renewcommand{\DBKtitle}{#1}}
+
+% Redefine author so that it can be used by the domitete
+\def\author#1{\renewcommand{\DBKauthor}{#1}}
+
+% Redefine how to print the cover page and book infos
+\def\maketitle{
+  \DBKcover
+  \if\DBKcopyright\@empty\else
+    \DBKcopyright \\
+  \fi
+  \if\DBKlegalblock\@empty\else
+    \DBKlegalblock
+  \fi
+  \newpage
+%  SH changed \DBKdomitete -> \\
+  \hspace{0.6em}\\
+}
+
+% How to render a <legalnotice>
+\newenvironment{DBKlegalnotice}{
+  \if@twocolumn
+    \noindent\small\textit{\DBKlegaltitle}
+    \/\bfseries---$\!$
+  \else
+    \if\DBKlegaltitle\@empty\else
+      \noindent\begin{center}\small\bfseries\DBKlegaltitle\end{center}%
+    \fi
+    \begin{quote}\small
+  \fi
+}{
+  \vspace{0.6em}\par\if@twocolumn\else\end{quote}\fi
+}
+
+% ##############################################################################
+% ### Index redefinition
+% ##############################################################################
+
+% Index is redefined to have the section numbered, and to have a correct page
+% count
+\renewenvironment{theindex}
+{ 
+  \if@twocolumn
+    \@restonecolfalse
+  \else
+    \@restonecoltrue
+  \fi
+  \columnseprule \z@
+  \columnsep 35\p@
+  \pagebreak
+  \@ifundefined{chapter}{
+    \twocolumn[\section{\indexname}]%
+  }{
+    % To not have the number, replace makechapterhead by
+    % makeschapterhead
+    % \chapter{\indexname}{%
+    % \@mkboth{\MakeUppercase\indexname}%
+    %        {\MakeUppercase\indexname}
+    % }%
+    \refstepcounter{chapter}
+    \twocolumn[\@makechapterhead{\indexname}]%
+  }
+  \thispagestyle{plain}\parindent\z@
+  \parskip\z@ \@plus .3\p@\relax
+  \let\item\@idxitem
+}{\if@restonecol\onecolumn\else\clearpage\fi}
+
+\let\stdindex=\theindex
+\let\endstdindex=\endtheindex
+\renewenvironment{theindex}{
+  \begin{stdindex}
+  \@ifundefined{chapter}{}{
+    % To not have the number, replace by:
+    % \addcontentsline{toc}{chapter}{\numberline{}\indexname}
+    \addcontentsline{toc}{chapter}{\numberline{\thechapter}\indexname}
+  }
+}{
+  \label{LastPage}%
+  \end{stdindex}
+}
+
+
+% ##############################################################################
+% ### Commands and environments
+% ##############################################################################
+\newcommand{\draft}{\special{!userdict begin /bop-hook{gsave 200 30 translate %
+         65 rotate /Times-Roman findfont 216 scalefont setfont %
+         0 0 moveto 0.8 setgray (DRAFT) show grestore}def end}}
+
+\AtEndDocument{%
+  \label{LastPage}%
+}
+\usepackage{refcount}
+
+\usepackage{dbk_locale}
+% \usepackage{dbk_title}
+\usepackage{copasi_title}
+\usepackage{dbk_headfoot}
+\usepackage{dbk_revision}
+\usepackage{dbk_admonition}
+\usepackage{dbk_changebar}
+\usepackage{dbk_biblio}
+\usepackage{dbk_table}
+\usepackage{dbk_item}
+\usepackage{dbk_graphic}
+\usepackage{dbk_verbatim}
+\usepackage{dbk_callout}
+\usepackage{dbk_annot}
+
+\makeatother
+
