@@ -1,10 +1,10 @@
 <chapter id="modelCreation" xreflabel="Model Creation">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_GUI.xml,v $ -->
-<!--   $Revision: 1.43 $ -->
+<!--   $Revision: 1.44 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: shoops $ -->
-<!--   $Date: 2007/03/30 14:01:13 $ -->
+<!--   $Date: 2007/03/30 20:15:12 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -2324,6 +2324,8 @@ The file contains the following sections:
 <para>
 <table frame="all"><title>Preprocessor defines</title>
 <tgroup cols="2" align="left" colsep="1" rowsep="1">
+<colspec colwidth="1*" />
+<colspec colwidth="2*" />
 <thead>
  <row>
    <entry>Name</entry>
