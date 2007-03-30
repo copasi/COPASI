@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/03/29 17:56:40 $
+//   $Date: 2007/03/30 10:10:08 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -133,12 +133,19 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
           //              viewerCurves.push_back(seg); // add copy of segment to vector
           //}
           CLMetabReferenceGlyph::Role r = edgesToNodesOfReaction[j2]->getRole();
+          std::string nodeKey = std::string(edgesToNodesOfReaction[j2]->getMetabGlyph()->getKey());
           nodeMap.insert(std::pair<std::string, std::string>
-                         (std::string(edgesToNodesOfReaction[j2]->getMetabGlyph()->getKey()),
+                         (nodeKey,
                           std::string(edgesToNodesOfReaction[j2]->getMetabGlyphKey()))); // map viewer node key to key of CLMetabRefeerenceGlyph
           curveMap.insert(std::pair<std::string, CLCurve>
                           (std::string(edgesToNodesOfReaction[j2]->getMetabGlyphKey()),
                            CLCurve(curve)));
+          nodeSizeMap.insert(std::pair<std::string, float>
+                             (nodeKey, edgesToNodesOfReaction[j2]->getMetabGlyph()->getHeight())); // initial node diameter is height of glyph bounding box
+          //          viewerNodeMap.insert(std::pair<std::string, CLMetabGlyph>
+          //                  (std::string(nodeKey),
+          //                  *findNodeWithKey(viewerNodes,nodeKey))
+          //);
           //std::cout << "role : " << r << std::endl;
           if ((r == CLMetabReferenceGlyph::PRODUCT) || (r == CLMetabReferenceGlyph::SIDEPRODUCT))
             {// create arrows just for edges to products or sideproducts
@@ -171,6 +178,25 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
   CLPoint p2 = CLPoint(lP->getDimensions().getWidth(), lP->getDimensions().getHeight());
   this->setGraphSize(p1, p2);
   //CQGLNetworkPainter::drawGraph();
+}
+
+// look for viewer node with key nodeKey and return this element
+CLMetabGlyph* CQGLNetworkPainter::findNodeWithKey(std::vector<CLMetabGlyph> viewerNodes, std::string nodeKey)
+{
+  bool nodeFound = false;
+  int numNodes = viewerNodes.size();
+  int i = 0;
+  while (!nodeFound && (i < numNodes))
+    {
+      if (viewerNodes[i].getKey() == nodeKey)
+        nodeFound = true;
+      else
+        i++;
+    }
+  if (nodeFound)
+    return &viewerNodes[i];
+  else
+    return NULL;
 }
 
 void CQGLNetworkPainter::drawGraph()
@@ -220,6 +246,13 @@ void CQGLNetworkPainter::drawGraph()
 // draw node as circle
 void CQGLNetworkPainter::drawNode(CLMetabGlyph &n)
 {
+  float diameter = 20.0;
+  std::map<std::string, float>::iterator iter = nodeSizeMap.find(n.getKey());
+  if (iter != nodeSizeMap.end())
+    {
+      diameter = iter->second;
+      std::cout << "diameter of " << n.getKey() << ": " << diameter << std::endl;
+    }
   glColor3f(1.0f, 0.0f, 0.0f); // red
   GLUquadricObj *qobj;
   qobj = gluNewQuadric();
@@ -231,7 +264,7 @@ void CQGLNetworkPainter::drawNode(CLMetabGlyph &n)
   glColor3f(1.0f, 0.0f, 0.0f); // red
   gluDisk(qobj, 0.0, n.getHeight() / 2.0, 25, 2);
   glColor3f(0.0f, 0.0f, 0.0f); // black
-  gluDisk(qobj, n.getHeight() / 2.0 - 1.0, n.getHeight() / 2.0, 25, 2);
+  gluDisk(qobj, diameter / 2.0 - 1.0, n.getHeight() / 2.0, 25, 2);
   glTranslatef(-(float)tx, -(float)ty, 0.0f);
 }
 
@@ -325,7 +358,7 @@ void CQGLNetworkPainter::drawLabel(CLTextGlyph l)
   glEnd();
   //std::cout << "X: " << l.getX() << "  y: " << l.getY() << "  w: " << l.getWidth() << "  h: " << l.getHeight() << std::endl;
   // now draw text
-  drawStringAt(l.getText(), l.getX(), l.getY(), l.getWidth(), l.getHeight(), QColor(61, 237, 181));
+  drawStringAt(l.getText(), l.getX(), l.getY(), l.getWidth(), l.getHeight(), QColor(61, 237, 181, QColor::Rgb));
   //renderBitmapString(l.getX(), l.getY(), l.getText(), l.getWidth(), l.getHeight());
 }
 
@@ -395,6 +428,7 @@ void CQGLNetworkPainter::drawStringAt(std::string s, C_FLOAT64 x, C_FLOAT64 y, C
   QPixmap pm(w2, h2);
   //pm.setMask(bm);
   //pm.fill(QColor(255, 0, 0));
+
   pm.fill(bgCol);
   QPainter painter2(&pm);
   painter2.setPen(Qt::black);
@@ -468,6 +502,19 @@ int CQGLNetworkPainter::round2powN(double d)
 //     glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, cStr[i]);
 //}
 //}
+
+void CQGLNetworkPainter::changeNodeSize(std::string viewerNodeKey, double newSize)
+{
+  // first change size of node in viewerNodes
+  std::map<std::string, float>::iterator iter = nodeSizeMap.find(viewerNodeKey);
+  if (iter != nodeSizeMap.end())
+    {
+      nodeSizeMap[viewerNodeKey] = newSize;
+      // now get curve(s) that belong(s) to node and change end point(s)
+      //for(multimap<string, int>::iterator iter = m.begin(); iter != m.end(); ++iter) {
+      //cout << " Name: " << iter->first << ", ID #" << iter->second << endl;
+    }
+}
 
 void CQGLNetworkPainter::mapLabelsToRectangles()
 {

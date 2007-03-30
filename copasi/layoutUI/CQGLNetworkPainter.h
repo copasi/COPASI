@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/03/29 17:56:40 $
+//   $Date: 2007/03/30 10:10:08 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -49,6 +49,8 @@ class CQGLNetworkPainter : public QGLWidget
     // void drawStringAt(string s, double x, double y);
     void drawArrow(CArrow a);
 
+    void changeNodeSize(std::string viewerNodeKey, double newSize);
+
     void mapLabelsToRectangles();
     void mapLabelsToCircles();
 
@@ -68,8 +70,11 @@ class CQGLNetworkPainter : public QGLWidget
     int mFontsize;
     double mFontsizeDouble;
 
-    std::map<std::string, CLCurve> curveMap; // maps mMetabGlyphKey  of CLMetabReferenceGlyph to curve in reaction
-    std::map<std::string, std::string> nodeMap; // maps mKey of viewer node  to mMetabGlyphKey of CLMetabReferenceGlyph
+    std::multimap<std::string, CLCurve> curveMap; // maps mMetabGlyphKey of CLMetabReferenceGlyph to curve in reaction
+    std::multimap<std::string, std::string> nodeMap; // maps mKey of viewer node  to mMetabGlyphKey of CLMetabReferenceGlyph
+    std::map<std::string, float> nodeSizeMap; // maps mKey of viewer node to size of this node in circular view
+
+    CLMetabGlyph *findNodeWithKey(std::vector<CLMetabGlyph> viewerNodes, std::string nodeKey);
 
     QAction *zoomInAction;
     QAction *zoomOutAction;
