@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/03/17 22:12:47 $
+//   $Date: 2007/04/01 12:43:57 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -317,11 +317,11 @@ void CQArrayAnnotationsWidget::setArrayAnnotation(const CArrayAnnotation * pArra
       mpSelectionTable->setText(1, 0, "Columns: ");
       mpSelectionTable->setText(1, 1, FROM_UTF8(mpArray->getDimensionDescription(1)));
       mpSelectionTable->adjustColumn(0);
-      //mpSelectionTable->adjustRow(0);
-      //mpSelectionTable->adjustRow(1);
 
       //std::cout << "width: " << mpSelectionTable->width()<< " height: " <<mpSelectionTable->height() << std::endl;
       //std::cout << "cwidth: " << mpSelectionTable->contentsWidth()<< " cheight: " <<mpSelectionTable->contentsHeight() << std::endl;
+      //std::cout << "minH: " << mpSelectionTable->minimumHeight() << " maxH: " << mpSelectionTable->maximumHeight() << std::endl;
+      //std::cout << "size hint: " << mpSelectionTable->sizeHint().height() << std::endl << std::endl;
       //mpSelectionTable->resize(5, 5);
 
       fillTable(0, 1, index);
@@ -349,7 +349,7 @@ void CQArrayAnnotationsWidget::initSelectionTable()
 
       //combo box
       QStringList combolist;
-      vectorOfStrings2QStringList(mpArray->getAnnotationsDisplay(i), combolist);
+      vectorOfStrings2QStringList(mpArray->getAnnotationsString(i), combolist);
       combolist.prepend("In columns");
       combolist.prepend("In rows");
 
@@ -503,8 +503,8 @@ void CQArrayAnnotationsWidget::fillTable(unsigned C_INT32 rowIndex, unsigned C_I
   mpContentTable->setNumCols(mpArray->size()[colIndex]);
   mpContentTable->setNumRows(mpArray->size()[rowIndex]);
 
-  std::vector<std::string> rowdescr = mpArray->getAnnotationsDisplay(rowIndex);
-  std::vector<std::string> coldescr = mpArray->getAnnotationsDisplay(colIndex);
+  std::vector<std::string> rowdescr = mpArray->getAnnotationsString(rowIndex);
+  std::vector<std::string> coldescr = mpArray->getAnnotationsString(colIndex);
 
   unsigned C_INT32 i, imax = mpArray->size()[rowIndex];
   unsigned C_INT32 j, jmax = mpArray->size()[colIndex];
@@ -584,7 +584,7 @@ void CQArrayAnnotationsWidget::fillTable(unsigned C_INT32 rowIndex,
     }
 
   //table contents and annotations
-  const std::vector<std::string> & rowdescr = mpArray->getAnnotationsDisplay(rowIndex);
+  const std::vector<std::string> & rowdescr = mpArray->getAnnotationsString(rowIndex);
   for (i = 0; i < imax; ++i)
     {
       index[rowIndex] = i;

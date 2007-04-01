@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-//   $Revision: 1.64 $
+//   $Revision: 1.65 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/02/12 14:28:48 $
+//   $Author: ssahle $
+//   $Date: 2007/04/01 12:45:17 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -85,14 +85,14 @@ void CSteadyStateTask::initObjects()
 {
   mpJacobianAnn = new CArrayAnnotation("Jacobian (complete system)", this,
                                        new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mJacobian));
-  mpJacobianAnn->setOnTheFly(false);
+  mpJacobianAnn->setMode(CArrayAnnotation::OBJECTS);
   mpJacobianAnn->setDescription("");
   mpJacobianAnn->setDimensionDescription(0, "Variables of the system, including dependent metabolites");
   mpJacobianAnn->setDimensionDescription(1, "Variables of the system, including dependent metabolites");
 
   mpJacobianXAnn = new CArrayAnnotation("Jacobian (reduced system)", this,
                                         new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mJacobianX));
-  mpJacobianXAnn->setOnTheFly(false);
+  mpJacobianXAnn->setMode(CArrayAnnotation::OBJECTS);
   mpJacobianXAnn->setDescription("");
   mpJacobianXAnn->setDimensionDescription(0, "Independent variables of the system");
   mpJacobianXAnn->setDimensionDescription(1, "Independent variables of the system");
@@ -168,8 +168,8 @@ bool CSteadyStateTask::initialize(const OutputFlag & of,
       const CModelEntity::Status & Status = ppEntities[*pUserOrder]->getStatus();
       if (Status == CModelEntity::ODE || Status == CModelEntity::REACTIONS)
         {
-          mpJacobianAnn->setAnnotation(0 , i, ppEntities[*pUserOrder]->getCN());
-          mpJacobianAnn->setAnnotation(1 , i, ppEntities[*pUserOrder]->getCN());
+          mpJacobianAnn->setAnnotationCN(0 , i, ppEntities[*pUserOrder]->getCN());
+          mpJacobianAnn->setAnnotationCN(1 , i, ppEntities[*pUserOrder]->getCN());
 
           i++;
         }
@@ -181,8 +181,8 @@ bool CSteadyStateTask::initialize(const OutputFlag & of,
   imax = sizeX;
   for (i = 0; i < imax; ++i, ++ppEntities)
     {
-      mpJacobianXAnn->setAnnotation(0 , i, (*ppEntities)->getCN());
-      mpJacobianXAnn->setAnnotation(1 , i, (*ppEntities)->getCN());
+      mpJacobianXAnn->setAnnotationCN(0 , i, (*ppEntities)->getCN());
+      mpJacobianXAnn->setAnnotationCN(1 , i, (*ppEntities)->getCN());
     }
 
   CSteadyStateProblem* pProblem =

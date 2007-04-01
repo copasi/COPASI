@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensMethod.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/02/12 14:28:48 $
+//   $Author: ssahle $
+//   $Date: 2007/04/01 12:46:28 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -484,14 +484,17 @@ bool CSensMethod::initialize(CSensProblem* problem)
   //resize result & annotations
   mpProblem->getResult().resize(s);
   mpProblem->getResultAnnotated()->resize();
+  //mpProblem->getResultAnnotated()->setMode(CArrayAnnotation::OBJECTS);
 
   mpProblem->getScaledResult().resize(s);
   mpProblem->getScaledResultAnnotated()->resize();
+  //mpProblem->getScaledResultAnnotated()->setMode(CArrayAnnotation::OBJECTS);
 
   if (mpProblem->collapsRequested())
     {
       mpProblem->getCollapsedResult().resize(sc);
       mpProblem->getCollapsedResultAnnotated()->resize();
+      //mpProblem->getCollapsedResultAnnotated()->setMode(CArrayAnnotation::OBJECTS);
     }
 
   unsigned C_INT32 dim = 0;
@@ -505,8 +508,8 @@ bool CSensMethod::initialize(CSensProblem* problem)
       mpProblem->getScaledResultAnnotated()->setDimensionDescription(dim, tmp.str());
       for (j = 0; j < mTargetfunctionPointers.size(); ++j)
         {
-          mpProblem->getResultAnnotated()->setAnnotation(dim, j, mTargetfunctionPointers[j]->getCN());
-          mpProblem->getScaledResultAnnotated()->setAnnotation(dim, j, mTargetfunctionPointers[j]->getCN());
+          mpProblem->getResultAnnotated()->setAnnotationCN(dim, j, mTargetfunctionPointers[j]->getCN());
+          mpProblem->getScaledResultAnnotated()->setAnnotationCN(dim, j, mTargetfunctionPointers[j]->getCN());
         }
       ++dim;
     }
@@ -525,10 +528,10 @@ bool CSensMethod::initialize(CSensProblem* problem)
             mpProblem->getCollapsedResultAnnotated()->setDimensionDescription(dim2, tmp.str());
           for (j = 0; j < mLocalData[i].variables.size(); ++j)
             {
-              mpProblem->getResultAnnotated()->setAnnotation(dim, j, mLocalData[i].variables[j]->getCN());
-              mpProblem->getScaledResultAnnotated()->setAnnotation(dim, j, mLocalData[i].variables[j]->getCN());
+              mpProblem->getResultAnnotated()->setAnnotationCN(dim, j, mLocalData[i].variables[j]->getCN());
+              mpProblem->getScaledResultAnnotated()->setAnnotationCN(dim, j, mLocalData[i].variables[j]->getCN());
               if (mpProblem->collapsRequested())
-                mpProblem->getCollapsedResultAnnotated()->setAnnotation(dim2, j, mLocalData[i].variables[j]->getCN());
+                mpProblem->getCollapsedResultAnnotated()->setAnnotationCN(dim2, j, mLocalData[i].variables[j]->getCN());
             }
           ++dim;
           ++dim2;

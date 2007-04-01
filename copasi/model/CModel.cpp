@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.296 $
+//   $Revision: 1.297 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/03/09 10:22:25 $
+//   $Date: 2007/04/01 12:48:01 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -2418,8 +2418,10 @@ bool CModel::convert2NonReversible()
 {
   //TODO check if there are any reversible reactions
   //TODO warn the user
-  //TODO tell the gui about changes
+  //TOD tell the gui about changes -> not from here
   //TODO generate report ?
+  //TODO check if newly generated reaction names are valid
+  //TODO map, so that the same function is split only once
 
   bool ret = true;
 
@@ -2660,7 +2662,7 @@ void CModel::initObjects()
   addObjectReference("Quantity Conversion Factor", mQuantity2NumberFactor, CCopasiObject::ValueDbl);
 
   CArrayAnnotation * tmp = new CArrayAnnotation("Stoichiometry(ann)", this, new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mStoi));
-  tmp->setOnTheFly(true);
+  tmp->setMode(CArrayAnnotation::VECTOR_ON_THE_FLY);
   tmp->setDescription("Stoichiometry Matrix");
   tmp->setDimensionDescription(0, "Metabolites");
   tmp->setDimensionDescription(1, "Reactions");
@@ -2668,7 +2670,7 @@ void CModel::initObjects()
   tmp->setCopasiVector(1, &mSteps);
 
   tmp = new CArrayAnnotation("Reduced stoichiometry(ann)", this, new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mRedStoi));
-  tmp->setOnTheFly(true);
+  tmp->setMode(CArrayAnnotation::VECTOR_ON_THE_FLY);
   tmp->setDescription("Reduced stoichiometry Matrix");
   tmp->setDimensionDescription(0, "Metabolites");
   tmp->setDimensionDescription(1, "Reactions");
@@ -2676,7 +2678,7 @@ void CModel::initObjects()
   tmp->setCopasiVector(1, &mSteps);
 
   tmp = new CArrayAnnotation("Link matrix(ann)", this, new CCopasiMatrixInterface<CLinkMatrixView>(&mLView));
-  tmp->setOnTheFly(true);
+  tmp->setMode(CArrayAnnotation::VECTOR_ON_THE_FLY);
   tmp->setDescription("Link matrix");
   tmp->setDimensionDescription(0, "Metabolites (full system)");
   tmp->setDimensionDescription(1, "Metabolites (reduced system)");
