@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CAnnotatedMatrix.cpp,v $
-   $Revision: 1.16 $
-   $Name:  $
-   $Author: ssahle $
-   $Date: 2007/01/10 10:38:59 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CAnnotatedMatrix.cpp,v $
+//   $Revision: 1.17 $
+//   $Name:  $
+//   $Author: ssahle $
+//   $Date: 2007/04/01 12:40:45 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -86,74 +86,122 @@ CArrayAnnotation::CArrayAnnotation(const std::string & name,
                                    const CCopasiContainer * pParent,
                                    CCopasiAbstractArray * array)
     : CCopasiContainer(name, pParent, "Array" /*, flags */),          //TODO: flags
-    mArray(array)
+    mArray(array),
+    mDefaultMode(OBJECTS)
 {
   assert(mArray);
 
-  resizeAnnotations();
+  resize();
 
   addObjectReference("Annotated Matrix", *this, CCopasiObject::ValueDbl);
 }
 
-unsigned int CArrayAnnotation::dimensionality() const
-  {
-    if (mOnTheFly)
-      return mArray->dimensionality();
-    else
-      return mAnnotations.size();
-  }
-
-const std::vector<CRegisteredObjectName> & CArrayAnnotation::getAnnotations(unsigned int d) const
-  {
-    if (mOnTheFly)
-      updateAnnotations();
-
-    return mAnnotations[d];
-  }
-
-void CArrayAnnotation::setAnnotation(unsigned int d, unsigned int i, const std::string cn)
+void CArrayAnnotation::setArray(CCopasiAbstractArray * a)
 {
-  assert(d < mAnnotations.size());
-  assert(i < mAnnotations[d].size());
-
-  mAnnotations[d][i] = cn;
+  mArray = a;
 }
 
-std::vector<std::string> CArrayAnnotation::getAnnotationsDisplay(unsigned int d) const
+void CArrayAnnotation::setMode(unsigned int d, Mode m)
+{
+  mModes[d] = m;
+  resizeOneDimension(d);
+}
+
+void CArrayAnnotation::setMode(Mode m)
+{
+  mDefaultMode = m;
+
+  unsigned int i;
+  for (i = 0; i < mModes.size(); ++i)
+    setMode(i, m);
+}
+
+unsigned int CArrayAnnotation::dimensionality() const
   {
-    if (mOnTheFly)
-      updateAnnotations();
-
-    std::vector<std::string> ret;
-
-    unsigned int i, imax = mAnnotations[d].size();
-    ret.resize(imax);
-    for (i = 0; i < imax; ++i)
-      ret[i] = CCopasiContainer::ObjectFromName(mAnnotations[d][i])->getObjectDisplayName();
-
-    return ret;
+    return mModes.size();
   }
 
-std::vector<std::string> CArrayAnnotation::getAnnotationsNames(unsigned int d) const
+void CArrayAnnotation::setCopasiVector(unsigned int d, const CCopasiContainer* v)
+{
+  assert(d < mCopasiVectors.size());
+  assert((mModes[d] == VECTOR) || (mModes[d] == VECTOR_ON_THE_FLY));
+
+  mCopasiVectors[d] = v;
+  if (mModes[d] == VECTOR)
+    createAnnotationsCNFromCopasiVector(d, mCopasiVectors[d]);
+}
+
+void CArrayAnnotation::setAnnotationCN(unsigned int d, unsigned int i, const std::string cn)
+{
+  assert(d < mAnnotationsCN.size());
+  assert(mModes[d] == OBJECTS);
+
+  resizeOneDimension(d);
+  assert(i < mAnnotationsCN[d].size());
+
+  mAnnotationsCN[d][i] = cn;
+}
+
+void CArrayAnnotation::setAnnotationString(unsigned int d, unsigned int i, const std::string s)
+{
+  assert(d < mAnnotationsString.size());
+  assert(mModes[d] == STRINGS);
+
+  resizeOneDimension(d);
+  assert(i < mAnnotationsString[d].size());
+
+  mAnnotationsString[d][i] = s;
+}
+
+const std::vector<CRegisteredObjectName> & CArrayAnnotation::getAnnotationsCN(unsigned int d) const
   {
-    if (mOnTheFly)
-      updateAnnotations();
+    assert(d < mModes.size());
+    assert(mModes[d] != STRINGS);
+    assert(mModes[d] != NUMBERS);
 
-    std::vector<std::string> ret;
+    if (mModes[d] == VECTOR_ON_THE_FLY)
+      createAnnotationsCNFromCopasiVector(d, mCopasiVectors[d]);
 
-    unsigned int i, imax = mAnnotations[d].size();
-    ret.resize(imax);
-    for (i = 0; i < imax; ++i)
-      ret[i] = CCopasiContainer::ObjectFromName(mAnnotations[d][i])->getObjectName();
+    return mAnnotationsCN[d];
+  }
 
-    return ret;
+const std::vector<std::string> & CArrayAnnotation::getAnnotationsString(unsigned int d, bool display) const
+  {
+    assert(d < mModes.size());
+
+    //generate CNs (if necessary)
+    if (mModes[d] == VECTOR_ON_THE_FLY)
+      createAnnotationsCNFromCopasiVector(d, mCopasiVectors[d]);
+
+    //generate DisplayNames
+    if ((mModes[d] == VECTOR) || (mModes[d] == VECTOR_ON_THE_FLY) || (mModes[d] == OBJECTS))
+      {
+        unsigned int i, imax = mAnnotationsCN[d].size();
+        mAnnotationsString[d].resize(imax);
+        for (i = 0; i < imax; ++i)
+          {
+            const CCopasiObject * obj = CCopasiContainer::ObjectFromName(mAnnotationsCN[d][i]);
+            if (obj)
+              mAnnotationsString[d][i] =
+                display ? obj->getObjectDisplayName() : obj->getObjectName();
+            else
+              mAnnotationsString[d][i] = "???";
+          }
+      }
+
+    //generate Numbers
+    if (mModes[d] == NUMBERS)
+      createNumbers(d);
+
+    // if the mode is STRINGS do nothing, mAnnotationsString is supposed to contain
+    // the correct strings
+
+    return mAnnotationsString[d];
   }
 
 const std::string & CArrayAnnotation::getDimensionDescription(unsigned int d) const
   {
-    if (mOnTheFly)
-      mDimensionDescriptions.resize(mArray->dimensionality());
-
+    assert(d < mDimensionDescriptions.size());
     return mDimensionDescriptions[d];
   }
 
@@ -163,42 +211,13 @@ void CArrayAnnotation::setDimensionDescription(unsigned int d, const std::string
   mDimensionDescriptions[d] = s;
 }
 
-void CArrayAnnotation::setCopasiVector(unsigned int d, const CCopasiContainer* v)
-{
-  assert(d < mCopasiVectors.size());
-
-  mCopasiVectors[d] = v;
-  createAnnotationsFromCopasiVector(d, v);
-}
-
 const std::string & CArrayAnnotation::getDescription() const
   {return mDescription;}
 
 void CArrayAnnotation::setDescription(const std::string & s)
 {mDescription = s;}
 
-//private
-bool CArrayAnnotation::updateAnnotations() const
-  {
-    bool success = true;
-
-    resizeAnnotations();
-
-    unsigned int i;
-    for (i = 0; i < mArray->dimensionality(); ++i)
-      {
-        if (mCopasiVectors[i])
-          {
-            if (!createAnnotationsFromCopasiVector(i, mCopasiVectors[i]))
-              success = false;
-          }
-        else
-          success = false;
-      }
-    return success;
-  }
-
-bool CArrayAnnotation::createAnnotationsFromCopasiVector(unsigned int d,
+bool CArrayAnnotation::createAnnotationsCNFromCopasiVector(unsigned int d,
     const CCopasiContainer* v) const
   {
     if (!v) return false;
@@ -209,40 +228,58 @@ bool CArrayAnnotation::createAnnotationsFromCopasiVector(unsigned int d,
     const CCopasiVector< CCopasiObject > * pVector =
       reinterpret_cast<const CCopasiVector< CCopasiObject > * >(v);
 
-    if (pVector->size() < mAnnotations[d].size()) return false;
+    mAnnotationsCN[d].resize(pVector->size());
+    //if (pVector->size() < mAnnotations[d].size()) return false;
 
     unsigned int i;
-    for (i = 0; i < mAnnotations[d].size(); ++i)
+    for (i = 0; i < mAnnotationsCN[d].size(); ++i)
       {
         if (!(*pVector)[i])
           return false;
         else
-          mAnnotations[d][i] = (*pVector)[i]->getCN();
+          mAnnotationsCN[d][i] = (*pVector)[i]->getCN();
       }
     return true;
   }
 
 //private
-void CArrayAnnotation::resizeAnnotations() const
+void CArrayAnnotation::createNumbers(unsigned int /*d*/) const
   {
-    mAnnotations.resize(mArray->dimensionality());
-    unsigned int i;
-    for (i = 0; i < mArray->dimensionality(); ++i)
-      mAnnotations[i].resize(mArray->size()[i]);
-
-    mDimensionDescriptions.resize(mArray->dimensionality());
-    mCopasiVectors.resize(mArray->dimensionality());
+    //TODO
   }
 
-void CArrayAnnotation::resize(/*const CCopasiAbstractArray::index_type & sizes*/)
+//private
+void CArrayAnnotation::reDimensionalize(unsigned int d)
+{
+  mAnnotationsCN.resize(d);
+  mAnnotationsString.resize(d);
+  mDimensionDescriptions.resize(d);
+  mCopasiVectors.resize(d);
+  mModes.resize(d, mDefaultMode);
+}
+
+//private
+void CArrayAnnotation::resizeOneDimension(unsigned int d)
+{
+  if (mModes[d] != VECTOR)
+    {
+      mAnnotationsCN[d].resize(mArray->size()[d]);
+      mAnnotationsString[d].resize(mArray->size()[d]);
+    }
+}
+
+void CArrayAnnotation::resize()
 {
   assert(mArray);
-  //mArray->resize(sizes);
-  resizeAnnotations();
+  reDimensionalize(mArray->dimensionality());
+
+  unsigned int i, imax = mArray->dimensionality();
+  for (i = 0; i < imax; ++i)
+    resizeOneDimension(i);
 }
 
 void CArrayAnnotation::print(std::ostream * ostream) const
-  {*ostream << *this;}
+{*ostream << *this;}
 
 #define SPC(level) std::string(level, ' ')
 
@@ -292,18 +329,17 @@ void CArrayAnnotation::printRecursively(std::ostream & ostream, C_INT32 level,
       }
   }
 
+#undef SPC
+
 std::ostream &operator<<(std::ostream &os, const CArrayAnnotation & o)
 {
   if (!o.array()) return os;
-
-  if (o.mOnTheFly)
-    const_cast<CArrayAnnotation*>(&o)->updateAnnotations();
 
   //cache the display names
   std::vector<std::vector<std::string> > displaynames;
   unsigned C_INT32 i;
   for (i = 0; i < o.dimensionality(); ++i)
-    displaynames.push_back(o.getAnnotationsDisplay(i));
+    displaynames.push_back(o.getAnnotationsString(i));
 
   os << o.getObjectName() << std::endl;
   os << o.getDescription() << std::endl;
@@ -322,46 +358,43 @@ std::ostream &operator<<(std::ostream &os, const CArrayAnnotation & o)
   return os;
 }
 
-void CArrayAnnotation::printDebugLoop(std::ostream & out, CCopasiAbstractArray::index_type & index, unsigned int level) const
-  {
-    unsigned int i, imax = mArray->size()[level];
-    for (i = 0; i < imax; ++i)
-      {
-        index[level] = i;
-
-        if (level == dimensionality() - 1)
-          {
-            out << (*mArray)[index] << "  ";
-          }
-        else
-          {
-            printDebugLoop(out, index, level + 1);
-            out << std::endl;
-          }
-      }
-  }
-
-void CArrayAnnotation::printDebug(std::ostream & out) const
-  {
-    out << mDescription << std::endl;
-    out << "  Dimensionality: " << dimensionality() << std::endl;
-
-    unsigned int i, j;
-    for (i = 0; i < dimensionality(); ++i)
-      {
-        out << "   " << i << ": " << mDimensionDescriptions[i] << std::endl;
-
-        //std::vector<std::string> names = const_cast<CArrayAnnotation*>(this)->getAnnotationsDisplay(i);
-
-        for (j = 0; j < mAnnotations[i].size(); ++j)
-          out << "     " << mAnnotations[i][j] /*<< " :" << names[j]*/ << std::endl;
-
-        out << std::endl;
-      }
-
-    CCopasiAbstractArray::index_type index; index.resize(dimensionality());
-    printDebugLoop(out, index, 0);
-  }
-
+// void CArrayAnnotation::printDebugLoop(std::ostream & out, CCopasiAbstractArray::index_type & index, unsigned int level) const
+//   {
+//     unsigned int i, imax = mArray->size()[level];
+//     for (i = 0; i < imax; ++i)
+//       {
+//         index[level] = i;
 //
-//*******************************************************
+//         if (level == dimensionality() - 1)
+//           {
+//             out << (*mArray)[index] << "  ";
+//}
+//         else
+//           {
+//             printDebugLoop(out, index, level + 1);
+//             out << std::endl;
+//}
+//}
+//}
+//
+// void CArrayAnnotation::printDebug(std::ostream & out) const
+//   {
+//     out << mDescription << std::endl;
+//     out << "  Dimensionality: " << dimensionality() << std::endl;
+//
+//     unsigned int i, j;
+//     for (i = 0; i < dimensionality(); ++i)
+//       {
+//         out << "   " << i << ": " << mDimensionDescriptions[i] << std::endl;
+//
+//         //std::vector<std::string> names = const_cast<CArrayAnnotation*>(this)->getAnnotationsDisplay(i);
+//
+//         for (j = 0; j < mAnnotations[i].size(); ++j)
+//           out << "     " << mAnnotations[i][j] /*<< " :" << names[j]*/ << std::endl;
+//
+//         out << std::endl;
+//}
+//
+//     CCopasiAbstractArray::index_type index; index.resize(dimensionality());
+//     printDebugLoop(out, index, 0);
+//}

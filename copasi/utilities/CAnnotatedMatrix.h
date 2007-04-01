@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CAnnotatedMatrix.h,v $
-   $Revision: 1.15 $
-   $Name:  $
-   $Author: ssahle $
-   $Date: 2007/01/10 10:38:59 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CAnnotatedMatrix.h,v $
+//   $Revision: 1.16 $
+//   $Name:  $
+//   $Author: ssahle $
+//   $Date: 2007/04/01 12:40:45 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -132,21 +132,112 @@ class CCopasiMatrixInterface: public CCopasiAbstractArray
       {return 2;}
   };
 
+/**
+ * this class provides an interface to a CVector<C_FLOAT64>,
+ * or indeed to any container class that has a size() method and
+ * a [] operator that returns C_FLOAT64.
+ */
+
+template<class VectorType>
+class CCopasiVectorInterface: public CCopasiAbstractArray
+  {
+  public:
+
+    CCopasiVectorInterface(VectorType * vector)
+        : mVector(vector)
+    {
+      assert(mVector);
+      mSizes.resize(1);
+      mSizes[0] = mVector->size();
+    }
+    ~CCopasiVectorInterface() {};
+
+    data_type & operator[] (const index_type & index)
+    {
+#ifdef COPASI_DEBUG
+      assert(index.size() == 1);
+#endif
+      return (*mVector)[index[0]];
+    }
+
+    const data_type & operator[] (const index_type & index) const
+      {
+#ifdef COPASI_DEBUG
+        assert(index.size() == 1);
+#endif
+        return (*mVector)[index[0]];
+      }
+
+  private:
+    VectorType * mVector;
+    mutable std::vector<unsigned int> mSizes;
+
+  public:
+    const index_type & size() const
+      {
+        //CCopasiMatrixInterface * tmp = const_cast<CCopasiMatrixInterface*>(this);
+        /*tmp->*/mSizes[0] =  mVector->size();
+        return mSizes;
+      }
+
+    unsigned int dimensionality() const
+      {return 1;}
+  };
+
 //**********************************************************************
 
 class CArrayAnnotation: public CCopasiContainer
   {
+  public:
+
+    /**
+     * The annotation to an array can work in different modes. The mode
+     * for each dimension can be changes independently.
+     *
+     * OBJECTS: The CNs for the rows, cols, ... of the array are given explicitly
+     *
+     * VECTOR: A CCopasiVector is provided from which the CNs are generated at
+     * the time the vector is set
+     *
+     * VECTOR_ON_THE_FLY: A CCopasiVector is provided, but the CNs are generated
+     * every time the annotations are retrieved (so that they are alway up to date).
+     *
+     * STRINGS: The annotations for the rows, cols, ... are given explicitly
+     * as strings.
+     *
+     * NUMBERS: The rows, cols, ... of the array are only annotation with
+     * runnng numbers (starting with 0)-
+     */
+    enum Mode
+    {
+      OBJECTS,
+      VECTOR,
+      VECTOR_ON_THE_FLY,
+      STRINGS,
+      NUMBERS
+    };
+
   private:
     CCopasiAbstractArray * mArray;
 
-    mutable std::vector< std::vector<CRegisteredObjectName> > mAnnotations;
+    mutable std::vector< std::vector<CRegisteredObjectName> > mAnnotationsCN;
+    mutable std::vector< std::vector<std::string> > mAnnotationsString;
 
-    mutable std::vector< std::string > mDimensionDescriptions;
-    mutable std::vector< const CCopasiContainer * > mCopasiVectors;
+    std::vector< std::string > mDimensionDescriptions;
+    std::vector< const CCopasiContainer * > mCopasiVectors;
+
+    /**
+     * This contains the mode for the different dimensions
+     */
+    std::vector<Mode> mModes;
+
+    /**
+     * This contains the default mode that is used if during a resize()
+     * the dimensionality is increased.
+     */
+    Mode mDefaultMode;
 
     std::string mDescription;
-
-    bool mOnTheFly;
 
   public:
     CArrayAnnotation(const std::string & name,
@@ -160,52 +251,104 @@ class CArrayAnnotation: public CCopasiContainer
 
   public:
 
+    /**
+     *  let the ArrayAnnotation point to a different array.
+     *  If you use this method without updating the annotations afterwards
+     *  it is your responsibility to make sure the new array fits the
+     *  existing annotation (in dimensionality and, if not in VECTOR_ON_THE_FLY mode,
+     *  in size).
+     */
+    void setArray(CCopasiAbstractArray * a);
+
     CCopasiAbstractArray * array()
     {return mArray;}
 
     const CCopasiAbstractArray * array() const
       {return mArray;}
 
-    bool onTheFly() const
-      {return mOnTheFly;}
+    /**
+     * set the mode for the dimension d
+     */
+    void setMode(unsigned int d, Mode m);
 
-    void setOnTheFly(bool flag)
-    {mOnTheFly = flag;}
+    /**
+     * set the mode for all dimensions, this also sets the
+     * default mode that is used when resizing the ArrayAnnotion
+     * to a larger dimensionality
+     */
+    void setMode(Mode m);
+
+    Mode getMode(unsigned int d) const
+      {return mModes[d];};
+
+    Mode getDefaultMode() const
+      {return mDefaultMode;};
 
     unsigned int dimensionality() const;
 
     CCopasiAbstractArray::index_type size() const
       {return mArray->size();}
 
-    const std::vector<CRegisteredObjectName> & getAnnotations(unsigned int d) const;
-    void setAnnotation(unsigned int d, unsigned int i, const std::string cn);
+    /**
+     * Associates a dimension d of the array with a CCopasiVector of
+     * CCopasiObjects. If the mode of the dimension d is VECTOR than
+     * the CNs of the objects in the vector are generated and stored immediately.
+     * If the mode is VECTOR_ON_THE_FLY the CNs are generated when getAnnotationsCN()
+     * or getAnnotationsString() is called.
+     */
+    void setCopasiVector(unsigned int d, const CCopasiContainer* v);
 
-    std::vector<std::string> getAnnotationsDisplay(unsigned int d) const;
-    std::vector<std::string> getAnnotationsNames(unsigned int d) const;
+    void setAnnotationCN(unsigned int d, unsigned int i, const std::string cn);
+    void setAnnotationString(unsigned int d, unsigned int i, const std::string s);
+
+    /**
+     * returns the vector of CNs that correspond to the rows, columns, ... of the array.
+     * This method must not be called if the mode for the dimension d is STRINGS or NUMBERS
+     */
+    const std::vector<CRegisteredObjectName> & getAnnotationsCN(unsigned int d) const;
+
+    /**
+     * This returns strings that annotate the rows, columns, ... of the array.
+     * If the mode is OBJECTS, VECTOR, or VECTOR_ON_THE_FLY the display argument determines
+     * if the object name or the object display name is used.
+     * Note that this method returns a reference. The content that the reference points to
+     * may be changes by later calls to the getAnnotationsCN() method with the same value for d.
+     * Specifically if you use this method to obtain a reference to the list of display names
+     * and then call the method again to get the plain object names, the first reference will
+     * after that also point to the plain object names.
+     */
+    const std::vector<std::string> & getAnnotationsString(unsigned int d, bool display = true) const;
 
     const std::string & getDimensionDescription(unsigned int d) const;
     void setDimensionDescription(unsigned int d, const std::string & s);
 
-    void setCopasiVector(unsigned int d, const CCopasiContainer* v);
-
     const std::string & getDescription() const;
     void setDescription(const std::string & s);
 
-    void resize(/*const CCopasiAbstractArray::index_type & sizes*/);
+    /**
+     * adjust the dimensionality and size to that of the array
+     */
+    void resize();
 
   private:
-    void resizeAnnotations() const;
+    /**
+     *  resize the internal vectors according to the dimensionality of the array
+     */
+    void reDimensionalize(unsigned int d);
+
+    void resizeOneDimension(unsigned int d);
+
+    //void printDebugLoop(std::ostream & out, CCopasiAbstractArray::index_type & index, unsigned int level) const;
 
     /**
-     * this generates the annotations if onTheFly() == true.
+     *  generate the list of CNs from the copasi vector v.
+     *  v needs to be a CCopasiVector (or derived from it)!
      */
-    bool updateAnnotations() const;
+    bool createAnnotationsCNFromCopasiVector(unsigned int d, const CCopasiContainer* v) const;
 
-    void printDebugLoop(std::ostream & out, CCopasiAbstractArray::index_type & index, unsigned int level) const;
+    void createNumbers(unsigned int d) const;
 
-    bool createAnnotationsFromCopasiVector(unsigned int d, const CCopasiContainer* v) const;
-
-    void printDebug(std::ostream & out) const;
+    //void printDebug(std::ostream & out) const;
 
     void printRecursively(std::ostream & ostream, C_INT32 level,
                           CCopasiAbstractArray::index_type & index,
