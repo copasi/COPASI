@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/04/01 12:43:57 $
+//   $Date: 2007/04/02 20:18:01 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -189,7 +189,13 @@ QColor CColorScaleBiLog::getColor(const C_FLOAT64 & number)
   int g = 0;
   int b = 0;
 
-  if (tmp < 0.5)
+  if (tmp != tmp)
+    {
+      r = 85;
+      g = 85;
+      b = 135;
+    }
+  else if (tmp < 0.5)
     {
       r = 255;
       g = 255 + (tmp - 0.5) * 260;
@@ -218,6 +224,8 @@ void CColorScaleBiLog::startAutomaticParameterCalculation()
 //virtual
 void CColorScaleBiLog::passValue(const C_FLOAT64 & number)
 {
+  if (number != number) return; //NaN
+  if (fabs(number) >= DBL_MAX) return; //Inf
   if (number == 0.0) return;
 
   C_FLOAT64 tmp = log(fabs(number));
