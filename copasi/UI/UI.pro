@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $ 
-#   $Revision: 1.146 $ 
+#   $Revision: 1.147 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2007/03/16 16:40:24 $ 
+#   $Date: 2007/04/02 17:01:05 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -11,7 +11,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.146 $ $Author: shoops $ $Date: 2007/03/16 16:40:24 $  
+# $Revision: 1.147 $ $Author: shoops $ $Date: 2007/04/02 17:01:05 $  
 ######################################################################
 
 LIB = UI
@@ -82,7 +82,6 @@ HEADERS += \
            StateWidget.h \
            SteadyStateWidget.h \
            TableDefinition.h \
-           TableDefinition1.h \
            OptimizationResultWidget.h \
            TaskWidget.h \
            TimeSeriesWidget.h \
@@ -146,7 +145,6 @@ SOURCES += \
            StateWidget.cpp \
            SteadyStateWidget.cpp \
            TableDefinition.cpp \
-           TableDefinition1.cpp \
            TaskWidget.cpp \
            TimeSeriesWidget.cpp \
            Tree.cpp \

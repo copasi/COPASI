@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.211 $
+//   $Revision: 1.212 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/02/18 23:07:45 $
+//   $Author: shoops $
+//   $Date: 2007/04/02 17:01:05 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -58,7 +58,6 @@
 #include "CQOptimizationWidget.h"
 #include "OptimizationResultWidget.h"
 #include "TableDefinition.h"
-#include "TableDefinition1.h"
 #include "CQSplashWidget.h"
 #include "CQTrajectoryWidget.h"
 #include "TimeSeriesWidget.h"
