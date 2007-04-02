@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqInterface.cpp,v $
-//   $Revision: 1.36 $
+//   $Revision: 1.37 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/02/26 13:53:17 $
+//   $Author: shoops $
+//   $Date: 2007/04/02 16:32:23 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -606,9 +606,43 @@ bool CChemEqInterface::createNonExistingMetabs() const
 
 bool CChemEqInterface::isMulticompartment() const
   {
-    CChemEq ce;
-    writeToChemEq(ce);
-    return (ce.getCompartmentNumber() > 1);
+    bool Initialize = true;
+    std::string Compartment = "";
+
+    std::vector< std::string >::const_iterator it;
+    std::vector< std::string >::const_iterator end;
+
+    for (it = mSubstrateCompartments.begin(), end = mSubstrateCompartments.end();
+         it != end; ++it)
+      if (Initialize)
+        {
+          Compartment = *it;
+          Initialize = false;
+        }
+      else if (Compartment != *it)
+        return true;
+
+    for (it = mProductCompartments.begin(), end = mProductCompartments.end();
+         it != end; ++it)
+      if (Initialize)
+        {
+          Compartment = *it;
+          Initialize = false;
+        }
+      else if (Compartment != *it)
+        return true;
+
+    for (it = mModifierCompartments.begin(), end = mModifierCompartments.end();
+         it != end; ++it)
+      if (Initialize)
+        {
+          Compartment = *it;
+          Initialize = false;
+        }
+      else if (Compartment != *it)
+        return true;
+
+    return false;
   }
 
 const CCompartment * CChemEqInterface::getCompartment() const
