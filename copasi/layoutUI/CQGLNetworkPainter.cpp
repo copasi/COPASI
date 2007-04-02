@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/03/30 10:10:08 $
+//   $Date: 2007/04/02 10:33:48 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -137,9 +137,9 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
           nodeMap.insert(std::pair<std::string, std::string>
                          (nodeKey,
                           std::string(edgesToNodesOfReaction[j2]->getMetabGlyphKey()))); // map viewer node key to key of CLMetabRefeerenceGlyph
-          curveMap.insert(std::pair<std::string, CLCurve>
+          curveMap.insert(std::pair<std::string, CLCurve*>
                           (std::string(edgesToNodesOfReaction[j2]->getMetabGlyphKey()),
-                           CLCurve(curve)));
+                           &(edgesToNodesOfReaction[j2]->getCurve())));
           nodeSizeMap.insert(std::pair<std::string, float>
                              (nodeKey, edgesToNodesOfReaction[j2]->getMetabGlyph()->getHeight())); // initial node diameter is height of glyph bounding box
           //          viewerNodeMap.insert(std::pair<std::string, CLMetabGlyph>
@@ -247,10 +247,13 @@ void CQGLNetworkPainter::drawGraph()
 void CQGLNetworkPainter::drawNode(CLMetabGlyph &n)
 {
   float diameter = 20.0;
+
   std::map<std::string, float>::iterator iter = nodeSizeMap.find(n.getKey());
   if (iter != nodeSizeMap.end())
     {
-      diameter = iter->second;
+      std::string viewerNodeKey = n.getKey();
+      diameter = nodeSizeMap[viewerNodeKey];
+      //diameter = iter->second;
       std::cout << "diameter of " << n.getKey() << ": " << diameter << std::endl;
     }
   glColor3f(1.0f, 0.0f, 0.0f); // red
@@ -503,6 +506,15 @@ int CQGLNetworkPainter::round2powN(double d)
 //}
 //}
 
+// set node sizes according to data set
+void CQGLNetworkPainter::setNodeSizes()
+{
+  // test: set all node to certain size
+  int i;
+  for (i = 0;i < viewerNodes.size();i++)
+    this->changeNodeSize(viewerNodes[i].getKey(), 50.0);
+}
+
 void CQGLNetworkPainter::changeNodeSize(std::string viewerNodeKey, double newSize)
 {
   // first change size of node in viewerNodes
@@ -525,6 +537,7 @@ void CQGLNetworkPainter::mapLabelsToRectangles()
 
 void CQGLNetworkPainter::mapLabelsToCircles()
 {
+  this->setNodeSizes();
   this->mLabelShape = CIRCLE;
   this->drawGraph();
   //this->draw();

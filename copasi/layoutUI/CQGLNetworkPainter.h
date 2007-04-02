@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/03/30 10:10:08 $
+//   $Date: 2007/04/02 10:33:48 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -49,6 +49,7 @@ class CQGLNetworkPainter : public QGLWidget
     // void drawStringAt(string s, double x, double y);
     void drawArrow(CArrow a);
 
+    void setNodeSizes();
     void changeNodeSize(std::string viewerNodeKey, double newSize);
 
     void mapLabelsToRectangles();
@@ -70,7 +71,7 @@ class CQGLNetworkPainter : public QGLWidget
     int mFontsize;
     double mFontsizeDouble;
 
-    std::multimap<std::string, CLCurve> curveMap; // maps mMetabGlyphKey of CLMetabReferenceGlyph to curve in reaction
+    std::multimap<std::string, CLCurve*> curveMap; // maps mMetabGlyphKey of CLMetabReferenceGlyph to curve in reaction
     std::multimap<std::string, std::string> nodeMap; // maps mKey of viewer node  to mMetabGlyphKey of CLMetabReferenceGlyph
     std::map<std::string, float> nodeSizeMap; // maps mKey of viewer node to size of this node in circular view
 
