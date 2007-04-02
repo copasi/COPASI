@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQModelValue.ui.h,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/16 19:55:37 $
+//   $Date: 2007/04/02 17:58:34 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -291,7 +291,11 @@ bool CQModelValue::enter(const std::string & key)
   mKey = key;
   mpModelValue = dynamic_cast< CModelValue * >(GlobalKeys.get(key));
 
-  if (!mpModelValue) return false;
+  if (!mpModelValue)
+    {
+      pListView->switchToOtherWidget(115, "");
+      return false;
+    }
 
   load();
   return true;

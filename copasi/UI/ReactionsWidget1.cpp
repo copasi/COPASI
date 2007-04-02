@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-//   $Revision: 1.187 $
+//   $Revision: 1.188 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/04/02 16:33:23 $
+//   $Date: 2007/04/02 17:58:34 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -560,6 +560,9 @@ bool ReactionsWidget1::enter(const std::string & key)
   objKey = key;
   CReaction* reac = dynamic_cast< CReaction * >(GlobalKeys.get(key));
 
-  if (reac) return loadFromReaction(reac);
-  else return false;
+  if (reac)
+    return loadFromReaction(reac);
+
+  pListView->switchToOtherWidget(114, "");
+  return false;
 }

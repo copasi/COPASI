@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/plotwidget1.cpp,v $
-//   $Revision: 1.47 $
+//   $Revision: 1.48 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/13 19:59:11 $
+//   $Date: 2007/04/02 17:58:48 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,7 +14,7 @@
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.47 2007/03/13 19:59:11 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.48 2007/04/02 17:58:48 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -408,6 +408,8 @@ void PlotWidget1::deletePlot()
 
   if (Size > 0)
     enter((*CCopasiDataModel::Global->getPlotDefinitionList())[std::min(Index, Size - 1)]->CCopasiParameter::getKey());
+  else
+    enter("");
 
   //ListViews::
   protectedNotify(ListViews::PLOT, ListViews::DELETE, objKey);
@@ -590,7 +592,11 @@ bool PlotWidget1::enter(const std::string & key)
   objKey = key;
   CPlotSpecification* pspec = dynamic_cast< CPlotSpecification * >(GlobalKeys.get(key));
 
-  if (!pspec) return false;
+  if (!pspec)
+    {
+      pListView->switchToOtherWidget(42, "");
+      return false;
+    }
 
   return loadFromPlotSpec(pspec);
 }

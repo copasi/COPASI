@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget1.cpp,v $
-//   $Revision: 1.92 $
+//   $Revision: 1.93 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/16 19:55:37 $
+//   $Date: 2007/04/02 17:58:34 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -444,6 +444,8 @@ void CompartmentsWidget1::slotBtnDeleteClicked()
 
         if (Size > 0)
           enter(CCopasiDataModel::Global->getModel()->getCompartments()[std::min(Index, Size - 1)]->getKey());
+        else
+          enter("");
 
         protectedNotify(ListViews::COMPARTMENT, ListViews::DELETE, objKey);
 
@@ -484,6 +486,10 @@ bool CompartmentsWidget1::enter(const std::string & key)
   objKey = key;
   CCompartment* comp = dynamic_cast< CCompartment * >(GlobalKeys.get(key));
 
-  if (comp) return loadFromCompartment(comp);
-  else return false;
+  if (comp)
+    return loadFromCompartment(comp);
+  else
+    pListView->switchToOtherWidget(111, "");
+
+  return false;
 }

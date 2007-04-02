@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportDefinition.ui.h,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/16 19:55:37 $
+//   $Date: 2007/04/02 17:58:34 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -311,6 +311,8 @@ void CQReportDefinition::btnDeleteReportClicked()
 
   if (Size > 0)
     enter((*CCopasiDataModel::Global->getReportDefinitionList())[std::min(Index, Size - 1)]->getKey());
+  else
+    enter("");
 
   protectedNotify(ListViews::REPORT, ListViews::DELETE, mKey);
 }
@@ -379,6 +381,12 @@ bool CQReportDefinition::enter(const std::string & key)
 {
   mKey = key;
   mpReportDefinition = dynamic_cast<CReportDefinition *>(GlobalKeys.get(mKey));
+
+  if (!mpReportDefinition)
+    {
+      pListView->switchToOtherWidget(43, "");
+      return false;
+    }
 
   return load();
 }

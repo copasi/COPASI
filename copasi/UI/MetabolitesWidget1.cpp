@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget1.cpp,v $
-//   $Revision: 1.137 $
+//   $Revision: 1.138 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/16 19:55:37 $
+//   $Date: 2007/04/02 17:58:34 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -756,6 +756,9 @@ bool MetabolitesWidget1::enter(const std::string & key)
   objKey = key;
   mpMetab = dynamic_cast< CMetab * >(GlobalKeys.get(key));
 
-  if (mpMetab) return loadFromMetabolite();
-  else return false;
+  if (mpMetab)
+    return loadFromMetabolite();
+
+  pListView->switchToOtherWidget(112, "");
+  return false;
 }

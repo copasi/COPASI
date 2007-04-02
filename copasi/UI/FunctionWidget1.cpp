@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-//   $Revision: 1.147 $
+//   $Revision: 1.148 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/16 19:55:37 $
+//   $Date: 2007/04/02 17:58:34 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1260,7 +1260,10 @@ void FunctionWidget1::slotDeleteButtonClicked()
         unsigned C_INT32 size =
           CCopasiDataModel::Global->getFunctionList()->loadedFunctions().size();
 
-        enter(CCopasiDataModel::Global->getFunctionList()->loadedFunctions()[std::min(index, size - 1)]->getKey());
+        if (size > 0)
+          enter(CCopasiDataModel::Global->getFunctionList()->loadedFunctions()[std::min(index, size - 1)]->getKey());
+        else
+          enter("");
 
         protectedNotify(ListViews::FUNCTION, ListViews::DELETE, objKey);
 
@@ -1354,6 +1357,9 @@ bool FunctionWidget1::enter(const std::string & key)
   //ddd.printDebugOutput();
   //ddd.findDimensionsBoth();
 
-  if (func) return loadFromFunction(func);
-  else return false;
+  if (func)
+    return loadFromFunction(func);
+
+  pListView->switchToOtherWidget(5, "");
+  return false;
 }
