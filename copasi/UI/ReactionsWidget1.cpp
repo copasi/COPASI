@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-//   $Revision: 1.186 $
+//   $Revision: 1.187 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/16 19:55:37 $
+//   $Date: 2007/04/02 16:33:23 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -98,7 +98,7 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
   deleteReaction->setText(trUtf8("&Delete"));
   Layout1->addWidget(deleteReaction);
 
-  ReactionsWidget1Layout->addMultiCellLayout(Layout1, 12, 12, 0, 3);
+  ReactionsWidget1Layout->addMultiCellLayout(Layout1, 11, 11, 0, 3);
 
   //
 
@@ -106,7 +106,7 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
   Line2->setFrameShape(QFrame::HLine);
   Line2->setFrameShadow(QFrame::Sunken);
   Line2->setFrameShape(QFrame::HLine);
-  ReactionsWidget1Layout->addMultiCellWidget(Line2, 6, 7, 0, 3);
+  ReactionsWidget1Layout->addMultiCellWidget(Line2, 7, 7, 0, 3);
 
   /*Line1 = new QFrame(this, "Line1");
   Line1->setFrameShape(QFrame::HLine);
@@ -125,24 +125,24 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
   TextLabel6->setText(trUtf8("Rate Law"));
   TextLabel6->setAlignment(int(QLabel::AlignVCenter
                                | QLabel::AlignRight));
-  ReactionsWidget1Layout->addWidget(TextLabel6, 4, 0);
+  ReactionsWidget1Layout->addWidget(TextLabel6, 5, 0);
 
   ComboBox1 = new QComboBox(FALSE, this, "ComboBox1");
-  ReactionsWidget1Layout->addMultiCellWidget(ComboBox1, 4, 4, 1, 2);
+  ReactionsWidget1Layout->addMultiCellWidget(ComboBox1, 5, 5, 1, 2);
 
   newKinetics = new QPushButton(this, "newKinetics");
   newKinetics->setText(trUtf8("&New Rate Law"));
-  ReactionsWidget1Layout->addWidget(newKinetics, 4, 3);
+  ReactionsWidget1Layout->addWidget(newKinetics, 5, 3);
 
   TextLabel8 = new QLabel(this, "TextLabel8");
   TextLabel8->setText(trUtf8("Flux"));
   TextLabel8->setAlignment(int(QLabel::AlignVCenter
                                | QLabel::AlignRight));
-  ReactionsWidget1Layout->addWidget(TextLabel8, 5, 0);
+  ReactionsWidget1Layout->addWidget(TextLabel8, 6, 0);
 
   LineEdit3 = new QLineEdit(this, "LineEdit3");
   LineEdit3->setEnabled(FALSE);
-  ReactionsWidget1Layout->addMultiCellWidget(LineEdit3, 5, 5, 1, 2);
+  ReactionsWidget1Layout->addMultiCellWidget(LineEdit3, 6, 6, 1, 2);
 
   //name
   LineEdit1 = new MyLineEdit(this, "LineEdit1");
@@ -157,27 +157,33 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
 
   LineEdit2 = new MyLineEdit(this, "LineEdit2");
   LineEdit2->setValidator(new ChemEqValidator(LineEdit2));
-  ReactionsWidget1Layout->addMultiCellWidget(LineEdit2, 2, 2, 1, 2);
+  ReactionsWidget1Layout->addMultiCellWidget(LineEdit2, 2, 2, 1, 3);
 
   CheckBox = new QCheckBox(this, "CheckBox");
   CheckBox->setText(trUtf8("Reversible"));
-  ReactionsWidget1Layout->addWidget(CheckBox, 2, 3);
+  ReactionsWidget1Layout->addWidget(CheckBox, 3, 1);
+
+  mpMultiCompartment = new QCheckBox(this, "mpMultiCompartment");
+  mpMultiCompartment->setText(trUtf8("Multi Compartment"));
+  mpMultiCompartment->setEnabled(false);
+  ReactionsWidget1Layout->addWidget(mpMultiCompartment, 3, 2);
 
   Line4 = new QFrame(this, "Line4");
   Line4->setFrameShape(QFrame::HLine);
   Line4->setFrameShadow(QFrame::Sunken);
   Line4->setFrameShape(QFrame::HLine);
-  ReactionsWidget1Layout->addMultiCellWidget(Line4, 3, 3, 0, 3);
+  ReactionsWidget1Layout->addMultiCellWidget(Line4, 4, 4, 0, 3);
 
   table = new ParameterTable(this, "table");
-  ReactionsWidget1Layout->addMultiCellWidget(table, 7, 9, 1, 3);
+  ReactionsWidget1Layout->addMultiCellWidget(table, 8, 9, 1, 3);
 
   QSpacerItem* spacer = new QSpacerItem(80, 101, QSizePolicy::Minimum, QSizePolicy::Expanding);
-  ReactionsWidget1Layout->addItem(spacer, 9, 0);
+  ReactionsWidget1Layout->addItem(spacer, 10, 0);
 
   setTabOrder(LineEdit1, LineEdit2);
   setTabOrder(LineEdit2, CheckBox);
-  setTabOrder(CheckBox, ComboBox1);
+  setTabOrder(CheckBox, mpMultiCompartment);
+  setTabOrder(mpMultiCompartment, ComboBox1);
   setTabOrder(ComboBox1, newKinetics);
   setTabOrder(newKinetics, table);
   setTabOrder(table, commitChanges);
@@ -416,6 +422,8 @@ void ReactionsWidget1::FillWidgetFromRI()
     {
       CheckBox->setChecked(true);
     }
+
+  mpMultiCompartment->setChecked(mpRi->isMulticompartment());
 
   // the function combobox
   QStringList comboEntries;

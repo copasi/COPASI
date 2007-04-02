@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.h,v $
-   $Revision: 1.46 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/28 00:21:45 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.h,v $
+//   $Revision: 1.47 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/04/02 16:33:33 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -93,6 +93,7 @@ class ReactionsWidget1 : public CopasiWidget
     QLabel* TextLabel5;
     QPushButton* newKinetics;
     QCheckBox* CheckBox;
+    QCheckBox * mpMultiCompartment;
 
     //QString name;
   };
