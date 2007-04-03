@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensProblem.cpp,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/04/01 12:46:28 $
+//   $Date: 2007/04/03 12:25:25 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -429,6 +429,7 @@ CSensProblem::getPossibleTargetFunctions(CSensProblem::SubTaskType type)
 
     case (CSensProblem::SteadyState):
             list.push_back(CObjectLists::SINGLE_OBJECT);
+      list.push_back(CObjectLists::ALL_VARIABLES);
       list.push_back(CObjectLists::NON_CONST_METAB_CONCENTRATIONS);
       list.push_back(CObjectLists::NON_CONST_METAB_NUMBERS);
       list.push_back(CObjectLists::NON_CONST_METAB_CONC_RATES);
@@ -490,6 +491,7 @@ CSensProblem::getPossibleVariables(CSensProblem::SubTaskType type)
             list.push_back(CObjectLists::SINGLE_OBJECT);
       list.push_back(CObjectLists::ALL_LOCAL_PARAMETER_VALUES);
       list.push_back(CObjectLists::ALL_PARAMETER_VALUES);
+      list.push_back(CObjectLists::ALL_METAB_INITIAL_CONCENTRATIONS);
       //TODO all const values, all model parameters
       break;
 

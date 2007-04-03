@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CObjectLists.cpp,v $
-   $Revision: 1.13 $
-   $Name:  $
-   $Author: ssahle $
-   $Date: 2007/01/02 11:59:11 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CObjectLists.cpp,v $
+//   $Revision: 1.14 $
+//   $Name:  $
+//   $Author: ssahle $
+//   $Date: 2007/04/03 12:24:36 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -56,6 +56,10 @@ const std::string CObjectLists::ListTypeName[] =
     "Local Parameter Values",
     "All Parameter Values",
     "All Parameter and Initial Values",
+
+    "All Variables of the model",
+    "All independent Variables of the model",
+
     ""
   };
 
@@ -308,6 +312,17 @@ CObjectLists::getListOfObjects(ListType t, const CModel* model)
 
         ObjectList::const_iterator it;
         for (it = l2.begin(); it != l2.end(); ++it) ret.push_back(*it);
+      }
+      break;
+
+    case ALL_VARIABLES:
+      {
+        ret = getListOfObjects(NON_CONST_METAB_CONCENTRATIONS, model);
+        ObjectList l2 = getListOfObjects(NON_CONST_GLOBAL_PARAMETER_VALUES, model);
+
+        ObjectList::const_iterator it;
+        for (it = l2.begin(); it != l2.end(); ++it) ret.push_back(*it);
+        //TODO extend to compartments
       }
       break;
     }

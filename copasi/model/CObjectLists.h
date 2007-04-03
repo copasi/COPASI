@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CObjectLists.h,v $
-   $Revision: 1.8 $
-   $Name:  $
-   $Author: ssahle $
-   $Date: 2007/01/02 11:59:11 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CObjectLists.h,v $
+//   $Revision: 1.9 $
+//   $Name:  $
+//   $Author: ssahle $
+//   $Date: 2007/04/03 12:24:36 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -60,7 +60,10 @@ class CObjectLists
       ALL_LOCAL_PARAMETER_VALUES,
 
       ALL_PARAMETER_VALUES,
-      ALL_PARAMETER_AND_INITIAL_VALUES
+      ALL_PARAMETER_AND_INITIAL_VALUES,
+
+      ALL_VARIABLES, //
+      ALL_ODE_VARIABLES
     };
 
     static const std::string ListTypeName[];
