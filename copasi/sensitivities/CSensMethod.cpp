@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensMethod.cpp,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/04/01 12:46:28 $
+//   $Date: 2007/04/03 12:28:06 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -98,6 +98,8 @@ bool CSensMethod::do_target_calculation(CCopasiArray & result, bool first)
       mpProblem->getModel()->updateSimulatedValues();
       mpProblem->getModel()->updateNonSimulatedValues();
     }
+  mpProblem->getModel()->updateSimulatedValues();
+  mpProblem->getModel()->updateNonSimulatedValues();
 
   //****** retrieve results ************
 
@@ -109,13 +111,15 @@ bool CSensMethod::do_target_calculation(CCopasiArray & result, bool first)
   result.resize(resultindex);
 
   //copy result
+  //std::cout.precision(20);
   for (i = 0; i < imax; ++i)
     {
       if (imax > 1)
         resultindex[0] = i;
       result[resultindex] = *(C_FLOAT64*)mTargetfunctionPointers[i]->getValuePointer();
-      //std::cout << *(C_FLOAT64*)mTargetfunctionPointers[i]->getValuePointer() << std::endl;
+      //std::cout << *(C_FLOAT64*)mTargetfunctionPointers[i]->getValuePointer() << "  ";
     }
+  //std::cout << std::endl;
 
   //progress bar
   ++mProgress;
