@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.h,v $
-//   $Revision: 1.36 $
+//   $Revision: 1.37 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2007/02/20 09:48:39 $
+//   $Date: 2007/04/05 12:39:23 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -59,7 +59,7 @@ class CCopasiMethod : public CCopasiParameterGroup
       hybrid,
       hybridLSODA,
       tssILDM,
-      //      tssCSP,
+      tssCSP,
       tauLeap,
       mcaMethodReder,
       scanMethod,

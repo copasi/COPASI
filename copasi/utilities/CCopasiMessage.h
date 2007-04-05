@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMessage.h,v $
-//   $Revision: 1.47 $
+//   $Revision: 1.48 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/02/26 18:10:48 $
+//   $Author: nsimus $
+//   $Date: 2007/04/05 12:39:23 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -54,6 +54,8 @@ Message;
 #define MCLyap                   MCopasiBase + 2700
 #define MCODEExporter            MCopasiBase + 2800
 #define MCRegistration           MCopasiBase + 2900
+#define MCTSSAMethod             MCopasiBase + 3000
+#define MCTSSAProblem            MCopasiBase + 3100
 
 /**
  *  This throws an exception with information where the error occured.
