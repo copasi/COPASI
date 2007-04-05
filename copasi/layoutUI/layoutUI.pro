@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/layoutUI.pro,v $ 
-#   $Revision: 1.3 $ 
+#   $Revision: 1.4 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2007/04/05 16:14:07 $ 
+#   $Date: 2007/04/05 16:32:38 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -12,10 +12,10 @@
 
 LIB = layoutUI
 
-CONFIG += qt
-
 include(../lib.pri)
 include(../common.pri)
+
+CONFIG += qt
 
 HEADERS = CQGLNetworkPainter.h \
           CArrow.h \
