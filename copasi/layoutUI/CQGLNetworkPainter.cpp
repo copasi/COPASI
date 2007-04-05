@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/04/02 10:33:48 $
+//   $Date: 2007/04/05 11:06:02 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -85,11 +85,11 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
   CCopasiVector<CLMetabGlyph> nodes;
   nodes = lP->getListOfMetaboliteGlyphs();
   //viewerNodes.resize (nodes.size());
-  viewerNodes = std::vector<CLMetabGlyph>();
+  viewerNodes = std::vector<CGraphNode>();
   unsigned int i;
   for (i = 0;i < nodes.size();i++)
     {
-      viewerNodes.push_back(*nodes[i]); // local vector of nodes contains objects, not pointers
+      viewerNodes.push_back(CGraphNode(*nodes[i])); // local vector of nodes contains objects, not pointers
       //viewerNodes[i].printObject();
     }
   CCopasiVector<CLReactionGlyph> reactions;
@@ -134,19 +134,21 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
           //}
           CLMetabReferenceGlyph::Role r = edgesToNodesOfReaction[j2]->getRole();
           std::string nodeKey = std::string(edgesToNodesOfReaction[j2]->getMetabGlyph()->getKey());
-          nodeMap.insert(std::pair<std::string, std::string>
-                         (nodeKey,
-                          std::string(edgesToNodesOfReaction[j2]->getMetabGlyphKey()))); // map viewer node key to key of CLMetabRefeerenceGlyph
-          curveMap.insert(std::pair<std::string, CLCurve*>
-                          (std::string(edgesToNodesOfReaction[j2]->getMetabGlyphKey()),
-                           &(edgesToNodesOfReaction[j2]->getCurve())));
-          nodeSizeMap.insert(std::pair<std::string, float>
-                             (nodeKey, edgesToNodesOfReaction[j2]->getMetabGlyph()->getHeight())); // initial node diameter is height of glyph bounding box
+          //          nodeMap.insert(std::pair<std::string, std::string>
+          //                         (nodeKey,
+          //                          std::string(edgesToNodesOfReaction[j2]->getMetabGlyphKey()))); // map viewer node key to key of CLMetabRefeerenceGlyph
+          //          curveMap.insert(std::pair<std::string, CLCurve*>
+          //                          (std::string(edgesToNodesOfReaction[j2]->getMetabGlyphKey()),
+          //                           &(edgesToNodesOfReaction[j2]->getCurve())));
+          //          nodeSizeMap.insert(std::pair<std::string, float>
+          //                             (nodeKey, edgesToNodesOfReaction[j2]->getMetabGlyph()->getHeight())); // initial node diameter is height of glyph bounding box
+          //          std::cout << nodeKey << " : " << edgesToNodesOfReaction[j2]->getMetabGlyph()->getHeight() << std::endl;
           //          viewerNodeMap.insert(std::pair<std::string, CLMetabGlyph>
           //                  (std::string(nodeKey),
           //                  *findNodeWithKey(viewerNodes,nodeKey))
           //);
           //std::cout << "role : " << r << std::endl;
+          storeCurveInCorrespondingNode(nodeKey, viewerCurves.back()); // use reference to last curve put into the vector viewerCurves
           if ((r == CLMetabReferenceGlyph::PRODUCT) || (r == CLMetabReferenceGlyph::SIDEPRODUCT))
             {// create arrows just for edges to products or sideproducts
               std::vector<CLLineSegment> segments = curve.getCurveSegments();
@@ -180,15 +182,25 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
   //CQGLNetworkPainter::drawGraph();
 }
 
+void CQGLNetworkPainter::storeCurveInCorrespondingNode(std::string nodeKey, CLCurve curve)
+{
+  CGraphNode *nodeP = findNodeWithKey(nodeKey);
+  if (nodeP != NULL)
+    {
+      nodeP->addCurve(&curve);
+      std::cout << "curve added to " << nodeKey << std::endl;
+    }
+}
+
 // look for viewer node with key nodeKey and return this element
-CLMetabGlyph* CQGLNetworkPainter::findNodeWithKey(std::vector<CLMetabGlyph> viewerNodes, std::string nodeKey)
+CGraphNode* CQGLNetworkPainter::findNodeWithKey(std::string nodeKey)
 {
   bool nodeFound = false;
   int numNodes = viewerNodes.size();
   int i = 0;
   while (!nodeFound && (i < numNodes))
     {
-      if (viewerNodes[i].getKey() == nodeKey)
+      if (viewerNodes[i].getOrigNodeKey() == nodeKey)
         nodeFound = true;
       else
         i++;
@@ -244,18 +256,20 @@ void CQGLNetworkPainter::drawGraph()
 }
 
 // draw node as circle
-void CQGLNetworkPainter::drawNode(CLMetabGlyph &n)
+void CQGLNetworkPainter::drawNode(CGraphNode &n)
 {
   float diameter = 20.0;
-
-  std::map<std::string, float>::iterator iter = nodeSizeMap.find(n.getKey());
-  if (iter != nodeSizeMap.end())
-    {
-      std::string viewerNodeKey = n.getKey();
-      diameter = nodeSizeMap[viewerNodeKey];
-      //diameter = iter->second;
-      std::cout << "diameter of " << n.getKey() << ": " << diameter << std::endl;
-    }
+  diameter = n.getSize();
+  std::cout << "diameter of " << n.getOrigNodeKey() << ": " << diameter << std::endl;
+  //std::map<std::string, float>::iterator iter = nodeSizeMap.find(n.getKey());
+  //std::cout << "find: " << n.getKey() <<std::endl;;
+  //  if (iter != nodeSizeMap.end())
+  //    {
+  //      std::string viewerNodeKey = n.getOrigNodeKey();
+  //      diameter = n.getSize();
+  //      //diameter = nodeSizeMap[viewerNodeKey];
+  //      std::cout << "diameter of " << n.getOrigNodeKey() << ": " << diameter << std::endl;
+  //}
   glColor3f(1.0f, 0.0f, 0.0f); // red
   GLUquadricObj *qobj;
   qobj = gluNewQuadric();
@@ -265,9 +279,9 @@ void CQGLNetworkPainter::drawNode(CLMetabGlyph &n)
   double ty = n.getY() + (n.getHeight() / 2.0);
   glTranslatef((float)tx, (float)ty, 0.0f);
   glColor3f(1.0f, 0.0f, 0.0f); // red
-  gluDisk(qobj, 0.0, n.getHeight() / 2.0, 25, 2);
+  gluDisk(qobj, 0.0, diameter / 2.0, 25, 2);
   glColor3f(0.0f, 0.0f, 0.0f); // black
-  gluDisk(qobj, diameter / 2.0 - 1.0, n.getHeight() / 2.0, 25, 2);
+  gluDisk(qobj, diameter / 2.0 - 1.0, diameter / 2.0, 25, 2);
   glTranslatef(-(float)tx, -(float)ty, 0.0f);
 }
 
@@ -512,21 +526,22 @@ void CQGLNetworkPainter::setNodeSizes()
   // test: set all node to certain size
   int i;
   for (i = 0;i < viewerNodes.size();i++)
-    this->changeNodeSize(viewerNodes[i].getKey(), 50.0);
+    viewerNodes[i].setSize(50.0);
+  //this->changeNodeSize(viewerNodes[i].setSize(50.0));
 }
 
-void CQGLNetworkPainter::changeNodeSize(std::string viewerNodeKey, double newSize)
-{
-  // first change size of node in viewerNodes
-  std::map<std::string, float>::iterator iter = nodeSizeMap.find(viewerNodeKey);
-  if (iter != nodeSizeMap.end())
-    {
-      nodeSizeMap[viewerNodeKey] = newSize;
-      // now get curve(s) that belong(s) to node and change end point(s)
-      //for(multimap<string, int>::iterator iter = m.begin(); iter != m.end(); ++iter) {
-      //cout << " Name: " << iter->first << ", ID #" << iter->second << endl;
-    }
-}
+//void CQGLNetworkPainter::changeNodeSize(std::string viewerNodeKey, double newSize)
+//{
+//  // first change size of node in viewerNodes
+//  std::map<std::string, float>::iterator iter = nodeSizeMap.find(viewerNodeKey);
+//  if (iter != nodeSizeMap.end())
+//    {
+//      nodeSizeMap[viewerNodeKey] = newSize;
+//      // now get curve(s) that belong(s) to node and change end point(s)
+//      //for(multimap<string, int>::iterator iter = m.begin(); iter != m.end(); ++iter) {
+//      //cout << " Name: " << iter->first << ", ID #" << iter->second << endl;
+//}
+//}
 
 void CQGLNetworkPainter::mapLabelsToRectangles()
 {

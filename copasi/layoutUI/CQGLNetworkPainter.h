@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/04/02 10:33:48 $
+//   $Date: 2007/04/05 11:06:02 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,6 +30,8 @@
 #include "copasi/layout/CLCurve.h"
 #include "copasi/layoutUI/CArrow.h"
 
+#include "copasi/layoutUI/CgraphNode.h"
+
 class CLayout;
 
 class CQGLNetworkPainter : public QGLWidget
@@ -43,14 +45,14 @@ class CQGLNetworkPainter : public QGLWidget
     void setGraphSize(const CLPoint & min, const CLPoint & max);
     void createGraph(CLayout *lP); // create local data structures
     void drawGraph(); // create OpenGL display list with graph objects
-    void drawNode(CLMetabGlyph &n);
+    void drawNode(CGraphNode &n);
     void drawEdge(CLCurve c);
     void drawLabel(CLTextGlyph l);
     // void drawStringAt(string s, double x, double y);
     void drawArrow(CArrow a);
 
     void setNodeSizes();
-    void changeNodeSize(std::string viewerNodeKey, double newSize);
+    //void changeNodeSize(std::string viewerNodeKey, double newSize);
 
     void mapLabelsToRectangles();
     void mapLabelsToCircles();
@@ -62,7 +64,7 @@ class CQGLNetworkPainter : public QGLWidget
   private:
     CLPoint mgraphMin;
     CLPoint mgraphMax;
-    std::vector<CLMetabGlyph> viewerNodes;
+    std::vector<CGraphNode> viewerNodes;
     std::vector<CLCurve> viewerCurves;
     std::vector<CArrow> viewerArrows;
     std::vector<CLTextGlyph> viewerLabels;
@@ -71,11 +73,12 @@ class CQGLNetworkPainter : public QGLWidget
     int mFontsize;
     double mFontsizeDouble;
 
-    std::multimap<std::string, CLCurve*> curveMap; // maps mMetabGlyphKey of CLMetabReferenceGlyph to curve in reaction
-    std::multimap<std::string, std::string> nodeMap; // maps mKey of viewer node  to mMetabGlyphKey of CLMetabReferenceGlyph
-    std::map<std::string, float> nodeSizeMap; // maps mKey of viewer node to size of this node in circular view
+    //std::multimap<std::string, CLCurve*> curveMap; // maps mMetabGlyphKey of CLMetabReferenceGlyph to curve in reaction
+    //std::multimap<std::string, std::string> nodeMap; // maps mKey of viewer node  to mMetabGlyphKey of CLMetabReferenceGlyph
+    //std::map<std::string, float> nodeSizeMap; // maps mKey of viewer node to size of this node in circular view
 
-    CLMetabGlyph *findNodeWithKey(std::vector<CLMetabGlyph> viewerNodes, std::string nodeKey);
+    CGraphNode* findNodeWithKey(std::string nodeKey);
+    void storeCurveInCorrespondingNode(std::string nodeKey, CLCurve curve);
 
     QAction *zoomInAction;
     QAction *zoomOutAction;
