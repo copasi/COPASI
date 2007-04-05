@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.297 $
+//   $Revision: 1.298 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/04/01 12:48:01 $
+//   $Date: 2007/04/05 14:58:43 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1304,6 +1304,7 @@ bool CModel::buildSimulatedSequence()
     }
 
   mSimulatedUpToDateObjects.clear();
+  //std::cout << "Simulated: " ; //debug
   mSimulatedRefreshes = CCopasiObject::buildUpdateSequence(Objects, this);
 
   // We have to remove the refresh calls already covered by mConstantRefreshes
@@ -1369,6 +1370,7 @@ bool CModel::buildConstantSequence()
     }
 
   mSimulatedUpToDateObjects.clear();
+  //std::cout << "Constant: " ; //debug
   mConstantRefreshes = CCopasiObject::buildUpdateSequence(Objects, this);
 
   return true;
@@ -1453,6 +1455,7 @@ bool CModel::buildNonSimulatedSequence()
         }
     }
 
+  //std::cout << "Non Simulated: " ; //debug
   mNonSimulatedRefreshes = CCopasiObject::buildUpdateSequence(Objects, this);
 
   return true;
@@ -1773,8 +1776,16 @@ void CModel::calculateJacobianX(CMatrix< C_FLOAT64 > & jacobianX,
 
       if (fabs(Store * 2.0 * derivationFactor) < resolution)
         {
-          X1 = resolution;
-          X2 = -resolution;
+          /*          X1 = + resolution;
+                    X2 = - resolution;*/
+          X1 = Store + 0.5 * resolution;
+          X2 = Store - 0.5 * resolution;
+
+          if ((Store >= 0) && (Store < 0.5*resolution))
+            {
+              X1 = resolution;
+              X2 = 0;
+            }
         }
       else
         {
