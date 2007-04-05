@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryMethod.cpp,v $
-//   $Revision: 1.37 $
+//   $Revision: 1.38 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2007/02/20 09:50:39 $
+//   $Date: 2007/04/05 09:54:04 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,8 +28,6 @@
 #include "CHybridMethod.h"
 #include "CHybridMethodLSODA.h"
 #include "CTauLeapMethod.h"
-#include "CTimeScaleSeparationILDM.h"
-//#include "CTimeScaleSeparationCSP.h"
 
 #include "CTrajectoryProblem.h"
 #include "model/CState.h"
@@ -67,14 +65,6 @@ CTrajectoryMethod::createTrajectoryMethod(CCopasiMethod::SubType subType,
     case tauLeap:
       pMethod = CTauLeapMethod::createTauLeapMethod(pProblem);
       break;
-
-    case tssILDM:
-      pMethod = new CTimeScaleSeparationILDM();
-      break;
-
-      //   case tssCSP:
-      //     pMethod = new CTimeScaleSeparationCSP();
-      //     break;
 
     default:
       fatalError();

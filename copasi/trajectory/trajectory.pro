@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/trajectory.pro,v $ 
-#   $Revision: 1.12 $ 
+#   $Revision: 1.13 $ 
 #   $Name:  $ 
 #   $Author: nsimus $ 
-#   $Date: 2007/02/20 09:51:02 $ 
+#   $Date: 2007/04/05 09:55:07 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -11,7 +11,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.12 $ $Author: nsimus $ $Date: 2007/02/20 09:51:02 $  
+# $Revision: 1.13 $ $Author: nsimus $ $Date: 2007/04/05 09:55:07 $  
 ######################################################################
 
 LIB = trajectory
@@ -30,8 +30,6 @@ HEADERS += CHybridMethod.h \
            CStochMethod.h \
            CStochNextReactionMethod.h \
            CTauLeapMethod.h \
-	   CTimeScaleSeparationILDM.h \
-#	   CTimeScaleSeparationCSP.h \
            CTimeSeries.h \
            CTrajectoryMethod.h \
            CTrajectoryProblem.h \
@@ -47,8 +45,6 @@ SOURCES += CHybridMethod.cpp \
            CStochMethod.cpp \
            CStochNextReactionMethod.cpp \
            CTauLeapMethod.cpp \
-	   CTimeScaleSeparationILDM.cpp \
-#	   CTimeScaleSeparationCSP.cpp \
            CTimeSeries.cpp \
            CTrajectoryMethod.cpp \
            CTrajectoryProblem.cpp \
