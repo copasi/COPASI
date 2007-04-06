@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/DifferentialEquations.cpp,v $
-//   $Revision: 1.34 $
+//   $Revision: 1.35 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/03/16 19:55:37 $
+//   $Author: ssahle $
+//   $Date: 2007/04/06 14:42:16 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -320,6 +320,9 @@ void DifferentialEquations::loadDifferentialEquations(CModel * model)
   C_INT32 i, imax = model->getMetabolites().size();
   for (i = 0; i < imax; i++)
     {
+      //skip fixed metabs
+      if (model->getMetabolites()[i]->getStatus() != CModelEntity::REACTIONS) continue;
+
       std::set<std::string> reacKeys = listReactionsForMetab(model, model->getMetabolites()[i]->getKey());
       std::set<std::string>::const_iterator it, itEnd = reacKeys.end();
       for (it = reacKeys.begin(); it != itEnd; ++it)
