@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.87 $
+//   $Revision: 1.88 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2007/04/05 12:40:20 $
+//   $Author: shoops $
+//   $Date: 2007/04/06 16:14:41 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -234,6 +234,8 @@ const MESSAGES Messages[] =
 
     // CODEExporter
     {MCODEExporter + 1, "CODEExporterXPPAUT (1): Length of exporting line exeeds 1000 characters."},
+    {MCODEExporter + 2, "CODEExporter (2): The export was incomplete since the model depends on model"
+     "quantities, which can currently not be exported."},
 
     {MCRegistration + 1, "CRegistration (1): Invalid registration code."},
     {MCRegistration + 2, "CRegistration (2): Email and/or user name do not match registration code."},
