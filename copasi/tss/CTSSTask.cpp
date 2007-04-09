@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/CTSSTask.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/02/20 23:50:33 $
+//   $Author: shoops $
+//   $Date: 2007/04/09 18:56:14 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -71,7 +71,7 @@ bool CTSSTask::initialize(const OutputFlag & of, std::ostream * pOstream)
 
   if (CCopasiTask::initialize(of, pOstream)) success = false;
 
-  if (!pProblem->getModel()->compileIfNecessary()) success = false;
+  if (!pProblem->getModel()->compileIfNecessary(mpCallBack)) success = false;
   //pProblem->setInitialState(pProblem->getModel()->getInitialState());
 
   return success;

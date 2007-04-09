@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
-//   $Revision: 1.38 $
+//   $Revision: 1.39 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/01/12 16:44:25 $
+//   $Date: 2007/04/09 18:56:13 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -260,7 +260,7 @@ int main(int argc, char *argv[])
               std::string Save;
               COptions::getValue("Save", Save);
 
-              CCopasiDataModel::Global->saveModel(Save, true);
+              CCopasiDataModel::Global->saveModel(Save, NULL, true);
             }
 
           // If no export or save file was given, we write to the
@@ -303,7 +303,7 @@ int main(int argc, char *argv[])
 
           for (; it != end; ++it)
             {
-              CCopasiDataModel::Global->loadModel(*it);
+              CCopasiDataModel::Global->loadModel(*it, NULL);
 
               // Check whether exporting to SBML is requested.
               if (!COptions::compareValue("ExportSBML", std::string("")))
@@ -324,7 +324,7 @@ int main(int argc, char *argv[])
                   // Export the C code File
                   std::string ExportC;
                   COptions::getValue("ExportC", ExportC);
-                  CCopasiDataModel::Global->exportMathModel(ExportC, "C Files (*.c)", true);
+                  CCopasiDataModel::Global->exportMathModel(ExportC, NULL, "C Files (*.c)", true);
 
                   // Since only one export file name can be specified we
                   // stop execution.
@@ -337,7 +337,7 @@ int main(int argc, char *argv[])
                   // Export the Berkeley Madonna File
                   std::string ExportBerkeleyMadonna;
                   COptions::getValue("ExportBerkeleyMadonna", ExportBerkeleyMadonna);
-                  CCopasiDataModel::Global->exportMathModel(ExportBerkeleyMadonna, "Berkeley Madonna Files (*.mmd)", true);
+                  CCopasiDataModel::Global->exportMathModel(ExportBerkeleyMadonna, NULL, "Berkeley Madonna Files (*.mmd)", true);
 
                   // Since only one export file name can be specified we
                   // stop execution.
@@ -373,7 +373,7 @@ int main(int argc, char *argv[])
                 {
                   std::string Save;
                   COptions::getValue("Save", Save);
-                  CCopasiDataModel::Global->saveModel(Save, true);
+                  CCopasiDataModel::Global->saveModel(Save, NULL, true);
 
                   // Since only one save file name can be specified we
                   // stop execution.

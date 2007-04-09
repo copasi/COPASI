@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.95 $
+//   $Revision: 1.96 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/16 16:56:06 $
+//   $Date: 2007/04/09 18:56:12 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -133,7 +133,7 @@ CCopasiDataModel::CCopasiDataModel(const bool withGUI):
   GlobalKeys.addFix("UndefinedFunction_0", mpUndefined);
 
   mpFunctionList->load();
-  newModel();
+  newModel(NULL, NULL);
   CCopasiObject::setRenameHandler(&mRenameHandler); //TODO where in the contructor should this be called?
 
   mpConfiguration->load();
@@ -160,7 +160,7 @@ CCopasiDataModel::~CCopasiDataModel()
   pdelete(pOldMetabolites);
 }
 
-bool CCopasiDataModel::loadModel(const std::string & fileName)
+bool CCopasiDataModel::loadModel(const std::string & fileName, CProcessReport* pProcessReport)
 {
   CCopasiMessage::clearDeque();
 
@@ -197,7 +197,7 @@ bool CCopasiDataModel::loadModel(const std::string & fileName)
           return false;
         }
 
-      newModel();
+      newModel(NULL, NULL);
       mpModel->load(inbuf);
 
       dynamic_cast<CSteadyStateTask *>((*mpTaskList)["Steady-State"])->load(inbuf);
@@ -250,7 +250,7 @@ bool CCopasiDataModel::loadModel(const std::string & fileName)
           return false;
         }
 
-      newModel(XML.getModel());
+      newModel(XML.getModel(), pProcessReport);
 
       if (XML.getTaskList())
         {
@@ -290,13 +290,15 @@ bool CCopasiDataModel::loadModel(const std::string & fileName)
     }
 
   if (mpModel)
-    mpModel->compileIfNecessary();
+    mpModel->compileIfNecessary(pProcessReport);
+
   changed(false);
 
   return true;
 }
 
-bool CCopasiDataModel::saveModel(const std::string & fileName, bool overwriteFile,
+bool CCopasiDataModel::saveModel(const std::string & fileName, CProcessReport* pProcessReport,
+                                 bool overwriteFile,
                                  const bool & autoSave)
 {
   CCopasiMessage::clearDeque();
@@ -331,7 +333,7 @@ bool CCopasiDataModel::saveModel(const std::string & fileName, bool overwriteFil
 
   try
     {
-      if (!mpModel->compileIfNecessary())
+      if (!mpModel->compileIfNecessary(pProcessReport))
         return false;
     }
 
@@ -421,7 +423,7 @@ bool CCopasiDataModel::autoSave()
 
   try
     {
-      if (!saveModel(AutoSave, true, true)) return false;
+      if (!saveModel(AutoSave, NULL, true, true)) return false;
     }
 
   catch (...)
@@ -433,7 +435,7 @@ bool CCopasiDataModel::autoSave()
   return true;
 }
 
-bool CCopasiDataModel::newModel(CModel * pModel
+bool CCopasiDataModel::newModel(CModel * pModel, CProcessReport* pProcessReport
 #ifdef WITH_LAYOUT
                                 , CListOfLayouts * pLol
 #endif
@@ -487,7 +489,7 @@ bool CCopasiDataModel::newModel(CModel * pModel
     }
 
   if (mpModel)
-    mpModel->compileIfNecessary();
+    mpModel->compileIfNecessary(pProcessReport);
   changed(false);
 
   return true;
@@ -535,7 +537,7 @@ bool CCopasiDataModel::importSBMLFromString(const std::string& sbmlDocumentText,
   mpCurrentSBMLDocument = pSBMLDocument;
   mCopasi2SBMLMap = Copasi2SBMLMap;
 
-  return newModel(pModel
+  return newModel(pModel, pImportHandler
 #ifdef WITH_LAYOUT
                   , pLol
 #endif
@@ -616,7 +618,7 @@ bool CCopasiDataModel::importSBML(const std::string & fileName, CProcessReport* 
   mpCurrentSBMLDocument = pSBMLDocument;
   mCopasi2SBMLMap = Copasi2SBMLMap;
 
-  return newModel(pModel
+  return newModel(pModel, pImportHandler
 #ifdef WITH_LAYOUT
                   , pLol
 #endif
@@ -675,7 +677,7 @@ bool CCopasiDataModel::exportSBML(const std::string & fileName, bool overwriteFi
 
   try
     {
-      if (!mpModel->compileIfNecessary())
+      if (!mpModel->compileIfNecessary(pExportHandler))
         return false;
     }
 
@@ -697,7 +699,8 @@ bool CCopasiDataModel::exportSBML(const std::string & fileName, bool overwriteFi
   return true;
 }
 
-bool CCopasiDataModel::exportMathModel(const std::string & fileName, const std::string & filter, bool overwriteFile)
+bool CCopasiDataModel::exportMathModel(const std::string & fileName, CProcessReport* pProcessReport,
+                                       const std::string & filter, bool overwriteFile)
 {
   CCopasiMessage::clearDeque();
 
@@ -724,7 +727,7 @@ bool CCopasiDataModel::exportMathModel(const std::string & fileName, const std::
 
   try
     {
-      if (!mpModel->compileIfNecessary())
+      if (!mpModel->compileIfNecessary(pProcessReport))
         return false;
     }
 
@@ -732,6 +735,15 @@ bool CCopasiDataModel::exportMathModel(const std::string & fileName, const std::
     {
       return false;
     }
+
+  CCopasiVector< CModelValue >::const_iterator it = mpModel->getModelValues().begin();
+  CCopasiVector< CModelValue >::const_iterator end = mpModel->getModelValues().end();
+
+  for (; it != end; ++it)
+    if ((*it)->isUsed()) break;
+
+  if (it != end)
+    CCopasiMessage(CCopasiMessage::WARNING, MCODEExporter + 2);
 
   if (filter == "C Files (*.c)")
     {

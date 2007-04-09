@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-   $Revision: 1.65 $
-   $Name:  $
-   $Author: ssahle $
-   $Date: 2007/01/08 14:50:04 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
+//   $Revision: 1.66 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/04/09 18:56:15 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -53,12 +53,6 @@ DataModelGUI::DataModelGUI():
 
 void DataModelGUI::linkDataModelToGUI()
 {
-  //TODO: delete old handler
-  //progress bar
-  CProgressBar* tmpBar = new CProgressBar();
-
-  CCopasiDataModel::Global->getModel()->setCompileHandler(tmpBar);
-
   //math model
   //pdelete(mpMathModel);
   //mpMathModel = new CMathModel();
@@ -90,9 +84,6 @@ void DataModelGUI::linkDataModelToGUI()
   mTree.findNodeFromId(43)->setObjectKey(CCopasiDataModel::Global->getReportDefinitionList()->getKey());
   //mTree.findNodeFromId(42)->setObjectKey(mPlotDefinitionList.getKey());
   mTree.findNodeFromId(42)->setObjectKey(CCopasiDataModel::Global->getPlotDefinitionList()->getKey());
-
-  CCopasiDataModel::Global->getModel()->setCompileHandler(NULL);
-  pdelete(tmpBar);
 
   ListViews::setDataModel(this);
 }
@@ -293,7 +284,7 @@ const IndexedNode * DataModelGUI::getNode(const int & id) const
 
 bool DataModelGUI::createModel()
 {
-  if (!CCopasiDataModel::Global->newModel()) return false;
+  if (!CCopasiDataModel::Global->newModel(NULL, NULL)) return false;
 
   mOutputHandlerPlot.setOutputDefinitionVector(CCopasiDataModel::Global->getPlotDefinitionList());
 
@@ -303,7 +294,9 @@ bool DataModelGUI::createModel()
 
 bool DataModelGUI::loadModel(const std::string & fileName)
 {
-  if (!CCopasiDataModel::Global->loadModel(fileName)) return false;
+  CProgressBar* pProgressBar = new CProgressBar();
+
+  if (!CCopasiDataModel::Global->loadModel(fileName, pProgressBar)) return false;
 
   CCopasiDataModel::Global->getConfiguration()->getRecentFiles().addFile(fileName);
 
@@ -312,14 +305,20 @@ bool DataModelGUI::loadModel(const std::string & fileName)
 
   linkDataModelToGUI();
 
+  pdelete(pProgressBar);
+
   return true;
 }
 
 bool DataModelGUI::saveModel(const std::string & fileName, bool overwriteFile)
 {
-  if (!CCopasiDataModel::Global->saveModel(fileName, overwriteFile)) return false;
+  CProgressBar* pProgressBar = new CProgressBar();
+
+  if (!CCopasiDataModel::Global->saveModel(fileName, pProgressBar, overwriteFile)) return false;
 
   CCopasiDataModel::Global->getConfiguration()->getRecentFiles().addFile(fileName);
+
+  pdelete(pProgressBar);
 
   return true;
 }
@@ -412,7 +411,11 @@ bool DataModelGUI::exportSBML(const std::string & fileName, bool overwriteFile, 
 
 bool DataModelGUI::exportMathModel(const std::string & fileName, const std::string & filter, bool overwriteFile)
 {
-  return CCopasiDataModel::Global->exportMathModel(fileName, filter, overwriteFile);
+  CProgressBar* pProgressBar = new CProgressBar();
+  bool success = CCopasiDataModel::Global->exportMathModel(fileName, pProgressBar, filter, overwriteFile);
+
+  pdelete(pProgressBar);
+  return success;
 }
 
 //************** Math model ***********************************************

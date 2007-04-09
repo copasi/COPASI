@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCATask.cpp,v $
-   $Revision: 1.11 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/06/20 13:19:55 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCATask.cpp,v $
+//   $Revision: 1.12 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/04/09 18:56:14 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -82,7 +82,7 @@ bool CMCATask::initialize(const OutputFlag & of,
 
   //initialize reporting
   if (!CCopasiTask::initialize(of, pOstream)) success = false;
-  if (!pProblem->getModel()->compileIfNecessary()) success = false;
+  if (!pProblem->getModel()->compileIfNecessary(mpCallBack)) success = false;
 
   CSteadyStateTask *pSubTask = pProblem->getSubTask();
 

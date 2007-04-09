@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.141 $
+//   $Revision: 1.142 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/16 16:56:07 $
+//   $Date: 2007/04/09 18:56:13 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -388,15 +388,17 @@ class CModel : public CModelEntity
 
     /**
      * Compile the model if necessary
+     * @param CProcessReport* pProcessReport
      * @return bool success
      */
-    bool compileIfNecessary();
+    bool compileIfNecessary(CProcessReport* pProcessReport);
 
     /**
      * Force a compile the model.
+     * @param CProcessReport* pProcessReport
      * @return bool success
      */
-    bool forceCompile();
+    bool forceCompile(CProcessReport* pProcessReport);
 
     /**
      *  Build the Stoichiometry Matrix from the chemical equations of the steps
@@ -984,16 +986,6 @@ class CModel : public CModelEntity
      * @return bool hasReversibleReaction
      */
     bool hasReversibleReaction() const;
-
-    /**
-     * set Progress bar handler
-     **/
-    void setCompileHandler(CProcessReport* pHandler);
-
-    /**
-     * get address of progress bar handler
-     **/
-    CProcessReport* getCompileHandlerAddr();
 
     /**
      * check if the model is suitable for stochastic simulation

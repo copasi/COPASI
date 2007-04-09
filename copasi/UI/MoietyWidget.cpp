@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MoietyWidget.cpp,v $
-//   $Revision: 1.72 $
+//   $Revision: 1.73 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/02/25 22:12:36 $
+//   $Author: shoops $
+//   $Date: 2007/04/09 18:56:15 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,6 +24,7 @@
 #include "DataModelGUI.h"
 #include "qtUtilities.h"
 #include "copasiui3window.h"
+#include "CProgressBar.h"
 
 //#include "MyTable.h"
 #include "model/CModel.h"
@@ -93,7 +94,12 @@ void MoietyWidget::slotBtnRunClicked()
   static_cast<CopasiUI3Window *>(qApp->mainWidget())->autoSave();
   static_cast<CopasiUI3Window *>(qApp->mainWidget())->suspendAutoSave(true);
 
-  CCopasiDataModel::Global->getModel()->compileIfNecessary();
+  CProgressBar* pProgressBar = new CProgressBar();
+
+  CCopasiDataModel::Global->getModel()->compileIfNecessary(pProgressBar);
+
+  pdelete(pProgressBar);
+
   fillTable();
 
   //mIgnoreUpdates = true; //to avoid recursive calls

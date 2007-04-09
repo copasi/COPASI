@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SteadyStateWidget.cpp,v $
-//   $Revision: 1.112 $
+//   $Revision: 1.113 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/12 14:29:14 $
+//   $Date: 2007/04/09 18:56:15 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -182,9 +182,6 @@ bool SteadyStateWidget::saveTask()
   CSteadyStateMethod* steadystatemethod =
     dynamic_cast<CSteadyStateMethod *>(mSteadyStateTask->getMethod());
   assert(steadystatemethod);
-
-  CCopasiDataModel::Global->getModel()->compileIfNecessary();
-  //steadystateproblem->setInitialState(CCopasiDataModel::Global->getModel()->getInitialState());
 
   bool bJacobian = taskJacobian->isChecked();
   bool bStatistics = taskStability->isChecked();

@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.87 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2007/01/11 17:32:39 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
+//   $Revision: 1.88 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/04/09 18:56:13 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -226,7 +226,7 @@ bool COptProblem::initialize()
   mInfinity = 2.0 * DBL_MAX;
 
   if (!mpModel) return false;
-  mpModel->compileIfNecessary();
+  mpModel->compileIfNecessary(mpCallBack);
 
   bool success = true;
 

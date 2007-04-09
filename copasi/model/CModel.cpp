@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.298 $
+//   $Revision: 1.299 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/04/05 14:58:43 $
+//   $Author: shoops $
+//   $Date: 2007/04/09 18:56:13 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -122,7 +122,7 @@ CModel::CModel():
 
   initializeMetabolites();
 
-  forceCompile();
+  forceCompile(NULL);
 
   /* This following 2 lines added by Liang Xu
   Becaues of the failure to initialize the parameter when creating a new models
@@ -178,7 +178,7 @@ CModel::CModel(const CModel & src):
 
   initializeMetabolites();
 
-  forceCompile();
+  forceCompile(NULL);
 }
 
 CModel::~CModel()
@@ -340,7 +340,7 @@ bool CModel::compile()
     {
       mpCompileHandler->setName("Compiling model...");
       unsigned C_INT32 totalSteps = 7;
-      hCompileStep = mpCompileHandler->addItem("Step",
+      hCompileStep = mpCompileHandler->addItem("Compile Process",
                      CCopasiParameter::UINT,
                      & CompileStep,
                      &totalSteps);
@@ -391,7 +391,7 @@ void CModel::setCompileFlag(bool flag)
   // if (flag) initializeMetabolites();
 }
 
-bool CModel::compileIfNecessary()
+bool CModel::compileIfNecessary(CProcessReport* pProcessReport)
 {
   /*
   std::cout << "** compiling a CModel is requested. ";
@@ -401,15 +401,19 @@ bool CModel::compileIfNecessary()
     std::cout << " " << std::endl;
   */
 
-  if (mCompileIsNecessary)
-    return compile();
-  return true;
+  if (!mCompileIsNecessary) return true;
+
+  mpCompileHandler = pProcessReport;
+  bool success = compile();
+  mpCompileHandler = NULL;
+
+  return success;
 }
 
-bool CModel::forceCompile()
+bool CModel::forceCompile(CProcessReport* pProcessReport)
 {
   setCompileFlag();
-  return compileIfNecessary();
+  return compileIfNecessary(pProcessReport);
 }
 
 void CModel::buildStoi()
@@ -2704,12 +2708,6 @@ bool CModel::hasReversibleReaction() const
 
     return false;
   }
-
-void CModel::setCompileHandler(CProcessReport* pHandler)
-{mpCompileHandler = pHandler;}
-
-CProcessReport* CModel::getCompileHandlerAddr()
-{return mpCompileHandler;}
 
 //**********************************************************************
 //                   CLinkMatrixView

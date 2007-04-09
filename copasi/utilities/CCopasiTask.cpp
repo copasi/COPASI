@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-//   $Revision: 1.54 $
+//   $Revision: 1.55 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2007/04/05 12:40:06 $
+//   $Author: shoops $
+//   $Date: 2007/04/09 18:56:15 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -222,7 +222,7 @@ bool CCopasiTask::initialize(const OutputFlag & of,
       return false;
     }
 
-  if (!mpProblem->getModel()->compileIfNecessary())
+  if (!mpProblem->getModel()->compileIfNecessary(mpCallBack))
     {
       CCopasiMessage(CCopasiMessage::ERROR, MCCopasiTask + 4, mpProblem->getModel()->getObjectName().c_str());
       return false;
