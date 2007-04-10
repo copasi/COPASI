@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CMassAction.h,v $
-   $Revision: 1.26 $
-   $Name:  $
-   $Author: gauges $
-   $Date: 2006/10/15 07:16:08 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CMassAction.h,v $
+//   $Revision: 1.27 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/04/10 16:48:44 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -84,7 +84,7 @@ class CMassAction : public CFunction
     virtual bool setInfix(const std::string & infix);
 
     /**
-     * Compile the function.
+     * Compile the evaluation tree.
      */
     virtual bool compile();
 

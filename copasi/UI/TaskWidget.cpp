@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.cpp,v $
-//   $Revision: 1.27 $
+//   $Revision: 1.28 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/16 19:55:37 $
+//   $Date: 2007/04/10 16:48:45 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -420,6 +420,17 @@ bool TaskWidget::commonRunTask()
           success = false;
           goto finish;
         }
+    }
+
+  if (CCopasiMessage::getHighestSeverity() > CCopasiMessage::ERROR)
+    {
+      mProgressBar->finish();
+      CQMessageBox::critical(this, "Initialization Error",
+                             CCopasiMessage::getAllMessageText().c_str(),
+                             QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+
+      success = false;
+      goto finish;
     }
 
   if (CCopasiMessage::getHighestSeverity() > CCopasiMessage::COMMANDLINE)

@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.h,v $
-   $Revision: 1.24 $
-   $Name:  $
-   $Author: gauges $
-   $Date: 2006/10/15 07:16:08 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.h,v $
+//   $Revision: 1.25 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/04/10 16:48:44 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -151,6 +151,17 @@ class CEvaluationTree:
     virtual bool setInfix(const std::string & infix);
 
     /**
+     * Compile the evaluation tree.
+     */
+    virtual bool compile();
+
+    /**
+     * Check whether this function is usable, i.e., properly defined
+     * @return bool isUsable
+     */
+    bool isUsable() const;
+
+    /**
      * Retrieve the infix description of the tree
      * @return const std::string & infix
      */
@@ -204,12 +215,6 @@ class CEvaluationTree:
     void setSBMLId(const std::string& id);
 
     /**
-     * Compile the individual nodes.
-     * @return bool success
-     */
-    bool compileNodes();
-
-    /**
      * Returns a reference to the SBML Id.
      */
     const std::string& getSBMLId() const;
@@ -251,6 +256,12 @@ class CEvaluationTree:
      */
     bool parse();
 
+    /**
+     * Compile the individual nodes.
+     * @return bool success
+     */
+    bool compileNodes();
+
   private:
     /**
      * Initialize the contained CCopasiObjects
@@ -274,6 +285,11 @@ class CEvaluationTree:
      * The infix representation of the expression
      */
     std::string mInfix;
+
+    /**
+     * Value indicating whether this functions might be used in a model
+     */
+    bool mUsable;
 
   private:
     /**

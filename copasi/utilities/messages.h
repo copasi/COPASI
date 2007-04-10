@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.88 $
+//   $Revision: 1.89 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/04/06 16:14:41 $
+//   $Date: 2007/04/10 16:48:46 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -58,6 +58,7 @@ const MESSAGES Messages[] =
     {MCReaction + 8, "CReaction (8): Could not find variable with name '%s'."},
     {MCReaction + 9, "CReaction (9): Could not find object for key '%s'."},
     {MCReaction + 10, "CReaction (10): Parameter '%s' is a vector."},
+    {MCReaction + 11, "CReaction (11): Reaction '%s' refers to unusable Function '%s'."},
 
     // CChemEq
     {MCChemEq + 1, "CChemEq (1): No Substrates and no Products."},

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionDB.h,v $
-//   $Revision: 1.49 $
+//   $Revision: 1.50 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/03/09 09:54:01 $
+//   $Author: shoops $
+//   $Date: 2007/04/10 16:48:44 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,8 +19,6 @@
 
 #ifndef COPASI_CFunctionDB
 #define COPASI_CFunctionDB
-
-#include <string>
 
 #include "function/CEvaluationTree.h"
 
@@ -42,9 +40,7 @@ class CFunctionDB : public CCopasiContainer
 
     /**
      *  Vector of the currently loaded functions
-     *  @supplierCardinality 0..*
      */
-    /** @dia:route 2,0; h,98.6992,12.15,102.581,17.0878,106.082 */
     CCopasiVectorN < CEvaluationTree > mLoadedFunctions;
 
     // Operations

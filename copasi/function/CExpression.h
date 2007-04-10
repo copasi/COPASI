@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.h,v $
-   $Revision: 1.13 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2007/01/08 15:56:33 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.h,v $
+//   $Revision: 1.14 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/04/10 16:48:44 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -58,7 +58,7 @@ class CExpression:
     virtual bool setInfix(const std::string & infix);
 
     /**
-     * Compile the function.
+     * Compile the evaluation tree.
      * @param std::vector< CCopasiContainer * > listOfContainer (Default: CCopasiContainer::EmptyList)
      * @return bool success
      */

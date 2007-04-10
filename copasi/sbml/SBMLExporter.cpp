@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-//   $Revision: 1.102 $
+//   $Revision: 1.103 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/03/27 10:52:27 $
+//   $Author: shoops $
+//   $Date: 2007/04/10 16:48:45 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -946,7 +946,7 @@ KineticLaw* SBMLExporter::createSBMLKineticLawFromCReaction(CReaction* copasiRea
               pTmpRoot->addChild(pObjectNode);
             }
           pTree->setRoot(pTmpRoot);
-          pTree->compileNodes();
+          pTree->compile();
           std::list<const CEvaluationTree*>* usedFunctionList = new std::list<const CEvaluationTree*>;
           this->findUsedFunctions(pTmpRoot, usedFunctionList);
           pdelete(usedFunctionList);

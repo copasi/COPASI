@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-//   $Revision: 1.66 $
+//   $Revision: 1.67 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/04/09 18:56:15 $
+//   $Date: 2007/04/10 16:48:45 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -296,27 +296,51 @@ bool DataModelGUI::loadModel(const std::string & fileName)
 {
   CProgressBar* pProgressBar = new CProgressBar();
 
-  if (!CCopasiDataModel::Global->loadModel(fileName, pProgressBar)) return false;
+  bool success = true;
 
-  CCopasiDataModel::Global->getConfiguration()->getRecentFiles().addFile(fileName);
+  try
+    {
+      success = CCopasiDataModel::Global->loadModel(fileName, pProgressBar);
+    }
 
-  // getModel()->setCompileFlag();
-  mOutputHandlerPlot.setOutputDefinitionVector(CCopasiDataModel::Global->getPlotDefinitionList());
+  catch (...)
+    {
+      success = false;
+    }
 
-  linkDataModelToGUI();
+  if (success)
+    {
+      CCopasiDataModel::Global->getConfiguration()->getRecentFiles().addFile(fileName);
+
+      // getModel()->setCompileFlag();
+      mOutputHandlerPlot.setOutputDefinitionVector(CCopasiDataModel::Global->getPlotDefinitionList());
+
+      linkDataModelToGUI();
+    }
 
   pdelete(pProgressBar);
 
-  return true;
+  return success;
 }
 
 bool DataModelGUI::saveModel(const std::string & fileName, bool overwriteFile)
 {
   CProgressBar* pProgressBar = new CProgressBar();
 
-  if (!CCopasiDataModel::Global->saveModel(fileName, pProgressBar, overwriteFile)) return false;
+  bool success = true;
 
-  CCopasiDataModel::Global->getConfiguration()->getRecentFiles().addFile(fileName);
+  try
+    {
+      success = CCopasiDataModel::Global->saveModel(fileName, pProgressBar, overwriteFile);
+    }
+
+  catch (...)
+    {
+      success = false;
+    }
+
+  if (success)
+    CCopasiDataModel::Global->getConfiguration()->getRecentFiles().addFile(fileName);
 
   pdelete(pProgressBar);
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.h,v $
-//   $Revision: 1.46 $
+//   $Revision: 1.47 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/03/09 09:53:08 $
+//   $Author: shoops $
+//   $Date: 2007/04/10 16:48:44 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,11 +52,6 @@ class CFunction:
      * @return bool success
      */
     virtual bool setInfix(const std::string & infix);
-
-    /**
-     * Compile the function.
-     */
-    virtual bool compile();
 
     /**
      * Calculates the value of the function

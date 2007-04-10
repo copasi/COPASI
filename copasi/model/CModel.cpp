@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.299 $
+//   $Revision: 1.300 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/04/09 18:56:13 $
+//   $Date: 2007/04/10 16:48:44 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -404,10 +404,19 @@ bool CModel::compileIfNecessary(CProcessReport* pProcessReport)
   if (!mCompileIsNecessary) return true;
 
   mpCompileHandler = pProcessReport;
-  bool success = compile();
+  bool success = false;
+
+  try
+    {
+      compile();
+    }
+
+  catch (...)
+  {}
+
   mpCompileHandler = NULL;
 
-  return success;
+  return true;
 }
 
 bool CModel::forceCompile(CProcessReport* pProcessReport)
@@ -453,6 +462,13 @@ void CModel::buildStoi()
   for (; pCol < pColEnd; ++pCol, ++itStep, ++i)
     {
       if (mpCompileHandler && !mpCompileHandler->progress(hProcess)) return;
+
+      // Since we are stepping through the reactions we can check whether
+      // the kinetic functions are usable.
+      if (!(*itStep)->getFunction()->isUsable())
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCReaction + 11,
+                       (*itStep)->getObjectName().c_str(),
+                       (*itStep)->getFunction()->getObjectName().c_str());
 
       const CCopasiVector< CChemEqElement > & Balance =
         (*itStep)->getChemEq().getBalances();

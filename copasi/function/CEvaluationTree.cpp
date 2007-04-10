@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-//   $Revision: 1.45 $
+//   $Revision: 1.46 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/03/09 09:51:51 $
+//   $Author: shoops $
+//   $Date: 2007/04/10 16:48:44 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -107,6 +107,7 @@ CEvaluationTree::CEvaluationTree(const std::string & name,
     mType(type),
     mKey(GlobalKeys.add("Function", this)),
     mInfix(),
+    mUsable(false),
     mErrorPosition(std::string::npos),
     mpNodeList(NULL),
     mpRoot(NULL),
@@ -122,6 +123,7 @@ CEvaluationTree::CEvaluationTree(const CEvaluationTree & src,
     mType(src.mType),
     mKey(GlobalKeys.add("Function", this)),
     mInfix(),
+    mUsable(false),
     mErrorPosition(std::string::npos),
     mpNodeList(NULL),
     mpRoot(NULL),
@@ -151,6 +153,9 @@ bool CEvaluationTree::setInfix(const std::string & infix)
 {
   if (infix == mInfix &&
       infix != "") return true;
+
+  // We assume until proven otherwise that the tree is not usable
+  mUsable = false;
 
   mInfix = infix;
 
@@ -225,22 +230,28 @@ bool CEvaluationTree::parse()
   return success;
 }
 
+bool CEvaluationTree::compile()
+{return compileNodes();}
+
+bool CEvaluationTree::isUsable() const
+  {return mUsable;}
+
 bool CEvaluationTree::compileNodes()
 {
   mDependencies.clear();
 
-  if (mInfix == "") return true;
-  if (mpNodeList == NULL) return false;
-
-  bool success = true;
+  if (mInfix == "")
+    return mUsable = true;
+  if (mpNodeList == NULL)
+    return mUsable = false;
 
   std::vector< CEvaluationNode * >::iterator it;
   std::vector< CEvaluationNode * >::iterator end = mpNodeList->end();
 
-  for (it = mpNodeList->begin(); it != end && success; ++it)
-    success = (*it)->compile(this);
+  for (it = mpNodeList->begin(), mUsable = true; it != end && mUsable; ++it)
+    mUsable = (*it)->compile(this);
 
-  if (!success)
+  if (!mUsable)
     {
       end = it;
       mErrorPosition = 0;
@@ -273,7 +284,7 @@ bool CEvaluationTree::compileNodes()
           }
     }
 
-  return success;
+  return mUsable;
 }
 
 bool CEvaluationTree::setRoot(CEvaluationNode* pRootNode)
