@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.191 $
+//   $Revision: 1.192 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/04/09 18:56:15 $
+//   $Date: 2007/04/10 16:19:20 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -232,10 +232,10 @@ bool CopasiUI3Window::slotFileSaveAs(QString str)
         {
           if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
             {
-              QMessageBox::critical(this, "Save File Error",
-                                    CCopasiMessage::getAllMessageText().c_str(),
-                                    QMessageBox::Ok | QMessageBox::Default,
-                                    QMessageBox::NoButton);
+              CQMessageBox::critical(this, "Save File Error",
+                                     CCopasiMessage::getAllMessageText().c_str(),
+                                     QMessageBox::Ok | QMessageBox::Default,
+                                     QMessageBox::NoButton);
               CCopasiMessage::clearDeque();
             }
         }
@@ -375,8 +375,8 @@ void CopasiUI3Window::slotFileOpen(QString file)
           QString Message = "Error while loading file " + newFile + QString("!\n\n");
           Message += FROM_UTF8(CCopasiMessage::getLastMessage().getText());
 
-          QMessageBox::critical(this, QString("File Error"), Message,
-                                QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+          CQMessageBox::critical(this, QString("File Error"), Message,
+                                 QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
           dataModel->createModel();
         }
 
@@ -395,8 +395,8 @@ void CopasiUI3Window::slotFileOpen(QString file)
               msg = CCopasiMessage::getLastMessage();
             }
 
-          QMessageBox::warning(this, QString("File Warning"), Message,
-                               QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+          CQMessageBox::warning(this, QString("File Warning"), Message,
+                                QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
         }
 
       if (strcasecmp(CDirEntry::suffix((const char *)newFile.utf8()).c_str(), ".cps") == 0 &&
@@ -457,11 +457,11 @@ bool CopasiUI3Window::slotFileSave()
       /* Ask for permision to overwrite write? */
       /* If no call slotFileSaveAs */
       choice =
-        QMessageBox::warning(this,
-                             "Confirm File Version Update",
-                             "You are to overwrite an existing Gepasi File.\n"
-                             "This will render the file unreadable for Gepasi",
-                             "Save As", "Overwrite", 0, 0, 1);
+        CQMessageBox::warning(this,
+                              "Confirm File Version Update",
+                              "You are to overwrite an existing Gepasi File.\n"
+                              "This will render the file unreadable for Gepasi",
+                              "Save As", "Overwrite", 0, 0, 1);
 
       if (!choice)
         {
@@ -483,10 +483,10 @@ bool CopasiUI3Window::slotFileSave()
         {
           if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
             {
-              QMessageBox::critical(this, "Save File Error",
-                                    CCopasiMessage::getAllMessageText().c_str(),
-                                    QMessageBox::Ok | QMessageBox::Default,
-                                    QMessageBox::NoButton);
+              CQMessageBox::critical(this, "Save File Error",
+                                     CCopasiMessage::getAllMessageText().c_str(),
+                                     QMessageBox::Ok | QMessageBox::Default,
+                                     QMessageBox::NoButton);
               CCopasiMessage::clearDeque();
             }
         }
@@ -866,8 +866,8 @@ void CopasiUI3Window::importSBMLFromString(const std::string& sbmlDocumentText)
           QString Message = "Error while importing SBML model!\n\n";
           Message += FROM_UTF8(CCopasiMessage::getLastMessage().getText());
 
-          QMessageBox::critical(this, QString("Import Error"), Message,
-                                QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+          CQMessageBox::critical(this, QString("Import Error"), Message,
+                                 QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
           CCopasiMessage::clearDeque();
 
           dataModel->createModel();
@@ -965,8 +965,8 @@ void CopasiUI3Window::slotImportSBML(QString file)
           QString Message = "Error while loading file " + SBMLFile + QString("!\n\n");
           Message += FROM_UTF8(CCopasiMessage::getLastMessage().getText());
 
-          QMessageBox::critical(this, QString("File Error"), Message,
-                                QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+          CQMessageBox::critical(this, QString("File Error"), Message,
+                                 QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
           CCopasiMessage::clearDeque();
 
           dataModel->createModel();
@@ -1075,7 +1075,9 @@ void CopasiUI3Window::slotExportSBML()
         {
           success = false;
           setCursor(oldCursor);
-          QMessageBox::critical(this, QString("File Error"), QString("Error. Could not export file ") + tmp + QString("!"), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+          CQMessageBox::critical(this, QString("File Error"),
+                                 QString("Error. Could not export file ") + tmp + QString("!"),
+                                 QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
         }
 
       setCursor(oldCursor);
@@ -1085,8 +1087,8 @@ void CopasiUI3Window::slotExportSBML()
           QString Message = "Error while saving file " + tmp + QString("!\n\n");
           Message += FROM_UTF8(CCopasiMessage::getLastMessage().getText());
 
-          QMessageBox::critical(this, QString("File Error"), Message,
-                                QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+          CQMessageBox::critical(this, QString("File Error"), Message,
+                                 QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
           CCopasiMessage::clearDeque();
         }
 
@@ -1151,10 +1153,10 @@ void CopasiUI3Window::slotExportMathModel()
         {
           if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
             {
-              QMessageBox::critical(this, "Export Error",
-                                    CCopasiMessage::getAllMessageText().c_str(),
-                                    QMessageBox::Ok | QMessageBox::Default,
-                                    QMessageBox::NoButton);
+              CQMessageBox::critical(this, "Export Error",
+                                     CCopasiMessage::getAllMessageText().c_str(),
+                                     QMessageBox::Ok | QMessageBox::Default,
+                                     QMessageBox::NoButton);
               CCopasiMessage::clearDeque();
             }
         }
@@ -1359,7 +1361,9 @@ std::string CopasiUI3Window::exportSBMLToString()
         {
           success = false;
           setCursor(oldCursor);
-          QMessageBox::critical(this, QString("File Error"), QString("Error. Could not do SBML export!"), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+          CQMessageBox::critical(this, QString("File Error"),
+                                 QString("Error. Could not do SBML export!"),
+                                 QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
         }
 
       setCursor(oldCursor);
@@ -1369,8 +1373,8 @@ std::string CopasiUI3Window::exportSBMLToString()
           QString Message = "Error while SBML model!\n\n";
           Message += FROM_UTF8(CCopasiMessage::getLastMessage().getText());
 
-          QMessageBox::critical(this, QString("File Error"), Message,
-                                QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+          CQMessageBox::critical(this, QString("File Error"), Message,
+                                 QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
           CCopasiMessage::clearDeque();
         }
     }

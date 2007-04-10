@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TimeSeriesSubwidget.ui.h,v $
-   $Revision: 1.18 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/28 00:24:53 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TimeSeriesSubwidget.ui.h,v $
+//   $Revision: 1.19 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/04/10 16:19:28 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -22,8 +22,10 @@
  ** destructor.
  *****************************************************************************/
 
-#include "UI/qtUtilities.h"
-#include "UI/CopasiFileDialog.h"
+#include "CQMessageBox.h"
+#include "qtUtilities.h"
+#include "CopasiFileDialog.h"
+
 #include "optimization/COptProblem.h"
 #include "optimization/COptTask.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
@@ -65,7 +67,7 @@ void TimeSeriesSubWidget::saveDataToFile()
     {
       std::string s = "Could not save data to ";
       s += fileName.utf8();
-      QMessageBox::critical(this, "Save Error", FROM_UTF8(s), QMessageBox::Ok, QMessageBox::Cancel);
+      CQMessageBox::critical(this, "Save Error", FROM_UTF8(s), QMessageBox::Ok, QMessageBox::Cancel);
     }
 }
 
