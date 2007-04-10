@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/copasi.xsd,v $ -->
-<!--   $Revision: 1.40 $ -->
+<!--   $Revision: 1.41 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: shoops $ -->
-<!--   $Date: 2007/02/21 18:38:40 $ -->
+<!--   $Date: 2007/04/10 17:33:57 $ -->
 <!-- End CVS Header -->
 <!-- Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual -->
 <!-- Properties, Inc. and EML Research, gGmbH. -->
@@ -89,13 +89,6 @@
                       <xs:enumeration value="#"/>
                     </xs:restriction>
                   </xs:simpleType>
-                </xs:attribute>
-                <xs:attribute name="stateVariable" type="cSTATE_VARIABLE_KEYREF" use="optional" id="copasi.Model.stateVariable">
-                  <xs:annotation>
-                    <xs:documentation>
-                      <p>This attribute is deprecated and no longer used. It will be removed in future schema versions.</p>
-                    </xs:documentation>
-                  </xs:annotation>
                 </xs:attribute>
                 <xs:attribute name="type" use="optional" default="deterministic">
                   <xs:simpleType>
@@ -562,7 +555,6 @@
                     <xs:attribute name="name" type="cNAME" use="required" id="copasi.Model.Reaction.name"/>
                     <xs:attribute name="compartment" type="cCOMPARTMENT_KEYREF" use="optional" default="Compartment_00" id="copasi.Model.Reaction.compartment"/>
                     <xs:attribute name="reversible" type="xs:boolean" use="required" id="copasi.Model.Reaction.reversible"/>
-                    <xs:attribute name="sbmlid" type="xs:string" use="optional" id="copasi.Model.Reaction.sbmlid"/>
                   </xs:complexType>
                 </xs:element>
               </xs:sequence>
