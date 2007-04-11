@@ -1,10 +1,10 @@
 <chapter id="methods" xreflabel="Methods">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_methods.xml,v $ -->
-<!--   $Revision: 1.11 $ -->
+<!--   $Revision: 1.12 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: shoops $ -->
-<!--   $Date: 2007/03/30 14:43:31 $ -->
+<!--   $Date: 2007/04/11 16:12:39 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -1386,7 +1386,9 @@ objective values for individuals with a
  <mml:mo>&ne;</mml:mo>
  <mml:mn>0</mml:mn>
 </mml:math></inlineequation>. The pseudo code for the sort
-is: <literallayout>  // Here sweepNum is optimal number of sweeps from paper, i.e., TotalPopulation
+is: 
+<programlisting>
+  // Here sweepNum is optimal number of sweeps from paper, i.e., TotalPopulation
   for (i = 0; i &lt; sweepNum; i++)
     {
       wasSwapped = false;
@@ -1417,7 +1419,7 @@ is: <literallayout>  // Here sweepNum is optimal number of sweeps from paper, i.
       // if no swap then break
       if (wasSwapped == false) break;
     }
-</literallayout>
+</programlisting>
 </para>
 </listitem>
 
