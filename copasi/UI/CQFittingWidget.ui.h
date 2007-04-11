@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQFittingWidget.ui.h,v $
-//   $Revision: 1.35 $
+//   $Revision: 1.36 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/16 19:55:37 $
+//   $Date: 2007/04/11 16:26:33 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -302,7 +302,10 @@ void CQFittingWidget::slotConstraintNumberChanged(int number)
 void CQFittingWidget::destroy()
 {
   pdelete(mpExperimentSet);
+
+#ifdef COPASI_CROSSVALIDATION
   pdelete(mpCrossValidationSet);
+#endif
 }
 
 void CQFittingWidget::slotCrossValidationData()
