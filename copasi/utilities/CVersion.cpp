@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CVersion.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.11.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/04/11 15:24:38 $
+//   $Date: 2007/04/11 17:11:40 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -71,7 +71,7 @@ void CVersion::setString()
   mVersion = StringPrint("%d.%d.%d++ (Debug)", mMajor, mMinor, mDevel);
 #else
   if (mComment == "stable")
-    mVersion = StringPrint("%d.%d (Build-%d)", mMajor, mMinor, mDevel);
+    mVersion = StringPrint("%d.%d (Build %d)", mMajor, mMinor, mDevel);
   else if (mComment != "")
     mVersion = StringPrint("%d.%d.%d (%s)", mMajor, mMinor, mDevel, mComment.c_str());
   else
