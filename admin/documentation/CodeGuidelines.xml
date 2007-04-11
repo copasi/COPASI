@@ -1,4 +1,15 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
+<!-- Begin CVS Header -->
+<!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/admin/documentation/CodeGuidelines.xml,v $ -->
+<!--   $Revision: 1.2 $ -->
+<!--   $Name:  $ -->
+<!--   $Author: shoops $ -->
+<!--   $Date: 2007/04/11 16:11:57 $ -->
+<!-- End CVS Header -->
+
+<!-- Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Properties, Inc. and EML Research, gGmbH. -->
+<!-- All rights reserved. -->
 
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook EBNF Module V1.1CR1//EN"
         "http://www.oasis-open.org/docbook/xml/mathml/1.1CR1/dbmathml.dtd" 
@@ -6,26 +17,26 @@
  <!ENTITY main SYSTEM "CodeGuidelines_main.xml" >  
 ]> 
 
-<book id="book" xmlns:mml="http://www.w3.org/1998/Math/MathML">
+<book id="book">
  <bookinfo>
   <title>C++ Coding Guidelines for COPASI</title>
   <subtitle>Under Development</subtitle>
   <author>
    <firstname>Stefan</firstname>
    <surname>Hoops</surname>
-   <affiliation>
-    <address>
+   <address>
+    <affiliation>
      <jobtitle>Senior Project Associate</jobtitle>
      <orgname>Virginia Tech</orgname>
      <orgdiv>Virginia Bioinformatics Institute</orgdiv>
-     <street>Bioinformatics Facility I</street>
-     <city>Blacksburg</city>
-     <state>Va</state>
-     <postcode>24061</postcode>
-     <country>USA</country>
-     <email>shoops@vbi.vt.edu</email>
-    </address>
-   </affiliation>
+    </affiliation>
+    <street>Bioinformatics Facility I</street>
+    <city>Blacksburg</city>
+    <state>Va</state>
+    <postcode>24061</postcode>
+    <country>USA</country>
+    <email>shoops@vbi.vt.edu</email>
+   </address>
   </author>
  </bookinfo>
 

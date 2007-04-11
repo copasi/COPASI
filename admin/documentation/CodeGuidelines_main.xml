@@ -1,10 +1,10 @@
 <chapter id="NamingConventions" xreflabel="Naming Conventions">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/admin/documentation/CodeGuidelines_main.xml,v $ -->
-<!--   $Revision: 1.6 $ -->
+<!--   $Revision: 1.7 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: shoops $ -->
-<!--   $Date: 2007/02/12 14:27:04 $ -->
+<!--   $Date: 2007/04/11 16:11:57 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -41,28 +41,28 @@ letters and are concatenated without underscores. In addition the
 following standards should be followed:  
 </para>
 
-<variablelist>
-<varlistentry><term>Counters</term>
-<listitem> might be used such as <literal>i</literal>, <literal>k</literal>,
-and <literal>l</literal>, which may be used in loops.</listitem>
-</varlistentry>
-<varlistentry><term>Iterators</term><listitem> might be used such as <literal>it</literal> and <literal>end</literal>, which may be used in loops. 
-</listitem></varlistentry>
-<varlistentry><term>Pointers</term><listitem> are prepended with a lower case letter <literal>p</literal>. 
-</listitem></varlistentry>
-<varlistentry><term>Method Parameters</term><listitem> must start with a lower case letter.
-</listitem></varlistentry>
-<varlistentry><term>Class Member Variables</term><listitem> are prepended with a lower case
+<simplelist type="horiz" columns="2">
+<member><command>Counters</command></member>
+<member>might be used such as <literal>i</literal>, <literal>k</literal>,
+and <literal>l</literal>, which may be used in loops.
+</member>
+<member><command>Iterators</command></member><member> might be used such as <literal>it</literal> and <literal>end</literal>, which may be used in loops. 
+</member>
+<member><command>Pointers</command></member><member> are prepended with a lower case letter <literal>p</literal>. 
+</member>
+<member><command>Method Parameters</command></member><member> must start with a lower case letter.
+</member>
+<member><command>Class Member Variables</command></member><member> are prepended with a lower case
   letter <literal>m</literal>.
-</listitem></varlistentry>
-<varlistentry><term>Class Member Pointers</term><listitem> must have the
+</member>
+<member><command>Class Member Pointers</command></member><member> must have the
   prefix <literal>mp</literal>.
-</listitem></varlistentry>
-</variablelist>
+</member>
+</simplelist>
 
 </sect1>
 
-<sect1 id="Method Name" xreflabel="Method Name">
+<sect1 id="MethodName" xreflabel="Method Name">
 <title>Method Name</title>
 <para>
 Method names should have a descriptive name starting with a lower case
@@ -77,47 +77,135 @@ include:
 In addition the following standards should be followed:  
 </para>
 
-<variablelist>
+<simplelist type="horiz" columns="2">
 
-<varlistentry><term>Retrieval Methods</term><listitem> must start with <literal>get</literal> followed by
+<member><command>Retrieval Methods</command></member><member> must start with <literal>get</literal> followed by
   the member variable name without the prefix.
-</listitem></varlistentry>
+</member>
 
-<varlistentry><term>Set Methods</term><listitem> must start with <literal>set</literal> followed by
+<member><command>Set Methods</command></member><member> must start with <literal>set</literal> followed by
   the member variable name without the prefix.
-</listitem></varlistentry>
+</member>
 
-<varlistentry><term>Boolean Query Functions</term><listitem> should start if applicable with
+<member><command>Boolean Query Functions</command></member><member> should start if applicable with
   <literal>is</literal>.
-</listitem></varlistentry>
-</variablelist>
+</member>
+</simplelist>
 </sect1>
 </chapter>
 
 <chapter id="ProgramCodeGuidelines" xreflabel="Program Code Guidelines">
 <title>Program Code Guidelines</title>
 
+<sect1 id="include" xreflabel="include">
+<title>Use of #include </title>
+<para>
+To minimize compilation problems on the different platforms and with
+the libraries COPASI depends on it is necessary to define some rules,
+which need to be followed when specifying include files in the COPASI
+code.  
+</para>
+<para> The #include statement distinguishes between two different type
+of include files. 
+</para>
+
+<itemizedlist>
+<listitem><para><command>Global Includes: </command>Global include files are
+indicated by surrounding the filename with &lt; and &gt;, i.e. the
+statements looks like: <literal>#include &lt;filename&gt;</literal>. 
+All files not located in the COPASI source tree are considered global includes.
+</para></listitem>
+
+<listitem><para><command>Local Includes: </command>Local include files are
+indicated by surrounding the filename with double quotes, i.e. the
+statements looks like: <literal>#include "filename"</literal>. 
+All files located in the COPASI source tree are considered local includes.
+</para></listitem>
+</itemizedlist>
+
+<sect2 id="includeHeader" xreflabel="include Header">
+<title>Order of #include in Header Files</title>
+<para>
+The number of include statements in header files should be kept to the
+minimum necessary to compile the header file, i.e., a COPASI code file
+just containing the following two lines of code must compile successfully:
+</para>
+<programlisting>
+#include "copasi.h"
+#include "filename"
+</programlisting>
+<para>
+To achieve the minimal list of includes one should replace all not
+needed includes with forward declarations as often as possible. Please
+note that it should never be necessary to include <literal>copasi.h
+</literal> in a header file.
+</para>
+<orderedlist>
+<listitem><para><command>Qt Header Files: </command>Qt header
+files must appear first. Please note that the Qt header file names are
+all lowercase.</para></listitem>
+<listitem><para><command>Global Header Files: </command>Other
+global header files must appear next.</para></listitem>
+<listitem><para><command>COPASI Header Files: </command>All COPASI
+header files must be included with the full filename starting with the
+<literal>copasi </literal> directory, i.e., the include statement
+looks like <literal>#include "copasi/.." </literal></para></listitem>
+</orderedlist>
+
+</sect2>
+<sect2 id="includeCode" xreflabel="include Code">
+<title>Order of #include in Code Files</title>
+<orderedlist>
+<listitem><para><command>Qt Header Files: </command>Qt header
+files must appear first. Please note that the Qt header file names are
+all lowercase.</para></listitem>
+<listitem><para><command>Global Header Files: </command>Other
+global header files must appear next.</para></listitem>
+<listitem><para><command>copasi.h: </command>This file must precede
+all other local includes since they depend on the defines
+of <literal>copasi.h </literal> to be present. </para></listitem>
+<listitem><para><command>COPASI Header Files: </command>COPASI
+header files must be included after
+<literal>copasi.h</literal>. </para></listitem> 
+<listitem><para><command>blaswrap.h or clapackwrap.h: </command>These two
+wrapper files must appear last as their defines often conflict with
+other includes.</para></listitem>
+</orderedlist>
+<para>
+
+</para>
+</sect2>
+
+</sect1>
+
 <sect1 id="Loops" xreflabel="Loops">
 <title>Loops</title>
+<para>
+
+</para>
 </sect1>
 </chapter>
 
 <chapter id="CodeDocumentation" xreflabel="Code Documentation">
 <title>Code Documentation</title>
-<sect1 id="Class Documentation" xreflabel="Class Documentation">
+<sect1 id="ClassDocumentation" xreflabel="Class Documentation">
 <title>Class Documentation</title>
+<para></para>
 </sect1>
 
-<sect1 id="Variable Documentation" xreflabel="Variable Documentation">
+<sect1 id="VariableDocumentation" xreflabel="Variable Documentation">
 <title>Variable Documentation</title>
+<para></para>
 </sect1>
 
-<sect1 id="Method Documentation" xreflabel="Method Documentation">
+<sect1 id="MethodDocumentation" xreflabel="Method Documentation">
 <title>Method Documentation</title>
+<para></para>
 </sect1>
 
-<sect1 id="Incline Code Documentation" xreflabel="Incline Code Documentation">
+<sect1 id="InclineCodeDocumentation" xreflabel="Incline Code Documentation">
 <title>Incline Code Documentation</title>
+<para></para>
 </sect1>
 </chapter>
 
@@ -143,23 +231,23 @@ main attributes:
 <variablelist><title>Attribute List</title>
 
 <varlistentry><term><literal>std::string mObjectName</literal></term>
-<listitem>&nbsp;<sbr/>The name of the object.
-</listitem></varlistentry>
+<listitem><para>The name of the object.
+</para></listitem></varlistentry>
 
 <varlistentry>
 <term><literal>std::string mObjectType</literal></term>
-<listitem>&nbsp;<sbr/>The type of the object, e.g. Compartment.
-</listitem></varlistentry>
+<listitem><para>The type of the object, e.g. Compartment.
+</para></listitem></varlistentry>
 
 <varlistentry>
 <term><literal>CCopasiContainer * mpObjectParent</literal></term>
-<listitem>&nbsp;<sbr/>A pointer to the objects parent container.
-</listitem></varlistentry>
+<listitem><para>A pointer to the objects parent container.
+</para></listitem></varlistentry>
 
 <varlistentry>
-<term><literal>unsigned int mObjectType</literal></term>
-<listitem>&nbsp;<sbr/>A flag indicating object properties.
-</listitem></varlistentry>
+<term><literal>unsigned int mObjectFlag</literal></term>
+<listitem><para>A flag indicating object properties.
+</para></listitem></varlistentry>
 </variablelist>
 
 </para>
@@ -173,22 +261,22 @@ methods:
 <varlistentry>
 <term><literal>CCopasiContainer * getObjectAncestor(const std::string
 &amp;type) const</literal></term>
-<listitem>&nbsp;<sbr/>This method retrieves the closest ancestor of the object of
+<listitem><para>This method retrieves the closest ancestor of the object of
 the specified type. 
-</listitem></varlistentry>
+</para></listitem></varlistentry>
 
 <varlistentry>
 <term><literal>virtual CCopasiObjectName getCN() const</literal></term>
-<listitem>&nbsp;<sbr/>This method retrieve the common name (CN) of the object.
-</listitem></varlistentry>
+<listitem><para>This method retrieve the common name (CN) of the object.
+</para></listitem></varlistentry>
 
 <varlistentry>
 <term><literal>
 
 </literal></term>
-<listitem>&nbsp;<sbr/>
+<listitem><para>
 
-</listitem></varlistentry>
+</para></listitem></varlistentry>
 
 </variablelist>
 
@@ -197,28 +285,33 @@ the specified type.
 
 <sect1 id="Container" xreflabel="Container">
 <title>Container</title>
+<para></para>
 </sect1>
 
-<sect1 id="COPASI Vector" xreflabel="COPASI Vector">
+<sect1 id="COPASIVector" xreflabel="COPASI Vector">
 <title>COPASI Vector</title>
+<para></para>
 </sect1>
 
 <sect1 id="Parameter" xreflabel="Parameter">
 <title>Parameter</title>
+<para></para>
 </sect1>
 
-<sect1 id="Parameter Group" xreflabel="Parameter Group">
+<sect1 id="ParameterGroup" xreflabel="Parameter Group">
 <title>Parameter Group</title>
+<para></para>
 </sect1>
 
 <sect1 id="Dependencies" xreflabel="Dependencies">
 <title>Dependencies</title>
+<para></para>
 </sect1>
 </chapter>
 
 <chapter id="TheModelState" xreflabel="The Model State">
 <title>The Model State</title>
-<sect1 id="State Template Order" xreflable="State Template Order">
+<sect1 id="StateTemplateOrder" xreflabel="State Template Order">
 <title>State Template Order</title>
 <para>
 This section describes whether and in which order the above calculated
@@ -295,25 +388,184 @@ no need to calculate them during simulation.
 </table>
 </sect1>
 
-<sect1 id="Setting the State" xreflabel="Setting the State">
+<sect1 id="SettingTheState" xreflabel="Setting the State">
 <title>Setting the State</title>
+<para></para>
 </sect1>
 
-<sect1 id="Applying Assignemets" xreflabel="Applying Assignemets">
+<sect1 id="ApplyingAssignemets" xreflabel="Applying Assignemets">
 <title>Applying Assignments</title>
+<para></para>
 </sect1>
 
-<sect1 id="Calculating Current Values" xreflabel="Calculating Current Values">
+<sect1 id="CalculatingCurrentValues" xreflabel="Calculating Current Values">
 <title>Calculating Current Values</title>
+<para></para>
 </sect1>
 
-<sect1 id="Dependency Specifications" xreflabel="Dependency Specifications">
+<sect1 id="DependencySpecifications" xreflabel="Dependency Specifications">
 <title>Dependency Specifications</title>
 
-<sect2 id="Transient Values" xreflabel="Transient Values">
+<sect2 id="InitialValues" xreflabel="Initial Values">
+<title>Initial Values</title>
+<para>
+The objects used in the expression for an initial value may not be
+simulated values, with the exception of values which are FIXED or
+evaluated through a constant ASSIGNMENT.
+</para>
+<sect3 id="MetaboliteWithInitialAssignment" 
+ xreflabel="Metabolite with Initial Assignment">
+<title>Metabolite with Initial Assignment</title>
+
+<table frame="all"><title>Metabolite with Initial Assignment</title>
+<tgroup cols="3" align="left" colsep="1" rowsep="1">
+<colspec colwidth="2*" />
+<colspec colwidth="6*" />
+<colspec colwidth="3*" />
+<thead>
+ <row>
+   <entry>Attribute</entry>
+   <entry>Dependencies</entry>
+   <entry>Refresh Method</entry>
+ </row>
+</thead>
+<tbody>
+ <row>
+   <entry>Initial Particle Number</entry>
+   <entry>Initial Concentration, parent compartment Volume</entry>
+   <entry>refreshInititalParticleNumber</entry>
+ </row>
+ <row>
+   <entry>Initial Concentration</entry>
+   <entry>all objects in expression</entry>
+   <entry>calculateInitialValue</entry>
+ </row>
+</tbody>
+</tgroup>
+</table>
+</sect3>
+
+<sect3 id="MetaboliteWithoutInitialAssignment" 
+ xreflabel="Metabolite without Initial Assignment">
+<title>Metabolite without Initial Assignment</title>
+
+<table frame="all"><title>Metabolite without Initial Assignment</title>
+<tgroup cols="3" align="left" colsep="1" rowsep="1">
+<colspec colwidth="2*" />
+<colspec colwidth="6*" />
+<colspec colwidth="3*" />
+<thead>
+ <row>
+   <entry>Attribute</entry>
+   <entry>Dependencies</entry>
+   <entry>Refresh Method</entry>
+ </row>
+</thead>
+<tbody>
+ <row>
+   <entry>Initial Particle Number</entry>
+   <entry>none</entry>
+   <entry>none</entry>
+ </row>
+ <row>
+   <entry>Initial Concentration</entry>
+   <entry>Initial particle number, parent compartment Volume</entry>
+   <entry>refreshInititalConcentration</entry>
+ </row>
+</tbody>
+</tgroup>
+</table>
+</sect3>
+
+<sect3 id="CompartmentGlobalQuantityWithInitialAssignment" 
+ xreflabel="Compartment, Global Quantity with Initial Assignment">
+<title>Compartment, Global Quantity with Initial Assignment</title>
+
+<table frame="all">
+<title>Compartment, Global Quantity with Initial Assignment</title>
+<tgroup cols="3" align="left" colsep="1" rowsep="1">
+<colspec colwidth="2*" />
+<colspec colwidth="6*" />
+<colspec colwidth="3*" />
+<thead>
+ <row>
+   <entry>Attribute</entry>
+   <entry>Dependencies</entry>
+   <entry>Refresh Method</entry>
+ </row>
+</thead>
+<tbody>
+ <row>
+   <entry>Initial Value</entry>
+   <entry>all objects in expression</entry>
+   <entry>calculateInitialValue</entry>
+ </row>
+</tbody>
+</tgroup>
+</table>
+</sect3>
+
+<sect3 id="CompartmentGlobalQuantityWithoutInitialAssignment" 
+ xreflabel="Compartment, Global Quantity without Initial Assignment">
+<title>Compartment, Global Quantity without Initial Assignment</title>
+
+<table frame="all">
+<title>Compartment, Global Quantity without Initial Assignment</title>
+<tgroup cols="3" align="left" colsep="1" rowsep="1">
+<colspec colwidth="2*" />
+<colspec colwidth="6*" />
+<colspec colwidth="3*" />
+<thead>
+ <row>
+   <entry>Attribute</entry>
+   <entry>Dependencies</entry>
+   <entry>Refresh Method</entry>
+ </row>
+</thead>
+<tbody>
+ <row>
+   <entry>Initial Value</entry>
+   <entry>none</entry>
+   <entry>none</entry>
+ </row>
+</tbody>
+</tgroup>
+</table>
+</sect3>
+
+<sect3 id="MoietyInitial" xreflabel="MoietyInitial">
+<title>Moiety</title>
+
+<table frame="all">
+<title>Moiety</title>
+<tgroup cols="3" align="left" colsep="1" rowsep="1">
+<colspec colwidth="2*" />
+<colspec colwidth="6*" />
+<colspec colwidth="3*" />
+<thead>
+ <row>
+   <entry>Attribute</entry>
+   <entry>Dependencies</entry>
+   <entry>Refresh Method</entry>
+ </row>
+</thead>
+<tbody>
+ <row>
+   <entry>Initial Number</entry>
+   <entry>Particle numbers of all involved metabolites</entry>
+   <entry>calculateInitialValue</entry>
+ </row>
+</tbody>
+</tgroup>
+</table>
+</sect3>
+
+</sect2>
+
+<sect2 id="TransientValues" xreflabel="Transient Values">
 <title>Transient Values</title>
 
-<sect3 id="Metabolite Reaction" xreflabel="Metabolite Reaction">
+<sect3 id="MetaboliteReaction" xreflabel="Metabolite Reaction">
 <title>Metabolite Reaction</title>
 <table frame="all"><title>Metabolite Reaction</title>
 <tgroup cols="3" align="left" colsep="1" rowsep="1">
@@ -363,8 +615,7 @@ no need to calculate them during simulation.
 </table>
 </sect3>
 
-<!--
-<sect3 id="Metabolite Dependent" xreflabel="Metabolite Dependent">
+<sect3 id="MetaboliteDependent" xreflabel="Metabolite Dependent">
 <title>Metabolite Dependent</title>
 <table frame="all"><title>Metabolite Dependent</title>
 <tgroup cols="3" align="left" colsep="1" rowsep="1">
@@ -386,8 +637,8 @@ no need to calculate them during simulation.
  </row>
  <row>
    <entry>Particle Number</entry>
-   <entry>none</entry>
-   <entry>none</entry>
+   <entry>Dependent number of associated moiety</entry>
+   <entry>refreshNumber</entry>
  </row>
  <row>
    <entry>Concentration</entry>
@@ -413,55 +664,8 @@ no need to calculate them during simulation.
 </tgroup>
 </table>
 </sect3>
--->
 
-<sect3 id="Metabolite Assignment (Particle Number)" xreflabel="Metabolite Assignment (Particle Number)">
-<title>Metabolite Assignment (Particle Number)</title>
-<table frame="all"><title>Metabolite Assignment (Particle Number)</title>
-<tgroup cols="3" align="left" colsep="1" rowsep="1">
-<colspec colwidth="2*" />
-<colspec colwidth="6*" />
-<colspec colwidth="3*" />
-<thead>
- <row>
-   <entry>Attribute</entry>
-   <entry>Dependencies</entry>
-   <entry>Refresh Method</entry>
- </row>
-</thead>
-<tbody>
- <row>
-   <entry>Self</entry>
-   <entry>all objects in expression</entry>
-   <entry>calculate</entry>
- </row>
- <row>
-   <entry>Particle Number</entry>
-   <entry>Self</entry>
-   <entry>none</entry>
- </row>
- <row>
-   <entry>Concentration</entry>
-   <entry>Particle Number, parent compartment Volume</entry>
-   <entry>non</entry>
- </row>
- <row>
-   <entry>Particle Rate (NA)</entry>
-   <entry>none</entry>
-   <entry>none</entry>
- </row>
- <row>
-   <entry>Concentration Rate (NA)</entry>
-   <entry>none</entry>
-   <entry>none</entry>
- </row>
-</tbody>
-</tgroup>
-</table>
-<para>This will not be implemented</para>
-</sect3>
-
-<sect3 id="Metabolite Assignment (Concentration)" xreflabel="Metabolite Assignment (Concentration)">
+<sect3 id="MetaboliteAssignmentConcentration" xreflabel="Metabolite Assignment (Concentration)">
 <title>Metabolite Assignment (Concentration)</title>
 <table frame="all"><title>Metabolite Assignment (Concentration)</title>
 <tgroup cols="3" align="left" colsep="1" rowsep="1">
@@ -507,53 +711,7 @@ no need to calculate them during simulation.
 <para>This will be implemented later</para>
 </sect3>
 
-<sect3 id="Metabolite ODE (Particle Number)" xreflabel="Metabolite ODE (Particle Number)">
-<title>Metabolite ODE (Particle Number)</title>
-<table frame="all"><title>Metabolite ODE (Particle Number)</title>
-<tgroup cols="3" align="left" colsep="1" rowsep="1">
-<colspec colwidth="2*" />
-<colspec colwidth="6*" />
-<colspec colwidth="3*" />
-<thead>
- <row>
-   <entry>Attribute</entry>
-   <entry>Dependencies</entry>
-   <entry>Refresh Method</entry>
- </row>
-</thead>
-<tbody>
- <row>
-   <entry>Self</entry>
-   <entry>all objects in expression</entry>
-   <entry>calculate</entry>
- </row>
- <row>
-   <entry>Particle Number</entry>
-   <entry>none</entry>
-   <entry>none</entry>
- </row>
- <row>
-   <entry>Concentration</entry>
-   <entry>parent compartment Volume</entry>
-   <entry>refreshConcentration</entry>
- </row>
- <row>
-   <entry>Particle Rate</entry>
-   <entry>Self</entry>
-   <entry>none</entry>
- </row>
- <row>
-   <entry>Concentration Rate</entry>
-   <entry>Particle Rate, parent compartment Volume</entry>
-   <entry>refreshConcentrationRate</entry>
- </row>
-</tbody>
-</tgroup>
-</table>
-<para>This will not be implemented</para>
-</sect3>
-
-<sect3 id="Metabolite ODE (Concentration)" xreflabel="Metabolite ODE (Concentration)">
+<sect3 id="MetaboliteODEConcentration" xreflabel="Metabolite ODE (Concentration)">
 <title>Metabolite ODE (Concentration)</title>
 <table frame="all"><title>Metabolite ODE (Concentration)</title>
 <tgroup cols="3" align="left" colsep="1" rowsep="1">
@@ -616,18 +774,13 @@ no need to calculate them during simulation.
 <tbody>
  <row>
    <entry>Self</entry>
-   <entry>none</entry>
-   <entry>none</entry>
- </row>
- <row>
-   <entry>Dependent Number</entry>
    <entry>Particle number of participating independent metabolites</entry>
    <entry>refreshDependentNumber</entry>
  </row>
  <row>
-   <entry>Dependent Rate</entry>
-   <entry>Rates of participating independent metabolites</entry>
-   <entry>refreshDependentRate</entry>
+   <entry>Dependent Number</entry>
+   <entry>Self</entry>
+   <entry>none</entry>
  </row>
 </tbody>
 </tgroup>
@@ -675,7 +828,7 @@ no need to calculate them during simulation.
 </table>
 </sect3>
 
-<sect3 id="Model Value Assignment" xreflabel="Model Value Assignment">
+<sect3 id="ModelValueAssignment" xreflabel="Model Value Assignment">
 <title>Model Value Assignment</title>
 <table frame="all"><title>Model Value Assignment</title>
 <tgroup cols="3" align="left" colsep="1" rowsep="1">
@@ -710,7 +863,7 @@ no need to calculate them during simulation.
 </table>
 </sect3>
 
-<sect3 id="Model Value ODE" xreflabel="Model Value ODE">
+<sect3 id="ModelValueODE" xreflabel="Model Value ODE">
 <title>Model Value ODE</title>
 <table frame="all"><title>Model Value ODE</title>
 <tgroup cols="3" align="left" colsep="1" rowsep="1">
@@ -745,7 +898,7 @@ no need to calculate them during simulation.
 </table>
 </sect3>
 
-<sect3 id="Compartment Assignment" xreflabel="Compartment Assignment">
+<sect3 id="CompartmentAssignment" xreflabel="Compartment Assignment">
 <title>Compartment Assignment</title>
 <table frame="all"><title>Compartment Assignment</title>
 <tgroup cols="3" align="left" colsep="1" rowsep="1">
@@ -781,7 +934,7 @@ no need to calculate them during simulation.
 <para>This will be implemented later</para>
 </sect3>
 
-<sect3 id="Compartment ODE" xreflabel="Compartment ODE">
+<sect3 id="CompartmentODE" xreflabel="Compartment ODE">
 <title>Compartment ODE</title>
 <table frame="all"><title>Compartment ODE</title>
 <tgroup cols="3" align="left" colsep="1" rowsep="1">
@@ -836,7 +989,7 @@ The installation location needs to be available to COPASI at runtime
 and therefore the environment variable <literal>COPASIDIR</literal> pointing to this
 location must be set by the user. 
 </para>
-<literallayout>
+<programlisting>
   $COPASIDIR 
    +- bin 
    |  +- CopasiSE 
@@ -875,17 +1028,17 @@ location must be set by the user.
    |        +- copasi icon small.png 
    +- README 
    +- ChangeLog 
-</literallayout>
+</programlisting>
 </sect1>
 
-<sect1 id="MacOS X" xreflabel="MacOS X">
+<sect1 id="MacOSX" xreflabel="MacOS X">
 <title>MacOS X</title>
 <para>
 The installation location must be available to COPASI at
 runtime. However it is possible to determine the location through MacOS
 X.
 </para>
-<literallayout>
+<programlisting>
   $COPASIDIR 
    +- CopasiSE.app 
    |  +- Contents 
@@ -926,7 +1079,7 @@ X.
    |  +- brusselator.cps 
    |  +- ... 
    +- COPASI-README.rtf 
-</literallayout>
+</programlisting>
 </sect1>
 
 <sect1 id="Windows" xreflabel="Windows">
@@ -936,7 +1089,7 @@ The installation location must be available to COPASI at
 runtime. However it is possible to determine the location through
 Windows specific means.
 </para>
-<literallayout>
+<programlisting>
   $COPASIDIR 
    +- bin 
    |  +- CopasiSE 
@@ -977,10 +1130,10 @@ Windows specific means.
    +- LICENSE.txt 
    +- README.txt
    +- ChangeLog 
-</literallayout>
+</programlisting>
 </sect1>
 
-<sect1 id="Handling Installation Differences" xreflabel="Handling Installation Differences">
+<sect1 id="HandlingInstallationDifferences" xreflabel="Handling Installation Differences">
 <title>Handling Installation Differences</title>
 <para>
 The handling of differences in the installation structure must be
