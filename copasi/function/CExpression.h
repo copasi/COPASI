@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.h,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/04/10 16:48:44 $
+//   $Date: 2007/04/11 15:22:08 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,9 +16,7 @@
 #include "function/CEvaluationTree.h"
 #include "report/CCopasiContainer.h"
 
-class CExpression:
-      public CEvaluationTree
-
+class CExpression: public CEvaluationTree
   {
     // Operations
   public:
@@ -83,18 +81,13 @@ class CExpression:
      */
     void writeMathML(std::ostream & out, bool fullExpand, unsigned C_INT32 l) const;
 
-  private:
     /**
      * Retrieve a pointer to the object defined by CN. This method may only be called
-     * during compile() sinces the list mpListOfContainer is only valid then.
+     * during compile() since the list mpListOfContainer is only valid then.
      * @param const CCopasiObjectName & CN
      * @return const CCopasiObject * value
      */
     virtual const CCopasiObject * getNodeObject(const CCopasiObjectName & CN) const;
-
-    // This is needed so that the tree compiles
-    friend bool CEvaluationNodeObject::compile(const CEvaluationTree * pTree);
-    friend bool CEvaluationTree::compileNodes();
 
   public:
     /**

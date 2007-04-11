@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.cpp,v $
-   $Revision: 1.19 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2007/01/08 15:56:33 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.cpp,v $
+//   $Revision: 1.20 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/04/11 15:22:08 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -68,7 +68,11 @@ bool CExpression::compile(std::vector< CCopasiContainer * > listOfContainer)
   else
     mDisplayString = "";
 
-  return compileNodes();
+  bool success = compileNodes();
+
+  mpListOfContainer = NULL;
+
+  return success;
 }
 
 const C_FLOAT64 & CExpression::calcValue()
@@ -87,10 +91,15 @@ void CExpression::refresh()
 {calcValue();}
 
 const CCopasiObject * CExpression::getNodeObject(const CCopasiObjectName & CN) const
-  {return CCopasiContainer::ObjectFromName(*mpListOfContainer, CN);}
+  {
+    if (mpListOfContainer != NULL)
+      return CCopasiContainer::ObjectFromName(*mpListOfContainer, CN);
+    else
+      return CCopasiContainer::ObjectFromName(CN);
+  }
 
 const std::vector< CCopasiContainer * > & CExpression::getListOfContainer() const
-  {return *mpListOfContainer;}
+{return *mpListOfContainer;}
 
 bool CExpression::updateInfix()
 {
