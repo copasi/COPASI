@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.pro,v $ 
-#   $Revision: 1.30 $ 
+#   $Revision: 1.31 $ 
 #   $Name:  $ 
-#   $Author: urost $ 
-#   $Date: 2007/02/26 10:31:08 $ 
+#   $Author: nsimus $ 
+#   $Date: 2007/04/12 12:38:30 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -11,7 +11,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.30 $ $Author: urost $ $Date: 2007/02/26 10:31:08 $  
+# $Revision: 1.31 $ $Author: nsimus $ $Date: 2007/04/12 12:38:30 $  
 ######################################################################
 
 TEMPLATE = subdirs
@@ -43,6 +43,7 @@ SUBDIRS += sensitivities
 SUBDIRS += steadystate
 SUBDIRS += trajectory
 SUBDIRS += tss
+SUBDIRS += tssanalysis
 SUBDIRS += utilities
 SUBDIRS += xml
 
