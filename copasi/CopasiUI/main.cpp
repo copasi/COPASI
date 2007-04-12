@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/main.cpp,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.32.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/16 19:57:57 $
+//   $Date: 2007/04/12 13:52:11 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -70,8 +70,13 @@ int main(int argc, char **argv)
       a.exec();
     }
 
-  pdelete(CCopasiDataModel::Global);
-  pdelete(CCopasiContainer::Root);
+  try // To surpress any access violations during destruction
+    {
+      pdelete(CCopasiDataModel::Global);
+      pdelete(CCopasiContainer::Root);
+    }
+  catch (...)
+  {}
 
   return 0;
 }
