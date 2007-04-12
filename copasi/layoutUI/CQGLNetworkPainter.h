@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/04/05 11:06:02 $
+//   $Date: 2007/04/12 17:33:49 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,7 +30,7 @@
 #include "copasi/layout/CLCurve.h"
 #include "copasi/layoutUI/CArrow.h"
 
-#include "copasi/layoutUI/CgraphNode.h"
+#include "copasi/layoutUI/CGraphNode.h"
 
 class CLayout;
 
@@ -78,7 +78,7 @@ class CQGLNetworkPainter : public QGLWidget
     //std::map<std::string, float> nodeSizeMap; // maps mKey of viewer node to size of this node in circular view
 
     CGraphNode* findNodeWithKey(std::string nodeKey);
-    void storeCurveInCorrespondingNode(std::string nodeKey, CLCurve curve);
+    void storeCurveInCorrespondingNode(std::string nodeKey, CLCurve* curve);
 
     QAction *zoomInAction;
     QAction *zoomOutAction;

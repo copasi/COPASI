@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/04/05 11:06:02 $
+//   $Date: 2007/04/12 17:33:49 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -125,6 +125,7 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
           const CLCurve curve = edgesToNodesOfReaction[j2]->getCurve();
 
           viewerCurves.push_back(curve);
+          //std::cout << "curve: " << curve << std::endl;
           //           int k;
           //         std::vector<CLLineSegment> segments = curve.getCurveSegments();
           //          for (k = 0;k < curve.getNumCurveSegments();k++)
@@ -148,7 +149,8 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
           //                  *findNodeWithKey(viewerNodes,nodeKey))
           //);
           //std::cout << "role : " << r << std::endl;
-          storeCurveInCorrespondingNode(nodeKey, viewerCurves.back()); // use reference to last curve put into the vector viewerCurves
+          //storeCurveInCorrespondingNode(nodeKey, viewerCurves.back()); // use reference to last curve put into the vector viewerCurves
+          storeCurveInCorrespondingNode(nodeKey, &viewerCurves[viewerCurves.size() - 1]);
           if ((r == CLMetabReferenceGlyph::PRODUCT) || (r == CLMetabReferenceGlyph::SIDEPRODUCT))
             {// create arrows just for edges to products or sideproducts
               std::vector<CLLineSegment> segments = curve.getCurveSegments();
@@ -182,13 +184,15 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
   //CQGLNetworkPainter::drawGraph();
 }
 
-void CQGLNetworkPainter::storeCurveInCorrespondingNode(std::string nodeKey, CLCurve curve)
+void CQGLNetworkPainter::storeCurveInCorrespondingNode(std::string nodeKey, CLCurve* pcurve)
 {
+
   CGraphNode *nodeP = findNodeWithKey(nodeKey);
   if (nodeP != NULL)
     {
-      nodeP->addCurve(&curve);
+      nodeP->addCurve(pcurve);
       std::cout << "curve added to " << nodeKey << std::endl;
+      std::cout << "curve: " << *pcurve << std::endl;
     }
 }
 
@@ -285,6 +289,7 @@ void CQGLNetworkPainter::drawNode(CGraphNode &n)
   glTranslatef(-(float)tx, -(float)ty, 0.0f);
 }
 
+// draw a curve: at the moment just a line from the start point to the end point (for each segment)
 void CQGLNetworkPainter::drawEdge(CLCurve c)
 {
   std::vector<CLLineSegment> segments = c.getCurveSegments();
@@ -527,7 +532,6 @@ void CQGLNetworkPainter::setNodeSizes()
   int i;
   for (i = 0;i < viewerNodes.size();i++)
     viewerNodes[i].setSize(50.0);
-  //this->changeNodeSize(viewerNodes[i].setSize(50.0));
 }
 
 //void CQGLNetworkPainter::changeNodeSize(std::string viewerNodeKey, double newSize)

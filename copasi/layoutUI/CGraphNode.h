@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CGraphNode.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/04/05 11:06:02 $
+//   $Date: 2007/04/12 17:33:49 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,6 +14,8 @@
 #define CGRAPHNODE_H_
 
 #include <vector>
+
+#include "copasi.h"
 
 #include "layout/CLGlyphs.h"
 #include "layout/CLCurve.h"
@@ -36,13 +38,17 @@ class CGraphNode : public CLMetabGlyph
                const CCopasiContainer * pParent = NULL);
 
     C_FLOAT64 getSize(){return this->msize;}
-    void setSize(C_FLOAT64 newSize){this->msize = newSize;}
+    void setSize(C_FLOAT64 newSize);
 
     std::string getOrigNodeKey(){return this->morigNodeKey;}
 
     std::vector<CLCurve*> getCurves(){return this->mConnectedCurves;}
 
-    void addCurve(CLCurve* curve){this->mConnectedCurves.push_back(curve);}
+    void addCurve(CLCurve* pcurve)
+    {
+      this->mConnectedCurves.push_back(pcurve);
+      std::cout << "add curve: " << *pcurve << std::endl;
+    }
 
     virtual void scale (const double & scaleFactor)
     {
