@@ -127,6 +127,10 @@ SOURCE=.\CProgressBar.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CQArrayAnnotationsWidget.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CQCopasiLayoutWidget.cpp
 # End Source File
 # Begin Source File
@@ -544,6 +548,10 @@ SOURCE=.\CPlotSelectionDialog.h
 # Begin Source File
 
 SOURCE=.\CProgressBar.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQArrayAnnotationsWidget.h
 # End Source File
 # Begin Source File
 
