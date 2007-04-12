@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.213 $
+//   $Revision: 1.214 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2007/04/12 12:30:53 $
+//   $Author: ssahle $
+//   $Date: 2007/04/12 15:15:31 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -236,11 +236,15 @@ ListViews::ListViews(QWidget *parent, const char *name):
     steadystateWidget(NULL),
     tableDefinition(NULL),
     tableDefinition1(NULL),
+#ifdef COPASI_TSS
     tssWidget(NULL),
+#endif
     timeSeriesWidget(NULL),
     trajectoryWidget(NULL),
+#ifdef COPASI_DEBUG
     tssaWidget(NULL),
     tssaResultWidget(NULL),
+#endif
 #ifdef COPASI_SSA
     mSSAWidget(NULL),
 #endif
@@ -464,11 +468,13 @@ void ListViews::ConstructNodeWidgets()
   if (!trajectoryWidget) trajectoryWidget = new CQTrajectoryWidget(this);
   trajectoryWidget->hide();
 
+#ifdef COPASI_DEBUG
   if (!tssaWidget) tssaWidget = new CQTSSAWidget(this);
   tssaWidget->hide();
 
   if (!tssaResultWidget) tssaResultWidget = new CQTSSAResultWidget(this);
   tssaResultWidget->hide();
+#endif
 
   if (!mpMathMatrixWidget) mpMathMatrixWidget = new CQMathMatrixWidget(this);
   mpMathMatrixWidget->hide();
@@ -617,12 +623,14 @@ CopasiWidget* ListViews::findWidgetFromId(const C_INT32 & id) const
       case 261:
         return lyapResultWidget;
         break;
+#ifdef COPASI_DEBUG
       case 27:
         return tssaWidget;
         break;
       case 271:
         return tssaResultWidget;
         break;
+#endif
       case 31:
         return scanWidget;
         break;

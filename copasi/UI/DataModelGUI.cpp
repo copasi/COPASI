@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-//   $Revision: 1.68 $
+//   $Revision: 1.69 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2007/04/12 12:33:20 $
+//   $Author: ssahle $
+//   $Date: 2007/04/12 15:14:59 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,8 +31,15 @@
 #include "steadystate/CSteadyStateTask.h"
 #include "steadystate/CMCATask.h"
 #include "trajectory/CTrajectoryTask.h"
+
+#ifdef COPASI_DEBUG
 #include "tssanalysis/CTSSATask.h"
+#endif
+
+#ifdef COPASI_TSS
 #include "tss/CTSSTask.h"
+#endif
+
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "utilities/CCopasiException.h"
 #include "commandline/CConfigurationFile.h"
