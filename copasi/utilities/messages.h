@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.89 $
+//   $Revision: 1.90 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/04/10 16:48:46 $
+//   $Author: nsimus $
+//   $Date: 2007/04/12 12:45:07 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -245,7 +245,7 @@ const MESSAGES Messages[] =
     // CTSSAMethod
     {MCTSSAMethod + 1, "CTSSAMethod (1): Deterministic integration failed. "
      "LSODA reported:\n%s \n\nPlease see result for indications of numerical instability."},
-    {MCTSSAMethod + 2, "CTSSAMethod (2): Problem is not a trajectory problem."},
+    {MCTSSAMethod + 2, "CTSSAMethod (2): Problem is not a time scale separaton analysis problem."},
     {MCTSSAMethod + 3, "CTSSAMethod (3): Internal step limit exceeded."},
     {MCTSSAMethod + 4, "CTSSAMethod (4): Numerical Error encountered."},
 
