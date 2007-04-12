@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.96 $
+//   $Revision: 1.97 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/04/09 18:56:12 $
+//   $Author: nsimus $
+//   $Date: 2007/04/12 12:59:36 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -44,6 +44,9 @@
 #include "sensitivities/CSensTask.h"
 #ifdef COPASI_SSA
 # include "ssa/CSSATask.h"
+#endif
+#ifdef COPASI_DEBUG
+#include "tssanalysis/CTSSATask.h"
 #endif
 #include "lyap/CLyapTask.h"
 #include "tss/CODEExporter.h"
@@ -830,6 +833,12 @@ CCopasiTask * CCopasiDataModel::addTask(const CCopasiTask::Type & taskType)
       pTask = new CSSATask(mpTaskList);
       break;
 #endif
+
+#ifdef COPASI_DEBUG
+    case CCopasiTask::tssAnalysis:
+      pTask = new CTSSATask(mpTaskList);
+      break;
+#endif // COPASI_DEBUG
 
     default:
       return pTask;
