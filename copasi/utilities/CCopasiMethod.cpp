@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.cpp,v $
-//   $Revision: 1.42 $
+//   $Revision: 1.43 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2007/04/05 12:39:23 $
+//   $Date: 2007/04/12 12:42:20 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -47,13 +47,19 @@ const std::string CCopasiMethod::SubTypeName[] =
     "Stochastic (Gibson + Bruck)",
     "Hybrid (Runge-Kutta)",
     "Hybrid (LSODA)",
-    "Time Scale Separation (ILDM)",
-    "Time Scale Separation (CSP)",
+#ifdef COPASI_DEBUG
+    //"Time Scale Separation (ILDM)",
+    //"Time Scale Separation (CSP)",
+    "ILDM (LSODA)",
+    "CSP (LSODA)",
+#endif // COPASI_DEBUG
     "Stochastic (\xcf\x84-Leap)",
     "MCA Method (Reder)",
     "Scan Framework",
     "Wolf Method",
+#ifdef COPASI_TSS
     "Time Scale Separation Method",
+#endif // COPASI_TSS
     "Sensitivities Method",
 #ifdef COPASI_SSA
     "Stoichiometric Stability Analysis Method",
@@ -88,13 +94,17 @@ const char* CCopasiMethod::XMLSubType[] =
     "Stochastic",
     "Hybrid",
     "Hybrid (LSODA)",
+#ifdef COPASI_DEBUG
     "TimeScaleSeparation(ILDM)",
     "TimeScaleSeparation(CSP)",
+#endif // COPASI_DEBUG
     "TauLeap",
     "MCAMethod(Reder)",
     "ScanFramework",
     "WolfMethod",
+#ifdef COPASI_TSS
     "TimeScaleSeparationMethod",
+#endif // COPASI_TSS
     "SensitivitiesMethod",
 #ifdef COPASI_SSA
     "SSAMethod",
