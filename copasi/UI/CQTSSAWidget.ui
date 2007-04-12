@@ -1,0 +1,238 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<comment> Begin CVS Header </comment>
+<comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSAWidget.ui,v $ </comment>
+<comment>   $Revision: 1.1 $ </comment>
+<comment>   $Name:  $ </comment>
+<comment>   $Author: nsimus $ </comment>
+<comment>   $Date: 2007/04/12 12:34:10 $ </comment>
+<comment> End CVS Header </comment>
+
+<comment> Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc. and EML Research, gGmbH. </comment>
+<comment> All rights reserved. </comment>
+
+<class>CQTSSAWidget</class>
+<widget class="TaskWidget">
+    <property name="name">
+        <cstring>CQTSSAWidget</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>358</width>
+            <height>141</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Time Scale Separation Analysis</string>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>mpGridLayout</cstring>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLineEdit" row="1" column="3">
+                    <property name="name">
+                        <cstring>mpEditIntervals</cstring>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="1" column="1">
+                    <property name="name">
+                        <cstring>mpEditIntervalSize</cstring>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="2" column="0">
+                    <property name="name">
+                        <cstring>mpLblDeltaT</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Start Output Time</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignVCenter|AlignRight</set>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="0" column="1">
+                    <property name="name">
+                        <cstring>mpEditDuration</cstring>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="1" column="2">
+                    <property name="name">
+                        <cstring>mpLblIntervals</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Intervals</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignVCenter|AlignRight</set>
+                    </property>
+                </widget>
+                <widget class="QCheckBox" row="2" column="2">
+                    <property name="name">
+                        <cstring>mpCheckDelay</cstring>
+                    </property>
+                    <property name="text">
+                        <string>delayed</string>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="2" column="1">
+                    <property name="name">
+                        <cstring>mpEditDelay</cstring>
+                    </property>
+                    <property name="frameShape">
+                        <enum>LineEditPanel</enum>
+                    </property>
+                    <property name="frameShadow">
+                        <enum>Sunken</enum>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="0" column="0">
+                    <property name="name">
+                        <cstring>mpLblDuration</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Duration</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignVCenter|AlignRight</set>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="1" column="0">
+                    <property name="name">
+                        <cstring>mpLblIntervalSize</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Interval Size</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignVCenter|AlignRight</set>
+                    </property>
+                </widget>
+                <widget class="QCheckBox" row="3" column="1" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>mpCheckSave</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Save Result in Memory</string>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+        <widget class="Line">
+            <property name="name">
+                <cstring>line1</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>HLine</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+        </widget>
+    </vbox>
+</widget>
+<customwidgets>
+    <customwidget>
+        <class>TaskWidget</class>
+        <header location="local">TaskWidget.h</header>
+        <sizehint>
+            <width>-1</width>
+            <height>-1</height>
+        </sizehint>
+        <container>1</container>
+        <sizepolicy>
+            <hordata>5</hordata>
+            <verdata>5</verdata>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+        </sizepolicy>
+        <pixmap>image0</pixmap>
+    </customwidget>
+</customwidgets>
+<images>
+    <image name="image0">
+        <data format="PNG" length="872">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b0000032f49444154388db59531681c4714863f992dde8004b320c32e38700732f80a176acfa8b04a81c016a809a8496b42208454098604d2c4904a6954a410511ae75c18ac42e61208a76b442488600332ec15825dd0c10c58300f32e0142b4591e2538a38af99dd99e1db6fdffec34e0d76079cd7bdeebd37bc831aec0ea6a6cec1fd9dfe9bf65c1bef3d555de1bcc36008846b47e71dc551c1706f08f1029e9c9b3efdfe29690e791b5a51cf961d2402384c2240b898e7e2be3812f8ce327ce92f83016a5f93be07e5f847f47549888a3110fe005f0b55ad08829985f66d105188a080cc407a53f97bfd0576b523dcf5e8eb9a103d66c652ee437f5bd9dfab9104342a9258b239616935a5bb10109a793b2d348fb902ae7cc53c4a8815c658767794ad0d0f11ac15f2394104aa91327aa57cfb6549bd96b1b206220dfcadc6263180626684721f7a67d0a50719f79721cf0d2401d594fe76a0b7e1e96d8ec8b20e8b0f0d92e825e31be71721064008015e3cf76854961e64ac7c0069ae6852e14f0c2f9e39965653deffd042226c6d56e8f89f91bb6c9c387c9d521c9458db988a3416fe3467fd6b4779e87127f0e8d39ce18ea7fc5d298a80c865f02563930855ed2081bc05e94d5014ef53d6bfa8280e3d6285ee420ad38ecebc45a3521d83c609e0a6c7200844c54e9f7d94939cf5af1ce561132f3b2de4b72095e67d251134825c51bed26330b3406229468aaaa1ff3234a6d34276cb321ad53c795c51eca754a5a25169b70c5c9f0a47e736b45a423d52fadb8195b51477a274efa7e4193c790ca357359f7d54a1a79e2cb374e6a1aaafe9310888b2b42a68547a1b9efeb6e3d1c739f30b81d67ce093cf73b2cce2c73544e82e5bda77fe35c701a2d05d80fa38a3b73962eb1b18ee783a772d2450950e3fd6a6b728c52f4a7160b032e1e4b9b13b3bfb8a002b6b429675e8fd50511c2ac5c1a8d91dc1ce5a161f5a7efd49a94e3d1a53eaf104e3e2a8a02805491b1349607139d05dc8298a4075dc40f396a1330fed3b502c1b8839248ef237de0e1eee0d614348f32652aabec91b1e39db250994c7bec9edf3a61dde43b1af54f50463220c7f3e5fbc3a4eaac9eb3726aefcc7ba01cd3fea7f01bf6bf8607730f52706519bdbb66077eb0000000049454e44ae426082</data>
+    </image>
+</images>
+<connections>
+    <connection>
+        <sender>mpEditDuration</sender>
+        <signal>lostFocus()</signal>
+        <receiver>CQTSSAWidget</receiver>
+        <slot>slotDuration()</slot>
+    </connection>
+    <connection>
+        <sender>mpEditIntervalSize</sender>
+        <signal>lostFocus()</signal>
+        <receiver>CQTSSAWidget</receiver>
+        <slot>slotIntervalSize()</slot>
+    </connection>
+    <connection>
+        <sender>mpEditIntervals</sender>
+        <signal>lostFocus()</signal>
+        <receiver>CQTSSAWidget</receiver>
+        <slot>slotIntervals()</slot>
+    </connection>
+    <connection>
+        <sender>mpCheckDelay</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>CQTSSAWidget</receiver>
+        <slot>slotOutputDelay(bool)</slot>
+    </connection>
+</connections>
+<tabstops>
+    <tabstop>mpEditDuration</tabstop>
+    <tabstop>mpEditIntervalSize</tabstop>
+    <tabstop>mpEditIntervals</tabstop>
+    <tabstop>mpCheckDelay</tabstop>
+    <tabstop>mpEditDelay</tabstop>
+    <tabstop>mpCheckSave</tabstop>
+</tabstops>
+<includes>
+    <include location="local" impldecl="in declaration">TaskWidget.h</include>
+    <include location="local" impldecl="in implementation">CQTSSAWidget.ui.h</include>
+</includes>
+<forwards>
+    <forward>class CTSSAProblem;</forward>
+    <forward>class CQValidatorInt;</forward>
+    <forward>class CQValidatorDouble;</forward>
+</forwards>
+<variables>
+    <variable access="private">CTSSAProblem * mpTSSAProblem;</variable>
+    <variable access="private">CQValidatorDouble * mpValidatorDuration;</variable>
+    <variable access="private">CQValidatorDouble * mpValidatorIntervalSize;</variable>
+    <variable access="private">CQValidatorDouble * mpValidatorDelay;</variable>
+    <variable access="private">CQValidatorInt * mpValidatorIntervals;</variable>
+</variables>
+<slots>
+    <slot specifier="non virtual">slotDuration()</slot>
+    <slot specifier="non virtual">slotIntervalSize()</slot>
+    <slot specifier="non virtual">slotIntervals()</slot>
+    <slot>slotOutputDelay( bool checked )</slot>
+</slots>
+<functions>
+    <function access="private" specifier="non virtual">init()</function>
+    <function access="private" specifier="non virtual">destroy()</function>
+    <function access="protected" returnType="bool">saveTask()</function>
+    <function access="protected" returnType="bool">loadTask()</function>
+    <function access="protected" returnType="CCopasiMethod *">createMethod( const CCopasiMethod::SubType &amp; type )</function>
+    <function returnType="bool">runTask()</function>
+    <function access="private" specifier="non virtual">checkTimeSeries()</function>
+</functions>
+<layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>taskwidget.h</includehint>
+</includehints>
+</UI>

@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $ 
-#   $Revision: 1.147 $ 
+#   $Revision: 1.148 $ 
 #   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2007/04/02 17:01:05 $ 
+#   $Author: nsimus $ 
+#   $Date: 2007/04/12 12:32:53 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -11,7 +11,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.147 $ $Author: shoops $ $Date: 2007/04/02 17:01:05 $  
+# $Revision: 1.148 $ $Author: nsimus $ $Date: 2007/04/12 12:32:53 $  
 ######################################################################
 
 LIB = UI
@@ -48,6 +48,7 @@ HEADERS += \
            CQMathMatrixWidget.h \
            CQReportListItem.h \
            CQSensResultWidget.h \
+           CQTSSAResultWidget.h \
            CQValidator.h \
            CScanContainerWidget.h \
            CTimeSeriesTable.h \
@@ -112,6 +113,7 @@ SOURCES += \
            CQMathMatrixWidget.cpp \
            CQReportListItem.cpp \
            CQSensResultWidget.cpp \
+           CQTSSAResultWidget.cpp \
            CQValidator.cpp \
            CScanContainerWidget.cpp \
            CTimeSeriesTable.cpp \
@@ -191,6 +193,8 @@ contains(DEFINES, WITH_LAYOUT) {
 # FORMS += CQTaskHeaderWidget.ui
 # FORMS += CQTextDialog.ui
 # FORMS += CQTrajectoryWidget.ui
+FORMS += CQTSSAWidget.ui
+FORMS += CQTSSAResultSubWidget.ui
 # FORMS += CScanWidgetBreak.ui
 # FORMS += CScanWidgetRandom.ui
 # FORMS += CScanWidgetRepeat.ui
@@ -251,6 +255,10 @@ HEADERS += \
            CQTextDialog.ui.h \
            CQTrajectoryWidget.h \
            CQTrajectoryWidget.ui.h \
+#           CQTSSAWidget.h \
+#           CQTSSAWidget.ui.h \
+#           CQTSSAResultSubWidget.h \
+#           CQTSSAResultSubWidget.ui.h \
            CQModelValue.h \
            CQModelValue.ui.h \
            CScanWidgetBreak.h \
@@ -274,7 +282,7 @@ HEADERS += \
            TimeSeriesSubwidget.h \
            TimeSeriesSubwidget.ui.h \
            objectdebug.h \
-           objectdebug.ui.h
+           objectdebug.ui.h 
 
 # sources generated from .ui files   
 SOURCES += \
@@ -302,6 +310,8 @@ SOURCES += \
            CQTaskBtnWidget.cpp \
            CQTaskHeaderWidget.cpp \
            CQTrajectoryWidget.cpp \
+#           CQTSSAWidget.cpp \
+#           CQTSSAResultSubWidget.cpp \
            CQTextDialog.cpp \
            CUpDownSubwidget.cpp \
            CScanWidgetBreak.cpp \

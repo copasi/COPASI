@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-//   $Revision: 1.118 $
+//   $Revision: 1.119 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/02/18 23:07:45 $
+//   $Author: nsimus $
+//   $Date: 2007/04/12 12:30:53 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -50,7 +50,14 @@ class CQSensResultWidget;
 class StateWidget;
 class CQTrajectoryWidget;
 class TableDefinition;
+#ifdef COPASI_TSS
 class TSSWidget;
+#endif // COPASI_TSS
+#ifdef COPASI_DEBUG
+class CQTSSAWidget;
+class CQTSSAResultWidget;
+class CQTSSAResultSubWidget;
+#endif
 class CQOptimizationWidget;
 class OptimizationResultWidget;
 class CopasiWidget;
@@ -198,9 +205,15 @@ class ListViews : public QSplitter
     SteadyStateWidget *steadystateWidget;
     TableDefinition *tableDefinition;
     CQReportDefinition *tableDefinition1;
+#ifdef COPASI_TSS
     TSSWidget *tssWidget;
+#endif // COPASI_TSS
     TimeSeriesWidget *timeSeriesWidget;
     CQTrajectoryWidget *trajectoryWidget;
+#ifdef COPASI_DEBUG
+    CQTSSAWidget *tssaWidget;
+    CQTSSAResultWidget *tssaResultWidget;
+#endif // COPASI_DEBUG
 #ifdef COPASI_SSA
     SSAWidget * mSSAWidget;
 #endif // COPASI_SSA

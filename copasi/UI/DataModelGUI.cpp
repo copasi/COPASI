@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-//   $Revision: 1.67 $
+//   $Revision: 1.68 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/04/10 16:48:45 $
+//   $Author: nsimus $
+//   $Date: 2007/04/12 12:33:20 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,6 +31,8 @@
 #include "steadystate/CSteadyStateTask.h"
 #include "steadystate/CMCATask.h"
 #include "trajectory/CTrajectoryTask.h"
+#include "tssanalysis/CTSSATask.h"
+#include "tss/CTSSTask.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "utilities/CCopasiException.h"
 #include "commandline/CConfigurationFile.h"
@@ -71,6 +73,11 @@ void DataModelGUI::linkDataModelToGUI()
 #ifdef COPASI_TSS
   mTree.findNodeFromId(25)->setObjectKey((*CCopasiDataModel::Global->getTaskList())["Time Scale Separation"]->getKey());
 #endif
+
+#ifdef COPASI_DEBUG
+  mTree.findNodeFromId(27)->setObjectKey((*CCopasiDataModel::Global->getTaskList())["Time Scale Separation Analysis"]->getKey());
+#endif
+
   mTree.findNodeFromId(26)->setObjectKey((*CCopasiDataModel::Global->getTaskList())["Lyapunov Exponents"]->getKey());
 
   mTree.findNodeFromId(31)->setObjectKey((*CCopasiDataModel::Global->getTaskList())["Scan"]->getKey());
