@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.pro,v $ 
-#   $Revision: 1.31 $ 
+#   $Revision: 1.32 $ 
 #   $Name:  $ 
 #   $Author: nsimus $ 
-#   $Date: 2007/04/12 12:38:30 $ 
+#   $Date: 2007/04/12 13:45:39 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -11,7 +11,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.31 $ $Author: nsimus $ $Date: 2007/04/12 12:38:30 $  
+# $Revision: 1.32 $ $Author: nsimus $ $Date: 2007/04/12 13:45:39 $  
 ######################################################################
 
 TEMPLATE = subdirs
@@ -43,13 +43,15 @@ SUBDIRS += sensitivities
 SUBDIRS += steadystate
 SUBDIRS += trajectory
 SUBDIRS += tss
-SUBDIRS += tssanalysis
 SUBDIRS += utilities
 SUBDIRS += xml
 
 contains(DEFINES, WITH_LAYOUT) {
   SUBDIRS += layout
   SUBDIRS += layoutUI
+
+contains(DEFINES, COPASI_DEBUG) {
+  SUBDIRS += tssanalysis
 }
 
 # Now the UI libraries
