@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMCAWidget.ui.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.2.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/12 14:29:14 $
+//   $Date: 2007/04/12 15:26:23 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,6 +25,7 @@
 #include <qmessagebox.h>
 #include <qtable.h>
 
+#include "CMCAResultWidget.h"
 #include "UI/CQTaskBtnWidget.h"
 #include "UI/CQTaskHeaderWidget.h"
 #include "UI/CProgressBar.h"
@@ -56,7 +57,10 @@ bool CQMCAWidget::runTask()
 
   commonAfterRunTask();
 
-  if (success)
+  CMCAResultWidget *pResult = dynamic_cast< CMCAResultWidget * >(pListView->findWidgetFromId(241));
+  if (pResult) pResult->loadFromBackend();
+
+  if (success && pResult)
     pListView->switchToOtherWidget(241, ""); //change to the results window
 
   return success;
