@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-//   $Revision: 1.55 $
+//   $Revision: 1.56 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/04/09 18:56:15 $
+//   $Author: nsimus $
+//   $Date: 2007/04/12 12:42:51 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -44,9 +44,9 @@ const std::string CCopasiTask::TypeName[] =
 #ifdef COPASI_DEBUG
     "Time Scale Separation Analysis",
 #endif // COPASI_DEBUG
-#ifdef COPASI_DEBUG
+#ifdef COPASI_TSS
     "Time Scale Separation",
-#endif // COPASI_DEBUG
+#endif // COPASI_TSS
     "Sensitivities",
 #ifdef COPASI_SSA
     "Stoichiometric Stability Analysis",
@@ -64,9 +64,9 @@ const char* CCopasiTask::XMLType[] =
     "parameterFitting",
     "metabolicControlAnalysis",
     "lyapunovExponents",
-#ifdef COPASI_DEBUG
+#ifdef COPASI_TSS
     "timeScaleSeparation",
-#endif // COPASI_DEBUG
+#endif // COPASI_TSS
 #ifdef COPASI_DEBUG
     "timeScaleSeparationAnalysis",
 #endif // COPASI_DEBUG

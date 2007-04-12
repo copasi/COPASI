@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.h,v $
-//   $Revision: 1.41 $
+//   $Revision: 1.42 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2007/04/05 12:40:06 $
+//   $Date: 2007/04/12 12:42:51 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -53,9 +53,9 @@ class CCopasiTask : public CCopasiContainer
 #ifdef COPASI_DEBUG
       tssAnalysis,
 #endif // COPASI_DEBUG
-#ifdef COPASI_DEBUG
+#ifdef COPASI_TSS
       tss,
-#endif // COPASI_DEBUG
+#endif // COPASI_TSS
       sens,
 #ifdef COPASI_SSA
       ssa,
