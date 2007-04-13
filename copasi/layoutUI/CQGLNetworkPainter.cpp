@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/04/12 17:33:49 $
+//   $Date: 2007/04/13 10:04:43 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -150,7 +150,7 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
           //);
           //std::cout << "role : " << r << std::endl;
           //storeCurveInCorrespondingNode(nodeKey, viewerCurves.back()); // use reference to last curve put into the vector viewerCurves
-          storeCurveInCorrespondingNode(nodeKey, &viewerCurves[viewerCurves.size() - 1]);
+          storeCurveInCorrespondingNode(nodeKey, viewerCurves.size() - 1); //index of curve derived from the fact that the curve currently is the last element of the vector
           if ((r == CLMetabReferenceGlyph::PRODUCT) || (r == CLMetabReferenceGlyph::SIDEPRODUCT))
             {// create arrows just for edges to products or sideproducts
               std::vector<CLLineSegment> segments = curve.getCurveSegments();
@@ -165,7 +165,8 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
             }
         } // end j
     } // end i (reactions)
-
+  //for (i=0;i<viewerNodes.size();i++)
+  // std::cout << "viewer node: " << viewerNodes[i] << std::endl;
   std::cout << "number of curves: " << viewerCurves.size() << std::endl;
 
   CCopasiVector<CLTextGlyph> labels;
@@ -184,15 +185,13 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
   //CQGLNetworkPainter::drawGraph();
 }
 
-void CQGLNetworkPainter::storeCurveInCorrespondingNode(std::string nodeKey, CLCurve* pcurve)
+void CQGLNetworkPainter::storeCurveInCorrespondingNode(std::string nodeKey, int indx)
 {
 
   CGraphNode *nodeP = findNodeWithKey(nodeKey);
   if (nodeP != NULL)
     {
-      nodeP->addCurve(pcurve);
-      std::cout << "curve added to " << nodeKey << std::endl;
-      std::cout << "curve: " << *pcurve << std::endl;
+      nodeP->addCurveIndex(indx);
     }
 }
 
@@ -264,7 +263,7 @@ void CQGLNetworkPainter::drawNode(CGraphNode &n)
 {
   float diameter = 20.0;
   diameter = n.getSize();
-  std::cout << "diameter of " << n.getOrigNodeKey() << ": " << diameter << std::endl;
+  //std::cout << "diameter of " << n.getOrigNodeKey() << ": " << diameter << std::endl;
   //std::map<std::string, float>::iterator iter = nodeSizeMap.find(n.getKey());
   //std::cout << "find: " << n.getKey() <<std::endl;;
   //  if (iter != nodeSizeMap.end())
@@ -531,7 +530,7 @@ void CQGLNetworkPainter::setNodeSizes()
   // test: set all node to certain size
   int i;
   for (i = 0;i < viewerNodes.size();i++)
-    viewerNodes[i].setSize(50.0);
+    viewerNodes[i].setSize(50.0, &viewerCurves);
 }
 
 //void CQGLNetworkPainter::changeNodeSize(std::string viewerNodeKey, double newSize)
@@ -550,6 +549,8 @@ void CQGLNetworkPainter::setNodeSizes()
 void CQGLNetworkPainter::mapLabelsToRectangles()
 {
   this->mLabelShape = RECTANGLE;
+  for (int i = 0;i < viewerNodes.size();i++)
+    viewerNodes[i].adaptCurvesForRectangles(&viewerCurves);
   this->drawGraph();
   //this->draw();
 }

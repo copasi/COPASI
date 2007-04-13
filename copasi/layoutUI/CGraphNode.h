@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CGraphNode.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/04/12 17:33:49 $
+//   $Date: 2007/04/13 10:04:43 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,7 +25,7 @@ class CGraphNode : public CLMetabGlyph
   private:
     C_FLOAT64 msize;
     std::string morigNodeKey;
-    std::vector<CLCurve*> mConnectedCurves;
+    std::vector<int> mConnectedCurveIndices; // indices of curves in CQGLNetworkPainter viewerNodes attached to the node
   public:
 
     CGraphNode(const std::string & name = "GraphNode",
@@ -38,16 +38,17 @@ class CGraphNode : public CLMetabGlyph
                const CCopasiContainer * pParent = NULL);
 
     C_FLOAT64 getSize(){return this->msize;}
-    void setSize(C_FLOAT64 newSize);
+    void setSize(C_FLOAT64 newSize, std::vector<CLCurve> *viewerCurves);
+
+    void adaptCurvesForRectangles(std::vector<CLCurve> *viewerCurves);
 
     std::string getOrigNodeKey(){return this->morigNodeKey;}
 
-    std::vector<CLCurve*> getCurves(){return this->mConnectedCurves;}
+    std::vector<int> getCurveIndices(){return this->mConnectedCurveIndices;}
 
-    void addCurve(CLCurve* pcurve)
+    void addCurveIndex(int indx)
     {
-      this->mConnectedCurves.push_back(pcurve);
-      std::cout << "add curve: " << *pcurve << std::endl;
+      this->mConnectedCurveIndices.push_back(indx);
     }
 
     virtual void scale (const double & scaleFactor)
@@ -55,6 +56,8 @@ class CGraphNode : public CLMetabGlyph
       this->mBBox.scale(scaleFactor);
       this->msize = this->msize * scaleFactor;
     }
+
+    friend std::ostream & operator<<(std::ostream &os, const CGraphNode & gn);
   };
 
 #endif
