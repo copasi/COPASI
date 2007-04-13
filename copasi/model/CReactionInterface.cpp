@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.cpp,v $
-//   $Revision: 1.28 $
+//   $Revision: 1.28.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/26 14:11:00 $
+//   $Date: 2007/04/13 13:48:35 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -92,7 +92,10 @@ void CReactionInterface::initFromReaction(const std::string & key)
     {
       setFunctionWithEmptyMapping("");
     }
+
+#ifdef COPASI_DEBUG
   printDebug();
+#endif // COPASI_DEBUG
 }
 
 bool CReactionInterface::loadMappingAndValues(const CReaction & rea)
