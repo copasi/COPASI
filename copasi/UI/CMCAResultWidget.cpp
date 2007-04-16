@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CMCAResultWidget.cpp,v $
-//   $Revision: 1.5.10.1 $
+//   $Revision: 1.5.10.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/04/12 15:26:23 $
+//   $Date: 2007/04/16 14:40:22 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -62,8 +62,13 @@ bool CMCAResultWidget::saveToBackend()
   return true;
 }
 
-bool CMCAResultWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
+bool CMCAResultWidget::update(ListViews::ObjectType objectType,
+                              ListViews::Action action,
+                              const std::string & C_UNUSED(key))
 {
+  if (objectType == ListViews::MODEL && action == ListViews::ADD)
+    mCentralWidget->loadAll(NULL);
+
   return true;
 }
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-//   $Revision: 1.118 $
+//   $Revision: 1.118.2.1 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/02/18 23:07:45 $
+//   $Author: shoops $
+//   $Date: 2007/04/16 14:40:22 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -133,7 +133,7 @@ class ListViews : public QSplitter
 
     void setTheRightPixmap(QListViewItem* lvi);
 
-    FolderListItem* findListViewItem(int id, std::string key); //should always return a valid item
+    FolderListItem* findListViewItem(C_INT32 id, std::string key); //should always return a valid item
 
   private slots:
     void slotFolderChanged(QListViewItem*);
@@ -154,6 +154,16 @@ class ListViews : public QSplitter
     bool updateCurrentWidget(ObjectType objectType, Action action, const std::string & key = "");
     static bool updateDataModelAndListviews(ObjectType objectType, Action action, const std::string & key);
     static bool updateAllListviews(C_INT32 id);
+
+    void notifyChildWidgets(FolderListItem * pItem,
+                            ObjectType objectType,
+                            Action action,
+                            const std::string & key);
+
+    static void notifyAllChildWidgets(C_INT32 id,
+                                      ObjectType objectType,
+                                      Action action,
+                                      const std::string & key);
 
     //the widgets
     QListView *folders;

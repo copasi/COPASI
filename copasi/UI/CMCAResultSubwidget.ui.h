@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CMCAResultSubwidget.ui.h,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.21.2.1 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/03/17 22:14:56 $
+//   $Author: shoops $
+//   $Date: 2007/04/16 14:40:21 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,16 +32,20 @@
 
 void CMCAResultSubwidget::init()
 {
-  mTopLabel->setText("");
   mSaveButton->setEnabled(false);
   mSaveButton->hide();
+
+  mMCAMethod = NULL;
+
+  clear();
 }
 
 void CMCAResultSubwidget::loadAll(const CMCAMethod * mcaMethod)
 {
+  mMCAMethod = mcaMethod;
+
   if (mcaMethod)
     {
-      mMCAMethod = mcaMethod;
       if (!mcaMethod->getModel())
         {
           clear();
@@ -72,6 +76,11 @@ void CMCAResultSubwidget::loadAll(const CMCAMethod * mcaMethod)
           if (mcaMethod->getSteadyStateStatus() == CSteadyStateMethod::notFound)
             mTopLabel->setText("No steady state found. Only elasticities available!");
         }
+    }
+  else
+    {
+      clear();
+      return;
     }
 }
 
