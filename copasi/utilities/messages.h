@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.89 $
+//   $Revision: 1.89.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/04/10 16:48:46 $
+//   $Date: 2007/04/18 17:14:48 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -222,6 +222,7 @@ const MESSAGES Messages[] =
     {MCFitting + 8, "CFitting (8): Failure reading file '%s'."},
     {MCFitting + 9, "CFitting (9): Experiment '%s' has no data rows."},
     {MCFitting + 10, "CFitting (10): Experiment '%s' has no dependent data."},
+    {MCFitting + 11, "CFitting (11): Missing independent data for Experiment '%s' in row '%d'."},
 
     // CCopasiObject
     {MCObject + 1, "CObject (1): Circular dependencies detected for object '%s'."},
