@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-//   $Revision: 1.48 $
+//   $Revision: 1.48.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/26 18:10:49 $
+//   $Date: 2007/04/18 16:20:18 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1396,9 +1396,14 @@ class CCopasiXMLParser : public CExpat
         std::ostringstream mXhtml;
 
         /**
-         * The level of xhtml elements.
+         * The level of nested xhtml elements.
          */
         unsigned C_INT32 mLevel;
+
+        /**
+         * Information whether an element is empty
+         */
+        std::stack< bool > mElementEmpty;
 
         // Operations
       public:

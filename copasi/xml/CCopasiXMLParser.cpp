@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.151 $
+//   $Revision: 1.151.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/06 17:30:12 $
+//   $Date: 2007/04/18 16:20:18 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1394,17 +1394,25 @@ void CCopasiXMLParser::CommentElement::start(const XML_Char *pszName,
       mXhtml.str("");
       mLevel = 0;
       mParser.enableCharacterDataHandler();
+      mElementEmpty.push(false);
       break;
 
     case xhtml:
+      if (mElementEmpty.top() == true)
+        {
+          mXhtml << ">";
+          mElementEmpty.top() = false;
+        }
+
       mXhtml << CCopasiXMLInterface::encode(mParser.getCharacterData());
       mXhtml << "<" << pszName;
       for (ppAttrs = papszAttrs; *ppAttrs && **ppAttrs; ppAttrs += 2)
         mXhtml << " " << *ppAttrs << "=\""
         << CCopasiXMLInterface::encode(*(ppAttrs + 1), CCopasiXMLInterface::attribute) << "\"";
-      mXhtml << ">";
 
       mLevel++;
+      mElementEmpty.push(true);
+
       mParser.enableCharacterDataHandler();
       break;
 
@@ -1421,6 +1429,8 @@ void CCopasiXMLParser::CommentElement::start(const XML_Char *pszName,
 
 void CCopasiXMLParser::CommentElement::end(const XML_Char *pszName)
 {
+  std::string Xhtml;
+
   switch (mCurrentElement)
     {
     case Comment:
@@ -1447,6 +1457,7 @@ void CCopasiXMLParser::CommentElement::end(const XML_Char *pszName)
 
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
+      mElementEmpty.pop();
 
       pdelete(mpCurrentHandler);
 
@@ -1455,10 +1466,30 @@ void CCopasiXMLParser::CommentElement::end(const XML_Char *pszName)
       break;
 
     case xhtml:
-      mXhtml << CCopasiXMLInterface::encode(mParser.getCharacterData());
-      mXhtml << "</" << pszName << ">";
+      Xhtml = mParser.getCharacterData();
 
+      // Check whether and how we need to close the attribute
+      if (mElementEmpty.top() == true)
+        {
+          if (Xhtml != "")
+            {
+              mElementEmpty.top() = false;
+              mXhtml << ">";
+            }
+          else
+            mXhtml << " />";
+        }
+
+      if (Xhtml != "")
+        mXhtml << CCopasiXMLInterface::encode(Xhtml);
+
+      if (mElementEmpty.top() == false)
+        mXhtml << "</" << pszName << ">";
+
+      mElementEmpty.pop();
+      mElementEmpty.top() = false;
       mLevel--;
+
       if (!mLevel) mCurrentElement = Comment;
       mParser.enableCharacterDataHandler();
       break;
@@ -2062,7 +2093,7 @@ void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
         mpCurrentHandler = &mParser.mCharacterDataElement;
       break;
 
-    case MathML:     // Old file format support
+    case MathML:      // Old file format support
       if (!strcmp(pszName, "MathML"))
         {
           /* If we do not have a MathML element handler we create one. */
@@ -2135,7 +2166,7 @@ void CCopasiXMLParser::ModelValueElement::end(const XML_Char *pszName)
       mCurrentElement = ModelValue;
       break;
 
-    case MathML:     // Old file format support
+    case MathML:      // Old file format support
       if (strcmp(pszName, "MathML"))
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                        pszName, "MathML", mParser.getCurrentLineNumber());
