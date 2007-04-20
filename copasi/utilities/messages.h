@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.89.2.1 $
+//   $Revision: 1.89.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/04/18 17:14:48 $
+//   $Date: 2007/04/20 18:01:51 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,6 +30,7 @@ const MESSAGES Messages[] =
     // CCopasiVector
     {MCCopasiVector + 1, "CCopasiVector (1): Object '%s' not found."},
     {MCCopasiVector + 2, "CCopasiVector (2): Object '%s' already exists."},
+    {MCCopasiVector + 3, "CCopasiVector (3): Index '%d' out fo range (0, '%d')."},
 
     // CFunctionParameters
     {MCFunctionParameters + 1, "CFunctionParameters (1): The usage '%s' "
