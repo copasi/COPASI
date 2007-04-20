@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiVector.h,v $
-//   $Revision: 1.71.2.1 $
+//   $Revision: 1.71.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/04/20 18:01:51 $
+//   $Date: 2007/04/20 18:42:53 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -157,7 +157,7 @@ template < class CType > class CCopasiVector:
                 *it = NULL;
               }
 
-        clear();
+        CCopasiVector< CType >::clear();
       }
 
       /**
@@ -400,6 +400,11 @@ template < class CType > class CCopasiVector:
 
 template < class CType > class CCopasiVectorS: public CCopasiVector < CType >
     {
+    public:
+      typedef typename std::vector< CType * >::value_type value_type;
+      typedef typename std::vector< CType * >::iterator iterator;
+      typedef typename std::vector< CType * >::const_iterator const_iterator;
+
       // Operations
     public:
       /**
@@ -435,13 +440,13 @@ template < class CType > class CCopasiVectorS: public CCopasiVector < CType >
       {
         unsigned C_INT32 i;
 
-        cleanup();
-        resize(size, false);
+        CCopasiVector< CType >::cleanup();
+        CCopasiVector< CType >::resize(size, false);
 
-        iterator Target = begin();
+        iterator Target = CCopasiVector< CType >::begin();
         for (i = 0; i < size; i++, Target++)*Target = NULL;
 
-        for (i = 0, Target = begin(); i < size; i++, Target++)
+        for (i = 0, Target = CCopasiVector< CType >::begin(); i < size; i++, Target++)
           {
             *Target = new CType("NoName", this);
             (*Target)->load(configbuffer);
@@ -451,6 +456,11 @@ template < class CType > class CCopasiVectorS: public CCopasiVector < CType >
 
 template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
     {
+    public:
+      typedef typename std::vector< CType * >::value_type value_type;
+      typedef typename std::vector< CType * >::iterator iterator;
+      typedef typename std::vector< CType * >::const_iterator const_iterator;
+
       // Operations
     public:
       /**
@@ -571,7 +581,7 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
           CCopasiMessage(CCopasiMessage::EXCEPTION,
                          MCCopasiVector + 1, name.c_str());
 
-        return *(begin() + Index);
+        return *(CCopasiVector< CType >::begin() + Index);
       }
 
       /**
@@ -587,7 +597,7 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
             CCopasiMessage(CCopasiMessage::EXCEPTION,
                            MCCopasiVector + 1, name.c_str());
 
-          return *(begin() + Index);
+          return *(CCopasiVector< CType >::begin() + Index);
         }
 
       /**
@@ -600,7 +610,7 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
           C_INT32 Index = getIndex(name.getElementName(0));
           if (Index == -1) return NULL;
 
-          CCopasiObject * pObject = *(begin() + Index);
+          CCopasiObject * pObject = *(CCopasiVector< CType >::begin() + Index);
 
           if (name.getObjectType() == pObject->getObjectType())
             return pObject; //exact match of type and name
@@ -628,8 +638,8 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
        */
       virtual unsigned C_INT32 getIndex(const std::string &name) const
         {
-          unsigned C_INT32 i, imax = size();
-          const_iterator Target = begin();
+          unsigned C_INT32 i, imax = CCopasiVector< CType >::size();
+          const_iterator Target = CCopasiVector< CType >::begin();
 
           std::string Name = unQuote(name);
           for (i = 0; i < imax; i++, Target++)
@@ -653,6 +663,11 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
 
 template < class CType > class CCopasiVectorNS: public CCopasiVectorN < CType >
     {
+    public:
+      typedef typename std::vector< CType * >::value_type value_type;
+      typedef typename std::vector< CType * >::iterator iterator;
+      typedef typename std::vector< CType * >::const_iterator const_iterator;
+
       // Operations
     public:
       /**
@@ -689,13 +704,13 @@ template < class CType > class CCopasiVectorNS: public CCopasiVectorN < CType >
       {
         unsigned C_INT32 i;
 
-        cleanup();
-        resize(size, false);
+        CCopasiVector< CType >::cleanup();
+        CCopasiVector< CType >::resize(size, false);
 
-        iterator Target = begin();
+        iterator Target = CCopasiVector< CType >::begin();
         for (i = 0; i < size; i++, Target++) *Target = NULL;
 
-        for (i = 0, Target = begin(); i < size; i++, Target++)
+        for (i = 0, Target = CCopasiVector< CType >::begin(); i < size; i++, Target++)
           {
             *Target = new CType("NoName", this);
             (*Target)->load(configbuffer);
