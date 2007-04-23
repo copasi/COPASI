@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMMethod.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2007/04/12 12:47:49 $
+//   $Author: isurovts $
+//   $Date: 2007/04/23 08:54:27 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -60,14 +60,24 @@ class CILDMMethod : public CTSSAMethod
     CVector< C_FLOAT64 > mYdot;
 
     /**
+     *
+    */
+    CVector< C_FLOAT64 > mY_initial;
+
+    /**
      *  Current time.
      */
     C_FLOAT64 mTime;
 
     /**
-     *  Jacobian matrix
+     *  Jacobian matrix at initial point
      */
     CMatrix <C_FLOAT64> mJacobian;
+
+    /**
+     *  Jacobian matrix
+     */
+    CMatrix <C_FLOAT64> mJacobian_initial;
 
     /**
      *
@@ -287,6 +297,12 @@ class CILDMMethod : public CTSSAMethod
     void newton(C_FLOAT64 *ys, C_INT & slow, C_INT & info);
 
     /**
+      * This is not very elegant solution. But I don't know the better one.
+     **/
+
+    void calculateNextJacobian(const double & deltaT);
+
+    /**
      *
      **/
 
@@ -297,6 +313,12 @@ class CILDMMethod : public CTSSAMethod
      **/
 
     void deuflhard(C_INT & slow, C_INT & info);
+
+    /**
+       *
+       **/
+
+    void transformation_norm(C_INT & slow, C_INT & info);
 
     /**
      *
