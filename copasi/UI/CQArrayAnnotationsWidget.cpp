@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.cpp,v $
-//   $Revision: 1.5.2.1 $
+//   $Revision: 1.5.2.2 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/04/24 15:03:31 $
+//   $Author: ssahle $
+//   $Date: 2007/04/24 15:25:02 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -401,6 +401,14 @@ void CQArrayAnnotationsWidget::clearWidget()
   mpSelectionTable->setNumRows(0);
   mpContentTable->setNumCols(0);
   mpContentTable->setNumRows(0);
+}
+
+void CQArrayAnnotationsWidget::setLegendEnabled(bool b)
+{
+  if (b)
+    mpSelectionTable->show();
+  else
+    mpSelectionTable->hide();
 }
 
 C_INT32 CQArrayAnnotationsWidget::currentItem(C_INT32 row)

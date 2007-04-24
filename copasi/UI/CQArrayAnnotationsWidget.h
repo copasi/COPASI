@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.2.2.1 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/03/17 22:12:47 $
+//   $Date: 2007/04/24 15:25:02 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -201,6 +201,11 @@ class CQArrayAnnotationsWidget : public QVBox
      * if true the parameters for the color coding are determined automatically
      */
     void setColorScalingAutomatic(bool s) {mAutomaticColorScaling = s;};
+
+    /**
+     * enable or disable the display of the dimensions annotation (the upper table)
+     */
+    void setLegendEnabled(bool b);
 
   protected slots:
 
