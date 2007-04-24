@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.h,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.30.2.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/02/12 14:28:48 $
+//   $Author: ssahle $
+//   $Date: 2007/04/24 15:26:34 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -151,12 +151,14 @@ class CSteadyStateTask : public CCopasiTask
      * @return const CMatrix< C_FLOAT64 > jacobian
      */
     const CMatrix< C_FLOAT64 > & getJacobian() const;
+    const CArrayAnnotation * getJacobianAnnotated() const;
 
     /**
      * Retrieves a the jacobian of the steady state.
      * @return const CMatrix< C_FLOAT64 > jacobian
      */
     const CMatrix< C_FLOAT64 > & getJacobianReduced() const;
+    const CArrayAnnotation * getJacobianXAnnotated() const;
 
     /**
      * Retrieves a the eigen values of the steady state.
