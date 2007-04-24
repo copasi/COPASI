@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.h,v $
-   $Revision: 1.17 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/11/20 16:39:12 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.h,v $
+//   $Revision: 1.17.4.1 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/04/24 15:05:10 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -21,6 +21,8 @@ class CCrossValidationSet;
 class CTrajectoryProblem;
 class CState;
 class CFitConstraint;
+class CArrayAnnotation;
+template < class CMatrixType > class CCopasiMatrixInterface;
 
 class CFitProblem : public COptProblem
   {
@@ -167,10 +169,16 @@ class CFitProblem : public COptProblem
     const CVector< C_FLOAT64 > & getVariableStdDeviations() const;
 
     /**
-     * Retreive the  correlations of the solution variables.
-     * @return const CMatrix< C_FLOAT64 > & variableCorrelations
+     * Retreive the Fisher Information Matrix of the solution variables.
+     * @return CArrayAnnotation & variableCorrelations
      */
-    const CMatrix< C_FLOAT64 > & getVariableCorrelations() const;
+    CArrayAnnotation & getFisherInformation() const;
+
+    /**
+     * Retreive the correlations of the solution variables.
+     * @return CArrayAnnotation & variableCorrelations
+     */
+    CArrayAnnotation & getCorrelations() const;
 
     /**
      * Retreive the experiment set.
@@ -362,6 +370,15 @@ class CFitProblem : public COptProblem
      * The Fisher information or parameter correlation matrix
      */
     CMatrix< C_FLOAT64 > mFisher;
+    CCopasiMatrixInterface< CMatrix< C_FLOAT64 > > * mpFisherMatrixInterface;
+    CArrayAnnotation * mpFisherMatrix;
+
+    /**
+     * The  parameter correlation matrix
+     */
+    CMatrix< C_FLOAT64 > mCorrelation;
+    CCopasiMatrixInterface< CMatrix< C_FLOAT64 > > * mpCorrelationMatrixInterface;
+    CArrayAnnotation * mpCorrelationMatrix;
   };
 
 #endif  // COPASI_CFitProblem

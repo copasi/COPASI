@@ -1,4 +1,16 @@
 <!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<comment> Begin CVS Header </comment>
+<comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingResult.ui,v $ </comment>
+<comment>   $Revision: 1.5.4.1 $ </comment>
+<comment>   $Name:  $ </comment>
+<comment>   $Author: shoops $ </comment>
+<comment>   $Date: 2007/04/24 15:05:10 $ </comment>
+<comment> End CVS Header </comment>
+
+<comment> Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc. and EML Research, gGmbH. </comment>
+<comment> All rights reserved. </comment>
+
 <class>CQFittingResult</class>
 <widget class="CopasiWidget">
     <property name="name">
@@ -74,12 +86,20 @@
                 <string>Fitted Values</string>
             </attribute>
         </widget>
-        <widget class="QTable">
+        <widget class="CQArrayAnnotationsWidget">
             <property name="name">
                 <cstring>mpCorrelations</cstring>
             </property>
             <attribute name="title">
-                <string>Correlation Matrix</string>
+                <string>Correlation</string>
+            </attribute>
+        </widget>
+        <widget class="CQArrayAnnotationsWidget">
+            <property name="name">
+                <cstring>mpFisherInformation</cstring>
+            </property>
+            <attribute name="title">
+                <string>Fisher Information</string>
             </attribute>
         </widget>
         <widget class="QTable">
@@ -152,6 +172,7 @@
 <includes>
     <include location="local" impldecl="in declaration">copasiWidget.h</include>
     <include location="local" impldecl="in declaration">CQFittingResultTab1.h</include>
+    <include location="local" impldecl="in declaration">CQArrayAnnotationsWidget.h</include>
     <include location="local" impldecl="in implementation">CQFittingResult.ui.h</include>
 </includes>
 <forwards>

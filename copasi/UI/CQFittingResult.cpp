@@ -1,19 +1,19 @@
-/* Begin CVS Header
-   $Source: /home/cvs/copasi_dev/cvs_admin/c++style,v $
-   $Revision: 1.24 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/04 15:58:17 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /home/cvs/copasi_dev/cvs_admin/addHeader,v $
+//   $Revision: 1.3 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/01/12 14:07:01 $
+// End CVS Header
 
-// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQFittingResult.ui'
  **
- ** Created: Mon Nov 20 11:50:14 2006
+ ** Created: Tue Apr 24 08:13:55 2007
  **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.6   edited Aug 31 2005 $)
  **
  ** WARNING! All changes made in this file will be lost!
@@ -59,8 +59,11 @@ CQFittingResult::CQFittingResult(QWidget* parent, const char* name)
   mpValues = new QTable(mpTabWidget, "mpValues");
   mpTabWidget->insertTab(mpValues, QString::fromLatin1(""));
 
-  mpCorrelations = new QTable(mpTabWidget, "mpCorrelations");
+  mpCorrelations = new CQArrayAnnotationsWidget(mpTabWidget, "mpCorrelations");
   mpTabWidget->insertTab(mpCorrelations, QString::fromLatin1(""));
+
+  mpFisherInformation = new CQArrayAnnotationsWidget(mpTabWidget, "mpFisherInformation");
+  mpTabWidget->insertTab(mpFisherInformation, QString::fromLatin1(""));
 
   mpCrossValidations = new QTable(mpTabWidget, "mpCrossValidations");
   mpTabWidget->insertTab(mpCrossValidations, QString::fromLatin1(""));
@@ -108,7 +111,8 @@ void CQFittingResult::languageChange()
   mpTabWidget->changeTab(mpParameters, tr("Parameters"));
   mpTabWidget->changeTab(mpExperiments, tr("Experiments"));
   mpTabWidget->changeTab(mpValues, tr("Fitted Values"));
-  mpTabWidget->changeTab(mpCorrelations, tr("Correlation Matrix"));
+  mpTabWidget->changeTab(mpCorrelations, tr("Correlation"));
+  mpTabWidget->changeTab(mpFisherInformation, tr("Fisher Information"));
   mpTabWidget->changeTab(mpCrossValidations, tr("CV Experiments"));
   mpTabWidget->changeTab(mpCrossValidationValues, tr("CV Fitted Values"));
   mpBtnSave->setText(tr("save data"));

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQFittingResult.ui.h,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.13.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/16 19:55:37 $
+//   $Date: 2007/04/24 15:05:10 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -263,51 +263,15 @@ bool CQFittingResult::enter(const std::string & /* key */)
   if (mpProblem->getFunctionEvaluations() == 0)
     imax = 0;
 
-  mpCorrelations->setNumRows(imax);
-  mpCorrelations->setNumCols(imax);
+  CColorScaleBiLog * tcs = new CColorScaleBiLog();
+  mpCorrelations->setColorCoding(tcs);
+  mpCorrelations->setColorScalingAutomatic(true);
+  mpCorrelations->setArrayAnnotation(&mpProblem->getCorrelations());
 
-  // Update the table headers
-  for (i = 0; i != imax; i++)
-    {
-      const CCopasiObject *pObject =
-        RootContainer.getObject(Items[i]->getObjectCN());
-
-      QHeader * pVerticalHeader = mpCorrelations->verticalHeader();
-      QHeader * pHorizontalHeader = mpCorrelations->horizontalHeader();
-
-      if (pObject)
-        {
-          std::string Experiments =
-            static_cast<CFitItem *>(Items[i])->getExperiments();
-
-          if (Experiments != "")
-            {
-              Experiments = "{" + Experiments + "}";
-              pVerticalHeader->setLabel(i, FROM_UTF8(pObject->getObjectDisplayName() + "; " + Experiments));
-              pHorizontalHeader->setLabel(i, FROM_UTF8(pObject->getObjectDisplayName() + "\n" + Experiments));
-            }
-          else
-            {
-              pVerticalHeader->setLabel(i, FROM_UTF8(pObject->getObjectDisplayName()));
-              pHorizontalHeader->setLabel(i, FROM_UTF8(pObject->getObjectDisplayName()));
-            }
-        }
-      else
-        {
-          pVerticalHeader->setLabel(i, "Not Found");
-          pHorizontalHeader->setLabel(i, "Not Found");
-        }
-    }
-
-  // Fill the table
-  const C_FLOAT64 * pCorrelation = mpProblem->getVariableCorrelations().array();
-  unsigned C_INT32 j;
-  for (i = 0; i != imax; i++)
-    for (j = 0; j != imax; j++)
-      mpCorrelations->setText(i, j, QString::number(*pCorrelation++));
-
-  for (i = 0; i != imax; i++)
-    mpCorrelations->adjustColumn(i);
+  tcs = new CColorScaleBiLog();
+  mpFisherInformation->setColorCoding(tcs);
+  mpFisherInformation->setColorScalingAutomatic(true);
+  mpFisherInformation->setArrayAnnotation(&mpProblem->getFisherInformation());
 
 #ifdef COPASI_CROSSVALIDATION
   bool Enable = (mpProblem->getCrossValidationSet().getExperimentCount() > 0);
@@ -489,111 +453,62 @@ void CQFittingResult::slotSave(void)
       file << Experiments.getDependentErrorMean()[i] << "\t";
       file << Experiments.getDependentErrorMeanSD()[i] << std::endl;
     }
-
-  // Fill correlation matrix
-  file << std::endl << "Correlation Matrix:" << std::endl;
-  imax = Items.size();
-  if (mpProblem->getFunctionEvaluations() == 0)
-    imax = 0;
-
-  // Update the table headers
-  for (i = 0; i != imax; i++)
-    {
-      if (i) file << "\t";
-
-      const CCopasiObject *pObject =
-        RootContainer.getObject(Items[i]->getObjectCN());
-
-      if (pObject)
-        {
-          std::string Experiments =
-            static_cast<CFitItem *>(Items[i])->getExperiments();
-
-          file << pObject->getObjectDisplayName();
-
-          if (Experiments != "")
-            file << "; {" << Experiments << "}";
-        }
-      else
-        file << "Not Found";
-    }
   file << std::endl;
 
-  // Fill the table
-  const C_FLOAT64 * pCorrelation = mpProblem->getVariableCorrelations().array();
-  unsigned C_INT32 j;
-  for (i = 0; i != imax; i++)
-    {
-      const CCopasiObject *pObject =
-        RootContainer.getObject(Items[i]->getObjectCN());
+  // Save the parameter correlations
+  file << mpProblem->getCorrelations() << std::endl;
 
-      if (pObject)
-        {
-          std::string Experiments =
-            static_cast<CFitItem *>(Items[i])->getExperiments();
-
-          file << pObject->getObjectDisplayName();
-
-          if (Experiments != "")
-            file << "; {" << Experiments << "}";
-        }
-      else
-        file << "Not Found";
-
-      file << "\t";
-
-      for (j = 0; j != imax; j++)
-        {
-          if (j) file << "\t";
-          file << *pCorrelation++;
-        }
-
-      file << std::endl;
-    }
+  // Save the Fisher information
+  file << mpProblem->getFisherInformation() << std::endl;
 
 #ifdef COPASI_CROSSVALIDATION
-  // Set up the cross validations table
-  file << std::endl << "Cross Validations:" << std::endl;
-  file << "Cross Validation Experiment\t Objective Value\tRoot Mean Square\tError Mean\tError Mean Std. Deviation" << std::endl;
-
-  // Loop over the cross validations
   const CCrossValidationSet & CrossValidations = mpProblem->getCrossValidationSet();
-
   imax = CrossValidations.getExperimentCount();
   if (mpProblem->getFunctionEvaluations() == 0)
     imax = 0;
 
-  for (i = 0; i != imax; i++)
+  if (imax)
     {
-      const CExperiment & Experiment = * CrossValidations.getExperiment(i);
-      file << Experiment.getObjectName() << "\t";
-      file << Experiment.getObjectiveValue() << "\t";
-      file << Experiment.getRMS() << "\t";
-      file << Experiment.getErrorMean() << "\t";
-      file << Experiment.getErrorMeanSD() << std::endl;
+      // Set up the cross validations table
+      file << std::endl << "Cross Validations:" << std::endl;
+      file << "Cross Validation Experiment\t Objective Value\tRoot Mean Square\tError Mean\tError Mean Std. Deviation" << std::endl;
+
+      // Loop over the cross validations
+      for (i = 0; i != imax; i++)
+        {
+          const CExperiment & Experiment = * CrossValidations.getExperiment(i);
+          file << Experiment.getObjectName() << "\t";
+          file << Experiment.getObjectiveValue() << "\t";
+          file << Experiment.getRMS() << "\t";
+          file << Experiment.getErrorMean() << "\t";
+          file << Experiment.getErrorMeanSD() << std::endl;
+        }
     }
 
-  // Set up the fitted values table
-  file << std::endl << "Cross Validation Fitted Values:" << std::endl;
-  file << "CV Fitted Value\tObjective Value\tRoot Mean Square\tError Mean\tError Mean Std. Deviation" << std::endl;
-
-  // Loop over the fitted values objects
   imax = CrossValidations.getDependentObjects().size();
   if (mpProblem->getFunctionEvaluations() == 0)
     imax = 0;
 
-  for (i = 0; i != imax; i++)
+  if (imax)
     {
-      const CCopasiObject * pObject = CrossValidations.getDependentObjects()[i];
-      if (pObject)
-        file << pObject->getObjectDisplayName() << "\t";
-      else
-        file << "Not Found\t";
+      // Set up the fitted values table
+      file << std::endl << "Cross Validation Fitted Values:" << std::endl;
+      file << "CV Fitted Value\tObjective Value\tRoot Mean Square\tError Mean\tError Mean Std. Deviation" << std::endl;
 
-      file << CrossValidations.getDependentObjectiveValues()[i] << "\t";
-      file << CrossValidations.getDependentRMS()[i] << "\t";
-      file << CrossValidations.getDependentErrorMean()[i] << "\t";
-      file << CrossValidations.getDependentErrorMeanSD()[i] << std::endl;
+      // Loop over the fitted values objects
+      for (i = 0; i != imax; i++)
+        {
+          const CCopasiObject * pObject = CrossValidations.getDependentObjects()[i];
+          if (pObject)
+            file << pObject->getObjectDisplayName() << "\t";
+          else
+            file << "Not Found\t";
+
+          file << CrossValidations.getDependentObjectiveValues()[i] << "\t";
+          file << CrossValidations.getDependentRMS()[i] << "\t";
+          file << CrossValidations.getDependentErrorMean()[i] << "\t";
+          file << CrossValidations.getDependentErrorMeanSD()[i] << std::endl;
+        }
     }
   file << std::endl;
 #endif // COPASI_CROSSVALIDATION
