@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQFittingResult.ui.h,v $
-//   $Revision: 1.13.2.1 $
+//   $Revision: 1.13.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/04/24 15:05:10 $
+//   $Date: 2007/04/24 15:38:43 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -99,6 +99,9 @@ void CQFittingResult::init()
 
   for (i = 0, imax = mpValues->numCols(); i != imax; i++)
     mpValues->adjustColumn(i);
+
+  mpCorrelations->setLegendEnabled(false);
+  mpFisherInformation->setLegendEnabled(false);
 
 #ifdef COPASI_CROSSVALIDATION
   // Set up the cross validation table
