@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-//   $Revision: 1.44.4.1 $
+//   $Revision: 1.44.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/04/24 15:05:10 $
+//   $Date: 2007/04/24 15:43:51 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -118,6 +118,28 @@ CFitProblem::~CFitProblem()
   pdelete(mpInitialState);
   pdelete(mpCorrelationMatrixInterface);
   pdelete(mpCorrelationMatrix);
+}
+
+void CFitProblem::initObjects()
+{
+#ifdef COPASI_CROSSVALIDATION
+  addObjectReference("Cross Validation Solution", mCrossValidationSolutionValue, CCopasiObject::ValueDbl);
+  addObjectReference("Cross Validation Objective", mCrossValidationObjective, CCopasiObject::ValueDbl);
+#endif // COPASI_CROSSVALIDATION
+
+  mpFisherMatrixInterface = new CCopasiMatrixInterface< CMatrix< C_FLOAT64 > >(&mFisher);
+  mpFisherMatrix = new CArrayAnnotation("Fisher Information Matrix", this, mpFisherMatrixInterface);
+  mpFisherMatrix->setDescription("Fisher Information Matrix");
+  mpFisherMatrix->setDimensionDescription(0, "Parameters");
+  mpFisherMatrix->setDimensionDescription(1, "Parameters");
+  mpFisherMatrix->setMode(CArrayAnnotation::STRINGS);
+
+  mpCorrelationMatrixInterface = new CCopasiMatrixInterface< CMatrix< C_FLOAT64 > >(&mCorrelation);
+  mpCorrelationMatrix = new CArrayAnnotation("Correlation Matrix", this, mpCorrelationMatrixInterface);
+  mpCorrelationMatrix->setDescription("Correlation Matrix");
+  mpCorrelationMatrix->setDimensionDescription(0, "Parameters");
+  mpCorrelationMatrix->setDimensionDescription(1, "Parameters");
+  mpCorrelationMatrix->setMode(CArrayAnnotation::STRINGS);
 }
 
 void CFitProblem::initializeParameter()
@@ -1503,28 +1525,6 @@ const C_FLOAT64 & CFitProblem::getCrossValidationRMS() const
 
 const C_FLOAT64 & CFitProblem::getCrossValidationSD() const
   {return mCrossValidationSD;}
-
-void CFitProblem::initObjects()
-{
-#ifdef COPASI_CROSSVALIDATION
-  addObjectReference("Cross Validation Solution", mCrossValidationSolutionValue, CCopasiObject::ValueDbl);
-  addObjectReference("Cross Validation Objective", mCrossValidationObjective, CCopasiObject::ValueDbl);
-#endif // COPASI_CROSSVALIDATION
-
-  mpFisherMatrixInterface = new CCopasiMatrixInterface< CMatrix< C_FLOAT64 > >(&mFisher);
-  mpFisherMatrix = new CArrayAnnotation("Fisher Information Matrix", this, mpFisherMatrixInterface);
-  mpFisherMatrix->setDescription("Fisher Information Matrix");
-  mpFisherMatrix->setDimensionDescription(0, "Parameters");
-  mpFisherMatrix->setDimensionDescription(1, "Parameters");
-  mpFisherMatrix->setMode(CArrayAnnotation::STRINGS);
-
-  mpCorrelationMatrixInterface = new CCopasiMatrixInterface< CMatrix< C_FLOAT64 > >(&mCorrelation);
-  mpCorrelationMatrix = new CArrayAnnotation("Correlation Matrix", this, mpCorrelationMatrixInterface);
-  mpCorrelationMatrix->setDescription("Correlation Matrix");
-  mpCorrelationMatrix->setDimensionDescription(0, "Parameters");
-  mpCorrelationMatrix->setDimensionDescription(1, "Parameters");
-  mpCorrelationMatrix->setMode(CArrayAnnotation::STRINGS);
-}
 
 bool CFitProblem::calculateCrossValidation()
 {
