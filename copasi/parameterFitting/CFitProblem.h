@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.h,v $
-//   $Revision: 1.17.4.1 $
+//   $Revision: 1.17.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/04/24 15:05:10 $
+//   $Date: 2007/04/24 15:12:22 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -235,12 +235,12 @@ class CFitProblem : public COptProblem
 
     virtual bool createObjectiveFunction();
 
-#ifdef COPASI_CROSSVALIDATION
     /**
      * Initialize objects
      */
     void initObjects();
 
+#ifdef COPASI_CROSSVALIDATION
     /**
      * Do the calculation for the cross validation based on the solution variables
      * and determine wheter to continue parameter fitting
