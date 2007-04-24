@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/StateSubwidget.ui.h,v $
-//   $Revision: 1.31 $
+//   $Revision: 1.31.2.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/02/12 14:29:14 $
+//   $Author: ssahle $
+//   $Date: 2007/04/24 15:25:38 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -125,7 +125,7 @@ void StateSubwidget::loadModelValues(const CModel * model)
 
 void StateSubwidget::loadJacobian(const CSteadyStateTask * task)
 {
-  const CMatrix< C_FLOAT64 > & jacobian = task->getJacobian();
+  /*const CMatrix< C_FLOAT64 > & jacobian = task->getJacobian();
 
   tableJacobian->setNumRows(jacobian.numRows());
   tableJacobian->setNumCols(jacobian.numCols());
@@ -166,12 +166,21 @@ void StateSubwidget::loadJacobian(const CSteadyStateTask * task)
           i++;
         }
     }
+  */
+
+  const CArrayAnnotation * JacAnn = task->getJacobianAnnotated();
+
+  CColorScaleBiLog * tcs = new CColorScaleBiLog();
+  mpJacobianAnnotationWidget->setColorCoding(tcs);
+  mpJacobianAnnotationWidget->setColorScalingAutomatic(true);
+  mpJacobianAnnotationWidget->setLegendEnabled(false);
+  mpJacobianAnnotationWidget->setArrayAnnotation(JacAnn);
 
   //Eigenvalues...
   const CVector< C_FLOAT64 > & eigen_i = task->getEigenValues().getI();
   const CVector< C_FLOAT64 > & eigen_r = task->getEigenValues().getR();
 
-  imax = eigen_i.size();
+  unsigned C_INT32 i, imax = eigen_i.size();
   tableEigenValues->setNumRows(imax);
   for (i = 0; i < imax; ++i)
     {
@@ -179,10 +188,21 @@ void StateSubwidget::loadJacobian(const CSteadyStateTask * task)
       tableEigenValues->setText(i, 1, QString::number(eigen_i[i]));
     }
 
+  unsigned C_INT32 j;
   for (j = 0; j < 2; ++j)
     tableEigenValues->adjustColumn(j);
 
   //JacobianX
+
+  const CArrayAnnotation * JacXAnn = task->getJacobianXAnnotated();
+
+  tcs = new CColorScaleBiLog();
+  mpJacobianXAnnotationWidget->setColorCoding(tcs);
+  mpJacobianXAnnotationWidget->setColorScalingAutomatic(true);
+  mpJacobianXAnnotationWidget->setLegendEnabled(false);
+  mpJacobianXAnnotationWidget->setArrayAnnotation(JacXAnn);
+
+  /*
   const CMatrix< C_FLOAT64 > & jacobianX = task->getJacobianReduced();
 
   tableJacobianX->setNumRows(jacobianX.numRows());
@@ -211,6 +231,7 @@ void StateSubwidget::loadJacobian(const CSteadyStateTask * task)
 
   for (j = 0; j < jmax; ++j)
     tableJacobianX->adjustColumn(j);
+  */
 
   //Eigenvalues...
   const CVector< C_FLOAT64 > & eigen_iX = task->getEigenValuesReduced().getI();
@@ -316,7 +337,7 @@ bool StateSubwidget::loadAll(const CSteadyStateTask * task)
 
   // protocol
   if (true /*pProblem->isJacobianRequested() ||
-                  pProblem->isStabilityAnalysisRequested()*/)
+                        pProblem->isStabilityAnalysisRequested()*/)
     {
       tabWidget->setTabEnabled(tabWidget->page(Last), true);
 
@@ -347,13 +368,15 @@ bool StateSubwidget::clear()
 
   tableFlux->setNumRows(0);
 
-  tableJacobian->setNumRows(0);
-  tableJacobian->setNumCols(0);
+  //tableJacobian->setNumRows(0);
+  //tableJacobian->setNumCols(0);
+  mpJacobianAnnotationWidget->setArrayAnnotation(NULL);
+  mpJacobianXAnnotationWidget->setArrayAnnotation(NULL);
 
   tableEigenValues->setNumRows(0);
 
-  tableJacobianX->setNumRows(0);
-  tableJacobianX->setNumCols(0);
+  //tableJacobianX->setNumRows(0);
+  //tableJacobianX->setNumCols(0);
 
   tableEigenValuesX->setNumRows(0);
 

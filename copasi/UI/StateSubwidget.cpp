@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/StateSubwidget.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.13.2.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/02/12 14:29:14 $
+//   $Author: ssahle $
+//   $Date: 2007/04/24 15:25:38 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,8 +13,8 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'StateSubwidget.ui'
  **
- ** Created: Do Feb 8 15:27:06 2007
- **      by: The User Interface Compiler ($Id: StateSubwidget.cpp,v 1.13 2007/02/12 14:29:14 shoops Exp $)
+ ** Created: Di Apr 24 17:21:59 2007
+ **      by: The User Interface Compiler ($Id: StateSubwidget.cpp,v 1.13.2.1 2007/04/24 15:25:38 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -31,6 +31,7 @@
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
+#include "CQArrayAnnotationsWidget.h"
 #include "StateSubwidget.ui.h"
 
 /*
@@ -130,29 +131,25 @@ StateSubwidget::StateSubwidget(QWidget* parent, const char* name, WFlags fl)
   tabWidget->insertTab(TabPage_3, QString::fromLatin1(""));
 
   TabPage_4 = new QWidget(tabWidget, "TabPage_4");
-  TabPageLayout_4 = new QVBoxLayout(TabPage_4, 11, 6, "TabPageLayout_4");
+  TabPageLayout_4 = new QGridLayout(TabPage_4, 1, 1, 11, 6, "TabPageLayout_4");
 
-  splitterJacobian = new QSplitter(TabPage_4, "splitterJacobian");
-  splitterJacobian->setOrientation(QSplitter::Vertical);
-  splitterJacobian->setOpaqueResize(TRUE);
+  splitter3 = new QSplitter(TabPage_4, "splitter3");
+  splitter3->setOrientation(QSplitter::Vertical);
 
-  QWidget* privateLayoutWidget = new QWidget(splitterJacobian, "layoutJacobian");
+  QWidget* privateLayoutWidget = new QWidget(splitter3, "layoutJacobian");
   layoutJacobian = new QGridLayout(privateLayoutWidget, 1, 1, 11, 6, "layoutJacobian");
+  spacer3 = new QSpacerItem(517, 21, QSizePolicy::Expanding, QSizePolicy::Minimum);
+  layoutJacobian->addItem(spacer3, 0, 1);
 
-  tableJacobian = new QTable(privateLayoutWidget, "tableJacobian");
-  tableJacobian->setNumRows(3);
-  tableJacobian->setNumCols(3);
-  tableJacobian->setReadOnly(TRUE);
+  mpJacobianAnnotationWidget = new CQArrayAnnotationsWidget(privateLayoutWidget, "mpJacobianAnnotationWidget");
 
-  layoutJacobian->addMultiCellWidget(tableJacobian, 1, 1, 0, 1);
+  layoutJacobian->addMultiCellWidget(mpJacobianAnnotationWidget, 1, 1, 0, 1);
 
   textLabelJacobian = new QLabel(privateLayoutWidget, "textLabelJacobian");
 
   layoutJacobian->addWidget(textLabelJacobian, 0, 0);
-  spacer3 = new QSpacerItem(191, 21, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  layoutJacobian->addItem(spacer3, 0, 1);
 
-  QWidget* privateLayoutWidget_2 = new QWidget(splitterJacobian, "layoutEigenvalues");
+  QWidget* privateLayoutWidget_2 = new QWidget(splitter3, "layoutEigenvalues");
   layoutEigenvalues = new QGridLayout(privateLayoutWidget_2, 1, 1, 11, 6, "layoutEigenvalues");
 
   tableEigenValues = new QTable(privateLayoutWidget_2, "tableEigenValues");
@@ -171,33 +168,30 @@ StateSubwidget::StateSubwidget(QWidget* parent, const char* name, WFlags fl)
   textLabelEigenvalues = new QLabel(privateLayoutWidget_2, "textLabelEigenvalues");
 
   layoutEigenvalues->addWidget(textLabelEigenvalues, 0, 0);
-  TabPageLayout_4->addWidget(splitterJacobian);
+
+  TabPageLayout_4->addWidget(splitter3, 0, 0);
   tabWidget->insertTab(TabPage_4, QString::fromLatin1(""));
 
   TabPage_5 = new QWidget(tabWidget, "TabPage_5");
   TabPageLayout_5 = new QVBoxLayout(TabPage_5, 11, 6, "TabPageLayout_5");
 
-  splitterJacobianX = new QSplitter(TabPage_5, "splitterJacobianX");
-  splitterJacobianX->setOrientation(QSplitter::Vertical);
-  splitterJacobianX->setOpaqueResize(TRUE);
+  splitter3_2 = new QSplitter(TabPage_5, "splitter3_2");
+  splitter3_2->setOrientation(QSplitter::Vertical);
 
-  QWidget* privateLayoutWidget_3 = new QWidget(splitterJacobianX, "layoutJacobianX");
+  QWidget* privateLayoutWidget_3 = new QWidget(splitter3_2, "layoutJacobianX");
   layoutJacobianX = new QGridLayout(privateLayoutWidget_3, 1, 1, 11, 6, "layoutJacobianX");
 
-  tableJacobianX = new QTable(privateLayoutWidget_3, "tableJacobianX");
-  tableJacobianX->setNumRows(3);
-  tableJacobianX->setNumCols(3);
-  tableJacobianX->setReadOnly(TRUE);
+  mpJacobianXAnnotationWidget = new CQArrayAnnotationsWidget(privateLayoutWidget_3, "mpJacobianXAnnotationWidget");
 
-  layoutJacobianX->addMultiCellWidget(tableJacobianX, 1, 1, 0, 1);
+  layoutJacobianX->addMultiCellWidget(mpJacobianXAnnotationWidget, 1, 1, 0, 1);
+  spacer3_2 = new QSpacerItem(518, 21, QSizePolicy::Expanding, QSizePolicy::Minimum);
+  layoutJacobianX->addItem(spacer3_2, 0, 1);
 
   textLabelJacobianX = new QLabel(privateLayoutWidget_3, "textLabelJacobianX");
 
   layoutJacobianX->addWidget(textLabelJacobianX, 0, 0);
-  spacer3_2 = new QSpacerItem(191, 21, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  layoutJacobianX->addItem(spacer3_2, 0, 1);
 
-  QWidget* privateLayoutWidget_4 = new QWidget(splitterJacobianX, "layoutEigenvaluesX");
+  QWidget* privateLayoutWidget_4 = new QWidget(splitter3_2, "layoutEigenvaluesX");
   layoutEigenvaluesX = new QGridLayout(privateLayoutWidget_4, 1, 1, 11, 6, "layoutEigenvaluesX");
 
   tableEigenValuesX = new QTable(privateLayoutWidget_4, "tableEigenValuesX");
@@ -216,7 +210,7 @@ StateSubwidget::StateSubwidget(QWidget* parent, const char* name, WFlags fl)
   textLabelEigenvaluesX = new QLabel(privateLayoutWidget_4, "textLabelEigenvaluesX");
 
   layoutEigenvaluesX->addWidget(textLabelEigenvaluesX, 0, 0);
-  TabPageLayout_5->addWidget(splitterJacobianX);
+  TabPageLayout_5->addWidget(splitter3_2);
   tabWidget->insertTab(TabPage_5, QString::fromLatin1(""));
 
   TabPage_6 = new QWidget(tabWidget, "TabPage_6");
@@ -239,7 +233,7 @@ StateSubwidget::StateSubwidget(QWidget* parent, const char* name, WFlags fl)
   tabWidget->insertTab(TabPage_7, QString::fromLatin1(""));
   StateSubwidgetLayout->addWidget(tabWidget);
   languageChange();
-  resize(QSize(600, 497).expandedTo(minimumSizeHint()));
+  resize(QSize(733, 629).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
   init();
 }
