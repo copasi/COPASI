@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMMethod.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: isurovts $
-//   $Date: 2007/04/23 08:54:27 $
+//   $Author: ssahle $
+//   $Date: 2007/04/25 12:29:37 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -11,10 +11,10 @@
 // All rights reserved.
 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMMethod.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: isurovts $
-//   $Date: 2007/04/23 08:54:27 $
+//   $Author: ssahle $
+//   $Date: 2007/04/25 12:29:37 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -213,6 +213,7 @@ void CILDMMethod::integrationStep(const double & deltaT)
     }
 
   mpState->setTime(mTime);
+  mpModel->setState(*mpState);
   *mpCurrentState = *mpState;
 
   return;
@@ -227,6 +228,7 @@ void CILDMMethod::step(const double & deltaT)
 
   C_INT i, j;
 
+  mY_initial.resize(dim);
   mJacobian_initial.resize(dim, dim);
   mQ.resize(dim, dim);
   mR.resize(dim, dim);
@@ -234,19 +236,72 @@ void CILDMMethod::step(const double & deltaT)
   mTdInverse.resize(dim, dim);
   mQz.resize(dim, dim);
 
-#if 0
   mpModel->updateSimulatedValues();
   // TO REMOVE : mpModel->applyAssignments();
-  mpModel->calculateJacobianX(mJacobian, 1e-6, 1e-10);
-
-#endif
+  mpModel->calculateJacobianX(mJacobian, 1e-6, 1e-12);
 
   std::cout << std::endl;
   std::cout << "*****************************" << std::endl;
   std::cout << "Next step t=: " << mTime << std::endl;
 
-  std::cout << "Jacobian:" << std::endl;
+  std::cout << "Jacobian-initial:" << std::endl;
   std::cout << mJacobian << std::endl;
+
+  std::cout << "Current concentrations" << std::endl;
+  for (i = 0; i < mpModel->getMetabolites().size(); ++i)
+    std::cout << mpModel->getMetabolites()[i]->getConcentration() << ",  ";
+  std::cout << std::endl;
+
+  /* the vector mY is the current state of the system*/
+
+  C_FLOAT64 number2conc = mpModel->getNumber2QuantityFactor()
+                          / mpModel->getCompartments()[0]->getInitialValue();
+
+  //this is an ugly hack that only makes sense if all metabs are in the same compartment
+  //at the moment is is the only case the algorithm deals with
+
+  CVector<C_FLOAT64> Xconc; //current state converted to concentrations
+  Xconc.resize(dim);
+  for (i = 0; i < dim; ++i)
+    Xconc[i] = mY[i] * number2conc;
+
+  std::cout << "mY_initial as concentration:" << std::endl;
+  for (i = 0; i < dim; i++)
+    std::cout << Xconc[i] << std::endl;
+
+  for (i = 0; i < dim; i++)
+    mY_initial[i] = mY[i];
+
+  // save initial  Jacobian before next time step
+  for (i = 0; i < dim; i++)
+    for (j = 0; j < dim; j++)
+      mJacobian_initial(i, j) = mJacobian(i, j);
+
+  // Next time step
+
+  integrationStep(deltaT);
+
+  mpModel->updateSimulatedValues();
+  // TO REMOVE : mpModel->applyAssignments();
+
+  // Calculate Jacobian for time step control
+
+  mpModel->calculateJacobianX(mJacobian, 1e-6, 1e-12);
+
+  std::cout << "Jacobian_next:" << std::endl;
+  std::cout << mJacobian << std::endl;
+
+  std::cout << "Current concentrations" << std::endl;
+  for (i = 0; i < mpModel->getMetabolites().size(); ++i)
+    std::cout << mpModel->getMetabolites()[i]->getConcentration() << ",  ";
+  std::cout << std::endl;
+
+  for (i = 0; i < dim; ++i)
+    Xconc[i] = mY[i] * number2conc;
+
+  std::cout << "mY_next as concentration:" << std::endl;
+  for (i = 0; i < dim; i++)
+    std::cout << Xconc[i] << std::endl;
 
   CMatrix<C_FLOAT64> Td_save;
   Td_save.resize(dim, dim);
@@ -458,25 +513,22 @@ integration:
       std::cout << std::endl;
     }
 
-  // save initial  Jacobian before next time step
-  for (i = 0; i < dim; i++)
-    for (j = 0; j < dim; j++)
-      mJacobian_initial(i, j) = mJacobian(i, j);
+  /*// save initial  Jacobian before next time step
+     for (i = 0; i < dim; i++)
+         for (j = 0; j < dim; j++)
+            mJacobian_initial(i, j) = mJacobian(i, j);
 
-  // Next time step
+    // Next time step
 
-  integrationStep(deltaT);
+    integrationStep(deltaT);
 
-  mpModel->updateSimulatedValues();
-  // TO REMOVE : mpModel->applyAssignments();
+    mpModel->updateSimulatedValues();
+    // TO REMOVE : mpModel->applyAssignments();
 
-  // Calculate Jacobian for time step control
+    // Calculate Jacobian for time step control
 
-  mpModel->calculateJacobianX(mJacobian, 1e-6, 1e-12);
-
-  std::cout << "Jacobian_next:" << std::endl;
-  std::cout << mJacobian << std::endl;
-
+    mpModel->calculateJacobianX(mJacobian, 1e-6, 1e-12);
+  */
   C_INT number, info;
 
   info = 0;
@@ -487,14 +539,14 @@ integration:
 
   /* the vector mY is the current state of the system*/
 
-  C_FLOAT64 number2conc = mpModel->getNumber2QuantityFactor()
-                          / mpModel->getCompartments()[0]->getInitialValue();
+  //C_FLOAT64 number2conc = mpModel->getNumber2QuantityFactor()
+  //                      / mpModel->getCompartments()[0]->getInitialValue();
 
   //this is an ugly hack that only makes sense if all metabs are in the same compartment
   //at the moment is is the only case the algorithm deals with
 
-  CVector<C_FLOAT64> Xconc; //current state converted to concentrations
-  Xconc.resize(dim);
+  //  CVector<C_FLOAT64> Xconc; //current state converted to concentrations
+  // Xconc.resize(dim);
   for (i = 0; i < dim; ++i)
     Xconc[i] = mY[i] * number2conc;
 
@@ -511,6 +563,28 @@ integration:
     }
 
   transformation_norm(slow, info);
+
+  std::cout << "Concentration last:" << std::endl;
+  for (i = 0; i < dim; ++i)
+    {
+      Xconc[i] = mY[i] * number2conc;
+      std::cout << Xconc[i] << std::endl;
+    }
+
+  mpModel->updateSimulatedValues();
+  // TO REMOVE : mpModel->applyAssignments();
+
+  // Calculate Jacobian for time step control
+
+  mpModel->calculateJacobianX(mJacobian, 1e-6, 1e-12);
+
+  std::cout << "Jacobian last: " << std::endl;
+  std::cout << mJacobian << std::endl;
+
+  std::cout << "Current concentrations" << std::endl;
+  for (i = 0; i < mpModel->getMetabolites().size(); ++i)
+    std::cout << mpModel->getMetabolites()[i]->getConcentration() << ",  ";
+  std::cout << std::endl;
 
   return;
 }
@@ -796,7 +870,7 @@ void CILDMMethod::schur(C_INT &info)
 
   for (i = 0; i < dim; i++)
     for (j = 0; j < dim; j++)
-      R[j + dim*i] = mJacobian(j, i);
+      R[j + dim*i] = mJacobian_initial(j, i);
 
   CVector<C_FLOAT64> eval_r;
   CVector<C_FLOAT64> eval_i;
@@ -1263,7 +1337,7 @@ void CILDMMethod::sylvester(C_INT slow, C_INT & info)
         {
           E(i, j) = 0.;
           for (k = 0; k < dim; k++)
-            E(i, j) = E(i, j) + mJacobian(i, k) * mTd(k, j);
+            E(i, j) = E(i, j) + mJacobian_initial(i, k) * mTd(k, j);
         }
     }
 
@@ -1350,10 +1424,12 @@ void CILDMMethod::deuflhard(C_INT & slow, C_INT & info)
   //this is an ugly hack that only makes sense if all metabs are in the same compartment
   //at the moment is is the only case the algorithm deals with
 
+  mY_initial.resize(dim);
+
   CVector<C_FLOAT64> Xconc; //current state converted to concentrations
   Xconc.resize(dim);
   for (i = 0; i < dim; ++i)
-    Xconc[i] = mY[i] * number2conc;
+    Xconc[i] = mY_initial[i] * number2conc;
 
   for (i = 0; i < dim; i++)
     {
@@ -1388,11 +1464,17 @@ void CILDMMethod::deuflhard(C_INT & slow, C_INT & info)
   for (j = 0; j < dim; j++)
     dxdt[j] = 0.;
 
-  mpModel->calculateDerivativesX(dxdt.array());
+  CVector<C_FLOAT64> x_help;
+  x_help.resize(dim);
 
+  for (j = 0; j < dim; j++)
+    x_help[j] = mY_initial[j];
+
+  // mpModel->calculateDerivativesX(dxdt.array());
+  calculateDerivativesX(x_help.array(), dxdt.array());
   //convert dxdt to concentration units...
-  for (i = 0; i < dim; ++i)
-    dxdt[i] *= number2conc;
+  //for (i = 0; i < dim; ++i)
+  //  dxdt[i] *= number2conc;
 
   for (i = 0; i < dim; i++)
     {
@@ -2138,20 +2220,6 @@ void CILDMMethod::start(const CState * initialState)
   mIWork[5] = * getValue("Max Internal Steps").pUINT;
   mIWork[7] = * getValue("Adams Max Order").pUINT;
   mIWork[8] = * getValue("BDF Max Order").pUINT;
-
-#if 1
-  mpModel->updateSimulatedValues();
-  // TO REMOVE : mpModel->applyAssignments();
-  mpModel->calculateJacobianX(mJacobian, 1e-6, 1e-10);
-
-  std::cout << std::endl;
-  std::cout << "*****************************" << std::endl;
-  std::cout << "Next step t=: " << mTime << std::endl;
-
-  std::cout << "start : Jacobian:" << std::endl;
-  std::cout << mJacobian << std::endl;
-
-#endif
 
   return;
 }
