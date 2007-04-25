@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.151 $
+//   $Revision: 1.152 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/03/06 17:30:12 $
+//   $Author: ssahle $
+//   $Date: 2007/04/25 09:28:45 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -42,6 +42,9 @@
 #endif
 #ifdef COPASI_TSS
 #include "tss/CTSSTask.h"
+#endif
+#ifdef COPASI_DEBUG
+# include "tssanalysis/CTSSATask.h"
 #endif
 #include "scan/CScanTask.h"
 #include "elementaryFluxModes/CEFMTask.h"
@@ -2062,7 +2065,7 @@ void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
         mpCurrentHandler = &mParser.mCharacterDataElement;
       break;
 
-    case MathML:     // Old file format support
+    case MathML:      // Old file format support
       if (!strcmp(pszName, "MathML"))
         {
           /* If we do not have a MathML element handler we create one. */
@@ -2135,7 +2138,7 @@ void CCopasiXMLParser::ModelValueElement::end(const XML_Char *pszName)
       mCurrentElement = ModelValue;
       break;
 
-    case MathML:     // Old file format support
+    case MathML:      // Old file format support
       if (strcmp(pszName, "MathML"))
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                        pszName, "MathML", mParser.getCurrentLineNumber());
@@ -4699,6 +4702,11 @@ void CCopasiXMLParser::TaskElement::start(const XML_Char *pszName, const XML_Cha
           mCommon.pCurrentTask = new CTSSTask(mCommon.pTaskList);
           break;
 #endif // COPASI_TSS
+#ifdef COPASI_DEBUG
+        case CCopasiTask::tssAnalysis:
+          mCommon.pCurrentTask = new CTSSATask(mCommon.pTaskList);
+          break;
+#endif // COPASI_DEBUG
         default:
           mParser.pushElementHandler(&mParser.mUnknownElement);
           mParser.onStartElement(pszName, papszAttrs);
