@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/04/13 10:04:43 $
+//   $Date: 2007/04/26 16:57:57 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual

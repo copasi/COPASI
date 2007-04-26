@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CGraphNode.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/04/13 10:04:43 $
+//   $Date: 2007/04/26 16:57:57 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,6 +26,7 @@ class CGraphNode : public CLMetabGlyph
     C_FLOAT64 msize;
     std::string morigNodeKey;
     std::vector<int> mConnectedCurveIndices; // indices of curves in CQGLNetworkPainter viewerNodes attached to the node
+    CLPoint getPointOnRectangle(CLBoundingBox r, CLPoint p);
   public:
 
     CGraphNode(const std::string & name = "GraphNode",
