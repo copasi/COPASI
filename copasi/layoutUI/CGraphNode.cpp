@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CGraphNode.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/04/26 16:57:57 $
+//   $Date: 2007/04/27 10:06:21 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -79,7 +79,7 @@ void CGraphNode::adaptCurvesForRectangles(std::vector<CLCurve> *viewerCurves)
           // move end point of segment to the border of the bounding rectangle of the node
           CLLineSegment* pLastSeg = pCurve->getSegmentAt(pCurve->getNumCurveSegments() - 1); // get pointer to last segment
           CLPoint to = pLastSeg->getEnd();
-          CLPoint pointOnRect = getPointOnRectangle(this->getBoundingBox(), pLastSeg->getEnd());
+          CLPoint pointOnRect = getPointOnRectangle(this->getBoundingBox(), pLastSeg->getStart());
           pLastSeg->setEnd(pointOnRect);
         }
     }
@@ -102,7 +102,7 @@ CLPoint CGraphNode::getPointOnRectangle(CLBoundingBox r, CLPoint p)
 
   //std::cout << "center: " << center << std::endl;
   //std::cout << "p: " << p << std::endl;
-  //std::cout << "qangle: " << qAngle << "  pangle: " << pAngle << std::endl;
+  std::cout << "qangle: " << qAngle << "  pangle: " << pAngle << std::endl;
 
   if (fabs(pAngle) < fabs(qAngle))
     {// intersection point is left or right side
