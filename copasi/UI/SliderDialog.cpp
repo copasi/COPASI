@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-//   $Revision: 1.66 $
+//   $Revision: 1.66.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/16 19:55:37 $
+//   $Date: 2007/04/27 19:18:42 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -321,7 +321,7 @@ void SliderDialog::addSlider(CSlider* pSlider)
   assert(pGUI);
   if (!this->equivalentSliderExists(pSlider))
     {
-      pGUI->pSliderList->add(pSlider);
+      pGUI->pSliderList->add(pSlider, true);
     }
   CopasiSlider* tmp = findCopasiSliderForCSlider(pSlider);
   if (!tmp)
