@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/04/26 16:57:57 $
+//   $Date: 2007/04/30 11:00:56 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -135,9 +135,9 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
           //}
           CLMetabReferenceGlyph::Role r = edgesToNodesOfReaction[j2]->getRole();
           std::string nodeKey = std::string(edgesToNodesOfReaction[j2]->getMetabGlyph()->getKey());
-          //          nodeMap.insert(std::pair<std::string, std::string>
-          //                         (nodeKey,
-          //                          std::string(edgesToNodesOfReaction[j2]->getMetabGlyphKey()))); // map viewer node key to key of CLMetabRefeerenceGlyph
+          nodeCurveMap.insert(std::pair<std::string, CLCurve>
+                              (nodeKey,
+                               viewerCurves[viewerCurves.size() - 1]));
           //          curveMap.insert(std::pair<std::string, CLCurve*>
           //                          (std::string(edgesToNodesOfReaction[j2]->getMetabGlyphKey()),
           //                           &(edgesToNodesOfReaction[j2]->getCurve())));
@@ -150,7 +150,7 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
           //);
           //std::cout << "role : " << r << std::endl;
           //storeCurveInCorrespondingNode(nodeKey, viewerCurves.back()); // use reference to last curve put into the vector viewerCurves
-          storeCurveInCorrespondingNode(nodeKey, viewerCurves.size() - 1); //index of curve derived from the fact that the curve currently is the last element of the vector
+          //storeCurveInCorrespondingNode(nodeKey, viewerCurves.size() - 1); //index of curve derived from the fact that the curve currently is the last element of the vector
           if ((r == CLMetabReferenceGlyph::PRODUCT) || (r == CLMetabReferenceGlyph::SIDEPRODUCT))
             {// create arrows just for edges to products or sideproducts
               std::vector<CLLineSegment> segments = curve.getCurveSegments();
@@ -162,7 +162,10 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
               //std::cout << "end:   " << p << std::endl;
               CArrow *ar = new CArrow(lastSeg, p.getX(), p.getY());
               viewerArrows.push_back(*ar);
+              storeCurveInCorrespondingNode(nodeKey, viewerCurves.size() - 1, viewerArrows.size() - 1); //store with arrow index, see below
             }
+          else // store without arrow
+            storeCurveInCorrespondingNode(nodeKey, viewerCurves.size() - 1); //index of curve derived from the fact that the curve currently is the last element of the vector
         } // end j
     } // end i (reactions)
   //for (i=0;i<viewerNodes.size();i++)
@@ -187,11 +190,20 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
 
 void CQGLNetworkPainter::storeCurveInCorrespondingNode(std::string nodeKey, int indx)
 {
-
   CGraphNode *nodeP = findNodeWithKey(nodeKey);
   if (nodeP != NULL)
     {
       nodeP->addCurveIndex(indx);
+    }
+}
+
+void CQGLNetworkPainter::storeCurveInCorrespondingNode(std::string nodeKey, int indx1, int indx2)
+{
+  CGraphNode *nodeP = findNodeWithKey(nodeKey);
+  if (nodeP != NULL)
+    {
+      nodeP->addCurveIndex(indx1);
+      nodeP->addArrowIndex(indx2);
     }
 }
 

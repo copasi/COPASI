@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/04/26 16:57:57 $
+//   $Date: 2007/04/30 11:00:56 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -74,11 +74,13 @@ class CQGLNetworkPainter : public QGLWidget
     double mFontsizeDouble;
 
     //std::multimap<std::string, CLCurve*> curveMap; // maps mMetabGlyphKey of CLMetabReferenceGlyph to curve in reaction
-    //std::multimap<std::string, std::string> nodeMap; // maps mKey of viewer node  to mMetabGlyphKey of CLMetabReferenceGlyph
+    std::multimap<std::string, CLCurve> nodeCurveMap; // maps mKey of viewer node (CGraphNode, originally from CLMetabGlyph, to curves (stored in viewerCurves) that point to thid node)
+    std::multimap<std::string, CArrow> nodeArrowMap; // maps mKey of viewer node (CGraphNode, originally from CLMetabGlyph, to arrows (stored in viewerArrows) that point to thid node)
     //std::map<std::string, float> nodeSizeMap; // maps mKey of viewer node to size of this node in circular view
 
     CGraphNode* findNodeWithKey(std::string nodeKey);
     void storeCurveInCorrespondingNode(std::string nodeKey, int indx);
+    void storeCurveInCorrespondingNode(std::string nodeKey, int indx1, int indx2);
 
     QAction *zoomInAction;
     QAction *zoomOutAction;
@@ -87,6 +89,9 @@ class CQGLNetworkPainter : public QGLWidget
     //void renderBitmapString(double x, double y, std::string s, double w, double h);
     void drawStringAt(std::string s, C_FLOAT64 x, C_FLOAT64 y, C_FLOAT64 w, C_FLOAT64 h, QColor bgCol);
     int round2powN(double d);
+    void updateGraphWithNodeSizes();
+    void updateEdge(CLLineSegment line);
+    void resetGraphToLabelView();
 
     enum shapeOfLabels {CIRCLE, RECTANGLE};
     shapeOfLabels mLabelShape;
