@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQFittingWidget.ui.h,v $
-//   $Revision: 1.36 $
+//   $Revision: 1.36.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/04/11 16:26:33 $
+//   $Date: 2007/05/01 13:10:58 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -305,7 +305,7 @@ void CQFittingWidget::destroy()
 
 #ifdef COPASI_CROSSVALIDATION
   pdelete(mpCrossValidationSet);
-#endif
+#endif // COPASI_CROSSVALIDATION
 }
 
 void CQFittingWidget::slotCrossValidationData()
