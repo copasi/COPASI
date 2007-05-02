@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-//   $Revision: 1.46 $
+//   $Revision: 1.46.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/04/10 16:48:44 $
+//   $Date: 2007/05/02 12:00:00 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -131,7 +131,6 @@ CEvaluationTree::CEvaluationTree(const CEvaluationTree & src,
 {
   initObjects();
   setInfix(src.mInfix);
-  compileNodes();
 }
 
 CEvaluationTree::~CEvaluationTree()
