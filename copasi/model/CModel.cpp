@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.300 $
+//   $Revision: 1.300.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/04/10 16:48:44 $
+//   $Date: 2007/05/04 16:54:34 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1254,6 +1254,7 @@ bool CModel::buildSimulatedSequence()
   std::set<const CCopasiObject * > Candidate;
   std::set< const CCopasiObject * >::iterator it;
   std::set< const CCopasiObject * >::iterator end = Objects.end();
+  CCopasiObject * pObject;
 
   while (UnusedFound)
     {
@@ -1263,10 +1264,15 @@ bool CModel::buildSimulatedSequence()
       for (; ppEntity != ppEntityEnd; ++ppEntity)
         if ((*ppEntity)->isUsed())
           {
-            Candidate.insert(*ppEntity);
+            if ((*ppEntity)->getStatus() != ASSIGNMENT)
+              pObject = *ppEntity;
+            else
+              pObject = (*ppEntity)->getValueReference();
+
+            Candidate.insert(pObject);
 
             for (it = Objects.begin(); it != end; ++it)
-              if (*it != *ppEntity &&
+              if (*it != pObject &&
                   (*it)->hasCircularDependencies(Candidate))
                 break;
 
@@ -1278,7 +1284,7 @@ bool CModel::buildSimulatedSequence()
                 Objects.erase(*ppEntity);
               }
 
-            Candidate.erase(*ppEntity);
+            Candidate.erase(pObject);
           }
     }
 
