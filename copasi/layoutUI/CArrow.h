@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CArrow.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/03/02 10:56:33 $
+//   $Date: 2007/05/04 09:49:28 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,7 +24,7 @@ class CArrow
     C_FLOAT64 arrowLength;
     C_FLOAT64 arrowWidth;
   public:
-    CArrow(){endPoint = CLPoint(0.0, 0.0);arrowLength = 20.0; arrowWidth = 10.0;}
+    CArrow(){endPoint = CLPoint(0.0, 0.0);arrowLength = 20.0; arrowWidth = 7.0;}
     CArrow(CLLineSegment l, C_FLOAT64 x, C_FLOAT64 y)
     {
       line = l;
