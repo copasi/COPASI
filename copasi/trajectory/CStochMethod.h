@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.h,v $
-   $Revision: 1.28 $
-   $Name:  $
-   $Author: gauges $
-   $Date: 2006/10/15 08:31:13 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.h,v $
+//   $Revision: 1.28.4.1 $
+//   $Name:  $
+//   $Author: ssahle $
+//   $Date: 2007/05/06 18:35:13 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -61,6 +61,13 @@ class CStochMethod : public CTrajectoryMethod
      * indicates if the correction N^2 -> N*(N-1) should be performed
      */
     bool mDoCorrection;
+
+    /**
+     * Indicates whether the model has global quantities with assignment rules.
+     * If it has, we will use a less efficient way to update the model
+     * state to handle this.
+     */
+    bool mHasAssignments;
 
     /**
      * Initialization.
@@ -257,6 +264,12 @@ class CStochMethod : public CTrajectoryMethod
 
     unsigned C_INT32 mNumReactions;
     unsigned C_INT32 mNumNumbers;
+
+    /**
+     * tests if the model contains a global value with an assignment rule that is
+     * used in calculations
+     */
+    static bool modelHasAssignments(const CModel* pModel);
   };
 
 //#include "CStochDirectMethod.h"
