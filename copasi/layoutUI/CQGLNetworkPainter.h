@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/05/04 09:49:28 $
+//   $Date: 2007/05/07 11:18:24 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,6 +31,8 @@
 #include "copasi/layoutUI/CArrow.h"
 
 #include "copasi/layoutUI/CGraphNode.h"
+#include "copasi/CopasiDataModel/CCopasiDataModel.h"
+#include "copasi/trajectory/CTrajectoryTask.h"
 
 class CLayout;
 
@@ -98,6 +100,9 @@ class CQGLNetworkPainter : public QGLWidget
 
     enum shapeOfLabels {CIRCLE, RECTANGLE};
     shapeOfLabels mLabelShape;
+
+    void createDataSets();
+    //CLDataSet getDataSet(C_INT32 t);
   protected:
 
     void initializeGraphPainter();

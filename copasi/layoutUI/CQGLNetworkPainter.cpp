@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/05/04 09:49:28 $
+//   $Date: 2007/05/07 11:18:24 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -223,6 +223,7 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
 //    return NULL;
 //}
 
+// create display lists
 void CQGLNetworkPainter::drawGraph()
 {
   //std::cout << "draw graph" << std::endl;
@@ -579,6 +580,21 @@ int CQGLNetworkPainter::round2powN(double d)
 //     glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, cStr[i]);
 //}
 //}
+
+void CQGLNetworkPainter::createDataSets()
+{
+  if (CCopasiDataModel::Global != NULL)
+    {
+      CTrajectoryTask *ptask = dynamic_cast< CTrajectoryTask * >((*CCopasiDataModel::Global->getTaskList())["Time-Course"]);
+      CTimeSeries timeSer = ptask->getTimeSeries();
+      if (timeSer.getNumSteps() > 0)
+        {
+          std::cout << "number of steps in time series: " << timeSer.getNumSteps() << std::endl;
+        }
+      else
+        std::cout << "empty time series: no steps found" << std::endl;
+    }
+}
 
 // set node sizes according to data set
 void CQGLNetworkPainter::setNodeSizes()
