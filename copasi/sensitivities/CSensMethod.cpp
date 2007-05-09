@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensMethod.cpp,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.20.2.1 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/04/03 12:28:06 $
+//   $Date: 2007/05/09 14:20:12 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -95,8 +95,9 @@ bool CSensMethod::do_target_calculation(CCopasiArray & result, bool first)
     }
   else
     {
-      mpProblem->getModel()->updateSimulatedValues();
-      mpProblem->getModel()->updateNonSimulatedValues();
+      //mpProblem->getModel()
+      //mpProblem->getModel()->updateSimulatedValues();
+      //mpProblem->getModel()->updateNonSimulatedValues();
     }
   mpProblem->getModel()->updateSimulatedValues();
   mpProblem->getModel()->updateNonSimulatedValues();
@@ -143,6 +144,11 @@ C_FLOAT64 CSensMethod::do_variation(CCopasiObject* variable)
   if (delta < *mpMinDelta) delta = *mpMinDelta;
 
   variable->setObjectValue(delta + value);
+
+  if (variable->getObjectName() == "Concentration")
+    {
+      std::cout << "Concentration" << std::endl;
+    }
 
   //debug
   //std::cout << variable->getObjectDisplayName() << "  " << value << " -> ";
@@ -440,10 +446,10 @@ bool CSensMethod::initialize(CSensProblem* problem)
                   ((*CCopasiDataModel::Global->getTaskList())["Time-Course"]);
       break;
 
-    case CSensProblem::LyapunovExp:
-      mpSubTask = dynamic_cast<CCopasiTask*>
-                  ((*CCopasiDataModel::Global->getTaskList())["Lyapunov Exponents"]);
-      break;
+      /*    case CSensProblem::LyapunovExp:
+            mpSubTask = dynamic_cast<CCopasiTask*>
+                        ((*CCopasiDataModel::Global->getTaskList())["Lyapunov Exponents"]);
+            break;*/
     }
 
   if (mpSubTask)
