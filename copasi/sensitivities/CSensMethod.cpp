@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensMethod.cpp,v $
-//   $Revision: 1.20.2.1 $
+//   $Revision: 1.20.2.2 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/05/09 14:20:12 $
+//   $Date: 2007/05/09 15:07:03 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -143,12 +143,17 @@ C_FLOAT64 CSensMethod::do_variation(CCopasiObject* variable)
   delta = fabs(value) * *mpDeltaFactor;
   if (delta < *mpMinDelta) delta = *mpMinDelta;
 
-  variable->setObjectValue(delta + value);
+  setValue(variable, delta + value);
 
-  if (variable->getObjectName() == "Concentration")
-    {
-      std::cout << "Concentration" << std::endl;
-    }
+  //   variable->setObjectValue(delta + value);
+  //
+  //   if (variable->getObjectName() == "Concentration")
+  //     {
+  //       std::cout << "Concentration" << std::endl;
+  //       CMetab* pMetab = dynamic_cast<CMetab*>(variable->getObjectAncestor("Metabolite"));
+  //       if (pMetab)
+  //         pMetab->setConcentration(delta + value);
+  //}
 
   //debug
   //std::cout << variable->getObjectDisplayName() << "  " << value << " -> ";
@@ -156,6 +161,19 @@ C_FLOAT64 CSensMethod::do_variation(CCopasiObject* variable)
   //std::cout << value << std::endl;
 
   return delta;
+}
+
+void CSensMethod::setValue(CCopasiObject* variable, C_FLOAT64 value)
+{
+  variable->setObjectValue(value);
+
+  if (variable->getObjectName() == "Concentration")
+    {
+      std::cout << "Concentration" << std::endl;
+      CMetab* pMetab = dynamic_cast<CMetab*>(variable->getObjectAncestor("Metabolite"));
+      if (pMetab)
+        pMetab->setConcentration(value);
+    }
 }
 
 void CSensMethod::calculate_difference(unsigned C_INT32 level, const C_FLOAT64 & delta,
@@ -250,7 +268,8 @@ bool CSensMethod::calculate_one_level(unsigned C_INT32 level, CCopasiArray & res
         }
 
       //restore variable
-      mLocalData[level].variables[i]->setObjectValue(store);
+      //mLocalData[level].variables[i]->setObjectValue(store);
+      setValue(mLocalData[level].variables[i], store);
 
       //calculate derivative
       if (imax > 1)

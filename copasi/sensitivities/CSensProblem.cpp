@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensProblem.cpp,v $
-//   $Revision: 1.23.2.1 $
+//   $Revision: 1.23.2.2 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/05/09 14:20:13 $
+//   $Date: 2007/05/09 15:07:03 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -480,8 +480,8 @@ CSensProblem::getPossibleVariables(CSensProblem::SubTaskType type)
     {
     case (Evaluation):
             list.push_back(CObjectLists::SINGLE_OBJECT);
-      //list.push_back(CObjectLists::NON_CONST_METAB_CONCENTRATIONS);
-      //list.push_back(CObjectLists::ALL_METAB_CONCENTRATIONS);
+      list.push_back(CObjectLists::NON_CONST_METAB_CONCENTRATIONS);
+      list.push_back(CObjectLists::ALL_METAB_CONCENTRATIONS);
       list.push_back(CObjectLists::NON_CONST_METAB_NUMBERS);
       list.push_back(CObjectLists::NON_CONST_GLOBAL_PARAMETER_VALUES);
       list.push_back(CObjectLists::GLOBAL_PARAMETER_VALUES);
