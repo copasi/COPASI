@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTimeSeries.h,v $
-   $Revision: 1.8 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:32:17 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTimeSeries.h,v $
+//   $Revision: 1.9 $
+//   $Name:  $
+//   $Author: ssahle $
+//   $Date: 2007/05/10 15:52:50 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -50,6 +50,11 @@ class CTimeSeries : private std::vector<CState>
     C_FLOAT64 getConcentrationData(unsigned C_INT32 step, unsigned C_INT32 var) const;
     const std::string & getTitle(unsigned C_INT32 var) const;
 
+    /**
+     * get the key of the object correspoding to column indexed by var
+     */
+    const std::string & getKey(unsigned C_INT32 var) const;
+
   private:
     //C_INT32 mN;
     //C_INT32 mCounter;
@@ -58,6 +63,7 @@ class CTimeSeries : private std::vector<CState>
     std::vector<std::string> mTitles;
     std::vector<C_FLOAT64> mFactors;
     CVector<unsigned C_INT32> mPivot;
+    std::vector<std::string> mKeys;
     std::string mDummyString;
     C_FLOAT64 mDummyFloat;
   };

@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTimeSeries.cpp,v $
-   $Revision: 1.12 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/08/24 14:39:51 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTimeSeries.cpp,v $
+//   $Revision: 1.13 $
+//   $Name:  $
+//   $Author: ssahle $
+//   $Date: 2007/05/10 15:52:50 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -42,6 +42,7 @@ bool CTimeSeries::init(C_INT32 n, CModel * pModel)
   mPivot.resize(imax);
   mTitles.resize(imax);
   mFactors.resize(imax);
+  mKeys.resize(imax);
 
   C_FLOAT64 Number2QuantityFactor = pModel->getNumber2QuantityFactor();
 
@@ -60,9 +61,11 @@ bool CTimeSeries::init(C_INT32 n, CModel * pModel)
           mTitles[i] = (*it)->getObjectDisplayName();
           mFactors[i] = 1.0;
         }
+      mKeys[i] = (*it)->getKey();
     }
 
   mTitles[0] = "Time";
+  mKeys[0] = pModel->getKey();
 
   const unsigned C_INT32 * pUserOrder = Template.getUserOrder().array();
   const unsigned C_INT32 * pUserOrderEnd = pUserOrder + Template.getUserOrder().size();
@@ -138,6 +141,14 @@ const std::string & CTimeSeries::getTitle(unsigned C_INT32 var) const
   {
     if (var < mPivot.size())
       return mTitles[mPivot[var]];
+    else
+      return mDummyString;
+  }
+
+const std::string & CTimeSeries::getKey(unsigned C_INT32 var) const
+  {
+    if (var < mPivot.size())
+      return mKeys[mPivot[var]];
     else
       return mDummyString;
   }
