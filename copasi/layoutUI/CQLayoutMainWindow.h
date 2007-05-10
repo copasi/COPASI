@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/03/12 12:05:37 $
+//   $Date: 2007/05/10 18:14:22 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -42,7 +42,7 @@ class CQLayoutMainWindow : public QMainWindow
 
   private slots:
     void loadSBMLFile();
-    void loadDataFile();
+    void loadData();
     void closeApplication();
 
     void mapLabelsToCircles();

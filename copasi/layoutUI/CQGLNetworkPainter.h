@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/05/07 11:18:24 $
+//   $Date: 2007/05/10 18:14:22 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -53,6 +53,8 @@ class CQGLNetworkPainter : public QGLWidget
     // void drawStringAt(string s, double x, double y);
     void drawArrow(CArrow a);
 
+    void createDataSets();
+
     void setNodeSizes();
     //void changeNodeSize(std::string viewerNodeKey, double newSize);
 
@@ -75,6 +77,7 @@ class CQGLNetworkPainter : public QGLWidget
     int mFontsize;
     double mFontsizeDouble;
 
+    std::map<std::string, std::string> keyMap; // maps Copasi SBML object keys to layout node keys
     std::map<std::string, CGraphNode>nodeMap;
     //std::multimap<std::string, CLCurve*> curveMap; // maps mMetabGlyphKey of CLMetabReferenceGlyph to curve in reaction
     std::multimap<std::string, CLCurve> nodeCurveMap; // maps mKey of viewer node (CGraphNode, originally from CLMetabGlyph, to curves (stored in viewerCurves) that point to thid node)
@@ -101,7 +104,6 @@ class CQGLNetworkPainter : public QGLWidget
     enum shapeOfLabels {CIRCLE, RECTANGLE};
     shapeOfLabels mLabelShape;
 
-    void createDataSets();
     //CLDataSet getDataSet(C_INT32 t);
   protected:
 

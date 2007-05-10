@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CGraphNode.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/05/04 09:49:28 $
+//   $Date: 2007/05/10 18:14:22 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,6 +23,7 @@ CGraphNode::CGraphNode(const std::string & name,
 {
   msize = 20.0;
   morigNodeKey = "";
+  mObjectKey = "";
 }
 
 CGraphNode::CGraphNode(const CLMetabGlyph & src,
@@ -31,6 +32,7 @@ CGraphNode::CGraphNode(const CLMetabGlyph & src,
 {
   msize = 20.0;
   morigNodeKey = src.getKey();
+  mObjectKey = src.getModelObjectKey();
 }
 
 CGraphNode::CGraphNode(const CGraphNode & src,
@@ -39,6 +41,7 @@ CGraphNode::CGraphNode(const CGraphNode & src,
 {
   msize = src.msize;
   morigNodeKey = src.morigNodeKey;
+  mObjectKey = src.mObjectKey;
 }
 
 void CGraphNode::setSize(C_FLOAT64 newSize)

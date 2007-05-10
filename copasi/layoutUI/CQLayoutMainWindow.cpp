@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/03/12 12:05:37 $
+//   $Date: 2007/05/10 18:14:22 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -75,11 +75,11 @@ void CQLayoutMainWindow::createActions()
   connect(openSBMLFile, SIGNAL(activated()) , this, SLOT(loadSBMLFile()));
 
   openDataFile = new QAction("data",
-                             "Load Simulation Data File",
+                             "Load Simulation Data",
                              CTRL + Key_D,
                              this);
-  openDataFile->setStatusTip("Load simulation data file");
-  connect(openDataFile, SIGNAL(activated()), this, SLOT(loadDataFile()));
+  openDataFile->setStatusTip("Load simulation data");
+  connect(openDataFile, SIGNAL(activated()), this, SLOT(loadData()));
 
   closeAction = new QAction ("close",
                              "Close Window",
@@ -179,8 +179,10 @@ void CQLayoutMainWindow::mapLabelsToRectangles()
     }
 }
 
-void CQLayoutMainWindow::loadDataFile()
-{}
+void CQLayoutMainWindow::loadData()
+{
+  glPainter->createDataSets();
+}
 
 void CQLayoutMainWindow::closeApplication()
 {

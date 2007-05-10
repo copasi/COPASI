@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/05/07 11:18:24 $
+//   $Date: 2007/05/10 18:14:22 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -96,7 +96,10 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
       nodeMap.insert(std::pair<std::string, CGraphNode>
                      (nKey,
                       CGraphNode(*nodes[i])));
-      //std::cout << "insert " << nKey << "  " << *nodes[i] << std::endl;
+      keymap.insert(std::pair<std::string, std::string>
+                    (*nodes[i]).getModelObjectKey(), nKey);
+      std::cout << "insert " << nKey << "  " << *nodes[i] << std::endl;
+      std::cout << "key: " << (*nodes[i]).getModelObjectKey() << std::endl;
       //viewerNodes[i].printObject();
     }
   CCopasiVector<CLReactionGlyph> reactions;
@@ -587,12 +590,29 @@ void CQGLNetworkPainter::createDataSets()
     {
       CTrajectoryTask *ptask = dynamic_cast< CTrajectoryTask * >((*CCopasiDataModel::Global->getTaskList())["Time-Course"]);
       CTimeSeries timeSer = ptask->getTimeSeries();
-      if (timeSer.getNumSteps() > 0)
+      //if (timeSer.getNumSteps() > 0)
+      if (timeSer.getNumVariables() > 0)
         {
           std::cout << "number of steps in time series: " << timeSer.getNumSteps() << std::endl;
+          std::cout << "number of variables: " << timeSer.getNumVariables() << std::endl;
+          C_INT32 i, t;
+          C_FLOAT64 val;
+          std::string name;
+          std::string key;
+          for (int t = 0;t < 10;t++)
+            {
+              for (i = 0;i < timeSer.getNumVariables();i++)
+                {
+                  val = timeSer.getConcentrationData(t, i);
+                  name = timeSer.getTitle(i);
+                  key = timeSer.getKey(i);
+                  std::cout << name << " : " << key << " : " << val << std::endl;
+                }
+              std::cout << "-------------" << std::endl;
+            }
         }
       else
-        std::cout << "empty time series: no steps found" << std::endl;
+        std::cout << "empty time series: no variables present" << std::endl;
     }
 }
 
