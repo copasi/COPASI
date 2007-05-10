@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.26 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/05/10 18:14:22 $
+//   $Date: 2007/05/10 18:20:43 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -92,12 +92,13 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
     {
       //viewerNodes.push_back(CGraphNode(*nodes[i])); // local vector of nodes contains objects, not pointers
       std::string nKey = (*nodes[i]).getKey();
+      std::string oKey = (*nodes[i]).getModelObjectKey();
       viewerNodes.push_back(nKey);
       nodeMap.insert(std::pair<std::string, CGraphNode>
                      (nKey,
                       CGraphNode(*nodes[i])));
-      keymap.insert(std::pair<std::string, std::string>
-                    (*nodes[i]).getModelObjectKey(), nKey);
+      keyMap.insert(std::pair<std::string, std::string>
+                    (oKey, nKey));
       std::cout << "insert " << nKey << "  " << *nodes[i] << std::endl;
       std::cout << "key: " << (*nodes[i]).getModelObjectKey() << std::endl;
       //viewerNodes[i].printObject();
