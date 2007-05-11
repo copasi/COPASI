@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.27 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/05/10 18:20:43 $
+//   $Date: 2007/05/11 10:39:29 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -99,8 +99,9 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
                       CGraphNode(*nodes[i])));
       keyMap.insert(std::pair<std::string, std::string>
                     (oKey, nKey));
-      std::cout << "insert " << nKey << "  " << *nodes[i] << std::endl;
-      std::cout << "key: " << (*nodes[i]).getModelObjectKey() << std::endl;
+      //std::cout << "insert " << nKey << "  " << *nodes[i] << std::endl;
+      //std::cout << "key: " << (*nodes[i]).getModelObjectKey() << std::endl;
+      //std::cout << "keys:  " << oKey << "  - " << nKey << std::endl;
       //viewerNodes[i].printObject();
     }
   CCopasiVector<CLReactionGlyph> reactions;
@@ -594,23 +595,49 @@ void CQGLNetworkPainter::createDataSets()
       //if (timeSer.getNumSteps() > 0)
       if (timeSer.getNumVariables() > 0)
         {
-          std::cout << "number of steps in time series: " << timeSer.getNumSteps() << std::endl;
-          std::cout << "number of variables: " << timeSer.getNumVariables() << std::endl;
+          pSummaryInfo = new CSimSummaryInfo(timeSer.getNumSteps(), timeSer.getNumVariables(),
+                                             timeSer.getConcentrationData(timeSer.getNumSteps() - 1, 0) - timeSer.getConcentrationData(0, 0));
+          C_FLOAT64 tt = timeSer.getConcentrationData(timeSer.getNumSteps() - 1, 0) - timeSer.getConcentrationData(0, 0);
+          //std::cout << "summary: no of steps: " << pSummaryInfo->getNumberOfSteps() << std::endl,
+          //std::cout << "total time: " << tt << std::endl;
+          //std::cout << "number of steps in time series: " << timeSer.getNumSteps() << std::endl;
+          //std::cout << "number of variables: " << timeSer.getNumVariables() << std::endl;
           C_INT32 i, t;
           C_FLOAT64 val;
           std::string name;
-          std::string key;
-          for (int t = 0;t < 10;t++)
+          std::string objKey;
+          std::string ndKey;
+          C_FLOAT64 minR;
+          C_FLOAT64 maxR;
+          C_FLOAT64 maxAll = 0.0;
+          for (i = 0;i < timeSer.getNumVariables();i++) // iterate on reactants
             {
-              for (i = 0;i < timeSer.getNumVariables();i++)
-                {
-                  val = timeSer.getConcentrationData(t, i);
-                  name = timeSer.getTitle(i);
-                  key = timeSer.getKey(i);
-                  std::cout << name << " : " << key << " : " << val << std::endl;
+              maxR = 0.0;
+              minR = std::numeric_limits<C_FLOAT64>::max();
+              name = timeSer.getTitle(i);
+              objKey = timeSer.getKey(i);
+              std::map<std::string, std::string>::iterator iter = keyMap.find(objKey);
+              if (iter != keyMap.end())
+                {// if there is a node (key)
+                  ndKey = (keyMap.find(objKey))->second;
+                  for (int t = 0;t < 10;t++) // iterate on time steps t=0..n
+                    {
+                      val = timeSer.getConcentrationData(t, i);
+                      if (val > maxR)
+                        maxR = val;
+                      if (val < minR)
+                        minR = val;
+                    }
+                  //std::cout << name << " : " << key << " : " << val << std::endl;
                 }
-              std::cout << "-------------" << std::endl;
+              pSummaryInfo->storeMax(ndKey, maxR);
+              pSummaryInfo->storeMin(ndKey, minR);
+              if (maxR > maxAll)
+                maxAll = maxR;
+              //std::cout << "-------------" << std::endl;
             }
+          pSummaryInfo->setMaxOverallConcentration(maxAll);
+          std::cout << *pSummaryInfo;
         }
       else
         std::cout << "empty time series: no variables present" << std::endl;

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/05/10 18:14:22 $
+//   $Date: 2007/05/11 10:39:29 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,6 +29,7 @@
 #include "copasi/layout/CLGlyphs.h"
 #include "copasi/layout/CLCurve.h"
 #include "copasi/layoutUI/CArrow.h"
+#include "copasi/layoutUI/CSimSummaryInfo.h"
 
 #include "copasi/layoutUI/CGraphNode.h"
 #include "copasi/CopasiDataModel/CCopasiDataModel.h"
@@ -43,6 +44,8 @@ class CQGLNetworkPainter : public QGLWidget
 
   public:
     CQGLNetworkPainter(QWidget *parent = 0, const char *name = 0);
+
+    CSimSummaryInfo *pSummaryInfo;
 
     void setGraphSize(const CLPoint & min, const CLPoint & max);
     void createGraph(CLayout *lP); // create local data structures
