@@ -1,10 +1,10 @@
 <chapter id="modelCreation" xreflabel="Model Creation">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_GUI.xml,v $ -->
-<!--   $Revision: 1.45 $ -->
+<!--   $Revision: 1.45.2.1 $ -->
 <!--   $Name:  $ -->
-<!--   $Author: shoops $ -->
-<!--   $Date: 2007/03/30 20:27:32 $ -->
+<!--   $Author: ssahle $ -->
+<!--   $Date: 2007/05/14 12:10:32 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -436,7 +436,7 @@ When typing reaction equations you should keep in mind that metabolite names in 
     Double clicking on an entry in the table will bring you to another dialog that lets you change certain parameters of the reaction. You can change the name of the reaction, the chemical equation and whether the reaction is reversible or not. Changing the chemical equation and the reversibility of a reaction influences the type of kinetics you can choose for the reaction. Each kinetic function defines how many substrates, products and modifiers it expects. Additionally it defines whether it can be used for reversible or irreversible reactions only or if it can be used on either. So depending on how many substrates, products and modifiers your kinetic equation has and whether it is reversible or not, only a subset of the defined kinetic functions will be available in the <guilabel>Kinetics</guilabel> combo box.
     If the kinetic function you want to assign to the reaction is not available yet, you can add it by clicking on the <guibutton>New Rate Law</guibutton> button (see also <xref linkend="addingFunctions" />). 
     Depending on the kinetic function you chose, you get a selection of parameters in the table named <guilabel>Symbol Definition</guilabel>, all functions parameters get a default value of 0.1 which can be changed by clicking into the corresponding cell and typing a new value.</para>
-<para>Per default all parameters to a kinetic function are local parameters and they exist only in the scope of the rate law of one reaction. Sometimes it is of advantage to use the same parameter in the rate laws for several reactions. This way if you want to change to value of this parameter, you only have to change it in once instead of having to change it in every reaction it occurs in individually. Parameters that can be used in more then one reaction are called global parameters in Copasi. How you add a global parameter to your model is described in the section called <xref linkend="globalParameters" />. Let us for the moment assume you already added such a global parameter to your model and now want to use it in a rate law. Each parameter in the <guilabel>Symbol Definition</guilabel> table has a checkbox labeled <guilabel>global</guilabel>. When you check this box, Copasi knows that the parameter that belongs to it is a global parameter and lets you select a global parameter from a list of global parameters that have been defined in the model. If none have been defined yet, the list contains only an entry termed <guilabel>unknown</guilabel>. In this case, you will have to define one or more global parameters first and then come back to the reaction where you want to use it. If the name of the global parameter is set to the <emphasis>unknown</emphasis> term, Copasi will reset the type of parameter to local if you leave the reaction widget.</para>
+<para>Per default all parameters to a kinetic function are local parameters and they exist only in the scope of the rate law of one reaction. Sometimes it is of advantage to use the same parameter in the rate laws for several reactions. This way if you want to change to value of this parameter, you only have to change it in once instead of having to change it in every reaction it occurs in individually. Parameters that can be used in more than one reaction are called global quantities (of type "fixed") in Copasi. How you add a global quantity to your model is described in the section called <xref linkend="globalQuantities" />. Let us for the moment assume you already added such a global quantity to your model and now want to use it in a rate law. Each parameter in the <guilabel>Symbol Definition</guilabel> table has a checkbox labeled <guilabel>global</guilabel>. When you check this box, Copasi knows that the parameter that belongs to it is a global quantity and lets you select one from a list of global quantities that have been defined in the model. If none have been defined yet, the list contains only an entry termed <guilabel>unknown</guilabel>. In this case, you will have to define one or more global quantities first and then come back to the reaction where you want to use it. If the name of the global quantity is set to the <emphasis>unknown</emphasis> term, Copasi will reset the type of parameter to local if you leave the reaction widget.</para>
 <para>So far we did not go into the details of how chemical equations are to be specified. Chemical equations have a simple schema. First you state all the substrates separated by  "+" characters. Please make sure that you separate the name of the substrate and the "+" character by at least one space character, otherwise COPASI will interpret the "+" sign as belonging to the metabolites name. (Having the "+" character as part of a metabolites name is allowed in COPASI!) after the list of substrates, you specify either an equals ("=") character if the reaction is reversible or the character combination "-&gt;" if the reaction is irreversible. This is followed by the list of products which must also be separated by the "+" character. Again make sure you have spaces around the separating "+" characters. Optionally this term can be followed by a semicolon and a list of modifiers which are separated by spaces. Either the list of substrates or the list of products may also be empty, but at least one of them must be present. Lets look at two examples:
 <orderedlist numeration="loweralpha" >
 <listitem><para>Metabolite A is irreversibly converted into Metabolite B. The chemical equation you would type is "A -&gt; B".</para></listitem>
@@ -448,10 +448,10 @@ When typing reaction equations you should keep in mind that metabolite names in 
 <para>E.g. in the reaction A -> B, if A and B are in the same compartment, the kinetic function for the reaction returns its result in Mol/(l*s). If A and B reside in different compartments, the result is returned in Mol/s. (This assumes that your default units are set to Mol, l and s.)</para>
 </caution>
 </sect1>
-<sect1 id="globalParameters" xreflabel="Global Parameters">
-<title>Global Parameters</title>
+<sect1 id="globalQuantities" xreflabel="Global Quantities">
+<title>Global Quantities</title>
 <para>
-In the model tree right below the <guibutton>Reaction</guibutton> branch is the <guibutton>Global parameters</guibutton> branch. If you select this branch, you see a table with all the global parameters that have been defined in your model. When you start a new model this table, just like all the others so far, is empty. The table has four columns and the ones named <guilabel>Status</guilabel> and <guilabel>Name</guilabel> should by now be already familiar.
+In the model tree right below the <guibutton>Reaction</guibutton> branch is the <guibutton>Global Quantities</guibutton> branch. If you select this branch, you see a table with all the global parameters that have been defined in your model. When you start a new model this table, just like all the others so far, is empty. The table has four columns and the ones named <guilabel>Status</guilabel> and <guilabel>Name</guilabel> should by now be already familiar.
 </para>
 <para>
 As with all other model elements, you can choose how you want to add a global parameter. The most convenient way is to just enter a name in an empty cell of the column termed <guilabel>Name</guilabel>.
@@ -1478,7 +1478,7 @@ To finally run the steady state calculation, click on the <guibutton>Run</guibut
 </screenshot>
 </para>
 <para>
-The results widget for the steady state calculation contains several tabs for the individual results. The first and the second tab contain the concentrations and the particle number at the steady state respectively. The third tab contains the fluxes for the reactions at the steady state. It contains concentration fluxes as well as particle fluxes. The fourth and fifth tab only contain results if you told COPASI to calculate the Jacobian matrix. The fourth tab then shows the Jacobian for the full system and the fifth tab contains the Jacobian matrix for the reduced system. The sixth and last tab contains the results for the stability analysis if a stability analysis was requested.  
+The results widget for the steady state calculation contains several tabs for the individual results. The first and the second tab contain the concentrations and the particle number at the steady state respectively. The third tab contains the fluxes for the reactions at the steady state. It contains concentration fluxes as well as particle fluxes. The fourth and fifth tab only contain results if you told COPASI to calculate the Jacobian matrix. The fourth tab then shows the Jacobian for the full system and the fifth tab contains the Jacobian matrix for the reduced system. For both Jacobian matrices also the eigenvalues are shown. The sixth tab contains the results for the stability analysis if a stability analysis was requested. The seventh and last tab shows a log that lists the calculation steps COPASI took while trying to find a steady state.
 </para>
 <para>
 If you want to have output from the Steady State Task, you have to create an output definition as described in the <xref linkend="outputGeneration" /> section or you use the default report named "Steady State". The default report prints a message telling whether a steady state was found. It also reports the concentration, concentration rate, particle number, particle number rate, and transition time of all metabolites as well as the flux for all reactions. The easiest way to get a customized output is probably to use the output assistant which you activate via the <guibutton>Output Assistant</guibutton> button. This is described in the <xref linkend="outputAssistant" /> section. All that is left to do in order to write the output to a specific file is to connect an output definition  with a file. This can be achieved by clicking on the <guibutton>Report</guibutton> button. This opens a dialog that lets you connect the report for a specific task to a file on your hard disk. First we choose a report that is suitable for the Steady State task from the drop down list at the top of the dialog. Next, we specify a file that will be used to store the report by clicking on the <guibutton>browse</guibutton> button and selecting the destination in the file dialog that opens. Per default, COPASI creates a new file or overwrites an existing file with the same name. Alternatively, you can tell COPASI to append the report to the end of an existing file by selecting the corresponding check box labeled <guilabel>Append</guilabel> at the bottom of the dialog. Once you are finished, you click on the <guilabel>Confirm</guilabel> button. If you now run the task, COPASI will write the output to the file you specified. 
@@ -2287,6 +2287,14 @@ tabs. In addition, you look at the correlation matrix of the
 parameters.
 </para>
 </sect1>
+
+<sect1 id="sensitivities" xreflabel="Sensitivities">
+<title>Sensitivity Analysis</title>
+<para>
+</para>
+</sect1>
+
+
 </chapter>
 
 <chapter id="importExport" xreflabel="Import/Export">
