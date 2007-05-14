@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.29 $
+//   $Revision: 1.30 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/05/14 09:51:14 $
+//   $Date: 2007/05/14 11:11:48 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,6 +34,7 @@
 #include "UI/qtUtilities.h"
 #include "layout/CLayout.h"
 #include "utilities/CCopasiVector.h"
+#include "layoutUI/CVisParameters.h"
 
 CQGLNetworkPainter::CQGLNetworkPainter(QWidget *parent, const char *name)
     : QGLWidget(parent, name)
@@ -619,7 +620,7 @@ void CQGLNetworkPainter::createDataSets()
           // now get some info about the data set such as the maximum concentrartion values for each reactant
           for (i = 0;i < timeSer.getNumVariables();i++) // iterate on reactants
             {
-              maxR = -std::numeric_limits<C_FLOAT64>::max();;
+              maxR = -std::numeric_limits<C_FLOAT64>::max();
               minR = std::numeric_limits<C_FLOAT64>::max();
               name = timeSer.getTitle(i);
               objKey = timeSer.getKey(i);
