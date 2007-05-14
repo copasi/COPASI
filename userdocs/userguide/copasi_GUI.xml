@@ -1,10 +1,10 @@
 <chapter id="modelCreation" xreflabel="Model Creation">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_GUI.xml,v $ -->
-<!--   $Revision: 1.45.2.1 $ -->
+<!--   $Revision: 1.45.2.2 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: ssahle $ -->
-<!--   $Date: 2007/05/14 12:10:32 $ -->
+<!--   $Date: 2007/05/14 16:27:45 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -451,7 +451,7 @@ When typing reaction equations you should keep in mind that metabolite names in 
 <sect1 id="globalQuantities" xreflabel="Global Quantities">
 <title>Global Quantities</title>
 <para>
-In the model tree right below the <guibutton>Reaction</guibutton> branch is the <guibutton>Global Quantities</guibutton> branch. If you select this branch, you see a table with all the global parameters that have been defined in your model. When you start a new model this table, just like all the others so far, is empty. The table has four columns and the ones named <guilabel>Status</guilabel> and <guilabel>Name</guilabel> should by now be already familiar.
+In the model tree right below the <guibutton>Reaction</guibutton> branch is the <guibutton>Global Quantities</guibutton> branch. If you select this branch, you see a table with all the global quantities that have been defined in your model. When you start a new model this table, just like all the others so far, is empty. The table has six columns and the ones named <guilabel>Status</guilabel> and <guilabel>Name</guilabel> should by now be already familiar. The third column specifies the type of the global quantity. There are three alternatives for that: "fixed" means the global quantity has a constant value (that can be used as a global parameter). "assignment" means the value of the quantity is calculated from a mathematical expression. If the type is "ode" the quantity is treated as a variable of the model and a differential equation for this variable can be provided. The forth and fifth column contain the initial and transient value of the global quantity. The sixth column contains the mathematical expression if the type is not "fixed".
 </para>
 <para>
 As with all other model elements, you can choose how you want to add a global parameter. The most convenient way is to just enter a name in an empty cell of the column termed <guilabel>Name</guilabel>.
@@ -460,7 +460,8 @@ As with all other model elements, you can choose how you want to add a global pa
 <!-- We need a screenshot here -->
 </para>
 <para>
-Contrary to all other model elements we have created so far, selecting the newly created global parameter in the tree view will not open a new widget. You can set all attributes of the global parameter directly in the table. And the only two attributes that can be changed are the name and the initial value of the parameter. For future version of Copasi it is planned to support parameters that change during a time course simulation, but for now the transient value of a parameter will always be identical to the initial value. 
+If you click on the name of a global quantity in the tree on the left or double click on a row of the table the information for only one of the global quantities is displayed. This is also where you can specify the mathematical expression for an "assignment" or "ode" quantity. 
+<!-- We need a screenshot here -->
 </para>
 </sect1>
 <sect1 id="parameterView" xreflabel="Parameter View">
@@ -485,7 +486,7 @@ Contrary to all other model elements we have created so far, selecting the newly
 </screenshot>
 </para>
 <para>
-    The parameter view widget can be displayed by selecting the leaf called <guilabel>Parameter overview</guilabel> on the Model branch which is located right underneath the <guilabel>Global parameters</guilabel> leaf. This widget allows you to view and edit all parameters of the model in one place. This saves you from moving around the model tree if you e.g. first have to edit the initial concentrations for some metabolites and afterward parameters of one or more reactions.
+    The parameter view widget can be displayed by selecting the leaf called <guilabel>Parameter overview</guilabel> on the Model branch which is located right underneath the <guilabel>Global Quantities</guilabel> leaf. This widget allows you to view and edit all parameters of the model in one place. This saves you from moving around the model tree if you e.g. first have to edit the initial concentrations for some metabolites and afterward parameters of one or more reactions.
     The view shows you the initial concentrations for the metabolites at the top followed by the initial time and the volumes of all the compartments and at the bottom the kinetic parameters of all reactions.
     In order to change some value, you double click on it which lets you input a new value. On hitting the return key or clicking somewhere else, the new value is not written to the object directly, but a '*' character appears in front of the name of the changed parameter. If you now leave this widget or press the commit button at the bottom of the dialog, the new value is written to the corresponding object in the model.
 </para>
