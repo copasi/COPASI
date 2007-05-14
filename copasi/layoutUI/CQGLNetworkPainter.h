@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/05/11 10:39:29 $
+//   $Date: 2007/05/14 08:33:43 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -107,6 +107,7 @@ class CQGLNetworkPainter : public QGLWidget
     enum shapeOfLabels {CIRCLE, RECTANGLE};
     shapeOfLabels mLabelShape;
 
+    void printNodeMap();
     //CLDataSet getDataSet(C_INT32 t);
   protected:
 

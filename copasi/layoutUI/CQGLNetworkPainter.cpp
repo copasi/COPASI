@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.27 $
+//   $Revision: 1.28 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/05/11 10:39:29 $
+//   $Date: 2007/05/14 08:33:43 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -178,11 +178,17 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
   labels = lP->getListOfTextGlyphs();
   std::cout << "number of labels " << labels.size() << std::endl;
   viewerLabels = std::vector<CLTextGlyph>();
+  std::map<std::string, CGraphNode>::iterator itNode;
   for (i = 0;i < labels.size();i++)
     {
       //cout << labels[i] << std::endl;
       //labels[i]->printLabel();
       viewerLabels.push_back(*labels[i]);
+      //std::cout << "label " << i << " : " << labels[i]->getGraphicalObjectKey() << std::endl;
+      itNode = nodeMap.find(labels[i]->getGraphicalObjectKey());
+      if (itNode != nodeMap.end())
+        (*itNode).second.setLabelText(labels[i]->getText());
+      //std::cout << "               " << labels[i]->getText() << std::endl;
     }
   CLPoint p1 = CLPoint(0.0, 0.0);
   CLPoint p2 = CLPoint(lP->getDimensions().getWidth(), lP->getDimensions().getHeight());
@@ -612,7 +618,7 @@ void CQGLNetworkPainter::createDataSets()
           C_FLOAT64 maxAll = 0.0;
           for (i = 0;i < timeSer.getNumVariables();i++) // iterate on reactants
             {
-              maxR = 0.0;
+              maxR = -std::numeric_limits<C_FLOAT64>::max();;
               minR = std::numeric_limits<C_FLOAT64>::max();
               name = timeSer.getTitle(i);
               objKey = timeSer.getKey(i);
@@ -638,6 +644,7 @@ void CQGLNetworkPainter::createDataSets()
             }
           pSummaryInfo->setMaxOverallConcentration(maxAll);
           std::cout << *pSummaryInfo;
+          this->printNodeMap();
         }
       else
         std::cout << "empty time series: no variables present" << std::endl;
@@ -1007,4 +1014,16 @@ void CQGLNetworkPainter::paintGL()
   //std::cout << "paint GL" << std::endl;
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear The Screen And The Depth Buffer
   draw();
+}
+
+void CQGLNetworkPainter::printNodeMap()
+{
+  std::cout << " node ids to label text mappings: " << std::endl;
+  std::map<std::string, CGraphNode>::iterator nodeIt;
+  nodeIt = nodeMap.begin();
+  while (nodeIt != nodeMap.end())
+    {
+      std::cout << (*nodeIt).first << "  :  " << (*nodeIt).second.getLabelText() << std::endl;
+      nodeIt++;
+    }
 }

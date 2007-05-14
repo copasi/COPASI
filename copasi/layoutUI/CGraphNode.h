@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CGraphNode.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/05/10 18:14:22 $
+//   $Date: 2007/05/14 08:33:43 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,7 +26,8 @@ class CGraphNode : public CLMetabGlyph
     C_FLOAT64 msize;
     std::string morigNodeKey;
     std::string mObjectKey; // corresponding sbml object key
-    std::vector<int> mConnectedCurveIndices; // indices of curves in CQGLNetworkPainter viewerNodes attached to the node
+
+    std::string mLabelText; // if node has a label, the string content should be stored here (additionally to label)
 
     CLPoint getPointOnRectangle(CLBoundingBox r, CLPoint p);
     //std::vector<int> mConnectedCurveIndices; // indices of curves in CQGLNetworkPainter viewerNodes attached to the node
@@ -53,17 +54,20 @@ class CGraphNode : public CLMetabGlyph
 
     std::string getOrigNodeKey(){return this->morigNodeKey;}
 
+    std::string getLabelText(){return this->mLabelText;}
+    void setLabelText(std::string name){this->mLabelText = name;}
+
     //std::vector<int> getCurveIndices(){return this->mConnectedCurveIndices;}
 
-    void addCurveIndex(int indx)
-    {
-      this->mConnectedCurveIndices.push_back(indx);
-    }
-
-    void addArrowIndex(int indx)
-    {
-      this->mConnectedCurveIndices.push_back(indx);
-    }
+    //    void addCurveIndex(int indx)
+    //    {
+    //      this->mConnectedCurveIndices.push_back(indx);
+    //}
+    //
+    //    void addArrowIndex(int indx)
+    //    {
+    //      this->mConnectedCurveIndices.push_back(indx);
+    //}
     //    void addCurveIndex(int indx)
     //    {
     //      this->mConnectedCurveIndices.push_back(indx);
