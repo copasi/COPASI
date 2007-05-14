@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTimeSeries.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/05/10 15:52:50 $
+//   $Date: 2007/05/14 08:55:29 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,8 +23,17 @@ class CModel;
 class CTimeSeries : private std::vector<CState>
   {
   public:
-
     CTimeSeries();
+
+  private:
+
+    //since copy concstructor and assignment operator are not properly implemented
+    //they should be inaccesible
+
+    CTimeSeries(const CTimeSeries &);
+    CTimeSeries & operator= (const CTimeSeries &);
+
+  public:
 
     //**** put data into time series ***
 
