@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.28 $
+//   $Revision: 1.29 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/05/14 08:33:43 $
+//   $Date: 2007/05/14 09:51:14 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -597,7 +597,7 @@ void CQGLNetworkPainter::createDataSets()
   if (CCopasiDataModel::Global != NULL)
     {
       CTrajectoryTask *ptask = dynamic_cast< CTrajectoryTask * >((*CCopasiDataModel::Global->getTaskList())["Time-Course"]);
-      CTimeSeries timeSer = ptask->getTimeSeries();
+      const CTimeSeries & timeSer = ptask->getTimeSeries();
       //if (timeSer.getNumSteps() > 0)
       if (timeSer.getNumVariables() > 0)
         {
@@ -616,6 +616,7 @@ void CQGLNetworkPainter::createDataSets()
           C_FLOAT64 minR;
           C_FLOAT64 maxR;
           C_FLOAT64 maxAll = 0.0;
+          // now get some info about the data set such as the maximum concentrartion values for each reactant
           for (i = 0;i < timeSer.getNumVariables();i++) // iterate on reactants
             {
               maxR = -std::numeric_limits<C_FLOAT64>::max();;
@@ -626,7 +627,7 @@ void CQGLNetworkPainter::createDataSets()
               if (iter != keyMap.end())
                 {// if there is a node (key)
                   ndKey = (keyMap.find(objKey))->second;
-                  for (int t = 0;t < 10;t++) // iterate on time steps t=0..n
+                  for (int t = 0;t < timeSer.getNumSteps();t++) // iterate on time steps t=0..n
                     {
                       val = timeSer.getConcentrationData(t, i);
                       if (val > maxR)
@@ -635,16 +636,15 @@ void CQGLNetworkPainter::createDataSets()
                         minR = val;
                     }
                   //std::cout << name << " : " << key << " : " << val << std::endl;
+                  pSummaryInfo->storeMax(ndKey, maxR);
+                  pSummaryInfo->storeMin(ndKey, minR);
+                  if (maxR > maxAll)
+                    maxAll = maxR;
                 }
-              pSummaryInfo->storeMax(ndKey, maxR);
-              pSummaryInfo->storeMin(ndKey, minR);
-              if (maxR > maxAll)
-                maxAll = maxR;
-              //std::cout << "-------------" << std::endl;
             }
           pSummaryInfo->setMaxOverallConcentration(maxAll);
-          std::cout << *pSummaryInfo;
-          this->printNodeMap();
+          //std::cout << *pSummaryInfo;
+          //this->printNodeMap();
         }
       else
         std::cout << "empty time series: no variables present" << std::endl;
