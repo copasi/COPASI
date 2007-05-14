@@ -1,10 +1,10 @@
 <chapter id="methods" xreflabel="Methods">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_methods.xml,v $ -->
-<!--   $Revision: 1.12 $ -->
+<!--   $Revision: 1.12.2.1 $ -->
 <!--   $Name:  $ -->
-<!--   $Author: shoops $ -->
-<!--   $Date: 2007/04/11 16:12:39 $ -->
+<!--   $Author: ssahle $ -->
+<!--   $Date: 2007/05/14 12:11:20 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -169,6 +169,10 @@ next desired reporting time. The default value is '10000'.
 <para>
 This stochastic simulation method utilizes the algorithm developed by Gibson and Bruck (see <citation>Gibson00</citation> for details). For each reaction a putative stochastic reaction time is calculated and the reaction with the shortest reaction time will be realized. The set of reactions is organized in a priority queue to allow for the efficient search for the fastest reaction. In addition, by using a so-called dependency graph only those reaction times are recalculated in each step, that are dependent on the reaction, which has been realized. This simulation method requires all the reactions to be irreversibe. However, Copasi provides a tool, that converts all reversible reactions into irreversible ones. Because the algorithm internally works on discrete particle numbers rather than concentrations, the particle numbers in the system must not exceed a value of approximately <inlineequation><mml:math><mml:msup><mml:mn>2</mml:mn><mml:mn>64</mml:mn></mml:msup></mml:math></inlineequation>.
 </para>
+<para>
+There is a restriction regarding global quantities: If a differential equation is provided for a global quantity (the quantity is of type "ode") the model cannot be simulated stochastically with the current version of COPASI. If the global quantity is of type "assignment" stochastical simulation is possible but not as efficient as for models without assignments. No restrictions apply for "fixed" global quantities.
+</para>
+
 
 <variablelist><title>Options for Stochastic (Gibson + Bruck)</title>
 <varlistentry><term>Max Internal Steps</term>
