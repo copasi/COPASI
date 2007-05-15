@@ -1,14 +1,16 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CDataEntity.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: urost $
-//   $Date: 2007/05/14 11:11:48 $
+//   $Author: shoops $
+//   $Date: 2007/05/15 13:46:35 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+
+#include <float.h>
 
 #include "CDataEntity.h"
 
@@ -36,5 +38,5 @@ C_FLOAT64 CDataEntity::getValueForSpecies(std::string nodeKey)
   if (it != mSpeciesValueMap.end())
     return (*it).second;
   else
-    return - std::numeric_limits<C_FLOAT64>::max();
+    return - DBL_MAX;
 }
