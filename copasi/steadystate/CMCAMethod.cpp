@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.cpp,v $
-//   $Revision: 1.39 $
+//   $Revision: 1.40 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/04/01 12:45:17 $
+//   $Author: shoops $
+//   $Date: 2007/05/15 13:46:08 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -11,7 +11,7 @@
 // All rights reserved.
 
 #include <cmath>
-#include <limits.h>
+#include <limits>
 #include <float.h>
 
 #include "copasi.h"

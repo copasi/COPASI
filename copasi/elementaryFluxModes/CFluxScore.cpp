@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CFluxScore.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/15 17:27:11 $
+//   $Date: 2007/05/15 13:46:07 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,7 +18,7 @@
  * (C) Stefan Hoops 2002
  */
 
-#include <limits.h>
+#include <limits>
 
 #include "copasi.h"
 #include "CFluxScore.h"

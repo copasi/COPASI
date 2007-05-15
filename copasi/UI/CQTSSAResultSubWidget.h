@@ -13,8 +13,8 @@
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQTSSAResultSubWidget.ui'
  **
- ** Created: Thu Apr 12 14:20:30 2007
- **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.5   edited Aug 31 12:13 $)
+ ** Created: Tue May 15 09:22:44 2007
+ **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.6   edited Aug 31 2005 $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
