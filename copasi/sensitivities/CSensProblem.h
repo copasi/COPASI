@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensProblem.h,v $
-   $Revision: 1.18 $
-   $Name:  $
-   $Author: ssahle $
-   $Date: 2007/01/11 09:33:59 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensProblem.h,v $
+//   $Revision: 1.19 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/05/15 12:36:26 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -64,8 +64,8 @@ class CSensProblem: public CCopasiProblem
     enum SubTaskType {
       Evaluation,
       SteadyState,
-      TimeSeries,
-      LyapunovExp
+      TimeSeries //,
+      //LyapunovExp
     };
 
     static const std::string SubTaskName[];

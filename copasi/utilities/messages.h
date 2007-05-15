@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.90 $
+//   $Revision: 1.91 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2007/04/12 12:45:07 $
+//   $Author: shoops $
+//   $Date: 2007/05/15 12:37:05 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,6 +30,7 @@ const MESSAGES Messages[] =
     // CCopasiVector
     {MCCopasiVector + 1, "CCopasiVector (1): Object '%s' not found."},
     {MCCopasiVector + 2, "CCopasiVector (2): Object '%s' already exists."},
+    {MCCopasiVector + 3, "CCopasiVector (3): Index '%d' out fo range (0, '%d')."},
 
     // CFunctionParameters
     {MCFunctionParameters + 1, "CFunctionParameters (1): The usage '%s' "
@@ -222,6 +223,7 @@ const MESSAGES Messages[] =
     {MCFitting + 8, "CFitting (8): Failure reading file '%s'."},
     {MCFitting + 9, "CFitting (9): Experiment '%s' has no data rows."},
     {MCFitting + 10, "CFitting (10): Experiment '%s' has no dependent data."},
+    {MCFitting + 11, "CFitting (11): Missing independent data for Experiment '%s' in row '%d'."},
 
     // CCopasiObject
     {MCObject + 1, "CObject (1): Circular dependencies detected for object '%s'."},

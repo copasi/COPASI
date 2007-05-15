@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/04/02 20:18:01 $
+//   $Author: shoops $
+//   $Date: 2007/05/15 12:36:53 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -262,7 +262,7 @@ CQArrayAnnotationsWidget::CQArrayAnnotationsWidget(QWidget* parent, const char* 
   mpSelectionTable->horizontalHeader()->hide();
   mpSelectionTable->setTopMargin(0);
   mpSelectionTable->setNumCols(2);
-  mpSelectionTable->setColumnStretchable(1, true);
+  //  mpSelectionTable->setColumnStretchable(1, true);
 
   mpSelectionTable->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 
@@ -312,6 +312,7 @@ void CQArrayAnnotationsWidget::setArrayAnnotation(const CArrayAnnotation * pArra
       mpSelectionTable->setText(0, 0, "Rows: ");
       mpSelectionTable->setText(0, 1, FROM_UTF8(mpArray->getDimensionDescription(0)));
       mpSelectionTable->adjustColumn(0);
+      mpSelectionTable->adjustColumn(1);
 
       fillTable(0, index);
     }
@@ -325,6 +326,7 @@ void CQArrayAnnotationsWidget::setArrayAnnotation(const CArrayAnnotation * pArra
       mpSelectionTable->setText(1, 0, "Columns: ");
       mpSelectionTable->setText(1, 1, FROM_UTF8(mpArray->getDimensionDescription(1)));
       mpSelectionTable->adjustColumn(0);
+      mpSelectionTable->adjustColumn(1);
 
       //std::cout << "width: " << mpSelectionTable->width()<< " height: " <<mpSelectionTable->height() << std::endl;
       //std::cout << "cwidth: " << mpSelectionTable->contentsWidth()<< " cheight: " <<mpSelectionTable->contentsHeight() << std::endl;
@@ -399,6 +401,14 @@ void CQArrayAnnotationsWidget::clearWidget()
   mpSelectionTable->setNumRows(0);
   mpContentTable->setNumCols(0);
   mpContentTable->setNumRows(0);
+}
+
+void CQArrayAnnotationsWidget::setLegendEnabled(bool b)
+{
+  if (b)
+    mpSelectionTable->show();
+  else
+    mpSelectionTable->hide();
 }
 
 C_INT32 CQArrayAnnotationsWidget::currentItem(C_INT32 row)
@@ -522,9 +532,11 @@ void CQArrayAnnotationsWidget::fillTable(unsigned C_INT32 rowIndex, unsigned C_I
     {
       mpContentTable->verticalHeader()->setLabel(i, FROM_UTF8(rowdescr[i]));
     }
+
   for (j = 0; j < jmax; ++j)
     {
-      mpContentTable->horizontalHeader()->setLabel(j, FROM_UTF8(coldescr[j]));
+      // :TODO: This is a hack we need a smarter way possibly using getObjctDisplayName.
+      mpContentTable->horizontalHeader()->setLabel(j, FROM_UTF8(coldescr[j]).replace("; {", "\n{"));
     }
 
   //automatic color scaling

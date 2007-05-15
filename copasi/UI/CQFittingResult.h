@@ -1,20 +1,20 @@
-/* Begin CVS Header
-   $Source: /home/cvs/copasi_dev/cvs_admin/c++style,v $
-   $Revision: 1.24 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/04 15:58:17 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /home/cvs/copasi_dev/copasi/UI/CQFittingResult.h,v $
+//   $Revision: 1.6.4.1 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/04/24 15:05:10 $
+// End CVS Header
 
-// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQFittingResult.ui'
  **
- ** Created: Mon Nov 20 11:50:13 2006
- **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.6   edited Aug 31 2005 $)
+ ** Created: Mon Apr 23 18:00:02 2007
+ **      by: The User Interface Compiler ($Id: CQFittingResult.h,v 1.6.4.1 2007/04/24 15:05:10 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -25,6 +25,7 @@
 #include <qvariant.h>
 #include "copasiWidget.h"
 #include "CQFittingResultTab1.h"
+#include "CQArrayAnnotationsWidget.h"
 
 class QVBoxLayout;
 class QHBoxLayout;
@@ -33,6 +34,7 @@ class QSpacerItem;
 class QTabWidget;
 class CQFittingResultTab1;
 class QTable;
+class CQArrayAnnotationsWidget;
 class QPushButton;
 class QLabel;
 class CFitTask;
@@ -51,7 +53,8 @@ class CQFittingResult : public CopasiWidget
     QTable* mpParameters;
     QTable* mpExperiments;
     QTable* mpValues;
-    QTable* mpCorrelations;
+    CQArrayAnnotationsWidget* mpCorrelations;
+    CQArrayAnnotationsWidget* mpFisherInformation;
     QTable* mpCrossValidations;
     QTable* mpCrossValidationValues;
     QPushButton* mpBtnSave;

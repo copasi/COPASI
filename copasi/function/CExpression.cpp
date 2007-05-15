@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.cpp,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/04/11 15:22:08 $
+//   $Date: 2007/05/15 12:36:11 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,7 +29,9 @@ CExpression::CExpression(const CExpression & src,
     CEvaluationTree(src, pParent),
     mpListOfContainer(NULL),
     mDisplayString(src.mDisplayString)
-{}
+{
+  compile();
+}
 
 CExpression::~CExpression() {}
 

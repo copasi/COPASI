@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
-//   $Author: urost $
-//   $Date: 2007/05/14 08:33:43 $
+//   $Author: shoops $
+//   $Date: 2007/05/15 12:36:11 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,6 +21,7 @@
 #include <qaction.h>
 #include <qevent.h>
 #include <qcolor.h>
+
 #include <vector>
 #include <string>
 #include <map>

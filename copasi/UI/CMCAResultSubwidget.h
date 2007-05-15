@@ -1,9 +1,9 @@
 // Begin CVS Header
-//   $Source: /home/cvs/copasi_dev/cvs_admin/addHeader,v $
-//   $Revision: 1.3 $
+//   $Source: /home/cvs/copasi_dev/copasi/UI/CMCAResultSubwidget.h,v $
+//   $Revision: 1.9.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/01/12 14:07:01 $
+//   $Date: 2007/04/16 14:39:19 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,8 +13,8 @@
 /****************************************************************************
  ** Form interface generated from reading ui file 'CMCAResultSubwidget.ui'
  **
- ** Created: Sa Mär 17 22:03:57 2007
- **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.5   edited Aug 31 12:13 $)
+ ** Created: Fri Apr 13 12:53:44 2007
+ **      by: The User Interface Compiler ($Id: CMCAResultSubwidget.h,v 1.9.2.1 2007/04/16 14:39:19 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -56,7 +56,6 @@ class CMCAResultSubwidget : public QWidget
     QWidget* TabPage;
     CQArrayAnnotationsWidget* mpArrayCCC;
 
-  public slots:
     virtual void loadAll(const CMCAMethod * mcaMethod);
     virtual void loadElasticities(const CMCAMethod * mcaMethod);
     virtual void loadConcentrationCCs(const CMCAMethod * mcaMethod);
@@ -64,6 +63,8 @@ class CMCAResultSubwidget : public QWidget
     virtual void clear();
 
   protected:
+    virtual void init();
+
     QVBoxLayout* CMCAResultSubwidgetLayout;
     QHBoxLayout* layout3;
     QHBoxLayout* tabLayout;
@@ -73,7 +74,6 @@ class CMCAResultSubwidget : public QWidget
   protected slots:
     virtual void languageChange();
 
-    virtual void init();
     virtual void slotSave();
     virtual void slotScaled();
 

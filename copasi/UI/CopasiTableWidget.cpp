@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.cpp,v $
-//   $Revision: 1.47 $
+//   $Revision: 1.48 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/16 19:55:37 $
+//   $Date: 2007/05/15 12:36:53 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -403,6 +403,9 @@ void CopasiTableWidget::resizeTable(const unsigned C_INT32 numRows)
   mFlagNew.resize(numRows);
   mFlagRenamed.resize(numRows);
   mFlagRO.resize(numRows);
+
+  if (numRows > 0)
+    table->setRowReadOnly(numRows - 1, false);
 }
 
 void CopasiTableWidget::updateRow(const C_INT32 row)

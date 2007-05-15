@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiVector.h,v $
-//   $Revision: 1.71 $
+//   $Revision: 1.72 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/03/09 09:58:54 $
+//   $Author: shoops $
+//   $Date: 2007/05/15 12:37:05 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,7 +20,6 @@
 #include <vector>
 #include <string>
 #include <iostream>
-#include <assert.h>
 
 #include "utilities/CCopasiMessage.h"
 #include "utilities/utility.h"
@@ -29,7 +28,6 @@
 #include "report/CCopasiContainer.h"
 
 class CReadConfig;
-//class CWriteConfig;
 
 template <class CType> class CCopasiVector;
 
@@ -48,7 +46,10 @@ template < class CType > class CCopasiVector:
 
     public:
       /**
-       *  Default constructor
+       * Default constructor
+       * @param const const std::string & name (Default: "NoName")
+       * @param const CCopasiContainer * pParent (Default: NULL)
+       * @param const unsigned C_INT32 & flag (Default: flag | CCopasiObject::Vector)
        */
       CCopasiVector(const std::string & name = "NoName",
                     const CCopasiContainer * pParent = NULL,
@@ -59,7 +60,9 @@ template < class CType > class CCopasiVector:
       {CONSTRUCTOR_TRACE;}
 
       /**
-       *  Copy constructor
+       * Copy constructor
+       * @param const CCopasiVector < CType > & src
+       * @param const CCopasiContainer * pParent (Default: NULL)
        */
       CCopasiVector(const CCopasiVector < CType > & src,
                     const CCopasiContainer * pParent = NULL):
@@ -68,8 +71,8 @@ template < class CType > class CCopasiVector:
       {
         CONSTRUCTOR_TRACE;
 
-        unsigned C_INT32 i, imax = ((std::vector< CType * > *)this)->size();
-        iterator Target = this->begin();
+        unsigned C_INT32 i, imax = size();
+        iterator Target = begin();
         const_iterator Source = src.begin();
 
         for (i = 0; i < imax; i++, Target++, Source++)
@@ -81,13 +84,20 @@ template < class CType > class CCopasiVector:
        */
       virtual ~CCopasiVector()
       {
-        this->cleanup();
+        cleanup();
         DESTRUCTOR_TRACE;
       }
 
+      /**
+       * Assignment operator. The effect of this operator is that both vectors will
+       * share the same objects. However, the parentship of the objects is not affected
+       * This means that the assigned vector must be used with some care.
+       * @param const CCopasiVector< CType > & rhs
+       * @return CCopasiVector< CType > & lhs
+       */
       CCopasiVector< CType > & operator = (const CCopasiVector< CType > & rhs)
       {
-        this->cleanup();
+        cleanup();
 
         const_iterator it = rhs.begin();
         const_iterator end = rhs.end();
@@ -98,13 +108,18 @@ template < class CType > class CCopasiVector:
         return *this;
       }
 
+      /**
+       * This creates a deep copy of the source, i.e., all objects are copied and
+       * the parent of these copies is the current vector.
+       * @param const CCopasiVector< CType > & source
+       */
       void deepCopy(const CCopasiVector< CType > & source)
       {
-        this->cleanup();
-        this->resize(source.size());
+        cleanup();
+        resize(source.size());
 
-        unsigned C_INT32 i, imax = ((std::vector< CType * > *)this)->size();
-        iterator Target = this->begin();
+        unsigned C_INT32 i, imax = size();
+        iterator Target = begin();
         const_iterator Source = source.begin();
 
         for (i = 0; i < imax; i++, Target++, Source++)
@@ -128,8 +143,8 @@ template < class CType > class CCopasiVector:
        */
       virtual void cleanup()
       {
-        iterator it = this->begin();
-        iterator End = this->end();
+        iterator it = begin();
+        iterator End = end();
 
         for (; it != End; it++)
           if (*it)
@@ -142,11 +157,13 @@ template < class CType > class CCopasiVector:
                 *it = NULL;
               }
 
-        this->clear();
+        CCopasiVector< CType >::clear();
       }
 
       /**
-       *
+       * Add a copy of the object to the end of the vector.
+       * @param const CType & src
+       * @return bool success.
        */
       virtual bool add(const CType & src)
       {
@@ -159,15 +176,21 @@ template < class CType > class CCopasiVector:
       }
 
       /**
-       *
+       * Swap two objects in the vector.
+       * @param const unsigned C_INT32 & indexFrom
+       * @param const unsigned C_INT32 & indexTo
        */
-      virtual void swap(unsigned C_INT32 indexFrom, unsigned C_INT32 indexTo)
+      virtual void swap(const unsigned C_INT32 & indexFrom, const unsigned C_INT32 & indexTo)
       {
-        assert(indexFrom < ((std::vector< CType * > *)this)->size());
-        assert(indexTo < ((std::vector< CType * > *)this)->size());
+        unsigned C_INT32 Size = size();
+        if (!(indexFrom < Size))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCCopasiVector + 3, indexFrom, Size - 1);
 
-        iterator from = this->begin() + indexFrom;
-        iterator to = this->begin() + indexTo;
+        if (!(indexTo < Size))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCCopasiVector + 3, indexTo, Size - 1);
+
+        iterator from = begin() + indexFrom;
+        iterator to = begin() + indexTo;
 
         value_type tmp = *from;
         *from = *to;
@@ -175,7 +198,11 @@ template < class CType > class CCopasiVector:
       }
 
       /**
-       *
+       * Add an object to the end of the vector, if adobt is true the vector.
+       * becomes the parent of the object.
+       * @param CType * src
+       * @param const bool & adopt (Default: false)
+       * @return bool success
        */
       virtual bool add(CType * src, bool adopt = false)
       {
@@ -187,12 +214,14 @@ template < class CType > class CCopasiVector:
 
       /**
        *  Removes the index-th element from the vector
-       *  @param "const unsigned C_INT32 &" indecx
+       *  @param const unsigned C_INT32 & index
        */
       virtual void remove(const unsigned C_INT32 & index)
       {
-        iterator Target = this->begin() + index;
-        assert(index < ((std::vector< CType * > *)this)->size());
+        if (!(index < size()))
+          return;
+
+        iterator Target = begin() + index;
 
         if (*Target)
           {
@@ -209,38 +238,54 @@ template < class CType > class CCopasiVector:
           }
       }
 
+      /**
+       * Removes the pointed to object from the vector
+       * @param CCopasiObject * pObject
+       * @return bool success
+       */
       virtual bool remove(CCopasiObject * pObject)
       {
         const unsigned C_INT32 index = getIndex(pObject);
-        if (index == C_INVALID_INDEX) return false;
 
-        iterator Target = this->begin() + index;
-        assert(index < ((std::vector< CType * > *)this)->size());
+        bool success = true;
 
-        if (*Target)
-          CCopasiContainer::remove(*Target);
+        if (index != C_INVALID_INDEX)
+          {
+            iterator Target = begin() + index;
+            erase(Target, Target + 1);
 
-        erase(Target, Target + 1);
+            success = false;
+          }
 
-        return true;
+        success &= CCopasiContainer::remove(pObject);
+
+        return success;
       }
 
       /**
-       *
+       * Retrieve the indexed object.
+       * @param const unsigned C_INT32 & index
+       * @return const value_type & object
        */
-      const value_type operator[](unsigned C_INT32 index) const
+      const value_type & operator[](const unsigned C_INT32 & index) const
         {
-          assert(index < ((std::vector< CType * > *)this)->size());
-          return *(this->begin() + index);
+          if (!(index < size()))
+            CCopasiMessage(CCopasiMessage::EXCEPTION, MCCopasiVector + 3, index, size() - 1);
+
+          return *(begin() + index);
         }
 
       /**
-       *
+       * Retrieve the indexed object.
+       * @param const unsigned C_INT32 & index
+       * @return value_type & object
        */
-      value_type & operator[](unsigned C_INT32 index)
+      value_type & operator[](const unsigned C_INT32 & index)
       {
-        assert(index < ((std::vector< CType * > *)this)->size());
-        return *(this->begin() + index);
+        if (!(index < size()))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCCopasiVector + 3, index, size() - 1);
+
+        return *(begin() + index);
       }
 
       /**
@@ -254,7 +299,7 @@ template < class CType > class CCopasiVector:
 
           if (Index < size())
             {
-              CCopasiObject * pObject = *(this->begin() + Index);
+              CCopasiObject * pObject = *(begin() + Index);
 
               if (name.getObjectType() == pObject->getObjectType())
                 return pObject; //exact match of type and name
@@ -268,47 +313,47 @@ template < class CType > class CCopasiVector:
 
       /**
        *  Retrieves the size of the vector
-       *  @return "unsigned C_INT32" size
+       *  @return unsigned C_INT32 size
        */
       virtual unsigned C_INT32 size() const
-      {return ((std::vector< CType * > *)this)->size();}
+      {return static_cast< const std::vector< CType * > * >(this)->size();}
 
       /**
        *  Resizes the vector
-       *  @param "unsigned C_INT32" size
-       *  @param
+       *  @param const unsigned C_INT32 & newSize
+       *  @param const bool & allocate (Default: true)
        */
-      virtual void resize(unsigned C_INT32 size,
+      virtual void resize(const unsigned C_INT32 & newSize,
                           const bool & allocate = true)
       {
-        unsigned C_INT32 OldSize = ((std::vector< CType * > *)this)->size();
+        unsigned C_INT32 OldSize = size();
 
-        if (OldSize == size) return; // Nothing to do.
+        if (OldSize == newSize) return; // Nothing to do.
 
-        if (OldSize < size)
+        if (OldSize < newSize)
           {
-            ((std::vector< CType * > *)this)->resize(size);
+            static_cast< std::vector< CType * > * >(this)->resize(newSize);
+
             unsigned C_INT32 i;
-            iterator Target = this->begin() + OldSize;
+            iterator Target = begin() + OldSize;
 
             if (allocate)
-              for (i = OldSize; i < size; i++, Target++)
+              for (i = OldSize; i < newSize; i++, Target++)
                 *Target = new CType("NoName", this);
             else
-              for (i = OldSize; i < size; i++, Target++)
+              for (i = OldSize; i < newSize; i++, Target++)
                 *Target = NULL;
           }
         else
           {
-            iterator Target = this->begin() + size;
-            iterator End = this->end();
+            iterator Target = begin() + newSize;
+            iterator End = end();
 
             for (; Target != End; Target++)
               if (*Target)
                 {
                   if ((*Target)->getObjectParent() == this)
                     {
-                      //                      (*Target)->cleanup();
                       CCopasiContainer::remove(*Target);
                       (*Target)->setObjectParent(NULL);
                       delete *Target;
@@ -317,23 +362,33 @@ template < class CType > class CCopasiVector:
                     CCopasiContainer::remove(*Target);
                 }
 
-            ((std::vector< CType * > *)this)->resize(size);
+            static_cast< std::vector< CType * > * >(this)->resize(newSize);
           }
       }
 
       /**
-       *
+       * Retrieve the index of the pointed to object in the vector. If the object
+       * is not found C_INVALID_INDEX is returned.
+       * @param const CCopasiObject * pObject
+       * @return unsigned C_INT32 index
        */
       virtual unsigned C_INT32 getIndex(const CCopasiObject * pObject) const
         {
           unsigned C_INT32 i, imax = size();
-          const_iterator Target = this->begin();
+          const_iterator Target = begin();
 
           for (i = 0; i < imax; i++, Target++)
             if (*Target == (void *) pObject) return i;
 
           return C_INVALID_INDEX;
         }
+
+      /**
+       * ostream operator
+       * @param std::ostream & os
+       * @param const CCopasiVector<CType> & d
+       * @return std::ostream & os
+       */
 #ifdef WIN32
       friend std::ostream &operator << (std::ostream &os,
                                         const CCopasiVector<CType> & d);
@@ -351,17 +406,20 @@ template < class CType > class CCopasiVectorS: public CCopasiVector < CType >
       typedef typename std::vector< CType * >::const_iterator const_iterator;
 
       // Operations
-
     public:
       /**
-       *  Default constructor
+       * Default constructor
+       * @param const std::string & name (Default: "NoName")
+       * @param const CCopasiContainer * pParent (Default: NULL)
        */
       CCopasiVectorS(const std::string & name = "NoName",
                      const CCopasiContainer * pParent = NULL):
       CCopasiVector< CType >(name, pParent){}
 
       /**
-       *  Copy constructor
+       * Copy constructor
+       * @param const CCopasiVectorS < CType > & src
+       * @param const CCopasiContainer * pParent (Default: NULL)
        */
       CCopasiVectorS(const CCopasiVectorS < CType > & src,
                      const CCopasiContainer * pParent = NULL) :
@@ -373,53 +431,27 @@ template < class CType > class CCopasiVectorS: public CCopasiVector < CType >
       virtual ~CCopasiVectorS() {}
 
       /**
-       *  Loads an object with data coming from a CReadConfig object.
-       *  (CReadConfig object reads an input stream)
-       *  @param "CReadConfig &" configbuffer reference to a CReadConfig object
-       *  @param "const unsigend C_INT32 &" size
+       * Loads an object with data coming from a CReadConfig object.
+       * (CReadConfig object reads an input stream)
+       * @param CReadConfig & configbuffer
+       * @param const unsigend C_INT32 & size
        */
       virtual void load(CReadConfig & configbuffer, unsigned C_INT32 size)
       {
         unsigned C_INT32 i;
 
-        this->cleanup();
-        ((std::vector< CType * > *)this)->resize(size);
+        CCopasiVector< CType >::cleanup();
+        CCopasiVector< CType >::resize(size, false);
 
-        iterator Target = this->begin();
+        iterator Target = CCopasiVector< CType >::begin();
         for (i = 0; i < size; i++, Target++)*Target = NULL;
 
-        for (i = 0, Target = this->begin(); i < size; i++, Target++)
+        for (i = 0, Target = CCopasiVector< CType >::begin(); i < size; i++, Target++)
           {
             *Target = new CType("NoName", this);
             (*Target)->load(configbuffer);
           }
       }
-
-      /**
-       *  Saves the contents of the object to a CWriteConfig object.
-       *  (Which usually has a file attached but may also have socket)
-       *  @param "CWriteConfig &" configbuffer reference to a CWriteConfig object.
-       */
-      /*virtual void save(CWriteConfig & configbuffer)
-      {
-        unsigned C_INT32 i, imax = size();
-        iterator Target = this->begin();
-
-        for (i = 0; i < imax; i++, Target++)
-          (*Target)->save(configbuffer);
-      }*/
-
-      /**
-       *
-       */
-      value_type & operator[](unsigned C_INT32 index)
-      {return ((CCopasiVector <CType>*) this)->operator[](index);}
-
-      /**
-       *
-       */
-      const value_type operator[](unsigned C_INT32 index) const
-        {return ((CCopasiVector <CType>*) this)->operator[](index);}
     };
 
 template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
@@ -430,10 +462,11 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
       typedef typename std::vector< CType * >::const_iterator const_iterator;
 
       // Operations
-
     public:
       /**
-       *  Default constructor
+       * Default constructor
+       * @param const std::string & name (Default: "NoName")
+       * @param const CCopasiContainer * pParent (Default: NULL)
        */
       CCopasiVectorN(const std::string & name = "NoName",
                      const CCopasiContainer * pParent = NULL):
@@ -444,7 +477,9 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
       {}
 
       /**
-       *  Copy constructor
+       * Copy constructor
+       * @param const CCopasiVectorN < CType > & src
+       * @param const CCopasiContainer * pParent (Default: NULL)
        */
       CCopasiVectorN(const CCopasiVectorN < CType > & src,
                      const CCopasiContainer * pParent = NULL) :
@@ -457,9 +492,10 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
       virtual ~CCopasiVectorN() {}
 
       /**
-       *
+       * Add a copy of the object to the end of the vector.
+       * @param const CType & src
+       * @return bool success.
        */
-
       virtual bool add(const CType & src)
       {
         if (!isInsertAllowed(&src))
@@ -476,9 +512,13 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
       }
 
       /**
-       *
+       * Add an object to the end of the vector, if adobt is true the vector.
+       * becomes the parent of the object.
+       * @param CType * src
+       * @param const bool & adopt (Default: false)
+       * @return bool success
        */
-      virtual bool add(CType * src, bool adopt = false)
+      virtual bool add(CType * src, const bool & adopt = false)
       {
         if (!isInsertAllowed(src))
           {
@@ -486,6 +526,7 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
                            MCCopasiVector + 2, src->getObjectName().c_str());
             return false;
           }
+
         // This is not very efficient !!!
         // It results in a lot of resizing of the vector !!!
         push_back(src);
@@ -493,7 +534,8 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
       }
 
       /**
-       *
+       * Remove the object with the given name from the vector.
+       * @param const std::string & name
        */
       virtual void remove(const std::string & name)
       {
@@ -511,21 +553,27 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
       }
 
       /**
-       *
+       * Retrieve the indexed object.
+       * @param const unsigned C_INT32 & index
+       * @return value_type & object
        */
-      value_type & operator[](unsigned C_INT32 index)
-      {return ((CCopasiVector <CType>*) this)->operator[](index);}
+      value_type & operator[](const unsigned C_INT32 & index)
+      {return CCopasiVector< CType >::operator[](index);}
 
       /**
-       *
+       * Retrieve the indexed object.
+       * @param const unsigned C_INT32 & index
+       * @return const value_type & object
        */
-      const value_type operator[](unsigned C_INT32 index) const
-        {return ((CCopasiVector <CType>*) this)->operator[](index);}
+      const value_type & operator[](const unsigned C_INT32 & index) const
+        {return CCopasiVector< CType >::operator[](index);}
 
       /**
-       *
+       * Retrieve the named object.
+       * @param const std::string & name
+       * @return value_type & object
        */
-      value_type & operator[](const std::string &name)
+      value_type & operator[](const std::string & name)
       {
         unsigned C_INT32 Index = getIndex(name);
 
@@ -533,13 +581,15 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
           CCopasiMessage(CCopasiMessage::EXCEPTION,
                          MCCopasiVector + 1, name.c_str());
 
-        return *(this->begin() + Index);
+        return *(CCopasiVector< CType >::begin() + Index);
       }
 
       /**
-       *
+       * Retrieve the named object.
+       * @param const std::string & name
+       * @return const value_type & object
        */
-      const value_type operator[](const std::string &name) const
+      const value_type & operator[](const std::string &name) const
         {
           C_INT32 Index = getIndex(name);
 
@@ -547,18 +597,20 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
             CCopasiMessage(CCopasiMessage::EXCEPTION,
                            MCCopasiVector + 1, name.c_str());
 
-          return *(this->begin() + Index);
+          return *(CCopasiVector< CType >::begin() + Index);
         }
 
       /**
-       *
+       * Retrieve a pointer to the named object.
+       * @param const std::string & name
+       * @return const CCopasiObject * pObject
        */
       virtual const CCopasiObject * getObject(const CCopasiObjectName &name) const
         {
           C_INT32 Index = getIndex(name.getElementName(0));
           if (Index == -1) return NULL;
 
-          CCopasiObject * pObject = *(this->begin() + Index);
+          CCopasiObject * pObject = *(CCopasiVector< CType >::begin() + Index);
 
           if (name.getObjectType() == pObject->getObjectType())
             return pObject; //exact match of type and name
@@ -579,12 +631,15 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
         }
 
       /**
-       *
+       * Retrieve the index of the named object in the vector. If an object with the
+       * given name is not found C_INVALID_INDEX is returned.
+       * @param const std::string & name
+       * @return unsigned C_INT32 index
        */
       virtual unsigned C_INT32 getIndex(const std::string &name) const
         {
-          unsigned C_INT32 i, imax = this->size();
-          const_iterator Target = this->begin();
+          unsigned C_INT32 i, imax = CCopasiVector< CType >::size();
+          const_iterator Target = CCopasiVector< CType >::begin();
 
           std::string Name = unQuote(name);
           for (i = 0; i < imax; i++, Target++)
@@ -597,7 +652,10 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
 
     private:
       /**
-       *
+       * Check whether an insert of the given src into the vector is allowed
+       * to avoid naming conflicts.
+       * @param const CType * src
+       * @return bool insertAllowed
        */
       virtual bool isInsertAllowed(const CType * src)
     {return (getIndex(src->getObjectName()) == C_INVALID_INDEX);}
@@ -611,10 +669,11 @@ template < class CType > class CCopasiVectorNS: public CCopasiVectorN < CType >
       typedef typename std::vector< CType * >::const_iterator const_iterator;
 
       // Operations
-
     public:
       /**
-       *  Default constructor
+       * Default constructor
+       * @param const std::string & name (Default: "NoName")
+       * @param const CCopasiContainer * pParent (Default: NULL)
        */
       CCopasiVectorNS(const std::string & name = "NoName",
                       const CCopasiContainer * pParent = NULL):
@@ -622,7 +681,9 @@ template < class CType > class CCopasiVectorNS: public CCopasiVectorN < CType >
       {}
 
       /**
-       *  Copy constructor
+       * Copy constructor
+       * @param const CCopasiVectorNS < CType > & src
+       * @param const CCopasiContainer * pParent (Default: NULL)
        */
       CCopasiVectorNS(const CCopasiVectorNS < CType > & src,
                       const CCopasiContainer * pParent = NULL) :
@@ -636,69 +697,25 @@ template < class CType > class CCopasiVectorNS: public CCopasiVectorN < CType >
       /**
        *  Loads an object with data coming from a CReadConfig object.
        *  (CReadConfig object reads an input stream)
-       *  @param "CReadConfig &" configbuffer reference to a CReadConfig object
-       *  @param "const unsigend C_INT32 &" size
+       *  @param CReadConfig & configbuffer
+       *  @param const unsigend C_INT32 & size
        */
       virtual void load(CReadConfig & configbuffer, unsigned C_INT32 size)
       {
         unsigned C_INT32 i;
 
-        this->cleanup();
-        ((std::vector< CType * >*)this)->resize(size);
+        CCopasiVector< CType >::cleanup();
+        CCopasiVector< CType >::resize(size, false);
 
-        iterator Target = this->begin();
+        iterator Target = CCopasiVector< CType >::begin();
         for (i = 0; i < size; i++, Target++) *Target = NULL;
 
-        for (i = 0, Target = this->begin(); i < size; i++, Target++)
+        for (i = 0, Target = CCopasiVector< CType >::begin(); i < size; i++, Target++)
           {
             *Target = new CType("NoName", this);
             (*Target)->load(configbuffer);
           }
       }
-
-      /**
-       *  Saves the contents of the object to a CWriteConfig object.
-       *  (Which usually has a file attached but may also have socket)
-       *  @param "CWriteConfig &" configbuffer reference to a CWriteConfig object.
-       */
-      /*virtual void save(CWriteConfig & configbuffer)
-      {
-        unsigned C_INT32 i, imax = size();
-        iterator Target = begin();
-
-        for (i = 0; i < imax; i++, Target++)
-          (*Target)->save(configbuffer);
-      }*/
-
-      /**
-       *
-       */
-      value_type & operator[](unsigned C_INT32 index)
-      {return ((CCopasiVector <CType>*) this)->operator[](index);}
-
-      /**
-       *
-       */
-      const value_type operator[](unsigned C_INT32 index) const
-        {return ((const CCopasiVector <CType>*) this)->operator[](index);}
-
-      /**
-       *
-       */
-      value_type & operator[](const std::string &name)
-      {return ((CCopasiVectorN <CType>*) this)->operator[](name);}
-
-      /**
-       *
-       */
-      const value_type operator[](const std::string &name) const
-        {return ((CCopasiVectorN <CType>*) this)->operator[](name);}
-
-    private:
-
-      /** @associates <{CCopasiVectorS< CType >}>
-       * @directed*/
-      /*# int lnkCCopasiVectorS; */
     };
 
 template <class CType>

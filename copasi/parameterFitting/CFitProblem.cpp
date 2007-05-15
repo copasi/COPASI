@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-   $Revision: 1.44 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2007/01/11 17:32:38 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
+//   $Revision: 1.45 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/05/15 12:36:25 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -28,6 +28,7 @@
 #include "trajectory/CTrajectoryProblem.h"
 #include "utilities/CProcessReport.h"
 #include "utilities/CCopasiException.h"
+#include "utilities/CAnnotatedMatrix.h"
 
 #include "blaswrap.h"           //use blas
 #include "clapackwrap.h"        //use CLAPACK
@@ -60,11 +61,14 @@ CFitProblem::CFitProblem(const CCopasiTask::Type & type,
     mRMS(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
     mSD(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
     mParameterSD(0),
-    mFisher(0, 0)
+    mFisher(0, 0),
+    mpFisherMatrixInterface(NULL),
+    mpFisherMatrix(NULL),
+    mCorrelation(0, 0),
+    mpCorrelationMatrixInterface(NULL),
+    mpCorrelationMatrix(NULL)
 {
-#ifdef COPASI_CROSSVALIDATION
   initObjects();
-#endif // COPASI_CROSSVALIDATION
   initializeParameter();
 }
 
@@ -96,11 +100,14 @@ CFitProblem::CFitProblem(const CFitProblem& src,
     mRMS(src.mRMS),
     mSD(src.mSD),
     mParameterSD(src.mParameterSD),
-    mFisher(src.mFisher)
+    mFisher(src.mFisher),
+    mpFisherMatrixInterface(NULL),
+    mpFisherMatrix(NULL),
+    mCorrelation(src.mCorrelation),
+    mpCorrelationMatrixInterface(NULL),
+    mpCorrelationMatrix(NULL)
 {
-#ifdef COPASI_CROSSVALIDATION
   initObjects();
-#endif // COPASI_CROSSVALIDATION
   initializeParameter();
 }
 
@@ -109,6 +116,30 @@ CFitProblem::~CFitProblem()
 {
   pdelete(mpTrajectoryProblem);
   pdelete(mpInitialState);
+  pdelete(mpCorrelationMatrixInterface);
+  pdelete(mpCorrelationMatrix);
+}
+
+void CFitProblem::initObjects()
+{
+#ifdef COPASI_CROSSVALIDATION
+  addObjectReference("Cross Validation Solution", mCrossValidationSolutionValue, CCopasiObject::ValueDbl);
+  addObjectReference("Cross Validation Objective", mCrossValidationObjective, CCopasiObject::ValueDbl);
+#endif // COPASI_CROSSVALIDATION
+
+  mpFisherMatrixInterface = new CCopasiMatrixInterface< CMatrix< C_FLOAT64 > >(&mFisher);
+  mpFisherMatrix = new CArrayAnnotation("Fisher Information Matrix", this, mpFisherMatrixInterface);
+  mpFisherMatrix->setDescription("Fisher Information Matrix");
+  mpFisherMatrix->setDimensionDescription(0, "Parameters");
+  mpFisherMatrix->setDimensionDescription(1, "Parameters");
+  mpFisherMatrix->setMode(CArrayAnnotation::STRINGS);
+
+  mpCorrelationMatrixInterface = new CCopasiMatrixInterface< CMatrix< C_FLOAT64 > >(&mCorrelation);
+  mpCorrelationMatrix = new CArrayAnnotation("Correlation Matrix", this, mpCorrelationMatrixInterface);
+  mpCorrelationMatrix->setDescription("Correlation Matrix");
+  mpCorrelationMatrix->setDimensionDescription(0, "Parameters");
+  mpCorrelationMatrix->setDimensionDescription(1, "Parameters");
+  mpCorrelationMatrix->setMode(CArrayAnnotation::STRINGS);
 }
 
 void CFitProblem::initializeParameter()
@@ -321,10 +352,19 @@ bool CFitProblem::initialize()
   unsigned C_INT32 j;
   unsigned C_INT32 Index;
 
+  imax = mSolutionVariables.size();
+
+  mFisher.resize(imax, imax);
+  mpFisherMatrix->resize();
+  mCorrelation.resize(imax, imax);
+  mpCorrelationMatrix->resize();
+
   for (j = 0; it != end; ++it, j++)
     {
       pItem = static_cast<CFitItem *>(*it);
       pItem->updateBounds(mpOptItems->begin());
+
+      std::string Annotation = pItem->getObjectDisplayName();
 
       imax = pItem->getExperimentCount();
       if (imax == 0)
@@ -334,6 +374,8 @@ bool CFitProblem::initialize()
         }
       else
         {
+          Annotation += "; {" + pItem->getExperiments() + "}";
+
           for (i = 0; i < imax; i++)
             {
               if ((Index = mpExperimentSet->keyToIndex(pItem->getExperiment(i))) == C_INVALID_INDEX)
@@ -341,6 +383,11 @@ bool CFitProblem::initialize()
               mExperimentUpdateMethods(Index, j) = pItem->COptItem::getUpdateMethod();
             };
         }
+
+      mpFisherMatrix->setAnnotationString(0, j, Annotation);
+      mpFisherMatrix->setAnnotationString(1, j, Annotation);
+      mpCorrelationMatrix->setAnnotationString(0, j, Annotation);
+      mpCorrelationMatrix->setAnnotationString(1, j, Annotation);
     }
 
   // Build a matrix of experiment and constraint items;
@@ -831,7 +878,6 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
   mParameterSD.resize(imax);
   mParameterSD = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
-  mFisher.resize(imax, imax);
   mFisher = std::numeric_limits<C_FLOAT64>::quiet_NaN();
   mGradient.resize(imax);
   mGradient = std::numeric_limits<C_FLOAT64>::quiet_NaN();
@@ -928,6 +974,8 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
           mFisher(l, i) = tmp;
       }
 
+  mCorrelation = mFisher;
+
 #ifdef XXXX
   /* int dgetrf_(integer *m,
    *             integer *n,
@@ -984,10 +1032,10 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
 
   CVector< C_INT > ipiv(imax);
 
-  dgetrf_(&N, &N, mFisher.array(), &N, ipiv.array(), &info);
+  dgetrf_(&N, &N, mCorrelation.array(), &N, ipiv.array(), &info);
   if (info)
     {
-      mFisher = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+      mCorrelation = std::numeric_limits<C_FLOAT64>::quiet_NaN();
       mParameterSD = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
       CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 1, info);
@@ -1051,10 +1099,10 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
   CVector< C_FLOAT64 > work;
   work.resize(1);
 
-  dgetri_(&N, mFisher.array(), &N, ipiv.array(), work.array(), &lwork, &info);
+  dgetri_(&N, mCorrelation.array(), &N, ipiv.array(), work.array(), &lwork, &info);
   if (info)
     {
-      mFisher = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+      mCorrelation = std::numeric_limits<C_FLOAT64>::quiet_NaN();
       mParameterSD = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
       CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 1, info);
@@ -1065,10 +1113,10 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
   lwork = (C_INT) work[0];
   work.resize(lwork);
 
-  dgetri_(&N, mFisher.array(), &N, ipiv.array(), work.array(), &lwork, &info);
+  dgetri_(&N, mCorrelation.array(), &N, ipiv.array(), work.array(), &lwork, &info);
   if (info)
     {
-      mFisher = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+      mCorrelation = std::numeric_limits<C_FLOAT64>::quiet_NaN();
       mParameterSD = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
       CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 1, info);
@@ -1078,7 +1126,6 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
 
 #endif // XXXX
 
-#ifdef XXXX
   // The Fisher Information matrix is a symmetric positive semidefinit matrix.
 
   /* int dpotrf_(char *uplo, integer *n, doublereal *a,
@@ -1136,10 +1183,10 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
   C_INT info = 0;
   C_INT N = imax;
 
-  dpotrf_(&U, &N, mFisher.array(), &N, &info);
+  dpotrf_(&U, &N, mCorrelation.array(), &N, &info);
   if (info)
     {
-      mFisher = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+      mCorrelation = std::numeric_limits<C_FLOAT64>::quiet_NaN();
       mParameterSD = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
       CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 1, info);
@@ -1186,10 +1233,10 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
    *
    */
 
-  dpotri_(&U, &N, mFisher.array(), &N, &info);
+  dpotri_(&U, &N, mCorrelation.array(), &N, &info);
   if (info)
     {
-      mFisher = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+      mCorrelation = std::numeric_limits<C_FLOAT64>::quiet_NaN();
       mParameterSD = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
       CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 1, info);
@@ -1200,9 +1247,11 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
 
   for (i = 0; i < imax; i++)
     for (l = 0; l < i; l++)
-      mFisher(l, i) = mFisher(i, l);
-#endif // XXXX
+      mCorrelation(l, i) = mCorrelation(i, l);
 
+  CVector< C_FLOAT64 > S(imax);
+
+#ifdef XXXX
   // We invert the Fisher information matrix with the help of singular
   // value decomposition.
 
@@ -1342,12 +1391,12 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
   CVector< C_FLOAT64 > work;
   work.resize(1);
 
-  dgesvd_(&job, &job, &N, &N, mFisher.array(), &N, S.array(), U.array(),
+  dgesvd_(&job, &job, &N, &N, mCorrelation.array(), &N, S.array(), U.array(),
           &N, VT.array(), &N, work.array(), &lwork, &info);
 
   if (info)
     {
-      mFisher = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+      mCorrelation = std::numeric_limits<C_FLOAT64>::quiet_NaN();
       mParameterSD = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
       CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 1, info);
@@ -1358,15 +1407,15 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
   lwork = (C_INT) work[0];
   work.resize(lwork);
 
-  // This actually calculates the SVD of mFisher^T, since dgesvd uses
-  // fortran notation, i.e., mFisher = V^T * B^T * U
-  dgesvd_(&job, &job, &N, &N, mFisher.array(), &N, S.array(), U.array(),
+  // This actually calculates the SVD of mCorrelation^T, since dgesvd uses
+  // fortran notation, i.e., mCorrelation = V^T * B^T * U
+  dgesvd_(&job, &job, &N, &N, mCorrelation.array(), &N, S.array(), U.array(),
           &N, VT.array(), &N, work.array(), &lwork, &info);
 
   // Even if info is not zero we are still able to invert
   if (info)
     {
-      mFisher = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+      mCorrelation = std::numeric_limits<C_FLOAT64>::quiet_NaN();
       mParameterSD = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
       CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 1, info);
@@ -1378,12 +1427,12 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
   // that we are calculating a pseudo inverse in the case that one or
   // more singular values are zero.
 
-  mFisher = 0.0;
+  mCorrelation = 0.0;
   for (i = 0; i < imax; i++)
     if (S[i] == 0.0)
-      mFisher(i, i) = 0.0;
+      mCorrelation(i, i) = 0.0;
     else
-      mFisher(i, i) = 1.0 / S[i];
+      mCorrelation(i, i) = 1.0 / S[i];
 
   CMatrix< C_FLOAT64 > Tmp(imax, imax);
 
@@ -1393,32 +1442,38 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
   C_FLOAT64 Beta = 0.0;
 
   dgemm_(&opN, &opN, &N, &N, &N, &Alpha, U.array(), &N,
-         mFisher.array(), &N, &Beta, Tmp.array(), &N);
+         mCorrelation.array(), &N, &Beta, Tmp.array(), &N);
 
   dgemm_(&opN, &opN, &N, &N, &N, &Alpha, Tmp.array(), &N,
-         VT.array(), &N, &Beta, mFisher.array(), &N);
+         VT.array(), &N, &Beta, mCorrelation.array(), &N);
+#endif // XXXX
 
   // rescale the lower bound of the covariant matrix to have unit diagonal
   for (i = 0; i < imax; i++)
     {
       C_FLOAT64 & tmp = S[i];
 
-      if (mFisher(i, i) != 0.0)
+      if (mCorrelation(i, i) > 0.0)
         {
-          tmp = 1.0 / sqrt(mFisher(i, i));
+          tmp = 1.0 / sqrt(mCorrelation(i, i));
+          mParameterSD[i] = mSD / tmp;
+        }
+      else if (mCorrelation(i, i) < 0.0)
+        {
+          tmp = 1.0 / sqrt(- mCorrelation(i, i));
           mParameterSD[i] = mSD / tmp;
         }
       else
         {
           mParameterSD[i] = mInfinity;
           tmp = 1.0;
-          mFisher(i, i) = 1.0;
+          mCorrelation(i, i) = 1.0;
         }
     }
 
   for (i = 0; i < imax; i++)
     for (l = 0; l < imax; l++)
-      mFisher(i, l) *= S[i] * S[l];
+      mCorrelation(i, l) *= S[i] * S[l];
 
   // Make sure the timer is acurate.
   (*mCPUTime.getRefresh())();
@@ -1438,8 +1493,11 @@ const CVector< C_FLOAT64 > & CFitProblem::getVariableGradients() const
 const CVector< C_FLOAT64 > & CFitProblem::getVariableStdDeviations() const
   {return mParameterSD;}
 
-const CMatrix< C_FLOAT64 > & CFitProblem::getVariableCorrelations() const
-  {return mFisher;}
+CArrayAnnotation & CFitProblem::getFisherInformation() const
+  {return *mpFisherMatrix;}
+
+CArrayAnnotation & CFitProblem::getCorrelations() const
+  {return *mpCorrelationMatrix;}
 
 const CExperimentSet & CFitProblem::getExperiementSet() const
   {return *mpExperimentSet;}
@@ -1467,12 +1525,6 @@ const C_FLOAT64 & CFitProblem::getCrossValidationRMS() const
 
 const C_FLOAT64 & CFitProblem::getCrossValidationSD() const
   {return mCrossValidationSD;}
-
-void CFitProblem::initObjects()
-{
-  addObjectReference("Cross Validation Solution", mCrossValidationSolutionValue, CCopasiObject::ValueDbl);
-  addObjectReference("Cross Validation Objective", mCrossValidationObjective, CCopasiObject::ValueDbl);
-}
 
 bool CFitProblem::calculateCrossValidation()
 {

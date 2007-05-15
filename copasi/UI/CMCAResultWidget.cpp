@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CMCAResultWidget.cpp,v $
-   $Revision: 1.5 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:40 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CMCAResultWidget.cpp,v $
+//   $Revision: 1.6 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/05/15 12:36:53 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -62,8 +62,13 @@ bool CMCAResultWidget::saveToBackend()
   return true;
 }
 
-bool CMCAResultWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
+bool CMCAResultWidget::update(ListViews::ObjectType objectType,
+                              ListViews::Action action,
+                              const std::string & C_UNUSED(key))
 {
+  if (objectType == ListViews::MODEL && action == ListViews::ADD)
+    mCentralWidget->loadAll(NULL);
+
   return true;
 }
 
@@ -74,5 +79,5 @@ bool CMCAResultWidget::leave()
 
 bool CMCAResultWidget::enter(const std::string & C_UNUSED(key))
 {
-  return loadFromBackend();
+  return true;
 }

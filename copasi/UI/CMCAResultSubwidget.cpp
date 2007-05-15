@@ -1,9 +1,9 @@
 // Begin CVS Header
-//   $Source: /home/cvs/copasi_dev/cvs_admin/addHeader,v $
-//   $Revision: 1.3 $
+//   $Source: /home/cvs/copasi_dev/copasi/UI/CMCAResultSubwidget.cpp,v $
+//   $Revision: 1.8.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/01/12 14:07:01 $
+//   $Date: 2007/04/16 14:39:19 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,8 +13,8 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CMCAResultSubwidget.ui'
  **
- ** Created: Sa Mär 17 22:06:35 2007
- **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.5   edited Aug 31 12:13 $)
+ ** Created: Mon Apr 16 10:28:14 2007
+ **      by: The User Interface Compiler ($Id: CMCAResultSubwidget.cpp,v 1.8.2.1 2007/04/16 14:39:19 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -60,14 +60,14 @@ CMCAResultSubwidget::CMCAResultSubwidget(QWidget* parent, const char* name, WFla
   mTabWidget = new QTabWidget(this, "mTabWidget");
 
   tab = new QWidget(mTabWidget, "tab");
-  tabLayout = new QHBoxLayout(tab, 11, 6, "tabLayout");
+  tabLayout = new QHBoxLayout(tab, 0, 6, "tabLayout");
 
   mpArrayElasticities = new CQArrayAnnotationsWidget(tab, "mpArrayElasticities");
   tabLayout->addWidget(mpArrayElasticities);
   mTabWidget->insertTab(tab, QString::fromLatin1(""));
 
   tab_2 = new QWidget(mTabWidget, "tab_2");
-  tabLayout_2 = new QGridLayout(tab_2, 1, 1, 11, 6, "tabLayout_2");
+  tabLayout_2 = new QGridLayout(tab_2, 1, 1, 0, 6, "tabLayout_2");
 
   mpArrayFCC = new CQArrayAnnotationsWidget(tab_2, "mpArrayFCC");
 
@@ -75,7 +75,7 @@ CMCAResultSubwidget::CMCAResultSubwidget(QWidget* parent, const char* name, WFla
   mTabWidget->insertTab(tab_2, QString::fromLatin1(""));
 
   TabPage = new QWidget(mTabWidget, "TabPage");
-  TabPageLayout = new QGridLayout(TabPage, 1, 1, 11, 6, "TabPageLayout");
+  TabPageLayout = new QGridLayout(TabPage, 1, 1, 0, 6, "TabPageLayout");
 
   mpArrayCCC = new CQArrayAnnotationsWidget(TabPage, "mpArrayCCC");
 

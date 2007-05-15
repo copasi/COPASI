@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensProblem.cpp,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/04/03 12:25:25 $
+//   $Author: shoops $
+//   $Date: 2007/05/15 12:36:26 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -109,7 +109,7 @@ const std::string CSensProblem::SubTaskName[] =
     "Evaluation",
     "Steady State",
     "Time Series",
-    "Lyapunov Exponents",
+    //"Lyapunov Exponents",
     ""
   };
 
@@ -118,7 +118,7 @@ const char * CSensProblem::XMLSubTask[] =
     "Evaluation",
     "SteadyState",
     "TimeSeries",
-    "LyapunovExponents",
+    //"LyapunovExponents",
     NULL
   };
 
@@ -441,6 +441,7 @@ CSensProblem::getPossibleTargetFunctions(CSensProblem::SubTaskType type)
 
     case (CSensProblem::TimeSeries):
             list.push_back(CObjectLists::SINGLE_OBJECT);
+      list.push_back(CObjectLists::ALL_VARIABLES);
       list.push_back(CObjectLists::NON_CONST_METAB_CONCENTRATIONS);
       list.push_back(CObjectLists::NON_CONST_METAB_NUMBERS);
       list.push_back(CObjectLists::NON_CONST_METAB_CONC_RATES);
@@ -451,13 +452,13 @@ CSensProblem::getPossibleTargetFunctions(CSensProblem::SubTaskType type)
       //TODO all model variables
       break;
 
-    case (CSensProblem::LyapunovExp):
-            list.push_back(CObjectLists::SINGLE_OBJECT);
-      /*      list.push_back(CObjectLists::NON_CONST_METAB_NUMBERS);
-            list.push_back(CObjectLists::NON_CONST_METAB_CONCENTRATIONS);
-            list.push_back(CObjectLists::REACTION_CONC_FLUXES);
-            list.push_back(CObjectLists::NON_CONST_METAB_PART_RATES);*/
-      break;
+      /*case (CSensProblem::LyapunovExp):
+              list.push_back(CObjectLists::SINGLE_OBJECT);
+              list.push_back(CObjectLists::NON_CONST_METAB_NUMBERS);
+              list.push_back(CObjectLists::NON_CONST_METAB_CONCENTRATIONS);
+              list.push_back(CObjectLists::REACTION_CONC_FLUXES);
+              list.push_back(CObjectLists::NON_CONST_METAB_PART_RATES);
+        break;*/
     }
 
   return list;
@@ -481,6 +482,7 @@ CSensProblem::getPossibleVariables(CSensProblem::SubTaskType type)
             list.push_back(CObjectLists::SINGLE_OBJECT);
       list.push_back(CObjectLists::NON_CONST_METAB_CONCENTRATIONS);
       list.push_back(CObjectLists::ALL_METAB_CONCENTRATIONS);
+      list.push_back(CObjectLists::NON_CONST_METAB_NUMBERS);
       list.push_back(CObjectLists::NON_CONST_GLOBAL_PARAMETER_VALUES);
       list.push_back(CObjectLists::GLOBAL_PARAMETER_VALUES);
       list.push_back(CObjectLists::ALL_LOCAL_PARAMETER_VALUES);
@@ -504,14 +506,14 @@ CSensProblem::getPossibleVariables(CSensProblem::SubTaskType type)
       //TODO all const values, all model parameters, all initial values
       break;
 
-    case (LyapunovExp):
-            list.push_back(CObjectLists::SINGLE_OBJECT);
-      /*      list.push_back(CObjectLists::NON_CONST_METAB_CONCENTRATIONS);
-            list.push_back(CObjectLists::GLOBAL_PARAMETER_VALUES);
-            list.push_back(CObjectLists::ALL_LOCAL_PARAMETER_VALUES);
-            list.push_back(CObjectLists::ALL_PARAMETER_VALUES);
-            list.push_back(CObjectLists::ALL_PARAMETER_AND_INITIAL_VALUES);*/
-      break;
+      /*case (LyapunovExp):
+              list.push_back(CObjectLists::SINGLE_OBJECT);
+              list.push_back(CObjectLists::NON_CONST_METAB_CONCENTRATIONS);
+              list.push_back(CObjectLists::GLOBAL_PARAMETER_VALUES);
+              list.push_back(CObjectLists::ALL_LOCAL_PARAMETER_VALUES);
+              list.push_back(CObjectLists::ALL_PARAMETER_VALUES);
+              list.push_back(CObjectLists::ALL_PARAMETER_AND_INITIAL_VALUES);
+        break;*/
     }
 
   return list;

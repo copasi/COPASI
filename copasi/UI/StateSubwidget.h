@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/StateSubwidget.h,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/12 14:29:14 $
+//   $Date: 2007/05/15 12:36:53 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,8 +13,8 @@
 /****************************************************************************
  ** Form interface generated from reading ui file 'StateSubwidget.ui'
  **
- ** Created: Do Feb 8 15:15:25 2007
- **      by: The User Interface Compiler ($Id: StateSubwidget.h,v 1.13 2007/02/12 14:29:14 shoops Exp $)
+ ** Created: Di Apr 24 17:05:28 2007
+ **      by: The User Interface Compiler ($Id: StateSubwidget.h,v 1.14 2007/05/15 12:36:53 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -23,12 +23,14 @@
 #define STATESUBWIDGET_H
 
 #include <qvariant.h>
+#include <qpixmap.h>
 #include <qwidget.h>
 
 class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
 class QSpacerItem;
+class CQArrayAnnotationsWidget;
 class QLabel;
 class QTabWidget;
 class QTextEdit;
@@ -58,14 +60,14 @@ class StateSubwidget : public QWidget
     QWidget* TabPage_3;
     QTable* tableFlux;
     QWidget* TabPage_4;
-    QSplitter* splitterJacobian;
-    QTable* tableJacobian;
+    QSplitter* splitter3;
+    CQArrayAnnotationsWidget* mpJacobianAnnotationWidget;
     QLabel* textLabelJacobian;
     QTable* tableEigenValues;
     QLabel* textLabelEigenvalues;
     QWidget* TabPage_5;
-    QSplitter* splitterJacobianX;
-    QTable* tableJacobianX;
+    QSplitter* splitter3_2;
+    CQArrayAnnotationsWidget* mpJacobianXAnnotationWidget;
     QLabel* textLabelJacobianX;
     QTable* tableEigenValuesX;
     QLabel* textLabelEigenvaluesX;
@@ -92,7 +94,7 @@ class StateSubwidget : public QWidget
     QVBoxLayout* tabLayout_2;
     QHBoxLayout* TabPageLayout_2;
     QVBoxLayout* TabPageLayout_3;
-    QVBoxLayout* TabPageLayout_4;
+    QGridLayout* TabPageLayout_4;
     QGridLayout* layoutJacobian;
     QSpacerItem* spacer3;
     QGridLayout* layoutEigenvalues;
@@ -109,6 +111,9 @@ class StateSubwidget : public QWidget
     virtual void languageChange();
 
     virtual void init();
+
+  private:
+    QPixmap image0;
   };
 
 #endif // STATESUBWIDGET_H

@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensMethod.h,v $
-   $Revision: 1.11 $
-   $Name:  $
-   $Author: ssahle $
-   $Date: 2007/01/11 15:02:27 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensMethod.h,v $
+//   $Revision: 1.12 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/05/15 12:36:26 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -120,6 +120,12 @@ class CSensMethod : public CCopasiMethod
     bool do_target_calculation(CCopasiArray & result, bool first);
 
     C_FLOAT64 do_variation(CCopasiObject* variable);
+
+    /**
+     * wraps the CCopasiObject::setObjectValue() method so we can add special treatment
+     * of concentrations
+     */
+    void setValue(CCopasiObject* variable, C_FLOAT64 value);
 
     void calculate_difference(unsigned C_INT32 level, const C_FLOAT64 & delta,
                               CCopasiArray & result, CCopasiArray::index_type & resultindex);

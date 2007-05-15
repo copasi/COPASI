@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-//   $Revision: 1.65 $
+//   $Revision: 1.66 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/04/01 12:45:17 $
+//   $Author: shoops $
+//   $Date: 2007/05/15 12:36:26 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -117,6 +117,16 @@ const CMatrix< C_FLOAT64 > & CSteadyStateTask::getJacobian() const
   {return mJacobian;}
 const CMatrix< C_FLOAT64 > & CSteadyStateTask::getJacobianReduced() const
   {return mJacobianX;}
+
+const CArrayAnnotation * CSteadyStateTask::getJacobianAnnotated() const
+  {
+    return mpJacobianAnn;
+  }
+
+const CArrayAnnotation * CSteadyStateTask::getJacobianXAnnotated() const
+  {
+    return mpJacobianXAnn;
+  }
 
 const CEigen & CSteadyStateTask::getEigenValues() const
   {

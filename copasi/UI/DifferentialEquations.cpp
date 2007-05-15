@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/DifferentialEquations.cpp,v $
-//   $Revision: 1.35 $
+//   $Revision: 1.36 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/04/06 14:42:16 $
+//   $Author: shoops $
+//   $Date: 2007/05/15 12:36:53 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -311,6 +311,7 @@ void DifferentialEquations::writeRHS_ModelEntity(std::ostream & out,
 
 void DifferentialEquations::loadDifferentialEquations(CModel * model)
 {
+  bool hasContents = false;
   mml.str("");
 
   unsigned C_INT32 l = 0;
@@ -327,6 +328,8 @@ void DifferentialEquations::loadDifferentialEquations(CModel * model)
       std::set<std::string>::const_iterator it, itEnd = reacKeys.end();
       for (it = reacKeys.begin(); it != itEnd; ++it)
         {
+          hasContents = true;
+
           mml << SPC(l + 1) << "<mtr>" << std::endl;
 
           //first column (lhs)
@@ -358,6 +361,7 @@ void DifferentialEquations::loadDifferentialEquations(CModel * model)
   for (i = 0; i < imax; ++i)
     if (model->getModelValues()[i]->getStatus() == CModelEntity::ODE)
       {
+        hasContents = true;
         mml << SPC(l + 1) << "<mtr>" << std::endl;
 
         //first column (lhs)
@@ -384,6 +388,7 @@ void DifferentialEquations::loadDifferentialEquations(CModel * model)
   for (i = 0; i < imax; ++i)
     if (model->getModelValues()[i]->getStatus() == CModelEntity::ASSIGNMENT)
       {
+        hasContents = true;
         mml << SPC(l + 1) << "<mtr>" << std::endl;
 
         //first column (lhs)
@@ -417,11 +422,6 @@ void DifferentialEquations::loadDifferentialEquations(CModel * model)
 
   if (tmp) tmp->unsetCursor();
 
-  bool hasContents = true;
-  if (model->getReactions().size() == 0)
-    {
-      hasContents = false;
-    }
   btnSaveToFile->setEnabled(hasContents);
 }
 

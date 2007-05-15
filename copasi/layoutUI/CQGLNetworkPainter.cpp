@@ -1,18 +1,14 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.31 $
 //   $Name:  $
-//   $Author: urost $
-//   $Date: 2007/05/14 11:11:48 $
+//   $Author: shoops $
+//   $Date: 2007/05/15 12:36:11 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
-
-#include <iostream>
-#include <math.h>
-#include <utility>
 
 #include <qfont.h>
 #include <qstring.h>
@@ -25,12 +21,14 @@
 #include <qimage.h>
 #include <qcolor.h>
 
-//#include "FTFont.h"
-//#include "FTGLPixmapFont.h"
-//#include "FTGLPolygonFont.h"
+#include <iostream>
+#include <math.h>
+#include <utility>
+
 #include "copasi.h"
 
 #include "CQGLNetworkPainter.h"
+
 #include "UI/qtUtilities.h"
 #include "layout/CLayout.h"
 #include "utilities/CCopasiVector.h"
@@ -659,7 +657,7 @@ void CQGLNetworkPainter::setNodeSizes()
   int i;
   // curves to nodes are changed, arrows are created newly
   nodeArrowMap.clear();
-  for (i = 0;i < viewerNodes.size();i++)
+  for (i = 0; i < viewerNodes.size(); i++)
     {
       std::map<std::string, CGraphNode>::iterator nodeIt;
       nodeIt = nodeMap.find(viewerNodes[i]);

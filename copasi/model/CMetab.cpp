@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-//   $Revision: 1.112 $
+//   $Revision: 1.113 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/12 14:27:07 $
+//   $Date: 2007/05/15 12:36:11 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -306,9 +306,12 @@ bool CMetab::compile()
 
     case ODE:
       // :TODO: This needs to be implemented when this status becomes available
+      mpValueReference->addDirectDependency(this);
       break;
 
     case REACTIONS:
+      mpValueReference->addDirectDependency(this);
+
       mRateVector.clear();
 
       CCopasiVectorN< CReaction >::const_iterator it = mpModel->getReactions().begin();

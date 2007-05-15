@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensMethod.cpp,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/04/03 12:28:06 $
+//   $Author: shoops $
+//   $Date: 2007/05/15 12:36:26 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -95,8 +95,9 @@ bool CSensMethod::do_target_calculation(CCopasiArray & result, bool first)
     }
   else
     {
-      mpProblem->getModel()->updateSimulatedValues();
-      mpProblem->getModel()->updateNonSimulatedValues();
+      //mpProblem->getModel()
+      //mpProblem->getModel()->updateSimulatedValues();
+      //mpProblem->getModel()->updateNonSimulatedValues();
     }
   mpProblem->getModel()->updateSimulatedValues();
   mpProblem->getModel()->updateNonSimulatedValues();
@@ -142,7 +143,17 @@ C_FLOAT64 CSensMethod::do_variation(CCopasiObject* variable)
   delta = fabs(value) * *mpDeltaFactor;
   if (delta < *mpMinDelta) delta = *mpMinDelta;
 
-  variable->setObjectValue(delta + value);
+  setValue(variable, delta + value);
+
+  //   variable->setObjectValue(delta + value);
+  //
+  //   if (variable->getObjectName() == "Concentration")
+  //     {
+  //       std::cout << "Concentration" << std::endl;
+  //       CMetab* pMetab = dynamic_cast<CMetab*>(variable->getObjectAncestor("Metabolite"));
+  //       if (pMetab)
+  //         pMetab->setConcentration(delta + value);
+  //}
 
   //debug
   //std::cout << variable->getObjectDisplayName() << "  " << value << " -> ";
@@ -150,6 +161,19 @@ C_FLOAT64 CSensMethod::do_variation(CCopasiObject* variable)
   //std::cout << value << std::endl;
 
   return delta;
+}
+
+void CSensMethod::setValue(CCopasiObject* variable, C_FLOAT64 value)
+{
+  variable->setObjectValue(value);
+
+  if (variable->getObjectName() == "Concentration")
+    {
+      std::cout << "Concentration" << std::endl;
+      CMetab* pMetab = dynamic_cast<CMetab*>(variable->getObjectAncestor("Metabolite"));
+      if (pMetab)
+        pMetab->setConcentration(value);
+    }
 }
 
 void CSensMethod::calculate_difference(unsigned C_INT32 level, const C_FLOAT64 & delta,
@@ -244,7 +268,8 @@ bool CSensMethod::calculate_one_level(unsigned C_INT32 level, CCopasiArray & res
         }
 
       //restore variable
-      mLocalData[level].variables[i]->setObjectValue(store);
+      //mLocalData[level].variables[i]->setObjectValue(store);
+      setValue(mLocalData[level].variables[i], store);
 
       //calculate derivative
       if (imax > 1)
@@ -440,10 +465,10 @@ bool CSensMethod::initialize(CSensProblem* problem)
                   ((*CCopasiDataModel::Global->getTaskList())["Time-Course"]);
       break;
 
-    case CSensProblem::LyapunovExp:
-      mpSubTask = dynamic_cast<CCopasiTask*>
-                  ((*CCopasiDataModel::Global->getTaskList())["Lyapunov Exponents"]);
-      break;
+      /*    case CSensProblem::LyapunovExp:
+            mpSubTask = dynamic_cast<CCopasiTask*>
+                        ((*CCopasiDataModel::Global->getTaskList())["Lyapunov Exponents"]);
+            break;*/
     }
 
   if (mpSubTask)

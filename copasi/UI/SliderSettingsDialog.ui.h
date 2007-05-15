@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/SliderSettingsDialog.ui.h,v $
-//   $Revision: 1.29 $
+//   $Revision: 1.30 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/16 19:55:37 $
+//   $Date: 2007/05/15 12:36:53 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,17 +36,17 @@
 
 CSlider* SliderSettingsDialog::getSlider()
 {
-  return this->mpSlider;
+  return mpSlider;
 }
 
 void SliderSettingsDialog::setSlider(CSlider * slider)
 {
   unsigned int i;
-  unsigned int iMax = this->mDefinedSliders.size();
+  unsigned int iMax = mDefinedSliders.size();
   bool found = false;
   for (i = 0; i < iMax;++i)
     {
-      if (this->mDefinedSliders[i] == slider)
+      if (mDefinedSliders[i] == slider)
         {
           found = true;
           break;
@@ -54,63 +54,63 @@ void SliderSettingsDialog::setSlider(CSlider * slider)
     }
   if (found)
     {
-      this->mpSlider = slider;
+      mpSlider = slider;
       if (slider->getSliderObject())
         {
-          this->mpObjectNameLineEdit->setText(FROM_UTF8(slider->getSliderObject()->getObjectDisplayName()));
+          mpObjectNameLineEdit->setText(FROM_UTF8(slider->getSliderObject()->getObjectDisplayName()));
         }
       else
         {
-          this->mpObjectNameLineEdit->setText("Object not avalable!");
+          mpObjectNameLineEdit->setText("Object not avalable!");
         }
-      this->updateInputFields();
-      this->updateInputFieldsValues();
+      updateInputFields();
+      updateInputFieldsValues();
     }
   else
     {
-      this->mpSlider = NULL;
-      this->mpObjectNameLineEdit->setText("NULL");
-      this->mpObjectBrowseButton->show();
-      this->updateInputFields();
+      mpSlider = NULL;
+      mpObjectNameLineEdit->setText("NULL");
+      mpObjectBrowseButton->show();
+      updateInputFields();
     }
 }
 
 void SliderSettingsDialog::setDefinedSliders(std::vector<CSlider *> sliderVect)
 {
-  this->mDefinedSliders = sliderVect;
+  mDefinedSliders = sliderVect;
 }
 
 void SliderSettingsDialog::updateInputFieldsValues()
 {
-  if (this->mpSlider)
+  if (mpSlider)
     {
-      this->mValue = this->mpSlider->getSliderValue();
-      this->mpObjectValueEdit->setText(QString::number(this->mValue));
+      mValue = mpSlider->getSliderValue();
+      mpObjectValueEdit->setText(QString::number(mValue));
 
-      this->mOriginalValue = this->mpSlider->getOriginalValue();
-      this->mpOriginalValueEdit->setText(QString::number(this->mOriginalValue));
+      mOriginalValue = mpSlider->getOriginalValue();
+      mpOriginalValueEdit->setText(QString::number(mOriginalValue));
 
-      this->mMinValue = this->mpSlider->getMinValue();
-      this->mpMinValueEdit->setText(QString::number(this->mMinValue));
+      mMinValue = mpSlider->getMinValue();
+      mpMinValueEdit->setText(QString::number(mMinValue));
 
-      this->mMaxValue = this->mpSlider->getMaxValue();
-      this->mpMaxValueEdit->setText(QString::number(this->mMaxValue));
+      mMaxValue = mpSlider->getMaxValue();
+      mpMaxValueEdit->setText(QString::number(mMaxValue));
 
-      this->mNumMinorTicks = this->mpSlider->getTickNumber();
-      this->mpNumMinorTicksEdit->setText(QString::number(this->mNumMinorTicks));
+      mNumMinorTicks = mpSlider->getTickNumber();
+      mpNumMinorTicksEdit->setText(QString::number(mNumMinorTicks));
 
-      this->mMinorMajorFactor = this->mpSlider->getTickFactor();
-      this->mpMinorMajorFactorEdit->setText(QString::number(this->mMinorMajorFactor));
+      mMinorMajorFactor = mpSlider->getTickFactor();
+      mpMinorMajorFactorEdit->setText(QString::number(mMinorMajorFactor));
 
-      this->numMinorTicksChanged();
+      numMinorTicksChanged();
 
-      if (this->mpSlider->getScaling() == CSlider::logarithmic)
+      if (mpSlider->getScaling() == CSlider::logarithmic)
         {
-          this->mpLogCheckBox->setChecked(true);
+          mpLogCheckBox->setChecked(true);
         }
       else
         {
-          this->mpLogCheckBox->setChecked(false);
+          mpLogCheckBox->setChecked(false);
         }
     }
 }
@@ -118,29 +118,29 @@ void SliderSettingsDialog::updateInputFieldsValues()
 void SliderSettingsDialog::updateInputFields()
 {
   // if the current slider is NULL, disable all input fields
-  if (this->mpSlider)
+  if (mpSlider)
     {
       mpObjectNameLineEdit->setEnabled(false);
-      this->mpMaxValueEdit->setEnabled(true);
-      this->mpMinValueEdit->setEnabled(true);
-      this->mpMinorMajorFactorEdit->setEnabled(true);
-      this->mpMinorTickSizeEdit->setEnabled(true);
-      this->mpNumMinorTicksEdit->setEnabled(true);
-      this->mpObjectValueEdit->setEnabled(true);
-      this->mpLogCheckBox->setEnabled(true);
-      this->mpOriginalValueEdit->setEnabled(true);
+      mpMaxValueEdit->setEnabled(true);
+      mpMinValueEdit->setEnabled(true);
+      mpMinorMajorFactorEdit->setEnabled(true);
+      mpMinorTickSizeEdit->setEnabled(true);
+      mpNumMinorTicksEdit->setEnabled(true);
+      mpObjectValueEdit->setEnabled(true);
+      mpLogCheckBox->setEnabled(true);
+      mpOriginalValueEdit->setEnabled(true);
     }
   else
     {
       mpObjectNameLineEdit->setEnabled(true);
-      this->mpMaxValueEdit->setEnabled(false);
-      this->mpMinValueEdit->setEnabled(false);
-      this->mpMinorMajorFactorEdit->setEnabled(false);
-      this->mpMinorTickSizeEdit->setEnabled(false);
-      this->mpNumMinorTicksEdit->setEnabled(false);
-      this->mpObjectValueEdit->setEnabled(false);
-      this->mpOriginalValueEdit->setEnabled(false);
-      this->mpLogCheckBox->setEnabled(false);
+      mpMaxValueEdit->setEnabled(false);
+      mpMinValueEdit->setEnabled(false);
+      mpMinorMajorFactorEdit->setEnabled(false);
+      mpMinorTickSizeEdit->setEnabled(false);
+      mpNumMinorTicksEdit->setEnabled(false);
+      mpObjectValueEdit->setEnabled(false);
+      mpOriginalValueEdit->setEnabled(false);
+      mpLogCheckBox->setEnabled(false);
     }
 }
 
@@ -153,7 +153,7 @@ void SliderSettingsDialog::okButtonPressed()
   disconnect(mpMinValueEdit, 0, 0, 0);
   disconnect(mpMaxValueEdit, 0, 0, 0);
   // only now change underlying slider
-  this->updateSlider();
+  updateSlider();
   // close dialog with positive feedback
   done(QDialog::Accepted);
 }
@@ -161,43 +161,43 @@ void SliderSettingsDialog::okButtonPressed()
 void SliderSettingsDialog::cancelButtonPressed()
 {
   // close dialog, drop input
-  this->close();
+  close();
 }
 
 void SliderSettingsDialog::minorTickSizeChanged()
 {
   // adjust numMinorTicks
-  this->mMinorTickSize = this->mpMinorTickSizeEdit->text().toDouble();
-  if (this->mMinorTickSize == 0.0)
+  mMinorTickSize = mpMinorTickSizeEdit->text().toDouble();
+  if (mMinorTickSize == 0.0)
     {
-      this->mNumMinorTicks = 1;
+      mNumMinorTicks = 1;
     }
   else
     {
-      this->mNumMinorTicks = (unsigned int)floor(((this->mMaxValue - this->mMinValue) / this->mMinorTickSize) + 0.5);
+      mNumMinorTicks = (unsigned int)floor(((mMaxValue - mMinValue) / mMinorTickSize) + 0.5);
     }
-  if (this->mNumMinorTicks == 0)
+  if (mNumMinorTicks == 0)
     {
-      this->mNumMinorTicks = 1;
-      this->mMinorTickSize = this->mMaxValue - this->mMinValue;
-      this->mpMinorTickSizeEdit->setText(QString::number(this->mMinorTickSize));
+      mNumMinorTicks = 1;
+      mMinorTickSize = mMaxValue - mMinValue;
+      mpMinorTickSizeEdit->setText(QString::number(mMinorTickSize));
     }
-  this->mpNumMinorTicksEdit->setText(QString::number(this->mNumMinorTicks));
-  this->mChanged = NONE;
+  mpNumMinorTicksEdit->setText(QString::number(mNumMinorTicks));
+  mChanged = NONE;
 }
 
 void SliderSettingsDialog::numMinorTicksChanged()
 {
   // adjust minorTickSize
-  this->mNumMinorTicks = this->mpNumMinorTicksEdit->text().toUInt();
-  if (this->mNumMinorTicks == 1)
+  mNumMinorTicks = mpNumMinorTicksEdit->text().toUInt();
+  if (mNumMinorTicks == 1)
     {
-      this->mNumMinorTicks = 1;
-      this->mpNumMinorTicksEdit->setText(QString::number(this->mNumMinorTicks));
+      mNumMinorTicks = 1;
+      mpNumMinorTicksEdit->setText(QString::number(mNumMinorTicks));
     }
-  this->mMinorTickSize = (this->mMaxValue - this->mMinValue) / this->mNumMinorTicks;
-  this->mpMinorTickSizeEdit->setText(QString::number(this->mMinorTickSize));
-  this->mChanged = NONE;
+  mMinorTickSize = (mMaxValue - mMinValue) / mNumMinorTicks;
+  mpMinorTickSizeEdit->setText(QString::number(mMinorTickSize));
+  mChanged = NONE;
 }
 
 void SliderSettingsDialog::minValueChanged()
@@ -205,41 +205,41 @@ void SliderSettingsDialog::minValueChanged()
   // check if it is smaller than the current value
   // if not, set it to the current value
   double value = mpMinValueEdit->text().toDouble();
-  if ((value > this->mOriginalValue) &&
+  if ((value > mOriginalValue) &&
       (CQMessageBox::question(this, "Default value out of range.",
                               "The minimum value you set is larger than the default value of the slider. The new default will be set to the minimum. Do you want to procceed?",
                               QMessageBox::Yes, QMessageBox::No | QMessageBox::Default | QMessageBox::Escape) != 0)
 )
     {
-      this->mpMinValueEdit->setText(QString::number(this->mMinValue));
+      mpMinValueEdit->setText(QString::number(mMinValue));
     }
   else
     {
-      this->mOriginalValue = value;
-      this->mpOriginalValueEdit->setText(QString::number(this->mOriginalValue));
-      this->mMinValue = value;
-      if (this->mMinValue > this->mMaxValue)
+      mOriginalValue = value;
+      mpOriginalValueEdit->setText(QString::number(mOriginalValue));
+      mMinValue = value;
+      if (mMinValue > mMaxValue)
         {
-          this->mMaxValue = this->mMinValue;
-          this->mpMaxValueEdit->setText(QString::number(this->mMaxValue));
+          mMaxValue = mMinValue;
+          mpMaxValueEdit->setText(QString::number(mMaxValue));
         }
-      if (this->mMinValue > this->mValue)
+      if (mMinValue > mValue)
         {
-          this->mValue = this->mMinValue;
-          this->mpObjectValueEdit->setText(QString::number(this->mValue));
+          mValue = mMinValue;
+          mpObjectValueEdit->setText(QString::number(mValue));
         }
-      this->mMinorTickSize = (this->mMaxValue - this->mMinValue) / this->mNumMinorTicks;
-      this->mpMinorTickSizeEdit->setText(QString::number(this->mMinorTickSize));
-      if (this->mMinValue <= 0.0 && this->mpLogCheckBox->isChecked())
+      mMinorTickSize = (mMaxValue - mMinValue) / mNumMinorTicks;
+      mpMinorTickSizeEdit->setText(QString::number(mMinorTickSize));
+      if (mMinValue <= 0.0 && mpLogCheckBox->isChecked())
         {
           CQMessageBox::information(this, "Incorrect min value",
                                     "For logarithmic sliders, the minimum value may not be 0.0 or negative. Please set the minimum value to some (possibly very small) positive number first.",
                                     QMessageBox::Ok | QMessageBox::Default , QMessageBox::NoButton);
-          this->mpLogCheckBox->setChecked(false);
-          this->mScaling = CSlider::linear;
+          mpLogCheckBox->setChecked(false);
+          mScaling = CSlider::linear;
         }
     }
-  this->mChanged = NONE;
+  mChanged = NONE;
 }
 
 void SliderSettingsDialog::maxValueChanged()
@@ -247,67 +247,67 @@ void SliderSettingsDialog::maxValueChanged()
   // check if it is larget then the current value
   // else set it to the current value
   double value = mpMaxValueEdit->text().toDouble();
-  if (value < this->mOriginalValue)
+  if (value < mOriginalValue)
     {
       if (CQMessageBox::question(this, "Default value out of range.",
                                  "The maximum value you set is smaller than the default value of the slider. The new default will be set to the maximum. Do you want to procceed?",
                                  QMessageBox::Yes, QMessageBox::No | QMessageBox::Default | QMessageBox::Escape) != 0)
         {
-          this->mpMaxValueEdit->setText(QString::number(this->mMaxValue));
-          this->mChanged = NONE;
+          mpMaxValueEdit->setText(QString::number(mMaxValue));
+          mChanged = NONE;
           return;
         }
-      this->mOriginalValue = value;
-      this->mpOriginalValueEdit->setText(QString::number(this->mOriginalValue));
+      mOriginalValue = value;
+      mpOriginalValueEdit->setText(QString::number(mOriginalValue));
     }
-  this->mMaxValue = value;
-  if (this->mMinValue > this->mMaxValue)
+  mMaxValue = value;
+  if (mMinValue > mMaxValue)
     {
-      this->mMinValue = this->mMaxValue;
-      this->mpMinValueEdit->setText(QString::number(this->mMinValue));
+      mMinValue = mMaxValue;
+      mpMinValueEdit->setText(QString::number(mMinValue));
     }
-  if (this->mMaxValue < this->mValue)
+  if (mMaxValue < mValue)
     {
-      this->mValue = this->mMaxValue;
-      this->mpObjectValueEdit->setText(QString::number(this->mValue));
+      mValue = mMaxValue;
+      mpObjectValueEdit->setText(QString::number(mValue));
     }
-  this->mMinorTickSize = (this->mMaxValue - this->mMinValue) / this->mNumMinorTicks;
-  this->mpMinorTickSizeEdit->setText(QString::number(this->mMinorTickSize));
-  this->mChanged = NONE;
+  mMinorTickSize = (mMaxValue - mMinValue) / mNumMinorTicks;
+  mpMinorTickSizeEdit->setText(QString::number(mMinorTickSize));
+  mChanged = NONE;
 }
 
 void SliderSettingsDialog::objectValueChanged()
 {
   // check if the value is within range, else set a new range
   // get the value and set it in the current slider
-  this->mValue = mpObjectValueEdit->text().toDouble();
-  if (this->mValue > this->mMaxValue)
+  mValue = mpObjectValueEdit->text().toDouble();
+  if (mValue > mMaxValue)
     {
-      this->mMaxValue = this->mValue;
-      this->mpMaxValueEdit->setText(QString::number(this->mMaxValue));
+      mMaxValue = mValue;
+      mpMaxValueEdit->setText(QString::number(mMaxValue));
     }
-  if (this->mValue < this->mMinValue)
+  if (mValue < mMinValue)
     {
-      this->mMinValue = this->mValue;
-      this->mpMinValueEdit->setText(QString::number(this->mMinValue));
+      mMinValue = mValue;
+      mpMinValueEdit->setText(QString::number(mMinValue));
     }
-  this->mChanged = NONE;
+  mChanged = NONE;
 }
 
 void SliderSettingsDialog::minorMajorFactorChanged()
 {
   // get the value and set it in the current slider
-  this->mMinorMajorFactor = this->mpMinorMajorFactorEdit->text().toUInt();
-  this->mChanged = NONE;
+  mMinorMajorFactor = mpMinorMajorFactorEdit->text().toUInt();
+  mChanged = NONE;
 }
 
 void SliderSettingsDialog::init()
 {
-  this->mpSlider = NULL;
-  this->mChanged = NONE;
-  this->mScaling = CSlider::linear;
-  this->mpExtendedOptionsButton->setText("Advanced >>");
-  this->mpExtendedOptionsFrame->hide();
+  mpSlider = NULL;
+  mChanged = NONE;
+  mScaling = CSlider::linear;
+  mpExtendedOptionsButton->setText("Advanced >>");
+  mpExtendedOptionsFrame->hide();
   mpObjectValueEdit->setValidator(new QDoubleValidator(this));
   mpOriginalValueEdit->setValidator(new QDoubleValidator(this));
   mpMinValueEdit->setValidator(new QDoubleValidator(this));
@@ -319,7 +319,7 @@ void SliderSettingsDialog::init()
   v = new QIntValidator(this);
   v->setBottom(0);
   mpMinorMajorFactorEdit->setValidator(v);
-  this->updateInputFields();
+  updateInputFields();
 }
 
 void SliderSettingsDialog::browseButtonPressed()
@@ -334,8 +334,8 @@ void SliderSettingsDialog::browseButtonPressed()
           CQMessageBox::information(this, "Invalid Object",
                                     "You chose an object that does not correspond to an integer or float value. Please choose an object that corresponds to an integet or float value.",
                                     QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
-          this->mpSlider = NULL;
-          this->mpObjectNameLineEdit->setText("");
+          mpSlider = NULL;
+          mpObjectNameLineEdit->setText("");
           return;
         }
 
@@ -346,146 +346,141 @@ void SliderSettingsDialog::browseButtonPressed()
       if (!pAncestor)
         {
           CQMessageBox::information(this, "Invalid Object",
-                                    "You chose an object that does cannot be used as a slider. Please choose an object that corresponds to an integet or float value.",
+                                    "You chose an object that cannot be used as a slider. Please choose an other object.",
                                     QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
-          this->mpSlider = NULL;
-          this->mpObjectNameLineEdit->setText("");
+          mpSlider = NULL;
+          mpObjectNameLineEdit->setText("");
           return;
         }
 
-      // check if this object already has a slider object
-      // if yes, call setSlider with the correct slider object
-      // else create a new slider object for this object and add it to the sliders
-      if (this->mpSlider && this->mpSlider->getSliderObject() == pObject) return;
-      unsigned C_INT32 i;
-      unsigned C_INT32 iMax = this->mDefinedSliders.size();
-      unsigned C_INT32 found = iMax;
-      unsigned C_INT32 sliderFound = iMax;
-      for (i = 0; i < iMax;++i)
+      // We do not have a slider therefore we create one.
+      if (mpSlider == NULL)
         {
-          if (this->mDefinedSliders[i]->getSliderObject() == pObject)
-            {
-              found = i;
-              if (sliderFound)
-                {
-                  break;
-                }
-            }
-          if (this->mDefinedSliders[i] == this->mpSlider)
-            {
-              sliderFound = i;
-              if (found)
-                {
-                  break;
-                }
-            }
-        }
-      if (this->mpSlider && (!sliderFound))
-        {
-          delete this->mpSlider;
-          this->mpSlider = NULL;
-        }
-      if (found != iMax)
-        {
-          this->setSlider(this->mDefinedSliders[found]);
-        }
-      else
-        {
-          this->mpSlider = new CSlider();
-          this->mpSlider->setSliderObject(const_cast< CCopasiObject * >(pObject));
+          mpSlider = new CSlider;
+          mpSlider->setSliderObject(const_cast< CCopasiObject * >(pObject));
 
           if (pAncestor)
-            this->mpSlider->setAssociatedEntityKey(pAncestor->getKey());
+            mpSlider->setAssociatedEntityKey(pAncestor->getKey());
 
-          this->mpSlider->resetRange();
-          this->updateInputFields();
-          this->updateInputFieldsValues();
+          mpSlider->resetRange();
+          updateInputFields();
+          updateInputFieldsValues();
+
+          mpObjectNameLineEdit->setText(FROM_UTF8(mpSlider->getSliderObject()->getObjectDisplayName()));
+          return;
         }
-      this->mpObjectNameLineEdit->setText(FROM_UTF8(this->mpSlider->getSliderObject()->getObjectDisplayName()));
+
+      // If the object of an existing slider has not changed we have nothing to do
+      if (mpSlider->getSliderObject() == pObject)
+        return;
+
+      // Check whether a slider with the object already exists
+      unsigned C_INT32 i, iMax = mDefinedSliders.size();
+
+      for (i = 0; i < iMax;++i)
+        if (mDefinedSliders[i]->getSliderObject() == pObject)
+          break;
+
+      // A slider with the new object exists we switch to it.
+      if (i != iMax)
+        setSlider(mDefinedSliders[i]);
+      else // We need to change the object an reinitialize the slider
+        {
+          mpSlider->setSliderObject(const_cast< CCopasiObject * >(pObject));
+
+          if (pAncestor)
+            mpSlider->setAssociatedEntityKey(pAncestor->getKey());
+
+          mpSlider->resetRange();
+          updateInputFields();
+          updateInputFieldsValues();
+        }
+
+      mpObjectNameLineEdit->setText(FROM_UTF8(mpSlider->getSliderObject()->getObjectDisplayName()));
     }
 }
 
 void SliderSettingsDialog::setModel(CModel * model)
 {
-  this->mpModel = model;
+  mpModel = model;
 }
 
 void SliderSettingsDialog::disableObjectChoosing(bool disableChoosing)
 {
-  this->mpObjectBrowseButton->setHidden(disableChoosing);
+  mpObjectBrowseButton->setHidden(disableChoosing);
 }
 
 void SliderSettingsDialog::updateSlider()
 {
-  this->updateInternalValues();
-  if (this->mpSlider)
+  updateInternalValues();
+  if (mpSlider)
     {
-      if (this->mMinValue < this->mpSlider->getMaxValue())
+      if (mMinValue < mpSlider->getMaxValue())
         {
-          this->mpSlider->setMinValue(this->mMinValue);
-          this->mpSlider->setMaxValue(this->mMaxValue);
+          mpSlider->setMinValue(mMinValue);
+          mpSlider->setMaxValue(mMaxValue);
         }
       else
         {
-          this->mpSlider->setMaxValue(this->mMaxValue);
-          this->mpSlider->setMinValue(this->mMinValue);
+          mpSlider->setMaxValue(mMaxValue);
+          mpSlider->setMinValue(mMinValue);
         }
-      this->mpSlider->setSliderValue(this->mValue);
-      this->mpSlider->setTickNumber(this->mNumMinorTicks);
-      this->mpSlider->setTickFactor(this->mMinorMajorFactor);
-      this->mpSlider->setScaling((CSlider::Scale)this->mScaling);
-      this->mpSlider->setOriginalValue(this->mOriginalValue);
+      mpSlider->setSliderValue(mValue);
+      mpSlider->setTickNumber(mNumMinorTicks);
+      mpSlider->setTickFactor(mMinorMajorFactor);
+      mpSlider->setScaling((CSlider::Scale)mScaling);
+      mpSlider->setOriginalValue(mOriginalValue);
     }
 }
 
 void SliderSettingsDialog::extendedOptionsClicked()
 {
-  if (this->mpExtendedOptionsFrame->isHidden())
+  if (mpExtendedOptionsFrame->isHidden())
     {
-      this->mpExtendedOptionsButton->setText("Advanced <<");
-      this->mpExtendedOptionsFrame->show();
+      mpExtendedOptionsButton->setText("Advanced <<");
+      mpExtendedOptionsFrame->show();
     }
   else
     {
-      this->mpExtendedOptionsButton->setText("Advanced >>");
-      this->mpExtendedOptionsFrame->hide();
+      mpExtendedOptionsButton->setText("Advanced >>");
+      mpExtendedOptionsFrame->hide();
     }
 }
 
 void SliderSettingsDialog::logCheckBoxToggled(bool on)
 {
-  this->updateInternalValues();
-  this->mChanged = LOGARITHMIC;
+  updateInternalValues();
+  mChanged = LOGARITHMIC;
   if (on)
     {
       // check if the minValue is 0.0 or negative if so, issue an error message and uncheck the checkbox again
-      if (this->mMinValue <= 0.0)
+      if (mMinValue <= 0.0)
         {
           CQMessageBox::information(this, "Incorrect min value",
                                     "For logarithmic sliders, the minimum value may not be 0.0 or negative. Please set the minimum value to some (possibly very small) positive number first.",
                                     QMessageBox::Ok | QMessageBox::Default , QMessageBox::NoButton);
-          this->mpLogCheckBox->setChecked(false);
-          this->mScaling = CSlider::linear;
+          mpLogCheckBox->setChecked(false);
+          mScaling = CSlider::linear;
         }
       else
         {
-          this->mScaling = CSlider::logarithmic;
+          mScaling = CSlider::logarithmic;
         }
     }
   else
     {
-      this->mScaling = CSlider::linear;
+      mScaling = CSlider::linear;
     }
 }
 
 void SliderSettingsDialog::globalCheckBoxToggled()
 {
-  this->updateInternalValues();
+  updateInternalValues();
 }
 
 void SliderSettingsDialog::updateInternalValues()
 {
-  switch (this->mChanged)
+  switch (mChanged)
     {
     case VALUE:
       objectValueChanged();
@@ -517,51 +512,51 @@ void SliderSettingsDialog::originalValueChanged()
 {
   // check if the value is within range, else set it to
   // set new values for the range
-  this->mOriginalValue = mpOriginalValueEdit->text().toDouble();
-  if (this->mOriginalValue > this->mMaxValue)
+  mOriginalValue = mpOriginalValueEdit->text().toDouble();
+  if (mOriginalValue > mMaxValue)
     {
-      this->mMaxValue = this->mOriginalValue;
-      this->mpMaxValueEdit->setText(QString::number(this->mMaxValue));
+      mMaxValue = mOriginalValue;
+      mpMaxValueEdit->setText(QString::number(mMaxValue));
     }
-  if (this->mOriginalValue < this->mMinValue)
+  if (mOriginalValue < mMinValue)
     {
-      this->mMinValue = this->mOriginalValue;
-      this->mpMinValueEdit->setText(QString::number(this->mMinValue));
+      mMinValue = mOriginalValue;
+      mpMinValueEdit->setText(QString::number(mMinValue));
     }
-  this->mChanged = NONE;
+  mChanged = NONE;
 }
 
 void SliderSettingsDialog::minValueTextChanged()
 {
-  this->mChanged = MIN;
+  mChanged = MIN;
 }
 
 void SliderSettingsDialog::maxValueTextChanged()
 {
-  this->mChanged = MAX;
+  mChanged = MAX;
 }
 
 void SliderSettingsDialog::numTicksTextChanged()
 {
-  this->mChanged = NUMTICKS;
+  mChanged = NUMTICKS;
 }
 
 void SliderSettingsDialog::tickSizeTextChanged()
 {
-  this->mChanged = TICKSIZE;
+  mChanged = TICKSIZE;
 }
 
 void SliderSettingsDialog::tickFactorTextChanged()
 {
-  this->mChanged = TICKFACTOR;
+  mChanged = TICKFACTOR;
 }
 
 void SliderSettingsDialog::origValueTextChanged()
 {
-  this->mChanged = ORIGVAL;
+  mChanged = ORIGVAL;
 }
 
 void SliderSettingsDialog::valueTextChanged()
 {
-  this->mChanged = VALUE;
+  mChanged = VALUE;
 }

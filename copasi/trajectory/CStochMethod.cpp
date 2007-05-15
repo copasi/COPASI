@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-   $Revision: 1.61 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/06 16:03:47 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
+//   $Revision: 1.62 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/05/15 12:36:26 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -198,8 +198,11 @@ void CStochMethod::start(const CState * initialState)
   else
     mDoCorrection = false;
 
+  mHasAssignments = modelHasAssignments(mpModel);
+
   unsigned C_INT32 i, imax;
 
+  //fix variable particel numbers to be integer
   mNumNumbers = mpCurrentState->getNumVariable();
   mNumbers.resize(mNumNumbers);
   C_FLOAT64 * Dbl = mpCurrentState->beginIndependent();
@@ -212,6 +215,7 @@ void CStochMethod::start(const CState * initialState)
       //obj can later be used to handle variables differently
     }
 
+  //make sure fixed particle numbers are integer
   imax = mpCurrentState->getNumFixed();
   for (i = 0; i < imax; ++i, Dbl++, ++obj)
     {
@@ -220,7 +224,11 @@ void CStochMethod::start(const CState * initialState)
         *Dbl = floor(*Dbl);
     }
 
+  //update model to integer particle numbers and calculate initial propensities
   mpModel->setState(*mpCurrentState);
+
+  mpModel->updateSimulatedValues(); //for assignments
+  //mpModel->updateNonSimulatedValues(); //for assignments
 
   mNumReactions = mpModel->getReactions().size();
 
@@ -234,6 +242,10 @@ void CStochMethod::start(const CState * initialState)
   setupDependencyGraphAndBalances();
   //std::cout << mDG;
   updatePropensities();
+
+  //debug
+  //for (i=0; i<mAmu.size(); ++i) std::cout << mAmu[i] << " ";
+  //std::cout << std::endl;
 
   // call init of the specific simulation method
   initMethod(mpCurrentState->getTime());
@@ -333,10 +345,15 @@ C_INT32 CStochMethod::calculateAmu(C_INT32 index)
       mAmu[index] = rate_factor;
     }
 
+  //debug
+  /*  if (mAmu[index]<0)
+      {
+        std::cout << "negative amu" << std::endl;
+      }*/
+  // a more efficient way to calculate mass action kinetics could be included
+
   //std::cout << "Index = " << index << "  Amu = " << amu << std::endl;
   return 0;
-
-  // a more efficient way to calculate mass action kinetics could be included
 }
 
 C_INT32 CStochMethod::updateSystemState(C_INT32 rxn)
@@ -355,23 +372,37 @@ C_INT32 CStochMethod::updateSystemState(C_INT32 rxn)
     {
       mNumbers[bi->mIndex] = mNumbers[bi->mIndex] + bi->mMultiplicity;
       mpModel->getMetabolitesX()[bi->mIndex]->setValue(mNumbers[bi->mIndex]);
+
+      //debug
+      //if (mNumbers[bi->mIndex]<0)
+      //  std::cout << "number negative" << std::endl;
     }
 
-  const std::set<C_INT32> & dep_nodes = mDG.getDependents(rxn);
-
-  std::set<C_INT32>::const_iterator it;
-  unsigned int ii;
-  for (it = dep_nodes.begin(); it != dep_nodes.end(); it++)
+  if (mHasAssignments)
     {
-      ii = *it;
-      mAmuOld[ii] = mAmu[ii];
-      calculateAmu(ii);
+      // this is less efficient but can deal with assignments.
+      //TODO: handle dependencies for assignments also.
+      mpModel->updateSimulatedValues();
+      updatePropensities();
     }
+  else
+    {
+      const std::set<C_INT32> & dep_nodes = mDG.getDependents(rxn);
 
-  //mA0Old = mA0;
+      std::set<C_INT32>::const_iterator it;
+      unsigned int ii;
+      for (it = dep_nodes.begin(); it != dep_nodes.end(); it++)
+        {
+          ii = *it;
+          mAmuOld[ii] = mAmu[ii];
+          calculateAmu(ii);
+        }
 
-  mA0 = 0;
-  mA0 = std::accumulate(mAmu.begin(), mAmu.end(), mA0);
+      //mA0Old = mA0;
+
+      mA0 = 0;
+      mA0 = std::accumulate(mAmu.begin(), mAmu.end(), mA0);
+    }
 
   return 0;
 }
@@ -600,15 +631,14 @@ bool CStochMethod::isValidProblem(const CCopasiProblem * pProblem)
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 18);
           return false;
         }
-
-      if (pTP->getModel()->getModelValues()[i]->getStatus() == CModelEntity::ASSIGNMENT)
-        if (pTP->getModel()->getModelValues()[i]->isUsed())
-          {
-            //used assignment found
-            CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 19);
-            return false;
-          }
     }
+
+  //   if (modelHasAssignments(pTP->getModel()))
+  //     {
+  //       CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 19);
+  //       return false;
+  //}
+  //  this test is disabled since we have preliminary support for assignments
 
   //TODO: rewrite CModel::suitableForStochasticSimulation() to use
   //      CCopasiMessage
@@ -628,4 +658,20 @@ bool CStochMethod::isValidProblem(const CCopasiProblem * pProblem)
     }
 
   return true;
+}
+
+//static
+bool CStochMethod::modelHasAssignments(const CModel* pModel)
+{
+  C_INT32 i, imax = pModel->getNumModelValues();
+  for (i = 0; i < imax; ++i)
+    {
+      if (pModel->getModelValues()[i]->getStatus() == CModelEntity::ASSIGNMENT)
+        if (pModel->getModelValues()[i]->isUsed())
+          {
+            //used assignment found
+            return true;
+          }
+    }
+  return false;
 }
