@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/stochastic-testsuite/copasi_wrapper.cpp,v $
-   $Revision: 1.5 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/05/09 12:25:23 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/stochastic-testsuite/copasi_wrapper.cpp,v $
+//   $Revision: 1.6 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/05/15 14:44:03 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -191,7 +191,7 @@ int main(int argc, char *argv[])
       // save the file for control purposes
       std::string saveFilename = pSBMLFilename;
       saveFilename = saveFilename.substr(0, saveFilename.length() - 4) + ".cps";
-      CCopasiDataModel::Global->saveModel(saveFilename, true);
+      CCopasiDataModel::Global->saveModel(saveFilename, NULL, true);
 
       // Run the trajectory task
 
