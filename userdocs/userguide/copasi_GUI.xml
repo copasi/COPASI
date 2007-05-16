@@ -1,10 +1,10 @@
 <chapter id="modelCreation" xreflabel="Model Creation">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_GUI.xml,v $ -->
-<!--   $Revision: 1.45.2.2 $ -->
+<!--   $Revision: 1.45.2.3 $ -->
 <!--   $Name:  $ -->
-<!--   $Author: ssahle $ -->
-<!--   $Date: 2007/05/14 16:27:45 $ -->
+<!--   $Author: shoops $ -->
+<!--   $Date: 2007/05/16 19:10:48 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -457,11 +457,39 @@ In the model tree right below the <guibutton>Reaction</guibutton> branch is the 
 As with all other model elements, you can choose how you want to add a global parameter. The most convenient way is to just enter a name in an empty cell of the column termed <guilabel>Name</guilabel>.
 </para>
 <para>
-<!-- We need a screenshot here -->
+<screenshot>
+<screeninfo>Produced with COPASI 4.1 (Build 21) on Darwin on 05/16/2007</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/GlobalQuantities_01.png" format="PNG" scale="50" align="center" />
+ </imageobject> 
+ <textobject>
+   <phrase>global quantities table with 3 entries</phrase>
+ </textobject>
+ <caption>
+  <para>Global Quantities Table</para>
+ </caption> 
+</mediaobject>
+</screenshot>
 </para>
 <para>
 If you click on the name of a global quantity in the tree on the left or double click on a row of the table the information for only one of the global quantities is displayed. This is also where you can specify the mathematical expression for an "assignment" or "ode" quantity. 
-<!-- We need a screenshot here -->
+</para>
+<para>
+<screenshot>
+<screeninfo>Produced with COPASI 4.1 (Build 21) on Darwin on 05/16/2007</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/GlobalQuantities_02.png" format="PNG" scale="50" align="center" />
+ </imageobject> 
+ <textobject>
+   <phrase>single global quantitiy interface</phrase>
+ </textobject>
+ <caption>
+  <para>Individual Global Quantity Interface</para>
+ </caption> 
+</mediaobject>
+</screenshot>
 </para>
 </sect1>
 <sect1 id="parameterView" xreflabel="Parameter View">
