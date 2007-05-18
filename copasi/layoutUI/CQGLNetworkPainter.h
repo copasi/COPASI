@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/05/15 12:36:11 $
+//   $Author: urost $
+//   $Date: 2007/05/18 10:13:51 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,6 +31,7 @@
 #include "copasi/layout/CLCurve.h"
 #include "copasi/layoutUI/CArrow.h"
 #include "copasi/layoutUI/CSimSummaryInfo.h"
+#include "copasi/layoutUI/CVisParameters.h"
 
 #include "copasi/layoutUI/CGraphNode.h"
 #include "copasi/CopasiDataModel/CCopasiDataModel.h"
@@ -91,6 +92,8 @@ class CQGLNetworkPainter : public QGLWidget
     //CGraphNode* findNodeWithKey(std::string nodeKey);
     //void storeCurveInCorrespondingNode(std::string nodeKey, int indx);
     //void storeCurveInCorrespondingNode(std::string nodeKey, int indx1, int indx2);
+
+    CVisParameters mVisualizationParameters;
 
     void adaptCurveForRectangles(std::multimap<std::string, CLCurve>::iterator it, CLBoundingBox box);
     CLPoint getPointOnRectangle(CLBoundingBox r, CLPoint p);

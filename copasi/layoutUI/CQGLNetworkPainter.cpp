@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.33 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/05/15 13:46:35 $
+//   $Author: urost $
+//   $Date: 2007/05/18 10:13:51 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,6 +34,7 @@
 #include "layout/CLayout.h"
 #include "utilities/CCopasiVector.h"
 #include "layoutUI/CVisParameters.h"
+#include "layoutUI/CDataEntity.h"
 
 CQGLNetworkPainter::CQGLNetworkPainter(QWidget *parent, const char *name)
     : QGLWidget(parent, name)
@@ -598,56 +599,87 @@ void CQGLNetworkPainter::createDataSets()
     {
       CTrajectoryTask *ptask = dynamic_cast< CTrajectoryTask * >((*CCopasiDataModel::Global->getTaskList())["Time-Course"]);
       const CTimeSeries & timeSer = ptask->getTimeSeries();
-      //if (timeSer.getNumSteps() > 0)
-      if (timeSer.getNumVariables() > 0)
+      if (timeSer.getNumSteps() > 0)
         {
-          pSummaryInfo = new CSimSummaryInfo(timeSer.getNumSteps(), timeSer.getNumVariables(),
-                                             timeSer.getConcentrationData(timeSer.getNumSteps() - 1, 0) - timeSer.getConcentrationData(0, 0));
-          C_FLOAT64 tt = timeSer.getConcentrationData(timeSer.getNumSteps() - 1, 0) - timeSer.getConcentrationData(0, 0);
-          //std::cout << "summary: no of steps: " << pSummaryInfo->getNumberOfSteps() << std::endl,
-          //std::cout << "total time: " << tt << std::endl;
-          //std::cout << "number of steps in time series: " << timeSer.getNumSteps() << std::endl;
-          //std::cout << "number of variables: " << timeSer.getNumVariables() << std::endl;
-          C_INT32 i, t;
-          C_FLOAT64 val;
-          std::string name;
-          std::string objKey;
-          std::string ndKey;
-          C_FLOAT64 minR;
-          C_FLOAT64 maxR;
-          C_FLOAT64 maxAll = 0.0;
-          // now get some info about the data set such as the maximum concentrartion values for each reactant
-          for (i = 0;i < timeSer.getNumVariables();i++) // iterate on reactants
+          if (timeSer.getNumVariables() > 0)
             {
-              maxR = - DBL_MAX;
-              minR = DBL_MAX;
-              name = timeSer.getTitle(i);
-              objKey = timeSer.getKey(i);
-              std::map<std::string, std::string>::iterator iter = keyMap.find(objKey);
-              if (iter != keyMap.end())
-                {// if there is a node (key)
-                  ndKey = (keyMap.find(objKey))->second;
-                  for (int t = 0;t < timeSer.getNumSteps();t++) // iterate on time steps t=0..n
-                    {
-                      val = timeSer.getConcentrationData(t, i);
-                      if (val > maxR)
-                        maxR = val;
-                      if (val < minR)
-                        minR = val;
+              pSummaryInfo = new CSimSummaryInfo(timeSer.getNumSteps(), timeSer.getNumVariables(),
+                                                 timeSer.getConcentrationData(timeSer.getNumSteps() - 1, 0) - timeSer.getConcentrationData(0, 0));
+              C_FLOAT64 tt = timeSer.getConcentrationData(timeSer.getNumSteps() - 1, 0) - timeSer.getConcentrationData(0, 0);
+              //std::cout << "summary: no of steps: " << pSummaryInfo->getNumberOfSteps() << std::endl,
+              //std::cout << "total time: " << tt << std::endl;
+              //std::cout << "number of steps in time series: " << timeSer.getNumSteps() << std::endl;
+              //std::cout << "number of variables: " << timeSer.getNumVariables() << std::endl;
+              C_INT32 i, t;
+              C_FLOAT64 val;
+              std::string name;
+              std::string objKey;
+              std::string ndKey;
+              C_FLOAT64 minR;
+              C_FLOAT64 maxR;
+              C_FLOAT64 maxAll = 0.0;
+              // now get some info about the data set such as the maximum concentration values for each reactant
+              for (i = 0;i < timeSer.getNumVariables();i++) // iterate on reactants
+                {
+                  maxR = - DBL_MAX;
+                  minR = DBL_MAX;
+                  name = timeSer.getTitle(i);
+                  objKey = timeSer.getKey(i);
+                  std::map<std::string, std::string>::iterator iter = keyMap.find(objKey);
+                  if (iter != keyMap.end())
+                    {// if there is a node (key)
+                      ndKey = (keyMap.find(objKey))->second;
+                      for (int t = 0;t < timeSer.getNumSteps();t++) // iterate on time steps t=0..n
+                        {
+                          val = timeSer.getConcentrationData(t, i);
+                          if (val > maxR)
+                            maxR = val;
+                          if (val < minR)
+                            minR = val;
+                        }
+                      //std::cout << name << " : " << key << " : " << val << std::endl;
+                      pSummaryInfo->storeMax(ndKey, maxR);
+                      pSummaryInfo->storeMin(ndKey, minR);
+                      if (maxR > maxAll)
+                        maxAll = maxR;
                     }
-                  //std::cout << name << " : " << key << " : " << val << std::endl;
-                  pSummaryInfo->storeMax(ndKey, maxR);
-                  pSummaryInfo->storeMin(ndKey, minR);
-                  if (maxR > maxAll)
-                    maxAll = maxR;
+                }
+              pSummaryInfo->setMaxOverallConcentration(maxAll);
+              //std::cout << *pSummaryInfo;
+              //this->printNodeMap();
+
+              // now create data sets for visualization/animation
+              for (int t = 0;t < timeSer.getNumSteps();t++)  // iterate on time steps t=0..n
+                {
+                  CDataEntity dataSet;
+                  for (i = 0;i < timeSer.getNumVariables();i++) // iterate on reactants
+                    {
+                      //name = timeSer.getTitle(i);
+                      objKey = timeSer.getKey(i); // object key os dbml species
+                      std::map<std::string, std::string>::iterator iter = keyMap.find(objKey);
+                      if (iter != keyMap.end())
+                        {// if there is a node (key)
+                          ndKey = (keyMap.find(objKey))->second; // key of graphical node
+                          val = timeSer.getConcentrationData(t, i); // get concentration of species i at timepoint t
+                          C_FLOAT64 scaledVal;
+                          // now scale value;
+                          minR = pSummaryInfo->getMinForSpecies(ndKey);
+                          maxR = pSummaryInfo->getMaxForSpecies(ndKey);
+                          scaledVal = CVisParameters::minNodeSize +
+                                      (((CVisParameters::maxNodeSize - CVisParameters::minNodeSize) / (maxR - minR))
+                                       * (val - minR));
+                          // put scaled value in data entity (collection of scaled values for one step)
+                          dataSet.putValueForSpecies(ndKey, scaledVal);
+                          std::cout << ndKey << ": " << val << "  to  " << scaledVal << std::endl;
+                        }
+                    }
                 }
             }
-          pSummaryInfo->setMaxOverallConcentration(maxAll);
-          //std::cout << *pSummaryInfo;
-          //this->printNodeMap();
+          else
+            std::cout << "empty time series: no variables present" << std::endl;
         }
       else
-        std::cout << "empty time series: no variables present" << std::endl;
+        std::cout << "no simulation steps found: you have to create a time course first" << std::endl;
     }
 }
 
@@ -951,12 +983,14 @@ void CQGLNetworkPainter::testOpenGL()
 
 void CQGLNetworkPainter::initializeGraphPainter()
 {
+  mVisualizationParameters = CVisParameters();
   mLabelShape = RECTANGLE;
   mgraphMin = CLPoint(0.0, 0.0);
   mgraphMax = CLPoint(250.0, 250.0);
   mFontname = "Helvetica";
   mFontsize = 12;
   mFontsizeDouble = 12.0; // to avoid rounding errors due to zooming in and out
+
   createActions();
 }
 

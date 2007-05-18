@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CVisParameters.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/05/14 11:11:48 $
+//   $Date: 2007/05/18 10:13:51 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,6 +21,11 @@ class CVisParameters
     static const C_INT16 GLOBAL_SCALING;
     static const C_INT16 INDIVIDUAL_SCALING;
 
+    static C_FLOAT64 minNodeSize;
+    static C_FLOAT64 maxNodeSize;
+
     CVisParameters();
+
+    //static void init();
   };
 #endif
