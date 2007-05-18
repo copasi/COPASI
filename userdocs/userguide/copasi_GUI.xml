@@ -1,10 +1,10 @@
 <chapter id="modelCreation" xreflabel="Model Creation">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_GUI.xml,v $ -->
-<!--   $Revision: 1.45.2.4 $ -->
+<!--   $Revision: 1.45.2.5 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: shoops $ -->
-<!--   $Date: 2007/05/18 16:21:15 $ -->
+<!--   $Date: 2007/05/18 19:10:13 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -3243,17 +3243,258 @@ are + Infinity and - Infinity respectively.
 If you want to set your own bounds, disable the check boxes and enter
 your own value in the edit field. The value for the lower bound goes
 into the correspondingly labeled edit field, likewise for the upper
-bound. 
+bound. As a matter of convenience you may enter -X% or +X% as the
+lower and upper limits. This instructs COPASI to calculate the limits
+based on the start value.  
 You can also specify other objects from the model as bounds for the
 parameter. To choose the value of another object as a bound for the
 parameter, click on the button beside the edit field and choose the
-object from the tree. You can restrict the effect of a parameter for a
-subset of the experiments you are attempting to fit. To do this select
-the <guibutton>...</guibutton> to the right of <guilabel>Affected
-Experiments</guilabel>. A possible application is to fit different
-initial values for each time course experiment. To help you in such a
-case the <guibutton>Duplicate for each Experiment</guibutton> button will
-create a copy of the current parameter for each specified experiment.
+object from the tree.  The start value is the initial parameter
+value used by COPASI in any fitting attempt. Per default COPASI
+selects the current model value of the parameter to be estimated as
+the starting value. You may manually override this default or use the
+<guibutton>...</guibutton> to reset it to model values, randomize it, or
+set it to the last estimated values. Additionally, you can restrict
+the effect of a parameter to a subset of the experiments you are
+attempting to fit. To do this select the <guibutton>...</guibutton> to
+the right of <guilabel>Affected Experiments</guilabel>. A possible
+application is to fit different initial values for each time course
+experiment. To help you in such a case the <guibutton>Duplicate for
+each Experiment</guibutton> button will create a copy of the current
+parameter for each specified experiment. 
+</para>
+
+<sect2 id="experimentalData" xreflabel="Experimental Data">
+<title>Experimental Data</title>
+
+<para>
+Before you can execute a parameter estimation task you need to specify
+the dataset which COPASI will use to fit the parameters you have
+specified. Each experiment of your dataset contributes to the objective
+function with the following weighted sum of squares: 
+<equation><mml:math display="block">
+  <mml:mrow>
+   <mml:mrow>
+    <mml:mi>E</mml:mi>
+    <mml:mrow>
+     <mml:mo>(</mml:mo>
+     <mml:mi>P</mml:mi>
+     <mml:mo>)</mml:mo>
+    </mml:mrow>
+    <mml:mo>=</mml:mo>
+    <mml:msub>
+     <mml:mo>&Sigma;</mml:mo>
+     <mml:mrow>
+      <mml:mi>i</mml:mi>
+      <mml:mi>,</mml:mi>
+      <mml:mi>j</mml:mi>
+     </mml:mrow>
+    </mml:msub>
+   </mml:mrow>
+   <mml:msub>
+    <mml:mo>&omega;</mml:mo>
+    <mml:mi>j</mml:mi>
+   </mml:msub>
+   <mml:msup>
+    <mml:mrow>
+     <mml:mo>(</mml:mo>
+     <mml:mrow>
+      <mml:mrow>
+       <mml:msub>
+        <mml:mi>x</mml:mi>
+        <mml:mrow>
+         <mml:mi>i</mml:mi>
+         <mml:mi>,</mml:mi>
+         <mml:mi>j</mml:mi>
+        </mml:mrow>
+       </mml:msub>
+       <mml:mo>-</mml:mo>
+       <mml:msub>
+        <mml:mi>y</mml:mi>
+        <mml:mrow>
+         <mml:mi>i</mml:mi>
+         <mml:mi>,</mml:mi>
+         <mml:mi>j</mml:mi>
+        </mml:mrow>
+       </mml:msub>
+      </mml:mrow>
+      <mml:mrow>
+       <mml:mo>(</mml:mo>
+       <mml:mi>P</mml:mi>
+       <mml:mo>)</mml:mo>
+      </mml:mrow>
+     </mml:mrow>
+     <mml:mo>)</mml:mo>
+    </mml:mrow>
+    <mml:mn>2</mml:mn>
+   </mml:msup>
+  </mml:mrow>
+</mml:math></equation>
+Where
+<inlineequation><mml:math><mml:mi>P</mml:mi></mml:math></inlineequation>
+is the currently tested parameter set,
+<inlineequation><mml:math>
+ <mml:msub>
+  <mml:mi>x</mml:mi>
+  <mml:mrow>
+   <mml:mi>i</mml:mi>
+   <mml:mi>,</mml:mi>
+   <mml:mi>j</mml:mi>
+  </mml:mrow>
+ </mml:msub>
+</mml:math></inlineequation>
+is a point in the dataset, and
+<inlineequation><mml:math>
+ <mml:msub>
+  <mml:mi>y</mml:mi>
+  <mml:mrow>
+   <mml:mi>i</mml:mi>
+   <mml:mi>,</mml:mi>
+   <mml:mi>j</mml:mi>
+  </mml:mrow>
+ </mml:msub>
+ <mml:mrow>
+  <mml:mo>(</mml:mo>
+  <mml:mi>P</mml:mi>
+  <mml:mo>)</mml:mo>
+  </mml:mrow>
+</mml:math></inlineequation> the corresponding simulated value. The indeces
+<inlineequation><mml:math><mml:mi>i</mml:mi></mml:math></inlineequation> and
+<inlineequation><mml:math><mml:mi>j</mml:mi></mml:math></inlineequation>
+denote columns and rows in the dataset.
+The weight for each data column is given by
+<inlineequation><mml:math>
+ <mml:msub>
+  <mml:mo>&omega;</mml:mo>
+  <mml:mi>j</mml:mi>
+ </mml:msub>
+</mml:math></inlineequation>. COPASI provides 3 methods shown in the
+table below to calculate the weights for you. After applying the
+method chosen COPASI scales the weights so that for each
+experiment the maximal occurring weight is 1. In case that the weights
+calculated are not satisfactory you are able to manually override them
+individually. 
+</para>
+<para>
+<table frame="all"><title>Weight Calculation Methods</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<colspec colwidth="1*" />
+<colspec colwidth="3*" />
+<thead>
+ <row>
+   <entry>Name</entry>
+   <entry>Formula</entry>
+ </row>
+</thead>
+<tbody>
+ <row>
+  <entry>Mean</entry>
+  <entry>
+   <inlineequation><mml:math>
+    <mml:mrow>
+     <mml:msub>
+      <mml:mo>&omega;</mml:mo>
+      <mml:mi>j</mml:mi>
+     </mml:msub>
+     <mml:mo>=</mml:mo>
+     <mml:mrow>
+      <mml:mn>1</mml:mn>
+      <mml:mo>/</mml:mo>
+      <mml:mrow>
+       <mml:mo>|</mml:mo>
+       <mml:mo>&lt;</mml:mo>
+       <mml:msub>
+        <mml:mi>x</mml:mi>
+        <mml:mi>j</mml:mi>
+       </mml:msub>
+       <mml:mo>&gt;</mml:mo>
+       <mml:mo>|</mml:mo>
+      </mml:mrow>
+     </mml:mrow>
+    </mml:mrow>
+   </mml:math></inlineequation>
+  </entry>
+ </row>
+ <row>
+  <entry>Mean Square</entry>
+  <entry>
+  <inlineequation><mml:math>
+   <mml:mrow>
+    <mml:msub>
+     <mml:mo>&omega;</mml:mo>
+     <mml:mi>j</mml:mi>
+    </mml:msub>
+    <mml:mo>=</mml:mo>
+    <mml:mrow>
+     <mml:mn>1</mml:mn>
+     <mml:mo>/</mml:mo>
+     <mml:msqrt>
+      <mml:mrow>
+       <mml:mo>&lt;</mml:mo>
+       <mml:msubsup>
+        <mml:mi>x</mml:mi>
+        <mml:mi>j</mml:mi>
+        <mml:mn>2</mml:mn>
+       </mml:msubsup>
+       <mml:mo>&gt;</mml:mo>
+      </mml:mrow>
+     </mml:msqrt>
+    </mml:mrow>
+   </mml:mrow>
+   </mml:math></inlineequation>
+  </entry>
+ </row>
+ <row>
+  <entry>Standard Deviation</entry>
+  <entry>
+   <inlineequation><mml:math>
+    <mml:mrow>
+     <mml:msub>
+      <mml:mo>&omega;</mml:mo>
+      <mml:mi>j</mml:mi>
+     </mml:msub>
+     <mml:mo>=</mml:mo>
+     <mml:mrow>
+      <mml:mn>1</mml:mn>
+      <mml:mo>/</mml:mo>
+      <mml:mrow>
+       <mml:mo>(</mml:mo>
+       <mml:mo>&lt;</mml:mo>
+       <mml:msubsup>
+        <mml:mi>x</mml:mi>
+        <mml:mi>j</mml:mi>
+        <mml:mn>2</mml:mn>
+       </mml:msubsup>
+       <mml:mo>&gt;</mml:mo>
+       <mml:mo>-</mml:mo>
+       <mml:mo>&lt;</mml:mo>
+       <mml:msub>
+        <mml:mi>x</mml:mi>
+        <mml:mi>j</mml:mi>
+       </mml:msub>
+       <mml:mo>&gt;</mml:mo>
+       <mml:mo>&lt;</mml:mo>
+       <mml:msub>
+        <mml:mi>x</mml:mi>
+        <mml:mi>j</mml:mi>
+       </mml:msub>
+       <mml:mo>&gt;</mml:mo>
+       <mml:mo>)</mml:mo>
+      </mml:mrow>
+     </mml:mrow>
+    </mml:mrow>
+   </mml:math></inlineequation>
+  </entry>
+ </row>
+</tbody>
+</tgroup>
+</table>
+</para>
+
+<para>
+To specify the experimental data you click on the <guibutton>Experimental
+Data</guibutton> button at the top right of the parameter estimation
+dialog. A new dialog opens that lets you enter experimental data.
 </para>
 
 <para>
@@ -3277,11 +3518,7 @@ create a copy of the current parameter for each specified experiment.
 </para>
 
 <para>
-Once you added and defined all the parameters for the fitting, you
-have to add experimental data as a reference for the fitting
-process. For this, you click on the <guibutton>Experimental
-Data</guibutton> button at the top right of the dialog. A new dialog
-opens that lets you enter experimental datasets. To read a data file,
+To read a data file,
 click on the open button beside the label <guilabel>File</guilabel> at
 the top of the dialog and choose a file that contains experimental
 data from the file dialog. The data file should contain experimental
@@ -3295,7 +3532,7 @@ each experiment is treated as the row containing the column
 headings. However, this is only a default and the header row can be
 specified by the user. The header row may be anywhere in the file the
 data is contained. The purpose of the header row is to ease the
-interface to the data file and may be committed. To tell COPASI that
+interface to the data file and may be omitted. To tell COPASI that
 no header row is included uncheck the box next to the header. Once
 COPASI has read a file, you have to specify some information for each
 experiment included in the file. To select an experiment you choose it
@@ -3373,6 +3610,10 @@ the bottom of the dialog by selecting the method from the drop down
 list. For an explanation of the individual methods, please consult the
 methods section. 
 </para>
+</sect2>
+
+<sect2 id="parameterEstimationResult" xreflabel="parameter estimation result">
+<title>Result</title>
 <para>
 If you want to have output from the parameter estimation task, you
 have to create an output definition as described in the <xref
@@ -3429,9 +3670,10 @@ contains multiple tabs.
 The overall fit and performance statistic are displayed in the
 <guilabel>Main</guilabel> and detailed information about parameters,
 experiments, and fitted values can be found under the corresponding
-tabs. In addition, you look at the correlation matrix of the
-parameters.
+tabs. In addition, you may look at the correlation matrix of the
+parameters or the Fisher information matrix. 
 </para>
+</sect2>
 </sect1>
 
 <sect1 id="sensitivities" xreflabel="Sensitivities">
