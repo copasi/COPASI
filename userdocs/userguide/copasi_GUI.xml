@@ -1,10 +1,10 @@
 <chapter id="modelCreation" xreflabel="Model Creation">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_GUI.xml,v $ -->
-<!--   $Revision: 1.45.2.5 $ -->
+<!--   $Revision: 1.45.2.6 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: shoops $ -->
-<!--   $Date: 2007/05/18 19:10:13 $ -->
+<!--   $Date: 2007/05/18 19:26:26 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -3113,7 +3113,16 @@ the search will effectively proceed from the lowest possible to the
 largest possible double precision number. If you want to specify your
 own range, you first have to deselect the <guilabel>+Inf</guilabel> or
 <guilabel>-Inf</guilabel> check box and then you can set your own
-bounds. If you want to delete a parameter from the scan list, you just
+bounds. As a matter of convenience you may enter -X% or +X% as the
+lower and upper limits. This instructs COPASI to calculate the limits
+based on the start value.
+The start value is the initial parameter
+value used by COPASI in any fitting attempt. Per default COPASI
+selects the current model value of the parameter to be estimated as
+the starting value. You may manually override this default or use the
+<guibutton>...</guibutton> to reset it to model values, randomize it, or
+set it to the last estimated values.
+If you want to delete a parameter from the scan list, you just
 select it and click on the <guilabel>delete</guilabel> button which
 you find at the right side. If you want to scan more than one
 parameter, you just add more by clicking on the
