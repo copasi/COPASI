@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.34 $
+//   $Revision: 1.35 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/05/21 10:28:58 $
+//   $Date: 2007/05/21 20:40:14 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -671,6 +671,7 @@ void CQGLNetworkPainter::createDataSets()
                                        * (val - minR));
                           // put scaled value in data entity (collection of scaled values for one step)
                           dataSet.putValueForSpecies(ndKey, scaledVal);
+                          //std::cout << timeSer.getTitle(i)  << " ndKey: " << ndKey << "  " << scaledVal << std::endl;
                           //std::cout << timeSer.getTitle(i) << ": " << val << " mapped  to  " << scaledVal << std::endl;
                         }
                     }
@@ -686,18 +687,26 @@ void CQGLNetworkPainter::createDataSets()
     }
 }
 
+void CQGLNetworkPainter::runAnimation()
+{
+  this->mLabelShape = CIRCLE;
+  this->showStep (5);
+  this->drawGraph();
+}
+
 void CQGLNetworkPainter::showStep(int i)
 {
   //std::cout << "phhh" << std::endl;
   std::cout << "number of data sets: " << dataSets.size() << std::endl;
   if ((0 <= i) && (i < dataSets.size()))
     {
-      std::cout << "xxxxxxxx" << std::endl;
       CDataEntity *dataSet = &(dataSets[i]);
       for (i = 0; i < viewerNodes.size();i++)
         {
+          C_FLOAT64 val = dataSet->getValueForSpecies(viewerNodes[i]);
           std::cout << "show " << viewerNodes[i] << "  " << dataSet->getValueForSpecies(viewerNodes[i]) << std::endl;
-          setNodeSize(viewerNodes[i], dataSet->getValueForSpecies(viewerNodes[i]));
+          if (val != -DBL_MAX)
+            setNodeSize(viewerNodes[i], val);
         }
     }
 }
@@ -713,10 +722,10 @@ void CQGLNetworkPainter::setNodeSize(std::string key, C_FLOAT64 val)
   std::map<std::string, CGraphNode>::iterator nodeIt;
   nodeIt = nodeMap.find(key);
   if (nodeIt != nodeMap.end())
-    (*nodeIt).second.setSize(val); // set to test size
+    (*nodeIt).second.setSize(val);
   // now adaptCurves pointing to nodes
   std::pair<std::multimap<std::string, CLCurve>::iterator, std::multimap<std::string, CLCurve>::iterator> curveRangeIt;;
-  curveRangeIt = nodeCurveMap.equal_range(viewerNodes[i]);
+  curveRangeIt = nodeCurveMap.equal_range(key);
   std::multimap<std::string, CLCurve>::iterator curveIt;
   curveIt = curveRangeIt.first;
   while (curveIt != curveRangeIt.second)
@@ -745,7 +754,7 @@ void CQGLNetworkPainter::setNodeSize(std::string key, C_FLOAT64 val)
           CLPoint p = pLastSeg->getEnd();
           CArrow *ar = new CArrow(*pLastSeg, p.getX(), p.getY());
           nodeArrowMap.insert(std::pair<std::string, CArrow>
-                              (viewerNodes[i], *ar));
+                              (key, *ar));
         }
       curveIt++;
     }
@@ -830,7 +839,6 @@ CLPoint CQGLNetworkPainter::getPointOnRectangle(CLBoundingBox r, CLPoint p)
 void CQGLNetworkPainter::mapLabelsToCircles()
 {
   this->mLabelShape = CIRCLE;
-  this->showStep (0);
   this->drawGraph();
   //this->draw();
 }

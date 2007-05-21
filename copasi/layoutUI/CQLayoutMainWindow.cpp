@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/05/10 18:14:22 $
+//   $Date: 2007/05/21 20:40:14 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -88,6 +88,13 @@ void CQLayoutMainWindow::createActions()
   closeAction->setStatusTip("Close Layout Window");
   connect(closeAction, SIGNAL(activated()), this, SLOT(closeApplication()));
 
+  runAnimation = new QAction("animate",
+                             "Run animation",
+                             CTRL + Key_A,
+                             this);
+  runAnimation->setStatusTip("show complete animation sequence of current times series");
+  connect(runAnimation, SIGNAL(activated()), this, SLOT(showAnimation()));
+
   rectangularShape = new QAction ("rectangle",
                                   "rectangle",
                                   CTRL + Key_R ,
@@ -111,6 +118,9 @@ void CQLayoutMainWindow::createMenus()
   fileMenu->insertSeparator();
   closeAction->addTo(fileMenu);
 
+  actionsMenu = new QPopupMenu(this);
+  runAnimation->addTo(actionsMenu);
+
   labelShapeMenu = new QPopupMenu(this);
 
   rectangularShape->addTo(labelShapeMenu);
@@ -120,6 +130,7 @@ void CQLayoutMainWindow::createMenus()
   optionsMenu->insertItem("Shape of Label", labelShapeMenu);
 
   menuBar()->insertItem("File", fileMenu);
+  menuBar()->insertItem("Actions", actionsMenu);
   menuBar()->insertItem("Options", optionsMenu);
 }
 
@@ -182,6 +193,11 @@ void CQLayoutMainWindow::mapLabelsToRectangles()
 void CQLayoutMainWindow::loadData()
 {
   glPainter->createDataSets();
+}
+
+void CQLayoutMainWindow::showAnimation()
+{
+  glPainter->runAnimation();
 }
 
 void CQLayoutMainWindow::closeApplication()

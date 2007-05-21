@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/05/21 10:28:58 $
+//   $Date: 2007/05/21 20:40:14 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -66,6 +66,8 @@ class CQGLNetworkPainter : public QGLWidget
 
     void mapLabelsToRectangles();
     void mapLabelsToCircles();
+
+    void runAnimation();
 
   private slots:
     void zoomIn();

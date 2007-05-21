@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/05/10 18:14:22 $
+//   $Date: 2007/05/21 20:40:14 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -43,6 +43,7 @@ class CQLayoutMainWindow : public QMainWindow
   private slots:
     void loadSBMLFile();
     void loadData();
+    void showAnimation();
     void closeApplication();
 
     void mapLabelsToCircles();
@@ -54,9 +55,11 @@ class CQLayoutMainWindow : public QMainWindow
     bool maybeSave();
 
     QPopupMenu *fileMenu;
+    QPopupMenu *actionsMenu;
     QPopupMenu *optionsMenu;
     QPopupMenu *labelShapeMenu;
 
+    QAction *runAnimation;
     QAction *openSBMLFile;
     QAction *openDataFile;
     QAction *closeAction;
