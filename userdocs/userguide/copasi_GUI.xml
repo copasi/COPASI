@@ -1,10 +1,10 @@
 <chapter id="modelCreation" xreflabel="Model Creation">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_GUI.xml,v $ -->
-<!--   $Revision: 1.45.2.6 $ -->
+<!--   $Revision: 1.45.2.7 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: shoops $ -->
-<!--   $Date: 2007/05/18 19:26:26 $ -->
+<!--   $Date: 2007/05/21 20:39:07 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -3689,6 +3689,27 @@ parameters or the Fisher information matrix.
 <title>Sensitivity Analysis</title>
 <para>
 </para>
+
+<para>
+<screenshot>
+<screeninfo>Produced with COPASI 4.1 (Build 21) on MacOS X on 05/21/2007</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/Sensitivities_01.png" format="PNG" scale="50" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/Sensitivities_01.ps" format="EPS" scale="50" align="center" />
+ </imageobject> 
+ <textobject>
+   <phrase>MacOS screenshot that shows the sensitivity analysis task</phrase>
+ </textobject>
+ <caption>
+  <para>Sensitivity Analysis</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+
 </sect1>
 
 
