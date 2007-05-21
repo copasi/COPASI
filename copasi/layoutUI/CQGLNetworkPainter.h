@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/05/18 10:13:51 $
+//   $Date: 2007/05/21 10:28:58 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,6 +32,7 @@
 #include "copasi/layoutUI/CArrow.h"
 #include "copasi/layoutUI/CSimSummaryInfo.h"
 #include "copasi/layoutUI/CVisParameters.h"
+#include "copasi/layoutUI/CDataEntity.h"
 
 #include "copasi/layoutUI/CGraphNode.h"
 #include "copasi/CopasiDataModel/CCopasiDataModel.h"
@@ -60,7 +61,7 @@ class CQGLNetworkPainter : public QGLWidget
 
     void createDataSets();
 
-    void setNodeSizes();
+    void setNodeSize(std::string key, C_FLOAT64 val);
     //void changeNodeSize(std::string viewerNodeKey, double newSize);
 
     void mapLabelsToRectangles();
@@ -81,6 +82,8 @@ class CQGLNetworkPainter : public QGLWidget
     std::string mFontname;
     int mFontsize;
     double mFontsizeDouble;
+
+    std::vector<CDataEntity> dataSets;
 
     std::map<std::string, std::string> keyMap; // maps Copasi SBML object keys to layout node keys
     std::map<std::string, CGraphNode>nodeMap;
@@ -107,6 +110,8 @@ class CQGLNetworkPainter : public QGLWidget
     void updateGraphWithNodeSizes();
     void updateEdge(CLLineSegment line);
     void resetGraphToLabelView();
+
+    void showStep(int i);
 
     enum shapeOfLabels {CIRCLE, RECTANGLE};
     shapeOfLabels mLabelShape;
