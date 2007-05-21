@@ -1,10 +1,10 @@
 <chapter id="methods" xreflabel="Methods">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_methods.xml,v $ -->
-<!--   $Revision: 1.12.2.2 $ -->
+<!--   $Revision: 1.12.2.3 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: shoops $ -->
-<!--   $Date: 2007/05/17 20:33:23 $ -->
+<!--   $Date: 2007/05/21 18:57:23 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -101,33 +101,15 @@ Please note that best achievable relative tolerance is approximately
 </para>
 </listitem>
 </varlistentry>
-<varlistentry><term>Use Default Absolute Tolerance</term>
-<listitem>
-<para>
-This parameter is a boolean value to determine whether COPASI shall
-make a guess for the absolute tolerance. The absolute tolerance
-determines whether numbers are considered to be zero during
-calculation. Numbers with an absolute values less than the absolute
-tolerance are treated as zero. A value of '1' (the default) instructs
-COPASI to make a guess which can be found in the Absolute Tolerance
-parameter after calculation. When specifying a value of '0' one needs
-also to provide a value for the absolute tolerance.
-</para>
-</listitem>
-</varlistentry>
 <varlistentry><term>Absolute Tolerance</term>
 <listitem>
 <para>
-This parameter is a numeric value specifying the desired absolute
-tolerance the user wants to achieve or if Use Default Absolute
-Tolerance parameter is set '1' the value COPASI selected. Please note
-that COPASI internally calculates with particle numbers which might be
-quite large (<inlineequation><mml:math><mml:mn>1.0</mml:mn><mml:mo>*</mml:mo>
-<mml:msup><mml:mn>10</mml:mn><mml:mn>23</mml:mn></mml:msup></mml:math></inlineequation>)
-and therefore an absolute tolerance of 
+This parameter is a positive numeric value specifying the desired
+absolute tolerance the user wants to achieve. Please note that for
+metbolites the absolute tolerance is applied to the concentration
+value. The default value is
 <inlineequation><mml:math><mml:mn>1.0</mml:mn><mml:mo>*</mml:mo>
-<mml:msup><mml:mn>10</mml:mn><mml:mn>9</mml:mn></mml:msup></mml:math></inlineequation>
-is already small.
+<mml:msup><mml:mn>10</mml:mn><mml:mn>-12</mml:mn></mml:msup></mml:math></inlineequation>.
 </para>
 </listitem>
 </varlistentry>
