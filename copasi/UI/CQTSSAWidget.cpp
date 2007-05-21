@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSAWidget.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/05/15 13:46:08 $
+//   $Author: ssahle $
+//   $Date: 2007/05/21 12:27:27 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,8 +13,8 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQTSSAWidget.ui'
  **
- ** Created: Tue May 15 09:22:45 2007
- **      by: The User Interface Compiler ($Id: CQTSSAWidget.cpp,v 1.2 2007/05/15 13:46:08 shoops Exp $)
+ ** Created: Mo Mai 21 14:16:28 2007
+ **      by: The User Interface Compiler ($Id: CQTSSAWidget.cpp,v 1.3 2007/05/21 12:27:27 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -29,7 +29,6 @@
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
-#include "taskwidget.h"
 #include "TaskWidget.h"
 #include "CQTSSAWidget.ui.h"
 

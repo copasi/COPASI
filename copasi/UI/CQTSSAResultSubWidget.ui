@@ -1,10 +1,10 @@
 <!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSAResultSubWidget.ui,v $ </comment>
-<comment>   $Revision: 1.1 $ </comment>
+<comment>   $Revision: 1.2 $ </comment>
 <comment>   $Name:  $ </comment>
-<comment>   $Author: nsimus $ </comment>
-<comment>   $Date: 2007/04/12 12:34:10 $ </comment>
+<comment>   $Author: ssahle $ </comment>
+<comment>   $Date: 2007/05/21 12:27:27 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -212,6 +212,6 @@
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
-    <includehint>ctimeseriestable.h</includehint>
+    <includehint>CTimeSeriesTable.h</includehint>
 </includehints>
 </UI>
