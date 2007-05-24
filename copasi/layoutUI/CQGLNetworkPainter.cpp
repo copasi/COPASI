@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.35 $
+//   $Revision: 1.36 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/05/21 20:40:14 $
+//   $Date: 2007/05/24 20:02:29 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -647,11 +647,10 @@ void CQGLNetworkPainter::createDataSets()
               pSummaryInfo->setMaxOverallConcentration(maxAll);
               //std::cout << *pSummaryInfo;
               //this->printNodeMap();
-
+              //dataSets.resize(timeSer.getNumSteps());
               // now create data sets for visualization/animation
               for (int t = 0;t < timeSer.getNumSteps();t++)  // iterate on time steps t=0..n
                 {
-                  dataSets.resize(timeSer.getNumSteps());
                   CDataEntity dataSet;
                   for (i = 0;i < timeSer.getNumVariables();i++) // iterate on reactants
                     {
@@ -676,7 +675,10 @@ void CQGLNetworkPainter::createDataSets()
                         }
                     }
                   // now collect data set
-                  dataSets.push_back(dataSet);
+                  //std::cout << "A: number of elements in data set: " << dataSet.getNumberOfElements() << std::endl;
+                  //dataSets.push_back(dataSet);
+                  dataSets.insert(std::pair<int, CDataEntity>
+                                  (t, dataSet));
                 }
             }
           else
@@ -690,23 +692,28 @@ void CQGLNetworkPainter::createDataSets()
 void CQGLNetworkPainter::runAnimation()
 {
   this->mLabelShape = CIRCLE;
-  this->showStep (5);
+  if (dataSets.size() == 0)
+    this->createDataSets(); // load data if this was not done before
+  this->showStep (98);
   this->drawGraph();
 }
 
 void CQGLNetworkPainter::showStep(int i)
 {
-  //std::cout << "phhh" << std::endl;
-  std::cout << "number of data sets: " << dataSets.size() << std::endl;
   if ((0 <= i) && (i < dataSets.size()))
     {
-      CDataEntity *dataSet = &(dataSets[i]);
-      for (i = 0; i < viewerNodes.size();i++)
+      //CDataEntity *dataSet = &(dataSets[i]);
+      std::map<int, CDataEntity>::iterator iter = dataSets.find(i);
+      if (iter != dataSets.end())
         {
-          C_FLOAT64 val = dataSet->getValueForSpecies(viewerNodes[i]);
-          std::cout << "show " << viewerNodes[i] << "  " << dataSet->getValueForSpecies(viewerNodes[i]) << std::endl;
-          if (val != -DBL_MAX)
-            setNodeSize(viewerNodes[i], val);
+          CDataEntity dataSet = (*iter).second;
+          for (i = 0; i < viewerNodes.size();i++)
+            {
+              C_FLOAT64 val = dataSet.getValueForSpecies(viewerNodes[i]);
+              //std::cout << "show " << viewerNodes[i] << "  " << dataSet->getValueForSpecies(viewerNodes[i]) << std::endl;
+              if (val != -DBL_MAX)
+                setNodeSize(viewerNodes[i], val);
+            }
         }
     }
 }
