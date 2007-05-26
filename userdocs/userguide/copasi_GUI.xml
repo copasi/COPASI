@@ -1,10 +1,10 @@
 <chapter id="modelCreation" xreflabel="Model Creation">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_GUI.xml,v $ -->
-<!--   $Revision: 1.45 $ -->
+<!--   $Revision: 1.46 $ -->
 <!--   $Name:  $ -->
-<!--   $Author: shoops $ -->
-<!--   $Date: 2007/03/30 20:27:32 $ -->
+<!--   $Author: gauges $ -->
+<!--   $Date: 2007/05/26 07:57:40 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -2293,18 +2293,21 @@ parameters.
 <title>Importing and Exporting models</title>
 <para>COPASI is one modeling and simulation tool among many and often people use more than one tool to create, investigate and simulate their models. In order to make it easier to exchange model files with other programs, COPASI supports reading and writing of several model file formats. Naturally COPASI can read and write it's own file format and it can read Gepasi files just as well although it will not write Gepasi files.
 </para>
-<sect1 id="sbmlImportExport" xreflabel="Importing and Exporting SBML files">
-<title>Importing and Exporting SBML files</title>
 <para>
 In addition to those two file formats, COPASI can import SBML Level 1 and 2 files and it can export models as SBML Level 2 files as well as C source code or Berkeley Madonna files.</para>
 <para>We hope that we will be able to support even more different file formats in the future.</para>
+<sect1 id="sbmlImportExport" xreflabel="Importing and Exporting SBML files">
+<title>Importing and Exporting SBML files</title>
 <para>COPASI is able to import <ulink url="http://www.sbml.org">SBML</ulink> level 1 and level 2 files as well as export SBML level 2 files through the corresponding entries in the <guimenu>File</guimenu> menu. For the import and export the SBML Model is read with <ulink url="http://www.sbml.org/libsbml.html">libsbml</ulink> and converted to the COPASI model structure and vice versa.</para>
-<para>On exporting, COPASI converts its native model structure to an SBML model that is again written out using libsbml. Since the SBML model structure is converted into the COPASI model structure upon import, some of the information in the SBML file gets lost because COPASI does not support the corresponding model elements. Examples of data that gets lost are rules and events.</para>
+<para>
+Version 2.3.4 of libSBML which at the time of writing is the current stable version does not handle SBML Level2 files with a version different from 1, COPASI therefore uses a patch version of libsbml to also import SBML Level2 Version 2 and even 3. New features of those versions that are not yet supported by COPASI are ignored.    
+</para>
+<para>On exporting, COPASI converts its native model structure to an SBML model that is again written out using libsbml. Since the SBML model structure is converted into the COPASI model structure upon import, some of the information in the SBML file gets lost because COPASI does not support the corresponding model elements. Examples of data that gets lost are certain rules and events.</para>
 <para>
 Notes and Annotations from the original SBML file should be preserved when you import and reexport an SBML file as long as you do not delete the objects that contain the annotation in COPASI. But still if you have important annotations or notes in your SBML file make a backup of the file before you open it in COPASI since we can not guarantee that they will survive an import/export cycle.
 </para>
-<para>Likewise, SBML does not support all of the elements of a COPASI model so some information from the COPASI model also gets lost when exporting an SBML file. For example tasks, reports and plot definitions are not exported to SBML.</para>
-<para>This is normally not a big problem since the essential parts of a model normally get imported or exported. A consequence however one should keep in mind is that if you import an SBML file into COPASI and later export it again, it might have lost some of the original information. So if your SBML model depends on rules and events, it is not suitable for import into COPASI; this will change in the future.
+<para>Likewise, SBML does not support all of the elements of a COPASI model so some information from the COPASI model also gets lost when exporting an SBML file. For example tasks, reports and plot definitions are not exported to the SBML file.</para>
+<para>This is normally not a big problem since the essential parts of a model normally get imported or exported. A consequence however one should keep in mind is that if you import an SBML file into COPASI and later export it again, it might have lost some of the original information. So if your SBML model depends on rules on metabolites and compartments and events, it is not suitable for import into COPASI. This will change in future versions of COPASI.
 </para>
 <para>
 Upon import of an SBML file, COPASI tries to identify the function calls it read. That means if COPASI finds a reaction where the kinetic law consists of a single function call, COPASI tries to find out whether the function called corresponds to one of its built in functions. So for SBML files that have been exported from COPASI, the function calls can be identified upon re-import. Since all functions that can not be recognized have to be added to the global function database, this feature might save you some entries there and keep the global function database more manageable. The same goes for mass action kinetics. COPASI also tries to identify mass action kinetics on import but as opposed to other kinetics, COPASI also checks kinetic laws that don't only consist of a single function call.
@@ -2416,6 +2419,16 @@ COPASI adds comments to variables in the ODE by using the semicolon to separate 
 </caution>
 <para>
 In order to export the set of differential equations to a Berkeley Madonna<!--&trade;--> file, you select the <guisubmenu>Export ODEs</guisubmenu> menu entry from COPASI's <guimenu>File</guimenu> menu. In the save dialog that shows up, you select <emphasis>Berkeley Madonna Files (*.mmd)</emphasis> from the <guilabel>File type</guilabel> drop down and specify the name of the file you want to write the ODEs to. After clicking on the <guibutton>Save</guibutton> the ODEs will be saved to the specified file.</para>
+</sect1>
+<sect1 id="xppExport" xreflabel="Exporting XPPAUT files">
+<title>Exporting XPPAUT files</title>
+<para>
+<ulink url="http://www.math.pitt.edu/~bard/xpp/xpp.html">XPPAUT</ulink> is a program to to solve differential equations. It is freely available for Windows, MacOS X, Linux/Unix and probabyl others. Its input format is very similar to the one from madonna and COPASI starting from Version 4.1 Build21 can export models as a set of differential equations for use in XPPAUT.
+</para>
+<!-- I will have to test if XPPAUT can support more functions than Berkeley Madonna and if the functions like sec,csc are exported. Also I need to find out how TRUE, FALSE, nan and infinitiy are exported. --> 
+<para>
+In order to export the set of differential equations to an XPPAUT file, you select the <guisubmenu>Export ODEs</guisubmenu> menu entry from COPASI's <guimenu>File</guimenu> menu. In the save dialog that shows up, you select <emphasis>XPPAUT (*.ode)</emphasis> from the <guilabel>File type</guilabel> drop down and specify the name of the file you want to write the ODEs to. After clicking on the <guibutton>Save</guibutton> the ODEs will be saved to the specified file.
+</para>
 </sect1>
 </chapter>  
 
