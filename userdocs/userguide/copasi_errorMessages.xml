@@ -1,10 +1,10 @@
 <!-- Please don't remove, I want to use this to easily be able to check if messages has been changed in order to be able to update this file. -->
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_errorMessages.xml,v $ -->
-<!--   $Revision: 1.5 $ -->
+<!--   $Revision: 1.6 $ -->
 <!--   $Name:  $ -->
-<!--   $Author: shoops $ -->
-<!--   $Date: 2007/03/30 14:43:31 $ -->
+<!--   $Author: gauges $ -->
+<!--   $Date: 2007/05/26 13:39:27 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -13,7 +13,7 @@
 
 <!--
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_errorMessages.xml,v $
-$Revision: 1.5 $
+$Revision: 1.6 $
 -->
 
 <appendix id="errorMessages" xreflabel="Error Messages">
@@ -22,7 +22,7 @@ $Revision: 1.5 $
 This section contains a list of COPASI error messages and an explanation when and/or why this error might have occurred. This is work in progress and not all error messages might have been fully documented here yet.
 </para>
 <para>
-Also keep in mind that the vast majority of error messages listed here are internal to COPASI and users will probably never see them at all. If you see one of those, you know that there is a bug in COPASI and you should provide a bug report that is as detailed as possible. At the very least, the bug report should include a description of what you did when the bug occurred, the operating system you are running COPASI on and the version of COPASI you were using. Naturally, if possible, we would also like to have some file that shows the error reproducibly since this makes finding bugs a lot easier for us. Error messages that you should never encounter will be marked INTERNAL in the description. So if you encounter any error message marked as INTERNAL please provide as with a bug report so we can fix it. There are two ways to provide a bug report. The first one is to go to COPASI's <ulink url="http://calvin.bioinformatics.vt.edu/bugzilla/createaccount.cgi">bugzilla web-page</ulink> and create a new account if you don't already have one and enter a full bug report into the bugzilla database. The other way to report a bug is to send an email to bugs@copasi.org with the information mentioned above. 
+Also keep in mind that the vast majority of error messages listed here are internal to COPASI and users will probably never see them at all. If you see one of those, you know that there is a bug in COPASI and you should provide a bug report that is as detailed as possible. At the very least, the bug report should include a description of what you did when the bug occurred, the operating system you are running COPASI on and the version of COPASI you were using. Naturally, if possible, we would also like to have some file that shows the error reproducibly since this makes finding bugs a lot easier for us. Error messages that you should never encounter will be marked INTERNAL in the description. So if you encounter any error message marked as INTERNAL please provide as with a bug report so we can fix it. There are two ways to provide a bug report. The first one is to go to COPASI's <ulink url="http://www.copasi.org/tracker/createaccount.cgi">bugzilla web-page</ulink> and create a new account if you don't already have one and enter a full bug report into the bugzilla database. The other way to report a bug is to send an email to bugs@copasi.org with the information mentioned above. 
 </para>
 <sect1 id="configReaderErrors" xreflabel="Gepasi File Reader Error Messages">
 <title>Gepasi File Reader Error Messages</title>
@@ -78,6 +78,12 @@ These error messages are from Copasis vector class which is sued in many places.
 <varlistentry><term>Error Message:</term><listitem><para> Object 'OBJECTNAME' already exists.</para></listitem></varlistentry>
 <varlistentry><term>Description:</term><listitem><para>INTERNAL</para></listitem></varlistentry>
 </variablelist>
+<variablelist>
+<varlistentry><term>Error Code:</term><listitem><para>CCopasiVector (3)</para></listitem></varlistentry>
+<varlistentry><term>Error Message:</term><listitem><para> Index 'INDEX' out of range (0, 'LASTINDEX').</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>INTERNAL</para></listitem></varlistentry>
+</variablelist>
+
 
 
 
@@ -95,6 +101,7 @@ Error messages from Copasis internal function representation.
 <varlistentry><term>Error Message:</term><listitem><para> No parameter with usage 'TYPE' with index >= 'INDEX'.</para></listitem></varlistentry>
 <varlistentry><term>Description:</term><listitem><para>INTERNAL</para></listitem></varlistentry>
 </variablelist>
+
 
 
 
@@ -158,6 +165,11 @@ CReaction is COPASIs internal reaction representation. Many of the error message
 <varlistentry><term>Description:</term><listitem><para>INTERNAL. A reaction tries to use a function as a kinetic law that is unknown.</para></listitem></varlistentry>
 </variablelist>
 <variablelist>
+<varlistentry><term>Error Code:</term><listitem><para>CReaction (2)</para></listitem></varlistentry>
+<varlistentry><term>Error Message:</term><listitem><para> In Reaction 'REACTIONNAME' the compartment could not be guessed.</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>???</para></listitem></varlistentry>
+</variablelist>
+<variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>CReaction (3)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para> Reaction 'REACTIONNAME' has no substrates and no products.</para></listitem></varlistentry>
 <varlistentry><term>Description:</term><listitem><para>COPASI found a reaction with neither substrates nor products. A reaction needs to have at least one substrate or one product.</para></listitem></varlistentry>
@@ -179,7 +191,7 @@ CReaction is COPASIs internal reaction representation. Many of the error message
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>CReaction (7)</para></listitem></varlistentry>
-<varlistentry><term>Error Message:</term><listitem><para> CMetab object 'OBJECTNAME' is neither substrate, product nor modifier to reaction 'REACTIONNAME' but it is used in the kinetic law.</para></listitem></varlistentry>
+<varlistentry><term>Error Message:</term><listitem><para> Metabolite object 'OBJECTNAME' is neither substrate, product nor modifier to reaction 'REACTIONNAME' but it is used in the kinetic law.</para></listitem></varlistentry>
 <varlistentry><term>Description:</term><listitem><para>During SBML import COPASI found a name in a kinetic law that is neither a parameter, a substrate, product or modifier to the reaction. The most likely cause for this that a modifier has not been declared in the listOfModifiers of the reaction.</para></listitem></varlistentry>
 </variablelist>
 <variablelist>
@@ -197,26 +209,52 @@ CReaction is COPASIs internal reaction representation. Many of the error message
 <varlistentry><term>Error Message:</term><listitem><para> Parameter 'PARAMETER' is a vector.</para></listitem></varlistentry>
 <varlistentry><term>Description:</term><listitem><para>INTERNAL</para></listitem></varlistentry>
 </variablelist>
+<variablelist>
+<varlistentry><term>Error Code:</term><listitem><para>CReaction (11)</para></listitem></varlistentry>
+<varlistentry><term>Error Message:</term><listitem><para> Reaction 'REACTIONNAME' refers to unusable Function 'FUNCTIONNAME'.</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>???</para></listitem></varlistentry>
+</variablelist>
 
 
 
 </para>
 </sect1>
 
-<!--
-CReaction (4): Only Metabolites, Compartments, or Parameter object
-nodes are allowed in kinetic functions: 
-Selfexplanatory :) However this might be a bug as we should also
-support model, i.e., time. Ralph can you check as this is SBML
-related. A better class wold be "SBML" since this is related to
-import/export.
--->
+<sect1 id="chemEqErrors" xreflabel="Chemical Equation Error Messages">
+<title>Chemical Equation Error Messages</title>
+<para>
+</para>
+<para>
+<variablelist>
+<varlistentry><term>Error Code:</term><listitem><para>CChemEq (1)</para></listitem></varlistentry>
+<varlistentry><term>Error Message:</term><listitem><para>No Substrates and no Products. </para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>???</para></listitem></varlistentry>
+</variablelist>
+<variablelist>
+<varlistentry><term>Error Code:</term><listitem><para>CChemEq (2)</para></listitem></varlistentry>
+<varlistentry><term>Error Message:</term><listitem><para>Substrates in different Compartments. </para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>???</para></listitem></varlistentry>
+</variablelist>
+<variablelist>
+<varlistentry><term>Error Code:</term><listitem><para>CChemEq (3)</para></listitem></varlistentry>
+<varlistentry><term>Error Message:</term><listitem><para>No Substrates and Products are in different compartments. </para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>???</para></listitem></varlistentry>
+</variablelist>
+</para>
+</sect1>
+
+
 
 <sect1 id="parameterErrors" xreflabel="Parameter Error Messages">
 <title>Parameter Error Messages</title>
 <para>
 </para>
 <para>
+<variablelist>
+<varlistentry><term>Error Code:</term><listitem><para>CCopasiParameter (1)</para></listitem></varlistentry>
+<varlistentry><term>Error Message:</term><listitem><para> Invalid value 'VALUE' for 'PARAMETERNAME' </para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>???</para></listitem></varlistentry>
+</variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>CCopasiParameter (2)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para> Elevation failed, since no parameter is provided.</para></listitem></varlistentry>
@@ -274,7 +312,7 @@ These error messages can occur when running a trajectory task. All of them depen
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>CTrajectoryMethod (7)</para></listitem></varlistentry>
-<varlistentry><term>Error Message:</term><listitem><para> pProblem == NULL</para></listitem></varlistentry>
+<varlistentry><term>Error Message:</term><listitem><para> Problem is not set.</para></listitem></varlistentry>
 <varlistentry><term>Description:</term><listitem><para>INTERNAL</para></listitem></varlistentry>
 </variablelist>
 <variablelist>
@@ -308,10 +346,36 @@ These error messages can occur when running a trajectory task. All of them depen
 <varlistentry><term>Description:</term><listitem><para>The stepsize for the Runge Kutta solver within the hybrid method must be positive, since the hybrid method does not support backward integration in time.</para></listitem></varlistentry>
 </variablelist>
 <variablelist>
+<varlistentry><term>Error Code:</term><listitem><para>CTrajectoryMethod (14)</para></listitem></varlistentry>
+<varlistentry><term>Error Message:</term><listitem><para> Use Random Seed should be 0 or 1 since it is a boolean parameter.</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>The value of the parameter called "Use Random Seed" should be 0 or 1 since it is a boolean parameter.</para></listitem></varlistentry>
+</variablelist>
+<variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>CTrajectoryMethod (15)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para> Max Internal Steps needs to be positive.</para></listitem></varlistentry>
 <varlistentry><term>Description:</term><listitem><para>The maximal number of internal steps must be at least 1.</para></listitem></varlistentry>
 </variablelist>
+<variablelist>
+<varlistentry><term>Error Code:</term><listitem><para>CTrajectoryMethod (16)</para></listitem></varlistentry>
+<varlistentry><term>Error Message:</term><listitem><para>Numerical Error encountered. </para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>???</para></listitem></varlistentry>
+</variablelist>
+<variablelist>
+<varlistentry><term>Error Code:</term><listitem><para>CTrajectoryMethod (17)</para></listitem></varlistentry>
+<varlistentry><term>Error Message:</term><listitem><para>At least one reaction is necessary to perform stochastic simulation. </para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>???</para></listitem></varlistentry>
+</variablelist>
+<variablelist>
+<varlistentry><term>Error Code:</term><listitem><para>CTrajectoryMethod (18)</para></listitem></varlistentry>
+<varlistentry><term>Error Message:</term><listitem><para>The model contains a global quantity with an ODE rule. Stochastic simulation is not possible. </para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>???</para></listitem></varlistentry>
+</variablelist>
+<variablelist>
+<varlistentry><term>Error Code:</term><listitem><para>CTrajectoryMethod (19)</para></listitem></varlistentry>
+<varlistentry><term>Error Message:</term><listitem><para>The model contains a global quantity with an assignment rule. The value of the quantity is used in the model. Stochastic simulation of such models is not possible with this version of COPASI. </para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>???</para></listitem></varlistentry>
+</variablelist>
+
 
 
 
@@ -366,6 +430,26 @@ These error messages can occur when reading COPASI files. Many of the error mess
 <varlistentry><term>Error Code:</term><listitem><para>XML (8)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para> Unknown variable 'VARIABLENAME' in function 'FUNCTIONNAME' encountered at line 'LINENUMBER'. A possible reason is that the variable is a reserved string within the function description.</para></listitem></varlistentry>
 <varlistentry><term>Description:</term><listitem><para>Please check the file if a variable of the function FUNCTIONNAME at line LINENUMBER is a reserved keyword. For a list of reserved keywords see the section on <xref linkend="addingFunctions" /></para></listitem></varlistentry>
+</variablelist>
+<variablelist>
+<varlistentry><term>Error Code:</term><listitem><para>XML (9)</para></listitem></varlistentry>
+<varlistentry><term>Error Message:</term><listitem><para>The file 'FILENAME' is written in a newer version 'VERSION' of the COPASI file format. This file might include features your version of COPASI does not support. To assure full compatibility please download the newest version at http://www.copasi.org."</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>Self explanatory.</para></listitem></varlistentry>
+</variablelist>
+<variablelist>
+<varlistentry><term>Error Code:</term><listitem><para>XML (10)</para></listitem></varlistentry>
+<varlistentry><term>Error Message:</term><listitem><para>Invalid element '&lt;ELEMENTNAME&gt;' expecting '&lt;ELEMENTNAME&gt;' encountered at line 'LINENUMBER'.</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>While reading a file, COPASI has encountered an element where it actually expected a different element.</para></listitem></varlistentry>
+</variablelist>
+<variablelist>
+<varlistentry><term>Error Code:</term><listitem><para>XML (11)</para></listitem></varlistentry>
+<varlistentry><term>Error Message:</term><listitem><para>Invalid closing element '&lt;ELEMENTNAME&gt;' expecting '&lt;ELEMENTNAME&gt;' encountered at line 'LINENUMBER'.</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>While reading an XML file, COPASI encountered the end element tag for an element, but actually expected another element to end.</para></listitem></varlistentry>
+</variablelist>
+<variablelist>
+<varlistentry><term>Error Code:</term><listitem><para>XML (12)</para></listitem></varlistentry>
+<varlistentry><term>Error Message:</term><listitem><para> Order 'INDEX' out of range for variable 'VARIABLENAME' in function 'FUNCTIONNAME' encountered at line 'LINENUMBER'.</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>???</para></listitem></varlistentry>
 </variablelist>
 </para>
 
@@ -467,8 +551,8 @@ The following errors are generated by the SBML importer and exporter. If you enc
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>SBML (3)</para></listitem></varlistentry>
-<varlistentry><term>Error Message:</term><listitem><para> The SBML document contains rules that were ignored.</para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>COPASI does not support SBML rules yet, so if you load an SBML file that contains rules, COPASI will warn you that the rules have been ignored. Please be aware that this will very likely change simulation results.</para></listitem></varlistentry>
+<varlistentry><term>Error Message:</term><listitem><para> The SBML document contains unsupported rules that were ignored. Only rate and assignment rules for global parameters are currently supported.</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>COPASI does not support SBML rules for species and compartments yet, so if you load an SBML file that contains rules for those model elements, COPASI will warn you that the rules have been ignored. Please be aware that this will very likely change simulation results.</para></listitem></varlistentry>
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>SBML (4)</para></listitem></varlistentry>
@@ -502,7 +586,7 @@ The following errors are generated by the SBML importer and exporter. If you enc
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>SBML (10)</para></listitem></varlistentry>
-<varlistentry><term>Error Message:</term><listitem><para> COPASI does not support stoichiometric expressions yet.</para></listitem></varlistentry>
+<varlistentry><term>Error Message:</term><listitem><para> COPASI does not support stoichiometric expressions.</para></listitem></varlistentry>
 <varlistentry><term>Description:</term><listitem><para>Although COPASI does support fractional stoichiometries, arbitrary stoichiometric expressions are not supported yet. If such a stoichiometry is encountered, COPASI will not read the file.</para></listitem></varlistentry>
 </variablelist>
 <variablelist>
@@ -604,6 +688,51 @@ The following errors are generated by the SBML importer and exporter. If you enc
 <varlistentry><term>Error Code:</term><listitem><para>SBML (30)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para> Can't handle units of type item with scale set to 1.\n If this file was created with COPASI RC1 or older please see the COPASI FAQ.</para></listitem></varlistentry>
 <varlistentry><term>Description:</term><listitem><para>COPASI prior to and including RC1 had a bug in the SBML exporter. If the default concentration units were set to items, COPASI would set the scale to 1 instead of 0 on the exported substance unit definition. You can correct those files by opening them in a text editor and setting the scale for the substance units to 0. If the file was not created with COPASI, the scale was probably meant to be 1 and COPASI can not import it since it does not do unit conversion yet.</para></listitem></varlistentry>
+</variablelist>
+<variablelist>
+<varlistentry><term>Error Code:</term><listitem><para>SBML (31)</para></listitem></varlistentry>
+<varlistentry><term>Error Message:</term><listitem><para>(Assigment/ODE)Rules are currently only supported for global parameters.</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>COPASI currently only supports assignment and ODE rules for global parameters, if an SBML file contains such rules for species or compartments, they are ignored. Working with such a model in COPASI will most likely lead to incorrect results.</para></listitem></varlistentry>
+</variablelist>
+<variablelist>
+<varlistentry><term>Error Code:</term><listitem><para>SBML (32)</para></listitem></varlistentry>
+<varlistentry><term>Error Message:</term><listitem><para>Error in Assignment/ODE-Rule variable id 'ID' does not specify a compartment, species or global parameter.</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>Rules in SBML files are only allowed on compartments, species and global parameters if the id referenced from a rule does not correspond to one of those entity types, it is an error.</para></listitem></varlistentry>
+</variablelist>
+<variablelist>
+<varlistentry><term>Error Code:</term><listitem><para>SBML (33)</para></listitem></varlistentry>
+<varlistentry><term>Error Message:</term><listitem><para>Error: Assignment/ODE-Rule is not allowed for local parameter 'PARAMETERID'.</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>COPASI encountered a rule for a local parameter which is not allowed.</para></listitem></varlistentry>
+</variablelist>
+<variablelist>
+<varlistentry><term>Error Code:</term><listitem><para>SBML (34)</para></listitem></varlistentry>
+<varlistentry><term>Error Message:</term><listitem><para>Error: Assignment/ODE-Rule is not allowed for local constant 'CONSTANTNAME' identified by id 'ID'</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para></para></listitem></varlistentry>
+</variablelist>
+<variablelist>
+<varlistentry><term>Error Code:</term><listitem><para>SBML (35)</para></listitem></varlistentry>
+<varlistentry><term>Error Message:</term><listitem><para>Error: Only one AssignmentRule or RateRule is allowed for id 'ID'.</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para></para>COPASI has encountered an entity for which more than one rule has been specified.</listitem></varlistentry>
+</variablelist>
+<variablelist>
+<varlistentry><term>Error Code:</term><listitem><para>SBML (36)</para></listitem></varlistentry>
+<varlistentry><term>Error Message:</term><listitem><para>COPASI can not handle models that use the delay function.</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>The delay function is not supported in COPASI.</para></listitem></varlistentry>
+</variablelist>
+<variablelist>
+<varlistentry><term>Error Code:</term><listitem><para>SBML (37)</para></listitem></varlistentry>
+<varlistentry><term>Error Message:</term><listitem><para>The id 'ID' is used in the expression of a rule, although it is later defined by a rule itself.</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>An object is referenced in the expression of a rule but is later defined by a rule itself. This is not allowed, please change the order of rules in the SBML file so that the rule for object with id is listed before the rule ID is referenced in. Also make sure that this does not lead to circular dependencies.</para></listitem></varlistentry>
+</variablelist>
+<variablelist>
+<varlistentry><term>Error Code:</term><listitem><para>SBML (38)</para></listitem></varlistentry>
+<varlistentry><term>Error Message:</term><listitem><para>Only references to compartments, species, global parameters or the time are allowed in SBML rule expressions.</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>Objects referenced from the expression of a rule in SBML can only be compartments, species or global parameters.</para></listitem></varlistentry>
+</variablelist>
+<variablelist>
+<varlistentry><term>Error Code:</term><listitem><para>SBML (39)</para></listitem></varlistentry>
+<varlistentry><term>Error Message:</term><listitem><para>Object with id 'ID' referenced in kinetic law, but no object with that id found in model. </para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>An id is referenced in the expression of a kinetic law, but COPASI could not find an object with that id in the model.</para></listitem></varlistentry>
 </variablelist>
 
 
@@ -749,22 +878,22 @@ All tasks in COPASI are derived from one base class called CCopasiTask. These er
 
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>CCopasiTask (1)</para></listitem></varlistentry>
-<varlistentry><term>Error Message:</term><listitem><para> No problem defined for Task 'TASK'.</para></listitem></varlistentry>
+<varlistentry><term>Error Message:</term><listitem><para> No problem defined for task 'TASK'.</para></listitem></varlistentry>
 <varlistentry><term>Description:</term><listitem><para>INTERNAL</para></listitem></varlistentry>
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>CCopasiTask (2)</para></listitem></varlistentry>
-<varlistentry><term>Error Message:</term><listitem><para> No model associated for Task 'TASK'.</para></listitem></varlistentry>
+<varlistentry><term>Error Message:</term><listitem><para> No model associated for task 'TASK'.</para></listitem></varlistentry>
 <varlistentry><term>Description:</term><listitem><para>INTERNAL</para></listitem></varlistentry>
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>CCopasiTask (3)</para></listitem></varlistentry>
-<varlistentry><term>Error Message:</term><listitem><para> No method defined for Task 'TASK'.</para></listitem></varlistentry>
+<varlistentry><term>Error Message:</term><listitem><para> No method defined for task 'TASK'.</para></listitem></varlistentry>
 <varlistentry><term>Description:</term><listitem><para>INTERNAL</para></listitem></varlistentry>
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>CCopasiTask (4)</para></listitem></varlistentry>
-<varlistentry><term>Error Message:</term><listitem><para> Error compiling Model 'MODELNAME'.</para></listitem></varlistentry>
+<varlistentry><term>Error Message:</term><listitem><para> Error compiling model 'MODELNAME'.</para></listitem></varlistentry>
 <varlistentry><term>Description:</term><listitem><para>This indicates a serious problem with the model. Please check your model. If you think your model is OK, please send a bug report.</para></listitem></varlistentry>
 </variablelist>
 <variablelist>
@@ -774,13 +903,13 @@ All tasks in COPASI are derived from one base class called CCopasiTask. These er
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>CCopasiTask (6)</para></listitem></varlistentry>
-<varlistentry><term>Error Message:</term><listitem><para> Problems compiling Report 'REPORT'.</para></listitem></varlistentry>
+<varlistentry><term>Error Message:</term><listitem><para> Requested output object: 'OUTPUTOBJECTID' not found. It will be ignored.</para></listitem></varlistentry>
 <varlistentry><term>Description:</term><listitem><para>At least one of the objects used in the report could not be found. The report will generated despite the problem but might not be what you expected. This usually happens if you change the model after you defined the plots.</para></listitem></varlistentry>
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>CCopasiTask (7)</para></listitem></varlistentry>
-<varlistentry><term>Error Message:</term><listitem><para> Problems compiling Plots.</para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>At least one of the ob jets used in the plots could not be found. The plots will generated despite the problem but some curves will be empty. This usually happens if you change the model after you defined the plots.</para></listitem></varlistentry>
+<varlistentry><term>Error Message:</term><listitem><para> Problems compiling output.</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>???</para></listitem></varlistentry>
 </variablelist>
 
 
@@ -852,6 +981,21 @@ These errors messages can occur when doing a parameter estimation.
 <varlistentry><term>Error Message:</term><listitem><para> Failure reading file 'FILE'.</para></listitem></varlistentry>
 <varlistentry><term>Description:</term><listitem><para>The file cannot be read. Calculation is stopped and the problem must be fixed first. Make sure all data files specified for the fitting are there and readable.</para></listitem></varlistentry>
 </variablelist>
+<variablelist>
+<varlistentry><term>Error Code:</term><listitem><para>CFitting (9)</para></listitem></varlistentry>
+<varlistentry><term>Error Message:</term><listitem><para>Experiment 'EXPERIMENTID' has no data rows.</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>???</para></listitem></varlistentry>
+</variablelist>
+<variablelist>
+<varlistentry><term>Error Code:</term><listitem><para>CFitting (10)</para></listitem></varlistentry>
+<varlistentry><term>Error Message:</term><listitem><para>Experiment 'EXPERIMENTID' has no dependent data.</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>???</para></listitem></varlistentry>
+</variablelist>
+<variablelist>
+<varlistentry><term>Error Code:</term><listitem><para>CFitting (11)</para></listitem></varlistentry>
+<varlistentry><term>Error Message:</term><listitem><para>Missing independent data for Experiment 'EXPERIMENTID' in row 'ROWNUMBER'.</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>???</para></listitem></varlistentry>
+</variablelist>
 
 
 
@@ -914,6 +1058,131 @@ These error messages can occur when calculating the Lyapunov Exponents of a syst
 
 </para>
 </sect1>
+
+<sect1>
+<title>ODE Export Error Messages</title>
+<para>
+These error messages can occur when exporting a model to a set of ODEs either as C code, Madonna file or XPPAUT file.
+</para>
+
+<para>
+<variablelist>
+<varlistentry><term>Error Code:</term><listitem><para>MCODEExporter (1)</para></listitem></varlistentry>
+<varlistentry><term>Error Message:</term><listitem><para>Length of exporting line exeeds 1000 characters.</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>Lines in XPPAUT input files may not be larger than 1000 characters.</para></listitem></varlistentry>
+</variablelist>
+<variablelist>
+<varlistentry><term>Error Code:</term><listitem><para>MCODEExporter (2)</para></listitem></varlistentry>
+<varlistentry><term>Error Message:</term><listitem><para>The export was incomplete since the model depends on model quantities, which can currently not be exported.</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>???</para></listitem></varlistentry>
+</variablelist>
+</para>
+</sect1>
+
+<sect1>
+<title>Commercial Version Error Messages</title>
+<para>
+These error messages can only occur in the commercial version and have to do with license issues. 
+</para>
+
+<para>
+<variablelist>
+<varlistentry><term>Error Code:</term><listitem><para>MCRegistration (1)</para></listitem></varlistentry>
+<varlistentry><term>Error Message:</term><listitem><para>Invalid registration code.</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>???</para></listitem></varlistentry>
+</variablelist>
+<variablelist>
+<varlistentry><term>Error Code:</term><listitem><para>MCRegistration (2)</para></listitem></varlistentry>
+<varlistentry><term>Error Message:</term><listitem><para>Email and/or user name do not match registration code.</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>???</para></listitem></varlistentry>
+</variablelist>
+<variablelist>
+<varlistentry><term>Error Code:</term><listitem><para>MCRegistration (3)</para></listitem></varlistentry>
+<varlistentry><term>Error Message:</term><listitem><para>Trial license expired on: 'DATE'.</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>???</para></listitem></varlistentry>
+</variablelist>
+</para>
+</sect1>
+
+<sect1>
+<title>Timescale Separation Analysis Error Messages</title>
+<para>
+These error messages can only occur when doing a time scale separation analysis in COPASI. 
+</para>
+
+<sect2>
+<title>Errors from the timescale separation analysis method.</title>
+<para>
+<variablelist>
+<varlistentry><term>Error Code:</term><listitem><para>MCTSSAMethod (1)</para></listitem></varlistentry>
+<varlistentry><term>Error Message:</term><listitem><para>Deterministic integration failed. LSODA reported: LSODAERRORMESSAGE HERE Please see result for indications of numerical instability.</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>???</para></listitem></varlistentry>
+</variablelist>
+<variablelist>
+<varlistentry><term>Error Code:</term><listitem><para>MCTSSAMethod (2)</para></listitem></varlistentry>
+<varlistentry><term>Error Message:</term><listitem><para>Problem is not a time scale separation analysis problem.</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>???</para></listitem></varlistentry>
+</variablelist>
+<variablelist>
+<varlistentry><term>Error Code:</term><listitem><para>MCTSSAMethod (3)</para></listitem></varlistentry>
+<varlistentry><term>Error Message:</term><listitem><para>Internal step limit exceeded.</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>???</para></listitem></varlistentry>
+</variablelist>
+<variablelist>
+<varlistentry><term>Error Code:</term><listitem><para>MCTSSAMethod (4)</para></listitem></varlistentry>
+<varlistentry><term>Error Message:</term><listitem><para>Numerical Error encountered.</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>???</para></listitem></varlistentry>
+</variablelist>
+</para>
+</sect2>
+
+<sect2>
+<title>Errors from the timescale separation analysis problem</title>
+<para>
+<variablelist>
+<varlistentry><term>Error Code:</term><listitem><para>MCTSSAProblem (1)</para></listitem></varlistentry>
+<varlistentry><term>Error Message:</term><listitem><para>Invalid step size = 'VALUE'. </para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>???</para></listitem></varlistentry>
+</variablelist>
+<variablelist>
+<varlistentry><term>Error Code:</term><listitem><para>MCTSSAProblem (2)</para></listitem></varlistentry>
+<varlistentry><term>Error Message:</term><listitem><para>The step number 'VALUE' exceeds the limit. The step number and step size have been adjusted to avoid over flow.</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>???</para></listitem></varlistentry>
+</variablelist>
+<variablelist>
+<varlistentry><term>Error Code:</term><listitem><para>MCTSSAProblem (3)</para></listitem></varlistentry>
+<varlistentry><term>Error Message:</term><listitem><para>The step size 'VALUE' is to small for the machine accuracy. The step number and step size have been adjusted.</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>???</para></listitem></varlistentry>
+</variablelist>
+</para>
+</sect2>
+</sect1>
+
+<sect1>
+<title>Commercial Version Error Messages</title>
+<para>
+These error messages can only occur in the commercial version and have to do with license issues. 
+</para>
+
+<para>
+<variablelist>
+<varlistentry><term>Error Code:</term><listitem><para>MCRegistration (1)</para></listitem></varlistentry>
+<varlistentry><term>Error Message:</term><listitem><para> </para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>???</para></listitem></varlistentry>
+</variablelist>
+<variablelist>
+<varlistentry><term>Error Code:</term><listitem><para>MCRegistration (2)</para></listitem></varlistentry>
+<varlistentry><term>Error Message:</term><listitem><para> </para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>???</para></listitem></varlistentry>
+</variablelist>
+<variablelist>
+<varlistentry><term>Error Code:</term><listitem><para>MCRegistration (3)</para></listitem></varlistentry>
+<varlistentry><term>Error Message:</term><listitem><para> </para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>???</para></listitem></varlistentry>
+</variablelist>
+</para>
+</sect1>
+
 
 
 </appendix>
