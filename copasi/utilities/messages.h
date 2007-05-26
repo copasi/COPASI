@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.91 $
+//   $Revision: 1.92 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/05/15 12:37:05 $
+//   $Author: gauges $
+//   $Date: 2007/05/26 13:38:49 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,7 +30,7 @@ const MESSAGES Messages[] =
     // CCopasiVector
     {MCCopasiVector + 1, "CCopasiVector (1): Object '%s' not found."},
     {MCCopasiVector + 2, "CCopasiVector (2): Object '%s' already exists."},
-    {MCCopasiVector + 3, "CCopasiVector (3): Index '%d' out fo range (0, '%d')."},
+    {MCCopasiVector + 3, "CCopasiVector (3): Index '%d' out of range (0, '%d')."},
 
     // CFunctionParameters
     {MCFunctionParameters + 1, "CFunctionParameters (1): The usage '%s' "
@@ -145,7 +145,7 @@ const MESSAGES Messages[] =
     {MCSBML + 7, "SBML (7): One or more model values have not been set."},
     {MCSBML + 8, "SBML (8): Expression tree for kinetic of reaction '%s' could not be converted."},
     {MCSBML + 9, "SBML (9): Could not set function from expression in reaction '%s'."},
-    {MCSBML + 10, "SBML (10): COPASI does not support stoichiometric expressions yet."},
+    {MCSBML + 10, "SBML (10): COPASI does not support stoichiometric expressions."},
     {MCSBML + 11, "SBML (11): Function '%s' does not start with a Lambda element."},
     {MCSBML + 12, "SBML (12): Function '%s' contains invalid parameter list."},
     {MCSBML + 13, "SBML (13): Could not read function definition for function '%s'."},
@@ -167,14 +167,14 @@ const MESSAGES Messages[] =
     {MCSBML + 29, "SBML (29): Unable to handle reactions with the 'fast' flag set.\nThe flag has been set to false."},
     {MCSBML + 30, "SBML (30): Can't handle units of type item with scale set to 1.\n If this file was created with COPASI RC1 or older please see the COPASI FAQ."},
     {MCSBML + 31, "SBML (31): %s are currently only supported for global parameters."},
-    {MCSBML + 32, "SBML (32): Error in %s variable id '%s' does not specify a Compartment, Species or global Parameter."},
+    {MCSBML + 32, "SBML (32): Error in %s variable id '%s' does not specify a compartment, species or global parameter."},
     {MCSBML + 33, "SBML (33): Error: %s is not allowed for local parameter '%s'."},
-    {MCSBML + 34, "SBML (34): Error: %s is not allowed for local constant %s identified by id '%s'."},
+    {MCSBML + 34, "SBML (34): Error: %s is not allowed for local constant '%s' identified by id '%s'."},
     {MCSBML + 35, "SBML (35): Error: Only one AssignmentRule or RateRule is allowed for id '%s'."},
     {MCSBML + 36, "SBML (36): COPASI can not handle models that use the delay function."},
     {MCSBML + 37, "SBML (37): The id '%s' is used in the expression of a rule, although it is later defined by a rule itself."},
     {MCSBML + 38, "SBML (38): Only references to compartments, species, global parameters or the time are allowed in SBML rule expressions."},
-    {MCSBML + 39, "SBML (39): Object with id \"%s\" referenced in kinetic law, but no object with that id found in model."},
+    {MCSBML + 39, "SBML (39): Object with id '%s' referenced in kinetic law, but no object with that id found in model."},
 
     {MCTrajectoryProblem + 1, "CTrajectoryProblem (1): Invalid step size = '%f'."},
     {MCTrajectoryProblem + 2, "CTrajectoryProblem (2): The step number '%f' "
@@ -200,13 +200,13 @@ const MESSAGES Messages[] =
 
     {MCEvaluationNodeObject + 1, "CEvaluationNodeObject (1): Only references to compartment, species, parameters and reaction are allowed in expression."},
 
-    {MCCopasiTask + 1, "CCopasiTask (1): No problem defined for Task '%s'."},
-    {MCCopasiTask + 2, "CCopasiTask (2): No model associated for Task '%s'."},
-    {MCCopasiTask + 3, "CCopasiTask (3): No method defined for Task '%s'."},
-    {MCCopasiTask + 4, "CCopasiTask (4): Error compiling Model '%s'."},
+    {MCCopasiTask + 1, "CCopasiTask (1): No problem defined for task '%s'."},
+    {MCCopasiTask + 2, "CCopasiTask (2): No model associated for task '%s'."},
+    {MCCopasiTask + 3, "CCopasiTask (3): No method defined for task '%s'."},
+    {MCCopasiTask + 4, "CCopasiTask (4): Error compiling model '%s'."},
     {MCCopasiTask + 5, "CCopasiTask (5): No output file defined for report."},
-    {MCCopasiTask + 6, "CCopasiTask (6): Requested output Object:\n '%s'\n not found. It will be ignored."},
-    {MCCopasiTask + 7, "CCopasiTask (7): Problems compiling Output."},
+    {MCCopasiTask + 6, "CCopasiTask (6): Requested output object:\n '%s'\n not found. It will be ignored."},
+    {MCCopasiTask + 7, "CCopasiTask (7): Problems compiling output."},
 
     {MCSteadyState + 1, "CSteadyState (1): The model is explicitly time dependent. "
      "Therefore, the calculation of a steady state is not very meaningful."},
@@ -236,7 +236,7 @@ const MESSAGES Messages[] =
     {MCLyap + 5, "CLyapMethod (5): Orthonormalization interval is larger than overall time."},
 
     // CODEExporter
-    {MCODEExporter + 1, "CODEExporterXPPAUT (1): Length of exporting line exeeds 1000 characters."},
+    {MCODEExporter + 1, "CODEExporter (1): Length of exporting line exeeds 1000 characters."},
     {MCODEExporter + 2, "CODEExporter (2): The export was incomplete since the model depends on model"
      "quantities, which can currently not be exported."},
 
@@ -247,7 +247,7 @@ const MESSAGES Messages[] =
     // CTSSAMethod
     {MCTSSAMethod + 1, "CTSSAMethod (1): Deterministic integration failed. "
      "LSODA reported:\n%s \n\nPlease see result for indications of numerical instability."},
-    {MCTSSAMethod + 2, "CTSSAMethod (2): Problem is not a time scale separaton analysis problem."},
+    {MCTSSAMethod + 2, "CTSSAMethod (2): Problem is not a time scale separation analysis problem."},
     {MCTSSAMethod + 3, "CTSSAMethod (3): Internal step limit exceeded."},
     {MCTSSAMethod + 4, "CTSSAMethod (4): Numerical Error encountered."},
 
