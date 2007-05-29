@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensProblem.cpp,v $
-//   $Revision: 1.23.2.2 $
+//   $Revision: 1.23.2.3 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/05/09 15:07:03 $
+//   $Date: 2007/05/29 16:20:49 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -173,7 +173,10 @@ CSensProblem::CSensProblem(const CCopasiContainer * pParent):
     CCopasiProblem(CCopasiTask::sens, pParent),
     mpSubTaskType(NULL),
     mpTargetFunctions(NULL),
-    mpVariablesGroup(NULL)
+    mpVariablesGroup(NULL),
+    mpResultAnnotation(NULL),
+    mpScaledResultAnnotation(NULL),
+    mpCollapsedResultAnnotation(NULL)
 {
   addParameter("SubtaskType", CCopasiParameter::UINT, (unsigned C_INT32) 0);
   mpSubTaskType = (CSensProblem::SubTaskType*)getValue("SubtaskType").pUINT;
@@ -212,7 +215,10 @@ CSensProblem::CSensProblem(const CSensProblem & src,
     CCopasiProblem(src, pParent),
     mpSubTaskType(NULL),
     mpTargetFunctions(NULL),
-    mpVariablesGroup(NULL)
+    mpVariablesGroup(NULL),
+    mpResultAnnotation(NULL),
+    mpScaledResultAnnotation(NULL),
+    mpCollapsedResultAnnotation(NULL)
 {
   mpSubTaskType = (CSensProblem::SubTaskType*)getValue("SubtaskType").pUINT;
   mpTargetFunctions = dynamic_cast<CCopasiParameterGroup*>(getParameter("TargetFunctions"));
