@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CAnnotatedMatrix.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.17.2.1 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/04/01 12:40:45 $
+//   $Date: 2007/05/29 16:17:11 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,7 +17,7 @@
 #include "report/CCopasiObjectReference.h"
 
 CCopasiArray::CCopasiArray()
-    : mDim(0) {}
+    : mDim(0) {mData.resize(1);}
 
 CCopasiArray::CCopasiArray(const index_type & sizes)
 {
