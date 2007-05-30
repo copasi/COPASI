@@ -1,10 +1,10 @@
 <chapter id="modelCreation" xreflabel="Model Creation">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_GUI.xml,v $ -->
-<!--   $Revision: 1.45.2.9 $ -->
+<!--   $Revision: 1.45.2.10 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: gauges $ -->
-<!--   $Date: 2007/05/30 19:46:47 $ -->
+<!--   $Date: 2007/05/30 19:51:15 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -3757,7 +3757,12 @@ model that is again written out using libsbml. Since the SBML model
 structure is converted into the COPASI model structure upon import,
 some of the information in the SBML file gets lost because COPASI does
 not support the corresponding model elements. Examples of data that
-gets lost are rules and events.
+gets lost are events and assignment and rate rules an metabolites and 
+compartments as well as all algebraic rules.
+</para>
+<para>
+Starting with COPASI Build21, the import and export of assignment and 
+rate rules for global parameters are supported. 
 </para>
 <para>
 Notes and Annotations from the original SBML file should be preserved
