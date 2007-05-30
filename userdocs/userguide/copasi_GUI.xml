@@ -1,10 +1,10 @@
 <chapter id="modelCreation" xreflabel="Model Creation">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_GUI.xml,v $ -->
-<!--   $Revision: 1.45.2.8 $ -->
+<!--   $Revision: 1.45.2.9 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: gauges $ -->
-<!--   $Date: 2007/05/30 15:12:21 $ -->
+<!--   $Date: 2007/05/30 19:46:47 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -911,6 +911,12 @@ the mathematical expression for an "assignment" or "ode" quantity.
  </caption> 
 </mediaobject>
 </screenshot>
+</para>
+<para>
+If a parameter has the type fixed, it's value is determined by the initial value in the GUI. The value of a fixed parameter does not change over the course of a time course simulation. If the type of the parameter has been set to assignment, an expression has to be specified that determines the value of the parameter. The expression can reference other model entities, e.g. other parameters, species, etc. This way, if any of the referenced enities change during a time course simulation, the value of the parameter changes also according to the given expression. Last but not least a parameter can be of type ode which means that an expression has to be specified that determines the rate of change of the parameter over time, starting with the given inital value. 
+</para>
+<para>
+Even so COPASI does not support building models from ordinary differential equations, one can specify a model as a set of differential equations using a set of global parameters which have the type ode.
 </para>
 </sect1>
 <sect1 id="parameterView" xreflabel="Parameter View">
