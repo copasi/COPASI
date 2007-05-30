@@ -1,10 +1,10 @@
 <chapter id="modelCreation" xreflabel="Model Creation">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_GUI.xml,v $ -->
-<!--   $Revision: 1.45.2.7 $ -->
+<!--   $Revision: 1.45.2.8 $ -->
 <!--   $Name:  $ -->
-<!--   $Author: shoops $ -->
-<!--   $Date: 2007/05/21 20:39:07 $ -->
+<!--   $Author: gauges $ -->
+<!--   $Date: 2007/05/30 15:12:21 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -3726,13 +3726,13 @@ formats. Naturally COPASI can read and write it's own file format and
 it can read Gepasi files just as well although it will not write
 Gepasi files. 
 </para>
-<sect1 id="sbmlImportExport" xreflabel="Importing and Exporting SBML files">
-<title>Importing and Exporting SBML files</title>
 <para>
 In addition to those two file formats, COPASI can import SBML Level 1
 and 2 files and it can export models as SBML Level 2 files as well as
 C source code or Berkeley Madonna files.
 </para>
+<sect1 id="sbmlImportExport" xreflabel="Importing and Exporting SBML files">
+<title>Importing and Exporting SBML files</title>
 <para>
 We hope that we will be able to support even more different file
 formats in the future.
@@ -3975,11 +3975,14 @@ url="http://www.math.pitt.edu/~bard/xpp/xpp.html">xppaut</ulink>
 program or even <ulink
 url="http://www.wolfram.com/">Mathematica<!--&trade;--></ulink>.
 </para>
+<!-- 
+This doesn't seem to be true any more.
 <para>
 Names of model elements are replaced by generic names on export,
 future version of COPASI will try to keep the element names if
 possible. 
 </para>
+-->
 <caution>
 <para>
 Berkeley Madonna does not support all mathematical functions available
@@ -4014,6 +4017,27 @@ type</guilabel> drop down and specify the name of the file you want to
 write the ODEs to. After clicking on the <guibutton>Save</guibutton>
 the ODEs will be saved to the specified file.
 </para>
+</sect1>
+<sect1 id="xppExport" xreflabel="Exporting XPPAUT files">
+<title>Exporting XPPAUT files</title>
+<para>
+<ulink url="http://www.math.pitt.edu/~bard/xpp/xpp.html">XPPAUT</ulink> is a program to to solve differential equations. It is freely available for Windows, MacOS X, Linux/Unix and probabyl others. Its input format is very similar to the one from madonna and COPASI starting from Version 4.1 Build21 can export models as a set of differential equations for use in XPPAUT.
+</para>
+<para>
+In order to export the set of differential equations to an XPPAUT file, you select the <guisubmenu>Export ODEs</guisubmenu> menu entry from COPASI's <guimenu>File</guimenu> menu. In the save dialog that shows up, you select <emphasis>XPPAUT (*.ode)</emphasis> from the <guilabel>File type</guilabel> drop down and specify the name of the file you want to write the ODEs to. After clicking on the <guibutton>Save</guibutton> the ODEs will be saved to the specified file.
+</para>
+<caution>
+<para>
+Just as in Berkeley Madonna, XPPAUT does not support all functions supported by COPASI. Functions that are not supported are exported as <emphasis>@</emphasis>. Among the unsupported functions are <emphasis>sec</emphasis>, <emphasis>csc</emphasis>, <emphasis>cot</emphasis>, <emphasis>sech</emphasis>, <emphasis>csch</emphasis>, <emphasis>coth</emphasis>, <emphasis>arcsec</emphasis>, <emphasis>arccsc</emphasis>, <emphasis>arccot</emphasis>, <emphasis>arcsech</emphasis>, <emphasis>arccsch</emphasis>, <emphasis>arccoth</emphasis>, <emphasis>factorial</emphasis>, <emphasis>modulus</emphasis> and <emphasis>logical xor</emphasis>.  
+</para>
+<para>
+The values of <emphasis>TRUE</emphasis> and <emphasis>FALSE</emphasis> are converted to <emphasis>1</emphasis> and <emphasis>0</emphasis> respectively upon export. <emphasis>INFINITY</emphasis> and <emphasis>NAN</emphasis> are exported as <emphasis>INF</emphasis> and <emphasis>NAN</emphasis>.
+Since both <emphasis>INF</emphasis> and <emphasis>NAN</emphasis> are not supported keywords in XPPAUT, those files have to be modified before they can be used in XPPAUT.
+</para>
+<para>
+We also noted that also <emphasis>ceil</emphasis> was mentioned in the XPPAUT documentation, files containing this function could not be loaded in XPPAUT.
+</para>
+</caution>
 </sect1>
 </chapter>  
 
