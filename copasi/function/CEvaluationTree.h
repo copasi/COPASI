@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.h,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.26 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/04/10 16:48:44 $
+//   $Date: 2007/05/31 15:22:00 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -221,11 +221,11 @@ class CEvaluationTree:
 
     /**
      * Complete the list of evaluation tree such that all called trees are includes.
-     * @param CCopasiVectorN< CEvaluationTree > & list
+     * @param std::vector< CEvaluationTree * > & list
      * @param const unsigned C_INT32 & added (Default: list.size())
      * @return bool success
      */
-    static bool completeEvaluationTreeList(CCopasiVectorN< CEvaluationTree > & list,
+    static bool completeEvaluationTreeList(std::vector< CEvaluationTree * > & list,
                                            const unsigned C_INT32 & added = 0);
 
     /**

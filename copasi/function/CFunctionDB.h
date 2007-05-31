@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionDB.h,v $
-//   $Revision: 1.50 $
+//   $Revision: 1.51 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/04/10 16:48:44 $
+//   $Date: 2007/05/31 15:22:00 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -184,8 +184,9 @@ class CFunctionDB : public CCopasiContainer
 
     /**
      * Retrieves a list of all functions used in the model
+     * @return std::vector< CEvaluationTree * > usedFunctions
      */
-    const CCopasiVectorN< CEvaluationTree > & getUsedFunctions() const;
+    std::vector< CEvaluationTree * > getUsedFunctions() const;
   };
 
 #endif // COPASI_CFunctionDB

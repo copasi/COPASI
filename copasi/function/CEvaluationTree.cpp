@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-//   $Revision: 1.47 $
+//   $Revision: 1.48 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/05/15 12:36:11 $
+//   $Date: 2007/05/31 15:22:00 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,6 +14,7 @@
 
 #include <sstream>
 #include <vector>
+#include <algorithm>
 
 #include "CEvaluationNode.h"
 #include "CEvaluationTree.h"
@@ -463,7 +464,7 @@ const std::string& CEvaluationTree::getSBMLId() const
     return this->mSBMLId;
   }
 
-bool CEvaluationTree::completeEvaluationTreeList(CCopasiVectorN< CEvaluationTree > & list,
+bool CEvaluationTree::completeEvaluationTreeList(std::vector< CEvaluationTree * > & list,
     const unsigned C_INT32 & added)
 {
   unsigned Added = 0;
@@ -486,8 +487,11 @@ bool CEvaluationTree::completeEvaluationTreeList(CCopasiVectorN< CEvaluationTree
         {
           if (((*it)->getType() & 0xFF000000) == CEvaluationNode::CALL &&
               (Index = Functions.getIndex((*it)->getData())) != C_INVALID_INDEX &&
-              list.add(Functions[Index]))
-            Added ++;
+              list.end() == std::find(list.begin(), list.end(), Functions[Index]))
+            {
+              list.push_back(Functions[Index]);
+              Added++;
+            }
         }
     }
 
