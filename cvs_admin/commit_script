@@ -15,7 +15,7 @@ for my_file in $@; do
          "`basename $my_file`" != "`basename $my_file .hpp`" ]; then
 
       echo "  C formating $my_file" >> /home/shoops/projects/copasi_dev/cvs_admin/commit_script.out
-      /home/shoops/projects/copasi_dev/cvs_admin/c++style $my_file
+      /home/shoops/projects/copasi_dev/cvs_admin/c++style --unix $my_file
 
     fi
   fi
