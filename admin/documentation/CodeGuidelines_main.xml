@@ -1,10 +1,10 @@
 <chapter id="NamingConventions" xreflabel="Naming Conventions">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/admin/documentation/CodeGuidelines_main.xml,v $ -->
-<!--   $Revision: 1.7 $ -->
+<!--   $Revision: 1.8 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: shoops $ -->
-<!--   $Date: 2007/04/11 16:11:57 $ -->
+<!--   $Date: 2007/05/31 18:19:40 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -181,7 +181,11 @@ other includes.</para></listitem>
 <sect1 id="Loops" xreflabel="Loops">
 <title>Loops</title>
 <para>
-
+Counter or iterators used in loops must not be declared in the
+<literal>for</literal> statement as the scope of the variables
+declared within is not well defined in C and C++ standard and thus
+leads to compile problems. The solution is to define those variables
+prior to the <literal>for</literal> statement. 
 </para>
 </sect1>
 </chapter>
@@ -190,7 +194,11 @@ other includes.</para></listitem>
 <title>Code Documentation</title>
 <sect1 id="ClassDocumentation" xreflabel="Class Documentation">
 <title>Class Documentation</title>
-<para></para>
+<para>
+The COPASI team uses doxygen to generate API documentation. It is
+therefore necessary that the classes, methods, and variables or
+documented completely.
+</para>
 </sect1>
 
 <sect1 id="VariableDocumentation" xreflabel="Variable Documentation">
@@ -587,7 +595,7 @@ evaluated through a constant ASSIGNMENT.
  </row>
  <row>
    <entry>Particle Number</entry>
-   <entry>none</entry>
+   <entry>Self (state controlled)</entry>
    <entry>none</entry>
  </row>
  <row>
@@ -733,12 +741,12 @@ evaluated through a constant ASSIGNMENT.
  </row>
  <row>
    <entry>Particle Number</entry>
-   <entry>parent compartment Volume</entry>
+   <entry>Self (state controlled)</entry>
    <entry>refreshNumber</entry>
  </row>
  <row>
    <entry>Concentration</entry>
-   <entry>none</entry>
+   <entry>Particle Number, parent compartment Volume</entry>
    <entry>none</entry>
  </row>
  <row>
@@ -885,7 +893,7 @@ evaluated through a constant ASSIGNMENT.
  </row>
  <row>
    <entry>Value</entry>
-   <entry>none</entry>
+   <entry>Self (state controlled)</entry>
    <entry>none</entry>
  </row>
  <row>
@@ -956,7 +964,7 @@ evaluated through a constant ASSIGNMENT.
  </row>
  <row>
    <entry>Volume</entry>
-   <entry>none</entry>
+   <entry>Self (state controlled)</entry>
    <entry>none</entry>
  </row>
  <row>
