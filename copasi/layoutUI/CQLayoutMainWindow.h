@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/05/31 15:22:59 $
+//   $Date: 2007/05/31 19:40:14 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,7 +24,7 @@
 #include <qlayout.h>
 #include <qscrollview.h>
 #include <qsplitter.h>
-#include <qtextedit.h>
+#include <qslider.h>
 
 #include "CQGLNetworkPainter.h"
 
@@ -33,7 +33,7 @@
 class CQLayoutMainWindow : public QMainWindow
   {
 
-    Q_OBJECT
+    Q_OBJECT      // must include this if you use Qt signals/slots
 
   public:
     CQLayoutMainWindow(QWidget *parent = 0, const char *name = 0);
@@ -50,6 +50,8 @@ class CQLayoutMainWindow : public QMainWindow
 
     void mapLabelsToCircles();
     void mapLabelsToRectangles();
+
+    void showStep(int i);
 
   private:
     void createActions();
@@ -72,6 +74,7 @@ class CQLayoutMainWindow : public QMainWindow
     //CQParameterWindow *paraWin;
     CQGLNetworkPainter *glPainter;
     QScrollView *scrollView;
+    QSlider *timeSlider;
   };
 
 #endif /*SIMGUI_H_*/

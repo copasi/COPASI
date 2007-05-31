@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/05/31 15:49:26 $
+//   $Date: 2007/05/31 19:40:14 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,8 +31,15 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
   QSplitter *splitter = new QSplitter(Qt::Horizontal, this);
   splitter->setCaption("Test");
 
-  QLabel *label = new QLabel(splitter, "Test Label", 0);
-  QTextEdit *testEditor = new QTextEdit(splitter);
+  //QLabel *label = new QLabel(splitter, "Test Label", 0);
+  //QTextEdit *testEditor = new QTextEdit(splitter);
+  timeSlider = new QSlider(Qt::Horizontal, splitter);
+  timeSlider->setRange(0, 100);
+  timeSlider->setValue(0);
+  //timeSlider->setTickmarks(QSlider::Below);
+  timeSlider->setDisabled(TRUE);
+  connect(timeSlider, SIGNAL(valueChanged(int)),
+          this, SLOT(showStep(int)));
 
   // create sroll view
   scrollView = new QScrollView(splitter);
@@ -203,12 +210,23 @@ void CQLayoutMainWindow::mapLabelsToRectangles()
 
 void CQLayoutMainWindow::loadData()
 {
-  glPainter->createDataSets();
+  bool successfulP = glPainter->createDataSets();
+  if (successfulP)
+    {
+      this->timeSlider->setEnabled(true);
+      int maxVal = glPainter->getNumberOfSteps();
+      this->timeSlider->setRange(0, maxVal);
+    }
 }
 
 void CQLayoutMainWindow::showAnimation()
 {
   glPainter->runAnimation();
+}
+
+void CQLayoutMainWindow::showStep(int i)
+{
+  glPainter->showStep(i);
 }
 
 void CQLayoutMainWindow::closeApplication()

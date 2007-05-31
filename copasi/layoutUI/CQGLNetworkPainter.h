@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/05/24 20:02:29 $
+//   $Date: 2007/05/31 19:40:14 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -59,7 +59,8 @@ class CQGLNetworkPainter : public QGLWidget
     // void drawStringAt(string s, double x, double y);
     void drawArrow(CArrow a);
 
-    void createDataSets();
+    bool createDataSets();
+    C_INT32 getNumberOfSteps();
 
     void setNodeSize(std::string key, C_FLOAT64 val);
     //void changeNodeSize(std::string viewerNodeKey, double newSize);
@@ -68,6 +69,7 @@ class CQGLNetworkPainter : public QGLWidget
     void mapLabelsToCircles();
 
     void runAnimation();
+    void showStep(int i);
 
   private slots:
     void zoomIn();
@@ -112,8 +114,6 @@ class CQGLNetworkPainter : public QGLWidget
     void updateGraphWithNodeSizes();
     void updateEdge(CLLineSegment line);
     void resetGraphToLabelView();
-
-    void showStep(int i);
 
     enum shapeOfLabels {CIRCLE, RECTANGLE};
     shapeOfLabels mLabelShape;

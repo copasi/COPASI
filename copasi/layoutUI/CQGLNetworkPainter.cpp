@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.38 $
+//   $Revision: 1.39 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/05/31 16:59:23 $
+//   $Author: urost $
+//   $Date: 2007/05/31 19:40:14 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -604,8 +604,9 @@ int CQGLNetworkPainter::round2powN(double d)
 //}
 //}
 
-void CQGLNetworkPainter::createDataSets()
+bool CQGLNetworkPainter::createDataSets()
 {
+  bool loadDataSuccessful = false;
   if (CCopasiDataModel::Global != NULL)
     {
       CTrajectoryTask *ptask = dynamic_cast< CTrajectoryTask * >((*CCopasiDataModel::Global->getTaskList())["Time-Course"]);
@@ -691,6 +692,7 @@ void CQGLNetworkPainter::createDataSets()
                   dataSets.insert(std::pair<int, CDataEntity>
                                   (t, dataSet));
                 }
+              loadDataSuccessful = true;
             }
           else
             std::cout << "empty time series: no variables present" << std::endl;
@@ -698,6 +700,12 @@ void CQGLNetworkPainter::createDataSets()
       else
         std::cout << "no simulation steps found: you have to create a time course first" << std::endl;
     }
+  return loadDataSuccessful;
+}
+
+C_INT32 CQGLNetworkPainter::getNumberOfSteps()
+{
+  return dataSets.size();
 }
 
 void CQGLNetworkPainter::runAnimation()
@@ -711,6 +719,9 @@ void CQGLNetworkPainter::runAnimation()
 
 void CQGLNetworkPainter::showStep(int i)
 {
+  std::cout << "show step " << i << std::endl;
+  if (this->mLabelShape != CIRCLE)
+    this->mLabelShape = CIRCLE;
   if ((0 <= i) && (i < dataSets.size()))
     {
       //CDataEntity *dataSet = &(dataSets[i]);
