@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiVector.h,v $
-//   $Revision: 1.73 $
+//   $Revision: 1.74 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/05/31 14:54:39 $
+//   $Author: gauges $
+//   $Date: 2007/05/31 15:36:15 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -117,8 +117,8 @@ template < class CType > class CCopasiVector:
       {
         cleanup();
 
-        std::vector< CType * >::const_iterator it = rhs.begin();
-        std::vector< CType * >::const_iterator end = rhs.end();
+        typename std::vector< CType * >::const_iterator it = rhs.begin();
+        typename std::vector< CType * >::const_iterator end = rhs.end();
 
         for (;it != end; ++it)
           add(*it, false);
