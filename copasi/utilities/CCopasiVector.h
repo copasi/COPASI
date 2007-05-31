@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiVector.h,v $
-//   $Revision: 1.72 $
+//   $Revision: 1.73 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/05/15 12:37:05 $
+//   $Date: 2007/05/31 14:54:39 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -101,6 +101,24 @@ template < class CType > class CCopasiVector:
 
         const_iterator it = rhs.begin();
         const_iterator end = rhs.end();
+
+        for (;it != end; ++it)
+          add(*it, false);
+
+        return *this;
+      }
+
+      /**
+       * Assignment operator.
+       * @param const std::vector< CType * > & rhs
+       * @return CCopasiVector< CType > & lhs
+       */
+      CCopasiVector< CType > & operator = (const std::vector< CType * > & rhs)
+      {
+        cleanup();
+
+        std::vector< CType * >::const_iterator it = rhs.begin();
+        std::vector< CType * >::const_iterator end = rhs.end();
 
         for (;it != end; ++it)
           add(*it, false);
@@ -490,6 +508,17 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
        *  Destructor
        */
       virtual ~CCopasiVectorN() {}
+
+      /**
+       * Assignment operator.
+       * @param const std::vector< CType * > & rhs
+       * @return CCopasiVectorN< CType > & lhs
+       */
+      CCopasiVectorN< CType > & operator = (const std::vector< CType * > & rhs)
+      {
+        CCopasiVector< CType >::operator=(rhs);
+        return *this;
+      }
 
       /**
        * Add a copy of the object to the end of the vector.
