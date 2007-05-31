@@ -19,25 +19,19 @@ if [ "`basename $1`" != "`basename $1 .h`" -o \
      "`basename $1`" != "`basename $1 .i`" -o \
      "`basename $1`" != "`basename $1 .java`" ]; then
   CommentStart='//'
-else 
-  if [ "`basename $1`" != "`basename $1 .py`" -o \
+elif [ "`basename $1`" != "`basename $1 .py`" -o \
        "`basename $1`" != "`basename $1 .pro`" -o \
        "`basename $1`" != "`basename $1 .pri`" ]; then
-    CommentStart=#
-  else 
-    if [ "`basename $1`" != "`basename $1 .xsd`" -o \
-         "`basename $1`" != "`basename $1 .xml`" ]; then
-      CommentStart='<!--'
-      CommentEnd='-->'
-      PrologEnd='>'
-    else 
-      if [ "`basename $1`" != "`basename $1 .ui`" ]; then
-        CommentStart='<comment>'
-        CommentEnd='</comment>'
-        PrologEnd='>'
-      fi
-    fi
-  fi
+  CommentStart=#
+elif [ "`basename $1`" != "`basename $1 .xsd`" -o \
+       "`basename $1`" != "`basename $1 .xml`" ]; then
+  CommentStart='<!--'
+  CommentEnd='-->'
+  PrologEnd='>'
+elif [ "`basename $1`" != "`basename $1 .ui`" ]; then
+  CommentStart='<comment>'
+  CommentEnd='</comment>'
+  PrologEnd='>'
 fi
 
 if [ x$CommentStart != x"" ]; then
@@ -54,10 +48,10 @@ BEGIN {
     if ($0 !~ ".*Begin CVS Header.*") {
       printf "'$CommentStart' Begin CVS Header '$CommentEnd'\n"
       printf "'$CommentStart'   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/cvs_admin/addHeader,v $ '$CommentEnd'\n"
-      printf "'$CommentStart'   $Revision: 1.3 $ '$CommentEnd'\n"
+      printf "'$CommentStart'   $Revision: 1.4 $ '$CommentEnd'\n"
       printf "'$CommentStart'   $Name:  $ '$CommentEnd'\n"
       printf "'$CommentStart'   $Author: shoops $ '$CommentEnd'\n"
-      printf "'$CommentStart'   $Date: 2007/01/12 14:07:01 $ '$CommentEnd'\n"
+      printf "'$CommentStart'   $Date: 2007/05/31 18:21:38 $ '$CommentEnd'\n"
       printf "'$CommentStart' End CVS Header '$CommentEnd'\n"
       printf "\n"
       printf "'$CommentStart' Copyright (C) '$Date' by Pedro Mendes, Virginia Tech Intellectual '$CommentEnd'\n"
