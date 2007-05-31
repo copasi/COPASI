@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CDataEntity.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
-//   $Author: urost $
-//   $Date: 2007/05/24 20:02:29 $
+//   $Author: shoops $
+//   $Date: 2007/05/31 16:59:23 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,13 +25,10 @@ CDataEntity::CDataEntity(C_FLOAT64 t)
   mTime = t;
 }
 
-CDataEntity::CDataEntity(const CDataEntity & cDat)
-{
-  mTime = cDat.mTime;
-  //mSpeciesValueMap = std::map<std::string, C_FLOAT64> (cDat);
-  //copy((cDat.mSpeciesValueMap).begin(),(cDat.mSpeciesValueMap).end(),mSpeciesValueMap.begin());
-  mSpeciesValueMap.insert(cDat.mSpeciesValueMap.begin(), cDat.mSpeciesValueMap.end());
-}
+CDataEntity::CDataEntity(const CDataEntity & src):
+    mTime(src.mTime),
+    mSpeciesValueMap(src.mSpeciesValueMap)
+{}
 
 void CDataEntity::putValueForSpecies(std::string nodeKey, C_FLOAT64 value)
 {

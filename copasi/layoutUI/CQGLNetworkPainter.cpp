@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.37 $
+//   $Revision: 1.38 $
 //   $Name:  $
-//   $Author: urost $
-//   $Date: 2007/05/31 15:22:59 $
+//   $Author: shoops $
+//   $Date: 2007/05/31 16:59:23 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -630,7 +630,7 @@ void CQGLNetworkPainter::createDataSets()
               C_FLOAT64 maxR;
               C_FLOAT64 maxAll = 0.0;
               // now get some info about the data set such as the maximum concentration values for each reactant
-              for (i = 0;i < timeSer.getNumVariables();i++) // iterate on reactants
+              for (i = 0; i < timeSer.getNumVariables(); i++) // iterate on reactants
                 {
                   maxR = - DBL_MAX;
                   minR = DBL_MAX;
@@ -660,7 +660,7 @@ void CQGLNetworkPainter::createDataSets()
               //this->printNodeMap();
               //dataSets.resize(timeSer.getNumSteps());
               // now create data sets for visualization/animation
-              for (int t = 0;t < timeSer.getNumSteps();t++)  // iterate on time steps t=0..n
+              for (t = 0; t < timeSer.getNumSteps(); t++)  // iterate on time steps t=0..n
                 {
                   CDataEntity dataSet;
                   for (i = 0;i < timeSer.getNumVariables();i++) // iterate on reactants

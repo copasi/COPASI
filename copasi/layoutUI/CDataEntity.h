@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CDataEntity.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: urost $
-//   $Date: 2007/05/24 20:02:29 $
+//   $Author: shoops $
+//   $Date: 2007/05/31 16:59:23 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,7 +27,7 @@ class CDataEntity
   public:
     CDataEntity();
     CDataEntity(C_FLOAT64 t);
-    CDataEntity(const CDataEntity & cDat);
+    CDataEntity(const CDataEntity & src);
 
     void putValueForSpecies(std::string nodeKey, C_FLOAT64 value);
     C_FLOAT64 getValueForSpecies(std::string nodeKey);
