@@ -4,6 +4,17 @@ ASTYLE=`dirname $0`/./astyle
 GAWK=gawk
 MV=mv
 
+if [ x$1 = x--unix ]; then
+  shift
+  function ConvertToUnix () {
+    dos2unix 1>/dev/null 2>&1 $1
+  }
+else
+  function ConvertToUnix () {
+    echo -n
+  }
+fi
+
 $GAWK -- '
 BEGIN {
   CVSHeader = 0
@@ -14,10 +25,10 @@ BEGIN {
     if ($0 ~ "/\\* Begin CVS Header.*") {
       printf "// Begin CVS Header \n"
       printf "//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/cvs_admin/c++style,v $ \n"
-      printf "//   $Revision: 1.30 $ \n"
+      printf "//   $Revision: 1.31 $ \n"
       printf "//   $Name:  $ \n"
       printf "//   $Author: shoops $ \n"
-      printf "//   $Date: 2007/01/25 17:47:25 $ \n"
+      printf "//   $Date: 2007/05/31 18:26:42 $ \n"
       printf "// End CVS Header \n"
       CVSHeader = 1
     } else if ($0 ~ "// Begin CVS Header.*") {
@@ -39,7 +50,7 @@ $ASTYLE --mode=c \
         --one-line=keep-blocks \
         --pad=oper \
         --convert-tabs \
-        --min-conditional=0 \
+        --min-conditional-indent=0 \
         |\
 $GAWK -- '
 BEGIN {
@@ -71,6 +82,7 @@ $0 !~ "^ *$" {
 
   gsub(/ +$/, "")
   gsub(/\( +/, "(")
+  gsub(/, +/, ", ")
   gsub(/ +)/, ")")
   gsub(/\{ +/, "{")
   gsub(/^\*/, " *")
@@ -107,4 +119,5 @@ $0 !~ "^ *$" {
   }
 }
 ' > $1.tmp && \
-$MV -f $1.tmp $1
+ConvertToUnix $1.tmp && \
+$MV -f $1.tmp $1 
