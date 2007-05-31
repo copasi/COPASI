@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.36 $
+//   $Revision: 1.37 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/05/24 20:02:29 $
+//   $Date: 2007/05/31 15:22:59 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -136,36 +136,47 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
           //              viewerCurves.push_back(seg); // add copy of segment to vector
           //}
           CLMetabReferenceGlyph::Role r = edgesToNodesOfReaction[j2]->getRole();
-          std::string nodeKey = std::string(edgesToNodesOfReaction[j2]->getMetabGlyph()->getKey());
-          nodeCurveMap.insert(std::pair<std::string, CLCurve>
-                              (nodeKey,
-                               curve));
-          //std::cout << "insert " << nodeKey << "  " << curve << std::endl;
-          //          curveMap.insert(std::pair<std::string, CLCurve*>
-          //                          (std::string(edgesToNodesOfReaction[j2]->getMetabGlyphKey()),
-          //                           &(edgesToNodesOfReaction[j2]->getCurve())));
-          //          nodeSizeMap.insert(std::pair<std::string, float>
-          //                             (nodeKey, edgesToNodesOfReaction[j2]->getMetabGlyph()->getHeight())); // initial node diameter is height of glyph bounding box
-          //          std::cout << nodeKey << " : " << edgesToNodesOfReaction[j2]->getMetabGlyph()->getHeight() << std::endl;
-          //          viewerNodeMap.insert(std::pair<std::string, CLMetabGlyph>
-          //                  (std::string(nodeKey),
-          //                  *findNodeWithKey(viewerNodes,nodeKey))
-          //);
-          //std::cout << "role : " << r << std::endl;
-          //storeCurveInCorrespondingNode(nodeKey, viewerCurves.back()); // use reference to last curve put into the vector viewerCurves
-          //storeCurveInCorrespondingNode(nodeKey, viewerCurves.size() - 1); //index of curve derived from the fact that the curve currently is the last element of the vector
-          if ((r == CLMetabReferenceGlyph::PRODUCT) || (r == CLMetabReferenceGlyph::SIDEPRODUCT))
-            {// create arrows just for edges to products or sideproducts
-              std::vector<CLLineSegment> segments = curve.getCurveSegments();
-              CLLineSegment lastSeg = segments[curve.getNumCurveSegments() - 1];
-              //std::cout << "number of segments in curve: " << curve.getNumCurveSegments() << std::endl;
-              CLPoint p = lastSeg.getEnd();
-              //std::cout << "end:   " << p << std::endl;
-              CArrow *ar = new CArrow(lastSeg, p.getX(), p.getY());
-              nodeArrowMap.insert(std::pair<std::string, CArrow>
-                                  (nodeKey, *ar));
-              //viewerArrows.push_back(*ar);
-              //storeCurveInCorrespondingNode(nodeKey, viewerCurves.size() - 1, viewerArrows.size() - 1); //store with arrow index, see below
+          //std::cout << "role: " << r << std::endl;
+          //std::cout << "edge:  " << edgesToNodesOfReaction[j2]->getMetabGlyph() << std::endl;
+          // if curve does belong to node, put it in nodeCurveMap, else put it into list of other curves)
+          if (edgesToNodesOfReaction[j2]->getMetabGlyph() != NULL)
+            {
+              std::string nodeKey = std::string(edgesToNodesOfReaction[j2]->getMetabGlyph()->getKey());
+              nodeCurveMap.insert(std::pair<std::string, CLCurve>
+                                  (nodeKey,
+                                   curve)); // remember curves belonging to a certain node
+
+              //std::cout << "insert " << nodeKey << "  " << curve << std::endl;
+              //          curveMap.insert(std::pair<std::string, CLCurve*>
+              //                          (std::string(edgesToNodesOfReaction[j2]->getMetabGlyphKey()),
+              //                           &(edgesToNodesOfReaction[j2]->getCurve())));
+              //          nodeSizeMap.insert(std::pair<std::string, float>
+              //                             (nodeKey, edgesToNodesOfReaction[j2]->getMetabGlyph()->getHeight())); // initial node diameter is height of glyph bounding box
+              //          std::cout << nodeKey << " : " << edgesToNodesOfReaction[j2]->getMetabGlyph()->getHeight() << std::endl;
+              //          viewerNodeMap.insert(std::pair<std::string, CLMetabGlyph>
+              //                  (std::string(nodeKey),
+              //                  *findNodeWithKey(viewerNodes,nodeKey))
+              //);
+              //std::cout << "role : " << r << std::endl;
+              //storeCurveInCorrespondingNode(nodeKey, viewerCurves.back()); // use reference to last curve put into the vector viewerCurves
+              //storeCurveInCorrespondingNode(nodeKey, viewerCurves.size() - 1); //index of curve derived from the fact that the curve currently is the last element of the vector
+              // if role is product or sideproduct, create arrow for line
+              if ((r == CLMetabReferenceGlyph::PRODUCT) || (r == CLMetabReferenceGlyph::SIDEPRODUCT))
+                {// create arrows just for edges to products or sideproducts
+                  std::vector<CLLineSegment> segments = curve.getCurveSegments();
+                  CLLineSegment lastSeg = segments[curve.getNumCurveSegments() - 1];
+                  //std::cout << "number of segments in curve: " << curve.getNumCurveSegments() << std::endl;
+                  CLPoint p = lastSeg.getEnd();
+                  CArrow *ar = new CArrow(lastSeg, p.getX(), p.getY());
+                  nodeArrowMap.insert(std::pair<std::string, CArrow>
+                                      (nodeKey, *ar));
+                  //viewerArrows.push_back(*ar);
+                  //storeCurveInCorrespondingNode(nodeKey, viewerCurves.size() - 1, viewerArrows.size() - 1); //store with arrow index, see below
+                }
+            }
+          else
+            {
+              viewerCurves.push_back(curve);
             }
           //else // store without arrow
           //storeCurveInCorrespondingNode(nodeKey, viewerCurves.size() - 1); //index of curve derived from the fact that the curve currently is the last element of the vector

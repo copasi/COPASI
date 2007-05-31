@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/05/21 20:40:14 $
+//   $Date: 2007/05/31 15:22:59 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,8 +27,15 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
   createActions();
   createMenus();
 
+  // create split window
+  QSplitter splitter(Qt::Horizontal, this);
+  splitter.setCaption("Test");
+
+  QLabel *label = new QLabel(&splitter, "Test Label", 0);
+  //QTextEdit *testEditor = new QTextEdit(&splitter);
+
   // create sroll view
-  scrollView = new QScrollView(this);
+  scrollView = new QScrollView(&splitter);
   scrollView->setCaption("Network Graph Viewer");
   //scrollView->viewport()->setPaletteBackgroundColor(QColor(255,255,240));
   scrollView->viewport()->setPaletteBackgroundColor(QColor(219, 235, 255));
@@ -60,8 +67,11 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
     }
   // put OpenGL widget into scrollView
   scrollView->addChild(glPainter);
-  setCentralWidget(scrollView);
-  scrollView->show();
+  //setCentralWidget(scrollView);
+  //scrollView->show();
+
+  setCentralWidget(&splitter);
+  splitter.show();
   //glPainter->drawGraph();
 }
 

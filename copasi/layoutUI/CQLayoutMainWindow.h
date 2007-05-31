@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/05/21 20:40:14 $
+//   $Date: 2007/05/31 15:22:59 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,6 +23,8 @@
 #include <qgl.h>
 #include <qlayout.h>
 #include <qscrollview.h>
+#include <qsplitter.h>
+#include <qtextedit.h>
 
 #include "CQGLNetworkPainter.h"
 
@@ -67,6 +69,7 @@ class CQLayoutMainWindow : public QMainWindow
     QAction *rectangularShape;
     QAction *circularShape;
 
+    //CQParameterWindow *paraWin;
     CQGLNetworkPainter *glPainter;
     QScrollView *scrollView;
   };
