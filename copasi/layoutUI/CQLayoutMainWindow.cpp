@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/06/01 08:37:02 $
+//   $Date: 2007/06/01 10:40:16 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,6 +33,8 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
 
   //QLabel *label = new QLabel(splitter, "Test Label", 0);
   //QTextEdit *testEditor = new QTextEdit(splitter);
+  ParaPanel *paraPanel = new ParaPanel;
+
   timeSlider = new QSlider(Qt::Horizontal, splitter);
   timeSlider->setRange(0, 100);
   timeSlider->setValue(0);
