@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/05/31 19:40:14 $
+//   $Date: 2007/06/01 08:31:42 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -215,7 +215,9 @@ void CQLayoutMainWindow::loadData()
     {
       this->timeSlider->setEnabled(true);
       int maxVal = glPainter->getNumberOfSteps();
+      //std::cout << "number of steps: " << maxVal << std::endl;
       this->timeSlider->setRange(0, maxVal);
+      glPainter->updateGL();
     }
 }
 

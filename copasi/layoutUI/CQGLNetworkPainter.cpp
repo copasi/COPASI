@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.39 $
+//   $Revision: 1.40 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/05/31 19:40:14 $
+//   $Date: 2007/06/01 08:31:42 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -714,12 +714,12 @@ void CQGLNetworkPainter::runAnimation()
   if (dataSets.size() == 0)
     this->createDataSets(); // load data if this was not done before
   this->showStep (98);
-  this->drawGraph();
+  //this->drawGraph();
 }
 
 void CQGLNetworkPainter::showStep(int i)
 {
-  std::cout << "show step " << i << std::endl;
+  //std::cout << "show step " << i << std::endl;
   if (this->mLabelShape != CIRCLE)
     this->mLabelShape = CIRCLE;
   if ((0 <= i) && (i < dataSets.size()))
@@ -738,11 +738,13 @@ void CQGLNetworkPainter::showStep(int i)
             }
         }
     }
+  this->drawGraph();
 }
 
 // set node sizes according to data set
 void CQGLNetworkPainter::setNodeSize(std::string key, C_FLOAT64 val)
 {
+  //std::cout << "set " << key << "  to " << val << std::endl;
   int i;
   // curves to nodes are changed, arrows are created newly
   nodeArrowMap.clear();
