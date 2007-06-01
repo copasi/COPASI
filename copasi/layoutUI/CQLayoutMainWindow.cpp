@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/06/01 08:31:42 $
+//   $Date: 2007/06/01 08:37:02 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -229,6 +229,7 @@ void CQLayoutMainWindow::showAnimation()
 void CQLayoutMainWindow::showStep(int i)
 {
   glPainter->showStep(i);
+  glPainter->updateGL();
 }
 
 void CQLayoutMainWindow::closeApplication()
