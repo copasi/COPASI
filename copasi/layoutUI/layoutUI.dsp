@@ -59,6 +59,14 @@ SOURCE=.\CArrow.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CDataEntity.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CGraphCurve.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CGraphNode.cpp
 # End Source File
 # Begin Source File
@@ -69,6 +77,14 @@ SOURCE=.\CQGLNetworkPainter.cpp
 
 SOURCE=.\CQLayoutMainWindow.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=.\CSimSummaryInfo.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CVisParameters.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -76,6 +92,14 @@ SOURCE=.\CQLayoutMainWindow.cpp
 # Begin Source File
 
 SOURCE=.\CArrow.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CDataEntity.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CGraphCurve.h
 # End Source File
 # Begin Source File
 
@@ -88,6 +112,14 @@ SOURCE=.\CQGLNetworkPainter.h
 # Begin Source File
 
 SOURCE=.\CQLayoutMainWindow.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CSimSummaryInfo.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CVisParameters.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"
