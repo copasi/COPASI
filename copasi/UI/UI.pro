@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $ 
-#   $Revision: 1.148 $ 
+#   $Revision: 1.149 $ 
 #   $Name:  $ 
-#   $Author: nsimus $ 
-#   $Date: 2007/04/12 12:32:53 $ 
+#   $Author: ssahle $ 
+#   $Date: 2007/06/04 15:58:33 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -11,7 +11,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.148 $ $Author: nsimus $ $Date: 2007/04/12 12:32:53 $  
+# $Revision: 1.149 $ $Author: ssahle $ $Date: 2007/06/04 15:58:33 $  
 ######################################################################
 
 LIB = UI
@@ -76,7 +76,6 @@ HEADERS += \
            qtUtilities.h \
            ReactionsWidget.h \
            ReactionsWidget1.h \
-           ScanItemWidget.h \
            ScanWidget.h \
            SensitivitiesWidget.h \
            SliderDialog.h \
@@ -140,7 +139,6 @@ SOURCES += \
            qtUtilities.cpp \
            ReactionsWidget.cpp \
            ReactionsWidget1.cpp \
-           ScanItemWidget.cpp \
            ScanWidget.cpp \
            SensitivitiesWidget.cpp \
            SliderDialog.cpp \
@@ -193,8 +191,8 @@ contains(DEFINES, WITH_LAYOUT) {
 # FORMS += CQTaskHeaderWidget.ui
 # FORMS += CQTextDialog.ui
 # FORMS += CQTrajectoryWidget.ui
-FORMS += CQTSSAWidget.ui
-FORMS += CQTSSAResultSubWidget.ui
+# FORMS += CQTSSAWidget.ui
+# FORMS += CQTSSAResultSubWidget.ui
 # FORMS += CScanWidgetBreak.ui
 # FORMS += CScanWidgetRandom.ui
 # FORMS += CScanWidgetRepeat.ui
@@ -255,10 +253,10 @@ HEADERS += \
            CQTextDialog.ui.h \
            CQTrajectoryWidget.h \
            CQTrajectoryWidget.ui.h \
-#           CQTSSAWidget.h \
-#           CQTSSAWidget.ui.h \
-#           CQTSSAResultSubWidget.h \
-#           CQTSSAResultSubWidget.ui.h \
+           CQTSSAWidget.h \
+           CQTSSAWidget.ui.h \
+           CQTSSAResultSubWidget.h \
+           CQTSSAResultSubWidget.ui.h \
            CQModelValue.h \
            CQModelValue.ui.h \
            CScanWidgetBreak.h \
@@ -310,8 +308,8 @@ SOURCES += \
            CQTaskBtnWidget.cpp \
            CQTaskHeaderWidget.cpp \
            CQTrajectoryWidget.cpp \
-#           CQTSSAWidget.cpp \
-#           CQTSSAResultSubWidget.cpp \
+           CQTSSAWidget.cpp \
+           CQTSSAResultSubWidget.cpp \
            CQTextDialog.cpp \
            CUpDownSubwidget.cpp \
            CScanWidgetBreak.cpp \
