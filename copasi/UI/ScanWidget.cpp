@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ScanWidget.cpp,v $
-//   $Revision: 1.200 $
+//   $Revision: 1.201 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/04/09 18:56:15 $
+//   $Author: ssahle $
+//   $Date: 2007/06/04 16:15:31 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,17 +13,18 @@
 //***  In this file I have put "//+++" in all places where something has to be added
 //***  if a new scan item is introduced.
 
-#include <qfiledialog.h>
-#include <qvariant.h>
+//#include <qfiledialog.h>
+//#include <qvariant.h>
 #include <qcheckbox.h>
 #include <qlabel.h>
 #include <qpushbutton.h>
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
-#include <qmessagebox.h>
+//#include <qmessagebox.h>
 #include <qcombobox.h>
 #include <qapplication.h>
+#include <qlineedit.h>
 
 #include "copasi.h"
 
@@ -34,22 +35,13 @@
 #include "model/CModel.h"
 #include "listviews.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
-#include "ScanItemWidget.h"
 #include "ObjectBrowserDialog.h"
 #include "ObjectBrowserItem.h"
 #include "DefaultplotDialog.h"
 #include "copasiui3window.h"
 #include "CReportDefinitionSelect.h"
 
-//#include "SteadyStateWidget.h"
-//#include "TrajectoryWidget.h"
-//#include "trajectory/CTrajectoryTask.h"
-//#include "trajectory/CTrajectoryProblem.h"
-//#include "steadystate/CSteadyStateTask.h"
-//#include "steadystate/CSteadyStateProblem.h"
-
 #include "report/CKeyFactory.h"
-//#include "CReportDefinitionSelect.h"
 #include "qtUtilities.h"
 #include "CProgressBar.h"
 #include "utilities/CCopasiException.h"
