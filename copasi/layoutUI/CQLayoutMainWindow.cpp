@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/06/01 22:37:59 $
+//   $Date: 2007/06/04 13:28:16 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,6 +19,8 @@
 #include <string>
 #include <iostream>
 
+#include "ParaPanel.h"
+
 using namespace std;
 
 CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMainWindow(parent, name)
@@ -33,7 +35,7 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
 
   //QLabel *label = new QLabel(splitter, "Test Label", 0);
   //QTextEdit *testEditor = new QTextEdit(splitter);
-  //ParaPanel *paraPanel = new ParaPanel;
+  ParaPanel *paraPanel = new ParaPanel(splitter);
 
   timeSlider = new QSlider(Qt::Horizontal, splitter);
   timeSlider->setRange(0, 100);
