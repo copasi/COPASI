@@ -1,3 +1,15 @@
+// Begin CVS Header 
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiDataModel.i,v $ 
+//   $Revision: 1.14 $ 
+//   $Name:  $ 
+//   $Author: gauges $ 
+//   $Date: 2007/06/11 16:54:46 $ 
+// End CVS Header 
+
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
+
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
@@ -13,8 +25,9 @@
 #include <string>
 
 %ignore CCopasiDataModel::CCopasiDataModel(const bool);
-%ignore CCopasiDataModel::saveModel(const std::string& fileName,bool overwriteFile , const bool& autoSave);
-%ignore CCopasiDataModel::newModel(CModel* pModel);
+%ignore CCopasiDataModel::loadModel(const std::string& fileName,CProcessReport* pProcessReport=NULL);
+%ignore CCopasiDataModel::saveModel(const std::string& fileName,CProcessReport* pProcessReport=NULL, bool overwriteFile , const bool& autoSave);
+%ignore CCopasiDataModel::newModel(CModel* pModel=NULL,CProcessReport* pProcessReport=NULL);
 %ignore CCopasiDataModel::importSBMLFromString(const std::string& sbmlDocumentText,CProcessReport* pImportHandler);
 %ignore CCopasiDataModel::importSBML(const std::string& fileName,CProcessReport* pImportHandler);
 %ignore CCopasiDataModel::exportSBML(const std::string& fileName,bool overwriteFile,int sbmlLevel, int sbmlVersion,bool exportIncomplete = false, CProcessReport* pExportHandler);
@@ -25,12 +38,12 @@
 class CCopasiDataModel 
 {
   public:
-    bool loadModel(const std::string& fileName);
-    bool saveModel(const std::string& fileName,
+    bool loadModel(const std::string& fileName,CProcessReport* pProcessReport=NULL);
+    bool saveModel(const std::string& fileName,CProcessReport* pProcessReport=NULL,
                    bool overwriteFile = false,
                    const bool& autoSave = false);
 
-    bool newModel(CModel* pModel = NULL);
+    bool newModel(CModel* pModel = NULL,CProcessReport* pProcessReport=NULL);
     
     bool importSBMLFromString(const std::string& sbmlDocumentText,CProcessReport* pImportHandler = NULL);
     bool importSBML(const std::string& fileName, CProcessReport* pImportHandler = NULL);

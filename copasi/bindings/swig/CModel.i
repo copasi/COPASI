@@ -1,3 +1,15 @@
+// Begin CVS Header 
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CModel.i,v $ 
+//   $Revision: 1.9 $ 
+//   $Name:  $ 
+//   $Author: gauges $ 
+//   $Date: 2007/06/11 16:54:46 $ 
+// End CVS Header 
+
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
+
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
@@ -7,6 +19,9 @@
 #include "model/CModel.h"
 
 %}
+
+%ignore CModel::compileIfNecessary(CProcessReport* pProcessReport=NULL);
+%ignore CModel::forceCompile(CProcessReport* pProcessReport=NULL);
 
 class CModel : public CModelEntity
 {
@@ -53,13 +68,13 @@ class CModel : public CModelEntity
      * Compile the model if necessary
      * @return bool success
      */
-    bool compileIfNecessary();
+    bool compileIfNecessary(CProcessReport* pProcessReport=NULL);
 
     /**
      * Force a compile the model.
      * @return bool success
      */
-    bool forceCompile();
+    bool forceCompile(CProcessReport* pProcessReport=NULL);
 
 
     /**
