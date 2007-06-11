@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/gui/org/COPASI/gui/TaskWidget.java,v $ 
-//   $Revision: 1.3 $ 
+//   $Revision: 1.4 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2007/02/12 15:26:46 $ 
+//   $Date: 2007/06/11 16:56:23 $ 
 // End CVS Header 
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -544,6 +544,9 @@ public class TaskWidget extends JPanel implements ActionListener, TableModelList
 		else if(e.getSource()==this.mMethodWidget.mMethodDropdown)
 		{
 			String s=(String)((JComboBox)e.getSource()).getSelectedItem();
+			if(s == null){
+				return;
+			}
 			int type=CCopasiMethod.TypeNameToEnum(s);
 			this.mMethodWidget.mParameterTable.getModel().removeTableModelListener(this);
 			this.mMethodWidget.mMethodDropdown.removeActionListener(this);
