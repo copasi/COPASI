@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/06/04 13:28:16 $
+//   $Author: urost $
+//   $Date: 2007/06/11 19:35:07 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,12 +14,12 @@
 #include "layout/CListOfLayouts.h"
 #include "layout/CLayout.h"
 #include "layout/CLBase.h"
-#include"CQLayoutMainWindow.h"
+#include "CQLayoutMainWindow.h"
+#include "ParaPanel.h"
+
 //#include "sbmlDocumentLoader.h"
 #include <string>
 #include <iostream>
-
-#include "ParaPanel.h"
 
 using namespace std;
 
@@ -29,21 +29,16 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
   createActions();
   createMenus();
 
-  // create split window
+  // create split window with parameter panel and graph panel
   QSplitter *splitter = new QSplitter(Qt::Horizontal, this);
   splitter->setCaption("Test");
+
+  QBoxLayout * mainBox = new QVBoxLayout(this);
+  mainBox->addWidget(splitter);
 
   //QLabel *label = new QLabel(splitter, "Test Label", 0);
   //QTextEdit *testEditor = new QTextEdit(splitter);
   ParaPanel *paraPanel = new ParaPanel(splitter);
-
-  timeSlider = new QSlider(Qt::Horizontal, splitter);
-  timeSlider->setRange(0, 100);
-  timeSlider->setValue(0);
-  //timeSlider->setTickmarks(QSlider::Below);
-  timeSlider->setDisabled(TRUE);
-  connect(timeSlider, SIGNAL(valueChanged(int)),
-          this, SLOT(showStep(int)));
 
   // create sroll view
   scrollView = new QScrollView(splitter);
@@ -82,8 +77,25 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
   //setCentralWidget(scrollView);
   //scrollView->show();
 
-  setCentralWidget(splitter);
-  splitter->show();
+  // create slider
+  //timeSlider = new QSlider(Qt::Horizontal, splitter);
+  QBoxLayout * bottomBox = new QHBoxLayout(this);
+
+  timeSlider = new QwtSlider(this, Qt::Horizontal, QwtSlider::Top, QwtSlider::BgTrough);
+  timeSlider->setRange(0, 100, 1, 0);
+  timeSlider->setValue(0.0);
+  //timeSlider->setTickmarks(QSlider::Below);
+  timeSlider->setDisabled(TRUE);
+  connect(timeSlider, SIGNAL(valueChanged(int)),
+          this, SLOT(showStep(int)));
+  bottomBox->addWidget(timeSlider);
+  bottomWidget = new QWidget(this);
+
+  //QBoxLayout * bottomBox = new QHBoxLayout(timeSlider);
+  //this->addWidget(bottomWidget);
+
+  setCentralWidget(this);
+  this->show();
   //glPainter->drawGraph();
 }
 

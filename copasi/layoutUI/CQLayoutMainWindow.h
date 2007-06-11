@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/05/31 19:40:14 $
+//   $Date: 2007/06/11 19:35:07 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,7 +24,10 @@
 #include <qlayout.h>
 #include <qscrollview.h>
 #include <qsplitter.h>
-#include <qslider.h>
+#include <qlayout.h>
+#include <qwidget.h>
+//#include <qslider.h>
+#include <qwt_slider.h>
 
 #include "CQGLNetworkPainter.h"
 
@@ -74,7 +77,13 @@ class CQLayoutMainWindow : public QMainWindow
     //CQParameterWindow *paraWin;
     CQGLNetworkPainter *glPainter;
     QScrollView *scrollView;
-    QSlider *timeSlider;
+    //QSlider *timeSlider;
+    QwtSlider *timeSlider;
+
+    // mainBox contains topBox and bottomBox
+    QHBoxLayout *bottomBox;
+    QVBoxLayout *mainBox;
+    QWidget *bottomWidget;
   };
 
 #endif /*SIMGUI_H_*/
