@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/gui/org/COPASI/gui/TaskWidget.java,v $ 
-//   $Revision: 1.5 $ 
+//   $Revision: 1.6 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2007/06/12 10:39:36 $ 
+//   $Date: 2007/06/12 10:53:54 $ 
 // End CVS Header 
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -476,11 +476,13 @@ public class TaskWidget extends JPanel implements ActionListener, TableModelList
 	protected ButtonWidget  mButtonWidget;
 	protected CCopasiTask mTask;
 	protected boolean mDefaultReportCreated;
+        protected boolean mOverwrite;
 	
 	public TaskWidget(String title,boolean enableReportButton)
 	{
 		super();
 		this.mTask=null;
+                this.mOverwrite=false;
 		this.setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
 		this.mTitle=title;
 		this.mTitleWidget=new TitleWidget(this.mTitle);
@@ -499,7 +501,7 @@ public class TaskWidget extends JPanel implements ActionListener, TableModelList
 		this.mMethodWidget.mMethodDropdown.addActionListener(this);
 		this.mMethodWidget.mParameterTable.getModel().addTableModelListener(this);
 		this.enableDefaultReportButton(enableReportButton);
-	}
+        }
 	
 	
 	/**
@@ -756,6 +758,7 @@ public class TaskWidget extends JPanel implements ActionListener, TableModelList
 		  if(report!=null)
 		  {
 			  report.setTarget(target);
+                          report.setAppend(!this.mOverwrite);
 		  }
 		}
 	}
@@ -777,6 +780,16 @@ public class TaskWidget extends JPanel implements ActionListener, TableModelList
 		  this.mDefaultReportCreated=true;
 		}
 	}
+
+        public boolean getOverwriteTarget()
+        {
+            return this.mOverwrite;
+        }
+	
+        public void setOverwriteTarget(boolean overwrite)
+        {
+            this.mOverwrite=overwrite;
+        }
 	
 	public static void main(String[] args)
 	{	
