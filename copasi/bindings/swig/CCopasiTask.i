@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiTask.i,v $ 
-//   $Revision: 1.10 $ 
+//   $Revision: 1.11 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2007/02/12 15:26:46 $ 
+//   $Date: 2007/06/12 10:38:49 $ 
 // End CVS Header 
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -175,6 +175,7 @@ class CCopasiTask : public CCopasiContainer
         if(result)
         {
           result=self->process(useInitialValues);
+          CCopasiDataModel::Global->finish();
         }
         if(result)
         {
