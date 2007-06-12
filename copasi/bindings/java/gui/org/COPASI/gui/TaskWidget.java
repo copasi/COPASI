@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/gui/org/COPASI/gui/TaskWidget.java,v $ 
-//   $Revision: 1.4 $ 
+//   $Revision: 1.5 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2007/06/11 16:56:23 $ 
+//   $Date: 2007/06/12 10:39:36 $ 
 // End CVS Header 
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -720,6 +720,7 @@ public class TaskWidget extends JPanel implements ActionListener, TableModelList
 	 */
 	protected void resetTask()
 	{
+          this.mDefaultReportCreated=false;
 	}
 	
 	
@@ -766,6 +767,7 @@ public class TaskWidget extends JPanel implements ActionListener, TableModelList
 	{
 		if(!this.mDefaultReportCreated && this.mTask!=null)
 		{
+                  //System.out.println("Creating default report.");;
 		  int index=COutputAssistant.getDefaultReportIndex(this.mTask.getProblem());
 		  CCopasiObject def=COutputAssistant.createDefaultOutput(index, this.mTask, true);
 		  if (def instanceof CReportDefinition) 
