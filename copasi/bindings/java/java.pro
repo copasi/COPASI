@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/java.pro,v $ 
-#   $Revision: 1.13 $ 
+#   $Revision: 1.14 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2007/06/13 16:13:30 $ 
+#   $Date: 2007/06/13 17:13:33 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -85,24 +85,27 @@ isEmpty(SWIG_PATH){
 !isEmpty(SWIG_PATH){
     # check if swig is there and create a target to run it to create
     # copasi_wrapper.cpp
-    win32{
+    contains(BUILD_OS, WIN32){
         !exists($$SWIG_PATH/swig.exe){
-        error(Unable to find swig excecutable in $$SWIG_PATH. Please use --with-swig=PATH to specify the path where PATH/bin/swig is located.) 
+        error(Unable to find swig excecutable in $$SWIG_PATH. Please use --with-swig=PATH to specify the path where PATH/swig.exe is located.) 
+         }
     }
-    else{
+    !contains(BUILD_OS, WIN32){
         !exists($$SWIG_PATH/bin/swig){
         error(Unable to find swig excecutable in $$SWIG_PATH/bin/. Please use --with-swig=PATH to specify the path where PATH/bin/swig is located.) 
+        }
     }
-}
 
     DEFINE_COMMANDLINE = $$join(DEFINES," -D",-D)
-
-    wrapper_source.target = copasi_wrapper.cpp
-    wrapper_source.depends = $$SWIG_INTERFACE_FILES java.i local.cpp
-    win32{
+    contains(BUILD_OS, WIN32){
+      wrapper_source.target = copasi_wrapper.cpp
+      wrapper_source.depends = $$SWIG_INTERFACE_FILES java.i local.cpp
       wrapper_source.commands = $(DEL_FILE) $$wrapper_source.target ; mkdir  java_files/org/COPASI ; $$SWIG_PATH/swig.exe $$DEFINE_COMMANDLINE -I../.. -c++ -java -o $$wrapper_source.target -package org.COPASI -outdir java_files/org/COPASI/  java.i; cd java_files; javac -classpath . -d . org/COPASI/*.java ;rm -f  copasi.jar;jar cf copasi.jar org ; cd .. 
     } 
-    else{
+    !contains(BUILD_OS, WIN32){
+
+      wrapper_source.target = copasi_wrapper.cpp
+      wrapper_source.depends = $$SWIG_INTERFACE_FILES java.i local.cpp
       wrapper_source.commands = $(DEL_FILE) $$wrapper_source.target ; mkdir -p java_files/org/COPASI ; $$SWIG_PATH/bin/swig $$DEFINE_COMMANDLINE -I../.. -c++ -java -o $$wrapper_source.target -package org.COPASI -outdir java_files/org/COPASI/  java.i; cd java_files; javac -classpath . -d . org/COPASI/*.java ;rm -f  copasi.jar;jar cf copasi.jar org ; cd .. 
     }
     QMAKE_EXTRA_UNIX_TARGETS += wrapper_source
