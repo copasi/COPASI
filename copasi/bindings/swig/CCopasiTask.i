@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiTask.i,v $ 
-//   $Revision: 1.11 $ 
+//   $Revision: 1.12 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2007/06/12 10:38:49 $ 
+//   $Date: 2007/06/13 12:42:15 $ 
 // End CVS Header 
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -171,6 +171,7 @@ class CCopasiTask : public CCopasiContainer
 
     virtual  bool process(bool useInitialValues) 
       {
+        CCopasiMessage::clearDeque();
         bool result=self->initialize(CCopasiTask::OUTPUT_COMPLETE,NULL);
         if(result)
         {
