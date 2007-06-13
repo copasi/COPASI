@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/copasi.i,v $ 
-//   $Revision: 1.16 $ 
+//   $Revision: 1.17 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2007/06/13 12:42:15 $ 
+//   $Date: 2007/06/13 12:58:12 $ 
 // End CVS Header 
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -71,3 +71,12 @@
 %include "CTrajectoryTask.i"
 %include "COutputAssistant.i"
 %include "CCopasiMessage.i"
+%include "CSteadyStateProblem.i"
+%include "CSteadyStateMethod.i"
+%include "CSteadyStateTask.i"
+%include "CNewtonMethod.i"
+%include "CScanMethod.i"
+%include "CScanProblem.i"
+%include "CScanTask.i"
+
+
