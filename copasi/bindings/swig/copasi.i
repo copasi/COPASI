@@ -1,3 +1,15 @@
+// Begin CVS Header 
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/copasi.i,v $ 
+//   $Revision: 1.15 $ 
+//   $Name:  $ 
+//   $Author: gauges $ 
+//   $Date: 2007/06/13 08:42:27 $ 
+// End CVS Header 
+
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
+
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
@@ -55,4 +67,5 @@
 %include "CTrajectoryMethod.i"
 %include "CTrajectoryTask.i"
 %include "COutputAssistant.i"
+%include "CCopasiMessage.i"
 
