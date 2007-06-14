@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/java.pro,v $ 
-#   $Revision: 1.14 $ 
+#   $Revision: 1.15 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2007/06/13 17:13:33 $ 
+#   $Date: 2007/06/14 08:32:54 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -23,12 +23,61 @@ COPASI_LIBS += -lCOPASISE
 LIBS = $$COPASI_LIBS $$LIBS
 
 INCLUDEPATH += ../..
+contains(BUILD_OS,Linux){
+
+  !isEmpty(JAVA_LIB_PATH){
+    LIBS += -L$$JAVA_LIB_PATH
+  }
+
+  !isEmpty(JAVA_INCLUDE_PATH){
+    INCLUDEPATH += $$JAVA_INCLUDE_PATH 
+  }
+
+
+ LIBS += -llapack
+ LIBS += -lblas
+# LIBS += -lF77
+ LIBS += -lfl
+ LIBS += -lsbml
+ LIBS += -lfl
+ LIBS += -lqwt
+ LIBS += -lexpat
+
+
+}
+
+contains(BUILD_OS, Darwin) {
+    LIBS += -framework JavaVM
+    LIBS += -framework Quicktime
+    LIBS += -framework Carbon
+    LIBS += -framework Accelerate
+
+  !isEmpty(JAVA_INCLUDE_PATH){
+    INCLUDEPATH += $$JAVA_INCLUDE_PATH
+  }
+  
+
+}
+
+contains(BUILD_OS, WIN32) { 
+  config -= staticlib
+  config += dll
+  
+  !isEmpty(JAVA_INCLUDE_PATH){
+    INCLUDEPATH += $$JAVA_INCLUDE_PATH
+    INCLUDEPATH += $$JAVA_INCLUDE_PATH\win32
+  }
+  
+
+}
+
 
 SWIG_INTERFACE_FILES=../swig/CChemEq.i \
                      ../swig/CChemEqElement.i \
                      ../swig/CCompartment.i \
                      ../swig/CCopasiContainer.i \
                      ../swig/CCopasiDataModel.i \
+		     ../swig/CCopasiMessage.i \
                      ../swig/CCopasiMethod.i \
                      ../swig/CCopasiObject.i \
                      ../swig/CCopasiObjectName.i \
@@ -48,19 +97,26 @@ SWIG_INTERFACE_FILES=../swig/CChemEq.i \
                      ../swig/CModel.i \
                      ../swig/CModelValue.i \
                      ../swig/CMoiety.i \
+		     ../swig/CNewtonMethod.i \
                      ../swig/COutputAssistant.i \
                      ../swig/COutputHandler.i \
                      ../swig/CReaction.i \
                      ../swig/CReport.i \
                      ../swig/CReportDefinition.i \
                      ../swig/CReportDefinitionVector.i \
+       		     ../swig/CScanMethod.i \
+		     ../swig/CScanProblem.i \
+		     ../swig/CScanTask.i \
                      ../swig/CState.i \
+       		     ../swig/CSteadyStateMethod.i \
+		     ../swig/CSteadyStateProblem.i \
+		     ../swig/CSteadyStateTask.i \
                      ../swig/CTimeSeries.i \
                      ../swig/CTrajectoryMethod.i \
                      ../swig/CTrajectoryProblem.i \
                      ../swig/CTrajectoryTask.i \
                      ../swig/CVersion.i \
-                     ../swig/copasi.i 
+                     ../swig/copasi.i \
 
 
 #DISTFILE   = $$SWIG_INTERFACE_FILES
@@ -100,65 +156,21 @@ isEmpty(SWIG_PATH){
     contains(BUILD_OS, WIN32){
       wrapper_source.target = copasi_wrapper.cpp
       wrapper_source.depends = $$SWIG_INTERFACE_FILES java.i local.cpp
-      wrapper_source.commands = $(DEL_FILE) $$wrapper_source.target ; mkdir  java_files/org/COPASI ; $$SWIG_PATH/swig.exe $$DEFINE_COMMANDLINE -I../.. -c++ -java -o $$wrapper_source.target -package org.COPASI -outdir java_files/org/COPASI/  java.i; cd java_files; javac -classpath . -d . org/COPASI/*.java ;rm -f  copasi.jar;jar cf copasi.jar org ; cd .. 
+      wrapper_source.commands = $$SWIG_PATH\swig.exe $$DEFINE_COMMANDLINE -I..\.. -c++ -java -o $$wrapper_source.target -package org.COPASI -outdir java_files\org\COPASI\  java.i && cd java_files && c:\Java\jdk1.5.0_12\bin\javac.exe -classpath . -d . org\COPASI\*.java  && cd .. 
+      QMAKE_EXTRA_WIN_TARGETS += wrapper_source
+      PRE_TARGETDEPS += ..\..\lib\COPASISE.lib
     } 
     !contains(BUILD_OS, WIN32){
 
       wrapper_source.target = copasi_wrapper.cpp
       wrapper_source.depends = $$SWIG_INTERFACE_FILES java.i local.cpp
       wrapper_source.commands = $(DEL_FILE) $$wrapper_source.target ; mkdir -p java_files/org/COPASI ; $$SWIG_PATH/bin/swig $$DEFINE_COMMANDLINE -I../.. -c++ -java -o $$wrapper_source.target -package org.COPASI -outdir java_files/org/COPASI/  java.i; cd java_files; javac -classpath . -d . org/COPASI/*.java ;rm -f  copasi.jar;jar cf copasi.jar org ; cd .. 
+      QMAKE_EXTRA_UNIX_TARGETS += wrapper_source
+      PRE_TARGETDEPS += ../../lib/libCOPASISE.a
     }
-    QMAKE_EXTRA_UNIX_TARGETS += wrapper_source
     PRE_TARGETDEPS += copasi_wrapper.cpp
 }
 
-PRE_TARGETDEPS += ../../lib/libCOPASISE.a
-#PRE_TARGETDEPS += ../../lib/libCOPASIUI.a
-
-contains(BUILD_OS,Linux){
-
-  !isEmpty(JAVA_LIB_PATH){
-    LIBS += -L$$JAVA_LIB_PATH
-  }
-
-  !isEmpty(JAVA_INCLUDE_PATH){
-    INCLUDEPATH += $$JAVA_INCLUDE_PATH 
-  }
-
-
- LIBS += -llapack
- LIBS += -lblas
-# LIBS += -lF77
- LIBS += -lfl
- LIBS += -lsbml
- LIBS += -lfl
- LIBS += -lqwt
- LIBS += -lexpat
-
-
-}
-
-contains(BUILD_OS, Darwin) {
-    LIBS += -framework JavaVM
-    LIBS += -framework Quicktime
-    LIBS += -framework Carbon
-    LIBS += -framework Accelerate
-
-  !isEmpty(JAVA_INCLUDE_PATH){
-    INCLUDEPATH += $$JAVA_INCLUDE_PATH
-  }
-  
-
-}
-
-contains(BUILD_OS, WIN32) {
-
-  !isEmpty(JAVA_INCLUDE_PATH){
-    INCLUDEPATH += $$JAVA_INCLUDE_PATH
-  }
-  
-
-}
 
 
 
