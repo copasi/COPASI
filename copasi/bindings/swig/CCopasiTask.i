@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiTask.i,v $ 
-//   $Revision: 1.12 $ 
+//   $Revision: 1.13 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2007/06/13 12:42:15 $ 
+//   $Date: 2007/06/14 08:33:26 $ 
 // End CVS Header 
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -22,7 +22,8 @@
 #include "utilities/CCopasiException.h"
 %}
 
-%template(MethodTypeStdVector) std::vector<int>;
+%template(IntStdVector) std::vector<int>;
+typedef std::vector<C_INT32> IntStdVector;
 
 class CCopasiTask : public CCopasiContainer
 {
@@ -157,9 +158,9 @@ class CCopasiTask : public CCopasiContainer
 
 
 %extend {
-  std::vector<int> getValidMethods() const
+  std::vector<C_INT32> getValidMethods() const
     {
-      std::vector<int> validMethods;
+      std::vector<C_INT32> validMethods;
       unsigned int i=0;
       while(self->ValidMethods[i]!=CCopasiMethod::unset)
       {
