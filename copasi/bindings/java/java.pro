@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/java.pro,v $ 
-#   $Revision: 1.17 $ 
+#   $Revision: 1.18 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2007/06/15 11:27:05 $ 
+#   $Date: 2007/06/15 12:13:30 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -53,6 +53,10 @@ contains(BUILD_OS, Darwin) {
     LIBS += -framework Quicktime
     LIBS += -framework Carbon
     LIBS += -framework Accelerate
+   
+    # make a hard link from the generated dylib file to a file with the ending
+    # jnilib
+    QMAKE_POST_LINK = ln libCopasiJava.1.0.0.dylib libCopasiJava.jnilib 
 
   !isEmpty(JAVA_HOME){
    isEmpty(JAVA_INCLUDE_PATH){
@@ -233,7 +237,7 @@ isEmpty(SWIG_PATH){
 
       wrapper_source.target = copasi_wrapper.cpp
       wrapper_source.depends = $$SWIG_INTERFACE_FILES java.i local.cpp
-      wrapper_source.commands = $(DEL_FILE) $$wrapper_source.target; $(DEL_FILE) java_files/org/COPASI/*; $(DEL_FILE) gui/org/COPASI/gui/*.class ; mkdir -p java_files/org/COPASI ; $$SWIG_PATH/bin/swig $$DEFINE_COMMANDLINE -I../.. -c++ -java -o $$wrapper_source.target -package org.COPASI -outdir java_files/org/COPASI/  java.i; cd java_files; $JAVA_HOME/bin/javac -classpath . -d . org/COPASI/*.java ;rm -f  copasi.jar;$$JAVA_HOME/bin/jar cf ../copasi.jar org ; cd .. ; cd  gui; $$JAVA_HOME/bin/jar cf ../copasi_gui.jar org/COPASI/gui/*.class org/COPASI/gui/*.java 
+      wrapper_source.commands = $(DEL_FILE) $$wrapper_source.target; $(DEL_FILE) java_files/org/COPASI/*; $(DEL_FILE) gui/org/COPASI/gui/*.class ; mkdir -p java_files/org/COPASI ; $$SWIG_PATH/bin/swig $$DEFINE_COMMANDLINE -I../.. -c++ -java -o $$wrapper_source.target -package org.COPASI -outdir java_files/org/COPASI/  java.i; cd java_files; $$JAVA_HOME/bin/javac -classpath . -d . org/COPASI/*.java ;rm -f  copasi.jar;$$JAVA_HOME/bin/jar cf ../copasi.jar org ; cd .. ; cd  gui; $$JAVA_HOME/bin/jar cf ../copasi_gui.jar org/COPASI/gui/*.class org/COPASI/gui/*.java 
       QMAKE_EXTRA_UNIX_TARGETS += wrapper_source
       PRE_TARGETDEPS += ../../lib/libCOPASISE.a
     }
