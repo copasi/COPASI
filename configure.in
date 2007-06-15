@@ -186,7 +186,11 @@ fi
 AC_ARG_WITH([java],
   AS_HELP_STRING([--with-java=PATH],
                  [Path to Java]),
-  [JAVA_PATH=$withval;JAVA_INCLUDE_PATH=$JAVA_PATH/include;JAVA_LIB_PATH=$JAVA_PATH/lib])
+  [JAVA_PATH=$withval;JAVA_HOME=$withval;JAVA_INCLUDE_PATH=$JAVA_PATH/include;JAVA_LIB_PATH=$JAVA_PATH/lib])
+
+if test x"${JAVA_HOME}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG JAVA_HOME=$JAVA_HOME"
+fi
 
 
 AC_ARG_WITH([java-includes],
