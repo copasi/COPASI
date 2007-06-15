@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/python.pro,v $ 
-#   $Revision: 1.12 $ 
+#   $Revision: 1.13 $ 
 #   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2007/03/22 17:02:14 $ 
+#   $Author: gauges $ 
+#   $Date: 2007/06/15 13:05:14 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -11,6 +11,7 @@
 # All rights reserved. 
 
 TEMPLATE = lib
+CONFIG -= qt
 
 include(../../common.pri)
 
@@ -26,13 +27,122 @@ LIBS = $$COPASI_LIBS $$LIBS
 
 INCLUDEPATH += ../..
 
-SOURCES += copasi_wrapper.cpp
+contains(BUILD_OS,Linux){
+
+  !isEmpty(PYTHON_LIB_PATH){
+    LIBS += -L$$PYTHON_LIB_PATH
+  }
+
+  !isEmpty(PYTHON_INCLUDE_PATH){
+    INCLUDEPATH += $$PYTHON_INCLUDE_PATH
+  }
+
+
+ LIBS += -llapack
+ LIBS += -lblas
+ LIBS += -lF77
+ LIBS += -lfl
+ LIBS += -lpython2.3
+ LIBS += -lsbml
+ LIBS += -lqwt
+ LIBS += -lexpat
+
+ QMAKE_POST_LINK += ln -sf libCopasiPython.so _COPASI.so
+
+}
+
+contains(BUILD_OS, Darwin) {
+    LIBS += -framework Python
+    LIBS += -framework Quicktime
+    LIBS += -framework Carbon
+    LIBS += -framework Accelerate
+
+  !isEmpty(PYTHON_INCLUDE_PATH){
+    INCLUDEPATH += $$PYTHON_INCLUDE_PATH
+  }
+
+  QMAKE_POST_LINK += ln -sf libCopasiPython.dylib _COPASI.so
+}
+
+contains(BUILD_OS, WIN32) { 
+  CONFIG -= staticlib
+  CONFIG += dll
+  CONFIG += embed_manifest_dll
+
+  QMAKE_POST_LINK = mt.exe -manifest $(TARGET).manifest -outputresource:$(TARGET);2
+
+  !isEmpty(PYTHON_LIB_PATH){
+    LIBS += -L$$PYTHON_LIB_PATH
+  }
+
+  !isEmpty(PYTHON_INCLUDE_PATH){
+    INCLUDEPATH += $$PYTHON_INCLUDE_PATH
+  }
+
+  
+  !isEmpty(MKL_PATH) {
+    DEFINES += USE_MKL
+    QMAKE_CXXFLAGS_DEBUG   += -I"$${MKL_PATH}\include"
+    QMAKE_CXXFLAGS_RELEASE += -I"$${MKL_PATH}\include"
+    QMAKE_LFLAGS_WINDOWS += /LIBPATH:"$${MKL_PATH}\32\lib"
+    QMAKE_LFLAGS_CONSOLE += /LIBPATH:"$${MKL_PATH}\32\lib"
+#    LIBS += mkl_lapack.lib mkl_p3.lib mkl_c.lib
+    LIBS += mkl_lapack.lib mkl_ia32.lib guide.lib
+  } else {
+    !isEmpty(CLAPACK_PATH) {
+      DEFINES += USE_CLAPACK
+      QMAKE_CXXFLAGS_DEBUG   += -I"$${CLAPACK_PATH}\include"
+      QMAKE_CXXFLAGS_RELEASE += -I"$${CLAPACK_PATH}\include"
+      QMAKE_LFLAGS_WINDOWS += /LIBPATH:"$${CLAPACK_PATH}\lib"
+      QMAKE_LFLAGS_CONSOLE += /LIBPATH:"$${CLAPACK_PATH}\lib"
+      QMAKE_LFLAGS_CONSOLE_DLL += /LIBPATH:"$${CLAPACK_PATH}\lib"
+      LIBS += libI77.lib
+      LIBS += libF77.lib
+#      LIBS += blas.lib
+      LIBS += clapack.lib
+    } else {
+      error( "Either MKL_PATH or CLAPACK_PATH must be specified" )
+    }
+  }
+
+  !isEmpty(EXPAT_PATH) {
+    QMAKE_CXXFLAGS_DEBUG   += -I"$${EXPAT_PATH}\Source\lib"
+    QMAKE_CXXFLAGS_RELEASE += -I"$${EXPAT_PATH}\Source\lib"
+    QMAKE_LFLAGS_WINDOWS += /LIBPATH:"$${EXPAT_PATH}\StaticLibs"
+    QMAKE_LFLAGS_CONSOLE_DLL += /LIBPATH:"$${EXPAT_PATH}\StaticLibs"
+    LIBS += libexpat.lib
+  } else {
+    error( "EXPAT_PATH must be specified" )
+  }
+
+  !isEmpty(SBML_PATH) {
+    QMAKE_CXXFLAGS_DEBUG   += -I"$${SBML_PATH}\include"
+    QMAKE_CXXFLAGS_RELEASE += -I"$${SBML_PATH}\include"
+    QMAKE_CXXFLAGS_DEBUG   += -I"$${SBML_PATH}\include\sbml"
+    QMAKE_CXXFLAGS_RELEASE += -I"$${SBML_PATH}\include\sbml"
+    QMAKE_LFLAGS_WINDOWS += /LIBPATH:"$${SBML_PATH}\lib"
+    QMAKE_LFLAGS_CONSOLE_DLL += /LIBPATH:"$${SBML_PATH}\lib"
+    release{
+      LIBS += libsbml.lib
+    }
+    debug{
+      LIBS += libsbmlD.lib
+    }
+
+  } else {
+    error( "SBML_PATH must be specified" )
+  }
+}
+
+
+
 
 SWIG_INTERFACE_FILES=../swig/CChemEq.i \
                      ../swig/CChemEqElement.i \
                      ../swig/CCompartment.i \
                      ../swig/CCopasiContainer.i \
                      ../swig/CCopasiDataModel.i \
+		     ../swig/CCopasiMessage.i \
                      ../swig/CCopasiMethod.i \
                      ../swig/CCopasiObject.i \
                      ../swig/CCopasiObjectName.i \
@@ -52,19 +162,27 @@ SWIG_INTERFACE_FILES=../swig/CChemEq.i \
                      ../swig/CModel.i \
                      ../swig/CModelValue.i \
                      ../swig/CMoiety.i \
+		     ../swig/CNewtonMethod.i \
                      ../swig/COutputAssistant.i \
                      ../swig/COutputHandler.i \
                      ../swig/CReaction.i \
                      ../swig/CReport.i \
                      ../swig/CReportDefinition.i \
                      ../swig/CReportDefinitionVector.i \
+       		     ../swig/CScanMethod.i \
+		     ../swig/CScanProblem.i \
+		     ../swig/CScanTask.i \
                      ../swig/CState.i \
+       		     ../swig/CSteadyStateMethod.i \
+		     ../swig/CSteadyStateProblem.i \
+		     ../swig/CSteadyStateTask.i \
                      ../swig/CTimeSeries.i \
                      ../swig/CTrajectoryMethod.i \
                      ../swig/CTrajectoryProblem.i \
                      ../swig/CTrajectoryTask.i \
                      ../swig/CVersion.i \
-                     ../swig/copasi.i 
+                     ../swig/copasi.i \
+
 
 
 UNITTEST_FILES = unittests/Test_CChemEq.py \
@@ -123,60 +241,38 @@ isEmpty(SWIG_PATH){
 !isEmpty(SWIG_PATH){
     # check if swig is there and create a target to run it to create
     # copasi_wrapper.cpp
-    !exists($$SWIG_PATH/bin/swig){
-        error(Unable to find swig excecutable in $$SWIG_PATH/bin/. Please use --with-swig=PATH to specify the path where PATH/bin/swig is located.) 
+    contains(BUILD_OS, WIN32){
+        !exists($$SWIG_PATH/swig.exe){
+        error(Unable to find swig excecutable in $$SWIG_PATH. Please use --with-swig=PATH to specify the path where PATH/swig.exe is located.) 
+         }
     }
-
+    !contains(BUILD_OS, WIN32){
+      !exists($$SWIG_PATH/bin/swig){
+        error(Unable to find swig excecutable in $$SWIG_PATH/bin/. Please use --with-swig=PATH to specify the path where PATH/bin/swig is located.) 
+      }
+    }
     DEFINE_COMMANDLINE = $$join(DEFINES," -D",-D)
 
-    wrapper_source.target = copasi_wrapper.cpp
-    wrapper_source.depends = $$SWIG_INTERFACE_FILES python.i local.cpp
-    wrapper_source.commands = $(DEL_FILE) $$wrapper_source.target ; $$SWIG_PATH/bin/swig $$DEFINE_COMMANDLINE -classic -I../.. -c++ -python -o $$wrapper_source.target python.i
-
-    QMAKE_EXTRA_UNIX_TARGETS += wrapper_source
+    contains(BUILD_OS, WIN32){
+      wrapper_source.target = copasi_wrapper.cpp
+      wrapper_source.depends = $$SWIG_INTERFACE_FILES python.i local.cpp
+      wrapper_source.commands = $(DEL_FILE) $$wrapper_source.target ; $$SWIG_PATH/swig.exe $$DEFINE_COMMANDLINE -classic -I..\.. -c++ -python -o $$wrapper_source.target python.i
+  
+      QMAKE_EXTRA_WIN_TARGETS += wrapper_source
+      PRE_TARGETDEPS += ..\..\lib\COPASISE.lib
+    }
+    !contains(BUILD_OS, WIN32){
+      wrapper_source.target = copasi_wrapper.cpp
+      wrapper_source.depends = $$SWIG_INTERFACE_FILES python.i local.cpp
+      wrapper_source.commands = $(DEL_FILE) $$wrapper_source.target ; $$SWIG_PATH/bin/swig $$DEFINE_COMMANDLINE -classic -I../.. -c++ -python -o $$wrapper_source.target python.i
+  
+      QMAKE_EXTRA_UNIX_TARGETS += wrapper_source
+    }
+    PRE_TARGETDEPS += ../../lib/libCOPASISE.a
     PRE_TARGETDEPS += copasi_wrapper.cpp
 }
 
-PRE_TARGETDEPS += ../../lib/libCOPASISE.a
-#PRE_TARGETDEPS += ../../lib/libCOPASIUI.a
 
-
-contains(BUILD_OS,Linux){
-
-  !isEmpty(PYTHON_LIB_PATH){
-    LIBS += -L$$PYTHON_LIB_PATH
-  }
-
-  !isEmpty(PYTHON_INCLUDE_PATH){
-    INCLUDEPATH += $$PYTHON_INCLUDE_PATH
-  }
-
-
- LIBS += -llapack
- LIBS += -lblas
- LIBS += -lF77
- LIBS += -lfl
- LIBS += -lpython2.3
- LIBS += -lsbml
- LIBS += -lqwt
- LIBS += -lexpat
-
- QMAKE_POST_LINK += ln -sf libCopasiPython.so _COPASI.so
-
-}
-
-contains(BUILD_OS, Darwin) {
-    LIBS += -framework Python
-    LIBS += -framework Quicktime
-    LIBS += -framework Carbon
-    LIBS += -framework Accelerate
-
-  !isEmpty(PYTHON_INCLUDE_PATH){
-    INCLUDEPATH += $$PYTHON_INCLUDE_PATH
-  }
-
-  QMAKE_POST_LINK += ln -sf libCopasiPython.dylib _COPASI.so
-}
-
+SOURCES += copasi_wrapper.cpp
 
 
