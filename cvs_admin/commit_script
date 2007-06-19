@@ -1,21 +1,23 @@
 #! /bin/sh
-echo $$ called as: $0 $@ >> /home/shoops/projects/copasi_dev/cvs_admin/commit_script.out
+echo $$ called as: $0 $@ >> $0.out
 my_dir="$1"
 shift
+
+binDir=`dirname $0`
 
 for my_file in $@; do
   if [ -e "`basename $my_file`" ]; then
 
-    echo "  adding header information $my_file" >> /home/shoops/projects/copasi_dev/cvs_admin/commit_script.out
-    /home/shoops/projects/copasi_dev/cvs_admin/addHeader $my_file
+    echo "  adding header information $my_file" >> $0.out
+    $binDir/addHeader $my_file
   
     if [ "`basename $my_file`" != "`basename $my_file .h`" -o \
          "`basename $my_file`" != "`basename $my_file .c`" -o \
          "`basename $my_file`" != "`basename $my_file .cpp`" -o \
          "`basename $my_file`" != "`basename $my_file .hpp`" ]; then
 
-      echo "  C formating $my_file" >> /home/shoops/projects/copasi_dev/cvs_admin/commit_script.out
-      /home/shoops/projects/copasi_dev/cvs_admin/c++style --unix $my_file
+      echo "  C formating $my_file" >> $0.out
+      $binDir/c++style --unix $my_file
 
     fi
   fi
