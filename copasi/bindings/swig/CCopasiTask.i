@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiTask.i,v $ 
-//   $Revision: 1.13 $ 
+//   $Revision: 1.14 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2007/06/14 08:33:26 $ 
+//   $Date: 2007/06/19 15:49:36 $ 
 // End CVS Header 
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -22,8 +22,7 @@
 #include "utilities/CCopasiException.h"
 %}
 
-%template(IntStdVector) std::vector<int>;
-typedef std::vector<C_INT32> IntStdVector;
+%catches(CCopasiException) CCopasiTask::process();
 
 class CCopasiTask : public CCopasiContainer
 {

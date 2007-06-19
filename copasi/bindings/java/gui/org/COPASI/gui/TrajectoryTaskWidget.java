@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/gui/org/COPASI/gui/TrajectoryTaskWidget.java,v $ 
-//   $Revision: 1.3 $ 
+//   $Revision: 1.4 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2007/02/12 15:26:46 $ 
+//   $Date: 2007/06/19 15:49:36 $ 
 // End CVS Header 
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -28,6 +28,8 @@ import org.COPASI.CCopasiDataModel;
 import org.COPASI.CCopasiParameter;
 import org.COPASI.CCopasiProblem;
 import org.COPASI.CCopasiTask;
+import org.COPASI.CCopasiException;
+import org.COPASI.CCopasiMessage;
 
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -315,7 +317,17 @@ public class TrajectoryTaskWidget extends TaskWidget  implements FocusListener{
 	            {
 	            	JFrame mainDialog=new JFrame();
 	            	mainDialog.setTitle("Task Dialog");
-	        		mainDialog.getContentPane().add(new TrajectoryTaskWidget(true));
+                                TrajectoryTaskWidget widget=new TrajectoryTaskWidget(true);
+                                boolean result=false;
+                                try{
+                                  result=widget.loadModel("bad_model.xml");
+                                }
+                                catch(Exception e)
+                                {
+                                  System.out.println(e.getMessage());
+                                }
+                                System.out.println("Model loaded: " + new Boolean(result).toString());
+	        		mainDialog.getContentPane().add(widget);
 	        	 	mainDialog.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	        		mainDialog.pack();
 	        		mainDialog.setVisible(true);

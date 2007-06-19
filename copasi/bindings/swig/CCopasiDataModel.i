@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiDataModel.i,v $ 
-//   $Revision: 1.14 $ 
+//   $Revision: 1.15 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2007/06/11 16:54:46 $ 
+//   $Date: 2007/06/19 15:49:36 $ 
 // End CVS Header 
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -34,6 +34,13 @@
 %ignore CCopasiDataModel::exportSBMLToString(CProcessReport* pExportHandler);
 
 %immutable CCopasiDataModel::Global;
+
+%catches(CCopasiException) CCopasiDataModel::newModel(CModel* pModel = NULL,CProcessReport* pProcessReport=NULL);
+%catches(CCopasiException) CCopasiDataModel::importSBMLFromString(const std::string& sbmlDocumentText,CProcessReport* pImportHandler = NULL);
+%catches(CCopasiException) CCopasiDataModel::importSBML(const std::string&,CProcessReport*);
+%catches(CCopasiException) CCopasiDataModel::exportSBMLToString(CProcessReport* pExportHandler = NULL);
+%catches(CCopasiException) CCopasiDataModel::exportSBML(const std::string& fileName, bool overwriteFile=false, int sbmlLevel = 2, int sbmlVersion = 1, bool exportIncomplete = false, CProcessReport* pExportHandler = NULL);
+ 
 
 class CCopasiDataModel 
 {

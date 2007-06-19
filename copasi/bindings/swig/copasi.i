@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/copasi.i,v $ 
-//   $Revision: 1.17 $ 
+//   $Revision: 1.18 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2007/06/13 12:58:12 $ 
+//   $Date: 2007/06/19 15:49:36 $ 
 // End CVS Header 
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -32,6 +32,8 @@
 %include std_vector.i
 
 %include "CRandom.i"
+%include "CCopasiMessage.i"
+%include "CCopasiException.i"
 %include "CCopasiObjectName.i"
 %include "CCopasiObject.i"
 %include "CCopasiContainer.i"
@@ -70,7 +72,6 @@
 %include "CTrajectoryMethod.i"
 %include "CTrajectoryTask.i"
 %include "COutputAssistant.i"
-%include "CCopasiMessage.i"
 %include "CSteadyStateProblem.i"
 %include "CSteadyStateMethod.i"
 %include "CSteadyStateTask.i"

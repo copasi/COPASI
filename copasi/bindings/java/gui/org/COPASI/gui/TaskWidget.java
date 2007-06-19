@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/gui/org/COPASI/gui/TaskWidget.java,v $ 
-//   $Revision: 1.6 $ 
+//   $Revision: 1.7 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2007/06/12 10:53:54 $ 
+//   $Date: 2007/06/19 15:49:36 $ 
 // End CVS Header 
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -698,7 +698,7 @@ public class TaskWidget extends JPanel implements ActionListener, TableModelList
 	 */
 	public void enableDefaultReportButton(boolean enable)
 	{
-		this.mButtonWidget.mReportButton.setVisible(enable);
+		this.mButtonWidget.mReportButton.setEnabled(enable);
 	}
 	
 	/**
@@ -709,10 +709,12 @@ public class TaskWidget extends JPanel implements ActionListener, TableModelList
 	public boolean loadModel(String fileName)
 	{
 		boolean result=CCopasiDataModel.getGlobal().importSBML(fileName);
-		if(result==true)
+		if(result==false)
 		{
 			this.resetTask();
-		}
+                }
+                this.mButtonWidget.mReportButton.setEnabled(result);
+                this.mButtonWidget.mRunButton.setEnabled(result);
 		return result;
 	}
 
