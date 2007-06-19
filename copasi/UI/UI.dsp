@@ -195,6 +195,10 @@ SOURCE=.\CQOptimizationWidget.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CQPreferenceDialog.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CQProgressDialog.cpp
 # End Source File
 # Begin Source File
@@ -667,6 +671,14 @@ SOURCE=.\CQOptimizationWidget.ui.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\CQPreferenceDialog.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQPreferenceDialog.ui.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\CQProgressDialog.h
 # End Source File
 # Begin Source File
@@ -1097,6 +1109,10 @@ SOURCE=.\CQModelValue.ui
 # Begin Source File
 
 SOURCE=.\CQOptimizationWidget.ui
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQPreferenceDialog.ui
 # End Source File
 # Begin Source File
 

@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $ 
-#   $Revision: 1.149 $ 
+#   $Revision: 1.150 $ 
 #   $Name:  $ 
-#   $Author: ssahle $ 
-#   $Date: 2007/06/04 15:58:33 $ 
+#   $Author: aekamal $ 
+#   $Date: 2007/06/19 16:35:28 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -11,7 +11,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.149 $ $Author: ssahle $ $Date: 2007/06/04 15:58:33 $  
+# $Revision: 1.150 $ $Author: aekamal $ $Date: 2007/06/19 16:35:28 $  
 ######################################################################
 
 LIB = UI
@@ -110,6 +110,7 @@ SOURCES += \
            CQExpressionWidget.cpp \
            CQLyapResultWidget.cpp \
            CQMathMatrixWidget.cpp \
+           CQPreferenceDialog.cpp \
            CQReportListItem.cpp \
            CQSensResultWidget.cpp \
            CQTSSAResultWidget.cpp \
@@ -180,6 +181,7 @@ contains(DEFINES, WITH_LAYOUT) {
 # FORMS += CQMessageBox.ui
 # FORMS += CQModelValue.ui
 # FORMS += CQOptimizationWidget.ui
+# FORMS += CQPreferenceDialog.ui
 # FORMS += CQProgressDialog.ui
 # FORMS += CQProgressItem.ui
 # FORMS += CQProgressItemBar.ui
@@ -232,6 +234,8 @@ HEADERS += \
            CQMessageBox.ui.h \
            CQOptimizationWidget.h \
            CQOptimizationWidget.ui.h \
+           CQPreferenceDialog.h \
+           CQPreferenceDialog.ui.h \
            CQProgressDialog.h \
            CQProgressDialog.ui.h \
            CQProgressItem.h \

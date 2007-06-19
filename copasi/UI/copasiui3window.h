@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-//   $Revision: 1.63 $
+//   $Revision: 1.64 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/03/16 17:15:52 $
+//   $Author: aekamal $
+//   $Date: 2007/06/19 16:35:28 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -58,6 +58,7 @@ class CopasiUI3Window : public QMainWindow
   public slots:
     void slotToggleSliders();
     void slotObjectBrowserDialog();
+    void slotPreferences();
     void autoSave();
 
   protected slots:

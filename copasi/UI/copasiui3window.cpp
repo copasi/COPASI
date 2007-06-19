@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.192 $
+//   $Revision: 1.193 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/04/10 16:19:20 $
+//   $Author: aekamal $
+//   $Date: 2007/06/19 16:35:28 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -39,6 +39,7 @@ extern const char * CopasiLicense;
 #include "qtUtilities.h"
 #include "SliderDialog.h"
 #include "CQMessageBox.h"
+#include "CQPreferenceDialog.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "utilities/CVersion.h"
@@ -767,6 +768,8 @@ void CopasiUI3Window::createMenuBar()
   tools->insertItem("Object &Browser", this, SLOT(slotObjectBrowserDialog()), 0, 2);
   this->mShowSlidersMenuEntry = tools->insertItem("Show Sliders", this, SLOT(slotToggleSliders()));
   tools->setItemChecked(this->mShowSlidersMenuEntry, false);
+  tools->insertSeparator();
+  tools->insertItem("&Preferences...", this, SLOT(slotPreferences()), CTRL + Key_P, 3);
 
 #ifdef COPASI_LICENSE_COM
   tools->insertSeparator();
@@ -799,6 +802,13 @@ void CopasiUI3Window::slotObjectBrowserDialog()
     {
       tools->setItemEnabled(2, TRUE);
     }
+}
+
+void CopasiUI3Window::slotPreferences()
+{
+  static CQPreferenceDialog * preferenceDialog = new CQPreferenceDialog(this, 0, false);
+  preferenceDialog->setModal(true);
+  preferenceDialog->show();
 }
 
 void CopasiUI3Window::slotTutorialWizard()
