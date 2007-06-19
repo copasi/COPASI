@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/FunctionDB.xml.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/21 16:37:47 $
+//   $Date: 2007/06/19 15:55:17 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -288,7 +288,7 @@ static char FunctionDBxml[] =
   "</Function>\n"
   "<Function key=\"Function_21\" name=\"Ordered Bi Bi\" type=\"PreDefined\" reversible=\"true\">\n"
   "<Expression>\n"
-  "Vf*(substratea*substrateb-productp*productq/Keq)/(substratea*substrateb*(1+productp/Kip)+Kma*substrateb+Kmb*(substratea+Kia)+Vf/(Vr*Keq)*(Kmq*productp*(1+substratea/Kia)+productq*(Kmp*(1+Kia*substrateb/(Kma*Kmb))+productp*(1+substrateb/Kib))))\n"
+  "Vf*(substratea*substrateb-productp*productq/Keq)/(substratea*substrateb*(1+productp/Kip)+Kma*substrateb+Kmb*(substratea+Kia)+Vf/(Vr*Keq)*(Kmq*productp*(1+substratea/Kia)+productq*(Kmp*(1+Kma*substrateb/(Kia*Kmb))+productp*(1+substrateb/Kib))))\n"
   "</Expression>"
   "<ListOfParameterDescriptions>\n"
   "<ParameterDescription key=\"FunctionParameter_124\" name=\"substratea\" order=\"0\" role=\"substrate\"/>\n"
@@ -343,7 +343,7 @@ static char FunctionDBxml[] =
   "</Function>\n"
   "<Function key=\"Function_24\" name=\"Ping Pong Bi Bi\" type=\"PreDefined\" reversible=\"true\">\n"
   "<Expression>\n"
-  "Vf*(substratea*substrateb-productp*productq/Keq)/(substratea*substrateb*(1+productq/Kiq)+Kma*substrateb+Kmb*substratea+Vf/(Vr*Keq)*(Kmq*productp*(1+substratea/Kia)+productq*(Kmp+productp)))\n"
+  "Vf*(substratea*substrateb-productp*productq/Keq)/(substratea*substrateb+Kmb*substratea+Kma*substrateb*(1+productq/Kiq)+Vf/(Vr*Keq)*(Kmq*productp*(1+substratea/Kia)+productq*(Kmp+productp)))\n"
   "</Expression>"
   "<ListOfParameterDescriptions>\n"
   "<ParameterDescription key=\"FunctionParameter_158\" name=\"substratea\" order=\"0\" role=\"substrate\"/>\n"
