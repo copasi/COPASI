@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/gui/org/COPASI/gui/TrajectoryTaskWidget.java,v $ 
-//   $Revision: 1.5 $ 
+//   $Revision: 1.6 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2007/06/20 10:23:45 $ 
+//   $Date: 2007/06/20 14:01:24 $ 
 // End CVS Header 
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -30,6 +30,8 @@ import org.COPASI.CCopasiProblem;
 import org.COPASI.CCopasiTask;
 import org.COPASI.CCopasiException;
 import org.COPASI.CCopasiMessage;
+import org.COPASI.CTimeSeries;
+import org.COPASI.CTrajectoryTask;
 
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -302,7 +304,61 @@ public class TrajectoryTaskWidget extends TaskWidget  implements FocusListener{
 			
 		}
 	}
-	
+
+        /**
+         * This method return the time series of the associated trajectory
+         * task. If the task has not been run yet, the time series is empty.
+         */
+        public CTimeSeries getTimeSeries()
+        {
+            return ((CTrajectoryTask)this.mTask).getTimeSeries();
+        }
+
+        /**
+         * This method return all the data from a time series as a two
+         * dimensional array of double values. The individual numbers are the
+         * concentration for a species variable. For all other variables
+         * (parameters and compartments) it is the value of the entity.
+         */
+        public double[][] getTimeSeriesConcentrationData()
+        {
+            CTimeSeries timeSeries=this.getTimeSeries();
+            int iMax=(int)timeSeries.getNumSteps();
+            int jMax=(int)timeSeries.getNumVariables();
+            double[][] data=new double[iMax][jMax];
+            int i,j;
+            for(i=0;i<iMax;i++)
+            {
+                for(j=0;j<jMax;j++)
+                {
+                    data[i][j]=timeSeries.getConcentrationData(i,j);
+                }
+            }
+            return data;
+        }
+        
+        /**
+         * This method return all the data from a time series as a two
+         * dimensional array of double values. The individual numbers are the
+         * number of molecules for a species variable. For all other variables
+         * (parameters and compartments) it is the value of the entity.
+         */
+        public double[][] getTimeSeriesData()
+        {
+            CTimeSeries timeSeries=this.getTimeSeries();
+            int iMax=(int)timeSeries.getNumSteps();
+            int jMax=(int)timeSeries.getNumVariables();
+            double[][] data=new double[iMax][jMax];
+            int i,j;
+            for(i=0;i<iMax;i++)
+            {
+                for(j=0;j<jMax;j++)
+                {
+                    data[i][j]=timeSeries.getData(i,j);
+                }
+            }
+            return data;
+        }
 	
 	/**
 	 * @param args
@@ -317,20 +373,40 @@ public class TrajectoryTaskWidget extends TaskWidget  implements FocusListener{
 	            {
 	            	JFrame mainDialog=new JFrame();
 	            	mainDialog.setTitle("Task Dialog");
-                                TrajectoryTaskWidget widget=new TrajectoryTaskWidget(true);
-                                boolean result=result=widget.loadModel("good_model.xml");
-                                if(result==true)
-                                {
-                                  System.out.println("Model loaded sucessfully.");
-                                }
-                                else
-                                {
-                                    System.exit(1);
-                                }
-	        		mainDialog.getContentPane().add(widget);
-	        	 	mainDialog.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	        		mainDialog.pack();
-	        		mainDialog.setVisible(true);
+                        TrajectoryTaskWidget widget=new TrajectoryTaskWidget(true);
+                        
+                        class SimpleTaskRunEventListener implements TaskRunEventListener
+                        {
+                           public void taskRun(TaskRunEvent event)
+                           {
+                             System.out.println("The task has been run.");
+                             if(event.getSource() instanceof CTrajectoryTask)
+                             {
+                               CTrajectoryTask task=(CTrajectoryTask)event.getSource();
+                               System.out.println("Number of time steps: " + task.getTimeSeries().getNumSteps()); 
+                               System.out.println("Number of variables: " + task.getTimeSeries().getNumVariables()); 
+                             }
+                           }
+                        }
+
+                        widget.addTaskRunEventListener(new SimpleTaskRunEventListener());
+
+
+                        boolean result=result=widget.loadModel("good_model.xml");
+                        if(result==true)
+                        {
+                          widget.displayErrorMessages(true);
+                          System.out.println("Model loaded sucessfully.");
+                        }
+                        else
+                        {
+                            widget.displayErrorMessages(true);
+                            System.exit(1);
+                        }
+	        	mainDialog.getContentPane().add(widget);
+	        	mainDialog.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	        	mainDialog.pack();
+	        	mainDialog.setVisible(true);
 	            }
 	          }
 	        );	

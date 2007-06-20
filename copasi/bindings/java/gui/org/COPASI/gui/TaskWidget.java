@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/gui/org/COPASI/gui/TaskWidget.java,v $ 
-//   $Revision: 1.8 $ 
+//   $Revision: 1.9 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2007/06/20 10:23:45 $ 
+//   $Date: 2007/06/20 14:01:24 $ 
 // End CVS Header 
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -20,6 +20,7 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.BoxLayout;
@@ -42,6 +43,9 @@ import java.awt.Container;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import java.util.Vector;
+import java.util.Enumeration;
 
 import org.COPASI.CCopasiDataModel;
 import org.COPASI.CCopasiObject;
@@ -478,6 +482,7 @@ public class TaskWidget extends JPanel implements ActionListener, TableModelList
 	protected CCopasiTask mTask;
 	protected boolean mDefaultReportCreated;
         protected boolean mOverwrite;
+        protected Vector<TaskRunEventListener> mListeners;
 	
 	public TaskWidget(String title,boolean enableReportButton)
 	{
@@ -543,6 +548,8 @@ public class TaskWidget extends JPanel implements ActionListener, TableModelList
                     String message=ex.getMessage();
                     JOptionPane.showMessageDialog(null, message , "Error", JOptionPane.ERROR_MESSAGE);
                 }
+                TaskRunEvent event=new TaskRunEvent(this.mTask);
+                this.processTaskRunEvent(event);
             }
             else if(e.getSource()==this.mMethodWidget.mMethodDropdown)
             {
@@ -726,7 +733,7 @@ public class TaskWidget extends JPanel implements ActionListener, TableModelList
              return false;
            }
            // check if the file could not be read at all
-           if(CCopasiMessage.checkForMessage(6750)==true)
+           if(CCopasiMessage.getHighestSeverity()==CCopasiMessage.ERROR || CCopasiMessage.getHighestSeverity()==CCopasiMessage.EXCEPTION)
            {
               return false;
            }
@@ -803,16 +810,98 @@ public class TaskWidget extends JPanel implements ActionListener, TableModelList
 		}
 	}
 
+        /**
+         * Returns true if the target for the report associated with the task
+         * is to be overwritten when the report is created.
+         */
         public boolean getOverwriteTarget()
         {
             return this.mOverwrite;
         }
 	
+        /**
+         * Sets if the target for the report associated with the task
+         * is to be overwritten when the report is created.
+         * If true, the file associated with the report is overwritten,
+         *  otherwise the output is appended to the end of the file.
+         * The default behavior is to append the data to the end.
+         */
         public void setOverwriteTarget(boolean overwrite)
         {
             this.mOverwrite=overwrite;
         }
-	
+
+        /**
+         * Returns a string that contains all COPASI error messages from
+         * the error message deque.
+         */
+        public String getErrorMessages(boolean cronological)
+        {
+            return CCopasiMessage.getAllMessageText(cronological);
+        }
+
+
+
+        /**
+         * If there are error messages in the deque, this method will display
+         * them in a dialog.
+         */
+        public void displayErrorMessages(boolean cronological)
+        {
+           if(CCopasiMessage.peekFirstMessage().getNumber()!=6401 /* CCopasiMessage + 1 */)
+           {
+             if(CCopasiMessage.getHighestSeverity()==CCopasiMessage.ERROR || CCopasiMessage.getHighestSeverity()==CCopasiMessage.EXCEPTION)
+             {
+                JOptionPane.showMessageDialog(null, this.getErrorMessages(cronological),"ERROR", JOptionPane.ERROR_MESSAGE);
+             }
+             else
+             {
+              JOptionPane.showMessageDialog(null, this.getErrorMessages(cronological),"WARNING", JOptionPane.WARNING_MESSAGE);
+             }
+           }
+        }
+
+        /**
+         * Adds a TaskRunEventListener to the registration list.
+         */
+        public void addTaskRunEventListener(TaskRunEventListener listener)
+        {
+            if(mListeners==null)
+            {
+                mListeners=new Vector<TaskRunEventListener>();
+            }
+            mListeners.addElement(listener);
+        }
+
+        /**
+         * Removes a registered TaskRunEventListener from the registration
+         * list.
+         */
+        public void removeTaskRunEventListener(TaskRunEventListener listener)
+        {
+            if(mListeners!=null)
+            {
+                mListeners.removeElement(listener);
+            }
+        }
+
+        /**
+         * This method informs all registered TaskRunEventListeners about a
+         * TaskRunEvent that has occured.
+         */
+        protected void processTaskRunEvent(TaskRunEvent event)
+        {
+            Enumeration enu;
+            TaskRunEventListener listener;
+            enu=mListeners.elements();
+            while(enu.hasMoreElements())
+            {
+              listener=(TaskRunEventListener)enu.nextElement();
+              listener.taskRun(event);
+            }
+        }
+
+
 	public static void main(String[] args)
 	{	
         javax.swing.SwingUtilities.invokeLater
