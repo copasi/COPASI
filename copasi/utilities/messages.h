@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.92 $
+//   $Revision: 1.93 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/05/26 13:38:49 $
+//   $Date: 2007/06/20 10:21:15 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -175,6 +175,17 @@ const MESSAGES Messages[] =
     {MCSBML + 37, "SBML (37): The id '%s' is used in the expression of a rule, although it is later defined by a rule itself."},
     {MCSBML + 38, "SBML (38): Only references to compartments, species, global parameters or the time are allowed in SBML rule expressions."},
     {MCSBML + 39, "SBML (39): Object with id '%s' referenced in kinetic law, but no object with that id found in model."},
+    {MCSBML + 40, "SBML (40): LIBSBML %s %d at line %d column %d: %s."},
+    {MCSBML + 41, "SBML (41): No initial value set for species \"%s\"."},
+    {MCSBML + 42, "SBML (42): No initial value set for local parameter \"%s\"."},
+    {MCSBML + 43, "SBML (43): No initial value set for global parameter \"%s\"."},
+    {MCSBML + 44, "SBML (44): Reaction \"%s\" sets the substance unit of the kinetic law. COPASI can not handle this yet."},
+    {MCSBML + 45, "SBML (45): Compartment \"%s\" does not set the initial volume. Volume has been set to 1.0."},
+    {MCSBML + 46, "SBML (46): COPASI has changed the following function definitions to take the time as an additional argument instead of the function being directly or indirectly dependent on time:\n \"%s\" ."},
+    {MCSBML + 47, "SBML (47): COPASI found a call to the function \"%s\" which has not been defined."},
+    {MCSBML + 48, "SBML (48): Initial assignments ignored because they are not supported yet."},
+    {MCSBML + 49, "SBML (49): Constraints ignored because they are not supported yet."},
+    {MCSBML + 50, "SBML (50): Could not open file \"%s\"."},
 
     {MCTrajectoryProblem + 1, "CTrajectoryProblem (1): Invalid step size = '%f'."},
     {MCTrajectoryProblem + 2, "CTrajectoryProblem (2): The step number '%f' "
