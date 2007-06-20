@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.167 $
+//   $Revision: 1.168 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/05/26 07:27:16 $
+//   $Date: 2007/06/20 10:21:42 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1294,7 +1294,8 @@ CModel* SBMLImporter::readSBML(std::string filename,
   std::ifstream file(utf8ToLocale(filename).c_str());
   if (!file)
     {
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 31, filename.c_str());
+      CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 50, filename.c_str());
+      return NULL;
     }
   std::ostringstream stringStream;
   char c;
