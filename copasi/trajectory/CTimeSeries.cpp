@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTimeSeries.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/05/10 15:52:50 $
+//   $Author: gauges $
+//   $Date: 2007/06/20 15:38:02 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,6 +16,14 @@
 #include "model/CMetabNameInterface.h"
 #include "model/CModel.h"
 #include "utilities/CSort.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CKeyFactory.h"
+
+#include "sbml/SBase.h"
+#include "sbml/Compartment.h"
+#include "sbml/Species.h"
+#include "sbml/Parameter.h"
+#include "sbml/Model.h"
 
 CTimeSeries::CTimeSeries()
     : mIt(begin()),
@@ -151,6 +159,62 @@ const std::string & CTimeSeries::getKey(unsigned C_INT32 var) const
       return mKeys[mPivot[var]];
     else
       return mDummyString;
+  }
+
+std::string CTimeSeries::getSBMLId(unsigned C_INT32 var) const
+  {
+    std::string key = this->getKey(var);
+    std::string result("");
+    if (key != this->mDummyString)
+      {
+        CCopasiObject* pObject = GlobalKeys.get(key);
+        if (pObject != NULL)
+          {
+            std::map<CCopasiObject*, SBase*>::iterator pos = CCopasiDataModel::Global->getCopasi2SBMLMap().find(pObject);
+            if (pos != CCopasiDataModel::Global->getCopasi2SBMLMap().end())
+              {
+                SBase* pSBMLObject = pos->second;
+                Compartment* pSBMLCompartment = NULL;
+                Species* pSBMLSpecies = NULL;
+                Parameter* pSBMLParameter = NULL;
+                Model* pSBMLModel = NULL;
+                switch (pSBMLObject->getTypeCode())
+                  {
+                  case SBML_COMPARTMENT:
+                    pSBMLCompartment = dynamic_cast<Compartment*>(pSBMLObject);
+                    if (pSBMLCompartment && pSBMLCompartment->isSetId())
+                      {
+                        result = pSBMLCompartment->getId();
+                      }
+                    break;
+                  case SBML_SPECIES:
+                    pSBMLSpecies = dynamic_cast<Species*>(pSBMLObject);
+                    if (pSBMLSpecies && pSBMLSpecies->isSetId())
+                      {
+                        result = pSBMLSpecies->getId();
+                      }
+                    break;
+                  case SBML_PARAMETER:
+                    pSBMLParameter = dynamic_cast<Parameter*>(pSBMLObject);
+                    if (pSBMLParameter && pSBMLParameter->isSetId())
+                      {
+                        result = pSBMLParameter->getId();
+                      }
+                    break;
+                  case SBML_MODEL:
+                    pSBMLModel = dynamic_cast<Model*>(pSBMLObject);
+                    if (pSBMLModel && pSBMLModel->isSetId())
+                      {
+                        result = pSBMLModel->getId();
+                      }
+                    break;
+                  default:
+                    break;
+                  }
+              }
+          }
+      }
+    return result;
   }
 
 int CTimeSeries::save(const std::string& fileName, bool writeParticleNumbers, const std::string& separator) const
