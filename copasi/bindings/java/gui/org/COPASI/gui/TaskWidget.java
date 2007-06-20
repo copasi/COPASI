@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/gui/org/COPASI/gui/TaskWidget.java,v $ 
-//   $Revision: 1.7 $ 
+//   $Revision: 1.8 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2007/06/19 15:49:36 $ 
+//   $Date: 2007/06/20 10:23:45 $ 
 // End CVS Header 
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -52,6 +52,7 @@ import org.COPASI.CRegisteredObjectName;
 import org.COPASI.CReport;
 import org.COPASI.CReportDefinition;
 import org.COPASI.COutputAssistant;
+import org.COPASI.CCopasiMessage;
 
 /**
  * @author gauges
@@ -529,56 +530,56 @@ public class TaskWidget extends JPanel implements ActionListener, TableModelList
 	 */
 	public void actionPerformed(ActionEvent e)
 	{
-		if(e.getSource()==this.mButtonWidget.mRunButton)
-		{
-    	//System.out.println("Saving results to \""+this.mTask.getReport().getTarget()+"\".");
-		  try
-      {
-        this.mTask.process(true);	
-		  }
-      catch(java.lang.Exception ex)
-      {
-        // show an error dialog.
-				String message=ex.getMessage();
-			  JOptionPane.showMessageDialog(null, message , "Error", JOptionPane.ERROR_MESSAGE);
-      }
-    }
-		else if(e.getSource()==this.mMethodWidget.mMethodDropdown)
-		{
-			String s=(String)((JComboBox)e.getSource()).getSelectedItem();
-			if(s == null){
-				return;
-			}
-			int type=CCopasiMethod.TypeNameToEnum(s);
-			this.mMethodWidget.mParameterTable.getModel().removeTableModelListener(this);
-			this.mMethodWidget.mMethodDropdown.removeActionListener(this);
-			this.mTask.setMethodType(type);
-			this.mMethodWidget.fillTable(this.mTask.getMethod());
-			this.mMethodWidget.mParameterTable.getModel().addTableModelListener(this);
-			this.mMethodWidget.mMethodDropdown.addActionListener(this);
-		}
-		else if(e.getSource()==this.mButtonWidget.mReportButton)
-		{
-			this.createDefaultReportDefinition();
-			if(this.mTask.getReport().getTarget().equals(""))
-			{
-				// ask for a filename
-				JFileChooser chooser=new JFileChooser();
-				int returnVal = chooser.showSaveDialog(this);
-			    if(returnVal == JFileChooser.APPROVE_OPTION) 
-			    {
-			       String fileName=chooser.getSelectedFile().getAbsolutePath();
-			       if(!fileName.equals(""))
-			       {
-			    	   this.mTask.getReport().setTarget(fileName);
-			       }
-			    }
-			}
- 			this.mButtonWidget.mReportButton.setEnabled(false);
-		}
-		
-	}
-	
+            if(e.getSource()==this.mButtonWidget.mRunButton)
+            {
+                //System.out.println("Saving results to \""+this.mTask.getReport().getTarget()+"\".");
+                try
+                {
+                    this.mTask.process(true);	
+                }
+                catch(java.lang.Exception ex)
+                {
+                    // show an error dialog.
+                    String message=ex.getMessage();
+                    JOptionPane.showMessageDialog(null, message , "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+            else if(e.getSource()==this.mMethodWidget.mMethodDropdown)
+            {
+                String s=(String)((JComboBox)e.getSource()).getSelectedItem();
+                if(s == null){
+                    return;
+                }
+                int type=CCopasiMethod.TypeNameToEnum(s);
+                this.mMethodWidget.mParameterTable.getModel().removeTableModelListener(this);
+                this.mMethodWidget.mMethodDropdown.removeActionListener(this);
+                this.mTask.setMethodType(type);
+                this.mMethodWidget.fillTable(this.mTask.getMethod());
+                this.mMethodWidget.mParameterTable.getModel().addTableModelListener(this);
+                this.mMethodWidget.mMethodDropdown.addActionListener(this);
+            }
+            else if(e.getSource()==this.mButtonWidget.mReportButton)
+            {
+                this.createDefaultReportDefinition();
+                if(this.mTask.getReport().getTarget().equals(""))
+                {
+                    // ask for a filename
+                    JFileChooser chooser=new JFileChooser();
+                    int returnVal = chooser.showSaveDialog(this);
+                    if(returnVal == JFileChooser.APPROVE_OPTION) 
+                    {
+                        String fileName=chooser.getSelectedFile().getAbsolutePath();
+                        if(!fileName.equals(""))
+                        {
+                            this.mTask.getReport().setTarget(fileName);
+                        }
+                    }
+                }
+                this.mButtonWidget.mReportButton.setEnabled(false);
+            }
+
+        }
+
 	/**
 	 * Handles events that come from changes in the method parameter table.
 	 */
@@ -708,14 +709,32 @@ public class TaskWidget extends JPanel implements ActionListener, TableModelList
 	 */
 	public boolean loadModel(String fileName)
 	{
-		boolean result=CCopasiDataModel.getGlobal().importSBML(fileName);
-		if(result==false)
-		{
-			this.resetTask();
-                }
-                this.mButtonWidget.mReportButton.setEnabled(result);
-                this.mButtonWidget.mRunButton.setEnabled(result);
-		return result;
+           CCopasiMessage.clearDeque();
+           try
+           {
+             CCopasiDataModel.getGlobal().importSBML(fileName);
+           }
+           catch(java.lang.Exception e)
+           {
+             // show an error dialog
+             if(CCopasiDataModel.getGlobal().getModel()==null)
+             {
+                 this.resetTask();
+                 this.mButtonWidget.mReportButton.setEnabled(false);
+                 this.mButtonWidget.mRunButton.setEnabled(false);
+             }
+             return false;
+           }
+           // check if the file could not be read at all
+           if(CCopasiMessage.checkForMessage(6750)==true)
+           {
+              return false;
+           }
+           // the model has been loaded
+           this.resetTask();
+           this.mButtonWidget.mReportButton.setEnabled(true);
+           this.mButtonWidget.mRunButton.setEnabled(true);
+	   return true;
 	}
 
 	/**
@@ -725,6 +744,7 @@ public class TaskWidget extends JPanel implements ActionListener, TableModelList
 	protected void resetTask()
 	{
           this.mDefaultReportCreated=false;
+          this.mButtonWidget.mReportButton.setEnabled(false);
 	}
 	
 	

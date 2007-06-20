@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/java.i,v $ 
-//   $Revision: 1.12 $ 
+//   $Revision: 1.13 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2007/02/12 15:26:45 $ 
+//   $Date: 2007/06/20 10:23:45 $ 
 // End CVS Header 
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -373,6 +373,104 @@ void initCopasi();
      return $null;
    }
 }
+
+
+%javaexception("java.lang.Exception") CCopasiDataModel::importSBML {
+   try 
+   {
+     $action
+   } 
+   catch (std::exception &e) 
+   {
+     jclass clazz = jenv->FindClass("java/lang/Exception");
+     jenv->ThrowNew(clazz, e.what());
+     return $null;
+   }
+   catch(CCopasiException& e)
+   {
+     jclass clazz = jenv->FindClass("java/lang/Exception");
+     jenv->ThrowNew(clazz, e.getMessage().getText().c_str());
+     return $null;
+   }
+}
+
+
+%javaexception("java.lang.Exception") CCopasiDataModel::newModel {
+   try 
+   {
+     $action
+   } 
+   catch (std::exception &e) 
+   {
+     jclass clazz = jenv->FindClass("java/lang/Exception");
+     jenv->ThrowNew(clazz, e.what());
+     return $null;
+   }
+   catch(CCopasiException& e)
+   {
+     jclass clazz = jenv->FindClass("java/lang/Exception");
+     jenv->ThrowNew(clazz, e.getMessage().getText().c_str());
+     return $null;
+   }
+}
+
+%javaexception("java.lang.Exception") CCopasiDataModel::importSBMLFromString {
+   try 
+   {
+     $action
+   } 
+   catch (std::exception &e) 
+   {
+     jclass clazz = jenv->FindClass("java/lang/Exception");
+     jenv->ThrowNew(clazz, e.what());
+     return $null;
+   }
+   catch(CCopasiException& e)
+   {
+     jclass clazz = jenv->FindClass("java/lang/Exception");
+     jenv->ThrowNew(clazz, e.getMessage().getText().c_str());
+     return $null;
+   }
+}
+
+%javaexception("java.lang.Exception") CCopasiDataModel::exportSBMLToString {
+   try 
+   {
+     $action
+   } 
+   catch (std::exception &e) 
+   {
+     jclass clazz = jenv->FindClass("java/lang/Exception");
+     jenv->ThrowNew(clazz, e.what());
+     return $null;
+   }
+   catch(CCopasiException& e)
+   {
+     jclass clazz = jenv->FindClass("java/lang/Exception");
+     jenv->ThrowNew(clazz, e.getMessage().getText().c_str());
+     return $null;
+   }
+}
+
+%javaexception("java.lang.Exception") CCopasiDataModel::exportSBML {
+   try 
+   {
+     $action
+   } 
+   catch (std::exception &e) 
+   {
+     jclass clazz = jenv->FindClass("java/lang/Exception");
+     jenv->ThrowNew(clazz, e.what());
+     return $null;
+   }
+   catch(CCopasiException& e)
+   {
+     jclass clazz = jenv->FindClass("java/lang/Exception");
+     jenv->ThrowNew(clazz, e.getMessage().getText().c_str());
+     return $null;
+   }
+}
+
 
 %include "../swig/copasi.i"
 

@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/gui/org/COPASI/gui/TrajectoryTaskWidget.java,v $ 
-//   $Revision: 1.4 $ 
+//   $Revision: 1.5 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2007/06/19 15:49:36 $ 
+//   $Date: 2007/06/20 10:23:45 $ 
 // End CVS Header 
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -318,15 +318,15 @@ public class TrajectoryTaskWidget extends TaskWidget  implements FocusListener{
 	            	JFrame mainDialog=new JFrame();
 	            	mainDialog.setTitle("Task Dialog");
                                 TrajectoryTaskWidget widget=new TrajectoryTaskWidget(true);
-                                boolean result=false;
-                                try{
-                                  result=widget.loadModel("bad_model.xml");
-                                }
-                                catch(Exception e)
+                                boolean result=result=widget.loadModel("good_model.xml");
+                                if(result==true)
                                 {
-                                  System.out.println(e.getMessage());
+                                  System.out.println("Model loaded sucessfully.");
                                 }
-                                System.out.println("Model loaded: " + new Boolean(result).toString());
+                                else
+                                {
+                                    System.exit(1);
+                                }
 	        		mainDialog.getContentPane().add(widget);
 	        	 	mainDialog.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	        		mainDialog.pack();
