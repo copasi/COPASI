@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/gui/org/COPASI/gui/TrajectoryTaskWidget.java,v $ 
-//   $Revision: 1.7 $ 
+//   $Revision: 1.8 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2007/06/20 14:10:21 $ 
+//   $Date: 2007/06/20 15:39:26 $ 
 // End CVS Header 
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -20,6 +20,10 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+import javax.swing.JTable;
+import javax.swing.JScrollPane;
+
+import java.util.Vector;
 
 import java.awt.Insets;
 import java.awt.GridBagLayout;
@@ -334,8 +338,49 @@ public class TrajectoryTaskWidget extends TaskWidget  implements FocusListener{
                              }
                            }
                         }
-
+                        
                         widget.addTaskRunEventListener(new SimpleTaskRunEventListener());
+
+                        class ElaborateTaskRunEventListener implements TaskRunEventListener
+                        {
+                           public void taskRun(TaskRunEvent event)
+                           {
+                             System.out.println("The task has been run.");
+                             if(event.getSource() instanceof CTrajectoryTask)
+                             {
+                               CTrajectoryTask task=(CTrajectoryTask)event.getSource();
+                               CTimeSeries timeSeries=task.getTimeSeries();
+                               JFrame mainFrame=new JFrame("Time Course Result");
+                               long i,j;
+                               long iMax=timeSeries.getNumSteps();
+                               long jMax=timeSeries.getNumVariables();
+                               Vector<String> columnNames=new Vector<String>();
+                               Vector<Vector<Double>> data=new Vector<Vector<Double>>();
+                               for(j=0;j<jMax;j++)
+                               {
+                                 columnNames.addElement(timeSeries.getSBMLId(j));
+                               }
+                               for(i=0;i<iMax;i++)
+                               {
+                                  Vector<Double> tmp=new Vector<Double>();
+                                  for(j=0;j<jMax;j++)
+                                  {
+                                    tmp.addElement(new Double(timeSeries.getConcentrationData(i,j)));   
+                                  }
+                                  data.addElement(tmp);
+                               }
+                               JTable table=new JTable(data,columnNames);
+
+                               JScrollPane scrollPane = new JScrollPane(table);
+
+                               mainFrame.getContentPane().add(scrollPane);
+                               mainFrame.pack();
+                               mainFrame.setVisible(true);
+                             }
+                           }
+                        }
+
+                        widget.addTaskRunEventListener(new ElaborateTaskRunEventListener());
 
 
                         boolean result=result=widget.loadModel("good_model.xml");
