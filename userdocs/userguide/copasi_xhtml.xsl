@@ -9,7 +9,7 @@
 <xsl:import href="/sw/share/xml/xsl/docbook-xsl/xhtml/profile-docbook.xsl"/>
 -->
 
-<xsl:import href="/usr/share/docbook-xsl/xhtml/chunk.xsl"/>
+<xsl:import href="/usr/share/sgml/docbook/xsl-stylesheets-1.69.1-5/xhtml/chunk.xsl"/>
 
 <xsl:param name="html.ext" select="'.xhtml'"/>
 <!-- <xsl:param name="use.extensions" select="1" />
