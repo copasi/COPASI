@@ -2,7 +2,7 @@
 # od dblatex:
 
 # The dblatex installation directory
-DBLATEX_PATH=/usr/local/dblatex
+DBLATEX_PATH=/home/usr
 
 # These should be correct after DBLATEX_PATH
 DBLATEX=$(DBLATEX_PATH)/bin/dblatex
