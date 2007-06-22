@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/java.pro,v $ 
-#   $Revision: 1.19 $ 
+#   $Revision: 1.20 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2007/06/19 15:49:36 $ 
+#   $Date: 2007/06/22 08:17:12 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -53,9 +53,12 @@ contains(BUILD_OS, Darwin) {
     LIBS += -framework Quicktime
     LIBS += -framework Carbon
     LIBS += -framework Accelerate
-   
+
+    QMAKE_LFLAGS_SHLIB += -unexported_symbols_list unexported_symbols.list
+    
     # make a hard link from the generated dylib file to a file with the ending
     # jnilib
+    QMAKE_PRE_LINK = nm -g $$SBML_PATH/lib/libsbml.a | grep "^[0-9]" | cut -d" " -f3  > unexported_symbols.list  
     QMAKE_POST_LINK = ln -f libCopasiJava.1.0.0.dylib libCopasiJava.jnilib 
 
   !isEmpty(JAVA_HOME){
