@@ -1,10 +1,10 @@
 <!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQPreferenceDialog.ui,v $ </comment>
-<comment>   $Revision: 1.1 $ </comment>
+<comment>   $Revision: 1.2 $ </comment>
 <comment>   $Name:  $ </comment>
 <comment>   $Author: aekamal $ </comment>
-<comment>   $Date: 2007/06/19 16:35:28 $ </comment>
+<comment>   $Date: 2007/06/23 16:29:21 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -12,6 +12,7 @@
 <comment> All rights reserved. </comment>
 
 <class>CQPreferenceDialog</class>
+<comment> All rights reserved. </comment>
 <widget class="QDialog">
     <property name="name">
         <cstring>CQPreferenceDialog</cstring>
@@ -30,63 +31,6 @@
     <property name="sizeGripEnabled">
         <bool>true</bool>
     </property>
-    <widget class="QListView">
-        <column>
-            <property name="text">
-                <string>Name                                       </string>
-            </property>
-            <property name="clickable">
-                <bool>true</bool>
-            </property>
-            <property name="resizable">
-                <bool>true</bool>
-            </property>
-        </column>
-        <column>
-            <property name="text">
-                <string>Value          </string>
-            </property>
-            <property name="clickable">
-                <bool>true</bool>
-            </property>
-            <property name="resizable">
-                <bool>true</bool>
-            </property>
-        </column>
-    <item>
-        <property name="text">
-            <string>Max Last Visited Files</string>
-        </property>
-        <property name="text">
-            <string></string>
-        </property>
-        <property name="pixmap">
-            <pixmap></pixmap>
-        </property>
-        <property name="pixmap">
-            <pixmap></pixmap>
-        </property>
-    </item>
-        <property name="name">
-            <cstring>mpListView</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>11</x>
-                <y>11</y>
-                <width>238</width>
-                <height>170</height>
-            </rect>
-        </property>
-        <property name="sizePolicy">
-            <sizepolicy>
-                <hsizetype>7</hsizetype>
-                <vsizetype>7</vsizetype>
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-            </sizepolicy>
-        </property>
-    </widget>
     <widget class="QLayoutWidget">
         <property name="name">
             <cstring>Layout1</cstring>
@@ -142,6 +86,55 @@
             </widget>
         </hbox>
     </widget>
+    <widget class="QListView">
+        <column>
+            <property name="text">
+                <string>Name</string>
+            </property>
+            <property name="clickable">
+                <bool>true</bool>
+            </property>
+            <property name="resizable">
+                <bool>true</bool>
+            </property>
+        </column>
+        <column>
+            <property name="text">
+                <string>Value</string>
+            </property>
+            <property name="clickable">
+                <bool>true</bool>
+            </property>
+            <property name="resizable">
+                <bool>true</bool>
+            </property>
+        </column>
+        <property name="name">
+            <cstring>mpListView</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>10</x>
+                <y>10</y>
+                <width>238</width>
+                <height>170</height>
+            </rect>
+        </property>
+        <property name="sizePolicy">
+            <sizepolicy>
+                <hsizetype>7</hsizetype>
+                <vsizetype>7</vsizetype>
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+            </sizepolicy>
+        </property>
+        <property name="allColumnsShowFocus">
+            <bool>true</bool>
+        </property>
+        <property name="defaultRenameAction">
+            <enum>Accept</enum>
+        </property>
+    </widget>
 </widget>
 <connections>
     <connection>
@@ -156,6 +149,18 @@
         <receiver>CQPreferenceDialog</receiver>
         <slot>slotBtnCancel()</slot>
     </connection>
+    <connection>
+        <sender>mpListView</sender>
+        <signal>clicked(QListViewItem*,const QPoint&amp;,int)</signal>
+        <receiver>CQPreferenceDialog</receiver>
+        <slot>editItem(QListViewItem*,const QPoint&amp;,int)</slot>
+    </connection>
+    <connection>
+        <sender>mpListView</sender>
+        <signal>returnPressed(QListViewItem*)</signal>
+        <receiver>CQPreferenceDialog</receiver>
+        <slot>editItem(QListViewItem*)</slot>
+    </connection>
 </connections>
 <tabstops>
     <tabstop>mpListView</tabstop>
@@ -166,7 +171,8 @@
     <slot access="protected">slotBtnOk()</slot>
     <slot access="protected">slotBtnCancel()</slot>
     <slot access="private">init()</slot>
-    <slot access="private">destroy()</slot>
+    <slot access="protected">editItem(QListViewItem*,const QPoint&amp;,int)</slot>
+    <slot access="protected">editItem(QListViewItem*)</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

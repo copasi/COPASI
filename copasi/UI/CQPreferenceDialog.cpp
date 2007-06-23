@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQPreferenceDialog.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2007/06/19 16:35:28 $
+//   $Date: 2007/06/23 16:29:21 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,8 +13,8 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQPreferenceDialog.ui'
  **
- ** Created: Wed Jun 13 16:56:18 2007
- **      by: The User Interface Compiler ($Id: CQPreferenceDialog.cpp,v 1.1 2007/06/19 16:35:28 aekamal Exp $)
+ ** Created: Sat Jun 23 12:19:37 2007
+ **      by: The User Interface Compiler ($Id: CQPreferenceDialog.cpp,v 1.2 2007/06/23 16:29:21 aekamal Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -22,15 +22,12 @@
 #include "CQPreferenceDialog.h"
 
 #include <qvariant.h>
+#include <qpushbutton.h>
 #include <qheader.h>
 #include <qlistview.h>
-#include <qpushbutton.h>
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
-#include <qimage.h>
-#include <qpixmap.h>
-
 #include "CQPreferenceDialog.ui.h"
 
 /*
@@ -47,12 +44,6 @@ CQPreferenceDialog::CQPreferenceDialog(QWidget* parent, const char* name, bool m
     setName("CQPreferenceDialog");
   setSizeGripEnabled(TRUE);
 
-  mpListView = new QListView(this, "mpListView");
-  mpListView->addColumn(tr("Name                                       "));
-  mpListView->addColumn(tr("Value          "));
-  mpListView->setGeometry(QRect(11, 11, 238, 170));
-  mpListView->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)7, (QSizePolicy::SizeType)7, 0, 0, mpListView->sizePolicy().hasHeightForWidth()));
-
   QWidget* privateLayoutWidget = new QWidget(this, "Layout1");
   privateLayoutWidget->setGeometry(QRect(10, 190, 240, 28));
   Layout1 = new QHBoxLayout(privateLayoutWidget, 0, 6, "Layout1");
@@ -65,6 +56,14 @@ CQPreferenceDialog::CQPreferenceDialog(QWidget* parent, const char* name, bool m
   mpBtnCancel = new QPushButton(privateLayoutWidget, "mpBtnCancel");
   mpBtnCancel->setAutoDefault(TRUE);
   Layout1->addWidget(mpBtnCancel);
+
+  mpListView = new QListView(this, "mpListView");
+  mpListView->addColumn(tr("Name"));
+  mpListView->addColumn(tr("Value"));
+  mpListView->setGeometry(QRect(10, 10, 238, 170));
+  mpListView->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)7, (QSizePolicy::SizeType)7, 0, 0, mpListView->sizePolicy().hasHeightForWidth()));
+  mpListView->setAllColumnsShowFocus(TRUE);
+  mpListView->setDefaultRenameAction(QListView::Accept);
   languageChange();
   resize(QSize(261, 225).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
@@ -72,6 +71,8 @@ CQPreferenceDialog::CQPreferenceDialog(QWidget* parent, const char* name, bool m
   // signals and slots connections
   connect(mpBtnOk, SIGNAL(clicked()), this, SLOT(slotBtnOk()));
   connect(mpBtnCancel, SIGNAL(clicked()), this, SLOT(slotBtnCancel()));
+  connect(mpListView, SIGNAL(clicked(QListViewItem*, const QPoint&, int)), this, SLOT(editItem(QListViewItem*, const QPoint&, int)));
+  connect(mpListView, SIGNAL(returnPressed(QListViewItem*)), this, SLOT(editItem(QListViewItem*)));
 
   // tab order
   setTabOrder(mpListView, mpBtnOk);
@@ -84,7 +85,6 @@ CQPreferenceDialog::CQPreferenceDialog(QWidget* parent, const char* name, bool m
  */
 CQPreferenceDialog::~CQPreferenceDialog()
 {
-  destroy();
   // no need to delete child widgets, Qt does it all for us
 }
 
@@ -95,14 +95,10 @@ CQPreferenceDialog::~CQPreferenceDialog()
 void CQPreferenceDialog::languageChange()
 {
   setCaption(tr("Preferences"));
-  mpListView->header()->setLabel(0, tr("Name                                       "));
-  mpListView->header()->setLabel(1, tr("Value          "));
-  mpListView->clear();
-  QListViewItem * item = new QListViewItem(mpListView, 0);
-  item->setText(0, tr("Max Last Visited Files"));
-
   mpBtnOk->setText(tr("&OK"));
   mpBtnOk->setAccel(QKeySequence(QString::null));
   mpBtnCancel->setText(tr("&Cancel"));
   mpBtnCancel->setAccel(QKeySequence(QString::null));
+  mpListView->header()->setLabel(0, tr("Name"));
+  mpListView->header()->setLabel(1, tr("Value"));
 }

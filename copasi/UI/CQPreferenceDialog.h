@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQPreferenceDialog.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2007/06/19 16:35:28 $
+//   $Date: 2007/06/23 16:29:21 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,8 +13,8 @@
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQPreferenceDialog.ui'
  **
- ** Created: Wed Jun 13 16:56:15 2007
- **      by: The User Interface Compiler ($Id: CQPreferenceDialog.h,v 1.1 2007/06/19 16:35:28 aekamal Exp $)
+ ** Created: Sat Jun 23 12:19:36 2007
+ **      by: The User Interface Compiler ($Id: CQPreferenceDialog.h,v 1.2 2007/06/23 16:29:21 aekamal Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -29,9 +29,9 @@ class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
 class QSpacerItem;
+class QPushButton;
 class QListView;
 class QListViewItem;
-class QPushButton;
 
 class CQPreferenceDialog : public QDialog
   {
@@ -41,9 +41,9 @@ class CQPreferenceDialog : public QDialog
     CQPreferenceDialog(QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0);
     ~CQPreferenceDialog();
 
-    QListView* mpListView;
     QPushButton* mpBtnOk;
     QPushButton* mpBtnCancel;
+    QListView* mpListView;
 
   protected:
     QHBoxLayout* Layout1;
@@ -53,10 +53,11 @@ class CQPreferenceDialog : public QDialog
 
     virtual void slotBtnOk();
     virtual void slotBtnCancel();
+    virtual void editItem(QListViewItem*, const QPoint&, int);
+    virtual void editItem(QListViewItem*);
 
   private slots:
     virtual void init();
-    virtual void destroy();
   };
 
 #endif // CQPREFERENCEDIALOG_H
