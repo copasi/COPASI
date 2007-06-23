@@ -1,6 +1,18 @@
+# Begin CVS Header 
+#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/runTests.py,v $ 
+#   $Revision: 1.8 $ 
+#   $Name:  $ 
+#   $Author: gauges $ 
+#   $Date: 2007/06/23 12:45:47 $ 
+# End CVS Header 
+
+# Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc. and EML Research, gGmbH. 
+# All rights reserved. 
+
 #!/usr/bin/python
 
-# Copyright Â© 2005 by Pedro Mendes, Virginia Tech Intellectual
+# Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
 # Properties, Inc. and EML Research, gGmbH.
 # All rights reserved.
 
@@ -8,6 +20,7 @@
 
 import unittest
 
+import Test_CCopasiMessage
 import Test_CChemEq
 import Test_CChemEqElement
 import Test_CCompartment
@@ -48,6 +61,7 @@ import Test_CVersion
 
 suites=[
           Test_CVersion.suite()
+         ,Test_CCopasiMessage.suite()
          ,Test_CState.suite()
          ,Test_CTimeSeries.suite()
          ,Test_CCopasiObject.suite()
@@ -55,8 +69,8 @@ suites=[
          ,Test_CMoiety.suite()
          ,Test_CModelValue.suite()
          ,Test_CMetab.suite()
-	       ,Test_CChemEq.suite()
-	       ,Test_CChemEqElement.suite()
+	 ,Test_CChemEq.suite()
+	 ,Test_CChemEqElement.suite()
          ,Test_CCopasiVector.suite()
          ,Test_CMatrix.suite()
          ,Test_CCopasiStaticString.suite()
@@ -74,11 +88,11 @@ suites=[
          ,Test_CTrajectoryMethod.suite()
          ,Test_CTrajectoryTask.suite()
          ,Test_CCopasiDataModel.suite()
-	       ,Test_CFunctionDB.suite()
-	       ,Test_CEvaluationTree.suite()
-	       ,Test_CFunction.suite()
-	       ,Test_CFunctionParameters.suite()
-	       ,Test_CFunctionParameter.suite()
+	 ,Test_CFunctionDB.suite()
+	 ,Test_CEvaluationTree.suite()
+	 ,Test_CFunction.suite()
+	 ,Test_CFunctionParameters.suite()
+	 ,Test_CFunctionParameter.suite()
          ,Test_CReport.suite()
          ,Test_COutputAssistant.suite()
          ,Test_CreateSimpleModel.suite()

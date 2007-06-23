@@ -1,6 +1,26 @@
+// Begin CVS Header 
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/python.i,v $ 
+//   $Revision: 1.19 $ 
+//   $Name:  $ 
+//   $Author: gauges $ 
+//   $Date: 2007/06/23 12:45:46 $ 
+// End CVS Header 
+
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
+
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+
+/**
+ * Convert CCopasiAbstractArray objects into the most specific type possible.
+ */
+%typemap(out) CCopasiAbstractArray*
+{
+  $result = SWIG_NewPointerObj($1, GetDowncastSwigTypeForCCopasiAbstractArray($1), 0);
+}
 
 
 
@@ -115,6 +135,15 @@ COutputAssistant.getDefaultReportIndex=_COPASI.COutputAssistant_getDefaultReport
 COutputAssistant.getItemName=_COPASI.COutputAssistant_getItemName
 COutputAssistant.getItem=_COPASI.COutputAssistant_getItem
 COutputAssistant.createDefaultOutput=_COPASI.COutputAssistant_createDefaultOutput
+
+CCopasiMessage.peekFirstMessage=_COPASI.CCopasiMessage_peekFirstMessage
+CCopasiMessage.peekLastMessage=_COPASI.CCopasiMessage_peekLastMessage
+CCopasiMessage.getFirstMessage=_COPASI.CCopasiMessage_getFirstMessage
+CCopasiMessage.getLastMessage=_COPASI.CCopasiMessage_getLastMessage
+CCopasiMessage.getAllMessageText=_COPASI.CCopasiMessage_getAllMessageText
+CCopasiMessage.clearDeque=_COPASI.CCopasiMessage_clearDeque
+CCopasiMessage.getHighestSeverity=_COPASI.CCopasiMessage_getHighestSeverity
+CCopasiMessage.checkForMessage=_COPASI.CCopasiMessage_checkForMessage
 
 %}
 

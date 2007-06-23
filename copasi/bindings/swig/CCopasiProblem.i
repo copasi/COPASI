@@ -1,3 +1,15 @@
+// Begin CVS Header 
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiProblem.i,v $ 
+//   $Revision: 1.6 $ 
+//   $Name:  $ 
+//   $Author: gauges $ 
+//   $Date: 2007/06/23 12:45:47 $ 
+// End CVS Header 
+
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
+
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
@@ -8,46 +20,17 @@
 
 %}
 
+%ignore CCopasiProblem::CCopasiProblem(const CCopasiTask::Type& type, const CCopasiContainer* pParent);
+%ignore CCopasiProblem::setModel(CModel* pModel);
+%ignore CCopasiProblem::setCallback(CProcessReport* pCallBack);
+%ignore CCopasiProblem::initialize();
+%ignore CCopasiProblem::calculate();
+%ignore CCopasiProblem::restore(const bool& updateModel);
+%ignore CCopasiProblem::checkParametricConstraints();
+%ignore CCopasiProblem::checkFunctionalConstraints();
+%ignore CCopasiProblem::print(std::ostream* ostream) const;
+%ignore CCopasiProblem::printResult(std::ostream* ostream) const;
+%ignore operator<<(std::ostream& os,const CCopasiProblem& o);
 
-class CCopasiProblem : public CCopasiParameterGroup
-{
- protected:
-
-    /**
-     * Specific constructor
-     * @param const CCopasiTask::Type & type
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CCopasiProblem(const CCopasiTask::Type & type,
-                   const CCopasiContainer * pParent = NULL);
-
-  public:
-    /**
-     * Copy constructor
-     * @param const CCopasiProblemr & src
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CCopasiProblem(const CCopasiProblem & src,
-                   const CCopasiContainer * pParent = NULL);
-
-    /**
-     * Destructor
-     */
-    virtual ~CCopasiProblem();
-
-    /**
-     * Retrieve the type of the problem
-     * @return  const string & type
-     */
-    const CCopasiTask::Type & getType() const;
-
-    /**
-     * Retrieve the model of the problem
-     * @result CModel * pModel
-     */
-    CModel * getModel() const;
-
-
-};
-
+%include "utilities/CCopasiProblem.h"
 

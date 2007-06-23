@@ -1,3 +1,15 @@
+# Begin CVS Header 
+#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/Test_CFunctionParameters.py,v $ 
+#   $Revision: 1.6 $ 
+#   $Name:  $ 
+#   $Author: gauges $ 
+#   $Date: 2007/06/23 12:45:47 $ 
+# End CVS Header 
+
+# Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc. and EML Research, gGmbH. 
+# All rights reserved. 
+
 # Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
 # Properties, Inc. and EML Research, gGmbH.
 # All rights reserved.
@@ -56,7 +68,7 @@ class Test_CFunctionParameters(unittest.TestCase):
   def test_getParameterByUsage(self):
     p=self.parameters.getParameterByUsage(COPASI.CFunctionParameter.PARAMETER,1)
     self.assert_(p.__class__==COPASI.CFunctionParameter)
-    self.assert_(p.getObjectName()=="Keq")
+    self.assert_(p.getObjectName()=="Kms")
 
   def test_getNumberOfParametersByUsage(self):
     n=self.parameters.getNumberOfParametersByUsage(COPASI.CFunctionParameter.PARAMETER)
@@ -66,7 +78,7 @@ class Test_CFunctionParameters(unittest.TestCase):
   def test_findParameterByName(self):
     n=self.parameters.findParameterByName("Kms",COPASI.CFunctionParameter.FLOAT64)
     self.assert_(type(n)==IntType)
-    self.assert_(n==5)
+    self.assert_(n==2)
 
 
 def suite():

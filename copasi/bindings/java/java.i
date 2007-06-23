@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/java.i,v $ 
-//   $Revision: 1.13 $ 
+//   $Revision: 1.14 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2007/06/20 10:23:45 $ 
+//   $Date: 2007/06/23 12:45:45 $ 
 // End CVS Header 
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -25,6 +25,22 @@
 
 
 void initCopasi();
+%typemap(jni) CCopasiAbstractArray* CArrayAnnotation::array "jobject"
+%typemap(jtype) CCopasiAbstractArray* CArrayAnnotation::array "CCopasiAbstractArray"
+%typemap(jstype) CCopasiAbstractArray* CArrayAnnotation::array "CCopasiAbstractArray"
+%typemap(javaout) CCopasiAbstractArray* CArrayAnnotation::array 
+{
+  return $jnicall;
+}
+%typemap(out) CCopasiAbstractArray* CArrayAnnotation::array
+{
+    $result = DownCast_CCopasiAbstractArray(jenv,$1);
+    if(!$result)
+    {
+        std::cout << "Failed to create new java object" << std::endl;
+    }
+}
+
 
 %typemap(jni) CCopasiTask* CCopasiDataModel::getTask "jobject"
 %typemap(jtype) CCopasiTask* CCopasiDataModel::getTask "CCopasiTask"

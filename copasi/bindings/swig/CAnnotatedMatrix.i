@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CAnnotatedMatrix.i,v $ 
-//   $Revision: 1.1 $ 
+//   $Revision: 1.2 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2007/06/13 12:42:15 $ 
+//   $Date: 2007/06/23 12:45:47 $ 
 // End CVS Header 
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -31,6 +31,7 @@
 %ignore CArrayAnnotation::operator=(const CArrayAnnotation&);
 %ignore CArrayAnnotation::array() const;
 %ignore operator<<(std::ostream &os, const CArrayAnnotation & o);
+%ignore CArrayAnnotation::print(std::ostream* ostream) const;
 
 %include "utilities/CAnnotatedMatrix.h"
 
@@ -69,4 +70,9 @@ typedef C_FLOAT64 data_type;
       return (*($self))[index];
    }
 };
+
+
+%template(AnnotatedFloatMatrix) CCopasiMatrixInterface<CMatrix<C_FLOAT64> >;
+
+typedef CCopasimatrixInterface<CMatrix<C_FLOAT64> > AnnotatedFloatMatrix;
 

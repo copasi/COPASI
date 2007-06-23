@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/python.pro,v $ 
-#   $Revision: 1.14 $ 
+#   $Revision: 1.15 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2007/06/19 15:49:35 $ 
+#   $Date: 2007/06/23 12:45:46 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,12 +21,9 @@ COPASI_LIBS += -L../../lib
 
 COPASI_LIBS += -lCOPASISE 
 
-
 LIBS = $$COPASI_LIBS $$LIBS
 
-
 INCLUDEPATH += ../..
-
 contains(BUILD_OS,Linux){
 
   !isEmpty(PYTHON_LIB_PATH){
@@ -40,11 +37,9 @@ contains(BUILD_OS,Linux){
 
  LIBS += -llapack
  LIBS += -lblas
- LIBS += -lF77
  LIBS += -lfl
  LIBS += -lpython2.3
  LIBS += -lsbml
- LIBS += -lqwt
  LIBS += -lexpat
 
  QMAKE_POST_LINK += ln -sf libCopasiPython.so _COPASI.so
@@ -57,8 +52,12 @@ contains(BUILD_OS, Darwin) {
     LIBS += -framework Carbon
     LIBS += -framework Accelerate
 
+    QMAKE_LFLAGS_SHLIB += -unexported_symbols_list unexported_symbols.list
+    QMAKE_PRE_LINK = nm -g $$SBML_PATH/lib/libsbml.a | grep "^[0-9]" | cut -d" " -f3  > unexported_symbols.list ; nm -g $$EXPAT_PATH/lib/libexpat.a | grep "^[0-9]" | cut -d" " -f3  >> unexported_symbols.list
+
+
   !isEmpty(PYTHON_INCLUDE_PATH){
-    INCLUDEPATH += $$PYTHON_INCLUDE_PATH
+    INCLUDEPATH += $$PYTHON_INCLUDE_PATH/python2.3/
   }
 
   QMAKE_POST_LINK += ln -sf libCopasiPython.dylib _COPASI.so
@@ -78,7 +77,6 @@ contains(BUILD_OS, WIN32) {
   !isEmpty(PYTHON_INCLUDE_PATH){
     INCLUDEPATH += $$PYTHON_INCLUDE_PATH
   }
-
   
   !isEmpty(MKL_PATH) {
     DEFINES += USE_MKL
@@ -135,8 +133,6 @@ contains(BUILD_OS, WIN32) {
 }
 
 
-
-
 SWIG_INTERFACE_FILES=../swig/CChemEq.i \
                      ../swig/CChemEqElement.i \
                      ../swig/CCompartment.i \
@@ -144,6 +140,7 @@ SWIG_INTERFACE_FILES=../swig/CChemEq.i \
                      ../swig/CCopasiDataModel.i \
                      ../swig/CCopasiException.i \
 		     ../swig/CCopasiMessage.i \
+		     ../swig/messages.i \
                      ../swig/CCopasiMethod.i \
                      ../swig/CCopasiObject.i \
                      ../swig/CCopasiObjectName.i \
@@ -252,13 +249,12 @@ isEmpty(SWIG_PATH){
         error(Unable to find swig excecutable in $$SWIG_PATH/bin/. Please use --with-swig=PATH to specify the path where PATH/bin/swig is located.) 
       }
     }
-    DEFINE_COMMANDLINE = $$join(DEFINES," -D",-D)
 
+    DEFINE_COMMANDLINE = $$join(DEFINES," -D",-D)
     contains(BUILD_OS, WIN32){
       wrapper_source.target = copasi_wrapper.cpp
       wrapper_source.depends = $$SWIG_INTERFACE_FILES python.i local.cpp
       wrapper_source.commands = $(DEL_FILE) $$wrapper_source.target ; $$SWIG_PATH/swig.exe $$DEFINE_COMMANDLINE -classic -I..\.. -c++ -python -o $$wrapper_source.target python.i
-  
       QMAKE_EXTRA_WIN_TARGETS += wrapper_source
       PRE_TARGETDEPS += ..\..\lib\COPASISE.lib
     }
@@ -268,12 +264,10 @@ isEmpty(SWIG_PATH){
       wrapper_source.commands = $(DEL_FILE) $$wrapper_source.target ; $$SWIG_PATH/bin/swig $$DEFINE_COMMANDLINE -classic -I../.. -c++ -python -o $$wrapper_source.target python.i
   
       QMAKE_EXTRA_UNIX_TARGETS += wrapper_source
+      PRE_TARGETDEPS += ../../lib/libCOPASISE.a
     }
-    PRE_TARGETDEPS += ../../lib/libCOPASISE.a
     PRE_TARGETDEPS += copasi_wrapper.cpp
 }
 
 
 SOURCES += copasi_wrapper.cpp
-
-

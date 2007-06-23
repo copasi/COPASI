@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/copasi.i,v $ 
-//   $Revision: 1.18 $ 
+//   $Revision: 1.19 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2007/06/19 15:49:36 $ 
+//   $Date: 2007/06/23 12:45:47 $ 
 // End CVS Header 
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -33,6 +33,7 @@
 
 %include "CRandom.i"
 %include "CCopasiMessage.i"
+%include "messages.i"
 %include "CCopasiException.i"
 %include "CCopasiObjectName.i"
 %include "CCopasiObject.i"

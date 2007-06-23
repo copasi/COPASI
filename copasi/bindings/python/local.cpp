@@ -1,15 +1,16 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/local.cpp,v $
-   $Revision: 1.5 $
-   $Name:  $
-   $Author: gauges $
-   $Date: 2007/01/09 16:33:06 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/local.cpp,v $
+//   $Revision: 1.6 $
+//   $Name:  $
+//   $Author: gauges $
+//   $Date: 2007/06/23 12:45:46 $
+// End CVS Header
 
-// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
+#include "CopasiDataModel/CCopasiDataModel.h"
 #include "utilities/CCopasiMethod.h"
 #include "utilities/CCopasiProblem.h"
 #include "utilities/CCopasiTask.h"
@@ -27,6 +28,17 @@
 #include "model/CMoiety.h"
 #include "report/CCopasiStaticString.h"
 #include "report/CReportDefinition.h"
+#include "utilities/CAnnotatedMatrix.h"
+#include "utilities/CMatrix.h"
+#include "steadystate/CSteadyStateTask.h"
+#include "steadystate/CSteadyStateProblem.h"
+#include "steadystate/CSteadyStateMethod.h"
+#include "steadystate/CNewtonMethod.h"
+/*
+#include "scan/CScanTask.h"
+#include "scan/CScanProblem.h"
+#include "scan/CScanMethod.h"
+ */
 
 //#include <iostream>
 
@@ -52,6 +64,28 @@ typedef std::vector<CFunction> CFunctionStdVector;
 
 typedef CCopasiVector<CChemEqElement> CChemEqElementVector;
 
+typedef CCopasiMatrixInterface<CMatrix<C_FLOAT64> > AnnotatedFloatMatrix;
+
+/**
+ * @return the most specific Swig type for the given CCopasiAbstractArray object.
+ */
+struct swig_type_info*
+      GetDowncastSwigTypeForCCopasiAbstractArray (CCopasiAbstractArray* array)
+  {
+    if (array == NULL) return SWIGTYPE_p_CCopasiAbstractArray;
+
+    struct swig_type_info* pInfo = SWIGTYPE_p_CCopasiAbstractArray;
+    if (dynamic_cast<CCopasiArray*>(array))
+      {
+        pInfo = SWIGTYPE_p_CCopasiArray;
+      }
+    else if (dynamic_cast<CCopasiMatrixInterface<CMatrix<C_FLOAT64> >*>(array))
+      {
+        pInfo = SWIGTYPE_p_CCopasiMatrixInterfaceTCMatrixTdouble_t_t;
+      }
+    return pInfo;
+  }
+
 /**
  * @return the most specific Swig type for the given Task object.
  */
@@ -63,18 +97,16 @@ struct swig_type_info*
     struct swig_type_info* pInfo = SWIGTYPE_p_CCopasiTask;
     switch (task->getType())
       {
-        /*
-              case CCopasiTask::steadyState:
-                pInfo=SWIGTYPE_p_CSteadyStateTask;
-                break;
-        */
+      case CCopasiTask::steadyState:
+        pInfo = SWIGTYPE_p_CSteadyStateTask;
+        break;
       case CCopasiTask::timeCourse:
         pInfo = SWIGTYPE_p_CTrajectoryTask;
         break;
         /*
-              case CCopasiTask::scan:
-                pInfo=SWIGTYPE_p_CScanTask;
-                break;
+        case CCopasiTask::scan:
+        pInfo=SWIGTYPE_p_CScanTask;
+        break;
               case CCopasiTask::fluxMode:
                 pInfo=SWIGTYPE_p_CEFMTask;
                 break;
@@ -164,10 +196,10 @@ struct swig_type_info*
               case CCopasiMethod::ParicleSwarm:
                 pInfo=SWIGTYPE_p_;
                 break;
-              case CCopasiMethod::Newton:
-                pInfo=SWIGTYPE_p_;
-                break;
-        */
+            */
+      case CCopasiMethod::Newton:
+        pInfo = SWIGTYPE_p_CNewtonMethod;
+        break;
       case CCopasiMethod::deterministic:
         pInfo = SWIGTYPE_p_CTrajectoryMethod;
         //pInfo=SWIGTYPE_p_CLsodaMethod;
@@ -239,18 +271,16 @@ struct swig_type_info*
     struct swig_type_info* pInfo = SWIGTYPE_p_CCopasiProblem;
     switch (problem->getType())
       {
-        /*
-              case CCopasiTask::steadyState:
-                pInfo=SWIGTYPE_p_CSteadyStateTask;
-                break;
-        */
+      case CCopasiTask::steadyState:
+        pInfo = SWIGTYPE_p_CSteadyStateProblem;
+        break;
       case CCopasiTask::timeCourse:
         pInfo = SWIGTYPE_p_CTrajectoryProblem;
         break;
         /*
-              case CCopasiTask::scan:
-                pInfo=SWIGTYPE_p_CScanProblem;
-                break;
+        case CCopasiTask::scan:
+        pInfo=SWIGTYPE_p_CScanProblem;
+        break;
               case CCopasiTask::fluxMode:
                 pInfo=SWIGTYPE_p_CEFMProblem;
                 break;
@@ -464,6 +494,10 @@ struct swig_type_info*
     else if (dynamic_cast<CReport*>(container))
       {
         pInfo = SWIGTYPE_p_CReport;
+      }
+    else if (dynamic_cast<CArrayAnnotation*>(container))
+      {
+        pInfo = SWIGTYPE_p_CArrayAnnotation;
       }
     return pInfo;
   }

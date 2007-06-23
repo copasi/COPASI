@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/java.pro,v $ 
-#   $Revision: 1.20 $ 
+#   $Revision: 1.21 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2007/06/22 08:17:12 $ 
+#   $Date: 2007/06/23 12:45:46 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -38,11 +38,9 @@ contains(BUILD_OS,Linux){
 
  LIBS += -llapack
  LIBS += -lblas
-# LIBS += -lF77
  LIBS += -lfl
  LIBS += -lsbml
  LIBS += -lfl
-# LIBS += -lqwt
  LIBS += -lexpat
 
 
@@ -58,7 +56,7 @@ contains(BUILD_OS, Darwin) {
     
     # make a hard link from the generated dylib file to a file with the ending
     # jnilib
-    QMAKE_PRE_LINK = nm -g $$SBML_PATH/lib/libsbml.a | grep "^[0-9]" | cut -d" " -f3  > unexported_symbols.list  
+    QMAKE_PRE_LINK = nm -g $$SBML_PATH/lib/libsbml.a | grep "^[0-9]" | cut -d" " -f3  > unexported_symbols.list ; nm -g $$EXPAT_PATH/lib/libexpat.a | grep "^[0-9]" | cut -d" " -f3  >> unexported_symbols.list
     QMAKE_POST_LINK = ln -f libCopasiJava.1.0.0.dylib libCopasiJava.jnilib 
 
   !isEmpty(JAVA_HOME){
@@ -155,6 +153,7 @@ SWIG_INTERFACE_FILES=../swig/CChemEq.i \
                      ../swig/CCopasiDataModel.i \
                      ../swig/CCopasiException.i \
 		     ../swig/CCopasiMessage.i \
+		     ../swig/messages.i \
                      ../swig/CCopasiMethod.i \
                      ../swig/CCopasiObject.i \
                      ../swig/CCopasiObjectName.i \
@@ -224,9 +223,9 @@ isEmpty(SWIG_PATH){
          }
     }
     !contains(BUILD_OS, WIN32){
-        !exists($$SWIG_PATH/bin/swig){
+      !exists($$SWIG_PATH/bin/swig){
         error(Unable to find swig excecutable in $$SWIG_PATH/bin/. Please use --with-swig=PATH to specify the path where PATH/bin/swig is located.) 
-        }
+      }
     }
 
     DEFINE_COMMANDLINE = $$join(DEFINES," -D",-D)
@@ -236,7 +235,7 @@ isEmpty(SWIG_PATH){
       wrapper_source.commands = $(DEL_FILE) copasi_wrapper.cpp && $(DEL_FILE) java_files\org\COPASI\*.java && $(DEL_FILE) java_files\org\COPASI\*.class && $(DEL_FILE) gui\org\COPASI\gui\*.class && $$SWIG_PATH\swig.exe $$DEFINE_COMMANDLINE -I..\.. -c++ -java -o $$wrapper_source.target -package org.COPASI -outdir java_files\org\COPASI\  java.i && cd java_files && $$JAVA_HOME\bin\javac.exe -classpath . -d . org\COPASI\*.java  && cd .. && $$JAVA_HOME\bin\jar.exe cvf copasi.jar -C java_files .\org && cd gui && $$JAVA_HOME\bin\javac.exe -classpath .;..\copasi.jar -d . org\COPASI\gui\*.java && $$JAVA_HOME\bin\jar.exe cvf ..\copasi_gui.jar -C . org\COPASI\gui\*.class org\COPASI\gui\*.java
       QMAKE_EXTRA_WIN_TARGETS += wrapper_source
       PRE_TARGETDEPS += ..\..\lib\COPASISE.lib
-    } 
+    }
     !contains(BUILD_OS, WIN32){
 
       wrapper_source.target = copasi_wrapper.cpp
@@ -247,8 +246,6 @@ isEmpty(SWIG_PATH){
     }
     PRE_TARGETDEPS += copasi_wrapper.cpp
 }
-
-
 
 
 SOURCES += copasi_wrapper.cpp

@@ -1,3 +1,15 @@
+# Begin CVS Header 
+#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/Test_CFunction.py,v $ 
+#   $Revision: 1.6 $ 
+#   $Name:  $ 
+#   $Author: gauges $ 
+#   $Date: 2007/06/23 12:45:47 $ 
+# End CVS Header 
+
+# Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc. and EML Research, gGmbH. 
+# All rights reserved. 
+
 # Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
 # Properties, Inc. and EML Research, gGmbH.
 # All rights reserved.
@@ -38,7 +50,7 @@ class Test_CFunction(unittest.TestCase):
   def test_getVariableIndex(self):
     index=self.function.getVariableIndex("Kmp")
     self.assert_(type(index)==IntType)
-    self.assert_(index==6)
+    self.assert_(index==3)
 
 #  def test_getVariableValue(self):
 #    v=self.function.getVariableValue(3)

@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CModel.i,v $ 
-//   $Revision: 1.9 $ 
+//   $Revision: 1.10 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2007/06/11 16:54:46 $ 
+//   $Date: 2007/06/23 12:45:47 $ 
 // End CVS Header 
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -20,8 +20,8 @@
 
 %}
 
-%ignore CModel::compileIfNecessary(CProcessReport* pProcessReport=NULL);
-%ignore CModel::forceCompile(CProcessReport* pProcessReport=NULL);
+%ignore CModel::compileIfNecessary(CProcessReport* pProcessReport);
+%ignore CModel::forceCompile(CProcessReport* pProcessReport);
 
 class CModel : public CModelEntity
 {
@@ -68,13 +68,13 @@ class CModel : public CModelEntity
      * Compile the model if necessary
      * @return bool success
      */
-    bool compileIfNecessary(CProcessReport* pProcessReport=NULL);
+    bool compileIfNecessary(CProcessReport* pProcessReport);
 
     /**
      * Force a compile the model.
      * @return bool success
      */
-    bool forceCompile(CProcessReport* pProcessReport=NULL);
+    bool forceCompile(CProcessReport* pProcessReport);
 
 
     /**
@@ -448,7 +448,7 @@ class CModel : public CModelEntity
      */
     unsigned C_INT32 getNumCompartments() const
     {
-    	return self->getCompartments().size();
+      return self->getCompartments().size();
     }
 
     /**
@@ -457,7 +457,7 @@ class CModel : public CModelEntity
      */
     unsigned C_INT32 getNumReactions() const
     {
-    	return self->getReactions().size();
+      return self->getReactions().size();
     }
 
     CReaction* getReaction(unsigned C_INT32 index)
@@ -484,6 +484,16 @@ class CModel : public CModelEntity
     {
         return self->getMoieties()[index];
     }
+
+    bool forceCompile()
+    {
+        return $self->forceCompile(NULL);
+    };
+
+    bool compileIfNecessary()
+    {
+        return $self->compileIfNecessary(NULL);
+    };
 
 }
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/local.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/06/11 16:55:22 $
+//   $Date: 2007/06/23 12:45:46 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,7 +31,17 @@
 #include "report/CCopasiStaticString.h"
 #include "report/CReportDefinition.h"
 #include "report/CReportDefinitionVector.h"
-
+#include "utilities/CAnnotatedMatrix.h"
+#include "utilities/CMatrix.h"
+#include "steadystate/CSteadyStateTask.h"
+#include "steadystate/CSteadyStateProblem.h"
+#include "steadystate/CSteadyStateMethod.h"
+#include "steadystate/CNewtonMethod.h"
+/*
+#include "scan/CScanTask.h"
+#include "scan/CScanProblem.h"
+#include "scan/CScanMethod.h"
+ */
 //#include <iostream>
 
 typedef CCopasiVector<CCopasiTask> TaskVector;
@@ -66,12 +76,65 @@ typedef CCopasiVectorN<CReaction> ReactionVectorN;
 typedef CCopasiVector<CReaction> ReactionVector;
 typedef CCopasiVector<CEvaluationTree> CEvaluationTreeVector;
 
+typedef CCopasiMatrixInterface<CMatrix<C_FLOAT64> > AnnotatedFloatMatrix;
+
 #include "CopasiDataModel/CCopasiDataModel.h"
 
 void initCopasi()
 {
   CCopasiContainer::init();
   CCopasiDataModel::Global = new CCopasiDataModel();
+}
+
+jobject DownCast_CCopasiAbstractArray(JNIEnv* jenv, CCopasiAbstractArray* pPointer)
+{
+  jobject result = NULL;
+  if (dynamic_cast<CCopasiArray*>(pPointer))
+    {
+      // return a CCopasiArray
+      jclass clazz = jenv->FindClass("org/COPASI/CCopasiArray");
+      if (clazz)
+        {
+          jmethodID mid = jenv->GetMethodID(clazz, "<init>", "(JZ)V");
+          if (mid)
+            {
+              jlong cptr = 0;
+              *(CCopasiArray**)&cptr = static_cast<CCopasiArray*>(pPointer);
+              result = jenv->NewObject(clazz, mid, cptr, false);
+            }
+        }
+    }
+  else if (dynamic_cast<CCopasiMatrixInterface<CMatrix<C_FLOAT64> >*>(pPointer))
+    {
+      // return a CCopasiArray
+      jclass clazz = jenv->FindClass("org/COPASI/AnnotatedFloatArray");
+      if (clazz)
+        {
+          jmethodID mid = jenv->GetMethodID(clazz, "<init>", "(JZ)V");
+          if (mid)
+            {
+              jlong cptr = 0;
+              *(CCopasiMatrixInterface<CMatrix<C_FLOAT64> >**)&cptr = static_cast<CCopasiMatrixInterface<CMatrix<C_FLOAT64> >*>(pPointer);
+              result = jenv->NewObject(clazz, mid, cptr, false);
+            }
+        }
+    }
+  else
+    {
+      // return a CCopasiAbstractArray
+      jclass clazz = jenv->FindClass("org/COPASI/CCopasiAbstractArray");
+      if (clazz)
+        {
+          jmethodID mid = jenv->GetMethodID(clazz, "<init>", "(JZ)V");
+          if (mid)
+            {
+              jlong cptr = 0;
+              *(CCopasiAbstractArray**)&cptr = static_cast<CCopasiAbstractArray*>(pPointer);
+              result = jenv->NewObject(clazz, mid, cptr, false);
+            }
+        }
+    }
+  return result;
 }
 
 jobject DownCast_CModelEntity(JNIEnv* jenv, CModelEntity* pPointer)
@@ -209,6 +272,38 @@ jobject DownCast_CCopasiTask(JNIEnv* jenv, CCopasiTask* pPointer)
             }
         }
     }
+  else if (dynamic_cast<CSteadyStateTask*>(pPointer))
+    {
+      // return a CSteadyStateTask
+      jclass clazz = jenv->FindClass("org/COPASI/CSteadyStateTask");
+      if (clazz)
+        {
+          jmethodID mid = jenv->GetMethodID(clazz, "<init>", "(JZ)V");
+          if (mid)
+            {
+              jlong cptr = 0;
+              *(CSteadyStateTask**)&cptr = static_cast<CSteadyStateTask*>(pPointer);
+              result = jenv->NewObject(clazz, mid, cptr, false);
+            }
+        }
+    }
+  /*
+  else if (dynamic_cast<CScanTask*>(pPointer))
+    {
+      // return a CSteadyStateTask
+      jclass clazz = jenv->FindClass("org/COPASI/CScanTask");
+      if (clazz)
+        {
+          jmethodID mid = jenv->GetMethodID(clazz, "<init>", "(JZ)V");
+          if (mid)
+            {
+              jlong cptr = 0;
+              *(CScanTask**)&cptr = static_cast<CScanTask*>(pPointer);
+              result = jenv->NewObject(clazz, mid, cptr, false);
+            }
+        }
+    }
+    */
   else
     {
       // return a CCopasiTask
@@ -245,6 +340,53 @@ jobject DownCast_CCopasiMethod(JNIEnv* jenv, CCopasiMethod* pPointer)
             }
         }
     }
+  else if (dynamic_cast<CNewtonMethod*>(pPointer))
+    {
+      // return a CNewtonMethod
+      jclass clazz = jenv->FindClass("org/COPASI/CNewtonMethod");
+      if (clazz)
+        {
+          jmethodID mid = jenv->GetMethodID(clazz, "<init>", "(JZ)V");
+          if (mid)
+            {
+              jlong cptr = 0;
+              *(CNewtonMethod**)&cptr = static_cast<CNewtonMethod*>(pPointer);
+              result = jenv->NewObject(clazz, mid, cptr, false);
+            }
+        }
+    }
+  else if (dynamic_cast<CSteadyStateMethod*>(pPointer))
+    {
+      // return a CSteadyStateMethod
+      jclass clazz = jenv->FindClass("org/COPASI/CSteadyStateMethod");
+      if (clazz)
+        {
+          jmethodID mid = jenv->GetMethodID(clazz, "<init>", "(JZ)V");
+          if (mid)
+            {
+              jlong cptr = 0;
+              *(CSteadyStateMethod**)&cptr = static_cast<CSteadyStateMethod*>(pPointer);
+              result = jenv->NewObject(clazz, mid, cptr, false);
+            }
+        }
+    }
+  /*
+  else if (dynamic_cast<CScanMethod*>(pPointer))
+    {
+      // return a CScanMethod
+      jclass clazz = jenv->FindClass("org/COPASI/CScanMethod");
+      if (clazz)
+        {
+          jmethodID mid = jenv->GetMethodID(clazz, "<init>", "(JZ)V");
+          if (mid)
+            {
+              jlong cptr = 0;
+              *(CScanMethod**)&cptr = static_cast<CScanMethod*>(pPointer);
+              result = jenv->NewObject(clazz, mid, cptr, false);
+            }
+        }
+    }
+    */
   else
     {
       // return a CCopasiMethod
@@ -281,6 +423,38 @@ jobject DownCast_CCopasiProblem(JNIEnv* jenv, CCopasiProblem* pPointer)
             }
         }
     }
+  else if (dynamic_cast<CSteadyStateProblem*>(pPointer))
+    {
+      // return a CSteadyStateProblem
+      jclass clazz = jenv->FindClass("org/COPASI/CSteadyStateProblem");
+      if (clazz)
+        {
+          jmethodID mid = jenv->GetMethodID(clazz, "<init>", "(JZ)V");
+          if (mid)
+            {
+              jlong cptr = 0;
+              *(CSteadyStateProblem**)&cptr = static_cast<CSteadyStateProblem*>(pPointer);
+              result = jenv->NewObject(clazz, mid, cptr, false);
+            }
+        }
+    }
+  /*
+  else if (dynamic_cast<CScanProblem*>(pPointer))
+    {
+      // return a CScanProblem
+      jclass clazz = jenv->FindClass("org/COPASI/CScanProblem");
+      if (clazz)
+        {
+          jmethodID mid = jenv->GetMethodID(clazz, "<init>", "(JZ)V");
+          if (mid)
+            {
+              jlong cptr = 0;
+              *(CScanProblem**)&cptr = static_cast<CScanProblem*>(pPointer);
+              result = jenv->NewObject(clazz, mid, cptr, false);
+            }
+        }
+    }
+    */
   else
     {
       // return a CCopasiProblem
@@ -319,6 +493,53 @@ jobject DownCast_CCopasiParameterGroup(JNIEnv* jenv, CCopasiParameterGroup* pPoi
                 }
             }
         }
+      else if (dynamic_cast<CNewtonMethod*>(pPointer))
+        {
+          // return a CNewtonMethod
+          jclass clazz = jenv->FindClass("org/COPASI/CNewtonMethod");
+          if (clazz)
+            {
+              jmethodID mid = jenv->GetMethodID(clazz, "<init>", "(JZ)V");
+              if (mid)
+                {
+                  jlong cptr = 0;
+                  *(CNewtonMethod**)&cptr = static_cast<CNewtonMethod*>(pPointer);
+                  result = jenv->NewObject(clazz, mid, cptr, false);
+                }
+            }
+        }
+      else if (dynamic_cast<CSteadyStateMethod*>(pPointer))
+        {
+          // return a CSteadyStateMethod
+          jclass clazz = jenv->FindClass("org/COPASI/CSteadyStateMethod");
+          if (clazz)
+            {
+              jmethodID mid = jenv->GetMethodID(clazz, "<init>", "(JZ)V");
+              if (mid)
+                {
+                  jlong cptr = 0;
+                  *(CSteadyStateMethod**)&cptr = static_cast<CSteadyStateMethod*>(pPointer);
+                  result = jenv->NewObject(clazz, mid, cptr, false);
+                }
+            }
+        }
+      /*
+      else if (dynamic_cast<CScanMethod*>(pPointer))
+        {
+          // return a CScanMethod
+          jclass clazz = jenv->FindClass("org/COPASI/CScanMethod");
+          if (clazz)
+            {
+              jmethodID mid = jenv->GetMethodID(clazz, "<init>", "(JZ)V");
+              if (mid)
+                {
+                  jlong cptr = 0;
+                  *(CScanMethod**)&cptr = static_cast<CScanMethod*>(pPointer);
+                  result = jenv->NewObject(clazz, mid, cptr, false);
+                }
+            }
+        }
+        */
       else
         {
           // return a CCopasiMethod
@@ -352,6 +573,38 @@ jobject DownCast_CCopasiParameterGroup(JNIEnv* jenv, CCopasiParameterGroup* pPoi
                 }
             }
         }
+      else if (dynamic_cast<CSteadyStateProblem*>(pPointer))
+        {
+          // return a CSteadyStateProblem
+          jclass clazz = jenv->FindClass("org/COPASI/CSteadyStateProblem");
+          if (clazz)
+            {
+              jmethodID mid = jenv->GetMethodID(clazz, "<init>", "(JZ)V");
+              if (mid)
+                {
+                  jlong cptr = 0;
+                  *(CSteadyStateProblem**)&cptr = static_cast<CSteadyStateProblem*>(pPointer);
+                  result = jenv->NewObject(clazz, mid, cptr, false);
+                }
+            }
+        }
+      /*
+      else if (dynamic_cast<CScanProblem*>(pPointer))
+        {
+          // return a CScanProblem
+          jclass clazz = jenv->FindClass("org/COPASI/CScanProblem");
+          if (clazz)
+            {
+              jmethodID mid = jenv->GetMethodID(clazz, "<init>", "(JZ)V");
+              if (mid)
+                {
+                  jlong cptr = 0;
+                  *(CScanProblem**)&cptr = static_cast<CScanProblem*>(pPointer);
+                  result = jenv->NewObject(clazz, mid, cptr, false);
+                }
+            }
+        }
+        */
       else
         {
           // return a CCopasiProblem
@@ -408,6 +661,53 @@ jobject DownCast_CCopasiParameter(JNIEnv* jenv, CCopasiParameter* pPointer)
                     }
                 }
             }
+          else if (dynamic_cast<CNewtonMethod*>(pPointer))
+            {
+              // return a CNewtonMethod
+              jclass clazz = jenv->FindClass("org/COPASI/CNewtonMethod");
+              if (clazz)
+                {
+                  jmethodID mid = jenv->GetMethodID(clazz, "<init>", "(JZ)V");
+                  if (mid)
+                    {
+                      jlong cptr = 0;
+                      *(CNewtonMethod**)&cptr = static_cast<CNewtonMethod*>(pPointer);
+                      result = jenv->NewObject(clazz, mid, cptr, false);
+                    }
+                }
+            }
+          else if (dynamic_cast<CSteadyStateMethod*>(pPointer))
+            {
+              // return a CSteadyStateMethod
+              jclass clazz = jenv->FindClass("org/COPASI/CSteadyStateMethod");
+              if (clazz)
+                {
+                  jmethodID mid = jenv->GetMethodID(clazz, "<init>", "(JZ)V");
+                  if (mid)
+                    {
+                      jlong cptr = 0;
+                      *(CSteadyStateMethod**)&cptr = static_cast<CSteadyStateMethod*>(pPointer);
+                      result = jenv->NewObject(clazz, mid, cptr, false);
+                    }
+                }
+            }
+          /*
+          else if (dynamic_cast<CScanMethod*>(pPointer))
+          {
+              // return a CScanMethod
+              jclass clazz = jenv->FindClass("org/COPASI/CScanMethod");
+              if (clazz)
+              {
+                  jmethodID mid = jenv->GetMethodID(clazz, "<init>", "(JZ)V");
+                  if (mid)
+                  {
+                      jlong cptr = 0;
+                      *(CScanMethod**)&cptr = static_cast<CScanMethod*>(pPointer);
+                      result = jenv->NewObject(clazz, mid, cptr, false);
+                  }
+              }
+          }
+          */
           else
             {
               // return a CCopasiMethod
@@ -441,6 +741,38 @@ jobject DownCast_CCopasiParameter(JNIEnv* jenv, CCopasiParameter* pPointer)
                     }
                 }
             }
+          else if (dynamic_cast<CSteadyStateProblem*>(pPointer))
+            {
+              // return a CSteadyStateProblem
+              jclass clazz = jenv->FindClass("org/COPASI/CSteadyStateProblem");
+              if (clazz)
+                {
+                  jmethodID mid = jenv->GetMethodID(clazz, "<init>", "(JZ)V");
+                  if (mid)
+                    {
+                      jlong cptr = 0;
+                      *(CSteadyStateProblem**)&cptr = static_cast<CSteadyStateProblem*>(pPointer);
+                      result = jenv->NewObject(clazz, mid, cptr, false);
+                    }
+                }
+            }
+          /*
+          else if (dynamic_cast<CScanProblem*>(pPointer))
+              {
+              // return a CScanProblem
+              jclass clazz = jenv->FindClass("org/COPASI/CScanProblem");
+              if (clazz)
+                  {
+                  jmethodID mid = jenv->GetMethodID(clazz, "<init>", "(JZ)V");
+                  if (mid)
+                      {
+                      jlong cptr = 0;
+                      *(CScanProblem**)&cptr = static_cast<CScanProblem*>(pPointer);
+                      result = jenv->NewObject(clazz, mid, cptr, false);
+                      }
+                  }
+              }
+              */
           else
             {
               // return a CCopasiProblem
@@ -541,6 +873,38 @@ jobject DownCast_CCopasiContainer(JNIEnv* jenv, CCopasiContainer* pPointer)
                 }
             }
         }
+      else if (dynamic_cast<CSteadyStateTask*>(pPointer))
+        {
+          // return a CSteadyStateTask
+          jclass clazz = jenv->FindClass("org/COPASI/CSteadyStateTask");
+          if (clazz)
+            {
+              jmethodID mid = jenv->GetMethodID(clazz, "<init>", "(JZ)V");
+              if (mid)
+                {
+                  jlong cptr = 0;
+                  *(CSteadyStateTask**)&cptr = static_cast<CSteadyStateTask*>(pPointer);
+                  result = jenv->NewObject(clazz, mid, cptr, false);
+                }
+            }
+        }
+      /*
+      else if (dynamic_cast<CScanTask*>(pPointer))
+        {
+          // return a CScanTask
+          jclass clazz = jenv->FindClass("org/COPASI/CScanTask");
+          if (clazz)
+            {
+              jmethodID mid = jenv->GetMethodID(clazz, "<init>", "(JZ)V");
+              if (mid)
+                {
+                  jlong cptr = 0;
+                  *(CScanTask**)&cptr = static_cast<CScanTask*>(pPointer);
+                  result = jenv->NewObject(clazz, mid, cptr, false);
+                }
+            }
+        }
+        */
       else
         {
           // return a CCopasiTask
@@ -578,6 +942,53 @@ jobject DownCast_CCopasiContainer(JNIEnv* jenv, CCopasiContainer* pPointer)
                         }
                     }
                 }
+              else if (dynamic_cast<CNewtonMethod*>(pPointer))
+                {
+                  // return a CNewtonMethod
+                  jclass clazz = jenv->FindClass("org/COPASI/CNewtonMethod");
+                  if (clazz)
+                    {
+                      jmethodID mid = jenv->GetMethodID(clazz, "<init>", "(JZ)V");
+                      if (mid)
+                        {
+                          jlong cptr = 0;
+                          *(CNewtonMethod**)&cptr = static_cast<CNewtonMethod*>(pPointer);
+                          result = jenv->NewObject(clazz, mid, cptr, false);
+                        }
+                    }
+                }
+              else if (dynamic_cast<CSteadyStateMethod*>(pPointer))
+                {
+                  // return a CSteadyStateMethod
+                  jclass clazz = jenv->FindClass("org/COPASI/CSteadyStateMethod");
+                  if (clazz)
+                    {
+                      jmethodID mid = jenv->GetMethodID(clazz, "<init>", "(JZ)V");
+                      if (mid)
+                        {
+                          jlong cptr = 0;
+                          *(CSteadyStateMethod**)&cptr = static_cast<CSteadyStateMethod*>(pPointer);
+                          result = jenv->NewObject(clazz, mid, cptr, false);
+                        }
+                    }
+                }
+              /*
+              else if (dynamic_cast<CScanMethod*>(pPointer))
+                {
+                  // return a CScanMethod
+                  jclass clazz = jenv->FindClass("org/COPASI/CScanMethod");
+                  if (clazz)
+                    {
+                      jmethodID mid = jenv->GetMethodID(clazz, "<init>", "(JZ)V");
+                      if (mid)
+                        {
+                          jlong cptr = 0;
+                          *(CScanMethod**)&cptr = static_cast<CScanMethod*>(pPointer);
+                          result = jenv->NewObject(clazz, mid, cptr, false);
+                        }
+                    }
+                }
+                */
               else
                 {
                   // return a CCopasiMethod
@@ -611,6 +1022,38 @@ jobject DownCast_CCopasiContainer(JNIEnv* jenv, CCopasiContainer* pPointer)
                         }
                     }
                 }
+              else if (dynamic_cast<CSteadyStateProblem*>(pPointer))
+                {
+                  // return a CSteadyStateProblem
+                  jclass clazz = jenv->FindClass("org/COPASI/CSteadyStateProblem");
+                  if (clazz)
+                    {
+                      jmethodID mid = jenv->GetMethodID(clazz, "<init>", "(JZ)V");
+                      if (mid)
+                        {
+                          jlong cptr = 0;
+                          *(CSteadyStateProblem**)&cptr = static_cast<CSteadyStateProblem*>(pPointer);
+                          result = jenv->NewObject(clazz, mid, cptr, false);
+                        }
+                    }
+                }
+              /*
+              else if (dynamic_cast<CScanProblem*>(pPointer))
+                {
+                  // return a CScanProblem
+                  jclass clazz = jenv->FindClass("org/COPASI/CScanProblem");
+                  if (clazz)
+                    {
+                      jmethodID mid = jenv->GetMethodID(clazz, "<init>", "(JZ)V");
+                      if (mid)
+                        {
+                          jlong cptr = 0;
+                          *(CScanProblem**)&cptr = static_cast<CScanProblem*>(pPointer);
+                          result = jenv->NewObject(clazz, mid, cptr, false);
+                        }
+                    }
+                }
+                */
               else
                 {
                   // return a CCopasiProblem
@@ -1180,6 +1623,21 @@ jobject DownCast_CCopasiContainer(JNIEnv* jenv, CCopasiContainer* pPointer)
                 }
             }
         }
+      else if (dynamic_cast<CArrayAnnotation*>(pPointer))
+        {
+          // return a CArrayAnnotation
+          jclass clazz = jenv->FindClass("org/COPASI/CArrayAnnotation");
+          if (clazz)
+            {
+              jmethodID mid = jenv->GetMethodID(clazz, "<init>", "(JZ)V");
+              if (mid)
+                {
+                  jlong cptr = 0;
+                  *(CArrayAnnotation**)&cptr = static_cast<CArrayAnnotation*>(pPointer);
+                  result = jenv->NewObject(clazz, mid, cptr, false);
+                }
+            }
+        }
       else
         {
           // return a CCopasiContainer
@@ -1251,6 +1709,38 @@ jobject DownCast_CCopasiObject(JNIEnv* jenv, CCopasiObject* pPointer)
                     }
                 }
             }
+          else if (dynamic_cast<CSteadyStateTask*>(pPointer))
+            {
+              // return a CSteadyStateTask
+              jclass clazz = jenv->FindClass("org/COPASI/CSteadyStateTask");
+              if (clazz)
+                {
+                  jmethodID mid = jenv->GetMethodID(clazz, "<init>", "(JZ)V");
+                  if (mid)
+                    {
+                      jlong cptr = 0;
+                      *(CSteadyStateTask**)&cptr = static_cast<CSteadyStateTask*>(pPointer);
+                      result = jenv->NewObject(clazz, mid, cptr, false);
+                    }
+                }
+            }
+          /*
+          else if (dynamic_cast<CScanTask*>(pPointer))
+            {
+              // return a CScanTask
+              jclass clazz = jenv->FindClass("org/COPASI/CScanTask");
+              if (clazz)
+                {
+                  jmethodID mid = jenv->GetMethodID(clazz, "<init>", "(JZ)V");
+                  if (mid)
+                    {
+                      jlong cptr = 0;
+                      *(CScanTask**)&cptr = static_cast<CScanTask*>(pPointer);
+                      result = jenv->NewObject(clazz, mid, cptr, false);
+                    }
+                }
+            }
+            */
           else
             {
               // return a CCopasiTask
@@ -1288,6 +1778,53 @@ jobject DownCast_CCopasiObject(JNIEnv* jenv, CCopasiObject* pPointer)
                             }
                         }
                     }
+                  else if (dynamic_cast<CNewtonMethod*>(pPointer))
+                    {
+                      // return a CNewtonMethod
+                      jclass clazz = jenv->FindClass("org/COPASI/CNewtonMethod");
+                      if (clazz)
+                        {
+                          jmethodID mid = jenv->GetMethodID(clazz, "<init>", "(JZ)V");
+                          if (mid)
+                            {
+                              jlong cptr = 0;
+                              *(CNewtonMethod**)&cptr = static_cast<CNewtonMethod*>(pPointer);
+                              result = jenv->NewObject(clazz, mid, cptr, false);
+                            }
+                        }
+                    }
+                  else if (dynamic_cast<CSteadyStateMethod*>(pPointer))
+                    {
+                      // return a CSteadyStateMethod
+                      jclass clazz = jenv->FindClass("org/COPASI/CSteadyStateMethod");
+                      if (clazz)
+                        {
+                          jmethodID mid = jenv->GetMethodID(clazz, "<init>", "(JZ)V");
+                          if (mid)
+                            {
+                              jlong cptr = 0;
+                              *(CSteadyStateMethod**)&cptr = static_cast<CSteadyStateMethod*>(pPointer);
+                              result = jenv->NewObject(clazz, mid, cptr, false);
+                            }
+                        }
+                    }
+                  /*
+                  else if (dynamic_cast<CScanMethod*>(pPointer))
+                    {
+                      // return a CScanMethod
+                      jclass clazz = jenv->FindClass("org/COPASI/CScanMethod");
+                      if (clazz)
+                        {
+                          jmethodID mid = jenv->GetMethodID(clazz, "<init>", "(JZ)V");
+                          if (mid)
+                            {
+                              jlong cptr = 0;
+                              *(CScanMethod**)&cptr = static_cast<CScanMethod*>(pPointer);
+                              result = jenv->NewObject(clazz, mid, cptr, false);
+                            }
+                        }
+                    }
+                    */
                   else
                     {
                       // return a CCopasiMethod
@@ -1321,6 +1858,38 @@ jobject DownCast_CCopasiObject(JNIEnv* jenv, CCopasiObject* pPointer)
                             }
                         }
                     }
+                  else if (dynamic_cast<CSteadyStateProblem*>(pPointer))
+                    {
+                      // return a CSteadyStateProblem
+                      jclass clazz = jenv->FindClass("org/COPASI/CSteadyStateProblem");
+                      if (clazz)
+                        {
+                          jmethodID mid = jenv->GetMethodID(clazz, "<init>", "(JZ)V");
+                          if (mid)
+                            {
+                              jlong cptr = 0;
+                              *(CSteadyStateProblem**)&cptr = static_cast<CSteadyStateProblem*>(pPointer);
+                              result = jenv->NewObject(clazz, mid, cptr, false);
+                            }
+                        }
+                    }
+                  /*
+                  else if (dynamic_cast<CScanProblem*>(pPointer))
+                    {
+                      // return a CScanProblem
+                      jclass clazz = jenv->FindClass("org/COPASI/CScanProblem");
+                      if (clazz)
+                        {
+                          jmethodID mid = jenv->GetMethodID(clazz, "<init>", "(JZ)V");
+                          if (mid)
+                            {
+                              jlong cptr = 0;
+                              *(CScanProblem**)&cptr = static_cast<CScanProblem*>(pPointer);
+                              result = jenv->NewObject(clazz, mid, cptr, false);
+                            }
+                        }
+                    }
+                    */
                   else
                     {
                       // return a CCopasiProblem
@@ -1887,6 +2456,21 @@ jobject DownCast_CCopasiObject(JNIEnv* jenv, CCopasiObject* pPointer)
                           *(CChemEqElementVector**)&cptr = static_cast<CChemEqElementVector*>(pPointer);
                           result = jenv->NewObject(clazz, mid, cptr, false);
                         }
+                    }
+                }
+            }
+          else if (dynamic_cast<CArrayAnnotation*>(pPointer))
+            {
+              // return a CArrayAnnotation
+              jclass clazz = jenv->FindClass("org/COPASI/CArrayAnnotation");
+              if (clazz)
+                {
+                  jmethodID mid = jenv->GetMethodID(clazz, "<init>", "(JZ)V");
+                  if (mid)
+                    {
+                      jlong cptr = 0;
+                      *(CArrayAnnotation**)&cptr = static_cast<CArrayAnnotation*>(pPointer);
+                      result = jenv->NewObject(clazz, mid, cptr, false);
                     }
                 }
             }

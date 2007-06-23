@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/gui/org/COPASI/gui/TaskWidget.java,v $ 
-//   $Revision: 1.9 $ 
+//   $Revision: 1.10 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2007/06/20 14:01:24 $ 
+//   $Date: 2007/06/23 12:45:46 $ 
 // End CVS Header 
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -57,6 +57,7 @@ import org.COPASI.CReport;
 import org.COPASI.CReportDefinition;
 import org.COPASI.COutputAssistant;
 import org.COPASI.CCopasiMessage;
+import org.COPASI.COPASIConstants;
 
 /**
  * @author gauges
@@ -848,7 +849,7 @@ public class TaskWidget extends JPanel implements ActionListener, TableModelList
          */
         public void displayErrorMessages(boolean cronological)
         {
-           if(CCopasiMessage.peekFirstMessage().getNumber()!=6401 /* CCopasiMessage + 1 */)
+           if(CCopasiMessage.peekFirstMessage().getNumber()!=COPASIConstants.MCCopasiMessage + 1 )
            {
              if(CCopasiMessage.getHighestSeverity()==CCopasiMessage.ERROR || CCopasiMessage.getHighestSeverity()==CCopasiMessage.EXCEPTION)
              {
