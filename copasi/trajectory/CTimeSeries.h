@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTimeSeries.h,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/06/20 15:38:02 $
+//   $Author: ssahle $
+//   $Date: 2007/06/29 14:47:10 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -69,7 +69,7 @@ class CTimeSeries : private std::vector<CState>
      * If there is no corresponding SBML object (e.g. if the model comes from a
      * COPASI file) the empty string is returned.
      */
-    std::string CTimeSeries::getSBMLId(unsigned C_INT32 var) const;
+    std::string getSBMLId(unsigned C_INT32 var) const;
 
   private:
     //C_INT32 mN;
