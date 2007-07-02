@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: urost $
-//   $Date: 2007/06/11 19:35:07 $
+//   $Author: ssahle $
+//   $Date: 2007/07/02 08:59:30 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,11 +27,13 @@
 #include <qlayout.h>
 #include <qwidget.h>
 //#include <qslider.h>
-#include <qwt_slider.h>
+//#include <qwt_slider.h>
 
 #include "CQGLNetworkPainter.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
+
+class QwtSlider;
 
 class CQLayoutMainWindow : public QMainWindow
   {

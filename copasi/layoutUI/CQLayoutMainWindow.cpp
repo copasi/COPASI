@@ -1,14 +1,16 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
-//   $Author: urost $
-//   $Date: 2007/06/11 19:35:07 $
+//   $Author: ssahle $
+//   $Date: 2007/07/02 08:59:30 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+
+#include <qwt_slider.h>
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "layout/CListOfLayouts.h"
@@ -81,7 +83,7 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
   //timeSlider = new QSlider(Qt::Horizontal, splitter);
   QBoxLayout * bottomBox = new QHBoxLayout(this);
 
-  timeSlider = new QwtSlider(this, Qt::Horizontal, QwtSlider::Top, QwtSlider::BgTrough);
+  timeSlider = new QwtSlider(this, Qt::Horizontal, QwtSlider::TopScale, QwtSlider::BgTrough);
   timeSlider->setRange(0, 100, 1, 0);
   timeSlider->setValue(0.0);
   //timeSlider->setTickmarks(QSlider::Below);
