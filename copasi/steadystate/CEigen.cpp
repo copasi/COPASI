@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CEigen.cpp,v $
-   $Revision: 1.42 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/08/24 14:57:45 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CEigen.cpp,v $
+//   $Revision: 1.43 $
+//   $Name:  $
+//   $Author: ssahle $
+//   $Date: 2007/07/02 16:11:37 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -54,6 +54,12 @@ CEigen::CEigen(const std::string & name,
     mNzero(0),
     mStiffness(0),
     mHierarchy(0),
+
+    mMaxRealOfComplex(0.0),
+    mImagOfMaxComplex(0.0),
+    mFreqOfMaxComplex(0.0),
+    mOscillationIndicator(0.0),
+
     mResolution(0),
     mJobvs('N'),
     mSort('N'),
@@ -88,6 +94,12 @@ CEigen::CEigen(const CEigen & src,
     mNzero(src.mNzero),
     mStiffness(src.mStiffness),
     mHierarchy(src.mHierarchy),
+
+    mMaxRealOfComplex(src.mMaxRealOfComplex),
+    mImagOfMaxComplex(src.mImagOfMaxComplex),
+    mFreqOfMaxComplex(src.mFreqOfMaxComplex),
+    mOscillationIndicator(src.mOscillationIndicator),
+
     mResolution(src.mResolution),
     mJobvs(src.mSort),
     mSort(src.mSort),
@@ -135,6 +147,11 @@ void CEigen::initObjects()
   addObjectReference("Resolution", mResolution, CCopasiObject::ValueDbl);
   addVectorReference("Vector of real part of eigenvalues", mR, CCopasiObject::ValueDbl);
   addVectorReference("Vector of imaginary part of eigenvalues", mI, CCopasiObject::ValueDbl);
+
+  addObjectReference("Maximum real part of complex eigenvalue", mMaxRealOfComplex, CCopasiObject::ValueDbl);
+  addObjectReference("Imaginary part of largest complex eigenvalue", mImagOfMaxComplex, CCopasiObject::ValueDbl);
+  addObjectReference("Linear Frequency of largest complex eigenvalue", mFreqOfMaxComplex, CCopasiObject::ValueDbl);
+  addObjectReference("Oscillation indicator", mOscillationIndicator, CCopasiObject::ValueDbl);
 }
 
 /**
@@ -230,20 +247,20 @@ void CEigen::calcEigenValues(const CMatrix< C_FLOAT64 > & matrix)
 
   // Querry for the work array size.
   mLWork = -1;
-  dgees_(&mJobvs,        // 'N'
-         &mSort,         // 'N'
-         NULL,           // NULL,
-         &mN,            // n,
+  dgees_(&mJobvs, // 'N'
+         &mSort, // 'N'
+         NULL, // NULL,
+         &mN, // n,
          mA.array(),
          & mLDA,
-         & mSdim,        // output
+         & mSdim, // output
          mR.array(),
          mI.array(),
          mpVS,
          & mLdvs,
          mWork.array(),
          & mLWork,
-         mpBWork,        // NULL
+         mpBWork, // NULL
          &mInfo);        // output
 
   mLWork = (C_INT) mWork[0];
@@ -361,20 +378,20 @@ void CEigen::calcEigenValues(const CMatrix< C_FLOAT64 > & matrix)
    *                   could also be caused by underflow due to scaling.
    *
    */
-  dgees_(&mJobvs,        // 'N'
-         &mSort,         // 'N'
-         NULL,           // NULL,
-         &mN,            // n,
+  dgees_(&mJobvs, // 'N'
+         &mSort, // 'N'
+         NULL, // NULL,
+         &mN, // n,
          mA.array(),
          & mLDA,
-         & mSdim,        // output
+         & mSdim, // output
          mR.array(),
          mI.array(),
          mpVS,
          & mLdvs,
          mWork.array(),
          & mLWork,
-         mpBWork,        // NULL
+         mpBWork, // NULL
          &mInfo);        // output
 
   if (mInfo) fatalError();
@@ -408,7 +425,9 @@ void CEigen::stabilityAnalysis(const C_FLOAT64 & resolution)
 
   // calculate various eigenvalue statistics
   mMaxrealpart = mR[0];
+  mMaxRealOfComplex = mR[mN - 1] - 1;
   mMaximagpart = fabs(mI[0]);
+  mImagOfMaxComplex = 0.0;
 
   for (i = 0; i < mN; i++)
     {
@@ -418,6 +437,13 @@ void CEigen::stabilityAnalysis(const C_FLOAT64 & resolution)
       // for the largest imaginary part
       if (fabs(mI[i]) > mMaximagpart)
         mMaximagpart = fabs(mI[i]);
+
+      // for the largest complex eigenvalue
+      if ((fabs(mI[i]) > resolution) && (mR[i] > mMaxRealOfComplex))
+        {
+          mMaxRealOfComplex = mR[i];
+          mImagOfMaxComplex = fabs(mI[i]);
+        }
 
       if (fabs(mR[i]) > resolution)
         {
@@ -456,6 +482,11 @@ void CEigen::stabilityAnalysis(const C_FLOAT64 & resolution)
         }
     }
 
+  if (mImagOfMaxComplex == 0)
+    mMaxRealOfComplex = mR[mN - 1]; //default value
+
+  mFreqOfMaxComplex = mImagOfMaxComplex / (2 * M_PI);
+
   if (mNposreal > 0)
     {
       if (mR[0] > fabs(mR[mN - 1]))
@@ -486,6 +517,9 @@ void CEigen::stabilityAnalysis(const C_FLOAT64 & resolution)
         tott += fabs(1 / mR[i]);
       }
   mHierarchy = distt / tott / (mN - 1);
+
+  //TODO add some metric that indicates the possibility of oscillations
+  mOscillationIndicator = 0.0;
 }
 
 /**
@@ -567,6 +601,11 @@ std::ostream &operator<<(std::ostream &os, const CEigen &A)
   // Output Max imaginary Part
   os << " Largest absolute imaginary part:  ";
   os << std::setprecision(6) << A.mMaximagpart << std::endl;
+
+  if (A.mImagOfMaxComplex > A.mResolution)
+    os << " The complex eigenvalues with the largest real part are:  "
+    << A.mMaxRealOfComplex << " +|- " << A.mImagOfMaxComplex << "i" << std::endl;
+
   // Output Eigen-nreal
   os.unsetf(std::ios_base::scientific);
   os.unsetf(std::ios_base::showpoint);

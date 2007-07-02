@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CEigen.h,v $
-   $Revision: 1.29 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/08/09 21:05:48 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CEigen.h,v $
+//   $Revision: 1.30 $
+//   $Name:  $
+//   $Author: ssahle $
+//   $Date: 2007/07/02 16:11:37 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -85,6 +85,27 @@ class CEigen: public CCopasiContainer
      * the hierary of the eigenvalues
      */
     C_FLOAT64 mHierarchy;
+
+    /**
+     * largest real part of a complex eigenvalue.
+     * If there is no complex eigenvalue it will be the smallest ev.
+     */
+    C_FLOAT64 mMaxRealOfComplex;
+
+    /**
+     * imaginary part of complex with largest real part
+     */
+    C_FLOAT64 mImagOfMaxComplex;
+
+    /**
+     * frequency of complex with largest real part
+     */
+    C_FLOAT64 mFreqOfMaxComplex;
+
+    /**
+     * An index that is supposed to indicate the presence of oscillations
+     */
+    C_FLOAT64 mOscillationIndicator;
 
     /**
      * The resolution of needed for the stability analysis
