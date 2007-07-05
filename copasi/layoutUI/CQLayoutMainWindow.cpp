@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/07/02 08:59:30 $
+//   $Author: urost $
+//   $Date: 2007/07/05 16:29:10 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -88,8 +88,8 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
   timeSlider->setValue(0.0);
   //timeSlider->setTickmarks(QSlider::Below);
   timeSlider->setDisabled(TRUE);
-  connect(timeSlider, SIGNAL(valueChanged(int)),
-          this, SLOT(showStep(int)));
+  connect(timeSlider, SIGNAL(valueChanged(double)),
+          this, SLOT(showStep(double)));
   bottomBox->addWidget(timeSlider);
   bottomWidget = new QWidget(this);
 
@@ -244,9 +244,10 @@ void CQLayoutMainWindow::showAnimation()
   glPainter->runAnimation();
 }
 
-void CQLayoutMainWindow::showStep(int i)
+void CQLayoutMainWindow::showStep(double i)
 {
-  glPainter->showStep(i);
+
+  glPainter->showStep((int) i);
   glPainter->updateGL();
 }
 

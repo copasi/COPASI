@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/ParaPanel.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/06/04 13:28:16 $
+//   $Author: urost $
+//   $Date: 2007/07/05 16:29:10 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,8 +13,8 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'ParaPanel.ui'
  **
- ** Created: Mo Jun 4 11:03:39 2007
- **      by: The User Interface Compiler ($Id: ParaPanel.cpp,v 1.1 2007/06/04 13:28:16 ssahle Exp $)
+ ** Created: Thu Jul 5 18:15:01 2007
+ **      by: The User Interface Compiler ($Id: ParaPanel.cpp,v 1.2 2007/07/05 16:29:10 urost Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
