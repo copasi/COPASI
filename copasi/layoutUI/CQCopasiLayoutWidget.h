@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/Attic/CQCopasiLayoutWidget.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: urost $
-//   $Date: 2007/07/06 10:17:32 $
+//   $Author: ssahle $
+//   $Date: 2007/07/06 11:54:16 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,9 +19,9 @@
 //#include <qvbox.h>
 #include "UI/copasiWidget.h"
 //#include "mathematics.h"
-#include "CQLayoutMainWindow.h"
+//#include "CQLayoutMainWindow.h"
 
-//class CQLayoutMainWindow;
+class CQLayoutMainWindow;
 class QGridLayout;
 //class QLineEdit;
 class QLabel;

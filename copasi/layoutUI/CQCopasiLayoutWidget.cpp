@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/Attic/CQCopasiLayoutWidget.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: urost $
-//   $Date: 2007/07/06 10:17:37 $
+//   $Author: ssahle $
+//   $Date: 2007/07/06 11:54:16 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,7 +19,8 @@
 #include "copasi.h"
 
 #include "CQCopasiLayoutWidget.h"
-//#include "CQLayoutMainWindow.h"
+#include "CQLayoutMainWindow.h"
+
 /**
  *  Constructs a CQCopasiLayoutWidget which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
