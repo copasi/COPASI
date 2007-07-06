@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /home/cvs/copasi_dev/cvs_admin/addHeader,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/01/12 14:07:01 $
+//   $Date: 2007/05/31 18:21:38 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,8 +13,8 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQTSSAResultSubWidget.ui'
  **
- ** Created: Mo Mai 21 14:17:30 2007
- **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.7   edited Aug 31 2005 $)
+ ** Created: Thu May 31 17:59:25 2007
+ **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.6   edited Aug 31 2005 $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
