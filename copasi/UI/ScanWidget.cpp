@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ScanWidget.cpp,v $
-//   $Revision: 1.201 $
+//   $Revision: 1.202 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/06/04 16:15:31 $
+//   $Date: 2007/07/07 21:13:51 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,17 +13,12 @@
 //***  In this file I have put "//+++" in all places where something has to be added
 //***  if a new scan item is introduced.
 
-//#include <qfiledialog.h>
-//#include <qvariant.h>
-#include <qcheckbox.h>
 #include <qlabel.h>
 #include <qpushbutton.h>
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
-//#include <qmessagebox.h>
 #include <qcombobox.h>
-#include <qapplication.h>
 #include <qlineedit.h>
 
 #include "copasi.h"
@@ -32,19 +27,13 @@
 #include "scan/CScanTask.h"
 #include "scan/CScanProblem.h"
 #include "scan/CScanMethod.h"
-#include "model/CModel.h"
-#include "listviews.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
-#include "ObjectBrowserDialog.h"
-#include "ObjectBrowserItem.h"
-#include "DefaultplotDialog.h"
-#include "copasiui3window.h"
-#include "CReportDefinitionSelect.h"
+
+#include "CQTaskHeaderWidget.h"
+#include "CQTaskBtnWidget.h"
 
 #include "report/CKeyFactory.h"
 #include "qtUtilities.h"
-#include "CProgressBar.h"
-#include "utilities/CCopasiException.h"
 #include "CScanContainerWidget.h"
 #include "utilities/CopasiTime.h"
 
@@ -58,8 +47,7 @@
 #include "./icons/scanwidgetbuttonicon.xpm"
 
 ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
-    : CopasiWidget(parent, name, f),
-    pParent(parent)
+    : TaskWidget(parent, name, f)
 {
   if (!name)
     setName("ScanWidget");
@@ -67,42 +55,16 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
   setCaption(trUtf8("ScanWidget"));
   ScanWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "ScanWidgetLayout");
 
+  mpHeaderWidget->setTaskName("Parameter Scan");
+
+  ScanWidgetLayout->addWidget(mpHeaderWidget, 0, 0);
+  ScanWidgetLayout->addWidget(mpBtnWidget, 3, 0);
+
   //*****************
 
   QHBoxLayout* tmpLayout = new QHBoxLayout();
 
-  taskNameLabel = new QLabel(this, "taskNameLabel");
-  //taskNameLabel->setText(trUtf8("Task Name"));
-  taskNameLabel->setText(trUtf8("<h2>Parameter Scan</h2>"));
-  taskNameLabel->setAlignment(int(QLabel::AlignVCenter
-                                  | QLabel::AlignLeft));
-  //SteadyStateWidgetLayout->addWidget(taskNameLabel, 0, 0);
-  tmpLayout->addWidget(taskNameLabel);
-
   QSpacerItem* tmpSpacer = new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  tmpLayout->addItem(tmpSpacer);
-
-  bExecutable = new QCheckBox(this, "bExecutable");
-  bExecutable->setText(trUtf8("executable"));
-  // this is the child widget to edit an steadystatetask
-  bExecutable->setChecked(parent == NULL);
-  bExecutable->setEnabled(parent != NULL);
-  //SteadyStateWidgetLayout->addWidget(bExecutable, 0, 2);
-  tmpLayout->addWidget(bExecutable);
-
-  ScanWidgetLayout->addMultiCellLayout(tmpLayout, 0, 0, 0, 2);
-
-  //***********
-
-  //TextLabel1 = new QLabel(this, "TextLabel1");
-  //TextLabel1->setText("<h2>Parameter Scan</h2>");
-  //ScanWidgetLayout->addWidget(TextLabel1, 0, 0);
-
-  //**********************
-
-  tmpLayout = new QHBoxLayout();
-
-  tmpSpacer = new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum);
   tmpLayout->addItem(tmpSpacer);
 
   QLabel* tmpLabel = new QLabel(this);
@@ -122,33 +84,7 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
   //ScanWidgetLayout->addWidget(buttonNewItem, 1, 2);
   tmpLayout->addWidget(buttonNewItem);
 
-  ScanWidgetLayout->addMultiCellLayout(tmpLayout, 1, 1, 0, 2);
-
-  //sExecutable = new QCheckBox(this, "sExecutable");
-  //sExecutable->setText(trUtf8("Scan Executable"));
-
-  //ScanWidgetLayout->addWidget(sExecutable, 0, 2);
-
-  //**********************
-  Layout2 = new QHBoxLayout(0, 0, 6, "Layout2");
-
-  scanButton = new QPushButton(this, "scanButton");
-  scanButton->setText(trUtf8("Run"));
-  Layout2->addWidget(scanButton);
-
-  cancelChange = new QPushButton(this, "cancelChange");
-  cancelChange->setText(trUtf8("Revert"));
-  Layout2->addWidget(cancelChange);
-
-  reportDefinitionButton = new QPushButton(this, "ReportDefinition");
-  reportDefinitionButton->setText(trUtf8("Report"));
-  Layout2->addWidget(reportDefinitionButton);
-
-  outputDefinitionButton = new QPushButton(this, "OutputDefinition");
-  outputDefinitionButton->setText(trUtf8("Output Assistant"));
-  Layout2->addWidget(outputDefinitionButton);
-
-  ScanWidgetLayout->addMultiCellLayout(Layout2, 6, 6, 0, 2);
+  ScanWidgetLayout->addLayout(tmpLayout, 1, 0);
 
   //*****************************
 
@@ -157,48 +93,207 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
   scrollview = new CScanContainerWidget(this);
   Layout24->addWidget(scrollview);
 
-  ScanWidgetLayout->addMultiCellLayout(Layout24, 4, 4, 0, 2);
+  ScanWidgetLayout->addLayout(Layout24, 2, 0);
 
   // tab order
   /*setTabOrder(taskName, sExecutable);
-  setTabOrder(sExecutable, steadyState);
-  setTabOrder(steadyState, trajectory);
-  setTabOrder(trajectory, addButton);
-  setTabOrder(downButton, scrollview);
-  setTabOrder(scrollview, ObjectListBox);
-  setTabOrder(ObjectListBox, scanButton);
-  setTabOrder(scanButton, cancelChange);
-  setTabOrder(cancelChange, reportDefinitionButton);*/
+  setTabOrder(sExecutable, steadyState);*/
 
-  connect(scanButton, SIGNAL(clicked()), this, SLOT(runScanTask()));
-  connect(cancelChange, SIGNAL(clicked()), this, SLOT(CancelChangeButton()));
-  connect(reportDefinitionButton, SIGNAL(clicked()), this, SLOT(ReportDefinitionClicked()));
-  connect(outputDefinitionButton, SIGNAL(clicked()), this, SLOT(outputDefinitionClicked()));
   connect(buttonNewItem, SIGNAL(clicked()), this, SLOT(slotAddItem()));
-
-  //connect(sExecutable, SIGNAL(clicked()), this, SLOT(ScanCheckBoxClicked()));
-
-  /*sExecutable->setEnabled(false);
-  scanButton->setEnabled(true);*/
-
-  //reportDefinitionButton->setEnabled(false);
 }
 
 ScanWidget::~ScanWidget()
 {}
 
-void ScanWidget::CancelChangeButton()
+bool ScanWidget::runTask()
 {
-  loadScan();
+  if (!commonBeforeRunTask()) return false;
+
+  bool success = true;
+  if (!commonRunTask()) success = false;
+
+  if (!commonAfterRunTask()) success = false;
+
+  //   StateWidget *pResult = dynamic_cast< StateWidget * >(pListView->findWidgetFromId(211));
+  //   if (pResult) pResult->loadFromBackend();
+  //
+  //   if (success && isShown()) pListView->switchToOtherWidget(211, ""); //change to the results window
+
+  //TODO: is this necessary?
+  //scanTask->restore();
+
+  return success;
 }
 
-void ScanWidget::ScanCheckBoxClicked()
-{
-  /*  CScanTask* scanTask =
-      dynamic_cast< CScanTask * >(GlobalKeys.get(scanTaskKey));
-    scanTask->setRequested(sExecutable->isChecked());
-    scanButton->setEnabled(sExecutable->isChecked());*/
-}
+// void ScanWidget::runScanTask()
+// {
+//   CScanTask* scanTask =
+//     dynamic_cast< CScanTask * >(GlobalKeys.get(scanTaskKey));
+//   if (!scanTask) return;
+//
+//   //******** this is from commonBeforeRunTask() ************
+//
+//   // save the state of the widget
+//   if (!saveScan()) //+++
+//     {
+//       CQMessageBox::critical(this, "Simulation Error",
+//                              CCopasiMessage::getAllMessageText().c_str(),
+//                              QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+//       return ;//false;
+//}
+//
+//   if (!scanTask) return;// false; //+++
+//
+//   //set mouse cursor
+//   setCursor(Qt::WaitCursor);
+//
+//   //handle autosave feature
+//   static_cast<CopasiUI3Window *>(qApp->mainWidget())->autoSave();
+//   static_cast<CopasiUI3Window *>(qApp->mainWidget())->suspendAutoSave(true);
+//
+//   //create progress bar
+//   CProgressBar * tmpBar = new CProgressBar();
+//   scanTask->setCallBack(tmpBar);
+//
+//   CCopasiMessage::clearDeque();
+//   //return true;
+//
+//   //********** this is from commonRunTask() **************
+//
+//   bool success = true;
+//
+//   // Initialize the task
+//   try
+//     {
+//       if (!scanTask->initialize(CCopasiTask::OUTPUT_COMPLETE, NULL))
+//         throw CCopasiException(CCopasiMessage::peekLastMessage());
+//}
+//
+//   catch (CCopasiException Exception)
+//     {
+//       if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
+//         {
+//           tmpBar->finish();
+//           CQMessageBox::critical(this, "Initialization Error",
+//                                  CCopasiMessage::getAllMessageText().c_str(),
+//                                  QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+//
+//           success = false;
+//           goto finish;
+//}
+//}
+//
+//   if (CCopasiMessage::getHighestSeverity() > CCopasiMessage::ERROR)
+//     {
+//       tmpBar->finish();
+//       CQMessageBox::critical(this, "Initialization Error",
+//                              CCopasiMessage::getAllMessageText().c_str(),
+//                              QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+//
+//       success = false;
+//       goto finish;
+//}
+//
+//   if (CCopasiMessage::getHighestSeverity() > CCopasiMessage::COMMANDLINE)
+//     {
+//       C_INT Result =
+//         CQMessageBox::question(this, "Initialization Warning",
+//                                CCopasiMessage::getAllMessageText().c_str(),
+//                                QMessageBox::Ignore | QMessageBox::Default,
+//                                QMessageBox::Abort | QMessageBox::Escape);
+//
+//       if (Result == 1)
+//         {
+//           success = false;
+//           goto finish;
+//}
+//}
+//
+//   CCopasiMessage::clearDeque();
+//
+//   // Execute the task
+//   try
+//     {
+//       if (!scanTask->process(true))
+//         throw CCopasiException(CCopasiMessage::peekLastMessage());
+//}
+//
+//   catch (CCopasiException Exception)
+//     {
+//       if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
+//         {
+//           tmpBar->finish();
+//           CQMessageBox::critical(this, "Calculation Error", CCopasiMessage::getAllMessageText().c_str(),
+//                                  QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+//}
+//
+//       success = false;
+//       goto finish;
+//}
+//
+//   if (CCopasiMessage::getHighestSeverity() > CCopasiMessage::COMMANDLINE)
+//     {
+//       CQMessageBox::information(this, "Calculation Warning",
+//                                 CCopasiMessage::getAllMessageText().c_str(),
+//                                 QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+//}
+//
+// finish:
+//
+//   CCopasiMessage::clearDeque();
+//
+//   try {scanTask->restore();}
+//
+//   catch (CCopasiException Exception)
+//     {
+//       if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
+//         {
+//           tmpBar->finish();
+//           CQMessageBox::critical(this, "Calculation Error", CCopasiMessage::getAllMessageText().c_str(),
+//                                  QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+//           CCopasiMessage::clearDeque();
+//}
+//}
+//
+//   catch (...) {}
+//
+//   if (CCopasiMessage::getHighestSeverity() > CCopasiMessage::COMMANDLINE)
+//     {
+//       C_INT Result =
+//         CQMessageBox::information(this, "Calculation Warning",
+//                                   CCopasiMessage::getAllMessageText().c_str(),
+//                                   QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+//}
+//
+//   CCopasiMessage::clearDeque();
+//
+//   //return success;
+//
+//   // this is from commonAfterRunTask()
+//
+//   if (!scanTask) return;// false;
+//
+//   if (tmpBar)
+//     {
+//       tmpBar->finish();
+//       pdelete(tmpBar);
+//}
+//   scanTask->setCallBack(NULL);
+//
+//   CCopasiMessage::clearDeque();
+//
+//   CCopasiDataModel::Global->finish();
+//   protectedNotify(ListViews::STATE, ListViews::CHANGE, CCopasiDataModel::Global->getModel()->getKey());
+//   unsetCursor();
+//   static_cast<CopasiUI3Window *>(qApp->mainWidget())->suspendAutoSave(false);
+//
+//   //return
+//   loadScan();
+//
+//
+//}
+
+#ifdef XXXX
 
 void ScanWidget::runScanTask()
 {
@@ -253,18 +348,18 @@ void ScanWidget::runScanTask()
   return;
 }
 
-bool ScanWidget::loadScan()
+#endif
+
+bool ScanWidget::loadTask()
 {
+  loadCommon();
+
   CScanTask* scanTask =
-    dynamic_cast< CScanTask * >(GlobalKeys.get(scanTaskKey));
+    dynamic_cast< CScanTask * >(GlobalKeys.get(mObjectKey));
   if (!scanTask) return false;
 
   CScanProblem *scanProblem = dynamic_cast<CScanProblem *>(scanTask->getProblem());
   if (!scanProblem) return false;
-
-  bExecutable->setChecked(scanTask->isScheduled());
-
-  mModel = scanProblem->getModel();
 
   scrollview->clearWidgetList();
 
@@ -404,138 +499,51 @@ bool ScanWidget::slotAddItem()
   return true;
 }
 
-bool ScanWidget::saveScan() const
-  {
-    CScanTask* scanTask =
-      dynamic_cast< CScanTask * >(GlobalKeys.get(scanTaskKey));
-    if (!scanTask) return false;
-
-    CScanProblem *scanProblem = dynamic_cast<CScanProblem *>(scanTask->getProblem());
-    if (!scanProblem) return false;
-
-    //set the executable flag
-    bool bScheduled = bExecutable->isChecked();
-    scanTask->setScheduled(bScheduled);
-
-    scanProblem->clearScanItems();
-
-    const std::vector<QWidget*> & widgetList = scrollview->getWidgetList();
-
-    unsigned C_INT32 i, imax = widgetList.size();
-    for (i = 0; i < imax; ++i)
-      {
-        //+++
-
-        // item: scan parameter
-        const CScanWidgetScan* tmp1 = dynamic_cast<CScanWidgetScan*>(widgetList[i]);
-        if (tmp1) {tmp1->saveToScanItem(scanProblem); continue;}
-
-        // item: repeat
-        const CScanWidgetRepeat* tmp2 = dynamic_cast<CScanWidgetRepeat*>(widgetList[i]);
-        if (tmp2) {tmp2->saveToScanItem(scanProblem); continue;}
-
-        // item: random
-        const CScanWidgetRandom* tmp3 = dynamic_cast<CScanWidgetRandom*>(widgetList[i]);
-        if (tmp3) {tmp3->saveToScanItem(scanProblem); continue;}
-
-        // item: break
-        /*const CScanWidgetBreak* tmp4 = dynamic_cast<CScanWidgetBreak*>(widgetList[i]);
-        if (tmp4) {tmp4->saveToScanItem(scanProblem); continue;}*/
-
-        // the subtask
-        const CScanWidgetTask* tmpT = dynamic_cast<CScanWidgetTask*>(widgetList[i]);
-        if (tmpT) {tmpT->saveToScanProblem(scanProblem); continue;}
-
-        return false;
-      }
-
-    // :TODO Bug 322: This should only be called when actual changes have been saved.
-    CCopasiDataModel::Global->changed();
-
-    return true;
-  }
-
-void ScanWidget::ReportDefinitionClicked()
+bool ScanWidget::saveTask()
 {
-  CScanTask* task =
-    dynamic_cast< CScanTask * >(GlobalKeys.get(scanTaskKey));
-  assert(task);
+  saveCommon();
 
-  CReportDefinitionSelect * pSelectDlg = new CReportDefinitionSelect(pParent);
-  pSelectDlg->setReport(&task->getReport());
-  pSelectDlg->loadReportDefinitionVector();
-  pSelectDlg->exec();
-
-  delete pSelectDlg;
-}
-
-void ScanWidget::outputDefinitionClicked()
-{
-  CCopasiTask* task =
-    dynamic_cast< CCopasiTask * >(GlobalKeys.get(scanTaskKey));
-  assert(task);
-
-  DefaultPlotDialog * pDlg = new DefaultPlotDialog(this);
-  pDlg->setTask(task);
-  if (pDlg->exec() == QDialog::Accepted)
-    {
-      //std::cout << "plot created" << std::endl;
-      protectedNotify(ListViews::PLOT, ListViews::ADD, "");
-    }
-  else
-    {
-      //std::cout << "no plot created" << std::endl;
-    }
-
-  if (pDlg)delete pDlg;
-}
-
-//************* CCopasiWidget interface *******************************
-
-bool ScanWidget::enter(const std::string & key)
-{
   CScanTask* scanTask =
-    dynamic_cast< CScanTask * >(GlobalKeys.get(key));
+    dynamic_cast< CScanTask * >(GlobalKeys.get(mObjectKey));
   if (!scanTask) return false;
 
-  scanTaskKey = key;
+  CScanProblem *scanProblem = dynamic_cast<CScanProblem *>(scanTask->getProblem());
+  if (!scanProblem) return false;
 
-  //pSteadyStateWidget->enter(SteadyStateKey);
-  //pTrajectoryWidget->enter(TrajectoryKey);
+  scanProblem->clearScanItems();
 
-  // ((CScanProblem*)(scanTask->getProblem()))->createDebugScan(dataModel->getModel());
+  const std::vector<QWidget*> & widgetList = scrollview->getWidgetList();
 
-  loadScan();
-
-  return true;
-}
-
-bool ScanWidget::leave()
-{
-  //CScanTask* scanTask =
-  //  dynamic_cast< CScanTask * >(GlobalKeys.get(scanTaskKey));
-  //if (!scanTask) return false;
-
-  return saveScan();
-}
-
-bool ScanWidget::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
-{
-  if (mIgnoreUpdates) return true;
-
-  switch (objectType)
+  unsigned C_INT32 i, imax = widgetList.size();
+  for (i = 0; i < imax; ++i)
     {
-    case ListViews::MODEL:
-      // check if there is a list of Report Defs
-      CReportDefinitionVector* pReportDefinitionVector;
-      pReportDefinitionVector = CCopasiDataModel::Global->getReportDefinitionList();
-      if (pReportDefinitionVector)
-        reportDefinitionButton->setEnabled(true);
-      break;
-    default:
-      break;
+      //+++
+
+      // item: scan parameter
+      const CScanWidgetScan* tmp1 = dynamic_cast<CScanWidgetScan*>(widgetList[i]);
+      if (tmp1) {tmp1->saveToScanItem(scanProblem); continue;}
+
+      // item: repeat
+      const CScanWidgetRepeat* tmp2 = dynamic_cast<CScanWidgetRepeat*>(widgetList[i]);
+      if (tmp2) {tmp2->saveToScanItem(scanProblem); continue;}
+
+      // item: random
+      const CScanWidgetRandom* tmp3 = dynamic_cast<CScanWidgetRandom*>(widgetList[i]);
+      if (tmp3) {tmp3->saveToScanItem(scanProblem); continue;}
+
+      // item: break
+      /*const CScanWidgetBreak* tmp4 = dynamic_cast<CScanWidgetBreak*>(widgetList[i]);
+      if (tmp4) {tmp4->saveToScanItem(scanProblem); continue;}*/
+
+      // the subtask
+      const CScanWidgetTask* tmpT = dynamic_cast<CScanWidgetTask*>(widgetList[i]);
+      if (tmpT) {tmpT->saveToScanProblem(scanProblem); continue;}
+
+      return false;
     }
+
+  // :TODO Bug 322: This should only be called when actual changes have been saved.
+  CCopasiDataModel::Global->changed();
+
   return true;
 }
-
-//***********************************************************
