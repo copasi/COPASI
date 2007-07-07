@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanProblem.h,v $
-   $Revision: 1.28 $
-   $Name:  $
-   $Author: ssahle $
-   $Date: 2006/06/29 09:01:19 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanProblem.h,v $
+//   $Revision: 1.29 $
+//   $Name:  $
+//   $Author: ssahle $
+//   $Date: 2007/07/07 21:22:13 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -108,8 +108,6 @@ class CScanProblem : public CCopasiProblem
     CCopasiParameterGroup* createScanItem(CScanProblem::Type type, unsigned C_INT32 steps = 5, const CCopasiObject* obj = NULL);
 
     void clearScanItems();
-
-    //void createDebugScan(CModel* model);
 
     /**
      * Load a scan problem

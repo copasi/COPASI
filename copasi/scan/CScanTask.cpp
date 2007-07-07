@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.cpp,v $
-//   $Revision: 1.65 $
+//   $Revision: 1.66 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/02/12 14:28:48 $
+//   $Author: ssahle $
+//   $Date: 2007/07/07 21:22:13 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -66,6 +66,8 @@ bool CScanTask::initialize(const OutputFlag & of,
 {
   assert(mpProblem && mpMethod);
 
+  mpMethod->isValidProblem(mpProblem);
+
   bool success = true;
   if (!CCopasiTask::initialize(of, pOstream)) success = false;
 
@@ -86,7 +88,7 @@ bool CScanTask::process(const bool & /* useInitialValues */)
   if (!mpProblem) fatalError();
   if (!mpMethod) fatalError();
 
-  mpMethod->isValidProblem(mpProblem);
+  //mpMethod->isValidProblem(mpProblem);
 
   CScanProblem * pProblem = dynamic_cast<CScanProblem *>(mpProblem);
   if (!pProblem) fatalError();
