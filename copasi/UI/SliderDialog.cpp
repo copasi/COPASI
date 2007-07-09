@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-//   $Revision: 1.67 $
+//   $Revision: 1.68 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/05/15 12:36:53 $
+//   $Author: ssahle $
+//   $Date: 2007/07/09 08:47:17 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -561,7 +561,7 @@ void SliderDialog::runScanTask()
   if (pParentWindow)
     {
       pParentWindow->getScanWidget()->enter((*CCopasiDataModel::Global->getTaskList())["Scan"]->getKey());
-      pParentWindow->getScanWidget()->runScanTask();
+      pParentWindow->getScanWidget()->runTask();
     }
 }
 
