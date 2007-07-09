@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/07/05 16:29:10 $
+//   $Date: 2007/07/09 11:01:29 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,7 +35,8 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
   QSplitter *splitter = new QSplitter(Qt::Horizontal, this);
   splitter->setCaption("Test");
 
-  QBoxLayout * mainBox = new QVBoxLayout(this);
+  mainWidget = new QWidget;
+  mainBox = new QVBoxLayout(mainWidget);
   mainBox->addWidget(splitter);
 
   //QLabel *label = new QLabel(splitter, "Test Label", 0);
@@ -81,22 +82,27 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
 
   // create slider
   //timeSlider = new QSlider(Qt::Horizontal, splitter);
-  QBoxLayout * bottomBox = new QHBoxLayout(this);
+  //bottomBox = new QHBoxLayout(mainBox);
+  bottomBox = new QHBox(mainWidget);
+  //bottomBox->setMinimumHeight(15);
+  //bottomBox->setMinimumWidth(100);
 
-  timeSlider = new QwtSlider(this, Qt::Horizontal, QwtSlider::TopScale, QwtSlider::BgTrough);
+  timeSlider = new QwtSlider(bottomBox, Qt::Horizontal, QwtSlider::TopScale, QwtSlider::BgTrough);
   timeSlider->setRange(0, 100, 1, 0);
   timeSlider->setValue(0.0);
   //timeSlider->setTickmarks(QSlider::Below);
   timeSlider->setDisabled(TRUE);
   connect(timeSlider, SIGNAL(valueChanged(double)),
           this, SLOT(showStep(double)));
-  bottomBox->addWidget(timeSlider);
-  bottomWidget = new QWidget(this);
+  //bottomBox->addWidget(timeSlider);
+  //bottomWidget = new QWidget(this);
+
+  mainBox->addWidget(bottomBox);
 
   //QBoxLayout * bottomBox = new QHBoxLayout(timeSlider);
   //this->addWidget(bottomWidget);
 
-  setCentralWidget(this);
+  setCentralWidget(mainWidget);
   this->show();
   //glPainter->drawGraph();
 }

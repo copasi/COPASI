@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.h,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/07/05 16:29:10 $
+//   $Date: 2007/07/09 11:01:19 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,6 +26,7 @@
 #include <qsplitter.h>
 #include <qlayout.h>
 #include <qwidget.h>
+#include <qhbox.h>
 //#include <qslider.h>
 //#include <qwt_slider.h>
 
@@ -83,9 +84,11 @@ class CQLayoutMainWindow : public QMainWindow
     QwtSlider *timeSlider;
 
     // mainBox contains topBox and bottomBox
-    QHBoxLayout *bottomBox;
+    QHBox *bottomBox;
+    //QHBoxLayout *bottomBox;
     QVBoxLayout *mainBox;
-    QWidget *bottomWidget;
+    QWidget *mainWidget;
+    //QWidget *bottomWidget;
   };
 
 #endif /*SIMGUI_H_*/
