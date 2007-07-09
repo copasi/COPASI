@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModelValuesWidget.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/03/16 19:55:37 $
+//   $Author: ssahle $
+//   $Date: 2007/07/09 13:03:36 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -177,7 +177,8 @@ void ModelValuesWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* o
   if (!pMV) return;
 
   CModelEntity::Status OldStatus = pMV->getStatus();
-  pMV->setStatus((CModelEntity::Status) mItemToType[static_cast<QComboTableItem *>(table->item(row, COL_TYPE))->currentItem()]);
+  if (dynamic_cast<QComboTableItem *>(table->item(row, COL_TYPE)))
+    pMV->setStatus((CModelEntity::Status) mItemToType[static_cast<QComboTableItem *>(table->item(row, COL_TYPE))->currentItem()]);
 
   if (pMV->getStatus() != CModelEntity::ASSIGNMENT &&
       OldStatus != CModelEntity::ASSIGNMENT)
