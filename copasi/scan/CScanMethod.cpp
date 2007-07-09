@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanMethod.cpp,v $
-//   $Revision: 1.49 $
+//   $Revision: 1.50 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/07/07 21:22:13 $
+//   $Date: 2007/07/09 16:15:23 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -177,6 +177,12 @@ bool CScanItemLinear::isValidScanItem()
 {
   if (!CScanItem::isValidScanItem()) return false;
 
+  if (!mpValue)
+    {
+      CCopasiMessage(CCopasiMessage::EXCEPTION, "Invalid or missing scan parameter.");
+      return false;
+    }
+
   if (mLog)
     {
       if ((mMin <= 0) || (mMax <= 0))
@@ -247,6 +253,29 @@ void CScanItemRandom::step()
 
   if (mpValue) mpValue->setObjectValue(Value);
   ++mIndex;
+}
+
+bool CScanItemRandom::isValidScanItem()
+{
+  if (!CScanItem::isValidScanItem()) return false;
+
+  if (!mpValue)
+    {
+      CCopasiMessage(CCopasiMessage::EXCEPTION, "Invalid or missing scan parameter.");
+      return false;
+    }
+
+  //   if (mLog)
+  //     {
+  //       if ((mMin <= 0) || (mMax <= 0))
+  //         {
+  //           //not a valid range for log
+  //           CCopasiMessage(CCopasiMessage::EXCEPTION, "Only positive values for min and max are possible\nfor a logarithmic scan.");
+  //           return false;
+  //}
+  //}
+
+  return true;
 }
 
 //*******

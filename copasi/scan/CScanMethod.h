@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanMethod.h,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.33 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/07/07 21:22:13 $
+//   $Date: 2007/07/09 16:15:23 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -125,6 +125,7 @@ class CScanItemRandom: public CScanItem
 
     void step();
     virtual bool isNesting() const {return false;};
+    virtual bool isValidScanItem();
   };
 
 //***********************************+
