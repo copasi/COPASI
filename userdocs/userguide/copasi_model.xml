@@ -1,10 +1,10 @@
 <chapter id="model" xreflabel="Model">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_model.xml,v $ -->
-<!--   $Revision: 1.3 $ -->
+<!--   $Revision: 1.3.6.1 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: shoops $ -->
-<!--   $Date: 2007/03/30 14:10:23 $ -->
+<!--   $Date: 2007/07/10 16:36:25 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -69,15 +69,34 @@ if any reversible reactions are involved.
 </para>
 </sect1>
 
-<sect1 id="GlobalParameters" xreflabel="Global Parameters">
-<title>Global Parameters</title>
+<sect1 id="GlobalQuantities" xreflabel="Global Quantities">
+<title>Global Quantities</title>
 <para>
-The model also contains a list of global parameters. In this version of COPASI
-they are always constant. They can be used as kinetic parameters in reactions.
-The main use is if you want to use the same kinetic parameter in several
-reactions, or if you want to change several parameters synchronously e.g. in a
-parameter scan.
+The model also contains a list of global quantities. Roughly speaking the global quantities can be used to describe values that are not necessarily a concentration or a volume. But to be more specific: The global quantities can have three different modes (called "types" in the GUI). 
 </para>
+<sect2 id="fixedquantities" xreflabel="fixed Quantities">
+<title>Fixed Quantities</title>
+<para>
+"Fixed" quantities always take a constant value. While the GUI still displays an initial value and a transient value those are always the same. This can be used if the same numerical value is used in several parts of the model (e.g. several reactions use a common kinetic parameter) but you want to be able to change this value in a single place.
+</para>
+</sect2>
+<sect2 id="assignedquantities" xreflabel="assigned Quantities">
+<title>Quantities with assignment</title>
+<para>
+Global quantities can also have an assignment rule. This means a mathematical expression is specified (which can involve other variable or constant values from the model) and the value of the global quantity is alway the value of this expression. Circular definitions are not allowed.
+Global quantities with assignment do not have an initial value (since their value is always, also at the beginning of a simulation, determined by the mathematical expression).
+These assigned quantities could be used for output only (e.g. if you want to plot the sum of some concentrations) or can be used in the model itself.
+</para>
+</sect2>
+<sect2 id="odequantities" xreflabel="ode Quantities">
+<title>Quantities with differential equation</title>
+<para>
+If global quantities are set to the "ode" mode they become true variables of the model. A mathematical expression has to be specified and this expression is interpreted as the right hand side of an ordinary differential equation for this variable. An initial value has to be provided for these quantities.
+</para>
+<para>
+Since there is no obvious probabilistic interpretation of a general ode stochastic simulation is disabled for models containing global quantities of type "ode".
+</para>
+</sect2>
 </sect1>
 
 <sect1 id="Reactions" xreflabel="Reactions">
