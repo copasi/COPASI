@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.h,v $
-   $Revision: 1.25 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/25 15:09:38 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.h,v $
+//   $Revision: 1.25.8.1 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/07/10 18:30:38 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -49,12 +49,12 @@ class CModelEntity : public CCopasiContainer
      */
     enum Status
     {
-      FIXED = 0,          //the entity is constant (for metabs even if they are part of a reaction)
-      ASSIGNMENT,         //the entity is changed by an assignment rule
-      REACTIONS,          //applies only for metabs, the metab concentration is changed by reactions
+      FIXED = 0, //the entity is constant (for metabs even if they are part of a reaction)
+      ASSIGNMENT, //the entity is changed by an assignment rule
+      REACTIONS, //applies only for metabs, the metab concentration is changed by reactions
       //      DEPENDENT, //applies only for metabs, the metab concentration is determined by conservation rules
       //      UNUSED,
-      ODE,                //the entity is changed by an ordinary differential equation
+      ODE, //the entity is changed by an ordinary differential equation
       TIME
     };
 
@@ -203,6 +203,25 @@ class CModelEntity : public CCopasiContainer
      * @return CExpression*
      */
     CExpression* getExpressionPtr();
+
+    /**
+     * Set the expression for non FIXED model values
+     * @param CExpression*
+     * @return bool success
+     */
+    bool setInitialExpressionPtr(CExpression* pExpression);
+
+    /**
+     * Retrieve the pointer to the expression for non FIXED model values.
+     * @return CExpression*
+     */
+    const CExpression* getInitialExpressionPtr() const;
+
+    /**
+     * Retrieve the pointer to the expression for non FIXED model values.
+     * @return CExpression*
+     */
+    CExpression* getInitialExpressionPtr();
 
     /**
      * Set the expression for non FIXED model values

@@ -1,104 +1,54 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ScanWidget.h,v $
-   $Revision: 1.59 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/28 00:21:45 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ScanWidget.h,v $
+//   $Revision: 1.59.8.1 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/07/10 18:30:38 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-/****************************************************************************
- **  $ CopasiUI/ScanWidget.h
- **  $ Author  : Liang Xu
- **
- ** This is the header file for the Scan Widget
- *****************************************************************************/
 #ifndef SCANWIDGET_H
 #define SCANWIDGET_H
 
 #include "copasi.h"
-#include <qvariant.h>
-#include <qwidget.h>
-#include "UI/copasiWidget.h"
-#include "utilities/CVector.h"
-#include <vector>
+#include "TaskWidget.h"
 
 class QHBoxLayout;
 class QGridLayout;
-class QCheckBox;
-class QLabel;
 class QPushButton;
 class QComboBox;
-class QToolButton;
 
-class CScanTask;
-class CScanProblem;
-class CScanMethod;
-class CModel;
-class SteadyStateWidget;
-class TrajectoryWidget;
-class CCopasiObject;
 class CScanContainerWidget;
 
-class ScanWidget : public CopasiWidget
+class ScanWidget : public TaskWidget
   {
     Q_OBJECT
-
-  private:
-    std::string scanTaskKey;
 
   public:
     ScanWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     ~ScanWidget();
-    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
-    virtual bool leave();
-    virtual bool enter(const std::string & key = "");
+
+    virtual bool runTask();
 
   protected:
-    bool loadScan();
 
-    bool saveScan() const;
+    virtual bool loadTask();
 
-    //inline std::string getScanTaskKey() const {return scanTaskKey;};
+    virtual bool saveTask();
 
-    QWidget* pParent;
+    //dummy, should not be used in this widget
+    virtual CCopasiMethod * createMethod(const CCopasiMethod::SubType & /*type*/) {return NULL;};
 
     CScanContainerWidget* scrollview;
-    QCheckBox* bExecutable;
-    QPushButton* scanButton;
-    QPushButton* cancelChange;
 
     QPushButton* buttonNewItem;
     QComboBox* comboType;
 
-    QLabel* taskNameLabel;
-    QLabel* TextLabel2;
-    QLabel* TextLabel3;
-
-    QPushButton* reportDefinitionButton;
-    QPushButton* outputDefinitionButton;
-
     QGridLayout* ScanWidgetLayout;
-    QHBoxLayout* Layout2;
     QHBoxLayout* Layout24;
-    CModel *mModel;
-
-  public slots:
-    virtual void CancelChangeButton();
-    virtual void ScanCheckBoxClicked();
-
-    virtual void runScanTask();
-    //virtual void SteadyStateButtonClicked();
-    //virtual void TrajectoryButtonClicked();
-
-    //virtual void SteadyStateEditing();
-    //virtual void TrajectoryEditing();
-
-    virtual void ReportDefinitionClicked();
-    virtual void outputDefinitionClicked();
 
   protected slots:
     bool slotAddItem();

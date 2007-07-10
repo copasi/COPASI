@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanMethod.h,v $
-   $Revision: 1.31 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/08/25 21:41:23 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanMethod.h,v $
+//   $Revision: 1.31.10.1 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/07/10 18:30:40 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -67,6 +67,12 @@ class CScanItem
 
     virtual ~CScanItem(){};
 
+    /**
+     * perform checks. This is used in the method::isValidProblem() method.
+     * It returns false for an invalid ScanItem and generates a CCopasiMessage
+     */
+    virtual bool isValidScanItem();
+
   protected:
 
     CScanItem(const CCopasiParameterGroup* si);
@@ -100,6 +106,8 @@ class CScanItemLinear: public CScanItem
     void step();
 
     virtual ~CScanItemLinear(){};
+
+    virtual bool isValidScanItem();
   };
 
 //***********************************+
@@ -117,6 +125,7 @@ class CScanItemRandom: public CScanItem
 
     void step();
     virtual bool isNesting() const {return false;};
+    virtual bool isValidScanItem();
   };
 
 //***********************************+

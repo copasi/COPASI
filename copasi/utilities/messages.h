@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.89.2.2 $
+//   $Revision: 1.89.2.2.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/04/20 18:01:51 $
+//   $Date: 2007/07/10 18:30:40 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,7 +30,7 @@ const MESSAGES Messages[] =
     // CCopasiVector
     {MCCopasiVector + 1, "CCopasiVector (1): Object '%s' not found."},
     {MCCopasiVector + 2, "CCopasiVector (2): Object '%s' already exists."},
-    {MCCopasiVector + 3, "CCopasiVector (3): Index '%d' out fo range (0, '%d')."},
+    {MCCopasiVector + 3, "CCopasiVector (3): Index '%d' out of range (0, '%d')."},
 
     // CFunctionParameters
     {MCFunctionParameters + 1, "CFunctionParameters (1): The usage '%s' "
@@ -200,13 +200,13 @@ const MESSAGES Messages[] =
 
     {MCEvaluationNodeObject + 1, "CEvaluationNodeObject (1): Only references to compartment, species, parameters and reaction are allowed in expression."},
 
-    {MCCopasiTask + 1, "CCopasiTask (1): No problem defined for Task '%s'."},
-    {MCCopasiTask + 2, "CCopasiTask (2): No model associated for Task '%s'."},
-    {MCCopasiTask + 3, "CCopasiTask (3): No method defined for Task '%s'."},
-    {MCCopasiTask + 4, "CCopasiTask (4): Error compiling Model '%s'."},
+    {MCCopasiTask + 1, "CCopasiTask (1): No problem defined for task '%s'."},
+    {MCCopasiTask + 2, "CCopasiTask (2): No model associated for task '%s'."},
+    {MCCopasiTask + 3, "CCopasiTask (3): No method defined for task '%s'."},
+    {MCCopasiTask + 4, "CCopasiTask (4): Error compiling model '%s'."},
     {MCCopasiTask + 5, "CCopasiTask (5): No output file defined for report."},
-    {MCCopasiTask + 6, "CCopasiTask (6): Requested output Object:\n '%s'\n not found. It will be ignored."},
-    {MCCopasiTask + 7, "CCopasiTask (7): Problems compiling Output."},
+    {MCCopasiTask + 6, "CCopasiTask (6): Requested output object:\n '%s'\n not found. It will be ignored."},
+    {MCCopasiTask + 7, "CCopasiTask (7): Problems compiling output."},
 
     {MCSteadyState + 1, "CSteadyState (1): The model is explicitly time dependent. "
      "Therefore, the calculation of a steady state is not very meaningful."},
@@ -224,6 +224,8 @@ const MESSAGES Messages[] =
     {MCFitting + 9, "CFitting (9): Experiment '%s' has no data rows."},
     {MCFitting + 10, "CFitting (10): Experiment '%s' has no dependent data."},
     {MCFitting + 11, "CFitting (11): Missing independent data for Experiment '%s' in row '%d'."},
+    {MCFitting + 12, "CFitting (12): The Fisher information matrix is singular. Therefore, the "
+     "correlation matrix can not be calculated."},
 
     // CCopasiObject
     {MCObject + 1, "CObject (1): Circular dependencies detected for object '%s'."},
@@ -236,7 +238,7 @@ const MESSAGES Messages[] =
     {MCLyap + 5, "CLyapMethod (5): Orthonormalization interval is larger than overall time."},
 
     // CODEExporter
-    {MCODEExporter + 1, "CODEExporterXPPAUT (1): Length of exporting line exeeds 1000 characters."},
+    {MCODEExporter + 1, "CODEExporter (1): Length of exporting line exeeds 1000 characters."},
     {MCODEExporter + 2, "CODEExporter (2): The export was incomplete since the model depends on model"
      "quantities, which can currently not be exported."},
 
@@ -247,7 +249,7 @@ const MESSAGES Messages[] =
     // CTSSAMethod
     {MCTSSAMethod + 1, "CTSSAMethod (1): Deterministic integration failed. "
      "LSODA reported:\n%s \n\nPlease see result for indications of numerical instability."},
-    {MCTSSAMethod + 2, "CTSSAMethod (2): Problem is not a trajectory problem."},
+    {MCTSSAMethod + 2, "CTSSAMethod (2): Problem is not a time scale separation analysis problem."},
     {MCTSSAMethod + 3, "CTSSAMethod (3): Internal step limit exceeded."},
     {MCTSSAMethod + 4, "CTSSAMethod (4): Numerical Error encountered."},
 

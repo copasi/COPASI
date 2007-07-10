@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.166 $
+//   $Revision: 1.166.4.1 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/03/27 10:47:55 $
+//   $Author: shoops $
+//   $Date: 2007/07/10 18:30:40 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -2166,6 +2166,10 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const 
                         }
                     }
                 }
+              else
+                {
+                  v = new std::vector<CEvaluationNodeObject*>;
+                }
             }
         }
       else
@@ -2747,7 +2751,7 @@ bool SBMLImporter::removeUnusedFunctions(CFunctionDB* pTmpFunctionDB, std::map<C
       if (mpImportHandler)
         {
           step = 0;
-          totalSteps = iMax;
+          totalSteps = iMax + this->mpCopasiModel->getCompartments().size() + this->mpCopasiModel->getMetabolites().size() + this->mpCopasiModel->getModelValues().size();
           hStep = mpImportHandler->addItem("Searching used functions...",
                                            CCopasiParameter::UINT,
                                            & step,
@@ -2765,6 +2769,76 @@ bool SBMLImporter::removeUnusedFunctions(CFunctionDB* pTmpFunctionDB, std::map<C
           ++step;
           if (mpImportHandler && !mpImportHandler->progress(hStep)) return false;
         }
+
+      iMax = this->mpCopasiModel->getCompartments().size();
+      for (i = 0;i < iMax;++i)
+        {
+          CModelEntity* pME = this->mpCopasiModel->getCompartments()[i];
+          if (pME->getStatus() != CModelEntity::FIXED)
+            {
+              const CEvaluationTree* pTree = pME->getExpressionPtr();
+              if (pTree != NULL)
+                {
+                  this->findFunctionCalls(pTree->getRoot(), functionNameSet);
+                }
+            }
+          if (pME->getStatus() != CModelEntity::ASSIGNMENT)
+            {
+              const CEvaluationTree* pTree = pME->getInitialExpressionPtr();
+              if (pTree != NULL)
+                {
+                  this->findFunctionCalls(pTree->getRoot(), functionNameSet);
+                }
+            }
+          ++step;
+        }
+
+      iMax = this->mpCopasiModel->getMetabolites().size();
+      for (i = 0;i < iMax;++i)
+        {
+          CModelEntity* pME = this->mpCopasiModel->getMetabolites()[i];
+          if (pME->getStatus() != CModelEntity::FIXED)
+            {
+              const CEvaluationTree* pTree = pME->getExpressionPtr();
+              if (pTree != NULL)
+                {
+                  this->findFunctionCalls(pTree->getRoot(), functionNameSet);
+                }
+            }
+          if (pME->getStatus() != CModelEntity::ASSIGNMENT)
+            {
+              const CEvaluationTree* pTree = pME->getInitialExpressionPtr();
+              if (pTree != NULL)
+                {
+                  this->findFunctionCalls(pTree->getRoot(), functionNameSet);
+                }
+            }
+          ++step;
+        }
+
+      iMax = this->mpCopasiModel->getModelValues().size();
+      for (i = 0;i < iMax;++i)
+        {
+          CModelEntity* pME = this->mpCopasiModel->getModelValues()[i];
+          if (pME->getStatus() != CModelEntity::FIXED)
+            {
+              const CEvaluationTree* pTree = pME->getExpressionPtr();
+              if (pTree != NULL)
+                {
+                  this->findFunctionCalls(pTree->getRoot(), functionNameSet);
+                }
+            }
+          if (pME->getStatus() != CModelEntity::ASSIGNMENT)
+            {
+              const CEvaluationTree* pTree = pME->getInitialExpressionPtr();
+              if (pTree != NULL)
+                {
+                  this->findFunctionCalls(pTree->getRoot(), functionNameSet);
+                }
+            }
+          ++step;
+        }
+
       CFunctionDB* pFunctionDB = CCopasiDataModel::Global->getFunctionList();
       if (mpImportHandler)
         {

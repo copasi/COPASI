@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-//   $Revision: 1.44.4.2 $
+//   $Revision: 1.44.4.2.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/04/24 15:43:51 $
+//   $Date: 2007/07/10 18:30:39 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1139,8 +1139,8 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
    *  positive definite matrix A.
    *
    *  The factorization has the form
-   *     A = U**T * U,  if UPLO = 'U', or
-   *     A = L  * L**T,  if UPLO = 'L',
+   *     A = U**T * U, if UPLO = 'U', or
+   *     A = L  * L**T, if UPLO = 'L',
    *  where U is an upper triangular matrix and L is lower triangular.
    *
    *  This is the block version of the algorithm, calling Level 3 BLAS.
@@ -1189,7 +1189,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
       mCorrelation = std::numeric_limits<C_FLOAT64>::quiet_NaN();
       mParameterSD = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
-      CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 1, info);
+      CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 12);
 
       return false;
     }
@@ -1314,7 +1314,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
    *  A       (input/output) DOUBLE PRECISION array, dimension (LDA,N)
    *          On entry, the M-by-N matrix A.
    *          On exit,
-   *          if JOBU = 'O',  A is overwritten with the first min(m,n)
+   *          if JOBU = 'O', A is overwritten with the first min(m,n)
    *                          columns of U (the left singular vectors,
    *                          stored columnwise);
    *          if JOBVT = 'O', A is overwritten with the first min(m,n)

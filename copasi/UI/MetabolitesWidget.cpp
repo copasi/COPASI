@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget.cpp,v $
-//   $Revision: 1.137 $
+//   $Revision: 1.137.6.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/16 19:55:37 $
+//   $Date: 2007/07/10 18:30:37 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -241,7 +241,15 @@ void MetabolitesWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* o
     pMetab->setInitialValue(table->text(row, COL_INUMBER).toDouble());
 
   //fixed? //TODO
-  bool fixed = ((QCheckTableItem*)(table->item(row, COL_FIXED)))->isChecked();
+  bool fixed;
+  QCheckTableItem* pTmpCTI = dynamic_cast<QCheckTableItem*>(table->item(row, COL_FIXED));
+  if (pTmpCTI)
+    fixed = pTmpCTI->isChecked();
+  else
+    {
+      fixed = false;
+      std::cout << "not a CheckTableItem" << std::endl;
+    }
   if (fixed)
     {
       if (pMetab->getStatus() != CModelEntity::FIXED)

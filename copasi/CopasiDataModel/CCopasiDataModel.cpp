@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.96 $
+//   $Revision: 1.96.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/04/09 18:56:12 $
+//   $Date: 2007/07/10 18:30:37 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -448,8 +448,6 @@ bool CCopasiDataModel::newModel(CModel * pModel, CProcessReport* pProcessReport
     mpModel = pModel;
   else
     {
-      CCopasiMessage::clearDeque();
-
       mpModel = new CModel();
       mSaveFileName = "";
       mSBMLFileName = "";
