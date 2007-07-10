@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/CPlotItem.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/02/12 20:54:09 $
+//   $Author: ssahle $
+//   $Date: 2007/07/10 08:54:07 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -116,7 +116,7 @@ void CPlotItem::setType(CPlotItem::Type type)
 
   if (type == histoItem1d)
     {
-      assertParameter("increment", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.1);
+      assertParameter("increment", CCopasiParameter::DOUBLE, (C_FLOAT64) 1.0);
     }
 
   if (type == curve2d || type == histoItem1d)
