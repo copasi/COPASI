@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.302 $
+//   $Revision: 1.303 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/05/15 13:46:08 $
+//   $Author: ssahle $
+//   $Date: 2007/07/10 08:46:00 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -2793,7 +2793,7 @@ std::string CModel::suitableForStochasticSimulation() const
 
         // TEST isReversible() == 0
         if (mSteps[i]->isReversible() != 0)
-          return "At least one reaction is reversible. That means stochastic simulation is not possible. \nYou can try \"Tools|Convert to irreversible\" which will split the reversible reactions \n into two irreversible reactions. However you will have to fix the kinetics afterwards.";
+          return "At least one reaction is reversible. That means stochastic simulation is not possible. \nYou can use \"Tools|Convert to irreversible\" which will split the reversible reactions \n into two irreversible reactions. However you should check the kinetics afterwards.";
 
         // TEST integer stoichometry
         // Iterate through each the metabolites
