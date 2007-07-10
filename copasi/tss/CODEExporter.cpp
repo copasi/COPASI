@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporter.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/03/22 20:07:15 $
+//   $Author: ssahle $
+//   $Date: 2007/07/10 22:53:16 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -11,10 +11,10 @@
 // All rights reserved.
 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporter.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/03/22 20:07:15 $
+//   $Author: ssahle $
+//   $Date: 2007/07/10 22:53:16 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -313,7 +313,7 @@ bool CODEExporter::exportModelValues(const CModel* copasiModel)
       std::string str1;
       std::string str2;
 
-      comments << "global parameter \'" << modval->getObjectName() << "\':" << CModelEntity::StatusName[modval->getStatus()];
+      comments << "global quantity \'" << modval->getObjectName() << "\':" << CModelEntity::StatusName[modval->getStatus()];
 
       switch (modval->getStatus())
         {
@@ -405,7 +405,7 @@ bool CODEExporter::exportModelValuesExpressions(const CModel* copasiModel, std::
         case CModelEntity::ASSIGNMENT:
           {
 
-            comments << "global parameter \'" << modval->getObjectName() << "\':" << CModelEntity::StatusName[modval->getStatus()];
+            comments << "global quantity \'" << modval->getObjectName() << "\':" << CModelEntity::StatusName[modval->getStatus()];
             const CExpression* pExpression = modval->getExpressionPtr();
             assert(pExpression);
 
