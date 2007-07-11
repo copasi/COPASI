@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CCopasiSimpleSelectionTree.cpp,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.22.6.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/13 19:56:56 $
+//   $Date: 2007/07/11 14:10:16 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -37,7 +37,7 @@ CCopasiSimpleSelectionTree::CCopasiSimpleSelectionTree(QWidget* parent, const ch
   this->matrixSubtree = new QListViewItem(this, "matrices");
 #endif // COPASI_DEBUG
 
-  this->mpModelQuantitySubtree = new QListViewItem(this, "global parameters");
+  this->mpModelQuantitySubtree = new QListViewItem(this, "global quantities");
   this->mpModelQuantityRateSubtree =
     new QListViewItem(this->mpModelQuantitySubtree, "rates");
   this->mpModelQuantityTransientValueSubtree =
