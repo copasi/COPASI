@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-//   $Revision: 1.64 $
+//   $Revision: 1.65 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2007/06/19 16:35:28 $
+//   $Author: ssahle $
+//   $Date: 2007/07/11 22:29:56 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,6 +29,7 @@ class QPushButton;
 class QLabel;
 class QHBox;
 class QScrollView;
+class QAction;
 
 class CopasiUI3Window : public QMainWindow
   {
@@ -85,17 +86,30 @@ class CopasiUI3Window : public QMainWindow
   private:
     int newFlag;
     QString FixedTitle;
-    QToolButton * msave_button;
-    QPopupMenu * mpFileMenu, * tools;
+    //QToolButton * msave_button;
+    QPopupMenu * tools;
 
-    int nsave_menu_id;
-    int nsaveas_menu_id;
-    int nexport_menu_SBML;
-    int nexport_menu_MathModel;
+    //int nsave_menu_id;
+    //int nsaveas_menu_id;
+    //int nexport_menu_SBML;
+    //int nexport_menu_MathModel;
     int nobject_browser;
-    bool bobject_browser_open;
+    bool mbObject_browser_open;
+
+    void createActions();
     void createToolBar();
     void createMenuBar();
+
+    QAction* mpaNew;
+    QAction* mpaOpen;
+    QAction* mpaSave;
+    QAction* mpaSaveAs;
+    QAction* mpaImportSBML;
+    QAction* mpaExportSBML;
+    QAction* mpaExportODE;
+    QAction* mpaObjectBrowser;
+    QAction* mpaSliders;
+
     void CleanUp();
     SliderDialog* sliders;
     int mShowSlidersMenuEntry;

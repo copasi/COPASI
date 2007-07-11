@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.193 $
+//   $Revision: 1.194 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2007/06/19 16:35:28 $
+//   $Author: ssahle $
+//   $Date: 2007/07/11 22:29:56 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,6 +25,7 @@
 #include <qlabel.h>
 #include <qhbox.h>
 #include <qscrollview.h>
+#include <qaction.h>
 
 #include <vector>
 
@@ -90,8 +91,8 @@ CopasiUI3Window::CopasiUI3Window():
     //    splitter(NULL),
     listViews(NULL),
     //    gpsFile(),
-    msave_button(NULL),
-    mpFileMenu(NULL),
+    //msave_button(NULL),
+    //mpFileMenu(NULL),
     sliders(NULL),
     mpToggleSliderDialogButton(NULL),
     mSaveAsRequired(true),
@@ -110,20 +111,24 @@ CopasiUI3Window::CopasiUI3Window():
 #endif // COPASI_LICENSE_COM
   FixedTitle += FROM_UTF8(CCopasiDataModel::Global->getVersion()->getVersion());
   updateTitle();
+
+  createActions();
   createToolBar(); // creates a tool bar
   createMenuBar();  // creates a menu bar
   //  mpFileMenu = new QPopupMenu;
   //mpFileMenu->setItemEnabled(nobject_browser, false);
-  bobject_browser_open = false;
-  mpFileMenu->setItemEnabled(nexport_menu_SBML, false);
-  mpFileMenu->setItemEnabled(nexport_menu_MathModel, false);
+  mbObject_browser_open = false;
 
-  //disable menu option
-  //mpFileMenu->setItemVisible(nexport_menu_MathModel, false);
+  //   mpFileMenu->setItemEnabled(nexport_menu_SBML, false);
+  //   mpFileMenu->setItemEnabled(nexport_menu_MathModel, false);
+  //   mpFileMenu->setItemEnabled(nsave_menu_id, false);
+  //   mpFileMenu->setItemEnabled(nsaveas_menu_id, false);
+  //   msave_button->setEnabled(false);
 
-  mpFileMenu->setItemEnabled(nsave_menu_id, false);
-  mpFileMenu->setItemEnabled(nsaveas_menu_id, false);
-  msave_button->setEnabled(false);
+  mpaSave->setEnabled(false);
+  mpaSaveAs->setEnabled(false);
+  mpaExportSBML->setEnabled(false);
+  mpaExportODE->setEnabled(false);
 
   if (!dataModel)
     {
@@ -185,6 +190,185 @@ CopasiUI3Window::~CopasiUI3Window()
 {
   pdelete(listViews);
   pdelete(dataModel);
+}
+
+void CopasiUI3Window::createActions()
+{
+  mpaNew = new QAction(QPixmap(filenew), "&New", CTRL + Key_N, this, "new");
+  connect(mpaNew, SIGNAL(activated()), this, SLOT(newDoc()));
+
+  mpaOpen = new QAction(QPixmap(fileopen), "&Open", CTRL + Key_O, this, "open");
+  connect(mpaOpen, SIGNAL(activated()), this, SLOT(slotFileOpen()));
+
+  mpaSave = new QAction(QPixmap(filesave), "&Save", CTRL + Key_S, this, "save");
+  connect(mpaSave, SIGNAL(activated()), this, SLOT(slotFileSave()));
+
+  mpaSaveAs = new QAction(QPixmap(filesave), "Save &As", CTRL + Key_A, this, "saveas");
+  connect(mpaSaveAs, SIGNAL(activated()), this, SLOT(slotFileSaveAs()));
+
+  mpaImportSBML = new QAction(QPixmap(fileopen), "&Import SBML", CTRL + Key_I, this, "importsbml");
+  connect(mpaImportSBML, SIGNAL(activated()), this, SLOT(slotImportSBML()));
+
+  mpaExportSBML = new QAction(QPixmap(filesave), "&Export SBML", CTRL + Key_E, this, "exportsbml");
+  connect(mpaExportSBML, SIGNAL(activated()), this, SLOT(slotExportSBML()));
+
+  mpaExportODE = new QAction(QPixmap(filesave), "Export ODEs", CTRL + Key_M, this, "exportode");
+  connect(mpaExportODE, SIGNAL(activated()), this, SLOT(slotExportMathModel()));
+
+  //     QAction* mpaObjectBrowser;
+  //     QAction* mpaSliders;
+}
+
+void CopasiUI3Window::createToolBar()
+{
+  QToolBar *tbMain = new QToolBar(this, "MainToolBar");
+  QToolButton* toolb;
+
+  //new
+  //   QWhatsThis::add(toolb, "Click this button to create a <em>new file</em>. <br>You can also select the <b>New</b> command from the <b>File</b> menu.</p>");
+  mpaNew->addTo(tbMain);
+
+  //open
+  //   QWhatsThis::add(toolb, "Click this button to open a <em>new file</em>. <br>You can also select the <b>Open</b> command from the <b>File</b> menu.</p>");
+  mpaOpen->addTo(tbMain);
+
+  //save
+  //   QWhatsThis::add(msave_button, "<p>Click this button to save the file you are editing. You will be prompted for a file name.\nYou can also select the <b>Save</b> command from the <b>File</b> menu.</p>");
+  mpaSave->addTo(tbMain);
+
+  // add a toobar toggle button to display/hide slider dialog
+  mpToggleSliderDialogButton = new QToolButton(QPixmap(toggleSliderDialog), "Toggle slider dialog", QString::null,
+                               this, SLOT(slotToggleSliders()), tbMain);
+  QWhatsThis::add(mpToggleSliderDialogButton, "<p>Click this button to show/hide the sliders dialog. This is the same as clicking on <b>show sliders</b> in the <b>Tools</b> menu.</p>");
+  this->mpToggleSliderDialogButton->setToggleButton(true);
+
+  //What's this
+  toolb = QWhatsThis::whatsThisButton(tbMain);
+  QWhatsThis::add(toolb, "This is a <b>What's This</b> button "
+                  "It enables the user to ask for help "
+                  "about widgets on the screen.");
+}
+
+void CopasiUI3Window::createMenuBar()
+{
+  const char* toolTip[7];
+
+  toolTip[0] = "Click this button to create a <em>new file</em>. <br>"
+               "You can also select the <b>New</b> command "
+               "from the <b>File</b> menu.</p>";
+
+  toolTip[1] = "Click this button to open a <em>file</em>. <br>"
+               "You can also select the <b>Open</b> command "
+               "from the <b>File</b> menu.</p>";
+
+  toolTip[2] = "<p>Click this button to save the file you "
+               "are editing. You will be prompted for a file name.\n"
+               "You can also select the <b>Save</b> command "
+               "from the <b>File</b> menu.</p>";
+
+  toolTip[3] = "<p>Click this button to save the file you are editing "
+               "under a new name. You will be prompted for a file name.\n"
+               "You can also select the <b>Save As</b> command "
+               "from the <b>File</b> menu.</p>";
+
+  toolTip[4] = "<p>Click this button to import a SBML file you "
+               "are editing. You will be prompted for a file name.\n"
+               "You can also select the <b>Import SBML</b> command "
+               "from the <b>File</b> menu.</p>";
+
+  toolTip[5] = "<p>Click this button to export a SBML file you "
+               "are editing. You will be prompted for a file name.\n"
+               "You can also select the <b>Export SBML</b> command "
+               "from the <b>File</b> menu.</p>";
+
+  toolTip[6] = "<p>Click this button to export the ODEs of the Mathematical Model. "
+               "You will be prompted for a file name.\n"
+               "You can also select the <b>Export </b> command "
+               "from the <b>File</b> menu.</p>";
+
+  // toolTip[7] = "<p>Click this button to to see the list of recently accessed files.</p>";
+
+  // toolTip[8] = "<p>Click this button to to see the list of recently accessed SBML files.</p>";
+
+  QPopupMenu * pFileMenu = new QPopupMenu(this);
+  menuBar()->insertItem("&File", pFileMenu);
+
+  mpaNew->addTo(pFileMenu);
+  mpaOpen->addTo(pFileMenu);
+  mpaSave->addTo(pFileMenu);
+  mpaSaveAs->addTo(pFileMenu);
+
+  pFileMenu->insertSeparator();
+
+  mpaImportSBML->addTo(pFileMenu);
+  mpaExportSBML->addTo(pFileMenu);
+  mpaExportODE->addTo(pFileMenu);
+
+  //   int j;
+  //   for (j = 4; j < 7; j++)
+  //     {
+  //       if (fileSeparator[j] == 1)
+  //         mpFileMenu->insertSeparator();
+  //
+  //       int id;
+  //
+  //       id = mpFileMenu->insertItem(icon[j], iconName[j],
+  //                                   this, slotFileName[j], hotKey[j]);
+  //
+  //       mpFileMenu->setWhatsThis(id, toolTip[j]);
+  //       if (j == 2)
+  //         nsave_menu_id = id;
+  //       if (j == 3)
+  //         nsaveas_menu_id = id;
+  //       if (j == 5)
+  //         nexport_menu_SBML = id;
+  //       if (j == 6)
+  //         nexport_menu_MathModel = id;
+  //}
+
+  pFileMenu->insertSeparator();
+
+  mpMenuRecentFiles = new QPopupMenu(this);
+  pFileMenu->insertItem("Recent Files", mpMenuRecentFiles);
+  refreshRecentFileMenu();
+
+  mpMenuRecentSBMLFiles = new QPopupMenu(this);
+  pFileMenu->insertItem("Recent SBML Files", mpMenuRecentSBMLFiles);
+  refreshRecentSBMLFileMenu();
+
+  pFileMenu->insertSeparator();
+
+  pFileMenu->insertItem("&Quit", this, SLOT(slotQuit()), CTRL + Key_Q);
+
+  tools = new QPopupMenu(this);
+  menuBar()->insertItem("&Tools", tools);
+
+  tools->insertSeparator();
+  tools->insertItem("&Convert to irreversible", this, SLOT(slotConvertToIrreversible()));
+  tools->insertSeparator();
+  tools->insertItem("Object &Browser", this, SLOT(slotObjectBrowserDialog()), 0, 2);
+  this->mShowSlidersMenuEntry = tools->insertItem("Show Sliders", this, SLOT(slotToggleSliders()));
+  tools->setItemChecked(this->mShowSlidersMenuEntry, false);
+  tools->insertSeparator();
+  tools->insertItem("&Preferences...", this, SLOT(slotPreferences()), CTRL + Key_P, 3);
+
+#ifdef COPASI_LICENSE_COM
+  tools->insertSeparator();
+  tools->insertItem("&Registration", this, SLOT(slotRegistration()));
+#endif // COPASI_LICENSE_COM
+
+  menuBar()->insertSeparator();
+
+  QPopupMenu * help = new QPopupMenu(this);
+  menuBar()->insertItem("&Help", help);
+
+  help->insertItem("Simple &Wizard", this, SLOT(slotTutorialWizard()));
+  help->insertSeparator();
+  help->insertItem("&About", this, SLOT(about()), Key_F1);
+  help->insertItem("&License", this, SLOT(license()));
+  help->insertItem("About &Qt", this, SLOT(aboutQt()));
+  help->insertSeparator();
+  help->insertItem("What's &This", this, SLOT(whatsThis()), SHIFT + Key_F1);
 }
 
 /***************CopasiUI3Window::slotFileSaveAs()******
@@ -259,8 +443,10 @@ bool CopasiUI3Window::slotFileSaveAs(QString str)
  *******************************************************************************************/
 void CopasiUI3Window::newDoc()
 {
-  if (newFlag == 0) newFlag = 1;
-  else ListViews::commit();
+  if (newFlag == 0)
+    newFlag = 1;
+  else
+    ListViews::commit();
 
   if (dataModel && CCopasiDataModel::Global->isChanged())
     {
@@ -289,13 +475,20 @@ void CopasiUI3Window::newDoc()
 
   dataModel->createModel();
   ListViews::notify(ListViews::MODEL, ListViews::ADD, CCopasiDataModel::Global->getModel()->getKey());
-  if (!bobject_browser_open)
+  if (!mbObject_browser_open)
     //mpFileMenu->setItemEnabled(nobject_browser, true);
-    mpFileMenu->setItemEnabled(nexport_menu_SBML, true);
-  mpFileMenu->setItemEnabled(nexport_menu_MathModel, true);
-  mpFileMenu->setItemEnabled(nsaveas_menu_id, true);
-  msave_button->setEnabled(true);
-  mpFileMenu->setItemEnabled(nsave_menu_id, true);
+
+    //   mpFileMenu->setItemEnabled(nexport_menu_SBML, true);
+    //   mpFileMenu->setItemEnabled(nexport_menu_MathModel, true);
+    //   mpFileMenu->setItemEnabled(nsaveas_menu_id, true);
+    //   msave_button->setEnabled(true);
+    //   mpFileMenu->setItemEnabled(nsave_menu_id, true);
+
+    mpaSave->setEnabled(true);
+  mpaSaveAs->setEnabled(true);
+  mpaExportSBML->setEnabled(true);
+  mpaExportODE->setEnabled(true);
+
   updateTitle();
   ListViews::switchAllListViewsToWidget(1, "");
   mSaveAsRequired = true;
@@ -417,11 +610,18 @@ void CopasiUI3Window::slotFileOpen(QString file)
 
       //if (!bobject_browser_open)
       //  mpFileMenu->setItemEnabled(nobject_browser, true);
-      mpFileMenu->setItemEnabled(nexport_menu_SBML, true);
-      mpFileMenu->setItemEnabled(nexport_menu_MathModel, true);
-      mpFileMenu->setItemEnabled(nsaveas_menu_id, true);
-      msave_button->setEnabled(true);
-      mpFileMenu->setItemEnabled(nsave_menu_id, true);
+
+      //       mpFileMenu->setItemEnabled(nexport_menu_SBML, true);
+      //       mpFileMenu->setItemEnabled(nexport_menu_MathModel, true);
+      //       mpFileMenu->setItemEnabled(nsaveas_menu_id, true);
+      //       msave_button->setEnabled(true);
+      //       mpFileMenu->setItemEnabled(nsave_menu_id, true);
+
+      mpaSave->setEnabled(true);
+      mpaSaveAs->setEnabled(true);
+      mpaExportSBML->setEnabled(true);
+      mpaExportODE->setEnabled(true);
+
       updateTitle();
       ListViews::switchAllListViewsToWidget(1, "");
 
@@ -621,175 +821,6 @@ void CopasiUI3Window::aboutQt()
   QMessageBox::aboutQt(this, "Qt");
 }
 
-/***************CopasiUI3Window::createToolBar()******
- **
- ** Parameters:- Void
- ** Returns  :-  Void
- ** Descripton:- This method is called to create the toolbar
- *******************************************************************************************/
-void CopasiUI3Window::createToolBar()
-{
-  QToolBar *tbMain = new QToolBar(this, "MainToolBar");
-  QToolButton* toolb;
-
-  //new
-  toolb = new QToolButton(QPixmap(filenew), "New", QString::null,
-                          this, SLOT(newDoc()), tbMain);
-  QWhatsThis::add(toolb, "Click this button to create a <em>new file</em>. <br>You can also select the <b>New</b> command from the <b>File</b> menu.</p>");
-
-  //open
-  toolb = new QToolButton(QPixmap(fileopen), "Open", QString::null,
-                          this, SLOT(slotFileOpen()), tbMain);
-  QWhatsThis::add(toolb, "Click this button to open a <em>new file</em>. <br>You can also select the <b>Open</b> command from the <b>File</b> menu.</p>");
-
-  //save
-  msave_button = new QToolButton(QPixmap(filesave), "Save", QString::null,
-                                 this, SLOT(slotFileSave()), tbMain);
-  QWhatsThis::add(msave_button, "<p>Click this button to save the file you are editing. You will be prompted for a file name.\nYou can also select the <b>Save</b> command from the <b>File</b> menu.</p>");
-
-  // add a toobar toggle button to display/hide slider dialog
-  mpToggleSliderDialogButton = new QToolButton(QPixmap(toggleSliderDialog), "Toggle slider dialog", QString::null,
-                               this, SLOT(slotToggleSliders()), tbMain);
-  QWhatsThis::add(mpToggleSliderDialogButton, "<p>Click this button to show/hide the sliders dialog. This is the same as clicking on <b>show sliders</b> in the <b>Tools</b> menu.</p>");
-  this->mpToggleSliderDialogButton->setToggleButton(true);
-
-  //What's this
-  toolb = QWhatsThis::whatsThisButton(tbMain);
-  QWhatsThis::add(toolb, "This is a <b>What's This</b> button "
-                  "It enables the user to ask for help "
-                  "about widgets on the screen.");
-}
-
-/***************CopasiUI3Window::createMenuBar()**********************************
- **
- ** Parameters:- Void
- ** Returns  :-  Void
- ** Descripton:- This method is to create the Menu Bar
- *************************************************************************************/
-void CopasiUI3Window::createMenuBar()
-{
-  //modified on 5th feb : Ankur (left for further modification...later
-  QPixmap icon[7] = {filenew, fileopen, filesave, filesave, fileopen, filesave, filesave};
-  const char* toolTip[7];
-
-  toolTip[0] = "Click this button to create a <em>new file</em>. <br>"
-               "You can also select the <b>New</b> command "
-               "from the <b>File</b> menu.</p>";
-
-  toolTip[1] = "Click this button to open a <em>file</em>. <br>"
-               "You can also select the <b>Open</b> command "
-               "from the <b>File</b> menu.</p>";
-
-  toolTip[2] = "<p>Click this button to save the file you "
-               "are editing. You will be prompted for a file name.\n"
-               "You can also select the <b>Save</b> command "
-               "from the <b>File</b> menu.</p>";
-
-  toolTip[3] = "<p>Click this button to save the file you are editing "
-               "under a new name. You will be prompted for a file name.\n"
-               "You can also select the <b>Save As</b> command "
-               "from the <b>File</b> menu.</p>";
-
-  toolTip[4] = "<p>Click this button to import a SBML file you "
-               "are editing. You will be prompted for a file name.\n"
-               "You can also select the <b>Import SBML</b> command "
-               "from the <b>File</b> menu.</p>";
-
-  toolTip[5] = "<p>Click this button to export a SBML file you "
-               "are editing. You will be prompted for a file name.\n"
-               "You can also select the <b>Export SBML</b> command "
-               "from the <b>File</b> menu.</p>";
-
-  toolTip[6] = "<p>Click this button to export the ODEs of the Mathematical Model. "
-               "You will be prompted for a file name.\n"
-               "You can also select the <b>Export </b> command "
-               "from the <b>File</b> menu.</p>";
-
-  // toolTip[7] = "<p>Click this button to to see the list of recently accessed files.</p>";
-
-  // toolTip[8] = "<p>Click this button to to see the list of recently accessed SBML files.</p>";
-
-  const char* iconName[7] =
-    {"&New", "&Open", "&Save", "Save&As", "&Import SBML", "&Export SBML", "&Export ODEs"};
-
-  const char* slotFileName[7] =
-    {
-      SLOT(newDoc()), SLOT(slotFileOpen()), SLOT(slotFileSave()), SLOT(slotFileSaveAs()),
-      SLOT(slotImportSBML()), SLOT(slotExportSBML()), SLOT(slotExportMathModel())
-    };
-  QKeySequence hotKey[7] =
-    {CTRL + Key_N, CTRL + Key_O, CTRL + Key_S, CTRL + Key_A, CTRL + Key_I, CTRL + Key_E, CTRL + Key_M};
-  int fileSeparator[7] = {0, 0, 0, 0, 1, 0, 0};
-
-  mpFileMenu = new QPopupMenu(this);
-
-  menuBar()->insertItem("&File", mpFileMenu);
-  int j;
-  for (j = 0; j < 7; j++)
-    {
-      if (fileSeparator[j] == 1)
-        mpFileMenu->insertSeparator();
-
-      int id;
-
-      id = mpFileMenu->insertItem(icon[j], iconName[j],
-                                  this, slotFileName[j], hotKey[j]);
-
-      mpFileMenu->setWhatsThis(id, toolTip[j]);
-      if (j == 2)
-        nsave_menu_id = id;
-      if (j == 3)
-        nsaveas_menu_id = id;
-      if (j == 5)
-        nexport_menu_SBML = id;
-      if (j == 6)
-        nexport_menu_MathModel = id;
-    }
-  mpFileMenu->insertSeparator();
-
-  mpMenuRecentFiles = new QPopupMenu(this);
-  mpFileMenu->insertItem("Recent Files", mpMenuRecentFiles);
-  refreshRecentFileMenu();
-
-  mpMenuRecentSBMLFiles = new QPopupMenu(this);
-  mpFileMenu->insertItem("Recent SBML Files", mpMenuRecentSBMLFiles);
-  refreshRecentSBMLFileMenu();
-
-  mpFileMenu->insertSeparator();
-
-  mpFileMenu->insertItem("&Quit", this, SLOT(slotQuit()), CTRL + Key_Q);
-
-  tools = new QPopupMenu(this);
-  menuBar()->insertItem("&Tools", tools);
-
-  tools->insertSeparator();
-  tools->insertItem("&Convert to irreversible", this, SLOT(slotConvertToIrreversible()));
-  tools->insertSeparator();
-  tools->insertItem("Object &Browser", this, SLOT(slotObjectBrowserDialog()), 0, 2);
-  this->mShowSlidersMenuEntry = tools->insertItem("Show Sliders", this, SLOT(slotToggleSliders()));
-  tools->setItemChecked(this->mShowSlidersMenuEntry, false);
-  tools->insertSeparator();
-  tools->insertItem("&Preferences...", this, SLOT(slotPreferences()), CTRL + Key_P, 3);
-
-#ifdef COPASI_LICENSE_COM
-  tools->insertSeparator();
-  tools->insertItem("&Registration", this, SLOT(slotRegistration()));
-#endif // COPASI_LICENSE_COM
-
-  menuBar()->insertSeparator();
-
-  QPopupMenu * help = new QPopupMenu(this);
-  menuBar()->insertItem("&Help", help);
-
-  help->insertItem("Simple &Wizard", this, SLOT(slotTutorialWizard()));
-  help->insertSeparator();
-  help->insertItem("&About", this, SLOT(about()), Key_F1);
-  help->insertItem("&License", this, SLOT(license()));
-  help->insertItem("About &Qt", this, SLOT(aboutQt()));
-  help->insertSeparator();
-  help->insertItem("What's &This", this, SLOT(whatsThis()), SHIFT + Key_F1);
-}
-
 void CopasiUI3Window::slotObjectBrowserDialog()
 {
   if (tools->isItemEnabled(2))
@@ -896,9 +927,9 @@ void CopasiUI3Window::importSBMLFromString(const std::string& sbmlDocumentText)
                         CCopasiDataModel::Global->getModel()->getKey());
 
       //if (!bobject_browser_open)
-      mpFileMenu->setItemEnabled(nsaveas_menu_id, true);
-      msave_button->setEnabled(true);
-      mpFileMenu->setItemEnabled(nsave_menu_id, true);
+      //       mpFileMenu->setItemEnabled(nsaveas_menu_id, true);
+      //       msave_button->setEnabled(true);
+      //       mpFileMenu->setItemEnabled(nsave_menu_id, true);
 
       ListViews::switchAllListViewsToWidget(1, "");
     }
@@ -996,11 +1027,17 @@ void CopasiUI3Window::slotImportSBML(QString file)
 
       //if (!bobject_browser_open)
       //  mpFileMenu->setItemEnabled(nobject_browser, true);
-      mpFileMenu->setItemEnabled(nexport_menu_SBML, true);
-      mpFileMenu->setItemEnabled(nexport_menu_MathModel, true);
-      mpFileMenu->setItemEnabled(nsaveas_menu_id, true);
-      msave_button->setEnabled(true);
-      mpFileMenu->setItemEnabled(nsave_menu_id, true);
+
+      //       mpFileMenu->setItemEnabled(nexport_menu_SBML, true);
+      //       mpFileMenu->setItemEnabled(nexport_menu_MathModel, true);
+      //       mpFileMenu->setItemEnabled(nsaveas_menu_id, true);
+      //       msave_button->setEnabled(true);
+      //       mpFileMenu->setItemEnabled(nsave_menu_id, true);
+
+      mpaSave->setEnabled(true);
+      mpaSaveAs->setEnabled(true);
+      mpaExportSBML->setEnabled(true);
+      mpaExportODE->setEnabled(true);
 
       ListViews::switchAllListViewsToWidget(1, "");
 
@@ -1197,13 +1234,13 @@ void CopasiUI3Window::slotToggleSliders()
 void CopasiUI3Window::enable_object_browser_menu()
 {
   //mpFileMenu->setItemEnabled(nobject_browser, true);
-  bobject_browser_open = false;
+  mbObject_browser_open = false;
 }
 
 void CopasiUI3Window::disable_object_browser_menu()
 {
   //mpFileMenu->setItemEnabled(nobject_browser, false);
-  bobject_browser_open = true;
+  mbObject_browser_open = true;
 }
 
 DataModelGUI* CopasiUI3Window::getDataModel()
