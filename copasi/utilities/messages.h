@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.89.2.2.2.1 $
+//   $Revision: 1.89.2.2.2.2 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/07/10 18:30:40 $
+//   $Author: gauges $
+//   $Date: 2007/07/11 14:41:30 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -145,7 +145,7 @@ const MESSAGES Messages[] =
     {MCSBML + 7, "SBML (7): One or more model values have not been set."},
     {MCSBML + 8, "SBML (8): Expression tree for kinetic of reaction '%s' could not be converted."},
     {MCSBML + 9, "SBML (9): Could not set function from expression in reaction '%s'."},
-    {MCSBML + 10, "SBML (10): COPASI does not support stoichiometric expressions yet."},
+    {MCSBML + 10, "SBML (10): COPASI does not support stoichiometric expressions."},
     {MCSBML + 11, "SBML (11): Function '%s' does not start with a Lambda element."},
     {MCSBML + 12, "SBML (12): Function '%s' contains invalid parameter list."},
     {MCSBML + 13, "SBML (13): Could not read function definition for function '%s'."},
@@ -167,14 +167,25 @@ const MESSAGES Messages[] =
     {MCSBML + 29, "SBML (29): Unable to handle reactions with the 'fast' flag set.\nThe flag has been set to false."},
     {MCSBML + 30, "SBML (30): Can't handle units of type item with scale set to 1.\n If this file was created with COPASI RC1 or older please see the COPASI FAQ."},
     {MCSBML + 31, "SBML (31): %s are currently only supported for global parameters."},
-    {MCSBML + 32, "SBML (32): Error in %s variable id '%s' does not specify a Compartment, Species or global Parameter."},
+    {MCSBML + 32, "SBML (32): Error in %s variable id '%s' does not specify a compartment, species or global parameter."},
     {MCSBML + 33, "SBML (33): Error: %s is not allowed for local parameter '%s'."},
-    {MCSBML + 34, "SBML (34): Error: %s is not allowed for local constant %s identified by id '%s'."},
+    {MCSBML + 34, "SBML (34): Error: %s is not allowed for local constant '%s' identified by id '%s'."},
     {MCSBML + 35, "SBML (35): Error: Only one AssignmentRule or RateRule is allowed for id '%s'."},
     {MCSBML + 36, "SBML (36): COPASI can not handle models that use the delay function."},
     {MCSBML + 37, "SBML (37): The id '%s' is used in the expression of a rule, although it is later defined by a rule itself."},
     {MCSBML + 38, "SBML (38): Only references to compartments, species, global parameters or the time are allowed in SBML rule expressions."},
-    {MCSBML + 39, "SBML (39): Object with id \"%s\" referenced in kinetic law, but no object with that id found in model."},
+    {MCSBML + 39, "SBML (39): Object with id '%s' referenced in kinetic law, but no object with that id found in model."},
+    {MCSBML + 40, "SBML (40): LIBSBML %s %d at line %d column %d: %s."},
+    {MCSBML + 41, "SBML (41): No initial value set for species \"%s\"."},
+    {MCSBML + 42, "SBML (42): No initial value set for local parameter \"%s\"."},
+    {MCSBML + 43, "SBML (43): No initial value set for global parameter \"%s\"."},
+    {MCSBML + 44, "SBML (44): Reaction \"%s\" sets the substance unit of the kinetic law. COPASI can not handle this yet."},
+    {MCSBML + 45, "SBML (45): Compartment \"%s\" does not set the initial volume. Volume has been set to 1.0."},
+    {MCSBML + 46, "SBML (46): COPASI has changed the following function definitions to take the time as an additional argument instead of the function being directly or indirectly dependent on time:\n \"%s\" ."},
+    {MCSBML + 47, "SBML (47): COPASI found a call to the function \"%s\" which has not been defined."},
+    {MCSBML + 48, "SBML (48): Initial assignments ignored because they are not supported yet."},
+    {MCSBML + 49, "SBML (49): Constraints ignored because they are not supported yet."},
+    {MCSBML + 50, "SBML (50): Could not open file \"%s\"."},
 
     {MCTrajectoryProblem + 1, "CTrajectoryProblem (1): Invalid step size = '%f'."},
     {MCTrajectoryProblem + 2, "CTrajectoryProblem (2): The step number '%f' "
