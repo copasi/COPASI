@@ -242,7 +242,7 @@ echo "Set the icon in the Info.plist file."
   esac
 
   scp Copasi-$build-$1*.* \
-    shoops@calvin.bioinformatics.vt.edu:/usr/local/apache/htdocs/calvin/copasi/alpha-test/$1/$license
+    copasi@gorbag.bioinformatics.vt.edu:www/integrator/snapshots/$license
 
 else
   echo usage: mkbuild.sh BUILD_OS
