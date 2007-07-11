@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SensitivitiesWidget.h,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/03/13 19:56:56 $
+//   $Author: ssahle $
+//   $Date: 2007/07/11 22:27:54 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,16 +22,6 @@
 #include <qcombobox.h>
 
 class QToolButton;
-//class QVBoxLayout;
-//class QHBoxLayout;
-//class QGridLayout;
-//class QCheckBox;
-//class QFrame;
-//class QLabel;
-//class QLineEdit;
-//class QPushButton;
-//class QRadioButton;
-//class QTable;
 
 /**
   * This class handles a combo box to choose from lists of object lists
@@ -69,9 +59,6 @@ class SensitivitiesWidget : public TaskWidget
     Q_OBJECT
 
   public:
-    //virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
-    //virtual bool leave();
-    //virtual bool enter(const std::string & key = "");
 
     explicit SensitivitiesWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     ~SensitivitiesWidget();
@@ -89,15 +76,6 @@ class SensitivitiesWidget : public TaskWidget
     //       Variable,
     //       SecondVariable
     //     };
-
-  public slots:
-    //virtual void CancelButtonClicked();
-    //virtual void CommitButtonClicked();
-    //virtual void ExportToFileButtonClicked();
-    //virtual void parameterValueChanged();
-    //virtual void RunButtonChecked();
-    //virtual void runTask();
-    //virtual void ReportDefinitionClicked();
 
   protected:
     QVBoxLayout* SensitivitiesWidgetLayout;

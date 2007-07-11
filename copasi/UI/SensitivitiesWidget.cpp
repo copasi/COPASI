@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SensitivitiesWidget.cpp,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/03/13 19:56:56 $
+//   $Author: ssahle $
+//   $Date: 2007/07/11 22:27:54 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,9 +33,9 @@
 #include "SensitivitiesWidget.h"
 #include "DataModelGUI.h"
 #include "qtUtilities.h"
-#include "listviews.h"
-#include "CProgressBar.h"
-#include "copasiui3window.h"
+//#include "listviews.h"
+//#include "CProgressBar.h"
+//#include "copasiui3window.h"
 #include "CQTaskBtnWidget.h"
 #include "CQTaskHeaderWidget.h"
 #include "CCopasiSelectionDialog.h"
