@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-//   $Revision: 1.65 $
+//   $Revision: 1.66 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/07/11 22:29:56 $
+//   $Date: 2007/07/11 23:26:23 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,10 +41,12 @@ class CopasiUI3Window : public QMainWindow
     void enable_object_browser_menu();
     void disable_object_browser_menu();
     DataModelGUI* getDataModel();
-    void saveFile();
+    //void saveFile();
+
     CQTrajectoryWidget* getTrajectoryWidget();
     SteadyStateWidget* getSteadyStateWidget();
     ScanWidget* getScanWidget();
+
     void checkPendingMessages();
     void suspendAutoSave(const bool & suspend);
     void importSBMLFromString(const std::string& sbmlDocumentText);
@@ -53,11 +55,10 @@ class CopasiUI3Window : public QMainWindow
   protected:
     CopasiUI3Window();
     DataModelGUI* dataModel; // to keep track of the data model..
-    //QSplitter *splitter; // to hold different views...
-    ListViews *listViews; // to create different list views...
+    ListViews *listViews;
 
   public slots:
-    void slotToggleSliders();
+    void slotShowSliders(bool flag);
     void slotObjectBrowserDialog();
     void slotPreferences();
     void autoSave();
@@ -112,8 +113,8 @@ class CopasiUI3Window : public QMainWindow
 
     void CleanUp();
     SliderDialog* sliders;
-    int mShowSlidersMenuEntry;
-    QToolButton* mpToggleSliderDialogButton;
+    //int mShowSlidersMenuEntry;
+    //QToolButton* mpToggleSliderDialogButton;
     bool mSaveAsRequired;
     void updateTitle();
     QTimer *mpAutoSaveTimer;

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-//   $Revision: 1.68 $
+//   $Revision: 1.69 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/07/09 08:47:17 $
+//   $Date: 2007/07/11 23:26:23 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -570,7 +570,7 @@ void SliderDialog::closeEvent(QCloseEvent* e)
   QDialog::closeEvent(e);
   if (pParentWindow)
     {
-      pParentWindow->slotToggleSliders();
+      pParentWindow->slotShowSliders(false);
     }
 }
 

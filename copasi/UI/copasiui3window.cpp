@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.194 $
+//   $Revision: 1.195 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/07/11 22:29:56 $
+//   $Date: 2007/07/11 23:26:23 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -88,13 +88,8 @@ CopasiUI3Window * CopasiUI3Window::create()
 CopasiUI3Window::CopasiUI3Window():
     QMainWindow(),
     dataModel(NULL),
-    //    splitter(NULL),
     listViews(NULL),
-    //    gpsFile(),
-    //msave_button(NULL),
-    //mpFileMenu(NULL),
     sliders(NULL),
-    mpToggleSliderDialogButton(NULL),
     mSaveAsRequired(true),
     mpAutoSaveTimer(NULL),
     mSuspendAutoSave(false),
@@ -115,15 +110,7 @@ CopasiUI3Window::CopasiUI3Window():
   createActions();
   createToolBar(); // creates a tool bar
   createMenuBar();  // creates a menu bar
-  //  mpFileMenu = new QPopupMenu;
-  //mpFileMenu->setItemEnabled(nobject_browser, false);
   mbObject_browser_open = false;
-
-  //   mpFileMenu->setItemEnabled(nexport_menu_SBML, false);
-  //   mpFileMenu->setItemEnabled(nexport_menu_MathModel, false);
-  //   mpFileMenu->setItemEnabled(nsave_menu_id, false);
-  //   mpFileMenu->setItemEnabled(nsaveas_menu_id, false);
-  //   msave_button->setEnabled(false);
 
   mpaSave->setEnabled(false);
   mpaSaveAs->setEnabled(false);
@@ -134,13 +121,9 @@ CopasiUI3Window::CopasiUI3Window():
     {
       // create the data model
       dataModel = new DataModelGUI();
-
-      //splitter = new QSplitter(QSplitter::Vertical, this , "main");
-      //splitter->show();
-      //this->setCentralWidget(splitter);
     }
 
-  listViews = new ListViews(this /*splitter*/);
+  listViews = new ListViews(this);
 
   connect(listViews->folders, SIGNAL(currentChanged(QListViewItem*)), this, SLOT(listViewsFolderChanged(QListViewItem*)));
 
@@ -215,8 +198,15 @@ void CopasiUI3Window::createActions()
   mpaExportODE = new QAction(QPixmap(filesave), "Export ODEs", CTRL + Key_M, this, "exportode");
   connect(mpaExportODE, SIGNAL(activated()), this, SLOT(slotExportMathModel()));
 
+  mpaSliders = new QAction(QPixmap(toggleSliderDialog), "Show sliders", 0, this, "showsliders");
+  mpaSliders->setToggleAction(true);
+  connect(mpaSliders, SIGNAL(toggled(bool)), this, SLOT(slotShowSliders(bool)));
+
+  //   mpaObjectBrowser = new QAction("Object &Browser", 0, this, "objectbrowser");
+  //   mpaObjectBrowser->setToggleAction(true);
+  //   connect(mpaObjectBrowser, SIGNAL(toggled(bool)), this, SLOT(slotObjectBrowserDialog()));
+
   //     QAction* mpaObjectBrowser;
-  //     QAction* mpaSliders;
 }
 
 void CopasiUI3Window::createToolBar()
@@ -237,10 +227,8 @@ void CopasiUI3Window::createToolBar()
   mpaSave->addTo(tbMain);
 
   // add a toobar toggle button to display/hide slider dialog
-  mpToggleSliderDialogButton = new QToolButton(QPixmap(toggleSliderDialog), "Toggle slider dialog", QString::null,
-                               this, SLOT(slotToggleSliders()), tbMain);
-  QWhatsThis::add(mpToggleSliderDialogButton, "<p>Click this button to show/hide the sliders dialog. This is the same as clicking on <b>show sliders</b> in the <b>Tools</b> menu.</p>");
-  this->mpToggleSliderDialogButton->setToggleButton(true);
+  //   QWhatsThis::add(mpToggleSliderDialogButton, "<p>Click this button to show/hide the sliders dialog. This is the same as clicking on <b>show sliders</b> in the <b>Tools</b> menu.</p>");
+  mpaSliders->addTo(tbMain);
 
   //What's this
   toolb = QWhatsThis::whatsThisButton(tbMain);
@@ -286,10 +274,6 @@ void CopasiUI3Window::createMenuBar()
                "You can also select the <b>Export </b> command "
                "from the <b>File</b> menu.</p>";
 
-  // toolTip[7] = "<p>Click this button to to see the list of recently accessed files.</p>";
-
-  // toolTip[8] = "<p>Click this button to to see the list of recently accessed SBML files.</p>";
-
   QPopupMenu * pFileMenu = new QPopupMenu(this);
   menuBar()->insertItem("&File", pFileMenu);
 
@@ -303,28 +287,6 @@ void CopasiUI3Window::createMenuBar()
   mpaImportSBML->addTo(pFileMenu);
   mpaExportSBML->addTo(pFileMenu);
   mpaExportODE->addTo(pFileMenu);
-
-  //   int j;
-  //   for (j = 4; j < 7; j++)
-  //     {
-  //       if (fileSeparator[j] == 1)
-  //         mpFileMenu->insertSeparator();
-  //
-  //       int id;
-  //
-  //       id = mpFileMenu->insertItem(icon[j], iconName[j],
-  //                                   this, slotFileName[j], hotKey[j]);
-  //
-  //       mpFileMenu->setWhatsThis(id, toolTip[j]);
-  //       if (j == 2)
-  //         nsave_menu_id = id;
-  //       if (j == 3)
-  //         nsaveas_menu_id = id;
-  //       if (j == 5)
-  //         nexport_menu_SBML = id;
-  //       if (j == 6)
-  //         nexport_menu_MathModel = id;
-  //}
 
   pFileMenu->insertSeparator();
 
@@ -347,8 +309,11 @@ void CopasiUI3Window::createMenuBar()
   tools->insertItem("&Convert to irreversible", this, SLOT(slotConvertToIrreversible()));
   tools->insertSeparator();
   tools->insertItem("Object &Browser", this, SLOT(slotObjectBrowserDialog()), 0, 2);
-  this->mShowSlidersMenuEntry = tools->insertItem("Show Sliders", this, SLOT(slotToggleSliders()));
-  tools->setItemChecked(this->mShowSlidersMenuEntry, false);
+
+  //this->mShowSlidersMenuEntry = tools->insertItem("Show Sliders", this, SLOT(slotToggleSliders()));
+  //tools->setItemChecked(this->mShowSlidersMenuEntry, false);
+  mpaSliders->addTo(tools);
+
   tools->insertSeparator();
   tools->insertItem("&Preferences...", this, SLOT(slotPreferences()), CTRL + Key_P, 3);
 
@@ -475,16 +440,10 @@ void CopasiUI3Window::newDoc()
 
   dataModel->createModel();
   ListViews::notify(ListViews::MODEL, ListViews::ADD, CCopasiDataModel::Global->getModel()->getKey());
-  if (!mbObject_browser_open)
-    //mpFileMenu->setItemEnabled(nobject_browser, true);
+  //if (!mbObject_browser_open)
+  //mpFileMenu->setItemEnabled(nobject_browser, true);
 
-    //   mpFileMenu->setItemEnabled(nexport_menu_SBML, true);
-    //   mpFileMenu->setItemEnabled(nexport_menu_MathModel, true);
-    //   mpFileMenu->setItemEnabled(nsaveas_menu_id, true);
-    //   msave_button->setEnabled(true);
-    //   mpFileMenu->setItemEnabled(nsave_menu_id, true);
-
-    mpaSave->setEnabled(true);
+  mpaSave->setEnabled(true);
   mpaSaveAs->setEnabled(true);
   mpaExportSBML->setEnabled(true);
   mpaExportODE->setEnabled(true);
@@ -607,15 +566,6 @@ void CopasiUI3Window::slotFileOpen(QString file)
 
       ListViews::notify(ListViews::MODEL, ListViews::ADD,
                         CCopasiDataModel::Global->getModel()->getKey());
-
-      //if (!bobject_browser_open)
-      //  mpFileMenu->setItemEnabled(nobject_browser, true);
-
-      //       mpFileMenu->setItemEnabled(nexport_menu_SBML, true);
-      //       mpFileMenu->setItemEnabled(nexport_menu_MathModel, true);
-      //       mpFileMenu->setItemEnabled(nsaveas_menu_id, true);
-      //       msave_button->setEnabled(true);
-      //       mpFileMenu->setItemEnabled(nsave_menu_id, true);
 
       mpaSave->setEnabled(true);
       mpaSaveAs->setEnabled(true);
@@ -1025,15 +975,6 @@ void CopasiUI3Window::slotImportSBML(QString file)
       ListViews::notify(ListViews::MODEL, ListViews::ADD,
                         CCopasiDataModel::Global->getModel()->getKey());
 
-      //if (!bobject_browser_open)
-      //  mpFileMenu->setItemEnabled(nobject_browser, true);
-
-      //       mpFileMenu->setItemEnabled(nexport_menu_SBML, true);
-      //       mpFileMenu->setItemEnabled(nexport_menu_MathModel, true);
-      //       mpFileMenu->setItemEnabled(nsaveas_menu_id, true);
-      //       msave_button->setEnabled(true);
-      //       mpFileMenu->setItemEnabled(nsave_menu_id, true);
-
       mpaSave->setEnabled(true);
       mpaSaveAs->setEnabled(true);
       mpaExportSBML->setEnabled(true);
@@ -1223,12 +1164,14 @@ void CopasiUI3Window::slotConvertToIrreversible()
   ListViews::notify(ListViews::MODEL, ListViews::CHANGE, "");
 }
 
-void CopasiUI3Window::slotToggleSliders()
+void CopasiUI3Window::slotShowSliders(bool flag)
 {
-  bool isChecked = menuBar()->isItemChecked(mShowSlidersMenuEntry);
-  menuBar()->setItemChecked(mShowSlidersMenuEntry, !isChecked);
-  this->mpToggleSliderDialogButton->setOn(!isChecked);
-  this->sliders->setHidden(isChecked);
+  //bool isChecked = menuBar()->isItemChecked(mShowSlidersMenuEntry);
+  //bool isChecked = mpaSliders->isOn();
+  mpaSliders->setOn(flag);
+  //menuBar()->setItemChecked(mShowSlidersMenuEntry, !isChecked);
+  //this->mpToggleSliderDialogButton->setOn(!isChecked);
+  this->sliders->setHidden(!flag);
 }
 
 void CopasiUI3Window::enable_object_browser_menu()
@@ -1252,10 +1195,10 @@ void CopasiUI3Window::listViewsFolderChanged(QListViewItem* item)
   this->sliders->setCurrentFolderId(id);
 }
 
-void CopasiUI3Window::saveFile()
-{
-  this->slotFileSave();
-}
+// void CopasiUI3Window::saveFile()
+// {
+//   this->slotFileSave();
+//}
 
 CQTrajectoryWidget* CopasiUI3Window::getTrajectoryWidget()
 {
