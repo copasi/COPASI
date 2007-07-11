@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.300.2.1 $
+//   $Revision: 1.300.2.1.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/05/04 16:54:34 $
+//   $Date: 2007/07/11 21:02:19 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -111,6 +111,7 @@ CModel::CModel():
   initObjects();
 
   setStatus(TIME);
+  setUsed(true);
 
   *mpIValue = 0.0;
   *mpValueAccess = std::numeric_limits<C_FLOAT64>::quiet_NaN();
@@ -332,6 +333,8 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
 
 bool CModel::compile()
 {
+  mpValueReference->addDirectDependency(this);
+
   CMatrix< C_FLOAT64 > LU;
 
   unsigned C_INT32 CompileStep = 0;
@@ -3085,18 +3088,12 @@ void CModel::buildLinkZero()
 
 bool CModel::isAutonomous() const
   {
-    const CKinFunction * pFunction;
+    std::set< const CCopasiObject * > TimeDependent;
 
-    std::vector< CReaction * >::const_iterator it = getReactions().begin();
-    std::vector< CReaction * >::const_iterator end = getReactions().end();
+    appendDependentReactions(getDeletedObjects(), TimeDependent);
+    appendDependentMetabolites(getDeletedObjects(), TimeDependent);
+    appendDependentCompartments(getDeletedObjects(), TimeDependent);
+    appendDependentModelValues(getDeletedObjects(), TimeDependent);
 
-    for (; it != end; ++it)
-      if ((pFunction =
-             dynamic_cast<const CKinFunction * >((*it)->getFunction())) != NULL &&
-          pFunction->getVariables().getNumberOfParametersByUsage(CFunctionParameter::TIME))
-        {
-          return false;
-        }
-
-    return true;
+    return (TimeDependent.begin() == TimeDependent.end());
   }
