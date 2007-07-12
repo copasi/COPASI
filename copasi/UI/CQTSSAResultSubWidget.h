@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /home/cvs/copasi_dev/cvs_admin/addHeader,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/01/12 14:07:01 $
+//   $Date: 2007/05/31 18:21:38 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,7 +13,7 @@
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQTSSAResultSubWidget.ui'
  **
- ** Created: Mo Mai 21 14:17:29 2007
+ ** Created: Do Jul 12 16:53:32 2007
  **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.7   edited Aug 31 2005 $)
  **
  ** WARNING! All changes made in this file will be lost!
@@ -32,10 +32,13 @@ class QHBoxLayout;
 class QGridLayout;
 class QSpacerItem;
 class CTimeSeriesTable;
+class CQArrayAnnotationsWidget;
 class QComboBox;
 class QPushButton;
 class QTabWidget;
 class QTextEdit;
+class QSlider;
+class QLabel;
 
 class CQTSSAResultSubWidget : public QWidget
   {
@@ -52,19 +55,45 @@ class CQTSSAResultSubWidget : public QWidget
     QTextEdit* optimizationResultText;
     QWidget* tab_2;
     CTimeSeriesTable* dataTable;
+    QWidget* TabPage;
+    QTabWidget* mTabWidget;
+    QWidget* tab_3;
+    CQArrayAnnotationsWidget* pArrayWidget;
+    QWidget* tab_4;
+    CQArrayAnnotationsWidget* pArrayWidget2;
+    QWidget* TabPage_2;
+    CQArrayAnnotationsWidget* pArrayWidget3;
+    QSlider* mSlider;
+    QLabel* mLabel7;
+    QLabel* pLabel1;
+    QLabel* mLabel2;
+    QLabel* mLabel3;
+    QLabel* mLabel4;
+    QLabel* mLabel5;
+    QLabel* mLabel6;
 
     void displayOptimizationTab(bool displayOptTab);
     bool clear();
+    void discardOldResults();
+    void setStepNumber();
+    void setStepSelectionDisabled(bool set);
 
   public slots:
     virtual CTimeSeriesTable * table();
+    void changeInterval();
+    void hideButtons();
 
   protected:
-    QVBoxLayout* CQTSSAResultSubWidgetLayout;
+    QGridLayout* CQTSSAResultSubWidgetLayout;
     QHBoxLayout* toplayout;
     QSpacerItem* spacer;
     QVBoxLayout* tabLayout;
     QVBoxLayout* tabLayout_2;
+    QGridLayout* TabPageLayout;
+    QSpacerItem* mSpacer;
+    QGridLayout* tabLayout_3;
+    QGridLayout* tabLayout_4;
+    QGridLayout* TabPageLayout_2;
 
   protected slots:
     virtual void languageChange();

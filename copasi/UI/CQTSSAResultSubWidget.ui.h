@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQTSSAResultSubWidget.ui.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2007/04/12 12:34:10 $
+//   $Author: ssahle $
+//   $Date: 2007/07/12 15:13:18 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,6 +27,23 @@
 #include "optimization/COptProblem.h"
 #include "optimization/COptTask.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
+
+//Artjom
+#include "tssanalysis/CTSSATask.h"
+#include "tssanalysis/CTSSAProblem.h"
+#include "tssanalysis/CILDMMethod.h"
+#include "utilities/CAnnotatedMatrix.h"
+#include "model/CModel.h"
+
+CTSSATask* pTSSTask;
+CTSSAProblem* pProblem;
+CILDMMethod* pTimeScaleSeperation;
+CModel* pModel;
+
+const CArrayAnnotation * pResult;
+const CArrayAnnotation * pResult2;
+const CArrayAnnotation * pResult3;
+//Artjom end
 
 void CQTSSAResultSubWidget::saveDataToFile()
 {
@@ -90,6 +107,25 @@ void CQTSSAResultSubWidget::toggleView()
 
 void CQTSSAResultSubWidget::init()
 {
+
+  //ARTJOM
+  //set colorsettings for ArrayAnnotationWidgets
+  CColorScaleSimple * tcs = new CColorScaleSimple();
+  tcs->setMinMax(-100, 100);
+  // mVslow_metab widget
+  pArrayWidget->setColorCoding(tcs);
+  pArrayWidget->setColorScalingAutomatic(false);
+  // mVslow widget
+  pArrayWidget2->setColorCoding(tcs);
+  pArrayWidget2->setColorScalingAutomatic(false);
+  // mVslow_space widget
+  pArrayWidget3->setColorCoding(tcs);
+  pArrayWidget3->setColorScalingAutomatic(false);
+
+  connect(mSlider, SIGNAL(valueChanged(int)), this, SLOT(changeInterval()));
+  connect(tabWidget2, SIGNAL(currentChanged(QWidget *)), this, SLOT(hideButtons()));
+
+  //ARTJOM ENDE
   dataTable->setNumRows(10);
   displayOptimizationTab(false);
 }
@@ -98,3 +134,79 @@ CTimeSeriesTable* CQTSSAResultSubWidget::table()
 {
   return dataTable;
 }
+//Artjom
+/**
+ * Fill the combobox mpSelectStep with count of steps the ILDM
+ * Method is calculating with.
+ **/
+void CQTSSAResultSubWidget::setStepNumber()
+{
+  CTSSATask* pTSSTask =
+    dynamic_cast<CTSSATask *>((*CCopasiDataModel::Global->getTaskList())["Time Scale Separation Analysis"]);
+  if (!pTSSTask) return;
+  pTimeScaleSeperation = dynamic_cast<CILDMMethod*>(pTSSTask->getMethod());
+  pProblem = dynamic_cast<CTSSAProblem*>(pTSSTask->getProblem());
+  CModel* pModel = pProblem->getModel();
+  QString a = FROM_UTF8(pModel->getTimeUnitName());
+  mLabel7->setText(a);
+  mLabel6->setNum((double)pProblem->getStepNumber());
+  mSlider->setRange(1, pProblem->getStepNumber());
+  mSlider->setValue(mSlider->minValue());
+  changeInterval();
+}
+
+/**
+ * Clear ArrayAnnotation-widgets.
+ **/
+void CQTSSAResultSubWidget::discardOldResults()
+{
+  pArrayWidget->setArrayAnnotation(NULL);
+  pArrayWidget2->setArrayAnnotation(NULL);
+  pArrayWidget3->setArrayAnnotation(NULL);
+}
+
+/**
+ * Get the results for the requested step from ILDM-method.
+ * Fill widgets with this results.
+ **/
+void CQTSSAResultSubWidget::changeInterval()
+{
+  int step = mSlider->value();
+  std::cout << "currentStep    " << step << std::endl;
+
+  mLabel2->setNum((double)pTimeScaleSeperation->returnCurrentTime(step - 1));
+  mLabel4->setNum(step);
+
+  pTimeScaleSeperation->setAnnotationM(step);
+  pResult = pTimeScaleSeperation->getVslowPrintAnn();
+  pResult2 = pTimeScaleSeperation->getVslowMetabPrintAnn();
+  pResult3 = pTimeScaleSeperation->getVslowSpacePrintAnn();
+  pArrayWidget->setArrayAnnotation(pResult);
+  pArrayWidget2->setArrayAnnotation(pResult2);
+  pArrayWidget3->setArrayAnnotation(pResult3);
+}
+
+/**
+ * Hide the above buttons if ILDM-tab is currently active.
+ **/
+void CQTSSAResultSubWidget::hideButtons()
+{
+  if (tabWidget2->currentPageIndex() == 1)
+    {
+      ButtonSaveData->setDisabled(true);
+      comboBox->setDisabled(true);
+    }
+  else
+    {
+      ButtonSaveData->setEnabled(true);
+      comboBox->setEnabled(true);
+    }
+}
+/**
+ * Able / Disable the combobox.
+ **/
+void CQTSSAResultSubWidget::setStepSelectionDisabled(bool set)
+{
+  mSlider->setDisabled(set);
+}
+//artjom end
