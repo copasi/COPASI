@@ -1,20 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMMethod.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/06/01 22:33:14 $
-// End CVS Header
-
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
-
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMMethod.cpp,v $
-//   $Revision: 1.5 $
-//   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/06/01 22:33:14 $
+//   $Date: 2007/07/12 14:44:30 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -585,6 +574,11 @@ integration:
   for (i = 0; i < mpModel->getMetabolites().size(); ++i)
     std::cout << mpModel->getMetabolites()[i]->getConcentration() << ", ";
   std::cout << std::endl;
+
+  // new entry for every entry contains the current data of currently step
+  setVectors(slow);
+  // set the stepcounter
+  mCurrentStep += 1;
 
   return;
 }
@@ -2267,4 +2261,143 @@ void CILDMMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * yd
     mpModel->calculateDerivatives(ydot);
 
   return;
+}
+
+/**
+ * Create the CArraAnnotations for every ILDM-tab in the CQTSSAResultSubWidget.
+ * Input for each CArraAnnotations is a seperate CMatrix.
+ **/
+void CILDMMethod::createAnnotationsM()
+{
+  CArrayAnnotation *
+  pTmp1 = new CArrayAnnotation("Unscaled elasticities", this,
+                               new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mVslowPrint));
+  pTmp1->setMode(0, pTmp1->STRINGS);
+  pTmp1->setMode(1, pTmp1->VECTOR);
+  pTmp1->setDescription("mVslowPrintAnn matrix");
+  pTmp1->setDimensionDescription(0, "contribution to each mode corresponding to timescale");
+  pTmp1->setDimensionDescription(1, "meatabolites");
+  pVslowPrintAnn = pTmp1;
+
+  CArrayAnnotation *
+  pTmp2 = new CArrayAnnotation("mVslowMetabPrint", this,
+                               new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mVslowMetabPrint));
+  pTmp2->setMode(1, pTmp2->STRINGS);
+  pTmp2->setMode(0, pTmp2->VECTOR);
+  pTmp2->setDescription("mVslowMetabPrint matrix");
+  pTmp2->setDimensionDescription(0, "mode distribution for each metabolite");
+  pTmp2->setDimensionDescription(1, "modes corresponding to timescale");
+  pVslowMetabPrintAnn = pTmp2;
+
+  CArrayAnnotation *
+  pTmp3 = new CArrayAnnotation("mVslowSpacePrint", this,
+                               new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mVslowSpacePrint));
+  pTmp3->setMode(1, pTmp3->STRINGS);
+  pTmp3->setMode(0, pTmp3->VECTOR);
+  pTmp3->setDescription("mVslowSpacePrint matrix");
+  pTmp3->setDimensionDescription(0, "metabolites");
+  pTmp3->setDimensionDescription(1, "contribution to slow space");
+  pVslowSpacePrintAnn = pTmp3;
+}
+/**
+ * Set the every CArrayAnnotation for the requested step.
+ * Set also the desription of CArayAnnotation for both dimensions:
+ *    - dimension description could consists of some std::srings
+ *      some strings contain the Time Scale values for requested step
+ *    - dimension description could consists of arrays of CommonNames
+ **/
+void CILDMMethod::setAnnotationM(int step)
+{
+  if (!step) return;
+  step -= 1;
+  double timeScale;
+  std::string str;
+  std::stringstream sstr;
+  sstr.str("");
+  sstr.clear();
+
+  mVslowPrint.resize(mData.dim, mData.dim);
+  mVslowPrint = mVec_mVslow[step];
+  pVslowPrintAnn->resize();
+  pVslowPrintAnn->setCopasiVector(1, &mpModel->getMetabolitesX());
+  for (int i = 0; i < mData.dim; i++)
+    {
+      timeScale = mVec_TimeScale[step][i];
+      sstr << "TS: ";
+      sstr << timeScale;
+      str = sstr.str();
+      pVslowPrintAnn->setAnnotationString(0, i, str);
+      sstr.str("");
+      sstr.clear();
+    }
+
+  mVslowMetabPrint.resize(mData.dim, mData.dim);
+  mVslowMetabPrint = mVec_mVslowMetab[step];
+  pVslowMetabPrintAnn->resize();
+  pVslowMetabPrintAnn->setCopasiVector(0, &mpModel->getMetabolitesX());
+  for (int i = 0; i < mData.dim; i++)
+    {
+      timeScale = mVec_TimeScale[step][i];
+      sstr << "TS: ";
+      sstr << timeScale;
+      str = sstr.str();
+      pVslowMetabPrintAnn->setAnnotationString(1, i, str);
+      sstr.str("");
+      sstr.clear();
+    }
+
+  sstr << mVec_SlowModes[step];
+  if (mVec_SlowModes[step] > 1)
+    sstr << " modes";
+  else
+    sstr << " mode";
+  str = sstr.str();
+  mVslowSpacePrint.resize(mData.dim, 1);
+  for (int i = 0; i < mData.dim; i++)
+    mVslowSpacePrint(i, 0) = mVec_mVslowSpace[step][i];
+  pVslowSpacePrintAnn->resize();
+  pVslowSpacePrintAnn->setCopasiVector(0, &mpModel->getMetabolitesX());
+  pVslowSpacePrintAnn->setAnnotationString(1, 0, str);
+}
+/**
+ * Empty every vector to be able to fill them with new values for a new calculation.
+ * Also nullify the step counter.
+ **/
+void CILDMMethod::emptyVectors()
+{
+  mCurrentStep = 0;
+  mVec_mVslow.erase(mVec_mVslow.begin(), mVec_mVslow.end());
+  mVec_TimeScale.erase(mVec_TimeScale.begin(), mVec_TimeScale.end());
+  mVec_mVslowMetab.erase(mVec_mVslowMetab.begin(), mVec_mVslowMetab.end());
+  mVec_mVslowSpace.erase(mVec_mVslowSpace.begin(), mVec_mVslowSpace.end());
+  mVec_SlowModes.erase(mVec_SlowModes.begin(), mVec_SlowModes.end());
+}
+
+/**
+ *upgrade all vectors with values from actually calculalion for current step
+ **/
+void CILDMMethod::setVectors(int slowMode)
+{
+  mVec_mVslow.push_back(mCurrentStep);
+  mVec_mVslow[mCurrentStep].resize(mData.dim, mData.dim);
+  mVec_mVslow[mCurrentStep] = mVslow;
+
+  mVec_TimeScale.push_back(mCurrentStep);
+  mVec_TimeScale[mCurrentStep].resize(mData.dim);
+  for (int i = 0; i < mData.dim; i++)
+    mVec_TimeScale[mCurrentStep][i] = -1 / mR(i, i);
+
+  mVec_mVslowMetab.push_back(mCurrentStep);
+  mVec_mVslowMetab[mCurrentStep].resize(mData.dim, mData.dim);
+  mVec_mVslowMetab[mCurrentStep] = mVslow_metab;
+
+  mVec_mVslowSpace.push_back(mCurrentStep);
+  mVec_mVslowSpace[mCurrentStep].resize(mData.dim);
+  mVec_mVslowSpace[mCurrentStep] = mVslow_space;
+
+  mVec_SlowModes.push_back(mCurrentStep);
+  mVec_SlowModes[mCurrentStep] = slowMode;
+
+  mCurrentTime.push_back(mCurrentStep);
+  mCurrentTime[mCurrentStep] = mTime;
 }
