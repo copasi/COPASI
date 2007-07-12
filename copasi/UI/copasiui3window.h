@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-//   $Revision: 1.66 $
+//   $Revision: 1.67 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/07/11 23:26:23 $
+//   $Date: 2007/07/12 00:44:30 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,6 +30,7 @@ class QLabel;
 class QHBox;
 class QScrollView;
 class QAction;
+class ObjectBrowserDialog;
 
 class CopasiUI3Window : public QMainWindow
   {
@@ -38,8 +39,8 @@ class CopasiUI3Window : public QMainWindow
   public:
     static CopasiUI3Window * create();
     ~CopasiUI3Window();
-    void enable_object_browser_menu();
-    void disable_object_browser_menu();
+    //void enable_object_browser_menu();
+    //void disable_object_browser_menu();
     DataModelGUI* getDataModel();
     //void saveFile();
 
@@ -59,7 +60,13 @@ class CopasiUI3Window : public QMainWindow
 
   public slots:
     void slotShowSliders(bool flag);
-    void slotObjectBrowserDialog();
+
+    /**
+     * This should only be called by the destructor of the object browser dialog
+     * otherwise a memory leak occurs
+     */
+    void slotObjectBrowserDialogWasClosed();
+
     void slotPreferences();
     void autoSave();
 
@@ -84,18 +91,24 @@ class CopasiUI3Window : public QMainWindow
     void slotOpenRecentSBMLFile(int index);
     bool slotRegistration();
 
+    /**
+     * This should only be called via signal by the corresponding QAction mpaObjectBrowser.
+     * Otherwise the QAction will not be up to date.
+     */
+    void slotShowObjectBrowserDialog(bool flag);
+
   private:
     int newFlag;
     QString FixedTitle;
     //QToolButton * msave_button;
-    QPopupMenu * tools;
+    //QPopupMenu * tools;
 
     //int nsave_menu_id;
     //int nsaveas_menu_id;
     //int nexport_menu_SBML;
     //int nexport_menu_MathModel;
-    int nobject_browser;
-    bool mbObject_browser_open;
+    //int nobject_browser;
+    //bool mbObject_browser_open;
 
     void createActions();
     void createToolBar();
@@ -112,9 +125,10 @@ class CopasiUI3Window : public QMainWindow
     QAction* mpaSliders;
 
     void CleanUp();
-    SliderDialog* sliders;
-    //int mShowSlidersMenuEntry;
-    //QToolButton* mpToggleSliderDialogButton;
+
+    SliderDialog* mpSliders;
+    ObjectBrowserDialog * mpObjectBrowser;
+
     bool mSaveAsRequired;
     void updateTitle();
     QTimer *mpAutoSaveTimer;

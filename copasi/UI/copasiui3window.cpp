@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.195 $
+//   $Revision: 1.196 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/07/11 23:26:23 $
+//   $Date: 2007/07/12 00:44:30 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -89,7 +89,8 @@ CopasiUI3Window::CopasiUI3Window():
     QMainWindow(),
     dataModel(NULL),
     listViews(NULL),
-    sliders(NULL),
+    mpSliders(NULL),
+    mpObjectBrowser(NULL),
     mSaveAsRequired(true),
     mpAutoSaveTimer(NULL),
     mSuspendAutoSave(false),
@@ -110,7 +111,7 @@ CopasiUI3Window::CopasiUI3Window():
   createActions();
   createToolBar(); // creates a tool bar
   createMenuBar();  // creates a menu bar
-  mbObject_browser_open = false;
+  //mbObject_browser_open = false;
 
   mpaSave->setEnabled(false);
   mpaSaveAs->setEnabled(false);
@@ -131,11 +132,11 @@ CopasiUI3Window::CopasiUI3Window():
   listViews->show();
   this->setCentralWidget(listViews);
 
-  this->sliders = new SliderDialog(NULL);
-  this->sliders->setParentWindow(this);
+  this->mpSliders = new SliderDialog(NULL);
+  this->mpSliders->setParentWindow(this);
   C_INT32 id = ((FolderListItem*)listViews->folders->currentItem())->getFolder()->getId();
-  this->sliders->setCurrentFolderId(id);
-  this->sliders->resize(350, 250);
+  this->mpSliders->setCurrentFolderId(id);
+  this->mpSliders->resize(350, 250);
 
   if (!COptions::compareValue("ImportSBML", std::string("")))
     {
@@ -202,9 +203,9 @@ void CopasiUI3Window::createActions()
   mpaSliders->setToggleAction(true);
   connect(mpaSliders, SIGNAL(toggled(bool)), this, SLOT(slotShowSliders(bool)));
 
-  //   mpaObjectBrowser = new QAction("Object &Browser", 0, this, "objectbrowser");
-  //   mpaObjectBrowser->setToggleAction(true);
-  //   connect(mpaObjectBrowser, SIGNAL(toggled(bool)), this, SLOT(slotObjectBrowserDialog()));
+  mpaObjectBrowser = new QAction("Object &Browser", 0, this, "objectbrowser");
+  mpaObjectBrowser->setToggleAction(true);
+  connect(mpaObjectBrowser, SIGNAL(toggled(bool)), this, SLOT(slotShowObjectBrowserDialog(bool)));
 
   //     QAction* mpaObjectBrowser;
 }
@@ -302,16 +303,17 @@ void CopasiUI3Window::createMenuBar()
 
   pFileMenu->insertItem("&Quit", this, SLOT(slotQuit()), CTRL + Key_Q);
 
-  tools = new QPopupMenu(this);
+  //****** tools menu **************
+
+  QPopupMenu* tools = new QPopupMenu(this);
   menuBar()->insertItem("&Tools", tools);
 
-  tools->insertSeparator();
+  //tools->insertSeparator();
   tools->insertItem("&Convert to irreversible", this, SLOT(slotConvertToIrreversible()));
   tools->insertSeparator();
-  tools->insertItem("Object &Browser", this, SLOT(slotObjectBrowserDialog()), 0, 2);
+  //tools->insertItem("Object &Browser", this, SLOT(slotObjectBrowserDialog()), 0, 2);
+  mpaObjectBrowser->addTo(tools);
 
-  //this->mShowSlidersMenuEntry = tools->insertItem("Show Sliders", this, SLOT(slotToggleSliders()));
-  //tools->setItemChecked(this->mShowSlidersMenuEntry, false);
   mpaSliders->addTo(tools);
 
   tools->insertSeparator();
@@ -321,6 +323,8 @@ void CopasiUI3Window::createMenuBar()
   tools->insertSeparator();
   tools->insertItem("&Registration", this, SLOT(slotRegistration()));
 #endif // COPASI_LICENSE_COM
+
+  //*******  help menu *****************
 
   menuBar()->insertSeparator();
 
@@ -771,18 +775,27 @@ void CopasiUI3Window::aboutQt()
   QMessageBox::aboutQt(this, "Qt");
 }
 
-void CopasiUI3Window::slotObjectBrowserDialog()
+void CopasiUI3Window::slotShowObjectBrowserDialog(bool flag)
 {
-  if (tools->isItemEnabled(2))
+
+  if (flag /*tools->isItemEnabled(2)*/)
     {
-      ObjectBrowserDialog * objectBrowserDialog = new ObjectBrowserDialog(this, 0, false, 1);
-      tools->setItemEnabled(2, FALSE);
-      objectBrowserDialog->show();
+      if (mpObjectBrowser)
+        delete mpObjectBrowser;
+      mpObjectBrowser = new ObjectBrowserDialog(this, 0, false, 1);
+      mpObjectBrowser->show();
     }
   else
     {
-      tools->setItemEnabled(2, TRUE);
+      if (mpObjectBrowser)
+        mpObjectBrowser->hide();
     }
+}
+
+void CopasiUI3Window::slotObjectBrowserDialogWasClosed()
+{
+  mpObjectBrowser = NULL;
+  mpaObjectBrowser->setOn(false);
 }
 
 void CopasiUI3Window::slotPreferences()
@@ -1166,25 +1179,21 @@ void CopasiUI3Window::slotConvertToIrreversible()
 
 void CopasiUI3Window::slotShowSliders(bool flag)
 {
-  //bool isChecked = menuBar()->isItemChecked(mShowSlidersMenuEntry);
-  //bool isChecked = mpaSliders->isOn();
   mpaSliders->setOn(flag);
-  //menuBar()->setItemChecked(mShowSlidersMenuEntry, !isChecked);
-  //this->mpToggleSliderDialogButton->setOn(!isChecked);
-  this->sliders->setHidden(!flag);
+  this->mpSliders->setHidden(!flag);
 }
 
-void CopasiUI3Window::enable_object_browser_menu()
-{
-  //mpFileMenu->setItemEnabled(nobject_browser, true);
-  mbObject_browser_open = false;
-}
+// void CopasiUI3Window::enable_object_browser_menu()
+// {
+//   //mpFileMenu->setItemEnabled(nobject_browser, true);
+//   mbObject_browser_open = false;
+//}
 
-void CopasiUI3Window::disable_object_browser_menu()
-{
-  //mpFileMenu->setItemEnabled(nobject_browser, false);
-  mbObject_browser_open = true;
-}
+// void CopasiUI3Window::disable_object_browser_menu()
+// {
+//   //mpFileMenu->setItemEnabled(nobject_browser, false);
+//   mbObject_browser_open = true;
+//}
 
 DataModelGUI* CopasiUI3Window::getDataModel()
 {return dataModel;}
@@ -1192,7 +1201,7 @@ DataModelGUI* CopasiUI3Window::getDataModel()
 void CopasiUI3Window::listViewsFolderChanged(QListViewItem* item)
 {
   C_INT32 id = ((FolderListItem*)item)->getFolder()->getId();
-  this->sliders->setCurrentFolderId(id);
+  this->mpSliders->setCurrentFolderId(id);
 }
 
 // void CopasiUI3Window::saveFile()
