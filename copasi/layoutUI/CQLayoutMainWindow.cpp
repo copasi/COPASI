@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/07/12 13:06:14 $
+//   $Date: 2007/07/12 14:26:47 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,13 +31,12 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
   createActions();
   createMenus();
 
-  // create split window with parameter panel and graph panel
-  QSplitter *splitter = new QSplitter(Qt::Horizontal, this);
-  splitter->setCaption("Test");
+  //mainWidget = new QWidget;
+  mainBox = new QVBox(this);
 
-  mainWidget = new QWidget;
-  mainBox = new QVBoxLayout(mainWidget);
-  mainBox->addWidget(splitter);
+  // create split window with parameter panel and graph panel
+  QSplitter *splitter = new QSplitter(Qt::Horizontal, mainBox);
+  splitter->setCaption("Test");
 
   //QLabel *label = new QLabel(splitter, "Test Label", 0);
   //QTextEdit *testEditor = new QTextEdit(splitter);
@@ -45,13 +44,11 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
 
   // create sroll view
   scrollView = new QScrollView(splitter);
-  //scrollView = new QScrollView(this);
   scrollView->setCaption("Network Graph Viewer");
   //scrollView->viewport()->setPaletteBackgroundColor(QColor(255,255,240));
   scrollView->viewport()->setPaletteBackgroundColor(QColor(219, 235, 255));
   //scrollView->viewport()->setMouseTracking(TRUE);
   // Create OpenGL widget
-  //cout << "viewport: " << scrollView.viewport() << endl;
   CListOfLayouts *pLayoutList;
   if (CCopasiDataModel::Global != NULL)
     {
@@ -77,32 +74,20 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
     }
   // put OpenGL widget into scrollView
   scrollView->addChild(glPainter);
-  //setCentralWidget(scrollView);
-  //scrollView->show();
 
-  // create slider
-  //timeSlider = new QSlider(Qt::Horizontal, splitter);
-  //bottomBox = new QHBoxLayout(mainBox);
-  bottomBox = new QHBox(mainWidget);
+  bottomBox = new QHBox(mainBox);
   //bottomBox->setMinimumHeight(15);
   //bottomBox->setMinimumWidth(100);
 
-  timeSlider = new QwtSlider(bottomBox, Qt::Horizontal, QwtSlider::TopScale, QwtSlider::BgTrough);
+  timeSlider = new QwtSlider(bottomBox, Qt::Horizontal, QwtSlider::BottomScale, QwtSlider::BgTrough);
   timeSlider->setRange(0, 100, 1, 0);
   timeSlider->setValue(0.0);
   //timeSlider->setTickmarks(QSlider::Below);
   timeSlider->setDisabled(TRUE);
   connect(timeSlider, SIGNAL(valueChanged(double)),
           this, SLOT(showStep(double)));
-  //bottomBox->addWidget(timeSlider);
-  //bottomWidget = new QWidget(this);
 
-  mainBox->addWidget(bottomBox);
-
-  //QBoxLayout * bottomBox = new QHBoxLayout(timeSlider);
-  //this->addWidget(bottomWidget);
-
-  setCentralWidget(mainWidget);
+  setCentralWidget(mainBox);
   this->show();
   //glPainter->drawGraph();
 }
