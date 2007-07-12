@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-//   $Revision: 1.88 $
+//   $Revision: 1.88.6.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/04/09 18:56:13 $
+//   $Date: 2007/07/12 19:30:39 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -302,10 +302,13 @@ bool COptProblem::initialize()
 
   for (i = 0; it != end; ++it, i++)
     {
-      if (!(*it)->compile(ContainerList)) return false;
+      success &= (*it)->compile(ContainerList);
+
       mUpdateMethods[i] = (*it)->getUpdateMethod();
       mOriginalVariables[i] = *(*it)->COptItem::getObjectValue();
     }
+
+  if (!success) return false;
 
   it = mpConstraintItems->begin();
   end = mpConstraintItems->end();

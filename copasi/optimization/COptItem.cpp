@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.cpp,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.21.6.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/12 14:28:47 $
+//   $Date: 2007/07/12 19:30:39 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,6 +27,8 @@
 #include "utilities/utility.h"
 
 C_FLOAT64 NaN = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+
+UpdateMethod DoNothing;
 
 CRandom * COptItem::mpRandom = NULL;
 
@@ -337,14 +339,15 @@ bool COptItem::compile(const std::vector< CCopasiContainer * > listOfContainer)
 {
   std::string Bound;
 
-  mpMethod = NULL;
-  mpObjectValue = NULL;
+  mpMethod = &DoNothing;
+  mpObjectValue = &NaN;
+
   if ((mpObject =
          CCopasiContainer::ObjectFromName(listOfContainer,
                                           getObjectCN())) != NULL &&
       mpObject->isValueDbl())
     mpObjectValue = (C_FLOAT64 *) mpObject->getValuePointer();
-  if (!mpObjectValue)
+  if (mpObjectValue == &NaN)
     {
       CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 1, getObjectCN().c_str());
       return false;
