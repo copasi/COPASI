@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMMethod.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/07/12 14:44:30 $
+//   $Date: 2007/07/12 15:10:59 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -142,6 +142,9 @@ void CILDMMethod::initializeParameter()
       setValue("Absolute Tolerance", NewValue);
       removeParameter("Use Default Absolute Tolerance");
     }
+
+  createAnnotationsM();
+  emptyVectors();
 }
 
 bool CILDMMethod::elevateChildren()
