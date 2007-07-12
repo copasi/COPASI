@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.151.2.1 $
+//   $Revision: 1.151.2.1.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/04/18 16:20:18 $
+//   $Date: 2007/07/12 18:44:11 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -2093,7 +2093,7 @@ void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
         mpCurrentHandler = &mParser.mCharacterDataElement;
       break;
 
-    case MathML:      // Old file format support
+    case MathML:       // Old file format support
       if (!strcmp(pszName, "MathML"))
         {
           /* If we do not have a MathML element handler we create one. */
@@ -2166,7 +2166,7 @@ void CCopasiXMLParser::ModelValueElement::end(const XML_Char *pszName)
       mCurrentElement = ModelValue;
       break;
 
-    case MathML:      // Old file format support
+    case MathML:       // Old file format support
       if (strcmp(pszName, "MathML"))
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                        pszName, "MathML", mParser.getCurrentLineNumber());
@@ -3134,7 +3134,6 @@ void CCopasiXMLParser::KineticLawElement::start(const XML_Char *pszName,
     const XML_Char **papszAttrs)
 {
   const char * Function;
-  CFunction * pFunction;
 
   mCurrentElement++; /* We should always be on the next element */
 
@@ -3147,18 +3146,20 @@ void CCopasiXMLParser::KineticLawElement::start(const XML_Char *pszName,
 
       Function = mParser.getAttributeValue("function", papszAttrs);
 
-      pFunction =
+      mCommon.pFunction =
         dynamic_cast< CFunction* >(mCommon.KeyMap.get(Function));
 
-      if (!pFunction)
+      if (!mCommon.pFunction)
         {
           CCopasiMessage(CCopasiMessage::RAW, MCXML + 7, Function,
                          mCommon.pReaction->getObjectName().c_str(),
                          mParser.getCurrentLineNumber());
-          pFunction = CCopasiDataModel::Global->mpUndefined;
+          mCommon.pFunction = CCopasiDataModel::Global->mpUndefined;
         }
 
-      mCommon.pReaction->setFunction(pFunction);
+      // This must be deferred till the end since we need to check for consistency
+      // of the parameters first (Bug 832)
+      // mCommon.pReaction->setFunction(pFunction);
       break;
 
     case ListOfCallParameters:
@@ -3166,7 +3167,7 @@ void CCopasiXMLParser::KineticLawElement::start(const XML_Char *pszName,
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
                        pszName, "ListOfCallParameters", mParser.getCurrentLineNumber());
 
-      if (mCommon.pReaction->getFunction() == CCopasiDataModel::Global->mpUndefined)
+      if (mCommon.pFunction == CCopasiDataModel::Global->mpUndefined)
         mParser.onStartElement(pszName, papszAttrs);
 
       /* If we do not have a etc element handler we create one. */
@@ -3197,6 +3198,21 @@ void CCopasiXMLParser::KineticLawElement::end(const XML_Char *pszName)
       if (strcmp(pszName, "KineticLaw"))
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                        pszName, "KineticLaw", mParser.getCurrentLineNumber());
+
+      mCommon.pReaction->setFunction(dynamic_cast< CFunction * >(mCommon.pFunction));
+
+      {
+        std::map< std::string, std::vector< std::string > >::const_iterator it
+        = mCommon.SourceParameterKeys.begin();
+        std::map< std::string, std::vector< std::string > >::const_iterator end
+        = mCommon.SourceParameterKeys.end();
+
+        for (; it != end; ++it)
+          if (it->second.size() > 0)
+            mCommon.pReaction->setParameterMappingVector(it->first, it->second);
+      }
+      mCommon.SourceParameterKeys.clear();
+
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
 
@@ -3241,6 +3257,8 @@ CCopasiXMLParser::ListOfCallParametersElement::~ListOfCallParametersElement()
 void CCopasiXMLParser::ListOfCallParametersElement::start(const XML_Char *pszName,
     const XML_Char **papszAttrs)
 {
+  CFunction * pFunction;
+
   mCurrentElement++; /* We should always be on the next element */
 
   switch (mCurrentElement)
@@ -3249,6 +3267,7 @@ void CCopasiXMLParser::ListOfCallParametersElement::start(const XML_Char *pszNam
       if (strcmp(pszName, "ListOfCallParameters"))
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
                        pszName, "ListOfCallParameters", mParser.getCurrentLineNumber());
+
       break;
 
     case CallParameter:
@@ -3284,6 +3303,7 @@ void CCopasiXMLParser::ListOfCallParametersElement::end(const XML_Char *pszName)
       if (strcmp(pszName, "ListOfCallParameters"))
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                        pszName, "ListOfCallParameters", mParser.getCurrentLineNumber());
+
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
 
@@ -3338,11 +3358,10 @@ void CCopasiXMLParser::CallParameterElement::start(const XML_Char *pszName,
       FunctionParameter =
         mParser.getAttributeValue("functionParameter", papszAttrs);
 
-      mpFunctionParameter =
+      mCommon.pFunctionVariable =
         dynamic_cast< CFunctionParameter* >(mCommon.KeyMap.get(FunctionParameter));
-      if (!mpFunctionParameter) fatalError();
+      if (!mCommon.pFunctionVariable) fatalError();
 
-      mCommon.SourceParameterKeys.clear();
       break;
 
     case SourceParameter:
@@ -3378,13 +3397,6 @@ void CCopasiXMLParser::CallParameterElement::end(const XML_Char *pszName)
       if (strcmp(pszName, "CallParameter"))
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                        pszName, "CallParameter", mParser.getCurrentLineNumber());
-      if (mCommon.SourceParameterKeys.size() > 0)
-        {
-          mCommon.pReaction->
-          setParameterMappingVector(mpFunctionParameter->getObjectName(),
-                                    mCommon.SourceParameterKeys);
-          mCommon.SourceParameterKeys.clear();
-        }
 
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
@@ -3447,11 +3459,16 @@ void CCopasiXMLParser::SourceParameterElement::start(const XML_Char *pszName,
       pObject = mCommon.KeyMap.get(Reference);
 
       if ((pParameter = dynamic_cast< CCopasiParameter * >(pObject)))
-        mCommon.SourceParameterKeys.push_back(pParameter->getKey());
+        {
+          // We need to assure that the parameter name for variables which are not
+          // of type vector match.
+          if (mCommon.pFunctionVariable->getType() < CFunctionParameter::VINT32)
+            pParameter->setObjectName(mCommon.pFunctionVariable->getObjectName());
+
+          mCommon.SourceParameterKeys[mCommon.pFunctionVariable->getObjectName()].push_back(pParameter->getKey());
+        }
       else if ((pME = dynamic_cast<CModelEntity*>(pObject)))
-        mCommon.SourceParameterKeys.push_back(pME->getKey());
-      else if ((pModel = dynamic_cast<CModel *>(pObject)))
-        mCommon.SourceParameterKeys.push_back(pModel->getKey());
+        mCommon.SourceParameterKeys[mCommon.pFunctionVariable->getObjectName()].push_back(pME->getKey());
       else
         fatalError();
 
