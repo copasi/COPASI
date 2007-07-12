@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSAResultWidget.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2007/04/12 12:34:10 $
+//   $Author: akoenig $
+//   $Date: 2007/07/12 14:54:34 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,7 +33,7 @@ class CQTSSAResultWidget : public CopasiWidget
     virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
     virtual bool leave();
     virtual bool enter(const std::string & key = "");
-
+    CQTSSAResultSubWidget* getSubWidget(){return mCentralWidget;};
   protected slots:
     //virtual void slotBtnCancelClicked();
     //virtual void slotBtnOKClicked();
