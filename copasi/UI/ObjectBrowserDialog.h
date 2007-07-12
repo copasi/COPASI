@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserDialog.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/03/13 19:56:56 $
+//   $Author: ssahle $
+//   $Date: 2007/07/12 00:41:15 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,6 +35,9 @@ class ObjectBrowserDialog : public QDialog
     void selectObjects(std::vector< const CCopasiObject * > * pObjectVector);
 
   protected:
+
+    virtual void closeEvent(QCloseEvent* e);
+
     QPushButton* clearButton;
     QPushButton* toggleViewButton;
     QPushButton* cancelButton;

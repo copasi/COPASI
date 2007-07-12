@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserDialog.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/03/13 19:56:56 $
+//   $Author: ssahle $
+//   $Date: 2007/07/12 00:41:15 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -107,12 +107,25 @@ ObjectBrowserDialog::ObjectBrowserDialog(QWidget* parent, const char* name, bool
 
 ObjectBrowserDialog::~ObjectBrowserDialog()
 {
+  /*  CopasiUI3Window* uiWindowParent = dynamic_cast<CopasiUI3Window*>(this->parent());
+    if (uiWindowParent)
+      {
+        uiWindowParent->slotObjectBrowserDialogWasClosed();
+      }*/
+  cleanup();
+}
+
+void ObjectBrowserDialog::closeEvent(QCloseEvent* e)
+{
+  QDialog::closeEvent(e);
+
+  //the code to notify the parent window explicitly is now only called if the
+  //dialog is closed by the user, not if it is deleted.
   CopasiUI3Window* uiWindowParent = dynamic_cast<CopasiUI3Window*>(this->parent());
   if (uiWindowParent)
     {
-      uiWindowParent->slotObjectBrowserDialog();
+      uiWindowParent->slotObjectBrowserDialogWasClosed();
     }
-  cleanup();
 }
 
 void ObjectBrowserDialog::cleanup()
