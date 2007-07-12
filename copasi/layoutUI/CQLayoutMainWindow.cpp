@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
-//   $Author: urost $
-//   $Date: 2007/07/12 14:26:47 $
+//   $Author: ssahle $
+//   $Date: 2007/07/12 15:48:15 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -82,6 +82,8 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
   timeSlider = new QwtSlider(bottomBox, Qt::Horizontal, QwtSlider::BottomScale, QwtSlider::BgTrough);
   timeSlider->setRange(0, 100, 1, 0);
   timeSlider->setValue(0.0);
+
+  timeSlider->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
   //timeSlider->setTickmarks(QSlider::Below);
   timeSlider->setDisabled(TRUE);
   connect(timeSlider, SIGNAL(valueChanged(double)),

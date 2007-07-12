@@ -1,10 +1,10 @@
 <!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/ParaPanel.ui,v $ </comment>
-<comment>   $Revision: 1.1 $ </comment>
+<comment>   $Revision: 1.2 $ </comment>
 <comment>   $Name:  $ </comment>
 <comment>   $Author: ssahle $ </comment>
-<comment>   $Date: 2007/06/04 13:28:16 $ </comment>
+<comment>   $Date: 2007/07/12 15:48:15 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -12,6 +12,7 @@
 <comment> All rights reserved. </comment>
 
 <class>ParaPanel</class>
+<comment> All rights reserved. </comment>
 <widget class="QWidget">
     <property name="name">
         <cstring>ParaPanel</cstring>
@@ -20,8 +21,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>420</width>
-            <height>275</height>
+            <width>419</width>
+            <height>304</height>
         </rect>
     </property>
     <property name="font">
@@ -32,11 +33,84 @@
     <property name="caption">
         <string>Form1</string>
     </property>
-    <vbox>
+    <grid>
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QLabel">
+        <widget class="QLabel" row="2" column="0">
+            <property name="name">
+                <cstring>schedModeLabel</cstring>
+            </property>
+            <property name="text">
+                <string>&lt;p align="right"&gt;Scheduling Mode&lt;/p&gt;</string>
+            </property>
+            <property name="buddy" stdset="0">
+                <cstring>individScalButton</cstring>
+            </property>
+        </widget>
+        <widget class="QButtonGroup" row="2" column="1">
+            <property name="name">
+                <cstring>scalingButtonGroup</cstring>
+            </property>
+            <property name="title">
+                <string></string>
+            </property>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QRadioButton">
+                    <property name="name">
+                        <cstring>individScalButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Individual Scaling</string>
+                    </property>
+                </widget>
+                <widget class="QRadioButton">
+                    <property name="name">
+                        <cstring>globalScalButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Global Scaling</string>
+                    </property>
+                </widget>
+            </vbox>
+        </widget>
+        <widget class="QLabel" row="1" column="0">
+            <property name="name">
+                <cstring>frameRateLabel</cstring>
+            </property>
+            <property name="text">
+                <string>&lt;p align="right"&gt;Frame rate (k frames /sec)&lt;/p&gt;</string>
+            </property>
+            <property name="buddy" stdset="0">
+                <cstring>spinBox1</cstring>
+            </property>
+        </widget>
+        <widget class="QSpinBox" row="1" column="1">
+            <property name="name">
+                <cstring>spinBox1</cstring>
+            </property>
+        </widget>
+        <spacer row="4" column="0">
+            <property name="name">
+                <cstring>spacer1</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>20</width>
+                    <height>495</height>
+                </size>
+            </property>
+        </spacer>
+        <widget class="QLabel" row="0" column="1">
             <property name="name">
                 <cstring>paraLabel</cstring>
             </property>
@@ -49,132 +123,12 @@
                 <string>Simulation Parameters</string>
             </property>
         </widget>
-        <widget class="QLayoutWidget">
-            <property name="name">
-                <cstring>layout1</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>frameRateLabel</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Frame rate (k frames /sec)</string>
-                    </property>
-                    <property name="buddy" stdset="0">
-                        <cstring>spinBox1</cstring>
-                    </property>
-                </widget>
-                <widget class="QSpinBox">
-                    <property name="name">
-                        <cstring>spinBox1</cstring>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-        <widget class="QLayoutWidget">
-            <property name="name">
-                <cstring>layout3</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>schedModeLabel</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Scheduling Mode</string>
-                    </property>
-                    <property name="buddy" stdset="0">
-                        <cstring>individScalButton</cstring>
-                    </property>
-                </widget>
-                <widget class="QButtonGroup">
-                    <property name="name">
-                        <cstring>scalingButtonGroup</cstring>
-                    </property>
-                    <property name="title">
-                        <string></string>
-                    </property>
-                    <widget class="QLayoutWidget">
-                        <property name="name">
-                            <cstring>layout2</cstring>
-                        </property>
-                        <property name="geometry">
-                            <rect>
-                                <x>10</x>
-                                <y>10</y>
-                                <width>156</width>
-                                <height>52</height>
-                            </rect>
-                        </property>
-                        <vbox>
-                            <property name="name">
-                                <cstring>unnamed</cstring>
-                            </property>
-                            <widget class="QRadioButton">
-                                <property name="name">
-                                    <cstring>individScalButton</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>Individual Scaling</string>
-                                </property>
-                            </widget>
-                            <widget class="QRadioButton">
-                                <property name="name">
-                                    <cstring>globalScalButton</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>Global Scaling</string>
-                                </property>
-                            </widget>
-                        </vbox>
-                    </widget>
-                </widget>
-            </hbox>
-        </widget>
-        <widget class="QLabel">
-            <property name="name">
-                <cstring>animModeLabel</cstring>
-            </property>
-            <property name="font">
-                <font>
-                    <pointsize>12</pointsize>
-                </font>
-            </property>
-            <property name="text">
-                <string>Animation parameters</string>
-            </property>
-        </widget>
-        <widget class="QSlider">
-            <property name="name">
-                <cstring>stepSlider</cstring>
-            </property>
-            <property name="enabled">
-                <bool>false</bool>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
-            <property name="tickmarks">
-                <enum>Below</enum>
-            </property>
-            <property name="tickInterval">
-                <number>10</number>
-            </property>
-        </widget>
-    </vbox>
+    </grid>
 </widget>
 <tabstops>
     <tabstop>spinBox1</tabstop>
     <tabstop>individScalButton</tabstop>
     <tabstop>globalScalButton</tabstop>
-    <tabstop>stepSlider</tabstop>
 </tabstops>
 <includes>
     <include location="local" impldecl="in implementation">ParaPanel.ui.h</include>

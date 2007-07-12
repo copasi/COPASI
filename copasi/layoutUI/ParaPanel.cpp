@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/ParaPanel.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: urost $
-//   $Date: 2007/07/06 10:14:27 $
+//   $Author: ssahle $
+//   $Date: 2007/07/12 15:48:15 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,8 +13,8 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'ParaPanel.ui'
  **
- ** Created: Fri Jul 6 08:51:22 2007
- **      by: The User Interface Compiler ($Id: ParaPanel.cpp,v 1.3 2007/07/06 10:14:27 urost Exp $)
+ ** Created: Do Jul 12 17:42:39 2007
+ **      by: The User Interface Compiler ($Id: ParaPanel.cpp,v 1.4 2007/07/12 15:48:15 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -22,12 +22,10 @@
 #include "ParaPanel.h"
 
 #include <qvariant.h>
-#include <qpushbutton.h>
 #include <qlabel.h>
-#include <qspinbox.h>
 #include <qbuttongroup.h>
 #include <qradiobutton.h>
-#include <qslider.h>
+#include <qspinbox.h>
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
@@ -45,66 +43,54 @@ ParaPanel::ParaPanel(QWidget* parent, const char* name, WFlags fl)
   QFont f(font());
   f.setBold(TRUE);
   setFont(f);
-  ParaPanelLayout = new QVBoxLayout(this, 11, 6, "ParaPanelLayout");
+  ParaPanelLayout = new QGridLayout(this, 1, 1, 11, 6, "ParaPanelLayout");
+
+  schedModeLabel = new QLabel(this, "schedModeLabel");
+
+  ParaPanelLayout->addWidget(schedModeLabel, 2, 0);
+
+  scalingButtonGroup = new QButtonGroup(this, "scalingButtonGroup");
+  scalingButtonGroup->setColumnLayout(0, Qt::Vertical);
+  scalingButtonGroup->layout()->setSpacing(6);
+  scalingButtonGroup->layout()->setMargin(11);
+  scalingButtonGroupLayout = new QVBoxLayout(scalingButtonGroup->layout());
+  scalingButtonGroupLayout->setAlignment(Qt::AlignTop);
+
+  individScalButton = new QRadioButton(scalingButtonGroup, "individScalButton");
+  scalingButtonGroupLayout->addWidget(individScalButton);
+
+  globalScalButton = new QRadioButton(scalingButtonGroup, "globalScalButton");
+  scalingButtonGroupLayout->addWidget(globalScalButton);
+
+  ParaPanelLayout->addWidget(scalingButtonGroup, 2, 1);
+
+  frameRateLabel = new QLabel(this, "frameRateLabel");
+
+  ParaPanelLayout->addWidget(frameRateLabel, 1, 0);
+
+  spinBox1 = new QSpinBox(this, "spinBox1");
+
+  ParaPanelLayout->addWidget(spinBox1, 1, 1);
+  spacer1 = new QSpacerItem(20, 495, QSizePolicy::Minimum, QSizePolicy::Expanding);
+  ParaPanelLayout->addItem(spacer1, 4, 0);
 
   paraLabel = new QLabel(this, "paraLabel");
   QFont paraLabel_font(paraLabel->font());
   paraLabel_font.setPointSize(12);
   paraLabel->setFont(paraLabel_font);
-  ParaPanelLayout->addWidget(paraLabel);
 
-  layout1 = new QHBoxLayout(0, 0, 6, "layout1");
-
-  frameRateLabel = new QLabel(this, "frameRateLabel");
-  layout1->addWidget(frameRateLabel);
-
-  spinBox1 = new QSpinBox(this, "spinBox1");
-  layout1->addWidget(spinBox1);
-  ParaPanelLayout->addLayout(layout1);
-
-  layout3 = new QHBoxLayout(0, 0, 6, "layout3");
-
-  schedModeLabel = new QLabel(this, "schedModeLabel");
-  layout3->addWidget(schedModeLabel);
-
-  scalingButtonGroup = new QButtonGroup(this, "scalingButtonGroup");
-
-  QWidget* privateLayoutWidget = new QWidget(scalingButtonGroup, "layout2");
-  privateLayoutWidget->setGeometry(QRect(10, 10, 156, 52));
-  layout2 = new QVBoxLayout(privateLayoutWidget, 11, 6, "layout2");
-
-  individScalButton = new QRadioButton(privateLayoutWidget, "individScalButton");
-  layout2->addWidget(individScalButton);
-
-  globalScalButton = new QRadioButton(privateLayoutWidget, "globalScalButton");
-  layout2->addWidget(globalScalButton);
-  layout3->addWidget(scalingButtonGroup);
-  ParaPanelLayout->addLayout(layout3);
-
-  animModeLabel = new QLabel(this, "animModeLabel");
-  QFont animModeLabel_font(animModeLabel->font());
-  animModeLabel_font.setPointSize(12);
-  animModeLabel->setFont(animModeLabel_font);
-  ParaPanelLayout->addWidget(animModeLabel);
-
-  stepSlider = new QSlider(this, "stepSlider");
-  stepSlider->setEnabled(FALSE);
-  stepSlider->setOrientation(QSlider::Horizontal);
-  stepSlider->setTickmarks(QSlider::Below);
-  stepSlider->setTickInterval(10);
-  ParaPanelLayout->addWidget(stepSlider);
+  ParaPanelLayout->addWidget(paraLabel, 0, 1);
   languageChange();
-  resize(QSize(420, 275).expandedTo(minimumSizeHint()));
+  resize(QSize(419, 304).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
 
   // tab order
   setTabOrder(spinBox1, individScalButton);
   setTabOrder(individScalButton, globalScalButton);
-  setTabOrder(globalScalButton, stepSlider);
 
   // buddies
-  frameRateLabel->setBuddy(spinBox1);
   schedModeLabel->setBuddy(individScalButton);
+  frameRateLabel->setBuddy(spinBox1);
 }
 
 /*
@@ -122,11 +108,10 @@ ParaPanel::~ParaPanel()
 void ParaPanel::languageChange()
 {
   setCaption(tr("Form1"));
-  paraLabel->setText(tr("Simulation Parameters"));
-  frameRateLabel->setText(tr("Frame rate (k frames /sec)"));
-  schedModeLabel->setText(tr("Scheduling Mode"));
+  schedModeLabel->setText(tr("<p align=\"right\">Scheduling Mode</p>"));
   scalingButtonGroup->setTitle(QString::null);
   individScalButton->setText(tr("Individual Scaling"));
   globalScalButton->setText(tr("Global Scaling"));
-  animModeLabel->setText(tr("Animation parameters"));
+  frameRateLabel->setText(tr("<p align=\"right\">Frame rate (k frames /sec)</p>"));
+  paraLabel->setText(tr("Simulation Parameters"));
 }

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/ParaPanel.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: urost $
-//   $Date: 2007/07/06 10:23:43 $
+//   $Author: ssahle $
+//   $Date: 2007/07/12 15:48:15 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,8 +13,8 @@
 /****************************************************************************
  ** Form interface generated from reading ui file 'ParaPanel.ui'
  **
- ** Created: Fri Jul 6 10:22:59 2007
- **      by: The User Interface Compiler ($Id: ParaPanel.h,v 1.4 2007/07/06 10:23:43 urost Exp $)
+ ** Created: Do Jul 12 17:42:37 2007
+ **      by: The User Interface Compiler ($Id: ParaPanel.h,v 1.5 2007/07/12 15:48:15 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -30,10 +30,9 @@ class QHBoxLayout;
 class QGridLayout;
 class QSpacerItem;
 class QLabel;
-class QSpinBox;
 class QButtonGroup;
 class QRadioButton;
-class QSlider;
+class QSpinBox;
 
 class ParaPanel : public QWidget
   {
@@ -43,24 +42,21 @@ class ParaPanel : public QWidget
     ParaPanel(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     ~ParaPanel();
 
-    QLabel* paraLabel;
-    QLabel* frameRateLabel;
-    QSpinBox* spinBox1;
     QLabel* schedModeLabel;
     QButtonGroup* scalingButtonGroup;
     QRadioButton* individScalButton;
     QRadioButton* globalScalButton;
-    QLabel* animModeLabel;
-    QSlider* stepSlider;
+    QLabel* frameRateLabel;
+    QSpinBox* spinBox1;
+    QLabel* paraLabel;
 
   public slots:
     virtual void stepSlider_valueChanged(int);
 
   protected:
-    QVBoxLayout* ParaPanelLayout;
-    QHBoxLayout* layout1;
-    QHBoxLayout* layout3;
-    QVBoxLayout* layout2;
+    QGridLayout* ParaPanelLayout;
+    QSpacerItem* spacer1;
+    QVBoxLayout* scalingButtonGroupLayout;
 
   protected slots:
     virtual void languageChange();
