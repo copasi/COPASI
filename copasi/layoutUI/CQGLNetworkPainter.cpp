@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.41 $
+//   $Revision: 1.42 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/07/15 14:50:27 $
+//   $Date: 2007/07/15 16:28:09 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,6 +20,7 @@
 #include <qpixmap.h>
 #include <qimage.h>
 #include <qcolor.h>
+#include <qtimer.h>
 
 #include <iostream>
 #include <math.h>
@@ -716,16 +717,23 @@ void CQGLNetworkPainter::runAnimation()
     this->createDataSets(); // load data if this was not done before
 
   CVisParameters::animationRunning = true;
-  C_INT32 i = 0;
-  while ((i <= CVisParameters::numberOfSteps) &&
+
+  while ((stepShown <= CVisParameters::numberOfSteps) &&
          (CVisParameters::animationRunning))
     {// while process has not been stopped
-      // set value in slider
-      emit stepChanged(i);
-      updateGL();
-      //this->showStep(i);
-      i++;
+      QTimer::singleShot(1000, this, SLOT(triggerAnimationStep()));
+      this->stepShown++;
     }
+}
+
+void CQGLNetworkPainter::triggerAnimationStep()
+{
+  // set value in slider
+  std::cout << "step: " << stepShown << std::endl;
+  emit stepChanged(stepShown);
+  //updateGL();
+  //this->showStep(i);
+
   //this->drawGraph();
 }
 
@@ -1065,7 +1073,7 @@ void CQGLNetworkPainter::initializeGraphPainter(QWidget *viewportWidget)
   //CQLayoutMainWindow *mainWindow = (*CQLayoutMainWindow) ();
   std::cout << "ancestor " << ancestor->className() << std::endl;
   connect(this, SIGNAL(stepChanged(C_INT32)), ancestor, SLOT(changeStepValue(C_INT32)));
-
+  stepShown = 0;
   createActions();
 }
 

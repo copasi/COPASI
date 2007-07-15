@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.27 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/07/15 14:50:56 $
+//   $Date: 2007/07/15 16:28:16 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -75,8 +75,11 @@ class CQGLNetworkPainter : public QGLWidget
     void zoomIn();
     void zoomOut();
 
+  public slots:
+    void triggerAnimationStep();
+
   signals:
-    void stepChanged(C_INT32 i);
+    void stepChanged(C_INT32);
 
   private:
     CLPoint mgraphMin;
@@ -102,6 +105,8 @@ class CQGLNetworkPainter : public QGLWidget
     //CGraphNode* findNodeWithKey(std::string nodeKey);
     //void storeCurveInCorrespondingNode(std::string nodeKey, int indx);
     //void storeCurveInCorrespondingNode(std::string nodeKey, int indx1, int indx2);
+
+    C_INT32 stepShown;
 
     CVisParameters mVisualizationParameters;
 
