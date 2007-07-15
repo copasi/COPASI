@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.40 $
+//   $Revision: 1.41 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/06/01 08:31:42 $
+//   $Date: 2007/07/15 14:50:27 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,6 +29,7 @@
 #include "copasi.h"
 
 #include "CQGLNetworkPainter.h"
+#include "CQLayoutMainWindow.h"
 
 #include "UI/qtUtilities.h"
 #include "layout/CLayout.h"
@@ -38,7 +39,7 @@
 
 CQGLNetworkPainter::CQGLNetworkPainter(QWidget *parent, const char *name)
     : QGLWidget(parent, name)
-{initializeGraphPainter();}
+{initializeGraphPainter(parent);}
 
 // set graph size and reset projection to fit new size
 void CQGLNetworkPainter::setGraphSize(const CLPoint & min, const CLPoint & max)
@@ -617,7 +618,7 @@ bool CQGLNetworkPainter::createDataSets()
             {
               pSummaryInfo = new CSimSummaryInfo(timeSer.getNumSteps(), timeSer.getNumVariables(),
                                                  timeSer.getConcentrationData(timeSer.getNumSteps() - 1, 0) - timeSer.getConcentrationData(0, 0));
-              C_FLOAT64 tt = timeSer.getConcentrationData(timeSer.getNumSteps() - 1, 0) - timeSer.getConcentrationData(0, 0);
+              //C_FLOAT64 tt = timeSer.getConcentrationData(timeSer.getNumSteps() - 1, 0) - timeSer.getConcentrationData(0, 0);
               //std::cout << "summary: no of steps: " << pSummaryInfo->getNumberOfSteps() << std::endl,
               //std::cout << "total time: " << tt << std::endl;
               //std::cout << "number of steps in time series: " << timeSer.getNumSteps() << std::endl;
@@ -713,7 +714,18 @@ void CQGLNetworkPainter::runAnimation()
   this->mLabelShape = CIRCLE;
   if (dataSets.size() == 0)
     this->createDataSets(); // load data if this was not done before
-  this->showStep (98);
+
+  CVisParameters::animationRunning = true;
+  C_INT32 i = 0;
+  while ((i <= CVisParameters::numberOfSteps) &&
+         (CVisParameters::animationRunning))
+    {// while process has not been stopped
+      // set value in slider
+      emit stepChanged(i);
+      updateGL();
+      //this->showStep(i);
+      i++;
+    }
   //this->drawGraph();
 }
 
@@ -1038,7 +1050,7 @@ void CQGLNetworkPainter::testOpenGL()
   glEnd(); // Zeichenaktion beenden
 }
 
-void CQGLNetworkPainter::initializeGraphPainter()
+void CQGLNetworkPainter::initializeGraphPainter(QWidget *viewportWidget)
 {
   mVisualizationParameters = CVisParameters();
   mLabelShape = RECTANGLE;
@@ -1047,6 +1059,12 @@ void CQGLNetworkPainter::initializeGraphPainter()
   mFontname = "Helvetica";
   mFontsize = 12;
   mFontsizeDouble = 12.0; // to avoid rounding errors due to zooming in and out
+
+  // parent structure: glPainter -> viewport -> scrollView -> splitter -> mainWindow
+  QWidget *ancestor = viewportWidget->parentWidget()->parentWidget()->parentWidget()->parentWidget();
+  //CQLayoutMainWindow *mainWindow = (*CQLayoutMainWindow) ();
+  std::cout << "ancestor " << ancestor->className() << std::endl;
+  connect(this, SIGNAL(stepChanged(C_INT32)), ancestor, SLOT(changeStepValue(C_INT32)));
 
   createActions();
 }

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.h,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/07/12 14:26:38 $
+//   $Date: 2007/07/15 14:49:51 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -59,6 +59,9 @@ class CQLayoutMainWindow : public QMainWindow
     void mapLabelsToRectangles();
 
     void showStep(double i);
+
+  public slots:
+    void changeStepValue(C_INT32 i);
 
   private:
     void createActions();

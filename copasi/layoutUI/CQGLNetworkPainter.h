@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.26 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/05/31 19:40:14 $
+//   $Date: 2007/07/15 14:50:56 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -75,6 +75,9 @@ class CQGLNetworkPainter : public QGLWidget
     void zoomIn();
     void zoomOut();
 
+  signals:
+    void stepChanged(C_INT32 i);
+
   private:
     CLPoint mgraphMin;
     CLPoint mgraphMax;
@@ -122,7 +125,7 @@ class CQGLNetworkPainter : public QGLWidget
     //CLDataSet getDataSet(C_INT32 t);
   protected:
 
-    void initializeGraphPainter();
+    void initializeGraphPainter(QWidget *viewportWidget);
     void draw();
     void contextMenuEvent(QContextMenuEvent *event);
     void testOpenGL();
