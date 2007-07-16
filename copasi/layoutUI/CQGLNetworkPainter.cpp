@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.42 $
+//   $Revision: 1.43 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/07/15 16:28:09 $
+//   $Date: 2007/07/16 11:07:21 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -718,19 +718,30 @@ void CQGLNetworkPainter::runAnimation()
 
   CVisParameters::animationRunning = true;
 
-  while ((stepShown <= CVisParameters::numberOfSteps) &&
-         (CVisParameters::animationRunning))
-    {// while process has not been stopped
-      QTimer::singleShot(1000, this, SLOT(triggerAnimationStep()));
-      this->stepShown++;
-    }
+  regularTimer->start((int)(1000 / CVisParameters::stepsPerSecond), false); // emit signal in chosen framerate
+
+  //while ((stepShown <= CVisParameters::numberOfSteps) &&
+  //       (CVisParameters::animationRunning))
+  //  {// while process has not been stopped
+  //    //QTimer::singleShot(1000, this, SLOT(triggerAnimationStep()));
+  //    //this->stepShown++;
+  //}
 }
 
 void CQGLNetworkPainter::triggerAnimationStep()
 {
-  // set value in slider
-  std::cout << "step: " << stepShown << std::endl;
-  emit stepChanged(stepShown);
+  if ((stepShown <= CVisParameters::numberOfSteps) &&
+      (CVisParameters::animationRunning))
+    {
+      // set value in slider
+      //std::cout << "step: " << stepShown << std::endl;
+      emit stepChanged(stepShown);
+      this->stepShown++;
+    }
+  else
+    {
+      regularTimer->stop();
+    }
   //updateGL();
   //this->showStep(i);
 
@@ -739,6 +750,7 @@ void CQGLNetworkPainter::triggerAnimationStep()
 
 void CQGLNetworkPainter::showStep(int i)
 {
+  this->stepShown = i;
   //std::cout << "show step " << i << std::endl;
   if (this->mLabelShape != CIRCLE)
     this->mLabelShape = CIRCLE;
@@ -1071,8 +1083,11 @@ void CQGLNetworkPainter::initializeGraphPainter(QWidget *viewportWidget)
   // parent structure: glPainter -> viewport -> scrollView -> splitter -> mainWindow
   QWidget *ancestor = viewportWidget->parentWidget()->parentWidget()->parentWidget()->parentWidget();
   //CQLayoutMainWindow *mainWindow = (*CQLayoutMainWindow) ();
-  std::cout << "ancestor " << ancestor->className() << std::endl;
+  //std::cout << "ancestor " << ancestor->className() << std::endl;
   connect(this, SIGNAL(stepChanged(C_INT32)), ancestor, SLOT(changeStepValue(C_INT32)));
+  regularTimer = new QTimer(this);
+  connect(regularTimer, SIGNAL(timeout()), this, SLOT(triggerAnimationStep()));
+
   stepShown = 0;
   createActions();
 }

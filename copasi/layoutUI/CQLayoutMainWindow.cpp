@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/07/12 15:48:15 $
+//   $Author: urost $
+//   $Date: 2007/07/16 11:07:37 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -57,7 +57,7 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
   else
     pLayoutList = NULL;
 
-  glPainter = new CQGLNetworkPainter(scrollView->viewport());
+  glPainter = new CQGLNetworkPainter(scrollView->viewport(), "Network layout");
   if (pLayoutList != NULL)
     {
       CLayout * pLayout;
@@ -78,6 +78,12 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
   bottomBox = new QHBox(mainBox);
   //bottomBox->setMinimumHeight(15);
   //bottomBox->setMinimumWidth(100);
+
+  startIcon = createStartIcon();
+  stopIcon = createStopIcon();
+  startStopButton = new QPushButton(bottomBox, "start/stop button");
+  connect(startStopButton, SIGNAL(clicked()), this, SLOT(startAnimation()));
+  startStopButton->setIconSet(startIcon);
 
   timeSlider = new QwtSlider(bottomBox, Qt::Horizontal, QwtSlider::BottomScale, QwtSlider::BgTrough);
   timeSlider->setRange(0, 100, 1, 0);
@@ -228,13 +234,36 @@ void CQLayoutMainWindow::loadData()
       int maxVal = glPainter->getNumberOfSteps();
       //std::cout << "number of steps: " << maxVal << std::endl;
       this->timeSlider->setRange(0, maxVal);
+      CVisParameters::numberOfSteps = maxVal;
       glPainter->updateGL();
     }
 }
 
 void CQLayoutMainWindow::showAnimation()
 {
+  startAnimation();
+}
+
+void CQLayoutMainWindow::startAnimation()
+{
+  CVisParameters::animationRunning = true;
+  this->timeSlider->setEnabled(false);
   glPainter->runAnimation();
+
+  //exchange icon and callback for start/stop button
+  disconnect(startStopButton, SIGNAL(clicked()), this, SLOT(startAnimation()));
+  connect(startStopButton, SIGNAL(clicked()), this, SLOT(stopAnimation()));
+  startStopButton->setIconSet(stopIcon);
+}
+
+void CQLayoutMainWindow::stopAnimation()
+{
+  CVisParameters::animationRunning = false;
+  this->timeSlider->setEnabled(true);
+
+  connect(startStopButton, SIGNAL(clicked()), this, SLOT(startAnimation()));
+  disconnect(startStopButton, SIGNAL(clicked()), this, SLOT(stopAnimation()));
+  startStopButton->setIconSet(startIcon);
 }
 
 void CQLayoutMainWindow::showStep(double i)
@@ -242,6 +271,12 @@ void CQLayoutMainWindow::showStep(double i)
 
   glPainter->showStep((int) i);
   glPainter->updateGL();
+}
+
+void CQLayoutMainWindow::changeStepValue(C_INT32 i)
+{
+  timeSlider->setValue(i);
+  //showStep(i);
 }
 
 void CQLayoutMainWindow::closeApplication()
@@ -260,6 +295,41 @@ void CQLayoutMainWindow::closeEvent(QCloseEvent *event)
     {
       event->ignore();
     }
+}
+
+QIconSet CQLayoutMainWindow::createStartIcon()
+{
+  QImage img = QImage();
+  C_INT32 w = 20;
+  C_INT32 h = 20;
+  img.create(w, h, 8, 2);
+  img.setColor(1, qRgb(0, 0, 255));
+  C_INT16 x, y;
+
+  for (x = 0;x < w;x++)
+    {
+      for (y = 0;y < h;y++)
+        {
+          img.setPixel(x, y, 1);
+          //uint *p = (uint *)img.scanLine(y) + x;
+          //*p = qRgb(0,0,255);
+        }
+    }
+
+  //QPixmap *pixmap = new QPixmap(20,20);
+  QPixmap *pixmap = new QPixmap();
+  pixmap->convertFromImage(img);
+  //pixmap->fill(QColor(0,255,0));
+  QIconSet *iconset = new QIconSet(*pixmap);
+  return *iconset;
+}
+
+QIconSet CQLayoutMainWindow::createStopIcon()
+{
+  QPixmap *pixmap = new QPixmap(20, 20);
+  pixmap->fill(QColor(255, 0, 0));
+  QIconSet *iconset = new QIconSet(*pixmap);
+  return *iconset;
 }
 
 // returns true because window is opened from Copasi and can be easily reopened

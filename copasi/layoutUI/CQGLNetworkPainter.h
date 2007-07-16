@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.27 $
+//   $Revision: 1.28 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/07/15 16:28:16 $
+//   $Date: 2007/07/16 11:07:10 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,6 +35,7 @@
 #include "copasi/layoutUI/CDataEntity.h"
 
 #include "copasi/layoutUI/CGraphNode.h"
+#include "copasi/layoutUI/CVisParameters.h"
 #include "copasi/CopasiDataModel/CCopasiDataModel.h"
 #include "copasi/trajectory/CTrajectoryTask.h"
 
@@ -107,6 +108,7 @@ class CQGLNetworkPainter : public QGLWidget
     //void storeCurveInCorrespondingNode(std::string nodeKey, int indx1, int indx2);
 
     C_INT32 stepShown;
+    QTimer *regularTimer;
 
     CVisParameters mVisualizationParameters;
 

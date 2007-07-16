@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.h,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/07/15 14:49:51 $
+//   $Date: 2007/07/16 11:07:32 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,12 +28,17 @@
 #include <qwidget.h>
 #include <qhbox.h>
 #include <qvbox.h>
+#include <qpushbutton.h>
+#include <qiconset.h>
+#include <qpixmap.h>
+#include <qimage.h>
 //#include <qslider.h>
 //#include <qwt_slider.h>
 
 #include "CQGLNetworkPainter.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "layoutUI/CVisParameters.h"
 
 class QwtSlider;
 
@@ -59,6 +64,8 @@ class CQLayoutMainWindow : public QMainWindow
     void mapLabelsToRectangles();
 
     void showStep(double i);
+    void startAnimation();
+    void stopAnimation();
 
   public slots:
     void changeStepValue(C_INT32 i);
@@ -87,12 +94,15 @@ class CQLayoutMainWindow : public QMainWindow
     //QSlider *timeSlider;
     QwtSlider *timeSlider;
 
-    // mainBox contains topBox and bottomBox
     QHBox *bottomBox;
-    //QHBoxLayout *bottomBox;
     QVBox *mainBox;
-    //QWidget *mainWidget;
-    //QWidget *bottomWidget;
+
+    QPushButton *startStopButton;
+    QIconSet startIcon;
+    QIconSet stopIcon;
+
+    QIconSet createStartIcon();
+    QIconSet createStopIcon();
   };
 
 #endif /*SIMGUI_H_*/
