@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/objectdebug.ui.h,v $
-   $Revision: 1.27 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/28 00:24:53 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/objectdebug.ui.h,v $
+//   $Revision: 1.28 $
+//   $Name:  $
+//   $Author: ssahle $
+//   $Date: 2007/07/17 21:17:08 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -169,15 +169,67 @@ void ObjectDebug::init()
   ListOfObjects->setAllColumnsShowFocus(true);
 }
 
-void ObjectDebug::action(QListViewItem * item, const QPoint & C_UNUSED(pnt), int C_UNUSED(col))
+// void ObjectDebug::action(QListViewItem * item, const QPoint & C_UNUSED(pnt), int C_UNUSED(col))
+// {
+//   //CCopasiObject* testObj = CCopasiContainer::ObjectFromName((const std::string)((const char*)item->text(5).utf8()));
+//   CCopasiObject* testObj = ((MyListViewItemWithPtr*)item)->mpObject;
+//
+//   if (!testObj) return;
+//
+//   std::cout << testObj->getObjectDisplayName() << std::endl;
+//   //std::cout << *testObj << std::endl;
+//   testObj->print(&std::cout);
+//   std::cout << std::endl;
+//}
+
+void ObjectDebug::writeDot()
 {
-  //CCopasiObject* testObj = CCopasiContainer::ObjectFromName((const std::string)((const char*)item->text(5).utf8()));
-  CCopasiObject* testObj = ((MyListViewItemWithPtr*)item)->mpObject;
+  CCopasiObject * obj;
 
-  if (!testObj) return;
+  obj = (CCopasiObject*)CCopasiContainer::Root;
+  if (!obj) return;
 
-  std::cout << testObj->getObjectDisplayName() << std::endl;
-  //std::cout << *testObj << std::endl;
-  testObj->print(&std::cout);
-  std::cout << std::endl;
+  std::ofstream os;
+  os.open("CopasiDependencies.dot", std::ios::out);
+
+  os << "digraph G {\n";
+
+  writeDotRecursively((void*)obj, os);
+
+  os << "}" << std::endl;
+}
+
+void ObjectDebug::writeDotRecursively(void * ptr, std::ostream & os)
+{
+  CCopasiObject* obj = (CCopasiObject*)ptr;
+
+  std::set< const CCopasiObject * >::const_iterator it, itEnd = obj->getDirectDependencies().end();
+  //std::cout << pO->getObjectName() <<  pO->getValueReference()->getDirectDependencies().size() << std::endl;
+  for (it = obj->getDirectDependencies().begin(); it != itEnd; ++it)
+    {
+      os << "\"" << obj->getObjectDisplayName() << "\" -> \"" << (*it)->getObjectDisplayName() << "\"\n";
+    }
+
+  if (obj->isContainer())
+    {
+      CCopasiContainer* container;
+      container = (CCopasiContainer*)obj;
+
+      CCopasiContainer::objectMap::const_iterator it = container->getObjects().begin();
+      // int cnt = container->getObjects().size();
+
+      for (; it != container->getObjects().end(); ++it)
+        {
+          //the next line skips name references...
+          if (it->second->getObjectName() == "Name") continue;
+
+          if (it->second->getObjectType() == "Function") continue;
+
+          //skip if the contained object is not owned by this container
+          if (it->second->getObjectParent() != container) continue;
+
+          writeDotRecursively((void*)it->second, os);
+        }
+      //return;
+    }
 }

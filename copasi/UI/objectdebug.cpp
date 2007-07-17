@@ -1,20 +1,20 @@
-/* Begin CVS Header
-   $Source: /home/cvs/copasi_dev/copasi/CopasiUI/objectdebug.cpp,v $
-   $Revision: 1.6 $
-   $Name:  $
-   $Author: ssahle $
-   $Date: 2005/11/10 09:33:59 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /home/cvs/copasi_dev/cvs_admin/addHeader,v $
+//   $Revision: 1.4 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/05/31 18:21:38 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'objectdebug.ui'
  **
- ** Created: Mi Nov 9 01:45:05 2005
- **      by: The User Interface Compiler ($Id: objectdebug.cpp,v 1.6 2005/11/10 09:33:59 ssahle Exp $)
+ ** Created: Di Jul 17 22:15:15 2007
+ **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.7   edited Aug 31 2005 $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -49,21 +49,25 @@ ObjectDebug::ObjectDebug(QWidget* parent, const char* name, bool modal, WFlags f
 
   UpdateButton = new QPushButton(this, "UpdateButton");
 
-  ObjectDebugLayout->addWidget(UpdateButton, 1, 1);
+  ObjectDebugLayout->addWidget(UpdateButton, 1, 2);
 
   ListOfObjects = new QListView(this, "ListOfObjects");
   ListOfObjects->addColumn(tr("Column 1"));
 
-  ObjectDebugLayout->addMultiCellWidget(ListOfObjects, 0, 0, 0, 1);
-  spacer5 = new QSpacerItem(121, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+  ObjectDebugLayout->addMultiCellWidget(ListOfObjects, 0, 0, 0, 2);
+  spacer5 = new QSpacerItem(240, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
   ObjectDebugLayout->addItem(spacer5, 1, 0);
+
+  pushButton2 = new QPushButton(this, "pushButton2");
+
+  ObjectDebugLayout->addWidget(pushButton2, 1, 1);
   languageChange();
   resize(QSize(517, 486).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
 
   // signals and slots connections
   connect(UpdateButton, SIGNAL(clicked()), this, SLOT(update()));
-  connect(ListOfObjects, SIGNAL(rightButtonClicked(QListViewItem*, const QPoint&, int)), this, SLOT(action(QListViewItem*, const QPoint&, int)));
+  connect(pushButton2, SIGNAL(clicked()), this, SLOT(writeDot()));
   init();
 }
 
@@ -87,4 +91,6 @@ void ObjectDebug::languageChange()
   ListOfObjects->clear();
   QListViewItem * item = new QListViewItem(ListOfObjects, 0);
   item->setText(0, tr("New Item"));
+
+  pushButton2->setText(tr("write Dependencies"));
 }

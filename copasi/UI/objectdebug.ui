@@ -1,4 +1,16 @@
 <!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<comment> Begin CVS Header </comment>
+<comment>   $Source: /home/cvs/copasi_dev/cvs_admin/addHeader,v $ </comment>
+<comment>   $Revision: 1.4 $ </comment>
+<comment>   $Name:  $ </comment>
+<comment>   $Author: shoops $ </comment>
+<comment>   $Date: 2007/05/31 18:21:38 $ </comment>
+<comment> End CVS Header </comment>
+
+<comment> Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc. and EML Research, gGmbH. </comment>
+<comment> All rights reserved. </comment>
+
 <class>ObjectDebug</class>
 <widget class="QDialog">
     <property name="name">
@@ -19,7 +31,7 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QPushButton" row="1" column="1">
+        <widget class="QPushButton" row="1" column="2">
             <property name="name">
                 <cstring>UpdateButton</cstring>
             </property>
@@ -27,7 +39,7 @@
                 <string>update</string>
             </property>
         </widget>
-        <widget class="QListView" row="0" column="0" rowspan="1" colspan="2">
+        <widget class="QListView" row="0" column="0" rowspan="1" colspan="3">
             <column>
                 <property name="text">
                     <string>Column 1</string>
@@ -63,11 +75,19 @@
             </property>
             <property name="sizeHint">
                 <size>
-                    <width>121</width>
+                    <width>240</width>
                     <height>20</height>
                 </size>
             </property>
         </spacer>
+        <widget class="QPushButton" row="1" column="1">
+            <property name="name">
+                <cstring>pushButton2</cstring>
+            </property>
+            <property name="text">
+                <string>write Dependencies</string>
+            </property>
+        </widget>
     </grid>
 </widget>
 <connections>
@@ -78,22 +98,24 @@
         <slot>update()</slot>
     </connection>
     <connection>
-        <sender>ListOfObjects</sender>
-        <signal>rightButtonClicked(QListViewItem*,const QPoint&amp;,int)</signal>
+        <sender>pushButton2</sender>
+        <signal>clicked()</signal>
         <receiver>ObjectDebug</receiver>
-        <slot>action(QListViewItem*,const QPoint&amp;,int)</slot>
+        <slot>writeDot()</slot>
     </connection>
 </connections>
 <includes>
+    <include location="global" impldecl="in declaration">iostream</include>
     <include location="local" impldecl="in implementation">objectdebug.ui.h</include>
 </includes>
 <slots>
     <slot specifier="non virtual">update()</slot>
-    <slot access="protected">action( QListViewItem * item, const QPoint &amp; pnt, int col )</slot>
+    <slot>writeDot()</slot>
 </slots>
 <functions>
     <function access="private" specifier="non virtual">addObjectRecursive( QWidget * parent, void * ptr )</function>
     <function access="private" specifier="non virtual">init()</function>
+    <function access="private">writeDotRecursively( void * ptr, std::ostream &amp; os )</function>
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

@@ -1,20 +1,20 @@
-/* Begin CVS Header
-   $Source: /home/cvs/copasi_dev/copasi/CopasiUI/objectdebug.h,v $
-   $Revision: 1.5 $
-   $Name:  $
-   $Author: ssahle $
-   $Date: 2005/11/10 09:33:59 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /home/cvs/copasi_dev/cvs_admin/addHeader,v $
+//   $Revision: 1.4 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/05/31 18:21:38 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'objectdebug.ui'
  **
- ** Created: Mi Nov 9 01:31:48 2005
- **      by: The User Interface Compiler ($Id: objectdebug.h,v 1.5 2005/11/10 09:33:59 ssahle Exp $)
+ ** Created: Di Jul 17 22:13:19 2007
+ **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.7   edited Aug 31 2005 $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -24,6 +24,7 @@
 
 #include <qvariant.h>
 #include <qdialog.h>
+#include <iostream>
 
 class QVBoxLayout;
 class QHBoxLayout;
@@ -43,9 +44,11 @@ class ObjectDebug : public QDialog
 
     QPushButton* UpdateButton;
     QListView* ListOfObjects;
+    QPushButton* pushButton2;
 
   public slots:
     void update();
+    virtual void writeDot();
 
   protected:
     QGridLayout* ObjectDebugLayout;
@@ -54,11 +57,10 @@ class ObjectDebug : public QDialog
   protected slots:
     virtual void languageChange();
 
-    virtual void action(QListViewItem * item, const QPoint & pnt, int col);
-
   private:
     void addObjectRecursive(QWidget * parent, void * ptr);
     void init();
+    virtual void writeDotRecursively(void * ptr, std::ostream & os);
   };
 
 #endif // OBJECTDEBUG_H
