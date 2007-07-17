@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CState.cpp,v $
-   $Revision: 1.67 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/08/29 15:18:57 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CState.cpp,v $
+//   $Revision: 1.68 $
+//   $Name:  $
+//   $Author: ssahle $
+//   $Date: 2007/07/17 21:15:56 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -183,10 +183,10 @@ void CStateTemplate::setUserOrder(const CVector< CModelEntity * > & entities)
 const CVector<unsigned C_INT32> & CStateTemplate::getUserOrder() const
 {return mUserOrder;}
 
-CModelEntity ** CStateTemplate::getEntities()
-{return mpEntities;}
+CModelEntity ** CStateTemplate::getEntities() {return mpEntities;}
+CModelEntity *const* CStateTemplate::getEntities() const {return mpEntities;}
 
-CModelEntity ** getEntities();
+//CModelEntity ** getEntities();
 CModelEntity ** CStateTemplate::beginIndependent() {return mpBeginIndependent;}
 CModelEntity ** CStateTemplate::endIndependent() {return mpBeginDependent;}
 CModelEntity ** CStateTemplate::beginDependent() {return mpBeginDependent;}
