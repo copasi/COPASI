@@ -284,6 +284,7 @@ done;
 cd ..
 
 tar -czf Copasi-${build}-SRC.tar.gz copasi-${build}-src 
-scp Copasi-$build-SRC*.* \
-  calvin.bioinformatics.vt.edu:/usr/local/apache/htdocs/calvin/copasi/alpha-test/SRC/$license
+ 
+scp Copasi-${build}-SRC*.* \
+  copasi@gorbag.bioinformatics.vt.edu:www/integrator/snapshots/$license
 
