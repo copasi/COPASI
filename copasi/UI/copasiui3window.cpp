@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.192.6.1 $
+//   $Revision: 1.192.6.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/17 14:05:18 $
+//   $Date: 2007/07/18 16:00:33 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -64,7 +64,7 @@ extern const char * CopasiLicense;
 #ifdef Darwin
 # define resetMenus \
 {\
- CQMessageBox * pMessage = new CQMessageBox(this); \
+ QMessageBox * pMessage = new QMessageBox(this); \
  pMessage->show(); \
  delete pMessage; \
 }
