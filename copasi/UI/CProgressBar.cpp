@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CProgressBar.cpp,v $
-   $Revision: 1.20 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/27 14:23:45 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CProgressBar.cpp,v $
+//   $Revision: 1.20.8.1 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/07/18 16:01:50 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -31,21 +31,30 @@ CProgressBar::CProgressBar(QWidget* parent, const char* name,
     CProcessReport(),
     CQProgressDialog(parent, name, modal, fl | WStyle_Minimize),
     mProgressItemList(1),
-    mNextEventProcessing(QDateTime::currentDateTime())
+    mNextEventProcessing(QDateTime::currentDateTime()),
+    mpMainWidget(NULL)
 {
   mProgressItemList[0] = NULL;
 
   // Whenever a progress bar is active we do not want any user
   // intervention.
-  if (qApp && qApp->mainWidget())
-    qApp->mainWidget()->setEnabled(false);
+  if ((mpMainWidget = qApp->mainWidget()) != NULL)
+    {
+      mpMainWidget->setEnabled(false);
+      qApp->processEvents();
+    }
 }
 
 CProgressBar::~CProgressBar()
 {
+  finish();
+
   // We need to activate the user interface again.
-  if (qApp->mainWidget())
-    qApp->mainWidget()->setEnabled(true);
+  if (mpMainWidget != NULL)
+    {
+      mpMainWidget->setEnabled(true);
+      qApp->processEvents();
+    }
 
   unsigned C_INT32 i, imax = mProgressItemList.size();
 
