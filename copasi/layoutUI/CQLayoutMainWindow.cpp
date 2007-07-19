@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
-//   $Author: urost $
-//   $Date: 2007/07/16 11:07:37 $
+//   $Author: ssahle $
+//   $Date: 2007/07/19 14:33:55 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,7 +22,7 @@
 //#include "sbmlDocumentLoader.h"
 #include <string>
 #include <iostream>
-
+#include <math.h>
 using namespace std;
 
 CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMainWindow(parent, name)
@@ -300,20 +300,35 @@ void CQLayoutMainWindow::closeEvent(QCloseEvent *event)
 QIconSet CQLayoutMainWindow::createStartIcon()
 {
   QImage img = QImage();
-  C_INT32 w = 20;
-  C_INT32 h = 20;
+  C_INT32 w = 19;
+  C_INT32 h = 19;
   img.create(w, h, 8, 2);
-  img.setColor(1, qRgb(0, 0, 255));
+  img.setColor(0, qRgb(0, 0, 200));
   C_INT16 x, y;
 
   for (x = 0;x < w;x++)
     {
       for (y = 0;y < h;y++)
         {
+          img.setPixel(x, y, 0);
+          //uint *p = (uint *)img.scanLine(y) + x;
+          //*p = qRgb(0,0,255);
+        }
+    }
+
+  C_INT32 delta = 0;
+  img.setColor(1, qRgb(255, 0, 0));
+  for (x = 3;x < w - 3;x++)
+    {
+      for (y = 3 + delta;y < h - 3 - delta;y++)
+        {
           img.setPixel(x, y, 1);
           //uint *p = (uint *)img.scanLine(y) + x;
           //*p = qRgb(0,0,255);
         }
+      //std::cout << "X: " << x << "  delta: " << delta <<std::endl;
+      if (fmod((double) x, 2.0) == 0)
+        delta++;
     }
 
   //QPixmap *pixmap = new QPixmap(20,20);
@@ -326,8 +341,38 @@ QIconSet CQLayoutMainWindow::createStartIcon()
 
 QIconSet CQLayoutMainWindow::createStopIcon()
 {
-  QPixmap *pixmap = new QPixmap(20, 20);
-  pixmap->fill(QColor(255, 0, 0));
+  QImage img = QImage();
+  C_INT32 w = 20;
+  C_INT32 h = 20;
+  img.create(w, h, 8, 2);
+  img.setColor(0, qRgb(0, 0, 200));
+  C_INT16 x, y;
+
+  for (x = 0;x < w;x++)
+    {
+      for (y = 0;y < h;y++)
+        {
+          img.setPixel(x, y, 0);
+          //uint *p = (uint *)img.scanLine(y) + x;
+          //*p = qRgb(0,0,255);
+        }
+    }
+
+  C_INT32 delta = 4;
+  img.setColor(1, qRgb(255, 0, 0));
+  for (x = (delta - 1);x <= (w - delta);x++)
+    {
+      for (y = (delta - 1);y <= (h - delta);y++)
+        {
+          img.setPixel(x, y, 1);
+          //uint *p = (uint *)img.scanLine(y) + x;
+          //*p = qRgb(0,0,255);
+        }
+    }
+
+  QPixmap *pixmap = new QPixmap();
+  //pixmap->fill(QColor(255, 0, 0));
+  pixmap->convertFromImage(img);
   QIconSet *iconset = new QIconSet(*pixmap);
   return *iconset;
 }

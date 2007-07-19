@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CVisParameters.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: urost $
-//   $Date: 2007/05/18 10:13:51 $
+//   $Author: ssahle $
+//   $Date: 2007/07/19 14:33:55 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,4 +23,7 @@ CVisParameters::CVisParameters()
 //void CVisParameters::init(){
 C_FLOAT64 CVisParameters::minNodeSize = 10.0;
 C_FLOAT64 CVisParameters::maxNodeSize = 100.0;
+C_INT32 CVisParameters::numberOfSteps = 0;
+C_INT16 CVisParameters::stepsPerSecond = 10;
+bool CVisParameters::animationRunning = false;
 //}
