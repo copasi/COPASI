@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanMethod.cpp,v $
-//   $Revision: 1.48.6.2 $
+//   $Revision: 1.48.6.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/18 16:51:28 $
+//   $Date: 2007/07/19 14:02:29 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -185,7 +185,7 @@ bool CScanItemLinear::isValidScanItem()
 
   if (mLog)
     {
-      if (isnan(mFaktor) || mFaktor < DBL_MAX || DBL_MAX < mFaktor)
+      if (isnan(mFaktor) || mFaktor < - DBL_MAX || DBL_MAX < mFaktor)
         {
           //not a valid range for log
           CCopasiMessage(CCopasiMessage::EXCEPTION, "Only positive values for min and max are possible for a logarithmic scan.");
