@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CDataEntity.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/05/31 16:59:23 $
+//   $Author: urost $
+//   $Date: 2007/07/22 19:18:34 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,8 +32,11 @@ CDataEntity::CDataEntity(const CDataEntity & src):
 
 void CDataEntity::putValueForSpecies(std::string nodeKey, C_FLOAT64 value)
 {
+  //std::cout << "put data for key: " << nodeKey << std::endl;
+  // mSpeciesValueMap.erase(nodeKey); // delete old value
   mSpeciesValueMap.insert(std::pair<std::string, C_FLOAT64>
                           (nodeKey, value));
+  //std::cout << "insertion took place: " << insertedP << std::endl;
   //std::cout << "put: " << nodeKey << "  : " << value << "  into map" << std::endl;
 }
 

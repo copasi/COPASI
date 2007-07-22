@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.28 $
+//   $Revision: 1.29 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/07/16 11:07:10 $
+//   $Date: 2007/07/22 19:18:05 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -70,7 +70,9 @@ class CQGLNetworkPainter : public QGLWidget
     void mapLabelsToCircles();
 
     void runAnimation();
-    void showStep(int i);
+    void showStep(C_INT32 i);
+
+    void rescaleDataSets(C_INT16 scaleMode);
 
   private slots:
     void zoomIn();
@@ -81,6 +83,7 @@ class CQGLNetworkPainter : public QGLWidget
 
   signals:
     void stepChanged(C_INT32);
+    void endOfAnimationReached ();
 
   private:
     CLPoint mgraphMin;
@@ -94,7 +97,7 @@ class CQGLNetworkPainter : public QGLWidget
     int mFontsize;
     double mFontsizeDouble;
 
-    std::map<int, CDataEntity> dataSets;
+    std::map<C_INT32, CDataEntity> dataSets;
 
     std::map<std::string, std::string> keyMap; // maps Copasi SBML object keys to layout node keys
     std::map<std::string, CGraphNode>nodeMap;

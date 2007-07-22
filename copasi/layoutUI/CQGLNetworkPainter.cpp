@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.43 $
+//   $Revision: 1.44 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/07/16 11:07:21 $
+//   $Date: 2007/07/22 19:19:00 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -606,6 +606,64 @@ int CQGLNetworkPainter::round2powN(double d)
 //}
 //}
 
+// INFO: to rescale an inteval [a..b] to another interval [x..y] the following formula is used: (val_old in [a..b]
+// val_new = x + ((val_old - a) * (y - x) / (b - a))
+void CQGLNetworkPainter::rescaleDataSets(C_INT16 scaleMode)
+{
+  CDataEntity dataSet;
+  C_INT32 s; // step number
+  C_FLOAT64 val, val_new;
+
+  std::cout << "A" << std::endl;
+  std::cout << "data sets: " << dataSets.size() << std::endl;
+  std::cout << "B" << std::endl;
+  for (s = 0; s < dataSets.size(); s++)
+    {
+      std::map<C_INT32, CDataEntity>::iterator iter = dataSets.find(s);
+      std::cout << "find: " << s << std::endl; //XXXX
+      if (iter != dataSets.end())
+        {
+          dataSet = (*iter).second;
+          C_INT32 i;
+          for (i = 0; i < viewerNodes.size();i++) // iterate over string values (node keys)
+            {
+              // get old value
+              val = dataSet.getValueForSpecies(viewerNodes[i]);
+              std::cout << "old value: " << val << std::endl;
+              if (scaleMode == 0)
+                {// global mode -> individual mode
+                  val_new =
+                    ((val - CVisParameters::minNodeSize) *
+                     (pSummaryInfo->getMaxOverallConcentration() - pSummaryInfo->getMinOverallConcentration()) / (CVisParameters::maxNodeSize - CVisParameters::minNodeSize)) + pSummaryInfo->getMinOverallConcentration();
+                  // now rescale
+                  val_new = ((val_new - pSummaryInfo->getMinForSpecies(viewerNodes[i])) *
+                             (CVisParameters::maxNodeSize - CVisParameters::minNodeSize) /
+                             (pSummaryInfo->getMaxForSpecies(viewerNodes[i]) - pSummaryInfo->getMinForSpecies(viewerNodes[i])))
+                            + CVisParameters::minNodeSize;
+                  std::cout << "new value: " << val_new << std::endl;
+                }
+              else
+                {// individual mode -> global mode
+                  // first calculate original value
+                  val_new =
+                    ((val - CVisParameters::minNodeSize) *
+                     (pSummaryInfo->getMaxForSpecies(viewerNodes[i]) - pSummaryInfo->getMinForSpecies(viewerNodes[i])) / (CVisParameters::maxNodeSize - CVisParameters::minNodeSize)) + CVisParameters::minNodeSize;
+                  // now rescale
+                  val_new = ((val_new - pSummaryInfo->getMinOverallConcentration()) *
+                             (CVisParameters::maxNodeSize - CVisParameters::minNodeSize) /
+                             (pSummaryInfo->getMaxOverallConcentration() - pSummaryInfo->getMinOverallConcentration()))
+                            + CVisParameters::minNodeSize;
+                  std::cout << "new value: " << val_new << std::endl;
+                }
+              dataSet.putValueForSpecies(viewerNodes[i], val_new);
+              //calculate new value
+              //             if (val != -DBL_MAX)
+              //                setNodeSize(viewerNodes[i], val);
+            }
+        }
+    }
+}
+
 bool CQGLNetworkPainter::createDataSets()
 {
   bool loadDataSuccessful = false;
@@ -691,8 +749,10 @@ bool CQGLNetworkPainter::createDataSets()
                   // now collect data set
                   //std::cout << "A: number of elements in data set: " << dataSet.getNumberOfElements() << std::endl;
                   //dataSets.push_back(dataSet);
-                  dataSets.insert(std::pair<int, CDataEntity>
+                  dataSets.insert(std::pair<C_INT32, CDataEntity>
                                   (t, dataSet));
+                  //std::cout << "no of inserted elements: " << dataSets.size() << std::endl;
+                  //std::cout << "t: " << t << "  time: " << dataSet.getTime() << std::endl;
                 }
               loadDataSuccessful = true;
             }
@@ -741,6 +801,7 @@ void CQGLNetworkPainter::triggerAnimationStep()
   else
     {
       regularTimer->stop();
+      emit endOfAnimationReached();
     }
   //updateGL();
   //this->showStep(i);
@@ -748,7 +809,7 @@ void CQGLNetworkPainter::triggerAnimationStep()
   //this->drawGraph();
 }
 
-void CQGLNetworkPainter::showStep(int i)
+void CQGLNetworkPainter::showStep(C_INT32 i)
 {
   this->stepShown = i;
   //std::cout << "show step " << i << std::endl;
@@ -757,7 +818,7 @@ void CQGLNetworkPainter::showStep(int i)
   if ((0 <= i) && (i < dataSets.size()))
     {
       //CDataEntity *dataSet = &(dataSets[i]);
-      std::map<int, CDataEntity>::iterator iter = dataSets.find(i);
+      std::map<C_INT32, CDataEntity>::iterator iter = dataSets.find(i);
       if (iter != dataSets.end())
         {
           CDataEntity dataSet = (*iter).second;
@@ -1085,6 +1146,7 @@ void CQGLNetworkPainter::initializeGraphPainter(QWidget *viewportWidget)
   //CQLayoutMainWindow *mainWindow = (*CQLayoutMainWindow) ();
   //std::cout << "ancestor " << ancestor->className() << std::endl;
   connect(this, SIGNAL(stepChanged(C_INT32)), ancestor, SLOT(changeStepValue(C_INT32)));
+  connect(this, SIGNAL(endOfAnimationReached()), ancestor, SLOT(endOfAnimationReached()));
   regularTimer = new QTimer(this);
   connect(regularTimer, SIGNAL(timeout()), this, SLOT(triggerAnimationStep()));
 

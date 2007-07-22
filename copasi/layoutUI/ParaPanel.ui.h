@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/Attic/ParaPanel.ui.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/07/05 16:29:10 $
+//   $Date: 2007/07/22 19:17:14 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,8 +22,32 @@
  ** destructor.
  *****************************************************************************/
 #include "copasi.h"
+#include "copasi/layoutUI/CVisParameters.h"
+#include "copasi/layoutUI/CQLayoutMainWindow.h"
 
-void ParaPanel::stepSlider_valueChanged(int)
+void ParaPanel::enableParameterChoice()
 {
-  std::cout << "not implemented yet" << std::endl;
+  spinBox1->setEnabled(true);
+  scalingButtonGroup->setEnabled(true);
+}
+
+void ParaPanel::disableParameterChoice()
+{
+  spinBox1->setEnabled(false);
+  scalingButtonGroup->setEnabled(false);
+}
+
+void ParaPanel::changeFrameRate()
+{
+  CVisParameters::stepsPerSecond = spinBox1->value();
+}
+
+void ParaPanel::setGlobalScaling()
+{
+  ((CQLayoutMainWindow *)(this->parentWidget()))->setGlobalScaling();
+}
+
+void ParaPanel::setIndividualScaling()
+{
+  ((CQLayoutMainWindow *)(this->parentWidget()))->setIndividualScaling();
 }

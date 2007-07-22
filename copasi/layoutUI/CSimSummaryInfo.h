@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CSimSummaryInfo.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/05/11 10:39:29 $
+//   $Date: 2007/07/22 19:17:42 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -38,6 +38,7 @@ class CSimSummaryInfo
     C_INT32 getNumberOfReactants(){return this->mNumberOfReactants;}
 
     C_FLOAT64 getMaxOverallConcentration(){return this->mMaxOverallConcentration;}
+    C_FLOAT64 getMinOverallConcentration(){return 0.0;}
     void setMaxOverallConcentration(C_FLOAT64 max){this->mMaxOverallConcentration = max;}
 
     void storeMax(std::string ndKey, C_FLOAT64 maxR);
