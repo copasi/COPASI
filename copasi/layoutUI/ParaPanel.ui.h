@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/Attic/ParaPanel.ui.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: urost $
-//   $Date: 2007/07/22 19:17:14 $
+//   $Author: ssahle $
+//   $Date: 2007/07/23 13:26:17 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -44,10 +44,17 @@ void ParaPanel::changeFrameRate()
 
 void ParaPanel::setGlobalScaling()
 {
-  ((CQLayoutMainWindow *)(this->parentWidget()))->setGlobalScaling();
+  CQLayoutMainWindow * tmp = dynamic_cast<CQLayoutMainWindow *>(parentWidget()->parentWidget()->parentWidget());
+  assert(tmp);
+  if (tmp) tmp -> setGlobalScaling();
+  //((CQLayoutMainWindow *)(this->parentWidget()))->setGlobalScaling();
 }
 
 void ParaPanel::setIndividualScaling()
 {
-  ((CQLayoutMainWindow *)(this->parentWidget()))->setIndividualScaling();
+  CQLayoutMainWindow * tmp = dynamic_cast<CQLayoutMainWindow *>(parentWidget()->parentWidget()->parentWidget());
+  assert(tmp);
+  if (tmp) tmp -> setIndividualScaling();
+
+  //((CQLayoutMainWindow *)(this->parentWidget()))->setIndividualScaling();
 }
