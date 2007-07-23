@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/07/19 14:33:55 $
+//   $Author: urost $
+//   $Date: 2007/07/23 09:40:11 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,7 +17,6 @@
 #include "layout/CLayout.h"
 #include "layout/CLBase.h"
 #include "CQLayoutMainWindow.h"
-#include "ParaPanel.h"
 
 //#include "sbmlDocumentLoader.h"
 #include <string>
@@ -40,7 +39,7 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
 
   //QLabel *label = new QLabel(splitter, "Test Label", 0);
   //QTextEdit *testEditor = new QTextEdit(splitter);
-  ParaPanel *paraPanel = new ParaPanel(splitter);
+  paraPanel = new ParaPanel(splitter);
 
   // create sroll view
   scrollView = new QScrollView(splitter);
@@ -84,14 +83,16 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
   startStopButton = new QPushButton(bottomBox, "start/stop button");
   connect(startStopButton, SIGNAL(clicked()), this, SLOT(startAnimation()));
   startStopButton->setIconSet(startIcon);
+  startStopButton->setEnabled(false);
 
   timeSlider = new QwtSlider(bottomBox, Qt::Horizontal, QwtSlider::BottomScale, QwtSlider::BgTrough);
   timeSlider->setRange(0, 100, 1, 0);
   timeSlider->setValue(0.0);
+  this->timeSlider->setEnabled(false);
 
   timeSlider->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
   //timeSlider->setTickmarks(QSlider::Below);
-  timeSlider->setDisabled(TRUE);
+  //timeSlider->setDisabled(TRUE);
   connect(timeSlider, SIGNAL(valueChanged(double)),
           this, SLOT(showStep(double)));
 
@@ -231,6 +232,7 @@ void CQLayoutMainWindow::loadData()
   if (successfulP)
     {
       this->timeSlider->setEnabled(true);
+      this->startStopButton->setEnabled(true);
       int maxVal = glPainter->getNumberOfSteps();
       //std::cout << "number of steps: " << maxVal << std::endl;
       this->timeSlider->setRange(0, maxVal);
@@ -254,6 +256,7 @@ void CQLayoutMainWindow::startAnimation()
   disconnect(startStopButton, SIGNAL(clicked()), this, SLOT(startAnimation()));
   connect(startStopButton, SIGNAL(clicked()), this, SLOT(stopAnimation()));
   startStopButton->setIconSet(stopIcon);
+  paraPanel->disableParameterChoice();
 }
 
 void CQLayoutMainWindow::stopAnimation()
@@ -264,6 +267,14 @@ void CQLayoutMainWindow::stopAnimation()
   connect(startStopButton, SIGNAL(clicked()), this, SLOT(startAnimation()));
   disconnect(startStopButton, SIGNAL(clicked()), this, SLOT(stopAnimation()));
   startStopButton->setIconSet(startIcon);
+  paraPanel->enableParameterChoice();
+}
+
+void CQLayoutMainWindow::endOfAnimationReached()
+{
+  //this->startStopButton->clicked();
+  //emit this->startStopButton->clicked();
+  this->stopAnimation();
 }
 
 void CQLayoutMainWindow::showStep(double i)
@@ -277,6 +288,16 @@ void CQLayoutMainWindow::changeStepValue(C_INT32 i)
 {
   timeSlider->setValue(i);
   //showStep(i);
+}
+
+void CQLayoutMainWindow::setIndividualScaling()
+{
+  glPainter->rescaleDataSets(0);
+}
+
+void CQLayoutMainWindow::setGlobalScaling()
+{
+  glPainter->rescaleDataSets(1);
 }
 
 void CQLayoutMainWindow::closeApplication()
