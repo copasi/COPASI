@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.cpp,v $
-   $Revision: 1.40 $
-   $Name:  $
-   $Author: ssahle $
-   $Date: 2007/01/08 14:57:08 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.cpp,v $
+//   $Revision: 1.41 $
+//   $Name:  $
+//   $Author: ssahle $
+//   $Date: 2007/07/24 19:15:42 $
+// End CVS Header
 
-// Copyright � 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -511,6 +511,8 @@ std::string CEvaluationNodeFunction::getDisplay_XPP_String(const CEvaluationTree
       }
     else
       return "@"; //TODO
+
+    return ""; //should never be reached, only because of warning
   }
 
 CEvaluationNode* CEvaluationNodeFunction::createNodeFromASTTree(const ASTNode& node)
