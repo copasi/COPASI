@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-//   $Revision: 1.92 $
+//   $Revision: 1.93 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/07/24 15:35:05 $
+//   $Date: 2007/07/24 19:19:33 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1044,6 +1044,9 @@ void CCopasiXML::saveBoundingBox(const CLBoundingBox& bb)
   endSaveElement("BoundingBox");
 }
 
+void CCopasiXML::saveCurve(const CLCurve& c)
+{}
+
 bool CCopasiXML::saveLayoutList()
 {
   bool success = true;
@@ -1132,8 +1135,33 @@ bool CCopasiXML::saveLayoutList()
               Attributes.add("reaction", cg->getModelObjectKey());
               startSaveElement("ReactionGlyph", Attributes);
 
-              //TODO
-              saveBoundingBox(cg->getBoundingBox());
+              if (cg->getCurve().getNumCurveSegments() == 0)
+                saveBoundingBox(cg->getBoundingBox());
+              else
+                saveCurve(cg->getCurve());
+
+              // metab reference glyphs
+              startSaveElement("ListOfMetaboliteReferenceGlyphs");
+              unsigned C_INT32 k, kmax = cg->getListOfMetabReferenceGlyphs().size();
+              for (k = 0; k < kmax; ++k)
+                {
+                  CLMetabReferenceGlyph * mrg = cg->getListOfMetabReferenceGlyphs()[k];
+                  Attributes.erase();
+                  Attributes.add("key", mrg->getKey());
+                  Attributes.add("name", mrg->getObjectName());
+                  Attributes.add("metaboliteGlyph", mrg->getMetabGlyphKey());
+                  //Attributes.add("metaboliteReference", mrg->getXXX());
+                  Attributes.add("role", CLMetabReferenceGlyph::XMLRole[mrg->getRole()]);
+                  startSaveElement("MetaboliteReferenceGlyph", Attributes);
+
+                  if (mrg->getCurve().getNumCurveSegments() == 0)
+                    saveBoundingBox(mrg->getBoundingBox());
+                  else
+                    saveCurve(mrg->getCurve());
+
+                  endSaveElement("MetaboliteReferenceGlyph");
+                }
+              endSaveElement("ListOfMetaboliteReferenceGlyphs");
 
               endSaveElement("ReactionGlyph");
             }

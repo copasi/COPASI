@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.h,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/07/24 15:35:05 $
+//   $Date: 2007/07/24 19:19:33 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,6 +35,7 @@ class CListOfLayouts;
 class CLPoint;
 class CLDimensions;
 class CLBoundingBox;
+class CLCurve;
 #endif
 
 class CCopasiParameter;
@@ -307,6 +308,8 @@ class CCopasiXML : public CCopasiXMLInterface
     void saveDimensions(const CLDimensions& d);
 
     void saveBoundingBox(const CLBoundingBox& bb);
+
+    void saveCurve(const CLCurve& c);
 #endif
 
     /**
