@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.h,v $
-//   $Revision: 1.67 $
+//   $Revision: 1.68 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/12 00:05:45 $
+//   $Date: 2007/07/24 09:48:09 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -373,6 +373,8 @@ class CCopasiObject
     }
 
     UpdateMethod * getUpdateMethod() const;
+
+    bool hasUpdateMethod() const;
 
     template <class CType>
     void setRefresh(CType * pType,

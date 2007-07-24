@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-//   $Revision: 1.64 $
+//   $Revision: 1.65 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/04/06 16:09:16 $
+//   $Author: ssahle $
+//   $Date: 2007/07/24 09:48:09 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -432,6 +432,9 @@ void CCopasiObject::setObjectValue(const bool & value)
 
 UpdateMethod * CCopasiObject::getUpdateMethod() const
   {return mpUpdateMethod;}
+
+bool CCopasiObject::hasUpdateMethod() const
+  {return mpUpdateMethod != &mDefaultUpdateMethod;}
 
 void CCopasiObject::clearRefresh()
 {pdelete(mpRefresh);}
