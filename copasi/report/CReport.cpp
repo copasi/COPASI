@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReport.cpp,v $
-//   $Revision: 1.57 $
+//   $Revision: 1.58 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/23 18:53:42 $
+//   $Date: 2007/07/24 18:40:25 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -110,7 +110,7 @@ void CReport::output(const Activity & activity)
     }
 }
 
-void CReport::separate(const Activity & activity)
+void CReport::separate(const Activity & /* activity */)
 {
   if (!mpOstream) return;
   (*mpOstream) << std::endl;

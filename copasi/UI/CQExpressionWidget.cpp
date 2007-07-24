@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/13 19:56:56 $
+//   $Date: 2007/07/24 18:40:20 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,7 +30,7 @@ CQExpressionHighlighter::CQExpressionHighlighter(CQExpressionWidget* ew)
     : QSyntaxHighlighter(ew)
 {}
 
-int CQExpressionHighlighter::highlightParagraph (const QString & text, int endStateOfLastPara)
+int CQExpressionHighlighter::highlightParagraph (const QString & text, int /* endStateOfLastPara */)
 {
   int pos = 0;
   int oldpos = -1;
@@ -283,7 +283,7 @@ void CQExpressionWidget::doKeyboardAction(QTextEdit::KeyboardAction action)
       break;
 
     case QTextEdit::ActionDelete:
-      if (pos == text().length()) return;
+      if ((unsigned int) pos == text().length()) return;
       if (text(para)[pos] == '<')
         {
           //std::cout << "Delete into object." << std::endl;

@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CIndexedPriorityQueue.cpp,v $
-   $Revision: 1.14 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:32:43 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CIndexedPriorityQueue.cpp,v $
+//   $Revision: 1.15 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/07/24 18:40:22 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -36,16 +36,16 @@ C_INT32 CIndexedPriorityQueue::removeStochReaction(const C_INT32 index)
   C_INT32 t;
 
   // check if index is valid
-  if ((index < 0) || (index >= mIndexPointer.size())) return - 1;
+  if ((index < 0) || (index >= (C_INT32) mIndexPointer.size())) return - 1;
 
-  if ((mIndexPointer[index] != -1) && (mIndexPointer[index] != mHeap.size() - 1)) // if the node with the given index exists in the tree
+  if ((mIndexPointer[index] != -1) && (mIndexPointer[index] != (C_INT32) (mHeap.size() - 1))) // if the node with the given index exists in the tree
     {// remove the node with the given index from the tree
       swapNodes(t = mIndexPointer[index], mHeap.size() - 1);
       mHeap.pop_back();
       mIndexPointer[index] = -1;
       heapify(t);
     }
-  else if (mIndexPointer[index] == mHeap.size() - 1) // last node in the heap
+  else if (mIndexPointer[index] == (C_INT32) (mHeap.size() - 1)) // last node in the heap
     {
       mHeap.pop_back();
       mIndexPointer[index] = -1;
@@ -59,7 +59,7 @@ C_INT32 CIndexedPriorityQueue::insertStochReaction(const C_INT32 index, const C_
   C_INT32 pos;
 
   // check if index is valid
-  if ((index < 0) || (index >= mIndexPointer.size())) return - 1;
+  if ((index < 0) || (index >= (C_INT32) mIndexPointer.size())) return - 1;
   // first the node is inserted at the end of the heap
   mIndexPointer[index] = mHeap.size();
   PQNode heap_node(index, key);

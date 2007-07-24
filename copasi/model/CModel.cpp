@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.305 $
+//   $Revision: 1.306 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/24 13:25:47 $
+//   $Date: 2007/07/24 18:40:23 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -410,7 +410,6 @@ bool CModel::compileIfNecessary(CProcessReport* pProcessReport)
   if (!mCompileIsNecessary) return true;
 
   mpCompileHandler = pProcessReport;
-  bool success = false;
 
   try
     {
@@ -550,7 +549,7 @@ bool CModel::handleUnusedMetabolites()
   std::vector< CMetab * >::iterator itUnusedMetabolites = UnusedMetabolites.begin();
   std::vector< unsigned C_INT32 >::const_iterator itUnused = Unused.begin();
   std::vector< unsigned C_INT32 >::const_iterator endUnused = Unused.end();
-  CMetab * pMetab;
+
   CCopasiVector< CMetab >::iterator itMetab = mMetabolitesX.begin() + mNumMetabolitesODE;
   CCopasiVector< CMetab >::iterator endMetab = itMetab + mNumMetabolitesReaction;
 
@@ -614,13 +613,12 @@ bool CModel::handleUnusedMetabolites()
 
 void CModel::buildRedStoi()
 {
-  C_INT32 i;
-  C_INT32 numCols = mStoi.numCols();
+  unsigned C_INT32 i;
+  unsigned C_INT32 numCols = mStoi.numCols();
 
   mRedStoi.resize(mNumMetabolitesIndependent, numCols);
   mStoiReordered.resize(mStoi.numRows(), numCols);
 
-  C_FLOAT64 * pStoi = mStoi.array();
   C_FLOAT64 * pRedStoi = mRedStoi.array();
   C_FLOAT64 * pStoiReordered = mStoiReordered.array();
   unsigned C_INT32 * pRow = mRowLU.array();
@@ -1032,7 +1030,7 @@ const CVector<unsigned C_INT32> & CModel::getMetabolitePermutation() const
 /**
  *        Returns the index of the metab
  */
-C_INT32 CModel::findMetabByName(const std::string & Target) const
+unsigned C_INT32 CModel::findMetabByName(const std::string & Target) const
   {
     unsigned C_INT32 i, s;
     std::string name;
@@ -1044,13 +1042,13 @@ C_INT32 CModel::findMetabByName(const std::string & Target) const
         if (name == Target)
           return i;
       }
-    return - 1;
+    return C_INVALID_INDEX;
   }
 
 /**
  *        Returns the index of the Moiety
  */
-C_INT32 CModel::findMoiety(const std::string &Target) const
+unsigned C_INT32 CModel::findMoiety(const std::string &Target) const
   {
     unsigned C_INT32 i, s;
     std::string name;
@@ -1062,7 +1060,7 @@ C_INT32 CModel::findMoiety(const std::string &Target) const
         if (name == Target)
           return i;
       }
-    return - 1;
+    return C_INVALID_INDEX;
   }
 
 //**********************************************************************
@@ -2872,11 +2870,11 @@ void CModel::buildLinkZero()
   CVector< C_INT > JPVT(N);
   JPVT = 0;
 
-  unsigned C_INT32 Dim = std::min(M, N);
+  C_INT32 Dim = std::min(M, N);
 
   if (Dim == 0)
     {
-      unsigned C_INT32 i;
+      C_INT32 i;
       mRowLU.resize(N);
 
       for (i = 0; i < N; i++)
@@ -2983,14 +2981,14 @@ void CModel::buildLinkZero()
           JPVT.array(), TAU.array(), WORK.array(), &LWORK, &INFO);
   if (INFO < 0) fatalError();
 
-  LWORK = WORK[0];
+  LWORK = (C_INT) WORK[0];
   WORK.resize(LWORK);
 
   dgeqp3_(&M, &N, mRedStoi.array(), &LDA,
           JPVT.array(), TAU.array(), WORK.array(), &LWORK, &INFO);
   if (INFO < 0) fatalError();
 
-  unsigned C_INT32 i;
+  C_INT32 i;
   mRowLU.resize(N);
   for (i = 0; i < N; i++)
     mRowLU[i] = JPVT[i] - 1;
@@ -3080,7 +3078,7 @@ void CModel::buildLinkZero()
   DebugFile << CTransposeView< CMatrix< C_FLOAT64 > >(mRedStoi) << std::endl;
 #endif
 
-  unsigned C_INT32 j, k;
+  C_INT32 j, k;
 
   // Compute Link_0 = inverse(R_1,1) * R_1,2
   // :TODO: Use dgemm

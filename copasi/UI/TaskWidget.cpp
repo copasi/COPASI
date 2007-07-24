@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.cpp,v $
-//   $Revision: 1.28 $
+//   $Revision: 1.29 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/04/10 16:48:45 $
+//   $Date: 2007/07/24 18:40:20 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -498,10 +498,9 @@ finish:
 
   if (CCopasiMessage::getHighestSeverity() > CCopasiMessage::COMMANDLINE)
     {
-      C_INT Result =
-        CQMessageBox::information(this, "Calculation Warning",
-                                  CCopasiMessage::getAllMessageText().c_str(),
-                                  QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+      CQMessageBox::information(this, "Calculation Warning",
+                                CCopasiMessage::getAllMessageText().c_str(),
+                                QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
     }
 
   CCopasiMessage::clearDeque();

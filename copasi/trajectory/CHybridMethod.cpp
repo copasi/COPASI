@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.cpp,v $
-   $Revision: 1.47 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/06 16:03:47 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.cpp,v $
+//   $Revision: 1.48 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/07/24 18:40:24 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -336,7 +336,7 @@ void CHybridMethod::integrateDeterministicPart(C_FLOAT64 dt)
   // find the set union of all reactions, which depend on one of the deterministic reactions. The propensities of the stochastic reactions in this set union will be updated later in the method updatePriorityQueue().
   for (react = mFirstReactionFlag; react != NULL; react = react->mpNext)
     {
-      const std::set <C_INT32> & dependents = mDG.getDependents(react->mIndex);
+      const std::set <unsigned C_INT32> & dependents = mDG.getDependents(react->mIndex);
       std::copy(dependents.begin(), dependents.end(),
                 std::inserter(mUpdateSet, mUpdateSet.begin()));
     }
@@ -373,7 +373,7 @@ void CHybridMethod::integrateDeterministicPartEuler(C_FLOAT64 dt)
   // find the set union of all reactions, which depend on one of the deterministic reactions. The propensities of the stochastic reactions in this set union will be updated later in the method updatePriorityQueue().
   for (react = mFirstReactionFlag; react != NULL; react = react->mpNext)
     {
-      const std::set <C_INT32> & dependents = mDG.getDependents(react->mIndex);
+      const std::set <unsigned C_INT32> & dependents = mDG.getDependents(react->mIndex);
       std::copy(dependents.begin(), dependents.end(),
                 std::inserter(mUpdateSet, mUpdateSet.begin()));
     }
@@ -571,7 +571,7 @@ void CHybridMethod::fireReaction(C_INT32 rIndex)
     }
 
   // insert all dependent reactions into the mUpdateSet
-  const std::set <C_INT32> & dependents = mDG.getDependents(rIndex);
+  const std::set <unsigned C_INT32> & dependents = mDG.getDependents(rIndex);
   std::copy(dependents.begin(), dependents.end(),
             std::inserter(mUpdateSet, mUpdateSet.begin()));
 

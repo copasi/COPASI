@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochNextReactionMethod.cpp,v $
-   $Revision: 1.9 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:32:17 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochNextReactionMethod.cpp,v $
+//   $Revision: 1.10 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/07/24 18:40:24 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -64,17 +64,17 @@ void CStochNextReactionMethod::setupPriorityQueue(C_FLOAT64 start_time)
 
 void CStochNextReactionMethod::updatePriorityQueue(C_INT32 reaction_index, C_FLOAT64 time)
 {
-  const std::set<C_INT32> & dep_nodes = mDG.getDependents(reaction_index);
+  const std::set<unsigned C_INT32> & dep_nodes = mDG.getDependents(reaction_index);
 
   C_FLOAT64 new_time = time + generateReactionTime(reaction_index);
 
   mPQ.updateNode(reaction_index, new_time);
 
-  std::set<C_INT32>::const_iterator di;
+  std::set<unsigned C_INT32>::const_iterator di;
 
   for (di = dep_nodes.begin(); di != dep_nodes.end(); di++)
     {
-      if (*di != reaction_index)
+      if (*di != (unsigned C_INT32) reaction_index)
         {
           C_INT32 index = *di;
           C_FLOAT64 new_time;

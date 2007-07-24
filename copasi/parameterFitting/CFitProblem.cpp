@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-//   $Revision: 1.46 $
+//   $Revision: 1.47 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/24 13:25:49 $
+//   $Date: 2007/07/24 18:40:26 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -556,7 +556,7 @@ bool CFitProblem::calculate()
   bool Continue = true;
 
   unsigned i, imax = mpExperimentSet->getExperimentCount();
-  unsigned j, jmax = mpOptItems->size();
+  unsigned j;
   unsigned kmax;
   mCalculateValue = 0.0;
 
@@ -865,7 +865,6 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
   unsigned C_INT32 i, imax = mSolutionVariables.size();
   unsigned C_INT32 j, jmax = mExperimentDependentValues.size();
   unsigned C_INT32 l;
-  unsigned C_INT32 k, kmax = mpExperimentSet->getExperimentCount();
 
   mRMS = std::numeric_limits<C_FLOAT64>::quiet_NaN();
   mSD = std::numeric_limits<C_FLOAT64>::quiet_NaN();

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-//   $Revision: 1.52 $
+//   $Revision: 1.53 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/05/15 12:36:25 $
+//   $Date: 2007/07/24 18:40:26 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -410,9 +410,6 @@ C_FLOAT64 CExperiment::sumOfSquaresStore(const unsigned C_INT32 & index,
 
 bool CExperiment::calculateStatistics()
 {
-  CFitTask * pTask =
-    dynamic_cast<CFitTask *>(getObjectAncestor("Task"));
-
   C_FLOAT64 * pTime;
   C_FLOAT64 SavedTime;
   if (*mpTaskType == CCopasiTask::timeCourse)
@@ -869,7 +866,6 @@ bool CExperiment::calculateWeights()
   // Guess missing dependent values
   for (j = 0; j < DependentCount; j++)
     {
-      C_FLOAT64 & Mean = mMeans[j];
       C_FLOAT64 & MeanSquare = MeanSquares[j];
 
       for (i = 0; i < mNumDataRows; i++)

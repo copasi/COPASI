@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.cpp,v $
-//   $Revision: 1.74 $
+//   $Revision: 1.75 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/04/10 16:48:44 $
+//   $Date: 2007/07/24 18:40:21 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -309,7 +309,7 @@ CFunction * CFunction::createCopy() const
     return newFunction;
   }
 
-std::pair<CFunction *, CFunction *> CFunction::splitFunction(const CEvaluationNode* node,
+std::pair<CFunction *, CFunction *> CFunction::splitFunction(const CEvaluationNode * /* node */,
     const std::string & name1,
     const std::string & name2) const
   {

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporter.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/24 13:25:51 $
+//   $Date: 2007/07/24 18:40:24 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -59,7 +59,8 @@ CODEExporter::~CODEExporter()
 /**
  **
  */
-bool CODEExporter::exportMathModel(const CModel* copasiModel, std::string mmasciiFilename, std::string Filter, bool overwriteFile)
+bool CODEExporter::exportMathModel(const CModel * copasiModel, std::string mmasciiFilename,
+                                   std::string /* Filter */, bool overwriteFile)
 {
   /* check if the file already exisits.
           If yes, write if overwrite is true,
@@ -184,7 +185,8 @@ bool CODEExporter::preprocess(const CModel* copasiModel)
   return true;
 }
 
-bool CODEExporter::exportTitleData(const CModel* copasiModel, std::ofstream & outFile)
+bool CODEExporter::exportTitleData(const CModel* /* copasiModel */,
+                                   std::ofstream & /* outFile */)
 {return true;}
 
 /* export metabolites */
@@ -761,7 +763,8 @@ bool CODEExporter::exportODEs(const CModel* copasiModel, std::map< std::string, 
   return true;
 }
 
-bool CODEExporter::exportClosingData(const CModel* copasiModel, std::ofstream & outFile)
+bool CODEExporter::exportClosingData(const CModel* /* copasiModel */,
+                                     std::ofstream & /* outFile */)
 {return true;}
 
 void CODEExporter::setReservedNames()
@@ -770,25 +773,36 @@ void CODEExporter::setReservedNames()
 std::string CODEExporter::translateTimeVariableName()
 {return " ";}
 
-std::string CODEExporter::translateObjectName(const std::string & realName)
+std::string CODEExporter::translateObjectName(const std::string & /* realName */)
 {return " ";}
 
-std::string CODEExporter::setODEName(const std::string & objName)
+std::string CODEExporter::setODEName(const std::string & /* objName */)
 {return " ";}
 
-bool CODEExporter::exportSingleObject(std::ostringstream & which, std::string & name, std::string & expression, std::string & comments)
+bool CODEExporter::exportSingleObject(std::ostringstream & /* which */,
+                                      std::string & /* name */,
+                                      std::string & /* expression */,
+                                      std::string & /* comments */)
 {return true;}
 
-bool CODEExporter::exportSingleMetabolite(const CMetab* metab, std::string & expression, std::string & comments)
+bool CODEExporter::exportSingleMetabolite(const CMetab * /* metab */,
+    std::string & /* expression */,
+    std::string & /* comments */)
 {return true;}
 
-bool CODEExporter::exportSingleCompartement(const CCompartment* comp, std::string & expression, std::string & comments)
+bool CODEExporter::exportSingleCompartement(const CCompartment * /* comp */,
+    std::string & /* expression */,
+    std::string & /* comments */)
 {return true;}
 
-bool CODEExporter::exportSingleModVal(const CModelValue* modval, std::string & expression, std::string & comments)
+bool CODEExporter::exportSingleModVal(const CModelValue * /* modval */,
+                                      std::string & /* expression */,
+                                      std::string & /* comments */)
 {return true;}
 
-bool CODEExporter::exportSingleParameter(const CCopasiParameter* param, std::string & expression, std::string & comments)
+bool CODEExporter::exportSingleParameter(const CCopasiParameter * /* param */,
+    std::string & /* expression */,
+    std::string & /* comments */)
 {return true;}
 
 bool CODEExporter::exportKineticFunction (CReaction* reac)
@@ -1060,25 +1074,27 @@ bool CODEExporter::exportSingleFunction(CEvaluationNode* pNode, const CReaction 
   return true;
 }
 
-std::string CODEExporter::getDisplayFunctionString(CFunction * func)
+std::string CODEExporter::getDisplayFunctionString(CFunction * /* func */)
 {return " ";}
 
-std::string CODEExporter::getDisplayExpressionString(CExpression * tmp)
+std::string CODEExporter::getDisplayExpressionString(CExpression * /* tmp */)
 {return " ";}
 
-bool CODEExporter::exportSingleODE(const CModelEntity* mentity, std::string & equation, std::string & comments)
+bool CODEExporter::exportSingleODE(const CModelEntity * /* mentity */,
+                                   std::string & /* equation */,
+                                   std::string & /* comments */)
 {return true;}
 
-bool CODEExporter::exportKineticFunctionGroup (const CModel* copasiModel)
+bool CODEExporter::exportKineticFunctionGroup(const CModel * /* copasiModel */)
 {return true;}
 
-std::string CODEExporter::KineticFunction2ODEmember(const CReaction *reac)
+std::string CODEExporter::KineticFunction2ODEmember(const CReaction * /* reac */)
 {return " ";}
 
-std::string CODEExporter::exportTitleString(const unsigned C_INT32 tmp)
+std::string CODEExporter::exportTitleString(const unsigned C_INT32 /* tmp */)
 {return " ";}
 
-std::string CODEExporter::exportClosingString(const unsigned C_INT32 tmp)
+std::string CODEExporter::exportClosingString(const unsigned C_INT32 /* tmp */)
 {return " ";}
 
 /**

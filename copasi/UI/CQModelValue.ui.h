@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQModelValue.ui.h,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/04/02 17:58:34 $
+//   $Date: 2007/07/24 18:40:20 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -251,6 +251,9 @@ void CQModelValue::slotTypeChanged(int type)
       mpEditInitialValue->setText(QString::number(mpModelValue->getInitialValue()));
       mpEditExpression->setExpression(mpModelValue->getExpression());
       break;
+
+    default:
+      break;
     }
 }
 
@@ -273,7 +276,9 @@ void CQModelValue::init()
 void CQModelValue::destroy()
 {}
 
-bool CQModelValue::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+bool CQModelValue::update(ListViews::ObjectType /* objectType */,
+                          ListViews::Action /* action */,
+                          const std::string & /* key */)
 {
   return true;
 }

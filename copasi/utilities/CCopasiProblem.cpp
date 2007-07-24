@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiProblem.cpp,v $
-   $Revision: 1.19 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:32:42 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiProblem.cpp,v $
+//   $Revision: 1.20 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/07/24 18:40:22 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -76,7 +76,7 @@ bool CCopasiProblem::initialize() {return true;}
 
 bool CCopasiProblem::calculate() {return true;}
 
-bool CCopasiProblem::restore(const bool & updateModel) {return true;}
+bool CCopasiProblem::restore(const bool & /* updateModel */) {return true;}
 
 bool CCopasiProblem::checkParametricConstraints() {return true;}
 

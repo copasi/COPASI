@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.cpp,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.31 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/03/09 09:51:20 $
+//   $Author: shoops $
+//   $Date: 2007/07/24 18:40:21 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -215,10 +215,10 @@ ASTNode* CEvaluationNode::toAST() const
 const C_FLOAT64 * CEvaluationNode::getValuePointer() const
   {return &mValue;}
 
-void CEvaluationNode::writeMathML(std::ostream & out,
-                                  const std::vector<std::vector<std::string> > & env,
-                                  bool expand,
-                                  unsigned C_INT32 l) const
+void CEvaluationNode::writeMathML(std::ostream & /* out */,
+                                  const std::vector<std::vector<std::string> > & /* env */,
+                                  bool /* expand */,
+                                  unsigned C_INT32 /* l */) const
   {}
 
 void CEvaluationNode::printRecursively(std::ostream & os, int indent) const

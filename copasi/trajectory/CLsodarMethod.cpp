@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/Attic/CLsodarMethod.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/12 14:28:49 $
+//   $Date: 2007/07/24 18:40:24 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -155,25 +155,25 @@ void CLsodarMethod::step(const double & deltaT)
   C_INT DSize = mDWork.size();
   C_INT ISize = mIWork.size();
 
-  mLSODAR(&EvalF,          //  1. evaluate F
-          &mData.dim,      //  2. number of variables
-          mY,              //  3. the array of current concentrations
-          &mTime,          //  4. the current time
-          &EndTime,        //  5. the final time
-          &ITOL,           //  6. error control
-          &mRtol,          //  7. relative tolerance array
-          mAtol.array(),   //  8. absolute tolerance array
-          &mState,         //  9. output by overshoot & interpolatation
-          &mLsodarStatus,  // 10. the state control variable
-          &one,            // 11. further options (one)
-          mDWork.array(),  // 12. the double work array
-          &DSize,          // 13. the double work array size
-          mIWork.array(),  // 14. the int work array
-          &ISize,          // 15. the int work array size
-          NULL,            // 16. evaluate J (not given)
-          &mJType,         // 17. type of j evaluation 2 internal full matrix
-          &EvalR,          // 18. evaluate constraint functions
-          &mNumRoots,      // 19. number of constraint functions g(i)
+  mLSODAR(&EvalF, //  1. evaluate F
+          &mData.dim, //  2. number of variables
+          mY, //  3. the array of current concentrations
+          &mTime, //  4. the current time
+          &EndTime, //  5. the final time
+          &ITOL, //  6. error control
+          &mRtol, //  7. relative tolerance array
+          mAtol.array(), //  8. absolute tolerance array
+          &mState, //  9. output by overshoot & interpolatation
+          &mLsodarStatus, // 10. the state control variable
+          &one, // 11. further options (one)
+          mDWork.array(), // 12. the double work array
+          &DSize, // 13. the double work array size
+          mIWork.array(), // 14. the int work array
+          &ISize, // 15. the int work array size
+          NULL, // 16. evaluate J (not given)
+          &mJType, // 17. type of j evaluation 2 internal full matrix
+          &EvalR, // 18. evaluate constraint functions
+          &mNumRoots, // 19. number of constraint functions g(i)
           mRoots.array()); // 20. integer array of length NG for output of root information
 
   if (mLsodarStatus == -1) mLsodarStatus = 2;
@@ -288,5 +288,6 @@ void CLsodarMethod::EvalR(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 
                           const C_INT * nr, const double * r)
 {static_cast<Data *>((void *) n)->pMethod->evalR(t, y, nr, r);}
 
-void CLsodarMethod::evalR(const C_FLOAT64 * t, const C_FLOAT64 * y, const C_INT * nr, const double * r)
+void CLsodarMethod::evalR(const C_FLOAT64 * /* t */, const C_FLOAT64 * /* y */,
+                          const C_INT * /* nr */, const double * /* r */)
 {};

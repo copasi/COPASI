@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-//   $Revision: 1.89 $
+//   $Revision: 1.90 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/24 13:25:48 $
+//   $Date: 2007/07/24 18:40:22 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -473,8 +473,8 @@ bool COptProblem::calculate()
   return true;
 }
 
-bool COptProblem::calculateStatistics(const C_FLOAT64 & factor,
-                                      const C_FLOAT64 & resolution)
+bool COptProblem::calculateStatistics(const C_FLOAT64 & /* factor */,
+                                      const C_FLOAT64 & /* resolution */)
 {
 #ifdef XXXX // The gradient is also meanigful for optimization.
   unsigned C_INT32 i, imax = mSolutionVariables.size();

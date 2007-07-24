@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.143 $
+//   $Revision: 1.144 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/07/24 09:45:07 $
+//   $Author: shoops $
+//   $Date: 2007/07/24 18:40:23 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -619,13 +619,17 @@ class CModel : public CModelEntity
 
     /**
      * Returns the index of the metab
+     * @param const std::string & Target
+     * @return index
      */
-    C_INT32 findMetabByName(const std::string & Target) const;
+    unsigned C_INT32 findMetabByName(const std::string & Target) const;
 
     /**
      * Returns the index of the Moiety
+     * @param const std::string & Target
+     * @return index
      */
-    C_INT32 findMoiety(const std::string &Target) const;
+    unsigned C_INT32 findMoiety(const std::string &Target) const;
 
     /**
      * Get the LU decomposition matrix of this model

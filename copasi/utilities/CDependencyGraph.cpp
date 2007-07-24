@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDependencyGraph.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/15 17:30:51 $
+//   $Date: 2007/07/24 18:40:22 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,7 +22,7 @@ CDependencyGraphNode::CDependencyGraphNode()
 CDependencyGraphNode::~CDependencyGraphNode()
 {}
 
-void CDependencyGraphNode::addDependent(const C_INT32 node_num)
+void CDependencyGraphNode::addDependent(const unsigned C_INT32 & node_num)
 {
   // Ensure that the same node is not added twice
   //  if (find(mDependents.begin(), mDependents.end(), node_num) == mDependents.end())
@@ -32,7 +32,7 @@ void CDependencyGraphNode::addDependent(const C_INT32 node_num)
   mDependents.insert(node_num);
 }
 
-const std::set <C_INT32> & CDependencyGraphNode::getDependents() const
+const std::set <unsigned C_INT32> & CDependencyGraphNode::getDependents() const
   {
     return mDependents;
   }
@@ -41,7 +41,7 @@ const std::set <C_INT32> & CDependencyGraphNode::getDependents() const
 CDependencyGraph::CDependencyGraph() {}
 CDependencyGraph::~CDependencyGraph() {}
 
-void CDependencyGraph::addNode(const C_INT32 node)
+void CDependencyGraph::addNode(const unsigned C_INT32 & node)
 {
   if (node >= mNodes.size())
     mNodes.resize(node + 1);
@@ -49,18 +49,18 @@ void CDependencyGraph::addNode(const C_INT32 node)
   //  mNodes.push_back(node);
 }
 
-void CDependencyGraph::resize(C_INT32 n)
+void CDependencyGraph::resize(const unsigned C_INT32 & n)
 {
   mNodes.resize(n);
 }
 
-void CDependencyGraph::addDependent(const C_INT32 node, const C_INT32 dependent)
+void CDependencyGraph::addDependent(const unsigned C_INT32 & node, const unsigned C_INT32 & dependent)
 {
   addNode(node);
   mNodes[node].addDependent(dependent);
 }
 
-const std::set <C_INT32> & CDependencyGraph::getDependents(const C_INT32 node) const
+const std::set <unsigned C_INT32> & CDependencyGraph::getDependents(const unsigned C_INT32 & node) const
   {
     return mNodes[node].getDependents();
   }
@@ -124,7 +124,7 @@ int main(int argc, char **argv)
 std::ostream & operator<<(std::ostream &os,
                           const CDependencyGraphNode & d)
 {
-  std::set <C_INT32>::const_iterator it;
+  std::set <unsigned C_INT32>::const_iterator it;
   for (it = d.mDependents.begin(); it != d.mDependents.end(); it++)
     os << *it << "  ";
 

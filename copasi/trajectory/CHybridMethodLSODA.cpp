@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethodLSODA.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/02/20 23:51:28 $
+//   $Author: shoops $
+//   $Date: 2007/07/24 18:40:24 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -471,22 +471,22 @@ void CHybridMethodLSODA::integrateDeterministicPart(C_FLOAT64 deltaT)
       return;
     }
 
-  mLSODA(&EvalF ,          //  1. evaluate F
-         &mData.dim,       //  2. number of variables
-         mY ,              //  3. the array of current concentrations
-         &mTime ,          //  4. the current time
-         &EndTime ,        //  5. the final time
-         &one ,            //  6. scalar error control
-         &mRtol ,          //  7. relative tolerance array
-         &mAtol ,          //  8. absolute tolerance array
-         &mState ,         //  9. output by overshoot & interpolatation
-         &mLsodaStatus ,   // 10. the state control variable
-         &one ,            // 11. futher options (one)
-         mDWork.array() ,  // 12. the double work array
-         &DSize ,          // 13. the double work array size
-         mIWork.array() ,  // 14. the int work array
-         &ISize ,          // 15. the int work array size
-         NULL ,            // 16. evaluate J (not given)
+  mLSODA(&EvalF , //  1. evaluate F
+         &mData.dim, //  2. number of variables
+         mY , //  3. the array of current concentrations
+         &mTime , //  4. the current time
+         &EndTime , //  5. the final time
+         &one , //  6. scalar error control
+         &mRtol , //  7. relative tolerance array
+         &mAtol , //  8. absolute tolerance array
+         &mState , //  9. output by overshoot & interpolatation
+         &mLsodaStatus , // 10. the state control variable
+         &one , // 11. futher options (one)
+         mDWork.array() , // 12. the double work array
+         &DSize , // 13. the double work array size
+         mIWork.array() , // 14. the int work array
+         &ISize , // 15. the int work array size
+         NULL , // 16. evaluate J (not given)
          &mJType);        // 17. the type of jacobian calculate (2)
 
   if (mLsodaStatus == -1) mLsodaStatus = 2;
@@ -506,7 +506,7 @@ void CHybridMethodLSODA::integrateDeterministicPart(C_FLOAT64 deltaT)
 
   for (react = mFirstReactionFlag; react != NULL; react = react->mpNext)
     {
-      const std::set <C_INT32> & dependents = mDG.getDependents(react->mIndex);
+      const std::set <unsigned C_INT32> & dependents = mDG.getDependents(react->mIndex);
       std::copy(dependents.begin(), dependents.end(),
                 std::inserter(mUpdateSet, mUpdateSet.begin()));
     }
@@ -598,7 +598,7 @@ void CHybridMethodLSODA::fireReaction(C_INT32 rIndex)
     }
 
   // insert all dependent reactions into the mUpdateSet
-  const std::set <C_INT32> & dependents = mDG.getDependents(rIndex);
+  const std::set <unsigned C_INT32> & dependents = mDG.getDependents(rIndex);
   std::copy(dependents.begin(), dependents.end(),
             std::inserter(mUpdateSet, mUpdateSet.begin()));
 

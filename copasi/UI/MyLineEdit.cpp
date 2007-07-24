@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/MyLineEdit.cpp,v $
-   $Revision: 1.10 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/08/25 18:19:25 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/MyLineEdit.cpp,v $
+//   $Revision: 1.11 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/07/24 18:40:20 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -59,7 +59,7 @@ void MyLineEdit::slotReturnPressed()
 void MyLineEdit::slotForceUpdate()
 {process();}
 
-void MyLineEdit::slotTextChanged(const QString & text)
+void MyLineEdit::slotTextChanged(const QString & /* text */)
 {
   updateColor();
 }

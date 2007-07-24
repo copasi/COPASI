@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodLevenbergMarquardt.cpp,v $
-   $Revision: 1.10 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/11/15 15:57:16 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodLevenbergMarquardt.cpp,v $
+//   $Revision: 1.11 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/07/24 18:40:22 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -64,8 +64,8 @@ bool COptMethodLevenbergMarquardt::optimise()
   C_INT one = 1;
 
   unsigned C_INT32 i;
-  C_FLOAT64 tmp, LM_lambda, nu, convp, convx;
-  bool calc_grad, calc_hess;
+  C_FLOAT64 LM_lambda, nu, convp, convx;
+  bool calc_hess;
   nrhs = 1;
 
   dim = (C_INT) mVariableSize;

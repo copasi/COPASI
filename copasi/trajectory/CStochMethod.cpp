@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-//   $Revision: 1.63 $
+//   $Revision: 1.64 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/05/15 13:46:08 $
+//   $Date: 2007/07/24 18:40:24 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -387,9 +387,9 @@ C_INT32 CStochMethod::updateSystemState(C_INT32 rxn)
     }
   else
     {
-      const std::set<C_INT32> & dep_nodes = mDG.getDependents(rxn);
+      const std::set<unsigned C_INT32> & dep_nodes = mDG.getDependents(rxn);
 
-      std::set<C_INT32>::const_iterator it;
+      std::set<unsigned C_INT32>::const_iterator it;
       unsigned int ii;
       for (it = dep_nodes.begin(); it != dep_nodes.end(); it++)
         {

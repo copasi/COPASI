@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeOperator.cpp,v $
-   $Revision: 1.26 $
-   $Name:  $
-   $Author: nsimus $
-   $Date: 2006/08/15 11:40:44 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeOperator.cpp,v $
+//   $Revision: 1.27 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/07/24 18:40:21 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -439,9 +439,9 @@ CEvaluationNode* CEvaluationNodeOperator::simplifyNode(CEvaluationNode *child1, 
                   // easier to recognize a negative exponent.
                   int exp;
                   if (fabs(child2->value() - floor(child2->value())) < 1.0E-100)
-                    exp = floor(child2->value());
+                    exp = (int) floor(child2->value());
                   else
-                    exp = floor(child2->value()) + 1;
+                    exp = (int) floor(child2->value()) + 1;
 
                   CEvaluationNode* newpower = CEvaluationNode::create((Type)(OPERATOR | POWER), "^");
                   CEvaluationNode* newchild1 = dynamic_cast<CEvaluationNode*>(child1->getChild())->copyBranch();

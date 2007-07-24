@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SensitivitiesWidget.cpp,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/07/11 22:27:54 $
+//   $Author: shoops $
+//   $Date: 2007/07/24 18:40:20 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -73,7 +73,7 @@ void SensWidgetComboBox::fillFromList(const std::vector<CObjectLists::ListType> 
 
 CObjectLists::ListType SensWidgetComboBox::getCurrentObjectList() const
   {
-    int index = currentItem();
+    unsigned int index = currentItem();
     if (index < mIndexTable.size())
       return mIndexTable[currentItem()];
     else

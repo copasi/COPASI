@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/qtUtilities.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/16 19:55:37 $
+//   $Date: 2007/07/24 18:40:20 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -71,6 +71,9 @@ QString getParameterValue(const CCopasiParameterGroup * group,
 
     case CCopasiParameter::INVALID:
       return QString::fromUtf8("INVALID");
+      break;
+
+    default:
       break;
     }
 
@@ -146,6 +149,9 @@ bool setParameterValue(CCopasiParameterGroup * group,
     case CCopasiParameter::GROUP:
     case CCopasiParameter::INVALID:
       return false;
+      break;
+
+    default:
       break;
     }
 

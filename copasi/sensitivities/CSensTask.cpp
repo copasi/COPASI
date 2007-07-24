@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensTask.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/04/09 18:56:14 $
+//   $Date: 2007/07/24 18:40:23 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -102,7 +102,7 @@ bool CSensTask::process(const bool & /* useInitialValues */)
   return (success);
 }
 
-std::ostream &operator<<(std::ostream &os, const CSensTask &A)
+std::ostream &operator<<(std::ostream &os, const CSensTask & /* A */)
 {
   return os;
 }

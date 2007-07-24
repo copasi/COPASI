@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSA.cpp,v $
-   $Revision: 1.13 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/11/15 15:57:16 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSA.cpp,v $
+//   $Revision: 1.14 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/07/24 18:40:22 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -59,7 +59,7 @@ bool COptMethodSA::optimise()
 
   unsigned C_INT32 i, j, k, m;
 
-  C_INT32 h, a;
+  unsigned C_INT32 h, a;
   C_FLOAT64 xc, p, c, nt, New;
   C_FLOAT64 fk[STORED];
   bool ready;

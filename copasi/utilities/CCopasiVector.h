@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiVector.h,v $
-//   $Revision: 1.74 $
+//   $Revision: 1.75 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/05/31 15:36:15 $
+//   $Author: shoops $
+//   $Date: 2007/07/24 18:40:22 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -620,7 +620,7 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
        */
       const value_type & operator[](const std::string &name) const
         {
-          C_INT32 Index = getIndex(name);
+          unsigned C_INT32 Index = getIndex(name);
 
           if (Index == C_INVALID_INDEX)
             CCopasiMessage(CCopasiMessage::EXCEPTION,

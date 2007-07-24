@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.cpp,v $
-//   $Revision: 1.29 $
+//   $Revision: 1.30 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/05/15 12:36:11 $
+//   $Date: 2007/07/24 18:40:23 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -167,6 +167,9 @@ bool CReactionInterface::loadMappingAndValues(const CReaction & rea)
               pObj = dynamic_cast<const CModelValue*>(GlobalKeys.get(*(it->begin())));
               //assert(pObj);
               if (pObj) SubList[0] = pObj->getObjectName();
+              break;
+
+            default:
               break;
             }
         }
@@ -457,6 +460,9 @@ bool CReactionInterface::isLocked(CFunctionParameter::Role usage) const
       case CFunctionParameter::VOLUME:
         return mpModel->getCompartments().size() <= 1;
         break;
+
+      default:
+        break;
       }
     return false;
   }
@@ -545,6 +551,9 @@ void CReactionInterface::copyMapping()
           //TODO: check existence?
           mNameMap[i] = oldMap[j];
           break;
+
+        default:
+          break;
         }
     }
 
@@ -588,6 +597,9 @@ void CReactionInterface::connectNonMetabolites()
 
         case CFunctionParameter::TIME:
           mNameMap[i][0] = mpModel->getObjectName();
+          break;
+
+        default:
           break;
         }
     }
@@ -683,6 +695,9 @@ void CReactionInterface::setMapping(unsigned C_INT32 index, std::string mn)
       assert(!isVector(index));
       mNameMap[index][0] = mn;
       updateModifiersInChemEq();
+      break;
+
+    default:
       break;
     }
 }

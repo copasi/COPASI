@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSRES.cpp,v $
-   $Revision: 1.6 $
-   $Name:  $
-   $Author: ssahle $
-   $Date: 2006/11/27 15:52:41 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSRES.cpp,v $
+//   $Revision: 1.7 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/07/24 18:40:22 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -539,9 +539,8 @@ bool COptMethodSRES::initialize()
 
       try
         {
-          C_FLOAT64 tmp =
-            mMaxVariance[i] =
-              (*OptItem.getUpperBoundValue() - *OptItem.getLowerBoundValue()) / sqrt(double(mVariableSize));
+          mMaxVariance[i] =
+            (*OptItem.getUpperBoundValue() - *OptItem.getLowerBoundValue()) / sqrt(double(mVariableSize));
         }
       catch (...)
         {
@@ -588,7 +587,7 @@ bool COptMethodSRES::cleanup()
 }
 
 // evaluate the distance of parameters and constraints to boundaries
-C_FLOAT64 COptMethodSRES::phi(C_INT32 indivNum)
+C_FLOAT64 COptMethodSRES::phi(C_INT32 /* indivNum */)
 {
   C_FLOAT64 phiVal = 0.0;
   C_FLOAT64 phiCalc;

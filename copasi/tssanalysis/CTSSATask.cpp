@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSATask.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2007/04/12 12:47:49 $
+//   $Author: shoops $
+//   $Date: 2007/07/24 18:40:26 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -152,8 +152,6 @@ bool CTSSATask::process(const bool & useInitialValues)
   processStart(useInitialValues);
 
   //*****
-
-  unsigned C_INT32 FailCounter = 0;
 
   C_FLOAT64 StepSize = mpTSSAProblem->getStepSize();
   C_FLOAT64 NextTimeToReport;

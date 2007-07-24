@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeCall.cpp,v $
-   $Revision: 1.20 $
-   $Name:  $
-   $Author: nsimus $
-   $Date: 2006/08/15 11:39:31 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeCall.cpp,v $
+//   $Revision: 1.21 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/07/24 18:40:21 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -231,14 +231,14 @@ std::string CEvaluationNodeCall::getDisplay_C_String(const CEvaluationTree * pTr
     return DisplayString + ")";
   }
 
-std::string CEvaluationNodeCall::getDisplay_MMD_String(const CEvaluationTree * pTree) const
+std::string CEvaluationNodeCall::getDisplay_MMD_String(const CEvaluationTree * /* pTree */) const
   {
     std::string DisplayString = mData;
 
     return DisplayString;
   }
 
-std::string CEvaluationNodeCall::getDisplay_XPP_String(const CEvaluationTree * pTree) const
+std::string CEvaluationNodeCall::getDisplay_XPP_String(const CEvaluationTree * /* pTree */) const
   {
     std::string DisplayString = mData;
 

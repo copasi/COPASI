@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMMethod.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/07/12 15:10:59 $
+//   $Author: shoops $
+//   $Date: 2007/07/24 18:40:26 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -176,9 +176,6 @@ void CILDMMethod::integrationStep(const double & deltaT)
   C_INT DSize = mDWork.size();
   C_INT ISize = mIWork.size();
 
-  C_INT i;
-  C_INT dim = mData.dim;
-
   mLSODA(&EvalF, //  1. evaluate F
          &mData.dim, //  2. number of variables
          mY, //  3. the array of current concentrations
@@ -240,7 +237,7 @@ void CILDMMethod::step(const double & deltaT)
   std::cout << mJacobian << std::endl;
 
   std::cout << "Current concentrations" << std::endl;
-  for (i = 0; i < mpModel->getMetabolites().size(); ++i)
+  for (i = 0; (unsigned C_INT32) i < mpModel->getMetabolites().size(); ++i)
     std::cout << mpModel->getMetabolites()[i]->getConcentration() << ", ";
   std::cout << std::endl;
 
@@ -284,7 +281,7 @@ void CILDMMethod::step(const double & deltaT)
   std::cout << mJacobian << std::endl;
 
   std::cout << "Current concentrations" << std::endl;
-  for (i = 0; i < mpModel->getMetabolites().size(); ++i)
+  for (i = 0; (unsigned C_INT32) i < mpModel->getMetabolites().size(); ++i)
     std::cout << mpModel->getMetabolites()[i]->getConcentration() << ", ";
   std::cout << std::endl;
 
@@ -574,7 +571,7 @@ integration:
   std::cout << mJacobian << std::endl;
 
   std::cout << "Current concentrations" << std::endl;
-  for (i = 0; i < mpModel->getMetabolites().size(); ++i)
+  for (i = 0; (unsigned C_INT32) i < mpModel->getMetabolites().size(); ++i)
     std::cout << mpModel->getMetabolites()[i]->getConcentration() << ", ";
   std::cout << std::endl;
 

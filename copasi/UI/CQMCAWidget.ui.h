@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMCAWidget.ui.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/05/15 12:36:53 $
+//   $Date: 2007/07/24 18:40:20 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -66,7 +66,7 @@ bool CQMCAWidget::runTask()
   return success;
 }
 
-CCopasiMethod * CQMCAWidget::createMethod(const CCopasiMethod::SubType & type)
+CCopasiMethod * CQMCAWidget::createMethod(const CCopasiMethod::SubType & /* type */)
 {return new CMCAMethod;}
 
 bool CQMCAWidget::loadTask()

@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeConstant.cpp,v $
-   $Revision: 1.22 $
-   $Name:  $
-   $Author: ssahle $
-   $Date: 2007/01/08 14:57:08 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeConstant.cpp,v $
+//   $Revision: 1.23 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/07/24 18:40:21 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -235,9 +235,9 @@ ASTNode* CEvaluationNodeConstant::toAST() const
 #include "utilities/copasimathml.h"
 
 void CEvaluationNodeConstant::writeMathML(std::ostream & out,
-    const std::vector<std::vector<std::string> > & env,
-    bool expand,
-    unsigned C_INT32 l) const
+    const std::vector<std::vector<std::string> > & /* env */,
+    bool /* expand */,
+    unsigned C_INT32 /* l */) const
   {
     SubType subType = (SubType)CEvaluationNode::subType(this->getType());
 

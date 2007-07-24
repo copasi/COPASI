@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CMassAction.cpp,v $
-//   $Revision: 1.37 $
+//   $Revision: 1.38 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/04/10 16:48:44 $
+//   $Date: 2007/07/24 18:40:21 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -160,7 +160,8 @@ bool CMassAction::compile()
 
 void CMassAction::writeMathML(std::ostream & out,
                               const std::vector<std::vector<std::string> > & env,
-                              bool expand, bool fullExpand,
+                              bool /* expand */,
+                              bool /* fullExpand */,
                               unsigned C_INT32 l) const
   {
     bool rev = (isReversible() == TriTrue);

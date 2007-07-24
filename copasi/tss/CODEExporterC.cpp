@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporterC.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2007/01/18 12:13:48 $
+//   $Author: shoops $
+//   $Date: 2007/07/24 18:40:24 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -453,7 +453,7 @@ bool CODEExporterC::exportSingleParameter(const CCopasiParameter* param, std::st
   return true;
 }
 
-bool CODEExporterC::exportKineticFunction(CReaction* reac)
+bool CODEExporterC::exportKineticFunction(CReaction* /* reac */)
 {return true;}
 
 bool CODEExporterC::exportKineticFunctionGroup (const CModel* copasiModel)

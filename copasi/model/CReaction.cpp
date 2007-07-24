@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-//   $Revision: 1.167 $
+//   $Revision: 1.168 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/03/09 10:03:22 $
+//   $Author: shoops $
+//   $Date: 2007/07/24 18:40:23 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -105,7 +105,6 @@ bool CReaction::setObjectParent(const CCopasiContainer * pParent)
 {
   bool success = CCopasiContainer::setObjectParent(pParent);
 
-  CModel * pModel = (CModel *) getObjectAncestor("Model");
   CCopasiObject * pObject;
 
   pObject =
@@ -765,8 +764,6 @@ void CReaction::setScalingFactor()
 
 void CReaction::initObjects()
 {
-  CModel * pModel = (CModel *) getObjectAncestor("Model");
-
   mpFluxReference =
     static_cast<CCopasiObjectReference<C_FLOAT64> *>(addObjectReference("Flux", mFlux, CCopasiObject::ValueDbl));
   mpFluxReference->setRefresh(this, &CReaction::calculate);
@@ -1188,7 +1185,6 @@ bool CReaction::setFunctionFromExpressionTree(CEvaluationTree* tree, std::map<CC
           while (it != endIt)
             {
               CFunctionParameter* pFunPar = it->second.second;
-              CCopasiObject* pObject = it->second.first;
               std::string id = it->first;
               this->setParameterMapping(pFunPar->getObjectName(), it->second.first->getKey());
               delete pFunPar;

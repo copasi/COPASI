@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-//   $Revision: 1.113 $
+//   $Revision: 1.114 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/05/15 12:36:11 $
+//   $Date: 2007/07/24 18:40:23 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -272,6 +272,9 @@ void CMetab::setStatus(const CModelEntity::Status & status)
       mpConcRateReference->setDirectDependencies(Dependencies);
       mpConcRateReference->setRefresh(this, &CMetab::refreshConcentrationRate);
       break;
+
+    default:
+      break;
     }
 
   if (mpModel && mpCompartment) refreshConcentration();
@@ -314,37 +317,43 @@ bool CMetab::compile()
 
       mRateVector.clear();
 
-      CCopasiVectorN< CReaction >::const_iterator it = mpModel->getReactions().begin();
-      CCopasiVectorN< CReaction >::const_iterator end = mpModel->getReactions().end();
+      {
+        CCopasiVectorN< CReaction >::const_iterator it = mpModel->getReactions().begin();
+        CCopasiVectorN< CReaction >::const_iterator end = mpModel->getReactions().end();
 
-      for (; it != end; ++it)
-        {
-          const CCopasiVector< CChemEqElement > &Balances =
-            (*it)->getChemEq().getBalances();
-          CCopasiVector< CChemEqElement >::const_iterator itChem = Balances.begin();
-          CCopasiVector< CChemEqElement >::const_iterator endChem = Balances.end();
+        for (; it != end; ++it)
+          {
+            const CCopasiVector< CChemEqElement > &Balances =
+              (*it)->getChemEq().getBalances();
+            CCopasiVector< CChemEqElement >::const_iterator itChem = Balances.begin();
+            CCopasiVector< CChemEqElement >::const_iterator endChem = Balances.end();
 
-          for (; itChem != endChem; ++itChem)
-            if ((*itChem)->getMetaboliteKey() == mKey)
-              break;
+            for (; itChem != endChem; ++itChem)
+              if ((*itChem)->getMetaboliteKey() == mKey)
+                break;
 
-          if (itChem != endChem)
-            {
-              Dependencies.insert((*it)->getObject(CCopasiObjectName("Reference=ParticleFlux")));
+            if (itChem != endChem)
+              {
+                Dependencies.insert((*it)->getObject(CCopasiObjectName("Reference=ParticleFlux")));
 
-              std::pair< C_FLOAT64, const C_FLOAT64 * > Insert;
-              Insert.first = (*itChem)->getMultiplicity();
-              Insert.second = &(*it)->getParticleFlux();
+                std::pair< C_FLOAT64, const C_FLOAT64 * > Insert;
+                Insert.first = (*itChem)->getMultiplicity();
+                Insert.second = &(*it)->getParticleFlux();
 
-              mRateVector.push_back(Insert);
-            }
-        }
+                mRateVector.push_back(Insert);
+              }
+          }
+      }
 
       mpRateReference->setRefresh(this, &CMetab::refreshRate);
       mpRateReference->setDirectDependencies(Dependencies);
 
       mpTTReference->setRefresh(this, &CMetab::refreshTransitionTime);
       mpTTReference->setDirectDependencies(Dependencies);
+      break;
+
+    default:
+      break;
     }
 
   return true;
@@ -368,6 +377,9 @@ void CMetab::calculate()
     case REACTIONS:
       if (isDependent())
         *mpValueData = mpMoiety->getDependentNumber();
+      break;
+
+    default:
       break;
     }
 }
@@ -399,6 +411,9 @@ void CMetab::refreshRate()
         for (; it != end; ++it)
           mRate += it->first * *it->second;
       }
+      break;
+
+    default:
       break;
     }
 }
@@ -446,6 +461,9 @@ void CMetab::refreshTransitionTime()
         else
           mTT = *mpValueData / Flux;
       }
+      break;
+
+    default:
       break;
     }
 }

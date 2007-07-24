@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/24 13:25:47 $
+//   $Date: 2007/07/24 18:40:20 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -66,14 +66,14 @@ QColor CColorScaleSimple::getColor(const C_FLOAT64 & number)
   else if (tmp < 0.5)
     {
       r = 255;
-      g = 255 + (tmp - 0.5) * 260;
-      b = 255 + (tmp - 0.5) * 260;
+      g = (int) (255 + (tmp - 0.5) * 260);
+      b = (int) (255 + (tmp - 0.5) * 260);
     }
   else
     {
-      r = 255 - (tmp - 0.5) * 260;
+      r = (int) (255 - (tmp - 0.5) * 260);
       g = 255;
-      b = 255 - (tmp - 0.5) * 260;
+      b = (int) (255 - (tmp - 0.5) * 260);
     }
 
   QColor color(r, g, b);
@@ -194,14 +194,14 @@ QColor CColorScaleBiLog::getColor(const C_FLOAT64 & number)
   else if (tmp < 0.5)
     {
       r = 255;
-      g = 255 + (tmp - 0.5) * 260;
-      b = 255 + (tmp - 0.5) * 260;
+      g = (int) (255 + (tmp - 0.5) * 260);
+      b = (int) (255 + (tmp - 0.5) * 260);
     }
   else
     {
-      r = 255 - (tmp - 0.5) * 260;
+      r = (int) (255 - (tmp - 0.5) * 260);
       g = 255;
-      b = 255 - (tmp - 0.5) * 260;
+      b = (int) (255 - (tmp - 0.5) * 260);
     }
 
   QColor color(r, g, b);

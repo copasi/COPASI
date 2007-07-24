@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.cpp,v $
-//   $Revision: 1.27 $
+//   $Revision: 1.28 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/15 17:30:49 $
+//   $Date: 2007/07/24 18:40:21 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -96,20 +96,20 @@ std::string CEvaluationNodeObject::getDisplayString(const CEvaluationTree * pTre
   }
 #endif
 
-std::string CEvaluationNodeObject::getDisplayString(const CEvaluationTree * pTree) const
+std::string CEvaluationNodeObject::getDisplayString(const CEvaluationTree * /* pTree */) const
 {return mData;}
 
-std::string CEvaluationNodeObject::getDisplay_C_String(const CEvaluationTree * pTree) const
+std::string CEvaluationNodeObject::getDisplay_C_String(const CEvaluationTree * /* pTree */) const
   {
     return mData;
   }
 
-std::string CEvaluationNodeObject::getDisplay_MMD_String(const CEvaluationTree * pTree) const
+std::string CEvaluationNodeObject::getDisplay_MMD_String(const CEvaluationTree * /* pTree */) const
   {
     return mData;
   }
 
-std::string CEvaluationNodeObject::getDisplay_XPP_String(const CEvaluationTree * pTree) const
+std::string CEvaluationNodeObject::getDisplay_XPP_String(const CEvaluationTree * /* pTree */) const
   {
     return mData;
   }
@@ -194,8 +194,8 @@ const CRegisteredObjectName & CEvaluationNodeObject::getObjectCN() const
 #include "utilities/copasimathml.h"
 
 void CEvaluationNodeObject::writeMathML(std::ostream & out,
-                                        const std::vector<std::vector<std::string> > & env,
-                                        bool expand,
+                                        const std::vector<std::vector<std::string> > & /* env */,
+                                        bool /* expand */,
                                         unsigned C_INT32 l) const
   {
     const CCopasiObject* obj = CCopasiContainer::ObjectFromName(mRegisteredObjectCN);

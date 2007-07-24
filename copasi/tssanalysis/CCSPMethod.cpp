@@ -1,14 +1,16 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CCSPMethod.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2007/04/12 12:47:49 $
+//   $Author: shoops $
+//   $Date: 2007/07/24 18:40:26 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+
+#include <math.h>
 
 #include "copasi.h"
 
@@ -173,22 +175,22 @@ void CCSPMethod::integrationStep(const double & deltaT)
   C_INT DSize = mDWork.size();
   C_INT ISize = mIWork.size();
 
-  mLSODA(&EvalF,          //  1. evaluate F
-         &mData.dim,      //  2. number of variables
-         mY,              //  3. the array of current concentrations
-         &mTime,          //  4. the current time
-         &EndTime,        //  5. the final time
-         &ITOL,           //  6. error control
-         &mRtol,          //  7. relative tolerance array
-         mAtol.array(),   //  8. absolute tolerance array
-         &mState,         //  9. output by overshoot & interpolatation
-         &mLsodaStatus,   // 10. the state control variable
-         &one,            // 11. futher options (one)
-         mDWork.array(),  // 12. the double work array
-         &DSize,          // 13. the double work array size
-         mIWork.array(),  // 14. the int work array
-         &ISize,          // 15. the int work array size
-         NULL,            // 16. evaluate J (not given)
+  mLSODA(&EvalF, //  1. evaluate F
+         &mData.dim, //  2. number of variables
+         mY, //  3. the array of current concentrations
+         &mTime, //  4. the current time
+         &EndTime, //  5. the final time
+         &ITOL, //  6. error control
+         &mRtol, //  7. relative tolerance array
+         mAtol.array(), //  8. absolute tolerance array
+         &mState, //  9. output by overshoot & interpolatation
+         &mLsodaStatus, // 10. the state control variable
+         &one, // 11. futher options (one)
+         mDWork.array(), // 12. the double work array
+         &DSize, // 13. the double work array size
+         mIWork.array(), // 14. the int work array
+         &ISize, // 15. the int work array size
+         NULL, // 16. evaluate J (not given)
          &mJType);        // 17. the type of jacobian calculate (2)
 
   if (mLsodaStatus == -1) mLsodaStatus = 2;
@@ -836,7 +838,7 @@ void CCSPMethod::map_index(C_FLOAT64 *eval_r, C_INT *index,
   for (i = 0; i < dim; i++)
     {
       index[i] = 0;
-      abs_eval_r[i] = abs(eval_r[i]);
+      abs_eval_r[i] = fabs(eval_r[i]);
     }
 
   count = dim;
@@ -1002,7 +1004,7 @@ void CCSPMethod::cspstep0(C_INT & n, C_INT & m, CMatrix< C_FLOAT64 > & A, CMatri
     {
       eigen[i] = SCHUR(n - 1 - i, n - 1 - i);
 
-      tsc[i] = 1. / abs(eigen[i]);
+      tsc[i] = 1. / fabs(eigen[i]);
     }
 
 #ifdef CSP_DEBUG
@@ -1431,7 +1433,7 @@ void CCSPMethod::fastModesDetection(C_INT & n, C_INT & m, C_FLOAT64 & tisc, CMat
     {
       eigen[i] = SCHUR(n - 1 - i, n - 1 - i);
 
-      tsc[i] = 1. / abs(eigen[i]);
+      tsc[i] = 1. / fabs(eigen[i]);
     }
 
 #ifdef CSP_DEBUG

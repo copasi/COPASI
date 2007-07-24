@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CObjectLists.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/04/03 12:24:36 $
+//   $Author: shoops $
+//   $Date: 2007/07/24 18:40:23 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -324,6 +324,9 @@ CObjectLists::getListOfObjects(ListType t, const CModel* model)
         for (it = l2.begin(); it != l2.end(); ++it) ret.push_back(*it);
         //TODO extend to compartments
       }
+      break;
+
+    default:
       break;
     }
 

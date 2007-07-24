@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.cpp,v $
-   $Revision: 1.30 $
-   $Name:  $
-   $Author: ssahle $
-   $Date: 2007/01/09 13:43:23 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.cpp,v $
+//   $Revision: 1.31 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/07/24 18:40:22 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -149,7 +149,7 @@ CCopasiParameter & CCopasiParameter::operator = (const CCopasiParameter & rhs)
 }
 const std::string & CCopasiParameter::getKey() const {return mKey;}
 
-bool CCopasiParameter::setValue(const std::vector< CCopasiParameter * > & value)
+bool CCopasiParameter::setValue(const std::vector< CCopasiParameter * > & /* value */)
 {
   fatalError();
   return false;

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-//   $Revision: 1.48 $
+//   $Revision: 1.49 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/20 13:35:56 $
+//   $Date: 2007/07/24 18:40:25 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -537,7 +537,7 @@ void CopasiPlot::updateCurves(const unsigned C_INT32 & activity, const bool & do
   unsigned C_INT32 k, kmax = mCurves.size();
 
   for (k = 0; k < kmax; k++)
-    if (mCurveActivities[k] == activity)
+    if ((unsigned C_INT32) mCurveActivities[k] == activity)
       {
         std::vector< QMemArray< double > * > & data = mData[activity];
         unsigned C_INT32 & ndata = mDataSize[activity];

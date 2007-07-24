@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQFittingItemWidget.ui.h,v $
-//   $Revision: 1.28 $
+//   $Revision: 1.29 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/13 19:56:56 $
+//   $Date: 2007/07/24 18:40:20 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,6 +25,10 @@
 #include "parameterFitting/CExperiment.h"
 #include "parameterFitting/CExperimentSet.h"
 #include "utilities/utility.h"
+
+#ifndef COPASI_CROSSVALIDATION
+# define pCrossValidationMap
+#endif // not COPASI_CROSSVALIDATION
 
 void CQFittingItemWidget::init()
 {
@@ -363,7 +367,9 @@ void CQFittingItemWidget::slotExperiments()
     }
 }
 
-bool CQFittingItemWidget::load(CCopasiParameterGroup * pItems, const std::map<std::string, std::string> * pExperimentMap, const std::map<std::string, std::string> * pCrossValidationMap)
+bool CQFittingItemWidget::load(CCopasiParameterGroup * pItems,
+                               const std::map<std::string, std::string> * pExperimentMap,
+                               const std::map<std::string, std::string> * pCrossValidationMap)
 {
   mpItems = pItems;
   mSelection.clear();
@@ -614,8 +620,7 @@ bool CQFittingItemWidget::save(const std::map<std::string, std::string> * pExper
 
       if (mItemType == FIT_ITEM || mItemType == FIT_CONSTRAINT)
         {
-          if (pExperimentMap == NULL ||
-              pCrossValidationMap == NULL) return false;
+          if (pExperimentMap == NULL) return false;
 
           unsigned C_INT32 j, jmax =
             static_cast<CFitItem *>(pItem)->getExperimentCount();
@@ -854,7 +859,7 @@ void CQFittingItemWidget::slotDown()
   std::set< unsigned int >::reverse_iterator end = mSelection.rend();
   COptItem * pItem;
 
-  if (*it == mpTable->numRows() - 1)
+  if (*it == (unsigned int) (mpTable->numRows() - 1))
     ++it; // The last row can not be moved down.
 
   for (; it != end; ++it)
@@ -906,6 +911,8 @@ void CQFittingItemWidget::slotDuplicatePerExperiment()
         case FIT_CONSTRAINT:
           pTemplate = new CFitConstraint(*(*mpItemsCopy)[*mSelection.begin()]);
           break;
+        default:
+          break;
         }
 
       // Remove all experiments from the template
@@ -922,6 +929,8 @@ void CQFittingItemWidget::slotDuplicatePerExperiment()
               break;
             case FIT_CONSTRAINT:
               pItem = new CFitConstraint(*pTemplate);
+              break;
+            default:
               break;
             }
 
@@ -1581,9 +1590,9 @@ void CQFittingItemWidget::slotCrossValidationChanged()
   return;
 }
 
+#ifdef COPASI_CROSSVALIDATION
 void CQFittingItemWidget::setCrossValidationSet(const CCrossValidationSet * & pCrossValidationSet)
 {
-#ifdef COPASI_CROSSVALIDATION
   mppCrossValidationSet = &pCrossValidationSet;
 
   bool Enabled = (*mppCrossValidationSet)->getExperimentCount() != 0;
@@ -1592,8 +1601,8 @@ void CQFittingItemWidget::setCrossValidationSet(const CCrossValidationSet * & pC
   mpCheckCrossValidationsAll->setEnabled(Enabled);
   mpBoxCrossValidations->setEnabled(Enabled && !mpCheckCrossValidationsAll->isChecked());
   mpLblCrossValidations->setEnabled(Enabled);
-#endif // COPASI_CROSSVALIDATION
 }
+#endif // COPASI_CROSSVALIDATION
 
 void CQFittingItemWidget::slotCheckAllCrossValidations(bool checked)
 {
