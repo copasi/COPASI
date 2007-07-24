@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLReactionGlyph.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/03/02 15:22:21 $
+//   $Date: 2007/07/24 19:17:12 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,6 +33,19 @@ const std::string CLMetabReferenceGlyph::RoleName[] =
     "activator",
     "inhibitor"
     ""
+  };
+
+const char* CLMetabReferenceGlyph::XMLRole[] =
+  {
+    "undefinedRole",
+    "substrate",
+    "product",
+    "sideSubstrate",
+    "sideProduct",
+    "modifier",
+    "activator",
+    "inhibitor",
+    NULL
   };
 
 CLMetabReferenceGlyph::CLMetabReferenceGlyph(const std::string & name,

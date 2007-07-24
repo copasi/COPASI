@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLReactionGlyph.h,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/03/02 14:51:32 $
+//   $Date: 2007/07/24 19:17:12 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -156,7 +156,7 @@ class CLReactionGlyph : public CLGraphicalObject
       {return mvMetabReferences;};
 
     /**
-     *  add Glyph to layout. The layout takes ownership of the glyph.
+     *  add Glyph to reaction glyph. The reaction glyph takes ownership of the glyph.
      */
     void addMetabReferenceGlyph(CLMetabReferenceGlyph * glyph);
 
