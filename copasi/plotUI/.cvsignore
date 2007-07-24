@@ -1,3 +1,7 @@
 auto
 moc_*.cpp
 Makefile
+curve2dwidget.cpp
+HistoWidget.h
+HistoWidget.cpp
+curve2dwidget.h
