@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.142 $
+//   $Revision: 1.143 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/04/09 18:56:13 $
+//   $Author: ssahle $
+//   $Date: 2007/07/24 09:45:07 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -980,6 +980,11 @@ class CModel : public CModelEntity
      * @return std::set< const CCopasiObject * > & upToDateObjects
      */
     std::set< const CCopasiObject * > & getUpToDateObjects();
+    const std::set< const CCopasiObject * > & getUpToDateObjects() const;
+
+    const std::vector< Refresh * > & getListOfSimulatedRefreshes() const; //mSimulatedRefreshes;
+    const std::vector< Refresh * > & getListOfConstantRefreshes() const; //mConstantRefreshes;
+    const std::vector< Refresh * > & getListOfNonSimulatedRefreshes() const; //mNonSimulatedRefreshes;
 
     /**
      * Check whether the model contains reversible reactions

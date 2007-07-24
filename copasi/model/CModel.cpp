@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.303 $
+//   $Revision: 1.304 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/07/10 08:46:00 $
+//   $Date: 2007/07/24 09:45:07 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -379,6 +379,9 @@ bool CModel::compile()
   if (mpCompileHandler) mpCompileHandler->finish(hCompileStep);
 
   mCompileIsNecessary = false;
+
+  //writeDependenciesToDotFile();
+
   return true;
 }
 
@@ -992,6 +995,9 @@ CStateTemplate & CModel::getStateTemplate()
 
 std::set< const CCopasiObject * > & CModel::getUpToDateObjects()
 {CCHECK return mSimulatedUpToDateObjects;}
+
+const std::set< const CCopasiObject * > & CModel::getUpToDateObjects() const
+  {return mSimulatedUpToDateObjects;}
 
 bool CModel::setTitle(const std::string &title)
 {
@@ -3100,3 +3106,12 @@ bool CModel::isAutonomous() const
 
     return true;
   }
+
+const std::vector< Refresh * > & CModel::getListOfSimulatedRefreshes() const
+  {return mSimulatedRefreshes;}
+
+const std::vector< Refresh * > & CModel::getListOfConstantRefreshes() const
+  {return mConstantRefreshes;}
+
+const std::vector< Refresh * > & CModel::getListOfNonSimulatedRefreshes() const
+  {return mNonSimulatedRefreshes;}
