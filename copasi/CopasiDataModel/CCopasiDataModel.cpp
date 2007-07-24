@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.99 $
+//   $Revision: 1.100 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/07/24 13:25:47 $
+//   $Author: ssahle $
+//   $Date: 2007/07/24 15:35:22 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -351,9 +351,10 @@ bool CCopasiDataModel::saveModel(const std::string & fileName, CProcessReport* p
   XML.setTaskList(*mpTaskList);
   XML.setReportList(*mpReportDefinitionList);
   XML.setPlotList(*mpPlotDefinitionList);
-  //TODO: layouts
   XML.setGUI(*mpGUI);
-
+#ifdef WITH_LAYOUT
+  XML.setLayoutList(*mpListOfLayouts);
+#endif //WITH_LAYOUT
   bool success = true;
 
   if (!autoSave)
