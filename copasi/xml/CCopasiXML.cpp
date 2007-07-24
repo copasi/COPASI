@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-//   $Revision: 1.91 $
+//   $Revision: 1.92 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/02/28 10:34:39 $
+//   $Author: ssahle $
+//   $Date: 2007/07/24 15:35:05 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -44,6 +44,10 @@
 #include "plot/COutputDefinitionVector.h"
 #include "plot/CPlotItem.h"
 
+#ifdef WITH_LAYOUT
+#include "layout/CListOfLayouts.h"
+#endif
+
 // class CCopasiTask;
 // class CCopasiReport;
 
@@ -55,6 +59,9 @@ CCopasiXML::CCopasiXML():
     mpReportList(NULL),
     mpPlotList(NULL),
     mpGUI(NULL)
+#ifdef WITH_LAYOUT
+    , mpLayoutList(NULL)
+#endif
 {
   mVersion.setVersion(COPASI_XML_VERSION_MAJOR,
                       COPASI_XML_VERSION_MINOR,
@@ -109,6 +116,9 @@ bool CCopasiXML::save(std::ostream & os,
   if (!saveReportList()) success = false;
   if (!savePlotList()) success = false;
   if (!saveGUI()) success = false;
+#ifdef WITH_LAYOUT
+  if (!saveLayoutList()) success = false;
+#endif //WITH_LAYOUT
   if (!saveSBMLReference()) success = false;
 
   endSaveElement("COPASI");
@@ -137,6 +147,7 @@ bool CCopasiXML::load(std::istream & is,
   Parser.setTaskList(mpTaskList);
   Parser.setPlotList(mpPlotList);
   Parser.setGUI(mpGUI);
+  //TODO
 
 #define BUFFER_SIZE 0xfffe
   char * pBuffer = new char[BUFFER_SIZE + 1];
@@ -168,6 +179,7 @@ bool CCopasiXML::load(std::istream & is,
       mpReportList = Parser.getReportList();
       mpTaskList = Parser.getTaskList();
       mpPlotList = Parser.getPlotList();
+      //TODO
     }
 
   if (FileVersion.getVersionDevel() > mVersion.getVersionDevel())
@@ -232,6 +244,8 @@ bool CCopasiXML::freeTaskList()
   return true;
 }
 
+//************
+
 bool CCopasiXML::setPlotList(const COutputDefinitionVector & plotList)
 {
   mpPlotList = const_cast<COutputDefinitionVector *>(&plotList);
@@ -249,6 +263,8 @@ bool CCopasiXML::freePlotList()
   pdelete(mpPlotList);
   return true;
 }
+
+//************
 
 bool CCopasiXML::setReportList(const CReportDefinitionVector & reportList)
 {
@@ -268,6 +284,8 @@ bool CCopasiXML::freeReportList()
   return true;
 }
 
+//************
+
 bool CCopasiXML::setGUI(const SCopasiXMLGUI & GUI)
 {
   mpGUI = const_cast<SCopasiXMLGUI *>(&GUI);
@@ -283,6 +301,28 @@ bool CCopasiXML::freeGUI()
   pdelete(mpGUI);
   return true;
 }
+
+//************
+
+#ifdef WITH_LAYOUT
+bool CCopasiXML::setLayoutList(const CListOfLayouts & layoutList)
+{
+  mpLayoutList = const_cast<CListOfLayouts *>(&layoutList);
+  return true;
+}
+
+CListOfLayouts * CCopasiXML::getLayoutList() const
+  {return mpLayoutList;}
+
+bool CCopasiXML::haveLayoutList() const
+  {return mpLayoutList != NULL;}
+
+bool CCopasiXML::freeLayoutList()
+{
+  pdelete(mpLayoutList);
+  return true;
+}
+#endif
 
 bool CCopasiXML::saveModel()
 {
@@ -976,6 +1016,186 @@ bool CCopasiXML::saveReportList()
 
   return success;
 }
+
+#ifdef WITH_LAYOUT
+void CCopasiXML::savePosition(const CLPoint& p)
+{
+  CXMLAttributeList Attributes;
+  Attributes.erase();
+  Attributes.add("x", p.getX());
+  Attributes.add("y", p.getY());
+  saveElement("Position", Attributes);
+}
+
+void CCopasiXML::saveDimensions(const CLDimensions& d)
+{
+  CXMLAttributeList Attributes;
+  Attributes.erase();
+  Attributes.add("width", d.getWidth());
+  Attributes.add("height", d.getHeight());
+  saveElement("Dimensions", Attributes);
+}
+
+void CCopasiXML::saveBoundingBox(const CLBoundingBox& bb)
+{
+  startSaveElement("BoundingBox");
+  savePosition(bb.getPosition());
+  saveDimensions(bb.getDimensions());
+  endSaveElement("BoundingBox");
+}
+
+bool CCopasiXML::saveLayoutList()
+{
+  bool success = true;
+  if (!haveLayoutList()) return success;
+
+  unsigned C_INT32 i, imax = mpLayoutList->size();
+  if (!imax) return success;
+
+  CXMLAttributeList Attributes;
+  CLayout * pLayout = NULL;
+
+  startSaveElement("ListOfLayouts");
+
+  for (i = 0; i < imax; i++)
+    {
+      pLayout = (*mpLayoutList)[i];
+
+      Attributes.erase();
+      Attributes.add("key", pLayout->getKey());
+      Attributes.add("name", pLayout->getObjectName());
+      startSaveElement("Layout", Attributes);
+
+      Attributes.erase();
+      Attributes.add("width", pLayout->getDimensions().getWidth());
+      Attributes.add("height", pLayout->getDimensions().getHeight());
+      saveElement("Dimensions", Attributes);
+
+      unsigned C_INT32 j, jmax;
+
+      //compartment glyphs
+      if (pLayout->getListOfCompartmentGlyphs().size() > 0)
+        {
+          startSaveElement("ListOfCompartmentGlyphs");
+
+          jmax = pLayout->getListOfCompartmentGlyphs().size();
+          for (j = 0; j < jmax; ++j)
+            {
+              CLCompartmentGlyph* cg = pLayout->getListOfCompartmentGlyphs()[j];
+              Attributes.erase();
+              Attributes.add("key", cg->getKey());
+              Attributes.add("name", cg->getObjectName());
+              Attributes.add("compartment", cg->getModelObjectKey());
+              startSaveElement("CompartmentGlyph", Attributes);
+
+              saveBoundingBox(cg->getBoundingBox());
+
+              endSaveElement("CompartmentGlyph");
+            }
+          endSaveElement("ListOfCompartmentGlyphs");
+        }
+
+      //species glyphs
+      if (pLayout->getListOfMetaboliteGlyphs().size() > 0)
+        {
+          startSaveElement("ListOfMetabGlyphs");
+
+          jmax = pLayout->getListOfMetaboliteGlyphs().size();
+          for (j = 0; j < jmax; ++j)
+            {
+              CLMetabGlyph* cg = pLayout->getListOfMetaboliteGlyphs()[j];
+              Attributes.erase();
+              Attributes.add("key", cg->getKey());
+              Attributes.add("name", cg->getObjectName());
+              Attributes.add("metabolite", cg->getModelObjectKey());
+              startSaveElement("MetaboliteGlyph", Attributes);
+
+              saveBoundingBox(cg->getBoundingBox());
+
+              endSaveElement("MetaboliteGlyph");
+            }
+          endSaveElement("ListOfMetabGlyphs");
+        }
+
+      //reaction glyphs
+      if (pLayout->getListOfReactionGlyphs().size() > 0)
+        {
+          startSaveElement("ListOfReactionGlyphs");
+
+          jmax = pLayout->getListOfReactionGlyphs().size();
+          for (j = 0; j < jmax; ++j)
+            {
+              CLReactionGlyph* cg = pLayout->getListOfReactionGlyphs()[j];
+              Attributes.erase();
+              Attributes.add("key", cg->getKey());
+              Attributes.add("name", cg->getObjectName());
+              Attributes.add("reaction", cg->getModelObjectKey());
+              startSaveElement("ReactionGlyph", Attributes);
+
+              //TODO
+              saveBoundingBox(cg->getBoundingBox());
+
+              endSaveElement("ReactionGlyph");
+            }
+          endSaveElement("ListOfReactionGlyphs");
+        }
+
+      //text Glyphs
+      if (pLayout->getListOfTextGlyphs().size() > 0)
+        {
+          startSaveElement("ListOfTextGlyphs");
+
+          jmax = pLayout->getListOfTextGlyphs().size();
+          for (j = 0; j < jmax; ++j)
+            {
+              CLTextGlyph* cg = pLayout->getListOfTextGlyphs()[j];
+              Attributes.erase();
+              Attributes.add("key", cg->getKey());
+              Attributes.add("name", cg->getObjectName());
+              Attributes.add("graphicalObject", cg->getGraphicalObjectKey());
+              if (cg->isTextSet())
+                Attributes.add("originOfText", cg->getModelObjectKey());
+              else
+                Attributes.add("text", cg->getText());
+
+              startSaveElement("TextGlyph", Attributes);
+
+              saveBoundingBox(cg->getBoundingBox());
+
+              endSaveElement("TextGlyph");
+            }
+          endSaveElement("ListOfTextGlyphs");
+        }
+
+      //additional graphical objects
+      if (pLayout->getListOfGraphicalObjects().size() > 0)
+        {
+          startSaveElement("ListOfAdditionalGraphicalObjects");
+
+          jmax = pLayout->getListOfGraphicalObjects().size();
+          for (j = 0; j < jmax; ++j)
+            {
+              CLGraphicalObject* cg = pLayout->getListOfGraphicalObjects()[j];
+              Attributes.erase();
+              Attributes.add("key", cg->getKey());
+              Attributes.add("name", cg->getObjectName());
+              startSaveElement("AdditionalGraphicalObject", Attributes);
+
+              saveBoundingBox(cg->getBoundingBox());
+
+              endSaveElement("AdditionalGraphicalObject");
+            }
+          endSaveElement("ListOfAdditionalGraphicalObjects");
+        }
+
+      endSaveElement("Layout");
+    }
+
+  endSaveElement("ListOfLayouts");
+
+  return success;
+}
+#endif //WITH_LAYOUT
 
 bool CCopasiXML::saveGUI()
 {

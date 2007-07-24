@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.h,v $
-   $Revision: 1.15 $
-   $Name:  $
-   $Author: gauges $
-   $Date: 2006/10/15 08:31:12 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.h,v $
+//   $Revision: 1.16 $
+//   $Name:  $
+//   $Author: ssahle $
+//   $Date: 2007/07/24 15:35:05 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -24,6 +24,18 @@
 
 #include "xml/CCopasiXMLInterface.h"
 #include "utilities/CVersion.h"
+
+class CModel;
+class CEvaluationTree;
+class CCopasiTask;
+class CReportDefinitionVector;
+class COutputDefinitionVector;
+#ifdef WITH_LAYOUT
+class CListOfLayouts;
+class CLPoint;
+class CLDimensions;
+class CLBoundingBox;
+#endif
 
 class CCopasiParameter;
 class CCopasiParameterGroup;
@@ -218,6 +230,34 @@ class CCopasiXML : public CCopasiXMLInterface
      * @return bool success
      */
     bool freeGUI();
+
+#ifdef WITH_LAYOUT
+    /**
+     * Set the layout list.
+     * @param const CListOfLayouts & reportList
+     * @return bool success
+     */
+    bool setLayoutList(const CListOfLayouts & reportList);
+
+    /**
+     * Retreive the layout list.
+     * @return CListOfLayouts * layoutList
+     */
+    CListOfLayouts * getLayoutList() const;
+
+    /**
+     * Retreive whether the XML contains a layout list.
+     * @return bool haveLayoutList
+     */
+    bool haveLayoutList() const;
+
+    /**
+     * Free the layout list.
+     * @return bool success
+     */
+    bool freeLayoutList();
+#endif
+
   private:
     /**
      * Save the model.
@@ -254,6 +294,20 @@ class CCopasiXML : public CCopasiXMLInterface
      * @return bool success
      */
     bool saveGUI();
+
+#ifdef WITH_LAYOUT
+    /**
+     * Save the list of reports.
+     * @return bool success
+     */
+    bool saveLayoutList();
+
+    void savePosition(const CLPoint& p);
+
+    void saveDimensions(const CLDimensions& d);
+
+    void saveBoundingBox(const CLBoundingBox& bb);
+#endif
 
     /**
      * Save the SBML reference information
@@ -318,6 +372,14 @@ class CCopasiXML : public CCopasiXMLInterface
      * The ownership is handed to the user.
      */
     SCopasiXMLGUI * mpGUI;
+
+#ifdef WITH_LAYOUT
+    /**
+     * Pointer to a vector of plots which has been loaded or is to be saved.
+     * The ownership is handed to the user.
+     */
+    CListOfLayouts * mpLayoutList;
+#endif
 
     /**
      * SBML Reference
