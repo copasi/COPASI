@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.h,v $
-   $Revision: 1.32 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/09/15 12:28:29 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.h,v $
+//   $Revision: 1.33 $
+//   $Name:  $
+//   $Author: ssahle $
+//   $Date: 2007/07/24 15:34:22 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -27,17 +27,11 @@
 
 #include "copasi.h"
 
-class CModel;
 template <class CType> class CCopasiVector;
 template <class CType> class CCopasiVectorN;
-class CEvaluationTree;
-class CCopasiTask;
-class CReportDefinitionVector;
 class CXMLAttributeList;
-class COutputDefinitionVector;
 class CSlider;
 class CCopasiParameter;
-class CCopasiParameterGroup;
 
 /**
  * The class CCopasiXMLInterface specifies an interface to various XML formats
