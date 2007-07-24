@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/objectdebug.ui.h,v $
-//   $Revision: 1.28 $
+//   $Revision: 1.29 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/07/17 21:17:08 $
+//   $Date: 2007/07/24 09:51:04 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -182,54 +182,11 @@ void ObjectDebug::init()
 //   std::cout << std::endl;
 //}
 
+#include "model/CDotOutput.h"
+
 void ObjectDebug::writeDot()
 {
-  CCopasiObject * obj;
 
-  obj = (CCopasiObject*)CCopasiContainer::Root;
-  if (!obj) return;
-
-  std::ofstream os;
-  os.open("CopasiDependencies.dot", std::ios::out);
-
-  os << "digraph G {\n";
-
-  writeDotRecursively((void*)obj, os);
-
-  os << "}" << std::endl;
-}
-
-void ObjectDebug::writeDotRecursively(void * ptr, std::ostream & os)
-{
-  CCopasiObject* obj = (CCopasiObject*)ptr;
-
-  std::set< const CCopasiObject * >::const_iterator it, itEnd = obj->getDirectDependencies().end();
-  //std::cout << pO->getObjectName() <<  pO->getValueReference()->getDirectDependencies().size() << std::endl;
-  for (it = obj->getDirectDependencies().begin(); it != itEnd; ++it)
-    {
-      os << "\"" << obj->getObjectDisplayName() << "\" -> \"" << (*it)->getObjectDisplayName() << "\"\n";
-    }
-
-  if (obj->isContainer())
-    {
-      CCopasiContainer* container;
-      container = (CCopasiContainer*)obj;
-
-      CCopasiContainer::objectMap::const_iterator it = container->getObjects().begin();
-      // int cnt = container->getObjects().size();
-
-      for (; it != container->getObjects().end(); ++it)
-        {
-          //the next line skips name references...
-          if (it->second->getObjectName() == "Name") continue;
-
-          if (it->second->getObjectType() == "Function") continue;
-
-          //skip if the contained object is not owned by this container
-          if (it->second->getObjectParent() != container) continue;
-
-          writeDotRecursively((void*)it->second, os);
-        }
-      //return;
-    }
+  CDotOutput dot;
+  dot.simpleCall();
 }

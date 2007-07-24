@@ -13,7 +13,7 @@
 /****************************************************************************
  ** Form interface generated from reading ui file 'objectdebug.ui'
  **
- ** Created: Di Jul 17 22:13:19 2007
+ ** Created: Fr Jul 20 17:43:14 2007
  **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.7   edited Aug 31 2005 $)
  **
  ** WARNING! All changes made in this file will be lost!
@@ -60,7 +60,6 @@ class ObjectDebug : public QDialog
   private:
     void addObjectRecursive(QWidget * parent, void * ptr);
     void init();
-    virtual void writeDotRecursively(void * ptr, std::ostream & os);
   };
 
 #endif // OBJECTDEBUG_H

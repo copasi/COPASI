@@ -1,10 +1,10 @@
 <!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <comment> Begin CVS Header </comment>
-<comment>   $Source: /home/cvs/copasi_dev/cvs_admin/addHeader,v $ </comment>
+<comment>   $Source: /home/cvs/copasi_dev/copasi/UI/objectdebug.ui,v $ </comment>
 <comment>   $Revision: 1.4 $ </comment>
 <comment>   $Name:  $ </comment>
-<comment>   $Author: shoops $ </comment>
-<comment>   $Date: 2007/05/31 18:21:38 $ </comment>
+<comment>   $Author: ssahle $ </comment>
+<comment>   $Date: 2007/07/17 21:17:08 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -115,7 +115,6 @@
 <functions>
     <function access="private" specifier="non virtual">addObjectRecursive( QWidget * parent, void * ptr )</function>
     <function access="private" specifier="non virtual">init()</function>
-    <function access="private">writeDotRecursively( void * ptr, std::ostream &amp; os )</function>
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

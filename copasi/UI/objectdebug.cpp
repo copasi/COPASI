@@ -13,7 +13,7 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'objectdebug.ui'
  **
- ** Created: Di Jul 17 22:15:15 2007
+ ** Created: Fr Jul 20 17:43:14 2007
  **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.7   edited Aug 31 2005 $)
  **
  ** WARNING! All changes made in this file will be lost!
