@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.304 $
+//   $Revision: 1.305 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/07/24 09:45:07 $
+//   $Author: shoops $
+//   $Date: 2007/07/24 13:25:47 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -111,6 +111,7 @@ CModel::CModel():
   initObjects();
 
   setStatus(TIME);
+  setUsed(true);
 
   *mpIValue = 0.0;
   *mpValueAccess = std::numeric_limits<C_FLOAT64>::quiet_NaN();
@@ -332,6 +333,8 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
 
 bool CModel::compile()
 {
+  mpValueReference->addDirectDependency(this);
+
   CMatrix< C_FLOAT64 > LU;
 
   unsigned C_INT32 CompileStep = 0;
@@ -2375,6 +2378,30 @@ bool CModel::removeReaction(const std::string & key,
   if (!pReaction)
     return false;
 
+  if (recursive)
+    {
+      /* Before deleting  delete all the objects that are dependent */
+      std::set< const CCopasiObject * > ToBeDeleted;
+      std::set< const CCopasiObject * >::const_iterator it, end;
+
+      // We need to build the list first and then delete to avoid
+      // crashes in the appendDependent... methods caused by the deletion.
+      appendDependentReactions(pReaction->getDeletedObjects(), ToBeDeleted);
+      appendDependentMetabolites(pReaction->getDeletedObjects(), ToBeDeleted);
+      appendDependentCompartments(pReaction->getDeletedObjects(), ToBeDeleted);
+      appendDependentModelValues(pReaction->getDeletedObjects(), ToBeDeleted);
+
+      for (it = ToBeDeleted.begin(), end = ToBeDeleted.end(); it != end; ++it)
+        if (dynamic_cast< const CReaction *>(*it) != NULL)
+          removeReaction((*it)->getKey(), false);
+        else if (dynamic_cast< const CMetab *>(*it) != NULL)
+          removeMetabolite((*it)->getKey(), false);
+        else if (dynamic_cast< const CCompartment *>(*it) != NULL)
+          removeCompartment((*it)->getKey(), false);
+        else
+          removeModelValue((*it)->getKey(), false);
+    }
+
   //Check if Reaction exists
   unsigned C_INT32 index =
     mSteps.CCopasiVector< CReaction >::getIndex(pReaction);
@@ -3091,20 +3118,14 @@ void CModel::buildLinkZero()
 
 bool CModel::isAutonomous() const
   {
-    const CKinFunction * pFunction;
+    std::set< const CCopasiObject * > TimeDependent;
 
-    std::vector< CReaction * >::const_iterator it = getReactions().begin();
-    std::vector< CReaction * >::const_iterator end = getReactions().end();
+    appendDependentReactions(getDeletedObjects(), TimeDependent);
+    appendDependentMetabolites(getDeletedObjects(), TimeDependent);
+    appendDependentCompartments(getDeletedObjects(), TimeDependent);
+    appendDependentModelValues(getDeletedObjects(), TimeDependent);
 
-    for (; it != end; ++it)
-      if ((pFunction =
-             dynamic_cast<const CKinFunction * >((*it)->getFunction())) != NULL &&
-          pFunction->getVariables().getNumberOfParametersByUsage(CFunctionParameter::TIME))
-        {
-          return false;
-        }
-
-    return true;
+    return (TimeDependent.begin() == TimeDependent.end());
   }
 
 const std::vector< Refresh * > & CModel::getListOfSimulatedRefreshes() const

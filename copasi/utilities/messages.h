@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.93 $
+//   $Revision: 1.94 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/06/20 10:21:15 $
+//   $Author: shoops $
+//   $Date: 2007/07/24 13:25:52 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -235,6 +235,8 @@ const MESSAGES Messages[] =
     {MCFitting + 9, "CFitting (9): Experiment '%s' has no data rows."},
     {MCFitting + 10, "CFitting (10): Experiment '%s' has no dependent data."},
     {MCFitting + 11, "CFitting (11): Missing independent data for Experiment '%s' in row '%d'."},
+    {MCFitting + 12, "CFitting (12): The Fisher information matrix is singular. Therefore, the "
+     "correlation matrix can not be calculated."},
 
     // CCopasiObject
     {MCObject + 1, "CObject (1): Circular dependencies detected for object '%s'."},

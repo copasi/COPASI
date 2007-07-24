@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.168 $
+//   $Revision: 1.169 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/06/20 10:21:42 $
+//   $Author: shoops $
+//   $Date: 2007/07/24 13:25:50 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1294,8 +1294,7 @@ CModel* SBMLImporter::readSBML(std::string filename,
   std::ifstream file(utf8ToLocale(filename).c_str());
   if (!file)
     {
-      CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 50, filename.c_str());
-      return NULL;
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 50, filename.c_str());
     }
   std::ostringstream stringStream;
   char c;
@@ -1350,12 +1349,13 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
       sbmlDoc->validate();
       if (sbmlDoc->getNumFatals() > 0)
         {
-          ParseMessage * pSBMLMessage = sbmlDoc->getFatal(1);
-          if (pSBMLMessage->getMessage() != "This file probably contains a model of an unsupported SBML version.")
+          ParseMessage * pSBMLMessage = sbmlDoc->getFatal(0);
+          /*
+          if (pSBMLMessage && pSBMLMessage->getMessage() != "This file probably contains a model of an unsupported SBML version.")
             {
               pSBMLMessage = sbmlDoc->getFatal(0);
             }
-
+          */
           CCopasiMessage Message(CCopasiMessage::RAW, MCXML + 2,
                                  pSBMLMessage->getLine(),
                                  pSBMLMessage->getColumn(),
@@ -2167,6 +2167,10 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const 
                         }
                     }
                 }
+              else
+                {
+                  v = new std::vector<CEvaluationNodeObject*>;
+                }
             }
         }
       else
@@ -2748,7 +2752,7 @@ bool SBMLImporter::removeUnusedFunctions(CFunctionDB* pTmpFunctionDB, std::map<C
       if (mpImportHandler)
         {
           step = 0;
-          totalSteps = iMax;
+          totalSteps = iMax + this->mpCopasiModel->getCompartments().size() + this->mpCopasiModel->getMetabolites().size() + this->mpCopasiModel->getModelValues().size();
           hStep = mpImportHandler->addItem("Searching used functions...",
                                            CCopasiParameter::UINT,
                                            & step,
@@ -2766,6 +2770,76 @@ bool SBMLImporter::removeUnusedFunctions(CFunctionDB* pTmpFunctionDB, std::map<C
           ++step;
           if (mpImportHandler && !mpImportHandler->progress(hStep)) return false;
         }
+
+      iMax = this->mpCopasiModel->getCompartments().size();
+      for (i = 0;i < iMax;++i)
+        {
+          CModelEntity* pME = this->mpCopasiModel->getCompartments()[i];
+          if (pME->getStatus() != CModelEntity::FIXED)
+            {
+              const CEvaluationTree* pTree = pME->getExpressionPtr();
+              if (pTree != NULL)
+                {
+                  this->findFunctionCalls(pTree->getRoot(), functionNameSet);
+                }
+            }
+          if (pME->getStatus() != CModelEntity::ASSIGNMENT)
+            {
+              const CEvaluationTree* pTree = pME->getInitialExpressionPtr();
+              if (pTree != NULL)
+                {
+                  this->findFunctionCalls(pTree->getRoot(), functionNameSet);
+                }
+            }
+          ++step;
+        }
+
+      iMax = this->mpCopasiModel->getMetabolites().size();
+      for (i = 0;i < iMax;++i)
+        {
+          CModelEntity* pME = this->mpCopasiModel->getMetabolites()[i];
+          if (pME->getStatus() != CModelEntity::FIXED)
+            {
+              const CEvaluationTree* pTree = pME->getExpressionPtr();
+              if (pTree != NULL)
+                {
+                  this->findFunctionCalls(pTree->getRoot(), functionNameSet);
+                }
+            }
+          if (pME->getStatus() != CModelEntity::ASSIGNMENT)
+            {
+              const CEvaluationTree* pTree = pME->getInitialExpressionPtr();
+              if (pTree != NULL)
+                {
+                  this->findFunctionCalls(pTree->getRoot(), functionNameSet);
+                }
+            }
+          ++step;
+        }
+
+      iMax = this->mpCopasiModel->getModelValues().size();
+      for (i = 0;i < iMax;++i)
+        {
+          CModelEntity* pME = this->mpCopasiModel->getModelValues()[i];
+          if (pME->getStatus() != CModelEntity::FIXED)
+            {
+              const CEvaluationTree* pTree = pME->getExpressionPtr();
+              if (pTree != NULL)
+                {
+                  this->findFunctionCalls(pTree->getRoot(), functionNameSet);
+                }
+            }
+          if (pME->getStatus() != CModelEntity::ASSIGNMENT)
+            {
+              const CEvaluationTree* pTree = pME->getInitialExpressionPtr();
+              if (pTree != NULL)
+                {
+                  this->findFunctionCalls(pTree->getRoot(), functionNameSet);
+                }
+            }
+          ++step;
+        }
+
       CFunctionDB* pFunctionDB = CCopasiDataModel::Global->getFunctionList();
       if (mpImportHandler)
         {

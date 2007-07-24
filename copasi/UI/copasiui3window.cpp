@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.196 $
+//   $Revision: 1.197 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/07/12 00:44:30 $
+//   $Author: shoops $
+//   $Date: 2007/07/24 13:25:47 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -61,6 +61,18 @@ extern const char * CopasiLicense;
 #include "./icons/Copasi16-Alpha.xpm"
 
 #define AutoSaveInterval 10*60*1000
+
+// This is a hack to enable the menus under Darwin on PowerPC (Bug 841)
+#ifdef Darwin
+# define resetMenus \
+{\
+ QMessageBox * pMessage = new QMessageBox(this); \
+ pMessage->show(); \
+ delete pMessage; \
+}
+#else
+# define resetMenus
+#endif // DARWIN
 
 CopasiUI3Window * CopasiUI3Window::create()
 {
@@ -393,7 +405,8 @@ bool CopasiUI3Window::slotFileSaveAs(QString str)
               CCopasiMessage::clearDeque();
             }
         }
-      setCursor(oldCursor);
+      setCursor(oldCursor); resetMenus;
+
       refreshRecentFileMenu();
     }
 
@@ -525,7 +538,7 @@ void CopasiUI3Window::slotFileOpen(QString file)
         {
           success = false;
         }
-      setCursor(oldCursor);
+      setCursor(oldCursor); resetMenus;
 
       if (!success)
         {
@@ -645,7 +658,7 @@ bool CopasiUI3Window::slotFileSave()
               CCopasiMessage::clearDeque();
             }
         }
-      setCursor(oldCursor);
+      setCursor(oldCursor); resetMenus;
     }
 
   refreshRecentFileMenu();
@@ -863,7 +876,7 @@ void CopasiUI3Window::importSBMLFromString(const std::string& sbmlDocumentText)
           success = false;
         }
 
-      setCursor(oldCursor);
+      setCursor(oldCursor); resetMenus;
 
       if (!success)
         {
@@ -962,7 +975,7 @@ void CopasiUI3Window::slotImportSBML(QString file)
           success = false;
         }
 
-      setCursor(oldCursor);
+      setCursor(oldCursor); resetMenus;
 
       if (!success)
         {
@@ -1075,13 +1088,13 @@ void CopasiUI3Window::slotExportSBML()
       catch (CCopasiException except)
         {
           success = false;
-          setCursor(oldCursor);
+          setCursor(oldCursor); resetMenus;
           CQMessageBox::critical(this, QString("File Error"),
                                  QString("Error. Could not export file ") + tmp + QString("!"),
                                  QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
         }
 
-      setCursor(oldCursor);
+      setCursor(oldCursor); resetMenus;
 
       if (!success)
         {
@@ -1161,7 +1174,7 @@ void CopasiUI3Window::slotExportMathModel()
               CCopasiMessage::clearDeque();
             }
         }
-      setCursor(oldCursor);
+      setCursor(oldCursor); resetMenus;
     }
 }
 
@@ -1359,13 +1372,13 @@ std::string CopasiUI3Window::exportSBMLToString()
       catch (CCopasiException except)
         {
           success = false;
-          setCursor(oldCursor);
+          setCursor(oldCursor); resetMenus;
           CQMessageBox::critical(this, QString("File Error"),
                                  QString("Error. Could not do SBML export!"),
                                  QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
         }
 
-      setCursor(oldCursor);
+      setCursor(oldCursor); resetMenus;
 
       if (!success)
         {

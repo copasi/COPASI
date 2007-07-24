@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-//   $Revision: 1.188 $
+//   $Revision: 1.189 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/04/02 17:58:34 $
+//   $Date: 2007/07/24 13:25:47 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -367,39 +367,162 @@ void ReactionsWidget1::slotBtnNewClicked()
 // Just added 5/18/04
 void ReactionsWidget1::slotBtnDeleteClicked()
 {
-  if (CCopasiDataModel::Global->getModel())
+  CModel * pModel = CCopasiDataModel::Global->getModel();
+  if (pModel == NULL)
+    return;
+
+  CReaction * pReaction =
+    dynamic_cast< CReaction * >(GlobalKeys.get(objKey));
+  if (pReaction == NULL) return;
+
+  QString reactionList = "Are you sure you want to delete listed REACTION(S) ?\n";
+  QString effectedCompartmentList = "Following COMPARTMENT(S) reference above REACTION(S) and will be deleted -\n";
+  QString effectedMetabList = "Following METABOLITE(S) reference above REACTION(S) and will be deleted -\n";
+  QString effectedReacList = "Following REACTION(S) reference above REACTION(S) and will be deleted -\n";
+  QString effectedValueList = "Following MODEL VALUE(S) reference above REACTION(S) and will be deleted -\n";
+
+  bool compartmentFound = false;
+  bool metabFound = false;
+  bool reacFound = false;
+  bool valueFound = false;
+
+  reactionList.append(FROM_UTF8(pReaction->getObjectName()));
+  reactionList.append(", ");
+
+  std::set< const CCopasiObject * > Reactions;
+  pModel->appendDependentReactions(pReaction->getDeletedObjects(), Reactions);
+
+  if (Reactions.size() > 0)
     {
-      QString reacList = "Are you sure you want to delete the reaction?\n";
-      reacList.append(FROM_UTF8(mpRi->getReactionName()));
-
-      int choice = CQMessageBox::warning(this, "CONFIRM DELETE",
-                                         reacList,
-                                         "Continue", "Cancel", 0, 1, 1);
-
-      switch (choice)
+      reacFound = true;
+      std::set< const CCopasiObject * >::const_iterator it, itEnd = Reactions.end();
+      for (it = Reactions.begin(); it != itEnd; ++it)
         {
-        case 0:                                      // Yes or Enter
-          {
-            unsigned C_INT32 index = CCopasiDataModel::Global->getModel()->getReactions().getIndex(mpRi->getReactionName());
-
-            CCopasiDataModel::Global->getModel()->removeReaction(objKey);
-            unsigned C_INT32 size = CCopasiDataModel::Global->getModel()->getReactions().size();
-
-            mpRi->setFunctionWithEmptyMapping("");
-
-            if (size > 0)
-              enter(CCopasiDataModel::Global->getModel()->getReactions()[std::min(index, size - 1)]->getKey());
-            else
-              enter("");
-
-            protectedNotify(ListViews::REACTION, ListViews::DELETE, objKey);
-
-            break;
-          }
-
-        default:                                                    // No or Escape
-          break;
+          effectedReacList.append(FROM_UTF8((*it)->getObjectName()));
+          effectedReacList.append(", ");
         }
+
+      effectedReacList.remove(effectedReacList.length() - 2, 2);
+      effectedReacList.append("  ---> ");
+      effectedReacList.append(FROM_UTF8(pReaction->getObjectName()));
+      effectedReacList.append("\n");
+    }
+
+  std::set< const CCopasiObject * > Metabolites;
+  pModel->appendDependentMetabolites(pReaction->getDeletedObjects(), Metabolites);
+
+  if (Metabolites.size() > 0)
+    {
+      metabFound = true;
+      std::set< const CCopasiObject * >::const_iterator it, itEnd = Metabolites.end();
+      for (it = Metabolites.begin(); it != itEnd; ++it)
+        {
+          effectedMetabList.append(FROM_UTF8((*it)->getObjectName()));
+          effectedMetabList.append(", ");
+        }
+
+      effectedMetabList.remove(effectedMetabList.length() - 2, 2);
+      effectedMetabList.append("  ---> ");
+      effectedMetabList.append(FROM_UTF8(pReaction->getObjectName()));
+      effectedMetabList.append("\n");
+    }
+
+  std::set< const CCopasiObject * > Values;
+  pModel->appendDependentModelValues(pReaction->getDeletedObjects(), Values);
+
+  if (Values.size() > 0)
+    {
+      valueFound = true;
+      std::set< const CCopasiObject * >::const_iterator it, itEnd = Values.end();
+      for (it = Values.begin(); it != itEnd; ++it)
+        {
+          effectedValueList.append(FROM_UTF8((*it)->getObjectName()));
+          effectedValueList.append(", ");
+        }
+
+      effectedValueList.remove(effectedValueList.length() - 2, 2);
+      effectedValueList.append("  ---> ");
+      effectedValueList.append(FROM_UTF8(pReaction->getObjectName()));
+      effectedValueList.append("\n");
+    }
+
+  std::set< const CCopasiObject * > Compartments;
+  pModel->appendDependentCompartments(pReaction->getDeletedObjects(), Compartments);
+
+  if (Compartments.size() > 0)
+    {
+      compartmentFound = true;
+      std::set< const CCopasiObject * >::const_iterator it, itEnd = Compartments.end();
+      for (it = Compartments.begin(); it != itEnd; ++it)
+        {
+          effectedCompartmentList.append(FROM_UTF8((*it)->getObjectName()));
+          effectedCompartmentList.append(", ");
+        }
+
+      effectedCompartmentList.remove(effectedCompartmentList.length() - 2, 2);
+      effectedCompartmentList.append("  ---> ");
+      effectedCompartmentList.append(FROM_UTF8(pReaction->getObjectName()));
+      effectedCompartmentList.append("\n");
+    }
+
+  reactionList.remove(reactionList.length() - 2, 2);
+
+  QString msg = reactionList;
+
+  if (compartmentFound)
+    {
+      msg.append("\n \n");
+      msg.append(effectedCompartmentList);
+    }
+
+  if (metabFound)
+    {
+      msg.append("\n \n");
+      msg.append(effectedMetabList);
+    }
+
+  if (reacFound)
+    {
+      msg.append("\n \n");
+      msg.append(effectedReacList);
+    }
+
+  if (valueFound)
+    {
+      msg.append("\n \n");
+      msg.append(effectedValueList);
+    }
+
+  C_INT32 choice = 0;
+  if (metabFound || reacFound || valueFound || valueFound)
+    choice = CQMessageBox::question(this,
+                                    "CONFIRM DELETE",
+                                    msg,
+                                    "Continue", "Cancel", 0, 1, 1);
+
+  switch (choice)
+    {
+    case 0:                                                     // Yes or Enter
+      {
+        unsigned C_INT32 index
+        = CCopasiDataModel::Global->getModel()->getReactions().getIndex(mpRi->getReactionName());
+
+        CCopasiDataModel::Global->getModel()->removeReaction(objKey);
+        unsigned C_INT32 size
+        = CCopasiDataModel::Global->getModel()->getReactions().size();
+
+        mpRi->setFunctionWithEmptyMapping("");
+
+        if (size > 0)
+          enter(CCopasiDataModel::Global->getModel()->getReactions()[std::min(index, size - 1)]->getKey());
+        else
+          enter("");
+
+        protectedNotify(ListViews::REACTION, ListViews::DELETE, objKey);
+        break;
+      }
+    default:                                                     // No or Escape
+      break;
     }
 }
 

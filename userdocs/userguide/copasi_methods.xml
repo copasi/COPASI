@@ -1,10 +1,10 @@
 <chapter id="methods" xreflabel="Methods">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_methods.xml,v $ -->
-<!--   $Revision: 1.12 $ -->
+<!--   $Revision: 1.13 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: shoops $ -->
-<!--   $Date: 2007/04/11 16:12:39 $ -->
+<!--   $Date: 2007/07/24 13:25:56 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -101,33 +101,15 @@ Please note that best achievable relative tolerance is approximately
 </para>
 </listitem>
 </varlistentry>
-<varlistentry><term>Use Default Absolute Tolerance</term>
-<listitem>
-<para>
-This parameter is a boolean value to determine whether COPASI shall
-make a guess for the absolute tolerance. The absolute tolerance
-determines whether numbers are considered to be zero during
-calculation. Numbers with an absolute values less than the absolute
-tolerance are treated as zero. A value of '1' (the default) instructs
-COPASI to make a guess which can be found in the Absolute Tolerance
-parameter after calculation. When specifying a value of '0' one needs
-also to provide a value for the absolute tolerance.
-</para>
-</listitem>
-</varlistentry>
 <varlistentry><term>Absolute Tolerance</term>
 <listitem>
 <para>
-This parameter is a numeric value specifying the desired absolute
-tolerance the user wants to achieve or if Use Default Absolute
-Tolerance parameter is set '1' the value COPASI selected. Please note
-that COPASI internally calculates with particle numbers which might be
-quite large (<inlineequation><mml:math><mml:mn>1.0</mml:mn><mml:mo>*</mml:mo>
-<mml:msup><mml:mn>10</mml:mn><mml:mn>23</mml:mn></mml:msup></mml:math></inlineequation>)
-and therefore an absolute tolerance of 
+This parameter is a positive numeric value specifying the desired
+absolute tolerance the user wants to achieve. Please note that for
+metbolites the absolute tolerance is applied to the concentration
+value. The default value is
 <inlineequation><mml:math><mml:mn>1.0</mml:mn><mml:mo>*</mml:mo>
-<mml:msup><mml:mn>10</mml:mn><mml:mn>9</mml:mn></mml:msup></mml:math></inlineequation>
-is already small.
+<mml:msup><mml:mn>10</mml:mn><mml:mn>-12</mml:mn></mml:msup></mml:math></inlineequation>.
 </para>
 </listitem>
 </varlistentry>
@@ -167,8 +149,12 @@ next desired reporting time. The default value is '10000'.
 <sect3 id="NextReactionMethod" xreflabel="Next Reaction Method">
 <title>The Next-Reaction-Method</title>
 <para>
-This stochastic simulation method utilizes the algorithm developed by Gibson and Bruck (see <citation>Gibson00</citation> for details). For each reaction a putative stochastic reaction time is calculated and the reaction with the shortest reaction time will be realized. The set of reactions is organized in a priority queue to allow for the efficient search for the fastest reaction. In addition, by using a so-called dependency graph only those reaction times are recalculated in each step, that are dependent on the reaction, which has been realized. This simulation method requires all the reactions to be irreversibe. However, Copasi provides a tool, that converts all reversible reactions into irreversible ones. Because the algorithm internally works on discrete particle numbers rather than concentrations, the particle numbers in the system must not exceed a value of approximately <inlineequation><mml:math><mml:msup><mml:mn>2</mml:mn><mml:mn>64</mml:mn></mml:msup></mml:math></inlineequation>.
+This stochastic simulation method utilizes the algorithm developed by Gibson and Bruck (see <citation>Gibson00</citation> for details). For each reaction a putative stochastic reaction time is calculated and the reaction with the shortest reaction time will be realized. The set of reactions is organized in a priority queue to allow for the efficient search for the fastest reaction. In addition, by using a so-called dependency graph only those reaction times are recalculated in each step, that are dependent on the reaction, which has been realized. This simulation method requires all the reactions to be irreversible. However, COPASI provides a tool, that converts all reversible reactions into irreversible ones. Because the algorithm internally works on discrete particle numbers rather than concentrations, the particle numbers in the system must not exceed a value of approximately <inlineequation><mml:math><mml:msup><mml:mn>2</mml:mn><mml:mn>64</mml:mn></mml:msup></mml:math></inlineequation>.
 </para>
+<para>
+There is a restriction regarding global quantities: If a differential equation is provided for a global quantity (the quantity is of type "ode") the model cannot be simulated stochastically with the current version of COPASI. If the global quantity is of type "assignment" stochastic simulation is possible but not as efficient as for models without assignments. No restrictions apply for "fixed" global quantities.
+</para>
+
 
 <variablelist><title>Options for Stochastic (Gibson + Bruck)</title>
 <varlistentry><term>Max Internal Steps</term>
@@ -183,7 +169,7 @@ next desired reporting time. The default value is '1000000'.
 <varlistentry><term>Subtype</term>
 <listitem>
 <para>
-This parameter is ignored in the current version of Copasi.
+This parameter is ignored in the current version of COPASI.
 </para>
 </listitem>
 </varlistentry>
@@ -581,7 +567,7 @@ decide whether the current state is acceptable as a steady-state. If
 the absolute change of each state variable is smaller than the
 resolutions the state is accepted. The default is <inlineequation><mml:math>
 <mml:msup><mml:mn>10</mml:mn><mml:mn>-9</mml:mn></mml:msup></mml:math></inlineequation>.
-Note that this value is interpreted as a concentration value, even though the calculation internally uses particle numbers. The reason for that is purely heuristical: In many cases the modeler will choose the units in a way that concentration values are neither extremely large not extremely small numerically so that the default value for this parameter leads to useful results. However generally it is not save to just keep the default value without checking. 
+Note that this value is interpreted as a concentration value, even though the calculation internally uses particle numbers. The reason for that is purely heuristic: In many cases the modeler will choose the units in a way that concentration values are neither extremely large not extremely small numerically so that the default value for this parameter leads to useful results. However generally it is not save to just keep the default value without checking. 
 </para>
 </listitem>
 </varlistentry>
@@ -646,7 +632,7 @@ concentrations). It is defined <citation>Kacser73</citation>
 where A is the variable, i the step (enzyme) and v the steady-state
 rate of the perturbed step. The most common control coefficients are
 those for fluxes and metabolite concentrations, but any variable of
-the system can be analysed with MCA and have control coefficients
+the system can be analyzed with MCA and have control coefficients
 defined by equations analogous to equation 1. In fact, there is no
 need even for the system to be in a steady state. Gepasi only
 calculates directly the steady-state concentration- and flux-control
@@ -726,7 +712,7 @@ of the system's elements (steps).
 xreflabel="Enzyme Kinetics and the Elasticity Coefficients"> 
 <title>Enzyme Kinetics and the Elasticity Coefficients</title>
 <para>
-In enzyme kinetics the behaviour of isolated enzymes is studied
+In enzyme kinetics the behavior of isolated enzymes is studied
 through the dependence of the initial rates of reaction with the
 concentration of the substrate(s). Enzyme kinetic studies are centered
 on derivation of rate equations and the determination of their kinetic
@@ -789,7 +775,7 @@ written as:
 where v is the rate of the enzyme in question and p is the parameter
 of the perturbation. Each enzyme has as many elasticity coefficients
 as the number of parameters that affect it. One can immediately
-recognise the concentration of the reaction substrates, products and
+recognize the concentration of the reaction substrates, products and
 modifiers as parameters of the reaction. Unlike control coefficients,
 elasticity coefficients are not systemic properties but rather
 measure how isolated enzymes are sensitive to changes in their
@@ -920,14 +906,14 @@ perturbed metabolite.
 The connectivity theorems allow MCA to describe how perturbations on
 metabolites of a pathway propagate through the chain of enzymes. The
 local (kinetic) properties of each enzyme effectively propagate the
-perturbation to and from its immediate neighbours. 
+perturbation to and from its immediate neighbors. 
 </para>
 </sect2>
 
 <sect2 id="MCAScaling">
 <title>Scaling</title>
 <para>
-COPASI calculates (non-normalised) elasticity coefficients by
+COPASI calculates (non-normalized) elasticity coefficients by
 numerical derivation with finite differences. To calculate control
 coefficients from steady-state data, COPASI applies the method
 described in <citation>Reder88</citation>. This method works with the
@@ -1692,14 +1678,204 @@ random number generator. A value of zero instructs COPASI to select a
 </variablelist>
 </sect2>
 
+<sect2 id="NelderMead" xreflabel="Nelder - Mead">
+<title>Nelder - Mead</title>
+
+<para>
+This method also known as the simplex method is due to Nelder and Mead 
+<citation>Nelder65</citation>. A simplex is a polytope of
+<inlineequation><mml:math>
+  <mml:mrow>
+   <mml:mi>N</mml:mi>
+   <mml:mo>+</mml:mo>
+   <mml:mn>1</mml:mn>
+  </mml:mrow>
+</mml:math></inlineequation> vertices in
+<inlineequation><mml:math>
+  <mml:mrow>
+   <mml:mi>N</mml:mi>
+  </mml:mrow>
+</mml:math></inlineequation> dimensions. The objective function is 
+evaluated at each vertex. Dependent on these calculated values a new
+simplex is constructed.  The simplest step is to replace the worst
+point with a point reflected through the centroid of the remaining
+<inlineequation><mml:math>
+  <mml:mrow>
+   <mml:mi>N</mml:mi>
+  </mml:mrow>
+</mml:math></inlineequation>
+points. If this point is better than the best current point, then we
+can try stretching exponentially out along this line. On the other
+hand, if this new point isn't much better than the previous value then
+we are stepping across a valley, so we shrink the simplex towards the
+best point.
+</para>
+
+<variablelist><title>Options for Nelder - Mead</title>
+<varlistentry><term>Iteration Limit</term>
+<listitem>
+<para>
+This parameter is a positive integer to determine the maximum number of
+iterations the method is to perform. The default value is '200'.
+</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>Tolerance</term>
+<listitem>
+<para>
+This parameter is a positive number and provides an alternative
+termination criteria. If the variance of the values of the objective
+function at the vertices of the current simplex is smaller than the
+tolerance the algorithm stops. The default is '<inlineequation>
+ <mml:math>
+  <mml:mn>1.0</mml:mn>
+  <mml:mo>*</mml:mo>
+  <mml:msup>
+   <mml:mn>10</mml:mn>
+   <mml:mn>-5</mml:mn>
+  </mml:msup>
+ </mml:math>
+</inlineequation>'.
+</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>Scale</term>
+<listitem>
+<para>
+This parameter is a positive number and determines the size of the
+initial simplex. The edges of the polytope are inverse proportional to
+the scale, i.e., a larger value makes the initial simplex smaller. 
+The default is '10'.
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</sect2>
+
+<sect2 id="ParticleSwarm" xreflabel="Particle Swarm">
+<title>Particle Swarm</title>
+
+<para>
+The particle swarm optimization method suggested by Kennedy and
+Eberhart <citation>Kennedy95</citation> is inspired by a flock of
+birds or a school of fish searching for food. Each particle has a
+position <inlineequation><mml:math>
+  <mml:msub>
+   <mml:mi>X</mml:mi>
+   <mml:mi>i</mml:mi>
+  </mml:msub>
+</mml:math></inlineequation>
+and a velocity <inlineequation><mml:math>
+  <mml:msub>
+   <mml:mi>V</mml:mi>
+   <mml:mi>i</mml:mi>
+  </mml:msub>
+</mml:math></inlineequation>
+in the parameter space. Additionally, it remembers its best achieved
+objective value <inlineequation><mml:math>
+ <mml:mi>O</mml:mi>
+</mml:math></inlineequation> and position <inlineequation><mml:math>
+  <mml:msub>
+   <mml:mi>M</mml:mi>
+   <mml:mi>i</mml:mi>
+  </mml:msub>
+</mml:math></inlineequation>. Dependent on its own information and the
+position of its best neighbor (a random subset of particles of the
+swarm) a new velocity is calculated. With this information the
+position is updated. The pseudo code for the algorithm for each
+particle is:
+</para>
+<programlisting>
+  N =  best neighbor's position
+
+  for i = 0 to number of parameters do
+    R1 = uniform random number in [0, 1]
+    R2 = uniform random number in [0, 1]
+
+    V[i]= w * V[i]
+          + C * R1 * (M[i]- X[i])
+          + C * R2 * (N[i]- X[i])
+    X[i] = X[i] + V[i]
+  enddo
+
+  current_O = evaluate objective function
+
+  if current_O &lt; O then do
+    O = current_O
+    M = X
+  enddo
+</programlisting>
+
+<variablelist><title>Options for Particle Swarm</title>
+<varlistentry><term>Iteration Limit</term>
+<listitem>
+<para>
+This parameter is a positive integer to determine the maximum number of
+iterations the method is to perform. The default value is '2000'.
+</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>Swarm Size</term>
+<listitem>
+<para>
+This parameter is a positive integer specifying the number of
+particles in the swarm. The default value is '50'.
+</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>Std. Deviation</term>
+<listitem>
+<para>
+This parameter is a positive number and provides an alternative
+termination criteria. If the standard deviation of the
+values of the objective function of each particle and the standard
+deviation the best positions is smaller than the provided value the
+algorithm stops. The default value is '<inlineequation>
+ <mml:math>
+  <mml:mn>1.0</mml:mn>
+  <mml:mo>*</mml:mo>
+  <mml:msup>
+   <mml:mn>10</mml:mn>
+   <mml:mn>-6</mml:mn>
+  </mml:msup>
+ </mml:math>
+</inlineequation>'.
+</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>Random Number Generator</term>
+<listitem>
+<para>
+The parameter is an enumeration value to determine which random number
+generator this method shall use. COPASI provides two random number
+generators R250 <citation>Maier91</citation>
+ (selected through the value 0) and the
+<ulink url="http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/emt.html">Mersenne
+Twister </ulink><citation>Matsumoto98</citation>
+ (selected through the value 1 (default)).
+</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>Seed</term>
+<listitem>
+<para>
+The parameter is a positive integer value to determine the seed for the
+random number generator. A value of zero instructs COPASI to select a
+"random" value.
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</sect2>
+
 <sect2 id="RandomSearch" xreflabel="Random Search">
 <title>Random Search</title>
 
 <para>
-Random search is an optimisation method that attempts to find the
+Random search is an optimization method that attempts to find the
 optimum by testing the objective function's value on a series of
 combinations of random values of the adjustable parameters. The random
-vlues are generated complying with any boundaries selected by the
+values are generated complying with any boundaries selected by the
 user, furthermore, any combinations of parameter values that do not
 fulfill constraints on the variables are excluded. This means that the
 method is capable of handling bounds on the adjustable parameters and
@@ -1707,7 +1883,7 @@ fulfilling constraints.
 </para>
 
 <para>
-For infinite number of iterations this method is garanteed to find the
+For infinite number of iterations this method is guaranteed to find the
 global optimum of the objective function. In general one is interested
 in processing a very large number of iterations. 
 </para>
@@ -1716,7 +1892,7 @@ in processing a very large number of iterations.
 <varlistentry><term>Number of Iterations</term>
 <listitem>
 <para>
-This parameter is a positeve interger to determine the number of
+This parameter is a positive integer to determine the number of
 parameter sets to be drawn before the algorithm stops. The default
 value is '100000'.
 </para>
@@ -1884,7 +2060,7 @@ where the constraints are given by
   </mml:mrow>
 </mml:math></inlineequation>.
 The value <inlineequation><mml:math><mml:mo>&phi;</mml:mo></mml:math></inlineequation> is used within
-the selection, which is perfomred as described in <xref
+the selection, which is performed as described in <xref
 linkend="GeneticAlgorithmSR"/> 
 </para>
 
@@ -2102,7 +2278,7 @@ default is '0.85'.
 <varlistentry><term>Tolerance</term>
 <listitem>
 <para>
-Convergence stopping criterium: the method stops when the change in
+Convergence stopping criteria: the method stops when the change in
 the objective function has been smaller than this value in the last
 two temperature steps. The default is
 '<inlineequation><mml:math>
@@ -2147,7 +2323,7 @@ random number generator. A value of zero instructs COPASI to select a
 <title>Steepest Descent</title>
 
 <para>
-Steepest descent <citation>Fogel92</citation> is an optimisation
+Steepest descent <citation>Fogel92</citation> is an optimization
 method that follows the direction of steepest descent on the
 hyper-surface of the objective function to find a local minimum. The
 direction of steepest descent is defined by the negative of the
@@ -2186,25 +2362,25 @@ steps is less than the tolerance the algorithm stops. The default is
 <sect1 id="lyapunovExponentsMethod" xreflabel="Lyapunov exponents">
   <title>Lyapunov Exponents Calculation</title>
   <para>
-    Copasi allows the calculation of lyapunov exponents of a trajectory as well as the average divergence of the system. The exponents are calculated for the reduced system (see <xref linkend="deterministicModel" />), so the maximum number of exponents that can be calculated is the number of independent variables. If less than this number of exponents is requested, the largest exponents are calculated.
-    Copasi uses the well known algorithm proposed by Wolf et al. (<citation>Wolf85</citation>). This algorithm integrates one reference trajectory and simultanously <inlineequation><mml:math><mml:mi>N</mml:mi></mml:math></inlineequation> difference trajectories (if <inlineequation><mml:math><mml:mi>N</mml:mi></mml:math></inlineequation> is the number of exponents requested) in a system linearized around the reference trajectory. This integration is carried out for a short time interval (the "Orthonormalization interval", see below) and then the difference vectors are reorthonormalized. The exponents for this time interval are calculated from how much each of the difference trajectories converged or diverged from the reference trajectory during the interval. This calculation is repeated and the "local" exponents are averaged over the the whole trajectory.
+    COPASI allows the calculation of Lyapunov exponents of a trajectory as well as the average divergence of the system. The exponents are calculated for the reduced system (see <xref linkend="deterministicModel" />), so the maximum number of exponents that can be calculated is the number of independent variables. If less than this number of exponents is requested, the largest exponents are calculated.
+    COPASI uses the well known algorithm proposed by Wolf et al. (<citation>Wolf85</citation>). This algorithm integrates one reference trajectory and simultaneously <inlineequation><mml:math><mml:mi>N</mml:mi></mml:math></inlineequation> difference trajectories (if <inlineequation><mml:math><mml:mi>N</mml:mi></mml:math></inlineequation> is the number of exponents requested) in a system linearized around the reference trajectory. This integration is carried out for a short time interval (the "Orthonormalization interval", see below) and then the difference vectors are reorthonormalized. The exponents for this time interval are calculated from how much each of the difference trajectories converged or diverged from the reference trajectory during the interval. This calculation is repeated and the "local" exponents are averaged over the the whole trajectory.
   </para>
   <para>
-    The divergence is calculated (if requested) as the average of the trace of the jacobian. Although it is not numerically necessary the divergence is also calculated for the same short intervals that are used for the lyapunov exponents. This allows comparing the local values of the divergence with the local exponents.
+    The divergence is calculated (if requested) as the average of the trace of the Jacobian. Although it is not numerically necessary the divergence is also calculated for the same short intervals that are used for the Lyapunov exponents. This allows comparing the local values of the divergence with the local exponents.
   </para> 
   <para>
-    If you are only interested in the end result of the lyapunov exponents and the average divergence you can just use the default report that is provided by Copasi (or just look at the result in the GUI). If you want to have access to the "local" results for the single orthonormalization intervals however, you will have to define a plot or report manually. In this version of copasi you will need to used the "expert" feature of the object selection dialog to access the exponents. They are located in the "Lyapunov Exponents" branch under the "Task List" entry. Output takes place after each reorthonormalization interval. The output can contain each of the ten largest exponents, both the local value from the last interval and the and the average value of all intervals calculated so far. Correspondingly the divergence can be output both as an average over the last interval or as an average over the whole trajectory.
+    If you are only interested in the end result of the Lyapunov exponents and the average divergence you can just use the default report that is provided by COPASI (or just look at the result in the GUI). If you want to have access to the "local" results for the single orthonormalization intervals however, you will have to define a plot or report manually. In this version of COPASI you will need to used the "expert" feature of the object selection dialog to access the exponents. They are located in the "Lyapunov Exponents" branch under the "Task List" entry. Output takes place after each reorthonormalization interval. The output can contain each of the ten largest exponents, both the local value from the last interval and the and the average value of all intervals calculated so far. Correspondingly the divergence can be output both as an average over the last interval or as an average over the whole trajectory.
   </para> 
   <para>
-    The jacobian that is used for both lypunov exponents and divergence calculation is calculated using finite differences. The integration of the reference and difference trajectories is done using LSODA <citation>Hindmarsh83</citation>.
+    The Jacobian that is used for both Lyapunov exponents and divergence calculation is calculated using finite differences. The integration of the reference and difference trajectories is done using LSODA <citation>Hindmarsh83</citation>.
   </para> 
   <variablelist><title>Options for Lyapunov exponents calculation</title>
     <varlistentry><term>Orthonormalization interval</term>
       <listitem>
         <para>
-          This is the time interval after which an orthonormalization of the difference trajectories takes place. This parameter is critical for the accuracy of the lyapunov exponents. Smaller values generally lead to more accurate results, but take longer time (since the numerical integration needs to be restarted for many short calculations).
+          This is the time interval after which an orthonormalization of the difference trajectories takes place. This parameter is critical for the accuracy of the Lyapunov exponents. Smaller values generally lead to more accurate results, but take longer time (since the numerical integration needs to be restarted for many short calculations).
           One way to judge the adequacy of this parameter is to compare the sum of exponents with the divergence of the system. Those two values should be the same (only if you request the calculation of all exponents), and since the calculation of the divergence is very robust, a mismatch would typically mean that the orthonormalization interval needs to be smaller.
-          Note that this parameter mostly affects the accuracy of the exponents with the largest absolute values. Since large positive exponents are unusual, this means that the largest negative exponents suffer from accuracy problems related to this parameter. If you don't need the exact values of the stronly negative exponents you can chose a larger value for this parameter and enjoy a much faster calculation. The default value is <inlineequation><mml:math><mml:mn>1.0</mml:mn></mml:math></inlineequation>.
+          Note that this parameter mostly affects the accuracy of the exponents with the largest absolute values. Since large positive exponents are unusual, this means that the largest negative exponents suffer from accuracy problems related to this parameter. If you don't need the exact values of the strongly negative exponents you can chose a larger value for this parameter and enjoy a much faster calculation. The default value is <inlineequation><mml:math><mml:mn>1.0</mml:mn></mml:math></inlineequation>.
         </para>
       </listitem>
     </varlistentry>
@@ -2212,7 +2388,7 @@ steps is less than the tolerance the algorithm stops. The default is
       <listitem>
         <para>
           This parameter specifies the overall time of the calculation. The integration will be repeated in small steps given by the "Orthonormalization interval" parameter until the overall time is reached.
-          This value is also critical for the accuracy of the exponents. Since copasi cannot guess how fast the exponents converge, no save default value can be given for this parameter. One indication would be that if the system does not run into a steady state one of the exponents should be zero. If this is not the case in the result, probably the overal time was to short to allow the exponents to converge to their average value. The default value is <inlineequation><mml:math><mml:mn>1000</mml:mn></mml:math></inlineequation>.
+          This value is also critical for the accuracy of the exponents. Since COPASI cannot guess how fast the exponents converge, no save default value can be given for this parameter. One indication would be that if the system does not run into a steady state one of the exponents should be zero. If this is not the case in the result, probably the overall time was to short to allow the exponents to converge to their average value. The default value is <inlineequation><mml:math><mml:mn>1000</mml:mn></mml:math></inlineequation>.
         </para>
       </listitem>
     </varlistentry>
@@ -2226,7 +2402,7 @@ steps is less than the tolerance the algorithm stops. The default is
 <sect1 id="sensitivitiesMethod" xreflabel="Sensitivities">
   <title>Sensitivities Calculation</title>
   <para>
-    Copasi allows the calculation of generalized sensitivities of a model. This is done by numerical differentiation using finite differences. The user specifies a list of functions to be differentiated and one or two lists of variables. The differentiation is performed with respect to these variables. Since every function in the list is differentiated with respect to every variable in the list the result will generally be a two-dimensional matrix. If also a list of variables for second derivatives is given then all the first derivatives are again differentiated with respect to all the variables in the second list. The result will be a three-dimensional array of second derivatives. 
+    COPASI allows the calculation of generalized sensitivities of a model. This is done by numerical differentiation using finite differences. The user specifies a list of functions to be differentiated and one or two lists of variables. The differentiation is performed with respect to these variables. Since every function in the list is differentiated with respect to every variable in the list the result will generally be a two-dimensional matrix. If also a list of variables for second derivatives is given then all the first derivatives are again differentiated with respect to all the variables in the second list. The result will be a three-dimensional array of second derivatives. 
   </para>
 
   <sect2 id="sensitivitiesUnscaled" xreflabel="Unscaled Sensitivities">

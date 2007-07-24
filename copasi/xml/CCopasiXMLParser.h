@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-//   $Revision: 1.49 $
+//   $Revision: 1.50 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/05/15 12:37:05 $
+//   $Date: 2007/07/24 13:25:54 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -81,6 +81,11 @@ struct SCopasiXMLParserCommon
     CEvaluationTree * pFunction;
 
     /**
+     * Pointer to the currently processed function.
+     */
+    CFunctionParameter * pFunctionVariable;
+
+    /**
      * The description of the function.
      */
     std::string FunctionDescription;
@@ -98,7 +103,7 @@ struct SCopasiXMLParserCommon
     /**
      * The keys of the source parameters for a call parameter.
      */
-    std::vector< std::string > SourceParameterKeys;
+    std::map< std::string, std::vector< std::string > > SourceParameterKeys;
 
     /**
      * A map relating CopasiXML function keys with internal keys
@@ -540,11 +545,6 @@ class CCopasiXMLParser : public CExpat
           CallParameter = 0,
           SourceParameter
         };
-
-        /**
-         * A pointer to the function parameter.
-         */
-        CFunctionParameter * mpFunctionParameter;
 
         // Operations
       public:
