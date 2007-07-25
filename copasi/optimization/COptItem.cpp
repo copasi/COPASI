@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.cpp,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/24 13:25:48 $
+//   $Date: 2007/07/25 16:59:03 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -98,7 +98,7 @@ void COptItem::initializeParameter()
   mpParmUpperBound =
     assertParameter("UpperBound", CCopasiParameter::CN, CCopasiObjectName("inf"))->getValue().pCN;
   mpParmStartValue =
-    assertParameter("StartValue", CCopasiParameter::DOUBLE, std::numeric_limits<C_FLOAT64>::quiet_NaN())->getValue().pDOUBLE;
+    assertParameter("StartValue", CCopasiParameter::DOUBLE, NaN)->getValue().pDOUBLE;
 }
 
 bool COptItem::setObjectCN(const CCopasiObjectName & objectCN)
@@ -197,22 +197,7 @@ const std::string COptItem::getUpperBound() const
 
 bool COptItem::setStartValue(const C_FLOAT64 & value)
 {
-  if (mpObjectValue == NULL)
-    {
-      CCopasiObject * pObject = CCopasiContainer::ObjectFromName(getObjectCN());
-
-      if (pObject == NULL ||
-          (mpObjectValue = (C_FLOAT64 *) pObject->getValuePointer()) == NULL)
-        {
-          *mpParmStartValue = value;
-          return true;
-        }
-    }
-
-  if (value != *mpObjectValue)
-    *mpParmStartValue = value;
-  else
-    *mpParmStartValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+  *mpParmStartValue = value;
 
   return true;
 }
@@ -244,7 +229,7 @@ C_FLOAT64 COptItem::getRandomValue(CRandom * pRandom)
   if (mpLowerBound == NULL ||
       mpUpperBound == NULL)
     {
-      RandomValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+      RandomValue = NaN;
       return RandomValue;
     }
 
