@@ -219,18 +219,20 @@ AC_ARG_WITH([copasi-license],
                  [Specify whether to use the German (DE), US (US) or Commercial (COM) license.]),
   [COPASI_LICENSE=$withval])
 
-if test x"${COPASI_LICENSE}" = x"DE" -o x"${COPASI_LICENSE}" = x"US" -o x"${COPASI_LICENSE}" = x"COM"; then
+if test x"${COPASI_LICENSE}" = x"DE" -o x"${COPASI_LICENSE}" = x"COM"; then
   QMAKE_ARG="$QMAKE_ARG USE_LICENSE=$COPASI_LICENSE"
+else
+  QMAKE_ARG="$QMAKE_ARG USE_LICENSE=US"
 fi
 
 
-dnl Determine whether any lex and yacc sources shall be builf
-AC_ARG_WITH([build-parser],
-  AS_HELP_STRING([--with-build-parser],
-                 [Specify whether to build lex and yacc sources.]),
-  [BUILD_PARSER=$withval])
-
-if test x"$BUILD_PARSER" = x"yes"; then
+AC_ARG_ENABLE([lex-yacc],
+  AS_HELP_STRING([--enable-lex-yacc],
+                 [Specify whether to compile lex and yacc sources (default: no).]),
+  [ENABLE_LEX_YACC=$enable_lex_yacc],
+  [ENABLE_LEX_YACC="no"])
+  
+if test x"$ENABLE_LEX_YACC" = x"yes"; then
   QMAKE_ARG="$QMAKE_ARG BUILD_PARSER=yes"
 fi
 
@@ -249,7 +251,7 @@ dnl to prevent calling aclocal, automake and configure again
  touch Makefile.in
  touch configure
 
- find . -type f -name Makefile -exec rm {} \;
+ find copasi -type f -name Makefile -exec rm {} \;
 
  cd copasi && \
  echo executing in `pwd`: && \
