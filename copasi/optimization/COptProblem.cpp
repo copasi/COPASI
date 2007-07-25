@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-//   $Revision: 1.90 $
+//   $Revision: 1.91 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/24 18:40:22 $
+//   $Date: 2007/07/25 16:58:17 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -291,6 +291,9 @@ bool COptProblem::initialize()
   mSolutionVariables.resize(Size);
   mOriginalVariables.resize(Size);
 
+  mSolutionVariables = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+  mOriginalVariables = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+
   std::vector< COptItem * >::iterator it = mpOptItems->begin();
   std::vector< COptItem * >::iterator end = mpOptItems->end();
 
@@ -353,32 +356,25 @@ bool COptProblem::restore(const bool & updateModel)
   std::vector<COptItem * >::iterator end = mpOptItems->end();
   C_FLOAT64 * pTmp;
 
-  if (updateModel)
+  if (updateModel && mSolutionValue != mInfinity)
     {
-      // Set the model values to the solution values
+      // Set the model values ans start values to the solution values
       pTmp = mSolutionVariables.array();
 
       for (; it != end; ++it, pTmp++)
-        (*(*it)->COptItem::getUpdateMethod())(*pTmp);
-
-      // Update the start values
-      // This can only be done after all model values are updated since
-      // the behaviour of setStartValue dependes on the model value and multiple
-      // variables may point to the same model value.
-      pTmp = mSolutionVariables.array();
-      it = mpOptItems->begin();
-      end = mpOptItems->end();
-
-      for (; it != end; ++it, pTmp++)
-        (*it)->setStartValue(*pTmp);
+        {
+          (*(*it)->COptItem::getUpdateMethod())(*pTmp);
+          (*it)->setStartValue(*pTmp);
+        }
     }
   else
     {
-      // Reset the model values to the starting values
+      // Reset the model values to the original values
       pTmp = mOriginalVariables.array();
 
       for (; it != end; ++it, pTmp++)
-        (*(*it)->COptItem::getUpdateMethod())(*pTmp);
+        if (!isnan(*pTmp))
+          (*(*it)->COptItem::getUpdateMethod())(*pTmp);
     }
 
   if (mFailedCounter * 20 > mCounter) // > 5% failure rate
