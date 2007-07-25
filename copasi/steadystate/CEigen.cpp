@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CEigen.cpp,v $
-//   $Revision: 1.43 $
+//   $Revision: 1.44 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/07/02 16:11:37 $
+//   $Author: shoops $
+//   $Date: 2007/07/25 18:32:09 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,6 +25,12 @@
 #endif
 
 #include <cmath>
+#ifndef M_PI
+#define M_PI           3.14159265358979323846  /* pi */
+#endif // not M_PI
+#ifndef M_E
+#define M_E            2.7182818284590452354   /* e */
+#endif // not M_E
 
 #include "copasi.h"
 
