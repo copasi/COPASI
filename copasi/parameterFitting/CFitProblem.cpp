@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-//   $Revision: 1.47 $
+//   $Revision: 1.48 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/24 18:40:26 $
+//   $Date: 2007/07/25 15:16:26 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1531,7 +1531,7 @@ bool CFitProblem::calculateCrossValidation()
   bool Continue = true;
 
   unsigned i, imax = mpCrossValidationSet->getExperimentCount();
-  unsigned j, jmax = mpOptItems->size();
+  unsigned j;
   unsigned kmax;
   C_FLOAT64 CalculateValue = 0.0;
 
