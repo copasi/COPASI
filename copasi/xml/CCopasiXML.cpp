@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-//   $Revision: 1.93 $
+//   $Revision: 1.94 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/07/24 19:19:33 $
+//   $Date: 2007/07/25 16:17:48 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1018,13 +1018,13 @@ bool CCopasiXML::saveReportList()
 }
 
 #ifdef WITH_LAYOUT
-void CCopasiXML::savePosition(const CLPoint& p)
+void CCopasiXML::savePosition(const CLPoint& p, const std::string & tag)
 {
   CXMLAttributeList Attributes;
   Attributes.erase();
   Attributes.add("x", p.getX());
   Attributes.add("y", p.getY());
-  saveElement("Position", Attributes);
+  saveElement(tag, Attributes);
 }
 
 void CCopasiXML::saveDimensions(const CLDimensions& d)
@@ -1045,7 +1045,36 @@ void CCopasiXML::saveBoundingBox(const CLBoundingBox& bb)
 }
 
 void CCopasiXML::saveCurve(const CLCurve& c)
-{}
+{
+  startSaveElement("Curve");
+  if (c.getNumCurveSegments() > 0)
+    {
+      startSaveElement("ListOfCurveSegments");
+      unsigned C_INT32 i, imax = c.getNumCurveSegments();
+      for (i = 0; i < imax; ++i)
+        {
+          const CLLineSegment & cs = c.getCurveSegments()[i];
+          if (cs.isBezier())
+            startSaveElement("CubicBezier");
+          else
+            startSaveElement("LineSegment");
+
+          savePosition(cs.getStart(), "Start");
+          savePosition(cs.getEnd(), "End");
+
+          if (cs.isBezier())
+            {
+              savePosition(cs.getBase1(), "BasePoint1");
+              savePosition(cs.getBase2(), "BasePoint2");
+              endSaveElement("CubicBezier");
+            }
+          else
+            endSaveElement("LineSegment");
+        }
+      endSaveElement("ListOfCurveSegments");
+    }
+  endSaveElement("Curve");
+}
 
 bool CCopasiXML::saveLayoutList()
 {

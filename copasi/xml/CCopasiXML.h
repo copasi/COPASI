@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.h,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/07/24 19:19:33 $
+//   $Date: 2007/07/25 16:17:48 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -303,7 +303,7 @@ class CCopasiXML : public CCopasiXMLInterface
      */
     bool saveLayoutList();
 
-    void savePosition(const CLPoint& p);
+    void savePosition(const CLPoint& p, const std::string & tag = "Position");
 
     void saveDimensions(const CLDimensions& d);
 
