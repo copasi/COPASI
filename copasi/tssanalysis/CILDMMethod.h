@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMMethod.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/07/12 14:44:30 $
+//   $Author: isurovts $
+//   $Date: 2007/07/26 15:32:04 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -110,6 +110,16 @@ class CILDMMethod : public CTSSAMethod
     /**
      *
      */
+    CMatrix <C_FLOAT64> mTd_save;
+    /**
+         *
+         */
+    CMatrix <C_FLOAT64> mTdInverse_save;
+
+    /**
+     *
+     */
+
     CVector<C_FLOAT64> mCfast;
 
     /**

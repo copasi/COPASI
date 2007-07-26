@@ -1,14 +1,23 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMMethod.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/07/24 18:40:26 $
+//   $Author: isurovts $
+//   $Date: 2007/07/26 15:32:04 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+
+// to activate the printing  set flag_...=0:
+
+// flag_jacob=0  to print Jacobian
+// flag_tab =0 to print the Tabs with slow space Analysis
+// flag_deufl=0 to prove the deuflhard algorithm
+// flag_Td =0  to print the transformation matrices mTd and mTdInverse
+// flag_sylvester=0  to print the transformed Jacobian:  mTdInverse*Jacobian_initial*mTd (should be diagonal)
+// flag_norm =0 for printing "norm story"
 
 #include "copasi.h"
 
@@ -225,6 +234,11 @@ void CILDMMethod::step(const double & deltaT)
   mTdInverse.resize(dim, dim);
   mQz.resize(dim, dim);
 
+  mTd_save.resize(dim, dim);
+
+  //CMatrix<C_FLOAT64> TdInverse_save;
+  mTdInverse_save.resize(dim, dim);
+
   mpModel->updateSimulatedValues();
   // TO REMOVE : mpModel->applyAssignments();
   mpModel->calculateJacobianX(mJacobian, 1e-6, 1e-12);
@@ -233,13 +247,14 @@ void CILDMMethod::step(const double & deltaT)
   std::cout << "*****************************" << std::endl;
   std::cout << "Next step t=: " << mTime << std::endl;
 
-  std::cout << "Jacobian-initial:" << std::endl;
-  std::cout << mJacobian << std::endl;
+  C_INT flag_jacob;
+  flag_jacob = 1;  // Set flag_jacob=0 to printing Jacobian
 
-  std::cout << "Current concentrations" << std::endl;
-  for (i = 0; (unsigned C_INT32) i < mpModel->getMetabolites().size(); ++i)
-    std::cout << mpModel->getMetabolites()[i]->getConcentration() << ", ";
-  std::cout << std::endl;
+  if (flag_jacob == 0)
+    {
+      std::cout << "Jacobian-initial:" << std::endl;
+      std::cout << mJacobian << std::endl;
+    }
 
   /* the vector mY is the current state of the system*/
 
@@ -254,12 +269,15 @@ void CILDMMethod::step(const double & deltaT)
   for (i = 0; i < dim; ++i)
     Xconc[i] = mY[i] * number2conc;
 
-  std::cout << "mY_initial as concentration:" << std::endl;
+  /*
+    std::cout << "mY_initial as concentration:" << std::endl;
+    for (i = 0; i < dim; i++)
+      std::cout << Xconc[i] << std::endl;
+  */
   for (i = 0; i < dim; i++)
-    std::cout << Xconc[i] << std::endl;
-
-  for (i = 0; i < dim; i++)
-    mY_initial[i] = mY[i];
+    {
+      mY_initial[i] = mY[i];
+    }
 
   // save initial  Jacobian before next time step
   for (i = 0; i < dim; i++)
@@ -277,32 +295,31 @@ void CILDMMethod::step(const double & deltaT)
 
   mpModel->calculateJacobianX(mJacobian, 1e-6, 1e-12);
 
-  std::cout << "Jacobian_next:" << std::endl;
-  std::cout << mJacobian << std::endl;
+  if (flag_jacob == 0)
+    {
+      std::cout << "Jacobian_next:" << std::endl;
+      std::cout << mJacobian << std::endl;
+    }
 
-  std::cout << "Current concentrations" << std::endl;
-  for (i = 0; (unsigned C_INT32) i < mpModel->getMetabolites().size(); ++i)
-    std::cout << mpModel->getMetabolites()[i]->getConcentration() << ", ";
-  std::cout << std::endl;
+  /*
+    std::cout << "Current concentrations" << std::endl;
+    for (i = 0; (unsigned C_INT32) i < mpModel->getMetabolites().size(); ++i)
+      std::cout << mpModel->getMetabolites()[i]->getConcentration() << ", ";
+    std::cout << std::endl;
 
-  for (i = 0; i < dim; ++i)
-    Xconc[i] = mY[i] * number2conc;
+    for (i = 0; i < dim; ++i)
+      Xconc[i] = mY[i] * number2conc;
 
-  std::cout << "mY_next as concentration:" << std::endl;
-  for (i = 0; i < dim; i++)
-    std::cout << Xconc[i] << std::endl;
-
-  CMatrix<C_FLOAT64> Td_save;
-  Td_save.resize(dim, dim);
-
-  CMatrix<C_FLOAT64> TdInverse_save;
-  TdInverse_save.resize(dim, dim);
-
+    std::cout << "mY_next as concentration:" << std::endl;
+    for (i = 0; i < dim; i++)
+      std::cout << Xconc[i] << std::endl;
+  */
+  //CMatrix<C_FLOAT64> mTd_save;
   for (i = 0; i < dim; i++)
     for (j = 0; j < dim; j++)
       {
-        Td_save(i, j) = 0;
-        TdInverse_save(i, j) = 0;
+        mTd_save(i, j) = 0;
+        mTdInverse_save(i, j) = 0;
       }
 
   for (i = 0; i < dim; i++)
@@ -328,13 +345,20 @@ void CILDMMethod::step(const double & deltaT)
 
       goto integration;
     }
+
+  if (flag_jacob == 0)
+    {
+      std::cout << "mR :" << std::endl,
+      std::cout << mR << std::endl;
+    }
+
   /* If complex eigenvalues */
 
   if (mR(dim - 1, dim - 1) == mR(dim - 2 , dim - 2))
     {
       if (dim == 2)
         {
-          slow = 2;
+          slow = dim;
           goto integration;
         }
       else
@@ -346,14 +370,16 @@ void CILDMMethod::step(const double & deltaT)
 
   /* If positive eigenvalues */
 
-  if (mR(slow - 1, slow - 1) >= 0)
+  if (mR(dim - 1, dim - 1) >= 0)
     {
-      slow = 2;
+      slow = dim;
       fast = 0;
       std::cout << "positive eigenvalues" << std::endl;
       failed = 1;
       goto integration;
     }
+
+  C_INT failed_while;
 
   /*  do START slow iterations */
 
@@ -363,19 +389,27 @@ void CILDMMethod::step(const double & deltaT)
       fast = fast + 1;
       slow = dim - fast;
 
-      if (fast < dim)
+      if (fast < dim - 1)
         if (mR(slow, slow) == mR(slow - 1 , slow - 1))
           fast = fast + 1;
 
       slow = dim - fast;
 
-      /**
-      Solution of Sylvester equation for given slow, mQ,mR
-      Output: mTd, mTdinverse and mQz (mQz is used later for newton iterations)
+      /* for (i = 0; i < dim; i++)
+         for (j = 0; j < dim; j++)
+          {
+            mTd_save(i, j) = mTd(i,j);
+            mTdInverse_save(i, j) = mTdInverse(i,j);
+          }
       */
+      /**
+        Solution of Sylvester equation for given slow, mQ,mR
+        Output: mTd, mTdinverse and mQz (mQz is used later for newton iterations)
+        */
 
       C_INT info = 0;
-      C_INT failed = 0;
+
+      failed_while = 0;
 
       sylvester (slow, info);
       if (info)
@@ -386,8 +420,8 @@ void CILDMMethod::step(const double & deltaT)
           // std::cout << " slow_if " << slow << std::endl;
           // slow = dim - fast;
           // std::cout << " slow_after_if " << slow << std::endl;
-          std::cout << "sylvester not work" << std::endl;
-          failed = 1;
+          std::cout << "sylvester not work" << " slow = " << slow << std::endl;
+          failed_while = 1;
           goto integration;
         }
 
@@ -396,8 +430,8 @@ void CILDMMethod::step(const double & deltaT)
       for (i = slow ; i < dim; i++)
         if (mR(i - 1, i - 1) >= 0)
           {
-            std::cout << "positive eigenvalues" << std::endl;
-            failed = 1;
+            std::cout << "positive eigenvalues for i = " << i << std::endl;
+            failed_while = 1;
             goto integration;
           }
 
@@ -419,7 +453,7 @@ void CILDMMethod::step(const double & deltaT)
 
       /* If the Deuflhard criterion is not satisfied, return to smaller fast */
 
-      failed = 0;
+      failed_while = 0;
 
       if (info)
         {
@@ -427,51 +461,61 @@ void CILDMMethod::step(const double & deltaT)
           // if (mR(slow - 1, slow - 1) == mR(slow , slow))
           //  fast = fast - 1;
           // slow = dim - fast;
-          std::cout << "deuflhard not work" << std::endl;
-          failed = 1;
+          std::cout << "deuflhard not work" << " slow_deufl " << slow << std::endl;
+          failed_while = 1;
           goto integration;
         }
     }
 
 integration:
+  std::cout << "failed = " << failed << std::endl;
+  std::cout << "failed_while = " << failed_while << std::endl;
 
-  if (failed)
+  if ((failed == 1) || (failed_while == 1))
     {
       if (slow < dim)
         {
           fast = fast - 1;
-          if (mR(slow - 1, slow - 1) == mR(slow - 2 , slow - 2))
+          if ((fast > 1) && (mR(slow - 1, slow - 1) == mR(slow , slow)))
             fast = fast - 1;
           slow = dim - fast;
-
-          for (i = 0; i < dim; i++)
-            for (j = 0; j < dim; j++)
-              {
-                mTd(i, j) = Td_save(i, j);
-                mTdInverse(i, j) = TdInverse_save(i, j);
-              }
+          /*         for (i = 0; i < dim; i++)
+                      for (j = 0; j < dim; j++)
+                       {
+                         mTd(i, j) = mTd_save(i, j);
+                         mTdInverse(i, j) = mTdInverse_save(i, j);
+                      }  */
         }
     }
-  else
+  /*else
     {
       for (i = 0; i < dim; i++)
         for (j = 0; j < dim; j++)
           {
-            Td_save(i, j) = mTd(i, j);
-            TdInverse_save(i, j) = mTdInverse(i, j);
+            mTd(i, j) = mTd_save(i, j);
+            mTdInverse(i, j) = mTdInverse_save(i, j);
           }
     }
+  */
 
-  std::cout << "slow " << slow << std::endl;
+  mSlow = slow;
+
+  std::cout << "slow " << mSlow << std::endl;
   std::cout << "fast " << fast << std::endl;
   std::cout << std::endl;
 
-  if (slow < dim)
-    {
-      mat_anal_mod(slow);
-      mat_anal_metab(slow);
-      mat_anal_mod_space(slow);
+  // Flag for print Tabs
 
+  C_INT flag_tab;
+
+  flag_tab = 1;    //change flag_tab=0 to print the Analysis Tabs  in the file
+
+  mat_anal_mod(slow);
+  mat_anal_metab(slow);
+  mat_anal_mod_space(slow);
+
+  if (flag_tab == 0)
+    {
       for (i = 0 ; i < dim; i++)
         {
           std::cout << "Contribution to slow space:" << mpModel->getMetabolitesX()[i]->getObjectName() << "  " << mVslow_space[i] << std::endl;
@@ -496,28 +540,43 @@ integration:
           std::cout << std::endl;
         }
     }
-  else
+
+  if (slow == dim)
     {
       std::cout << "No reduction is possible at this time point " << std::endl;
       std::cout << std::endl;
     }
 
+  C_INT flag_Td;
+
+  flag_Td = 1;
+
+  if (flag_Td == 0)
+    {
+      std::cout << "Transformation matrix mTd: " << std::endl;
+      std::cout << mTd << std::endl;
+      std::cout << std::endl;
+      std::cout << "Inverse of transformation matrix: mTdInvesre: " << std::endl;
+      std::cout << mTdInverse << std::endl;
+      std::cout << std::endl;
+    }
+
   /*// save initial  Jacobian before next time step
-     for (i = 0; i < dim; i++)
-         for (j = 0; j < dim; j++)
-            mJacobian_initial(i, j) = mJacobian(i, j);
+      for (i = 0; i < dim; i++)
+          for (j = 0; j < dim; j++)
+             mJacobian_initial(i, j) = mJacobian(i, j);
 
-    // Next time step
+     // Next time step
 
-    integrationStep(deltaT);
+     integrationStep(deltaT);
 
-    mpModel->updateSimulatedValues();
-    // TO REMOVE : mpModel->applyAssignments();
+     mpModel->updateSimulatedValues();
+     // TO REMOVE : mpModel->applyAssignments();
 
-    // Calculate Jacobian for time step control
+     // Calculate Jacobian for time step control
 
-    mpModel->calculateJacobianX(mJacobian, 1e-6, 1e-12);
-  */
+     mpModel->calculateJacobianX(mJacobian, 1e-6, 1e-12);
+   */
   C_INT number, info;
 
   info = 0;
@@ -553,13 +612,6 @@ integration:
 
   transformation_norm(slow, info);
 
-  std::cout << "Concentration last:" << std::endl;
-  for (i = 0; i < dim; ++i)
-    {
-      Xconc[i] = mY[i] * number2conc;
-      std::cout << Xconc[i] << std::endl;
-    }
-
   mpModel->updateSimulatedValues();
   // TO REMOVE : mpModel->applyAssignments();
 
@@ -567,13 +619,15 @@ integration:
 
   mpModel->calculateJacobianX(mJacobian, 1e-6, 1e-12);
 
-  std::cout << "Jacobian last: " << std::endl;
-  std::cout << mJacobian << std::endl;
+  /*
+    std::cout << "Jacobian last: " << std::endl;
+    std::cout << mJacobian << std::endl;
 
-  std::cout << "Current concentrations" << std::endl;
-  for (i = 0; (unsigned C_INT32) i < mpModel->getMetabolites().size(); ++i)
-    std::cout << mpModel->getMetabolites()[i]->getConcentration() << ", ";
-  std::cout << std::endl;
+    std::cout << "Current concentrations" << std::endl;
+    for (i = 0; (unsigned C_INT32) i < mpModel->getMetabolites().size(); ++i)
+      std::cout << mpModel->getMetabolites()[i]->getConcentration() << ", ";
+    std::cout << std::endl;
+  */
 
   // new entry for every entry contains the current data of currently step
   setVectors(slow);
@@ -601,7 +655,7 @@ void CILDMMethod::mat_anal_mod(C_INT & slow)
 
   // norm  of mTd
 
-  if (slow > 0)
+  if (slow < dim)
     {
       for (j = 0; j < dim; j++)
         denom[j] = 0;
@@ -638,7 +692,7 @@ void CILDMMethod::mat_anal_metab(C_INT & slow)
   CVector<C_FLOAT64> denom;
   denom.resize(dim);
 
-  if (slow > 0)
+  if (slow < dim)
     {
       for (j = 0; j < dim; j++)
         denom[j] = 0;
@@ -672,6 +726,8 @@ void CILDMMethod::mat_anal_mod_space(C_INT & slow)
   C_INT i, j, dim;
 
   dim = mData.dim;
+  C_INT fast;
+  fast = dim - slow;
 
   CMatrix<C_FLOAT64> Matrix_anal;
   Matrix_anal.resize(dim, dim);
@@ -689,7 +745,7 @@ void CILDMMethod::mat_anal_mod_space(C_INT & slow)
         Matrix_anal (i, j) = mTdInverse(i, j) / length;
     }
 
-  if (slow > 0)
+  if (slow < dim)
     {
       denom = 0.0;
       for (i = 0; i < dim; i++)
@@ -1114,10 +1170,6 @@ void CILDMMethod::schur(C_INT &info)
         mR(j, i) = R.array()[j + dim * i];
       }
 
-  std::cout << "mR:" << std::endl;
-  std::cout << mR << std::endl;
-  std::cout << std::endl;
-
   return;
 }
 /**
@@ -1345,6 +1397,17 @@ void CILDMMethod::sylvester(C_INT slow, C_INT & info)
         }
     }
 
+  C_INT flag_sylvester;
+
+  flag_sylvester = 1;
+
+  if (flag_sylvester == 0)
+    {
+      std::cout << " Matrix S = mTdInverse *Jacobian * mTd  " << std::endl;
+      std::cout << S << std::endl;
+      std::cout << std::endl;
+    }
+
   for (i = 0; i < dim; i++)
     for (j = 0; j < dim; j++)
       mQz(i, j) = 0.;
@@ -1401,6 +1464,9 @@ void CILDMMethod::deuflhard(C_INT & slow, C_INT & info)
   C_INT i, j;
   C_INT dim = mData.dim;
   C_INT fast = dim - slow;
+  C_INT flag_deufl;
+
+  flag_deufl = 1;
 
   /* calculations before relaxing yf to slow manifold */
 
@@ -1418,7 +1484,7 @@ void CILDMMethod::deuflhard(C_INT & slow, C_INT & info)
   //this is an ugly hack that only makes sense if all metabs are in the same compartment
   //at the moment is is the only case the algorithm deals with
 
-  mY_initial.resize(dim);
+  //mY_initial.resize(dim);
 
   CVector<C_FLOAT64> Xconc; //current state converted to concentrations
   Xconc.resize(dim);
@@ -1439,7 +1505,6 @@ void CILDMMethod::deuflhard(C_INT & slow, C_INT & info)
     {
       mCfast[j] = c_full[j + slow];
     }
-
   CVector<C_FLOAT64> g_full;
   g_full.resize(dim);
 
@@ -1462,20 +1527,25 @@ void CILDMMethod::deuflhard(C_INT & slow, C_INT & info)
   x_help.resize(dim);
 
   for (j = 0; j < dim; j++)
-    x_help[j] = mY_initial[j];
+    {
+      x_help[j] = mY_initial[j] * number2conc;
+      if (flag_deufl == 0)
+        std::cout << "x_help: " << x_help[j] << std::endl;
+    }
 
   // mpModel->calculateDerivativesX(dxdt.array());
   calculateDerivativesX(x_help.array(), dxdt.array());
   //convert dxdt to concentration units...
-  //for (i = 0; i < dim; ++i)
-  //  dxdt[i] *= number2conc;
+  //  for (i = 0; i < dim; ++i)
+  //   dxdt[i] *= number2conc;
 
   for (i = 0; i < dim; i++)
     {
       g_full[i] = 0.0;
       for (j = 0; j < dim; j++)
         g_full[i] = g_full[i] + mTdInverse(i, j) * dxdt[j];
-      // std::cout << "g_full: " << g_full[i] << std::endl;
+      if (flag_deufl == 0)
+        std::cout << "g_full: " << g_full[i] << std::endl;
     }
 
   for (j = 0; j < slow; j++)
@@ -1525,6 +1595,8 @@ void CILDMMethod::deuflhard(C_INT & slow, C_INT & info)
       x_relax[i] = 0.0;
       for (j = 0; j < dim; j++)
         x_relax[i] = x_relax[i] + mTd(i, j) * c_relax[j];
+      if (flag_deufl == 0)
+        std::cout << "x_relax: " << x_relax[i] << std::endl;
     }
 
   calculateDerivativesX(x_relax.array(), dxdt_relax.array());
@@ -1534,6 +1606,8 @@ void CILDMMethod::deuflhard(C_INT & slow, C_INT & info)
       g_relax[i] = 0.0;
       for (j = 0; j < dim; j++)
         g_relax[i] = g_relax[i] + mTdInverse(i, j) * dxdt_relax[j];
+      if (flag_deufl == 0)
+        std::cout << "g_relax: " << g_relax[i] << std::endl;
     }
 
   CVector<C_FLOAT64> re;
@@ -1579,8 +1653,6 @@ void CILDMMethod::transformation_norm(C_INT & slow, C_INT & info)
 
   C_INT i, j, k, fast;
 
-  std::cout << "slow_transformation = " << slow << std::endl;
-
   fast = dim - slow;
 
   CMatrix<C_FLOAT64> S_initial;
@@ -1612,8 +1684,14 @@ void CILDMMethod::transformation_norm(C_INT & slow, C_INT & info)
         }
     }
 
-  std::cout << "S_initial " << std::endl;
-  std::cout << S_initial << std::endl;
+  C_INT flag_norm;
+  flag_norm = 1;
+
+  if (flag_norm == 0)
+    {
+      std::cout << "S_initial " << std::endl;
+      std::cout << S_initial << std::endl;
+    }
 
   CMatrix<C_FLOAT64> S_new;
   S_new.resize(dim, dim);
@@ -1644,9 +1722,11 @@ void CILDMMethod::transformation_norm(C_INT & slow, C_INT & info)
         }
     }
 
-  std::cout << " S_new: " << std::endl;
-  std::cout << S_new << std::endl;
-
+  if (flag_norm == 0)
+    {
+      std::cout << " S_new: " << std::endl;
+      std::cout << S_new << std::endl;
+    }
   C_FLOAT64 tol;
 
   tol = 1e-2;
@@ -1710,10 +1790,13 @@ void CILDMMethod::transformation_norm(C_INT & slow, C_INT & info)
 
   norm_S12 = sqrt(norm_S12);
 
-  std::cout << "norm_S11: " << norm_S11 << std::endl;
-  std::cout << "norm_S22: " << norm_S22 << std::endl;
-  std::cout << "norm_S12: " << norm_S12 << std::endl;
-  std::cout << "norm_S21: " << norm_S21 << std::endl;
+  if (flag_norm == 0)
+    {
+      std::cout << "norm_S11: " << norm_S11 << std::endl;
+      std::cout << "norm_S22: " << norm_S22 << std::endl;
+      std::cout << "norm_S12: " << norm_S12 << std::endl;
+      std::cout << "norm_S21: " << norm_S21 << std::endl;
+    }
 
   info = 0;
 
@@ -2191,7 +2274,7 @@ void CILDMMethod::start(const CState * initialState)
     }
 
   mYdot.resize(mData.dim);
-
+  // mY_initial.resize(mData.dim);
   mJacobian.resize(mData.dim, mData.dim);
 
   /* Tolerance for Deuflhard criterium  */
@@ -2275,7 +2358,8 @@ void CILDMMethod::createAnnotationsM()
   pTmp1->setMode(0, pTmp1->STRINGS);
   pTmp1->setMode(1, pTmp1->VECTOR);
   pTmp1->setDescription("mVslowPrintAnn matrix");
-  pTmp1->setDimensionDescription(0, "contribution to each mode corresponding to timescale");
+  //pTmp1->setDimensionDescription(0, "contribution to each mode corresponding to timescale");
+  pTmp1->setDimensionDescription(0, "contribution to  mode (TS - corresponding timescale)");
   pTmp1->setDimensionDescription(1, "meatabolites");
   pVslowPrintAnn = pTmp1;
 
@@ -2286,7 +2370,8 @@ void CILDMMethod::createAnnotationsM()
   pTmp2->setMode(0, pTmp2->VECTOR);
   pTmp2->setDescription("mVslowMetabPrint matrix");
   pTmp2->setDimensionDescription(0, "mode distribution for each metabolite");
-  pTmp2->setDimensionDescription(1, "modes corresponding to timescale");
+  //pTmp2->setDimensionDescription(1, "modes corresponding to timescale");
+  pTmp2->setDimensionDescription(1, "modes (TS - corresponding  timescale)");
   pVslowMetabPrintAnn = pTmp2;
 
   CArrayAnnotation *
