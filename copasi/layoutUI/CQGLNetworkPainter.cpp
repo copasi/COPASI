@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.45 $
+//   $Revision: 1.46 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/07/26 16:31:24 $
+//   $Date: 2007/07/26 20:08:15 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -647,7 +647,7 @@ void CQGLNetworkPainter::rescaleDataSets(C_INT16 scaleMode)
                   // first calculate original value
                   val_new =
                     ((val - CVisParameters::minNodeSize) *
-                     (pSummaryInfo->getMaxForSpecies(viewerNodes[i]) - pSummaryInfo->getMinForSpecies(viewerNodes[i])) / (CVisParameters::maxNodeSize - CVisParameters::minNodeSize)) + CVisParameters::minNodeSize;
+                     (pSummaryInfo->getMaxForSpecies(viewerNodes[i]) - pSummaryInfo->getMinForSpecies(viewerNodes[i])) / (CVisParameters::maxNodeSize - CVisParameters::minNodeSize)) + pSummaryInfo->getMinForSpecies(viewerNodes[i]);
                   // now rescale
                   val_new = ((val_new - pSummaryInfo->getMinOverallConcentration()) *
                              (CVisParameters::maxNodeSize - CVisParameters::minNodeSize) /

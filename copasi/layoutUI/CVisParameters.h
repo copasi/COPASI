@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CVisParameters.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/07/19 14:33:55 $
+//   $Author: urost $
+//   $Date: 2007/07/26 20:09:50 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,6 +27,8 @@ class CVisParameters
     static C_INT32 numberOfSteps;
 
     static C_INT16 stepsPerSecond;
+
+    static C_INT16 scalingMode;
 
     static bool animationRunning;
 
