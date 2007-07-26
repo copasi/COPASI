@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.44 $
+//   $Revision: 1.45 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/07/22 19:19:00 $
+//   $Date: 2007/07/26 16:31:24 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -656,10 +656,14 @@ void CQGLNetworkPainter::rescaleDataSets(C_INT16 scaleMode)
                   std::cout << "new value: " << val_new << std::endl;
                 }
               dataSet.putValueForSpecies(viewerNodes[i], val_new);
+
               //calculate new value
               //             if (val != -DBL_MAX)
               //                setNodeSize(viewerNodes[i], val);
             }
+          dataSets.erase(s);
+          dataSets.insert (std::pair<C_INT32, CDataEntity>
+                           (s, dataSet));
         }
     }
 }
