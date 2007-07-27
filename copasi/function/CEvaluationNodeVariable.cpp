@@ -1,10 +1,14 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeVariable.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/07/24 18:40:21 $
+//   $Author: gauges $
+//   $Date: 2007/07/27 12:30:05 $
 // End CVS Header
+
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
@@ -69,5 +73,11 @@ void CEvaluationNodeVariable::writeMathML(std::ostream & out,
     unsigned C_INT32 l) const
   {
     if (mIndex < env.size())
-      out << SPC(l) << env[mIndex][0] << std::endl;
+      {
+        out << SPC(l) << env[mIndex][0] << std::endl;
+      }
+    else
+      {
+        out << SPC(l) << "<mi>" << this->mData << "</mi>" << std::endl;
+      }
   }
