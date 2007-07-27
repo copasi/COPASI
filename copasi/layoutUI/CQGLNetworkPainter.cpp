@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.47 $
+//   $Revision: 1.48 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/07/27 10:04:36 $
+//   $Date: 2007/07/27 13:47:37 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -626,7 +626,7 @@ void CQGLNetworkPainter::rescaleDataSets(C_INT16 scaleMode)
               // get old value
               val = dataSet.getValueForSpecies(viewerNodes[i]);
               //std::cout << "old value: " << val << std::endl;
-              if (scaleMode == 0)
+              if (scaleMode == CVisParameters::INDIVIDUAL_SCALING)
                 {// global mode -> individual mode
                   val_new =
                     ((val - CVisParameters::minNodeSize) *
@@ -636,7 +636,7 @@ void CQGLNetworkPainter::rescaleDataSets(C_INT16 scaleMode)
                              (CVisParameters::maxNodeSize - CVisParameters::minNodeSize) /
                              (pSummaryInfo->getMaxForSpecies(viewerNodes[i]) - pSummaryInfo->getMinForSpecies(viewerNodes[i])))
                             + CVisParameters::minNodeSize;
-                  std::cout << "new value: " << val_new << std::endl;
+                  //std::cout << "new value: " << val_new << std::endl;
                 }
               else
                 {// individual mode -> global mode
@@ -649,7 +649,7 @@ void CQGLNetworkPainter::rescaleDataSets(C_INT16 scaleMode)
                              (CVisParameters::maxNodeSize - CVisParameters::minNodeSize) /
                              (pSummaryInfo->getMaxOverallConcentration() - pSummaryInfo->getMinOverallConcentration()))
                             + CVisParameters::minNodeSize;
-                  //std::cout << "new value: " << val_new << std::endl;
+                  std::cout << "new value: " << val_new << std::endl;
                 }
               dataSet.putValueForSpecies(viewerNodes[i], val_new);
 
@@ -737,13 +737,11 @@ bool CQGLNetworkPainter::createDataSets()
                           // now scale value;
                           if (CVisParameters::scalingMode == CVisParameters::INDIVIDUAL_SCALING)
                             {
-                              std::cout << "individual scaling" << std::endl;
                               minR = pSummaryInfo->getMinForSpecies(ndKey);
                               maxR = pSummaryInfo->getMaxForSpecies(ndKey);
                             }
                           else
                             {// == CVisParameters.GLOBAL_SCALING
-                              std::cout << "global scaling" << std::endl;
                               minR = pSummaryInfo->getMinOverallConcentration();
                               maxR = pSummaryInfo->getMaxOverallConcentration();
                             }
