@@ -1,10 +1,14 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeOperator.cpp,v $
-//   $Revision: 1.27 $
+//   $Revision: 1.28 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/07/24 18:40:21 $
+//   $Author: gauges $
+//   $Date: 2007/07/27 12:31:15 $
 // End CVS Header
+
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
@@ -398,6 +402,7 @@ CEvaluationNode* CEvaluationNodeOperator::simplifyNode(CEvaluationNode *child1, 
               if (CEvaluationNode::type(child1->getType()) == NUMBER)
                 {// both children numbers ->calculate
                   std::stringstream tmp;
+                  tmp.precision(18);
                   tmp << pow(child1->value(), child2->value());
                   CEvaluationNode *newnode = CEvaluationNode::create((Type)(NUMBER | CEvaluationNodeNumber::DOUBLE), tmp.str());
                   delete child1;
@@ -423,6 +428,7 @@ CEvaluationNode* CEvaluationNodeOperator::simplifyNode(CEvaluationNode *child1, 
                   CEvaluationNode* newchild2 = CEvaluationNode::create((Type)(OPERATOR | POWER), "^");
                   CEvaluationNode* grandchild1 = child1;
                   std::stringstream tmp;
+                  tmp.precision(18);
                   tmp << fabs(child2->value());
                   CEvaluationNode* grandchild2 = CEvaluationNode::create((Type)(NUMBER | CEvaluationNodeNumber::DOUBLE), tmp.str());
                   newnode->addChild(newchild1, NULL);
@@ -531,6 +537,7 @@ CEvaluationNode* CEvaluationNodeOperator::simplifyNode(CEvaluationNode *child1, 
               CEvaluationNode* newchild2 = CEvaluationNode::create((Type)(OPERATOR | POWER), "^");
               CEvaluationNode * grandchild1 = child1;
               std::stringstream tmp;
+              tmp.precision(18);
               tmp << child2->value() - 1.0;
               CEvaluationNode * grandchild2 = CEvaluationNode::create((Type)(NUMBER | CEvaluationNodeNumber::DOUBLE), tmp.str());
               newnode->addChild(newchild1, NULL);
@@ -569,6 +576,7 @@ CEvaluationNode* CEvaluationNodeOperator::simplifyNode(CEvaluationNode *child1, 
               if (CEvaluationNode::type(child2->getType()) == NUMBER)
                 {// both children numbers ->calculate
                   std::stringstream tmp;
+                  tmp.precision(18);
                   tmp << child1->value() * child2->value();
                   CEvaluationNode *newnode = CEvaluationNode::create((Type)(NUMBER | CEvaluationNodeNumber::DOUBLE), tmp.str());
                   delete child1;
@@ -594,6 +602,7 @@ CEvaluationNode* CEvaluationNodeOperator::simplifyNode(CEvaluationNode *child1, 
                   CEvaluationNode *newnode = CEvaluationNode::create((Type)(FUNCTION | CEvaluationNodeFunction::MINUS), "-");
                   CEvaluationNode *newchild1 = CEvaluationNode::create((Type)(OPERATOR | MULTIPLY), "*");
                   std::stringstream tmp;
+                  tmp.precision(18);
                   tmp << fabs(child1->value());
                   CEvaluationNode *grandchild1 = CEvaluationNode::create((Type)(NUMBER | CEvaluationNodeNumber::DOUBLE), tmp.str());
                   CEvaluationNode *grandchild2 = child2;
@@ -623,6 +632,7 @@ CEvaluationNode* CEvaluationNodeOperator::simplifyNode(CEvaluationNode *child1, 
                   CEvaluationNode *newnode = CEvaluationNode::create((Type)(FUNCTION | CEvaluationNodeFunction::MINUS), "-");
                   CEvaluationNode *newchild1 = CEvaluationNode::create((Type)(OPERATOR | MULTIPLY), "*");
                   std::stringstream tmp;
+                  tmp.precision(18);
                   tmp << fabs(child2->value());
                   CEvaluationNode *grandchild1 = child1;
                   CEvaluationNode *grandchild2 = CEvaluationNode::create((Type)(NUMBER | CEvaluationNodeNumber::DOUBLE), tmp.str());
@@ -756,6 +766,7 @@ CEvaluationNode* CEvaluationNodeOperator::simplifyNode(CEvaluationNode *child1, 
               if (CEvaluationNode::type(child2->getType()) == NUMBER)
                 {// both children numbers ->calculate
                   std::stringstream tmp;
+                  tmp.precision(18);
                   tmp << child1->value() / child2->value();
                   CEvaluationNode *newnode = CEvaluationNode::create((Type)(NUMBER | CEvaluationNodeNumber::DOUBLE), tmp.str());
                   delete child1;
@@ -848,6 +859,7 @@ CEvaluationNode* CEvaluationNodeOperator::simplifyNode(CEvaluationNode *child1, 
               if (CEvaluationNode::type(child2->getType()) == NUMBER)
                 {// both children numbers ->calculate
                   std::stringstream tmp;
+                  tmp.precision(18);
                   tmp << child1->value() + child2->value();
                   CEvaluationNode *newnode = CEvaluationNode::create((Type)(NUMBER | CEvaluationNodeNumber::DOUBLE), tmp.str());
                   delete child1;
@@ -887,6 +899,7 @@ CEvaluationNode* CEvaluationNodeOperator::simplifyNode(CEvaluationNode *child1, 
               if (CEvaluationNode::type(child2->getType()) == NUMBER)
                 {// both children numbers ->calculate
                   std::stringstream tmp;
+                  tmp.precision(18);
                   tmp << child1->value() - child2->value();
                   CEvaluationNode *newnode = CEvaluationNode::create((Type)(NUMBER | CEvaluationNodeNumber::DOUBLE), tmp.str());
                   delete child1;
