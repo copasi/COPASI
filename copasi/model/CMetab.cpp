@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-//   $Revision: 1.114 $
+//   $Revision: 1.115 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/24 18:40:23 $
+//   $Date: 2007/07/27 16:37:07 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,6 +25,7 @@
 #include "CModel.h"
 #include "CMetab.h"
 #include "CMetabNameInterface.h"
+#include "function/CExpression.h"
 
 //static
 C_FLOAT64 CMetab::convertToNumber(const C_FLOAT64 & concentration,
@@ -228,6 +229,11 @@ void CMetab::refreshConcentration()
   mConc = *mpValueAccess / mpCompartment->getValue() * mpModel->getNumber2QuantityFactor();
 }
 
+void CMetab::refreshNumber()
+{
+  *mpValueAccess = mConc * mpCompartment->getValue() * mpModel->getQuantity2NumberFactor();
+}
+
 void CMetab::setStatus(const CModelEntity::Status & status)
 {
   CModelEntity::setStatus(status);
@@ -244,11 +250,41 @@ void CMetab::setStatus(const CModelEntity::Status & status)
       break;
 
     case ASSIGNMENT:
-      // :TODO: This needs to be implemented when this status becomes available
+      Dependencies.insert(mpConcReference);
+      if (pVolumeReference)
+        Dependencies.insert(pVolumeReference);
+      mpValueReference->setDirectDependencies(Dependencies);
+      mpValueReference->setRefresh(this, &CMetab::refreshNumber);
+
+      mpConcReference->setDirectDependencies(mpExpression->getDirectDependencies());
+      mpConcReference->setRefresh(this, &CMetab::calculate);
+
+      // The dependecies and refresh of the rate are correct (see CModelEntity::setStatus).
+
+      mpConcRateReference->setDirectDependencies(mpRateReference->getDirectDependencies());
+      mpConcRateReference->clearRefresh();
       break;
 
     case ODE:
-      // :TODO: This needs to be implemented when this status becomes available
+      mpValueReference->setDirectDependencies(Dependencies);
+      mpValueReference->clearRefresh();
+
+      Dependencies.insert(mpValueReference);
+      if (pVolumeReference)
+        Dependencies.insert(pVolumeReference);
+      mpConcReference->setDirectDependencies(Dependencies);
+      mpConcReference->setRefresh(this, &CMetab::refreshConcentration);
+
+      Dependencies.clear();
+      Dependencies.insert(mpConcRateReference);
+      if (pVolumeReference)
+        Dependencies.insert(pVolumeReference);
+      mpRateReference->setDirectDependencies(Dependencies);
+      mpRateReference->setRefresh(this, &CMetab::refreshRate);
+
+      mpConcRateReference->setDirectDependencies(mpExpression->getDirectDependencies());
+      mpConcRateReference->setRefresh(this, &CMetab::calculate);
+
       break;
 
     case REACTIONS:
@@ -290,26 +326,67 @@ bool CMetab::compile()
 {
   std::set<const CCopasiObject *> Dependencies;
 
+  mRateVector.clear();
+  mpRateReference->setDirectDependencies(Dependencies);
+  mpRateReference->clearRefresh();
+
+  mpConcRateReference->setDirectDependencies(Dependencies);
+  mpConcRateReference->clearRefresh();
+
+  mpTTReference->setDirectDependencies(Dependencies);
+  mpTTReference->clearRefresh();
+
+  const CCopasiObject * pVolumeReference = NULL;
+  if (mpCompartment)
+    pVolumeReference = mpCompartment->getObject(CCopasiObjectName("Reference=Volume"));
+
   switch (getStatus())
     {
     case FIXED:
-      mRateVector.clear();
-      mpRateReference->setDirectDependencies(Dependencies);
-      mpRateReference->clearRefresh();
       mRate = 0.0;
-
-      mpTTReference->setDirectDependencies(Dependencies);
-      mpTTReference->clearRefresh();
+      mConcRate = 0.0;
       mTT = 2 * DBL_MAX;
       break;
 
     case ASSIGNMENT:
-      // :TODO: This needs to be implemented when this status becomes available
+      Dependencies.insert(mpConcReference);
+      if (pVolumeReference)
+        Dependencies.insert(pVolumeReference);
+      mpValueReference->setDirectDependencies(Dependencies);
+      mpValueReference->setRefresh(this, &CMetab::refreshNumber);
+
+      mpConcReference->setDirectDependencies(mpExpression->getDirectDependencies());
+      mpConcReference->setRefresh(this, &CMetab::calculate);
+
+      mRate = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+      mConcRate = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+      mTT = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
       break;
 
     case ODE:
-      // :TODO: This needs to be implemented when this status becomes available
       mpValueReference->addDirectDependency(this);
+
+      Dependencies.insert(mpValueReference);
+      if (pVolumeReference)
+        Dependencies.insert(pVolumeReference);
+      mpConcReference->setDirectDependencies(Dependencies);
+      mpConcReference->setRefresh(this, &CMetab::refreshConcentration);
+
+      Dependencies.clear();
+      Dependencies.insert(mpConcRateReference);
+      if (pVolumeReference)
+        Dependencies.insert(pVolumeReference);
+      mpRateReference->setDirectDependencies(Dependencies);
+      mpRateReference->setRefresh(this, &CMetab::refreshRate);
+
+      mpConcRateReference->setDirectDependencies(mpExpression->getDirectDependencies());
+      mpConcRateReference->setRefresh(this, &CMetab::calculate);
+
+      Dependencies.clear();
+      Dependencies.insert(mpValueReference);
+      Dependencies.insert(mpRateReference);
+      mpTTReference->setDirectDependencies(Dependencies);
+      mpTTReference->setRefresh(this, &CMetab::refreshTransitionTime);
       break;
 
     case REACTIONS:
@@ -367,11 +444,11 @@ void CMetab::calculate()
       break;
 
     case ASSIGNMENT:
-      // :TODO: This needs to be implemented when this status becomes available
+      mConc = mpExpression->calcValue();
       break;
 
     case ODE:
-      // :TODO: This needs to be implemented when this status becomes available
+      mConcRate = mpExpression->calcValue();
       break;
 
     case REACTIONS:
@@ -392,11 +469,10 @@ void CMetab::refreshRate()
       break;
 
     case ASSIGNMENT:
-      // :TODO: This needs to be implemented when this status becomes available
       break;
 
     case ODE:
-      // :TODO: This needs to be implemented when this status becomes available
+      mRate = mConcRate * getCompartment()->getValue() * mpModel->getQuantity2NumberFactor();
       break;
 
     case REACTIONS:
@@ -426,11 +502,10 @@ void CMetab::refreshTransitionTime()
       break;
 
     case ASSIGNMENT:
-      // :TODO: This needs to be implemented when this status becomes available
       break;
 
     case ODE:
-      // :TODO: This needs to be implemented when this status becomes available
+      mTT = *mpValueData / mRate;
       break;
 
     case REACTIONS:
