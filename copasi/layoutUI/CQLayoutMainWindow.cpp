@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.26 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/07/23 09:40:11 $
+//   $Date: 2007/07/27 10:05:23 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -292,12 +292,14 @@ void CQLayoutMainWindow::changeStepValue(C_INT32 i)
 
 void CQLayoutMainWindow::setIndividualScaling()
 {
-  glPainter->rescaleDataSets(0);
+  CVisParameters::scalingMode == CVisParameters::INDIVIDUAL_SCALING;
+  glPainter->rescaleDataSets(CVisParameters::INDIVIDUAL_SCALING);
 }
 
 void CQLayoutMainWindow::setGlobalScaling()
 {
-  glPainter->rescaleDataSets(1);
+  CVisParameters::scalingMode == CVisParameters::GLOBAL_SCALING;
+  glPainter->rescaleDataSets(CVisParameters::GLOBAL_SCALING);
 }
 
 void CQLayoutMainWindow::closeApplication()

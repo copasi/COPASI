@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.46 $
+//   $Revision: 1.47 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/07/26 20:08:15 $
+//   $Date: 2007/07/27 10:04:36 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -614,13 +614,9 @@ void CQGLNetworkPainter::rescaleDataSets(C_INT16 scaleMode)
   C_INT32 s; // step number
   C_FLOAT64 val, val_new;
 
-  std::cout << "A" << std::endl;
-  std::cout << "data sets: " << dataSets.size() << std::endl;
-  std::cout << "B" << std::endl;
   for (s = 0; s < dataSets.size(); s++)
     {
       std::map<C_INT32, CDataEntity>::iterator iter = dataSets.find(s);
-      std::cout << "find: " << s << std::endl; //XXXX
       if (iter != dataSets.end())
         {
           dataSet = (*iter).second;
@@ -629,7 +625,7 @@ void CQGLNetworkPainter::rescaleDataSets(C_INT16 scaleMode)
             {
               // get old value
               val = dataSet.getValueForSpecies(viewerNodes[i]);
-              std::cout << "old value: " << val << std::endl;
+              //std::cout << "old value: " << val << std::endl;
               if (scaleMode == 0)
                 {// global mode -> individual mode
                   val_new =
@@ -653,7 +649,7 @@ void CQGLNetworkPainter::rescaleDataSets(C_INT16 scaleMode)
                              (CVisParameters::maxNodeSize - CVisParameters::minNodeSize) /
                              (pSummaryInfo->getMaxOverallConcentration() - pSummaryInfo->getMinOverallConcentration()))
                             + CVisParameters::minNodeSize;
-                  std::cout << "new value: " << val_new << std::endl;
+                  //std::cout << "new value: " << val_new << std::endl;
                 }
               dataSet.putValueForSpecies(viewerNodes[i], val_new);
 
@@ -739,8 +735,18 @@ bool CQGLNetworkPainter::createDataSets()
                           val = timeSer.getConcentrationData(t, i); // get concentration of species i at timepoint t
                           C_FLOAT64 scaledVal;
                           // now scale value;
-                          minR = pSummaryInfo->getMinForSpecies(ndKey);
-                          maxR = pSummaryInfo->getMaxForSpecies(ndKey);
+                          if (CVisParameters::scalingMode == CVisParameters::INDIVIDUAL_SCALING)
+                            {
+                              std::cout << "individual scaling" << std::endl;
+                              minR = pSummaryInfo->getMinForSpecies(ndKey);
+                              maxR = pSummaryInfo->getMaxForSpecies(ndKey);
+                            }
+                          else
+                            {// == CVisParameters.GLOBAL_SCALING
+                              std::cout << "global scaling" << std::endl;
+                              minR = pSummaryInfo->getMinOverallConcentration();
+                              maxR = pSummaryInfo->getMaxOverallConcentration();
+                            }
                           scaledVal = CVisParameters::minNodeSize +
                                       (((CVisParameters::maxNodeSize - CVisParameters::minNodeSize) / (maxR - minR))
                                        * (val - minR));
@@ -766,6 +772,7 @@ bool CQGLNetworkPainter::createDataSets()
       else
         std::cout << "no simulation steps found: you have to create a time course first" << std::endl;
     }
+  //std::cout << *pSummaryInfo << std::endl;
   return loadDataSuccessful;
 }
 
