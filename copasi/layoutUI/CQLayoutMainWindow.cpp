@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.28 $
+//   $Revision: 1.29 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/07/30 07:39:39 $
+//   $Date: 2007/07/30 10:43:33 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -84,6 +84,9 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
   connect(startStopButton, SIGNAL(clicked()), this, SLOT(startAnimation()));
   startStopButton->setIconSet(startIcon);
   startStopButton->setEnabled(false);
+
+  //QSpacerItem(10,15,QSizePolicy::Minimum, QSizePolicy::Expanding);
+  //XXXGridLayout->addItem(spacer1, 4, 0);
 
   timeSlider = new QwtSlider(bottomBox, Qt::Horizontal, QwtSlider::BottomScale, QwtSlider::BgTrough);
   timeSlider->setRange(0, 100, 1, 0);
@@ -235,6 +238,7 @@ void CQLayoutMainWindow::loadData()
     {
       this->timeSlider->setEnabled(true);
       this->startStopButton->setEnabled(true);
+      paraPanel->enableStepNumberChoice();
       int maxVal = glPainter->getNumberOfSteps();
       //std::cout << "number of steps: " << maxVal << std::endl;
       this->timeSlider->setRange(0, maxVal);
@@ -261,6 +265,7 @@ void CQLayoutMainWindow::startAnimation()
   connect(startStopButton, SIGNAL(clicked()), this, SLOT(stopAnimation()));
   startStopButton->setIconSet(stopIcon);
   paraPanel->disableParameterChoice();
+  paraPanel->disableStepNumberChoice();
 }
 
 void CQLayoutMainWindow::stopAnimation()
@@ -272,6 +277,7 @@ void CQLayoutMainWindow::stopAnimation()
   disconnect(startStopButton, SIGNAL(clicked()), this, SLOT(stopAnimation()));
   startStopButton->setIconSet(startIcon);
   paraPanel->enableParameterChoice();
+  paraPanel->enableStepNumberChoice();
 }
 
 void CQLayoutMainWindow::endOfAnimationReached()
@@ -286,6 +292,7 @@ void CQLayoutMainWindow::showStep(double i)
 
   glPainter->showStep((int) i);
   glPainter->updateGL();
+  paraPanel->setStepNumber(i);
 }
 
 void CQLayoutMainWindow::changeStepValue(C_INT32 i)
@@ -306,6 +313,11 @@ void CQLayoutMainWindow::setGlobalScaling()
   CVisParameters::scalingMode = CVisParameters::GLOBAL_SCALING;
   glPainter->rescaleDataSets(CVisParameters::GLOBAL_SCALING);
   showStep(this->timeSlider->value());
+}
+
+void CQLayoutMainWindow::setValueOnSlider(C_INT32 val)
+{
+  timeSlider->setValue(val);
 }
 
 void CQLayoutMainWindow::closeApplication()

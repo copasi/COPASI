@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/Attic/ParaPanel.ui.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/07/23 13:26:17 $
+//   $Author: urost $
+//   $Date: 2007/07/30 10:44:15 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,6 +25,9 @@
 #include "copasi/layoutUI/CVisParameters.h"
 #include "copasi/layoutUI/CQLayoutMainWindow.h"
 
+#include <qstring.h>
+#include <qvalidator.h>
+
 void ParaPanel::enableParameterChoice()
 {
   spinBox1->setEnabled(true);
@@ -35,6 +38,16 @@ void ParaPanel::disableParameterChoice()
 {
   spinBox1->setEnabled(false);
   scalingButtonGroup->setEnabled(false);
+}
+
+void ParaPanel::enableStepNumberChoice()
+{
+  stepEdit->setEnabled(true);
+}
+
+void ParaPanel::disableStepNumberChoice()
+{
+  stepEdit->setEnabled(false);
 }
 
 void ParaPanel::changeFrameRate()
@@ -57,4 +70,28 @@ void ParaPanel::setIndividualScaling()
   if (tmp) tmp -> setIndividualScaling();
 
   //((CQLayoutMainWindow *)(this->parentWidget()))->setIndividualScaling();
+}
+
+void ParaPanel::setStepNumber(int i)
+{
+  QString s = QString::number(i, 10);
+  stepEdit->setText(s);
+}
+
+void ParaPanel::stepEdit_returnPressed()
+{
+  QValidator* validator = new QIntValidator(0, INT_MAX, this);
+  stepEdit->setValidator(validator);
+
+  //if (validator->validate(stepEdit->text()) == QValidator::Acceptable) {
+  QString line = stepEdit->text();
+  bool ok;
+  int val = line.toInt(&ok, 10);
+  if (ok)
+    {
+      CQLayoutMainWindow * tmp = dynamic_cast<CQLayoutMainWindow *>(parentWidget()->parentWidget()->parentWidget());
+      assert(tmp);
+      if (tmp) tmp -> setValueOnSlider(val);
+    }
+  //}
 }
