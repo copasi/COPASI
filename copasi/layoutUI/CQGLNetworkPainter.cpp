@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.48 $
+//   $Revision: 1.49 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/07/27 13:47:37 $
+//   $Date: 2007/07/30 07:39:57 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,6 +41,11 @@
 CQGLNetworkPainter::CQGLNetworkPainter(QWidget *parent, const char *name)
     : QGLWidget(parent, name)
 {initializeGraphPainter(parent);}
+
+CQGLNetworkPainter::~CQGLNetworkPainter()
+{
+  std::cout << "destroy network painter" << std::endl;
+}
 
 // set graph size and reset projection to fit new size
 void CQGLNetworkPainter::setGraphSize(const CLPoint & min, const CLPoint & max)
@@ -649,7 +654,7 @@ void CQGLNetworkPainter::rescaleDataSets(C_INT16 scaleMode)
                              (CVisParameters::maxNodeSize - CVisParameters::minNodeSize) /
                              (pSummaryInfo->getMaxOverallConcentration() - pSummaryInfo->getMinOverallConcentration()))
                             + CVisParameters::minNodeSize;
-                  std::cout << "new value: " << val_new << std::endl;
+                  //std::cout << "new value: " << val_new << std::endl;
                 }
               dataSet.putValueForSpecies(viewerNodes[i], val_new);
 
@@ -1138,6 +1143,13 @@ void CQGLNetworkPainter::testOpenGL()
   glVertex3f(-1.5f, -0.5f, 0.0f); // linke Ecke unten
   glVertex3f(-1.5f, 0.5f, 0.0f); // linke Ecke oben
   glEnd(); // Zeichenaktion beenden
+}
+
+bool CQGLNetworkPainter::isCircleMode()
+{
+  if (this->mLabelShape == CIRCLE)
+    return true;
+  else return false;
 }
 
 void CQGLNetworkPainter::initializeGraphPainter(QWidget *viewportWidget)

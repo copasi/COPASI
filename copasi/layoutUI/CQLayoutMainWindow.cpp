@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.27 $
+//   $Revision: 1.28 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/07/27 13:47:53 $
+//   $Date: 2007/07/30 07:39:39 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -215,6 +215,8 @@ void CQLayoutMainWindow::mapLabelsToCircles()
   if (glPainter != NULL)
     {
       glPainter->mapLabelsToCircles();
+      if (CVisParameters::numberOfSteps > 0)
+        showStep(this->timeSlider->value());
     }
 }
 
@@ -238,6 +240,8 @@ void CQLayoutMainWindow::loadData()
       this->timeSlider->setRange(0, maxVal);
       CVisParameters::numberOfSteps = maxVal;
       glPainter->updateGL();
+      if (this->glPainter->isCircleMode())
+        showStep(this->timeSlider->value());
     }
 }
 
@@ -294,12 +298,14 @@ void CQLayoutMainWindow::setIndividualScaling()
 {
   CVisParameters::scalingMode = CVisParameters::INDIVIDUAL_SCALING;
   glPainter->rescaleDataSets(CVisParameters::INDIVIDUAL_SCALING);
+  showStep(this->timeSlider->value());
 }
 
 void CQLayoutMainWindow::setGlobalScaling()
 {
   CVisParameters::scalingMode = CVisParameters::GLOBAL_SCALING;
   glPainter->rescaleDataSets(CVisParameters::GLOBAL_SCALING);
+  showStep(this->timeSlider->value());
 }
 
 void CQLayoutMainWindow::closeApplication()

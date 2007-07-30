@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.29 $
+//   $Revision: 1.30 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/07/22 19:18:05 $
+//   $Date: 2007/07/30 07:40:04 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,6 +48,7 @@ class CQGLNetworkPainter : public QGLWidget
 
   public:
     CQGLNetworkPainter(QWidget *parent = 0, const char *name = 0);
+    ~CQGLNetworkPainter();
 
     CSimSummaryInfo *pSummaryInfo;
 
@@ -62,6 +63,7 @@ class CQGLNetworkPainter : public QGLWidget
 
     bool createDataSets();
     C_INT32 getNumberOfSteps();
+    bool isCircleMode();
 
     void setNodeSize(std::string key, C_FLOAT64 val);
     //void changeNodeSize(std::string viewerNodeKey, double newSize);
