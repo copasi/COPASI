@@ -2,7 +2,7 @@
 # od dblatex:
 
 # The dblatex installation directory
-DBLATEX_PATH=/usr/local/dblatex
+DBLATEX_PATH=/home/usr
 
 # These should be correct after DBLATEX_PATH
 DBLATEX=$(DBLATEX_PATH)/bin/dblatex
@@ -15,8 +15,9 @@ COPASI_TEXINPUTS=.:$(COPASI_DBLATEX):$(DBLATEX_TEXINPUTS):$(TEXINPUTS)
 
 # xhtml environment for COPASI
 
-COPASI_XHTML=xhtml
-.PHONY: CodeGuidelines.pdf CodeGuidelines.xhtml \
+COPASI_XHTML=dblatex/copasi_xhtml.xsl
+
+.PHONY: CodeGuidelines.pdf \
 	Redistribution.pdf \
 	SBMLReaction.pdf
 
@@ -43,10 +44,11 @@ CodeGuidelines.clean:
 
 CodeGuidelines.xhtml: $(CodeGuidelines_SOURCES) \
 	$(CodeGuidelines_IMAGES) \
-	$(COPASI_XHTML)/copasi.xsl
+	$(COPASI_XHTML)
 	@[ -d $@ ] || mkdir $@
+	touch $@
 	(cd $@; \
-	xsltproc ../$(COPASI_XHTML)/copasi.xsl ../CodeGuidelines.xml; \
+	xsltproc ../$(COPASI_XHTML) ../CodeGuidelines.xml; \
 	cd ..)
 
 
