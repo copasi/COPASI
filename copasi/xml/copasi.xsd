@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/copasi.xsd,v $ -->
-<!--   $Revision: 1.41 $ -->
+<!--   $Revision: 1.42 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: shoops $ -->
-<!--   $Date: 2007/04/10 17:33:57 $ -->
+<!--   $Date: 2007/07/31 17:55:57 $ -->
 <!-- End CVS Header -->
 <!-- Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual -->
 <!-- Properties, Inc. and EML Research, gGmbH. -->
 <!-- All rights reserved. -->
-<!-- edited with XMLSpy v2006 sp1 U (http://www.altova.com) by Stefan Hoops (VBI) -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
   <xs:element name="COPASI" id="copasi.COPASI">
     <xs:annotation>
@@ -47,7 +46,7 @@
                 <xs:attribute name="timeUnit" use="required" id="copasi.Model.timeUnit">
                   <xs:annotation>
                     <xs:documentation>
-                      <p>The time unit for the model. This is a string which may take one of the following values: d, h, min, s, ms, µs, ns, ps, fs.</p>
+                      <p>The time unit for the model. This is a string which may take one of the following values: d, h, min, s, ms, Âµs, ns, ps, fs.</p>
                     </xs:documentation>
                   </xs:annotation>
                   <xs:simpleType>
@@ -57,7 +56,7 @@
                       <xs:enumeration value="min"/>
                       <xs:enumeration value="s"/>
                       <xs:enumeration value="ms"/>
-                      <xs:enumeration value="µs"/>
+                      <xs:enumeration value="Âµs"/>
                       <xs:enumeration value="ns"/>
                       <xs:enumeration value="ps"/>
                       <xs:enumeration value="fs"/>
@@ -67,10 +66,10 @@
                 <xs:attribute name="volumeUnit" use="required" id="copasi.Model.volumeUnit">
                   <xs:simpleType>
                     <xs:restriction base="xs:string">
-                      <xs:enumeration value="m³"/>
+                      <xs:enumeration value="mÂ³"/>
                       <xs:enumeration value="l"/>
                       <xs:enumeration value="ml"/>
-                      <xs:enumeration value="µl"/>
+                      <xs:enumeration value="Âµl"/>
                       <xs:enumeration value="nl"/>
                       <xs:enumeration value="pl"/>
                       <xs:enumeration value="fl"/>
@@ -82,7 +81,7 @@
                     <xs:restriction base="xs:string">
                       <xs:enumeration value="mol"/>
                       <xs:enumeration value="mmol"/>
-                      <xs:enumeration value="µmol"/>
+                      <xs:enumeration value="Âµmol"/>
                       <xs:enumeration value="nmol"/>
                       <xs:enumeration value="pmol"/>
                       <xs:enumeration value="fmol"/>
