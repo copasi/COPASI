@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensMethod.cpp,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/05/15 12:36:26 $
+//   $Date: 2007/07/31 17:57:36 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -99,7 +99,7 @@ bool CSensMethod::do_target_calculation(CCopasiArray & result, bool first)
       //mpProblem->getModel()->updateSimulatedValues();
       //mpProblem->getModel()->updateNonSimulatedValues();
     }
-  mpProblem->getModel()->updateSimulatedValues();
+  mpProblem->getModel()->updateSimulatedValues(true);
   mpProblem->getModel()->updateNonSimulatedValues();
 
   //****** retrieve results ************

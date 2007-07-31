@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CState.cpp,v $
-//   $Revision: 1.68 $
+//   $Revision: 1.69 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/07/17 21:15:56 $
+//   $Author: shoops $
+//   $Date: 2007/07/31 17:57:34 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -328,10 +328,13 @@ unsigned C_INT32 CState::getNumVariable() const
 unsigned C_INT32 CState::getNumFixed() const
   {return mpEnd - mpBeginFixed;}
 
+/*
 void CState::setUpdateDependentRequired(const bool & required)
 {mUpdateDependentRequired = required;}
+
 const bool & CState::isUpdateDependentRequired() const
   {return mUpdateDependentRequired;}
+ */
 
 C_FLOAT64 * CState::resize(const unsigned C_INT32 & size)
 {

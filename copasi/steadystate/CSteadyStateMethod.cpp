@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateMethod.cpp,v $
-//   $Revision: 1.28 $
+//   $Revision: 1.29 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/12 14:28:48 $
+//   $Date: 2007/07/31 17:57:35 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -241,7 +241,7 @@ void CSteadyStateMethod::doJacobian(CMatrix< C_FLOAT64 > & jacobian,
                                     CMatrix< C_FLOAT64 > & jacobianX)
 {
   mpModel->setState(*mpSteadyState);
-  mpModel->updateSimulatedValues();
+  mpModel->updateSimulatedValues(true);
 
   mpModel->calculateJacobian(jacobian, *mpDerivationFactor, *mpDerivationResolution);
   mpModel->calculateJacobianX(jacobianX, *mpDerivationFactor, *mpDerivationResolution);
@@ -258,7 +258,7 @@ C_FLOAT64 CSteadyStateMethod::getStabilityResolution()
 void CSteadyStateMethod::calculateJacobianX(const C_FLOAT64 & oldMaxRate)
 {
   mpModel->setState(*mpSteadyState);
-  mpModel->updateSimulatedValues();
+  mpModel->updateSimulatedValues(true);
   mpModel->calculateJacobianX(*mpJacobianX,
                               std::min(*mpDerivationFactor, oldMaxRate),
                               *mpDerivationResolution);

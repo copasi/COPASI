@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-//   $Revision: 1.79 $
+//   $Revision: 1.80 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/12 14:28:48 $
+//   $Date: 2007/07/31 17:57:35 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -295,7 +295,6 @@ CSteadyStateMethod::ReturnCode CNewtonMethod::processInternal()
   if (mpProgressHandler)
     mpProgressHandler->setName("performing steady state calculation...");
 
-  mpSteadyState->setUpdateDependentRequired(true);
   mpX = mpSteadyState->beginIndependent();
 
   NewtonResultCode returnCode;
@@ -628,7 +627,7 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::processNewton()
 void CNewtonMethod::calculateDerivativesX()
 {
   mpModel->setState(*mpSteadyState);
-  mpModel->updateSimulatedValues();
+  mpModel->updateSimulatedValues(true);
   mpModel->calculateDerivativesX(mdxdt.array());
 }
 
@@ -649,25 +648,14 @@ bool CNewtonMethod::allPositive()
     if (*pIt < ParticleResolution * (*itMetab)->getCompartment()->getValue())
       return false;
 
-  // This is necessarry since the dependent numbers may be ignored during calculation.
-  if (mpSteadyState->isUpdateDependentRequired())
-    {
-      CCopasiVector< CMoiety >::const_iterator itMoiety = mpModel->getMoieties().begin();
-      CCopasiVector< CMoiety >::const_iterator endMoiety = mpModel->getMoieties().end();
+  mpModel->updateSimulatedValues(true);
 
-      for (; itMoiety != endMoiety; ++itMoiety, itMetab++)
-        if ((*itMoiety)->dependentNumber() < ParticleResolution * (*itMetab)->getCompartment()->getValue())
-          return false;
-    }
-  else
-    {
-      pIt = mpSteadyState->beginDependent();
-      pEnd = pIt + mpModel->getNumDependentMetabs();
+  pIt = mpSteadyState->beginDependent();
+  pEnd = pIt + mpModel->getNumDependentMetabs();
 
-      for (; pIt != pEnd; ++pIt, itMetab++)
-        if (*pIt < ParticleResolution * (*itMetab)->getCompartment()->getValue())
-          return false;
-    }
+  for (; pIt != pEnd; ++pIt, itMetab++)
+    if (*pIt < ParticleResolution * (*itMetab)->getCompartment()->getValue())
+      return false;
 
   // :TODO: we need to implement checking for metabolites determined by assignments
   // :TODO: when those are implemented.

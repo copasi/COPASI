@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/Attic/CLsodarMethod.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/24 18:40:24 $
+//   $Date: 2007/07/31 17:57:34 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -209,15 +209,9 @@ void CLsodarMethod::start(const CState * initialState)
 
   mReducedModel = * getValue("Integrate Reduced Model").pBOOL;
   if (mReducedModel)
-    {
-      mpState->setUpdateDependentRequired(true);
-      mData.dim = mpState->getNumIndependent();
-    }
+    mData.dim = mpState->getNumIndependent();
   else
-    {
-      mpState->setUpdateDependentRequired(false);
-      mData.dim = mpState->getNumIndependent() + mpModel->getNumDependentMetabs();
-    }
+    mData.dim = mpState->getNumIndependent() + mpModel->getNumDependentMetabs();
 
   mYdot.resize(mData.dim);
 
@@ -274,7 +268,7 @@ void CLsodarMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * 
   mpState->setTime(*t);
 
   mpModel->setState(*mpState);
-  mpModel->updateSimulatedValues();
+  mpModel->updateSimulatedValues(mReducedModel);
 
   if (mReducedModel)
     mpModel->calculateDerivativesX(ydot);

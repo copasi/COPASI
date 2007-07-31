@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMoiety.cpp,v $
-   $Revision: 1.43 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/09/11 14:25:42 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMoiety.cpp,v $
+//   $Revision: 1.44 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/07/31 17:57:34 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -29,7 +29,7 @@
 CMoiety::CMoiety(const std::string & name,
                  const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Moiety"),
-    mKey(GlobalKeys.add("Moiety", this)),                   //By G
+    mKey(GlobalKeys.add("Moiety", this)), //By G
     mNumber(0),
     mINumber(0),
     mEquation()
@@ -41,7 +41,7 @@ CMoiety::CMoiety(const std::string & name,
 CMoiety::CMoiety(const CMoiety & src,
                  const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
-    mKey(GlobalKeys.add("Moiety", this)),                   //By G
+    mKey(GlobalKeys.add("Moiety", this)), //By G
     mNumber(src.mNumber),
     mINumber(src.mINumber),
     mEquation(src.mEquation)
@@ -69,10 +69,6 @@ void CMoiety::initObjects()
   Dependencies.insert(this);
   pObj->setDirectDependencies(Dependencies);
 
-  mpRateReference =
-    static_cast< CCopasiObjectReference< C_FLOAT64 > * >(addObjectReference("DependentRate", mRate, CCopasiObject::ValueDbl));
-  mpRateReference->setRefresh(this, &CMoiety::refreshDependentRate);
-
   return;
 }
 
@@ -83,10 +79,7 @@ void CMoiety::add(C_FLOAT64 value, CMetab * pMetabolite)
   if (!mEquation.size())
     pMetabolite->setDependentOn(this);
   else
-    {
-      mDependencies.insert(pMetabolite->mpValueReference);
-      mpRateReference->addDirectDependency(pMetabolite->mpRateReference);
-    }
+    mDependencies.insert(pMetabolite->mpValueReference);
 
   std::pair<C_FLOAT64, CMetab *> element;
 
@@ -100,9 +93,6 @@ void CMoiety::cleanup()
 {
   mDependencies.clear();
   mEquation.clear();
-
-  std::set< const CCopasiObject *> NoDependencies;
-  mpRateReference->setDirectDependencies(NoDependencies);
 }
 
 void CMoiety::refreshDependentNumber()
@@ -117,18 +107,6 @@ void CMoiety::refreshDependentNumber()
   return;
 }
 
-void CMoiety::refreshDependentRate()
-{
-  mRate = 0;
-
-  std::vector< std::pair< C_FLOAT64, CMetab * > >::iterator it = mEquation.begin() + 1;
-  std::vector< std::pair< C_FLOAT64, CMetab * > >::iterator end = mEquation.end();
-  for (; it != end; ++it)
-    mRate -= it->first * it->second->getRate();
-
-  return;
-}
-
 const C_FLOAT64 & CMoiety::dependentNumber()
 {
   refreshDependentNumber();
@@ -137,9 +115,6 @@ const C_FLOAT64 & CMoiety::dependentNumber()
 
 const C_FLOAT64 & CMoiety::getDependentNumber() const
   {return mNumber;}
-
-const C_FLOAT64 & CMoiety::getDependentRate() const
-  {return mRate;}
 
 const std::string & CMoiety::getKey() const {return mKey;} //By G
 

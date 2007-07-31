@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/StateSubwidget.ui.h,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.34 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/24 13:25:47 $
+//   $Date: 2007/07/31 17:57:35 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -289,7 +289,7 @@ bool StateSubwidget::loadAll(const CSteadyStateTask * task)
   CModel * pModel = task->getProblem()->getModel();
 
   pModel->setState(*pState);
-  pModel->updateSimulatedValues();
+  pModel->updateSimulatedValues(true);
 
   pModel->updateNonSimulatedValues();
 
@@ -337,7 +337,7 @@ bool StateSubwidget::loadAll(const CSteadyStateTask * task)
 
   // protocol
   if (true /*pProblem->isJacobianRequested() ||
-                              pProblem->isStabilityAnalysisRequested()*/)
+                                    pProblem->isStabilityAnalysisRequested()*/)
     {
       tabWidget->setTabEnabled(tabWidget->page(Last), true);
 

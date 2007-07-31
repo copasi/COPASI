@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-//   $Revision: 1.66 $
+//   $Revision: 1.67 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/05/15 12:36:26 $
+//   $Date: 2007/07/31 17:57:35 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -279,7 +279,7 @@ bool CSteadyStateTask::restore()
       CModel * pModel = mpProblem->getModel();
 
       pModel->setState(*mpSteadyState);
-      pModel->updateSimulatedValues();
+      pModel->updateSimulatedValues(true);
       pModel->setInitialState(pModel->getState());
     }
 
@@ -316,7 +316,7 @@ std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
   if (!pModel) return os;
 
   pModel->setState(*pState);
-  pModel->updateSimulatedValues();
+  pModel->updateSimulatedValues(true);
   pModel->updateNonSimulatedValues();
 
   // Metabolite Info: Name, Concentration, Concentration Rate, Particle Number, Particle Rate, Transition Time

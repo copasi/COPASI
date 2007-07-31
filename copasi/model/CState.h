@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CState.h,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.34 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/07/17 21:15:56 $
+//   $Author: shoops $
+//   $Date: 2007/07/31 17:57:34 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -128,8 +128,10 @@ class CState
     unsigned C_INT32 getNumVariable() const;
     unsigned C_INT32 getNumFixed() const;
 
+    /*
     void setUpdateDependentRequired(const bool & required);
     const bool & isUpdateDependentRequired() const;
+    */
 
   protected:
     // These methods are only accessible from CStateTemplate

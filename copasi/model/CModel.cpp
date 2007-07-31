@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.306 $
+//   $Revision: 1.307 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/24 18:40:23 $
+//   $Date: 2007/07/31 17:57:34 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -794,8 +794,7 @@ void CModel::buildMoieties()
 
   for (i = 0; i < imax; i++, ++it)
     {
-      pMoiety = new CMoiety;
-      pMoiety->setObjectName((*it)->getObjectName());
+      pMoiety = new CMoiety((*it)->getObjectName());
       pMoiety->add(1.0, *it);
 
       for (j = 0; j < mNumMetabolitesIndependent; j++, pFactor++)
@@ -1078,7 +1077,7 @@ void CModel::applyInitialValues()
     (**itRefresh++)();
 
   // Update all dependend objects needed for simulation.
-  updateSimulatedValues();
+  updateSimulatedValues(true);
 }
 
 void CModel::clearMoieties()
@@ -1502,19 +1501,6 @@ const CState & CModel::getState() const
 
 void CModel::setInitialState(const CState & state)
 {
-  // The situation where the initial state has the updateDependentRequired flag
-  // set is currently not handled.
-
-  assert (!state.isUpdateDependentRequired());
-
-  // To prevent triggering the above assertion please use:
-  //   setState(state);
-  //   updateSimulatedValues();
-  //   setInititalState(getState());
-  //
-  // This is not done automatically since it changes the current state of
-  // the model.
-
   mInitialState = state;
 
   // We have to update the moieties
@@ -1541,11 +1527,11 @@ void CModel::setState(const CState & state)
   return;
 }
 
-void CModel::updateSimulatedValues(void)
+void CModel::updateSimulatedValues(const bool & updateMoieties)
 {
   // Depending on which model we are using we need to update
   // the particle numbers for the dependent metabolites.
-  if (mCurrentState.isUpdateDependentRequired())
+  if (updateMoieties)
     {
       C_FLOAT64 * pDependent = mCurrentState.beginDependent();
       CCopasiVector< CMoiety >::iterator itMoiety = mMoieties.begin();
@@ -1553,8 +1539,6 @@ void CModel::updateSimulatedValues(void)
 
       for (; itMoiety != endMoiety; ++itMoiety, ++pDependent)
         *pDependent = (*itMoiety)->dependentNumber();
-
-      mCurrentState.setUpdateDependentRequired(false);
     }
 
   std::vector< Refresh * >::const_iterator itRefresh = mSimulatedRefreshes.begin();
@@ -1680,18 +1664,6 @@ void CModel::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
                                const C_FLOAT64 & derivationFactor,
                                const C_FLOAT64 & resolution)
 {
-  if (mCurrentState.isUpdateDependentRequired())
-    {
-      C_FLOAT64 * pDependent = mCurrentState.beginDependent();
-      CCopasiVector< CMoiety >::iterator itMoiety = mMoieties.begin();
-      CCopasiVector< CMoiety >::iterator endMoiety = mMoieties.end();
-
-      for (; itMoiety != endMoiety; ++itMoiety, ++pDependent)
-        *pDependent = (*itMoiety)->dependentNumber();
-
-      mCurrentState.setUpdateDependentRequired(false);
-    }
-
   unsigned C_INT32 Dim =
     mCurrentState.getNumIndependent() + mNumMetabolitesReaction - mNumMetabolitesIndependent;
   unsigned C_INT32 Col;
@@ -1733,11 +1705,11 @@ void CModel::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
       InvDelta = 1.0 / (X2 - X1);
 
       *pX = X1;
-      updateSimulatedValues();
+      updateSimulatedValues(false);
       calculateDerivatives(Y1.array());
 
       *pX = X2;
-      updateSimulatedValues();
+      updateSimulatedValues(false);
       calculateDerivatives(Y2.array());
 
       *pX = Store;
@@ -1750,7 +1722,7 @@ void CModel::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
         * pJacobian = (*pY2 - *pY1) * InvDelta;
     }
 
-  updateSimulatedValues();
+  updateSimulatedValues(false);
 
   //  jacobian = Jacobian;
   //  return;
@@ -1828,13 +1800,11 @@ void CModel::calculateJacobianX(CMatrix< C_FLOAT64 > & jacobianX,
       InvDelta = 1.0 / (X2 - X1);
 
       *pX = X1;
-      mCurrentState.setUpdateDependentRequired(true);
-      updateSimulatedValues();
+      updateSimulatedValues(true);
       calculateDerivativesX(Y1.array());
 
       *pX = X2;
-      mCurrentState.setUpdateDependentRequired(true);
-      updateSimulatedValues();
+      updateSimulatedValues(true);
       calculateDerivativesX(Y2.array());
 
       *pX = Store;
@@ -1847,8 +1817,7 @@ void CModel::calculateJacobianX(CMatrix< C_FLOAT64 > & jacobianX,
         * pJacobian = (*pY2 - *pY1) * InvDelta;
     }
 
-  mCurrentState.setUpdateDependentRequired(true);
-  updateSimulatedValues();
+  updateSimulatedValues(true);
 }
 
 C_FLOAT64 CModel::calculateDivergence() const

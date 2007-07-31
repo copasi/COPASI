@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapTask.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/12 14:27:06 $
+//   $Date: 2007/07/31 17:57:36 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -173,7 +173,7 @@ bool CLyapTask::process(const bool & useInitialValues)
   catch (CCopasiException Exception)
     {
       //mpLyapProblem->getModel()->setState(*mpCurrentState);
-      mpLyapProblem->getModel()->updateSimulatedValues();
+      mpLyapProblem->getModel()->updateSimulatedValues(true);
 
       calculationsBeforeOutput();
       output(COutputInterface::DURING);
@@ -207,7 +207,7 @@ bool CLyapTask::restore()
 
       //TODO
       //pModel->setState(*mpCurrentState);
-      pModel->updateSimulatedValues();
+      pModel->updateSimulatedValues(true);
       pModel->setInitialState(pModel->getState());
     }
 

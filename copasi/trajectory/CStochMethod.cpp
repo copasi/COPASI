@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-//   $Revision: 1.64 $
+//   $Revision: 1.65 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/24 18:40:24 $
+//   $Date: 2007/07/31 17:57:34 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -227,7 +227,7 @@ void CStochMethod::start(const CState * initialState)
   //update model to integer particle numbers and calculate initial propensities
   mpModel->setState(*mpCurrentState);
 
-  mpModel->updateSimulatedValues(); //for assignments
+  mpModel->updateSimulatedValues(false); //for assignments
   //mpModel->updateNonSimulatedValues(); //for assignments
 
   mNumReactions = mpModel->getReactions().size();
@@ -382,7 +382,7 @@ C_INT32 CStochMethod::updateSystemState(C_INT32 rxn)
     {
       // this is less efficient but can deal with assignments.
       //TODO: handle dependencies for assignments also.
-      mpModel->updateSimulatedValues();
+      mpModel->updateSimulatedValues(false);
       updatePropensities();
     }
   else

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.cpp,v $
-//   $Revision: 1.45 $
+//   $Revision: 1.46 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/12 14:28:49 $
+//   $Date: 2007/07/31 17:57:34 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -155,22 +155,22 @@ void CLsodaMethod::step(const double & deltaT)
   C_INT DSize = mDWork.size();
   C_INT ISize = mIWork.size();
 
-  mLSODA(&EvalF,          //  1. evaluate F
-         &mData.dim,      //  2. number of variables
-         mY,              //  3. the array of current concentrations
-         &mTime,          //  4. the current time
-         &EndTime,        //  5. the final time
-         &ITOL,           //  6. error control
-         &mRtol,          //  7. relative tolerance array
-         mAtol.array(),   //  8. absolute tolerance array
-         &mState,         //  9. output by overshoot & interpolatation
-         &mLsodaStatus,   // 10. the state control variable
-         &one,            // 11. futher options (one)
-         mDWork.array(),  // 12. the double work array
-         &DSize,          // 13. the double work array size
-         mIWork.array(),  // 14. the int work array
-         &ISize,          // 15. the int work array size
-         NULL,            // 16. evaluate J (not given)
+  mLSODA(&EvalF, //  1. evaluate F
+         &mData.dim, //  2. number of variables
+         mY, //  3. the array of current concentrations
+         &mTime, //  4. the current time
+         &EndTime, //  5. the final time
+         &ITOL, //  6. error control
+         &mRtol, //  7. relative tolerance array
+         mAtol.array(), //  8. absolute tolerance array
+         &mState, //  9. output by overshoot & interpolatation
+         &mLsodaStatus, // 10. the state control variable
+         &one, // 11. futher options (one)
+         mDWork.array(), // 12. the double work array
+         &DSize, // 13. the double work array size
+         mIWork.array(), // 14. the int work array
+         &ISize, // 15. the int work array size
+         NULL, // 16. evaluate J (not given)
          &mJType);        // 17. the type of jacobian calculate (2)
 
   if (mLsodaStatus == -1) mLsodaStatus = 2;
@@ -206,15 +206,9 @@ void CLsodaMethod::start(const CState * initialState)
 
   mReducedModel = * getValue("Integrate Reduced Model").pBOOL;
   if (mReducedModel)
-    {
-      mpState->setUpdateDependentRequired(true);
-      mData.dim = mpState->getNumIndependent();
-    }
+    mData.dim = mpState->getNumIndependent();
   else
-    {
-      mpState->setUpdateDependentRequired(false);
-      mData.dim = mpState->getNumIndependent() + mpModel->getNumDependentMetabs();
-    }
+    mData.dim = mpState->getNumIndependent() + mpModel->getNumDependentMetabs();
 
   mYdot.resize(mData.dim);
 
@@ -278,7 +272,7 @@ void CLsodaMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * y
   mpState->setTime(*t);
 
   mpModel->setState(*mpState);
-  mpModel->updateSimulatedValues();
+  mpModel->updateSimulatedValues(mReducedModel);
 
   if (mReducedModel)
     mpModel->calculateDerivativesX(ydot);

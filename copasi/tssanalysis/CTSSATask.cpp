@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSATask.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/24 18:40:26 $
+//   $Date: 2007/07/31 17:57:36 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -232,7 +232,7 @@ bool CTSSATask::process(const bool & useInitialValues)
   catch (int)
     {
       mpTSSAProblem->getModel()->setState(*mpCurrentState);
-      mpTSSAProblem->getModel()->updateSimulatedValues();
+      mpTSSAProblem->getModel()->updateSimulatedValues(true);
 
       if ((*LE)(outputStartTime, *mpCurrentTime))
         {
@@ -248,7 +248,7 @@ bool CTSSATask::process(const bool & useInitialValues)
   catch (CCopasiException Exception)
     {
       mpTSSAProblem->getModel()->setState(*mpCurrentState);
-      mpTSSAProblem->getModel()->updateSimulatedValues();
+      mpTSSAProblem->getModel()->updateSimulatedValues(true);
 
       if ((*LE)(outputStartTime, *mpCurrentTime))
         {
@@ -301,7 +301,7 @@ bool CTSSATask::processStep(const C_FLOAT64 & nextTime)
       while (true);
 
       mpTSSAProblem->getModel()->setState(*mpCurrentState);
-      mpTSSAProblem->getModel()->updateSimulatedValues();
+      mpTSSAProblem->getModel()->updateSimulatedValues(true);
 
       return true;
     }
@@ -323,7 +323,7 @@ bool CTSSATask::processStep(const C_FLOAT64 & nextTime)
       while (true);
 
       mpTSSAProblem->getModel()->setState(*mpCurrentState);
-      mpTSSAProblem->getModel()->updateSimulatedValues();
+      mpTSSAProblem->getModel()->updateSimulatedValues(true);
 
       return true;
     }
@@ -341,7 +341,7 @@ bool CTSSATask::restore()
       CModel * pModel = mpProblem->getModel();
 
       pModel->setState(*mpCurrentState);
-      pModel->updateSimulatedValues();
+      pModel->updateSimulatedValues(true);
       pModel->setInitialState(pModel->getState());
     }
 

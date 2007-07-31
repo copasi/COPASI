@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CCSPMethod.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/24 18:40:26 $
+//   $Date: 2007/07/31 17:57:36 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -960,7 +960,7 @@ void CCSPMethod::cspstep0(C_INT & n, C_INT & m, CMatrix< C_FLOAT64 > & A, CMatri
   /* n = mData.dim;
   m = n; */
 
-  mpModel->updateSimulatedValues();
+  mpModel->updateSimulatedValues(mReducedModel);
 
   for (j = 0; j < n; j++)
     {
@@ -1296,8 +1296,7 @@ void CCSPMethod::calculateDerivativesX(C_INT & n, CVector<C_FLOAT64> & y, CVecto
   for (i = 0; i < n; i++)
     mpModel->getMetabolitesX()[i]->setConcentration(y[i]);
 
-  mpState->setUpdateDependentRequired(true);
-  mpModel->updateSimulatedValues();
+  mpModel->updateSimulatedValues(mReducedModel);
   mpModel->calculateDerivativesX(g.array());
 
   C_FLOAT64 number2conc = mpModel->getNumber2QuantityFactor()
@@ -1310,8 +1309,7 @@ void CCSPMethod::calculateDerivativesX(C_INT & n, CVector<C_FLOAT64> & y, CVecto
   for (i = 0; i < n; i++)
     mpModel->getMetabolitesX()[i]->setValue(tmp[i]);
 
-  mpState->setUpdateDependentRequired(true);
-  mpModel->updateSimulatedValues();
+  mpModel->updateSimulatedValues(mReducedModel);
 
   return;
 }
@@ -1332,16 +1330,14 @@ void CCSPMethod::calculateJacobianX(C_INT & n, CVector<C_FLOAT64> & y, CMatrix <
   for (i = 0; i < n; i++)
     mpModel->getMetabolitesX()[i]->setConcentration(y[i]);
 
-  mpState->setUpdateDependentRequired(true);
-  mpModel->updateSimulatedValues();
+  mpModel->updateSimulatedValues(mReducedModel);
   mpModel->calculateJacobianX(J, 1e-6, 1e-12);
 
   /* write back concentrations of the current state*/
   for (i = 0; i < n; i++)
     mpModel->getMetabolitesX()[i]->setValue(tmp[i]);
 
-  mpState->setUpdateDependentRequired(true);
-  mpModel->updateSimulatedValues();
+  mpModel->updateSimulatedValues(mReducedModel);
 
   return;
 }
@@ -1784,15 +1780,9 @@ void CCSPMethod::start(const CState * initialState)
 
   mReducedModel = true; /* * getValue("Integrate Reduced Model").pBOOL; */
   if (mReducedModel)
-    {
-      mpState->setUpdateDependentRequired(true);
-      mData.dim = mpState->getNumIndependent();
-    }
+    mData.dim = mpState->getNumIndependent();
   else
-    {
-      mpState->setUpdateDependentRequired(false);
-      mData.dim = mpState->getNumIndependent() + mpModel->getNumDependentMetabs();
-    }
+    mData.dim = mpState->getNumIndependent() + mpModel->getNumDependentMetabs();
 
   mYdot.resize(mData.dim);
 
@@ -1858,7 +1848,7 @@ void CCSPMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydo
   mpState->setTime(*t);
 
   mpModel->setState(*mpState);
-  mpModel->updateSimulatedValues();
+  mpModel->updateSimulatedValues(mReducedModel);
 
   if (mReducedModel)
     mpModel->calculateDerivativesX(ydot);

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMMethod.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: isurovts $
-//   $Date: 2007/07/26 15:32:04 $
+//   $Author: shoops $
+//   $Date: 2007/07/31 17:57:36 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -239,7 +239,7 @@ void CILDMMethod::step(const double & deltaT)
   //CMatrix<C_FLOAT64> TdInverse_save;
   mTdInverse_save.resize(dim, dim);
 
-  mpModel->updateSimulatedValues();
+  mpModel->updateSimulatedValues(mReducedModel);
   // TO REMOVE : mpModel->applyAssignments();
   mpModel->calculateJacobianX(mJacobian, 1e-6, 1e-12);
 
@@ -288,7 +288,7 @@ void CILDMMethod::step(const double & deltaT)
 
   integrationStep(deltaT);
 
-  mpModel->updateSimulatedValues();
+  mpModel->updateSimulatedValues(mReducedModel);
   // TO REMOVE : mpModel->applyAssignments();
 
   // Calculate Jacobian for time step control
@@ -612,7 +612,7 @@ integration:
 
   transformation_norm(slow, info);
 
-  mpModel->updateSimulatedValues();
+  mpModel->updateSimulatedValues(mReducedModel);
   // TO REMOVE : mpModel->applyAssignments();
 
   // Calculate Jacobian for time step control
@@ -1518,7 +1518,7 @@ void CILDMMethod::deuflhard(C_INT & slow, C_INT & info)
   dxdt.resize(dim);
 
   // TO REMOVE: mpModel->applyAssignments();
-  mpModel->updateSimulatedValues();
+  mpModel->updateSimulatedValues(mReducedModel);
 
   for (j = 0; j < dim; j++)
     dxdt[j] = 0.;
@@ -2127,8 +2127,7 @@ void CILDMMethod::calculateDerivativesX(C_FLOAT64 * X1, C_FLOAT64 * Y1)
   for (i = 0, imax = indep; i < imax; i++)
     mpModel->getMetabolitesX()[i]->setConcentration(X1[i]);
 
-  mpState->setUpdateDependentRequired(true);
-  mpModel->updateSimulatedValues();
+  mpModel->updateSimulatedValues(mReducedModel);
   // TO REMOVE:  mpModel->applyAssignments();
   mpModel->calculateDerivativesX(Y1);
 
@@ -2141,8 +2140,7 @@ void CILDMMethod::calculateDerivativesX(C_FLOAT64 * X1, C_FLOAT64 * Y1)
   for (i = 0, imax = indep; i < imax; i++)
     mpModel->getMetabolitesX()[i]->setValue(tmp[i]);
 
-  mpState->setUpdateDependentRequired(true);
-  mpModel->updateSimulatedValues();
+  mpModel->updateSimulatedValues(mReducedModel);
   // TO REMOVE: mpModel->applyAssignments();
 
   return;
@@ -2263,15 +2261,9 @@ void CILDMMethod::start(const CState * initialState)
 
   mReducedModel = true; /* * getValue("Integrate Reduced Model").pBOOL; */
   if (mReducedModel)
-    {
-      mpState->setUpdateDependentRequired(true);
-      mData.dim = mpState->getNumIndependent();
-    }
+    mData.dim = mpState->getNumIndependent();
   else
-    {
-      mpState->setUpdateDependentRequired(false);
-      mData.dim = mpState->getNumIndependent() + mpModel->getNumDependentMetabs();
-    }
+    mData.dim = mpState->getNumIndependent() + mpModel->getNumDependentMetabs();
 
   mYdot.resize(mData.dim);
   // mY_initial.resize(mData.dim);
@@ -2336,7 +2328,7 @@ void CILDMMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * yd
 
   mpModel->setState(*mpState);
   // TO REMOVE : mpModel->applyAssignments();
-  mpModel->updateSimulatedValues();
+  mpModel->updateSimulatedValues(mReducedModel);
 
   if (mReducedModel)
     mpModel->calculateDerivativesX(ydot);

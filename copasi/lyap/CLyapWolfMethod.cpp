@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapWolfMethod.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/02/20 23:54:21 $
+//   $Author: shoops $
+//   $Date: 2007/07/31 17:57:36 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -78,22 +78,22 @@ void CLyapWolfMethod::step(const double & deltaT)
   C_INT DSize = mDWork.size();
   C_INT ISize = mIWork.size();
 
-  mLSODA(&EvalF ,            //  1. evaluate F
-         &mData.dim ,        //  2. number of variables
+  mLSODA(&EvalF , //  1. evaluate F
+         &mData.dim , //  2. number of variables
          mVariables.array(), //  3. the array of current concentrations
-         &mTime ,            //  4. the current time
-         &EndTime ,          //  5. the final time
-         &two ,              //  6. vector absolute error, scalar relative error
-         &mRtol ,            //  7. relative tolerance array
-         mAtol.array() ,     //  8. absolute tolerance array
-         &mState ,           //  9. output by overshoot & interpolatation
-         &mLsodaStatus ,     // 10. the state control variable
-         &one ,              // 11. futher options (one)
-         mDWork.array() ,    // 12. the double work array
-         &DSize ,            // 13. the double work array size
-         mIWork.array() ,    // 14. the int work array
-         &ISize ,            // 15. the int work array size
-         NULL ,              // 16. evaluate J (not given)
+         &mTime , //  4. the current time
+         &EndTime , //  5. the final time
+         &two , //  6. vector absolute error, scalar relative error
+         &mRtol , //  7. relative tolerance array
+         mAtol.array() , //  8. absolute tolerance array
+         &mState , //  9. output by overshoot & interpolatation
+         &mLsodaStatus , // 10. the state control variable
+         &one , // 11. futher options (one)
+         mDWork.array() , // 12. the double work array
+         &DSize , // 13. the double work array size
+         mIWork.array() , // 14. the int work array
+         &ISize , // 15. the int work array size
+         NULL , // 16. evaluate J (not given)
          &mJType);           // 17. the type of jacobian calculate (2)
 
   if (mLsodaStatus == -1) mLsodaStatus = 2;
@@ -127,15 +127,9 @@ void CLyapWolfMethod::start(/*const CState * initialState*/)
 
   mReducedModel = true; /* *getValue("Integrate Reduced Model").pBOOL;*/
   if (mReducedModel)
-    {
-      mpState->setUpdateDependentRequired(true);
-      mSystemSize = mpState->getNumIndependent();
-    }
+    mSystemSize = mpState->getNumIndependent();
   else
-    {
-      mpState->setUpdateDependentRequired(false);
-      mSystemSize = mpState->getNumVariable();
-    }
+    mSystemSize = mpState->getNumVariable();
 
   mNumExp = mpProblem->getExponentNumber();
   mDoDivergence = mpProblem->divergenceRequested();
@@ -241,7 +235,7 @@ void CLyapWolfMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 
   //copy state to model
   CModel * pModel = mpProblem->getModel();
   pModel->setState(*mpState);
-  pModel->updateSimulatedValues();
+  pModel->updateSimulatedValues(mReducedModel);
 
   //the model
   if (mReducedModel)
@@ -375,7 +369,7 @@ bool CLyapWolfMethod::calculate()
   mpState->setTime(mTime);
   //copy state to model
   mpProblem->getModel()->setState(*mpState);
-  mpProblem->getModel()->updateSimulatedValues();
+  mpProblem->getModel()->updateSimulatedValues(mReducedModel);
   mpTask->methodCallback((mTime - transientTime) * handlerFactor);
   //********
 
@@ -420,7 +414,7 @@ bool CLyapWolfMethod::calculate()
       mpState->setTime(mTime);
       //copy state to model
       mpProblem->getModel()->setState(*mpState);
-      mpProblem->getModel()->updateSimulatedValues();
+      mpProblem->getModel()->updateSimulatedValues(mReducedModel);
       flagProceed &= mpTask->methodCallback((mTime - transientTime) * handlerFactor);
     }
   while ((mTime < endTime) && flagProceed);

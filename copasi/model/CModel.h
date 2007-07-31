@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.144 $
+//   $Revision: 1.145 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/24 18:40:23 $
+//   $Date: 2007/07/31 17:57:34 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -684,9 +684,11 @@ class CModel : public CModelEntity
 
     /**
      * This method calculates all values needed for simulation based on the current
-     * current state.
+     * current state. If updateMoities is true the particle numbers of dependent metabolites
+     * of type REACTION are calculated otherwise they are assumed to be synchronized.
+     * @param const bool & updateMoieties
      */
-    void updateSimulatedValues(void);
+    void updateSimulatedValues(const bool & updateMoieties);
 
     /**
      * Calling this method after updateSimulatedValues assure that all model values

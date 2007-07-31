@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-//   $Revision: 1.115 $
+//   $Revision: 1.116 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/27 16:37:07 $
+//   $Date: 2007/07/31 17:57:34 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -390,8 +390,13 @@ bool CMetab::compile()
       break;
 
     case REACTIONS:
-      mpValueReference->addDirectDependency(this);
+      if (isDependent())
+        Dependencies.insert(mpMoiety);
+      else
+        Dependencies.insert(this);
+      mpValueReference->setDirectDependencies(Dependencies);
 
+      Dependencies.clear();
       mRateVector.clear();
 
       {

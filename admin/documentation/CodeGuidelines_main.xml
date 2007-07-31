@@ -1,10 +1,10 @@
 <chapter id="NamingConventions" xreflabel="Naming Conventions">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/admin/documentation/CodeGuidelines_main.xml,v $ -->
-<!--   $Revision: 1.8 $ -->
+<!--   $Revision: 1.9 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: shoops $ -->
-<!--   $Date: 2007/05/31 18:19:40 $ -->
+<!--   $Date: 2007/07/31 17:57:35 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -574,8 +574,8 @@ evaluated through a constant ASSIGNMENT.
 <title>Transient Values</title>
 
 <sect3 id="MetaboliteReaction" xreflabel="Metabolite Reaction">
-<title>Metabolite Reaction</title>
-<table frame="all"><title>Metabolite Reaction</title>
+<title>Metabolite Reaction (Independent)</title>
+<table frame="all"><title>Metabolite Reaction (Independent)</title>
 <tgroup cols="3" align="left" colsep="1" rowsep="1">
 <colspec colwidth="2*" />
 <colspec colwidth="6*" />
@@ -624,8 +624,8 @@ evaluated through a constant ASSIGNMENT.
 </sect3>
 
 <sect3 id="MetaboliteDependent" xreflabel="Metabolite Dependent">
-<title>Metabolite Dependent</title>
-<table frame="all"><title>Metabolite Dependent</title>
+<title>Metabolite Reaction (Dependent)</title>
+<table frame="all"><title>Metabolite Reaction (Dependent)</title>
 <tgroup cols="3" align="left" colsep="1" rowsep="1">
 <colspec colwidth="2*" />
 <colspec colwidth="6*" />
@@ -646,7 +646,7 @@ evaluated through a constant ASSIGNMENT.
  <row>
    <entry>Particle Number</entry>
    <entry>Dependent number of associated moiety</entry>
-   <entry>refreshNumber</entry>
+   <entry>none</entry>
  </row>
  <row>
    <entry>Concentration</entry>
@@ -713,6 +713,11 @@ evaluated through a constant ASSIGNMENT.
    <entry>none</entry>
    <entry>none</entry>
  </row>
+ <row>
+   <entry>Transition Time (NA)</entry>
+   <entry>none</entry>
+   <entry>none</entry>
+ </row>
 </tbody>
 </tgroup>
 </table>
@@ -742,12 +747,12 @@ evaluated through a constant ASSIGNMENT.
  <row>
    <entry>Particle Number</entry>
    <entry>Self (state controlled)</entry>
-   <entry>refreshNumber</entry>
+   <entry>none</entry>
  </row>
  <row>
    <entry>Concentration</entry>
    <entry>Particle Number, parent compartment Volume</entry>
-   <entry>none</entry>
+   <entry>refreshConcentration</entry>
  </row>
  <row>
    <entry>Particle Rate</entry>
@@ -758,6 +763,11 @@ evaluated through a constant ASSIGNMENT.
    <entry>Concentration Rate</entry>
    <entry>all objects in expression</entry>
    <entry>calculate</entry>
+ </row>
+ <row>
+   <entry>Transition Time</entry>
+   <entry>Particle Number, Particle Rate</entry>
+   <entry>refreshTransitionTime</entry>
  </row>
 </tbody>
 </tgroup>
@@ -783,7 +793,7 @@ evaluated through a constant ASSIGNMENT.
  <row>
    <entry>Self</entry>
    <entry>Particle number of participating independent metabolites</entry>
-   <entry>refreshDependentNumber</entry>
+   <entry>none</entry>
  </row>
  <row>
    <entry>Dependent Number</entry>
