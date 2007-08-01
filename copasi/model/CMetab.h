@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.h,v $
-//   $Revision: 1.79 $
+//   $Revision: 1.80 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/27 16:37:07 $
+//   $Date: 2007/08/01 15:53:23 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -292,12 +292,6 @@ class CMetab : public CModelEntity
      * @return CCopasiObject * valueReference
      */
     virtual CCopasiObject * getValueReference();
-
-    /**
-     * Retreive object referencing the rate
-     * @return CCopasiObject * rateReference
-     */
-    virtual CCopasiObject * getRateReference();
 
     /**
      * ostream operator

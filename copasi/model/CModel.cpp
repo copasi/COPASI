@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.307 $
+//   $Revision: 1.308 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/31 17:57:34 $
+//   $Date: 2007/08/01 15:53:23 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -484,7 +484,9 @@ void CModel::buildStoi()
         {
           const std::string & key = (*itBalance)->getMetaboliteKey();
 
-          for (pRow = pCol, itMetab = mMetabolitesX.begin() + mNumMetabolitesODE; pRow < pRowEnd; pRow += numCols, ++itMetab)
+          for (pRow = pCol, itMetab = mMetabolitesX.begin() + mNumMetabolitesODE;
+               pRow < pRowEnd;
+               pRow += numCols, ++itMetab)
             if ((*itMetab)->getKey() == key)
               {
                 *pRow = (*itBalance)->getMultiplicity();
@@ -1228,16 +1230,19 @@ bool CModel::buildSimulatedSequence()
   std::set< const CCopasiObject * > Objects;
 
   // For CModelValues and CCompartment ODEs we need to add the Rate
-  // For CMetab ODEs we need to add the Concentration Rate
-  // Since getRateReference is overloaded for CMetab the following suffices
+  // For CMetab ODEs we need to add the Particle Rate
   CModelEntity **ppEntity = mStateTemplate.beginIndependent();
   CModelEntity **ppEntityEnd = mStateTemplate.endIndependent() - mNumMetabolitesIndependent;
   for (; ppEntity != ppEntityEnd; ++ppEntity)
     Objects.insert((*ppEntity)->getRateReference());
 
-  // For CMetab REACTIONs we currently do not need to add anything as these
-  // changes are calculated with dgemm in caculateDerivatives for performance reasons,
-  // i.e., it suffices to add all reaction rates.
+  // We do not add the rates for metabolites of type REACTION. These are automatically calculated
+  // with dgemm in calculate derivatives based on the reaction fluxes added below.
+  // In the case that other simulated values depend on such a rate this is taken care by
+  // calcuating all dependecies.
+  // This mechanism may lead occasinally to multiple calculations of rates of metabolites when used
+  // in assignments or ODEs. However this is acceptable and more than compensated by the performance
+  // gains of dgemm.
 
   // For CMetab ASSIGNMENTs we need to add the Concentration
   // For CModelValues and CCompartment ASSIGNMENTs we need to add the Value

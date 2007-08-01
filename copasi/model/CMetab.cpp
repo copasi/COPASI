@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-//   $Revision: 1.116 $
+//   $Revision: 1.117 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/31 17:57:34 $
+//   $Date: 2007/08/01 15:53:23 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -612,21 +612,6 @@ CCopasiObject * CMetab::getValueReference()
 
     default:
       return CModelEntity::getValueReference();
-      break;
-    }
-}
-
-CCopasiObject * CMetab::getRateReference()
-{
-  switch (getStatus())
-    {
-    case ODE:
-    case ASSIGNMENT:
-      return mpConcRateReference;
-      break;
-
-    default:
-      return CModelEntity::getRateReference();
       break;
     }
 }
