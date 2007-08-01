@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-//   $Revision: 1.94 $
+//   $Revision: 1.95 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/07/25 16:17:48 $
+//   $Date: 2007/08/01 18:36:58 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -147,7 +147,9 @@ bool CCopasiXML::load(std::istream & is,
   Parser.setTaskList(mpTaskList);
   Parser.setPlotList(mpPlotList);
   Parser.setGUI(mpGUI);
-  //TODO
+#ifdef WITH_LAYOUT
+  Parser.setLayoutList(mpLayoutList);
+#endif //WITH_LAYOUT
 
 #define BUFFER_SIZE 0xfffe
   char * pBuffer = new char[BUFFER_SIZE + 1];
@@ -179,7 +181,9 @@ bool CCopasiXML::load(std::istream & is,
       mpReportList = Parser.getReportList();
       mpTaskList = Parser.getTaskList();
       mpPlotList = Parser.getPlotList();
-      //TODO
+#ifdef WITH_LAYOUT
+      mpLayoutList = Parser.getLayoutList();
+#endif //WITH_LAYOUT
     }
 
   if (FileVersion.getVersionDevel() > mVersion.getVersionDevel())

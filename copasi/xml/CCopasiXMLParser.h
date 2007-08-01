@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-//   $Revision: 1.50 $
+//   $Revision: 1.51 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/07/24 13:25:54 $
+//   $Author: ssahle $
+//   $Date: 2007/08/01 18:38:12 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -51,6 +51,12 @@ class CSlider;
 class SCopasiXMLGUI;
 class CReportDefinition;
 class CCopasiTask;
+#ifdef WITH_LAYOUT
+class CListOfLayouts;
+class CLayout;
+class CLCompartmentGlyph;
+class CLMetabGlyph;
+#endif //WITH_LAYOUT
 
 struct SCopasiXMLParserCommon
   {
@@ -170,6 +176,23 @@ struct SCopasiXMLParserCommon
      * Pointer to the currently processed channel.
      */
     CPlotDataChannelSpec* pCurrentChannelSpec;
+
+#ifdef WITH_LAYOUT
+    /**
+     * Pointer to a list of Layouts which has been loaded or is to be saved.
+     * The ownership is handed to the user.
+     */
+    CListOfLayouts * pLayoutList;
+
+    /**
+     * Pointer to the currently processed layout
+     */
+    CLayout * pCurrentLayout;
+
+    CLCompartmentGlyph * pCompartmentGlyph;
+    CLMetabGlyph * pMetaboliteGlyph;
+    //CLDimensions * pDimensions;
+#endif //WITH_LAYOUT
 
     /**
      * Nesting level of the currently processed parameter group
@@ -2488,6 +2511,9 @@ class CCopasiXMLParser : public CExpat
           ListOfReports,
           ListOfPlots,
           GUI,
+#ifdef WITH_LAYOUT
+          ListOfLayouts,
+#endif //WITH_LAYOUT
           SBMLReference
         };
 
@@ -2870,6 +2896,166 @@ class CCopasiXMLParser : public CExpat
         virtual void end(const XML_Char *pszName);
       };
 
+#ifdef WITH_LAYOUT
+  class CompartmentGlyphElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+      private:
+        enum Element
+        {
+          CompartmentGlyph = 0,
+          BoundingBox,
+          Position,
+          Dimensions
+        };
+
+        unsigned C_INT32 mLineNumber;
+
+      public:
+        CompartmentGlyphElement(CCopasiXMLParser & parser,
+                                SCopasiXMLParserCommon & common);
+
+        virtual ~CompartmentGlyphElement();
+
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        virtual void end(const XML_Char *pszName);
+      };
+
+  class ListOfCompartmentGlyphsElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+      private:
+        enum Element
+        {
+          ListOfCompartmentGlyphs = 0,
+          CompartmentGlyph
+        };
+
+      public:
+        ListOfCompartmentGlyphsElement(CCopasiXMLParser & parser,
+                                       SCopasiXMLParserCommon & common);
+
+        virtual ~ListOfCompartmentGlyphsElement();
+
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        virtual void end(const XML_Char *pszName);
+      };
+
+  class MetaboliteGlyphElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+      private:
+        enum Element
+        {
+          MetaboliteGlyph = 0,
+          BoundingBox,
+          Position,
+          Dimensions
+        };
+
+        unsigned C_INT32 mLineNumber;
+
+      public:
+        MetaboliteGlyphElement(CCopasiXMLParser & parser,
+                               SCopasiXMLParserCommon & common);
+
+        virtual ~MetaboliteGlyphElement();
+
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        virtual void end(const XML_Char *pszName);
+      };
+
+  class ListOfMetabGlyphsElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+      private:
+        enum Element
+        {
+          ListOfMetabGlyphs = 0,
+          MetaboliteGlyph
+        };
+
+      public:
+        ListOfMetabGlyphsElement(CCopasiXMLParser & parser,
+                                 SCopasiXMLParserCommon & common);
+
+        virtual ~ListOfMetabGlyphsElement();
+
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        virtual void end(const XML_Char *pszName);
+      };
+
+  class LayoutElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+      private:
+        enum Element
+        {
+          Layout = 0,
+          Dimensions,
+          ListOfCompartmentGlyphs,
+          ListOfMetabGlyphs
+        };
+
+        unsigned C_INT32 mLineNumber;
+
+      public:
+        LayoutElement(CCopasiXMLParser & parser,
+                      SCopasiXMLParserCommon & common);
+
+        virtual ~LayoutElement();
+
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        virtual void end(const XML_Char *pszName);
+      };
+
+  class ListOfLayoutsElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+        // Attributes
+      private:
+        /**
+         *
+         */
+        enum Element
+        {
+          ListOfLayouts = 0,
+          Layout
+        };
+
+        // Operations
+      public:
+        /**
+         * Constructor
+         */
+        ListOfLayoutsElement(CCopasiXMLParser & parser,
+                             SCopasiXMLParserCommon & common);
+
+        /**
+         * Destructor
+         */
+        virtual ~ListOfLayoutsElement();
+
+        /**
+         * Start element handler
+         * @param const XML_Char *pszName
+         * @param const XML_Char **papszAttrs
+         */
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        /**
+         * End element handler
+         * @param const XML_Char *pszName
+         */
+        virtual void end(const XML_Char *pszName);
+      };
+#endif //WITH_LAYOUT
+
   class SBMLReferenceElement:
           public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
       {
@@ -3104,6 +3290,20 @@ class CCopasiXMLParser : public CExpat
      * @return SCopasiXMLGUI * pGUI
      */
     SCopasiXMLGUI * getGUI() const;
+
+#ifdef WITH_LAYOUT
+    /**
+     * Set the list of loaded layouts
+     * @param CListOfLayouts * pLayoutList
+     */
+    void setLayoutList(CListOfLayouts * pLayoutList);
+
+    /**
+     * Retrieve the list of loaded layouts
+     * @return CListOfLayouts * pLayoutList
+     */
+    CListOfLayouts * getLayoutList() const;
+#endif //WITH_LAYOUT
 
     /**
      * Retreive a pointer to the current group if available

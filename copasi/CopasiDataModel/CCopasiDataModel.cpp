@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.100 $
+//   $Revision: 1.101 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/07/24 15:35:22 $
+//   $Date: 2007/08/01 18:34:51 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -245,6 +245,9 @@ bool CCopasiDataModel::loadModel(const std::string & fileName, CProcessReport* p
           XML.freeReportList();
           XML.freePlotList();
           XML.freeGUI();
+#ifdef WITH_LAYOUT
+          XML.freeLayoutList();
+#endif //WITH_LAYOUT
 
           // restore the copasi2sbml map
           mCopasi2SBMLMap = mapBackup;
@@ -279,8 +282,14 @@ bool CCopasiDataModel::loadModel(const std::string & fileName, CProcessReport* p
 
       //TODO: layouts
 #ifdef WITH_LAYOUT
+      if (XML.getLayoutList())
+        {
+          pdelete(mpListOfLayouts);
+          mpListOfLayouts = XML.getLayoutList();
+        }
+
       // for debugging create a template layout
-      mpListOfLayouts->add(CLayoutInitializer::createLayoutFromCModel(mpModel), true);
+      //mpListOfLayouts->add(CLayoutInitializer::createLayoutFromCModel(mpModel), true);
 #endif
 
       if (mWithGUI)
