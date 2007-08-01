@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLayoutInitializer.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/16 00:09:33 $
+//   $Date: 2007/08/01 18:36:12 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -50,6 +50,11 @@ CLayout * CLayoutInitializer::createLayoutFromCModel(const CModel* model)
       layout->addReactionGlyph(reac);
     }
 
+  //temporary
+  //std::ofstream ofs; ofs.open("CopasiModel.dot");
+  //layout->exportToDotFile(ofs);
+  //ofs.close();
+
   return layout;
 }
 
@@ -90,6 +95,7 @@ CLReactionGlyph * CLayoutInitializer::createReactionGlyph(const CReaction * r,
     {
       //create metab reference glyph and add to reaction glyph
       CLMetabReferenceGlyph * tmpMRG = new CLMetabReferenceGlyph();
+      tmpMRG->setRole(CLMetabReferenceGlyph::SUBSTRATE);
       rg->addMetabReferenceGlyph(tmpMRG);
 
       //get the metab key from the copasi reaction
@@ -107,6 +113,7 @@ CLReactionGlyph * CLayoutInitializer::createReactionGlyph(const CReaction * r,
     {
       //create metab reference glyph and add to reaction glyph
       CLMetabReferenceGlyph * tmpMRG = new CLMetabReferenceGlyph();
+      tmpMRG->setRole(CLMetabReferenceGlyph::PRODUCT);
       rg->addMetabReferenceGlyph(tmpMRG);
 
       //get the metab key from the copasi reaction
@@ -124,6 +131,7 @@ CLReactionGlyph * CLayoutInitializer::createReactionGlyph(const CReaction * r,
     {
       //create metab reference glyph and add to reaction glyph
       CLMetabReferenceGlyph * tmpMRG = new CLMetabReferenceGlyph();
+      tmpMRG->setRole(CLMetabReferenceGlyph::MODIFIER);
       rg->addMetabReferenceGlyph(tmpMRG);
 
       //get the metab key from the copasi reaction
