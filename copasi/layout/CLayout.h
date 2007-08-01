@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLayout.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: urost $
-//   $Date: 2007/02/23 20:47:18 $
+//   $Author: ssahle $
+//   $Date: 2007/08/01 18:35:43 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,17 +14,12 @@
 #define CLAYOUT_H_
 
 #include <string>
-//#include <vector>
 
 #include "utilities/CCopasiVector.h"
 
 #include "CLBase.h"
 #include "CLGlyphs.h"
 #include "CLReactionGlyph.h"
-
-//#include "node.h"
-//#include "reaction.h"
-//#include "label.h"
 
 class Layout;
 
@@ -45,9 +40,6 @@ class CLayout : public CLBase, public CCopasiContainer
     CCopasiVector<CLReactionGlyph> mvReactions;
     CCopasiVector<CLTextGlyph> mvLabels;
     CCopasiVector<CLGraphicalObject> mvGraphicalObjects;
-    //vector<node*> nodePVec;
-    //vector<reaction*> reactionPVec;
-    //vector<label*> labelPVec;
 
   public:
 
@@ -74,18 +66,6 @@ class CLayout : public CLBase, public CCopasiContainer
     virtual const std::string & getKey() const
       {return mKey;};
 
-    /*    CLayout(const CLDimensions & dim)
-          :mDimensions(dim)
-          {};*/
-
-    /*    network(double w, double h, vector<node*> nPVec,vector<reaction*> rPVec,vector<label*> lPVec){
-            width = w; height = h;
-            nodePVec = vector<node*> (nPVec);
-            reactionPVec = vector<reaction*> (rPVec);
-            labelPVec = vector<label*>(lPVec);
-            }*/
-
-    //CLDimensions & dimensions() {return mDimensions;};
     const CLDimensions & getDimensions() const {return mDimensions;};
     void setDimensions(const CLDimensions & d) {mDimensions = d;};
 
@@ -146,12 +126,16 @@ class CLayout : public CLBase, public CCopasiContainer
     friend std::ostream & operator<<(std::ostream &os, const CLayout & g);
     void print(std::ostream * ostream) const;
 
-    /*    void setNodes(vector<node*> nPVec){nodePVec = vector<node*> (nPVec);}
-        vector<node*> getNodes(){return nodePVec;}
-        void setReactions(vector<reaction*> rPVec){reactionPVec = vector<reaction*> (rPVec);}
-        vector<reaction*>getReactions(){return reactionPVec;}
-        void setLabels(vector<label*> lPVec){labelPVec = vector<label*> (lPVec);}
-        vector<label*> getLabels(){return labelPVec;}*/
+    void exportToDotFile(std::ostream & os) const;
+
+  protected:
+    void writeDotNode(std::ostream & os, const std::string & id,
+                      const std::string & label,
+                      int t = 0) const;
+
+    void writeDotEdge(std::ostream & os, const std::string & id1,
+                      const std::string & id2,
+                      int t = 0) const;
   };
 
 #endif

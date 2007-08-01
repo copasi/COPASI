@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLayout.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/02/16 16:56:07 $
+//   $Author: ssahle $
+//   $Date: 2007/08/01 18:35:43 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -12,6 +12,7 @@
 
 #define USE_LAYOUT 1
 
+#include "iostream"
 #include "sbml/layout/Layout.h"
 
 #include "copasi.h"
@@ -149,5 +150,62 @@ std::ostream & operator<<(std::ostream &os, const CLayout & l)
   return os;
 }
 
-void CLayout::print(std::ostream * ostream) const
-{*ostream << *this;}
+void CLayout::print(std::ostream * os) const
+{*os << *this;}
+
+void CLayout::exportToDotFile(std::ostream & os) const
+  {
+    os << "digraph G {\n";
+
+    //metab glyphs
+    unsigned C_INT32 i, imax = mvMetabs.size();
+    for (i = 0; i < imax; ++i)
+      {
+        writeDotNode(os, mvMetabs[i]->getKey(), mvMetabs[i]->getModelObjectDisplayName());
+      }
+
+    //reaction glyphs
+    imax = mvReactions.size();
+    for (i = 0; i < imax; ++i)
+      {
+        writeDotNode(os, mvReactions[i]->getKey() + "_S", "", 1);
+        writeDotNode(os, mvReactions[i]->getKey() + "_P", "", 1);
+        writeDotEdge(os, mvReactions[i]->getKey() + "_S", mvReactions[i]->getKey() + "_P", 1);
+
+        unsigned C_INT j, jmax = mvReactions[i]->getListOfMetabReferenceGlyphs().size();
+        for (j = 0; j < jmax; ++j)
+          {
+            CLMetabReferenceGlyph* mrg = mvReactions[i]->getListOfMetabReferenceGlyphs()[j];
+
+            if (mrg->getRole() == CLMetabReferenceGlyph::SUBSTRATE)
+              writeDotEdge(os, mrg->getMetabGlyphKey(), mvReactions[i]->getKey() + "_S");
+            else if (mrg->getRole() == CLMetabReferenceGlyph::PRODUCT)
+              writeDotEdge(os, mvReactions[i]->getKey() + "_P", mrg->getMetabGlyphKey());
+            else
+              std::cout << "!!!!" << std::endl;
+          }
+      }
+
+    os << "}" << std::endl;
+  }
+
+void CLayout::writeDotNode(std::ostream & os, const std::string & id,
+                           const std::string & label,
+                           int t) const
+  {
+    std::string tmp;
+    if (t == 1)
+      tmp = " shape=point ";
+    os << id << " [" << tmp << " label=\"" << label << "\"] \n";
+  }
+
+void CLayout::writeDotEdge(std::ostream & os, const std::string & id1,
+                           const std::string & id2,
+                           int t) const
+  {
+    std::string tmp;
+    if (t == 1)
+      tmp = " [len=0.2] ";
+
+    os << id1 << " -> " << id2 << tmp << "\n"; //[label=\"" << label << "\"] \n";
+  }
