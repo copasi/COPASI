@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/StateSubwidget.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/05/15 12:36:53 $
+//   $Author: ssahle $
+//   $Date: 2007/08/02 14:19:14 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,8 +13,8 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'StateSubwidget.ui'
  **
- ** Created: Di Apr 24 17:21:59 2007
- **      by: The User Interface Compiler ($Id: StateSubwidget.cpp,v 1.14 2007/05/15 12:36:53 shoops Exp $)
+ ** Created: Do Aug 2 16:13:48 2007
+ **      by: The User Interface Compiler ($Id: StateSubwidget.cpp,v 1.15 2007/08/02 14:19:14 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -50,6 +50,7 @@ StateSubwidget::StateSubwidget(QWidget* parent, const char* name, WFlags fl)
   StateSubwidgetLayout->addWidget(topLabel);
 
   tabWidget = new QTabWidget(this, "tabWidget");
+  tabWidget->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)7, 0, 0, tabWidget->sizePolicy().hasHeightForWidth()));
 
   TabPage = new QWidget(tabWidget, "TabPage");
   TabPageLayout = new QVBoxLayout(TabPage, 11, 6, "TabPageLayout");
