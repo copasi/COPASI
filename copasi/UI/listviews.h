@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-//   $Revision: 1.122 $
+//   $Revision: 1.123 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/07/06 11:53:18 $
+//   $Author: shoops $
+//   $Date: 2007/08/03 13:46:40 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,7 +33,7 @@ class FunctionSymbols;
 class FunctionWidget1;
 class FunctionWidget;
 class CMathModel;
-class MetabolitesWidget1;
+class CQMetabolite;
 class MetabolitesWidget;
 class CQEFMWidget;
 class ModelWidget;
@@ -191,7 +191,7 @@ class ListViews : public QSplitter
     CQLyapWidget *lyapWidget;
     CQLyapResultWidget *lyapResultWidget;
     MetabolitesWidget *metabolitesWidget;
-    MetabolitesWidget1 *metabolitesWidget1;
+    CQMetabolite *metabolitesWidget1;
     ModelWidget *modelWidget;
     ModelValuesWidget *modelValuesWidget;
     CQModelValue *mpModelValueWidget;

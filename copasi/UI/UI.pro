@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $ 
-#   $Revision: 1.151 $ 
+#   $Revision: 1.152 $ 
 #   $Name:  $ 
-#   $Author: urost $ 
-#   $Date: 2007/07/06 10:14:00 $ 
+#   $Author: shoops $ 
+#   $Date: 2007/08/03 13:46:40 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -11,7 +11,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.151 $ $Author: urost $ $Date: 2007/07/06 10:14:00 $  
+# $Revision: 1.152 $ $Author: shoops $ $Date: 2007/08/03 13:46:40 $  
 ######################################################################
 
 LIB = UI
@@ -179,6 +179,7 @@ SOURCES += \
 # FORMS += CQLyapWidget.ui
 # FORMS += CQMCAWidget.ui
 # FORMS += CQMessageBox.ui
+# FORMS += CQMetabolite.ui
 # FORMS += CQModelValue.ui
 # FORMS += CQOptimizationWidget.ui
 # FORMS += CQPreferenceDialog.ui
@@ -232,6 +233,10 @@ HEADERS += \
            CQMCAWidget.ui.h \
            CQMessageBox.h \
            CQMessageBox.ui.h \
+           CQMetabolite.h \
+           CQMetabolite.ui.h \
+           CQModelValue.h \
+           CQModelValue.ui.h \
            CQOptimizationWidget.h \
            CQOptimizationWidget.ui.h \
            CQPreferenceDialog.h \
@@ -261,8 +266,6 @@ HEADERS += \
            CQTSSAWidget.ui.h \
            CQTSSAResultSubWidget.h \
            CQTSSAResultSubWidget.ui.h \
-           CQModelValue.h \
-           CQModelValue.ui.h \
            CScanWidgetBreak.h \
            CScanWidgetBreak.ui.h \
            CScanWidgetRandom.h \
@@ -300,6 +303,7 @@ SOURCES += \
            CQLyapWidget.cpp \
            CQMCAWidget.cpp \
            CQMessageBox.cpp \
+           CQMetabolite.cpp \
            CQModelValue.cpp \
            CQOptimizationWidget.cpp \
            CQProgressItem.cpp \
