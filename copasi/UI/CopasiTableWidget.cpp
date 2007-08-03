@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.cpp,v $
-//   $Revision: 1.48 $
+//   $Revision: 1.49 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/05/15 12:36:53 $
+//   $Date: 2007/08/03 19:41:13 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -49,7 +49,9 @@ CopasiTableWidget::CopasiTableWidget(QWidget *parent, bool ro, const char * name
       table->setReadOnly(true);
       table->hideColumn(0);
     }
-  resizeTable(1);
+
+  resizeTable(0);
+
   flagtoAdjust = true;
 
   //here the buttons are defined
@@ -173,11 +175,12 @@ void CopasiTableWidget::fillTable()
       updateRow(j);
     }
 
+  // Clear the name in the last row
+  table->clearCell(jmax, 1);
+
   //clear last line and adjust column width of the table
   for (i = 0; i < numCols; ++i)
     {
-      table->clearCell(jmax, i);
-
       /* the logic for not adjusting in a certain cases
        * is implemented here */
 
@@ -405,7 +408,10 @@ void CopasiTableWidget::resizeTable(const unsigned C_INT32 numRows)
   mFlagRO.resize(numRows);
 
   if (numRows > 0)
-    table->setRowReadOnly(numRows - 1, false);
+    {
+      defaultTableLineContent(numRows - 1, 0);
+      table->setRowReadOnly(numRows - 1, false);
+    }
 }
 
 void CopasiTableWidget::updateRow(const C_INT32 row)
