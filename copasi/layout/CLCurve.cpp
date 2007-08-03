@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLCurve.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/21 18:52:26 $
+//   $Date: 2007/08/03 15:44:10 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -79,6 +79,11 @@ void CLCurve::addCurveSegment(CLLineSegment * pLs)
 {
   if (pLs)
     mCurveSegments.push_back(*pLs);
+}
+
+void CLCurve::clear()
+{
+  mCurveSegments.clear();
 }
 
 bool CLCurve::isContinuous() const
