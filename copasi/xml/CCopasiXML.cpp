@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-//   $Revision: 1.96 $
+//   $Revision: 1.97 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/08/03 09:18:18 $
+//   $Date: 2007/08/03 15:45:03 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1050,6 +1050,7 @@ void CCopasiXML::saveBoundingBox(const CLBoundingBox& bb)
 
 void CCopasiXML::saveCurve(const CLCurve& c)
 {
+  CXMLAttributeList Attributes;
   startSaveElement("Curve");
   if (c.getNumCurveSegments() > 0)
     {
@@ -1058,10 +1059,13 @@ void CCopasiXML::saveCurve(const CLCurve& c)
       for (i = 0; i < imax; ++i)
         {
           const CLLineSegment & cs = c.getCurveSegments()[i];
+
+          Attributes.erase();
           if (cs.isBezier())
-            startSaveElement("CubicBezier");
+            Attributes.add("xsi:type", "CubicBezier");
           else
-            startSaveElement("LineSegment");
+            Attributes.add("xsi:type", "LineSegment");
+          startSaveElement("CurveSegment", Attributes);
 
           savePosition(cs.getStart(), "Start");
           savePosition(cs.getEnd(), "End");
@@ -1070,10 +1074,8 @@ void CCopasiXML::saveCurve(const CLCurve& c)
             {
               savePosition(cs.getBase1(), "BasePoint1");
               savePosition(cs.getBase2(), "BasePoint2");
-              endSaveElement("CubicBezier");
             }
-          else
-            endSaveElement("LineSegment");
+          endSaveElement("CurveSegment");
         }
       endSaveElement("ListOfCurveSegments");
     }
