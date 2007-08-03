@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-//   $Revision: 1.51 $
+//   $Revision: 1.52 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/08/01 18:38:12 $
+//   $Date: 2007/08/03 09:20:29 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -56,6 +56,9 @@ class CListOfLayouts;
 class CLayout;
 class CLCompartmentGlyph;
 class CLMetabGlyph;
+class CLReactionGlyph;
+class CLTextGlyph;
+class CLGraphicalObject;
 #endif //WITH_LAYOUT
 
 struct SCopasiXMLParserCommon
@@ -191,7 +194,9 @@ struct SCopasiXMLParserCommon
 
     CLCompartmentGlyph * pCompartmentGlyph;
     CLMetabGlyph * pMetaboliteGlyph;
-    //CLDimensions * pDimensions;
+    CLReactionGlyph * pReactionGlyph;
+    CLTextGlyph * pTextGlyph;
+    CLGraphicalObject * pAdditionalGO;
 #endif //WITH_LAYOUT
 
     /**
@@ -2989,6 +2994,144 @@ class CCopasiXMLParser : public CExpat
         virtual void end(const XML_Char *pszName);
       };
 
+  class ReactionGlyphElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+      private:
+        enum Element
+        {
+          ReactionGlyph = 0,
+          BoundingBox,
+          Position,
+          Dimensions
+        };
+
+        unsigned C_INT32 mLineNumber;
+
+      public:
+        ReactionGlyphElement(CCopasiXMLParser & parser,
+                             SCopasiXMLParserCommon & common);
+
+        virtual ~ReactionGlyphElement();
+
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        virtual void end(const XML_Char *pszName);
+      };
+
+  class ListOfReactionGlyphsElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+      private:
+        enum Element
+        {
+          ListOfReactionGlyphs = 0,
+          ReactionGlyph
+        };
+
+      public:
+        ListOfReactionGlyphsElement(CCopasiXMLParser & parser,
+                                    SCopasiXMLParserCommon & common);
+
+        virtual ~ListOfReactionGlyphsElement();
+
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        virtual void end(const XML_Char *pszName);
+      };
+
+  class TextGlyphElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+      private:
+        enum Element
+        {
+          TextGlyph = 0,
+          BoundingBox,
+          Position,
+          Dimensions
+        };
+
+        unsigned C_INT32 mLineNumber;
+
+      public:
+        TextGlyphElement(CCopasiXMLParser & parser,
+                         SCopasiXMLParserCommon & common);
+
+        virtual ~TextGlyphElement();
+
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        virtual void end(const XML_Char *pszName);
+      };
+
+  class ListOfTextGlyphsElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+      private:
+        enum Element
+        {
+          ListOfTextGlyphs = 0,
+          TextGlyph
+        };
+
+      public:
+        ListOfTextGlyphsElement(CCopasiXMLParser & parser,
+                                SCopasiXMLParserCommon & common);
+
+        virtual ~ListOfTextGlyphsElement();
+
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        virtual void end(const XML_Char *pszName);
+      };
+
+  class AdditionalGOElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+      private:
+        enum Element
+        {
+          AdditionalGO = 0,
+          BoundingBox,
+          Position,
+          Dimensions
+        };
+
+        unsigned C_INT32 mLineNumber;
+
+      public:
+        AdditionalGOElement(CCopasiXMLParser & parser,
+                            SCopasiXMLParserCommon & common);
+
+        virtual ~AdditionalGOElement();
+
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        virtual void end(const XML_Char *pszName);
+      };
+
+  class ListOfAdditionalGOsElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+      private:
+        enum Element
+        {
+          ListOfAdditionalGOs = 0,
+          AdditionalGO
+        };
+
+      public:
+        ListOfAdditionalGOsElement(CCopasiXMLParser & parser,
+                                   SCopasiXMLParserCommon & common);
+
+        virtual ~ListOfAdditionalGOsElement();
+
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        virtual void end(const XML_Char *pszName);
+      };
+
   class LayoutElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
       {
       private:
@@ -2997,7 +3140,10 @@ class CCopasiXMLParser : public CExpat
           Layout = 0,
           Dimensions,
           ListOfCompartmentGlyphs,
-          ListOfMetabGlyphs
+          ListOfMetabGlyphs,
+          ListOfReactionGlyphs,
+          ListOfTextGlyphs,
+          ListOfAdditionalGOs
         };
 
         unsigned C_INT32 mLineNumber;
