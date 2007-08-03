@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-//   $Revision: 1.95 $
+//   $Revision: 1.96 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/08/01 18:36:58 $
+//   $Date: 2007/08/03 09:18:18 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1215,9 +1215,9 @@ bool CCopasiXML::saveLayoutList()
               Attributes.add("name", cg->getObjectName());
               Attributes.add("graphicalObject", cg->getGraphicalObjectKey());
               if (cg->isTextSet())
-                Attributes.add("originOfText", cg->getModelObjectKey());
-              else
                 Attributes.add("text", cg->getText());
+              else
+                Attributes.add("originOfText", cg->getModelObjectKey());
 
               startSaveElement("TextGlyph", Attributes);
 
