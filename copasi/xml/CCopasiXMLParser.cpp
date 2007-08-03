@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.157 $
+//   $Revision: 1.158 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/08/03 09:20:29 $
+//   $Date: 2007/08/03 15:46:15 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -2128,7 +2128,7 @@ void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
         mpCurrentHandler = &mParser.mCharacterDataElement;
       break;
 
-    case MathML:           // Old file format support
+    case MathML:            // Old file format support
       if (!strcmp(pszName, "MathML"))
         {
           /* If we do not have a MathML element handler we create one. */
@@ -2201,7 +2201,7 @@ void CCopasiXMLParser::ModelValueElement::end(const XML_Char *pszName)
       mCurrentElement = ModelValue;
       break;
 
-    case MathML:           // Old file format support
+    case MathML:            // Old file format support
       if (strcmp(pszName, "MathML"))
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                        pszName, "MathML", mParser.getCurrentLineNumber());
@@ -4616,6 +4616,160 @@ void CCopasiXMLParser::PlotSpecificationElement::end(const XML_Char *pszName)
 
 #ifdef WITH_LAYOUT
 
+//******** Curve **********
+
+CCopasiXMLParser::CurveElement::CurveElement(CCopasiXMLParser& parser, SCopasiXMLParserCommon & common): CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+{}
+
+CCopasiXMLParser::CurveElement::~CurveElement()
+{}
+
+void CCopasiXMLParser::CurveElement::start(const XML_Char *pszName, const XML_Char** papszAttrs)
+{
+  std::cout << "XMLParser STA : Curve" << " (" << pszName << ")" << mCurrentElement << std::endl; //DEBUG
+
+  mCurrentElement++; /* We should always be on hte next element */
+  //  mpCurrentHandler = NULL;
+  mLineNumber = (unsigned int) - 1;
+
+  switch (mCurrentElement)
+    {
+    case Curve:
+      if (strcmp(pszName, "Curve"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "Curve", mParser.getCurrentLineNumber());
+
+      if (!mCommon.pCurve) fatalError(); //pCurve must point to a curve of a reaction glyph
+      //or a metab reference glyph
+      mCommon.pCurve->clear();
+      {
+        //workload
+
+        /*        mCommon.pReactionGlyph = new CLReactionGlyph(name);
+
+                CReaction * pReaction = dynamic_cast< CReaction * >(mCommon.KeyMap.get(reaction));
+                if (!pReaction) fatalError();
+                mCommon.pReactionGlyph->setModelObjectKey(pReaction->getKey());
+
+                mCommon.pCurrentLayout->addReactionGlyph(mCommon.pReactionGlyph);
+                mCommon.KeyMap.addFix(key, mCommon.pReactionGlyph);*/
+      }
+      return;
+      break;
+
+    case ListOfCurveSegments:
+      if (strcmp(pszName, "ListOfCurveSegments"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "ListOfCurveSegments", mParser.getCurrentLineNumber());
+      return;
+      break;
+
+    case CurveSegment:
+      if (strcmp(pszName, "CurveSegment"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "CurveSegment", mParser.getCurrentLineNumber());
+      {
+        //workload
+        const char * type;
+        type = mParser.getAttributeValue("xsi:type", papszAttrs);
+
+        if (!mCommon.pLineSegment)
+          mCommon.pLineSegment = new CLLineSegment;
+
+        mCommon.pLineSegment->setIsBezier(type == "CubicBezier");
+      }
+      return;
+      break;
+
+    case Start:
+      if (strcmp(pszName, "Start"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "Start", mParser.getCurrentLineNumber());
+      {//workload
+        const char * attr;
+        attr = mParser.getAttributeValue("x", papszAttrs);
+        C_FLOAT64 dX = CCopasiXMLInterface::DBL(attr);
+        attr = mParser.getAttributeValue("y", papszAttrs);
+        C_FLOAT64 dY = CCopasiXMLInterface::DBL(attr);
+        mCommon.pLineSegment->setStart(CLPoint(dX, dY));
+        return;
+      }
+      return;
+      break;
+
+    case End:
+      if (strcmp(pszName, "End"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "End", mParser.getCurrentLineNumber());
+      {//workload
+        const char * attr;
+        attr = mParser.getAttributeValue("x", papszAttrs);
+        C_FLOAT64 dX = CCopasiXMLInterface::DBL(attr);
+        attr = mParser.getAttributeValue("y", papszAttrs);
+        C_FLOAT64 dY = CCopasiXMLInterface::DBL(attr);
+        mCommon.pLineSegment->setEnd(CLPoint(dX, dY));
+        return;
+      }
+      return;
+      break;
+
+    default:
+      mCurrentElement = UNKNOWN_ELEMENT;
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
+      break;
+    }
+
+  //   if (mpCurrentHandler)
+  //     mParser.pushElementHandler(mpCurrentHandler);
+  //
+  //   mParser.onStartElement(pszName, papszAttrs);
+
+  return;
+}
+
+void CCopasiXMLParser::CurveElement::end(const XML_Char *pszName)
+{
+  std::cout << "XMLParser END : Curve" << " (" << pszName << ")" << mCurrentElement << std::endl; //DEBUG
+
+  if (!strcmp(pszName, "Curve"))
+    {
+      mParser.popElementHandler();
+      mCurrentElement = START_ELEMENT;
+
+      /* Tell the parent element we are done. */
+      mParser.onEndElement(pszName);
+    }
+  else
+    {
+      switch (mCurrentElement)
+        {
+        case ListOfCurveSegments:
+          break;
+
+        case CurveSegment:
+          mCommon.pCurve->addCurveSegment(*mCommon.pLineSegment);
+          //tell the handler where to continue
+          mCurrentElement = ListOfCurveSegments;
+          break;
+
+        case Start:
+          break;
+
+        case End:
+          //tell the handler where to continue
+          mCurrentElement = CurveSegment;
+          break;
+
+        default:
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "???", mParser.getCurrentLineNumber());
+          break;
+        }
+    }
+  return;
+}
+
 //******** CompartmentGlyph **********
 
 CCopasiXMLParser::CompartmentGlyphElement::CompartmentGlyphElement(CCopasiXMLParser& parser, SCopasiXMLParserCommon & common): CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
@@ -5152,6 +5306,15 @@ void CCopasiXMLParser::ReactionGlyphElement::start(const XML_Char *pszName, cons
       }
       break;
 
+    case Curve:
+      if (!strcmp(pszName, "Curve"))
+        {
+          mpCurrentHandler = new CurveElement(mParser, mCommon);
+          if (mCommon.pReactionGlyph)
+            mCommon.pCurve = &mCommon.pReactionGlyph->getCurve();
+        }
+      break;
+
     default:
       mCurrentElement = UNKNOWN_ELEMENT;
       mParser.pushElementHandler(&mParser.mUnknownElement);
@@ -5192,6 +5355,9 @@ void CCopasiXMLParser::ReactionGlyphElement::end(const XML_Char *pszName)
         case Dimensions:
           //tell the handler where to continue
           mCurrentElement = BoundingBox;
+          break;
+
+        case Curve:
           break;
 
         case UNKNOWN_ELEMENT:

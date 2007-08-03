@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-//   $Revision: 1.52 $
+//   $Revision: 1.53 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/08/03 09:20:29 $
+//   $Date: 2007/08/03 15:46:15 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -59,6 +59,8 @@ class CLMetabGlyph;
 class CLReactionGlyph;
 class CLTextGlyph;
 class CLGraphicalObject;
+class CLCurve;
+class CLLineSegment;
 #endif //WITH_LAYOUT
 
 struct SCopasiXMLParserCommon
@@ -197,6 +199,8 @@ struct SCopasiXMLParserCommon
     CLReactionGlyph * pReactionGlyph;
     CLTextGlyph * pTextGlyph;
     CLGraphicalObject * pAdditionalGO;
+    CLCurve *pCurve;
+    CLLineSegment *pLineSegment;
 #endif //WITH_LAYOUT
 
     /**
@@ -2902,6 +2906,32 @@ class CCopasiXMLParser : public CExpat
       };
 
 #ifdef WITH_LAYOUT
+  class CurveElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+      private:
+        enum Element
+        {
+          Curve = 0,
+          ListOfCurveSegments,
+          CurveSegment,
+          Start,
+          End
+        };
+
+        unsigned C_INT32 mLineNumber;
+
+      public:
+        CurveElement(CCopasiXMLParser & parser,
+                     SCopasiXMLParserCommon & common);
+
+        virtual ~CurveElement();
+
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        virtual void end(const XML_Char *pszName);
+      };
+
   class CompartmentGlyphElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
       {
       private:
@@ -3002,7 +3032,8 @@ class CCopasiXMLParser : public CExpat
           ReactionGlyph = 0,
           BoundingBox,
           Position,
-          Dimensions
+          Dimensions,
+          Curve
         };
 
         unsigned C_INT32 mLineNumber;
