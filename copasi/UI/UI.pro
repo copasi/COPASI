@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $ 
-#   $Revision: 1.152 $ 
+#   $Revision: 1.153 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2007/08/03 13:46:40 $ 
+#   $Date: 2007/08/03 14:38:29 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -11,7 +11,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.152 $ $Author: shoops $ $Date: 2007/08/03 13:46:40 $  
+# $Revision: 1.153 $ $Author: shoops $ $Date: 2007/08/03 14:38:29 $  
 ######################################################################
 
 LIB = UI
@@ -60,7 +60,6 @@ HEADERS += \
            FunctionWidget.h \
            FunctionWidget1.h \
            MetabolitesWidget.h \
-           MetabolitesWidget1.h \
            ModelWidget.h \
            ModelValuesWidget.h \
            MoietyWidget.h \
@@ -125,7 +124,6 @@ SOURCES += \
            FunctionWidget1.cpp \
            listviews.cpp \
            MetabolitesWidget.cpp \
-           MetabolitesWidget1.cpp \
            ModelValuesWidget.cpp \
            ModelWidget.cpp \
            MoietyWidget.cpp \
