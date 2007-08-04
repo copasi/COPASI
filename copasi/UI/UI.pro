@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $ 
-#   $Revision: 1.153 $ 
+#   $Revision: 1.154 $ 
 #   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2007/08/03 14:38:29 $ 
+#   $Author: ssahle $ 
+#   $Date: 2007/08/04 13:52:21 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -11,7 +11,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.153 $ $Author: shoops $ $Date: 2007/08/03 14:38:29 $  
+# $Revision: 1.154 $ $Author: ssahle $ $Date: 2007/08/04 13:52:21 $  
 ######################################################################
 
 LIB = UI
@@ -56,7 +56,7 @@ HEADERS += \
            DataModel.txt.h \
            DifferentialEquations.h \
            FunctionItemWidget.h \
-           FunctionSymbols.h \
+#           FunctionSymbols.h \
            FunctionWidget.h \
            FunctionWidget1.h \
            MetabolitesWidget.h \
@@ -119,7 +119,7 @@ SOURCES += \
            DataModelGUI.cpp \
            DifferentialEquations.cpp \
            FunctionItemWidget.cpp \
-           FunctionSymbols.cpp \
+#           FunctionSymbols.cpp \
            FunctionWidget.cpp \
            FunctionWidget1.cpp \
            listviews.cpp \

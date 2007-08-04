@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.217 $
+//   $Revision: 1.218 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/08/03 13:46:40 $
+//   $Author: ssahle $
+//   $Date: 2007/08/04 13:53:26 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,7 +28,7 @@
 #include "DataModelGUI.h"
 #include "CompartmentsWidget.h"
 #include "CompartmentsWidget1.h"
-#include "FunctionSymbols.h"
+//#include "FunctionSymbols.h"
 #include "FunctionWidget.h"
 #include "FunctionWidget1.h"
 #ifdef HAVE_MML
@@ -206,7 +206,7 @@ ListViews::ListViews(QWidget *parent, const char *name):
     compartmentsWidget1(NULL),
     defaultWidget(NULL),
     differentialEquations(NULL),
-    functionSymbols(NULL),
+    //functionSymbols(NULL),
     functionWidget(NULL),
     functionWidget1(NULL),
     lyapWidget(NULL),
@@ -333,28 +333,19 @@ void ListViews::setupFolders()
 void ListViews::ConstructNodeWidgets()
 {
   // create the model widgets
-  //  if (!compartmentSymbols) compartmentSymbols = new CompartmentSymbols(this);
-  //  compartmentSymbols->hide();
-
   if (!compartmentsWidget) compartmentsWidget = new CompartmentsWidget(this);
   compartmentsWidget->hide();
 
   if (!compartmentsWidget1) compartmentsWidget1 = new CompartmentsWidget1(this);
   compartmentsWidget1->hide();
 
-  //  if (!constantSymbols) constantSymbols = new ConstantSymbols(this);
-  //  constantSymbols->hide();
-
 #ifdef HAVE_MML
   if (!differentialEquations) differentialEquations = new DifferentialEquations(this);
   differentialEquations->hide();
 #endif // HAVE_MML
 
-  //  if (!fixedMetaboliteSymbols) fixedMetaboliteSymbols = new FixedMetaboliteSymbols(this);
-  //  fixedMetaboliteSymbols->hide();
-
-  if (!functionSymbols) functionSymbols = new FunctionSymbols(this);
-  functionSymbols->hide();
+  //if (!functionSymbols) functionSymbols = new FunctionSymbols(this);
+  //functionSymbols->hide();
 
   if (!functionWidget) functionWidget = new FunctionWidget(this);
   functionWidget->hide();
@@ -367,9 +358,6 @@ void ListViews::ConstructNodeWidgets()
 
   if (!lyapResultWidget) lyapResultWidget = new CQLyapResultWidget(this);
   lyapResultWidget->hide();
-
-  //  if (!metaboliteSymbols) metaboliteSymbols = new MetaboliteSymbols(this);
-  //  metaboliteSymbols->hide();
 
   if (!metabolitesWidget) metabolitesWidget = new MetabolitesWidget(this);
   metabolitesWidget->hide();
@@ -567,9 +555,9 @@ CopasiWidget* ListViews::findWidgetFromId(const C_INT32 & id) const
       case 116:
         return parametersWidget;
         break;
-      case 122:
-        return functionSymbols;
-        break;
+        //case 122:
+        //  return functionSymbols;
+        //  break;
 #ifdef HAVE_MML
       case 126:
         return differentialEquations;
