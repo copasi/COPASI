@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-//   $Revision: 1.53 $
+//   $Revision: 1.54 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/08/03 15:46:15 $
+//   $Date: 2007/08/04 12:57:47 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -61,6 +61,7 @@ class CLTextGlyph;
 class CLGraphicalObject;
 class CLCurve;
 class CLLineSegment;
+class CLMetabReferenceGlyph;
 #endif //WITH_LAYOUT
 
 struct SCopasiXMLParserCommon
@@ -201,6 +202,7 @@ struct SCopasiXMLParserCommon
     CLGraphicalObject * pAdditionalGO;
     CLCurve *pCurve;
     CLLineSegment *pLineSegment;
+    CLMetabReferenceGlyph* pMetaboliteReferenceGlyph;
 #endif //WITH_LAYOUT
 
     /**
@@ -3024,6 +3026,53 @@ class CCopasiXMLParser : public CExpat
         virtual void end(const XML_Char *pszName);
       };
 
+  class MetaboliteReferenceGlyphElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+      private:
+        enum Element
+        {
+          MetaboliteReferenceGlyph = 0,
+          BoundingBox,
+          Position,
+          Dimensions,
+          Curve
+        };
+
+        unsigned C_INT32 mLineNumber;
+
+      public:
+        MetaboliteReferenceGlyphElement(CCopasiXMLParser & parser,
+                                        SCopasiXMLParserCommon & common);
+
+        virtual ~MetaboliteReferenceGlyphElement();
+
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        virtual void end(const XML_Char *pszName);
+      };
+
+  class ListOfMetaboliteReferenceGlyphsElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+      private:
+        enum Element
+        {
+          ListOfMetaboliteReferenceGlyphs = 0,
+          MetaboliteReferenceGlyph
+        };
+
+      public:
+        ListOfMetaboliteReferenceGlyphsElement(CCopasiXMLParser & parser,
+                                               SCopasiXMLParserCommon & common);
+
+        virtual ~ListOfMetaboliteReferenceGlyphsElement();
+
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        virtual void end(const XML_Char *pszName);
+      };
+
   class ReactionGlyphElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
       {
       private:
@@ -3033,7 +3082,8 @@ class CCopasiXMLParser : public CExpat
           BoundingBox,
           Position,
           Dimensions,
-          Curve
+          Curve,
+          ListOfMetaboliteReferenceGlyphs
         };
 
         unsigned C_INT32 mLineNumber;

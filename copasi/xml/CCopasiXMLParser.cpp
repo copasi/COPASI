@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.158 $
+//   $Revision: 1.159 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/08/03 15:46:15 $
+//   $Date: 2007/08/04 12:57:47 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -180,6 +180,15 @@ CCopasiXMLParser::CCopasiXMLParser(CVersion & version) :
 #ifdef WITH_LAYOUT
   mCommon.pLayoutList = NULL;
   mCommon.pCurrentLayout = NULL;
+  mCommon.pCompartmentGlyph = NULL;
+  mCommon.pMetaboliteGlyph = NULL;
+  mCommon.pReactionGlyph = NULL;
+  mCommon.pTextGlyph = NULL;
+  mCommon.pAdditionalGO = NULL;
+  mCommon.pCurve = NULL;
+  mCommon.pLineSegment = NULL;
+  mCommon.pMetaboliteReferenceGlyph = NULL;
+
 #endif //WITH_LAYOUT
 
   enableElementHandler(true);
@@ -2128,7 +2137,7 @@ void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
         mpCurrentHandler = &mParser.mCharacterDataElement;
       break;
 
-    case MathML:            // Old file format support
+    case MathML:             // Old file format support
       if (!strcmp(pszName, "MathML"))
         {
           /* If we do not have a MathML element handler we create one. */
@@ -2201,7 +2210,7 @@ void CCopasiXMLParser::ModelValueElement::end(const XML_Char *pszName)
       mCurrentElement = ModelValue;
       break;
 
-    case MathML:            // Old file format support
+    case MathML:             // Old file format support
       if (strcmp(pszName, "MathML"))
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                        pszName, "MathML", mParser.getCurrentLineNumber());
@@ -5224,6 +5233,255 @@ void CCopasiXMLParser::ListOfMetabGlyphsElement::end(const XML_Char * pszName)
   return;
 }
 
+//******** MetaboliteReferenceGlyph **********
+
+CCopasiXMLParser::MetaboliteReferenceGlyphElement::MetaboliteReferenceGlyphElement(CCopasiXMLParser& parser, SCopasiXMLParserCommon & common)
+    : CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+{}
+
+CCopasiXMLParser::MetaboliteReferenceGlyphElement::~MetaboliteReferenceGlyphElement()
+{}
+
+void CCopasiXMLParser::MetaboliteReferenceGlyphElement::start(const XML_Char *pszName, const XML_Char** papszAttrs)
+{
+  std::cout << "XMLParser STA : MetaboliteReferenceGlyph" << " (" << pszName << ")" << mCurrentElement << std::endl; //DEBUG
+
+  mCurrentElement++; /* We should always be on hte next element */
+  mpCurrentHandler = NULL;
+  mLineNumber = (unsigned int) - 1;
+
+  switch (mCurrentElement)
+    {
+    case MetaboliteReferenceGlyph:
+      if (strcmp(pszName, "MetaboliteReferenceGlyph"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "MetaboliteReferenceGlyph", mParser.getCurrentLineNumber());
+      {
+        //workload
+        const char * key;
+        const char * name;
+        const char * metaboliteGlyph;
+        const char * role;
+        key = mParser.getAttributeValue("key", papszAttrs);
+        name = mParser.getAttributeValue("name", papszAttrs);
+        metaboliteGlyph = mParser.getAttributeValue("metaboliteGlyph", papszAttrs);
+        role = mParser.getAttributeValue("role", papszAttrs);
+
+        mCommon.pMetaboliteReferenceGlyph = new CLMetabReferenceGlyph(name);
+
+        CLMetabGlyph * pMetabGlyph = dynamic_cast< CLMetabGlyph * >(mCommon.KeyMap.get(metaboliteGlyph));
+        if (!pMetabGlyph) fatalError();
+        mCommon.pMetaboliteReferenceGlyph->setMetabGlyphKey(pMetabGlyph->getKey());
+
+        //interpret role string
+        C_INT32 i;
+        for (i = 0; (CLMetabReferenceGlyph::XMLRole[i] != "") && (CLMetabReferenceGlyph::XMLRole[i] != role); ++i);
+
+        if (CLMetabReferenceGlyph::XMLRole[i] == "")
+          mCommon.pMetaboliteReferenceGlyph->setRole(CLMetabReferenceGlyph::UNDEFINED);
+        else
+          mCommon.pMetaboliteReferenceGlyph->setRole(CLMetabReferenceGlyph::Role(i));
+
+        mCommon.pReactionGlyph->addMetabReferenceGlyph(mCommon.pMetaboliteReferenceGlyph);
+        mCommon.KeyMap.addFix(key, mCommon.pMetaboliteReferenceGlyph);
+      }
+      return;
+      break;
+
+    case BoundingBox:
+      if (strcmp(pszName, "BoundingBox"))
+        {
+          //CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+          //               pszName, "BoundingBox", mParser.getCurrentLineNumber());
+          mCurrentElement = Dimensions;
+        }
+      else
+        return;
+      break;
+
+    case Position:
+      if (strcmp(pszName, "Position"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "Position", mParser.getCurrentLineNumber());
+      {//workload
+        const char * attr;
+        attr = mParser.getAttributeValue("x", papszAttrs);
+        mCommon.pMetaboliteReferenceGlyph->setX(CCopasiXMLInterface::DBL(attr));
+        attr = mParser.getAttributeValue("y", papszAttrs);
+        mCommon.pMetaboliteReferenceGlyph->setY(CCopasiXMLInterface::DBL(attr));
+        return;
+      }
+      break;
+
+    case Dimensions:
+      if (strcmp(pszName, "Dimensions"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "Dimensions", mParser.getCurrentLineNumber());
+      {//workload
+        const char * attr;
+        attr = mParser.getAttributeValue("width", papszAttrs);
+        mCommon.pMetaboliteReferenceGlyph->setWidth(CCopasiXMLInterface::DBL(attr));
+        attr = mParser.getAttributeValue("height", papszAttrs);
+        mCommon.pMetaboliteReferenceGlyph->setHeight(CCopasiXMLInterface::DBL(attr));
+        return;
+      }
+      break;
+
+    case Curve:
+      if (!strcmp(pszName, "Curve"))
+        {
+          mpCurrentHandler = new CurveElement(mParser, mCommon);
+          if (mCommon.pMetaboliteReferenceGlyph)
+            mCommon.pCurve = &mCommon.pMetaboliteReferenceGlyph->getCurve();
+        }
+      break;
+
+    default:
+      mCurrentElement = UNKNOWN_ELEMENT;
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
+      break;
+    }
+
+  if (mpCurrentHandler)
+    mParser.pushElementHandler(mpCurrentHandler);
+
+  mParser.onStartElement(pszName, papszAttrs);
+
+  return;
+}
+
+void CCopasiXMLParser::MetaboliteReferenceGlyphElement::end(const XML_Char *pszName)
+{
+  std::cout << "XMLParser END : MetaboliteReferenceGlyph" << " (" << pszName << ")" << mCurrentElement << std::endl; //DEBUG
+
+  if (!strcmp(pszName, "MetaboliteReferenceGlyph"))
+    {
+      mParser.popElementHandler();
+      mCurrentElement = START_ELEMENT;
+
+      /* Tell the parent element we are done. */
+      mParser.onEndElement(pszName);
+    }
+  else
+    {
+      switch (mCurrentElement)
+        {
+        case BoundingBox:
+          break;
+
+        case Position:
+          break;
+
+        case Dimensions:
+          //tell the handler where to continue
+          mCurrentElement = BoundingBox;
+          break;
+
+        case Curve:
+          break;
+
+        case UNKNOWN_ELEMENT:
+          mCurrentElement = MetaboliteReferenceGlyph;
+          break;
+
+        default:
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "???", mParser.getCurrentLineNumber());
+          break;
+        }
+    }
+  return;
+}
+
+//******* ListOfMetaboliteReferenceGlyphs ********
+
+CCopasiXMLParser::ListOfMetaboliteReferenceGlyphsElement::ListOfMetaboliteReferenceGlyphsElement(CCopasiXMLParser & parser,
+    SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+{}
+
+CCopasiXMLParser::ListOfMetaboliteReferenceGlyphsElement::~ListOfMetaboliteReferenceGlyphsElement()
+{
+  pdelete(mpCurrentHandler);
+}
+
+void CCopasiXMLParser::ListOfMetaboliteReferenceGlyphsElement::start(const XML_Char * pszName,
+    const XML_Char ** papszAttrs)
+{
+  std::cout << "XMLParser STA : ListOfMetaboliteReferenceGlyphs" << " (" << pszName << ")" << mCurrentElement << std::endl; //DEBUG
+
+  mCurrentElement++; /* We should always be on the next element */
+
+  switch (mCurrentElement)
+    {
+    case ListOfMetaboliteReferenceGlyphs:
+      if (strcmp(pszName, "ListOfMetaboliteReferenceGlyphs"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "ListOfMetaboliteReferenceGlyphs", mParser.getCurrentLineNumber());
+      break;
+
+    case MetaboliteReferenceGlyph:
+      //only one type of tags may occur here, so we can throw an exception.
+      //No need to silently ignore unknown tags here.
+      if (strcmp(pszName, "MetaboliteReferenceGlyph"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "MetaboliteReferenceGlyph", mParser.getCurrentLineNumber());
+
+      //only one type of tags may occur here, so if the handler exists
+      //it must be the correct one
+      if (!mpCurrentHandler)
+        mpCurrentHandler = new MetaboliteReferenceGlyphElement(mParser, mCommon);
+
+      mParser.pushElementHandler(mpCurrentHandler);
+      mpCurrentHandler->start(pszName, papszAttrs);
+      break;
+
+    default:
+      std::cout << "should never happen" << std::endl; //DEBUG
+      break;
+    }
+  return;
+}
+
+void CCopasiXMLParser::ListOfMetaboliteReferenceGlyphsElement::end(const XML_Char * pszName)
+{
+  std::cout << "XMLParser END : ListOfMetaboliteReferenceGlyphs" << " (" << pszName << ")" << mCurrentElement << std::endl; //DEBUG
+
+  switch (mCurrentElement)
+    {
+    case ListOfMetaboliteReferenceGlyphs:
+      if (strcmp(pszName, "ListOfMetaboliteReferenceGlyphs"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "ListOfMetaboliteReferenceGlyphs", mParser.getCurrentLineNumber());
+      mParser.popElementHandler();
+
+      //reset handler
+      mCurrentElement = START_ELEMENT;
+      //call parent handler
+      mParser.onEndElement(pszName);
+      break;
+
+    case MetaboliteReferenceGlyph:
+      if (strcmp(pszName, "MetaboliteReferenceGlyph"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "MetaboliteReferenceGlyph", mParser.getCurrentLineNumber());
+
+      //tell the handler where to continue
+      mCurrentElement = ListOfMetaboliteReferenceGlyphs;
+
+      //no need to delete Handler (since it is the only one the destructor
+      //will handle it)
+      break;
+
+    default:
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                     pszName, "???", mParser.getCurrentLineNumber());
+      break;
+    }
+  return;
+}
+
 //******** ReactionGlyph **********
 
 CCopasiXMLParser::ReactionGlyphElement::ReactionGlyphElement(CCopasiXMLParser& parser, SCopasiXMLParserCommon & common): CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
@@ -5315,6 +5573,11 @@ void CCopasiXMLParser::ReactionGlyphElement::start(const XML_Char *pszName, cons
         }
       break;
 
+    case ListOfMetaboliteReferenceGlyphs:
+      if (!strcmp(pszName, "ListOfMetaboliteReferenceGlyphs"))
+        mpCurrentHandler = new ListOfMetaboliteReferenceGlyphsElement(mParser, mCommon);
+      break;
+
     default:
       mCurrentElement = UNKNOWN_ELEMENT;
       mParser.pushElementHandler(&mParser.mUnknownElement);
@@ -5358,6 +5621,9 @@ void CCopasiXMLParser::ReactionGlyphElement::end(const XML_Char *pszName)
           break;
 
         case Curve:
+          break;
+
+        case ListOfMetaboliteReferenceGlyphs:
           break;
 
         case UNKNOWN_ELEMENT:
