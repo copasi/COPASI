@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/DifferentialEquations.h,v $
-   $Revision: 1.19 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/28 00:20:16 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/DifferentialEquations.h,v $
+//   $Revision: 1.20 $
+//   $Name:  $
+//   $Author: ssahle $
+//   $Date: 2007/08/04 21:44:33 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -52,27 +52,6 @@ class DifferentialEquations : public CopasiWidget
 
   private:
     void loadDifferentialEquations(CModel * model);
-
-    static void writeLHS(std::ostream & out, const std::string & metabName,
-                         const std::string & compName, unsigned C_INT32 l);
-
-    static void writeRHS(std::ostream & out, const CMetab* pMetab, const CReaction* pReac,
-                         bool expand, bool expandFull,
-                         unsigned C_INT32 l);
-
-    //list keys of all reactions that have the metab in their balances
-    static std::set<std::string> listReactionsForMetab(const CModel* model,
-        const std::string & key);
-
-    static void createParameterMapping(const CReaction* pReac,
-                                       std::vector<std::vector<std::string> > & params);
-
-    void writeLHS_ModelValue(std::ostream & out,
-                             const std::string & valueName, unsigned C_INT32 l);
-
-    void writeRHS_ModelEntity(std::ostream & out,
-                              const CModelEntity* pEntity,
-                              bool expandFull, unsigned C_INT32 l);
 
     std::ostringstream mml;
   };
