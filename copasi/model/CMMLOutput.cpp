@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMMLOutput.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/08/04 21:45:16 $
+//   $Date: 2007/08/05 21:28:02 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -49,7 +49,7 @@ void CMMLOutput::writeLHS(std::ostream & out,
 
 void CMMLOutput::writeRHS(std::ostream & out,
                           const CMetab* pMetab, const CReaction* pReac,
-                          bool expand, bool expandFull,
+                          bool numbers, bool expand, bool expandFull,
                           unsigned C_INT32 l)
 {
   if (!pMetab)
@@ -112,7 +112,7 @@ void CMMLOutput::writeRHS(std::ostream & out,
   if (pReac->getFunction())
     {
       std::vector<std::vector<std::string> > params;
-      createParameterMapping(pReac, params);
+      createParameterMapping(pReac, params, numbers);
       if (expand) out << SPC(l + 1) << "<mfenced>" << std::endl;
       pReac->getFunction()->writeMathML(out, params, expand, expandFull, l + 1);
       if (expand) out << SPC(l + 1) << "</mfenced>" << std::endl;
@@ -122,7 +122,8 @@ void CMMLOutput::writeRHS(std::ostream & out,
 }
 
 void CMMLOutput::createParameterMapping(const CReaction* pReac,
-                                        std::vector<std::vector<std::string> > & params)
+                                        std::vector<std::vector<std::string> > & params,
+                                        bool numbers)
 {
   assert(pReac);
   assert(pReac->getFunction());
@@ -165,9 +166,19 @@ void CMMLOutput::createParameterMapping(const CReaction* pReac,
         case CFunctionParameter::PARAMETER:
           if (pReac->isLocalParameter(i))
             {
-              std::ostringstream number;
-              number << pReac->getParameterValue(functionParams[i]->getObjectName());
-              params[i][0] = "<mn>" + number.str() + "</mn>";
+              if (numbers)
+                {
+                  std::ostringstream number;
+                  number << pReac->getParameterValue(functionParams[i]->getObjectName());
+                  params[i][0] = "<mn>" + number.str() + "</mn>";
+                }
+              else
+                {
+                  name = GlobalKeys.get(pReac->getParameterMappings()[i][0])->getObjectName();
+                  //params[i][0] = "<mi>" + CMathMl::fixName(name) + "</mi>";
+                  params[i][0] = "<msub><mi>" + CMathMl::fixName(name) + "</mi><mi>("
+                                 + CMathMl::fixName(pReac->getObjectName()) + ")</mi></msub>";
+                }
             }
           else
             {
@@ -272,7 +283,7 @@ void CMMLOutput::writeDifferentialEquations(std::ostream & mml, CModel * model, 
           mml << SPC(l + 2) << "<mtd columnalign='left'>" << std::endl;
           writeRHS(mml, model->getMetabolites()[i],
                    dynamic_cast<CReaction*>(GlobalKeys.get(*it)) ,
-                   expand, expandFull, l + 3);
+                   localParameterNumbers, expand, expandFull, l + 3);
           mml << SPC(l + 2) << "</mtd>" << std::endl;
 
           mml << SPC(l + 1) << "</mtr>" << std::endl;

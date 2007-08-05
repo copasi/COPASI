@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMMLOutput.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/08/04 21:45:16 $
+//   $Date: 2007/08/05 21:28:02 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -43,7 +43,7 @@ class CMMLOutput
                          const std::string & compName, unsigned C_INT32 l);
 
     static void writeRHS(std::ostream & out, const CMetab* pMetab, const CReaction* pReac,
-                         bool expand, bool expandFull,
+                         bool numbers, bool expand, bool expandFull,
                          unsigned C_INT32 l);
 
     //list keys of all reactions that have the metab in their balances
@@ -51,7 +51,8 @@ class CMMLOutput
         const std::string & key);
 
     static void createParameterMapping(const CReaction* pReac,
-                                       std::vector<std::vector<std::string> > & params);
+                                       std::vector<std::vector<std::string> > & params,
+                                       bool numbers);
 
     static void writeLHS_ModelValue(std::ostream & out,
                                     const std::string & valueName, unsigned C_INT32 l);
