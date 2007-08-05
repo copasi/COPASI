@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLReactionGlyph.h,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/07/24 19:17:12 $
+//   $Date: 2007/08/05 12:24:11 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -61,7 +61,7 @@ class CLMetabReferenceGlyph : public CLGraphicalObject
      * XML type names of the roles. This is used in the xml
      * importer and exporter
      */
-    static const char* XMLRole[];
+    static const std::string XMLRole[];
 
   private:
 
