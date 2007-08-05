@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.218 $
+//   $Revision: 1.219 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/08/04 13:53:26 $
+//   $Date: 2007/08/05 10:08:21 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,7 +32,7 @@
 #include "FunctionWidget.h"
 #include "FunctionWidget1.h"
 #ifdef HAVE_MML
-# include "DifferentialEquations.h"
+# include "CQDifferentialEquations.h"
 #endif // HAVE_MML
 #include "CQLyapWidget.h"
 #include "CQLyapResultWidget.h"
@@ -340,7 +340,7 @@ void ListViews::ConstructNodeWidgets()
   compartmentsWidget1->hide();
 
 #ifdef HAVE_MML
-  if (!differentialEquations) differentialEquations = new DifferentialEquations(this);
+  if (!differentialEquations) differentialEquations = new CQDifferentialEquations(this);
   differentialEquations->hide();
 #endif // HAVE_MML
 
