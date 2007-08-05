@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQDifferentialEquations.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/08/05 10:00:19 $
+//   $Date: 2007/08/05 12:24:53 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,8 +13,8 @@
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQDifferentialEquations.ui'
  **
- ** Created: So Aug 5 11:45:07 2007
- **      by: The User Interface Compiler ($Id: CQDifferentialEquations.h,v 1.1 2007/08/05 10:00:19 ssahle Exp $)
+ ** Created: So Aug 5 14:11:34 2007
+ **      by: The User Interface Compiler ($Id: CQDifferentialEquations.h,v 1.2 2007/08/05 12:24:53 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -32,6 +32,8 @@ class QHBoxLayout;
 class QGridLayout;
 class QSpacerItem;
 class QScrollView;
+class QLabel;
+class QComboBox;
 class QPushButton;
 class QtMmlWidget;
 
@@ -43,8 +45,12 @@ class CQDifferentialEquations : public CopasiWidget
     CQDifferentialEquations(QWidget* parent = 0, const char* name = 0);
     ~CQDifferentialEquations();
 
-    QPushButton* mpSaveButton;
     QScrollView* mpScrollView;
+    QLabel* textLabelParameters;
+    QLabel* textLabelFunctions;
+    QComboBox* comboBoxParameters;
+    QComboBox* comboBoxFunctions;
+    QPushButton* mpSaveButton;
 
     virtual bool enter(const std::string &);
 
@@ -56,7 +62,12 @@ class CQDifferentialEquations : public CopasiWidget
     std::ostringstream mml;
 
     QGridLayout* CQDifferentialEquationsLayout;
+    QHBoxLayout* layout1;
+    QSpacerItem* spacer1_2;
+    QHBoxLayout* layout2;
     QSpacerItem* spacer1;
+    QVBoxLayout* layout3;
+    QSpacerItem* spacer3;
 
   protected slots:
     virtual void languageChange();

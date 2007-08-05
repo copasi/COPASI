@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQDifferentialEquations.ui.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/08/05 10:00:19 $
+//   $Date: 2007/08/05 12:24:53 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,6 +48,8 @@ void CQDifferentialEquations::init()
   mpMMLWidget->show();
 
   mpScrollView->addChild(mpMMLWidget);
+
+  comboBoxFunctions->setCurrentItem(1);
 }
 
 void CQDifferentialEquations::slotSaveMML()
@@ -93,7 +95,30 @@ void CQDifferentialEquations::slotUpdateWidget()
   //std::ostringstream mml;
   mml.str("");
 
-  CMMLOutput::writeDifferentialEquations(mml, CCopasiDataModel::Global->getModel(), true, true, false);
+  bool expand, expandAll;
+  switch (comboBoxFunctions->currentItem())
+    {
+    case 0:
+      expand = false;
+      expandAll = false;
+      break;
+
+    case 1:
+      expand = true;
+      expandAll = false;
+      break;
+
+    default:
+      expand = true;
+      expandAll = true;
+      break;
+    };
+
+  bool parameterAsNumbers = false;
+  if (comboBoxParameters->currentItem() == 0)
+    parameterAsNumbers = true;
+
+  CMMLOutput::writeDifferentialEquations(mml, CCopasiDataModel::Global->getModel(), parameterAsNumbers, expand, expandAll);
 
   QWidget* tmp = dynamic_cast<QWidget*>(parent());
   if (tmp) tmp->setCursor(Qt::WaitCursor);
@@ -114,5 +139,4 @@ bool CQDifferentialEquations::enter(const std::string &)
 }
 
 void CQDifferentialEquations::newFunction()
-{
-}
+{}

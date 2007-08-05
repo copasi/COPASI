@@ -1,10 +1,10 @@
 <!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQDifferentialEquations.ui,v $ </comment>
-<comment>   $Revision: 1.1 $ </comment>
+<comment>   $Revision: 1.2 $ </comment>
 <comment>   $Name:  $ </comment>
 <comment>   $Author: ssahle $ </comment>
-<comment>   $Date: 2007/08/05 10:00:19 $ </comment>
+<comment>   $Date: 2007/08/05 12:24:53 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -12,6 +12,7 @@
 <comment> All rights reserved. </comment>
 
 <class>CQDifferentialEquations</class>
+<comment> All rights reserved. </comment>
 <widget class="CopasiWidget">
     <property name="name">
         <cstring>CQDifferentialEquations</cstring>
@@ -20,8 +21,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>600</width>
-            <height>480</height>
+            <width>673</width>
+            <height>573</height>
         </rect>
     </property>
     <property name="caption">
@@ -31,35 +32,156 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <spacer row="1" column="0">
-            <property name="name">
-                <cstring>spacer1</cstring>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
-            <property name="sizeType">
-                <enum>Expanding</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>251</width>
-                    <height>20</height>
-                </size>
-            </property>
-        </spacer>
-        <widget class="QPushButton" row="1" column="1">
-            <property name="name">
-                <cstring>mpSaveButton</cstring>
-            </property>
-            <property name="text">
-                <string>Save MathML to disk</string>
-            </property>
-        </widget>
-        <widget class="QScrollView" row="0" column="0" rowspan="1" colspan="2">
+        <widget class="QScrollView" row="0" column="0" rowspan="1" colspan="3">
             <property name="name">
                 <cstring>mpScrollView</cstring>
             </property>
+        </widget>
+        <widget class="QLabel" row="1" column="0">
+            <property name="name">
+                <cstring>textLabelParameters</cstring>
+            </property>
+            <property name="text">
+                <string>local parameters</string>
+            </property>
+            <property name="alignment">
+                <set>AlignVCenter|AlignRight</set>
+            </property>
+        </widget>
+        <widget class="QLabel" row="2" column="0">
+            <property name="name">
+                <cstring>textLabelFunctions</cstring>
+            </property>
+            <property name="text">
+                <string>functions</string>
+            </property>
+            <property name="alignment">
+                <set>AlignVCenter|AlignRight</set>
+            </property>
+        </widget>
+        <widget class="QLayoutWidget" row="1" column="1">
+            <property name="name">
+                <cstring>layout1</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QComboBox">
+                    <item>
+                        <property name="text">
+                            <string>display numerical value</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>display name</string>
+                        </property>
+                    </item>
+                    <property name="name">
+                        <cstring>comboBoxParameters</cstring>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer1_2</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>120</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+            </hbox>
+        </widget>
+        <widget class="QLayoutWidget" row="2" column="1">
+            <property name="name">
+                <cstring>layout2</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QComboBox">
+                    <item>
+                        <property name="text">
+                            <string>display name</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>expand only kinetic functions</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>expand all functions</string>
+                        </property>
+                    </item>
+                    <property name="name">
+                        <cstring>comboBoxFunctions</cstring>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer1</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>120</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+            </hbox>
+        </widget>
+        <widget class="QLayoutWidget" row="1" column="2" rowspan="2" colspan="1">
+            <property name="name">
+                <cstring>layout3</cstring>
+            </property>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>mpSaveButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Save MathML to disk</string>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer3</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Vertical</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>20</width>
+                            <height>71</height>
+                        </size>
+                    </property>
+                </spacer>
+            </vbox>
         </widget>
     </grid>
 </widget>
@@ -108,6 +230,18 @@
         <signal>clicked()</signal>
         <receiver>CQDifferentialEquations</receiver>
         <slot>slotSaveMML()</slot>
+    </connection>
+    <connection>
+        <sender>comboBoxParameters</sender>
+        <signal>activated(int)</signal>
+        <receiver>CQDifferentialEquations</receiver>
+        <slot>slotUpdateWidget()</slot>
+    </connection>
+    <connection>
+        <sender>comboBoxFunctions</sender>
+        <signal>activated(int)</signal>
+        <receiver>CQDifferentialEquations</receiver>
+        <slot>slotUpdateWidget()</slot>
     </connection>
 </connections>
 <includes>
