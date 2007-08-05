@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $ 
-#   $Revision: 1.154 $ 
+#   $Revision: 1.155 $ 
 #   $Name:  $ 
 #   $Author: ssahle $ 
-#   $Date: 2007/08/04 13:52:21 $ 
+#   $Date: 2007/08/05 10:00:19 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -11,7 +11,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.154 $ $Author: ssahle $ $Date: 2007/08/04 13:52:21 $  
+# $Revision: 1.155 $ $Author: ssahle $ $Date: 2007/08/05 10:00:19 $  
 ######################################################################
 
 LIB = UI
@@ -54,9 +54,7 @@ HEADERS += \
            CTimeSeriesTable.h \
            DataModelGUI.h \
            DataModel.txt.h \
-           DifferentialEquations.h \
            FunctionItemWidget.h \
-#           FunctionSymbols.h \
            FunctionWidget.h \
            FunctionWidget1.h \
            MetabolitesWidget.h \
@@ -117,9 +115,7 @@ SOURCES += \
            CScanContainerWidget.cpp \
            CTimeSeriesTable.cpp \
            DataModelGUI.cpp \
-           DifferentialEquations.cpp \
            FunctionItemWidget.cpp \
-#           FunctionSymbols.cpp \
            FunctionWidget.cpp \
            FunctionWidget1.cpp \
            listviews.cpp \
@@ -149,10 +145,6 @@ SOURCES += \
            Tree.cpp \
            TSSWidget.cpp
 
-!contains(DEFINES, HAVE_MML) {
-  HEADERS -= DifferentialEquations.h
-  SOURCES -= DifferentialEquations.cpp
-}
 
 !contains(DEFINES, COPASI_TSS) {
   HEADERS -= TSSWidget.h
@@ -166,6 +158,7 @@ SOURCES += \
 
 
 # FORMS += CMCAResultSubwidget.ui
+# FORMS += CQDifferentialEquations.ui
 # FORMS += CQEFMWidget.ui
 # FORMS += CQExperimentData.ui
 # FORMS += CQExperimentSelection.ui
@@ -210,6 +203,7 @@ SOURCES += \
 HEADERS += \
            CMCAResultSubwidget.h \
            CMCAResultSubwidget.ui.h \
+           CQDifferentialEquations.h \
            CQEFMWidget.h \
            CQEFMWidget.ui.h \
            CQExperimentData.h \
@@ -290,6 +284,7 @@ HEADERS += \
 # sources generated from .ui files   
 SOURCES += \
            CMCAResultSubwidget.cpp \
+           CQDifferentialEquations.cpp \
            CQEFMWidget.cpp \
            CQExperimentData.cpp \
            CQExperimentSelection.cpp \
@@ -328,6 +323,12 @@ SOURCES += \
            SliderSettingsDialog.cpp \
            StateSubwidget.cpp \
            TimeSeriesSubwidget.cpp 
+
+
+!contains(DEFINES, HAVE_MML) {
+  HEADERS -= CQDifferentialEquations.h
+  SOURCES -= CQDifferentialEquations.cpp
+}
 
 #ifdef COPASI_LICENSE_COM
 contains(USE_LICENSE, COM) {
