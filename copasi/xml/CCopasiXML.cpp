@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-//   $Revision: 1.97 $
+//   $Revision: 1.98 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/08/03 15:45:03 $
+//   $Author: shoops $
+//   $Date: 2007/08/07 17:19:22 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -420,6 +420,7 @@ bool CCopasiXML::saveModel()
           startSaveElement("Metabolite", Attributes);
 
           if (SimulationType != CModelEntity::FIXED &&
+              SimulationType != CModelEntity::REACTIONS &&
               pMetab->getExpression() != "")
             {
               startSaveElement("Expression");
