@@ -1,62 +1,67 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/Attic/CQCopasiLayoutWidget.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/07/06 11:54:16 $
+//   $Date: 2007/08/07 15:35:41 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#ifndef CQCLAYOUTW_H
-#define CQCLAYOUTW_H
+/****************************************************************************
+ ** Form interface generated from reading ui file 'CQCopasiLayoutWidget.ui'
+ **
+ ** Created: Di Aug 7 17:30:34 2007
+ **      by: The User Interface Compiler ($Id: CQCopasiLayoutWidget.h,v 1.3 2007/08/07 15:35:41 ssahle Exp $)
+ **
+ ** WARNING! All changes made in this file will be lost!
+ ****************************************************************************/
 
-#include <qaction.h>
-#include <qpushbutton.h>
+#ifndef CQCOPASILAYOUTWIDGET_H
+#define CQCOPASILAYOUTWIDGET_H
 
-//#include <qvbox.h>
+#include <qvariant.h>
+#include <qpixmap.h>
 #include "UI/copasiWidget.h"
-//#include "mathematics.h"
-//#include "CQLayoutMainWindow.h"
 
-class CQLayoutMainWindow;
+class QVBoxLayout;
+class QHBoxLayout;
 class QGridLayout;
-//class QLineEdit;
-class QLabel;
-class QTabWidget;
+class QSpacerItem;
+class QPushButton;
 
 class CQCopasiLayoutWidget : public CopasiWidget
   {
     Q_OBJECT
 
   public:
-    CQCopasiLayoutWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+    CQCopasiLayoutWidget(QWidget* parent = 0, const char* name = 0);
     ~CQCopasiLayoutWidget();
 
-    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
-    virtual bool leave();
-    virtual bool enter(const std::string & key = "");
+    QPushButton* mpShowLayoutOld;
 
-  protected slots:
-    void displayNetworkWidget();
+    virtual bool enter(const std::string &);
+
+  public slots:
+    virtual void slotUpdateWidget();
 
   protected:
+    QVBoxLayout* CQCopasiLayoutWidgetLayout;
+    QSpacerItem* spacer4;
 
-    void loadFromBackend();
-    void saveToBackend();
-
-    QGridLayout* mWidgetLayout;
-
-    QLabel* mLabelTitle;
-    QPushButton* mShowNetworkButton;
-
-    QTabWidget* mpTab;
+  protected slots:
+    virtual void languageChange();
 
   private:
-    QAction *mDisplayNetwork;
-    CQLayoutMainWindow *pWin;
+    QPixmap image0;
+
+    void init();
+    virtual void newFunction();
+
+  private slots:
+    virtual void displayNetworkWidgetOld();
   };
 
-#endif
+#endif // CQCOPASILAYOUTWIDGET_H

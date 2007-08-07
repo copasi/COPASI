@@ -1,106 +1,72 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/Attic/CQCopasiLayoutWidget.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/07/06 11:54:16 $
+//   $Date: 2007/08/07 15:35:41 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-//#include <qpushbutton.h>
-#include <qlayout.h>
-#include <qlineedit.h>
-#include <qlabel.h>
-#include <qtabwidget.h>
-
-#include "copasi.h"
+/****************************************************************************
+ ** Form implementation generated from reading ui file 'CQCopasiLayoutWidget.ui'
+ **
+ ** Created: Di Aug 7 17:31:11 2007
+ **      by: The User Interface Compiler ($Id: CQCopasiLayoutWidget.cpp,v 1.3 2007/08/07 15:35:41 ssahle Exp $)
+ **
+ ** WARNING! All changes made in this file will be lost!
+ ****************************************************************************/
 
 #include "CQCopasiLayoutWidget.h"
-#include "CQLayoutMainWindow.h"
 
-/**
+#include <qvariant.h>
+#include <qpushbutton.h>
+#include <qlayout.h>
+#include <qtooltip.h>
+#include <qwhatsthis.h>
+#include "UI/copasiWidget.h"
+#include "CQCopasiLayoutWidget.ui.h"
+
+/*
  *  Constructs a CQCopasiLayoutWidget which is a child of 'parent', with the
- *  name 'name' and widget flags set to 'f'.
+ *  name 'name'.'
  */
-CQCopasiLayoutWidget::CQCopasiLayoutWidget(QWidget* parent, const char* name, WFlags fl)
-    : CopasiWidget(parent, name, fl)
+CQCopasiLayoutWidget::CQCopasiLayoutWidget(QWidget* parent, const char* name)
+    : CopasiWidget(parent, name)
 {
   if (!name)
     setName("CQCopasiLayoutWidget");
-  setCaption("CQCopasiLayoutWidget");
+  CQCopasiLayoutWidgetLayout = new QVBoxLayout(this, 11, 6, "CQCopasiLayoutWidgetLayout");
+  spacer4 = new QSpacerItem(20, 61, QSizePolicy::Minimum, QSizePolicy::Expanding);
+  CQCopasiLayoutWidgetLayout->addItem(spacer4);
 
-  mWidgetLayout = new QGridLayout(this, 1, 2, 11, 6, "CQCopasiLayoutWidgetLayout");
+  mpShowLayoutOld = new QPushButton(this, "mpShowLayoutOld");
+  CQCopasiLayoutWidgetLayout->addWidget(mpShowLayoutOld);
+  languageChange();
+  resize(QSize(673, 573).expandedTo(minimumSizeHint()));
+  clearWState(WState_Polished);
 
-  // **********  Label **************
-  mLabelTitle = new QLabel(this, "ShowNetLabel");
-  mLabelTitle->setText("Reaction network");
-  mLabelTitle->setAlignment(int(QLabel::AlignVCenter
-                                | QLabel::AlignLeft));
-  mLabelTitle->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-  mWidgetLayout->addWidget(mLabelTitle, 0, 0);
-
-  // ********** Button ***************
-
-  mShowNetworkButton = new QPushButton("show", this);
-  mDisplayNetwork = new QAction("displayNetwork",
-                                "Show reaction network",
-                                CTRL + Key_D,
-                                this);
-  //mShowNetworkButton->setStatusTip("Show reaction network as graph");
-  connect(mShowNetworkButton, SIGNAL(clicked()), this, SLOT(displayNetworkWidget()));
-  mWidgetLayout->addWidget(mShowNetworkButton, 0, 1);
-
-  // tab widget
-  mpTab = new QTabWidget(this, "TabWidget");
-  mWidgetLayout->addMultiCellWidget(mpTab, 1, 2, 0, 2);
+  // signals and slots connections
+  connect(mpShowLayoutOld, SIGNAL(clicked()), this, SLOT(displayNetworkWidgetOld()));
+  init();
 }
 
 /*
  *  Destroys the object and frees any allocated resources
  */
 CQCopasiLayoutWidget::~CQCopasiLayoutWidget()
-{}
-
-void CQCopasiLayoutWidget::loadFromBackend()
 {
-
-  const CModel* pModel = CCopasiDataModel::Global->getModel();
+  // no need to delete child widgets, Qt does it all for us
 }
 
-//*************************************
-
-void CQCopasiLayoutWidget::displayNetworkWidget()
+/*
+ *  Sets the strings of the subwidgets using the current
+ *  language.
+ */
+void CQCopasiLayoutWidget::languageChange()
 {
-  //QApplication app(argc,argv);
-  //mWin(this, "Reaction Network");
-  pWin = new CQLayoutMainWindow(this, "Reaction Network");
-  //mWin((QWidget *)this,"Reaction Network");
-  //app.setMainWidget(&gui);
-  pWin->resize(600, 430);
-  pWin->show();
-}
-
-bool CQCopasiLayoutWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action
-                                  C_UNUSED(action), const std::string & C_UNUSED(key))
-{
-  /*  if (this->isShown())
-      return loadFromBackend();
-    else
-      return true;*/
-  return true;
-}
-
-bool CQCopasiLayoutWidget::leave()
-{
-  return true;
-}
-
-bool CQCopasiLayoutWidget::enter(const std::string & C_UNUSED(key))
-{
-  loadFromBackend();
-
-  return true;
+  setCaption(tr("Form1"));
+  mpShowLayoutOld->setText(tr("Show Layout"));
 }
