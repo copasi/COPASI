@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-//   $Revision: 1.118 $
+//   $Revision: 1.119 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/08/07 11:38:17 $
+//   $Author: shoops $
+//   $Date: 2007/08/07 17:16:22 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -324,7 +324,9 @@ void CMetab::setStatus(const CModelEntity::Status & status)
 
 bool CMetab::compile()
 {
+  bool success = true;
   std::set<const CCopasiObject *> Dependencies;
+  std::vector< CCopasiContainer * > listOfContainer;
 
   mRateVector.clear();
   mpRateReference->setDirectDependencies(Dependencies);
@@ -340,9 +342,6 @@ bool CMetab::compile()
   if (mpCompartment)
     pVolumeReference = mpCompartment->getObject(CCopasiObjectName("Reference=Volume"));
 
-  std::vector< CCopasiContainer * > listOfContainer;
-  listOfContainer.push_back(getObjectAncestor("Model"));
-
   switch (getStatus())
     {
     case FIXED:
@@ -352,13 +351,14 @@ bool CMetab::compile()
       break;
 
     case ASSIGNMENT:
-      /*success = */mpExpression->compile(listOfContainer);
-
       Dependencies.insert(mpConcReference);
       if (pVolumeReference)
         Dependencies.insert(pVolumeReference);
       mpValueReference->setDirectDependencies(Dependencies);
       mpValueReference->setRefresh(this, &CMetab::refreshNumber);
+
+      listOfContainer.push_back(getObjectAncestor("Model"));
+      success = mpExpression->compile(listOfContainer);
 
       mpConcReference->setDirectDependencies(mpExpression->getDirectDependencies());
       mpConcReference->setRefresh(this, &CMetab::calculate);
@@ -369,8 +369,6 @@ bool CMetab::compile()
       break;
 
     case ODE:
-      /*success = */mpExpression->compile(listOfContainer);
-
       mpValueReference->addDirectDependency(this);
 
       Dependencies.insert(mpValueReference);
@@ -385,6 +383,9 @@ bool CMetab::compile()
         Dependencies.insert(pVolumeReference);
       mpRateReference->setDirectDependencies(Dependencies);
       mpRateReference->setRefresh(this, &CMetab::refreshRate);
+
+      listOfContainer.push_back(getObjectAncestor("Model"));
+      success = mpExpression->compile(listOfContainer);
 
       mpConcRateReference->setDirectDependencies(mpExpression->getDirectDependencies());
       mpConcRateReference->setRefresh(this, &CMetab::calculate);
@@ -445,7 +446,7 @@ bool CMetab::compile()
       break;
     }
 
-  return true;
+  return success;
 }
 
 void CMetab::calculate()
