@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget.h,v $
-   $Revision: 1.31 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/28 00:20:16 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget.h,v $
+//   $Revision: 1.32 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/08/07 17:30:41 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -50,7 +50,7 @@ class MetabolitesWidget : public CopasiTableWidget
     /**
      * shows units for the quantities
      */
-    void showHeaders();
+    virtual void updateHeaderUnits();
 
     /**
      * returns a list of objects that should be displayed
@@ -114,6 +114,16 @@ class MetabolitesWidget : public CopasiTableWidget
      * @param unsigned C_INT32 row
      */
     void compartmentChanged(unsigned C_INT32 row);
+
+    /**
+     * A list containing the possible selections for type
+     */
+    QStringList mTypes;
+
+    /**
+     * A vector mapping the item index to a model valu type
+     */
+    std::vector< unsigned C_INT32 > mItemToType;
   };
 
 #endif
