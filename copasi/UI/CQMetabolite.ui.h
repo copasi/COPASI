@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMetabolite.ui.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/08/07 18:06:48 $
+//   $Date: 2007/08/07 18:55:57 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -54,7 +54,6 @@ void CQMetabolite::init()
   mpComboBoxInitialType->hide();
   mpComboBoxInitialSelection->hide();
 
-  mIgnoreSignal = false;
   mInitialNumberLastChanged = true;
 }
 
@@ -251,8 +250,6 @@ void CQMetabolite::slotBtnDelete()
 
 void CQMetabolite::slotCompartmentChanged(int compartment)
 {
-  mIgnoreSignal = true;
-
   if (!mpMetab || !mpCurrentCompartment) return;
 
   QString Compartment = mpComboBoxCompartment->text(compartment);
@@ -265,18 +262,14 @@ void CQMetabolite::slotCompartmentChanged(int compartment)
   if (QString::number(mInitialNumber, 'g', 10) == mpEditInitialNumber->text())
     mInitialNumberLastChanged = false;
 
-  C_FLOAT64 Factor = pNewCompartment->getInitialValue() / mpCurrentCompartment->getInitialValue();
-  mpEditInitialNumber->setText(QString::number(Factor * mInitialNumber, 'g', 10));
+  mInitialNumber *= pNewCompartment->getInitialValue() / mpCurrentCompartment->getInitialValue();
+  mpEditInitialNumber->setText(QString::number(mInitialNumber, 'g', 10));
 
   mpCurrentCompartment = pNewCompartment;
-
-  mIgnoreSignal = false;
 }
 
 void CQMetabolite::slotTypeChanged(int type)
 {
-  mIgnoreSignal = true;
-
   switch ((CModelEntity::Status) mItemToType[type])
     {
     case CModelEntity::FIXED:
@@ -334,8 +327,6 @@ void CQMetabolite::slotTypeChanged(int type)
     default:
       break;
     }
-
-  mIgnoreSignal = false;
 }
 
 void CQMetabolite::slotInitialTypeChanged(int /* initialType */)
@@ -595,34 +586,32 @@ void CQMetabolite::slotReactionTableCurrentChanged(int, int, int, const QPoint &
     }
 }
 
-void CQMetabolite::slotInitialConcentrationChanged(const QString & newValue)
+void CQMetabolite::slotInitialConcentrationLostFocus()
 {
-  if (mIgnoreSignal) return;
-  mIgnoreSignal = true;
+  if (QString::number(mInitialConcentration, 'g', 10) == mpEditInitialConcentration->text())
+    return;
 
   mInitialNumber /= mInitialConcentration;
-  mInitialConcentration = newValue.toDouble();
+  mInitialConcentration = mpEditInitialConcentration->text().toDouble();
   mInitialNumber *= mInitialConcentration;
 
   mpEditInitialNumber->setText(QString::number(mInitialNumber, 'g', 10));
 
   mInitialNumberLastChanged = false;
-  mIgnoreSignal = false;
 }
 
-void CQMetabolite::slotInitialNumberChanged(const QString & newValue)
+void CQMetabolite::slotInitialNumberLostFocus()
 {
-  if (mIgnoreSignal) return;
-  mIgnoreSignal = true;
+  if (QString::number(mInitialNumber, 'g', 10) == mpEditInitialNumber->text())
+    return;
 
   mInitialConcentration /= mInitialNumber;
-  mInitialNumber = newValue.toDouble();
+  mInitialNumber = mpEditInitialNumber->text().toDouble();
   mInitialConcentration *= mInitialNumber;
 
   mpEditInitialConcentration->setText(QString::number(mInitialConcentration, 'g', 10));
 
   mInitialNumberLastChanged = true;
-  mIgnoreSignal = false;
 }
 
 void CQMetabolite::loadReactionTable()
