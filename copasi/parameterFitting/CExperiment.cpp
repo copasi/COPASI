@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-//   $Revision: 1.53 $
+//   $Revision: 1.54 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/24 18:40:26 $
+//   $Date: 2007/08/07 17:17:21 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -701,6 +701,11 @@ bool CExperiment::read(std::istream & in,
   mpDataDependentCalculated = NULL;
   mColumnName.resize(IndependentCount + DependentCount + TimeCount);
 
+  // resize the vectors for the statistics
+  mMeans.resize(DependentCount);
+  mWeight.resize(DependentCount);
+  mDefaultWeight.resize(DependentCount);
+
   if (!TimeCount && *mpTaskType == CCopasiTask::timeCourse)
     {
       CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 3);
@@ -814,11 +819,6 @@ bool CExperiment::read(std::istream & in,
 
       mNumDataRows++;
     }
-
-  // resize the vectors for the statistics
-  mMeans.resize(DependentCount);
-  mWeight.resize(DependentCount);
-  mDefaultWeight.resize(DependentCount);
 
   return calculateWeights();
 }
