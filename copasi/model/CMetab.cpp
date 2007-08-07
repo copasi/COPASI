@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-//   $Revision: 1.117 $
+//   $Revision: 1.118 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/08/01 15:53:23 $
+//   $Author: ssahle $
+//   $Date: 2007/08/07 11:38:17 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -340,6 +340,9 @@ bool CMetab::compile()
   if (mpCompartment)
     pVolumeReference = mpCompartment->getObject(CCopasiObjectName("Reference=Volume"));
 
+  std::vector< CCopasiContainer * > listOfContainer;
+  listOfContainer.push_back(getObjectAncestor("Model"));
+
   switch (getStatus())
     {
     case FIXED:
@@ -349,6 +352,8 @@ bool CMetab::compile()
       break;
 
     case ASSIGNMENT:
+      /*success = */mpExpression->compile(listOfContainer);
+
       Dependencies.insert(mpConcReference);
       if (pVolumeReference)
         Dependencies.insert(pVolumeReference);
@@ -364,6 +369,8 @@ bool CMetab::compile()
       break;
 
     case ODE:
+      /*success = */mpExpression->compile(listOfContainer);
+
       mpValueReference->addDirectDependency(this);
 
       Dependencies.insert(mpValueReference);
