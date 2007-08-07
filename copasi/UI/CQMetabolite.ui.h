@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMetabolite.ui.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/08/03 13:46:40 $
+//   $Date: 2007/08/07 18:06:48 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -461,6 +461,9 @@ void CQMetabolite::load()
   // Concentration Rate
   mpEditConcentrationRate->setText(QString::number(mpMetab->getConcentrationRate()));
 
+  // Expression
+  mpEditExpression->setExpression(mpMetab->getExpression());
+
   loadReactionTable();
 
   mChanged = false;
@@ -561,8 +564,7 @@ void CQMetabolite::save()
 }
 
 void CQMetabolite::destroy()
-{
-}
+{}
 
 void CQMetabolite::slotReactionTableCurrentChanged(int, int, int, const QPoint &)
 {
