@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget.cpp,v $
-//   $Revision: 1.109 $
+//   $Revision: 1.110 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/16 19:55:37 $
+//   $Date: 2007/08/07 17:29:34 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -63,18 +63,16 @@ void CompartmentsWidget::init()
 
   tableHeader->setLabel(0, "Status");
   tableHeader->setLabel(1, "Name");
-  tableHeader->setLabel(2, "Volume");
 
   //for sbml ids
   //tableHeader->setLabel(numCols - 1, "SBML ID");
   //table->setColumnReadOnly(numCols - 1, true);
 }
 
-void CompartmentsWidget::showHeaders()
+void CompartmentsWidget::updateHeaderUnits()
 {
   QHeader *tableHeader = table->horizontalHeader();
-  tableHeader->setLabel(0, "Status");
-  tableHeader->setLabel(1, "Name");
+
   if (CCopasiDataModel::Global->getModel())
     {
       std::string str = CCopasiDataModel::Global->getModel()->getVolumeUnitName();
@@ -88,7 +86,6 @@ void CompartmentsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned 
   const CCompartment* pComp = (const CCompartment*)obj;
   table->setText(row, 1, FROM_UTF8(pComp->getObjectName()));
   table->setText(row, 2, QString::number(pComp->getValue()));
-  showHeaders();
 }
 
 void CompartmentsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj)

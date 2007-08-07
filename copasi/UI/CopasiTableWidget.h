@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.h,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/03/08 10:55:36 $
+//   $Author: shoops $
+//   $Date: 2007/08/07 17:29:34 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -105,6 +105,11 @@ class CopasiTableWidget : public CopasiWidget
      * This initializes the widget
      */
     virtual void init() = 0;
+
+    /**
+     * Update the units in column headers
+     */
+    virtual void updateHeaderUnits();
 
     /**
      * returns a list of objects that should be displayed

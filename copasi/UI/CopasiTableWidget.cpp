@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.cpp,v $
-//   $Revision: 1.49 $
+//   $Revision: 1.50 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/08/03 19:41:13 $
+//   $Date: 2007/08/07 17:29:34 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -155,6 +155,8 @@ void CopasiTableWidget::handleSBMLId(const CCopasiObject* obj, unsigned C_INT32 
 
 void CopasiTableWidget::fillTable()
 {
+  updateHeaderUnits();
+
   std::vector<const CCopasiObject*> objects = getObjects();
 
   //  const CCopasiVectorN < CCompartment > & objects = CCopasiDataModel::Global->getModel()->getCompartments();
@@ -561,3 +563,6 @@ void CopasiTableWidget::keyPressEvent (QKeyEvent * e)
       slotTableDelKey();
     }
 }
+
+void CopasiTableWidget::updateHeaderUnits()
+{}

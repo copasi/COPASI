@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModelValuesWidget.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/07/09 13:03:36 $
+//   $Author: shoops $
+//   $Date: 2007/08/07 17:29:34 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -80,18 +80,6 @@ void ModelValuesWidget::init()
   mItemToType.push_back(CModelEntity::ODE);
 }
 
-void ModelValuesWidget::showHeaders()
-{
-  /*  QHeader *tableHeader = table->horizontalHeader();
-    tableHeader->setLabel(0, "Status");
-    tableHeader->setLabel(COL_NAME "Name");
-    if (CCopasiDataModel::Global->getModel())
-      {
-        std::string str = CCopasiDataModel::Global->getModel()->getVolumeUnit();
-        tableHeader->setLabel(COL_INITIAL "Volume\n(" + FROM_UTF8(str) + ")");
-      }*/
-}
-
 void ModelValuesWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_INT32 row)
 {
   if (!obj) return;
@@ -166,8 +154,6 @@ void ModelValuesWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C
     table->setText(row, COL_EXPRESSION, FROM_UTF8(pExpression->getDisplayString()));
   else
     table->setText(row, COL_EXPRESSION, "");
-
-  showHeaders();
 }
 
 void ModelValuesWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj)
@@ -189,13 +175,10 @@ void ModelValuesWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C
 {
   if (exc != COL_INITIAL)
     table->setText(row, COL_INITIAL, QString::number(0.0));
+
   if (exc != COL_TYPE)
     {
-      QStringList Types;
-      Types.push_back(FROM_UTF8(CModelEntity::StatusName[CModelEntity::FIXED]));
-      Types.push_back(FROM_UTF8(CModelEntity::StatusName[CModelEntity::ASSIGNMENT]));
-      Types.push_back(FROM_UTF8(CModelEntity::StatusName[CModelEntity::ODE]));
-      QComboTableItem * pComboBox = new QComboTableItem(table, Types);
+      QComboTableItem * pComboBox = new QComboTableItem(table, mTypes);
       pComboBox->setCurrentItem(0);
       table->setItem(row, COL_TYPE, pComboBox);
     }

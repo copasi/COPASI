@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget.h,v $
-   $Revision: 1.40 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/28 00:26:44 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget.h,v $
+//   $Revision: 1.41 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/08/07 17:29:34 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -33,8 +33,10 @@ class CompartmentsWidget : public CopasiTableWidget
     {init();}
 
   protected:
-    void showHeaders();
-    /* updates the headers with unit info */
+    /**
+     * shows units for the quantities
+     */
+    virtual void updateHeaderUnits();
 
     /**
      * This initializes the widget
