@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.161 $
+//   $Revision: 1.162 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/08/07 09:38:06 $
+//   $Author: shoops $
+//   $Date: 2007/08/07 17:20:00 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1850,9 +1850,7 @@ CCopasiXMLParser::MetaboliteElement::MetaboliteElement(CCopasiXMLParser & parser
 {}
 
 CCopasiXMLParser::MetaboliteElement::~MetaboliteElement()
-{
-  //pdelete(mpCurrentHandler);
-}
+{}
 
 void CCopasiXMLParser::MetaboliteElement::start(const XML_Char *pszName,
     const XML_Char **papszAttrs)
@@ -2137,7 +2135,7 @@ void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
         mpCurrentHandler = &mParser.mCharacterDataElement;
       break;
 
-    case MathML:               // Old file format support
+    case MathML:                // Old file format support
       if (!strcmp(pszName, "MathML"))
         {
           /* If we do not have a MathML element handler we create one. */
@@ -2210,7 +2208,7 @@ void CCopasiXMLParser::ModelValueElement::end(const XML_Char *pszName)
       mCurrentElement = ModelValue;
       break;
 
-    case MathML:               // Old file format support
+    case MathML:                // Old file format support
       if (strcmp(pszName, "MathML"))
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                        pszName, "MathML", mParser.getCurrentLineNumber());
