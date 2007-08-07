@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-//   $Revision: 1.39 $
+//   $Revision: 1.40 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/24 13:25:48 $
+//   $Date: 2007/08/07 17:15:14 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,7 +31,7 @@ const std::string CModelEntity::StatusName[] =
   {
     "fixed",
     "assignment",
-    "determined by reactions",
+    "reactions",
     "ode",
     "time",
     ""
