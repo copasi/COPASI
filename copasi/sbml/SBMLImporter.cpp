@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.170 $
+//   $Revision: 1.171 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/08 12:43:52 $
+//   $Date: 2007/08/08 14:23:12 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -3000,7 +3000,24 @@ void SBMLImporter::importRule(const Rule* rule, CModelEntity::Status ruleType, s
           pC = dynamic_cast<Compartment*>(it->second);
           if (pC->getId() == sbmlId)
             {
+              if (pC->getConstant())
+                {
+                  if (ruleType == CModelEntity::ASSIGNMENT)
+                    {
+                      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 34 , "AssignmentRule", "Compartment", sbmlId.c_str());
+                    }
+                  else if (ruleType == CModelEntity::ODE)
+                    {
+                      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 34 , "RateRule", "Compartment", sbmlId.c_str());
+                    }
+                  else
+                    {
+                      // should never happen
+                      fatalError();
+                    }
+                }
               type = SBML_COMPARTMENT;
+              pObject = it->first;
               found = true;
             }
           break;
@@ -3008,7 +3025,25 @@ void SBMLImporter::importRule(const Rule* rule, CModelEntity::Status ruleType, s
           pS = dynamic_cast<Species*>(it->second);
           if (pS->getId() == sbmlId)
             {
+              // make sure the species is not declared constant
+              if (pS->getConstant())
+                {
+                  if (ruleType == CModelEntity::ASSIGNMENT)
+                    {
+                      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 34 , "AssignmentRule", "Metabolite", sbmlId.c_str());
+                    }
+                  else if (ruleType == CModelEntity::ODE)
+                    {
+                      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 34 , "RateRule", "Metabolite", sbmlId.c_str());
+                    }
+                  else
+                    {
+                      // should never happen
+                      fatalError();
+                    }
+                }
               type = SBML_SPECIES;
+              pObject = it->first;
               found = true;
             }
           break;

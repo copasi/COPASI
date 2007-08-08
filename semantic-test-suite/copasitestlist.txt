@@ -75,8 +75,25 @@ TEST mathml/tan/mathml-tan.test
 TEST mathml/tanh/mathml-tanh.test
 TEST mathml/times/mathml-times.test
 CATEGORY Basic Rules
+TEST basicRules/assignment-Species/basicRules-assignment-Species.test
+TEST basicRules/assignmentInconsistent-Species/basicRules-assignmentInconsistent-Species.test
+TEST basicRules/assignmentInitialize-Species/basicRules-assignmentInitialize-Species.test
+TEST basicRules/assignmentUsedInAssignment-Species/basicRules-assignmentUsedInAssignment-Species.test
+TEST basicRules/assignmentUsedInDifferential-Species/basicRules-assignmentUsedInDifferential-Species.test
+TEST basicRules/assignmentUsedInReaction-Species/basicRules-assignmentUsedInReaction-Species.test
+TEST basicRules/differential-Species/basicRules-differential-Species.test
+TEST basicRules/differentialUsedInDifferential-Species/basicRules-differentialUsedInDifferential-Species.test
+TEST basicRules/differentialUsedInReaction-Species/basicRules-differentialUsedInReaction-Species.test
+TEST basicRules/dynamicAssignmentUsedInDifferential-Species/basicRules-dynamicAssignmentUsedInDifferential-Species.test
+TEST basicRules/dynamicAssignmentUsedInReaction-Species/basicRules-dynamicAssignmentUsedInReaction-Species.test
 TEST basicRules/noRule-Species/basicRules-noRule-Species.test
+TEST basicRules/reactionUsedInDifferential-Species/basicRules-reactionUsedInDifferential-Species.test
+TEST basicRules/differentialUsedInAssignment-Species/basicRules-differentialUsedInAssignment-Species.test
+TEST basicRules/differentialUsedInAssignmentConsistent-Species/basicRules-differentialUsedInAssignmentConsistent-Species.test
+TEST basicRules/reactionUsedInAssignment-Species/basicRules-reactionUsedInAssignment-Species.test
 CATEGORY Stoichiometry
 TEST stoichiometry/floatingPoint/stoichiometry-floatingPoint.test
 CATEGORY Functions
 TEST functions/kinetic-law/functions-kinetic-law.test
+TEST functions/basic-rules/functions-basic-rules.test
+
