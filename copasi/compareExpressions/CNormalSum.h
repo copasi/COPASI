@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalSum.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/07 16:49:49 $
+//   $Date: 2007/08/08 10:27:29 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,7 +13,7 @@
 #ifndef COPASI_CNormalSum_H__
 #define COPASI_CNormalSum_H__
 
-#include "test3/CNormalBase.h"
+#include "compareExpressions/CNormalBase.h"
 #include "copasi/copasi.h"
 #include <string>
 #include <set>

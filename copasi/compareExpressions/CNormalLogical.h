@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLogical.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/07 16:49:49 $
+//   $Date: 2007/08/08 10:27:29 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,14 +13,11 @@
 #ifndef CNormalLogical_H__
 #define CNormalLogical_H__
 
-#include "test3/CNormalBase.h"
+#include "compareExpressions/CNormalBase.h"
 #include <string>
 #include <iostream>
 #include <set>
 #include <utility>
-
-//#include "test3/CNormalLogicalItem.h"
-//#include "test3/CNormalChoiceLogical.h"
 
 class CNormalLogicalItem;
 class CNormalChoiceLogical;
