@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.169 $
+//   $Revision: 1.170 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/07/24 13:25:50 $
+//   $Author: gauges $
+//   $Date: 2007/08/08 12:43:52 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -341,6 +341,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
     {
       CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 3);
     }
+  /*
   if (this->mUnsupportedAssignmentRuleFound)
     {
       CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 31, "AssignmentRules");
@@ -349,6 +350,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
     {
       CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 31 , "RateRules");
     }
+  */
   if (sbmlModel->getNumEvents() > 0)
     {
       CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 4);
@@ -3050,15 +3052,15 @@ void SBMLImporter::importRule(const Rule* rule, CModelEntity::Status ruleType, s
         case SBML_PARAMETER:
           // activate the next two lines if rules for compartments and
           // metabolites should be imported.
-          //case SBML_SPECIES:
-          //case SBML_COMPARTMENT:
+        case SBML_SPECIES:
+        case SBML_COMPARTMENT:
           // check if it really is a global parameter, a metabolite or a
           // compartment
           pME = dynamic_cast<CModelValue*>(pObject);
           // activate the next two lines if rules for compartments and
           // metabolites should be imported.
-          //if(!pME) pME=dynamic_cast<CCompartment*>(pObject);
-          //if(!pME) pME=dynamic_cast<CMetab*>(pObject);
+          if (!pME) pME = dynamic_cast<CCompartment*>(pObject);
+          if (!pME) pME = dynamic_cast<CMetab*>(pObject);
           if (!pME)
             {
               if (ruleType == CModelEntity::ASSIGNMENT)
@@ -3078,14 +3080,13 @@ void SBMLImporter::importRule(const Rule* rule, CModelEntity::Status ruleType, s
           this->importRuleForModelEntity(rule, pME, ruleType, copasi2sbmlmap);
           break;
         default:
-          /*
           // now that compartments, metabolites and global parameters are
           // supported, everything else should produce a fatal error.
           fatalError();
-          */
 
           // remove the rest of this block and activate the code above if rules
           // for metabolites and compartments are supported.
+          /*
           if (ruleType == CModelEntity::ASSIGNMENT)
             {
               mUnsupportedAssignmentRuleFound = true;
@@ -3099,7 +3100,7 @@ void SBMLImporter::importRule(const Rule* rule, CModelEntity::Status ruleType, s
               // should never happen
               fatalError();
             }
-
+          */
           break;
         }
     }
