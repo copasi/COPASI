@@ -1215,6 +1215,7 @@ Optional Packages:
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
   --with-qwt=PATH         Path to QWT Library
   --with-expat=PATH       Path to Expat XML Library
+  --with-cppunit=PATH     Path to CPPUNIT Library
   --with-sbml=PATH        Path to SBML Library
   --with-clapack=PATH     Path to CLAPACK Library
   --with-lapack=PATH      Path to LAPACK Library
@@ -2221,6 +2222,17 @@ if test x"${EXPAT_PATH}" != x""; then
   QMAKE_ARG="$QMAKE_ARG EXPAT_PATH=$EXPAT_PATH"
 fi
 
+
+
+# Check whether --with-cppunit was given.
+if test "${with_cppunit+set}" = set; then
+  withval=$with_cppunit; CPPUNIT_PATH=$withval
+fi
+
+
+if test x"${CPPUNIT_PATH}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG CPPUNIT_PATH=$CPPUNIT_PATH"
+fi
 
 
 # Check whether --with-sbml was given.

@@ -82,6 +82,16 @@ if test x"${EXPAT_PATH}" != x""; then
 fi
 
 
+dnl cppunit library
+AC_ARG_WITH([cppunit],
+  AS_HELP_STRING([--with-cppunit=PATH],
+                 [Path to CPPUNIT Library ]),
+  [CPPUNIT_PATH=$withval])
+
+if test x"${CPPUNIT_PATH}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG CPPUNIT_PATH=$CPPUNIT_PATH"
+fi
+
 dnl sbml library
 AC_ARG_WITH([sbml],
   AS_HELP_STRING([--with-sbml=PATH],
