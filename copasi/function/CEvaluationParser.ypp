@@ -150,6 +150,14 @@ bool:     TOKEN_LOGICAL_VALUE
           {
             mpRootNode = $1;
           }
+        | TOKEN_LOGICAL_CHOICE TOKEN_STRUCTURE_OPEN bool TOKEN_STRUCTURE_COMMA bool TOKEN_STRUCTURE_COMMA bool TOKEN_STRUCTURE_CLOSE
+          {
+            $$ = $1;
+            $$->addChild($3); 
+            $$->addChild($5); 
+            $$->addChild($7); 
+            mpRootNode = $$; 
+          }
         | exp TOKEN_LOGICAL_EQ exp
           {
             $$ = $2;

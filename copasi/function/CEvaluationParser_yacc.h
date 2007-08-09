@@ -1,18 +1,14 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationParser_yacc.h,v $
-   $Revision: 1.17 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/06/21 14:02:01 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationParser_yacc.h,v $
+//   $Revision: 1.18 $
+//   $Name:  $
+//   $Author: ssahle $
+//   $Date: 2007/08/09 14:46:43 $
+// End CVS Header
 
-// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
-
-#ifndef YYERRCODE
-#define YYERRCODE 256
-#endif
 
 #define TOKEN_NUMBER 257
 #define TOKEN_VARIABLE 258
