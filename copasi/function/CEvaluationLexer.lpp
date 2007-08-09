@@ -64,7 +64,7 @@ ID       [a-z_A-Z][a-z_A-Z0-9]*
   mpNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::TRUE,
                                        yytext);
   COMMON_ACTION;
-  return TOKEN_NUMBER;
+  return TOKEN_LOGICAL_VALUE;
 %}
 
 (false|FALSE) %{
@@ -72,7 +72,7 @@ ID       [a-z_A-Z][a-z_A-Z0-9]*
   mpNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::FALSE,
                                        yytext);
   COMMON_ACTION;
-  return TOKEN_NUMBER;
+  return TOKEN_LOGICAL_VALUE;
 %}
 
 (infinity|INFINITY) %{
