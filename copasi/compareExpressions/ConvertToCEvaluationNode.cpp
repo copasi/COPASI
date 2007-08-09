@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/ConvertToCEvaluationNode.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/08 10:27:29 $
+//   $Date: 2007/08/09 05:13:46 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1127,10 +1127,11 @@ CNormalBase* createItemPowerItem(const CEvaluationNode* pNode)
 {
   CNormalBase* pResult = NULL;
   CEvaluationNode::Type type = CEvaluationNode::type(pNode->getType());
+  CEvaluationNodeOperator::SubType subType;
   switch (type)
     {
     case CEvaluationNode::OPERATOR:
-      CEvaluationNodeOperator::SubType subType = (CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pNode->getType());
+      subType = (CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pNode->getType());
       if (subType == CEvaluationNodeOperator::POWER)
         {
           if ((CEvaluationNode::type(dynamic_cast<const CEvaluationNode*>(pNode->getChild()->getSibling())->getType())) == CEvaluationNode::NUMBER)
@@ -1570,6 +1571,13 @@ CNormalLogical* createLogical(const CEvaluationNode* pNode)
         }
       else if (CEvaluationNode::type(type) == CEvaluationNode::LOGICAL)
         {
+          CNormalLogicalItem* pLogicalItem = NULL;
+          CEvaluationNode* pOrNode = NULL;
+          CEvaluationNode* pAndNode = NULL;
+          const CEvaluationNode* pA = NULL;
+          const CEvaluationNode* pB = NULL;
+          CEvaluationNode* pNotNode = NULL;
+          CNormalLogical* pLeftLogical = NULL;
           switch ((CEvaluationNodeLogical::SubType)CEvaluationNode::subType(type))
             {
             case CEvaluationNodeLogical::EQ:
@@ -1578,7 +1586,7 @@ CNormalLogical* createLogical(const CEvaluationNode* pNode)
             case CEvaluationNodeLogical::LT:
             case CEvaluationNodeLogical::GE:
             case CEvaluationNodeLogical::LE:
-              CNormalLogicalItem* pLogicalItem = createLogicalItem(pNode);
+              pLogicalItem = createLogicalItem(pNode);
               if (pLogicalItem != NULL)
                 {
                   pResult = new CNormalLogical();
@@ -1589,14 +1597,14 @@ CNormalLogical* createLogical(const CEvaluationNode* pNode)
               break;
             case CEvaluationNodeLogical::XOR:
               // replace A xor B by A OR B AND NOT(A AND B)
-              const CEvaluationNode* pA = dynamic_cast<const CEvaluationNode*>(pNode->getChild());
-              const CEvaluationNode* pB = dynamic_cast<const CEvaluationNode*>(pA->getSibling());
-              CEvaluationNode* pAndNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::AND, "AND");
+              pA = dynamic_cast<const CEvaluationNode*>(pNode->getChild());
+              pB = dynamic_cast<const CEvaluationNode*>(pA->getSibling());
+              pAndNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::AND, "AND");
               pAndNode->addChild(pA->copyBranch());
               pAndNode->addChild(pB->copyBranch());
-              CEvaluationNode* pNotNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::NOT, "NOT");
+              pNotNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::NOT, "NOT");
               pNotNode->addChild(pAndNode);
-              CEvaluationNode* pOrNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::OR, "OR");
+              pOrNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::OR, "OR");
               pOrNode->addChild(pA->copyBranch());
               pOrNode->addChild(pB->copyBranch());
               pAndNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::AND, "AND");
@@ -1606,7 +1614,7 @@ CNormalLogical* createLogical(const CEvaluationNode* pNode)
               delete pAndNode;
               break;
             case CEvaluationNodeLogical::AND:
-              CNormalLogical* pLeftLogical = createLogical(dynamic_cast<const CEvaluationNode*>(pNode->getChild()));
+              pLeftLogical = createLogical(dynamic_cast<const CEvaluationNode*>(pNode->getChild()));
               if (pLeftLogical != NULL)
                 {
                   pLeftLogical->simplify();
@@ -1701,6 +1709,14 @@ CNormalLogical* createLogical(const CEvaluationNode* pNode)
             }
           else if (CEvaluationNode::type((dynamic_cast<const CEvaluationNode*>(pNode->getChild())->getType())) == CEvaluationNode::LOGICAL)
             {
+              CNormalLogical* pLeftLogical1 = NULL;
+              CNormalLogical* pLeftLogical2 = NULL;
+              CNormalLogicalItem* pLogicalItem = NULL;
+              const CEvaluationNode* pA = NULL;
+              const CEvaluationNode* pB = NULL;
+              CEvaluationNode* pAndNode = NULL;
+              CEvaluationNode* pNotNode = NULL;
+              CEvaluationNode* pOrNode = NULL;
               switch ((CEvaluationNodeLogical::SubType)CEvaluationNode::subType((dynamic_cast<const CEvaluationNode*>(pNode->getChild())->getType())))
                 {
                 case CEvaluationNodeLogical::EQ:
@@ -1709,7 +1725,7 @@ CNormalLogical* createLogical(const CEvaluationNode* pNode)
                 case CEvaluationNodeLogical::LT:
                 case CEvaluationNodeLogical::GE:
                 case CEvaluationNodeLogical::LE:
-                  CNormalLogicalItem* pLogicalItem = createLogicalItem(pNode);
+                  pLogicalItem = createLogicalItem(pNode);
                   if (pLogicalItem != NULL)
                     {
                       pResult = new CNormalLogical();
@@ -1719,7 +1735,7 @@ CNormalLogical* createLogical(const CEvaluationNode* pNode)
                     }
                   break;
                 case CEvaluationNodeLogical::OR:
-                  CNormalLogical* pLeftLogical1 = createLogical(dynamic_cast<const CEvaluationNode*>(pNode->getChild()->getChild()));
+                  pLeftLogical1 = createLogical(dynamic_cast<const CEvaluationNode*>(pNode->getChild()->getChild()));
                   if (pLeftLogical1 != NULL)
                     {
                       pLeftLogical1->simplify();
@@ -1794,14 +1810,14 @@ CNormalLogical* createLogical(const CEvaluationNode* pNode)
                   break;
                 case CEvaluationNodeLogical::XOR:
                   // replace A xor B by A OR B AND NOT(A AND B)
-                  const CEvaluationNode* pA = dynamic_cast<const CEvaluationNode*>(pNode->getChild()->getChild());
-                  const CEvaluationNode* pB = dynamic_cast<const CEvaluationNode*>(pA->getSibling());
-                  CEvaluationNode* pAndNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::AND, "AND");
+                  pA = dynamic_cast<const CEvaluationNode*>(pNode->getChild()->getChild());
+                  pB = dynamic_cast<const CEvaluationNode*>(pA->getSibling());
+                  pAndNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::AND, "AND");
                   pAndNode->addChild(pA->copyBranch());
                   pAndNode->addChild(pB->copyBranch());
-                  CEvaluationNode* pNotNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::NOT, "NOT");
+                  pNotNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::NOT, "NOT");
                   pNotNode->addChild(pAndNode);
-                  CEvaluationNode* pOrNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::OR, "OR");
+                  pOrNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::OR, "OR");
                   pOrNode->addChild(pA->copyBranch());
                   pOrNode->addChild(pB->copyBranch());
                   pAndNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::AND, "AND");
@@ -1812,7 +1828,7 @@ CNormalLogical* createLogical(const CEvaluationNode* pNode)
                   delete pAndNode;
                   break;
                 case CEvaluationNodeLogical::AND:
-                  CNormalLogical* pLeftLogical2 = createLogical(dynamic_cast<const CEvaluationNode*>(pNode->getChild()->getChild()));
+                  pLeftLogical2 = createLogical(dynamic_cast<const CEvaluationNode*>(pNode->getChild()->getChild()));
                   if (pLeftLogical2 != NULL)
                     {
                       pLeftLogical2->simplify();
