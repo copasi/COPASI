@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_normalform.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/07 16:49:50 $
+//   $Date: 2007/08/09 10:53:34 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,16 +15,16 @@
 #include <string>
 #include <set>
 
-#include "copasi/function/CEvaluationTree.h"
-#include "copasi/function/CEvaluationNode.h"
-#include "CNormalFraction.h"
-#include "CNormalTranslation.h"
-#include "CNormalSum.h"
-#include "CNormalProduct.h"
-#include "CNormalItemPower.h"
-#include "CNormalItem.h"
-#include "CNormalFunction.h"
-#include "CNormalGeneralPower.h"
+#include "function/CEvaluationTree.h"
+#include "function/CEvaluationNode.h"
+#include "compareExpressions/CNormalFraction.h"
+#include "compareExpressions/CNormalTranslation.h"
+#include "compareExpressions/CNormalSum.h"
+#include "compareExpressions/CNormalProduct.h"
+#include "compareExpressions/CNormalItemPower.h"
+#include "compareExpressions/CNormalItem.h"
+#include "compareExpressions/CNormalFunction.h"
+#include "compareExpressions/CNormalGeneralPower.h"
 
 void test_normalform::setUp(){}
 

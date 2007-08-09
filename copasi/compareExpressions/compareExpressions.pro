@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/compareExpressions.pro,v $ 
-#   $Revision: 1.2 $ 
+#   $Revision: 1.3 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2007/08/08 10:27:29 $ 
+#   $Date: 2007/08/09 10:53:34 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -11,67 +11,18 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.2 $ $Author: gauges $ $Date: 2007/08/08 10:27:29 $  
+# $Revision: 1.3 $ $Author: gauges $ $Date: 2007/08/09 10:53:34 $  
 ######################################################################
 
 LIB = compareExpressions
 
 
-#TEMPLATE = lib
-
-#CONFIG -= qt
-
 include(../lib.pri)
 include(../common.pri)
 
-#DEPENDPATH += .. 
-#INCLUDEPATH += ..
-#
-#COPASI_LIBS = COPASISE
-#
-#contains(BUILD_OS, WIN32) {
-#  LIBS += $$join(COPASI_LIBS, ".lib  ../lib/", ../lib/, .lib)
-#
-#  TARGETDEPS += $$join(COPASI_LIBS, ".lib  ../lib/", ../lib/, .lib)
-#}
-#
-#contains(BUILD_OS, Linux) {
-#  LIBS = -L../lib \
-#         $$join(COPASI_LIBS, " -l", -l) \
-#         $${LIBS}
-#
-#  LIBS += -L$${CPPUNIT_PATH}/lib -lcppunit
-#  
-#  INCLUDEPATH += $${CPPUNIT_PATH}/include
-#
-#
-#  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a)
-#}
-#
-#contains(BUILD_OS, SunOS) {
-#  QMAKE_LFLAGS += -z rescan
-#
-#  LIBS = -L../lib \
-#         $$join(COPASI_LIBS, " -l", -l) \
-#         $${LIBS}
-#
-#  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a)
-#}  
-#
-#contains(BUILD_OS, Darwin){
-#  QMAKE_LFLAGS += -Wl,-search_paths_first
-#  
-#
-#  LIBS = $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a) \
-#         $${LIBS}
-#
-#  LIBS += -L$${CPPUNIT_PATH}/lib -lcppunit
-#  
-#  INCLUDEPATH += $${CPPUNIT_PATH}/include
-#
-#  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a)
-#}
-
+PRE_TARGETDEPS += ../lib/libCOPASISE.a
+QMAKE_EXTRA_UNIX_TARGETS += check
+check.commands = cd unittests; $(QMAKE) $$(0);make
 
 # Input
 HEADERS +=  CNormalItem.h \

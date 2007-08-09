@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/unittests.pro,v $ 
-#   $Revision: 1.1 $ 
+#   $Revision: 1.2 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2007/08/09 05:24:58 $ 
+#   $Date: 2007/08/09 10:53:34 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -14,7 +14,10 @@ TEMPLATE = app
 
 CONFIG -= qt
 
+LIBS += -lCOPASISE -L../../lib/ 
+
 include(../../common.pri)
+
 
 contains(BUILD_OS, WIN32) {
 #  LIBS += $$join(COPASI_LIBS, ".lib  ../lib/", ../lib/, .lib)
@@ -48,11 +51,11 @@ contains(BUILD_OS, SunOS) {
 }  
 
 contains(BUILD_OS, Darwin){
-#  QMAKE_LFLAGS += -Wl,-search_paths_first
-#  
-#
-#  LIBS = $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a) \
-#         $${LIBS}
+  QMAKE_LFLAGS += -Wl,-search_paths_first
+  
+
+  LIBS = $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a) \
+         $${LIBS}
 
 !isEmpty(CPPUNIT_PATH)
 {

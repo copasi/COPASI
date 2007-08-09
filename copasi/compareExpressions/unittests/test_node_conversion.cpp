@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_node_conversion.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/07 16:49:50 $
+//   $Date: 2007/08/09 10:53:34 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,13 +14,13 @@
 
 #include <string>
 
-#include "ConvertToCEvaluationNode.h"
-#include "CNormalSum.h"
-#include "CNormalBase.h"
-#include "CNormalFraction.h"
-#include "CNormalProduct.h"
-#include "CNormalItem.h"
-#include "CNormalItemPower.h"
+#include "compareExpressions/ConvertToCEvaluationNode.h"
+#include "compareExpressions/CNormalSum.h"
+#include "compareExpressions/CNormalBase.h"
+#include "compareExpressions/CNormalFraction.h"
+#include "compareExpressions/CNormalProduct.h"
+#include "compareExpressions/CNormalItem.h"
+#include "compareExpressions/CNormalItemPower.h"
 
 #include "function/CEvaluationTree.h"
 
