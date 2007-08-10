@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalFraction.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/08 10:27:29 $
+//   $Date: 2007/08/10 13:42:20 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -81,6 +81,18 @@ class CNormalFraction : public CNormalBase
      * @return true.
      */
     bool setDenominatorOne();
+
+    /**
+     * Retrieve the numerator of this fraction.
+     * @return mpNumerator.
+     */
+    CNormalSum& getNumerator();
+
+    /**
+     * Retrieve the denominator of this fraction.
+     * @return mpDenominator.
+     */
+    CNormalSum& getDenominator();
 
     /**
      * Retrieve the numerator of this fraction.

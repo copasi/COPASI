@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalSum.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/09 10:53:34 $
+//   $Date: 2007/08/10 13:42:20 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -142,6 +142,16 @@ class CNormalSum : public CNormalBase
      * @return bool.
      */
     bool operator==(const CNormalSum & rhs) const;
+
+    /**
+     * Sets the products of this product.
+     */
+    void setProducts(const std::set<CNormalProduct*, compareProducts>& set);
+
+    /**
+     * Sets the fractions of this product.
+     */
+    void setFractions(const std::set<CNormalFraction*>& set);
 
     /**
      * Check if an itempower is a factor of this sum.

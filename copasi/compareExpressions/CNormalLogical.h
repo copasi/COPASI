@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLogical.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/08 10:27:29 $
+//   $Date: 2007/08/10 13:42:20 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -111,6 +111,15 @@ class CNormalLogical : public CNormalBase
     ItemSetOfSets& getAndSets();
     const ItemSetOfSets& getAndSets() const;
 
+    void setAndSets(const ItemSetOfSets& set);
+    void setChoices(const ChoiceSetOfSets& set);
+
+    /**
+     * This routine calls cleanSet on all inner sets.
+     */
+    template<typename TYPE>
+    static void cleanSetOfSets(std::set<std::pair<std::set<std::pair<TYPE*, bool>, SetSorter<TYPE> >, bool>, SetOfSetsSorter<TYPE> >& s);
+
   protected:
     /**
      * Negates a set of elements.
@@ -145,12 +154,6 @@ class CNormalLogical : public CNormalBase
      */
     template<typename TYPE>
     static void cleanSet(std::set<std::pair<TYPE*, bool>, SetSorter<TYPE> >& s);
-
-    /**
-     * This routine calls cleanSet on all inner sets.
-     */
-    template<typename TYPE>
-    static void cleanSetOfSets(std::set<std::pair<std::set<std::pair<TYPE*, bool>, SetSorter<TYPE> >, bool>, SetOfSetsSorter<TYPE> >& s);
 
     /**
      * This routine makes a deep copy of all elements in the souce set and

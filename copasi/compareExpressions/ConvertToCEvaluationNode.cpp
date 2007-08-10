@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/ConvertToCEvaluationNode.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/09 05:13:46 $
+//   $Date: 2007/08/10 13:42:20 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1182,22 +1182,19 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalChoice& choice)
   // this will become a CEvaluationNodeChoice with an mpIf, an mpTrue and and
   // mpFalse
   CEvaluationNodeChoice* pChoiceNode = NULL;
-  if (choice.getCondition() != NULL && choice.getTrueExpression() != NULL && choice.getFalseExpression() != NULL)
+  CEvaluationNode* pChild1 = convertToCEvaluationNode(choice.getCondition());
+  if (pChild1 != NULL)
     {
-      CEvaluationNode* pChild1 = convertToCEvaluationNode(*choice.getCondition());
-      if (pChild1 != NULL)
+      CEvaluationNode* pChild2 = convertToCEvaluationNode(choice.getTrueExpression());
+      if (pChild2 != NULL)
         {
-          CEvaluationNode* pChild2 = convertToCEvaluationNode(*choice.getTrueExpression());
-          if (pChild2 != NULL)
+          CEvaluationNode* pChild3 = convertToCEvaluationNode(choice.getFalseExpression());
+          if (pChild3 != NULL)
             {
-              CEvaluationNode* pChild3 = convertToCEvaluationNode(*choice.getFalseExpression());
-              if (pChild3 != NULL)
-                {
-                  pChoiceNode = new CEvaluationNodeChoice(CEvaluationNodeChoice::IF, "IF");
-                  pChoiceNode->addChild(pChild1);
-                  pChoiceNode->addChild(pChild2);
-                  pChoiceNode->addChild(pChild3);
-                }
+              pChoiceNode = new CEvaluationNodeChoice(CEvaluationNodeChoice::IF, "IF");
+              pChoiceNode->addChild(pChild1);
+              pChoiceNode->addChild(pChild2);
+              pChoiceNode->addChild(pChild3);
             }
         }
     }
@@ -1209,22 +1206,19 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalChoiceLogical& choice)
   // this will become a CEvaluationNodeChoice with an mpIf, an mpTrue and and
   // mpFalse
   CEvaluationNodeChoice* pChoiceNode = NULL;
-  if (choice.getCondition() != NULL && choice.getTrueExpression() != NULL && choice.getFalseExpression() != NULL)
+  CEvaluationNode* pChild1 = convertToCEvaluationNode(choice.getCondition());
+  if (pChild1 != NULL)
     {
-      CEvaluationNode* pChild1 = convertToCEvaluationNode(*choice.getCondition());
-      if (pChild1 != NULL)
+      CEvaluationNode* pChild2 = convertToCEvaluationNode(choice.getTrueExpression());
+      if (pChild2 != NULL)
         {
-          CEvaluationNode* pChild2 = convertToCEvaluationNode(*choice.getTrueExpression());
-          if (pChild2 != NULL)
+          CEvaluationNode* pChild3 = convertToCEvaluationNode(choice.getFalseExpression());
+          if (pChild3 != NULL)
             {
-              CEvaluationNode* pChild3 = convertToCEvaluationNode(*choice.getFalseExpression());
-              if (pChild3 != NULL)
-                {
-                  pChoiceNode = new CEvaluationNodeChoice(CEvaluationNodeChoice::IF, "IF");
-                  pChoiceNode->addChild(pChild1);
-                  pChoiceNode->addChild(pChild2);
-                  pChoiceNode->addChild(pChild3);
-                }
+              pChoiceNode = new CEvaluationNodeChoice(CEvaluationNodeChoice::IF, "IF");
+              pChoiceNode->addChild(pChild1);
+              pChoiceNode->addChild(pChild2);
+              pChoiceNode->addChild(pChild3);
             }
         }
     }

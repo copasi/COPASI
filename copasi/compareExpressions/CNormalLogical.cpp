@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLogical.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/09 05:13:46 $
+//   $Date: 2007/08/10 13:42:20 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -316,18 +316,18 @@ bool CNormalLogical::simplify()
             }
           (*it2).first->simplify();
           std::set<std::pair<CNormalLogical*, bool>, CNormalLogical::SetSorter<CNormalLogical> > tmpSet2;
-          tmpSet2.insert(std::make_pair(new CNormalLogical(*(*it2).first->getTrueExpression()), false));
-          CNormalLogical* pLogical = new CNormalLogical(*(*it2).first->getCondition());
+          tmpSet2.insert(std::make_pair(new CNormalLogical((*it2).first->getTrueExpression()), false));
+          CNormalLogical* pLogical = new CNormalLogical((*it2).first->getCondition());
           pLogical->negate();
           tmpSet2.insert(std::make_pair(pLogical, true));
           tmpAndItems.insert(std::make_pair(tmpSet2, false));
           tmpSet2.clear();
-          tmpSet2.insert(std::make_pair(new CNormalLogical(*(*it2).first->getFalseExpression()), false));
-          tmpSet2.insert(std::make_pair(new CNormalLogical(*(*it2).first->getCondition()), false));
+          tmpSet2.insert(std::make_pair(new CNormalLogical((*it2).first->getFalseExpression()), false));
+          tmpSet2.insert(std::make_pair(new CNormalLogical((*it2).first->getCondition()), false));
           tmpAndItems.insert(std::make_pair(tmpSet2, false));
           tmpSet2.clear();
-          tmpSet2.insert(std::make_pair(new CNormalLogical(*(*it2).first->getTrueExpression()), false));
-          tmpSet2.insert(std::make_pair(new CNormalLogical(*(*it2).first->getFalseExpression()), false));
+          tmpSet2.insert(std::make_pair(new CNormalLogical((*it2).first->getTrueExpression()), false));
+          tmpSet2.insert(std::make_pair(new CNormalLogical((*it2).first->getFalseExpression()), false));
           tmpAndItems.insert(std::make_pair(tmpSet2, false));
           ++it2;
         }
@@ -970,3 +970,17 @@ bool CNormalLogical::operator<(const CNormalLogical& rhs) const
       }
     return result;
   }
+
+void CNormalLogical::setAndSets(const ItemSetOfSets& set)
+{
+  cleanSetOfSets(this->mAndSets);
+  this->mAndSets.clear();
+  copySetOfSets(set, this->mAndSets);
+}
+
+void CNormalLogical::setChoices(const ChoiceSetOfSets& set)
+{
+  cleanSetOfSets(this->mChoices);
+  this->mChoices.clear();
+  copySetOfSets(set, this->mChoices);
+}

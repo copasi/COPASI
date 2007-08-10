@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalChoiceLogical.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/08 10:27:29 $
+//   $Date: 2007/08/10 13:42:20 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -45,7 +45,7 @@ bool CNormalChoiceLogical::setCondition(const CNormalLogical& cond)
   bool result = true;
   if (this->mpCondition != NULL) delete this->mpCondition;
   // check the cond if it is OK
-  result = checkConditionTree(&cond);
+  result = checkConditionTree(cond);
   if (result == true)
     {
       this->mpCondition = cond.copy();
@@ -58,7 +58,7 @@ bool CNormalChoiceLogical::setTrueExpression(const CNormalLogical& branch)
   bool result = true;
   if (this->mpTrue != NULL) delete this->mpTrue;
   // check the branch if it is OK
-  result = checkConditionTree(&branch);
+  result = checkConditionTree(branch);
   this->mpTrue = branch.copy();
   return result;
 }
@@ -68,39 +68,39 @@ bool CNormalChoiceLogical::setFalseExpression(const CNormalLogical& branch)
   bool result = true;
   if (this->mpFalse != NULL) delete this->mpFalse;
   // check the branch if it is OK
-  result = checkConditionTree(&branch);
+  result = checkConditionTree(branch);
   this->mpFalse = branch.copy();
   return result;
 }
 
-const CNormalLogical* CNormalChoiceLogical::getCondition() const
+const CNormalLogical& CNormalChoiceLogical::getCondition() const
   {
-    return mpCondition;
+    return *mpCondition;
   }
 
-CNormalLogical* CNormalChoiceLogical::getCondition()
+CNormalLogical& CNormalChoiceLogical::getCondition()
 {
-  return mpCondition;
+  return *mpCondition;
 }
 
-const CNormalLogical* CNormalChoiceLogical::getTrueExpression() const
+const CNormalLogical& CNormalChoiceLogical::getTrueExpression() const
   {
-    return mpTrue;
+    return *mpTrue;
   }
 
-CNormalLogical* CNormalChoiceLogical::getTrueExpression()
+CNormalLogical& CNormalChoiceLogical::getTrueExpression()
 {
-  return mpTrue;
+  return *mpTrue;
 }
 
-const CNormalLogical* CNormalChoiceLogical::getFalseExpression() const
+const CNormalLogical& CNormalChoiceLogical::getFalseExpression() const
   {
-    return mpFalse;
+    return *mpFalse;
   }
 
-CNormalLogical* CNormalChoiceLogical::getFalseExpression()
+CNormalLogical& CNormalChoiceLogical::getFalseExpression()
 {
-  return mpFalse;
+  return *mpFalse;
 }
 
 CNormalChoiceLogical* CNormalChoiceLogical::copy() const
@@ -108,10 +108,10 @@ CNormalChoiceLogical* CNormalChoiceLogical::copy() const
     return new CNormalChoiceLogical(*this);
   }
 
-bool CNormalChoiceLogical::checkConditionTree(const CNormalBase* branch)
+bool CNormalChoiceLogical::checkConditionTree(const CNormalBase& branch)
 {
   bool result = true;
-  const CNormalChoiceLogical* pChoice = dynamic_cast<const CNormalChoiceLogical*>(branch);
+  const CNormalChoiceLogical* pChoice = dynamic_cast<const CNormalChoiceLogical*>(&branch);
   if (pChoice != NULL)
     {
       // check the condition and the two branches
@@ -121,10 +121,10 @@ bool CNormalChoiceLogical::checkConditionTree(const CNormalBase* branch)
     }
   else
     {
-      const CNormalLogical* pLogical = dynamic_cast<const CNormalLogical*>(branch);
+      const CNormalLogical* pLogical = dynamic_cast<const CNormalLogical*>(&branch);
       if (pLogical == NULL)
         {
-          const CNormalItem* pItem = dynamic_cast<const CNormalItem*>(branch);
+          const CNormalItem* pItem = dynamic_cast<const CNormalItem*>(&branch);
           if (pItem == NULL)
             {
               result = false;

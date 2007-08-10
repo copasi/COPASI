@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalSum.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/08 10:27:29 $
+//   $Date: 2007/08/10 13:42:20 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -455,3 +455,37 @@ bool CNormalSum::operator<(const CNormalSum& rhs) const
       }
     return result;
   }
+
+void CNormalSum::setProducts(const std::set<CNormalProduct*, compareProducts>& set)
+{
+  std::set<CNormalProduct*, compareProducts>::const_iterator it = this->mProducts.begin(), endit = this->mProducts.end();
+  while (it != endit)
+    {
+      delete *it;
+      ++it;
+    }
+  it = set.begin(), endit = set.end();
+  this->mProducts.clear();
+  while (it != endit)
+    {
+      this->mProducts.insert(new CNormalProduct(**it));
+      ++it;
+    }
+}
+
+void CNormalSum::setFractions(const std::set<CNormalFraction*>& set)
+{
+  std::set<CNormalFraction*>::const_iterator it = this->mFractions.begin(), endit = this->mFractions.end();
+  while (it != endit)
+    {
+      delete *it;
+      ++it;
+    }
+  it = set.begin(), endit = set.end();
+  this->mFractions.clear();
+  while (it != endit)
+    {
+      this->mFractions.insert(new CNormalFraction(**it));
+      ++it;
+    }
+}

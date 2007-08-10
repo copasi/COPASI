@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalChoice.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/08 10:27:29 $
+//   $Date: 2007/08/10 13:42:20 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -45,7 +45,7 @@ bool CNormalChoice::setCondition(const CNormalLogical& cond)
   bool result = true;
   if (this->mpCondition != NULL) delete this->mpCondition;
   // check the cond if it is OK
-  result = checkConditionTree(&cond);
+  result = checkConditionTree(cond);
   if (result == true)
     {
       this->mpCondition = cond.copy();
@@ -58,7 +58,7 @@ bool CNormalChoice::setTrueExpression(const CNormalFraction& branch)
   bool result = true;
   if (this->mpTrue != NULL) delete this->mpTrue;
   // check the branch if it is OK
-  result = checkExpressionTree(&branch);
+  result = checkExpressionTree(branch);
   this->mpTrue = branch.copy();
   return result;
 }
@@ -68,39 +68,39 @@ bool CNormalChoice::setFalseExpression(const CNormalFraction& branch)
   bool result = true;
   if (this->mpFalse != NULL) delete this->mpFalse;
   // check the branch if it is OK
-  result = checkExpressionTree(&branch);
+  result = checkExpressionTree(branch);
   this->mpFalse = branch.copy();
   return result;
 }
 
-const CNormalLogical* CNormalChoice::getCondition() const
+const CNormalLogical& CNormalChoice::getCondition() const
   {
-    return mpCondition;
+    return *mpCondition;
   }
 
-CNormalLogical* CNormalChoice::getCondition()
+CNormalLogical& CNormalChoice::getCondition()
 {
-  return mpCondition;
+  return *mpCondition;
 }
 
-const CNormalFraction* CNormalChoice::getTrueExpression() const
+const CNormalFraction& CNormalChoice::getTrueExpression() const
   {
-    return mpTrue;
+    return *mpTrue;
   }
 
-CNormalFraction* CNormalChoice::getTrueExpression()
+CNormalFraction& CNormalChoice::getTrueExpression()
 {
-  return mpTrue;
+  return *mpTrue;
 }
 
-const CNormalFraction* CNormalChoice::getFalseExpression() const
+const CNormalFraction& CNormalChoice::getFalseExpression() const
   {
-    return mpFalse;
+    return *mpFalse;
   }
 
-CNormalFraction* CNormalChoice::getFalseExpression()
+CNormalFraction& CNormalChoice::getFalseExpression()
 {
-  return mpFalse;
+  return *mpFalse;
 }
 
 CNormalChoice* CNormalChoice::copy() const
@@ -108,10 +108,10 @@ CNormalChoice* CNormalChoice::copy() const
     return new CNormalChoice(*this);
   }
 
-bool CNormalChoice::checkConditionTree(const CNormalBase* branch)
+bool CNormalChoice::checkConditionTree(const CNormalBase& branch)
 {
   bool result = true;
-  const CNormalChoice* pChoice = dynamic_cast<const CNormalChoice*>(branch);
+  const CNormalChoice* pChoice = dynamic_cast<const CNormalChoice*>(&branch);
   if (pChoice != NULL)
     {
       // check the condition and the two branches
@@ -121,10 +121,10 @@ bool CNormalChoice::checkConditionTree(const CNormalBase* branch)
     }
   else
     {
-      const CNormalLogical* pLogical = dynamic_cast<const CNormalLogical*>(branch);
+      const CNormalLogical* pLogical = dynamic_cast<const CNormalLogical*>(&branch);
       if (pLogical == NULL)
         {
-          const CNormalItem* pItem = dynamic_cast<const CNormalItem*>(branch);
+          const CNormalItem* pItem = dynamic_cast<const CNormalItem*>(&branch);
           if (pItem == NULL)
             {
               result = false;
@@ -146,10 +146,10 @@ bool CNormalChoice::checkConditionTree(const CNormalBase* branch)
   return result;
 }
 
-bool CNormalChoice::checkExpressionTree(const CNormalBase* branch)
+bool CNormalChoice::checkExpressionTree(const CNormalBase& branch)
 {
   bool result = true;
-  const CNormalChoice* pChoice = dynamic_cast<const CNormalChoice*>(branch);
+  const CNormalChoice* pChoice = dynamic_cast<const CNormalChoice*>(&branch);
   if (pChoice != NULL)
     {
       result = checkConditionTree(pChoice->getCondition());
@@ -158,7 +158,7 @@ bool CNormalChoice::checkExpressionTree(const CNormalBase* branch)
     }
   else
     {
-      const CNormalFraction* pFraction = dynamic_cast<const CNormalFraction*>(branch);
+      const CNormalFraction* pFraction = dynamic_cast<const CNormalFraction*>(&branch);
       if (pFraction == NULL)
         {
           result = false;

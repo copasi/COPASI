@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalProduct.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/08 10:27:29 $
+//   $Date: 2007/08/10 13:42:20 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -157,10 +157,9 @@ class CNormalProduct : public CNormalBase
     const std::set <CNormalItemPower*, compareItemPowers >& getItemPowers() const;
 
     /**
-     * Retrieve the set of powers of this product.
-     * @return mPowers.
-     *
-     const std::set <CNormalPower*, comparePowers>& getPowers() const;*/
+     * Sets the item powers of this product.
+     */
+    void setItemPowers(const std::set<CNormalItemPower*, compareItemPowers>& set);
 
     bool checkSamePowerList(const CNormalProduct & rhs) const;
 

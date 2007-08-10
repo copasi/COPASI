@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalChoice.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/08 10:27:29 $
+//   $Date: 2007/08/10 13:42:20 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,17 +40,17 @@ class CNormalChoice : public CNormalBase
     bool setTrueExpression(const CNormalFraction& branch);
     bool setFalseExpression(const CNormalFraction& branch);
 
-    const CNormalLogical* getCondition() const;
-    CNormalLogical* getCondition();
+    const CNormalLogical& getCondition() const;
+    CNormalLogical& getCondition();
 
-    const CNormalFraction* getTrueExpression() const;
-    CNormalFraction* getTrueExpression();
+    const CNormalFraction& getTrueExpression() const;
+    CNormalFraction& getTrueExpression();
 
-    const CNormalFraction* getFalseExpression() const;
-    CNormalFraction* getFalseExpression();
+    const CNormalFraction& getFalseExpression() const;
+    CNormalFraction& getFalseExpression();
 
-    static bool checkConditionTree(const CNormalBase* branch);
-    static bool checkExpressionTree(const CNormalBase* branch);
+    static bool checkConditionTree(const CNormalBase& branch);
+    static bool checkExpressionTree(const CNormalBase& branch);
 
     virtual std::string toString() const;
     virtual bool simplify();
