@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeChoice.cpp,v $
-   $Revision: 1.14 $
-   $Name:  $
-   $Author: nsimus $
-   $Date: 2006/08/15 11:39:31 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeChoice.cpp,v $
+//   $Revision: 1.15 $
+//   $Name:  $
+//   $Author: gauges $
+//   $Date: 2007/08/12 16:36:43 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -24,7 +24,7 @@ CEvaluationNodeChoice::CEvaluationNodeChoice():
 
 CEvaluationNodeChoice::CEvaluationNodeChoice(const SubType & subType,
     const Data & data):
-    CEvaluationNode((Type) (CEvaluationNode::FUNCTION | subType), data),
+    CEvaluationNode((Type) (CEvaluationNode::CHOICE | subType), data),
     mpIf(NULL),
     mpTrue(NULL),
     mpFalse(NULL)
