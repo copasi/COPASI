@@ -1,5 +1,17 @@
+# Begin CVS Header 
+#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/function.pro,v $ 
+#   $Revision: 1.25 $ 
+#   $Name:  $ 
+#   $Author: ssahle $ 
+#   $Date: 2007/08/12 18:03:40 $ 
+# End CVS Header 
+
+# Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc. and EML Research, gGmbH. 
+# All rights reserved. 
+
 ######################################################################
-# $Revision: 1.24 $ $Author: shoops $ $Date: 2007/01/08 17:29:01 $  
+# $Revision: 1.25 $ $Author: ssahle $ $Date: 2007/08/12 18:03:40 $  
 ######################################################################
 
 LIB = function
@@ -28,6 +40,7 @@ HEADERS += \
            CEvaluationTree.h \
            CExpression.h \
            CFunction.h \
+           CFunctionAnalyzer.h \
            CFunctionDB.h \
            FunctionDB.xml.h \
            CFunctionParameter.h \
@@ -56,6 +69,7 @@ SOURCES += \
            CEvaluationTree.cpp \
            CExpression.cpp \
            CFunction.cpp \
+           CFunctionAnalyzer.cpp \
            CFunctionDB.cpp \
            CFunctionParameter.cpp \
            CFunctionParameters.cpp \
