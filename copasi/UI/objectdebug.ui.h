@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/objectdebug.ui.h,v $
-//   $Revision: 1.29 $
+//   $Revision: 1.30 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/07/24 09:51:04 $
+//   $Date: 2007/08/12 18:11:37 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -189,4 +189,12 @@ void ObjectDebug::writeDot()
 
   CDotOutput dot;
   dot.simpleCall();
+}
+
+#include "function/CFunctionAnalyzer.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
+
+void ObjectDebug::checkModel()
+{
+  CModelAnalyzer::checkModel(CCopasiDataModel::Global->getModel());
 }

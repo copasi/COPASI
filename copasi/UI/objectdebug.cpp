@@ -13,7 +13,7 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'objectdebug.ui'
  **
- ** Created: Fr Jul 20 17:43:14 2007
+ ** Created: Di Aug 7 23:52:02 2007
  **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.7   edited Aug 31 2005 $)
  **
  ** WARNING! All changes made in this file will be lost!
@@ -49,18 +49,22 @@ ObjectDebug::ObjectDebug(QWidget* parent, const char* name, bool modal, WFlags f
 
   UpdateButton = new QPushButton(this, "UpdateButton");
 
-  ObjectDebugLayout->addWidget(UpdateButton, 1, 2);
+  ObjectDebugLayout->addWidget(UpdateButton, 1, 3);
 
   ListOfObjects = new QListView(this, "ListOfObjects");
   ListOfObjects->addColumn(tr("Column 1"));
 
-  ObjectDebugLayout->addMultiCellWidget(ListOfObjects, 0, 0, 0, 2);
-  spacer5 = new QSpacerItem(240, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  ObjectDebugLayout->addItem(spacer5, 1, 0);
+  ObjectDebugLayout->addMultiCellWidget(ListOfObjects, 0, 0, 0, 3);
 
   pushButton2 = new QPushButton(this, "pushButton2");
 
-  ObjectDebugLayout->addWidget(pushButton2, 1, 1);
+  ObjectDebugLayout->addWidget(pushButton2, 1, 2);
+  spacer5 = new QSpacerItem(90, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+  ObjectDebugLayout->addItem(spacer5, 1, 0);
+
+  ButtonModelCheck = new QPushButton(this, "ButtonModelCheck");
+
+  ObjectDebugLayout->addWidget(ButtonModelCheck, 1, 1);
   languageChange();
   resize(QSize(517, 486).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
@@ -68,6 +72,7 @@ ObjectDebug::ObjectDebug(QWidget* parent, const char* name, bool modal, WFlags f
   // signals and slots connections
   connect(UpdateButton, SIGNAL(clicked()), this, SLOT(update()));
   connect(pushButton2, SIGNAL(clicked()), this, SLOT(writeDot()));
+  connect(ButtonModelCheck, SIGNAL(clicked()), this, SLOT(checkModel()));
   init();
 }
 
@@ -93,4 +98,5 @@ void ObjectDebug::languageChange()
   item->setText(0, tr("New Item"));
 
   pushButton2->setText(tr("write Dependencies"));
+  ButtonModelCheck->setText(tr("check model"));
 }

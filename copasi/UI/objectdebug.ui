@@ -1,10 +1,10 @@
 <!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <comment> Begin CVS Header </comment>
-<comment>   $Source: /home/cvs/copasi_dev/copasi/UI/objectdebug.ui,v $ </comment>
+<comment>   $Source: /home/cvs/copasi_dev/cvs_admin/addHeader,v $ </comment>
 <comment>   $Revision: 1.4 $ </comment>
 <comment>   $Name:  $ </comment>
-<comment>   $Author: ssahle $ </comment>
-<comment>   $Date: 2007/07/17 21:17:08 $ </comment>
+<comment>   $Author: shoops $ </comment>
+<comment>   $Date: 2007/05/31 18:21:38 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -12,6 +12,7 @@
 <comment> All rights reserved. </comment>
 
 <class>ObjectDebug</class>
+<comment> All rights reserved. </comment>
 <widget class="QDialog">
     <property name="name">
         <cstring>ObjectDebug</cstring>
@@ -31,7 +32,7 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QPushButton" row="1" column="2">
+        <widget class="QPushButton" row="1" column="3">
             <property name="name">
                 <cstring>UpdateButton</cstring>
             </property>
@@ -39,7 +40,7 @@
                 <string>update</string>
             </property>
         </widget>
-        <widget class="QListView" row="0" column="0" rowspan="1" colspan="3">
+        <widget class="QListView" row="0" column="0" rowspan="1" colspan="4">
             <column>
                 <property name="text">
                     <string>Column 1</string>
@@ -63,6 +64,14 @@
                 <cstring>ListOfObjects</cstring>
             </property>
         </widget>
+        <widget class="QPushButton" row="1" column="2">
+            <property name="name">
+                <cstring>pushButton2</cstring>
+            </property>
+            <property name="text">
+                <string>write Dependencies</string>
+            </property>
+        </widget>
         <spacer row="1" column="0">
             <property name="name">
                 <cstring>spacer5</cstring>
@@ -75,17 +84,17 @@
             </property>
             <property name="sizeHint">
                 <size>
-                    <width>240</width>
+                    <width>90</width>
                     <height>20</height>
                 </size>
             </property>
         </spacer>
         <widget class="QPushButton" row="1" column="1">
             <property name="name">
-                <cstring>pushButton2</cstring>
+                <cstring>ButtonModelCheck</cstring>
             </property>
             <property name="text">
-                <string>write Dependencies</string>
+                <string>check model</string>
             </property>
         </widget>
     </grid>
@@ -103,6 +112,12 @@
         <receiver>ObjectDebug</receiver>
         <slot>writeDot()</slot>
     </connection>
+    <connection>
+        <sender>ButtonModelCheck</sender>
+        <signal>clicked()</signal>
+        <receiver>ObjectDebug</receiver>
+        <slot>checkModel()</slot>
+    </connection>
 </connections>
 <includes>
     <include location="global" impldecl="in declaration">iostream</include>
@@ -111,6 +126,7 @@
 <slots>
     <slot specifier="non virtual">update()</slot>
     <slot>writeDot()</slot>
+    <slot>checkModel()</slot>
 </slots>
 <functions>
     <function access="private" specifier="non virtual">addObjectRecursive( QWidget * parent, void * ptr )</function>

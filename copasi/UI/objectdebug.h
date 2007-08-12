@@ -13,7 +13,7 @@
 /****************************************************************************
  ** Form interface generated from reading ui file 'objectdebug.ui'
  **
- ** Created: Fr Jul 20 17:43:14 2007
+ ** Created: Di Aug 7 23:52:02 2007
  **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.7   edited Aug 31 2005 $)
  **
  ** WARNING! All changes made in this file will be lost!
@@ -45,10 +45,12 @@ class ObjectDebug : public QDialog
     QPushButton* UpdateButton;
     QListView* ListOfObjects;
     QPushButton* pushButton2;
+    QPushButton* ButtonModelCheck;
 
   public slots:
     void update();
     virtual void writeDot();
+    virtual void checkModel();
 
   protected:
     QGridLayout* ObjectDebugLayout;
