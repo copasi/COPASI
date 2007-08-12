@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLogical.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/10 13:42:20 $
+//   $Date: 2007/08/12 16:38:04 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -67,7 +67,7 @@ CNormalLogical::CNormalLogical(const CNormalLogical& src): CNormalBase(src), mNo
       ItemSet::const_iterator it3 = it2->first.begin(), endit3 = it2->first.end();
       while (it3 != endit3)
         {
-          tmp.insert(std::make_pair(new CNormalLogicalItem(*it3->first), it3->second));
+          tmp.insert(std::make_pair(it3->first->copy(), it3->second));
           ++it3;
         }
       this->mAndSets.insert(std::make_pair(tmp, it2->second));
@@ -172,14 +172,14 @@ std::string CNormalLogical::toString() const
     ChoiceSetOfSets::const_iterator it = this->mChoices.begin(), endit = this->mChoices.end();
     if (this->mNot == true)
       {
-        str << "NOT";
+        str << "NOT ";
       }
     str << "(";
     while (it != endit)
       {
         if (it->second == true)
           {
-            str << "NOT";
+            str << "NOT ";
           }
         str << "(";
         ChoiceSet::const_iterator inner = it->first.begin(), innerend = it->first.end();
@@ -187,7 +187,7 @@ std::string CNormalLogical::toString() const
           {
             if (inner->second == true)
               {
-                str << "NOT(" << inner->first->toString() << ")";
+                str << "NOT (" << inner->first->toString() << ")";
               }
             else
               {
@@ -211,7 +211,7 @@ std::string CNormalLogical::toString() const
       {
         if (it->second == true)
           {
-            str << "NOT";
+            str << "NOT ";
           }
         str << "(";
         ItemSet::const_iterator inner = it2->first.begin(), innerend = it2->first.end();
@@ -219,7 +219,7 @@ std::string CNormalLogical::toString() const
           {
             if (inner->second == true)
               {
-                str << "NOT(" << inner->first->toString() << ")";
+                str << "NOT (" << inner->first->toString() << ")";
               }
             else
               {

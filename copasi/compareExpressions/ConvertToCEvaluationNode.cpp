@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/ConvertToCEvaluationNode.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/10 13:42:20 $
+//   $Date: 2007/08/12 16:38:04 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -458,6 +458,7 @@ CNormalItemPower * createItemPower(const CEvaluationNode* node)
 CNormalProduct * createProduct(const CEvaluationNode* node)
 {
   CNormalProduct * product = new CNormalProduct();
+  CNormalChoice * pChoice = NULL;
   switch (CEvaluationNode::type(node->getType()))
     {
     case CEvaluationNode::OPERATOR:  // PLUS(->createSum), MINUS(translated as +(-..)) and DIVIDE(->createFraction) do not occur.
@@ -522,13 +523,11 @@ CNormalProduct * createProduct(const CEvaluationNode* node)
     case CEvaluationNode::LOGICAL:
       throw std::exception(/*"Error. Logical Nodes are not allowed here."*/);
       break;
-      /*
-      case CEvaluationNode::CHOICE:
-          CNormalChoice * product2 = createChoice(dynamic_cast<const CEvaluationNode*>(node->getChild()));
-          product->multiply(*product2);
-          delete product2;
-          break;
-      */
+    case CEvaluationNode::CHOICE:
+      pChoice = createChoice(dynamic_cast<const CEvaluationNode*>(node));
+      product->multiply(*pChoice);
+      delete pChoice;
+      break;
     default:   //cases VARIABLE, CONSTANT, OBJECT, VECTOR
       CNormalItem * item = createItem(node);
       product->multiply(*item);
@@ -748,18 +747,14 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalBase& base)
     {
       pNode = convertToCEvaluationNode(dynamic_cast<const CNormalSum&>(base));
     }
-  /*
-  else if(dynamic_cast<const CNormalLogical*>(&base)!=NULL)
-  {
-      pNode=convertToCEvaluationNode(dynamic_cast<const CNormalLogical&>(base));
-  }
-  */
-  /*
-  else if(dynamic_cast<const CNormalChoice*>(&base)!=NULL)
-  {
-      pNode=convertToCEvaluationNode(dynamic_cast<const CNormalChoice&>(base));
-  }
-  */
+  else if (dynamic_cast<const CNormalLogical*>(&base) != NULL)
+    {
+      pNode = convertToCEvaluationNode(dynamic_cast<const CNormalLogical&>(base));
+    }
+  else if (dynamic_cast<const CNormalChoice*>(&base) != NULL)
+    {
+      pNode = convertToCEvaluationNode(dynamic_cast<const CNormalChoice&>(base));
+    }
   return pNode;
 }
 
@@ -1498,9 +1493,23 @@ CNormalChoice* createChoice(const CEvaluationNode* pNode)
           CNormalFraction* pTrueFraction = createNormalRepresentation(dynamic_cast<const CEvaluationNode*>(pNode->getChild()->getSibling()));
           if (pTrueFraction != NULL)
             {
-              CNormalFraction* pFalseFraction = createNormalRepresentation(dynamic_cast<const CEvaluationNode*>(pNode->getChild()->getSibling()->getSibling()));
-              if (pFalseFraction != NULL)
+              // the false branch is optional
+              const CEvaluationNode* pFalseBranch = dynamic_cast<const CEvaluationNode*>(pNode->getChild()->getSibling()->getSibling());
+              if (pFalseBranch != NULL)
                 {
+                  CNormalFraction* pFalseFraction = createNormalRepresentation(pFalseBranch);
+                  if (pFalseFraction != NULL)
+                    {
+                      pResult = new CNormalChoice();
+                      pResult->setCondition(*pLogical);
+                      pResult->setTrueExpression(*pTrueFraction);
+                      pResult->setFalseExpression(*pFalseFraction);
+                      delete pFalseFraction;
+                    }
+                }
+              else
+                {
+                  CNormalFraction* pFalseFraction = new CNormalFraction();
                   pResult = new CNormalChoice();
                   pResult->setCondition(*pLogical);
                   pResult->setTrueExpression(*pTrueFraction);
@@ -1526,12 +1535,26 @@ CNormalChoiceLogical* createLogicalChoice(const CEvaluationNode* pNode)
           CNormalLogical* pTrueLogical = createLogical(dynamic_cast<const CEvaluationNode*>(pNode->getChild()->getSibling()));
           if (pTrueLogical != NULL)
             {
-              CNormalLogical* pFalseLogical = createLogical(dynamic_cast<const CEvaluationNode*>(pNode->getChild()->getSibling()->getSibling()));
-              if (pFalseLogical != NULL)
+              // the false branch is optional
+              const CEvaluationNode* pFalseBranch = dynamic_cast<const CEvaluationNode*>(pNode->getChild()->getSibling()->getSibling());
+              if (pFalseBranch != NULL)
+                {
+                  CNormalLogical* pFalseLogical = createLogical(pFalseBranch);
+                  if (pFalseLogical != NULL)
+                    {
+                      pResult = new CNormalChoiceLogical();
+                      pResult->setCondition(*pLogical);
+                      pResult->setTrueExpression(*pTrueLogical);
+                      pResult->setFalseExpression(*pFalseLogical);
+                      delete pFalseLogical;
+                    }
+                }
+              else
                 {
                   pResult = new CNormalChoiceLogical();
                   pResult->setCondition(*pLogical);
                   pResult->setTrueExpression(*pTrueLogical);
+                  CNormalLogical* pFalseLogical = new CNormalLogical();
                   pResult->setFalseExpression(*pFalseLogical);
                   delete pFalseLogical;
                 }

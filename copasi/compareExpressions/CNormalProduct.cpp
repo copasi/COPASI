@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalProduct.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/10 13:42:20 $
+//   $Date: 2007/08/12 16:38:04 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,6 +22,7 @@
 #include "CNormalProduct.h"
 #include "CNormalFunction.h"
 #include "CNormalGeneralPower.h"
+#include "CNormalChoice.h"
 
 bool compareItemPowers::operator()(const CNormalItemPower* itemPower1, const CNormalItemPower* itemPower2)
 {
@@ -98,6 +99,29 @@ bool CNormalProduct::multiply(const C_FLOAT64& number)
       mItemPowers.clear();
       //mPowers.clear();
     }
+  return true;
+}
+
+/**
+ * Multiply an choice to this product.
+ * @return true.
+ */
+bool CNormalProduct::multiply(const CNormalChoice& choice)
+{
+  if (fabs(mFactor) < 1.0E-100)
+    return true;
+  std::set <CNormalItemPower*, compareItemPowers >::const_iterator it;
+  std::set <CNormalItemPower*, compareItemPowers >::const_iterator itEnd = mItemPowers.end();
+  for (it = mItemPowers.begin(); it != itEnd; ++it)
+    {
+      if ((*it)->getItem().areEqual(choice) == true)
+        {
+          (*it)->setExp((*it)->getExp() + 1.0);
+          return true;
+        }
+    }
+  CNormalItemPower* tmp = new CNormalItemPower(choice, 1.0);
+  mItemPowers.insert(tmp);
   return true;
 }
 

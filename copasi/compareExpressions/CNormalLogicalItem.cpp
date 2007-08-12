@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLogicalItem.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/08 10:27:29 $
+//   $Date: 2007/08/12 16:38:04 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -111,7 +111,19 @@ bool CNormalLogicalItem::operator<(const CNormalLogicalItem& rhs) const
 
 CNormalLogicalItem* CNormalLogicalItem::copy() const
   {
-    return new CNormalLogicalItem(*this);
+    CNormalLogicalItem* pResult = NULL;
+    if ((this->mpLeft != NULL) && (this->mpRight != NULL))
+      {
+        pResult = new CNormalLogicalItem(*this);
+      }
+    else
+      {
+        pResult = new CNormalLogicalItem();
+        pResult->mType = this->mType;
+        pResult->mpLeft = NULL;
+        pResult->mpRight = NULL;
+      }
+    return pResult;
   }
 
 std::string CNormalLogicalItem::toString() const

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalProduct.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/10 13:42:20 $
+//   $Date: 2007/08/12 16:38:04 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,6 +23,7 @@ class CNormalSum;
 class CNormalLcm;
 class CNormalFunction;
 class CNormalGeneralPower;
+class CNormalChoice;
 
 class compareItemPowers
   {
@@ -94,6 +95,12 @@ class CNormalProduct : public CNormalBase
      * @return true.
      */
     bool multiply(const CNormalFunction& fun);
+
+    /**
+     * Multiply a function to this product.
+     * @return true.
+     */
+    bool multiply(const CNormalChoice& choice);
 
     /**
      * Multiply a general power to this product.

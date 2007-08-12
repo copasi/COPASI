@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalItemPower.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/10 13:42:20 $
+//   $Date: 2007/08/12 16:38:04 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 #include "CNormalItemPower.h"
 #include "CNormalFunction.h"
 #include "CNormalGeneralPower.h"
-//#include "CNormalChoice.h"
+#include "CNormalChoice.h"
 
 #include <sstream>
 
@@ -98,14 +98,12 @@ bool CNormalItemPower::setItem(const CNormalBase& item)
       this->mItemType = CNormalItemPower::POWER;
       this->mpItem = item.copy();
     }
-  /*
-  else if(dynamic_cast<const CNormalChoice*>(&item))
-  {
-      if(this->mpItem!=NULL) delete this->mpItem;
-      this->mItemType=CNormalItemPower::CHOICE;
-      this->mpItem=item.copy();
-  }
-  */
+  else if (dynamic_cast<const CNormalChoice*>(&item))
+    {
+      if (this->mpItem != NULL) delete this->mpItem;
+      this->mItemType = CNormalItemPower::CHOICE;
+      this->mpItem = item.copy();
+    }
   else
     {
       result = false;
