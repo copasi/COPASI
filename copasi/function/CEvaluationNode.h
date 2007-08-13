@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.h,v $
-//   $Revision: 1.29 $
+//   $Revision: 1.30 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/03/09 09:51:20 $
+//   $Author: gauges $
+//   $Date: 2007/08/13 20:59:12 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -192,7 +192,13 @@ class CEvaluationNode : public CCopasiNode< std::string >
      * Copy a node and assign new children child1 and child2
      * @return CEvaluationNode* return a pointer to the new node
      */
-    CEvaluationNode* copyNode(CEvaluationNode *child1, CEvaluationNode *child2) const;
+    CEvaluationNode* copyNode(CEvaluationNode* child1, CEvaluationNode* child2) const;
+
+    /**
+     * Copy a node and assign new children in the vector
+     * @return CEvaluationNode* return a pointer to the new node
+     */
+    CEvaluationNode* copyNode(const std::vector<CEvaluationNode*>& children) const;
 
     /**
      * Copy the whole branch with this node as root.
@@ -204,7 +210,7 @@ class CEvaluationNode : public CCopasiNode< std::string >
      * Create a simplified node from the original node with children child1 and child2 (if not exist, = NULL)
      * @return CEvaluationNode* return a pointer to the simplified node;
      */
-    virtual CEvaluationNode* simplifyNode(CEvaluationNode *child1, CEvaluationNode *child2) const;
+    virtual CEvaluationNode* simplifyNode(const std::vector<CEvaluationNode*>& children) const;
 
     /**
      * Comparison operator used to evaluate the precedence of the node.
@@ -312,7 +318,7 @@ class CEvaluationNode : public CCopasiNode< std::string >
      * -----------------+--------------+------------------
      *                  | STRUCTURE:   |
      *  ULONG_MAX       |  (| 1
-     *  0               |  ,           | 1
+     *  0               |  , | 1
      *  0               |)           | ULONG_MAX
      */
     class CPrecedence

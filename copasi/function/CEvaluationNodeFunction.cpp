@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.cpp,v $
-//   $Revision: 1.41 $
+//   $Revision: 1.42 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/07/24 19:15:42 $
+//   $Author: gauges $
+//   $Date: 2007/08/13 20:59:12 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -811,8 +811,10 @@ ASTNode* CEvaluationNodeFunction::toAST() const
     return node;
   }
 
-CEvaluationNode* CEvaluationNodeFunction::simplifyNode(CEvaluationNode *child1, CEvaluationNode *child2) const
+CEvaluationNode* CEvaluationNodeFunction::simplifyNode(const std::vector<CEvaluationNode*>& children) const
   {
+    assert(children.size() > 0);
+    CEvaluationNode* child1 = children[0];
     switch (mType & 0x00FFFFFF)
       {
       case MINUS:
@@ -853,7 +855,7 @@ CEvaluationNode* CEvaluationNodeFunction::simplifyNode(CEvaluationNode *child1, 
                     }
                   default:        // cases POWER, MULTIPLY, MODULUS. don't expect MINUS to occur anymore
                     {
-                      CEvaluationNode *newnode = copyNode(child1, child2);
+                      CEvaluationNode *newnode = copyNode(children);
                       return newnode;
                     }
                   }
@@ -867,7 +869,7 @@ CEvaluationNode* CEvaluationNodeFunction::simplifyNode(CEvaluationNode *child1, 
                     return newnode;
                   }
                 // default: copy
-                CEvaluationNode *newnode = copyNode(child1, child2);
+                CEvaluationNode *newnode = copyNode(children);
                 return newnode;
               }
             case CEvaluationNode::NUMBER:
@@ -880,7 +882,7 @@ CEvaluationNode* CEvaluationNodeFunction::simplifyNode(CEvaluationNode *child1, 
               }
             default:         //cases VARIABLE, CONSTANT..
               {
-                CEvaluationNode *newnode = copyNode(child1, child2);
+                CEvaluationNode *newnode = copyNode(children);
                 return newnode;
               }
             }
@@ -895,7 +897,7 @@ CEvaluationNode* CEvaluationNodeFunction::simplifyNode(CEvaluationNode *child1, 
         }
       default:
         {
-          CEvaluationNode *newnode = copyNode(child1, child2);
+          CEvaluationNode *newnode = copyNode(children);
           return newnode;
         }
       }

@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.h,v $
-   $Revision: 1.29 $
-   $Name:  $
-   $Author: nsimus $
-   $Date: 2006/08/15 11:39:31 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.h,v $
+//   $Revision: 1.30 $
+//   $Name:  $
+//   $Author: gauges $
+//   $Date: 2007/08/13 20:59:12 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -167,11 +167,11 @@ class CEvaluationNodeFunction : public CEvaluationNode
     virtual ASTNode* toAST() const;
 
     /**
-     * Create a simplified node for a functionNode with children child1 and child2 (if not exist, = NULL),
+     * Create a simplified node for an operatorNode with children from vector (if not exist, = NULL),
      * and assign new children
      * @return CEvaluationNode* return a pointer to the simplified node;
      */
-    virtual CEvaluationNode* simplifyNode(CEvaluationNode *child1, CEvaluationNode *child2) const;
+    virtual CEvaluationNode* simplifyNode(const std::vector<CEvaluationNode*>& children) const;
 
     /**
      *  generate display MathML recursively

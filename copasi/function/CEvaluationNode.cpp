@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.cpp,v $
-//   $Revision: 1.31 $
+//   $Revision: 1.32 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/07/24 18:40:21 $
+//   $Author: gauges $
+//   $Date: 2007/08/13 20:59:12 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -167,43 +167,47 @@ const CEvaluationNode::Type & CEvaluationNode::getType() const
 bool CEvaluationNode::operator < (const CEvaluationNode & rhs)
 {return (mPrecedence.right < rhs.mPrecedence.left);}
 
-CEvaluationNode* CEvaluationNode::copyNode(CEvaluationNode *child1, CEvaluationNode *child2) const
+CEvaluationNode* CEvaluationNode::copyNode(CEvaluationNode* child1, CEvaluationNode* child2) const
+  {
+    std::vector<CEvaluationNode*> children;
+    if (child1 != NULL) children.push_back(child1);
+    if (child2 != NULL) children.push_back(child2);
+    return copyNode(children);
+  }
+
+CEvaluationNode* CEvaluationNode::copyNode(const std::vector<CEvaluationNode*>& children) const
   {
     //std::cout << " this->getData() " << this->CEvaluationNode::getData() << std::endl;
 
     CEvaluationNode *newnode = create(getType(), getData());
-    if (child1 != NULL)
+    std::vector<CEvaluationNode*>::const_iterator it = children.begin(), endit = children.end();
+    while (it != endit)
       {
-        newnode->addChild(child1, NULL);
-        if (child2 != NULL)
-          {
-            newnode->addChild(child2, child1);
-          }
+        newnode->addChild(*it);
+        ++it;
       }
     return newnode;
   }
 
 CEvaluationNode* CEvaluationNode::copyBranch() const
   {
-    const CEvaluationNode *child1 = dynamic_cast<const CEvaluationNode*>(getChild());
-    CEvaluationNode *newchild1 = NULL;
-    CEvaluationNode *newchild2 = NULL;
-    if (child1 != NULL)
+    std::vector<CEvaluationNode*> children;
+    const CEvaluationNode* child = dynamic_cast<const CEvaluationNode*>(getChild());
+    while (child != NULL)
       {
-        newchild1 = child1->copyBranch();
-        const CEvaluationNode *child2 = dynamic_cast<const CEvaluationNode*>(child1->getSibling());
-        if (child2 != NULL)
-          {
-            newchild2 = child2->copyBranch();
-          }
+        CEvaluationNode *newchild = NULL;
+        newchild = child->copyBranch();
+        children.push_back(newchild);
+        child = dynamic_cast<const CEvaluationNode*>(child->getSibling());
       }
-    CEvaluationNode *newnode = copyNode(newchild1, newchild2);
+    children.push_back(NULL);
+    CEvaluationNode *newnode = copyNode(children);
     return newnode;
   }
 
-CEvaluationNode* CEvaluationNode::simplifyNode(CEvaluationNode *child1, CEvaluationNode *child2) const
+CEvaluationNode* CEvaluationNode::simplifyNode(const std::vector<CEvaluationNode*>& children) const
   {
-    CEvaluationNode *newnode = copyNode(child1, child2);
+    CEvaluationNode *newnode = copyNode(children);
     return newnode;
   }
 

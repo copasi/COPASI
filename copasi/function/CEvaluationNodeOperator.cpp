@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeOperator.cpp,v $
-//   $Revision: 1.28 $
+//   $Revision: 1.29 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/07/27 12:31:15 $
+//   $Date: 2007/08/13 20:59:12 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -391,8 +391,25 @@ ASTNode* CEvaluationNodeOperator::toAST() const
     return node;
   }
 
+/*
 CEvaluationNode* CEvaluationNodeOperator::simplifyNode(CEvaluationNode *child1, CEvaluationNode *child2) const
+{
+    std::vector<CEvaluationNode*> children;
+    children.push_back(child1);
+    children.push_back(child1);
+    return this->simplifyNode(children);
+}
+ */
+
+CEvaluationNode* CEvaluationNodeOperator::simplifyNode(const std::vector<CEvaluationNode*>& children) const
   {
+    assert(children.size() > 0);
+    CEvaluationNode* child1 = children[0];
+    CEvaluationNode* child2 = NULL;
+    if (children.size() > 1)
+      {
+        child2 = children[1];
+      }
     switch (CEvaluationNode::subType(mType))
       {
       case POWER:
