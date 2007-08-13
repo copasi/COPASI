@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionAnalyzer.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/08/12 18:03:40 $
+//   $Date: 2007/08/13 15:06:27 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -199,8 +199,8 @@ CFunctionAnalyzer::CValue CFunctionAnalyzer::CValue::operator^(const CFunctionAn
 
     //base is known
     if ((this->mStatus & known) && ((rhs.mStatus & negative)
-                                     || (rhs.mStatus & zero)
-                                     || (rhs.mStatus & positive)))
+                                    || (rhs.mStatus & zero)
+                                    || (rhs.mStatus & positive)))
       {
         if (this->mDouble == 1.0) // base is 1
           ret.orValue(1.0);
@@ -210,8 +210,8 @@ CFunctionAnalyzer::CValue CFunctionAnalyzer::CValue::operator^(const CFunctionAn
 
     //exponent is known
     if (((this->mStatus & negative)
-          || (this->mStatus & zero)
-          || (this->mStatus & positive)) && (rhs.mStatus & known))
+         || (this->mStatus & zero)
+         || (this->mStatus & positive)) && (rhs.mStatus & known))
       {
         if ((rhs.mDouble == trunc(rhs.mDouble)) && (rhs.mDouble != 0.0)) //exponent is integer but not 0
           {
@@ -409,12 +409,50 @@ void CModelAnalyzer::checkReaction(const CReaction* reaction)
 {
   if (!reaction) return;
 
+  //reversibility
+  if (reaction->getFunction()->isReversible() == TriUnspecified)
+    {
+      //warning
+      std::cout << "Kinetics is of unspecified reversibility." << std::endl;
+    }
+  else if (((reaction->getFunction()->isReversible() == TriTrue) && !reaction->isReversible())
+            || ((reaction->getFunction()->isReversible() == TriFalse) && reaction->isReversible()))
+    {
+      //error; or copasi error?
+      std::cout << "Reversibility of function and kinetics does not match." << std::endl;
+    }
+  else
+    {
+      //OK.
+    }
+
+  //mapping
+  unsigned C_INT32 i, imax;
+  imax = reaction->getChemEq().getSubstrates().size();
+  for (i = 0; i < imax; ++i)
+    {
+      std::string tmpkey = reaction->getChemEq().getSubstrates()[i]->getMetaboliteKey();
+
+      //each substrate of the reaction needs to be mapped to a function parameter with role SUBSTRATE
+    }
+
+  //for reversible reactions each product of the reaction needs to be mapped to a function parameter with role PRODUCT
+  //for irreversible?
+
+  //for all function parameters
+  //  substr: must be matched to a substr. of the reaction (copasi bug?)
+  //  Product: must be matched to a product of the reaction (copasi bug?)
+  //  modifier: must be matched to a modifier of the reaction (only warning?). Must be matched to a metab (copasi bug?)
+  //  parameter: must be matched to a local or global parameter (copasi bug?)
+  //  volume: copasi bug
+  //  time: copasi bug
+  //  variable: ???
+
   //check mapping:
   // are all reaction participants mapped to a corresponding function parameter?
-  // does the reversibility match?
 
   //check function:
   // irrev: no products should occur
   // irrev: if substr=0 -> kinetics=0
-  CFunctionAnalyzer::checkKineticFunction(reaction->getFunction());
+  CFunctionAnalyzer::checkKineticFunction(reaction->getFunction() /*, reaction*/);
 }
