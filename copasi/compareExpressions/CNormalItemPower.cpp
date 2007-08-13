@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalItemPower.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/13 07:41:17 $
+//   $Date: 2007/08/13 07:59:50 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -171,11 +171,11 @@ bool CNormalItemPower::operator==(const CNormalItemPower & rhs) const
           case CNormalItemPower::POWER:
             result = (dynamic_cast<CNormalGeneralPower&>(*this->mpItem) == dynamic_cast<CNormalGeneralPower&>(*rhs.mpItem));
             break;
-            /*
-               case CNormalItemPower::CHOICE:
-               result=(dynamic_cast<CNormalChoice&>(*this->mpItem)==dynamic_cast<CNormalChoice&>(*rhs.mpItem));
-               break;
-               */
+          case CNormalItemPower::CHOICE:
+            result = (dynamic_cast<CNormalChoice&>(*this->mpItem) == dynamic_cast<CNormalChoice&>(*rhs.mpItem));
+          case CNormalItemPower::INVALID:
+            result = true;
+            break;
           }
       }
     return result;
@@ -229,19 +229,20 @@ bool CNormalItemPower::operator<(const CNormalItemPower & rhs) const
                   }
               }
             break;
-            /*
-               case CNormalItemPower::CHOICE:
-               result=(dynamic_cast<CNormalChoice&>(*this->mpItem) < dynamic_cast<CNormalChoice&>(*rhs.mpItem));
-               if(!result)
-               {
-               result=!(dynamic_cast<CNormalChoice&>(*rhs.mpItem) < dynamic_cast<CNormalChoice&>(*this->mpItem));
-               if(result)
-               {
-               result=(rhs.mExp < this->mExp);
-               }
-               }
-               break;
-               */
+          case CNormalItemPower::CHOICE:
+            result = (dynamic_cast<CNormalChoice&>(*this->mpItem) < dynamic_cast<CNormalChoice&>(*rhs.mpItem));
+            if(!result)
+              {
+                result = !(dynamic_cast<CNormalChoice&>(*rhs.mpItem) < dynamic_cast<CNormalChoice&>(*this->mpItem));
+                if(result)
+                  {
+                    result = (rhs.mExp < this->mExp);
+                  }
+              }
+            break;
+          case CNormalItemPower::INVALID:
+            result = false;
+            break;
           }
       }
     return result;
