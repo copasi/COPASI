@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_normalform.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/13 07:41:17 $
+//   $Date: 2007/08/13 21:05:36 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,6 +14,7 @@
 
 #include <string>
 #include <set>
+#include <math.h>
 
 #include "function/CEvaluationTree.h"
 #include "function/CEvaluationNode.h"
@@ -1102,7 +1103,8 @@ void test_normalform::test_fraction_numbers()
   CPPUNIT_ASSERT(products.size() == 1);
   const CNormalProduct* pProduct = *(products.begin());
   CPPUNIT_ASSERT(pProduct != NULL);
-  CPPUNIT_ASSERT(pProduct->getFactor() == (7.0 / 3.0));
+  double quotient = (double)7.0 / (double)3.0;
+  CPPUNIT_ASSERT(fabs((pProduct->getFactor() - quotient) / quotient) < 1e-15);
   CPPUNIT_ASSERT(pProduct->getItemPowers().size() == 0);
 }
 
@@ -2706,7 +2708,7 @@ void test_normalform::test_simple_stepwise_numbers()
   CPPUNIT_ASSERT(products->size() == 1);
   pProduct = *(products->begin());
   CPPUNIT_ASSERT(pProduct != NULL);
-  CPPUNIT_ASSERT(pProduct->getFactor() == 1.0);
+  CPPUNIT_ASSERT(pProduct->getFactor() == 4.5);
   CPPUNIT_ASSERT(pProduct->getItemPowers().size() == 0);
 }
 
@@ -2842,7 +2844,7 @@ void test_normalform::test_simple_stepwise_fractions()
   CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
   CPPUNIT_ASSERT(pItem->getName() == "R");
 
-  // check the false branch
+  // check false branch
   pFraction2 = &pChoice->getFalseExpression();
   CPPUNIT_ASSERT(pFraction2 != NULL);
   numerator = &pFraction2->getNumerator();
@@ -2852,7 +2854,53 @@ void test_normalform::test_simple_stepwise_fractions()
   pProduct = *(products->begin());
   CPPUNIT_ASSERT(pProduct != NULL);
   CPPUNIT_ASSERT(pProduct->getFactor() == 1.0);
-  CPPUNIT_ASSERT(pProduct->getItemPowers().size() == 0);
+  CPPUNIT_ASSERT(pProduct->getItemPowers().size() == 1);
+  pItemPower = *(pProduct->getItemPowers().begin());
+  CPPUNIT_ASSERT(pItemPower != NULL);
+  CPPUNIT_ASSERT(pItemPower->getExp() == 1.0);
+  CPPUNIT_ASSERT(pItemPower->getItemType() == CNormalItemPower::FUNCTION);
+  pFunction = dynamic_cast<const CNormalFunction*>(&pItemPower->getItem());
+  CPPUNIT_ASSERT(pFunction != NULL);
+  CPPUNIT_ASSERT(pFunction->getType() == CNormalFunction::SIN);
+  pFraction2 = &pFunction->getFraction();
+  CPPUNIT_ASSERT(pFraction2 != NULL);
+  CPPUNIT_ASSERT(pFraction2->checkDenominatorOne() == true);
+  numerator = &pFraction2->getNumerator();
+  CPPUNIT_ASSERT(numerator->getFractions().size() == 0);
+  products = &numerator->getProducts();
+  CPPUNIT_ASSERT(products->size() == 1);
+  pProduct = *(products->begin());
+  CPPUNIT_ASSERT(pProduct != NULL);
+  CPPUNIT_ASSERT(pProduct->getFactor() == 1.0);
+  CPPUNIT_ASSERT(pProduct->getItemPowers().size() == 1);
+  pItemPower = *(pProduct->getItemPowers().begin());
+  CPPUNIT_ASSERT(pItemPower != NULL);
+  CPPUNIT_ASSERT(pItemPower->getExp() == 1.0);
+  CPPUNIT_ASSERT(pItemPower->getItemType() == CNormalItemPower::ITEM);
+  pItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
+  CPPUNIT_ASSERT(pItem != NULL);
+  CPPUNIT_ASSERT(pItem->getType() == CNormalItem::CONSTANT);
+  CPPUNIT_ASSERT(pItem->getName() == "PI");
+
+  // set pFraction2 again since it has been set to the fraction of the function
+  // above
+  pFraction2 = &pChoice->getFalseExpression();
+  denominator = &pFraction2->getDenominator();
+  CPPUNIT_ASSERT(denominator->getFractions().size() == 0);
+  products = &denominator->getProducts();
+  CPPUNIT_ASSERT(products->size() == 1);
+  pProduct = *(products->begin());
+  CPPUNIT_ASSERT(pProduct != NULL);
+  CPPUNIT_ASSERT(pProduct->getFactor() == 1.0);
+  CPPUNIT_ASSERT(pProduct->getItemPowers().size() == 1);
+  pItemPower = *(pProduct->getItemPowers().begin());
+  CPPUNIT_ASSERT(pItemPower != NULL);
+  CPPUNIT_ASSERT(pItemPower->getExp() == 6.0);
+  CPPUNIT_ASSERT(pItemPower->getItemType() == CNormalItemPower::ITEM);
+  pItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
+  CPPUNIT_ASSERT(pItem != NULL);
+  CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
+  CPPUNIT_ASSERT(pItem->getName() == "A");
 }
 
 void test_normalform::test_simple_nested_stepwise_numbers()
@@ -2886,7 +2934,15 @@ void test_normalform::test_simple_nested_stepwise_numbers()
   CPPUNIT_ASSERT(pLogical != NULL);
   CPPUNIT_ASSERT(pLogical->isNegated() == false);
   CPPUNIT_ASSERT(pLogical->getChoices().size() == 0);
-  CPPUNIT_ASSERT(false);
+  CPPUNIT_ASSERT(pLogical->getAndSets().size() == 1);
+  std::pair<CNormalLogical::ItemSet, bool> outerpair = *(pLogical->getAndSets().begin());
+  CPPUNIT_ASSERT(outerpair.second == false);
+  CPPUNIT_ASSERT(outerpair.first.size() == 1);
+  std::pair<CNormalLogicalItem*, bool> innerpair = *(outerpair.first.begin());
+  CPPUNIT_ASSERT(innerpair.second == false);
+  const CNormalLogicalItem* pLogicalItem = innerpair.first;
+  CPPUNIT_ASSERT(pLogicalItem != NULL);
+  CPPUNIT_ASSERT(pLogicalItem->getType() == CNormalLogicalItem::FALSE);
 
   // check the true branch
   const CNormalFraction* pFraction2 = &pChoice->getTrueExpression();
@@ -2907,7 +2963,11 @@ void test_normalform::test_simple_nested_stepwise_numbers()
   numerator = &pFraction2->getNumerator();
   CPPUNIT_ASSERT(numerator->getFractions().size() == 0);
   products = &numerator->getProducts();
-  CPPUNIT_ASSERT(products->size() == 0);
+  CPPUNIT_ASSERT(products->size() == 1);
+  pProduct = *(products->begin());
+  CPPUNIT_ASSERT(pProduct != NULL);
+  CPPUNIT_ASSERT(pProduct->getFactor() == 4.5);
+  CPPUNIT_ASSERT(pProduct->getItemPowers().size() == 0);
 }
 
 void test_normalform::test_simple_nested_stepwise_fractions()
@@ -3035,7 +3095,62 @@ void test_normalform::test_simple_nested_stepwise_fractions()
   CPPUNIT_ASSERT(pItem->getName() == "R");
 
   // check false branch
-  CPPUNIT_ASSERT(false);
+  pFraction2 = &pChoice->getFalseExpression();
+  CPPUNIT_ASSERT(pFraction2 != NULL);
+  numerator = &pFraction2->getNumerator();
+  CPPUNIT_ASSERT(numerator->getFractions().size() == 0);
+  products = &numerator->getProducts();
+  CPPUNIT_ASSERT(products->size() == 1);
+  pProduct = *(products->begin());
+  CPPUNIT_ASSERT(pProduct != NULL);
+  CPPUNIT_ASSERT(pProduct->getFactor() == 1.0);
+  CPPUNIT_ASSERT(pProduct->getItemPowers().size() == 1);
+  pItemPower = *(pProduct->getItemPowers().begin());
+  CPPUNIT_ASSERT(pItemPower != NULL);
+  CPPUNIT_ASSERT(pItemPower->getExp() == 1.0);
+  CPPUNIT_ASSERT(pItemPower->getItemType() == CNormalItemPower::FUNCTION);
+  pFunction = dynamic_cast<const CNormalFunction*>(&pItemPower->getItem());
+  CPPUNIT_ASSERT(pFunction != NULL);
+  CPPUNIT_ASSERT(pFunction->getType() == CNormalFunction::SIN);
+  pFraction2 = &pFunction->getFraction();
+  CPPUNIT_ASSERT(pFraction2 != NULL);
+  CPPUNIT_ASSERT(pFraction2->checkDenominatorOne() == true);
+  numerator = &pFraction2->getNumerator();
+  CPPUNIT_ASSERT(numerator->getFractions().size() == 0);
+  products = &numerator->getProducts();
+  CPPUNIT_ASSERT(products->size() == 1);
+  pProduct = *(products->begin());
+  CPPUNIT_ASSERT(pProduct != NULL);
+  CPPUNIT_ASSERT(pProduct->getFactor() == 1.0);
+  CPPUNIT_ASSERT(pProduct->getItemPowers().size() == 1);
+  pItemPower = *(pProduct->getItemPowers().begin());
+  CPPUNIT_ASSERT(pItemPower != NULL);
+  CPPUNIT_ASSERT(pItemPower->getExp() == 1.0);
+  CPPUNIT_ASSERT(pItemPower->getItemType() == CNormalItemPower::ITEM);
+  pItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
+  CPPUNIT_ASSERT(pItem != NULL);
+  CPPUNIT_ASSERT(pItem->getType() == CNormalItem::CONSTANT);
+  CPPUNIT_ASSERT(pItem->getName() == "PI");
+
+  // set pFraction2 again since it has been set to the fraction of the function
+  // above
+  pFraction2 = &pChoice->getFalseExpression();
+  denominator = &pFraction2->getDenominator();
+  CPPUNIT_ASSERT(denominator->getFractions().size() == 0);
+  products = &denominator->getProducts();
+  CPPUNIT_ASSERT(products->size() == 1);
+  pProduct = *(products->begin());
+  CPPUNIT_ASSERT(pProduct != NULL);
+  CPPUNIT_ASSERT(pProduct->getFactor() == 1.0);
+  CPPUNIT_ASSERT(pProduct->getItemPowers().size() == 1);
+  pItemPower = *(pProduct->getItemPowers().begin());
+  CPPUNIT_ASSERT(pItemPower != NULL);
+  CPPUNIT_ASSERT(pItemPower->getExp() == 6.0);
+  CPPUNIT_ASSERT(pItemPower->getItemType() == CNormalItemPower::ITEM);
+  pItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
+  CPPUNIT_ASSERT(pItem != NULL);
+  CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
+  CPPUNIT_ASSERT(pItem->getName() == "A");
 }
 
 void test_normalform::test_nested_stepwise_fractions()
@@ -3163,7 +3278,7 @@ void test_normalform::test_nested_stepwise_fractions()
   CPPUNIT_ASSERT(pItem->getName() == "R");
 
   // check false branch
-  pFraction2 = &pChoice->getTrueExpression();
+  pFraction2 = &pChoice->getFalseExpression();
   CPPUNIT_ASSERT(pFraction2 != NULL);
   numerator = &pFraction2->getNumerator();
   CPPUNIT_ASSERT(numerator->getFractions().size() == 0);
@@ -3200,6 +3315,9 @@ void test_normalform::test_nested_stepwise_fractions()
   CPPUNIT_ASSERT(pItem->getType() == CNormalItem::CONSTANT);
   CPPUNIT_ASSERT(pItem->getName() == "PI");
 
+  // set pFraction2 again since it has been set to the fraction of the function
+  // above
+  pFraction2 = &pChoice->getFalseExpression();
   denominator = &pFraction2->getDenominator();
   CPPUNIT_ASSERT(denominator->getFractions().size() == 0);
   products = &denominator->getProducts();
@@ -3210,39 +3328,10 @@ void test_normalform::test_nested_stepwise_fractions()
   CPPUNIT_ASSERT(pProduct->getItemPowers().size() == 1);
   pItemPower = *(pProduct->getItemPowers().begin());
   CPPUNIT_ASSERT(pItemPower != NULL);
-  CPPUNIT_ASSERT(pItemPower->getExp() == 1.0);
-  CPPUNIT_ASSERT(pItemPower->getItemType() == CNormalItemPower::POWER);
-  pGeneralPower = dynamic_cast<const CNormalGeneralPower*>(&pItemPower->getItem());
-  CPPUNIT_ASSERT(pGeneralPower != NULL);
-  CPPUNIT_ASSERT(pGeneralPower->getType() == CNormalGeneralPower::POWER);
-  pFraction2 = &pGeneralPower->getLeft();
-  CPPUNIT_ASSERT(pFraction2 != NULL);
-  CPPUNIT_ASSERT(pFraction2->checkDenominatorOne() == true);
-  numerator = &pFraction2->getNumerator();
-  CPPUNIT_ASSERT(numerator->getFractions().size() == 0);
-  products = &numerator->getProducts();
-  CPPUNIT_ASSERT(products->size() == 1);
-  pProduct = *(products->begin());
-  CPPUNIT_ASSERT(pProduct != NULL);
-  CPPUNIT_ASSERT(pProduct->getFactor() == 1.0);
-  CPPUNIT_ASSERT(pProduct->getItemPowers().size() == 1);
-  pItemPower = *(pProduct->getItemPowers().begin());
-  CPPUNIT_ASSERT(pItemPower != NULL);
-  CPPUNIT_ASSERT(pItemPower->getExp() == 1.0);
+  CPPUNIT_ASSERT(pItemPower->getExp() == 6.0);
   CPPUNIT_ASSERT(pItemPower->getItemType() == CNormalItemPower::ITEM);
   pItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
   CPPUNIT_ASSERT(pItem != NULL);
   CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
   CPPUNIT_ASSERT(pItem->getName() == "A");
-  pFraction2 = &pGeneralPower->getRight();
-  CPPUNIT_ASSERT(pFraction2 != NULL);
-  CPPUNIT_ASSERT(pFraction2->checkDenominatorOne() == true);
-  numerator = &pFraction2->getNumerator();
-  CPPUNIT_ASSERT(numerator->getFractions().size() == 0);
-  products = &numerator->getProducts();
-  CPPUNIT_ASSERT(products->size() == 1);
-  pProduct = *(products->begin());
-  CPPUNIT_ASSERT(pProduct != NULL);
-  CPPUNIT_ASSERT(pProduct->getFactor() == 6.0);
-  CPPUNIT_ASSERT(pProduct->getItemPowers().size() == 0);
 }
