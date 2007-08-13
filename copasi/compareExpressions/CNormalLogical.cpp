@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLogical.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/13 07:41:17 $
+//   $Date: 2007/08/13 21:04:41 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,7 +41,7 @@ CNormalLogical::CNormalLogical(const CNormalLogical& src): CNormalBase(src), mNo
       ChoiceSet::const_iterator it4 = (*it).first.begin(), endit4 = (*it).first.end();
       while (it4 != endit4)
         {
-          tmp.insert(std::make_pair(new CNormalChoiceLogical(*it4->first), it4->second));
+          tmp.insert(std::make_pair(it4->first->copy(), it4->second));
           ++it4;
         }
       this->mChoices.insert(std::make_pair(tmp, it->second));
@@ -61,16 +61,22 @@ CNormalLogical::CNormalLogical(const CNormalLogical& src): CNormalBase(src), mNo
   this->mAndSets.clear();
   it2 = src.mAndSets.begin();
   endit2 = src.mAndSets.end();
+  bool flag = false;
+  CNormalLogicalItem* pTmpItem = NULL;
   while (it2 != endit2)
     {
       ItemSet tmp;
       ItemSet::const_iterator it3 = it2->first.begin(), endit3 = it2->first.end();
       while (it3 != endit3)
         {
-          tmp.insert(std::make_pair(it3->first->copy(), it3->second));
+          flag = it3->second;
+          pTmpItem = it3->first->copy();
+          //std::cout << "1. item: " << pTmpItem->toString() << std::endl;
+          tmp.insert(std::make_pair(pTmpItem, flag));
           ++it3;
         }
-      this->mAndSets.insert(std::make_pair(tmp, it2->second));
+      flag = it2->second;
+      this->mAndSets.insert(std::make_pair(tmp, flag));
       ++it2;
     }
 }
