@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/ConvertToCEvaluationNode.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/12 16:38:04 $
+//   $Date: 2007/08/13 21:05:57 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1595,6 +1595,8 @@ CNormalLogical* createLogical(const CEvaluationNode* pNode)
           const CEvaluationNode* pB = NULL;
           CEvaluationNode* pNotNode = NULL;
           CNormalLogical* pLeftLogical = NULL;
+          CNormalLogical::ChoiceSetOfSets::const_iterator it, endit;
+          CNormalLogical::ItemSetOfSets::const_iterator it2, endit2;
           switch ((CEvaluationNodeLogical::SubType)CEvaluationNode::subType(type))
             {
             case CEvaluationNodeLogical::EQ:
@@ -1707,248 +1709,41 @@ CNormalLogical* createLogical(const CEvaluationNode* pNode)
                     }
                 }
               break;
+            case CEvaluationNodeLogical::OR:
+              // 1. create two logicals, one for the left side and one for the
+              //    right side
+              pResult = createLogical(dynamic_cast<const CEvaluationNode*>(pNode->getChild()));
+              pLeftLogical = createLogical(dynamic_cast<const CEvaluationNode*>(pNode->getChild()->getSibling()));
+              // 2. add all or items from the second logical to the first and
+              //    delete the second
+              it = pLeftLogical->getChoices().begin(), endit = pLeftLogical->getChoices().end();
+              while (it != endit)
+                {
+                  CNormalLogical::ChoiceSet tmpSet;
+                  CNormalLogical::copySet((*it).first, tmpSet);
+                  pResult->getChoices().insert(std::make_pair(tmpSet, (*it).second));
+                  ++it;
+                }
+              it2 = pLeftLogical->getAndSets().begin(), endit2 = pLeftLogical->getAndSets().end();
+              while (it2 != endit2)
+                {
+                  CNormalLogical::ItemSet tmpSet;
+                  CNormalLogical::copySet((*it2).first, tmpSet);
+                  pResult->getAndSets().insert(std::make_pair(tmpSet, (*it2).second));
+                  ++it2;
+                }
+              delete pLeftLogical;
+              break;
             default:
               break;
             }
         }
       else if (CEvaluationNode::type(type) == CEvaluationNode::FUNCTION && ((CEvaluationNodeFunction::SubType)CEvaluationNode::subType(type)) == CEvaluationNodeFunction::NOT)
         {
-          if (CEvaluationNode::type((dynamic_cast<const CEvaluationNode*>(pNode->getChild())->getType())) == CEvaluationNode::CHOICE)
+          pResult = createLogical(dynamic_cast<const CEvaluationNode*>(pNode->getChild()));
+          if (pResult != NULL)
             {
-              CNormalChoiceLogical* pLogicalChoice = createLogicalChoice(dynamic_cast<const CEvaluationNode*>(pNode->getChild()));
-              if (pLogicalChoice != NULL)
-                {
-                  pResult = new CNormalLogical();
-                  CNormalLogical::ChoiceSet tmp;
-                  tmp.insert(std::make_pair(pLogicalChoice, true));
-                  pResult->getChoices().insert(std::make_pair(tmp, false));
-                }
-            }
-          else if (CEvaluationNode::type((dynamic_cast<const CEvaluationNode*>(pNode->getChild())->getType())) == CEvaluationNode::LOGICAL)
-            {
-              CNormalLogical* pLeftLogical1 = NULL;
-              CNormalLogical* pLeftLogical2 = NULL;
-              CNormalLogicalItem* pLogicalItem = NULL;
-              const CEvaluationNode* pA = NULL;
-              const CEvaluationNode* pB = NULL;
-              CEvaluationNode* pAndNode = NULL;
-              CEvaluationNode* pNotNode = NULL;
-              CEvaluationNode* pOrNode = NULL;
-              switch ((CEvaluationNodeLogical::SubType)CEvaluationNode::subType((dynamic_cast<const CEvaluationNode*>(pNode->getChild())->getType())))
-                {
-                case CEvaluationNodeLogical::EQ:
-                case CEvaluationNodeLogical::NE:
-                case CEvaluationNodeLogical::GT:
-                case CEvaluationNodeLogical::LT:
-                case CEvaluationNodeLogical::GE:
-                case CEvaluationNodeLogical::LE:
-                  pLogicalItem = createLogicalItem(pNode);
-                  if (pLogicalItem != NULL)
-                    {
-                      pResult = new CNormalLogical();
-                      CNormalLogical::ItemSet tmp;
-                      tmp.insert(std::make_pair(pLogicalItem, true));
-                      pResult->getAndSets().insert(std::make_pair(tmp, false));
-                    }
-                  break;
-                case CEvaluationNodeLogical::OR:
-                  pLeftLogical1 = createLogical(dynamic_cast<const CEvaluationNode*>(pNode->getChild()->getChild()));
-                  if (pLeftLogical1 != NULL)
-                    {
-                      pLeftLogical1->simplify();
-                      CNormalLogical* pRightLogical = createLogical(dynamic_cast<const CEvaluationNode*>(pNode->getChild()->getChild()->getSibling()));
-                      if (pRightLogical != NULL)
-                        {
-                          pRightLogical->simplify();
-                          // integrate the items into a new logical item
-                          // for or it is easy, we only have to copy all
-                          // and sets and add them to the new logical
-                          pResult = new CNormalLogical();
-                          CNormalLogical::ChoiceSetOfSets::const_iterator it = pLeftLogical1->getChoices().begin(), endit = pLeftLogical1->getChoices().end();
-                          while (it != endit)
-                            {
-                              CNormalLogical::ChoiceSet tmp;
-                              CNormalLogical::ChoiceSet::const_iterator innerit = (*it).first.begin(), innerendit = (*it).first.end();
-                              while (innerit != innerendit)
-                                {
-                                  tmp.insert(std::make_pair(new CNormalChoiceLogical(*(*innerit).first), (*innerit).second));
-                                  ++innerit;
-                                }
-                              pResult->getChoices().insert(std::make_pair(tmp, (*it).second));
-                              ++it;
-                            }
-                          it = pRightLogical->getChoices().begin(), endit = pRightLogical->getChoices().end();
-                          while (it != endit)
-                            {
-                              CNormalLogical::ChoiceSet tmp;
-                              CNormalLogical::ChoiceSet::const_iterator innerit = (*it).first.begin(), innerendit = (*it).first.end();
-                              while (innerit != innerendit)
-                                {
-                                  tmp.insert(std::make_pair(new CNormalChoiceLogical(*(*innerit).first), (*innerit).second));
-                                  ++innerit;
-                                }
-                              pResult->getChoices().insert(std::make_pair(tmp, (*it).second));
-                              ++it;
-                            }
-                          CNormalLogical::ItemSetOfSets::const_iterator it2 = pLeftLogical1->getAndSets().begin(), endit2 = pLeftLogical1->getAndSets().end();
-                          while (it2 != endit2)
-                            {
-                              CNormalLogical::ItemSet tmp;
-                              CNormalLogical::ItemSet::const_iterator innerit = (*it2).first.begin(), innerendit = (*it2).first.end();
-                              while (innerit != innerendit)
-                                {
-                                  tmp.insert(std::make_pair(new CNormalLogicalItem(*(*innerit).first), (*innerit).second));
-                                  ++innerit;
-                                }
-                              pResult->getAndSets().insert(std::make_pair(tmp, (*it).second));
-                              ++it2;
-                            }
-                          it2 = pRightLogical->getAndSets().begin(), endit2 = pRightLogical->getAndSets().end();
-                          while (it2 != endit2)
-                            {
-                              CNormalLogical::ItemSet tmp;
-                              CNormalLogical::ItemSet::const_iterator innerit = (*it2).first.begin(), innerendit = (*it2).first.end();
-                              while (innerit != innerendit)
-                                {
-                                  tmp.insert(std::make_pair(new CNormalLogicalItem(*(*innerit).first), (*innerit).second));
-                                  ++innerit;
-                                }
-                              pResult->getAndSets().insert(std::make_pair(tmp, (*it).second));
-                              ++it2;
-                            }
-                          pResult->setIsNegated(!pResult->isNegated());
-                        }
-                      else
-                        {
-                          delete pLeftLogical1;
-                          pLeftLogical1 = NULL;
-                        }
-                    }
-                  break;
-                case CEvaluationNodeLogical::XOR:
-                  // replace A xor B by A OR B AND NOT(A AND B)
-                  pA = dynamic_cast<const CEvaluationNode*>(pNode->getChild()->getChild());
-                  pB = dynamic_cast<const CEvaluationNode*>(pA->getSibling());
-                  pAndNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::AND, "AND");
-                  pAndNode->addChild(pA->copyBranch());
-                  pAndNode->addChild(pB->copyBranch());
-                  pNotNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::NOT, "NOT");
-                  pNotNode->addChild(pAndNode);
-                  pOrNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::OR, "OR");
-                  pOrNode->addChild(pA->copyBranch());
-                  pOrNode->addChild(pB->copyBranch());
-                  pAndNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::AND, "AND");
-                  pAndNode->addChild(pOrNode);
-                  pAndNode->addChild(pNotNode);
-                  pResult = createLogical(pAndNode);
-                  pResult->setIsNegated(!pResult->isNegated());
-                  delete pAndNode;
-                  break;
-                case CEvaluationNodeLogical::AND:
-                  pLeftLogical2 = createLogical(dynamic_cast<const CEvaluationNode*>(pNode->getChild()->getChild()));
-                  if (pLeftLogical2 != NULL)
-                    {
-                      pLeftLogical2->simplify();
-                      CNormalLogical* pRightLogical = createLogical(dynamic_cast<const CEvaluationNode*>(pNode->getChild()->getChild()->getSibling()));
-                      if (pRightLogical != NULL)
-                        {
-                          pRightLogical->simplify();
-                          // integrate the items into a new logical item
-                          // we have to create an AND set for every
-                          // combination between two AND Sets from the
-                          // two logicals
-                          pResult = new CNormalLogical();
-                          CNormalLogical::ChoiceSetOfSets::const_iterator it = pLeftLogical2->getChoices().begin(), endit = pLeftLogical2->getChoices().end();
-                          while (it != endit)
-                            {
-                              CNormalLogical::ChoiceSetOfSets::const_iterator it2 = pRightLogical->getChoices().begin(), endit2 = pRightLogical->getChoices().end();
-                              if ((*it).second == true) throw std::exception();
-                              while (it2 != endit2)
-                                {
-                                  // create an AND set from the two, but only
-                                  // if both don't have the NOT flag set
-                                  // which should always be the case since we
-                                  // called simplify on the items.
-                                  if ((*it2).second == true) throw std::exception();
-                                  CNormalLogical::ChoiceSet tmp;
-                                  CNormalLogical::ChoiceSet::const_iterator innerit = (*it).first.begin(), innerendit = (*it).first.end();
-                                  while (innerit != innerendit)
-                                    {
-                                      tmp.insert(std::make_pair(new CNormalChoiceLogical(*(*innerit).first), (*innerit).second));
-                                      ++innerit;
-                                    }
-                                  innerit = (*it2).first.begin(), innerendit = (*it2).first.end();
-                                  while (innerit != innerendit)
-                                    {
-                                      tmp.insert(std::make_pair(new CNormalChoiceLogical(*(*innerit).first), (*innerit).second));
-                                      ++innerit;
-                                    }
-                                  pResult->getChoices().insert(std::make_pair(tmp, false));
-                                  ++it2;
-                                }
-                              ++it;
-                            }
-                          CNormalLogical::ItemSetOfSets::const_iterator it2 = pLeftLogical2->getAndSets().begin(), endit2 = pLeftLogical2->getAndSets().end();
-                          while (it2 != endit2)
-                            {
-                              CNormalLogical::ItemSetOfSets::const_iterator it3 = pRightLogical->getAndSets().begin(), endit3 = pRightLogical->getAndSets().end();
-                              if ((*it2).second == true) throw std::exception();
-                              while (it3 != endit3)
-                                {
-                                  // create an AND set from the two, but only
-                                  // if both don't have the NOT flag set
-                                  // which should always be the case since we
-                                  // called simplify on the items.
-                                  if ((*it3).second == true) throw std::exception();
-                                  CNormalLogical::ItemSet tmp;
-                                  CNormalLogical::ItemSet::const_iterator innerit = (*it2).first.begin(), innerendit = (*it2).first.end();
-                                  while (innerit != innerendit)
-                                    {
-                                      tmp.insert(std::make_pair(new CNormalLogicalItem(*(*innerit).first), (*innerit).second));
-                                      ++innerit;
-                                    }
-                                  innerit = (*it3).first.begin(), innerendit = (*it3).first.end();
-                                  while (innerit != innerendit)
-                                    {
-                                      tmp.insert(std::make_pair(new CNormalLogicalItem(*(*innerit).first), (*innerit).second));
-                                      ++innerit;
-                                    }
-                                  pResult->getAndSets().insert(std::make_pair(tmp, false));
-                                  ++it3;
-                                }
-                              ++it2;
-                            }
-                          pResult->setIsNegated(!pResult->isNegated());
-                        }
-                      else
-                        {
-                          delete pLeftLogical2;
-                          pLeftLogical2 = NULL;
-                        }
-                    }
-                  break;
-                default:
-                  break;
-                }
-            }
-          else if (CEvaluationNode::type((dynamic_cast<const CEvaluationNode*>(pNode->getChild())->getType())) == CEvaluationNode::CONSTANT)
-            {
-              if (((CEvaluationNodeConstant::SubType)CEvaluationNode::subType(dynamic_cast<const CEvaluationNode*>(pNode->getChild())->getType())) == CEvaluationNodeConstant::FALSE || ((CEvaluationNodeConstant::SubType)CEvaluationNode::subType(dynamic_cast<const CEvaluationNode*>(pNode->getChild())->getType())) == CEvaluationNodeConstant::TRUE)
-                {
-                  CNormalLogicalItem* pLogicalItem = createLogicalItem(dynamic_cast<const CEvaluationNode*>(pNode->getChild()));
-                  if (pLogicalItem != NULL)
-                    {
-                      pResult = new CNormalLogical();
-                      CNormalLogical::ItemSet tmp;
-                      tmp.insert(std::make_pair(pLogicalItem, true));
-                      pResult->getAndSets().insert(std::make_pair(tmp, false));
-                    }
-                }
-            }
-          else if (CEvaluationNode::type((dynamic_cast<const CEvaluationNode*>(pNode->getChild())->getType())) == CEvaluationNode::FUNCTION && ((CEvaluationNodeFunction::SubType)CEvaluationNode::subType((dynamic_cast<const CEvaluationNode*>(pNode->getChild())->getType()))) == CEvaluationNodeFunction::NOT)
-            {
-              // two NOT cancel each other out
-              pResult = createLogical(dynamic_cast<const CEvaluationNode*>(pNode->getChild()->getChild()));
+              pResult->negate();
             }
         }
       else if (CEvaluationNode::type(type) == CEvaluationNode::CHOICE)
