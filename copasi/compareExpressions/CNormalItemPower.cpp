@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalItemPower.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/12 16:38:04 $
+//   $Date: 2007/08/13 07:41:17 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -274,3 +274,8 @@ CNormalItemPower::ItemType CNormalItemPower::getItemType() const
   {
     return this->mItemType;
   }
+
+bool CNormalItemPower::simplify()
+{
+  return this->mpItem->simplify();
+}

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalProduct.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/12 16:38:04 $
+//   $Date: 2007/08/13 07:41:17 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -174,7 +174,7 @@ class CNormalProduct : public CNormalBase
 
     virtual std::string toString() const;
 
-    virtual bool simplify(){return true;};
+    virtual bool simplify();
 
     friend std::ostream & operator<< (std::ostream &os,
                                       const CNormalProduct & d);

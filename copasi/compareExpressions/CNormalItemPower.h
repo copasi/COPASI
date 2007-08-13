@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalItemPower.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/10 13:42:20 $
+//   $Date: 2007/08/13 07:41:17 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -114,7 +114,7 @@ class CNormalItemPower : public CNormalBase
 
     virtual std::string toString() const;
 
-    virtual bool simplify(){return true;};
+    virtual bool simplify();
 
     ItemType getItemType() const;
 

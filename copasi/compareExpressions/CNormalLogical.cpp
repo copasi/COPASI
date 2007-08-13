@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLogical.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/12 16:38:04 $
+//   $Date: 2007/08/13 07:41:17 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -490,12 +490,15 @@ bool CNormalLogical::simplify()
       // whole set can be replaced by one FALSE item
       // likewise if one item in an OR set is TRUE, the whole set can be replaced
       // by one TRUE item
-      it2 = this->mAndSets.begin(), endit2 = --(this->mAndSets.end());
+      it2 = this->mAndSets.begin(), endit2 = this->mAndSets.end();
+      if (it != endit)
+        {
+          --endit;
+        }
       bool eliminate = false;
       CNormalLogicalItem* pLogicalItem1, *pLogicalItem2;
       while (it2 != endit2 && eliminate == false)
         {
-          ItemSetOfSets::iterator it3 = ++it2, endit3 = this->mAndSets.end();
           // if the set in it2 contains only one item and that item is a true
           // item, we can eliminate all other sets
           if ((*it2).first.size() == 1)
@@ -507,6 +510,8 @@ bool CNormalLogical::simplify()
                   break;
                 }
               pLogicalItem1->negate();
+              ItemSetOfSets::iterator it3 = it2, endit3 = this->mAndSets.end();
+              ++it3;
               while (it3 != endit3 && eliminate == false)
                 {
                   if ((*it3).first.size() == 1)
@@ -747,7 +752,7 @@ void CNormalLogical::copySet(const std::set<std::pair<TYPE*, bool>, CNormalLogic
   typename std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> >::const_iterator it = source.begin(), endit = source.end();
   while (it != endit)
     {
-      target.insert(std::make_pair(new TYPE(*(*it).first), (*it).second));
+      target.insert(std::make_pair((*it).first->copy(), (*it).second));
       ++it;
     }
 }

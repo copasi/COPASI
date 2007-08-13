@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_normalform.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/12 16:38:04 $
+//   $Date: 2007/08/13 07:41:17 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -2703,7 +2703,11 @@ void test_normalform::test_simple_stepwise_numbers()
   numerator = &pFraction2->getNumerator();
   CPPUNIT_ASSERT(numerator->getFractions().size() == 0);
   products = &numerator->getProducts();
-  CPPUNIT_ASSERT(products->size() == 0);
+  CPPUNIT_ASSERT(products->size() == 1);
+  pProduct = *(products->begin());
+  CPPUNIT_ASSERT(pProduct != NULL);
+  CPPUNIT_ASSERT(pProduct->getFactor() == 1.0);
+  CPPUNIT_ASSERT(pProduct->getItemPowers().size() == 0);
 }
 
 void test_normalform::test_simple_stepwise_fractions()
@@ -2844,7 +2848,11 @@ void test_normalform::test_simple_stepwise_fractions()
   numerator = &pFraction2->getNumerator();
   CPPUNIT_ASSERT(numerator->getFractions().size() == 0);
   products = &numerator->getProducts();
-  CPPUNIT_ASSERT(products->size() == 0);
+  CPPUNIT_ASSERT(products->size() == 1);
+  pProduct = *(products->begin());
+  CPPUNIT_ASSERT(pProduct != NULL);
+  CPPUNIT_ASSERT(pProduct->getFactor() == 1.0);
+  CPPUNIT_ASSERT(pProduct->getItemPowers().size() == 0);
 }
 
 void test_normalform::test_simple_nested_stepwise_numbers()

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLogicalItem.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/12 16:38:04 $
+//   $Date: 2007/08/13 07:41:17 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,7 +15,7 @@
 
 #include <sstream>
 
-CNormalLogicalItem::CNormalLogicalItem(): CNormalBase(), mType(CNormalLogicalItem::INVALID), mpLeft(NULL), mpRight(NULL)
+CNormalLogicalItem::CNormalLogicalItem(): CNormalBase(), mType(CNormalLogicalItem::INVALID), mpLeft(new CNormalFraction()), mpRight(new CNormalFraction())
 {}
 
 CNormalLogicalItem::CNormalLogicalItem(const CNormalLogicalItem& src): CNormalBase(src), mType(src.mType), mpLeft(new CNormalFraction(*src.mpLeft)), mpRight(new CNormalFraction(*src.mpRight))
@@ -23,8 +23,8 @@ CNormalLogicalItem::CNormalLogicalItem(const CNormalLogicalItem& src): CNormalBa
 
 CNormalLogicalItem::~CNormalLogicalItem()
 {
-  if (this->mpLeft) delete this->mpLeft;
-  if (this->mpRight) delete this->mpRight;
+  if (this->mpLeft != NULL) delete this->mpLeft;
+  if (this->mpRight != NULL) delete this->mpRight;
 }
 
 CNormalLogicalItem& CNormalLogicalItem::operator=(const CNormalLogicalItem& src)
@@ -298,8 +298,16 @@ void CNormalLogicalItem::setType(CNormalLogicalItem::Type type)
     {
     case CNormalLogicalItem::TRUE:
     case CNormalLogicalItem::FALSE:
-      if (this->mpLeft != NULL) delete this->mpLeft;
-      if (this->mpRight != NULL) delete this->mpRight;
+      if (this->mpLeft != NULL)
+        {
+          delete this->mpLeft;
+          this->mpLeft = new CNormalFraction();
+        }
+      if (this->mpRight != NULL)
+        {
+          delete this->mpRight;
+          this->mpRight = new CNormalFraction();
+        }
       break;
     default:
       break;
@@ -318,10 +326,10 @@ void CNormalLogicalItem::negate()
   switch (this->mType)
     {
     case TRUE:
-      this->mType = TRUE;
+      this->mType = FALSE;
       break;
     case FALSE:
-      this->mType = FALSE;
+      this->mType = TRUE;
       break;
     case EQ:
       this->mType = NE;

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalFraction.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/10 13:42:20 $
+//   $Date: 2007/08/13 07:41:17 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -314,26 +314,35 @@ const CNormalSum* CNormalFraction::multiply(CNormalLcm lcm)
  */
 bool CNormalFraction::simplify()
 {
-  if (mpNumerator->getFractions().size() + mpDenominator->getFractions().size() > 0)
+  bool result = true;
+  result = this->mpNumerator->simplify();
+  if (result == true)
     {
-      std::set<CNormalFraction*>::const_iterator it;
-      std::set<CNormalFraction*>::const_iterator itEnd = mpNumerator->getFractions().end();
-      for (it = mpNumerator->getFractions().begin(); it != itEnd; ++it)
+      result = this->mpDenominator->simplify();
+    }
+  if (result == true)
+    {
+      if (mpNumerator->getFractions().size() + mpDenominator->getFractions().size() > 0)
         {
-          (*it)->simplify();
+          std::set<CNormalFraction*>::const_iterator it;
+          std::set<CNormalFraction*>::const_iterator itEnd = mpNumerator->getFractions().end();
+          for (it = mpNumerator->getFractions().begin(); it != itEnd; ++it)
+            {
+              (*it)->simplify();
+            }
+          std::set<CNormalFraction*>::const_iterator it2;
+          std::set<CNormalFraction*>::const_iterator it2End = mpDenominator->getFractions().end();
+          for (it2 = mpDenominator->getFractions().begin(); it2 != it2End; ++it2)
+            {
+              (*it2)->simplify();
+            }
+          const CNormalLcm* lcm = findLcm();
+          expand(*lcm);
+          delete lcm;
         }
-      std::set<CNormalFraction*>::const_iterator it2;
-      std::set<CNormalFraction*>::const_iterator it2End = mpDenominator->getFractions().end();
-      for (it2 = mpDenominator->getFractions().begin(); it2 != it2End; ++it2)
-        {
-          (*it2)->simplify();
-        }
-      const CNormalLcm* lcm = findLcm();
-      expand(*lcm);
-      delete lcm;
     }
   cancel();
-  return true;
+  return result;
 }
 
 bool CNormalFraction::operator==(const CNormalFraction & rhs) const

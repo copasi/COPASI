@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalProduct.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/12 16:38:04 $
+//   $Date: 2007/08/13 07:41:17 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -460,4 +460,16 @@ void CNormalProduct::setItemPowers(const std::set<CNormalItemPower*, compareItem
       this->mItemPowers.insert(new CNormalItemPower(**it));
       ++it;
     }
+}
+
+bool CNormalProduct::simplify()
+{
+  bool result = true;
+  std::set<CNormalItemPower*, compareItemPowers>::iterator it = this->mItemPowers.begin(), endit = this->mItemPowers.end();
+  while (it != endit && result == true)
+    {
+      result = (*it)->simplify();
+      ++it;
+    }
+  return result;
 }
