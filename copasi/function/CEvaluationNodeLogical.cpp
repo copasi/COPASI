@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeLogical.cpp,v $
-   $Revision: 1.13 $
-   $Name:  $
-   $Author: nsimus $
-   $Date: 2006/08/15 11:39:31 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeLogical.cpp,v $
+//   $Revision: 1.14 $
+//   $Name:  $
+//   $Author: gauges $
+//   $Date: 2007/08/13 07:38:52 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -22,7 +22,7 @@ CEvaluationNodeLogical::CEvaluationNodeLogical():
 
 CEvaluationNodeLogical::CEvaluationNodeLogical(const SubType & subType,
     const Data & data):
-    CEvaluationNode((Type) (CEvaluationNode::OPERATOR | subType), data),
+    CEvaluationNode((Type) (CEvaluationNode::LOGICAL | subType), data),
     mpLeft(NULL),
     mpRight(NULL)
 {
