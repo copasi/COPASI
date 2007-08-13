@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/08 10:27:29 $
+//   $Date: 2007/08/13 21:00:41 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,6 +13,7 @@
 #include <sstream>
 #include <string>
 #include <set>
+#include <vector>
 #include <iostream>
 
 #include "CNormalBase.h"
@@ -33,20 +34,16 @@
 CEvaluationNode* CNormalTranslation::simplifyTree(const CEvaluationNode* node)
 {
   //std::cout << "simplifyTree called." << std::endl;
-  const CEvaluationNode * child1 = dynamic_cast<const CEvaluationNode*>(node->getChild());
-  CEvaluationNode * newchild1 = NULL;
-  CEvaluationNode * newchild2 = NULL;
-  if (child1 != NULL)
+  const CEvaluationNode * child = dynamic_cast<const CEvaluationNode*>(node->getChild());
+  CEvaluationNode * newchild = NULL;
+  std::vector<CEvaluationNode*> children;
+  while (child != NULL)
     {
-      newchild1 = simplifyTree(child1);
-
-      const CEvaluationNode * child2 = dynamic_cast<const CEvaluationNode*>(child1->getSibling());
-      if (child2 != NULL)
-        newchild2 = simplifyTree(child2);
+      newchild = simplifyTree(child);
+      child = dynamic_cast<const CEvaluationNode*>(child->getSibling());
+      children.push_back(newchild);
     }
-
-  CEvaluationNode* newnode = node->simplifyNode(newchild1, newchild2);
-
+  CEvaluationNode* newnode = node->simplifyNode(children);
   return newnode;
 }
 
