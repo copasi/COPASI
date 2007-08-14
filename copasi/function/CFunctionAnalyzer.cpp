@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionAnalyzer.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/08/13 15:06:27 $
+//   $Date: 2007/08/14 16:01:09 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -416,7 +416,7 @@ void CModelAnalyzer::checkReaction(const CReaction* reaction)
       std::cout << "Kinetics is of unspecified reversibility." << std::endl;
     }
   else if (((reaction->getFunction()->isReversible() == TriTrue) && !reaction->isReversible())
-            || ((reaction->getFunction()->isReversible() == TriFalse) && reaction->isReversible()))
+           || ((reaction->getFunction()->isReversible() == TriFalse) && reaction->isReversible()))
     {
       //error; or copasi error?
       std::cout << "Reversibility of function and kinetics does not match." << std::endl;
@@ -426,14 +426,28 @@ void CModelAnalyzer::checkReaction(const CReaction* reaction)
       //OK.
     }
 
+  //TODO special case mass action
+
   //mapping
   unsigned C_INT32 i, imax;
   imax = reaction->getChemEq().getSubstrates().size();
   for (i = 0; i < imax; ++i)
     {
+      //each substrate of the reaction needs to be mapped to a function parameter with role SUBSTRATE
       std::string tmpkey = reaction->getChemEq().getSubstrates()[i]->getMetaboliteKey();
 
-      //each substrate of the reaction needs to be mapped to a function parameter with role SUBSTRATE
+      unsigned C_INT32 j, jmax = reaction->getFunctionParameters().size();
+      for (j = 0; j < jmax; ++j)
+        {
+          if ((reaction->getFunctionParameters()[j]->getUsage() == CFunctionParameter::SUBSTRATE)
+              && reaction->getParameterMappings()[j][0] == tmpkey)
+            break;
+        }
+      if (j == jmax)
+        {
+          //warning/error?
+          std::cout << "A substrate of this reaction is not mapped to a corresponding function parameter" << std::endl;
+        }
     }
 
   //for reversible reactions each product of the reaction needs to be mapped to a function parameter with role PRODUCT
