@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLogical.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/08/14 13:54:01 $
+//   $Author: ssahle $
+//   $Date: 2007/08/14 15:18:15 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -91,7 +91,7 @@ std::string CNormalLogical::toString() const
     ItemSetOfSets::const_iterator it2 = this->mAndSets.begin(), endit2 = this->mAndSets.end();
     while (it2 != endit2)
       {
-        if (it->second == true)
+        if (it2->second == true)
           {
             str << "NOT ";
           }
