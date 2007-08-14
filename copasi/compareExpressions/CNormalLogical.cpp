@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLogical.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/13 21:04:41 $
+//   $Date: 2007/08/14 13:54:01 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,150 +21,26 @@ CNormalLogical::CNormalLogical(): CNormalBase(), mNot(false)
 
 CNormalLogical::CNormalLogical(const CNormalLogical& src): CNormalBase(src), mNot(src.mNot)
 {
-  ChoiceSetOfSets::const_iterator it = this->mChoices.begin(), endit = this->mChoices.end();
-  while (it != endit)
-    {
-      ChoiceSet::const_iterator it4 = it->first.begin(), endit4 = it->first.end();
-      while (it4 != endit4)
-        {
-          delete it4->first;
-          ++it4;
-        }
-      ++it;
-    }
-  this->mChoices.clear();
-  it = src.mChoices.begin();
-  endit = src.mChoices.end();
-  while (it != endit)
-    {
-      ChoiceSet tmp;
-      ChoiceSet::const_iterator it4 = (*it).first.begin(), endit4 = (*it).first.end();
-      while (it4 != endit4)
-        {
-          tmp.insert(std::make_pair(it4->first->copy(), it4->second));
-          ++it4;
-        }
-      this->mChoices.insert(std::make_pair(tmp, it->second));
-      ++it;
-    }
-  ItemSetOfSets::const_iterator it2 = this->mAndSets.begin(), endit2 = this->mAndSets.end();
-  while (it2 != endit2)
-    {
-      ItemSet::const_iterator it3 = it2->first.begin(), endit3 = it2->first.end();
-      while (it3 != endit3)
-        {
-          delete it3->first;
-          ++it3;
-        }
-      ++it2;
-    }
-  this->mAndSets.clear();
-  it2 = src.mAndSets.begin();
-  endit2 = src.mAndSets.end();
-  bool flag = false;
-  CNormalLogicalItem* pTmpItem = NULL;
-  while (it2 != endit2)
-    {
-      ItemSet tmp;
-      ItemSet::const_iterator it3 = it2->first.begin(), endit3 = it2->first.end();
-      while (it3 != endit3)
-        {
-          flag = it3->second;
-          pTmpItem = it3->first->copy();
-          //std::cout << "1. item: " << pTmpItem->toString() << std::endl;
-          tmp.insert(std::make_pair(pTmpItem, flag));
-          ++it3;
-        }
-      flag = it2->second;
-      this->mAndSets.insert(std::make_pair(tmp, flag));
-      ++it2;
-    }
+  cleanSetOfSets(this->mChoices);
+  copySetOfSets(src.mChoices, this->mChoices);
+  cleanSetOfSets(this->mAndSets);
+  copySetOfSets(src.mAndSets, this->mAndSets);
 }
 
 CNormalLogical& CNormalLogical::operator=(const CNormalLogical& src)
 {
   this->mNot = src.mNot;
-  ChoiceSetOfSets::const_iterator it = this->mChoices.begin(), endit = this->mChoices.end();
-  while (it != endit)
-    {
-      ChoiceSet::const_iterator it4 = it->first.begin(), endit4 = it->first.end();
-      while (it4 != endit4)
-        {
-          delete it4->first;
-          ++it4;
-        }
-      ++it;
-    }
-  this->mChoices.clear();
-  it = src.mChoices.begin();
-  endit = src.mChoices.end();
-  while (it != endit)
-    {
-      ChoiceSet tmp;
-      ChoiceSet::const_iterator it4 = it->first.begin(), endit4 = it->first.end();
-      while (it4 != endit4)
-        {
-          tmp.insert(std::make_pair(new CNormalChoiceLogical(*it4->first), it4->second));
-          ++it4;
-        }
-      this->mChoices.insert(std::make_pair(tmp, it->second));
-      ++it;
-    }
-  ItemSetOfSets::const_iterator it2 = this->mAndSets.begin(), endit2 = this->mAndSets.end();
-  while (it2 != endit2)
-    {
-      ItemSet::const_iterator it3 = it2->first.begin(), endit3 = it2->first.end();
-      while (it3 != endit3)
-        {
-          delete it3->first;
-          ++it3;
-        }
-      ++it2;
-    }
-  this->mAndSets.clear();
-  it2 = src.mAndSets.begin();
-  endit2 = src.mAndSets.end();
-  while (it2 != endit2)
-    {
-      ItemSet tmp;
-      ItemSet::const_iterator it3 = it2->first.begin(), endit3 = it2->first.end();
-      while (it3 != endit3)
-        {
-          tmp.insert(std::make_pair(new CNormalLogicalItem(*it3->first), it3->second));
-          ++it3;
-        }
-      this->mAndSets.insert(std::make_pair(tmp, it2->second));
-      ++it2;
-    }
+  cleanSetOfSets(this->mChoices);
+  copySetOfSets(src.mChoices, this->mChoices);
+  cleanSetOfSets(this->mAndSets);
+  copySetOfSets(src.mAndSets, this->mAndSets);
   return *this;
 }
 
 CNormalLogical::~CNormalLogical()
 {
-  ChoiceSetOfSets::const_iterator it = this->mChoices.begin(), endit = this->mChoices.end();
-  while (it != endit)
-    {
-      ChoiceSet::const_iterator it4 = it->first.begin(), endit4 = it->first.end();
-      while (it4 != endit4)
-        {
-          delete it4->first;
-          ++it4;
-        }
-      ++it;
-    }
-  this->mChoices.clear();
-  ItemSetOfSets::const_iterator it2 = this->mAndSets.begin(), endit2 = this->mAndSets.end();
-  while (it2 != endit2)
-    {
-      ItemSet::const_iterator it3 = it2->first.begin(), endit3 = it2->first.end();
-      while (it3 != endit3)
-        {
-          delete it3->first;
-          ++it3;
-        }
-      ++it2;
-    }
-  this->mAndSets.clear();
+  cleanSetOfSets(this->mChoices);
+  cleanSetOfSets(this->mAndSets);
 }
 
 CNormalLogical* CNormalLogical::copy() const
