@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeNumber.cpp,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/07/24 18:40:21 $
+//   $Author: ssahle $
+//   $Date: 2007/08/15 14:58:27 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -77,8 +77,8 @@ CEvaluationNode* CEvaluationNodeNumber::createNodeFromASTTree(const ASTNode& nod
       ss << node.getInteger();
       data = ss.str();
 
-      if (node.getInteger() < 0)
-        data = "(" + data + ")";
+      //if (node.getInteger() < 0)
+      //  data = "(" + data + ")";
 
       pNode = new CEvaluationNodeNumber(subType, data);
       break;
@@ -102,8 +102,8 @@ CEvaluationNode* CEvaluationNodeNumber::createNodeFromASTTree(const ASTNode& nod
           ss << node.getReal();
           data = ss.str();
 
-          if (node.getReal() < 0)
-            data = "(" + data + ")";
+          //if (node.getReal() < 0)
+          //  data = "(" + data + ")";
 
           pNode = new CEvaluationNodeNumber(subType, data);
         }
