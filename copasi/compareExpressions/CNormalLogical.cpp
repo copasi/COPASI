@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLogical.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/08/14 15:18:15 $
+//   $Author: gauges $
+//   $Date: 2007/08/15 15:34:33 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -201,7 +201,7 @@ bool CNormalLogical::simplify()
           tmpSet2.insert(std::make_pair(new CNormalLogical((*it2).first->getTrueExpression()), false));
           CNormalLogical* pLogical = new CNormalLogical((*it2).first->getCondition());
           pLogical->negate();
-          tmpSet2.insert(std::make_pair(pLogical, true));
+          tmpSet2.insert(std::make_pair(pLogical, false));
           tmpAndItems.insert(std::make_pair(tmpSet2, false));
           tmpSet2.clear();
           tmpSet2.insert(std::make_pair(new CNormalLogical((*it2).first->getFalseExpression()), false));
@@ -433,13 +433,15 @@ bool CNormalLogical::convertAndOrToOrAnd(const std::set<std::pair<std::set<std::
     std::set<std::pair<std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> >, bool>, CNormalLogical::SetOfSetsSorter<TYPE> >& target)
 {
   bool result = true;
-  if (source.size() > 2)
+  if (source.size() > 1)
     {
       typename std::set<std::pair<std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> >, bool>, CNormalLogical::SetOfSetsSorter<TYPE> > tmpSourceSet((++source.begin()), source.end());
       typename std::set<std::pair<std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> >, bool>, CNormalLogical::SetOfSetsSorter<TYPE> > tmpTargetSet;
       result = ((*source.begin()).second == false);
       if (result == true)
         {
+          // recursively call this function
+          // the result returned in tmpTargetSet is a combination of and combined sets of or combined items
           result = convertAndOrToOrAnd(tmpSourceSet, tmpTargetSet);
           if (result == true)
             {
@@ -460,12 +462,15 @@ bool CNormalLogical::convertAndOrToOrAnd(const std::set<std::pair<std::set<std::
                           ++it3;
                         }
                       ++it2;
+                      target.insert(std::make_pair(tmpSet, false));
                     }
                   ++it;
                 }
             }
         }
       // cleanup tmpTarget
+      cleanSetOfSets(tmpTargetSet);
+      /*
       typename std::set<std::pair<std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> >, bool>, CNormalLogical::SetOfSetsSorter<TYPE> >::iterator it = tmpTargetSet.begin(), endit = tmpTargetSet.end();
       while (it != endit)
         {
@@ -477,15 +482,20 @@ bool CNormalLogical::convertAndOrToOrAnd(const std::set<std::pair<std::set<std::
             }
           ++it;
         }
+      */
     }
   else if (source.size() == 1)
     {
+      // all not flags have to be eliminated at this point
       if ((*source.begin()).second == true)
         {
           result = false;
         }
       else
         {
+          // we have a set of and combined elements in (*source.begin()).first
+          // and we convert them to a set of or combined items
+          // So one set of n items becomes n sets of one item each.
           const typename std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> > item = (*source.begin()).first;
           typename std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> >::const_iterator it = item.begin(), endit = item.end();
           while (it != endit && result == true)
