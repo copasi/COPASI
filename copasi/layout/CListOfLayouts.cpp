@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CListOfLayouts.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/02/26 18:11:51 $
+//   $Author: ssahle $
+//   $Date: 2007/08/16 11:57:26 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,6 +14,8 @@
 
 #include "CListOfLayouts.h"
 #include "report/CKeyFactory.h"
+
+#include "sbml/layout/Layout.h"
 
 CListOfLayouts::CListOfLayouts(const std::string & name,
                                const CCopasiContainer * pParent):
@@ -38,3 +40,29 @@ void CListOfLayouts::addLayout(CLayout * layout, const std::map<std::string, std
 
   //TODO: store map
 }
+
+void CListOfLayouts::exportToSBML(ListOf * lol, const std::map<CCopasiObject*, SBase*> & copasimodelmap) const
+  {
+    unsigned C_INT32 i, imax = this->size();
+    for (i = 0; i < imax; ++i)
+      {
+        CLayout * tmp = (*this)[i];
+
+        //check if the layout exists in the libsbml data
+        std::map<CCopasiObject*, SBase*>::const_iterator it;
+        it = copasimodelmap.find(tmp);
+
+        Layout * pLayout;
+        if (it == copasimodelmap.end()) //not found
+          {
+            pLayout = new Layout;
+            lol->append(pLayout);
+          }
+        else
+          {
+            pLayout = dynamic_cast<Layout*>(it->second);
+          }
+
+        tmp->exportToSBML(pLayout, copasimodelmap);
+      }
+  }

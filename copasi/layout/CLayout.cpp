@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLayout.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/08/01 18:35:43 $
+//   $Date: 2007/08/16 11:57:26 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -208,4 +208,36 @@ void CLayout::writeDotEdge(std::ostream & os, const std::string & id1,
       tmp = " [len=0.2] ";
 
     os << id1 << " -> " << id2 << tmp << "\n"; //[label=\"" << label << "\"] \n";
+  }
+
+void CLayout::exportToSBML(Layout * layout, const std::map<CCopasiObject*, SBase*> & copasimodelmap) const
+  {
+    if (!layout) return;
+
+    //Dimensions
+    //layout->setDimensions(mDimensions.getSBMLDimensions());
+
+    //Compartment glyphs
+    unsigned C_INT32 i, imax = mvCompartments.size();
+    for (i = 0; i < imax; ++i)
+      {
+        CLCompartmentGlyph * tmp = mvCompartments[i];
+
+        //check if the compartment glyph exists in the libsbml data
+        std::map<CCopasiObject*, SBase*>::const_iterator it;
+        it = copasimodelmap.find(tmp);
+
+        CompartmentGlyph * pCG;
+        if (it == copasimodelmap.end()) //not found
+          {
+            pCG = new CompartmentGlyph;
+            layout->getListOfCompartmentGlyphs().append(pCG);
+          }
+        else
+          {
+            pCG = dynamic_cast<CompartmentGlyph*>(it->second);
+          }
+
+        //tmp->exportToSBML(pCG, copasimodelmap);
+      }
   }

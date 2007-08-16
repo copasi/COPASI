@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLayout.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/08/01 18:35:43 $
+//   $Date: 2007/08/16 11:57:26 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -127,6 +127,12 @@ class CLayout : public CLBase, public CCopasiContainer
     void print(std::ostream * ostream) const;
 
     void exportToDotFile(std::ostream & os) const;
+
+    /**
+     * This method writes the information of the copasi layout object into the
+     * corresponding sbml object
+     */
+    void exportToSBML(Layout * layout, const std::map<CCopasiObject*, SBase*> & copasimodelmap) const;
 
   protected:
     void writeDotNode(std::ostream & os, const std::string & id,
