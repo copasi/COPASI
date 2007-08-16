@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.h,v $
-//   $Revision: 1.40 $
+//   $Revision: 1.41 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/02/16 16:56:08 $
+//   $Author: ssahle $
+//   $Date: 2007/08/16 13:32:41 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,6 +33,9 @@ class SBase;
 
 // COPASI Classes:
 class CCopasiDataModel;
+#ifdef WITH_LAYOUT
+class CListOfLayouts;
+#endif //WITH_LAYOUT
 
 class SBMLExporter
   {
@@ -286,6 +289,14 @@ class SBMLExporter
      */
     static std::vector<std::string> isRuleSBMLL2V1Compatible(const CModelEntity* pME);
 
+#ifdef WITH_LAYOUT
+    /**
+     * Add layouts to the libsbml document. The libsbml document needs to be created before,
+     * so this should be called after createSBMLDocumentFromCModel().
+     */
+    void addLayoutsToSBMLDocument(const CListOfLayouts * copasiLayouts);
+#endif //WITH_LAYOUT
+
   public:
 
     /**
@@ -303,7 +314,11 @@ class SBMLExporter
      ** it and returns it as a string.
      ** On failure an empty string is returned.
      */
-    std::string exportSBMLToString(CModel* copasiModel, int sbmlLevel = 2, int sbmlVersion = 1, bool incompleteExport = false);
+    std::string exportSBMLToString(CModel* copasiModel,
+#ifdef WITH_LAYOUT
+                                   const CListOfLayouts * copasiLayouts,
+#endif //WITH_LAYOUT
+                                   int sbmlLevel = 2, int sbmlVersion = 1, bool incompleteExport = false);
 
     /**
      ** This method takes a copasi CModel object, crerates an SBMLDocument from
@@ -311,7 +326,11 @@ class SBMLExporter
      ** argument to the function. The function return "true" on success and
      ** "false" on failure.
      */
-    bool exportSBML(CModel* copasiModel, std::string sbmlFilename, bool overwriteFile = false, int sbmlLevel = 2, int sbmlVersion = 1, bool incompleteExport = false);
+    bool exportSBML(CModel* copasiModel,
+#ifdef WITH_LAYOUT
+                    const CListOfLayouts * copasiLayouts,
+#endif //WITH_LAYOUT
+                    std::string sbmlFilename, bool overwriteFile = false, int sbmlLevel = 2, int sbmlVersion = 1, bool incompleteExport = false);
 
     /**
     ** This method tests if a string only consists of whitespace characters

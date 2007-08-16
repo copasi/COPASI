@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-//   $Revision: 1.103 $
+//   $Revision: 1.104 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/04/10 16:48:45 $
+//   $Author: ssahle $
+//   $Date: 2007/08/16 13:32:41 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -55,6 +55,10 @@
 #include "function/CFunctionDB.h"
 #include "function/CExpression.h"
 
+#ifdef WITH_LAYOUT
+#include "layout/CListOfLayouts.h"
+#endif //WITH_LAYOUT
+
 #include "xml/CCopasiXMLInterface.h"
 
 const char* SBMLExporter::HTML_HEADER = "<body xmlns=\"http://www.w3.org/1999/xhtml\">";
@@ -84,12 +88,22 @@ SBMLExporter::~SBMLExporter()
  ** it and returns it as a string.
  ** On failure an empty string is returned.
  */
-std::string SBMLExporter::exportSBMLToString(CModel* copasiModel, int sbmlLevel , int sbmlVersion , bool incompleteExport)
+std::string SBMLExporter::exportSBMLToString(CModel* copasiModel,
+#ifdef WITH_LAYOUT
+    const CListOfLayouts * copasiLayouts,
+#endif //WITH_LAYOUT
+    int sbmlLevel , int sbmlVersion ,
+    bool incompleteExport)
 {
   this->mHandledSBMLObjects.clear();
   this->mpCopasiModel = copasiModel;
   /* create the SBMLDocument from the copasi model */
   this->createSBMLDocumentFromCModel(copasiModel, sbmlLevel, sbmlVersion, incompleteExport);
+
+#ifdef WITH_LAYOUT
+  this->addLayoutsToSBMLDocument(copasiLayouts);
+#endif //WITH_LAYOUT
+
   this->removeUnusedObjects();
   if (this->sbmlDocument->getModel() != NULL)
     {
@@ -117,13 +131,21 @@ std::string SBMLExporter::exportSBMLToString(CModel* copasiModel, int sbmlLevel 
  ** argument to the function. The function return "true" on success and
  ** "false" on failure.
  */
-bool SBMLExporter::exportSBML(CModel* copasiModel, std::string sbmlFilename, bool overwriteFile, int sbmlLevel, int sbmlVersion, bool incompleteExport)
+bool SBMLExporter::exportSBML(CModel* copasiModel,
+#ifdef WITH_LAYOUT
+                              const CListOfLayouts * copasiLayouts,
+#endif //WITH_LAYOUT
+                              std::string sbmlFilename, bool overwriteFile, int sbmlLevel, int sbmlVersion, bool incompleteExport)
 {
   bool success = true;
   this->mHandledSBMLObjects.clear();
   this->mpCopasiModel = copasiModel;
   /* create a string that represents the SBMLDocument */
-  std::string str = this->exportSBMLToString(copasiModel, sbmlLevel, sbmlVersion, incompleteExport);
+  std::string str = this->exportSBMLToString(copasiModel,
+#ifdef WITH_LAYOUT
+                    copasiLayouts,
+#endif //WITH_LAYOUT
+                    sbmlLevel, sbmlVersion, incompleteExport);
   if (!str.empty())
     {
       /* check if the file already exisits.
@@ -2270,3 +2292,12 @@ std::vector<std::string> SBMLExporter::isRuleSBMLL2V1Compatible(const CModelEnti
     }
   return result;
 }
+
+#ifdef WITH_LAYOUT
+void SBMLExporter::addLayoutsToSBMLDocument(const CListOfLayouts * copasiLayouts)
+{
+  if (this->sbmlDocument && sbmlDocument->getModel())
+    copasiLayouts->exportToSBML(&this->sbmlDocument->getModel()->getListOfLayouts(),
+                                CCopasiDataModel::Global->getCopasi2SBMLMap());
+}
+#endif //WITH_LAYOUT
