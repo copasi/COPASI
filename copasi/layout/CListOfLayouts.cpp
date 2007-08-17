@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CListOfLayouts.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/08/16 11:57:26 $
+//   $Date: 2007/08/17 12:35:28 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,7 +41,7 @@ void CListOfLayouts::addLayout(CLayout * layout, const std::map<std::string, std
   //TODO: store map
 }
 
-void CListOfLayouts::exportToSBML(ListOf * lol, const std::map<CCopasiObject*, SBase*> & copasimodelmap) const
+void CListOfLayouts::exportToSBML(ListOf * lol, std::map<CCopasiObject*, SBase*> & copasimodelmap) const
   {
     unsigned C_INT32 i, imax = this->size();
     for (i = 0; i < imax; ++i)
@@ -55,8 +55,12 @@ void CListOfLayouts::exportToSBML(ListOf * lol, const std::map<CCopasiObject*, S
         Layout * pLayout;
         if (it == copasimodelmap.end()) //not found
           {
+            //create new object and add to libsbml data structures
             pLayout = new Layout;
             lol->append(pLayout);
+
+            //add object to map
+            copasimodelmap[tmp] = pLayout;
           }
         else
           {
@@ -65,4 +69,7 @@ void CListOfLayouts::exportToSBML(ListOf * lol, const std::map<CCopasiObject*, S
 
         tmp->exportToSBML(pLayout, copasimodelmap);
       }
+
+    //check if a something needs to be deleted from the sbml data structures
+    //TODO
   }
