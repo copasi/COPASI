@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/unittests.pro,v $ 
-#   $Revision: 1.2 $ 
+#   $Revision: 1.3 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2007/08/09 10:53:34 $ 
+#   $Date: 2007/08/17 13:33:08 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -71,11 +71,13 @@ contains(BUILD_OS, Darwin){
 # Input
 HEADERS +=  test_expression_comparison.hpp \
             test_node_conversion.hpp \
+            test_cnormallogical.hpp \
             test_normalform.hpp 
 
 SOURCES += test.cpp \
            test_expression_comparison.cpp \
            test_node_conversion.cpp \
+           test_cnormallogical.cpp \
            test_normalform.cpp 
 
 
