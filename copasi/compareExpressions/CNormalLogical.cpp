@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLogical.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/15 15:34:33 $
+//   $Date: 2007/08/17 13:36:09 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -287,8 +287,10 @@ bool CNormalLogical::simplify()
     }
   if (result == true)
     {
-      // get rid of the mNot if it is set
+      // we can assume that all choices have been converted, so we clean the
+      // data structure
       cleanSetOfSets(this->mChoices);
+      // get rid of the mNot if it is set
       if (this->mNot == true)
         {
           ItemSetOfSets tmpSet;
@@ -671,41 +673,35 @@ template<typename TYPE>
 bool CNormalLogical::SetOfSetsSorter<TYPE>::operator()(const std::pair<std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> >, bool>& lhs,
     const std::pair<std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> >, bool>& rhs) const
   {
-    bool result = true;
+    bool result = false;
     if (lhs.second == rhs.second)
       {
         if (lhs.first.size() == rhs.first.size())
           {
             typename std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> >::const_iterator it = lhs.first.begin(), endit = lhs.first.end(), it2 = rhs.first.begin();
+            SetSorter<TYPE> sorter;
             while (it != endit && result == true)
               {
-                if ((*it).second == (*it2).second)
-                  {
-                    result = ((*(*it).first) < (*(*it2).first));
-                  }
-                else if ((*it2).second == true)
-                  {
-                    result = false;
-                  }
+                result = sorter(*it, *it2);
                 ++it;
                 ++it2;
               }
           }
-        else if (rhs.first.size() < lhs.first.size())
+        else if (lhs.first.size() < rhs.first.size())
           {
-            result = false;
+            result = true;
           }
       }
-    else if (rhs.second == true)
+    else if (lhs.second == true)
       {
-        result = false;
+        result = true;
       }
     return result;
   }
 
 /**
  * This routine compares a set of sets and returns true if the first
- * argument is smaller than the second.
+ * argument is equal to the second argument
  */
 template<typename TYPE>
 bool CNormalLogical::SetOfSetsSorter<TYPE>::isEqual(const std::pair<std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> >, bool>& lhs,
@@ -717,9 +713,10 @@ bool CNormalLogical::SetOfSetsSorter<TYPE>::isEqual(const std::pair<std::set<std
         if (lhs.first.size() == rhs.first.size())
           {
             typename std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> >::const_iterator it = lhs.first.begin(), endit = lhs.first.end(), it2 = rhs.first.begin();
+            SetSorter<TYPE> sorter;
             while (it != endit && result == true)
               {
-                result = (((*it).second == ((*it2).second)) && (*(*it).first) == (*(*it2).first));
+                result = sorter.isEqual(*it, *it2);
                 ++it;
                 ++it2;
               }
