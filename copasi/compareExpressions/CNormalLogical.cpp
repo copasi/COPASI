@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLogical.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/17 13:36:09 $
+//   $Date: 2007/08/18 19:14:08 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -321,7 +321,10 @@ bool CNormalLogical::simplify()
           // also if we find a false item, we can eliminate all others
           bool eliminate = false;
           it3 = (*it2).first.begin();
-          --endit3;
+          if (it3 != endit3)
+            {
+              --endit3;
+            }
           CNormalLogicalItem* pItem1;
           CNormalLogicalItem* pItem2;
           while (it3 != endit3 && eliminate == false)
@@ -680,9 +683,11 @@ bool CNormalLogical::SetOfSetsSorter<TYPE>::operator()(const std::pair<std::set<
           {
             typename std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> >::const_iterator it = lhs.first.begin(), endit = lhs.first.end(), it2 = rhs.first.begin();
             SetSorter<TYPE> sorter;
-            while (it != endit && result == true)
+            //if(it==endit) std::cout << "SetOfSetsSorter:: Set is empty." << std::endl;
+            while (it != endit && result == false)
               {
                 result = sorter(*it, *it2);
+                //std::cout << "SetOfSetsSorter:: Result from SetSorter: " << result << std::endl;
                 ++it;
                 ++it2;
               }
@@ -690,11 +695,13 @@ bool CNormalLogical::SetOfSetsSorter<TYPE>::operator()(const std::pair<std::set<
         else if (lhs.first.size() < rhs.first.size())
           {
             result = true;
+            //std::cout << "SetOfSetsSorter:: The LHS set is smaller" << std::endl;
           }
       }
     else if (lhs.second == true)
       {
         result = true;
+        //std::cout << "SetOfSetsSorter:: The LHS pair is true" << std::endl;
       }
     return result;
   }
@@ -741,13 +748,15 @@ template<typename TYPE>
 bool CNormalLogical::SetSorter<TYPE>::operator()(const std::pair<TYPE*, bool>& lhs, const std::pair<TYPE*, bool>& rhs) const
   {
     bool result = false;
-    if (lhs.second == true && rhs.second == false)
-      {
-        result = true;
-      }
-    else if (lhs.second == rhs.second)
+    if (lhs.second == rhs.second)
       {
         result = ((*lhs.first) < (*rhs.first));
+        //std::cout << "SetSorter:: Result of item comparison:" << result << std::endl;
+      }
+    else if (lhs.second == true)
+      {
+        result = true;
+        //std::cout << "SetSorter:: The LHS is true." << std::endl;
       }
     return result;
   }

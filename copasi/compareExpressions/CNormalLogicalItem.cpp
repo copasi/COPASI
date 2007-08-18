@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLogicalItem.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/13 07:41:17 $
+//   $Date: 2007/08/18 19:14:08 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -51,6 +51,7 @@ bool CNormalLogicalItem::operator<(const CNormalLogicalItem& rhs) const
     if (this->mType < rhs.mType)
       {
         result = true;
+        //std::cout << "CNormalLogicalItem:: " << this->mType << " is smaller than " << rhs.mType << std::endl;
       }
     else if (this->mType == rhs.mType)
       {
@@ -59,6 +60,7 @@ bool CNormalLogicalItem::operator<(const CNormalLogicalItem& rhs) const
             if (rhs.mpLeft != NULL)
               {
                 result = true;
+                //std::cout << "CNormalLogicalItem:: mpLeft is NULL, but rhs.mpLeft isn't" << std::endl;
               }
             else
               {
@@ -67,13 +69,15 @@ bool CNormalLogicalItem::operator<(const CNormalLogicalItem& rhs) const
                     if (rhs.mpRight != NULL)
                       {
                         result = true;
+                        //std::cout << "CNormalLogicalItem:: mpRight is NULL, but rhs.mpRight isn't" << std::endl;
                       }
                   }
                 else
                   {
                     if (rhs.mpRight != NULL)
                       {
-                        result = (*this->mpRight < *rhs.mpRight);
+                        result = ((*this->mpRight) < (*rhs.mpRight));
+                        //std::cout << "CNormalLogicalItem:: this right side is smaller than RHS.mpRight" << std::endl;
                       }
                   }
               }
@@ -82,17 +86,19 @@ bool CNormalLogicalItem::operator<(const CNormalLogicalItem& rhs) const
           {
             if (rhs.mpLeft != NULL)
               {
-                if (*this->mpLeft < *rhs.mpLeft)
+                if ((*this->mpLeft) < (*rhs.mpLeft))
                   {
                     result = true;
+                    //std::cout << "CNormalLogicalItem:: this left side is smaller than RHS.mpLeft" << std::endl;
                   }
-                else if (*this->mpLeft == *rhs.mpLeft)
+                else if ((*this->mpLeft) == (*rhs.mpLeft))
                   {
                     if (this->mpRight == NULL)
                       {
                         if (rhs.mpRight != NULL)
                           {
                             result = true;
+                            //std::cout << "CNormalLogicalItem:: mpRight is NULL, but rhs.mpRight isn't" << std::endl;
                           }
                       }
                     else
@@ -100,6 +106,7 @@ bool CNormalLogicalItem::operator<(const CNormalLogicalItem& rhs) const
                         if (rhs.mpRight != NULL)
                           {
                             result = (*this->mpRight < *rhs.mpRight);
+                            //std::cout << "CNormalLogicalItem:: this right side is smaller than RHS.mpRight" << std::endl;
                           }
                       }
                   }

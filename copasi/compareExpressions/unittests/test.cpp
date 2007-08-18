@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/17 13:33:08 $
+//   $Date: 2007/08/18 19:14:09 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,7 +25,7 @@ int main(int /*argc*/, char ** /*argv*/)
 {
   CppUnit::TextUi::TestRunner runner;
   runner.addTest(test_cnormallogical::suite());
-  //runner.addTest(test_normalform::suite());
+  runner.addTest(test_normalform::suite());
   //runner.addTest(test_node_conversion::suite());
   //runner.addTest(test_expression_comparison::suite());
   runner.run();

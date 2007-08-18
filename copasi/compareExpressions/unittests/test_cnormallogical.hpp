@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_cnormallogical.hpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/17 13:33:08 $
+//   $Date: 2007/08/18 19:14:09 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,6 +23,8 @@
 class test_cnormallogical : public CppUnit::TestFixture
   {
     CPPUNIT_TEST_SUITE(test_cnormallogical);
+    CPPUNIT_TEST(test_SetSorter_operator);
+    CPPUNIT_TEST(test_SetOfSetsSorter_operator);
     CPPUNIT_TEST(test_SetSorter_LogicalItem);
     CPPUNIT_TEST(test_SetOfSetsSorter_LogicalItem);
     CPPUNIT_TEST_SUITE_END();
@@ -32,6 +34,8 @@ class test_cnormallogical : public CppUnit::TestFixture
 
     void tearDown();
 
+    void test_SetSorter_operator();
+    void test_SetOfSetsSorter_operator();
     void test_SetSorter_LogicalItem();
     void test_SetOfSetsSorter_LogicalItem();
   };
