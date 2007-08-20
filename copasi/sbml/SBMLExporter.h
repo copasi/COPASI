@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.h,v $
-//   $Revision: 1.41 $
+//   $Revision: 1.42 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/08/16 13:32:41 $
+//   $Author: gauges $
+//   $Date: 2007/08/20 10:57:29 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -57,7 +57,7 @@ class SBMLExporter
      * This is needed to be able to delete objects that are no longer there
      * from the sbml model.
      */
-    std::vector<SBase*> mHandledSBMLObjects;
+    std::set<SBase*> mHandledSBMLObjects;
 
     std::set<std::string>* mpIdSet;
 
@@ -81,19 +81,19 @@ class SBMLExporter
      ** Optionally the method takes two integers that specify the level and the
      ** version number of the SBMLDocument that will be generated.
      */
-    SBMLDocument* createSBMLDocumentFromCModel(CModel* copasiModel, int sbmlLevel = 2, int sbmlVersion = 1, bool incompleteExport = false);
+    SBMLDocument* createSBMLDocumentFromCModel(CCopasiDataModel* pDataModel, int sbmlLevel = 2, int sbmlVersion = 1, bool incompleteExport = false);
 
     /**
      ** This method taked a copasi CModel and generates a SBML Model object
      **  which is returned. On failure NULL is returned.
      */
-    Model* createSBMLModelFromCModel(CModel* copasiModel, int sbmlLevel, int sbmlVersion, bool incompleteExport = false);
+    Model* createSBMLModelFromCModel(CCopasiDataModel* pDataModel, int sbmlLevel, int sbmlVersion, bool incompleteExport = false);
 
     /**
      ** This method takes a pointer to a copasi CCompartment object and creates
      ** a SBML Compartment. The pointer to the SBML Comprtment is returned.
      */
-    Compartment* createSBMLCompartmentFromCCompartment(CCompartment* copasiCompartment);
+    Compartment* createSBMLCompartmentFromCCompartment(CCompartment* copasiCompartment, CCopasiDataModel* pDataModel);
 
     /**
      ** This method takes a pointer to a copasi CEvaluationTree object and creates
@@ -105,27 +105,27 @@ class SBMLExporter
      ** This method takes a pointer to a copasi CMetab object and creates a SBML
      ** Species object. The pointer to the species object is returned.
      */
-    Species* createSBMLSpeciesFromCMetab(CMetab* copasiMetabolite);
+    Species* createSBMLSpeciesFromCMetab(CMetab* copasiMetabolite, CCopasiDataModel* pDataModel);
 
     /**
      ** This method takes a pointer to a copasi CModelValue object and creates a SBML
      ** Parameter object. The pointer to the parameter object is returned.
      */
-    Parameter* createSBMLParameterFromCModelValue(CModelValue* pModelValue);
+    Parameter* createSBMLParameterFromCModelValue(CModelValue* pModelValue, CCopasiDataModel* pDataModel);
 
     /**
      ** This method takes a pointer to a copasi CReaction object and creates an
      ** SBML Reaction object. The pointer to the created reaction object is
      ** returned.
      */
-    Reaction* createSBMLReactionFromCReaction(CReaction* reaction);
+    Reaction* createSBMLReactionFromCReaction(CReaction* reaction, CCopasiDataModel* pDataModel);
 
     /**
      ** This method takes a pointer to a copasi CReation object and creates a
      ** SBML KineticLaw object from the kintik function of the copasi reaction
      ** object. The pointer to the created KineticLaw is returned.
      */
-    KineticLaw* createSBMLKineticLawFromCReaction(CReaction* copasiReaction);
+    KineticLaw* createSBMLKineticLawFromCReaction(CReaction* copasiReaction, CCopasiDataModel* pDataModel);
 
     /**
      ** This method takes a string that specifies the time unit used in the
@@ -166,7 +166,7 @@ class SBMLExporter
      * Additionally remove all function definitions and all unit
      * definitions that have not been used in the file.
      */
-    void removeUnusedObjects();
+    void removeUnusedObjects(CCopasiDataModel* pDataModel);
 
     /**
      * Removes all UnitDefinition objects that have not been used.
@@ -194,7 +194,7 @@ class SBMLExporter
      * This also covers function called by function call etc.
      * If a loop is encountered this throws an exception.
      */
-    void findUsedFunctions(CEvaluationNode* pNode, std::list<const CEvaluationTree*>* usedFunctionList);
+    void findUsedFunctions(CEvaluationNode* pNode, std::list<const CEvaluationTree*>* usedFunctionList, CCopasiDataModel* pDataModel);
 
     /**
      * Check if some CEvaluationTree is already in a list.
@@ -217,7 +217,7 @@ class SBMLExporter
      * The arguments are a parameter mapping vector as
      * used in a reaction.
      */
-    CEvaluationNode* createExpressionTree(const CFunction* const pFun, const std::vector<std::vector<std::string> >& arguments);
+    CEvaluationNode* createExpressionTree(const CFunction* const pFun, const std::vector<std::vector<std::string> >& arguments, CCopasiDataModel* pDataModel);
 
     /**
      * Translate a function with its arguments into an expression tree.
@@ -225,16 +225,16 @@ class SBMLExporter
      * The arguments are given as a vector of common names
      * enclosed in <>.
      */
-    CEvaluationNode* createExpressionTree(const CFunction* const pFun, const std::map<std::string, std::string>& parameterMap);
+    CEvaluationNode* createExpressionTree(const CFunction* const pFun, const std::map<std::string, std::string>& parameterMap, CCopasiDataModel* pDataModel);
 
-    CEvaluationNode* createExpressionTree(const CEvaluationNode* const pNode, const std::map<std::string, std::string>& parameterMap);
+    CEvaluationNode* createExpressionTree(const CEvaluationNode* const pNode, const std::map<std::string, std::string>& parameterMap, CCopasiDataModel* pDataModel);
 
     /**
      * Checks the SBML Model if there alreay exists a rule for the given
      * ModelEntity, if yes, a pointer to the Rule object is returned, else NULL
      * is returned.
      */
-    Rule* findExistingRuleForModelEntity(const CModelEntity* pME);
+    Rule* findExistingRuleForModelEntity(const CModelEntity* pME, CCopasiDataModel* pDataModel);
 
     /**
      * This function takes a vector of rules and tries to sort them in correct
@@ -247,7 +247,7 @@ class SBMLExporter
      * if the status of the entity evaluates to ASSIGNMENT or ODE, otherwise
      * a NULL pointer is returned.
      */
-    Rule* createRuleFromCModelEntity(CModelEntity* pME, int sbmlLevel, int sbmlVersion, bool exportIncomplete);
+    Rule* createRuleFromCModelEntity(CModelEntity* pME, CCopasiDataModel* pDataModel, int sbmlLevel, int sbmlVersion, bool exportIncomplete);
 
     /**
      * This method returns a vector of Rules that the given Rule depends on.
@@ -272,7 +272,7 @@ class SBMLExporter
      * If it can be exported, the result vector will be empty, otherwise it will
      * contain a number of messages that specify why it can't be exported.
      */
-    static std::vector<std::string> isModelSBMLL2V1Compatible(const CCopasiDataModel* pDataModel);
+    static std::vector<std::string> isModelSBMLL2V1Compatible(CCopasiDataModel* pDataModel);
 
     /**
      * Checks wether the rule in the given model entity can be exported to
@@ -280,14 +280,14 @@ class SBMLExporter
      * If it can be exported, the result vector will be empty, otherwise it will
      * contain a number of messages that specify why it can't be exported.
      */
-    static std::vector<std::string> isRuleSBMLCompatible(const CModelEntity* pME, int sbmlLevel, int sbmlVersion);
+    static std::vector<std::string> isRuleSBMLCompatible(const CModelEntity* pME, CCopasiDataModel* pDataModel, int sbmlLevel, int sbmlVersion);
 
     /**
      * Checks wether the rule in the given model entity can be exported to SBML Level2 Version1.
      * If it can be exported, the result vector will be empty, otherwise it will
      * contain a number of messages that specify why it can't be exported.
      */
-    static std::vector<std::string> isRuleSBMLL2V1Compatible(const CModelEntity* pME);
+    static std::vector<std::string> isRuleSBMLL2V1Compatible(const CModelEntity* pME, CCopasiDataModel* pDataModel);
 
 #ifdef WITH_LAYOUT
     /**
@@ -314,7 +314,7 @@ class SBMLExporter
      ** it and returns it as a string.
      ** On failure an empty string is returned.
      */
-    std::string exportSBMLToString(CModel* copasiModel,
+    std::string exportSBMLToString(CCopasiDataModel* pDataModel,
 #ifdef WITH_LAYOUT
                                    const CListOfLayouts * copasiLayouts,
 #endif //WITH_LAYOUT
@@ -326,7 +326,7 @@ class SBMLExporter
      ** argument to the function. The function return "true" on success and
      ** "false" on failure.
      */
-    bool exportSBML(CModel* copasiModel,
+    bool exportSBML(CCopasiDataModel* pDataModel,
 #ifdef WITH_LAYOUT
                     const CListOfLayouts * copasiLayouts,
 #endif //WITH_LAYOUT
@@ -345,7 +345,7 @@ class SBMLExporter
      */
     static std::string createUniqueId(const std::set<std::string>* pIdSet, const std::string& prefix);
 
-    std::set<std::string>* createIdSet(const Model* pSBMLModel);
+    std::set<std::string>* createIdSet(const Model* pSBMLModel, CCopasiDataModel* pDataModel);
 
     SBMLDocument* getSBMLDocument() const;
 
@@ -362,7 +362,7 @@ class SBMLExporter
      * If it can be exported, the result vector will be empty, otherwise it will
      * contain a number of messages that specify why it can't be exported.
      */
-    static std::vector<std::string> isModelSBMLCompatible(const CCopasiDataModel* pDataModel, int sbmlLevel, int sbmlVersion);
+    static std::vector<std::string> isModelSBMLCompatible(CCopasiDataModel* pDataModel, int sbmlLevel, int sbmlVersion);
   };
 
 #endif

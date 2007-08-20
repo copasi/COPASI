@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.101 $
+//   $Revision: 1.102 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/08/01 18:34:51 $
+//   $Author: gauges $
+//   $Date: 2007/08/20 10:57:30 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -634,7 +634,7 @@ std::string CCopasiDataModel::exportSBMLToString(CProcessReport* pExportHandler)
 
   SBMLExporter exporter;
   exporter.setExportHandler(pExportHandler);
-  std::string str = exporter.exportSBMLToString(mpModel);
+  std::string str = exporter.exportSBMLToString(this);
 
   if (mpCurrentSBMLDocument != exporter.getSBMLDocument())
     pdelete(mpCurrentSBMLDocument);
@@ -691,7 +691,7 @@ bool CCopasiDataModel::exportSBML(const std::string & fileName, bool overwriteFi
 
   SBMLExporter exporter;
   exporter.setExportHandler(pExportHandler);
-  if (!exporter.exportSBML(mpModel, FileName.c_str(), overwriteFile, sbmlLevel, sbmlVersion, exportIncomplete)) return false;
+  if (!exporter.exportSBML(this, FileName.c_str(), overwriteFile, sbmlLevel, sbmlVersion, exportIncomplete)) return false;
 
   if (mpCurrentSBMLDocument != exporter.getSBMLDocument())
     pdelete(mpCurrentSBMLDocument);
@@ -1129,7 +1129,7 @@ void CCopasiDataModel::removeSBMLIdFromFunctions()
     }
 }
 
-std::vector<std::string> CCopasiDataModel::isSBMLCompatible(int sbmlLevel, int sbmlVersion) const
-  {
-    return SBMLExporter::isModelSBMLCompatible(this, sbmlLevel, sbmlVersion);
-  }
+std::vector<std::string> CCopasiDataModel::isSBMLCompatible(int sbmlLevel, int sbmlVersion)
+{
+  return SBMLExporter::isModelSBMLCompatible(this, sbmlLevel, sbmlVersion);
+}

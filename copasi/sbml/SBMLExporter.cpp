@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-//   $Revision: 1.104 $
+//   $Revision: 1.105 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/08/16 13:32:41 $
+//   $Author: gauges $
+//   $Date: 2007/08/20 10:57:29 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -88,7 +88,7 @@ SBMLExporter::~SBMLExporter()
  ** it and returns it as a string.
  ** On failure an empty string is returned.
  */
-std::string SBMLExporter::exportSBMLToString(CModel* copasiModel,
+std::string SBMLExporter::exportSBMLToString(CCopasiDataModel* pDataModel,
 #ifdef WITH_LAYOUT
     const CListOfLayouts * copasiLayouts,
 #endif //WITH_LAYOUT
@@ -96,21 +96,21 @@ std::string SBMLExporter::exportSBMLToString(CModel* copasiModel,
     bool incompleteExport)
 {
   this->mHandledSBMLObjects.clear();
-  this->mpCopasiModel = copasiModel;
+  this->mpCopasiModel = pDataModel->getModel();
   /* create the SBMLDocument from the copasi model */
-  this->createSBMLDocumentFromCModel(copasiModel, sbmlLevel, sbmlVersion, incompleteExport);
+  this->createSBMLDocumentFromCModel(pDataModel, sbmlLevel, sbmlVersion, incompleteExport);
 
 #ifdef WITH_LAYOUT
   this->addLayoutsToSBMLDocument(copasiLayouts);
 #endif //WITH_LAYOUT
 
-  this->removeUnusedObjects();
+  this->removeUnusedObjects(pDataModel);
   if (this->sbmlDocument->getModel() != NULL)
     {
       SBMLWriter* writer = new SBMLWriter();
 
       writer->setProgramName("COPASI");
-      writer->setProgramVersion(CCopasiDataModel::Global->getVersion()->getVersion().c_str());
+      writer->setProgramVersion(pDataModel->getVersion()->getVersion().c_str());
 
       char* d = writer->writeToString(*this->sbmlDocument);
       std::string returnValue = d;
@@ -131,7 +131,7 @@ std::string SBMLExporter::exportSBMLToString(CModel* copasiModel,
  ** argument to the function. The function return "true" on success and
  ** "false" on failure.
  */
-bool SBMLExporter::exportSBML(CModel* copasiModel,
+bool SBMLExporter::exportSBML(CCopasiDataModel* pDataModel,
 #ifdef WITH_LAYOUT
                               const CListOfLayouts * copasiLayouts,
 #endif //WITH_LAYOUT
@@ -139,9 +139,9 @@ bool SBMLExporter::exportSBML(CModel* copasiModel,
 {
   bool success = true;
   this->mHandledSBMLObjects.clear();
-  this->mpCopasiModel = copasiModel;
+  this->mpCopasiModel = pDataModel->getModel();
   /* create a string that represents the SBMLDocument */
-  std::string str = this->exportSBMLToString(copasiModel,
+  std::string str = this->exportSBMLToString(pDataModel,
 #ifdef WITH_LAYOUT
                     copasiLayouts,
 #endif //WITH_LAYOUT
@@ -177,7 +177,7 @@ bool SBMLExporter::exportSBML(CModel* copasiModel,
  ** Optionally the method takes two integers that specify the level and the
  ** version number of the SBMLDocument that will be generated.
  */
-SBMLDocument* SBMLExporter::createSBMLDocumentFromCModel(CModel* copasiModel, int sbmlLevel, int sbmlVersion, bool incompleteExport)
+SBMLDocument* SBMLExporter::createSBMLDocumentFromCModel(CCopasiDataModel* pDataModel, int sbmlLevel, int sbmlVersion, bool incompleteExport)
 {
   if (mpExportHandler)
     {
@@ -190,7 +190,7 @@ SBMLDocument* SBMLExporter::createSBMLDocumentFromCModel(CModel* copasiModel, in
                                         &mTotalSteps);
     }
 
-  this->sbmlDocument = CCopasiDataModel::Global->getCurrentSBMLDocument();
+  this->sbmlDocument = pDataModel->getCurrentSBMLDocument();
   if (!this->sbmlDocument)
     {
       /* create a new document object */
@@ -199,7 +199,7 @@ SBMLDocument* SBMLExporter::createSBMLDocumentFromCModel(CModel* copasiModel, in
   this->sbmlDocument->setLevel(sbmlLevel);
   this->sbmlDocument->setVersion(sbmlVersion);
   /* create the model object from the copasi model */
-  this->createSBMLModelFromCModel(copasiModel, sbmlLevel, sbmlVersion, incompleteExport);
+  this->createSBMLModelFromCModel(pDataModel, sbmlLevel, sbmlVersion, incompleteExport);
   if (mpExportHandler)
     {
       mStep = 7;
@@ -217,11 +217,12 @@ SBMLDocument* SBMLExporter::createSBMLDocumentFromCModel(CModel* copasiModel, in
  ** This method taked a copasi CModel and generates a SBML Model object
  **  which is returned. On failure NULL is returned.
  */
-Model* SBMLExporter::createSBMLModelFromCModel(CModel* copasiModel, int sbmlLevel, int sbmlVersion, bool incompleteExport)
+Model* SBMLExporter::createSBMLModelFromCModel(CCopasiDataModel* pDataModel, int sbmlLevel, int sbmlVersion, bool incompleteExport)
 {
   unsigned C_INT32 step = 0, totalSteps, hStep;
   Model* sbmlModel = NULL;
-  std::map<CCopasiObject*, SBase*>& copasi2sbmlmap = CCopasiDataModel::Global->getCopasi2SBMLMap();
+  CModel* copasiModel = pDataModel->getModel();
+  std::map<CCopasiObject*, SBase*>& copasi2sbmlmap = pDataModel->getCopasi2SBMLMap();
   std::map<CCopasiObject*, SBase*>::const_iterator pos = copasi2sbmlmap.find(copasiModel);
   if (this->mpIdSet) pdelete(this->mpIdSet);
   if (pos != copasi2sbmlmap.end())
@@ -232,18 +233,18 @@ Model* SBMLExporter::createSBMLModelFromCModel(CModel* copasiModel, int sbmlLeve
         {
           sbmlDocument->setModel(sbmlModel);
         }
-      this->mpIdSet = SBMLExporter::createIdSet(sbmlModel);
+      this->mpIdSet = SBMLExporter::createIdSet(sbmlModel, pDataModel);
     }
   else
     {
       /* create a new model object */
-      this->mpIdSet = SBMLExporter::createIdSet(sbmlModel);
+      this->mpIdSet = SBMLExporter::createIdSet(sbmlModel, pDataModel);
       sbmlModel = new Model();
       copasi2sbmlmap[copasiModel] = sbmlModel;
       sbmlModel->setId(copasiModel->getKey().c_str());
       sbmlDocument->setModel(sbmlModel);
     }
-  this->mHandledSBMLObjects.push_back(sbmlModel);
+  this->mHandledSBMLObjects.insert(sbmlModel);
   if (!copasiModel->getObjectName().empty())
     {
       sbmlModel->setName(copasiModel->getObjectName().c_str());
@@ -362,7 +363,7 @@ Model* SBMLExporter::createSBMLModelFromCModel(CModel* copasiModel, int sbmlLeve
     }
   for (counter = 0; counter < iMax; counter++)
     {
-      Compartment* sbmlCompartment = this->createSBMLCompartmentFromCCompartment(copasiModel->getCompartments()[counter]);
+      Compartment* sbmlCompartment = this->createSBMLCompartmentFromCCompartment(copasiModel->getCompartments()[counter], pDataModel);
       if (!sbmlModel->getCompartment(sbmlCompartment->getId()))
         {
           sbmlModel->addCompartment(*sbmlCompartment);
@@ -386,7 +387,7 @@ Model* SBMLExporter::createSBMLModelFromCModel(CModel* copasiModel, int sbmlLeve
     }
   for (counter = 0; counter < iMax; counter++)
     {
-      Species* sbmlSpecies = this->createSBMLSpeciesFromCMetab(copasiModel->getMetabolites()[counter]);
+      Species* sbmlSpecies = this->createSBMLSpeciesFromCMetab(copasiModel->getMetabolites()[counter], pDataModel);
       if (!sbmlModel->getSpecies(sbmlSpecies->getId()))
         {
           sbmlModel->addSpecies(*sbmlSpecies);
@@ -410,7 +411,7 @@ Model* SBMLExporter::createSBMLModelFromCModel(CModel* copasiModel, int sbmlLeve
     }
   for (counter = 0; counter < iMax; counter++)
     {
-      Parameter* sbmlParameter = this->createSBMLParameterFromCModelValue(copasiModel->getModelValues()[counter]);
+      Parameter* sbmlParameter = this->createSBMLParameterFromCModelValue(copasiModel->getModelValues()[counter], pDataModel);
       if (!sbmlModel->getParameter(sbmlParameter->getId()))
         {
           sbmlModel->addParameter(*sbmlParameter);
@@ -435,7 +436,7 @@ Model* SBMLExporter::createSBMLModelFromCModel(CModel* copasiModel, int sbmlLeve
     }
   for (counter = 0; counter < iMax; counter++)
     {
-      Reaction* sbmlReaction = this->createSBMLReactionFromCReaction(copasiModel->getReactions()[counter]);
+      Reaction* sbmlReaction = this->createSBMLReactionFromCReaction(copasiModel->getReactions()[counter], pDataModel);
       if (!sbmlModel->getReaction(sbmlReaction->getId()))
         {
           sbmlModel->addReaction(*sbmlReaction);
@@ -447,6 +448,53 @@ Model* SBMLExporter::createSBMLModelFromCModel(CModel* copasiModel, int sbmlLeve
   /* create all rules */
   // this is done last so that all reactions have already been created
   // in case we have a rule that depends on a reaction
+  std::vector<Rule*> rules;
+  iMax = copasiModel->getCompartments().size();
+  if (mpExportHandler)
+    {
+      mpExportHandler->finish(hStep);
+      mStep = 5;
+      mpExportHandler->progress(mHStep);
+      totalSteps = iMax;
+      step = 0;
+      hStep = mpExportHandler->addItem("Creating rate rules and assignment rules for compartments...",
+                                       CCopasiParameter::UINT,
+                                       & step,
+                                       &totalSteps);
+    }
+  for (counter = 0; counter < iMax; counter++)
+    {
+      Rule* sbmlRule = this->createRuleFromCModelEntity(copasiModel->getCompartments()[counter], pDataModel, sbmlLevel, sbmlVersion, incompleteExport);
+      if (sbmlRule != NULL)
+        {
+          rules.push_back(sbmlRule);
+        }
+      ++step;
+      if (mpExportHandler && !mpExportHandler->progress(hStep)) return false;
+    }
+  iMax = copasiModel->getMetabolites().size();
+  if (mpExportHandler)
+    {
+      mpExportHandler->finish(hStep);
+      mStep = 5;
+      mpExportHandler->progress(mHStep);
+      totalSteps = iMax;
+      step = 0;
+      hStep = mpExportHandler->addItem("Creating rate rules and assignment rules for metabolites...",
+                                       CCopasiParameter::UINT,
+                                       & step,
+                                       &totalSteps);
+    }
+  for (counter = 0; counter < iMax; counter++)
+    {
+      Rule* sbmlRule = this->createRuleFromCModelEntity(copasiModel->getMetabolites()[counter], pDataModel, sbmlLevel, sbmlVersion, incompleteExport);
+      if (sbmlRule != NULL)
+        {
+          rules.push_back(sbmlRule);
+        }
+      ++step;
+      if (mpExportHandler && !mpExportHandler->progress(hStep)) return false;
+    }
   iMax = copasiModel->getModelValues().size();
   if (mpExportHandler)
     {
@@ -460,10 +508,9 @@ Model* SBMLExporter::createSBMLModelFromCModel(CModel* copasiModel, int sbmlLeve
                                        & step,
                                        &totalSteps);
     }
-  std::vector<Rule*> rules;
   for (counter = 0; counter < iMax; counter++)
     {
-      Rule* sbmlRule = this->createRuleFromCModelEntity(copasiModel->getModelValues()[counter], sbmlLevel, sbmlVersion, incompleteExport);
+      Rule* sbmlRule = this->createRuleFromCModelEntity(copasiModel->getModelValues()[counter], pDataModel, sbmlLevel, sbmlVersion, incompleteExport);
       if (sbmlRule != NULL)
         {
           rules.push_back(sbmlRule);
@@ -609,10 +656,10 @@ UnitDefinition* SBMLExporter::createSBMLVolumeUnitDefinitionFromCopasiVolumeUnit
  ** This method takes a pointer to a copasi CCompartment object and creates
  ** a SBML Compartment. The pointer to the SBML Comprtment is returned.
  */
-Compartment* SBMLExporter::createSBMLCompartmentFromCCompartment(CCompartment* copasiCompartment)
+Compartment* SBMLExporter::createSBMLCompartmentFromCCompartment(CCompartment* copasiCompartment, CCopasiDataModel* pDataModel)
 {
   Compartment* sbmlCompartment = NULL;
-  std::map<CCopasiObject*, SBase*>& copasi2sbmlmap = CCopasiDataModel::Global->getCopasi2SBMLMap();
+  std::map<CCopasiObject*, SBase*>& copasi2sbmlmap = pDataModel->getCopasi2SBMLMap();
   std::map<CCopasiObject*, SBase*>::iterator pos = copasi2sbmlmap.find(copasiCompartment);
   if (pos != copasi2sbmlmap.end())
     {
@@ -635,7 +682,7 @@ Compartment* SBMLExporter::createSBMLCompartmentFromCCompartment(CCompartment* c
       sbmlCompartment->setSpatialDimensions(3);
       sbmlCompartment->setConstant(true);
     }
-  this->mHandledSBMLObjects.push_back(sbmlCompartment);
+  this->mHandledSBMLObjects.insert(sbmlCompartment);
   sbmlCompartment->setName(copasiCompartment->getObjectName().c_str());
   double value = copasiCompartment->getInitialValue();
   // if the value is NaN, unset the initial volume
@@ -654,10 +701,10 @@ Compartment* SBMLExporter::createSBMLCompartmentFromCCompartment(CCompartment* c
  ** This method takes a pointer to a copasi CMetab object and creates a SBML
  ** Species object. The pointer to the species object is returned.
  */
-Species* SBMLExporter::createSBMLSpeciesFromCMetab(CMetab* copasiMetabolite)
+Species* SBMLExporter::createSBMLSpeciesFromCMetab(CMetab* copasiMetabolite, CCopasiDataModel* pDataModel)
 {
   Species* sbmlSpecies = NULL;
-  std::map<CCopasiObject*, SBase*>& copasi2sbmlmap = CCopasiDataModel::Global->getCopasi2SBMLMap();
+  std::map<CCopasiObject*, SBase*>& copasi2sbmlmap = pDataModel->getCopasi2SBMLMap();
   std::map<CCopasiObject*, SBase*>::iterator pos = copasi2sbmlmap.find(copasiMetabolite);
   if (pos != copasi2sbmlmap.end())
     {
@@ -677,7 +724,7 @@ Species* SBMLExporter::createSBMLSpeciesFromCMetab(CMetab* copasiMetabolite)
         }
       sbmlSpecies->setId(id);
     }
-  this->mHandledSBMLObjects.push_back(sbmlSpecies);
+  this->mHandledSBMLObjects.insert(sbmlSpecies);
   sbmlSpecies->setName(copasiMetabolite->getObjectName().c_str());
   sbmlSpecies->setBoundaryCondition(copasiMetabolite->getStatus() == CModelEntity::FIXED);
   sbmlSpecies->setConstant(copasiMetabolite->getStatus() == CModelEntity::FIXED);
@@ -710,10 +757,10 @@ Species* SBMLExporter::createSBMLSpeciesFromCMetab(CMetab* copasiMetabolite)
  ** This method takes a pointer to a copasi CModelValue object and creates a SBML
  ** Parameter object. The pointer to the parameter object is returned.
  */
-Parameter* SBMLExporter::createSBMLParameterFromCModelValue(CModelValue* pModelValue)
+Parameter* SBMLExporter::createSBMLParameterFromCModelValue(CModelValue* pModelValue, CCopasiDataModel* pDataModel)
 {
   Parameter* pParameter = NULL;
-  std::map<CCopasiObject*, SBase*>& copasi2sbmlmap = CCopasiDataModel::Global->getCopasi2SBMLMap();
+  std::map<CCopasiObject*, SBase*>& copasi2sbmlmap = pDataModel->getCopasi2SBMLMap();
   std::map<CCopasiObject*, SBase*>::iterator pos = copasi2sbmlmap.find(pModelValue);
   if (pos != copasi2sbmlmap.end())
     {
@@ -733,7 +780,7 @@ Parameter* SBMLExporter::createSBMLParameterFromCModelValue(CModelValue* pModelV
         }
       pParameter->setId(id);
     }
-  this->mHandledSBMLObjects.push_back(pParameter);
+  this->mHandledSBMLObjects.insert(pParameter);
   pParameter->setName(pModelValue->getObjectName());
   double value = pModelValue->getInitialValue();
   // if the value is NaN, unset the parameters value
@@ -753,10 +800,10 @@ Parameter* SBMLExporter::createSBMLParameterFromCModelValue(CModelValue* pModelV
  ** SBML Reaction object. The pointer to the created reaction object is
  ** returned.
  */
-Reaction* SBMLExporter::createSBMLReactionFromCReaction(CReaction* copasiReaction)
+Reaction* SBMLExporter::createSBMLReactionFromCReaction(CReaction* copasiReaction, CCopasiDataModel* pDataModel)
 {
   Reaction* sbmlReaction = NULL;
-  std::map<CCopasiObject*, SBase*>& copasi2sbmlmap = CCopasiDataModel::Global->getCopasi2SBMLMap();
+  std::map<CCopasiObject*, SBase*>& copasi2sbmlmap = pDataModel->getCopasi2SBMLMap();
   std::map<CCopasiObject*, SBase*>::iterator pos = copasi2sbmlmap.find(copasiReaction);
   if (pos != copasi2sbmlmap.end())
     {
@@ -777,7 +824,7 @@ Reaction* SBMLExporter::createSBMLReactionFromCReaction(CReaction* copasiReactio
         }
       sbmlReaction->setId(id);
     }
-  this->mHandledSBMLObjects.push_back(sbmlReaction);
+  this->mHandledSBMLObjects.insert(sbmlReaction);
   sbmlReaction->setName(copasiReaction->getObjectName().c_str());
   sbmlReaction->setReversible(copasiReaction->isReversible());
   const CChemEq chemicalEquation = copasiReaction->getChemEq();
@@ -857,9 +904,9 @@ Reaction* SBMLExporter::createSBMLReactionFromCReaction(CReaction* copasiReactio
     }
   /* create the kinetic law */
   /* if there is one on copasi */
-  if ((copasiReaction->getFunction()) != CCopasiDataModel::Global->mpUndefined)
+  if ((copasiReaction->getFunction()) != pDataModel->mpUndefined)
     {
-      KineticLaw* kLaw = this->createSBMLKineticLawFromCReaction(copasiReaction);
+      KineticLaw* kLaw = this->createSBMLKineticLawFromCReaction(copasiReaction, pDataModel);
       sbmlReaction->setKineticLaw(*kLaw);
     }
   else
@@ -874,13 +921,13 @@ Reaction* SBMLExporter::createSBMLReactionFromCReaction(CReaction* copasiReactio
  ** SBML KineticLaw object from the kintik function of the copasi reaction
  ** object. The pointer to the created KineticLaw is returned.
  */
-KineticLaw* SBMLExporter::createSBMLKineticLawFromCReaction(CReaction* copasiReaction)
+KineticLaw* SBMLExporter::createSBMLKineticLawFromCReaction(CReaction* copasiReaction, CCopasiDataModel* pDataModel)
 {
   KineticLaw* kLaw = NULL;
   /*
    * This code can not be activated yet since roundtripping of kinetcs is not so trivial.
    *
-  std::map<CCopasiObject*,SBase*>& copasi2sbmlmap=CCopasiDataModel::Global->getCopasi2SBMLMap();
+  std::map<CCopasiObject*,SBase*>& copasi2sbmlmap=pDataModel->getCopasi2SBMLMap();
   std::map<CCopasiObject*,SBase*>::iterator pos=copasi2sbmlmap.find(copasiReaction);
   if(pos!=copasi2sbmlmap.end())
   {
@@ -970,14 +1017,14 @@ KineticLaw* SBMLExporter::createSBMLKineticLawFromCReaction(CReaction* copasiRea
           pTree->setRoot(pTmpRoot);
           pTree->compile();
           std::list<const CEvaluationTree*>* usedFunctionList = new std::list<const CEvaluationTree*>;
-          this->findUsedFunctions(pTmpRoot, usedFunctionList);
+          this->findUsedFunctions(pTmpRoot, usedFunctionList, pDataModel);
           pdelete(usedFunctionList);
           node = pTmpRoot->toAST();
           pdelete(pTree);
         }
       else
         {
-          CEvaluationNode* pExpressionRoot = this->createExpressionTree(copasiReaction->getFunction(), copasiReaction->getParameterMappings());
+          CEvaluationNode* pExpressionRoot = this->createExpressionTree(copasiReaction->getFunction(), copasiReaction->getParameterMappings(), pDataModel);
           if (!pExpressionRoot) fatalError();
           node = pExpressionRoot->toAST();
           if (!node) fatalError();
@@ -1149,23 +1196,43 @@ void SBMLExporter::replaceNodeName(ASTNode* pNode, const std::string& oldName, c
     }
 }
 
-void SBMLExporter::removeUnusedObjects()
+void SBMLExporter::removeUnusedObjects(CCopasiDataModel* pDataModel)
 {
   // go through the sbmlDocument and remove all species, compartments, parameters and reactions
   // that are not in mHandledSBMLObjects because this means they are no longer in the copasi model.
+  // also remove all rules where the corresponding species, parameter or
+  // compartment is no longer in the copasi model
+
+  // first we need to turn around the copasi2sbmlmap in order to remove entries
+  // of objects that are no longer there
+  std::map<SBase*, CCopasiObject*> sbml2copasimap;
+  std::map<CCopasiObject*, SBase*>& copasi2sbmlmap = pDataModel->getCopasi2SBMLMap();
+  std::map<CCopasiObject*, SBase*>::const_iterator it = copasi2sbmlmap.begin(), endit = copasi2sbmlmap.end();
+  while (it != endit)
+    {
+      sbml2copasimap.insert(std::make_pair(it->second, it->first));
+      ++it;
+    }
+  std::map<SBase*, CCopasiObject*>::const_iterator sbml2copasimap_pos , sbml2copasimap_endpos = sbml2copasimap.end();
   Model* model = this->sbmlDocument->getModel();
   assert(model);
   unsigned int i;
-  std::vector<SBase*>::iterator pos;
-  std::vector<SBase*>::iterator endPos = this->mHandledSBMLObjects.end();
+  std::set<SBase*>::iterator pos;
+  std::set<SBase*>::iterator endPos = this->mHandledSBMLObjects.end();
   ListOf* list = &model->getListOfCompartments();
   for (i = list->getNumItems(); i > 0;--i)
     {
       SBase* object = list->get(i - 1);
-      pos = std::find(this->mHandledSBMLObjects.begin(), this->mHandledSBMLObjects.end(), object);
+      pos = this->mHandledSBMLObjects.find(object);
       if (pos == endPos)
         {
           list->remove(i - 1);
+          // clean the entry from the copasi2sbmlmap
+          sbml2copasimap_pos = sbml2copasimap.find(object);
+          if (sbml2copasimap_pos != sbml2copasimap_endpos)
+            {
+              copasi2sbmlmap.erase(copasi2sbmlmap.find(sbml2copasimap_pos->second));
+            }
           pdelete(object);
         }
     }
@@ -1173,10 +1240,16 @@ void SBMLExporter::removeUnusedObjects()
   for (i = list->getNumItems(); i > 0;--i)
     {
       SBase* object = list->get(i - 1);
-      pos = std::find(this->mHandledSBMLObjects.begin(), this->mHandledSBMLObjects.end(), object);
+      pos = this->mHandledSBMLObjects.find(object);
       if (pos == endPos)
         {
           list->remove(i - 1);
+          // clean the entry from the copasi2sbmlmap
+          sbml2copasimap_pos = sbml2copasimap.find(object);
+          if (sbml2copasimap_pos != sbml2copasimap_endpos)
+            {
+              copasi2sbmlmap.erase(copasi2sbmlmap.find(sbml2copasimap_pos->second));
+            }
           pdelete(object);
         }
     }
@@ -1184,10 +1257,16 @@ void SBMLExporter::removeUnusedObjects()
   for (i = list->getNumItems(); i > 0;--i)
     {
       SBase* object = list->get(i - 1);
-      pos = std::find(this->mHandledSBMLObjects.begin(), this->mHandledSBMLObjects.end(), object);
+      pos = this->mHandledSBMLObjects.find(object);
       if (pos == endPos)
         {
           list->remove(i - 1);
+          // clean the entry from the copasi2sbmlmap
+          sbml2copasimap_pos = sbml2copasimap.find(object);
+          if (sbml2copasimap_pos != sbml2copasimap_endpos)
+            {
+              copasi2sbmlmap.erase(copasi2sbmlmap.find(sbml2copasimap_pos->second));
+            }
           pdelete(object);
         }
     }
@@ -1195,14 +1274,19 @@ void SBMLExporter::removeUnusedObjects()
   for (i = list->getNumItems(); i > 0;--i)
     {
       SBase* object = list->get(i - 1);
-      pos = std::find(this->mHandledSBMLObjects.begin(), this->mHandledSBMLObjects.end(), object);
+      pos = this->mHandledSBMLObjects.find(object);
       if (pos == endPos)
         {
           list->remove(i - 1);
+          // clean the entry from the copasi2sbmlmap
+          sbml2copasimap_pos = sbml2copasimap.find(object);
+          if (sbml2copasimap_pos != sbml2copasimap_endpos)
+            {
+              copasi2sbmlmap.erase(copasi2sbmlmap.find(sbml2copasimap_pos->second));
+            }
           pdelete(object);
         }
     }
-
   this->removeUnusedFunctionDefinitions();
   this->removeUnusedUnitDefinitions();
 }
@@ -1219,7 +1303,7 @@ void SBMLExporter::removeUnusedUnitDefinitions()
   // this can only be done one we understand events and rules
 }
 
-std::set<std::string>* SBMLExporter::createIdSet(const Model* pSBMLModel)
+std::set<std::string>* SBMLExporter::createIdSet(const Model* pSBMLModel, CCopasiDataModel* pDataModel)
 {
   // go through all function definitions, compartments, species, reactions,
   // parameters and events and create a set with all used ids.
@@ -1266,7 +1350,7 @@ std::set<std::string>* SBMLExporter::createIdSet(const Model* pSBMLModel)
       pIdSet = new std::set<std::string>();
       std::string id;
       unsigned int i, iMax;
-      CCopasiVectorN<CEvaluationTree>& loadedFunctions = CCopasiDataModel::Global->getFunctionList()->loadedFunctions();
+      CCopasiVectorN<CEvaluationTree>& loadedFunctions = pDataModel->getFunctionList()->loadedFunctions();
       iMax = loadedFunctions.size();
       for (i = 0;i < iMax;++i)
         {
@@ -1377,9 +1461,9 @@ ASTNode* SBMLExporter::isDividedByVolume(const ASTNode* node, const std::string&
   return result;
 }
 
-void SBMLExporter::findUsedFunctions(CEvaluationNode* pNode, std::list<const CEvaluationTree*>* usedFunctionList)
+void SBMLExporter::findUsedFunctions(CEvaluationNode* pNode, std::list<const CEvaluationTree*>* usedFunctionList, CCopasiDataModel* pDataModel)
 {
-  CFunctionDB* pFunDB = CCopasiDataModel::Global->getFunctionList();
+  CFunctionDB* pFunDB = pDataModel->getFunctionList();
   CCopasiTree<CEvaluationNode>::iterator treeIt = pNode;
   CCopasiTree<CEvaluationNode>::iterator treeEndIt = NULL;
 
@@ -1405,7 +1489,7 @@ void SBMLExporter::findUsedFunctions(CEvaluationNode* pNode, std::list<const CEv
             {
               std::list<const CEvaluationTree*>::iterator pos = usedFunctionList->end();
               --pos;
-              this->findUsedFunctions(pFun->getRoot(), usedFunctionList);
+              this->findUsedFunctions(pFun->getRoot(), usedFunctionList, pDataModel);
               // add this function to mpUsedFunctions after the last function in usedFunctionList
               // if usedFunctionList does not have any entries after pos, just insert the function
               // at the beginning
@@ -1595,7 +1679,7 @@ void SBMLExporter::removeFromList(ListOf& list, SBase* pObject)
     }
 }
 
-CEvaluationNode* SBMLExporter::createExpressionTree(const CFunction* const pFun, const std::vector<std::vector<std::string> >& arguments)
+CEvaluationNode* SBMLExporter::createExpressionTree(const CFunction* const pFun, const std::vector<std::vector<std::string> >& arguments, CCopasiDataModel* pDataModel)
 {
   if (!pFun || pFun->getVariables().size() != arguments.size()) fatalError();
   std::map< std::string, std::string > parameterMap;
@@ -1607,16 +1691,16 @@ CEvaluationNode* SBMLExporter::createExpressionTree(const CFunction* const pFun,
       if (!pObject) fatalError();
       parameterMap[pFun->getVariables()[i]->getObjectName()] = "<" + pObject->getCN() + ">";
     }
-  return this->createExpressionTree(pFun, parameterMap);
+  return this->createExpressionTree(pFun, parameterMap, pDataModel);
 }
 
-CEvaluationNode* SBMLExporter::createExpressionTree(const CFunction* const pFun, const std::map<std::string, std::string>& parameterMap)
+CEvaluationNode* SBMLExporter::createExpressionTree(const CFunction* const pFun, const std::map<std::string, std::string>& parameterMap, CCopasiDataModel* pDataModel)
 {
   if (!pFun) fatalError();
-  return this->createExpressionTree(pFun->getRoot(), parameterMap);
+  return this->createExpressionTree(pFun->getRoot(), parameterMap, pDataModel);
 }
 
-CEvaluationNode* SBMLExporter::createExpressionTree(const CEvaluationNode* const pNode, const std::map<std::string, std::string>& parameterMap)
+CEvaluationNode* SBMLExporter::createExpressionTree(const CEvaluationNode* const pNode, const std::map<std::string, std::string>& parameterMap, CCopasiDataModel* pDataModel)
 {
   if (!pNode) fatalError();
   CEvaluationNode* pResultNode = NULL;
@@ -1630,7 +1714,7 @@ CEvaluationNode* SBMLExporter::createExpressionTree(const CEvaluationNode* const
   switch (CEvaluationNode::type(pNode->getType()))
     {
     case CEvaluationNode::CALL:
-      pFun = dynamic_cast<const CFunction*>(CCopasiDataModel::Global->getFunctionList()->findFunction(pNode->getData()));
+      pFun = dynamic_cast<const CFunction*>(pDataModel->getFunctionList()->findFunction(pNode->getData()));
       assert(pFun);
       pChildNode = static_cast<const CEvaluationNode*>(pNode->getChild());
       while (pChildNode)
@@ -1648,7 +1732,7 @@ CEvaluationNode* SBMLExporter::createExpressionTree(const CEvaluationNode* const
           arguments[arguments.size() - 1].push_back(pObject->getKey());
           pChildNode = static_cast<const CEvaluationNode*>(pChildNode->getSibling());
         }
-      pResultNode = this->createExpressionTree(pFun, arguments);
+      pResultNode = this->createExpressionTree(pFun, arguments, pDataModel);
       break;
     case CEvaluationNode::VARIABLE:
       // replace the variable node with an object node
@@ -1678,7 +1762,7 @@ CEvaluationNode* SBMLExporter::createExpressionTree(const CEvaluationNode* const
   pChildNode = static_cast<const CEvaluationNode*>(pNode->getChild());
   while (pChildNode)
     {
-      pResultNode->addChild(this->createExpressionTree(pChildNode, parameterMap));
+      pResultNode->addChild(this->createExpressionTree(pChildNode, parameterMap, pDataModel));
       pChildNode = static_cast<const CEvaluationNode*>(pChildNode->getSibling());
     }
   assert(pResultNode);
@@ -1700,15 +1784,15 @@ const std::list<const CEvaluationTree*>* SBMLExporter::getUsedFunctionList() con
     return this->mpUsedFunctions;
   }
 
-Rule* SBMLExporter::createRuleFromCModelEntity(CModelEntity* pME, int sbmlLevel, int sbmlVersion, bool incompleteExport)
+Rule* SBMLExporter::createRuleFromCModelEntity(CModelEntity* pME, CCopasiDataModel* pDataModel, int sbmlLevel, int sbmlVersion, bool incompleteExport)
 {
   Rule* pRule = NULL;
   Model* pModel = sbmlDocument->getModel();
   if (!pModel) fatalError();
   if (pME)
     {
-      Rule* pOldRule = this->findExistingRuleForModelEntity(pME);
-      std::map<CCopasiObject*, SBase*>& copasi2sbmlmap = CCopasiDataModel::Global->getCopasi2SBMLMap();
+      Rule* pOldRule = this->findExistingRuleForModelEntity(pME, pDataModel);
+      std::map<CCopasiObject*, SBase*>& copasi2sbmlmap = pDataModel->getCopasi2SBMLMap();
       std::map<CCopasiObject*, SBase*>::iterator pos = copasi2sbmlmap.find(const_cast<CModelEntity*>(pME));
       if (pos == copasi2sbmlmap.end()) fatalError();
       SBase* pSBase = pos->second;
@@ -1755,7 +1839,7 @@ Rule* SBMLExporter::createRuleFromCModelEntity(CModelEntity* pME, int sbmlLevel,
           // are allowed at the moment
           if (incompleteExport)
             {
-              if (!this->isRuleSBMLCompatible(pME, sbmlLevel, sbmlVersion).empty())
+              if (!this->isRuleSBMLCompatible(pME, pDataModel, sbmlLevel, sbmlVersion).empty())
                 {
                   // reset some attributes
                   switch (pSBase->getTypeCode())
@@ -1781,7 +1865,7 @@ Rule* SBMLExporter::createRuleFromCModelEntity(CModelEntity* pME, int sbmlLevel,
             }
           this->checkExpressionObjects(pME->getExpressionPtr()->getRoot());
           std::list<const CEvaluationTree*>* usedFunctionList = new std::list<const CEvaluationTree*>;
-          this->findUsedFunctions(pME->getExpressionPtr()->getRoot(), usedFunctionList);
+          this->findUsedFunctions(pME->getExpressionPtr()->getRoot(), usedFunctionList, pDataModel);
           pdelete(usedFunctionList);
           // now we set the new expression
           ASTNode* pRootNode = pME->getExpressionPtr()->getRoot()->toAST();
@@ -1830,7 +1914,7 @@ Rule* SBMLExporter::createRuleFromCModelEntity(CModelEntity* pME, int sbmlLevel,
           // are allowed at the moment
           if (incompleteExport)
             {
-              if (!this->isRuleSBMLCompatible(pME, sbmlLevel, sbmlVersion).empty())
+              if (!this->isRuleSBMLCompatible(pME, pDataModel, sbmlLevel, sbmlVersion).empty())
                 {
                   // reset some attributes
                   switch (pSBase->getTypeCode())
@@ -1857,7 +1941,7 @@ Rule* SBMLExporter::createRuleFromCModelEntity(CModelEntity* pME, int sbmlLevel,
             }
           this->checkExpressionObjects(pME->getExpressionPtr()->getRoot());
           std::list<const CEvaluationTree*>* usedFunctionList = new std::list<const CEvaluationTree*>;
-          this->findUsedFunctions(pME->getExpressionPtr()->getRoot(), usedFunctionList);
+          this->findUsedFunctions(pME->getExpressionPtr()->getRoot(), usedFunctionList, pDataModel);
           pdelete(usedFunctionList);
           // now we set the new expression
           ASTNode* pRootNode = pME->getExpressionPtr()->getRoot()->toAST();
@@ -1962,10 +2046,13 @@ void SBMLExporter::exportRules(std::vector<Rule*>& rules)
       // there must be some dependency loops
       fatalError();
     }
+  // since we create all rules from scratch and existing rules are deleted when
+  Model* pModel = sbmlDocument->getModel();
+  // the new rule is created, we now have to clean the remaining rules
+  pModel->getListOfRules().freeItems();
   // now we can add all rules in sorted Rules to the model
   it = sortedAssignmentRules.begin();
   endIt = sortedAssignmentRules.end();
-  Model* pModel = sbmlDocument->getModel();
   while (it != endIt)
     {
       pModel->addRule(*(*it));
@@ -2057,15 +2144,15 @@ std::set<std::string> SBMLExporter::getObjectNodeIds(const ASTNode* pNode)
   return ids;
 }
 
-Rule* SBMLExporter::findExistingRuleForModelEntity(const CModelEntity* pME)
+Rule* SBMLExporter::findExistingRuleForModelEntity(const CModelEntity* pME, CCopasiDataModel* pDataModel)
 {
   Rule* pOldRule = NULL;
   Model* pModel = sbmlDocument->getModel();
   if (!pModel) fatalError();
   unsigned int i, iMax = pModel->getNumRules();
   SBase* pObject = NULL;
-  std::map<CCopasiObject*, SBase*>& copasi2sbmlmap = CCopasiDataModel::Global->getCopasi2SBMLMap();
-  std::map<CCopasiObject*, SBase*>::iterator pos = copasi2sbmlmap.find(const_cast<CModelEntity*>(pME));
+  const std::map<CCopasiObject*, SBase*>& copasi2sbmlmap = pDataModel->getCopasi2SBMLMap();
+  std::map<CCopasiObject*, SBase*>::const_iterator pos = copasi2sbmlmap.find(const_cast<CModelEntity*>(pME));
   if (pos != copasi2sbmlmap.end())
     {
       pObject = pos->second;
@@ -2142,7 +2229,7 @@ bool SBMLExporter::checkExpressionObjects(const CEvaluationNode* pNode) const
     return result;
   }
 
-std::vector<std::string> SBMLExporter::isModelSBMLCompatible(const CCopasiDataModel* pDataModel, int sbmlLevel, int sbmlVersion)
+std::vector<std::string> SBMLExporter::isModelSBMLCompatible(CCopasiDataModel* pDataModel, int sbmlLevel, int sbmlVersion)
 {
   std::vector<std::string> result;
   std::ostringstream ss;
@@ -2167,7 +2254,7 @@ std::vector<std::string> SBMLExporter::isModelSBMLCompatible(const CCopasiDataMo
   return result;
 }
 
-std::vector<std::string> SBMLExporter::isModelSBMLL2V1Compatible(const CCopasiDataModel* pDataModel)
+std::vector<std::string> SBMLExporter::isModelSBMLL2V1Compatible(CCopasiDataModel* pDataModel)
 {
   std::vector<std::string> result;
   // go through all assignment expressions and check if object nodes only contain
@@ -2185,7 +2272,7 @@ std::vector<std::string> SBMLExporter::isModelSBMLL2V1Compatible(const CCopasiDa
       CModelEntity::Status status = pModelValue->getStatus();
       if (status == CModelEntity::ASSIGNMENT || status == CModelEntity::ODE)
         {
-          std::vector<std::string> tmpVect = isRuleSBMLL2V1Compatible(pModelValue);
+          std::vector<std::string> tmpVect = isRuleSBMLL2V1Compatible(pModelValue, pDataModel);
           if (tmpVect.size() != 0)
             {
               std::vector<std::string>::iterator it = tmpVect.begin();
@@ -2201,7 +2288,7 @@ std::vector<std::string> SBMLExporter::isModelSBMLL2V1Compatible(const CCopasiDa
   return result;
 }
 
-std::vector<std::string> SBMLExporter::isRuleSBMLCompatible(const CModelEntity* pME, int sbmlLevel, int sbmlVersion)
+std::vector<std::string> SBMLExporter::isRuleSBMLCompatible(const CModelEntity* pME, CCopasiDataModel* pDataModel, int sbmlLevel, int sbmlVersion)
 {
   std::vector<std::string> result;
   std::ostringstream ss;
@@ -2211,7 +2298,7 @@ std::vector<std::string> SBMLExporter::isRuleSBMLCompatible(const CModelEntity* 
       switch (sbmlVersion)
         {
         case 1:
-          result = SBMLExporter::isRuleSBMLL2V1Compatible(pME);
+          result = SBMLExporter::isRuleSBMLL2V1Compatible(pME, pDataModel);
           break;
         default:
           fatalError();
@@ -2225,7 +2312,7 @@ std::vector<std::string> SBMLExporter::isRuleSBMLCompatible(const CModelEntity* 
   return result;
 }
 
-std::vector<std::string> SBMLExporter::isRuleSBMLL2V1Compatible(const CModelEntity* pME)
+std::vector<std::string> SBMLExporter::isRuleSBMLL2V1Compatible(const CModelEntity* pME, CCopasiDataModel* pDataModel)
 {
   std::vector<std::string> result;
   const CExpression* pExpression = pME->getExpressionPtr();
@@ -2239,7 +2326,7 @@ std::vector<std::string> SBMLExporter::isRuleSBMLL2V1Compatible(const CModelEnti
           const CEvaluationNodeObject* pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(objectNodes[j]);
           assert(pObjectNode);
           std::vector<CCopasiContainer*> containers;
-          containers.push_back(CCopasiDataModel::Global->getModel());
+          containers.push_back(pDataModel->getModel());
           const CCopasiObject* pObject = CCopasiContainer::ObjectFromName(containers, pObjectNode->getObjectCN());
           assert(pObject);
           if (pObject->isReference())
@@ -2294,10 +2381,10 @@ std::vector<std::string> SBMLExporter::isRuleSBMLL2V1Compatible(const CModelEnti
 }
 
 #ifdef WITH_LAYOUT
-void SBMLExporter::addLayoutsToSBMLDocument(const CListOfLayouts * copasiLayouts)
+void SBMLExporter::addLayoutsToSBMLDocument(const CListOfLayouts * copasiLayouts, CCopasiDataModel* pDataModel)
 {
   if (this->sbmlDocument && sbmlDocument->getModel())
     copasiLayouts->exportToSBML(&this->sbmlDocument->getModel()->getListOfLayouts(),
-                                CCopasiDataModel::Global->getCopasi2SBMLMap());
+                                pDataModel->getCopasi2SBMLMap());
 }
 #endif //WITH_LAYOUT
