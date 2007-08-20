@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.h,v $
-//   $Revision: 1.42 $
+//   $Revision: 1.43 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/08/20 10:57:29 $
+//   $Author: ssahle $
+//   $Date: 2007/08/20 13:08:38 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -294,7 +294,7 @@ class SBMLExporter
      * Add layouts to the libsbml document. The libsbml document needs to be created before,
      * so this should be called after createSBMLDocumentFromCModel().
      */
-    void addLayoutsToSBMLDocument(const CListOfLayouts * copasiLayouts);
+    void addLayoutsToSBMLDocument(const CListOfLayouts * copasiLayouts, CCopasiDataModel* pDataModel);
 #endif //WITH_LAYOUT
 
   public:
@@ -315,9 +315,6 @@ class SBMLExporter
      ** On failure an empty string is returned.
      */
     std::string exportSBMLToString(CCopasiDataModel* pDataModel,
-#ifdef WITH_LAYOUT
-                                   const CListOfLayouts * copasiLayouts,
-#endif //WITH_LAYOUT
                                    int sbmlLevel = 2, int sbmlVersion = 1, bool incompleteExport = false);
 
     /**
@@ -327,9 +324,6 @@ class SBMLExporter
      ** "false" on failure.
      */
     bool exportSBML(CCopasiDataModel* pDataModel,
-#ifdef WITH_LAYOUT
-                    const CListOfLayouts * copasiLayouts,
-#endif //WITH_LAYOUT
                     std::string sbmlFilename, bool overwriteFile = false, int sbmlLevel = 2, int sbmlVersion = 1, bool incompleteExport = false);
 
     /**
