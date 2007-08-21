@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CDotOutput.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/07/24 09:45:44 $
+//   $Date: 2007/08/21 08:53:12 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -82,7 +82,10 @@ void CDotOutput::writeDotRecursively(const CCopasiObject * obj, std::ostream & o
           if (mOnlyAlgebraicDependencies)
             {
               if ((*it)->hasUpdateMethod())
-                writeEdge(os, obj, *it);
+                {
+                  writeEdge(os, obj, *it);
+                  //std::cout << "\"" << obj->getObjectDisplayName() << "\" -> \"" << (*it)->getObjectDisplayName() << "\"" << std::endl;
+                }
               else
                 {//find indirect dependencies
                   std::set<const CCopasiObject* > tmpObjectSet;
@@ -93,8 +96,10 @@ void CDotOutput::writeDotRecursively(const CCopasiObject * obj, std::ostream & o
                 }
             }
           else
-            writeEdge(os, obj, *it);
-          //os << "\"" << obj->getObjectDisplayName() << "\" -> \"" << (*it)->getObjectDisplayName() << "\"\n";
+            {
+              writeEdge(os, obj, *it);
+              //std::cout << "\"" << obj->getObjectDisplayName() << "\" -> \"" << (*it)->getObjectDisplayName() << "\"" << std::endl;
+            }
         }
     }
 
