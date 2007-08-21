@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.cpp,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.33 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/08/13 20:59:12 $
+//   $Author: ssahle $
+//   $Date: 2007/08/21 09:00:52 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -335,19 +335,32 @@ CEvaluationNode* CEvaluationNode::splitBranch(const CEvaluationNode* splitnode, 
       }
     else
       {
-        const CEvaluationNode *child1 = dynamic_cast<const CEvaluationNode*>(getChild());
-        CEvaluationNode *newchild1 = NULL;
-        CEvaluationNode *newchild2 = NULL;
-        if (child1 != NULL)
+        /*        const CEvaluationNode *child1 = dynamic_cast<const CEvaluationNode*>(getChild());
+                CEvaluationNode *newchild1 = NULL;
+                CEvaluationNode *newchild2 = NULL;
+                if (child1 != NULL)
+                  {
+                    newchild1 = child1->splitBranch(splitnode, left);
+                    const CEvaluationNode *child2 = dynamic_cast<const CEvaluationNode*>(child1->getSibling());
+                    if (child2 != NULL)
+                      {
+                        newchild2 = child2->splitBranch(splitnode, left);
+                      }
+                  }
+                CEvaluationNode *newnode = copyNode(newchild1, newchild2);
+                return newnode;*/
+
+        std::vector<CEvaluationNode*> children;
+        const CEvaluationNode* child = dynamic_cast<const CEvaluationNode*>(getChild());
+        while (child != NULL)
           {
-            newchild1 = child1->splitBranch(splitnode, left);
-            const CEvaluationNode *child2 = dynamic_cast<const CEvaluationNode*>(child1->getSibling());
-            if (child2 != NULL)
-              {
-                newchild2 = child2->splitBranch(splitnode, left);
-              }
+            CEvaluationNode *newchild = NULL;
+            newchild = child->splitBranch(splitnode, left);
+            children.push_back(newchild);
+            child = dynamic_cast<const CEvaluationNode*>(child->getSibling());
           }
-        CEvaluationNode *newnode = copyNode(newchild1, newchild2);
+        children.push_back(NULL);
+        CEvaluationNode *newnode = copyNode(children);
         return newnode;
       }
   }
@@ -369,6 +382,8 @@ const CEvaluationNode* CEvaluationNode::findTopMinus() const
         child = dynamic_cast<const CEvaluationNode*>(child->getSibling());
         if (child) tmp = child->findTopMinus();
         if (tmp) return tmp;
+
+        //TODO: check if both children contain a minus. This would not be a valid split point.
       }
 
     if (getType() == (OPERATOR | CEvaluationNodeOperator::DIVIDE))
