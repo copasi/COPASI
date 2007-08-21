@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionAnalyzer.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/08/12 18:03:40 $
+//   $Date: 2007/08/21 16:15:07 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -37,8 +37,6 @@ class CFunctionAnalyzer
           known = 16,
           unknown = 7
         };
-
-        //static const std::string StatusName[];
 
         CValue()
             : mStatus(Status(novalue)), mDouble(0.0) {};
@@ -94,13 +92,21 @@ class CFunctionAnalyzer
         friend std::ostream & operator<<(std::ostream &os, const CValue & v);
       };
 
-    static void checkKineticFunction(const CFunction * f);
+    class Result
+      {
+      public:
+        std::vector<std::vector<CValue> > mSubstrateZero;
+      };
+
+    static Result checkKineticFunction(const CFunction * f, const CReaction * reaction = NULL, const CModel * model = NULL);
 
   protected:
 
     static CValue evaluateNode(const CEvaluationNode * node, const std::vector<CValue> & callParameters);
 
-    static void constructCallParameters(const CFunctionParameters & fp, std::vector<CValue> & callParameters);
+    static void constructCallParameters(const CFunctionParameters & fp, std::vector<CValue> & callParameters, bool posi);
+
+    static void constructCallParametersActualValues(std::vector<CValue> & callParameters, /*const CModel* model,*/ const CReaction* reaction);
   };
 
 class CModelAnalyzer
@@ -109,7 +115,7 @@ class CModelAnalyzer
 
     static void checkModel(const CModel* model);
 
-    static void checkReaction(const CReaction* reaction);
+    static void checkReaction(const CReaction* reaction, const CModel* model);
   };
 
 #endif
