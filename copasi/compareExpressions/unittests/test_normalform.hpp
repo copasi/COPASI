@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_normalform.hpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/09 15:35:08 $
+//   $Date: 2007/08/21 15:29:42 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,6 +17,8 @@
 #include <cppunit/TestSuite.h>
 #include <cppunit/TestResult.h>
 #include <cppunit/extensions/HelperMacros.h>
+
+class CNormalFraction;
 
 class test_normalform : public CppUnit::TestFixture
   {
@@ -85,6 +87,9 @@ class test_normalform : public CppUnit::TestFixture
     CPPUNIT_TEST(test_nested_stepwise_fractions);
 
     CPPUNIT_TEST_SUITE_END();
+
+  protected:
+    CNormalFraction* pFraction;
 
   public:
     void setUp();

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/ConvertToCEvaluationNode.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/13 21:05:57 $
+//   $Date: 2007/08/21 15:29:42 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -225,8 +225,8 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalProduct& product)
           if (pMult == pResult)
             {
               // there were no item powers
+              delete pResult;
               pResult = dynamic_cast<CEvaluationNode*>(pResult->getChild())->copyBranch();
-              delete pMult;
             }
           else
             {
@@ -236,6 +236,7 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalProduct& product)
               assert(pParent != NULL);
               if (pParent == pResult)
                 {
+                  delete pResult;
                   pResult = dynamic_cast<CEvaluationNode*>(pMult->getSibling());
                 }
               else

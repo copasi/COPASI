@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_cnormallogical.hpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/18 19:14:09 $
+//   $Date: 2007/08/21 15:29:42 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,6 +19,8 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "compareExpressions/CNormalLogical.h"
+
+class CNormalFraction;
 
 class test_cnormallogical : public CppUnit::TestFixture
   {

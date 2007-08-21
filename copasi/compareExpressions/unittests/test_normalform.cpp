@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_normalform.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/13 21:05:36 $
+//   $Date: 2007/08/21 15:29:42 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,9 +31,15 @@
 #include "compareExpressions/CNormalLogical.h"
 #include "compareExpressions/CNormalLogicalItem.h"
 
-void test_normalform::setUp(){}
+void test_normalform::setUp()
+{
+  pFraction = NULL;
+}
 
-void test_normalform::tearDown(){}
+void test_normalform::tearDown()
+{
+  if (pFraction != NULL) delete pFraction;
+}
 
 void test_normalform::test_item_number()
 {
@@ -41,7 +47,7 @@ void test_normalform::test_item_number()
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
-  CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
   CPPUNIT_ASSERT(pFraction != NULL);
   CPPUNIT_ASSERT(pFraction->checkDenominatorOne() == true);
@@ -62,7 +68,7 @@ void test_normalform::test_item_variable()
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
-  CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
   CPPUNIT_ASSERT(pFraction != NULL);
   CPPUNIT_ASSERT(pFraction->checkDenominatorOne() == true);
@@ -91,7 +97,7 @@ void test_normalform::test_item_constant()
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
-  CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
   CPPUNIT_ASSERT(pFraction != NULL);
   CPPUNIT_ASSERT(pFraction->checkDenominatorOne() == true);
@@ -120,7 +126,7 @@ void test_normalform::test_item_function()
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
-  CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
   CPPUNIT_ASSERT(pFraction != NULL);
   CPPUNIT_ASSERT(pFraction->checkDenominatorOne() == true);
@@ -159,7 +165,7 @@ void test_normalform::test_sum_numbers()
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
-  CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
   CPPUNIT_ASSERT(pFraction != NULL);
 
@@ -180,7 +186,7 @@ void test_normalform::test_sum_variables()
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
-  CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
   CPPUNIT_ASSERT(pFraction != NULL);
 
@@ -222,7 +228,7 @@ void test_normalform::test_sum_constants()
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
-  CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
   CPPUNIT_ASSERT(pFraction != NULL);
 
@@ -264,7 +270,7 @@ void test_normalform::test_sum_functions()
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
-  CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
   CPPUNIT_ASSERT(pFraction != NULL);
 
@@ -326,7 +332,7 @@ void test_normalform::test_sum_functions_reversed()
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
-  CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
   CPPUNIT_ASSERT(pFraction != NULL);
 
@@ -388,7 +394,7 @@ void test_normalform::test_sum_mixed_1()
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
-  CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
   CPPUNIT_ASSERT(pFraction != NULL);
 
@@ -432,7 +438,7 @@ void test_normalform::test_sum_mixed_1_reversed()
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
-  CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
   CPPUNIT_ASSERT(pFraction != NULL);
 
@@ -476,7 +482,7 @@ void test_normalform::test_sum_mixed_2()
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
-  CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
   CPPUNIT_ASSERT(pFraction != NULL);
 
@@ -539,7 +545,7 @@ void test_normalform::test_sum_mixed_2_reversed()
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
-  CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
   CPPUNIT_ASSERT(pFraction != NULL);
 
@@ -602,7 +608,7 @@ void test_normalform::test_product_numbers()
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
-  CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
   CPPUNIT_ASSERT(pFraction != NULL);
 
@@ -622,7 +628,7 @@ void test_normalform::test_product_variables()
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
-  CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
   CPPUNIT_ASSERT(pFraction != NULL);
 
@@ -661,7 +667,7 @@ void test_normalform::test_product_variables_reversed()
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
-  CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
   CPPUNIT_ASSERT(pFraction != NULL);
 
@@ -700,7 +706,7 @@ void test_normalform::test_product_constants()
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
-  CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
   CPPUNIT_ASSERT(pFraction != NULL);
 
@@ -739,7 +745,7 @@ void test_normalform::test_product_constants_reversed()
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
-  CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
   CPPUNIT_ASSERT(pFraction != NULL);
 
@@ -778,7 +784,7 @@ void test_normalform::test_product_functions()
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
-  CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
   CPPUNIT_ASSERT(pFraction != NULL);
 
@@ -837,7 +843,7 @@ void test_normalform::test_product_functions_reversed()
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
-  CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
   CPPUNIT_ASSERT(pFraction != NULL);
 
@@ -896,7 +902,7 @@ void test_normalform::test_product_mixed_1()
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
-  CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
   CPPUNIT_ASSERT(pFraction != NULL);
 
@@ -934,7 +940,7 @@ void test_normalform::test_product_mixed_1_reversed()
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
-  CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
   CPPUNIT_ASSERT(pFraction != NULL);
 
@@ -972,7 +978,7 @@ void test_normalform::test_product_mixed_2()
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
-  CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
   CPPUNIT_ASSERT(pFraction != NULL);
 
@@ -1032,7 +1038,7 @@ void test_normalform::test_product_mixed_2_reversed()
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
-  CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
   CPPUNIT_ASSERT(pFraction != NULL);
 
@@ -1092,7 +1098,7 @@ void test_normalform::test_fraction_numbers()
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
-  CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
   CPPUNIT_ASSERT(pFraction != NULL);
   CPPUNIT_ASSERT(pFraction->checkDenominatorOne() == true);
@@ -1114,7 +1120,7 @@ void test_normalform::test_fraction_variables()
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
-  CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
   CPPUNIT_ASSERT(pFraction != NULL);
 
@@ -1159,7 +1165,7 @@ void test_normalform::test_fraction_constants()
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
-  CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
   CPPUNIT_ASSERT(pFraction != NULL);
 
@@ -1204,7 +1210,7 @@ void test_normalform::test_fraction_functions()
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
-  CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
   CPPUNIT_ASSERT(pFraction != NULL);
 
@@ -1269,7 +1275,7 @@ void test_normalform::test_fraction_mixed_1()
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
-  CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
   CPPUNIT_ASSERT(pFraction != NULL);
 
@@ -1306,7 +1312,7 @@ void test_normalform::test_fraction_mixed_2()
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
-  CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
   CPPUNIT_ASSERT(pFraction != NULL);
 
@@ -1369,7 +1375,7 @@ void test_normalform::test_itempower_numbers()
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
-  CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
   CPPUNIT_ASSERT(pFraction != NULL);
 
@@ -1389,7 +1395,7 @@ void test_normalform::test_itempower_variables()
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
-  CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
   CPPUNIT_ASSERT(pFraction != NULL);
 
@@ -1417,7 +1423,7 @@ void test_normalform::test_itempower_constants()
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
-  CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
   CPPUNIT_ASSERT(pFraction != NULL);
 
@@ -1445,7 +1451,7 @@ void test_normalform::test_itempower_functions()
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
-  CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
   CPPUNIT_ASSERT(pFraction != NULL);
 
@@ -1483,7 +1489,7 @@ void test_normalform::test_generalpower_number_and_variable()
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
-  CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
   CPPUNIT_ASSERT(pFraction != NULL);
 
@@ -1540,7 +1546,7 @@ void test_normalform::test_generalpower_variable_and_variable()
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
-  CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
   CPPUNIT_ASSERT(pFraction != NULL);
 
@@ -1605,7 +1611,7 @@ void test_normalform::test_generalpower_constant_and_constant()
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
-  CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
   CPPUNIT_ASSERT(pFraction != NULL);
 
@@ -1670,7 +1676,7 @@ void test_normalform::test_generalpower_function_and_function()
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
-  CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
   CPPUNIT_ASSERT(pFraction != NULL);
 
@@ -1755,7 +1761,7 @@ void test_normalform::test_generalmodulus_number_and_variable()
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
-  CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
   CPPUNIT_ASSERT(pFraction != NULL);
 
@@ -1812,7 +1818,7 @@ void test_normalform::test_generalmodulus_variable_and_variable()
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
-  CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
   CPPUNIT_ASSERT(pFraction != NULL);
 
@@ -1877,7 +1883,7 @@ void test_normalform::test_generalmodulus_constant_and_constant()
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
-  CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
   CPPUNIT_ASSERT(pFraction != NULL);
 
@@ -1942,7 +1948,7 @@ void test_normalform::test_generalmodulus_function_and_function()
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
-  CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
   CPPUNIT_ASSERT(pFraction != NULL);
 
@@ -2027,7 +2033,7 @@ void test_normalform::test_generalpower_mixed_1()
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
-  CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
   CPPUNIT_ASSERT(pFraction != NULL);
 
@@ -2116,7 +2122,7 @@ void test_normalform::test_generalpower_mixed_2()
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
-  CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
   CPPUNIT_ASSERT(pFraction != NULL);
 
@@ -2191,7 +2197,7 @@ void test_normalform::test_generalpower_mixed_3()
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
-  CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
   CPPUNIT_ASSERT(pFraction != NULL);
 
@@ -2272,7 +2278,7 @@ void test_normalform::test_generalpower_mixed_4()
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
-  CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
   CPPUNIT_ASSERT(pFraction != NULL);
 
@@ -2337,7 +2343,7 @@ void test_normalform::test_generalmodulus_mixed_1()
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
-  CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
   CPPUNIT_ASSERT(pFraction != NULL);
 
@@ -2426,7 +2432,7 @@ void test_normalform::test_generalmodulus_mixed_2()
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
-  CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
   CPPUNIT_ASSERT(pFraction != NULL);
 
@@ -2501,7 +2507,7 @@ void test_normalform::test_generalmodulus_mixed_3()
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
-  CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
   CPPUNIT_ASSERT(pFraction != NULL);
 
@@ -2582,7 +2588,7 @@ void test_normalform::test_generalmodulus_mixed_4()
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
-  CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
   CPPUNIT_ASSERT(pFraction != NULL);
 
@@ -2647,7 +2653,7 @@ void test_normalform::test_simple_stepwise_numbers()
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
-  CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
   CPPUNIT_ASSERT(pFraction != NULL);
   CPPUNIT_ASSERT(pFraction->checkDenominatorOne() == true);
@@ -2718,7 +2724,7 @@ void test_normalform::test_simple_stepwise_fractions()
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
-  CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
   CPPUNIT_ASSERT(pFraction != NULL);
   CPPUNIT_ASSERT(pFraction->checkDenominatorOne() == true);
@@ -2909,7 +2915,7 @@ void test_normalform::test_simple_nested_stepwise_numbers()
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
-  CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
   CPPUNIT_ASSERT(pFraction != NULL);
   CPPUNIT_ASSERT(pFraction->checkDenominatorOne() == true);
@@ -2976,7 +2982,7 @@ void test_normalform::test_simple_nested_stepwise_fractions()
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
-  CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
   CPPUNIT_ASSERT(pFraction != NULL);
   CPPUNIT_ASSERT(pFraction->checkDenominatorOne() == true);
@@ -3159,7 +3165,7 @@ void test_normalform::test_nested_stepwise_fractions()
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
-  CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
   CPPUNIT_ASSERT(pFraction != NULL);
   CPPUNIT_ASSERT(pFraction->checkDenominatorOne() == true);

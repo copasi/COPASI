@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLogical.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/18 19:14:08 $
+//   $Date: 2007/08/21 15:29:42 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -205,15 +205,26 @@ bool CNormalLogical::simplify()
           tmpAndItems.insert(std::make_pair(tmpSet2, false));
           tmpSet2.clear();
           tmpSet2.insert(std::make_pair(new CNormalLogical((*it2).first->getFalseExpression()), false));
-          tmpSet2.insert(std::make_pair(new CNormalLogical((*it2).first->getCondition()), false));
+          CNormalLogical* pTmpLogical = new CNormalLogical((*it2).first->getCondition());
+          if (tmpSet2.insert(std::make_pair(pTmpLogical , false)).second == false)
+            {
+              delete pTmpLogical;
+            }
           tmpAndItems.insert(std::make_pair(tmpSet2, false));
           tmpSet2.clear();
           tmpSet2.insert(std::make_pair(new CNormalLogical((*it2).first->getTrueExpression()), false));
-          tmpSet2.insert(std::make_pair(new CNormalLogical((*it2).first->getFalseExpression()), false));
-          tmpAndItems.insert(std::make_pair(tmpSet2, false));
+          pTmpLogical = new CNormalLogical((*it2).first->getFalseExpression());
+          if (tmpSet2.insert(std::make_pair(pTmpLogical , false)).second == false)
+            {
+              delete pTmpLogical;
+            }
+          if (tmpAndItems.insert(std::make_pair(tmpSet2, false)).second == false)
+            {
+              cleanSet(tmpSet2);
+            }
           ++it2;
         }
-      if (result == false) cleanSet(tmpSet);
+      /*if (result == false)*/ cleanSet(tmpSet);
       ++it;
     }
   if (result == false)
@@ -333,6 +344,7 @@ bool CNormalLogical::simplify()
               if (pItem1->getType() == CNormalLogicalItem::FALSE)
                 {
                   eliminate = true;
+                  delete pItem1;
                   break;
                 }
               pItem1->negate();
@@ -361,13 +373,19 @@ bool CNormalLogical::simplify()
               CNormalLogicalItem* pLogical = new CNormalLogicalItem();
               pLogical->setType(CNormalLogicalItem::FALSE);
               tmpSet.insert(std::make_pair(pLogical, false));
-              tmpAndSets.insert(std::make_pair(tmpSet, false));
+              if (tmpAndSets.insert(std::make_pair(tmpSet, false)).second == false)
+                {
+                  cleanSet(tmpSet);
+                }
             }
           else
             {
               ItemSet tmpSet;
               copySet((*it2).first, tmpSet);
-              tmpAndSets.insert(std::make_pair(tmpSet, false));
+              if (tmpAndSets.insert(std::make_pair(tmpSet, false)).second == false)
+                {
+                  cleanSet(tmpSet);
+                }
             }
           ++it2;
         }
@@ -394,6 +412,7 @@ bool CNormalLogical::simplify()
               if (pLogicalItem1->getType() == CNormalLogicalItem::TRUE)
                 {
                   eliminate = true;
+                  delete pLogicalItem1;
                   break;
                 }
               pLogicalItem1->negate();
@@ -407,6 +426,7 @@ bool CNormalLogical::simplify()
                       if ((*pLogicalItem1) == (*pLogicalItem2))
                         {
                           eliminate = true;
+                          delete pLogicalItem1;
                           break;
                         }
                     }
@@ -459,15 +479,26 @@ bool CNormalLogical::convertAndOrToOrAnd(const std::set<std::pair<std::set<std::
                   while (it2 != endit2)
                     {
                       typename std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> > tmpSet;
-                      tmpSet.insert(std::make_pair(new TYPE(*(*it).first), false));
+                      TYPE* pNewItem = new TYPE(*(*it).first);
+                      if (tmpSet.insert(std::make_pair(pNewItem, false)).second == false)
+                        {
+                          delete pNewItem;
+                        }
                       typename std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> >::const_iterator it3 = (*it2).first.begin(), endit3 = (*it2).first.end();
                       while (it3 != endit3)
                         {
-                          tmpSet.insert(std::make_pair(new TYPE(*(*it3).first), false));
+                          pNewItem = new TYPE(*(*it3).first);
+                          if (tmpSet.insert(std::make_pair(pNewItem, false)).second == false)
+                            {
+                              delete pNewItem;
+                            }
                           ++it3;
                         }
                       ++it2;
-                      target.insert(std::make_pair(tmpSet, false));
+                      if (target.insert(std::make_pair(tmpSet, false)).second == false)
+                        {
+                          cleanSet(tmpSet);
+                        }
                     }
                   ++it;
                 }
@@ -512,8 +543,13 @@ bool CNormalLogical::convertAndOrToOrAnd(const std::set<std::pair<std::set<std::
               else
                 {
                   typename std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> > tmpSet;
-                  tmpSet.insert(std::make_pair(new TYPE(*(*it).first), false));
-                  target.insert(std::make_pair(tmpSet, false));
+                  TYPE* pNewItem = new TYPE(*(*it).first);
+                  tmpSet.insert(std::make_pair(pNewItem, false));
+                  if (target.insert(std::make_pair(tmpSet, false)).second == false)
+                    {
+                      // clean up if the insert failed.
+                      delete pNewItem;
+                    }
                 }
               ++it;
             }
@@ -649,7 +685,12 @@ void CNormalLogical::copySet(const std::set<std::pair<TYPE*, bool>, CNormalLogic
   typename std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> >::const_iterator it = source.begin(), endit = source.end();
   while (it != endit)
     {
-      target.insert(std::make_pair((*it).first->copy(), (*it).second));
+      TYPE* pNewItem = (*it).first->copy();
+      if (target.insert(std::make_pair(pNewItem, (*it).second)).second == false)
+        {
+          // clean up the item if the insert failed
+          delete pNewItem;
+        }
       ++it;
     }
 }
@@ -663,7 +704,11 @@ void CNormalLogical::copySetOfSets(const std::set<std::pair<std::set<std::pair<T
     {
       typename std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> > tmpSet;
       copySet((*it).first, tmpSet);
-      target.insert(std::make_pair(tmpSet, (*it).second));
+      if (target.insert(std::make_pair(tmpSet, (*it).second)).second == false)
+        {
+          // clean the set if the insert failed
+          cleanSet(tmpSet);
+        }
       ++it;
     }
 }
