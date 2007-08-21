@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/PlotWidget.cpp,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/07 14:25:37 $
+//   $Date: 2007/08/21 17:31:46 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -96,7 +96,7 @@ void PlotWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj)
 void PlotWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT32 exc)
 {
   if (exc != 2)
-    table->setText(row, 2, "");
+    table->clearCell(row, 2);
 
   // 3: active?
   if (exc != 3)

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/FunctionWidget.cpp,v $
-//   $Revision: 1.71 $
+//   $Revision: 1.72 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/08/21 16:18:51 $
+//   $Date: 2007/08/21 17:31:46 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -120,8 +120,9 @@ void FunctionWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_IN
 {
   if (exc != 2)
     table->setText(row, 2, FROM_UTF8(CEvaluationTree::TypeName[4]));
+
   if (exc != 3)
-    table->setText(row, 3, "");
+    table->clearCell(row, 3);
 }
 
 QString FunctionWidget::defaultObjectName() const

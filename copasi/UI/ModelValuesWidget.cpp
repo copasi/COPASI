@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModelValuesWidget.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/08/21 16:18:51 $
+//   $Date: 2007/08/21 17:31:46 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -173,15 +173,21 @@ void ModelValuesWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* o
 
 void ModelValuesWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT32 exc)
 {
-  if (exc != COL_INITIAL)
-    table->setText(row, COL_INITIAL, QString::number(0.0));
-
   if (exc != COL_TYPE)
     {
       QComboTableItem * pComboBox = new QComboTableItem(table, mTypes);
       pComboBox->setCurrentItem(0);
       table->setItem(row, COL_TYPE, pComboBox);
     }
+
+  if (exc != COL_INITIAL)
+    table->setText(row, COL_INITIAL, QString::number(0.0));
+
+  if (exc != COL_TRANSIENT)
+    table->clearCell(row, COL_TRANSIENT);
+
+  if (exc != COL_EXPRESSION)
+    table->clearCell(row, COL_EXPRESSION);
 }
 
 QString ModelValuesWidget::defaultObjectName() const

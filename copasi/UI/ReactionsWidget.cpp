@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ReactionsWidget.cpp,v $
-//   $Revision: 1.97 $
+//   $Revision: 1.98 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/08/21 16:18:51 $
+//   $Date: 2007/08/21 17:31:46 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -133,10 +133,13 @@ void ReactionsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj
 void ReactionsWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT32 exc)
 {
   if (exc != 2)
-    table->setText(row, 2, "");
+    table->clearCell(row, 2);
+
   if (exc != 3)
-    table->setText(row, 3, "");
-  table->setText(row, 4, "");
+    table->clearCell(row, 3);
+
+  if (exc != 4)
+    table->clearCell(row, 4);
 }
 
 QString ReactionsWidget::defaultObjectName() const
