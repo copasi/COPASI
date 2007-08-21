@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionAnalyzer.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/08/14 16:01:09 $
+//   $Date: 2007/08/21 09:03:22 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -384,6 +384,18 @@ CFunctionAnalyzer::CValue CFunctionAnalyzer::evaluateNode(const CEvaluationNode 
       return callParameters[pENV->getIndex()];
     }
 
+  const CEvaluationNodeFunction * pENF = dynamic_cast<const CEvaluationNodeFunction*>(node);
+  if (pENF)
+    {
+      //TODO: implement at least the most important functions
+    }
+
+  const CEvaluationNodeChoice * pENC = dynamic_cast<const CEvaluationNodeChoice*>(node);
+  if (pENC)
+    {
+      //TODO: implement
+    }
+
   return CValue::unknown;
 }
 
@@ -428,7 +440,8 @@ void CModelAnalyzer::checkReaction(const CReaction* reaction)
 
   //TODO special case mass action
 
-  //mapping
+  //********* mapping **********************
+
   unsigned C_INT32 i, imax;
   imax = reaction->getChemEq().getSubstrates().size();
   for (i = 0; i < imax; ++i)
@@ -451,19 +464,112 @@ void CModelAnalyzer::checkReaction(const CReaction* reaction)
     }
 
   //for reversible reactions each product of the reaction needs to be mapped to a function parameter with role PRODUCT
-  //for irreversible?
+  if (reaction->getFunction()->isReversible() == TriTrue)
+    {
+      imax = reaction->getChemEq().getProducts().size();
+      for (i = 0; i < imax; ++i)
+        {
+          std::string tmpkey = reaction->getChemEq().getProducts()[i]->getMetaboliteKey();
+
+          unsigned C_INT32 j, jmax = reaction->getFunctionParameters().size();
+          for (j = 0; j < jmax; ++j)
+            {
+              if ((reaction->getFunctionParameters()[j]->getUsage() == CFunctionParameter::PRODUCT)
+                  && reaction->getParameterMappings()[j][0] == tmpkey)
+                break;
+            }
+          if (j == jmax)
+            {
+              //warning/error?
+              std::cout << "A product of this reaction is not mapped to a corresponding function parameter" << std::endl;
+            }
+        }
+    }
+
+  imax = reaction->getChemEq().getModifiers().size();
+  for (i = 0; i < imax; ++i)
+    {
+      //each modifier of the reaction should be mapped to a function parameter with role MODIFIER
+      std::string tmpkey = reaction->getChemEq().getModifiers()[i]->getMetaboliteKey();
+
+      unsigned C_INT32 j, jmax = reaction->getFunctionParameters().size();
+      for (j = 0; j < jmax; ++j)
+        {
+          if ((reaction->getFunctionParameters()[j]->getUsage() == CFunctionParameter::MODIFIER)
+              && reaction->getParameterMappings()[j][0] == tmpkey)
+            break;
+        }
+      if (j == jmax)
+        {
+          //warning
+          std::cout << "A modifier of this reaction is not mapped to a corresponding function parameter" << std::endl;
+        }
+    }
+
+  unsigned C_INT32 j, jmax;
+
+  //loop over all function parameters
+  imax = reaction->getFunctionParameters().size();
+  for (i = 0; i < imax; ++i)
+    {
+      switch (reaction->getFunctionParameters()[i]->getUsage())
+        {
+          //substrate must be matched to a substr. of the reaction (copasi bug?)
+        case CFunctionParameter::SUBSTRATE:
+          jmax = reaction->getChemEq().getSubstrates().size();
+          for (j = 0; j < jmax; ++j)
+            {
+              if (reaction->getParameterMappings()[i][0]
+                  == reaction->getChemEq().getSubstrates()[j]->getMetaboliteKey())
+                break;
+            }
+          if (j == jmax)
+            {
+              //copasi error?
+              std::cout << "A SUBSTRATE function parameter is not mapped to a substrate of the reaction." << std::endl;
+            }
+          break;
+
+          //Product must be matched to a product of the reaction (copasi bug?)
+        case CFunctionParameter::PRODUCT:
+          jmax = reaction->getChemEq().getProducts().size();
+          for (j = 0; j < jmax; ++j)
+            {
+              if (reaction->getParameterMappings()[i][0]
+                  == reaction->getChemEq().getProducts()[j]->getMetaboliteKey())
+                break;
+            }
+          if (j == jmax)
+            {
+              //copasi error?
+              std::cout << "A PRODUCT function parameter is not mapped to a product of the reaction." << std::endl;
+            }
+          break;
+
+        case CFunctionParameter::MODIFIER:
+          jmax = reaction->getChemEq().getModifiers().size();
+          for (j = 0; j < jmax; ++j)
+            {
+              if (reaction->getParameterMappings()[i][0]
+                  == reaction->getChemEq().getModifiers()[j]->getMetaboliteKey())
+                break;
+            }
+          if (j == jmax)
+            {
+              //copasi error?
+              std::cout << "A MODIFIER function parameter is not mapped to a modifier of the reaction." << std::endl;
+              //this is not a user error. The modifier should have been added to the chemeq automatically.
+            }
+          break;
+        }
+    }
 
   //for all function parameters
-  //  substr: must be matched to a substr. of the reaction (copasi bug?)
-  //  Product: must be matched to a product of the reaction (copasi bug?)
-  //  modifier: must be matched to a modifier of the reaction (only warning?). Must be matched to a metab (copasi bug?)
+  //  substr., product, modifier: Must be matched to a metab (copasi bug?)
   //  parameter: must be matched to a local or global parameter (copasi bug?)
   //  volume: copasi bug
   //  time: copasi bug
   //  variable: ???
-
-  //check mapping:
-  // are all reaction participants mapped to a corresponding function parameter?
 
   //check function:
   // irrev: no products should occur
