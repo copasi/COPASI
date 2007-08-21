@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CListOfLayouts.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/08/20 08:57:45 $
+//   $Date: 2007/08/21 08:52:20 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -88,6 +88,10 @@ void CListOfLayouts::exportToSBML(ListOf * lol, std::map<CCopasiObject*, SBase*>
             pdelete(object);
 
             //TODO: delete from map
+            //the object and every object it contains need to be removed from the
+            //map.
+            //For now I do not implement this since layout object are not added to the
+            //map in the first place.
           }
       }
   }

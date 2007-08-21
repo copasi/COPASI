@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/SBMLDocumentLoader.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/20 23:52:33 $
+//   $Date: 2007/08/21 08:52:20 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -111,6 +111,10 @@ void SBMLDocumentLoader::readListOfLayouts(CListOfLayouts & lol,
           lol.addLayout(pLayout, layoutmap);
         }
     }
+
+  //TODO: the layout object should be added to the copasimodelmap. However,
+  //if this is done, the object also need to be removed if necessary in the
+  //sbml exporter (see comment in CListOfLayouts::exportToSBML()).
 }
 
 //static
