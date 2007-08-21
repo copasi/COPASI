@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLogical.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/21 15:29:42 $
+//   $Date: 2007/08/21 16:13:21 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -348,7 +348,11 @@ bool CNormalLogical::simplify()
                   break;
                 }
               pItem1->negate();
-              ItemSet::iterator it4 = ++it3, endit4 = (*it2).first.end();
+              ItemSet::iterator it4 = it3, endit4 = (*it2).first.end();
+              if (it4 != endit4)
+                {
+                  ++it4;
+                }
               while (it4 != endit4 && eliminate == false)
                 {
                   pItem2 = (*it4).first;
