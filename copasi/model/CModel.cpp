@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.308 $
+//   $Revision: 1.309 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/08/01 15:53:23 $
+//   $Author: ssahle $
+//   $Date: 2007/08/21 08:53:47 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -2491,37 +2491,6 @@ bool CModel::convert2NonReversible()
 
         if (/*fn == "Mass action (reversible)"*/false) //obsolete
           {
-            //create the two new reactions
-            reac1 = createReaction(rn1);
-            reac2 = createReaction(rn2);
-
-            ri1.initFromReaction(reac0->getKey());
-            ri1.setReactionName(rn1);
-
-            ri2.initFromReaction(reac0->getKey());
-            ri2.setReactionName(rn2);
-
-            //set the new function
-            ri1.setReversibility(false, "Mass action (irreversible)");
-            ri2.reverse(false, "Mass action (irreversible)");
-
-            ri1.writeBackToReaction(reac1);
-            ri2.writeBackToReaction(reac2);
-
-            //set the kinetic parameters
-            if (reac0->isLocalParameter("k1"))
-              reac1->setParameterValue("k1", reac0->getParameterValue("k1"));
-            else
-              reac1->setParameterMapping("k1", reac0->getParameterMapping("k1")[0]);
-
-            if (reac0->isLocalParameter("k2"))
-              reac2->setParameterValue("k1", reac0->getParameterValue("k2"));
-            else
-              reac2->setParameterMapping("k1", reac0->getParameterMapping("k2")[0]);
-
-            //remove the old reaction
-            reactionsToDelete.push_back(reac0->getObjectName());
-            ret = true;
           }
         else  //new implementation
           {
