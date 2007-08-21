@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.cpp,v $
-//   $Revision: 1.51 $
+//   $Revision: 1.52 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/08/21 17:31:46 $
+//   $Date: 2007/08/21 17:34:46 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -178,7 +178,6 @@ void CopasiTableWidget::fillTable()
     }
 
   // Clear the name in the last row and show default content.
-  // :TODO: Bug 865. This does not suffice we need to restore all default values.
   table->clearCell(jmax, 1);
   defaultTableLineContent(jmax, 0);
 
