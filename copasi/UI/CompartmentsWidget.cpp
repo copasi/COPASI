@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget.cpp,v $
-//   $Revision: 1.110 $
+//   $Revision: 1.111 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/08/07 17:29:34 $
+//   $Date: 2007/08/21 16:18:51 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -178,7 +178,12 @@ void CompartmentsWidget::deleteObjects(const std::vector<std::string> & keys)
       compartmentList.append(", ");
 
       std::set< const CCopasiObject * > Reactions;
-      pModel->appendDependentReactions(comp->getDeletedObjects(), Reactions);
+      std::set< const CCopasiObject * > Metabolites;
+      std::set< const CCopasiObject * > Values;
+      std::set< const CCopasiObject * > Compartments;
+
+      pModel->appendDependentModelObjects(comp->getDeletedObjects(),
+                                          Reactions, Metabolites, Compartments, Values);
 
       if (Reactions.size() > 0)
         {
@@ -196,9 +201,6 @@ void CompartmentsWidget::deleteObjects(const std::vector<std::string> & keys)
           effectedReacList.append("\n");
         }
 
-      std::set< const CCopasiObject * > Metabolites;
-      pModel->appendDependentMetabolites(comp->getDeletedObjects(), Metabolites);
-
       if (Metabolites.size() > 0)
         {
           metabFound = true;
@@ -215,9 +217,6 @@ void CompartmentsWidget::deleteObjects(const std::vector<std::string> & keys)
           effectedMetabList.append("\n");
         }
 
-      std::set< const CCopasiObject * > Values;
-      pModel->appendDependentModelValues(comp->getDeletedObjects(), Values);
-
       if (Values.size() > 0)
         {
           valueFound = true;
@@ -233,9 +232,6 @@ void CompartmentsWidget::deleteObjects(const std::vector<std::string> & keys)
           effectedValueList.append(FROM_UTF8(comp->getObjectName()));
           effectedValueList.append("\n");
         }
-
-      std::set< const CCopasiObject * > Compartments;
-      pModel->appendDependentCompartments(comp->getDeletedObjects(), Compartments);
 
       if (Compartments.size() > 0)
         {

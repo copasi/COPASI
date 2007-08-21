@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.309 $
+//   $Revision: 1.310 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/08/21 08:53:47 $
+//   $Author: shoops $
+//   $Date: 2007/08/21 16:18:50 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -2003,6 +2003,98 @@ std::string CModel::getQuantityRateUnitName() const
 
 //**********************************************************************
 
+void CModel::appendDependentModelObjects(std::set< const CCopasiObject * > DeletedObjects,
+    std::set< const CCopasiObject * > & dependentReactions,
+    std::set< const CCopasiObject * > & dependentMetabolites,
+    std::set< const CCopasiObject * > & dependentCompartments,
+    std::set< const CCopasiObject * > & dependentModelValues) const
+  {
+    unsigned C_INT32 NumberDeleted = 0;
+
+    while (DeletedObjects.size() != NumberDeleted)
+      {
+        NumberDeleted = DeletedObjects.size();
+
+        appendDependentReactions(DeletedObjects, dependentReactions);
+
+        if (dependentReactions.size() > 0)
+          {
+            std::set< const CCopasiObject * >::const_iterator it, itEnd = dependentReactions.end();
+            for (it = dependentReactions.begin(); it != itEnd; ++it)
+              if (DeletedObjects.find(*it) == DeletedObjects.end())
+                {
+                  std::set< const CCopasiObject * > AdditionalObjects =
+                    static_cast< const CReaction * >(*it)->getDeletedObjects();
+
+                  std::set< const CCopasiObject * >::const_iterator itDeleted = AdditionalObjects.begin();
+                  std::set< const CCopasiObject * >::const_iterator endDeleted = AdditionalObjects.end();
+
+                  for (; itDeleted != endDeleted; ++itDeleted)
+                    DeletedObjects.insert(*itDeleted);
+                }
+          }
+
+        appendDependentMetabolites(DeletedObjects, dependentMetabolites);
+
+        if (dependentMetabolites.size() > 0)
+          {
+            std::set< const CCopasiObject * >::const_iterator it, itEnd = dependentMetabolites.end();
+            for (it = dependentMetabolites.begin(); it != itEnd; ++it)
+              if (DeletedObjects.find(*it) == DeletedObjects.end())
+                {
+                  std::set< const CCopasiObject * > AdditionalObjects =
+                    static_cast< const CMetab * >(*it)->getDeletedObjects();
+
+                  std::set< const CCopasiObject * >::const_iterator itDeleted = AdditionalObjects.begin();
+                  std::set< const CCopasiObject * >::const_iterator endDeleted = AdditionalObjects.end();
+
+                  for (; itDeleted != endDeleted; ++itDeleted)
+                    DeletedObjects.insert(*itDeleted);
+                }
+          }
+
+        appendDependentModelValues(DeletedObjects, dependentModelValues);
+
+        if (dependentModelValues.size() > 0)
+          {
+            std::set< const CCopasiObject * >::const_iterator it, itEnd = dependentModelValues.end();
+            for (it = dependentModelValues.begin(); it != itEnd; ++it)
+              if (DeletedObjects.find(*it) == DeletedObjects.end())
+                {
+                  std::set< const CCopasiObject * > AdditionalObjects =
+                    static_cast< const CModelValue * >(*it)->getDeletedObjects();
+
+                  std::set< const CCopasiObject * >::const_iterator itDeleted = AdditionalObjects.begin();
+                  std::set< const CCopasiObject * >::const_iterator endDeleted = AdditionalObjects.end();
+
+                  for (; itDeleted != endDeleted; ++itDeleted)
+                    DeletedObjects.insert(*itDeleted);
+                }
+          }
+
+        appendDependentCompartments(DeletedObjects, dependentCompartments);
+
+        if (dependentCompartments.size() > 0)
+          {
+            std::set< const CCopasiObject * >::const_iterator it, itEnd = dependentCompartments.end();
+            for (it = dependentCompartments.begin(); it != itEnd; ++it)
+              if (DeletedObjects.find(*it) == DeletedObjects.end())
+                {
+                  std::set< const CCopasiObject * > AdditionalObjects =
+                    static_cast< const CCompartment * >(*it)->getDeletedObjects();
+
+                  std::set< const CCopasiObject * >::const_iterator itDeleted = AdditionalObjects.begin();
+                  std::set< const CCopasiObject * >::const_iterator endDeleted = AdditionalObjects.end();
+
+                  for (; itDeleted != endDeleted; ++itDeleted)
+                    DeletedObjects.insert(*itDeleted);
+                }
+          }
+      }
+
+    return;
+  }
+
 void CModel::appendDependentReactions(std::set< const CCopasiObject * > candidates,
                                       std::set< const CCopasiObject * > & dependentReactions) const
   {
@@ -2221,25 +2313,27 @@ bool CModel::removeMetabolite(const std::string & key,
   if (recursive)
     {
       /* Before deleting  delete all the objects that are dependent */
-      std::set< const CCopasiObject * > ToBeDeleted;
       std::set< const CCopasiObject * >::const_iterator it, end;
 
-      // We need to build the list first and then delete to avoid
-      // crashes in the appendDependent... methods caused by the deletion.
-      appendDependentReactions(pMetabolite->getDeletedObjects(), ToBeDeleted);
-      appendDependentMetabolites(pMetabolite->getDeletedObjects(), ToBeDeleted);
-      appendDependentCompartments(pMetabolite->getDeletedObjects(), ToBeDeleted);
-      appendDependentModelValues(pMetabolite->getDeletedObjects(), ToBeDeleted);
+      std::set< const CCopasiObject * > Reactions;
+      std::set< const CCopasiObject * > Metabolites;
+      std::set< const CCopasiObject * > Values;
+      std::set< const CCopasiObject * > Compartments;
 
-      for (it = ToBeDeleted.begin(), end = ToBeDeleted.end(); it != end; ++it)
-        if (dynamic_cast< const CReaction *>(*it) != NULL)
-          removeReaction((*it)->getKey(), false);
-        else if (dynamic_cast< const CMetab *>(*it) != NULL)
-          removeMetabolite((*it)->getKey(), false);
-        else if (dynamic_cast< const CCompartment *>(*it) != NULL)
-          removeCompartment((*it)->getKey(), false);
-        else
-          removeModelValue((*it)->getKey(), false);
+      appendDependentModelObjects(pMetabolite->getDeletedObjects(),
+                                  Reactions, Metabolites, Compartments, Values);
+
+      for (it = Reactions.begin(), end = Reactions.end(); it != end; ++it)
+        removeReaction((*it)->getKey(), false);
+
+      for (it = Metabolites.begin(), end = Metabolites.end(); it != end; ++it)
+        removeMetabolite((*it)->getKey(), false);
+
+      for (it = Compartments.begin(), end = Compartments.end(); it != end; ++it)
+        removeCompartment((*it)->getKey(), false);
+
+      for (it = Values.begin(), end = Values.end(); it != end; ++it)
+        removeModelValue((*it)->getKey(), false);
     }
 
   /* Check if metabolite with that name exists */
@@ -2290,25 +2384,27 @@ bool CModel::removeCompartment(const std::string & key,
   if (recursive)
     {
       /* Before deleting  delete all the objects that are dependent */
-      std::set< const CCopasiObject * > ToBeDeleted;
       std::set< const CCopasiObject * >::const_iterator it, end;
 
-      // We need to build the list first and then delete to avoid
-      // crashes in the appendDependent... methods caused by the deletion.
-      appendDependentReactions(pCompartment->getDeletedObjects(), ToBeDeleted);
-      appendDependentMetabolites(pCompartment->getDeletedObjects(), ToBeDeleted);
-      appendDependentCompartments(pCompartment->getDeletedObjects(), ToBeDeleted);
-      appendDependentModelValues(pCompartment->getDeletedObjects(), ToBeDeleted);
+      std::set< const CCopasiObject * > Reactions;
+      std::set< const CCopasiObject * > Metabolites;
+      std::set< const CCopasiObject * > Values;
+      std::set< const CCopasiObject * > Compartments;
 
-      for (it = ToBeDeleted.begin(), end = ToBeDeleted.end(); it != end; ++it)
-        if (dynamic_cast< const CReaction *>(*it) != NULL)
-          removeReaction((*it)->getKey(), false);
-        else if (dynamic_cast< const CMetab *>(*it) != NULL)
-          removeMetabolite((*it)->getKey(), false);
-        else if (dynamic_cast< const CCompartment *>(*it) != NULL)
-          removeCompartment((*it)->getKey(), false);
-        else
-          removeModelValue((*it)->getKey(), false);
+      appendDependentModelObjects(pCompartment->getDeletedObjects(),
+                                  Reactions, Metabolites, Compartments, Values);
+
+      for (it = Reactions.begin(), end = Reactions.end(); it != end; ++it)
+        removeReaction((*it)->getKey(), false);
+
+      for (it = Metabolites.begin(), end = Metabolites.end(); it != end; ++it)
+        removeMetabolite((*it)->getKey(), false);
+
+      for (it = Compartments.begin(), end = Compartments.end(); it != end; ++it)
+        removeCompartment((*it)->getKey(), false);
+
+      for (it = Values.begin(), end = Values.end(); it != end; ++it)
+        removeModelValue((*it)->getKey(), false);
     }
 
   //Check if Compartment with that name exists
@@ -2353,25 +2449,27 @@ bool CModel::removeReaction(const std::string & key,
   if (recursive)
     {
       /* Before deleting  delete all the objects that are dependent */
-      std::set< const CCopasiObject * > ToBeDeleted;
       std::set< const CCopasiObject * >::const_iterator it, end;
 
-      // We need to build the list first and then delete to avoid
-      // crashes in the appendDependent... methods caused by the deletion.
-      appendDependentReactions(pReaction->getDeletedObjects(), ToBeDeleted);
-      appendDependentMetabolites(pReaction->getDeletedObjects(), ToBeDeleted);
-      appendDependentCompartments(pReaction->getDeletedObjects(), ToBeDeleted);
-      appendDependentModelValues(pReaction->getDeletedObjects(), ToBeDeleted);
+      std::set< const CCopasiObject * > Reactions;
+      std::set< const CCopasiObject * > Metabolites;
+      std::set< const CCopasiObject * > Values;
+      std::set< const CCopasiObject * > Compartments;
 
-      for (it = ToBeDeleted.begin(), end = ToBeDeleted.end(); it != end; ++it)
-        if (dynamic_cast< const CReaction *>(*it) != NULL)
-          removeReaction((*it)->getKey(), false);
-        else if (dynamic_cast< const CMetab *>(*it) != NULL)
-          removeMetabolite((*it)->getKey(), false);
-        else if (dynamic_cast< const CCompartment *>(*it) != NULL)
-          removeCompartment((*it)->getKey(), false);
-        else
-          removeModelValue((*it)->getKey(), false);
+      appendDependentModelObjects(pReaction->getDeletedObjects(),
+                                  Reactions, Metabolites, Compartments, Values);
+
+      for (it = Reactions.begin(), end = Reactions.end(); it != end; ++it)
+        removeReaction((*it)->getKey(), false);
+
+      for (it = Metabolites.begin(), end = Metabolites.end(); it != end; ++it)
+        removeMetabolite((*it)->getKey(), false);
+
+      for (it = Compartments.begin(), end = Compartments.end(); it != end; ++it)
+        removeCompartment((*it)->getKey(), false);
+
+      for (it = Values.begin(), end = Values.end(); it != end; ++it)
+        removeModelValue((*it)->getKey(), false);
     }
 
   //Check if Reaction exists
@@ -2422,25 +2520,27 @@ bool CModel::removeModelValue(const std::string & key,
   if (recursive)
     {
       /* Before deleting  delete all the objects that are dependent */
-      std::set< const CCopasiObject * > ToBeDeleted;
       std::set< const CCopasiObject * >::const_iterator it, end;
 
-      // We need to build the list first and then delete to avoid
-      // crashes in the appendDependent... methods caused by the deletion.
-      appendDependentReactions(pModelValue->getDeletedObjects(), ToBeDeleted);
-      appendDependentMetabolites(pModelValue->getDeletedObjects(), ToBeDeleted);
-      appendDependentCompartments(pModelValue->getDeletedObjects(), ToBeDeleted);
-      appendDependentModelValues(pModelValue->getDeletedObjects(), ToBeDeleted);
+      std::set< const CCopasiObject * > Reactions;
+      std::set< const CCopasiObject * > Metabolites;
+      std::set< const CCopasiObject * > Values;
+      std::set< const CCopasiObject * > Compartments;
 
-      for (it = ToBeDeleted.begin(), end = ToBeDeleted.end(); it != end; ++it)
-        if (dynamic_cast< const CReaction *>(*it) != NULL)
-          removeReaction((*it)->getKey(), false);
-        else if (dynamic_cast< const CMetab *>(*it) != NULL)
-          removeMetabolite((*it)->getKey(), false);
-        else if (dynamic_cast< const CCompartment *>(*it) != NULL)
-          removeCompartment((*it)->getKey(), false);
-        else
-          removeModelValue((*it)->getKey(), false);
+      appendDependentModelObjects(pModelValue->getDeletedObjects(),
+                                  Reactions, Metabolites, Compartments, Values);
+
+      for (it = Reactions.begin(), end = Reactions.end(); it != end; ++it)
+        removeReaction((*it)->getKey(), false);
+
+      for (it = Metabolites.begin(), end = Metabolites.end(); it != end; ++it)
+        removeMetabolite((*it)->getKey(), false);
+
+      for (it = Compartments.begin(), end = Compartments.end(); it != end; ++it)
+        removeCompartment((*it)->getKey(), false);
+
+      for (it = Values.begin(), end = Values.end(); it != end; ++it)
+        removeModelValue((*it)->getKey(), false);
     }
 
   //Check if Value with that name exists

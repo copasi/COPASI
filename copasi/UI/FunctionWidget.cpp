@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/FunctionWidget.cpp,v $
-//   $Revision: 1.70 $
+//   $Revision: 1.71 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/16 19:55:37 $
+//   $Date: 2007/08/21 16:18:51 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -211,7 +211,12 @@ void FunctionWidget::deleteObjects(const std::vector<std::string> & keys)
         }
 
       std::set< const CCopasiObject * > Reactions;
-      pModel->appendDependentReactions(ToBeDeleted, Reactions);
+      std::set< const CCopasiObject * > Metabolites;
+      std::set< const CCopasiObject * > Values;
+      std::set< const CCopasiObject * > Compartments;
+
+      pModel->appendDependentModelObjects(ToBeDeleted,
+                                          Reactions, Metabolites, Compartments, Values);
 
       if (Reactions.size() > 0)
         {
@@ -229,9 +234,6 @@ void FunctionWidget::deleteObjects(const std::vector<std::string> & keys)
           effectedReactionList.append("\n");
         }
 
-      std::set< const CCopasiObject * > Metabolites;
-      pModel->appendDependentMetabolites(ToBeDeleted, Metabolites);
-
       if (Metabolites.size() > 0)
         {
           metaboliteFound = true;
@@ -248,9 +250,6 @@ void FunctionWidget::deleteObjects(const std::vector<std::string> & keys)
           effectedMetaboliteList.append("\n");
         }
 
-      std::set< const CCopasiObject * > Compartments;
-      pModel->appendDependentCompartments(ToBeDeleted, Compartments);
-
       if (Compartments.size() > 0)
         {
           compartmentFound = true;
@@ -266,9 +265,6 @@ void FunctionWidget::deleteObjects(const std::vector<std::string> & keys)
           effectedCompartmentList.append(FROM_UTF8(pFunction->getObjectName()));
           effectedCompartmentList.append("\n");
         }
-
-      std::set< const CCopasiObject * > Values;
-      pModel->appendDependentModelValues(ToBeDeleted, Values);
 
       if (Values.size() > 0)
         {

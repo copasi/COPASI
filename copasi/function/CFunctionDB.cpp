@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionDB.cpp,v $
-//   $Revision: 1.76 $
+//   $Revision: 1.77 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/05/31 15:22:00 $
+//   $Date: 2007/08/21 16:18:51 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -382,31 +382,33 @@ std::vector< CEvaluationTree * > CFunctionDB::getUsedFunctions() const
         std::set< const CCopasiObject * > Function;
         Function.insert(*it);
 
-        std::set< const CCopasiObject * > Dependent;
+        std::set< const CCopasiObject * > Reactions;
+        std::set< const CCopasiObject * > Metabolites;
+        std::set< const CCopasiObject * > Values;
+        std::set< const CCopasiObject * > Compartments;
 
-        pModel->appendDependentReactions(Function, Dependent);
-        if (Dependent.size() != 0)
+        pModel->appendDependentModelObjects(Function,
+                                            Reactions, Metabolites, Compartments, Values);
+
+        if (Reactions.size() != 0)
           {
             UsedFunctions.push_back(*it);
             continue;
           }
 
-        pModel->appendDependentModelValues(Function, Dependent);
-        if (Dependent.size() != 0)
+        if (Metabolites.size() != 0)
           {
             UsedFunctions.push_back(*it);
             continue;
           }
 
-        pModel->appendDependentCompartments(Function, Dependent);
-        if (Dependent.size() != 0)
+        if (Values.size() != 0)
           {
             UsedFunctions.push_back(*it);
             continue;
           }
 
-        pModel->appendDependentMetabolites(Function, Dependent);
-        if (Dependent.size() != 0)
+        if (Compartments.size() != 0)
           {
             UsedFunctions.push_back(*it);
             continue;

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-//   $Revision: 1.148 $
+//   $Revision: 1.149 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/04/02 17:58:34 $
+//   $Date: 2007/08/21 16:18:51 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -870,6 +870,11 @@ void FunctionWidget1::slotCommitButtonClicked()
       QString effectedCompartmentList = "Following COMPARTMENT(S) reference above FUNCTION(S) -\n";
       QString effectedValueList = "Following MODEL QUANTIT(S) reference above FUNCTION(S) -\n";
 
+      std::set< const CCopasiObject * > Reactions;
+      std::set< const CCopasiObject * > Metabolites;
+      std::set< const CCopasiObject * > Values;
+      std::set< const CCopasiObject * > Compartments;
+
       bool functionFound = false;
       bool reactionFound = false;
       bool metaboliteFound = false;
@@ -902,8 +907,8 @@ void FunctionWidget1::slotCommitButtonClicked()
           effectedFunctionList.append("\n");
         }
 
-      std::set< const CCopasiObject * > Reactions;
-      pModel->appendDependentReactions(ToBeDeleted, Reactions);
+      pModel->appendDependentModelObjects(ToBeDeleted,
+                                          Reactions, Metabolites, Compartments, Values);
 
       if (Reactions.size() > 0)
         {
@@ -921,9 +926,6 @@ void FunctionWidget1::slotCommitButtonClicked()
           effectedReactionList.append("\n");
         }
 
-      std::set< const CCopasiObject * > Metabolites;
-      pModel->appendDependentMetabolites(ToBeDeleted, Metabolites);
-
       if (Metabolites.size() > 0)
         {
           metaboliteFound = true;
@@ -940,9 +942,6 @@ void FunctionWidget1::slotCommitButtonClicked()
           effectedMetaboliteList.append("\n");
         }
 
-      std::set< const CCopasiObject * > Compartments;
-      pModel->appendDependentCompartments(ToBeDeleted, Compartments);
-
       if (Compartments.size() > 0)
         {
           compartmentFound = true;
@@ -958,9 +957,6 @@ void FunctionWidget1::slotCommitButtonClicked()
           effectedCompartmentList.append(FROM_UTF8(pFunction->getObjectName()));
           effectedCompartmentList.append("\n");
         }
-
-      std::set< const CCopasiObject * > Values;
-      pModel->appendDependentModelValues(ToBeDeleted, Values);
 
       if (Values.size() > 0)
         {
@@ -1121,7 +1117,12 @@ void FunctionWidget1::slotDeleteButtonClicked()
     }
 
   std::set< const CCopasiObject * > Reactions;
-  pModel->appendDependentReactions(ToBeDeleted, Reactions);
+  std::set< const CCopasiObject * > Metabolites;
+  std::set< const CCopasiObject * > Values;
+  std::set< const CCopasiObject * > Compartments;
+
+  pModel->appendDependentModelObjects(ToBeDeleted,
+                                      Reactions, Metabolites, Compartments, Values);
 
   if (Reactions.size() > 0)
     {
@@ -1139,9 +1140,6 @@ void FunctionWidget1::slotDeleteButtonClicked()
       effectedReactionList.append("\n");
     }
 
-  std::set< const CCopasiObject * > Metabolites;
-  pModel->appendDependentMetabolites(ToBeDeleted, Metabolites);
-
   if (Metabolites.size() > 0)
     {
       metaboliteFound = true;
@@ -1158,9 +1156,6 @@ void FunctionWidget1::slotDeleteButtonClicked()
       effectedMetaboliteList.append("\n");
     }
 
-  std::set< const CCopasiObject * > Compartments;
-  pModel->appendDependentCompartments(ToBeDeleted, Compartments);
-
   if (Compartments.size() > 0)
     {
       compartmentFound = true;
@@ -1176,9 +1171,6 @@ void FunctionWidget1::slotDeleteButtonClicked()
       effectedCompartmentList.append(FROM_UTF8(pFunction->getObjectName()));
       effectedCompartmentList.append("\n");
     }
-
-  std::set< const CCopasiObject * > Values;
-  pModel->appendDependentModelValues(ToBeDeleted, Values);
 
   if (Values.size() > 0)
     {

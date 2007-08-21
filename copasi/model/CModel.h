@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.145 $
+//   $Revision: 1.146 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/31 17:57:34 $
+//   $Date: 2007/08/21 16:18:50 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -894,6 +894,21 @@ class CModel : public CModelEntity
     /* Remove a metabolite from the model */
     bool removeMetabolite(const std::string & key,
                           const bool & recursive = true);
+
+    /**
+     * Appends pointers to all model objects, which are dependent on the candidates
+     * to appropriate lists.
+     * @param std::set< const CCopasiObject * > candidates
+     * @param std::set< const CCopasiObject * > & dependentReactions
+     * @param std::set< const CCopasiObject * > & dependentMetabolites
+     * @param std::set< const CCopasiObject * > & dependentCompartments
+     * @param std::set< const CCopasiObject * > & dependentModelValues
+     */
+    void appendDependentModelObjects(std::set< const CCopasiObject * > candidates,
+                                     std::set< const CCopasiObject * > & dependentReactions,
+                                     std::set< const CCopasiObject * > & dependentMetabolites,
+                                     std::set< const CCopasiObject * > & dependentCompartments,
+                                     std::set< const CCopasiObject * > & dependentModelValues) const;
 
     /**
      * Appends pointers to reactions which are dependent on the candidates to the

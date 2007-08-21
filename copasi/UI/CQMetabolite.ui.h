@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMetabolite.ui.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/08/07 18:55:57 $
+//   $Date: 2007/08/21 16:18:51 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -111,7 +111,12 @@ void CQMetabolite::slotBtnDelete()
   metaboliteList.append(", ");
 
   std::set< const CCopasiObject * > Reactions;
-  pModel->appendDependentReactions(mpMetab->getDeletedObjects(), Reactions);
+  std::set< const CCopasiObject * > Metabolites;
+  std::set< const CCopasiObject * > Values;
+  std::set< const CCopasiObject * > Compartments;
+
+  pModel->appendDependentModelObjects(mpMetab->getDeletedObjects(),
+                                      Reactions, Metabolites, Compartments, Values);
 
   if (Reactions.size() > 0)
     {
@@ -129,9 +134,6 @@ void CQMetabolite::slotBtnDelete()
       effectedReacList.append("\n");
     }
 
-  std::set< const CCopasiObject * > Metabolites;
-  pModel->appendDependentMetabolites(mpMetab->getDeletedObjects(), Metabolites);
-
   if (Metabolites.size() > 0)
     {
       metabFound = true;
@@ -148,9 +150,6 @@ void CQMetabolite::slotBtnDelete()
       effectedMetabList.append("\n");
     }
 
-  std::set< const CCopasiObject * > Values;
-  pModel->appendDependentModelValues(mpMetab->getDeletedObjects(), Values);
-
   if (Values.size() > 0)
     {
       valueFound = true;
@@ -166,9 +165,6 @@ void CQMetabolite::slotBtnDelete()
       effectedValueList.append(FROM_UTF8(mpMetab->getObjectName()));
       effectedValueList.append("\n");
     }
-
-  std::set< const CCopasiObject * > Compartments;
-  pModel->appendDependentCompartments(mpMetab->getDeletedObjects(), Compartments);
 
   if (Compartments.size() > 0)
     {

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQModelValue.ui.h,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/24 18:40:20 $
+//   $Date: 2007/08/21 16:18:51 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -65,6 +65,10 @@ void CQModelValue::slotBtnDelete()
   CModel * pModel = CCopasiDataModel::Global->getModel();
   if (pModel == NULL)
     return;
+  /*
+  std::set< const CCopasiObject * > DeletedObjects;
+  unsigned C_INT32 NumberDeleted = 0;
+  */
 
   QString valueList = "Are you sure you want to delete listed MODEL VALUE(S) ?\n";
   QString effectedCompartmentList = "Following COMPARTMENT(S) reference above MODEL VALUE(S) and will be deleted -\n";
@@ -81,7 +85,12 @@ void CQModelValue::slotBtnDelete()
   valueList.append(", ");
 
   std::set< const CCopasiObject * > Reactions;
-  pModel->appendDependentReactions(mpModelValue->getDeletedObjects(), Reactions);
+  std::set< const CCopasiObject * > Metabolites;
+  std::set< const CCopasiObject * > Values;
+  std::set< const CCopasiObject * > Compartments;
+
+  pModel->appendDependentModelObjects(mpModelValue->getDeletedObjects(),
+                                      Reactions, Metabolites, Compartments, Values);
 
   if (Reactions.size() > 0)
     {
@@ -99,9 +108,6 @@ void CQModelValue::slotBtnDelete()
       effectedReacList.append("\n");
     }
 
-  std::set< const CCopasiObject * > Metabolites;
-  pModel->appendDependentMetabolites(mpModelValue->getDeletedObjects(), Metabolites);
-
   if (Metabolites.size() > 0)
     {
       metabFound = true;
@@ -118,9 +124,6 @@ void CQModelValue::slotBtnDelete()
       effectedMetabList.append("\n");
     }
 
-  std::set< const CCopasiObject * > Values;
-  pModel->appendDependentModelValues(mpModelValue->getDeletedObjects(), Values);
-
   if (Values.size() > 0)
     {
       valueFound = true;
@@ -136,9 +139,6 @@ void CQModelValue::slotBtnDelete()
       effectedValueList.append(FROM_UTF8(mpModelValue->getObjectName()));
       effectedValueList.append("\n");
     }
-
-  std::set< const CCopasiObject * > Compartments;
-  pModel->appendDependentCompartments(mpModelValue->getDeletedObjects(), Compartments);
 
   if (Compartments.size() > 0)
     {

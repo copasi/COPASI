@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget1.cpp,v $
-//   $Revision: 1.93 $
+//   $Revision: 1.94 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/04/02 17:58:34 $
+//   $Date: 2007/08/21 16:18:51 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -312,6 +312,11 @@ void CompartmentsWidget1::slotBtnDeleteClicked()
   QString effectedReacList = "Following REACTION(S) reference above COMPARTMENT(S) and will be deleted -\n";
   QString effectedValueList = "Following MODEL VALUE(S) reference above COMPARTMENT(S) and will be deleted -\n";
 
+  std::set< const CCopasiObject * > Reactions;
+  std::set< const CCopasiObject * > Metabolites;
+  std::set< const CCopasiObject * > Values;
+  std::set< const CCopasiObject * > Compartments;
+
   bool compartmentFound = false;
   bool metabFound = false;
   bool reacFound = false;
@@ -320,8 +325,8 @@ void CompartmentsWidget1::slotBtnDeleteClicked()
   compartmentList.append(FROM_UTF8(comp->getObjectName()));
   compartmentList.append(", ");
 
-  std::set< const CCopasiObject * > Reactions;
-  pModel->appendDependentReactions(comp->getDeletedObjects(), Reactions);
+  pModel->appendDependentModelObjects(comp->getDeletedObjects(),
+                                      Reactions, Metabolites, Compartments, Values);
 
   if (Reactions.size() > 0)
     {
@@ -339,9 +344,6 @@ void CompartmentsWidget1::slotBtnDeleteClicked()
       effectedReacList.append("\n");
     }
 
-  std::set< const CCopasiObject * > Metabolites;
-  pModel->appendDependentMetabolites(comp->getDeletedObjects(), Metabolites);
-
   if (Metabolites.size() > 0)
     {
       metabFound = true;
@@ -358,9 +360,6 @@ void CompartmentsWidget1::slotBtnDeleteClicked()
       effectedMetabList.append("\n");
     }
 
-  std::set< const CCopasiObject * > Values;
-  pModel->appendDependentModelValues(comp->getDeletedObjects(), Values);
-
   if (Values.size() > 0)
     {
       valueFound = true;
@@ -376,9 +375,6 @@ void CompartmentsWidget1::slotBtnDeleteClicked()
       effectedValueList.append(FROM_UTF8(comp->getObjectName()));
       effectedValueList.append("\n");
     }
-
-  std::set< const CCopasiObject * > Compartments;
-  pModel->appendDependentCompartments(comp->getDeletedObjects(), Compartments);
 
   if (Compartments.size() > 0)
     {
