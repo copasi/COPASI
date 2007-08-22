@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.219 $
+//   $Revision: 1.220 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/08/05 10:08:21 $
+//   $Author: shoops $
+//   $Date: 2007/08/22 12:59:17 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,7 +27,7 @@
 
 #include "DataModelGUI.h"
 #include "CompartmentsWidget.h"
-#include "CompartmentsWidget1.h"
+#include "CQCompartment.h"
 //#include "FunctionSymbols.h"
 #include "FunctionWidget.h"
 #include "FunctionWidget1.h"
@@ -336,7 +336,7 @@ void ListViews::ConstructNodeWidgets()
   if (!compartmentsWidget) compartmentsWidget = new CompartmentsWidget(this);
   compartmentsWidget->hide();
 
-  if (!compartmentsWidget1) compartmentsWidget1 = new CompartmentsWidget1(this);
+  if (!compartmentsWidget1) compartmentsWidget1 = new CQCompartment(this);
   compartmentsWidget1->hide();
 
 #ifdef HAVE_MML
