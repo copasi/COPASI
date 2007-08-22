@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMetabolite.ui.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/08/21 16:18:51 $
+//   $Date: 2007/08/22 12:53:42 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -45,10 +45,7 @@ void CQMetabolite::init()
   mItemToType.push_back(CModelEntity::ASSIGNMENT);
   mItemToType.push_back(CModelEntity::ODE);
 
-  mpReactionTable->verticalHeader()->hide();
-  mpReactionTable->setLeftMargin(0);
-  mpReactionTable->horizontalHeader()->hide();
-  mpReactionTable->setTopMargin(0);
+  mpReactionTable->header()->hide();
 
   // :TODO: Enable this for initial expressions
   mpComboBoxInitialType->hide();
@@ -553,7 +550,7 @@ void CQMetabolite::save()
 void CQMetabolite::destroy()
 {}
 
-void CQMetabolite::slotReactionTableCurrentChanged(int, int, int, const QPoint &)
+void CQMetabolite::slotReactionTableCurrentChanged(QListViewItem * pItem)
 {
   CModel * pModel = CCopasiDataModel::Global->getModel();
   if (pModel == NULL) return;
@@ -564,7 +561,7 @@ void CQMetabolite::slotReactionTableCurrentChanged(int, int, int, const QPoint &
   pModel->appendDependentReactions(mpMetab->getDeletedObjects(), Reactions);
 
   std::string s1, s2;
-  s1 = mpReactionTable->text(mpReactionTable->currentRow(), 0).utf8();
+  s1 = pItem->text(0).utf8();
   s1 = s1.substr(0, s1.length() - 2);
 
   C_INT32 i = 0;
@@ -620,7 +617,9 @@ void CQMetabolite::loadReactionTable()
   std::set< const CCopasiObject * > Reactions;
   pModel->appendDependentReactions(mpMetab->getDeletedObjects(), Reactions);
 
-  mpReactionTable->setNumRows(std::max<unsigned C_INT32>(1, Reactions.size()));
+  mpReactionTable->clear();
+  mpReactionTable->setColumnWidth(0, 10);
+  mpReactionTable->setColumnWidth(1, 10);
 
   std::set< const CCopasiObject * >::const_iterator it = Reactions.begin();
   std::set< const CCopasiObject * >::const_iterator end = Reactions.end();
@@ -630,18 +629,13 @@ void CQMetabolite::loadReactionTable()
   for (; it != end; ++it, ++i)
     {
       pReaction = static_cast< const CReaction * >(*it);
-      mpReactionTable->setText(i, 0, FROM_UTF8(pReaction->getObjectName()) + ": ");
-      mpReactionTable->setText(i, 1, FROM_UTF8(CChemEqInterface::getChemEqString(CCopasiDataModel::Global->getModel(), *pReaction, false)));
+      new QListViewItem(mpReactionTable,
+                        FROM_UTF8(pReaction->getObjectName()) + ": ",
+                        FROM_UTF8(CChemEqInterface::getChemEqString(CCopasiDataModel::Global->getModel(), *pReaction, false)));
     }
 
   if (i == 0)
-    {
-      mpReactionTable->setText(0, 0, "none");
-      mpReactionTable->setText(0, 1, "");
-    }
-
-  mpReactionTable->adjustColumn(0);
-  mpReactionTable->adjustColumn(1);
+    new QListViewItem(mpReactionTable, "none");
 
   return;
 }
