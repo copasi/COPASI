@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget.cpp,v $
-//   $Revision: 1.111 $
+//   $Revision: 1.112 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/08/21 16:18:51 $
+//   $Date: 2007/08/22 15:45:20 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,14 +22,12 @@
 
 #include <qlayout.h>
 #include <qwidget.h>
-// #include <qmessagebox.h>
 #include <qfont.h>
 #include <qpushbutton.h>
 #include <qaction.h>
 #include <qregexp.h>
 #include <qvalidator.h>
 
-//#include "MyTable.h"
 #include "CQMessageBox.h"
 #include "listviews.h"
 #include "qtUtilities.h"
@@ -37,6 +35,15 @@
 #include "model/CCompartment.h"
 #include "report/CKeyFactory.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "function/CExpression.h"
+
+#define COL_MARK         0
+#define COL_NAME         1
+#define COL_TYPE         2
+#define COL_IVOLUME      3
+#define COL_VOLUME       4
+#define COL_RATE         5
+#define COL_EXPRESSION   6
 
 std::vector<const CCopasiObject*> CompartmentsWidget::getObjects() const
   {
@@ -53,20 +60,31 @@ std::vector<const CCopasiObject*> CompartmentsWidget::getObjects() const
 void CompartmentsWidget::init()
 {
   mOT = ListViews::COMPARTMENT;
-  numCols = 3; //+ 1;
+  numCols = 7;
   table->setNumCols(numCols);
-  //table->QTable::setNumRows(1);
 
   //Setting table headers
-
   QHeader *tableHeader = table->horizontalHeader();
+  tableHeader->setLabel(COL_MARK, "Status");
+  tableHeader->setLabel(COL_NAME, "Name");
+  tableHeader->setLabel(COL_TYPE, "Type");
+  // tableHeader->setLabel(COL_IVOLUME, "Initial Volume");
+  // tableHeader->setLabel(COL_VOLUME, "Volume");
+  // tableHeader->setLabel(COL_RATE, "Rate");
+  tableHeader->setLabel(COL_EXPRESSION, "Expression");
 
-  tableHeader->setLabel(0, "Status");
-  tableHeader->setLabel(1, "Name");
+  // Set readonly
+  table->setColumnReadOnly (COL_VOLUME, true);
+  table->setColumnReadOnly (COL_RATE, true);
+  table->setColumnReadOnly (COL_EXPRESSION, true);
 
-  //for sbml ids
-  //tableHeader->setLabel(numCols - 1, "SBML ID");
-  //table->setColumnReadOnly(numCols - 1, true);
+  mTypes.push_back(FROM_UTF8(CModelEntity::StatusName[CModelEntity::FIXED]));
+  mTypes.push_back(FROM_UTF8(CModelEntity::StatusName[CModelEntity::ASSIGNMENT]));
+  mTypes.push_back(FROM_UTF8(CModelEntity::StatusName[CModelEntity::ODE]));
+
+  mItemToType.push_back(CModelEntity::FIXED);
+  mItemToType.push_back(CModelEntity::ASSIGNMENT);
+  mItemToType.push_back(CModelEntity::ODE);
 }
 
 void CompartmentsWidget::updateHeaderUnits()
@@ -76,22 +94,58 @@ void CompartmentsWidget::updateHeaderUnits()
   if (CCopasiDataModel::Global->getModel())
     {
       std::string str = CCopasiDataModel::Global->getModel()->getVolumeUnitName();
-      tableHeader->setLabel(2, "Volume\n(" + FROM_UTF8(str) + ")");
+      tableHeader->setLabel(COL_IVOLUME, "Initial Volume\n(" + FROM_UTF8(str) + ")");
+      tableHeader->setLabel(COL_VOLUME, "Volume\n(" + FROM_UTF8(str) + ")");
+      tableHeader->setLabel(COL_RATE,
+                            "Rate\n(" + FROM_UTF8(str) + "/" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getTimeUnitName()) + ")");
     }
 }
 
 void CompartmentsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_INT32 row)
 {
   if (!obj) return;
-  const CCompartment* pComp = (const CCompartment*)obj;
-  table->setText(row, 1, FROM_UTF8(pComp->getObjectName()));
-  table->setText(row, 2, QString::number(pComp->getValue()));
+  const CCompartment * pComp = static_cast< const CCompartment * >(obj);
+
+  // Name
+  table->setText(row, COL_NAME, FROM_UTF8(pComp->getObjectName()));
+
+  // Type
+  QComboTableItem * pComboBox = new QComboTableItem(table, mTypes);
+  pComboBox->setCurrentItem(FROM_UTF8(CModelEntity::StatusName[pComp->getStatus()]));
+  table->setItem(row, COL_TYPE, pComboBox);
+
+  // Initial Volume
+  table->setText(row, COL_IVOLUME, QString::number(pComp->getInitialValue()));
+
+  // Volume
+  table->setText(row, COL_VOLUME, QString::number(pComp->getValue()));
+
+  // Rate
+  table->setText(row, COL_RATE, QString::number(pComp->getRate()));
+
+  // Expression
+  const CExpression * pExpression = pComp->getExpressionPtr();
+  if (pExpression != NULL)
+    table->setText(row, COL_EXPRESSION, FROM_UTF8(pExpression->getDisplayString()));
+  else
+    table->setText(row, COL_EXPRESSION, "");
 }
 
 void CompartmentsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj)
 {
   if (!obj) return;
+  CCompartment * pComp = static_cast< CCompartment * >(obj);
+
+  // Type
+  if (dynamic_cast<QComboTableItem *>(table->item(row, COL_TYPE)))
+    pComp->setStatus((CModelEntity::Status) mItemToType[static_cast<QComboTableItem *>(table->item(row, COL_TYPE))->currentItem()]);
+
+  // Initial Volume
+  pComp->setInitialValue(table->text(row, COL_IVOLUME).toDouble());
+
+  /*
   int pos = 0;
+
   QDoubleValidator v(this, "");
   QString tmpstring = table->text(row, 2);
   if ((v.validate(tmpstring, pos) == QValidator::Intermediate) ||
@@ -102,36 +156,40 @@ void CompartmentsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* 
                                 QMessageBox::Ok, QMessageBox::NoButton);
       return;
     }
-  CCompartment* pComp = (CCompartment*)obj;
-  pComp->setInitialValue(table->text(row, 2).toDouble());
+  */
 }
 
 void CompartmentsWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT32 exc)
 {
-  if (exc != 2)
-    table->setText(row, 2, QString::number(1.0));
+  // Type
+  if (exc != COL_TYPE)
+    {
+      QComboTableItem * pComboBox = new QComboTableItem(table, mTypes);
+      pComboBox->setCurrentItem(0);
+      table->setItem(row, COL_TYPE, pComboBox);
+    }
+
+  // Initial Volume
+  if (exc != COL_IVOLUME)
+    table->setText(row, COL_IVOLUME, QString::number(1.0));
+
+  // Volume
+  if (exc != COL_VOLUME)
+    table->clearCell(row, COL_VOLUME);
+
+  // Rate
+  if (exc != COL_RATE)
+    table->clearCell(row, COL_RATE);
+
+  // Expression
+  if (exc != COL_EXPRESSION)
+    table->clearCell(row, COL_EXPRESSION);
 }
 
 QString CompartmentsWidget::defaultObjectName() const
   {
     return "compartment";
   }
-
-//specific
-/*void CompartmentsWidget::createNewObject()
-{
-  std::string name = "compartment_0";
-  int i = 0;
-  while (!CCopasiDataModel::Global->getModel()->createCompartment(name))
-    {
-      i++;
-      name = "compartment_";
-      name += (const char *)QString::number(i).utf8();
-    }
-  table->setText(table->numRows() - 1, 1, FROM_UTF8(name));
-  table->setNumRows(table->numRows());
-  ListViews::notify(ListViews::COMPARTMENT, ListViews::ADD);
-}*/
 
 CCopasiObject* CompartmentsWidget::createNewObject(const std::string & name)
 {

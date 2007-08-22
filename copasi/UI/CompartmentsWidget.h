@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget.h,v $
-//   $Revision: 1.41 $
+//   $Revision: 1.42 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/08/07 17:29:34 $
+//   $Date: 2007/08/22 15:45:20 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -78,6 +78,17 @@ class CompartmentsWidget : public CopasiTableWidget
      * the prefix that is used to construct new object names
      */
     virtual QString defaultObjectName() const;
+
+  private:
+    /**
+     * A list containing the possible selections for type
+     */
+    QStringList mTypes;
+
+    /**
+     * A vector mapping the item index to a model valu type
+     */
+    std::vector< unsigned C_INT32 > mItemToType;
   };
 
 #endif
