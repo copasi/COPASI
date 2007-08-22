@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLogical.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/17 13:36:09 $
+//   $Date: 2007/08/22 17:30:11 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,6 +25,9 @@ class CNormalChoiceLogical;
 class CNormalLogical : public CNormalBase
   {
   public:
+    std::string getLeft(){return std::string("dummy");}
+    std::string getRight(){return std::string("dummy");}
+
     template<typename TYPE>
     class SetSorter
       {

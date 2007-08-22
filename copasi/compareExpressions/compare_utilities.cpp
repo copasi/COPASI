@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/compare_utilities.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/10 13:42:20 $
+//   $Date: 2007/08/22 17:30:11 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -270,14 +270,8 @@ void normalize_variable_names(CNormalBase* pBase, std::map<std::string, std::str
     }
   else if ((pLogicalItem = dynamic_cast<CNormalLogicalItem*>(pBase)) != NULL)
     {
-      if (pLogicalItem->getLeft() != NULL)
-        {
-          normalize_variable_names(pLogicalItem->getLeft(), variableMap);
-        }
-      if (pLogicalItem->getRight() != NULL)
-        {
-          normalize_variable_names(pLogicalItem->getRight(), variableMap);
-        }
+      normalize_variable_names(&pLogicalItem->getLeft(), variableMap);
+      normalize_variable_names(&pLogicalItem->getRight(), variableMap);
     }
   else if ((pProduct = dynamic_cast<CNormalProduct*>(pBase)) != NULL)
     {

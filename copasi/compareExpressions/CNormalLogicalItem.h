@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLogicalItem.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/08 10:27:29 $
+//   $Date: 2007/08/22 17:30:11 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,8 +17,7 @@
 #include <string>
 
 #include "compareExpressions/CNormalBase.h"
-
-class CNormalFraction;
+#include "compareExpressions/CNormalFraction.h"
 
 class CNormalLogicalItem : public CNormalBase
   {
@@ -38,8 +37,8 @@ class CNormalLogicalItem : public CNormalBase
 
   protected:
     Type mType;
-    CNormalFraction* mpLeft;
-    CNormalFraction* mpRight;
+    CNormalFraction mLeft;
+    CNormalFraction mRight;
 
   public:
     CNormalLogicalItem();
@@ -52,10 +51,10 @@ class CNormalLogicalItem : public CNormalBase
     virtual std::string toString() const;
     virtual bool simplify();
 
-    CNormalFraction* getLeft();
-    const CNormalFraction* getLeft() const;
-    CNormalFraction* getRight();
-    const CNormalFraction* getRight() const;
+    CNormalFraction& getLeft();
+    const CNormalFraction& getLeft() const;
+    CNormalFraction& getRight();
+    const CNormalFraction& getRight() const;
 
     bool setLeft(const CNormalFraction& left);
     bool setRight(const CNormalFraction& right);

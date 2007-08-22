@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/ConvertToCEvaluationNode.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/21 15:41:12 $
+//   $Date: 2007/08/22 17:30:11 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1258,34 +1258,26 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalLogicalItem& item)
     }
   if (item.getType() != CNormalLogicalItem::TRUE && item.getType() != CNormalLogicalItem::FALSE)
     {
-      if (item.getLeft() != NULL && item.getRight() != NULL)
+      CEvaluationNode* pChild1 = convertToCEvaluationNode(item.getLeft());
+      if (pChild1 == NULL)
         {
-          CEvaluationNode* pChild1 = convertToCEvaluationNode(*item.getLeft());
-          if (pChild1 == NULL)
+          delete pLogicalNode;
+          pLogicalNode = NULL;
+        }
+      else
+        {
+          CEvaluationNode* pChild2 = convertToCEvaluationNode(item.getRight());
+          if (pChild2 == NULL)
             {
               delete pLogicalNode;
               pLogicalNode = NULL;
             }
           else
             {
-              CEvaluationNode* pChild2 = convertToCEvaluationNode(*item.getRight());
-              if (pChild2 == NULL)
-                {
-                  delete pLogicalNode;
-                  pLogicalNode = NULL;
-                }
-              else
-                {
-                  pLogicalNode->addChild(pChild1);
-                  pLogicalNode->addChild(pChild2);
-                  pLogicalNode->compile(NULL);
-                }
+              pLogicalNode->addChild(pChild1);
+              pLogicalNode->addChild(pChild2);
+              pLogicalNode->compile(NULL);
             }
-        }
-      else
-        {
-          delete pLogicalNode;
-          pLogicalNode = NULL;
         }
     }
   return pLogicalNode;

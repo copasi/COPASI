@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLogical.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/21 16:13:21 $
+//   $Date: 2007/08/22 17:30:11 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -168,6 +168,7 @@ const CNormalLogical::ItemSetOfSets& CNormalLogical::getAndSets() const
 bool CNormalLogical::simplify()
 {
   bool result = true;
+  std::cout << "Running simplify on " << *this << std::endl;
   // first get rid of all choices
   // if A then B else C is replaced by (A AND B) OR (NOT(A) AND C)
   // to save some memory and computing power, we can already make one more
@@ -178,11 +179,13 @@ bool CNormalLogical::simplify()
   std::set<std::pair<std::set<std::pair<CNormalLogical*, bool>, CNormalLogical::SetSorter<CNormalLogical> >, bool>, CNormalLogical::SetOfSetsSorter<CNormalLogical> > tmpAndItems;
   std::set<std::pair<std::set<std::pair<CNormalLogical*, bool>, CNormalLogical::SetSorter<CNormalLogical> >, bool>, CNormalLogical::SetOfSetsSorter<CNormalLogical> > tmpOrItems;
   ChoiceSetOfSets::const_iterator it = this->mChoices.begin(), endit = this->mChoices.end();
+  std::cout << "Eliminating choices: " << this->mChoices.size() << std::endl;
   while (it != endit && result == true)
     {
       ChoiceSet tmpSet;
       if ((*it).second == true)
         {
+          std::cout << "Negating choice." << std::endl;
           result = negateSets((*it).first, tmpSet);
         }
       else
@@ -192,19 +195,154 @@ bool CNormalLogical::simplify()
       ChoiceSet::iterator it2 = tmpSet.begin(), endit2 = tmpSet.end();
       while (it2 != endit2 && result == true)
         {
+          std::cout << "Expanding choice to (A & B) | (!A & B)" << std::endl;
           if ((*it2).second == true)
             {
               (*it2).first->negate();
             }
+          std::cout << "Simplifying choice:" << std::endl;
           (*it2).first->simplify();
           std::set<std::pair<CNormalLogical*, bool>, CNormalLogical::SetSorter<CNormalLogical> > tmpSet2;
-          tmpSet2.insert(std::make_pair(new CNormalLogical((*it2).first->getTrueExpression()), false));
-          CNormalLogical* pLogical = new CNormalLogical((*it2).first->getCondition());
+
+          std::cout << "printing true expression before copy: " << std::endl;
+          std::cout << "condition: " << it2->first->getTrueExpression() << std::endl;
+          std::cout << "num choices: " << it2->first->getTrueExpression().getChoices().size() << std::endl;
+          std::cout << "num and sets: " << it2->first->getTrueExpression().getAndSets().size() << std::endl;
+          ItemSetOfSets::const_iterator posC = it2->first->getTrueExpression().getAndSets().begin();
+          while (posC != it2->first->getTrueExpression().getAndSets().end())
+            {
+              std::cout << "new set: " << std::endl;
+              ItemSet::const_iterator posD = posC->first.begin();
+              while (posD != posC->first.end())
+                {
+                  std::cout << "item: " << *(posD->first) << std::endl;
+                  std::cout << "item left: " << posD->first->getLeft() << std::endl;
+                  std::cout << "item right: " << posD->first->getRight() << std::endl;
+                  ++posD;
+                }
+              ++posC;
+            }
+
+          CNormalLogical* pLogical = new CNormalLogical((*it2).first->getTrueExpression());
+
+          std::cout << "printing true after copy: " << std::endl;
+          std::cout << "num choices: " << pLogical->getChoices().size() << std::endl;
+          std::cout << "num and sets: " << pLogical->getAndSets().size() << std::endl;
+          posC = pLogical->getAndSets().begin();
+          while (posC != pLogical->getAndSets().end())
+            {
+              std::cout << "new set: " << std::endl;
+              ItemSet::const_iterator posD = posC->first.begin();
+              while (posD != posC->first.end())
+                {
+                  std::cout << "item: " << *(posD->first) << std::endl;
+                  std::cout << "item left: " << posD->first->getLeft() << std::endl;
+                  std::cout << "item right: " << posD->first->getRight() << std::endl;
+                  ++posD;
+                }
+              ++posC;
+            }
+
+          tmpSet2.insert(std::make_pair(pLogical, false));
+
+          std::cout << "printing condition before copy: " << std::endl;
+          std::cout << "condition: " << it2->first->getCondition() << std::endl;
+          std::cout << "num choices: " << it2->first->getCondition().getChoices().size() << std::endl;
+          std::cout << "num and sets: " << it2->first->getCondition().getAndSets().size() << std::endl;
+          posC = it2->first->getCondition().getAndSets().begin();
+          while (posC != it2->first->getCondition().getAndSets().end())
+            {
+              std::cout << "new set: " << std::endl;
+              ItemSet::const_iterator posD = posC->first.begin();
+              while (posD != posC->first.end())
+                {
+                  std::cout << "item: " << *(posD->first) << std::endl;
+                  std::cout << "item left: " << posD->first->getLeft() << std::endl;
+                  std::cout << "item right: " << posD->first->getRight() << std::endl;
+                  ++posD;
+                }
+              ++posC;
+            }
+          pLogical = new CNormalLogical((*it2).first->getCondition());
+          std::cout << "printing condition after copy: " << std::endl;
+          std::cout << "num choices: " << pLogical->getChoices().size() << std::endl;
+          std::cout << "num and sets: " << pLogical->getAndSets().size() << std::endl;
+          posC = pLogical->getAndSets().begin();
+          while (posC != pLogical->getAndSets().end())
+            {
+              std::cout << "new set: " << std::endl;
+              ItemSet::const_iterator posD = posC->first.begin();
+              while (posD != posC->first.end())
+                {
+                  std::cout << "item: " << *(posD->first) << std::endl;
+                  std::cout << "item left: " << posD->first->getLeft() << std::endl;
+                  std::cout << "item right: " << posD->first->getRight() << std::endl;
+                  ++posD;
+                }
+              ++posC;
+            }
           pLogical->negate();
+          std::cout << "printing condition after negating: " << std::endl;
+          std::cout << "num choices: " << pLogical->getChoices().size() << std::endl;
+          std::cout << "num and sets: " << pLogical->getAndSets().size() << std::endl;
+          posC = pLogical->getAndSets().begin();
+          while (posC != pLogical->getAndSets().end())
+            {
+              std::cout << "new set: " << std::endl;
+              ItemSet::const_iterator posD = posC->first.begin();
+              while (posD != posC->first.end())
+                {
+                  std::cout << "item: " << *(posD->first) << std::endl;
+                  std::cout << "item left: " << posD->first->getLeft() << std::endl;
+                  std::cout << "item right: " << posD->first->getRight() << std::endl;
+                  ++posD;
+                }
+              ++posC;
+            }
           tmpSet2.insert(std::make_pair(pLogical, false));
           tmpAndItems.insert(std::make_pair(tmpSet2, false));
           tmpSet2.clear();
-          tmpSet2.insert(std::make_pair(new CNormalLogical((*it2).first->getFalseExpression()), false));
+
+          std::cout << "printing false expression before copy: " << std::endl;
+          std::cout << "condition: " << it2->first->getFalseExpression() << std::endl;
+          std::cout << "num choices: " << it2->first->getFalseExpression().getChoices().size() << std::endl;
+          std::cout << "num and sets: " << it2->first->getFalseExpression().getAndSets().size() << std::endl;
+          posC = it2->first->getFalseExpression().getAndSets().begin();
+          while (posC != it2->first->getFalseExpression().getAndSets().end())
+            {
+              std::cout << "new set: " << std::endl;
+              ItemSet::const_iterator posD = posC->first.begin();
+              while (posD != posC->first.end())
+                {
+                  std::cout << "item: " << *(posD->first) << std::endl;
+                  std::cout << "item left: " << posD->first->getLeft() << std::endl;
+                  std::cout << "item right: " << posD->first->getRight() << std::endl;
+                  ++posD;
+                }
+              ++posC;
+            }
+
+          pLogical = new CNormalLogical((*it2).first->getFalseExpression());
+          tmpSet2.insert(std::make_pair(pLogical, false));
+
+          std::cout << "printing condition after negating: " << std::endl;
+          std::cout << "num choices: " << pLogical->getChoices().size() << std::endl;
+          std::cout << "num and sets: " << pLogical->getAndSets().size() << std::endl;
+          posC = pLogical->getAndSets().begin();
+          while (posC != pLogical->getAndSets().end())
+            {
+              std::cout << "new set: " << std::endl;
+              ItemSet::const_iterator posD = posC->first.begin();
+              while (posD != posC->first.end())
+                {
+                  std::cout << "item: " << *(posD->first) << std::endl;
+                  std::cout << "item left: " << posD->first->getLeft() << std::endl;
+                  std::cout << "item right: " << posD->first->getRight() << std::endl;
+                  ++posD;
+                }
+              ++posC;
+            }
+
           CNormalLogical* pTmpLogical = new CNormalLogical((*it2).first->getCondition());
           if (tmpSet2.insert(std::make_pair(pTmpLogical , false)).second == false)
             {
@@ -224,7 +362,7 @@ bool CNormalLogical::simplify()
             }
           ++it2;
         }
-      /*if (result == false)*/ cleanSet(tmpSet);
+      cleanSet(tmpSet);
       ++it;
     }
   if (result == false)
@@ -233,6 +371,36 @@ bool CNormalLogical::simplify()
     }
   else
     {
+      std::cout << "Converting AndOrSet to OrAndSet" << std::endl;
+      std::cout << "Printing tmpAndSets:" << std::endl;
+      std::set<std::pair<std::set<std::pair<CNormalLogical*, bool>, CNormalLogical::SetSorter<CNormalLogical> >, bool>, CNormalLogical::SetOfSetsSorter<CNormalLogical> >::const_iterator posA = tmpAndItems.begin();
+      while (posA != tmpAndItems.end())
+        {
+          std::cout << "new logical set: " << std::endl;
+          std::set<std::pair<CNormalLogical*, bool>, CNormalLogical::SetSorter<CNormalLogical> >::const_iterator posB = posA->first.begin();
+          while (posB != posA->first.end())
+            {
+              std::cout << "item: " << *(posB->first) << std::endl;
+              std::cout << "num choices: " << posB->first->getChoices().size() << std::endl;
+              std::cout << "num and sets: " << posB->first->getAndSets().size() << std::endl;
+              ItemSetOfSets::const_iterator posC = posB->first->getAndSets().begin();
+              while (posC != posB->first->getAndSets().end())
+                {
+                  std::cout << "new set: " << std::endl;
+                  ItemSet::const_iterator posD = posC->first.begin();
+                  while (posD != posC->first.end())
+                    {
+                      std::cout << "item: " << *(posD->first) << std::endl;
+                      std::cout << "item left: " << posD->first->getLeft() << std::endl;
+                      std::cout << "item right: " << posD->first->getRight() << std::endl;
+                      ++posD;
+                    }
+                  ++posC;
+                }
+              ++posB;
+            }
+          ++posA;
+        }
       result = convertAndOrToOrAnd(tmpAndItems, tmpOrItems);
       cleanSetOfSets(tmpAndItems);
       if (result == false)
@@ -245,6 +413,7 @@ bool CNormalLogical::simplify()
           // CNormalLogical items which themselves are OR combined sets of
           // AND combined CNormalLogicalItem elements
           // so we have to get rid of two more levels
+          std::cout << "Getting rid of the two additional levels." << std::endl;
           ItemSetOfSets tmpAndItems2;
           ItemSetOfSets tmpOrItems2;
           std::set<std::pair<std::set<std::pair<CNormalLogical*, bool>, CNormalLogical::SetSorter<CNormalLogical> >, bool>, CNormalLogical::SetOfSetsSorter<CNormalLogical> >::iterator it2 = tmpOrItems.begin(), endit2 = tmpOrItems.end();
@@ -260,6 +429,7 @@ bool CNormalLogical::simplify()
                   copySetOfSets((*it3).first->getAndSets(), tmpSet);
                   if ((*it3).first->isNegated())
                     {
+                      std::cout << "Negating set." << std::endl;
                       result = negateSetOfSets((*it3).first->getAndSets(), tmpSet);
                     }
                   else
@@ -270,6 +440,22 @@ bool CNormalLogical::simplify()
                     {
                       // new entries are appended with each call to
                       // convertAndOrToOrAnd
+                      std::cout << "First level." << std::endl;
+                      ItemSetOfSets::const_iterator pos = tmpSet.begin();
+                      std::cout << "print ing tmpSet:" << std::endl;
+                      while (pos != tmpSet.end())
+                        {
+                          ItemSet::const_iterator pos2 = pos->first.begin();
+                          std::cout << "new set: " << std::endl;
+                          while (pos2 != pos->first.end())
+                            {
+                              std::cout << "item: " << *(pos2->first) << std::endl;
+                              std::cout << "item left: " << pos2->first->getLeft() << std::endl;
+                              std::cout << "item right: " << pos2->first->getRight() << std::endl;
+                              ++pos2;
+                            }
+                          ++pos;
+                        }
                       result = convertAndOrToOrAnd(tmpSet, tmpAndItems2);
                       cleanSetOfSets(tmpSet);
                     }
@@ -284,11 +470,13 @@ bool CNormalLogical::simplify()
           cleanSetOfSets(tmpOrItems);
           if (result == true)
             {
+              std::cout << "Second level." << std::endl;
               result = convertAndOrToOrAnd(tmpAndItems2, tmpOrItems2);
               cleanSetOfSets(tmpAndItems2);
               if (result == true)
                 {
                   // now we can add all sets in tmpOrItems to this->mAndSets
+                  std::cout << "Adding the converted choices to the and set." << std::endl;
                   copySetOfSets(tmpOrItems2, this->mAndSets);
                   // cleanup tmpOrItems2
                   cleanSetOfSets(tmpOrItems2);
@@ -305,6 +493,7 @@ bool CNormalLogical::simplify()
       if (this->mNot == true)
         {
           ItemSetOfSets tmpSet;
+          std::cout << "Negating logical." << std::endl;
           result = negateSetOfSets(this->mAndSets, tmpSet);
           if (result == true)
             {
@@ -314,6 +503,7 @@ bool CNormalLogical::simplify()
         }
       ItemSetOfSets::iterator it2 = this->mAndSets.begin(), endit2 = this->mAndSets.end();
       ItemSetOfSets tmpAndSets;
+      std::cout << "Getting rid of all not flags in the and set." << std::endl;
       while (it2 != endit2)
         {
           // get rid of all not flags within the items.
@@ -330,6 +520,7 @@ bool CNormalLogical::simplify()
           // if this is the case, the whole set can be replaced by false
           // because B AND NOT(B) is always false
           // also if we find a false item, we can eliminate all others
+          std::cout << "Check if two items in an inner set cancel each other out." << std::endl;
           bool eliminate = false;
           it3 = (*it2).first.begin();
           if (it3 != endit3)
@@ -373,6 +564,7 @@ bool CNormalLogical::simplify()
             }
           if (eliminate == true)
             {
+              std::cout << "Eliminating an inner set and replacing it with FALSE." << std::endl;
               ItemSet tmpSet;
               CNormalLogicalItem* pLogical = new CNormalLogicalItem();
               pLogical->setType(CNormalLogicalItem::FALSE);
@@ -399,6 +591,8 @@ bool CNormalLogical::simplify()
       // whole set can be replaced by one FALSE item
       // likewise if one item in an OR set is TRUE, the whole set can be replaced
       // by one TRUE item
+      //
+      std::cout << "Check if the outer set can be replaced by a single item." << std::endl;
       it2 = this->mAndSets.begin(), endit2 = this->mAndSets.end();
       if (it != endit)
         {
@@ -442,6 +636,7 @@ bool CNormalLogical::simplify()
         }
       if (eliminate == true)
         {
+          std::cout << "Eliniating outer set and replacing it with TRUE." << std::endl;
           cleanSetOfSets(this->mAndSets);
           ItemSet tmpSet;
           CNormalLogicalItem* pLogical = new CNormalLogicalItem();
@@ -450,6 +645,23 @@ bool CNormalLogical::simplify()
           this->mAndSets.insert(std::make_pair(tmpSet, false));
         }
     }
+  // since we worked on the objects in the sets, we might have messed up the order of
+  // objects, or some objects might be in there twice, so to fix this, we copy the set
+  std::cout << "Safety copy of the and set to eliminate duplicat entries." << std::endl;
+  ItemSetOfSets::iterator it2 = this->mAndSets.begin();
+  ItemSetOfSets::iterator endit2 = this->mAndSets.end();
+  ItemSetOfSets tmpSet;
+  while (it2 != endit2)
+    {
+      if (tmpSet.insert(*it2).second == false)
+        {
+          // delete the item in this set.
+          cleanSet(const_cast<ItemSet&>(it2->first));
+        }
+      ++it2;
+    }
+  this->mAndSets.clear();
+  this->mAndSets = tmpSet;
   return result;
 }
 
@@ -461,6 +673,24 @@ template<typename TYPE>
 bool CNormalLogical::convertAndOrToOrAnd(const std::set<std::pair<std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> >, bool>, CNormalLogical::SetOfSetsSorter<TYPE> >& source,
     std::set<std::pair<std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> >, bool>, CNormalLogical::SetOfSetsSorter<TYPE> >& target)
 {
+  /*
+  std::cout << "Running convertAndOrToOrAnd with " << source.size() << "items." << std::endl;
+  std::cout << "source set contents: " << std::endl;
+  typename std::set<std::pair<std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> >, bool>, CNormalLogical::SetOfSetsSorter<TYPE> >::const_iterator pos=source.begin();
+  while(pos!=source.end())
+  {
+   std::cout << "new set: " << std::endl;
+  typename std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> >::const_iterator pos2=pos->first.begin();
+  while(pos2!=pos->first.end())
+  {
+  std::cout << "item: " <<  *(pos2->first) << std::endl;
+  std::cout << "item left: " << pos2->first->getLeft() << std::endl;
+  std::cout << "item right: " << pos2->first->getRight() << std::endl;
+  ++pos2;
+  }
+  ++pos;
+  }
+  */
   bool result = true;
   if (source.size() > 1)
     {
@@ -471,6 +701,7 @@ bool CNormalLogical::convertAndOrToOrAnd(const std::set<std::pair<std::set<std::
         {
           // recursively call this function
           // the result returned in tmpTargetSet is a combination of and combined sets of or combined items
+          //std::cout << "Calling convertAndOrToOrAnd recursively." << std::endl;
           result = convertAndOrToOrAnd(tmpSourceSet, tmpTargetSet);
           if (result == true)
             {
@@ -484,6 +715,13 @@ bool CNormalLogical::convertAndOrToOrAnd(const std::set<std::pair<std::set<std::
                     {
                       typename std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> > tmpSet;
                       TYPE* pNewItem = new TYPE(*(*it).first);
+                      /*
+                      std::cout << "Inserting new item in outer loop: " << *pNewItem << std::endl;
+                      std::cout << "left: " << pNewItem->getLeft() << std::endl;
+                      std::cout << "right: " << pNewItem->getRight() << std::endl;
+                      std::cout << "Source left: " << it->first->getLeft() << std::endl;
+                      std::cout << "Source right: " << it->first->getRight() << std::endl;
+                      */
                       if (tmpSet.insert(std::make_pair(pNewItem, false)).second == false)
                         {
                           delete pNewItem;
@@ -492,6 +730,13 @@ bool CNormalLogical::convertAndOrToOrAnd(const std::set<std::pair<std::set<std::
                       while (it3 != endit3)
                         {
                           pNewItem = new TYPE(*(*it3).first);
+                          /*
+                          std::cout << "Inserting new item in inner loop: " << *pNewItem << std::endl;
+                          std::cout << "left: " << pNewItem->getLeft() << std::endl;
+                          std::cout << "right: " << pNewItem->getRight() << std::endl;
+                          std::cout << "Source left: " << it3->first->getLeft() << std::endl;
+                          std::cout << "Source right: " << it3->first->getRight() << std::endl;
+                          */
                           if (tmpSet.insert(std::make_pair(pNewItem, false)).second == false)
                             {
                               delete pNewItem;
@@ -510,19 +755,6 @@ bool CNormalLogical::convertAndOrToOrAnd(const std::set<std::pair<std::set<std::
         }
       // cleanup tmpTarget
       cleanSetOfSets(tmpTargetSet);
-      /*
-      typename std::set<std::pair<std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> >, bool>, CNormalLogical::SetOfSetsSorter<TYPE> >::iterator it = tmpTargetSet.begin(), endit = tmpTargetSet.end();
-      while (it != endit)
-        {
-          typename std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> >::iterator it2 = (*it).first.begin(), endit2 = (*it).first.end();
-          while (it2 != endit2)
-            {
-              delete (*it2).first;
-              ++it2;
-            }
-          ++it;
-        }
-      */
     }
   else if (source.size() == 1)
     {
@@ -536,6 +768,7 @@ bool CNormalLogical::convertAndOrToOrAnd(const std::set<std::pair<std::set<std::
           // we have a set of and combined elements in (*source.begin()).first
           // and we convert them to a set of or combined items
           // So one set of n items becomes n sets of one item each.
+          //std::cout << "Converting a set of n items to n sets of one item." << std::endl;
           const typename std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> > item = (*source.begin()).first;
           typename std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> >::const_iterator it = item.begin(), endit = item.end();
           while (it != endit && result == true)
@@ -726,17 +959,18 @@ bool CNormalLogical::SetOfSetsSorter<TYPE>::operator()(const std::pair<std::set<
     const std::pair<std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> >, bool>& rhs) const
   {
     bool result = false;
+    std::cout << "SetOfSetsSorter:: Comparing std::pair<set of size " << lhs.first.size() << "," << lhs.second << "> and std::pair<set of size " << rhs.first.size() << "," << rhs.second << ">." << std::endl;
     if (lhs.second == rhs.second)
       {
         if (lhs.first.size() == rhs.first.size())
           {
             typename std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> >::const_iterator it = lhs.first.begin(), endit = lhs.first.end(), it2 = rhs.first.begin();
             SetSorter<TYPE> sorter;
-            //if(it==endit) std::cout << "SetOfSetsSorter:: Set is empty." << std::endl;
+            if (it == endit) std::cout << "SetOfSetsSorter:: Set is empty." << std::endl;
             while (it != endit && result == false)
               {
                 result = sorter(*it, *it2);
-                //std::cout << "SetOfSetsSorter:: Result from SetSorter: " << result << std::endl;
+                std::cout << "SetOfSetsSorter:: Result from SetSorter: " << result << std::endl;
                 ++it;
                 ++it2;
               }
@@ -744,13 +978,13 @@ bool CNormalLogical::SetOfSetsSorter<TYPE>::operator()(const std::pair<std::set<
         else if (lhs.first.size() < rhs.first.size())
           {
             result = true;
-            //std::cout << "SetOfSetsSorter:: The LHS set is smaller" << std::endl;
+            std::cout << "SetOfSetsSorter:: The LHS set is smaller" << std::endl;
           }
       }
     else if (lhs.second == true)
       {
         result = true;
-        //std::cout << "SetOfSetsSorter:: The LHS pair is true" << std::endl;
+        std::cout << "SetOfSetsSorter:: The LHS pair is true" << std::endl;
       }
     return result;
   }
@@ -797,15 +1031,16 @@ template<typename TYPE>
 bool CNormalLogical::SetSorter<TYPE>::operator()(const std::pair<TYPE*, bool>& lhs, const std::pair<TYPE*, bool>& rhs) const
   {
     bool result = false;
+    std::cout << "SetSorter:: Comparing std::pair<" << *lhs.first << "," << lhs.second << "> and std::pair<" << *rhs.first << "," << rhs.second << ">." << std::endl;
     if (lhs.second == rhs.second)
       {
         result = ((*lhs.first) < (*rhs.first));
-        //std::cout << "SetSorter:: Result of item comparison:" << result << std::endl;
+        std::cout << "SetSorter:: Result of item comparison:" << result << std::endl;
       }
     else if (lhs.second == true)
       {
         result = true;
-        //std::cout << "SetSorter:: The LHS is true." << std::endl;
+        std::cout << "SetSorter:: The LHS is true." << std::endl;
       }
     return result;
   }

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLogicalItem.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/18 19:14:08 $
+//   $Date: 2007/08/22 17:30:11 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -11,37 +11,23 @@
 // All rights reserved.
 
 #include "CNormalLogicalItem.h"
-#include "CNormalFraction.h"
 
 #include <sstream>
 
-CNormalLogicalItem::CNormalLogicalItem(): CNormalBase(), mType(CNormalLogicalItem::INVALID), mpLeft(new CNormalFraction()), mpRight(new CNormalFraction())
+CNormalLogicalItem::CNormalLogicalItem(): CNormalBase(), mType(CNormalLogicalItem::INVALID)
 {}
 
-CNormalLogicalItem::CNormalLogicalItem(const CNormalLogicalItem& src): CNormalBase(src), mType(src.mType), mpLeft(new CNormalFraction(*src.mpLeft)), mpRight(new CNormalFraction(*src.mpRight))
+CNormalLogicalItem::CNormalLogicalItem(const CNormalLogicalItem& src): CNormalBase(src), mType(src.mType), mLeft(src.mLeft), mRight(src.mRight)
 {}
 
 CNormalLogicalItem::~CNormalLogicalItem()
-{
-  if (this->mpLeft != NULL) delete this->mpLeft;
-  if (this->mpRight != NULL) delete this->mpRight;
-}
+{}
 
 CNormalLogicalItem& CNormalLogicalItem::operator=(const CNormalLogicalItem& src)
 {
-  if (this->mpLeft != NULL) delete this->mpLeft;
-  mpLeft = NULL;
-  if (this->mpRight != NULL) delete this->mpRight;
-  mpRight = NULL;
   this->mType = src.mType;
-  if (src.mpLeft != NULL)
-    {
-      this->mpLeft = new CNormalFraction(*src.mpLeft);
-    }
-  if (src.mpRight != NULL)
-    {
-      this->mpRight = new CNormalFraction(*src.mpRight);
-    }
+  this->mLeft = src.mLeft;
+  this->mRight = src.mRight;
   return *this;
 }
 
@@ -51,65 +37,28 @@ bool CNormalLogicalItem::operator<(const CNormalLogicalItem& rhs) const
     if (this->mType < rhs.mType)
       {
         result = true;
-        //std::cout << "CNormalLogicalItem:: " << this->mType << " is smaller than " << rhs.mType << std::endl;
+        std::cout << "CNormalLogicalItem:: " << this->mType << " is smaller than " << rhs.mType << std::endl;
       }
     else if (this->mType == rhs.mType)
       {
-        if (this->mpLeft == NULL)
+        if (this->mLeft == rhs.mLeft)
           {
-            if (rhs.mpLeft != NULL)
+            result = (this->mRight < rhs.mRight);
+            if (result)
               {
-                result = true;
-                //std::cout << "CNormalLogicalItem:: mpLeft is NULL, but rhs.mpLeft isn't" << std::endl;
-              }
-            else
-              {
-                if (this->mpRight == NULL)
-                  {
-                    if (rhs.mpRight != NULL)
-                      {
-                        result = true;
-                        //std::cout << "CNormalLogicalItem:: mpRight is NULL, but rhs.mpRight isn't" << std::endl;
-                      }
-                  }
-                else
-                  {
-                    if (rhs.mpRight != NULL)
-                      {
-                        result = ((*this->mpRight) < (*rhs.mpRight));
-                        //std::cout << "CNormalLogicalItem:: this right side is smaller than RHS.mpRight" << std::endl;
-                      }
-                  }
+                std::cout << "The right hand side of this is smaller than the right hand side of RHS." << std::endl;
+                std::cout << "this.mRight: " << this->mRight << std::endl;
+                std::cout << "rhs.mRight: " << rhs.mRight << std::endl;
               }
           }
         else
           {
-            if (rhs.mpLeft != NULL)
+            result = (this->mLeft < rhs.mLeft);
+            if (result)
               {
-                if ((*this->mpLeft) < (*rhs.mpLeft))
-                  {
-                    result = true;
-                    //std::cout << "CNormalLogicalItem:: this left side is smaller than RHS.mpLeft" << std::endl;
-                  }
-                else if ((*this->mpLeft) == (*rhs.mpLeft))
-                  {
-                    if (this->mpRight == NULL)
-                      {
-                        if (rhs.mpRight != NULL)
-                          {
-                            result = true;
-                            //std::cout << "CNormalLogicalItem:: mpRight is NULL, but rhs.mpRight isn't" << std::endl;
-                          }
-                      }
-                    else
-                      {
-                        if (rhs.mpRight != NULL)
-                          {
-                            result = (*this->mpRight < *rhs.mpRight);
-                            //std::cout << "CNormalLogicalItem:: this right side is smaller than RHS.mpRight" << std::endl;
-                          }
-                      }
-                  }
+                std::cout << "The left hand side of this is smaller than the left hand side of RHS." << std::endl;
+                std::cout << "this.mLeft: " << this->mLeft << std::endl;
+                std::cout << "rhs.mLeft: " << rhs.mLeft << std::endl;
               }
           }
       }
@@ -118,19 +67,7 @@ bool CNormalLogicalItem::operator<(const CNormalLogicalItem& rhs) const
 
 CNormalLogicalItem* CNormalLogicalItem::copy() const
   {
-    CNormalLogicalItem* pResult = NULL;
-    if ((this->mpLeft != NULL) && (this->mpRight != NULL))
-      {
-        pResult = new CNormalLogicalItem(*this);
-      }
-    else
-      {
-        pResult = new CNormalLogicalItem();
-        pResult->mType = this->mType;
-        pResult->mpLeft = NULL;
-        pResult->mpRight = NULL;
-      }
-    return pResult;
+    return new CNormalLogicalItem(*this);
   }
 
 std::string CNormalLogicalItem::toString() const
@@ -145,82 +82,22 @@ std::string CNormalLogicalItem::toString() const
         str << "FALSE";
         break;
       case CNormalLogicalItem::EQ:
-        str << "(";
-        if (this->mpLeft != NULL)
-          {
-            str << this->mpLeft->toString();
-          }
-        str << " == ";
-        if (this->mpRight != NULL)
-          {
-            str << this->mpRight->toString();
-          }
-        str << ")";
+        str << "(" << this->mLeft << " == " << this->mRight << ")";
         break;
       case CNormalLogicalItem::NE:
-        str << "(";
-        if (this->mpLeft != NULL)
-          {
-            str << this->mpLeft->toString();
-          }
-        str << " != ";
-        if (this->mpRight != NULL)
-          {
-            str << this->mpRight->toString();
-          }
-        str << ")";
+        str << "(" << this->mLeft << " != " << this->mRight << ")";
         break;
       case CNormalLogicalItem::LT:
-        str << "(";
-        if (this->mpLeft != NULL)
-          {
-            str << this->mpLeft->toString();
-          }
-        str << " < ";
-        if (this->mpRight != NULL)
-          {
-            str << this->mpRight->toString();
-          }
-        str << ")";
+        str << "(" << this->mLeft << " < " << this->mRight << ")";
         break;
       case CNormalLogicalItem::GT:
-        str << "(";
-        if (this->mpLeft != NULL)
-          {
-            str << this->mpLeft->toString();
-          }
-        str << " > ";
-        if (this->mpRight != NULL)
-          {
-            str << this->mpRight->toString();
-          }
-        str << ")";
+        str << "(" << this->mLeft << " > " << this->mRight << ")";
         break;
       case CNormalLogicalItem::GE:
-        str << "(";
-        if (this->mpLeft != NULL)
-          {
-            str << this->mpLeft->toString();
-          }
-        str << " >= ";
-        if (this->mpRight != NULL)
-          {
-            str << this->mpRight->toString();
-          }
-        str << ")";
+        str << "(" << this->mLeft << " >= " << this->mRight << ")";
         break;
       case CNormalLogicalItem::LE:
-        str << "(";
-        if (this->mpLeft != NULL)
-          {
-            str << this->mpLeft->toString();
-          }
-        str << " <= ";
-        if (this->mpRight != NULL)
-          {
-            str << this->mpRight->toString();
-          }
-        str << ")";
+        str << "(" << this->mLeft << " <= " << this->mRight << ")";
         break;
       case INVALID:
         break;
@@ -235,41 +112,41 @@ bool CNormalLogicalItem::simplify()
     {
       // replace by LT and switch mpLeft and mpRight
       this->mType = LT;
-      CNormalFraction* pTMP = this->mpLeft;
-      this->mpLeft = this->mpRight;
-      this->mpRight = pTMP;
+      CNormalFraction TMP = this->mLeft;
+      this->mLeft = this->mRight;
+      this->mRight = TMP;
     }
   else if (this->mType == GE)
     {
       // replace by LE and switch mpLeft and mpRight
       this->mType = LE;
-      CNormalFraction* pTMP = this->mpLeft;
-      this->mpLeft = this->mpRight;
-      this->mpRight = pTMP;
+      CNormalFraction TMP = this->mLeft;
+      this->mLeft = this->mRight;
+      this->mRight = TMP;
     }
-  if (this->mpLeft) result &= this->mpLeft->simplify();
-  if (this->mpRight) result &= this->mpRight->simplify();
+  result &= this->mLeft.simplify();
+  if (result) result &= this->mRight.simplify();
   return result;
 }
 
-CNormalFraction* CNormalLogicalItem::getLeft()
+CNormalFraction& CNormalLogicalItem::getLeft()
 {
-  return this->mpLeft;
+  return this->mLeft;
 }
 
-const CNormalFraction* CNormalLogicalItem::getLeft() const
+const CNormalFraction& CNormalLogicalItem::getLeft() const
   {
-    return this->mpLeft;
+    return this->mLeft;
   }
 
-CNormalFraction* CNormalLogicalItem::getRight()
+CNormalFraction& CNormalLogicalItem::getRight()
 {
-  return this->mpRight;
+  return this->mRight;
 }
 
-const CNormalFraction* CNormalLogicalItem::getRight() const
+const CNormalFraction& CNormalLogicalItem::getRight() const
   {
-    return this->mpRight;
+    return this->mRight;
   }
 
 bool CNormalLogicalItem::setLeft(const CNormalFraction& left)
@@ -277,8 +154,7 @@ bool CNormalLogicalItem::setLeft(const CNormalFraction& left)
   bool result = false;
   if (this->mType != CNormalLogicalItem::TRUE && this->mType != CNormalLogicalItem::FALSE)
     {
-      if (this->mpLeft != NULL) delete this->mpLeft;
-      this->mpLeft = new CNormalFraction(left);
+      this->mLeft = left;
     }
   return result;
 }
@@ -288,8 +164,7 @@ bool CNormalLogicalItem::setRight(const CNormalFraction& right)
   bool result = false;
   if (this->mType != CNormalLogicalItem::TRUE && this->mType != CNormalLogicalItem::FALSE)
     {
-      if (this->mpRight != NULL) delete this->mpRight;
-      this->mpRight = new CNormalFraction(right);
+      this->mRight = right;
     }
   return result;
 }
@@ -305,16 +180,8 @@ void CNormalLogicalItem::setType(CNormalLogicalItem::Type type)
     {
     case CNormalLogicalItem::TRUE:
     case CNormalLogicalItem::FALSE:
-      if (this->mpLeft != NULL)
-        {
-          delete this->mpLeft;
-          this->mpLeft = new CNormalFraction();
-        }
-      if (this->mpRight != NULL)
-        {
-          delete this->mpRight;
-          this->mpRight = new CNormalFraction();
-        }
+      this->mLeft = CNormalFraction();
+      this->mRight = CNormalFraction();
       break;
     default:
       break;
@@ -366,10 +233,10 @@ bool CNormalLogicalItem::operator==(const CNormalLogicalItem& rhs) const
     bool result = true;
     if (this->mType == rhs.mType)
       {
-        result = ((*this->mpLeft) == (*rhs.mpLeft));
+        result = (this->mLeft == rhs.mLeft);
         if (result)
           {
-            result = ((*this->mpRight) == (*rhs.mpRight));
+            result = (this->mRight == rhs.mRight);
           }
       }
     else
