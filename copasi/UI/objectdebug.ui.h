@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/objectdebug.ui.h,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.31 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/08/12 18:11:37 $
+//   $Date: 2007/08/22 16:55:16 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -191,10 +191,17 @@ void ObjectDebug::writeDot()
   dot.simpleCall();
 }
 
-#include "function/CFunctionAnalyzer.h"
+#include "model/CModelAnalyzer.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include <qtextedit.h>
+#include <sstream>
 
 void ObjectDebug::checkModel()
 {
-  CModelAnalyzer::checkModel(CCopasiDataModel::Global->getModel());
+
+  std::ostringstream ss;
+  CModelAnalyzer::checkModel(ss, CCopasiDataModel::Global->getModel());
+
+  QTextEdit* pTE = new QTextEdit(ss.str());
+  pTE->show();
 }
