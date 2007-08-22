@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelAnalyzer.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/08/22 16:53:54 $
+//   $Date: 2007/08/22 23:59:49 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,42 +22,53 @@
 //this define specifies whether debug output is written to std::cout
 //#define C_DBG_FA
 
-//static
-void CModelAnalyzer::checkModel(std::ostream & os, const CModel* model)
+CModelAnalyzer::CModelAnalyzer(const CModel* model)
+{
+  checkModel(model);
+}
+
+void CModelAnalyzer::checkModel(const CModel* model)
 {
   if (!model) return;
+
+  mpModel = model;
 
   C_INT32 i, imax = model->getTotSteps();
   for (i = 0; i < imax; ++i)
     {
       std::cout << "Reaction: " << model->getReactions()[i]->getObjectName() << std::endl;
-      checkReaction(os, model->getReactions()[i], model);
+      mReactionResults.push_back(checkReaction(model->getReactions()[i]));
     }
 }
 
-//static
-void CModelAnalyzer::checkReaction(std::ostream & os, const CReaction* reaction, const CModel* model)
+CModelAnalyzer::ReactionResult CModelAnalyzer::checkReaction(const CReaction* reaction)
 {
-  if (!reaction) return;
+  ReactionResult ret;
+
+  if (!reaction) return ret;
+
+  ret.mReactionName = reaction->getObjectName();
 
   //reversibility
   if (reaction->getFunction()->isReversible() == TriUnspecified)
     {
       //warning
       std::cout << "Kinetics is of unspecified reversibility." << std::endl;
+      ret.mKineticUnspecifiedReversibility = true;
     }
   else if (((reaction->getFunction()->isReversible() == TriTrue) && !reaction->isReversible())
            || ((reaction->getFunction()->isReversible() == TriFalse) && reaction->isReversible()))
     {
       //error; or copasi error?
       std::cout << "Reversibility of function and kinetics does not match." << std::endl;
+      ret.mReversibilityMismatch = true;
     }
   else
     {
       //OK.
     }
 
-  if (dynamic_cast<const CMassAction*>(reaction->getFunction())) return;
+  if (dynamic_cast<const CMassAction*>(reaction->getFunction())) return ret;
   //TODO special case mass action
 
   //********* mapping **********************
@@ -80,6 +91,9 @@ void CModelAnalyzer::checkReaction(std::ostream & os, const CReaction* reaction,
         {
           //warning/error?
           std::cout << "A substrate of this reaction is not mapped to a corresponding function parameter" << std::endl;
+          const CMetab * pM = reaction->getChemEq().getSubstrates()[i]->getMetabolite();
+          if (pM)
+            ret.mChemEqSubs.push_back(pM->getObjectName());
         }
     }
 
@@ -102,6 +116,9 @@ void CModelAnalyzer::checkReaction(std::ostream & os, const CReaction* reaction,
             {
               //warning/error?
               std::cout << "A product of this reaction is not mapped to a corresponding function parameter" << std::endl;
+              const CMetab * pM = reaction->getChemEq().getProducts()[i]->getMetabolite();
+              if (pM)
+                ret.mChemEqProds.push_back(pM->getObjectName());
             }
         }
     }
@@ -123,6 +140,9 @@ void CModelAnalyzer::checkReaction(std::ostream & os, const CReaction* reaction,
         {
           //warning
           std::cout << "A modifier of this reaction is not mapped to a corresponding function parameter" << std::endl;
+          const CMetab * pM = reaction->getChemEq().getModifiers()[i]->getMetabolite();
+          if (pM)
+            ret.mChemEqMods.push_back(pM->getObjectName());
         }
     }
 
@@ -143,6 +163,7 @@ void CModelAnalyzer::checkReaction(std::ostream & os, const CReaction* reaction,
             {
               //copasi bug!
               std::cout << "Copasi bug! Something that is not a metabolite is mapped to a (subs/prod/mod) function parameter." << std::endl;
+              ret.mNotMetabolite.push_back(reaction->getFunctionParameters()[i]->getObjectName());
             }
         }
 
@@ -161,6 +182,7 @@ void CModelAnalyzer::checkReaction(std::ostream & os, const CReaction* reaction,
             {
               //copasi error?
               std::cout << "A SUBSTRATE function parameter is not mapped to a substrate of the reaction." << std::endl;
+              ret.mFunctionParametersSubs.push_back(reaction->getFunctionParameters()[i]->getObjectName());
             }
           break;
 
@@ -177,6 +199,7 @@ void CModelAnalyzer::checkReaction(std::ostream & os, const CReaction* reaction,
             {
               //copasi error?
               std::cout << "A PRODUCT function parameter is not mapped to a product of the reaction." << std::endl;
+              ret.mFunctionParametersProds.push_back(reaction->getFunctionParameters()[i]->getObjectName());
             }
           break;
 
@@ -193,6 +216,7 @@ void CModelAnalyzer::checkReaction(std::ostream & os, const CReaction* reaction,
             {
               //copasi error?
               std::cout << "A MODIFIER function parameter is not mapped to a modifier of the reaction." << std::endl;
+              ret.mFunctionParametersMods.push_back(reaction->getFunctionParameters()[i]->getObjectName());
               //this is not a user error. The modifier should have been added to the chemeq automatically.
             }
           break;
@@ -210,41 +234,44 @@ void CModelAnalyzer::checkReaction(std::ostream & os, const CReaction* reaction,
           if (j == jmax) //not a local parameter
             {
               //now search in global value list
-              jmax = model->getModelValues().size();
+              jmax = mpModel->getModelValues().size();
               for (j = 0; j < jmax; ++j)
                 {
                   if (reaction->getParameterMappings()[i][0]
-                      == model->getModelValues()[j]->getKey())
+                      == mpModel->getModelValues()[j]->getKey())
                     break;
                 }
               if (j == jmax) //not a global parameter
                 {
                   //copasi bug
                   std::cout << "A PARAMETER function parameter is mapped neither to a local parameter nor a global value." << std::endl;
+                  ret.mFunctionParametersParams.push_back(reaction->getFunctionParameters()[i]->getObjectName());
                 }
             }
           break;
 
         case CFunctionParameter::VOLUME:
-          jmax = model->getCompartments().size();
+          jmax = mpModel->getCompartments().size();
           for (j = 0; j < jmax; ++j)
             {
               if (reaction->getParameterMappings()[i][0]
-                  == model->getCompartments()[j]->getKey())
+                  == mpModel->getCompartments()[j]->getKey())
                 break;
             }
           if (j == jmax)
             {
               //copasi bug
               std::cout << "A VOLUME function parameter is not mapped to a compartment." << std::endl;
+              ret.mFunctionParametersVol.push_back(reaction->getFunctionParameters()[i]->getObjectName());
             }
           break;
 
         case CFunctionParameter::TIME:
-          if (reaction->getParameterMappings()[i][0] != model->getKey())
+          if (reaction->getParameterMappings()[i][0] != mpModel->getKey())
             {
               //copasi bug
               std::cout << "Internal Copasi bug: TIME parameter not mapped correctly." << std::endl;
+              ret.mFunctionParametersTime.push_back(reaction->getFunctionParameters()[i]->getObjectName());
             }
           break;
 
@@ -252,6 +279,7 @@ void CModelAnalyzer::checkReaction(std::ostream & os, const CReaction* reaction,
           {
             //copasi bug
             std::cout << "Don't know what to do with a VARIABLE parameter here..." << std::endl;
+            ret.mFunctionParametersVar.push_back(reaction->getFunctionParameters()[i]->getObjectName());
           }
           break;
         }
@@ -261,6 +289,138 @@ void CModelAnalyzer::checkReaction(std::ostream & os, const CReaction* reaction,
   // irrev: no products should occur
   // irrev: if substr=0 -> kinetics=0
   CFunctionAnalyzer fa(reaction->getFunction() , reaction);
-  fa.getResult().writeResult(os, true, true);
-  fa.getResult().writeTable(os, true);
+  ret.mFunctionResult = fa.getResult();
+
+  //fa.getResult().writeResult(os, true, true);
+  //fa.getResult().writeTable(os, true);
+
+  return ret;
 }
+
+//*********** Reporting **********************************
+
+#define WRITE(__level, __text) os << CFunctionAnalyzer::write(__level, rt, __text, "");
+
+bool CModelAnalyzer::ReactionResult::writeResult(std::ostream & os, bool rt, bool longText) const
+  {
+    bool ret = false;
+
+    //reaction name
+    if (rt) os << "<h2>";
+    os << mReactionName;
+    if (rt) os << "</h2>";
+    os << "\n";
+
+    //reaction results
+    if (mKineticUnspecifiedReversibility)
+      os << CFunctionAnalyzer::write(1, rt, "The kinetic function has unspecified reversibility.", "");
+
+    if (mReversibilityMismatch)
+      os << CFunctionAnalyzer::write(3, rt, "The reversibility of the reaction and the kinetic function doesn't match.", "");
+
+    unsigned int i, imax;
+    imax = mChemEqSubs.size();
+    for (i = 0; i < imax; ++i)
+      {
+        os << CFunctionAnalyzer::write(2, rt, "The reaction substrate \""
+                                       + mChemEqSubs[i]
+                                       + "\" is not mapped to a corresponding function parameter.", "");
+      }
+
+    imax = mChemEqProds.size();
+    for (i = 0; i < imax; ++i)
+      {
+        os << CFunctionAnalyzer::write(2, rt, "The reaction product \""
+                                       + mChemEqProds[i]
+                                       + "\" is not mapped to a corresponding function parameter.", "");
+      }
+
+    imax = mChemEqMods.size();
+    for (i = 0; i < imax; ++i)
+      {
+        os << CFunctionAnalyzer::write(1, rt, "The reaction modifier \""
+                                       + mChemEqMods[i]
+                                       + "\" is not mapped to a corresponding function parameter.", "");
+      }
+
+    imax = mNotMetabolite.size();
+    for (i = 0; i < imax; ++i)
+      {
+        os << CFunctionAnalyzer::write(3, rt, "The function parameter \""
+                                       + mNotMetabolite[i]
+                                       + "\" which should be mapped to a metabolite is mapped to something else.", "");
+      }
+
+    imax = mFunctionParametersSubs.size();
+    for (i = 0; i < imax; ++i)
+      {
+        os << CFunctionAnalyzer::write(3, rt, "The function parameter \""
+                                       + mFunctionParametersSubs[i]
+                                       + "\" is not mapped to a substrate of the reaction.", "");
+      }
+
+    imax = mFunctionParametersProds.size();
+    for (i = 0; i < imax; ++i)
+      {
+        os << CFunctionAnalyzer::write(3, rt, "The function parameter \""
+                                       + mFunctionParametersProds[i]
+                                       + "\" is not mapped to a product of the reaction.", "");
+      }
+
+    imax = mFunctionParametersMods.size();
+    for (i = 0; i < imax; ++i)
+      {
+        os << CFunctionAnalyzer::write(3, rt, "The function parameter \""
+                                       + mFunctionParametersMods[i]
+                                       + "\" is not mapped to a modifier of the reaction.", "");
+      }
+
+    imax = mFunctionParametersParams.size();
+    for (i = 0; i < imax; ++i)
+      {
+        os << CFunctionAnalyzer::write(3, rt, "The function parameter \""
+                                       + mFunctionParametersParams[i]
+                                       + "\" is not mapped to local parameter or a global value.", "");
+      }
+
+    imax = mFunctionParametersVol.size();
+    for (i = 0; i < imax; ++i)
+      {
+        os << CFunctionAnalyzer::write(3, rt, "The function parameter \""
+                                       + mFunctionParametersVol[i]
+                                       + "\" is not mapped to a compartment.", "");
+      }
+
+    imax = mFunctionParametersTime.size();
+    for (i = 0; i < imax; ++i)
+      {
+        os << CFunctionAnalyzer::write(3, rt, "The function parameter \""
+                                       + mFunctionParametersTime[i]
+                                       + "\" is not correctly handled as model time.", "");
+      }
+
+    imax = mFunctionParametersVar.size();
+    for (i = 0; i < imax; ++i)
+      {
+        os << CFunctionAnalyzer::write(1, rt, "The function parameter \""
+                                       + mFunctionParametersVar[i]
+                                       + "\" is marked as \"variable\". Not sure what this means.", "");
+      }
+
+    //function results
+    mFunctionResult.writeResult(os, rt, longText);
+    mFunctionResult.writeTable(os, rt);
+
+    return ret;
+  }
+
+void CModelAnalyzer::writeReport(std::ostream & os, bool rt, bool longText) const
+  {
+
+    //reaction results
+    unsigned i, imax = mReactionResults.size();
+    for (i = 0; i < imax; ++i)
+      {
+        mReactionResults[i].writeResult(os, rt, longText);
+      }
+  }

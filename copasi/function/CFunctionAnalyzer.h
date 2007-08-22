@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionAnalyzer.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/08/22 16:52:45 $
+//   $Date: 2007/08/22 23:59:00 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -140,6 +140,11 @@ class CFunctionAnalyzer
     static void constructCallParameters(const CFunctionParameters & fp, std::vector<CValue> & callParameters, bool posi);
 
     static void constructCallParametersActualValues(std::vector<CValue> & callParameters, /*const CModel* model,*/ const CReaction* reaction);
+
+  public:
+    //convenience function to help with writing the reports
+    //static std::string write(int level, bool rt, const std::string & text);
+    static std::string write(int level, bool rt, const std::string & text, const std::string & longText);
   };
 
 #endif

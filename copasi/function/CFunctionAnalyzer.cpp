@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionAnalyzer.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/08/22 16:52:45 $
+//   $Date: 2007/08/22 23:59:00 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -635,4 +635,20 @@ void CFunctionAnalyzer::checkKineticFunction(const CFunction * f, const CReactio
           mResult.mProductZero.push_back(std::pair<int, std::vector<CValue> >(i, tmpValueVector));
         }
     }
+}
+
+//static
+std::string CFunctionAnalyzer::write(int level, bool rt, const std::string & text, const std::string & longText)
+{
+  std::string ret;
+  if (rt) ret += "<p>";
+  ret += (text + "\n");
+  if (longText != "")
+    {
+      if (rt) ret += "<br>";
+      ret += longText + "\n";
+    }
+  if (rt) ret += "</p>";
+
+  return ret;
 }
