@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionAnalyzer.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/08/21 16:15:07 $
+//   $Date: 2007/08/22 16:52:45 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,6 +21,14 @@ class CReaction;
 class CFunction;
 class CFunctionParameters;
 
+/**
+ * This class performs an analysis of a kinetic function. The function
+ * to analyze is passed to the constructor. The result can be retrieved
+ * with the getResult() method. The Result class has methods for reporting.
+ * The reporting methods may assume that the function (and possibly the reaction)
+ * still exists, so don't delete the function between the analysis and the
+ * reporting of the results!
+ */
 class CFunctionAnalyzer
   {
   public:
@@ -92,30 +100,46 @@ class CFunctionAnalyzer
         friend std::ostream & operator<<(std::ostream &os, const CValue & v);
       };
 
+    /**
+     * This class contains the result of the analysis of one function.
+     */
     class Result
       {
       public:
-        std::vector<std::vector<CValue> > mSubstrateZero;
+        Result();
+        void clear() {*this = Result();};
+
+        /**
+         * writes a text report about the function to the stream. The return value
+         * indicates if a problem was reported.
+         */
+        bool writeResult(std::ostream & os, bool rt, bool longText) const;
+
+        void writeTable(std::ostream & os, bool rt) const;
+
+        const CFunction * mpFunction;
+        bool mIrreversibleKineticsWithProducts;
+        std::vector<CValue> mUnchangedParameters;
+        std::vector<std::pair<int, std::vector<CValue> > > mSubstrateZero;
+        std::vector<std::pair<int, std::vector<CValue> > > mProductZero;
       };
 
-    static Result checkKineticFunction(const CFunction * f, const CReaction * reaction = NULL, const CModel * model = NULL);
+    void checkKineticFunction(const CFunction * f, const CReaction * reaction = NULL);
+
+    CFunctionAnalyzer(const CFunction * f, const CReaction * reaction = NULL)
+    {checkKineticFunction(f, reaction);};
+
+    const Result & getResult() const {return mResult;};
 
   protected:
+
+    Result mResult;
 
     static CValue evaluateNode(const CEvaluationNode * node, const std::vector<CValue> & callParameters);
 
     static void constructCallParameters(const CFunctionParameters & fp, std::vector<CValue> & callParameters, bool posi);
 
     static void constructCallParametersActualValues(std::vector<CValue> & callParameters, /*const CModel* model,*/ const CReaction* reaction);
-  };
-
-class CModelAnalyzer
-  {
-  public:
-
-    static void checkModel(const CModel* model);
-
-    static void checkReaction(const CReaction* reaction, const CModel* model);
   };
 
 #endif
