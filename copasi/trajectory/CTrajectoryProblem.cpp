@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryProblem.cpp,v $
-   $Revision: 1.43 $
-   $Name:  $
-   $Author: ssahle $
-   $Date: 2006/05/05 23:44:33 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryProblem.cpp,v $
+//   $Revision: 1.44 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/08/22 15:44:06 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -213,6 +213,9 @@ bool CTrajectoryProblem::sync()
 {
   bool success = true;
 
+  if (fabs(*mpDuration) < DBL_MIN)
+    return success;
+
   C_FLOAT64 Tmp = *mpDuration;
   C_FLOAT64 StepSize = *mpStepSize;
   C_FLOAT64 StepNumber = (C_FLOAT64) * mpStepNumber;
@@ -256,8 +259,6 @@ bool CTrajectoryProblem::sync()
 
           StepNumber = (C_FLOAT64) ULONG_MAX;
           StepSize = Tmp / StepNumber;
-
-          success = false;
         }
 
       /* Assure that the step size has the appropriate sign. */
@@ -266,8 +267,6 @@ bool CTrajectoryProblem::sync()
 
   *mpStepSize = StepSize;
   *mpStepNumber = (unsigned C_INT32) StepNumber;
-
-  if (!success) throw 1;
 
   return success;
 }
