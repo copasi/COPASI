@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget.cpp,v $
-//   $Revision: 1.112 $
+//   $Revision: 1.113 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/08/22 15:45:20 $
+//   $Date: 2007/08/22 19:52:19 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -142,21 +142,6 @@ void CompartmentsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* 
 
   // Initial Volume
   pComp->setInitialValue(table->text(row, COL_IVOLUME).toDouble());
-
-  /*
-  int pos = 0;
-
-  QDoubleValidator v(this, "");
-  QString tmpstring = table->text(row, 2);
-  if ((v.validate(tmpstring, pos) == QValidator::Intermediate) ||
-      (v.validate(tmpstring, pos) == QValidator::Invalid))
-    {
-      CQMessageBox::information(this, "Invalid Input!",
-                                "The volume must be specified.",
-                                QMessageBox::Ok, QMessageBox::NoButton);
-      return;
-    }
-  */
 }
 
 void CompartmentsWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT32 exc)
@@ -363,4 +348,36 @@ void CompartmentsWidget::deleteObjects(const std::vector<std::string> & keys)
     default:                    // No or Escape
       break;
     }
+}
+
+void CompartmentsWidget::valueChanged(unsigned C_INT32 row, unsigned C_INT32 col)
+{
+  switch (col)
+    {
+    case COL_TYPE:
+      switch ((CModelEntity::Status) mItemToType[static_cast<QComboTableItem *>(table->item(row, COL_TYPE))->currentItem()])
+        {
+        case CModelEntity::ASSIGNMENT:
+          table->setText(row, COL_IVOLUME, "nan");
+          break;
+
+        default:
+          if (table->text(row, COL_IVOLUME) == "nan")
+            {
+              CCompartment* pComp =
+                dynamic_cast< CCompartment *>(GlobalKeys.get(mKeys[row]));
+
+              if (pComp == NULL || isnan(pComp->getInitialValue()))
+                table->setText(row, COL_IVOLUME, QString::number(1.0));
+              else
+                table->setText(row, COL_IVOLUME, QString::number(pComp->getInitialValue()));
+            }
+          break;
+        }
+      break;
+
+    default:
+      break;
+    }
+  return;
 }

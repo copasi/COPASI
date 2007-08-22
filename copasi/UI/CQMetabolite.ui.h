@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMetabolite.ui.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/08/22 12:53:42 $
+//   $Date: 2007/08/22 19:52:19 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -56,6 +56,7 @@ void CQMetabolite::init()
 
 void CQMetabolite::slotBtnCommit()
 {
+  mpBtnCommit->setFocus();
   save();
   load();
 }
@@ -252,9 +253,6 @@ void CQMetabolite::slotCompartmentChanged(int compartment)
   if (pNewCompartment == mpCurrentCompartment ||
       pNewCompartment == NULL) return;
 
-  if (QString::number(mInitialNumber, 'g', 10) == mpEditInitialNumber->text())
-    mInitialNumberLastChanged = false;
-
   mInitialNumber *= pNewCompartment->getInitialValue() / mpCurrentCompartment->getInitialValue();
   mpEditInitialNumber->setText(QString::number(mInitialNumber, 'g', 10));
 
@@ -287,6 +285,15 @@ void CQMetabolite::slotTypeChanged(int type)
 
       mpEditInitialNumber->setEnabled(false);
       mpEditInitialNumber->setText("nan");
+
+      if (isnan(mInitialConcentration) && isnan(mInitialNumber))
+        {
+          mInitialConcentration = 0.1;
+          if (mpCurrentCompartment != NULL)
+            mInitialNumber = CMetab::convertToNumber(mInitialConcentration,
+                             *mpCurrentCompartment,
+                             *CCopasiDataModel::Global->getModel());
+        }
 
       mpEditExpression->setExpression(mpMetab->getExpression());
       break;
@@ -584,9 +591,12 @@ void CQMetabolite::slotInitialConcentrationLostFocus()
   if (QString::number(mInitialConcentration, 'g', 10) == mpEditInitialConcentration->text())
     return;
 
-  mInitialNumber /= mInitialConcentration;
+  if (!mpMetab || !mpCurrentCompartment) return;
+
   mInitialConcentration = mpEditInitialConcentration->text().toDouble();
-  mInitialNumber *= mInitialConcentration;
+  mInitialNumber = CMetab::convertToNumber(mInitialConcentration,
+                   *mpCurrentCompartment,
+                   *CCopasiDataModel::Global->getModel());
 
   mpEditInitialNumber->setText(QString::number(mInitialNumber, 'g', 10));
 
@@ -598,9 +608,12 @@ void CQMetabolite::slotInitialNumberLostFocus()
   if (QString::number(mInitialNumber, 'g', 10) == mpEditInitialNumber->text())
     return;
 
-  mInitialConcentration /= mInitialNumber;
+  if (!mpMetab || !mpCurrentCompartment) return;
+
   mInitialNumber = mpEditInitialNumber->text().toDouble();
-  mInitialConcentration *= mInitialNumber;
+  mInitialConcentration = CMetab::convertToConcentration(mInitialNumber,
+                          *mpCurrentCompartment,
+                          *CCopasiDataModel::Global->getModel());
 
   mpEditInitialConcentration->setText(QString::number(mInitialConcentration, 'g', 10));
 

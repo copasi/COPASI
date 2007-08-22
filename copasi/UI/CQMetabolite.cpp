@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMetabolite.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/08/22 12:53:42 $
+//   $Date: 2007/08/22 19:52:19 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,8 +13,8 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQMetabolite.ui'
  **
- ** Created: Wed Aug 22 08:28:07 2007
- **      by: The User Interface Compiler ($Id: CQMetabolite.cpp,v 1.3 2007/08/22 12:53:42 shoops Exp $)
+ ** Created: Wed Aug 22 15:41:07 2007
+ **      by: The User Interface Compiler ($Id: CQMetabolite.cpp,v 1.4 2007/08/22 19:52:19 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/

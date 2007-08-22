@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQCompartment.ui.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/08/22 12:59:17 $
+//   $Date: 2007/08/22 19:52:19 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -244,6 +244,8 @@ void CQCompartment::slotTypeChanged(int type)
 
       mpEditInitialVolume->setEnabled(true);
       mpEditInitialVolume->setText(QString::number(mpCompartment->getInitialValue(), 'g', 10));
+      if (mpEditInitialVolume->text() == "nan")
+        mpEditInitialVolume->setText(QString::number(1.0, 'g', 10));
       break;
 
     case CModelEntity::ASSIGNMENT:
@@ -264,6 +266,8 @@ void CQCompartment::slotTypeChanged(int type)
 
       mpEditInitialVolume->setEnabled(true);
       mpEditInitialVolume->setText(QString::number(mpCompartment->getInitialValue(), 'g', 10));
+      if (mpEditInitialVolume->text() == "nan")
+        mpEditInitialVolume->setText(QString::number(1.0, 'g', 10));
 
       mpEditExpression->setExpression(mpCompartment->getExpression());
       break;

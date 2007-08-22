@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget.h,v $
-//   $Revision: 1.42 $
+//   $Revision: 1.43 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/08/22 15:45:20 $
+//   $Date: 2007/08/22 19:52:19 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -78,6 +78,14 @@ class CompartmentsWidget : public CopasiTableWidget
      * the prefix that is used to construct new object names
      */
     virtual QString defaultObjectName() const;
+
+    /**
+     * This method provides a hook for derived classes to act on changes in
+     * the table.
+     * @param unsigned C_INT32 row
+     * @param unsigned C_INT32 col
+     */
+    virtual void valueChanged(unsigned C_INT32 row, unsigned C_INT32 col);
 
   private:
     /**
