@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_normalform.hpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/23 09:03:48 $
+//   $Date: 2007/08/23 14:59:49 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -84,7 +84,10 @@ class test_normalform : public CppUnit::TestFixture
     CPPUNIT_TEST(test_simple_stepwise_fractions);
     CPPUNIT_TEST(test_simple_nested_stepwise_numbers);
     CPPUNIT_TEST(test_simple_nested_stepwise_fractions);
-    CPPUNIT_TEST(test_nested_stepwise_fractions);
+    CPPUNIT_TEST(test_nested_stepwise_numbers_2levels_1);
+    CPPUNIT_TEST(test_nested_stepwise_numbers_2levels_2);
+    CPPUNIT_TEST(test_nested_stepwise_numbers_2levels_3);
+    CPPUNIT_TEST(test_nested_stepwise_fractions_3levels);
 
     CPPUNIT_TEST_SUITE_END();
 
@@ -157,7 +160,10 @@ class test_normalform : public CppUnit::TestFixture
     void test_simple_stepwise_fractions();
     void test_simple_nested_stepwise_numbers();
     void test_simple_nested_stepwise_fractions();
-    void test_nested_stepwise_fractions();
+    void test_nested_stepwise_numbers_2levels_1();
+    void test_nested_stepwise_numbers_2levels_2();
+    void test_nested_stepwise_numbers_2levels_3();
+    void test_nested_stepwise_fractions_3levels();
   };
 
 #endif /* TEST_NORMALFORM_HPP__ */

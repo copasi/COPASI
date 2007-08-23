@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_normalform.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/21 15:29:42 $
+//   $Date: 2007/08/23 14:59:49 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -3002,12 +3002,20 @@ void test_normalform::test_simple_nested_stepwise_fractions()
   const CNormalChoice* pChoice = dynamic_cast<const CNormalChoice*>(&pItemPower->getItem());
   CPPUNIT_ASSERT(pChoice != NULL);
 
-  // check condition
+  // check the condition
   const CNormalLogical* pLogical = &pChoice->getCondition();
   CPPUNIT_ASSERT(pLogical != NULL);
   CPPUNIT_ASSERT(pLogical->isNegated() == false);
   CPPUNIT_ASSERT(pLogical->getChoices().size() == 0);
-  CPPUNIT_ASSERT(false);
+  CPPUNIT_ASSERT(pLogical->getAndSets().size() == 1);
+  std::pair<CNormalLogical::ItemSet, bool> outerpair = *(pLogical->getAndSets().begin());
+  CPPUNIT_ASSERT(outerpair.second == false);
+  CPPUNIT_ASSERT(outerpair.first.size() == 1);
+  std::pair<CNormalLogicalItem*, bool> innerpair = *(outerpair.first.begin());
+  CPPUNIT_ASSERT(innerpair.second == false);
+  const CNormalLogicalItem* pLogicalItem = innerpair.first;
+  CPPUNIT_ASSERT(pLogicalItem != NULL);
+  CPPUNIT_ASSERT(pLogicalItem->getType() == CNormalLogicalItem::FALSE);
 
   // check the true branch
   const CNormalFraction* pFraction2 = &pChoice->getTrueExpression();
@@ -3159,7 +3167,204 @@ void test_normalform::test_simple_nested_stepwise_fractions()
   CPPUNIT_ASSERT(pItem->getName() == "A");
 }
 
-void test_normalform::test_nested_stepwise_fractions()
+void test_normalform::test_nested_stepwise_numbers_2levels_1()
+{
+  std::string infix("IF(IF(A gt PI,FALSE,4.0 ne A),2.3,4.5)");
+  CEvaluationTree* pTree = new CEvaluationTree();
+  pTree->setInfix(infix);
+  CPPUNIT_ASSERT(pTree->getRoot() != NULL);
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  delete pTree;
+  CPPUNIT_ASSERT(pFraction != NULL);
+  CPPUNIT_ASSERT(pFraction->checkDenominatorOne() == true);
+
+  const CNormalSum* numerator = &pFraction->getNumerator();
+  CPPUNIT_ASSERT(numerator->getFractions().size() == 0);
+  const std::set<CNormalProduct*, compareProducts >* products = &numerator->getProducts();
+  CPPUNIT_ASSERT(products->size() == 1);
+  const CNormalProduct* pProduct = *(products->begin());
+  CPPUNIT_ASSERT(pProduct != NULL);
+  CPPUNIT_ASSERT(pProduct->getFactor() == 1.0);
+  CPPUNIT_ASSERT(pProduct->getItemPowers().size() == 1);
+  const CNormalItemPower* pItemPower = *(pProduct->getItemPowers().begin());
+  CPPUNIT_ASSERT(pItemPower != NULL);
+  CPPUNIT_ASSERT(pItemPower->getExp() == 1.0);
+  CPPUNIT_ASSERT(pItemPower->getItemType() == CNormalItemPower::CHOICE);
+  const CNormalChoice* pChoice = dynamic_cast<const CNormalChoice*>(&pItemPower->getItem());
+  CPPUNIT_ASSERT(pChoice != NULL);
+
+  // check the condition
+  const CNormalLogical* pLogical = &pChoice->getCondition();
+  CPPUNIT_ASSERT(pLogical != NULL);
+  CPPUNIT_ASSERT(pLogical->isNegated() == false);
+  CPPUNIT_ASSERT(pLogical->getChoices().size() == 0);
+  CPPUNIT_ASSERT(pLogical->getAndSets().size() == 1);
+  CNormalLogical::ItemSetOfSets::const_iterator outerIt = pLogical->getAndSets().begin();
+  std::pair<CNormalLogical::ItemSet, bool> outerpair = *(outerIt);
+  CPPUNIT_ASSERT(outerpair.second == false);
+  CPPUNIT_ASSERT(outerpair.first.size() == 2);
+  CNormalLogical::ItemSet::const_iterator innerIt = outerpair.first.begin();
+  std::pair<CNormalLogicalItem*, bool> innerpair = *(innerIt);
+  CPPUNIT_ASSERT(innerpair.second == false);
+  const CNormalLogicalItem* pLogicalItem = innerpair.first;
+  CPPUNIT_ASSERT(pLogicalItem != NULL);
+  CPPUNIT_ASSERT(pLogicalItem->getType() == CNormalLogicalItem::NE);
+  // check left side and right side
+  CPPUNIT_ASSERT(false);
+  ++innerIt;
+  innerpair = *(innerIt);
+  CPPUNIT_ASSERT(innerpair.second == false);
+  pLogicalItem = innerpair.first;
+  CPPUNIT_ASSERT(pLogicalItem != NULL);
+  CPPUNIT_ASSERT(pLogicalItem->getType() == CNormalLogicalItem::LE);
+  // check the left side and the right side
+  CPPUNIT_ASSERT(false);
+
+  // check the true branch
+  const CNormalFraction* pFraction2 = &pChoice->getTrueExpression();
+  CPPUNIT_ASSERT(pFraction2 != NULL);
+  CPPUNIT_ASSERT(pFraction2->checkDenominatorOne() == true);
+  numerator = &pFraction2->getNumerator();
+  CPPUNIT_ASSERT(numerator->getFractions().size() == 0);
+  products = &numerator->getProducts();
+  CPPUNIT_ASSERT(products->size() == 1);
+  pProduct = *(products->begin());
+  CPPUNIT_ASSERT(pProduct != NULL);
+  CPPUNIT_ASSERT(pProduct->getFactor() == 2.3);
+  CPPUNIT_ASSERT(pProduct->getItemPowers().size() == 0);
+
+  // check the false branch
+  pFraction2 = &pChoice->getFalseExpression();
+  CPPUNIT_ASSERT(pFraction2 != NULL);
+  numerator = &pFraction2->getNumerator();
+  CPPUNIT_ASSERT(numerator->getFractions().size() == 0);
+  products = &numerator->getProducts();
+  CPPUNIT_ASSERT(products->size() == 1);
+  pProduct = *(products->begin());
+  CPPUNIT_ASSERT(pProduct != NULL);
+  CPPUNIT_ASSERT(pProduct->getFactor() == 4.5);
+  CPPUNIT_ASSERT(pProduct->getItemPowers().size() == 0);
+}
+
+void test_normalform::test_nested_stepwise_numbers_2levels_2()
+{
+  std::string infix("IF(IF(2 eq T,FALSE,NOT (D eq F)),2.3,4.5)");
+  CEvaluationTree* pTree = new CEvaluationTree();
+  pTree->setInfix(infix);
+  CPPUNIT_ASSERT(pTree->getRoot() != NULL);
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  delete pTree;
+  CPPUNIT_ASSERT(pFraction != NULL);
+  CPPUNIT_ASSERT(pFraction->checkDenominatorOne() == true);
+
+  const CNormalSum* numerator = &pFraction->getNumerator();
+  CPPUNIT_ASSERT(numerator->getFractions().size() == 0);
+  const std::set<CNormalProduct*, compareProducts >* products = &numerator->getProducts();
+  CPPUNIT_ASSERT(products->size() == 1);
+  const CNormalProduct* pProduct = *(products->begin());
+  CPPUNIT_ASSERT(pProduct != NULL);
+  CPPUNIT_ASSERT(pProduct->getFactor() == 1.0);
+  CPPUNIT_ASSERT(pProduct->getItemPowers().size() == 1);
+  const CNormalItemPower* pItemPower = *(pProduct->getItemPowers().begin());
+  CPPUNIT_ASSERT(pItemPower != NULL);
+  CPPUNIT_ASSERT(pItemPower->getExp() == 1.0);
+  CPPUNIT_ASSERT(pItemPower->getItemType() == CNormalItemPower::CHOICE);
+  const CNormalChoice* pChoice = dynamic_cast<const CNormalChoice*>(&pItemPower->getItem());
+  CPPUNIT_ASSERT(pChoice != NULL);
+
+  // check condition
+  const CNormalLogical* pLogical = &pChoice->getCondition();
+  CPPUNIT_ASSERT(pLogical != NULL);
+  CPPUNIT_ASSERT(pLogical->isNegated() == false);
+  CPPUNIT_ASSERT(pLogical->getChoices().size() == 0);
+  CPPUNIT_ASSERT(false);
+
+  // check the true branch
+  const CNormalFraction* pFraction2 = &pChoice->getTrueExpression();
+  CPPUNIT_ASSERT(pFraction2 != NULL);
+  CPPUNIT_ASSERT(pFraction2->checkDenominatorOne() == true);
+  numerator = &pFraction2->getNumerator();
+  CPPUNIT_ASSERT(numerator->getFractions().size() == 0);
+  products = &numerator->getProducts();
+  CPPUNIT_ASSERT(products->size() == 1);
+  pProduct = *(products->begin());
+  CPPUNIT_ASSERT(pProduct != NULL);
+  CPPUNIT_ASSERT(pProduct->getFactor() == 2.3);
+  CPPUNIT_ASSERT(pProduct->getItemPowers().size() == 0);
+
+  // check the false branch
+  pFraction2 = &pChoice->getFalseExpression();
+  CPPUNIT_ASSERT(pFraction2 != NULL);
+  numerator = &pFraction2->getNumerator();
+  CPPUNIT_ASSERT(numerator->getFractions().size() == 0);
+  products = &numerator->getProducts();
+  CPPUNIT_ASSERT(products->size() == 1);
+  pProduct = *(products->begin());
+  CPPUNIT_ASSERT(pProduct != NULL);
+  CPPUNIT_ASSERT(pProduct->getFactor() == 4.5);
+  CPPUNIT_ASSERT(pProduct->getItemPowers().size() == 0);
+}
+
+void test_normalform::test_nested_stepwise_numbers_2levels_3()
+{
+  std::string infix("IF(IF(SIN(D*PI) lt X,TRUE,2*T^(3*J) ne 6.2),2.3,4.5)");
+  CEvaluationTree* pTree = new CEvaluationTree();
+  pTree->setInfix(infix);
+  CPPUNIT_ASSERT(pTree->getRoot() != NULL);
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  delete pTree;
+  CPPUNIT_ASSERT(pFraction != NULL);
+  CPPUNIT_ASSERT(pFraction->checkDenominatorOne() == true);
+
+  const CNormalSum* numerator = &pFraction->getNumerator();
+  CPPUNIT_ASSERT(numerator->getFractions().size() == 0);
+  const std::set<CNormalProduct*, compareProducts >* products = &numerator->getProducts();
+  CPPUNIT_ASSERT(products->size() == 1);
+  const CNormalProduct* pProduct = *(products->begin());
+  CPPUNIT_ASSERT(pProduct != NULL);
+  CPPUNIT_ASSERT(pProduct->getFactor() == 1.0);
+  CPPUNIT_ASSERT(pProduct->getItemPowers().size() == 1);
+  const CNormalItemPower* pItemPower = *(pProduct->getItemPowers().begin());
+  CPPUNIT_ASSERT(pItemPower != NULL);
+  CPPUNIT_ASSERT(pItemPower->getExp() == 1.0);
+  CPPUNIT_ASSERT(pItemPower->getItemType() == CNormalItemPower::CHOICE);
+  const CNormalChoice* pChoice = dynamic_cast<const CNormalChoice*>(&pItemPower->getItem());
+  CPPUNIT_ASSERT(pChoice != NULL);
+
+  // check condition
+  const CNormalLogical* pLogical = &pChoice->getCondition();
+  CPPUNIT_ASSERT(pLogical != NULL);
+  CPPUNIT_ASSERT(pLogical->isNegated() == false);
+  CPPUNIT_ASSERT(pLogical->getChoices().size() == 0);
+  CPPUNIT_ASSERT(false);
+
+  // check the true branch
+  const CNormalFraction* pFraction2 = &pChoice->getTrueExpression();
+  CPPUNIT_ASSERT(pFraction2 != NULL);
+  CPPUNIT_ASSERT(pFraction2->checkDenominatorOne() == true);
+  numerator = &pFraction2->getNumerator();
+  CPPUNIT_ASSERT(numerator->getFractions().size() == 0);
+  products = &numerator->getProducts();
+  CPPUNIT_ASSERT(products->size() == 1);
+  pProduct = *(products->begin());
+  CPPUNIT_ASSERT(pProduct != NULL);
+  CPPUNIT_ASSERT(pProduct->getFactor() == 2.3);
+  CPPUNIT_ASSERT(pProduct->getItemPowers().size() == 0);
+
+  // check the false branch
+  pFraction2 = &pChoice->getFalseExpression();
+  CPPUNIT_ASSERT(pFraction2 != NULL);
+  numerator = &pFraction2->getNumerator();
+  CPPUNIT_ASSERT(numerator->getFractions().size() == 0);
+  products = &numerator->getProducts();
+  CPPUNIT_ASSERT(products->size() == 1);
+  pProduct = *(products->begin());
+  CPPUNIT_ASSERT(pProduct != NULL);
+  CPPUNIT_ASSERT(pProduct->getFactor() == 4.5);
+  CPPUNIT_ASSERT(pProduct->getItemPowers().size() == 0);
+}
+
+void test_normalform::test_nested_stepwise_fractions_3levels()
 {
   std::string infix("IF(IF(IF(A gt PI,FALSE,4.0 ne A),IF(2 eq T,FALSE,NOT (D eq F)),IF(SIN(D*PI) lt X,TRUE,2*T^(3*J) ne 6.2)),A/TAN(X)^R,SIN(PI)/A^6)");
   CEvaluationTree* pTree = new CEvaluationTree();
