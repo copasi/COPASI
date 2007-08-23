@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.h,v $
-//   $Revision: 1.80 $
+//   $Revision: 1.81 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/08/01 15:53:23 $
+//   $Date: 2007/08/23 19:02:10 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -286,12 +286,6 @@ class CMetab : public CModelEntity
      * Clear the list of moieties
      */
     void clearMoieties();
-
-    /**
-     * Retreive object referencing the value
-     * @return CCopasiObject * valueReference
-     */
-    virtual CCopasiObject * getValueReference();
 
     /**
      * ostream operator

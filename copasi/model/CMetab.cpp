@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-//   $Revision: 1.120 $
+//   $Revision: 1.121 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/08/22 19:52:19 $
+//   $Date: 2007/08/23 19:02:10 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -339,7 +339,7 @@ bool CMetab::compile()
 
   const CCopasiObject * pVolumeReference = NULL;
   if (mpCompartment)
-    pVolumeReference = mpCompartment->getObject(CCopasiObjectName("Reference=Volume"));
+    pVolumeReference = mpCompartment->getValueReference();
 
   switch (getStatus())
     {
@@ -439,6 +439,17 @@ bool CMetab::compile()
 
       mpTTReference->setRefresh(this, &CMetab::refreshTransitionTime);
       mpTTReference->setDirectDependencies(Dependencies);
+
+      Dependencies.clear();
+      Dependencies.insert(mpRateReference);
+      Dependencies.insert(mpConcReference);
+      if (pVolumeReference)
+        Dependencies.insert(pVolumeReference);
+      if (mpCompartment)
+        Dependencies.insert(mpCompartment->getRateReference());
+
+      mpConcRateReference->setDirectDependencies(Dependencies);
+      mpConcRateReference->setRefresh(this, &CMetab::refreshConcentrationRate);
       break;
 
     default:
@@ -517,7 +528,7 @@ void CMetab::refreshTransitionTime()
       break;
 
     case ODE:
-      mTT = *mpValueData / mRate;
+      mTT = *mpValueData / fabs(mRate);
       break;
 
     case REACTIONS:
@@ -599,7 +610,14 @@ C_FLOAT64 CMetab::getConcentrationRate() const
 
 void CMetab::refreshConcentrationRate()
 {
-  mConcRate = mRate / getCompartment()->getValue() * mpModel->getNumber2QuantityFactor();
+  // d(Particle Number*conversion/Volume)/dt
+  // = (Rate / Volume - Particle Number / Volume^2 * Volume Rate) * conversion
+  // = (Rate - Particle Number / Volume * Volume Rate) / Volume * conversion
+  // = (Rate  * conversion - Concentration * Volume Rate) / Volume
+
+  mConcRate =
+    (mRate * mpModel->getNumber2QuantityFactor() - mConc * getCompartment()->getRate())
+    / getCompartment()->getValue();
 }
 
 void * CMetab::getValuePointer() const
@@ -607,21 +625,6 @@ void * CMetab::getValuePointer() const
     //std::cout << "CMetab::getValuePointer();" << std::endl;
     return const_cast<C_FLOAT64 *>(&mConc);
   }
-
-CCopasiObject * CMetab::getValueReference()
-{
-  switch (getStatus())
-    {
-    case ODE:
-    case ASSIGNMENT:
-      return mpConcReference;
-      break;
-
-    default:
-      return CModelEntity::getValueReference();
-      break;
-    }
-}
 
 std::ostream & operator<<(std::ostream &os, const CMetab & d)
 {

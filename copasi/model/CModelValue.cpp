@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-//   $Revision: 1.40 $
+//   $Revision: 1.41 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/08/07 17:15:14 $
+//   $Date: 2007/08/23 19:02:10 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -266,11 +266,11 @@ const C_FLOAT64 & CModelEntity::getRate() const
     return mRate;
   }
 
-CCopasiObject * CModelEntity::getValueReference()
-{return mpValueReference;}
+CCopasiObject * CModelEntity::getValueReference() const
+  {return mpValueReference;}
 
-CCopasiObject * CModelEntity::getRateReference()
-{return mpRateReference;}
+CCopasiObject * CModelEntity::getRateReference() const
+  {return mpRateReference;}
 
 //***********
 

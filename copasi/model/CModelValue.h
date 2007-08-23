@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.h,v $
-//   $Revision: 1.27 $
+//   $Revision: 1.28 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/27 16:37:07 $
+//   $Date: 2007/08/23 19:02:10 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -277,13 +277,13 @@ class CModelEntity : public CCopasiContainer
      * Retreive object referencing the value
      * @return CCopasiObject * valueReference
      */
-    virtual CCopasiObject * getValueReference();
+    CCopasiObject * getValueReference() const;
 
     /**
      * Retreive object referencing the rate
      * @return CCopasiObject * rateReference
      */
-    virtual CCopasiObject * getRateReference();
+    CCopasiObject * getRateReference() const;
 
   protected:
     /**

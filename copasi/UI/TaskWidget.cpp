@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.cpp,v $
-//   $Revision: 1.29 $
+//   $Revision: 1.30 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/24 18:40:20 $
+//   $Date: 2007/08/23 19:02:10 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -390,6 +390,12 @@ bool TaskWidget::commonAfterRunTask()
   CCopasiMessage::clearDeque();
 
   CCopasiDataModel::Global->finish();
+
+  // Update all values shown in the GUI
+  CModel * pModel = CCopasiDataModel::Global->getModel();
+  pModel->updateSimulatedValues(true);
+  pModel->updateNonSimulatedValues();
+
   protectedNotify(ListViews::STATE, ListViews::CHANGE, CCopasiDataModel::Global->getModel()->getKey());
   unsetCursor();
   static_cast<CopasiUI3Window *>(qApp->mainWidget())->suspendAutoSave(false);

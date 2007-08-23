@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.310 $
+//   $Revision: 1.311 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/08/21 16:18:50 $
+//   $Date: 2007/08/23 19:02:10 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -348,6 +348,12 @@ bool CModel::compile()
                      & CompileStep,
                      &totalSteps);
     }
+
+  // To assure that we do not produce access violations we clear the refres sequences
+  // first
+  mSimulatedRefreshes.clear();
+  mConstantRefreshes.clear();
+  mNonSimulatedRefreshes.clear();
 
   CompileStep = 0;
   if (mpCompileHandler && !mpCompileHandler->progress(hCompileStep)) return false;
@@ -1244,9 +1250,9 @@ bool CModel::buildSimulatedSequence()
   // in assignments or ODEs. However this is acceptable and more than compensated by the performance
   // gains of dgemm.
 
-  // For CMetab ASSIGNMENTs we need to add the Concentration
+  // For CMetab ASSIGNMENTs we technincally need only to add the Concentration
+  // however for completeness we calculate the state value.
   // For CModelValues and CCompartment ASSIGNMENTs we need to add the Value
-  // Since getValueReference is overloaded for CMetab the following suffices
   ppEntity = mStateTemplate.beginDependent() - mNumMetabolitesIndependent + mNumMetabolitesReaction;
   ppEntityEnd = mStateTemplate.endDependent();
   for (; ppEntity != ppEntityEnd; ++ppEntity)
@@ -1443,19 +1449,15 @@ bool CModel::buildNonSimulatedSequence()
   for (; itMetab != endMetab; ++itMetab)
     {
       Objects.insert((*itMetab)->getObject(CCopasiObjectName("Reference=Concentration")));
-      Objects.insert((*itMetab)->CModelEntity::getValueReference());
+      Objects.insert((*itMetab)->getValueReference());
 
       switch ((*itMetab)->getStatus())
         {
         case REACTIONS:
+        case ODE:
           Objects.insert((*itMetab)->getObject(CCopasiObjectName("Reference=TransitionTime")));
           Objects.insert((*itMetab)->getObject(CCopasiObjectName("Reference=Rate")));
-          Objects.insert((*itMetab)->CModelEntity::getRateReference());
-          break;
-
-        case ODE:
-          Objects.insert((*itMetab)->getObject(CCopasiObjectName("Reference=Rate")));
-          Objects.insert((*itMetab)->CModelEntity::getRateReference());
+          Objects.insert((*itMetab)->getRateReference());
           break;
 
         default:
