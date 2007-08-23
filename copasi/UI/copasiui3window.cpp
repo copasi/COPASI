@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.197 $
+//   $Revision: 1.198 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/07/24 13:25:47 $
+//   $Author: ssahle $
+//   $Date: 2007/08/23 14:02:41 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,6 +26,7 @@
 #include <qhbox.h>
 #include <qscrollview.h>
 #include <qaction.h>
+#include <qtextedit.h>
 
 #include <vector>
 
@@ -59,6 +60,7 @@ extern const char * CopasiLicense;
 #include "./icons/fileprint.xpm"
 #include "./icons/showSliders.xpm"
 #include "./icons/Copasi16-Alpha.xpm"
+#include "./icons/checkModel.xpm"
 
 #define AutoSaveInterval 10*60*1000
 
@@ -219,6 +221,9 @@ void CopasiUI3Window::createActions()
   mpaObjectBrowser->setToggleAction(true);
   connect(mpaObjectBrowser, SIGNAL(toggled(bool)), this, SLOT(slotShowObjectBrowserDialog(bool)));
 
+  mpaCheckModel = new QAction(QPixmap(checkModel_xpm), "Check model", 0, this, "checkmodel");
+  connect(mpaCheckModel, SIGNAL(activated()), this, SLOT(slotCheckModel()));
+
   //     QAction* mpaObjectBrowser;
 }
 
@@ -243,11 +248,13 @@ void CopasiUI3Window::createToolBar()
   //   QWhatsThis::add(mpToggleSliderDialogButton, "<p>Click this button to show/hide the sliders dialog. This is the same as clicking on <b>show sliders</b> in the <b>Tools</b> menu.</p>");
   mpaSliders->addTo(tbMain);
 
+  mpaCheckModel->addTo(tbMain);
+
   //What's this
-  toolb = QWhatsThis::whatsThisButton(tbMain);
-  QWhatsThis::add(toolb, "This is a <b>What's This</b> button "
-                  "It enables the user to ask for help "
-                  "about widgets on the screen.");
+  /*  toolb = QWhatsThis::whatsThisButton(tbMain);
+    QWhatsThis::add(toolb, "This is a <b>What's This</b> button "
+                    "It enables the user to ask for help "
+                    "about widgets on the screen.");*/
 }
 
 void CopasiUI3Window::createMenuBar()
@@ -327,6 +334,8 @@ void CopasiUI3Window::createMenuBar()
   mpaObjectBrowser->addTo(tools);
 
   mpaSliders->addTo(tools);
+
+  mpaCheckModel->addTo(tools);
 
   tools->insertSeparator();
   tools->insertItem("&Preferences...", this, SLOT(slotPreferences()), CTRL + Key_P, 3);
@@ -1391,6 +1400,18 @@ std::string CopasiUI3Window::exportSBMLToString()
         }
     }
   return ret;
+}
+
+#include "model/CModelAnalyzer.h"
+void CopasiUI3Window::slotCheckModel()
+{
+  CModelAnalyzer MA(CCopasiDataModel::Global->getModel());
+
+  std::ostringstream ss;
+  MA.writeReport(ss, true, true);
+
+  QTextEdit* pTE = new QTextEdit(ss.str());
+  pTE->show();
 }
 
 #ifdef COPASI_LICENSE_COM
