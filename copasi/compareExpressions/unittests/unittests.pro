@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/unittests.pro,v $ 
-#   $Revision: 1.4 $ 
+#   $Revision: 1.5 $ 
 #   $Name:  $ 
-#   $Author: gauges $ 
-#   $Date: 2007/08/23 09:03:48 $ 
+#   $Author: shoops $ 
+#   $Date: 2007/08/23 14:37:43 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -30,10 +30,8 @@ contains(BUILD_OS, Linux) {
 #         $$join(COPASI_LIBS, " -l", -l) \
 #         $${LIBS}
 
-!isEmpty(CPPUNIT_PATH)
-{
+!isEmpty(CPPUNIT_PATH) {
   LIBS += -L$${CPPUNIT_PATH}/lib -lcppunit
-  
   INCLUDEPATH += $${CPPUNIT_PATH}/include
 }
 
@@ -57,13 +55,6 @@ contains(BUILD_OS, Darwin){
 
   LIBS = $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a) \
          $${LIBS}
-
-!isEmpty(CPPUNIT_PATH)
-{
-  LIBS += -L$${CPPUNIT_PATH}/lib -lcppunit
-  
-  INCLUDEPATH += $${CPPUNIT_PATH}/include
-}
 
 #  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a)
 }
