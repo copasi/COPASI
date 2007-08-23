@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/compareExpressions.pro,v $ 
-#   $Revision: 1.5 $ 
+#   $Revision: 1.6 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2007/08/13 07:41:17 $ 
+#   $Date: 2007/08/23 09:03:47 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -11,7 +11,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.5 $ $Author: gauges $ $Date: 2007/08/13 07:41:17 $  
+# $Revision: 1.6 $ $Author: gauges $ $Date: 2007/08/23 09:03:47 $  
 ######################################################################
 
 LIB = compareExpressions
@@ -20,8 +20,8 @@ LIB = compareExpressions
 include(../lib.pri)
 include(../common.pri)
 
-QMAKE_EXTRA_UNIX_TARGETS += check
-check.commands = cd unittests; $(QMAKE) $$(0);make
+#QMAKE_EXTRA_UNIX_TARGETS += check
+#check.commands = cd unittests; $(QMAKE) $$(0);make
 
 # Input
 HEADERS +=  CNormalItem.h \

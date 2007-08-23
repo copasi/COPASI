@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLogicalItem.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/22 17:30:11 $
+//   $Date: 2007/08/23 09:03:47 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -37,29 +37,16 @@ bool CNormalLogicalItem::operator<(const CNormalLogicalItem& rhs) const
     if (this->mType < rhs.mType)
       {
         result = true;
-        std::cout << "CNormalLogicalItem:: " << this->mType << " is smaller than " << rhs.mType << std::endl;
       }
     else if (this->mType == rhs.mType)
       {
         if (this->mLeft == rhs.mLeft)
           {
             result = (this->mRight < rhs.mRight);
-            if (result)
-              {
-                std::cout << "The right hand side of this is smaller than the right hand side of RHS." << std::endl;
-                std::cout << "this.mRight: " << this->mRight << std::endl;
-                std::cout << "rhs.mRight: " << rhs.mRight << std::endl;
-              }
           }
         else
           {
             result = (this->mLeft < rhs.mLeft);
-            if (result)
-              {
-                std::cout << "The left hand side of this is smaller than the left hand side of RHS." << std::endl;
-                std::cout << "this.mLeft: " << this->mLeft << std::endl;
-                std::cout << "rhs.mLeft: " << rhs.mLeft << std::endl;
-              }
           }
       }
     return result;

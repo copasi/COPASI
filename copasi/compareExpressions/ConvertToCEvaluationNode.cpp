@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/ConvertToCEvaluationNode.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/22 17:30:11 $
+//   $Date: 2007/08/23 09:03:47 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1752,6 +1752,7 @@ CNormalLogical* createLogical(const CEvaluationNode* pNode)
             }
         }
     }
+  //std::cout << pResult->debug();
   return pResult;
 }
 
@@ -1911,5 +1912,10 @@ CNormalLogicalItem* createLogicalItem(const CEvaluationNode* pNode)
             }
         }
     }
+  /*
+  std::cout << "Created a logical item: " << *pResult << std::endl;
+  std::cout << "item left: " << pResult->getLeft() << std::endl;
+  std::cout << "item right: " << pResult->getRight() << std::endl;
+  */
   return pResult;
 }

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalFraction.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/13 07:41:17 $
+//   $Date: 2007/08/23 09:03:47 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,10 +16,13 @@
 #include "copasi.h"
 #include "compareExpressions/CNormalBase.h"
 #include <string>
+//#include <set>
 
 class CNormalSum;
 class CNormalItemPower;
 class CNormalLcm;
+
+//class CNormalLogical;
 
 class CNormalFraction : public CNormalBase
   {
@@ -160,8 +163,9 @@ class CNormalFraction : public CNormalBase
 
     virtual std::string toString() const;
 
-    friend std::ostream & operator<< (std::ostream &os,
-                                      const CNormalFraction & d);
+    //std::set<const CNormalLogical*> findLogicals() const;
   };
+
+std::ostream & operator<< (std::ostream &os, const CNormalFraction & d);
 
 #endif // COPASI_CNormalFraction_decl__

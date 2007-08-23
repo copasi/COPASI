@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/13 21:00:41 $
+//   $Date: 2007/08/23 09:03:47 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,6 +25,7 @@
 #include "CNormalFraction.h"
 #include "CNormalSum.h"
 #include "CNormalProduct.h"
+#include "CNormalLogical.h"
 
 /**
  * Simplify an evaluation tree given by the root node by creating a new simplified tree from the original one.
@@ -87,9 +88,30 @@ CNormalFraction* CNormalTranslation::normAndSimplify(const CEvaluationNode* root
   CEvaluationNode * root1 = simplifyTreeReptdly(root0);
 
   CNormalFraction* base = createNormalRepresentation(root1);
+  /*
+  std::set<const CNormalLogical*> logicals=base->findLogicals();
+  std::set<const CNormalLogical*>::iterator it=logicals.begin();
+  std::set<const CNormalLogical*>::iterator endit=logicals.end();
+  std::cout << "Found " << logicals.size() << " logicals: " << std::endl;
+  while(it!=endit)
+  {
+      std::cout << (*it)->debug();
+    ++it;
+  }
+  */
   //std::cout << "<p>Created Normal Repr.: " << base->toString() << "</p>" << std::endl;
   base->simplify();
-
+  /*
+  logicals=base->findLogicals();
+  it=logicals.begin();
+  endit=logicals.end();
+  std::cout << "Found " << logicals.size() << " logicals: " << std::endl;
+  while(it!=endit)
+  {
+      std::cout << (*it)->debug();
+    ++it;
+  }
+  */
   delete root1;
 
   return base;

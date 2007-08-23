@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalFraction.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/13 07:41:17 $
+//   $Date: 2007/08/23 09:03:47 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,6 +20,8 @@
 #include "CNormalLcm.h"
 #include "CNormalItemPower.h"
 #include "CNormalFraction.h"
+//#include "CNormalLogical.h"
+//#include "CNormalChoice.h"
 
 /**
  * Default constructor
@@ -179,52 +181,55 @@ bool CNormalFraction::expand(const CNormalLcm& lcm)
  */
 bool CNormalFraction::cancel()
 {
-  if (*mpDenominator == *mpNumerator)
+  if (mpNumerator->getProducts().size() != 0 || mpNumerator->getFractions().size() != 0 || mpDenominator->getProducts().size() != 0 || mpDenominator->getFractions().size() != 0)
     {
-      setDenominatorOne();
-      setNumerator(*mpDenominator);
-      return true;
-    }
-
-  if (mpDenominator->getProducts().size() != 0)
-    {
-      C_FLOAT64 factor = (*mpDenominator->getProducts().begin())->getFactor();
-      if (fabs(factor) < 1.0E-100)
-        return false;
-      else
+      if (*mpDenominator == *mpNumerator)
         {
-          mpNumerator->multiply(1.0 / factor);  //factor != 0 as checked earlier
-          mpDenominator->multiply(1.0 / factor);
+          setDenominatorOne();
+          setNumerator(*mpDenominator);
+          return true;
         }
-    }
 
-  if (checkForFractions() == false)
-    {
-      std::set<CNormalItemPower*, compareItemPowers >::iterator it = (*mpDenominator->getProducts().begin())->getItemPowers().begin();
-      std::set<CNormalItemPower*, compareItemPowers >::iterator itEnd = (*mpDenominator->getProducts().begin())->getItemPowers().end();
-      std::vector<CNormalItemPower*> tmpV;
-      while (it != itEnd)
-        {//runs through all item powers in the first product of the denominator
-          C_FLOAT64 exp = mpNumerator->checkFactor(**it);
-          if (fabs(exp) >= 1.0E-100)
+      if (mpDenominator->getProducts().size() != 0)
+        {
+          C_FLOAT64 factor = (*mpDenominator->getProducts().begin())->getFactor();
+          if (fabs(factor) < 1.0E-100)
+            return false;
+          else
             {
-              exp = mpDenominator->checkFactor(**it) < exp ? mpDenominator->checkFactor(**it) : exp;
+              mpNumerator->multiply(1.0 / factor);  //factor != 0 as checked earlier
+              mpDenominator->multiply(1.0 / factor);
+            }
+        }
+
+      if (checkForFractions() == false)
+        {
+          std::set<CNormalItemPower*, compareItemPowers >::iterator it = (*mpDenominator->getProducts().begin())->getItemPowers().begin();
+          std::set<CNormalItemPower*, compareItemPowers >::iterator itEnd = (*mpDenominator->getProducts().begin())->getItemPowers().end();
+          std::vector<CNormalItemPower*> tmpV;
+          while (it != itEnd)
+            {//runs through all item powers in the first product of the denominator
+              C_FLOAT64 exp = mpNumerator->checkFactor(**it);
               if (fabs(exp) >= 1.0E-100)
                 {
-                  CNormalItemPower* itemPower = new CNormalItemPower((*it)->getItem(), exp);
-                  tmpV.push_back(itemPower);
+                  exp = mpDenominator->checkFactor(**it) < exp ? mpDenominator->checkFactor(**it) : exp;
+                  if (fabs(exp) >= 1.0E-100)
+                    {
+                      CNormalItemPower* itemPower = new CNormalItemPower((*it)->getItem(), exp);
+                      tmpV.push_back(itemPower);
+                    }
                 }
+              ++it;
             }
-          ++it;
-        }
-      std::vector<CNormalItemPower*>::iterator it2 = tmpV.begin();
-      std::vector<CNormalItemPower*>::iterator itEnd2 = tmpV.end();
-      while (it2 != itEnd2)
-        {
-          mpNumerator->divide(**it2);
-          mpDenominator->divide(**it2);
-          delete *it2;
-          ++it2;
+          std::vector<CNormalItemPower*>::iterator it2 = tmpV.begin();
+          std::vector<CNormalItemPower*>::iterator itEnd2 = tmpV.end();
+          while (it2 != itEnd2)
+            {
+              mpNumerator->divide(**it2);
+              mpDenominator->divide(**it2);
+              delete *it2;
+              ++it2;
+            }
         }
     }
   return true;
@@ -390,3 +395,63 @@ bool CNormalFraction::operator<(const CNormalFraction& src) const
       }
     return result;
   }
+
+/*
+std::set<const CNormalLogical*> CNormalFraction::findLogicals() const
+{
+    std::set<const CNormalLogical*> set;
+    std::set<CNormalProduct*>::const_iterator it=this->mpDenominator->getProducts().begin();
+    std::set<CNormalProduct*>::const_iterator endit=this->mpDenominator->getProducts().end();
+    while(it!=endit)
+    {
+        std::set<CNormalItemPower*,compareItemPowers>::const_iterator it2=(*it)->getItemPowers().begin();
+        std::set<CNormalItemPower*,compareItemPowers>::const_iterator endit2=(*it)->getItemPowers().end();
+        while(it2!=endit2)
+        {
+          if((*it2)->getItemType()==CNormalItemPower::CHOICE)
+          {
+            const CNormalChoice* pChoice=dynamic_cast<const CNormalChoice*>(&(*it2)->getItem());
+            const CNormalLogical* pLogical=&pChoice->getCondition();
+            set.insert(pLogical);
+            std::set<const CNormalLogical*> tmpSet=pLogical->findLogicals();
+            set.insert(tmpSet.begin(),tmpSet.end());
+          }
+          else if((*it2)->getItemType()==CNormalItemPower::FUNCTION)
+          {
+          }
+          else if((*it2)->getItemType()==CNormalItemPower::POWER)
+          {
+          }
+          ++it2;
+        }
+        ++it;
+    }
+    it=this->mpNumerator->getProducts().begin();
+    endit=this->mpNumerator->getProducts().end();
+    while(it!=endit)
+    {
+        std::set<CNormalItemPower*,compareItemPowers>::const_iterator it2=(*it)->getItemPowers().begin();
+        std::set<CNormalItemPower*,compareItemPowers>::const_iterator endit2=(*it)->getItemPowers().end();
+        while(it2!=endit2)
+        {
+          if((*it2)->getItemType()==CNormalItemPower::CHOICE)
+          {
+            const CNormalChoice* pChoice=dynamic_cast<const CNormalChoice*>(&(*it2)->getItem());
+            const CNormalLogical* pLogical=&pChoice->getCondition();
+            set.insert(pLogical);
+            std::set<const CNormalLogical*> tmpSet=pLogical->findLogicals();
+            set.insert(tmpSet.begin(),tmpSet.end());
+          }
+          else if((*it2)->getItemType()==CNormalItemPower::FUNCTION)
+          {
+          }
+          else if((*it2)->getItemType()==CNormalItemPower::POWER)
+          {
+          }
+          ++it2;
+        }
+        ++it;
+    }
+    return set;
+}
+ */
