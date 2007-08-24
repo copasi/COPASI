@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.h,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/04/11 15:22:08 $
+//   $Date: 2007/08/24 19:13:53 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,6 +40,14 @@ class CExpression: public CEvaluationTree
      *  Destructor
      */
     virtual ~CExpression();
+
+    /**
+     * Creates the corresponding initial expression for the given expression by converting
+     * each transient value to the corresponding initial value.
+     * @param const CExpression & expression
+     * @return CExpression * pInitialExpression
+     */
+    static CExpression * createInitialExpression(const CExpression & expression);
 
   private:
     /**

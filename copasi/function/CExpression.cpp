@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.cpp,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/05/15 12:36:11 $
+//   $Date: 2007/08/24 19:13:53 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -166,3 +166,35 @@ void CExpression::writeMathML(std::ostream & out, bool fullExpand, unsigned C_IN
         if (flag) out << SPC(l) << "</mfenced>" << std::endl;
       }
   }
+
+// static
+CExpression * CExpression::createInitialExpression(const CExpression & expression)
+{
+  CExpression * pInitialExpression = new CExpression(expression, expression.getObjectParent());
+
+  std::vector< CEvaluationNode * > * pNodeList =
+    const_cast< std::vector< CEvaluationNode * > * >(&pInitialExpression->getNodeList());
+  std::vector< CEvaluationNode * >::iterator it = pNodeList->begin();
+  std::vector< CEvaluationNode * >::iterator end = pNodeList->end();
+
+  CEvaluationNodeObject * pNode;
+  CCopasiObject * pObject;
+  CCopasiObject * pObjectParent;
+  CModelEntity * pEntity;
+  CMetab * pMetab;
+
+  for (; it != end; ++it)
+    if ((pNode = dynamic_cast< CEvaluationNodeObject * >(*it)) != NULL &&
+        (pObject = CCopasiContainer::ObjectFromName(pNode->getObjectCN())) != NULL &&
+        (pObjectParent = pObject->getObjectParent()) != NULL &&
+        (pEntity = dynamic_cast< CModelEntity * >(pObjectParent)) != NULL)
+      {
+        if (pEntity->getValueReference() == pObject)
+          pNode->setData("<" + pEntity->getInitialValueReference()->getCN() + ">");
+        else if ((pMetab = dynamic_cast< CMetab * >(pEntity)) != NULL &&
+                 pMetab->getConcentrationReference() == pObject)
+          pNode->setData("<" + pMetab->getInitialConcentrationReference()->getCN() + ">");
+      }
+
+  return pInitialExpression;
+}
