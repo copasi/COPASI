@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.199 $
+//   $Revision: 1.200 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/08/24 09:40:45 $
+//   $Date: 2007/08/24 17:54:51 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -61,6 +61,8 @@ extern const char * CopasiLicense;
 #include "./icons/showSliders.xpm"
 #include "./icons/Copasi16-Alpha.xpm"
 #include "./icons/checkModel.xpm"
+#include "./icons/istos.xpm"
+#include "./icons/stois.xpm"
 
 #define AutoSaveInterval 10*60*1000
 
@@ -224,6 +226,12 @@ void CopasiUI3Window::createActions()
   mpaCheckModel = new QAction(QPixmap(checkModel_xpm), "Check model", 0, this, "checkmodel");
   connect(mpaCheckModel, SIGNAL(activated()), this, SLOT(slotCheckModel()));
 
+  mpaApplyInitialState = new QAction(QPixmap(istos_xpm), "Apply initial state", 0, this, "applyinitialstate");
+  connect(mpaApplyInitialState, SIGNAL(activated()), this, SLOT(slotApplyInitialState()));
+
+  mpaUpdateInitialState = new QAction(QPixmap(stois_xpm), "Update initial state from current state", 0, this, "updateinitialstate");
+  connect(mpaUpdateInitialState, SIGNAL(activated()), this, SLOT(slotUpdateInitialState()));
+
   //     QAction* mpaObjectBrowser;
 }
 
@@ -249,6 +257,9 @@ void CopasiUI3Window::createToolBar()
   mpaSliders->addTo(tbMain);
 
   mpaCheckModel->addTo(tbMain);
+
+  mpaApplyInitialState->addTo(tbMain);
+  mpaUpdateInitialState->addTo(tbMain);
 
   //What's this
   /*  toolb = QWhatsThis::whatsThisButton(tbMain);
@@ -336,6 +347,8 @@ void CopasiUI3Window::createMenuBar()
   mpaSliders->addTo(tools);
 
   mpaCheckModel->addTo(tools);
+  mpaApplyInitialState->addTo(tools);
+  mpaUpdateInitialState->addTo(tools);
 
   tools->insertSeparator();
   tools->insertItem("&Preferences...", this, SLOT(slotPreferences()), CTRL + Key_P, 3);
@@ -1412,6 +1425,16 @@ void CopasiUI3Window::slotCheckModel()
 
   QTextEdit* pTE = new QTextEdit(FROM_UTF8(ss.str()));
   pTE->show();
+}
+
+void CopasiUI3Window::slotApplyInitialState()
+{
+  //TODO
+}
+
+void CopasiUI3Window::slotUpdateInitialState()
+{
+  //TODO
 }
 
 #ifdef COPASI_LICENSE_COM

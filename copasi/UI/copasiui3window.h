@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-//   $Revision: 1.68 $
+//   $Revision: 1.69 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/08/23 14:02:41 $
+//   $Date: 2007/08/24 17:54:51 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -91,6 +91,8 @@ class CopasiUI3Window : public QMainWindow
     void slotOpenRecentSBMLFile(int index);
     bool slotRegistration();
     void slotCheckModel();
+    void slotApplyInitialState();
+    void slotUpdateInitialState();
 
     /**
      * This should only be called via signal by the corresponding QAction mpaObjectBrowser.
@@ -125,6 +127,8 @@ class CopasiUI3Window : public QMainWindow
     QAction* mpaObjectBrowser;
     QAction* mpaSliders;
     QAction* mpaCheckModel;
+    QAction* mpaApplyInitialState;
+    QAction* mpaUpdateInitialState;
 
     void CleanUp();
 
