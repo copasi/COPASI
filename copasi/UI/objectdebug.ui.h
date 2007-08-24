@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/objectdebug.ui.h,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.33 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/08/24 09:36:01 $
+//   $Date: 2007/08/24 09:40:45 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -203,6 +203,6 @@ void ObjectDebug::checkModel()
   std::ostringstream ss;
   MA.writeReport(ss, true, true);
 
-  QTextEdit* pTE = new QTextEdit(ss.str());
+  QTextEdit* pTE = new QTextEdit(FROM_UTF8(ss.str()));
   pTE->show();
 }
