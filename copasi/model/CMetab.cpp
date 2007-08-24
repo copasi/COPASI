@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-//   $Revision: 1.121 $
+//   $Revision: 1.122 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/08/23 19:02:10 $
+//   $Date: 2007/08/24 14:40:24 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -376,18 +376,25 @@ bool CMetab::compile()
       mpConcReference->setDirectDependencies(Dependencies);
       mpConcReference->setRefresh(this, &CMetab::refreshConcentration);
 
-      Dependencies.clear();
-      Dependencies.insert(mpConcRateReference);
-      if (pVolumeReference)
-        Dependencies.insert(pVolumeReference);
-      mpRateReference->setDirectDependencies(Dependencies);
-      mpRateReference->setRefresh(this, &CMetab::refreshRate);
-
       listOfContainer.push_back(getObjectAncestor("Model"));
       success = mpExpression->compile(listOfContainer);
 
-      mpConcRateReference->setDirectDependencies(mpExpression->getDirectDependencies());
-      mpConcRateReference->setRefresh(this, &CMetab::calculate);
+      Dependencies = mpExpression->getDirectDependencies();
+      if (pVolumeReference)
+        Dependencies.insert(pVolumeReference);
+      mpRateReference->setDirectDependencies(Dependencies);
+      mpRateReference->setRefresh(this, &CMetab::calculate);
+
+      Dependencies.clear();
+      Dependencies.insert(mpRateReference);
+      Dependencies.insert(mpConcReference);
+      if (pVolumeReference)
+        Dependencies.insert(pVolumeReference);
+      if (mpCompartment)
+        Dependencies.insert(mpCompartment->getRateReference());
+
+      mpConcRateReference->setDirectDependencies(Dependencies);
+      mpConcRateReference->setRefresh(this, &CMetab::refreshConcentrationRate);
 
       Dependencies.clear();
       Dependencies.insert(mpValueReference);
@@ -471,7 +478,7 @@ void CMetab::calculate()
       break;
 
     case ODE:
-      mConcRate = mpExpression->calcValue();
+      mRate = mpCompartment->getValue() * mpExpression->calcValue() * mpModel->getQuantity2NumberFactor();
       break;
 
     case REACTIONS:
@@ -495,7 +502,6 @@ void CMetab::refreshRate()
       break;
 
     case ODE:
-      mRate = mConcRate * getCompartment()->getValue() * mpModel->getQuantity2NumberFactor();
       break;
 
     case REACTIONS:
@@ -616,8 +622,8 @@ void CMetab::refreshConcentrationRate()
   // = (Rate  * conversion - Concentration * Volume Rate) / Volume
 
   mConcRate =
-    (mRate * mpModel->getNumber2QuantityFactor() - mConc * getCompartment()->getRate())
-    / getCompartment()->getValue();
+    (mRate * mpModel->getNumber2QuantityFactor() - mConc * mpCompartment->getRate())
+    / mpCompartment->getValue();
 }
 
 void * CMetab::getValuePointer() const
