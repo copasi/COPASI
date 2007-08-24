@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.h,v $
-//   $Revision: 1.28 $
+//   $Revision: 1.29 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/08/23 19:02:10 $
+//   $Date: 2007/08/24 19:11:52 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -272,6 +272,12 @@ class CModelEntity : public CCopasiContainer
      * @return const bool & usedOnce
      */
     const bool & isUsedOnce() const;
+
+    /**
+     * Retreive object referencing the initial value
+     * @return CCopasiObject * initialValueReference
+     */
+    CCopasiObject * getInitialValueReference() const;
 
     /**
      * Retreive object referencing the value
