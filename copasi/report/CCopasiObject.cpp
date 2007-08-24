@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-//   $Revision: 1.65 $
+//   $Revision: 1.66 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/07/24 09:48:09 $
+//   $Author: shoops $
+//   $Date: 2007/08/24 19:09:46 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -126,7 +126,7 @@ bool CCopasiObject::setObjectName(const std::string & name)
 
   if (mpObjectParent &&
       mpObjectParent->isNameVector() &&
-      mpObjectParent->getObject("[" + Name + "]"))
+      mpObjectParent->getObject("[" + CCopasiObjectName::escape(Name) + "]"))
     return false;
 
   if (smpRenameHandler && mpObjectParent)
