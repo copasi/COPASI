@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/java.pro,v $ 
-#   $Revision: 1.21 $ 
+#   $Revision: 1.22 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2007/06/23 12:45:46 $ 
+#   $Date: 2007/08/24 10:48:24 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -192,6 +192,7 @@ SWIG_INTERFACE_FILES=../swig/CChemEq.i \
                      ../swig/CTrajectoryProblem.i \
                      ../swig/CTrajectoryTask.i \
                      ../swig/CVersion.i \
+                     ../swig/compare_utilities.i \
                      ../swig/copasi.i \
 
 
