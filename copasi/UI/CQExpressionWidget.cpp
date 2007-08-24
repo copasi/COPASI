@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/24 18:40:20 $
+//   $Date: 2007/08/24 19:07:55 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,10 +48,14 @@ int CQExpressionHighlighter::highlightParagraph (const QString & text, int /* en
       oldpos = pos;
 
       pos = text.find(">", pos);
+      while (pos > 0 && text[pos - 1] == '\\')
+        pos = text.find(">", pos + 1);
+
       if (pos == -1)
         delta = 0;
       else
         delta = pos - oldpos + 1;
+
       setFormat(oldpos, delta, QColor(200, 0, 0));
       if (pos == -1) break;
       oldpos = pos;
@@ -227,6 +231,8 @@ bool CQExpressionWidget::isInObject(int par, int pos)
   int lo, lc;
   lo = tmp.findRev('<', pos - 1);
   lc = tmp.findRev('>', pos - 1);
+  while (lc > 0 && tmp[lc - 1] == '\\')
+    lc = tmp.findRev('>', lc - 1);
   //std::cout << "left:"  << lo << " " << lc  << std::endl;
 
   if ((lo == -1) && (lc == -1))
@@ -332,8 +338,18 @@ void CQExpressionWidget::setExpression(const std::string & expression)
           if (temp_object != NULL)
             {
               std::string DisplayName = temp_object->getObjectDisplayName();
-              out_str += "<" + DisplayName + ">";
               mParseList[DisplayName] = temp_object;
+
+              // We need to escape >
+              std::string::size_type pos = DisplayName.find_first_of("\\>");
+              while (pos != std::string::npos)
+                {
+                  DisplayName.insert(pos, "\\");
+                  pos += 2;
+                  pos = DisplayName.find_first_of("\\>", pos);
+                }
+
+              out_str += "<" + DisplayName + ">";
             }
           continue;
         }
@@ -379,7 +395,7 @@ std::string CQExpressionWidget::getExpression() const
             while (i < InfixDispayName.length() && InfixDispayName[i] != '>')
               {
                 if (InfixDispayName[i] == '\\') // '\' is an escape character.
-                  DisplayName += InfixDispayName[i++];
+                  i++;
 
                 DisplayName += InfixDispayName[i++];
               }
@@ -415,6 +431,16 @@ void CQExpressionWidget::slotSelectObject()
     {
       std::string Insert = pObject->getObjectDisplayName();
       mParseList[Insert] = pObject;
+
+      // We need to escape >
+      std::string::size_type pos = Insert.find_first_of("\\>");
+      while (pos != std::string::npos)
+        {
+          Insert.insert(pos, "\\");
+          pos += 2;
+          pos = Insert.find_first_of("\\>", pos);
+        }
+
       insert(FROM_UTF8("<" + Insert + ">"));
     }
 }
