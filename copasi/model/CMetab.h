@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.h,v $
-//   $Revision: 1.81 $
+//   $Revision: 1.82 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/08/23 19:02:10 $
+//   $Date: 2007/08/24 19:12:34 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -214,6 +214,18 @@ class CMetab : public CModelEntity
      *
      */
     virtual void setInitialValue(const C_FLOAT64 & initialValue);
+
+    /**
+     * Retreive object referencing the initial concentration
+     * @return CCopasiObject * initialConcentrationReference
+     */
+    CCopasiObject * getInitialConcentrationReference() const;
+
+    /**
+     * Retreive object referencing the concentration
+     * @return CCopasiObject * concentrationReference
+     */
+    CCopasiObject * getConcentrationReference() const;
 
     void refreshInitialConcentration();
 
