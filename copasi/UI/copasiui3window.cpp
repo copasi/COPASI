@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.200 $
+//   $Revision: 1.201 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/08/24 17:54:51 $
+//   $Date: 2007/08/25 00:39:47 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1424,6 +1424,8 @@ void CopasiUI3Window::slotCheckModel()
   MA.writeReport(ss, true, true);
 
   QTextEdit* pTE = new QTextEdit(FROM_UTF8(ss.str()));
+  pTE->setReadOnly(true);
+  pTE->resize(512, 640);
   pTE->show();
 }
 
