@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.29 $
+//   $Revision: 1.30 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/07/30 10:43:33 $
+//   $Date: 2007/08/27 09:27:26 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -75,6 +75,7 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
   scrollView->addChild(glPainter);
 
   bottomBox = new QHBox(mainBox);
+  bottomBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
   //bottomBox->setMinimumHeight(15);
   //bottomBox->setMinimumWidth(100);
 
