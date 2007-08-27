@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.31 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/07/30 07:40:04 $
+//   $Date: 2007/08/27 11:25:47 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,6 +33,7 @@
 #include "copasi/layoutUI/CSimSummaryInfo.h"
 #include "copasi/layoutUI/CVisParameters.h"
 #include "copasi/layoutUI/CDataEntity.h"
+#include "copasi/layoutUI/CQLayoutMainWindow.h"
 
 #include "copasi/layoutUI/CGraphNode.h"
 #include "copasi/layoutUI/CVisParameters.h"
@@ -115,7 +116,7 @@ class CQGLNetworkPainter : public QGLWidget
     C_INT32 stepShown;
     QTimer *regularTimer;
 
-    CVisParameters mVisualizationParameters;
+    CQLayoutMainWindow *pParentLayoutWindow;
 
     void adaptCurveForRectangles(std::multimap<std::string, CLCurve>::iterator it, CLBoundingBox box);
     CLPoint getPointOnRectangle(CLBoundingBox r, CLPoint p);

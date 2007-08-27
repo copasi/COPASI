@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.49 $
+//   $Revision: 1.50 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/07/30 07:39:57 $
+//   $Date: 2007/08/27 11:25:54 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -626,34 +626,44 @@ void CQGLNetworkPainter::rescaleDataSets(C_INT16 scaleMode)
         {
           dataSet = (*iter).second;
           C_INT32 i;
+          // try to get VisParameters from parent (CQLayoutMainWindow)
+          C_FLOAT64 minNodeSize = 10;
+          C_FLOAT64 maxNodeSize = 100;
+          if (pParentLayoutWindow != null)
+            {
+              minNodeSize = pParentLayoutWindow->getMinNodeSize();
+              maxNodeSize = pParentLayoutWindow->getMaxNodeSize();
+            }
           for (i = 0; i < viewerNodes.size();i++) // iterate over string values (node keys)
             {
               // get old value
               val = dataSet.getValueForSpecies(viewerNodes[i]);
               //std::cout << "old value: " << val << std::endl;
-              if (scaleMode == CVisParameters::INDIVIDUAL_SCALING)
+              if ((scaleMode == CVisParameters::INDIVIDUAL_SCALING) &&
+                  (pParentLayoutWindow != null))
                 {// global mode -> individual mode
+
                   val_new =
-                    ((val - CVisParameters::minNodeSize) *
-                     (pSummaryInfo->getMaxOverallConcentration() - pSummaryInfo->getMinOverallConcentration()) / (CVisParameters::maxNodeSize - CVisParameters::minNodeSize)) + pSummaryInfo->getMinOverallConcentration();
+                    ((val - minNodeSize) *
+                     (pSummaryInfo->getMaxOverallConcentration() - pSummaryInfo->getMinOverallConcentration()) / (maxNodeSize - minNodeSize)) + pSummaryInfo->getMinOverallConcentration();
                   // now rescale
                   val_new = ((val_new - pSummaryInfo->getMinForSpecies(viewerNodes[i])) *
-                             (CVisParameters::maxNodeSize - CVisParameters::minNodeSize) /
+                             (maxNodeSize - minNodeSize) /
                              (pSummaryInfo->getMaxForSpecies(viewerNodes[i]) - pSummaryInfo->getMinForSpecies(viewerNodes[i])))
-                            + CVisParameters::minNodeSize;
+                            + minNodeSize;
                   //std::cout << "new value: " << val_new << std::endl;
                 }
               else
                 {// individual mode -> global mode
                   // first calculate original value
                   val_new =
-                    ((val - CVisParameters::minNodeSize) *
-                     (pSummaryInfo->getMaxForSpecies(viewerNodes[i]) - pSummaryInfo->getMinForSpecies(viewerNodes[i])) / (CVisParameters::maxNodeSize - CVisParameters::minNodeSize)) + pSummaryInfo->getMinForSpecies(viewerNodes[i]);
+                    ((val - minNodeSize) *
+                     (pSummaryInfo->getMaxForSpecies(viewerNodes[i]) - pSummaryInfo->getMinForSpecies(viewerNodes[i])) / (maxNodeSize - minNodeSize)) + pSummaryInfo->getMinForSpecies(viewerNodes[i]);
                   // now rescale
                   val_new = ((val_new - pSummaryInfo->getMinOverallConcentration()) *
-                             (CVisParameters::maxNodeSize - CVisParameters::minNodeSize) /
+                             (maxNodeSize - minNodeSize) /
                              (pSummaryInfo->getMaxOverallConcentration() - pSummaryInfo->getMinOverallConcentration()))
-                            + CVisParameters::minNodeSize;
+                            + minNodeSize;
                   //std::cout << "new value: " << val_new << std::endl;
                 }
               dataSet.putValueForSpecies(viewerNodes[i], val_new);
@@ -726,6 +736,14 @@ bool CQGLNetworkPainter::createDataSets()
               //this->printNodeMap();
               //dataSets.resize(timeSer.getNumSteps());
               // now create data sets for visualization/animation
+              // try to get VisParameters from parent (CQLayoutMainWindow)
+              C_FLOAT64 minNodeSize = 10;
+              C_FLOAT64 maxNodeSize = 100;
+              if (pParentLayoutWindow != null)
+                {
+                  minNodeSize = pParentLayoutWindow->getMinNodeSize();
+                  maxNodeSize = pParentLayoutWindow->getMaxNodeSize();
+                }
               for (t = 0; t < timeSer.getNumSteps(); t++)  // iterate on time steps t=0..n
                 {
                   CDataEntity dataSet;
@@ -750,8 +768,8 @@ bool CQGLNetworkPainter::createDataSets()
                               minR = pSummaryInfo->getMinOverallConcentration();
                               maxR = pSummaryInfo->getMaxOverallConcentration();
                             }
-                          scaledVal = CVisParameters::minNodeSize +
-                                      (((CVisParameters::maxNodeSize - CVisParameters::minNodeSize) / (maxR - minR))
+                          scaledVal = minNodeSize +
+                                      (((maxNodeSize - minNodeSize) / (maxR - minR))
                                        * (val - minR));
                           // put scaled value in data entity (collection of scaled values for one step)
                           dataSet.putValueForSpecies(ndKey, scaledVal);
@@ -790,9 +808,18 @@ void CQGLNetworkPainter::runAnimation()
   if (dataSets.size() == 0)
     this->createDataSets(); // load data if this was not done before
 
-  CVisParameters::animationRunning = true;
+  // try to get VisParameters from parent (CQLayoutMainWindow)
 
-  regularTimer->start((int)(1000 / CVisParameters::stepsPerSecond), false); // emit signal in chosen framerate
+  C_INT16 stepsPerSecond = 10;
+  if (pParentLayoutWindow != null)
+    {
+      pParentLaoyutWindow->setAnimationRunning(true);
+      stepsPerSecond = pParentLaoyutWindow->getStepsPerSecond();
+    }
+
+  //CVisParameters::animationRunning = true;
+
+  regularTimer->start((int)(1000 / stepsPerSecond), false); // emit signal in chosen framerate
 
   //while ((stepShown <= CVisParameters::numberOfSteps) &&
   //       (CVisParameters::animationRunning))
@@ -804,8 +831,15 @@ void CQGLNetworkPainter::runAnimation()
 
 void CQGLNetworkPainter::triggerAnimationStep()
 {
-  if ((stepShown <= CVisParameters::numberOfSteps) &&
-      (CVisParameters::animationRunning))
+  C_INT32 numberOfSteps = 100;
+  bool animationRunning = true;
+  if (pParentLayoutWindow != null)
+    {
+      animationRunning = pParentLayoutWindow->getAnimationRunning();
+      numberOfSteps = pParentLaoyutWindow->getStepsPerSecond();
+    }
+  if ((stepShown <= numberOfSteps) &&
+      (animationRunning))
     {
       // set value in slider
       //std::cout << "step: " << stepShown << std::endl;
@@ -1154,7 +1188,6 @@ bool CQGLNetworkPainter::isCircleMode()
 
 void CQGLNetworkPainter::initializeGraphPainter(QWidget *viewportWidget)
 {
-  mVisualizationParameters = CVisParameters();
   mLabelShape = RECTANGLE;
   mgraphMin = CLPoint(0.0, 0.0);
   mgraphMax = CLPoint(250.0, 250.0);
@@ -1170,6 +1203,11 @@ void CQGLNetworkPainter::initializeGraphPainter(QWidget *viewportWidget)
   connect(this, SIGNAL(endOfAnimationReached()), ancestor, SLOT(endOfAnimationReached()));
   regularTimer = new QTimer(this);
   connect(regularTimer, SIGNAL(timeout()), this, SLOT(triggerAnimationStep()));
+
+  CQLayoutMainWindow * tmp = dynamic_cast<CQLayoutMainWindow *> ancestor;
+  assert(tmp);
+  if (tmp)
+    pParentLayoutWindow = tmp;
 
   stepShown = 0;
   createActions();

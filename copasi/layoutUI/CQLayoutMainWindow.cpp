@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.31 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/08/27 09:27:26 $
+//   $Date: 2007/08/27 11:25:31 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,6 +26,7 @@ using namespace std;
 
 CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMainWindow(parent, name)
 {
+  pVisParameters = new CVisParameters();
   setCaption(tr("Reaction network graph"));
   createActions();
   createMenus();
@@ -103,6 +104,54 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
   setCentralWidget(mainBox);
   this->show();
   //glPainter->drawGraph();
+}
+
+bool CQLayoutMainWindow::getAnimationRunning()
+{
+  if (pVisParameters != NULL)
+    {
+      return pVisParameters->animationRunning;
+    }
+  else
+    return false;
+}
+
+void CQLayoutMainWindow::setAnimationRunning(bool animationRunningP)
+{
+  if (pVisParameters != NULL)
+    {
+      pVisParameters->animationRunning = animationRunningP;
+    }
+}
+
+C_FLOAT64 CQLayoutMainWindow::getMinNodeSize()
+{
+  if (pVisParameters != NULL)
+    {
+      return pVisParameters->minNodeSize;
+    }
+  else
+    return 10;
+}
+
+C_FLOAT64 CQLayoutMainWindow::getMaxNodeSize()
+{
+  if (pVisParameters != NULL)
+    {
+      return pVisParameters->maxNodeSize;
+    }
+  else
+    return 100;
+}
+
+C_INT32 CQLayoutMainWindow::getStepsPerSecond()
+{
+  if (pVisParameters != NULL)
+    {
+      return pVisParameters->numberOfSteps;
+    }
+  else
+    return 2;
 }
 
 void CQLayoutMainWindow::createActions()
@@ -219,7 +268,7 @@ void CQLayoutMainWindow::mapLabelsToCircles()
   if (glPainter != NULL)
     {
       glPainter->mapLabelsToCircles();
-      if (CVisParameters::numberOfSteps > 0)
+      if (pVisParameters->numberOfSteps > 0)
         showStep(this->timeSlider->value());
     }
 }
@@ -243,7 +292,7 @@ void CQLayoutMainWindow::loadData()
       int maxVal = glPainter->getNumberOfSteps();
       //std::cout << "number of steps: " << maxVal << std::endl;
       this->timeSlider->setRange(0, maxVal);
-      CVisParameters::numberOfSteps = maxVal;
+      pVisParameters->numberOfSteps = maxVal;
       glPainter->updateGL();
       if (this->glPainter->isCircleMode())
         showStep(this->timeSlider->value());
@@ -257,7 +306,7 @@ void CQLayoutMainWindow::showAnimation()
 
 void CQLayoutMainWindow::startAnimation()
 {
-  CVisParameters::animationRunning = true;
+  pVisParameters->animationRunning = true;
   this->timeSlider->setEnabled(false);
   glPainter->runAnimation();
 
@@ -271,7 +320,7 @@ void CQLayoutMainWindow::startAnimation()
 
 void CQLayoutMainWindow::stopAnimation()
 {
-  CVisParameters::animationRunning = false;
+  pVisParameters->animationRunning = false;
   this->timeSlider->setEnabled(true);
 
   connect(startStopButton, SIGNAL(clicked()), this, SLOT(startAnimation()));
@@ -304,15 +353,15 @@ void CQLayoutMainWindow::changeStepValue(C_INT32 i)
 
 void CQLayoutMainWindow::setIndividualScaling()
 {
-  CVisParameters::scalingMode = CVisParameters::INDIVIDUAL_SCALING;
-  glPainter->rescaleDataSets(CVisParameters::INDIVIDUAL_SCALING);
+  pVisParameters->scalingMode = pVisParameters->INDIVIDUAL_SCALING;
+  glPainter->rescaleDataSets(pVisParameters->INDIVIDUAL_SCALING);
   showStep(this->timeSlider->value());
 }
 
 void CQLayoutMainWindow::setGlobalScaling()
 {
-  CVisParameters::scalingMode = CVisParameters::GLOBAL_SCALING;
-  glPainter->rescaleDataSets(CVisParameters::GLOBAL_SCALING);
+  pVisParameters->scalingMode = pVisParameters->GLOBAL_SCALING;
+  glPainter->rescaleDataSets(pVisParameters->GLOBAL_SCALING);
   showStep(this->timeSlider->value());
 }
 

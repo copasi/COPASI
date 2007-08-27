@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.h,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/07/30 10:43:43 $
+//   $Date: 2007/08/27 11:25:37 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -55,6 +55,13 @@ class CQLayoutMainWindow : public QMainWindow
     void setIndividualScaling();
     void setGlobalScaling();
     void setValueOnSlider(C_INT32);
+
+    CVisParameters *pVisParameters;
+    bool getAnimationRunning();
+    void setAnimationRunning(bool animationRunningP);
+    C_FLOAT64 getMinNodeSize();
+    C_FLOAT64 getMaxNodeSize();
+    C_INT32 getStepsPerSecond();
 
   protected:
     void closeEvent(QCloseEvent *event);
