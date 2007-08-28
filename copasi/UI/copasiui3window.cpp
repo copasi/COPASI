@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.201 $
+//   $Revision: 1.202 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/08/25 00:39:47 $
+//   $Author: shoops $
+//   $Date: 2007/08/28 17:09:58 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -238,7 +238,6 @@ void CopasiUI3Window::createActions()
 void CopasiUI3Window::createToolBar()
 {
   QToolBar *tbMain = new QToolBar(this, "MainToolBar");
-  QToolButton* toolb;
 
   //new
   //   QWhatsThis::add(toolb, "Click this button to create a <em>new file</em>. <br>You can also select the <b>New</b> command from the <b>File</b> menu.</p>");
