@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.31 $
+//   $Revision: 1.32 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/08/27 11:25:31 $
+//   $Date: 2007/08/29 17:36:12 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,6 +17,7 @@
 #include "layout/CLayout.h"
 #include "layout/CLBase.h"
 #include "CQLayoutMainWindow.h"
+#include "CQGLNetworkPainter.h"
 
 //#include "sbmlDocumentLoader.h"
 #include <string>
@@ -148,10 +149,28 @@ C_INT32 CQLayoutMainWindow::getStepsPerSecond()
 {
   if (pVisParameters != NULL)
     {
-      return pVisParameters->numberOfSteps;
+      return pVisParameters->stepsPerSecond;
     }
   else
     return 2;
+}
+
+void CQLayoutMainWindow::setStepsPerSecond(C_INT16 val)
+{
+  if (pVisParameters != NULL)
+    {
+      pVisParameters->stepsPerSecond = val;
+    }
+}
+
+C_INT16 CQLayoutMainWindow::getScalingMode()
+{
+  if (pVisParameters != NULL)
+    {
+      return pVisParameters->scalingMode;
+    }
+  else
+    return CVisParameters::INDIVIDUAL_SCALING;
 }
 
 void CQLayoutMainWindow::createActions()
@@ -268,7 +287,7 @@ void CQLayoutMainWindow::mapLabelsToCircles()
   if (glPainter != NULL)
     {
       glPainter->mapLabelsToCircles();
-      if (pVisParameters->numberOfSteps > 0)
+      if (glPainter->getNumberOfSteps() > 0)
         showStep(this->timeSlider->value());
     }
 }
@@ -292,7 +311,7 @@ void CQLayoutMainWindow::loadData()
       int maxVal = glPainter->getNumberOfSteps();
       //std::cout << "number of steps: " << maxVal << std::endl;
       this->timeSlider->setRange(0, maxVal);
-      pVisParameters->numberOfSteps = maxVal;
+      //pVisParameters->numberOfSteps = maxVal;
       glPainter->updateGL();
       if (this->glPainter->isCircleMode())
         showStep(this->timeSlider->value());

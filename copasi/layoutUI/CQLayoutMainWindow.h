@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.h,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/08/27 11:25:37 $
+//   $Date: 2007/08/29 17:34:41 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,13 +36,14 @@
 //#include <qslider.h>
 //#include <qwt_slider.h>
 
-#include "CQGLNetworkPainter.h"
+//#include "CQGLNetworkPainter.h"
 #include "ParaPanel.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "layoutUI/CVisParameters.h"
 
 class QwtSlider;
+class CQGLNetworkPainter;
 
 class CQLayoutMainWindow : public QMainWindow
   {
@@ -62,6 +63,8 @@ class CQLayoutMainWindow : public QMainWindow
     C_FLOAT64 getMinNodeSize();
     C_FLOAT64 getMaxNodeSize();
     C_INT32 getStepsPerSecond();
+    void setStepsPerSecond(C_INT16 val);
+    C_INT16 getScalingMode();
 
   protected:
     void closeEvent(QCloseEvent *event);

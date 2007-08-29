@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/Attic/ParaPanel.ui.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/07/30 10:44:15 $
+//   $Date: 2007/08/29 17:35:27 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,7 +52,10 @@ void ParaPanel::disableStepNumberChoice()
 
 void ParaPanel::changeFrameRate()
 {
-  CVisParameters::stepsPerSecond = spinBox1->value();
+  //CVisParameters::stepsPerSecond = spinBox1->value();
+  CQLayoutMainWindow * tmp = dynamic_cast<CQLayoutMainWindow *>(parentWidget()->parentWidget()->parentWidget());
+  assert(tmp);
+  if (tmp) tmp -> setStepsPerSecond(spinBox1->value());
 }
 
 void ParaPanel::setGlobalScaling()

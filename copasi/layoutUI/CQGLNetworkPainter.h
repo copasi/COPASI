@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.31 $
+//   $Revision: 1.32 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/08/27 11:25:47 $
+//   $Date: 2007/08/29 17:34:24 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,6 +21,7 @@
 #include <qaction.h>
 #include <qevent.h>
 #include <qcolor.h>
+#include <qmainwindow.h>
 
 #include <vector>
 #include <string>
@@ -30,10 +31,10 @@
 #include "copasi/layout/CLGlyphs.h"
 #include "copasi/layout/CLCurve.h"
 #include "copasi/layoutUI/CArrow.h"
+#include "copasi/layoutUI/CQLayoutMainWindow.h"
 #include "copasi/layoutUI/CSimSummaryInfo.h"
 #include "copasi/layoutUI/CVisParameters.h"
 #include "copasi/layoutUI/CDataEntity.h"
-#include "copasi/layoutUI/CQLayoutMainWindow.h"
 
 #include "copasi/layoutUI/CGraphNode.h"
 #include "copasi/layoutUI/CVisParameters.h"
@@ -41,6 +42,7 @@
 #include "copasi/trajectory/CTrajectoryTask.h"
 
 class CLayout;
+class CQLayoutMainWindow;
 
 class CQGLNetworkPainter : public QGLWidget
   {
@@ -115,7 +117,6 @@ class CQGLNetworkPainter : public QGLWidget
 
     C_INT32 stepShown;
     QTimer *regularTimer;
-
     CQLayoutMainWindow *pParentLayoutWindow;
 
     void adaptCurveForRectangles(std::multimap<std::string, CLCurve>::iterator it, CLBoundingBox box);

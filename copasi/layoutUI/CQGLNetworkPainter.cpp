@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.50 $
+//   $Revision: 1.51 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/08/27 11:25:54 $
+//   $Date: 2007/08/29 17:35:55 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -629,7 +629,7 @@ void CQGLNetworkPainter::rescaleDataSets(C_INT16 scaleMode)
           // try to get VisParameters from parent (CQLayoutMainWindow)
           C_FLOAT64 minNodeSize = 10;
           C_FLOAT64 maxNodeSize = 100;
-          if (pParentLayoutWindow != null)
+          if (pParentLayoutWindow != NULL)
             {
               minNodeSize = pParentLayoutWindow->getMinNodeSize();
               maxNodeSize = pParentLayoutWindow->getMaxNodeSize();
@@ -640,7 +640,7 @@ void CQGLNetworkPainter::rescaleDataSets(C_INT16 scaleMode)
               val = dataSet.getValueForSpecies(viewerNodes[i]);
               //std::cout << "old value: " << val << std::endl;
               if ((scaleMode == CVisParameters::INDIVIDUAL_SCALING) &&
-                  (pParentLayoutWindow != null))
+                  (pParentLayoutWindow != NULL))
                 {// global mode -> individual mode
 
                   val_new =
@@ -739,7 +739,7 @@ bool CQGLNetworkPainter::createDataSets()
               // try to get VisParameters from parent (CQLayoutMainWindow)
               C_FLOAT64 minNodeSize = 10;
               C_FLOAT64 maxNodeSize = 100;
-              if (pParentLayoutWindow != null)
+              if (pParentLayoutWindow != NULL)
                 {
                   minNodeSize = pParentLayoutWindow->getMinNodeSize();
                   maxNodeSize = pParentLayoutWindow->getMaxNodeSize();
@@ -758,7 +758,7 @@ bool CQGLNetworkPainter::createDataSets()
                           val = timeSer.getConcentrationData(t, i); // get concentration of species i at timepoint t
                           C_FLOAT64 scaledVal;
                           // now scale value;
-                          if (CVisParameters::scalingMode == CVisParameters::INDIVIDUAL_SCALING)
+                          if (pParentLayoutWindow->getScalingMode() == CVisParameters::INDIVIDUAL_SCALING)
                             {
                               minR = pSummaryInfo->getMinForSpecies(ndKey);
                               maxR = pSummaryInfo->getMaxForSpecies(ndKey);
@@ -799,6 +799,7 @@ bool CQGLNetworkPainter::createDataSets()
 
 C_INT32 CQGLNetworkPainter::getNumberOfSteps()
 {
+  //std::cout << "number of elements in data sets:" << dataSets.size() << std::endl;
   return dataSets.size();
 }
 
@@ -811,10 +812,10 @@ void CQGLNetworkPainter::runAnimation()
   // try to get VisParameters from parent (CQLayoutMainWindow)
 
   C_INT16 stepsPerSecond = 10;
-  if (pParentLayoutWindow != null)
+  if (pParentLayoutWindow != NULL)
     {
-      pParentLaoyutWindow->setAnimationRunning(true);
-      stepsPerSecond = pParentLaoyutWindow->getStepsPerSecond();
+      pParentLayoutWindow->setAnimationRunning(true);
+      stepsPerSecond = pParentLayoutWindow->getStepsPerSecond();
     }
 
   //CVisParameters::animationRunning = true;
@@ -833,11 +834,13 @@ void CQGLNetworkPainter::triggerAnimationStep()
 {
   C_INT32 numberOfSteps = 100;
   bool animationRunning = true;
-  if (pParentLayoutWindow != null)
+  if (pParentLayoutWindow != NULL)
     {
       animationRunning = pParentLayoutWindow->getAnimationRunning();
-      numberOfSteps = pParentLaoyutWindow->getStepsPerSecond();
+      //numberOfSteps = pParentLayoutWindow->getNumberOfSteps();
     }
+
+  numberOfSteps = getNumberOfSteps();
   if ((stepShown <= numberOfSteps) &&
       (animationRunning))
     {
@@ -1204,10 +1207,12 @@ void CQGLNetworkPainter::initializeGraphPainter(QWidget *viewportWidget)
   regularTimer = new QTimer(this);
   connect(regularTimer, SIGNAL(timeout()), this, SLOT(triggerAnimationStep()));
 
-  CQLayoutMainWindow * tmp = dynamic_cast<CQLayoutMainWindow *> ancestor;
+  CQLayoutMainWindow * tmp = dynamic_cast<CQLayoutMainWindow *>(ancestor);
   assert(tmp);
   if (tmp)
     pParentLayoutWindow = tmp;
+  else
+    pParentLayoutWindow = NULL;
 
   stepShown = 0;
   createActions();
