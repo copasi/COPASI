@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.34 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/08/30 17:11:14 $
+//   $Date: 2007/08/30 19:30:44 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -69,6 +69,7 @@ class CQGLNetworkPainter : public QGLWidget
     bool isCircleMode();
 
     void setNodeSize(std::string key, C_FLOAT64 val);
+    void setNodeSizeWithoutChangingCurves(std::string key, C_FLOAT64 val);
     //void changeNodeSize(std::string viewerNodeKey, double newSize);
 
     void mapLabelsToRectangles();

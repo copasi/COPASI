@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.52 $
+//   $Revision: 1.53 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/08/30 17:12:28 $
+//   $Date: 2007/08/30 19:30:35 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -906,11 +906,26 @@ void CQGLNetworkPainter::showStep(C_INT32 i)
                     setNodeSize(viewerNodes[i], val);
                 }
               else
-                setNodeSize(viewerNodes[i], DEFAULT_NODE_SIZE);
+                {
+                  setNodeSize(viewerNodes[i], DEFAULT_NODE_SIZE);
+                  C_FLOAT64 val = dataSet.getValueForSpecies(viewerNodes[i]);
+                  std::cout << "node size value: " << val << std::endl;
+                  if (val != -DBL_MAX)
+                    setNodeSizeWithoutChangingCurves(viewerNodes[i], val);
+                }
             }
         }
     }
   this->drawGraph();
+}
+
+void CQGLNetworkPainter::setNodeSizeWithoutChangingCurves(std::string key, C_FLOAT64 val)
+{
+  int i;
+  std::map<std::string, CGraphNode>::iterator nodeIt;
+  nodeIt = nodeMap.find(key);
+  if (nodeIt != nodeMap.end())
+    (*nodeIt).second.setSize(val);
 }
 
 // set node sizes according to data set and change curves (meaning end points of curve segments) to nodes
