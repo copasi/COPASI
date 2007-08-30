@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.51 $
+//   $Revision: 1.52 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/08/29 17:35:55 $
+//   $Date: 2007/08/30 17:12:28 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -37,6 +37,8 @@
 #include "utilities/CCopasiVector.h"
 #include "layoutUI/CVisParameters.h"
 #include "layoutUI/CDataEntity.h"
+
+const C_FLOAT64 CQGLNetworkPainter::DEFAULT_NODE_SIZE = 20.0;
 
 CQGLNetworkPainter::CQGLNetworkPainter(QWidget *parent, const char *name)
     : QGLWidget(parent, name)
@@ -348,8 +350,15 @@ void CQGLNetworkPainter::drawGraph()
 // draw node as circle
 void CQGLNetworkPainter::drawNode(CGraphNode &n) // draw node as filled circle
 {
-  float diameter = 20.0;
-  diameter = n.getSize();
+  float scaledValue = DEFAULT_NODE_SIZE;
+  C_INT16 mappingMode = CVisParameters::SIZE_DIAMETER_MODE;
+  if (pParentLayoutWindow != NULL)
+    {
+      mappingMode = pParentLayoutWindow->getMappingMode();
+      if ((mappingMode == CVisParameters::SIZE_DIAMETER_MODE) ||
+          (mappingMode == CVisParameters::SIZE_AREA_MODE))
+        scaledValue = n.getSize(); // change of node size only for size mode
+    }
   //std::cout << "diameter of " << n.getOrigNodeKey() << ": " << diameter << std::endl;
   //std::map<std::string, float>::iterator iter = nodeSizeMap.find(n.getKey());
   //std::cout << "find: " << n.getKey() <<std::endl;;
@@ -368,10 +377,23 @@ void CQGLNetworkPainter::drawNode(CGraphNode &n) // draw node as filled circle
   double tx = n.getX() + (n.getWidth() / 2.0);
   double ty = n.getY() + (n.getHeight() / 2.0);
   glTranslatef((float)tx, (float)ty, 0.0f);
-  glColor3f(1.0f, 0.0f, 0.0f); // red
-  gluDisk(qobj, 0.0, diameter / 2.0, 25, 2);
+
+  //std::cout << "mapping mode: " << CVisParameters::SIZE_DIAMETER_MODE << std::endl;
+
+  if ((mappingMode == CVisParameters::SIZE_DIAMETER_MODE) ||
+      (mappingMode == CVisParameters::SIZE_AREA_MODE))
+    glColor3f(1.0f, 0.0f, 0.0f); // red as default color for all nodes
+  else
+    {// color mapping
+      QColor col = QColor();
+      col.setHsv((int)scaledValue, 255, 255);
+      glColor3f(col.red(), col.green(), col.blue());
+      std::cout << "scaled color value: " << scaledValue << std::endl;
+    }
+
+  gluDisk(qobj, 0.0, scaledValue / 2.0, 25, 2);
   glColor3f(0.0f, 0.0f, 0.0f); // black
-  gluDisk(qobj, diameter / 2.0 - 1.0, diameter / 2.0, 25, 2);
+  gluDisk(qobj, scaledValue / 2.0 - 1.0, scaledValue / 2.0, 25, 2);
   glTranslatef(-(float)tx, -(float)ty, 0.0f);
 }
 
@@ -875,17 +897,23 @@ void CQGLNetworkPainter::showStep(C_INT32 i)
           CDataEntity dataSet = (*iter).second;
           for (i = 0; i < viewerNodes.size();i++)
             {
-              C_FLOAT64 val = dataSet.getValueForSpecies(viewerNodes[i]);
-              //std::cout << "show " << viewerNodes[i] << "  " << dataSet->getValueForSpecies(viewerNodes[i]) << std::endl;
-              if (val != -DBL_MAX)
-                setNodeSize(viewerNodes[i], val);
+              if ((pParentLayoutWindow != NULL) &&
+                  (pParentLayoutWindow->getMappingMode() != CVisParameters::COLOR_MODE))
+                {// no color mode
+                  C_FLOAT64 val = dataSet.getValueForSpecies(viewerNodes[i]);
+                  //std::cout << "show " << viewerNodes[i] << "  " << dataSet->getValueForSpecies(viewerNodes[i]) << std::endl;
+                  if (val != -DBL_MAX)
+                    setNodeSize(viewerNodes[i], val);
+                }
+              else
+                setNodeSize(viewerNodes[i], DEFAULT_NODE_SIZE);
             }
         }
     }
   this->drawGraph();
 }
 
-// set node sizes according to data set
+// set node sizes according to data set and change curves (meaning end points of curve segments) to nodes
 void CQGLNetworkPainter::setNodeSize(std::string key, C_FLOAT64 val)
 {
   //std::cout << "set " << key << "  to " << val << std::endl;
@@ -959,7 +987,7 @@ void CQGLNetworkPainter::mapLabelsToRectangles()
     {
       //curveIt = nodeCurveMap.find(viewerNodes[i]);
       rangeCurveIt = nodeCurveMap.equal_range(viewerNodes[i]);
-      std::map<std::string, CGraphNode>::iterator nodeIt = nodeMap.find(viewerNodes[i]);
+      std::map<std::string, CGraphNode>::iterator nodeIt = nodeMap.find(viewerNodes[i]); // find all edges belonging to a node
       if (nodeIt != nodeMap.end())
         {
           //while (curveIt != nodeCurveMap.end()){

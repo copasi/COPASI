@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.h,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/08/29 17:34:41 $
+//   $Date: 2007/08/30 17:11:34 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -65,6 +65,7 @@ class CQLayoutMainWindow : public QMainWindow
     C_INT32 getStepsPerSecond();
     void setStepsPerSecond(C_INT16 val);
     C_INT16 getScalingMode();
+    C_INT16 getMappingMode();
 
   protected:
     void closeEvent(QCloseEvent *event);

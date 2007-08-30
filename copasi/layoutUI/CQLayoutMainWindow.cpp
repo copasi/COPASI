@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.33 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/08/29 17:36:12 $
+//   $Date: 2007/08/30 17:12:45 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -89,7 +89,7 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
   startStopButton->setEnabled(false);
 
   //QSpacerItem(10,15,QSizePolicy::Minimum, QSizePolicy::Expanding);
-  //XXXGridLayout->addItem(spacer1, 4, 0);
+  //GridLayout->addItem(spacer1, 4, 0);
 
   timeSlider = new QwtSlider(bottomBox, Qt::Horizontal, QwtSlider::BottomScale, QwtSlider::BgTrough);
   timeSlider->setRange(0, 100, 1, 0);
@@ -127,22 +127,30 @@ void CQLayoutMainWindow::setAnimationRunning(bool animationRunningP)
 
 C_FLOAT64 CQLayoutMainWindow::getMinNodeSize()
 {
+  C_FLOAT64 minNodeSize = 10.0;
   if (pVisParameters != NULL)
     {
-      return pVisParameters->minNodeSize;
+      if ((pVisParameters->mappingMode == CVisParameters::SIZE_DIAMETER_MODE) ||
+          (pVisParameters->mappingMode == CVisParameters::SIZE_AREA_MODE))
+        minNodeSize = pVisParameters->minNodeSize;
+      else
+        return minNodeSize = 0.0; // color mode means: min h-value = 0;
     }
-  else
-    return 10;
+  return minNodeSize;
 }
 
 C_FLOAT64 CQLayoutMainWindow::getMaxNodeSize()
 {
+  C_FLOAT64 maxNodeSize = 100.0;
   if (pVisParameters != NULL)
     {
-      return pVisParameters->maxNodeSize;
+      if ((pVisParameters->mappingMode == CVisParameters::SIZE_DIAMETER_MODE) ||
+          (pVisParameters->mappingMode == CVisParameters::SIZE_AREA_MODE))
+        maxNodeSize = pVisParameters->maxNodeSize;
+      else
+        maxNodeSize = 359; // color mode means: max h-value < 360;
     }
-  else
-    return 100;
+  return maxNodeSize;
 }
 
 C_INT32 CQLayoutMainWindow::getStepsPerSecond()
@@ -171,6 +179,16 @@ C_INT16 CQLayoutMainWindow::getScalingMode()
     }
   else
     return CVisParameters::INDIVIDUAL_SCALING;
+}
+
+C_INT16 CQLayoutMainWindow::getMappingMode()
+{
+  if (pVisParameters != NULL)
+    {
+      return pVisParameters->mappingMode;
+    }
+  else
+    return CVisParameters::SIZE_DIAMETER_MODE; // default mode
 }
 
 void CQLayoutMainWindow::createActions()

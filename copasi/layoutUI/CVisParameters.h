@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CVisParameters.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/08/29 17:34:57 $
+//   $Date: 2007/08/30 17:11:56 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,6 +21,10 @@ class CVisParameters
     static const C_INT16 GLOBAL_SCALING;
     static const C_INT16 INDIVIDUAL_SCALING;
 
+    static const C_INT16 COLOR_MODE;
+    static const C_INT16 SIZE_DIAMETER_MODE;
+    static const C_INT16 SIZE_AREA_MODE;
+
     C_FLOAT64 minNodeSize;
     C_FLOAT64 maxNodeSize;
 
@@ -29,6 +33,8 @@ class CVisParameters
     C_INT16 stepsPerSecond;
 
     C_INT16 scalingMode;
+
+    C_INT16 mappingMode;
 
     bool animationRunning;
 

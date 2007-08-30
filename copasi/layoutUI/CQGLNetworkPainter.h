@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.33 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/08/29 17:34:24 $
+//   $Date: 2007/08/30 17:11:14 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -91,6 +91,8 @@ class CQGLNetworkPainter : public QGLWidget
     void endOfAnimationReached ();
 
   private:
+    static const C_FLOAT64 DEFAULT_NODE_SIZE;
+
     CLPoint mgraphMin;
     CLPoint mgraphMax;
     std::vector<std::string> viewerNodes; // contains node keys
