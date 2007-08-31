@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.53 $
+//   $Revision: 1.54 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/08/30 19:30:35 $
+//   $Date: 2007/08/31 10:57:08 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -386,9 +386,10 @@ void CQGLNetworkPainter::drawNode(CGraphNode &n) // draw node as filled circle
   else
     {// color mapping
       QColor col = QColor();
-      col.setHsv((int)scaledValue, 255, 255);
+      col.setHsv((int)n.getSize(), 255, 255);
       glColor3f(col.red(), col.green(), col.blue());
-      std::cout << "scaled color value: " << scaledValue << std::endl;
+      //std::cout << "scaled color value: " <<  (int)n.getSize()<< std::endl;
+      //std::cout << "red: " << col.red() << "   green: "  << col.green()  << "   blue:  " << col.blue() << std::endl;
     }
 
   gluDisk(qobj, 0.0, scaledValue / 2.0, 25, 2);
@@ -909,7 +910,7 @@ void CQGLNetworkPainter::showStep(C_INT32 i)
                 {
                   setNodeSize(viewerNodes[i], DEFAULT_NODE_SIZE);
                   C_FLOAT64 val = dataSet.getValueForSpecies(viewerNodes[i]);
-                  std::cout << "node size value: " << val << std::endl;
+                  //std::cout << "node size value: " << val << std::endl;
                   if (val != -DBL_MAX)
                     setNodeSizeWithoutChangingCurves(viewerNodes[i], val);
                 }

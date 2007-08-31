@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/Attic/ParaPanel.ui.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/08/29 17:35:27 $
+//   $Date: 2007/08/31 10:58:05 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -97,4 +97,18 @@ void ParaPanel::stepEdit_returnPressed()
       if (tmp) tmp -> setValueOnSlider(val);
     }
   //}
+}
+
+void ParaPanel::setSizeMode()
+{
+  CQLayoutMainWindow * tmp = dynamic_cast<CQLayoutMainWindow *>(parentWidget()->parentWidget()->parentWidget());
+  assert(tmp);
+  if (tmp) tmp -> setSizeMode();
+}
+
+void ParaPanel::setColorMode()
+{
+  CQLayoutMainWindow * tmp = dynamic_cast<CQLayoutMainWindow *>(parentWidget()->parentWidget()->parentWidget());
+  assert(tmp);
+  if (tmp) tmp -> setColorMode();
 }

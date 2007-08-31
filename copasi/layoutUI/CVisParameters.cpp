@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CVisParameters.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/08/30 17:13:00 $
+//   $Date: 2007/08/31 10:57:41 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,7 +31,7 @@ void CVisParameters::init()
   //numberOfSteps = 0;
   stepsPerSecond = 10;
   scalingMode = CVisParameters::INDIVIDUAL_SCALING;
-  //mappingMode = CVisParameters::SIZE_DIAMETER_MODE;
-  mappingMode = CVisParameters::COLOR_MODE;
+  mappingMode = CVisParameters::SIZE_DIAMETER_MODE;
+  //mappingMode = CVisParameters::COLOR_MODE;
   animationRunning = false;
 }

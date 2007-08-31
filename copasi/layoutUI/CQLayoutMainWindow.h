@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.h,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/08/30 17:11:34 $
+//   $Date: 2007/08/31 10:56:28 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -55,6 +55,8 @@ class CQLayoutMainWindow : public QMainWindow
     //CQLayoutMainWindow();
     void setIndividualScaling();
     void setGlobalScaling();
+    void setSizeMode();
+    void setColorMode();
     void setValueOnSlider(C_INT32);
 
     CVisParameters *pVisParameters;

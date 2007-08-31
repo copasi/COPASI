@@ -1,10 +1,10 @@
 <!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/ParaPanel.ui,v $ </comment>
-<comment>   $Revision: 1.5 $ </comment>
+<comment>   $Revision: 1.6 $ </comment>
 <comment>   $Name:  $ </comment>
 <comment>   $Author: urost $ </comment>
-<comment>   $Date: 2007/07/30 10:44:10 $ </comment>
+<comment>   $Date: 2007/08/31 10:58:54 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -36,65 +36,6 @@
     <property name="caption">
         <string>Form1</string>
     </property>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>schedModeLabel</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>11</x>
-                <y>76</y>
-                <width>103</width>
-                <height>68</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>&lt;p align="right"&gt;Scheduling Mode&lt;/p&gt;</string>
-        </property>
-        <property name="buddy" stdset="0">
-            <cstring>individScalButton</cstring>
-        </property>
-    </widget>
-    <widget class="QButtonGroup">
-        <property name="name">
-            <cstring>scalingButtonGroup</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>120</x>
-                <y>76</y>
-                <width>178</width>
-                <height>68</height>
-            </rect>
-        </property>
-        <property name="title">
-            <string></string>
-        </property>
-        <vbox>
-            <property name="name">
-                <cstring>unnamed</cstring>
-            </property>
-            <widget class="QRadioButton">
-                <property name="name">
-                    <cstring>individScalButton</cstring>
-                </property>
-                <property name="text">
-                    <string>Individual Scaling</string>
-                </property>
-                <property name="checked">
-                    <bool>true</bool>
-                </property>
-            </widget>
-            <widget class="QRadioButton">
-                <property name="name">
-                    <cstring>globalScalButton</cstring>
-                </property>
-                <property name="text">
-                    <string>Global Scaling</string>
-                </property>
-            </widget>
-        </vbox>
-    </widget>
     <widget class="QLabel">
         <property name="name">
             <cstring>frameRateLabel</cstring>
@@ -157,22 +98,6 @@
             <string>Simulation Parameters</string>
         </property>
     </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>stepLabel</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>20</x>
-                <y>150</y>
-                <width>101</width>
-                <height>41</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Step Number</string>
-        </property>
-    </widget>
     <spacer>
         <property name="name">
             <cstring>spacer1</cstring>
@@ -208,7 +133,7 @@
         <property name="geometry">
             <rect>
                 <x>120</x>
-                <y>160</y>
+                <y>250</y>
                 <width>121</width>
                 <height>21</height>
             </rect>
@@ -216,6 +141,140 @@
         <property name="text">
             <string>0</string>
         </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>stepLabel</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>20</x>
+                <y>240</y>
+                <width>101</width>
+                <height>41</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Step Number</string>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>schedModeLabel</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>11</x>
+                <y>76</y>
+                <width>103</width>
+                <height>68</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>&lt;p align="right"&gt;Scheduling Mode&lt;/p&gt;</string>
+        </property>
+        <property name="buddy" stdset="0">
+            <cstring>individScalButton</cstring>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>schedModeLabel_2</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>10</x>
+                <y>160</y>
+                <width>103</width>
+                <height>68</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>&lt;p align="right"&gt;Mapping Mode&lt;/p&gt;</string>
+        </property>
+        <property name="buddy" stdset="0">
+            <cstring>individScalButton</cstring>
+        </property>
+    </widget>
+    <widget class="QButtonGroup">
+        <property name="name">
+            <cstring>scalingButtonGroup_2</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>120</x>
+                <y>160</y>
+                <width>178</width>
+                <height>68</height>
+            </rect>
+        </property>
+        <property name="title">
+            <string></string>
+        </property>
+        <vbox>
+            <property name="name">
+                <cstring>unnamed</cstring>
+            </property>
+            <widget class="QRadioButton">
+                <property name="name">
+                    <cstring>sizeModeButton</cstring>
+                </property>
+                <property name="text">
+                    <string>Size Mode</string>
+                </property>
+                <property name="checked">
+                    <bool>true</bool>
+                </property>
+            </widget>
+            <widget class="QRadioButton">
+                <property name="name">
+                    <cstring>colorModeButton</cstring>
+                </property>
+                <property name="text">
+                    <string>Color Mode</string>
+                </property>
+            </widget>
+        </vbox>
+    </widget>
+    <widget class="QButtonGroup">
+        <property name="name">
+            <cstring>scalingButtonGroup</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>120</x>
+                <y>70</y>
+                <width>178</width>
+                <height>68</height>
+            </rect>
+        </property>
+        <property name="title">
+            <string></string>
+        </property>
+        <vbox>
+            <property name="name">
+                <cstring>unnamed</cstring>
+            </property>
+            <widget class="QRadioButton">
+                <property name="name">
+                    <cstring>individScalButton</cstring>
+                </property>
+                <property name="text">
+                    <string>Individual Scaling</string>
+                </property>
+                <property name="checked">
+                    <bool>true</bool>
+                </property>
+            </widget>
+            <widget class="QRadioButton">
+                <property name="name">
+                    <cstring>globalScalButton</cstring>
+                </property>
+                <property name="text">
+                    <string>Global Scaling</string>
+                </property>
+            </widget>
+        </vbox>
     </widget>
 </widget>
 <connections>
@@ -243,6 +302,18 @@
         <receiver>ParaPanel</receiver>
         <slot>stepEdit_returnPressed()</slot>
     </connection>
+    <connection>
+        <sender>sizeModeButton</sender>
+        <signal>clicked()</signal>
+        <receiver>ParaPanel</receiver>
+        <slot>setSizeMode()</slot>
+    </connection>
+    <connection>
+        <sender>colorModeButton</sender>
+        <signal>clicked()</signal>
+        <receiver>ParaPanel</receiver>
+        <slot>setColorMode()</slot>
+    </connection>
 </connections>
 <tabstops>
     <tabstop>spinBox1</tabstop>
@@ -257,13 +328,15 @@
     <slot>setGlobalScaling()</slot>
     <slot>setIndividualScaling()</slot>
     <slot>stepEdit_returnPressed()</slot>
+    <slot>setSizeMode()</slot>
+    <slot>setColorMode()</slot>
 </slots>
 <functions>
     <function>enableParameterChoice()</function>
     <function>disableParameterChoice()</function>
     <function>enableStepNumberChoice()</function>
     <function>disableStepNumberChoice()</function>
-    <function>setStepNumber(int i)</function>
+    <function>setStepNumber( int i )</function>
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

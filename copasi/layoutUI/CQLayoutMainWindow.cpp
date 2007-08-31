@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.34 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/08/30 17:12:45 $
+//   $Date: 2007/08/31 10:56:52 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -399,6 +399,20 @@ void CQLayoutMainWindow::setGlobalScaling()
 {
   pVisParameters->scalingMode = pVisParameters->GLOBAL_SCALING;
   glPainter->rescaleDataSets(pVisParameters->GLOBAL_SCALING);
+  showStep(this->timeSlider->value());
+}
+
+void CQLayoutMainWindow::setSizeMode()
+{
+  pVisParameters->mappingMode = CVisParameters::SIZE_DIAMETER_MODE;
+  glPainter->rescaleDataSets(pVisParameters->scalingMode);
+  showStep(this->timeSlider->value());
+}
+
+void CQLayoutMainWindow::setColorMode()
+{
+  pVisParameters->mappingMode = CVisParameters::COLOR_MODE;
+  glPainter->rescaleDataSets(pVisParameters->scalingMode); // rescaling, because min and max node size changed
   showStep(this->timeSlider->value());
 }
 
