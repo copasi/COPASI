@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.34 $
+//   $Revision: 1.35 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/08/31 10:56:52 $
+//   $Date: 2007/09/03 11:11:49 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -103,6 +103,8 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
           this, SLOT(showStep(double)));
 
   setCentralWidget(mainBox);
+  loadData(); // try to load data (if already present)
+
   this->show();
   //glPainter->drawGraph();
 }
@@ -130,11 +132,12 @@ C_FLOAT64 CQLayoutMainWindow::getMinNodeSize()
   C_FLOAT64 minNodeSize = 10.0;
   if (pVisParameters != NULL)
     {
-      if ((pVisParameters->mappingMode == CVisParameters::SIZE_DIAMETER_MODE) ||
-          (pVisParameters->mappingMode == CVisParameters::SIZE_AREA_MODE))
-        minNodeSize = pVisParameters->minNodeSize;
-      else
-        return minNodeSize = 0.0; // color mode means: min h-value = 0;
+
+      //       if ((pVisParameters->mappingMode == CVisParameters::SIZE_DIAMETER_MODE) ||
+      //           (pVisParameters->mappingMode == CVisParameters::SIZE_AREA_MODE))
+      minNodeSize = pVisParameters->minNodeSize;
+      //       else
+      //         minNodeSize = 0.0; // color mode means: min h-value = 0;
     }
   return minNodeSize;
 }
@@ -144,11 +147,11 @@ C_FLOAT64 CQLayoutMainWindow::getMaxNodeSize()
   C_FLOAT64 maxNodeSize = 100.0;
   if (pVisParameters != NULL)
     {
-      if ((pVisParameters->mappingMode == CVisParameters::SIZE_DIAMETER_MODE) ||
-          (pVisParameters->mappingMode == CVisParameters::SIZE_AREA_MODE))
-        maxNodeSize = pVisParameters->maxNodeSize;
-      else
-        maxNodeSize = 359; // color mode means: max h-value < 360;
+      //       if ((pVisParameters->mappingMode == CVisParameters::SIZE_DIAMETER_MODE) ||
+      //           (pVisParameters->mappingMode == CVisParameters::SIZE_AREA_MODE))
+      maxNodeSize = pVisParameters->maxNodeSize;
+      //       else
+      //         maxNodeSize = 359.0; // color mode means: max h-value < 360;
     }
   return maxNodeSize;
 }
@@ -220,6 +223,7 @@ void CQLayoutMainWindow::createActions()
                              this);
   runAnimation->setStatusTip("show complete animation sequence of current times series");
   connect(runAnimation, SIGNAL(activated()), this, SLOT(showAnimation()));
+  runAnimation->setEnabled(false);
 
   rectangularShape = new QAction ("rectangle",
                                   "rectangle",
@@ -324,6 +328,7 @@ void CQLayoutMainWindow::loadData()
   if (successfulP)
     {
       this->timeSlider->setEnabled(true);
+      this->runAnimation->setEnabled(true);
       this->startStopButton->setEnabled(true);
       paraPanel->enableStepNumberChoice();
       int maxVal = glPainter->getNumberOfSteps();
@@ -405,14 +410,14 @@ void CQLayoutMainWindow::setGlobalScaling()
 void CQLayoutMainWindow::setSizeMode()
 {
   pVisParameters->mappingMode = CVisParameters::SIZE_DIAMETER_MODE;
-  glPainter->rescaleDataSets(pVisParameters->scalingMode);
+  glPainter->rescaleDataSetsWithNewMinMax(0.0, 359.0, getMinNodeSize(), getMaxNodeSize(), pVisParameters->scalingMode);
   showStep(this->timeSlider->value());
 }
 
 void CQLayoutMainWindow::setColorMode()
 {
   pVisParameters->mappingMode = CVisParameters::COLOR_MODE;
-  glPainter->rescaleDataSets(pVisParameters->scalingMode); // rescaling, because min and max node size changed
+  glPainter->rescaleDataSetsWithNewMinMax(getMinNodeSize(), getMaxNodeSize(), 0.0, 359.0, pVisParameters->scalingMode); // rescaling, because min and max node size changed (interpretation as color value takes place elsewhere)
   showStep(this->timeSlider->value());
 }
 
