@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-//   $Revision: 1.66 $
+//   $Revision: 1.67 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/08/24 19:09:46 $
+//   $Date: 2007/09/04 20:27:18 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -265,12 +265,13 @@ bool CCopasiObject::hasCircularDependencies(std::set<const CCopasiObject * > & c
 
     for (; it != end; ++it)
       // Check whether the dependency *it depends on the candidates or this
-      if ((*it)->hasCircularDependencies(candidates)) return true;
+      if ((*it)->hasCircularDependencies(candidates))
+        break;
 
     // Remove the inserted object this from the candidates.
     candidates.erase(Inserted.first);
 
-    return false;
+    return it != end;
   }
 
 //static
