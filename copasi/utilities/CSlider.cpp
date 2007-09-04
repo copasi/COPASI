@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSlider.cpp,v $
-   $Revision: 1.23 $
-   $Name:  $
-   $Author: ssahle $
-   $Date: 2006/07/25 14:36:41 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSlider.cpp,v $
+//   $Revision: 1.24 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/09/04 20:28:35 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -16,6 +16,8 @@
 #include "CSlider.h"
 #include "report/CKeyFactory.h"
 #include "report/CCopasiObjectReference.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
+#include "model/CModel.h"
 
 const char * CSlider::TypeName[] =
   {"float", "unsignedFloat", "integer", "unsignedInteger", "Undefined", NULL};
@@ -37,7 +39,8 @@ CSlider::CSlider(const std::string & name,
     mTickFactor(100),
     mSync(true),
     mScaling(CSlider::linear),
-    mCN()
+    mCN(),
+    mInitialRefreshes()
 {}
 
 CSlider::CSlider(const CSlider & src,
@@ -54,7 +57,8 @@ CSlider::CSlider(const CSlider & src,
     mTickFactor(src.mTickFactor),
     mSync(src.mSync),
     mScaling(src.mScaling),
-    mCN()
+    mCN(src.mCN),
+    mInitialRefreshes(src.mInitialRefreshes)
 {}
 
 CSlider::~CSlider()
@@ -97,9 +101,16 @@ bool CSlider::setSliderObject(CCopasiObject * pObject)
 
   if (!pObject)
     {
+      mInitialRefreshes.clear();
       return false;
     }
   mCN = pObject->getCN();
+
+  std::set< const CCopasiObject * > ChangedObjects;
+  ChangedObjects.insert(pObject);
+
+  mInitialRefreshes =
+    CCopasiDataModel::Global->getModel()->buildInitialRefreshSequence(ChangedObjects);
 
   if (mpSliderObject->isValueInt())
     {
@@ -238,22 +249,17 @@ void CSlider::writeToObject()
   if (!mpSliderObject) return;
 
   if (mpSliderObject->isValueDbl())
-    {
-      mpSliderObject->setObjectValue(mValue);
-      return;
-    }
+    mpSliderObject->setObjectValue(mValue);
+  else if (mpSliderObject->isValueInt())
+    mpSliderObject->setObjectValue((C_INT32) floor(mValue + 0.5));
+  else if (mpSliderObject->isValueBool())
+    mpSliderObject->setObjectValue(mValue != 0.0);
 
-  if (mpSliderObject->isValueInt())
-    {
-      mpSliderObject->setObjectValue((C_INT32) floor(mValue + 0.5));
-      return;
-    }
+  std::vector< Refresh * >::iterator it = mInitialRefreshes.begin();
+  std::vector< Refresh * >::iterator end = mInitialRefreshes.end();
 
-  if (mpSliderObject->isValueBool())
-    {
-      mpSliderObject->setObjectValue(mValue != 0.0);
-      return;
-    }
+  for (; it != end; ++it)
+    (**it)();
 
   return;
 }
