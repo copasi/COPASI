@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.312 $
+//   $Revision: 1.313 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/08/24 16:00:11 $
+//   $Date: 2007/09/04 14:56:53 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -351,6 +351,7 @@ bool CModel::compile()
 
   // To assure that we do not produce access violations we clear the refres sequences
   // first
+  mInitialRefreshes.clear();
   mSimulatedRefreshes.clear();
   mConstantRefreshes.clear();
   mNonSimulatedRefreshes.clear();
@@ -380,6 +381,7 @@ bool CModel::compile()
 
   try
     {
+      buildInitialSequence();
       buildConstantSequence();
       buildSimulatedSequence();
       buildNonSimulatedSequence();
@@ -792,7 +794,7 @@ void CModel::updateMoietyValues()
   CCopasiVector< CMoiety >::iterator it = mMoieties.begin();
   CCopasiVector< CMoiety >::iterator end = mMoieties.end();
   for (; it != end; ++it)
-    (*it)->setInitialValue();
+    (*it)->refreshInitialValue();
 }
 
 void CModel::buildMoieties()
@@ -1082,13 +1084,19 @@ unsigned C_INT32 CModel::findMoiety(const std::string &Target) const
 
 void CModel::applyInitialValues()
 {
+  // Update all initial values.
+  std::vector< Refresh * >::const_iterator itRefresh = mInitialRefreshes.begin();
+  std::vector< Refresh * >::const_iterator endRefresh = mInitialRefreshes.end();
+  while (itRefresh != endRefresh)
+    (**itRefresh++)();
+
   // Copy the initial state to the current state,
   setState(mInitialState);
 
   // Update all "constant" dependend values.
   // Here "constant" means do not change during simulation.
-  std::vector< Refresh * >::const_iterator itRefresh = mConstantRefreshes.begin();
-  std::vector< Refresh * >::const_iterator endRefresh = mConstantRefreshes.end();
+  itRefresh = mConstantRefreshes.begin();
+  endRefresh = mConstantRefreshes.end();
   while (itRefresh != endRefresh)
     (**itRefresh++)();
 
@@ -1234,6 +1242,25 @@ bool CModel::buildUserOrder()
           (Status == CModelEntity::REACTIONS && ppEntity[*pUserOrder]->isUsed()))
         mJacobianPivot[i++] = *pUserOrder - 1;
     }
+
+  return true;
+}
+
+bool CModel::buildInitialSequence()
+{
+  // The objects which are changed are the initial values of the independent variables
+  // including the model time and the dependent metabolites.
+
+  std::set< const CCopasiObject * > Objects;
+
+  CModelEntity **ppEntity = mStateTemplate.beginIndependent() - 1; // Offset for time
+  CModelEntity **ppEntityEnd =
+    mStateTemplate.endIndependent() - mNumMetabolitesIndependent + mNumMetabolitesReaction;;
+
+  for (; ppEntity != ppEntityEnd; ++ppEntity)
+    Objects.insert((*ppEntity)->getInitialValueReference());
+
+  mInitialRefreshes = buildInitialRefreshSequence(Objects);
 
   return true;
 }
@@ -1523,7 +1550,7 @@ void CModel::setInitialState(const CState & state)
   CCopasiVector< CMoiety >::iterator endMoiety = mMoieties.end();
 
   for (; itMoiety != endMoiety; ++itMoiety)
-    (*itMoiety)->setInitialValue();
+    (*itMoiety)->refreshInitialValue();
 
   // The concentrations for the metabolites need to be updated
   CCopasiVector< CMetab >::iterator itMetab = mMetabolites.begin();
@@ -3187,3 +3214,140 @@ const std::vector< Refresh * > & CModel::getListOfConstantRefreshes() const
 
 const std::vector< Refresh * > & CModel::getListOfNonSimulatedRefreshes() const
   {return mNonSimulatedRefreshes;}
+
+std::vector< Refresh * >
+CModel::buildInitialRefreshSequence(std::set< const CCopasiObject * > & changedObjects)
+{
+  // First we remove all objects which are of type assignment from the changed objects
+  // since this may not be changed as they are under control of the assignment.
+  std::set< const CCopasiObject * >::iterator itSet = changedObjects.begin();
+  std::set< const CCopasiObject * >::iterator endSet = changedObjects.end();
+  std::set< const CCopasiObject * > Objects;
+  const CModelEntity * pEntity;
+
+  for (;itSet != endSet; ++itSet)
+    if ((pEntity = dynamic_cast< const CModelEntity * >((*itSet)->getObjectParent())) != NULL &&
+        pEntity->getStatus() == ASSIGNMENT)
+      Objects.insert(*itSet);
+
+  for (itSet = Objects.begin(), endSet = Objects.end(); itSet != endSet; ++itSet)
+    changedObjects.erase(*itSet);
+
+  // We need to add all initial values
+  CModelEntity **ppEntity = mStateTemplate.getEntities();
+  CModelEntity **ppEntityEnd = ppEntity + mStateTemplate.size();
+  const CMetab * pMetab;
+  Objects.clear();
+
+  for (; ppEntity != ppEntityEnd; ++ppEntity)
+    {
+      Objects.insert((*ppEntity)->getInitialValueReference());
+
+      // For metabolites we also need to add the initial concentration
+      if ((pMetab = dynamic_cast< const CMetab * >(*ppEntity)) != NULL)
+        Objects.insert(pMetab->getInitialConcentrationReference());
+    }
+
+  // We need to add the total particle number of moities.
+  CCopasiVector< CMoiety >::iterator itMoiety = mMoieties.begin();
+  CCopasiVector< CMoiety >::iterator endMoiety = mMoieties.end();
+
+  for (; itMoiety != endMoiety; ++itMoiety)
+    Objects.insert((*itMoiety)->getInitialValueReference());
+
+  std::set< const CCopasiObject * > DependencySet;
+  std::pair<std::set< const CCopasiObject * >::iterator, bool> InsertedObject;
+
+  assert (Objects.count(NULL) == 0);
+
+  // Check whether we have any circular dependencies
+  for (itSet = Objects.begin(), endSet = Objects.end(); itSet != endSet; ++itSet)
+    if ((*itSet)->hasCircularDependencies(DependencySet))
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCObject + 1, (*itSet)->getCN().c_str());
+
+  // Build the complete set of dependencies
+  for (itSet = Objects.begin(); itSet != endSet; ++itSet)
+    {
+      // At least the object itself needs to be up to date.
+      InsertedObject = DependencySet.insert(*itSet);
+
+      // Add all its dependencies
+      if (InsertedObject.second)
+        (*itSet)->getAllDependencies(DependencySet);
+    }
+
+  // Remove all objects which do not depend on the changed objects, or do not have a
+  // refresh method.
+  Objects.clear();
+
+  // :TODO: Handle initial assignments.
+  for (itSet = DependencySet.begin(), endSet = DependencySet.end(); itSet != endSet; ++itSet)
+    {
+      // No refresh method
+      if ((*itSet)->getRefresh() == NULL)
+        Objects.insert(*itSet);
+      // No changed objects, i.e., we need to update all
+      else if (changedObjects.size() == 0)
+        {
+          // The concentration of a metabolite is constant unless it is given by an assignment
+          if ((pMetab = dynamic_cast< const CMetab * >((*itSet)->getObjectParent())) != NULL &&
+              pMetab->getInitialConcentrationReference() == *itSet &&
+              pMetab->getStatus() != ASSIGNMENT)
+            Objects.insert(*itSet);
+          else
+            continue;
+        }
+      // The object itself has changed, thus no need to refresh it.
+      else if (changedObjects.count(*itSet) != 0)
+        Objects.insert(*itSet);
+      // Metabolite initial concentration
+      else if ((pMetab = dynamic_cast< const CMetab * >((*itSet)->getObjectParent())) != NULL &&
+               pMetab->getInitialConcentrationReference() == *itSet)
+        {
+          // Particle number not changed, and not dependent on changed values
+          // thus no need to refresh it.
+          if (changedObjects.count(pMetab->getInitialValueReference()) == 0 &&
+              !pMetab->getInitialConcentrationReference()->hasCircularDependencies(changedObjects))
+            Objects.insert(*itSet);
+          else // other must me refreshed
+            continue;
+        }
+      // The object does not depend on the changed values, thus no need to refresh it.
+      else if (!(*itSet)->hasCircularDependencies(changedObjects))
+        Objects.insert(*itSet);
+    }
+
+  for (itSet = Objects.begin(), endSet = Objects.end(); itSet != endSet; ++itSet)
+    DependencySet.erase(*itSet);
+
+  // Create a properly sorted list.
+  std::list< const CCopasiObject * > SortedList =
+    sortObjectsByDependency(DependencySet.begin(), DependencySet.end());
+
+  std::list< const CCopasiObject * >::iterator itList;
+  std::list< const CCopasiObject * >::iterator endList;
+
+  // Build the vector of pointers to refresh methods
+  Refresh * pRefresh;
+
+  std::vector< Refresh * > UpdateVector;
+  std::vector< Refresh * >::const_iterator itUpdate;
+  std::vector< Refresh * >::const_iterator endUpdate;
+
+  itList = SortedList.begin();
+  endList = SortedList.end();
+
+  for (; itList != endList; ++itList)
+    {
+      pRefresh = (*itList)->getRefresh();
+      itUpdate = UpdateVector.begin();
+      endUpdate = UpdateVector.end();
+
+      while (itUpdate != endUpdate && !(*itUpdate)->isEqual(pRefresh)) ++itUpdate;
+
+      if (itUpdate == endUpdate)
+        UpdateVector.push_back(pRefresh);
+    }
+
+  return UpdateVector;
+}

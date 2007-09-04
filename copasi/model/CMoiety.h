@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMoiety.h,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.31 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/31 17:57:34 $
+//   $Date: 2007/09/04 14:56:53 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -56,6 +56,16 @@ class CMoiety : public CCopasiContainer
     // CCopasiVector < CChemEqElement > mEquation;
     std::vector<std::pair< C_FLOAT64, CMetab * > > mEquation;
 
+    /**
+     * A pointer to the object for the total particle number
+     */
+    CCopasiObjectReference<C_FLOAT64> *mpINumberReference;
+
+    /**
+     * A pointer to the object for the dependent particle number
+     */
+    CCopasiObjectReference<C_FLOAT64> *mpDNumberReference;
+
     // Operations
   public:
     /**
@@ -100,9 +110,15 @@ class CMoiety : public CCopasiContainer
     void cleanup();
 
     /**
-     *
+     * Refresh the total particle number
      */
-    void setInitialValue();
+    void refreshInitialValue();
+
+    /**
+     * Retrieve the object for the total particle number
+     * @return CCopasiObject * initialValueReference
+     */
+    CCopasiObject * getInitialValueReference() const;
 
     /**
      * get the string representation of the moiety using the CMetabNameInterface

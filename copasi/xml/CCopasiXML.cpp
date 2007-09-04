@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-//   $Revision: 1.98 $
+//   $Revision: 1.99 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/08/07 17:19:22 $
+//   $Date: 2007/09/04 14:56:53 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -382,13 +382,6 @@ bool CCopasiXML::saveModel()
               endSaveElement("Expression");
             }
 
-          if (pComp->getInitialExpression() != "")
-            {
-              startSaveElement("InitialExpression");
-              saveData(pComp->getInitialExpression());
-              endSaveElement("InitialExpression");
-            }
-
           endSaveElement("Compartment");
           if (pComp->getSBMLId() != "")
             mSBMLReference[pComp->getSBMLId()] = pComp->getKey();
@@ -428,13 +421,6 @@ bool CCopasiXML::saveModel()
               endSaveElement("Expression");
             }
 
-          if (pMetab->getInitialExpression() != "")
-            {
-              startSaveElement("InitialExpression");
-              saveData(pMetab->getInitialExpression());
-              endSaveElement("InitialExpression");
-            }
-
           endSaveElement("Metabolite");
           if (pMetab->getSBMLId() != "")
             mSBMLReference[pMetab->getSBMLId()] = pMetab->getKey();
@@ -469,13 +455,6 @@ bool CCopasiXML::saveModel()
               startSaveElement("Expression");
               saveData(pMV->getExpression());
               endSaveElement("Expression");
-            }
-
-          if (pMV->getInitialExpression() != "")
-            {
-              startSaveElement("InitialExpression");
-              saveData(pMV->getInitialExpression());
-              endSaveElement("InitialExpression");
             }
 
           endSaveElement("ModelValue");

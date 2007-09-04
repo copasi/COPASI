@@ -1,10 +1,10 @@
 <chapter id="NamingConventions" xreflabel="Naming Conventions">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/admin/documentation/CodeGuidelines_main.xml,v $ -->
-<!--   $Revision: 1.10 $ -->
+<!--   $Revision: 1.11 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: shoops $ -->
-<!--   $Date: 2007/08/24 14:40:24 $ -->
+<!--   $Date: 2007/09/04 14:59:53 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -396,6 +396,50 @@ no need to calculate them during simulation.
 </table>
 </sect1>
 
+<sect1 id="SettingTheInitialState" xreflabel="Setting the Initial State">
+<title>Setting the Initial State</title>
+<para>
+The initial state of a COPASI model is due to the introduction of
+assignments for all model entities no longer determined through fixed
+values. To calculate the current initial values those assignments have
+to be evaluated at <inlineequation><mml:math>
+<mml:mi>t</mml:mi>
+<mml:mo>=</mml:mo>
+<mml:msub>
+ <mml:mi>T</mml:mi>
+ <mml:mn>0</mml:mn>
+</mml:msub>
+</mml:math></inlineequation>. These evaluation will effect in many cases
+other initial values. For example the initial particle numbers of
+metabolites will change when a compartment's initial volume
+changes. To detemine the initial values, which need to be recalculated
+as well as the functions used for their calculation COPASI uses a
+dependecy system. In this system each initial value stores the
+information on which values it depends and which method to call to
+recalculated its value. 
+</para>
+<para>
+Since the change of one initial value may now result in a complicated
+chain of updates for other initial values it no longer suffices to
+use its update method to set its value. We need to add an additional
+step which will update all values effected by the change. To retrive
+the list of needed refreshes in the proper order the class CModel
+provides the following method.
+</para>
+<variablelist>
+<varlistentry>
+<term><literal>vector&lt;Refresh *&gt;
+buildInitialRefreshSequence(set&lt;const CCopasiObject *&gt; &amp;changedObjects);</literal></term>
+<listitem><para>
+This method retrieves a vector of refresh methods, which must be called
+to update all other initial values given a set of changed objects. If
+the set of changed objects is empty the method will return a vector
+of refresh method, which suffices to synchronize all initial values.
+</para></listitem></varlistentry>
+e
+</variablelist>
+</sect1>
+
 <sect1 id="SettingTheState" xreflabel="Setting the State">
 <title>Setting the State</title>
 <para></para>
@@ -416,16 +460,11 @@ no need to calculate them during simulation.
 
 <sect2 id="InitialValues" xreflabel="Initial Values">
 <title>Initial Values</title>
-<para>
-The objects used in the expression for an initial value may not be
-simulated values, with the exception of values which are FIXED or
-evaluated through a constant ASSIGNMENT.
-</para>
-<sect3 id="MetaboliteWithInitialAssignment" 
- xreflabel="Metabolite with Initial Assignment">
-<title>Metabolite with Initial Assignment</title>
+<sect3 id="MetaboliteWithAssignment" 
+ xreflabel="Metabolite with Assignment">
+<title>Metabolite with Assignment</title>
 
-<table frame="all"><title>Metabolite with Initial Assignment</title>
+<table frame="all"><title>Metabolite with Assignment</title>
 <tgroup cols="3" align="left" colsep="1" rowsep="1">
 <colspec colwidth="2*" />
 <colspec colwidth="6*" />
@@ -441,23 +480,23 @@ evaluated through a constant ASSIGNMENT.
  <row>
    <entry>Initial Particle Number</entry>
    <entry>Initial Concentration, parent compartment Volume</entry>
-   <entry>refreshInititalParticleNumber</entry>
+   <entry>refreshInititalValue</entry>
  </row>
  <row>
    <entry>Initial Concentration</entry>
-   <entry>all objects in expression</entry>
-   <entry>calculateInitialValue</entry>
+   <entry>all objects in implicit expression</entry>
+   <entry>refreshInitialConcentration</entry>
  </row>
 </tbody>
 </tgroup>
 </table>
 </sect3>
 
-<sect3 id="MetaboliteWithoutInitialAssignment" 
- xreflabel="Metabolite without Initial Assignment">
-<title>Metabolite without Initial Assignment</title>
+<sect3 id="MetaboliteWithoutAssignment" 
+ xreflabel="Metabolite without Assignment">
+<title>Metabolite without Assignment</title>
 
-<table frame="all"><title>Metabolite without Initial Assignment</title>
+<table frame="all"><title>Metabolite without Assignment</title>
 <tgroup cols="3" align="left" colsep="1" rowsep="1">
 <colspec colwidth="2*" />
 <colspec colwidth="6*" />
@@ -472,25 +511,34 @@ evaluated through a constant ASSIGNMENT.
 <tbody>
  <row>
    <entry>Initial Particle Number</entry>
-   <entry>none</entry>
-   <entry>none</entry>
+   <entry>initial concentration, parent compartment volume</entry>
+   <entry>refreshInitialValue</entry>
  </row>
  <row>
    <entry>Initial Concentration</entry>
-   <entry>Initial particle number, parent compartment Volume</entry>
+   <entry>parent compartment Volume</entry>
    <entry>refreshInititalConcentration</entry>
  </row>
 </tbody>
 </tgroup>
 </table>
+<para>
+The initial concentration is of course dependent on the initial
+particle number. This must be taken into account manually to avoid
+circular depencies. However, this is straight forward as the initial
+particle number may only be set directly, in which case no further
+dependencies are encountered or calculated from the initial
+concentration in the case the concentration is given the normal 
+dependecies take care of the problem.
+</para>
 </sect3>
 
-<sect3 id="CompartmentGlobalQuantityWithInitialAssignment" 
- xreflabel="Compartment, Global Quantity with Initial Assignment">
-<title>Compartment, Global Quantity with Initial Assignment</title>
+<sect3 id="CompartmentGlobalQuantityWithAssignment" 
+ xreflabel="Compartment, Global Quantity with Assignment">
+<title>Compartment, Global Quantity with Assignment</title>
 
 <table frame="all">
-<title>Compartment, Global Quantity with Initial Assignment</title>
+<title>Compartment, Global Quantity with Assignment</title>
 <tgroup cols="3" align="left" colsep="1" rowsep="1">
 <colspec colwidth="2*" />
 <colspec colwidth="6*" />
@@ -505,20 +553,20 @@ evaluated through a constant ASSIGNMENT.
 <tbody>
  <row>
    <entry>Initial Value</entry>
-   <entry>all objects in expression</entry>
-   <entry>calculateInitialValue</entry>
+   <entry>all objects in implicit expression</entry>
+   <entry>refreshInitialValue</entry>
  </row>
 </tbody>
 </tgroup>
 </table>
 </sect3>
 
-<sect3 id="CompartmentGlobalQuantityWithoutInitialAssignment" 
- xreflabel="Compartment, Global Quantity without Initial Assignment">
-<title>Compartment, Global Quantity without Initial Assignment</title>
+<sect3 id="CompartmentGlobalQuantityWithoutAssignment" 
+ xreflabel="Compartment, Global Quantity without Assignment">
+<title>Compartment, Global Quantity without Assignment</title>
 
 <table frame="all">
-<title>Compartment, Global Quantity without Initial Assignment</title>
+<title>Compartment, Global Quantity without Assignment</title>
 <tgroup cols="3" align="left" colsep="1" rowsep="1">
 <colspec colwidth="2*" />
 <colspec colwidth="6*" />
@@ -561,7 +609,7 @@ evaluated through a constant ASSIGNMENT.
  <row>
    <entry>Initial Number</entry>
    <entry>Particle numbers of all involved metabolites</entry>
-   <entry>calculateInitialValue</entry>
+   <entry>refreshInitialValue</entry>
  </row>
 </tbody>
 </tgroup>

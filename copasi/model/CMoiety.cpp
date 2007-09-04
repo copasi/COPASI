@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMoiety.cpp,v $
-//   $Revision: 1.44 $
+//   $Revision: 1.45 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/31 17:57:34 $
+//   $Date: 2007/09/04 14:56:53 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -60,14 +60,13 @@ void CMoiety::initObjects()
 {
   setRefresh(this, &CMoiety::refreshDependentNumber);
 
-  addObjectReference("Value", mINumber, CCopasiObject::ValueDbl);
+  mpINumberReference =
+    static_cast<CCopasiObjectReference< C_FLOAT64 > *>(addObjectReference("Value", mINumber, CCopasiObject::ValueDbl));
+  mpINumberReference->setRefresh(this, &CMoiety::refreshInitialValue);
 
-  CCopasiObject * pObj =
-    addObjectReference("DependentValue", mNumber, CCopasiObject::ValueDbl);
-
-  std::set< const CCopasiObject * > Dependencies;
-  Dependencies.insert(this);
-  pObj->setDirectDependencies(Dependencies);
+  mpDNumberReference =
+    static_cast<CCopasiObjectReference< C_FLOAT64 > *>(addObjectReference("DependentValue", mNumber, CCopasiObject::ValueDbl));
+  mpDNumberReference->addDirectDependency(this);
 
   return;
 }
@@ -81,6 +80,8 @@ void CMoiety::add(C_FLOAT64 value, CMetab * pMetabolite)
   else
     mDependencies.insert(pMetabolite->mpValueReference);
 
+  mpINumberReference->addDirectDependency(pMetabolite->mpIValueReference);
+
   std::pair<C_FLOAT64, CMetab *> element;
 
   element.first = value;
@@ -93,6 +94,7 @@ void CMoiety::cleanup()
 {
   mDependencies.clear();
   mEquation.clear();
+  mpINumberReference->setDirectDependencies(mDependencies);
 }
 
 void CMoiety::refreshDependentNumber()
@@ -142,7 +144,7 @@ std::string CMoiety::getDescription(const CModel * model) const
     return Description;
   }
 
-void CMoiety::setInitialValue()
+void CMoiety::refreshInitialValue()
 {
   mINumber = 0;
 
@@ -154,9 +156,9 @@ void CMoiety::setInitialValue()
   return;
 }
 
-/**
- * Return the number value Wei Sun
- */
+CCopasiObject * CMoiety::getInitialValueReference() const
+{return mpINumberReference;}
+
 C_FLOAT64 CMoiety::getNumber() const
   {
     return mINumber;

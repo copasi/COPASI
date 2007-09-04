@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.220 $
+//   $Revision: 1.221 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/08/22 12:59:17 $
+//   $Date: 2007/09/04 14:56:53 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1068,6 +1068,9 @@ bool ListViews::notify(ObjectType objectType, Action action, const std::string &
 
   bool success = true;
 
+  // update all initial value
+  refreshInitialValues();
+
   //update the datamodel and the listviews trees
   if (!updateDataModelAndListviews(objectType, action, key)) success = false;
 
@@ -1152,4 +1155,17 @@ void ListViews::notifyAllChildWidgets(C_INT32 id,
       if (pItem)
         (*it)->notifyChildWidgets(pItem, objectType, action, key);
     }
+}
+
+void ListViews::refreshInitialValues()
+{
+  std::set< const CCopasiObject * > All;
+  std::vector< Refresh * > UpdateVector =
+    CCopasiDataModel::Global->getModel()->buildInitialRefreshSequence(All);
+
+  std::vector< Refresh * >::iterator it = UpdateVector.begin();
+  std::vector< Refresh * >::iterator end = UpdateVector.end();
+
+  for (; it != end; ++it)
+    (**it)();
 }

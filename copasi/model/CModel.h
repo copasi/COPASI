@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.146 $
+//   $Revision: 1.147 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/08/21 16:18:50 $
+//   $Date: 2007/09/04 14:56:53 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -316,6 +316,11 @@ class CModel : public CModelEntity
     bool mCompileIsNecessary;
 
     CProcessReport * mpCompileHandler;
+
+    /**
+     * An ordered list of refresh methods needed by the applyInitialvalues
+     */
+    std::vector< Refresh * > mInitialRefreshes;
 
     /**
      * An ordered list of refresh methods needed by the updateSimulatedValues
@@ -1024,6 +1029,16 @@ class CModel : public CModelEntity
      */
     bool isAutonomous() const;
 
+    /**
+     * Build the update sequence used to calculate all initial values depending
+     * on the changed objects. For metabolites the initial particle number is
+     * updated by default unless itself is in the list of changed objects. In
+     * that case the initial concentration is updated.
+     * @param std::set< const CCopasiObject * > & changedObjects
+     * @return std::vector< Refresh * > initialRefreshSequence
+     */
+    std::vector< Refresh * > buildInitialRefreshSequence(std::set< const CCopasiObject * > & changedObjects);
+
   private:
 
     bool compile();
@@ -1050,6 +1065,12 @@ class CModel : public CModelEntity
      * @return bool success
      */
     bool buildStateTemplate();
+
+    /**
+     * Build the update sequence used by applyInitialValues to update initial values
+     * @return bool success
+     */
+    bool buildInitialSequence();
 
     /**
      * Build the update sequence used by applyInitialValues to update values

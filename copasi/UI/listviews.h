@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-//   $Revision: 1.126 $
+//   $Revision: 1.127 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/08/22 12:59:17 $
+//   $Date: 2007/09/04 14:56:53 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -171,6 +171,8 @@ class ListViews : public QSplitter
                                       ObjectType objectType,
                                       Action action,
                                       const std::string & key);
+
+    static void refreshInitialValues();
 
     //the widgets
     QListView *folders;

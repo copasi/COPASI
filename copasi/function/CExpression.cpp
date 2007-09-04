@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.cpp,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/08/24 19:13:53 $
+//   $Date: 2007/09/04 14:56:54 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -195,6 +195,8 @@ CExpression * CExpression::createInitialExpression(const CExpression & expressio
                  pMetab->getConcentrationReference() == pObject)
           pNode->setData("<" + pMetab->getInitialConcentrationReference()->getCN() + ">");
       }
+
+  pInitialExpression->updateTree();
 
   return pInitialExpression;
 }
