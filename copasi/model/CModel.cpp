@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.313 $
+//   $Revision: 1.314 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/04 14:56:53 $
+//   $Date: 2007/09/04 17:30:58 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -351,7 +351,6 @@ bool CModel::compile()
 
   // To assure that we do not produce access violations we clear the refres sequences
   // first
-  mInitialRefreshes.clear();
   mSimulatedRefreshes.clear();
   mConstantRefreshes.clear();
   mNonSimulatedRefreshes.clear();
@@ -381,7 +380,8 @@ bool CModel::compile()
 
   try
     {
-      buildInitialSequence();
+      updateInitialValues();
+
       buildConstantSequence();
       buildSimulatedSequence();
       buildNonSimulatedSequence();
@@ -1084,19 +1084,13 @@ unsigned C_INT32 CModel::findMoiety(const std::string &Target) const
 
 void CModel::applyInitialValues()
 {
-  // Update all initial values.
-  std::vector< Refresh * >::const_iterator itRefresh = mInitialRefreshes.begin();
-  std::vector< Refresh * >::const_iterator endRefresh = mInitialRefreshes.end();
-  while (itRefresh != endRefresh)
-    (**itRefresh++)();
-
   // Copy the initial state to the current state,
   setState(mInitialState);
 
   // Update all "constant" dependend values.
   // Here "constant" means do not change during simulation.
-  itRefresh = mConstantRefreshes.begin();
-  endRefresh = mConstantRefreshes.end();
+  std::vector< Refresh * >::const_iterator itRefresh = mConstantRefreshes.begin();
+  std::vector< Refresh * >::const_iterator endRefresh = mConstantRefreshes.end();
   while (itRefresh != endRefresh)
     (**itRefresh++)();
 
@@ -1246,7 +1240,7 @@ bool CModel::buildUserOrder()
   return true;
 }
 
-bool CModel::buildInitialSequence()
+bool CModel::updateInitialValues()
 {
   // The objects which are changed are the initial values of the independent variables
   // including the model time and the dependent metabolites.
@@ -1260,7 +1254,13 @@ bool CModel::buildInitialSequence()
   for (; ppEntity != ppEntityEnd; ++ppEntity)
     Objects.insert((*ppEntity)->getInitialValueReference());
 
-  mInitialRefreshes = buildInitialRefreshSequence(Objects);
+  std::vector< Refresh * > InitialRefreshes = buildInitialRefreshSequence(Objects);
+
+  // Update all initial values.
+  std::vector< Refresh * >::const_iterator itRefresh = InitialRefreshes.begin();
+  std::vector< Refresh * >::const_iterator endRefresh = InitialRefreshes.end();
+  while (itRefresh != endRefresh)
+    (**itRefresh++)();
 
   return true;
 }
