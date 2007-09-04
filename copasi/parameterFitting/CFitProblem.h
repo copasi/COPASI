@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.h,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/05/15 12:36:25 $
+//   $Date: 2007/09/04 17:31:39 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -262,9 +262,21 @@ class CFitProblem : public COptProblem
     CMatrix< UpdateMethod * > mExperimentUpdateMethods;
 
     /**
+     * A vector of refresh methods which contains the sequence of refresh methods
+     * to update the initial values for each experiment.
+     * */
+    CVector< std::vector< Refresh * > > mExperimentInitialRefreshes;
+
+    /**
      * Matrix of constraints for each experiment.
      */
     CMatrix< CFitConstraint * > mExperimentConstraints;
+
+    /**
+     * A vector of refresh methods which contains the sequence of refresh methods
+     * to update the constraint values for each experiment.
+     * */
+    CVector< std::vector< Refresh * > > mExperimentConstraintRefreshes;
 
     /**
      * The simulation values for the experiments.
@@ -283,9 +295,21 @@ class CFitProblem : public COptProblem
     CMatrix< UpdateMethod * > mCrossValidationUpdateMethods;
 
     /**
+     * A vector of refresh methods which contains the sequence of refresh methods
+     * to update the initial values for each cross validation.
+     * */
+    CVector< std::vector< Refresh * > > mCrossValidationInitialRefreshes;
+
+    /**
      * Matrix of constraints for each experiment.
      */
     CMatrix< CFitConstraint * > mCrossValidationConstraints;
+
+    /**
+     * A vector of refresh methods which contains the sequence of refresh methods
+     * to update the constraint values for each cross validation.
+     * */
+    CVector< std::vector< Refresh * > > mCrossValidationConstraintRefreshes;
 
     /**
      * The simulation values for the experiments.

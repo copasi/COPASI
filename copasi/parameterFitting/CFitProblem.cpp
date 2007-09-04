@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-//   $Revision: 1.48 $
+//   $Revision: 1.49 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/25 15:16:26 $
+//   $Date: 2007/09/04 17:31:39 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -341,6 +341,10 @@ bool CFitProblem::initialize()
   mExperimentUpdateMethods.resize(mpExperimentSet->getExperimentCount(),
                                   mpOptItems->size());
   mExperimentUpdateMethods = NULL;
+  mExperimentInitialRefreshes.resize(mpExperimentSet->getExperimentCount());
+
+  std::vector< std::set< const CCopasiObject * > > ObjectSet;
+  ObjectSet.resize(mpExperimentSet->getExperimentCount());
 
   std::vector<COptItem * >::iterator it = mpOptItems->begin();
   std::vector<COptItem * >::iterator end = mpOptItems->end();
@@ -370,7 +374,10 @@ bool CFitProblem::initialize()
       if (imax == 0)
         {
           for (i = 0, imax = mpExperimentSet->getExperimentCount(); i < imax; i++)
-            mExperimentUpdateMethods(i, j) = pItem->COptItem::getUpdateMethod();
+            {
+              mExperimentUpdateMethods(i, j) = pItem->COptItem::getUpdateMethod();
+              ObjectSet[i].insert(pItem->getObject());
+            }
         }
       else
         {
@@ -381,6 +388,7 @@ bool CFitProblem::initialize()
               if ((Index = mpExperimentSet->keyToIndex(pItem->getExperiment(i))) == C_INVALID_INDEX)
                 return false;
               mExperimentUpdateMethods(Index, j) = pItem->COptItem::getUpdateMethod();
+              ObjectSet[Index].insert(pItem->getObject());
             };
         }
 
@@ -390,10 +398,16 @@ bool CFitProblem::initialize()
       mpCorrelationMatrix->setAnnotationString(1, j, Annotation);
     }
 
+  for (i = 0, imax = mpExperimentSet->getExperimentCount(); i < imax; i++)
+    mExperimentInitialRefreshes[i] = mpModel->buildInitialRefreshSequence(ObjectSet[i]);
+
   // Build a matrix of experiment and constraint items;
   mExperimentConstraints.resize(mpExperimentSet->getExperimentCount(),
                                 mpConstraintItems->size());
   mExperimentConstraints = NULL;
+  mExperimentConstraintRefreshes.resize(mpExperimentSet->getExperimentCount());
+  ObjectSet.clear();
+  ObjectSet.resize(mpExperimentSet->getExperimentCount());
 
   it = mpConstraintItems->begin();
   end = mpConstraintItems->end();
@@ -408,7 +422,10 @@ bool CFitProblem::initialize()
       if (imax == 0)
         {
           for (i = 0, imax = mpExperimentSet->getExperimentCount(); i < imax; i++)
-            mExperimentConstraints(i, j) = pConstraint;
+            {
+              mExperimentConstraints(i, j) = pConstraint;
+              ObjectSet[i].insert(pConstraint->getObject());
+            }
         }
       else
         {
@@ -417,9 +434,13 @@ bool CFitProblem::initialize()
               if ((Index = mpExperimentSet->keyToIndex(pConstraint->getExperiment(i))) == C_INVALID_INDEX)
                 return false;
               mExperimentConstraints(Index, j) = pConstraint;
+              ObjectSet[Index].insert(pConstraint->getObject());
             };
         }
     }
+
+  for (i = 0, imax = mpExperimentSet->getExperimentCount(); i < imax; i++)
+    mExperimentConstraintRefreshes[i] = CCopasiObject::buildUpdateSequence(ObjectSet[i], mpModel);
 
   mExperimentDependentValues.resize(mpExperimentSet->getDataPointCount());
 
@@ -430,6 +451,10 @@ bool CFitProblem::initialize()
   mCrossValidationUpdateMethods.resize(mpCrossValidationSet->getExperimentCount(),
                                        mpOptItems->size());
   mCrossValidationUpdateMethods = NULL;
+  mCrossValidationInitialRefreshes.resize(mpCrossValidationSet->getExperimentCount());
+
+  ObjectSet.clear();
+  ObjectSet.resize(mpCrossValidationSet->getExperimentCount());
 
   it = mpOptItems->begin();
   end = mpOptItems->end();
@@ -443,7 +468,10 @@ bool CFitProblem::initialize()
       if (imax == 0)
         {
           for (i = 0, imax = mpCrossValidationSet->getExperimentCount(); i < imax; i++)
-            mCrossValidationUpdateMethods(i, j) = pItem->COptItem::getUpdateMethod();
+            {
+              mCrossValidationUpdateMethods(i, j) = pItem->COptItem::getUpdateMethod();
+              ObjectSet[i].insert(pItem->getObject());
+            }
         }
       else
         {
@@ -452,14 +480,21 @@ bool CFitProblem::initialize()
               if ((Index = mpCrossValidationSet->keyToIndex(pItem->getCrossValidation(i))) == C_INVALID_INDEX)
                 return false;
               mCrossValidationUpdateMethods(Index, j) = pItem->COptItem::getUpdateMethod();
+              ObjectSet[Index].insert(pItem->getObject());
             };
         }
     }
+
+  for (i = 0, imax = mpCrossValidationSet->getExperimentCount(); i < imax; i++)
+    mCrossValidationInitialRefreshes[i] = mpModel->buildInitialRefreshSequence(ObjectSet[i]);
 
   // Build a matrix of cross validation experiments and constraint items;
   mCrossValidationConstraints.resize(mpCrossValidationSet->getExperimentCount(),
                                      mpConstraintItems->size());
   mCrossValidationConstraints = NULL;
+  mCrossValidationConstraintRefreshes.resize(mpCrossValidationSet->getExperimentCount());
+  ObjectSet.clear();
+  ObjectSet.resize(mpCrossValidationSet->getExperimentCount());
 
   it = mpConstraintItems->begin();
   end = mpConstraintItems->end();
@@ -472,7 +507,10 @@ bool CFitProblem::initialize()
       if (imax == 0)
         {
           for (i = 0, imax = mpCrossValidationSet->getExperimentCount(); i < imax; i++)
-            mCrossValidationConstraints(i, j) = pConstraint;
+            {
+              mCrossValidationConstraints(i, j) = pConstraint;
+              ObjectSet[i].insert(pConstraint->getObject());
+            }
         }
       else
         {
@@ -481,9 +519,13 @@ bool CFitProblem::initialize()
               if ((Index = mpCrossValidationSet->keyToIndex(pConstraint->getCrossValidation(i))) == C_INVALID_INDEX)
                 return false;
               mCrossValidationConstraints(Index, j) = pConstraint;
+              ObjectSet[Index].insert(pConstraint->getObject());
             };
         }
     }
+
+  for (i = 0, imax = mpCrossValidationSet->getExperimentCount(); i < imax; i++)
+    mCrossValidationConstraintRefreshes[i] = CCopasiObject::buildUpdateSequence(ObjectSet[i], mpModel);
 
   mCrossValidationDependentValues.resize(mpCrossValidationSet->getDataPointCount());
 
@@ -571,7 +613,7 @@ bool CFitProblem::calculate()
   std::vector<COptItem *>::iterator endConstraint = mpConstraintItems->end();
 
   std::vector< Refresh *>::const_iterator itRefresh;
-  std::vector< Refresh *>::const_iterator endRefresh = mRefreshConstraints.end();
+  std::vector< Refresh *>::const_iterator endRefresh;
 
   // Reset the constraints memory
   for (itConstraint = mpConstraintItems->begin(); itConstraint != endConstraint; ++itConstraint)
@@ -593,6 +635,12 @@ bool CFitProblem::calculate()
             if (*pUpdate)
               (**pUpdate)(static_cast<CFitItem *>(*itItem)->getLocalValue());
 
+          // Update the initial values
+          itRefresh = mExperimentInitialRefreshes[i].begin();
+          endRefresh = mExperimentInitialRefreshes[i].end();
+          for (; itRefresh != endRefresh; ++itRefresh)
+            (**itRefresh)();
+
           kmax = pExp->getNumDataRows();
 
           switch (pExp->getExperimentType())
@@ -612,7 +660,9 @@ bool CFitProblem::calculate()
 
                   // We check after each simulation whether the constraints are violated.
                   // Make sure the constraint values are up to date.
-                  for (itRefresh = mRefreshConstraints.begin(); itRefresh != endRefresh; ++itRefresh)
+                  itRefresh = mExperimentConstraintRefreshes[i].begin();
+                  endRefresh = mExperimentConstraintRefreshes[i].end();
+                  for (; itRefresh != endRefresh; ++itRefresh)
                     (**itRefresh)();
 
                   ppConstraint = mExperimentConstraints[i];
@@ -654,7 +704,9 @@ bool CFitProblem::calculate()
 
               // We check after each simulation whether the constraints are violated.
               // Make sure the constraint values are up to date.
-              for (itRefresh = mRefreshConstraints.begin(); itRefresh != endRefresh; ++itRefresh)
+              itRefresh = mExperimentConstraintRefreshes[i].begin();
+              endRefresh = mExperimentConstraintRefreshes[i].end();
+              for (; itRefresh != endRefresh; ++itRefresh)
                 (**itRefresh)();
 
               ppConstraintEnd = ppConstraint + mExperimentConstraints.numCols();
@@ -1548,7 +1600,7 @@ bool CFitProblem::calculateCrossValidation()
   std::vector<COptItem *>::iterator endConstraint = mpConstraintItems->end();
 
   std::vector< Refresh *>::const_iterator itRefresh;
-  std::vector< Refresh *>::const_iterator endRefresh = mRefreshConstraints.end();
+  std::vector< Refresh *>::const_iterator endRefresh;
 
   // Reset the constraints memory
   for (itConstraint = mpConstraintItems->begin(); itConstraint != endConstraint; ++itConstraint)
@@ -1570,6 +1622,12 @@ bool CFitProblem::calculateCrossValidation()
             if (*pUpdate)
               (**pUpdate)(*pSolution);
 
+          // Update the initial values
+          itRefresh = mCrossValidationInitialRefreshes[i].begin();
+          endRefresh = mCrossValidationInitialRefreshes[i].end();
+          for (; itRefresh != endRefresh; ++itRefresh)
+            (**itRefresh)();
+
           kmax = pExp->getNumDataRows();
 
           switch (pExp->getExperimentType())
@@ -1589,7 +1647,9 @@ bool CFitProblem::calculateCrossValidation()
 
                   // We check after each simulation whether the constraints are violated.
                   // Make sure the constraint values are up to date.
-                  for (itRefresh = mRefreshConstraints.begin(); itRefresh != endRefresh; ++itRefresh)
+                  itRefresh = mCrossValidationConstraintRefreshes[i].begin();
+                  endRefresh = mCrossValidationConstraintRefreshes[i].end();
+                  for (; itRefresh != endRefresh; ++itRefresh)
                     (**itRefresh)();
 
                   ppConstraint = mCrossValidationConstraints[i];
@@ -1631,7 +1691,9 @@ bool CFitProblem::calculateCrossValidation()
 
               // We check after each simulation whether the constraints are violated.
               // Make sure the constraint values are up to date.
-              for (itRefresh = mRefreshConstraints.begin(); itRefresh != endRefresh; ++itRefresh)
+              itRefresh = mCrossValidationConstraintRefreshes[i].begin();
+              endRefresh = mCrossValidationConstraintRefreshes[i].end();
+              for (; itRefresh != endRefresh; ++itRefresh)
                 (**itRefresh)();
 
               ppConstraintEnd = ppConstraint + mCrossValidationConstraints.numCols();

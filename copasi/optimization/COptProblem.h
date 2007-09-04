@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.h,v $
-   $Revision: 1.53 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2007/01/11 17:32:39 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.h,v $
+//   $Revision: 1.54 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/09/04 17:31:39 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -356,6 +356,12 @@ class COptProblem : public CCopasiProblem
      * A vector of update method to the values of the optimization items.
      */
     std::vector< UpdateMethod * > mUpdateMethods;
+
+    /**
+     * A vector of refresh methods which need to be called update all initial
+     * values which depend on the optimization items.
+     */
+    std::vector< Refresh * > mInitialRefreshMethods;
 
     /**
      * A vector of refresh methods which need to be called retreive the value

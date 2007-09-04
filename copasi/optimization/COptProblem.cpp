@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-//   $Revision: 1.91 $
+//   $Revision: 1.92 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/25 16:58:17 $
+//   $Date: 2007/09/04 17:31:39 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -62,6 +62,7 @@ COptProblem::COptProblem(const CCopasiTask::Type & type,
     mpTrajectory(NULL),
     mpFunction(NULL),
     mUpdateMethods(),
+    mInitialRefreshMethods(),
     mRefreshMethods(),
     mRefreshConstraints(),
     mCalculateValue(0),
@@ -94,6 +95,7 @@ COptProblem::COptProblem(const COptProblem& src,
     mpTrajectory(src.mpTrajectory),
     mpFunction(NULL),
     mUpdateMethods(),
+    mInitialRefreshMethods(),
     mRefreshMethods(),
     mRefreshConstraints(),
     mCalculateValue(src.mCalculateValue),
@@ -303,13 +305,19 @@ bool COptProblem::initialize()
       return false;
     }
 
+  std::set< const CCopasiObject * > changedObjects;
+
   for (i = 0; it != end; ++it, i++)
     {
       success &= (*it)->compile(ContainerList);
 
       mUpdateMethods[i] = (*it)->getUpdateMethod();
+      changedObjects.insert((*it)->getObject());
       mOriginalVariables[i] = *(*it)->COptItem::getObjectValue();
     }
+
+  changedObjects.erase(NULL);
+  mInitialRefreshMethods = mpModel->buildInitialRefreshSequence(changedObjects);
 
   if (!success) return false;
 
@@ -420,27 +428,25 @@ bool COptProblem::checkFunctionalConstraints()
  */
 bool COptProblem::calculate()
 {
-  mCounter += 1;
+  mCounter++;
   bool success = false;
 
   try
     {
+      // Update all initial values which depend on the optimization items.
+      std::vector< Refresh * >::const_iterator it = mInitialRefreshMethods.begin();
+      std::vector< Refresh * >::const_iterator end = mInitialRefreshMethods.end();
+      for (; it != end; ++it)
+        (**it)();
+
       if (mpSteadyState != NULL)
-        {
-          //((CSteadyStateProblem *) mpSteadyState->getProblem())->
-          //setInitialState(mpSteadyState->getProblem()->getModel()->getInitialState());
-          success = mpSteadyState->process(true);
-        }
+        success = mpSteadyState->process(true);
+      else if (mpTrajectory != NULL)
+        success = mpTrajectory->process(true);
 
-      if (mpTrajectory != NULL)
-        {
-          //((CTrajectoryProblem *) mpTrajectory->getProblem())->
-          //setInitialState(mpTrajectory->getProblem()->getModel()->getInitialState());
-          success = mpTrajectory->process(true);
-        }
-
-      std::vector< Refresh *>::const_iterator it = mRefreshMethods.begin();
-      std::vector< Refresh *>::const_iterator end = mRefreshMethods.end();
+      // Refresh all values needed to calculate the objective function.
+      it = mRefreshMethods.begin();
+      end = mRefreshMethods.end();
       for (; it != end; ++it)
         (**it)();
 
