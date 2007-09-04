@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionAnalyzer.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/08/22 23:59:00 $
+//   $Author: shoops $
+//   $Date: 2007/09/04 17:29:21 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -279,7 +279,7 @@ CFunctionAnalyzer::Result::Result()
     mIrreversibleKineticsWithProducts(false)
 {};
 
-bool CFunctionAnalyzer::Result::writeResult(std::ostream & os, bool rt, bool longText) const
+bool CFunctionAnalyzer::Result::writeResult(std::ostream & os, bool rt, bool /* longText */) const
   {
     bool ret = false;
 
@@ -638,7 +638,7 @@ void CFunctionAnalyzer::checkKineticFunction(const CFunction * f, const CReactio
 }
 
 //static
-std::string CFunctionAnalyzer::write(int level, bool rt, const std::string & text, const std::string & longText)
+std::string CFunctionAnalyzer::write(int /* level */, bool rt, const std::string & text, const std::string & longText)
 {
   std::string ret;
   if (rt) ret += "<p>";
