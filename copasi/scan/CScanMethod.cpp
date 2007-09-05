@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanMethod.cpp,v $
-//   $Revision: 1.51 $
+//   $Revision: 1.52 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/24 13:25:50 $
+//   $Date: 2007/09/05 13:40:36 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -116,6 +116,10 @@ bool CScanItem::isValidScanItem()
   return true;
 }
 
+const CCopasiObject * CScanItem::getObject() const
+  {
+    return mpValue;
+  }
 //*******
 
 CScanItemRepeat::CScanItemRepeat(const CCopasiParameterGroup* si)
@@ -359,8 +363,9 @@ bool CScanMethod::init()
   if (mpTask == NULL) return false;
 
   cleanupScanItems();
-
+  mInitialRefreshes.clear();
   mTotalSteps = 1;
+  std::set< const CCopasiObject * > ObjectSet;
 
   unsigned C_INT32 i, imax = mpProblem->getNumberOfScanItems();
   for (i = 0; i < imax; ++i)
@@ -369,7 +374,11 @@ bool CScanMethod::init()
                            mpRandomGenerator,
                            (CScanTask*)(getObjectParent())));
       mTotalSteps *= mScanItems[i]->getNumSteps();
+      ObjectSet.insert(mScanItems[i]->getObject());
     }
+
+  ObjectSet.erase(NULL);
+  mInitialRefreshes = mpProblem->getModel()->buildInitialRefreshSequence(ObjectSet);
 
   //set mLastNestingItem
   mLastNestingItem = -1;
@@ -448,6 +457,12 @@ bool CScanMethod::loop(unsigned C_INT32 level)
 bool CScanMethod::calculate()
 {
   //std::cout << "*********** Scan: calculate... ************" << std::endl;
+  std::vector< Refresh * >::iterator it = mInitialRefreshes.begin();
+  std::vector< Refresh * >::iterator end = mInitialRefreshes.end();
+
+  while (it != end)
+    (**it++)();
+
   return mpTask->processCallback();
 }
 

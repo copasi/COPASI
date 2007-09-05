@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanMethod.h,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.34 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/07/09 16:15:23 $
+//   $Author: shoops $
+//   $Date: 2007/09/05 13:40:36 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -72,6 +72,12 @@ class CScanItem
      * It returns false for an invalid ScanItem and generates a CCopasiMessage
      */
     virtual bool isValidScanItem();
+
+    /**
+     * Retrieve the object which is scanned by the item.
+     * @return const CCopasiObject * object
+     */
+    const CCopasiObject * getObject() const;
 
   protected:
 
@@ -163,6 +169,8 @@ class CScanMethod : public CCopasiMethod
     CRandom * mpRandomGenerator;
 
     std::vector<CScanItem*> mScanItems;
+
+    std::vector< Refresh * > mInitialRefreshes;
 
     unsigned C_INT32 mTotalSteps;
 
