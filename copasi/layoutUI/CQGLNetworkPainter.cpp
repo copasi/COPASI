@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.55 $
+//   $Revision: 1.56 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/09/03 11:12:08 $
+//   $Date: 2007/09/06 14:19:07 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -268,18 +268,22 @@ void CQGLNetworkPainter::drawGraph()
   if ((pParentLayoutWindow != NULL) &&
       (pParentLayoutWindow->getMappingMode() == CVisParameters::COLOR_MODE)) // draw color legend
     {
-      C_INT32 sx = 20; //start at position (sx,sy)
+
+      C_INT32 sx = 40; //start at position (sx,sy)
       C_INT32 sy = 20;
-      C_INT32 w = 180; // size of legend rectangle w x h
+      C_INT32 w = 120; // size of legend rectangle w x h
       C_INT32 h = 15;
-      C_FLOAT64 dHue = 360.0 / w;
+      C_FLOAT64 dHue = 240.0 / w;
       C_FLOAT64 hue = 0.0;
+
+      //QGLWidget::renderText (10, sy+15, "MIN");
+      //QGLWidget::renderText (165,sy+15, "MAX");
 
       C_INT16 i;
       QColor col = QColor();
-      for (i = 0;i < w;i++)
+      for (i = sx;i <= (w + sx);i++)
         {
-          col.setHsv((int)hue, 255, 255);
+          col.setHsv((int)(240 - hue), 255, 255);
           //std::cout << "------------" << std::endl;
           //std::cout << "color hsv value: "  << (int) hue << std::endl;
           //std::cout << "r: " << col.red() << "   g: " << col.green() << "   b: " << col.blue() << std::endl;
@@ -416,7 +420,9 @@ void CQGLNetworkPainter::drawNode(CGraphNode &n) // draw node as filled circle
   else
     {// color mapping
       QColor col = QColor();
-      col.setHsv((int)n.getSize(), 255, 255);
+      //std::cout << "scaled color value: " <<  (int)n.getSize()<< std::endl;
+      C_INT32 colVal = (int)(240 - n.getSize());
+      col.setHsv(colVal, 255, 255);
       //glColor3f(col.red(), col.green(), col.blue());
       QGLWidget::qglColor(col);
       // std::cout << "scaled color value: " <<  (int)n.getSize()<< std::endl;
@@ -711,6 +717,34 @@ void CQGLNetworkPainter::rescaleDataSetsWithNewMinMax(C_FLOAT64 oldMin, C_FLOAT6
 
 // INFO: to rescale an inteval [a..b] to another interval [x..y] the following formula is used: (val_old in [a..b]
 // val_new = x + ((val_old - a) * (y - x) / (b - a))
+
+void CQGLNetworkPainter::changeMinMaxNodeSize(C_FLOAT64 minNodeSize, C_FLOAT64 maxNodeSize, C_INT16 scalingMode)
+{
+  CDataEntity dataSet;
+  C_INT32 s; // step number
+  C_FLOAT64 val, val_new;
+  for (s = 0; s < dataSets.size(); s++)
+    {
+      std::map<C_INT32, CDataEntity>::iterator iter = dataSets.find(s);
+      if (iter != dataSets.end())
+        {
+          dataSet = (*iter).second;
+          C_INT32 i;
+          for (i = 0; i < viewerNodes.size();i++) // iterate over string values (node keys)
+            {
+              // get old value
+              val = dataSet.getValueForSpecies(viewerNodes[i]);
+              std::cout << "old value: " << val << std::endl;
+              val_new = 1;
+              dataSets.erase(s);
+              dataSets.insert (std::pair<C_INT32, CDataEntity>
+                               (s, dataSet));
+              // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+            }
+        }
+    }
+}
+
 void CQGLNetworkPainter::rescaleDataSets(C_INT16 scaleMode)
 {
   CDataEntity dataSet;
@@ -732,7 +766,7 @@ void CQGLNetworkPainter::rescaleDataSets(C_INT16 scaleMode)
               if (pParentLayoutWindow->getMappingMode() == CVisParameters::COLOR_MODE)
                 {
                   minNodeSize = 0.0;
-                  maxNodeSize = 359.0;
+                  maxNodeSize = 240.0; // red to blue in HSV color value (hue) circle
                 }
               else
                 {
@@ -744,7 +778,7 @@ void CQGLNetworkPainter::rescaleDataSets(C_INT16 scaleMode)
             {
               // get old value
               val = dataSet.getValueForSpecies(viewerNodes[i]);
-              //std::cout << "old value: " << val << std::endl;
+              std::cout << "old value: " << val << std::endl;
               if ((scaleMode == CVisParameters::INDIVIDUAL_SCALING) &&
                   (pParentLayoutWindow != NULL))
                 {// global mode -> individual mode
@@ -757,7 +791,7 @@ void CQGLNetworkPainter::rescaleDataSets(C_INT16 scaleMode)
                              (maxNodeSize - minNodeSize) /
                              (pSummaryInfo->getMaxForSpecies(viewerNodes[i]) - pSummaryInfo->getMinForSpecies(viewerNodes[i])))
                             + minNodeSize;
-                  //std::cout << "new value: " << val_new << std::endl;
+                  std::cout << "new value: " << val_new << std::endl;
                 }
               else
                 {// individual mode -> global mode
