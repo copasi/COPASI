@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.35 $
+//   $Revision: 1.36 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/09/03 11:11:49 $
+//   $Date: 2007/09/06 14:19:31 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -410,14 +410,16 @@ void CQLayoutMainWindow::setGlobalScaling()
 void CQLayoutMainWindow::setSizeMode()
 {
   pVisParameters->mappingMode = CVisParameters::SIZE_DIAMETER_MODE;
-  glPainter->rescaleDataSetsWithNewMinMax(0.0, 359.0, getMinNodeSize(), getMaxNodeSize(), pVisParameters->scalingMode);
+  //glPainter->changeMinMaxNodeSize(getMinNodeSize(), getMaxNodeSize(),pVisParameters->scalingMode);
+  glPainter->rescaleDataSetsWithNewMinMax(0.0, 240.0, getMinNodeSize(), getMaxNodeSize(), pVisParameters->scalingMode); // only [0.240] of possible HSV values (not fill circle in order to get good color range)
   showStep(this->timeSlider->value());
 }
 
 void CQLayoutMainWindow::setColorMode()
 {
   pVisParameters->mappingMode = CVisParameters::COLOR_MODE;
-  glPainter->rescaleDataSetsWithNewMinMax(getMinNodeSize(), getMaxNodeSize(), 0.0, 359.0, pVisParameters->scalingMode); // rescaling, because min and max node size changed (interpretation as color value takes place elsewhere)
+  //glPainter->changeMinMaxNodeSize(pVisParameters->scalingMode); // rescaling, because min and max node size changed
+  glPainter->rescaleDataSetsWithNewMinMax(getMinNodeSize(), getMaxNodeSize(), 0.0, 240.0, pVisParameters->scalingMode); // rescaling, because min and max node size changed (interpretation as color value takes place elsewhere),only [0.240] of possible HSV values (not fill circle in order to get good color range)
   showStep(this->timeSlider->value());
 }
 

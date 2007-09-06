@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.35 $
+//   $Revision: 1.36 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/09/03 11:12:03 $
+//   $Date: 2007/09/06 14:18:13 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -78,6 +78,7 @@ class CQGLNetworkPainter : public QGLWidget
     void runAnimation();
     void showStep(C_INT32 i);
 
+    void changeMinMaxNodeSize(C_FLOAT64 minNodeSize, C_FLOAT64 maxNodeSize, C_INT16 scalingMode);
     void rescaleDataSets(C_INT16 scaleMode);
     void rescaleDataSetsWithNewMinMax(C_FLOAT64 oldMin, C_FLOAT64 oldMax, C_FLOAT64 newMin, C_FLOAT64 newMax, C_INT16 scaleMode);
 
