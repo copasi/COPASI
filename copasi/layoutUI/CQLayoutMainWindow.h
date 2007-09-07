@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.h,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/08/31 10:56:28 $
+//   $Date: 2007/09/07 19:38:26 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -82,6 +82,8 @@ class CQLayoutMainWindow : public QMainWindow
     void mapLabelsToCircles();
     void mapLabelsToRectangles();
 
+    void changeMinMaxNodeSizes();
+
     void showStep(double i);
     void startAnimation();
     void stopAnimation();
@@ -107,6 +109,8 @@ class CQLayoutMainWindow : public QMainWindow
 
     QAction *rectangularShape;
     QAction *circularShape;
+
+    QAction *miMaNodeSizes;
 
     //CQParameterWindow *paraWin;
     ParaPanel *paraPanel;
