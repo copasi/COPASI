@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.36 $
+//   $Revision: 1.37 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/09/06 14:18:13 $
+//   $Date: 2007/09/07 16:10:37 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,6 +22,8 @@
 #include <qevent.h>
 #include <qcolor.h>
 #include <qmainwindow.h>
+#include <qfont.h>
+#include <qfontmetrics.h>
 
 #include <vector>
 #include <string>
@@ -78,7 +80,6 @@ class CQGLNetworkPainter : public QGLWidget
     void runAnimation();
     void showStep(C_INT32 i);
 
-    void changeMinMaxNodeSize(C_FLOAT64 minNodeSize, C_FLOAT64 maxNodeSize, C_INT16 scalingMode);
     void rescaleDataSets(C_INT16 scaleMode);
     void rescaleDataSetsWithNewMinMax(C_FLOAT64 oldMin, C_FLOAT64 oldMax, C_FLOAT64 newMin, C_FLOAT64 newMax, C_INT16 scaleMode);
 
@@ -106,6 +107,8 @@ class CQGLNetworkPainter : public QGLWidget
     std::string mFontname;
     int mFontsize;
     double mFontsizeDouble;
+    QFont mf;
+    //QFontMetrics mfm;
 
     std::map<C_INT32, CDataEntity> dataSets;
 

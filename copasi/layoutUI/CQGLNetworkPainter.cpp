@@ -1,18 +1,16 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.56 $
+//   $Revision: 1.57 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/09/06 14:19:07 $
+//   $Date: 2007/09/07 16:10:18 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include <qfont.h>
 #include <qstring.h>
-#include <qfontmetrics.h>
 #include <qbitmap.h>
 #include <qpainter.h>
 #include <qrect.h>
@@ -276,8 +274,8 @@ void CQGLNetworkPainter::drawGraph()
       C_FLOAT64 dHue = 240.0 / w;
       C_FLOAT64 hue = 0.0;
 
-      //QGLWidget::renderText (10, sy+15, "MIN");
-      //QGLWidget::renderText (165,sy+15, "MAX");
+      QGLWidget::renderText (10, sy + 15, "MIN", mf, graphObjList);
+      QGLWidget::renderText (165, sy + 15, "MAX", mf, graphObjList);
 
       C_INT16 i;
       QColor col = QColor();
@@ -558,17 +556,16 @@ void CQGLNetworkPainter::drawLabel(CLTextGlyph l)
 
 void CQGLNetworkPainter::drawStringAt(std::string s, C_FLOAT64 x, C_FLOAT64 y, C_FLOAT64 w, C_FLOAT64 h, QColor bgCol)
 {
+
   glColor3f(0.0f, 0.0f, 0.0f); // black
   //this->drawText((int)x,(int)y,QString(s));
 
-  QFont f(FROM_UTF8(this->mFontname));
-  f.setPointSize(this->mFontsize);
-  QFontMetrics fm(f);
   QString str(FROM_UTF8(s));
   //QRect c((int)x,(int)y,(int)w,(int)h);
 
   //QRect bbox = fm.boundingRect((int)x,(int)y,(int)w,(int)h,Qt::AlignCenter,s);
-  QRect bbox = fm.boundingRect(FROM_UTF8(s)); // bounding rectangle for text in certain size
+  QFontMetrics mfm = QFontMetrics(mf);
+  QRect bbox = mfm.boundingRect(FROM_UTF8(s)); // bounding rectangle for text in certain size
 
   int w2 = round2powN(bbox.width()); // look for smallest w2 = 2^^k with n > w2
   int h2 = round2powN(bbox.height() + 2); // look for smallest h2 = 2^^k with n > h2
@@ -577,9 +574,10 @@ void CQGLNetworkPainter::drawStringAt(std::string s, C_FLOAT64 x, C_FLOAT64 y, C
   while (h2 > h)
     {// reduce fontsize in order to avoid problems with size of texture image
       this->mFontsize--;
-      f.setPointSize(this->mFontsize);
-      fm = QFontMetrics(f);
-      bbox = fm.boundingRect(FROM_UTF8(s));
+      mf.setPointSize(this->mFontsize);
+      const QFont& mfRef = mf;
+      QFontMetrics mfm = QFontMetrics(mfRef);
+      bbox = mfm.boundingRect(FROM_UTF8(s));
       w2 = round2powN(bbox.width());
       h2 = round2powN(bbox.height() + 2);
     }
@@ -600,7 +598,7 @@ void CQGLNetworkPainter::drawStringAt(std::string s, C_FLOAT64 x, C_FLOAT64 y, C
   pm.fill(bgCol);
   QPainter painter2(&pm);
   painter2.setPen(Qt::black);
-  painter2.setFont(f);
+  painter2.setFont(mf);
   painter2.drawText(c, Qt::AlignCenter, FROM_UTF8(s));
   painter2.end();
 
@@ -678,7 +676,7 @@ void CQGLNetworkPainter::rescaleDataSetsWithNewMinMax(C_FLOAT64 oldMin, C_FLOAT6
   C_FLOAT64 val, val_new;
   for (s = 0; s < dataSets.size(); s++) // for all steps
     {
-      //std:: cout << "step: " << s << std::endl;
+      //std:: cout << "rescale step: " << s << std::endl;
       std::map<C_INT32, CDataEntity>::iterator iter = dataSets.find(s);
       if (iter != dataSets.end())
         {
@@ -704,6 +702,10 @@ void CQGLNetworkPainter::rescaleDataSetsWithNewMinMax(C_FLOAT64 oldMin, C_FLOAT6
                 }
               C_FLOAT64 val_orig = ((val - oldMin) / (oldMax - oldMin) * (b - a)) + a;
               val_new = newMin + ((val_orig - a) / (b - a) * (newMax - newMin));
+              //std::cout << "----------- " << std::endl;
+
+              //std::cout << "val_old: " << viewerNodes[i] << "  " << val << std::endl;
+
               //std::cout << "val_orig: " << viewerNodes[i] << "  " << val_orig << std::endl;
               //std::cout << "val_new: " << viewerNodes[i] << "  " << val_new << std::endl;
               dataSet.putValueForSpecies(viewerNodes[i], val_new);
@@ -717,33 +719,6 @@ void CQGLNetworkPainter::rescaleDataSetsWithNewMinMax(C_FLOAT64 oldMin, C_FLOAT6
 
 // INFO: to rescale an inteval [a..b] to another interval [x..y] the following formula is used: (val_old in [a..b]
 // val_new = x + ((val_old - a) * (y - x) / (b - a))
-
-void CQGLNetworkPainter::changeMinMaxNodeSize(C_FLOAT64 minNodeSize, C_FLOAT64 maxNodeSize, C_INT16 scalingMode)
-{
-  CDataEntity dataSet;
-  C_INT32 s; // step number
-  C_FLOAT64 val, val_new;
-  for (s = 0; s < dataSets.size(); s++)
-    {
-      std::map<C_INT32, CDataEntity>::iterator iter = dataSets.find(s);
-      if (iter != dataSets.end())
-        {
-          dataSet = (*iter).second;
-          C_INT32 i;
-          for (i = 0; i < viewerNodes.size();i++) // iterate over string values (node keys)
-            {
-              // get old value
-              val = dataSet.getValueForSpecies(viewerNodes[i]);
-              std::cout << "old value: " << val << std::endl;
-              val_new = 1;
-              dataSets.erase(s);
-              dataSets.insert (std::pair<C_INT32, CDataEntity>
-                               (s, dataSet));
-              // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-            }
-        }
-    }
-}
 
 void CQGLNetworkPainter::rescaleDataSets(C_INT16 scaleMode)
 {
@@ -778,7 +753,7 @@ void CQGLNetworkPainter::rescaleDataSets(C_INT16 scaleMode)
             {
               // get old value
               val = dataSet.getValueForSpecies(viewerNodes[i]);
-              std::cout << "old value: " << val << std::endl;
+              //std::cout << "old value: " << val << std::endl;
               if ((scaleMode == CVisParameters::INDIVIDUAL_SCALING) &&
                   (pParentLayoutWindow != NULL))
                 {// global mode -> individual mode
@@ -821,6 +796,7 @@ void CQGLNetworkPainter::rescaleDataSets(C_INT16 scaleMode)
 
 bool CQGLNetworkPainter::createDataSets()
 {
+  int counter = 0;
   bool loadDataSuccessful = false;
   if (CCopasiDataModel::Global != NULL)
     {
@@ -830,6 +806,7 @@ bool CQGLNetworkPainter::createDataSets()
         {
           if (timeSer.getNumVariables() > 0)
             {
+              dataSets.clear(); // remove old data sets
               pSummaryInfo = new CSimSummaryInfo(timeSer.getNumSteps(), timeSer.getNumVariables(),
                                                  timeSer.getConcentrationData(timeSer.getNumSteps() - 1, 0) - timeSer.getConcentrationData(0, 0));
               //C_FLOAT64 tt = timeSer.getConcentrationData(timeSer.getNumSteps() - 1, 0) - timeSer.getConcentrationData(0, 0);
@@ -856,7 +833,7 @@ bool CQGLNetworkPainter::createDataSets()
                   if (iter != keyMap.end())
                     {// if there is a node (key)
                       ndKey = (keyMap.find(objKey))->second;
-                      for (int t = 0;t < timeSer.getNumSteps();t++) // iterate on time steps t=0..n
+                      for (int t = 0;t <= timeSer.getNumSteps();t++) // iterate on time steps t=0..n
                         {
                           val = timeSer.getConcentrationData(t, i);
                           if (val > maxR)
@@ -913,6 +890,7 @@ bool CQGLNetworkPainter::createDataSets()
                                        * (val - minR));
                           // put scaled value in data entity (collection of scaled values for one step)
                           dataSet.putValueForSpecies(ndKey, scaledVal);
+                          dataSet.putOrigValueForSpecies(ndKey, val);
                           //std::cout << timeSer.getTitle(i)  << " ndKey: " << ndKey << "  " << scaledVal << std::endl;
                           //std::cout << timeSer.getTitle(i) << ": " << val << " mapped  to  " << scaledVal << std::endl;
                         }
@@ -922,6 +900,7 @@ bool CQGLNetworkPainter::createDataSets()
                   //dataSets.push_back(dataSet);
                   dataSets.insert(std::pair<C_INT32, CDataEntity>
                                   (t, dataSet));
+                  counter++;
                   //std::cout << "no of inserted elements: " << dataSets.size() << std::endl;
                   //std::cout << "t: " << t << "  time: " << dataSet.getTime() << std::endl;
                 }
@@ -934,6 +913,7 @@ bool CQGLNetworkPainter::createDataSets()
         std::cout << "no simulation steps found: you have to create a time course first" << std::endl;
     }
   //std::cout << *pSummaryInfo << std::endl;
+  //std::cout << "number of data sets created: " << dataSets.size() << std::endl;
   return loadDataSuccessful;
 }
 
@@ -1008,6 +988,7 @@ void CQGLNetworkPainter::showStep(C_INT32 i)
     this->mLabelShape = CIRCLE;
   if ((0 <= i) && (i < dataSets.size()))
     {
+      //std::cout << "step: " << i << std::endl;
       //CDataEntity *dataSet = &(dataSets[i]);
       std::map<C_INT32, CDataEntity>::iterator iter = dataSets.find(i);
       if (iter != dataSets.end())
@@ -1015,21 +996,26 @@ void CQGLNetworkPainter::showStep(C_INT32 i)
           CDataEntity dataSet = (*iter).second;
           for (i = 0; i < viewerNodes.size();i++)
             {
-              if ((pParentLayoutWindow != NULL) &&
-                  (pParentLayoutWindow->getMappingMode() != CVisParameters::COLOR_MODE))
-                {// no color mode
-                  C_FLOAT64 val = dataSet.getValueForSpecies(viewerNodes[i]);
-                  //std::cout << "show " << viewerNodes[i] << "  " << dataSet->getValueForSpecies(viewerNodes[i]) << std::endl;
-                  if (val != -DBL_MAX)
-                    setNodeSize(viewerNodes[i], val);
-                }
-              else
+              if (pParentLayoutWindow != NULL)
                 {
-                  setNodeSize(viewerNodes[i], DEFAULT_NODE_SIZE);
                   C_FLOAT64 val = dataSet.getValueForSpecies(viewerNodes[i]);
-                  //std::cout << "node size value: " << val << std::endl;
-                  if (val != -DBL_MAX)
-                    setNodeSizeWithoutChangingCurves(viewerNodes[i], val);
+                  if (pParentLayoutWindow->getMappingMode() != CVisParameters::COLOR_MODE)
+                    {// no color mode
+
+                      //std::cout << "show " << viewerNodes[i] << "  " << dataSet->getValueForSpecies(viewerNodes[i]) << std::endl;
+                      if (val != -DBL_MAX)
+                        setNodeSize(viewerNodes[i], val);
+                    }
+                  else // COLOR_MODE
+                    {
+                      setNodeSize(viewerNodes[i], DEFAULT_NODE_SIZE);
+                      //C_FLOAT64 val = dataSet.getValueForSpecies(viewerNodes[i]);
+                      //std::cout << "node size value: " << val << std::endl;
+                      if (val != -DBL_MAX)
+                        setNodeSizeWithoutChangingCurves(viewerNodes[i], val);
+                    }
+                  C_FLOAT64 v = dataSet.getOrigValueForSpecies(viewerNodes[i]);
+                  //std::cout << "orig value for: " << viewerNodes[i] << ": " << v << std::endl;
                 }
             }
         }
@@ -1359,6 +1345,12 @@ void CQGLNetworkPainter::initializeGraphPainter(QWidget *viewportWidget)
   mFontsize = 12;
   mFontsizeDouble = 12.0; // to avoid rounding errors due to zooming in and out
 
+  //mf(FROM_UTF8(this->mFontname));
+  mf = QFont(FROM_UTF8(mFontname));
+  mf.setPointSize(this->mFontsize);
+  const QFont& mfRef = mf;
+  QFontMetrics mfm = QFontMetrics(mfRef);
+
   // parent structure: glPainter -> viewport -> scrollView -> splitter -> mainWindow
   QWidget *ancestor = viewportWidget->parentWidget()->parentWidget()->parentWidget()->parentWidget();
   //CQLayoutMainWindow *mainWindow = (*CQLayoutMainWindow) ();
@@ -1395,7 +1387,7 @@ void CQGLNetworkPainter::initializeGL()
   //glDepthFunc(GL_LEQUAL);       // The Type Of Depth Test To Do
   //glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST); // Really Nice Perspective Calculation
 
-  graphObjList = glGenLists(1);
+  graphObjList = glGenLists(256);
   drawGraph(); // create display list with graph objects
   //glNewList(graphObjList, GL_COMPILE);
   //glEndList();
