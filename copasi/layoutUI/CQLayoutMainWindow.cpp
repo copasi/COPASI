@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.37 $
+//   $Revision: 1.38 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/09/07 16:10:51 $
+//   $Date: 2007/09/07 19:38:18 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,6 +18,7 @@
 #include "layout/CLBase.h"
 #include "CQLayoutMainWindow.h"
 #include "CQGLNetworkPainter.h"
+#include "NodeSizePanel.h"
 
 //#include "sbmlDocumentLoader.h"
 #include <string>
@@ -238,6 +239,13 @@ void CQLayoutMainWindow::createActions()
                                this);
   connect(circularShape, SIGNAL(activated()), this, SLOT(mapLabelsToCircles()));
   circularShape->setStatusTip("Show labels as circles");
+
+  miMaNodeSizes = new QAction ("minmax",
+                               "Set Min/Max Node Sizes",
+                               CTRL + Key_M,
+                               this);
+  connect(miMaNodeSizes, SIGNAL(activated()), this, SLOT(changeMinMaxNodeSizes()));
+  miMaNodeSizes->setStatusTip("Change Min/Max for Node Sizes within animation");
 }
 
 void CQLayoutMainWindow::createMenus()
@@ -258,6 +266,7 @@ void CQLayoutMainWindow::createMenus()
 
   optionsMenu = new QPopupMenu(this);
   optionsMenu->insertItem("Shape of Label", labelShapeMenu);
+  miMaNodeSizes->addTo(optionsMenu);
 
   menuBar()->insertItem("File", fileMenu);
   menuBar()->insertItem("Actions", actionsMenu);
@@ -320,6 +329,12 @@ void CQLayoutMainWindow::mapLabelsToRectangles()
     {
       glPainter->mapLabelsToRectangles();
     }
+}
+
+void CQLayoutMainWindow::changeMinMaxNodeSizes()
+{
+  std::cout << "change min/max values for node sizes" << std::endl;
+  NodeSizePanel *panel = new NodeSizePanel();
 }
 
 void CQLayoutMainWindow::loadData()
@@ -422,7 +437,7 @@ void CQLayoutMainWindow::setColorMode()
   //glPainter->changeMinMaxNodeSize(pVisParameters->scalingMode); // rescaling, because min and max node size changed
   glPainter->rescaleDataSetsWithNewMinMax(getMinNodeSize(), getMaxNodeSize(), 0.0, 240.0, pVisParameters->scalingMode); // rescaling, because min and max node size changed (interpretation as color value takes place elsewhere),only [0.240] of possible HSV values (not fill circle in order to get good color range)
   showStep(this->timeSlider->value());
-  std::cout << "showStep: " << this->timeSlider->value() << std::endl;
+  //std::cout << "showStep: " << this->timeSlider->value() << std::endl;
 }
 
 void CQLayoutMainWindow::setValueOnSlider(C_INT32 val)
