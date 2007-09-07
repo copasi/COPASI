@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.36 $
+//   $Revision: 1.37 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/09/06 14:19:31 $
+//   $Date: 2007/09/07 16:10:51 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -333,7 +333,7 @@ void CQLayoutMainWindow::loadData()
       paraPanel->enableStepNumberChoice();
       int maxVal = glPainter->getNumberOfSteps();
       //std::cout << "number of steps: " << maxVal << std::endl;
-      this->timeSlider->setRange(0, maxVal);
+      this->timeSlider->setRange(0, maxVal - 1);
       //pVisParameters->numberOfSteps = maxVal;
       glPainter->updateGL();
       if (this->glPainter->isCircleMode())
@@ -413,6 +413,7 @@ void CQLayoutMainWindow::setSizeMode()
   //glPainter->changeMinMaxNodeSize(getMinNodeSize(), getMaxNodeSize(),pVisParameters->scalingMode);
   glPainter->rescaleDataSetsWithNewMinMax(0.0, 240.0, getMinNodeSize(), getMaxNodeSize(), pVisParameters->scalingMode); // only [0.240] of possible HSV values (not fill circle in order to get good color range)
   showStep(this->timeSlider->value());
+  //std::cout << "show Step: " << this->timeSlider->value() << std::endl;
 }
 
 void CQLayoutMainWindow::setColorMode()
@@ -421,6 +422,7 @@ void CQLayoutMainWindow::setColorMode()
   //glPainter->changeMinMaxNodeSize(pVisParameters->scalingMode); // rescaling, because min and max node size changed
   glPainter->rescaleDataSetsWithNewMinMax(getMinNodeSize(), getMaxNodeSize(), 0.0, 240.0, pVisParameters->scalingMode); // rescaling, because min and max node size changed (interpretation as color value takes place elsewhere),only [0.240] of possible HSV values (not fill circle in order to get good color range)
   showStep(this->timeSlider->value());
+  std::cout << "showStep: " << this->timeSlider->value() << std::endl;
 }
 
 void CQLayoutMainWindow::setValueOnSlider(C_INT32 val)
