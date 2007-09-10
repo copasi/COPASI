@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.203 $
+//   $Revision: 1.204 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/09/04 14:59:11 $
+//   $Author: ssahle $
+//   $Date: 2007/09/10 21:27:53 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -57,7 +57,7 @@ extern const char * CopasiLicense;
 #include "./icons/filenew.xpm"
 #include "./icons/fileopen.xpm"
 #include "./icons/filesave.xpm"
-#include "./icons/fileprint.xpm"
+//#include "./icons/fileprint.xpm"
 #include "./icons/showSliders.xpm"
 #include "./icons/Copasi16-Alpha.xpm"
 #include "./icons/checkModel.xpm"
@@ -1272,7 +1272,7 @@ void CopasiUI3Window::checkPendingMessages()
           msg_pending = CCopasiMessage::getLastMessage();
         }
 
-      CQMessageBox::information(this, QString("SBML Import Information"), text,
+      CQMessageBox::information(this, QString("COPASI Message"), text,
                                 QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
     }
 }
