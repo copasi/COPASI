@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQCompartment.ui.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/08/22 19:52:19 $
+//   $Author: akoenig $
+//   $Date: 2007/09/10 10:30:43 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -352,7 +352,7 @@ void CQCompartment::load()
 
   mpLblRate->setText("Volume Change ("
                      + FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnitName())
-                     + "/" + CCopasiDataModel::Global->getModel()->getTimeUnitName() + ")");
+                     + "/" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getTimeUnitName()) + ")");
 
   // Name
   mpEditName->setText(FROM_UTF8(mpCompartment->getObjectName()));
