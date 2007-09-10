@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.94 $
+//   $Revision: 1.95 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/07/24 13:25:52 $
+//   $Author: ssahle $
+//   $Date: 2007/09/10 21:26:12 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -120,9 +120,9 @@ const MESSAGES Messages[] =
 
     // Configuration
     {MCConfiguration + 1, "Configuration (1): COPASI directory is not set. Some features might not be working correctly.\n"
-     "                   Please set the environment variable COPASIDIR or use the\n"
-     "                   command-line options -c COPASIDIR or --copasidir COPASIDIR\n"
-     "                   to point to the COPASI installation directory."},
+     "Please set the environment variable COPASIDIR or use the "
+     "command-line options \"-c COPASIDIR\" or \"--copasidir COPASIDIR\" "
+     "to point to the COPASI installation directory."},
     {MCConfiguration + 2, "Configuration (2): Configuration file '%s' found but is not readable."},
 
     // Optimization
