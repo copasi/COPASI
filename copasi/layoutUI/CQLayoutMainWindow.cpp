@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.38 $
+//   $Revision: 1.39 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/09/07 19:38:18 $
+//   $Date: 2007/09/10 10:48:00 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -155,6 +155,18 @@ C_FLOAT64 CQLayoutMainWindow::getMaxNodeSize()
       //         maxNodeSize = 359.0; // color mode means: max h-value < 360;
     }
   return maxNodeSize;
+}
+
+void CQLayoutMainWindow::setMinNodeSize(C_FLOAT64 minNdSize)
+{
+  if (pVisParameters != NULL)
+    pVisParameters->minNodeSize = minNdSize;
+}
+
+void CQLayoutMainWindow::setMaxNodeSize(C_FLOAT64 maxNdSize)
+{
+  if (pVisParameters != NULL)
+    pVisParameters->maxNodeSize = maxNdSize;
 }
 
 C_INT32 CQLayoutMainWindow::getStepsPerSecond()
@@ -333,8 +345,9 @@ void CQLayoutMainWindow::mapLabelsToRectangles()
 
 void CQLayoutMainWindow::changeMinMaxNodeSizes()
 {
-  std::cout << "change min/max values for node sizes" << std::endl;
-  NodeSizePanel *panel = new NodeSizePanel();
+  //std::cout << "change min/max values for node sizes" << std::endl;
+  NodeSizePanel *panel = new NodeSizePanel(this);
+  panel->exec();
 }
 
 void CQLayoutMainWindow::loadData()
@@ -443,6 +456,31 @@ void CQLayoutMainWindow::setColorMode()
 void CQLayoutMainWindow::setValueOnSlider(C_INT32 val)
 {
   timeSlider->setValue(val);
+}
+
+// set minimum possible node size for animation
+void CQLayoutMainWindow::setMinValue(C_INT32 minNdSize)
+{
+  glPainter->rescaleDataSetsWithNewMinMax(getMinNodeSize(), getMaxNodeSize(), minNdSize, getMaxNodeSize(), pVisParameters->scalingMode);
+  setMinNodeSize(minNdSize);
+  showStep(this->timeSlider->value());
+}
+
+// set maximum possible node size for animation
+void CQLayoutMainWindow::setMaxValue(C_INT32 maxNdSize)
+{
+  glPainter->rescaleDataSetsWithNewMinMax(getMinNodeSize(), getMaxNodeSize(), getMinNodeSize(), maxNdSize, pVisParameters->scalingMode);
+  setMaxNodeSize(maxNdSize);
+  showStep(this->timeSlider->value());
+}
+
+void CQLayoutMainWindow::setMinAndMaxValue(C_INT32 minNdSize, C_INT32 maxNdSize)
+{
+  //std::cout << "min old: " << getMinNodeSize() << "  max  old:  " << getMaxNodeSize() << "  min new: " << minNdSize << "  max new: " << maxNdSize << std::endl;
+  glPainter->rescaleDataSetsWithNewMinMax(getMinNodeSize(), getMaxNodeSize(), minNdSize, maxNdSize, pVisParameters->scalingMode);
+  setMinNodeSize(minNdSize);
+  setMaxNodeSize(maxNdSize);
+  showStep(this->timeSlider->value());
 }
 
 void CQLayoutMainWindow::closeApplication()

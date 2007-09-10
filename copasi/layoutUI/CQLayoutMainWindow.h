@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.h,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/09/07 19:38:26 $
+//   $Date: 2007/09/10 10:48:09 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -59,9 +59,15 @@ class CQLayoutMainWindow : public QMainWindow
     void setColorMode();
     void setValueOnSlider(C_INT32);
 
+    void setMinValue(C_INT32 minNdSize); // set minimum possible node size
+    void setMaxValue(C_INT32 maxNdSize); // set maximum possible node size
+    void setMinAndMaxValue(C_INT32 minNdSize, C_INT32 maxNdSize);
+
     CVisParameters *pVisParameters;
     bool getAnimationRunning();
     void setAnimationRunning(bool animationRunningP);
+    void setMinNodeSize(C_FLOAT64 minNdSize);
+    void setMaxNodeSize(C_FLOAT64 minNdSize);
     C_FLOAT64 getMinNodeSize();
     C_FLOAT64 getMaxNodeSize();
     C_INT32 getStepsPerSecond();
