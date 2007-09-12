@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMessage.cpp,v $
-//   $Revision: 1.35 $
+//   $Revision: 1.36 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/24 18:40:22 $
+//   $Date: 2007/09/12 16:49:35 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -103,6 +103,11 @@ void CCopasiMessage::clearDeque()
 {
   mMessageDeque.clear();
   return;
+}
+
+unsigned C_INT32 CCopasiMessage::size()
+{
+  return mMessageDeque.size();
 }
 
 CCopasiMessage::Type CCopasiMessage::getHighestSeverity()

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMessage.h,v $
-//   $Revision: 1.49 $
+//   $Revision: 1.50 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/05/15 12:37:05 $
+//   $Date: 2007/09/12 16:49:35 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -159,6 +159,12 @@ class CCopasiMessage
      * This function clears the message stack.
      */
     static void clearDeque();
+
+    /**
+     * Retreive the size of the deque
+     * @return unsigned C_INT32 size
+     */
+    static unsigned C_INT32 size();
 
     /**
      * Retrieve highest severity of the messages in the deque.

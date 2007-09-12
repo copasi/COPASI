@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.cpp,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/04 14:56:54 $
+//   $Date: 2007/09/12 16:49:35 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -170,6 +170,7 @@ void CExpression::writeMathML(std::ostream & out, bool fullExpand, unsigned C_IN
 // static
 CExpression * CExpression::createInitialExpression(const CExpression & expression)
 {
+  unsigned C_INT32 Size = CCopasiMessage::size();
   CExpression * pInitialExpression = new CExpression(expression, expression.getObjectParent());
 
   std::vector< CEvaluationNode * > * pNodeList =
@@ -197,6 +198,9 @@ CExpression * CExpression::createInitialExpression(const CExpression & expressio
       }
 
   pInitialExpression->updateTree();
+
+  while (CCopasiMessage::size() > Size)
+    CCopasiMessage::getLastMessage();
 
   return pInitialExpression;
 }
