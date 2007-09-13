@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.57 $
+//   $Revision: 1.58 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/09/07 16:10:18 $
+//   $Date: 2007/09/13 17:34:39 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,6 +35,7 @@
 #include "utilities/CCopasiVector.h"
 #include "layoutUI/CVisParameters.h"
 #include "layoutUI/CDataEntity.h"
+#include "layoutUI/BezierCurve.h"
 
 const C_FLOAT64 CQGLNetworkPainter::DEFAULT_NODE_SIZE = 20.0;
 
@@ -448,15 +449,46 @@ void CQGLNetworkPainter::drawEdge(CLCurve c)
       C_FLOAT64 x, y;
       //glColor3f(0.0f,0.0f,1.0f); // blue
 
-      glBegin(GL_LINE_STRIP);
-
-      x = startPoint.getX();
-      y = startPoint.getY();
-      glVertex2d(x, y);
-      x = endPoint.getX();
-      y = endPoint.getY();
-      glVertex2d(x, y);
-      glEnd();
+      if (seg.isBezier())
+        {
+          //std::cout << "Bezier curve found" << std::endl;
+          std::vector<CLPoint> pts = std::vector<CLPoint>();
+          pts.push_back(startPoint);
+          pts.push_back(seg.getBase1());
+          pts.push_back(seg.getBase2());
+          pts.push_back(endPoint);
+          BezierCurve *bezier = new BezierCurve();
+          std::vector<CLPoint> bezierPts = bezier->curvePts(pts);
+          //now paint bezier as line strip
+          glBegin(GL_LINE_STRIP);
+          x = startPoint.getX();
+          y = startPoint.getY();
+          glVertex2d(x, y);
+          C_INT32 i;
+          for (i = 0;i < bezierPts.size();i++)
+            {
+              //std::cout << "i: " << i << "   " << std::endl;
+              x = bezierPts[i].getX();
+              y = bezierPts[i].getY();
+              //std::cout << "     x: " << x << "   y: " << y << std::endl;
+              glVertex2d(x, y);
+            }
+          x = endPoint.getX();
+          y = endPoint.getY();
+          glVertex2d(x, y);
+          glEnd();
+        }
+      else
+        {// just draw a straight line
+          glBegin(GL_LINE_STRIP);
+          x = startPoint.getX();
+          y = startPoint.getY();
+          glVertex2d(x, y);
+          x = endPoint.getX();
+          y = endPoint.getY();
+          glVertex2d(x, y);
+          glEnd();
+        }
     }
 }
 
