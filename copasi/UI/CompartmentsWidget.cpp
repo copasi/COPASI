@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget.cpp,v $
-//   $Revision: 1.113 $
+//   $Revision: 1.114 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/08/22 19:52:19 $
+//   $Date: 2007/09/14 15:29:50 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -116,6 +116,10 @@ void CompartmentsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned 
 
   // Initial Volume
   table->setText(row, COL_IVOLUME, QString::number(pComp->getInitialValue()));
+  if (pComp->getStatus() == CModelEntity::ASSIGNMENT)
+    table->item(row, COL_IVOLUME)->setEnabled(false);
+  else
+    table->item(row, COL_IVOLUME)->setEnabled(true);
 
   // Volume
   table->setText(row, COL_VOLUME, QString::number(pComp->getValue()));
@@ -355,25 +359,10 @@ void CompartmentsWidget::valueChanged(unsigned C_INT32 row, unsigned C_INT32 col
   switch (col)
     {
     case COL_TYPE:
-      switch ((CModelEntity::Status) mItemToType[static_cast<QComboTableItem *>(table->item(row, COL_TYPE))->currentItem()])
-        {
-        case CModelEntity::ASSIGNMENT:
-          table->setText(row, COL_IVOLUME, "nan");
-          break;
-
-        default:
-          if (table->text(row, COL_IVOLUME) == "nan")
-            {
-              CCompartment* pComp =
-                dynamic_cast< CCompartment *>(GlobalKeys.get(mKeys[row]));
-
-              if (pComp == NULL || isnan(pComp->getInitialValue()))
-                table->setText(row, COL_IVOLUME, QString::number(1.0));
-              else
-                table->setText(row, COL_IVOLUME, QString::number(pComp->getInitialValue()));
-            }
-          break;
-        }
+      if (CModelEntity::ASSIGNMENT == (CModelEntity::Status) mItemToType[static_cast<QComboTableItem *>(table->item(row, COL_TYPE))->currentItem()])
+        table->item(row, COL_IVOLUME)->setEnabled(false);
+      else
+        table->item(row, COL_IVOLUME)->setEnabled(true);
       break;
 
     default:

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModelValuesWidget.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/08/21 17:31:46 $
+//   $Date: 2007/09/14 15:29:50 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,7 +33,8 @@
 #define COL_TYPE 2
 #define COL_INITIAL 3
 #define COL_TRANSIENT 4
-#define COL_EXPRESSION 5
+#define COL_RATE 5
+#define COL_EXPRESSION 6
 
 std::vector<const CCopasiObject*> ModelValuesWidget::getObjects() const
   {
@@ -50,9 +51,10 @@ std::vector<const CCopasiObject*> ModelValuesWidget::getObjects() const
 void ModelValuesWidget::init()
 {
   mOT = ListViews::MODELVALUE;
-  numCols = 6; // + 1;
+  numCols = 7; // + 1;
   table->setNumCols(numCols);
   table->setColumnReadOnly (COL_TRANSIENT, true);
+  table->setColumnReadOnly (COL_RATE, true);
   table->setColumnReadOnly (COL_EXPRESSION, true);
 
   //table->QTable::setNumRows(1);
@@ -65,6 +67,7 @@ void ModelValuesWidget::init()
   tableHeader->setLabel(COL_TYPE, "Type");
   tableHeader->setLabel(COL_INITIAL, "Initial Value");
   tableHeader->setLabel(COL_TRANSIENT, "Transient Value");
+  tableHeader->setLabel(COL_RATE, "Rate");
   tableHeader->setLabel(COL_EXPRESSION, "Expression");
 
   //for sbml ids
@@ -91,18 +94,15 @@ void ModelValuesWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C
   pComboBox->setCurrentItem(FROM_UTF8(CModelEntity::StatusName[pMV->getStatus()]));
   table->setItem(row, COL_TYPE, pComboBox);
 
+  table->setText(row, COL_INITIAL, QString::number(pMV->getInitialValue()));
   if (pMV->getStatus() == CModelEntity::ASSIGNMENT)
-    {
-      table->setText(row, COL_INITIAL, "nan");
-      table->item(row, COL_INITIAL)->setEnabled(false);
-    }
+    table->item(row, COL_INITIAL)->setEnabled(false);
   else
-    {
-      table->setText(row, COL_INITIAL, QString::number(pMV->getInitialValue()));
-      table->item(row, COL_INITIAL)->setEnabled(true);
-    }
+    table->item(row, COL_INITIAL)->setEnabled(true);
 
   table->setText(row, COL_TRANSIENT, QString::number(pMV->getValue()));
+
+  table->setText(row, COL_RATE, QString::number(pMV->getRate()));
 
 #ifdef XXXX
   std::string Expression = pMV->getExpression();
@@ -367,4 +367,21 @@ void ModelValuesWidget::deleteObjects(const std::vector<std::string> & keys)
     default:                     // No or Escape
       break;
     }
+}
+
+void ModelValuesWidget::valueChanged(unsigned C_INT32 row, unsigned C_INT32 col)
+{
+  switch (col)
+    {
+    case COL_TYPE:
+      if (CModelEntity::ASSIGNMENT == (CModelEntity::Status) mItemToType[static_cast<QComboTableItem *>(table->item(row, COL_TYPE))->currentItem()])
+        table->item(row, COL_INITIAL)->setEnabled(false);
+      else
+        table->item(row, COL_INITIAL)->setEnabled(true);
+      break;
+
+    default:
+      break;
+    }
+  return;
 }

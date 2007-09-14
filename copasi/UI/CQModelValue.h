@@ -1,20 +1,20 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQModelValue.h,v $
-   $Revision: 1.5 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/28 00:26:44 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQModelValue.h,v $
+//   $Revision: 1.6 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/09/14 15:29:50 $
+// End CVS Header
 
-// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQModelValue.ui'
  **
- ** Created: Fri Sep 1 14:45:19 2006
- **      by: The User Interface Compiler ($Id: CQModelValue.h,v 1.5 2006/10/28 00:26:44 shoops Exp $)
+ ** Created: Wed Sep 12 16:05:40 2007
+ **      by: The User Interface Compiler ($Id: CQModelValue.h,v 1.6 2007/09/14 15:29:50 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -25,16 +25,16 @@
 #include <qvariant.h>
 #include <qpixmap.h>
 #include <string>
-#include "UI/copasiWidget.h"
+#include "copasiWidget.h"
 
 class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
 class QSpacerItem;
+class QLineEdit;
 class QLabel;
 class CQExpressionWidget;
 class QToolButton;
-class QLineEdit;
 class QComboBox;
 class QFrame;
 class QPushButton;
@@ -50,27 +50,30 @@ class CQModelValue : public CopasiWidget
     CQModelValue(QWidget* parent = 0, const char* name = 0);
     ~CQModelValue();
 
+    QLineEdit* mpEditRate;
+    QLabel* mpLblRate;
+    QLabel* mpLblCurrentValue;
+    QLabel* mpLblExpression;
+    QLabel* mpLblType;
+    QLineEdit* mpEditName;
+    QLineEdit* mpEditInitialValue;
     QLabel* mpLblName;
+    QLabel* mpLblInitialValue;
+    QLabel* mpLblValue;
     CQExpressionWidget* mpEditExpression;
     QToolButton* mpBtnObject;
-    QLabel* mpLblInitialValue;
-    QLabel* mpLblType;
-    QLineEdit* mpEditInitialValue;
+    QLineEdit* mpEditCurrentValue;
     QComboBox* mpComboBoxType;
     QFrame* mpLine1;
-    QLineEdit* mpEditName;
-    QLabel* mpLblExpression;
-    QLabel* mpLblCurrentValue;
-    QLineEdit* mpEditCurrentValue;
     QFrame* mpLine2;
     QPushButton* mpBtnCommit;
     QPushButton* mpBtnRevert;
     QPushButton* mpBtnNew;
     QPushButton* mpBtnDelete;
 
-    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
     virtual bool leave();
     virtual bool enter(const std::string & key = "");
+    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
 
   protected:
     bool mChanged;
@@ -80,8 +83,8 @@ class CQModelValue : public CopasiWidget
 
     QVBoxLayout* CQModelValueLayout;
     QSpacerItem* mpSpacer;
-    QGridLayout* layout8;
-    QHBoxLayout* mpHBoxLayout;
+    QGridLayout* layout7;
+    QHBoxLayout* layout6;
     QVBoxLayout* mpVBoxLayout;
     QSpacerItem* mpSpacerObject;
     QHBoxLayout* mpBtnLayout;

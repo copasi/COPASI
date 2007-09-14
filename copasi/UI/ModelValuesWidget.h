@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModelValuesWidget.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/08/07 17:29:34 $
+//   $Date: 2007/09/14 15:29:50 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -65,6 +65,14 @@ class ModelValuesWidget : public CopasiTableWidget
      * the prefix that is used to construct new object names
      */
     virtual QString defaultObjectName() const;
+
+    /**
+     * This method provides a hook for derived classes to act on changes in
+     * the table.
+     * @param unsigned C_INT32 row
+     * @param unsigned C_INT32 col
+     */
+    virtual void valueChanged(unsigned C_INT32 row, unsigned C_INT32 col);
 
     // Attributes
   private:

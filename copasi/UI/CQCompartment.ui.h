@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQCompartment.ui.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: akoenig $
-//   $Date: 2007/09/10 10:30:43 $
+//   $Author: shoops $
+//   $Date: 2007/09/14 15:29:49 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -243,9 +243,6 @@ void CQCompartment::slotTypeChanged(int type)
       mpBtnObject->hide();
 
       mpEditInitialVolume->setEnabled(true);
-      mpEditInitialVolume->setText(QString::number(mpCompartment->getInitialValue(), 'g', 10));
-      if (mpEditInitialVolume->text() == "nan")
-        mpEditInitialVolume->setText(QString::number(1.0, 'g', 10));
       break;
 
     case CModelEntity::ASSIGNMENT:
@@ -254,7 +251,6 @@ void CQCompartment::slotTypeChanged(int type)
       mpBtnObject->show();
 
       mpEditInitialVolume->setEnabled(false);
-      mpEditInitialVolume->setText("nan");
 
       mpEditExpression->setExpression(mpCompartment->getExpression());
       break;
@@ -265,9 +261,6 @@ void CQCompartment::slotTypeChanged(int type)
       mpBtnObject->show();
 
       mpEditInitialVolume->setEnabled(true);
-      mpEditInitialVolume->setText(QString::number(mpCompartment->getInitialValue(), 'g', 10));
-      if (mpEditInitialVolume->text() == "nan")
-        mpEditInitialVolume->setText(QString::number(1.0, 'g', 10));
 
       mpEditExpression->setExpression(mpCompartment->getExpression());
       break;
@@ -350,7 +343,7 @@ void CQCompartment::load()
   mpLblVolume->setText("Volume ("
                        + FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnitName()) + ")");
 
-  mpLblRate->setText("Volume Change ("
+  mpLblRate->setText("Rate ("
                      + FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnitName())
                      + "/" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getTimeUnitName()) + ")");
 
@@ -362,6 +355,9 @@ void CQCompartment::load()
 
   // Type dependent display of values
   slotTypeChanged(mpComboBoxType->currentItem());
+
+  // Initial Volume
+  mpEditInitialVolume->setText(QString::number(mpCompartment->getInitialValue(), 'g', 10));
 
   // Transient Volume
   mpEditCurrentVolume->setText(QString::number(mpCompartment->getValue()));

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQModelValue.ui.h,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/08/21 16:18:51 $
+//   $Date: 2007/09/14 15:29:50 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -228,8 +228,6 @@ void CQModelValue::slotTypeChanged(int type)
       mpEditExpression->hide();
       mpBtnObject->hide();
       mpEditInitialValue->setEnabled(true);
-
-      mpEditInitialValue->setText(QString::number(mpModelValue->getInitialValue()));
       break;
 
     case CModelEntity::ASSIGNMENT:
@@ -238,7 +236,6 @@ void CQModelValue::slotTypeChanged(int type)
       mpBtnObject->show();
       mpEditInitialValue->setEnabled(false);
 
-      mpEditInitialValue->setText("nan");
       mpEditExpression->setExpression(mpModelValue->getExpression());
       break;
 
@@ -248,7 +245,6 @@ void CQModelValue::slotTypeChanged(int type)
       mpBtnObject->show();
       mpEditInitialValue->setEnabled(true);
 
-      mpEditInitialValue->setText(QString::number(mpModelValue->getInitialValue()));
       mpEditExpression->setExpression(mpModelValue->getExpression());
       break;
 
@@ -310,13 +306,23 @@ void CQModelValue::load()
 {
   if (mpModelValue == NULL) return;
 
+  // Name
   mpEditName->setText(FROM_UTF8(mpModelValue->getObjectName()));
 
+  // Type
   mpComboBoxType->setCurrentText(FROM_UTF8(CModelEntity::StatusName[mpModelValue->getStatus()]));
   slotTypeChanged(mpComboBoxType->currentItem());
 
+  // Initial Value
+  mpEditInitialValue->setText(QString::number(mpModelValue->getInitialValue()));
+
+  // Current Value
   mpEditCurrentValue->setText(QString::number(mpModelValue->getValue()));
 
+  // Rate
+  mpEditRate->setText(QString::number(mpModelValue->getRate()));
+
+  // Expression
   mpEditExpression->setExpression(mpModelValue->getExpression());
 
   mChanged = false;

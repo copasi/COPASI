@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.204 $
+//   $Revision: 1.205 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/09/10 21:27:53 $
+//   $Author: shoops $
+//   $Date: 2007/09/14 15:29:50 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1434,8 +1434,11 @@ void CopasiUI3Window::slotApplyInitialState()
 
   if (pModel != NULL)
     {
+      pModel->compileIfNecessary(NULL);
       pModel->applyInitialValues();
       pModel->updateNonSimulatedValues();
+
+      ListViews::notify(ListViews::STATE, ListViews::CHANGE, CCopasiDataModel::Global->getModel()->getKey());
     }
 }
 
@@ -1445,9 +1448,12 @@ void CopasiUI3Window::slotUpdateInitialState()
 
   if (pModel != NULL)
     {
+      pModel->compileIfNecessary(NULL);
       pModel->setInitialState(pModel->getState());
       pModel->applyInitialValues();
       pModel->updateNonSimulatedValues();
+
+      ListViews::notify(ListViews::STATE, ListViews::CHANGE, CCopasiDataModel::Global->getModel()->getKey());
     }
 }
 

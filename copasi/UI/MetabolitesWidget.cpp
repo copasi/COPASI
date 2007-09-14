@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget.cpp,v $
-//   $Revision: 1.141 $
+//   $Revision: 1.142 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/08/22 19:52:19 $
+//   $Date: 2007/09/14 15:29:49 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -147,6 +147,17 @@ void MetabolitesWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C
 
   // Initial Number
   table->setText(row, COL_INUMBER, QString::number(pMetab->getInitialValue()));
+
+  if (pMetab->getStatus() == CModelEntity::ASSIGNMENT)
+    {
+      table->item(row, COL_ICONCENTRATION)->setEnabled(false);
+      table->item(row, COL_INUMBER)->setEnabled(false);
+    }
+  else
+    {
+      table->item(row, COL_ICONCENTRATION)->setEnabled(true);
+      table->item(row, COL_INUMBER)->setEnabled(true);
+    }
 
   // Transient Concentration
   table->setText(row, COL_CONCENTRATION, QString::number(pMetab->getConcentration()));
@@ -505,41 +516,18 @@ void MetabolitesWidget::valueChanged(unsigned C_INT32 row, unsigned C_INT32 col)
   switch (col)
     {
     case COL_TYPE:
-      switch ((CModelEntity::Status) mItemToType[static_cast<QComboTableItem *>(table->item(row, COL_TYPE))->currentItem()])
+      if (CModelEntity::ASSIGNMENT == (CModelEntity::Status) mItemToType[static_cast<QComboTableItem *>(table->item(row, COL_TYPE))->currentItem()])
         {
-        case CModelEntity::ASSIGNMENT:
-          table->setText(row, COL_ICONCENTRATION, "nan");
-          table->setText(row, COL_INUMBER, "nan");
-          break;
-
-        default:
-          if (table->text(row, COL_ICONCENTRATION) == "nan")
-            {
-              CMetab * pMetab =
-                dynamic_cast< CMetab *>(GlobalKeys.get(mKeys[row]));
-
-              if (this->mFlagConc)
-                {
-                  if (pMetab == NULL || isnan(pMetab->getInitialConcentration()))
-                    table->setText(row, COL_ICONCENTRATION, QString::number(0.1));
-                  else
-                    table->setText(row, COL_ICONCENTRATION, QString::number(pMetab->getInitialConcentration()));
-
-                  initialConcentrationChanged(row);
-                }
-              else
-                {
-                  if (pMetab == NULL || isnan(pMetab->getInitialValue()))
-                    table->setText(row, COL_INUMBER, QString::number(100));
-                  else
-                    table->setText(row, COL_INUMBER, QString::number(pMetab->getInitialValue()));
-
-                  initialNumberChanged(row);
-                }
-            }
-          break;
+          table->item(row, COL_ICONCENTRATION)->setEnabled(false);
+          table->item(row, COL_INUMBER)->setEnabled(false);
+        }
+      else
+        {
+          table->item(row, COL_ICONCENTRATION)->setEnabled(true);
+          table->item(row, COL_INUMBER)->setEnabled(true);
         }
       break;
+
     case COL_ICONCENTRATION:
       initialConcentrationChanged(row);
       break;

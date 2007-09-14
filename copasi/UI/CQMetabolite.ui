@@ -1,10 +1,10 @@
 <!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMetabolite.ui,v $ </comment>
-<comment>   $Revision: 1.3 $ </comment>
+<comment>   $Revision: 1.4 $ </comment>
 <comment>   $Name:  $ </comment>
 <comment>   $Author: shoops $ </comment>
-<comment>   $Date: 2007/08/22 12:53:42 $ </comment>
+<comment>   $Date: 2007/09/14 15:29:50 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -21,8 +21,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>474</width>
-            <height>447</height>
+            <width>479</width>
+            <height>482</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -36,225 +36,78 @@
     <property name="caption">
         <string>Metabolite</string>
     </property>
-    <grid>
+    <vbox>
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QLineEdit" row="0" column="1" rowspan="1" colspan="2">
+        <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>mpEditName</cstring>
+                <cstring>layout8</cstring>
             </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>3</hsizetype>
-                    <vsizetype>0</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
-            </property>
-            <property name="frameShape">
-                <enum>LineEditPanel</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Sunken</enum>
-            </property>
-        </widget>
-        <widget class="QLabel" row="0" column="0">
-            <property name="name">
-                <cstring>mpLblName</cstring>
-            </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>5</hsizetype>
-                    <vsizetype>1</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
-            </property>
-            <property name="text">
-                <string>Metobolite Name</string>
-            </property>
-            <property name="alignment">
-                <set>AlignVCenter|AlignRight</set>
-            </property>
-        </widget>
-        <widget class="QComboBox" row="1" column="1" rowspan="1" colspan="2">
-            <property name="name">
-                <cstring>mpComboBoxCompartment</cstring>
-            </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>3</hsizetype>
-                    <vsizetype>0</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
-            </property>
-        </widget>
-        <widget class="QLabel" row="1" column="0">
-            <property name="name">
-                <cstring>mpLblCompartment</cstring>
-            </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>5</hsizetype>
-                    <vsizetype>1</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
-            </property>
-            <property name="text">
-                <string>Compartment</string>
-            </property>
-            <property name="alignment">
-                <set>AlignVCenter|AlignRight</set>
-            </property>
-        </widget>
-        <widget class="QLabel" row="2" column="0">
-            <property name="name">
-                <cstring>mpLblType</cstring>
-            </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>5</hsizetype>
-                    <vsizetype>1</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
-            </property>
-            <property name="text">
-                <string>Type</string>
-            </property>
-            <property name="alignment">
-                <set>AlignVCenter|AlignRight</set>
-            </property>
-        </widget>
-        <widget class="QComboBox" row="2" column="1">
-            <property name="name">
-                <cstring>mpComboBoxType</cstring>
-            </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>3</hsizetype>
-                    <vsizetype>0</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
-            </property>
-        </widget>
-        <widget class="QLayoutWidget" row="4" column="1">
-            <property name="name">
-                <cstring>mpLayoutInitialValues</cstring>
-            </property>
-            <hbox>
+            <grid>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QLabel">
+                <widget class="QLabel" row="6" column="3">
                     <property name="name">
-                        <cstring>mpLblInitialValue</cstring>
+                        <cstring>mpLblTransientValue</cstring>
                     </property>
                     <property name="sizePolicy">
                         <sizepolicy>
-                            <hsizetype>5</hsizetype>
+                            <hsizetype>3</hsizetype>
                             <vsizetype>5</vsizetype>
                             <horstretch>0</horstretch>
                             <verstretch>0</verstretch>
                         </sizepolicy>
                     </property>
                     <property name="text">
-                        <string>Initial Values</string>
+                        <string>Transient Values</string>
                     </property>
                     <property name="alignment">
                         <set>AlignVCenter|AlignLeft</set>
                     </property>
                 </widget>
-                <widget class="QComboBox">
+                <widget class="QLabel" row="0" column="0" rowspan="1" colspan="2">
                     <property name="name">
-                        <cstring>mpComboBoxInitialType</cstring>
+                        <cstring>mpLblName</cstring>
                     </property>
                     <property name="sizePolicy">
                         <sizepolicy>
-                            <hsizetype>3</hsizetype>
-                            <vsizetype>0</vsizetype>
+                            <hsizetype>5</hsizetype>
+                            <vsizetype>1</vsizetype>
                             <horstretch>0</horstretch>
                             <verstretch>0</verstretch>
                         </sizepolicy>
                     </property>
+                    <property name="text">
+                        <string>Metobolite Name</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignVCenter|AlignRight</set>
+                    </property>
                 </widget>
-            </hbox>
-        </widget>
-        <widget class="QLabel" row="4" column="2">
-            <property name="name">
-                <cstring>mpLblTransientValue</cstring>
-            </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>3</hsizetype>
-                    <vsizetype>5</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
-            </property>
-            <property name="text">
-                <string>Transient Values</string>
-            </property>
-            <property name="alignment">
-                <set>AlignVCenter|AlignLeft</set>
-            </property>
-        </widget>
-        <widget class="QLabel" row="5" column="0">
-            <property name="name">
-                <cstring>mpLblConcentration</cstring>
-            </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>5</hsizetype>
-                    <vsizetype>1</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
-            </property>
-            <property name="text">
-                <string>Concentration</string>
-            </property>
-            <property name="alignment">
-                <set>AlignVCenter|AlignRight</set>
-            </property>
-        </widget>
-        <widget class="QLineEdit" row="5" column="2">
-            <property name="name">
-                <cstring>mpEditCurrentConcentration</cstring>
-            </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>3</hsizetype>
-                    <vsizetype>5</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
-            </property>
-            <property name="frameShape">
-                <enum>LineEditPanel</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Sunken</enum>
-            </property>
-            <property name="readOnly">
-                <bool>true</bool>
-            </property>
-        </widget>
-        <widget class="QLayoutWidget" row="5" column="1">
-            <property name="name">
-                <cstring>mpLayoutInitialConcentration</cstring>
-            </property>
-            <vbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QLineEdit">
+                <widget class="QLabel" row="1" column="0" rowspan="2" colspan="2">
                     <property name="name">
-                        <cstring>mpEditInitialConcentration</cstring>
+                        <cstring>mpLblCompartment</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>5</hsizetype>
+                            <vsizetype>1</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>Compartment</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignVCenter|AlignRight</set>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="8" column="3">
+                    <property name="name">
+                        <cstring>mpEditRate</cstring>
                     </property>
                     <property name="sizePolicy">
                         <sizepolicy>
@@ -270,10 +123,13 @@
                     <property name="frameShadow">
                         <enum>Sunken</enum>
                     </property>
+                    <property name="readOnly">
+                        <bool>true</bool>
+                    </property>
                 </widget>
-                <widget class="QComboBox">
+                <widget class="QComboBox" row="1" column="2" rowspan="2" colspan="2">
                     <property name="name">
-                        <cstring>mpComboBoxInitialSelection</cstring>
+                        <cstring>mpComboBoxCompartment</cstring>
                     </property>
                     <property name="sizePolicy">
                         <sizepolicy>
@@ -284,161 +140,200 @@
                         </sizepolicy>
                     </property>
                 </widget>
-            </vbox>
-        </widget>
-        <widget class="QLabel" row="6" column="0">
-            <property name="name">
-                <cstring>mpLblNumber</cstring>
-            </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>5</hsizetype>
-                    <vsizetype>1</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
-            </property>
-            <property name="text">
-                <string>Particle Number</string>
-            </property>
-            <property name="alignment">
-                <set>AlignVCenter|AlignRight</set>
-            </property>
-        </widget>
-        <widget class="QLineEdit" row="6" column="1">
-            <property name="name">
-                <cstring>mpEditInitialNumber</cstring>
-            </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>3</hsizetype>
-                    <vsizetype>5</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
-            </property>
-            <property name="frameShape">
-                <enum>LineEditPanel</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Sunken</enum>
-            </property>
-        </widget>
-        <widget class="QLineEdit" row="6" column="2">
-            <property name="name">
-                <cstring>mpEditCurrentNumber</cstring>
-            </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>3</hsizetype>
-                    <vsizetype>5</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
-            </property>
-            <property name="frameShape">
-                <enum>LineEditPanel</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Sunken</enum>
-            </property>
-            <property name="readOnly">
-                <bool>true</bool>
-            </property>
-        </widget>
-        <widget class="QLineEdit" row="7" column="2">
-            <property name="name">
-                <cstring>mpEditTransitionTime</cstring>
-            </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>3</hsizetype>
-                    <vsizetype>5</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
-            </property>
-            <property name="frameShape">
-                <enum>LineEditPanel</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Sunken</enum>
-            </property>
-            <property name="readOnly">
-                <bool>true</bool>
-            </property>
-        </widget>
-        <widget class="QLabel" row="7" column="0">
-            <property name="name">
-                <cstring>mpLblTransitionTime</cstring>
-            </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>5</hsizetype>
-                    <vsizetype>1</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
-            </property>
-            <property name="text">
-                <string>Transition Time</string>
-            </property>
-            <property name="alignment">
-                <set>AlignVCenter|AlignRight</set>
-            </property>
-        </widget>
-        <widget class="QLineEdit" row="8" column="2">
-            <property name="name">
-                <cstring>mpEditConcentrationRate</cstring>
-            </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>3</hsizetype>
-                    <vsizetype>5</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
-            </property>
-            <property name="frameShape">
-                <enum>LineEditPanel</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Sunken</enum>
-            </property>
-            <property name="readOnly">
-                <bool>true</bool>
-            </property>
-        </widget>
-        <widget class="QLabel" row="8" column="0">
-            <property name="name">
-                <cstring>mpLblConcentrationRate</cstring>
-            </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>5</hsizetype>
-                    <vsizetype>1</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
-            </property>
-            <property name="text">
-                <string>Concentration Rate</string>
-            </property>
-            <property name="alignment">
-                <set>AlignVCenter|AlignRight</set>
-            </property>
-        </widget>
-        <widget class="QLayoutWidget" row="9" column="1" rowspan="1" colspan="2">
-            <property name="name">
-                <cstring>mpHBoxLayout</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="CQExpressionWidget">
+                <widget class="QLabel" row="2" column="1" rowspan="2" colspan="1">
                     <property name="name">
-                        <cstring>mpEditExpression</cstring>
+                        <cstring>mpLblType</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>5</hsizetype>
+                            <vsizetype>1</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>Type</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignVCenter|AlignRight</set>
+                    </property>
+                </widget>
+                <widget class="QLayoutWidget" row="6" column="2">
+                    <property name="name">
+                        <cstring>mpLayoutInitialValues</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>mpLblInitialValue</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>5</hsizetype>
+                                    <vsizetype>5</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="text">
+                                <string>Initial Values</string>
+                            </property>
+                            <property name="alignment">
+                                <set>AlignVCenter|AlignLeft</set>
+                            </property>
+                        </widget>
+                        <widget class="QComboBox">
+                            <property name="name">
+                                <cstring>mpComboBoxInitialType</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>3</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+                <widget class="QLabel" row="9" column="0" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>mpLblTransitionTime</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>5</hsizetype>
+                            <vsizetype>1</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>Transition Time</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignVCenter|AlignRight</set>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="10" column="0" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>mpLblExpression</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>5</hsizetype>
+                            <vsizetype>1</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>Expression</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignTop|AlignRight</set>
+                    </property>
+                </widget>
+                <widget class="QLayoutWidget" row="10" column="2" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>mpHBoxLayout</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="CQExpressionWidget">
+                            <property name="name">
+                                <cstring>mpEditExpression</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>5</hsizetype>
+                                    <vsizetype>5</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                        </widget>
+                        <widget class="QLayoutWidget">
+                            <property name="name">
+                                <cstring>mpVBoxLayout</cstring>
+                            </property>
+                            <vbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="QToolButton">
+                                    <property name="name">
+                                        <cstring>mpBtnObject</cstring>
+                                    </property>
+                                    <property name="maximumSize">
+                                        <size>
+                                            <width>20</width>
+                                            <height>20</height>
+                                        </size>
+                                    </property>
+                                    <property name="text">
+                                        <string></string>
+                                    </property>
+                                    <property name="iconSet">
+                                        <iconset>image0</iconset>
+                                    </property>
+                                    <property name="textLabel">
+                                        <string>select</string>
+                                    </property>
+                                </widget>
+                                <spacer>
+                                    <property name="name">
+                                        <cstring>mpSpacerObject</cstring>
+                                    </property>
+                                    <property name="orientation">
+                                        <enum>Vertical</enum>
+                                    </property>
+                                    <property name="sizeType">
+                                        <enum>Expanding</enum>
+                                    </property>
+                                    <property name="sizeHint">
+                                        <size>
+                                            <width>20</width>
+                                            <height>35</height>
+                                        </size>
+                                    </property>
+                                </spacer>
+                            </vbox>
+                        </widget>
+                    </hbox>
+                </widget>
+                <widget class="QListView" row="11" column="2" rowspan="1" colspan="2">
+                    <column>
+                        <property name="text">
+                            <string>Name</string>
+                        </property>
+                        <property name="clickable">
+                            <bool>true</bool>
+                        </property>
+                        <property name="resizable">
+                            <bool>true</bool>
+                        </property>
+                    </column>
+                    <column>
+                        <property name="text">
+                            <string>Equation</string>
+                        </property>
+                        <property name="clickable">
+                            <bool>true</bool>
+                        </property>
+                        <property name="resizable">
+                            <bool>true</bool>
+                        </property>
+                    </column>
+                    <property name="name">
+                        <cstring>mpReactionTable</cstring>
                     </property>
                     <property name="sizePolicy">
                         <sizepolicy>
@@ -449,129 +344,206 @@
                         </sizepolicy>
                     </property>
                 </widget>
-                <widget class="QLayoutWidget">
+                <widget class="Line" row="4" column="0" rowspan="1" colspan="4">
                     <property name="name">
-                        <cstring>mpVBoxLayout</cstring>
+                        <cstring>mpLine1</cstring>
+                    </property>
+                    <property name="frameShape">
+                        <enum>HLine</enum>
+                    </property>
+                    <property name="frameShadow">
+                        <enum>Sunken</enum>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="7" column="1">
+                    <property name="name">
+                        <cstring>mpLblValue</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>5</hsizetype>
+                            <vsizetype>1</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>Concentration</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignVCenter|AlignRight</set>
+                    </property>
+                </widget>
+                <widget class="QComboBox" row="3" column="2">
+                    <property name="name">
+                        <cstring>mpComboBoxType</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>3</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="0" column="2" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>mpEditName</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>3</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="frameShape">
+                        <enum>LineEditPanel</enum>
+                    </property>
+                    <property name="frameShadow">
+                        <enum>Sunken</enum>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="9" column="3">
+                    <property name="name">
+                        <cstring>mpEditTransitionTime</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>3</hsizetype>
+                            <vsizetype>5</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="frameShape">
+                        <enum>LineEditPanel</enum>
+                    </property>
+                    <property name="frameShadow">
+                        <enum>Sunken</enum>
+                    </property>
+                    <property name="readOnly">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="8" column="0" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>mpLblRate</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>5</hsizetype>
+                            <vsizetype>1</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>Rate</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignVCenter|AlignRight</set>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="11" column="0" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>mpLblReactions</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>5</hsizetype>
+                            <vsizetype>1</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>Involved in Reactions</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignTop|AlignRight</set>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="5" column="0" rowspan="2" colspan="2">
+                    <property name="name">
+                        <cstring>mpBtnToggle</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Particle Numbers</string>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="7" column="3">
+                    <property name="name">
+                        <cstring>mpEditCurrentValue</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>3</hsizetype>
+                            <vsizetype>5</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="frameShape">
+                        <enum>LineEditPanel</enum>
+                    </property>
+                    <property name="frameShadow">
+                        <enum>Sunken</enum>
+                    </property>
+                    <property name="readOnly">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <widget class="QLayoutWidget" row="7" column="2">
+                    <property name="name">
+                        <cstring>mpLayoutInitialConcentration</cstring>
                     </property>
                     <vbox>
                         <property name="name">
                             <cstring>unnamed</cstring>
                         </property>
-                        <widget class="QToolButton">
+                        <widget class="QLineEdit">
                             <property name="name">
-                                <cstring>mpBtnObject</cstring>
+                                <cstring>mpEditInitialValue</cstring>
                             </property>
-                            <property name="maximumSize">
-                                <size>
-                                    <width>20</width>
-                                    <height>20</height>
-                                </size>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>3</hsizetype>
+                                    <vsizetype>5</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
                             </property>
-                            <property name="text">
-                                <string></string>
+                            <property name="frameShape">
+                                <enum>LineEditPanel</enum>
                             </property>
-                            <property name="iconSet">
-                                <iconset>image0</iconset>
-                            </property>
-                            <property name="textLabel">
-                                <string>select</string>
+                            <property name="frameShadow">
+                                <enum>Sunken</enum>
                             </property>
                         </widget>
-                        <spacer>
+                        <widget class="QComboBox">
                             <property name="name">
-                                <cstring>mpSpacerObject</cstring>
+                                <cstring>mpComboBoxInitialSelection</cstring>
                             </property>
-                            <property name="orientation">
-                                <enum>Vertical</enum>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>3</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
                             </property>
-                            <property name="sizeType">
-                                <enum>Expanding</enum>
-                            </property>
-                            <property name="sizeHint">
-                                <size>
-                                    <width>20</width>
-                                    <height>35</height>
-                                </size>
-                            </property>
-                        </spacer>
+                        </widget>
                     </vbox>
                 </widget>
-            </hbox>
+            </grid>
         </widget>
-        <widget class="QLabel" row="9" column="0">
-            <property name="name">
-                <cstring>mpLblExpression</cstring>
-            </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>5</hsizetype>
-                    <vsizetype>1</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
-            </property>
-            <property name="text">
-                <string>Expression</string>
-            </property>
-            <property name="alignment">
-                <set>AlignTop|AlignRight</set>
-            </property>
-        </widget>
-        <widget class="QLabel" row="10" column="0">
-            <property name="name">
-                <cstring>mpLblReactions</cstring>
-            </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>5</hsizetype>
-                    <vsizetype>1</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
-            </property>
-            <property name="text">
-                <string>Involved in Reactions</string>
-            </property>
-            <property name="alignment">
-                <set>AlignTop|AlignRight</set>
-            </property>
-        </widget>
-        <widget class="QListView" row="10" column="1" rowspan="1" colspan="2">
-            <column>
-                <property name="text">
-                    <string>Name</string>
-                </property>
-                <property name="clickable">
-                    <bool>true</bool>
-                </property>
-                <property name="resizable">
-                    <bool>true</bool>
-                </property>
-            </column>
-            <column>
-                <property name="text">
-                    <string>Equation</string>
-                </property>
-                <property name="clickable">
-                    <bool>true</bool>
-                </property>
-                <property name="resizable">
-                    <bool>true</bool>
-                </property>
-            </column>
-            <property name="name">
-                <cstring>mpReactionTable</cstring>
-            </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>5</hsizetype>
-                    <vsizetype>5</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
-            </property>
-        </widget>
-        <spacer row="11" column="1">
+        <spacer>
             <property name="name">
                 <cstring>mpSpacer</cstring>
             </property>
@@ -588,7 +560,7 @@
                 </size>
             </property>
         </spacer>
-        <widget class="Line" row="12" column="0" rowspan="1" colspan="3">
+        <widget class="Line">
             <property name="name">
                 <cstring>mpLine2</cstring>
             </property>
@@ -602,7 +574,7 @@
                 <enum>Horizontal</enum>
             </property>
         </widget>
-        <widget class="QLayoutWidget" row="13" column="0" rowspan="1" colspan="3">
+        <widget class="QLayoutWidget">
             <property name="name">
                 <cstring>mpBtnLayout</cstring>
             </property>
@@ -644,21 +616,7 @@
                 </widget>
             </hbox>
         </widget>
-        <widget class="Line" row="3" column="0" rowspan="1" colspan="3">
-            <property name="name">
-                <cstring>mpLine1</cstring>
-            </property>
-            <property name="frameShape">
-                <enum>HLine</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Sunken</enum>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
-        </widget>
-    </grid>
+    </vbox>
 </widget>
 <customwidgets>
     <customwidget>
@@ -682,10 +640,10 @@
 </customwidgets>
 <images>
     <image name="image0">
-        <data format="PNG" length="705">89504e470d0a1a0a0000000d49484452000000100000001008060000001ff3ff610000028849444154789c95933168137114c67fffd2a181142228a4d0e10e1c1ac96003821e2e061d5a27535c529d3ac645141cac8388b8d4493208ad0e7a2ed638d8d4a1340525ff82b49782d87328bda3865c90923bb0981b0acfa1dad20a82d3c7e37df0defbf13ea4258816a425acea55feb7eed1be0603b4afc919390ed543a638cdaa74539ed84b5332d08b1cf52b69098eef903372e00306ac47553995b428bf9bc1d8b5586ed7289cc913f4ba5cbe58c45973d5bebfaeeb484bf675d559944dfb8bdcbaf94016efd565b6322df25d64f5d39c48a72347fd4a5ab23fb9baf64612df4cdeaccd3371214f94f2c867c7d59ffed14d1ddf3960602fccc8d28247cdaf31797d9c781095cf8eab7f32fac3c05eb0251599b47b1b4c5c2de16c38ea1093a62da7d2162c95e9f60fe3fe68901bb9051b034acd56a665f963886924285d29a09b9eb20c0bed6bac744af4ca2bcccf2e151f32711ff35d482762ccc198b19b0f508b4f67a5d66c70f77a09773b3898dc5b13fbed0c03e4d191c3f8855182641b2b3b0a2b159ccf5da2be657aec950a85749ec6b6a7f66ff4aa527ef29820ea23300226ef4d110c1e53d6e909a59b9e225ba0b2d1201385a897f7a7254a0594ae4eeed1ce8662dfb946c628903b9382a13175887e725da69e3fc34a66b086437adcd821d88ea9aecc0806785f2b0cc75d1a3b351834f136ca924b23eb6b53127e9c90f2a31bb01d121a219cbdad54c7d994872f6c0aa72d827e8fb1ec39ecd737c8c411b565b076f26834b9e428f34997e2a50299136d12e74bcaf11d545dd7b18e9b527e5f66fd6b1ff10eb03b4c14cec30eb00b4513da43098a2345dcd8c53ab9f71f96617190b2ef1d113d27b2d591fa6f950f73225b3fe58b5397bdfedfa9fc2b0bffabbf00dcb5e7b3f41cc6090000000049454e44ae426082</data>
+        <data format="PNG" length="697">89504e470d0a1a0a0000000d49484452000000100000001008060000001ff3ff610000028049444154388d9593316853611485bf5f1c5e2143bba590a1853798a290842e3e1c242068a483ad0e4db766cc54aa83d80e529c5a717a38d822625f5cda38d8d641cc60c9df529a17509b0409be0c9294509a2021cd50b80e55abad224e87cb39dc73eee55ea42e8816a42ee4748effadc9ea2c52973fe3d7b6e4b656443e5565d199957d77474eea94d405b7ec12312350064c28ecadca407714fba54d9028992f6bc42fc6f0c873fd6a0277db553ff5273be6dcb752753ecbe4c48c64a773b2949e17d997a3245fdb7f4ef0c379757b597a6a419ced34c92b31767d45a2a131f5833f99d42dbbc709169fcdcbe4c4acdcbb3b2bfb5bd5534e7f432575c179ed486f2b88c70689d1246ee997194d28541c190844e1cd43e8b988dbd82032740f4a3d4a2da5e76563bd417f5f17c95b7174a5a82cd342973556a057f4e602c10f45521508770cd207e0efead01fe830726796b3bd0d3f86cf233994c0ad78ca322d28836520cee329facfc6b0f71a246e8ce0191e73a161d84c512842e6f93467163653c4fd31f46e5145cc08baacc1cb88fde801b5a68117f098ba6fe3f90d650d2694ae1415a138a99226dc6ca0961e2ccaaecf23393a75b4edd081389337099b7106c2069c1f51bf6dbfdb93b92736d1ee30910b35cee45b9ada5e87d5cd05c104ef630aab73c046730dfa8278255b2201430adb7372b09e107b26017b0d6a811a5cbaad54fb7d55a69f2e101f8ce27515190945715e24081f36595b87682b46860c966f98b42fcff8b538033d15b89c546ed945657516cb1f14fbd5430a25834e0b38b4683696a1051cc2783f54ce75313e344ebe95c73a37a67459639916c75fb6df16d12b22d5b664bfa3bc5b11a98aecb85939e24f7fe53f2fed5ff80da8a705d9bf58e0170000000049454e44ae426082</data>
     </image>
     <image name="image1">
-        <data format="PNG" length="872">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b0000032f49444154789cb59531681c4714863f992dde8004b320c32e38700732f80a176acfa8b04a81c016a809a8496b42208454098604d2c4904a6954a410511ae75c18ac42e61208a76b442488600332ec15825dd0c10c58300f32e0142b4591e2538a38af99dd99e1db6fdffec34e0d76079cd7bdeebd37bc831aec0ea6a6cec1fd9dfe9bf65c1bef3d555de1bcc36008846b47e71dc551c1706f08f1029e9c9b3efdfe29690e791b5a51cf961d2402384c2240b898e7e2be3812f8ce327ce92f83016a5f93be07e5f847f47549888a3110fe005f0b55ad08829985f66d105188a080cc407a53f97bfd0576b523dcf5e8eb9a103d66c652ee437f5bd9dfab9104342a9258b239616935a5bb10109a793b2d348fb902ae7cc53c4a8815c658767794ad0d0f11ac15f2394104aa91327aa57cfb6549bd96b1b206220dfcadc6263180626684721f7a67d0a50719f79721cf0d2401d594fe76a0b7e1e96d8ec8b20e8b0f0d92e825e31be71721064008015e3cf76854961e64ac7c0069ae6852e14f0c2f9e39965653deffd042226c6d56e8f89f91bb6c9c387c9d521c9458db988a3416fe3467fd6b4779e87127f0e8d39ce18ea7fc5d298a80c865f02563930855ed2081bc05e94d5014ef53d6bfa8280e3d6285ee420ad38ecebc45a3521d83c609e0a6c7200844c54e9f7d94939cf5af1ce561132f3b2de4b72095e67d251134825c51bed26330b3406229468aaaa1ff3234a6d34276cb321ad53c795c51eca754a5a25169b70c5c9f0a47e736b45a423d52fadb8195b51477a274efa7e4193c790ca357359f7d54a1a79e2cb374e6a1aaafe9310888b2b42a68547a1b9efeb6e3d1c739f30b81d67ce093cf73b2cce2c73544e82e5bda77fe35c701a2d05d80fa38a3b73962eb1b18ee783a772d2450950e3fd6a6b728c52f4a7160b032e1e4b9b13b3bfb8a002b6b429675e8fd50511c2ac5c1a8d91dc1ce5a161f5a7efd49a94e3d1a53eaf104e3e2a8a02805491b1349607139d05dc8298a4075dc40f396a1330fed3b502c1b8839248ef237de0e1eee0d614348f32652aabec91b1e39db250994c7bec9edf3a61dde43b1af54f50463220c7f3e5fbc3a4eaac9eb3726aefcc7ba01cd3fea7f01bf6bf8607730f52706519bdbfe9953cf0000000049454e44ae426082</data>
+        <data format="PNG" length="872">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b0000032f49444154388db59531681c4714863f992dde8004b320c32e38700732f80a176acfa8b04a81c016a809a8496b42208454098604d2c4904a6954a410511ae75c18ac42e61208a76b442488600332ec15825dd0c10c58300f32e0142b4591e2538a38af99dd99e1db6fdffec34e0d76079cd7bdeebd37bc831aec0ea6a6cec1fd9dfe9bf65c1bef3d555de1bcc36008846b47e71dc551c1706f08f1029e9c9b3efdfe29690e791b5a51cf961d2402384c2240b898e7e2be3812f8ce327ce92f83016a5f93be07e5f847f47549888a3110fe005f0b55ad08829985f66d105188a080cc407a53f97bfd0576b523dcf5e8eb9a103d66c652ee437f5bd9dfab9104342a9258b239616935a5bb10109a793b2d348fb902ae7cc53c4a8815c658767794ad0d0f11ac15f2394104aa91327aa57cfb6549bd96b1b206220dfcadc6263180626684721f7a67d0a50719f79721cf0d2401d594fe76a0b7e1e96d8ec8b20e8b0f0d92e825e31be71721064008015e3cf76854961e64ac7c0069ae6852e14f0c2f9e39965653deffd042226c6d56e8f89f91bb6c9c387c9d521c9458db988a3416fe3467fd6b4779e87127f0e8d39ce18ea7fc5d298a80c865f02563930855ed2081bc05e94d5014ef53d6bfa8280e3d6285ee420ad38ecebc45a3521d83c609e0a6c7200844c54e9f7d94939cf5af1ce561132f3b2de4b72095e67d251134825c51bed26330b3406229468aaaa1ff3234a6d34276cb321ad53c795c51eca754a5a25169b70c5c9f0a47e736b45a423d52fadb8195b51477a274efa7e4193c790ca357359f7d54a1a79e2cb374e6a1aaafe9310888b2b42a68547a1b9efeb6e3d1c739f30b81d67ce093cf73b2cce2c73544e82e5bda77fe35c701a2d05d80fa38a3b73962eb1b18ee783a772d2450950e3fd6a6b728c52f4a7160b032e1e4b9b13b3bfb8a002b6b429675e8fd50511c2ac5c1a8d91dc1ce5a161f5a7efd49a94e3d1a53eaf104e3e2a8a02805491b1349607139d05dc8298a4075dc40f396a1330fed3b502c1b8839248ef237de0e1eee0d614348f32652aabec91b1e39db250994c7bec9edf3a61dde43b1af54f50463220c7f3e5fbc3a4eaac9eb3726aefcc7ba01cd3fea7f01bf6bf8607730f52706519bdbb66077eb0000000049454e44ae426082</data>
     </image>
 </images>
 <connections>
@@ -750,16 +708,10 @@
         <slot>slotExpressionValid(bool)</slot>
     </connection>
     <connection>
-        <sender>mpEditInitialConcentration</sender>
+        <sender>mpEditInitialValue</sender>
         <signal>lostFocus()</signal>
         <receiver>CQMetabolite</receiver>
-        <slot>slotInitialConcentrationLostFocus()</slot>
-    </connection>
-    <connection>
-        <sender>mpEditInitialNumber</sender>
-        <signal>lostFocus()</signal>
-        <receiver>CQMetabolite</receiver>
-        <slot>slotInitialNumberLostFocus()</slot>
+        <slot>slotInitialValueLostFocus()</slot>
     </connection>
     <connection>
         <sender>mpReactionTable</sender>
@@ -767,21 +719,27 @@
         <receiver>CQMetabolite</receiver>
         <slot>slotReactionTableCurrentChanged(QListViewItem*)</slot>
     </connection>
+    <connection>
+        <sender>mpBtnToggle</sender>
+        <signal>clicked()</signal>
+        <receiver>CQMetabolite</receiver>
+        <slot>slotToggleDisplay()</slot>
+    </connection>
 </connections>
 <tabstops>
     <tabstop>mpEditName</tabstop>
     <tabstop>mpComboBoxCompartment</tabstop>
     <tabstop>mpComboBoxType</tabstop>
+    <tabstop>mpBtnToggle</tabstop>
     <tabstop>mpComboBoxInitialType</tabstop>
-    <tabstop>mpEditInitialConcentration</tabstop>
+    <tabstop>mpEditInitialValue</tabstop>
     <tabstop>mpComboBoxInitialSelection</tabstop>
-    <tabstop>mpEditCurrentConcentration</tabstop>
-    <tabstop>mpEditInitialNumber</tabstop>
-    <tabstop>mpEditCurrentNumber</tabstop>
+    <tabstop>mpEditCurrentValue</tabstop>
+    <tabstop>mpEditRate</tabstop>
     <tabstop>mpEditTransitionTime</tabstop>
-    <tabstop>mpEditConcentrationRate</tabstop>
     <tabstop>mpEditExpression</tabstop>
     <tabstop>mpBtnObject</tabstop>
+    <tabstop>mpReactionTable</tabstop>
     <tabstop>mpBtnCommit</tabstop>
     <tabstop>mpBtnRevert</tabstop>
     <tabstop>mpBtnNew</tabstop>
@@ -808,6 +766,7 @@
     <variable access="private">std::vector&lt; int &gt; mItemToType;</variable>
     <variable access="private">double mInitialNumber;</variable>
     <variable access="private">double mInitialConcentration;</variable>
+    <variable access="private">bool mShowConcentration;</variable>
 </variables>
 <slots>
     <slot access="private" specifier="non virtual">slotBtnCommit()</slot>
@@ -821,8 +780,8 @@
     <slot access="private" specifier="non virtual">slotNameLostFocus()</slot>
     <slot access="private" specifier="non virtual">slotExpressionValid( bool valid )</slot>
     <slot access="private" specifier="non virtual">slotReactionTableCurrentChanged( QListViewItem * pItem )</slot>
-    <slot access="private" specifier="non virtual">slotInitialConcentrationLostFocus()</slot>
-    <slot access="private" specifier="non virtual">slotInitialNumberLostFocus()</slot>
+    <slot access="private" specifier="non virtual">slotInitialValueLostFocus()</slot>
+    <slot access="private" specifier="non virtual">slotToggleDisplay()</slot>
 </slots>
 <functions>
     <function access="private" specifier="non virtual">init()</function>

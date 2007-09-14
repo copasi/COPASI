@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMetabolite.ui.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/08/22 19:52:19 $
+//   $Date: 2007/09/14 15:29:50 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,6 +52,7 @@ void CQMetabolite::init()
   mpComboBoxInitialSelection->hide();
 
   mInitialNumberLastChanged = true;
+  mShowConcentration = true;
 }
 
 void CQMetabolite::slotBtnCommit()
@@ -254,7 +255,9 @@ void CQMetabolite::slotCompartmentChanged(int compartment)
       pNewCompartment == NULL) return;
 
   mInitialNumber *= pNewCompartment->getInitialValue() / mpCurrentCompartment->getInitialValue();
-  mpEditInitialNumber->setText(QString::number(mInitialNumber, 'g', 10));
+
+  if (!mShowConcentration)
+    mpEditInitialValue->setText(QString::number(mInitialNumber, 'g', 10));
 
   mpCurrentCompartment = pNewCompartment;
 }
@@ -268,11 +271,7 @@ void CQMetabolite::slotTypeChanged(int type)
       mpEditExpression->hide();
       mpBtnObject->hide();
 
-      mpEditInitialConcentration->setEnabled(true);
-      mpEditInitialConcentration->setText(QString::number(mInitialConcentration, 'g', 10));
-
-      mpEditInitialNumber->setEnabled(true);
-      mpEditInitialNumber->setText(QString::number(mInitialNumber, 'g', 10));
+      mpEditInitialValue->setEnabled(true);
       break;
 
     case CModelEntity::ASSIGNMENT:
@@ -280,20 +279,7 @@ void CQMetabolite::slotTypeChanged(int type)
       mpEditExpression->show();
       mpBtnObject->show();
 
-      mpEditInitialConcentration->setEnabled(false);
-      mpEditInitialConcentration->setText("nan");
-
-      mpEditInitialNumber->setEnabled(false);
-      mpEditInitialNumber->setText("nan");
-
-      if (isnan(mInitialConcentration) && isnan(mInitialNumber))
-        {
-          mInitialConcentration = 0.1;
-          if (mpCurrentCompartment != NULL)
-            mInitialNumber = CMetab::convertToNumber(mInitialConcentration,
-                             *mpCurrentCompartment,
-                             *CCopasiDataModel::Global->getModel());
-        }
+      mpEditInitialValue->setEnabled(false);
 
       mpEditExpression->setExpression(mpMetab->getExpression());
       break;
@@ -303,11 +289,7 @@ void CQMetabolite::slotTypeChanged(int type)
       mpEditExpression->show();
       mpBtnObject->show();
 
-      mpEditInitialConcentration->setEnabled(true);
-      mpEditInitialConcentration->setText(QString::number(mInitialConcentration, 'g', 10));
-
-      mpEditInitialNumber->setEnabled(true);
-      mpEditInitialNumber->setText(QString::number(mInitialNumber, 'g', 10));
+      mpEditInitialValue->setEnabled(true);
 
       mpEditExpression->setExpression(mpMetab->getExpression());
       break;
@@ -317,11 +299,7 @@ void CQMetabolite::slotTypeChanged(int type)
       mpEditExpression->hide();
       mpBtnObject->hide();
 
-      mpEditInitialConcentration->setEnabled(true);
-      mpEditInitialConcentration->setText(QString::number(mInitialConcentration, 'g', 10));
-
-      mpEditInitialNumber->setEnabled(true);
-      mpEditInitialNumber->setText(QString::number(mInitialNumber, 'g', 10));
+      mpEditInitialValue->setEnabled(true);
       break;
 
     default:
@@ -399,13 +377,7 @@ void CQMetabolite::load()
   if (mpMetab == NULL) return;
 
   // Update the labels to reflect the model units
-  mpLblConcentration->setText("Concentration ("
-                              + FROM_UTF8(CCopasiDataModel::Global->getModel()->getConcentrationUnitName()) + ")");
-
   mpLblTransitionTime->setText("Transition Time (" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getTimeUnitName()) + ")");
-
-  mpLblConcentrationRate->setText("Concentration Change\n("
-                                  + FROM_UTF8(CCopasiDataModel::Global->getModel()->getConcentrationRateUnitName()) + ")");
 
   // Name
   mpEditName->setText(FROM_UTF8(mpMetab->getObjectName()));
@@ -433,29 +405,25 @@ void CQMetabolite::load()
   // Initial Concentration handled in slotTypeChanged
   mInitialConcentration = mpMetab->getInitialConcentration();
 
-  // Transient Concentration
-  mpEditCurrentConcentration->setText(QString::number(mpMetab->getConcentration()));
-
   // Initial Number handled in slotTypeChanged
   mInitialNumber = mpMetab->getInitialValue();
+
   mInitialNumberLastChanged = true;
 
   // Type dependent display of values
   slotTypeChanged(mpComboBoxType->currentItem());
 
-  // Transient Number
-  mpEditCurrentNumber->setText(QString::number(mpMetab->getValue()));
-
   // Transistion Time
   mpEditTransitionTime->setText(QString::number(mpMetab->getTransitionTime()));
-
-  // Concentration Rate
-  mpEditConcentrationRate->setText(QString::number(mpMetab->getConcentrationRate()));
 
   // Expression
   mpEditExpression->setExpression(mpMetab->getExpression());
 
   loadReactionTable();
+
+  // Update the units and values accordingly
+  mShowConcentration = !mShowConcentration;
+  slotToggleDisplay();
 
   mChanged = false;
   return;
@@ -515,8 +483,8 @@ void CQMetabolite::save()
           CCopasiDataModel::Global->getModel()->getCompartments()[CompartmentToRemove]->getMetabolites().remove(mpMetab->getObjectName());
           CCopasiDataModel::Global->getModel()->setCompileFlag();
           CCopasiDataModel::Global->getModel()->initializeMetabolites();
-          protectedNotify(ListViews::METABOLITE, ListViews::CHANGE, mKey);
           protectedNotify(ListViews::COMPARTMENT, ListViews::CHANGE, "");
+          mChanged = true;
         }
     }
 
@@ -530,15 +498,15 @@ void CQMetabolite::save()
   // Initial Concentration and Initial Number
   if (mInitialNumberLastChanged)
     {
-      if (QString::number(mpMetab->getInitialValue(), 'g', 10) != mpEditInitialNumber->text())
+      if (mpMetab->getInitialValue() != mInitialNumber)
         {
-          mpMetab->setInitialValue(mpEditInitialNumber->text().toDouble());
+          mpMetab->setInitialValue(mInitialNumber);
           mChanged = true;
         }
     }
   else
     {
-      mpMetab->setInitialConcentration(mpEditInitialConcentration->text().toDouble());
+      mpMetab->setInitialConcentration(mInitialConcentration);
       mChanged = true;
     }
 
@@ -549,7 +517,11 @@ void CQMetabolite::save()
       mChanged = true;
     }
 
-  if (mChanged) CCopasiDataModel::Global->changed();
+  if (mChanged)
+    {
+      CCopasiDataModel::Global->changed();
+      protectedNotify(ListViews::METABOLITE, ListViews::CHANGE, mKey);
+    }
 
   mChanged = false;
 }
@@ -586,38 +558,36 @@ void CQMetabolite::slotReactionTableCurrentChanged(QListViewItem * pItem)
     }
 }
 
-void CQMetabolite::slotInitialConcentrationLostFocus()
+void CQMetabolite::slotInitialValueLostFocus()
 {
-  if (QString::number(mInitialConcentration, 'g', 10) == mpEditInitialConcentration->text())
-    return;
+  if (mShowConcentration)
+    {
+      if (QString::number(mInitialConcentration, 'g', 10) == mpEditInitialValue->text())
+        return;
 
-  if (!mpMetab || !mpCurrentCompartment) return;
+      if (!mpMetab || !mpCurrentCompartment) return;
 
-  mInitialConcentration = mpEditInitialConcentration->text().toDouble();
-  mInitialNumber = CMetab::convertToNumber(mInitialConcentration,
-                   *mpCurrentCompartment,
-                   *CCopasiDataModel::Global->getModel());
+      mInitialConcentration = mpEditInitialValue->text().toDouble();
+      mInitialNumber = CMetab::convertToNumber(mInitialConcentration,
+                       *mpCurrentCompartment,
+                       *CCopasiDataModel::Global->getModel());
 
-  mpEditInitialNumber->setText(QString::number(mInitialNumber, 'g', 10));
+      mInitialNumberLastChanged = false;
+    }
+  else
+    {
+      if (QString::number(mInitialNumber, 'g', 10) == mpEditInitialValue->text())
+        return;
 
-  mInitialNumberLastChanged = false;
-}
+      if (!mpMetab || !mpCurrentCompartment) return;
 
-void CQMetabolite::slotInitialNumberLostFocus()
-{
-  if (QString::number(mInitialNumber, 'g', 10) == mpEditInitialNumber->text())
-    return;
+      mInitialNumber = mpEditInitialValue->text().toDouble();
+      mInitialConcentration = CMetab::convertToConcentration(mInitialNumber,
+                              *mpCurrentCompartment,
+                              *CCopasiDataModel::Global->getModel());
 
-  if (!mpMetab || !mpCurrentCompartment) return;
-
-  mInitialNumber = mpEditInitialNumber->text().toDouble();
-  mInitialConcentration = CMetab::convertToConcentration(mInitialNumber,
-                          *mpCurrentCompartment,
-                          *CCopasiDataModel::Global->getModel());
-
-  mpEditInitialConcentration->setText(QString::number(mInitialConcentration, 'g', 10));
-
-  mInitialNumberLastChanged = true;
+      mInitialNumberLastChanged = true;
+    }
 }
 
 void CQMetabolite::loadReactionTable()
@@ -651,4 +621,39 @@ void CQMetabolite::loadReactionTable()
     new QListViewItem(mpReactionTable, "none");
 
   return;
+}
+
+void CQMetabolite::slotToggleDisplay()
+{
+  mShowConcentration = !mShowConcentration;
+
+  if (mShowConcentration)
+    {
+      // Update the labels to reflect the model units
+      mpLblValue->setText("Concentration ("
+                          + FROM_UTF8(CCopasiDataModel::Global->getModel()->getConcentrationUnitName()) + ")");
+
+      mpLblRate->setText("Rate ("
+                         + FROM_UTF8(CCopasiDataModel::Global->getModel()->getConcentrationRateUnitName()) + ")");
+
+      mpEditInitialValue->setText(QString::number(mInitialConcentration, 'g', 10));
+      mpEditCurrentValue->setText(QString::number(mpMetab->getConcentration()));
+      mpEditRate->setText(QString::number(mpMetab->getConcentrationRate()));
+
+      mpBtnToggle->setText("Particle Number");
+    }
+  else
+    {
+      // Update the labels to reflect the model units
+      mpLblValue->setText("Particle Number");
+
+      mpLblRate->setText("Rate (1/"
+                         + FROM_UTF8(CCopasiDataModel::Global->getModel()->getTimeUnitName()) + ")");
+
+      mpEditInitialValue->setText(QString::number(mInitialNumber, 'g', 10));
+      mpEditCurrentValue->setText(QString::number(mpMetab->getValue()));
+      mpEditRate->setText(QString::number(mpMetab->getRate()));
+
+      mpBtnToggle->setText("Concentration");
+    }
 }
