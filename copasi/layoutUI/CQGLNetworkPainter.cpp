@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.58 $
+//   $Revision: 1.59 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/09/13 17:34:39 $
+//   $Date: 2007/09/14 10:13:40 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -175,7 +175,23 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
                   CLLineSegment lastSeg = segments[curve.getNumCurveSegments() - 1];
                   //std::cout << "number of segments in curve: " << curve.getNumCurveSegments() << std::endl;
                   CLPoint p = lastSeg.getEnd();
-                  CArrow *ar = new CArrow(lastSeg, p.getX(), p.getY());
+                  CArrow *ar;
+                  if (lastSeg.isBezier())
+                    {
+                      BezierCurve *bezier = new BezierCurve();
+                      std::vector<CLPoint> pts = std::vector<CLPoint>();
+                      pts.push_back(lastSeg.getStart());
+                      pts.push_back(lastSeg.getBase1());
+                      pts.push_back(lastSeg.getBase2());
+                      pts.push_back(lastSeg.getEnd());
+                      std::vector<CLPoint> bezierPts = bezier->curvePts(pts);
+                      C_INT32 num = bezierPts.size();
+                      CLLineSegment segForArrow = CLLineSegment(bezierPts[num - 2], bezierPts[num - 1]);
+                      ar = new CArrow(segForArrow, bezierPts[num - 1].getX(), bezierPts[num - 1].getY());
+                    }
+                  else
+                    ar = new CArrow(lastSeg, p.getX(), p.getY());
+                  //std::cout << "arrow line: " << ar->getStartOfLine() << ar->getEndOfLine() << std::endl;
                   nodeArrowMap.insert(std::pair<std::string, CArrow>
                                       (nodeKey, *ar));
                   //viewerArrows.push_back(*ar);
@@ -475,7 +491,7 @@ void CQGLNetworkPainter::drawEdge(CLCurve c)
             }
           x = endPoint.getX();
           y = endPoint.getY();
-          glVertex2d(x, y);
+          //glVertex2d(x, y);
           glEnd();
         }
       else
