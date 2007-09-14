@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.315 $
+//   $Revision: 1.316 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/09/14 15:21:12 $
+//   $Author: shoops $
+//   $Date: 2007/09/14 19:05:31 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1379,6 +1379,9 @@ bool CModel::buildSimulatedSequence()
       endReaction = mSteps.end();
       for (; itReaction != endReaction; ++itReaction)
         (*itReaction)->compile();
+
+      // The compile might have broken some refresh pointers we need to rebuild the constant sequence
+      buildConstantSequence();
     }
 
   mSimulatedUpToDateObjects.clear();
