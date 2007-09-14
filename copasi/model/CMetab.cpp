@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-//   $Revision: 1.125 $
+//   $Revision: 1.126 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/14 15:27:14 $
+//   $Date: 2007/09/14 19:04:25 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -241,9 +241,11 @@ void CMetab::refreshNumber()
 
 void CMetab::setStatus(const CModelEntity::Status & status)
 {
+  Status OldStatus = getStatus();
+
   CModelEntity::setStatus(status);
 
-  if (status == getStatus()) return;
+  if (status == OldStatus) return;
 
   std::set< const CCopasiObject * > Dependencies;
 
