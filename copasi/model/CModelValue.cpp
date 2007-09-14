@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-//   $Revision: 1.43 $
+//   $Revision: 1.44 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/04 14:56:53 $
+//   $Date: 2007/09/14 15:27:14 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -351,6 +351,9 @@ void CModelEntity::setStatus(const CModelEntity::Status & status)
 {
   if (mStatus != status)
     {
+      if (mpModel != NULL)
+        mpModel->setCompileFlag(true);
+
       mStatus = status;
       this->setValuePtr(mpValueData);
 
@@ -381,6 +384,8 @@ void CModelEntity::setStatus(const CModelEntity::Status & status)
 
           mpValueReference->setDirectDependencies(mpExpression->getDirectDependencies());
           mpValueReference->setRefresh(this, &CModelEntity::calculate);
+
+          mRate = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
           mUsed = true;
           mUsedOnce = false;
@@ -413,6 +418,8 @@ void CModelEntity::setStatus(const CModelEntity::Status & status)
 
         case FIXED:
           pdelete(mpExpression);
+
+          mRate = 0.0;
 
           mUsed = false;
           mUsedOnce = false;
