@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/BezierCurve.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/09/13 17:37:43 $
+//   $Date: 2007/09/14 10:12:54 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -38,12 +38,12 @@ std::vector<CLPoint> BezierCurve::curvePts(const std::vector<CLPoint>& pts)
   std::vector<CLPoint>points;
   points = std::vector<CLPoint>();
 
-  C_FLOAT64 t = this->dt;
+  C_FLOAT64 t = 0.0;
 
   C_INT32 i;
   C_INT32 n = pts.size() - 1;
-  C_INT32 count;
-  for (count = 1; count < this->steps;count++)
+
+  while (t <= 1.0000001)
     {
       x = 0.0;
       y = 0.0;
