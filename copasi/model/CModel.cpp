@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.314 $
+//   $Revision: 1.315 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/09/04 17:30:58 $
+//   $Author: ssahle $
+//   $Date: 2007/09/14 15:21:12 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -2756,7 +2756,11 @@ bool CModel::convert2NonReversible()
                         break;
 
                       default:
-                        continue;
+                        reac1->setParameterMapping(fp->getObjectName(),
+                                                   reac0->getParameterMapping(fp->getObjectName())[0]);
+                        reac2->setParameterMapping(fp->getObjectName(),
+                                                   reac0->getParameterMapping(fp->getObjectName())[0]);
+                        break;
                       }
                   }
               }
