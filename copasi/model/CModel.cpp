@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.317 $
+//   $Revision: 1.318 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/17 14:16:17 $
+//   $Date: 2007/09/17 15:07:53 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -608,7 +608,6 @@ bool CModel::handleUnusedMetabolites()
   // Handle metabolites determined by assignement and marked as fixed
   // This is just a shift of NumUnused.
   endMetab = itMetab + mNumMetabolitesAssignment + mNumMetabolitesUnused;
-  mNumMetabolitesUnused += NumUnused;
   for (; itMetab != endMetab; ++itMetab)
     *itMetab = *(itMetab + NumUnused);
 
