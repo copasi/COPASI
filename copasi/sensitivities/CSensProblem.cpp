@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensProblem.cpp,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.26 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/24 13:25:51 $
+//   $Date: 2007/09/17 19:47:35 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -428,8 +428,8 @@ CSensProblem::getPossibleTargetFunctions(CSensProblem::SubTaskType type)
             list.push_back(CObjectLists::SINGLE_OBJECT);
       list.push_back(CObjectLists::REACTION_CONC_FLUXES);
       list.push_back(CObjectLists::REACTION_PART_FLUXES);
-      list.push_back(CObjectLists::NON_CONST_METAB_CONC_RATES);
-      list.push_back(CObjectLists::NON_CONST_METAB_PART_RATES);
+      list.push_back(CObjectLists::METAB_CONC_RATES);
+      list.push_back(CObjectLists::METAB_PART_RATES);
       list.push_back(CObjectLists::GLOBAL_PARAMETER_RATES);
       break;
 
@@ -438,8 +438,8 @@ CSensProblem::getPossibleTargetFunctions(CSensProblem::SubTaskType type)
       list.push_back(CObjectLists::ALL_VARIABLES);
       list.push_back(CObjectLists::NON_CONST_METAB_CONCENTRATIONS);
       list.push_back(CObjectLists::NON_CONST_METAB_NUMBERS);
-      list.push_back(CObjectLists::NON_CONST_METAB_CONC_RATES);
-      list.push_back(CObjectLists::NON_CONST_METAB_PART_RATES);
+      list.push_back(CObjectLists::METAB_CONC_RATES);
+      list.push_back(CObjectLists::METAB_PART_RATES);
       list.push_back(CObjectLists::NON_CONST_GLOBAL_PARAMETER_VALUES);
       list.push_back(CObjectLists::REACTION_CONC_FLUXES);
       list.push_back(CObjectLists::REACTION_PART_FLUXES);
@@ -450,8 +450,8 @@ CSensProblem::getPossibleTargetFunctions(CSensProblem::SubTaskType type)
       list.push_back(CObjectLists::ALL_VARIABLES);
       list.push_back(CObjectLists::NON_CONST_METAB_CONCENTRATIONS);
       list.push_back(CObjectLists::NON_CONST_METAB_NUMBERS);
-      list.push_back(CObjectLists::NON_CONST_METAB_CONC_RATES);
-      list.push_back(CObjectLists::NON_CONST_METAB_PART_RATES);
+      list.push_back(CObjectLists::METAB_CONC_RATES);
+      list.push_back(CObjectLists::METAB_PART_RATES);
       list.push_back(CObjectLists::NON_CONST_GLOBAL_PARAMETER_VALUES);
       list.push_back(CObjectLists::REACTION_CONC_FLUXES);
       list.push_back(CObjectLists::REACTION_PART_FLUXES);
@@ -487,7 +487,7 @@ CSensProblem::getPossibleVariables(CSensProblem::SubTaskType type)
     case (Evaluation):
             list.push_back(CObjectLists::SINGLE_OBJECT);
       list.push_back(CObjectLists::NON_CONST_METAB_CONCENTRATIONS);
-      list.push_back(CObjectLists::ALL_METAB_CONCENTRATIONS);
+      list.push_back(CObjectLists::METAB_CONCENTRATIONS);
       list.push_back(CObjectLists::NON_CONST_METAB_NUMBERS);
       list.push_back(CObjectLists::NON_CONST_GLOBAL_PARAMETER_VALUES);
       list.push_back(CObjectLists::GLOBAL_PARAMETER_VALUES);
@@ -499,7 +499,7 @@ CSensProblem::getPossibleVariables(CSensProblem::SubTaskType type)
             list.push_back(CObjectLists::SINGLE_OBJECT);
       list.push_back(CObjectLists::ALL_LOCAL_PARAMETER_VALUES);
       list.push_back(CObjectLists::ALL_PARAMETER_VALUES);
-      list.push_back(CObjectLists::ALL_METAB_INITIAL_CONCENTRATIONS);
+      list.push_back(CObjectLists::METAB_INITIAL_CONCENTRATIONS);
       //TODO all const values, all model parameters
       break;
 
@@ -507,7 +507,7 @@ CSensProblem::getPossibleVariables(CSensProblem::SubTaskType type)
             list.push_back(CObjectLists::SINGLE_OBJECT);
       list.push_back(CObjectLists::ALL_LOCAL_PARAMETER_VALUES);
       list.push_back(CObjectLists::ALL_PARAMETER_VALUES);
-      list.push_back(CObjectLists::ALL_METAB_INITIAL_CONCENTRATIONS);
+      list.push_back(CObjectLists::METAB_INITIAL_CONCENTRATIONS);
       list.push_back(CObjectLists::ALL_PARAMETER_AND_INITIAL_VALUES);
       //TODO all const values, all model parameters, all initial values
       break;
