@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-//   $Revision: 1.67 $
+//   $Revision: 1.68 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/04 20:27:18 $
+//   $Date: 2007/09/17 14:16:18 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -318,16 +318,24 @@ CCopasiObject::buildUpdateSequence(const std::set< const CCopasiObject * > & obj
     else
       ++itSet;
 
+  // Build the ignore list if it is empty.
+  if (Ignore.size() == 0)
+    Ignore = DependencySet;
+  else // Remove the items in the ignore list
+    {
+      itSet = Ignore.begin();
+      endSet = Ignore.end();
+
+      for (; itSet != endSet; ++itSet)
+        DependencySet.erase(*itSet);
+    }
+
   // Create a properly sorted list.
   std::list< const CCopasiObject * > SortedList =
     sortObjectsByDependency(DependencySet.begin(), DependencySet.end());
 
   std::list< const CCopasiObject * >::iterator itList;
   std::list< const CCopasiObject * >::iterator endList;
-
-  // Build the ignore list if it is empty.
-  if (Ignore.size() == 0)
-    Ignore = DependencySet;
 
   // Build the vector of pointers to refresh methods
   Refresh * pRefresh;

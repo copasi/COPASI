@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-//   $Revision: 1.126 $
+//   $Revision: 1.127 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/14 19:04:25 $
+//   $Date: 2007/09/17 14:16:17 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -137,7 +137,14 @@ bool CMetab::setObjectParent(const CCopasiContainer * pParent)
   CModelEntity::setObjectParent(pParent);
   initCompartment(NULL);
 
-  setStatus(getStatus());
+  Status CurrentStatus = getStatus();
+
+  if (CurrentStatus != FIXED)
+    setStatus(FIXED);
+  else
+    setStatus(REACTIONS);
+
+  setStatus(CurrentStatus);
 
   return true;
 }
@@ -451,10 +458,7 @@ bool CMetab::compile()
       mpIConcReference->setDirectDependencies(Dependencies);
       Dependencies.clear();
 
-      if (isDependent())
-        Dependencies.insert(mpMoiety);
-      else
-        Dependencies.insert(this);
+      Dependencies.insert(this);
       mpValueReference->setDirectDependencies(Dependencies);
 
       Dependencies.clear();

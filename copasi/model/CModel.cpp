@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.316 $
+//   $Revision: 1.317 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/14 19:05:31 $
+//   $Date: 2007/09/17 14:16:17 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1333,7 +1333,7 @@ bool CModel::buildSimulatedSequence()
                 UnusedFound = true;
                 mReorderNeeded = true;
                 (*ppEntity)->setUsed(false);
-                Objects.erase(*ppEntity);
+                Objects.erase(pObject);
               }
 
             Candidate.erase(pObject);
