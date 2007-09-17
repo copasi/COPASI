@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/COutputAssistant.cpp,v $
-   $Revision: 1.12 $
-   $Name:  $
-   $Author: ssahle $
-   $Date: 2007/01/09 13:38:51 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/COutputAssistant.cpp,v $
+//   $Revision: 1.13 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/09/17 19:44:07 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -161,48 +161,48 @@ bool COutputAssistant::initialize()
 
   //concentrations plot
   tmp.first = 0;
-  tmp.second.name = "Concentrations and Global Quantity Values";
-  tmp.second.description = "A plot of the variable metabolite concentrations and variable global quantity values vs. time.";
+  tmp.second.name = "Concentrations, Volumes, and Global Quantity Values";
+  tmp.second.description = "A plot of the variable metabolite concentrations, variable compartment volumes, and variable global quantity values vs. time.";
   tmp.second.isPlot = true;
   tmp.second.mTaskType = CCopasiTask::timeCourse;
   mMap.insert(tmp);
 
   //particle numbers plot
   tmp.first = 1;
-  tmp.second.name = "Particle Numbers and Global Quantity Values";
-  tmp.second.description = "A plot of the variable metabolite particle numbers and variable global quantity values vs. time.";
+  tmp.second.name = "Particle Numbers, Volumes, and Global Quantity Values";
+  tmp.second.description = "A plot of the variable metabolite particle numbers, variable compartment volumes, and variable global quantity values vs. time.";
   tmp.second.isPlot = true;
   tmp.second.mTaskType = CCopasiTask::timeCourse;
   mMap.insert(tmp);
 
   //complete concentrations plot
   tmp.first = 2;
-  tmp.second.name = "Complete Concentrations and Global Quantity Values";
-  tmp.second.description = "A plot of all the metabolite concentrations and all global quantity values vs. time (includes fixed ones).";
+  tmp.second.name = "Complete Concentrations, Volumes, and Global Quantity Values";
+  tmp.second.description = "A plot of all the metabolite concentrations, compartment volumes, and all global quantity values vs. time (includes fixed ones).";
   tmp.second.isPlot = true;
   tmp.second.mTaskType = CCopasiTask::timeCourse;
   mMap.insert(tmp);
 
   //complete particle numbers plot
   tmp.first = 3;
-  tmp.second.name = "Complete Particle Numbers and Global Quantity Values";
-  tmp.second.description = "A plot of all the metabolite particle numbers and global quantity values vs. time (includes fixed ones).";
+  tmp.second.name = "Complete Particle Numbers, Volumes, and Global Quantity Values";
+  tmp.second.description = "A plot of all the metabolite particle numbers, compartment volumes, and global quantity values vs. time (includes fixed ones).";
   tmp.second.isPlot = true;
   tmp.second.mTaskType = CCopasiTask::timeCourse;
   mMap.insert(tmp);
 
   //concentration rate plot
   tmp.first = 4;
-  tmp.second.name = "Concentration Rates and Global Quantity Rates";
-  tmp.second.description = "A plot of the rate of change of concentrations of all metabolites dependent on reactions and global quantities determined by ODEs vs. time.";
+  tmp.second.name = "Concentration Rates, Volume Rates, and Global Quantity Rates";
+  tmp.second.description = "A plot of the rate of change of concentrations of metabolites, compartment volume, and global quantities, which are determined by ODEs or reactions vs. time.";
   tmp.second.isPlot = true;
   tmp.second.mTaskType = CCopasiTask::timeCourse;
   mMap.insert(tmp);
 
   //particle rate plot
   tmp.first = 5;
-  tmp.second.name = "Particle Number Rates and Global Quantity Rates";
-  tmp.second.description = "A plot of the rate of change of particle numbers of all metabolites dependent on reactions and global quantities determined by ODEs vs. time.";
+  tmp.second.name = "Particle Number Rates, Volume Rates, and Global Quantity Rates";
+  tmp.second.description = "A plot of the rate of change of particle numbers of all metabolites, compartment volume, and global quantities, which are determined by ODEs or reactions vs. time.";
   tmp.second.isPlot = true;
   tmp.second.mTaskType = CCopasiTask::timeCourse;
   mMap.insert(tmp);
@@ -265,43 +265,43 @@ bool COutputAssistant::initialize()
 
   //concentrations report
   tmp.first = 1000;
-  tmp.second.name = "Time, Concentrations and Global Quantity Values";
-  tmp.second.description = "A table of time, variable metabolite concentrations and variable global quantity values.";
+  tmp.second.name = "Time, Concentrations, Volumes, and Global Quantity Values";
+  tmp.second.description = "A table of time, variable metabolite concentrations, variable compartment volumes, and variable global quantity values.";
   tmp.second.isPlot = false; //report
   tmp.second.mTaskType = CCopasiTask::timeCourse;
   mMap.insert(tmp);
 
   tmp.first = 1001;
-  tmp.second.name = "Time, Particle Numbers and Global Quantity Values";
-  tmp.second.description = "A table of time, variable metabolite particle numbers and variable global quantity values.";
+  tmp.second.name = "Time, Particle Numbers, Volumes, and Global Quantity Values";
+  tmp.second.description = "A table of time, variable metabolite particle numbers, variable compartment volumes, and variable global quantity values.";
   tmp.second.isPlot = false; //report
   tmp.second.mTaskType = CCopasiTask::timeCourse;
   mMap.insert(tmp);
 
   tmp.first = 1002;
-  tmp.second.name = "Complete Time, Concentrations and Global Quantity Values";
-  tmp.second.description = "A table of time, all metabolite concentrations and all global quantity values (includes fixed ones).";
+  tmp.second.name = "Complete Time, Concentrations, Volumes, and Global Quantity Values";
+  tmp.second.description = "A table of time, all metabolite concentrations, all compartment volumes, and all global quantity values (includes fixed ones).";
   tmp.second.isPlot = false; //report
   tmp.second.mTaskType = CCopasiTask::timeCourse;
   mMap.insert(tmp);
 
   tmp.first = 1003;
-  tmp.second.name = "Complete Time, Particle Numbers and Global Quantity Values";
-  tmp.second.description = "A table of time, all metabolite particle numbers and all global quantity values (includes fixed ones).";
+  tmp.second.name = "Complete Time, Particle Numbers, Volumes, and Global Quantity Values";
+  tmp.second.description = "A table of time, all metabolite particle numbers, all compartment volumes, and all global quantity values (includes fixed ones).";
   tmp.second.isPlot = false; //report
   tmp.second.mTaskType = CCopasiTask::timeCourse;
   mMap.insert(tmp);
 
   tmp.first = 1004;
-  tmp.second.name = "Time, Concentration Rates and Global Quantity Rates";
-  tmp.second.description = "A table of time and the rate of change of concentrations of all metabolites dependent on reactions and global quantities determined by ODEs.";
+  tmp.second.name = "Time, Concentration Rates, Volume Rates, and Global Quantity Rates";
+  tmp.second.description = "A table of time and the rate of change of concentrations of metabolites, compartment volumes, and global quantities which are determined by reactions or ODEs.";
   tmp.second.isPlot = false; //report
   tmp.second.mTaskType = CCopasiTask::timeCourse;
   mMap.insert(tmp);  //not possible at the moment
 
   tmp.first = 1005;
-  tmp.second.name = "Time, Particle Numbers Rates and Global Quantity Rates";
-  tmp.second.description = "A table of time and the rate of change of particle numbers of all metabolites dependent on reactions and global quantities determined by ODEs.";
+  tmp.second.name = "Time, Particle Numbers Rates, Volume Rates, and Global Quantity Rates";
+  tmp.second.description = "A table of time and the rate of change of particle numbers of metabolites, compartment volumes, and global quantities which are determined by reactions or ODEs.";
   tmp.second.isPlot = false; //report
   tmp.second.mTaskType = CCopasiTask::timeCourse;
   mMap.insert(tmp);
@@ -347,19 +347,19 @@ bool COutputAssistant::initialize()
 //static
 CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * task, bool activate)
 {
-  if (!task)
+  if (task == NULL)
     {
       //std::cout << "task==NULL in COutputAssistant::createDefaultOutput()" << std::endl;
       return NULL;
     }
-  if (!task->getProblem())
+  if (task->getProblem() == NULL)
     {
       //std::cout << "problem==NULL in COutputAssistant::createDefaultOutput()" << std::endl;
       return NULL;
     }
 
   CModel* pModel = task->getProblem()->getModel();
-  if (!pModel)
+  if (pModel == NULL)
     {
       //std::cout << "model==NULL in COutputAssistant::createDefaultOutput()" << std::endl;
       return NULL;
@@ -379,6 +379,9 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
       data1 =
         CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_METAB_CONCENTRATIONS, pModel);
       tmpdata =
+        CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_COMPARTMENT_VOLUMES, pModel);
+      data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
+      tmpdata =
         CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_GLOBAL_PARAMETER_VALUES, pModel);
       data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
       break;
@@ -386,33 +389,48 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
       data1 =
         CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_METAB_NUMBERS, pModel);
       tmpdata =
+        CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_COMPARTMENT_VOLUMES, pModel);
+      data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
+      tmpdata =
         CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_GLOBAL_PARAMETER_VALUES, pModel);
       data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
       break;
     case 2:
       data1 =
-        CObjectLists::getListOfConstObjects(CObjectLists::ALL_METAB_CONCENTRATIONS, pModel);
+        CObjectLists::getListOfConstObjects(CObjectLists::METAB_CONCENTRATIONS, pModel);
+      tmpdata =
+        CObjectLists::getListOfConstObjects(CObjectLists::COMPARTMENT_VOLUMES, pModel);
+      data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
       tmpdata =
         CObjectLists::getListOfConstObjects(CObjectLists::GLOBAL_PARAMETER_VALUES, pModel);
       data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
       break;
     case 3:
       data1 =
-        CObjectLists::getListOfConstObjects(CObjectLists::ALL_METAB_NUMBERS, pModel);
+        CObjectLists::getListOfConstObjects(CObjectLists::METAB_NUMBERS, pModel);
+      tmpdata =
+        CObjectLists::getListOfConstObjects(CObjectLists::COMPARTMENT_VOLUMES, pModel);
+      data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
       tmpdata =
         CObjectLists::getListOfConstObjects(CObjectLists::GLOBAL_PARAMETER_VALUES, pModel);
       data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
       break;
     case 4:
       data1 =
-        CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_METAB_CONC_RATES, pModel);
+        CObjectLists::getListOfConstObjects(CObjectLists::METAB_CONC_RATES, pModel);
+      tmpdata =
+        CObjectLists::getListOfConstObjects(CObjectLists::COMPARTMENT_RATES, pModel);
+      data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
       tmpdata =
         CObjectLists::getListOfConstObjects(CObjectLists::GLOBAL_PARAMETER_RATES, pModel);
       data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
       break;
     case 5:
       data1 =
-        CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_METAB_PART_RATES, pModel);
+        CObjectLists::getListOfConstObjects(CObjectLists::METAB_PART_RATES, pModel);
+      tmpdata =
+        CObjectLists::getListOfConstObjects(CObjectLists::COMPARTMENT_RATES, pModel);
+      data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
       tmpdata =
         CObjectLists::getListOfConstObjects(CObjectLists::GLOBAL_PARAMETER_RATES, pModel);
       data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
@@ -429,10 +447,16 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
       data1 =
         CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_METAB_CONCENTRATIONS, pModel);
       tmpdata =
+        CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_COMPARTMENT_VOLUMES, pModel);
+      data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
+      tmpdata =
         CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_GLOBAL_PARAMETER_VALUES, pModel);
       data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
       tmpdata =
-        CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_METAB_CONC_RATES, pModel);
+        CObjectLists::getListOfConstObjects(CObjectLists::METAB_CONC_RATES, pModel);
+      data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
+      tmpdata =
+        CObjectLists::getListOfConstObjects(CObjectLists::COMPARTMENT_RATES, pModel);
       data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
       tmpdata =
         CObjectLists::getListOfConstObjects(CObjectLists::GLOBAL_PARAMETER_RATES, pModel);
@@ -440,21 +464,33 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
       tmpdata =
         CObjectLists::getListOfConstObjects(CObjectLists::REACTION_CONC_FLUXES, pModel);
       data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
+      tmpdata =
+        CObjectLists::getListOfConstObjects(CObjectLists::METAB_TRANSITION_TIME, pModel);
+      data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
       break;
     case 9:
       data1 =
         CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_METAB_NUMBERS, pModel);
       tmpdata =
+        CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_COMPARTMENT_VOLUMES, pModel);
+      data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
+      tmpdata =
         CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_GLOBAL_PARAMETER_VALUES, pModel);
       data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
       tmpdata =
-        CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_METAB_PART_RATES, pModel);
+        CObjectLists::getListOfConstObjects(CObjectLists::METAB_PART_RATES, pModel);
+      data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
+      tmpdata =
+        CObjectLists::getListOfConstObjects(CObjectLists::COMPARTMENT_RATES, pModel);
       data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
       tmpdata =
         CObjectLists::getListOfConstObjects(CObjectLists::GLOBAL_PARAMETER_RATES, pModel);
       data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
       tmpdata =
         CObjectLists::getListOfConstObjects(CObjectLists::REACTION_PART_FLUXES, pModel);
+      data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
+      tmpdata =
+        CObjectLists::getListOfConstObjects(CObjectLists::METAB_TRANSITION_TIME, pModel);
       data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
       break;
     case 10: // :TODO: Implement me!
