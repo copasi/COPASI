@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.318 $
+//   $Revision: 1.319 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/09/17 15:07:53 $
+//   $Author: ssahle $
+//   $Date: 2007/09/18 00:15:47 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -2628,152 +2628,146 @@ bool CModel::convert2NonReversible()
         //std::cout << i << "  ";
         fn = reac0->getFunction()->getObjectName();
 
-        if (/*fn == "Mass action (reversible)"*/false) //obsolete
+        const CFunction* pFunc = reac0->getFunction();
+
+        bool massaction = (fn == "Mass action (reversible)");
+
+        std::pair<CFunction *, CFunction *> tmp;
+
+        if (massaction)
           {
+            //set functions to mass action (irrev)
+            tmp.first = dynamic_cast<CFunction*>
+                        (CCopasiDataModel::Global->getFunctionList()-> findFunction("Mass action (irreversible)"));
+            assert(tmp.first);
+            tmp.second = tmp.first;
           }
-        else  //new implementation
+        else //not mass action
           {
-            const CFunction* pFunc = reac0->getFunction();
+            //try splitting
+            tmp = pFunc->splitFunction(NULL, pFunc->getObjectName() + " (forward part)",
+                                       pFunc->getObjectName() + " (backward part)");
 
-            bool massaction = (fn == "Mass action (reversible)");
-
-            std::pair<CFunction *, CFunction *> tmp;
-
-            if (massaction)
+            if ((tmp.first == NULL) || (tmp.second == NULL))
               {
-                //set functions to mass action (irrev)
-                tmp.first = dynamic_cast<CFunction*>
-                            (CCopasiDataModel::Global->getFunctionList()-> findFunction("Mass action (irreversible)"));
-                assert(tmp.first);
-                tmp.second = tmp.first;
+                pdelete(tmp.first);
+                pdelete(tmp.second);
+                continue;
               }
-            else //not mass action
-              {
-                //try splitting
-                tmp = pFunc->splitFunction(NULL, pFunc->getObjectName() + " (forward part)",
-                                           pFunc->getObjectName() + " (backward part)");
 
-                if ((tmp.first == NULL) || (tmp.second == NULL))
+            //if (tmp.first) std::cout << *tmp.first << "\n\n";
+            //if (tmp.second) std::cout << *tmp.second;
+
+            if (tmp.first) CCopasiDataModel::Global->getFunctionList()->addAndAdaptName(tmp.first);
+            if (tmp.second) CCopasiDataModel::Global->getFunctionList()->addAndAdaptName(tmp.second);
+          }
+
+        C_INT32 i, imax;
+
+        //**** create 1st reaction.
+        reac1 = createReaction(rn1);
+        reac1->setReversible(false);
+        //substrates
+        imax = reac0->getChemEq().getSubstrates().size();
+        for (i = 0; i < imax; ++i)
+          reac1->addSubstrate(reac0->getChemEq().getSubstrates()[i]->getMetaboliteKey(),
+                              reac0->getChemEq().getSubstrates()[i]->getMultiplicity());
+        //products
+        imax = reac0->getChemEq().getProducts().size();
+        for (i = 0; i < imax; ++i)
+          reac1->addProduct(reac0->getChemEq().getProducts()[i]->getMetaboliteKey(),
+                            reac0->getChemEq().getProducts()[i]->getMultiplicity());
+        //function
+        reac1->setFunction(tmp.first);
+
+        //**** create 2nd reaction.
+        reac2 = createReaction(rn2);
+        reac2->setReversible(false);
+        //substrates -> products
+        imax = reac0->getChemEq().getSubstrates().size();
+        for (i = 0; i < imax; ++i)
+          reac2->addProduct(reac0->getChemEq().getSubstrates()[i]->getMetaboliteKey(),
+                            reac0->getChemEq().getSubstrates()[i]->getMultiplicity());
+        //products -> substrates
+        imax = reac0->getChemEq().getProducts().size();
+        for (i = 0; i < imax; ++i)
+          reac2->addSubstrate(reac0->getChemEq().getProducts()[i]->getMetaboliteKey(),
+                              reac0->getChemEq().getProducts()[i]->getMultiplicity());
+        //function
+        reac2->setFunction(tmp.second);
+
+        //mapping for both reactions
+        if (massaction)
+          {
+            // the parameter names of the massaction kinetics are hardcoded here.
+            if (reac0->isLocalParameter("k1"))
+              reac1->setParameterValue("k1", reac0->getParameterValue("k1"));
+            else
+              reac1->setParameterMapping("k1", reac0->getParameterMapping("k1")[0]);
+
+            reac1->setParameterMappingVector("substrate", reac0->getParameterMapping("substrate"));
+
+            if (reac0->isLocalParameter("k2"))
+              reac2->setParameterValue("k1", reac0->getParameterValue("k2"));
+            else
+              reac2->setParameterMapping("k1", reac0->getParameterMapping("k2")[0]);
+
+            reac2->setParameterMappingVector("substrate", reac0->getParameterMapping("product"));
+          }
+        else //not mass action
+          {
+            const CFunctionParameters & fps = reac0->getFunctionParameters();
+            imax = fps.size();
+            for (i = 0; i < imax; ++i)
+              {
+                const CFunctionParameter * fp = fps[i];
+                assert(fp);
+                assert(fp->getType() == CFunctionParameter::FLOAT64);
+
+                switch (fp->getUsage())
                   {
-                    pdelete(tmp.first);
-                    pdelete(tmp.second);
-                    continue;
-                  }
+                  case CFunctionParameter::SUBSTRATE:
+                  case CFunctionParameter::PRODUCT:
+                  case CFunctionParameter::MODIFIER:
+                    reac1->setParameterMapping(fp->getObjectName(),
+                                               reac0->getParameterMapping(fp->getObjectName())[0]);
+                    reac2->setParameterMapping(fp->getObjectName(),
+                                               reac0->getParameterMapping(fp->getObjectName())[0]);
+                    break;
 
-                //if (tmp.first) std::cout << *tmp.first << "\n\n";
-                //if (tmp.second) std::cout << *tmp.second;
-
-                if (tmp.first) CCopasiDataModel::Global->getFunctionList()->addAndAdaptName(tmp.first);
-                if (tmp.second) CCopasiDataModel::Global->getFunctionList()->addAndAdaptName(tmp.second);
-              }
-
-            C_INT32 i, imax;
-
-            //**** create 1st reaction.
-            reac1 = createReaction(rn1);
-            reac1->setReversible(false);
-            //substrates
-            imax = reac0->getChemEq().getSubstrates().size();
-            for (i = 0; i < imax; ++i)
-              reac1->addSubstrate(reac0->getChemEq().getSubstrates()[i]->getMetaboliteKey(),
-                                  reac0->getChemEq().getSubstrates()[i]->getMultiplicity());
-            //products
-            imax = reac0->getChemEq().getProducts().size();
-            for (i = 0; i < imax; ++i)
-              reac1->addProduct(reac0->getChemEq().getProducts()[i]->getMetaboliteKey(),
-                                reac0->getChemEq().getProducts()[i]->getMultiplicity());
-            //function
-            reac1->setFunction(tmp.first);
-
-            //**** create 2nd reaction.
-            reac2 = createReaction(rn2);
-            reac2->setReversible(false);
-            //substrates -> products
-            imax = reac0->getChemEq().getSubstrates().size();
-            for (i = 0; i < imax; ++i)
-              reac2->addProduct(reac0->getChemEq().getSubstrates()[i]->getMetaboliteKey(),
-                                reac0->getChemEq().getSubstrates()[i]->getMultiplicity());
-            //products -> substrates
-            imax = reac0->getChemEq().getProducts().size();
-            for (i = 0; i < imax; ++i)
-              reac2->addSubstrate(reac0->getChemEq().getProducts()[i]->getMetaboliteKey(),
-                                  reac0->getChemEq().getProducts()[i]->getMultiplicity());
-            //function
-            reac2->setFunction(tmp.second);
-
-            //mapping for both reactions
-            if (massaction)
-              {
-                // the parameter names of the massaction kinetics are hardcoded here.
-                if (reac0->isLocalParameter("k1"))
-                  reac1->setParameterValue("k1", reac0->getParameterValue("k1"));
-                else
-                  reac1->setParameterMapping("k1", reac0->getParameterMapping("k1")[0]);
-
-                reac1->setParameterMappingVector("substrate", reac0->getParameterMapping("substrate"));
-
-                if (reac0->isLocalParameter("k2"))
-                  reac2->setParameterValue("k1", reac0->getParameterValue("k2"));
-                else
-                  reac2->setParameterMapping("k1", reac0->getParameterMapping("k2")[0]);
-
-                reac2->setParameterMappingVector("substrate", reac0->getParameterMapping("product"));
-              }
-            else //not mass action
-              {
-                const CFunctionParameters & fps = reac0->getFunctionParameters();
-                imax = fps.size();
-                for (i = 0; i < imax; ++i)
-                  {
-                    const CFunctionParameter * fp = fps[i];
-                    assert(fp);
-                    assert(fp->getType() == CFunctionParameter::FLOAT64);
-
-                    switch (fp->getUsage())
+                  case CFunctionParameter::PARAMETER:
+                    if (reac0->isLocalParameter(fp->getObjectName()))
                       {
-                      case CFunctionParameter::SUBSTRATE:
-                      case CFunctionParameter::PRODUCT:
-                      case CFunctionParameter::MODIFIER:
-                        reac1->setParameterMapping(fp->getObjectName(),
-                                                   reac0->getParameterMapping(fp->getObjectName())[0]);
-                        reac2->setParameterMapping(fp->getObjectName(),
-                                                   reac0->getParameterMapping(fp->getObjectName())[0]);
-                        break;
-
-                      case CFunctionParameter::PARAMETER:
-                        if (reac0->isLocalParameter(fp->getObjectName()))
-                          {
-                            reac1->setParameterValue(fp->getObjectName(),
-                                                     reac0->getParameterValue(fp->getObjectName()));
-                            reac2->setParameterValue(fp->getObjectName(),
-                                                     reac0->getParameterValue(fp->getObjectName()));
-                          }
-                        else
-                          {
-                            reac1->setParameterMapping(fp->getObjectName(),
-                                                       reac0->getParameterMapping(fp->getObjectName())[0]);
-                            reac2->setParameterMapping(fp->getObjectName(),
-                                                       reac0->getParameterMapping(fp->getObjectName())[0]);
-                          }
-                        break;
-
-                      default:
-                        reac1->setParameterMapping(fp->getObjectName(),
-                                                   reac0->getParameterMapping(fp->getObjectName())[0]);
-                        reac2->setParameterMapping(fp->getObjectName(),
-                                                   reac0->getParameterMapping(fp->getObjectName())[0]);
-                        break;
+                        reac1->setParameterValue(fp->getObjectName(),
+                                                 reac0->getParameterValue(fp->getObjectName()));
+                        reac2->setParameterValue(fp->getObjectName(),
+                                                 reac0->getParameterValue(fp->getObjectName()));
                       }
+                    else
+                      {
+                        reac1->setParameterMapping(fp->getObjectName(),
+                                                   reac0->getParameterMapping(fp->getObjectName())[0]);
+                        reac2->setParameterMapping(fp->getObjectName(),
+                                                   reac0->getParameterMapping(fp->getObjectName())[0]);
+                      }
+                    break;
+
+                  default:
+                    reac1->setParameterMapping(fp->getObjectName(),
+                                               reac0->getParameterMapping(fp->getObjectName())[0]);
+                    reac2->setParameterMapping(fp->getObjectName(),
+                                               reac0->getParameterMapping(fp->getObjectName())[0]);
+                    break;
                   }
               }
-
-            reac1->compile();
-            reac2->compile();
-
-            //remove the old reaction
-            reactionsToDelete.push_back(reac0->getObjectName());
-            ret = true;
           }
+
+        reac1->compile();
+        reac2->compile();
+
+        //remove the old reaction
+        reactionsToDelete.push_back(reac0->getObjectName());
+        ret = true;
       }
 
   imax = reactionsToDelete.size();
