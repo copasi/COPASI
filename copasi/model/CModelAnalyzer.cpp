@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelAnalyzer.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/09/18 00:14:54 $
+//   $Date: 2007/09/18 22:00:43 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -408,13 +408,13 @@ bool CModelAnalyzer::ReactionResult::writeResult(std::ostream & os, bool rt, boo
       }
 
     //function results
-    mFunctionResult.writeResult(os, rt, verbose);
-
-    //     mFunctionResult.mOriginalFunction.writeTable(os, rt);
-    //     if (rt) os << "<p>\n";
-    //     mFunctionResult.mFPart.writeTable(os, rt);
-    //     if (rt) os << "<p>\n";
-    //     mFunctionResult.mBPart.writeTable(os, rt);
+    std::ostringstream tmpss;
+    bool eee = mFunctionResult.writeResult(tmpss, rt, verbose);
+    if (eee) ret = true;
+    if (eee || verbose)
+      {
+        os << tmpss.str();
+      }
 
     return ret;
   }
@@ -426,6 +426,7 @@ void CModelAnalyzer::writeReport(std::ostream & os, bool rt, bool verbose) const
     unsigned i, imax = mReactionResults.size();
     for (i = 0; i < imax; ++i)
       {
+        //std::ostringstream tmpss;
         mReactionResults[i].writeResult(os, rt, verbose);
       }
   }
