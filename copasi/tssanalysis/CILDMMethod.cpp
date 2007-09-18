@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMMethod.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/31 17:57:36 $
+//   $Date: 2007/09/18 13:59:37 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -353,6 +353,7 @@ void CILDMMethod::step(const double & deltaT)
     }
 
   /* If complex eigenvalues */
+  // :TODO: Bug 873 this is broken for dim <= 1
 
   if (mR(dim - 1, dim - 1) == mR(dim - 2 , dim - 2))
     {
