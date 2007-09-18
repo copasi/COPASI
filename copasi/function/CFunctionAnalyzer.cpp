@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionAnalyzer.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/09/18 00:13:39 $
+//   $Author: shoops $
+//   $Date: 2007/09/18 17:00:09 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,6 +17,11 @@
 #include "CFunction.h"
 #include "model/CModel.h"
 #include "report/CKeyFactory.h"
+
+#ifdef WIN32
+double trunc(double x)
+{return (x < 0.0) ? -floor(fabs(x)) : floor(x);}
+#endif
 
 //this define specifies whether debug output is written to std::cout
 //#define C_DBG_FA
