@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQTSSAWidget.ui.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/07/12 15:13:18 $
+//   $Author: shoops $
+//   $Date: 2007/09/18 16:44:59 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -313,7 +313,7 @@ bool CQTSSAWidget::runTask()
 
 void CQTSSAWidget::checkTimeSeries()
 {
-  if (mpEditIntervals->text().toLong() * CCopasiDataModel::Global->getModel()->getNumVariableMetabs() > TSSAMAX)
+  if (mpEditIntervals->text().toLong() * CCopasiDataModel::Global->getModel()->getStateTemplate().getNumVariable() > TSSAMAX)
     {
       mpCheckSave->setChecked(false);
       mpCheckSave->setEnabled(false);
