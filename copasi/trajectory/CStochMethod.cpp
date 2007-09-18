@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-//   $Revision: 1.65 $
+//   $Revision: 1.66 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/31 17:57:34 $
+//   $Date: 2007/09/18 14:51:38 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -146,6 +146,9 @@ void CStochMethod::step(const double & deltaT)
   unsigned C_INT32 i;
   unsigned C_INT32 imax;
 
+  // :TODO: Bug 774: This assumes that the number of variable metabs is the number
+  // of metabs determined by reaction. In addition they are expected at the beginning of the
+  // MetabolitesX which is not the case if we have metabolites of type ODE.
   for (i = 0, imax = mpProblem->getModel()->getNumVariableMetabs(); i < imax; i++)
     if (mpProblem->getModel()->getMetabolitesX()[i]->getValue() >= mMaxIntBeforeStep)
       {

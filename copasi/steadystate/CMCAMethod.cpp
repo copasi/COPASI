@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.cpp,v $
-//   $Revision: 1.40 $
+//   $Revision: 1.41 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/05/15 13:46:08 $
+//   $Date: 2007/09/18 14:51:38 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -267,6 +267,8 @@ int CMCAMethod::calculateUnscaledConcentrationCC()
   if (info != 0)
     return MCA_SINGULAR;
 
+  // :TODO: Bug 774: This assumes that the number of variable metabs is the number
+  // of metabs determined by reaction.
   aux1.resize(mpModel->getNumVariableMetabs(), M);
   aux1 = 0.0;
 
@@ -276,6 +278,8 @@ int CMCAMethod::calculateUnscaledConcentrationCC()
     for (j = 0; j < M; j++)
       aux1[i][j] = - aux2[i][j];
 
+  // :TODO: Bug 774: This assumes that the number of variable metabs is the number
+  // of metabs determined by reaction.
   for (i = M ; i < (C_INT32)mpModel->getNumVariableMetabs(); i++)
     for (j = 0; j < M; j++)
       {
@@ -286,6 +290,8 @@ int CMCAMethod::calculateUnscaledConcentrationCC()
 
   // mGamma = aux1 * RedStoi
   // :TODO: use dgemm
+  // :TODO: Bug 774: This assumes that the number of variable metabs is the number
+  // of metabs determined by reaction.
   mUnscaledConcCC.resize(mpModel->getNumVariableMetabs(), N);
   for (i = 0; i < (C_INT32)mpModel->getNumVariableMetabs(); i++)
     for (j = 0; j < N; j++)
@@ -386,6 +392,8 @@ void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
 
   // Scale ConcCC
   mScaledConcCC.resize(mUnscaledConcCC.numRows(), mUnscaledConcCC.numCols());
+  // :TODO: Bug 774: This assumes that the number of variable metabs is the number
+  // of metabs determined by reaction.
   for (i = 0; i < mpModel->getNumVariableMetabs(); i++)
     for (j = 0; j < mpModel->getTotSteps(); j++)
       {
