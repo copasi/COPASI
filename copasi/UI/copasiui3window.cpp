@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.206 $
+//   $Revision: 1.207 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/09/17 14:16:17 $
+//   $Author: ssahle $
+//   $Date: 2007/09/18 22:07:01 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1420,7 +1420,7 @@ void CopasiUI3Window::slotCheckModel()
   CModelAnalyzer MA(CCopasiDataModel::Global->getModel());
 
   std::ostringstream ss;
-  MA.writeReport(ss, true, true);
+  MA.writeReport(ss, true, false);
 
   QTextEdit* pTE = new QTextEdit(FROM_UTF8(ss.str()));
   pTE->setReadOnly(true);
