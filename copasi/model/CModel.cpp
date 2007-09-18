@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.319 $
+//   $Revision: 1.320 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/09/18 00:15:47 $
+//   $Author: shoops $
+//   $Date: 2007/09/18 16:46:21 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -54,6 +54,8 @@
 #else
 #define CCHECK
 #endif
+
+#define mNumMetabolitesDependent (mNumMetabolitesReaction - mNumMetabolitesIndependent)
 
 const char * CModel::VolumeUnitNames[] =
   {"m\xc2\xb3", "l", "ml", "\xc2\xb5l", "nl", "pl", "fl", NULL};
@@ -764,9 +766,10 @@ void CModel::buildL(const CMatrix< C_FLOAT64 > & LU)
   DebugFile << R << std::endl;
 #endif
 
-  mL.resize(mNumMetabolitesReaction - mNumMetabolitesIndependent, mNumMetabolitesIndependent);
+  mL.resize(mNumMetabolitesDependent, mNumMetabolitesIndependent);
 
-  imin = mNumMetabolitesIndependent, imax = getNumVariableMetabs();
+  imin = mNumMetabolitesIndependent;
+  imax = mNumMetabolitesReaction;
   jmax = mNumMetabolitesIndependent;
 
   // Construct L_0
@@ -798,7 +801,7 @@ void CModel::updateMoietyValues()
 
 void CModel::buildMoieties()
 {
-  unsigned C_INT32 i, imax = mNumMetabolitesReaction - mNumMetabolitesIndependent;
+  unsigned C_INT32 i, imax = mNumMetabolitesDependent;
   unsigned C_INT32 j;
 
   CCopasiVector< CMetab >::iterator it =
@@ -951,7 +954,7 @@ unsigned C_INT32 CModel::getNumMetabs() const
   {return mMetabolites.size();}
 
 unsigned C_INT32 CModel::getNumVariableMetabs() const
-  {return mNumMetabolitesReaction;}
+  {return mNumMetabolitesODE + mNumMetabolitesReaction + mNumMetabolitesAssignment;}
 
 unsigned C_INT32 CModel::getNumODEMetabs() const
   {CCHECK return mNumMetabolitesODE;}
@@ -1183,11 +1186,7 @@ bool CModel::buildStateTemplate()
 
   // Now all entities and reactions can be compiled
   ppEntity = mStateTemplate.beginIndependent();
-  CModelEntity ** ppEntityEnd = mStateTemplate.endDependent();
-  for (; ppEntity != ppEntityEnd; ++ppEntity)
-    (*ppEntity)->compile();
-
-  ppEntityEnd = mStateTemplate.endFixed();
+  CModelEntity ** ppEntityEnd = mStateTemplate.endFixed();
   for (; ppEntity != ppEntityEnd; ++ppEntity)
     (*ppEntity)->compile();
 
@@ -1222,7 +1221,7 @@ bool CModel::buildUserOrder()
 
   mStateTemplate.setUserOrder(Entities);
 
-  mJacobianPivot.resize(mStateTemplate.getNumIndependent() - mNumMetabolitesIndependent + mNumMetabolitesReaction);
+  mJacobianPivot.resize(mStateTemplate.getNumIndependent() + mNumMetabolitesDependent);
 
   const unsigned C_INT32 * pUserOrder = mStateTemplate.getUserOrder().array();
   const unsigned C_INT32 * pUserOrderEnd = pUserOrder + mStateTemplate.getUserOrder().size();
@@ -1248,7 +1247,7 @@ bool CModel::updateInitialValues()
 
   CModelEntity **ppEntity = mStateTemplate.beginIndependent() - 1; // Offset for time
   CModelEntity **ppEntityEnd =
-    mStateTemplate.endIndependent() - mNumMetabolitesIndependent + mNumMetabolitesReaction;;
+    mStateTemplate.endIndependent() + mNumMetabolitesDependent;
 
   for (; ppEntity != ppEntityEnd; ++ppEntity)
     Objects.insert((*ppEntity)->getInitialValueReference());
@@ -1287,7 +1286,7 @@ bool CModel::buildSimulatedSequence()
   // For CMetab ASSIGNMENTs we technincally need only to add the Concentration
   // however for completeness we calculate the state value.
   // For CModelValues and CCompartment ASSIGNMENTs we need to add the Value
-  ppEntity = mStateTemplate.beginDependent() - mNumMetabolitesIndependent + mNumMetabolitesReaction;
+  ppEntity = mStateTemplate.beginDependent() + mNumMetabolitesDependent;
   ppEntityEnd = mStateTemplate.endDependent();
   for (; ppEntity != ppEntityEnd; ++ppEntity)
     Objects.insert((*ppEntity)->getValueReference());
@@ -1306,17 +1305,20 @@ bool CModel::buildSimulatedSequence()
   std::set< const CCopasiObject * >::iterator it;
   std::set< const CCopasiObject * >::iterator end = Objects.end();
   CCopasiObject * pObject;
+  CMetab * pMetab;
 
   while (UnusedFound)
     {
       UnusedFound = false;
-      ppEntity = mStateTemplate.beginDependent() + mNumMetabolitesReaction - mNumMetabolitesIndependent;
+      ppEntity = mStateTemplate.beginDependent() + mNumMetabolitesDependent;
 
       for (; ppEntity != ppEntityEnd; ++ppEntity)
         if ((*ppEntity)->isUsed())
           {
             if ((*ppEntity)->getStatus() != ASSIGNMENT)
               pObject = *ppEntity;
+            else if ((pMetab = dynamic_cast< CMetab *>(*ppEntity)) != NULL)
+              pObject = pMetab->getConcentrationReference();
             else
               pObject = (*ppEntity)->getValueReference();
 
@@ -1344,7 +1346,7 @@ bool CModel::buildSimulatedSequence()
       CVector< CModelEntity * > Reorder(mStateTemplate.size() - 1);
       CModelEntity ** ppReorder = Reorder.array();
       ppEntity = mStateTemplate.beginIndependent();
-      ppEntityEnd = mStateTemplate.beginDependent() + mNumMetabolitesReaction - mNumMetabolitesIndependent;
+      ppEntityEnd = mStateTemplate.beginDependent() + mNumMetabolitesDependent;
 
       for (; ppEntity != ppEntityEnd; ++ppEntity, ++ppReorder)
         *ppReorder = *ppEntity;
@@ -1356,7 +1358,7 @@ bool CModel::buildSimulatedSequence()
         if ((*ppEntity)->isUsed())
           *ppReorder++ = *ppEntity;
 
-      ppEntity = mStateTemplate.beginDependent() + mNumMetabolitesReaction - mNumMetabolitesIndependent;
+      ppEntity = mStateTemplate.beginDependent() + mNumMetabolitesDependent;
       for (; ppEntity != ppEntityEnd; ++ppEntity)
         if (!(*ppEntity)->isUsed())
           *ppReorder++ = *ppEntity;
@@ -1422,7 +1424,7 @@ bool CModel::buildConstantSequence()
   std::set< const CCopasiObject * > Objects;
 
   CModelEntity ** ppEntity =
-    mStateTemplate.beginDependent() - mNumMetabolitesIndependent + mNumMetabolitesReaction;
+    mStateTemplate.beginDependent() + mNumMetabolitesDependent;
   CModelEntity ** ppEntityEnd = mStateTemplate.endDependent();
   for (; ppEntity != ppEntityEnd; ++ppEntity)
     {
@@ -1709,7 +1711,7 @@ void CModel::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
                                const C_FLOAT64 & resolution)
 {
   unsigned C_INT32 Dim =
-    mCurrentState.getNumIndependent() + mNumMetabolitesReaction - mNumMetabolitesIndependent;
+    mCurrentState.getNumIndependent() + mNumMetabolitesDependent;
   unsigned C_INT32 Col;
 
   jacobian.resize(Dim, Dim);
