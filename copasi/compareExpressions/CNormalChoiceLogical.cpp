@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalChoiceLogical.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/08/10 13:42:20 $
+//   $Author: shoops $
+//   $Date: 2007/09/18 19:34:00 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,57 +19,67 @@
 CNormalChoiceLogical::CNormalChoiceLogical(): CNormalBase(), mpCondition(NULL), mpTrue(NULL), mpFalse(NULL)
 {}
 
-CNormalChoiceLogical::CNormalChoiceLogical(const CNormalChoiceLogical& src): CNormalBase(src), mpCondition(src.mpCondition->copy()), mpTrue(src.mpTrue->copy()), mpFalse(src.mpFalse->copy())
-{}
+CNormalChoiceLogical::CNormalChoiceLogical(const CNormalChoiceLogical& src):
+    CNormalBase(src),
+    mpCondition(NULL),
+    mpTrue(NULL),
+    mpFalse(NULL)
+{*this = src;}
 
 CNormalChoiceLogical::~CNormalChoiceLogical()
 {
-  if (this->mpCondition != NULL) delete this->mpCondition;
-  if (this->mpTrue != NULL) delete this->mpTrue;
-  if (this->mpFalse != NULL) delete this->mpFalse;
+  pdelete(mpCondition);
+  pdelete(mpTrue);
+  pdelete(mpFalse);
 }
 
 CNormalChoiceLogical& CNormalChoiceLogical::operator=(const CNormalChoiceLogical& src)
 {
-  if (this->mpCondition != NULL) delete this->mpCondition;
-  if (this->mpTrue != NULL) delete this->mpTrue;
-  if (this->mpFalse != NULL) delete this->mpFalse;
-  this->mpCondition = src.mpCondition->copy();
-  this->mpTrue = src.mpTrue->copy();
-  this->mpFalse = src.mpFalse->copy();
+  pdelete(mpCondition);
+  pdelete(mpTrue);
+  pdelete(mpFalse);
+
+  if (src.mpCondition != NULL)
+    mpCondition = new CNormalLogical(*src.mpCondition);
+  if (src.mpTrue != NULL)
+    mpTrue = new CNormalLogical(*src.mpTrue);
+  if (src.mpFalse != NULL)
+    mpFalse = new CNormalLogical(*src.mpFalse);
+
   return *this;
 }
 
 bool CNormalChoiceLogical::setCondition(const CNormalLogical& cond)
 {
   bool result = true;
-  if (this->mpCondition != NULL) delete this->mpCondition;
+  pdelete(mpCondition);
+
   // check the cond if it is OK
   result = checkConditionTree(cond);
   if (result == true)
-    {
-      this->mpCondition = cond.copy();
-    }
+    mpCondition = new CNormalLogical(cond);
   return result;
 }
 
 bool CNormalChoiceLogical::setTrueExpression(const CNormalLogical& branch)
 {
   bool result = true;
-  if (this->mpTrue != NULL) delete this->mpTrue;
+  pdelete(mpTrue);
+
   // check the branch if it is OK
   result = checkConditionTree(branch);
-  this->mpTrue = branch.copy();
+  mpTrue = new CNormalLogical(branch);
   return result;
 }
 
 bool CNormalChoiceLogical::setFalseExpression(const CNormalLogical& branch)
 {
   bool result = true;
-  if (this->mpFalse != NULL) delete this->mpFalse;
+  pdelete(mpFalse);
+
   // check the branch if it is OK
   result = checkConditionTree(branch);
-  this->mpFalse = branch.copy();
+  mpFalse = new CNormalLogical(branch);
   return result;
 }
 
@@ -103,7 +113,7 @@ CNormalLogical& CNormalChoiceLogical::getFalseExpression()
   return *mpFalse;
 }
 
-CNormalChoiceLogical* CNormalChoiceLogical::copy() const
+CNormalBase * CNormalChoiceLogical::copy() const
   {
     return new CNormalChoiceLogical(*this);
   }

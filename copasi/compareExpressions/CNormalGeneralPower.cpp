@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalGeneralPower.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/08/08 10:27:29 $
+//   $Author: shoops $
+//   $Date: 2007/09/18 19:34:00 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -130,7 +130,7 @@ bool CNormalGeneralPower::simplify()
   return result;
 }
 
-CNormalGeneralPower* CNormalGeneralPower::copy() const
+CNormalBase * CNormalGeneralPower::copy() const
   {
     return new CNormalGeneralPower(*this);
   }

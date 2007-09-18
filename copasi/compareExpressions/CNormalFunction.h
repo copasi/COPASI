@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalFunction.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/08/07 16:49:49 $
+//   $Author: shoops $
+//   $Date: 2007/09/18 19:34:00 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -79,7 +79,7 @@ class CNormalFunction: public CNormalBase
     bool operator==(const CNormalFunction& src) const;
     bool operator<(const CNormalFunction& src) const;
 
-    virtual CNormalFunction* copy() const;
+    virtual CNormalBase * copy() const;
     virtual bool simplify();
 
     virtual std::string toString() const;

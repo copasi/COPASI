@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLogical.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/08/23 09:03:47 $
+//   $Author: shoops $
+//   $Date: 2007/09/18 19:34:00 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -43,7 +43,7 @@ CNormalLogical::~CNormalLogical()
   cleanSetOfSets(this->mAndSets);
 }
 
-CNormalLogical* CNormalLogical::copy() const
+CNormalBase * CNormalLogical::copy() const
   {
     return new CNormalLogical(*this);
   }
@@ -697,7 +697,7 @@ void CNormalLogical::copySet(const std::set<std::pair<TYPE*, bool>, CNormalLogic
   typename std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> >::const_iterator it = source.begin(), endit = source.end();
   while (it != endit)
     {
-      TYPE* pNewItem = (*it).first->copy();
+      TYPE* pNewItem = new TYPE(*(*it).first);
       if (target.insert(std::make_pair(pNewItem, (*it).second)).second == false)
         {
           // clean up the item if the insert failed

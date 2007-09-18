@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalGeneralPower.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/08/07 16:49:49 $
+//   $Author: shoops $
+//   $Date: 2007/09/18 19:34:00 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -46,7 +46,7 @@ class CNormalGeneralPower: public CNormalBase
     bool operator==(const CNormalGeneralPower& rhs) const;
     bool operator<(const CNormalGeneralPower& rhs) const;
 
-    virtual CNormalGeneralPower* copy() const;
+    virtual CNormalBase * copy() const;
     virtual bool simplify();
 
     virtual std::string toString() const;

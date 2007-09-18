@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalChoice.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/08/13 07:59:50 $
+//   $Author: shoops $
+//   $Date: 2007/09/18 19:34:00 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,7 +32,7 @@ class CNormalChoice : public CNormalBase
     CNormalChoice(const CNormalChoice& src);
     virtual ~CNormalChoice();
 
-    virtual CNormalChoice* copy() const;
+    virtual CNormalBase * copy() const;
 
     CNormalChoice& operator=(const CNormalChoice& src);
     bool operator==(const CNormalChoice& rhs) const;

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalFraction.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/08/23 09:03:47 $
+//   $Author: shoops $
+//   $Date: 2007/09/18 19:34:00 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -54,7 +54,7 @@ class CNormalFraction : public CNormalBase
      */
     bool operator<(const CNormalFraction& src) const;
 
-    virtual CNormalFraction* copy() const;
+    virtual CNormalBase * copy() const;
 
     /**
      * Dtor.

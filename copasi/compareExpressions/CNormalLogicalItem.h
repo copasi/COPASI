@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLogicalItem.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/08/22 17:30:11 $
+//   $Author: shoops $
+//   $Date: 2007/09/18 19:34:00 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -47,7 +47,7 @@ class CNormalLogicalItem : public CNormalBase
     CNormalLogicalItem& operator=(const CNormalLogicalItem& src);
     bool operator<(const CNormalLogicalItem& rhs) const;
     bool operator==(const CNormalLogicalItem& rhs) const;
-    virtual CNormalLogicalItem* copy() const;
+    virtual CNormalBase * copy() const;
     virtual std::string toString() const;
     virtual bool simplify();
 

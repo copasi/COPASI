@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalChoice.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/08/13 07:59:50 $
+//   $Author: shoops $
+//   $Date: 2007/09/18 19:34:00 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,57 +19,71 @@
 CNormalChoice::CNormalChoice(): CNormalBase(), mpCondition(NULL), mpTrue(NULL), mpFalse(NULL)
 {}
 
-CNormalChoice::CNormalChoice(const CNormalChoice& src): CNormalBase(src), mpCondition(src.mpCondition->copy()), mpTrue(src.mpTrue->copy()), mpFalse(src.mpFalse->copy())
-{}
+CNormalChoice::CNormalChoice(const CNormalChoice& src):
+    CNormalBase(src),
+    mpCondition(NULL),
+    mpTrue(NULL),
+    mpFalse(NULL)
+{*this = src;}
 
 CNormalChoice::~CNormalChoice()
 {
-  if (this->mpCondition != NULL) delete this->mpCondition;
-  if (this->mpTrue != NULL) delete this->mpTrue;
-  if (this->mpFalse != NULL) delete this->mpFalse;
+  pdelete(mpCondition);
+  pdelete(mpTrue);
+  pdelete(mpFalse);
 }
 
 CNormalChoice& CNormalChoice::operator=(const CNormalChoice& src)
 {
-  if (this->mpCondition != NULL) delete this->mpCondition;
-  if (this->mpTrue != NULL) delete this->mpTrue;
-  if (this->mpFalse != NULL) delete this->mpFalse;
-  this->mpCondition = src.mpCondition->copy();
-  this->mpTrue = src.mpTrue->copy();
-  this->mpFalse = src.mpFalse->copy();
+  pdelete(mpCondition);
+  pdelete(mpTrue);
+  pdelete(mpFalse);
+
+  if (src.mpCondition != NULL)
+    mpCondition = new CNormalLogical(*src.mpCondition);
+  if (src.mpCondition != NULL)
+    mpTrue = new CNormalFraction(*src.mpTrue);
+  if (src.mpCondition != NULL)
+    mpFalse = new CNormalFraction(*src.mpFalse);
+
   return *this;
 }
 
 bool CNormalChoice::setCondition(const CNormalLogical& cond)
 {
   bool result = true;
-  if (this->mpCondition != NULL) delete this->mpCondition;
+
+  pdelete(mpCondition);
+
   // check the cond if it is OK
   result = checkConditionTree(cond);
   if (result == true)
-    {
-      this->mpCondition = cond.copy();
-    }
+    mpCondition = new CNormalLogical(cond);
+
   return result;
 }
 
 bool CNormalChoice::setTrueExpression(const CNormalFraction& branch)
 {
   bool result = true;
-  if (this->mpTrue != NULL) delete this->mpTrue;
+
+  pdelete(mpTrue);
+
   // check the branch if it is OK
   result = checkExpressionTree(branch);
-  this->mpTrue = branch.copy();
+
+  mpTrue = new CNormalFraction(branch);
   return result;
 }
 
 bool CNormalChoice::setFalseExpression(const CNormalFraction& branch)
 {
   bool result = true;
-  if (this->mpFalse != NULL) delete this->mpFalse;
+  pdelete(mpFalse);
+
   // check the branch if it is OK
   result = checkExpressionTree(branch);
-  this->mpFalse = branch.copy();
+  mpFalse = new CNormalFraction(branch);
   return result;
 }
 
@@ -103,7 +117,7 @@ CNormalFraction& CNormalChoice::getFalseExpression()
   return *mpFalse;
 }
 
-CNormalChoice* CNormalChoice::copy() const
+CNormalBase * CNormalChoice::copy() const
   {
     return new CNormalChoice(*this);
   }
