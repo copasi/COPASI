@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMMethod.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/18 13:59:37 $
+//   $Date: 2007/09/18 17:30:08 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -2386,6 +2386,8 @@ void CILDMMethod::createAnnotationsM()
  **/
 void CILDMMethod::setAnnotationM(int step)
 {
+  int i;
+
   if (!step) return;
   step -= 1;
   double timeScale;
@@ -2398,7 +2400,7 @@ void CILDMMethod::setAnnotationM(int step)
   mVslowPrint = mVec_mVslow[step];
   pVslowPrintAnn->resize();
   pVslowPrintAnn->setCopasiVector(1, &mpModel->getMetabolitesX());
-  for (int i = 0; i < mData.dim; i++)
+  for (i = 0; i < mData.dim; i++)
     {
       timeScale = mVec_TimeScale[step][i];
       sstr << "TS: ";
@@ -2413,7 +2415,7 @@ void CILDMMethod::setAnnotationM(int step)
   mVslowMetabPrint = mVec_mVslowMetab[step];
   pVslowMetabPrintAnn->resize();
   pVslowMetabPrintAnn->setCopasiVector(0, &mpModel->getMetabolitesX());
-  for (int i = 0; i < mData.dim; i++)
+  for (i = 0; i < mData.dim; i++)
     {
       timeScale = mVec_TimeScale[step][i];
       sstr << "TS: ";
@@ -2431,7 +2433,7 @@ void CILDMMethod::setAnnotationM(int step)
     sstr << " mode";
   str = sstr.str();
   mVslowSpacePrint.resize(mData.dim, 1);
-  for (int i = 0; i < mData.dim; i++)
+  for (i = 0; i < mData.dim; i++)
     mVslowSpacePrint(i, 0) = mVec_mVslowSpace[step][i];
   pVslowSpacePrintAnn->resize();
   pVslowSpacePrintAnn->setCopasiVector(0, &mpModel->getMetabolitesX());
