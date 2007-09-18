@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionAnalyzer.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/08/22 23:59:00 $
+//   $Date: 2007/09/18 00:13:39 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -72,6 +72,17 @@ class CFunctionAnalyzer
         CValue operator-(const CValue & rhs) const;
         CValue operator^(const CValue & rhs) const;
 
+        bool isPositive() const;
+        bool containsPositive() const;
+        bool isZero() const;
+        bool containsZero() const;
+        bool isNegative() const;
+        bool containsNegative() const;
+        bool isInvalid() const;
+        bool containsInvalid() const;
+
+        bool operator==(const CValue & rhs) const;
+
       protected:
         CValue invert() const;
 
@@ -106,6 +117,17 @@ class CFunctionAnalyzer
     class Result
       {
       public:
+
+        struct FunctionInformation
+          {
+            std::vector<CValue> mUnchangedParameters;
+            std::vector<std::pair<std::pair<int, std::string>, std::vector<CValue> > > mSubstrateZero;
+            std::vector<std::pair<std::pair<int, std::string>, std::vector<CValue> > > mProductZero;
+
+            void writeTable(std::ostream & os, bool rt) const;
+            bool writeAnalysis(std::ostream & os, bool rt, bool reversible) const;
+          };
+
         Result();
         void clear() {*this = Result();};
 
@@ -113,15 +135,18 @@ class CFunctionAnalyzer
          * writes a text report about the function to the stream. The return value
          * indicates if a problem was reported.
          */
-        bool writeResult(std::ostream & os, bool rt, bool longText) const;
+        bool writeResult(std::ostream & os, bool rt, bool verbose) const;
 
-        void writeTable(std::ostream & os, bool rt) const;
+        //void writeTable(std::ostream & os, bool rt) const;
 
         const CFunction * mpFunction;
         bool mIrreversibleKineticsWithProducts;
-        std::vector<CValue> mUnchangedParameters;
-        std::vector<std::pair<int, std::vector<CValue> > > mSubstrateZero;
-        std::vector<std::pair<int, std::vector<CValue> > > mProductZero;
+
+        FunctionInformation mOriginalFunction;
+
+        bool mReversibleNonSplitable;
+        FunctionInformation mFPart;
+        FunctionInformation mBPart;
       };
 
     void checkKineticFunction(const CFunction * f, const CReaction * reaction = NULL);

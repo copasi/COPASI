@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelAnalyzer.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/08/22 23:59:49 $
+//   $Date: 2007/09/18 00:14:54 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -301,7 +301,7 @@ CModelAnalyzer::ReactionResult CModelAnalyzer::checkReaction(const CReaction* re
 
 #define WRITE(__level, __text) os << CFunctionAnalyzer::write(__level, rt, __text, "");
 
-bool CModelAnalyzer::ReactionResult::writeResult(std::ostream & os, bool rt, bool longText) const
+bool CModelAnalyzer::ReactionResult::writeResult(std::ostream & os, bool rt, bool verbose) const
   {
     bool ret = false;
 
@@ -408,19 +408,24 @@ bool CModelAnalyzer::ReactionResult::writeResult(std::ostream & os, bool rt, boo
       }
 
     //function results
-    mFunctionResult.writeResult(os, rt, longText);
-    mFunctionResult.writeTable(os, rt);
+    mFunctionResult.writeResult(os, rt, verbose);
+
+    //     mFunctionResult.mOriginalFunction.writeTable(os, rt);
+    //     if (rt) os << "<p>\n";
+    //     mFunctionResult.mFPart.writeTable(os, rt);
+    //     if (rt) os << "<p>\n";
+    //     mFunctionResult.mBPart.writeTable(os, rt);
 
     return ret;
   }
 
-void CModelAnalyzer::writeReport(std::ostream & os, bool rt, bool longText) const
+void CModelAnalyzer::writeReport(std::ostream & os, bool rt, bool verbose) const
   {
 
     //reaction results
     unsigned i, imax = mReactionResults.size();
     for (i = 0; i < imax; ++i)
       {
-        mReactionResults[i].writeResult(os, rt, longText);
+        mReactionResults[i].writeResult(os, rt, verbose);
       }
   }

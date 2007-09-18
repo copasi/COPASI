@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelAnalyzer.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/08/22 23:59:49 $
+//   $Date: 2007/09/18 00:14:54 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,7 +27,7 @@ class CModelAnalyzer
 
     CModelAnalyzer(const CModel* model);
 
-    void writeReport(std::ostream & os, bool rt, bool longText) const;
+    void writeReport(std::ostream & os, bool rt, bool verbose) const;
 
   protected:
     class ReactionResult
@@ -60,7 +60,7 @@ class CModelAnalyzer
          * writes a text report about the function to the stream. The return value
          * indicates if a problem was reported.
          */
-        bool writeResult(std::ostream & os, bool rt, bool longText) const;
+        bool writeResult(std::ostream & os, bool rt, bool verbose) const;
       };
 
     void checkModel(const CModel* model);
