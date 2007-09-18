@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/unittests.pro,v $ 
-#   $Revision: 1.6 $ 
+#   $Revision: 1.7 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2007/08/24 10:41:31 $ 
+#   $Date: 2007/09/18 16:33:49 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -62,6 +62,8 @@ contains(BUILD_OS, Darwin){
    PRE_TARGETDEPS += ../../lib/libCOPASISE.a
 
 #  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a)
+}
+
 }
 
 
