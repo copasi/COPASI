@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CopasiSlider.cpp,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.33 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/04 20:28:35 $
+//   $Date: 2007/09/18 18:15:46 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -286,7 +286,7 @@ C_FLOAT64 CopasiSlider::calculateValueFromPosition(int position)
       break;
     case CSlider::logarithmic:
       exponent = (((double)position) * log10(this->mpCSlider->getMaxValue() / this->mpCSlider->getMinValue())) / this->mpCSlider->getTickNumber();
-      value = this->mpCSlider->getMinValue() * pow(10, exponent);
+      value = this->mpCSlider->getMinValue() * pow(10.0, exponent);
       break;
     default:
       value = 0.0;
