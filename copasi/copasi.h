@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.h,v $
-//   $Revision: 1.57 $
+//   $Revision: 1.58 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/04/10 18:03:40 $
+//   $Date: 2007/09/19 17:05:21 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -98,7 +98,7 @@
 # define ios_base ios
 #endif
 
-#if (defined USE_MKL || defined USE_SUNPERF)
+#if (defined USE_MKL || defined USE_SUNPERF || defined __x86_64)
 # define C_INT int
 #else
 # if (defined USE_CLAPACK || defined USE_LAPACK || defined Darwin)
