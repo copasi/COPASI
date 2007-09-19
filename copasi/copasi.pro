@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.pro,v $ 
-#   $Revision: 1.36 $ 
+#   $Revision: 1.37 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2007/08/23 14:37:00 $ 
+#   $Date: 2007/09/19 18:17:37 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -11,7 +11,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.36 $ $Author: shoops $ $Date: 2007/08/23 14:37:00 $  
+# $Revision: 1.37 $ $Author: shoops $ $Date: 2007/09/19 18:17:37 $  
 ######################################################################
 
 TEMPLATE = subdirs
@@ -46,6 +46,10 @@ SUBDIRS += tss
 SUBDIRS += utilities
 SUBDIRS += xml
 
+!contains(BUILD_OS, WIN32) {
+  SUBDIRS += compareExpressions
+}
+
 contains(DEFINES, WITH_LAYOUT) {
   SUBDIRS += layout
   SUBDIRS += layoutUI
@@ -64,8 +68,6 @@ contains(DEFINES, COPASI_DEBUG) {
   SUBDIRS += UI
   SUBDIRS += wizard
 }
-
-SUBDIRS += compareExpressions
 
 # Now build the libs
 SUBDIRS += libs
