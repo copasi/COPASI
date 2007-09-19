@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeNumber.cpp,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/08/15 15:02:03 $
+//   $Author: shoops $
+//   $Date: 2007/09/19 14:08:56 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -157,7 +157,7 @@ ASTNode* CEvaluationNodeNumber::toAST() const
       case ENOTATION:
         node->setType(AST_REAL_E);
         num2 = floor(log10(this->value()));
-        num1 = pow(10, log10(this->value()) - num2);
+        num1 = pow(10.0, log10(this->value()) - num2);
         node->setValue(num1, (long)num2);
         break;
       case RATIONALE:
