@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLogical.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/18 19:34:00 $
+//   $Date: 2007/09/19 13:26:56 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -255,7 +255,8 @@ bool CNormalLogical::simplify()
           std::set<std::pair<std::set<std::pair<CNormalLogical*, bool>, CNormalLogical::SetSorter<CNormalLogical> >, bool>, CNormalLogical::SetOfSetsSorter<CNormalLogical> >::iterator it2 = tmpOrItems.begin(), endit2 = tmpOrItems.end();
           while (it2 != endit2)
             {
-              std::set<std::pair<CNormalLogical*, bool> >::const_iterator it3 = (*it2).first.begin(), endit3 = (*it2).first.end();
+              std::set<std::pair<CNormalLogical*, bool>, CNormalLogical::SetSorter<CNormalLogical> >::const_iterator it3 = (*it2).first.begin();
+              std::set<std::pair<CNormalLogical*, bool>, CNormalLogical::SetSorter<CNormalLogical> >::const_iterator endit3 = (*it2).first.end();
               assert(it2->second != true);
               while (it3 != endit3 && result == true)
                 {
@@ -485,8 +486,14 @@ bool CNormalLogical::convertAndOrToOrAnd(const std::set<std::pair<std::set<std::
   bool result = true;
   if (source.size() > 1)
     {
-      typename std::set<std::pair<std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> >, bool>, CNormalLogical::SetOfSetsSorter<TYPE> > tmpSourceSet((++source.begin()), source.end());
-      typename std::set<std::pair<std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> >, bool>, CNormalLogical::SetOfSetsSorter<TYPE> > tmpTargetSet;
+      std::set<std::pair<std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> >, bool>, CNormalLogical::SetOfSetsSorter<TYPE> > tmpSourceSet;
+      std::set<std::pair<std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> >, bool>, CNormalLogical::SetOfSetsSorter<TYPE> > tmpTargetSet;
+      std::set<std::pair<std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> >, bool>, CNormalLogical::SetOfSetsSorter<TYPE> >::const_iterator itSrc = source.begin();
+      std::set<std::pair<std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> >, bool>, CNormalLogical::SetOfSetsSorter<TYPE> >::const_iterator endSrc = source.end();
+
+      if (itSrc != endSrc) itSrc++;
+      while (itSrc != endSrc) tmpSourceSet.insert(*itSrc++);
+
       result = ((*source.begin()).second == false);
       if (result == true)
         {

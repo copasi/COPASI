@@ -108,6 +108,18 @@ Package=<4>
 
 ###############################################################################
 
+Project: "compareExpressions"=.\compareExpressions\compareExpressions.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
 Project: "copasiXML"=.\xml\copasiXML.dsp - Package Owner=<4>
 
 Package=<5>

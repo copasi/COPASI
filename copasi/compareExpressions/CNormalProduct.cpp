@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalProduct.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/18 19:34:00 $
+//   $Date: 2007/09/19 13:26:56 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -301,8 +301,8 @@ CNormalSum* CNormalProduct::multiply(const CNormalSum& sum)
     }
   CNormalSum* tmp = new CNormalSum(sum);
   CNormalSum* newsum = new CNormalSum();
-  std::set<CNormalProduct*>::const_iterator it;
-  std::set<CNormalProduct*>::const_iterator itEnd = tmp->getProducts().end();
+  std::set<CNormalProduct*, compareProducts>::const_iterator it;
+  std::set<CNormalProduct*, compareProducts>::const_iterator itEnd = tmp->getProducts().end();
   for (it = tmp->getProducts().begin(); it != itEnd; ++it)
     {
       (*it)->multiply(*this);
@@ -360,10 +360,10 @@ bool CNormalProduct::checkSamePowerList(const CNormalProduct & rhs) const
   {
     if (mItemPowers.size() != rhs.mItemPowers.size())
       return false;
-    std::set<CNormalItemPower*>::const_iterator it;
-    std::set<CNormalItemPower*>::const_iterator itEnd = mItemPowers.end();
-    std::set<CNormalItemPower*>::const_iterator it2;
-    std::set<CNormalItemPower*>::const_iterator it2End = rhs.mItemPowers.end();
+    std::set< CNormalItemPower*, compareItemPowers >::const_iterator it;
+    std::set< CNormalItemPower*, compareItemPowers >::const_iterator itEnd = mItemPowers.end();
+    std::set< CNormalItemPower*, compareItemPowers >::const_iterator it2;
+    std::set< CNormalItemPower*, compareItemPowers >::const_iterator it2End = rhs.mItemPowers.end();
     for (it = mItemPowers.begin(), it2 = rhs.mItemPowers.begin(); it != itEnd; ++it, ++it2)
       {
         if (!(**it == **it2))

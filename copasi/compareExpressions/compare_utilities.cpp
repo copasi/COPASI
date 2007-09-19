@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/compare_utilities.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/08/22 17:30:11 $
+//   $Author: shoops $
+//   $Date: 2007/09/19 13:26:56 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -64,7 +64,7 @@ bool expand_function_calls(ASTNode* pNode, const Model* pModel)
           pNode = pTmpNode;
         }
     }
-  unsigned int i, iMax = pNode->getNumChildren();
+  unsigned int i = 0, iMax = pNode->getNumChildren();
   while (i < iMax && result == true)
     {
       result = expand_function_calls(pNode->getChild(i), pModel);
@@ -311,7 +311,7 @@ void normalize_variable_names(CNormalBase* pBase, std::map<std::string, std::str
           ++it;
         }
       std::set<CNormalProduct*, compareProducts> tmpSet2;
-      std::set<CNormalProduct*, compareProducts*>::const_iterator it2 = pSum->getProducts().begin(), endit2 = pSum->getProducts().end();
+      std::set<CNormalProduct*, compareProducts>::const_iterator it2 = pSum->getProducts().begin(), endit2 = pSum->getProducts().end();
       while (it2 != endit2)
         {
           pProduct = new CNormalProduct(**it2);

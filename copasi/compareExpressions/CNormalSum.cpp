@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalSum.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/18 19:34:00 $
+//   $Date: 2007/09/19 13:26:56 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -285,13 +285,13 @@ bool CNormalSum::divide(const CNormalItemPower& itemPower)
 C_FLOAT64 CNormalSum::checkFactor(const CNormalItemPower& itemPower) const //sum does not contain fractions!!
   {
     C_FLOAT64 exp = itemPower.getExp();
-    std::set<CNormalProduct*, compareProducts >::iterator it;
-    std::set<CNormalProduct*, compareProducts >::iterator itEnd = mProducts.end();
+    std::set<CNormalProduct*, compareProducts >::const_iterator it;
+    std::set<CNormalProduct*, compareProducts >::const_iterator itEnd = mProducts.end();
     for (it = mProducts.begin(); it != itEnd; ++it)
       {
         bool containsFactor = false;
-        std::set<CNormalItemPower*, compareItemPowers >::iterator it2;
-        std::set<CNormalItemPower*, compareItemPowers >::iterator it2End = (*it)->getItemPowers().end();
+        std::set<CNormalItemPower*, compareItemPowers >::const_iterator it2;
+        std::set<CNormalItemPower*, compareItemPowers >::const_iterator it2End = (*it)->getItemPowers().end();
         for (it2 = (*it)->getItemPowers().begin(); it2 != it2End; ++it2)
           {
             if ((*it2)->getItem().areEqual(itemPower.getItem()))
@@ -432,8 +432,8 @@ bool CNormalSum::operator<(const CNormalSum& rhs) const
               }
             else if (this->mProducts.size() == rhs.mProducts.size())
               {
-                std::set<CNormalProduct*>::const_iterator it3 = this->mProducts.begin(), endit3 = this->mProducts.end();
-                std::set<CNormalProduct*>::const_iterator it4 = rhs.mProducts.begin(), endit4 = rhs.mProducts.end();
+                std::set<CNormalProduct*, compareProducts>::const_iterator it3 = this->mProducts.begin(), endit3 = this->mProducts.end();
+                std::set<CNormalProduct*, compareProducts>::const_iterator it4 = rhs.mProducts.begin(), endit4 = rhs.mProducts.end();
                 compareProducts comp;
                 while (result == false && it3 != endit3)
                   {

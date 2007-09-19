@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalFraction.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/18 19:34:00 $
+//   $Date: 2007/09/19 13:30:58 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -204,8 +204,8 @@ bool CNormalFraction::cancel()
 
       if (checkForFractions() == false)
         {
-          std::set<CNormalItemPower*, compareItemPowers >::iterator it = (*mpDenominator->getProducts().begin())->getItemPowers().begin();
-          std::set<CNormalItemPower*, compareItemPowers >::iterator itEnd = (*mpDenominator->getProducts().begin())->getItemPowers().end();
+          std::set<CNormalItemPower*, compareItemPowers >::const_iterator it = (*mpDenominator->getProducts().begin())->getItemPowers().begin();
+          std::set<CNormalItemPower*, compareItemPowers >::const_iterator itEnd = (*mpDenominator->getProducts().begin())->getItemPowers().end();
           std::vector<CNormalItemPower*> tmpV;
           while (it != itEnd)
             {//runs through all item powers in the first product of the denominator
