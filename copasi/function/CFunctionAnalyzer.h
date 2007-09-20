@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionAnalyzer.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/09/18 00:13:39 $
+//   $Author: shoops $
+//   $Date: 2007/09/20 15:16:43 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -99,7 +99,11 @@ class CFunctionAnalyzer
         /**
          * add the value to the set off possible values
          */
+#ifdef WIN32 // To prevent a fatal compiler error in Visual Studio C++ 6.0
+        void orValue(const double value) {Or(CValue(value)); /*  mDouble = value; Or(known);*/};
+#else
         void orValue(const double & value) {Or(CValue(value)); /*  mDouble = value; Or(known);*/};
+#endif
 
       private:
         Status mStatus;
