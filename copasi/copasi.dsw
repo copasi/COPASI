@@ -261,9 +261,6 @@ Package=<4>
     Project_Dep_Name function
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name layout
-    End Project Dependency
-    Begin Project Dependency
     Project_Dep_Name tssanalysis
     End Project Dependency
 }}}
@@ -289,9 +286,6 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name wizard
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name layoutUI
     End Project Dependency
 }}}
 
