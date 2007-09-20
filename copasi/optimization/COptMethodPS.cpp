@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodPS.cpp,v $
-   $Revision: 1.5 $
-   $Name:  $
-   $Author: ssahle $
-   $Date: 2006/11/27 15:50:18 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodPS.cpp,v $
+//   $Revision: 1.6 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/09/20 14:06:35 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -223,9 +223,9 @@ bool COptMethodPS::create(const unsigned C_INT32 & index)
                 }
               else
                 {
-                  *pIndividual = pow(10, log10(std::max(mn, DBL_MIN)) + la * mpRandom->getRandomCC());
+                  *pIndividual = pow(10.0, log10(std::max(mn, DBL_MIN)) + la * mpRandom->getRandomCC());
                   *pVelocity =
-                    pow(10, log10(std::max(mn, DBL_MIN)) + la * mpRandom->getRandomCC()) - *pIndividual;
+                    pow(10.0, log10(std::max(mn, DBL_MIN)) + la * mpRandom->getRandomCC()) - *pIndividual;
                 }
             }
           else if (mx > 0) // 0 is in the interval (mn, mx)
@@ -266,9 +266,9 @@ bool COptMethodPS::create(const unsigned C_INT32 & index)
                 }
               else
                 {
-                  *pIndividual = - pow(10, log10(std::max(mn, DBL_MIN)) + la * mpRandom->getRandomCC());
+                  *pIndividual = - pow(10.0, log10(std::max(mn, DBL_MIN)) + la * mpRandom->getRandomCC());
                   *pVelocity =
-                    - pow(10, log10(std::max(mn, DBL_MIN)) + la * mpRandom->getRandomCC()) - *pIndividual;
+                    - pow(10.0, log10(std::max(mn, DBL_MIN)) + la * mpRandom->getRandomCC()) - *pIndividual;
                 }
             }
         }

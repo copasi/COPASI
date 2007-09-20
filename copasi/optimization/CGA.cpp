@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CGA.cpp,v $
-   $Revision: 1.25 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:29:52 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CGA.cpp,v $
+//   $Revision: 1.26 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/09/20 14:06:35 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -634,7 +634,7 @@ void CGA::creation(unsigned int l, unsigned int u)
               if (linear)
                 mIndV[i][j] = mMin + dr250() * (mMax - mMin);
               else
-                mIndV[i][j] = mMin * pow(10, la * dr250());
+                mIndV[i][j] = mMin * pow(10.0, la * dr250());
             }
           catch (unsigned int e)
             {

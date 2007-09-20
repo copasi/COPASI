@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CRandomSearch.cpp,v $
-   $Revision: 1.32 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/11/15 15:57:16 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CRandomSearch.cpp,v $
+//   $Revision: 1.33 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/09/20 14:06:35 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -171,7 +171,7 @@ bool CRandomSearch::optimise()
                   if (la < 1.8)
                     mut = mn + mpRandom->getRandomCC() * (mx - mn);
                   else
-                    mut = pow(10, log10(std::max(mn, DBL_MIN)) + la * mpRandom->getRandomCC());
+                    mut = pow(10.0, log10(std::max(mn, DBL_MIN)) + la * mpRandom->getRandomCC());
                 }
             }
 

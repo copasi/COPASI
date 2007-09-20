@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.cpp,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/25 16:59:03 $
+//   $Date: 2007/09/20 14:06:35 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -257,7 +257,7 @@ C_FLOAT64 COptItem::getRandomValue(CRandom * pRandom)
           if (la < 1.8 || !(mn > 0.0)) // linear
             RandomValue = mn + pRandom->getRandomCC() * (mx - mn);
           else
-            RandomValue = pow(10, log10(std::max(mn, DBL_MIN)) + la * pRandom->getRandomCC());
+            RandomValue = pow(10.0, log10(std::max(mn, DBL_MIN)) + la * pRandom->getRandomCC());
         }
       else if (mx > 0) // 0 is in the interval (mn, mx)
         {
@@ -288,7 +288,7 @@ C_FLOAT64 COptItem::getRandomValue(CRandom * pRandom)
           if (la < 1.8 || !(mn > 0.0)) // linear
             RandomValue = - (mn + pRandom->getRandomCC() * (mx - mn));
           else
-            RandomValue = - pow(10, log10(std::max(mn, DBL_MIN)) + la * pRandom->getRandomCC());
+            RandomValue = - pow(10.0, log10(std::max(mn, DBL_MIN)) + la * pRandom->getRandomCC());
         }
     }
 

@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodEP2.cpp,v $
-   $Revision: 1.7 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:29:53 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodEP2.cpp,v $
+//   $Revision: 1.8 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/09/20 14:06:35 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -14,12 +14,9 @@
                     COptMethodEP2.cpp  - Evolutionary Program  Optimizer
                     -------------------------------------------------
 
-
          Implemented by Dingjun Chen
 
-
                        Starting Date: Dec. 2003
-
 
                        COPASI project group
  ***************************************************************************/
@@ -128,7 +125,7 @@ C_INT32 COptMethodEP2::optimise()
               if (linear)
                 individual[i][j] = *Minimum[j] + pRand->getRandomCC() * (*Maximum[j] - *Minimum[j]);
               else
-                individual[i][j] = *Minimum[j] * pow(10, la * pRand->getRandomCC());
+                individual[i][j] = *Minimum[j] * pow(10.0, la * pRand->getRandomCC());
             }
           catch (int)
             {
@@ -308,7 +305,7 @@ C_INT32 COptMethodEP2::optimise()
                       if (linear)
                         individual[mm][jj] = *Minimum[jj] + pRand->getRandomCC() * (*Maximum[jj] - *Minimum[jj]);
                       else
-                        individual[mm][jj] = *Minimum[jj] * pow(10, la * pRand->getRandomCC());
+                        individual[mm][jj] = *Minimum[jj] * pow(10.0, la * pRand->getRandomCC());
                     }
                   catch (int)
                     {
@@ -354,7 +351,7 @@ C_INT32 COptMethodEP2::optimise()
                           if (linear)
                             individual[mm][jj] = *Minimum[jj] + pRand->getRandomCC() * (*Maximum[jj] - *Minimum[jj]);
                           else
-                            individual[mm][jj] = *Minimum[jj] * pow(10, la * pRand->getRandomCC());
+                            individual[mm][jj] = *Minimum[jj] * pow(10.0, la * pRand->getRandomCC());
                         }
                       catch (int)
                         {
@@ -400,7 +397,7 @@ C_INT32 COptMethodEP2::optimise()
                               if (linear)
                                 individual[mm][jj] = *Minimum[jj] + pRand->getRandomCC() * (*Maximum[jj] - *Minimum[jj]);
                               else
-                                individual[mm][jj] = *Minimum[jj] * pow(10, la * pRand->getRandomCC());
+                                individual[mm][jj] = *Minimum[jj] * pow(10.0, la * pRand->getRandomCC());
                             }
                           catch (int)
                             {

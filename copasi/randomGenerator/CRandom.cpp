@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/randomGenerator/CRandom.cpp,v $
-   $Revision: 1.18 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/07/21 18:15:48 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/randomGenerator/CRandom.cpp,v $
+//   $Revision: 1.19 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/09/20 14:06:35 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -335,7 +335,7 @@ C_FLOAT64 CRandom::getRandomNormalPositive(const C_FLOAT64 & mean,
 
 C_FLOAT64 CRandom::getRandomNormalLog(const C_FLOAT64 & mean,
                                       const C_FLOAT64 & sd)
-{return mean * pow(10, getRandomNormal01() * sd);}
+{return mean * pow(10.0, getRandomNormal01() * sd);}
 
 C_FLOAT64 CRandom::getRandomPoisson(const C_FLOAT64 & mu)
 {
