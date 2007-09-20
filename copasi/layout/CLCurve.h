@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLCurve.h,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/08/03 15:44:10 $
+//   $Author: urost $
+//   $Date: 2007/09/20 17:51:16 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -153,6 +153,21 @@ class CLCurve : public CLBase
      * of line segments.
      */
     std::vector <CLPoint> getListOfPoints() const;
+
+    /**
+     * Two curves are supposed to be equal iff all there line segments
+     * including their order are equal
+     */
+    bool operator==(const CLCurve & rhs) const
+      {
+        bool result = true;
+        unsigned int i;
+        for (i = 0;i < mCurveSegments.size();i++)
+          {
+            result = result && (mCurveSegments[i] == rhs.mCurveSegments[i]);
+          }
+        return result;
+      }
 
     void scale (const double & scaleFactor)
     {
