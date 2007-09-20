@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQOptimizationWidget.ui.h,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/16 19:55:37 $
+//   $Date: 2007/09/20 17:06:03 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,6 +19,7 @@
 #include "UI/CQFittingItemWidget.h"
 #include "UI/CProgressBar.h"
 #include "UI/CCopasiSelectionDialog.h"
+#include "UI/OptimizationResultWidget.h"
 #include "UI/qtUtilities.h"
 
 #include "report/CKeyFactory.h"
@@ -126,6 +127,10 @@ bool CQOptimizationWidget::runTask()
   bool success = commonRunTask();
 
   commonAfterRunTask();
+
+  OptimizationResultWidget *pResult =
+    dynamic_cast< OptimizationResultWidget * >(pListView->findWidgetFromId(321));
+  if (pResult) pResult->loadFromBackend();
 
   return success;
 }

@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationResultWidget.cpp,v $
-   $Revision: 1.4 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:45 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationResultWidget.cpp,v $
+//   $Revision: 1.5 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/09/20 17:06:03 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -154,20 +154,10 @@ bool OptimizationResultWidget::update(ListViews::ObjectType C_UNUSED(objectType)
 }
 
 bool OptimizationResultWidget::leave()
-{
-  //return saveToCompartment();
-  return true;
-}
+{return true;}
 
 bool OptimizationResultWidget::enter(const std::string & C_UNUSED(key))
-{
-  //objKey = key;
-  return loadFromBackend();
-  /*CCompartment* comp = dynamic_cast< CCompartment * >(GlobalKeys.get(key));
-
-  if (comp) return loadFromCompartment(comp);
-  else return false;*/
-}
+{return true;}
 
 void OptimizationResultWidget::runSetInitialState()
 {

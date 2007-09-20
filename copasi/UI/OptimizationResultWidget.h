@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationResultWidget.h,v $
-   $Revision: 1.4 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/28 00:21:45 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationResultWidget.h,v $
+//   $Revision: 1.5 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/09/20 17:06:03 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -44,6 +44,8 @@ class OptimizationResultWidget : public CopasiWidget
     virtual bool leave();
     virtual bool enter(const std::string & key = "");
 
+    bool loadFromBackend();
+
   public slots:
     virtual void runSetInitialState();
 
@@ -52,7 +54,6 @@ class OptimizationResultWidget : public CopasiWidget
     //virtual void slotBtnOKClicked();
 
   protected:
-    bool loadFromBackend();
     bool saveToBackend();
     std::string objKey;
 
