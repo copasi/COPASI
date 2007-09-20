@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-//   $Revision: 1.92 $
+//   $Revision: 1.93 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/04 17:31:39 $
+//   $Date: 2007/09/20 18:02:47 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -340,7 +340,9 @@ bool COptProblem::initialize()
 
   mCPUTime.start();
 
-  if (!mpFunction || !mpFunction->compile(ContainerList))
+  if (!mpFunction ||
+      mpFunction->getInfix() == "" ||
+      !mpFunction->compile(ContainerList))
     {
       mRefreshMethods.clear();
       CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 5);
