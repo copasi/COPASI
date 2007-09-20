@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeNumber.cpp,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/20 19:09:33 $
+//   $Date: 2007/09/20 19:50:04 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -74,13 +74,20 @@ CEvaluationNode* CEvaluationNodeNumber::createNodeFromASTTree(const ASTNode& nod
     {
     case AST_INTEGER:
       subType = INTEGER;
-      ss << node.getInteger();
-      data = ss.str();
+      if (node.getInteger() < 0)
+        {
+          pNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::MINUS, "-");
 
-      //if (node.getInteger() < 0)
-      //  data = "(" + data + ")";
-
-      pNode = new CEvaluationNodeNumber(subType, data);
+          ss << fabs(node.getInteger());
+          data = ss.str();
+          pNode->addChild(new CEvaluationNodeNumber(subType, data));
+        }
+      else
+        {
+          ss << node.getInteger();
+          data = ss.str();
+          pNode = new CEvaluationNodeNumber(subType, data);
+        }
       break;
     case AST_REAL:
       subType = DOUBLE;
@@ -97,32 +104,67 @@ CEvaluationNode* CEvaluationNodeNumber::createNodeFromASTTree(const ASTNode& nod
         {
           pNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "NAN");
         }
+      else if (node.getReal() < 0.0)
+        {
+          pNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::MINUS, "-");
+
+          ss << fabs(node.getReal());
+          data = ss.str();
+          pNode->addChild(new CEvaluationNodeNumber(subType, data));
+        }
       else
         {
           ss << node.getReal();
           data = ss.str();
-
-          //if (node.getReal() < 0)
-          //  data = "(" + data + ")";
-
           pNode = new CEvaluationNodeNumber(subType, data);
         }
       break;
     case AST_REAL_E:
       subType = ENOTATION;
-      ss << node.getReal();
-      data = ss.str();
+      if (node.getReal() == (2*DBL_MAX))
+        {
+          pNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::_INFINITY, "INFINITY");
+        }
+      else if (node.getReal() == (-2*DBL_MAX))
+        {
+          pNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::MINUS, "-");
+          pNode->addChild(new CEvaluationNodeConstant(CEvaluationNodeConstant::_INFINITY, "INFINITY"));
+        }
+      else if (isnan(node.getReal()))
+        {
+          pNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "NAN");
+        }
+      else if (node.getReal() < 0.0)
+        {
+          pNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::MINUS, "-");
 
-      //if (node.getReal() < 0)
-      //  data = "(" + data + ")";
-
-      pNode = new CEvaluationNodeNumber(subType, data);
+          ss << fabs(node.getReal());
+          data = ss.str();
+          pNode->addChild(new CEvaluationNodeNumber(subType, data));
+        }
+      else
+        {
+          ss << node.getReal();
+          data = ss.str();
+          pNode = new CEvaluationNodeNumber(subType, data);
+        }
       break;
     case AST_RATIONAL:
       subType = RATIONALE;
-      ss << "(" << node.getNumerator() << "/" << node.getDenominator() << ")";
-      data = ss.str();
-      pNode = new CEvaluationNodeNumber(subType, data);
+      if (node.getReal() < 0.0) // getReal returns the value of the node
+        {
+          pNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::MINUS, "-");
+
+          ss << "(" << fabs(node.getNumerator()) << "/" << fabs(node.getDenominator()) << ")";
+          data = ss.str();
+          pNode->addChild(new CEvaluationNodeNumber(subType, data));
+        }
+      else
+        {
+          ss << "(" << node.getNumerator() << "/" << node.getDenominator() << ")";
+          data = ss.str();
+          pNode = new CEvaluationNodeNumber(subType, data);
+        }
       break;
     default:
       subType = INVALID;
