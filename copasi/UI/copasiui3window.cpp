@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.207 $
+//   $Revision: 1.208 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/09/18 22:07:01 $
+//   $Author: shoops $
+//   $Date: 2007/09/20 18:35:42 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -786,7 +786,9 @@ void CopasiUI3Window::slotFilePrint()
  *******************************************************************************************/
 void CopasiUI3Window::about()
 {
-  AboutDialog* aboutDialog = new AboutDialog(this, AboutDialog::text, 76, 30);
+  QString text =
+    QString(AboutDialog::text).arg(FROM_UTF8(CCopasiDataModel::Global->getVersion()->getVersion()));
+  AboutDialog* aboutDialog = new AboutDialog(this, text, 76, 30);
   aboutDialog->setCaption(FixedTitle);
   aboutDialog->exec();
 }

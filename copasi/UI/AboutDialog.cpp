@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/AboutDialog.cpp,v $
-   $Revision: 1.11 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/12/01 15:24:41 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/AboutDialog.cpp,v $
+//   $Revision: 1.12 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/09/20 18:35:42 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -20,9 +20,6 @@
 #include "icons/copasi_beta_background.xpm"
 
 #include "copasi.h"
-#include "qtUtilities.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "utilities/CVersion.h"
 
 const char* AboutDialog::text =
   "COPASI is a simulator for biochemical networks. It is a joint project\n"
@@ -54,7 +51,7 @@ const char* AboutDialog::text =
 ;
 
 AboutDialog::AboutDialog(QWidget* parent,
-                         const char * text,
+                         const QString & text,
                          const int & width,
                          const int & heigth):
     QDialog(parent),
@@ -78,7 +75,8 @@ AboutDialog::AboutDialog(QWidget* parent,
   int h = heigth * FontMetrics.lineSpacing();
   this->textEdit->setFixedSize(w, h);
   this->textEdit->setReadOnly(true);
-  this->textEdit->setText(QString(text).arg(FROM_UTF8(CCopasiDataModel::Global->getVersion()->getVersion())));
+  this->textEdit->setText(text);
+  //  this->textEdit->setText(QString(text).arg();
   this->closeButton = new QPushButton(this);
   this->closeButton->setText("close");
   this->mainLayout->addWidget(this->textEdit);
