@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.37 $
+//   $Revision: 1.38 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/09/07 16:10:37 $
+//   $Date: 2007/09/20 15:35:16 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -128,7 +128,9 @@ class CQGLNetworkPainter : public QGLWidget
     CQLayoutMainWindow *pParentLayoutWindow;
 
     void adaptCurveForRectangles(std::multimap<std::string, CLCurve>::iterator it, CLBoundingBox box);
+    void adaptCurveForCircle(std::multimap<std::string, CLCurve>::iterator it, CLBoundingBox box);
     CLPoint getPointOnRectangle(CLBoundingBox r, CLPoint p);
+    CLPoint getPointOnCircle(CLBoundingBox r, CLPoint p);
     QAction *zoomInAction;
     QAction *zoomOutAction;
     void createActions();

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.60 $
+//   $Revision: 1.61 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/09/17 11:05:27 $
+//   $Date: 2007/09/20 15:35:16 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1115,13 +1115,15 @@ void CQGLNetworkPainter::setNodeSize(std::string key, C_FLOAT64 val)
       CLCurve *pCurve = & (*curveIt).second;
       if (pCurve != NULL)
         {
-          //std::cout << "curve in node: " << this->morigNodeKey << std::endl;
           CLLineSegment* pLastSeg = pCurve->getSegmentAt(pCurve->getNumCurveSegments() - 1); // get pointer to last segment
           // move end point of segment along the line from the circle center(=from) to the current end point of the löast segment
           // so that it lies on the border of the circle
           //std::cout << "1. last segment: " << *pLastSeg << std::endl;
           CLPoint to;
-          to = pLastSeg->getEnd();
+          if (pLastSeg->isBezier())
+            to = pLastSeg->getBase2();
+          else
+            to = pLastSeg->getEnd();
           //std::cout << "node: " << (*nodeIt).second<< std::endl;
           CLPoint from = CLPoint((*nodeIt).second.getX() + ((*nodeIt).second.getWidth() / 2.0), (*nodeIt).second.getY() + ((*nodeIt).second.getHeight() / 2.0)); // center of bounding box and also of circle
           C_FLOAT64 distance = sqrt(((to.getX() - from.getX()) * (to.getX() - from.getX())) + ((to.getY() - from.getY()) * (to.getY() - from.getY())));
@@ -1130,9 +1132,9 @@ void CQGLNetworkPainter::setNodeSize(std::string key, C_FLOAT64 val)
           C_FLOAT64 newX = from.getX() + ((to.getX() - from.getX()) / distance * (*nodeIt).second.getSize() / 2.0);
           C_FLOAT64 newY = from.getY() + ((to.getY() - from.getY()) / distance * (*nodeIt).second.getSize() / 2.0);
 
-          C_FLOAT64 dx, dy;
-          dx = to.getX() - newX;
-          dy = to.getY() - newY;
+          //C_FLOAT64 dx, dy;
+          //dx = to.getX() - newX;
+          //dy = to.getY() - newY;
           pLastSeg->setEnd(CLPoint(newX, newY));
           // std::cout << "2. last segment: " << *pLastSeg << std::endl;
           // now insert new arrow in map
@@ -1187,7 +1189,7 @@ void CQGLNetworkPainter::mapLabelsToRectangles()
         }
     }
   //viewerNodes[i].adaptCurvesForRectangles(&viewerCurves);
-  this->drawGraph();
+  this->drawGraph(); // this function will draw the bounding box for each node
   //this->draw();
 }
 
@@ -1229,20 +1231,114 @@ CLPoint CQGLNetworkPainter::getPointOnRectangle(CLBoundingBox r, CLPoint p)
 void CQGLNetworkPainter::mapLabelsToCircles()
 {
   this->mLabelShape = CIRCLE;
+
+  nodeArrowMap.clear(); // map is filled with new arrows
+  std::pair<std::multimap<std::string, CLCurve>::iterator, std::multimap<std::string, CLCurve>::iterator> rangeCurveIt;
+  std::multimap<std::string, CLCurve>::iterator curveIt;
+  for (int i = 0;i < viewerNodes.size();i++)
+    {
+      //curveIt = nodeCurveMap.find(viewerNodes[i]);
+      rangeCurveIt = nodeCurveMap.equal_range(viewerNodes[i]);
+      std::map<std::string, CGraphNode>::iterator nodeIt = nodeMap.find(viewerNodes[i]); // find all edges belonging to a node
+      if (nodeIt != nodeMap.end())
+        {
+          //while (curveIt != nodeCurveMap.end()){
+          curveIt = rangeCurveIt.first;
+          while (curveIt != rangeCurveIt.second)
+            {
+              this->adaptCurveForCircle(curveIt, (*nodeIt).second.getBoundingBox());
+              curveIt++;
+            }
+        }
+    }
+
   this->drawGraph();
   //this->draw();
 }
 
+CLPoint CQGLNetworkPainter::getPointOnCircle(CLBoundingBox r, CLPoint p)
+{
+  CLPoint center; // center of rectangle
+  center.setX(r.getPosition().getX() + (r.getDimensions().getWidth() / 2.0));
+  center.setY(r.getPosition().getY() + (r.getDimensions().getHeight() / 2.0));
+
+  C_FLOAT64 distance = sqrt(((p.getX() - center.getX()) * (p.getX() - center.getX())) + ((p.getY() - center.getY()) * (p.getY() - center.getY())));
+  //std::cout << "distance: " << distance << "  size: " << msize << std::endl;
+
+  C_FLOAT64 onPointX = center.getX() + ((p.getX() - center.getX()) / distance * DEFAULT_NODE_SIZE / 2.0);
+  C_FLOAT64 onPointY = center.getY() + ((p.getY() - center.getY()) / distance * DEFAULT_NODE_SIZE / 2.0);
+
+  return CLPoint(onPointX, onPointY);
+}
+
+// move one or two points of a curve, so that the end point of the curve ends at the circle given by the center of the bounding box (where the diagonals intersect) that is given in the parameters and that has the default size
+void CQGLNetworkPainter::adaptCurveForCircle(std::multimap<std::string, CLCurve>::iterator it, CLBoundingBox box)
+{
+  CLLineSegment* pLastSeg = (*it).second.getSegmentAt((*it).second.getNumCurveSegments() - 1);
+  CLPoint pointOnCircle;
+
+  if (pLastSeg->isBezier())
+    pointOnCircle = getPointOnCircle(box, pLastSeg->getBase2());
+  else
+    pointOnCircle = getPointOnCircle(box, pLastSeg->getStart());
+
+  pLastSeg->setEnd(pointOnCircle);
+
+  // create corresponding arrow, if necessary and insert it into map
+  CLPoint p = pLastSeg->getEnd();
+  CArrow *ar;
+  if (pLastSeg->isBezier())
+    {
+      BezierCurve *bezier = new BezierCurve();
+      std::vector<CLPoint> pts = std::vector<CLPoint>();
+      pts.push_back(pLastSeg->getStart());
+      pts.push_back(pLastSeg->getBase1());
+      pts.push_back(pLastSeg->getBase2());
+      pts.push_back(pLastSeg->getEnd());
+      std::vector<CLPoint> bezierPts = bezier->curvePts(pts);
+      C_INT32 num = bezierPts.size();
+      CLLineSegment segForArrow = CLLineSegment(bezierPts[num - 2], bezierPts[num - 1]);
+      ar = new CArrow(segForArrow, bezierPts[num - 1].getX(), bezierPts[num - 1].getY());
+    }
+  else
+    ar = new CArrow(*pLastSeg, p.getX(), p.getY());
+
+  nodeArrowMap.insert(std::pair<std::string, CArrow>
+                      ((*it).first, *ar));
+}
+
+// move one or two points of a curve, so that the end point of the curve ends at the box given in the parameters
 void CQGLNetworkPainter::adaptCurveForRectangles(std::multimap<std::string, CLCurve>::iterator it, CLBoundingBox box)
 {
   // while (it != nodeCurveMap.end()){
   CLLineSegment* pLastSeg = (*it).second.getSegmentAt((*it).second.getNumCurveSegments() - 1);
-  CLPoint pointOnRect = getPointOnRectangle(box, pLastSeg->getStart());
+  CLPoint pointOnRect;
+  if (pLastSeg->isBezier())
+    pointOnRect = getPointOnRectangle(box, pLastSeg->getBase2());
+  else
+    pointOnRect = getPointOnRectangle(box, pLastSeg->getStart());
   pLastSeg->setEnd(pointOnRect);
 
-  // create corresponding arrow and insert it into map
+  // create corresponding arrow, if necessary and insert it into map
   CLPoint p = pLastSeg->getEnd();
-  CArrow *ar = new CArrow(*pLastSeg, p.getX(), p.getY());
+  CArrow *ar;
+  if (pLastSeg->isBezier())
+    {
+      BezierCurve *bezier = new BezierCurve();
+      std::vector<CLPoint> pts = std::vector<CLPoint>();
+      pts.push_back(pLastSeg->getStart());
+      pts.push_back(pLastSeg->getBase1());
+      pts.push_back(pLastSeg->getBase2());
+      pts.push_back(pLastSeg->getEnd());
+      std::vector<CLPoint> bezierPts = bezier->curvePts(pts);
+      C_INT32 num = bezierPts.size();
+      CLLineSegment segForArrow = CLLineSegment(bezierPts[num - 2], bezierPts[num - 1]);
+      ar = new CArrow(segForArrow, bezierPts[num - 1].getX(), bezierPts[num - 1].getY());
+    }
+  else
+    ar = new CArrow(*pLastSeg, p.getX(), p.getY());
+
+  //CArrow *ar = new CArrow(*pLastSeg, p.getX(), p.getY());
   nodeArrowMap.insert(std::pair<std::string, CArrow>
                       ((*it).first, *ar));
   //  it++;
