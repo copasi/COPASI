@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.62 $ 
+#   $Revision: 1.63 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2007/03/22 17:02:13 $ 
+#   $Date: 2007/09/20 14:05:35 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -11,7 +11,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.62 $ $Author: shoops $ $Date: 2007/03/22 17:02:13 $  
+# $Revision: 1.63 $ $Author: shoops $ $Date: 2007/09/20 14:05:35 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -163,8 +163,7 @@ contains(BUILD_OS, WIN32) {
     QMAKE_CXXFLAGS_RELEASE += -I"$${MKL_PATH}\include"
     QMAKE_LFLAGS_WINDOWS += /LIBPATH:"$${MKL_PATH}\32\lib"
     QMAKE_LFLAGS_CONSOLE += /LIBPATH:"$${MKL_PATH}\32\lib"
-#    LIBS += mkl_lapack.lib mkl_p3.lib mkl_c.lib
-    LIBS += mkl_lapack.lib mkl_ia32.lib guide.lib
+    LIBS += mkl_c.lib
   } else {
     !isEmpty(CLAPACK_PATH) {
       DEFINES += USE_CLAPACK
@@ -181,8 +180,8 @@ contains(BUILD_OS, WIN32) {
   !isEmpty(EXPAT_PATH) {
     QMAKE_CXXFLAGS_DEBUG   += -I"$${EXPAT_PATH}\Source\lib"
     QMAKE_CXXFLAGS_RELEASE += -I"$${EXPAT_PATH}\Source\lib"
-    QMAKE_LFLAGS_WINDOWS += /LIBPATH:"$${EXPAT_PATH}\StaticLibs"
-    QMAKE_LFLAGS_CONSOLE += /LIBPATH:"$${EXPAT_PATH}\StaticLibs"
+    QMAKE_LFLAGS += /LIBPATH:"$${EXPAT_PATH}\StaticLibs"
+    QMAKE_LFLAGS += /LIBPATH:"$${EXPAT_PATH}\bin"
     LIBS += libexpatMT.lib
   } else {
     error( "EXPAT_PATH must be specified" )
