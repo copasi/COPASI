@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.h,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.31 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/08/13 20:59:12 $
+//   $Author: ssahle $
+//   $Date: 2007/09/21 15:40:12 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,6 +18,7 @@
 
 #include "copasi.h"
 #include "utilities/CCopasiNode.h"
+#include "CFunctionAnalyzer.h"
 
 class CEvaluationTree;
 class ASTNode;
@@ -254,7 +255,7 @@ class CEvaluationNode : public CCopasiNode< std::string >
      * multiplication or division nodes only. For the division nodes only the
      * left child is considered.
      */
-    const CEvaluationNode* findTopMinus() const;
+    const CEvaluationNode* findTopMinus(const std::vector<CFunctionAnalyzer::CValue> & callParameters) const;
 
     // Attributes
   protected:

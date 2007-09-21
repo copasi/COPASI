@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.cpp,v $
-//   $Revision: 1.75 $
+//   $Revision: 1.76 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/07/24 18:40:21 $
+//   $Author: ssahle $
+//   $Date: 2007/09/21 15:40:22 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -309,6 +309,8 @@ CFunction * CFunction::createCopy() const
     return newFunction;
   }
 
+#include "CFunctionAnalyzer.h"
+
 std::pair<CFunction *, CFunction *> CFunction::splitFunction(const CEvaluationNode * /* node */,
     const std::string & name1,
     const std::string & name2) const
@@ -323,8 +325,13 @@ std::pair<CFunction *, CFunction *> CFunction::splitFunction(const CEvaluationNo
     CFunction* newFunction2 = new CFunction();
     newFunction2->setObjectName(name2);
 
+    //when searching for a split point we need to analyze subtrees. For
+    //doing this a representation of the call parameters in the format
+    //used by CFunctionAnalyzer is needed.
+    std::vector<CFunctionAnalyzer::CValue> callParameters;
+    CFunctionAnalyzer::constructCallParameters(this->getVariables(), callParameters, true);
     // find the split point
-    const CEvaluationNode* splitnode = this->mpRoot->findTopMinus();
+    const CEvaluationNode* splitnode = this->mpRoot->findTopMinus(callParameters);
     if (!splitnode) return std::pair<CFunction *, CFunction *>(NULL, NULL);
 
     //std::cout << splitnode << std::endl;
