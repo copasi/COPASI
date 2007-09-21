@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionAnalyzer.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/09/18 17:00:09 $
+//   $Author: ssahle $
+//   $Date: 2007/09/21 15:37:18 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1024,6 +1024,15 @@ CFunctionAnalyzer::CValue CFunctionAnalyzer::evaluateNode(const CEvaluationNode 
   if (pENF)
     {
       //TODO: implement at least the most important functions
+      switch (CEvaluationNode::subType(pENF->getType()))
+        {
+        case CEvaluationNodeFunction::MINUS:
+          return evaluateNode(pENF->getLeft(), callParameters).invert();
+          break;
+
+        default:
+          break;
+        }
     }
 
   const CEvaluationNodeChoice * pENC = dynamic_cast<const CEvaluationNodeChoice*>(node);

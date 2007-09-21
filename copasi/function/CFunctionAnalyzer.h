@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionAnalyzer.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/09/20 15:16:43 $
+//   $Author: ssahle $
+//   $Date: 2007/09/21 15:37:18 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -82,9 +82,9 @@ class CFunctionAnalyzer
         bool containsInvalid() const;
 
         bool operator==(const CValue & rhs) const;
+        CValue invert() const;
 
       protected:
-        CValue invert() const;
 
         /**
          * convert a CValue with status "known" to a more general status.
@@ -160,13 +160,13 @@ class CFunctionAnalyzer
 
     const Result & getResult() const {return mResult;};
 
-  protected:
-
-    Result mResult;
-
     static CValue evaluateNode(const CEvaluationNode * node, const std::vector<CValue> & callParameters);
 
     static void constructCallParameters(const CFunctionParameters & fp, std::vector<CValue> & callParameters, bool posi);
+
+  protected:
+
+    Result mResult;
 
     static void constructCallParametersActualValues(std::vector<CValue> & callParameters, /*const CModel* model,*/ const CReaction* reaction);
 
