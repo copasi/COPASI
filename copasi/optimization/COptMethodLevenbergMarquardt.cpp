@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodLevenbergMarquardt.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/07/24 18:40:22 $
+//   $Author: jdada $
+//   $Date: 2007/09/21 10:55:00 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -163,46 +163,71 @@ bool COptMethodLevenbergMarquardt::optimise()
           //         &dim, &info);
         }
 
-      // Assure that the step will stay within the bounds but is
-      // in its original direction.
-      C_FLOAT64 Factor = 1.0;
-      while (true)
+      // Force the parameters to stay within the defined boundaries.
+      // Forcing the parameters gives better solution than forcing the steps.
+      // It gives same results with Gepasi.
+      for (i = 0; i < mVariableSize; i++)
         {
-          convp = 0.0;
+          mCurrent[i] = mBest[i] + mStep[i];
 
-          for (i = 0; i < mVariableSize; i++)
+          const COptItem & OptItem = *(*mpOptItem)[i];
+
+          switch (OptItem.checkConstraint(mCurrent[i]))
             {
-              mStep[i] *= Factor;
-              mCurrent[i] = mBest[i] + mStep[i];
+            case - 1:
+              mCurrent[i] = *OptItem.getLowerBoundValue() + DBL_EPSILON;
+              break;
+
+            case 1:
+              mCurrent[i] = *OptItem.getUpperBoundValue() - DBL_EPSILON;
+              break;
+
+            case 0:
+              break;
             }
-
-          Factor = 1.0;
-
-          for (i = 0; i < mVariableSize; i++)
-            {
-              const COptItem & OptItem = *(*mpOptItem)[i];
-
-              switch (OptItem.checkConstraint(mCurrent[i]))
-                {
-                case - 1:
-                  Factor =
-                    std::min(Factor, (*OptItem.getLowerBoundValue() - mBest[i]) / mStep[i]);
-                  break;
-
-                case 1:
-                  Factor =
-                    std::min(Factor, (*OptItem.getUpperBoundValue() - mBest[i]) / mStep[i]);
-                  break;
-
-                case 0:
-                  break;
-                }
-            }
-
-          if (Factor == 1.0) break;
         }
 
-      for (i = 0; i < mVariableSize; i++)
+      // Assure that the step will stay within the bounds but is
+      // in its original direction.
+      /* C_FLOAT64 Factor = 1.0;
+       while (true)
+         {
+           convp = 0.0;
+
+           for (i = 0; i < mVariableSize; i++)
+             {
+               mStep[i] *= Factor;
+               mCurrent[i] = mBest[i] + mStep[i];
+             }
+
+           Factor = 1.0;
+
+           for (i = 0; i < mVariableSize; i++)
+             {
+               const COptItem & OptItem = *(*mpOptItem)[i];
+
+               switch (OptItem.checkConstraint(mCurrent[i]))
+                 {
+                 case - 1:
+                   Factor =
+                     std::min(Factor, (*OptItem.getLowerBoundValue() - mBest[i]) / mStep[i]);
+                   break;
+
+                 case 1:
+                   Factor =
+                     std::min(Factor, (*OptItem.getUpperBoundValue() - mBest[i]) / mStep[i]);
+                   break;
+
+                 case 0:
+                   break;
+                 }
+             }
+
+           if (Factor == 1.0) break;
+         }
+       */
+
+      for (convp = 0.0, i = 0; i < mVariableSize; i++)
         {
           (*(*mpSetCalculateVariable)[i])(mCurrent[i]);
           convp += fabs((mCurrent[i] - mBest[i]) / mBest[i]);
