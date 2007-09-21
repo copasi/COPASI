@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.163 $
+//   $Revision: 1.164 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/04 14:56:53 $
+//   $Date: 2007/09/21 18:19:00 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1720,12 +1720,16 @@ void CCopasiXMLParser::CompartmentElement::end(const XML_Char *pszName)
       if (strcmp(pszName, "Expression"))
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                        pszName, "Expression", mParser.getCurrentLineNumber());
-      mpCompartment->setExpression(mCommon.CharacterData);
+      {
+        unsigned C_INT32 Size = CCopasiMessage::size();
 
-      // Remove error messages created by setExpression as this may fail
-      // due to incomplete model specification at this time.
-      if (CCopasiMessage::peekLastMessage().getNumber() == MCFunction + 3)
-        CCopasiMessage::getLastMessage();
+        mpCompartment->setExpression(mCommon.CharacterData);
+
+        // Remove error messages created by setExpression as this may fail
+        // due to incomplete model specification at this time.
+        while (CCopasiMessage::size() > Size)
+          CCopasiMessage::getLastMessage();
+      }
       break;
 
     case UNKNOWN_ELEMENT:
@@ -1930,12 +1934,16 @@ void CCopasiXMLParser::MetaboliteElement::end(const XML_Char *pszName)
       if (strcmp(pszName, "Expression"))
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                        pszName, "Expression", mParser.getCurrentLineNumber());
-      mpMetabolite->setExpression(mCommon.CharacterData);
+      {
+        unsigned C_INT32 Size = CCopasiMessage::size();
 
-      // Remove error messages created by setExpression as this may fail
-      // due to incomplete model specification at this time.
-      if (CCopasiMessage::peekLastMessage().getNumber() == MCFunction + 3)
-        CCopasiMessage::getLastMessage();
+        mpMetabolite->setExpression(mCommon.CharacterData);
+
+        // Remove error messages created by setExpression as this may fail
+        // due to incomplete model specification at this time.
+        while (CCopasiMessage::size() > Size)
+          CCopasiMessage::getLastMessage();
+      }
       break;
 
       mCurrentElement = Metabolite;
@@ -2095,7 +2103,7 @@ void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
         mpCurrentHandler = &mParser.mCharacterDataElement;
       break;
 
-    case MathML:                 // Old file format support
+    case MathML:                  // Old file format support
       if (!strcmp(pszName, "MathML"))
         {
           /* If we do not have a MathML element handler we create one. */
@@ -2146,15 +2154,19 @@ void CCopasiXMLParser::ModelValueElement::end(const XML_Char *pszName)
       if (strcmp(pszName, "Expression"))
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                        pszName, "Expression", mParser.getCurrentLineNumber());
-      mpMV->setExpression(mCommon.CharacterData);
+      {
+        unsigned C_INT32 Size = CCopasiMessage::size();
 
-      // Remove error messages created by setExpression as this may fail
-      // due to incomplete model specification at this time.
-      if (CCopasiMessage::peekLastMessage().getNumber() == MCFunction + 3)
-        CCopasiMessage::getLastMessage();
+        mpMV->setExpression(mCommon.CharacterData);
+
+        // Remove error messages created by setExpression as this may fail
+        // due to incomplete model specification at this time.
+        while (CCopasiMessage::size() > Size)
+          CCopasiMessage::getLastMessage();
+      }
       break;
 
-    case MathML:                 // Old file format support
+    case MathML:                  // Old file format support
       if (strcmp(pszName, "MathML"))
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                        pszName, "MathML", mParser.getCurrentLineNumber());
