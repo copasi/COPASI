@@ -514,7 +514,7 @@ ID       [a-z_A-Z][a-z_A-Z0-9]*
 %}
 
 <sOPERATOR>"+"   %{
-  BEGIN(sID);
+  BEGIN(sSIGN);
   mpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::PLUS,
                                        yytext);
   COMMON_ACTION;
@@ -522,7 +522,7 @@ ID       [a-z_A-Z][a-z_A-Z0-9]*
 %}
 
 <sOPERATOR>"-"   %{
-  BEGIN(sID);
+  BEGIN(sSIGN);
   mpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MINUS,
                                        yytext);
   COMMON_ACTION;

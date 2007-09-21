@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.cpp,v $
-//   $Revision: 1.42 $
+//   $Revision: 1.43 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/08/13 20:59:12 $
+//   $Author: shoops $
+//   $Date: 2007/09/21 17:56:26 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -908,25 +908,12 @@ std::string CEvaluationNodeFunction::handleSign(const std::string & str) const
     Data Result = mData;
 
     Type T = mpLeft->getType();
-    if ((T & 0xFF000000) == OPERATOR &&
-        ((T & 0x00FFFFFF) == CEvaluationNodeOperator::MINUS ||
-         (T & 0x00FFFFFF) == CEvaluationNodeOperator::PLUS))
+    if ((T & 0xFF000000) == OPERATOR)
       {
         Result += "(" + str + ")";
       }
     else
       Result += str;
-
-    const CEvaluationNode * pParent = static_cast<const CEvaluationNode *>(getParent());
-
-    if (!pParent) return Result;
-
-    T = pParent->getType();
-    if ((T & 0xFF000000) == OPERATOR &&
-        this == static_cast<const CEvaluationNode *>(pParent->getChild()->getSibling()))
-      {
-        Result = "(" + Result + ")";
-      }
 
     return Result;
   }
