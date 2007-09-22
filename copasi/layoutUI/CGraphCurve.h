@@ -1,17 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CGraphCurve.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/04/30 11:00:56 $
+//   $Date: 2007/09/22 16:55:04 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#ifndef CGRAPHNODE_H_
-#define CGRAPHNODE_H_
+#ifndef CGRAPHCURVE_H_
+#define CGRAPHCURVE_H_
 
 #include <string>
 
@@ -20,24 +20,29 @@
 #include "layout/CLGlyphs.h"
 #include "layout/CLCurve.h"
 
+#include "layoutUI/CArrow.h"
+
 class CGraphCurve : public CLCurve
   {
   private:
-    string mKey;
-    Carrow arrow;
-    bool hasArrow;
+    CArrow mArrow;
+    bool mHasArrow;
 
   public:
 
-    CLGraphCurve()
-        : CLCurve() {};
+    CGraphCurve();
 
-    CLGraphCurve(const CLCurve & c);
+    CGraphCurve(const CLCurve & c);
 
     /**
      * copy constructor (should make deep copy)
      */
-    CLGraphCurve(const CLGraphCurve & c);
+    CGraphCurve(const CGraphCurve & c);
+
+    bool hasArrowP(){return mHasArrow;}
+    void setArrowP(bool b){mHasArrow = b;}
+    void setArrow(CArrow ar){mArrow = ar;}
+    CArrow getArrow(){return mArrow;}
   };
 
 #endif
