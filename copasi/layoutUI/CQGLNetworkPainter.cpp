@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.61 $
+//   $Revision: 1.62 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/09/20 15:35:16 $
+//   $Date: 2007/09/22 16:52:39 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -119,11 +119,11 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
   std::cout << "number of reactions: " << reactions.size() << std::endl;
 
   //now extract curves to draw from reaction
-  viewerCurves = std::vector<CLCurve>();
+  viewerCurves = std::vector<CGraphCurve>();
   //first get reaction arrow
   for (i = 0;i < reactions.size();i++)
     {
-      CLCurve curve = (reactions[i])->getCurve();
+      CGraphCurve curve = CGraphCurve((reactions[i])->getCurve());
       viewerCurves.push_back(curve);
 
       CCopasiVector<CLMetabReferenceGlyph> edgesToNodesOfReaction;
@@ -132,7 +132,7 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
       unsigned int j2;
       for (j2 = 0;j2 < edgesToNodesOfReaction.size();j2++)
         {
-          const CLCurve curve = edgesToNodesOfReaction[j2]->getCurve();
+          CGraphCurve curve = CGraphCurve(edgesToNodesOfReaction[j2]->getCurve());
 
           //viewerCurves.push_back(curve);
           //std::cout << "curve: " << curve << std::endl;
@@ -150,24 +150,7 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
           if (edgesToNodesOfReaction[j2]->getMetabGlyph() != NULL)
             {
               std::string nodeKey = std::string(edgesToNodesOfReaction[j2]->getMetabGlyph()->getKey());
-              nodeCurveMap.insert(std::pair<std::string, CLCurve>
-                                  (nodeKey,
-                                   curve)); // remember curves belonging to a certain node
 
-              //std::cout << "insert " << nodeKey << "  " << curve << std::endl;
-              //          curveMap.insert(std::pair<std::string, CLCurve*>
-              //                          (std::string(edgesToNodesOfReaction[j2]->getMetabGlyphKey()),
-              //                           &(edgesToNodesOfReaction[j2]->getCurve())));
-              //          nodeSizeMap.insert(std::pair<std::string, float>
-              //                             (nodeKey, edgesToNodesOfReaction[j2]->getMetabGlyph()->getHeight())); // initial node diameter is height of glyph bounding box
-              //          std::cout << nodeKey << " : " << edgesToNodesOfReaction[j2]->getMetabGlyph()->getHeight() << std::endl;
-              //          viewerNodeMap.insert(std::pair<std::string, CLMetabGlyph>
-              //                  (std::string(nodeKey),
-              //                  *findNodeWithKey(viewerNodes,nodeKey))
-              //);
-              //std::cout << "role : " << r << std::endl;
-              //storeCurveInCorrespondingNode(nodeKey, viewerCurves.back()); // use reference to last curve put into the vector viewerCurves
-              //storeCurveInCorrespondingNode(nodeKey, viewerCurves.size() - 1); //index of curve derived from the fact that the curve currently is the last element of the vector
               // if role is product or sideproduct, create arrow for line
               if ((r == CLMetabReferenceGlyph::PRODUCT) || (r == CLMetabReferenceGlyph::SIDEPRODUCT))
                 {// create arrows just for edges to products or sideproducts
@@ -192,11 +175,17 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
                   else
                     ar = new CArrow(lastSeg, p.getX(), p.getY());
                   //std::cout << "arrow line: " << ar->getStartOfLine() << ar->getEndOfLine() << std::endl;
-                  nodeArrowMap.insert(std::pair<std::string, CArrow>
-                                      (nodeKey, *ar));
+                  //                   nodeArrowMap.insert(std::pair<std::string, CArrow>
+                  //                                       (nodeKey, *ar));
+
+                  curve.setArrowP(true);
+                  curve.setArrow(*ar);
                   //viewerArrows.push_back(*ar);
                   //storeCurveInCorrespondingNode(nodeKey, viewerCurves.size() - 1, viewerArrows.size() - 1); //store with arrow index, see below
                 }
+              nodeCurveMap.insert(std::pair<std::string, CGraphCurve>
+                                  (nodeKey,
+                                   curve));
             }
           else
             {
@@ -318,9 +307,9 @@ void CQGLNetworkPainter::drawGraph()
 
   //std::cout << "draw node in circle mode" << std::endl;
   std::map<std::string, CGraphNode>::iterator itNode;
-  std::multimap<std::string, CLCurve>::iterator itCurve;
+  std::multimap<std::string, CGraphCurve>::iterator itCurve;
   std::multimap<std::string, CArrow>::iterator itArrow;
-  std::pair<std::multimap<std::string, CLCurve>::iterator, std::multimap<std::string, CLCurve>::iterator> curveRangeIt;;
+  std::pair<std::multimap<std::string, CGraphCurve>::iterator, std::multimap<std::string, CGraphCurve>::iterator> curveRangeIt;;
   std::pair<std::multimap<std::string, CArrow>::iterator, std::multimap<std::string, CArrow>::iterator> arrowRangeIt;
   //std::cout << nodeCurveMap.size() << " elements in nodeCurveMap" << std::endl;
   for (i = 0;i < viewerNodes.size();i++)
@@ -349,14 +338,14 @@ void CQGLNetworkPainter::drawGraph()
         }
 
       // draw arrows of node
-      arrowRangeIt = nodeArrowMap.equal_range(viewerNodes[i]);
-      itArrow = arrowRangeIt.first;
-      while (itArrow != arrowRangeIt.second)
-        {
-          //std::cout << "draw arrow " << std::endl;
-          drawArrow((*itArrow).second);
-          itArrow++;
-        }
+      //arrowRangeIt = nodeArrowMap.equal_range(viewerNodes[i]);
+      //itArrow = arrowRangeIt.first;
+      //       while (itArrow != arrowRangeIt.second)
+      //         {
+      //           //std::cout << "draw arrow " << std::endl;
+      //           drawArrow((*itArrow).second);
+      //           itArrow++;
+      //}
       if (this->mLabelShape == CIRCLE)
         {
           //draw node as a circle
@@ -451,7 +440,7 @@ void CQGLNetworkPainter::drawNode(CGraphNode &n) // draw node as filled circle
 }
 
 // draw a curve: at the moment just a line from the start point to the end point (for each segment)
-void CQGLNetworkPainter::drawEdge(CLCurve c)
+void CQGLNetworkPainter::drawEdge(CGraphCurve &c)
 {
   std::vector<CLLineSegment> segments = c.getCurveSegments();
   for (int k = 0;k < c.getNumCurveSegments();k++)
@@ -506,6 +495,8 @@ void CQGLNetworkPainter::drawEdge(CLCurve c)
           glEnd();
         }
     }
+  if (c.hasArrowP())
+    drawArrow(c.getArrow());
 }
 
 void CQGLNetworkPainter::drawArrow(CArrow a)
@@ -1106,13 +1097,13 @@ void CQGLNetworkPainter::setNodeSize(std::string key, C_FLOAT64 val)
   if (nodeIt != nodeMap.end())
     (*nodeIt).second.setSize(val);
   // now adaptCurves pointing to nodes
-  std::pair<std::multimap<std::string, CLCurve>::iterator, std::multimap<std::string, CLCurve>::iterator> curveRangeIt;;
+  std::pair<std::multimap<std::string, CGraphCurve>::iterator, std::multimap<std::string, CGraphCurve>::iterator> curveRangeIt;;
   curveRangeIt = nodeCurveMap.equal_range(key);
-  std::multimap<std::string, CLCurve>::iterator curveIt;
+  std::multimap<std::string, CGraphCurve>::iterator curveIt;
   curveIt = curveRangeIt.first;
   while (curveIt != curveRangeIt.second)
     {
-      CLCurve *pCurve = & (*curveIt).second;
+      CGraphCurve *pCurve = & (*curveIt).second;
       if (pCurve != NULL)
         {
           CLLineSegment* pLastSeg = pCurve->getSegmentAt(pCurve->getNumCurveSegments() - 1); // get pointer to last segment
@@ -1147,6 +1138,8 @@ void CQGLNetworkPainter::setNodeSize(std::string key, C_FLOAT64 val)
           CArrow *ar = new CArrow(*pLastSeg, p.getX(), p.getY());
           nodeArrowMap.insert(std::pair<std::string, CArrow>
                               (key, *ar));
+          pCurve->setArrowP(true);
+          pCurve->setArrow(*ar);
         }
       curveIt++;
     }
@@ -1170,8 +1163,8 @@ void CQGLNetworkPainter::mapLabelsToRectangles()
 {
   this->mLabelShape = RECTANGLE;
   nodeArrowMap.clear(); // map is filled with new arrows
-  std::pair<std::multimap<std::string, CLCurve>::iterator, std::multimap<std::string, CLCurve>::iterator> rangeCurveIt;
-  std::multimap<std::string, CLCurve>::iterator curveIt;
+  std::pair<std::multimap<std::string, CGraphCurve>::iterator, std::multimap<std::string, CGraphCurve>::iterator> rangeCurveIt;
+  std::multimap<std::string, CGraphCurve>::iterator curveIt;
   for (int i = 0;i < viewerNodes.size();i++)
     {
       //curveIt = nodeCurveMap.find(viewerNodes[i]);
@@ -1233,8 +1226,8 @@ void CQGLNetworkPainter::mapLabelsToCircles()
   this->mLabelShape = CIRCLE;
 
   nodeArrowMap.clear(); // map is filled with new arrows
-  std::pair<std::multimap<std::string, CLCurve>::iterator, std::multimap<std::string, CLCurve>::iterator> rangeCurveIt;
-  std::multimap<std::string, CLCurve>::iterator curveIt;
+  std::pair<std::multimap<std::string, CGraphCurve>::iterator, std::multimap<std::string, CGraphCurve>::iterator> rangeCurveIt;
+  std::multimap<std::string, CGraphCurve>::iterator curveIt;
   for (int i = 0;i < viewerNodes.size();i++)
     {
       //curveIt = nodeCurveMap.find(viewerNodes[i]);
@@ -1272,7 +1265,7 @@ CLPoint CQGLNetworkPainter::getPointOnCircle(CLBoundingBox r, CLPoint p)
 }
 
 // move one or two points of a curve, so that the end point of the curve ends at the circle given by the center of the bounding box (where the diagonals intersect) that is given in the parameters and that has the default size
-void CQGLNetworkPainter::adaptCurveForCircle(std::multimap<std::string, CLCurve>::iterator it, CLBoundingBox box)
+void CQGLNetworkPainter::adaptCurveForCircle(std::multimap<std::string, CGraphCurve>::iterator it, CLBoundingBox box)
 {
   CLLineSegment* pLastSeg = (*it).second.getSegmentAt((*it).second.getNumCurveSegments() - 1);
   CLPoint pointOnCircle;
@@ -1285,30 +1278,35 @@ void CQGLNetworkPainter::adaptCurveForCircle(std::multimap<std::string, CLCurve>
   pLastSeg->setEnd(pointOnCircle);
 
   // create corresponding arrow, if necessary and insert it into map
-  CLPoint p = pLastSeg->getEnd();
-  CArrow *ar;
-  if (pLastSeg->isBezier())
+  if (((*it).second).hasArrowP())
     {
-      BezierCurve *bezier = new BezierCurve();
-      std::vector<CLPoint> pts = std::vector<CLPoint>();
-      pts.push_back(pLastSeg->getStart());
-      pts.push_back(pLastSeg->getBase1());
-      pts.push_back(pLastSeg->getBase2());
-      pts.push_back(pLastSeg->getEnd());
-      std::vector<CLPoint> bezierPts = bezier->curvePts(pts);
-      C_INT32 num = bezierPts.size();
-      CLLineSegment segForArrow = CLLineSegment(bezierPts[num - 2], bezierPts[num - 1]);
-      ar = new CArrow(segForArrow, bezierPts[num - 1].getX(), bezierPts[num - 1].getY());
-    }
-  else
-    ar = new CArrow(*pLastSeg, p.getX(), p.getY());
+      CLPoint p = pLastSeg->getEnd();
+      CArrow *ar;
+      if (pLastSeg->isBezier())
+        {
+          BezierCurve *bezier = new BezierCurve();
+          std::vector<CLPoint> pts = std::vector<CLPoint>();
+          pts.push_back(pLastSeg->getStart());
+          pts.push_back(pLastSeg->getBase1());
+          pts.push_back(pLastSeg->getBase2());
+          pts.push_back(pLastSeg->getEnd());
+          std::vector<CLPoint> bezierPts = bezier->curvePts(pts);
+          C_INT32 num = bezierPts.size();
+          CLLineSegment segForArrow = CLLineSegment(bezierPts[num - 2], bezierPts[num - 1]);
+          ar = new CArrow(segForArrow, bezierPts[num - 1].getX(), bezierPts[num - 1].getY());
+        }
+      else
+        ar = new CArrow(*pLastSeg, p.getX(), p.getY());
 
-  nodeArrowMap.insert(std::pair<std::string, CArrow>
-                      ((*it).first, *ar));
+      nodeArrowMap.insert(std::pair<std::string, CArrow>
+                          ((*it).first, *ar));
+      ((*it).second).setArrowP(true);
+      ((*it).second).setArrow(*ar);
+    }
 }
 
 // move one or two points of a curve, so that the end point of the curve ends at the box given in the parameters
-void CQGLNetworkPainter::adaptCurveForRectangles(std::multimap<std::string, CLCurve>::iterator it, CLBoundingBox box)
+void CQGLNetworkPainter::adaptCurveForRectangles(std::multimap<std::string, CGraphCurve>::iterator it, CLBoundingBox box)
 {
   // while (it != nodeCurveMap.end()){
   CLLineSegment* pLastSeg = (*it).second.getSegmentAt((*it).second.getNumCurveSegments() - 1);
@@ -1321,26 +1319,31 @@ void CQGLNetworkPainter::adaptCurveForRectangles(std::multimap<std::string, CLCu
 
   // create corresponding arrow, if necessary and insert it into map
   CLPoint p = pLastSeg->getEnd();
-  CArrow *ar;
-  if (pLastSeg->isBezier())
-    {
-      BezierCurve *bezier = new BezierCurve();
-      std::vector<CLPoint> pts = std::vector<CLPoint>();
-      pts.push_back(pLastSeg->getStart());
-      pts.push_back(pLastSeg->getBase1());
-      pts.push_back(pLastSeg->getBase2());
-      pts.push_back(pLastSeg->getEnd());
-      std::vector<CLPoint> bezierPts = bezier->curvePts(pts);
-      C_INT32 num = bezierPts.size();
-      CLLineSegment segForArrow = CLLineSegment(bezierPts[num - 2], bezierPts[num - 1]);
-      ar = new CArrow(segForArrow, bezierPts[num - 1].getX(), bezierPts[num - 1].getY());
-    }
-  else
-    ar = new CArrow(*pLastSeg, p.getX(), p.getY());
 
-  //CArrow *ar = new CArrow(*pLastSeg, p.getX(), p.getY());
-  nodeArrowMap.insert(std::pair<std::string, CArrow>
-                      ((*it).first, *ar));
+  if (((*it).second).hasArrowP())
+    {
+      CArrow *ar;
+      if (pLastSeg->isBezier())
+        {
+          BezierCurve *bezier = new BezierCurve();
+          std::vector<CLPoint> pts = std::vector<CLPoint>();
+          pts.push_back(pLastSeg->getStart());
+          pts.push_back(pLastSeg->getBase1());
+          pts.push_back(pLastSeg->getBase2());
+          pts.push_back(pLastSeg->getEnd());
+          std::vector<CLPoint> bezierPts = bezier->curvePts(pts);
+          C_INT32 num = bezierPts.size();
+          CLLineSegment segForArrow = CLLineSegment(bezierPts[num - 2], bezierPts[num - 1]);
+          ar = new CArrow(segForArrow, bezierPts[num - 1].getX(), bezierPts[num - 1].getY());
+        }
+      else
+        ar = new CArrow(*pLastSeg, p.getX(), p.getY());
+
+      nodeArrowMap.insert(std::pair<std::string, CArrow>
+                          ((*it).first, *ar));
+      ((*it).second).setArrowP(true);
+      ((*it).second).setArrow(*ar);
+    }
   //  it++;
   //}
 }
@@ -1400,8 +1403,8 @@ void CQGLNetworkPainter::zoom(C_FLOAT64 zoomFactor)
   //scale curves that are associated with a reactant/species node (i.e. directly points to it)
   for (i = 0; i < viewerNodes.size();i++)
     {
-      std::pair<std::multimap<std::string, CLCurve>::iterator, std::multimap<std::string, CLCurve>::iterator> curveRangeIt;
-      std::multimap<std::string, CLCurve>::iterator curveIt;
+      std::pair<std::multimap<std::string, CGraphCurve>::iterator, std::multimap<std::string, CGraphCurve>::iterator> curveRangeIt;
+      std::multimap<std::string, CGraphCurve>::iterator curveIt;
 
       curveRangeIt = nodeCurveMap.equal_range(viewerNodes[i]);
       //curveIt = nodeCurveMap.find(viewerNodes[i]);

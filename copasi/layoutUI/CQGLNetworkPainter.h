@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.38 $
+//   $Revision: 1.39 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/09/20 15:35:16 $
+//   $Date: 2007/09/22 16:52:48 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,18 +28,21 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <set>
 
 #include "copasi/layout/CLBase.h"
 #include "copasi/layout/CLGlyphs.h"
 #include "copasi/layout/CLCurve.h"
+
 #include "copasi/layoutUI/CArrow.h"
 #include "copasi/layoutUI/CQLayoutMainWindow.h"
 #include "copasi/layoutUI/CSimSummaryInfo.h"
 #include "copasi/layoutUI/CVisParameters.h"
 #include "copasi/layoutUI/CDataEntity.h"
-
+#include "copasi/layoutUI/CGraphCurve.h"
 #include "copasi/layoutUI/CGraphNode.h"
 #include "copasi/layoutUI/CVisParameters.h"
+
 #include "copasi/CopasiDataModel/CCopasiDataModel.h"
 #include "copasi/trajectory/CTrajectoryTask.h"
 
@@ -61,7 +64,7 @@ class CQGLNetworkPainter : public QGLWidget
     void createGraph(CLayout *lP); // create local data structures
     void drawGraph(); // create OpenGL display list with graph objects
     void drawNode(CGraphNode &n);
-    void drawEdge(CLCurve c);
+    void drawEdge(CGraphCurve &c);
     void drawLabel(CLTextGlyph l);
     // void drawStringAt(string s, double x, double y);
     void drawArrow(CArrow a);
@@ -100,9 +103,11 @@ class CQGLNetworkPainter : public QGLWidget
     CLPoint mgraphMin;
     CLPoint mgraphMax;
     std::vector<std::string> viewerNodes; // contains node keys
-    std::vector<CLCurve> viewerCurves; // contains curves defining a reaction (not directly associated with a node)
+    std::vector<CGraphCurve> viewerCurves; // contains curves defining a reaction (not directly associated with a node)
     //std::vector<CArrow> viewerArrows;
     std::vector<CLTextGlyph> viewerLabels;
+    std::vector<CGraphCurve> curvesWithArrow;
+
     GLuint graphObjList;
     std::string mFontname;
     int mFontsize;
@@ -115,7 +120,7 @@ class CQGLNetworkPainter : public QGLWidget
     std::map<std::string, std::string> keyMap; // maps Copasi SBML object keys to layout node keys
     std::map<std::string, CGraphNode>nodeMap;
     //std::multimap<std::string, CLCurve*> curveMap; // maps mMetabGlyphKey of CLMetabReferenceGlyph to curve in reaction
-    std::multimap<std::string, CLCurve> nodeCurveMap; // maps mKey of viewer node (CGraphNode, originally from CLMetabGlyph, to curves (stored in viewerCurves) that point to thid node)
+    std::multimap<std::string, CGraphCurve> nodeCurveMap; // maps mKey of viewer node (CGraphNode, originally from CLMetabGlyph, to curves (stored in viewerCurves) that point to thid node)
     std::multimap<std::string, CArrow> nodeArrowMap; // maps mKey of viewer node (CGraphNode, originally from CLMetabGlyph, to arrows (stored in viewerArrows) that point to thid node)
     //std::map<std::string, float> nodeSizeMap; // maps mKey of viewer node to size of this node in circular view
 
@@ -127,8 +132,8 @@ class CQGLNetworkPainter : public QGLWidget
     QTimer *regularTimer;
     CQLayoutMainWindow *pParentLayoutWindow;
 
-    void adaptCurveForRectangles(std::multimap<std::string, CLCurve>::iterator it, CLBoundingBox box);
-    void adaptCurveForCircle(std::multimap<std::string, CLCurve>::iterator it, CLBoundingBox box);
+    void adaptCurveForRectangles(std::multimap<std::string, CGraphCurve>::iterator it, CLBoundingBox box);
+    void adaptCurveForCircle(std::multimap<std::string, CGraphCurve>::iterator it, CLBoundingBox box);
     CLPoint getPointOnRectangle(CLBoundingBox r, CLPoint p);
     CLPoint getPointOnCircle(CLBoundingBox r, CLPoint p);
     QAction *zoomInAction;
@@ -141,6 +146,8 @@ class CQGLNetworkPainter : public QGLWidget
     void updateGraphWithNodeSizes();
     void updateEdge(CLLineSegment line);
     void resetGraphToLabelView();
+
+    //bool checkCurveForArrow(CGraphCurve curve);
 
     enum shapeOfLabels {CIRCLE, RECTANGLE};
     shapeOfLabels mLabelShape;
