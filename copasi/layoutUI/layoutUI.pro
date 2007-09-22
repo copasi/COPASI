@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/layoutUI.pro,v $ 
-#   $Revision: 1.15 $ 
+#   $Revision: 1.16 $ 
 #   $Name:  $ 
 #   $Author: urost $ 
-#   $Date: 2007/09/17 06:54:59 $ 
+#   $Date: 2007/09/22 16:55:51 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -20,6 +20,7 @@ CONFIG += qt
 HEADERS = CQGLNetworkPainter.h \
           CArrow.h \
           CGraphNode.h \
+          CGraphCurve.h \
           CQLayoutMainWindow.h \
           CSimSummaryInfo.h \
           CDataEntity.h \
@@ -31,6 +32,7 @@ HEADERS = CQGLNetworkPainter.h \
 SOURCES = CQLayoutMainWindow.cpp \
           CArrow.cpp \
           CGraphNode.cpp \
+          CGraphCurve.cpp \
           CQGLNetworkPainter.cpp \
           CSimSummaryInfo.cpp \
           CDataEntity.cpp \
