@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CGraphCurve.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/09/22 16:55:04 $
+//   $Date: 2007/09/23 10:27:56 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -43,6 +43,8 @@ class CGraphCurve : public CLCurve
     void setArrowP(bool b){mHasArrow = b;}
     void setArrow(CArrow ar){mArrow = ar;}
     CArrow getArrow(){return mArrow;}
+
+    void scale (const double & scaleFactor);
   };
 
 #endif

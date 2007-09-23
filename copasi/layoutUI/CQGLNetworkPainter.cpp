@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.62 $
+//   $Revision: 1.63 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/09/22 16:52:39 $
+//   $Date: 2007/09/23 10:27:56 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1411,15 +1411,17 @@ void CQGLNetworkPainter::zoom(C_FLOAT64 zoomFactor)
       curveIt = curveRangeIt.first;
       while (curveIt != curveRangeIt.second)
         {
-          CLLineSegment *seg;
-          int numSegs = (*curveIt).second.getNumCurveSegments();
+          ((*curveIt).second).scale(zoomFactor);
 
-          for (int k = 0;k < numSegs;k++)
-            {
-              seg = (*curveIt).second.getSegmentAt(k);
-              if (seg != NULL)
-                seg->scale(zoomFactor);
-            }
+          //           CLLineSegment *seg;
+          //           int numSegs = (*curveIt).second.getNumCurveSegments();
+
+          //           for (int k = 0;k < numSegs;k++)
+          //             {
+          //               seg = (*curveIt).second.getSegmentAt(k);
+          //               if (seg != NULL)
+          //                 seg->scale(zoomFactor);
+          //}
           curveIt++;
         }
     }
