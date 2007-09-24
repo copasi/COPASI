@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_cnormallogical.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/21 15:29:42 $
+//   $Date: 2007/09/24 15:39:43 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,6 +14,12 @@
 #include "compareExpressions/CNormalLogicalItem.h"
 #include "compareExpressions/CNormalChoiceLogical.h"
 #include "compareExpressions/CNormalFraction.h"
+#include "function/CEvaluationTree.h"
+#include "compareExpressions/CNormalTranslation.h"
+#include "compareExpressions/CNormalSum.h"
+#include "compareExpressions/CNormalItemPower.h"
+#include "compareExpressions/CNormalProduct.h"
+#include "compareExpressions/CNormalItem.h"
 
 void test_cnormallogical::setUp(){}
 
@@ -326,25 +332,31 @@ void test_cnormallogical::test_SetSorter_LogicalItem()
   CNormalLogicalItem* pItem = new CNormalLogicalItem();
 
   pItem->setType(CNormalLogicalItem::TRUE);
-  set.insert(std::make_pair(pItem->copy(), false));
-  CPPUNIT_ASSERT(set.size() == 1);
-  CNormalLogicalItem* pNewItem = pItem->copy();
+  CNormalLogicalItem* pNewItem = dynamic_cast<CNormalLogicalItem*>(pItem->copy());
+  CPPUNIT_ASSERT(pNewItem != NULL);
   set.insert(std::make_pair(pNewItem, false));
   CPPUNIT_ASSERT(set.size() == 1);
-  delete pNewItem;
-  set.insert(std::make_pair(pItem->copy(), true));
+  pNewItem = dynamic_cast<CNormalLogicalItem*>(pItem->copy());
+  set.insert(std::make_pair(pNewItem, false));
+  CPPUNIT_ASSERT(set.size() == 1);
+  pNewItem = dynamic_cast<CNormalLogicalItem*>(pItem->copy());
+  CPPUNIT_ASSERT(pNewItem != NULL);
+  set.insert(std::make_pair(pNewItem, true));
   CPPUNIT_ASSERT(set.size() == 2);
   CNormalLogical::cleanSet(set);
   CPPUNIT_ASSERT(set.size() == 0);
 
   pItem->setType(CNormalLogicalItem::FALSE);
-  set.insert(std::make_pair(pItem->copy(), false));
-  CPPUNIT_ASSERT(set.size() == 1);
-  pNewItem = pItem->copy();
+  pNewItem = dynamic_cast<CNormalLogicalItem*>(pItem->copy());
+  CPPUNIT_ASSERT(pNewItem != NULL);
   set.insert(std::make_pair(pNewItem, false));
-  delete pNewItem;
   CPPUNIT_ASSERT(set.size() == 1);
-  set.insert(std::make_pair(pItem->copy(), true));
+  pNewItem = dynamic_cast<CNormalLogicalItem*>(pItem->copy());
+  set.insert(std::make_pair(pNewItem, false));
+  CPPUNIT_ASSERT(set.size() == 1);
+  pNewItem = dynamic_cast<CNormalLogicalItem*>(pItem->copy());
+  CPPUNIT_ASSERT(pNewItem != NULL);
+  set.insert(std::make_pair(pNewItem, true));
   CPPUNIT_ASSERT(set.size() == 2);
   CNormalLogical::cleanSet(set);
   CPPUNIT_ASSERT(set.size() == 0);
@@ -356,13 +368,16 @@ void test_cnormallogical::test_SetSorter_LogicalItem()
   pFraction->multiply(5.0);
   pItem->setRight(*pFraction);
   delete pFraction;
-  set.insert(std::make_pair(pItem->copy(), false));
-  CPPUNIT_ASSERT(set.size() == 1);
-  pNewItem = pItem->copy();
+  pNewItem = dynamic_cast<CNormalLogicalItem*>(pItem->copy());
+  CPPUNIT_ASSERT(pNewItem != NULL);
   set.insert(std::make_pair(pNewItem, false));
   CPPUNIT_ASSERT(set.size() == 1);
-  delete pNewItem;
-  set.insert(std::make_pair(pItem->copy(), true));
+  pNewItem = dynamic_cast<CNormalLogicalItem*>(pItem->copy());
+  set.insert(std::make_pair(pNewItem, false));
+  CPPUNIT_ASSERT(set.size() == 1);
+  pNewItem = dynamic_cast<CNormalLogicalItem*>(pItem->copy());
+  CPPUNIT_ASSERT(pNewItem != NULL);
+  set.insert(std::make_pair(pNewItem, true));
   CPPUNIT_ASSERT(set.size() == 2);
   CNormalLogical::cleanSet(set);
   CPPUNIT_ASSERT(set.size() == 0);
@@ -377,53 +392,433 @@ void test_cnormallogical::test_SetOfSetsSorter_LogicalItem()
   CNormalLogical::ItemSet set;
   CNormalLogicalItem* pLogicalItem = new CNormalLogicalItem();
   pLogicalItem->setType(CNormalLogicalItem::TRUE);
+  CNormalLogicalItem* pNewItem = dynamic_cast<CNormalLogicalItem*>(pLogicalItem->copy());
+  CPPUNIT_ASSERT(pNewItem != NULL);
 
-  set.insert(std::make_pair(pLogicalItem->copy(), false));
+  set.insert(std::make_pair(pNewItem, false));
   setOfSets.insert(std::make_pair(set, false));
   CPPUNIT_ASSERT(setOfSets.size() == 1);
   // add the same thing again
   set.clear();
   CPPUNIT_ASSERT(set.size() == 0);
-  set.insert(std::make_pair(pLogicalItem->copy(), false));
+  pNewItem = dynamic_cast<CNormalLogicalItem*>(pLogicalItem->copy());
+  CPPUNIT_ASSERT(pNewItem != NULL);
+  set.insert(std::make_pair(pNewItem, false));
   setOfSets.insert(std::make_pair(set, false));
   CPPUNIT_ASSERT(setOfSets.size() == 1);
 
   CNormalLogical::cleanSet(set);
   CPPUNIT_ASSERT(set.size() == 0);
-  set.insert(std::make_pair(pLogicalItem->copy(), true));
+  pNewItem = dynamic_cast<CNormalLogicalItem*>(pLogicalItem->copy());
+  CPPUNIT_ASSERT(pNewItem != NULL);
+  set.insert(std::make_pair(pNewItem, true));
   setOfSets.insert(std::make_pair(set, false));
   CPPUNIT_ASSERT(setOfSets.size() == 2);
   // add the same thing again
   set.clear();
   CPPUNIT_ASSERT(set.size() == 0);
-  set.insert(std::make_pair(pLogicalItem->copy(), true));
+  pNewItem = dynamic_cast<CNormalLogicalItem*>(pLogicalItem->copy());
+  CPPUNIT_ASSERT(pNewItem != NULL);
+  set.insert(std::make_pair(pNewItem, true));
   setOfSets.insert(std::make_pair(set, false));
   CPPUNIT_ASSERT(setOfSets.size() == 2);
 
   CNormalLogical::cleanSet(set);
   CPPUNIT_ASSERT(set.size() == 0);
-  set.insert(std::make_pair(pLogicalItem->copy(), false));
+  pNewItem = dynamic_cast<CNormalLogicalItem*>(pLogicalItem->copy());
+  CPPUNIT_ASSERT(pNewItem != NULL);
+  set.insert(std::make_pair(pNewItem, false));
   setOfSets.insert(std::make_pair(set, true));
   CPPUNIT_ASSERT(setOfSets.size() == 3);
   // add the same thing again
   set.clear();
   CPPUNIT_ASSERT(set.size() == 0);
-  set.insert(std::make_pair(pLogicalItem->copy(), false));
+  pNewItem = dynamic_cast<CNormalLogicalItem*>(pLogicalItem->copy());
+  CPPUNIT_ASSERT(pNewItem != NULL);
+  set.insert(std::make_pair(pNewItem, false));
   setOfSets.insert(std::make_pair(set, true));
   CPPUNIT_ASSERT(setOfSets.size() == 3);
 
   CNormalLogical::cleanSet(set);
   CPPUNIT_ASSERT(set.size() == 0);
-  set.insert(std::make_pair(pLogicalItem->copy(), true));
+  pNewItem = dynamic_cast<CNormalLogicalItem*>(pLogicalItem->copy());
+  CPPUNIT_ASSERT(pNewItem != NULL);
+  set.insert(std::make_pair(pNewItem, true));
   setOfSets.insert(std::make_pair(set, true));
   CPPUNIT_ASSERT(setOfSets.size() == 4);
   // add the same thing again
   set.clear();
   CPPUNIT_ASSERT(set.size() == 0);
-  set.insert(std::make_pair(pLogicalItem->copy(), true));
+  pNewItem = dynamic_cast<CNormalLogicalItem*>(pLogicalItem->copy());
+  CPPUNIT_ASSERT(pNewItem != NULL);
+  set.insert(std::make_pair(pNewItem, true));
   setOfSets.insert(std::make_pair(set, true));
   CPPUNIT_ASSERT(setOfSets.size() == 4);
   CNormalLogical::cleanSet(set);
   CNormalLogical::cleanSetOfSets(setOfSets);
   delete pLogicalItem;
 }
+
+void test_cnormallogical::test_simplify_1()
+{
+  CNormalLogicalItem* pCond = new CNormalLogicalItem();
+  pCond->setType(CNormalLogicalItem::GT);
+  std::string infix("A");
+  CEvaluationTree* pTree = new CEvaluationTree();
+  pTree->setInfix(infix);
+  CPPUNIT_ASSERT(pTree->getRoot() != NULL);
+  const CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pCond->setLeft(*pFraction);
+  delete pTree;
+  delete pFraction;
+
+  infix = "PI";
+  pTree = new CEvaluationTree();
+  pTree->setInfix(infix);
+  CPPUNIT_ASSERT(pTree->getRoot() != NULL);
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pCond->setRight(*pFraction);
+  delete pTree;
+  delete pFraction;
+
+  CNormalLogicalItem* pTrue = new CNormalLogicalItem();
+  pTrue->setType(CNormalLogicalItem::FALSE);
+
+  CNormalLogicalItem* pFalse = new CNormalLogicalItem();
+  pFalse->setType(CNormalLogicalItem::NE);
+  infix = "4";
+  pTree = new CEvaluationTree();
+  pTree->setInfix(infix);
+  CPPUNIT_ASSERT(pTree->getRoot() != NULL);
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pFalse->setLeft(*pFraction);
+  delete pTree;
+  delete pFraction;
+
+  infix = "A";
+  pTree = new CEvaluationTree();
+  pTree->setInfix(infix);
+  CPPUNIT_ASSERT(pTree->getRoot() != NULL);
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  pFalse->setRight(*pFraction);
+  delete pTree;
+  delete pFraction;
+
+  CNormalChoiceLogical* pLogicalChoice = new CNormalChoiceLogical();
+  CNormalLogical* pTmpLogical = new CNormalLogical();
+  CNormalLogical::ItemSet tmpSet;
+  tmpSet.insert(std::make_pair(new CNormalLogicalItem(*pCond), false));
+  pTmpLogical->getAndSets().insert(std::make_pair(tmpSet, false));
+  pLogicalChoice->setCondition(*pTmpLogical);
+  delete pCond;
+  delete pTmpLogical;
+  tmpSet.clear();
+
+  pTmpLogical = new CNormalLogical();
+  tmpSet.insert(std::make_pair(new CNormalLogicalItem(*pTrue), false));
+  pTmpLogical->getAndSets().insert(std::make_pair(tmpSet, false));
+  pLogicalChoice->setTrueExpression(*pTmpLogical);
+  delete pTrue;
+  delete pTmpLogical;
+  tmpSet.clear();
+
+  pTmpLogical = new CNormalLogical();
+  tmpSet.insert(std::make_pair(new CNormalLogicalItem(*pFalse), false));
+  pTmpLogical->getAndSets().insert(std::make_pair(tmpSet, false));
+  pLogicalChoice->setFalseExpression(*pTmpLogical);
+  delete pFalse;
+  delete pTmpLogical;
+  tmpSet.clear();
+
+  CNormalLogical* pLogical = new CNormalLogical();
+  CNormalLogical::ChoiceSet set;
+  set.insert(std::make_pair(pLogicalChoice, false));
+  pLogical->getChoices().insert(std::make_pair(set, false));
+
+  pLogical->simplify();
+
+  CPPUNIT_ASSERT(pLogical->getChoices().size() == 0);
+  const CNormalLogical::ItemSetOfSets& orItems = pLogical->getAndSets();
+  CPPUNIT_ASSERT(orItems.size() == 1);
+
+  CNormalLogical::ItemSetOfSets::const_iterator it = orItems.begin();
+  CPPUNIT_ASSERT(it->second == false);
+  const CNormalLogical::ItemSet& andSet2 = it->first;
+  CPPUNIT_ASSERT(andSet2.size() == 2);
+
+  CNormalLogical::ItemSet::const_iterator it2 = andSet2.begin();
+  CPPUNIT_ASSERT(it2->second == false);
+  const CNormalLogicalItem* pItem = it2->first;
+  CPPUNIT_ASSERT(pItem->getType() == CNormalLogicalItem::NE);
+
+  pFraction = &pItem->getLeft();
+  CPPUNIT_ASSERT(pFraction != NULL);
+  CPPUNIT_ASSERT(pFraction->checkDenominatorOne() == true);
+
+  const CNormalSum* pNumerator = &pFraction->getNumerator();
+  CPPUNIT_ASSERT(pNumerator->getFractions().size() == 0);
+  const std::set<CNormalProduct*, compareProducts >* pProducts = &pNumerator->getProducts();
+  CPPUNIT_ASSERT(pProducts->size() == 1);
+  const CNormalProduct* pProduct = *(pProducts->begin());
+  CPPUNIT_ASSERT(pProduct != NULL);
+  CPPUNIT_ASSERT(pProduct->getFactor() == 4.0);
+  CPPUNIT_ASSERT(pProduct->getItemPowers().size() == 0);
+
+  pFraction = &pItem->getRight();
+  CPPUNIT_ASSERT(pFraction != NULL);
+  CPPUNIT_ASSERT(pFraction->checkDenominatorOne() == true);
+
+  pNumerator = &pFraction->getNumerator();
+  CPPUNIT_ASSERT(pNumerator->getFractions().size() == 0);
+  pProducts = &pNumerator->getProducts();
+  CPPUNIT_ASSERT(pProducts->size() == 1);
+  pProduct = *(pProducts->begin());
+  CPPUNIT_ASSERT(pProduct != NULL);
+  CPPUNIT_ASSERT(pProduct->getFactor() == 1.0);
+  CPPUNIT_ASSERT(pProduct->getItemPowers().size() == 1);
+  const CNormalItemPower* pItemPower = *(pProduct->getItemPowers().begin());
+  CPPUNIT_ASSERT(pItemPower != NULL);
+  CPPUNIT_ASSERT(pItemPower->getExp() == 1.0);
+  CPPUNIT_ASSERT(pItemPower->getItemType() == CNormalItemPower::ITEM);
+  const CNormalItem* pNormalItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
+  CPPUNIT_ASSERT(pNormalItem != NULL);
+  CPPUNIT_ASSERT(pNormalItem->getType() == CNormalItem::VARIABLE);
+  CPPUNIT_ASSERT(pNormalItem->getName() == "A");
+
+  ++it2;
+  CPPUNIT_ASSERT(it2->second == false);
+  pItem = it2->first;
+  CPPUNIT_ASSERT(pItem->getType() == CNormalLogicalItem::LE);
+
+  pFraction = &pItem->getLeft();
+  CPPUNIT_ASSERT(pFraction != NULL);
+  CPPUNIT_ASSERT(pFraction->checkDenominatorOne() == true);
+
+  pNumerator = &pFraction->getNumerator();
+  CPPUNIT_ASSERT(pNumerator->getFractions().size() == 0);
+  pProducts = &pNumerator->getProducts();
+  CPPUNIT_ASSERT(pProducts->size() == 1);
+  pProduct = *(pProducts->begin());
+  CPPUNIT_ASSERT(pProduct != NULL);
+  CPPUNIT_ASSERT(pProduct->getFactor() == 1.0);
+  CPPUNIT_ASSERT(pProduct->getItemPowers().size() == 1);
+  pItemPower = *(pProduct->getItemPowers().begin());
+  CPPUNIT_ASSERT(pItemPower != NULL);
+  CPPUNIT_ASSERT(pItemPower->getExp() == 1.0);
+  CPPUNIT_ASSERT(pItemPower->getItemType() == CNormalItemPower::ITEM);
+  pNormalItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
+  CPPUNIT_ASSERT(pNormalItem != NULL);
+  CPPUNIT_ASSERT(pNormalItem->getType() == CNormalItem::VARIABLE);
+  CPPUNIT_ASSERT(pNormalItem->getName() == "A");
+
+  pFraction = &pItem->getRight();
+  CPPUNIT_ASSERT(pFraction != NULL);
+  CPPUNIT_ASSERT(pFraction->checkDenominatorOne() == true);
+
+  pNumerator = &pFraction->getNumerator();
+  CPPUNIT_ASSERT(pNumerator->getFractions().size() == 0);
+  pProducts = &pNumerator->getProducts();
+  CPPUNIT_ASSERT(pProducts->size() == 1);
+  pProduct = *(pProducts->begin());
+  CPPUNIT_ASSERT(pProduct != NULL);
+  CPPUNIT_ASSERT(pProduct->getFactor() == 1.0);
+  CPPUNIT_ASSERT(pProduct->getItemPowers().size() == 1);
+  pItemPower = *(pProduct->getItemPowers().begin());
+  CPPUNIT_ASSERT(pItemPower != NULL);
+  CPPUNIT_ASSERT(pItemPower->getExp() == 1.0);
+  CPPUNIT_ASSERT(pItemPower->getItemType() == CNormalItemPower::ITEM);
+  pNormalItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
+  CPPUNIT_ASSERT(pNormalItem != NULL);
+  CPPUNIT_ASSERT(pNormalItem->getType() == CNormalItem::CONSTANT);
+  CPPUNIT_ASSERT(pNormalItem->getName() == "PI");
+
+  delete pLogical;
+}
+
+/* This test is not necessary right now.
+void test_cnormallogical::test_simplify_2()
+{
+// if(2==T) then FALSE else NOT(D==F)
+CNormalLogicalItem* pCond=new CNormalLogicalItem();
+pCond->setType(CNormalLogicalItem::EQ);
+std::string infix("2");
+CEvaluationTree* pTree = new CEvaluationTree();
+pTree->setInfix(infix);
+CPPUNIT_ASSERT(pTree->getRoot() != NULL);
+const CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+pCond->setLeft(*pFraction);
+delete pTree;
+delete pFraction;
+
+infix="T";
+pTree = new CEvaluationTree();
+pTree->setInfix(infix);
+CPPUNIT_ASSERT(pTree->getRoot() != NULL);
+pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+pCond->setRight(*pFraction);
+delete pTree;
+delete pFraction;
+
+CNormalLogicalItem* pTrue=new CNormalLogicalItem();
+pTrue->setType(CNormalLogicalItem::FALSE);
+
+CNormalLogicalItem* pFalse=new CNormalLogicalItem();
+pFalse->setType(CNormalLogicalItem::EQ);
+infix="D";
+pTree = new CEvaluationTree();
+pTree->setInfix(infix);
+CPPUNIT_ASSERT(pTree->getRoot() != NULL);
+pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+pFalse->setLeft(*pFraction);
+delete pTree;
+delete pFraction;
+
+infix="F";
+pTree = new CEvaluationTree();
+pTree->setInfix(infix);
+CPPUNIT_ASSERT(pTree->getRoot() != NULL);
+pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+pFalse->setRight(*pFraction);
+delete pTree;
+delete pFraction;
+
+CNormalChoiceLogical* pLogicalChoice=new CNormalChoiceLogical();
+CNormalLogical* pTmpLogical=new CNormalLogical();
+CNormalLogical::ItemSet tmpSet;
+tmpSet.insert(std::make_pair(new CNormalLogicalItem(*pCond),false));
+pTmpLogical->getAndSets().insert(std::make_pair(tmpSet,false));
+pLogicalChoice->setCondition(*pTmpLogical);
+delete pCond;
+delete pTmpLogical;
+tmpSet.clear();
+
+pTmpLogical=new CNormalLogical();
+tmpSet.insert(std::make_pair(new CNormalLogicalItem(*pTrue),false));
+pTmpLogical->getAndSets().insert(std::make_pair(tmpSet,false));
+pLogicalChoice->setTrueExpression(*pTmpLogical);
+delete pTrue;
+delete pTmpLogical;
+tmpSet.clear();
+
+pTmpLogical=new CNormalLogical();
+tmpSet.insert(std::make_pair(new CNormalLogicalItem(*pFalse),false));
+pTmpLogical->getAndSets().insert(std::make_pair(tmpSet,false));
+pLogicalChoice->setFalseExpression(*pTmpLogical);
+delete pFalse;
+delete pTmpLogical;
+tmpSet.clear();
+
+CNormalLogical* pLogical=new CNormalLogical();
+CNormalLogical::ChoiceSet set;
+set.insert(std::make_pair(pLogicalChoice,false));
+pLogical->getChoices().insert(std::make_pair(set,false));
+
+pLogical->simplify();
+
+CPPUNIT_ASSERT(pLogical->getChoices().size()==0);
+const CNormalLogical::ItemSetOfSets& orItems=pLogical->getAndSets();
+CPPUNIT_ASSERT(orItems.size()==2);
+
+CNormalLogical::ItemSetOfSets::const_iterator it=orItems.begin();
+CPPUNIT_ASSERT(it->second==false);
+const CNormalLogical::ItemSet& andSet=it->first;
+CPPUNIT_ASSERT(andSet.size()==1);
+CNormalLogical::ItemSet::const_iterator it2=andSet.begin();
+CPPUNIT_ASSERT(it2->second==false);
+const CNormalLogicalItem* pItem=it2->first;
+CPPUNIT_ASSERT(pItem->getType()==CNormalLogicalItem::FALSE);
+
+++it;
+CPPUNIT_ASSERT(it->second==false);
+const CNormalLogical::ItemSet& andSet2=it->first;
+CPPUNIT_ASSERT(andSet2.size()==2);
+
+it2=andSet2.begin();
+CPPUNIT_ASSERT(it2->second==false);
+pItem=it2->first;
+CPPUNIT_ASSERT(pItem->getType()==CNormalLogicalItem::NE);
+
+pFraction=&pItem->getLeft();
+CPPUNIT_ASSERT(pFraction != NULL);
+CPPUNIT_ASSERT(pFraction->checkDenominatorOne() == true);
+
+const CNormalSum* pNumerator = &pFraction->getNumerator();
+CPPUNIT_ASSERT(pNumerator->getFractions().size() == 0);
+const std::set<CNormalProduct*, compareProducts >* pProducts = &pNumerator->getProducts();
+CPPUNIT_ASSERT(pProducts->size() == 1);
+const CNormalProduct* pProduct = *(pProducts->begin());
+CPPUNIT_ASSERT(pProduct != NULL);
+CPPUNIT_ASSERT(pProduct->getFactor() == 4.0);
+CPPUNIT_ASSERT(pProduct->getItemPowers().size() == 0);
+
+pFraction=&pItem->getRight();
+CPPUNIT_ASSERT(pFraction != NULL);
+CPPUNIT_ASSERT(pFraction->checkDenominatorOne() == true);
+
+pNumerator = &pFraction->getNumerator();
+CPPUNIT_ASSERT(pNumerator->getFractions().size() == 0);
+pProducts = &pNumerator->getProducts();
+CPPUNIT_ASSERT(pProducts->size() == 1);
+pProduct = *(pProducts->begin());
+CPPUNIT_ASSERT(pProduct != NULL);
+CPPUNIT_ASSERT(pProduct->getFactor() == 1.0);
+CPPUNIT_ASSERT(pProduct->getItemPowers().size() == 1);
+const CNormalItemPower* pItemPower = *(pProduct->getItemPowers().begin());
+CPPUNIT_ASSERT(pItemPower != NULL);
+CPPUNIT_ASSERT(pItemPower->getExp() == 1.0);
+CPPUNIT_ASSERT(pItemPower->getItemType() == CNormalItemPower::ITEM);
+const CNormalItem* pNormalItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
+CPPUNIT_ASSERT(pNormalItem != NULL);
+CPPUNIT_ASSERT(pNormalItem->getType() == CNormalItem::VARIABLE);
+CPPUNIT_ASSERT(pNormalItem->getName() == "A");
+
+++it2;
+CPPUNIT_ASSERT(it2->second==false);
+pItem=it2->first;
+CPPUNIT_ASSERT(pItem->getType()==CNormalLogicalItem::LE);
+
+pFraction=&pItem->getLeft();
+CPPUNIT_ASSERT(pFraction != NULL);
+CPPUNIT_ASSERT(pFraction->checkDenominatorOne() == true);
+
+pNumerator = &pFraction->getNumerator();
+CPPUNIT_ASSERT(pNumerator->getFractions().size() == 0);
+pProducts = &pNumerator->getProducts();
+CPPUNIT_ASSERT(pProducts->size() == 1);
+pProduct = *(pProducts->begin());
+CPPUNIT_ASSERT(pProduct != NULL);
+CPPUNIT_ASSERT(pProduct->getFactor() == 1.0);
+CPPUNIT_ASSERT(pProduct->getItemPowers().size() == 1);
+pItemPower = *(pProduct->getItemPowers().begin());
+CPPUNIT_ASSERT(pItemPower != NULL);
+CPPUNIT_ASSERT(pItemPower->getExp() == 1.0);
+CPPUNIT_ASSERT(pItemPower->getItemType() == CNormalItemPower::ITEM);
+pNormalItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
+CPPUNIT_ASSERT(pNormalItem != NULL);
+CPPUNIT_ASSERT(pNormalItem->getType() == CNormalItem::VARIABLE);
+CPPUNIT_ASSERT(pNormalItem->getName() == "A");
+
+pFraction=&pItem->getRight();
+CPPUNIT_ASSERT(pFraction != NULL);
+CPPUNIT_ASSERT(pFraction->checkDenominatorOne() == true);
+
+pNumerator = &pFraction->getNumerator();
+CPPUNIT_ASSERT(pNumerator->getFractions().size() == 0);
+pProducts = &pNumerator->getProducts();
+CPPUNIT_ASSERT(pProducts->size() == 1);
+pProduct = *(pProducts->begin());
+CPPUNIT_ASSERT(pProduct != NULL);
+CPPUNIT_ASSERT(pProduct->getFactor() == 1.0);
+CPPUNIT_ASSERT(pProduct->getItemPowers().size() == 1);
+pItemPower = *(pProduct->getItemPowers().begin());
+CPPUNIT_ASSERT(pItemPower != NULL);
+CPPUNIT_ASSERT(pItemPower->getExp() == 1.0);
+CPPUNIT_ASSERT(pItemPower->getItemType() == CNormalItemPower::ITEM);
+pNormalItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
+CPPUNIT_ASSERT(pNormalItem != NULL);
+CPPUNIT_ASSERT(pNormalItem->getType() == CNormalItem::CONSTANT);
+CPPUNIT_ASSERT(pNormalItem->getName() == "PI");
+
+delete pLogical;
+}
+ */
