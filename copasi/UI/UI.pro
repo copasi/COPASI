@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $ 
-#   $Revision: 1.156.2.1 $ 
+#   $Revision: 1.156.2.2 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2007/09/24 14:49:50 $ 
+#   $Date: 2007/09/24 15:25:49 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -11,7 +11,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.156.2.1 $ $Author: shoops $ $Date: 2007/09/24 14:49:50 $  
+# $Revision: 1.156.2.2 $ $Author: shoops $ $Date: 2007/09/24 15:25:49 $  
 ######################################################################
 
 LIB = UI
@@ -356,6 +356,7 @@ DISTFILES += UI.dsp \
              icons/CopasiDoc.ico \
              icons/CopasiDoc??-Alpha.xpm \
              icons/closeSlider.xpm \
+             icons/checkModel.xpm \
              icons/copasi_beta_background.xpm \
              icons/copasi_rc.xpm \
              icons/editSlider.xpm \
@@ -363,6 +364,7 @@ DISTFILES += UI.dsp \
              icons/fileopen.xpm \
              icons/fileprint.xpm \
              icons/filesave.xpm \
+             icons/istos.xpm \
              icons/locked.xpm \
              icons/modifier.xpm \
              icons/objectAll.xpm \
@@ -371,6 +373,9 @@ DISTFILES += UI.dsp \
              icons/product.xpm \
              icons/scanwidgetbuttonicon.xpm \
              icons/showSliders.xpm \
+             icons/stois.xpm \
              icons/substrate.xpm \
              icons/unlocked.xpm \
+             
+             
 
