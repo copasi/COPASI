@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLogicalItem.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/09/18 19:34:00 $
+//   $Author: gauges $
+//   $Date: 2007/09/24 15:37:36 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -97,16 +97,16 @@ bool CNormalLogicalItem::simplify()
   bool result = true;
   if (this->mType == GT)
     {
-      // replace by LT and switch mpLeft and mpRight
-      this->mType = LT;
+      // replace by LE and switch mpLeft and mpRight
+      this->mType = LE;
       CNormalFraction TMP = this->mLeft;
       this->mLeft = this->mRight;
       this->mRight = TMP;
     }
   else if (this->mType == GE)
     {
-      // replace by LE and switch mpLeft and mpRight
-      this->mType = LE;
+      // replace by LT and switch mpLeft and mpRight
+      this->mType = LT;
       CNormalFraction TMP = this->mLeft;
       this->mLeft = this->mRight;
       this->mRight = TMP;
