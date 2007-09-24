@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $ 
-#   $Revision: 1.156 $ 
+#   $Revision: 1.156.2.1 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2007/08/22 12:59:17 $ 
+#   $Date: 2007/09/24 14:49:50 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -11,7 +11,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.156 $ $Author: shoops $ $Date: 2007/08/22 12:59:17 $  
+# $Revision: 1.156.2.1 $ $Author: shoops $ $Date: 2007/09/24 14:49:50 $  
 ######################################################################
 
 LIB = UI
@@ -47,7 +47,6 @@ HEADERS += \
            CQMathMatrixWidget.h \
            CQReportListItem.h \
            CQSensResultWidget.h \
-           CQTSSAResultWidget.h \
            CQValidator.h \
            CScanContainerWidget.h \
            CTimeSeriesTable.h \
@@ -108,7 +107,6 @@ SOURCES += \
            CQPreferenceDialog.cpp \
            CQReportListItem.cpp \
            CQSensResultWidget.cpp \
-           CQTSSAResultWidget.cpp \
            CQValidator.cpp \
            CScanContainerWidget.cpp \
            CTimeSeriesTable.cpp \
@@ -184,8 +182,6 @@ SOURCES += \
 # FORMS += CQTaskHeaderWidget.ui
 # FORMS += CQTextDialog.ui
 # FORMS += CQTrajectoryWidget.ui
-# FORMS += CQTSSAWidget.ui
-# FORMS += CQTSSAResultSubWidget.ui
 # FORMS += CScanWidgetBreak.ui
 # FORMS += CScanWidgetRandom.ui
 # FORMS += CScanWidgetRepeat.ui
@@ -255,10 +251,6 @@ HEADERS += \
            CQTextDialog.ui.h \
            CQTrajectoryWidget.h \
            CQTrajectoryWidget.ui.h \
-           CQTSSAWidget.h \
-           CQTSSAWidget.ui.h \
-           CQTSSAResultSubWidget.h \
-           CQTSSAResultSubWidget.ui.h \
            CScanWidgetBreak.h \
            CScanWidgetBreak.ui.h \
            CScanWidgetRandom.h \
@@ -311,8 +303,6 @@ SOURCES += \
            CQTaskBtnWidget.cpp \
            CQTaskHeaderWidget.cpp \
            CQTrajectoryWidget.cpp \
-           CQTSSAWidget.cpp \
-           CQTSSAResultSubWidget.cpp \
            CQTextDialog.cpp \
            CUpDownSubwidget.cpp \
            CScanWidgetBreak.cpp \
@@ -330,6 +320,23 @@ SOURCES += \
 !contains(DEFINES, HAVE_MML) {
   HEADERS -= CQDifferentialEquations.h
   SOURCES -= CQDifferentialEquations.cpp
+}
+
+contains(DEFINES, COPASI_TSSA) {
+  HEADERS += CQTSSAResultWidget.h
+  SOURCES += CQTSSAResultWidget.cpp
+	  
+# FORMS += CQTSSAWidget.ui
+# FORMS += CQTSSAResultSubWidget.ui
+
+  HEADERS += CQTSSAWidget.h \
+             CQTSSAWidget.ui.h \
+             CQTSSAResultSubWidget.h \
+             CQTSSAResultSubWidget.ui.h
+             
+  SOURCES += CQTSSAWidget.cpp \
+             CQTSSAResultSubWidget.cpp
+             
 }
 
 #ifdef COPASI_LICENSE_COM

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.221 $
+//   $Revision: 1.221.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/04 14:56:53 $
+//   $Date: 2007/09/24 14:49:50 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -456,13 +456,13 @@ void ListViews::ConstructNodeWidgets()
   if (!trajectoryWidget) trajectoryWidget = new CQTrajectoryWidget(this);
   trajectoryWidget->hide();
 
-#ifdef COPASI_DEBUG
+#ifdef COPASI_TSSA
   if (!tssaWidget) tssaWidget = new CQTSSAWidget(this);
   tssaWidget->hide();
 
   if (!tssaResultWidget) tssaResultWidget = new CQTSSAResultWidget(this);
   tssaResultWidget->hide();
-#endif
+#endif // COPASI_TSSA
 
   if (!mpMathMatrixWidget) mpMathMatrixWidget = new CQMathMatrixWidget(this);
   mpMathMatrixWidget->hide();

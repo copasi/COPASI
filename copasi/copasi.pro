@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.pro,v $ 
-#   $Revision: 1.37 $ 
+#   $Revision: 1.37.2.1 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2007/09/19 18:17:37 $ 
+#   $Date: 2007/09/24 14:49:52 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -11,7 +11,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.37 $ $Author: shoops $ $Date: 2007/09/19 18:17:37 $  
+# $Revision: 1.37.2.1 $ $Author: shoops $ $Date: 2007/09/24 14:49:52 $  
 ######################################################################
 
 TEMPLATE = subdirs
@@ -55,7 +55,7 @@ contains(DEFINES, WITH_LAYOUT) {
   SUBDIRS += layoutUI
 }
 
-contains(DEFINES, COPASI_DEBUG) {
+contains(DEFINES, COPASI_TSSA) {
   SUBDIRS += tssanalysis
 }
 
