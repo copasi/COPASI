@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLogical.cpp,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/09/24 12:48:32 $
+//   $Date: 2007/09/24 15:38:47 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -307,7 +307,7 @@ bool CNormalLogical::simplify()
           // check if one item is equal to negating another item
           // if this is the case, the whole set can be replaced by false
           // because B AND NOT(B) is always false
-          // also if we find a false item, we can eliminate all others
+          // also if we find a FALSE item, we can eliminate all others
           bool eliminate = false;
           it3 = (*it2).first.begin();
           if (it3 != endit3)
@@ -379,9 +379,9 @@ bool CNormalLogical::simplify()
       // by one TRUE item
       //
       it2 = this->mAndSets.begin(), endit2 = this->mAndSets.end();
-      if (it != endit)
+      if (it2 != endit2)
         {
-          --endit;
+          --endit2;
         }
       bool eliminate = false;
       CNormalLogicalItem* pLogicalItem1, *pLogicalItem2;
@@ -417,6 +417,26 @@ bool CNormalLogical::simplify()
                 }
               delete pLogicalItem1;
             }
+          else
+            {
+              // go through the set of and combined items and eliminate all TRUE
+              // items
+              ItemSet tmpSet;
+              ItemSet::iterator it4 = it2->first.begin(), endit4 = it2->first.end();
+              while (it4 != endit4)
+                {
+                  if (it4->first->getType() != CNormalLogicalItem::TRUE)
+                    {
+                      tmpSet.insert(std::make_pair(new CNormalLogicalItem(*it4->first), it4->second));
+                    }
+                  ++it4;
+                }
+              ItemSet tmpSet2 = it2->first;
+              cleanSet(tmpSet2);
+              bool second = it2->second;
+              this->mAndSets.erase(it2);
+              this->mAndSets.insert(std::make_pair(tmpSet, second));
+            }
           ++it2;
         }
       if (eliminate == true)
@@ -427,6 +447,53 @@ bool CNormalLogical::simplify()
           pLogical->setType(CNormalLogicalItem::TRUE);
           tmpSet.insert(std::make_pair(pLogical, false));
           this->mAndSets.insert(std::make_pair(tmpSet, false));
+        }
+      else if (this->mAndSets.size() > 1)
+        {
+          // we can not eliminate the whole set, so we have to check if we can
+          // eliminate TRUE items in the last set of and combined items that has
+          // not been covered in the code above since the iterator did not cover
+          // the last element.
+          ItemSet tmpSet;
+          ItemSet::iterator it4 = it2->first.begin(), endit4 = it2->first.end();
+          while (it4 != endit4)
+            {
+              if (it4->first->getType() != CNormalLogicalItem::TRUE)
+                {
+                  tmpSet.insert(std::make_pair(new CNormalLogicalItem(*it4->first), it4->second));
+                }
+              ++it4;
+            }
+          ItemSet tmpSet2 = it2->first;
+          cleanSet(tmpSet2);
+          bool second = it2->second;
+          this->mAndSets.erase(it2);
+          this->mAndSets.insert(std::make_pair(tmpSet, second));
+        }
+    }
+  // now we go through all or combined sets if there are more then one and
+  // erase all FALSE items
+  if (this->mAndSets.size() > 1)
+    {
+      bool eliminateFalse = true;
+      while (eliminateFalse)
+        {
+          ItemSetOfSets::iterator it2 = this->mAndSets.begin();
+          ItemSetOfSets::iterator endit2 = this->mAndSets.end();
+          while (it2 != endit2)
+            {
+              if (it2->first.size() == 1 && (it2->first.begin()->first->getType() == CNormalLogicalItem::FALSE))
+                {
+                  delete it2->first.begin()->first;
+                  this->mAndSets.erase(it2);
+                  break;
+                }
+              ++it2;
+            }
+          if (it2 == endit2)
+            {
+              eliminateFalse = false;
+            }
         }
     }
   // since we worked on the objects in the sets, we might have messed up the order of
