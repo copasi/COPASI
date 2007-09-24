@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalGeneralPower.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/09/18 19:34:00 $
+//   $Author: gauges $
+//   $Date: 2007/09/24 15:36:37 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -42,7 +42,7 @@ CNormalGeneralPower& CNormalGeneralPower::operator=(const CNormalGeneralPower& s
 std::string CNormalGeneralPower::toString() const
   {
     std::ostringstream s;
-    s << this->mpLeft->toString() << CNormalGeneralPower::SYMBOLS[this->mType] << this->mpRight->toString();
+    s << "(" << this->mpLeft->toString() << ")" << CNormalGeneralPower::SYMBOLS[this->mType] << "(" << this->mpRight->toString() << ")";
     return s.str();
   }
 
