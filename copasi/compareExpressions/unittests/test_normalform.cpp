@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_normalform.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/09/24 15:39:43 $
+//   $Date: 2007/09/25 14:48:21 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -3647,7 +3647,7 @@ void test_normalform::test_nested_stepwise_numbers_2levels_3()
   pLogicalItem = innerIt->first;
   // check type, left side and right side
   CPPUNIT_ASSERT(pLogicalItem != NULL);
-  CPPUNIT_ASSERT(pLogicalItem->getType() == CNormalLogicalItem::LT);
+  CPPUNIT_ASSERT(pLogicalItem->getType() == CNormalLogicalItem::LE);
   pFraction2 = &pLogicalItem->getLeft();
   CPPUNIT_ASSERT(pFraction2 != NULL);
   numerator = &pFraction2->getNumerator();
@@ -3746,7 +3746,6 @@ void test_normalform::test_nested_stepwise_fractions_3levels()
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
-  CPPUNIT_ASSERT(false);
   pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
   CPPUNIT_ASSERT(pFraction != NULL);
@@ -3772,6 +3771,9 @@ void test_normalform::test_nested_stepwise_fractions_3levels()
   CPPUNIT_ASSERT(pLogical != NULL);
   CPPUNIT_ASSERT(pLogical->isNegated() == false);
   CPPUNIT_ASSERT(pLogical->getChoices().size() == 0);
+  CPPUNIT_ASSERT(pLogical->getAndSets().size() == 5);
+  //std::cout << "\npLogical: " << pLogical->toString() << std::endl;
+
   CPPUNIT_ASSERT(false);
 
   // check the true branch
