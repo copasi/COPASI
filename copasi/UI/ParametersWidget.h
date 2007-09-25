@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ParametersWidget.h,v $
-   $Revision: 1.6 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/28 00:21:45 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ParametersWidget.h,v $
+//   $Revision: 1.6.10.1 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/09/25 16:55:01 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -42,7 +42,7 @@ class ParametersWidget : public CopasiWidget
 
   protected:
     bool loadFromModel();
-    bool saveToModel() const;
+    bool saveToModel();
 
     std::string objKey;
 
