@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.cpp,v $
-//   $Revision: 1.49 $
+//   $Revision: 1.49.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/18 14:51:38 $
+//   $Date: 2007/09/25 14:11:13 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1302,7 +1302,7 @@ std::set<C_INT32> *CHybridMethod::getParticipatesIn(C_INT32 rIndex)
       retset->insert(findMetab(modif[i]->getMetabolite()));
     }
   */ //TODO reac
-  std::cout << "getParticipatesIn(" << rIndex << ") is broken!" << std::endl;
+  //std::cout << "getParticipatesIn(" << rIndex << ") is broken!" << std::endl;
   return retset;
 }
 

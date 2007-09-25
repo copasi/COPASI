@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelAnalyzer.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.4.2.1 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/09/18 22:00:43 $
+//   $Author: shoops $
+//   $Date: 2007/09/25 14:11:14 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,7 +36,6 @@ void CModelAnalyzer::checkModel(const CModel* model)
   C_INT32 i, imax = model->getTotSteps();
   for (i = 0; i < imax; ++i)
     {
-      std::cout << "Reaction: " << model->getReactions()[i]->getObjectName() << std::endl;
       mReactionResults.push_back(checkReaction(model->getReactions()[i]));
     }
 }
@@ -53,14 +52,14 @@ CModelAnalyzer::ReactionResult CModelAnalyzer::checkReaction(const CReaction* re
   if (reaction->getFunction()->isReversible() == TriUnspecified)
     {
       //warning
-      std::cout << "Kinetics is of unspecified reversibility." << std::endl;
+      //std::cout << "Kinetics is of unspecified reversibility." << std::endl;
       ret.mKineticUnspecifiedReversibility = true;
     }
   else if (((reaction->getFunction()->isReversible() == TriTrue) && !reaction->isReversible())
            || ((reaction->getFunction()->isReversible() == TriFalse) && reaction->isReversible()))
     {
       //error; or copasi error?
-      std::cout << "Reversibility of function and kinetics does not match." << std::endl;
+      //std::cout << "Reversibility of function and kinetics does not match." << std::endl;
       ret.mReversibilityMismatch = true;
     }
   else
@@ -90,7 +89,7 @@ CModelAnalyzer::ReactionResult CModelAnalyzer::checkReaction(const CReaction* re
       if (j == jmax)
         {
           //warning/error?
-          std::cout << "A substrate of this reaction is not mapped to a corresponding function parameter" << std::endl;
+          //std::cout << "A substrate of this reaction is not mapped to a corresponding function parameter" << std::endl;
           const CMetab * pM = reaction->getChemEq().getSubstrates()[i]->getMetabolite();
           if (pM)
             ret.mChemEqSubs.push_back(pM->getObjectName());
@@ -139,7 +138,7 @@ CModelAnalyzer::ReactionResult CModelAnalyzer::checkReaction(const CReaction* re
       if (j == jmax)
         {
           //warning
-          std::cout << "A modifier of this reaction is not mapped to a corresponding function parameter" << std::endl;
+          //std::cout << "A modifier of this reaction is not mapped to a corresponding function parameter" << std::endl;
           const CMetab * pM = reaction->getChemEq().getModifiers()[i]->getMetabolite();
           if (pM)
             ret.mChemEqMods.push_back(pM->getObjectName());
@@ -162,7 +161,7 @@ CModelAnalyzer::ReactionResult CModelAnalyzer::checkReaction(const CReaction* re
           if (!dynamic_cast<CMetab*>(GlobalKeys.get(reaction->getParameterMappings()[i][0])))
             {
               //copasi bug!
-              std::cout << "Copasi bug! Something that is not a metabolite is mapped to a (subs/prod/mod) function parameter." << std::endl;
+              //std::cout << "Copasi bug! Something that is not a metabolite is mapped to a (subs/prod/mod) function parameter." << std::endl;
               ret.mNotMetabolite.push_back(reaction->getFunctionParameters()[i]->getObjectName());
             }
         }
@@ -181,7 +180,7 @@ CModelAnalyzer::ReactionResult CModelAnalyzer::checkReaction(const CReaction* re
           if (j == jmax)
             {
               //copasi error?
-              std::cout << "A SUBSTRATE function parameter is not mapped to a substrate of the reaction." << std::endl;
+              //std::cout << "A SUBSTRATE function parameter is not mapped to a substrate of the reaction." << std::endl;
               ret.mFunctionParametersSubs.push_back(reaction->getFunctionParameters()[i]->getObjectName());
             }
           break;
@@ -198,7 +197,7 @@ CModelAnalyzer::ReactionResult CModelAnalyzer::checkReaction(const CReaction* re
           if (j == jmax)
             {
               //copasi error?
-              std::cout << "A PRODUCT function parameter is not mapped to a product of the reaction." << std::endl;
+              //std::cout << "A PRODUCT function parameter is not mapped to a product of the reaction." << std::endl;
               ret.mFunctionParametersProds.push_back(reaction->getFunctionParameters()[i]->getObjectName());
             }
           break;
@@ -215,7 +214,7 @@ CModelAnalyzer::ReactionResult CModelAnalyzer::checkReaction(const CReaction* re
           if (j == jmax)
             {
               //copasi error?
-              std::cout << "A MODIFIER function parameter is not mapped to a modifier of the reaction." << std::endl;
+              //std::cout << "A MODIFIER function parameter is not mapped to a modifier of the reaction." << std::endl;
               ret.mFunctionParametersMods.push_back(reaction->getFunctionParameters()[i]->getObjectName());
               //this is not a user error. The modifier should have been added to the chemeq automatically.
             }
@@ -244,7 +243,7 @@ CModelAnalyzer::ReactionResult CModelAnalyzer::checkReaction(const CReaction* re
               if (j == jmax) //not a global parameter
                 {
                   //copasi bug
-                  std::cout << "A PARAMETER function parameter is mapped neither to a local parameter nor a global value." << std::endl;
+                  //std::cout << "A PARAMETER function parameter is mapped neither to a local parameter nor a global value." << std::endl;
                   ret.mFunctionParametersParams.push_back(reaction->getFunctionParameters()[i]->getObjectName());
                 }
             }
@@ -261,7 +260,7 @@ CModelAnalyzer::ReactionResult CModelAnalyzer::checkReaction(const CReaction* re
           if (j == jmax)
             {
               //copasi bug
-              std::cout << "A VOLUME function parameter is not mapped to a compartment." << std::endl;
+              //std::cout << "A VOLUME function parameter is not mapped to a compartment." << std::endl;
               ret.mFunctionParametersVol.push_back(reaction->getFunctionParameters()[i]->getObjectName());
             }
           break;
@@ -270,7 +269,7 @@ CModelAnalyzer::ReactionResult CModelAnalyzer::checkReaction(const CReaction* re
           if (reaction->getParameterMappings()[i][0] != mpModel->getKey())
             {
               //copasi bug
-              std::cout << "Internal Copasi bug: TIME parameter not mapped correctly." << std::endl;
+              //std::cout << "Internal Copasi bug: TIME parameter not mapped correctly." << std::endl;
               ret.mFunctionParametersTime.push_back(reaction->getFunctionParameters()[i]->getObjectName());
             }
           break;
@@ -278,7 +277,7 @@ CModelAnalyzer::ReactionResult CModelAnalyzer::checkReaction(const CReaction* re
         case CFunctionParameter::VARIABLE:
           {
             //copasi bug
-            std::cout << "Don't know what to do with a VARIABLE parameter here..." << std::endl;
+            //std::cout << "Don't know what to do with a VARIABLE parameter here..." << std::endl;
             ret.mFunctionParametersVar.push_back(reaction->getFunctionParameters()[i]->getObjectName());
           }
           break;

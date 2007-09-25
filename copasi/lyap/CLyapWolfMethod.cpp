@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapWolfMethod.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.12.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/31 17:57:36 $
+//   $Date: 2007/09/25 14:11:15 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -361,7 +361,7 @@ bool CLyapWolfMethod::calculate()
     }
   else
     {
-      std::cout << "no transient" << std::endl;
+      // std::cout << "no transient" << std::endl;
     }
 
   //copy working array to state

@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/ssa/Attic/CSSATask.cpp,v $
-   $Revision: 1.1 $
-   $Name:  $
-   $Author: tjohann $
-   $Date: 2006/09/12 15:16:20 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/ssa/Attic/CSSATask.cpp,v $
+//   $Revision: 1.1.14.1 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/09/25 14:11:14 $
+// End CVS Header
 
-// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -69,4 +69,4 @@ CSSATask::print(std::ostream * ostream) const
 {}
 
 std::ostream &operator<<(std::ostream &os, const CSSATask &A)
-{return std::cout;}
+{return os;}
