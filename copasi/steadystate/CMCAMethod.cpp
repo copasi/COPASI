@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.cpp,v $
-//   $Revision: 1.41 $
+//   $Revision: 1.41.2.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/09/18 14:51:38 $
+//   $Author: ssahle $
+//   $Date: 2007/09/25 22:33:40 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -182,17 +182,23 @@ void CMCAMethod::calculateUnscaledElasticities(C_FLOAT64 res)
 
       // let's take X_dx
       metabs[j]->setValue(temp * K1);
+      mpModel->updateSimulatedValues(false); //TODO test if true or false shoudl be used
+      //mpModel->updateNonSimulatedValues();
 
-      // Calculate the fluxes
+      // get the fluxes
       for (i = 0; i < numReacs; i++)
-        f1[i] = reacs[i]->calculateParticleFlux();
+        //f1[i] = reacs[i]->calculateParticleFlux();
+        f1[i] = reacs[i]->getParticleFlux();
 
       // now X-dx
       metabs[j]->setValue(temp * K2);
+      mpModel->updateSimulatedValues(false); //TODO test if true or false shoudl be used
+      //mpModel->updateNonSimulatedValues();
 
-      // calculate the fluxes
+      // get the fluxes
       for (i = 0; i < numReacs; i++)
-        f2[i] = reacs[i]->calculateParticleFlux();
+        //f2[i] = reacs[i]->calculateParticleFlux();
+        f2[i] = reacs[i]->getParticleFlux();
 
       // set column j of Dxv
       for (i = 0; i < numReacs; i++)
