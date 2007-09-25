@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLogical.cpp,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/09/24 15:38:47 $
+//   $Date: 2007/09/25 14:38:11 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -417,26 +417,6 @@ bool CNormalLogical::simplify()
                 }
               delete pLogicalItem1;
             }
-          else
-            {
-              // go through the set of and combined items and eliminate all TRUE
-              // items
-              ItemSet tmpSet;
-              ItemSet::iterator it4 = it2->first.begin(), endit4 = it2->first.end();
-              while (it4 != endit4)
-                {
-                  if (it4->first->getType() != CNormalLogicalItem::TRUE)
-                    {
-                      tmpSet.insert(std::make_pair(new CNormalLogicalItem(*it4->first), it4->second));
-                    }
-                  ++it4;
-                }
-              ItemSet tmpSet2 = it2->first;
-              cleanSet(tmpSet2);
-              bool second = it2->second;
-              this->mAndSets.erase(it2);
-              this->mAndSets.insert(std::make_pair(tmpSet, second));
-            }
           ++it2;
         }
       if (eliminate == true)
@@ -448,416 +428,53 @@ bool CNormalLogical::simplify()
           tmpSet.insert(std::make_pair(pLogical, false));
           this->mAndSets.insert(std::make_pair(tmpSet, false));
         }
-      else if (this->mAndSets.size() > 1)
-        {
-          // we can not eliminate the whole set, so we have to check if we can
-          // eliminate TRUE items in the last set of and combined items that has
-          // not been covered in the code above since the iterator did not cover
-          // the last element.
-          ItemSet tmpSet;
-          ItemSet::iterator it4 = it2->first.begin(), endit4 = it2->first.end();
-          while (it4 != endit4)
-            {
-              if (it4->first->getType() != CNormalLogicalItem::TRUE)
-                {
-                  tmpSet.insert(std::make_pair(new CNormalLogicalItem(*it4->first), it4->second));
-                }
-              ++it4;
-            }
-          ItemSet tmpSet2 = it2->first;
-          cleanSet(tmpSet2);
-          bool second = it2->second;
-          this->mAndSets.erase(it2);
-          this->mAndSets.insert(std::make_pair(tmpSet, second));
-        }
     }
   // now we go through all or combined sets if there are more then one and
   // erase all FALSE items
   if (this->mAndSets.size() > 1)
     {
-      bool eliminateFalse = true;
-      while (eliminateFalse)
-        {
-          ItemSetOfSets::iterator it2 = this->mAndSets.begin();
-          ItemSetOfSets::iterator endit2 = this->mAndSets.end();
-          while (it2 != endit2)
-            {
-              if (it2->first.size() == 1 && (it2->first.begin()->first->getType() == CNormalLogicalItem::FALSE))
-                {
-                  delete it2->first.begin()->first;
-                  this->mAndSets.erase(it2);
-                  break;
-                }
-              ++it2;
-            }
-          if (it2 == endit2)
-            {
-              eliminateFalse = false;
-            }
-        }
+      // there can be only one set that contains only one false item
+      // in mAndSets since it is a set and the sorter eliminates all
+      // others
+      ItemSet tmpSet;
+      CNormalLogicalItem* pFalseItem = new CNormalLogicalItem();
+      pFalseItem->setType(CNormalLogicalItem::FALSE);
+      tmpSet.insert(std::make_pair(pFalseItem, false));
+      std::pair<ItemSet, bool> falsePair = std::make_pair(tmpSet, false);
+      this->mAndSets.erase(falsePair);
+      delete pFalseItem;
     }
   // since we worked on the objects in the sets, we might have messed up the order of
   // objects, or some objects might be in there twice, so to fix this, we copy the set
   ItemSetOfSets::iterator it2 = this->mAndSets.begin();
   ItemSetOfSets::iterator endit2 = this->mAndSets.end();
   ItemSetOfSets tmpSet;
+  CNormalLogicalItem* pTrueItem = new CNormalLogicalItem();
+  pTrueItem->setType(CNormalLogicalItem::TRUE);
+  std::pair<CNormalLogicalItem*, bool> truePair = std::make_pair(pTrueItem, false);
   while (it2 != endit2)
     {
-      if (tmpSet.insert(*it2).second == false)
+      ItemSet tmpSet2(it2->first.begin(), it2->first.end());
+      // while we are at it, we also delete all TRUE items in the inner sets
+      // if those have more than one item
+      // there can be only one true item per set since it
+      // is a set and the sorter eliminates all others
+      if (tmpSet2.size() > 1)
         {
-          // delete the item in this set.
-          cleanSet(const_cast<ItemSet&>(it2->first));
+          tmpSet2.erase(truePair);
+        }
+      if (tmpSet.insert(std::make_pair(tmpSet2, it2->second)).second == false)
+        {
+          // delete the items in this set.
+          cleanSet(tmpSet2);
         }
       ++it2;
     }
+  delete pTrueItem;
   this->mAndSets.clear();
   this->mAndSets = tmpSet;
   return result;
 }
-
-//bool CNormalLogical::simplify()
-//{
-//  bool result = true;
-//  // first get rid of all choices
-//  // if A then B else C is replaced by (A AND B) OR (NOT(A) AND C)
-//  /*
-//  // to save some memory and computing power, we can already make one more
-//  // transformation here and convert (A AND B) OR (NOT(A) AND C) to (B OR
-//  // NOT(A)) AND (A OR C) AND (B OR C)
-//  // we we have a set of AND combined set of OR combined elements which we
-//  // have to convert to a set of OR combined sets of AND combined elements.
-//  */
-//  /* I think this is to complicated. (A AND B) OR (NOT(A) AND C) alread is a set
-//   * of or combined sets of and combined elements so why not take this!
-//   */
-//  std::set<std::pair<std::set<std::pair<CNormalLogical*, bool>, CNormalLogical::SetSorter<CNormalLogical> >, bool>, CNormalLogical::SetOfSetsSorter<CNormalLogical> > tmpAndItems;
-//  //std::set<std::pair<std::set<std::pair<CNormalLogical*, bool>, CNormalLogical::SetSorter<CNormalLogical> >, bool>, CNormalLogical::SetOfSetsSorter<CNormalLogical> > tmpOrItems;
-//  ChoiceSetOfSets::const_iterator it = this->mChoices.begin(), endit = this->mChoices.end();
-//  while (it != endit && result == true)
-//    {
-//      ChoiceSet tmpSet;
-//      if ((*it).second == true)
-//        {
-//          result = negateSets((*it).first, tmpSet);
-//}
-//      else
-//        {
-//          copySet((*it).first, tmpSet);
-//}
-//      ChoiceSet::iterator it2 = tmpSet.begin(), endit2 = tmpSet.end();
-//      while (it2 != endit2 && result == true)
-//        {
-//          if ((*it2).second == true)
-//            {
-//              (*it2).first->negate();
-//}
-//          (*it2).first->simplify();
-//          std::set<std::pair<CNormalLogical*, bool>, CNormalLogical::SetSorter<CNormalLogical> > tmpSet2;
-//          /**
-//           *  to complicated!
-//          CNormalLogical* pLogical = new CNormalLogical((*it2).first->getTrueExpression());
-//
-//          tmpSet2.insert(std::make_pair(pLogical, false));
-//
-//          pLogical = new CNormalLogical((*it2).first->getCondition());
-//          pLogical->negate();
-//          tmpSet2.insert(std::make_pair(pLogical, false));
-//          tmpAndItems.insert(std::make_pair(tmpSet2, false));
-//          tmpSet2.clear();
-//          pLogical = new CNormalLogical((*it2).first->getFalseExpression());
-//          tmpSet2.insert(std::make_pair(pLogical, false));
-//          CNormalLogical* pTmpLogical = new CNormalLogical((*it2).first->getCondition());
-//          if (tmpSet2.insert(std::make_pair(pTmpLogical , false)).second == false)
-//            {
-//              delete pTmpLogical;
-//}
-//          tmpAndItems.insert(std::make_pair(tmpSet2, false));
-//          tmpSet2.clear();
-//          tmpSet2.insert(std::make_pair(new CNormalLogical((*it2).first->getTrueExpression()), false));
-//          pTmpLogical = new CNormalLogical((*it2).first->getFalseExpression());
-//          if (tmpSet2.insert(std::make_pair(pTmpLogical , false)).second == false)
-//            {
-//              delete pTmpLogical;
-//}
-//          if (tmpAndItems.insert(std::make_pair(tmpSet2, false)).second == false)
-//            {
-//              cleanSet(tmpSet2);
-//}
-//          */
-//          CNormalLogical* pLogical=new CNormalLogical((*it2).first->getCondition());
-//   tmpSet2.insert(std::make_pair(pLogical,false));
-//          pLogical=new CNormalLogical((*it2).first->getTrueExpression());
-//   if(tmpSet2.insert(std::make_pair(pLogical,false)).second==false)
-//   {
-//  delete pLogical;
-//}
-//   if(tmpAndItems.insert(std::make_pair(tmpSet2,false)).second==false)
-//   {
-//           cleanSet(tmpSet2);
-//}
-//   tmpSet2.clear();
-//          pLogical=new CNormalLogical((*it2).first->getCondition());
-//   pLogical->negate();
-//   tmpSet2.insert(std::make_pair(pLogical,false));
-//          pLogical=new CNormalLogical((*it2).first->getFalseExpression());
-//   if(tmpSet2.insert(std::make_pair(pLogical,false)).second==false)
-//          {
-//             delete pLogical;
-//}
-//   if(tmpAndItems.insert(std::make_pair(tmpSet2,false)).second==false)
-//   {
-//           cleanSet(tmpSet2);
-//}
-//          ++it2;
-//}
-//      cleanSet(tmpSet);
-//      ++it;
-//}
-//  if (result == false)
-//    {
-//      cleanSetOfSets(tmpAndItems);
-//}
-//  else
-//    {
-//      /*result = convertAndOrToOrAnd(tmpAndItems, tmpOrItems);
-//      cleanSetOfSets(tmpAndItems);
-//      if (result == false)
-//        {
-//          cleanSetOfSets(tmpOrItems);
-//}
-//      else
-//        {
-//     */
-//          // now we have a set of OR combined sets of AND combined
-//          // CNormalLogical items which themselves are OR combined sets of
-//          // AND combined CNormalLogicalItem elements
-//          // so we have to get rid of two more levels
-//          ItemSetOfSets tmpAndItems2;
-//          ItemSetOfSets tmpOrItems2;
-//          std::set<std::pair<std::set<std::pair<CNormalLogical*, bool>, CNormalLogical::SetSorter<CNormalLogical> >, bool>, CNormalLogical::SetOfSetsSorter<CNormalLogical> >::iterator it2 = tmpAndItems.begin(), endit2 = tmpAndItems.end();
-//          while (it2 != endit2)
-//            {
-//              std::set<std::pair<CNormalLogical*, bool> >::const_iterator it3 = (*it2).first.begin(), endit3 = (*it2).first.end();
-//              assert(it2->second != true);
-//              while (it3 != endit3 && result == true)
-//                {
-//                  assert(it3->second != true);
-//                  assert(it3->first->getChoices().size() == 0);
-//                  ItemSetOfSets tmpSet;
-//                  //copySetOfSets((*it3).first->getAndSets(), tmpSet);
-//                  if ((*it3).first->isNegated())
-//                    {
-//                      result = negateSetOfSets((*it3).first->getAndSets(), tmpSet);
-//}
-//                  else
-//                    {
-//                      copySetOfSets((*it3).first->getAndSets(), tmpSet);
-//}
-//                  if (result == true)
-//                    {
-//                      // calling this function with tmpAndItems2 repeatedly should be OK
-//                      // since the set is not cleared, new items are only added.
-//                      result = convertAndOrToOrAnd(tmpSet, tmpAndItems2);
-//                      cleanSetOfSets(tmpSet);
-//}
-//                  else
-//                    {
-//                      cleanSetOfSets(tmpSet);
-//}
-//                  ++it3;
-//}
-//              ++it2;
-//}
-//          //cleanSetOfSets(tmpOrItems);
-//          cleanSetOfSets(tmpAndItems);
-//          if (result == true)
-//            {
-//              result = convertAndOrToOrAnd(tmpAndItems2, tmpOrItems2);
-//              cleanSetOfSets(tmpAndItems2);
-//              if (result == true)
-//                {
-//                  // now we can add all sets in tmpOrItems to this->mAndSets
-//                  copySetOfSets(tmpOrItems2, this->mAndSets);
-//                  cleanSetOfSets(tmpOrItems2);
-//}
-//}
-//        //}
-//}
-//  if (result == true)
-//    {
-//      // we can assume that all choices have been converted, so we clean the
-//      // data structure
-//      cleanSetOfSets(this->mChoices);
-//      // get rid of the mNot if it is set
-//      if (this->mNot == true)
-//        {
-//          ItemSetOfSets tmpSet;
-//          result = negateSetOfSets(this->mAndSets, tmpSet);
-//          if (result == true)
-//            {
-//              cleanSetOfSets(this->mAndSets);
-//              this->mAndSets = tmpSet;
-//}
-//}
-//      ItemSetOfSets::iterator it2 = this->mAndSets.begin(), endit2 = this->mAndSets.end();
-//      ItemSetOfSets tmpAndSets;
-//      while (it2 != endit2)
-//        {
-//          // get rid of all not flags within the items.
-//          // and simplify all items
-//          assert((*it2).second == false);
-//          ItemSet::iterator it3 = (*it2).first.begin(), endit3 = (*it2).first.end();
-//          while (it3 != endit3)
-//            {
-//              assert((*it3).second == false);
-//              (*it3).first->simplify();
-//              ++it3;
-//}
-//          // check if one item is equal to negating another item
-//          // if this is the case, the whole set can be replaced by false
-//          // because B AND NOT(B) is always false
-//          // also if we find a false item, we can eliminate all others
-//          bool eliminate = false;
-//          it3 = (*it2).first.begin();
-//          if (it3 != endit3)
-//            {
-//              --endit3;
-//}
-//          CNormalLogicalItem* pItem1;
-//          CNormalLogicalItem* pItem2;
-//          while (it3 != endit3 && eliminate == false)
-//            {
-//              pItem1 = new CNormalLogicalItem(*(*it3).first);
-//              if (pItem1->getType() == CNormalLogicalItem::FALSE)
-//                {
-//                  eliminate = true;
-//                  delete pItem1;
-//                  break;
-//}
-//              pItem1->negate();
-//              ItemSet::iterator it4 = it3, endit4 = (*it2).first.end();
-//              if (it4 != endit4)
-//                {
-//                  ++it4;
-//}
-//              while (it4 != endit4 && eliminate == false)
-//                {
-//                  pItem2 = (*it4).first;
-//                  if (pItem2->getType() == CNormalLogicalItem::FALSE)
-//                    {
-//                      eliminate = true;
-//                      break;
-//}
-//                  if ((*pItem2) == (*pItem1))
-//                    {
-//                      eliminate = true;
-//                      break;
-//}
-//                  ++it4;
-//}
-//              delete pItem1;
-//              ++it3;
-//}
-//          if (eliminate == true)
-//            {
-//              ItemSet tmpSet;
-//              CNormalLogicalItem* pLogical = new CNormalLogicalItem();
-//              pLogical->setType(CNormalLogicalItem::FALSE);
-//              tmpSet.insert(std::make_pair(pLogical, false));
-//              if (tmpAndSets.insert(std::make_pair(tmpSet, false)).second == false)
-//                {
-//                  cleanSet(tmpSet);
-//}
-//}
-//          else
-//            {
-//              ItemSet tmpSet;
-//              copySet((*it2).first, tmpSet);
-//              if (tmpAndSets.insert(std::make_pair(tmpSet, false)).second == false)
-//                {
-//                  cleanSet(tmpSet);
-//}
-//}
-//          ++it2;
-//}
-//      cleanSetOfSets(this->mAndSets);
-//      this->mAndSets = tmpAndSets;
-//      // simplify the sets, e.g. if one item in an AND combination is false, the
-//      // whole set can be replaced by one FALSE item
-//      // likewise if one item in an OR set is TRUE, the whole set can be replaced
-//      // by one TRUE item
-//      //
-//      it2 = this->mAndSets.begin(), endit2 = this->mAndSets.end();
-//      if (it != endit)
-//        {
-//          --endit;
-//}
-//      bool eliminate = false;
-//      CNormalLogicalItem* pLogicalItem1, *pLogicalItem2;
-//      while (it2 != endit2 && eliminate == false)
-//        {
-//          // if the set in it2 contains only one item and that item is a true
-//          // item, we can eliminate all other sets
-//          if ((*it2).first.size() == 1)
-//            {
-//              pLogicalItem1 = new CNormalLogicalItem(*(*(*it2).first.begin()).first);
-//              if (pLogicalItem1->getType() == CNormalLogicalItem::TRUE)
-//                {
-//                  eliminate = true;
-//                  delete pLogicalItem1;
-//                  break;
-//}
-//              pLogicalItem1->negate();
-//              ItemSetOfSets::iterator it3 = it2, endit3 = this->mAndSets.end();
-//              ++it3;
-//              while (it3 != endit3 && eliminate == false)
-//                {
-//                  if ((*it3).first.size() == 1)
-//                    {
-//                      pLogicalItem2 = (*(*it3).first.begin()).first;
-//                      if ((*pLogicalItem1) == (*pLogicalItem2))
-//                        {
-//                          eliminate = true;
-//                          delete pLogicalItem1;
-//                          break;
-//}
-//}
-//                  ++it3;
-//}
-//              delete pLogicalItem1;
-//}
-//          ++it2;
-//}
-//      if (eliminate == true)
-//        {
-//          cleanSetOfSets(this->mAndSets);
-//          ItemSet tmpSet;
-//          CNormalLogicalItem* pLogical = new CNormalLogicalItem();
-//          pLogical->setType(CNormalLogicalItem::TRUE);
-//          tmpSet.insert(std::make_pair(pLogical, false));
-//          this->mAndSets.insert(std::make_pair(tmpSet, false));
-//}
-//}
-//  /*
-//  // since we worked on the objects in the sets, we might have messed up the order of
-//  // objects, or some objects might be in there twice, so to fix this, we copy the set
-//  ItemSetOfSets::iterator it2 = this->mAndSets.begin();
-//  ItemSetOfSets::iterator endit2 = this->mAndSets.end();
-//  ItemSetOfSets tmpSet;
-//  while (it2 != endit2)
-//    {
-//      if (tmpSet.insert(*it2).second == false)
-//        {
-//          // delete the item in this set.
-//          cleanSet(const_cast<ItemSet&>(it2->first));
-//}
-//      ++it2;
-//}
-//  this->mAndSets.clear();
-//  this->mAndSets = tmpSet;
-//  */
-//  return result;
-//}
 
 /**
  * Converts a set of AND combined sets of OR combined elements into a
