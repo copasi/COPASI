@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.cpp,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.24.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/12 16:49:35 $
+//   $Date: 2007/09/26 22:25:32 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -65,12 +65,18 @@ bool CExpression::compile(std::vector< CCopasiContainer * > listOfContainer)
 {
   mpListOfContainer = & listOfContainer;
 
-  if (mpRoot)
-    mDisplayString = mpRoot->getDisplayString(this);
-  else
-    mDisplayString = "";
-
   bool success = compileNodes();
+
+  if (mpRoot)
+    {
+      mDisplayString = mpRoot->getDisplayString(this);
+      mInfix = mpRoot->getInfix();
+    }
+  else
+    {
+      mDisplayString = "";
+      mInfix = "";
+    }
 
   mpListOfContainer = NULL;
 
