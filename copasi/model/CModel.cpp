@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.320 $
+//   $Revision: 1.320.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/18 16:46:21 $
+//   $Date: 2007/09/26 19:19:52 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -2338,7 +2338,7 @@ CMetab* CModel::createMetabolite(const std::string & name,
   if (!mMetabolites.add(pMetab))
     return NULL;
 
-  setCompileFlag();
+  mCompileIsNecessary = true;
 
   return pMetab;
 }
@@ -2387,7 +2387,7 @@ bool CModel::removeMetabolite(const std::string & key,
   pdelete(pMetabolite);
 
   clearMoieties();
-  setCompileFlag();
+  mCompileIsNecessary = true;
 
   return true;
 }
@@ -2410,6 +2410,7 @@ CCompartment* CModel::createCompartment(const std::string & name,
       return NULL;
     }
 
+  mCompileIsNecessary = true;
   return cpt;
 }
 
@@ -2456,7 +2457,7 @@ bool CModel::removeCompartment(const std::string & key,
 
   mCompartments.CCopasiVector< CCompartment >::remove(index);
 
-  //compile();
+  mCompileIsNecessary = true;
 
   return true;
 }
@@ -2474,7 +2475,7 @@ CReaction* CModel::createReaction(const std::string & name)
       return NULL;
     }
 
-  setCompileFlag();
+  mCompileIsNecessary = true;
   return pReaction;
 }
 
@@ -2523,7 +2524,7 @@ bool CModel::removeReaction(const std::string & key,
   mSteps.CCopasiVector< CReaction >::remove(index);
 
   clearMoieties();
-  setCompileFlag();
+  mCompileIsNecessary = true;
 
   return true;
 }
@@ -2546,6 +2547,7 @@ CModelValue* CModel::createModelValue(const std::string & name,
       return NULL;
     }
 
+  mCompileIsNecessary = true;
   return cmv;
 }
 
@@ -2592,7 +2594,7 @@ bool CModel::removeModelValue(const std::string & key,
 
   mValues.CCopasiVector< CModelValue >::remove(index);
 
-  //compile();
+  mCompileIsNecessary = true;
 
   return true;
 }
