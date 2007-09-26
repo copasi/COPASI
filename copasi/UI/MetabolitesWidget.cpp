@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget.cpp,v $
-//   $Revision: 1.142 $
+//   $Revision: 1.142.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/14 15:29:49 $
+//   $Date: 2007/09/26 19:23:54 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -266,6 +266,7 @@ void MetabolitesWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C
       if (exc != COL_ICONCENTRATION)
         table->setText(row, COL_ICONCENTRATION, QString::number(1.0));
 
+      table->setText(row, COL_INUMBER, "");
       initialConcentrationChanged(row);
     }
   else
@@ -274,6 +275,7 @@ void MetabolitesWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C
       if (exc != COL_INUMBER)
         table->setText(row, COL_INUMBER, QString::number(100.0));
 
+      table->setText(row, COL_ICONCENTRATION, "");
       initialNumberChanged(row);
     }
 
