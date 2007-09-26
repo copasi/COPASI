@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionAnalyzer.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.7.2.1 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/09/21 15:37:18 $
+//   $Date: 2007/09/26 09:02:53 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,6 +32,14 @@ class CFunctionParameters;
 class CFunctionAnalyzer
   {
   public:
+    /**
+    * This is the base class of the arithmetics of the function analyzer. It describes possibilities for values.
+    * It basically consists of some flags that tell whether the value can be positive, can be negative, can
+    * be zero, or invalid, or if an actual exact numerical value is known.
+    * The usual arithmetic operators are defined for this class, the most important functions need to be
+    * implemented still. The missing functions are not critical since there is a save fallback: If you do not
+    * know how to perform a specific operation on CValues, the result should be (unknown|invalid).
+    */
     class CValue
       {
       public:
@@ -122,6 +130,11 @@ class CFunctionAnalyzer
       {
       public:
 
+        /**
+         * This contains low level infomation about one function. The Result class contains
+         * three instances of this structure: For the complete function and for the forward and
+         * backwards part of a reversible function
+         */
         struct FunctionInformation
           {
             std::vector<CValue> mUnchangedParameters;
@@ -129,6 +142,11 @@ class CFunctionAnalyzer
             std::vector<std::pair<std::pair<int, std::string>, std::vector<CValue> > > mProductZero;
 
             void writeTable(std::ostream & os, bool rt) const;
+
+            /**
+             * This writes a (hopefully) user understandable interpretation of the results to os.
+             * The return value indicates if a problem was reported.
+             */
             bool writeAnalysis(std::ostream & os, bool rt, bool reversible) const;
           };
 
