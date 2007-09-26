@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotwindow.h,v $
-   $Revision: 1.20 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/28 00:31:05 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotwindow.h,v $
+//   $Revision: 1.20.10.1 $
+//   $Name:  $
+//   $Author: ssahle $
+//   $Date: 2007/09/26 15:27:14 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -41,7 +41,7 @@ class PlotWindow : public QMainWindow, public COutputInterface
 
     bool initFromSpec(const CPlotSpecification* ptrSpec);
 
-    //QToolButton * zoomButton;
+    QToolButton * zoomButton;
     QToolButton * printButton;
     QToolButton * saveButton;
 
@@ -86,4 +86,6 @@ class PlotWindow : public QMainWindow, public COutputInterface
     void printPlot();
 
     void slotSaveData();
+
+    void slotZoomOut();
   };
