@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.148 $
+//   $Revision: 1.148.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/04 17:30:58 $
+//   $Date: 2007/09/26 22:17:20 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -655,6 +655,12 @@ class CModel : public CModelEntity
     void applyInitialValues();
 
     /**
+     * Update all initial values.
+     * @return bool success
+     */
+    bool updateInitialValues();
+
+    /**
      * Get the current state of the model, i.e., all current model
      * quantities.
      * @return const CState & initialState
@@ -1060,12 +1066,6 @@ class CModel : public CModelEntity
      * @return bool success
      */
     bool buildStateTemplate();
-
-    /**
-     * Update all initial values.
-     * @return bool success
-     */
-    bool updateInitialValues();
 
     /**
      * Build the update sequence used by applyInitialValues to update values

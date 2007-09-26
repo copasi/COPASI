@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.320.2.1 $
+//   $Revision: 1.320.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/26 19:19:52 $
+//   $Date: 2007/09/26 22:17:19 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -382,8 +382,6 @@ bool CModel::compile()
 
   try
     {
-      updateInitialValues();
-
       buildConstantSequence();
       buildSimulatedSequence();
       buildNonSimulatedSequence();
