@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.221.2.1 $
+//   $Revision: 1.221.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/24 14:49:50 $
+//   $Date: 2007/09/26 14:38:47 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1160,8 +1160,12 @@ void ListViews::notifyAllChildWidgets(C_INT32 id,
 void ListViews::refreshInitialValues()
 {
   std::set< const CCopasiObject * > All;
+
+  CModel * pModel = CCopasiDataModel::Global->getModel();
+  pModel->compileIfNecessary(NULL);
+
   std::vector< Refresh * > UpdateVector =
-    CCopasiDataModel::Global->getModel()->buildInitialRefreshSequence(All);
+    pModel->buildInitialRefreshSequence(All);
 
   std::vector< Refresh * >::iterator it = UpdateVector.begin();
   std::vector< Refresh * >::iterator end = UpdateVector.end();
