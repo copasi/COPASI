@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLogical.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/09/24 15:38:47 $
+//   $Date: 2007/09/26 12:37:58 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,6 +17,7 @@
 #include <string>
 #include <iostream>
 #include <set>
+#include <map>
 #include <utility>
 
 class CNormalLogicalItem;
@@ -171,6 +172,21 @@ class CNormalLogical : public CNormalBase
      */
     template<typename TYPE>
     static void copySetOfSets(const std::set<std::pair<std::set<std::pair<TYPE*, bool>, SetSorter<TYPE> >, bool>, SetOfSetsSorter<TYPE> >& source, std::set<std::pair<std::set<std::pair<TYPE*, bool>, SetSorter<TYPE> >, bool>, SetOfSetsSorter<TYPE> >& target);
+
+    /**
+     * This method creates the canonical disjunctive normalform for a logical
+     * expression. The expression must not contain choices and no negated item
+     * sets or items. Since the method scales with exponentially, the number of
+     * logical individual logical items in the expression is limited to 16.
+     * The return value is true if the call succeeded and false otherwise.
+     */
+    bool generateCanonicalDNF(ItemSetOfSets& tmpAndSet) const;
+
+    /**
+     * Given a map that associates each logical element with a truth value,
+     * this method evaluates the whole logical expression.
+     */
+    bool evaluateExpression(const std::map<CNormalLogicalItem, bool>& truthValueMap) const;
   };
 
 std::ostream& operator<<(std::ostream& os, const CNormalLogical& logical);

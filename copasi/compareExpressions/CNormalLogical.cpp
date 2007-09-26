@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLogical.cpp,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/09/25 14:38:11 $
+//   $Date: 2007/09/26 12:37:58 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,6 +13,8 @@
 #include "CNormalLogical.h"
 #include "CNormalChoiceLogical.h"
 #include "CNormalLogicalItem.h"
+#include <vector>
+#include <bitset>
 #include <sstream>
 #include <assert.h>
 
@@ -473,6 +475,12 @@ bool CNormalLogical::simplify()
   delete pTrueItem;
   this->mAndSets.clear();
   this->mAndSets = tmpSet;
+  tmpSet.clear();
+  if (result = this->generateCanonicalDNF(tmpSet))
+    {
+      cleanSetOfSets(this->mAndSets);
+      this->mAndSets = tmpSet;
+    }
   return result;
 }
 
@@ -994,3 +1002,116 @@ std::set<const CNormalLogical*> CNormalLogical::findLogicals() const
     return set;
 }
  */
+
+bool CNormalLogical::generateCanonicalDNF(ItemSetOfSets& tmpAndSets) const
+  {
+    bool result = true;
+    if (this->mChoices.empty() && !this->mAndSets.empty())
+      {
+        // first we have to create a map with logical items as the keys
+        // the sorting should be OK since CNormalLogicalItem implements the
+        // less operator.
+        std::map<CNormalLogicalItem, bool> truthValueMap;
+        ItemSetOfSets::const_iterator outerIt = this->mAndSets.begin(), outerEndit = this->mAndSets.end();
+        while (outerIt != outerEndit && result == true)
+          {
+            result = (outerIt->second == false);
+            ItemSet::const_iterator innerIt = outerIt->first.begin(), innerEndit = outerIt->first.end();
+            while (innerIt != innerEndit && result == true)
+              {
+                result = (innerIt->second == false);
+                truthValueMap[*(innerIt->first)] = false;
+                ++innerIt;
+              }
+            ++outerIt;
+          }
+        if (truthValueMap.size() <= 16)
+          {
+            std::vector<CNormalLogicalItem> itemVector;
+            std::map<CNormalLogicalItem, bool>::const_iterator mapIt = truthValueMap.begin(), mapEndit = truthValueMap.end();
+            while (mapIt != mapEndit)
+              {
+                itemVector.push_back(mapIt->first);
+                ++mapIt;
+              }
+            unsigned int i = 0, iMax = (1 << itemVector.size()) - 1;
+            while (i < iMax && result == true)
+              {
+                // create a new row for the truth table
+                // the bits in i can be mapped to the truth values
+                std::bitset<16> bitSet(i);
+                unsigned int j, jMax = itemVector.size();
+                for (j = 0;j < jMax;++j)
+                  {
+                    truthValueMap[itemVector[j]] = bitSet[j];
+                  }
+                // now we evaluate the logical expression to see if the result
+                // is true or false
+                if (this->evaluateExpression(truthValueMap) == true)
+                  {
+                    // the result was true, so this combination is part of the
+                    // canonical disjunctive normalform
+                    ItemSet tmpSet;
+                    for (j = 0;j < jMax;++j)
+                      {
+                        CNormalLogicalItem* pItem = new CNormalLogicalItem(itemVector[j]);
+                        if (bitSet[j] == false)
+                          {
+                            pItem->negate();
+                            pItem->simplify();
+                          }
+                        tmpSet.insert(std::make_pair(pItem, false));
+                      }
+                    tmpAndSets.insert(std::make_pair(tmpSet, false));
+                  }
+                ++i;
+              }
+          }
+        else
+          {
+            result = false;
+          }
+      }
+    else
+      {
+        result = false;
+      }
+    return result;
+  }
+
+bool CNormalLogical::evaluateExpression(const std::map<CNormalLogicalItem, bool>& truthValueMap) const
+  {
+    bool result = false;
+    ItemSetOfSets::const_iterator outerIt = this->mAndSets.begin(), outerEndit = this->mAndSets.end();
+    while (outerIt != outerEndit)
+      {
+        ItemSet::const_iterator innerIt = outerIt->first.begin(), innerEndit = outerIt->first.end();
+        bool innerResult = true;
+        while (innerIt != innerEndit && innerResult == true)
+          {
+            std::map<CNormalLogicalItem, bool>::const_iterator pos = truthValueMap.find(*(innerIt->first));
+            assert(pos != truthValueMap.end());
+            if (pos != truthValueMap.end())
+              {
+                innerResult = pos->second;
+                if (innerIt->second == true) innerResult = (!innerResult);
+              }
+            else
+              {
+                innerResult = false;
+              }
+            ++innerIt;
+          }
+        if (outerIt->second == true)
+          {
+            innerResult = (!innerResult);
+          }
+        if (innerResult == true)
+          {
+            result = true;
+            break;
+          }
+        ++outerIt;
+      }
+    return result;
+  }
