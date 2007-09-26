@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLogical.cpp,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/09/26 12:37:58 $
+//   $Date: 2007/09/26 19:44:48 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1034,7 +1034,7 @@ bool CNormalLogical::generateCanonicalDNF(ItemSetOfSets& tmpAndSets) const
                 itemVector.push_back(mapIt->first);
                 ++mapIt;
               }
-            unsigned int i = 0, iMax = (1 << itemVector.size()) - 1;
+            unsigned int i = 0, iMax = (1 << itemVector.size());
             while (i < iMax && result == true)
               {
                 // create a new row for the truth table
