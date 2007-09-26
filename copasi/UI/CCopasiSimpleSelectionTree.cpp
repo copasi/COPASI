@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CCopasiSimpleSelectionTree.cpp,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.23.2.1 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/07/10 22:48:05 $
+//   $Author: shoops $
+//   $Date: 2007/09/26 19:20:56 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -561,9 +561,15 @@ bool CCopasiSimpleSelectionTree::filter(const SelectionFlag & flag, const CCopas
 
       if (pEntity)
         {
-          // CModelEntity::ASSIGNMENT may have no intitial value
+          // CModelEntity::ASSIGNMENT may have no intitial value or rate
           if (pEntity->getStatus() == CModelEntity::ASSIGNMENT &&
-              pObject->getObjectName().compare(0, 7, "Initial") == 0)
+              (pObject->getObjectName().compare(0, 7, "Initial") == 0 ||
+               pObject->getObjectName().find("Rate") != std::string::npos))
+            return false;
+
+          // CModelEntity::FIXED may have no rate
+          if (pEntity->getStatus() == CModelEntity::FIXED &&
+              pObject->getObjectName().find("Rate") != std::string::npos)
             return false;
 
           // CModelEntity are handled differently dependent on the type
