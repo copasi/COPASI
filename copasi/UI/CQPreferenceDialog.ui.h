@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQPreferenceDialog.ui.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2007/06/23 16:29:21 $
+//   $Date: 2007/09/26 21:11:41 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,6 +17,22 @@
 
 #define COL_NAME 0
 #define COL_VALUE 1
+
+class CPreferenceListViewItem : public QListViewItem
+  {
+  public:
+    CPreferenceListViewItem(QListView *parent, const QString & label1, QString label2 = QString::null)
+        : QListViewItem(parent, label1, label2)
+    {
+      setRenameEnabled(COL_VALUE, true);
+    }
+
+    CPreferenceListViewItem(QListViewItem *parent, const QString & label1, QString label2 = QString::null)
+        : QListViewItem(parent, label1, label2)
+    {
+      setRenameEnabled(COL_VALUE, true);
+    }
+  };
 
 void CQPreferenceDialog::slotBtnOk()
 {
@@ -42,7 +58,6 @@ void CQPreferenceDialog::slotBtnOk()
           {item->setText(COL_VALUE, QString::number(maxFiles));}
           return;
         }
-      QMessageBox::information(this, "maxFiles", QString::number(maxFiles));
     }
   done(1);
 }
@@ -79,8 +94,7 @@ void CQPreferenceDialog::init()
     }
   if (maxFiles > 0)
     {
-      QListViewItem *item = new QListViewItem(mpListView, "Max Last Visited Files", QString::number(maxFiles));
-      item->setRenameEnabled(COL_VALUE, true);
+      CPreferenceListViewItem *item = new CPreferenceListViewItem(mpListView, "Max Last Visited Files", QString::number(maxFiles));
     }
 }
 

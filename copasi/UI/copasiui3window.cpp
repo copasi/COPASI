@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.208 $
+//   $Revision: 1.209 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/09/20 18:35:42 $
+//   $Author: aekamal $
+//   $Date: 2007/09/26 21:11:41 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -836,7 +836,7 @@ void CopasiUI3Window::slotObjectBrowserDialogWasClosed()
 
 void CopasiUI3Window::slotPreferences()
 {
-  static CQPreferenceDialog * preferenceDialog = new CQPreferenceDialog(this, 0, false);
+  CQPreferenceDialog * preferenceDialog = new CQPreferenceDialog(this, 0, false, Qt::WDestructiveClose);
   preferenceDialog->setModal(true);
   preferenceDialog->show();
 }
