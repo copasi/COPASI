@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_cnormallogical.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/09/24 15:39:43 $
+//   $Date: 2007/09/26 19:45:53 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -535,7 +535,7 @@ void test_cnormallogical::test_simplify_1()
   set.insert(std::make_pair(pLogicalChoice, false));
   pLogical->getChoices().insert(std::make_pair(set, false));
 
-  pLogical->simplify();
+  CPPUNIT_ASSERT(pLogical->simplify() == true);
 
   CPPUNIT_ASSERT(pLogical->getChoices().size() == 0);
   const CNormalLogical::ItemSetOfSets& orItems = pLogical->getAndSets();
