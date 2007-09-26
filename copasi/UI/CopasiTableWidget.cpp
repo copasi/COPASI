@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.cpp,v $
-//   $Revision: 1.52 $
+//   $Revision: 1.52.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/08/21 17:34:46 $
+//   $Date: 2007/09/26 19:22:05 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -248,7 +248,10 @@ void CopasiTableWidget::saveTable()
                                             msg,
                                             QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
                 }
+
               tableLineToObject(j, pObj);
+              mKeys[j] = pObj->getKey();
+
               // ListViews::notify(mOT, ListViews::ADD, pObj->getKey());
               protectedNotify(mOT, ListViews::ADD, pObj->getKey());
               mChanged = true;
@@ -334,13 +337,13 @@ void CopasiTableWidget::slotDoubleClicked(int row, int C_UNUSED(col),
     }
 
   saveTable();
-  fillTable();
 
   if (flagNew)
     {
-      fillTable();
-      key = mKeys[table->numRows() - 2];
+      key = mKeys[row];
     }
+
+  fillTable();
 
   if (GlobalKeys.get(key))
     pListView->switchToOtherWidget(0, key);
