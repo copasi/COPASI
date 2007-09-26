@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.221.2.2 $
+//   $Revision: 1.221.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/26 14:38:47 $
+//   $Date: 2007/09/26 19:22:58 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1069,7 +1069,8 @@ bool ListViews::notify(ObjectType objectType, Action action, const std::string &
   bool success = true;
 
   // update all initial value
-  refreshInitialValues();
+  if (action != RENAME)
+    refreshInitialValues();
 
   //update the datamodel and the listviews trees
   if (!updateDataModelAndListviews(objectType, action, key)) success = false;
