@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.320.2.2 $
+//   $Revision: 1.320.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/26 22:17:19 $
+//   $Date: 2007/09/27 12:51:51 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1276,7 +1276,7 @@ bool CModel::buildSimulatedSequence()
   // We do not add the rates for metabolites of type REACTION. These are automatically calculated
   // with dgemm in calculate derivatives based on the reaction fluxes added below.
   // In the case that other simulated values depend on such a rate this is taken care by
-  // calcuating all dependecies.
+  // calculating all dependencies.
   // This mechanism may lead occasinally to multiple calculations of rates of metabolites when used
   // in assignments or ODEs. However this is acceptable and more than compensated by the performance
   // gains of dgemm.
