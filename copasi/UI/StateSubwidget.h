@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/StateSubwidget.h,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.15.2.1 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/08/02 14:19:14 $
+//   $Date: 2007/09/27 09:18:24 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,8 +13,8 @@
 /****************************************************************************
  ** Form interface generated from reading ui file 'StateSubwidget.ui'
  **
- ** Created: Do Aug 2 16:13:44 2007
- **      by: The User Interface Compiler ($Id: StateSubwidget.h,v 1.15 2007/08/02 14:19:14 ssahle Exp $)
+ ** Created: Thu Sep 27 00:56:49 2007
+ **      by: The User Interface Compiler ($Id: StateSubwidget.h,v 1.15.2.1 2007/09/27 09:18:24 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
