@@ -1,9 +1,9 @@
 // Begin CVS Header
-//   $Source: /home/cvs/copasi_dev/copasi/UI/CQFittingResult.h,v $
-//   $Revision: 1.6.4.1 $
+//   $Source: /home/cvs/copasi_dev/cvs_admin/addHeader,v $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/04/24 15:05:10 $
+//   $Date: 2007/05/31 18:21:38 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,8 +13,8 @@
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQFittingResult.ui'
  **
- ** Created: Mon Apr 23 18:00:02 2007
- **      by: The User Interface Compiler ($Id: CQFittingResult.h,v 1.6.4.1 2007/04/24 15:05:10 shoops Exp $)
+ ** Created: Thu Sep 27 16:17:25 2007
+ **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.7   edited Aug 31 2005 $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/

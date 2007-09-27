@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/plotwidget1.h,v $
-   $Revision: 1.16 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/28 00:31:05 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/plotwidget1.h,v $
+//   $Revision: 1.16.10.1 $
+//   $Name:  $
+//   $Author: ssahle $
+//   $Date: 2007/09/27 14:21:12 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -14,7 +14,7 @@
  ** Form interface generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Mon Sep 29 10:43:24 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.h,v 1.16 2006/10/28 00:31:05 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.h,v 1.16.10.1 2007/09/27 14:21:12 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -47,7 +47,6 @@ class QToolButton;
 class PlotWindow;
 class Curve2DWidget;
 
-#include <qtabwidget.h>
 class PlotWidget1 : public CopasiWidget
   {
     Q_OBJECT
