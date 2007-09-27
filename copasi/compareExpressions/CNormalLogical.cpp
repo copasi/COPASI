@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLogical.cpp,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/09/26 19:44:48 $
+//   $Date: 2007/09/27 08:29:32 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1031,7 +1031,16 @@ bool CNormalLogical::generateCanonicalDNF(ItemSetOfSets& tmpAndSets) const
             std::map<CNormalLogicalItem, bool>::const_iterator mapIt = truthValueMap.begin(), mapEndit = truthValueMap.end();
             while (mapIt != mapEndit)
               {
-                itemVector.push_back(mapIt->first);
+                // only add the item if the negated item is not already part
+                // of the vector
+                CNormalLogicalItem* pNegatedItem = new CNormalLogicalItem(mapIt->first);
+                pNegatedItem->negate();
+                pNegatedItem->simplify();
+                if (std::find(itemVector.begin(), itemVector.end(), *pNegatedItem) == itemVector.end())
+                  {
+                    itemVector.push_back(mapIt->first);
+                  }
+                delete pNegatedItem;
                 ++mapIt;
               }
             unsigned int i = 0, iMax = (1 << itemVector.size());
@@ -1044,6 +1053,16 @@ bool CNormalLogical::generateCanonicalDNF(ItemSetOfSets& tmpAndSets) const
                 for (j = 0;j < jMax;++j)
                   {
                     truthValueMap[itemVector[j]] = bitSet[j];
+                    // set the truth value for the negated item if it is in the
+                    // map
+                    CNormalLogicalItem* pNegatedItem = new CNormalLogicalItem(itemVector[j]);
+                    pNegatedItem->negate();
+                    pNegatedItem->simplify();
+                    if (truthValueMap.find(*pNegatedItem) != truthValueMap.end())
+                      {
+                        truthValueMap[*pNegatedItem] = !(bitSet[j]);
+                      }
+                    delete pNegatedItem;
                   }
                 // now we evaluate the logical expression to see if the result
                 // is true or false
