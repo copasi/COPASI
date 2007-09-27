@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.cpp,v $
-//   $Revision: 1.28.2.1 $
+//   $Revision: 1.28.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/26 22:22:39 $
+//   $Date: 2007/09/27 12:51:28 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -100,7 +100,9 @@ std::string CEvaluationNodeObject::getDisplayString(const CEvaluationTree * pTre
 #endif
 
 std::string CEvaluationNodeObject::getDisplayString(const CEvaluationTree * /* pTree */) const
-{return mData;}
+  {
+    return "<" + mRegisteredObjectCN + ">";
+  }
 
 std::string CEvaluationNodeObject::getDisplay_C_String(const CEvaluationTree * /* pTree */) const
   {
