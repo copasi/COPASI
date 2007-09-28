@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.320.2.3 $
+//   $Revision: 1.320.2.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/09/27 12:51:51 $
+//   $Author: ssahle $
+//   $Date: 2007/09/28 02:40:42 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -521,6 +521,20 @@ void CModel::buildStoi()
   DebugFile << mStoi << std::endl;
 #endif
 
+  //update annotations
+  mpStoiAnnotation->resize();
+  unsigned C_INT32 j, imax = mMetabolites.size();
+  for (i = 0, j = 0; i < imax; ++i)
+    {
+      if (mMetabolites[i]->getStatus() == CModelEntity::REACTIONS && mMetabolites[i]->isUsed())
+        {
+          mpStoiAnnotation->setAnnotationCN(0, j, mMetabolites[i]->getCN());
+          ++j;
+        }
+    }
+  if (j != mpStoiAnnotation->size()[0])
+    std::cout << "Problem with size of stoichiometry matrix." << std::endl;
+
   if (mpCompileHandler)
     mpCompileHandler->finish(hProcess);
 
@@ -674,120 +688,121 @@ void CModel::buildRedStoi()
   return;
 }
 
-void CModel::buildL(const CMatrix< C_FLOAT64 > & LU)
-{
-  C_INT N = mNumMetabolitesIndependent;
-  C_INT LDA = std::max((C_INT) 1, N);
-  C_INT Info;
-
-  unsigned C_INT32 i, imin, imax;
-  unsigned C_INT32 j, jmax;
-  unsigned C_INT32 k;
-  C_FLOAT64 * sum;
-
-  CMatrix< C_FLOAT64 > R(N, N);
-
-  for (i = 1; i < (unsigned C_INT32) N; i++)
-    for (j = 0; j < i; j++)
-      R(i, j) = LU(i, j);
-
-#ifdef DEBUG_MATRIX
-  DebugFile << "L" << std::endl;
-  DebugFile << R << std::endl;
-#endif
-
-  /* to take care of differences between fortran's and c's memory  acces,
-     we need to take the transpose, i.e.,the upper triangular */
-  char cL = 'U';
-  char cU = 'U'; /* 1 in the diaogonal of R */
-
-  /* int dtrtri_(char *uplo,
-   *             char *diag,
-   *             integer *n,
-   *             doublereal * A,
-   *             integer *lda,
-   *             integer *info);
-   *  -- LAPACK routine (version 3.0) --
-   *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-   *     Courant Institute, Argonne National Lab, and Rice University
-   *     March 31, 1993
-   *
-   *  Purpose
-   *  =======
-   *
-   *  DTRTRI computes the inverse of a real upper or lower triangular
-   *  matrix A.
-   *
-   *  This is the Level 3 BLAS version of the algorithm.
-   *
-   *  Arguments
-   *  =========
-   *
-   *  uplo    (input) CHARACTER*1
-   *          = 'U':  A is upper triangular;
-   *          = 'L':  A is lower triangular.
-   *
-   *  diag    (input) CHARACTER*1
-   *          = 'N':  A is non-unit triangular;
-   *          = 'U':  A is unit triangular.
-   *
-   *  n       (input) INTEGER
-   *          The order of the matrix A.  n >= 0.
-   *
-   *  A       (input/output) DOUBLE PRECISION array, dimension (lda,n)
-   *          On entry, the triangular matrix A.  If uplo = 'U', the
-   *          leading n-by-n upper triangular part of the array A contains
-   *          the upper triangular matrix, and the strictly lower
-   *          triangular part of A is not referenced.  If uplo = 'L', the
-   *          leading n-by-n lower triangular part of the array A contains
-   *          the lower triangular matrix, and the strictly upper
-   *          triangular part of A is not referenced.  If diag = 'U', the
-   *          diagonal elements of A are also not referenced and are
-   *          assumed to be 1.
-   *          On exit, the (triangular) inverse of the original matrix, in
-   *          the same storage format.
-   *
-   *  lda     (input) INTEGER
-   *          The leading dimension of the array A.  lda >= max(1,n).
-   *
-   *  info    (output) INTEGER
-   *          = 0: successful exit
-   *          < 0: if info = -i, the i-th argument had an illegal value
-   *          > 0: if info = i, A(i,i) is exactly zero.  The triangular
-   *               matrix is singular and its inverse can not be computed.
-   */
-  dtrtri_(&cL, &cU, &N, R.array(), &LDA, &Info);
-  if (Info) fatalError();
-
-#ifdef DEBUG_MATRIX
-  DebugFile << "L inverse" << std::endl;
-  DebugFile << R << std::endl;
-#endif
-
-  mL.resize(mNumMetabolitesDependent, mNumMetabolitesIndependent);
-
-  imin = mNumMetabolitesIndependent;
-  imax = mNumMetabolitesReaction;
-  jmax = mNumMetabolitesIndependent;
-
-  // Construct L_0
-  for (i = imin; i < imax; i++)
-    for (j = 0; j < jmax; j++)
-      {
-        sum = & mL(i - imin, j);
-        *sum = LU(i, j);
-
-        for (k = j + 1; k < jmax; k++)
-          *sum += LU(i, k) * R(k, j);
-
-        if (fabs(*sum) < DBL_EPSILON) *sum = 0.0;
-      }
-
-#ifdef DEBUG_MATRIX
-  DebugFile << "Link Matrix:" << std::endl;
-  DebugFile << mLView << std::endl;
-#endif // DEBUG_MATRIX
-}
+// void CModel::buildL(const CMatrix< C_FLOAT64 > & LU)
+// {
+//   C_INT N = mNumMetabolitesIndependent;
+//   C_INT LDA = std::max((C_INT) 1, N);
+//   C_INT Info;
+//
+//   unsigned C_INT32 i, imin, imax;
+//   unsigned C_INT32 j, jmax;
+//   unsigned C_INT32 k;
+//   C_FLOAT64 * sum;
+//
+//   CMatrix< C_FLOAT64 > R(N, N);
+//
+//   for (i = 1; i < (unsigned C_INT32) N; i++)
+//     for (j = 0; j < i; j++)
+//       R(i, j) = LU(i, j);
+//
+// #ifdef DEBUG_MATRIX
+//   DebugFile << "L" << std::endl;
+//   DebugFile << R << std::endl;
+// #endif
+//
+//   /* to take care of differences between fortran's and c's memory  acces,
+//      we need to take the transpose, i.e.,the upper triangular */
+//   char cL = 'U';
+//   char cU = 'U'; /* 1 in the diaogonal of R */
+//
+//   /* int dtrtri_(char *uplo,
+//    *             char *diag,
+//    *             integer *n,
+//    *             doublereal * A,
+//    *             integer *lda,
+//    *             integer *info);
+//    *  -- LAPACK routine (version 3.0) --
+//    *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
+//    *     Courant Institute, Argonne National Lab, and Rice University
+//    *     March 31, 1993
+//    *
+//    *  Purpose
+//    *  =======
+//    *
+//    *  DTRTRI computes the inverse of a real upper or lower triangular
+//    *  matrix A.
+//    *
+//    *  This is the Level 3 BLAS version of the algorithm.
+//    *
+//    *  Arguments
+//    *  =========
+//    *
+//    *  uplo    (input) CHARACTER*1
+//    *          = 'U':  A is upper triangular;
+//    *          = 'L':  A is lower triangular.
+//    *
+//    *  diag    (input) CHARACTER*1
+//    *          = 'N':  A is non-unit triangular;
+//    *          = 'U':  A is unit triangular.
+//    *
+//    *  n       (input) INTEGER
+//    *          The order of the matrix A.  n >= 0.
+//    *
+//    *  A       (input/output) DOUBLE PRECISION array, dimension (lda,n)
+//    *          On entry, the triangular matrix A.  If uplo = 'U', the
+//    *          leading n-by-n upper triangular part of the array A contains
+//    *          the upper triangular matrix, and the strictly lower
+//    *          triangular part of A is not referenced.  If uplo = 'L', the
+//    *          leading n-by-n lower triangular part of the array A contains
+//    *          the lower triangular matrix, and the strictly upper
+//    *          triangular part of A is not referenced.  If diag = 'U', the
+//    *          diagonal elements of A are also not referenced and are
+//    *          assumed to be 1.
+//    *          On exit, the (triangular) inverse of the original matrix, in
+//    *          the same storage format.
+//    *
+//    *  lda     (input) INTEGER
+//    *          The leading dimension of the array A.  lda >= max(1,n).
+//    *
+//    *  info    (output) INTEGER
+//    *          = 0: successful exit
+//    *          < 0: if info = -i, the i-th argument had an illegal value
+//    *          > 0: if info = i, A(i,i) is exactly zero.  The triangular
+//    *               matrix is singular and its inverse can not be computed.
+//    */
+//   dtrtri_(&cL, &cU, &N, R.array(), &LDA, &Info);
+//   if (Info) fatalError();
+//
+// #ifdef DEBUG_MATRIX
+//   DebugFile << "L inverse" << std::endl;
+//   DebugFile << R << std::endl;
+// #endif
+//
+//   mL.resize(mNumMetabolitesDependent, mNumMetabolitesIndependent);
+//
+//   imin = mNumMetabolitesIndependent;
+//   imax = mNumMetabolitesReaction;
+//   jmax = mNumMetabolitesIndependent;
+//
+//   // Construct L_0
+//   for (i = imin; i < imax; i++)
+//     for (j = 0; j < jmax; j++)
+//       {
+//         sum = & mL(i - imin, j);
+//         *sum = LU(i, j);
+//
+//         for (k = j + 1; k < jmax; k++)
+//           *sum += LU(i, k) * R(k, j);
+//
+//         if (fabs(*sum) < DBL_EPSILON) *sum = 0.0;
+//}
+//
+//
+// #ifdef DEBUG_MATRIX
+//   DebugFile << "Link Matrix:" << std::endl;
+//   DebugFile << mLView << std::endl;
+// #endif // DEBUG_MATRIX
+//}
 
 void CModel::updateMoietyValues()
 {
@@ -2811,15 +2826,15 @@ void CModel::initObjects()
   addObjectReference("Quantity Unit", mQuantityUnit);
   addObjectReference("Quantity Conversion Factor", mQuantity2NumberFactor, CCopasiObject::ValueDbl);
 
-  CArrayAnnotation * tmp = new CArrayAnnotation("Stoichiometry(ann)", this, new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mStoi));
-  tmp->setMode(CArrayAnnotation::VECTOR_ON_THE_FLY);
-  tmp->setDescription("Stoichiometry Matrix");
-  tmp->setDimensionDescription(0, "Metabolites");
-  tmp->setDimensionDescription(1, "Reactions");
-  tmp->setCopasiVector(0, &mMetabolites);
-  tmp->setCopasiVector(1, &mSteps);
+  mpStoiAnnotation = new CArrayAnnotation("Stoichiometry(ann)", this, new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mStoi));
+  mpStoiAnnotation->setDescription("Stoichiometry Matrix");
+  mpStoiAnnotation->setMode(0, CArrayAnnotation::OBJECTS);
+  mpStoiAnnotation->setDimensionDescription(0, "Metabolites that are controlled by reactions");
+  mpStoiAnnotation->setMode(1, CArrayAnnotation::VECTOR_ON_THE_FLY);
+  mpStoiAnnotation->setDimensionDescription(1, "Reactions");
+  mpStoiAnnotation->setCopasiVector(1, &mSteps);
 
-  tmp = new CArrayAnnotation("Reduced stoichiometry(ann)", this, new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mRedStoi));
+  CArrayAnnotation * tmp = new CArrayAnnotation("Reduced stoichiometry(ann)", this, new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mRedStoi));
   tmp->setMode(CArrayAnnotation::VECTOR_ON_THE_FLY);
   tmp->setDescription("Reduced stoichiometry Matrix");
   tmp->setDimensionDescription(0, "Metabolites");
@@ -2827,13 +2842,13 @@ void CModel::initObjects()
   tmp->setCopasiVector(0, &mMetabolitesX);
   tmp->setCopasiVector(1, &mSteps);
 
-  tmp = new CArrayAnnotation("Link matrix(ann)", this, new CCopasiMatrixInterface<CLinkMatrixView>(&mLView));
-  tmp->setMode(CArrayAnnotation::VECTOR_ON_THE_FLY);
-  tmp->setDescription("Link matrix");
-  tmp->setDimensionDescription(0, "Metabolites (full system)");
-  tmp->setDimensionDescription(1, "Metabolites (reduced system)");
-  tmp->setCopasiVector(0, &mMetabolites);
-  tmp->setCopasiVector(1, &mMetabolitesX);
+  mpLinkMatrixAnnotation = new CArrayAnnotation("Link matrix(ann)", this, new CCopasiMatrixInterface<CLinkMatrixView>(&mLView));
+  mpLinkMatrixAnnotation->setDescription("Link matrix");
+  mpLinkMatrixAnnotation->setMode(0, CArrayAnnotation::OBJECTS);
+  mpLinkMatrixAnnotation->setDimensionDescription(0, "Metabolites that are controlled by reactions (full system)");
+  mpLinkMatrixAnnotation->setMode(1, CArrayAnnotation::VECTOR_ON_THE_FLY);
+  mpLinkMatrixAnnotation->setDimensionDescription(1, "Metabolites (reduced system)");
+  mpLinkMatrixAnnotation->setCopasiVector(1, &mMetabolitesX);
 }
 
 bool CModel::hasReversibleReaction() const
@@ -3192,6 +3207,20 @@ void CModel::buildLinkZero()
   DebugFile << "Link Zero Matrix:" << std::endl;
   DebugFile << mL << std::endl;
 #endif // DEBUG_MATRIX
+
+  //update annotations
+  mpLinkMatrixAnnotation->resize();
+  unsigned C_INT32 imax = mMetabolites.size();
+  for (i = 0, j = 0; i < imax; ++i)
+    {
+      if (mMetabolites[i]->getStatus() == CModelEntity::REACTIONS && mMetabolites[i]->isUsed())
+        {
+          mpLinkMatrixAnnotation->setAnnotationCN(0, j, mMetabolites[i]->getCN());
+          ++j;
+        }
+    }
+  if (j != mpLinkMatrixAnnotation->size()[0])
+    std::cout << "Problem with size of link matrix." << std::endl;
 
   return;
 }

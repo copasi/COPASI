@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.148.2.1 $
+//   $Revision: 1.148.2.2 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/09/26 22:17:20 $
+//   $Author: ssahle $
+//   $Date: 2007/09/28 02:40:42 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,6 +29,7 @@
 
 class CCompartment;
 class CProcessReport;
+class CArrayAnnotation;
 
 class CModel : public CModelEntity
   {
@@ -235,6 +236,8 @@ class CModel : public CModelEntity
      */
     CMatrix< C_FLOAT64 > mStoi;
 
+    CArrayAnnotation * mpStoiAnnotation;
+
     /**
      *   Stoichiometry Matrix
      */
@@ -291,6 +294,8 @@ class CModel : public CModelEntity
      *   This matrix stores L
      */
     CMatrix < C_FLOAT64 > mL;
+
+    CArrayAnnotation * mpLinkMatrixAnnotation;
 
     /**
      *   This is used to return a view to L
@@ -415,7 +420,7 @@ class CModel : public CModelEntity
      *  Build the core of the link matrix L
      *  @param const CMatrix< C_FLOAT64 > & LU
      */
-    void buildL(const CMatrix< C_FLOAT64 > & LU);
+    //void buildL(const CMatrix< C_FLOAT64 > & LU);
 
 #ifdef XXXX
     /**
