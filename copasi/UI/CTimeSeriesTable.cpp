@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CTimeSeriesTable.cpp,v $
-   $Revision: 1.6 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:42 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CTimeSeriesTable.cpp,v $
+//   $Revision: 1.6.16.1 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/09/28 13:37:21 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -29,6 +29,7 @@ void CTimeSeriesTable::setTimeSeries(const CTimeSeries & ts)
 
 QString CTimeSeriesTable::textForCell(unsigned int row, unsigned int col)
 {
+  if (mTS == NULL) return "";
   if (row > mTS->getNumSteps()) return "";
   if (col > mTS->getNumVariables()) return "";
 
