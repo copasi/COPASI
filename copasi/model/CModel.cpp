@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.320.2.4 $
+//   $Revision: 1.320.2.5 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/09/28 02:40:42 $
+//   $Date: 2007/09/28 09:24:11 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -390,12 +390,14 @@ bool CModel::compile()
     {
       return false;
     }
-
   CompileStep = 6;
   if (mpCompileHandler && !mpCompileHandler->progress(hCompileStep)) return false;
 
   buildUserOrder();
   if (mpCompileHandler) mpCompileHandler->finish(hCompileStep);
+
+  //update annotations
+  updateMatrixAnnotations();
 
   mCompileIsNecessary = false;
 
@@ -520,20 +522,6 @@ void CModel::buildStoi()
   DebugFile << "Stoichiometry Matrix" << std::endl;
   DebugFile << mStoi << std::endl;
 #endif
-
-  //update annotations
-  mpStoiAnnotation->resize();
-  unsigned C_INT32 j, imax = mMetabolites.size();
-  for (i = 0, j = 0; i < imax; ++i)
-    {
-      if (mMetabolites[i]->getStatus() == CModelEntity::REACTIONS && mMetabolites[i]->isUsed())
-        {
-          mpStoiAnnotation->setAnnotationCN(0, j, mMetabolites[i]->getCN());
-          ++j;
-        }
-    }
-  if (j != mpStoiAnnotation->size()[0])
-    std::cout << "Problem with size of stoichiometry matrix." << std::endl;
 
   if (mpCompileHandler)
     mpCompileHandler->finish(hProcess);
@@ -686,6 +674,35 @@ void CModel::buildRedStoi()
 #endif
 
   return;
+}
+
+void CModel::updateMatrixAnnotations()
+{
+  mpLinkMatrixAnnotation->resize();
+  unsigned C_INT32 i, j, imax = mMetabolitesX.size();
+  for (i = 0, j = 0; i < imax; ++i)
+    {
+      if (mMetabolitesX[i]->getStatus() == CModelEntity::REACTIONS && mMetabolitesX[i]->isUsed())
+        {
+          mpLinkMatrixAnnotation->setAnnotationCN(0, j, mMetabolitesX[i]->getCN());
+          ++j;
+        }
+    }
+  if (j != mpLinkMatrixAnnotation->size()[0])
+    std::cout << "Problem with size of link matrix." << std::endl;
+
+  mpStoiAnnotation->resize();
+  imax = mMetabolites.size();
+  for (i = 0, j = 0; i < imax; ++i)
+    {
+      if (mMetabolites[i]->getStatus() == CModelEntity::REACTIONS && mMetabolites[i]->isUsed())
+        {
+          mpStoiAnnotation->setAnnotationCN(0, j, mMetabolites[i]->getCN());
+          ++j;
+        }
+    }
+  if (j != mpStoiAnnotation->size()[0])
+    std::cout << "Problem with size of stoichiometry matrix." << std::endl;
 }
 
 // void CModel::buildL(const CMatrix< C_FLOAT64 > & LU)
@@ -3207,20 +3224,6 @@ void CModel::buildLinkZero()
   DebugFile << "Link Zero Matrix:" << std::endl;
   DebugFile << mL << std::endl;
 #endif // DEBUG_MATRIX
-
-  //update annotations
-  mpLinkMatrixAnnotation->resize();
-  unsigned C_INT32 imax = mMetabolites.size();
-  for (i = 0, j = 0; i < imax; ++i)
-    {
-      if (mMetabolites[i]->getStatus() == CModelEntity::REACTIONS && mMetabolites[i]->isUsed())
-        {
-          mpLinkMatrixAnnotation->setAnnotationCN(0, j, mMetabolites[i]->getCN());
-          ++j;
-        }
-    }
-  if (j != mpLinkMatrixAnnotation->size()[0])
-    std::cout << "Problem with size of link matrix." << std::endl;
 
   return;
 }

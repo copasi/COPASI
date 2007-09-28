@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.148.2.2 $
+//   $Revision: 1.148.2.3 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/09/28 02:40:42 $
+//   $Date: 2007/09/28 09:24:11 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1096,6 +1096,11 @@ class CModel : public CModelEntity
      * @return bool success
      */
     bool buildUserOrder();
+
+    /**
+     * This updates the annotations of the link matrix and the stoichiometry matrix
+     */
+    void updateMatrixAnnotations();
 
 #ifdef COPASI_DEBUG
   public:
