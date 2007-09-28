@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.148.2.3 $
+//   $Revision: 1.148.2.4 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/09/28 09:24:11 $
+//   $Author: shoops $
+//   $Date: 2007/09/28 13:43:25 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -236,6 +236,9 @@ class CModel : public CModelEntity
      */
     CMatrix< C_FLOAT64 > mStoi;
 
+    /**
+     * Column and Row Annotation for the reduced Stoichiometry Matrix
+     */
     CArrayAnnotation * mpStoiAnnotation;
 
     /**
@@ -247,6 +250,11 @@ class CModel : public CModelEntity
      *   Reduced Stoichiometry Matrix
      */
     CMatrix< C_FLOAT64 > mRedStoi;
+
+    /**
+     * Column and Row Annotation for the reduced Stoichiometry Matrix
+     */
+    CArrayAnnotation * mpRedStoiAnnotation;
 
     /**
      * The elasticity matrix d(Flux_i)/dx_j
@@ -295,6 +303,9 @@ class CModel : public CModelEntity
      */
     CMatrix < C_FLOAT64 > mL;
 
+    /**
+     * Column and Row Annotation for the Link Matrix
+     */
     CArrayAnnotation * mpLinkMatrixAnnotation;
 
     /**
