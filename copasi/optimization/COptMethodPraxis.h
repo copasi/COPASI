@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodPraxis.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: jdada $
-//   $Date: 2007/09/28 12:02:28 $
+//   $Date: 2007/09/28 13:44:21 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -70,6 +70,16 @@ class COptMethodPraxis: public COptMethod
      * @return bool success
      */
     virtual bool cleanup();
+
+    /**
+     * The tolerance
+     */
+    C_FLOAT64 mTolerance;
+
+    /**
+     * The number of iterations
+     */
+    unsigned C_INT32 mIteration;
   };
 
 #endif  // COPASI_COptMethodPraxis
