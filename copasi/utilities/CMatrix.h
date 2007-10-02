@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CMatrix.h,v $
-   $Revision: 1.30 $
-   $Name:  $
-   $Author: gauges $
-   $Date: 2006/10/15 08:31:12 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CMatrix.h,v $
+//   $Revision: 1.31 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/10/02 23:39:39 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -87,12 +87,11 @@ class CMatrix
      * @param unsigned C_INT32 cols (default = 0)
      */
     CMatrix(unsigned C_INT32 rows = 0, unsigned C_INT32 cols = 0) :
-        mRows(rows),
-        mCols(cols),
+        mRows(0),
+        mCols(0),
         mArray(NULL)
     {
-      if (mRows && mCols)
-        mArray = new CType[mRows * mCols];
+      resize(rows, cols);
     }
 
     /**
@@ -100,15 +99,14 @@ class CMatrix
      * @param const CMatrix <CType> & src
      */
     CMatrix(const CMatrix <CType> & src):
-        mRows(src.mRows),
-        mCols(src.mCols),
+        mRows(0),
+        mCols(0),
         mArray(NULL)
     {
+      resize(src.mRows, src.mCols);
+
       if (mRows && mCols)
-        {
-          mArray = new CType[mRows * mCols];
-          memcpy(mArray, src.mArray, mRows * mCols * sizeof(CType));
-        }
+        memcpy(mArray, src.mArray, mRows * mCols * sizeof(CType));
     }
 
     /**
@@ -153,7 +151,17 @@ class CMatrix
               mArray = NULL;
             }
           if (rows && cols)
-            mArray = new CType[rows * cols];
+            {
+              mArray = new CType[rows * cols];
+
+              if (mArray == NULL)
+                {
+                  mRows = 0;
+                  mCols = 0;
+
+                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCopasiBase + 1, rows * cols * sizeof(CType));
+                }
+            }
         }
 
       mRows = rows;

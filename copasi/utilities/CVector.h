@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CVector.h,v $
-   $Revision: 1.31 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:32:43 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CVector.h,v $
+//   $Revision: 1.32 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/10/02 23:39:39 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -16,6 +16,7 @@
 #include <iostream>
 
 #include "copasi.h"
+#include "utilities/CCopasiMessage.h"
 
 template<typename CType> class CVector;
 
@@ -52,30 +53,29 @@ template <class CType> class CVector
      * @param unsigned C_INT32 size (default = 0)
      */
     CVector(unsigned C_INT32 size = 0) :
-        mSize(size),
+        mSize(0),
         mVector(NULL)
-    {if (mSize) mVector = new CType[mSize];}
+    {resize(size);}
 
     /**
      * Copy constructor
      * @param const CVector <CType> & src
      */
     CVector(const CVector <CType> & src):
-        mSize(src.mSize),
+        mSize(0),
         mVector(NULL)
     {
+      resize(src.mSize);
+
       if (mSize)
-        {
-          mVector = new CType[mSize];
-          memcpy(mVector, src.mVector, mSize * sizeof(CType));
-        }
+        memcpy(mVector, src.mVector, mSize * sizeof(CType));
     }
 
     /**
      * Destructor.
      */
     ~CVector()
-    {if (mVector) delete [] mVector;}
+  {if (mVector) delete [] mVector;}
 
     /**
      * The number of elements stored in the vector.
@@ -101,7 +101,17 @@ template <class CType> class CVector
 
       mSize = size;
 
-      if (mSize) mVector = new CType[mSize];
+      if (mSize)
+        {
+          mVector = new CType[mSize];
+
+          if (mVector == NULL)
+            {
+              mSize = 0;
+              CCopasiMessage(CCopasiMessage::EXCEPTION, MCopasiBase + 1, size * sizeof(CType));
+            }
+        }
+
       //TODO: maybe we should only resize if the vector gets bigger
       //or much smaller?
     }

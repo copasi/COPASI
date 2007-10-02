@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.96 $
+//   $Revision: 1.97 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/02 18:18:00 $
+//   $Date: 2007/10/02 23:39:39 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -12,6 +12,9 @@
 
 const MESSAGES Messages[] =
   {
+    // MCopasiBase
+    {MCopasiBase + 1, "CVector (1): Memory allocation failed for '%d' bytes."},
+
     // CReadConfig
     {MCReadConfig + 1, "CReadConfig (1): Variable '%s' not found in '%s(%d)'."},
     {MCReadConfig + 2, "CReadConfig (2): Cannot open file '%s'."},
