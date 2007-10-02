@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDirEntry.cpp,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/02 19:27:10 $
+//   $Date: 2007/10/02 23:38:57 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -360,9 +360,14 @@ bool CDirEntry::match(const std::string & name,
 bool CDirEntry::isRelativePath(const std::string & path)
 {
 #ifdef WIN32
-  return (path.length() < 2 ||
-          path[1] != ':' ||
-          (path[0] != '/' || path[1] != '/'));
+  if (path.length() < 2)
+    return true;
+  if (path[1] == ':')
+    return false;
+  if (path[0] == '/' && path[1] == '/')
+    return false;
+
+  return true;
 #else
   return (path.length() < 1 || path[0] != '/');
 #endif
