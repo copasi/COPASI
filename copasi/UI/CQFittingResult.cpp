@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /home/cvs/copasi_dev/copasi/UI/CQFittingResult.cpp,v $
-//   $Revision: 1.6.4.1 $
+//   $Revision: 1.7.4.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/04/24 15:05:10 $
+//   $Author: ssahle $
+//   $Date: 2007/09/27 14:22:43 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,8 +13,8 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQFittingResult.ui'
  **
- ** Created: Tue Apr 24 08:13:55 2007
- **      by: The User Interface Compiler ($Id: CQFittingResult.cpp,v 1.6.4.1 2007/04/24 15:05:10 shoops Exp $)
+ ** Created: Thu Sep 27 16:17:27 2007
+ **      by: The User Interface Compiler ($Id: CQFittingResult.cpp,v 1.7.4.1 2007/09/27 14:22:43 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -44,7 +44,7 @@ CQFittingResult::CQFittingResult(QWidget* parent, const char* name)
 
   mpTabWidget = new QTabWidget(this, "mpTabWidget");
   mpTabWidget->setGeometry(QRect(10, 50, 380, 190));
-  mpTabWidget->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)5, 0, 0, mpTabWidget->sizePolicy().hasHeightForWidth()));
+  mpTabWidget->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)2, (QSizePolicy::SizeType)5, 0, 0, mpTabWidget->sizePolicy().hasHeightForWidth()));
   mpTabWidget->setMinimumSize(QSize(210, 180));
 
   mpMain = new CQFittingResultTab1(mpTabWidget, "mpMain");

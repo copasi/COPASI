@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMetabolite.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/14 15:29:50 $
+//   $Date: 2007/10/02 18:18:01 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,8 +13,8 @@
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQMetabolite.ui'
  **
- ** Created: Wed Sep 12 15:43:06 2007
- **      by: The User Interface Compiler ($Id: CQMetabolite.h,v 1.5 2007/09/14 15:29:50 shoops Exp $)
+ ** Created: Wed Sep 26 20:38:17 2007
+ **      by: The User Interface Compiler ($Id: CQMetabolite.h,v 1.6 2007/10/02 18:18:01 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -35,11 +35,11 @@ class CQExpressionWidget;
 class QLabel;
 class QLineEdit;
 class QComboBox;
+class QFrame;
+class QPushButton;
 class QToolButton;
 class QListView;
 class QListViewItem;
-class QFrame;
-class QPushButton;
 class CQExpressionWidget;
 class CMetab;
 class CCompartment;
@@ -53,30 +53,30 @@ class CQMetabolite : public CopasiWidget
     CQMetabolite(QWidget* parent = 0, const char* name = 0);
     ~CQMetabolite();
 
-    QLabel* mpLblTransientValue;
-    QLabel* mpLblName;
-    QLabel* mpLblCompartment;
-    QLineEdit* mpEditRate;
-    QComboBox* mpComboBoxCompartment;
-    QLabel* mpLblType;
+    QLabel* mpLblReactions;
+    QLineEdit* mpEditTransitionTime;
+    QLabel* mpLblExpression;
     QLabel* mpLblInitialValue;
     QComboBox* mpComboBoxInitialType;
-    QLabel* mpLblTransitionTime;
-    QLabel* mpLblExpression;
+    QLabel* mpLblType;
+    QLineEdit* mpEditCurrentValue;
+    QLabel* mpLblRate;
+    QLabel* mpLblValue;
+    QLineEdit* mpEditName;
+    QFrame* mpLine1;
+    QComboBox* mpComboBoxCompartment;
+    QLineEdit* mpEditRate;
+    QPushButton* mpBtnToggle;
     CQExpressionWidget* mpEditExpression;
     QToolButton* mpBtnObject;
-    QListView* mpReactionTable;
-    QFrame* mpLine1;
-    QLabel* mpLblValue;
-    QComboBox* mpComboBoxType;
-    QLineEdit* mpEditName;
-    QLineEdit* mpEditTransitionTime;
-    QLabel* mpLblRate;
-    QLabel* mpLblReactions;
-    QPushButton* mpBtnToggle;
-    QLineEdit* mpEditCurrentValue;
     QLineEdit* mpEditInitialValue;
     QComboBox* mpComboBoxInitialSelection;
+    QComboBox* mpComboBoxType;
+    QLabel* mpLblTransientValue;
+    QLabel* mpLblCompartment;
+    QListView* mpReactionTable;
+    QLabel* mpLblTransitionTime;
+    QLabel* mpLblName;
     QFrame* mpLine2;
     QPushButton* mpBtnCommit;
     QPushButton* mpBtnRevert;
@@ -90,7 +90,7 @@ class CQMetabolite : public CopasiWidget
   protected:
     QVBoxLayout* CQMetaboliteLayout;
     QSpacerItem* mpSpacer;
-    QGridLayout* layout8;
+    QGridLayout* layout7;
     QHBoxLayout* mpLayoutInitialValues;
     QHBoxLayout* mpHBoxLayout;
     QVBoxLayout* mpVBoxLayout;

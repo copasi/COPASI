@@ -1,10 +1,10 @@
 <!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/StateSubwidget.ui,v $ </comment>
-<comment>   $Revision: 1.11 $ </comment>
+<comment>   $Revision: 1.12 $ </comment>
 <comment>   $Name:  $ </comment>
-<comment>   $Author: ssahle $ </comment>
-<comment>   $Date: 2007/08/02 14:19:14 $ </comment>
+<comment>   $Author: shoops $ </comment>
+<comment>   $Date: 2007/10/02 18:18:01 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -54,7 +54,7 @@
             </property>
             <property name="sizePolicy">
                 <sizepolicy>
-                    <hsizetype>5</hsizetype>
+                    <hsizetype>2</hsizetype>
                     <vsizetype>7</vsizetype>
                     <horstretch>0</horstretch>
                     <verstretch>0</verstretch>
@@ -65,7 +65,7 @@
                     <cstring>TabPage</cstring>
                 </property>
                 <attribute name="title">
-                    <string>Optimization Result</string>
+                    <string>Optimi&amp;zation Result</string>
                 </attribute>
                 <vbox>
                     <property name="name">
@@ -133,7 +133,7 @@
                     <cstring>tab</cstring>
                 </property>
                 <attribute name="title">
-                    <string>Particle Numbers</string>
+                    <string>Particle &amp;Numbers</string>
                 </attribute>
                 <vbox>
                     <property name="name">
@@ -180,7 +180,7 @@
                     <cstring>TabPage</cstring>
                 </property>
                 <attribute name="title">
-                    <string>Model Quantities</string>
+                    <string>Model &amp;Quantities</string>
                 </attribute>
                 <hbox>
                     <property name="name">
@@ -224,7 +224,7 @@
                     <cstring>TabPage</cstring>
                 </property>
                 <attribute name="title">
-                    <string>Fluxes</string>
+                    <string>Flu&amp;xes</string>
                 </attribute>
                 <vbox>
                     <property name="name">
@@ -271,7 +271,7 @@
                     <cstring>TabPage</cstring>
                 </property>
                 <attribute name="title">
-                    <string>Jacobian</string>
+                    <string>&amp;Jacobian</string>
                 </attribute>
                 <grid>
                     <property name="name">
@@ -511,7 +511,7 @@
                     <cstring>TabPage</cstring>
                 </property>
                 <attribute name="title">
-                    <string>Stability</string>
+                    <string>Stabilit&amp;y</string>
                 </attribute>
                 <vbox>
                     <property name="name">
@@ -599,7 +599,7 @@
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
-    <includehint>CQArrayAnnotationsWidget.h</includehint>
-    <includehint>CQArrayAnnotationsWidget.h</includehint>
+    <includehint>cqarrayannotationswidget.h</includehint>
+    <includehint>cqarrayannotationswidget.h</includehint>
 </includehints>
 </UI>

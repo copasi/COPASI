@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotwindow.cpp,v $
-//   $Revision: 1.31 $
+//   $Revision: 1.32 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/16 19:56:35 $
+//   $Date: 2007/10/02 18:18:07 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -53,11 +53,6 @@ PlotWindow::PlotWindow(COutputHandlerPlot * pHandler, const CPlotSpecification* 
   QToolBar * plotTools = new QToolBar(this, "plot operations");
   plotTools->setLabel("Plot Operations");
 
-  //zoomButton = new QToolButton(plotTools, "zoom");
-  //zoomButton->setText("Zoom");
-  //zoomButton->setTextLabel("Zoom");
-  //zoomButton->setToggleButton(true);
-
   printButton = new QToolButton(plotTools, "print plot");
   printButton -> setTextLabel("Print plot");
   printButton -> setText("Print");
@@ -66,12 +61,19 @@ PlotWindow::PlotWindow(COutputHandlerPlot * pHandler, const CPlotSpecification* 
   saveButton -> setTextLabel("Save data...");
   saveButton -> setText("Save data...");
 
+  zoomButton = new QToolButton(plotTools, "zoom");
+  zoomButton->setText("Zoom out");
+  zoomButton->setTextLabel("Zoom out");
+  //zoomButton->setToggleButton(true);
+
+  //TODO button icons...
+
   plotTools->setStretchableWidget(new QWidget(plotTools));
 
   mpPlot = new CopasiPlot(ptrSpec, this);
   setCentralWidget(mpPlot);
 
-  //connect(zoomButton, SIGNAL(clicked()), this, SLOT(enableZoom()));
+  connect(zoomButton, SIGNAL(clicked()), this, SLOT(slotZoomOut()));
   connect(printButton, SIGNAL(clicked()), this, SLOT(printPlot()));
   connect(saveButton, SIGNAL(clicked()), this, SLOT(slotSaveData()));
   //connect(mpPlot, SIGNAL(plotMouseReleased(const QMouseEvent &)), this, SLOT(mouseReleased(const QMouseEvent&)));
@@ -159,6 +161,14 @@ void PlotWindow::slotSaveData()
       s += fileName.utf8();
       CQMessageBox::critical(this, "Save Error", FROM_UTF8(s), QMessageBox::Ok, QMessageBox::NoButton);
     }
+}
+
+#include "scrollzoomer.h"
+
+void PlotWindow::slotZoomOut()
+{
+  if (mpPlot && mpPlot->mpZoomer)
+    mpPlot->mpZoomer->zoom(0);
 }
 
 //-----------------------------------------------------------------------------

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/plotwidget1.cpp,v $
-//   $Revision: 1.48 $
+//   $Revision: 1.49 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/04/02 17:58:48 $
+//   $Date: 2007/10/02 18:18:07 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,7 +14,7 @@
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.48 2007/04/02 17:58:48 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.49 2007/10/02 18:18:07 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -32,6 +32,7 @@
 #include <qwidget.h>
 #include <qtoolbutton.h>
 #include <qlayout.h>
+
 //#include <qtooltip.h>
 //#include <qwhatsthis.h>
 
@@ -149,7 +150,7 @@ PlotWidget1::PlotWidget1(QWidget* parent, const char* name, WFlags fl)
   //************** tabs *****************
 
   tabs = new QTabWidget(this, "tabs");
-  tabs->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)3, (QSizePolicy::SizeType)3, 0, 0, tabs->sizePolicy().hasHeightForWidth()));
+  tabs->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)2, (QSizePolicy::SizeType)3, 0, 0, tabs->sizePolicy().hasHeightForWidth()));
   tabs->setTabPosition(QTabWidget::Top);
   tabs->setTabShape(QTabWidget::Rounded);
   PlotWidget1Layout->addMultiCellWidget(tabs, 6, 6, 0, 1);

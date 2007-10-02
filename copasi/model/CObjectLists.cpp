@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CObjectLists.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/17 19:44:07 $
+//   $Date: 2007/10/02 18:18:05 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -82,7 +82,7 @@ CObjectLists::getListOfObjects(ListType t, const CModel* model)
 {
   std::vector< const CCopasiObject * > src = getListOfConstObjects(t, model);
   std::vector< CCopasiObject * > target;
-  target.resize(target.size());
+  target.resize(src.size());
 
   std::vector< const CCopasiObject * >::iterator itSrc = src.begin();
   std::vector< const CCopasiObject * >::iterator endSrc = src.end();

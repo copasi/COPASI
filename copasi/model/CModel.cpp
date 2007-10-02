@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.320 $
+//   $Revision: 1.321 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/18 16:46:21 $
+//   $Date: 2007/10/02 18:18:05 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -382,8 +382,6 @@ bool CModel::compile()
 
   try
     {
-      updateInitialValues();
-
       buildConstantSequence();
       buildSimulatedSequence();
       buildNonSimulatedSequence();
@@ -392,12 +390,14 @@ bool CModel::compile()
     {
       return false;
     }
-
   CompileStep = 6;
   if (mpCompileHandler && !mpCompileHandler->progress(hCompileStep)) return false;
 
   buildUserOrder();
   if (mpCompileHandler) mpCompileHandler->finish(hCompileStep);
+
+  //update annotations
+  updateMatrixAnnotations();
 
   mCompileIsNecessary = false;
 
@@ -676,119 +676,37 @@ void CModel::buildRedStoi()
   return;
 }
 
-void CModel::buildL(const CMatrix< C_FLOAT64 > & LU)
+void CModel::updateMatrixAnnotations()
 {
-  C_INT N = mNumMetabolitesIndependent;
-  C_INT LDA = std::max((C_INT) 1, N);
-  C_INT Info;
+  mpLinkMatrixAnnotation->resize();
+  mpStoiAnnotation->resize();
+  mpRedStoiAnnotation->resize();
 
-  unsigned C_INT32 i, imin, imax;
-  unsigned C_INT32 j, jmax;
-  unsigned C_INT32 k;
-  C_FLOAT64 * sum;
+  CCopasiVector< CMetab >::const_iterator it = mMetabolitesX.begin() + mNumMetabolitesODE;
+  CCopasiVector< CMetab >::const_iterator end = it + mNumMetabolitesIndependent;
 
-  CMatrix< C_FLOAT64 > R(N, N);
+  CCopasiObjectName CN;
+  unsigned C_INT32 j;
 
-  for (i = 1; i < (unsigned C_INT32) N; i++)
-    for (j = 0; j < i; j++)
-      R(i, j) = LU(i, j);
+  for (j = 0; it != end; ++it, j++)
+    {
+      CN = (*it)->getCN();
 
-#ifdef DEBUG_MATRIX
-  DebugFile << "L" << std::endl;
-  DebugFile << R << std::endl;
-#endif
+      mpStoiAnnotation->setAnnotationCN(0, j, CN);
+      mpLinkMatrixAnnotation->setAnnotationCN(0, j, CN);
+      mpLinkMatrixAnnotation->setAnnotationCN(1, j, CN);
+      mpRedStoiAnnotation->setAnnotationCN(0, j, CN);
+    }
 
-  /* to take care of differences between fortran's and c's memory  acces,
-     we need to take the transpose, i.e.,the upper triangular */
-  char cL = 'U';
-  char cU = 'U'; /* 1 in the diaogonal of R */
+  end += mNumMetabolitesDependent;
 
-  /* int dtrtri_(char *uplo,
-   *             char *diag,
-   *             integer *n,
-   *             doublereal * A,
-   *             integer *lda,
-   *             integer *info);
-   *  -- LAPACK routine (version 3.0) --
-   *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-   *     Courant Institute, Argonne National Lab, and Rice University
-   *     March 31, 1993
-   *
-   *  Purpose
-   *  =======
-   *
-   *  DTRTRI computes the inverse of a real upper or lower triangular
-   *  matrix A.
-   *
-   *  This is the Level 3 BLAS version of the algorithm.
-   *
-   *  Arguments
-   *  =========
-   *
-   *  uplo    (input) CHARACTER*1
-   *          = 'U':  A is upper triangular;
-   *          = 'L':  A is lower triangular.
-   *
-   *  diag    (input) CHARACTER*1
-   *          = 'N':  A is non-unit triangular;
-   *          = 'U':  A is unit triangular.
-   *
-   *  n       (input) INTEGER
-   *          The order of the matrix A.  n >= 0.
-   *
-   *  A       (input/output) DOUBLE PRECISION array, dimension (lda,n)
-   *          On entry, the triangular matrix A.  If uplo = 'U', the
-   *          leading n-by-n upper triangular part of the array A contains
-   *          the upper triangular matrix, and the strictly lower
-   *          triangular part of A is not referenced.  If uplo = 'L', the
-   *          leading n-by-n lower triangular part of the array A contains
-   *          the lower triangular matrix, and the strictly upper
-   *          triangular part of A is not referenced.  If diag = 'U', the
-   *          diagonal elements of A are also not referenced and are
-   *          assumed to be 1.
-   *          On exit, the (triangular) inverse of the original matrix, in
-   *          the same storage format.
-   *
-   *  lda     (input) INTEGER
-   *          The leading dimension of the array A.  lda >= max(1,n).
-   *
-   *  info    (output) INTEGER
-   *          = 0: successful exit
-   *          < 0: if info = -i, the i-th argument had an illegal value
-   *          > 0: if info = i, A(i,i) is exactly zero.  The triangular
-   *               matrix is singular and its inverse can not be computed.
-   */
-  dtrtri_(&cL, &cU, &N, R.array(), &LDA, &Info);
-  if (Info) fatalError();
+  for (; it != end; ++it, j++)
+    {
+      CN = (*it)->getCN();
 
-#ifdef DEBUG_MATRIX
-  DebugFile << "L inverse" << std::endl;
-  DebugFile << R << std::endl;
-#endif
-
-  mL.resize(mNumMetabolitesDependent, mNumMetabolitesIndependent);
-
-  imin = mNumMetabolitesIndependent;
-  imax = mNumMetabolitesReaction;
-  jmax = mNumMetabolitesIndependent;
-
-  // Construct L_0
-  for (i = imin; i < imax; i++)
-    for (j = 0; j < jmax; j++)
-      {
-        sum = & mL(i - imin, j);
-        *sum = LU(i, j);
-
-        for (k = j + 1; k < jmax; k++)
-          *sum += LU(i, k) * R(k, j);
-
-        if (fabs(*sum) < DBL_EPSILON) *sum = 0.0;
-      }
-
-#ifdef DEBUG_MATRIX
-  DebugFile << "Link Matrix:" << std::endl;
-  DebugFile << mLView << std::endl;
-#endif // DEBUG_MATRIX
+      mpStoiAnnotation->setAnnotationCN(0, j, CN);
+      mpLinkMatrixAnnotation->setAnnotationCN(0, j, CN);
+    }
 }
 
 void CModel::updateMoietyValues()
@@ -1278,7 +1196,7 @@ bool CModel::buildSimulatedSequence()
   // We do not add the rates for metabolites of type REACTION. These are automatically calculated
   // with dgemm in calculate derivatives based on the reaction fluxes added below.
   // In the case that other simulated values depend on such a rate this is taken care by
-  // calcuating all dependecies.
+  // calculating all dependencies.
   // This mechanism may lead occasinally to multiple calculations of rates of metabolites when used
   // in assignments or ODEs. However this is acceptable and more than compensated by the performance
   // gains of dgemm.
@@ -2338,7 +2256,7 @@ CMetab* CModel::createMetabolite(const std::string & name,
   if (!mMetabolites.add(pMetab))
     return NULL;
 
-  setCompileFlag();
+  mCompileIsNecessary = true;
 
   return pMetab;
 }
@@ -2387,7 +2305,7 @@ bool CModel::removeMetabolite(const std::string & key,
   pdelete(pMetabolite);
 
   clearMoieties();
-  setCompileFlag();
+  mCompileIsNecessary = true;
 
   return true;
 }
@@ -2410,6 +2328,7 @@ CCompartment* CModel::createCompartment(const std::string & name,
       return NULL;
     }
 
+  mCompileIsNecessary = true;
   return cpt;
 }
 
@@ -2456,7 +2375,7 @@ bool CModel::removeCompartment(const std::string & key,
 
   mCompartments.CCopasiVector< CCompartment >::remove(index);
 
-  //compile();
+  mCompileIsNecessary = true;
 
   return true;
 }
@@ -2474,7 +2393,7 @@ CReaction* CModel::createReaction(const std::string & name)
       return NULL;
     }
 
-  setCompileFlag();
+  mCompileIsNecessary = true;
   return pReaction;
 }
 
@@ -2523,7 +2442,7 @@ bool CModel::removeReaction(const std::string & key,
   mSteps.CCopasiVector< CReaction >::remove(index);
 
   clearMoieties();
-  setCompileFlag();
+  mCompileIsNecessary = true;
 
   return true;
 }
@@ -2546,6 +2465,7 @@ CModelValue* CModel::createModelValue(const std::string & name,
       return NULL;
     }
 
+  mCompileIsNecessary = true;
   return cmv;
 }
 
@@ -2592,7 +2512,7 @@ bool CModel::removeModelValue(const std::string & key,
 
   mValues.CCopasiVector< CModelValue >::remove(index);
 
-  //compile();
+  mCompileIsNecessary = true;
 
   return true;
 }
@@ -2811,29 +2731,28 @@ void CModel::initObjects()
   addObjectReference("Quantity Unit", mQuantityUnit);
   addObjectReference("Quantity Conversion Factor", mQuantity2NumberFactor, CCopasiObject::ValueDbl);
 
-  CArrayAnnotation * tmp = new CArrayAnnotation("Stoichiometry(ann)", this, new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mStoi));
-  tmp->setMode(CArrayAnnotation::VECTOR_ON_THE_FLY);
-  tmp->setDescription("Stoichiometry Matrix");
-  tmp->setDimensionDescription(0, "Metabolites");
-  tmp->setDimensionDescription(1, "Reactions");
-  tmp->setCopasiVector(0, &mMetabolites);
-  tmp->setCopasiVector(1, &mSteps);
+  mpStoiAnnotation = new CArrayAnnotation("Stoichiometry(ann)", this, new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mStoiReordered));
+  mpStoiAnnotation->setDescription("Stoichiometry Matrix");
+  mpStoiAnnotation->setMode(0, CArrayAnnotation::OBJECTS);
+  mpStoiAnnotation->setDimensionDescription(0, "Metabolites that are controlled by reactions");
+  mpStoiAnnotation->setMode(1, CArrayAnnotation::VECTOR_ON_THE_FLY);
+  mpStoiAnnotation->setDimensionDescription(1, "Reactions");
+  mpStoiAnnotation->setCopasiVector(1, &mSteps);
 
-  tmp = new CArrayAnnotation("Reduced stoichiometry(ann)", this, new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mRedStoi));
-  tmp->setMode(CArrayAnnotation::VECTOR_ON_THE_FLY);
-  tmp->setDescription("Reduced stoichiometry Matrix");
-  tmp->setDimensionDescription(0, "Metabolites");
-  tmp->setDimensionDescription(1, "Reactions");
-  tmp->setCopasiVector(0, &mMetabolitesX);
-  tmp->setCopasiVector(1, &mSteps);
+  mpRedStoiAnnotation = new CArrayAnnotation("Reduced stoichiometry(ann)", this, new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mRedStoi));
+  mpRedStoiAnnotation->setDescription("Reduced stoichiometry Matrix");
+  mpRedStoiAnnotation->setMode(0, CArrayAnnotation::OBJECTS);
+  mpRedStoiAnnotation->setDimensionDescription(0, "Metabolites (reduced system)");
+  mpRedStoiAnnotation->setMode(1, CArrayAnnotation::VECTOR_ON_THE_FLY);
+  mpRedStoiAnnotation->setDimensionDescription(1, "Reactions");
+  mpRedStoiAnnotation->setCopasiVector(1, &mSteps);
 
-  tmp = new CArrayAnnotation("Link matrix(ann)", this, new CCopasiMatrixInterface<CLinkMatrixView>(&mLView));
-  tmp->setMode(CArrayAnnotation::VECTOR_ON_THE_FLY);
-  tmp->setDescription("Link matrix");
-  tmp->setDimensionDescription(0, "Metabolites (full system)");
-  tmp->setDimensionDescription(1, "Metabolites (reduced system)");
-  tmp->setCopasiVector(0, &mMetabolites);
-  tmp->setCopasiVector(1, &mMetabolitesX);
+  mpLinkMatrixAnnotation = new CArrayAnnotation("Link matrix(ann)", this, new CCopasiMatrixInterface<CLinkMatrixView>(&mLView));
+  mpLinkMatrixAnnotation->setDescription("Link matrix");
+  mpLinkMatrixAnnotation->setMode(0, CArrayAnnotation::OBJECTS);
+  mpLinkMatrixAnnotation->setDimensionDescription(0, "Metabolites that are controlled by reactions (full system)");
+  mpLinkMatrixAnnotation->setMode(1, CArrayAnnotation::OBJECTS);
+  mpLinkMatrixAnnotation->setDimensionDescription(1, "Metabolites (reduced system)");
 }
 
 bool CModel::hasReversibleReaction() const

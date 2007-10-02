@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.148 $
+//   $Revision: 1.149 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/04 17:30:58 $
+//   $Date: 2007/10/02 18:18:05 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,6 +29,7 @@
 
 class CCompartment;
 class CProcessReport;
+class CArrayAnnotation;
 
 class CModel : public CModelEntity
   {
@@ -236,6 +237,11 @@ class CModel : public CModelEntity
     CMatrix< C_FLOAT64 > mStoi;
 
     /**
+     * Column and Row Annotation for the reduced Stoichiometry Matrix
+     */
+    CArrayAnnotation * mpStoiAnnotation;
+
+    /**
      *   Stoichiometry Matrix
      */
     CMatrix< C_FLOAT64 > mStoiReordered;
@@ -244,6 +250,11 @@ class CModel : public CModelEntity
      *   Reduced Stoichiometry Matrix
      */
     CMatrix< C_FLOAT64 > mRedStoi;
+
+    /**
+     * Column and Row Annotation for the reduced Stoichiometry Matrix
+     */
+    CArrayAnnotation * mpRedStoiAnnotation;
 
     /**
      * The elasticity matrix d(Flux_i)/dx_j
@@ -291,6 +302,11 @@ class CModel : public CModelEntity
      *   This matrix stores L
      */
     CMatrix < C_FLOAT64 > mL;
+
+    /**
+     * Column and Row Annotation for the Link Matrix
+     */
+    CArrayAnnotation * mpLinkMatrixAnnotation;
 
     /**
      *   This is used to return a view to L
@@ -415,7 +431,7 @@ class CModel : public CModelEntity
      *  Build the core of the link matrix L
      *  @param const CMatrix< C_FLOAT64 > & LU
      */
-    void buildL(const CMatrix< C_FLOAT64 > & LU);
+    //void buildL(const CMatrix< C_FLOAT64 > & LU);
 
 #ifdef XXXX
     /**
@@ -653,6 +669,12 @@ class CModel : public CModelEntity
      * initialize all values of the model with their initial values
      */
     void applyInitialValues();
+
+    /**
+     * Update all initial values.
+     * @return bool success
+     */
+    bool updateInitialValues();
 
     /**
      * Get the current state of the model, i.e., all current model
@@ -1062,12 +1084,6 @@ class CModel : public CModelEntity
     bool buildStateTemplate();
 
     /**
-     * Update all initial values.
-     * @return bool success
-     */
-    bool updateInitialValues();
-
-    /**
      * Build the update sequence used by applyInitialValues to update values
      * "constant" during simulation
      * @return bool success
@@ -1091,6 +1107,11 @@ class CModel : public CModelEntity
      * @return bool success
      */
     bool buildUserOrder();
+
+    /**
+     * This updates the annotations of the link matrix and the stoichiometry matrix
+     */
+    void updateMatrixAnnotations();
 
 #ifdef COPASI_DEBUG
   public:

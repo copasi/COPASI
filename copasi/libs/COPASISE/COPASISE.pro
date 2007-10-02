@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/libs/COPASISE/COPASISE.pro,v $ 
-#   $Revision: 1.22 $ 
+#   $Revision: 1.23 $ 
 #   $Name:  $ 
-#   $Author: gauges $ 
-#   $Date: 2007/09/24 11:10:42 $ 
+#   $Author: shoops $ 
+#   $Date: 2007/10/02 18:18:06 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -50,7 +50,7 @@ contains(DEFINES, WITH_LAYOUT) {
   COPASI_LIBS += layout
 }
 
-contains(DEFINES, COPASI_DEBUG) {
+contains(DEFINES, COPASI_TSSA) {
   COPASI_LIBS += tssanalysis
 }
 

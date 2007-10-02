@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ParametersWidget.cpp,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/24 18:40:20 $
+//   $Date: 2007/10/02 18:18:01 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -305,117 +305,111 @@ bool ParametersWidget::loadFromModel()
   const CCopasiVector< CModelValue > & params = model->getModelValues();
   imax = params.size();
   for (i = 0; i < imax; ++i)
-    switch (params[i]->getStatus())
-      {
-      case CModelEntity::ASSIGNMENT:
-        new CParameterListItem(mParamItem, FROM_UTF8(params[i]->getObjectName()),
-                               params[i], params[i]->getValue(), unit);
-        break;
+    new CParameterListItem(mParamItem, FROM_UTF8(params[i]->getObjectName()),
+                           params[i], params[i]->getInitialValue(), unit);
 
-      default:
-        new CParameterListItem(mParamItem, FROM_UTF8(params[i]->getObjectName()),
-                               params[i], params[i]->getInitialValue(), unit);
-        break;
-      }
   return true;
 }
 
-bool ParametersWidget::saveToModel() const
-  {
-    if (listView->isRenaming())
-      {
-        //std::cout << "renaming" << std::endl;
+bool ParametersWidget::saveToModel()
+{
+  if (listView->isRenaming())
+    {
+      //std::cout << "renaming" << std::endl;
 
-        //the following is a hack to force termination of an active editor
-        QListViewItem* tmp = listView->currentItem();
-        listView->setCurrentItem(listView->firstChild());
-        if (tmp)
-          {
-            listView->setCurrentItem(tmp);
-          }
-      }
+      //the following is a hack to force termination of an active editor
+      QListViewItem* tmp = listView->currentItem();
+      listView->setCurrentItem(listView->firstChild());
+      if (tmp)
+        {
+          listView->setCurrentItem(tmp);
+        }
+    }
 
-    bool changed = false;
+  bool changed = false;
 
-    CParameterListItem * child;
+  CParameterListItem * child;
 
-    //Time
-    child = (CParameterListItem *)mTimeItem->firstChild();
-    if (child->isChanged())
-      {
-        changed = true;
-        CModel* tmp = dynamic_cast<CModel*>(child->getObject());
-        if (tmp) tmp->setInitialTime(child->getValue());
-      }
+  //Time
+  child = (CParameterListItem *)mTimeItem->firstChild();
+  if (child->isChanged())
+    {
+      changed = true;
+      CModel* tmp = dynamic_cast<CModel*>(child->getObject());
+      if (tmp) tmp->setInitialTime(child->getValue());
+    }
 
-    //Metabs
-    child = (CParameterListItem *)mMetabItem->firstChild();
-    while (child)
-      {
-        //std::cout << child->getObject()->getObjectName() << std::endl;
-        if (child->isChanged())
-          {
-            changed = true;
-            CMetab* tmp = dynamic_cast<CMetab*>(child->getObject());
-            if (tmp) tmp->setInitialConcentration(child->getValue());
-          }
-        child = (CParameterListItem *)child->nextSibling();
-      }
+  //Metabs
+  child = (CParameterListItem *)mMetabItem->firstChild();
+  while (child)
+    {
+      //std::cout << child->getObject()->getObjectName() << std::endl;
+      if (child->isChanged())
+        {
+          changed = true;
+          CMetab* tmp = dynamic_cast<CMetab*>(child->getObject());
+          if (tmp) tmp->setInitialConcentration(child->getValue());
+        }
+      child = (CParameterListItem *)child->nextSibling();
+    }
 
-    //Compartments
-    child = (CParameterListItem *)mCompItem->firstChild();
-    while (child)
-      {
-        //std::cout << child->getObject()->getObjectName() << std::endl;
-        if (child->isChanged())
-          {
-            changed = true;
-            CCompartment* tmp = dynamic_cast<CCompartment*>(child->getObject());
-            if (tmp) tmp->setInitialValue(child->getValue());
-          }
-        child = (CParameterListItem *)child->nextSibling();
-      }
+  //Compartments
+  child = (CParameterListItem *)mCompItem->firstChild();
+  while (child)
+    {
+      //std::cout << child->getObject()->getObjectName() << std::endl;
+      if (child->isChanged())
+        {
+          changed = true;
+          CCompartment* tmp = dynamic_cast<CCompartment*>(child->getObject());
+          if (tmp) tmp->setInitialValue(child->getValue());
+        }
+      child = (CParameterListItem *)child->nextSibling();
+    }
 
-    //Reactions
-    CParameterListItem * child2;
-    child = (CParameterListItem *)mReacItem->firstChild();
-    while (child)
-      {
-        child2 = (CParameterListItem *)child->firstChild();
-        while (child2)
-          {
-            //std::cout << child2->getObject()->getObjectName() << std::endl;
-            if (child2->isChanged())
-              {
-                changed = true;
-                CCopasiParameter* tmp = dynamic_cast<CCopasiParameter*>(child2->getObject());
-                if (tmp) tmp->setValue(child2->getValue());
-                //this does nothing for global parameters since the dynamic cast fails for those
-              }
-            child2 = (CParameterListItem *)child2->nextSibling();
-          }
-        child = (CParameterListItem *)child->nextSibling();
-      }
+  //Reactions
+  CParameterListItem * child2;
+  child = (CParameterListItem *)mReacItem->firstChild();
+  while (child)
+    {
+      child2 = (CParameterListItem *)child->firstChild();
+      while (child2)
+        {
+          //std::cout << child2->getObject()->getObjectName() << std::endl;
+          if (child2->isChanged())
+            {
+              changed = true;
+              CCopasiParameter* tmp = dynamic_cast<CCopasiParameter*>(child2->getObject());
+              if (tmp) tmp->setValue(child2->getValue());
+              //this does nothing for global parameters since the dynamic cast fails for those
+            }
+          child2 = (CParameterListItem *)child2->nextSibling();
+        }
+      child = (CParameterListItem *)child->nextSibling();
+    }
 
-    //global Parameters
-    child = (CParameterListItem *)mParamItem->firstChild();
-    while (child)
-      {
-        //std::cout << child->getObject()->getObjectName() << std::endl;
-        if (child->isChanged())
-          {
-            changed = true;
-            CModelValue* tmp = dynamic_cast<CModelValue*>(child->getObject());
-            if (tmp) tmp->setInitialValue(child->getValue());
-          }
-        child = (CParameterListItem *)child->nextSibling();
-      }
+  //global Parameters
+  child = (CParameterListItem *)mParamItem->firstChild();
+  while (child)
+    {
+      //std::cout << child->getObject()->getObjectName() << std::endl;
+      if (child->isChanged())
+        {
+          changed = true;
+          CModelValue* tmp = dynamic_cast<CModelValue*>(child->getObject());
+          if (tmp) tmp->setInitialValue(child->getValue());
+        }
+      child = (CParameterListItem *)child->nextSibling();
+    }
 
-    if (changed)
+  if (changed)
+    {
+      protectedNotify(ListViews::STATE, ListViews::CHANGE, CCopasiDataModel::Global->getModel()->getKey());
       CCopasiDataModel::Global->changed();
+    }
 
-    return true;
-  }
+  return true;
+}
 
 //slot
 void ParametersWidget::editItem(QListViewItem * item, const QPoint & C_UNUSED(pnt), int c)

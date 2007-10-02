@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMetabolite.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/14 15:29:49 $
+//   $Date: 2007/10/02 18:18:01 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,8 +13,8 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQMetabolite.ui'
  **
- ** Created: Wed Sep 12 15:43:10 2007
- **      by: The User Interface Compiler ($Id: CQMetabolite.cpp,v 1.5 2007/09/14 15:29:49 shoops Exp $)
+ ** Created: Wed Sep 26 20:38:18 2007
+ **      by: The User Interface Compiler ($Id: CQMetabolite.cpp,v 1.6 2007/10/02 18:18:01 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -26,10 +26,10 @@
 #include <qlabel.h>
 #include <qlineedit.h>
 #include <qcombobox.h>
+#include <qframe.h>
 #include <qtoolbutton.h>
 #include <qheader.h>
 #include <qlistview.h>
-#include <qframe.h>
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
@@ -43,7 +43,7 @@ static const unsigned char image0_data[] =
     0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d,
     0x49, 0x48, 0x44, 0x52, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x10,
     0x08, 0x06, 0x00, 0x00, 0x00, 0x1f, 0xf3, 0xff, 0x61, 0x00, 0x00, 0x02,
-    0x80, 0x49, 0x44, 0x41, 0x54, 0x38, 0x8d, 0x95, 0x93, 0x31, 0x68, 0x53,
+    0x80, 0x49, 0x44, 0x41, 0x54, 0x78, 0x9c, 0x95, 0x93, 0x31, 0x68, 0x53,
     0x61, 0x14, 0x85, 0xbf, 0x5f, 0x1c, 0x5e, 0x21, 0x43, 0xbb, 0xa5, 0x90,
     0xa1, 0x85, 0x37, 0x98, 0xa2, 0x90, 0x84, 0x2e, 0x3e, 0x1c, 0x24, 0x20,
     0x68, 0xa4, 0x83, 0xad, 0x0e, 0x4d, 0xb7, 0x66, 0xcc, 0x54, 0xaa, 0x83,
@@ -96,8 +96,8 @@ static const unsigned char image0_data[] =
     0xc7, 0x3a, 0x37, 0xa6, 0x74, 0x59, 0x63, 0x99, 0x16, 0xc7, 0x5f, 0xb6,
     0xdf, 0x16, 0xd1, 0x2b, 0x22, 0xd5, 0xb6, 0x64, 0xbf, 0xa3, 0xbc, 0x5b,
     0x11, 0xa9, 0x8a, 0xec, 0xb8, 0x59, 0x39, 0xe2, 0x4f, 0x7f, 0xe5, 0x3f,
-    0x2f, 0xed, 0x5f, 0xf8, 0x0d, 0xa8, 0xa7, 0x05, 0xd9, 0xbf, 0x58, 0xe0,
-    0x17, 0x00, 0x00, 0x00, 0x00, 0x49, 0x45, 0x4e, 0x44, 0xae, 0x42, 0x60,
+    0x2f, 0xed, 0x5f, 0xf8, 0x0d, 0xa8, 0xa7, 0x05, 0xd9, 0x07, 0x13, 0x99,
+    0x9e, 0x00, 0x00, 0x00, 0x00, 0x49, 0x45, 0x4e, 0x44, 0xae, 0x42, 0x60,
     0x82
   };
 
@@ -116,44 +116,27 @@ CQMetabolite::CQMetabolite(QWidget* parent, const char* name)
   setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)5, 0, 0, sizePolicy().hasHeightForWidth()));
   CQMetaboliteLayout = new QVBoxLayout(this, 11, 6, "CQMetaboliteLayout");
 
-  layout8 = new QGridLayout(0, 1, 1, 0, 6, "layout8");
+  layout7 = new QGridLayout(0, 1, 1, 0, 6, "layout7");
 
-  mpLblTransientValue = new QLabel(this, "mpLblTransientValue");
-  mpLblTransientValue->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)3, (QSizePolicy::SizeType)5, 0, 0, mpLblTransientValue->sizePolicy().hasHeightForWidth()));
-  mpLblTransientValue->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignLeft));
+  mpLblReactions = new QLabel(this, "mpLblReactions");
+  mpLblReactions->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)1, 0, 0, mpLblReactions->sizePolicy().hasHeightForWidth()));
+  mpLblReactions->setAlignment(int(QLabel::AlignTop | QLabel::AlignRight));
 
-  layout8->addWidget(mpLblTransientValue, 6, 3);
+  layout7->addWidget(mpLblReactions, 10, 0);
 
-  mpLblName = new QLabel(this, "mpLblName");
-  mpLblName->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)1, 0, 0, mpLblName->sizePolicy().hasHeightForWidth()));
-  mpLblName->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignRight));
+  mpEditTransitionTime = new QLineEdit(this, "mpEditTransitionTime");
+  mpEditTransitionTime->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)3, (QSizePolicy::SizeType)5, 0, 0, mpEditTransitionTime->sizePolicy().hasHeightForWidth()));
+  mpEditTransitionTime->setFrameShape(QLineEdit::LineEditPanel);
+  mpEditTransitionTime->setFrameShadow(QLineEdit::Sunken);
+  mpEditTransitionTime->setReadOnly(TRUE);
 
-  layout8->addMultiCellWidget(mpLblName, 0, 0, 0, 1);
+  layout7->addWidget(mpEditTransitionTime, 8, 2);
 
-  mpLblCompartment = new QLabel(this, "mpLblCompartment");
-  mpLblCompartment->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)1, 0, 0, mpLblCompartment->sizePolicy().hasHeightForWidth()));
-  mpLblCompartment->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignRight));
+  mpLblExpression = new QLabel(this, "mpLblExpression");
+  mpLblExpression->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)1, 0, 0, mpLblExpression->sizePolicy().hasHeightForWidth()));
+  mpLblExpression->setAlignment(int(QLabel::AlignTop | QLabel::AlignRight));
 
-  layout8->addMultiCellWidget(mpLblCompartment, 1, 2, 0, 1);
-
-  mpEditRate = new QLineEdit(this, "mpEditRate");
-  mpEditRate->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)3, (QSizePolicy::SizeType)5, 0, 0, mpEditRate->sizePolicy().hasHeightForWidth()));
-  mpEditRate->setFrameShape(QLineEdit::LineEditPanel);
-  mpEditRate->setFrameShadow(QLineEdit::Sunken);
-  mpEditRate->setReadOnly(TRUE);
-
-  layout8->addWidget(mpEditRate, 8, 3);
-
-  mpComboBoxCompartment = new QComboBox(FALSE, this, "mpComboBoxCompartment");
-  mpComboBoxCompartment->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)3, (QSizePolicy::SizeType)0, 0, 0, mpComboBoxCompartment->sizePolicy().hasHeightForWidth()));
-
-  layout8->addMultiCellWidget(mpComboBoxCompartment, 1, 2, 2, 3);
-
-  mpLblType = new QLabel(this, "mpLblType");
-  mpLblType->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)1, 0, 0, mpLblType->sizePolicy().hasHeightForWidth()));
-  mpLblType->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignRight));
-
-  layout8->addMultiCellWidget(mpLblType, 2, 3, 1, 1);
+  layout7->addWidget(mpLblExpression, 9, 0);
 
   mpLayoutInitialValues = new QHBoxLayout(0, 0, 6, "mpLayoutInitialValues");
 
@@ -166,19 +149,64 @@ CQMetabolite::CQMetabolite(QWidget* parent, const char* name)
   mpComboBoxInitialType->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)3, (QSizePolicy::SizeType)0, 0, 0, mpComboBoxInitialType->sizePolicy().hasHeightForWidth()));
   mpLayoutInitialValues->addWidget(mpComboBoxInitialType);
 
-  layout8->addLayout(mpLayoutInitialValues, 6, 2);
+  layout7->addLayout(mpLayoutInitialValues, 5, 1);
 
-  mpLblTransitionTime = new QLabel(this, "mpLblTransitionTime");
-  mpLblTransitionTime->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)1, 0, 0, mpLblTransitionTime->sizePolicy().hasHeightForWidth()));
-  mpLblTransitionTime->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignRight));
+  mpLblType = new QLabel(this, "mpLblType");
+  mpLblType->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)1, 0, 0, mpLblType->sizePolicy().hasHeightForWidth()));
+  mpLblType->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignRight));
 
-  layout8->addMultiCellWidget(mpLblTransitionTime, 9, 9, 0, 1);
+  layout7->addWidget(mpLblType, 2, 0);
 
-  mpLblExpression = new QLabel(this, "mpLblExpression");
-  mpLblExpression->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)1, 0, 0, mpLblExpression->sizePolicy().hasHeightForWidth()));
-  mpLblExpression->setAlignment(int(QLabel::AlignTop | QLabel::AlignRight));
+  mpEditCurrentValue = new QLineEdit(this, "mpEditCurrentValue");
+  mpEditCurrentValue->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)3, (QSizePolicy::SizeType)5, 0, 0, mpEditCurrentValue->sizePolicy().hasHeightForWidth()));
+  mpEditCurrentValue->setFrameShape(QLineEdit::LineEditPanel);
+  mpEditCurrentValue->setFrameShadow(QLineEdit::Sunken);
+  mpEditCurrentValue->setReadOnly(TRUE);
 
-  layout8->addMultiCellWidget(mpLblExpression, 10, 10, 0, 1);
+  layout7->addWidget(mpEditCurrentValue, 6, 2);
+
+  mpLblRate = new QLabel(this, "mpLblRate");
+  mpLblRate->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)1, 0, 0, mpLblRate->sizePolicy().hasHeightForWidth()));
+  mpLblRate->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignRight));
+
+  layout7->addWidget(mpLblRate, 7, 0);
+
+  mpLblValue = new QLabel(this, "mpLblValue");
+  mpLblValue->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)1, 0, 0, mpLblValue->sizePolicy().hasHeightForWidth()));
+  mpLblValue->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignRight));
+
+  layout7->addWidget(mpLblValue, 6, 0);
+
+  mpEditName = new QLineEdit(this, "mpEditName");
+  mpEditName->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)3, (QSizePolicy::SizeType)0, 0, 0, mpEditName->sizePolicy().hasHeightForWidth()));
+  mpEditName->setFrameShape(QLineEdit::LineEditPanel);
+  mpEditName->setFrameShadow(QLineEdit::Sunken);
+
+  layout7->addMultiCellWidget(mpEditName, 0, 0, 1, 2);
+
+  mpLine1 = new QFrame(this, "mpLine1");
+  mpLine1->setFrameShape(QFrame::HLine);
+  mpLine1->setFrameShadow(QFrame::Sunken);
+  mpLine1->setFrameShape(QFrame::HLine);
+
+  layout7->addMultiCellWidget(mpLine1, 3, 3, 0, 2);
+
+  mpComboBoxCompartment = new QComboBox(FALSE, this, "mpComboBoxCompartment");
+  mpComboBoxCompartment->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)3, (QSizePolicy::SizeType)0, 0, 0, mpComboBoxCompartment->sizePolicy().hasHeightForWidth()));
+
+  layout7->addMultiCellWidget(mpComboBoxCompartment, 1, 1, 1, 2);
+
+  mpEditRate = new QLineEdit(this, "mpEditRate");
+  mpEditRate->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)3, (QSizePolicy::SizeType)5, 0, 0, mpEditRate->sizePolicy().hasHeightForWidth()));
+  mpEditRate->setFrameShape(QLineEdit::LineEditPanel);
+  mpEditRate->setFrameShadow(QLineEdit::Sunken);
+  mpEditRate->setReadOnly(TRUE);
+
+  layout7->addWidget(mpEditRate, 7, 2);
+
+  mpBtnToggle = new QPushButton(this, "mpBtnToggle");
+
+  layout7->addMultiCellWidget(mpBtnToggle, 4, 5, 0, 0);
 
   mpHBoxLayout = new QHBoxLayout(0, 0, 6, "mpHBoxLayout");
 
@@ -196,71 +224,7 @@ CQMetabolite::CQMetabolite(QWidget* parent, const char* name)
   mpVBoxLayout->addItem(mpSpacerObject);
   mpHBoxLayout->addLayout(mpVBoxLayout);
 
-  layout8->addMultiCellLayout(mpHBoxLayout, 10, 10, 2, 3);
-
-  mpReactionTable = new QListView(this, "mpReactionTable");
-  mpReactionTable->addColumn(tr("Name"));
-  mpReactionTable->addColumn(tr("Equation"));
-  mpReactionTable->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)5, 0, 0, mpReactionTable->sizePolicy().hasHeightForWidth()));
-
-  layout8->addMultiCellWidget(mpReactionTable, 11, 11, 2, 3);
-
-  mpLine1 = new QFrame(this, "mpLine1");
-  mpLine1->setFrameShape(QFrame::HLine);
-  mpLine1->setFrameShadow(QFrame::Sunken);
-  mpLine1->setFrameShape(QFrame::HLine);
-
-  layout8->addMultiCellWidget(mpLine1, 4, 4, 0, 3);
-
-  mpLblValue = new QLabel(this, "mpLblValue");
-  mpLblValue->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)1, 0, 0, mpLblValue->sizePolicy().hasHeightForWidth()));
-  mpLblValue->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignRight));
-
-  layout8->addWidget(mpLblValue, 7, 1);
-
-  mpComboBoxType = new QComboBox(FALSE, this, "mpComboBoxType");
-  mpComboBoxType->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)3, (QSizePolicy::SizeType)0, 0, 0, mpComboBoxType->sizePolicy().hasHeightForWidth()));
-
-  layout8->addWidget(mpComboBoxType, 3, 2);
-
-  mpEditName = new QLineEdit(this, "mpEditName");
-  mpEditName->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)3, (QSizePolicy::SizeType)0, 0, 0, mpEditName->sizePolicy().hasHeightForWidth()));
-  mpEditName->setFrameShape(QLineEdit::LineEditPanel);
-  mpEditName->setFrameShadow(QLineEdit::Sunken);
-
-  layout8->addMultiCellWidget(mpEditName, 0, 0, 2, 3);
-
-  mpEditTransitionTime = new QLineEdit(this, "mpEditTransitionTime");
-  mpEditTransitionTime->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)3, (QSizePolicy::SizeType)5, 0, 0, mpEditTransitionTime->sizePolicy().hasHeightForWidth()));
-  mpEditTransitionTime->setFrameShape(QLineEdit::LineEditPanel);
-  mpEditTransitionTime->setFrameShadow(QLineEdit::Sunken);
-  mpEditTransitionTime->setReadOnly(TRUE);
-
-  layout8->addWidget(mpEditTransitionTime, 9, 3);
-
-  mpLblRate = new QLabel(this, "mpLblRate");
-  mpLblRate->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)1, 0, 0, mpLblRate->sizePolicy().hasHeightForWidth()));
-  mpLblRate->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignRight));
-
-  layout8->addMultiCellWidget(mpLblRate, 8, 8, 0, 1);
-
-  mpLblReactions = new QLabel(this, "mpLblReactions");
-  mpLblReactions->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)1, 0, 0, mpLblReactions->sizePolicy().hasHeightForWidth()));
-  mpLblReactions->setAlignment(int(QLabel::AlignTop | QLabel::AlignRight));
-
-  layout8->addMultiCellWidget(mpLblReactions, 11, 11, 0, 1);
-
-  mpBtnToggle = new QPushButton(this, "mpBtnToggle");
-
-  layout8->addMultiCellWidget(mpBtnToggle, 5, 6, 0, 1);
-
-  mpEditCurrentValue = new QLineEdit(this, "mpEditCurrentValue");
-  mpEditCurrentValue->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)3, (QSizePolicy::SizeType)5, 0, 0, mpEditCurrentValue->sizePolicy().hasHeightForWidth()));
-  mpEditCurrentValue->setFrameShape(QLineEdit::LineEditPanel);
-  mpEditCurrentValue->setFrameShadow(QLineEdit::Sunken);
-  mpEditCurrentValue->setReadOnly(TRUE);
-
-  layout8->addWidget(mpEditCurrentValue, 7, 3);
+  layout7->addMultiCellLayout(mpHBoxLayout, 9, 9, 1, 2);
 
   mpLayoutInitialConcentration = new QVBoxLayout(0, 0, 6, "mpLayoutInitialConcentration");
 
@@ -274,8 +238,44 @@ CQMetabolite::CQMetabolite(QWidget* parent, const char* name)
   mpComboBoxInitialSelection->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)3, (QSizePolicy::SizeType)0, 0, 0, mpComboBoxInitialSelection->sizePolicy().hasHeightForWidth()));
   mpLayoutInitialConcentration->addWidget(mpComboBoxInitialSelection);
 
-  layout8->addLayout(mpLayoutInitialConcentration, 7, 2);
-  CQMetaboliteLayout->addLayout(layout8);
+  layout7->addLayout(mpLayoutInitialConcentration, 6, 1);
+
+  mpComboBoxType = new QComboBox(FALSE, this, "mpComboBoxType");
+  mpComboBoxType->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)3, (QSizePolicy::SizeType)0, 0, 0, mpComboBoxType->sizePolicy().hasHeightForWidth()));
+
+  layout7->addWidget(mpComboBoxType, 2, 1);
+
+  mpLblTransientValue = new QLabel(this, "mpLblTransientValue");
+  mpLblTransientValue->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)3, (QSizePolicy::SizeType)5, 0, 0, mpLblTransientValue->sizePolicy().hasHeightForWidth()));
+  mpLblTransientValue->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignLeft));
+
+  layout7->addWidget(mpLblTransientValue, 5, 2);
+
+  mpLblCompartment = new QLabel(this, "mpLblCompartment");
+  mpLblCompartment->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)1, 0, 0, mpLblCompartment->sizePolicy().hasHeightForWidth()));
+  mpLblCompartment->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignRight));
+
+  layout7->addWidget(mpLblCompartment, 1, 0);
+
+  mpReactionTable = new QListView(this, "mpReactionTable");
+  mpReactionTable->addColumn(tr("Name"));
+  mpReactionTable->addColumn(tr("Equation"));
+  mpReactionTable->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)5, 0, 0, mpReactionTable->sizePolicy().hasHeightForWidth()));
+
+  layout7->addMultiCellWidget(mpReactionTable, 10, 10, 1, 2);
+
+  mpLblTransitionTime = new QLabel(this, "mpLblTransitionTime");
+  mpLblTransitionTime->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)1, 0, 0, mpLblTransitionTime->sizePolicy().hasHeightForWidth()));
+  mpLblTransitionTime->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignRight));
+
+  layout7->addWidget(mpLblTransitionTime, 8, 0);
+
+  mpLblName = new QLabel(this, "mpLblName");
+  mpLblName->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)1, 0, 0, mpLblName->sizePolicy().hasHeightForWidth()));
+  mpLblName->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignRight));
+
+  layout7->addWidget(mpLblName, 0, 0);
+  CQMetaboliteLayout->addLayout(layout7);
   mpSpacer = new QSpacerItem(20, 16, QSizePolicy::Minimum, QSizePolicy::Expanding);
   CQMetaboliteLayout->addItem(mpSpacer);
 
@@ -300,7 +300,7 @@ CQMetabolite::CQMetabolite(QWidget* parent, const char* name)
   mpBtnLayout->addWidget(mpBtnDelete);
   CQMetaboliteLayout->addLayout(mpBtnLayout);
   languageChange();
-  resize(QSize(479, 482).expandedTo(minimumSizeHint()));
+  resize(QSize(493, 482).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
 
   // signals and slots connections
@@ -354,21 +354,21 @@ CQMetabolite::~CQMetabolite()
 void CQMetabolite::languageChange()
 {
   setCaption(tr("Metabolite"));
-  mpLblTransientValue->setText(tr("Transient Values"));
-  mpLblName->setText(tr("Metobolite Name"));
-  mpLblCompartment->setText(tr("Compartment"));
-  mpLblType->setText(tr("Type"));
-  mpLblInitialValue->setText(tr("Initial Values"));
-  mpLblTransitionTime->setText(tr("Transition Time"));
+  mpLblReactions->setText(tr("Involved in Reactions"));
   mpLblExpression->setText(tr("Expression"));
+  mpLblInitialValue->setText(tr("Initial Values"));
+  mpLblType->setText(tr("Type"));
+  mpLblRate->setText(tr("Rate"));
+  mpLblValue->setText(tr("Concentration"));
+  mpBtnToggle->setText(tr("Particle Numbers"));
   mpBtnObject->setText(QString::null);
   mpBtnObject->setTextLabel(tr("select"));
+  mpLblTransientValue->setText(tr("Transient Values"));
+  mpLblCompartment->setText(tr("Compartment"));
   mpReactionTable->header()->setLabel(0, tr("Name"));
   mpReactionTable->header()->setLabel(1, tr("Equation"));
-  mpLblValue->setText(tr("Concentration"));
-  mpLblRate->setText(tr("Rate"));
-  mpLblReactions->setText(tr("Involved in Reactions"));
-  mpBtnToggle->setText(tr("Particle Numbers"));
+  mpLblTransitionTime->setText(tr("Transition Time"));
+  mpLblName->setText(tr("Metobolite Name"));
   mpBtnCommit->setText(tr("Commit"));
   mpBtnRevert->setText(tr("Revert"));
   mpBtnNew->setText(tr("New"));

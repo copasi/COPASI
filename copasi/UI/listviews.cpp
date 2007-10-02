@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.221 $
+//   $Revision: 1.222 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/04 14:56:53 $
+//   $Date: 2007/10/02 18:18:01 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -456,13 +456,13 @@ void ListViews::ConstructNodeWidgets()
   if (!trajectoryWidget) trajectoryWidget = new CQTrajectoryWidget(this);
   trajectoryWidget->hide();
 
-#ifdef COPASI_DEBUG
+#ifdef COPASI_TSSA
   if (!tssaWidget) tssaWidget = new CQTSSAWidget(this);
   tssaWidget->hide();
 
   if (!tssaResultWidget) tssaResultWidget = new CQTSSAResultWidget(this);
   tssaResultWidget->hide();
-#endif
+#endif // COPASI_TSSA
 
   if (!mpMathMatrixWidget) mpMathMatrixWidget = new CQMathMatrixWidget(this);
   mpMathMatrixWidget->hide();
@@ -1069,7 +1069,8 @@ bool ListViews::notify(ObjectType objectType, Action action, const std::string &
   bool success = true;
 
   // update all initial value
-  refreshInitialValues();
+  if (action != RENAME)
+    refreshInitialValues();
 
   //update the datamodel and the listviews trees
   if (!updateDataModelAndListviews(objectType, action, key)) success = false;
@@ -1160,8 +1161,12 @@ void ListViews::notifyAllChildWidgets(C_INT32 id,
 void ListViews::refreshInitialValues()
 {
   std::set< const CCopasiObject * > All;
+
+  CModel * pModel = CCopasiDataModel::Global->getModel();
+  pModel->compileIfNecessary(NULL);
+
   std::vector< Refresh * > UpdateVector =
-    CCopasiDataModel::Global->getModel()->buildInitialRefreshSequence(All);
+    pModel->buildInitialRefreshSequence(All);
 
   std::vector< Refresh * >::iterator it = UpdateVector.begin();
   std::vector< Refresh * >::iterator end = UpdateVector.end();

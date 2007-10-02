@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMetabolite.ui.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/14 15:29:50 $
+//   $Date: 2007/10/02 18:18:01 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -626,6 +626,11 @@ void CQMetabolite::loadReactionTable()
 void CQMetabolite::slotToggleDisplay()
 {
   mShowConcentration = !mShowConcentration;
+
+  int Width = fontMetrics().width("Concentration (" +
+                                  FROM_UTF8(CCopasiDataModel::Global->getModel()->getConcentrationUnitName()) +
+                                  ")");
+  mpLblValue->setMinimumWidth(Width);
 
   if (mShowConcentration)
     {

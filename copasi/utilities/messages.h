@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.95 $
+//   $Revision: 1.96 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/09/10 21:26:12 $
+//   $Author: shoops $
+//   $Date: 2007/10/02 18:18:00 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -96,7 +96,9 @@ const MESSAGES Messages[] =
     {MCTrajectoryMethod + 16, "CTrajectoryMethod (16): Numerical Error encountered."},
     {MCTrajectoryMethod + 17, "CTrajectoryMethod (17): At least one reaction is necessary to perform stochastic simulation."},
     {MCTrajectoryMethod + 18, "CTrajectoryMethod (18): The model contains a global quantity with an ODE rule.\nStochastic simulation is not possible."},
-    {MCTrajectoryMethod + 19, "CTrajectoryMethod (19): The model contains a global quantity with an assignment rule. \nThe value of the quantity is used in the model. \nStochastic simulation of such models is not possible with this version of COPASI."},
+    {MCTrajectoryMethod + 19, "CTrajectoryMethod (19): The model contains a global quantity with an assignment rule. \nThe value of the quantity is used in the model. \nStochastic simulation of such models is not possible with this version of COPASI."}, //obsolete
+    {MCTrajectoryMethod + 20, "CTrajectoryMethod (20): The model contains a metabolite with an ODE rule.\nStochastic simulation is not possible."},
+    {MCTrajectoryMethod + 21, "CTrajectoryMethod (21): The model contains a compartment with an ODE rule.\nStochastic simulation is not possible."},
 
     // XML Package
     {MCXML + 1, "XML (1): Required attribute '%s' not found (line: '%d')."},

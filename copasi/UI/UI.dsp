@@ -187,6 +187,10 @@ SOURCE=.\CQMessageBox.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CQMetabolite.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CQModelValue.cpp
 # End Source File
 # Begin Source File
@@ -655,6 +659,14 @@ SOURCE=.\CQMessageBox.ui.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\CQMetabolite.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQMetabolite.ui.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\CQModelValue.h
 # End Source File
 # Begin Source File
@@ -1101,6 +1113,10 @@ SOURCE=.\CQMCAWidget.ui
 # Begin Source File
 
 SOURCE=.\CQMessageBox.ui
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQMetabolite.ui
 # End Source File
 # Begin Source File
 

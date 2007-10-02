@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMMLOutput.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/08/07 12:21:56 $
+//   $Author: shoops $
+//   $Date: 2007/10/02 18:18:05 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -237,8 +237,8 @@ void CMMLOutput::writeRHS_ModelEntity(std::ostream & out,
   out << SPC(l + 0) << "<mrow>" << std::endl;
 
   pEntity->getExpressionPtr()->writeMathML(out, expandFull, l + 1);
-  pEntity->getExpressionPtr()->writeMathML(std::cout, expandFull, l + 1);
-  std::cout << std::endl;
+  // pEntity->getExpressionPtr()->writeMathML(std::cout, expandFull, l + 1);
+  // std::cout << std::endl;
 
   out << SPC(l + 0) << "</mrow>" << std::endl;
 }

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensMethod.cpp,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/31 17:57:36 $
+//   $Date: 2007/10/02 18:18:06 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -169,7 +169,7 @@ void CSensMethod::setValue(CCopasiObject* variable, C_FLOAT64 value)
 
   if (variable->getObjectName() == "Concentration")
     {
-      std::cout << "Concentration" << std::endl;
+      //std::cout << "Concentration" << std::endl;
       CMetab* pMetab = dynamic_cast<CMetab*>(variable->getObjectAncestor("Metabolite"));
       if (pMetab)
         pMetab->setConcentration(value);

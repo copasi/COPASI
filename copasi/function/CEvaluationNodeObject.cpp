@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.cpp,v $
-//   $Revision: 1.28 $
+//   $Revision: 1.29 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/24 18:40:21 $
+//   $Date: 2007/10/02 18:18:03 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -65,6 +65,8 @@ bool CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
   if (mpValue == NULL) return false;
   if (!pObject->isValueDbl()) return false;
 
+  mData = "<" + mRegisteredObjectCN + ">";
+
   return (getChild() == NULL); // We must not have any children.
 }
 
@@ -81,6 +83,7 @@ bool CEvaluationNodeObject::setData(const Data & data)
 
 std::string CEvaluationNodeObject::getInfix() const
   {return "<" + mRegisteredObjectCN + ">";}
+
 #if 0
 std::string CEvaluationNodeObject::getDisplayString(const CEvaluationTree * pTree) const
   {
@@ -97,21 +100,23 @@ std::string CEvaluationNodeObject::getDisplayString(const CEvaluationTree * pTre
 #endif
 
 std::string CEvaluationNodeObject::getDisplayString(const CEvaluationTree * /* pTree */) const
-{return mData;}
+  {
+    return "<" + mRegisteredObjectCN + ">";
+  }
 
 std::string CEvaluationNodeObject::getDisplay_C_String(const CEvaluationTree * /* pTree */) const
   {
-    return mData;
+    return "<" + mRegisteredObjectCN + ">";
   }
 
 std::string CEvaluationNodeObject::getDisplay_MMD_String(const CEvaluationTree * /* pTree */) const
   {
-    return mData;
+    return "<" + mRegisteredObjectCN + ">";
   }
 
 std::string CEvaluationNodeObject::getDisplay_XPP_String(const CEvaluationTree * /* pTree */) const
   {
-    return mData;
+    return "<" + mRegisteredObjectCN + ">";
   }
 
 CEvaluationNode* CEvaluationNodeObject::createNodeFromASTTree(const ASTNode& node)

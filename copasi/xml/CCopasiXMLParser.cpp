@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.164 $
+//   $Revision: 1.165 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/21 18:19:00 $
+//   $Date: 2007/10/02 18:18:02 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -43,9 +43,9 @@
 #ifdef COPASI_TSS
 #include "tss/CTSSTask.h"
 #endif
-#ifdef COPASI_DEBUG
+#ifdef COPASI_TSSA
 # include "tssanalysis/CTSSATask.h"
-#endif
+#endif // COPASI_TSSA
 #include "scan/CScanTask.h"
 #include "elementaryFluxModes/CEFMTask.h"
 #include "optimization/COptTask.h"
@@ -2103,7 +2103,7 @@ void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
         mpCurrentHandler = &mParser.mCharacterDataElement;
       break;
 
-    case MathML:                  // Old file format support
+    case MathML:                     // Old file format support
       if (!strcmp(pszName, "MathML"))
         {
           /* If we do not have a MathML element handler we create one. */
@@ -2166,7 +2166,7 @@ void CCopasiXMLParser::ModelValueElement::end(const XML_Char *pszName)
       }
       break;
 
-    case MathML:                  // Old file format support
+    case MathML:                     // Old file format support
       if (strcmp(pszName, "MathML"))
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                        pszName, "MathML", mParser.getCurrentLineNumber());
@@ -4913,8 +4913,6 @@ void CCopasiXMLParser::ListOfCompartmentGlyphsElement::start(const XML_Char * ps
       break;
 
     default:
-      std::cout << "should never happen" << std::endl; //DEBUG
-      //TODO unnecessary to handle unknown elements here
       mLastKnownElement = mCurrentElement - 1;
       mCurrentElement = UNKNOWN_ELEMENT;
       mParser.pushElementHandler(&mParser.mUnknownElement);
@@ -4955,8 +4953,6 @@ void CCopasiXMLParser::ListOfCompartmentGlyphsElement::end(const XML_Char * pszN
       break;
 
     case UNKNOWN_ELEMENT:
-      std::cout << "should never happen" << std::endl; //DEBUG
-      //TODO no need to handle unknowns
       mCurrentElement = mLastKnownElement;
       break;
 
@@ -5145,7 +5141,10 @@ void CCopasiXMLParser::ListOfMetabGlyphsElement::start(const XML_Char * pszName,
       break;
 
     default:
-      std::cout << "should never happen" << std::endl; //DEBUG
+      mLastKnownElement = mCurrentElement - 1;
+      mCurrentElement = UNKNOWN_ELEMENT;
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
   return;
@@ -5179,6 +5178,10 @@ void CCopasiXMLParser::ListOfMetabGlyphsElement::end(const XML_Char * pszName)
 
       //no need to delete Handler (since it is the only one the destructor
       //will handle it)
+      break;
+
+    case UNKNOWN_ELEMENT:
+      mCurrentElement = mLastKnownElement;
       break;
 
     default:
@@ -5394,7 +5397,10 @@ void CCopasiXMLParser::ListOfMetaboliteReferenceGlyphsElement::start(const XML_C
       break;
 
     default:
-      std::cout << "should never happen" << std::endl; //DEBUG
+      mLastKnownElement = mCurrentElement - 1;
+      mCurrentElement = UNKNOWN_ELEMENT;
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
   return;
@@ -5428,6 +5434,10 @@ void CCopasiXMLParser::ListOfMetaboliteReferenceGlyphsElement::end(const XML_Cha
 
       //no need to delete Handler (since it is the only one the destructor
       //will handle it)
+      break;
+
+    case UNKNOWN_ELEMENT:
+      mCurrentElement = mLastKnownElement;
       break;
 
     default:
@@ -5639,7 +5649,10 @@ void CCopasiXMLParser::ListOfReactionGlyphsElement::start(const XML_Char * pszNa
       break;
 
     default:
-      std::cout << "should never happen" << std::endl; //DEBUG
+      mLastKnownElement = mCurrentElement - 1;
+      mCurrentElement = UNKNOWN_ELEMENT;
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
   return;
@@ -5673,6 +5686,10 @@ void CCopasiXMLParser::ListOfReactionGlyphsElement::end(const XML_Char * pszName
 
       //no need to delete Handler (since it is the only one the destructor
       //will handle it)
+      break;
+
+    case UNKNOWN_ELEMENT:
+      mCurrentElement = mLastKnownElement;
       break;
 
     default:
@@ -5880,7 +5897,10 @@ void CCopasiXMLParser::ListOfTextGlyphsElement::start(const XML_Char * pszName,
       break;
 
     default:
-      std::cout << "should never happen" << std::endl; //DEBUG
+      mLastKnownElement = mCurrentElement - 1;
+      mCurrentElement = UNKNOWN_ELEMENT;
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
   return;
@@ -5914,6 +5934,10 @@ void CCopasiXMLParser::ListOfTextGlyphsElement::end(const XML_Char * pszName)
 
       //no need to delete Handler (since it is the only one the destructor
       //will handle it)
+      break;
+
+    case UNKNOWN_ELEMENT:
+      mCurrentElement = mLastKnownElement;
       break;
 
     default:
@@ -6095,7 +6119,10 @@ void CCopasiXMLParser::ListOfAdditionalGOsElement::start(const XML_Char * pszNam
       break;
 
     default:
-      std::cout << "should never happen" << std::endl; //DEBUG
+      mLastKnownElement = mCurrentElement - 1;
+      mCurrentElement = UNKNOWN_ELEMENT;
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
   return;
@@ -6129,6 +6156,10 @@ void CCopasiXMLParser::ListOfAdditionalGOsElement::end(const XML_Char * pszName)
 
       //no need to delete Handler (since it is the only one the destructor
       //will handle it)
+      break;
+
+    case UNKNOWN_ELEMENT:
+      mCurrentElement = mLastKnownElement;
       break;
 
     default:
@@ -6363,7 +6394,6 @@ void CCopasiXMLParser::ListOfLayoutsElement::start(const XML_Char * pszName,
       break;
 
     default:
-      std::cout << "should never happen" << std::endl; //DEBUG
       mLastKnownElement = mCurrentElement - 1;
       mCurrentElement = UNKNOWN_ELEMENT;
       mParser.pushElementHandler(&mParser.mUnknownElement);
@@ -6409,7 +6439,6 @@ void CCopasiXMLParser::ListOfLayoutsElement::end(const XML_Char * pszName)
       break;
 
     case UNKNOWN_ELEMENT:
-      std::cout << "should never happen" << std::endl; //DEBUG
       mCurrentElement = mLastKnownElement;
       break;
 
@@ -6587,11 +6616,11 @@ void CCopasiXMLParser::TaskElement::start(const XML_Char *pszName, const XML_Cha
           mCommon.pCurrentTask = new CTSSTask(mCommon.pTaskList);
           break;
 #endif // COPASI_TSS
-#ifdef COPASI_DEBUG
+#ifdef COPASI_TSSA
         case CCopasiTask::tssAnalysis:
           mCommon.pCurrentTask = new CTSSATask(mCommon.pTaskList);
           break;
-#endif // COPASI_DEBUG
+#endif // COPASI_TSSA
         default:
           mParser.pushElementHandler(&mParser.mUnknownElement);
           mParser.onStartElement(pszName, papszAttrs);

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-//   $Revision: 1.66 $
+//   $Revision: 1.67 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/18 14:51:38 $
+//   $Date: 2007/10/02 18:18:03 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,8 +40,6 @@ C_INT32 CStochMethod::checkModel(CModel * C_UNUSED(pmodel))
 {
   // Here several checks will be performed to validate the model
   return 2; // suggest next reaction method
-
-  // TODO check if stoich is integer
 }
 
 CStochMethod *
@@ -635,6 +633,26 @@ bool CStochMethod::isValidProblem(const CCopasiProblem * pProblem)
           return false;
         }
     }
+  imax = pTP->getModel()->getNumMetabs();
+  for (i = 0; i < imax; ++i)
+    {
+      if (pTP->getModel()->getMetabolites()[i]->getStatus() == CModelEntity::ODE)
+        {
+          //ode rule found
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 20);
+          return false;
+        }
+    }
+  imax = pTP->getModel()->getCompartments().size();
+  for (i = 0; i < imax; ++i)
+    {
+      if (pTP->getModel()->getCompartments()[i]->getStatus() == CModelEntity::ODE)
+        {
+          //ode rule found
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 21);
+          return false;
+        }
+    }
 
   //   if (modelHasAssignments(pTP->getModel()))
   //     {
@@ -676,5 +694,28 @@ bool CStochMethod::modelHasAssignments(const CModel* pModel)
             return true;
           }
     }
+
+  imax = pModel->getNumMetabs();
+  for (i = 0; i < imax; ++i)
+    {
+      if (pModel->getMetabolites()[i]->getStatus() == CModelEntity::ASSIGNMENT)
+        if (pModel->getMetabolites()[i]->isUsed())
+          {
+            //used assignment found
+            return true;
+          }
+    }
+
+  imax = pModel->getCompartments().size();
+  for (i = 0; i < imax; ++i)
+    {
+      if (pModel->getCompartments()[i]->getStatus() == CModelEntity::ASSIGNMENT)
+        if (pModel->getCompartments()[i]->isUsed())
+          {
+            //used assignment found
+            return true;
+          }
+    }
+
   return false;
 }

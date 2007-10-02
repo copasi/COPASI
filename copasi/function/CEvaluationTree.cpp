@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-//   $Revision: 1.48 $
+//   $Revision: 1.49 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/05/31 15:22:00 $
+//   $Date: 2007/10/02 18:18:03 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -163,7 +163,7 @@ bool CEvaluationTree::setInfix(const std::string & infix)
 }
 
 const std::string & CEvaluationTree::getInfix() const
-{return mInfix;;}
+{return mInfix;}
 
 std::string::size_type CEvaluationTree::getErrorPosition() const
   {return mErrorPosition;}

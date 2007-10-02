@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/08/24 19:07:55 $
+//   $Date: 2007/10/02 18:18:01 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -241,7 +241,7 @@ bool CQExpressionWidget::isInObject(int par, int pos)
     result = true;
   else if (lo == -1)
     {
-      std::cout << "inconsistent expression!" << std::endl;
+      //std::cout << "inconsistent expression!" << std::endl;
       result = false;
     }
   else if (lo < lc)

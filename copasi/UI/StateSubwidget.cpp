@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/StateSubwidget.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/08/02 14:19:14 $
+//   $Author: shoops $
+//   $Date: 2007/10/02 18:18:01 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,8 +13,8 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'StateSubwidget.ui'
  **
- ** Created: Do Aug 2 16:13:48 2007
- **      by: The User Interface Compiler ($Id: StateSubwidget.cpp,v 1.15 2007/08/02 14:19:14 ssahle Exp $)
+ ** Created: Thu Sep 27 00:56:52 2007
+ **      by: The User Interface Compiler ($Id: StateSubwidget.cpp,v 1.16 2007/10/02 18:18:01 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -50,7 +50,7 @@ StateSubwidget::StateSubwidget(QWidget* parent, const char* name, WFlags fl)
   StateSubwidgetLayout->addWidget(topLabel);
 
   tabWidget = new QTabWidget(this, "tabWidget");
-  tabWidget->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)7, 0, 0, tabWidget->sizePolicy().hasHeightForWidth()));
+  tabWidget->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)2, (QSizePolicy::SizeType)7, 0, 0, tabWidget->sizePolicy().hasHeightForWidth()));
 
   TabPage = new QWidget(tabWidget, "TabPage");
   TabPageLayout = new QVBoxLayout(TabPage, 11, 6, "TabPageLayout");
@@ -255,7 +255,7 @@ void StateSubwidget::languageChange()
 {
   setCaption(tr("Form1"));
   topLabel->setText(tr("textLabel1"));
-  tabWidget->changeTab(TabPage, tr("Optimization Result"));
+  tabWidget->changeTab(TabPage, tr("Optimi&zation Result"));
   concentrationsTable->horizontalHeader()->setLabel(0, tr("Metabolite name"));
   concentrationsTable->horizontalHeader()->setLabel(1, tr("Concentration"));
   concentrationsTable->horizontalHeader()->setLabel(2, tr("Rate"));
@@ -265,27 +265,27 @@ void StateSubwidget::languageChange()
   numbersTable->horizontalHeader()->setLabel(1, tr("Numbers"));
   numbersTable->horizontalHeader()->setLabel(2, tr("Number rate"));
   numbersTable->horizontalHeader()->setLabel(3, tr("Transition Time"));
-  tabWidget->changeTab(tab_2, tr("Particle Numbers"));
+  tabWidget->changeTab(tab_2, tr("Particle &Numbers"));
   mpModelValueTable->horizontalHeader()->setLabel(0, tr("Name"));
   mpModelValueTable->horizontalHeader()->setLabel(1, tr("Type"));
   mpModelValueTable->horizontalHeader()->setLabel(2, tr("Value"));
   mpModelValueTable->horizontalHeader()->setLabel(3, tr("Rate"));
-  tabWidget->changeTab(TabPage_2, tr("Model Quantities"));
+  tabWidget->changeTab(TabPage_2, tr("Model &Quantities"));
   tableFlux->horizontalHeader()->setLabel(0, tr("Reaction name"));
   tableFlux->horizontalHeader()->setLabel(1, tr("Flux"));
   tableFlux->horizontalHeader()->setLabel(2, tr("Particle flux"));
   tableFlux->horizontalHeader()->setLabel(3, tr("Chemical equation"));
-  tabWidget->changeTab(TabPage_3, tr("Fluxes"));
+  tabWidget->changeTab(TabPage_3, tr("Flu&xes"));
   textLabelJacobian->setText(tr("Jacobian (complete system)"));
   tableEigenValues->horizontalHeader()->setLabel(0, tr("Real"));
   tableEigenValues->horizontalHeader()->setLabel(1, tr("Imaginary"));
   textLabelEigenvalues->setText(tr("Eigenvalues (complete system)"));
-  tabWidget->changeTab(TabPage_4, tr("Jacobian"));
+  tabWidget->changeTab(TabPage_4, tr("&Jacobian"));
   textLabelJacobianX->setText(tr("Jacobian (Reduced System)"));
   tableEigenValuesX->horizontalHeader()->setLabel(0, tr("Real"));
   tableEigenValuesX->horizontalHeader()->setLabel(1, tr("Imaginary"));
   textLabelEigenvaluesX->setText(tr("Eigenvalues (Reduced System)"));
   tabWidget->changeTab(TabPage_5, tr("Jacobian (Reduced System)"));
-  tabWidget->changeTab(TabPage_6, tr("Stability"));
+  tabWidget->changeTab(TabPage_6, tr("Stabilit&y"));
   tabWidget->changeTab(TabPage_7, tr("Protocol"));
 }
