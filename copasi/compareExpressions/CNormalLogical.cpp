@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLogical.cpp,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.26 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/10/04 12:02:33 $
+//   $Date: 2007/10/04 13:28:51 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -524,6 +524,8 @@ bool CNormalLogical::simplify()
   this->mAndSets.clear();
   this->mAndSets = tmpSet;
   tmpSet.clear();
+  eliminateNullItems(this->mAndSets, tmpSet, true);
+  cleanSetOfSets(tmpSet);
   if (result = this->generateCanonicalDNF(tmpSet))
     {
       cleanSetOfSets(this->mAndSets);
@@ -1197,7 +1199,8 @@ void CNormalLogical::eliminateNullItems(const ItemSetOfSets& source, ItemSetOfSe
   if (orSet == true)
     {
       // the outer set is or combined, so the items in the inner set are and
-      // combined and the neutral item is false
+      // combined and the neutral item is for the outer set is the false item
+      // and for the innerset it is the true item
       neutralItem.setType(CNormalLogicalItem::FALSE);
     }
   else
@@ -1214,8 +1217,8 @@ void CNormalLogical::eliminateNullItems(const ItemSetOfSets& source, ItemSetOfSe
         {
           CNormalLogicalItem* pNegatedItem = new CNormalLogicalItem(*innerIt->first);
           pNegatedItem->negate();
-          std::pair<CNormalLogicalItem*, bool> negatedSet = std::make_pair(pNegatedItem, innerIt->second);
-          ItemSet::const_iterator pos = outerIt->first.find(negatedSet);
+          std::pair<CNormalLogicalItem*, bool> negatedPair = std::make_pair(pNegatedItem, innerIt->second);
+          ItemSet::const_iterator pos = outerIt->first.find(negatedPair);
           if (pos != outerIt->first.end())
             {
               eliminate = true;
@@ -1223,7 +1226,7 @@ void CNormalLogical::eliminateNullItems(const ItemSetOfSets& source, ItemSetOfSe
             }
           // also look for the simplified form just on case
           pNegatedItem->simplify();
-          pos = outerIt->first.find(negatedSet);
+          pos = outerIt->first.find(negatedPair);
           if (pos != outerIt->first.end())
             {
               eliminate = true;
@@ -1249,7 +1252,7 @@ void CNormalLogical::eliminateNullItems(const ItemSetOfSets& source, ItemSetOfSe
           while (innerIt != innerEndit)
             {
               CNormalLogicalItem* pNewItem = new CNormalLogicalItem(*innerIt->first);
-              if (innerIt->second == false)
+              if (innerIt->second == true)
                 {
                   pNewItem->negate();
                 }
@@ -1257,11 +1260,16 @@ void CNormalLogical::eliminateNullItems(const ItemSetOfSets& source, ItemSetOfSe
               tmpSet.insert(std::make_pair(pNewItem, false));
               ++innerIt;
             }
-          // remove the neutral item if there is more than one item in the
+          // remove the neutral item of the inner set if there is more than one item in the
           // set
           if (tmpSet.size() > 1)
             {
+              // neutralItem is the neutral item for the outer set
+              // to get the neutral item for the inner set, we have to negate
+              // the one for the outer set
               CNormalLogicalItem* pItem = new CNormalLogicalItem(neutralItem);
+              pItem->negate();
+              pItem->simplify();
               std::pair<CNormalLogicalItem*, bool> tmpPair = std::make_pair(pItem, false);
               ItemSet::const_iterator p = tmpSet.find(tmpPair);
               if (p != tmpSet.end())
@@ -1298,8 +1306,11 @@ void CNormalLogical::eliminateNullItems(const ItemSetOfSets& source, ItemSetOfSe
           std::pair<ItemSet, bool> tmpPair = std::make_pair(tmpSet, false);
           if (tmpTarget.find(tmpPair) != tmpTarget.end())
             {
-              // the neutral element for the outer set is the negated neutral
-              // element for the inner set
+
+              // we can stop here since we now know that the whole set of sets
+              // is true or false depending on the logical order of the set of
+              // sets.
+              cleanSetOfSets(target);
               ItemSet neutralSet;
               CNormalLogicalItem* pI = new CNormalLogicalItem(neutralItem);
               pI->negate();
@@ -1308,6 +1319,7 @@ void CNormalLogical::eliminateNullItems(const ItemSetOfSets& source, ItemSetOfSe
                 {
                   delete pI;
                 }
+              break;
             }
           else
             {
@@ -1319,6 +1331,15 @@ void CNormalLogical::eliminateNullItems(const ItemSetOfSets& source, ItemSetOfSe
                 }
             }
         }
+      else
+        {
+          ItemSet tmpSet2;
+          copySet(sourceSet, tmpSet2);
+          if (target.insert(std::make_pair(tmpSet2, outerIt->second)).second == false)
+            {
+              cleanSet(tmpSet2);
+            }
+        }
       ++outerIt;
     }
   if (target.size() > 1)
@@ -1327,7 +1348,7 @@ void CNormalLogical::eliminateNullItems(const ItemSetOfSets& source, ItemSetOfSe
       ItemSet neutralSet;
       CNormalLogicalItem* pI = new CNormalLogicalItem(neutralItem);
       neutralSet.insert(std::make_pair(pI, false));
-      std::pair<ItemSet, bool> neutralPair = std::make_pair(neutralSet, true);
+      std::pair<ItemSet, bool> neutralPair = std::make_pair(neutralSet, false);
       ItemSetOfSets::const_iterator pos = target.find(neutralPair);
       if (pos != target.end())
         {
@@ -1336,7 +1357,7 @@ void CNormalLogical::eliminateNullItems(const ItemSetOfSets& source, ItemSetOfSe
           delete pTmpItem;
         }
       pI->negate();
-      neutralPair = std::make_pair(neutralSet, false);
+      neutralPair = std::make_pair(neutralSet, true);
       pos = target.find(neutralPair);
       if (pos != target.end())
         {

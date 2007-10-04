@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_normalform.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/10/04 12:02:34 $
+//   $Date: 2007/10/04 13:28:52 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -4001,8 +4001,7 @@ void test_normalform::test_nested_stepwise_fractions_3levels()
   CPPUNIT_ASSERT(pLogical != NULL);
   CPPUNIT_ASSERT(pLogical->isNegated() == false);
   CPPUNIT_ASSERT(pLogical->getChoices().size() == 0);
-  CPPUNIT_ASSERT(pLogical->getAndSets().size() == 5);
-  //std::cout << "\npLogical: " << pLogical->toString() << std::endl;
+  CPPUNIT_ASSERT(pLogical->getAndSets().size() == 40);
 
   CPPUNIT_ASSERT(false);
 
