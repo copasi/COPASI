@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.39 $
+//   $Revision: 1.40 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/09/22 16:52:48 $
+//   $Date: 2007/10/04 17:21:41 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -42,6 +42,7 @@
 #include "copasi/layoutUI/CGraphCurve.h"
 #include "copasi/layoutUI/CGraphNode.h"
 #include "copasi/layoutUI/CVisParameters.h"
+#include "copasi/layoutUI/RGTextureSpec.h"
 
 #include "copasi/CopasiDataModel/CCopasiDataModel.h"
 #include "copasi/trajectory/CTrajectoryTask.h"
@@ -110,7 +111,7 @@ class CQGLNetworkPainter : public QGLWidget
 
     GLuint graphObjList;
     std::string mFontname;
-    int mFontsize;
+    unsigned int mFontsize;
     double mFontsizeDouble;
     QFont mf;
     //QFontMetrics mfm;
@@ -143,6 +144,10 @@ class CQGLNetworkPainter : public QGLWidget
     //void renderBitmapString(double x, double y, std::string s, double w, double h);
     void drawStringAt(std::string s, C_FLOAT64 x, C_FLOAT64 y, C_FLOAT64 w, C_FLOAT64 h, QColor bgCol);
     int round2powN(double d);
+
+    void RG_drawStringAt(std::string s, C_INT32 x, C_INT32 y, C_INT32 w, C_INT32 h);
+    RGTextureSpec* RG_createTextureForText(const std::string& text, const std::string& fontName, unsigned int fontSize);
+
     void updateGraphWithNodeSizes();
     void updateEdge(CLLineSegment line);
     void resetGraphToLabelView();

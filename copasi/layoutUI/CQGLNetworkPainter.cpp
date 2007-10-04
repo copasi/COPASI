@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.63 $
+//   $Revision: 1.64 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/09/23 10:27:56 $
+//   $Date: 2007/10/04 17:21:41 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,6 +19,14 @@
 #include <qimage.h>
 #include <qcolor.h>
 #include <qtimer.h>
+#include <qcanvas.h>
+
+//#include <Q3Canvas>
+//#include <Q3CanvasText>
+//#include <QPainter>
+//#include <QFont>
+//#include <QFontMetrics>
+//#include <QString>
 
 #include <iostream>
 #include <math.h>
@@ -378,6 +386,7 @@ void CQGLNetworkPainter::drawGraph()
           C_FLOAT64 x = viewerLabels[i].getX() + (viewerLabels[i].getWidth() / 2.0) + (viewerLabels[i].getHeight() / 2.0);
           C_FLOAT64 y = viewerLabels[i].getY();
           drawStringAt(viewerLabels[i].getText(), x, y, viewerLabels[i].getWidth(), viewerLabels[i].getHeight(), QColor(219, 235, 255));
+          //RG_drawStringAt(viewerLabels[i].getText(), x, y, viewerLabels[i].getWidth(), viewerLabels[i].getHeight());
         }
     }
 
@@ -592,6 +601,111 @@ void CQGLNetworkPainter::drawLabel(CLTextGlyph l)
 //}
 
 // uses QT
+
+void CQGLNetworkPainter::RG_drawStringAt(std::string s, C_INT32 x, C_INT32 y, C_INT32 w, C_INT32 h)
+{
+  RGTextureSpec* texSpec = RG_createTextureForText(s, mFontname, mFontsize);
+  if (texSpec == NULL)
+    {
+      return;
+    }
+  glPushMatrix();
+  glColor3f(0.0, 0.0, 0.0);
+  glEnable(GL_TEXTURE_2D);
+  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+  GLuint textureNames[1];
+  glGenTextures(1, textureNames);
+  glBindTexture(GL_TEXTURE_2D, textureNames[0]);
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_INTENSITY8, static_cast<int>(texSpec->textureWidth), static_cast<int>(texSpec->textureHeight), 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, texSpec->textureData);
+  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+  glTranslated(x, y, 0.5);
+  double xOffset = (w - texSpec->textWidth + 2) / 2.0;
+  double yOffset = (h - texSpec->textHeight + 2) / 2.0;
+  xOffset = (xOffset < 0.0) ? 0.0 : xOffset;
+  yOffset = (yOffset < 0.0) ? 0.0 : yOffset;
+  double textureXRatio = ((texSpec->textWidth + 2) / texSpec->textureWidth) / ((w - xOffset) / w);
+  double textureYRatio = ((texSpec->textHeight + 2) / texSpec->textureHeight) / ((h - 2 * yOffset) / h);
+
+  glBegin(GL_POLYGON);
+  glTexCoord2f(-xOffset / texSpec->textureWidth, -yOffset / texSpec->textureHeight);
+  glVertex3f(0.0, 0.0, 0.0);
+  glTexCoord2f(textureXRatio, -yOffset / texSpec->textureHeight);
+  glVertex3f(w, 0.0, 0.0);
+  glTexCoord2f(textureXRatio, textureYRatio);
+  glVertex3f(w, h, 0.0);
+  glTexCoord2f(-xOffset / texSpec->textureWidth, textureYRatio);
+  glVertex3f(0.0, h, 0.0);
+  glEnd();
+
+  glDisable(GL_TEXTURE_2D);
+  glPopMatrix();
+  //   if((this->mMode==MODE_SELECT || this->mMode==MODE_LAYOUT_CIRCULAR) && std::find(this->mSelection.begin(),this->mSelection.end(),pTextGlyph)!=this->mSelection.end())
+  //   {
+  //      RectangleSpec* frame=this->mSelectionFrameDict[pTextGlyph->getId()];
+  //      this->drawSelectionFrame(frame,this->mSelectionFrameDictHandles[frame]);
+  //}
+  delete[] texSpec->textureData;
+  delete texSpec;
+}
+
+RGTextureSpec* CQGLNetworkPainter::RG_createTextureForText(const std::string& text, const std::string& fontName, unsigned int fontSize)
+{
+  QFont font(QString(fontName.c_str()), fontSize);
+  QFontMetrics fontMetrics = QFontMetrics(font);
+
+  QRect rect = fontMetrics.boundingRect(QString(text.c_str()));
+  int width = rect.width();
+  int height = rect.height();
+  int exponent = static_cast<int>(ceil(log2(width + 2.0)));
+  if (exponent < 6)
+    {
+      exponent = 6;
+    }
+  width = static_cast<int>(pow(2, exponent + 1));
+  exponent = static_cast<int>(ceil(log2(height + 2.0)));
+  if (exponent < 6)
+    {
+      exponent = 6;
+    }
+  height = static_cast<int>(pow(2, exponent + 1));
+
+  QPixmap pixmap(width, height);
+  pixmap.fill(QColor(255, 255, 255));
+  QCanvas canvas(width, height);
+  QCanvasText canvasText(QString(text.c_str()), &canvas);
+  canvasText.setFont(font);
+  canvasText.setColor(QColor(0, 0, 0));
+  // also move one to the right and one down to generate one column
+  // and one row of transparent pixels
+  canvasText.moveBy(1, 1);
+  canvasText.show();
+  QPainter painter(&pixmap);
+  canvas.drawArea(canvas.rect(), &painter);
+
+  RGTextureSpec* texture = new RGTextureSpec();
+  texture->textureData = new GLubyte[height * width];
+  texture->textureWidth = width;
+  texture->textureHeight = height;
+  texture->textWidth = rect.width();
+  texture->textHeight = rect.height();
+  //QImage image=pixmap.toImage();
+  QImage image = pixmap.convertToImage();
+  int i;
+  for (i = 0;i < height;++i)
+    {
+      int j;
+      for (j = 0;j < width;++j)
+        {
+          QRgb pixel = image.pixel(j, i);
+          texture->textureData[i*width + j] = static_cast<unsigned char>(255 - (qRed(pixel) + qGreen(pixel) + qBlue(pixel)) / 3);
+        }
+    }
+  return texture;
+}
 
 void CQGLNetworkPainter::drawStringAt(std::string s, C_FLOAT64 x, C_FLOAT64 y, C_FLOAT64 w, C_FLOAT64 h, QColor bgCol)
 {
