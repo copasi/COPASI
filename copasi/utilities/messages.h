@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.97 $
+//   $Revision: 1.98 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/02 23:39:39 $
+//   $Date: 2007/10/04 17:31:04 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -242,6 +242,7 @@ const MESSAGES Messages[] =
     {MCFitting + 11, "CFitting (11): Missing independent data for Experiment '%s' in row '%d'."},
     {MCFitting + 12, "CFitting (12): The Fisher information matrix is singular. Therefore, the "
      "correlation matrix can not be calculated."},
+    {MCFitting + 13, "CFitting (13): Not enough memory avlailable to calculate the Fisher Information Matrix."},
 
     // CCopasiObject
     {MCObject + 1, "CObject (1): Circular dependencies detected for object '%s'."},

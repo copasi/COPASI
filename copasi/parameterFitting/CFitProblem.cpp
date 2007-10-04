@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-//   $Revision: 1.49 $
+//   $Revision: 1.50 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/04 17:31:39 $
+//   $Date: 2007/10/04 17:31:04 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -972,7 +972,16 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
   mHaveStatistics = true;
 
   CMatrix< C_FLOAT64 > dyp;
-  dyp.resize(imax, jmax);
+  bool CalculateFIM = true;
+  try
+    {
+      dyp.resize(imax, jmax);
+    }
+
+  catch (CCopasiException Exception)
+    {
+      CalculateFIM = false;
+    }
 
   C_FLOAT64 Current;
   C_FLOAT64 Delta;
@@ -997,8 +1006,9 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
 
       mGradient[i] = (mCalculateValue - mSolutionValue) * Delta;
 
-      for (j = 0; j < jmax; j++)
-        dyp(i, j) = (mExperimentDependentValues[j] - DependentValues[j]) * Delta;
+      if (CalculateFIM)
+        for (j = 0; j < jmax; j++)
+          dyp(i, j) = (mExperimentDependentValues[j] - DependentValues[j]) * Delta;
 
       // Restore the value
       (*mUpdateMethods[i])(Current);
@@ -1007,6 +1017,12 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
   // This is necessary so that CExperiment::printResult shows the correct data.
   calculate();
   mStoreResults = false;
+
+  if (!CalculateFIM)
+    {
+      CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 13);
+      return false;
+    }
 
   // Construct the fisher information matrix
   for (i = 0; i < imax; i++)
