@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLogical.h,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/09/26 12:37:58 $
+//   $Date: 2007/10/04 12:02:33 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -187,6 +187,22 @@ class CNormalLogical : public CNormalBase
      * this method evaluates the whole logical expression.
      */
     bool evaluateExpression(const std::map<CNormalLogicalItem, bool>& truthValueMap) const;
+
+    /**
+     * This methods checks wether there is something like A and !A in a set, if
+     * such an occurance is found, the whole set is converted to a set with either a false or a true item.
+     * For or combined items, this would be true, for and combined
+     * sets, it would be false.
+     * If there already are sets in the outer set, this set could be eliminated
+     * altogether.
+     */
+    static void eliminateNullItems(const ItemSetOfSets& source, ItemSetOfSets& target, bool orSet);
+
+#ifdef COPASI_DEBUG
+    static void printSetOfSets(const ItemSetOfSets& set);
+    static void printSetSizes(const ItemSetOfSets& set);
+    static void printSetElement(const ItemSetOfSets& set, unsigned int index1, unsigned int index2);
+#endif // COPASI_DEBUG
   };
 
 std::ostream& operator<<(std::ostream& os, const CNormalLogical& logical);

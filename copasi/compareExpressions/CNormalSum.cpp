@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalSum.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/09/19 13:26:56 $
+//   $Author: gauges $
+//   $Date: 2007/10/04 12:02:33 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -434,10 +434,12 @@ bool CNormalSum::operator<(const CNormalSum& rhs) const
               {
                 std::set<CNormalProduct*, compareProducts>::const_iterator it3 = this->mProducts.begin(), endit3 = this->mProducts.end();
                 std::set<CNormalProduct*, compareProducts>::const_iterator it4 = rhs.mProducts.begin(), endit4 = rhs.mProducts.end();
-                compareProducts comp;
+                // I can not use the sorter to compare because the sorter does
+                // not take the factor of a product into account.
+                // This is a feature, but a bug
                 while (result == false && it3 != endit3)
                   {
-                    if (comp((*it3), (*it4)))
+                    if ((**it3) < (**it4))
                       {
                         result = true;
                       }

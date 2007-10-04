@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalProduct.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/09/19 13:26:56 $
+//   $Author: gauges $
+//   $Date: 2007/10/04 12:02:33 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -425,21 +425,28 @@ bool CNormalProduct::operator<(const CNormalProduct& rhs) const
       }
     else if (this->mFactor == rhs.mFactor)
       {
-        std::set<CNormalItemPower*, compareItemPowers >::const_iterator it = this->mItemPowers.begin(), endit = this->mItemPowers.end();
-        std::set<CNormalItemPower*, compareItemPowers >::const_iterator it2 = rhs.mItemPowers.begin();
-        compareItemPowers comp;
-        while (result == false && it != endit)
+        if (this->mItemPowers.size() < rhs.mItemPowers.size())
           {
-            if (comp(*it, *it2))
+            result = true;
+          }
+        else if (this->mItemPowers.size() == rhs.mItemPowers.size())
+          {
+            std::set<CNormalItemPower*, compareItemPowers >::const_iterator it = this->mItemPowers.begin(), endit = this->mItemPowers.end();
+            std::set<CNormalItemPower*, compareItemPowers >::const_iterator it2 = rhs.mItemPowers.begin();
+            compareItemPowers comp;
+            while (result == false && it != endit)
               {
-                result = true;
+                if (comp(*it, *it2))
+                  {
+                    result = true;
+                  }
+                if ((**it) == (**it2))
+                  {
+                    break;
+                  }
+                ++it;
+                ++it2;
               }
-            if ((**it) == (**it2))
-              {
-                break;
-              }
-            ++it;
-            ++it2;
           }
       }
     return result;
