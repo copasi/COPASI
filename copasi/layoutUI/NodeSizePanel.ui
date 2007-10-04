@@ -1,10 +1,10 @@
 <!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/NodeSizePanel.ui,v $ </comment>
-<comment>   $Revision: 1.3 $ </comment>
+<comment>   $Revision: 1.4 $ </comment>
 <comment>   $Name:  $ </comment>
 <comment>   $Author: urost $ </comment>
-<comment>   $Date: 2007/09/10 10:49:22 $ </comment>
+<comment>   $Date: 2007/10/04 17:57:57 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -28,38 +28,6 @@
     <property name="caption">
         <string>Set Min/Max Node Sizes</string>
     </property>
-    <widget class="QLineEdit">
-        <property name="name">
-            <cstring>lineEdit1</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>140</x>
-                <y>20</y>
-                <width>40</width>
-                <height>22</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>10</string>
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>textLabel1</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>10</x>
-                <y>10</y>
-                <width>125</width>
-                <height>41</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Minimum Node Size:</string>
-        </property>
-    </widget>
     <widget class="QPushButton">
         <property name="name">
             <cstring>pushButton2</cstring>
@@ -124,6 +92,38 @@
             <string>OK</string>
         </property>
     </widget>
+    <widget class="QLineEdit">
+        <property name="name">
+            <cstring>lineEdit1</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>140</x>
+                <y>20</y>
+                <width>40</width>
+                <height>22</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>10</string>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabel1</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>10</x>
+                <y>10</y>
+                <width>125</width>
+                <height>41</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Minimum Node Size:</string>
+        </property>
+    </widget>
 </widget>
 <connections>
     <connection>
@@ -142,13 +142,13 @@
         <sender>lineEdit1</sender>
         <signal>returnPressed()</signal>
         <receiver>NodeSizePanel</receiver>
-        <slot>setMinValue()</slot>
+        <slot>setMinAndMaxValues()</slot>
     </connection>
     <connection>
         <sender>lineEdit2</sender>
         <signal>returnPressed()</signal>
         <receiver>NodeSizePanel</receiver>
-        <slot>setMaxValue()</slot>
+        <slot>setMinAndMaxValues()</slot>
     </connection>
 </connections>
 <includes>

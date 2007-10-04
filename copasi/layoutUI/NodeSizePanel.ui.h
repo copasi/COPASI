@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/Attic/NodeSizePanel.ui.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/09/10 10:49:26 $
+//   $Date: 2007/10/04 17:57:58 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,7 +35,7 @@ void NodeSizePanel::setMinAndMaxValues()
   bool ok2;
   C_INT32 val2 = s2.toInt(&ok2, 10);
 
-  if ((tmp) && (ok1) && (ok2))
+  if ((tmp) && (ok1) && (ok2) && (val1 < val2))
     tmp->setMinAndMaxValue(val1, val2);
   //std::cout << "set min and max value " << val1 << " /  " << val2 << std::endl;
   close();
@@ -57,6 +57,7 @@ void NodeSizePanel::setMinValue()
   QString s = lineEdit1->text();
   bool ok;
   C_INT32 val = s.toInt(&ok, 10);
+
   if ((tmp) && (ok))
     tmp->setMinValue(val);
   //std::cout << "set min value " << val << std::endl;
