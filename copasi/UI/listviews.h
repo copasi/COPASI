@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-//   $Revision: 1.128 $
+//   $Revision: 1.129 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2007/10/04 18:13:23 $
+//   $Date: 2007/10/04 21:19:25 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,8 +24,9 @@
 #include "copasi.h"
 #include "UI/Tree.h"
 
-class DataModelGUI;
+#include "CTabWidget.h"
 
+class DataModelGUI;
 class CQCompartment;
 class CompartmentsWidget;
 class CQDifferentialEquations;
@@ -36,7 +37,7 @@ class CMathModel;
 class CQMetabolite;
 class MetabolitesWidget;
 class CQEFMWidget;
-class ModelWidget;
+//class ModelWidget;
 class ModelValuesWidget;
 class MoietyWidget1;
 class MoietyWidget;
@@ -128,12 +129,12 @@ class ListViews : public QSplitter
     void restoreCurrentItem();
     static void storeCurrentItemInAllListViews();
     static void restoreCurrentItemInAllListViews();
-    CopasiWidget* findWidgetFromId(const C_INT32 & id) const;
+    QWidget* findWidgetFromId(const C_INT32 & id) const;
 
   private:
     CMathModel *mpMathModel;
 
-    CopasiWidget* findWidgetFromItem(FolderListItem* item) const;
+    QWidget* findWidgetFromItem(FolderListItem* item) const;
 
     void ConstructNodeWidgets();
     void setupFolders();

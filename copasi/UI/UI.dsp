@@ -291,6 +291,10 @@ SOURCE=.\CScanWidgetTask.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CTabWidget.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CTimeSeriesTable.cpp
 # End Source File
 # Begin Source File
@@ -840,6 +844,10 @@ SOURCE=.\CScanWidgetTask.h
 # Begin Source File
 
 SOURCE=.\CScanWidgetTask.ui.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CTabWidget.h
 # End Source File
 # Begin Source File
 

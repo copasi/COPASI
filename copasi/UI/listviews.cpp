@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.223 $
+//   $Revision: 1.224 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2007/10/04 18:13:22 $
+//   $Date: 2007/10/04 21:19:25 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -367,7 +367,9 @@ void ListViews::ConstructNodeWidgets()
 
   if (!modelWidget)
     {
-      modelWidget = new CTabWidget(this, new ModelWidget(), "Model", new ModelWidget());
+      QString* label1 = new QString ("Model");
+      QString* label2 = new QString ("MInfo");
+      modelWidget = new CTabWidget(new ModelWidget(), *label1, new ModelWidget(), *label2, this);
     }
   modelWidget->hide();
 
@@ -479,14 +481,14 @@ void ListViews::ConstructNodeWidgets()
 /**
  * tries to find the right hand side widget that belongs to an item of the tree view
  */
-CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
+QWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
   {
     // first try ID
     C_INT32 id = item->getFolder()->getId();
-    CopasiWidget * pWidget = findWidgetFromId(id);
+    QWidget * pWidget = findWidgetFromId(id);
 
     if (pWidget != NULL)
-      return pWidget;
+      return dynamic_cast<CopasiWidget*>(pWidget);
 
     // then try parent id:
     FolderListItem* parent = (FolderListItem*)item->parent();
@@ -528,7 +530,7 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
     return NULL;
   }
 
-CopasiWidget* ListViews::findWidgetFromId(const C_INT32 & id) const
+QWidget* ListViews::findWidgetFromId(const C_INT32 & id) const
   {
     switch (id)
       {
@@ -717,7 +719,7 @@ void ListViews::slotFolderChanged(QListViewItem *i)
   FolderListItem *item = (FolderListItem*)i; //TODO dynamic cast?
 
   // find the widget
-  CopasiWidget* newWidget = findWidgetFromItem(item);
+  CopasiWidget* newWidget = dynamic_cast<CopasiWidget*> (findWidgetFromItem(item));
   if (!newWidget) return; //do nothing
   std::string itemKey = item->getFolder()->getObjectKey();
 
@@ -734,7 +736,7 @@ void ListViews::slotFolderChanged(QListViewItem *i)
     }
 
   // find the widget again (it may have changed)
-  newWidget = findWidgetFromItem(item);
+  newWidget = dynamic_cast<CopasiWidget*> (findWidgetFromItem(item));
   if (!newWidget) newWidget = defaultWidget; //should never happen
   itemKey = item->getFolder()->getObjectKey();
 
@@ -1137,7 +1139,7 @@ void ListViews::notifyChildWidgets(FolderListItem * pItem,
     {
       notifyChildWidgets(pChild, objectType, action, key);
 
-      CopasiWidget * pWidget = findWidgetFromItem(pChild);
+      CopasiWidget * pWidget = dynamic_cast<CopasiWidget*> (findWidgetFromItem(pChild));
       if (pWidget)
         pWidget->update(objectType, action, key);
 

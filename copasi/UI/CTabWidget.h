@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CTabWidget.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2007/10/04 18:13:22 $
+//   $Date: 2007/10/04 21:19:25 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,15 +13,17 @@
 #ifndef CTABWIDGET_H
 #define CTABWIDGET_H
 
+#include <qtabwidget.h>
+
 /**This class is the container for the two widgets - the entity widget
  * and the associated MIRIAM object widget.
  */
 class CTabWidget : public QTabWidget
   {
   public:
-    CTabWidget(QWidget* parent = 0, QWidget* Tab1Widget,
-               QString& label1, QWidget* Tab2Widget, QString& label2 = "MIRIAM Info",
-               const char* name = 0, WFlags f = 0);
+    CTabWidget(QWidget* Tab1Widget, QString& label1,
+               QWidget* Tab2Widget, QString& label2,
+               QWidget* parent = 0, const char* name = 0, WFlags f = 0);
     ~CTabWidget();
     QWidget* getTab1Widget();
     QWidget* getTab2Widget();

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CTabWidget.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2007/10/04 18:13:22 $
+//   $Date: 2007/10/04 21:19:25 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,18 +16,18 @@
  *  Constructs a CQPreferenceDialog as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-CTabWidget::CTabWidget(QWidget* parent, QWidget* Tab1Widget,
-                       QString& label1, QWidget* Tab2Widget, QString& label2,
-                       const char* name, WFlags f)
-    : QDialog(parent, name, f)
+CTabWidget::CTabWidget(QWidget* Tab1Widget, QString& label1,
+                       QWidget* Tab2Widget, QString& label2,
+                       QWidget* parent, const char* name, WFlags f)
+    : QTabWidget(parent, name, f)
 {
   if (!name)
     setName("CTabWidget");
 
-  this.Tab1Widget = Tab1Widget;
-  this.Tab2Widget = Tab2Widget;
-  addTab(QWidget* Tab1Widget, label1);
-  addTab(QWidget* Tab2Widget, label2);
+  this->Tab1Widget = Tab1Widget;
+  this->Tab2Widget = Tab2Widget;
+  addTab(Tab1Widget, label1);
+  addTab(Tab2Widget, label2);
 }
 
 /*
