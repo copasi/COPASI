@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.cpp,v $
-//   $Revision: 1.66 $
+//   $Revision: 1.67 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/07/07 21:22:13 $
+//   $Author: shoops $
+//   $Date: 2007/10/04 17:32:39 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -139,10 +139,11 @@ bool CScanTask::process(const bool & /* useInitialValues */)
 
 bool CScanTask::processCallback()
 {
-  mpSubtask->process(!mAdjustInitialConditions);
+  bool success = mpSubtask->process(!mAdjustInitialConditions);
 
   //do output
-  if (!mOutputInSubtask) output(COutputInterface::DURING);
+  if (success && !mOutputInSubtask)
+    output(COutputInterface::DURING);
 
   //do progress bar
   ++mProgress;
