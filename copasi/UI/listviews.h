@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-//   $Revision: 1.127 $
+//   $Revision: 1.128 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/09/04 14:56:53 $
+//   $Author: aekamal $
+//   $Date: 2007/10/04 18:13:23 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -190,7 +190,7 @@ class ListViews : public QSplitter
     CQLyapResultWidget *lyapResultWidget;
     MetabolitesWidget *metabolitesWidget;
     CQMetabolite *metabolitesWidget1;
-    ModelWidget *modelWidget;
+    CTabWidget *modelWidget;
     ModelValuesWidget *modelValuesWidget;
     CQModelValue *mpModelValueWidget;
     CQEFMWidget *modesWidget;

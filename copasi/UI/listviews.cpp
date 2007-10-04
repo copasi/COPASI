@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.222 $
+//   $Revision: 1.223 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/10/02 18:18:01 $
+//   $Author: aekamal $
+//   $Date: 2007/10/04 18:13:22 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -365,7 +365,10 @@ void ListViews::ConstructNodeWidgets()
   if (!metabolitesWidget1) metabolitesWidget1 = new CQMetabolite(this);
   metabolitesWidget1->hide();
 
-  if (!modelWidget) modelWidget = new ModelWidget(this);
+  if (!modelWidget)
+    {
+      modelWidget = new CTabWidget(this, new ModelWidget(), "Model", new ModelWidget());
+    }
   modelWidget->hide();
 
   if (!mpModelValueWidget) mpModelValueWidget = new CQModelValue(this);

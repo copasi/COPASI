@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $ 
-#   $Revision: 1.157 $ 
+#   $Revision: 1.158 $ 
 #   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2007/10/02 18:18:01 $ 
+#   $Author: aekamal $ 
+#   $Date: 2007/10/04 18:13:23 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -11,7 +11,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.157 $ $Author: shoops $ $Date: 2007/10/02 18:18:01 $  
+# $Revision: 1.158 $ $Author: aekamal $ $Date: 2007/10/04 18:13:23 $  
 ######################################################################
 
 LIB = UI
@@ -261,6 +261,7 @@ HEADERS += \
            CScanWidgetScan.ui.h \
            CScanWidgetTask.h  \ 
            CScanWidgetTask.ui.h  \ 
+		   CTabWidget.h  \
            CUpDownSubwidget.h \
            CUpDownSubwidget.ui.h \
            DefaultplotDialog.h \
@@ -310,6 +311,7 @@ SOURCES += \
            CScanWidgetRepeat.cpp \
            CScanWidgetScan.cpp \
            CScanWidgetTask.cpp \  
+		   CTabWidget.cpp \
            DefaultplotDialog.cpp \
            objectdebug.cpp \
            SliderSettingsDialog.cpp \
