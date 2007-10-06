@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionAnalyzer.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/09/21 15:37:18 $
+//   $Date: 2007/10/06 00:40:14 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1199,7 +1199,7 @@ void CFunctionAnalyzer::checkKineticFunction(const CFunction * f, const CReactio
           CFunctionAnalyzer fa1(tmp.first);
           mResult.mFPart = fa1.getResult().mOriginalFunction;
 
-          CFunctionAnalyzer fa2(tmp.first);
+          CFunctionAnalyzer fa2(tmp.second);
           mResult.mBPart = fa2.getResult().mOriginalFunction;
         }
 
