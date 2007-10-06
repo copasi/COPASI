@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.98 $
+//   $Revision: 1.99 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/04 17:31:04 $
+//   $Date: 2007/10/06 23:37:05 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -119,6 +119,7 @@ const MESSAGES Messages[] =
     {MCXML + 10, "XML (10): Invalid element '<%s>' expecting '<%s>' encountered at line '%d'."},
     {MCXML + 11, "XML (11): Invalid closing element '</%s>' expecting '</%s>' encountered at line '%d'."},
     {MCXML + 12, "XML (12): Order '%d' out of range for variable '%s' in function '%s' encountered at line '%d'. "},
+    {MCXML + 13, "XML (13): Unrecognized format in file '%s'."},
 
     // CCopasiMessage
     {MCCopasiMessage + 1, "Message (1): No more messages."},

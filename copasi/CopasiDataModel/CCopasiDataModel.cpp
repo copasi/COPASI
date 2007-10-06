@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.103 $
+//   $Revision: 1.104 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/02 18:18:00 $
+//   $Date: 2007/10/06 23:37:05 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -217,7 +217,7 @@ bool CCopasiDataModel::loadModel(const std::string & fileName, CProcessReport* p
       mSaveFileName += ".cps";
       mSBMLFileName = "";
     }
-  else if (!Line.compare(0, 5, "<?xml"))
+  else if (!Line.find("<?xml") != std::string::npos)
     {
       //std::cout << "XML Format" << std::endl;
       File.seekg(0, std::ios_base::beg);
@@ -299,6 +299,11 @@ bool CCopasiDataModel::loadModel(const std::string & fileName, CProcessReport* p
         }
 
       mSaveFileName = FileName;
+    }
+  else
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, MCXML + 13, FileName.c_str());
+      return false;
     }
 
   if (mpModel)
