@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget.cpp,v $
-//   $Revision: 1.143 $
+//   $Revision: 1.144 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/02 18:18:01 $
+//   $Date: 2007/10/08 14:53:17 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -574,8 +574,12 @@ void MetabolitesWidget::initialNumberChanged(unsigned C_INT32 row)
   const CMetab * pMetab
   = static_cast< CMetab * >(GlobalKeys.get(mKeys[row]));
 
-  const CCompartment * pCompartment
-  = CCopasiDataModel::Global->getModel()->getCompartments()[(const char *)table->text(row, COL_CURRENTCOMPARTMENT).utf8()];
+  const CCompartment * pCompartment = NULL;
+  try
+    {
+      pCompartment = CCopasiDataModel::Global->getModel()->getCompartments()[(const char *)table->text(row, COL_CURRENTCOMPARTMENT).utf8()];
+    }
+  catch (...) {}
 
   if (!pMetab || !pCompartment) return;
 
@@ -594,10 +598,11 @@ void MetabolitesWidget::compartmentChanged(unsigned C_INT32 row)
   QString Compartment = table->text(row, COL_CURRENTCOMPARTMENT);
 
   const CCompartment * pCompartment = NULL;
-
-  if (Compartment != "")
-    pCompartment =
-      CCopasiDataModel::Global->getModel()->getCompartments()[(const char *)table->text(row, COL_CURRENTCOMPARTMENT).utf8()];
+  try
+    {
+      pCompartment = CCopasiDataModel::Global->getModel()->getCompartments()[(const char *)table->text(row, COL_CURRENTCOMPARTMENT).utf8()];
+    }
+  catch (...) {}
 
   if (!pMetab || !pCompartment) return;
 
