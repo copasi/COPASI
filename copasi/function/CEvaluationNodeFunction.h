@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.h,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.31 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/08/13 20:59:12 $
+//   $Author: shoops $
+//   $Date: 2007/10/08 20:24:11 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,8 +25,10 @@
 # pragma warning (disable: 4056 4756)
 #endif
 
+class CRandom;
+
 /**
- * This is the class for nodes presenting opertors used in an evaluation trees.
+ * This is the class for nodes presenting build-in functions used in an evaluation trees.
  */
 class CEvaluationNodeFunction : public CEvaluationNode
   {
@@ -74,7 +76,9 @@ class CEvaluationNodeFunction : public CEvaluationNode
       FACTORIAL = 0x0000001f,
       MINUS = 0x00000020,
       PLUS = 0x00000021,
-      NOT = 0x00000022
+      NOT = 0x00000022,
+      RUNIFORM = 0x00000023,
+      RNORMAL = 0x00000024
     };
 
     // Operations
@@ -110,8 +114,10 @@ class CEvaluationNodeFunction : public CEvaluationNode
      */
     virtual inline const C_FLOAT64 & value() const
       {
-        return *const_cast<C_FLOAT64 *>(&mValue)
-        = (*mpFunction)(mpLeft->value());
+        if (mpFunction2)
+          return *const_cast<C_FLOAT64 *>(&mValue) = (*mpFunction2)(mpLeft->value(), mpRight->value());
+        else
+          return *const_cast<C_FLOAT64 *>(&mValue) = (*mpFunction)(mpLeft->value());
       }
 
     /**
@@ -188,7 +194,7 @@ class CEvaluationNodeFunction : public CEvaluationNode
     std::string handleSign(const std::string & str) const;
 
     static inline C_FLOAT64 sec(C_FLOAT64 value)
-    {return 1.0 / cos(value);}
+  {return 1.0 / cos(value);}
 
     static inline C_FLOAT64 csc(C_FLOAT64 value)
     {return 1.0 / sin(value);}
@@ -252,11 +258,24 @@ class CEvaluationNodeFunction : public CEvaluationNode
     static inline C_FLOAT64 copasiNot(C_FLOAT64 value)
   {return (value != 0.0) ? 0.0 : 1.0;}
 
+    static C_FLOAT64 runiform(const C_FLOAT64 & lowerBound,
+                              const C_FLOAT64 & upperBound);
+
+    static C_FLOAT64 rnormal(const C_FLOAT64 & mean,
+                             const C_FLOAT64 & sd);
+
     // Attributes
   private:
     C_FLOAT64 (*mpFunction)(C_FLOAT64 value1);
 
+    C_FLOAT64 (*mpFunction2)(const C_FLOAT64 & value1,
+                             const C_FLOAT64 & value2);
+
     CEvaluationNode * mpLeft;
+
+    CEvaluationNode * mpRight;
+
+    static CRandom * mpRandom;
   };
 
 #ifdef WIN32

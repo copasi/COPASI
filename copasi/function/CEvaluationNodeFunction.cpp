@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.cpp,v $
-//   $Revision: 1.43 $
+//   $Revision: 1.44 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/21 17:56:26 $
+//   $Date: 2007/10/08 20:24:11 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,9 +17,20 @@
 #include <sstream>
 #include "CEvaluationTree.h"
 
-#include "sbml/math/ASTNode.h"
+#include "randomGenerator/CRandom.h"
 
+#include "sbml/math/ASTNode.h"
 #include "sbml/ConverterASTNode.h"
+
+CRandom * CEvaluationNodeFunction::mpRandom = NULL;
+
+C_FLOAT64 CEvaluationNodeFunction::runiform(const C_FLOAT64 & lowerBound,
+    const C_FLOAT64 & upperBound)
+{return lowerBound + mpRandom->getRandomOO() * (upperBound - lowerBound);}
+
+C_FLOAT64 CEvaluationNodeFunction::rnormal(const C_FLOAT64 & mean,
+    const C_FLOAT64 & sd)
+{return mpRandom->getRandomNormal(mean, sd);}
 
 CEvaluationNodeFunction::CEvaluationNodeFunction():
     CEvaluationNode(CEvaluationNode::INVALID, "")
@@ -29,7 +40,9 @@ CEvaluationNodeFunction::CEvaluationNodeFunction(const SubType & subType,
     const Data & data):
     CEvaluationNode((Type) (CEvaluationNode::FUNCTION | subType), data),
     mpFunction(NULL),
-    mpLeft(NULL)
+    mpFunction2(NULL),
+    mpLeft(NULL),
+    mpRight(NULL)
 {
   switch (subType)
     {
@@ -173,6 +186,18 @@ CEvaluationNodeFunction::CEvaluationNodeFunction(const SubType & subType,
       mpFunction = copasiNot;
       break;
 
+    case RUNIFORM:
+      mpFunction2 = runiform;
+      if (!mpRandom)
+        mpRandom = CRandom::createGenerator();
+      break;
+
+    case RNORMAL:
+      mpFunction2 = rnormal;
+      if (!mpRandom)
+        mpRandom = CRandom::createGenerator();
+      break;
+
     default:
       mpFunction = NULL;
       fatalError();
@@ -194,7 +219,13 @@ bool CEvaluationNodeFunction::compile(const CEvaluationTree * /* pTree */)
   mpLeft = static_cast<CEvaluationNode *>(getChild());
   if (mpLeft == NULL) return false;
 
-  return (mpLeft->getSibling() == NULL); // We must have only one child
+  if (mpFunction)
+    return (mpLeft->getSibling() == NULL); // We must have only one child
+
+  mpRight = static_cast<CEvaluationNode *>(mpLeft->getSibling());
+  if (mpRight == NULL) return false;
+
+  return (mpRight->getSibling() == NULL); // We must have only two children
 }
 
 std::string CEvaluationNodeFunction::getInfix() const
@@ -205,6 +236,10 @@ std::string CEvaluationNodeFunction::getInfix() const
         case MINUS:
         case PLUS:
           return handleSign(mpLeft->getInfix());
+
+        case RUNIFORM:
+        case RNORMAL:
+          return mData + "(" + mpLeft->getInfix() + "," + mpRight->getInfix() + ")";
 
         default:
           return mData + "(" + mpLeft->getInfix() + ")";
@@ -341,6 +376,9 @@ std::string CEvaluationNodeFunction::getDisplay_C_String(const CEvaluationTree *
           case FACTORIAL:
             data = "factorial";
             break;
+            // case RUNIFORM:
+            // case RNORMAL:
+            // :TODO: Bug 895: Implement me
           default:
             data = "@";
             break;
@@ -419,6 +457,9 @@ std::string CEvaluationNodeFunction::getDisplay_MMD_String(const CEvaluationTree
              */
             //data = "@";
             data = "ILLEGAL FUNCTION";
+            // case RUNIFORM:
+            // case RNORMAL:
+            // :TODO: Bug 895: Implement me
             break;
           }
 
@@ -492,6 +533,9 @@ std::string CEvaluationNodeFunction::getDisplay_XPP_String(const CEvaluationTree
                case ARCCOTH:
                case FACTORIAL: */
 
+            // case RUNIFORM:
+            // case RNORMAL:
+            // :TODO: Bug 895: Implement me
             data = "@"; //TODO
             break;
           }
@@ -794,12 +838,17 @@ ASTNode* CEvaluationNodeFunction::toAST() const
         break;
       case PLUS:
         // if this is the unary plus as I suspect,
-        // the nodde will be replaced by its only child
+        // the node will be replaced by its only child
         delete node;
         node = dynamic_cast<const CEvaluationNode*>(this->getChild())->toAST();
         break;
       case NOT:
         node->setType(AST_LOGICAL_NOT);
+        break;
+      case RUNIFORM:
+      case RNORMAL:
+        // :TODO: Bug 894: Implement me.
+        fatalError();
         break;
       }
     // for all but INVALID one child has to be converted

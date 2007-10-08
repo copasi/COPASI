@@ -435,6 +435,22 @@ ID       [a-z_A-Z][a-z_A-Z0-9]*
   return TOKEN_FUNCTION;
 %}
 
+(uniform|UNIFORM)/\(   %{
+  BEGIN(sOPERATOR); 
+  mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::RUNIFORM,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_FUNCTION_2;
+%}
+
+(normal|NORMAL)/\(   %{
+  BEGIN(sOPERATOR); 
+  mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::RNORMAL,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_FUNCTION_2;
+%}
+
 (if|IF)/\(   %{
   BEGIN(sOPERATOR); 
   mpNode = new CEvaluationNodeChoice(CEvaluationNodeChoice::IF,

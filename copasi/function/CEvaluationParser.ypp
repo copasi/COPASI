@@ -30,6 +30,7 @@
 
 %token TOKEN_CALL
 %token TOKEN_FUNCTION
+%token TOKEN_FUNCTION_2
 %token TOKEN_SIGN
 
 %token TOKEN_OPERATOR_POWER
@@ -73,6 +74,7 @@
 %right TOKEN_OPERATOR_POWER
 %right TOKEN_CALL // Will never occur
 %right TOKEN_FUNCTION // Will never occur
+%right TOKEN_FUNCTION_2 // Will never occur
 %right TOKEN_SIGN // Will never occur
 %right TOKEN_LOGICAL_CHOICE // Will never occur
 
@@ -124,6 +126,13 @@ exp:      TOKEN_NUMBER
           {
             $$ = $1;
             $$->addChild($3);
+            mpRootNode = $$; 
+          }
+        | TOKEN_FUNCTION_2 TOKEN_STRUCTURE_OPEN exp TOKEN_STRUCTURE_COMMA exp TOKEN_STRUCTURE_CLOSE
+          {
+            $$ = $1;
+            $$->addChild($3);
+            $$->addChild($5);
             mpRootNode = $$; 
           }
         | TOKEN_SIGN exp
