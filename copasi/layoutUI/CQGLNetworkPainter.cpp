@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.64 $
+//   $Revision: 1.65 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/10/04 17:21:41 $
+//   $Date: 2007/10/08 10:47:32 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -385,8 +385,8 @@ void CQGLNetworkPainter::drawGraph()
           // xPosition of text: start from middle of label and advance to the right by the assumed size of the corresponding circle
           C_FLOAT64 x = viewerLabels[i].getX() + (viewerLabels[i].getWidth() / 2.0) + (viewerLabels[i].getHeight() / 2.0);
           C_FLOAT64 y = viewerLabels[i].getY();
-          drawStringAt(viewerLabels[i].getText(), x, y, viewerLabels[i].getWidth(), viewerLabels[i].getHeight(), QColor(219, 235, 255));
-          //RG_drawStringAt(viewerLabels[i].getText(), x, y, viewerLabels[i].getWidth(), viewerLabels[i].getHeight());
+          //drawStringAt(viewerLabels[i].getText(), x, y, viewerLabels[i].getWidth(), viewerLabels[i].getHeight(), QColor(219, 235, 255));
+          RG_drawStringAt(viewerLabels[i].getText(), x, y, viewerLabels[i].getWidth(), viewerLabels[i].getHeight());
         }
     }
 
@@ -604,7 +604,8 @@ void CQGLNetworkPainter::drawLabel(CLTextGlyph l)
 
 void CQGLNetworkPainter::RG_drawStringAt(std::string s, C_INT32 x, C_INT32 y, C_INT32 w, C_INT32 h)
 {
-  RGTextureSpec* texSpec = RG_createTextureForText(s, mFontname, mFontsize);
+  RGTextureSpec* texSpec = RG_createTextureForText(s, mFontname, static_cast<int>(floor(h)));
+
   if (texSpec == NULL)
     {
       return;
@@ -692,8 +693,9 @@ RGTextureSpec* CQGLNetworkPainter::RG_createTextureForText(const std::string& te
   texture->textureHeight = height;
   texture->textWidth = rect.width();
   texture->textHeight = rect.height();
-  //QImage image=pixmap.toImage();
-  QImage image = pixmap.convertToImage();
+  //QImage image=pixmap.toImage();// RG
+  QImage image = pixmap.convertToImage(); // UR
+  //QImage timg = QGLWidget::convertToGLFormat(image); // UR
   int i;
   for (i = 0;i < height;++i)
     {
@@ -702,6 +704,9 @@ RGTextureSpec* CQGLNetworkPainter::RG_createTextureForText(const std::string& te
         {
           QRgb pixel = image.pixel(j, i);
           texture->textureData[i*width + j] = static_cast<unsigned char>(255 - (qRed(pixel) + qGreen(pixel) + qBlue(pixel)) / 3);
+          //if (qBlue(pixel) != 255)
+          //  std::cout << "(" << i << " : " << j << ") " << "r: " << qRed(pixel) << "  g: " << qGreen(pixel) << "  b: " << qBlue(pixel) << std::endl;
+          //texture->textureData[i*width + j] = (timg.bits())[i*width + j];// UR
         }
     }
   return texture;
@@ -1663,6 +1668,10 @@ void CQGLNetworkPainter::initializeGL()
   //glClearColor(QColor(255,255,240));
   //glClearColor(1.0f, 1.0f, 0.94f, 0.0f);  // background ivory
   qglClearColor(QColor(255, 255, 240, QColor::Rgb));
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  glEnable(GL_BLEND);
+  glEnable(GL_LINE_SMOOTH);
+  glDisable(GL_ALPHA_TEST);
 
   //glEnable(GL_DEPTH_TEST);
   glShadeModel(GL_SMOOTH);
