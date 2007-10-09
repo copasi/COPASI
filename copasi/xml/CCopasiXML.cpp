@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-//   $Revision: 1.99 $
+//   $Revision: 1.100 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/04 14:56:53 $
+//   $Date: 2007/10/09 19:13:11 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -351,6 +351,13 @@ bool CCopasiXML::saveModel()
   saveXhtml(mpModel->getComments());
   endSaveElement("Comment");
 
+  if (mpModel->getExpression() != "")
+    {
+      startSaveElement("InitialExpression");
+      saveData(mpModel->getExpression());
+      endSaveElement("InitalExpression");
+    }
+
   unsigned C_INT32 i, imax;
 
   if ((imax = mpModel->getCompartments().size()) > 0)
@@ -380,6 +387,13 @@ bool CCopasiXML::saveModel()
               startSaveElement("Expression");
               saveData(pComp->getExpression());
               endSaveElement("Expression");
+            }
+
+          if (pComp->getExpression() != "")
+            {
+              startSaveElement("InitialExpression");
+              saveData(pComp->getExpression());
+              endSaveElement("InitalExpression");
             }
 
           endSaveElement("Compartment");
@@ -421,6 +435,13 @@ bool CCopasiXML::saveModel()
               endSaveElement("Expression");
             }
 
+          if (pMetab->getExpression() != "")
+            {
+              startSaveElement("InitialExpression");
+              saveData(pMetab->getExpression());
+              endSaveElement("InitalExpression");
+            }
+
           endSaveElement("Metabolite");
           if (pMetab->getSBMLId() != "")
             mSBMLReference[pMetab->getSBMLId()] = pMetab->getKey();
@@ -455,6 +476,13 @@ bool CCopasiXML::saveModel()
               startSaveElement("Expression");
               saveData(pMV->getExpression());
               endSaveElement("Expression");
+            }
+
+          if (pMV->getExpression() != "")
+            {
+              startSaveElement("InitialExpression");
+              saveData(pMV->getExpression());
+              endSaveElement("InitalExpression");
             }
 
           endSaveElement("ModelValue");

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-//   $Revision: 1.55 $
+//   $Revision: 1.56 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/04 14:56:54 $
+//   $Date: 2007/10/09 19:13:10 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1148,7 +1148,8 @@ class CCopasiXMLParser : public CExpat
         enum Element
         {
           Metabolite = 0,
-          Expression
+          Expression,
+          InitialExpression
         };
 
         // Operations
@@ -1238,7 +1239,8 @@ class CCopasiXMLParser : public CExpat
         enum Element
         {
           Compartment = 0,
-          Expression
+          Expression,
+          InitialExpression
         };
 
         // Operations
@@ -1331,6 +1333,7 @@ class CCopasiXMLParser : public CExpat
         {
           ModelValue = 0,
           Expression,
+          InitialExpression,
           MathML
         };
 
@@ -1476,6 +1479,7 @@ class CCopasiXMLParser : public CExpat
         {
           Model = 0,
           Comment,
+          InitialExpression,
           ListOfCompartments,
           ListOfMetabolites,
           ListOfModelValues,
