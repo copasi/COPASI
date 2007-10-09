@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-//   $Revision: 1.45 $
+//   $Revision: 1.46 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/02 18:18:05 $
+//   $Date: 2007/10/09 19:07:23 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -137,43 +137,40 @@ bool CModelEntity::compile()
 
   std::set< const CCopasiObject * > NoDependencies;
   std::vector< CCopasiContainer * > listOfContainer;
+  listOfContainer.push_back(mpModel);
 
   switch (mStatus)
     {
     case ASSIGNMENT:
-      listOfContainer.push_back(getObjectAncestor("Model"));
-
       success &= mpExpression->compile(listOfContainer);
       mpValueReference->setDirectDependencies(mpExpression->getDirectDependencies());
 
       pdelete(mpInitialExpression);
       mpInitialExpression = CExpression::createInitialExpression(*mpExpression);
 
-      if (mpInitialExpression != NULL)
-        {
-          success &= mpInitialExpression->compile(listOfContainer);
-          mpIValueReference->setDirectDependencies(mpInitialExpression->getDirectDependencies());
-          mpIValueReference->setRefresh(this, &CModelEntity::refreshInitialValue);
-        }
-      else
-        {
-          mpIValueReference->setDirectDependencies(NoDependencies);
-          mpIValueReference->clearRefresh();
-        }
-
       break;
 
     case ODE:
       mpValueReference->addDirectDependency(this);
 
-      listOfContainer.push_back(getObjectAncestor("Model"));
       success &= mpExpression->compile(listOfContainer);
       mpRateReference->setDirectDependencies(mpExpression->getDirectDependencies());
 
-      break;
-
     default:
       break;
+    }
+
+  // Here we handle initial expressions for all types.
+  if (getInitialExpression() != "")
+    {
+      success &= mpInitialExpression->compile(listOfContainer);
+      mpIValueReference->setDirectDependencies(mpInitialExpression->getDirectDependencies());
+      mpIValueReference->setRefresh(this, &CModelEntity::refreshInitialValue);
+    }
+  else
+    {
+      mpIValueReference->setDirectDependencies(NoDependencies);
+      mpIValueReference->clearRefresh();
     }
 
   return success;
@@ -295,6 +292,7 @@ std::string CModelEntity::getInitialExpression() const
     if (mStatus == ASSIGNMENT || mpInitialExpression == NULL)
       return "";
 
+    mpInitialExpression->updateInfix();
     return mpInitialExpression->getInfix();
   }
 
@@ -359,8 +357,6 @@ void CModelEntity::setStatus(const CModelEntity::Status & status)
       setDirectDependencies(NoDependencies);
       clearRefresh();
 
-      pdelete(mpInitialExpression);
-
       mpIValueReference->setDirectDependencies(NoDependencies);
       mpIValueReference->clearRefresh();
 
@@ -375,6 +371,9 @@ void CModelEntity::setStatus(const CModelEntity::Status & status)
         case ASSIGNMENT:
           if (mpExpression == NULL)
             mpExpression = new CExpression;
+
+          pdelete(mpInitialExpression);
+          mpInitialExpression = CExpression::createInitialExpression(*mpExpression);
 
           mpValueReference->setDirectDependencies(mpExpression->getDirectDependencies());
           mpValueReference->setRefresh(this, &CModelEntity::calculate);
