@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.65 $
+//   $Revision: 1.66 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/10/08 10:47:32 $
+//   $Date: 2007/10/10 15:32:08 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -141,20 +141,7 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
       for (j2 = 0;j2 < edgesToNodesOfReaction.size();j2++)
         {
           CGraphCurve curve = CGraphCurve(edgesToNodesOfReaction[j2]->getCurve());
-
-          //viewerCurves.push_back(curve);
-          //std::cout << "curve: " << curve << std::endl;
-          //           int k;
-          //         std::vector<CLLineSegment> segments = curve.getCurveSegments();
-          //          for (k = 0;k < curve.getNumCurveSegments();k++)
-          //            {
-          //              CLLineSegment seg = segments[k];
-          //              viewerCurves.push_back(seg); // add copy of segment to vector
-          //}
           CLMetabReferenceGlyph::Role r = edgesToNodesOfReaction[j2]->getRole();
-          //std::cout << "role: " << r << std::endl;
-          //std::cout << "edge:  " << edgesToNodesOfReaction[j2]->getMetabGlyph() << std::endl;
-          // if curve does belong to node, put it in nodeCurveMap, else put it into list of other curves)
           if (edgesToNodesOfReaction[j2]->getMetabGlyph() != NULL)
             {
               std::string nodeKey = std::string(edgesToNodesOfReaction[j2]->getMetabGlyph()->getKey());
@@ -288,8 +275,10 @@ void CQGLNetworkPainter::drawGraph()
       C_FLOAT64 dHue = 240.0 / w;
       C_FLOAT64 hue = 0.0;
 
-      QGLWidget::renderText (10, sy + 15, "MIN", mf, graphObjList);
-      QGLWidget::renderText (165, sy + 15, "MAX", mf, graphObjList);
+      // QGLWidget::renderText (10, sy + 15, "MIN", mf, graphObjList);
+      // QGLWidget::renderText (165, sy + 15, "MAX", mf, graphObjList);
+      RG_drawStringAt("MIN", 7, sy + 3, 32, 16);
+      RG_drawStringAt("MAX", 165, sy + 3, 32, 16);
 
       C_INT16 i;
       QColor col = QColor();
@@ -551,6 +540,7 @@ void CQGLNetworkPainter::drawArrow(CArrow a)
   glEnd();
 }
 
+// draws label as a rectangular filled shape with a border and the text inside
 void CQGLNetworkPainter::drawLabel(CLTextGlyph l)
 {
   //glColor3f(0.5f, 1.0f, 0.69f); // label background color somehow green
@@ -572,7 +562,8 @@ void CQGLNetworkPainter::drawLabel(CLTextGlyph l)
   glEnd();
   //std::cout << "X: " << l.getX() << "  y: " << l.getY() << "  w: " << l.getWidth() << "  h: " << l.getHeight() << std::endl;
   // now draw text
-  drawStringAt(l.getText(), l.getX(), l.getY(), l.getWidth(), l.getHeight(), QColor(61, 237, 181, QColor::Rgb));
+  //drawStringAt(l.getText(), l.getX(), l.getY(), l.getWidth(), l.getHeight(), QColor(61, 237, 181, QColor::Rgb));
+  RG_drawStringAt(l.getText(), l.getX(), l.getY(), l.getWidth(), l.getHeight());
   //renderBitmapString(l.getX(), l.getY(), l.getText(), l.getWidth(), l.getHeight());
 }
 
@@ -605,7 +596,6 @@ void CQGLNetworkPainter::drawLabel(CLTextGlyph l)
 void CQGLNetworkPainter::RG_drawStringAt(std::string s, C_INT32 x, C_INT32 y, C_INT32 w, C_INT32 h)
 {
   RGTextureSpec* texSpec = RG_createTextureForText(s, mFontname, static_cast<int>(floor(h)));
-
   if (texSpec == NULL)
     {
       return;
@@ -714,7 +704,6 @@ RGTextureSpec* CQGLNetworkPainter::RG_createTextureForText(const std::string& te
 
 void CQGLNetworkPainter::drawStringAt(std::string s, C_FLOAT64 x, C_FLOAT64 y, C_FLOAT64 w, C_FLOAT64 h, QColor bgCol)
 {
-
   glColor3f(0.0f, 0.0f, 0.0f); // black
   //this->drawText((int)x,(int)y,QString(s));
 
@@ -1303,6 +1292,7 @@ void CQGLNetworkPainter::mapLabelsToRectangles()
   //viewerNodes[i].adaptCurvesForRectangles(&viewerCurves);
   this->drawGraph(); // this function will draw the bounding box for each node
   //this->draw();
+  this->updateGL();
 }
 
 CLPoint CQGLNetworkPainter::getPointOnRectangle(CLBoundingBox r, CLPoint p)
@@ -1365,7 +1355,8 @@ void CQGLNetworkPainter::mapLabelsToCircles()
     }
 
   this->drawGraph();
-  //this->draw();
+  // this->draw();
+  this->updateGL();
 }
 
 CLPoint CQGLNetworkPainter::getPointOnCircle(CLBoundingBox r, CLPoint p)
