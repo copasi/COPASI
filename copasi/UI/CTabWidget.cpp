@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CTabWidget.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2007/10/10 16:24:00 $
+//   $Date: 2007/10/10 20:33:19 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -11,6 +11,8 @@
 // All rights reserved.
 
 #include <qtabwidget.h>
+#include <qlayout.h>
+#include <qmultilineedit.h>
 
 #include "CTabWidget.h"
 #include "ModelWidget.h"
@@ -26,12 +28,18 @@ CTabWidget::CTabWidget(QString& label1, QString& label2,
   if (!name)
     CopasiWidget::setName("CTabWidget");
 
-  mTabWidget = new QTabWidget (this);
+  QHBoxLayout* tabLayout = new QHBoxLayout(this, 0, 0, "tabLayout");
+  mTabWidget = new QTabWidget (this, "mTabWidget");
+  tabLayout->addWidget(mTabWidget);
+
   Tab1Widget = new ModelWidget(mTabWidget);
-  Tab2Widget = new ModelWidget(mTabWidget);
+  //Tab2Widget = new ModelWidget(mTabWidget);
+  QMultiLineEdit* mle = new QMultiLineEdit(mTabWidget, "multiLineEdit");
+
+  mle->setText("MIRIAM Widgets go here...");
+
   mTabWidget->addTab(Tab1Widget, label1);
-  mTabWidget->addTab(Tab2Widget, label2);
-  Tab1Widget->show();
+  mTabWidget->addTab(mle, label2);
 }
 
 /*

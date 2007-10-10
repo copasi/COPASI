@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CTabWidget.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2007/10/10 16:24:00 $
+//   $Date: 2007/10/10 20:33:19 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,10 +34,6 @@ class CTabWidget : public CopasiWidget
     QTabWidget *mTabWidget;
     CopasiWidget* Tab1Widget;
     CopasiWidget* Tab2Widget;
-
-  protected slots:
-
-  private slots:
   };
 
 #endif // CTABWIDGET_H
