@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-//   $Revision: 1.130 $
+//   $Revision: 1.131 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/10/10 14:59:15 $
+//   $Author: aekamal $
+//   $Date: 2007/10/10 16:24:00 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -133,12 +133,12 @@ class ListViews : public QSplitter
     void restoreCurrentItem();
     static void storeCurrentItemInAllListViews();
     static void restoreCurrentItemInAllListViews();
-    QWidget* findWidgetFromId(const C_INT32 & id) const;
+    CopasiWidget* findWidgetFromId(const C_INT32 & id) const;
 
   private:
     CMathModel *mpMathModel;
 
-    QWidget* findWidgetFromItem(FolderListItem* item) const;
+    CopasiWidget* findWidgetFromItem(FolderListItem* item) const;
 
     void ConstructNodeWidgets();
     void setupFolders();

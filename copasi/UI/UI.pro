@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $ 
-#   $Revision: 1.158 $ 
+#   $Revision: 1.159 $ 
 #   $Name:  $ 
 #   $Author: aekamal $ 
-#   $Date: 2007/10/04 18:13:23 $ 
+#   $Date: 2007/10/10 16:24:00 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -11,7 +11,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.158 $ $Author: aekamal $ $Date: 2007/10/04 18:13:23 $  
+# $Revision: 1.159 $ $Author: aekamal $ $Date: 2007/10/10 16:24:00 $  
 ######################################################################
 
 LIB = UI
@@ -261,7 +261,6 @@ HEADERS += \
            CScanWidgetScan.ui.h \
            CScanWidgetTask.h  \ 
            CScanWidgetTask.ui.h  \ 
-		   CTabWidget.h  \
            CUpDownSubwidget.h \
            CUpDownSubwidget.ui.h \
            DefaultplotDialog.h \
@@ -311,7 +310,6 @@ SOURCES += \
            CScanWidgetRepeat.cpp \
            CScanWidgetScan.cpp \
            CScanWidgetTask.cpp \  
-		   CTabWidget.cpp \
            DefaultplotDialog.cpp \
            objectdebug.cpp \
            SliderSettingsDialog.cpp \
@@ -351,6 +349,11 @@ HEADERS += CQRegistrationDialog.h \
 SOURCES += CQRegistrationDialog.cpp
 }
 #endif // COPAS_LICENSE_COM
+
+contains(DEFINES, COPASI_MIRIAM) {
+  HEADERS += CTabWidget.h
+  SOURCES += CTabWidget.cpp
+}
 
 DISTFILES += UI.dsp \
              icons/Copasi.ico \
