@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.226 $
+//   $Revision: 1.227 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2007/10/10 16:24:00 $
+//   $Date: 2007/10/10 16:31:04 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -77,7 +77,10 @@
 #include "CQReportDefinition.h"
 #include "PlotWidget.h"
 #include "CQMathMatrixWidget.h"
+
+#ifdef COPASI_MIRIAM
 #include "CTabWidget.h"
+#endif
 
 #ifdef WITH_LAYOUT
 #include "layoutUI/CQCopasiLayoutWidget.h"
