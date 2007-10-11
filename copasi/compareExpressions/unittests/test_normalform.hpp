@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_normalform.hpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/23 14:59:49 $
+//   $Date: 2007/10/11 11:44:11 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,6 +19,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 class CNormalFraction;
+class CNormalLogicalItem;
 
 class test_normalform : public CppUnit::TestFixture
   {
@@ -164,6 +165,42 @@ class test_normalform : public CppUnit::TestFixture
     void test_nested_stepwise_numbers_2levels_2();
     void test_nested_stepwise_numbers_2levels_3();
     void test_nested_stepwise_fractions_3levels();
+
+    // PI < A
+    bool check_LogicalItemA(const CNormalLogicalItem* pLogicalItem);
+
+    // 4 != A
+    bool check_LogicalItemB(const CNormalLogicalItem* pLogicalItem);
+
+    //2==T
+    bool check_LogicalItemC(const CNormalLogicalItem* pLogicalItem);
+
+    // D == F
+    bool check_LogicalItemD(const CNormalLogicalItem* pLogicalItem);
+
+    // SIN(PI*D) < X
+    bool check_LogicalItemE(const CNormalLogicalItem* pLogicalItem);
+
+    // 2*T^(3*J) != 6.2
+    bool check_LogicalItemF(const CNormalLogicalItem* pLogicalItem);
+
+    // A <= PI
+    bool check_LogicalItemNotA(const CNormalLogicalItem* pLogicalItem);
+
+    // 4 == A
+    bool check_LogicalItemNotB(const CNormalLogicalItem* pLogicalItem);
+
+    //2!=T
+    bool check_LogicalItemNotC(const CNormalLogicalItem* pLogicalItem);
+
+    // D != F
+    bool check_LogicalItemNotD(const CNormalLogicalItem* pLogicalItem);
+
+    // X <= SIN(PI*D)
+    bool check_LogicalItemNotE(const CNormalLogicalItem* pLogicalItem);
+
+    // 2*T^(3*J) == 6.2
+    bool check_LogicalItemNotF(const CNormalLogicalItem* pLogicalItem);
   };
 
 #endif /* TEST_NORMALFORM_HPP__ */
