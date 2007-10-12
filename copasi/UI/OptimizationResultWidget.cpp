@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationResultWidget.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/20 17:06:03 $
+//   $Date: 2007/10/12 18:35:35 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -158,12 +158,3 @@ bool OptimizationResultWidget::leave()
 
 bool OptimizationResultWidget::enter(const std::string & C_UNUSED(key))
 {return true;}
-
-void OptimizationResultWidget::runSetInitialState()
-{
-  CSteadyStateTask* mSteadyStateTask =
-    dynamic_cast<CSteadyStateTask *>(GlobalKeys.get("Task_2"));
-  const CState *currentState = mSteadyStateTask->getState();
-  if (currentState)
-    CCopasiDataModel::Global->getModel()->setInitialState(*currentState);
-}

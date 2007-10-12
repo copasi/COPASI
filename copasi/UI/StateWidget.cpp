@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/StateWidget.cpp,v $
-   $Revision: 1.16 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/08/16 19:52:32 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/StateWidget.cpp,v $
+//   $Revision: 1.17 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/10/12 18:35:35 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -114,13 +114,4 @@ bool StateWidget::enter(const std::string & C_UNUSED(key))
   // ...;
 
   return true;
-}
-
-void StateWidget::runSetInitialState()
-{
-  CSteadyStateTask* mSteadyStateTask =
-    dynamic_cast<CSteadyStateTask *>(GlobalKeys.get("Task_2"));
-  const CState *currentState = mSteadyStateTask->getState();
-  if (currentState)
-    CCopasiDataModel::Global->getModel()->setInitialState(*currentState);
 }

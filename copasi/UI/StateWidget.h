@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/StateWidget.h,v $
-   $Revision: 1.6 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/28 00:21:45 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/StateWidget.h,v $
+//   $Revision: 1.7 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/10/12 18:35:35 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -37,9 +37,6 @@ class StateWidget : public CopasiWidget
     virtual bool leave();
     virtual bool enter(const std::string & key = "");
     bool loadFromBackend();
-
-  public slots:
-    virtual void runSetInitialState();
 
   protected slots:
     //virtual void slotBtnCancelClicked();

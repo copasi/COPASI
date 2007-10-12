@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationResultWidget.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/20 17:06:03 $
+//   $Date: 2007/10/12 18:35:35 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -45,9 +45,6 @@ class OptimizationResultWidget : public CopasiWidget
     virtual bool enter(const std::string & key = "");
 
     bool loadFromBackend();
-
-  public slots:
-    virtual void runSetInitialState();
 
   protected slots:
     //virtual void slotBtnCancelClicked();
