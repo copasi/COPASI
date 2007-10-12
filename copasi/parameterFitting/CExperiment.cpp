@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-//   $Revision: 1.54 $
+//   $Revision: 1.55 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/08/07 17:17:21 $
+//   $Date: 2007/10/12 20:14:23 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -562,6 +562,7 @@ bool CExperiment::compile(const std::vector< CCopasiContainer * > listOfContaine
   mIndependentValues.resize(IndependentCount);
   mDependentObjects.clear();
   std::set< const CCopasiObject * > Dependencies;
+  std::set< const CCopasiObject * > IdependentObjects;
 
   IndependentCount = 0;
   DependentCount = 0;
@@ -585,6 +586,7 @@ bool CExperiment::compile(const std::vector< CCopasiContainer * > listOfContaine
             CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 6, Objects[i]->getObjectDisplayName().c_str(), i + 1);
             return false;
           }
+        IdependentObjects.insert(Objects[i]);
         mIndependentUpdateMethods[IndependentCount] =
           Objects[i]->getUpdateMethod();
         mIndependentValues[IndependentCount] =
@@ -651,6 +653,7 @@ bool CExperiment::compile(const std::vector< CCopasiContainer * > listOfContaine
   CModel * pModel =
     dynamic_cast< CModel * >(CCopasiContainer::ObjectFromName(listOfContainer, CCopasiObjectName("Model=" + CCopasiObjectName::escape(CCopasiDataModel::Global->getModel()->getObjectName()))));
 
+  mIndependentRefreshMethods = pModel->buildInitialRefreshSequence(IdependentObjects);
   mRefreshMethods = CCopasiObject::buildUpdateSequence(Dependencies, pModel);
 
   return success;
@@ -974,6 +977,12 @@ bool CExperiment::updateModelWithIndependentData(const unsigned C_INT32 & index)
   for (i = 0; i < imax; i++)
     (*mIndependentUpdateMethods[i])(mDataIndependent(index, i));
 
+  // Update all initial values.
+  std::vector< Refresh * >::const_iterator itRefresh = mIndependentRefreshMethods.begin();
+  std::vector< Refresh * >::const_iterator endRefresh = mIndependentRefreshMethods.end();
+  while (itRefresh != endRefresh)
+    (**itRefresh++)();
+
   return true;
 }
 
@@ -983,6 +992,12 @@ bool CExperiment::restoreModelIndependentData()
 
   for (i = 0; i < imax; i++)
     (*mIndependentUpdateMethods[i])(mIndependentValues[i]);
+
+  // Update all initial values.
+  std::vector< Refresh * >::const_iterator itRefresh = mIndependentRefreshMethods.begin();
+  std::vector< Refresh * >::const_iterator endRefresh = mIndependentRefreshMethods.end();
+  while (itRefresh != endRefresh)
+    (**itRefresh++)();
 
   return true;
 }

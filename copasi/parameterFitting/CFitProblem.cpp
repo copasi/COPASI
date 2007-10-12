@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-//   $Revision: 1.50 $
+//   $Revision: 1.51 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/04 17:31:04 $
+//   $Date: 2007/10/12 20:14:23 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -629,17 +629,18 @@ bool CFitProblem::calculate()
           pExp = mpExperimentSet->getExperiment(i);
 
           mpModel->setInitialState(*mpInitialState);
+          mpModel->updateInitialValues();
 
           // set the global and experiment local fit item values.
           for (itItem = mpOptItems->begin(); itItem != endItem; itItem++, pUpdate++)
             if (*pUpdate)
               (**pUpdate)(static_cast<CFitItem *>(*itItem)->getLocalValue());
 
-          // Update the initial values
+          // Update initial values which changed due to the fit item values.
           itRefresh = mExperimentInitialRefreshes[i].begin();
           endRefresh = mExperimentInitialRefreshes[i].end();
-          for (; itRefresh != endRefresh; ++itRefresh)
-            (**itRefresh)();
+          while (itRefresh != endRefresh)
+            (**itRefresh++)();
 
           kmax = pExp->getNumDataRows();
 
@@ -720,20 +721,6 @@ bool CFitProblem::calculate()
 
           // restore independent data
           pExp->restoreModelIndependentData();
-
-          switch (pExp->getExperimentType())
-            {
-            case CCopasiTask::steadyState:
-              mpSteadyState->restore();
-              break;
-
-            case CCopasiTask::timeCourse:
-              mpTrajectory->restore();
-              break;
-
-            default:
-              break;
-            }
         }
     }
 
@@ -1632,6 +1619,7 @@ bool CFitProblem::calculateCrossValidation()
           pExp = mpCrossValidationSet->getExperiment(i);
 
           mpModel->setInitialState(*mpInitialState);
+          mpModel->updateInitialValues();
 
           // set the global and CrossValidation local fit item values.
           for (; pSolution != pSolutionEnd; pSolution++, pUpdate++)
@@ -1723,20 +1711,6 @@ bool CFitProblem::calculateCrossValidation()
 
           // restore independent data
           pExp->restoreModelIndependentData();
-
-          switch (pExp->getExperimentType())
-            {
-            case CCopasiTask::steadyState:
-              mpSteadyState->restore();
-              break;
-
-            case CCopasiTask::timeCourse:
-              mpTrajectory->restore();
-              break;
-
-            default:
-              break;
-            }
         }
     }
 
