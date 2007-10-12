@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-//   $Revision: 1.68 $
+//   $Revision: 1.69 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/04 17:31:51 $
+//   $Date: 2007/10/12 18:40:21 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -284,6 +284,7 @@ bool CSteadyStateTask::restore()
       pModel->setState(*mpSteadyState);
       pModel->updateSimulatedValues(true);
       pModel->setInitialState(pModel->getState());
+      pModel->updateInitialValues();
     }
 
   return success;

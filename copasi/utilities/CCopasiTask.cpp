@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-//   $Revision: 1.56 $
+//   $Revision: 1.57 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2007/04/12 12:42:51 $
+//   $Author: shoops $
+//   $Date: 2007/10/12 18:40:20 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -268,7 +268,10 @@ bool CCopasiTask::restore()
   if (!mUpdateModel)
     {
       if (mpInitialState)
-        mpProblem->getModel()->setInitialState(*mpInitialState);
+        {
+          mpProblem->getModel()->setInitialState(*mpInitialState);
+          mpProblem->getModel()->updateInitialValues();
+        }
     }
 
   mpProblem->restore(mUpdateModel);

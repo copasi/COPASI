@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapTask.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/31 17:57:36 $
+//   $Date: 2007/10/12 18:40:21 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -209,6 +209,7 @@ bool CLyapTask::restore()
       //pModel->setState(*mpCurrentState);
       pModel->updateSimulatedValues(true);
       pModel->setInitialState(pModel->getState());
+      pModel->updateInitialValues();
     }
 
   return success;
