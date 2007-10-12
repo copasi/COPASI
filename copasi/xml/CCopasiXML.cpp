@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-//   $Revision: 1.100 $
+//   $Revision: 1.101 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/09 19:13:11 $
+//   $Date: 2007/10/12 11:42:57 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -351,10 +351,10 @@ bool CCopasiXML::saveModel()
   saveXhtml(mpModel->getComments());
   endSaveElement("Comment");
 
-  if (mpModel->getExpression() != "")
+  if (mpModel->getInitialExpression() != "")
     {
       startSaveElement("InitialExpression");
-      saveData(mpModel->getExpression());
+      saveData(mpModel->getInitialExpression());
       endSaveElement("InitalExpression");
     }
 
@@ -389,10 +389,10 @@ bool CCopasiXML::saveModel()
               endSaveElement("Expression");
             }
 
-          if (pComp->getExpression() != "")
+          if (pComp->getInitialExpression() != "")
             {
               startSaveElement("InitialExpression");
-              saveData(pComp->getExpression());
+              saveData(pComp->getInitialExpression());
               endSaveElement("InitalExpression");
             }
 
@@ -435,10 +435,10 @@ bool CCopasiXML::saveModel()
               endSaveElement("Expression");
             }
 
-          if (pMetab->getExpression() != "")
+          if (pMetab->getInitialExpression() != "")
             {
               startSaveElement("InitialExpression");
-              saveData(pMetab->getExpression());
+              saveData(pMetab->getInitialExpression());
               endSaveElement("InitalExpression");
             }
 
@@ -478,10 +478,10 @@ bool CCopasiXML::saveModel()
               endSaveElement("Expression");
             }
 
-          if (pMV->getExpression() != "")
+          if (pMV->getInitialExpression() != "")
             {
               startSaveElement("InitialExpression");
-              saveData(pMV->getExpression());
+              saveData(pMV->getInitialExpression());
               endSaveElement("InitalExpression");
             }
 
