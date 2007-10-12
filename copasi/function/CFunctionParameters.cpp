@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionParameters.cpp,v $
-//   $Revision: 1.41 $
+//   $Revision: 1.42 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/03/09 09:56:18 $
+//   $Author: shoops $
+//   $Date: 2007/10/12 18:30:56 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -165,12 +165,22 @@ bool CFunctionParameters::operator==(const CFunctionParameters & rhs) const
   {
     if (size() != rhs.size()) return false;
 
+    CFunctionParameter::Role lhsRole, rhsRole;
+
     C_INT32 i, imax = size();
     for (i = 0; i < imax; ++i)
       {
         if (mParameters[i]->getObjectName() != rhs.mParameters[i]->getObjectName()) return false;
         if (mParameters[i]->getType() != rhs.mParameters[i]->getType()) return false;
-        if (mParameters[i]->getUsage() != rhs.mParameters[i]->getUsage()) return false;
+        lhsRole = mParameters[i]->getUsage();
+        rhsRole = rhs.mParameters[i]->getUsage();
+
+        // We do not destinguish between PARAMETER and VARIABLE
+        if ((lhsRole == CFunctionParameter::PARAMETER || lhsRole == CFunctionParameter::VARIABLE) &&
+            (rhsRole == CFunctionParameter::PARAMETER || rhsRole == CFunctionParameter::VARIABLE))
+          continue;
+
+        if (lhsRole != rhsRole) return false;
       }
     return true;
   }
