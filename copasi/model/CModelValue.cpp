@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-//   $Revision: 1.46 $
+//   $Revision: 1.47 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/09 19:07:23 $
+//   $Date: 2007/10/12 11:45:40 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -345,6 +345,12 @@ void CModelEntity::setStatus(const CModelEntity::Status & status)
     {
       if (mpModel != NULL)
         mpModel->setCompileFlag(true);
+
+      // An assignment may not have an initial expression.
+      // However, internally we always create one, which need
+      // to be deleted.
+      if (mStatus == ASSIGNMENT)
+        pdelete(mpInitialExpression);
 
       mStatus = status;
       this->setValuePtr(mpValueData);
