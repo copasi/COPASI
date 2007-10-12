@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeCall.cpp,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/24 18:40:21 $
+//   $Date: 2007/10/12 18:29:09 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,6 +21,7 @@
 #include "CExpression.h"
 #include "CFunctionDB.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "utilities/utility.cpp"
 
 CEvaluationNodeCall::CEvaluationNodeCall():
     CEvaluationNode(CEvaluationNode::INVALID, ""),
@@ -38,6 +39,8 @@ CEvaluationNodeCall::CEvaluationNodeCall(const SubType & subType,
     mCallNodes(),
     mpCallParameters(NULL)
 {
+  mData = unQuote(mData);
+
   switch (subType)
     {
     case FUNCTION:
@@ -149,7 +152,7 @@ bool CEvaluationNodeCall::calls(std::set< std::string > & list) const
 
 std::string CEvaluationNodeCall::getInfix() const
   {
-    std::string Infix = mData + "(";
+    std::string Infix = quote(mData, "-+^*/%(){},\t\r\n") + "(";
     switch (mType & 0x00FFFFFF)
       {
       case FUNCTION:
@@ -177,7 +180,7 @@ std::string CEvaluationNodeCall::getInfix() const
 
 std::string CEvaluationNodeCall::getDisplayString(const CEvaluationTree * pTree) const
   {
-    std::string DisplayString = mData + "(";
+    std::string DisplayString = quote(mData, "-+^*/%(){},\t\r\n") + "(";
     switch (mType & 0x00FFFFFF)
       {
       case FUNCTION:
@@ -205,7 +208,7 @@ std::string CEvaluationNodeCall::getDisplayString(const CEvaluationTree * pTree)
 
 std::string CEvaluationNodeCall::getDisplay_C_String(const CEvaluationTree * pTree) const
   {
-    std::string DisplayString = mData + "(";
+    std::string DisplayString = quote(mData, "-+^*/%(){},\t\r\n") + "(";
     switch (mType & 0x00FFFFFF)
       {
       case FUNCTION:
@@ -233,14 +236,14 @@ std::string CEvaluationNodeCall::getDisplay_C_String(const CEvaluationTree * pTr
 
 std::string CEvaluationNodeCall::getDisplay_MMD_String(const CEvaluationTree * /* pTree */) const
   {
-    std::string DisplayString = mData;
+    std::string DisplayString = quote(mData, "-+^*/%(){},\t\r\n");
 
     return DisplayString;
   }
 
 std::string CEvaluationNodeCall::getDisplay_XPP_String(const CEvaluationTree * /* pTree */) const
   {
-    std::string DisplayString = mData;
+    std::string DisplayString = quote(mData, "-+^*/%(){},\t\r\n");
 
     return DisplayString;
   }
