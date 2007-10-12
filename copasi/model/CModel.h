@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.149 $
+//   $Revision: 1.150 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/02 18:18:05 $
+//   $Date: 2007/10/12 18:57:18 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -332,6 +332,11 @@ class CModel : public CModelEntity
     bool mCompileIsNecessary;
 
     CProcessReport * mpCompileHandler;
+
+    /**
+     * An ordered list of refresh methods needed by the updateInitialValues
+     */
+    std::vector< Refresh * > mInitialRefreshes;
 
     /**
      * An ordered list of refresh methods needed by the updateSimulatedValues
@@ -1082,6 +1087,13 @@ class CModel : public CModelEntity
      * @return bool success
      */
     bool buildStateTemplate();
+
+    /**
+     * Build the update sequence used by updateInitialValues to update all
+     * initial values.
+     * @return bool success
+     */
+    bool buildInitialSequence();
 
     /**
      * Build the update sequence used by applyInitialValues to update values

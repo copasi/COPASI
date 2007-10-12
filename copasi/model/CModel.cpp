@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.321 $
+//   $Revision: 1.322 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/02 18:18:05 $
+//   $Date: 2007/10/12 18:57:19 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -105,6 +105,7 @@ CModel::CModel():
     mQuantity2NumberFactor(1.0),
     mNumber2QuantityFactor(1.0),
     mpCompileHandler(NULL),
+    mInitialRefreshes(),
     mSimulatedRefreshes(),
     mConstantRefreshes(),
     mNonSimulatedRefreshes(),
@@ -166,6 +167,7 @@ CModel::CModel(const CModel & src):
     mQuantity2NumberFactor(src.mQuantity2NumberFactor),
     mNumber2QuantityFactor(src.mNumber2QuantityFactor),
     mpCompileHandler(NULL),
+    mInitialRefreshes(),
     mSimulatedRefreshes(),
     mConstantRefreshes(),
     mNonSimulatedRefreshes(),
@@ -353,6 +355,7 @@ bool CModel::compile()
 
   // To assure that we do not produce access violations we clear the refres sequences
   // first
+  mInitialRefreshes.clear();
   mSimulatedRefreshes.clear();
   mConstantRefreshes.clear();
   mNonSimulatedRefreshes.clear();
@@ -382,6 +385,7 @@ bool CModel::compile()
 
   try
     {
+      buildInitialSequence();
       buildConstantSequence();
       buildSimulatedSequence();
       buildNonSimulatedSequence();
@@ -1156,7 +1160,7 @@ bool CModel::buildUserOrder()
   return true;
 }
 
-bool CModel::updateInitialValues()
+bool CModel::buildInitialSequence()
 {
   // The objects which are changed are the initial values of the independent variables
   // including the model time and the dependent metabolites.
@@ -1170,11 +1174,20 @@ bool CModel::updateInitialValues()
   for (; ppEntity != ppEntityEnd; ++ppEntity)
     Objects.insert((*ppEntity)->getInitialValueReference());
 
-  std::vector< Refresh * > InitialRefreshes = buildInitialRefreshSequence(Objects);
+  mInitialRefreshes = buildInitialRefreshSequence(Objects);
+
+  return true;
+}
+
+bool CModel::updateInitialValues()
+{
+  // :TODO: We should have a seperate flag to handle this but the impact on the performance is minor.
+  if (mCompileIsNecessary)
+    buildInitialSequence();
 
   // Update all initial values.
-  std::vector< Refresh * >::const_iterator itRefresh = InitialRefreshes.begin();
-  std::vector< Refresh * >::const_iterator endRefresh = InitialRefreshes.end();
+  std::vector< Refresh * >::const_iterator itRefresh = mInitialRefreshes.begin();
+  std::vector< Refresh * >::const_iterator endRefresh = mInitialRefreshes.end();
   while (itRefresh != endRefresh)
     (**itRefresh++)();
 
@@ -1466,20 +1479,6 @@ const CState & CModel::getState() const
 void CModel::setInitialState(const CState & state)
 {
   mInitialState = state;
-
-  // We have to update the moieties
-  CCopasiVector< CMoiety >::iterator itMoiety = mMoieties.begin();
-  CCopasiVector< CMoiety >::iterator endMoiety = mMoieties.end();
-
-  for (; itMoiety != endMoiety; ++itMoiety)
-    (*itMoiety)->refreshInitialValue();
-
-  // The concentrations for the metabolites need to be updated
-  CCopasiVector< CMetab >::iterator itMetab = mMetabolites.begin();
-  CCopasiVector< CMetab >::iterator endMetab = mMetabolites.end();
-
-  for (; itMetab != endMetab; ++itMetab)
-    (*itMetab)->refreshInitialConcentration();
 
   return;
 }
