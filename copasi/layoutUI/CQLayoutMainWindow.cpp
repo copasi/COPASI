@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.39 $
+//   $Revision: 1.40 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/09/10 10:48:00 $
+//   $Date: 2007/10/15 10:42:11 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -410,9 +410,9 @@ void CQLayoutMainWindow::endOfAnimationReached()
 void CQLayoutMainWindow::showStep(double i)
 {
 
-  glPainter->showStep((int) i);
+  glPainter->showStep(static_cast<int>(i));
   glPainter->updateGL();
-  paraPanel->setStepNumber(i);
+  paraPanel->setStepNumber(static_cast<int>(i));
 }
 
 void CQLayoutMainWindow::changeStepValue(C_INT32 i)
