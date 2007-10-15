@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.171 $
+//   $Revision: 1.172 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/08 14:23:12 $
+//   $Date: 2007/10/15 09:15:25 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -207,7 +207,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
         {
           fatalError();
         }
-      CCompartment* copasiCompartment = this->createCCompartmentFromCompartment(sbmlCompartment, this->mpCopasiModel, copasi2sbmlmap);
+      CCompartment* copasiCompartment = this->createCCompartmentFromCompartment(sbmlCompartment, this->mpCopasiModel, copasi2sbmlmap, sbmlModel);
       std::string key = sbmlCompartment->getId();
       if (mLevel == 1)
         {
@@ -243,7 +243,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       CCompartment* copasiCompartment = compartmentMap[sbmlSpecies->getCompartment()];
       if (copasiCompartment != NULL)
         {
-          CMetab* copasiMetabolite = this->createCMetabFromSpecies(sbmlSpecies, this->mpCopasiModel, copasiCompartment, copasi2sbmlmap);
+          CMetab* copasiMetabolite = this->createCMetabFromSpecies(sbmlSpecies, this->mpCopasiModel, copasiCompartment, copasi2sbmlmap, sbmlModel);
           std::string key;
           if (this->mLevel == 1)
             {
@@ -491,7 +491,7 @@ CFunction* SBMLImporter::createCFunctionFromFunctionTree(const FunctionDefinitio
  * given as argument.
  */
 CCompartment*
-SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartment, CModel* copasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
+SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartment, CModel* copasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, const Model* pSBMLModel)
 {
   if (sbmlCompartment->isSetUnits())
     {
@@ -548,8 +548,38 @@ SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartme
         {
           // Set value to NaN and create a warning if it is the first time
           // this happend
+          std::string sbmlId = sbmlCompartment->getId();
+          bool ruleFound = false;
+          unsigned int k, kMax = pSBMLModel->getNumRules();
+          for (k = 0;k < kMax;++k)
+            {
+              Rule* pRule = pSBMLModel->getRule(k);
+              switch (pRule->getTypeCode())
+                {
+                case SBML_ASSIGNMENT_RULE:
+                  if (dynamic_cast<AssignmentRule*>(pRule)->getVariable() == sbmlId)
+                    {
+                      ruleFound = true;
+                      break;
+                    }
+                  break;
+                case SBML_RATE_RULE:
+                  if (dynamic_cast<RateRule*>(pRule)->getVariable() == sbmlId)
+                    {
+                      ruleFound = true;
+                      break;
+                    }
+                  break;
+                case SBML_ALGEBRAIC_RULE:
+                  break;
+                default:
+                  fatalError();
+                  break;
+                }
+            }
+
           value = std::numeric_limits<C_FLOAT64>::quiet_NaN();
-          if (!this->mIncompleteModel)
+          if (!this->mIncompleteModel && !ruleFound)
             {
               this->mIncompleteModel = true;
               CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 7);
@@ -575,7 +605,7 @@ SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartme
  * Creates and returns a Copasi CMetab from the given SBML Species object.
  */
 CMetab*
-SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasiModel, CCompartment* copasiCompartment, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
+SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasiModel, CCompartment* copasiCompartment, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, const Model* pSBMLModel)
 {
   if (sbmlSpecies->isSetSubstanceUnits())
     {
@@ -669,7 +699,36 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
   else
     {
       copasiMetabolite->setInitialConcentration(std::numeric_limits<C_FLOAT64>::quiet_NaN());      // CHECK UNITS !!!
-      if (!this->mIncompleteModel)
+      std::string sbmlId = sbmlSpecies->getId();
+      bool ruleFound = false;
+      unsigned int k, kMax = pSBMLModel->getNumRules();
+      for (k = 0;k < kMax;++k)
+        {
+          Rule* pRule = pSBMLModel->getRule(k);
+          switch (pRule->getTypeCode())
+            {
+            case SBML_ASSIGNMENT_RULE:
+              if (dynamic_cast<AssignmentRule*>(pRule)->getVariable() == sbmlId)
+                {
+                  ruleFound = true;
+                  break;
+                }
+              break;
+            case SBML_RATE_RULE:
+              if (dynamic_cast<RateRule*>(pRule)->getVariable() == sbmlId)
+                {
+                  ruleFound = true;
+                  break;
+                }
+              break;
+            case SBML_ALGEBRAIC_RULE:
+              break;
+            default:
+              fatalError();
+              break;
+            }
+        }
+      if (!this->mIncompleteModel && !ruleFound)
         {
           this->mIncompleteModel = true;
           CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 7);
@@ -693,7 +752,7 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
  * Reaction object.
  */
 CReaction*
-SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Model* C_UNUSED(sbmlModel), CModel* copasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, CFunctionDB* pTmpFunctionDB)
+SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Model* C_UNUSED(pSBMLModel), CModel* copasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, CFunctionDB* pTmpFunctionDB)
 {
   if (sbmlReaction == NULL)
     {
@@ -1731,7 +1790,7 @@ CModelValue* SBMLImporter::createCModelValueFromParameter(const Parameter* sbmlP
       // check if there is an assignment rule for this entity
       std::map<CCopasiObject*, SBase*>::iterator pos = copasi2sbmlmap.find(copasiModel);
       if (pos == copasi2sbmlmap.end()) fatalError();
-      bool assignmentRuleFound = false;
+      bool ruleFound = false;
       Model* pSBMLModel = dynamic_cast<Model*>(pos->second);
       unsigned int k, kMax = pSBMLModel->getNumRules();
       for (k = 0;k < kMax;++k)
@@ -1742,11 +1801,16 @@ CModelValue* SBMLImporter::createCModelValueFromParameter(const Parameter* sbmlP
             case SBML_ASSIGNMENT_RULE:
               if (dynamic_cast<AssignmentRule*>(pRule)->getVariable() == sbmlId)
                 {
-                  assignmentRuleFound = true;
+                  ruleFound = true;
                   break;
                 }
               break;
             case SBML_RATE_RULE:
+              if (dynamic_cast<RateRule*>(pRule)->getVariable() == sbmlId)
+                {
+                  ruleFound = true;
+                  break;
+                }
               break;
             case SBML_ALGEBRAIC_RULE:
               break;
@@ -1759,7 +1823,7 @@ CModelValue* SBMLImporter::createCModelValueFromParameter(const Parameter* sbmlP
       // Set value to NaN and create a warning if it is the first time
       // this happend
       value = std::numeric_limits<C_FLOAT64>::quiet_NaN();
-      if ((!assignmentRuleFound) && (!this->mIncompleteModel))
+      if ((!ruleFound) && (!this->mIncompleteModel))
         {
           this->mIncompleteModel = true;
           CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 7);

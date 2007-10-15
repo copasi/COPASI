@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.99 $
+//   $Revision: 1.100 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/10/06 23:37:05 $
+//   $Author: gauges $
+//   $Date: 2007/10/15 09:15:24 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -144,7 +144,7 @@ const MESSAGES Messages[] =
     // SBML
     {MCSBML + 1, "SBML (1): SBML Level 2 Version 1 does not support initial times different from 0. This information will be lost in the exported file."},
     {MCSBML + 2, "SBML (2): The SBML document contains no model."},
-    {MCSBML + 3, "SBML (3): The SBML document contains unsupported rules that were ignored.\nOnly rate and assignment rules for global parameters are currently supported."},
+    {MCSBML + 3, "SBML (3): The SBML document contains algebraic rules that were ignored. Entities determined by those rules are probably undetermined now."},
     {MCSBML + 4, "SBML (4): The SBML document contains events that were ignored."},
     {MCSBML + 5, "SBML (5): Compartment %s referenced by species %s does not exist."},
     {MCSBML + 6, "SBML (6): Annotations in SBase element of SBML Level 1 files, this is invalid and has been ignored."},
