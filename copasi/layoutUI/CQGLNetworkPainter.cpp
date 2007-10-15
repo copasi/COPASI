@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.66 $
+//   $Revision: 1.67 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/10/10 15:32:08 $
+//   $Date: 2007/10/15 08:44:40 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -375,7 +375,7 @@ void CQGLNetworkPainter::drawGraph()
           C_FLOAT64 x = viewerLabels[i].getX() + (viewerLabels[i].getWidth() / 2.0) + (viewerLabels[i].getHeight() / 2.0);
           C_FLOAT64 y = viewerLabels[i].getY();
           //drawStringAt(viewerLabels[i].getText(), x, y, viewerLabels[i].getWidth(), viewerLabels[i].getHeight(), QColor(219, 235, 255));
-          RG_drawStringAt(viewerLabels[i].getText(), x, y, viewerLabels[i].getWidth(), viewerLabels[i].getHeight());
+          RG_drawStringAt(viewerLabels[i].getText(), static_cast<C_INT32>(x), static_cast<C_INT32>(y), static_cast<C_INT32>(viewerLabels[i].getWidth()), static_cast<C_INT32>(viewerLabels[i].getHeight()));
         }
     }
 
@@ -467,7 +467,7 @@ void CQGLNetworkPainter::drawEdge(CGraphCurve &c)
           x = startPoint.getX();
           y = startPoint.getY();
           glVertex2d(x, y);
-          C_INT32 i;
+          unsigned int i;
           for (i = 0;i < bezierPts.size();i++)
             {
               //std::cout << "i: " << i << "   " << std::endl;
@@ -563,7 +563,7 @@ void CQGLNetworkPainter::drawLabel(CLTextGlyph l)
   //std::cout << "X: " << l.getX() << "  y: " << l.getY() << "  w: " << l.getWidth() << "  h: " << l.getHeight() << std::endl;
   // now draw text
   //drawStringAt(l.getText(), l.getX(), l.getY(), l.getWidth(), l.getHeight(), QColor(61, 237, 181, QColor::Rgb));
-  RG_drawStringAt(l.getText(), l.getX(), l.getY(), l.getWidth(), l.getHeight());
+  RG_drawStringAt(l.getText(), static_cast<C_INT32>(l.getX()), static_cast<C_INT32>(l.getY()), static_cast<C_INT32>(l.getWidth()), static_cast<C_INT32>(l.getHeight()));
   //renderBitmapString(l.getX(), l.getY(), l.getText(), l.getWidth(), l.getHeight());
 }
 
@@ -752,8 +752,8 @@ void CQGLNetworkPainter::drawStringAt(std::string s, C_FLOAT64 x, C_FLOAT64 y, C
   QImage img = pm.convertToImage();
   QImage timg = QGLWidget::convertToGLFormat(img);
 
-  //glTexImage2D(GL_TEXTURE_2D, 0, 3, timg.width(), timg.height(), 0,
-  //                  GL_RGBA, GL_UNSIGNED_BYTE, timg.bits());
+  glTexImage2D(GL_TEXTURE_2D, 0, 3, timg.width(), timg.height(), 0,
+               GL_RGBA, GL_UNSIGNED_BYTE, timg.bits());
   double xoff = (w - w2) / 2.0;
   double yoff = (h - h2) / 2.0;
 
@@ -819,7 +819,7 @@ int CQGLNetworkPainter::round2powN(double d)
 void CQGLNetworkPainter::rescaleDataSetsWithNewMinMax(C_FLOAT64 oldMin, C_FLOAT64 oldMax, C_FLOAT64 newMin, C_FLOAT64 newMax, C_INT16 scaleMode)
 {
   CDataEntity dataSet;
-  C_INT32 s; // step number
+  unsigned int s; // step number
   C_FLOAT64 val, val_new;
   for (s = 0; s < dataSets.size(); s++) // for all steps
     {
@@ -828,7 +828,7 @@ void CQGLNetworkPainter::rescaleDataSetsWithNewMinMax(C_FLOAT64 oldMin, C_FLOAT6
       if (iter != dataSets.end())
         {
           dataSet = (*iter).second;
-          C_INT32 i;
+          unsigned int i;
           for (i = 0; i < viewerNodes.size();i++) // iterate over string values (node keys)
             {
               // get old value
@@ -870,7 +870,7 @@ void CQGLNetworkPainter::rescaleDataSetsWithNewMinMax(C_FLOAT64 oldMin, C_FLOAT6
 void CQGLNetworkPainter::rescaleDataSets(C_INT16 scaleMode)
 {
   CDataEntity dataSet;
-  C_INT32 s; // step number
+  unsigned int s; // step number
   C_FLOAT64 val, val_new;
 
   for (s = 0; s < dataSets.size(); s++)
@@ -879,7 +879,7 @@ void CQGLNetworkPainter::rescaleDataSets(C_INT16 scaleMode)
       if (iter != dataSets.end())
         {
           dataSet = (*iter).second;
-          C_INT32 i;
+          unsigned int i;
           // try to get VisParameters from parent (CQLayoutMainWindow)
           C_FLOAT64 minNodeSize = 10;
           C_FLOAT64 maxNodeSize = 100;
@@ -961,7 +961,8 @@ bool CQGLNetworkPainter::createDataSets()
               //std::cout << "total time: " << tt << std::endl;
               //std::cout << "number of steps in time series: " << timeSer.getNumSteps() << std::endl;
               //std::cout << "number of variables: " << timeSer.getNumVariables() << std::endl;
-              C_INT32 i, t;
+              unsigned int i;
+              unsigned int t;
               C_FLOAT64 val;
               std::string name;
               std::string objKey;
@@ -980,7 +981,7 @@ bool CQGLNetworkPainter::createDataSets()
                   if (iter != keyMap.end())
                     {// if there is a node (key)
                       ndKey = (keyMap.find(objKey))->second;
-                      for (int t = 0;t <= timeSer.getNumSteps();t++) // iterate on time steps t=0..n
+                      for (t = 0;t <= timeSer.getNumSteps();t++) // iterate on time steps t=0..n
                         {
                           val = timeSer.getConcentrationData(t, i);
                           if (val > maxR)
@@ -1127,20 +1128,21 @@ void CQGLNetworkPainter::triggerAnimationStep()
   //this->drawGraph();
 }
 
-void CQGLNetworkPainter::showStep(C_INT32 i)
+void CQGLNetworkPainter::showStep(C_INT32 stepNumber)
 {
-  this->stepShown = i;
+  this->stepShown = stepNumber;
   //std::cout << "show step " << i << std::endl;
   if (this->mLabelShape != CIRCLE)
     this->mLabelShape = CIRCLE;
-  if ((0 <= i) && (i < dataSets.size()))
+  if ((0 <= stepNumber) && (static_cast<unsigned int>(stepNumber) < dataSets.size()))
     {
-      //std::cout << "step: " << i << std::endl;
-      //CDataEntity *dataSet = &(dataSets[i]);
-      std::map<C_INT32, CDataEntity>::iterator iter = dataSets.find(i);
+      //std::cout << "step: " << stepNumber << std::endl;
+      //CDataEntity *dataSet = &(dataSets[stepNumber]);
+      std::map<C_INT32, CDataEntity>::iterator iter = dataSets.find(stepNumber);
       if (iter != dataSets.end())
         {
           CDataEntity dataSet = (*iter).second;
+          unsigned int i;
           for (i = 0; i < viewerNodes.size();i++)
             {
               if (pParentLayoutWindow != NULL)
@@ -1173,7 +1175,7 @@ void CQGLNetworkPainter::showStep(C_INT32 i)
                         else
                           setNodeSizeWithoutChangingCurves(viewerNodes[i], val);
                     }
-                  C_FLOAT64 v = dataSet.getOrigValueForSpecies(viewerNodes[i]);
+                  //C_FLOAT64 v = dataSet.getOrigValueForSpecies(viewerNodes[i]);
                   //std::cout << "orig value for: " << viewerNodes[i] << ": " << v << std::endl;
                 }
             }
@@ -1184,7 +1186,7 @@ void CQGLNetworkPainter::showStep(C_INT32 i)
 
 void CQGLNetworkPainter::setNodeSizeWithoutChangingCurves(std::string key, C_FLOAT64 val)
 {
-  int i;
+  //int i;
   std::map<std::string, CGraphNode>::iterator nodeIt;
   nodeIt = nodeMap.find(key);
   if (nodeIt != nodeMap.end())
@@ -1195,7 +1197,7 @@ void CQGLNetworkPainter::setNodeSizeWithoutChangingCurves(std::string key, C_FLO
 void CQGLNetworkPainter::setNodeSize(std::string key, C_FLOAT64 val)
 {
   //std::cout << "set " << key << "  to " << val << std::endl;
-  int i;
+  //int i;
   // curves to nodes are changed, arrows are created newly
   nodeArrowMap.clear();
   // for (i = 0; i < viewerNodes.size(); i++)
@@ -1273,7 +1275,8 @@ void CQGLNetworkPainter::mapLabelsToRectangles()
   nodeArrowMap.clear(); // map is filled with new arrows
   std::pair<std::multimap<std::string, CGraphCurve>::iterator, std::multimap<std::string, CGraphCurve>::iterator> rangeCurveIt;
   std::multimap<std::string, CGraphCurve>::iterator curveIt;
-  for (int i = 0;i < viewerNodes.size();i++)
+  unsigned int i;
+  for (i = 0;i < viewerNodes.size();i++)
     {
       //curveIt = nodeCurveMap.find(viewerNodes[i]);
       rangeCurveIt = nodeCurveMap.equal_range(viewerNodes[i]);
@@ -1337,7 +1340,8 @@ void CQGLNetworkPainter::mapLabelsToCircles()
   nodeArrowMap.clear(); // map is filled with new arrows
   std::pair<std::multimap<std::string, CGraphCurve>::iterator, std::multimap<std::string, CGraphCurve>::iterator> rangeCurveIt;
   std::multimap<std::string, CGraphCurve>::iterator curveIt;
-  for (int i = 0;i < viewerNodes.size();i++)
+  unsigned int i;
+  for (i = 0;i < viewerNodes.size();i++)
     {
       //curveIt = nodeCurveMap.find(viewerNodes[i]);
       rangeCurveIt = nodeCurveMap.equal_range(viewerNodes[i]);
