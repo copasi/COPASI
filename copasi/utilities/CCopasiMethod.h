@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.h,v $
-//   $Revision: 1.39 $
+//   $Revision: 1.40 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/10/02 18:18:00 $
+//   $Author: jdada $
+//   $Date: 2007/10/15 14:06:53 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,6 +52,7 @@ class CCopasiMethod : public CCopasiParameterGroup
       SRES,
       Statistics,
       ParticleSwarm,
+      Praxis,
       Newton,
       deterministic,
       LSODAR,

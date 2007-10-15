@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodPraxis.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: jdada $
-//   $Date: 2007/09/28 13:44:21 $
+//   $Date: 2007/10/15 14:06:53 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,7 +18,12 @@
 #define COPASI_COptMethodPraxis
 
 #include <vector>
+#include "utilities/CMatrix.h"
 #include "optimization/COptMethod.h"
+
+#include "CPraxis.h"
+
+class FPraxis;
 
 class COptMethodPraxis: public COptMethod
   {
@@ -80,6 +85,54 @@ class COptMethodPraxis: public COptMethod
      * The number of iterations
      */
     unsigned C_INT32 mIteration;
+
+    /**
+     * Handle to the process report item "Current Iteration"
+     */
+    unsigned C_INT32 mhIteration;
+
+    /**
+     * number of parameters
+     */
+    C_INT mVariableSize;
+
+    /**
+     * The current solution guess
+     */
+    CVector< C_FLOAT64 > mCurrent;
+
+    /**
+     * The last individual
+     */
+    CVector< C_FLOAT64 > mBest;
+
+    /**
+     * The best value found so far
+     */
+    C_FLOAT64 mBestValue;
+
+    /**
+     * The result of a function evaluation
+     */
+    C_FLOAT64 mEvaluationValue;
+
+    /**
+     * Flag indicating whether the computation shall continue
+     */
+    bool mContinue;
+
+    /**
+     * Functor pointing to the Praxis method.
+     */
+    FPraxis * mpPraxis;
+
+    const C_FLOAT64 evaluateFunction(C_FLOAT64 *, C_INT *);
+
+    /**
+     * Evaluate the objective function
+     * @return bool continue
+     */
+    const C_FLOAT64 & evaluate();
   };
 
 #endif  // COPASI_COptMethodPraxis

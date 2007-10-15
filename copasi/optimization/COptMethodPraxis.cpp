@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodPraxis.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: jdada $
-//   $Date: 2007/09/28 12:02:28 $
+//   $Date: 2007/10/15 14:06:54 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,21 +21,26 @@
 #include "report/CCopasiObjectReference.h"
 
 COptMethodPraxis::COptMethodPraxis(const CCopasiContainer * pParent):
-    COptMethod(CCopasiTask::optimization, CCopasiMethod::Praxis, pParent)
-{
-  addParameter("Iteration Limit", CCopasiParameter::UINT, (unsigned C_INT32) 200);
-  addParameter("Tolerance", CCopasiParameter::DOUBLE, (C_FLOAT64) 1.e-005);
+    COptMethod(CCopasiTask::optimization, CCopasiMethod::Praxis, pParent),
+    mpPraxis(new FPraxisTemplate<COptMethodPraxis>(this, &COptMethodPraxis::evaluateFunction))
 
+{
+  addParameter("Tolerance", CCopasiParameter::DOUBLE, (C_FLOAT64) 1.e-005);
   initObjects();
 }
 
 COptMethodPraxis::COptMethodPraxis(const COptMethodPraxis & src,
                                    const CCopasiContainer * pParent):
-    COptMethod(src, pParent)
+    COptMethod(src, pParent),
+    mpPraxis(new FPraxisTemplate<COptMethodPraxis>(this, &COptMethodPraxis::evaluateFunction))
 {initObjects();}
 
 COptMethodPraxis::~COptMethodPraxis()
-{cleanup();}
+{
+
+  pdelete(mpPraxis);
+  cleanup();
+}
 
 void COptMethodPraxis::initObjects()
 {
@@ -52,6 +57,51 @@ bool COptMethodPraxis::optimise()
 {
   if (!initialize()) return false;
 
+  C_INT i;
+  C_INT prin = 0;
+  C_FLOAT64 tmp = 0.0;
+  C_FLOAT64 machep, stepmx, d1, d2;
+
+  // initial point is the first guess but we have to make sure that
+  // we are within the parameter domain
+
+  for (i = 0; i < mVariableSize; i++)
+    {
+      const COptItem & OptItem = *(*mpOptItem)[i];
+      mCurrent[i] = *OptItem.getObjectValue();
+
+      //force it to be within the bounds
+      switch (OptItem.checkConstraint(mCurrent[i]))
+        {
+        case - 1:
+          mCurrent[i] = *OptItem.getLowerBoundValue();
+          break;
+
+        case 1:
+          mCurrent[i] = *OptItem.getUpperBoundValue();
+          break;
+        }
+
+      //set the value
+      (*(*mpSetCalculateVariable)[i])(mCurrent[i]);
+    }
+
+  //estimate the machine epsilon
+  d1 = 1.0;
+  do
+    {
+      d1 /= 2.0;
+      d2 = d1 + 1.;
+    }
+  while (d2 != 1.0);
+  machep = d1 * 2.0;
+
+  //estimate the maximum step size
+  stepmx = 0.6;
+
+  //carry out the minimisation
+  mBestValue = praxis_(&mTolerance, &machep, &stepmx, &mVariableSize, &prin, mCurrent.array(), mpPraxis, &tmp);
+
   return true;
 }
 
@@ -59,10 +109,89 @@ bool COptMethodPraxis::initialize()
 {
   cleanup();
 
+  if (!COptMethod::initialize()) return false;
+
+  mTolerance = * getValue("Tolerance").pDOUBLE;
+  mIteration = 0;
+
+  mVariableSize = mpOptItem->size();
+  mCurrent.resize(mVariableSize);
+  mBest.resize(mVariableSize);
+
+  mContinue = true;
+  mVariableSize = mpOptItem->size();
+
   return true;
 }
 
 bool COptMethodPraxis::cleanup()
 {
   return true;
+}
+
+// evaluate the value of the objective function
+const C_FLOAT64 COptMethodPraxis::evaluateFunction(C_FLOAT64 *x, C_INT *n)
+{
+
+  C_INT i;
+  for (i = 0; i < *n; i++)
+    {
+      const COptItem & OptItem = *(*mpOptItem)[i];
+
+      //force the new parameter values from the the praxis to be within the bounds
+
+      switch (OptItem.checkConstraint(x[i]))
+        {
+        case - 1:
+          x[i] = *OptItem.getLowerBoundValue() + DBL_EPSILON;
+          break;
+
+        case 1:
+          x[i] = *OptItem.getUpperBoundValue() - DBL_EPSILON;
+          break;
+
+        case 0:
+          break;
+        }
+
+      //set the values
+      (*(*mpSetCalculateVariable)[i])(x[i]);
+    }
+
+  //carry out the function evaluation
+  mEvaluationValue = evaluate();
+
+  // We found a new best value lets report it.
+  mBest = mCurrent;
+
+  if (!isnan(mEvaluationValue))
+    {
+      // and store that value
+      mBestValue = mEvaluationValue;
+      mContinue = mpOptProblem->setSolution(mBestValue, mBest);
+
+      // We found a new best value lets report it.
+      mpParentTask->output(COutputInterface::DURING);
+    }
+
+  return mBestValue;
+}
+
+const C_FLOAT64 & COptMethodPraxis::evaluate()
+{
+  // We do not need to check whether the parametric constraints are fulfilled
+  // since the parameters are created within the bounds.
+
+  mContinue = mpOptProblem->calculate();
+  mEvaluationValue = mpOptProblem->getCalculateValue();
+
+  // when we leave the either the parameter or functional domain
+  // we penalize the objective value by forcing it to be larger
+  // than the best value recorded so far.
+  if (mEvaluationValue < mBestValue &&
+      (!mpOptProblem->checkParametricConstraints() ||
+       !mpOptProblem->checkFunctionalConstraints()))
+    mEvaluationValue = mBestValue + mBestValue - mEvaluationValue;
+
+  return mEvaluationValue;
 }

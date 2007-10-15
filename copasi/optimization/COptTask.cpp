@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptTask.cpp,v $
-   $Revision: 1.32 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/06 15:56:08 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptTask.cpp,v $
+//   $Revision: 1.33 $
+//   $Name:  $
+//   $Author: jdada $
+//   $Date: 2007/10/15 14:06:53 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -45,6 +45,7 @@ unsigned C_INT32 COptTask::ValidMethods[] =
     CCopasiMethod::RandomSearch,
     CCopasiMethod::NelderMead,
     CCopasiMethod::ParticleSwarm,
+    CCopasiMethod::Praxis,
     CCopasiMethod::SimulatedAnnealing,
     CCopasiMethod::SRES,
     CCopasiMethod::SteepestDescent,

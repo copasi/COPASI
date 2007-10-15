@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.cpp,v $
-//   $Revision: 1.44 $
+//   $Revision: 1.45 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/10/02 18:18:00 $
+//   $Author: jdada $
+//   $Date: 2007/10/15 14:06:53 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,6 +41,7 @@ const std::string CCopasiMethod::SubTypeName[] =
     "Evolution Strategy (SRES)",
     "Current Solution Statistics",
     "Particle Swarm",
+    "Praxis",
     "Enhanced Newton",
     "Deterministic (LSODA)",
     "Deterministic (LSODAR)",
@@ -88,6 +89,7 @@ const char* CCopasiMethod::XMLSubType[] =
     "EvolutionaryStrategySR",
     "CurrentSolutionStatistics",
     "ParticleSwarm",
+    "Praxis",
     "EnhancedNewton",
     "Deterministic(LSODA)",
     "Deterministic(LSODAR)",
