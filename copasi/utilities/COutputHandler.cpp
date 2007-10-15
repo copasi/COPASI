@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/COutputHandler.cpp,v $
-   $Revision: 1.20 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/08/25 19:13:52 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/COutputHandler.cpp,v $
+//   $Revision: 1.21 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/10/15 17:51:26 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -153,7 +153,7 @@ bool COutputHandler::compileRefresh(const std::vector< CCopasiContainer * > & li
   CModel * pModel =
     dynamic_cast< CModel * >(CCopasiContainer::ObjectFromName(listOfContainer, CCopasiDataModel::Global->getModel()->getCN()));
 
-  mObjectRefreshes = CCopasiObject::buildUpdateSequence(mObjects, pModel);
+  mObjectRefreshes = CCopasiObject::buildUpdateSequence(mObjects, pModel->getUptoDateObjects());
 
   std::set< const CCopasiObject * >::const_iterator it = mObjects.begin();
   std::set< const CCopasiObject * >::const_iterator end = mObjects.end();

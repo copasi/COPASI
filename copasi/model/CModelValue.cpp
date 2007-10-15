@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-//   $Revision: 1.47 $
+//   $Revision: 1.48 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/12 11:45:40 $
+//   $Date: 2007/10/15 17:51:26 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -161,7 +161,8 @@ bool CModelEntity::compile()
     }
 
   // Here we handle initial expressions for all types.
-  if (getInitialExpression() != "")
+  if (mpInitialExpression != NULL &&
+      mpInitialExpression->getInfix() != "")
     {
       success &= mpInitialExpression->compile(listOfContainer);
       mpIValueReference->setDirectDependencies(mpInitialExpression->getDirectDependencies());

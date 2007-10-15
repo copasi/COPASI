@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CDotOutput.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/08/21 08:53:12 $
+//   $Author: shoops $
+//   $Date: 2007/10/15 17:51:26 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -176,7 +176,7 @@ void CDotOutput::writeEdge(std::ostream & os, const CCopasiObject * ptr1, const 
 
 void CDotOutput::updateObjectNodesFromModel(const CModel* model)
 {
-  const std::set< const CCopasiObject * > & objectSet = model->getUpToDateObjects();
+  const std::set< const CCopasiObject * > & objectSet = model->getUptoDateObjects();
 
   std::set< const CCopasiObject * >::const_iterator it, itEnd = objectSet.end();
   for (it = objectSet.begin(); it != itEnd; ++it)

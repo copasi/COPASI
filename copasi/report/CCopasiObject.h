@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.h,v $
-//   $Revision: 1.68 $
+//   $Revision: 1.69 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/07/24 09:48:09 $
+//   $Author: shoops $
+//   $Date: 2007/10/15 17:51:27 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,6 +31,7 @@
 
 class CCopasiObjectName;
 class CCopasiContainer;
+class CCopasiObject;
 class CModel;
 
 template <class CType> class CCopasiObjectReference;
@@ -95,6 +96,9 @@ class Refresh
 
     virtual bool isEqual(Refresh *const rhs) const
       {return (this == rhs);}
+
+    virtual CCopasiObject * getObject() const
+      {return NULL;}
   };
 
 template <typename CClass> class RefreshTemplate : public Refresh
@@ -124,6 +128,9 @@ template <typename CClass> class RefreshTemplate : public Refresh
     // override operator "()"
     virtual void operator()(void)
     {(*mpInstance.*mMethod)();}  // execute member function
+
+    virtual CCopasiObject * getObject() const
+      {return mpInstance;}
 
     virtual bool isEqual(Refresh *const rhs) const
       {
@@ -290,7 +297,7 @@ class CCopasiObject
      * @return std::vector< Refresh * > updateSequence
      */
     static std::vector< Refresh * > buildUpdateSequence(const std::set< const CCopasiObject * > & objects,
-        CModel * pModel);
+        const std::set< const CCopasiObject * > & uptoDateObjects);
 
     /**
      * Comparison operator which can be used to sort objects based on their dependencies

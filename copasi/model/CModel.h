@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.150 $
+//   $Revision: 1.151 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/12 18:57:18 $
+//   $Date: 2007/10/15 17:51:25 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1025,10 +1025,16 @@ class CModel : public CModelEntity
     /**
      * Retrieve the list of objects which are up to date after a call
      * to apply assignment.
-     * @return std::set< const CCopasiObject * > & upToDateObjects
+     * @return std::set< const CCopasiObject * > & uptoDateObjects
      */
-    std::set< const CCopasiObject * > & getUpToDateObjects();
-    const std::set< const CCopasiObject * > & getUpToDateObjects() const;
+    std::set< const CCopasiObject * > & getUptoDateObjects();
+
+    /**
+     * Retrieve the list of objects which are up to date after a call
+     * to apply assignment.
+     * @return const std::set< const CCopasiObject * > & uptoDateObjects
+     */
+    const std::set< const CCopasiObject * > & getUptoDateObjects() const;
 
     const std::vector< Refresh * > & getListOfSimulatedRefreshes() const; //mSimulatedRefreshes;
     const std::vector< Refresh * > & getListOfConstantRefreshes() const; //mConstantRefreshes;

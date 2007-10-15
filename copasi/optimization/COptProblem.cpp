@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-//   $Revision: 1.93 $
+//   $Revision: 1.94 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/20 18:02:47 $
+//   $Date: 2007/10/15 17:51:27 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -334,7 +334,7 @@ bool COptProblem::initialize()
       Objects.insert((*it)->getObject());
     }
 
-  mRefreshConstraints = CCopasiObject::buildUpdateSequence(Objects, mpModel);
+  mRefreshConstraints = CCopasiObject::buildUpdateSequence(Objects, mpModel->getUptoDateObjects());
 
   createObjectiveFunction();
 
@@ -349,7 +349,7 @@ bool COptProblem::initialize()
       return false;
     }
 
-  mRefreshMethods = CCopasiObject::buildUpdateSequence(mpFunction->getDirectDependencies(), mpModel);
+  mRefreshMethods = CCopasiObject::buildUpdateSequence(mpFunction->getDirectDependencies(), mpModel->getUptoDateObjects());
 
   return success;
 }

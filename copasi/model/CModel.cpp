@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.322 $
+//   $Revision: 1.323 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/12 18:57:19 $
+//   $Date: 2007/10/15 17:51:26 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -935,10 +935,10 @@ const CMatrix< C_FLOAT64 > & CModel::getL0() const
 CStateTemplate & CModel::getStateTemplate()
 {CCHECK return mStateTemplate;}
 
-std::set< const CCopasiObject * > & CModel::getUpToDateObjects()
+std::set< const CCopasiObject * > & CModel::getUptoDateObjects()
 {CCHECK return mSimulatedUpToDateObjects;}
 
-const std::set< const CCopasiObject * > & CModel::getUpToDateObjects() const
+const std::set< const CCopasiObject * > & CModel::getUptoDateObjects() const
   {return mSimulatedUpToDateObjects;}
 
 bool CModel::setTitle(const std::string &title)
@@ -1318,7 +1318,7 @@ bool CModel::buildSimulatedSequence()
 
   mSimulatedUpToDateObjects.clear();
   //std::cout << "Simulated: " ; //debug
-  mSimulatedRefreshes = CCopasiObject::buildUpdateSequence(Objects, this);
+  mSimulatedRefreshes = CCopasiObject::buildUpdateSequence(Objects, mSimulatedUpToDateObjects);
 
   // We have to remove the refresh calls already covered by mConstantRefreshes
   std::vector< Refresh * >::const_iterator itInitialRefresh = mConstantRefreshes.begin();
@@ -1383,8 +1383,8 @@ bool CModel::buildConstantSequence()
     }
 
   mSimulatedUpToDateObjects.clear();
-  //std::cout << "Constant: " ; //debug
-  mConstantRefreshes = CCopasiObject::buildUpdateSequence(Objects, this);
+  mConstantRefreshes = CCopasiObject::buildUpdateSequence(Objects, mSimulatedUpToDateObjects);
+  mSimulatedUpToDateObjects = Objects;
 
   return true;
 }
@@ -1465,7 +1465,7 @@ bool CModel::buildNonSimulatedSequence()
     }
 
   //std::cout << "Non Simulated: " ; //debug
-  mNonSimulatedRefreshes = CCopasiObject::buildUpdateSequence(Objects, this);
+  mNonSimulatedRefreshes = CCopasiObject::buildUpdateSequence(Objects, mSimulatedUpToDateObjects);
 
   return true;
 }

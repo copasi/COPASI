@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-//   $Revision: 1.55 $
+//   $Revision: 1.56 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/12 20:14:23 $
+//   $Date: 2007/10/15 17:51:25 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -654,7 +654,7 @@ bool CExperiment::compile(const std::vector< CCopasiContainer * > listOfContaine
     dynamic_cast< CModel * >(CCopasiContainer::ObjectFromName(listOfContainer, CCopasiObjectName("Model=" + CCopasiObjectName::escape(CCopasiDataModel::Global->getModel()->getObjectName()))));
 
   mIndependentRefreshMethods = pModel->buildInitialRefreshSequence(IdependentObjects);
-  mRefreshMethods = CCopasiObject::buildUpdateSequence(Dependencies, pModel);
+  mRefreshMethods = CCopasiObject::buildUpdateSequence(Dependencies, pModel->getUptoDateObjects());
 
   return success;
 }

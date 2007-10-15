@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-//   $Revision: 1.68 $
+//   $Revision: 1.69 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/17 14:16:18 $
+//   $Date: 2007/10/15 17:51:27 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -277,11 +277,8 @@ bool CCopasiObject::hasCircularDependencies(std::set<const CCopasiObject * > & c
 //static
 std::vector< Refresh * >
 CCopasiObject::buildUpdateSequence(const std::set< const CCopasiObject * > & objects,
-                                   CModel * pModel)
+                                   const std::set< const CCopasiObject * > & uptoDateObjects)
 {
-  assert(pModel);
-  std::set< const CCopasiObject * > & Ignore = pModel->getUpToDateObjects();
-
   std::set< const CCopasiObject * > DependencySet;
 
   std::set< const CCopasiObject * >::const_iterator itSet;
@@ -318,17 +315,12 @@ CCopasiObject::buildUpdateSequence(const std::set< const CCopasiObject * > & obj
     else
       ++itSet;
 
-  // Build the ignore list if it is empty.
-  if (Ignore.size() == 0)
-    Ignore = DependencySet;
-  else // Remove the items in the ignore list
-    {
-      itSet = Ignore.begin();
-      endSet = Ignore.end();
+  // Remove the items in the ignore list
+  itSet = uptoDateObjects.begin();
+  endSet = uptoDateObjects.end();
 
-      for (; itSet != endSet; ++itSet)
-        DependencySet.erase(*itSet);
-    }
+  for (; itSet != endSet; ++itSet)
+    DependencySet.erase(*itSet);
 
   // Create a properly sorted list.
   std::list< const CCopasiObject * > SortedList =

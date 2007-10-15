@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-//   $Revision: 1.51 $
+//   $Revision: 1.52 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/12 20:14:23 $
+//   $Date: 2007/10/15 17:51:25 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -440,7 +440,7 @@ bool CFitProblem::initialize()
     }
 
   for (i = 0, imax = mpExperimentSet->getExperimentCount(); i < imax; i++)
-    mExperimentConstraintRefreshes[i] = CCopasiObject::buildUpdateSequence(ObjectSet[i], mpModel);
+    mExperimentConstraintRefreshes[i] = CCopasiObject::buildUpdateSequence(ObjectSet[i], mpModel->getUptoDateObjects());
 
   mExperimentDependentValues.resize(mpExperimentSet->getDataPointCount());
 
@@ -525,7 +525,7 @@ bool CFitProblem::initialize()
     }
 
   for (i = 0, imax = mpCrossValidationSet->getExperimentCount(); i < imax; i++)
-    mCrossValidationConstraintRefreshes[i] = CCopasiObject::buildUpdateSequence(ObjectSet[i], mpModel);
+    mCrossValidationConstraintRefreshes[i] = CCopasiObject::buildUpdateSequence(ObjectSet[i], mpModel->getUptoDateObjects());
 
   mCrossValidationDependentValues.resize(mpCrossValidationSet->getDataPointCount());
 
