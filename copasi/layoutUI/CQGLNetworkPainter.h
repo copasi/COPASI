@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.40 $
+//   $Revision: 1.41 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/10/04 17:21:41 $
+//   $Date: 2007/10/15 11:03:25 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -120,6 +120,7 @@ class CQGLNetworkPainter : public QGLWidget
 
     std::map<std::string, std::string> keyMap; // maps Copasi SBML object keys to layout node keys
     std::map<std::string, CGraphNode>nodeMap;
+    std::map<std::string, std::string>labelNodeMap; // maps label keys to node keys
     //std::multimap<std::string, CLCurve*> curveMap; // maps mMetabGlyphKey of CLMetabReferenceGlyph to curve in reaction
     std::multimap<std::string, CGraphCurve> nodeCurveMap; // maps mKey of viewer node (CGraphNode, originally from CLMetabGlyph, to curves (stored in viewerCurves) that point to thid node)
     std::multimap<std::string, CArrow> nodeArrowMap; // maps mKey of viewer node (CGraphNode, originally from CLMetabGlyph, to arrows (stored in viewerArrows) that point to thid node)
@@ -147,6 +148,8 @@ class CQGLNetworkPainter : public QGLWidget
 
     void RG_drawStringAt(std::string s, C_INT32 x, C_INT32 y, C_INT32 w, C_INT32 h);
     RGTextureSpec* RG_createTextureForText(const std::string& text, const std::string& fontName, unsigned int fontSize);
+
+    int getTextWidth(const std::string& text, const std::string& fontName, unsigned int fontSize);
 
     void updateGraphWithNodeSizes();
     void updateEdge(CLLineSegment line);

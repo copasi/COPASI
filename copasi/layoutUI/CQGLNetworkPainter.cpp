@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.67 $
+//   $Revision: 1.68 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/10/15 08:44:40 $
+//   $Date: 2007/10/15 11:03:25 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -201,6 +201,9 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
   std::map<std::string, CGraphNode>::iterator itNode;
   for (i = 0;i < labels.size();i++)
     {
+      labelNodeMap.insert(std::pair<std::string, std::string>
+                          (labels[i]->getKey(),
+                           labels[i]->getGraphicalObjectKey()));
       //cout << labels[i] << std::endl;
       //labels[i]->printLabel();
       viewerLabels.push_back(*labels[i]);
@@ -298,7 +301,7 @@ void CQGLNetworkPainter::drawGraph()
 
           hue += dHue;
         }
-    }
+    } // end color mode
 
   // draw curves to (reactant) nodes and arrows and circular nodes when in appropriate mode
 
@@ -371,9 +374,40 @@ void CQGLNetworkPainter::drawGraph()
     {// draw string next to circle (to the right)
       for (i = 0;i < viewerLabels.size();i++)
         {
-          // xPosition of text: start from middle of label and advance to the right by the assumed size of the corresponding circle
-          C_FLOAT64 x = viewerLabels[i].getX() + (viewerLabels[i].getWidth() / 2.0) + (viewerLabels[i].getHeight() / 2.0);
-          C_FLOAT64 y = viewerLabels[i].getY();
+          C_FLOAT64 tWid = getTextWidth(viewerLabels[i].getText(), mFontname, static_cast<int>(floor(viewerLabels[i].getHeight())));
+          C_FLOAT64 nDiam = 20.0; //getNodeSizeForLabel();
+          C_FLOAT64 x, y;
+          //XXXXXXXXXXXX
+          const std::string& labelKey = viewerLabels[i].getGraphicalObjectKey();
+          if (!labelKey.empty())
+            {
+              //      std::map<std::string, std::string>::iterator itNode;
+              //      labelNodeMap.find(labelKey);
+              //      if (itNode != labelNodeMap.end()) {// node is corresponding graphical object
+              //        std::map<std::string, CGraphNode>::iterator itNodeObj;
+              //        std::string ndKey = (*itNode).second;
+              //        itNodeObj = nodeMap.find(ndKey);
+              //        if (itNodeObj != nodeMap.end())
+              //   std::cout << "size of node: " << (*itNodeObj).second.getSize() << std::endl;}
+
+              std::cout << viewerLabels[i].getText() << " node  key: " << labelKey << std::endl;
+              if (tWid > nDiam)
+                {// label wider than size of circle-> place next to circle
+                  x = viewerLabels[i].getX() + (viewerLabels[i].getWidth() / 2.0);
+                  y = viewerLabels[i].getY() + (viewerLabels[i].getHeight() / 2.0);
+                }
+              else
+                {// place in center of circle
+                  x = viewerLabels[i].getX() + (viewerLabels[i].getWidth() / 2.0);
+                  y = viewerLabels[i].getY() + (viewerLabels[i].getHeight() / 2.0);
+                }
+            }
+          else
+            {// if there is no node associated, just take label position
+              x = viewerLabels[i].getX();
+              y = viewerLabels[i].getY();
+            }
+          //std::cout << viewerLabels[i].getText() << "  x: " << x << "   y: " << y << std::endl;
           //drawStringAt(viewerLabels[i].getText(), x, y, viewerLabels[i].getWidth(), viewerLabels[i].getHeight(), QColor(219, 235, 255));
           RG_drawStringAt(viewerLabels[i].getText(), static_cast<C_INT32>(x), static_cast<C_INT32>(y), static_cast<C_INT32>(viewerLabels[i].getWidth()), static_cast<C_INT32>(viewerLabels[i].getHeight()));
         }
@@ -641,6 +675,17 @@ void CQGLNetworkPainter::RG_drawStringAt(std::string s, C_INT32 x, C_INT32 y, C_
   //}
   delete[] texSpec->textureData;
   delete texSpec;
+}
+
+int CQGLNetworkPainter::getTextWidth(const std::string& text, const std::string& fontName, unsigned int fontSize)
+{
+  QFont font(QString(fontName.c_str()), fontSize);
+  QFontMetrics fontMetrics = QFontMetrics(font);
+
+  QRect rect = fontMetrics.boundingRect(QString(text.c_str()));
+  int width = rect.width();
+
+  return width;
 }
 
 RGTextureSpec* CQGLNetworkPainter::RG_createTextureForText(const std::string& text, const std::string& fontName, unsigned int fontSize)
