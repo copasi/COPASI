@@ -1,5 +1,17 @@
+# Begin CVS Header 
+#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/optimization.pro,v $ 
+#   $Revision: 1.28 $ 
+#   $Name:  $ 
+#   $Author: ssahle $ 
+#   $Date: 2007/10/16 09:00:16 $ 
+# End CVS Header 
+
+# Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc. and EML Research, gGmbH. 
+# All rights reserved. 
+
 ######################################################################
-# $Revision: 1.27 $ $Author: shoops $ $Date: 2006/10/30 21:12:16 $  
+# $Revision: 1.28 $ $Author: ssahle $ $Date: 2007/10/16 09:00:16 $  
 ######################################################################
 
 LIB = optimization
@@ -16,13 +28,15 @@ HEADERS += COptItem.h \
            COptMethodHookeJeeves.h \
            COptMethodLevenbergMarquardt.h \
            COptMethodNelderMead.h \
+           COptMethodPraxis.h \
            COptMethodPS.h \
            COptMethodSA.h \
            COptMethodSRES.h \
            COptMethodSteepestDescent.h \
            COptMethodStatistics.h \
            COptProblem.h \
-           COptTask.h \ 
+           COptTask.h \
+           CPraxis.h \
            CRandomSearch.h \
            FminBrent.h
            
@@ -34,6 +48,7 @@ SOURCES += COptItem.cpp \
            COptMethodHookeJeeves.cpp \
            COptMethodLevenbergMarquardt.cpp \
            COptMethodNelderMead.cpp \
+           COptMethodPraxis.cpp \
            COptMethodPS.cpp \
            COptMethodSA.cpp \
            COptMethodSRES.cpp \
@@ -41,6 +56,7 @@ SOURCES += COptItem.cpp \
            COptMethodStatistics.cpp \
            COptProblem.cpp \
            COptTask.cpp \
+           CPraxis.cpp \
            CRandomSearch.cpp \
            FminBrent.cpp
 
