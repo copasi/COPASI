@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.68 $
+//   $Revision: 1.69 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/10/15 11:03:25 $
+//   $Date: 2007/10/16 10:18:00 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -381,8 +381,8 @@ void CQGLNetworkPainter::drawGraph()
           const std::string& labelKey = viewerLabels[i].getGraphicalObjectKey();
           if (!labelKey.empty())
             {
-              //      std::map<std::string, std::string>::iterator itNode;
-              //      labelNodeMap.find(labelKey);
+              std::map<std::string, std::string>::iterator itNode;
+              labelNodeMap.find(labelKey);
               //      if (itNode != labelNodeMap.end()) {// node is corresponding graphical object
               //        std::map<std::string, CGraphNode>::iterator itNodeObj;
               //        std::string ndKey = (*itNode).second;
