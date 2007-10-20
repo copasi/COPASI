@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.41 $
+//   $Revision: 1.42 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/10/15 11:03:25 $
+//   $Date: 2007/10/20 20:12:41 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -150,6 +150,7 @@ class CQGLNetworkPainter : public QGLWidget
     RGTextureSpec* RG_createTextureForText(const std::string& text, const std::string& fontName, unsigned int fontSize);
 
     int getTextWidth(const std::string& text, const std::string& fontName, unsigned int fontSize);
+    int getLabelWindowWidth(int width);
 
     void updateGraphWithNodeSizes();
     void updateEdge(CLLineSegment line);

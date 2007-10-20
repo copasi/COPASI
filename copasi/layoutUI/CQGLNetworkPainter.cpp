@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.69 $
+//   $Revision: 1.70 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/10/16 10:18:00 $
+//   $Date: 2007/10/20 20:12:41 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -204,6 +204,8 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
       labelNodeMap.insert(std::pair<std::string, std::string>
                           (labels[i]->getKey(),
                            labels[i]->getGraphicalObjectKey()));
+      std::string s1 = labels[i]->getKey();
+      std::string s2 = labels[i]->getGraphicalObjectKey();
       //cout << labels[i] << std::endl;
       //labels[i]->printLabel();
       viewerLabels.push_back(*labels[i]);
@@ -375,31 +377,39 @@ void CQGLNetworkPainter::drawGraph()
       for (i = 0;i < viewerLabels.size();i++)
         {
           C_FLOAT64 tWid = getTextWidth(viewerLabels[i].getText(), mFontname, static_cast<int>(floor(viewerLabels[i].getHeight())));
-          C_FLOAT64 nDiam = 20.0; //getNodeSizeForLabel();
+          int labelWid = getLabelWindowWidth(tWid);
+          C_FLOAT64 nDiam = 0.0;
           C_FLOAT64 x, y;
           //XXXXXXXXXXXX
-          const std::string& labelKey = viewerLabels[i].getGraphicalObjectKey();
-          if (!labelKey.empty())
+          const std::string& nodeKey = viewerLabels[i].getGraphicalObjectKey();
+          if (!nodeKey.empty())
             {
-              std::map<std::string, std::string>::iterator itNode;
-              labelNodeMap.find(labelKey);
-              //      if (itNode != labelNodeMap.end()) {// node is corresponding graphical object
-              //        std::map<std::string, CGraphNode>::iterator itNodeObj;
-              //        std::string ndKey = (*itNode).second;
-              //        itNodeObj = nodeMap.find(ndKey);
-              //        if (itNodeObj != nodeMap.end())
-              //   std::cout << "size of node: " << (*itNodeObj).second.getSize() << std::endl;}
+              //               std::map<std::string, std::string>::iterator itNode;
+              //               itNode = labelNodeMap.find(labelKey);
 
-              std::cout << viewerLabels[i].getText() << " node  key: " << labelKey << std::endl;
+              //               if (itNode != labelNodeMap.end()) {// node is corresponding graphical object
+              std::map<std::string, CGraphNode>::iterator itNodeObj;
+              //   std::string ndKey = (*itNode).second;
+              itNodeObj = nodeMap.find(nodeKey);
+              if (itNodeObj != nodeMap.end())
+                nDiam = (*itNodeObj).second.getSize();
+              //std::cout << "size of node: " << (*itNodeObj).second.getSize() << std::endl;
+              //}
+
+              //std::cout << viewerLabels[i].getText() << " node  key: " << nodeKey << std::endl;
+              C_INT32 xNdCenter = (*itNodeObj).second.getX() + ((*itNodeObj).second.getWidth() / 2.0);
+              C_INT32 yNdCenter = (*itNodeObj).second.getY(); // + ((*itNodeObj).second.getHeight() / 2.0);
+              //C_INT32 xLabelStartOff = tWid / 2.0;
               if (tWid > nDiam)
                 {// label wider than size of circle-> place next to circle
-                  x = viewerLabels[i].getX() + (viewerLabels[i].getWidth() / 2.0);
-                  y = viewerLabels[i].getY() + (viewerLabels[i].getHeight() / 2.0);
+
+                  x = xNdCenter + ((*itNodeObj).second.getWidth() / 2.0) - (labelWid - tWid) / 2.0;
+                  y = yNdCenter;
                 }
               else
                 {// place in center of circle
-                  x = viewerLabels[i].getX() + (viewerLabels[i].getWidth() / 2.0);
-                  y = viewerLabels[i].getY() + (viewerLabels[i].getHeight() / 2.0);
+                  x = xNdCenter - tWid / 2.0;
+                  y = yNdCenter;
                 }
             }
           else
@@ -685,6 +695,17 @@ int CQGLNetworkPainter::getTextWidth(const std::string& text, const std::string&
   QRect rect = fontMetrics.boundingRect(QString(text.c_str()));
   int width = rect.width();
 
+  return width;
+}
+
+int CQGLNetworkPainter::getLabelWindowWidth(int width)
+{
+  int exponent = static_cast<int>(ceil(log2(width + 2.0)));
+  if (exponent < 6)
+    {
+      exponent = 6;
+    }
+  width = static_cast<int>(pow(2, exponent + 1));
   return width;
 }
 
