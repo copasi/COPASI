@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.70 $
+//   $Revision: 1.71 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/10/20 20:12:41 $
+//   $Date: 2007/10/22 11:15:54 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -377,7 +377,7 @@ void CQGLNetworkPainter::drawGraph()
       for (i = 0;i < viewerLabels.size();i++)
         {
           C_FLOAT64 tWid = getTextWidth(viewerLabels[i].getText(), mFontname, static_cast<int>(floor(viewerLabels[i].getHeight())));
-          int labelWid = getLabelWindowWidth(tWid);
+          int labelWWid = getLabelWindowWidth(tWid);
           C_FLOAT64 nDiam = 0.0;
           C_FLOAT64 x, y;
           //XXXXXXXXXXXX
@@ -403,12 +403,12 @@ void CQGLNetworkPainter::drawGraph()
               if (tWid > nDiam)
                 {// label wider than size of circle-> place next to circle
 
-                  x = xNdCenter + ((*itNodeObj).second.getWidth() / 2.0) - (labelWid - tWid) / 2.0;
+                  x = xNdCenter + (nDiam / 2.0) + 2.0; // + nDiam / 2.0 - ((labelWWid - (*itNodeObj).second.getWidth()) / 2.0); // node center + circle radius - texture window overhead
                   y = yNdCenter;
                 }
               else
                 {// place in center of circle
-                  x = xNdCenter - tWid / 2.0;
+                  x = xNdCenter; // - ((*itNodeObj).second.getWidth() / 2.0); // - ((labelWWid - (*itNodeObj).second.getWidth()) / 2.0);
                   y = yNdCenter;
                 }
             }
@@ -418,8 +418,8 @@ void CQGLNetworkPainter::drawGraph()
               y = viewerLabels[i].getY();
             }
           //std::cout << viewerLabels[i].getText() << "  x: " << x << "   y: " << y << std::endl;
-          //drawStringAt(viewerLabels[i].getText(), x, y, viewerLabels[i].getWidth(), viewerLabels[i].getHeight(), QColor(219, 235, 255));
-          RG_drawStringAt(viewerLabels[i].getText(), static_cast<C_INT32>(x), static_cast<C_INT32>(y), static_cast<C_INT32>(viewerLabels[i].getWidth()), static_cast<C_INT32>(viewerLabels[i].getHeight()));
+          drawStringAt(viewerLabels[i].getText(), x, y, viewerLabels[i].getWidth(), viewerLabels[i].getHeight(), QColor(219, 235, 255));
+          //RG_drawStringAt(viewerLabels[i].getText(), static_cast<C_INT32>(x), static_cast<C_INT32>(y), static_cast<C_INT32>(viewerLabels[i].getWidth()), static_cast<C_INT32>(viewerLabels[i].getHeight()));
         }
     }
 
@@ -822,6 +822,9 @@ void CQGLNetworkPainter::drawStringAt(std::string s, C_FLOAT64 x, C_FLOAT64 y, C
                GL_RGBA, GL_UNSIGNED_BYTE, timg.bits());
   double xoff = (w - w2) / 2.0;
   double yoff = (h - h2) / 2.0;
+
+  xoff = 0;
+  yoff = 0;
 
   //std::cout << "w: " << w << "  w2: " << w2 << "   xoff: " << xoff << std::endl;
   //std::cout << "h: " << h << "  h2: " << h2 << "   yoff: " << yoff << std::endl;
