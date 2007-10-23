@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionAnalyzer.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/10/06 00:40:14 $
+//   $Date: 2007/10/23 09:46:17 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1038,6 +1038,28 @@ CFunctionAnalyzer::CValue CFunctionAnalyzer::evaluateNode(const CEvaluationNode 
   const CEvaluationNodeChoice * pENC = dynamic_cast<const CEvaluationNodeChoice*>(node);
   if (pENC)
     {
+      //TODO: implement
+    }
+
+  const CEvaluationNodeCall * pENCall = dynamic_cast<const CEvaluationNodeCall*>(node);
+  if (pENCall)
+    {
+      //some checks
+      if (!pENCall->getCalledTree()) return CValue::invalid;
+      const CFunction * tmpFunc = dynamic_cast<const CFunction*>(pENCall->getCalledTree());
+      if (!tmpFunc) return CValue::invalid;
+      if (!pENCall->getCalledTree()->getRoot()) return CValue::invalid;
+      unsigned C_INT32 i, imax = tmpFunc->getVariables().size();
+      if (imax != pENCall->getListOfChildNodes().size()) return CValue::invalid;
+
+      std::vector<CValue> localCallParameters;
+      localCallParameters.resize(imax);
+      for (i = 0; i < imax; ++i)
+        {
+          localCallParameters[i] = evaluateNode(pENCall->getListOfChildNodes()[i], callParameters);
+        }
+      return CFunctionAnalyzer::evaluateNode(pENCall->getCalledTree()->getRoot(), localCallParameters);
+
       //TODO: implement
     }
 
