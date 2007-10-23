@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.71 $
+//   $Revision: 1.72 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/10/22 11:15:54 $
+//   $Date: 2007/10/23 10:10:36 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -403,12 +403,12 @@ void CQGLNetworkPainter::drawGraph()
               if (tWid > nDiam)
                 {// label wider than size of circle-> place next to circle
 
-                  x = xNdCenter + (nDiam / 2.0) + 2.0; // + nDiam / 2.0 - ((labelWWid - (*itNodeObj).second.getWidth()) / 2.0); // node center + circle radius - texture window overhead
+                  x = xNdCenter + (nDiam / 2.0) + 2.0 - ((viewerLabels[i].getWidth() - tWid) / 2.0); // + nDiam / 2.0 - ((labelWWid - (*itNodeObj).second.getWidth()) / 2.0); // node center + circle radius - texture window overhead
                   y = yNdCenter;
                 }
               else
                 {// place in center of circle
-                  x = xNdCenter; // - ((*itNodeObj).second.getWidth() / 2.0); // - ((labelWWid - (*itNodeObj).second.getWidth()) / 2.0);
+                  x = xNdCenter - (viewerLabels[i].getWidth() / 2.0); // - ((labelWWid - (*itNodeObj).second.getWidth()) / 2.0);
                   y = yNdCenter;
                 }
             }
@@ -418,8 +418,8 @@ void CQGLNetworkPainter::drawGraph()
               y = viewerLabels[i].getY();
             }
           //std::cout << viewerLabels[i].getText() << "  x: " << x << "   y: " << y << std::endl;
-          drawStringAt(viewerLabels[i].getText(), x, y, viewerLabels[i].getWidth(), viewerLabels[i].getHeight(), QColor(219, 235, 255));
-          //RG_drawStringAt(viewerLabels[i].getText(), static_cast<C_INT32>(x), static_cast<C_INT32>(y), static_cast<C_INT32>(viewerLabels[i].getWidth()), static_cast<C_INT32>(viewerLabels[i].getHeight()));
+          // drawStringAt(viewerLabels[i].getText(), x, y, viewerLabels[i].getWidth(), viewerLabels[i].getHeight(), QColor(219, 235, 255));
+          RG_drawStringAt(viewerLabels[i].getText(), static_cast<C_INT32>(x), static_cast<C_INT32>(y), static_cast<C_INT32>(viewerLabels[i].getWidth()), static_cast<C_INT32>(viewerLabels[i].getHeight()));
         }
     }
 
