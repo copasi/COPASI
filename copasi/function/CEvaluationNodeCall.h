@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeCall.h,v $
-   $Revision: 1.14 $
-   $Name:  $
-   $Author: gauges $
-   $Date: 2006/10/15 07:16:08 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeCall.h,v $
+//   $Revision: 1.15 $
+//   $Name:  $
+//   $Author: ssahle $
+//   $Date: 2007/10/23 09:45:35 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -160,10 +160,15 @@ class CEvaluationNodeCall : public CEvaluationNode
     /**
      *  generate display MathML recursively
      */
-
     virtual void writeMathML(std::ostream & out,
                              const std::vector<std::vector<std::string> > & env,
                              bool expand = true, unsigned C_INT32 l = 0) const;
+
+    /**
+     *  returns the vector of child nodes, corresponding to the arguments of a function call
+     */
+    const std::vector<CEvaluationNode *> getListOfChildNodes() const {return mCallNodes;}
+
   private:
     /**
      * Build the list of call parameters which correspond to
