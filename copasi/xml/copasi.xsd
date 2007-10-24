@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/copasi.xsd,v $ -->
-<!--   $Revision: 1.44 $ -->
+<!--   $Revision: 1.45 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: shoops $ -->
-<!--   $Date: 2007/10/24 17:48:20 $ -->
+<!--   $Date: 2007/10/24 17:53:15 $ -->
 <!-- End CVS Header -->
 <!-- Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual -->
 <!-- Properties, Inc. and EML Research, gGmbH. -->
@@ -46,7 +46,7 @@
                 <xs:attribute name="timeUnit" use="required" id="copasi.Model.timeUnit">
                   <xs:annotation>
                     <xs:documentation>
-                      <p>The time unit for the model. This is a string which may take one of the following values: d, h, min, s, ms, Âµs, ns, ps, fs.</p>
+                      <p>The time unit for the model. This is a string which may take one of the following values: d, h, min, s, ms, µs, ns, ps, fs.</p>
                     </xs:documentation>
                   </xs:annotation>
                   <xs:simpleType>
