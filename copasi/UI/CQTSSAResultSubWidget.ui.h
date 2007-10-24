@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQTSSAResultSubWidget.ui.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/07/12 15:13:18 $
+//   $Author: akoenig $
+//   $Date: 2007/10/24 12:29:45 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,7 +28,6 @@
 #include "optimization/COptTask.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 
-//Artjom
 #include "tssanalysis/CTSSATask.h"
 #include "tssanalysis/CTSSAProblem.h"
 #include "tssanalysis/CILDMMethod.h"
@@ -43,7 +42,6 @@ CModel* pModel;
 const CArrayAnnotation * pResult;
 const CArrayAnnotation * pResult2;
 const CArrayAnnotation * pResult3;
-//Artjom end
 
 void CQTSSAResultSubWidget::saveDataToFile()
 {
@@ -108,7 +106,6 @@ void CQTSSAResultSubWidget::toggleView()
 void CQTSSAResultSubWidget::init()
 {
 
-  //ARTJOM
   //set colorsettings for ArrayAnnotationWidgets
   CColorScaleSimple * tcs = new CColorScaleSimple();
   tcs->setMinMax(-100, 100);
@@ -125,7 +122,6 @@ void CQTSSAResultSubWidget::init()
   connect(mSlider, SIGNAL(valueChanged(int)), this, SLOT(changeInterval()));
   connect(tabWidget2, SIGNAL(currentChanged(QWidget *)), this, SLOT(hideButtons()));
 
-  //ARTJOM ENDE
   dataTable->setNumRows(10);
   displayOptimizationTab(false);
 }
@@ -134,7 +130,7 @@ CTimeSeriesTable* CQTSSAResultSubWidget::table()
 {
   return dataTable;
 }
-//Artjom
+
 /**
  * Fill the combobox mpSelectStep with count of steps the ILDM
  * Method is calculating with.
@@ -209,4 +205,3 @@ void CQTSSAResultSubWidget::setStepSelectionDisabled(bool set)
 {
   mSlider->setDisabled(set);
 }
-//artjom end
