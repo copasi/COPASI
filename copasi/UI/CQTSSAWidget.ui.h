@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQTSSAWidget.ui.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/09/18 16:44:59 $
+//   $Author: akoenig $
+//   $Date: 2007/10/24 12:39:43 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -37,15 +37,15 @@
 #include "model/CModel.h"
 #include "report/CKeyFactory.h"
 #include "utilities/CCopasiException.h"
-#include "tssanalysis/CILDMMethod.h"//artjom
-#include "CQTSSAResultSubWidget.h"//artjom
-#include "CQTSSAResultWidget.h"//artjom
+#include "tssanalysis/CILDMMethod.h"
+#include "CQTSSAResultSubWidget.h"
+#include "CQTSSAResultWidget.h"
 
 #define TSSAMAX 10000000
 
-CILDMMethod* pTSSMethod; //artjom
-CQTSSAResultSubWidget* pTSSResultSubWidget; //artjom
-CTSSATask * pCTSSATask; //artjom
+CILDMMethod* pTSSMethod;
+CQTSSAResultSubWidget* pTSSResultSubWidget;
+CTSSATask * pCTSSATask;
 
 class mpTSSResultSubWidget;
 
@@ -284,13 +284,11 @@ CCopasiMethod * CQTSSAWidget::createMethod(const CCopasiMethod::SubType & type)
 
 bool CQTSSAWidget::runTask()
 {
-  //artjom
   pCTSSATask =
     dynamic_cast<CTSSATask *>((*CCopasiDataModel::Global->getTaskList())["Time Scale Separation Analysis"]);
   if (!pCTSSATask) return false;
   pTSSMethod = dynamic_cast<CILDMMethod*>(pCTSSATask->getMethod());
   pTSSMethod->emptyVectors();
-  //artjom end
 
   checkTimeSeries();
   if (!commonBeforeRunTask()) return false;
@@ -300,14 +298,13 @@ bool CQTSSAWidget::runTask()
 
   if (!commonAfterRunTask()) success = false;
 
-  //artjom
   pTSSResultSubWidget =
     dynamic_cast< CQTSSAResultWidget * >(pListView->findWidgetFromId(271))->getSubWidget();
   if (!pTSSResultSubWidget) return false;
 
   pTSSResultSubWidget->discardOldResults();
   pTSSResultSubWidget->setStepNumber();
-  //artjom end
+
   return success;
 }
 

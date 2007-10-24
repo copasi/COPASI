@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSAResultWidget.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/07/12 15:13:18 $
+//   $Author: akoenig $
+//   $Date: 2007/10/24 12:39:28 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,13 +23,11 @@
 
 //#include "report/CKeyFactory.h"
 #include "qtUtilities.h"
-//artjom
 #include "tssanalysis/CILDMMethod.h"
 #include "tssanalysis/CTSSATask.h"
 
 CTSSATask* pTask;
 CILDMMethod* pTSSILDM;
-//artjom end
 
 /*
  *  Constructs a CQTSSAResultWidget which is a child of 'parent', with the
@@ -105,7 +103,6 @@ bool CQTSSAResultWidget::leave()
 
 bool CQTSSAResultWidget::enter(const std::string & C_UNUSED(key))
 {
-  //artjom
   pTask =
     dynamic_cast<CTSSATask *>((*CCopasiDataModel::Global->getTaskList())["Time Scale Separation Analysis"]);
   pTSSILDM = dynamic_cast<CILDMMethod*>(pTask->getMethod());
@@ -117,7 +114,6 @@ bool CQTSSAResultWidget::enter(const std::string & C_UNUSED(key))
     }
   else
     mCentralWidget->setStepSelectionDisabled(false);
-  //artjom end
 
   return loadFromBackend();
   /*objKey = key;
