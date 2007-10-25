@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_expression_comparison.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/09 10:53:34 $
+//   $Date: 2007/10/25 08:25:22 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -175,6 +175,8 @@ void test_expression_comparison::test_reversible_hill()
       //std::cout << "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">\n<header></header>\n<body>" << std::endl;
       std::string infix1("Vf*substrate/Shalve*(1-product/(substrate*Keq))*(substrate/Shalve+product/Phalve)^(h-1)/(1+(substrate/Shalve+product/Phalve)^h)");
       std::string infix2("(substrate*Phalve+product*Shalve)^(h-1)*Vf/Shalve*(substrate-Keq^(-1)*product)/(Phalve^(h-1)*Shalve^(h-1)+(substrate*Phalve+product*Shalve)^h/(Shalve*Phalve))");
+      //std::string infix1("Vf*substrate/Shalve*(1-product/(substrate*Keq))*(substrate/Shalve+product/Phalve)^(5-1)/(1+(substrate/Shalve+product/Phalve)^5)");
+      //std::string infix2("(substrate*Phalve+product*Shalve)^(5-1)*Vf/Shalve*(substrate-Keq^(-1)*product)/(Phalve^(5-1)*Shalve^(5-1)+(substrate*Phalve+product*Shalve)^5/(Shalve*Phalve))");
       CEvaluationTree* firstTree = new CEvaluationTree("first tree", NULL, CEvaluationTree::Function);
       firstTree->setInfix(infix1);
       CPPUNIT_ASSERT(firstTree->getRoot() != NULL);

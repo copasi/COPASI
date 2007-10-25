@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_normalform.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/10/11 11:44:11 $
+//   $Date: 2007/10/25 08:25:22 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -5107,4 +5107,153 @@ bool test_normalform::check_LogicalItemNotF(const CNormalLogicalItem* pLogicalIt
   if (pProduct->getFactor() != 6.2) return false;
   if (pProduct->getItemPowers().size() != 0) return false;
   return result;
+}
+
+void test_normalform::test_nested_fractions_itempowers_1level()
+{
+  std::string infix("(A+B)^3/(A+B)^2");
+  CEvaluationTree* pTree = new CEvaluationTree();
+  pTree->setInfix(infix);
+  CPPUNIT_ASSERT(pTree->getRoot() != NULL);
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  delete pTree;
+  CPPUNIT_ASSERT(pFraction != NULL);
+  CPPUNIT_ASSERT(pFraction->checkDenominatorOne() == true);
+  const CNormalSum* pNumerator = &pFraction->getNumerator();
+  CPPUNIT_ASSERT(pNumerator->getFractions().size() == 0);
+  const std::set<CNormalProduct*, compareProducts>* pProducts = &pNumerator->getProducts();
+  CPPUNIT_ASSERT(pProducts->size() == 2);
+  CPPUNIT_ASSERT(false);
+}
+
+void test_normalform::test_nested_fractions_itempower_generalpower_1level()
+{
+  std::string infix("(A+B)^n/(A+B)^l");
+  CEvaluationTree* pTree = new CEvaluationTree();
+  pTree->setInfix(infix);
+  CPPUNIT_ASSERT(pTree->getRoot() != NULL);
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  delete pTree;
+  CPPUNIT_ASSERT(pFraction != NULL);
+  CPPUNIT_ASSERT(false);
+}
+
+void test_normalform::test_nested_fractions_generalpower_itempower_1level()
+{
+  std::string infix("(A+B)^n/(A+B)^2");
+  CEvaluationTree* pTree = new CEvaluationTree();
+  pTree->setInfix(infix);
+  CPPUNIT_ASSERT(pTree->getRoot() != NULL);
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  delete pTree;
+  CPPUNIT_ASSERT(pFraction != NULL);
+  CPPUNIT_ASSERT(false);
+}
+
+void test_normalform::test_nested_fractions_generalpowers_1level()
+{
+  std::string infix("(A+B)^2/(A+B)^l");
+  CEvaluationTree* pTree = new CEvaluationTree();
+  pTree->setInfix(infix);
+  CPPUNIT_ASSERT(pTree->getRoot() != NULL);
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  delete pTree;
+  CPPUNIT_ASSERT(pFraction != NULL);
+  CPPUNIT_ASSERT(false);
+}
+
+void test_normalform::test_nested_fractions_itempowers_2level()
+{
+  std::string infix("((A+B)/F)^3/((A+B)/F)");
+  CEvaluationTree* pTree = new CEvaluationTree();
+  pTree->setInfix(infix);
+  CPPUNIT_ASSERT(pTree->getRoot() != NULL);
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  delete pTree;
+  CPPUNIT_ASSERT(pFraction != NULL);
+  CPPUNIT_ASSERT(false);
+}
+
+void test_normalform::test_nested_fractions_itempower_generalpower_2level()
+{
+  std::string infix("((A+B)/F)^(n-2)/((A+B)/F)^3");
+  CEvaluationTree* pTree = new CEvaluationTree();
+  pTree->setInfix(infix);
+  CPPUNIT_ASSERT(pTree->getRoot() != NULL);
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  delete pTree;
+  CPPUNIT_ASSERT(pFraction != NULL);
+  CPPUNIT_ASSERT(false);
+}
+
+void test_normalform::test_nested_fractions_generalpower_itempower_2level()
+{
+  std::string infix("((A+B)/F)^3/((A+B)/F)^(n+3)");
+  CEvaluationTree* pTree = new CEvaluationTree();
+  pTree->setInfix(infix);
+  CPPUNIT_ASSERT(pTree->getRoot() != NULL);
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  delete pTree;
+  CPPUNIT_ASSERT(pFraction != NULL);
+  CPPUNIT_ASSERT(false);
+}
+
+void test_normalform::test_nested_fractions_generalpowers_2level()
+{
+  std::string infix("((A+B)/F)^(n-2)/((A+B)/F)^(x+3)");
+  CEvaluationTree* pTree = new CEvaluationTree();
+  pTree->setInfix(infix);
+  CPPUNIT_ASSERT(pTree->getRoot() != NULL);
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  delete pTree;
+  CPPUNIT_ASSERT(pFraction != NULL);
+  CPPUNIT_ASSERT(false);
+}
+
+void test_normalform::test_nested_fractions_itempowers_2level_complex()
+{
+  std::string infix("(((A*B)+(C*D))/((E*F)+(G*H)))^4/(((A*B)+(C*D))/((E*F)+(G*H)))^5");
+  CEvaluationTree* pTree = new CEvaluationTree();
+  pTree->setInfix(infix);
+  CPPUNIT_ASSERT(pTree->getRoot() != NULL);
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  delete pTree;
+  CPPUNIT_ASSERT(pFraction != NULL);
+  CPPUNIT_ASSERT(false);
+}
+
+void test_normalform::test_nested_fractions_itempower_generalpower_2level_complex()
+{
+  std::string infix("(((A*B)+(C*D))/((E*F)+(G*H)))^4/(((A*B)+(C*D))/((E*F)+(G*H)))^(n-3)");
+  CEvaluationTree* pTree = new CEvaluationTree();
+  pTree->setInfix(infix);
+  CPPUNIT_ASSERT(pTree->getRoot() != NULL);
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  delete pTree;
+  CPPUNIT_ASSERT(pFraction != NULL);
+  CPPUNIT_ASSERT(false);
+}
+
+void test_normalform::test_nested_fractions_generalpower_itempower_2level_complex()
+{
+  std::string infix("(((A*B)+(C*D))/((E*F)+(G*H)))^(n-3)/(((A*B)+(C*D))/((E*F)+(G*H)))^5");
+  CEvaluationTree* pTree = new CEvaluationTree();
+  pTree->setInfix(infix);
+  CPPUNIT_ASSERT(pTree->getRoot() != NULL);
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  delete pTree;
+  CPPUNIT_ASSERT(pFraction != NULL);
+  CPPUNIT_ASSERT(false);
+}
+
+void test_normalform::test_nested_fractions_generalpowers_2level_complex()
+{
+  std::string infix("(((A*B)+(C*D))/((E*F)+(G*H)))^(n-3)/(((A*B)+(C*D))/((E*F)+(G*H)))^(x+7)");
+  CEvaluationTree* pTree = new CEvaluationTree();
+  pTree->setInfix(infix);
+  CPPUNIT_ASSERT(pTree->getRoot() != NULL);
+  pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  delete pTree;
+  CPPUNIT_ASSERT(pFraction != NULL);
+  CPPUNIT_ASSERT(false);
 }
