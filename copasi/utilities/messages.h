@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.100 $
+//   $Revision: 1.101 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/10/15 09:15:24 $
+//   $Date: 2007/10/25 07:07:31 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -158,7 +158,7 @@ const MESSAGES Messages[] =
     {MCSBML + 14, "SBML (14): Could not import function with id '%s'."},
     {MCSBML + 15, "SBML (15): Could not find function with id '%s'."},
     {MCSBML + 16, "SBML (16): Loop found in function. That means a function calls itself either directly or indirectly."},
-    {MCSBML + 17, "SBML (17): Single compartment reaction found where the kinetic law does not include a multiplication by the volume."},
+    {MCSBML + 17, "SBML (17): One or more single compartment reactions found where the kinetic law does not include a multiplication by the volume:\n%s"},
     {MCSBML + 18, "SBML (18): Support for 'hasOnlySubstanceUnit' flag on species is experimental. Species in compartments of dimension 0 are also considered to have this flag set."},
     {MCSBML + 19, "SBML (19): spatialSizeUnits on species %s ignored."},
     {MCSBML + 20, "SBML (20): Setting an initial concentration on species %s which has the 'hasOnlySubstanceUnits' flag set is not allowed."},
@@ -180,7 +180,7 @@ const MESSAGES Messages[] =
     {MCSBML + 36, "SBML (36): COPASI can not handle models that use the delay function."},
     {MCSBML + 37, "SBML (37): The id '%s' is used in the expression of a rule, although it is later defined by a rule itself."},
     {MCSBML + 38, "SBML (38): Only references to compartments, species, global parameters or the time are allowed in SBML rule expressions."},
-    {MCSBML + 39, "SBML (39): Object with id '%s' referenced in kinetic law, but no object with that id found in model."},
+    {MCSBML + 39, "SBML (39): Object with id \"%s\" referenced in kinetic law, but no object with that id found in model."},
     {MCSBML + 40, "SBML (40): LIBSBML %s %d at line %d column %d: %s."},
     {MCSBML + 41, "SBML (41): No initial value set for species \"%s\"."},
     {MCSBML + 42, "SBML (42): No initial value set for local parameter \"%s\"."},
