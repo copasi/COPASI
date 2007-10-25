@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-//   $Revision: 1.49 $
+//   $Revision: 1.50 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/07/24 18:40:25 $
+//   $Author: akoenig $
+//   $Date: 2007/10/25 13:02:05 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -146,7 +146,14 @@ CopasiPlot::CopasiPlot(const CPlotSpecification* plotspec, QWidget* parent):
 {
   QwtLegend *legend = new QwtLegend;
   legend->setItemMode(QwtLegend::CheckableItem);
+
+  // whole legend can not be displayed at bottom on DARWIN
+  // maybe a Qwt bug ?!?
+#ifdef Darwin
+  insertLegend(legend, QwtPlot::TopLegend);
+#else
   insertLegend(legend, QwtPlot::BottomLegend);
+#endif
 
   // Set up the zoom facility
   mpZoomer = new ScrollZoomer(canvas());
