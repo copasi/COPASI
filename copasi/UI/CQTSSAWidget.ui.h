@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQTSSAWidget.ui.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: akoenig $
-//   $Date: 2007/10/24 12:39:43 $
+//   $Date: 2007/10/25 20:21:29 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -305,6 +305,7 @@ bool CQTSSAWidget::runTask()
   pTSSResultSubWidget->discardOldResults();
   pTSSResultSubWidget->setStepNumber();
 
+  if (success) pListView->switchToOtherWidget(271, ""); //change to the results window
   return success;
 }
 
