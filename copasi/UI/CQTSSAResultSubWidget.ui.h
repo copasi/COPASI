@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQTSSAResultSubWidget.ui.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: akoenig $
-//   $Date: 2007/10/25 20:04:22 $
+//   $Date: 2007/10/25 20:16:39 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -159,6 +159,10 @@ void CQTSSAResultSubWidget::discardOldResults()
   pArrayWidget->setArrayAnnotation(NULL);
   pArrayWidget2->setArrayAnnotation(NULL);
   pArrayWidget3->setArrayAnnotation(NULL);
+
+  mLabel2->setNum(0);
+  mLabel4->setNum(0);
+  mLabel6->setNum(0);
 }
 
 /**
