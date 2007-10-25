@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQTSSAResultSubWidget.ui.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: akoenig $
-//   $Date: 2007/10/24 12:29:45 $
+//   $Date: 2007/10/25 20:04:22 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -168,9 +168,12 @@ void CQTSSAResultSubWidget::discardOldResults()
 void CQTSSAResultSubWidget::changeInterval()
 {
   int step = mSlider->value();
-  std::cout << "currentStep    " << step << std::endl;
 
-  mLabel2->setNum((double)pTimeScaleSeperation->returnCurrentTime(step - 1));
+  if (step == 1)
+    mLabel2->setNum(0);
+  else
+    mLabel2->setNum((double)pTimeScaleSeperation->returnCurrentTime(step - 2));
+
   mLabel4->setNum(step);
 
   pTimeScaleSeperation->setAnnotationM(step);
@@ -199,7 +202,7 @@ void CQTSSAResultSubWidget::hideButtons()
     }
 }
 /**
- * Able / Disable the combobox.
+ * Able / Disable the slider.
  **/
 void CQTSSAResultSubWidget::setStepSelectionDisabled(bool set)
 {
