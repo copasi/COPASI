@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelAnalyzer.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/10/02 18:18:05 $
+//   $Author: ssahle $
+//   $Date: 2007/10/26 13:12:04 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -114,7 +114,7 @@ CModelAnalyzer::ReactionResult CModelAnalyzer::checkReaction(const CReaction* re
           if (j == jmax)
             {
               //warning/error?
-              std::cout << "A product of this reaction is not mapped to a corresponding function parameter" << std::endl;
+              //std::cout << "A product of this reaction is not mapped to a corresponding function parameter" << std::endl;
               const CMetab * pM = reaction->getChemEq().getProducts()[i]->getMetabolite();
               if (pM)
                 ret.mChemEqProds.push_back(pM->getObjectName());
