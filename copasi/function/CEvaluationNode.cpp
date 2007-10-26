@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.cpp,v $
-//   $Revision: 1.34 $
+//   $Revision: 1.35 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/09/21 15:40:12 $
+//   $Date: 2007/10/26 12:59:02 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -381,7 +381,7 @@ const CEvaluationNode* CEvaluationNode::findTopMinus(const std::vector<CFunction
             //we have found a minus operator in the branch of the left child. We
             //only want to report this as a split point if the other branch is positive.
             const CEvaluationNode *child2 = dynamic_cast<const CEvaluationNode*>(child->getSibling());
-            if (CFunctionAnalyzer::evaluateNode(child2, callParameters).isPositive())
+            if (CFunctionAnalyzer::evaluateNode(child2, callParameters, CFunctionAnalyzer::NOOBJECT).isPositive())
               return tmp;
             else
               return NULL;
@@ -394,7 +394,7 @@ const CEvaluationNode* CEvaluationNode::findTopMinus(const std::vector<CFunction
           {
             //we have found a minus operator in the branch of the right child. We
             //only want to report this as a split point if the other branch is positive.
-            if (CFunctionAnalyzer::evaluateNode(child, callParameters).isPositive())
+            if (CFunctionAnalyzer::evaluateNode(child, callParameters, CFunctionAnalyzer::NOOBJECT).isPositive())
               return tmp;
             else
               return NULL;
