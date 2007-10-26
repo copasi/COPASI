@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQTSSAResultSubWidget.ui.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: akoenig $
-//   $Date: 2007/10/25 20:16:39 $
+//   $Date: 2007/10/26 11:07:35 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -211,4 +211,9 @@ void CQTSSAResultSubWidget::hideButtons()
 void CQTSSAResultSubWidget::setStepSelectionDisabled(bool set)
 {
   mSlider->setDisabled(set);
+}
+
+void CQTSSAResultSubWidget::activateTab(int tab)
+{
+  tabWidget2->setCurrentPage(tab);
 }
