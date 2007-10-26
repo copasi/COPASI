@@ -13,8 +13,8 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQTSSAResultSubWidget.ui'
  **
- ** Created: Do Jul 12 16:53:36 2007
- **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.7   edited Aug 31 2005 $)
+ ** Created: Fri Oct 26 14:04:39 2007
+ **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.8   edited Jan 11 14:47 $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -32,10 +32,10 @@
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
-#include "qmessagebox.h"
-#include "qfiledialog.h"
 #include "CTimeSeriesTable.h"
 #include "CQArrayAnnotationsWidget.h"
+#include "qmessagebox.h"
+#include "qfiledialog.h"
 #include "CQTSSAResultSubWidget.ui.h"
 
 /*

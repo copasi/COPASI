@@ -13,8 +13,8 @@
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQTSSAResultSubWidget.ui'
  **
- ** Created: Do Jul 12 16:53:32 2007
- **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.7   edited Aug 31 2005 $)
+ ** Created: Fri Oct 26 14:04:34 2007
+ **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.8   edited Jan 11 14:47 $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -77,6 +77,7 @@ class CQTSSAResultSubWidget : public QWidget
     void discardOldResults();
     void setStepNumber();
     void setStepSelectionDisabled(bool set);
+    void activateTab(int tab);
 
   public slots:
     virtual CTimeSeriesTable * table();
