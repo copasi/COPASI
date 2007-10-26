@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.cpp,v $
-//   $Revision: 1.35 $
+//   $Revision: 1.36 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/10/26 12:59:02 $
+//   $Author: gauges $
+//   $Date: 2007/10/26 14:19:14 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -413,4 +413,102 @@ const CEvaluationNode* CEvaluationNode::findTopMinus(const std::vector<CFunction
       }
 
     return NULL;
+  }
+
+bool CEvaluationNode::operator==(const CEvaluationNode& right) const
+  {
+    bool result = true;
+    if (this->getType() == right.getType())
+      {
+        switch (CEvaluationNode::type(this->getType()))
+          {
+          case CEvaluationNode::CONSTANT:
+          case CEvaluationNode::NUMBER:
+          case CEvaluationNode::OBJECT:
+          case CEvaluationNode::CALL:
+          case CEvaluationNode::STRUCTURE:
+          case CEvaluationNode::VARIABLE:
+          case CEvaluationNode::WHITESPACE:
+            result = (this->getData() == right.getData());
+            break;
+          case CEvaluationNode::OPERATOR:
+          case CEvaluationNode::FUNCTION:
+          case CEvaluationNode::CHOICE:
+          case CEvaluationNode::LOGICAL:
+          case CEvaluationNode::MV_FUNCTION:
+          case CEvaluationNode::VECTOR:
+          case CEvaluationNode::INVALID:
+            break;
+          }
+        const CEvaluationNode* pChild1 = dynamic_cast<const CEvaluationNode*>(this->getChild());
+        const CEvaluationNode* pChild2 = dynamic_cast<const CEvaluationNode*>(right.getChild());
+        while (result == true)
+          {
+            if (pChild1 == NULL || pChild2 == NULL)
+              {
+                if (!(pChild1 == NULL && pChild2 == NULL))
+                  {
+                    result = false;
+                  }
+              }
+            else
+              {
+                result = (*pChild1 == *pChild2);
+              }
+            pChild1 = dynamic_cast<const CEvaluationNode*>(pChild1->getSibling());
+            pChild2 = dynamic_cast<const CEvaluationNode*>(pChild2->getSibling());
+          }
+      }
+    return result;
+  }
+
+bool CEvaluationNode::operator<(const CEvaluationNode& right) const
+  {
+    bool result = false;
+    if (this->getType() < right.getType())
+      {
+        result = true;
+      }
+    else if (this->getType() == right.getType())
+      {
+        switch (CEvaluationNode::type(this->getType()))
+          {
+          case CEvaluationNode::CONSTANT:
+          case CEvaluationNode::NUMBER:
+          case CEvaluationNode::OBJECT:
+          case CEvaluationNode::CALL:
+          case CEvaluationNode::STRUCTURE:
+          case CEvaluationNode::VARIABLE:
+          case CEvaluationNode::WHITESPACE:
+            result = (this->getData() < right.getData());
+            break;
+          case CEvaluationNode::OPERATOR:
+          case CEvaluationNode::FUNCTION:
+          case CEvaluationNode::CHOICE:
+          case CEvaluationNode::LOGICAL:
+          case CEvaluationNode::MV_FUNCTION:
+          case CEvaluationNode::VECTOR:
+          case CEvaluationNode::INVALID:
+            break;
+          }
+        const CEvaluationNode* pChild1 = dynamic_cast<const CEvaluationNode*>(this->getChild());
+        const CEvaluationNode* pChild2 = dynamic_cast<const CEvaluationNode*>(right.getChild());
+        while (result == false)
+          {
+            if (pChild1 == NULL || pChild2 == NULL)
+              {
+                if (pChild1 == NULL && pChild2 != NULL)
+                  {
+                    result = true;
+                  }
+              }
+            else
+              {
+                result = (*pChild1 < *pChild2);
+              }
+            pChild1 = dynamic_cast<const CEvaluationNode*>(pChild1->getSibling());
+            pChild2 = dynamic_cast<const CEvaluationNode*>(pChild2->getSibling());
+          }
+      }
+    return result;
   }
