@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/function.pro,v $ 
-#   $Revision: 1.25 $ 
+#   $Revision: 1.26 $ 
 #   $Name:  $ 
 #   $Author: ssahle $ 
-#   $Date: 2007/08/12 18:03:40 $ 
+#   $Date: 2007/10/26 13:09:59 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -11,7 +11,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.25 $ $Author: ssahle $ $Date: 2007/08/12 18:03:40 $  
+# $Revision: 1.26 $ $Author: ssahle $ $Date: 2007/10/26 13:09:59 $  
 ######################################################################
 
 LIB = function
@@ -22,6 +22,7 @@ include(../common.pri)
 # Input
 HEADERS += \
            CCallParameters.h \
+           CDerive.h \
            CEvaluationLexer.h \
            CEvaluationNode.h \
            CEvaluationNodeCall.h \
@@ -51,6 +52,7 @@ HEADERS += \
 
 SOURCES += \
            CCallParameters.cpp \
+           CDerive.cpp \
            CEvaluationNode.cpp \
            CEvaluationNodeCall.cpp \
            CEvaluationNodeChoice.cpp \
