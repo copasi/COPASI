@@ -1,10 +1,10 @@
 <!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSAResultSubWidget.ui,v $ </comment>
-<comment>   $Revision: 1.3 $ </comment>
+<comment>   $Revision: 1.4 $ </comment>
 <comment>   $Name:  $ </comment>
-<comment>   $Author: ssahle $ </comment>
-<comment>   $Date: 2007/07/12 15:13:18 $ </comment>
+<comment>   $Author: akoenig $ </comment>
+<comment>   $Date: 2007/10/26 11:06:32 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -485,6 +485,7 @@
     <function specifier="non virtual">discardOldResults()</function>
     <function specifier="non virtual">setStepNumber( )</function>
     <function specifier="non virtual">setStepSelectionDisabled(bool set)</function>
+    <function specifier="non virtual">activateTab(int tab)</function>
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
