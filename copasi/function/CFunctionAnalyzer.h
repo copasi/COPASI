@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionAnalyzer.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/10/02 18:18:03 $
+//   $Author: ssahle $
+//   $Date: 2007/10/26 12:58:10 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -164,10 +164,15 @@ class CFunctionAnalyzer
         const CFunction * mpFunction;
         bool mIrreversibleKineticsWithProducts;
 
+        /** low level information about the original function */
         FunctionInformation mOriginalFunction;
 
         bool mReversibleNonSplitable;
+
+        /** low level information about the forward part of the function */
         FunctionInformation mFPart;
+
+        /** low level information about the backwards part of the function */
         FunctionInformation mBPart;
       };
 
@@ -178,14 +183,34 @@ class CFunctionAnalyzer
 
     const Result & getResult() const {return mResult;};
 
-    static CValue evaluateNode(const CEvaluationNode * node, const std::vector<CValue> & callParameters);
+    /**
+     * Mode tells how to interprete an object in CValue arithmetics.
+     * NOOBJECT means objects are invalid (e.g. for functions, where no object nodes should occur).
+     * GENERAL means concentrations and volumes are positive, all other values positive, zero, or negative.
+     * POSITIVE means all objects are positive. ACTUAL means the actual value is used for local parameters and constant values.
+     */
+    enum Mode {NOOBJECT, GENERAL, POSITIVE, ACTUAL };
 
+    /**
+     * Do the CValue arithmetics of a tree. The callParameters contain the CValues corresponding
+     * to the CEvaluationNodeVariable nodes. The value of mode should not have an effect if this is called
+     * for a function tree.
+     */
+    static CValue evaluateNode(const CEvaluationNode * node, const std::vector<CValue> & callParameters, Mode mode);
+
+    /**
+     * constructs call parameters for use with the evaluateNode() method
+     */
     static void constructCallParameters(const CFunctionParameters & fp, std::vector<CValue> & callParameters, bool posi);
 
   protected:
 
     Result mResult;
 
+    /**
+     * constructs call parameters for use with the evaluateNode() method, using the actual values for
+     * local parameters and fixed entities.
+     */
     static void constructCallParametersActualValues(std::vector<CValue> & callParameters, /*const CModel* model,*/ const CReaction* reaction);
 
   public:

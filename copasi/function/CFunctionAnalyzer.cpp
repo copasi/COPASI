@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionAnalyzer.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/10/23 09:46:17 $
+//   $Date: 2007/10/26 12:58:10 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -971,7 +971,8 @@ void CFunctionAnalyzer::constructCallParametersActualValues(std::vector<CValue> 
 }
 
 //static
-CFunctionAnalyzer::CValue CFunctionAnalyzer::evaluateNode(const CEvaluationNode * node, const std::vector<CValue> & callParameters)
+CFunctionAnalyzer::CValue CFunctionAnalyzer::evaluateNode(const CEvaluationNode * node, const std::vector<CValue> & callParameters,
+    Mode mode)
 {
   const CEvaluationNodeOperator * pENO = dynamic_cast<const CEvaluationNodeOperator*>(node);
   if (pENO)
@@ -979,23 +980,23 @@ CFunctionAnalyzer::CValue CFunctionAnalyzer::evaluateNode(const CEvaluationNode 
       switch (CEvaluationNode::subType(pENO->getType()))
         {
         case CEvaluationNodeOperator::MULTIPLY:
-          return evaluateNode(pENO->getLeft(), callParameters) * evaluateNode(pENO->getRight(), callParameters);
+          return evaluateNode(pENO->getLeft(), callParameters, mode) * evaluateNode(pENO->getRight(), callParameters, mode);
           break;
 
         case CEvaluationNodeOperator::DIVIDE:
-          return evaluateNode(pENO->getLeft(), callParameters) / evaluateNode(pENO->getRight(), callParameters);
+          return evaluateNode(pENO->getLeft(), callParameters, mode) / evaluateNode(pENO->getRight(), callParameters, mode);
           break;
 
         case CEvaluationNodeOperator::PLUS:
-          return evaluateNode(pENO->getLeft(), callParameters) + evaluateNode(pENO->getRight(), callParameters);
+          return evaluateNode(pENO->getLeft(), callParameters, mode) + evaluateNode(pENO->getRight(), callParameters, mode);
           break;
 
         case CEvaluationNodeOperator::MINUS:
-          return evaluateNode(pENO->getLeft(), callParameters) - evaluateNode(pENO->getRight(), callParameters);
+          return evaluateNode(pENO->getLeft(), callParameters, mode) - evaluateNode(pENO->getRight(), callParameters, mode);
           break;
 
         case CEvaluationNodeOperator::POWER:
-          return evaluateNode(pENO->getLeft(), callParameters) ^ evaluateNode(pENO->getRight(), callParameters);
+          return evaluateNode(pENO->getLeft(), callParameters, mode) ^ evaluateNode(pENO->getRight(), callParameters, mode);
           break;
           //
           //           case MODULUS:
@@ -1017,6 +1018,7 @@ CFunctionAnalyzer::CValue CFunctionAnalyzer::evaluateNode(const CEvaluationNode 
   const CEvaluationNodeVariable * pENV = dynamic_cast<const CEvaluationNodeVariable*>(node);
   if (pENV)
     {
+      if (callParameters.size() < pENV->getIndex() + 1) return CValue::invalid;
       return callParameters[pENV->getIndex()];
     }
 
@@ -1027,7 +1029,7 @@ CFunctionAnalyzer::CValue CFunctionAnalyzer::evaluateNode(const CEvaluationNode 
       switch (CEvaluationNode::subType(pENF->getType()))
         {
         case CEvaluationNodeFunction::MINUS:
-          return evaluateNode(pENF->getLeft(), callParameters).invert();
+          return evaluateNode(pENF->getLeft(), callParameters, mode).invert();
           break;
 
         default:
@@ -1056,11 +1058,17 @@ CFunctionAnalyzer::CValue CFunctionAnalyzer::evaluateNode(const CEvaluationNode 
       localCallParameters.resize(imax);
       for (i = 0; i < imax; ++i)
         {
-          localCallParameters[i] = evaluateNode(pENCall->getListOfChildNodes()[i], callParameters);
+          localCallParameters[i] = evaluateNode(pENCall->getListOfChildNodes()[i], callParameters, mode);
         }
-      return CFunctionAnalyzer::evaluateNode(pENCall->getCalledTree()->getRoot(), localCallParameters);
+      return CFunctionAnalyzer::evaluateNode(pENCall->getCalledTree()->getRoot(), localCallParameters, mode);
+    }
 
-      //TODO: implement
+  const CEvaluationNodeObject * pENObject = dynamic_cast<const CEvaluationNodeObject*>(node);
+  if (pENObject)
+    {
+      if (mode == NOOBJECT) return CValue::invalid;
+      if (mode == POSITIVE) return CValue::positive;
+      //TODO: implement GENERAL and ACTUAL
     }
 
   return CValue::unknown;
@@ -1095,13 +1103,13 @@ void CFunctionAnalyzer::checkKineticFunction(const CFunction * f, const CReactio
 
   //construct call parameter vector
   constructCallParameters(f->getVariables(), callParameters, false);
-  tmpValue = CFunctionAnalyzer::evaluateNode(f->getRoot(), callParameters);
+  tmpValue = CFunctionAnalyzer::evaluateNode(f->getRoot(), callParameters, NOOBJECT);
   //std::cout << tmpValue << ", ";
   mResult.mOriginalFunction.mUnchangedParameters.push_back(tmpValue);
 
   //construct call parameter vector
   constructCallParameters(f->getVariables(), callParameters, true);
-  tmpValue = CFunctionAnalyzer::evaluateNode(f->getRoot(), callParameters);
+  tmpValue = CFunctionAnalyzer::evaluateNode(f->getRoot(), callParameters, NOOBJECT);
   //std::cout << tmpValue; // << std::endl;
   mResult.mOriginalFunction.mUnchangedParameters.push_back(tmpValue);
 
@@ -1109,7 +1117,7 @@ void CFunctionAnalyzer::checkKineticFunction(const CFunction * f, const CReactio
     {
       //construct call parameter vector
       constructCallParametersActualValues(callParameters, reaction);
-      tmpValue = CFunctionAnalyzer::evaluateNode(f->getRoot(), callParameters);
+      tmpValue = CFunctionAnalyzer::evaluateNode(f->getRoot(), callParameters, NOOBJECT);
       //std::cout << ", " << tmpValue << std::endl;
       mResult.mOriginalFunction.mUnchangedParameters.push_back(tmpValue);
     }
@@ -1133,7 +1141,7 @@ void CFunctionAnalyzer::checkKineticFunction(const CFunction * f, const CReactio
           constructCallParameters(f->getVariables(), callParameters, false);
           //set one substrate to zero
           callParameters[i] = CValue::zero;
-          tmpValue = CFunctionAnalyzer::evaluateNode(f->getRoot(), callParameters);
+          tmpValue = CFunctionAnalyzer::evaluateNode(f->getRoot(), callParameters, NOOBJECT);
           //std::cout << tmpValue << ", ";
           tmpValueVector.push_back(tmpValue);
 
@@ -1141,7 +1149,7 @@ void CFunctionAnalyzer::checkKineticFunction(const CFunction * f, const CReactio
           constructCallParameters(f->getVariables(), callParameters, true);
           //set one substrate to zero
           callParameters[i] = CValue::zero;
-          tmpValue = CFunctionAnalyzer::evaluateNode(f->getRoot(), callParameters);
+          tmpValue = CFunctionAnalyzer::evaluateNode(f->getRoot(), callParameters, NOOBJECT);
           //std::cout << tmpValue; // << std::endl;
           tmpValueVector.push_back(tmpValue);
 
@@ -1151,7 +1159,7 @@ void CFunctionAnalyzer::checkKineticFunction(const CFunction * f, const CReactio
               constructCallParametersActualValues(callParameters, reaction);
               //set one substrate to zero
               callParameters[i] = CValue::zero;
-              tmpValue = CFunctionAnalyzer::evaluateNode(f->getRoot(), callParameters);
+              tmpValue = CFunctionAnalyzer::evaluateNode(f->getRoot(), callParameters, NOOBJECT);
               //test if result is indeed 0 (as is required)
               //std::cout << ", " << tmpValue << std::endl;
               tmpValueVector.push_back(tmpValue);
@@ -1173,7 +1181,7 @@ void CFunctionAnalyzer::checkKineticFunction(const CFunction * f, const CReactio
           constructCallParameters(f->getVariables(), callParameters, false);
           //set one product to zero
           callParameters[i] = CValue::zero;
-          tmpValue = CFunctionAnalyzer::evaluateNode(f->getRoot(), callParameters);
+          tmpValue = CFunctionAnalyzer::evaluateNode(f->getRoot(), callParameters, NOOBJECT);
           //std::cout << CFunctionAnalyzer::evaluateNode(f->getRoot(), callParameters) << ", ";
           tmpValueVector.push_back(tmpValue);
 
@@ -1181,7 +1189,7 @@ void CFunctionAnalyzer::checkKineticFunction(const CFunction * f, const CReactio
           constructCallParameters(f->getVariables(), callParameters, true);
           //set one substrate to zero
           callParameters[i] = CValue::zero;
-          tmpValue = CFunctionAnalyzer::evaluateNode(f->getRoot(), callParameters);
+          tmpValue = CFunctionAnalyzer::evaluateNode(f->getRoot(), callParameters, NOOBJECT);
           //std::cout << CFunctionAnalyzer::evaluateNode(f->getRoot(), callParameters); // << std::endl;
           tmpValueVector.push_back(tmpValue);
 
@@ -1191,7 +1199,7 @@ void CFunctionAnalyzer::checkKineticFunction(const CFunction * f, const CReactio
               constructCallParametersActualValues(callParameters, reaction);
               //set one substrate to zero
               callParameters[i] = CValue::zero;
-              tmpValue = CFunctionAnalyzer::evaluateNode(f->getRoot(), callParameters);
+              tmpValue = CFunctionAnalyzer::evaluateNode(f->getRoot(), callParameters, NOOBJECT);
               //std::cout << ", " << CFunctionAnalyzer::evaluateNode(f->getRoot(), callParameters) << std::endl;
               tmpValueVector.push_back(tmpValue);
             }
