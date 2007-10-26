@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeVariable.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/07/27 12:30:05 $
+//   $Author: ssahle $
+//   $Date: 2007/10/26 13:00:53 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -44,6 +44,7 @@ CEvaluationNodeVariable::~CEvaluationNodeVariable() {}
 bool CEvaluationNodeVariable::compile(const CEvaluationTree * pTree)
 {
   mpTree = pTree;
+  if (!pTree) return false;
   mIndex = pTree->getVariableIndex(mData);
 
   if (mIndex == C_INVALID_INDEX) return false;
