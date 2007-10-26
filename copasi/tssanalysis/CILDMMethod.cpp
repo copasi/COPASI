@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMMethod.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/09/18 17:30:08 $
+//   $Author: akoenig $
+//   $Date: 2007/10/26 09:05:44 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -2353,7 +2353,7 @@ void CILDMMethod::createAnnotationsM()
   pTmp1->setDescription("mVslowPrintAnn matrix");
   //pTmp1->setDimensionDescription(0, "contribution to each mode corresponding to timescale");
   pTmp1->setDimensionDescription(0, "contribution to  mode (TS - corresponding timescale)");
-  pTmp1->setDimensionDescription(1, "meatabolites");
+  pTmp1->setDimensionDescription(1, "metabolites");
   pVslowPrintAnn = pTmp1;
 
   CArrayAnnotation *
