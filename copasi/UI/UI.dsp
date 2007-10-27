@@ -59,6 +59,10 @@ SOURCE=.\AboutDialog.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CAuthorsWidget.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CCopasiPlotSelectionDialog.cpp
 # End Source File
 # Begin Source File
@@ -80,6 +84,10 @@ SOURCE=.\CMCAResultSubwidget.cpp
 # Begin Source File
 
 SOURCE=.\CMCAResultWidget.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CMIRIAMModelWidget.cpp
 # End Source File
 # Begin Source File
 
@@ -491,6 +499,10 @@ SOURCE=.\AboutDialog.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\CAuthorsWidget.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\CCopasiPlotSelectionDialog.h
 # End Source File
 # Begin Source File
@@ -520,6 +532,10 @@ SOURCE=.\CMCAResultSubwidget.ui.h
 # Begin Source File
 
 SOURCE=.\CMCAResultWidget.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CMIRIAMModelWidget.h
 # End Source File
 # Begin Source File
 

@@ -60,6 +60,18 @@ Package=<4>
 
 ###############################################################################
 
+Project: "MIRIAM"=.\MIRIAM\MIRIAM.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
 Project: "MathML"=.\mml\MathML.dsp - Package Owner=<4>
 
 Package=<5>
@@ -383,6 +395,9 @@ Package=<5>
 
 Package=<4>
 {{{
+    Begin Project Dependency
+    Project_Dep_Name MIRIAM
+    End Project Dependency
 }}}
 
 ###############################################################################
