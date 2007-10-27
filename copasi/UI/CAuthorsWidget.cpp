@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CAuthorsWidget.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2007/10/27 01:57:08 $
+//   $Date: 2007/10/27 17:07:51 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -82,10 +82,10 @@ void CAuthorsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_IN
   table->setText(row, COL_URL, FROM_UTF8(pAuthor->getURL()));
 }
 
-void MoietyWidget::tableLineToObject(unsigned C_INT32 C_UNUSED(row), CCopasiObject* C_UNUSED(obj))
+void CAuthorsWidget::tableLineToObject(unsigned C_INT32 C_UNUSED(row), CCopasiObject* C_UNUSED(obj))
 {}
 
-void MoietyWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT32 exc)
+void CAuthorsWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT32 exc)
 {
   if (exc != 2)
     table->clearCell(row, 2);
@@ -94,11 +94,11 @@ void MoietyWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT3
     table->clearCell(row, 3);
 }
 
-QString MoietyWidget::defaultObjectName() const
+QString CAuthorsWidget::defaultObjectName() const
 {return "";}
 
-CCopasiObject* MoietyWidget::createNewObject(const std::string & C_UNUSED(name))
+CCopasiObject* CAuthorsWidget::createNewObject(const std::string & C_UNUSED(name))
 {return NULL;}
 
-void MoietyWidget::deleteObjects(const std::vector<std::string> & C_UNUSED(keys))
+void CAuthorsWidget::deleteObjects(const std::vector<std::string> & C_UNUSED(keys))
 {}

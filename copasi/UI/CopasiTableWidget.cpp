@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.cpp,v $
-//   $Revision: 1.54 $
+//   $Revision: 1.55 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2007/10/27 01:30:08 $
+//   $Date: 2007/10/27 17:07:51 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,6 +30,7 @@ CopasiTableWidget::CopasiTableWidget(QWidget *parent, bool ro, const char * name
     : CopasiWidget(parent, name, f)
 {
   mRO = ro;
+  mShowButtons = showButtons;
 
   //here the table is initialized
   table = new QTable(this, "table");
@@ -55,7 +56,7 @@ CopasiTableWidget::CopasiTableWidget(QWidget *parent, bool ro, const char * name
   flagtoAdjust = true;
 
   //here the buttons are defined
-  if (!mRO && !showButtons)
+  if (!mRO && mShowButtons)
     {
       btnOK = new QPushButton("Commit", this);
       btnCancel = new QPushButton("Revert", this);
@@ -69,7 +70,7 @@ CopasiTableWidget::CopasiTableWidget(QWidget *parent, bool ro, const char * name
   //vBoxLayout->addSpacing(5);
 
   QHBoxLayout* mHLayout = new QHBoxLayout(vBoxLayout, 0);
-  if (!mRO && !showButtons)
+  if (!mRO && mShowButtons)
     {
       //mHLayout->addSpacing(32);
       //mHLayout->addSpacing(50);
@@ -104,7 +105,7 @@ CopasiTableWidget::CopasiTableWidget(QWidget *parent, bool ro, const char * name
   //connect(table, SIGNAL(delKeyPressed()), this, SLOT(slotTableDelKey()));
   //<update_comment>
 
-  if (!mRO && !showButtons)
+  if (!mRO && mShowButtons)
     {
       connect(btnOK, SIGNAL(clicked ()), this,
               SLOT(slotBtnOKClicked()));
@@ -209,8 +210,12 @@ void CopasiTableWidget::fillTable()
 
   if (!mRO)
     {
-      btnOK->setEnabled(false);
-      btnCancel->setEnabled(false);
+      emit setEnableOKAndCancel(false);
+      if (mShowButtons)
+        {
+          btnOK->setEnabled(false);
+          btnCancel->setEnabled(false);
+        }
     }
 }
 
@@ -364,8 +369,12 @@ void CopasiTableWidget::slotValueChanged(int row, int col)
 {
   if (mRO) return;
   //std::cout << "Table..valueChanged " << row << "  " << col << std::endl;
-  btnOK->setEnabled(true);
-  btnCancel->setEnabled(true);
+  emit setEnableOKAndCancel(true);
+  if (mShowButtons)
+    {
+      btnOK->setEnabled(true);
+      btnCancel->setEnabled(true);
+    }
 
   if (row == table->numRows() - 1) //new Object
     {
@@ -399,7 +408,7 @@ void CopasiTableWidget::slotTableDelKey()
 {
   //std::cout << "**del**" << std::endl;
   //pressing del does exactly the same thing as hitting the delete button
-  if (!mRO)
+  if (!mRO && mShowButtons)
     slotBtnDeleteClicked();
 }
 
@@ -459,7 +468,8 @@ QString CopasiTableWidget::createNewName(const QString name)
 void CopasiTableWidget::slotBtnOKClicked()
 {
   // Assure that the changes to the current cell get commited.
-  btnOK->setFocus();
+  if (mShowButtons)
+    btnOK->setFocus();
 
   saveTable();
   fillTable();
@@ -506,8 +516,12 @@ void CopasiTableWidget::slotBtnDeleteClicked()
     }
   if (flagFirstFound)
     {
-      btnOK->setEnabled(true);
-      btnCancel->setEnabled(true);
+      emit setEnableOKAndCancel(true);
+      if (mShowButtons)
+        {
+          btnOK->setEnabled(true);
+          btnCancel->setEnabled(true);
+        }
     }
 }
 
@@ -524,8 +538,12 @@ void CopasiTableWidget::slotBtnNewClicked()
 
   table->ensureCellVisible(row, 0);
 
-  btnOK->setEnabled(true);
-  btnCancel->setEnabled(true);
+  emit setEnableOKAndCancel(true);
+  if (mShowButtons)
+    {
+      btnOK->setEnabled(true);
+      btnCancel->setEnabled(true);
+    }
 }
 
 //*********** Standard Interface to Copasi Widgets ******************

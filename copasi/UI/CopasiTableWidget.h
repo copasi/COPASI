@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.h,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2007/10/27 01:30:08 $
+//   $Date: 2007/10/27 17:07:51 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,6 +52,7 @@ class CopasiTableWidget : public CopasiWidget
     virtual void slotCurrentChanged(int, int);
     virtual void slotTableDelKey();
 
+  public slots:
     virtual void slotBtnOKClicked();
     virtual void slotBtnCancelClicked();
     virtual void slotBtnDeleteClicked();
@@ -92,6 +93,7 @@ class CopasiTableWidget : public CopasiWidget
 
     //bool mIgnoreUpdates;
     bool mRO;
+    bool mShowButtons;
     ListViews::ObjectType mOT;
 
     /**
@@ -161,6 +163,7 @@ class CopasiTableWidget : public CopasiWidget
      */
     virtual void keyPressEvent (QKeyEvent * e);
   signals:
+    void setEnableOKAndCancel(bool e);
     void delKeyPressed();
   };
 
