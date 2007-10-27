@@ -179,6 +179,10 @@ SOURCE=.\CQLyapWidget.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CQMathMatrixWidget.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CQMCAWidget.cpp
 # End Source File
 # Begin Source File
@@ -644,6 +648,10 @@ SOURCE=.\CQLyapWidget.h
 # Begin Source File
 
 SOURCE=.\CQLyapWidget.ui.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQMathMatrixWidget.h
 # End Source File
 # Begin Source File
 

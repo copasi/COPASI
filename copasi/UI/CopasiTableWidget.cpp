@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.cpp,v $
-//   $Revision: 1.53 $
+//   $Revision: 1.54 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/10/02 18:18:01 $
+//   $Author: aekamal $
+//   $Date: 2007/10/27 01:30:08 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,7 +26,7 @@
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CKeyFactory.h"
 
-CopasiTableWidget::CopasiTableWidget(QWidget *parent, bool ro, const char * name, WFlags f)
+CopasiTableWidget::CopasiTableWidget(QWidget *parent, bool ro, const char * name, WFlags f, bool showButtons)
     : CopasiWidget(parent, name, f)
 {
   mRO = ro;
@@ -55,7 +55,7 @@ CopasiTableWidget::CopasiTableWidget(QWidget *parent, bool ro, const char * name
   flagtoAdjust = true;
 
   //here the buttons are defined
-  if (!mRO)
+  if (!mRO && !showButtons)
     {
       btnOK = new QPushButton("Commit", this);
       btnCancel = new QPushButton("Revert", this);
@@ -69,7 +69,7 @@ CopasiTableWidget::CopasiTableWidget(QWidget *parent, bool ro, const char * name
   //vBoxLayout->addSpacing(5);
 
   QHBoxLayout* mHLayout = new QHBoxLayout(vBoxLayout, 0);
-  if (!mRO)
+  if (!mRO && !showButtons)
     {
       //mHLayout->addSpacing(32);
       //mHLayout->addSpacing(50);
@@ -104,7 +104,7 @@ CopasiTableWidget::CopasiTableWidget(QWidget *parent, bool ro, const char * name
   //connect(table, SIGNAL(delKeyPressed()), this, SLOT(slotTableDelKey()));
   //<update_comment>
 
-  if (!mRO)
+  if (!mRO && !showButtons)
     {
       connect(btnOK, SIGNAL(clicked ()), this,
               SLOT(slotBtnOKClicked()));

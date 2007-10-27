@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.h,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/08/07 17:29:34 $
+//   $Author: aekamal $
+//   $Date: 2007/10/27 01:30:08 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -39,7 +39,7 @@ class CopasiTableWidget : public CopasiWidget
     Q_OBJECT
 
   public:
-    CopasiTableWidget(QWidget *parent, bool ro, const char * name = 0, WFlags f = 0);
+    CopasiTableWidget(QWidget *parent, bool ro, const char * name = 0, WFlags f = 0, bool showButtons = true);
 
     virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
     virtual bool leave();

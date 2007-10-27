@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.pro,v $ 
-#   $Revision: 1.38 $ 
+#   $Revision: 1.39 $ 
 #   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2007/10/02 18:18:05 $ 
+#   $Author: aekamal $ 
+#   $Date: 2007/10/27 01:30:08 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -11,7 +11,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.38 $ $Author: shoops $ $Date: 2007/10/02 18:18:05 $  
+# $Revision: 1.39 $ $Author: aekamal $ $Date: 2007/10/27 01:30:08 $  
 ######################################################################
 
 TEMPLATE = subdirs
@@ -67,6 +67,10 @@ contains(DEFINES, COPASI_TSSA) {
   SUBDIRS += plotUI
   SUBDIRS += UI
   SUBDIRS += wizard
+}
+
+contains(DEFINES, COPASI_MIRIAM) {
+  SUBDIRS += MIRIAM
 }
 
 # Now build the libs

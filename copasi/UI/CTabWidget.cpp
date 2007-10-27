@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CTabWidget.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2007/10/10 20:33:19 $
+//   $Date: 2007/10/27 01:30:08 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -12,14 +12,15 @@
 
 #include <qtabwidget.h>
 #include <qlayout.h>
-#include <qmultilineedit.h>
 
 #include "CTabWidget.h"
 #include "ModelWidget.h"
+#include "CMIRIAMModelWidget.h"
 
 /*
- *  Constructs a CQPreferenceDialog as a child of 'parent', with the
- *  name 'name' and widget flags set to 'f'.
+ *  Constructs a CTabWidget as a child of 'parent', with the
+ *  name 'name' and widget flags set to 'f'. label1 and label2
+ *  are the tab names.
  */
 CTabWidget::CTabWidget(QString& label1, QString& label2,
                        QWidget* parent, const char* name, WFlags f)
@@ -33,13 +34,10 @@ CTabWidget::CTabWidget(QString& label1, QString& label2,
   tabLayout->addWidget(mTabWidget);
 
   Tab1Widget = new ModelWidget(mTabWidget);
-  //Tab2Widget = new ModelWidget(mTabWidget);
-  QMultiLineEdit* mle = new QMultiLineEdit(mTabWidget, "multiLineEdit");
-
-  mle->setText("MIRIAM Widgets go here...");
+  Tab2Widget = new CMIRIAMModelWidget(mTabWidget);
 
   mTabWidget->addTab(Tab1Widget, label1);
-  mTabWidget->addTab(mle, label2);
+  mTabWidget->addTab(Tab2Widget, label2);
 }
 
 /*

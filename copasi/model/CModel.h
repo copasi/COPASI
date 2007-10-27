@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.151 $
+//   $Revision: 1.152 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/10/15 17:51:25 $
+//   $Author: aekamal $
+//   $Date: 2007/10/27 01:30:07 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,6 +26,10 @@
 #include "utilities/CVector.h"
 #include "utilities/CMatrix.h"
 #include "report/CCopasiContainer.h"
+
+#ifdef COPASI_MIRIAM
+#include "MIRIAM/CModelMIRIAMInfo.h"
+#endif
 
 class CCompartment;
 class CProcessReport;
@@ -359,6 +363,13 @@ class CModel : public CModelEntity
      * A flag indicating whether the state template has to be reordered
      */
     bool mReorderNeeded;
+
+#ifdef COPASI_MIRIAM
+    /**
+        *  Stores the MIRIAM info of Model.
+        */
+    CModelMIRIAMInfo mMIRIAMInfo;
+#endif COPASI_MIRIAM
 
   public:
     /**
@@ -1130,6 +1141,14 @@ class CModel : public CModelEntity
      * This updates the annotations of the link matrix and the stoichiometry matrix
      */
     void updateMatrixAnnotations();
+
+#ifdef COPASI_MIRIAM
+    /**
+        * Return the MIRIAM info of this model
+        * @return CModelMIRIAMInfo&
+        */
+    CModelMIRIAMInfo& getMIRIAMInfo();
+#endif
 
 #ifdef COPASI_DEBUG
   public:

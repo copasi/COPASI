@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $ 
-#   $Revision: 1.159 $ 
+#   $Revision: 1.160 $ 
 #   $Name:  $ 
 #   $Author: aekamal $ 
-#   $Date: 2007/10/10 16:24:00 $ 
+#   $Date: 2007/10/27 01:30:08 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -11,7 +11,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.159 $ $Author: aekamal $ $Date: 2007/10/10 16:24:00 $  
+# $Revision: 1.160 $ $Author: aekamal $ $Date: 2007/10/27 01:30:08 $  
 ######################################################################
 
 LIB = UI
@@ -351,8 +351,11 @@ SOURCES += CQRegistrationDialog.cpp
 #endif // COPAS_LICENSE_COM
 
 contains(DEFINES, COPASI_MIRIAM) {
-  HEADERS += CTabWidget.h
-  SOURCES += CTabWidget.cpp
+  HEADERS += CTabWidget.h \
+             CMIRIAMModelWidget.h
+
+  SOURCES += CTabWidget.cpp \
+             CMIRIAMModelWidget.cpp
 }
 
 DISTFILES += UI.dsp \

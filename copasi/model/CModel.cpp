@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.323 $
+//   $Revision: 1.324 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/10/15 17:51:26 $
+//   $Author: aekamal $
+//   $Date: 2007/10/27 01:30:07 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -965,6 +965,11 @@ const C_FLOAT64 & CModel::getTime() const
 
 const CVector<unsigned C_INT32> & CModel::getMetabolitePermutation() const
   {CCHECK return mRowLU;}
+
+#ifdef COPASI_MIRIAM
+CModelMIRIAMInfo& CModel::getMIRIAMInfo()
+{return mMIRIAMInfo;}
+#endif
 
 //**********************************************************************
 

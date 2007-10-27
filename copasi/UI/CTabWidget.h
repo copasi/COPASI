@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CTabWidget.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2007/10/10 20:33:19 $
+//   $Date: 2007/10/27 01:30:08 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,7 +17,6 @@
 
 #include "copasiWidget.h"
 
-class CopasiWidget;
 /**This class is the container for the two widgets - the entity widget
  * and the associated MIRIAM object widget.
  */
