@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CTabWidget.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2007/10/27 01:30:08 $
+//   $Author: ssahle $
+//   $Date: 2007/10/29 13:46:05 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,7 +23,7 @@
 class CTabWidget : public CopasiWidget
   {
   public:
-    CTabWidget(QString& label1, QString& label2,
+    CTabWidget(const QString& label1, const QString& label2,
                QWidget* parent = 0, const char* name = 0, WFlags f = 0);
     ~CTabWidget();
     CopasiWidget* getTab1Widget();

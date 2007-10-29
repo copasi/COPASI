@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CTabWidget.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2007/10/27 01:30:08 $
+//   $Author: ssahle $
+//   $Date: 2007/10/29 13:46:05 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,7 +22,7 @@
  *  name 'name' and widget flags set to 'f'. label1 and label2
  *  are the tab names.
  */
-CTabWidget::CTabWidget(QString& label1, QString& label2,
+CTabWidget::CTabWidget(const QString& label1, const QString& label2,
                        QWidget* parent, const char* name, WFlags f)
     : CopasiWidget(parent, name, f)
 {
