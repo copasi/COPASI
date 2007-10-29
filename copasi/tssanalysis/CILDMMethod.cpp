@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMMethod.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
-//   $Author: akoenig $
-//   $Date: 2007/10/26 09:05:44 $
+//   $Author: ssahle $
+//   $Date: 2007/10/29 10:28:57 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,11 +13,13 @@
 // to activate the printing  set flag_...=0:
 
 // flag_jacob=0  to print Jacobian
+// flag_schur=0  to print matrices of Schur decomposition
 // flag_tab =0 to print the Tabs with slow space Analysis
 // flag_deufl=0 to prove the deuflhard algorithm
 // flag_Td =0  to print the transformation matrices mTd and mTdInverse
 // flag_sylvester=0  to print the transformed Jacobian:  mTdInverse*Jacobian_initial*mTd (should be diagonal)
 // flag_norm =0 for printing "norm story"
+// flag_orthog =0 to print the matrices proved the orthogonality of transformation
 
 #include "copasi.h"
 
@@ -186,24 +188,25 @@ void CILDMMethod::integrationStep(const double & deltaT)
   C_INT ISize = mIWork.size();
 
   mLSODA(&EvalF, //  1. evaluate F
-         &mData.dim, //  2. number of variables
-         mY, //  3. the array of current concentrations
-         &mTime, //  4. the current time
-         &EndTime, //  5. the final time
-         &ITOL, //  6. error control
-         &mRtol, //  7. relative tolerance array
-         mAtol.array(), //  8. absolute tolerance array
-         &mState, //  9. output by overshoot & interpolatation
-         &mLsodaStatus, // 10. the state control variable
-         &one, // 11. futher options (one)
-         mDWork.array(), // 12. the double work array
-         &DSize, // 13. the double work array size
-         mIWork.array(), // 14. the int work array
-         &ISize, // 15. the int work array size
-         NULL, // 16. evaluate J (not given)
-         &mJType);        // 17. the type of jacobian calculate (2)
+          &mData.dim, //  2. number of variables
+          mY, //  3. the array of current concentrations
+          &mTime, //  4. the current time
+          &EndTime, //  5. the final time
+          &ITOL, //  6. error control
+          &mRtol, //  7. relative tolerance array
+          mAtol.array(), //  8. absolute tolerance array
+          &mState, //  9. output by overshoot & interpolatation
+          &mLsodaStatus, // 10. the state control variable
+          &one, // 11. futher options (one)
+          mDWork.array(), // 12. the double work array
+          &DSize, // 13. the double work array size
+          mIWork.array(), // 14. the int work array
+          &ISize, // 15. the int work array size
+          NULL, // 16. evaluate J (not given)
+          &mJType);        // 17. the type of jacobian calculate (2)
 
-  if (mLsodaStatus == -1) mLsodaStatus = 2;
+  if (mLsodaStatus == -1)
+    mLsodaStatus = 2;
 
   if ((mLsodaStatus != 1) && (mLsodaStatus != 2) && (mLsodaStatus != -1))
     {
@@ -266,18 +269,17 @@ void CILDMMethod::step(const double & deltaT)
 
   CVector<C_FLOAT64> Xconc; //current state converted to concentrations
   Xconc.resize(dim);
+
   for (i = 0; i < dim; ++i)
     Xconc[i] = mY[i] * number2conc;
 
-  /*
-    std::cout << "mY_initial as concentration:" << std::endl;
-    for (i = 0; i < dim; i++)
-      std::cout << Xconc[i] << std::endl;
-  */
   for (i = 0; i < dim; i++)
-    {
-      mY_initial[i] = mY[i];
-    }
+    mY_initial[i] = mY[i];
+
+  CVector<C_FLOAT64> Xconc_initial; //current state converted to concentrations
+  Xconc_initial.resize(dim);
+  for (i = 0; i < dim; ++i)
+    Xconc_initial[i] = mY_initial[i] * number2conc;
 
   // save initial  Jacobian before next time step
   for (i = 0; i < dim; i++)
@@ -285,14 +287,12 @@ void CILDMMethod::step(const double & deltaT)
       mJacobian_initial(i, j) = mJacobian(i, j);
 
   // Next time step
-
   integrationStep(deltaT);
 
   mpModel->updateSimulatedValues(mReducedModel);
   // TO REMOVE : mpModel->applyAssignments();
 
   // Calculate Jacobian for time step control
-
   mpModel->calculateJacobianX(mJacobian, 1e-6, 1e-12);
 
   if (flag_jacob == 0)
@@ -301,19 +301,6 @@ void CILDMMethod::step(const double & deltaT)
       std::cout << mJacobian << std::endl;
     }
 
-  /*
-    std::cout << "Current concentrations" << std::endl;
-    for (i = 0; (unsigned C_INT32) i < mpModel->getMetabolites().size(); ++i)
-      std::cout << mpModel->getMetabolites()[i]->getConcentration() << ", ";
-    std::cout << std::endl;
-
-    for (i = 0; i < dim; ++i)
-      Xconc[i] = mY[i] * number2conc;
-
-    std::cout << "mY_next as concentration:" << std::endl;
-    for (i = 0; i < dim; i++)
-      std::cout << Xconc[i] << std::endl;
-  */
   //CMatrix<C_FLOAT64> mTd_save;
   for (i = 0; i < dim; i++)
     for (j = 0; j < dim; j++)
@@ -329,16 +316,35 @@ void CILDMMethod::step(const double & deltaT)
         mTdInverse(i, j) = 0;
       }
 
-  /**
-   Schur  Decomposition of Jacobian (reordered).  Output:  mQ - transformation matrix
-   mR - block upper triangular matrix (with ordered eigenvalues)
-  */
+  /** Schur  Decomposition of Jacobian (reordered).
+  Output:  mQ - transformation matrix mR - block upper triangular matrix (with ordered eigenvalues) */
+
   C_INT failed = 0;
   C_INT info_schur = 0;
+
+  /** test **/
+
+  C_FLOAT64 max = 0;
+  CVector<C_FLOAT64> re;
+  CVector<C_FLOAT64> dxdt_relax;
+  CVector<C_FLOAT64> x_relax;
+  CVector<C_FLOAT64> x_help;
+  CVector<C_FLOAT64> dxdt;
+
+  CMatrix<C_FLOAT64> orthog_prove;
+  orthog_prove.resize(dim, dim);
+
+  C_INT flag_orthog = 1;
+
+  CVector<C_INT> index_metab;
+  index_metab.resize(dim);
+
+  /** end of test **/
 
   schur(info_schur);
 
   std::cout << "info_schur: " << info_schur << std::endl;
+
   if (info_schur)
     {
       std::cout << " There are problems with calculation of Jacobi matrix. Please check  the problem is specified suitable. " << std::endl;
@@ -346,15 +352,36 @@ void CILDMMethod::step(const double & deltaT)
       goto integration;
     }
 
-  if (flag_jacob == 0)
+  for (i = 0; i < dim; i++)
+    for (j = 0; j < dim; j++)
+      {
+        mTdInverse(i, j) = mQ(j, i);
+      }
+
+  // Prove of orthogonality of mQ
+  for (i = 0; i < dim; i++)
+    for (j = 0; j < dim; j++)
+      {
+        orthog_prove(i, j) = orthog(i, j);
+      }
+
+  if (flag_orthog == 0)
+    std::cout << "Proof of  matrix Q:" << orthog_prove << std::endl;
+
+  C_INT flag_schur;
+  flag_schur = 1;
+
+  if (flag_schur == 0)
     {
-      std::cout << "mR :" << std::endl,
+      std::cout << "Schur Decomposition" << std::endl;
+      std::cout << "mR - block upper triangular matrix :" << std::endl;
       std::cout << mR << std::endl;
+      std::cout << "mQ - transformation matrix" << std::endl;
+      std::cout << mQ << std::endl;
     }
 
   /* If complex eigenvalues */
-  // :TODO: Bug 873 this is broken for dim <= 1
-
+  //BUG 873
   if (mR(dim - 1, dim - 1) == mR(dim - 2 , dim - 2))
     {
       if (dim == 2)
@@ -364,12 +391,12 @@ void CILDMMethod::step(const double & deltaT)
         }
       else
         {
-          fast = fast + 1;
-          slow = dim - fast;
+          //  fast = fast + 1;
+          //  slow = dim - fast;
         }
     }
 
-  /* If positive eigenvalues */
+  // If positive eigenvalues
 
   if (mR(dim - 1, dim - 1) >= 0)
     {
@@ -379,6 +406,173 @@ void CILDMMethod::step(const double & deltaT)
       failed = 1;
       goto integration;
     }
+
+  C_INT temp;
+  temp = dim - 1;
+  mat_anal_mod(temp);
+
+  for (j = 0; j < dim; j++)
+    index_metab[j] = -1;
+
+  for (i = 0; i < dim ; i ++)
+    for (j = 0; j < dim; j++)
+      {
+        if (mVslow(dim - i - 1, j) > 70)
+          index_metab[i] = j + 1;
+      }
+
+  //std::cout << "mVslow_metab: " << mVslow << std::endl;
+  //std::cout << std::endl;
+
+  std::cout << "Dominance of metabolites in the mode:" << std::endl;
+
+  for (i = 0; i < dim; i++)
+    {
+      j = index_metab[i] - 1;
+      std::cout << " Mode number: " << dim - i << " TS: " << - 1 / mR(dim - i - 1, dim - i - 1) << " : ";
+      if (j > - 1)
+        std::cout << "  Metabolite : " << mpModel->getMetabolitesX()[j]->getObjectName() << std::endl;
+      else
+        std::cout << "   There is no dominant metabolite in this mode" << std::endl;
+    }
+
+  C_FLOAT64 y_cons;
+  C_INT number, info, k;
+  info = 0;
+  k = 0;
+  number = index_metab[k] - 1;
+
+  if (number > - 1)
+    newton_for_timestep(number, y_cons, info);
+  else
+    std::cout << "The are no dominant metabolites in  fastest mode" << std::endl;
+
+  C_INT flag_deufl;
+  flag_deufl = 1;
+
+  // Experiment 8.10
+
+  while (k < dim - 1)
+    {
+      if (number > -1)
+        {
+          dxdt.resize(dim);
+          for (j = 0; j < dim; j++)
+            dxdt[j] = 0.;
+
+          //CVector<C_FLOAT64> x_help;
+          x_help.resize(dim);
+
+          for (j = 0; j < dim; j++)
+            {
+              x_help[j] = mY_initial[j] * number2conc;
+              if (flag_deufl == 0)
+                std::cout << "x_help: " << x_help[j] << std::endl;
+            }
+
+          // mpModel->calculateDerivativesX(dxdt.array());
+          calculateDerivativesX(x_help.array(), dxdt.array());
+
+          info = 0;
+
+          //NEWTON: Looking for consistent initial value for DAE system
+          //Output:  y_cons, info
+
+          newton_for_timestep(number, y_cons, info);
+
+          if (info)
+            {
+              // TODO
+              std::cout << "info: newton iteration stop" << std::endl;
+
+              break;
+            }
+
+          // calculation of x_relax at point x_relax (after relaxing yf to slow manifold)
+
+          // CVector<C_FLOAT64> x_relax;
+          x_relax.resize(dim);
+
+          for (i = 0; i < dim; i ++)
+            {
+              if (i == number)
+                x_relax[i] = y_cons;
+              else
+                x_relax[i] = x_help[i];
+            }
+
+          //CVector<C_FLOAT64> dxdt_relax;
+          dxdt_relax.resize(dim);
+
+          if (flag_deufl == 0)
+            std::cout << "x_relax: " << x_relax[i] << std::endl;
+
+          calculateDerivativesX(x_relax.array(), dxdt_relax.array());
+
+          for (i = 0; i < dim; i++)
+            {
+              if (flag_deufl == 0)
+                {
+                  std::cout << "dxdt_relax[" << i << "]: " << dxdt_relax[i] << std::endl;
+                  std::cout << "dxdt[" << i << "]: " << dxdt[i] << std::endl;
+                }
+            }
+
+          //CVector<C_FLOAT64> re;
+          re.resize(dim);
+
+          C_FLOAT64 eps;
+          eps = 1 / fabs(mR(dim - k - 1, dim - k - 1));
+          std::cout << "EPS: " << eps << std::endl;
+
+          // stop criterion for slow reaction modes
+
+          for (i = 0; i < dim; i++)
+            {
+              if (i == number)
+                re[i] = 0;
+              else
+                {
+                  re[i] = fabs(dxdt_relax[i] - dxdt[i]);
+                  re[i] = re[i] * eps;
+                }
+            }
+
+          //C_FLOAT64 max = 0.;
+          for (i = 0; i < dim; i++)
+            if (max < re[i])
+              max = re[i];
+
+          if (max >= mDtol)
+            info = 1;
+          else
+            info = 0;
+
+          std::cout << std::endl;
+          std::cout << "************* Prove of Deuflhard criterium for metabolite  " << mpModel->getMetabolitesX()[number]->getObjectName() << "  ";
+
+          if (info == 0)
+            std::cout << "is satisfied." << " max: " << max << " mDtol: " << mDtol << std::endl;
+          else
+            std::cout << "not satisfied." << " max: " << max << " mDtol: " << mDtol << std::endl;
+
+          std::cout << std::endl;
+        }
+
+      k = k + 1;
+      number = index_metab[k] - 1;
+      max = 0;
+    }
+
+  // end of experiment 21.09
+
+  for (i = 0; i < dim; i++)
+    for (j = 0; j < dim; j++)
+      mTd(i, j) = 0;
+
+  for (i = 0; i < dim; i++)
+    for (j = 0; j < dim; j++)
+      mTdInverse(i, j) = 0;
 
   C_INT failed_while;
 
@@ -396,31 +590,17 @@ void CILDMMethod::step(const double & deltaT)
 
       slow = dim - fast;
 
-      /* for (i = 0; i < dim; i++)
-         for (j = 0; j < dim; j++)
-          {
-            mTd_save(i, j) = mTd(i,j);
-            mTdInverse_save(i, j) = mTdInverse(i,j);
-          }
-      */
-      /**
-        Solution of Sylvester equation for given slow, mQ,mR
-        Output: mTd, mTdinverse and mQz (mQz is used later for newton iterations)
-        */
+      /** Solution of Sylvester equation for given slow, mQ,mR
+      Output: mTd, mTdinverse and mQz (mQz is used later for newton iterations) */
 
       C_INT info = 0;
 
       failed_while = 0;
 
       sylvester (slow, info);
+
       if (info)
         {
-          // fast = fast - 1;
-          // if (mR(slow - 1, slow - 1) == mR(slow , slow))
-          //  fast = fast - 1;
-          // std::cout << " slow_if " << slow << std::endl;
-          // slow = dim - fast;
-          // std::cout << " slow_after_if " << slow << std::endl;
           std::cout << "sylvester not work" << " slow = " << slow << std::endl;
           failed_while = 1;
           goto integration;
@@ -429,7 +609,7 @@ void CILDMMethod::step(const double & deltaT)
       /* Check real parts of eigenvalues of Jacobian */
 
       for (i = slow ; i < dim; i++)
-        if (mR(i - 1, i - 1) >= 0)
+        if (mR(i , i) >= 0)
           {
             std::cout << "positive eigenvalues for i = " << i << std::endl;
             failed_while = 1;
@@ -441,27 +621,23 @@ void CILDMMethod::step(const double & deltaT)
 
       mCfast.resize(fast);
 
-      /**
-        Deuflhard Iteration:  Prove Deuflhard criteria, find consistent
-      initial value for DAE
-        output:  info - if Deuflhard is satisfied for this slow;
-        transformation matrices
-        mTd and mTdinverse
-      */
+      /** Deuflhard Iteration:  Prove Deuflhard criteria, find consistent initial value for DAE
+      output:  info - if Deuflhard is satisfied for this slow;
+      transformation matrices mTd and mTdinverse */
+
       info = 0;
 
-      deuflhard(slow, info);
+      C_INT help;
+      help = 0;
 
-      /* If the Deuflhard criterion is not satisfied, return to smaller fast */
+      deuflhard(slow, info);
+      help = help + 1;
+      //std::cout << "Test_Deuflh   help=" << help << std::endl;
 
       failed_while = 0;
 
       if (info)
         {
-          // fast = fast - 1;
-          // if (mR(slow - 1, slow - 1) == mR(slow , slow))
-          //  fast = fast - 1;
-          // slow = dim - fast;
           std::cout << "deuflhard not work" << " slow_deufl " << slow << std::endl;
           failed_while = 1;
           goto integration;
@@ -469,35 +645,18 @@ void CILDMMethod::step(const double & deltaT)
     }
 
 integration:
-  std::cout << "failed = " << failed << std::endl;
-  std::cout << "failed_while = " << failed_while << std::endl;
 
   if ((failed == 1) || (failed_while == 1))
     {
       if (slow < dim)
         {
           fast = fast - 1;
-          if ((fast > 1) && (mR(slow - 1, slow - 1) == mR(slow , slow)))
+          slow = dim - fast;
+          if ((fast >= 1) && (mR(slow - 1, slow - 1) == mR(slow , slow)))
             fast = fast - 1;
           slow = dim - fast;
-          /*         for (i = 0; i < dim; i++)
-                      for (j = 0; j < dim; j++)
-                       {
-                         mTd(i, j) = mTd_save(i, j);
-                         mTdInverse(i, j) = mTdInverse_save(i, j);
-                      }  */
         }
     }
-  /*else
-    {
-      for (i = 0; i < dim; i++)
-        for (j = 0; j < dim; j++)
-          {
-            mTd(i, j) = mTd_save(i, j);
-            mTdInverse(i, j) = mTdInverse_save(i, j);
-          }
-    }
-  */
 
   mSlow = slow;
 
@@ -505,15 +664,24 @@ integration:
   std::cout << "fast " << fast << std::endl;
   std::cout << std::endl;
 
+  for (i = 0; i < dim; i++)
+    for (j = 0; j < dim; j++)
+      {
+        orthog_prove(i, j) = orthog(i, j);
+      }
+
+  if (flag_orthog == 0)
+    std::cout << "Proof of  matrix mTdInverse:" << orthog_prove << std::endl;
+
   // Flag for print Tabs
 
   C_INT flag_tab;
-
   flag_tab = 1;    //change flag_tab=0 to print the Analysis Tabs  in the file
 
   mat_anal_mod(slow);
   mat_anal_metab(slow);
   mat_anal_mod_space(slow);
+  mat_anal_fast_space(slow);
 
   if (flag_tab == 0)
     {
@@ -542,6 +710,11 @@ integration:
         }
     }
 
+  for (i = 0 ; i < dim; i++)
+    std::cout << "Contribution to fast space:" << mpModel->getMetabolitesX()[i]->getObjectName() << "  " << mVfast_space[i] << std::endl;
+
+  std::cout << std::endl;
+
   if (slow == dim)
     {
       std::cout << "No reduction is possible at this time point " << std::endl;
@@ -562,37 +735,13 @@ integration:
       std::cout << std::endl;
     }
 
-  /*// save initial  Jacobian before next time step
-      for (i = 0; i < dim; i++)
-          for (j = 0; j < dim; j++)
-             mJacobian_initial(i, j) = mJacobian(i, j);
-
-     // Next time step
-
-     integrationStep(deltaT);
-
-     mpModel->updateSimulatedValues();
-     // TO REMOVE : mpModel->applyAssignments();
-
-     // Calculate Jacobian for time step control
-
-     mpModel->calculateJacobianX(mJacobian, 1e-6, 1e-12);
-   */
-  C_INT number, info;
+  // C_INT number, info;
 
   info = 0;
 
-  C_FLOAT64 y_cons;
+  //  C_FLOAT64 y_cons;
   CVector<C_FLOAT64> error_prove;
   error_prove.resize(dim);
-
-  /* the vector mY is the current state of the system*/
-
-  //C_FLOAT64 number2conc = mpModel->getNumber2QuantityFactor()
-  //                      / mpModel->getCompartments()[0]->getInitialValue();
-
-  //this is an ugly hack that only makes sense if all metabs are in the same compartment
-  //at the moment is is the only case the algorithm deals with
 
   //  CVector<C_FLOAT64> Xconc; //current state converted to concentrations
   // Xconc.resize(dim);
@@ -620,18 +769,9 @@ integration:
 
   mpModel->calculateJacobianX(mJacobian, 1e-6, 1e-12);
 
-  /*
-    std::cout << "Jacobian last: " << std::endl;
-    std::cout << mJacobian << std::endl;
-
-    std::cout << "Current concentrations" << std::endl;
-    for (i = 0; (unsigned C_INT32) i < mpModel->getMetabolites().size(); ++i)
-      std::cout << mpModel->getMetabolites()[i]->getConcentration() << ", ";
-    std::cout << std::endl;
-  */
-
   // new entry for every entry contains the current data of currently step
   setVectors(slow);
+
   // set the stepcounter
   mCurrentStep += 1;
 
@@ -677,6 +817,7 @@ void CILDMMethod::mat_anal_mod(C_INT & slow)
     for (i = 0; i < dim; i++)
       for (j = 0; j < dim; j++)
         mVslow(i, j) = 0;
+
   return;
 }
 
@@ -685,7 +826,6 @@ MAT_ANAL_METAB:  mathematical analysis of matrices mTd for post-analysis
  */
 void CILDMMethod::mat_anal_metab(C_INT & slow)
 {
-
   C_INT i, j, dim;
 
   dim = mData.dim;
@@ -772,6 +912,73 @@ void CILDMMethod::mat_anal_mod_space(C_INT & slow)
   return;
 }
 
+/**
+MAT_ANAL_fast_space:  mathematical analysis of matrices mTdInverse for post-analysis
+ */
+
+void CILDMMethod::mat_anal_fast_space(C_INT & slow)
+{
+  C_FLOAT64 denom, length;
+  C_INT i, j, dim;
+
+  dim = mData.dim;
+  C_INT fast;
+  fast = dim - slow;
+
+  CMatrix<C_FLOAT64> Matrix_anal;
+  Matrix_anal.resize(dim, dim);
+
+  for (j = 0; j < dim; j++)
+    {
+      length = 0;
+      for (i = 0; i < dim; i++)
+        {
+          length = length + mTdInverse(i, j) * mTdInverse(i, j);
+        }
+      length = sqrt(length);
+      length = 1;
+      for (i = 0; i < dim; i++)
+        Matrix_anal (i, j) = mTdInverse(i, j) / length;
+    }
+
+  if (slow < dim)
+    {
+      denom = 0.0;
+      for (i = 0; i < dim; i++)
+        {
+          for (j = slow; j < dim; j++)
+            denom = denom + fabs(Matrix_anal(j, i));
+        }
+
+      for (i = 0; i < dim; i++)
+        mVfast_space[i] = 0.0;
+
+      for (j = 0; j < dim; j++)
+        {
+          for (i = slow; i < dim; i++)
+            mVfast_space[j] = mVfast_space[j] + fabs(Matrix_anal(i, j));
+
+          mVfast_space[j] = (mVfast_space[j] / denom) * 100;
+        }
+    }
+  else
+    for (i = 0; i < dim; i++)
+      mVfast_space[i] = 0;
+  return;
+}
+
+double CILDMMethod::orthog(C_INT & number1, C_INT & number2)
+{
+  C_FLOAT64 product = 0;
+  C_INT k, dim;
+
+  dim = mData.dim;
+
+  for (k = 0; k < dim; k++)
+    product = product + mTdInverse(k, number1) * mTdInverse(k, number2);
+
+  return product;
+}
 /**
  SCHUR:  Schur  Decomposition of Jacobian (reordered).
  Output:  mQ - transformation matrix
@@ -1432,7 +1639,6 @@ void CILDMMethod::evalsort(C_FLOAT64 *reval, const C_INT & dim)
   for (i = 0; i < dim - 1; i++)
     {
       min = i;
-
       for (j = i + 1; j < dim; j++)
         {
           if (reval[j] < reval[min])
@@ -1461,7 +1667,6 @@ void CILDMMethod::evalsort(C_FLOAT64 *reval, const C_INT & dim)
  */
 void CILDMMethod::deuflhard(C_INT & slow, C_INT & info)
 {
-
   C_INT i, j;
   C_INT dim = mData.dim;
   C_INT fast = dim - slow;
@@ -1503,9 +1708,8 @@ void CILDMMethod::deuflhard(C_INT & slow, C_INT & info)
     c_slow[j] = c_full[j];
 
   for (j = 0; j < fast; j++)
-    {
-      mCfast[j] = c_full[j + slow];
-    }
+    mCfast[j] = c_full[j + slow];
+
   CVector<C_FLOAT64> g_full;
   g_full.resize(dim);
 
@@ -1554,10 +1758,8 @@ void CILDMMethod::deuflhard(C_INT & slow, C_INT & info)
 
   info = 0;
 
-  /**
-  NEWTON: Looking for consistent initial value for DAE system
-  Output:  mCfast, info
-  */
+  /**  NEWTON: Looking for consistent initial value for DAE system
+  Output:  mCfast, info */
   newton(c_slow.array(), slow, info);
 
   if (info)
@@ -1568,8 +1770,7 @@ void CILDMMethod::deuflhard(C_INT & slow, C_INT & info)
       return;
     }
 
-  /* calculation of g_relax at point x_relax
-     (after relaxing yf to slow manifold)*/
+  /* calculation of g_relax at point x_relax (after relaxing yf to slow manifold)*/
 
   CVector<C_FLOAT64> c_relax;
   c_relax.resize(dim);
@@ -1587,9 +1788,7 @@ void CILDMMethod::deuflhard(C_INT & slow, C_INT & info)
     c_relax[i] = c_slow[i];
 
   for (i = slow; i < dim; i++)
-    {
-      c_relax[i] = mCfast[i - slow];
-    }
+    c_relax[i] = mCfast[i - slow];
 
   for (i = 0; i < dim; i++)
     {
@@ -1728,6 +1927,7 @@ void CILDMMethod::transformation_norm(C_INT & slow, C_INT & info)
       std::cout << " S_new: " << std::endl;
       std::cout << S_new << std::endl;
     }
+
   C_FLOAT64 tol;
 
   tol = 1e-2;
@@ -1850,11 +2050,11 @@ void CILDMMethod::newton(C_FLOAT64 *ys, C_INT & slow, C_INT & info)
   S_22.resize(fast, fast);
 
   nrhs = 1;
-  tol = 0.000001;
+  tol = 1e-6;
   err = 10.0;
   iter = 0;
 
-  itermax = 10;
+  itermax = 150;
   iterations = 0;
 
   info = 0;
@@ -1864,9 +2064,7 @@ void CILDMMethod::newton(C_FLOAT64 *ys, C_INT & slow, C_INT & info)
       S_22(i, j) = mQz(i, j);
 
   for (i = 0; i < fast; i++)
-    {
-      yf_newton[i] = mCfast[i];
-    }
+    yf_newton[i] = mCfast[i];
 
   for (i = 0; i < fast; i++)
     for (j = 0; j < fast; j++)
@@ -1895,10 +2093,7 @@ void CILDMMethod::newton(C_FLOAT64 *ys, C_INT & slow, C_INT & info)
         y_newton[i] = ys[i];
 
       for (i = slow; i < dim; i++)
-        {
-          y_newton[i] = yf_newton[i - slow];
-          //   std::cout << "y_newton_partII: " << y_newton[i] << std::endl;
-        }
+        y_newton[i] = yf_newton[i - slow];
 
       for (i = 0; i < dim; i++)
         {
@@ -1917,9 +2112,7 @@ void CILDMMethod::newton(C_FLOAT64 *ys, C_INT & slow, C_INT & info)
         }
 
       for (i = 0; i < fast; i++)
-        {
-          gf_newton[i] = -1. * g_newton[i + slow];
-        }
+        gf_newton[i] = -1. * g_newton[i + slow];
 
       /*       int dgesv_(integer *n, integer *nrhs, doublereal *a, integer
        * *lda, integer *ipiv, doublereal *b, integer *ldb, integer *info)
@@ -1993,9 +2186,7 @@ void CILDMMethod::newton(C_FLOAT64 *ys, C_INT & slow, C_INT & info)
         }
 
       for (i = 0; i < fast; i++)
-        {
-          d_yf[i] = gf_newton[i];
-        }
+        d_yf[i] = gf_newton[i];
 
       err = -10.;
       for (i = 0; i < fast; i++)
@@ -2040,10 +2231,10 @@ void CILDMMethod::newton_for_timestep(C_INT metabolite_number, C_FLOAT64 & y_con
 {
   C_INT i, iter, itermax;
   iter = 0;
-  itermax = 50;
+  itermax = 150;
 
   C_FLOAT64 tol, err;
-  tol = 1e-12;
+  tol = 1e-6;
   err = 10.0;
 
   C_INT dim = mData.dim;
@@ -2058,9 +2249,8 @@ void CILDMMethod::newton_for_timestep(C_INT metabolite_number, C_FLOAT64 & y_con
       std::cout << "Metabolite: " << mpModel->getMetabolitesX()[metabolite_number]->getObjectName() << " seems to be constant " << std::endl;
       return;
     }
-  info = 0;
 
-  /* the vector mY is the current state of the system*/
+  info = 0;
 
   C_FLOAT64 number2conc = mpModel->getNumber2QuantityFactor()
                           / mpModel->getCompartments()[0]->getInitialValue();
@@ -2092,15 +2282,8 @@ void CILDMMethod::newton_for_timestep(C_INT metabolite_number, C_FLOAT64 & y_con
 
       calculateDerivativesX(y_newton.array(), dydt.array());
 
-      //for(i = 0; i < dim; i++)
-      // std::cout << "dydt[" << i << "]: " << dydt[i] << std::endl;
-
       d_y = - 1 / deriv * dydt[metabolite_number];
 
-      //    if  ((iter == 2)&(d_y < 1e-16))
-      //        std::cout << "Warning: Concentration rate of metabolite " << metabolite_number << " is close  to zero. " << deriv << "  (constant value maybe?)" << std::endl;
-
-      //std::cout << "d_y: " << d_y << std::endl;
       if (err > fabs(d_y))
         err = fabs(d_y);
     }
@@ -2128,12 +2311,14 @@ void CILDMMethod::calculateDerivativesX(C_FLOAT64 * X1, C_FLOAT64 * Y1)
   for (i = 0, imax = indep; i < imax; i++)
     mpModel->getMetabolitesX()[i]->setConcentration(X1[i]);
 
+  //mpState->setUpdateDependentRequired(true);
   mpModel->updateSimulatedValues(mReducedModel);
   // TO REMOVE:  mpModel->applyAssignments();
   mpModel->calculateDerivativesX(Y1);
 
   C_FLOAT64 number2conc = mpModel->getNumber2QuantityFactor()
                           / mpModel->getCompartments()[0]->getInitialValue();
+
   for (i = 0; i < imax;++i)
     Y1[i] *= number2conc;
 
@@ -2141,6 +2326,7 @@ void CILDMMethod::calculateDerivativesX(C_FLOAT64 * X1, C_FLOAT64 * Y1)
   for (i = 0, imax = indep; i < imax; i++)
     mpModel->getMetabolitesX()[i]->setValue(tmp[i]);
 
+  //mpState->setUpdateDependentRequired(true);
   mpModel->updateSimulatedValues(mReducedModel);
   // TO REMOVE: mpModel->applyAssignments();
 
@@ -2189,18 +2375,14 @@ void CILDMMethod::map_index(C_FLOAT64 *eval_r, C_INT *index, const C_INT & dim)
 
   for (i = 0; i < dim; i++)
     {
-
       max = i;
-
       for (j = 0; j < dim; j++)
         {
           //if (abs_eval_r[j] > abs_eval_r[max])
           if (abs_eval_r[j] < abs_eval_r[max])
             max = j;
         }
-
       index[max] = count;
-
       abs_eval_r[max] = factor * max_value;
       count --;
     }
@@ -2218,11 +2400,13 @@ void CILDMMethod::update_nid(C_INT *index, C_INT *nid, const C_INT & dim)
 {
   C_INT k;
 
-  for (k = 0; k < dim; k++) nid[k] = 0;
+  for (k = 0; k < dim; k++)
+    nid[k] = 0;
 
   for (k = 1; k < dim - 1; k++)
     if (index[k] == index[k + 1])
       nid[k - 1] = k;
+
   return;
 }
 
@@ -2233,7 +2417,8 @@ void CILDMMethod::update_pid(C_INT *index, C_INT *pid, const C_INT & dim)
 {
   C_INT k;
 
-  for (k = 0; k < dim; k++) pid[k] = 0;
+  for (k = 0; k < dim; k++)
+    pid[k] = 0;
 
   for (k = 1; k < dim; k++)
     if (index[k] == index[k - 1])
@@ -2262,9 +2447,15 @@ void CILDMMethod::start(const CState * initialState)
 
   mReducedModel = true; /* * getValue("Integrate Reduced Model").pBOOL; */
   if (mReducedModel)
-    mData.dim = mpState->getNumIndependent();
+    {
+      //mpState->setUpdateDependentRequired(true);
+      mData.dim = mpState->getNumIndependent();
+    }
   else
-    mData.dim = mpState->getNumIndependent() + mpModel->getNumDependentMetabs();
+    {
+      //mpState->setUpdateDependentRequired(false);
+      mData.dim = mpState->getNumIndependent() + mpModel->getNumDependentMetabs();
+    }
 
   mYdot.resize(mData.dim);
   // mY_initial.resize(mData.dim);
@@ -2277,6 +2468,7 @@ void CILDMMethod::start(const CState * initialState)
   mVslow.resize(mData.dim, mData.dim);
   mVslow_metab.resize(mData.dim, mData.dim);
   mVslow_space.resize(mData.dim);
+  mVfast_space.resize(mData.dim);
 
   /* Configure lsoda */
   mRtol = * getValue("Relative Tolerance").pUDOUBLE;
@@ -2386,8 +2578,6 @@ void CILDMMethod::createAnnotationsM()
  **/
 void CILDMMethod::setAnnotationM(int step)
 {
-  int i;
-
   if (!step) return;
   step -= 1;
   double timeScale;
@@ -2395,6 +2585,7 @@ void CILDMMethod::setAnnotationM(int step)
   std::stringstream sstr;
   sstr.str("");
   sstr.clear();
+  int i;
 
   mVslowPrint.resize(mData.dim, mData.dim);
   mVslowPrint = mVec_mVslow[step];
@@ -2427,10 +2618,16 @@ void CILDMMethod::setAnnotationM(int step)
     }
 
   sstr << mVec_SlowModes[step];
-  if (mVec_SlowModes[step] > 1)
-    sstr << " modes";
-  else
-    sstr << " mode";
+  // if (mVec_SlowModes[step] > 1)
+  // sstr << " slow modes";
+  //else
+  // sstr << " slow mode";
+  sstr << " slow; ";
+
+  C_INT dim = mData.dim;
+  sstr << dim - mVec_SlowModes[step];
+  sstr << " fast";
+
   str = sstr.str();
   mVslowSpacePrint.resize(mData.dim, 1);
   for (i = 0; i < mData.dim; i++)
@@ -2464,7 +2661,8 @@ void CILDMMethod::setVectors(int slowMode)
 
   mVec_TimeScale.push_back(mCurrentStep);
   mVec_TimeScale[mCurrentStep].resize(mData.dim);
-  for (int i = 0; i < mData.dim; i++)
+  int i;
+  for (i = 0; i < mData.dim; i++)
     mVec_TimeScale[mCurrentStep][i] = -1 / mR(i, i);
 
   mVec_mVslowMetab.push_back(mCurrentStep);

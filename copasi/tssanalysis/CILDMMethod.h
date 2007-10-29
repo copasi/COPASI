@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMMethod.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: isurovts $
-//   $Date: 2007/07/26 15:32:04 $
+//   $Author: ssahle $
+//   $Date: 2007/10/29 10:28:57 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -73,12 +73,12 @@ class CILDMMethod : public CTSSAMethod
     C_FLOAT64 mTime;
 
     /**
-     *  Jacobian matrix at initial point
+     *  Jacobian matrix
      */
     CMatrix <C_FLOAT64> mJacobian;
 
     /**
-     *  Jacobian matrix
+     *  Jacobian matrix at initial point
      */
     CMatrix <C_FLOAT64> mJacobian_initial;
 
@@ -136,6 +136,11 @@ class CILDMMethod : public CTSSAMethod
      *
      */
     CVector<C_FLOAT64> mVslow_space;
+
+    /**
+       *
+       */
+    CVector<C_FLOAT64> mVfast_space;
 
     /**
      *
@@ -308,6 +313,7 @@ class CILDMMethod : public CTSSAMethod
      *
      **/
     void newton(C_FLOAT64 *ys, C_INT & slow, C_INT & info);
+    //  void newton_new(CVector<C_FLOAT64> *ys, CVector< C_INT> & index_metab, C_INT & slow, C_INT & info);
 
     /**
       * This is not very elegant solution. But I don't know the better one.
@@ -347,6 +353,12 @@ class CILDMMethod : public CTSSAMethod
      *
      **/
     void mat_anal_mod_space(C_INT & slow);
+    void mat_anal_fast_space(C_INT & slow);
+
+    /**
+         *
+       **/
+    double orthog(C_INT & number1, C_INT & number2);
 
     /**
      *vectors contain whole data for all calculationsteps
