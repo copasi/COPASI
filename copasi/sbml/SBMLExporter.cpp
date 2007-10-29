@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-//   $Revision: 1.107 $
+//   $Revision: 1.108 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/10/29 13:17:18 $
+//   $Author: gauges $
+//   $Date: 2007/10/29 22:07:16 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -371,11 +371,12 @@ Model* SBMLExporter::createSBMLModelFromCModel(CCopasiDataModel* pDataModel, int
         {
           sbmlModel->addCompartment(sbmlCompartment);
           Compartment* pTmpCompartment = sbmlModel->getCompartment(sbmlCompartment->getId());
+          // delete the compartment since a copy was added above
+          delete sbmlCompartment;
           assert(pTmpCompartment);
           copasi2sbmlmap[pCopasiCompartment] = pTmpCompartment;
           this->mHandledSBMLObjects.insert(pTmpCompartment);
         }
-      delete sbmlCompartment;
       ++step;
       if (mpExportHandler && !mpExportHandler->progress(hStep)) return false;
     }
@@ -401,11 +402,12 @@ Model* SBMLExporter::createSBMLModelFromCModel(CCopasiDataModel* pDataModel, int
         {
           sbmlModel->addSpecies(sbmlSpecies);
           Species* pTmpSpecies = sbmlModel->getSpecies(sbmlSpecies->getId());
+          // delete the species since a copy was added above
+          delete sbmlSpecies;
           assert(pTmpSpecies);
           copasi2sbmlmap[pCopasiSpecies] = pTmpSpecies;
           this->mHandledSBMLObjects.insert(pTmpSpecies);
         }
-      delete sbmlSpecies;
       ++step;
       if (mpExportHandler && !mpExportHandler->progress(hStep)) return false;
     }
@@ -431,11 +433,12 @@ Model* SBMLExporter::createSBMLModelFromCModel(CCopasiDataModel* pDataModel, int
         {
           sbmlModel->addParameter(sbmlParameter);
           Parameter* pTmpParameter = sbmlModel->getParameter(sbmlParameter->getId());
+          // delete the parameter since a copy was added above
+          delete sbmlParameter;
           assert(pTmpParameter);
           copasi2sbmlmap[pCopasiParameter] = pTmpParameter;
           this->mHandledSBMLObjects.insert(pTmpParameter);
         }
-      delete sbmlParameter;
       ++step;
       if (mpExportHandler && !mpExportHandler->progress(hStep)) return false;
     }
@@ -462,11 +465,12 @@ Model* SBMLExporter::createSBMLModelFromCModel(CCopasiDataModel* pDataModel, int
         {
           sbmlModel->addReaction(sbmlReaction);
           Reaction* pTmpReaction = sbmlModel->getReaction(sbmlReaction->getId());
+          // delete the reaction since a copy was added above
+          delete sbmlReaction;
           assert(pTmpReaction);
           copasi2sbmlmap[pCopasiReaction] = pTmpReaction;
           this->mHandledSBMLObjects.insert(pTmpReaction);
         }
-      delete sbmlReaction;
       ++step;
       if (mpExportHandler && !mpExportHandler->progress(hStep)) return false;
     }
