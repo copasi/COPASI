@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CVisParameters.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/08/30 17:11:56 $
+//   $Date: 2007/10/29 10:09:12 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,6 +18,8 @@
 class CVisParameters
   {
   public:
+    static const C_FLOAT64 EPSILON;
+
     static const C_INT16 GLOBAL_SCALING;
     static const C_INT16 INDIVIDUAL_SCALING;
 

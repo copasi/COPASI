@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.72 $
+//   $Revision: 1.73 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/10/23 10:10:36 $
+//   $Date: 2007/10/29 10:08:49 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1102,9 +1102,12 @@ bool CQGLNetworkPainter::createDataSets()
                               minR = pSummaryInfo->getMinOverallConcentration();
                               maxR = pSummaryInfo->getMaxOverallConcentration();
                             }
-                          scaledVal = minNodeSize +
-                                      (((maxNodeSize - minNodeSize) / (maxR - minR))
-                                       * (val - minR));
+                          if ((maxR - minR) > CVisParameters::EPSILON)
+                            scaledVal = minNodeSize +
+                                        (((maxNodeSize - minNodeSize) / (maxR - minR))
+                                         * (val - minR));
+                          else
+                            scaledVal = (maxNodeSize + minNodeSize) / 2.0;
                           // put scaled value in data entity (collection of scaled values for one step)
                           dataSet.putValueForSpecies(ndKey, scaledVal);
                           dataSet.putOrigValueForSpecies(ndKey, val);
@@ -1286,14 +1289,14 @@ void CQGLNetworkPainter::setNodeSize(std::string key, C_FLOAT64 val)
       if (pCurve != NULL)
         {
           CLLineSegment* pLastSeg = pCurve->getSegmentAt(pCurve->getNumCurveSegments() - 1); // get pointer to last segment
-          // move end point of segment along the line from the circle center(=from) to the current end point of the löast segment
+          // move end point of segment along the line from the circle center(=from) to the current end point of the last segment
           // so that it lies on the border of the circle
           //std::cout << "1. last segment: " << *pLastSeg << std::endl;
           CLPoint to;
           if (pLastSeg->isBezier())
             to = pLastSeg->getBase2();
           else
-            to = pLastSeg->getEnd();
+            to = pLastSeg->getStart();
           //std::cout << "node: " << (*nodeIt).second<< std::endl;
           CLPoint from = CLPoint((*nodeIt).second.getX() + ((*nodeIt).second.getWidth() / 2.0), (*nodeIt).second.getY() + ((*nodeIt).second.getHeight() / 2.0)); // center of bounding box and also of circle
           C_FLOAT64 distance = sqrt(((to.getX() - from.getX()) * (to.getX() - from.getX())) + ((to.getY() - from.getY()) * (to.getY() - from.getY())));
