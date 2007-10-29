@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CMIRIAMModelWidget.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2007/10/27 17:07:51 $
+//   $Author: ssahle $
+//   $Date: 2007/10/29 13:45:14 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,7 +13,7 @@
 #ifndef COPASI_CMIRIAMMODELWIDGET
 #define COPASI_CMIRIAMMODELWIDGET
 
-#include "CopasiWidget.h"
+#include "copasiWidget.h"
 
 class CAuthorsWidget;
 class QPushButton;
