@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.40 $
+//   $Revision: 1.41 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/10/15 10:42:11 $
+//   $Date: 2007/10/29 12:00:54 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -11,6 +11,7 @@
 // All rights reserved.
 
 #include <qwt_slider.h>
+#include <qvaluelist.h>
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "layout/CListOfLayouts.h"
@@ -77,6 +78,17 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
   // put OpenGL widget into scrollView
   scrollView->addChild(glPainter);
 
+  QValueList<int> sizeList = splitter->sizes();
+  if (sizeList.size() >= 2)
+    {
+      QValueList<int>::Iterator it = sizeList.begin();
+      (*it) = paraPanel->width();
+      ++it;
+      (*it) = scrollView->width();
+    }
+  splitter->setSizes(sizeList);
+  splitter->setResizeMode(paraPanel, QSplitter::KeepSize);
+
   bottomBox = new QHBox(mainBox);
   bottomBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
   //bottomBox->setMinimumHeight(15);
@@ -84,10 +96,17 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
 
   startIcon = createStartIcon();
   stopIcon = createStopIcon();
+
+  // XXXXXXXX
+  buttonBox = new QVBox(bottomBox);
+  QBoxLayout *l = new QVBoxLayout(buttonBox);
+
   startStopButton = new QPushButton(bottomBox, "start/stop button");
   connect(startStopButton, SIGNAL(clicked()), this, SLOT(startAnimation()));
   startStopButton->setIconSet(startIcon);
   startStopButton->setEnabled(false);
+
+  l->addItem(new QSpacerItem(20, 30));
 
   //QSpacerItem(10,15,QSizePolicy::Minimum, QSizePolicy::Expanding);
   //GridLayout->addItem(spacer1, 4, 0);
