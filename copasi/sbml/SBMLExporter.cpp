@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-//   $Revision: 1.106 $
+//   $Revision: 1.107 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/08/20 13:08:38 $
+//   $Author: shoops $
+//   $Date: 2007/10/29 13:17:18 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,11 +25,8 @@
 #include <sbml/UnitKind.h>
 #include <sbml/SBMLDocument.h>
 #include <sbml/SBMLWriter.h>
-#include <sbml/ModifierSpeciesReference.h>
 #include <sbml/SpeciesReference.h>
 #include <sbml/Rule.h>
-#include <sbml/RateRule.h>
-#include <sbml/AssignmentRule.h>
 #include <sbml/FunctionDefinition.h>
 #include <sbml/Event.h>
 #include <sbml/Model.h>
@@ -39,6 +36,9 @@
 #include <sbml/KineticLaw.h>
 #include <sbml/math/ASTNode.h>
 #include <sbml/Parameter.h>
+#include <sbml/xml/XMLNode.h>
+#include <sbml/xml/XMLErrorLog.h>
+#include <sbml/xml/XMLInputStream.h>
 
 #include "copasi.h"
 
@@ -94,6 +94,7 @@ std::string SBMLExporter::exportSBMLToString(CCopasiDataModel* pDataModel,
 {
   this->mHandledSBMLObjects.clear();
   this->mpCopasiModel = pDataModel->getModel();
+
   /* create the SBMLDocument from the copasi model */
   this->createSBMLDocumentFromCModel(pDataModel, sbmlLevel, sbmlVersion, incompleteExport);
 
@@ -102,6 +103,7 @@ std::string SBMLExporter::exportSBMLToString(CCopasiDataModel* pDataModel,
 #endif //WITH_LAYOUT
 
   this->removeUnusedObjects(pDataModel);
+
   if (this->sbmlDocument->getModel() != NULL)
     {
       SBMLWriter* writer = new SBMLWriter();
@@ -109,7 +111,7 @@ std::string SBMLExporter::exportSBMLToString(CCopasiDataModel* pDataModel,
       writer->setProgramName("COPASI");
       writer->setProgramVersion(pDataModel->getVersion()->getVersion().c_str());
 
-      char* d = writer->writeToString(*this->sbmlDocument);
+      char* d = writer->writeToString(this->sbmlDocument);
       std::string returnValue = d;
       if (d) free(d);
       pdelete(writer);
@@ -187,8 +189,7 @@ SBMLDocument* SBMLExporter::createSBMLDocumentFromCModel(CCopasiDataModel* pData
       /* create a new document object */
       this->sbmlDocument = new SBMLDocument();
     }
-  this->sbmlDocument->setLevel(sbmlLevel);
-  this->sbmlDocument->setVersion(sbmlVersion);
+  this->sbmlDocument->setLevelAndVersion(sbmlLevel, sbmlVersion);
   /* create the model object from the copasi model */
   this->createSBMLModelFromCModel(pDataModel, sbmlLevel, sbmlVersion, incompleteExport);
   if (mpExportHandler)
@@ -242,8 +243,15 @@ Model* SBMLExporter::createSBMLModelFromCModel(CCopasiDataModel* pDataModel, int
     }
   if ((!copasiModel->getComments().empty()) && !(this->isEmptyString(copasiModel->getComments())))
     {
-      sbmlModel->setNotes(/*(SBMLExporter::HTML_HEADER +*/
-        /*CCopasiXMLInterface::encode(*/copasiModel->getComments() /*) + SBMLExporter::HTML_FOOTER).c_str()*/);
+      XMLErrorLog* log = new XMLErrorLog();
+      XMLInputStream stream(copasiModel->getComments().c_str(), false, "", log);
+      XMLNode* c = new XMLNode(stream);
+      if (log->getNumErrors() == 0)
+        {
+          sbmlModel->setNotes(c);
+        }
+      if (c != NULL) delete c;
+      delete log;
     }
   /* if the copasi volume unit does not correspond to the default SBML volume
   ** unit, we have to create a UnitDefinition and make it the default in the
@@ -256,25 +264,26 @@ Model* SBMLExporter::createSBMLModelFromCModel(CCopasiDataModel* pDataModel, int
         {
           if (!UnitConversionFactory::areEqual(*sbmlModel->getUnitDefinition("volume"), *uDef))
             {
-              ListOf& list = sbmlModel->getListOfUnitDefinitions();
-              unsigned int i = list.getNumItems();
+              ListOf* list = sbmlModel->getListOfUnitDefinitions();
+              unsigned int i = list->size();
               for (; i > 0;--i)
                 {
-                  UnitDefinition* uDef = dynamic_cast<UnitDefinition*>(list.get(i - 1));
+                  UnitDefinition* uDef = dynamic_cast<UnitDefinition*>(list->get(i - 1));
                   if (uDef && uDef->getId() == "volume")
                     {
-                      list.remove(i - 1);
+                      list->remove(i - 1);
                       pdelete(uDef);
                       break;
                     }
                 }
-              sbmlModel->addUnitDefinition(*uDef);
+              sbmlModel->addUnitDefinition(uDef);
             }
         }
       else
         {
-          sbmlModel->addUnitDefinition(*uDef);
+          sbmlModel->addUnitDefinition(uDef);
         }
+      delete uDef;
     }
   /* if the copasi time unit does not correspond to the default SBML time
   ** unit, we have to create a UnitDefinition and make it the default in the
@@ -287,25 +296,26 @@ Model* SBMLExporter::createSBMLModelFromCModel(CCopasiDataModel* pDataModel, int
         {
           if (!UnitConversionFactory::areEqual(*sbmlModel->getUnitDefinition("time"), *uDef))
             {
-              ListOf& list = sbmlModel->getListOfUnitDefinitions();
-              unsigned int i = list.getNumItems();
+              ListOf* list = sbmlModel->getListOfUnitDefinitions();
+              unsigned int i = list->size();
               for (; i > 0;++i)
                 {
-                  UnitDefinition* uDef = dynamic_cast<UnitDefinition*>(list.get(i - 1));
+                  UnitDefinition* uDef = dynamic_cast<UnitDefinition*>(list->get(i - 1));
                   if (uDef->getId() == "time")
                     {
-                      list.remove(i - 1);
+                      list->remove(i - 1);
                       pdelete(uDef);
                       break;
                     }
                 }
-              sbmlModel->addUnitDefinition(*uDef);
+              sbmlModel->addUnitDefinition(uDef);
             }
         }
       else
         {
-          sbmlModel->addUnitDefinition(*uDef);
+          sbmlModel->addUnitDefinition(uDef);
         }
+      delete uDef;
     }
   /* if the copasi quantity unit does not correspond to the default SBML
   ** substance
@@ -319,25 +329,26 @@ Model* SBMLExporter::createSBMLModelFromCModel(CCopasiDataModel* pDataModel, int
         {
           if (!UnitConversionFactory::areEqual(*sbmlModel->getUnitDefinition("substance"), *uDef))
             {
-              ListOf& list = sbmlModel->getListOfUnitDefinitions();
-              unsigned int i = list.getNumItems();
+              ListOf* list = sbmlModel->getListOfUnitDefinitions();
+              unsigned int i = list->size();
               for (; i > 0;++i)
                 {
-                  UnitDefinition* uDef = dynamic_cast<UnitDefinition*>(list.get(i - 1));
+                  UnitDefinition* uDef = dynamic_cast<UnitDefinition*>(list->get(i - 1));
                   if (uDef->getId() == "substance")
                     {
-                      list.remove(i - 1);
+                      list->remove(i - 1);
                       pdelete(uDef);
                       break;
                     }
                 }
-              sbmlModel->addUnitDefinition(*uDef);
+              sbmlModel->addUnitDefinition(uDef);
             }
         }
       else
         {
-          sbmlModel->addUnitDefinition(*uDef);
+          sbmlModel->addUnitDefinition(uDef);
         }
+      delete uDef;
     }
   /* create all compartments */
   unsigned int counter, iMax = copasiModel->getCompartments().size();
@@ -354,11 +365,17 @@ Model* SBMLExporter::createSBMLModelFromCModel(CCopasiDataModel* pDataModel, int
     }
   for (counter = 0; counter < iMax; counter++)
     {
-      Compartment* sbmlCompartment = this->createSBMLCompartmentFromCCompartment(copasiModel->getCompartments()[counter], pDataModel);
+      CCompartment* pCopasiCompartment = copasiModel->getCompartments()[counter];
+      Compartment* sbmlCompartment = this->createSBMLCompartmentFromCCompartment(pCopasiCompartment, pDataModel);
       if (!sbmlModel->getCompartment(sbmlCompartment->getId()))
         {
-          sbmlModel->addCompartment(*sbmlCompartment);
+          sbmlModel->addCompartment(sbmlCompartment);
+          Compartment* pTmpCompartment = sbmlModel->getCompartment(sbmlCompartment->getId());
+          assert(pTmpCompartment);
+          copasi2sbmlmap[pCopasiCompartment] = pTmpCompartment;
+          this->mHandledSBMLObjects.insert(pTmpCompartment);
         }
+      delete sbmlCompartment;
       ++step;
       if (mpExportHandler && !mpExportHandler->progress(hStep)) return false;
     }
@@ -378,11 +395,17 @@ Model* SBMLExporter::createSBMLModelFromCModel(CCopasiDataModel* pDataModel, int
     }
   for (counter = 0; counter < iMax; counter++)
     {
-      Species* sbmlSpecies = this->createSBMLSpeciesFromCMetab(copasiModel->getMetabolites()[counter], pDataModel);
+      CMetab* pCopasiSpecies = copasiModel->getMetabolites()[counter];
+      Species* sbmlSpecies = this->createSBMLSpeciesFromCMetab(pCopasiSpecies, pDataModel);
       if (!sbmlModel->getSpecies(sbmlSpecies->getId()))
         {
-          sbmlModel->addSpecies(*sbmlSpecies);
+          sbmlModel->addSpecies(sbmlSpecies);
+          Species* pTmpSpecies = sbmlModel->getSpecies(sbmlSpecies->getId());
+          assert(pTmpSpecies);
+          copasi2sbmlmap[pCopasiSpecies] = pTmpSpecies;
+          this->mHandledSBMLObjects.insert(pTmpSpecies);
         }
+      delete sbmlSpecies;
       ++step;
       if (mpExportHandler && !mpExportHandler->progress(hStep)) return false;
     }
@@ -402,11 +425,17 @@ Model* SBMLExporter::createSBMLModelFromCModel(CCopasiDataModel* pDataModel, int
     }
   for (counter = 0; counter < iMax; counter++)
     {
-      Parameter* sbmlParameter = this->createSBMLParameterFromCModelValue(copasiModel->getModelValues()[counter], pDataModel);
+      CModelValue* pCopasiParameter = copasiModel->getModelValues()[counter];
+      Parameter* sbmlParameter = this->createSBMLParameterFromCModelValue(pCopasiParameter, pDataModel);
       if (!sbmlModel->getParameter(sbmlParameter->getId()))
         {
-          sbmlModel->addParameter(*sbmlParameter);
+          sbmlModel->addParameter(sbmlParameter);
+          Parameter* pTmpParameter = sbmlModel->getParameter(sbmlParameter->getId());
+          assert(pTmpParameter);
+          copasi2sbmlmap[pCopasiParameter] = pTmpParameter;
+          this->mHandledSBMLObjects.insert(pTmpParameter);
         }
+      delete sbmlParameter;
       ++step;
       if (mpExportHandler && !mpExportHandler->progress(hStep)) return false;
     }
@@ -427,11 +456,17 @@ Model* SBMLExporter::createSBMLModelFromCModel(CCopasiDataModel* pDataModel, int
     }
   for (counter = 0; counter < iMax; counter++)
     {
-      Reaction* sbmlReaction = this->createSBMLReactionFromCReaction(copasiModel->getReactions()[counter], pDataModel);
+      CReaction* pCopasiReaction = copasiModel->getReactions()[counter];
+      Reaction* sbmlReaction = this->createSBMLReactionFromCReaction(pCopasiReaction, pDataModel);
       if (!sbmlModel->getReaction(sbmlReaction->getId()))
         {
-          sbmlModel->addReaction(*sbmlReaction);
+          sbmlModel->addReaction(sbmlReaction);
+          Reaction* pTmpReaction = sbmlModel->getReaction(sbmlReaction->getId());
+          assert(pTmpReaction);
+          copasi2sbmlmap[pCopasiReaction] = pTmpReaction;
+          this->mHandledSBMLObjects.insert(pTmpReaction);
         }
+      delete sbmlReaction;
       ++step;
       if (mpExportHandler && !mpExportHandler->progress(hStep)) return false;
     }
@@ -527,43 +562,43 @@ UnitDefinition* SBMLExporter::createSBMLTimeUnitDefinitionFromCopasiTimeUnit(CMo
 {
   UnitDefinition* uDef = new UnitDefinition("time");
   uDef->setId("time");
-  Unit* unit = NULL;
+  Unit unit;
 
   switch (u)
     {
     case CModel::d:
-      unit = new Unit(UNIT_KIND_SECOND, 1, 0);
-      unit->setMultiplier(86400);
+      unit = Unit(UNIT_KIND_SECOND, 1, 0);
+      unit.setMultiplier(86400);
       break;
     case CModel::h:
-      unit = new Unit(UNIT_KIND_SECOND, 1, 0);
-      unit->setMultiplier(3600);
+      unit = Unit(UNIT_KIND_SECOND, 1, 0);
+      unit.setMultiplier(3600);
       break;
     case CModel::min:
-      unit = new Unit(UNIT_KIND_SECOND, 1, 0);
-      unit->setMultiplier(60);
+      unit = Unit(UNIT_KIND_SECOND, 1, 0);
+      unit.setMultiplier(60);
       break;
     case CModel::ms:
-      unit = new Unit(UNIT_KIND_SECOND, 1, -3);
+      unit = Unit(UNIT_KIND_SECOND, 1, -3);
       break;
     case CModel::micros:
-      unit = new Unit(UNIT_KIND_SECOND, 1, -6);
+      unit = Unit(UNIT_KIND_SECOND, 1, -6);
       break;
     case CModel::ns:
-      unit = new Unit(UNIT_KIND_SECOND, 1, -9);
+      unit = Unit(UNIT_KIND_SECOND, 1, -9);
       break;
     case CModel::ps:
-      unit = new Unit(UNIT_KIND_SECOND, 1, -12);
+      unit = Unit(UNIT_KIND_SECOND, 1, -12);
       break;
     case CModel::fs:
-      unit = new Unit(UNIT_KIND_SECOND, 1, -15);
+      unit = Unit(UNIT_KIND_SECOND, 1, -15);
       break;
     default:
       CCopasiMessage(CCopasiMessage::EXCEPTION, "SBMLExporter Error: Unknown copasi time unit.");
       break;
     }
 
-  uDef->addUnit(*unit);
+  uDef->addUnit(&unit);
   return uDef;
 }
 
@@ -576,32 +611,32 @@ UnitDefinition* SBMLExporter::createSBMLSubstanceUnitDefinitionFromCopasiQuantit
 {
   UnitDefinition* uDef = new UnitDefinition("substance");
   uDef->setId("substance");
-  Unit* unit = NULL;
+  Unit unit;
   switch (u)
     {
     case CModel::mMol:
-      unit = new Unit(UNIT_KIND_MOLE, 1, -3);
+      unit = Unit(UNIT_KIND_MOLE, 1, -3);
       break;
     case CModel::microMol:
-      unit = new Unit(UNIT_KIND_MOLE, 1, -6);
+      unit = Unit(UNIT_KIND_MOLE, 1, -6);
       break;
     case CModel::nMol:
-      unit = new Unit(UNIT_KIND_MOLE, 1, -9);
+      unit = Unit(UNIT_KIND_MOLE, 1, -9);
       break;
     case CModel::pMol:
-      unit = new Unit(UNIT_KIND_MOLE, 1, -12);
+      unit = Unit(UNIT_KIND_MOLE, 1, -12);
       break;
     case CModel::fMol:
-      unit = new Unit(UNIT_KIND_MOLE, 1, -15);
+      unit = Unit(UNIT_KIND_MOLE, 1, -15);
       break;
     case CModel::number:
-      unit = new Unit(UNIT_KIND_ITEM, 1, 0);
+      unit = Unit(UNIT_KIND_ITEM, 1, 0);
       break;
     default:
       CCopasiMessage(CCopasiMessage::EXCEPTION, "SBMLExporter Error: Unknown copasi quantity unit.");
       break;
     }
-  uDef->addUnit(*unit);
+  uDef->addUnit(&unit);
   return uDef;
 }
 
@@ -614,32 +649,32 @@ UnitDefinition* SBMLExporter::createSBMLVolumeUnitDefinitionFromCopasiVolumeUnit
 {
   UnitDefinition* uDef = new UnitDefinition("volume");
   uDef->setId("volume");
-  Unit* unit = NULL;
+  Unit unit;
   switch (u)
     {
     case CModel::ml:
-      unit = new Unit(UNIT_KIND_LITRE, 1, -3);
+      unit = Unit(UNIT_KIND_LITRE, 1, -3);
       break;
     case CModel::microl:
-      unit = new Unit(UNIT_KIND_LITRE, 1, -6);
+      unit = Unit(UNIT_KIND_LITRE, 1, -6);
       break;
     case CModel::nl:
-      unit = new Unit(UNIT_KIND_LITRE, 1, -9);
+      unit = Unit(UNIT_KIND_LITRE, 1, -9);
       break;
     case CModel::pl:
-      unit = new Unit(UNIT_KIND_LITRE, 1, -12);
+      unit = Unit(UNIT_KIND_LITRE, 1, -12);
       break;
     case CModel::fl:
-      unit = new Unit(UNIT_KIND_LITRE, 1, -15);
+      unit = Unit(UNIT_KIND_LITRE, 1, -15);
       break;
     case CModel::m3:
-      unit = new Unit(UNIT_KIND_METRE, 3, 0);
+      unit = Unit(UNIT_KIND_METRE, 3, 0);
       break;
     default:
       CCopasiMessage(CCopasiMessage::EXCEPTION, "SBMLExporter Error: Unknown copasi volume unit.");
       break;
     }
-  uDef->addUnit(*unit);
+  uDef->addUnit(&unit);
   return uDef;
 }
 
@@ -830,15 +865,16 @@ Reaction* SBMLExporter::createSBMLReactionFromCReaction(CReaction* copasiReactio
       if (!(sRef = sbmlReaction->getReactant(pMetabolite->getSBMLId())))
         {
           sRef = new SpeciesReference();
-          sbmlReaction->addReactant(*sRef);
           sRef->setSpecies(pMetabolite->getSBMLId().c_str());
+          sbmlReaction->addReactant(sRef);
+          delete sRef;
         }
       sRef->setStoichiometry(element->getMultiplicity());
       sRef->setDenominator(1);
       usedReferences.insert(sRef->getSpecies());
     }
-  ListOf* l = &sbmlReaction->getListOfReactants();
-  for (counter = l->getNumItems(); counter > 0;--counter)
+  ListOf* l = sbmlReaction->getListOfReactants();
+  for (counter = l->size(); counter > 0;--counter)
     {
       if (usedReferences.find(static_cast<SimpleSpeciesReference*>(l->get(counter - 1))->getSpecies()) == usedReferences.end())
         {
@@ -856,14 +892,15 @@ Reaction* SBMLExporter::createSBMLReactionFromCReaction(CReaction* copasiReactio
         {
           sRef = new SpeciesReference();
           sRef->setSpecies(pMetabolite->getSBMLId().c_str());
-          sbmlReaction->addProduct(*sRef);
+          sbmlReaction->addProduct(sRef);
+          delete sRef;
         }
       sRef->setStoichiometry(element->getMultiplicity());
       sRef->setDenominator(1);
       usedReferences.insert(sRef->getSpecies());
     }
-  l = &sbmlReaction->getListOfProducts();
-  for (counter = l->getNumItems(); counter > 0;--counter)
+  l = sbmlReaction->getListOfProducts();
+  for (counter = l->size(); counter > 0;--counter)
     {
       if (usedReferences.find(static_cast<SimpleSpeciesReference*>(l->get(counter - 1))->getSpecies()) == usedReferences.end())
         {
@@ -881,12 +918,13 @@ Reaction* SBMLExporter::createSBMLReactionFromCReaction(CReaction* copasiReactio
         {
           sRef = new ModifierSpeciesReference();
           sRef->setSpecies(pMetabolite->getSBMLId().c_str());
-          sbmlReaction->addModifier(*sRef);
+          sbmlReaction->addModifier(sRef);
+          delete sRef;
         }
       usedReferences.insert(sRef->getSpecies());
     }
-  l = &sbmlReaction->getListOfModifiers();
-  for (counter = l->getNumItems(); counter > 0;--counter)
+  l = sbmlReaction->getListOfModifiers();
+  for (counter = l->size(); counter > 0;--counter)
     {
       if (usedReferences.find(static_cast<SimpleSpeciesReference*>(l->get(counter - 1))->getSpecies()) == usedReferences.end())
         {
@@ -898,7 +936,8 @@ Reaction* SBMLExporter::createSBMLReactionFromCReaction(CReaction* copasiReactio
   if ((copasiReaction->getFunction()) != pDataModel->mpUndefined)
     {
       KineticLaw* kLaw = this->createSBMLKineticLawFromCReaction(copasiReaction, pDataModel);
-      sbmlReaction->setKineticLaw(*kLaw);
+      sbmlReaction->setKineticLaw(kLaw);
+      delete kLaw;
     }
   else
     {
@@ -1085,18 +1124,18 @@ KineticLaw* SBMLExporter::createSBMLKineticLawFromCReaction(CReaction* copasiRea
           // otherwise the parameter already has been created
           if (copasiReaction->isLocalParameter(counter))
             {
-              Parameter* sbmlPara = new Parameter();
+              Parameter sbmlPara = Parameter();
 
               std::string parameterKey = copasiReaction->getParameterMappings()[counter][0];
 
-              sbmlPara->setId(para->getObjectName().c_str());
+              sbmlPara.setId(para->getObjectName().c_str());
               double value = copasiReaction->getParameterValue(para->getObjectName());
               // if the value is NaN, leave the parameter value unset.
               if (!isnan(value))
                 {
-                  sbmlPara->setValue(value);
+                  sbmlPara.setValue(value);
                 }
-              kLaw->addParameter(*sbmlPara);
+              kLaw->addParameter(&sbmlPara);
             }
           /* the code below is responsible for bug 646, that's why I put it in comments
              Currently I don't know why it is there at all. RG
@@ -1210,8 +1249,8 @@ void SBMLExporter::removeUnusedObjects(CCopasiDataModel* pDataModel)
   unsigned int i;
   std::set<SBase*>::iterator pos;
   std::set<SBase*>::iterator endPos = this->mHandledSBMLObjects.end();
-  ListOf* list = &model->getListOfCompartments();
-  for (i = list->getNumItems(); i > 0;--i)
+  ListOf* list = model->getListOfCompartments();
+  for (i = list->size(); i > 0;--i)
     {
       SBase* object = list->get(i - 1);
       pos = this->mHandledSBMLObjects.find(object);
@@ -1227,8 +1266,8 @@ void SBMLExporter::removeUnusedObjects(CCopasiDataModel* pDataModel)
           pdelete(object);
         }
     }
-  list = &model->getListOfSpecies();
-  for (i = list->getNumItems(); i > 0;--i)
+  list = model->getListOfSpecies();
+  for (i = list->size(); i > 0;--i)
     {
       SBase* object = list->get(i - 1);
       pos = this->mHandledSBMLObjects.find(object);
@@ -1244,8 +1283,8 @@ void SBMLExporter::removeUnusedObjects(CCopasiDataModel* pDataModel)
           pdelete(object);
         }
     }
-  list = &model->getListOfParameters();
-  for (i = list->getNumItems(); i > 0;--i)
+  list = model->getListOfParameters();
+  for (i = list->size(); i > 0;--i)
     {
       SBase* object = list->get(i - 1);
       pos = this->mHandledSBMLObjects.find(object);
@@ -1261,8 +1300,8 @@ void SBMLExporter::removeUnusedObjects(CCopasiDataModel* pDataModel)
           pdelete(object);
         }
     }
-  list = &model->getListOfReactions();
-  for (i = list->getNumItems(); i > 0;--i)
+  list = model->getListOfReactions();
+  for (i = list->size(); i > 0;--i)
     {
       SBase* object = list->get(i - 1);
       pos = this->mHandledSBMLObjects.find(object);
@@ -1553,19 +1592,19 @@ void SBMLExporter::findUsedFunctions(CEvaluationNode* pNode, std::list<const CEv
 
 void SBMLExporter::createFunctionDefinitions()
 {
-  ListOf& listOfFunctionDefinitions = this->sbmlDocument->getModel()->getListOfFunctionDefinitions();
+  ListOf* listOfFunctionDefinitions = this->sbmlDocument->getModel()->getListOfFunctionDefinitions();
   std::list<const CEvaluationTree*>::const_iterator it = this->mpUsedFunctions->begin();
   std::list<const CEvaluationTree*>::const_iterator endIt = this->mpUsedFunctions->end();
   while (it != endIt)
     {
       // delete an existing function definition with this name
       // add the new function definition
-      unsigned int i, iMax = listOfFunctionDefinitions.getNumItems();
+      unsigned int i, iMax = listOfFunctionDefinitions->size();
       for (i = 0; i < iMax;++i)
         {
-          if (static_cast<FunctionDefinition*>(listOfFunctionDefinitions.get(i))->getId() == (*it)->getSBMLId())
+          if (static_cast<FunctionDefinition*>(listOfFunctionDefinitions->get(i))->getId() == (*it)->getSBMLId())
             {
-              listOfFunctionDefinitions.remove(i);
+              listOfFunctionDefinitions->remove(i);
               break;
             }
         }
@@ -1580,9 +1619,9 @@ void SBMLExporter::createFunctionDefinitions()
 FunctionDefinition* SBMLExporter::createSBMLFunctionDefinitionFromCEvaluationTree(const CEvaluationTree* tree)
 {
   // convert the tree root to an AST tree.
-  FunctionDefinition& pFunDef = this->sbmlDocument->getModel()->createFunctionDefinition();
-  pFunDef.setId(tree->getSBMLId());
-  pFunDef.setName(tree->getObjectName());
+  FunctionDefinition* pFunDef = this->sbmlDocument->getModel()->createFunctionDefinition();
+  pFunDef->setId(tree->getSBMLId());
+  pFunDef->setName(tree->getObjectName());
   if (!tree->getRoot())
     {
       std::string errorMessage = std::string("Can not export function");
@@ -1604,14 +1643,14 @@ FunctionDefinition* SBMLExporter::createSBMLFunctionDefinitionFromCEvaluationTre
       pLambda->addChild(pParamNode);
     }
   pLambda->addChild(pFunNode);
-  pFunDef.setMath(pLambda);
-  return &pFunDef;
+  pFunDef->setMath(pLambda);
+  return pFunDef;
 }
 
-bool SBMLExporter::existsInList(CEvaluationTree* tree, const std::list<const CEvaluationTree*>* list)
+bool SBMLExporter::existsInList(CEvaluationTree* tree, const std::list<const CEvaluationTree*>* pList)
 {
-  std::list<const CEvaluationTree*>::const_iterator it = list->begin();
-  std::list<const CEvaluationTree*>::const_iterator endIt = list->end();
+  std::list<const CEvaluationTree*>::const_iterator it = pList->begin();
+  std::list<const CEvaluationTree*>::const_iterator endIt = pList->end();
   while (it != endIt)
     {
       if ((*it) == tree) break;
@@ -1656,14 +1695,14 @@ void SBMLExporter::setExportHandler(CProcessReport* pExportHandler)
   this->mpExportHandler = pExportHandler;
 }
 
-void SBMLExporter::removeFromList(ListOf& list, SBase* pObject)
+void SBMLExporter::removeFromList(ListOf * pList, SBase* pObject)
 {
-  unsigned i, iMax = list.getNumItems();
+  unsigned i, iMax = pList->size();
   for (i = 0;i < iMax;++i)
     {
-      if (list.get(i) == pObject)
+      if (pList->get(i) == pObject)
         {
-          list.remove(i);
+          pList->remove(i);
           pdelete(pObject);
           break;
         }
@@ -2040,13 +2079,18 @@ void SBMLExporter::exportRules(std::vector<Rule*>& rules)
   // since we create all rules from scratch and existing rules are deleted when
   Model* pModel = sbmlDocument->getModel();
   // the new rule is created, we now have to clean the remaining rules
-  pModel->getListOfRules().freeItems();
+  while (pModel->getListOfRules()->size() > 0)
+    {
+      SBase* pTmpObject = pModel->getListOfRules()->remove(0);
+      delete pTmpObject;
+    }
   // now we can add all rules in sorted Rules to the model
   it = sortedAssignmentRules.begin();
   endIt = sortedAssignmentRules.end();
   while (it != endIt)
     {
-      pModel->addRule(*(*it));
+      pModel->addRule((*it));
+      delete (*it);
       ++it;
     }
   // now we add all the RateRules in the order they appear in rules
@@ -2056,8 +2100,9 @@ void SBMLExporter::exportRules(std::vector<Rule*>& rules)
     {
       if ((*it)->getTypeCode() != SBML_ASSIGNMENT_RULE)
         {
-          pModel->addRule(*(*it));
+          pModel->addRule((*it));
         }
+      delete (*it);
       ++it;
     }
 }
@@ -2279,7 +2324,7 @@ std::vector<std::string> SBMLExporter::isModelSBMLL2V1Compatible(CCopasiDataMode
   return result;
 }
 
-std::vector<std::string> SBMLExporter::isRuleSBMLCompatible(const CModelEntity* pME, CCopasiDataModel* pDataModel, int sbmlLevel, int sbmlVersion)
+std::vector<std::string> SBMLExporter::isRuleSBMLCompatible(const CModelEntity* pME, const CCopasiDataModel* pDataModel, int sbmlLevel, int sbmlVersion)
 {
   std::vector<std::string> result;
   std::ostringstream ss;
@@ -2303,7 +2348,7 @@ std::vector<std::string> SBMLExporter::isRuleSBMLCompatible(const CModelEntity* 
   return result;
 }
 
-std::vector<std::string> SBMLExporter::isRuleSBMLL2V1Compatible(const CModelEntity* pME, CCopasiDataModel* pDataModel)
+std::vector<std::string> SBMLExporter::isRuleSBMLL2V1Compatible(const CModelEntity* pME, const CCopasiDataModel* pDataModel)
 {
   std::vector<std::string> result;
   const CExpression* pExpression = pME->getExpressionPtr();
@@ -2317,7 +2362,7 @@ std::vector<std::string> SBMLExporter::isRuleSBMLL2V1Compatible(const CModelEnti
           const CEvaluationNodeObject* pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(objectNodes[j]);
           assert(pObjectNode);
           std::vector<CCopasiContainer*> containers;
-          containers.push_back(pDataModel->getModel());
+          containers.push_back(const_cast<CModel*>(pDataModel->getModel()));
           const CCopasiObject* pObject = CCopasiContainer::ObjectFromName(containers, pObjectNode->getObjectCN());
           assert(pObject);
           if (pObject->isReference())

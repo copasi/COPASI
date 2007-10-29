@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/COutputHandler.h,v $
-   $Revision: 1.16 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/08/07 19:27:10 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/COutputHandler.h,v $
+//   $Revision: 1.17 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/10/29 13:17:19 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -166,9 +166,9 @@ class COutputHandler: public COutputInterface
 
     /**
      * Check whether the handler is a master
-     * @return const bool isMaster
+     * @return bool isMaster
      */
-    const bool isMaster() const;
+    bool isMaster() const;
 
   protected:
     /**

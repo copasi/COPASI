@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/compare_utilities.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/19 13:26:56 $
+//   $Date: 2007/10/29 13:17:17 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -76,7 +76,7 @@ bool expand_function_calls(ASTNode* pNode, const Model* pModel)
 ASTNode* expand_function_call(const ASTNode* pCall, const Model* pModel)
 {
   // find the function that belongs to the call
-  FunctionDefinition* pFunctionDefinition = NULL;
+  const FunctionDefinition * pFunctionDefinition = NULL;
   ASTNode* pResult = NULL;
   unsigned int i = 0, iMax = pModel->getNumFunctionDefinitions();
   while (i < iMax)

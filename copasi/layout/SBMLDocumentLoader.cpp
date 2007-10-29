@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/SBMLDocumentLoader.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/08/21 08:52:20 $
+//   $Author: shoops $
+//   $Date: 2007/10/29 13:17:17 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,7 +14,7 @@
 
 #define USE_LAYOUT 1
 
-#include <sbml/xml/ParseMessage.h>
+#include <sbml/xml/XMLError.h>
 #include <sbml/layout/SpeciesGlyph.h>
 #include <sbml/layout/ReactionGlyph.h>
 #include <sbml/layout/SpeciesReferenceGlyph.h>
@@ -43,14 +43,23 @@ CLayout* SBMLDocumentLoader::loadDocument(const char *filename)
   //std::vector<node*> nodeVector;
   CLayout* pLayout = new CLayout();
   //cout << this->sbmlDocP << endl;
-  if ((this->sbmlDocP->getNumFatals()) == 0)
+  unsigned int i, iMax = this->sbmlDocP->getNumErrors();
+  bool fatalFound = false;
+
+  while (!fatalFound && i < iMax)
+    {
+      const XMLError* pError = this->sbmlDocP->getError(i);
+      fatalFound = (pError->getSeverity() == XMLError::Fatal);
+      ++i;
+    }
+  if (!fatalFound)
     {
       // check whether layout is included in SBML file
       modelP = this->sbmlDocP->getModel();
       if (modelP != NULL)
         {
           //layoutList = &modelP->getListOfLayouts();
-          int numberOfLayouts = modelP->getListOfLayouts().getNumItems();
+          int numberOfLayouts = modelP->getListOfLayouts()->size();
           std::cout << "number of layouts: " << numberOfLayouts << "  " << std::endl;
           if (numberOfLayouts > 0)
             {
@@ -61,15 +70,18 @@ CLayout* SBMLDocumentLoader::loadDocument(const char *filename)
     }
   else
     {
-      int numberOfErrors = this->sbmlDocP->getNumFatals();
-      std::cout << numberOfErrors << "  error(s)" << std::endl;
-      ParseMessage *message;
-      for (int i = 0;i < numberOfErrors;i++)
+      unsigned int numberOfErrors = 1;
+      while (i < iMax)
         {
-          message = this->sbmlDocP->getFatal(i);
-          std::cout << message->getMessage();
-          std::cout << std::endl;
+          const XMLError* pError = this->sbmlDocP->getError(i);
+          if (pError->getSeverity() == XMLError::Fatal)
+            {
+              ++numberOfErrors;
+              std::cerr << "LIBSBML Error " << pError->getErrorId() << "at line " << pError->getLine() << " column " << pError->getColumn() << ": " << pError->getMessage() << std::endl;
+            }
+          ++i;
         }
+      std::cout << numberOfErrors << "  error(s)" << std::endl;
     }
   return pLayout;
 }
@@ -99,7 +111,7 @@ void SBMLDocumentLoader::readListOfLayouts(CListOfLayouts & lol,
     }
 
   //iterate through list of layouts
-  C_INT32 i, imax = sbmlList.getNumItems();
+  C_INT32 i, imax = sbmlList.size();
   for (i = 0; i < imax; ++i)
     {
       std::map<std::string, std::string> layoutmap;
@@ -128,62 +140,62 @@ CLayout * SBMLDocumentLoader::createLayout(const Layout & sbmlLayout,
   C_INT32 i, imax;
 
   //compartments
-  imax = sbmlLayout.getListOfCompartmentGlyphs().getNumItems();
+  imax = sbmlLayout.getListOfCompartmentGlyphs()->size();
   for (i = 0; i < imax; ++i)
     {
       const CompartmentGlyph* tmp
-      = dynamic_cast<const CompartmentGlyph*>(sbmlLayout.getListOfCompartmentGlyphs().get(i));
+      = dynamic_cast<const CompartmentGlyph*>(sbmlLayout.getListOfCompartmentGlyphs()->get(i));
       if (tmp)
         layout->addCompartmentGlyph(new CLCompartmentGlyph(*tmp, modelmap, layoutmap));
     }
 
   //species
-  imax = sbmlLayout.getListOfSpeciesGlyphs().getNumItems();
+  imax = sbmlLayout.getListOfSpeciesGlyphs()->size();
   for (i = 0; i < imax; ++i)
     {
       const SpeciesGlyph* tmp
-      = dynamic_cast<const SpeciesGlyph*>(sbmlLayout.getListOfSpeciesGlyphs().get(i));
+      = dynamic_cast<const SpeciesGlyph*>(sbmlLayout.getListOfSpeciesGlyphs()->get(i));
       if (tmp)
         layout->addMetaboliteGlyph(new CLMetabGlyph(*tmp, modelmap, layoutmap));
     }
 
   //reactions
-  imax = sbmlLayout.getListOfReactionGlyphs().getNumItems();
+  imax = sbmlLayout.getListOfReactionGlyphs()->size();
   for (i = 0; i < imax; ++i)
     {
       const ReactionGlyph* tmp
-      = dynamic_cast<const ReactionGlyph*>(sbmlLayout.getListOfReactionGlyphs().get(i));
+      = dynamic_cast<const ReactionGlyph*>(sbmlLayout.getListOfReactionGlyphs()->get(i));
       if (tmp)
         layout->addReactionGlyph(new CLReactionGlyph(*tmp, modelmap, layoutmap));
     }
 
   //text
-  imax = sbmlLayout.getListOfTextGlyphs().getNumItems();
+  imax = sbmlLayout.getListOfTextGlyphs()->size();
   for (i = 0; i < imax; ++i)
     {
       const TextGlyph* tmp
-      = dynamic_cast<const TextGlyph*>(sbmlLayout.getListOfTextGlyphs().get(i));
+      = dynamic_cast<const TextGlyph*>(sbmlLayout.getListOfTextGlyphs()->get(i));
       if (tmp)
         layout->addTextGlyph(new CLTextGlyph(*tmp, modelmap, layoutmap));
     }
 
   //additional
-  imax = sbmlLayout.getListOfAdditionalGraphicalObjects().getNumItems();
+  imax = sbmlLayout.getListOfAdditionalGraphicalObjects()->size();
   for (i = 0; i < imax; ++i)
     {
       const GraphicalObject* tmp
-      = dynamic_cast<const GraphicalObject*>(sbmlLayout.getListOfAdditionalGraphicalObjects().get(i));
+      = dynamic_cast<const GraphicalObject*>(sbmlLayout.getListOfAdditionalGraphicalObjects()->get(i));
       if (tmp)
         layout->addGraphicalObject(new CLGraphicalObject(*tmp, layoutmap));
     }
 
   //second pass text (the text glyph can refer to other glyphs. These references can)
   //only be resolved after all glyphs are created).
-  imax = sbmlLayout.getListOfTextGlyphs().getNumItems();
+  imax = sbmlLayout.getListOfTextGlyphs()->size();
   for (i = 0; i < imax; ++i)
     {
       const TextGlyph* tmp
-      = dynamic_cast<const TextGlyph*>(sbmlLayout.getListOfTextGlyphs().get(i));
+      = dynamic_cast<const TextGlyph*>(sbmlLayout.getListOfTextGlyphs()->get(i));
       if (tmp)
         postprocessTextGlyph(*tmp, layoutmap);
     }
@@ -231,11 +243,11 @@ void SBMLDocumentLoader::postprocessTextGlyph(const TextGlyph & sbml,
     double height = dimGraph.getHeight();
     // get nodes
     ListOf listOfSpeciesGlyphs = layout->getListOfSpeciesGlyphs();
-    int numberOfSpeciesGlyphs = listOfSpeciesGlyphs.getNumItems();
+    int numberOfSpeciesGlyphs = listOfSpeciesGlyphs->size();
     std::vector<node*> nodePVec(numberOfSpeciesGlyphs);
     //nodePVec.resize(numberOfSpeciesGlyphs);
     for (int i=0;i<numberOfSpeciesGlyphs;i++){
-      SpeciesGlyph *glyph = (SpeciesGlyph*)listOfSpeciesGlyphs.get(i);
+      SpeciesGlyph *glyph = (SpeciesGlyph*)listOfSpeciesGlyphs->get(i);
       BoundingBox box = glyph->getBoundingBox();
       Point p = box.getPosition();
       Dimensions dim = box.getDimensions();
@@ -247,14 +259,14 @@ void SBMLDocumentLoader::postprocessTextGlyph(const TextGlyph & sbml,
 
     // now get reactions
     ListOf listOfReactionGlyphs = layout->getListOfReactionGlyphs();
-    int numberOfReactionGlyphs = listOfReactionGlyphs.getNumItems();
+    int numberOfReactionGlyphs = listOfReactionGlyphs->size();
     std::vector<reaction*> reactionPVec(numberOfReactionGlyphs);
     //reactionPVec.resize(numberOfReactionGlyphs);
     cout << "number of reactions: " << numberOfReactionGlyphs << endl;
     int i;
     for (i=0;i<numberOfReactionGlyphs;i++){
       //cout << "reaction: " << i << endl;
-      ReactionGlyph *rGlyphP= (ReactionGlyph*)listOfReactionGlyphs.get(i);
+      ReactionGlyph *rGlyphP= (ReactionGlyph*)listOfReactionGlyphs->get(i);
       // now extract id (from model, if present), reaction curce and speciesReferenceGlyph info
       string id = rGlyphP->getReactionId();
 
@@ -263,7 +275,7 @@ void SBMLDocumentLoader::postprocessTextGlyph(const TextGlyph & sbml,
 
       // get edges to reactants (stored in speciesReferences)
       ListOf& listOfSpeciesReferenceGlyphs = rGlyphP->getListOfSpeciesReferenceGlyphs ();
-      int numberOfSpecRefGlyphs = listOfSpeciesReferenceGlyphs.getNumItems();
+      int numberOfSpecRefGlyphs = listOfSpeciesReferenceGlyphs->size();
       SpeciesReferenceGlyph *specRefGl;
       string speciesGlId;
       vector <curveSegment*> reactantCurveSegments;
@@ -277,7 +289,7 @@ void SBMLDocumentLoader::postprocessTextGlyph(const TextGlyph & sbml,
       //edges = vector <edge*>(numberOfSpecRefGlyphs);
       int j;
       for (j=0;j<numberOfSpecRefGlyphs;j++){
-        specRefGl = (SpeciesReferenceGlyph*)listOfSpeciesReferenceGlyphs.get(j);
+        specRefGl = (SpeciesReferenceGlyph*)listOfSpeciesReferenceGlyphs->get(j);
         speciesGlId = specRefGl->getSpeciesGlyphId(); // string id of species glyph
         // now find corresponding node
         //itPos = find_if(nodePVec.begin(),nodePVec.end(),std::bind2nd(ptr_fun(node::hasID),speciesGlId));
@@ -310,7 +322,7 @@ void SBMLDocumentLoader::postprocessTextGlyph(const TextGlyph & sbml,
     }
     // now get text labels
     ListOf& listOfTextGlyphs = layout->getListOfTextGlyphs();
-    int numberOfTextGlyphs = listOfTextGlyphs.getNumItems();
+    int numberOfTextGlyphs = listOfTextGlyphs->size();
     vector<label*> labelPVec;
     label *labelP;
     TextGlyph  *tGlyphP;
@@ -318,7 +330,7 @@ void SBMLDocumentLoader::postprocessTextGlyph(const TextGlyph & sbml,
     string text;
 
     for (j=0;j<numberOfTextGlyphs;j++){
-        tGlyphP = (TextGlyph*)listOfTextGlyphs.get(j);
+        tGlyphP = (TextGlyph*)listOfTextGlyphs->get(j);
         text = tGlyphP->getText();
         if (text == "") // if there is no text attribute (i.e.empty)
           text = tGlyphP->getOriginOfTextId(); // try other attribute
@@ -347,14 +359,14 @@ void SBMLDocumentLoader::postprocessTextGlyph(const TextGlyph & sbml,
 
 //   vector <curveSegment*> SBMLDocumentLoader::getCurveSegments(Curve *curve){
 //       ListOf& listOfCurveSegments = curve->getListOfCurveSegments ();
-//       int numberOfCurveSegments = listOfCurveSegments.getNumItems();
+//       int numberOfCurveSegments = listOfCurveSegments->size();
 //       vector <curveSegment*> mySegments;
 //       //mySegments.resize(numberOfCurveSegments);
 //       LineSegment *lineSeg;
 //       curveSegment *mySegment;
 //       Point p1,p2;
 //       for (int j=0;j<numberOfCurveSegments;j++){
-//         lineSeg = (LineSegment*)listOfCurveSegments.get(j);
+//         lineSeg = (LineSegment*)listOfCurveSegments->get(j);
 //         p1 = lineSeg->getStart();
 //         p2 = lineSeg->getEnd();
 //         // now get base points on potential curve, if defined

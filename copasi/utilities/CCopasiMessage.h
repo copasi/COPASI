@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMessage.h,v $
-//   $Revision: 1.50 $
+//   $Revision: 1.51 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/12 16:49:35 $
+//   $Date: 2007/10/29 13:17:19 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -70,16 +70,22 @@ class CCopasiMessage
     enum Type
     {
       RAW = 0,
-      TRACE,
-      COMMANDLINE,
-      WARNING,
+      TRACE = 1,
+      COMMANDLINE = 2,
+      WARNING = 3,
       // In the case that ERROR is defined we have to remove its definition
       // temporarely.
 #ifdef ERROR
 # undef ERROR
 #endif
-      ERROR,
-      EXCEPTION
+      ERROR = 4,
+      EXCEPTION = 5,
+      RAW_FILTERED = 128,
+      TRACE_FILTERED = 129,
+      COMMANDLINE_FILTERED = 130,
+      WARNING_FILTERED = 131,
+      ERROR_FILTERED = 132,
+      EXCEPTION_FILTERED = 133
     };
 
     // Attributes

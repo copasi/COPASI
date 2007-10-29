@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.h,v $
-//   $Revision: 1.43 $
+//   $Revision: 1.44 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/08/20 13:08:38 $
+//   $Author: shoops $
+//   $Date: 2007/10/29 13:17:18 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -209,7 +209,7 @@ class SBMLExporter
     /**
      * Remove some object from an sbml list.
      */
-    void removeFromList(ListOf& list, SBase* pObject);
+    void removeFromList(ListOf* list, SBase* pObject);
 
     /**
      * Translate a function with its arguments into an expression tree.
@@ -280,14 +280,14 @@ class SBMLExporter
      * If it can be exported, the result vector will be empty, otherwise it will
      * contain a number of messages that specify why it can't be exported.
      */
-    static std::vector<std::string> isRuleSBMLCompatible(const CModelEntity* pME, CCopasiDataModel* pDataModel, int sbmlLevel, int sbmlVersion);
+    static std::vector<std::string> isRuleSBMLCompatible(const CModelEntity* pME, const CCopasiDataModel* pDataModel, int sbmlLevel, int sbmlVersion);
 
     /**
      * Checks wether the rule in the given model entity can be exported to SBML Level2 Version1.
      * If it can be exported, the result vector will be empty, otherwise it will
      * contain a number of messages that specify why it can't be exported.
      */
-    static std::vector<std::string> isRuleSBMLL2V1Compatible(const CModelEntity* pME, CCopasiDataModel* pDataModel);
+    static std::vector<std::string> isRuleSBMLL2V1Compatible(const CModelEntity* pME, const CCopasiDataModel* pDataModel);
 
 #ifdef WITH_LAYOUT
     /**

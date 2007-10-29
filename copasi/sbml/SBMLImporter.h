@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-//   $Revision: 1.57 $
+//   $Revision: 1.58 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/10/15 09:15:25 $
+//   $Author: shoops $
+//   $Date: 2007/10/29 13:17:18 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,6 +41,7 @@ class Rule;
 class SBMLImporter
   {
   protected:
+    std::set<unsigned int> mIgnoredSBMLMessages;
     std::map<std::string, CMetab*> speciesMap;
     CFunctionDB* functionDB;
     bool mIncompleteModel;
@@ -53,13 +54,14 @@ class SBMLImporter
     std::set<std::string> mUsedFunctions;
     CModel* mpCopasiModel;
     std::map<std::string, std::string> mFunctionNameMapping;
-    bool mDivisionByCompartmentWarning;
+    std::set<std::string> mDivisionByCompartmentReactions;
     CProcessReport* mpImportHandler;
     unsigned C_INT32 mImportStep;
     unsigned C_INT32 mhImportStep;
     unsigned C_INT32 mTotalSteps;
     std::map<Species*, Compartment*> mSubstanceOnlySpecies;
     bool mFastReactionsEncountered;
+    std::set<std::string> mExplicitelyTimeDependentFunctionDefinitions;
 
     /**
      * Creates and returns a Copasi CModel from the SBMLDocument given as argument.
@@ -140,7 +142,7 @@ class SBMLImporter
      * Returns the user defined SBML function definition that belongs to the given
      * name, or NULL if none can be found.
      */
-    FunctionDefinition* getFunctionDefinitionForName(const std::string name, const Model* model);
+    const FunctionDefinition* getFunctionDefinitionForName(const std::string name, const Model* model);
 
     /**
      * Replaces the variables in a function definition with the actual function
@@ -291,6 +293,27 @@ class SBMLImporter
     bool isStochasticModel(const Model* pSBMLModel);
 
     void replaceObjectNames(ASTNode* pNode, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+
+    /**
+     * For function definitions that use the time symbol we have to make this a
+     * variable that is passed to the function instead.
+     * The function recursively goes through the AST tree rooted in root and
+     * changs all time nodes to varaible nodes with name newNodeName.
+     * If a time node has been found, the function return true, otherwise false
+     * is returned.
+     */
+    bool replaceTimeNodesInFunctionDefinition(ASTNode* root, std::string newNodeName);
+
+    /**
+     * This function replaces function calls to all functions listed in mExplicitelyTimeDependentFunctionDefinitions
+     * with the same call but an additional parameter which is the time.
+     * This replacement includes all model entities that have a mathematical
+     * expression, so depending on the version of SBML, this would include:
+     * initial assignments, rules, constraints, kinetic laws and events.
+     * The corresponding replacement for the function definitions is done in
+     * replaceTimeNodesInFunctionDefinition.
+     */
+    void replaceTimeDependentFunctionCalls(ASTNode* root);
 
   public:
     SBMLImporter();

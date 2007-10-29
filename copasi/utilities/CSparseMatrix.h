@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSparseMatrix.h,v $
-   $Revision: 1.4 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:32:43 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSparseMatrix.h,v $
+//   $Revision: 1.5 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/10/29 13:17:19 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -67,9 +67,9 @@ class CSparseMatrix
     CSparseMatrix(const CCompressedColumnFormat & ccf);
     ~CSparseMatrix();
     bool resize(const unsigned C_INT32 & rows, const unsigned C_INT32 & columns);
-    const unsigned C_INT32 numRows() const;
-    const unsigned C_INT32 numCols() const;
-    const unsigned C_INT32 numNonZeros() const;
+    const unsigned C_INT32 & numRows() const;
+    const unsigned C_INT32 & numCols() const;
+    unsigned C_INT32 numNonZeros() const;
 
     const std::vector< std::vector< CSparseMatrixElement *> > & getColumns() const;
     std::vector< std::vector< CSparseMatrixElement *> > & getColumns();

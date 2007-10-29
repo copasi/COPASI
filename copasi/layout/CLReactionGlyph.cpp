@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLReactionGlyph.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/08/05 12:24:11 $
+//   $Author: shoops $
+//   $Date: 2007/10/29 13:17:17 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -161,11 +161,11 @@ CLReactionGlyph::CLReactionGlyph(const ReactionGlyph & sbml,
     }
 
   //species reference glyphs
-  C_INT32 i, imax = sbml.getListOfSpeciesReferenceGlyphs().getNumItems();
+  C_INT32 i, imax = sbml.getListOfSpeciesReferenceGlyphs()->size();
   for (i = 0; i < imax; ++i)
     {
       const SpeciesReferenceGlyph* tmp
-      = dynamic_cast<const SpeciesReferenceGlyph*>(sbml.getListOfSpeciesReferenceGlyphs().get(i));
+      = dynamic_cast<const SpeciesReferenceGlyph*>(sbml.getListOfSpeciesReferenceGlyphs()->get(i));
       if (tmp)
         addMetabReferenceGlyph(new CLMetabReferenceGlyph(*tmp, modelmap, layoutmap));
     }

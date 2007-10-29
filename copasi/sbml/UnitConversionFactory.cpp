@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/UnitConversionFactory.cpp,v $
-   $Revision: 1.6 $
-   $Name:  $
-   $Author: ssahle $
-   $Date: 2006/11/27 15:57:48 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/UnitConversionFactory.cpp,v $
+//   $Revision: 1.7 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/10/29 13:17:18 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -214,7 +214,8 @@ UnitDefinition* UnitConversionFactory::convertAmpereToSI(const Unit& unit)
   UnitDefinition* pUdef = new UnitDefinition();
   Unit* pU = new Unit(unit);
   pU->setOffset(0.0);
-  pUdef->addUnit(*pU);
+  pUdef->addUnit(pU);
+  delete pU;
   return pUdef;
 }
 
@@ -259,7 +260,8 @@ UnitDefinition* UnitConversionFactory::convertCandelaToSI(const Unit& unit)
   UnitDefinition* pUdef = new UnitDefinition();
   Unit* pU = new Unit(unit);
   pU->setOffset(0.0);
-  pUdef->addUnit(*pU);
+  pUdef->addUnit(pU);
+  delete pU;
   return pUdef;
 }
 
@@ -282,7 +284,8 @@ UnitDefinition* UnitConversionFactory::convertCelsiusToSI(const Unit& unit)
   Unit* pU = new Unit(unit);
   pU->setKind(UNIT_KIND_KELVIN);
   pU->setOffset(0.0);
-  pUdef->addUnit(*pU);
+  pUdef->addUnit(pU);
+  delete pU;
   return pUdef;
 }
 
@@ -305,11 +308,13 @@ UnitDefinition* UnitConversionFactory::convertCoulombToSI(const Unit& unit)
   Unit* pU = new Unit(unit);
   pU->setKind(UNIT_KIND_AMPERE);
   pU->setOffset(0.0);
-  pUdef->addUnit(*pU);
+  pUdef->addUnit(pU);
+  delete pU;
   pU = new Unit();
   pU->setKind(UNIT_KIND_SECOND);
   pU->setExponent(unit.getExponent());
-  pUdef->addUnit(*pU);
+  pUdef->addUnit(pU);
+  delete pU;
   return pUdef;
 }
 
@@ -332,7 +337,8 @@ UnitDefinition* UnitConversionFactory::convertDimensionlessToSI(const Unit& unit
   Unit* pU = new Unit(unit);
   pU->setKind(UNIT_KIND_DIMENSIONLESS);
   pU->setOffset(0.0);
-  pUdef->addUnit(*pU);
+  pUdef->addUnit(pU);
+  delete pU;
   return pUdef;
 }
 
@@ -356,16 +362,20 @@ UnitDefinition* UnitConversionFactory::convertFaradToSI(const Unit& unit)
   pU->setOffset(0.0);
   pU->setKind(UNIT_KIND_AMPERE);
   pU->setExponent(2*unit.getExponent());
-  pUdef->addUnit(*pU);
+  pUdef->addUnit(pU);
+  delete pU;
   pU = new Unit(UNIT_KIND_KILOGRAM);
   pU->setExponent(-1*unit.getExponent());
-  pUdef->addUnit(*pU);
+  pUdef->addUnit(pU);
+  delete pU;
   pU = new Unit(UNIT_KIND_METER);
   pU->setExponent(-2*unit.getExponent());
-  pUdef->addUnit(*pU);
+  pUdef->addUnit(pU);
+  delete pU;
   pU = new Unit(UNIT_KIND_SECOND);
   pU->setExponent(4*unit.getExponent());
-  pUdef->addUnit(*pU);
+  pUdef->addUnit(pU);
+  delete pU;
   return pUdef;
 }
 
@@ -387,7 +397,8 @@ UnitDefinition* UnitConversionFactory::convertKilogramToSI(const Unit& unit)
   UnitDefinition* pUdef = new UnitDefinition();
   Unit* pU = new Unit(unit);
   pU->setOffset(0.0);
-  pUdef->addUnit(*pU);
+  pUdef->addUnit(pU);
+  delete pU;
   return pUdef;
 }
 
@@ -412,10 +423,12 @@ UnitDefinition* UnitConversionFactory::convertDoseToSI(const Unit& unit)
   pU->setOffset(0.0);
   pU->setKind(UNIT_KIND_METER);
   pU->setExponent(2*unit.getExponent());
-  pUdef->addUnit(*pU);
+  pUdef->addUnit(pU);
+  delete pU;
   pU = new Unit(UNIT_KIND_SECOND);
   pU->setExponent(-2*unit.getExponent());
-  pUdef->addUnit(*pU);
+  pUdef->addUnit(pU);
+  delete pU;
   return pUdef;
 }
 
@@ -439,16 +452,20 @@ UnitDefinition* UnitConversionFactory::convertHenryToSI(const Unit& unit)
   pU->setOffset(0.0);
   pU->setKind(UNIT_KIND_AMPERE);
   pU->setExponent(-2*unit.getExponent());
-  pUdef->addUnit(*pU);
+  pUdef->addUnit(pU);
+  delete pU;
   pU = new Unit(UNIT_KIND_KILOGRAM);
   pU->setExponent(unit.getExponent());
-  pUdef->addUnit(*pU);
+  pUdef->addUnit(pU);
+  delete pU;
   pU = new Unit(UNIT_KIND_METER);
   pU->setExponent(2*unit.getExponent());
-  pUdef->addUnit(*pU);
+  pUdef->addUnit(pU);
+  delete pU;
   pU = new Unit(UNIT_KIND_SECOND);
   pU->setExponent(-2*unit.getExponent());
-  pUdef->addUnit(*pU);
+  pUdef->addUnit(pU);
+  delete pU;
   return pUdef;
 }
 
@@ -472,13 +489,16 @@ UnitDefinition* UnitConversionFactory::convertJouleToSI(const Unit& unit)
   pU->setOffset(0.0);
   pU->setKind(UNIT_KIND_KILOGRAM);
   pU->setExponent(unit.getExponent());
-  pUdef->addUnit(*pU);
+  pUdef->addUnit(pU);
+  delete pU;
   pU = new Unit(UNIT_KIND_METER);
   pU->setExponent(2*unit.getExponent());
-  pUdef->addUnit(*pU);
+  pUdef->addUnit(pU);
+  delete pU;
   pU = new Unit(UNIT_KIND_SECOND);
   pU->setExponent(-2*unit.getExponent());
-  pUdef->addUnit(*pU);
+  pUdef->addUnit(pU);
+  delete pU;
   return pUdef;
 }
 
@@ -502,10 +522,12 @@ UnitDefinition* UnitConversionFactory::convertKatalToSI(const Unit& unit)
   pU->setOffset(0.0);
   pU->setKind(UNIT_KIND_MOLE);
   pU->setExponent(unit.getExponent());
-  pUdef->addUnit(*pU);
+  pUdef->addUnit(pU);
+  delete pU;
   pU = new Unit(UNIT_KIND_SECOND);
   pU->setExponent(-1*unit.getExponent());
-  pUdef->addUnit(*pU);
+  pUdef->addUnit(pU);
+  delete pU;
   return pUdef;
 }
 
@@ -527,7 +549,8 @@ UnitDefinition* UnitConversionFactory::convertKelvinToSI(const Unit& unit)
   UnitDefinition* pUdef = new UnitDefinition();
   Unit* pU = new Unit(unit);
   pU->setOffset(0.0);
-  pUdef->addUnit(*pU);
+  pUdef->addUnit(pU);
+  delete pU;
   return pUdef;
 }
 
@@ -572,10 +595,12 @@ UnitDefinition* UnitConversionFactory::convertLuxToSI(const Unit& unit)
   Unit* pU = new Unit(unit);
   pU->setKind(UNIT_KIND_CANDELA);
   pU->setOffset(0.0);
-  pUdef->addUnit(*pU);
+  pUdef->addUnit(pU);
+  delete pU;
   pU = new Unit(UNIT_KIND_METER);
   pU->setExponent(-2*unit.getExponent());
-  pUdef->addUnit(*pU);
+  pUdef->addUnit(pU);
+  delete pU;
   return pUdef;
 }
 
@@ -597,7 +622,8 @@ UnitDefinition* UnitConversionFactory::convertMeterToSI(const Unit& unit)
   UnitDefinition* pUdef = new UnitDefinition();
   Unit* pU = new Unit(unit);
   pU->setOffset(0.0);
-  pUdef->addUnit(*pU);
+  pUdef->addUnit(pU);
+  delete pU;
   return pUdef;
 }
 
@@ -619,7 +645,8 @@ UnitDefinition* UnitConversionFactory::convertMoleToSI(const Unit& unit)
   UnitDefinition* pUdef = new UnitDefinition();
   Unit* pU = new Unit(unit);
   pU->setOffset(0.0);
-  pUdef->addUnit(*pU);
+  pUdef->addUnit(pU);
+  delete pU;
   return pUdef;
 }
 
@@ -642,13 +669,16 @@ UnitDefinition* UnitConversionFactory::convertNewtonToSI(const Unit& unit)
   Unit* pU = new Unit(unit);
   pU->setOffset(0.0);
   pU->setKind(UNIT_KIND_KILOGRAM);
-  pUdef->addUnit(*pU);
+  pUdef->addUnit(pU);
+  delete pU;
   pU = new Unit(UNIT_KIND_METER);
   pU->setExponent(unit.getExponent());
-  pUdef->addUnit(*pU);
+  pUdef->addUnit(pU);
+  delete pU;
   pU = new Unit(UNIT_KIND_SECOND);
   pU->setExponent(-2*unit.getExponent());
-  pUdef->addUnit(*pU);
+  pUdef->addUnit(pU);
+  delete pU;
   return pUdef;
 }
 
@@ -672,16 +702,20 @@ UnitDefinition* UnitConversionFactory::convertOhmToSI(const Unit& unit)
   pU->setOffset(0.0);
   pU->setKind(UNIT_KIND_AMPERE);
   pU->setExponent(-2*unit.getExponent());
-  pUdef->addUnit(*pU);
+  pUdef->addUnit(pU);
+  delete pU;
   pU = new Unit(UNIT_KIND_KILOGRAM);
   pU->setExponent(unit.getExponent());
-  pUdef->addUnit(*pU);
+  pUdef->addUnit(pU);
+  delete pU;
   pU = new Unit(UNIT_KIND_METER);
   pU->setExponent(2*unit.getExponent());
-  pUdef->addUnit(*pU);
+  pUdef->addUnit(pU);
+  delete pU;
   pU = new Unit(UNIT_KIND_SECOND);
   pU->setExponent(-3*unit.getExponent());
-  pUdef->addUnit(*pU);
+  pUdef->addUnit(pU);
+  delete pU;
   return pUdef;
 }
 
@@ -704,13 +738,16 @@ UnitDefinition* UnitConversionFactory::convertPascalToSI(const Unit& unit)
   Unit* pU = new Unit(unit);
   pU->setKind(UNIT_KIND_KILOGRAM);
   pU->setOffset(0.0);
-  pUdef->addUnit(*pU);
+  pUdef->addUnit(pU);
+  delete pU;
   pU = new Unit(UNIT_KIND_METER);
   pU->setExponent(-1*unit.getExponent());
-  pUdef->addUnit(*pU);
+  pUdef->addUnit(pU);
+  delete pU;
   pU = new Unit(UNIT_KIND_SECOND);
   pU->setExponent(-2*unit.getExponent());
-  pUdef->addUnit(*pU);
+  pUdef->addUnit(pU);
+  delete pU;
   return pUdef;
 }
 
@@ -732,7 +769,8 @@ UnitDefinition* UnitConversionFactory::convertSecondToSI(const Unit& unit)
   UnitDefinition* pUdef = new UnitDefinition();
   Unit* pU = new Unit(unit);
   pU->setOffset(0.0);
-  pUdef->addUnit(*pU);
+  pUdef->addUnit(pU);
+  delete pU;
   return pUdef;
 }
 
@@ -756,16 +794,20 @@ UnitDefinition* UnitConversionFactory::convertSiemensToSI(const Unit& unit)
   pU->setOffset(0.0);
   pU->setKind(UNIT_KIND_AMPERE);
   pU->setExponent(2*unit.getExponent());
-  pUdef->addUnit(*pU);
+  pUdef->addUnit(pU);
+  delete pU;
   pU = new Unit(UNIT_KIND_KILOGRAM);
   pU->setExponent(-1*unit.getExponent());
-  pUdef->addUnit(*pU);
+  pUdef->addUnit(pU);
+  delete pU;
   pU = new Unit(UNIT_KIND_METER);
   pU->setExponent(-2*unit.getExponent());
-  pUdef->addUnit(*pU);
+  pUdef->addUnit(pU);
+  delete pU;
   pU = new Unit(UNIT_KIND_SECOND);
   pU->setExponent(3*unit.getExponent());
-  pUdef->addUnit(*pU);
+  pUdef->addUnit(pU);
+  delete pU;
   return pUdef;
 }
 
@@ -789,13 +831,16 @@ UnitDefinition* UnitConversionFactory::convertTeslaToSI(const Unit& unit)
   pU->setOffset(0.0);
   pU->setKind(UNIT_KIND_AMPERE);
   pU->setExponent(-1*unit.getExponent());
-  pUdef->addUnit(*pU);
+  pUdef->addUnit(pU);
+  delete pU;
   pU = new Unit(UNIT_KIND_KILOGRAM);
   pU->setExponent(unit.getExponent());
-  pUdef->addUnit(*pU);
+  pUdef->addUnit(pU);
+  delete pU;
   pU = new Unit(UNIT_KIND_SECOND);
   pU->setExponent(-2*unit.getExponent());
-  pUdef->addUnit(*pU);
+  pUdef->addUnit(pU);
+  delete pU;
   return pUdef;
 }
 
@@ -819,16 +864,20 @@ UnitDefinition* UnitConversionFactory::convertVoltToSI(const Unit& unit)
   pU->setOffset(0.0);
   pU->setKind(UNIT_KIND_AMPERE);
   pU->setExponent(-1*unit.getExponent());
-  pUdef->addUnit(*pU);
+  pUdef->addUnit(pU);
+  delete pU;
   pU = new Unit(UNIT_KIND_KILOGRAM);
   pU->setExponent(unit.getExponent());
-  pUdef->addUnit(*pU);
+  pUdef->addUnit(pU);
+  delete pU;
   pU = new Unit(UNIT_KIND_METER);
   pU->setExponent(2*unit.getExponent());
-  pUdef->addUnit(*pU);
+  pUdef->addUnit(pU);
+  delete pU;
   pU = new Unit(UNIT_KIND_SECOND);
   pU->setExponent(-3*unit.getExponent());
-  pUdef->addUnit(*pU);
+  pUdef->addUnit(pU);
+  delete pU;
   return pUdef;
 }
 
@@ -852,13 +901,16 @@ UnitDefinition* UnitConversionFactory::convertWattToSI(const Unit& unit)
   pU->setOffset(0.0);
   pU->setKind(UNIT_KIND_KILOGRAM);
   pU->setExponent(unit.getExponent());
-  pUdef->addUnit(*pU);
+  pUdef->addUnit(pU);
+  delete pU;
   pU = new Unit(UNIT_KIND_METER);
   pU->setExponent(2*unit.getExponent());
-  pUdef->addUnit(*pU);
+  pUdef->addUnit(pU);
+  delete pU;
   pU = new Unit(UNIT_KIND_SECOND);
   pU->setExponent(-3*unit.getExponent());
-  pUdef->addUnit(*pU);
+  pUdef->addUnit(pU);
+  delete pU;
   return pUdef;
 }
 
@@ -882,16 +934,20 @@ UnitDefinition* UnitConversionFactory::convertWeberToSI(const Unit& unit)
   pU->setOffset(0.0);
   pU->setKind(UNIT_KIND_AMPERE);
   pU->setExponent(-1*unit.getExponent());
-  pUdef->addUnit(*pU);
+  pUdef->addUnit(pU);
+  delete pU;
   pU = new Unit(UNIT_KIND_KILOGRAM);
   pU->setExponent(unit.getExponent());
-  pUdef->addUnit(*pU);
+  pUdef->addUnit(pU);
+  delete pU;
   pU = new Unit(UNIT_KIND_METER);
   pU->setExponent(2*unit.getExponent());
-  pUdef->addUnit(*pU);
+  pUdef->addUnit(pU);
+  delete pU;
   pU = new Unit(UNIT_KIND_SECOND);
   pU->setExponent(-2*unit.getExponent());
-  pUdef->addUnit(*pU);
+  pUdef->addUnit(pU);
+  delete pU;
   return pUdef;
 }
 
@@ -985,7 +1041,7 @@ UnitDefinition* UnitConversionFactory::combine(const UnitDefinition& uDef1, cons
   unsigned int i;
   for (i = 0; i < maxUnits;++i)
     {
-      Unit* pSrcUnit = uDef1.getUnit(i);
+      const Unit* pSrcUnit = uDef1.getUnit(i);
       unsigned int maxUnits2 = pResult->getNumUnits();
       unsigned int j;
       bool exists = false;
@@ -1015,13 +1071,14 @@ UnitDefinition* UnitConversionFactory::combine(const UnitDefinition& uDef1, cons
       if (!exists)
         {
           Unit* tmpUnit = new Unit(*pSrcUnit);
-          pResult->addUnit(*tmpUnit);
+          pResult->addUnit(tmpUnit);
+          delete tmpUnit;
         }
     }
   maxUnits = uDef2.getNumUnits();
   for (i = 0; i < maxUnits;++i)
     {
-      Unit* pSrcUnit = uDef2.getUnit(i);
+      const Unit* pSrcUnit = uDef2.getUnit(i);
       unsigned int maxUnits2 = pResult->getNumUnits();
       unsigned int j;
       bool exists = false;
@@ -1051,7 +1108,8 @@ UnitDefinition* UnitConversionFactory::combine(const UnitDefinition& uDef1, cons
       if (!exists)
         {
           Unit* tmpUnit = new Unit(*pSrcUnit);
-          pResult->addUnit(*tmpUnit);
+          pResult->addUnit(tmpUnit);
+          delete tmpUnit;
         }
     }
   UnitDefinition* pTmp = UnitConversionFactory::eliminateDimensionless(pResult);
@@ -1088,7 +1146,7 @@ UnitDefinition* UnitConversionFactory::eliminateDimensionless(UnitDefinition* pU
           pU = new Unit(*(pUdef->getUnit(i)));
           if (pU->getKind() != UNIT_KIND_DIMENSIONLESS)
             {
-              pTmpUdef->addUnit(*pU);
+              pTmpUdef->addUnit(pU);
             }
           else
             {
@@ -1096,6 +1154,7 @@ UnitDefinition* UnitConversionFactory::eliminateDimensionless(UnitDefinition* pU
               scale = scale + pU->getScale();
               multiplier = multiplier * pU->getMultiplier();
             }
+          delete pU;
           ++i;
         }
       i = pTmpUdef->getNumUnits();
@@ -1321,11 +1380,11 @@ bool UnitConversionFactory::containsOnlyGivenUnits(const UnitDefinition& uDef, c
           Unit* pU = pTmpUdef->getUnit(i);
           UnitKind_t kind = pU->getKind();
           unsigned int j;
-          unsigned int maxUnits2 = unitList.getNumItems();
+          unsigned int maxUnits2 = unitList.size();
           bool found = false;
           for (j = 0; j < maxUnits2;++j)
             {
-              Unit* pU2 = dynamic_cast<Unit*>(unitList.get(j));
+              const Unit* pU2 = dynamic_cast<const Unit*>(unitList.get(j));
               if (!pU2) break;
               if (pU2->getKind() == kind)
                 {

@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/CopasiUI.pro,v $ 
-#   $Revision: 1.137 $ 
+#   $Revision: 1.138 $ 
 #   $Name:  $ 
-#   $Author: urost $ 
-#   $Date: 2007/02/26 10:31:09 $ 
+#   $Author: shoops $ 
+#   $Date: 2007/10/29 13:17:15 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -11,7 +11,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.137 $ $Author: urost $ $Date: 2007/02/26 10:31:09 $  
+# $Revision: 1.138 $ $Author: shoops $ $Date: 2007/10/29 13:17:15 $  
 ######################################################################
 
 TEMPLATE = app
@@ -104,6 +104,9 @@ contains(BUILD_OS, SunOS) {
 
 contains(BUILD_OS, Darwin){
   QMAKE_LFLAGS += -Wl,-search_paths_first
+  contains(DEFINES, WITH_LAYOUT) {
+    CONFIG += opengl
+  }
   
   LIBS = $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a) \
          $$LIBS

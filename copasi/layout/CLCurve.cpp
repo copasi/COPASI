@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLCurve.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/08/03 15:44:10 $
+//   $Author: shoops $
+//   $Date: 2007/10/29 13:17:17 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,8 +19,8 @@
 
 CLLineSegment::CLLineSegment(const LineSegment & ls)
     : CLBase(ls),
-    mStart(ls.getStart()),
-    mEnd(ls.getEnd()),
+    mStart(*ls.getStart()),
+    mEnd(*ls.getEnd()),
     mBase1(),
     mBase2(),
     mIsBezier(false)
@@ -30,8 +30,8 @@ CLLineSegment::CLLineSegment(const LineSegment & ls)
   if (cb)
     {
       mIsBezier = true;
-      mBase1 = CLPoint(cb->getBasePoint1());
-      mBase2 = CLPoint(cb->getBasePoint2());
+      mBase1 = CLPoint(*cb->getBasePoint1());
+      mBase2 = CLPoint(*cb->getBasePoint2());
     }
 }
 
@@ -55,11 +55,11 @@ CLCurve::CLCurve(const Curve & sbmlcurve)
     mCurveSegments()
 {
   //TODO
-  C_INT32 i, imax = sbmlcurve.getListOfCurveSegments().getNumItems();
+  C_INT32 i, imax = sbmlcurve.getListOfCurveSegments()->size();
   for (i = 0; i < imax; ++i)
     {
       const LineSegment* tmp
-      = dynamic_cast<const LineSegment*>(sbmlcurve.getListOfCurveSegments().get(i));
+      = dynamic_cast<const LineSegment*>(sbmlcurve.getListOfCurveSegments()->get(i));
       if (tmp)
         addCurveSegment(new CLLineSegment(*tmp));
     }

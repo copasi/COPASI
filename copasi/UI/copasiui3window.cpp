@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.210 $
+//   $Revision: 1.211 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/12 18:38:28 $
+//   $Date: 2007/10/29 13:17:15 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1267,15 +1267,41 @@ void CopasiUI3Window::checkPendingMessages()
   if (msg_pending.getNumber() != MCCopasiMessage + 1)
     {
       QString text;
+      QString filteredText;
+      unsigned int numMessages = 0;
+      unsigned int numFilteredMessages = 0;
       while (msg_pending.getNumber() != MCCopasiMessage + 1)
         {
-          text += "\n";
-          text += FROM_UTF8(msg_pending.getText());
+          if (msg_pending.getType() & 128)
+            {
+              ++numFilteredMessages;
+              filteredText += "\n";
+              filteredText += FROM_UTF8(msg_pending.getText());
+            }
+          else
+            {
+              ++numMessages;
+              text += "\n";
+              text += FROM_UTF8(msg_pending.getText());
+            }
           msg_pending = CCopasiMessage::getLastMessage();
         }
 
-      CQMessageBox::information(this, QString("COPASI Message"), text,
-                                QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+      if (numFilteredMessages != 0)
+        {
+          CQMessageBox box(this);
+          box.configure(QString("SBML Import Information"), text, QMessageBox::Information, QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton, QMessageBox::NoButton);
+          box.enableFilteredMessages(true);
+          box.setFilteredMessageText(filteredText);
+          box.setMessageTabLabel(QString::number(numMessages) + QString(" messages"));
+          box.setFilteredTabLabel(QString::number(numFilteredMessages) + QString(" filtered messages"));
+          box.exec();
+        }
+      else
+        {
+          CQMessageBox::information(this, QString("SBML Import Information"), text,
+                                    QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+        }
     }
 }
 

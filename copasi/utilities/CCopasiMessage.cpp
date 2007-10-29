@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMessage.cpp,v $
-//   $Revision: 1.36 $
+//   $Revision: 1.37 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/12 16:49:35 $
+//   $Date: 2007/10/29 13:17:19 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -250,6 +250,42 @@ void CCopasiMessage::handler(const bool & /* _throw */)
 
     case EXCEPTION:
       mText = ">EXCEPTION ";
+      mText += LocalTimeStamp();
+      mText += "<\n";
+      break;
+
+    case RAW_FILTERED:
+      mText = ">RAW(filtered) ";
+      mText += LocalTimeStamp();
+      mText += "<\n";
+      break;
+
+    case TRACE_FILTERED:
+      mText = ">TRACE(filtered) ";
+      mText += LocalTimeStamp();
+      mText += "<\n";
+      break;
+
+    case COMMANDLINE_FILTERED:
+      mText = ">COMMANDLINE(filtered) ";
+      mText += LocalTimeStamp();
+      mText += "<\n";
+      break;
+
+    case WARNING_FILTERED:
+      mText = ">WARNING(filtered) ";
+      mText += LocalTimeStamp();
+      mText += "<\n";
+      break;
+
+    case ERROR_FILTERED:
+      mText = ">ERROR(filtered) ";
+      mText += LocalTimeStamp();
+      mText += "<\n";
+      break;
+
+    case EXCEPTION_FILTERED:
+      mText = ">EXCEPTION(filtered) ";
       mText += LocalTimeStamp();
       mText += "<\n";
       break;

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGraphicalObject.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/02/23 16:15:46 $
+//   $Author: shoops $
+//   $Date: 2007/10/29 13:17:17 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -43,7 +43,7 @@ CLGraphicalObject::CLGraphicalObject(const GraphicalObject & sbml,
     CCopasiContainer(sbml.getId(), pParent, "LayoutElement"),
     mKey(GlobalKeys.add("Layout", this)),
     mModelObjectKey(""),
-    mBBox(sbml.getBoundingBox())
+    mBBox(*sbml.getBoundingBox())
 {
   //add the copasi key to the map
   layoutmap[sbml.getId()] = mKey;

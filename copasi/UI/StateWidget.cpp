@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/StateWidget.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/12 18:35:35 $
+//   $Date: 2007/10/29 13:17:15 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -39,7 +39,6 @@ StateWidget::StateWidget(QWidget* parent, const char* name, WFlags fl)
 
   setInitialState = new QPushButton(this, "setInitialState");
   setInitialState->setText(trUtf8("SetResultsAsNextInitialState"));
-  connect(setInitialState, SIGNAL(clicked()), this, SLOT(runSetInitialState()));
 
   parentLayout = new QVBoxLayout(this, 0, 0, "parentLayout");
   stateLayout = new QHBoxLayout(0, 0 , 6, "StateLayout");

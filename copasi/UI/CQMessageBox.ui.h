@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMessageBox.ui.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/16 16:40:24 $
+//   $Date: 2007/10/29 13:17:15 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,6 +29,7 @@ void CQMessageBox::configure(const QString & caption, const QString & text,
 {
   mpLblIcon->setPixmap(QMessageBox::standardIcon(icon));
   mpMessage->setText(text);
+  this->enableFilteredMessages(false);
   setCaption(caption);
 
   mBtnEscape = -1;
@@ -149,6 +150,8 @@ void CQMessageBox::init()
   mBtn[1] = mpBtn1;
   mBtn[2] = mpBtn2;
   mBtn[3] = mpBtn3;
+
+  this->enableFilteredMessages(false);
 }
 
 void CQMessageBox::keyPressEvent(QKeyEvent * e)
@@ -246,4 +249,45 @@ int CQMessageBox::information(QWidget * parent, const QString & caption, const Q
                      btnDefault, btnEscape);
 
   return pDialog->exec();
+}
+
+void CQMessageBox::enableFilteredMessages(bool enable)
+{
+  this->mpTabWidget->setTabEnabled(this->mpTabWidget->page(1), enable);
+}
+
+void CQMessageBox::addMessages(const QString & messageText)
+{
+  QString text = this->mpMessage->text();
+  text += "\n";
+  text += messageText;
+  this->mpMessage->setText(text);
+}
+
+void CQMessageBox::addFilteredMessages(const QString & messageText)
+{
+  QString text = this->mpFilteredMessage->text();
+  text += "\n";
+  text += messageText;
+  this->mpFilteredMessage->setText(text);
+}
+
+void CQMessageBox::setFilteredTabLabel(const QString & labelText)
+{
+  this->mpTabWidget->setTabLabel(this->mpTabWidget->page(1), labelText);
+}
+
+void CQMessageBox::setMessageTabLabel(const QString & labelText)
+{
+  this->mpTabWidget->setTabLabel(this->mpTabWidget->page(0), labelText);
+}
+
+void CQMessageBox::setMessageText(const QString & text)
+{
+  this->mpMessage->setText(text);
+}
+
+void CQMessageBox::setFilteredMessageText(const QString & text)
+{
+  this->mpFilteredMessage->setText(text);
 }

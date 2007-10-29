@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLayout.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/08/16 11:57:26 $
+//   $Author: shoops $
+//   $Date: 2007/10/29 13:17:17 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -55,7 +55,7 @@ CLayout::CLayout(const Layout & sbml,
     : CLBase(sbml),
     CCopasiContainer(sbml.getId(), pParent, "Layout"),
     mKey(GlobalKeys.add("Layout", this)),
-    mDimensions(sbml.getDimensions()),
+    mDimensions(*sbml.getDimensions()),
     mvCompartments("ListOfCompartmentGlyphs", this),
     mvMetabs("ListOfMetaboliteGlyphs", this),
     mvReactions("ListOfReactionGlyphs", this),

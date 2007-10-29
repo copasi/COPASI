@@ -1,10 +1,10 @@
 <!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMessageBox.ui,v $ </comment>
-<comment>   $Revision: 1.1 $ </comment>
+<comment>   $Revision: 1.2 $ </comment>
 <comment>   $Name:  $ </comment>
 <comment>   $Author: shoops $ </comment>
-<comment>   $Date: 2007/03/16 16:40:24 $ </comment>
+<comment>   $Date: 2007/10/29 13:17:15 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -12,6 +12,7 @@
 <comment> All rights reserved. </comment>
 
 <class>CQMessageBox</class>
+<comment> All rights reserved. </comment>
 <widget class="QDialog">
     <property name="name">
         <cstring>CQMessageBox</cstring>
@@ -20,8 +21,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>384</width>
-            <height>235</height>
+            <width>648</width>
+            <height>324</height>
         </rect>
     </property>
     <property name="caption">
@@ -149,13 +150,52 @@
                 </spacer>
             </vbox>
         </widget>
-        <widget class="QTextEdit" row="0" column="1">
+        <widget class="QTabWidget" row="0" column="1">
             <property name="name">
-                <cstring>mpMessage</cstring>
+                <cstring>mpTabWidget</cstring>
             </property>
-            <property name="readOnly">
-                <bool>true</bool>
-            </property>
+            <widget class="QWidget">
+                <property name="name">
+                    <cstring>tab</cstring>
+                </property>
+                <attribute name="title">
+                    <string>Messages</string>
+                </attribute>
+                <hbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QTextEdit">
+                        <property name="name">
+                            <cstring>mpMessage</cstring>
+                        </property>
+                        <property name="resizePolicy">
+                            <enum>Manual</enum>
+                        </property>
+                        <property name="readOnly">
+                            <bool>true</bool>
+                        </property>
+                    </widget>
+                </hbox>
+            </widget>
+            <widget class="QWidget">
+                <property name="name">
+                    <cstring>tab</cstring>
+                </property>
+                <attribute name="title">
+                    <string>Filtered Messages</string>
+                </attribute>
+                <grid>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QTextEdit" row="0" column="0">
+                        <property name="name">
+                            <cstring>mpFilteredMessage</cstring>
+                        </property>
+                    </widget>
+                </grid>
+            </widget>
         </widget>
     </grid>
 </widget>
@@ -202,13 +242,20 @@
     <slot access="private" specifier="non virtual">slotBtn3()</slot>
 </slots>
 <functions>
-    <function access="private" specifier="non virtual">configure( const QString &amp; caption, const QString &amp; text, QMessageBox::Icon icon, int btn0, int btn1, int btn2, int btn3 )</function>
+    <function specifier="non virtual">configure( const QString &amp; caption, const QString &amp; text, QMessageBox::Icon icon, int btn0, int btn1, int btn2, int btn3 )</function>
     <function access="private" specifier="non virtual">configureBtn(int index, int type)</function>
     <function access="private" specifier="non virtual">configure( const QString &amp; caption, const QString &amp; text, QMessageBox::Icon icon, const QString &amp; text0, const QString &amp; text1, const QString &amp; text2, const QString &amp; text3, int btnDefault, int btnEscape )</function>
     <function access="private" specifier="non virtual">configureBtn(int index, const QString &amp; text, int btnDefault, int btnEscape )</function>
     <function access="private" specifier="non virtual">init()</function>
     <function access="protected">keyPressEvent( QKeyEvent * e )</function>
     <function access="protected">closeEvent( QCloseEvent * e )</function>
+    <function>enableFilteredMessages(bool enable)</function>
+    <function>addMessages(const QString &amp; messageText)</function>
+    <function>addFilteredMessages(const QString &amp; messageText)</function>
+    <function>setFilteredTabLabel(const QString &amp; labelText)</function>
+    <function>setMessageTabLabel(const QString &amp; labelText)</function>
+    <function>setMessageText(const QString &amp; text)</function>
+    <function>setFilteredMessageText(const QString &amp; text)</function>
     <function specifier="static" returnType="int">critical( QWidget * parent, const QString &amp; caption, const QString &amp; message, int btn0, int btn1, int btn2 = 0)</function>
     <function specifier="static" returnType="int">critical( QWidget * parent, const QString &amp; caption, const QString &amp; message, const QString &amp; text0 = QString::null, const QString &amp; text1 = QString::null, const QString &amp; text2 = QString::null, int btnDefault = 0, int btnEscape = -1 )</function>
     <function specifier="static" returnType="int">warning( QWidget * parent, const QString &amp; caption, const QString &amp; message, int btn0, int btn1, int btn2 = 0)</function>

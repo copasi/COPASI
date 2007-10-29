@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLUtils.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/02/13 16:58:53 $
+//   $Author: shoops $
+//   $Date: 2007/10/29 13:17:18 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,20 +19,11 @@
 #include "sbml/Compartment.h"
 #include "sbml/Species.h"
 #include "sbml/SpeciesReference.h"
-#include "sbml/ModifierSpeciesReference.h"
 #include "sbml/Reaction.h"
-//#include "sbml/KineticLaw.h"
-//#include "sbml/math/FormulaFormatter.h"
 #include "sbml/Model.h"
-//#include "sbml/UnitKind.h"
-//#include "sbml/Unit.h"
 #include "sbml/Parameter.h"
-//#include "sbml/Rule.h"
-//#include "sbml/RateRule.h"
-//#include "sbml/AssignmentRule.h"
 #include "sbml/FunctionDefinition.h"
 #include "sbml/Event.h"
-//#include "sbml/xml/ParseMessage.h"
 
 #include "SBMLUtils.h"
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.101 $
+//   $Revision: 1.102 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/10/25 07:07:31 $
+//   $Author: shoops $
+//   $Date: 2007/10/29 13:17:19 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -148,7 +148,7 @@ const MESSAGES Messages[] =
     {MCSBML + 4, "SBML (4): The SBML document contains events that were ignored."},
     {MCSBML + 5, "SBML (5): Compartment %s referenced by species %s does not exist."},
     {MCSBML + 6, "SBML (6): Annotations in SBase element of SBML Level 1 files, this is invalid and has been ignored."},
-    {MCSBML + 7, "SBML (7): One or more model values have not been set."},
+    {MCSBML + 7, "SBML (7): No initial value set for compartment \"%s\"."},
     {MCSBML + 8, "SBML (8): Expression tree for kinetic of reaction '%s' could not be converted."},
     {MCSBML + 9, "SBML (9): Could not set function from expression in reaction '%s'."},
     {MCSBML + 10, "SBML (10): COPASI does not support stoichiometric expressions."},

@@ -1,10 +1,10 @@
 <chapter id="modelCreation" xreflabel="Model Creation">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_GUI.xml,v $ -->
-<!--   $Revision: 1.48 $ -->
+<!--   $Revision: 1.49 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: shoops $ -->
-<!--   $Date: 2007/07/24 13:25:56 $ -->
+<!--   $Date: 2007/10/29 13:17:20 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -4205,75 +4205,50 @@ Gepasi files.
 <para>
 In addition to those two file formats, COPASI can import SBML Level 1
 and 2 files and it can export models as SBML Level 2 files as well as
-C source code or Berkeley Madonna files.
+C source code, XPPaut, or Berkeley Madonna files.
 </para>
 <sect1 id="sbmlImportExport" xreflabel="Importing and Exporting SBML files">
 <title>Importing and Exporting SBML files</title>
+<para>COPASI is able to import <ulink url="http://www.sbml.org">SBML</ulink> level 1 and level 2 files as well as export SBML level 2 files through the corresponding entries in the <guimenu>File</guimenu> menu. For the import and export the SBML Model is read with <ulink url="http://www.sbml.org/libsbml.html">libsbml</ulink> and converted to the COPASI model structure and vice versa.</para>
+<para>On exporting, COPASI converts its native model structure to an SBML model that is again written out using libsbml. Since the SBML model structure is converted into the COPASI model structure upon import, some of the information in the SBML file gets lost because COPASI does not support the corresponding model elements. Examples of data that gets lost are certain rules and events.</para>
+<para>
+Notes and Annotations from the original SBML file should be preserved when you import and reexport an SBML file as long as you do not delete the objects that contain the annotation in COPASI. But still if you have important annotations or notes in your SBML file make a backup of the file before you open it in COPASI since we can not guarantee that they will survive an import/export cycle.
+</para>
+<para>Likewise, SBML does not support all of the elements of a COPASI model so some information from the COPASI model also gets lost when exporting an SBML file. For example tasks, reports and plot definitions are not exported to the SBML file.</para>
+<para>This is normally not a big problem since the essential parts of a model normally get imported or exported. A consequence however one should keep in mind is that if you import an SBML file into COPASI and later export it again, it might have lost some of the original information. So if your SBML model depends on rules on metabolites and compartments and events, it is not suitable for import into COPASI. This will change in future versions of COPASI.
+</para>
 <para>
 We hope that we will be able to support even more different file
 formats in the future.
 </para>
 <para>
-COPASI is able to import <ulink url="http://www.sbml.org">SBML</ulink>
-level 1 and level 2 files as well as export SBML level 2 files through
-the corresponding entries in the <guimenu>File</guimenu> menu. For the
-import and export the SBML Model is read with <ulink
-url="http://www.sbml.org/libsbml.html">libsbml</ulink> and converted
-to the COPASI model structure and vice versa.
+Current versions of COPASI use libSBML version 3 which supports SBML files up to Level 2 Version 3. LibSBML 3 also has a lot of builtin tests to check the validity of a model. Upon import COPASI will display most of those errors to the user. LibSBML 3 also gives a lot of warnings, especially concerning units in SBML files, which should help the user in generating better, more consistent models. Even so this is a good thing, it can happen that the real errors are hidden by the large amount of warnings. COPASI now uses a new error message dialog that splits the messages in filtered and unfiltered messages. The unfiltered messages are what the user sees when the dialog comes up. In order the see the filtered messages the second tab in the message dialog has to be selected. If there are no filtered messages, this tab is disabled. In the labels of the individual tabs, COPASI also shows you the number of messages that for the corresponding tab.
+</para>
+<screenshot>
+<screeninfo>Produced with COPASI Build 21 on MacOS X on 06/08/2007</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/MessageDialog_01.png" format="PNG" scale="50" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/MessageDialog_01.ps" format="EPS" scale="50" align="center" />
+ </imageobject> 
+ <textobject>
+   <phrase>Error Message Dialog after import of an SBML file</phrase>
+ </textobject>
+ <caption>
+  <para>SBML Import Error Messages</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+<para>
+In the current version, the errors that are filtered are hard coded and they are all warnings that have to do with unit inconsistencies within the model. In future version of COPASI, we will have a mechanism that will let the user manage which error messages should be filtered.
 </para>
 <para>
-On exporting, COPASI converts its native model structure to an SBML
-model that is again written out using libsbml. Since the SBML model
-structure is converted into the COPASI model structure upon import,
-some of the information in the SBML file gets lost because COPASI does
-not support the corresponding model elements. Examples of data that
-gets lost are events and assignment and rate rules an metabolites and 
-compartments as well as all algebraic rules.
+Although COPASI now uses libSBML 3, not all features found in the different versions of SBML are currently supported. If an unsupported feature is encountered during import, COPASI will usually notify the user. Depending on which parts of the model have been ignored, ignored, the result of timecourse simulations and other tasks might not be what you expect.
 </para>
 <para>
-Starting with COPASI Build21, the import and export of assignment and 
-rate rules for global parameters are supported. 
-</para>
-<para>
-Notes and Annotations from the original SBML file should be preserved
-when you import and reexport an SBML file as long as you do not delete
-the objects that contain the annotation in COPASI. But still if you
-have important annotations or notes in your SBML file make a backup of
-the file before you open it in COPASI since we can not guarantee that
-they will survive an import/export cycle. 
-</para>
-<para>
-Likewise, SBML does not support all of the elements of a COPASI model
-so some information from the COPASI model also gets lost when
-exporting an SBML file. For example tasks, reports and plot
-definitions are not exported to SBML.
-</para>
-<para>
-This is normally not a big problem since the essential parts of a
-model normally get imported or exported. A consequence however one
-should keep in mind is that if you import an SBML file into COPASI and
-later export it again, it might have lost some of the original
-information. So if your SBML model depends on rules and events, it is
-not suitable for import into COPASI; this will change in the future.
-</para>
-<para>
-Upon import of an SBML file, COPASI tries to identify the function
-calls it read. That means if COPASI finds a reaction where the kinetic
-law consists of a single function call, COPASI tries to find out
-whether the function called corresponds to one of its built in
-functions. So for SBML files that have been exported from COPASI, the
-function calls can be identified upon re-import. Since all functions
-that can not be recognized have to be added to the global function
-database, this feature might save you some entries there and keep the
-global function database more manageable. The same goes for mass
-action kinetics. COPASI also tries to identify mass action kinetics on
-import but as opposed to other kinetics, COPASI also checks kinetic
-laws that don't only consist of a single function call.
-</para>
-<para>
-This is still very rudimentary and we hope to improve this function
-recognition in the future so that also functions exported from other
-programs can be recognized. 
+This is still very rudimentary and we hope to improve this function recognition in the future so that also functions exported from other programs can be recognized.
 </para>
 </sect1>
 <sect1 id="cExport" xreflabel="Exporting C Source files">

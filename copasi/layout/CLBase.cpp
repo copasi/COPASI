@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLBase.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/16 16:56:07 $
+//   $Date: 2007/10/29 13:17:17 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,8 +29,8 @@ CLDimensions::CLDimensions(const Dimensions& d)
 {}
 
 CLBoundingBox::CLBoundingBox(const BoundingBox & bb)
-    : mPosition(bb.getPosition()),
-    mDimensions(bb.getDimensions())
+    : mPosition(*bb.getPosition()),
+    mDimensions(*bb.getDimensions())
 {}
 
 std::ostream & operator<<(std::ostream &os, const CLPoint & p)

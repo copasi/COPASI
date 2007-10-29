@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMessageBox.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/16 16:40:24 $
+//   $Date: 2007/10/29 13:17:15 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,8 +13,8 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQMessageBox.ui'
  **
- ** Created: Fri Mar 16 12:23:01 2007
- **      by: The User Interface Compiler ($Id: CQMessageBox.cpp,v 1.1 2007/03/16 16:40:24 shoops Exp $)
+ ** Created: Mon Jun 11 13:57:12 2007
+ **      by: The User Interface Compiler ($Id: CQMessageBox.cpp,v 1.2 2007/10/29 13:17:15 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -24,6 +24,8 @@
 #include <qvariant.h>
 #include <qpushbutton.h>
 #include <qlabel.h>
+#include <qtabwidget.h>
+#include <qwidget.h>
 #include <qtextedit.h>
 #include <qlayout.h>
 #include <qtooltip.h>
@@ -77,12 +79,28 @@ CQMessageBox::CQMessageBox(QWidget* parent, const char* name, bool modal, WFlags
 
   CQMessageBoxLayout->addLayout(mpLayoutIcon, 0, 0);
 
-  mpMessage = new QTextEdit(this, "mpMessage");
-  mpMessage->setReadOnly(TRUE);
+  mpTabWidget = new QTabWidget(this, "mpTabWidget");
 
-  CQMessageBoxLayout->addWidget(mpMessage, 0, 1);
+  tab = new QWidget(mpTabWidget, "tab");
+  tabLayout = new QHBoxLayout(tab, 11, 6, "tabLayout");
+
+  mpMessage = new QTextEdit(tab, "mpMessage");
+  mpMessage->setResizePolicy(QTextEdit::Manual);
+  mpMessage->setReadOnly(TRUE);
+  tabLayout->addWidget(mpMessage);
+  mpTabWidget->insertTab(tab, QString::fromLatin1(""));
+
+  tab_2 = new QWidget(mpTabWidget, "tab_2");
+  tabLayout_2 = new QGridLayout(tab_2, 1, 1, 11, 6, "tabLayout_2");
+
+  mpFilteredMessage = new QTextEdit(tab_2, "mpFilteredMessage");
+
+  tabLayout_2->addWidget(mpFilteredMessage, 0, 0);
+  mpTabWidget->insertTab(tab_2, QString::fromLatin1(""));
+
+  CQMessageBoxLayout->addWidget(mpTabWidget, 0, 1);
   languageChange();
-  resize(QSize(384, 235).expandedTo(minimumSizeHint()));
+  resize(QSize(648, 324).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
 
   // signals and slots connections
@@ -117,4 +135,6 @@ void CQMessageBox::languageChange()
   mpBtn3->setText(tr("3"));
   mpBtn3->setAccel(QKeySequence(QString::null));
   mpLblIcon->setText(QString::null);
+  mpTabWidget->changeTab(tab, tr("Messages"));
+  mpTabWidget->changeTab(tab_2, tr("Filtered Messages"));
 }

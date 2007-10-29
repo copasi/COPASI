@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.172 $
+//   $Revision: 1.173 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/10/15 09:15:25 $
+//   $Author: shoops $
+//   $Date: 2007/10/29 13:17:18 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,7 +32,6 @@
 #include <sbml/Compartment.h>
 #include <sbml/Species.h>
 #include <sbml/SpeciesReference.h>
-#include <sbml/ModifierSpeciesReference.h>
 #include <sbml/Reaction.h>
 #include <sbml/KineticLaw.h>
 #include <sbml/math/FormulaFormatter.h>
@@ -41,10 +40,7 @@
 #include <sbml/Unit.h>
 #include <sbml/Parameter.h>
 #include <sbml/Rule.h>
-#include <sbml/RateRule.h>
-#include <sbml/AssignmentRule.h>
 #include <sbml/FunctionDefinition.h>
-#include <sbml/xml/ParseMessage.h>
 
 #include "copasi.h"
 
@@ -123,7 +119,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
         }
     }
 
-  std::string title, comment;
+  std::string title;
   if (this->isStochasticModel(sbmlModel))
     {
       this->mpCopasiModel->setModelType(CModel::stochastic);
@@ -132,9 +128,14 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
     {
       this->mpCopasiModel->setModelType(CModel::deterministic);
     }
-  comment = sbmlModel->getNotes();
-
-  this->mpCopasiModel->setComments(comment);
+  const XMLNode* comment = sbmlModel->getNotes();
+  if (comment != NULL)
+    {
+      std::ostringstream stream;
+      XMLOutputStream o(stream);
+      o << * comment;
+      this->mpCopasiModel->setComments(stream.str());
+    }
   title = sbmlModel->getName();
   if (title == "")
     {
@@ -181,6 +182,75 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       this->mFunctionNameMapping[pSBMLFunDef->getId()] = pFun->getObjectName();
       ++step;
       if (mpImportHandler && !mpImportHandler->progress(hStep)) return false;
+    }
+  // now we go through all initial assignments, rules, constraints, kinetic
+  // laws and events and replace function calls to functions in mExplicitelyTimeDependentFunctionDefinitions
+  // by a call with the extra parameter that is the time.
+  if (mExplicitelyTimeDependentFunctionDefinitions.size() != 0)
+    {
+      std::ostringstream sstream;
+      std::set<std::string>::const_iterator it = mExplicitelyTimeDependentFunctionDefinitions.begin(), endit = mExplicitelyTimeDependentFunctionDefinitions.end();
+      while (it != endit)
+        {
+          sstream << ", " << *it;
+          ++it;
+        }
+      std::string reactionNames = sstream.str();
+      CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 46 , reactionNames.substr(2, reactionNames.size()).c_str());
+      ASTNode* pMathNode = NULL;
+      if (sbmlDocument->getLevel() == 2 && sbmlDocument->getVersion() > 1)
+        {
+          num = sbmlModel->getNumInitialAssignments();
+          for (counter = 0;counter < num;++counter)
+            {
+              pMathNode = const_cast<ASTNode*>(sbmlModel->getInitialAssignment(counter)->getMath());
+              this->replaceTimeDependentFunctionCalls(pMathNode);
+            }
+          num = sbmlModel->getNumConstraints();
+          for (counter = 0;counter < num;++counter)
+            {
+              pMathNode = const_cast<ASTNode*>(sbmlModel->getConstraint(counter)->getMath());
+              this->replaceTimeDependentFunctionCalls(pMathNode);
+            }
+        }
+      num = sbmlModel->getNumRules();
+      for (counter = 0;counter < num;++counter)
+        {
+          pMathNode = const_cast<ASTNode*>(sbmlModel->getRule(counter)->getMath());
+          this->replaceTimeDependentFunctionCalls(pMathNode);
+        }
+      num = sbmlModel->getNumReactions();
+      for (counter = 0;counter < num;++counter)
+        {
+          KineticLaw* kLaw = sbmlModel->getReaction(counter)->getKineticLaw();
+          if (kLaw)
+            {
+              pMathNode = const_cast<ASTNode*>(kLaw->getMath());
+              this->replaceTimeDependentFunctionCalls(pMathNode);
+            }
+        }
+      num = sbmlModel->getNumEvents();
+      for (counter = 0;counter < num;++counter)
+        {
+          Event* pEvent = sbmlModel->getEvent(counter);
+          const Trigger* pTrigger = pEvent->getTrigger();
+          if (pTrigger != NULL)
+            {
+              pMathNode = const_cast<ASTNode*>(pTrigger->getMath());
+              this->replaceTimeDependentFunctionCalls(pMathNode);
+            }
+          EventAssignment* pEventAssignment = NULL;
+          unsigned int j, jMax = pEvent->getNumEventAssignments();
+          for (j = 0;j < jMax;++j)
+            {
+              pEvent->getEventAssignment(j);
+              if (pEventAssignment != NULL)
+                {
+                  pMathNode = const_cast<ASTNode*>(pEventAssignment->getMath());
+                  this->replaceTimeDependentFunctionCalls(pMathNode);
+                }
+            }
+        }
     }
 
   std::map<std::string, CCompartment*> compartmentMap;
@@ -288,6 +358,10 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       ++step;
       if (mpImportHandler && !mpImportHandler->progress(hStep)) return false;
     }
+  if (sbmlModel->getNumInitialAssignments() > 0)
+    {
+      CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 48);
+    }
 
   /* Create the rules */
   this->areRulesUnique(sbmlModel);
@@ -316,6 +390,10 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       if (mpImportHandler && !mpImportHandler->progress(hStep)) return false;
     }
 
+  if (sbmlModel->getNumConstraints() > 0)
+    {
+      CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 49);
+    }
   /* Create all reactions */
   num = sbmlModel->getNumReactions();
   if (mpImportHandler)
@@ -330,11 +408,27 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
                                        & step,
                                        &totalSteps);
     }
+  this->mDivisionByCompartmentReactions.clear();
   for (counter = 0; counter < num; counter++)
     {
       this->createCReactionFromReaction(sbmlModel->getReaction(counter), sbmlModel, this->mpCopasiModel, copasi2sbmlmap, pTmpFunctionDB);
       ++step;
       if (mpImportHandler && !mpImportHandler->progress(hStep)) return false;
+    }
+  if (!this->mDivisionByCompartmentReactions.empty())
+    {
+      // create the error message
+      std::string idList;
+      std::set<std::string>::const_iterator it = this->mDivisionByCompartmentReactions.begin();
+      std::set<std::string>::const_iterator endit = this->mDivisionByCompartmentReactions.end();
+      while (it != endit)
+        {
+          idList += (*it);
+          idList += ", ";
+          ++it;
+        }
+      idList = idList.substr(0, idList.length() - 2);
+      CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 17, idList.c_str());
     }
   this->mpCopasiModel->setCompileFlag();
   if (this->mUnsupportedRuleFound)
@@ -430,6 +524,7 @@ CFunction* SBMLImporter::createCFunctionFromFunctionTree(const FunctionDefinitio
           // the last child is the actual function
           pFun = new CKinFunction();
           unsigned int i, iMax = root.getNumChildren() - 1;
+          std::set<std::string> variableNames;
           for (i = 0; i < iMax;++i)
             {
               ASTNode* pVarNode = root.getChild(i);
@@ -439,7 +534,33 @@ CFunction* SBMLImporter::createCFunctionFromFunctionTree(const FunctionDefinitio
                   CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 12, pSBMLFunction->getId().c_str());
                 }
               pFun->addVariable(pVarNode->getName());
+              variableNames.insert(pVarNode->getName());
             }
+          // now we check if the AST tree has a node that represents the time
+          // object
+          // find a unique name for the time variable
+          std::ostringstream sstream;
+          std::string timeVariableName = "time";
+          unsigned int postfix = 1;
+          while (variableNames.find(timeVariableName) != variableNames.end())
+            {
+              sstream.str("");
+              sstream << "time_" << postfix;
+              timeVariableName = sstream.str();
+              ++postfix;
+            }
+          if (this->replaceTimeNodesInFunctionDefinition(root.getChild(iMax), timeVariableName))
+            {
+              // add another variable to the function
+              ASTNode* pVarNode = new ASTNode(AST_NAME);
+              pVarNode->setName(timeVariableName.c_str());
+              ASTNode* pTmpNode = root.removeChild(iMax);
+              root.addChild(pVarNode);
+              root.addChild(pTmpNode);
+              pFun->addVariable(timeVariableName);
+              this->mExplicitelyTimeDependentFunctionDefinitions.insert(pSBMLFunction->getId());
+            }
+
           pFun->setTree(*root.getChild(iMax));
           CCopasiTree<CEvaluationNode>::iterator treeIt = pFun->getRoot();
           // if the root node already is an object node, this has to be dealt with separately
@@ -546,25 +667,24 @@ SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartme
         }
       else
         {
-          // Set value to NaN and create a warning if it is the first time
-          // this happend
+          // check if the size of the compartment is determined by a rule
           std::string sbmlId = sbmlCompartment->getId();
           bool ruleFound = false;
           unsigned int k, kMax = pSBMLModel->getNumRules();
-          for (k = 0;k < kMax;++k)
+          for (k = 0;k < kMax && !ruleFound;++k)
             {
-              Rule* pRule = pSBMLModel->getRule(k);
+              const Rule* pRule = pSBMLModel->getRule(k);
               switch (pRule->getTypeCode())
                 {
                 case SBML_ASSIGNMENT_RULE:
-                  if (dynamic_cast<AssignmentRule*>(pRule)->getVariable() == sbmlId)
+                  if (dynamic_cast<const AssignmentRule*>(pRule)->getVariable() == sbmlId)
                     {
                       ruleFound = true;
                       break;
                     }
                   break;
                 case SBML_RATE_RULE:
-                  if (dynamic_cast<RateRule*>(pRule)->getVariable() == sbmlId)
+                  if (dynamic_cast<const RateRule*>(pRule)->getVariable() == sbmlId)
                     {
                       ruleFound = true;
                       break;
@@ -577,12 +697,41 @@ SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartme
                   break;
                 }
             }
-
-          value = std::numeric_limits<C_FLOAT64>::quiet_NaN();
-          if (!this->mIncompleteModel && !ruleFound)
+          if (!ruleFound)
             {
-              this->mIncompleteModel = true;
-              CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 7);
+              // go through all species of the model and check if the ones that are
+              // in this compartment have the hasOnlySubstanceUnits flag set.
+              const SBMLDocument* pSBMLDocument = sbmlCompartment->getSBMLDocument();
+              assert(pSBMLDocument != NULL);
+              const Model* pSBMLModel = pSBMLDocument->getModel();
+              assert(pSBMLModel != NULL);
+              bool onlySubstanceCompartment = true;
+              unsigned int i, iMax = pSBMLModel->getNumSpecies();
+              for (i = 0;i < iMax;++i)
+                {
+                  const Species* pSpecies = pSBMLModel->getSpecies(i);
+                  if (pSpecies->getCompartment() == sbmlCompartment->getId() && pSpecies->getHasOnlySubstanceUnits() == false)
+                    {
+                      onlySubstanceCompartment = false;
+                      break;
+                    }
+                }
+              // Set value to NaN and create a warning if it is the first time
+              // this happend
+              if (onlySubstanceCompartment)
+                {
+                  value = 1.0;
+                  CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 45, sbmlCompartment->getId().c_str());
+                }
+              else
+                {
+                  value = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+                  if (!this->mIncompleteModel)
+                    {
+                      this->mIncompleteModel = true;
+                      CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 7, sbmlCompartment->getId().c_str());
+                    }
+                }
             }
         }
     }
@@ -702,20 +851,20 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
       std::string sbmlId = sbmlSpecies->getId();
       bool ruleFound = false;
       unsigned int k, kMax = pSBMLModel->getNumRules();
-      for (k = 0;k < kMax;++k)
+      for (k = 0;k < kMax && !ruleFound;++k)
         {
-          Rule* pRule = pSBMLModel->getRule(k);
+          const Rule* pRule = pSBMLModel->getRule(k);
           switch (pRule->getTypeCode())
             {
             case SBML_ASSIGNMENT_RULE:
-              if (dynamic_cast<AssignmentRule*>(pRule)->getVariable() == sbmlId)
+              if (dynamic_cast<const AssignmentRule*>(pRule)->getVariable() == sbmlId)
                 {
                   ruleFound = true;
                   break;
                 }
               break;
             case SBML_RATE_RULE:
-              if (dynamic_cast<RateRule*>(pRule)->getVariable() == sbmlId)
+              if (dynamic_cast<const RateRule*>(pRule)->getVariable() == sbmlId)
                 {
                   ruleFound = true;
                   break;
@@ -731,7 +880,7 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
       if (!this->mIncompleteModel && !ruleFound)
         {
           this->mIncompleteModel = true;
-          CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 7);
+          CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 41, sbmlSpecies->getId().c_str());
         }
     }
   //DebugFile << "Created metabolite: " << copasiMetabolite->getObjectName() << std::endl;
@@ -804,9 +953,10 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
   unsigned int num = sbmlReaction->getNumReactants();
   bool singleCompartment = true;
   const CCompartment* compartment = NULL;
+  bool hasOnlySubstanceUnitPresent = false;
   for (counter = 0; counter < num; counter++)
     {
-      SpeciesReference* sr = sbmlReaction->getReactant(counter);
+      const SpeciesReference* sr = sbmlReaction->getReactant(counter);
       if (sr == NULL)
         {
           delete copasiReaction;
@@ -825,6 +975,11 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
           delete copasiReaction;
           fatalError();
         }
+      std::map<CCopasiObject*, SBase*>::const_iterator spos = copasi2sbmlmap.find(pos->second);
+      assert(spos != copasi2sbmlmap.end());
+      Species* pSBMLSpecies = dynamic_cast<Species*>(spos->second);
+      assert(pSBMLSpecies != NULL);
+      hasOnlySubstanceUnitPresent = (hasOnlySubstanceUnitPresent | (pSBMLSpecies->getHasOnlySubstanceUnits() == true));
       if (compartment == NULL)
         {
           compartment = pos->second->getCompartment();
@@ -843,7 +998,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
   num = sbmlReaction->getNumProducts();
   for (counter = 0; counter < num; counter++)
     {
-      SpeciesReference* sr = sbmlReaction->getProduct(counter);
+      const SpeciesReference* sr = sbmlReaction->getProduct(counter);
       if (sr == NULL)
         {
           delete copasiReaction;
@@ -862,6 +1017,11 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
           delete copasiReaction;
           fatalError();
         }
+      std::map<CCopasiObject*, SBase*>::const_iterator spos = copasi2sbmlmap.find(pos->second);
+      assert(spos != copasi2sbmlmap.end());
+      Species* pSBMLSpecies = dynamic_cast<Species*>(spos->second);
+      assert(pSBMLSpecies != NULL);
+      hasOnlySubstanceUnitPresent = (hasOnlySubstanceUnitPresent | (pSBMLSpecies->getHasOnlySubstanceUnits() == true));
       if (compartment == NULL)
         {
           compartment = pos->second->getCompartment();
@@ -880,7 +1040,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
   num = sbmlReaction->getNumModifiers();
   for (counter = 0; counter < num; counter++)
     {
-      ModifierSpeciesReference* sr = sbmlReaction->getModifier(counter);
+      const ModifierSpeciesReference* sr = sbmlReaction->getModifier(counter);
       if (sr == NULL)
         {
           delete copasiReaction;
@@ -893,6 +1053,11 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
           delete copasiReaction;
           fatalError();
         }
+      std::map<CCopasiObject*, SBase*>::const_iterator spos = copasi2sbmlmap.find(pos->second);
+      assert(spos != copasi2sbmlmap.end());
+      Species* pSBMLSpecies = dynamic_cast<Species*>(spos->second);
+      assert(pSBMLSpecies != NULL);
+      hasOnlySubstanceUnitPresent = (hasOnlySubstanceUnitPresent | (pSBMLSpecies->getHasOnlySubstanceUnits() == true));
       if (compartment == NULL)
         {
           compartment = pos->second->getCompartment();
@@ -910,7 +1075,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
   /* in the newly created CFunction set the types for all parameters and
    * either a mapping or a value
    */
-  KineticLaw* kLaw = sbmlReaction->getKineticLaw();
+  const KineticLaw* kLaw = sbmlReaction->getKineticLaw();
   if (kLaw != NULL)
     {
       if (kLaw->isSetSubstanceUnits())
@@ -919,7 +1084,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
           if (cU != "substance")
             {
               delete copasiReaction;
-              fatalError();
+              CCopasiMessage Message(CCopasiMessage::EXCEPTION, MCSBML + 44, sbmlReaction->getId().c_str());
             }
         }
       if (kLaw->isSetTimeUnits())
@@ -932,13 +1097,9 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
             }
         }
 
-      if (!kLaw->isSetMath())
-        {
-          kLaw->setMathFromFormula();
-        }
       for (counter = 0; counter < kLaw->getNumParameters();++counter)
         {
-          Parameter* pSBMLParameter = kLaw->getParameter(counter);
+          const Parameter* pSBMLParameter = kLaw->getParameter(counter);
           std::string id;
           if (this->mLevel == 1)
             {
@@ -961,7 +1122,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
               if (!this->mIncompleteModel)
                 {
                   this->mIncompleteModel = true;
-                  CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 7);
+                  CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 42, pSBMLParameter->getId().c_str());
                 }
             }
           copasiReaction->getParameters().addParameter(id, CCopasiParameter::DOUBLE, value);
@@ -1002,6 +1163,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                   node = tmpNode1;
                   if (node->getType() == AST_DIVIDE && node->getNumChildren() != 2)
                     {
+                      delete tmpNode1;
                       fatalError();
                     }
                 }
@@ -1015,12 +1177,14 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                   tmpNode2->setName(compartment->getSBMLId().c_str());
                   tmpNode1->addChild(tmpNode2);
                   node = tmpNode1;
-                  if (!this->mDivisionByCompartmentWarning && compartment->getInitialValue() == 1.0)
+                  if (!hasOnlySubstanceUnitPresent && compartment->getInitialValue() == 1.0)
                     {
-                      this->mDivisionByCompartmentWarning = true;
+                      // we have to check if all species used in the reaction
+                      // have the hasOnlySubstance flag set
+
                       if (node->getChild(0)->getType() == AST_FUNCTION && (!this->containsVolume(node->getChild(0), compartment->getSBMLId())))
                         {
-                          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 17);
+                          this->mDivisionByCompartmentReactions.insert(sbmlReaction->getId());
                         }
                     }
                 }
@@ -1039,6 +1203,8 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 27, copasiReaction->getObjectName().c_str());
         }
       CEvaluationNode* pExpressionTreeRoot = CEvaluationTree::convertASTNode(*node);
+      delete node;
+      node = NULL;
       if (pExpressionTreeRoot)
         {
           CEvaluationTree* pTmpTree = CEvaluationTree::create(CEvaluationTree::Expression);
@@ -1222,10 +1388,10 @@ SBMLImporter::createBVarMap(const ASTNode* uDefFunction, const ASTNode* function
  * Returns the user defined SBML function definition that belongs to the given
  * name, or NULL if none can be found.
  */
-FunctionDefinition*
+const FunctionDefinition*
 SBMLImporter::getFunctionDefinitionForName(const std::string name, const Model* sbmlModel)
 {
-  FunctionDefinition* fDef = NULL;
+  const FunctionDefinition* fDef = NULL;
   unsigned int counter;
   for (counter = 0; counter < sbmlModel->getNumFunctionDefinitions(); counter++)
     {
@@ -1286,9 +1452,15 @@ SBMLImporter::SBMLImporter()
   this->mUnsupportedRuleFound = false;
   this->mUnsupportedRateRuleFound = false;
   this->mUnsupportedAssignmentRuleFound = false;
-  this->mDivisionByCompartmentWarning = false;
   this->mpImportHandler = NULL;
   this->mFastReactionsEncountered = false;
+  this->mIgnoredSBMLMessages.insert(10501);
+  this->mIgnoredSBMLMessages.insert(10512);
+  this->mIgnoredSBMLMessages.insert(10513);
+  this->mIgnoredSBMLMessages.insert(10533);
+  this->mIgnoredSBMLMessages.insert(10541);
+  this->mIgnoredSBMLMessages.insert(10551);
+  this->mIgnoredSBMLMessages.insert(10562);
 }
 
 /**
@@ -1393,7 +1565,7 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
   if (funDB != NULL)
     {
       this->functionDB = funDB;
-      SBMLReader* reader = new SBMLReader(XML_SCHEMA_VALIDATION_NONE);
+      SBMLReader* reader = new SBMLReader();
 
       mImportStep = 0;
       if (mpImportHandler)
@@ -1407,32 +1579,76 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
         }
 
       SBMLDocument* sbmlDoc = reader->readSBMLFromString(sbmlDocumentText);
-      sbmlDoc->validate();
-      if (sbmlDoc->getNumFatals() > 0)
+      if (sbmlDoc->checkConsistency() != 0)
         {
-          ParseMessage * pSBMLMessage = sbmlDoc->getFatal(0);
-          /*
-          if (pSBMLMessage && pSBMLMessage->getMessage() != "This file probably contains a model of an unsupported SBML version.")
+          int fatal = -1;
+          unsigned int i, iMax = sbmlDoc->getNumErrors();
+          for (i = 0;(i < iMax) && (fatal == -1);++i)
             {
-              pSBMLMessage = sbmlDoc->getFatal(0);
-            }
-          */
-          CCopasiMessage Message(CCopasiMessage::RAW, MCXML + 2,
-                                 pSBMLMessage->getLine(),
-                                 pSBMLMessage->getColumn(),
-                                 pSBMLMessage->getMessage().c_str());
+              const XMLError* pSBMLError = sbmlDoc->getError(i);
+              CCopasiMessage::Type messageType = CCopasiMessage::RAW;
+              switch (pSBMLError->getSeverity())
+                {
+                case XMLError::Info:
 
-          if (mpImportHandler) mpImportHandler->finish(mhImportStep);
-          return NULL;
+                  if (mIgnoredSBMLMessages.find(pSBMLError->getErrorId()) != mIgnoredSBMLMessages.end())
+                    {
+                      messageType = CCopasiMessage::WARNING_FILTERED;
+                    }
+                  else
+                    {
+                      messageType = CCopasiMessage::WARNING;
+                    }
+                  CCopasiMessage(messageType, MCSBML + 40, "INFO", pSBMLError->getErrorId(), pSBMLError->getLine(), pSBMLError->getColumn(), pSBMLError->getMessage().c_str());
+                  break;
+                case XMLError::Warning:
+                  if (mIgnoredSBMLMessages.find(pSBMLError->getErrorId()) != mIgnoredSBMLMessages.end())
+                    {
+                      messageType = CCopasiMessage::WARNING_FILTERED;
+                    }
+                  else
+                    {
+                      messageType = CCopasiMessage::WARNING;
+                    }
+                  CCopasiMessage(messageType, MCSBML + 40, "WARNING", pSBMLError->getErrorId(), pSBMLError->getLine(), pSBMLError->getColumn(), pSBMLError->getMessage().c_str());
+                  break;
+                case XMLError::Error:
+                  if (mIgnoredSBMLMessages.find(pSBMLError->getErrorId()) != mIgnoredSBMLMessages.end())
+                    {
+                      messageType = CCopasiMessage::ERROR_FILTERED;
+                    }
+                  CCopasiMessage(messageType, MCSBML + 40, "ERROR", pSBMLError->getErrorId(), pSBMLError->getLine(), pSBMLError->getColumn(), pSBMLError->getMessage().c_str());
+                  break;
+                case XMLError::Fatal:
+                  // treat unknown as fatal
+                default:
+                  //CCopasiMessage(CCopasiMessage::TRACE, MCSBML + 40,"FATAL",pSBMLError->getLine(),pSBMLError->getColumn(),pSBMLError->getMessage().c_str());
+                  fatal = i;
+                  break;
+                }
+              //std::cerr << pSBMLError->getMessage() << std::endl;
+            }
+
+          if (fatal != -1)
+            {
+              const XMLError* pSBMLError = sbmlDoc->getError(fatal);
+              CCopasiMessage Message(CCopasiMessage::RAW, MCXML + 2,
+                                     pSBMLError->getLine(),
+                                     pSBMLError->getColumn(),
+                                     pSBMLError->getMessage().c_str());
+              if (mpImportHandler) mpImportHandler->finish(mhImportStep);
+              return NULL;
+            }
         }
+      /*
       else if (sbmlDoc->getNumErrors() > 0)
         {
           ParseMessage * pSBMLMessage = sbmlDoc->getError(0);
-          /* some level 1 files have an annotation in the wrong place
-           * This is considered an error by libsbml, but
-           * it does not really affect the model, so we try to
-           * read it anyway.
-           */
+          // some level 1 files have an annotation in the wrong place
+          // This is considered an error by libsbml, but
+          // it does not really affect the model, so we try to
+          // read it anyway.
+          //
           if ((sbmlDoc->getNumErrors() > 1) ||
               (strncmp(pSBMLMessage->getMessage().c_str(),
                        "The <sbml> element cannot contain an <annotation>.  Use the <model> element instead."
@@ -1451,6 +1667,7 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
               CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 6);
             }
         }
+      */
       if (sbmlDoc->getModel() == NULL)
         {
           CCopasiMessage Message(CCopasiMessage::ERROR, MCSBML + 2);
@@ -1470,7 +1687,7 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
               Compartment* pCompartment = pSBMLDocument->getModel()->getCompartment(i);
               pCompartment->setSize(pCompartment->getVolume());
             }
-          pSBMLDocument->setLevel(2);
+          pSBMLDocument->setLevelAndVersion(2, 1);
           mLevel = pSBMLDocument->getLevel();
         }
 
@@ -1481,7 +1698,7 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
       Model* sbmlmodel = pSBMLDocument->getModel();
       if (sbmlmodel && prLol)
         SBMLDocumentLoader::readListOfLayouts(*prLol,
-                                              sbmlmodel->getListOfLayouts(),
+                                              *sbmlmodel->getListOfLayouts(),
                                               copasi2sbmlmap);
 #endif
     }
@@ -1510,7 +1727,7 @@ SBMLImporter::handleSubstanceUnit(const UnitDefinition* uDef)
     }
   if (uDef->getNumUnits() == 1)
     {
-      Unit* u = uDef->getUnit(0);
+      const Unit* u = uDef->getUnit(0);
       if (u == NULL)
         {
           //DebugFile << "Expected Unit, got NULL pointer." << std::endl;
@@ -1596,7 +1813,7 @@ SBMLImporter::handleTimeUnit(const UnitDefinition* uDef)
     }
   if (uDef->getNumUnits() == 1)
     {
-      Unit* u = uDef->getUnit(0);
+      const Unit* u = uDef->getUnit(0);
       if (u == NULL)
         {
           //DebugFile << "Expected Unit, got NULL pointer." << std::endl;
@@ -1683,7 +1900,7 @@ SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef)
     }
   if (uDef->getNumUnits() == 1)
     {
-      Unit* u = uDef->getUnit(0);
+      const Unit* u = uDef->getUnit(0);
       if (u == NULL)
         {
           //DebugFile << "Expected Unit, got NULL pointer." << std::endl;
@@ -1793,7 +2010,7 @@ CModelValue* SBMLImporter::createCModelValueFromParameter(const Parameter* sbmlP
       bool ruleFound = false;
       Model* pSBMLModel = dynamic_cast<Model*>(pos->second);
       unsigned int k, kMax = pSBMLModel->getNumRules();
-      for (k = 0;k < kMax;++k)
+      for (k = 0;k < kMax && !ruleFound;++k)
         {
           Rule* pRule = pSBMLModel->getRule(k);
           switch (pRule->getTypeCode())
@@ -1826,7 +2043,7 @@ CModelValue* SBMLImporter::createCModelValueFromParameter(const Parameter* sbmlP
       if ((!ruleFound) && (!this->mIncompleteModel))
         {
           this->mIncompleteModel = true;
-          CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 7);
+          CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 43, sbmlParameter->getId().c_str());
         }
     }
   CModelValue* pMV = copasiModel->createModelValue(name + appendix, value);
@@ -2036,9 +2253,7 @@ void SBMLImporter::replaceCallNodeNames(ConverterASTNode* pNode)
 
           if (pos == this->mFunctionNameMapping.end())
             {
-              //TODO: implement a specific check for "delay"
-              CCopasiMessage(CCopasiMessage::EXCEPTION,
-                             "An undefined function was used in a MathML expression. This could also mean \nthat the SBML model contains delay terms which copasi doesn't support yet.");
+              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 47, pNode->getName());
             }
           std::string newName = pos->second;
           pNode->setName(newName.c_str());
@@ -2926,6 +3141,8 @@ bool SBMLImporter::removeUnusedFunctions(CFunctionDB* pTmpFunctionDB, std::map<C
         ++it;
       }
       */
+      // here we could have a dialog asking the user if unused functions should
+      // be removed.
       while (pTmpFunctionDB->loadedFunctions().size() != 0)
         {
           CEvaluationTree* pTree = pTmpFunctionDB->loadedFunctions()[0];
@@ -3256,10 +3473,6 @@ void SBMLImporter::areRulesUnique(const Model* sbmlModel)
 
 void SBMLImporter::importRuleForModelEntity(const Rule* rule, CModelEntity* pME, CModelEntity::Status status, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
 {
-  if (!rule->isSetMath())
-    {
-      rule->setMathFromFormula();
-    }
   if (rule->getTypeCode() == SBML_ASSIGNMENT_RULE)
     {
       this->checkRuleMathConsistency(rule, copasi2sbmlmap);
@@ -3283,7 +3496,6 @@ void SBMLImporter::checkRuleMathConsistency(const Rule* pRule, std::map<CCopasiO
     // check if no nodes with ids of objects are used in an assignmet that are
     // set in another assignment rule later on
     std::set<std::string> idSet;
-    if (!pRule->isSetMath() && pRule->isSetFormula()) pRule->setMathFromFormula();
     const ASTNode* pNode = pRule->getMath();
     this->getIdsFromNode(pNode, idSet);
     Model* sbmlModel = dynamic_cast<Model*>(copasi2sbmlmap[mpCopasiModel]);
@@ -3389,5 +3601,61 @@ void SBMLImporter::replaceObjectNames(ASTNode* pNode, std::map<CCopasiObject*, S
         {
           this->replaceObjectNames(pNode->getChild(i), copasi2sbmlmap);
         }
+    }
+}
+
+/**
+ * For function definitions that use the time symbol we have to make this a
+ * variable that is passed to the function instead.
+ * The function recursively goes through the AST tree rooted in root and
+ * changs all time nodes to variable nodes with name newNodeName.
+ * Additionally all function calls to functions in mExplicitelyTimeDependentFunctionDefinitions
+ * have to be changed to contain the added parameter.
+ * If a time node has been found, the function return true, otherwise false
+ * is returned.
+ */
+bool SBMLImporter::replaceTimeNodesInFunctionDefinition(ASTNode* root, std::string newNodeName)
+{
+  bool timeFound = false;
+  if (root->getType() == AST_NAME_TIME)
+    {
+      timeFound = true;
+      root->setType(AST_NAME);
+      root->setName(newNodeName.c_str());
+    }
+  else
+    {
+      if (root->getType() == AST_FUNCTION && mExplicitelyTimeDependentFunctionDefinitions.find(root->getName()) != mExplicitelyTimeDependentFunctionDefinitions.end())
+        {
+          // add a new child to this child node
+          ASTNode* pParameterNode = new ASTNode(AST_NAME);
+          pParameterNode->setName(newNodeName.c_str());
+          root->addChild(pParameterNode);
+          timeFound = timeFound || true;
+        }
+    }
+  unsigned int i, iMax = root->getNumChildren();
+  for (i = 0;i < iMax;++i)
+    {
+      ASTNode* child = root->getChild(i);
+      timeFound = timeFound || this->replaceTimeNodesInFunctionDefinition(child, newNodeName);
+    }
+  return timeFound;
+}
+
+void SBMLImporter::replaceTimeDependentFunctionCalls(ASTNode* root)
+{
+  if (root == NULL) return;
+  if (root->getType() == AST_FUNCTION && mExplicitelyTimeDependentFunctionDefinitions.find(root->getName()) != mExplicitelyTimeDependentFunctionDefinitions.end())
+    {
+      // add a new child to this child node
+      ASTNode* pTimeNode = new ASTNode(AST_NAME_TIME);
+      pTimeNode->setName("TIME");
+      root->addChild(pTimeNode);
+    }
+  unsigned int i, iMax = root->getNumChildren();
+  for (i = 0;i < iMax;++i)
+    {
+      this->replaceTimeDependentFunctionCalls(root->getChild(i));
     }
 }
