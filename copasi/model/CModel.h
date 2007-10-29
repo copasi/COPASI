@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.152 $
+//   $Revision: 1.153 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2007/10/27 01:30:07 $
+//   $Author: ssahle $
+//   $Date: 2007/10/29 09:37:52 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -369,7 +369,7 @@ class CModel : public CModelEntity
         *  Stores the MIRIAM info of Model.
         */
     CModelMIRIAMInfo mMIRIAMInfo;
-#endif COPASI_MIRIAM
+#endif //COPASI_MIRIAM
 
   public:
     /**
