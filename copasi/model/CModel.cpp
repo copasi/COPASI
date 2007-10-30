@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.325 $
+//   $Revision: 1.326 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/10/30 15:51:17 $
+//   $Date: 2007/10/30 16:45:46 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -869,6 +869,12 @@ const CCopasiVectorN< CModelValue > & CModel::getModelValues() const
 
 CCopasiVectorN< CModelValue > & CModel::getModelValues()
 {return mValues;}
+
+CCopasiVectorN < CEvent > & CModel::getEvents()
+{return mEvents;}
+
+const CCopasiVectorN < CEvent > & CModel::getEvents() const
+  {return mEvents;}
 
 //********
 
@@ -2520,6 +2526,51 @@ bool CModel::removeModelValue(const std::string & key,
 
   return true;
 }
+
+CEvent* CModel::createEvent(const std::string & name)
+{
+  if (mEvents.getIndex(name) != C_INVALID_INDEX)
+    return NULL;
+
+  CEvent * pEvent = new CEvent(name);
+
+  if (!mEvents.add(pEvent, true))
+    {
+      delete pEvent;
+      return NULL;
+    }
+
+  mCompileIsNecessary = true;
+  return pEvent;
+}
+
+bool CModel::removeEvent(const std::string & key,
+                         const bool & recursive)
+{
+  CEvent * pEvent =
+    dynamic_cast< CEvent * >(GlobalKeys.get(key));
+
+  if (!pEvent)
+    return false;
+
+  //TODO can anything depend on an event?
+
+  //Check if Event exists
+  unsigned C_INT32 index =
+    mEvents.CCopasiVector< CEvent >::getIndex(pEvent);
+
+  if (index == C_INVALID_INDEX)
+    return false;
+
+  mEvents.CCopasiVector< CEvent >::remove(index);
+
+  //clearMoieties();
+  mCompileIsNecessary = true;
+
+  return true;
+}
+
+//*****************************************************************
 
 bool CModel::convert2NonReversible()
 {
