@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.174 $
+//   $Revision: 1.175 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/10/30 17:09:50 $
+//   $Author: shoops $
+//   $Date: 2007/10/30 18:26:19 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -2157,11 +2157,11 @@ bool SBMLImporter::sbmlId2CopasiCN(ASTNode* pNode, std::map<CCopasiObject*, SBas
   return success;
 }
 
-void SBMLImporter::printMap(const std::map<CCopasiObject*, SBase*>& map)
+void SBMLImporter::printMap(const std::map<CCopasiObject*, SBase*> & copasi2sbml)
 {
-  std::map<CCopasiObject*, SBase*>::const_iterator it = map.begin();
-  std::map<CCopasiObject*, SBase*>::const_iterator end = map.end();
-  std::cout << "Number of elements: " << map.size() << std::endl;
+  std::map<CCopasiObject*, SBase*>::const_iterator it = copasi2sbml.begin();
+  std::map<CCopasiObject*, SBase*>::const_iterator end = copasi2sbml.end();
+  std::cout << "Number of elements: " << copasi2sbml.size() << std::endl;
   while (it != end)
     {
       std::cout << "(@" << it->first << ")" << it->first->getObjectName() << " : " << "(@" << it->second << ")" << it->second->getTypeCode() << std::endl;
@@ -3761,8 +3761,8 @@ bool SBMLImporter::setInitialValues(CModel* pModel, const std::map<CCopasiObject
         }
       ++metabIt;
     }
-  CCopasiVectorNS<CModelValue>::iterator mvIt = pModel->getModelValues().begin();
-  CCopasiVectorNS<CModelValue>::iterator mvEndit = pModel->getModelValues().end();
+  CCopasiVectorN<CModelValue>::iterator mvIt = pModel->getModelValues().begin();
+  CCopasiVectorN<CModelValue>::iterator mvEndit = pModel->getModelValues().end();
   while (mvIt != mvEndit)
     {
       pos = copasi2sbmlmap.find(*mvIt);
