@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeCall.cpp,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/12 18:29:09 $
+//   $Date: 2007/10/30 18:21:36 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,7 +21,7 @@
 #include "CExpression.h"
 #include "CFunctionDB.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
-#include "utilities/utility.cpp"
+#include "utilities/utility.h"
 
 CEvaluationNodeCall::CEvaluationNodeCall():
     CEvaluationNode(CEvaluationNode::INVALID, ""),
