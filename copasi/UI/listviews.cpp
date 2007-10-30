@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.228 $
+//   $Revision: 1.229 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2007/10/10 20:33:19 $
+//   $Author: ssahle $
+//   $Date: 2007/10/30 16:43:46 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,7 +28,8 @@
 #include "DataModelGUI.h"
 #include "CompartmentsWidget.h"
 #include "CQCompartment.h"
-//#include "FunctionSymbols.h"
+#include "CQEventsWidget.h"
+#include "CQEventWidget1.h"
 #include "FunctionWidget.h"
 #include "FunctionWidget1.h"
 #ifdef HAVE_MML
@@ -210,7 +211,8 @@ ListViews::ListViews(QWidget *parent, const char *name):
     compartmentsWidget1(NULL),
     defaultWidget(NULL),
     differentialEquations(NULL),
-    //functionSymbols(NULL),
+    eventsWidget(NULL),
+    eventWidget1(NULL),
     functionWidget(NULL),
     functionWidget1(NULL),
     lyapWidget(NULL),
@@ -348,8 +350,11 @@ void ListViews::ConstructNodeWidgets()
   differentialEquations->hide();
 #endif // HAVE_MML
 
-  //if (!functionSymbols) functionSymbols = new FunctionSymbols(this);
-  //functionSymbols->hide();
+  if (!eventsWidget) eventsWidget = new CQEventsWidget(this);
+  eventsWidget->hide();
+
+  if (!eventWidget1) eventWidget1 = new CQEventWidget1(this);
+  eventWidget1->hide();
 
   if (!functionWidget) functionWidget = new FunctionWidget(this);
   functionWidget->hide();
@@ -516,6 +521,9 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 115:
         return mpModelValueWidget;
         break;
+      case 116:
+        return eventWidget1;
+        break;
       case 222:
         return moietyWidget1;
         break;
@@ -562,6 +570,9 @@ CopasiWidget* ListViews::findWidgetFromId(const C_INT32 & id) const
         return modelValuesWidget;
         break;
       case 116:
+        return eventsWidget;
+        break;
+      case 117:
         return parametersWidget;
         break;
         //case 122:
@@ -1030,6 +1041,9 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
 
   dataModel->updateModelValues();
   updateAllListviews(115);
+
+  dataModel->updateEvents();
+  updateAllListviews(116);
 
   dataModel->updateMoieties();
   updateAllListviews(222);

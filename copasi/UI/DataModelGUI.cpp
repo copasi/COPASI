@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-//   $Revision: 1.70 $
+//   $Revision: 1.71 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/10/02 18:18:01 $
+//   $Author: ssahle $
+//   $Date: 2007/10/30 16:44:17 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,7 +20,6 @@
 #include "listviews.h"
 
 #include "function/CFunctionDB.h"
-//#include "mathmodel/CMathModel.h"
 #include "model/CModel.h"
 #include "model/CModelValue.h"
 #include "model/CMetabNameInterface.h"
@@ -43,8 +42,6 @@
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "utilities/CCopasiException.h"
 #include "commandline/CConfigurationFile.h"
-
-//int Folder::smModifier = 0;
 
 //*****************************************************************************
 
@@ -93,7 +90,7 @@ void DataModelGUI::linkDataModelToGUI()
 
   mTree.findNodeFromId(34)->setObjectKey((*CCopasiDataModel::Global->getTaskList())["Sensitivities"]->getKey());
 
-  mTree.findNodeFromId(116)->setObjectKey(CCopasiDataModel::Global->getModel()->getKey()); //parameters
+  mTree.findNodeFromId(117)->setObjectKey(CCopasiDataModel::Global->getModel()->getKey()); //parameters
 
   mTree.findNodeFromId(43)->setObjectKey(CCopasiDataModel::Global->getReportDefinitionList()->getKey());
   //mTree.findNodeFromId(42)->setObjectKey(mPlotDefinitionList.getKey());
@@ -243,6 +240,25 @@ void DataModelGUI::updateFunctions()
         parent->addChild(-1,
                           FROM_UTF8(obj->getObjectName()),
                           obj->getKey());
+    }
+}
+
+void DataModelGUI::updateEvents()
+{
+  IndexedNode * parent = mTree.findNodeFromId(116);
+
+  parent->removeChildren();
+
+  const CCopasiVectorN< CEvent > & objects = CCopasiDataModel::Global->getModel()->getEvents();
+  C_INT32 j, jmax = objects.size();
+  CEvent *obj;
+  for (j = 0; j < jmax; j++)
+    {
+      obj = objects[j];
+      obj->compile();
+      parent->addChild(-1,
+                        FROM_UTF8(obj->getObjectName()),
+                        obj->getKey());
     }
 }
 
@@ -455,22 +471,6 @@ bool DataModelGUI::exportMathModel(const std::string & fileName, const std::stri
   pdelete(pProgressBar);
   return success;
 }
-
-//************** Math model ***********************************************
-
-// bool DataModelGUI::updateMathModel()
-// {
-//   if (mMathModelUpdateScheduled) mpMathModel->setModel(CCopasiDataModel::Global->getModel());
-//
-//   mMathModelUpdateScheduled = false;
-//   return true;
-//}
-//
-// bool DataModelGUI::scheduleMathModelUpdate(const bool & update)
-// {
-//   mMathModelUpdateScheduled = update;
-//   return true;
-//}
 
 //************** QApplication ***********************************************
 
