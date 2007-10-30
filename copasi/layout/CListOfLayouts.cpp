@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CListOfLayouts.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/08/21 08:52:20 $
+//   $Date: 2007/10/30 11:53:53 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -78,7 +78,7 @@ void CListOfLayouts::exportToSBML(ListOf * lol, std::map<CCopasiObject*, SBase*>
       }
 
     //check if a something needs to be deleted from the sbml data structures
-    for (i = lol->getNumItems(); i > 0;--i)
+    for (i = lol->size(); i > 0;--i)
       {
         SBase* object = lol->get(i - 1);
 

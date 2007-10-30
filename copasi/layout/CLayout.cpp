@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLayout.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/10/29 13:17:17 $
+//   $Author: ssahle $
+//   $Date: 2007/10/30 11:53:53 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -231,7 +231,7 @@ void CLayout::exportToSBML(Layout * layout, const std::map<CCopasiObject*, SBase
         if (it == copasimodelmap.end()) //not found
           {
             pCG = new CompartmentGlyph;
-            layout->getListOfCompartmentGlyphs().append(pCG);
+            layout->getListOfCompartmentGlyphs()->append(pCG);
           }
         else
           {
