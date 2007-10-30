@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.153 $
+//   $Revision: 1.154 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/10/29 09:37:52 $
+//   $Date: 2007/10/30 14:42:38 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,6 +20,7 @@
 
 #include "model/CState.h"
 #include "model/CReaction.h"
+#include "CEvent.h"
 #include "model/CMoiety.h"
 #include "model/CModelValue.h"
 
@@ -31,7 +32,7 @@
 #include "MIRIAM/CModelMIRIAMInfo.h"
 #endif
 
-class CCompartment;
+//class CCompartment;
 class CProcessReport;
 class CArrayAnnotation;
 
@@ -219,6 +220,11 @@ class CModel : public CModelEntity
      *  for array of steps
      */
     CCopasiVectorNS< CReaction > mSteps;
+
+    /**
+     *  for array of events
+     */
+    CCopasiVectorN< CEvent > mEvents;
 
     /**
      *  Vectors of fluxes of the reactions.
@@ -558,6 +564,20 @@ class CModel : public CModelEntity
      * @return unsigned C_INT32 total steps;
      */
     unsigned C_INT32 getTotSteps() const;
+
+    //********* Events **************************
+
+    /**
+     * Return the vector of events
+     */
+    CCopasiVectorN < CEvent > & getEvents();
+
+    /**
+     * Return the vector of events
+     */
+    const CCopasiVectorN < CEvent > & getEvents() const;
+
+    //******************************************+
 
     /**
      * Return the comments of this model Wei Sun
@@ -993,7 +1013,7 @@ class CModel : public CModelEntity
     CCompartment* createCompartment(const std::string & name,
                                     const C_FLOAT64 & volume = 1.0);
 
-    /* Remove a Compartment from the model */
+    /** Remove a Compartment from the model */
     bool removeCompartment(const std::string & key,
                            const bool & recursive = true);
 
@@ -1004,9 +1024,20 @@ class CModel : public CModelEntity
      */
     CReaction* createReaction(const std::string &name);
 
-    /* Remove a reaction from the model*/
+    /** Remove a reaction from the model*/
     bool removeReaction(const std::string & key,
                         const bool & recursive = true);
+
+    /**
+     * Add a new event to the model
+     * @param const std::string &name
+     * @return bool success (false if failed)
+     */
+    CEvent* createEvent(const std::string &name);
+
+    /** Remove an event from the model*/
+    bool removeEvent(const std::string & key,
+                     const bool & recursive = true);
 
     /**
      * Add a non concentration value to the model
