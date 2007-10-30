@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-//   $Revision: 1.58 $
+//   $Revision: 1.59 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/10/29 13:17:18 $
+//   $Author: gauges $
+//   $Date: 2007/10/30 17:09:50 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -314,6 +314,14 @@ class SBMLImporter
      * replaceTimeNodesInFunctionDefinition.
      */
     void replaceTimeDependentFunctionCalls(ASTNode* root);
+
+    /**
+     * Sets the initial values on compartments, metabolites and model values if
+     * those initial values have been set in the sbml model.
+     * Otherwise the routine checks if a rule or an initial assignment has been set for the entity.
+     * If the entity has not been set in any way, an error message is created.
+     */
+    bool setInitialValues(CModel* pModel, const std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
 
   public:
     SBMLImporter();

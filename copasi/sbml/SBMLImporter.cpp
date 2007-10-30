@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.173 $
+//   $Revision: 1.174 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/10/29 13:17:18 $
+//   $Author: gauges $
+//   $Date: 2007/10/30 17:09:50 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -435,16 +435,6 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
     {
       CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 3);
     }
-  /*
-  if (this->mUnsupportedAssignmentRuleFound)
-    {
-      CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 31, "AssignmentRules");
-    }
-  if (this->mUnsupportedRateRuleFound)
-    {
-      CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 31 , "RateRules");
-    }
-  */
   if (sbmlModel->getNumEvents() > 0)
     {
       CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 4);
@@ -460,10 +450,6 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   this->removeUnusedFunctions(pTmpFunctionDB, copasi2sbmlmap);
 
   // unset the hasOnlySubstanceUnits flag on all such species
-  //if (!this->mSubstanceOnlySpecies.empty())
-  //  {
-  //    CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 18);
-  //}
   std::map<Species*, Compartment*>::iterator it = this->mSubstanceOnlySpecies.begin();
   std::map<Species*, Compartment*>::iterator endIt = this->mSubstanceOnlySpecies.end();
   while (it != endIt)
@@ -471,6 +457,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       it->first->setHasOnlySubstanceUnits(false);
       ++it;
     }
+  setInitialValues(this->mpCopasiModel, copasi2sbmlmap);
 
   delete pTmpFunctionDB;
 
@@ -612,7 +599,7 @@ CFunction* SBMLImporter::createCFunctionFromFunctionTree(const FunctionDefinitio
  * given as argument.
  */
 CCompartment*
-SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartment, CModel* copasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, const Model* pSBMLModel)
+SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartment, CModel* copasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, const Model* /*pSBMLModel*/)
 {
   if (sbmlCompartment->isSetUnits())
     {
@@ -655,6 +642,7 @@ SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartme
       appendix = numberStream.str();
     }
   double value;
+  /*
   if (mLevel == 1)
     {
       value = sbmlCompartment->getVolume();
@@ -735,6 +723,7 @@ SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartme
             }
         }
     }
+  */
 
   CCompartment* copasiCompartment = copasiModel->createCompartment(name + appendix, value);
   if (this->mLevel == 1)
@@ -754,7 +743,7 @@ SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartme
  * Creates and returns a Copasi CMetab from the given SBML Species object.
  */
 CMetab*
-SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasiModel, CCompartment* copasiCompartment, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, const Model* pSBMLModel)
+SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasiModel, CCompartment* copasiCompartment, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, const Model* /*pSBMLModel*/)
 {
   if (sbmlSpecies->isSetSubstanceUnits())
     {
@@ -820,6 +809,9 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
     {
       this->mSubstanceOnlySpecies.insert(std::make_pair(const_cast<Species*>(sbmlSpecies), pSBMLCompartment));
     }
+
+  /* The initial values are now set by a new routine after all other things
+   * have been done.
   if (sbmlSpecies->isSetInitialAmount() && sbmlSpecies->getInitialAmount() == sbmlSpecies->getInitialAmount()) // make sure it's not set to NaN
     {
       if (sbmlSpecies->getInitialAmount() != 0.0)
@@ -883,6 +875,7 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
           CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 41, sbmlSpecies->getId().c_str());
         }
     }
+    */
   //DebugFile << "Created metabolite: " << copasiMetabolite->getObjectName() << std::endl;
   copasi2sbmlmap[copasiMetabolite] = const_cast<Species*>(sbmlSpecies);
   if (this->mLevel == 1)
@@ -1997,6 +1990,7 @@ CModelValue* SBMLImporter::createCModelValueFromParameter(const Parameter* sbmlP
     {
       sbmlId = sbmlParameter->getId();
     }
+  /*
   double value;
   if (sbmlParameter->isSetValue() && sbmlParameter->getValue() == sbmlParameter->getValue()) // make sure it is not set to NaN
     {
@@ -2046,7 +2040,8 @@ CModelValue* SBMLImporter::createCModelValueFromParameter(const Parameter* sbmlP
           CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 43, sbmlParameter->getId().c_str());
         }
     }
-  CModelValue* pMV = copasiModel->createModelValue(name + appendix, value);
+    */
+  CModelValue* pMV = copasiModel->createModelValue(name + appendix, /*value*/ 0.0);
   copasi2sbmlmap[pMV] = const_cast<Parameter*>(sbmlParameter);
   pMV->setSBMLId(sbmlId);
   return pMV;
@@ -3658,4 +3653,152 @@ void SBMLImporter::replaceTimeDependentFunctionCalls(ASTNode* root)
     {
       this->replaceTimeDependentFunctionCalls(root->getChild(i));
     }
+}
+
+bool SBMLImporter::setInitialValues(CModel* pModel, const std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
+{
+  // go through the CCopasiDataModel and set the initial values on all
+  // compartments, metabolites and model values if they were given in the sbml
+  // model.
+  // if no initial value was given for an entity, check if the value is set
+  // by another means (rule, initialAssignment) and if not, create an error
+  // message
+  std::map<CCopasiObject*, SBase*>::const_iterator pos;
+  std::set<const CCopasiObject*> changedObjects;
+  CCopasiVectorNS<CCompartment>::iterator compartmentIt = pModel->getCompartments().begin();
+  CCopasiVectorNS<CCompartment>::iterator compartmentEndit = pModel->getCompartments().end();
+  while (compartmentIt != compartmentEndit)
+    {
+      pos = copasi2sbmlmap.find(*compartmentIt);
+      assert(pos != copasi2sbmlmap.end());
+      Compartment* pSBMLCompartment = dynamic_cast<Compartment*>(pos->second);
+      assert(pSBMLCompartment != NULL);
+      // for level 1 models we have to use isSetVolume to determine if the
+      // volume has been set since in level 1, compartments had different
+      // defaults
+      if ((this->mLevel == 1 && pSBMLCompartment->isSetVolume()) || pSBMLCompartment->isSetSize())
+        {
+          // set the initial value
+          // here we can safely use getSize() regardless of the level of the
+          // sbml model
+          (*compartmentIt)->setInitialValue(pSBMLCompartment->getSize());
+          changedObjects.insert(*compartmentIt);
+        }
+      else
+        {
+          // if the entity has a status of FIXED or ODE,
+          // check if there is an initial assignment, else it is an
+          // error
+          if (((*compartmentIt)->getStatus() == CModelValue::FIXED || (*compartmentIt)->getStatus() == CModelValue::ODE) && (*compartmentIt)->getInitialExpressionPtr() == NULL)
+            {
+              this->mIncompleteModel = true;
+              (*compartmentIt)->setInitialValue(1.0);
+              changedObjects.insert(*compartmentIt);
+              CCopasiMessage::CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 45, pSBMLCompartment->getId().c_str());
+            }
+        }
+      ++compartmentIt;
+    }
+  CCopasiVectorNS<CMetab>::iterator metabIt = pModel->getMetabolites().begin();
+  CCopasiVectorNS<CMetab>::iterator metabEndit = pModel->getMetabolites().end();
+  while (metabIt != metabEndit)
+    {
+      pos = copasi2sbmlmap.find(*metabIt);
+      assert(pos != copasi2sbmlmap.end());
+      Species* pSBMLSpecies = dynamic_cast<Species*>(pos->second);
+      assert(pSBMLSpecies != NULL);
+      // check if the initial concentration or the initial amount has been set
+      if (pSBMLSpecies->isSetInitialConcentration())
+        {
+          if (pSBMLSpecies->getHasOnlySubstanceUnits() == true)
+            {
+              CCopasiMessage Message(CCopasiMessage::ERROR, MCSBML + 20, pSBMLSpecies->getId().c_str());
+            }
+          // set the initial value
+          // here we can safely use getSize() regardless of the level of the
+          // sbml model
+          (*metabIt)->setInitialConcentration(pSBMLSpecies->getInitialConcentration());
+          changedObjects.insert(*metabIt);
+        }
+      /*
+      else if(pSBMLSpecies->getHasOnlySubstanceUnits() && pSBMLSpecies->isSetInitialAmount())
+      {
+          if (sbmlSpecies->getInitialAmount() != 0.0)
+          {
+              copasiMetabolite->setInitialValue(sbmlSpecies->getInitialAmount()*pModel->getQuantity2NumberFactor()); // CHECK UNITS !!!
+          }
+          else
+          {
+              copasiMetabolite->setInitialConcentration(0.0);
+          }
+      }
+      */
+      else if (pSBMLSpecies->isSetInitialAmount())
+        {
+          if (pSBMLSpecies->getInitialAmount() != 0.0)
+            {
+              (*metabIt)->setInitialValue(pSBMLSpecies->getInitialAmount()*pModel->getQuantity2NumberFactor()); // CHECK UNITS !!!
+              changedObjects.insert(*metabIt);
+            }
+          else
+            {
+              (*metabIt)->setInitialConcentration(0.0);
+              changedObjects.insert(*metabIt);
+            }
+        }
+      else
+        {
+          // if the entity has a status of FIXED, REACTION or ODE,
+          // check if there is an initial assignment, else it is an
+          // error
+          if (((*metabIt)->getStatus() == CModelValue::FIXED || (*metabIt)->getStatus() == CModelValue::REACTIONS || (*metabIt)->getStatus() == CModelValue::ODE) && (*metabIt)->getInitialExpressionPtr() == NULL)
+            {
+              (*metabIt)->setInitialConcentration(1.0);
+              changedObjects.insert(*metabIt);
+              this->mIncompleteModel = true;
+              CCopasiMessage::CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 41, pSBMLSpecies->getId().c_str());
+            }
+        }
+      ++metabIt;
+    }
+  CCopasiVectorNS<CModelValue>::iterator mvIt = pModel->getModelValues().begin();
+  CCopasiVectorNS<CModelValue>::iterator mvEndit = pModel->getModelValues().end();
+  while (mvIt != mvEndit)
+    {
+      pos = copasi2sbmlmap.find(*mvIt);
+      assert(pos != copasi2sbmlmap.end());
+      Parameter* pSBMLParameter = dynamic_cast<Parameter*>(pos->second);
+      assert(pSBMLParameter != NULL);
+      // check if the initial concentration or the initial amount has been set
+      if (pSBMLParameter->isSetValue())
+        {
+          // set the initial value
+          // here we can safely use getSize() regardless of the level of the
+          // sbml model
+          (*mvIt)->setInitialValue(pSBMLParameter->getValue());
+          changedObjects.insert(*mvIt);
+        }
+      else
+        {
+          // if the entity has a status of FIXED or ODE,
+          // check if there is an initial assignment, else it is an
+          // error
+          if (((*mvIt)->getStatus() == CModelValue::FIXED || (*mvIt)->getStatus() == CModelValue::ODE) && (*mvIt)->getInitialExpressionPtr() == NULL)
+            {
+              (*metabIt)->setInitialValue(1.0);
+              changedObjects.insert(*mvIt);
+              this->mIncompleteModel = true;
+              CCopasiMessage::CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 43, pSBMLParameter->getId().c_str());
+            }
+        }
+      ++mvIt;
+    }
+  std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
+  std::vector<Refresh*>::iterator refreshIt = refreshes.begin(), refreshEndit = refreshes.end();
+  while (refreshIt != refreshEndit)
+    {
+      (**refreshIt)();
+      ++refreshIt;
+    }
+  return true;
 }

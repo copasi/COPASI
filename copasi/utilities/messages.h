@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.102 $
+//   $Revision: 1.103 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/10/29 13:17:19 $
+//   $Author: gauges $
+//   $Date: 2007/10/30 17:09:51 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -148,7 +148,7 @@ const MESSAGES Messages[] =
     {MCSBML + 4, "SBML (4): The SBML document contains events that were ignored."},
     {MCSBML + 5, "SBML (5): Compartment %s referenced by species %s does not exist."},
     {MCSBML + 6, "SBML (6): Annotations in SBase element of SBML Level 1 files, this is invalid and has been ignored."},
-    {MCSBML + 7, "SBML (7): No initial value set for compartment \"%s\"."},
+    {MCSBML + 7, "SBML (7): No initial value or initial assignment set for compartment \"%s\"."},
     {MCSBML + 8, "SBML (8): Expression tree for kinetic of reaction '%s' could not be converted."},
     {MCSBML + 9, "SBML (9): Could not set function from expression in reaction '%s'."},
     {MCSBML + 10, "SBML (10): COPASI does not support stoichiometric expressions."},
@@ -182,9 +182,9 @@ const MESSAGES Messages[] =
     {MCSBML + 38, "SBML (38): Only references to compartments, species, global parameters or the time are allowed in SBML rule expressions."},
     {MCSBML + 39, "SBML (39): Object with id \"%s\" referenced in kinetic law, but no object with that id found in model."},
     {MCSBML + 40, "SBML (40): LIBSBML %s %d at line %d column %d: %s."},
-    {MCSBML + 41, "SBML (41): No initial value set for species \"%s\"."},
+    {MCSBML + 41, "SBML (41): No initial value set for species \"%s\". Setting initial concentration to 1.0."},
     {MCSBML + 42, "SBML (42): No initial value set for local parameter \"%s\"."},
-    {MCSBML + 43, "SBML (43): No initial value set for global parameter \"%s\"."},
+    {MCSBML + 43, "SBML (43): No initial value set for global parameter \"%s\". Setting initial value to 1.0"},
     {MCSBML + 44, "SBML (44): Reaction \"%s\" sets the substance unit of the kinetic law. COPASI can not handle this yet."},
     {MCSBML + 45, "SBML (45): Compartment \"%s\" does not set the initial volume. Volume has been set to 1.0."},
     {MCSBML + 46, "SBML (46): COPASI has changed the following function definitions to take the time as an additional argument instead of the function being directly or indirectly dependent on time:\n \"%s\" ."},
