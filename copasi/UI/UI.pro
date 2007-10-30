@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $ 
-#   $Revision: 1.160 $ 
+#   $Revision: 1.161 $ 
 #   $Name:  $ 
-#   $Author: aekamal $ 
-#   $Date: 2007/10/27 01:30:08 $ 
+#   $Author: ssahle $ 
+#   $Date: 2007/10/30 16:10:08 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -11,7 +11,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.160 $ $Author: aekamal $ $Date: 2007/10/27 01:30:08 $  
+# $Revision: 1.161 $ $Author: ssahle $ $Date: 2007/10/30 16:10:08 $  
 ######################################################################
 
 LIB = UI
@@ -42,6 +42,8 @@ HEADERS += \
            copasiui3window.h \
            CProgressBar.h \
            CQArrayAnnotationsWidget.h \
+           CQEventsWidget.h \
+           CQEventWidget1.h \
            CQExpressionWidget.h \
            CQLyapResultWidget.h \
            CQMathMatrixWidget.h \
@@ -101,6 +103,8 @@ SOURCES += \
            CProgressBar.cpp \
            OptimizationResultWidget.cpp \
            CQArrayAnnotationsWidget.cpp \
+           CQEventsWidget.cpp \
+           CQEventWidget1.cpp \
            CQExpressionWidget.cpp \
            CQLyapResultWidget.cpp \
            CQMathMatrixWidget.cpp \
@@ -352,9 +356,11 @@ SOURCES += CQRegistrationDialog.cpp
 
 contains(DEFINES, COPASI_MIRIAM) {
   HEADERS += CTabWidget.h \
+             CAuthorsWidget.h \
              CMIRIAMModelWidget.h
 
   SOURCES += CTabWidget.cpp \
+             CAuthorsWidget.cpp \
              CMIRIAMModelWidget.cpp
 }
 
