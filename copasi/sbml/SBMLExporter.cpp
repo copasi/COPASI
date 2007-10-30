@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-//   $Revision: 1.108 $
+//   $Revision: 1.109 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/10/29 22:07:16 $
+//   $Author: ssahle $
+//   $Date: 2007/10/30 11:54:38 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -2424,7 +2424,7 @@ std::vector<std::string> SBMLExporter::isRuleSBMLL2V1Compatible(const CModelEnti
 void SBMLExporter::addLayoutsToSBMLDocument(const CListOfLayouts * copasiLayouts, CCopasiDataModel* pDataModel)
 {
   if (this->sbmlDocument && sbmlDocument->getModel())
-    copasiLayouts->exportToSBML(&this->sbmlDocument->getModel()->getListOfLayouts(),
+    copasiLayouts->exportToSBML(this->sbmlDocument->getModel()->getListOfLayouts(),
                                 pDataModel->getCopasi2SBMLMap());
 }
 #endif //WITH_LAYOUT
