@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.324 $
+//   $Revision: 1.325 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2007/10/27 01:30:07 $
+//   $Author: ssahle $
+//   $Date: 2007/10/30 15:51:17 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -2856,8 +2856,8 @@ std::string CModel::suitableForStochasticSimulation() const
 #ifdef COPASI_DEBUG
 void CModel::check() const
   {
-    if (mCompileIsNecessary)
-    {std::cout << "******** compile should have been called" << std::endl;}
+    //if (mCompileIsNecessary)
+    //{std::cout << "******** compile should have been called" << std::endl;}
   }
 #endif
 
