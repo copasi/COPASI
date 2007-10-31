@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.74 $
+//   $Revision: 1.75 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/31 15:15:41 $
+//   $Date: 2007/10/31 15:34:11 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,7 +36,8 @@
 #include "copasi.h"
 
 #if (defined WIN32 && !defined log2)
-# define log2(__x) (log(__x)/log(2))
+C_FLOAT64 log2(const C_FLOAT64 & __x)
+{return log(__x) / log(2.0);}
 #endif // WIN32
 
 #include "CQGLNetworkPainter.h"
@@ -643,7 +644,7 @@ void CQGLNetworkPainter::drawLabel(CLTextGlyph l)
 
 void CQGLNetworkPainter::RG_drawStringAt(std::string s, C_INT32 x, C_INT32 y, C_INT32 w, C_INT32 h)
 {
-  RGTextureSpec* texSpec = RG_createTextureForText(s, mFontname, static_cast<int>(floor(h)));
+  RGTextureSpec* texSpec = RG_createTextureForText(s, mFontname, h);
   if (texSpec == NULL)
     {
       return;
