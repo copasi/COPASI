@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CMIRIAMModelWidget.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/10/29 13:45:14 $
+//   $Author: aekamal $
+//   $Date: 2007/10/31 23:24:26 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,6 +41,8 @@ class CMIRIAMModelWidget : public CopasiWidget
     virtual void slotBtnClearClicked();
 
     virtual void slotEnableOKAndCancel(bool e);
+  public:
+    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
   };
 
 #endif // COPASI_CMIRIAMMODELWIDGET

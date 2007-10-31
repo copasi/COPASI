@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CAuthorsWidget.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2007/10/27 17:07:51 $
+//   $Date: 2007/10/31 23:24:26 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,13 +17,15 @@
 #include "MIRIAM/CAuthor.h"
 #include "utilities/CCopasiVector.h"
 #include "report/CCopasiObject.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 
 #include "CAuthorsWidget.h"
+#include "qtUtilities.h"
 
 #define COL_MARK               0
 #define COL_GIVEN_NAME         1
 #define COL_FAMILY_NAME        2
-#define COL_EMAIL         3
+#define COL_EMAIL              3
 #define COL_URL                4
 
 /*
@@ -48,19 +50,19 @@ CAuthorsWidget::~CAuthorsWidget()
 
 std::vector<const CCopasiObject*> CAuthorsWidget::getObjects() const
   {
-    const CCopasiVector<CAuthor>& tmp = CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getAuthors();
+    std::vector<CAuthor>& tmp = CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getAuthors();
     std::vector<const CCopasiObject*> ret;
 
     C_INT32 i, imax = tmp.size();
     for (i = 0; i < imax; ++i)
-      ret.push_back(tmp[i]);
+      ret.push_back(&tmp[i]);
 
     return ret;
   }
 
 void CAuthorsWidget::init()
 {
-  numCols = 4;
+  numCols = 5;
   table->setNumCols(numCols);
 
   //Setting table headers

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CTabWidget.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/10/29 13:46:05 $
+//   $Author: aekamal $
+//   $Date: 2007/10/31 23:24:26 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,6 +14,8 @@
 #define CTABWIDGET_H
 
 #include <qtabwidget.h>
+
+#include "UI/listviews.h"
 
 #include "copasiWidget.h"
 
@@ -26,6 +28,8 @@ class CTabWidget : public CopasiWidget
     CTabWidget(const QString& label1, const QString& label2,
                QWidget* parent = 0, const char* name = 0, WFlags f = 0);
     ~CTabWidget();
+
+    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
     CopasiWidget* getTab1Widget();
     CopasiWidget* getTab2Widget();
 

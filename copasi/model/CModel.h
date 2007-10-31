@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.154 $
+//   $Revision: 1.155 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/10/30 14:42:38 $
+//   $Author: aekamal $
+//   $Date: 2007/10/31 23:24:27 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1175,9 +1175,10 @@ class CModel : public CModelEntity
 
 #ifdef COPASI_MIRIAM
     /**
-        * Return the MIRIAM info of this model
-        * @return CModelMIRIAMInfo&
-        */
+    * Return the MIRIAM info of this model
+    * @return CModelMIRIAMInfo&
+    */
+  public:
     CModelMIRIAMInfo& getMIRIAMInfo();
 #endif
 
