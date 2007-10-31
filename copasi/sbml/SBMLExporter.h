@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.h,v $
-//   $Revision: 1.44 $
+//   $Revision: 1.45 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/10/29 13:17:18 $
+//   $Author: gauges $
+//   $Date: 2007/10/31 16:27:58 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -273,6 +273,14 @@ class SBMLExporter
      * contain a number of messages that specify why it can't be exported.
      */
     static std::vector<std::string> isModelSBMLL2V1Compatible(CCopasiDataModel* pDataModel);
+
+    /**
+     * Checks wether the model contains a metabolite that is defined by an ODE
+     * expression and that is located in a variable volume. Since COPASI
+     * interprets the expression differntly from SBML, we can not correctly
+     * export this yet. See Bug 903.
+     */
+    static void checkForODESpeciesInNonfixedCompartment(const CCopasiDataModel* pDataModel, std::vector<std::string> result);
 
     /**
      * Checks wether the rule in the given model entity can be exported to

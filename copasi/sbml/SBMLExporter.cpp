@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-//   $Revision: 1.109 $
+//   $Revision: 1.110 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/10/30 11:54:38 $
+//   $Author: gauges $
+//   $Date: 2007/10/31 16:27:58 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -94,33 +94,42 @@ std::string SBMLExporter::exportSBMLToString(CCopasiDataModel* pDataModel,
 {
   this->mHandledSBMLObjects.clear();
   this->mpCopasiModel = pDataModel->getModel();
-
-  /* create the SBMLDocument from the copasi model */
-  this->createSBMLDocumentFromCModel(pDataModel, sbmlLevel, sbmlVersion, incompleteExport);
-
-#ifdef WITH_LAYOUT
-  this->addLayoutsToSBMLDocument(pDataModel->getListOfLayouts(), pDataModel);
-#endif //WITH_LAYOUT
-
-  this->removeUnusedObjects(pDataModel);
-
-  if (this->sbmlDocument->getModel() != NULL)
+  // check the model for SBML compatibility
+  std::vector<std::string> compatibilityResult = isModelSBMLCompatible(pDataModel, sbmlLevel, sbmlVersion);
+  if (!compatibilityResult.empty())
     {
-      SBMLWriter* writer = new SBMLWriter();
-
-      writer->setProgramName("COPASI");
-      writer->setProgramVersion(pDataModel->getVersion()->getVersion().c_str());
-
-      char* d = writer->writeToString(this->sbmlDocument);
-      std::string returnValue = d;
-      if (d) free(d);
-      pdelete(writer);
-      return returnValue;
+      // display the inconsistencies
+      return std::string();
     }
   else
     {
-      /* if no SBMLDocument could be created return false */
-      return std::string();
+      /* create the SBMLDocument from the copasi model */
+      this->createSBMLDocumentFromCModel(pDataModel, sbmlLevel, sbmlVersion, incompleteExport);
+
+#ifdef WITH_LAYOUT
+      this->addLayoutsToSBMLDocument(pDataModel->getListOfLayouts(), pDataModel);
+#endif //WITH_LAYOUT
+
+      this->removeUnusedObjects(pDataModel);
+
+      if (this->sbmlDocument->getModel() != NULL)
+        {
+          SBMLWriter* writer = new SBMLWriter();
+
+          writer->setProgramName("COPASI");
+          writer->setProgramVersion(pDataModel->getVersion()->getVersion().c_str());
+
+          char* d = writer->writeToString(this->sbmlDocument);
+          std::string returnValue = d;
+          if (d) free(d);
+          pdelete(writer);
+          return returnValue;
+        }
+      else
+        {
+          /* if no SBMLDocument could be created return false */
+          return std::string();
+        }
     }
 }
 
@@ -2273,6 +2282,18 @@ std::vector<std::string> SBMLExporter::isModelSBMLCompatible(CCopasiDataModel* p
 {
   std::vector<std::string> result;
   std::ostringstream ss;
+  // general checks
+  // check if there is a species with an ode rule that is in a nonfixed
+  // compartment
+  checkForODESpeciesInNonfixedCompartment(pDataModel, result);
+
+  // check if the model contains references to normal distributions
+
+  // check if the model contains references to model entities that can not be
+  // represented in SBML like the inital value of something as opposed to the
+  // transient value
+
+  // level dependent checks
   switch (sbmlLevel)
     {
     case 2:
@@ -2428,3 +2449,24 @@ void SBMLExporter::addLayoutsToSBMLDocument(const CListOfLayouts * copasiLayouts
                                 pDataModel->getCopasi2SBMLMap());
 }
 #endif //WITH_LAYOUT
+
+void SBMLExporter::checkForODESpeciesInNonfixedCompartment(const CCopasiDataModel* pDataModel, std::vector<std::string> result)
+{
+  const CModel* pModel = pDataModel->getModel();
+  const CCopasiVector<CMetab>& metabolites = pModel->getMetabolites();
+  CCopasiVector<CMetab>::const_iterator it = metabolites.begin(), endit = metabolites.end();
+  while (it != endit)
+    {
+      if ((*it)->getStatus() == CModelValue::ODE)
+        {
+          const CCompartment* pCompartment = (*it)->getCompartment();
+          assert(pCompartment != NULL);
+          if (pCompartment->getStatus() != CModelValue::FIXED)
+            {
+              result.push_back("The metabolite \"" + (*it)->getObjectName() + "\" is defined by a rate expression and its compartments volume is variable. The way COPASI interprets this is differently from the way SBML does.");
+              CCopasiMessage::CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 52, (*it)->getObjectName().c_str());
+            }
+        }
+      ++it;
+    }
+}

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.175 $
+//   $Revision: 1.176 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/10/30 18:26:19 $
+//   $Author: gauges $
+//   $Date: 2007/10/31 16:27:58 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -3206,7 +3206,7 @@ bool SBMLImporter::isStochasticModel(const Model* pSBMLModel)
 
 void SBMLImporter::importSBMLRule(const Rule* sbmlRule, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
 {
-  // so far we only support assignment rules and rate rules for global parameters only
+  // so far we only support assignment rules and rate rules
   SBMLTypeCode_t type = sbmlRule->getTypeCode();
   if (type == SBML_ASSIGNMENT_RULE)
     {
@@ -3473,12 +3473,55 @@ void SBMLImporter::importRuleForModelEntity(const Rule* rule, CModelEntity* pME,
       this->checkRuleMathConsistency(rule, copasi2sbmlmap);
     }
   ConverterASTNode tmpNode(*rule->getMath());
+  // replace all the nodes that represent species with the
+  // hasOnlySubstanceUnits flag set with the node divided by the volume
+  replaceSubstanceOnlySpeciesNodes(&tmpNode, mSubstanceOnlySpecies);
   this->preprocessNode(&tmpNode);
   // replace the object names
   this->replaceObjectNames(&tmpNode, copasi2sbmlmap);
   // now we convert the node to a CEvaluationNode
   CExpression* pExpression = new CExpression;
   pExpression->setTree(tmpNode);
+  if (dynamic_cast<CMetab*>(pME) != NULL)
+    {
+      std::map<CCopasiObject*, SBase*>::iterator pos = copasi2sbmlmap.find(pME);
+      assert(pos != copasi2sbmlmap.end());
+      Species* pSBMLSpecies = dynamic_cast<Species*>(pos->second);
+      assert(pSBMLSpecies != NULL);
+      // check if the compartment is fixed
+      const CCompartment* pCompartment = static_cast<CMetab*>(pME)->getCompartment();
+      assert(pCompartment != NULL);
+      if (pCompartment->getStatus() == CModelValue::FIXED)
+        {
+          if (pSBMLSpecies->getHasOnlySubstanceUnits() == true)
+            {
+              // divide the expression by the volume
+              CEvaluationNodeObject* pVolumeNode = new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + pCompartment->getValueReference()->getCN() + ">");
+              CEvaluationNodeOperator* pOperatorNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::DIVIDE, "/");
+              pOperatorNode->addChild(pExpression->getRoot()->copyBranch());
+              pOperatorNode->addChild(pVolumeNode);
+              pExpression->setRoot(pOperatorNode);
+            }
+        }
+      else
+        {
+          if (pSBMLSpecies->getHasOnlySubstanceUnits() == true)
+            {
+              // if it is an divide by the volume
+              CEvaluationNodeObject* pVolumeNode = new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + pCompartment->getValueReference()->getCN() + ">");
+              CEvaluationNodeOperator* pOperatorNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::DIVIDE, "/");
+              pOperatorNode->addChild(pExpression->getRoot()->copyBranch());
+              pOperatorNode->addChild(pVolumeNode);
+              pExpression->setRoot(pOperatorNode);
+            }
+          else
+            {
+              // if it is an assignment rule we do nothing, if it is an ode rule,
+              // we need to issue a warning or an error
+              CCopasiMessage::CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 51 , pSBMLSpecies->getId().c_str());
+            }
+        }
+    }
   pME->setStatus(status);
   pME->setExpressionPtr(pExpression);
 }
