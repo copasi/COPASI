@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/SBMLDocumentLoader.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/29 13:17:17 $
+//   $Date: 2007/10/31 15:16:21 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -43,7 +43,7 @@ CLayout* SBMLDocumentLoader::loadDocument(const char *filename)
   //std::vector<node*> nodeVector;
   CLayout* pLayout = new CLayout();
   //cout << this->sbmlDocP << endl;
-  unsigned int i, iMax = this->sbmlDocP->getNumErrors();
+  unsigned C_INT32 i = 0, iMax = this->sbmlDocP->getNumErrors();
   bool fatalFound = false;
 
   while (!fatalFound && i < iMax)
