@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CListOfLayouts.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/10/30 11:53:53 $
+//   $Author: shoops $
+//   $Date: 2007/10/31 15:14:11 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -11,6 +11,8 @@
 // All rights reserved.
 
 #include "copasi.h"
+
+#define USE_LAYOUT
 
 #include "CListOfLayouts.h"
 #include "report/CKeyFactory.h"
