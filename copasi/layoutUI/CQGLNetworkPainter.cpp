@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.73 $
+//   $Revision: 1.74 $
 //   $Name:  $
-//   $Author: urost $
-//   $Date: 2007/10/29 10:08:49 $
+//   $Author: shoops $
+//   $Date: 2007/10/31 15:15:41 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,6 +34,10 @@
 #include <utility>
 
 #include "copasi.h"
+
+#if (defined WIN32 && !defined log2)
+# define log2(__x) (log(__x)/log(2))
+#endif // WIN32
 
 #include "CQGLNetworkPainter.h"
 #include "CQLayoutMainWindow.h"
