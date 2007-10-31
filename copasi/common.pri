@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.63 $ 
+#   $Revision: 1.64 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2007/09/20 14:05:35 $ 
+#   $Date: 2007/10/31 15:17:15 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -11,7 +11,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.63 $ $Author: shoops $ $Date: 2007/09/20 14:05:35 $  
+# $Revision: 1.64 $ $Author: shoops $ $Date: 2007/10/31 15:17:15 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -146,8 +146,8 @@ contains(BUILD_OS, WIN32) {
 
   DEFINES -= UNICODE 
   debug {
-    QMAKE_LFLAGS_WINDOWS += /NODEFAULTLIB:"msvcrt.lib"
-    QMAKE_LFLAGS_CONSOLE += /NODEFAULTLIB:"msvcrt.lib"
+    QMAKE_LFLAGS += /NODEFAULTLIB:"libcmt.lib"
+    QMAKE_LFLAGS += /NODEFAULTLIB:"msvcrt.lib"
   }
 
   #Release code optimization
@@ -167,10 +167,8 @@ contains(BUILD_OS, WIN32) {
   } else {
     !isEmpty(CLAPACK_PATH) {
       DEFINES += USE_CLAPACK
-      QMAKE_CXXFLAGS_DEBUG   += -I"$${CLAPACK_PATH}\include"
-      QMAKE_CXXFLAGS_RELEASE += -I"$${CLAPACK_PATH}\include"
-      QMAKE_LFLAGS_WINDOWS += /LIBPATH:"$${CLAPACK_PATH}\lib"
-      QMAKE_LFLAGS_CONSOLE += /LIBPATH:"$${CLAPACK_PATH}\lib"
+      QMAKE_CXXFLAGS   += -I"$${CLAPACK_PATH}\include"
+      QMAKE_LFLAGS += /LIBPATH:"$${CLAPACK_PATH}\lib"
       LIBS += clapack.lib
     } else {
       error( "Either MKL_PATH or CLAPACK_PATH must be specified" )
@@ -178,8 +176,7 @@ contains(BUILD_OS, WIN32) {
   }
 
   !isEmpty(EXPAT_PATH) {
-    QMAKE_CXXFLAGS_DEBUG   += -I"$${EXPAT_PATH}\Source\lib"
-    QMAKE_CXXFLAGS_RELEASE += -I"$${EXPAT_PATH}\Source\lib"
+    QMAKE_CXXFLAGS   += -I"$${EXPAT_PATH}\Source\lib"
     QMAKE_LFLAGS += /LIBPATH:"$${EXPAT_PATH}\StaticLibs"
     QMAKE_LFLAGS += /LIBPATH:"$${EXPAT_PATH}\bin"
     LIBS += libexpatMT.lib
@@ -188,10 +185,8 @@ contains(BUILD_OS, WIN32) {
   }
 
   !isEmpty(SBML_PATH) {
-    QMAKE_CXXFLAGS_DEBUG   += -I"$${SBML_PATH}\include"
-    QMAKE_CXXFLAGS_RELEASE += -I"$${SBML_PATH}\include"
-    QMAKE_LFLAGS_WINDOWS += /LIBPATH:"$${SBML_PATH}\lib"
-    QMAKE_LFLAGS_CONSOLE += /LIBPATH:"$${SBML_PATH}\lib"
+    QMAKE_CXXFLAGS   += -I"$${SBML_PATH}\include"
+    QMAKE_LFLAGS += /LIBPATH:"$${SBML_PATH}\lib"
     LIBS += libsbml.lib
   } else {
     error( "SBML_PATH must be specified" )
