@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CMIRIAMModelWidget.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2007/10/31 23:54:33 $
+//   $Date: 2007/11/01 05:31:30 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -101,5 +101,17 @@ void CMIRIAMModelWidget::slotEnableOKAndCancel(bool e)
 bool CMIRIAMModelWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
 {
   mAuthorsWidget->update(objectType, action, key);
+  return true;
+}
+
+bool CMIRIAMModelWidget::enter(const std::string & key)
+{
+  mAuthorsWidget->enter(key);
+  return true;
+}
+
+bool CMIRIAMModelWidget::leave()
+{
+  mAuthorsWidget->leave();
   return true;
 }

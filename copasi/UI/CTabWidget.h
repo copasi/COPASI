@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CTabWidget.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2007/10/31 23:24:26 $
+//   $Date: 2007/11/01 05:31:30 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,6 +30,8 @@ class CTabWidget : public CopasiWidget
     ~CTabWidget();
 
     virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
+    virtual bool leave();
+    virtual bool enter(const std::string & key = "");
     CopasiWidget* getTab1Widget();
     CopasiWidget* getTab2Widget();
 

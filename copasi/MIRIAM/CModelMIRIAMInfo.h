@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CModelMIRIAMInfo.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2007/10/27 01:45:50 $
+//   $Date: 2007/11/01 05:31:29 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,12 +26,14 @@ class CModelMIRIAMInfo
   {
     // Attributes
   private:
-    std::vector <CAuthor> mAuthors;
+    std::vector <CAuthor*> mAuthors;
 
     // Operations
   public:
     CModelMIRIAMInfo();
-    std::vector <CAuthor> & getAuthors();
+    ~CModelMIRIAMInfo();
+    std::vector <CAuthor*> & getAuthors();
+    CAuthor* createAuthor(std::string name);
   };
 
 #endif //COPASI_CMODELMIRIAMINFO

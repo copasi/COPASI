@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CTabWidget.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2007/10/31 23:24:26 $
+//   $Date: 2007/11/01 05:31:30 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -58,6 +58,34 @@ bool CTabWidget::update(ListViews::ObjectType objectType, ListViews::Action acti
   if (Tab2Widget)
     {
       Tab2Widget->update(objectType, action, key);
+    }
+  return true;
+}
+
+bool CTabWidget::leave()
+{
+  if (Tab1Widget)
+    {
+      Tab1Widget->leave();
+    }
+
+  if (Tab2Widget)
+    {
+      Tab2Widget->leave();
+    }
+  return true;
+}
+
+bool CTabWidget::enter(const std::string & key)
+{
+  if (Tab1Widget)
+    {
+      Tab1Widget->enter(key);
+    }
+
+  if (Tab2Widget)
+    {
+      Tab2Widget->enter(key);
     }
   return true;
 }

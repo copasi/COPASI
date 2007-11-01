@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/Attic/CAuthor.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2007/10/27 01:45:50 $
+//   $Date: 2007/11/01 05:31:29 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -67,6 +67,14 @@ class CAuthor : public CCopasiObject
     const std::string & getEmail() const;
 
     const std::string & getURL() const;
+
+    void setFamilyName(const std::string familyName);
+
+    void setGivenName(const std::string givenName);
+
+    void setEmail(const std::string Email);
+
+    void setURL(const std::string URL);
   };
 
 #endif //COPASI_CAUTHOR

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CAuthorsWidget.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2007/10/31 23:24:26 $
+//   $Date: 2007/11/01 05:31:30 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -50,12 +50,12 @@ CAuthorsWidget::~CAuthorsWidget()
 
 std::vector<const CCopasiObject*> CAuthorsWidget::getObjects() const
   {
-    std::vector<CAuthor>& tmp = CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getAuthors();
+    std::vector<CAuthor*>& tmp = CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getAuthors();
     std::vector<const CCopasiObject*> ret;
 
     C_INT32 i, imax = tmp.size();
     for (i = 0; i < imax; ++i)
-      ret.push_back(&tmp[i]);
+      ret.push_back(tmp[i]);
 
     return ret;
   }
@@ -84,23 +84,45 @@ void CAuthorsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_IN
   table->setText(row, COL_URL, FROM_UTF8(pAuthor->getURL()));
 }
 
-void CAuthorsWidget::tableLineToObject(unsigned C_INT32 C_UNUSED(row), CCopasiObject* C_UNUSED(obj))
-{}
+void CAuthorsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj)
+{
+  if (!obj) return;
+  CAuthor * pAuthor = static_cast< CAuthor * >(obj);
+
+  pAuthor->setGivenName((const char *) table->text(row, COL_GIVEN_NAME).utf8());
+  pAuthor->setFamilyName((const char *) table->text(row, COL_FAMILY_NAME).utf8());
+  pAuthor->setEmail((const char *) table->text(row, COL_EMAIL).utf8());
+  pAuthor->setURL((const char *) table->text(row, COL_URL).utf8());
+}
 
 void CAuthorsWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT32 exc)
 {
-  if (exc != 2)
-    table->clearCell(row, 2);
+  if (exc != COL_FAMILY_NAME)
+    table->clearCell(row, COL_FAMILY_NAME);
 
-  if (exc != 3)
-    table->clearCell(row, 3);
+  if (exc != COL_EMAIL)
+    table->clearCell(row, COL_EMAIL);
+
+  if (exc != COL_URL)
+    table->setText(row, COL_URL, "abcd.com");
 }
 
 QString CAuthorsWidget::defaultObjectName() const
-{return "";}
+{return "Author";}
 
-CCopasiObject* CAuthorsWidget::createNewObject(const std::string & C_UNUSED(name))
-{return NULL;}
+CCopasiObject* CAuthorsWidget::createNewObject(const std::string & name)
+{
+  std::string nname = name;
+  int i = 0;
+  CAuthor* pAuthor;
+  while (!(pAuthor = CCopasiDataModel::Global->getModel()->getMIRIAMInfo().createAuthor(nname)))
+    {
+      i++;
+      nname = name + "_";
+      nname += (const char *)QString::number(i).utf8();
+    }
+  return pAuthor;
+}
 
 void CAuthorsWidget::deleteObjects(const std::vector<std::string> & C_UNUSED(keys))
 {}
