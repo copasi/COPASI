@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiWidget.h,v $
-   $Revision: 1.20 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/28 00:24:53 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiWidget.h,v $
+//   $Revision: 1.21 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/11/01 17:51:00 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -34,13 +34,13 @@ class CopasiWidget : public QWidget
     virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
     virtual bool leave();
     virtual bool enter(const std::string & key = "");
+    virtual void setFramework(int framework);
 
   protected:
     bool protectedNotify(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key = "");
+    ListViews * mpListView;
     bool mIgnoreUpdates;
-
-    static DataModelGUI* dataModel;
-    ListViews* pListView;
+    int mFramework;
   };
 
 #endif // !defined(COPASI_WIDGET_H)

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQModelValue.ui.h,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/14 15:29:50 $
+//   $Date: 2007/11/01 17:51:00 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -294,7 +294,7 @@ bool CQModelValue::enter(const std::string & key)
 
   if (!mpModelValue)
     {
-      pListView->switchToOtherWidget(115, "");
+      mpListView->switchToOtherWidget(115, "");
       return false;
     }
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQTSSAWidget.ui.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: akoenig $
-//   $Date: 2007/10/26 11:09:31 $
+//   $Author: shoops $
+//   $Date: 2007/11/01 17:51:00 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -299,13 +299,13 @@ bool CQTSSAWidget::runTask()
   if (!commonAfterRunTask()) success = false;
 
   pTSSResultSubWidget =
-    dynamic_cast< CQTSSAResultWidget * >(pListView->findWidgetFromId(271))->getSubWidget();
+    dynamic_cast< CQTSSAResultWidget * >(mpListView->findWidgetFromId(271))->getSubWidget();
   if (!pTSSResultSubWidget) return false;
   pTSSResultSubWidget->activateTab(1);
   pTSSResultSubWidget->discardOldResults();
   pTSSResultSubWidget->setStepNumber();
 
-  if (success) pListView->switchToOtherWidget(271, ""); //change to the results window
+  if (success) mpListView->switchToOtherWidget(271, ""); //change to the results window
   return success;
 }
 

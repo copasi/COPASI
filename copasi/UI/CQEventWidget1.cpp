@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventWidget1.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/10/30 16:08:52 $
+//   $Author: shoops $
+//   $Date: 2007/11/01 17:51:00 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -339,6 +339,6 @@ bool CQEventWidget1::enter(const std::string & key)
   if (pEvent)
     return loadFromEvent(pEvent);
 
-  pListView->switchToOtherWidget(114, ""); //TODO
+  mpListView->switchToOtherWidget(114, ""); //TODO
   return false;
 }

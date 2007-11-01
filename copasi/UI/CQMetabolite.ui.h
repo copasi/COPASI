@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMetabolite.ui.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/02 18:18:01 $
+//   $Date: 2007/11/01 17:51:00 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -335,7 +335,7 @@ bool CQMetabolite::enter(const std::string & key)
 
   if (!mpMetab)
     {
-      pListView->switchToOtherWidget(112, "");
+      mpListView->switchToOtherWidget(112, "");
       return false;
     }
 
@@ -554,7 +554,7 @@ void CQMetabolite::slotReactionTableCurrentChanged(QListViewItem * pItem)
       s2 = pReaction->getObjectName();
 
       if (s1 == s2)
-        pListView->switchToOtherWidget(0, pReaction->getKey());
+        mpListView->switchToOtherWidget(0, pReaction->getKey());
     }
 }
 

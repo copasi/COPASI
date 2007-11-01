@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportDefinition.ui.h,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/04/02 17:58:34 $
+//   $Date: 2007/11/01 17:51:00 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -384,7 +384,7 @@ bool CQReportDefinition::enter(const std::string & key)
 
   if (!mpReportDefinition)
     {
-      pListView->switchToOtherWidget(43, "");
+      mpListView->switchToOtherWidget(43, "");
       return false;
     }
 

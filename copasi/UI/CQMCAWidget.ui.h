@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMCAWidget.ui.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/24 18:40:20 $
+//   $Date: 2007/11/01 17:51:00 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -57,11 +57,11 @@ bool CQMCAWidget::runTask()
 
   commonAfterRunTask();
 
-  CMCAResultWidget *pResult = dynamic_cast< CMCAResultWidget * >(pListView->findWidgetFromId(241));
+  CMCAResultWidget *pResult = dynamic_cast< CMCAResultWidget * >(mpListView->findWidgetFromId(241));
   if (pResult) pResult->loadFromBackend();
 
   if (success && pResult)
-    pListView->switchToOtherWidget(241, ""); //change to the results window
+    mpListView->switchToOtherWidget(241, ""); //change to the results window
 
   return success;
 }

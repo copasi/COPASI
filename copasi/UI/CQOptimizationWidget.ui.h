@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQOptimizationWidget.ui.h,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/20 17:06:03 $
+//   $Date: 2007/11/01 17:51:00 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -129,7 +129,7 @@ bool CQOptimizationWidget::runTask()
   commonAfterRunTask();
 
   OptimizationResultWidget *pResult =
-    dynamic_cast< OptimizationResultWidget * >(pListView->findWidgetFromId(321));
+    dynamic_cast< OptimizationResultWidget * >(mpListView->findWidgetFromId(321));
   if (pResult) pResult->loadFromBackend();
 
   return success;

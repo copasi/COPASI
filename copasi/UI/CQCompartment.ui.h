@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQCompartment.ui.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/14 15:29:49 $
+//   $Date: 2007/11/01 17:51:00 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -298,7 +298,7 @@ bool CQCompartment::enter(const std::string & key)
 
   if (!mpCompartment)
     {
-      pListView->switchToOtherWidget(111, "");
+      mpListView->switchToOtherWidget(111, "");
       return false;
     }
 
@@ -448,7 +448,7 @@ void CQCompartment::slotMetaboliteTableCurrentChanged(QListViewItem * pItem)
         s2 = it->second->getObjectName();
 
         if (s1 == s2)
-          pListView->switchToOtherWidget(0, it->second->getKey());
+          mpListView->switchToOtherWidget(0, it->second->getKey());
       }
 }
 

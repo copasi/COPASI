@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-//   $Revision: 1.149 $
+//   $Revision: 1.150 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/08/21 16:18:51 $
+//   $Date: 2007/11/01 17:51:00 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -681,7 +681,7 @@ bool FunctionWidget1::saveToFunction()
     {
       // We need to check whether other trees call the current one.
       std::set<std::string> dependentTrees;
-      if (dataModel && CCopasiDataModel::Global->getModel())
+      if (CCopasiDataModel::Global->getModel())
         {
           dependentTrees =
             CCopasiDataModel::Global->getFunctionList()->listDependentTrees(func->getObjectName());
@@ -1352,6 +1352,6 @@ bool FunctionWidget1::enter(const std::string & key)
   if (func)
     return loadFromFunction(func);
 
-  pListView->switchToOtherWidget(5, "");
+  mpListView->switchToOtherWidget(5, "");
   return false;
 }

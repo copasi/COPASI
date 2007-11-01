@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.cpp,v $
-//   $Revision: 1.55 $
+//   $Revision: 1.56 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2007/10/27 17:07:51 $
+//   $Author: shoops $
+//   $Date: 2007/11/01 17:51:00 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -351,7 +351,7 @@ void CopasiTableWidget::slotDoubleClicked(int row, int C_UNUSED(col),
   fillTable();
 
   if (GlobalKeys.get(key))
-    pListView->switchToOtherWidget(0, key);
+    mpListView->switchToOtherWidget(0, key);
 }
 
 void CopasiTableWidget::slotTableSelectionChanged()

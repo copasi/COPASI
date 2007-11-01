@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-//   $Revision: 1.190 $
+//   $Revision: 1.191 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/08/21 16:18:51 $
+//   $Date: 2007/11/01 17:51:00 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -644,7 +644,7 @@ void ReactionsWidget1::slotNewFunction()
   CCopasiDataModel::Global->getFunctionList()->add(pFunc = new CKinFunction(nname), true);
   protectedNotify(ListViews::FUNCTION, ListViews::ADD);
 
-  pListView->switchToOtherWidget(0, pFunc->getKey());
+  mpListView->switchToOtherWidget(0, pFunc->getKey());
 }
 
 bool ReactionsWidget1::update(ListViews::ObjectType objectType,
@@ -682,6 +682,6 @@ bool ReactionsWidget1::enter(const std::string & key)
   if (reac)
     return loadFromReaction(reac);
 
-  pListView->switchToOtherWidget(114, "");
+  mpListView->switchToOtherWidget(114, "");
   return false;
 }

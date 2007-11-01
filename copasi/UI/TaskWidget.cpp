@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.cpp,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.31 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/08/23 19:02:10 $
+//   $Date: 2007/11/01 17:51:00 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -202,7 +202,7 @@ void TaskWidget::reportBtnClicked()
 {
   if (!mpTask) return;
 
-  CReportDefinitionSelect * pSelectDlg = new CReportDefinitionSelect(pListView);
+  CReportDefinitionSelect * pSelectDlg = new CReportDefinitionSelect(mpListView);
   pSelectDlg->setReport(&mpTask->getReport());
   pSelectDlg->loadReportDefinitionVector();
   pSelectDlg->exec();

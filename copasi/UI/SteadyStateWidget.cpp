@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SteadyStateWidget.cpp,v $
-//   $Revision: 1.113 $
+//   $Revision: 1.114 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/04/09 18:56:15 $
+//   $Date: 2007/11/01 17:51:00 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -129,10 +129,10 @@ bool SteadyStateWidget::runTask()
 
   if (!commonAfterRunTask()) success = false;
 
-  StateWidget *pResult = dynamic_cast< StateWidget * >(pListView->findWidgetFromId(211));
+  StateWidget *pResult = dynamic_cast< StateWidget * >(mpListView->findWidgetFromId(211));
   if (pResult) pResult->loadFromBackend();
 
-  if (success && isShown()) pListView->switchToOtherWidget(211, ""); //change to the results window
+  if (success && isShown()) mpListView->switchToOtherWidget(211, ""); //change to the results window
 
   return success;
 }

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SensitivitiesWidget.cpp,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/24 18:40:20 $
+//   $Date: 2007/11/01 17:51:00 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -415,10 +415,10 @@ bool SensitivitiesWidget::runTask()
 
   //setup the result widget
   CQSensResultWidget *pResult =
-    dynamic_cast<CQSensResultWidget*>(pListView->findWidgetFromId(341));
+    dynamic_cast<CQSensResultWidget*>(mpListView->findWidgetFromId(341));
   if (pResult) pResult->newResult();
 
-  if (success && isShown()) pListView->switchToOtherWidget(341, ""); //change to the results window
+  if (success && isShown()) mpListView->switchToOtherWidget(341, ""); //change to the results window
 
   return success;
 }
