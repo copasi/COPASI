@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.211 $
+//   $Revision: 1.212 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/29 13:17:15 $
+//   $Date: 2007/11/01 17:51:52 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,6 +27,7 @@
 #include <qscrollview.h>
 #include <qaction.h>
 #include <qtextedit.h>
+#include <qcombobox.h>
 
 #include <vector>
 
@@ -259,6 +260,12 @@ void CopasiUI3Window::createToolBar()
 
   mpaApplyInitialState->addTo(tbMain);
   mpaUpdateInitialState->addTo(tbMain);
+
+  mpBoxSelectFramework = new QComboBox(tbMain);
+  mpBoxSelectFramework->insertItem("Concentrations");
+  mpBoxSelectFramework->insertItem("Particle Numbers");
+
+  connect(mpBoxSelectFramework, SIGNAL(activated(int)), this, SLOT(slotFrameworkChanged(int)));
 
   //What's this
   /*  toolb = QWhatsThis::whatsThisButton(tbMain);
@@ -1483,6 +1490,9 @@ void CopasiUI3Window::slotUpdateInitialState()
       ListViews::notify(ListViews::STATE, ListViews::CHANGE, CCopasiDataModel::Global->getModel()->getKey());
     }
 }
+
+void CopasiUI3Window::slotFrameworkChanged(int index)
+{ListViews::setFramework(index);}
 
 #ifdef COPASI_LICENSE_COM
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.229 $
+//   $Revision: 1.230 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/10/30 16:43:46 $
+//   $Author: shoops $
+//   $Date: 2007/11/01 17:51:52 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1172,13 +1172,41 @@ void ListViews::notifyAllChildWidgets(C_INT32 id,
                                       const std::string & key)
 {
   std::set<ListViews *>::iterator it = mListOfListViews.begin();
-  std::set<ListViews *>::iterator ende = mListOfListViews.end();
-  for (; it != ende; ++it)
+  std::set<ListViews *>::iterator end = mListOfListViews.end();
+  for (; it != end; ++it)
     {
       FolderListItem * pItem = (*it)->findListViewItem(id, "");
       if (pItem)
         (*it)->notifyChildWidgets(pItem, objectType, action, key);
     }
+}
+
+void ListViews::setChildWidgetsFramework(FolderListItem * pItem, int framework)
+{
+  FolderListItem * pChild = static_cast<FolderListItem * >(pItem->firstChild());
+
+  while (pChild)
+    {
+      setChildWidgetsFramework(pChild, framework);
+
+      CopasiWidget * pWidget = findWidgetFromItem(pChild);
+      if (pWidget != NULL)
+        pWidget->setFramework(framework);
+
+      pChild = static_cast<FolderListItem * >(pChild->nextSibling());
+    }
+}
+
+// static
+void ListViews::setFramework(int framework)
+{
+  std::set<ListViews *>::iterator it = mListOfListViews.begin();
+  std::set<ListViews *>::iterator end = mListOfListViews.end();
+  FolderListItem * pItem;
+
+  for (; it != end; ++it)
+    if ((pItem = (*it)->findListViewItem(0, "")) != NULL)
+      (*it)->setChildWidgetsFramework(pItem, framework);
 }
 
 void ListViews::refreshInitialValues()

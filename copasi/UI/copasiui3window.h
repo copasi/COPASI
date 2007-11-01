@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-//   $Revision: 1.69 $
+//   $Revision: 1.70 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/08/24 17:54:51 $
+//   $Author: shoops $
+//   $Date: 2007/11/01 17:51:52 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,6 +31,7 @@ class QHBox;
 class QScrollView;
 class QAction;
 class ObjectBrowserDialog;
+class QComboBox;
 
 class CopasiUI3Window : public QMainWindow
   {
@@ -57,6 +58,7 @@ class CopasiUI3Window : public QMainWindow
     CopasiUI3Window();
     DataModelGUI* dataModel; // to keep track of the data model..
     ListViews *listViews;
+    QComboBox * mpBoxSelectFramework;
 
   public slots:
     void slotShowSliders(bool flag);
@@ -93,6 +95,7 @@ class CopasiUI3Window : public QMainWindow
     void slotCheckModel();
     void slotApplyInitialState();
     void slotUpdateInitialState();
+    void slotFrameworkChanged(int index);
 
     /**
      * This should only be called via signal by the corresponding QAction mpaObjectBrowser.
