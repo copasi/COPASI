@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget.cpp,v $
-//   $Revision: 1.144 $
+//   $Revision: 1.145 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/08 14:53:17 $
+//   $Date: 2007/11/01 19:02:46 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -56,15 +56,8 @@ std::vector<const CCopasiObject*> MetabolitesWidget::getObjects() const
 void MetabolitesWidget::init()
 {
   mOT = ListViews::METABOLITE;
-  mExtraLayout->addStretch();
-  btnToggle = new QPushButton("&Show Numbers", this);
-  mExtraLayout->addWidget(btnToggle);
-  connect(btnToggle, SIGNAL(clicked ()), this,
-          SLOT(slotBtnToggleClicked()));
-
   numCols = 12; //+ 1; //+1 for sbml id
   table->setNumCols(numCols);
-  //table->QTable::setNumRows(1);
 
   //Setting table headers
   QHeader *tableHeader = table->horizontalHeader();
@@ -81,9 +74,6 @@ void MetabolitesWidget::init()
   tableHeader->setLabel(COL_EXPRESSION, "Expression");
 
   // Hide columns
-  table->hideColumn(COL_INUMBER);
-  table->hideColumn(COL_NUMBER);
-  table->hideColumn(COL_NRATE);
   table->hideColumn(COL_CURRENTCOMPARTMENT);
 
   // Set readonly
@@ -94,7 +84,7 @@ void MetabolitesWidget::init()
   table->setColumnReadOnly (COL_EXPRESSION, true);
 
   // We start with the concentration showing.
-  mFlagConc = true;
+  setFramework(mFramework);
 
   mTypes.push_back(FROM_UTF8(CModelEntity::StatusName[CModelEntity::REACTIONS]));
   mTypes.push_back(FROM_UTF8(CModelEntity::StatusName[CModelEntity::FIXED]));
@@ -481,6 +471,7 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
     }
 }
 
+/*
 void MetabolitesWidget::slotBtnToggleClicked()
 {
   if (mFlagConc)
@@ -509,9 +500,8 @@ void MetabolitesWidget::slotBtnToggleClicked()
       btnToggle->setText("&Show Numbers");
       mFlagConc = true;
     }
-
-  //  fillTable();
 }
+ */
 
 void MetabolitesWidget::valueChanged(unsigned C_INT32 row, unsigned C_INT32 col)
 {
@@ -621,4 +611,36 @@ void MetabolitesWidget::compartmentChanged(unsigned C_INT32 row)
                  QString::number(Factor * table->text(row, COL_NUMBER).toDouble()));
 
   return;
+}
+
+void MetabolitesWidget::setFramework(int framework)
+{
+  CopasiWidget::setFramework(framework);
+
+  switch (mFramework)
+    {
+    case 0:
+      table->showColumn(COL_ICONCENTRATION);
+      table->showColumn(COL_CONCENTRATION);
+      table->showColumn(COL_CRATE);
+
+      table->hideColumn(COL_INUMBER);
+      table->hideColumn(COL_NUMBER);
+      table->hideColumn(COL_NRATE);
+
+      mFlagConc = true;
+      break;
+
+    case 1:
+      table->hideColumn(COL_ICONCENTRATION);
+      table->hideColumn(COL_CONCENTRATION);
+      table->hideColumn(COL_CRATE);
+
+      table->showColumn(COL_INUMBER);
+      table->showColumn(COL_NUMBER);
+      table->showColumn(COL_NRATE);
+
+      mFlagConc = false;
+      break;
+    }
 }

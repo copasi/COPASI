@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget.h,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.33 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/08/07 17:30:41 $
+//   $Date: 2007/11/01 19:02:46 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,13 +34,14 @@ class MetabolitesWidget : public CopasiTableWidget
         : CopasiTableWidget(parent, false, name, f)
     {init();}
 
+    virtual void setFramework(int framework);
+
   protected slots:
-    virtual void slotBtnToggleClicked();
+    //    virtual void slotBtnToggleClicked();
 
   protected:
 
     bool mFlagConc;
-    QPushButton* btnToggle;
 
     /**
      * This initializes the widget
