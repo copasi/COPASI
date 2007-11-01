@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMetabolite.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/02 18:18:01 $
+//   $Date: 2007/11/01 19:28:34 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,8 +13,8 @@
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQMetabolite.ui'
  **
- ** Created: Wed Sep 26 20:38:17 2007
- **      by: The User Interface Compiler ($Id: CQMetabolite.h,v 1.6 2007/10/02 18:18:01 shoops Exp $)
+ ** Created: Thu Nov 1 15:22:35 2007
+ **      by: The User Interface Compiler ($Id: CQMetabolite.h,v 1.7 2007/11/01 19:28:34 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -86,6 +86,7 @@ class CQMetabolite : public CopasiWidget
     virtual bool enter(const std::string & key);
     virtual bool leave();
     virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
+    virtual void setFramework(int framework);
 
   protected:
     QVBoxLayout* CQMetaboliteLayout;
@@ -134,7 +135,6 @@ class CQMetabolite : public CopasiWidget
     void slotExpressionValid(bool valid);
     void slotReactionTableCurrentChanged(QListViewItem * pItem);
     void slotInitialValueLostFocus();
-    void slotToggleDisplay();
   };
 
 #endif // CQMETABOLITE_H

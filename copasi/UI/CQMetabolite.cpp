@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMetabolite.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/02 18:18:01 $
+//   $Date: 2007/11/01 19:28:34 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,8 +13,8 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQMetabolite.ui'
  **
- ** Created: Wed Sep 26 20:38:18 2007
- **      by: The User Interface Compiler ($Id: CQMetabolite.cpp,v 1.6 2007/10/02 18:18:01 shoops Exp $)
+ ** Created: Thu Nov 1 15:25:49 2007
+ **      by: The User Interface Compiler ($Id: CQMetabolite.cpp,v 1.7 2007/11/01 19:28:34 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -316,7 +316,6 @@ CQMetabolite::CQMetabolite(QWidget* parent, const char* name)
   connect(mpEditExpression, SIGNAL(valid(bool)), this, SLOT(slotExpressionValid(bool)));
   connect(mpEditInitialValue, SIGNAL(lostFocus()), this, SLOT(slotInitialValueLostFocus()));
   connect(mpReactionTable, SIGNAL(doubleClicked(QListViewItem*)), this, SLOT(slotReactionTableCurrentChanged(QListViewItem*)));
-  connect(mpBtnToggle, SIGNAL(clicked()), this, SLOT(slotToggleDisplay()));
 
   // tab order
   setTabOrder(mpEditName, mpComboBoxCompartment);

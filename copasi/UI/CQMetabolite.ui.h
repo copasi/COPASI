@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMetabolite.ui.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/01 17:51:00 $
+//   $Date: 2007/11/01 19:28:34 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,7 +52,11 @@ void CQMetabolite::init()
   mpComboBoxInitialSelection->hide();
 
   mInitialNumberLastChanged = true;
-  mShowConcentration = true;
+
+  int Width = fontMetrics().width("Concentration (" +
+                                  FROM_UTF8(CCopasiDataModel::Global->getModel()->getConcentrationUnitName()) +
+                                  ")");
+  mpLblValue->setMinimumWidth(Width);
 }
 
 void CQMetabolite::slotBtnCommit()
@@ -422,8 +426,7 @@ void CQMetabolite::load()
   loadReactionTable();
 
   // Update the units and values accordingly
-  mShowConcentration = !mShowConcentration;
-  slotToggleDisplay();
+  setFramework(mFramework);
 
   mChanged = false;
   return;
@@ -623,18 +626,13 @@ void CQMetabolite::loadReactionTable()
   return;
 }
 
-void CQMetabolite::slotToggleDisplay()
+void CQMetabolite::setFramework(int framework)
 {
-  mShowConcentration = !mShowConcentration;
+  CopasiWidget::setFramework(framework);
 
-  int Width = fontMetrics().width("Concentration (" +
-                                  FROM_UTF8(CCopasiDataModel::Global->getModel()->getConcentrationUnitName()) +
-                                  ")");
-  mpLblValue->setMinimumWidth(Width);
-
-  if (mShowConcentration)
+  switch (mFramework)
     {
-      // Update the labels to reflect the model units
+    case 0:
       mpLblValue->setText("Concentration ("
                           + FROM_UTF8(CCopasiDataModel::Global->getModel()->getConcentrationUnitName()) + ")");
 
@@ -645,11 +643,10 @@ void CQMetabolite::slotToggleDisplay()
       mpEditCurrentValue->setText(QString::number(mpMetab->getConcentration()));
       mpEditRate->setText(QString::number(mpMetab->getConcentrationRate()));
 
-      mpBtnToggle->setText("Particle Number");
-    }
-  else
-    {
-      // Update the labels to reflect the model units
+      mShowConcentration = true;
+      break;
+
+    case 1:
       mpLblValue->setText("Particle Number");
 
       mpLblRate->setText("Rate (1/"
@@ -659,6 +656,7 @@ void CQMetabolite::slotToggleDisplay()
       mpEditCurrentValue->setText(QString::number(mpMetab->getValue()));
       mpEditRate->setText(QString::number(mpMetab->getRate()));
 
-      mpBtnToggle->setText("Concentration");
+      mShowConcentration = false;
+      break;
     }
 }

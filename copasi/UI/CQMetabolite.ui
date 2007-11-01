@@ -1,10 +1,10 @@
 <!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMetabolite.ui,v $ </comment>
-<comment>   $Revision: 1.5 $ </comment>
+<comment>   $Revision: 1.6 $ </comment>
 <comment>   $Name:  $ </comment>
 <comment>   $Author: shoops $ </comment>
-<comment>   $Date: 2007/10/02 18:18:01 $ </comment>
+<comment>   $Date: 2007/11/01 19:28:34 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -719,12 +719,6 @@
         <receiver>CQMetabolite</receiver>
         <slot>slotReactionTableCurrentChanged(QListViewItem*)</slot>
     </connection>
-    <connection>
-        <sender>mpBtnToggle</sender>
-        <signal>clicked()</signal>
-        <receiver>CQMetabolite</receiver>
-        <slot>slotToggleDisplay()</slot>
-    </connection>
 </connections>
 <tabstops>
     <tabstop>mpEditName</tabstop>
@@ -781,17 +775,17 @@
     <slot access="private" specifier="non virtual">slotExpressionValid( bool valid )</slot>
     <slot access="private" specifier="non virtual">slotReactionTableCurrentChanged( QListViewItem * pItem )</slot>
     <slot access="private" specifier="non virtual">slotInitialValueLostFocus()</slot>
-    <slot access="private" specifier="non virtual">slotToggleDisplay()</slot>
 </slots>
 <functions>
     <function access="private" specifier="non virtual">init()</function>
     <function returnType="bool">enter( const std::string &amp; key )</function>
     <function returnType="bool">leave()</function>
+    <function returnType="bool">update( ListViews::ObjectType objectType, ListViews::Action action, const std::string &amp; key )</function>
+    <function>setFramework( int framework )</function>
     <function access="private" specifier="non virtual">load()</function>
     <function access="private" specifier="non virtual">save()</function>
     <function access="private" specifier="non virtual">destroy()</function>
     <function access="private" specifier="non virtual">loadReactionTable()</function>
-    <function returnType="bool">update( ListViews::ObjectType objectType, ListViews::Action action, const std::string &amp; key )</function>
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
