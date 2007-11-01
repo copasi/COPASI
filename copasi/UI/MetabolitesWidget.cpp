@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget.cpp,v $
-//   $Revision: 1.145 $
+//   $Revision: 1.146 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/01 19:02:46 $
+//   $Date: 2007/11/01 19:28:18 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -470,38 +470,6 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
       break;
     }
 }
-
-/*
-void MetabolitesWidget::slotBtnToggleClicked()
-{
-  if (mFlagConc)
-    {
-      table->hideColumn(COL_ICONCENTRATION);
-      table->hideColumn(COL_CONCENTRATION);
-      table->hideColumn(COL_CRATE);
-
-      table->showColumn(COL_INUMBER);
-      table->showColumn(COL_NUMBER);
-      table->showColumn(COL_NRATE);
-
-      btnToggle->setText("&Show Concentrations");
-      mFlagConc = false;
-    }
-  else
-    {
-      table->showColumn(COL_ICONCENTRATION);
-      table->showColumn(COL_CONCENTRATION);
-      table->showColumn(COL_CRATE);
-
-      table->hideColumn(COL_INUMBER);
-      table->hideColumn(COL_NUMBER);
-      table->hideColumn(COL_NRATE);
-
-      btnToggle->setText("&Show Numbers");
-      mFlagConc = true;
-    }
-}
- */
 
 void MetabolitesWidget::valueChanged(unsigned C_INT32 row, unsigned C_INT32 col)
 {
