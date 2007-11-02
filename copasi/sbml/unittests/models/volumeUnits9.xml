@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Begin CVS Header -->
+<!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/models/volumeUnits9.xml,v $ -->
+<!--   $Revision: 1.1 $ -->
+<!--   $Name:  $ -->
+<!--   $Author: gauges $ -->
+<!--   $Date: 2007/11/02 16:06:12 $ -->
+<!-- End CVS Header -->
+
+<!-- Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Properties, Inc. and EML Research, gGmbH. -->
+<!-- All rights reserved. -->
+
+<sbml xmlns="http://www.sbml.org/sbml/level2" level="2" version="1">
+  <model id="model" name="Testmodel">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p>testmodel there is a volume unit definition that is different from "volume" and all compartments have either "volume" or that new unit.</p>
+      </body>
+    </notes>
+    <listOfUnitDefinitions>
+      <unitDefinition id="volume">
+        <listOfUnits>
+          <unit kind="litre" scale="-6" />
+        </listOfUnits>
+      </unitDefinition>
+      <unitDefinition id="myVolumeUnit">
+        <listOfUnits>
+          <unit kind="litre" scale="-3" />
+        </listOfUnits>
+      </unitDefinition>
+    </listOfUnitDefinitions>
+    <listOfCompartments>
+      <compartment id="compartment1" name="Compartment 1" size="1e-16" units="volume" />
+      <compartment id="compartment2" name="Compartment 2" size="1e-16" units="myVolumeUnit" />
+      <compartment id="compartment3" name="Compartment 3" size="1e-16" units="volume" />
+      <compartment id="compartment4" name="Compartment 4" size="1e-16" units="myVolumeUnit" />
+      <compartment id="compartment5" name="Compartment 5" size="1e-16" units="volume" />
+      <compartment id="compartment6" name="Compartment 6" size="1e-16" units="volume" />
+    </listOfCompartments>
+  </model>
+</sbml>

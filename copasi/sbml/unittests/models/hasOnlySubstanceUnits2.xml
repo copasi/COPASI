@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Begin CVS Header -->
+<!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/models/hasOnlySubstanceUnits2.xml,v $ -->
+<!--   $Revision: 1.1 $ -->
+<!--   $Name:  $ -->
+<!--   $Author: gauges $ -->
+<!--   $Date: 2007/11/02 16:06:12 $ -->
+<!-- End CVS Header -->
+
+<!-- Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Properties, Inc. and EML Research, gGmbH. -->
+<!-- All rights reserved. -->
+
+<sbml xmlns="http://www.sbml.org/sbml/level2" level="2" version="1">
+  <model id="model" name="Testmodel">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p>testmodel where a species has the hasOnlySubstanceUnits flag set and is determined by a rate rule.</p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="compartment1" name="Compartment 1" size="1e-16">
+      </compartment>
+    </listOfCompartments>
+    <listOfSpecies>
+      <species id="species1" name="Species 1" compartment="compartment1" initialAmount="3.0" hasOnlySubstanceUnits="true">
+      </species>
+    </listOfSpecies>
+    <listOfRules>
+      <rateRule variable="species1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn>0.0</cn>
+            <cn>3.0</cn>
+          </apply>
+        </math>
+      </rateRule>
+    </listOfRules>
+  </model>
+</sbml>

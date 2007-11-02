@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Begin CVS Header -->
+<!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/models/timeUnits1.xml,v $ -->
+<!--   $Revision: 1.1 $ -->
+<!--   $Name:  $ -->
+<!--   $Author: gauges $ -->
+<!--   $Date: 2007/11/02 16:06:12 $ -->
+<!-- End CVS Header -->
+
+<!-- Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Properties, Inc. and EML Research, gGmbH. -->
+<!-- All rights reserved. -->
+
+<sbml xmlns="http://www.sbml.org/sbml/level2" level="2" version="1">
+  <model id="model" name="Testmodel">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p>testmodel where all kinetic laws have the time units set to "time" </p>
+      </body>
+    </notes>
+    <listOfUnitDefinitions>
+        <unitDefinition id="time">
+            <listOfUnits>
+              <unit kind="second" multiplier="1.0" scale="-6" />
+            </listOfUnits>
+        </unitDefinition>
+    </listOfUnitDefinitions>
+    <listOfCompartments>
+      <compartment id="compartment1" name="Compartment 1" size="1e-16" />
+    </listOfCompartments>
+    <listOfSpecies>
+      <species id="species1" name="Species 1" compartment="compartment1" initialAmount="10.0" />
+      <species id="species2" name="Species 2" compartment="compartment1" initialAmount="0.0" />
+      <species id="species3" name="Species 3" compartment="compartment1" initialAmount="0.0" />
+      <species id="species4" name="Species 4" compartment="compartment1" initialAmount="0.0" />
+      <species id="species5" name="Species 5" compartment="compartment1" initialAmount="0.0" />
+      <species id="species6" name="Species 6" compartment="compartment1" initialAmount="0.0" />
+      <species id="species7" name="Species 7" compartment="compartment1" initialAmount="0.0" />
+      <species id="species8" name="Species 8" compartment="compartment1" initialAmount="0.0" />
+    </listOfSpecies>
+    <listOfParameters>
+      <parameter id="parameter1" value="0.0" constant="false"/>
+    </listOfParameters>
+    <listOfReactions>
+      <reaction id="reaction1" name="Reaction 1">
+        <listOfReactants>
+          <speciesReference species="species1"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="species2"/>
+        </listOfProducts>
+        <kineticLaw timeUnits="time">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment1 </ci>
+              <apply>
+                <times/>
+                <ci> parameter1 </ci>
+                <ci> species1 </ci>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="reaction2" name="Reaction 2">
+        <listOfReactants>
+          <speciesReference species="species2"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="species3"/>
+        </listOfProducts>
+        <kineticLaw timeUnits="time">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment1 </ci>
+              <apply>
+                <times/>
+                <ci> parameter1 </ci>
+                <ci> species2 </ci>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="reaction3" name="Reaction 3">
+        <listOfReactants>
+          <speciesReference species="species3"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="species4"/>
+        </listOfProducts>
+        <kineticLaw timeUnits="time">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment1 </ci>
+              <apply>
+                <times/>
+                <ci> parameter1 </ci>
+                <ci> species3 </ci>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="reaction4" name="Reaction 4">
+        <listOfReactants>
+          <speciesReference species="species4"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="species5"/>
+        </listOfProducts>
+        <kineticLaw timeUnits="time">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment1 </ci>
+              <apply>
+                <times/>
+                <ci> parameter1 </ci>
+                <ci> species4 </ci>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="reaction5" name="Reaction 5">
+        <listOfReactants>
+          <speciesReference species="species5"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="species6"/>
+        </listOfProducts>
+        <kineticLaw timeUnits="time">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment1 </ci>
+              <apply>
+                <times/>
+                <ci> parameter1 </ci>
+                <ci> species5 </ci>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="reaction6" name="Reaction 6">
+        <listOfReactants>
+          <speciesReference species="species6"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="species7"/>
+        </listOfProducts>
+        <kineticLaw timeUnits="time">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment1 </ci>
+              <apply>
+                <times/>
+                <ci> parameter1 </ci>
+                <ci> species6 </ci>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="reaction7" name="Reaction 7">
+        <listOfReactants>
+          <speciesReference species="species7"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="species8"/>
+        </listOfProducts>
+        <kineticLaw timeUnits="time">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment1 </ci>
+              <apply>
+                <times/>
+                <ci> parameter1 </ci>
+                <ci> species7 </ci>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+    </listOfReactions>
+  </model>
+</sbml>
