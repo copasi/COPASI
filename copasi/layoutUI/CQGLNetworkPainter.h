@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.42 $
+//   $Revision: 1.43 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/10/20 20:12:41 $
+//   $Date: 2007/11/02 18:12:01 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -71,6 +71,7 @@ class CQGLNetworkPainter : public QGLWidget
     void drawArrow(CArrow a);
 
     bool createDataSets();
+    bool mDataPresentP; // shows, whether time series data has been load before
     C_INT32 getNumberOfSteps();
     bool isCircleMode();
 

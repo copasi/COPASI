@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.75 $
+//   $Revision: 1.76 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/10/31 15:34:11 $
+//   $Author: urost $
+//   $Date: 2007/11/02 18:12:01 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1139,6 +1139,7 @@ bool CQGLNetworkPainter::createDataSets()
     }
   //std::cout << *pSummaryInfo << std::endl;
   //std::cout << "number of data sets created: " << dataSets.size() << std::endl;
+  this->mDataPresentP = loadDataSuccessful;
   return loadDataSuccessful;
 }
 
@@ -1322,11 +1323,13 @@ void CQGLNetworkPainter::setNodeSize(std::string key, C_FLOAT64 val)
               //pLastSeg->setBase2(CLPoint(pLastSeg->getBase2().getX() + dx,pLastSeg->getBase2().getY() + dy));
             }
           CLPoint p = pLastSeg->getEnd();
-          CArrow *ar = new CArrow(*pLastSeg, p.getX(), p.getY());
-          nodeArrowMap.insert(std::pair<std::string, CArrow>
-                              (key, *ar));
-          pCurve->setArrowP(true);
-          pCurve->setArrow(*ar);
+          if (pCurve->hasArrowP())
+            {
+              CArrow *ar = new CArrow(*pLastSeg, p.getX(), p.getY());
+              nodeArrowMap.insert(std::pair<std::string, CArrow>
+                                  (key, *ar));
+              pCurve->setArrow(*ar);
+            }
         }
       curveIt++;
     }
@@ -1575,67 +1578,72 @@ void CQGLNetworkPainter::zoom(C_FLOAT64 zoomFactor)
   CLPoint cMax = CLPoint(this->mgraphMax.getX() * zoomFactor, this->mgraphMax.getY() * zoomFactor);
   this->setGraphSize(this->mgraphMin, cMax);
 
-  unsigned int i;
-  //scale nodes
-  for (i = 0;i < this->viewerNodes.size();i++)
+  if (pParentLayoutWindow != NULL)
     {
-      std::map<std::string, CGraphNode>::iterator nodeIt;
-      nodeIt = nodeMap.find(viewerNodes[i]);
-      if (nodeIt != nodeMap.end())
-        (*nodeIt).second.scale(zoomFactor);
-      //this->viewerNodes[i].scale(zoomFactor);
-    }
+      C_FLOAT64 oldMin = pParentLayoutWindow->getMinNodeSize();
+      C_FLOAT64 oldMax = pParentLayoutWindow->getMaxNodeSize();
+      pParentLayoutWindow->setMinNodeSize(pParentLayoutWindow->getMinNodeSize() * zoomFactor);
+      pParentLayoutWindow->setMaxNodeSize(pParentLayoutWindow->getMaxNodeSize() * zoomFactor);
+      unsigned int i;
 
-  //scale curves not directly pointing to a reactant/species node
-  for (i = 0;i < viewerCurves.size();i++)
-    {
-      this->viewerCurves[i].scale(zoomFactor);
-    }
-  //scale curves that are associated with a reactant/species node (i.e. directly points to it)
-  for (i = 0; i < viewerNodes.size();i++)
-    {
-      std::pair<std::multimap<std::string, CGraphCurve>::iterator, std::multimap<std::string, CGraphCurve>::iterator> curveRangeIt;
-      std::multimap<std::string, CGraphCurve>::iterator curveIt;
-
-      curveRangeIt = nodeCurveMap.equal_range(viewerNodes[i]);
-      //curveIt = nodeCurveMap.find(viewerNodes[i]);
-      curveIt = curveRangeIt.first;
-      while (curveIt != curveRangeIt.second)
+      if (mDataPresentP)
         {
-          ((*curveIt).second).scale(zoomFactor);
-
-          //           CLLineSegment *seg;
-          //           int numSegs = (*curveIt).second.getNumCurveSegments();
-
-          //           for (int k = 0;k < numSegs;k++)
-          //             {
-          //               seg = (*curveIt).second.getSegmentAt(k);
-          //               if (seg != NULL)
-          //                 seg->scale(zoomFactor);
-          //}
-          curveIt++;
+          rescaleDataSetsWithNewMinMax(oldMin, oldMax, pParentLayoutWindow->getMinNodeSize(), pParentLayoutWindow->getMaxNodeSize(), pParentLayoutWindow->getScalingMode());
         }
-    }
-  // common fontname and size for all labels are stored in this class
-  this->mFontsizeDouble = this->mFontsizeDouble * zoomFactor;
-  this->mFontsize = (int)this->mFontsizeDouble;
-  for (i = 0;i < viewerLabels.size();i++)
-    {
-      this->viewerLabels[i].scale(zoomFactor);
-    }
-  for (i = 0;i < viewerNodes.size();i++)
-    {
-      std::pair<std::multimap<std::string, CArrow>::iterator, std::multimap<std::string, CArrow>::iterator> arrowRangeIt;
-      std::multimap<std::string, CArrow>::iterator arrowIt;
-      arrowRangeIt = nodeArrowMap.equal_range(viewerNodes[i]);
-      arrowIt = arrowRangeIt.first;
-      while (arrowIt != arrowRangeIt.second)
+      //else {// just scale nodes and curves in graph (and not the whole data set)
+      //scale nodes
+      for (i = 0;i < this->viewerNodes.size();i++)
         {
-          (*arrowIt).second.scale(zoomFactor);
-          arrowIt++;
+          std::map<std::string, CGraphNode>::iterator nodeIt;
+          nodeIt = nodeMap.find(viewerNodes[i]);
+          if (nodeIt != nodeMap.end())
+            (*nodeIt).second.scale(zoomFactor);
+          //this->viewerNodes[i].scale(zoomFactor);
         }
+      //}
 
-      //this->viewerArrows[i].scale(zoomFactor);
+      //scale curves not directly pointing to a reactant/species node
+      for (i = 0;i < viewerCurves.size();i++)
+        {
+          this->viewerCurves[i].scale(zoomFactor);
+        }
+      //scale curves that are associated with a reactant/species node (i.e. directly points to it)
+      for (i = 0; i < viewerNodes.size();i++)
+        {
+          std::pair<std::multimap<std::string, CGraphCurve>::iterator, std::multimap<std::string, CGraphCurve>::iterator> curveRangeIt;
+          std::multimap<std::string, CGraphCurve>::iterator curveIt;
+
+          curveRangeIt = nodeCurveMap.equal_range(viewerNodes[i]);
+          //curveIt = nodeCurveMap.find(viewerNodes[i]);
+          curveIt = curveRangeIt.first;
+          while (curveIt != curveRangeIt.second)
+            {
+              ((*curveIt).second).scale(zoomFactor);
+              curveIt++;
+            }
+        }
+      // common fontname and size for all labels are stored in this class
+      this->mFontsizeDouble = this->mFontsizeDouble * zoomFactor;
+      this->mFontsize = (int)this->mFontsizeDouble;
+      for (i = 0;i < viewerLabels.size();i++)
+        {
+          this->viewerLabels[i].scale(zoomFactor);
+        }
+      for (i = 0;i < viewerNodes.size();i++)
+        {
+          std::pair<std::multimap<std::string, CArrow>::iterator, std::multimap<std::string, CArrow>::iterator> arrowRangeIt;
+          std::multimap<std::string, CArrow>::iterator arrowIt;
+          arrowRangeIt = nodeArrowMap.equal_range(viewerNodes[i]);
+          arrowIt = arrowRangeIt.first;
+          while (arrowIt != arrowRangeIt.second)
+            {
+              (*arrowIt).second.scale(zoomFactor);
+              arrowIt++;
+            }
+
+          //this->viewerArrows[i].scale(zoomFactor);
+        }
+      //}
     }
   this->drawGraph();
 }
@@ -1704,6 +1712,7 @@ void CQGLNetworkPainter::initializeGraphPainter(QWidget *viewportWidget)
   mFontname = "Helvetica";
   mFontsize = 12;
   mFontsizeDouble = 12.0; // to avoid rounding errors due to zooming in and out
+  mDataPresentP = false;
 
   //mf(FROM_UTF8(this->mFontname));
   mf = QFont(FROM_UTF8(mFontname));
