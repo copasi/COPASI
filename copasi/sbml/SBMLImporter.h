@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-//   $Revision: 1.59 $
+//   $Revision: 1.60 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/10/30 17:09:50 $
+//   $Date: 2007/11/03 19:44:16 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,6 +15,7 @@
 
 #include <string>
 #include <map>
+#include <utility>
 #include "sbml/math/ASTNode.h"
 
 #include "function/CFunctionDB.h"
@@ -167,19 +168,19 @@ class SBMLImporter
      * Returns the copasi VolumeUnit corresponding to the given SBML Volume
      *  UnitDefinition.
      */
-    CModel::VolumeUnit handleVolumeUnit(const UnitDefinition* uDef);
+    std::pair<CModel::VolumeUnit, bool> handleVolumeUnit(const UnitDefinition* uDef);
 
     /**
      * Returns the copasi QuantityUnit corresponding to the given SBML
      *  Substance UnitDefinition.
      */
-    CModel::QuantityUnit handleSubstanceUnit(const UnitDefinition* uDef);
+    std::pair<CModel::QuantityUnit, bool> handleSubstanceUnit(const UnitDefinition* uDef);
 
     /**
      * Returns the copasi TimeUnit corresponding to the given SBML Time
      *  UnitDefinition.
      */
-    CModel::TimeUnit handleTimeUnit(const UnitDefinition* uDef);
+    std::pair<CModel::TimeUnit, bool> handleTimeUnit(const UnitDefinition* uDef);
 
     /**
      * Replaces all occurences of the log function with two arguments by
@@ -322,6 +323,29 @@ class SBMLImporter
      * If the entity has not been set in any way, an error message is created.
      */
     bool setInitialValues(CModel* pModel, const std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+
+    void checkElementUnits(const Model* pSBMLModel, CModel* pCopasiModel, int level, int version);
+
+    /**
+     * Enhanced method to identify identical sbml unit definitions.
+     * This method uses the areIdentical method from libSBML, but if the method
+     * return false, it does some extra checks.
+     * Right now it check for example if two volumes, one given in litre and one
+     * given in cubic meters are identical.
+     */
+    static bool areSBMLUnitDefinitionsIdentical(const UnitDefinition* pUdef1, const UnitDefinition* pUdef2);
+
+    /**
+     * If the given UnitDefinition can be converted to a form of litres, the
+     * funktion return the UnitDefinition in litres, otherwise NULL is returned.
+     */
+    static Unit* convertSBMLCubicmetresToLitres(const Unit* pU);
+
+    /**
+     * This funktion normalizes the multiplier to be within the range 1.0 <=
+     * multiplier < 10.0.
+     */
+    static void normalizeSBMLUnit(Unit* pU);
 
   public:
     SBMLImporter();

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.176 $
+//   $Revision: 1.177 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/10/31 16:27:58 $
+//   $Date: 2007/11/03 19:44:16 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,6 +26,7 @@
 #include <sstream>
 #include <map>
 #include <limits>
+#include <cmath>
 
 #include <sbml/SBMLReader.h>
 #include <sbml/SBMLDocument.h>
@@ -41,6 +42,7 @@
 #include <sbml/Parameter.h>
 #include <sbml/Rule.h>
 #include <sbml/FunctionDefinition.h>
+#include <sbml/units/Utils_UnitDefinition.h>
 
 #include "copasi.h"
 
@@ -95,30 +97,25 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
           std::string unitId = uDef->getId();
           if (unitId == "substance")
             {
-              this->mpCopasiModel->setQuantityUnit(this->handleSubstanceUnit(uDef));
+              this->mpCopasiModel->setQuantityUnit(this->handleSubstanceUnit(uDef).first);
             }
           else if (unitId == "time")
             {
-              this->mpCopasiModel->setTimeUnit(this->handleTimeUnit(uDef));
+              this->mpCopasiModel->setTimeUnit(this->handleTimeUnit(uDef).first);
             }
           else if (unitId == "volume")
             {
-              this->mpCopasiModel->setVolumeUnit(this->handleVolumeUnit(uDef));
+              this->mpCopasiModel->setVolumeUnit(this->handleVolumeUnit(uDef).first);
             }
           else if ((unitId == "area") || (unitId == "length"))
             {
               /* do nothing, but do not throw an exception either */
             }
-          else
-            {
-              /* Dont' throw an exception any more because individual objects
-              ** are tested for unit usage and warning will be created there.
-              */
-              //throw StdException("Error. SBML Units other than \"substance\", \"time\" and \"volume\" not implemented.");
-            }
         }
     }
-
+  // go through all compartments and species and check if the units are
+  // consistent
+  checkElementUnits(sbmlModel, this->mpCopasiModel, mLevel, mVersion);
   std::string title;
   if (this->isStochasticModel(sbmlModel))
     {
@@ -604,18 +601,20 @@ SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartme
   if (sbmlCompartment->isSetUnits())
     {
       std::string cU = sbmlCompartment->getUnits();
-      if (cU != "volume" /* && cU != "area" && cU != "length" */)
-        {
-          //fatalError();
-          CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 24, sbmlCompartment->getId().c_str());
-          const_cast<Compartment*>(sbmlCompartment)->unsetUnits();
-        }
+      // this is now check in checkElementUnits
+      //if (cU != "volume" /* && cU != "area" && cU != "length" */)
+      //  {
+      //    //fatalError();
+      //    CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 24, sbmlCompartment->getId().c_str());
+      //    const_cast<Compartment*>(sbmlCompartment)->unsetUnits();
+      //}
       //else if (cU == "area" || cU == "length")
       //  {
       //    /* !!!! create a warning that the units will be ignored. */
       //    CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 22, sbmlCompartment->getId().c_str());
       //}
     }
+  /* those are now checked in checkElementUnits
   if (sbmlCompartment->getSpatialDimensions() == 0)
     {
       CCopasiMessage Message(CCopasiMessage::EXCEPTION, MCSBML + 23, sbmlCompartment->getId().c_str());
@@ -624,7 +623,7 @@ SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartme
     {
       CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 22, sbmlCompartment->getId().c_str());
     }
-
+   */
   std::string name = sbmlCompartment->getName();
   if (name == "")
     {
@@ -748,12 +747,14 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
   if (sbmlSpecies->isSetSubstanceUnits())
     {
       std::string cU = sbmlSpecies->getSubstanceUnits();
+      /* this is now checked in checkElementUnits
       if (cU != "substance")
         {
           //fatalError();
           CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 25, sbmlSpecies->getId().c_str());
           const_cast<Species*>(sbmlSpecies)->unsetUnits();
         }
+        */
     }
   if (sbmlSpecies->isSetSpatialSizeUnits())
     {
@@ -1071,6 +1072,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
   const KineticLaw* kLaw = sbmlReaction->getKineticLaw();
   if (kLaw != NULL)
     {
+      /* this is now done in checkElementUnits
       if (kLaw->isSetSubstanceUnits())
         {
           std::string cU = kLaw->getSubstanceUnits();
@@ -1089,6 +1091,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
               fatalError();
             }
         }
+        */
 
       for (counter = 0; counter < kLaw->getNumParameters();++counter)
         {
@@ -1709,9 +1712,10 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
  * Returns the copasi QuantityUnit corresponding to the given SBML
  *  Substance UnitDefinition.
  */
-CModel::QuantityUnit
+std::pair<CModel::QuantityUnit, bool>
 SBMLImporter::handleSubstanceUnit(const UnitDefinition* uDef)
 {
+  bool result = false;
   CModel::QuantityUnit qUnit = CModel::Mol;
   if (uDef == NULL)
     {
@@ -1734,21 +1738,27 @@ SBMLImporter::handleSubstanceUnit(const UnitDefinition* uDef)
                 {
                 case 0:
                   qUnit = CModel::Mol;
+                  result = true;
                   break;
                 case - 3:
                   qUnit = CModel::mMol;
+                  result = true;
                   break;
                 case - 6:
                   qUnit = CModel::microMol;
+                  result = true;
                   break;
                 case - 9:
                   qUnit = CModel::nMol;
+                  result = true;
                   break;
                 case - 12:
                   qUnit = CModel::pMol;
+                  result = true;
                   break;
                 case - 15:
                   qUnit = CModel::fMol;
+                  result = true;
                   break;
                 default:
                   //DebugFile << "Error. This value should never have been reached for the scale of the liter unit." << std::endl;
@@ -1771,6 +1781,7 @@ SBMLImporter::handleSubstanceUnit(const UnitDefinition* uDef)
                 }
               else
                 {
+                  result = true;
                   qUnit = CModel::number;
                 }
             }
@@ -1788,16 +1799,17 @@ SBMLImporter::handleSubstanceUnit(const UnitDefinition* uDef)
     {
       fatalError();
     }
-  return qUnit;
+  return std::make_pair(qUnit, result);
 }
 
 /**
  * Returns the copasi TimeUnit corresponding to the given SBML Time
  *  UnitDefinition.
  */
-CModel::TimeUnit
+std::pair<CModel::TimeUnit, bool>
 SBMLImporter::handleTimeUnit(const UnitDefinition* uDef)
 {
+  bool result = false;
   CModel::TimeUnit tUnit = CModel::s;
   if (uDef == NULL)
     {
@@ -1822,21 +1834,27 @@ SBMLImporter::handleTimeUnit(const UnitDefinition* uDef)
                     {
                     case 0:
                       tUnit = CModel::s;
+                      result = true;
                       break;
                     case - 3:
                       tUnit = CModel::ms;
+                      result = true;
                       break;
                     case - 6:
                       tUnit = CModel::micros;
+                      result = true;
                       break;
                     case - 9:
                       tUnit = CModel::ns;
+                      result = true;
                       break;
                     case - 12:
                       tUnit = CModel::ps;
+                      result = true;
                       break;
                     case - 15:
                       tUnit = CModel::fs;
+                      result = true;
                       break;
                     default:
                       //DebugFile << "Error. This value should never have been reached for the scale of the time unit." << std::endl;
@@ -1847,14 +1865,17 @@ SBMLImporter::handleTimeUnit(const UnitDefinition* uDef)
               else if (u->getMultiplier() == 60.0)
                 {
                   tUnit = CModel::min;
+                  result = true;
                 }
               else if (u->getMultiplier() == 3600.0)
                 {
                   tUnit = CModel::h;
+                  result = true;
                 }
               else if (u->getMultiplier() == 86400.0)
                 {
                   tUnit = CModel::d;
+                  result = true;
                 }
               else
                 {
@@ -1875,16 +1896,20 @@ SBMLImporter::handleTimeUnit(const UnitDefinition* uDef)
     {
       fatalError();
     }
-  return tUnit;
+  return std::make_pair(tUnit, result);
 }
 
 /**
  * Returns the copasi VolumeUnit corresponding to the given SBML Volume
  *  UnitDefinition.
  */
-CModel::VolumeUnit
+std::pair<CModel::VolumeUnit, bool>
 SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef)
 {
+  // TODO maybe we should simplify the Unitdefiniton first if this normalizes
+  // the scale and the multiplier
+  bool result = false;
+  const double TOLERANCE = 1e-25;
   CModel::VolumeUnit vUnit = CModel::l;
   if (uDef == NULL)
     {
@@ -1901,27 +1926,33 @@ SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef)
         }
       if ((u->getKind() == UNIT_KIND_LITER) || (u->getKind() == UNIT_KIND_LITRE))
         {
-          if ((u->getExponent() == 1) && (u->getMultiplier() == 1) && ((u->getScale() % 3) == 0) && (u->getScale() < 1) && (u->getScale() > -16))
+          if ((u->getExponent() == 1) && (u->getMultiplier() - 1.0 < TOLERANCE) && ((u->getScale() % 3) == 0) && (u->getScale() < 1) && (u->getScale() > -16))
             {
               switch (u->getScale())
                 {
                 case 0:
                   vUnit = CModel::l;
+                  result = true;
                   break;
                 case - 3:
                   vUnit = CModel::ml;
+                  result = true;
                   break;
                 case - 6:
                   vUnit = CModel::microl;
+                  result = true;
                   break;
                 case - 9:
                   vUnit = CModel::nl;
+                  result = true;
                   break;
                 case - 12:
                   vUnit = CModel::pl;
+                  result = true;
                   break;
                 case - 15:
                   vUnit = CModel::fl;
+                  result = true;
                   break;
                 default:
                   //DebugFile << "Error. This value should never have been reached for the scale of the liter unit." << std::endl;
@@ -1936,25 +1967,68 @@ SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef)
         }
       else if ((u->getKind() == UNIT_KIND_METER) || (u->getKind() == UNIT_KIND_METRE))
         {
-          if ((u->getExponent() == 3) && (u->getMultiplier() == 1) && (u->getScale() == 0))
+          if (u->getExponent() == 3)
             {
-              vUnit = CModel::m3;
+              if ((std::abs(u->getMultiplier()) - 1.0 < TOLERANCE) && (u->getScale() == 0))
+                {
+                  vUnit = CModel::m3;
+                  result = true;
+                }
+              else
+                {
+                  // try to convert to liter
+                  Unit* pLitreUnit = convertSBMLCubicmetresToLitres(u);
+                  if (pLitreUnit != NULL && pLitreUnit->getExponent() == 1 && (pLitreUnit->getScale() % 3 == 0) && (pLitreUnit->getScale() < 1) && (pLitreUnit->getScale() > -16) && std::abs(pLitreUnit->getMultiplier()) - 1.0 < TOLERANCE)
+                    {
+                      switch (pLitreUnit->getScale())
+                        {
+                        case 0:
+                          vUnit = CModel::l;
+                          result = true;
+                          break;
+                        case - 3:
+                          vUnit = CModel::ml;
+                          result = true;
+                          break;
+                        case - 6:
+                          vUnit = CModel::microl;
+                          result = true;
+                          break;
+                        case - 9:
+                          vUnit = CModel::nl;
+                          result = true;
+                          break;
+                        case - 12:
+                          vUnit = CModel::pl;
+                          result = true;
+                          break;
+                        case - 15:
+                          vUnit = CModel::fl;
+                          result = true;
+                          break;
+                        default:
+                          CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 54, uDef->getId().c_str());
+                          break;
+                        }
+                    }
+                  delete pLitreUnit;
+                }
             }
           else
             {
-              fatalError();
+              CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 54, uDef->getId().c_str());
             }
         }
       else
         {
-          fatalError();
+          CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 54, uDef->getId().c_str());
         }
     }
   else
     {
-      fatalError();
+      CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 54, uDef->getId().c_str());
     }
-  return vUnit;
+  return std::make_pair(vUnit, result);
 }
 
 CModelValue* SBMLImporter::createCModelValueFromParameter(const Parameter* sbmlParameter, CModel* copasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
@@ -3844,4 +3918,469 @@ bool SBMLImporter::setInitialValues(CModel* pModel, const std::map<CCopasiObject
       ++refreshIt;
     }
   return true;
+}
+
+void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiModel, int level, int version)
+{
+  unsigned int i, iMax = pSBMLModel->getNumCompartments();
+  std::vector<std::string> nonDefaultCompartments;
+  std::vector<std::string> nonDefaultSpecies;
+  std::vector<std::string> nonDefaultKineticTime;
+  std::vector<std::string> nonDefaultKineticSubstance;
+  const Compartment* pCompartment;
+  const Species* pSpecies;
+  const Reaction* pReaction;
+  const KineticLaw* pKineticLaw;
+  const UnitDefinition* pVolumeUnits = pSBMLModel->getUnitDefinition("volume");
+  if (pVolumeUnits == NULL)
+    {
+      // it has not been set explicitely, so create the default one
+      UnitDefinition* pTmpVolumeUnits = new UnitDefinition("volume");
+      pTmpVolumeUnits->createUnit();
+      Unit* pUnit = pTmpVolumeUnits->getUnit(0);
+      pUnit->setKind(UNIT_KIND_LITRE);
+      pUnit->setScale(0);
+      pUnit->setMultiplier(1.0);
+      pUnit->setExponent(1);
+      pVolumeUnits = pTmpVolumeUnits;
+    }
+  else
+    {
+      // make a copy so that we know we can delete the object at the end of
+      // the funtion
+      pVolumeUnits = dynamic_cast<UnitDefinition*>(pVolumeUnits->clone());
+    }
+  const UnitDefinition* pTimeUnits = pSBMLModel->getUnitDefinition("time");
+  if (pTimeUnits == NULL)
+    {
+      // it has not been set explicitely, so create the default one
+      UnitDefinition* pTmpTimeUnits = new UnitDefinition("time");
+      pTmpTimeUnits->createUnit();
+      Unit* pUnit = pTmpTimeUnits->getUnit(0);
+      pUnit->setKind(UNIT_KIND_SECOND);
+      pUnit->setScale(0);
+      pUnit->setMultiplier(1.0);
+      pUnit->setExponent(1);
+      pTimeUnits = pTmpTimeUnits;
+    }
+  else
+    {
+      // make a copy so that we know we can delete the object at the end of
+      // the funtion
+      pTimeUnits = dynamic_cast<UnitDefinition*>(pTimeUnits->clone());
+    }
+  const UnitDefinition* pSubstanceUnits = pSBMLModel->getUnitDefinition("substance");
+  if (pSubstanceUnits == NULL)
+    {
+      // it has not been set explicitely, so create the default one
+      UnitDefinition* pTmpSubstanceUnits = new UnitDefinition("volume");
+      pTmpSubstanceUnits->createUnit();
+      Unit* pUnit = pTmpSubstanceUnits->getUnit(0);
+      pUnit->setKind(UNIT_KIND_MOLE);
+      pUnit->setScale(0);
+      pUnit->setMultiplier(1.0);
+      pUnit->setExponent(1);
+      pSubstanceUnits = pTmpSubstanceUnits;
+    }
+  else
+    {
+      // make a copy so that we know we can delete the object at the end of
+      // the funtion
+      pSubstanceUnits = dynamic_cast<UnitDefinition*>(pSubstanceUnits->clone());
+    }
+  std::string lastUnit = "";
+  bool inconsistentUnits = false;
+  for (i = 0;i < iMax;++i)
+    {
+      pCompartment = pSBMLModel->getCompartment(i);
+      if (pCompartment->getSpatialDimensions() != 3)
+        {
+          if (pCompartment->getSpatialDimensions() == 0)
+            {
+              // MCSBML + 23, ERROR, compartment id
+              CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 23, pCompartment->getId().c_str());
+            }
+          else
+            {
+              // this can not have a dimension we know in copasi
+              // warn the user
+              // MCSBML + 22, compartment id
+              CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 22, pCompartment->getId().c_str());
+            }
+          lastUnit = "volume";
+        }
+      else
+        {
+          if (pCompartment->isSetUnits())
+            {
+              std::string unitId = pCompartment->getUnits();
+              const UnitDefinition* pUdef1;
+              if (unitId == "volume")
+                {
+                  pUdef1 = pVolumeUnits;
+                }
+              else
+                {
+                  pUdef1 = pSBMLModel->getUnitDefinition(unitId);
+                }
+              if (pUdef1 != NULL)
+                {
+                  // TODO the unit might be from table 2
+                }
+              assert(pUdef != NULL);
+              if (unitId != "volume" && !areSBMLUnitDefinitionsIdentical(pVolumeUnits, pUdef1))
+                {
+                  nonDefaultCompartments.push_back(pCompartment->getId());
+                }
+              if (lastUnit == "")
+                {
+                  lastUnit = unitId;
+                }
+              else if (unitId != lastUnit)
+                {
+                  // check if the two units have identical definitions
+                  const UnitDefinition* pUdef2 = pSBMLModel->getUnitDefinition(lastUnit);
+                  // TODO pUdef2 might be from table 2 or might be "volume"
+                  assert(pUdef2 != NULL);
+                  if (!areSBMLUnitDefinitionsIdentical(pUdef1, pUdef2))
+                    {
+                      inconsistentUnits = true;
+                    }
+                }
+            }
+          else if (lastUnit == "")
+            {
+              lastUnit = "volume";
+            }
+        }
+    }
+  if (!inconsistentUnits && lastUnit != "volume")
+    {
+      // try to set the default volume unit to the unit defined by lastUnit
+      const UnitDefinition* pUdef = pSBMLModel->getUnitDefinition(lastUnit);
+      assert(pUdef != NULL);
+      std::pair<CModel::VolumeUnit, bool> volume = this->handleVolumeUnit(pUdef);
+      if (volume.second == true)
+        {
+          // set the default volume unit
+          pCopasiModel->setVolumeUnit(volume.first);
+          delete pVolumeUnits;
+          pVolumeUnits = dynamic_cast<UnitDefinition*>(pUdef->clone());
+        }
+      else
+        {
+          inconsistentUnits = true;
+        }
+    }
+  if (inconsistentUnits)
+    {
+      // warn about inconsistent units and that they have been ignored and
+      // report the actual units used
+      // one warning for every entry in nonDefaultCompartment
+      std::vector<std::string>::iterator errorIt = nonDefaultCompartments.begin(), errorEndit = nonDefaultCompartments.end();
+      while (errorIt != errorEndit)
+        {
+          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 24, (*errorIt).c_str());
+          ++errorIt;
+        }
+    }
+  inconsistentUnits = false;
+  lastUnit = "";
+  iMax = pSBMLModel->getNumSpecies();
+  for (i = 0;i < iMax;++i)
+    {
+      pSpecies = pSBMLModel->getSpecies(i);
+      if (level < 2 || (level == 2 && version < 3))
+        {
+          // check the isSetSpatialSizeUnits flag for models prior to L2V3.
+          if (pSpecies->isSetSpatialSizeUnits() == true)
+            {
+              // check if the spatialSizeUnits is consistent with the
+              // pVolumeUnits
+              std::string spatialSizeUnits = pSpecies->getSpatialSizeUnits();
+              if (spatialSizeUnits == "volume" && pVolumeUnits->getId() != "volume")
+                {
+                  // check if they are identical
+                  const UnitDefinition* pTmpUdef = pSBMLModel->getUnitDefinition("volume");
+                  if (pTmpUdef == NULL)
+                    {
+                      pTmpUdef = new UnitDefinition("volume");
+                      Unit* pUnit = const_cast<UnitDefinition*>(pTmpUdef)->createUnit();
+                      pUnit->setKind(UNIT_KIND_LITRE);
+                      pUnit->setMultiplier(1.0);
+                      pUnit->setExponent(1.0);
+                      pUnit->setScale(0);
+                    }
+                  else
+                    {
+                      pTmpUdef = dynamic_cast<const UnitDefinition*>(pTmpUdef->clone());
+                    }
+                  const UnitDefinition* pTmpUdef2 = pSBMLModel->getUnitDefinition(spatialSizeUnits);
+                  // TODO spatialSizeUnits might be from table 2
+                  assert(pTmpUdef2 != NULL);
+                  if (!areSBMLUnitDefinitionsIdentical(pTmpUdef, pTmpUdef2))
+                    {
+                      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 55, pSpecies->getId().c_str());
+                    }
+                  delete pTmpUdef;
+                }
+              else if (spatialSizeUnits != "volume")
+                {
+                  // check if they are identical
+                  const UnitDefinition* pTmpUdef2 = pSBMLModel->getUnitDefinition(spatialSizeUnits);
+                  // TODO spatial size units might be from table 2 or might be
+                  // "volume"
+                  if (!pTmpUdef2)
+                    {
+                      assert(pTmpUdef2 != NULL);
+                    }
+                  if (!areSBMLUnitDefinitionsIdentical(pVolumeUnits, pTmpUdef2))
+                    {
+                      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 55, pSpecies->getId().c_str());
+                    }
+                }
+            }
+        }
+      if (pSpecies->isSetUnits())
+        {
+          std::string unitId = pSpecies->getUnits();
+          const UnitDefinition* pUdef1;
+          if (unitId == "substance")
+            {
+              pUdef1 = pSubstanceUnits;
+            }
+          else
+            {
+              pUdef1 = pSBMLModel->getUnitDefinition(unitId);
+            }
+          // TODO unitId might come from table 2
+          assert(pUdef1 != NULL);
+          if (unitId != "substance" && !areSBMLUnitDefinitionsIdentical(pSubstanceUnits, pUdef1))
+            {
+              nonDefaultSpecies.push_back(pSpecies->getId());
+            }
+          if (lastUnit == "")
+            {
+              lastUnit = unitId;
+            }
+          else if (unitId != lastUnit)
+            {
+              // check if the two units have identical definitions
+              const UnitDefinition* pUdef2 = pSBMLModel->getUnitDefinition(lastUnit);
+              // lastUnit might be  "substance" or might be from table 2
+
+              assert(pUdef2 != NULL);
+              if (!areSBMLUnitDefinitionsIdentical(pUdef1, pUdef2))
+                {
+                  inconsistentUnits = true;
+                }
+            }
+        }
+      else if (lastUnit == "")
+        {
+          lastUnit = "substance";
+        }
+    }
+  bool inconsistentTimeUnits = false;
+  std::string lastTimeUnits = "";
+  iMax = pSBMLModel->getNumReactions();
+  for (i = 0;i < iMax;++i)
+    {
+      pReaction = pSBMLModel->getReaction(i);
+      pKineticLaw = pReaction->getKineticLaw();
+      std::string unitId;
+      if (pKineticLaw->isSetSubstanceUnits())
+        {
+          unitId = pKineticLaw->getSubstanceUnits();
+          const UnitDefinition* pUdef1;
+          if (unitId == "substance")
+            {
+              pUdef1 = pSubstanceUnits;
+            }
+          else
+            {
+              pUdef1 = pSBMLModel->getUnitDefinition(unitId);
+            }
+          // TODO unitId might be from table 2
+          assert(pUdef1 != NULL);
+          if (unitId != "substance" && !areSBMLUnitDefinitionsIdentical(pSubstanceUnits, pUdef1))
+            {
+              nonDefaultKineticSubstance.push_back(pReaction->getId());
+            }
+          if (lastUnit == "")
+            {
+              lastUnit = unitId;
+            }
+          else if (unitId != lastUnit)
+            {
+              // check if the two units have identical definitions
+              const UnitDefinition* pUdef2 = pSBMLModel->getUnitDefinition(lastUnit);
+              // TODO lastUnit might be from table 2 or might be "substance"
+              assert(pUdef2 != NULL);
+              if (!areSBMLUnitDefinitionsIdentical(pUdef1, pUdef2))
+                {
+                  inconsistentUnits = true;
+                }
+            }
+        }
+      else if (lastUnit == "")
+        {
+          lastUnit = "substance";
+        }
+      if (pKineticLaw->isSetTimeUnits())
+        {
+          unitId = pKineticLaw->getTimeUnits();
+          const UnitDefinition* pUdef1;
+          if (unitId == "time")
+            {
+              pUdef1 = pTimeUnits;
+            }
+          else
+            {
+              pUdef1 = pSBMLModel->getUnitDefinition(unitId);
+            }
+          // TODO unitId might be from table 2
+          assert(pUdef1 != NULL);
+          if (unitId != "time" && !areSBMLUnitDefinitionsIdentical(pTimeUnits, pUdef1))
+            {
+              nonDefaultKineticTime.push_back(pReaction->getId());
+            }
+          if (lastTimeUnits == "")
+            {
+              lastTimeUnits = unitId;
+            }
+          else if (unitId != lastTimeUnits)
+            {
+              // check if the two units have identical definitions
+              const UnitDefinition* pUdef2 = pSBMLModel->getUnitDefinition(lastTimeUnits);
+              // TODO lastTimeUnits might be from table to or might be "time"
+              assert(pUdef2 != NULL);
+              if (!areSBMLUnitDefinitionsIdentical(pUdef1, pUdef2))
+                {
+                  inconsistentTimeUnits = true;
+                }
+            }
+        }
+      else if (lastTimeUnits == "") // set the last time unit to time
+        {
+          lastTimeUnits = "time";
+        }
+    }
+  if (!inconsistentUnits && lastUnit != "" && lastUnit != "substance")
+    {
+      // try to set the default substance unit to the unit defined by lastUnit
+      const UnitDefinition* pUdef = pSBMLModel->getUnitDefinition(lastUnit);
+      // TODO lastUnit might be from table 2
+      assert(pUdef != NULL);
+      std::pair<CModel::QuantityUnit, bool> quantity = this->handleSubstanceUnit(pUdef);
+      if (quantity.second == true)
+        {
+          // set the default volume unit
+          pCopasiModel->setQuantityUnit(quantity.first);
+        }
+      else
+        {
+          inconsistentUnits = true;
+        }
+    }
+  if (inconsistentUnits)
+    {
+      // warn about inconsistent units and that they have been ignored
+      // one warning SBML + 25 for each species in nonDefaultSpecies
+      // and one for each KineticLaw in nonDefaultKineticSubstance
+      std::vector<std::string>::iterator errorIt = nonDefaultSpecies.begin(), errorEndit = nonDefaultSpecies.end();
+      while (errorIt != errorEndit)
+        {
+          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 25, (*errorIt).c_str());
+          ++errorIt;
+        }
+      errorIt = nonDefaultKineticSubstance.begin(), errorEndit = nonDefaultKineticSubstance.end();
+      while (errorIt != errorEndit)
+        {
+          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 44, (*errorIt).c_str());
+          ++errorIt;
+        }
+    }
+  if (!inconsistentTimeUnits && lastTimeUnits != "" && lastTimeUnits != "time")
+    {
+      // try to set the default time units
+      const UnitDefinition* pUdef = pSBMLModel->getUnitDefinition(lastTimeUnits);
+      // TODO lastTimeUnits might be from table 2
+      assert(pUdef != NULL);
+      std::pair<CModel::TimeUnit, bool> time = this->handleTimeUnit(pUdef);
+      if (time.second == true)
+        {
+          // set the default volume unit
+          pCopasiModel->setTimeUnit(time.first);
+        }
+      else
+        {
+          inconsistentTimeUnits = true;
+        }
+    }
+  if (inconsistentTimeUnits)
+    {
+      // warn about inconsistent time unit
+      // one error for each entry in nonDefaultKineticTime
+      std::vector<std::string>::iterator errorIt = nonDefaultKineticTime.begin(), errorEndit = nonDefaultKineticTime.end();
+      while (errorIt != errorEndit)
+        {
+          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 53, (*errorIt).c_str());
+          ++errorIt;
+        }
+    }
+  // delete the units we created
+  delete pTimeUnits;
+  delete pSubstanceUnits;
+  delete pVolumeUnits;
+}
+
+/**
+ * Enhanced method to identify identical sbml unit definitions.
+ * The method first converts the unit definitions to SI units and simplifies
+ * them, only then they are compared.
+ */
+bool SBMLImporter::areSBMLUnitDefinitionsIdentical(const UnitDefinition* pUdef1, const UnitDefinition* pUdef2)
+{
+  UnitDefinition* pTmpUdef1 = convertToSI(pUdef1);
+  simplifyUnitDefinition(pTmpUdef1);
+  UnitDefinition* pTmpUdef2 = convertToSI(pUdef2);
+  simplifyUnitDefinition(pTmpUdef2);
+  bool result = areIdentical(pUdef1, pUdef2);
+  delete pTmpUdef1;
+  delete pTmpUdef2;
+  return result;
+}
+
+Unit* SBMLImporter::convertSBMLCubicmetresToLitres(const Unit* pU)
+{
+  Unit* pResult = NULL;
+  if (pU != NULL)
+    {
+      if ((pU->getKind() == UNIT_KIND_METER || pU->getKind() == UNIT_KIND_METRE) && pU->getExponent() % 3 == 0)
+        {
+          pResult = dynamic_cast<Unit*>(pU->clone());
+          assert(pResult != NULL);
+          removeScale(pResult);
+          pResult->setExponent(pResult->getExponent() / 3);
+          pResult->setKind(UNIT_KIND_LITRE);
+          pResult->setMultiplier(std::pow(pResult->getMultiplier(), 3));
+          normalizeSBMLUnit(pResult);
+        }
+    }
+  return pResult;
+}
+
+/**
+ * This funktion normalizes the multiplier to be within the range 1.0 <=
+ * multiplier < 10.0.
+ */
+void SBMLImporter::normalizeSBMLUnit(Unit* pU)
+{
+  if (pU != NULL)
+    {
+      long double log10Multiplier = std::log10(pU->getMultiplier());
+      pU->setScale(pU->getScale() + std::floor(log10Multiplier));
+      pU->setMultiplier(std::pow(10, (log10Multiplier - std::floor(log10Multiplier))));
+    }
 }

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.103 $
+//   $Revision: 1.104 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/10/30 17:09:51 $
+//   $Date: 2007/11/03 19:44:16 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -163,8 +163,8 @@ const MESSAGES Messages[] =
     {MCSBML + 19, "SBML (19): spatialSizeUnits on species %s ignored."},
     {MCSBML + 20, "SBML (20): Setting an initial concentration on species %s which has the 'hasOnlySubstanceUnits' flag set is not allowed."},
     {MCSBML + 21, "SBML (21): Setting an initial concentration on species '%s' which is in a compartment with spatial dimensions 0 is not allowed."},
-    {MCSBML + 22, "SBML (22): Current versions of COPASI only supports three dimensional compartments. '%s' will be converted to three dimensions."},
-    {MCSBML + 23, "SBML (23): Unable to handle compartment '%s' which has spatial dimensions of 0."},
+    {MCSBML + 22, "SBML (22): Current versions of COPASI only supports three dimensional compartments. '%s' will be considered to be three dimensional."},
+    {MCSBML + 23, "SBML (23): Compartment '%s' has spatial dimensions of 0, setting dimensions to 3.\nConsidering all species in that compartment to have \"hasOnlySubstanceUnits\" flag set."},
     {MCSBML + 24, "SBML (24): Units for compartment '%s' ignored."},
     {MCSBML + 25, "SBML (25): Units for species '%s' ignored."},
     {MCSBML + 26, "SBML (26): Units for parameter '%s' ignored."},
@@ -185,13 +185,18 @@ const MESSAGES Messages[] =
     {MCSBML + 41, "SBML (41): No initial value set for species \"%s\". Setting initial concentration to 1.0."},
     {MCSBML + 42, "SBML (42): No initial value set for local parameter \"%s\"."},
     {MCSBML + 43, "SBML (43): No initial value set for global parameter \"%s\". Setting initial value to 1.0"},
-    {MCSBML + 44, "SBML (44): Reaction \"%s\" sets the substance unit of the kinetic law. COPASI can not handle this yet."},
+    {MCSBML + 44, "SBML (44): Substance unit in kinetic law for reaction \"%s\" ignored."},
     {MCSBML + 45, "SBML (45): Compartment \"%s\" does not set the initial volume. Volume has been set to 1.0."},
     {MCSBML + 46, "SBML (46): COPASI has changed the following function definitions to take the time as an additional argument instead of the function being directly or indirectly dependent on time:\n \"%s\" ."},
     {MCSBML + 47, "SBML (47): COPASI found a call to the function \"%s\" which has not been defined."},
     {MCSBML + 48, "SBML (48): Initial assignments ignored because they are not supported yet."},
     {MCSBML + 49, "SBML (49): Constraints ignored because they are not supported yet."},
     {MCSBML + 50, "SBML (50): Could not open file \"%s\"."},
+    {MCSBML + 51, "SBML (51): The species \"%s\" is defined by a rate rule and its compartments volume is variable. COPASI will probably interpret this incorrectly."},
+    {MCSBML + 52, "SBML (52): The metabolite \"%s\" is defined by a rate expression and its compartments volume is variable. The way COPASI interprets this is differently from the way SBML does."},
+    {MCSBML + 53, "SBML (53): The reaction \"%s\" defines a time unit in its kinetic law which has been ignore."},
+    {MCSBML + 54, "SBML (54): Could not import volume unit with id \"%s\"."},
+    {MCSBML + 55, "SBML (55): Spatial size units on species \"%s\" is not the ame as the volume unit in the model and has been ignored."},
 
     {MCTrajectoryProblem + 1, "CTrajectoryProblem (1): Invalid step size = '%f'."},
     {MCTrajectoryProblem + 2, "CTrajectoryProblem (2): The step number '%f' "
