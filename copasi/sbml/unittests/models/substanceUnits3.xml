@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/models/substanceUnits3.xml,v $ -->
-<!--   $Revision: 1.1 $ -->
+<!--   $Revision: 1.2 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: gauges $ -->
-<!--   $Date: 2007/11/02 16:06:12 $ -->
+<!--   $Date: 2007/11/03 19:42:07 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -15,7 +15,9 @@
   <model id="model" name="Testmodel">
     <notes>
       <body xmlns="http://www.w3.org/1999/xhtml">
-        <p>testmodel where all kinetic laws have the substance units set to "substance".</p>
+        <p>testmodel where all species and kinetic laws have the substance units set to "mySubstanceUnit" which is different from the "substance" unit definition.</p>
+        <p>The units after import should be liter, second and nanomole.</p>
+        <p>there should be no warnings.</p>
       </body>
     </notes>
     <listOfUnitDefinitions>

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/models/volumeUnits12.xml,v $ -->
-<!--   $Revision: 1.1 $ -->
+<!--   $Revision: 1.2 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: gauges $ -->
-<!--   $Date: 2007/11/02 16:06:12 $ -->
+<!--   $Date: 2007/11/03 19:42:07 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -16,6 +16,7 @@
     <notes>
       <body xmlns="http://www.w3.org/1999/xhtml">
         <p>testmodel where the volume unit is an area instead of a volume.</p>
+        <p>This should give an error from libSBML.</p>
       </body>
     </notes>
     <listOfUnitDefinitions>

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/models/volumeUnits6.xml,v $ -->
-<!--   $Revision: 1.1 $ -->
+<!--   $Revision: 1.2 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: gauges $ -->
-<!--   $Date: 2007/11/02 16:06:12 $ -->
+<!--   $Date: 2007/11/03 19:42:07 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -16,6 +16,8 @@
     <notes>
       <body xmlns="http://www.w3.org/1999/xhtml">
         <p>testmodel there is a volume unit definition that is different from "volume" and all compartments have either "volume" or that new unit.</p>
+        <p>After import the units should be set to microliter, mole and second.</p>
+        <p>Warnings are expected for compartment2 and compartment4</p> 
       </body>
     </notes>
     <listOfUnitDefinitions>

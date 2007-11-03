@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/models/timeUnits4.xml,v $ -->
-<!--   $Revision: 1.1 $ -->
+<!--   $Revision: 1.2 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: gauges $ -->
-<!--   $Date: 2007/11/02 16:06:12 $ -->
+<!--   $Date: 2007/11/03 19:42:07 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -16,6 +16,8 @@
     <notes>
       <body xmlns="http://www.w3.org/1999/xhtml">
         <p>testmodel where all kinetic laws have the time units set to either "time" or a custom time unit that is different from time or a third that is different from the other two.</p>
+        <p>The units after import should be set to microsecond, liter and mole.</p>
+        <p>Warnings are expected for reaction2 and reaction5.</p>
       </body>
     </notes>
     <listOfUnitDefinitions>
