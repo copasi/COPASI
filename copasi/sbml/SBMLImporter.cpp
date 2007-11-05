@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.178 $
+//   $Revision: 1.179 $
 //   $Name:  $
-//   $Author: urost $
-//   $Date: 2007/11/05 07:25:01 $
+//   $Author: gauges $
+//   $Date: 2007/11/05 16:12:37 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -72,6 +72,12 @@
 #endif
 
 #include "utilities/CCopasiMessage.h"
+
+/**
+ * This determines the relative difference two SBML Units can have for their
+ * multiplier to be recognized as identical if everything else is the same.
+ */
+const double SBMLImporter::UNIT_MULTIPLIER_TOLERANCE = 1e-9;
 
 /**
  * Creates and returns a Copasi CModel from the SBMLDocument given as argument.
@@ -755,15 +761,6 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
           const_cast<Species*>(sbmlSpecies)->unsetUnits();
         }
         */
-    }
-  if (sbmlSpecies->isSetSpatialSizeUnits())
-    {
-      const std::string szU = sbmlSpecies->getSpatialSizeUnits();
-      if (szU != "volume")
-        {
-          /* !!!! create a warning that the spatialSizeUnits will be ignored */
-          CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 19, sbmlSpecies->getId().c_str());
-        }
     }
   std::map<CCopasiObject*, SBase*>::iterator it = copasi2sbmlmap.find(copasiCompartment);
   if (it == copasi2sbmlmap.end())
@@ -3931,63 +3928,9 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
   const Species* pSpecies;
   const Reaction* pReaction;
   const KineticLaw* pKineticLaw;
-  const UnitDefinition* pVolumeUnits = pSBMLModel->getUnitDefinition("volume");
-  if (pVolumeUnits == NULL)
-    {
-      // it has not been set explicitely, so create the default one
-      UnitDefinition* pTmpVolumeUnits = new UnitDefinition("volume");
-      pTmpVolumeUnits->createUnit();
-      Unit* pUnit = pTmpVolumeUnits->getUnit(0);
-      pUnit->setKind(UNIT_KIND_LITRE);
-      pUnit->setScale(0);
-      pUnit->setMultiplier(1.0);
-      pUnit->setExponent(1);
-      pVolumeUnits = pTmpVolumeUnits;
-    }
-  else
-    {
-      // make a copy so that we know we can delete the object at the end of
-      // the funtion
-      pVolumeUnits = dynamic_cast<UnitDefinition*>(pVolumeUnits->clone());
-    }
-  const UnitDefinition* pTimeUnits = pSBMLModel->getUnitDefinition("time");
-  if (pTimeUnits == NULL)
-    {
-      // it has not been set explicitely, so create the default one
-      UnitDefinition* pTmpTimeUnits = new UnitDefinition("time");
-      pTmpTimeUnits->createUnit();
-      Unit* pUnit = pTmpTimeUnits->getUnit(0);
-      pUnit->setKind(UNIT_KIND_SECOND);
-      pUnit->setScale(0);
-      pUnit->setMultiplier(1.0);
-      pUnit->setExponent(1);
-      pTimeUnits = pTmpTimeUnits;
-    }
-  else
-    {
-      // make a copy so that we know we can delete the object at the end of
-      // the funtion
-      pTimeUnits = dynamic_cast<UnitDefinition*>(pTimeUnits->clone());
-    }
-  const UnitDefinition* pSubstanceUnits = pSBMLModel->getUnitDefinition("substance");
-  if (pSubstanceUnits == NULL)
-    {
-      // it has not been set explicitely, so create the default one
-      UnitDefinition* pTmpSubstanceUnits = new UnitDefinition("volume");
-      pTmpSubstanceUnits->createUnit();
-      Unit* pUnit = pTmpSubstanceUnits->getUnit(0);
-      pUnit->setKind(UNIT_KIND_MOLE);
-      pUnit->setScale(0);
-      pUnit->setMultiplier(1.0);
-      pUnit->setExponent(1);
-      pSubstanceUnits = pTmpSubstanceUnits;
-    }
-  else
-    {
-      // make a copy so that we know we can delete the object at the end of
-      // the funtion
-      pSubstanceUnits = dynamic_cast<UnitDefinition*>(pSubstanceUnits->clone());
-    }
+  UnitDefinition* pVolumeUnits = getSBMLUnitDefinitionForId("volume", pSBMLModel);
+  UnitDefinition* pTimeUnits = getSBMLUnitDefinitionForId("time", pSBMLModel);
+  UnitDefinition* pSubstanceUnits = getSBMLUnitDefinitionForId("substance", pSBMLModel);
   std::string lastUnit = "";
   bool inconsistentUnits = false;
   for (i = 0;i < iMax;++i)
@@ -4014,20 +3957,12 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
           if (pCompartment->isSetUnits())
             {
               std::string unitId = pCompartment->getUnits();
-              const UnitDefinition* pUdef1;
-              if (unitId == "volume")
+              UnitDefinition* pUdef1 = getSBMLUnitDefinitionForId(unitId, pSBMLModel);
+              if (pUdef1 == NULL)
                 {
-                  pUdef1 = pVolumeUnits;
+                  // error message
+                  CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 55, unitId.c_str(), "units", "compartment", pCompartment->getId().c_str());
                 }
-              else
-                {
-                  pUdef1 = pSBMLModel->getUnitDefinition(unitId);
-                }
-              if (pUdef1 != NULL)
-                {
-                  // TODO the unit might be from table 2
-                }
-              assert(pUdef1 != NULL);
               if (unitId != "volume" && !areSBMLUnitDefinitionsIdentical(pVolumeUnits, pUdef1))
                 {
                   nonDefaultCompartments.push_back(pCompartment->getId());
@@ -4039,14 +3974,15 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
               else if (unitId != lastUnit)
                 {
                   // check if the two units have identical definitions
-                  const UnitDefinition* pUdef2 = pSBMLModel->getUnitDefinition(lastUnit);
-                  // TODO pUdef2 might be from table 2 or might be "volume"
+                  UnitDefinition* pUdef2 = getSBMLUnitDefinitionForId(lastUnit, pSBMLModel);
                   assert(pUdef2 != NULL);
                   if (!areSBMLUnitDefinitionsIdentical(pUdef1, pUdef2))
                     {
                       inconsistentUnits = true;
                     }
+                  delete pUdef2;
                 }
+              delete pUdef1;
             }
           else if (lastUnit == "")
             {
@@ -4098,63 +4034,28 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
               // check if the spatialSizeUnits is consistent with the
               // pVolumeUnits
               std::string spatialSizeUnits = pSpecies->getSpatialSizeUnits();
-              if (spatialSizeUnits == "volume" && pVolumeUnits->getId() != "volume")
+              UnitDefinition* pTmpUdef2 = getSBMLUnitDefinitionForId(spatialSizeUnits, pSBMLModel);
+              if (pTmpUdef2 == NULL)
                 {
-                  // check if they are identical
-                  const UnitDefinition* pTmpUdef = pSBMLModel->getUnitDefinition("volume");
-                  if (pTmpUdef == NULL)
-                    {
-                      pTmpUdef = new UnitDefinition("volume");
-                      Unit* pUnit = const_cast<UnitDefinition*>(pTmpUdef)->createUnit();
-                      pUnit->setKind(UNIT_KIND_LITRE);
-                      pUnit->setMultiplier(1.0);
-                      pUnit->setExponent(1.0);
-                      pUnit->setScale(0);
-                    }
-                  else
-                    {
-                      pTmpUdef = dynamic_cast<const UnitDefinition*>(pTmpUdef->clone());
-                    }
-                  const UnitDefinition* pTmpUdef2 = pSBMLModel->getUnitDefinition(spatialSizeUnits);
-                  // TODO spatialSizeUnits might be from table 2
-                  assert(pTmpUdef2 != NULL);
-                  if (!areSBMLUnitDefinitionsIdentical(pTmpUdef, pTmpUdef2))
-                    {
-                      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 55, pSpecies->getId().c_str());
-                    }
-                  delete pTmpUdef;
+                  // error message
+                  CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 55, spatialSizeUnits.c_str(), "spatialSizeUnits", "species", pSpecies->getId().c_str());
                 }
-              else if (spatialSizeUnits != "volume")
+              if (!areSBMLUnitDefinitionsIdentical(pVolumeUnits, pTmpUdef2))
                 {
-                  // check if they are identical
-                  const UnitDefinition* pTmpUdef2 = pSBMLModel->getUnitDefinition(spatialSizeUnits);
-                  // TODO spatial size units might be from table 2 or might be
-                  // "volume"
-                  if (!pTmpUdef2)
-                    {
-                      assert(pTmpUdef2 != NULL);
-                    }
-                  if (!areSBMLUnitDefinitionsIdentical(pVolumeUnits, pTmpUdef2))
-                    {
-                      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 55, pSpecies->getId().c_str());
-                    }
+                  CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 19, pSpecies->getId().c_str());
                 }
+              delete pTmpUdef2;
             }
         }
       if (pSpecies->isSetUnits())
         {
           std::string unitId = pSpecies->getUnits();
-          const UnitDefinition* pUdef1;
-          if (unitId == "substance")
+          UnitDefinition* pUdef1 = getSBMLUnitDefinitionForId(unitId, pSBMLModel);
+          if (pUdef1 == NULL)
             {
-              pUdef1 = pSubstanceUnits;
+              // error message
+              CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 55, unitId.c_str(), "substanceUnits", "species", pSpecies->getId().c_str());
             }
-          else
-            {
-              pUdef1 = pSBMLModel->getUnitDefinition(unitId);
-            }
-          // TODO unitId might come from table 2
-          assert(pUdef1 != NULL);
           if (unitId != "substance" && !areSBMLUnitDefinitionsIdentical(pSubstanceUnits, pUdef1))
             {
               nonDefaultSpecies.push_back(pSpecies->getId());
@@ -4166,15 +4067,15 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
           else if (unitId != lastUnit)
             {
               // check if the two units have identical definitions
-              const UnitDefinition* pUdef2 = pSBMLModel->getUnitDefinition(lastUnit);
-              // lastUnit might be  "substance" or might be from table 2
-
+              UnitDefinition* pUdef2 = getSBMLUnitDefinitionForId(lastUnit, pSBMLModel);
               assert(pUdef2 != NULL);
               if (!areSBMLUnitDefinitionsIdentical(pUdef1, pUdef2))
                 {
                   inconsistentUnits = true;
                 }
+              delete pUdef2;
             }
+          delete pUdef1;
         }
       else if (lastUnit == "")
         {
@@ -4192,17 +4093,12 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
       if (pKineticLaw->isSetSubstanceUnits())
         {
           unitId = pKineticLaw->getSubstanceUnits();
-          const UnitDefinition* pUdef1;
-          if (unitId == "substance")
+          UnitDefinition* pUdef1 = getSBMLUnitDefinitionForId(unitId, pSBMLModel);
+          if (pUdef1 == NULL)
             {
-              pUdef1 = pSubstanceUnits;
+              // error message
+              CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 55, unitId.c_str(), "substanceUnits", "kinetic law of the reaction", pReaction->getId().c_str());
             }
-          else
-            {
-              pUdef1 = pSBMLModel->getUnitDefinition(unitId);
-            }
-          // TODO unitId might be from table 2
-          assert(pUdef1 != NULL);
           if (unitId != "substance" && !areSBMLUnitDefinitionsIdentical(pSubstanceUnits, pUdef1))
             {
               nonDefaultKineticSubstance.push_back(pReaction->getId());
@@ -4214,14 +4110,15 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
           else if (unitId != lastUnit)
             {
               // check if the two units have identical definitions
-              const UnitDefinition* pUdef2 = pSBMLModel->getUnitDefinition(lastUnit);
-              // TODO lastUnit might be from table 2 or might be "substance"
+              UnitDefinition* pUdef2 = getSBMLUnitDefinitionForId(lastUnit, pSBMLModel);
               assert(pUdef2 != NULL);
               if (!areSBMLUnitDefinitionsIdentical(pUdef1, pUdef2))
                 {
                   inconsistentUnits = true;
                 }
+              delete pUdef2;
             }
+          delete pUdef1;
         }
       else if (lastUnit == "")
         {
@@ -4230,17 +4127,12 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
       if (pKineticLaw->isSetTimeUnits())
         {
           unitId = pKineticLaw->getTimeUnits();
-          const UnitDefinition* pUdef1;
-          if (unitId == "time")
+          UnitDefinition* pUdef1 = getSBMLUnitDefinitionForId(unitId, pSBMLModel);
+          if (pUdef1 == NULL)
             {
-              pUdef1 = pTimeUnits;
+              // error message
+              CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 55, unitId.c_str(), "timeUnits", "kinetic law of the reaction", pReaction->getId().c_str());
             }
-          else
-            {
-              pUdef1 = pSBMLModel->getUnitDefinition(unitId);
-            }
-          // TODO unitId might be from table 2
-          assert(pUdef1 != NULL);
           if (unitId != "time" && !areSBMLUnitDefinitionsIdentical(pTimeUnits, pUdef1))
             {
               nonDefaultKineticTime.push_back(pReaction->getId());
@@ -4252,14 +4144,15 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
           else if (unitId != lastTimeUnits)
             {
               // check if the two units have identical definitions
-              const UnitDefinition* pUdef2 = pSBMLModel->getUnitDefinition(lastTimeUnits);
-              // TODO lastTimeUnits might be from table to or might be "time"
+              UnitDefinition* pUdef2 = getSBMLUnitDefinitionForId(lastTimeUnits, pSBMLModel);
               assert(pUdef2 != NULL);
               if (!areSBMLUnitDefinitionsIdentical(pUdef1, pUdef2))
                 {
                   inconsistentTimeUnits = true;
                 }
+              delete pUdef2;
             }
+          delete pUdef1;
         }
       else if (lastTimeUnits == "") // set the last time unit to time
         {
@@ -4269,10 +4162,10 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
   if (!inconsistentUnits && lastUnit != "" && lastUnit != "substance")
     {
       // try to set the default substance unit to the unit defined by lastUnit
-      const UnitDefinition* pUdef = pSBMLModel->getUnitDefinition(lastUnit);
-      // TODO lastUnit might be from table 2
+      UnitDefinition* pUdef = getSBMLUnitDefinitionForId(lastUnit, pSBMLModel);
       assert(pUdef != NULL);
       std::pair<CModel::QuantityUnit, bool> quantity = this->handleSubstanceUnit(pUdef);
+      delete pUdef;
       if (quantity.second == true)
         {
           // set the default volume unit
@@ -4304,10 +4197,10 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
   if (!inconsistentTimeUnits && lastTimeUnits != "" && lastTimeUnits != "time")
     {
       // try to set the default time units
-      const UnitDefinition* pUdef = pSBMLModel->getUnitDefinition(lastTimeUnits);
-      // TODO lastTimeUnits might be from table 2
+      UnitDefinition* pUdef = getSBMLUnitDefinitionForId(lastTimeUnits, pSBMLModel);
       assert(pUdef != NULL);
       std::pair<CModel::TimeUnit, bool> time = this->handleTimeUnit(pUdef);
+      delete pUdef;
       if (time.second == true)
         {
           // set the default volume unit
@@ -4347,6 +4240,30 @@ bool SBMLImporter::areSBMLUnitDefinitionsIdentical(const UnitDefinition* pUdef1,
   UnitDefinition* pTmpUdef2 = convertToSI(pUdef2);
   simplifyUnitDefinition(pTmpUdef2);
   bool result = areIdentical(pUdef1, pUdef2);
+  if (result == false)
+    {
+      // check if maybe everything is the same, only the multipliers are
+      // somewhat off due to rounding errors
+      bool newResult = true;
+      if (pTmpUdef1->getNumUnits() == pTmpUdef2->getNumUnits())
+        {
+          orderUnitDefinition(pTmpUdef1);
+          orderUnitDefinition(pTmpUdef2);
+          unsigned int i = 0, iMax = pTmpUdef1->getNumUnits();
+          const Unit *pU1, *pU2;
+          while (newResult == true && i != iMax)
+            {
+              pU1 = pTmpUdef1->getUnit(i);
+              pU2 = pTmpUdef2->getUnit(i);
+              if (pU1->getKind() != pU2->getKind() || pU1->getExponent() != pU2->getExponent() || pU1->getScale() != pU2->getScale() || std::abs(((pU2->getMultiplier() - pU1->getMultiplier()) / pU1->getMultiplier()) > UNIT_MULTIPLIER_TOLERANCE))
+                {
+                  newResult = false;
+                }
+              ++i;
+            }
+          result = newResult;
+        }
+    }
   delete pTmpUdef1;
   delete pTmpUdef2;
   return result;
@@ -4383,4 +4300,329 @@ void SBMLImporter::normalizeSBMLUnit(Unit* pU)
       pU->setScale(pU->getScale() + std::floor(log10Multiplier));
       pU->setMultiplier(std::pow(10, (log10Multiplier - std::floor(log10Multiplier))));
     }
+}
+
+/**
+ * This method takes the id of a unit as it can appear in an SBML file, and
+ * returns a new UnitDefinition object for that id.
+ */
+UnitDefinition* SBMLImporter::getSBMLUnitDefinitionForId(const std::string& unitId, const Model* pSBMLModel)
+{
+  UnitDefinition* pUnitDefinition = NULL;
+  const UnitDefinition* pTmpUnitDefinition = pSBMLModel->getUnitDefinition(unitId);
+  if (pTmpUnitDefinition != NULL) // there was a unit definition with that id
+    {
+      pUnitDefinition = dynamic_cast<UnitDefinition*>(pTmpUnitDefinition->clone());
+      assert(pUnitDefinition != NULL);
+    }
+  else
+    {
+      if (unitId == "volume" || unitId == "litre")
+        {
+          pUnitDefinition = new UnitDefinition("dummy_volume");
+          Unit* pUnit = pUnitDefinition->createUnit();
+          pUnit->setKind(UNIT_KIND_LITRE);
+          pUnit->setExponent(1);
+          pUnit->setMultiplier(1.0);
+          pUnit->setScale(0);
+        }
+      else if (unitId == "substance" || unitId == "mole")
+        {
+          pUnitDefinition = new UnitDefinition("dummy_substance");
+          Unit* pUnit = pUnitDefinition->createUnit();
+          pUnit->setKind(UNIT_KIND_MOLE);
+          pUnit->setExponent(1);
+          pUnit->setMultiplier(1.0);
+          pUnit->setScale(0);
+        }
+      else if (unitId == "time" || unitId == "second")
+        {
+          pUnitDefinition = new UnitDefinition("dummy_time");
+          Unit* pUnit = pUnitDefinition->createUnit();
+          pUnit->setKind(UNIT_KIND_SECOND);
+          pUnit->setExponent(1);
+          pUnit->setMultiplier(1.0);
+          pUnit->setScale(0);
+        }
+      else if (unitId == "area")
+        {
+          pUnitDefinition = new UnitDefinition("area");
+          Unit* pUnit = pUnitDefinition->createUnit();
+          pUnit->setKind(UNIT_KIND_METRE);
+          pUnit->setExponent(2);
+          pUnit->setMultiplier(1.0);
+          pUnit->setScale(0);
+        }
+      else if (unitId == "length")
+        {
+          pUnitDefinition = new UnitDefinition("length");
+          Unit* pUnit = pUnitDefinition->createUnit();
+          pUnit->setKind(UNIT_KIND_METRE);
+          pUnit->setExponent(1);
+          pUnit->setMultiplier(1.0);
+          pUnit->setScale(0);
+        }
+      else if (unitId == "ampere")
+        {
+          pUnitDefinition = new UnitDefinition("dummy_ampere");
+          Unit* pUnit = pUnitDefinition->createUnit();
+          pUnit->setKind(UNIT_KIND_AMPERE);
+          pUnit->setExponent(1);
+          pUnit->setMultiplier(1.0);
+          pUnit->setScale(0);
+        }
+      else if (unitId == "farad")
+        {
+          pUnitDefinition = new UnitDefinition("dummy_farad");
+          Unit* pUnit = pUnitDefinition->createUnit();
+          pUnit->setKind(UNIT_KIND_FARAD);
+          pUnit->setExponent(1);
+          pUnit->setMultiplier(1.0);
+          pUnit->setScale(0);
+        }
+      else if (unitId == "joule")
+        {
+          pUnitDefinition = new UnitDefinition("dummy_joule");
+          Unit* pUnit = pUnitDefinition->createUnit();
+          pUnit->setKind(UNIT_KIND_JOULE);
+          pUnit->setExponent(1);
+          pUnit->setMultiplier(1.0);
+          pUnit->setScale(0);
+        }
+      else if (unitId == "lux")
+        {
+          pUnitDefinition = new UnitDefinition("dummy_lux");
+          Unit* pUnit = pUnitDefinition->createUnit();
+          pUnit->setKind(UNIT_KIND_LUX);
+          pUnit->setExponent(1);
+          pUnit->setMultiplier(1.0);
+          pUnit->setScale(0);
+        }
+      else if (unitId == "radian")
+        {
+          pUnitDefinition = new UnitDefinition("dummy_radian");
+          Unit* pUnit = pUnitDefinition->createUnit();
+          pUnit->setKind(UNIT_KIND_RADIAN);
+          pUnit->setExponent(1);
+          pUnit->setMultiplier(1.0);
+          pUnit->setScale(0);
+        }
+      else if (unitId == "volt")
+        {
+          pUnitDefinition = new UnitDefinition("dummy_volt");
+          Unit* pUnit = pUnitDefinition->createUnit();
+          pUnit->setKind(UNIT_KIND_VOLT);
+          pUnit->setExponent(1);
+          pUnit->setMultiplier(1.0);
+          pUnit->setScale(0);
+        }
+      else if (unitId == "becquerel")
+        {
+          pUnitDefinition = new UnitDefinition("dummy_becquerel");
+          Unit* pUnit = pUnitDefinition->createUnit();
+          pUnit->setKind(UNIT_KIND_BECQUEREL);
+          pUnit->setExponent(1);
+          pUnit->setMultiplier(1.0);
+          pUnit->setScale(0);
+        }
+      else if (unitId == "gram")
+        {
+          pUnitDefinition = new UnitDefinition("dummy_gram");
+          Unit* pUnit = pUnitDefinition->createUnit();
+          pUnit->setKind(UNIT_KIND_GRAM);
+          pUnit->setExponent(1);
+          pUnit->setMultiplier(1.0);
+          pUnit->setScale(0);
+        }
+      else if (unitId == "katal")
+        {
+          pUnitDefinition = new UnitDefinition("dummy_katal");
+          Unit* pUnit = pUnitDefinition->createUnit();
+          pUnit->setKind(UNIT_KIND_KATAL);
+          pUnit->setExponent(1);
+          pUnit->setMultiplier(1.0);
+          pUnit->setScale(0);
+        }
+      else if (unitId == "metre")
+        {
+          pUnitDefinition = new UnitDefinition("dummy_metre");
+          Unit* pUnit = pUnitDefinition->createUnit();
+          pUnit->setKind(UNIT_KIND_METRE);
+          pUnit->setExponent(1);
+          pUnit->setMultiplier(1.0);
+          pUnit->setScale(0);
+        }
+      else if (unitId == "candela")
+        {
+          pUnitDefinition = new UnitDefinition("dummy_candela");
+          Unit* pUnit = pUnitDefinition->createUnit();
+          pUnit->setKind(UNIT_KIND_CANDELA);
+          pUnit->setExponent(1);
+          pUnit->setMultiplier(1.0);
+          pUnit->setScale(0);
+        }
+      else if (unitId == "gray")
+        {
+          pUnitDefinition = new UnitDefinition("dummy_gray");
+          Unit* pUnit = pUnitDefinition->createUnit();
+          pUnit->setKind(UNIT_KIND_GRAY);
+          pUnit->setExponent(1);
+          pUnit->setMultiplier(1.0);
+          pUnit->setScale(0);
+        }
+      else if (unitId == "kelvin")
+        {
+          pUnitDefinition = new UnitDefinition("dummy_kelvin");
+          Unit* pUnit = pUnitDefinition->createUnit();
+          pUnit->setKind(UNIT_KIND_KELVIN);
+          pUnit->setExponent(1);
+          pUnit->setMultiplier(1.0);
+          pUnit->setScale(0);
+        }
+      else if (unitId == "siemens")
+        {
+          pUnitDefinition = new UnitDefinition("dummy_siemens");
+          Unit* pUnit = pUnitDefinition->createUnit();
+          pUnit->setKind(UNIT_KIND_SIEMENS);
+          pUnit->setExponent(1);
+          pUnit->setMultiplier(1.0);
+          pUnit->setScale(0);
+        }
+      else if (unitId == "weber")
+        {
+          pUnitDefinition = new UnitDefinition("dummy_weber");
+          Unit* pUnit = pUnitDefinition->createUnit();
+          pUnit->setKind(UNIT_KIND_WEBER);
+          pUnit->setExponent(1);
+          pUnit->setMultiplier(1.0);
+          pUnit->setScale(0);
+        }
+      else if (unitId == "Celsius")
+        {
+          pUnitDefinition = new UnitDefinition("dummy_celsius");
+          Unit* pUnit = pUnitDefinition->createUnit();
+          pUnit->setKind(UNIT_KIND_CELSIUS);
+          pUnit->setExponent(1);
+          pUnit->setMultiplier(1.0);
+          pUnit->setScale(0);
+        }
+      else if (unitId == "henry")
+        {
+          pUnitDefinition = new UnitDefinition("dummy_henry");
+          Unit* pUnit = pUnitDefinition->createUnit();
+          pUnit->setKind(UNIT_KIND_HENRY);
+          pUnit->setExponent(1);
+          pUnit->setMultiplier(1.0);
+          pUnit->setScale(0);
+        }
+      else if (unitId == "kilogram")
+        {
+          pUnitDefinition = new UnitDefinition("dummy_kilogram");
+          Unit* pUnit = pUnitDefinition->createUnit();
+          pUnit->setKind(UNIT_KIND_KILOGRAM);
+          pUnit->setExponent(1);
+          pUnit->setMultiplier(1.0);
+          pUnit->setScale(0);
+        }
+      else if (unitId == "newton")
+        {
+          pUnitDefinition = new UnitDefinition("dummy_newton");
+          Unit* pUnit = pUnitDefinition->createUnit();
+          pUnit->setKind(UNIT_KIND_NEWTON);
+          pUnit->setExponent(1);
+          pUnit->setMultiplier(1.0);
+          pUnit->setScale(0);
+        }
+      else if (unitId == "sievert")
+        {
+          pUnitDefinition = new UnitDefinition("dummy_sievert");
+          Unit* pUnit = pUnitDefinition->createUnit();
+          pUnit->setKind(UNIT_KIND_SIEVERT);
+          pUnit->setExponent(1);
+          pUnit->setMultiplier(1.0);
+          pUnit->setScale(0);
+        }
+      else if (unitId == "coulomb")
+        {
+          pUnitDefinition = new UnitDefinition("dummy_coulomb");
+          Unit* pUnit = pUnitDefinition->createUnit();
+          pUnit->setKind(UNIT_KIND_COULOMB);
+          pUnit->setExponent(1);
+          pUnit->setMultiplier(1.0);
+          pUnit->setScale(0);
+        }
+      else if (unitId == "hertz")
+        {
+          pUnitDefinition = new UnitDefinition("dummy_hertz");
+          Unit* pUnit = pUnitDefinition->createUnit();
+          pUnit->setKind(UNIT_KIND_HERTZ);
+          pUnit->setExponent(1);
+          pUnit->setMultiplier(1.0);
+          pUnit->setScale(0);
+        }
+      else if (unitId == "ohm")
+        {
+          pUnitDefinition = new UnitDefinition("dummy_ohm");
+          Unit* pUnit = pUnitDefinition->createUnit();
+          pUnit->setKind(UNIT_KIND_OHM);
+          pUnit->setExponent(1);
+          pUnit->setMultiplier(1.0);
+          pUnit->setScale(0);
+        }
+      else if (unitId == "steradian")
+        {
+          pUnitDefinition = new UnitDefinition("dummy_steradian");
+          Unit* pUnit = pUnitDefinition->createUnit();
+          pUnit->setKind(UNIT_KIND_STERADIAN);
+          pUnit->setExponent(1);
+          pUnit->setMultiplier(1.0);
+          pUnit->setScale(0);
+        }
+      else if (unitId == "dimensionless")
+        {
+          pUnitDefinition = new UnitDefinition("dummy_dimensionless");
+          Unit* pUnit = pUnitDefinition->createUnit();
+          pUnit->setKind(UNIT_KIND_DIMENSIONLESS);
+          pUnit->setExponent(1);
+          pUnit->setMultiplier(1.0);
+          pUnit->setScale(0);
+        }
+      else if (unitId == "item")
+        {
+          pUnitDefinition = new UnitDefinition("dummy_item");
+          Unit* pUnit = pUnitDefinition->createUnit();
+          pUnit->setKind(UNIT_KIND_ITEM);
+          pUnit->setExponent(1);
+          pUnit->setMultiplier(1.0);
+          pUnit->setScale(0);
+        }
+      else if (unitId == "lumen")
+        {
+          pUnitDefinition = new UnitDefinition("dummy_lumen");
+          Unit* pUnit = pUnitDefinition->createUnit();
+          pUnit->setKind(UNIT_KIND_LUMEN);
+          pUnit->setExponent(1);
+          pUnit->setMultiplier(1.0);
+          pUnit->setScale(0);
+        }
+      else if (unitId == "pascal")
+        {
+          pUnitDefinition = new UnitDefinition("dummy_pascal");
+          Unit* pUnit = pUnitDefinition->createUnit();
+          pUnit->setKind(UNIT_KIND_PASCAL);
+          pUnit->setExponent(1);
+          pUnit->setMultiplier(1.0);
+          pUnit->setScale(0);
+        }
+      else if (unitId == "tesla")
+        {
+          pUnitDefinition = new UnitDefinition("dummy_tesla");
+          Unit* pUnit = pUnitDefinition->createUnit();
+          pUnit->setKind(UNIT_KIND_TESLA);
+          pUnit->setExponent(1);
+          pUnit->setMultiplier(1.0);
+          pUnit->setScale(0);
+        }
+    }
+  return pUnitDefinition;
 }

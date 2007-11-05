@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.104 $
+//   $Revision: 1.105 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/11/03 19:44:16 $
+//   $Date: 2007/11/05 16:12:37 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -160,7 +160,7 @@ const MESSAGES Messages[] =
     {MCSBML + 16, "SBML (16): Loop found in function. That means a function calls itself either directly or indirectly."},
     {MCSBML + 17, "SBML (17): One or more single compartment reactions found where the kinetic law does not include a multiplication by the volume:\n%s"},
     {MCSBML + 18, "SBML (18): Support for 'hasOnlySubstanceUnit' flag on species is experimental. Species in compartments of dimension 0 are also considered to have this flag set."},
-    {MCSBML + 19, "SBML (19): spatialSizeUnits on species %s ignored."},
+    {MCSBML + 19, "SBML (19): Spatial size units on species \"%s\" is not the same as the volume unit in the model and has been ignored."},
     {MCSBML + 20, "SBML (20): Setting an initial concentration on species %s which has the 'hasOnlySubstanceUnits' flag set is not allowed."},
     {MCSBML + 21, "SBML (21): Setting an initial concentration on species '%s' which is in a compartment with spatial dimensions 0 is not allowed."},
     {MCSBML + 22, "SBML (22): Current versions of COPASI only supports three dimensional compartments. '%s' will be considered to be three dimensional."},
@@ -172,12 +172,12 @@ const MESSAGES Messages[] =
     {MCSBML + 28, "SBML (28): Error in function definition with id '%s'."},
     {MCSBML + 29, "SBML (29): Unable to handle reactions with the 'fast' flag set.\nThe flag has been set to false."},
     {MCSBML + 30, "SBML (30): Can't handle units of type item with scale set to 1.\n If this file was created with COPASI RC1 or older please see the COPASI FAQ."},
-    {MCSBML + 31, "SBML (31): %s are currently only supported for global parameters."},
+    {MCSBML + 31, "SBML (31): %s are currently only supported for global parameters."}, // OBSOLETE
     {MCSBML + 32, "SBML (32): Error in %s variable id '%s' does not specify a compartment, species or global parameter."},
     {MCSBML + 33, "SBML (33): Error: %s is not allowed for local parameter '%s'."},
     {MCSBML + 34, "SBML (34): Error: %s is not allowed for local constant '%s' identified by id '%s'."},
     {MCSBML + 35, "SBML (35): Error: Only one AssignmentRule or RateRule is allowed for id '%s'."},
-    {MCSBML + 36, "SBML (36): COPASI can not handle models that use the delay function."},
+    {MCSBML + 36, "SBML (36): COPASI can not handle models that use the delay function correctly."},
     {MCSBML + 37, "SBML (37): The id '%s' is used in the expression of a rule, although it is later defined by a rule itself."},
     {MCSBML + 38, "SBML (38): Only references to compartments, species, global parameters or the time are allowed in SBML rule expressions."},
     {MCSBML + 39, "SBML (39): Object with id \"%s\" referenced in kinetic law, but no object with that id found in model."},
@@ -195,8 +195,8 @@ const MESSAGES Messages[] =
     {MCSBML + 51, "SBML (51): The species \"%s\" is defined by a rate rule and its compartments volume is variable. COPASI will probably interpret this incorrectly."},
     {MCSBML + 52, "SBML (52): The metabolite \"%s\" is defined by a rate expression and its compartments volume is variable. The way COPASI interprets this is differently from the way SBML does."},
     {MCSBML + 53, "SBML (53): The reaction \"%s\" defines a time unit in its kinetic law which has been ignore."},
-    {MCSBML + 54, "SBML (54): Could not import volume unit with id \"%s\"."},
-    {MCSBML + 55, "SBML (55): Spatial size units on species \"%s\" is not the ame as the volume unit in the model and has been ignored."},
+    {MCSBML + 54, "SBML (54): Error while importing volume unit with id \"%s\"."},
+    {MCSBML + 55, "SBML (55): Could not find unit definition for unit with id \"%s\" used in \"%s\" attribute of %s with id \"%s\"."},
 
     {MCTrajectoryProblem + 1, "CTrajectoryProblem (1): Invalid step size = '%f'."},
     {MCTrajectoryProblem + 2, "CTrajectoryProblem (2): The step number '%f' "

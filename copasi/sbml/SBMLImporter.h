@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-//   $Revision: 1.60 $
+//   $Revision: 1.61 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/11/03 19:44:16 $
+//   $Date: 2007/11/05 16:12:38 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,6 +41,9 @@ class Rule;
 
 class SBMLImporter
   {
+  protected:
+    static const double UNIT_MULTIPLIER_TOLERANCE;
+
   protected:
     std::set<unsigned int> mIgnoredSBMLMessages;
     std::map<std::string, CMetab*> speciesMap;
@@ -346,6 +349,12 @@ class SBMLImporter
      * multiplier < 10.0.
      */
     static void normalizeSBMLUnit(Unit* pU);
+
+    /**
+     * This method takes the id of a unit as it can appear in an SBML file, and
+     * returns a new UnitDefinition object for that id.
+     */
+    static UnitDefinition* getSBMLUnitDefinitionForId(const std::string& unitId, const Model* pSBMLModel);
 
   public:
     SBMLImporter();
