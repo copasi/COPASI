@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.h,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/10/29 12:00:54 $
+//   $Date: 2007/11/05 15:06:26 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,6 +28,7 @@
 #include <qwidget.h>
 #include <qhbox.h>
 #include <qvbox.h>
+#include <qframe.h>
 #include <qpushbutton.h>
 #include <qiconset.h>
 #include <qpixmap.h>
@@ -125,8 +126,9 @@ class CQLayoutMainWindow : public QMainWindow
     //QSlider *timeSlider;
     QwtSlider *timeSlider;
 
-    QVBox *buttonBox;
-    QHBox *bottomBox;
+    //QVBox *buttonBox;
+    //QHBox *bottomBox;
+    QFrame *frame;
     QVBox *mainBox;
 
     QPushButton *startStopButton;

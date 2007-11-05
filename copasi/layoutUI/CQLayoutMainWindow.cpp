@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.41 $
+//   $Revision: 1.42 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/10/29 12:00:54 $
+//   $Date: 2007/11/05 15:06:26 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -89,38 +89,36 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
   splitter->setSizes(sizeList);
   splitter->setResizeMode(paraPanel, QSplitter::KeepSize);
 
-  bottomBox = new QHBox(mainBox);
-  bottomBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-  //bottomBox->setMinimumHeight(15);
-  //bottomBox->setMinimumWidth(100);
+  frame = new QFrame(mainBox);
+  //bottomBox = new QBox(mainBox);
+  //bottomBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
   startIcon = createStartIcon();
   stopIcon = createStopIcon();
 
-  // XXXXXXXX
-  buttonBox = new QVBox(bottomBox);
-  QBoxLayout *l = new QVBoxLayout(buttonBox);
+  startStopButton = new QPushButton(frame, "start/stop button");
 
-  startStopButton = new QPushButton(bottomBox, "start/stop button");
   connect(startStopButton, SIGNAL(clicked()), this, SLOT(startAnimation()));
   startStopButton->setIconSet(startIcon);
   startStopButton->setEnabled(false);
 
-  l->addItem(new QSpacerItem(20, 30));
-
-  //QSpacerItem(10,15,QSizePolicy::Minimum, QSizePolicy::Expanding);
-  //GridLayout->addItem(spacer1, 4, 0);
-
-  timeSlider = new QwtSlider(bottomBox, Qt::Horizontal, QwtSlider::BottomScale, QwtSlider::BgTrough);
+  timeSlider = new QwtSlider(frame, Qt::Horizontal, QwtSlider::BottomScale, QwtSlider::BgTrough);
   timeSlider->setRange(0, 100, 1, 0);
   timeSlider->setValue(0.0);
   this->timeSlider->setEnabled(false);
 
   timeSlider->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+  frame->setFixedHeight(55);
   //timeSlider->setTickmarks(QSlider::Below);
   //timeSlider->setDisabled(TRUE);
   connect(timeSlider, SIGNAL(valueChanged(double)),
           this, SLOT(showStep(double)));
+
+  QGridLayout* bottomBoxlayout = new QGridLayout(frame, 2, 2, 3, 6);
+  bottomBoxlayout->addMultiCellWidget(timeSlider, 0, 1, 1, 1, Qt::AlignTop);
+  bottomBoxlayout->addWidget(startStopButton, 0, 0);
+  QSpacerItem* theSpacer = new QSpacerItem(20, 20);
+  bottomBoxlayout->addItem(theSpacer, 1, 0);
 
   setCentralWidget(mainBox);
   loadData(); // try to load data (if already present)
