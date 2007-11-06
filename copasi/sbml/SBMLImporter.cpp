@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.179 $
+//   $Revision: 1.180 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/11/05 16:12:37 $
+//   $Date: 2007/11/06 20:13:10 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1126,221 +1126,229 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
         {
           fatalError();
         }
-      ConverterASTNode* node = new ConverterASTNode(*kLawMath);
-      this->preprocessNode(node);
-
-      if (node == NULL)
+      else if (kLawMath->getType() == AST_UNKNOWN)
         {
-          delete copasiReaction;
-          fatalError();
-        }
-
-      this->replaceSubstanceOnlySpeciesNodes(node, mSubstanceOnlySpecies);
-
-      /* if it is a single compartment reaction, we have to divide the whole kinetic
-      ** equation by the compartment because copasi expects
-      ** kinetic laws that specify concentration/time for single compartment
-      ** reactions.
-      */
-      if (singleCompartment)
-        {
-          if (compartment != NULL)
-            {
-              // check if the root node is a multiplication node and it's first child
-              // is a compartment node, if so, drop those two and make the second child
-              // new new root node
-              ConverterASTNode* tmpNode1 = this->isMultipliedByVolume(node, compartment->getSBMLId());
-              if (tmpNode1)
-                {
-                  delete node;
-                  node = tmpNode1;
-                  if (node->getType() == AST_DIVIDE && node->getNumChildren() != 2)
-                    {
-                      delete tmpNode1;
-                      fatalError();
-                    }
-                }
-              else
-                {
-                  tmpNode1 = new ConverterASTNode();
-                  tmpNode1->setType(AST_DIVIDE);
-                  tmpNode1->addChild(node);
-                  ConverterASTNode* tmpNode2 = new ConverterASTNode();
-                  tmpNode2->setType(AST_NAME);
-                  tmpNode2->setName(compartment->getSBMLId().c_str());
-                  tmpNode1->addChild(tmpNode2);
-                  node = tmpNode1;
-                  if (!hasOnlySubstanceUnitPresent && compartment->getInitialValue() == 1.0)
-                    {
-                      // we have to check if all species used in the reaction
-                      // have the hasOnlySubstance flag set
-
-                      if (node->getChild(0)->getType() == AST_FUNCTION && (!this->containsVolume(node->getChild(0), compartment->getSBMLId())))
-                        {
-                          this->mDivisionByCompartmentReactions.insert(sbmlReaction->getId());
-                        }
-                    }
-                }
-            }
-          else
-            {
-              delete node;
-              delete copasiReaction;
-              fatalError();
-            }
-        }
-
-      /* Create a new user defined CKinFunction */
-      if (!sbmlId2CopasiCN(node, copasi2sbmlmap, copasiReaction->getParameters()))
-        {
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 27, copasiReaction->getObjectName().c_str());
-        }
-      CEvaluationNode* pExpressionTreeRoot = CEvaluationTree::convertASTNode(*node);
-      delete node;
-      node = NULL;
-      if (pExpressionTreeRoot)
-        {
-          CEvaluationTree* pTmpTree = CEvaluationTree::create(CEvaluationTree::Expression);
-          pTmpTree->setRoot(pExpressionTreeRoot);
-          // check if the root node is a simple function call
-          if (this->isSimpleFunctionCall(pExpressionTreeRoot))
-            {
-              // if yes, we check if it corresponds to an already existing function
-              std::string functionName = pExpressionTreeRoot->getData();
-              CFunction* tree = dynamic_cast<CFunction*>(pTmpFunctionDB->findFunction(functionName));
-              assert(tree);
-              std::vector<CEvaluationNodeObject*>* v = this->isMassAction(tree, copasiReaction->getChemEq(), static_cast<const CEvaluationNodeCall*>(pExpressionTreeRoot));
-              if (!v)
-                {
-                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 27, copasiReaction->getObjectName().c_str());
-                }
-              if (!v->empty())
-                {
-                  CFunction* pFun = NULL;
-                  if (copasiReaction->isReversible())
-                    {
-                      pFun = static_cast<CFunction*>(this->functionDB->findFunction("Mass action (reversible)"));
-                    }
-                  else
-                    {
-                      pFun = static_cast<CFunction*>(this->functionDB->findFunction("Mass action (irreversible)"));
-                    }
-                  if (!pFun)
-                    {
-                      fatalError();
-                    }
-                  // do the mapping
-                  CEvaluationNodeCall* pCallNode = new CEvaluationNodeCall(CEvaluationNodeCall::EXPRESSION, "dummy_call");
-                  unsigned int i, iMax = v->size();
-                  for (i = 0;i < iMax;++i)
-                    {
-                      pCallNode->addChild((*v)[i]);
-                    }
-                  this->renameMassActionParameters(pCallNode);
-                  copasiReaction->setFunction(pFun);
-                  this->doMapping(copasiReaction, pCallNode);
-                  delete pCallNode;
-                }
-              else
-                {
-                  CFunction* pExistingFunction = this->findCorrespondingFunction(tree, copasiReaction);
-                  // if it does, we set the existing function for this reaction
-                  if (pExistingFunction)
-                    {
-                      copasiReaction->setFunction(pExistingFunction);
-                      // do the mapping
-                      this->doMapping(copasiReaction, dynamic_cast<const CEvaluationNodeCall*>(pExpressionTreeRoot));
-                    }
-                  // else we take the function from the pTmpFunctionDB, copy it and set the usage correctly
-                  else
-                    {
-                      // replace the variable nodes in tree with  nodes from
-                      std::map<std::string, std::string > arguments;
-                      const CFunctionParameters& funParams = tree->getVariables();
-                      const CEvaluationNode* pTmpNode = static_cast<const CEvaluationNode*>(pExpressionTreeRoot->getChild());
-                      unsigned int i, iMax = funParams.size();
-                      for (i = 0;(i < iMax) && pTmpNode;++i)
-                        {
-                          if (!(pTmpNode->getType() == CEvaluationNode::OBJECT)) fatalError();
-                          arguments[funParams[i]->getObjectName()] = pTmpNode->getData().substr(1, pTmpNode->getData().length() - 2);
-                          pTmpNode = static_cast<const CEvaluationNode*>(pTmpNode->getSibling());
-                        }
-                      assert((i == iMax) && pTmpNode == NULL);
-                      CEvaluationNode* pTmpExpression = this->variables2objects(tree->getRoot(), arguments);
-
-                      CEvaluationTree* pTmpTree2 = CEvaluationTree::create(CEvaluationTree::Expression);
-                      pTmpTree2->setRoot(pTmpExpression);
-                      copasiReaction->setFunctionFromExpressionTree(pTmpTree2, copasi2sbmlmap, this->functionDB);
-                      delete pTmpTree2;
-                      if (copasiReaction->getFunction()->getType() == CEvaluationTree::UserDefined)
-                        {
-                          pTmpFunctionDB->add(const_cast<CFunction*>(copasiReaction->getFunction()), false);
-                          this->mUsedFunctions.insert(copasiReaction->getFunction()->getObjectName());
-                        }
-                    }
-                }
-              pdelete(v);
-            }
-          else
-            {
-              std::vector<CEvaluationNodeObject*>* v = this->isMassAction(pTmpTree, copasiReaction->getChemEq());
-              if (!v)
-                {
-                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 27, copasiReaction->getObjectName().c_str());
-                }
-              if (!v->empty())
-                {
-                  CFunction* pFun = NULL;
-                  if (copasiReaction->isReversible())
-                    {
-                      pFun = static_cast<CFunction*>(this->functionDB->findFunction("Mass action (reversible)"));
-                    }
-                  else
-                    {
-                      pFun = static_cast<CFunction*>(this->functionDB->findFunction("Mass action (irreversible)"));
-                    }
-                  if (!pFun)
-                    {
-                      fatalError();
-                    }
-                  // do the mapping
-                  CEvaluationNodeCall* pCallNode = new CEvaluationNodeCall(CEvaluationNodeCall::EXPRESSION, "dummy_call");
-                  unsigned int i, iMax = v->size();
-                  for (i = 0;i < iMax;++i)
-                    {
-                      pCallNode->addChild((*v)[i]);
-                    }
-                  // rename the function parameters to k1 and k2
-                  this->renameMassActionParameters(pCallNode);
-                  copasiReaction->setFunction(pFun);
-                  this->doMapping(copasiReaction, pCallNode);
-                  delete pCallNode;
-                }
-              else
-                {
-                  if (!copasiReaction->setFunctionFromExpressionTree(pTmpTree, copasi2sbmlmap, this->functionDB))
-                    {
-                      // error message
-                      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 9, copasiReaction->getObjectName().c_str());
-                    }
-                  else
-                    {
-                      if (copasiReaction->getFunction()->getType() == CEvaluationTree::UserDefined)
-                        {
-                          pTmpFunctionDB->add(const_cast<CFunction*>(copasiReaction->getFunction()), false);
-                          this->mUsedFunctions.insert(copasiReaction->getFunction()->getObjectName());
-                        }
-                    }
-                }
-              pdelete(v);
-            }
-          // delete the temporary tree and all the nodes
-          delete pTmpTree;
+          copasiReaction->setFunction(NULL);
+          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 56, sbmlReaction->getId().c_str());
         }
       else
         {
-          // error message
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 8, copasiReaction->getObjectName().c_str());
+          ConverterASTNode* node = new ConverterASTNode(*kLawMath);
+          this->preprocessNode(node);
+
+          if (node == NULL)
+            {
+              delete copasiReaction;
+              fatalError();
+            }
+
+          this->replaceSubstanceOnlySpeciesNodes(node, mSubstanceOnlySpecies);
+
+          /* if it is a single compartment reaction, we have to divide the whole kinetic
+          ** equation by the compartment because copasi expects
+          ** kinetic laws that specify concentration/time for single compartment
+          ** reactions.
+          */
+          if (singleCompartment)
+            {
+              if (compartment != NULL)
+                {
+                  // check if the root node is a multiplication node and it's first child
+                  // is a compartment node, if so, drop those two and make the second child
+                  // new new root node
+                  ConverterASTNode* tmpNode1 = this->isMultipliedByVolume(node, compartment->getSBMLId());
+                  if (tmpNode1)
+                    {
+                      delete node;
+                      node = tmpNode1;
+                      if (node->getType() == AST_DIVIDE && node->getNumChildren() != 2)
+                        {
+                          delete tmpNode1;
+                          fatalError();
+                        }
+                    }
+                  else
+                    {
+                      tmpNode1 = new ConverterASTNode();
+                      tmpNode1->setType(AST_DIVIDE);
+                      tmpNode1->addChild(node);
+                      ConverterASTNode* tmpNode2 = new ConverterASTNode();
+                      tmpNode2->setType(AST_NAME);
+                      tmpNode2->setName(compartment->getSBMLId().c_str());
+                      tmpNode1->addChild(tmpNode2);
+                      node = tmpNode1;
+                      if (!hasOnlySubstanceUnitPresent && compartment->getInitialValue() == 1.0)
+                        {
+                          // we have to check if all species used in the reaction
+                          // have the hasOnlySubstance flag set
+
+                          if (node->getChild(0)->getType() == AST_FUNCTION && (!this->containsVolume(node->getChild(0), compartment->getSBMLId())))
+                            {
+                              this->mDivisionByCompartmentReactions.insert(sbmlReaction->getId());
+                            }
+                        }
+                    }
+                }
+              else
+                {
+                  delete node;
+                  delete copasiReaction;
+                  fatalError();
+                }
+            }
+
+          /* Create a new user defined CKinFunction */
+          if (!sbmlId2CopasiCN(node, copasi2sbmlmap, copasiReaction->getParameters()))
+            {
+              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 27, copasiReaction->getObjectName().c_str());
+            }
+          CEvaluationNode* pExpressionTreeRoot = CEvaluationTree::convertASTNode(*node);
+          delete node;
+          node = NULL;
+          if (pExpressionTreeRoot)
+            {
+              CEvaluationTree* pTmpTree = CEvaluationTree::create(CEvaluationTree::Expression);
+              pTmpTree->setRoot(pExpressionTreeRoot);
+              // check if the root node is a simple function call
+              if (this->isSimpleFunctionCall(pExpressionTreeRoot))
+                {
+                  // if yes, we check if it corresponds to an already existing function
+                  std::string functionName = pExpressionTreeRoot->getData();
+                  CFunction* tree = dynamic_cast<CFunction*>(pTmpFunctionDB->findFunction(functionName));
+                  assert(tree);
+                  std::vector<CEvaluationNodeObject*>* v = this->isMassAction(tree, copasiReaction->getChemEq(), static_cast<const CEvaluationNodeCall*>(pExpressionTreeRoot));
+                  if (!v)
+                    {
+                      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 27, copasiReaction->getObjectName().c_str());
+                    }
+                  if (!v->empty())
+                    {
+                      CFunction* pFun = NULL;
+                      if (copasiReaction->isReversible())
+                        {
+                          pFun = static_cast<CFunction*>(this->functionDB->findFunction("Mass action (reversible)"));
+                        }
+                      else
+                        {
+                          pFun = static_cast<CFunction*>(this->functionDB->findFunction("Mass action (irreversible)"));
+                        }
+                      if (!pFun)
+                        {
+                          fatalError();
+                        }
+                      // do the mapping
+                      CEvaluationNodeCall* pCallNode = new CEvaluationNodeCall(CEvaluationNodeCall::EXPRESSION, "dummy_call");
+                      unsigned int i, iMax = v->size();
+                      for (i = 0;i < iMax;++i)
+                        {
+                          pCallNode->addChild((*v)[i]);
+                        }
+                      this->renameMassActionParameters(pCallNode);
+                      copasiReaction->setFunction(pFun);
+                      this->doMapping(copasiReaction, pCallNode);
+                      delete pCallNode;
+                    }
+                  else
+                    {
+                      CFunction* pExistingFunction = this->findCorrespondingFunction(tree, copasiReaction);
+                      // if it does, we set the existing function for this reaction
+                      if (pExistingFunction)
+                        {
+                          copasiReaction->setFunction(pExistingFunction);
+                          // do the mapping
+                          this->doMapping(copasiReaction, dynamic_cast<const CEvaluationNodeCall*>(pExpressionTreeRoot));
+                        }
+                      // else we take the function from the pTmpFunctionDB, copy it and set the usage correctly
+                      else
+                        {
+                          // replace the variable nodes in tree with  nodes from
+                          std::map<std::string, std::string > arguments;
+                          const CFunctionParameters& funParams = tree->getVariables();
+                          const CEvaluationNode* pTmpNode = static_cast<const CEvaluationNode*>(pExpressionTreeRoot->getChild());
+                          unsigned int i, iMax = funParams.size();
+                          for (i = 0;(i < iMax) && pTmpNode;++i)
+                            {
+                              if (!(pTmpNode->getType() == CEvaluationNode::OBJECT)) fatalError();
+                              arguments[funParams[i]->getObjectName()] = pTmpNode->getData().substr(1, pTmpNode->getData().length() - 2);
+                              pTmpNode = static_cast<const CEvaluationNode*>(pTmpNode->getSibling());
+                            }
+                          assert((i == iMax) && pTmpNode == NULL);
+                          CEvaluationNode* pTmpExpression = this->variables2objects(tree->getRoot(), arguments);
+
+                          CEvaluationTree* pTmpTree2 = CEvaluationTree::create(CEvaluationTree::Expression);
+                          pTmpTree2->setRoot(pTmpExpression);
+                          copasiReaction->setFunctionFromExpressionTree(pTmpTree2, copasi2sbmlmap, this->functionDB);
+                          delete pTmpTree2;
+                          if (copasiReaction->getFunction()->getType() == CEvaluationTree::UserDefined)
+                            {
+                              pTmpFunctionDB->add(const_cast<CFunction*>(copasiReaction->getFunction()), false);
+                              this->mUsedFunctions.insert(copasiReaction->getFunction()->getObjectName());
+                            }
+                        }
+                    }
+                  pdelete(v);
+                }
+              else
+                {
+                  std::vector<CEvaluationNodeObject*>* v = this->isMassAction(pTmpTree, copasiReaction->getChemEq());
+                  if (!v)
+                    {
+                      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 27, copasiReaction->getObjectName().c_str());
+                    }
+                  if (!v->empty())
+                    {
+                      CFunction* pFun = NULL;
+                      if (copasiReaction->isReversible())
+                        {
+                          pFun = static_cast<CFunction*>(this->functionDB->findFunction("Mass action (reversible)"));
+                        }
+                      else
+                        {
+                          pFun = static_cast<CFunction*>(this->functionDB->findFunction("Mass action (irreversible)"));
+                        }
+                      if (!pFun)
+                        {
+                          fatalError();
+                        }
+                      // do the mapping
+                      CEvaluationNodeCall* pCallNode = new CEvaluationNodeCall(CEvaluationNodeCall::EXPRESSION, "dummy_call");
+                      unsigned int i, iMax = v->size();
+                      for (i = 0;i < iMax;++i)
+                        {
+                          pCallNode->addChild((*v)[i]);
+                        }
+                      // rename the function parameters to k1 and k2
+                      this->renameMassActionParameters(pCallNode);
+                      copasiReaction->setFunction(pFun);
+                      this->doMapping(copasiReaction, pCallNode);
+                      delete pCallNode;
+                    }
+                  else
+                    {
+                      if (!copasiReaction->setFunctionFromExpressionTree(pTmpTree, copasi2sbmlmap, this->functionDB))
+                        {
+                          // error message
+                          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 9, copasiReaction->getObjectName().c_str());
+                        }
+                      else
+                        {
+                          if (copasiReaction->getFunction()->getType() == CEvaluationTree::UserDefined)
+                            {
+                              pTmpFunctionDB->add(const_cast<CFunction*>(copasiReaction->getFunction()), false);
+                              this->mUsedFunctions.insert(copasiReaction->getFunction()->getObjectName());
+                            }
+                        }
+                    }
+                  pdelete(v);
+                }
+              // delete the temporary tree and all the nodes
+              delete pTmpTree;
+            }
+          else
+            {
+              // error message
+              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 8, copasiReaction->getObjectName().c_str());
+            }
         }
     }
   else
@@ -1635,7 +1643,7 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
         }
       /*
       else if (sbmlDoc->getNumErrors() > 0)
-        {
+          {
           ParseMessage * pSBMLMessage = sbmlDoc->getError(0);
           // some level 1 files have an annotation in the wrong place
           // This is considered an error by libsbml, but
@@ -1644,22 +1652,22 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
           //
           if ((sbmlDoc->getNumErrors() > 1) ||
               (strncmp(pSBMLMessage->getMessage().c_str(),
-                       "The <sbml> element cannot contain an <annotation>.  Use the <model> element instead."
-                       , 85) != 0))
-            {
+                      "The <sbml> element cannot contain an <annotation>.  Use the <model> element instead."
+                      , 85) != 0))
+              {
               CCopasiMessage Message(CCopasiMessage::RAW, MCXML + 2,
-                                     pSBMLMessage->getLine(),
-                                     pSBMLMessage->getColumn(),
-                                     pSBMLMessage->getMessage().c_str());
+                                      pSBMLMessage->getLine(),
+                                      pSBMLMessage->getColumn(),
+                                      pSBMLMessage->getMessage().c_str());
 
               if (mpImportHandler) mpImportHandler->finish(mhImportStep);
               return NULL;
-            }
+              }
           else
-            {
+              {
               CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 6);
-            }
-        }
+              }
+          }
       */
       if (sbmlDoc->getModel() == NULL)
         {
@@ -2064,11 +2072,11 @@ CModelValue* SBMLImporter::createCModelValueFromParameter(const Parameter* sbmlP
   /*
   double value;
   if (sbmlParameter->isSetValue() && sbmlParameter->getValue() == sbmlParameter->getValue()) // make sure it is not set to NaN
-    {
+      {
       value = sbmlParameter->getValue();
-    }
+      }
   else
-    {
+      {
       // check if there is an assignment rule for this entity
       std::map<CCopasiObject*, SBase*>::iterator pos = copasi2sbmlmap.find(copasiModel);
       if (pos == copasi2sbmlmap.end()) fatalError();
@@ -2076,42 +2084,42 @@ CModelValue* SBMLImporter::createCModelValueFromParameter(const Parameter* sbmlP
       Model* pSBMLModel = dynamic_cast<Model*>(pos->second);
       unsigned int k, kMax = pSBMLModel->getNumRules();
       for (k = 0;k < kMax && !ruleFound;++k)
-        {
+          {
           Rule* pRule = pSBMLModel->getRule(k);
           switch (pRule->getTypeCode())
-            {
-            case SBML_ASSIGNMENT_RULE:
+              {
+              case SBML_ASSIGNMENT_RULE:
               if (dynamic_cast<AssignmentRule*>(pRule)->getVariable() == sbmlId)
-                {
+                  {
                   ruleFound = true;
                   break;
-                }
+                  }
               break;
-            case SBML_RATE_RULE:
+              case SBML_RATE_RULE:
               if (dynamic_cast<RateRule*>(pRule)->getVariable() == sbmlId)
-                {
+                  {
                   ruleFound = true;
                   break;
-                }
+                  }
               break;
-            case SBML_ALGEBRAIC_RULE:
+              case SBML_ALGEBRAIC_RULE:
               break;
-            default:
+              default:
               fatalError();
               break;
-            }
-        }
+              }
+          }
 
       // Set value to NaN and create a warning if it is the first time
       // this happend
       value = std::numeric_limits<C_FLOAT64>::quiet_NaN();
       if ((!ruleFound) && (!this->mIncompleteModel))
-        {
+          {
           this->mIncompleteModel = true;
           CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 43, sbmlParameter->getId().c_str());
-        }
-    }
-    */
+          }
+      }
+      */
   CModelValue* pMV = copasiModel->createModelValue(name + appendix, /*value*/ 0.0);
   copasi2sbmlmap[pMV] = const_cast<Parameter*>(sbmlParameter);
   pMV->setSBMLId(sbmlId);
@@ -3203,8 +3211,8 @@ bool SBMLImporter::removeUnusedFunctions(CFunctionDB* pTmpFunctionDB, std::map<C
       std::cout << "used functions: " << std::endl;
       while(it!=functionNameSet.end())
       {
-        std::cout << (*it) << std::endl;
-        ++it;
+          std::cout << (*it) << std::endl;
+          ++it;
       }
       */
       // here we could have a dialog asking the user if unused functions should
@@ -3470,18 +3478,18 @@ void SBMLImporter::importRule(const Rule* rule, CModelEntity::Status ruleType, s
           // for metabolites and compartments are supported.
           /*
           if (ruleType == CModelEntity::ASSIGNMENT)
-            {
+              {
               mUnsupportedAssignmentRuleFound = true;
-            }
+              }
           else if (ruleType == CModelEntity::ODE)
-            {
+              {
               mUnsupportedRateRuleFound = true;
-            }
+              }
           else
-            {
+              {
               // should never happen
               fatalError();
-            }
+              }
           */
           break;
         }
@@ -4089,74 +4097,77 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
     {
       pReaction = pSBMLModel->getReaction(i);
       pKineticLaw = pReaction->getKineticLaw();
-      std::string unitId;
-      if (pKineticLaw->isSetSubstanceUnits())
+      if (pKineticLaw != NULL)
         {
-          unitId = pKineticLaw->getSubstanceUnits();
-          UnitDefinition* pUdef1 = getSBMLUnitDefinitionForId(unitId, pSBMLModel);
-          if (pUdef1 == NULL)
+          std::string unitId;
+          if (pKineticLaw->isSetSubstanceUnits())
             {
-              // error message
-              CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 55, unitId.c_str(), "substanceUnits", "kinetic law of the reaction", pReaction->getId().c_str());
-            }
-          if (unitId != "substance" && !areSBMLUnitDefinitionsIdentical(pSubstanceUnits, pUdef1))
-            {
-              nonDefaultKineticSubstance.push_back(pReaction->getId());
-            }
-          if (lastUnit == "")
-            {
-              lastUnit = unitId;
-            }
-          else if (unitId != lastUnit)
-            {
-              // check if the two units have identical definitions
-              UnitDefinition* pUdef2 = getSBMLUnitDefinitionForId(lastUnit, pSBMLModel);
-              assert(pUdef2 != NULL);
-              if (!areSBMLUnitDefinitionsIdentical(pUdef1, pUdef2))
+              unitId = pKineticLaw->getSubstanceUnits();
+              UnitDefinition* pUdef1 = getSBMLUnitDefinitionForId(unitId, pSBMLModel);
+              if (pUdef1 == NULL)
                 {
-                  inconsistentUnits = true;
+                  // error message
+                  CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 55, unitId.c_str(), "substanceUnits", "kinetic law of the reaction", pReaction->getId().c_str());
                 }
-              delete pUdef2;
-            }
-          delete pUdef1;
-        }
-      else if (lastUnit == "")
-        {
-          lastUnit = "substance";
-        }
-      if (pKineticLaw->isSetTimeUnits())
-        {
-          unitId = pKineticLaw->getTimeUnits();
-          UnitDefinition* pUdef1 = getSBMLUnitDefinitionForId(unitId, pSBMLModel);
-          if (pUdef1 == NULL)
-            {
-              // error message
-              CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 55, unitId.c_str(), "timeUnits", "kinetic law of the reaction", pReaction->getId().c_str());
-            }
-          if (unitId != "time" && !areSBMLUnitDefinitionsIdentical(pTimeUnits, pUdef1))
-            {
-              nonDefaultKineticTime.push_back(pReaction->getId());
-            }
-          if (lastTimeUnits == "")
-            {
-              lastTimeUnits = unitId;
-            }
-          else if (unitId != lastTimeUnits)
-            {
-              // check if the two units have identical definitions
-              UnitDefinition* pUdef2 = getSBMLUnitDefinitionForId(lastTimeUnits, pSBMLModel);
-              assert(pUdef2 != NULL);
-              if (!areSBMLUnitDefinitionsIdentical(pUdef1, pUdef2))
+              if (unitId != "substance" && !areSBMLUnitDefinitionsIdentical(pSubstanceUnits, pUdef1))
                 {
-                  inconsistentTimeUnits = true;
+                  nonDefaultKineticSubstance.push_back(pReaction->getId());
                 }
-              delete pUdef2;
+              if (lastUnit == "")
+                {
+                  lastUnit = unitId;
+                }
+              else if (unitId != lastUnit)
+                {
+                  // check if the two units have identical definitions
+                  UnitDefinition* pUdef2 = getSBMLUnitDefinitionForId(lastUnit, pSBMLModel);
+                  assert(pUdef2 != NULL);
+                  if (!areSBMLUnitDefinitionsIdentical(pUdef1, pUdef2))
+                    {
+                      inconsistentUnits = true;
+                    }
+                  delete pUdef2;
+                }
+              delete pUdef1;
             }
-          delete pUdef1;
-        }
-      else if (lastTimeUnits == "") // set the last time unit to time
-        {
-          lastTimeUnits = "time";
+          else if (lastUnit == "")
+            {
+              lastUnit = "substance";
+            }
+          if (pKineticLaw->isSetTimeUnits())
+            {
+              unitId = pKineticLaw->getTimeUnits();
+              UnitDefinition* pUdef1 = getSBMLUnitDefinitionForId(unitId, pSBMLModel);
+              if (pUdef1 == NULL)
+                {
+                  // error message
+                  CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 55, unitId.c_str(), "timeUnits", "kinetic law of the reaction", pReaction->getId().c_str());
+                }
+              if (unitId != "time" && !areSBMLUnitDefinitionsIdentical(pTimeUnits, pUdef1))
+                {
+                  nonDefaultKineticTime.push_back(pReaction->getId());
+                }
+              if (lastTimeUnits == "")
+                {
+                  lastTimeUnits = unitId;
+                }
+              else if (unitId != lastTimeUnits)
+                {
+                  // check if the two units have identical definitions
+                  UnitDefinition* pUdef2 = getSBMLUnitDefinitionForId(lastTimeUnits, pSBMLModel);
+                  assert(pUdef2 != NULL);
+                  if (!areSBMLUnitDefinitionsIdentical(pUdef1, pUdef2))
+                    {
+                      inconsistentTimeUnits = true;
+                    }
+                  delete pUdef2;
+                }
+              delete pUdef1;
+            }
+          else if (lastTimeUnits == "") // set the last time unit to time
+            {
+              lastTimeUnits = "time";
+            }
         }
     }
   if (!inconsistentUnits && lastUnit != "" && lastUnit != "substance")
