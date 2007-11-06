@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodPraxis.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: jdada $
-//   $Date: 2007/10/15 14:06:54 $
+//   $Date: 2007/11/06 15:01:39 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -119,7 +119,6 @@ bool COptMethodPraxis::initialize()
   mBest.resize(mVariableSize);
 
   mContinue = true;
-  mVariableSize = mpOptItem->size();
 
   return true;
 }

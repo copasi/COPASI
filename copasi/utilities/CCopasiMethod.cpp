@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.cpp,v $
-//   $Revision: 1.45 $
+//   $Revision: 1.46 $
 //   $Name:  $
 //   $Author: jdada $
-//   $Date: 2007/10/15 14:06:53 $
+//   $Date: 2007/11/06 15:01:39 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -42,6 +42,7 @@ const std::string CCopasiMethod::SubTypeName[] =
     "Current Solution Statistics",
     "Particle Swarm",
     "Praxis",
+    "Truncated Newton",
     "Enhanced Newton",
     "Deterministic (LSODA)",
     "Deterministic (LSODAR)",

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethod.cpp,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.34 $
 //   $Name:  $
-//   $Author: urost $
-//   $Date: 2007/10/16 10:19:31 $
+//   $Author: jdada $
+//   $Date: 2007/11/06 15:01:39 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -37,7 +37,8 @@
 #include "COptMethodStatistics.h"
 #include "COptMethodSteepestDescent.h"
 #include "COptMethodEP.h"
-//#include "COptMethodPraxis.h"
+#include "COptMethodPraxis.h"
+#include "COptMethodTruncatedNewton.h"
 
 COptMethod * COptMethod::createMethod(CCopasiMethod::SubType subType)
 {
@@ -93,9 +94,13 @@ COptMethod * COptMethod::createMethod(CCopasiMethod::SubType subType)
       pMethod = new COptMethodPS();
       break;
 
-      //     case Praxis:
-      //       pMethod = new COptMethodPraxis();
-      //       break;
+    case Praxis:
+      pMethod = new COptMethodPraxis();
+      break;
+
+    case TruncatedNewton:
+      pMethod = new COptMethodTruncatedNewton();
+      break;
 
     default:
       pMethod = new COptMethodGA();

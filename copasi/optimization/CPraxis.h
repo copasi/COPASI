@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CPraxis.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: jdada $
-//   $Date: 2007/10/15 14:06:53 $
+//   $Date: 2007/11/06 15:01:39 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -65,7 +65,6 @@ extern "C"
   {
 
     extern integer pow_ii(integer *, integer *);
-
     extern integer s_wsfe(cilist *);
     extern integer do_fio(integer *, char *, ftnlen);
     extern integer e_wsfe(void);
