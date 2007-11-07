@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CTruncatedNewton.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: jdada $
-//   $Date: 2007/11/06 15:01:39 $
+//   $Author: shoops $
+//   $Date: 2007/11/07 14:09:33 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,8 +15,7 @@
 
 #include "copasi.h"
 
-#include "f2c.h"
-#include "../blaswrap.h"
+#include "copasi/blaswrap.h"
 
 class FTruncatedNewton
   {
@@ -52,37 +51,39 @@ template <class CType> class FTruncatedNewtonTemplate : public FTruncatedNewton
     {return (*mpType.*mMethod)(n, value, value1, value2);}    ;  // execute member function
   };
 
-int tnbc_(integer *,
-          integer *,
-          doublereal *,
-          doublereal *,
-          doublereal *,
-          doublereal *,
-          integer *,
+int tnbc_(C_INT *,
+          C_INT *,
+          C_FLOAT64 *,
+          C_FLOAT64 *,
+          C_FLOAT64 *,
+          C_FLOAT64 *,
+          C_INT *,
           FTruncatedNewton *, // Functor for function under investigation
-          doublereal *,
-          doublereal *,
-          integer *);
+          C_FLOAT64 *,
+          C_FLOAT64 *,
+          C_INT *);
 
-int tn_(integer *,
-        integer *,
-        doublereal *,
-        doublereal *,
-        doublereal *,
-        doublereal *,
-        integer *,
+int tn_(C_INT *,
+        C_INT *,
+        C_FLOAT64 *,
+        C_FLOAT64 *,
+        C_FLOAT64 *,
+        C_FLOAT64 *,
+        C_INT *,
         FTruncatedNewton *);
 
+#ifdef MUST_BE_REMOVED
 //these external C functions (normally included in f2ch.add header file)
 //are required for the compilation of praxis
 extern "C"
   {
-    extern double pow_dd(doublereal *, doublereal *);
-    extern integer pow_ii(integer *, integer *);
-    extern integer s_wsfe(cilist *);
-    extern integer do_fio(integer *, char *, ftnlen);
-    extern integer e_wsfe(void);
-    double d_lg10(doublereal *);
+    extern double pow_dd(C_FLOAT64 *, C_FLOAT64 *);
+    extern C_INT pow_ii(C_INT *, C_INT *);
+    extern C_INT s_wsfe(cilist *);
+    extern C_INT do_fio(C_INT *, char *, ftnlen);
+    extern C_INT e_wsfe(void);
+    double d_lg10(C_FLOAT64 *);
   }
+#endif // MUST_BE_REMOVED
 
 #endif // COAPSI_CTruncatedNewton

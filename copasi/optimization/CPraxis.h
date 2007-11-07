@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CPraxis.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: jdada $
-//   $Date: 2007/11/06 15:01:39 $
+//   $Author: shoops $
+//   $Date: 2007/11/07 14:09:33 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,8 +14,6 @@
 #define COPASI_CPraxis
 
 #include "copasi.h"
-
-#include "f2c.h"
 
 class FPraxis
   {
@@ -50,25 +48,26 @@ template <class CType> class FPraxisTemplate : public FPraxis
     {return (*mpType.*mMethod)(value, n);}    ;              // execute member function
   };
 
-doublereal praxis_(doublereal *t0,
-                   doublereal *machep,
-                   doublereal *h0,
-                   integer *n,
-                   integer *prin,
-                   doublereal *x,
-                   FPraxis *f, // Functor for function under investigation
-                   doublereal *fmin);
+C_FLOAT64 praxis_(C_FLOAT64 *t0,
+                  C_FLOAT64 *machep,
+                  C_FLOAT64 *h0,
+                  C_INT *n,
+                  C_INT *prin,
+                  C_FLOAT64 *x,
+                  FPraxis *f, // Functor for function under investigation
+                  C_FLOAT64 *fmin);
 
+#ifdef MUST_BE_REMOVED
 //these external C functions (normally included in f2ch.add header file)
 //are required for the compilation of praxis
 extern "C"
   {
-
-    extern integer pow_ii(integer *, integer *);
-    extern integer s_wsfe(cilist *);
-    extern integer do_fio(integer *, char *, ftnlen);
-    extern integer e_wsfe(void);
-    double d_lg10(doublereal *);
+    extern C_INT pow_ii(C_INT *, C_INT *);
+    extern C_INT s_wsfe(cilist *);
+    extern C_INT do_fio(C_INT *, char *, ftnlen);
+    extern C_INT e_wsfe(void);
+    double d_lg10(C_FLOAT64 *);
   }
+#endif // MUST_BE_REMOVED
 
 #endif // COAPSI_CPraxis
