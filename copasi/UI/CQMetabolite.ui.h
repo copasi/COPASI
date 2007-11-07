@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMetabolite.ui.h,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/01 19:28:34 $
+//   $Date: 2007/11/07 17:05:36 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -86,6 +86,17 @@ void CQMetabolite::slotBtnNew()
       i++;
       name = "metabolite_";
       name += (const char *)QString::number(i).utf8();
+    }
+
+  switch (mFramework)
+    {
+    case 0:
+      mpMetab->setInitialConcentration(1.0);
+      break;
+
+    case 1:
+      mpMetab->setInitialValue(100.0);
+      break;
     }
 
   enter(mpMetab->getKey());
@@ -260,7 +271,7 @@ void CQMetabolite::slotCompartmentChanged(int compartment)
 
   mInitialNumber *= pNewCompartment->getInitialValue() / mpCurrentCompartment->getInitialValue();
 
-  if (!mShowConcentration)
+  if (mFramework == 1)
     mpEditInitialValue->setText(QString::number(mInitialNumber, 'g', 10));
 
   mpCurrentCompartment = pNewCompartment;
@@ -356,23 +367,41 @@ bool CQMetabolite::leave()
 }
 
 bool CQMetabolite::update(ListViews::ObjectType objectType,
-                          ListViews::Action /* action */,
-                          const std::string & /* key */)
+                          ListViews::Action action,
+                          const std::string & key)
 {
-  if (!isVisible() || mIgnoreUpdates) return true;
-
   switch (objectType)
     {
-    case ListViews::STATE:
     case ListViews::MODEL:
+      // For a new model we need to remove references to no longer existing metabolites
+      if (action == ListViews::ADD)
+        {
+          mKey = "";
+          mpMetab = NULL;
+        }
+      break;
+
     case ListViews::METABOLITE:
+      // If the currently displayed metabolite is deleted we need to remove its references.
+      if (action == ListViews::DELETE && mKey == key)
+        {
+          mKey = "";
+          mpMetab = NULL;
+        }
+      break;
+
+    case ListViews::STATE:
     case ListViews::COMPARTMENT:
-      load();
       break;
 
     default:
+      return true;
       break;
     }
+
+  if (isVisible() && !mIgnoreUpdates)
+    load();
+
   return true;
 }
 
@@ -563,8 +592,9 @@ void CQMetabolite::slotReactionTableCurrentChanged(QListViewItem * pItem)
 
 void CQMetabolite::slotInitialValueLostFocus()
 {
-  if (mShowConcentration)
+  switch (mFramework)
     {
+    case 0:
       if (QString::number(mInitialConcentration, 'g', 10) == mpEditInitialValue->text())
         return;
 
@@ -576,9 +606,9 @@ void CQMetabolite::slotInitialValueLostFocus()
                        *CCopasiDataModel::Global->getModel());
 
       mInitialNumberLastChanged = false;
-    }
-  else
-    {
+      break;
+
+    case 1:
       if (QString::number(mInitialNumber, 'g', 10) == mpEditInitialValue->text())
         return;
 
@@ -590,6 +620,7 @@ void CQMetabolite::slotInitialValueLostFocus()
                               *CCopasiDataModel::Global->getModel());
 
       mInitialNumberLastChanged = true;
+      break;
     }
 }
 
@@ -640,10 +671,17 @@ void CQMetabolite::setFramework(int framework)
                          + FROM_UTF8(CCopasiDataModel::Global->getModel()->getConcentrationRateUnitName()) + ")");
 
       mpEditInitialValue->setText(QString::number(mInitialConcentration, 'g', 10));
-      mpEditCurrentValue->setText(QString::number(mpMetab->getConcentration()));
-      mpEditRate->setText(QString::number(mpMetab->getConcentrationRate()));
+      if (mpMetab != NULL)
+        {
+          mpEditCurrentValue->setText(QString::number(mpMetab->getConcentration()));
+          mpEditRate->setText(QString::number(mpMetab->getConcentrationRate()));
+        }
+      else
+        {
+          mpEditCurrentValue->setText("");
+          mpEditRate->setText("");
+        }
 
-      mShowConcentration = true;
       break;
 
     case 1:
@@ -653,10 +691,17 @@ void CQMetabolite::setFramework(int framework)
                          + FROM_UTF8(CCopasiDataModel::Global->getModel()->getTimeUnitName()) + ")");
 
       mpEditInitialValue->setText(QString::number(mInitialNumber, 'g', 10));
-      mpEditCurrentValue->setText(QString::number(mpMetab->getValue()));
-      mpEditRate->setText(QString::number(mpMetab->getRate()));
+      if (mpMetab != NULL)
+        {
+          mpEditCurrentValue->setText(QString::number(mpMetab->getValue()));
+          mpEditRate->setText(QString::number(mpMetab->getRate()));
+        }
+      else
+        {
+          mpEditCurrentValue->setText("");
+          mpEditRate->setText("");
+        }
 
-      mShowConcentration = false;
       break;
     }
 }

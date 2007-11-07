@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMetabolite.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/01 19:28:34 $
+//   $Date: 2007/11/07 17:05:36 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,8 +13,8 @@
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQMetabolite.ui'
  **
- ** Created: Thu Nov 1 15:22:35 2007
- **      by: The User Interface Compiler ($Id: CQMetabolite.h,v 1.7 2007/11/01 19:28:34 shoops Exp $)
+ ** Created: Wed Nov 7 10:02:37 2007
+ **      by: The User Interface Compiler ($Id: CQMetabolite.h,v 1.8 2007/11/07 17:05:36 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -36,10 +36,10 @@ class QLabel;
 class QLineEdit;
 class QComboBox;
 class QFrame;
-class QPushButton;
 class QToolButton;
 class QListView;
 class QListViewItem;
+class QPushButton;
 class CQExpressionWidget;
 class CMetab;
 class CCompartment;
@@ -66,7 +66,6 @@ class CQMetabolite : public CopasiWidget
     QFrame* mpLine1;
     QComboBox* mpComboBoxCompartment;
     QLineEdit* mpEditRate;
-    QPushButton* mpBtnToggle;
     CQExpressionWidget* mpEditExpression;
     QToolButton* mpBtnObject;
     QLineEdit* mpEditInitialValue;
@@ -85,7 +84,7 @@ class CQMetabolite : public CopasiWidget
 
     virtual bool enter(const std::string & key);
     virtual bool leave();
-    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
+    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string &);
     virtual void setFramework(int framework);
 
   protected:
@@ -111,7 +110,6 @@ class CQMetabolite : public CopasiWidget
     std::vector< int > mItemToType;
     double mInitialNumber;
     double mInitialConcentration;
-    bool mShowConcentration;
 
     QPixmap image0;
     QPixmap image1;
