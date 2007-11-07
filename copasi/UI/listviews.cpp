@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.232 $
+//   $Revision: 1.233 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/07 19:45:40 $
+//   $Date: 2007/11/07 21:14:26 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1180,7 +1180,7 @@ void ListViews::notifyAllChildWidgets(C_INT32 id,
     }
 }
 
-void ListViews::setChildWidgetsFramework(FolderListItem * pItem, int framework)
+void ListViews::setChildWidgetsFramework(int framework)
 {
   QObjectList * pList = queryList("CopasiWidget");
   QObjectListIt it(*pList); // iterate over the CopasiWidgets
@@ -1200,11 +1200,9 @@ void ListViews::setFramework(int framework)
 {
   std::set<ListViews *>::iterator it = mListOfListViews.begin();
   std::set<ListViews *>::iterator end = mListOfListViews.end();
-  FolderListItem * pItem;
 
   for (; it != end; ++it)
-    if ((pItem = (*it)->findListViewItem(0, "")) != NULL)
-      (*it)->setChildWidgetsFramework(pItem, framework);
+    (*it)->setChildWidgetsFramework(framework);
 }
 
 void ListViews::refreshInitialValues()
