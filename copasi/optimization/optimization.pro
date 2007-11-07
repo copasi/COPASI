@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/optimization.pro,v $ 
-#   $Revision: 1.29 $ 
+#   $Revision: 1.30 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2007/10/29 13:17:18 $ 
+#   $Date: 2007/11/07 14:10:47 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -11,7 +11,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.29 $ $Author: shoops $ $Date: 2007/10/29 13:17:18 $  
+# $Revision: 1.30 $ $Author: shoops $ $Date: 2007/11/07 14:10:47 $  
 ######################################################################
 
 LIB = optimization
@@ -62,6 +62,14 @@ contains(DEFINES, COPASI_PRAXIS) {
            
   SOURCES += COptMethodPraxis.cpp \
              CPraxis.cpp
+}
+
+contains(DEFINES, COPASI_TRUNCATED_NEWTON) {
+  HEADERS += COptMethodTruncatedNewton.h \
+             CTruncatedNewton.h
+           
+  SOURCES += COptMethodTruncatedNewton.cpp \
+             CTruncatedNewton.cpp
 }
 
 DISTFILES += optimization.dsp
