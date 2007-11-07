@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget.cpp,v $
-//   $Revision: 1.146 $
+//   $Revision: 1.147 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/01 19:28:18 $
+//   $Date: 2007/11/07 16:58:36 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -512,11 +512,13 @@ void MetabolitesWidget::initialConcentrationChanged(unsigned C_INT32 row)
   = static_cast< CMetab * >(GlobalKeys.get(mKeys[row]));
 
   const CCompartment * pCompartment = NULL;
-  try
+
+  unsigned C_INT32 Index =
+    CCopasiDataModel::Global->getModel()->getCompartments().getIndex((const char *)table->text(row, COL_CURRENTCOMPARTMENT).utf8());
+  if (Index != C_INVALID_INDEX)
     {
-      pCompartment = CCopasiDataModel::Global->getModel()->getCompartments()[(const char *)table->text(row, COL_CURRENTCOMPARTMENT).utf8()];
+      pCompartment = CCopasiDataModel::Global->getModel()->getCompartments()[Index];
     }
-  catch (...) {}
 
   if (!pMetab || !pCompartment) return;
 
