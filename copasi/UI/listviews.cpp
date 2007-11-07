@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.231 $
+//   $Revision: 1.232 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/07 17:04:18 $
+//   $Date: 2007/11/07 19:45:40 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1182,18 +1182,17 @@ void ListViews::notifyAllChildWidgets(C_INT32 id,
 
 void ListViews::setChildWidgetsFramework(FolderListItem * pItem, int framework)
 {
-  FolderListItem * pChild = static_cast<FolderListItem * >(pItem->firstChild());
+  QObjectList * pList = queryList("CopasiWidget");
+  QObjectListIt it(*pList); // iterate over the CopasiWidgets
+  CopasiWidget * pCopasiWidget;
 
-  while (pChild)
+  while ((pCopasiWidget = static_cast< CopasiWidget * >(it.current())) != NULL)
     {
-      setChildWidgetsFramework(pChild, framework);
-
-      CopasiWidget * pWidget = findWidgetFromItem(pChild);
-      if (pWidget != NULL)
-        pWidget->setFramework(framework);
-
-      pChild = static_cast<FolderListItem * >(pChild->nextSibling());
+      pCopasiWidget->setFramework(framework);;
+      ++it;
     }
+
+  delete pList; // delete the list, not the CopasiWidgets
 }
 
 // static

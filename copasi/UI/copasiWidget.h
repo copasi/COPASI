@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiWidget.h,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/01 17:51:00 $
+//   $Date: 2007/11/07 19:45:40 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,6 +29,8 @@ class QResizeEvent;
 
 class CopasiWidget : public QWidget
   {
+    Q_OBJECT
+
   public:
     CopasiWidget(QWidget * parent = 0, const char * name = 0, WFlags f = 0);
     virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
