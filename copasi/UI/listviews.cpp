@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.230 $
+//   $Revision: 1.231 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/01 17:51:52 $
+//   $Date: 2007/11/07 17:04:18 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1104,8 +1104,7 @@ bool ListViews::notify(ObjectType objectType, Action action, const std::string &
   for (; it != ende; ++it)
     if (! (*it)->updateCurrentWidget(objectType, action, key)) success = false;
 
-  notifyAllChildWidgets(2, objectType, action, key); // Tasks
-  notifyAllChildWidgets(3, objectType, action, key); // Multiple Tasks
+  notifyAllChildWidgets(0, objectType, action, key);
 
   return success;
 }
