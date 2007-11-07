@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TimeSeriesSubwidget.ui.h,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/04/10 16:19:28 $
+//   $Date: 2007/11/07 19:46:35 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -82,16 +82,9 @@ void TimeSeriesSubWidget::displayOptimizationTab(bool displayOptTab)
     tabWidget2->removePage(tab);
 }
 
-void TimeSeriesSubWidget::toggleView()
-{
-  if (comboBox->currentItem() == 0)
-    dataTable->showConcentrations(true);
-  else
-    dataTable->showConcentrations(false);
-}
-
 void TimeSeriesSubWidget::init()
 {
+  mFramework = 0;
   dataTable->setNumRows(10);
   displayOptimizationTab(false);
 }
@@ -99,4 +92,20 @@ void TimeSeriesSubWidget::init()
 CTimeSeriesTable* TimeSeriesSubWidget::table()
 {
   return dataTable;
+}
+
+void TimeSeriesSubWidget::setFramework(const int & framework)
+{
+  mFramework = framework;
+
+  switch (mFramework)
+    {
+    case 0:
+      dataTable->showConcentrations(true);
+      break;
+
+    case 1:
+      dataTable->showConcentrations(false);
+      break;
+    }
 }

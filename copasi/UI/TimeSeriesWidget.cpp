@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TimeSeriesWidget.cpp,v $
-   $Revision: 1.10 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/05/04 19:13:10 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TimeSeriesWidget.cpp,v $
+//   $Revision: 1.11 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/11/07 19:46:35 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -40,6 +40,8 @@ TimeSeriesWidget::TimeSeriesWidget(QWidget* parent, const char* name, WFlags fl)
 
   mCentralWidget = new TimeSeriesSubWidget(this, "TimeSeriesSubwidget");
   mWidgetLayout->addWidget(mCentralWidget, 0, 0);
+
+  mCentralWidget->setFramework(mFramework);
 
   /*commitChanges = new QPushButton(this, "commitChanges");
   commitChanges->setText(trUtf8("Commit"));
@@ -105,4 +107,11 @@ bool TimeSeriesWidget::enter(const std::string & C_UNUSED(key))
 
   if (comp) return loadFromCompartment(comp);
   else return false;*/
+}
+
+void TimeSeriesWidget::setFramework(int framework)
+{
+  CopasiWidget::setFramework(framework);
+
+  mCentralWidget->setFramework(mFramework);
 }

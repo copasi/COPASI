@@ -1,20 +1,20 @@
-/* Begin CVS Header
-   $Source: /home/cvs/copasi_dev/copasi/CopasiUI/TimeSeriesSubwidget.h,v $
-   $Revision: 1.9.2.2 $
-   $Name:  $
-   $Author: ssahle $
-   $Date: 2006/05/19 13:28:34 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /home/cvs/copasi_dev/cvs_admin/addHeader,v $
+//   $Revision: 1.4 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/05/31 18:21:38 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'TimeSeriesSubwidget.ui'
  **
- ** Created: Fr Mai 19 15:21:07 2006
- **      by: The User Interface Compiler ($Id: TimeSeriesSubwidget.h,v 1.9.2.2 2006/05/19 13:28:34 ssahle Exp $)
+ ** Created: Wed Nov 7 13:58:32 2007
+ **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.8   edited Jan 11 14:47 $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -32,7 +32,6 @@ class QHBoxLayout;
 class QGridLayout;
 class QSpacerItem;
 class CTimeSeriesTable;
-class QComboBox;
 class QPushButton;
 class QTabWidget;
 class QTextEdit;
@@ -45,7 +44,6 @@ class TimeSeriesSubWidget : public QWidget
     TimeSeriesSubWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     ~TimeSeriesSubWidget();
 
-    QComboBox* comboBox;
     QPushButton* ButtonSaveData;
     QTabWidget* tabWidget2;
     QWidget* tab;
@@ -54,7 +52,7 @@ class TimeSeriesSubWidget : public QWidget
     CTimeSeriesTable* dataTable;
 
     void displayOptimizationTab(bool displayOptTab);
-    bool clear();
+    void setFramework(const int & framework);
 
   public slots:
     virtual CTimeSeriesTable * table();
@@ -70,10 +68,11 @@ class TimeSeriesSubWidget : public QWidget
     virtual void languageChange();
 
     void saveDataToFile();
-    void toggleView();
     virtual void init();
 
   private:
+    int mFramework;
+
     QPixmap image0;
   };
 
