@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.212 $
+//   $Revision: 1.213 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/01 17:51:52 $
+//   $Date: 2007/11/07 16:56:38 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1297,7 +1297,7 @@ void CopasiUI3Window::checkPendingMessages()
       if (numFilteredMessages != 0)
         {
           CQMessageBox box(this);
-          box.configure(QString("SBML Import Information"), text, QMessageBox::Information, QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton, QMessageBox::NoButton);
+          box.configure(QString("COPASI Message"), text, QMessageBox::Information, QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton, QMessageBox::NoButton);
           box.enableFilteredMessages(true);
           box.setFilteredMessageText(filteredText);
           box.setMessageTabLabel(QString::number(numMessages) + QString(" messages"));
@@ -1306,7 +1306,7 @@ void CopasiUI3Window::checkPendingMessages()
         }
       else
         {
-          CQMessageBox::information(this, QString("SBML Import Information"), text,
+          CQMessageBox::information(this, QString("COPASI Message"), text,
                                     QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
         }
     }
