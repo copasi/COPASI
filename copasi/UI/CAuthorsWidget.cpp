@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CAuthorsWidget.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2007/11/01 05:31:30 $
+//   $Date: 2007/11/08 22:26:35 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,15 +16,17 @@
 #include "model/CModel.h"
 #include "MIRIAM/CAuthor.h"
 #include "utilities/CCopasiVector.h"
-#include "report/CCopasiObject.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CCopasiObject.h"
+#include "report/CKeyFactory.h"
 
 #include "CAuthorsWidget.h"
 #include "qtUtilities.h"
+#include "CQMessageBox.h"
 
 #define COL_MARK               0
-#define COL_GIVEN_NAME         1
-#define COL_FAMILY_NAME        2
+#define COL_FAMILY_NAME        1
+#define COL_GIVEN_NAME         2
 #define COL_EMAIL              3
 #define COL_URL                4
 
@@ -50,7 +52,7 @@ CAuthorsWidget::~CAuthorsWidget()
 
 std::vector<const CCopasiObject*> CAuthorsWidget::getObjects() const
   {
-    std::vector<CAuthor*>& tmp = CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getAuthors();
+    const CCopasiVector<CAuthor>& tmp = CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getAuthors();
     std::vector<const CCopasiObject*> ret;
 
     C_INT32 i, imax = tmp.size();
@@ -68,8 +70,8 @@ void CAuthorsWidget::init()
   //Setting table headers
   QHeader *tableHeader = table->horizontalHeader();
   tableHeader->setLabel(COL_MARK, "Status");
-  tableHeader->setLabel(COL_GIVEN_NAME, "Given Name");
   tableHeader->setLabel(COL_FAMILY_NAME, "Family Name");
+  tableHeader->setLabel(COL_GIVEN_NAME, "Given Name");
   tableHeader->setLabel(COL_EMAIL, "Email");
   tableHeader->setLabel(COL_URL, "URL");
 }
@@ -78,8 +80,8 @@ void CAuthorsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_IN
 {
   if (!obj) return;
   const CAuthor *pAuthor = (const CAuthor*)obj;
-  table->setText(row, COL_GIVEN_NAME, FROM_UTF8(pAuthor->getGivenName()));
   table->setText(row, COL_FAMILY_NAME, FROM_UTF8(pAuthor->getFamilyName()));
+  table->setText(row, COL_GIVEN_NAME, FROM_UTF8(pAuthor->getGivenName()));
   table->setText(row, COL_EMAIL, FROM_UTF8(pAuthor->getEmail()));
   table->setText(row, COL_URL, FROM_UTF8(pAuthor->getURL()));
 }
@@ -89,16 +91,16 @@ void CAuthorsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj)
   if (!obj) return;
   CAuthor * pAuthor = static_cast< CAuthor * >(obj);
 
-  pAuthor->setGivenName((const char *) table->text(row, COL_GIVEN_NAME).utf8());
   pAuthor->setFamilyName((const char *) table->text(row, COL_FAMILY_NAME).utf8());
+  pAuthor->setGivenName((const char *) table->text(row, COL_GIVEN_NAME).utf8());
   pAuthor->setEmail((const char *) table->text(row, COL_EMAIL).utf8());
   pAuthor->setURL((const char *) table->text(row, COL_URL).utf8());
 }
 
 void CAuthorsWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT32 exc)
 {
-  if (exc != COL_FAMILY_NAME)
-    table->clearCell(row, COL_FAMILY_NAME);
+  if (exc != COL_GIVEN_NAME)
+    table->clearCell(row, COL_GIVEN_NAME);
 
   if (exc != COL_EMAIL)
     table->clearCell(row, COL_EMAIL);
@@ -108,7 +110,7 @@ void CAuthorsWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_IN
 }
 
 QString CAuthorsWidget::defaultObjectName() const
-{return "Author";}
+{return "New Author";}
 
 CCopasiObject* CAuthorsWidget::createNewObject(const std::string & name)
 {
@@ -124,5 +126,46 @@ CCopasiObject* CAuthorsWidget::createNewObject(const std::string & name)
   return pAuthor;
 }
 
-void CAuthorsWidget::deleteObjects(const std::vector<std::string> & C_UNUSED(keys))
-{}
+void CAuthorsWidget::deleteObjects(const std::vector<std::string> & keys)
+{
+
+  QString authorList = "Are you sure you want to delete listed AUTHOR(S) ?\n";
+  unsigned C_INT32 i, imax = keys.size();
+  for (i = 0; i < imax; i++) //all compartments
+    {
+      CAuthor * pAuthor =
+        dynamic_cast< CAuthor *>(GlobalKeys.get(keys[i]));
+
+      authorList.append(FROM_UTF8(pAuthor->getObjectName()));
+      authorList.append(", ");
+    }
+
+  authorList.remove(authorList.length() - 2, 2);
+
+  QString msg = authorList;
+
+  C_INT32 choice = 0;
+  choice = CQMessageBox::question(this,
+                                  "CONFIRM DELETE",
+                                  msg,
+                                  "Continue", "Cancel", 0, 1, 1);
+
+  switch (choice)
+    {
+    case 0:                                           // Yes or Enter
+      {
+        for (i = 0; i < imax; i++)
+          {
+            CCopasiDataModel::Global->getModel()->getMIRIAMInfo().removeAuthor(keys[i]);
+          }
+
+        //for (i = 0; i < imax; i++)
+        //protectedNotify(ListViews::MODEL, ListViews::DELETE, keys[i]);
+
+        mChanged = true;
+        break;
+      }
+    default:                                           // No or Escape
+      break;
+    }
+}

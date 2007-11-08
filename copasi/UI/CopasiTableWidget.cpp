@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.cpp,v $
-//   $Revision: 1.56 $
+//   $Revision: 1.57 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/11/01 17:51:00 $
+//   $Author: aekamal $
+//   $Date: 2007/11/08 22:26:35 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -583,6 +583,7 @@ void CopasiTableWidget::keyPressEvent (QKeyEvent * e)
   if (e->key() == k)
     {
       slotTableDelKey();
+      emit delKeyPressed();
     }
 }
 

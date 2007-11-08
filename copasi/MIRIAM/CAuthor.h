@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/Attic/CAuthor.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2007/11/01 05:31:29 $
+//   $Date: 2007/11/08 22:26:35 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,16 +21,18 @@
 
 #include <string>
 
-#include "report/CCopasiObject.h"
+#include "report/CCopasiContainer.h"
 
-class CAuthor : public CCopasiObject
+class CAuthor : public CCopasiContainer
   {
     // Attributes
   private:
+
+    std::string mKey;
     /**
-     * The Family Name of the author - (only Required field,
+    * The Family Name of the author - (only Required field,
     * everything else is optional).
-     */
+    */
     std::string mFamilyName;
     /** The first name.
     */
@@ -50,14 +52,27 @@ class CAuthor : public CCopasiObject
   public:
     /**
      * Default constructor
-     * @param const std::string & name (default: "NoName")
+     * @param const std::string & familyName
      * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CAuthor(const std::string & familyName, const std::string & givenName = "NoGivenName");
+    CAuthor(const std::string & familyName,
+            const CCopasiContainer * pParent = NULL,
+            const std::string & givenName = "NoGivenName");
+
+    /**
+     * Copy constructor
+     * @param "const CAuthor &" src
+     * @param const CCopasiContainer * pParent (default: NULL)
+     */
+    CAuthor(const CAuthor & src,
+            const CCopasiContainer * pParent = NULL);
+
+    ~CAuthor();
+    void initObjects();
 
     /** Add the given name to Last name to get the full Name.
-      *
-      */
+         *
+         */
     std::string getFullName() const;
 
     const std::string & getFamilyName() const;
@@ -75,6 +90,12 @@ class CAuthor : public CCopasiObject
     void setEmail(const std::string Email);
 
     void setURL(const std::string URL);
+
+    /**
+        *  Returns a string with the name of this Author.
+        *  @return std::string key
+        */
+    virtual const std::string & getKey() const;
   };
 
 #endif //COPASI_CAUTHOR

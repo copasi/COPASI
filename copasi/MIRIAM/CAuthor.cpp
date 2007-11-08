@@ -1,22 +1,50 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/Attic/CAuthor.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2007/11/01 05:31:29 $
+//   $Date: 2007/11/08 22:26:35 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
+#include "report/CKeyFactory.h"
+
 #include "CAuthor.h"
 
-CAuthor::CAuthor(const std::string & familyName, const std::string & givenName) :
+CAuthor::CAuthor(const std::string & familyName,
+                 const CCopasiContainer * pParent, const std::string & givenName) :
+    CCopasiContainer(familyName, pParent, "Author"),
+    mKey(GlobalKeys.add("Author", this)),
+    mFamilyName(familyName),
+    mGivenName (givenName),
     mEmail(""), mURL("")
 {
-  mFamilyName = familyName;
-  mGivenName = givenName;
+  initObjects();
+  CONSTRUCTOR_TRACE;
+}
+
+CAuthor::CAuthor(const CAuthor & src,
+                 const CCopasiContainer * pParent):
+    CCopasiContainer(src, pParent),
+    mKey(GlobalKeys.add("Author", this)),
+    mFamilyName(src.mFamilyName),
+    mGivenName(src.mGivenName),
+    mEmail(src.mEmail), mURL(src.mURL)
+
+{
+  CONSTRUCTOR_TRACE;
+  initObjects();
+}
+
+void CAuthor::initObjects()
+{}
+
+CAuthor::~CAuthor()
+{
+  GlobalKeys.remove(mKey);
 }
 
 const std::string & CAuthor::getFamilyName() const
@@ -45,3 +73,5 @@ void CAuthor::setEmail(const std::string Email)
 
 void CAuthor::setURL(const std::string URL)
 {mURL = URL;}
+
+const std::string & CAuthor::getKey() const {return mKey;} //By G

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CMIRIAMModelWidget.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2007/11/01 05:31:30 $
+//   $Date: 2007/11/08 22:26:35 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -65,6 +65,8 @@ CMIRIAMModelWidget::CMIRIAMModelWidget(QWidget* parent, const char* name, WFlags
 
   connect(mAuthorsWidget, SIGNAL(setEnableOKAndCancel(bool)), this,
           SLOT(slotEnableOKAndCancel(bool)));
+  connect(mAuthorsWidget, SIGNAL(delKeyPressed()), this,
+          SLOT(slotBtnDeleteClicked()));
 }
 
 void CMIRIAMModelWidget::slotBtnOKClicked()
