@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-//   $Revision: 1.150 $
+//   $Revision: 1.151 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/01 17:51:00 $
+//   $Date: 2007/11/09 14:27:22 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -528,37 +528,6 @@ bool FunctionWidget1::loadFromFunction(const CFunction* func)
   else if (!mpFunction)
     return false;
 
-  // make dialogue read only for predefined functions
-  if (mpFunction->getType() == CFunction::MassAction ||
-      mpFunction->getType() == CFunction::PreDefined)
-    {
-      flagRO = true;
-      RadioButton1->setEnabled(false);
-      RadioButton2->setEnabled(false);
-      RadioButton3->setEnabled(false);
-      commitChanges->setEnabled(false);
-      cancelChanges->setEnabled(false);
-      deleteFcn->setEnabled(false);
-      LineEdit1->setReadOnly(true);
-      textBrowser->setReadOnly(true);
-      Table1->setReadOnly(true);
-      Table2->setReadOnly(true);
-    }
-  else   /*** if function is user-defined *****/
-    {
-      flagRO = false;
-      RadioButton1->setEnabled(true);
-      RadioButton2->setEnabled(true);
-      RadioButton3->setEnabled(true);
-      LineEdit1->setReadOnly(false);
-      textBrowser->setReadOnly(false);
-      Table1->setReadOnly(false);
-      Table2->setReadOnly(false);
-      commitChanges->setEnabled(true);
-      cancelChanges->setEnabled(true);
-      deleteFcn->setEnabled(true);
-    }
-
   // function name
   LineEdit1->setText(FROM_UTF8(mpFunction->getObjectName()));
 
@@ -596,11 +565,43 @@ bool FunctionWidget1::loadFromFunction(const CFunction* func)
   // application table
   loadUsageTable(/*pFunction->getVariables().getUsageRanges()*/);
 
-  isValid = true;
-  flagChanged = false;
-
   //MathML widget
   updateMmlWidget();
+
+  isValid = mpFunction->isUsable();
+
+  // make dialogue read only for predefined functions
+  if (mpFunction->getType() == CFunction::MassAction ||
+      mpFunction->getType() == CFunction::PreDefined)
+    {
+      flagRO = true;
+      RadioButton1->setEnabled(false);
+      RadioButton2->setEnabled(false);
+      RadioButton3->setEnabled(false);
+      commitChanges->setEnabled(false);
+      cancelChanges->setEnabled(false);
+      deleteFcn->setEnabled(false);
+      LineEdit1->setReadOnly(true);
+      textBrowser->setReadOnly(true);
+      Table1->setReadOnly(true);
+      Table2->setReadOnly(true);
+    }
+  else   /*** if function is user-defined *****/
+    {
+      flagRO = false;
+      RadioButton1->setEnabled(true);
+      RadioButton2->setEnabled(true);
+      RadioButton3->setEnabled(true);
+      LineEdit1->setReadOnly(false);
+      textBrowser->setReadOnly(false);
+      Table1->setReadOnly(false);
+      Table2->setReadOnly(false);
+      commitChanges->setEnabled(isValid);
+      cancelChanges->setEnabled(true);
+      deleteFcn->setEnabled(true);
+    }
+
+  flagChanged = false;
 
   return true;
 }

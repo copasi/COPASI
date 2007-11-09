@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-//   $Revision: 1.49 $
+//   $Revision: 1.50 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/02 18:18:03 $
+//   $Date: 2007/11/09 14:27:23 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -248,8 +248,8 @@ bool CEvaluationTree::compileNodes()
   std::vector< CEvaluationNode * >::iterator it;
   std::vector< CEvaluationNode * >::iterator end = mpNodeList->end();
 
-  for (it = mpNodeList->begin(), mUsable = true; it != end && mUsable; ++it)
-    mUsable = (*it)->compile(this);
+  for (it = mpNodeList->begin(), mUsable = true; it != end; ++it)
+    mUsable &= (*it)->compile(this);
 
   if (!mUsable)
     {
