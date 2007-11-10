@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.h,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2007/10/27 17:07:51 $
+//   $Date: 2007/11/10 21:15:53 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,6 +24,8 @@
 #include <vector>
 
 #include <qtable.h>
+#include <qevent.h>
+
 #include "copasi.h"
 #include "UI/copasiWidget.h"
 
@@ -44,6 +46,7 @@ class CopasiTableWidget : public CopasiWidget
     virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
     virtual bool leave();
     virtual bool enter(const std::string & key = "");
+    bool isTableInFocus();
 
   protected slots:
     virtual void slotDoubleClicked(int, int, int, const QPoint &);
@@ -162,6 +165,7 @@ class CopasiTableWidget : public CopasiWidget
      * to catch the delKeyEvent
      */
     virtual void keyPressEvent (QKeyEvent * e);
+
   signals:
     void setEnableOKAndCancel(bool e);
     void delKeyPressed();

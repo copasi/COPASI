@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CAuthorsWidget.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2007/11/08 22:26:35 $
+//   $Date: 2007/11/10 21:15:53 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -38,7 +38,7 @@ CAuthorsWidget::CAuthorsWidget(QWidget* parent, const char* name, WFlags f)
     : CopasiTableWidget(parent, false, name, f, false)
 {
   if (!name)
-    CopasiTableWidget::setName("CAuthorsWidget");
+    CopasiTableWidget::setName("AuthorsWidget");
   init();
 }
 
@@ -106,11 +106,14 @@ void CAuthorsWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_IN
     table->clearCell(row, COL_EMAIL);
 
   if (exc != COL_URL)
-    table->setText(row, COL_URL, "abcd.com");
+    {
+      //table->setText(row, COL_URL, "abcd.com");
+      table->clearCell(row, COL_URL);
+    }
 }
 
 QString CAuthorsWidget::defaultObjectName() const
-{return "New Author";}
+  {return "New Author";}
 
 CCopasiObject* CAuthorsWidget::createNewObject(const std::string & name)
 {

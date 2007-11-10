@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CMIRIAMModelWidget.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2007/11/08 22:26:35 $
+//   $Date: 2007/11/10 21:15:53 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -11,6 +11,7 @@
 // All rights reserved.
 
 #include <qlayout.h>
+#include <qlabel.h>
 #include <qpushbutton.h>
 
 #include "CMIRIAMModelWidget.h"
@@ -27,7 +28,13 @@ CMIRIAMModelWidget::CMIRIAMModelWidget(QWidget* parent, const char* name, WFlags
     CopasiWidget::setName("CMIRIAMModelWidget");
 
   //Create new widgets
-  mAuthorsWidget = new CAuthorsWidget(this, "CAuthorsWidgetForModel");
+  QLabel *pLblAuthors = new QLabel("Authors: ", this);
+  mAuthorsWidget = new CAuthorsWidget(this, "AuthorsWidgetForModel");
+  pLblAuthors->setBuddy(mAuthorsWidget);
+
+  QLabel *pLblPublications = new QLabel("Publications: ", this);
+  mPublicationsWidget = new CAuthorsWidget(this, "PublicationsWidgetForModel");
+  pLblPublications->setBuddy(mPublicationsWidget);
 
   btnOK = new QPushButton("Commit", this);
   btnCancel = new QPushButton("Revert", this);
@@ -37,7 +44,11 @@ CMIRIAMModelWidget::CMIRIAMModelWidget(QWidget* parent, const char* name, WFlags
 
   //Layout Widgets
   QVBoxLayout *vBoxLayout = new QVBoxLayout(this, 6);
+  vBoxLayout->addWidget(pLblAuthors);
   vBoxLayout->addWidget(mAuthorsWidget);
+
+  vBoxLayout->addWidget(pLblPublications);
+  vBoxLayout->addWidget(mPublicationsWidget);
 
   QHBoxLayout* hLayout = new QHBoxLayout(vBoxLayout, 0);
 
@@ -67,31 +78,47 @@ CMIRIAMModelWidget::CMIRIAMModelWidget(QWidget* parent, const char* name, WFlags
           SLOT(slotEnableOKAndCancel(bool)));
   connect(mAuthorsWidget, SIGNAL(delKeyPressed()), this,
           SLOT(slotBtnDeleteClicked()));
+
+  connect(mPublicationsWidget, SIGNAL(setEnableOKAndCancel(bool)), this,
+          SLOT(slotEnableOKAndCancel(bool)));
+  connect(mPublicationsWidget, SIGNAL(delKeyPressed()), this,
+          SLOT(slotBtnDeleteClicked()));
 }
 
 void CMIRIAMModelWidget::slotBtnOKClicked()
 {
   mAuthorsWidget->slotBtnOKClicked();
+  mPublicationsWidget->slotBtnOKClicked();
 }
 
 void CMIRIAMModelWidget::slotBtnCancelClicked()
 {
   mAuthorsWidget->slotBtnCancelClicked();
+  mPublicationsWidget->slotBtnCancelClicked();
 }
 
 void CMIRIAMModelWidget::slotBtnClearClicked()
 {
-  mAuthorsWidget->slotBtnClearClicked();
+  if (mAuthorsWidget->isTableInFocus())
+  {mAuthorsWidget->slotBtnClearClicked();}
+  else if (mPublicationsWidget->isTableInFocus())
+  {mPublicationsWidget->slotBtnClearClicked();}
 }
 
 void CMIRIAMModelWidget::slotBtnDeleteClicked()
 {
-  mAuthorsWidget->slotBtnDeleteClicked();
+  if (mAuthorsWidget->isTableInFocus())
+  {mAuthorsWidget->slotBtnDeleteClicked();}
+  else if (mPublicationsWidget->isTableInFocus())
+  {mPublicationsWidget->slotBtnDeleteClicked();}
 }
 
 void CMIRIAMModelWidget::slotBtnNewClicked()
 {
-  mAuthorsWidget->slotBtnNewClicked();
+  if (mAuthorsWidget->isTableInFocus())
+  {mAuthorsWidget->slotBtnNewClicked();}
+  else if (mPublicationsWidget->isTableInFocus())
+  {mPublicationsWidget->slotBtnNewClicked();}
 }
 
 void CMIRIAMModelWidget::slotEnableOKAndCancel(bool e)
@@ -103,17 +130,20 @@ void CMIRIAMModelWidget::slotEnableOKAndCancel(bool e)
 bool CMIRIAMModelWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
 {
   mAuthorsWidget->update(objectType, action, key);
+  mPublicationsWidget->update(objectType, action, key);
   return true;
 }
 
 bool CMIRIAMModelWidget::enter(const std::string & key)
 {
   mAuthorsWidget->enter(key);
+  mPublicationsWidget->enter(key);
   return true;
 }
 
 bool CMIRIAMModelWidget::leave()
 {
   mAuthorsWidget->leave();
+  mPublicationsWidget->leave();
   return true;
 }

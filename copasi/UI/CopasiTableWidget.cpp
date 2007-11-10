@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.cpp,v $
-//   $Revision: 1.57 $
+//   $Revision: 1.58 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2007/11/08 22:26:35 $
+//   $Date: 2007/11/10 21:15:53 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -585,6 +585,11 @@ void CopasiTableWidget::keyPressEvent (QKeyEvent * e)
       slotTableDelKey();
       emit delKeyPressed();
     }
+}
+
+bool CopasiTableWidget::isTableInFocus()
+{
+  return table->hasFocus();
 }
 
 void CopasiTableWidget::updateHeaderUnits()
