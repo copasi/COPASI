@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-//   $Revision: 1.127 $
+//   $Revision: 1.128 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/17 14:16:17 $
+//   $Date: 2007/11/12 19:25:37 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -395,18 +395,6 @@ bool CMetab::compile()
       pdelete(mpInitialExpression);
       mpInitialExpression = CExpression::createInitialExpression(*mpExpression);
 
-      if (mpInitialExpression != NULL)
-        {
-          success &= mpInitialExpression->compile(listOfContainer);
-          mpIConcReference->setDirectDependencies(mpInitialExpression->getDirectDependencies());
-          mpIConcReference->setRefresh(this, &CMetab::refreshInitialConcentration);
-        }
-      else
-        {
-          mpIConcReference->setDirectDependencies(Dependencies);
-          mpIConcReference->clearRefresh();
-        }
-
       mRate = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
       mConcRate = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
       mTT = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
@@ -512,6 +500,20 @@ bool CMetab::compile()
 
     default:
       break;
+    }
+
+  // Here we handle initial expressions for all types.
+  if (mpInitialExpression != NULL &&
+      mpInitialExpression->getInfix() != "")
+    {
+      success &= mpInitialExpression->compile(listOfContainer);
+      mpIConcReference->setDirectDependencies(mpInitialExpression->getDirectDependencies());
+      mpIConcReference->setRefresh(this, &CMetab::refreshInitialConcentration);
+    }
+  else
+    {
+      mpIConcReference->setDirectDependencies(Dependencies);
+      mpIConcReference->clearRefresh();
     }
 
   return success;
