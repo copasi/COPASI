@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartment.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/12 21:13:06 $
+//   $Date: 2007/11/12 23:13:01 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,8 +13,8 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQCompartment.ui'
  **
- ** Created: Mon Nov 12 16:10:33 2007
- **      by: The User Interface Compiler ($Id: CQCompartment.cpp,v 1.2 2007/11/12 21:13:06 shoops Exp $)
+ ** Created: Mon Nov 12 18:00:10 2007
+ **      by: The User Interface Compiler ($Id: CQCompartment.cpp,v 1.3 2007/11/12 23:13:01 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -314,12 +314,12 @@ CQCompartment::~CQCompartment()
  */
 void CQCompartment::languageChange()
 {
-  setCaption(tr("Form1"));
+  setCaption(tr("Compartment"));
   mpBtnCommit->setText(tr("Commit"));
   mpBtnRevert->setText(tr("Revert"));
   mpBtnNew->setText(tr("New"));
   mpBtnDelete->setText(tr("Delete"));
-  mpLblType->setText(tr("Type"));
+  mpLblType->setText(tr("Simulation Type"));
   mpLblName->setText(tr("Compartment Name"));
   mpMetaboliteTable->header()->setLabel(0, tr("Name"));
   mpLblMetabolites->setText(tr("Contained Metabolites"));
