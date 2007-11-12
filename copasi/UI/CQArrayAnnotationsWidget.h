@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/07/24 13:25:47 $
+//   $Author: akoenig $
+//   $Date: 2007/11/12 17:06:33 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,6 +16,14 @@
 #include <qvbox.h>
 #include "utilities/CAnnotatedMatrix.h"
 #include "mathematics.h"
+
+#include <qhbox.h>
+#include <qpushbutton.h>
+#include <qwidgetstack.h>
+
+#ifdef WITH_QWT3D
+#include "CQBarChart.h"
+#endif
 
 class QGridLayout;
 class QTable;
@@ -178,7 +186,8 @@ class CQArrayAnnotationsWidget : public QVBox
     Q_OBJECT
 
   public:
-    CQArrayAnnotationsWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+
+    CQArrayAnnotationsWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0, bool barChart = true);
     ~CQArrayAnnotationsWidget();
 
     void setArrayAnnotation(const CArrayAnnotation * pArray);
@@ -203,9 +212,19 @@ class CQArrayAnnotationsWidget : public QVBox
      */
     void setLegendEnabled(bool b);
 
+    void hideBars();
+
+    void setFocusOnTable();
+
+    void setFocusOnBars();
+
   protected slots:
 
     void selectionTableChanged(int row, int col);
+
+    void changeContents();
+
+    void tableDoubleClicked();
 
   protected:
 
@@ -238,6 +257,22 @@ class CQArrayAnnotationsWidget : public QVBox
     void storeCurrentCombos();
 
     void clearWidget();
+
+#ifdef WITH_QWT3D
+    CQBarChart* plot3d;
+#endif
+
+    QHBox* mpHBoxSelection;
+    QHBox* mpHBoxContents;
+    QWidgetStack* mpStack;
+
+    bool showBarChart;
+    QPushButton* mpButton;
+    double** data;
+    std::vector<QColor> mColors;
+    void enableBarChart(bool enable);
+    void switchToTable();
+    void switchToBarChart();
 
     QTable* mpSelectionTable;
     QTable* mpContentTable;
