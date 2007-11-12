@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.234 $
+//   $Revision: 1.235 $
 //   $Name:  $
-//   $Author: akoenig $
-//   $Date: 2007/11/12 17:10:09 $
+//   $Author: ssahle $
+//   $Date: 2007/11/12 17:14:12 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -95,7 +95,6 @@
 #include "plotUI/plotwidget1.h"
 #include "model/CModel.h"
 
-#include <iostream.h>
 /**------FolderListItem::FolderListItem(QListView *parent, Folder *f)---->
  **
  ** Parameters:- 1. QListView* :- The parameter for the root of the tree
