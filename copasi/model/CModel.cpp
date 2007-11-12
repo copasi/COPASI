@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.327 $
+//   $Revision: 1.328 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/09 14:27:23 $
+//   $Date: 2007/11/12 19:24:56 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -3261,10 +3261,12 @@ CModel::buildInitialRefreshSequence(std::set< const CCopasiObject * > & changedO
       // No changed objects, i.e., we need to update all
       else if (changedObjects.size() == 0)
         {
-          // The concentration of a metabolite is constant unless it is given by an assignment
+          // The concentration of a metabolite is constant unless it is given by an
+          // assignment or an initial assignment.
           if ((pMetab = dynamic_cast< const CMetab * >((*itSet)->getObjectParent())) != NULL &&
               pMetab->getInitialConcentrationReference() == *itSet &&
-              pMetab->getStatus() != ASSIGNMENT)
+              pMetab->getInitialExpression() == "" &&
+              pMetab->getStatus() != CModelEntity::ASSIGNMENT)
             Objects.insert(*itSet);
           else
             continue;
