@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/02 18:18:01 $
+//   $Date: 2007/11/12 21:06:11 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -367,9 +367,7 @@ void CQExpressionWidget::setExpression(const std::string & expression)
       i++;
     }
 
-  disconnect(this, SIGNAL(textChanged()), this, SLOT(slotTextChanged()));
   setText(FROM_UTF8(out_str));
-  connect(this, SIGNAL(textChanged()), this, SLOT(slotTextChanged()));
 
   mpValidator->saved();
 
