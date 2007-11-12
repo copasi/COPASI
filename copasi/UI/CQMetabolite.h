@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMetabolite.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/12 19:27:44 $
+//   $Date: 2007/11/12 21:06:47 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,8 +13,8 @@
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQMetabolite.ui'
  **
- ** Created: Mon Nov 12 11:06:19 2007
- **      by: The User Interface Compiler ($Id: CQMetabolite.h,v 1.9 2007/11/12 19:27:44 shoops Exp $)
+ ** Created: Mon Nov 12 15:15:21 2007
+ **      by: The User Interface Compiler ($Id: CQMetabolite.h,v 1.10 2007/11/12 21:06:47 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -113,6 +113,8 @@ class CQMetabolite : public CopasiWidget
     std::vector< int > mItemToType;
     double mInitialNumber;
     double mInitialConcentration;
+    bool mExpressionValid;
+    bool mInitialExpressionValid;
 
     QPixmap image0;
     QPixmap image1;
@@ -131,9 +133,9 @@ class CQMetabolite : public CopasiWidget
     void slotCompartmentChanged(int compartment);
     void slotTypeChanged(int type);
     void slotInitialTypeChanged(bool useInitialExpression);
-    void slotInitialAssignment(int);
     void slotNameLostFocus();
     void slotExpressionValid(bool valid);
+    void slotInitialExpressionValid(bool valid);
     void slotReactionTableCurrentChanged(QListViewItem * pItem);
     void slotInitialValueLostFocus();
   };

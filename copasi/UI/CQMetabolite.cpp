@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMetabolite.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/12 19:27:44 $
+//   $Date: 2007/11/12 21:06:47 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,8 +13,8 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQMetabolite.ui'
  **
- ** Created: Mon Nov 12 12:10:47 2007
- **      by: The User Interface Compiler ($Id: CQMetabolite.cpp,v 1.9 2007/11/12 19:27:44 shoops Exp $)
+ ** Created: Mon Nov 12 15:21:30 2007
+ **      by: The User Interface Compiler ($Id: CQMetabolite.cpp,v 1.10 2007/11/12 21:06:47 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -309,6 +309,7 @@ CQMetabolite::CQMetabolite(QWidget* parent, const char* name)
   connect(mpComboBoxType, SIGNAL(activated(int)), this, SLOT(slotTypeChanged(int)));
   connect(mpBtnObjectExpression, SIGNAL(clicked()), mpEditExpression, SLOT(slotSelectObject()));
   connect(mpEditExpression, SIGNAL(valid(bool)), this, SLOT(slotExpressionValid(bool)));
+  connect(mpEditInitialExpression, SIGNAL(valid(bool)), this, SLOT(slotInitialExpressionValid(bool)));
   connect(mpEditInitialValue, SIGNAL(lostFocus()), this, SLOT(slotInitialValueLostFocus()));
   connect(mpReactionTable, SIGNAL(doubleClicked(QListViewItem*)), this, SLOT(slotReactionTableCurrentChanged(QListViewItem*)));
   connect(mpBoxUseInitialExpression, SIGNAL(toggled(bool)), this, SLOT(slotInitialTypeChanged(bool)));
@@ -321,11 +322,13 @@ CQMetabolite::CQMetabolite(QWidget* parent, const char* name)
   setTabOrder(mpEditExpression, mpBtnObjectExpression);
   setTabOrder(mpBtnObjectExpression, mpEditInitialValue);
   setTabOrder(mpEditInitialValue, mpBoxUseInitialExpression);
-  setTabOrder(mpBoxUseInitialExpression, mpReactionTable);
-  setTabOrder(mpReactionTable, mpEditCurrentValue);
+  setTabOrder(mpBoxUseInitialExpression, mpEditInitialExpression);
+  setTabOrder(mpEditInitialExpression, mpBtnObjectInitialExpression);
+  setTabOrder(mpBtnObjectInitialExpression, mpEditCurrentValue);
   setTabOrder(mpEditCurrentValue, mpEditRate);
   setTabOrder(mpEditRate, mpEditTransitionTime);
-  setTabOrder(mpEditTransitionTime, mpBtnCommit);
+  setTabOrder(mpEditTransitionTime, mpReactionTable);
+  setTabOrder(mpReactionTable, mpBtnCommit);
   setTabOrder(mpBtnCommit, mpBtnRevert);
   setTabOrder(mpBtnRevert, mpBtnNew);
   setTabOrder(mpBtnNew, mpBtnDelete);

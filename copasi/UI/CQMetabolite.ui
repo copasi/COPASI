@@ -1,10 +1,10 @@
 <!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMetabolite.ui,v $ </comment>
-<comment>   $Revision: 1.8 $ </comment>
+<comment>   $Revision: 1.9 $ </comment>
 <comment>   $Name:  $ </comment>
 <comment>   $Author: shoops $ </comment>
-<comment>   $Date: 2007/11/12 19:27:44 $ </comment>
+<comment>   $Date: 2007/11/12 21:06:47 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -720,6 +720,12 @@
         <slot>slotExpressionValid(bool)</slot>
     </connection>
     <connection>
+        <sender>mpEditInitialExpression</sender>
+        <signal>valid(bool)</signal>
+        <receiver>CQMetabolite</receiver>
+        <slot>slotInitialExpressionValid(bool)</slot>
+    </connection>
+    <connection>
         <sender>mpEditInitialValue</sender>
         <signal>lostFocus()</signal>
         <receiver>CQMetabolite</receiver>
@@ -752,10 +758,12 @@
     <tabstop>mpBtnObjectExpression</tabstop>
     <tabstop>mpEditInitialValue</tabstop>
     <tabstop>mpBoxUseInitialExpression</tabstop>
-    <tabstop>mpReactionTable</tabstop>
+    <tabstop>mpEditInitialExpression</tabstop>
+    <tabstop>mpBtnObjectInitialExpression</tabstop>
     <tabstop>mpEditCurrentValue</tabstop>
     <tabstop>mpEditRate</tabstop>
     <tabstop>mpEditTransitionTime</tabstop>
+    <tabstop>mpReactionTable</tabstop>
     <tabstop>mpBtnCommit</tabstop>
     <tabstop>mpBtnRevert</tabstop>
     <tabstop>mpBtnNew</tabstop>
@@ -782,6 +790,8 @@
     <variable access="private">std::vector&lt; int &gt; mItemToType;</variable>
     <variable access="private">double mInitialNumber;</variable>
     <variable access="private">double mInitialConcentration;</variable>
+    <variable access="private">bool mExpressionValid;</variable>
+    <variable access="private">bool mInitialExpressionValid;</variable>
 </variables>
 <slots>
     <slot access="private" specifier="non virtual">slotBtnCommit()</slot>
@@ -791,9 +801,9 @@
     <slot access="private" specifier="non virtual">slotCompartmentChanged( int compartment )</slot>
     <slot access="private" specifier="non virtual">slotTypeChanged( int type )</slot>
     <slot access="private" specifier="non virtual">slotInitialTypeChanged( bool useInitialExpression )</slot>
-    <slot access="private" specifier="non virtual">slotInitialAssignment( int )</slot>
     <slot access="private" specifier="non virtual">slotNameLostFocus()</slot>
     <slot access="private" specifier="non virtual">slotExpressionValid( bool valid )</slot>
+    <slot access="private" specifier="non virtual">slotInitialExpressionValid( bool valid )</slot>
     <slot access="private" specifier="non virtual">slotReactionTableCurrentChanged( QListViewItem * pItem )</slot>
     <slot access="private" specifier="non virtual">slotInitialValueLostFocus()</slot>
 </slots>
