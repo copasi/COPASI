@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.64 $ 
+#   $Revision: 1.65 $ 
 #   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2007/10/31 15:17:15 $ 
+#   $Author: akoenig $ 
+#   $Date: 2007/11/12 16:57:44 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -11,7 +11,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.64 $ $Author: shoops $ $Date: 2007/10/31 15:17:15 $  
+# $Revision: 1.65 $ $Author: akoenig $ $Date: 2007/11/12 16:57:44 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -48,7 +48,8 @@ QMAKE_LFLAGS  += $$(LDFLAGS)
 debug {
   DEFINES += COPASI_DEBUG
   #DEFINES += WITH_LAYOUT
-
+  DEFINES += COPASI_TSSA
+    
   isEmpty(COPASI_SRC_PACKAGE) {
     DEFINES += COPASI_TSS
   }
@@ -95,7 +96,7 @@ contains(STATIC_LINKAGE, yes) {
 }
 
 
-contains(BUILD_OS, Darwin) {
+contains(BUILD_OS, Darwin) {  
   release {
     contains(TEMPLATE, app) {
       QMAKE_POST_LINK = strip $(TARGET)
@@ -119,13 +120,24 @@ contains(BUILD_OS, Darwin) {
     LIBS += -lexpat
   }
 
+  !isEmpty(QWT3D_PATH){
+    LIBS +=  $${QWT3D_PATH}/lib/libqwtplot3d.a
+    INCLUDEPATH += $${QWT3D_PATH}/include
+    DEFINES += WITH_QWT3D
+  } else {
+    LIBS += -lqwtplot3d
+  }
+
   contains(CONFIG, qt) {
+  
     !isEmpty(QWT_PATH){
        LIBS+=  $${QWT_PATH}/lib/libqwt.a
        INCLUDEPATH += $${QWT_PATH}/include
     } else {
       LIBS += -lqwt
     }
+    
+
     
     LIBS += $(QTDIR)/lib/libqt-mt.a
   

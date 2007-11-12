@@ -71,6 +71,17 @@ if test x"${QWT_PATH}" != x""; then
 fi
 
 
+dnl qwt3d library
+AC_ARG_WITH([qwt3d],
+  AS_HELP_STRING([--with-qwt3d=PATH],
+                 [Path to QWT3D Library ]),
+  [QWT3D_PATH=$withval])
+
+if test x"${QWT3D_PATH}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG QWT3D_PATH=$QWT3D_PATH"
+fi
+
+
 dnl expat library   
 AC_ARG_WITH([expat],
   AC_HELP_STRING([--with-expat=PATH],
