@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.65 $ 
+#   $Revision: 1.66 $ 
 #   $Name:  $ 
-#   $Author: akoenig $ 
-#   $Date: 2007/11/12 16:57:44 $ 
+#   $Author: ssahle $ 
+#   $Date: 2007/11/12 18:37:43 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -11,7 +11,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.65 $ $Author: akoenig $ $Date: 2007/11/12 16:57:44 $  
+# $Revision: 1.66 $ $Author: ssahle $ $Date: 2007/11/12 18:37:43 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -124,9 +124,8 @@ contains(BUILD_OS, Darwin) {
     LIBS +=  $${QWT3D_PATH}/lib/libqwtplot3d.a
     INCLUDEPATH += $${QWT3D_PATH}/include
     DEFINES += WITH_QWT3D
-  } else {
-    LIBS += -lqwtplot3d
   }
+ 
 
   contains(CONFIG, qt) {
   
