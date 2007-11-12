@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQModelValue.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/14 15:29:50 $
+//   $Date: 2007/11/12 23:13:33 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,8 +13,8 @@
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQModelValue.ui'
  **
- ** Created: Wed Sep 12 16:05:40 2007
- **      by: The User Interface Compiler ($Id: CQModelValue.h,v 1.6 2007/09/14 15:29:50 shoops Exp $)
+ ** Created: Mon Nov 12 18:00:10 2007
+ **      by: The User Interface Compiler ($Id: CQModelValue.h,v 1.7 2007/11/12 23:13:33 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -31,16 +31,17 @@ class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
 class QSpacerItem;
-class QLineEdit;
-class QLabel;
 class CQExpressionWidget;
-class QToolButton;
-class QComboBox;
 class QFrame;
 class QPushButton;
+class QComboBox;
+class QLineEdit;
+class QLabel;
+class QCheckBox;
+class QToolButton;
 class CQExpressionWidget;
-class CExpression;
 class CModelValue;
+class CExpression;
 
 class CQModelValue : public CopasiWidget
   {
@@ -50,55 +51,63 @@ class CQModelValue : public CopasiWidget
     CQModelValue(QWidget* parent = 0, const char* name = 0);
     ~CQModelValue();
 
-    QLineEdit* mpEditRate;
-    QLabel* mpLblRate;
-    QLabel* mpLblCurrentValue;
-    QLabel* mpLblExpression;
-    QLabel* mpLblType;
-    QLineEdit* mpEditName;
-    QLineEdit* mpEditInitialValue;
-    QLabel* mpLblName;
-    QLabel* mpLblInitialValue;
-    QLabel* mpLblValue;
-    CQExpressionWidget* mpEditExpression;
-    QToolButton* mpBtnObject;
-    QLineEdit* mpEditCurrentValue;
-    QComboBox* mpComboBoxType;
-    QFrame* mpLine1;
     QFrame* mpLine2;
     QPushButton* mpBtnCommit;
     QPushButton* mpBtnRevert;
     QPushButton* mpBtnNew;
     QPushButton* mpBtnDelete;
+    QComboBox* mpComboBoxType;
+    QLineEdit* mpEditName;
+    QLabel* mpLblType;
+    QLabel* mpLblName;
+    QLabel* mpLblRate;
+    QLineEdit* mpEditRate;
+    QLabel* mpLblValue;
+    QLineEdit* mpEditCurrentValue;
+    QLabel* mpLblExpression;
+    QFrame* mpLine1;
+    QLabel* mpLblInitialValue;
+    QLineEdit* mpEditInitialValue;
+    QCheckBox* mpBoxUseInitialExpression;
+    QLabel* mpLblInitialExpression;
+    CQExpressionWidget* mpEditInitialExpression;
+    QToolButton* mpBtnInitialExpressionObject;
+    CQExpressionWidget* mpEditExpression;
+    QToolButton* mpBtnExpressionObject;
 
+    virtual bool enter(const std::string & key);
     virtual bool leave();
-    virtual bool enter(const std::string & key = "");
     virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
 
   protected:
-    bool mChanged;
-    std::string mKey;
-    CModelValue * mpModelValue;
-    std::vector< unsigned int > mItemToType;
-
-    QVBoxLayout* CQModelValueLayout;
+    QGridLayout* CQModelValueLayout;
     QSpacerItem* mpSpacer;
-    QGridLayout* layout7;
-    QHBoxLayout* layout6;
-    QVBoxLayout* mpVBoxLayout;
-    QSpacerItem* mpSpacerObject;
     QHBoxLayout* mpBtnLayout;
+    QHBoxLayout* mpHBoxLayoutInitialExpression;
+    QVBoxLayout* mpVBoxLayoutInitialExpression;
+    QSpacerItem* mpSpacerObjectInitialExpression;
+    QHBoxLayout* mpHBoxLayoutExpression;
+    QVBoxLayout* mpVBoxLayoutExpression;
+    QSpacerItem* mpSpacerExpressionObject;
 
   protected slots:
     virtual void languageChange();
 
   private:
+    std::vector< int > mItemToType;
+    CModelValue * mpModelValue;
+    std::string mKey;
+    bool mChanged;
+    bool mExpressionValid;
+    bool mInitialExpressionValid;
+
     QPixmap image0;
+    QPixmap image1;
 
     void init();
-    void destroy();
     void load();
     void save();
+    void destroy();
 
   private slots:
     void slotBtnCommit();
@@ -106,8 +115,10 @@ class CQModelValue : public CopasiWidget
     void slotBtnNew();
     void slotBtnDelete();
     void slotTypeChanged(int type);
-    void slotExpressionValid(bool valid);
+    void slotInitialTypeChanged(bool useInitialAssignment);
     void slotNameLostFocus();
+    void slotExpressionValid(bool valid);
+    void slotInitialExpressionValid(bool valid);
   };
 
 #endif // CQMODELVALUE_H

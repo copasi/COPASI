@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQModelValue.ui.h,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/01 17:51:00 $
+//   $Date: 2007/11/12 23:13:33 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -226,14 +226,14 @@ void CQModelValue::slotTypeChanged(int type)
     case CModelEntity::FIXED:
       mpLblExpression->hide();
       mpEditExpression->hide();
-      mpBtnObject->hide();
+      mpBtnExpressionObject->hide();
       mpEditInitialValue->setEnabled(true);
       break;
 
     case CModelEntity::ASSIGNMENT:
       mpLblExpression->show();
       mpEditExpression->show();
-      mpBtnObject->show();
+      mpBtnExpressionObject->show();
       mpEditInitialValue->setEnabled(false);
 
       mpEditExpression->setExpression(mpModelValue->getExpression());
@@ -242,7 +242,7 @@ void CQModelValue::slotTypeChanged(int type)
     case CModelEntity::ODE:
       mpLblExpression->show();
       mpEditExpression->show();
-      mpBtnObject->show();
+      mpBtnExpressionObject->show();
       mpEditInitialValue->setEnabled(true);
 
       mpEditExpression->setExpression(mpModelValue->getExpression());
@@ -255,7 +255,14 @@ void CQModelValue::slotTypeChanged(int type)
 
 void CQModelValue::slotExpressionValid(bool valid)
 {
-  mpBtnCommit->setEnabled(valid);
+  mExpressionValid = valid;
+  mpBtnCommit->setEnabled(mExpressionValid && mInitialExpressionValid);
+}
+
+void CQModelValue::slotInitialExpressionValid(bool valid)
+{
+  mInitialExpressionValid = valid;
+  mpBtnCommit->setEnabled(mExpressionValid && mInitialExpressionValid);
 }
 
 void CQModelValue::init()
@@ -267,6 +274,8 @@ void CQModelValue::init()
   mItemToType.push_back(CModelEntity::FIXED);
   mItemToType.push_back(CModelEntity::ASSIGNMENT);
   mItemToType.push_back(CModelEntity::ODE);
+
+  mpEditInitialExpression->setExpressionType(CCopasiSimpleSelectionTree::INITIAL_EXPRESSION);
 }
 
 void CQModelValue::destroy()
@@ -381,5 +390,34 @@ void CQModelValue::save()
 void CQModelValue::slotNameLostFocus()
 {
   if (mpEditName->text() != FROM_UTF8(mpModelValue->getObjectName()))
-    mpEditExpression->currentObjectRenamed(mpModelValue, mpEditName->text());
+    {
+      mpEditExpression->currentObjectRenamed(mpModelValue, mpEditName->text());
+      mpEditInitialExpression->currentObjectRenamed(mpModelValue, mpEditName->text());
+    }
+}
+
+void CQModelValue::slotInitialTypeChanged(bool useInitialAssignment)
+{
+  if (useInitialAssignment)
+    {
+      CQModelValueLayout->addWidget(mpLblInitialExpression, 4, 0);
+      CQModelValueLayout->addMultiCellLayout(mpHBoxLayoutInitialExpression, 4, 4, 1, 2);
+
+      mpLblInitialExpression->show();
+      mpEditInitialExpression->show();
+      mpBtnInitialExpressionObject->show();
+
+      mpEditInitialValue->setEnabled(false);
+    }
+  else
+    {
+      CQModelValueLayout->removeItem(mpHBoxLayoutInitialExpression);
+      CQModelValueLayout->remove(mpLblInitialExpression);
+
+      mpLblInitialExpression->hide();
+      mpEditInitialExpression->hide();
+      mpBtnInitialExpressionObject->hide();
+
+      mpEditInitialValue->setEnabled((CModelEntity::Status) mItemToType[mpComboBoxType->currentItem()] != CModelEntity::ASSIGNMENT);
+    }
 }
