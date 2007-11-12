@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-//   $Revision: 1.48 $
+//   $Revision: 1.49 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/15 17:51:26 $
+//   $Date: 2007/11/12 19:26:20 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -285,7 +285,9 @@ bool CModelEntity::setInitialExpression(const std::string & expression)
   if (mpInitialExpression == NULL)
     mpInitialExpression = new CExpression;
 
-  return mpInitialExpression->setInfix(expression);
+  if (!mpInitialExpression->setInfix(expression)) return false;
+
+  return compile();
 }
 
 std::string CModelEntity::getInitialExpression() const
