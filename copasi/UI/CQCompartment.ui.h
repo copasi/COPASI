@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQCompartment.ui.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/01 17:51:00 $
+//   $Date: 2007/11/12 21:13:06 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -45,9 +45,7 @@ void CQCompartment::init()
 
   mpMetaboliteTable->header()->hide();
 
-  // :TODO: Enable this for initial expressions
-  mpComboBoxInitialType->hide();
-  mpComboBoxInitialSelection->hide();
+  mpEditInitialExpression->setExpressionType(CCopasiSimpleSelectionTree::INITIAL_EXPRESSION);
 }
 
 void CQCompartment::slotBtnCommit()
@@ -238,31 +236,40 @@ void CQCompartment::slotTypeChanged(int type)
   switch ((CModelEntity::Status) mItemToType[type])
     {
     case CModelEntity::FIXED:
+      CQCompartmentLayout->removeItem(mpHBoxLayoutExpression);
+      CQCompartmentLayout->remove(mpLblExpression);
+
       mpLblExpression->hide();
       mpEditExpression->hide();
-      mpBtnObject->hide();
+      mpBtnExpressionObject->hide();
 
-      mpEditInitialVolume->setEnabled(true);
+      mpBoxUseInitialExpression->setEnabled(true);
+      slotInitialTypeChanged(mpBoxUseInitialExpression->isChecked());
       break;
 
     case CModelEntity::ASSIGNMENT:
+      CQCompartmentLayout->addWidget(mpLblExpression, 2, 0);
+      CQCompartmentLayout->addMultiCellLayout(mpHBoxLayoutExpression, 2, 2, 1, 2);
+
       mpLblExpression->show();
       mpEditExpression->show();
-      mpBtnObject->show();
+      mpBtnExpressionObject->show();
 
-      mpEditInitialVolume->setEnabled(false);
+      mpBoxUseInitialExpression->setEnabled(false);
+      slotInitialTypeChanged(false);
 
-      mpEditExpression->setExpression(mpCompartment->getExpression());
       break;
 
     case CModelEntity::ODE:
+      CQCompartmentLayout->addWidget(mpLblExpression, 2, 0);
+      CQCompartmentLayout->addMultiCellLayout(mpHBoxLayoutExpression, 2, 2, 1, 2);
+
       mpLblExpression->show();
       mpEditExpression->show();
-      mpBtnObject->show();
+      mpBtnExpressionObject->show();
 
-      mpEditInitialVolume->setEnabled(true);
-
-      mpEditExpression->setExpression(mpCompartment->getExpression());
+      mpBoxUseInitialExpression->setEnabled(true);
+      slotInitialTypeChanged(mpBoxUseInitialExpression->isChecked());
       break;
 
     default:
@@ -270,14 +277,30 @@ void CQCompartment::slotTypeChanged(int type)
     }
 }
 
-void CQCompartment::slotInitialTypeChanged(int /* initialType */)
+void CQCompartment::slotInitialTypeChanged(bool useInitialAssignment)
 {
-  // :TODO: Enable this for initial expressions
-}
+  if (useInitialAssignment)
+    {
+      CQCompartmentLayout->addWidget(mpLblInitialExpression, 4, 0);
+      CQCompartmentLayout->addMultiCellLayout(mpHBoxLayoutInitialExpression, 4, 4, 1, 2);
 
-void CQCompartment::slotInitialAssignment(int /* initialAssignment */)
-{
-  // :TODO: Enable this for initial expressions
+      mpLblInitialExpression->show();
+      mpEditInitialExpression->show();
+      mpBtnInitialExpressionObject->show();
+
+      mpEditInitialVolume->setEnabled(false);
+    }
+  else
+    {
+      CQCompartmentLayout->removeItem(mpHBoxLayoutInitialExpression);
+      CQCompartmentLayout->remove(mpLblInitialExpression);
+
+      mpLblInitialExpression->hide();
+      mpEditInitialExpression->hide();
+      mpBtnInitialExpressionObject->hide();
+
+      mpEditInitialVolume->setEnabled((CModelEntity::Status) mItemToType[mpComboBoxType->currentItem()] != CModelEntity::ASSIGNMENT);
+    }
 }
 
 void CQCompartment::slotNameLostFocus()
@@ -288,7 +311,14 @@ void CQCompartment::slotNameLostFocus()
 
 void CQCompartment::slotExpressionValid(bool valid)
 {
-  mpBtnCommit->setEnabled(valid);
+  mExpressionValid = valid;
+  mpBtnCommit->setEnabled(mExpressionValid && mInitialExpressionValid);
+}
+
+void CQCompartment::slotInitialExpressionValid(bool valid)
+{
+  mInitialExpressionValid = valid;
+  mpBtnCommit->setEnabled(mExpressionValid && mInitialExpressionValid);
 }
 
 bool CQCompartment::enter(const std::string & key)
@@ -340,6 +370,14 @@ void CQCompartment::load()
   if (mpCompartment == NULL) return;
 
   // Update the labels to reflect the model units
+  mpLblInitialValue->setText("Initial Volume ("
+                             + FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnitName()) + ")");
+  mpLblInitialExpression->setText("Initial Expression ("
+                                  + FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnitName()) + ")");
+
+  mpLblExpression->setText("Expression ("
+                           + FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnitName()) + ")");
+
   mpLblVolume->setText("Volume ("
                        + FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnitName()) + ")");
 
@@ -367,6 +405,22 @@ void CQCompartment::load()
 
   // Expression
   mpEditExpression->setExpression(mpCompartment->getExpression());
+
+  // Use Initial Expression
+  if (mpCompartment->getStatus() == CModelEntity::ASSIGNMENT ||
+      mpCompartment->getInitialExpression() == "")
+    {
+      mpBoxUseInitialExpression->setChecked(false);
+      slotInitialTypeChanged(false);
+    }
+  else
+    {
+      mpBoxUseInitialExpression->setChecked(true);
+      slotInitialTypeChanged(true);
+    }
+
+  // Initial Expression
+  mpEditInitialExpression->setExpression(mpCompartment->getInitialExpression());
 
   loadMetaboliteTable();
 
@@ -422,7 +476,28 @@ void CQCompartment::save()
       mChanged = true;
     }
 
-  if (mChanged) CCopasiDataModel::Global->changed();
+  // Initial Expression
+  if ((CModelEntity::Status) mItemToType[mpComboBoxType->currentItem()] != CModelEntity::ASSIGNMENT)
+    {
+      if (mpBoxUseInitialExpression->isChecked() &&
+          mpCompartment->getInitialExpression() != mpEditInitialExpression->getExpression())
+        {
+          mpCompartment->setInitialExpression(mpEditInitialExpression->getExpression());
+          mChanged = true;
+        }
+      else if (!mpBoxUseInitialExpression->isChecked() &&
+               mpCompartment->getInitialExpression() != "")
+        {
+          mpCompartment->setInitialExpression("");
+          mChanged = true;
+        }
+    }
+
+  if (mChanged)
+    {
+      CCopasiDataModel::Global->changed();
+      protectedNotify(ListViews::COMPARTMENT, ListViews::CHANGE, mKey);
+    }
 
   mChanged = false;
 }

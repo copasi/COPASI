@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartment.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/08/22 12:59:17 $
+//   $Date: 2007/11/12 21:13:06 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,8 +13,8 @@
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQCompartment.ui'
  **
- ** Created: Wed Aug 22 08:37:01 2007
- **      by: The User Interface Compiler ($Id: CQCompartment.h,v 1.1 2007/08/22 12:59:17 shoops Exp $)
+ ** Created: Mon Nov 12 15:33:43 2007
+ **      by: The User Interface Compiler ($Id: CQCompartment.h,v 1.2 2007/11/12 21:13:06 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -32,14 +32,15 @@ class QHBoxLayout;
 class QGridLayout;
 class QSpacerItem;
 class CQExpressionWidget;
-class QLabel;
+class QFrame;
+class QPushButton;
 class QComboBox;
 class QLineEdit;
+class QLabel;
 class QListView;
 class QListViewItem;
-class QFrame;
+class QCheckBox;
 class QToolButton;
-class QPushButton;
 class CQExpressionWidget;
 class CCompartment;
 class CExpression;
@@ -52,45 +53,46 @@ class CQCompartment : public CopasiWidget
     CQCompartment(QWidget* parent = 0, const char* name = 0);
     ~CQCompartment();
 
-    QLabel* mpLblVolume;
-    QComboBox* mpComboBoxType;
-    QLineEdit* mpEditName;
-    QLabel* mpLblMetabolites;
-    QListView* mpMetaboliteTable;
-    QLabel* mpLblType;
-    QLineEdit* mpEditCurrentVolume;
-    QFrame* mpLine1;
-    QLabel* mpLblName;
-    QLabel* mpLblRate;
-    QLineEdit* mpEditInitialVolume;
-    QComboBox* mpComboBoxInitialSelection;
-    QLineEdit* mpEditRate;
-    CQExpressionWidget* mpEditExpression;
-    QToolButton* mpBtnObject;
-    QLabel* mpLblInitialValue;
-    QComboBox* mpComboBoxInitialType;
-    QLabel* mpLblTransientValue;
-    QLabel* mpLblExpression;
     QFrame* mpLine2;
     QPushButton* mpBtnCommit;
     QPushButton* mpBtnRevert;
     QPushButton* mpBtnNew;
     QPushButton* mpBtnDelete;
+    QComboBox* mpComboBoxType;
+    QLineEdit* mpEditName;
+    QLabel* mpLblType;
+    QLabel* mpLblName;
+    QListView* mpMetaboliteTable;
+    QLabel* mpLblMetabolites;
+    QLabel* mpLblRate;
+    QLineEdit* mpEditRate;
+    QLabel* mpLblVolume;
+    QLineEdit* mpEditCurrentVolume;
+    QLabel* mpLblExpression;
+    QFrame* mpLine1;
+    QLabel* mpLblInitialValue;
+    QLineEdit* mpEditInitialVolume;
+    QCheckBox* mpBoxUseInitialExpression;
+    QLabel* mpLblInitialExpression;
+    CQExpressionWidget* mpEditInitialExpression;
+    QToolButton* mpBtnInitialExpressionObject;
+    CQExpressionWidget* mpEditExpression;
+    QToolButton* mpBtnExpressionObject;
 
     virtual bool enter(const std::string & key);
     virtual bool leave();
     virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
 
   protected:
-    QVBoxLayout* CQCompartmentLayout;
+    QGridLayout* CQCompartmentLayout;
     QSpacerItem* mpSpacer;
-    QGridLayout* mpGridLayout;
-    QVBoxLayout* mpLayoutInitialVolume;
-    QHBoxLayout* mpHBoxLayout;
-    QVBoxLayout* mpVBoxLayout;
-    QSpacerItem* mpSpacerObject;
-    QHBoxLayout* mpLayoutInitialValues;
     QHBoxLayout* mpBtnLayout;
+    QHBoxLayout* mpHBoxLayoutInitialExpression;
+    QVBoxLayout* mpVBoxLayoutInitialExpression;
+    QSpacerItem* mpSpacerObjectInitialExpression;
+    QHBoxLayout* mpHBoxLayoutExpression;
+    QVBoxLayout* mpVBoxLayoutExpression;
+    QSpacerItem* mpSpacerExpressionObject;
 
   protected slots:
     virtual void languageChange();
@@ -100,6 +102,8 @@ class CQCompartment : public CopasiWidget
     CCompartment * mpCompartment;
     std::string mKey;
     bool mChanged;
+    bool mExpressionValid;
+    bool mInitialExpressionValid;
 
     QPixmap image0;
     QPixmap image1;
@@ -116,10 +120,10 @@ class CQCompartment : public CopasiWidget
     void slotBtnNew();
     void slotBtnDelete();
     void slotTypeChanged(int type);
-    void slotInitialTypeChanged(int);
-    void slotInitialAssignment(int);
+    void slotInitialTypeChanged(bool useInitialAssignment);
     void slotNameLostFocus();
     void slotExpressionValid(bool valid);
+    void slotInitialExpressionValid(bool valid);
     void slotMetaboliteTableCurrentChanged(QListViewItem * pItem);
   };
 
