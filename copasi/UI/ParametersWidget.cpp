@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ParametersWidget.cpp,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/02 18:18:01 $
+//   $Date: 2007/11/12 19:27:44 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -72,10 +72,12 @@ class CParameterListItem : public QListViewItem
             {
             case CModelEntity::FIXED:
               setText(COL_STATUS, "fixed");
+              setRenameEnabled(COL_VALUE, me->getInitialExpression() == "");
               break;
 
             case CModelEntity::ODE:
               setText(COL_STATUS, "ode");
+              setRenameEnabled(COL_VALUE, me->getInitialExpression() == "");
               break;
 
             case CModelEntity::ASSIGNMENT:
@@ -90,6 +92,8 @@ class CParameterListItem : public QListViewItem
                 setText(COL_STATUS, "indep");
               else
                 setText(COL_STATUS, "unused");
+
+              setRenameEnabled(COL_VALUE, me->getInitialExpression() == "");
               break;
 
             default:

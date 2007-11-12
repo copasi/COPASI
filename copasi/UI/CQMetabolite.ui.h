@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMetabolite.ui.h,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/07 17:05:36 $
+//   $Date: 2007/11/12 19:27:44 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -47,16 +47,14 @@ void CQMetabolite::init()
 
   mpReactionTable->header()->hide();
 
-  // :TODO: Enable this for initial expressions
-  mpComboBoxInitialType->hide();
-  mpComboBoxInitialSelection->hide();
-
   mInitialNumberLastChanged = true;
 
   int Width = fontMetrics().width("Concentration (" +
                                   FROM_UTF8(CCopasiDataModel::Global->getModel()->getConcentrationUnitName()) +
                                   ")");
   mpLblValue->setMinimumWidth(Width);
+
+  mpEditInitialExpression->setExpressionType(CCopasiSimpleSelectionTree::INITIAL_EXPRESSION);
 }
 
 void CQMetabolite::slotBtnCommit()
@@ -282,39 +280,51 @@ void CQMetabolite::slotTypeChanged(int type)
   switch ((CModelEntity::Status) mItemToType[type])
     {
     case CModelEntity::FIXED:
+      CQMetaboliteLayout->removeItem(mpHBoxLayoutExpression);
+      CQMetaboliteLayout->remove(mpLblExpression);
+
       mpLblExpression->hide();
       mpEditExpression->hide();
-      mpBtnObject->hide();
+      mpBtnObjectExpression->hide();
 
-      mpEditInitialValue->setEnabled(true);
+      slotInitialTypeChanged(mpBoxUseInitialExpression->isChecked());
+      mpBoxUseInitialExpression->setEnabled(true);
       break;
 
     case CModelEntity::ASSIGNMENT:
+      CQMetaboliteLayout->addWidget(mpLblExpression, 3, 0);
+      CQMetaboliteLayout->addMultiCellLayout(mpHBoxLayoutExpression, 3, 3, 1, 2);
+
       mpLblExpression->show();
       mpEditExpression->show();
-      mpBtnObject->show();
+      mpBtnObjectExpression->show();
 
-      mpEditInitialValue->setEnabled(false);
-
-      mpEditExpression->setExpression(mpMetab->getExpression());
+      slotInitialTypeChanged(false);
+      mpBoxUseInitialExpression->setEnabled(false);
       break;
 
     case CModelEntity::ODE:
+      CQMetaboliteLayout->addWidget(mpLblExpression, 3, 0);
+      CQMetaboliteLayout->addMultiCellLayout(mpHBoxLayoutExpression, 3, 3, 1, 2);
+
       mpLblExpression->show();
       mpEditExpression->show();
-      mpBtnObject->show();
+      mpBtnObjectExpression->show();
 
-      mpEditInitialValue->setEnabled(true);
-
-      mpEditExpression->setExpression(mpMetab->getExpression());
+      slotInitialTypeChanged(mpBoxUseInitialExpression->isChecked());
+      mpBoxUseInitialExpression->setEnabled(true);
       break;
 
     case CModelEntity::REACTIONS:
+      CQMetaboliteLayout->removeItem(mpHBoxLayoutExpression);
+      CQMetaboliteLayout->remove(mpLblExpression);
+
       mpLblExpression->hide();
       mpEditExpression->hide();
-      mpBtnObject->hide();
+      mpBtnObjectExpression->hide();
 
-      mpEditInitialValue->setEnabled(true);
+      slotInitialTypeChanged(mpBoxUseInitialExpression->isChecked());
+      mpBoxUseInitialExpression->setEnabled(true);
       break;
 
     default:
@@ -322,9 +332,30 @@ void CQMetabolite::slotTypeChanged(int type)
     }
 }
 
-void CQMetabolite::slotInitialTypeChanged(int /* initialType */)
+void CQMetabolite::slotInitialTypeChanged(bool useInitialExpression)
 {
-  // :TODO: Enable this for initial expressions
+  if (useInitialExpression)
+    {
+      CQMetaboliteLayout->addWidget(mpLblInitialExpression, 5, 0);
+      CQMetaboliteLayout->addMultiCellLayout(mpHBoxLayoutInitialExpression, 5, 5, 1, 2);
+
+      mpLblInitialExpression->show();
+      mpEditInitialExpression->show();
+      mpBtnObjectInitialExpression->show();
+
+      mpEditInitialValue->setEnabled(false);
+    }
+  else
+    {
+      CQMetaboliteLayout->removeItem(mpHBoxLayoutInitialExpression);
+      CQMetaboliteLayout->remove(mpLblInitialExpression);
+
+      mpLblInitialExpression->hide();
+      mpEditInitialExpression->hide();
+      mpBtnObjectInitialExpression->hide();
+
+      mpEditInitialValue->setEnabled((CModelEntity::Status) mItemToType[mpComboBoxType->currentItem()] != CModelEntity::ASSIGNMENT);
+    }
 }
 
 void CQMetabolite::slotInitialAssignment(int /* initialAssignment */)
@@ -452,6 +483,22 @@ void CQMetabolite::load()
   // Expression
   mpEditExpression->setExpression(mpMetab->getExpression());
 
+  // Use Initial Expression
+  if (mpMetab->getStatus() == CModelEntity::ASSIGNMENT ||
+      mpMetab->getInitialExpression() == "")
+    {
+      mpBoxUseInitialExpression->setChecked(false);
+      slotInitialTypeChanged(false);
+    }
+  else
+    {
+      mpBoxUseInitialExpression->setChecked(true);
+      slotInitialTypeChanged(true);
+    }
+
+  // Initial Expression
+  mpEditInitialExpression->setExpression(mpMetab->getInitialExpression());
+
   loadReactionTable();
 
   // Update the units and values accordingly
@@ -547,6 +594,23 @@ void CQMetabolite::save()
     {
       mpMetab->setExpression(mpEditExpression->getExpression());
       mChanged = true;
+    }
+
+  // Initial Expression
+  if ((CModelEntity::Status) mItemToType[mpComboBoxType->currentItem()] != CModelEntity::ASSIGNMENT)
+    {
+      if (mpBoxUseInitialExpression->isChecked() &&
+          mpMetab->getInitialExpression() != mpEditInitialExpression->getExpression())
+        {
+          mpMetab->setInitialExpression(mpEditInitialExpression->getExpression());
+          mChanged = true;
+        }
+      else if (!mpBoxUseInitialExpression->isChecked() &&
+               mpMetab->getInitialExpression() != "")
+        {
+          mpMetab->setInitialExpression("");
+          mChanged = true;
+        }
     }
 
   if (mChanged)
@@ -664,13 +728,18 @@ void CQMetabolite::setFramework(int framework)
   switch (mFramework)
     {
     case 0:
+      mpLblInitialValue->setText("Initial Concentration\n("
+                                 + FROM_UTF8(CCopasiDataModel::Global->getModel()->getConcentrationUnitName()) + ")");
+      mpLblInitialExpression->setText("Initial Expression\n("
+                                      + FROM_UTF8(CCopasiDataModel::Global->getModel()->getConcentrationUnitName()) + ")");
+      mpLblExpression->setText("Expression\n("
+                               + FROM_UTF8(CCopasiDataModel::Global->getModel()->getConcentrationUnitName()) + ")");
       mpLblValue->setText("Concentration ("
                           + FROM_UTF8(CCopasiDataModel::Global->getModel()->getConcentrationUnitName()) + ")");
-
       mpLblRate->setText("Rate ("
                          + FROM_UTF8(CCopasiDataModel::Global->getModel()->getConcentrationRateUnitName()) + ")");
-
       mpEditInitialValue->setText(QString::number(mInitialConcentration, 'g', 10));
+
       if (mpMetab != NULL)
         {
           mpEditCurrentValue->setText(QString::number(mpMetab->getConcentration()));
@@ -685,11 +754,14 @@ void CQMetabolite::setFramework(int framework)
       break;
 
     case 1:
+      mpLblInitialValue->setText("Initial Particle Number");
+      mpLblInitialExpression->setText("Initial Expression\n("
+                                      + FROM_UTF8(CCopasiDataModel::Global->getModel()->getConcentrationUnitName()) + ")");
+      mpLblExpression->setText("Expression\n("
+                               + FROM_UTF8(CCopasiDataModel::Global->getModel()->getConcentrationUnitName()) + ")");
       mpLblValue->setText("Particle Number");
-
       mpLblRate->setText("Rate (1/"
                          + FROM_UTF8(CCopasiDataModel::Global->getModel()->getTimeUnitName()) + ")");
-
       mpEditInitialValue->setText(QString::number(mInitialNumber, 'g', 10));
       if (mpMetab != NULL)
         {

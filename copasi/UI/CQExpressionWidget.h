@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/13 19:56:56 $
+//   $Date: 2007/11/12 19:27:44 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -54,8 +54,6 @@ class CQExpressionWidget: public QTextEdit
 
     CQValidatorExpression * mpValidator;
 
-    //CQExpressionWidget (const QString & contents, QWidget * parent, const char * name = 0);
-
   protected:
     int mOldPar;
     int mOldPos;
@@ -69,8 +67,6 @@ class CQExpressionWidget: public QTextEdit
      * Indecates whether we are dealing with an INITIAL or TRANSIENT expression
      */
     CCopasiSimpleSelectionTree::SelectionFlag mExpressionType;
-
-    void setExpressionType(const CCopasiSimpleSelectionTree::SelectionFlag & expressionType);
 
     std::map< std::string, const CCopasiObject * > mParseList;
     const CCopasiObject * mpCurrentObject;
@@ -109,6 +105,12 @@ class CQExpressionWidget: public QTextEdit
      */
     void currentObjectRenamed(const CCopasiObject * pObject,
                               const QString & newName);
+
+    /**
+     * Set the type of the current expression
+     * @param const CCopasiSimpleSelectionTree::SelectionFlag & expressionType
+     */
+    void setExpressionType(const CCopasiSimpleSelectionTree::SelectionFlag & expressionType);
 
   protected slots:
     void slotCursorPositionChanged(int para, int pos);
