@@ -139,6 +139,10 @@ SOURCE=.\CQArrayAnnotationsWidget.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CQCompartment.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CQCopasiLayoutWidget.cpp
 # End Source File
 # Begin Source File
@@ -584,6 +588,14 @@ SOURCE=.\CProgressBar.h
 # Begin Source File
 
 SOURCE=.\CQArrayAnnotationsWidget.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQCompartment.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQCompartment.ui.h
 # End Source File
 # Begin Source File
 
@@ -1097,6 +1109,10 @@ SOURCE=.\CMCAResultSubwidget.ui
 # Begin Source File
 
 SOURCE=..\common.pri
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQCompartment.ui
 # End Source File
 # Begin Source File
 
