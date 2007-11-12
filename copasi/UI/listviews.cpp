@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.233 $
+//   $Revision: 1.234 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/11/07 21:14:26 $
+//   $Author: akoenig $
+//   $Date: 2007/11/12 17:10:09 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -95,6 +95,7 @@
 #include "plotUI/plotwidget1.h"
 #include "model/CModel.h"
 
+#include <iostream.h>
 /**------FolderListItem::FolderListItem(QListView *parent, Folder *f)---->
  **
  ** Parameters:- 1. QListView* :- The parameter for the root of the tree
@@ -203,6 +204,7 @@ QString FolderListItem::key(int, bool) const
  **               components in the code.
  ************************************************************/
 ListViews::ListViews(QWidget *parent, const char *name):
+
     QSplitter(Qt::Horizontal, parent, name),
     mpMathModel(NULL),
     mpCMCAResultWidget(NULL),
@@ -259,6 +261,7 @@ ListViews::ListViews(QWidget *parent, const char *name):
 #endif
     mpMathMatrixWidget(NULL)
 {
+
   this->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred, 1, 1));
   setChildrenCollapsible(false);
 
