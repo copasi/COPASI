@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.180 $
+//   $Revision: 1.181 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/11/06 20:13:10 $
+//   $Author: shoops $
+//   $Date: 2007/11/12 22:01:31 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1974,7 +1974,8 @@ SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef)
         {
           if (u->getExponent() == 3)
             {
-              if ((std::abs(u->getMultiplier()) - 1.0 < TOLERANCE) && (u->getScale() == 0))
+              if ((fabs(u->getMultiplier()) - 1.0 < TOLERANCE) &&
+                  (u->getScale() == 0))
                 {
                   vUnit = CModel::m3;
                   result = true;
@@ -1983,7 +1984,12 @@ SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef)
                 {
                   // try to convert to liter
                   Unit* pLitreUnit = convertSBMLCubicmetresToLitres(u);
-                  if (pLitreUnit != NULL && pLitreUnit->getExponent() == 1 && (pLitreUnit->getScale() % 3 == 0) && (pLitreUnit->getScale() < 1) && (pLitreUnit->getScale() > -16) && std::abs(pLitreUnit->getMultiplier()) - 1.0 < TOLERANCE)
+                  if (pLitreUnit != NULL &&
+                      pLitreUnit->getExponent() == 1 &&
+                      (pLitreUnit->getScale() % 3 == 0) &&
+                      (pLitreUnit->getScale() < 1) &&
+                      (pLitreUnit->getScale() > -16) &&
+                      fabs(pLitreUnit->getMultiplier()) - 1.0 < TOLERANCE)
                     {
                       switch (pLitreUnit->getScale())
                         {
@@ -2661,7 +2667,8 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const 
               // the metabolite has to be present in the multiplicityMap, otherwise it is not a mass action
               // the stoichiometry also has to fit
               std::map<const CMetab*, C_FLOAT64>::iterator pos = multiplicityMap.find(metabolites[i]->getMetabolite());
-              if (pos == multiplicityMap.end() || fabs(pos->second - metabolites[i]->getMultiplicity()) >= 0.01)
+              if (pos == multiplicityMap.end() ||
+                  fabs(pos->second - metabolites[i]->getMultiplicity()) >= 0.01)
                 {
                   result = false;
                   break;
@@ -4266,7 +4273,10 @@ bool SBMLImporter::areSBMLUnitDefinitionsIdentical(const UnitDefinition* pUdef1,
             {
               pU1 = pTmpUdef1->getUnit(i);
               pU2 = pTmpUdef2->getUnit(i);
-              if (pU1->getKind() != pU2->getKind() || pU1->getExponent() != pU2->getExponent() || pU1->getScale() != pU2->getScale() || std::abs(((pU2->getMultiplier() - pU1->getMultiplier()) / pU1->getMultiplier()) > UNIT_MULTIPLIER_TOLERANCE))
+              if (pU1->getKind() != pU2->getKind() ||
+                  pU1->getExponent() != pU2->getExponent() ||
+                  pU1->getScale() != pU2->getScale() ||
+                  fabs((pU2->getMultiplier() - pU1->getMultiplier()) / pU1->getMultiplier()) > UNIT_MULTIPLIER_TOLERANCE)
                 {
                   newResult = false;
                 }
@@ -4292,7 +4302,7 @@ Unit* SBMLImporter::convertSBMLCubicmetresToLitres(const Unit* pU)
           removeScale(pResult);
           pResult->setExponent(pResult->getExponent() / 3);
           pResult->setKind(UNIT_KIND_LITRE);
-          pResult->setMultiplier(std::pow(pResult->getMultiplier(), 3));
+          pResult->setMultiplier(pow(pResult->getMultiplier(), 3));
           normalizeSBMLUnit(pResult);
         }
     }
@@ -4307,9 +4317,9 @@ void SBMLImporter::normalizeSBMLUnit(Unit* pU)
 {
   if (pU != NULL)
     {
-      long double log10Multiplier = std::log10(pU->getMultiplier());
-      pU->setScale(pU->getScale() + std::floor(log10Multiplier));
-      pU->setMultiplier(std::pow(10, (log10Multiplier - std::floor(log10Multiplier))));
+      double log10Multiplier = log10(pU->getMultiplier());
+      pU->setScale(pU->getScale() + floor(log10Multiplier));
+      pU->setMultiplier(pow(10.0, log10Multiplier - floor(log10Multiplier)));
     }
 }
 
