@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: akoenig $
-//   $Date: 2007/11/12 17:06:33 $
+//   $Date: 2007/11/12 18:22:16 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -426,7 +426,9 @@ void CQArrayAnnotationsWidget::clearWidget()
   mpSelectionTable->setNumRows(0);
   mpContentTable->setNumCols(0);
   mpContentTable->setNumRows(0);
+#ifdef WITH_QWT3D
   if (showBarChart) plot3d->emptyPlot();
+#endif
 }
 
 void CQArrayAnnotationsWidget::setLegendEnabled(bool b)
@@ -600,7 +602,7 @@ void CQArrayAnnotationsWidget::fillTable(unsigned C_INT32 rowIndex, unsigned C_I
                                     QString::number(number)));
           }
       }
-
+#ifdef WITH_QWT3D
   if (showBarChart)
     {
 
@@ -676,6 +678,7 @@ void CQArrayAnnotationsWidget::fillTable(unsigned C_INT32 rowIndex, unsigned C_I
           enableBarChart(true);
         }
     }
+#endif
 }
 
 void CQArrayAnnotationsWidget::fillTable(unsigned C_INT32 rowIndex,
@@ -723,7 +726,7 @@ void CQArrayAnnotationsWidget::fillTable(unsigned C_INT32 rowIndex,
                                   QString::number(number)));
         }
     }
-
+#ifdef WITH_QWT3D
   if (showBarChart)
     {
       //create a new array data, witch holds the hole numeric data
@@ -792,6 +795,7 @@ void CQArrayAnnotationsWidget::fillTable(unsigned C_INT32 rowIndex,
           enableBarChart(true);
         }
     }
+#endif
 }
 
 void CQArrayAnnotationsWidget::fillTable()
@@ -870,74 +874,82 @@ void CQArrayAnnotationsWidget::hideBars()
 
 void CQArrayAnnotationsWidget::setFocusOnTable()
 {
-
-  int col = plot3d->mpPlot->mpSliderColumn->value();
-  int row = plot3d->mpPlot->mpSliderRow->value();
-
-  mpContentTable->clearSelection(true);
-  if (col < mpContentTable->numCols())
+#ifdef WITH_QWT3D
+  if (showBarChart)
     {
-      if (row < mpContentTable->numRows())
+      int col = plot3d->mpPlot->mpSliderColumn->value();
+      int row = plot3d->mpPlot->mpSliderRow->value();
+
+      mpContentTable->clearSelection(true);
+      if (col < mpContentTable->numCols())
         {
-          mpContentTable->setCurrentCell(row, col);
-          mpContentTable->ensureCellVisible (mpContentTable->currentRow(), mpContentTable->currentColumn());
-          mpContentTable->setFocus();
+          if (row < mpContentTable->numRows())
+            {
+              mpContentTable->setCurrentCell(row, col);
+              mpContentTable->ensureCellVisible (mpContentTable->currentRow(), mpContentTable->currentColumn());
+              mpContentTable->setFocus();
+            }
+          else
+            {
+              mpContentTable->selectColumn(col);
+              mpContentTable->setFocus();
+            }
         }
       else
         {
-          mpContentTable->selectColumn(col);
-          mpContentTable->setFocus();
+          if (row < mpContentTable->numRows())
+            {
+              mpContentTable->selectRow(row);
+              mpContentTable->setFocus();
+            }
+          else
+            {
+              mpContentTable->setCurrentCell(-1, -1);
+              std::cout << mpContentTable->currentRow() << std::endl;
+              std::cout << mpContentTable->currentColumn() << std::endl;
+            }
         }
     }
-  else
-    {
-      if (row < mpContentTable->numRows())
-        {
-          mpContentTable->selectRow(row);
-          mpContentTable->setFocus();
-        }
-      else
-        {
-          mpContentTable->setCurrentCell(-1, -1);
-          std::cout << mpContentTable->currentRow() << std::endl;
-          std::cout << mpContentTable->currentColumn() << std::endl;
-        }
-    }
+#endif
 }
 
 void CQArrayAnnotationsWidget::setFocusOnBars()
 {
-
-  int col = mpContentTable->currentColumn();
-  int row = mpContentTable->currentRow();
-
-  if (mpContentTable->isRowSelected (row, true))
+#ifdef WITH_QWT3D
+  if (showBarChart)
     {
-      plot3d->mpPlot->sliderMoved(-1, row);
-      plot3d->mpPlot->mpSliderColumn->setValue(mpContentTable->numCols() + 1);
-      plot3d->mpPlot->mpSliderRow->setValue(row);
-    }
-  else
-    if (mpContentTable->isColumnSelected (col, true))
-      {
-        plot3d->mpPlot->sliderMoved(col, -1);
-        plot3d->mpPlot->mpSliderColumn->setValue(col);
-        plot3d->mpPlot->mpSliderRow->setValue(mpContentTable->numRows() + 1);
-      }
-    else
-      {
-        if (mpContentTable->currentRow() == -1 && mpContentTable->currentColumn() == -1)
+      int col = mpContentTable->currentColumn();
+      int row = mpContentTable->currentRow();
+
+      if (mpContentTable->isRowSelected (row, true))
+        {
+          plot3d->mpPlot->sliderMoved(-1, row);
+          plot3d->mpPlot->mpSliderColumn->setValue(mpContentTable->numCols() + 1);
+          plot3d->mpPlot->mpSliderRow->setValue(row);
+        }
+      else
+        if (mpContentTable->isColumnSelected (col, true))
           {
-            plot3d->mpPlot->mpSliderColumn->setValue(mpContentTable->numCols() + 1);
+            plot3d->mpPlot->sliderMoved(col, -1);
+            plot3d->mpPlot->mpSliderColumn->setValue(col);
             plot3d->mpPlot->mpSliderRow->setValue(mpContentTable->numRows() + 1);
           }
         else
           {
-            plot3d->mpPlot->sliderMoved(col, row);
-            plot3d->mpPlot->mpSliderColumn->setValue(col);
-            plot3d->mpPlot->mpSliderRow->setValue(row);
+            if (mpContentTable->currentRow() == -1 && mpContentTable->currentColumn() == -1)
+              {
+                plot3d->mpPlot->mpSliderColumn->setValue(mpContentTable->numCols() + 1);
+                plot3d->mpPlot->mpSliderRow->setValue(mpContentTable->numRows() + 1);
+              }
+            else
+              {
+                plot3d->mpPlot->sliderMoved(col, row);
+                plot3d->mpPlot->mpSliderColumn->setValue(col);
+                plot3d->mpPlot->mpSliderRow->setValue(row);
+              }
           }
-      }
+    }
+#endif
 }
 
 void CQArrayAnnotationsWidget::tableDoubleClicked()

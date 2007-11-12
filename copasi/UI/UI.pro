@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $ 
-#   $Revision: 1.162 $ 
+#   $Revision: 1.163 $ 
 #   $Name:  $ 
 #   $Author: akoenig $ 
-#   $Date: 2007/11/12 17:07:52 $ 
+#   $Date: 2007/11/12 18:22:16 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -11,7 +11,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.162 $ $Author: akoenig $ $Date: 2007/11/12 17:07:52 $  
+# $Revision: 1.163 $ $Author: akoenig $ $Date: 2007/11/12 18:22:16 $  
 ######################################################################
 
 LIB = UI
@@ -153,6 +153,12 @@ SOURCES += \
   HEADERS -= TSSWidget.h
   SOURCES -= TSSWidget.cpp
 }
+
+!contains(DEFINES, WITH_QWT3D) {
+  HEADERS -= CQBarChart.h
+  SOURCES -= CQBarChart.cpp
+}
+
 
 #contains(DEFINES, WITH_LAYOUT) {
 #  HEADERS += CQCopasiLayoutWidget.h
