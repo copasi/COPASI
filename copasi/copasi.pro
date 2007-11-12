@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.pro,v $ 
-#   $Revision: 1.41 $ 
+#   $Revision: 1.42 $ 
 #   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2007/10/30 17:54:31 $ 
+#   $Author: akoenig $ 
+#   $Date: 2007/11/12 16:58:31 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -11,7 +11,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.41 $ $Author: shoops $ $Date: 2007/10/30 17:54:31 $  
+# $Revision: 1.42 $ $Author: akoenig $ $Date: 2007/11/12 16:58:31 $  
 ######################################################################
 
 TEMPLATE = subdirs
@@ -67,6 +67,9 @@ contains(DEFINES, COPASI_TSSA) {
 !contains(BUILD_GUI, no) {
   contains(DEFINES, HAVE_MML) {
     SUBDIRS += mml
+  }
+  contains(DEFINES, WITH_QWT3D) {
+    SUBDIRS += barChart
   }
   SUBDIRS += plotUI
   SUBDIRS += UI
