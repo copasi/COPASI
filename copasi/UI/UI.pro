@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $ 
-#   $Revision: 1.161 $ 
+#   $Revision: 1.162 $ 
 #   $Name:  $ 
-#   $Author: ssahle $ 
-#   $Date: 2007/10/30 16:10:08 $ 
+#   $Author: akoenig $ 
+#   $Date: 2007/11/12 17:07:52 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -11,7 +11,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.161 $ $Author: ssahle $ $Date: 2007/10/30 16:10:08 $  
+# $Revision: 1.162 $ $Author: akoenig $ $Date: 2007/11/12 17:07:52 $  
 ######################################################################
 
 LIB = UI
@@ -22,7 +22,8 @@ include(../common.pri)
 CONFIG += qt
 
 DEPENDPATH += .. 
-INCLUDEPATH += ..
+INCLUDEPATH += .. 
+
 
 # Input
 HEADERS += \
@@ -42,6 +43,7 @@ HEADERS += \
            copasiui3window.h \
            CProgressBar.h \
            CQArrayAnnotationsWidget.h \
+           CQBarChart.h \
            CQEventsWidget.h \
            CQEventWidget1.h \
            CQExpressionWidget.h \
@@ -103,6 +105,7 @@ SOURCES += \
            CProgressBar.cpp \
            OptimizationResultWidget.cpp \
            CQArrayAnnotationsWidget.cpp \
+           CQBarChart.cpp \
            CQEventsWidget.cpp \
            CQEventWidget1.cpp \
            CQExpressionWidget.cpp \
