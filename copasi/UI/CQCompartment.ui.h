@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQCompartment.ui.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/12 21:13:06 $
+//   $Date: 2007/11/13 14:46:02 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -257,7 +257,6 @@ void CQCompartment::slotTypeChanged(int type)
 
       mpBoxUseInitialExpression->setEnabled(false);
       slotInitialTypeChanged(false);
-
       break;
 
     case CModelEntity::ODE:
@@ -306,7 +305,10 @@ void CQCompartment::slotInitialTypeChanged(bool useInitialAssignment)
 void CQCompartment::slotNameLostFocus()
 {
   if (mpEditName->text() != FROM_UTF8(mpCompartment->getObjectName()))
-    mpEditExpression->currentObjectRenamed(mpCompartment, mpEditName->text());
+    {
+      mpEditExpression->currentObjectRenamed(mpCompartment, mpEditName->text());
+      mpEditInitialExpression->currentObjectRenamed(mpCompartment, mpEditName->text());
+    }
 }
 
 void CQCompartment::slotExpressionValid(bool valid)

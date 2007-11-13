@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartment.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/12 23:13:01 $
+//   $Date: 2007/11/13 14:46:02 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,8 +13,8 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQCompartment.ui'
  **
- ** Created: Mon Nov 12 18:00:10 2007
- **      by: The User Interface Compiler ($Id: CQCompartment.cpp,v 1.3 2007/11/12 23:13:01 shoops Exp $)
+ ** Created: Tue Nov 13 09:15:14 2007
+ **      by: The User Interface Compiler ($Id: CQCompartment.cpp,v 1.4 2007/11/13 14:46:02 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -281,6 +281,7 @@ CQCompartment::CQCompartment(QWidget* parent, const char* name)
   connect(mpMetaboliteTable, SIGNAL(doubleClicked(QListViewItem*)), this, SLOT(slotMetaboliteTableCurrentChanged(QListViewItem*)));
   connect(mpBtnInitialExpressionObject, SIGNAL(clicked()), mpEditInitialExpression, SLOT(slotSelectObject()));
   connect(mpBoxUseInitialExpression, SIGNAL(toggled(bool)), this, SLOT(slotInitialTypeChanged(bool)));
+  connect(mpEditName, SIGNAL(lostFocus()), this, SLOT(slotNameLostFocus()));
 
   // tab order
   setTabOrder(mpEditName, mpComboBoxType);
