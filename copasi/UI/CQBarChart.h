@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQBarChart.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: akoenig $
-//   $Date: 2007/11/12 17:10:09 $
+//   $Date: 2007/11/13 17:08:51 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -37,5 +37,6 @@ class CQBarChart : public QWidget
     void showColorLegend(bool CLegend);
     void setPlotTitle(QString title);
     void plotData();
+    bool sliderActive();
   };
 #endif //BARCHART_H
