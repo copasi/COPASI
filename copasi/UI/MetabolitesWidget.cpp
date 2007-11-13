@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget.cpp,v $
-//   $Revision: 1.147 $
+//   $Revision: 1.148 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/07 16:58:36 $
+//   $Date: 2007/11/13 15:08:15 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -138,7 +138,8 @@ void MetabolitesWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C
   // Initial Number
   table->setText(row, COL_INUMBER, QString::number(pMetab->getInitialValue()));
 
-  if (pMetab->getStatus() == CModelEntity::ASSIGNMENT)
+  if (pMetab->getStatus() == CModelEntity::ASSIGNMENT ||
+      pMetab->getInitialExpression() != "")
     {
       table->item(row, COL_ICONCENTRATION)->setEnabled(false);
       table->item(row, COL_INUMBER)->setEnabled(false);

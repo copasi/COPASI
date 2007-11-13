@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget.cpp,v $
-//   $Revision: 1.114 $
+//   $Revision: 1.115 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/14 15:29:50 $
+//   $Date: 2007/11/13 15:08:15 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -116,7 +116,8 @@ void CompartmentsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned 
 
   // Initial Volume
   table->setText(row, COL_IVOLUME, QString::number(pComp->getInitialValue()));
-  if (pComp->getStatus() == CModelEntity::ASSIGNMENT)
+  if (pComp->getStatus() == CModelEntity::ASSIGNMENT ||
+      pComp->getInitialExpression() != "")
     table->item(row, COL_IVOLUME)->setEnabled(false);
   else
     table->item(row, COL_IVOLUME)->setEnabled(true);

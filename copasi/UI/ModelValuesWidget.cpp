@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModelValuesWidget.cpp,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/14 15:29:50 $
+//   $Date: 2007/11/13 15:08:15 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -86,72 +86,37 @@ void ModelValuesWidget::init()
 void ModelValuesWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_INT32 row)
 {
   if (!obj) return;
+
   const CModelValue* pMV = dynamic_cast<const CModelValue*>(obj);
   if (!pMV) return;
+
+  // Name
   table->setText(row, COL_NAME, FROM_UTF8(pMV->getObjectName()));
 
+  // Type
   QComboTableItem * pComboBox = new QComboTableItem(table, mTypes);
   pComboBox->setCurrentItem(FROM_UTF8(CModelEntity::StatusName[pMV->getStatus()]));
   table->setItem(row, COL_TYPE, pComboBox);
 
+  // Initial value
   table->setText(row, COL_INITIAL, QString::number(pMV->getInitialValue()));
-  if (pMV->getStatus() == CModelEntity::ASSIGNMENT)
+
+  if (pMV->getStatus() == CModelEntity::ASSIGNMENT ||
+      pMV->getInitialExpression() != "")
     table->item(row, COL_INITIAL)->setEnabled(false);
   else
     table->item(row, COL_INITIAL)->setEnabled(true);
 
+  // Current value
   table->setText(row, COL_TRANSIENT, QString::number(pMV->getValue()));
 
+  // Rate
   table->setText(row, COL_RATE, QString::number(pMV->getRate()));
 
-#ifdef XXXX
-  std::string Expression = pMV->getExpression();
-
-  unsigned C_INT32 i = 0;
-
-  std::string out_str = "";
-  while (i < Expression.length())
-    {
-      if (Expression[i] == '<')
-        {
-          i++;
-          std::string objectName = "";
-
-          while (Expression[i] != '>' && i < Expression.length())
-            {
-              if (Expression[i] == '\\')
-                objectName += Expression[i++];
-
-              objectName += Expression[i];
-              i++;
-            }
-
-          CCopasiObjectName temp_CN(objectName);
-          CCopasiObject * temp_object = const_cast<CCopasiObject *>(RootContainer.getObject(temp_CN));
-          out_str += "<" + temp_object->getObjectDisplayName() + ">";
-          continue;
-        }
-
-      else if (Expression[i] == '>')
-        {
-          //do nothing
-        }
-
-      else
-        {
-          out_str += Expression[i];
-        }
-
-      i++;
-    }
-
-  table->setText(row, COL_EXPRESSION, FROM_UTF8(out_str));
-#endif
-
+  // Expression
   const CExpression * pExpression = pMV->getExpressionPtr();
-
   if (pExpression != NULL)
-    table->setText(row, COL_EXPRESSION, FROM_UTF8(pExpression->getDisplayString()));
+    table->setText(row, COL_EXPRESSION, pMV->getExpression());
   else
     table->setText(row, COL_EXPRESSION, "");
 }
