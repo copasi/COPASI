@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
-//   $Author: akoenig $
-//   $Date: 2007/11/13 17:37:03 $
+//   $Author: ssahle $
+//   $Date: 2007/11/13 17:38:59 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -250,7 +250,15 @@ void CColorScaleBiLog::finishAutomaticParameterCalculation()
 //******************************************************************
 //******************************************************************
 
-CQArrayAnnotationsWidget::CQArrayAnnotationsWidget(QWidget* parent, const char* name, WFlags fl, bool barChart, bool slider)
+CQArrayAnnotationsWidget::CQArrayAnnotationsWidget(QWidget* parent, const char* name, WFlags fl, bool
+#ifdef WITH_QWT3D
+    barChart
+#endif
+    , bool
+#ifdef WITH_QWT3D
+    slider
+#endif
+)
     : QVBox(parent, name, fl),
     mpColorScale(NULL)
 {
@@ -970,7 +978,6 @@ void CQArrayAnnotationsWidget::setFocusOnBars()
 void CQArrayAnnotationsWidget::tableDoubleClicked()
 {
 #ifdef WITH_QWT3D
-
   if (plot3d->sliderActive())
     switchToBarChart();
 #endif
