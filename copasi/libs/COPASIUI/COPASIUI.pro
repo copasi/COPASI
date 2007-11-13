@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/libs/COPASIUI/COPASIUI.pro,v $ 
-#   $Revision: 1.14 $ 
+#   $Revision: 1.15 $ 
 #   $Name:  $ 
-#   $Author: ssahle $ 
-#   $Date: 2007/02/26 13:50:05 $ 
+#   $Author: akoenig $ 
+#   $Date: 2007/11/13 10:28:52 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -25,6 +25,11 @@ CONFIG += qt
 contains(DEFINES, HAVE_MML) {
   COPASI_LIBS += mml
 }
+
+contains(DEFINES, WITH_QWT3D) {
+  COPASI_LIBS += barChart
+}
+
 COPASI_LIBS += plotUI
 COPASI_LIBS += UI
 COPASI_LIBS += wizard
