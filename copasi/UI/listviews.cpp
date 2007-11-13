@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.235 $
+//   $Revision: 1.236 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/11/12 17:14:12 $
+//   $Author: shoops $
+//   $Date: 2007/11/13 14:46:36 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,6 +26,8 @@
 #include <qimage.h>
 
 #include "DataModelGUI.h"
+#include "CQMessageBox.h"
+
 #include "CompartmentsWidget.h"
 #include "CQCompartment.h"
 #include "CQEventsWidget.h"
@@ -1214,8 +1216,23 @@ void ListViews::refreshInitialValues()
   CModel * pModel = CCopasiDataModel::Global->getModel();
   pModel->compileIfNecessary(NULL);
 
-  std::vector< Refresh * > UpdateVector =
-    pModel->buildInitialRefreshSequence(All);
+  std::vector< Refresh * > UpdateVector;
+  try
+    {
+      UpdateVector = pModel->buildInitialRefreshSequence(All);
+    }
+
+  catch (...)
+    {
+      QString Message = "Error while updating the initial values!\n\n";
+      Message += FROM_UTF8(CCopasiMessage::getLastMessage().getText());
+
+      CQMessageBox::critical(NULL, QString("COPASI Error"), Message,
+                             QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+      CCopasiMessage::clearDeque();
+
+      return;
+    }
 
   std::vector< Refresh * >::iterator it = UpdateVector.begin();
   std::vector< Refresh * >::iterator end = UpdateVector.end();
