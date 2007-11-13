@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CEvaluationNodeNormalizer.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/11/13 15:30:16 $
+//   $Author: ssahle $
+//   $Date: 2007/11/13 15:37:50 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -112,7 +112,7 @@ class CEvaluationNodeNormalizer
     static bool collectIdenticalBranches(CEvaluationNodeOperator::SubType subType, std::vector<CEvaluationNode*>& chainNodes);
     static bool reorderNodes(std::vector<CEvaluationNode*>& chainNodes);
     static void findChainNodes(CEvaluationNodeOperator* pNode, std::vector<CEvaluationNode*>& nodes);
-    static CEvaluationNodeOperator* CEvaluationNodeNormalizer::buildOperatorBranchFromChain(CEvaluationNodeOperator::SubType subType, const std::vector<CEvaluationNode*>& chainNodes);
+    static CEvaluationNodeOperator* buildOperatorBranchFromChain(CEvaluationNodeOperator::SubType subType, const std::vector<CEvaluationNode*>& chainNodes);
   };
 
 class lessCEvaluationNodes
