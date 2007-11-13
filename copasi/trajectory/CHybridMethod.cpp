@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.cpp,v $
-//   $Revision: 1.50 $
+//   $Revision: 1.51 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/02 18:18:03 $
+//   $Date: 2007/11/13 13:48:30 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1276,7 +1276,7 @@ std::set<std::string> *CHybridMethod::getAffects(C_INT32 rIndex)
  *   @param rIndex The index of the reaction being executed.
  *   @return The set of participating metabolites.
  */
-std::set<C_INT32> *CHybridMethod::getParticipatesIn(C_INT32 rIndex)
+std::set<C_INT32> *CHybridMethod::getParticipatesIn(C_INT32 /* rIndex */)
 {
   std::set<C_INT32> *retset = new std::set<C_INT32>;
   /*

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CDerive.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/10/26 13:09:46 $
+//   $Author: shoops $
+//   $Date: 2007/11/13 13:48:54 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,7 +24,7 @@ class CDerive
   public:
 
     //private:
-    static CEvaluationNode* deriveBranch(const CEvaluationNode* node, C_INT32 variableIndex, const CCopasiObject * pObject = NULL);
+    static CEvaluationNode* deriveBranch(const CEvaluationNode* node, unsigned C_INT32 variableIndex, const CCopasiObject * pObject = NULL);
 
     static void compileTree(CEvaluationNode* node, const CEvaluationTree * pTree);
   };

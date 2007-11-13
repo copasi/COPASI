@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.328 $
+//   $Revision: 1.329 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/12 19:24:56 $
+//   $Date: 2007/11/13 13:48:30 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -2541,7 +2541,7 @@ CEvent* CModel::createEvent(const std::string & name)
 }
 
 bool CModel::removeEvent(const std::string & key,
-                         const bool & recursive)
+                         const bool & /* recursive */)
 {
   CEvent * pEvent =
     dynamic_cast< CEvent * >(GlobalKeys.get(key));

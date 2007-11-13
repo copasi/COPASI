@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.181 $
+//   $Revision: 1.182 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/12 22:01:31 $
+//   $Date: 2007/11/13 13:48:30 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -4318,7 +4318,7 @@ void SBMLImporter::normalizeSBMLUnit(Unit* pU)
   if (pU != NULL)
     {
       double log10Multiplier = log10(pU->getMultiplier());
-      pU->setScale(pU->getScale() + floor(log10Multiplier));
+      pU->setScale(pU->getScale() + (C_INT32) floor(log10Multiplier));
       pU->setMultiplier(pow(10.0, log10Multiplier - floor(log10Multiplier)));
     }
 }

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CDerive.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/10/26 14:55:48 $
+//   $Author: shoops $
+//   $Date: 2007/11/13 13:48:54 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,7 +14,7 @@
 
 #include "CEvaluationNode.h"
 
-CEvaluationNode* CDerive::deriveBranch(const CEvaluationNode* node, C_INT32 variableIndex, const CCopasiObject * pObject)
+CEvaluationNode* CDerive::deriveBranch(const CEvaluationNode* node, unsigned C_INT32 variableIndex, const CCopasiObject * pObject)
 {
   CEvaluationNode * newNode = NULL;
 

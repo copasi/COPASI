@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
-//   $Author: akoenig $
-//   $Date: 2007/11/13 13:10:37 $
+//   $Author: shoops $
+//   $Date: 2007/11/13 13:48:29 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -249,7 +249,11 @@ void CColorScaleBiLog::finishAutomaticParameterCalculation()
 //******************************************************************
 //******************************************************************
 
-CQArrayAnnotationsWidget::CQArrayAnnotationsWidget(QWidget* parent, const char* name, WFlags fl, bool barChart)
+CQArrayAnnotationsWidget::CQArrayAnnotationsWidget(QWidget* parent, const char* name, WFlags fl, bool
+#ifdef WITH_QWT3D
+    barChart
+#endif
+)
     : QVBox(parent, name, fl),
     mpColorScale(NULL)
 {
