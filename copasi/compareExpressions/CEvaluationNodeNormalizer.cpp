@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CEvaluationNodeNormalizer.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/11/13 16:38:16 $
+//   $Date: 2007/11/13 20:01:26 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -81,8 +81,8 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalize(const CEvaluationNode* pNo
           pResult = normalizeCEvaluationNodeVector(dynamic_cast<const CEvaluationNodeVector*>(pNode));
           break;
         }
+      if (pResult == NULL) pResult = pNode->copyBranch();
     }
-  if (pResult == NULL) pResult = pNode->copyBranch();
   return pResult;
 }
 
@@ -105,7 +105,6 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeCEvaluationNodeConstant(con
       // copy the node
       pResult = new CEvaluationNodeConstant(*pNode);
     }
-  if (pResult == NULL) pResult = pNode->copyBranch();
   return pResult;
 }
 
@@ -137,8 +136,8 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeCEvaluationNodeOperator(con
           pResult = CEvaluationNodeNormalizer::normalizeMinusNode(pNode);
           break;
         }
+      if (pResult == NULL) pResult = pNode->copyBranch();
     }
-  if (pResult == NULL) pResult = pNode->copyBranch();
   return pResult;
 }
 
@@ -150,7 +149,6 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeCEvaluationNodeObject(const
       // copy the node
       pResult = new CEvaluationNodeObject(*pNode);
     }
-  if (pResult == NULL) pResult = pNode->copyBranch();
   return pResult;
 }
 
@@ -247,8 +245,8 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeCEvaluationNodeFunction(con
           pResult = CEvaluationNodeNormalizer::normalize(dynamic_cast<const CEvaluationNode*>(pNode->getChild()));
           break;
         }
+      if (pResult == NULL) pResult = pNode->copyBranch();
     }
-  if (pResult == NULL) pResult = pNode->copyBranch();
   return pResult;
 }
 
@@ -298,8 +296,8 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeCEvaluationNodeCall(const C
             }
           break;
         }
+      if (pResult == NULL) pResult = static_cast<CEvaluationNodeCall*>(pNode->copyBranch());
     }
-  if (pResult == NULL) pResult = static_cast<CEvaluationNodeCall*>(pNode->copyBranch());
   return pResult;
 }
 
@@ -311,7 +309,6 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeCEvaluationNodeStructure(co
       // copy the node
       pResult = new CEvaluationNodeStructure(*pNode);
     }
-  if (pResult == NULL) pResult = pNode->copyBranch();
   return pResult;
 }
 
@@ -363,8 +360,8 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeCEvaluationNodeChoice(const
               pResult = NULL;
             }
         }
+      if (pResult == NULL) pResult = static_cast<CEvaluationNodeChoice*>(pNode->copyBranch());
     }
-  if (pResult == NULL) pResult = static_cast<CEvaluationNodeChoice*>(pNode->copyBranch());
   return pResult;
 }
 
@@ -376,7 +373,6 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeCEvaluationNodeVariable(con
       // copy the node
       pResult = new CEvaluationNodeVariable(*pNode);
     }
-  if (pResult == NULL) pResult = pNode->copyBranch();
   return pResult;
 }
 
@@ -468,8 +464,8 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeCEvaluationNodeLogical(cons
             }
           break;
         }
+      if (pResult == NULL) pResult = static_cast<CEvaluationNodeLogical*>(pNode->copyBranch());
     }
-  if (pResult == NULL) pResult = static_cast<CEvaluationNodeLogical*>(pNode->copyBranch());
   return pResult;
 }
 
@@ -481,7 +477,6 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeCEvaluationNodeWhiteSpace(c
       // copy node
       pResult = new CEvaluationNodeWhiteSpace(*pNode);
     }
-  if (pResult == NULL) pResult = pNode->copyBranch();
   return pResult;
 }
 
@@ -525,8 +520,8 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeCEvaluationNodeVector(const
         case CEvaluationNodeVector::INVALID:
           break;
         }
+      if (pResult == NULL) pResult = static_cast<CEvaluationNodeVector*>(pNode->copyBranch());
     }
-  if (pResult == NULL) pResult = static_cast<CEvaluationNodeVector*>(pNode->copyBranch());
   return pResult;
 }
 
@@ -535,10 +530,10 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizePowerNode(const CEvaluation
   CEvaluationNode* pResult;
   if (pNode != NULL)
     {
-      const CEvaluationNode* pChild1 = dynamic_cast<const CEvaluationNode*>(pNode->getChild());
+      CEvaluationNode* pChild1 = CEvaluationNodeNormalizer::normalize(dynamic_cast<const CEvaluationNode*>(pNode->getChild()));
       if (pChild1 != NULL)
         {
-          const CEvaluationNode* pChild2 = dynamic_cast<const CEvaluationNode*>(pChild1->getSibling());
+          CEvaluationNode* pChild2 = CEvaluationNodeNormalizer::normalize(dynamic_cast<const CEvaluationNode*>(pChild1->getSibling()));
           if (pChild2 != NULL)
             {
               if (CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::NUMBER)
@@ -546,42 +541,30 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizePowerNode(const CEvaluation
                   if (pChild2->value() - 1.0 < ZERO)
                     {
                       // replace it with the first child
-                      pResult = CEvaluationNodeNormalizer::normalize(pChild1);
+                      pResult = pChild1;
+                      delete pChild2;
+                      pChild2 = NULL;
                     }
                   else if (pChild2->value() < ZERO)
                     {
                       // replace it by a number node of 1
                       pResult = new CEvaluationNodeNumber(CEvaluationNodeNumber::INTEGER, "1");
+                      delete pChild1;
+                      delete pChild2;
+                      pChild1 = NULL;
+                      pChild2 = NULL;
                     }
                 }
               else
                 {
                   pResult = new CEvaluationNodeOperator(CEvaluationNodeOperator::POWER, "");
-                  CEvaluationNode* pTmpResult = CEvaluationNodeNormalizer::normalize(pChild1);
-                  if (pTmpResult != NULL)
-                    {
-                      pResult->addChild(pTmpResult);
-                      pTmpResult = CEvaluationNodeNormalizer::normalize(pChild2);
-                      if (pTmpResult != NULL)
-                        {
-                          pResult->addChild(pTmpResult);
-                        }
-                      else
-                        {
-                          delete pResult;
-                          pResult = NULL;
-                        }
-                    }
-                  else
-                    {
-                      delete pResult;
-                      pResult = NULL;
-                    }
+                  pResult->addChild(pChild1);
+                  pResult->addChild(pChild2);
                 }
             }
         }
+      if (pResult == NULL) pResult = pNode->copyBranch();
     }
-  if (pResult == NULL) pResult = pNode->copyBranch();
   return pResult;
 }
 
@@ -606,14 +589,17 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeMultiplyNode(const CEvaluat
                   if (std::abs(pChild1->value() - 1.0) < ZERO)
                     {
                       pResult = pChild2;
-                      // to save some work in the second if clause below
-                      // we set pChild2 to its normalized form
-                      pChild2 = pResult;
+                      delete pChild1;
+                      pChild1 = NULL;
+                      pChild2 = NULL;
                     }
                   else if (std::abs(pChild1->value()) < ZERO)
                     {
                       pResult = new CEvaluationNodeNumber(CEvaluationNodeNumber::INTEGER, "0");
                       // we are done
+                      delete pChild1;
+                      delete pChild2;
+                      pChild1 = NULL;
                       pChild2 = NULL;
                     }
                 }
@@ -622,12 +608,16 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeMultiplyNode(const CEvaluat
                   if (std::abs(pChild2->value() - 1.0) < ZERO)
                     {
                       pResult = pChild1;
-                      pChild1 = pResult;
+                      delete pChild2;
+                      pChild2 = NULL;
+                      pChild1 = NULL;
                     }
                   else if (std::abs(pChild2->value()) < ZERO)
                     {
                       pResult = new CEvaluationNodeNumber(CEvaluationNodeNumber::INTEGER, "0");
                       // we are done
+                      delete pChild1;
+                      delete pChild2;
                       pChild1 = NULL;
                       pChild2 = NULL;
                     }
@@ -638,7 +628,7 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeMultiplyNode(const CEvaluat
                   pResult->addChild(pChild1);
                   pResult->addChild(pChild2);
                 }
-              if (pResult->getType() == CEvaluationNode::OPERATOR && pChild2 != NULL) // if pChild2 is NULL, the node was replace by a number node with value 0
+              if (pResult->getType() == CEvaluationNode::OPERATOR)
                 {
                   // multiply all number nodes in a multiplication chain
                   std::vector<CEvaluationNode*> chainNodes;
@@ -656,8 +646,8 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeMultiplyNode(const CEvaluat
                 }
             }
         }
+      if (pResult == NULL) pResult = pNode->copyBranch();
     }
-  if (pResult == NULL) pResult = pNode->copyBranch();
   return pResult;
 }
 
@@ -679,22 +669,22 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizePlusNode(const CEvaluationN
                   if (std::abs(pChild1->value()) < ZERO)
                     {
                       pResult = pChild2;
+                      delete pChild1;
+                      pChild1 = NULL;
+                      pChild2 = NULL;
                     }
                 }
               if (CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::NUMBER)
                 {
                   if (std::abs(pChild2->value()) < ZERO)
                     {
-                      if (pChild2 == pResult)
-                        {
-                          // we are done
-                          pChild1 = NULL;
-                          pChild2 = NULL;
-                        }
-                      else
+                      if (pChild2 != pResult)
                         {
                           pResult = pChild1;
+                          delete pChild2;
                         }
+                      pChild1 = NULL;
+                      pChild2 = NULL;
                     }
                 }
               if (!pResult)
@@ -703,7 +693,7 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizePlusNode(const CEvaluationN
                   pResult->addChild(pChild1);
                   pResult->addChild(pChild2);
                 }
-              if (pResult->getType() == CEvaluationNode::OPERATOR && pChild2 != NULL) // if pChild2 is NULL, the node was replace by a number node with value 0
+              if (pResult->getType() == CEvaluationNode::OPERATOR)
                 {
                   // add all number nodes in a summation chain
                   std::vector<CEvaluationNode*> chainNodes;
@@ -720,9 +710,14 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizePlusNode(const CEvaluationN
                   pResult = CEvaluationNodeNormalizer::buildOperatorBranchFromChain(subType, chainNodes);
                 }
             }
+          else
+            {
+              delete pChild1;
+              pChild1 = NULL;
+            }
         }
+      if (pResult == NULL) pResult = pNode->copyBranch();
     }
-  if (pResult == NULL) pResult = pNode->copyBranch();
   return pResult;
 }
 
@@ -743,6 +738,8 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeDivideNode(const CEvaluatio
                   if (std::abs(pChild2->value() - 1.0) < ZERO)
                     {
                       pResult = pChild1;
+                      delete pChild2;
+                      pChild2 = NULL;
                     }
                   else if (CEvaluationNode::type(pChild1->getType()) == CEvaluationNode::NUMBER)
                     {
@@ -750,6 +747,10 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeDivideNode(const CEvaluatio
                       std::ostringstream os;
                       os << pChild1->value() / pChild2->value();
                       pResult = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, os.str());
+                      delete pChild1;
+                      delete pChild2;
+                      pChild1 = NULL;
+                      pChild2 = NULL;
                     }
                 }
               else
@@ -759,12 +760,27 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeDivideNode(const CEvaluatio
                   if (*pChild1 == *pChild2)
                     {
                       pResult = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "1.0");
+                      delete pChild1;
+                      delete pChild2;
+                      pChild1 = NULL;
+                      pChild2 = NULL;
                     }
                 }
+              if (pResult == NULL)
+                {
+                  pResult = new CEvaluationNodeOperator(CEvaluationNodeOperator::DIVIDE, "/");
+                  pResult->addChild(pChild1);
+                  pResult->addChild(pChild2);
+                }
+            }
+          else
+            {
+              delete pChild1;
+              pChild1 = NULL;
             }
         }
+      if (pResult == NULL) pResult = pNode->copyBranch();
     }
-  if (pResult == NULL) pResult = pNode->copyBranch();
   return pResult;
 }
 
@@ -785,6 +801,10 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeModulusNode(const CEvaluati
                   if (std::abs(pChild2->value() - 1.0) < ZERO)
                     {
                       pResult = new CEvaluationNodeNumber(CEvaluationNodeNumber::INTEGER, "0");
+                      delete pChild1;
+                      delete pChild2;
+                      pChild1 = NULL;
+                      pChild2 = NULL;
                     }
                   else if (CEvaluationNode::type(pChild1->getType()) == CEvaluationNode::NUMBER &&
                            (CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pChild1->getType()) == CEvaluationNodeNumber::INTEGER &&
@@ -794,6 +814,10 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeModulusNode(const CEvaluati
                       std::ostringstream os;
                       os << (long)pChild1->value() % (long)pChild2->value();
                       pResult = new CEvaluationNodeNumber(CEvaluationNodeNumber::INTEGER, os.str());
+                      delete pChild1;
+                      delete pChild2;
+                      pChild1 = NULL;
+                      pChild2 = NULL;
                     }
                 }
               else
@@ -803,12 +827,27 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeModulusNode(const CEvaluati
                   if (*pChild1 == *pChild2)
                     {
                       pResult = new CEvaluationNodeNumber(CEvaluationNodeNumber::INTEGER, "0");
+                      delete pChild1;
+                      delete pChild2;
+                      pChild1 = NULL;
+                      pChild2 = NULL;
                     }
                 }
+              if (pResult == NULL)
+                {
+                  pResult = new CEvaluationNodeOperator(CEvaluationNodeOperator::MODULUS, "%");
+                  pResult->addChild(pChild1);
+                  pResult->addChild(pChild2);
+                }
+            }
+          else
+            {
+              delete pChild1;
+              pChild1 = NULL;
             }
         }
+      if (pResult == NULL) pResult = pNode->copyBranch();
     }
-  if (pResult == NULL) pResult = pNode->copyBranch();
   return pResult;
 }
 
@@ -829,6 +868,9 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeMinusNode(const CEvaluation
                   if (std::abs(pChild2->value()) < ZERO)
                     {
                       pResult = pChild1;
+                      delete pChild2;
+                      pChild1 = NULL;
+                      pChild2 = NULL;
                     }
                   else if (CEvaluationNode::type(pChild1->getType()) == CEvaluationNode::NUMBER)
                     {
@@ -836,6 +878,10 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeMinusNode(const CEvaluation
                       std::ostringstream os;
                       os << pChild1->value() - pChild2->value();
                       pResult = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, os.str());
+                      delete pChild1;
+                      delete pChild2;
+                      pChild1 = NULL;
+                      pChild2 = NULL;
                     }
                 }
               else
@@ -844,12 +890,27 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeMinusNode(const CEvaluation
                   if (*pChild1 == *pChild2)
                     {
                       pResult = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "0.0");
+                      delete pChild1;
+                      delete pChild2;
+                      pChild1 = NULL;
+                      pChild2 = NULL;
                     }
                 }
+              if (pResult == NULL)
+                {
+                  pResult = new CEvaluationNodeOperator(CEvaluationNodeOperator::MINUS, "-");
+                  pResult->addChild(pChild1);
+                  pResult->addChild(pChild2);
+                }
+            }
+          else
+            {
+              delete pChild1;
+              pChild1 = NULL;
             }
         }
+      if (pResult == NULL) pResult = pNode->copyBranch();
     }
-  if (pResult == NULL) pResult = pNode->copyBranch();
   return pResult;
 }
 
@@ -888,6 +949,7 @@ bool CEvaluationNodeNormalizer::eliminateMultipleNumbers(CEvaluationNodeOperator
             {
               changed = true;
               it = numbers.begin(), endit = numbers.end();
+              // don't delete the last one since we reset it's value
               --endit;
               while (it != endit)
                 {
@@ -898,7 +960,6 @@ bool CEvaluationNodeNormalizer::eliminateMultipleNumbers(CEvaluationNodeOperator
               std::ostringstream os;
               os << value;
               (*it)->setData(os.str());
-              chainNodes.push_back(*it);
             }
         }
     }
@@ -969,8 +1030,6 @@ bool CEvaluationNodeNormalizer::collectIdenticalBranches(CEvaluationNodeOperator
       // the node with the number of occurences
       // for a multiplication it's the same, but we use a power instead of a
       // multiplication
-      // for a subtraction and a division, we have to watch the order of the
-      // operands
       if (subType == CEvaluationNodeOperator::MULTIPLY || subType == CEvaluationNodeOperator::PLUS)
         {
           CEvaluationNodeOperator* pOperation = (subType == CEvaluationNodeOperator::MULTIPLY) ? new CEvaluationNodeOperator(CEvaluationNodeOperator::POWER, "^") : new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
