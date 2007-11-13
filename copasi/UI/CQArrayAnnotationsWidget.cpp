@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/11/13 13:48:29 $
+//   $Author: akoenig $
+//   $Date: 2007/11/13 17:06:40 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -12,6 +12,7 @@
 
 #include <qlayout.h>
 #include <qtable.h>
+#include <qlabel.h>
 
 #include "copasi.h"
 
@@ -249,11 +250,7 @@ void CColorScaleBiLog::finishAutomaticParameterCalculation()
 //******************************************************************
 //******************************************************************
 
-CQArrayAnnotationsWidget::CQArrayAnnotationsWidget(QWidget* parent, const char* name, WFlags fl, bool
-#ifdef WITH_QWT3D
-    barChart
-#endif
-)
+CQArrayAnnotationsWidget::CQArrayAnnotationsWidget(QWidget* parent, const char* name, WFlags fl, bool barChart, bool slider)
     : QVBox(parent, name, fl),
     mpColorScale(NULL)
 {
@@ -288,7 +285,8 @@ CQArrayAnnotationsWidget::CQArrayAnnotationsWidget(QWidget* parent, const char* 
     {
       plot3d = new CQBarChart(mpStack);
       plot3d->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
-      plot3d->activateSlider();
+      if (slider)
+        plot3d->activateSlider();
       mpStack->addWidget(plot3d, 1);
       switchToBarChart();
     }
@@ -869,17 +867,29 @@ void CQArrayAnnotationsWidget::switchToBarChart()
     }
 }
 
-void CQArrayAnnotationsWidget::hideBars()
+void CQArrayAnnotationsWidget::disableBarChart()
 {
 
   switchToTable();
   mpButton->hide();
 }
 
+void CQArrayAnnotationsWidget::disableSlider()
+{
+  if (plot3d->sliderActive())
+    {
+      plot3d->mpPlot->mpSliderColumn->hide();
+      plot3d->mpPlot->mpLabelColumn->clear();
+      plot3d->mpPlot->mpSliderRow->hide();
+      plot3d->mpPlot->mpLabelRow->clear();
+      plot3d->mpPlot->mpSlider = false;
+    }
+}
+
 void CQArrayAnnotationsWidget::setFocusOnTable()
 {
 #ifdef WITH_QWT3D
-  if (showBarChart)
+  if (showBarChart && plot3d->sliderActive())
     {
       int col = plot3d->mpPlot->mpSliderColumn->value();
       int row = plot3d->mpPlot->mpSliderRow->value();
@@ -918,7 +928,7 @@ void CQArrayAnnotationsWidget::setFocusOnTable()
 void CQArrayAnnotationsWidget::setFocusOnBars()
 {
 #ifdef WITH_QWT3D
-  if (showBarChart)
+  if (showBarChart && plot3d->sliderActive())
     {
       int col = mpContentTable->currentColumn();
       int row = mpContentTable->currentRow();
@@ -956,6 +966,6 @@ void CQArrayAnnotationsWidget::setFocusOnBars()
 
 void CQArrayAnnotationsWidget::tableDoubleClicked()
 {
-
-  switchToBarChart();
+  if (plot3d->sliderActive())
+    switchToBarChart();
 }

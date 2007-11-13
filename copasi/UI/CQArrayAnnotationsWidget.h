@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: akoenig $
-//   $Date: 2007/11/12 17:06:33 $
+//   $Date: 2007/11/13 17:06:40 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,6 +27,7 @@
 
 class QGridLayout;
 class QTable;
+class QLabel;
 
 /**
  * Base class for color scales. The derived classes provide algorithms
@@ -187,7 +188,7 @@ class CQArrayAnnotationsWidget : public QVBox
 
   public:
 
-    CQArrayAnnotationsWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0, bool barChart = true);
+    CQArrayAnnotationsWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0, bool barChart = true, bool slider = true);
     ~CQArrayAnnotationsWidget();
 
     void setArrayAnnotation(const CArrayAnnotation * pArray);
@@ -212,7 +213,9 @@ class CQArrayAnnotationsWidget : public QVBox
      */
     void setLegendEnabled(bool b);
 
-    void hideBars();
+    void disableBarChart();
+
+    void disableSlider();
 
     void setFocusOnTable();
 

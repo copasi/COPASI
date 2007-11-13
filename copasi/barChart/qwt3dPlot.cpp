@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/barChart/qwt3dPlot.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: akoenig $
-//   $Date: 2007/11/12 17:01:07 $
+//   $Date: 2007/11/13 17:10:12 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -336,6 +336,7 @@ void Plot3d::resizeCoordSys()
 
 int Plot3d::getColSliderPos()
 {
+  if (!mpSlider) return - 1;
   if (mpSliderColumn->value() > mData.columns)
     return - 1;
   else
@@ -344,6 +345,7 @@ int Plot3d::getColSliderPos()
 
 int Plot3d::getRowSliderPos()
 {
+  if (!mpSlider) return - 1;
   if (mpSliderRow->value() > mData.rows)
     return - 1;
   else
@@ -352,6 +354,7 @@ int Plot3d::getRowSliderPos()
 
 void Plot3d::sliderMoved(int column, int row)
 {
+  if (!mpSlider) return;
   int showColumn;
   int showRow;
 
