@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModelValuesWidget.cpp,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/11/13 15:08:15 $
+//   $Author: ssahle $
+//   $Date: 2007/11/13 17:45:07 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -116,7 +116,7 @@ void ModelValuesWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C
   // Expression
   const CExpression * pExpression = pMV->getExpressionPtr();
   if (pExpression != NULL)
-    table->setText(row, COL_EXPRESSION, pMV->getExpression());
+    table->setText(row, COL_EXPRESSION, FROM_UTF8(pMV->getExpression()));
   else
     table->setText(row, COL_EXPRESSION, "");
 }
