@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/website/license/Attic/license.cpp,v $
-   $Revision: 1.3 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2007/01/04 17:42:17 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/website/license/Attic/license.cpp,v $
+//   $Revision: 1.4 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/11/13 13:42:27 $
+// End CVS Header
 
-// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -161,6 +161,10 @@ int create()
                          Constant.c_str(),
                          "000",
                          StartDate.c_str());
+
+  *pOutput << "User:  " << Options.RegisteredUser << std::endl;
+  *pOutput << "Email: " << Options.RegisteredEmail << std::endl;
+  *pOutput << "Code:  " << RegCode << std::endl << std::endl;
 
   return 1;
 }
