@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMetabolite.h,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/12 21:06:47 $
+//   $Date: 2007/11/13 14:47:40 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,8 +13,8 @@
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQMetabolite.ui'
  **
- ** Created: Mon Nov 12 15:15:21 2007
- **      by: The User Interface Compiler ($Id: CQMetabolite.h,v 1.10 2007/11/12 21:06:47 shoops Exp $)
+ ** Created: Tue Nov 13 09:42:48 2007
+ **      by: The User Interface Compiler ($Id: CQMetabolite.h,v 1.11 2007/11/13 14:47:40 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -32,11 +32,11 @@ class QHBoxLayout;
 class QGridLayout;
 class QSpacerItem;
 class CQExpressionWidget;
-class QFrame;
 class QPushButton;
 class QLabel;
 class QLineEdit;
 class QComboBox;
+class QFrame;
 class QCheckBox;
 class QToolButton;
 class QListView;
@@ -54,7 +54,6 @@ class CQMetabolite : public CopasiWidget
     CQMetabolite(QWidget* parent = 0, const char* name = 0);
     ~CQMetabolite();
 
-    QFrame* mpLine2;
     QPushButton* mpBtnCommit;
     QPushButton* mpBtnRevert;
     QPushButton* mpBtnNew;
@@ -77,12 +76,13 @@ class CQMetabolite : public CopasiWidget
     QToolButton* mpBtnObjectExpression;
     QLabel* mpLblReactions;
     QListView* mpReactionTable;
-    QLabel* mpLblValue;
     QLineEdit* mpEditCurrentValue;
-    QLabel* mpLblRate;
-    QLabel* mpLblTransitionTime;
-    QLineEdit* mpEditTransitionTime;
     QLineEdit* mpEditRate;
+    QLineEdit* mpEditTransitionTime;
+    QLabel* mpLblValue;
+    QLabel* mpLblTransitionTime;
+    QLabel* mpLblRate;
+    QFrame* mpLine2;
 
     virtual bool enter(const std::string & key);
     virtual bool leave();
@@ -99,7 +99,6 @@ class CQMetabolite : public CopasiWidget
     QHBoxLayout* mpHBoxLayoutExpression;
     QVBoxLayout* mpVBoxLayoutExpression;
     QSpacerItem* mpSpacerObjectExpression;
-    QGridLayout* layout9;
 
   protected slots:
     virtual void languageChange();

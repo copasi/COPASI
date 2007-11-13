@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMetabolite.ui.h,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/12 21:06:47 $
+//   $Date: 2007/11/13 14:47:40 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -361,7 +361,10 @@ void CQMetabolite::slotInitialTypeChanged(bool useInitialExpression)
 void CQMetabolite::slotNameLostFocus()
 {
   if (mpEditName->text() != FROM_UTF8(mpMetab->getObjectName()))
-    mpEditExpression->currentObjectRenamed(mpMetab, mpEditName->text());
+    {
+      mpEditExpression->currentObjectRenamed(mpMetab, mpEditName->text());
+      mpEditInitialExpression->currentObjectRenamed(mpMetab, mpEditName->text());
+    }
 }
 
 void CQMetabolite::slotExpressionValid(bool valid)
