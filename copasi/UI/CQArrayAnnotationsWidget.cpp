@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: akoenig $
-//   $Date: 2007/11/13 17:28:36 $
+//   $Date: 2007/11/13 17:33:15 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -876,6 +876,8 @@ void CQArrayAnnotationsWidget::disableBarChart()
 
 void CQArrayAnnotationsWidget::disableSlider()
 {
+#ifdef WITH_QWT3D
+
   if (plot3d->sliderActive())
     {
       plot3d->mpPlot->mpSliderColumn->hide();
@@ -884,6 +886,7 @@ void CQArrayAnnotationsWidget::disableSlider()
       plot3d->mpPlot->mpLabelRow->clear();
       plot3d->mpPlot->mpSlider = false;
     }
+#endif
 }
 
 void CQArrayAnnotationsWidget::setFocusOnTable()
