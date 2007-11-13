@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: akoenig $
-//   $Date: 2007/11/12 18:22:16 $
+//   $Date: 2007/11/13 13:10:37 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -603,7 +603,7 @@ void CQArrayAnnotationsWidget::fillTable(unsigned C_INT32 rowIndex, unsigned C_I
           }
       }
 #ifdef WITH_QWT3D
-  if (showBarChart)
+  if (showBarChart && (jmax > 0 && imax > 0))
     {
 
       //create a new array data, witch holds the hole numeric data
@@ -727,7 +727,7 @@ void CQArrayAnnotationsWidget::fillTable(unsigned C_INT32 rowIndex,
         }
     }
 #ifdef WITH_QWT3D
-  if (showBarChart)
+  if (showBarChart && (imax > 0))
     {
       //create a new array data, witch holds the hole numeric data
       int rows = imax;
@@ -905,8 +905,6 @@ void CQArrayAnnotationsWidget::setFocusOnTable()
           else
             {
               mpContentTable->setCurrentCell(-1, -1);
-              std::cout << mpContentTable->currentRow() << std::endl;
-              std::cout << mpContentTable->currentColumn() << std::endl;
             }
         }
     }
