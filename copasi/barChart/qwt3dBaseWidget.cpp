@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/barChart/Attic/qwt3dBaseWidget.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: akoenig $
-//   $Date: 2007/11/12 17:01:07 $
+//   $Date: 2007/11/13 14:20:55 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -90,6 +90,7 @@ void BaseWidget::activateSlider()
   mpSliderColumn->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
   mpSliderColumn->setOrientation(QSlider::Horizontal);
   mpHBoxSmall->addWidget(mpSliderColumn, 0, 0);
+  mpHBoxSmall->addSpacing(24);
 
   QToolTip::add(mpSliderRow, "move slider to view requested row-description");
   QToolTip::add(mpSliderColumn, "move slider to view requested column-description");
