@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQModelValue.ui.h,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/12 23:13:33 $
+//   $Date: 2007/11/13 14:48:12 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -224,28 +224,39 @@ void CQModelValue::slotTypeChanged(int type)
   switch ((CModelEntity::Status) mItemToType[type])
     {
     case CModelEntity::FIXED:
+      CQModelValueLayout->removeItem(mpHBoxLayoutExpression);
+      CQModelValueLayout->remove(mpLblExpression);
+
       mpLblExpression->hide();
       mpEditExpression->hide();
       mpBtnExpressionObject->hide();
-      mpEditInitialValue->setEnabled(true);
+
+      mpBoxUseInitialExpression->setEnabled(true);
+      slotInitialTypeChanged(mpBoxUseInitialExpression->isChecked());
       break;
 
     case CModelEntity::ASSIGNMENT:
+      CQModelValueLayout->addWidget(mpLblExpression, 2, 0);
+      CQModelValueLayout->addMultiCellLayout(mpHBoxLayoutExpression, 2, 2, 1, 2);
+
       mpLblExpression->show();
       mpEditExpression->show();
       mpBtnExpressionObject->show();
-      mpEditInitialValue->setEnabled(false);
 
-      mpEditExpression->setExpression(mpModelValue->getExpression());
+      mpBoxUseInitialExpression->setEnabled(false);
+      slotInitialTypeChanged(false);
       break;
 
     case CModelEntity::ODE:
+      CQModelValueLayout->addWidget(mpLblExpression, 2, 0);
+      CQModelValueLayout->addMultiCellLayout(mpHBoxLayoutExpression, 2, 2, 1, 2);
+
       mpLblExpression->show();
       mpEditExpression->show();
       mpBtnExpressionObject->show();
-      mpEditInitialValue->setEnabled(true);
 
-      mpEditExpression->setExpression(mpModelValue->getExpression());
+      mpBoxUseInitialExpression->setEnabled(true);
+      slotInitialTypeChanged(mpBoxUseInitialExpression->isChecked());
       break;
 
     default:
@@ -334,6 +345,22 @@ void CQModelValue::load()
   // Expression
   mpEditExpression->setExpression(mpModelValue->getExpression());
 
+  // Use Initial Expression
+  if (mpModelValue->getStatus() == CModelEntity::ASSIGNMENT ||
+      mpModelValue->getInitialExpression() == "")
+    {
+      mpBoxUseInitialExpression->setChecked(false);
+      slotInitialTypeChanged(false);
+    }
+  else
+    {
+      mpBoxUseInitialExpression->setChecked(true);
+      slotInitialTypeChanged(true);
+    }
+
+  // Initial Expression
+  mpEditInitialExpression->setExpression(mpModelValue->getInitialExpression());
+
   mChanged = false;
 }
 
@@ -382,7 +409,28 @@ void CQModelValue::save()
       mChanged = true;
     }
 
-  if (mChanged) CCopasiDataModel::Global->changed();
+  // Initial Expression
+  if ((CModelEntity::Status) mItemToType[mpComboBoxType->currentItem()] != CModelEntity::ASSIGNMENT)
+    {
+      if (mpBoxUseInitialExpression->isChecked() &&
+          mpModelValue->getInitialExpression() != mpEditInitialExpression->getExpression())
+        {
+          mpModelValue->setInitialExpression(mpEditInitialExpression->getExpression());
+          mChanged = true;
+        }
+      else if (!mpBoxUseInitialExpression->isChecked() &&
+               mpModelValue->getInitialExpression() != "")
+        {
+          mpModelValue->setInitialExpression("");
+          mChanged = true;
+        }
+    }
+
+  if (mChanged)
+    {
+      CCopasiDataModel::Global->changed();
+      protectedNotify(ListViews::MODELVALUE, ListViews::CHANGE, mKey);
+    }
 
   mChanged = false;
 }
