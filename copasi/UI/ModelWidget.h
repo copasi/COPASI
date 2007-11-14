@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModelWidget.h,v $
-   $Revision: 1.14 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/28 00:20:16 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModelWidget.h,v $
+//   $Revision: 1.15 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/11/14 20:29:12 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -58,6 +58,7 @@ class ModelWidget : public CopasiWidget
     bool loadModel(CModel *model);
     bool saveToModel();
     std::string objKey;
+    QString mOldComment;
 
     QGridLayout* ModelWidgetLayout;
     QHBoxLayout* Layout5;

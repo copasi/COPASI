@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModelWidget.cpp,v $
-//   $Revision: 1.51 $
+//   $Revision: 1.52 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/02 18:18:01 $
+//   $Date: 2007/11/14 20:29:12 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -200,6 +200,9 @@ bool ModelWidget::loadModel(CModel *model)
     toggleEditorBox();
 
   mpEditComment->setText(FROM_UTF8(model->getComments()));
+  // We save the current comment so that we can see whether
+  // it has changed.
+  mOldComment = mpEditComment->text();
 
   // textBrowser->setReadOnly(FALSE);
   ComboBox1->clear();
@@ -264,39 +267,44 @@ bool ModelWidget::saveToModel()
       changed = true;
     }
 
-  std::string Richtext = (const char *)mpEditComment->text().utf8();
-
-  // remove leading whitepsaces
-  std::string::size_type pos = Richtext.find_first_not_of("\x0a\x0d\t ");
-  if (pos != 0) Richtext.erase(0, pos);
-
-  // remove trailing whitepsace
-  pos = Richtext.find_last_not_of("\x0a\x0d\t ");
-  if (pos < Richtext.length())
-    Richtext = Richtext.substr(0, pos + 1);
-
-  std::ostringstream xhtml;
-
-  if (Richtext[0] == '<')
+  if (mOldComment != mpEditComment->text())
     {
-      std::string::size_type pos = Richtext.find('>');
-      std::string FirstElement = Richtext.substr(0, pos);
+      std::string Richtext = (const char *)mpEditComment->text().utf8();
 
-      if (FirstElement.find("xmlns=\"http://www.w3.org/1999/xhtml\"") == std::string::npos)
-        FirstElement += " xmlns=\"http://www.w3.org/1999/xhtml\"";
+      // remove leading whitepsaces
+      std::string::size_type pos = Richtext.find_first_not_of("\x0a\x0d\t ");
+      if (pos != 0) Richtext.erase(0, pos);
 
-      xhtml << FirstElement << Richtext.substr(pos);
-    }
-  else
-    {
-      xhtml << "<body xmlns=\"http://www.w3.org/1999/xhtml\">";
-      xhtml << CCopasiXMLInterface::encode(Richtext);
-      xhtml << "</body>";
-    }
+      // remove trailing whitepsace
+      pos = Richtext.find_last_not_of("\x0a\x0d\t ");
+      if (pos < Richtext.length())
+        Richtext = Richtext.substr(0, pos + 1);
 
-  if (xhtml.str() != model->getComments())
-    {
+      std::ostringstream xhtml;
+
+      if (Richtext == "")
+        {
+          xhtml << "<body xmlns=\"http://www.w3.org/1999/xhtml\" />";
+        }
+      else if (Richtext[0] == '<')
+        {
+          std::string::size_type pos = Richtext.find('>');
+          std::string FirstElement = Richtext.substr(0, pos);
+
+          if (FirstElement.find("xmlns=\"http://www.w3.org/1999/xhtml\"") == std::string::npos)
+            FirstElement += " xmlns=\"http://www.w3.org/1999/xhtml\"";
+
+          xhtml << FirstElement << Richtext.substr(pos);
+        }
+      else
+        {
+          xhtml << "<body xmlns=\"http://www.w3.org/1999/xhtml\">";
+          xhtml << CCopasiXMLInterface::encode(Richtext);
+          xhtml << "</body>";
+        }
+
       model->setComments(xhtml.str());
+
       changed = true;
     }
 
