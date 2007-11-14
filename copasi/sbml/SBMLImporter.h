@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-//   $Revision: 1.61 $
+//   $Revision: 1.62 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/11/05 16:12:38 $
+//   $Date: 2007/11/14 21:25:46 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -296,7 +296,7 @@ class SBMLImporter
      */
     bool isStochasticModel(const Model* pSBMLModel);
 
-    void replaceObjectNames(ASTNode* pNode, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+    void replaceObjectNames(ASTNode* pNode, const std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
 
     /**
      * For function definitions that use the time symbol we have to make this a
@@ -355,6 +355,11 @@ class SBMLImporter
      * returns a new UnitDefinition object for that id.
      */
     static UnitDefinition* getSBMLUnitDefinitionForId(const std::string& unitId, const Model* pSBMLModel);
+
+    /**
+     * Imports all initial assignments if there are any.
+     */
+    void importInitialAssignments(const Model* pSBMLModel, const std::map<CCopasiObject*, SBase*>& copasi2sbmlMap);
 
   public:
     SBMLImporter();

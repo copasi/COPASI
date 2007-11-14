@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.182 $
+//   $Revision: 1.183 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/11/13 13:48:30 $
+//   $Author: gauges $
+//   $Date: 2007/11/14 21:25:46 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,6 +40,7 @@
 #include <sbml/UnitKind.h>
 #include <sbml/Unit.h>
 #include <sbml/Parameter.h>
+#include <sbml/InitialAssignment.h>
 #include <sbml/Rule.h>
 #include <sbml/FunctionDefinition.h>
 #include <sbml/units/Utils_UnitDefinition.h>
@@ -216,6 +217,10 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
               this->replaceTimeDependentFunctionCalls(pMathNode);
             }
         }
+
+      // import the initial assignments
+      //importInitialAssignments(sbmlModel,copasi2sbmlmap);
+
       num = sbmlModel->getNumRules();
       for (counter = 0;counter < num;++counter)
         {
@@ -3664,15 +3669,15 @@ void SBMLImporter::getIdsFromNode(const ASTNode* pNode, std::set<std::string>& i
     }
 }
 
-void SBMLImporter::replaceObjectNames(ASTNode* pNode, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
+void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
 {
   if (pNode->getType() == AST_NAME)
     {
       std::string name = pNode->getName();
       // the id can either belong to a compartment, a species, a reaction or a
       // global parameter
-      std::map<CCopasiObject*, SBase*>::iterator it = copasi2sbmlmap.begin();
-      std::map<CCopasiObject*, SBase*>::iterator endit = copasi2sbmlmap.end();
+      std::map<CCopasiObject*, SBase*>::const_iterator it = copasi2sbmlmap.begin();
+      std::map<CCopasiObject*, SBase*>::const_iterator endit = copasi2sbmlmap.end();
       CReaction* pReaction;
       CModelEntity* pModelEntity;
       while (it != endit)
@@ -4646,4 +4651,83 @@ UnitDefinition* SBMLImporter::getSBMLUnitDefinitionForId(const std::string& unit
         }
     }
   return pUnitDefinition;
+}
+
+void SBMLImporter::importInitialAssignments(const Model* pSBMLModel, const std::map<CCopasiObject*, SBase*>& copasi2sbmlMap)
+{
+  unsigned int i, iMax = pSBMLModel->getNumInitialAssignments();
+  std::map<std::string, CCopasiObject*> id2copasiMap;
+  std::map<CCopasiObject*, SBase*>::const_iterator it = copasi2sbmlMap.begin(), endit = copasi2sbmlMap.end();
+  while (it != endit)
+    {
+      id2copasiMap[it->second->getId()] = it->first;
+      ++it;
+    }
+  for (i = 0;i < iMax;++i)
+    {
+      const InitialAssignment* pInitialAssignment = pSBMLModel->getInitialAssignment(i);
+      if (pInitialAssignment != NULL)
+        {
+          std::string symbol = pInitialAssignment->getSymbol();
+          std::map<std::string, CCopasiObject*>::iterator pos = id2copasiMap.find(symbol);
+          if (pos != id2copasiMap.end())
+            {
+              if (!pInitialAssignment->isSetMath())
+                {
+                  CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 58, symbol.c_str());
+                }
+              else
+                {
+                  // create a CEvaluationNode based tree from the math
+                  // expression
+                  const ASTNode* pMath = pInitialAssignment->getMath();
+                  assert(pMath != NULL);
+                  ConverterASTNode tmpNode(*pMath);
+                  // replace all the nodes that represent species with the
+                  // hasOnlySubstanceUnits flag set with the node divided by the volume
+                  replaceSubstanceOnlySpeciesNodes(&tmpNode, mSubstanceOnlySpecies);
+                  this->preprocessNode(&tmpNode);
+                  // replace the object names
+                  this->replaceObjectNames(&tmpNode, copasi2sbmlMap);
+                  // now we convert the node to a CEvaluationNode
+                  CExpression* pExpression = new CExpression;
+                  pExpression->setTree(tmpNode);
+
+                  if (dynamic_cast<CMetab*>(pos->second) != NULL)
+                    {
+                      CMetab* pMetab = dynamic_cast<CMetab*>(pos->second);
+                      std::map<CCopasiObject*, SBase*>::const_iterator pos2 = copasi2sbmlMap.find(pMetab);
+                      assert(pos2 != copasi2sbmlMap.end());
+                      Species* pSBMLSpecies = dynamic_cast<Species*>(pos2->second);
+                      assert(pSBMLSpecies != NULL);
+                      const CCompartment* pCompartment = pMetab->getCompartment();
+                      assert(pCompartment != NULL);
+                      if (pSBMLSpecies->getHasOnlySubstanceUnits() == true)
+                        {
+                          // divide the expression by the volume
+                          CEvaluationNodeObject* pVolumeNode = new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + pCompartment->getValueReference()->getCN() + ">");
+                          CEvaluationNodeOperator* pOperatorNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::DIVIDE, "/");
+                          pOperatorNode->addChild(pExpression->getRoot()->copyBranch());
+                          pOperatorNode->addChild(pVolumeNode);
+                          pExpression->setRoot(pOperatorNode);
+                        }
+                      pMetab->setInitialExpressionPtr(pExpression);
+                    }
+                  else if (dynamic_cast<CCompartment*>(pos->second) != NULL || dynamic_cast<CModelValue*>(pos->second) != NULL)
+                    {
+                      CModelEntity* pME = dynamic_cast<CModelEntity*>(pos->second);
+                      pME->setInitialExpressionPtr(pExpression);
+                    }
+                  else
+                    {
+                      CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 59, symbol.c_str());
+                    }
+                }
+            }
+          else
+            {
+              CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 47 , symbol.c_str());
+            }
+        }
+    }
 }

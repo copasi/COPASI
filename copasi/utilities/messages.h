@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.106 $
+//   $Revision: 1.107 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/11/06 20:13:09 $
+//   $Date: 2007/11/14 21:25:45 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -198,6 +198,9 @@ const MESSAGES Messages[] =
     {MCSBML + 54, "SBML (54): Error while importing volume unit with id \"%s\"."},
     {MCSBML + 55, "SBML (55): Could not find unit definition for unit with id \"%s\" used in \"%s\" attribute of %s with id \"%s\"."},
     {MCSBML + 56, "SBML (56): There was a problem with the kinetic law in reaction \"%s\". Make sure the math element is not empty."},
+    {MCSBML + 57, "SBML (57): InitialAssignment defined for object with id \"%s\", but the corresponding object could not be found. Ignoring assignment."},
+    {MCSBML + 58, "SBML (58): InitialAssignment for object with id \"%s\" does not set a mathematical expression. Ignoring assignment."},
+    {MCSBML + 59, "SBML (59): Error while importing InitialAssignment for object with id \"%s\". Ignoring assignment."},
 
     {MCTrajectoryProblem + 1, "CTrajectoryProblem (1): Invalid step size = '%f'."},
     {MCTrajectoryProblem + 2, "CTrajectoryProblem (2): The step number '%f' "
