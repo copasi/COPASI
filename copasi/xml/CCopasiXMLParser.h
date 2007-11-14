@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-//   $Revision: 1.56 $
+//   $Revision: 1.57 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/09 19:13:10 $
+//   $Date: 2007/11/14 19:28:36 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,6 +34,7 @@
 class CCompartment;
 class CMetab;
 class CModel;
+class CModelEntity;
 class CModelValue;
 class CReaction;
 class CEvaluationTree;
@@ -124,9 +125,9 @@ struct SCopasiXMLParserCommon
     CKeyFactory KeyMap;
 
     /**
-     * A map relating StateVariables to Object keys
+     * A map relating StateVariables to model entities.
      */
-    std::vector< std::string > StateVariableList;
+    std::vector< CModelEntity * > StateVariableList;
 
     /**
      * Pointer to a vector of tasks which has been loaded or is to be saved.

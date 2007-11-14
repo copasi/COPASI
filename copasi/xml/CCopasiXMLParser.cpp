@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.168 $
+//   $Revision: 1.169 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/09 14:27:22 $
+//   $Date: 2007/11/14 19:28:36 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -2179,7 +2179,7 @@ void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
         mpCurrentHandler = &mParser.mCharacterDataElement;
       break;
 
-    case MathML:                        // Old file format support
+    case MathML:                         // Old file format support
       if (!strcmp(pszName, "MathML"))
         {
           /* If we do not have a MathML element handler we create one. */
@@ -2260,7 +2260,7 @@ void CCopasiXMLParser::ModelValueElement::end(const XML_Char *pszName)
       mCurrentElement = ModelValue;
       break;
 
-    case MathML:                        // Old file format support
+    case MathML:                         // Old file format support
       if (strcmp(pszName, "MathML"))
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                        pszName, "MathML", mParser.getCurrentLineNumber());
@@ -3702,17 +3702,8 @@ CCopasiXMLParser::StateTemplateVariableElement::~StateTemplateVariableElement()
 void CCopasiXMLParser::StateTemplateVariableElement::start(const XML_Char *pszName,
     const XML_Char **papszAttrs)
 {
-  // const char * Key;
   const char * ObjectReference;
-  CCopasiObject * pObject;
-  //CMetab * pMetabolite;
-  //CCompartment * pCompartment;
-  //CModelValue * pMV;
   CModelEntity * pME;
-  CModel * pModel;
-
-  //  std::map< std::string, std::string >::const_iterator ObjectKey;
-  //  std::pair< std::string, std::string > Map;
 
   mCurrentElement++; /* We should always be on the next element */
 
@@ -3725,23 +3716,12 @@ void CCopasiXMLParser::StateTemplateVariableElement::start(const XML_Char *pszNa
 
       ObjectReference = mParser.getAttributeValue("objectReference",
                         papszAttrs);
-      pObject = mCommon.KeyMap.get(ObjectReference);
+      pME = dynamic_cast< CModelEntity * >(mCommon.KeyMap.get(ObjectReference));
 
-      /*if ((pMetabolite = dynamic_cast< CMetab * >(pObject)))
-        mCommon.StateVariableList.push_back(pMetabolite->getKey());
-      else if ((pCompartment = dynamic_cast< CCompartment * >(pObject)))
-        mCommon.StateVariableList.push_back(pCompartment->getKey());
-      else if ((pMV = dynamic_cast< CModelValue * >(pObject)))
-        mCommon.StateVariableList.push_back(pMV->getKey());
-      else if ((pModel = dynamic_cast< CModel * >(pObject)))
-        mCommon.StateVariableList.push_back(pModel->getKey());
-      else fatalError();*/
-
-      if ((pME = dynamic_cast< CModelEntity * >(pObject)))
-        mCommon.StateVariableList.push_back(pME->getKey());
-      else if ((pModel = dynamic_cast< CModel * >(pObject)))
-        mCommon.StateVariableList.push_back(pModel->getKey());
-      else fatalError();
+      if (pME != NULL)
+        mCommon.StateVariableList.push_back(pME);
+      else
+        fatalError();
 
       break;
 
@@ -3829,10 +3809,9 @@ void CCopasiXMLParser::InitialStateElement::end(const XML_Char *pszName)
 {
   std::istringstream Values;
   std::string StringValue;
-  std::vector< std::string >::iterator it;
-  std::vector< std::string >::iterator end;
+  std::vector< CModelEntity * >::iterator it;
+  std::vector< CModelEntity * >::iterator end;
   double Value;
-  CModelEntity * pME;
 
   const CStateTemplate & Template = mCommon.pModel->getStateTemplate();
   CState IState = mCommon.pModel->getInitialState();
@@ -3857,10 +3836,9 @@ void CCopasiXMLParser::InitialStateElement::end(const XML_Char *pszName)
 
           Value = CCopasiXMLInterface::DBL(StringValue.c_str());
 
-          pME = dynamic_cast< CModelEntity* >(GlobalKeys.get(*it));
-          Index = Template.getIndex(pME);
+          Index = Template.getIndex(*it);
 
-          if (pME && Index != C_INVALID_INDEX)
+          if (Index != C_INVALID_INDEX)
             {
               pValues[Index] = Value;
               continue;
