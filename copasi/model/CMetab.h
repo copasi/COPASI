@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.h,v $
-//   $Revision: 1.83 $
+//   $Revision: 1.84 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/04 14:56:53 $
+//   $Date: 2007/11/14 19:29:53 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -95,11 +95,6 @@ class CMetab : public CModelEntity
      * If dependent the moiety the metabolite is calculated from
      */
     const CMoiety * mpMoiety;
-
-    /**
-     * The set of moieties the metabolite is part of
-     */
-    std::set< CMoiety * > mMoieties;
 
     std::vector< std::pair< C_FLOAT64, const C_FLOAT64 * > > mRateVector;
 
@@ -198,22 +193,12 @@ class CMetab : public CModelEntity
     /**
      *
      */
-    virtual void setValue(const C_FLOAT64 & value);
-
-    /**
-     *
-     */
     void setInitialConcentration(const C_FLOAT64 & initialConcentration);
 
     /**
      *
      */
     const C_FLOAT64 & getInitialConcentration() const;
-
-    /**
-     *
-     */
-    virtual void setInitialValue(const C_FLOAT64 & initialValue);
 
     /**
      * Retreive object referencing the initial concentration
@@ -292,17 +277,6 @@ class CMetab : public CModelEntity
      * @return bool dependent
      */
     bool isDependent() const;
-
-    /**
-     * Add a moiety to the list
-     * @param CMoiety * pMoiety
-     */
-    void addMoiety(CMoiety * pMoiety);
-
-    /**
-     * Clear the list of moieties
-     */
-    void clearMoieties();
 
     /**
      * ostream operator

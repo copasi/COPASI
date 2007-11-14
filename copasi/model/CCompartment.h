@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CCompartment.h,v $
-//   $Revision: 1.47 $
+//   $Revision: 1.48 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/12 14:27:07 $
+//   $Date: 2007/11/14 19:29:53 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -109,22 +109,6 @@ class CCompartment : public CModelEntity
     bool addMetabolite(CMetab * metabolite);
 
     bool removeMetabolite(CMetab *metabolite);
-
-    /**
-     *  Sets the initial volume of this compartment.
-     *  @param volume the volume of the compartment.
-     *  @return bool success
-     *  @see mVolume
-     */
-    virtual void setInitialValue(const C_FLOAT64 & initialValue);
-
-    /**
-     *  Sets the volume of this compartment.
-     *  @param const C_FLOAT64 & volume
-     *  @return bool success
-     *  @see mVolume
-     */
-    virtual void setValue(const C_FLOAT64 & value);
 
     friend std::ostream & operator<<(std::ostream &os, const CCompartment & d);
 

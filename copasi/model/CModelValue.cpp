@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-//   $Revision: 1.50 $
+//   $Revision: 1.51 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/12 21:05:07 $
+//   $Date: 2007/11/14 19:29:53 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -434,10 +434,13 @@ void CModelEntity::initObjects()
     static_cast<CCopasiObjectReference<C_FLOAT64> *>(addObjectReference("Value",
         Dummy,
         CCopasiObject::ValueDbl));
+  mpValueReference->setUpdateMethod(this, &CModelEntity::setValue);
+
   mpIValueReference =
     static_cast<CCopasiObjectReference<C_FLOAT64> *>(addObjectReference("InitialValue",
         Dummy,
         CCopasiObject::ValueDbl));
+  mpIValueReference->setUpdateMethod(this, &CModelEntity::setInitialValue);
 
   mpRateReference =
     static_cast<CCopasiObjectReference<C_FLOAT64> *>(addObjectReference("Rate", mRate, CCopasiObject::ValueDbl));

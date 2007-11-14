@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.329 $
+//   $Revision: 1.330 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/13 13:48:30 $
+//   $Date: 2007/11/14 19:29:53 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -771,9 +771,7 @@ void CModel::initializeMetabolites()
 
       for (; itMetab != endMetab; ++itMetab)
         {
-          (*itMetab)->clearMoieties();
           (*itMetab)->setUsed(!(*itMetab)->isFixed());
-
           mMetabolites.add(*itMetab);
         }
     }
@@ -1035,22 +1033,6 @@ void CModel::applyInitialValues()
 
 void CModel::clearMoieties()
 {
-  if (mMoieties.size() == 0) return;
-
-  CCopasiVector< CCompartment >::iterator itCompartment = mCompartments.begin();
-  CCopasiVector< CCompartment >::iterator endCompartment = mCompartments.end();
-  CCopasiVector< CMetab >::iterator itMetab;
-  CCopasiVector< CMetab >::iterator endMetab;
-
-  for (; itCompartment != endCompartment; ++itCompartment)
-    {
-      itMetab = (*itCompartment)->getMetabolites().begin();
-      endMetab = (*itCompartment)->getMetabolites().end();
-
-      for (; itMetab != endMetab; ++itMetab)
-        (*itMetab)->clearMoieties();
-    }
-
   mMoieties.resize(0);
 }
 
@@ -1173,17 +1155,36 @@ bool CModel::buildUserOrder()
 
 bool CModel::buildInitialSequence()
 {
-  // The objects which are changed are the initial values of the independent variables
-  // including the model time and the dependent metabolites.
+  // The objects which are changed are all initial values of of all model entities including
+  // fixed and unused once. Additionally, all kinetic parameters are possibly changed.
+  // This is basically all the parameters in the parameter overview whose value is editable.
+
+  // :TODO: Theoretically, it is possible that also task parameters influence the initial
+  // state of a model but that is currently not handled.
 
   std::set< const CCopasiObject * > Objects;
 
+  // The initial values of the model entities
   CModelEntity **ppEntity = mStateTemplate.beginIndependent() - 1; // Offset for time
-  CModelEntity **ppEntityEnd =
-    mStateTemplate.endIndependent() + mNumMetabolitesDependent;
+  CModelEntity **ppEntityEnd = mStateTemplate.endFixed();
 
   for (; ppEntity != ppEntityEnd; ++ppEntity)
-    Objects.insert((*ppEntity)->getInitialValueReference());
+    // Assignments have no initial values
+    if ((*ppEntity)->getStatus() != ASSIGNMENT)
+      Objects.insert((*ppEntity)->getInitialValueReference());
+
+  // The reaction parameters
+  CCopasiVector< CReaction >::const_iterator itReaction = mSteps.begin();
+  CCopasiVector< CReaction >::const_iterator endReaction = mSteps.end();
+  unsigned C_INT32 i, imax;
+
+  for (; itReaction != endReaction; ++itReaction)
+    {
+      const CCopasiParameterGroup & Group = (*itReaction)->getParameters();
+
+      for (i = 0, imax = Group.size(); i < imax; i++)
+        Objects.insert(Group.getParameter(i)->getObject(CCopasiObjectName("Reference=Value")));
+    }
 
   mInitialRefreshes = buildInitialRefreshSequence(Objects);
 

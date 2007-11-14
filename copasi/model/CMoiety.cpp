@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMoiety.cpp,v $
-//   $Revision: 1.45 $
+//   $Revision: 1.46 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/04 14:56:53 $
+//   $Date: 2007/11/14 19:29:53 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -73,8 +73,6 @@ void CMoiety::initObjects()
 
 void CMoiety::add(C_FLOAT64 value, CMetab * pMetabolite)
 {
-  pMetabolite->addMoiety(this);
-
   if (!mEquation.size())
     pMetabolite->setDependentOn(this);
   else
