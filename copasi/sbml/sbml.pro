@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/sbml.pro,v $ 
-#   $Revision: 1.14 $ 
+#   $Revision: 1.15 $ 
 #   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2007/10/29 13:17:18 $ 
+#   $Author: ssahle $ 
+#   $Date: 2007/11/15 13:56:22 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -24,6 +24,7 @@ contains(BUILD_OS, WIN32) {
 HEADERS += StdException.h \
            ConverterASTNode.h \
            SBMLImporter.h \
+           SBMLIncompatibility.h \
            SBMLExporter.h \
            SBMLReference.h \
            SBMLUtils.h \
@@ -34,6 +35,7 @@ HEADERS += StdException.h \
 SOURCES += StdException.cpp \
            ConverterASTNode.cpp \
            SBMLImporter.cpp \
+           SBMLIncompatibility.cpp \
            SBMLExporter.cpp \
            SBMLReference.cpp \
            SBMLUtils.cpp \
