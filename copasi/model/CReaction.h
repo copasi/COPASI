@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.h,v $
-   $Revision: 1.98 $
-   $Name:  $
-   $Author: ssahle $
-   $Date: 2007/01/09 13:44:15 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.h,v $
+//   $Revision: 1.99 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/11/15 21:18:07 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -108,6 +108,11 @@ class CReaction : public CCopasiContainer
      * or when the object is first exported to an SBML file.
      */
     std::string mSBMLId;
+
+    /**
+     * The RDF/XML representation of the MIRIAM annotation
+     */
+    std::string mMiriamAnnotation;
 
   public:
     /**
@@ -389,6 +394,18 @@ class CReaction : public CCopasiContainer
      * Returns a reference to the SBML Id.
      */
     const std::string& getSBMLId() const;
+
+    /**
+     * Set the RDF/XML representation of the MIRIAM annotation
+     * @param const std::string & miriamAnnotation
+     */
+    void setMiriamAnnotation(const std::string & miriamAnnotation);
+
+    /**
+     * Retreive the RDF/XML representation of the MIRIAM annotation
+     * @return const std::string & miriamAnnotation
+     */
+    const std::string & getMiriamAnnotation() const;
 
     /**
      * insert operator

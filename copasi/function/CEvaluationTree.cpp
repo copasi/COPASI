@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-//   $Revision: 1.50 $
+//   $Revision: 1.51 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/09 14:27:23 $
+//   $Date: 2007/11/15 21:18:07 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -110,6 +110,7 @@ CEvaluationTree::CEvaluationTree(const std::string & name,
     mInfix(),
     mUsable(false),
     mErrorPosition(std::string::npos),
+    mMiriamAnnotation(""),
     mpNodeList(NULL),
     mpRoot(NULL),
     mValue(std::numeric_limits<C_FLOAT64>::quiet_NaN())
@@ -126,6 +127,7 @@ CEvaluationTree::CEvaluationTree(const CEvaluationTree & src,
     mInfix(),
     mUsable(false),
     mErrorPosition(std::string::npos),
+    mMiriamAnnotation(src.mMiriamAnnotation),
     mpNodeList(NULL),
     mpRoot(NULL),
     mValue(src.mValue)
@@ -546,3 +548,9 @@ bool CEvaluationTree::calls(std::set< std::string > & list) const
 
     return Calls;
   }
+
+void CEvaluationTree::setMiriamAnnotation(const std::string & miriamAnnotation)
+{mMiriamAnnotation = miriamAnnotation;}
+
+const std::string & CEvaluationTree::getMiriamAnnotation() const
+  {return mMiriamAnnotation;}

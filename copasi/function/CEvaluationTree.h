@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.h,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.27 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/05/31 15:22:00 $
+//   $Date: 2007/11/15 21:18:07 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -249,6 +249,18 @@ class CEvaluationTree:
      */
     bool calls(std::set< std::string > & list) const;
 
+    /**
+     * Set the RDF/XML representation of the MIRIAM annotation
+     * @param const std::string & miriamAnnotation
+     */
+    void setMiriamAnnotation(const std::string & miriamAnnotation);
+
+    /**
+     * Retreive the RDF/XML representation of the MIRIAM annotation
+     * @return const std::string & miriamAnnotation
+     */
+    const std::string & getMiriamAnnotation() const;
+
   protected:
     /**
      * Parse the description
@@ -297,6 +309,11 @@ class CEvaluationTree:
      * std::string::npos indicates no error.
      */
     std::string::size_type mErrorPosition;
+
+    /**
+     * The RDF/XML representation of the MIRIAM annotation
+     */
+    std::string mMiriamAnnotation;
 
   protected:
     /**

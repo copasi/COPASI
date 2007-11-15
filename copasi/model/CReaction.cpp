@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-//   $Revision: 1.168 $
+//   $Revision: 1.169 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/24 18:40:23 $
+//   $Date: 2007/11/15 21:18:07 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -57,7 +57,8 @@ CReaction::CReaction(const std::string & name,
     mScalingFactor(&mDefaultScalingFactor),
     mUnitScalingFactor(&mDefaultScalingFactor),
     mMetabKeyMap(),
-    mParameters("Parameters", this)
+    mParameters("Parameters", this),
+    mMiriamAnnotation("")
 {
   CONSTRUCTOR_TRACE;
   initObjects();
@@ -78,7 +79,8 @@ CReaction::CReaction(const CReaction & src,
     mUnitScalingFactor(src.mUnitScalingFactor),
     mMap(src.mMap),
     mMetabKeyMap(src.mMetabKeyMap),
-    mParameters(src.mParameters, this)
+    mParameters(src.mParameters, this),
+    mMiriamAnnotation(src.mMiriamAnnotation)
 {
   CONSTRUCTOR_TRACE;
   initObjects();
@@ -1378,6 +1380,12 @@ const std::string& CReaction::getSBMLId() const
   {
     return this->mSBMLId;
   }
+
+void CReaction::setMiriamAnnotation(const std::string & miriamAnnotation)
+{mMiriamAnnotation = miriamAnnotation;}
+
+const std::string & CReaction::getMiriamAnnotation() const
+  {return mMiriamAnnotation;}
 
 std::string CReaction::escapeId(const std::string& id)
 {

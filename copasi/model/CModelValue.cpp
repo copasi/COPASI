@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-//   $Revision: 1.51 $
+//   $Revision: 1.52 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/14 19:29:53 $
+//   $Date: 2007/11/15 21:18:07 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -66,6 +66,7 @@ CModelEntity::CModelEntity(const std::string & name,
     mStatus(FIXED),
     mUsed(false),
     mUsedOnce(false),
+    mMiriamAnnotation(""),
     mpModel(NULL)
 {
   initObjects();
@@ -89,6 +90,7 @@ CModelEntity::CModelEntity(const CModelEntity & src,
     mStatus(FIXED),
     mUsed(false),
     mUsedOnce(false),
+    mMiriamAnnotation(src.mMiriamAnnotation),
     mpModel(NULL)
 {
   initObjects();
@@ -551,6 +553,12 @@ void CModelEntity::setUsedOnce(const bool & usedOnce)
 
 const bool & CModelEntity::isUsedOnce() const
   {return mUsedOnce;}
+
+void CModelEntity::setMiriamAnnotation(const std::string & miriamAnnotation)
+{mMiriamAnnotation = miriamAnnotation;}
+
+const std::string & CModelEntity::getMiriamAnnotation() const
+  {return mMiriamAnnotation;}
 
 //********************************************************************+
 

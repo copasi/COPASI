@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.h,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.31 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/04 14:56:53 $
+//   $Date: 2007/11/15 21:18:07 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -296,6 +296,18 @@ class CModelEntity : public CCopasiContainer
      */
     CCopasiObject * getRateReference() const;
 
+    /**
+     * Set the RDF/XML representation of the MIRIAM annotation
+     * @param const std::string & miriamAnnotation
+     */
+    void setMiriamAnnotation(const std::string & miriamAnnotation);
+
+    /**
+     * Retreive the RDF/XML representation of the MIRIAM annotation
+     * @return const std::string & miriamAnnotation
+     */
+    const std::string & getMiriamAnnotation() const;
+
   protected:
     /**
      * Pointer to the value of the model entity.
@@ -314,18 +326,17 @@ class CModelEntity : public CCopasiContainer
     C_FLOAT64 * mpIValue;
 
     /**
-     *  Rate of production of this metabolite
-     *  (concentration/time).
+     * Rate of change/time.
      */
     C_FLOAT64 mRate;
 
     /**
-     *
+     * The infix expression for objects of type ASSIGNMENT or ODE
      */
     CExpression * mpExpression;
 
     /**
-     *
+     * Optional initial expression
      */
     CExpression * mpInitialExpression;
 
@@ -346,6 +357,11 @@ class CModelEntity : public CCopasiContainer
      * calculated prior to the simulation
      */
     bool mUsedOnce;
+
+    /**
+     * The RDF/XML representation of the MIRIAM annotation
+     */
+    std::string mMiriamAnnotation;
 
   protected:
     CCopasiObjectReference<C_FLOAT64> *mpIValueReference;
