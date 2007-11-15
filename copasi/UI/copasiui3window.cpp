@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.213 $
+//   $Revision: 1.214 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/11/07 16:56:38 $
+//   $Author: gauges $
+//   $Date: 2007/11/15 21:03:52 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1079,7 +1079,8 @@ void CopasiUI3Window::slotExportSBML()
         tmp += ".xml";
 
       tmp = tmp.remove(QRegExp("\\.$"));
-      std::vector<std::string> errorList = CCopasiDataModel::Global->isSBMLCompatible(2, 1);
+      /*
+      std::vector<SBMLIncompatibility> errorList = CCopasiDataModel::Global->isSBMLCompatible(2, 1);
       if (!errorList.empty())
         {
           std::string tmpMessage = "Not all parts of the model are compatible with SBML Level2 Version1.\n\nContinue anyway?\n\nDetails:\n\n";
@@ -1100,7 +1101,7 @@ void CopasiUI3Window::slotExportSBML()
               return;
             }
         }
-
+      */
       Answer = checkSelection(tmp);
 
       if (Answer == QMessageBox::Cancel) return;
