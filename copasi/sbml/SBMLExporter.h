@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.h,v $
-//   $Revision: 1.46 $
+//   $Revision: 1.47 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/11/15 10:38:07 $
+//   $Date: 2007/11/15 12:44:33 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,6 +18,7 @@
 #include <vector>
 
 #include "model/CModel.h"
+#include "function/CEvaluationNodeFunction.h"
 
 // SBML Classes:
 class Model;
@@ -33,6 +34,7 @@ class SBase;
 
 // COPASI Classes:
 class CCopasiDataModel;
+class SBMLIncompatibility;
 #ifdef WITH_LAYOUT
 class CListOfLayouts;
 #endif //WITH_LAYOUT
@@ -194,22 +196,22 @@ class SBMLExporter
      * This also covers function called by function call etc.
      * If a loop is encountered this throws an exception.
      */
-    void findUsedFunctions(CEvaluationNode* pNode, std::list<const CEvaluationTree*>* usedFunctionList, CCopasiDataModel* pDataModel);
+    static void findUsedFunctions(CEvaluationNode* pNode, std::list<const CEvaluationTree*>* usedFunctionList, CCopasiDataModel* pDataModel, std::list<const CEvaluationTree*>* knownUsedFunctions, std::set<std::string>* pIdSet);
 
     /**
      * Check if some CEvaluationTree is already in a list.
      */
-    bool existsInList(CEvaluationTree* tree, const std::list<const CEvaluationTree*>* list);
+    static bool existsInList(CEvaluationTree* tree, const std::list<const CEvaluationTree*>* list);
 
     /**
      * Checks if the given string is a valid SBMLId.
      */
-    bool isValidSId(const std::string& id);
+    static bool isValidSId(const std::string& id);
 
     /**
      * Remove some object from an sbml list.
      */
-    void removeFromList(ListOf* list, SBase* pObject);
+    static void removeFromList(ListOf* list, SBase* pObject);
 
     /**
      * Translate a function with its arguments into an expression tree.
@@ -316,18 +318,38 @@ class SBMLExporter
      * that can not be expressed in SBML like the random distribution
      * functions.
      */
-    static std::vector<std::string> checkForUnsupportedFunctionCalls(const CCopasiDataModel* pDataModel);
+    static std::vector<SBMLIncompatibility> checkForUnsupportedFunctionCalls(const CCopasiDataModel* pDataModel,
+        const std::set<CEvaluationNodeFunction::SubType>& unsupportedFunctions);
+
+    /**
+     * This static methods checks, wether the given CEvaluationTree uses any function calls
+     * that can not be expressed in SBML like the random distribution
+     * functions.
+     */
+    static void checkForUnsupportedFunctionCalls(const CEvaluationTree* pTree,
+        std::vector<SBMLIncompatibility>& messages,
+        const std::set<CEvaluationNodeFunction::SubType>& unsupportedFunctions,
+        const char* objectType, const char* objectName);
+
+    /**
+     * This static methods checks recursively, whether the given CEvaluationNode constains any function calls
+     * that can not be expressed in SBML like the random distribution
+     * functions.
+     */
+    static void checkForUnsupportedFunctionCalls(const CEvaluationNode* pNode,
+        std::vector<SBMLIncompatibility>& messages, const std::set<CEvaluationNodeFunction::SubType>& unsupportedFunctions,
+        const char* objectType, const char* objectName);
 
     /**
      * This method checks wether the given model contains any assignment rules, ode
      * rules or initial assignments.
      */
-    static std::vector<std::string> checkForRulesOrAssignments(const CCopasiDataModel* pDataModel);
+    static std::vector<SBMLIncompatibility> checkForRulesOrAssignments(const CCopasiDataModel* pDataModel);
 
     /**
      * This method checks wether the given model contains any initial assignments.
      */
-    static std::vector<std::string> checkForInitialAssignments(const CCopasiDataModel* pDataModel);
+    static std::vector<SBMLIncompatibility> checkForInitialAssignments(const CCopasiDataModel* pDataModel);
 
 #ifdef WITH_LAYOUT
     /**
@@ -379,7 +401,7 @@ class SBMLExporter
      */
     static std::string createUniqueId(const std::set<std::string>* pIdSet, const std::string& prefix);
 
-    std::set<std::string>* createIdSet(const Model* pSBMLModel, CCopasiDataModel* pDataModel);
+    static std::set<std::string>* createIdSet(const Model* pSBMLModel, CCopasiDataModel* pDataModel);
 
     SBMLDocument* getSBMLDocument() const;
 
