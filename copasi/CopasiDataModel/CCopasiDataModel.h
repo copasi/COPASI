@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.h,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.31 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/20 10:57:30 $
+//   $Date: 2007/11/15 21:00:17 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,6 +29,7 @@ class SBMLDocument;
 class SBase;
 class CProcessReport;
 class CConfigurationFile;
+class SBMLIncompatibility;
 
 #ifdef WITH_LAYOUT
 class CListOfLayouts;
@@ -123,7 +124,7 @@ class CCopasiDataModel: public COutputHandler
      * If it can be exported, the result vector will be empty, otherwise it will
      * contain a number of messages that specify why it can't be exported.
      */
-    std::vector<std::string> isSBMLCompatible(int sbmlLevel = 2, int sbmlVersion = 1);
+    std::vector<SBMLIncompatibility> isSBMLCompatible(int sbmlLevel = 2, int sbmlVersion = 1);
 
     // Attributes
   protected:

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.104 $
+//   $Revision: 1.105 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/10/06 23:37:05 $
+//   $Author: gauges $
+//   $Date: 2007/11/15 21:00:17 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,6 +31,7 @@
 #include "report/CReportDefinitionVector.h"
 #include "sbml/SBMLExporter.h"
 #include "sbml/SBMLImporter.h"
+#include "sbml/SBMLIncompatibility.h"
 #include "scan/CScanTask.h"
 #include "elementaryFluxModes/CEFMTask.h"
 //#include "steadystate/CMCAMethod.h"
@@ -1140,7 +1141,7 @@ void CCopasiDataModel::removeSBMLIdFromFunctions()
     }
 }
 
-std::vector<std::string> CCopasiDataModel::isSBMLCompatible(int sbmlLevel, int sbmlVersion)
+std::vector<SBMLIncompatibility> CCopasiDataModel::isSBMLCompatible(int sbmlLevel, int sbmlVersion)
 {
   return SBMLExporter::isModelSBMLCompatible(this, sbmlLevel, sbmlVersion);
 }
