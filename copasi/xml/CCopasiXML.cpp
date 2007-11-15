@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-//   $Revision: 1.101 $
+//   $Revision: 1.102 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/12 11:42:57 $
+//   $Date: 2007/11/15 21:18:50 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -347,9 +347,12 @@ bool CCopasiXML::saveModel()
 
   startSaveElement("Model", Attributes);
 
-  startSaveElement("Comment");
-  saveXhtml(mpModel->getComments());
-  endSaveElement("Comment");
+  if (mpModel->getMiriamAnnotation() != "")
+    {
+      startSaveElement("MiriamAnnotation");
+      *mpOstream << mpModel->getMiriamAnnotation();
+      endSaveElement("MiriamAnnotation");
+    }
 
   if (mpModel->getInitialExpression() != "")
     {
@@ -357,6 +360,10 @@ bool CCopasiXML::saveModel()
       saveData(mpModel->getInitialExpression());
       endSaveElement("InitalExpression");
     }
+
+  startSaveElement("Comment");
+  saveXhtml(mpModel->getComments());
+  endSaveElement("Comment");
 
   unsigned C_INT32 i, imax;
 
@@ -380,6 +387,13 @@ bool CCopasiXML::saveModel()
           Attributes.setValue(2, CModelEntity::XMLStatus[SimulationType]);
 
           startSaveElement("Compartment", Attributes);
+
+          if (pComp->getMiriamAnnotation() != "")
+            {
+              startSaveElement("MiriamAnnotation");
+              *mpOstream << pComp->getMiriamAnnotation();
+              endSaveElement("MiriamAnnotation");
+            }
 
           if (SimulationType != CModelEntity::FIXED &&
               pComp->getExpression() != "")
@@ -426,6 +440,13 @@ bool CCopasiXML::saveModel()
 
           startSaveElement("Metabolite", Attributes);
 
+          if (pMetab->getMiriamAnnotation() != "")
+            {
+              startSaveElement("MiriamAnnotation");
+              *mpOstream << pMetab->getMiriamAnnotation();
+              endSaveElement("MiriamAnnotation");
+            }
+
           if (SimulationType != CModelEntity::FIXED &&
               SimulationType != CModelEntity::REACTIONS &&
               pMetab->getExpression() != "")
@@ -469,6 +490,13 @@ bool CCopasiXML::saveModel()
           Attributes.setValue(2, CModelEntity::XMLStatus[SimulationType]);
 
           startSaveElement("ModelValue", Attributes);
+
+          if (pMV->getMiriamAnnotation() != "")
+            {
+              startSaveElement("MiriamAnnotation");
+              *mpOstream << pMV->getMiriamAnnotation();
+              endSaveElement("MiriamAnnotation");
+            }
 
           if (SimulationType != CModelEntity::FIXED &&
               pMV->getExpression() != "")
@@ -525,6 +553,13 @@ bool CCopasiXML::saveModel()
             mSBMLReference[pReaction->getSBMLId()] = pReaction->getKey();
 
           startSaveElement("Reaction", Attributes);
+
+          if (pReaction->getMiriamAnnotation() != "")
+            {
+              startSaveElement("MiriamAnnotation");
+              *mpOstream << pReaction->getMiriamAnnotation();
+              endSaveElement("MiriamAnnotation");
+            }
 
           Attr.erase();
           Attr.add("metabolite", "");
@@ -729,6 +764,13 @@ bool CCopasiXML::saveFunctionList()
         }
 
       startSaveElement("Function", Attributes);
+
+      if (pEvaluationTree->getMiriamAnnotation() != "")
+        {
+          startSaveElement("MiriamAnnotation");
+          *mpOstream << pEvaluationTree->getMiriamAnnotation();
+          endSaveElement("MiriamAnnotation");
+        }
 
       startSaveElement("Expression");
       saveData(pEvaluationTree->getInfix());

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-//   $Revision: 1.57 $
+//   $Revision: 1.58 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/14 19:28:36 $
+//   $Date: 2007/11/15 21:18:50 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -241,7 +241,7 @@ class CCopasiXMLParser : public CExpat
     std::string mCharacterData;
 
     /**
-     * The element hndler stack
+     * The element handler stack
      */
     std::stack< CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon > * > mElementHandlerStack;
 
@@ -395,7 +395,7 @@ class CCopasiXMLParser : public CExpat
 
   public:
     /**
-     * The unknown element handler
+     * The character data element handler
      */
     CharacterDataElement mCharacterDataElement;
 
@@ -1036,6 +1036,7 @@ class CCopasiXMLParser : public CExpat
         enum Element
         {
           Reaction = 0,
+          MiriamAnnotation,
           ListOfSubstrates,
           ListOfProducts,
           ListOfModifiers,
@@ -1149,6 +1150,7 @@ class CCopasiXMLParser : public CExpat
         enum Element
         {
           Metabolite = 0,
+          MiriamAnnotation,
           Expression,
           InitialExpression
         };
@@ -1240,6 +1242,7 @@ class CCopasiXMLParser : public CExpat
         enum Element
         {
           Compartment = 0,
+          MiriamAnnotation,
           Expression,
           InitialExpression
         };
@@ -1333,6 +1336,7 @@ class CCopasiXMLParser : public CExpat
         enum Element
         {
           ModelValue = 0,
+          MiriamAnnotation,
           Expression,
           InitialExpression,
           MathML
@@ -1468,6 +1472,14 @@ class CCopasiXMLParser : public CExpat
         virtual void end(const XML_Char *pszName);
       };
 
+  public:
+    /**
+     * The comment element handler
+     */
+    CommentElement mCommentElement;
+
+  private:
+
   class ModelElement:
           public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
       {
@@ -1479,8 +1491,9 @@ class CCopasiXMLParser : public CExpat
         enum Element
         {
           Model = 0,
-          Comment,
+          MiriamAnnotation,
           InitialExpression,
+          Comment,
           ListOfCompartments,
           ListOfMetabolites,
           ListOfModelValues,
@@ -2309,7 +2322,6 @@ class CCopasiXMLParser : public CExpat
 
         // Attributes
       private:
-        CommentElement * mpCommentElement;
         ObjectElement * mpObjectElement;
       };
 
@@ -2357,7 +2369,6 @@ class CCopasiXMLParser : public CExpat
 
         // Attributes
       private:
-        CommentElement * mpCommentElement;
         ObjectElement * mpObjectElement;
       };
 
@@ -2405,7 +2416,6 @@ class CCopasiXMLParser : public CExpat
 
         // Attributes
       private:
-        CommentElement * mpCommentElement;
         ObjectElement * mpObjectElement;
       };
 
@@ -2468,7 +2478,6 @@ class CCopasiXMLParser : public CExpat
           Table
         };
 
-        CommentElement * mpCommentElement;
         HeaderElement * mpHeaderElement;
         BodyElement * mpBodyElement;
         FooterElement * mpFooterElement;
@@ -2741,6 +2750,7 @@ class CCopasiXMLParser : public CExpat
         enum Element
         {
           Function = 0,
+          MiriamAnnotation,
           Expression,
           ListOfParameterDescriptions,
           MathML
@@ -2783,6 +2793,70 @@ class CCopasiXMLParser : public CExpat
          */
         virtual void end(const XML_Char *pszName);
       };
+
+  class MiriamAnnotationElement: public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+        // Attributes
+      private:
+        /**
+         * Enum of invoked parsers
+         */
+        enum Element
+        {
+          MiriamAnnotation = 0,
+          RDF
+        };
+
+        /**
+         * String stream to handle RDF contents
+         */
+        std::ostringstream mRDF;
+
+        /**
+         * The level of nested xhtml elements.
+         */
+        unsigned C_INT32 mLevel;
+
+        /**
+         * Information whether an element is empty
+         */
+        std::stack< bool > mElementEmpty;
+
+        // Operations
+      public:
+        /**
+         * Constructor
+         */
+        MiriamAnnotationElement(CCopasiXMLParser & parser,
+                                SCopasiXMLParserCommon & common);
+
+        /**
+         * Destructor
+         */
+        virtual ~MiriamAnnotationElement();
+
+        /**
+         * Start element handler
+         * @param const XML_Char *pszName
+         * @param const XML_Char **papszAttrs
+         */
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        /**
+         * End element handler
+         * @param const XML_Char *pszName
+         */
+        virtual void end(const XML_Char *pszName);
+      };
+
+  public:
+    /**
+     * The Miriam Annotation Element handler
+     */
+    MiriamAnnotationElement mMiriamAnnotationElement;
+
+  private:
 
   class GUIElement:
           public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >

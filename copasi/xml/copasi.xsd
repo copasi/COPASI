@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/copasi.xsd,v $ -->
-<!--   $Revision: 1.47 $ -->
+<!--   $Revision: 1.48 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: shoops $ -->
-<!--   $Date: 2007/10/29 19:00:13 $ -->
+<!--   $Date: 2007/11/15 21:18:50 $ -->
 <!-- End CVS Header -->
 <!-- Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual -->
 <!-- Properties, Inc. and EML Research, gGmbH. -->
@@ -44,6 +44,7 @@
             <xs:complexContent>
               <xs:extension base="cMODEL">
                 <xs:sequence>
+                  <xs:element name="MiriamAnnotation" type="cMIRIAM" minOccurs="0"/>
                   <xs:element name="Comment" type="cCOMMENT" id="copasi.Model.Comment" minOccurs="0"/>
                   <xs:element name="InitialExpression" type="sEXPRESSION" minOccurs="0"/>
                   <xs:element name="ListOfCompartments" id="copasi.Model.ListOfCompartments" minOccurs="0">
@@ -120,6 +121,7 @@
                         <xs:element name="Reaction" id="copasi.Model.Reaction" maxOccurs="unbounded">
                           <xs:complexType>
                             <xs:sequence>
+                              <xs:element name="MiriamAnnotation" type="cMIRIAM" minOccurs="0"/>
                               <xs:element name="ListOfSubstrates" minOccurs="0">
                                 <xs:complexType mixed="true">
                                   <xs:sequence>
@@ -467,10 +469,15 @@
       <xs:attribute name="versionDevel" type="xs:integer" use="required"/>
     </xs:complexType>
     <xs:unique name="ModelStateVariableReference">
-      <xs:selector xpath="Model| Model/*/*"/>
+      <xs:selector xpath="Model|Model/*/*"/>
       <xs:field xpath="@stateVariable"/>
     </xs:unique>
   </xs:element>
+  <xs:complexType name="cMIRIAM" id="copasi.MIRIAM">
+    <xs:sequence>
+      <xs:element name="RDF" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+    </xs:sequence>
+  </xs:complexType>
   <xs:complexType name="cCOMMENT" id="copasi.COMMENT">
     <xs:sequence>
       <xs:any namespace="http://www.w3.org/1999/xhtml" processContents="skip" maxOccurs="unbounded"/>
@@ -495,6 +502,7 @@
   </xs:complexType>
   <xs:complexType name="cFUNCTION" id="copasi.FUNCTION">
     <xs:sequence>
+      <xs:element name="MiriamAnnotation" type="cMIRIAM" minOccurs="0"/>
       <xs:element name="Expression" type="sEXPRESSION"/>
       <xs:element name="ListOfParameterDescriptions" id="copasi.FUNCTION.ListOfParameterDescriptions" minOccurs="0">
         <xs:complexType mixed="true">
@@ -621,6 +629,7 @@
   </xs:complexType>
   <xs:complexType name="cMODEL_ENTITY" abstract="true">
     <xs:sequence>
+      <xs:element name="MiriamAnnotation" type="cMIRIAM" minOccurs="0"/>
       <xs:element name="Expression" type="sEXPRESSION" minOccurs="0"/>
       <xs:element name="InitialExpression" type="sEXPRESSION" minOccurs="0"/>
     </xs:sequence>
