@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.h,v $
-//   $Revision: 1.45 $
+//   $Revision: 1.46 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/10/31 16:27:58 $
+//   $Date: 2007/11/15 10:38:07 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -263,7 +263,7 @@ class SBMLExporter
     std::set<std::string> getObjectNodeIds(const ASTNode* pNode);
 
     /**
-     * Checks if the object nodes in a given rule expression ar of allowed types.
+     * Checks if the object nodes in a given rule expression are of allowed types.
      */
     bool checkExpressionObjects(const CEvaluationNode* pNode) const;
 
@@ -273,6 +273,13 @@ class SBMLExporter
      * contain a number of messages that specify why it can't be exported.
      */
     static std::vector<std::string> isModelSBMLL2V1Compatible(CCopasiDataModel* pDataModel);
+
+    /**
+     * Checks wether the given data model can be exported to SBML Level2 Version3.
+     * If it can be exported, the result vector will be empty, otherwise it will
+     * contain a number of messages that specify why it can't be exported.
+     */
+    static std::vector<std::string> isModelSBMLL2V3Compatible(CCopasiDataModel* pDataModel);
 
     /**
      * Checks wether the model contains a metabolite that is defined by an ODE
@@ -296,6 +303,31 @@ class SBMLExporter
      * contain a number of messages that specify why it can't be exported.
      */
     static std::vector<std::string> isRuleSBMLL2V1Compatible(const CModelEntity* pME, const CCopasiDataModel* pDataModel);
+
+    /**
+     * Checks wether the rule in the given model entity can be exported to SBML Level2 Version3.
+     * If it can be exported, the result vector will be empty, otherwise it will
+     * contain a number of messages that specify why it can't be exported.
+     */
+    static std::vector<std::string> isRuleSBMLL2V3Compatible(const CModelEntity* pME, const CCopasiDataModel* pDataModel);
+
+    /**
+     * This static methods checks, wether the model uses any function calls
+     * that can not be expressed in SBML like the random distribution
+     * functions.
+     */
+    static std::vector<std::string> checkForUnsupportedFunctionCalls(const CCopasiDataModel* pDataModel);
+
+    /**
+     * This method checks wether the given model contains any assignment rules, ode
+     * rules or initial assignments.
+     */
+    static std::vector<std::string> checkForRulesOrAssignments(const CCopasiDataModel* pDataModel);
+
+    /**
+     * This method checks wether the given model contains any initial assignments.
+     */
+    static std::vector<std::string> checkForInitialAssignments(const CCopasiDataModel* pDataModel);
 
 #ifdef WITH_LAYOUT
     /**

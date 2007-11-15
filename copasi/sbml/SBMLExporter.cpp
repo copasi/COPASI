@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-//   $Revision: 1.110 $
+//   $Revision: 1.111 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/10/31 16:27:58 $
+//   $Date: 2007/11/15 10:38:07 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -2469,4 +2469,37 @@ void SBMLExporter::checkForODESpeciesInNonfixedCompartment(const CCopasiDataMode
         }
       ++it;
     }
+}
+
+/**
+ * This static methods checks, wether the model uses any function calls
+ * that can not be expressed in SBML like the random distribution
+ * functions.
+ */
+std::vector<std::string> SBMLExporter::checkForUnsupportedFunctionCalls(const CCopasiDataModel* /*pDataModel*/)
+{
+  // TODO
+  std::vector<std::string> messages;
+  return messages;
+}
+
+/**
+ * This method checks wether the given model contains any assignment rules, ode
+ * rules or initial assignments.
+ */
+std::vector<std::string> SBMLExporter::checkForRulesOrAssignments(const CCopasiDataModel* /*pDataModel*/)
+{
+  // TODO
+  std::vector<std::string> messages;
+  return messages;
+}
+
+/**
+ * This method checks wether the given model contains any initial assignments.
+ */
+std::vector<std::string> SBMLExporter::checkForInitialAssignments(const CCopasiDataModel* /*pDataModel*/)
+{
+  // TODO
+  std::vector<std::string> messages;
+  return messages;
 }
