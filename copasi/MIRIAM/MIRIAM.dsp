@@ -24,7 +24,7 @@ CFG=MIRIAM - Win32 Build
 # PROP AllowPerConfigDependencies 0
 # PROP Scc_ProjName ""
 # PROP Scc_LocalPath ""
-# PROP BASE Use_MFC
+# PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
 # PROP BASE Output_Dir "Build"
 # PROP BASE Intermediate_Dir "Build"
@@ -33,7 +33,7 @@ CFG=MIRIAM - Win32 Build
 # PROP BASE Target_File "MIRIAM.lib"
 # PROP BASE Bsc_Name ""
 # PROP BASE Target_Dir ""
-# PROP Use_MFC
+# PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
 # PROP Output_Dir "Build"
 # PROP Intermediate_Dir "Build"
@@ -72,6 +72,10 @@ SOURCE=.\CAuthor.h
 # Begin Source File
 
 SOURCE=.\CModelMIRIAMInfo.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CRDFObject.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"
