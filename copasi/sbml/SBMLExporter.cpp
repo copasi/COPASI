@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-//   $Revision: 1.113 $
+//   $Revision: 1.114 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/11/15 14:57:13 $
+//   $Date: 2007/11/16 20:22:15 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -55,6 +55,7 @@
 #include "utilities/CCopasiTree.h"
 #include "function/CFunctionDB.h"
 #include "function/CExpression.h"
+#include "compareExpressions/compare_utilities.h"
 
 #ifdef WITH_LAYOUT
 #include "layout/CListOfLayouts.h"
@@ -91,46 +92,114 @@ SBMLExporter::~SBMLExporter()
  */
 std::string SBMLExporter::exportSBMLToString(CCopasiDataModel* pDataModel,
     int sbmlLevel , int sbmlVersion ,
-    bool incompleteExport)
+    bool incompleteExport, bool checkSBMLCompatibility)
 {
   this->mHandledSBMLObjects.clear();
   this->mpCopasiModel = pDataModel->getModel();
   // check the model for SBML compatibility
-  std::vector<SBMLIncompatibility> compatibilityResult = isModelSBMLCompatible(pDataModel, sbmlLevel, sbmlVersion);
-  if (!compatibilityResult.empty())
+  if (sbmlVersion == 0 || sbmlLevel > 2) sbmlLevel = 2;
+  if (sbmlVersion == 0 || sbmlVersion > 3) sbmlVersion = 3;
+  if (checkSBMLCompatibility == true)
     {
-      // display the inconsistencies
-      return std::string();
+      std::vector<SBMLIncompatibility> compatibilityResult = isModelSBMLCompatible(pDataModel, sbmlLevel, sbmlVersion);
+      // TODO if the results from the incompatibility check are negative and the
+      // incomplete export flag is true, remove everything that can not be exported
+      // the export
+      if (!compatibilityResult.empty())
+        {
+          // display the inconsistencies
+          return std::string();
+        }
+    }
+  /* create the SBMLDocument from the copasi model */
+  this->createSBMLDocumentFromCModel(pDataModel, sbmlLevel, sbmlVersion, incompleteExport);
+
+#ifdef WITH_LAYOUT
+  if (sbmlLevel > 1) // don't add layouts for level 1
+    {
+      this->addLayoutsToSBMLDocument(pDataModel->getListOfLayouts(), pDataModel);
+    }
+#endif //WITH_LAYOUT
+
+  this->removeUnusedObjects(pDataModel);
+  // make a copy of the document
+
+  SBMLDocument* pTmpSBMLDocument = this->sbmlDocument;
+  if (!(sbmlLevel == 2 && sbmlVersion == 3))
+    {
+      // make a copy of the model
+      pTmpSBMLDocument = dynamic_cast<SBMLDocument*>(this->sbmlDocument->clone());
+      if (sbmlLevel == 1)
+        {
+          if (sbmlVersion != 2) sbmlVersion = 2;
+          if (pTmpSBMLDocument != NULL && pTmpSBMLDocument->getModel() != NULL)
+            {
+              // expand all function calls in rules and kinetic laws
+              ListOf* pList = pTmpSBMLDocument->getModel()->getListOfReactions();
+              unsigned int i;
+              if (pList != NULL)
+                {
+                  for (i = 0;i < pList->size();++i)
+                    {
+                      Reaction* pReaction = dynamic_cast<Reaction*>(pList->get(i));
+                      if (pReaction != NULL && pReaction->getKineticLaw() != NULL && pReaction->getKineticLaw()->getMath() != NULL)
+                        {
+                          ASTNode* pExpanded = create_expression(pReaction->getKineticLaw()->getMath(), pTmpSBMLDocument->getModel());
+                          if (pExpanded != NULL)
+                            {
+                              pReaction->getKineticLaw()->setMath(pExpanded);
+                            }
+                        }
+                    }
+                }
+              pList = pTmpSBMLDocument->getModel()->getListOfRules();
+              if (pList != NULL)
+                {
+                  for (i = 0;i < pList->size();++i)
+                    {
+                      Rule* pRule = dynamic_cast<Rule*>(pList->get(i));
+                      if (pRule != NULL && pRule->getMath() != NULL)
+                        {
+                          ASTNode* pExpanded = create_expression(pRule->getMath(), pTmpSBMLDocument->getModel());
+                          if (pExpanded != NULL)
+                            {
+                              pRule->setMath(pExpanded);
+                            }
+                        }
+                    }
+                }
+
+              // delete the list of function definitions
+              pList = pTmpSBMLDocument->getModel()->getListOfFunctionDefinitions();
+              SBase* pSBase = NULL;
+              while (pList->size() > 0)
+                {
+                  pSBase = pList->remove(0);
+                  delete pSBase;
+                }
+            }
+        }
+      pTmpSBMLDocument->setLevelAndVersion(sbmlLevel, sbmlVersion);
+    }
+  if (pTmpSBMLDocument->getModel() != NULL)
+    {
+      SBMLWriter* writer = new SBMLWriter();
+
+      writer->setProgramName("COPASI");
+      writer->setProgramVersion(pDataModel->getVersion()->getVersion().c_str());
+
+      char* d = writer->writeToString(pTmpSBMLDocument);
+      std::string returnValue = d;
+      if (d) free(d);
+      pdelete(writer);
+      if (pTmpSBMLDocument != this->sbmlDocument) delete pTmpSBMLDocument;
+      return returnValue;
     }
   else
     {
-      /* create the SBMLDocument from the copasi model */
-      this->createSBMLDocumentFromCModel(pDataModel, sbmlLevel, sbmlVersion, incompleteExport);
-
-#ifdef WITH_LAYOUT
-      this->addLayoutsToSBMLDocument(pDataModel->getListOfLayouts(), pDataModel);
-#endif //WITH_LAYOUT
-
-      this->removeUnusedObjects(pDataModel);
-
-      if (this->sbmlDocument->getModel() != NULL)
-        {
-          SBMLWriter* writer = new SBMLWriter();
-
-          writer->setProgramName("COPASI");
-          writer->setProgramVersion(pDataModel->getVersion()->getVersion().c_str());
-
-          char* d = writer->writeToString(this->sbmlDocument);
-          std::string returnValue = d;
-          if (d) free(d);
-          pdelete(writer);
-          return returnValue;
-        }
-      else
-        {
-          /* if no SBMLDocument could be created return false */
-          return std::string();
-        }
+      /* if no SBMLDocument could be created return an empty string */
+      if (pTmpSBMLDocument != this->sbmlDocument) delete pTmpSBMLDocument;
+      return std::string();
     }
 }
 
@@ -141,14 +210,14 @@ std::string SBMLExporter::exportSBMLToString(CCopasiDataModel* pDataModel,
  ** "false" on failure.
  */
 bool SBMLExporter::exportSBML(CCopasiDataModel* pDataModel,
-                              std::string sbmlFilename, bool overwriteFile, int sbmlLevel, int sbmlVersion, bool incompleteExport)
+                              std::string sbmlFilename, bool overwriteFile, int sbmlLevel, int sbmlVersion, bool incompleteExport, bool checkSBMLCompatibility)
 {
   bool success = true;
   this->mHandledSBMLObjects.clear();
   this->mpCopasiModel = pDataModel->getModel();
   /* create a string that represents the SBMLDocument */
   std::string str = this->exportSBMLToString(pDataModel,
-                    sbmlLevel, sbmlVersion, incompleteExport);
+                    sbmlLevel, sbmlVersion, incompleteExport, checkSBMLCompatibility);
   if (!str.empty())
     {
       /* check if the file already exisits.

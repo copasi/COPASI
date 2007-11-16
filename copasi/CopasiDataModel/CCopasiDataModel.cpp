@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.105 $
+//   $Revision: 1.106 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/11/15 21:00:17 $
+//   $Date: 2007/11/16 20:22:16 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -656,7 +656,7 @@ std::string CCopasiDataModel::exportSBMLToString(CProcessReport* pExportHandler)
   return str;
 }
 
-bool CCopasiDataModel::exportSBML(const std::string & fileName, bool overwriteFile, int sbmlLevel, int sbmlVersion, bool exportIncomplete, CProcessReport* pExportHandler)
+bool CCopasiDataModel::exportSBML(const std::string & fileName, bool overwriteFile, int sbmlLevel, int sbmlVersion, bool exportIncomplete, bool checkSBMLCompatibility, CProcessReport* pExportHandler)
 {
   CCopasiMessage::clearDeque();
 
@@ -703,7 +703,7 @@ bool CCopasiDataModel::exportSBML(const std::string & fileName, bool overwriteFi
 
   SBMLExporter exporter;
   exporter.setExportHandler(pExportHandler);
-  if (!exporter.exportSBML(this, FileName.c_str(), overwriteFile, sbmlLevel, sbmlVersion, exportIncomplete)) return false;
+  if (!exporter.exportSBML(this, FileName.c_str(), overwriteFile, sbmlLevel, sbmlVersion, exportIncomplete, checkSBMLCompatibility)) return false;
 
   if (mpCurrentSBMLDocument != exporter.getSBMLDocument())
     pdelete(mpCurrentSBMLDocument);

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSBMLFileDialog.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/11/15 21:42:24 $
+//   $Date: 2007/11/16 20:22:15 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,7 +33,7 @@ class CQSBMLFileDialog : public CopasiFileDialog
     CQSBMLFileDialog(QWidget * parent , const char * name , bool modal);
 
     std::pair<QString, std::pair<unsigned C_INT32, unsigned C_INT32> >
-    getOpenFileName(const QString & startWith = QString::null,
+    getSaveFileName(const QString & startWith = QString::null,
                     const QString & filter = QString::null,
                     const QString & caption = QString::null,
                     QString selectedFilter = QString::null);

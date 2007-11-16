@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.h,v $
-//   $Revision: 1.48 $
+//   $Revision: 1.49 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/11/15 14:57:13 $
+//   $Date: 2007/11/16 20:22:15 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -378,7 +378,9 @@ class SBMLExporter
      ** On failure an empty string is returned.
      */
     std::string exportSBMLToString(CCopasiDataModel* pDataModel,
-                                   int sbmlLevel = 2, int sbmlVersion = 1, bool incompleteExport = false);
+                                   int sbmlLevel = 2, int sbmlVersion = 1,
+                                   bool incompleteExport = false,
+                                   bool checkSBMLCompatibility = true);
 
     /**
      ** This method takes a copasi CModel object, crerates an SBMLDocument from
@@ -387,7 +389,10 @@ class SBMLExporter
      ** "false" on failure.
      */
     bool exportSBML(CCopasiDataModel* pDataModel,
-                    std::string sbmlFilename, bool overwriteFile = false, int sbmlLevel = 2, int sbmlVersion = 1, bool incompleteExport = false);
+                    std::string sbmlFilename, bool overwriteFile = false,
+                    int sbmlLevel = 2, int sbmlVersion = 1,
+                    bool incompleteExport = false,
+                    bool checkSBMLCompatibility = true);
 
     /**
     ** This method tests if a string only consists of whitespace characters

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.214 $
+//   $Revision: 1.215 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/11/15 21:03:52 $
+//   $Date: 2007/11/16 20:22:15 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,6 +30,7 @@
 #include <qcombobox.h>
 
 #include <vector>
+#include <sstream>
 
 extern const char * CopasiLicense;
 
@@ -43,6 +44,7 @@ extern const char * CopasiLicense;
 #include "SliderDialog.h"
 #include "CQMessageBox.h"
 #include "CQPreferenceDialog.h"
+#include "CQSBMLFileDialog.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "utilities/CVersion.h"
@@ -54,6 +56,7 @@ extern const char * CopasiLicense;
 #include "commandline/CConfigurationFile.h"
 #include "wizard/wizard.h"
 #include "report/CKeyFactory.h"
+#include "sbml/SBMLIncompatibility.h"
 
 #include "./icons/filenew.xpm"
 #include "./icons/fileopen.xpm"
@@ -1067,32 +1070,36 @@ void CopasiUI3Window::slotExportSBML()
 
       // we need a new dialog the lets the user choose different levels of sbml as soon as support for export to those versions
       // has been implemented.
-
-      tmp =
-        CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
-                                          Default,
-                                          "XML Files (*.xml);;All Files (*.*);;",
-                                          "Choose a filename for SBML export.");
+      CQSBMLFileDialog sbmlFileDialog(this, "Save SBML File Dialog", true);
+      std::pair<QString, std::pair<unsigned C_INT32, unsigned C_INT32> > nameAndVersion =
+        sbmlFileDialog.getSaveFileName(Default,
+                                       "XML Files (*.xml);;All Files (*.*);;",
+                                       "Choose a filename and SBML version for SBML export.");
+      tmp = nameAndVersion.first;
+      sbmlLevel = nameAndVersion.second.first;
+      sbmlVersion = nameAndVersion.second.second;
       if (!tmp) return;
 
       if (!tmp.endsWith(".xml") && !tmp.endsWith("."))
         tmp += ".xml";
 
       tmp = tmp.remove(QRegExp("\\.$"));
-      /*
-      std::vector<SBMLIncompatibility> errorList = CCopasiDataModel::Global->isSBMLCompatible(2, 1);
+      std::vector<SBMLIncompatibility> errorList = CCopasiDataModel::Global->isSBMLCompatible(nameAndVersion.second.first, nameAndVersion.second.first);
       if (!errorList.empty())
         {
-          std::string tmpMessage = "Not all parts of the model are compatible with SBML Level2 Version1.\n\nContinue anyway?\n\nDetails:\n\n";
-          std::vector<std::string>::iterator it = errorList.begin();
-          std::vector<std::string>::iterator endit = errorList.end();
+          std::ostringstream os;
+          os << "Not all parts of the model are compatible with SBML Level ";
+          os << nameAndVersion.second.first << "Version " << nameAndVersion.second.second;
+          os << ".\nIf you continue, incompatible parts will be changed or might not be exported altogether.";
+          os << "\n\nContinue anyway?\n\nDetails:\n\n";
+          std::vector<SBMLIncompatibility>::iterator it = errorList.begin();
+          std::vector<SBMLIncompatibility>::iterator endit = errorList.end();
           while (it != endit)
             {
-              tmpMessage += *it;
-              tmpMessage += "\n";
+              os << (*it).getMessage() << "\n";
               ++it;
             }
-          if (CQMessageBox::question(this, "SBML Incompatible", tmpMessage.c_str(), QMessageBox::Yes, QMessageBox::No | QMessageBox::Default | QMessageBox::Escape, QMessageBox::NoButton) == 0)
+          if (CQMessageBox::question(this, "SBML Incompatible", os.str().c_str(), QMessageBox::Yes, QMessageBox::No | QMessageBox::Default | QMessageBox::Escape, QMessageBox::NoButton) == 0)
             {
               exportIncomplete = true;
             }
@@ -1101,7 +1108,6 @@ void CopasiUI3Window::slotExportSBML()
               return;
             }
         }
-      */
       Answer = checkSelection(tmp);
 
       if (Answer == QMessageBox::Cancel) return;
@@ -1114,7 +1120,7 @@ void CopasiUI3Window::slotExportSBML()
       bool success = false;
       try
         {
-          success = dataModel->exportSBML((const char *) tmp.utf8(), true, sbmlLevel, sbmlVersion, exportIncomplete);
+          success = dataModel->exportSBML((const char *) tmp.utf8(), true, sbmlLevel, sbmlVersion, exportIncomplete, false);
         }
       catch (CCopasiException except)
         {
