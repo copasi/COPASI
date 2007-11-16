@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/barChart/qwt3dBars.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: akoenig $
-//   $Date: 2007/11/13 14:24:26 $
+//   $Date: 2007/11/16 14:42:05 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -67,7 +67,7 @@ void Bar::draw(Qwt3D::Triple const& pos)
 
   glBegin(GL_QUADS);
 
-  if ((pos.x == mShowColumn) || (pos.y == mShowRow))
+  if (((int)(100*pos.x) == (int)(100*mShowColumn)) || ((int)(100*pos.y) == (int)(100*mShowRow)))
     glColor3d(0.71, 0.835, 1); //(1, 0, 0);
   else
     glColor4d(mFrom.r, mFrom.g, mFrom.b, mFrom.a);
@@ -76,7 +76,7 @@ void Bar::draw(Qwt3D::Triple const& pos)
   glVertex3d(pos.x + diag_, pos.y + diag_, minz);
   glVertex3d(pos.x - diag_, pos.y + diag_, minz);
 
-  if ((pos.x == mShowColumn) || (pos.y == mShowRow))
+  if (((int)(100*pos.x) == (int)(100*mShowColumn)) || ((int)(100*pos.y) == (int)(100*mShowRow)))
     glColor3d(0.71, 0.835, 1); //(1, 0, 0);
   else
     glColor4d(mTo.r, mTo.g, mTo.b, mTo.a);
