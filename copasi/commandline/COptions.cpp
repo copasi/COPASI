@@ -1,12 +1,24 @@
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.cpp,v $
+//   $Revision: 1.38 $
+//   $Name:  $
+//   $Author: ssahle $
+//   $Date: 2007/11/16 11:58:32 $
+// End CVS Header
+
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
+
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.cpp,v $
-   $Revision: 1.37 $
+   $Revision: 1.38 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/12/15 16:17:58 $
+   $Author: ssahle $
+   $Date: 2007/11/16 11:58:32 $
    End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright ï¿½ 2005 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -24,7 +36,7 @@
 #endif
 
 #ifdef Darwin
-# include "Carbon.h"
+# include <Carbon/Carbon.h>
 #endif
 
 #include <sstream>
