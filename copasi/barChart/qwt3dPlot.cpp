@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/barChart/qwt3dPlot.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: akoenig $
-//   $Date: 2007/11/13 17:10:12 $
+//   $Date: 2007/11/16 14:38:42 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -201,7 +201,7 @@ void Plot3d::setLegend()
     mpPlot->legend()->setLimits(0, mpPlot->hull().maxVertex.z);
 
   mpPlot->legend()->setMajors(4);
-  mpPlot->legend()->setMinors(4);
+  mpPlot->legend()->setMinors(0);
 
   mpPlot->showColorLegend(true);
 }
