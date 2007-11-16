@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/11/13 17:38:59 $
+//   $Author: akoenig $
+//   $Date: 2007/11/16 09:48:16 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -258,6 +258,10 @@ CQArrayAnnotationsWidget::CQArrayAnnotationsWidget(QWidget* parent, const char* 
 #ifdef WITH_QWT3D
     slider
 #endif
+    , bool
+#ifdef WITH_QWT3D
+    barChartFirst
+#endif
 )
     : QVBox(parent, name, fl),
     mpColorScale(NULL)
@@ -293,10 +297,9 @@ CQArrayAnnotationsWidget::CQArrayAnnotationsWidget(QWidget* parent, const char* 
     {
       plot3d = new CQBarChart(mpStack);
       plot3d->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
-      if (slider)
-        plot3d->activateSlider();
+      if (slider) plot3d->activateSlider();
       mpStack->addWidget(plot3d, 1);
-      switchToBarChart();
+      if (barChartFirst) switchToBarChart();
     }
 #else
   disableBarChart();

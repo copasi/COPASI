@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: akoenig $
-//   $Date: 2007/11/13 17:06:40 $
+//   $Date: 2007/11/16 09:48:16 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -188,7 +188,7 @@ class CQArrayAnnotationsWidget : public QVBox
 
   public:
 
-    CQArrayAnnotationsWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0, bool barChart = true, bool slider = true);
+    CQArrayAnnotationsWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0, bool barChart = true, bool slider = true, bool barChartFirst = true);
     ~CQArrayAnnotationsWidget();
 
     void setArrayAnnotation(const CArrayAnnotation * pArray);
