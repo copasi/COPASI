@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/copasi.xsd,v $ -->
-<!--   $Revision: 1.48 $ -->
+<!--   $Revision: 1.49 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: shoops $ -->
-<!--   $Date: 2007/11/15 21:18:50 $ -->
+<!--   $Date: 2007/11/16 13:49:57 $ -->
 <!-- End CVS Header -->
 <!-- Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual -->
 <!-- Properties, Inc. and EML Research, gGmbH. -->
@@ -55,6 +55,7 @@
                             <xs:complexContent>
                               <xs:extension base="cCOMPARTMENT">
                                 <xs:sequence>
+                                  <xs:element name="MiriamAnnotation" type="cMIRIAM" minOccurs="0"/>
                                   <xs:element name="Expression" type="sEXPRESSION" minOccurs="0"/>
                                   <xs:element name="InitialExpression" type="sEXPRESSION" minOccurs="0"/>
                                 </xs:sequence>
@@ -77,6 +78,7 @@
                             <xs:complexContent>
                               <xs:extension base="cMETABOLITE">
                                 <xs:sequence>
+                                  <xs:element name="MiriamAnnotation" type="cMIRIAM" minOccurs="0"/>
                                   <xs:element name="Expression" type="sEXPRESSION" minOccurs="0"/>
                                   <xs:element name="InitialExpression" type="sEXPRESSION" minOccurs="0"/>
                                 </xs:sequence>
@@ -101,6 +103,7 @@
                             <xs:complexContent>
                               <xs:extension base="cMODELVALUE">
                                 <xs:sequence>
+                                  <xs:element name="MiriamAnnotation" type="cMIRIAM" minOccurs="0"/>
                                   <xs:element name="Expression" type="sEXPRESSION" minOccurs="0"/>
                                   <xs:element name="InitialExpression" type="sEXPRESSION" minOccurs="0"/>
                                 </xs:sequence>
@@ -628,11 +631,6 @@
     </xs:complexContent>
   </xs:complexType>
   <xs:complexType name="cMODEL_ENTITY" abstract="true">
-    <xs:sequence>
-      <xs:element name="MiriamAnnotation" type="cMIRIAM" minOccurs="0"/>
-      <xs:element name="Expression" type="sEXPRESSION" minOccurs="0"/>
-      <xs:element name="InitialExpression" type="sEXPRESSION" minOccurs="0"/>
-    </xs:sequence>
     <xs:attribute name="key" type="cKEY" use="required"/>
     <xs:attribute name="name" type="cNAME" use="required"/>
     <xs:attribute name="simulationType" type="sSIMULATION_TYPE" use="optional"/>
