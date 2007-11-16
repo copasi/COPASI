@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-//   $Revision: 1.102 $
+//   $Revision: 1.103 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/15 21:18:50 $
+//   $Date: 2007/11/16 21:06:58 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -350,7 +350,7 @@ bool CCopasiXML::saveModel()
   if (mpModel->getMiriamAnnotation() != "")
     {
       startSaveElement("MiriamAnnotation");
-      *mpOstream << mpModel->getMiriamAnnotation();
+      *mpOstream << mpModel->getMiriamAnnotation() << std::endl;
       endSaveElement("MiriamAnnotation");
     }
 
@@ -391,7 +391,7 @@ bool CCopasiXML::saveModel()
           if (pComp->getMiriamAnnotation() != "")
             {
               startSaveElement("MiriamAnnotation");
-              *mpOstream << pComp->getMiriamAnnotation();
+              *mpOstream << pComp->getMiriamAnnotation() << std::endl;
               endSaveElement("MiriamAnnotation");
             }
 
@@ -443,7 +443,7 @@ bool CCopasiXML::saveModel()
           if (pMetab->getMiriamAnnotation() != "")
             {
               startSaveElement("MiriamAnnotation");
-              *mpOstream << pMetab->getMiriamAnnotation();
+              *mpOstream << pMetab->getMiriamAnnotation() << std::endl;
               endSaveElement("MiriamAnnotation");
             }
 
@@ -494,7 +494,7 @@ bool CCopasiXML::saveModel()
           if (pMV->getMiriamAnnotation() != "")
             {
               startSaveElement("MiriamAnnotation");
-              *mpOstream << pMV->getMiriamAnnotation();
+              *mpOstream << pMV->getMiriamAnnotation() << std::endl;
               endSaveElement("MiriamAnnotation");
             }
 
@@ -557,7 +557,7 @@ bool CCopasiXML::saveModel()
           if (pReaction->getMiriamAnnotation() != "")
             {
               startSaveElement("MiriamAnnotation");
-              *mpOstream << pReaction->getMiriamAnnotation();
+              *mpOstream << pReaction->getMiriamAnnotation() << std::endl;
               endSaveElement("MiriamAnnotation");
             }
 
@@ -768,7 +768,7 @@ bool CCopasiXML::saveFunctionList()
       if (pEvaluationTree->getMiriamAnnotation() != "")
         {
           startSaveElement("MiriamAnnotation");
-          *mpOstream << pEvaluationTree->getMiriamAnnotation();
+          *mpOstream << pEvaluationTree->getMiriamAnnotation() << std::endl;
           endSaveElement("MiriamAnnotation");
         }
 
