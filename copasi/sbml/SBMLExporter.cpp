@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-//   $Revision: 1.114 $
+//   $Revision: 1.115 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/11/16 20:22:15 $
+//   $Date: 2007/11/19 14:14:25 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -303,6 +303,9 @@ Model* SBMLExporter::createSBMLModelFromCModel(CCopasiDataModel* pDataModel, int
       if (sbmlDocument->getModel() != sbmlModel)
         {
           sbmlDocument->setModel(sbmlModel);
+          delete sbmlModel;
+          sbmlModel = sbmlDocument->getModel();
+          copasi2sbmlmap[copasiModel] = sbmlModel;
         }
       this->mpIdSet = SBMLExporter::createIdSet(sbmlModel, pDataModel);
     }
@@ -311,9 +314,11 @@ Model* SBMLExporter::createSBMLModelFromCModel(CCopasiDataModel* pDataModel, int
       /* create a new model object */
       this->mpIdSet = SBMLExporter::createIdSet(sbmlModel, pDataModel);
       sbmlModel = new Model();
-      copasi2sbmlmap[copasiModel] = sbmlModel;
       sbmlModel->setId(copasiModel->getKey().c_str());
       sbmlDocument->setModel(sbmlModel);
+      delete sbmlModel;
+      sbmlModel = sbmlDocument->getModel();
+      copasi2sbmlmap[copasiModel] = sbmlModel;
     }
   this->mHandledSBMLObjects.insert(sbmlModel);
   if (!copasiModel->getObjectName().empty())
@@ -2552,7 +2557,6 @@ void SBMLExporter::checkForODESpeciesInNonfixedCompartment(const CCopasiDataMode
 /**
  * This method checks wether the given model contains any assignment rules, ode
  * rules or initial assignments.
- */
 std::vector<SBMLIncompatibility> SBMLExporter::checkForRulesOrAssignments(const CCopasiDataModel* pDataModel)
 {
   std::vector<SBMLIncompatibility> messages;
@@ -2609,6 +2613,7 @@ std::vector<SBMLIncompatibility> SBMLExporter::checkForRulesOrAssignments(const 
     }
   return messages;
 }
+ */
 
 /**
  * This method checks wether the given model contains any initial assignments.

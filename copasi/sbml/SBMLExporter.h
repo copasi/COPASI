@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.h,v $
-//   $Revision: 1.49 $
+//   $Revision: 1.50 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/11/16 20:22:15 $
+//   $Date: 2007/11/19 14:14:25 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -345,7 +345,7 @@ class SBMLExporter
      * This method checks wether the given model contains any assignment rules, ode
      * rules or initial assignments.
      */
-    static std::vector<SBMLIncompatibility> checkForRulesOrAssignments(const CCopasiDataModel* pDataModel);
+    //static std::vector<SBMLIncompatibility> checkForRulesOrAssignments(const CCopasiDataModel* pDataModel);
 
     /**
      * This method checks wether the given model contains any initial assignments.
@@ -361,7 +361,6 @@ class SBMLExporter
 #endif //WITH_LAYOUT
 
   public:
-
     /**
      ** Constructor for the exporter.
      */
