@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.330 $
+//   $Revision: 1.331 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/14 19:29:53 $
+//   $Date: 2007/11/20 17:19:58 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -771,7 +771,8 @@ void CModel::initializeMetabolites()
 
       for (; itMetab != endMetab; ++itMetab)
         {
-          (*itMetab)->setUsed(!(*itMetab)->isFixed());
+          // Reset all moities
+          (*itMetab)->setDependentOn(NULL);
           mMetabolites.add(*itMetab);
         }
     }
