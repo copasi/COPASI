@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-//   $Revision: 1.52 $
+//   $Revision: 1.53 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/15 17:51:25 $
+//   $Date: 2007/11/20 18:10:42 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -655,6 +655,7 @@ bool CFitProblem::calculate()
 
                   if (!Continue)
                     {
+                      mFailedCounter++;
                       mCalculateValue = mInfinity;
                       break;
                     }
