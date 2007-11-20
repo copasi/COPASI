@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.185 $
+//   $Revision: 1.186 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/11/20 15:53:41 $
+//   $Author: shoops $
+//   $Date: 2007/11/20 17:21:06 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -3818,9 +3818,7 @@ bool SBMLImporter::setInitialValues(CModel* pModel, const std::map<CCopasiObject
           // here we can safely use getSize() regardless of the level of the
           // sbml model
           (*compartmentIt)->setInitialValue(pSBMLCompartment->getSize());
-          pChangedObject = (*compartmentIt)->getObject(CCopasiObjectName("Reference=InitialVolume"));
-          assert(pChangedObject != NULL);
-          if (pChangedObject != NULL) changedObjects.insert(pChangedObject);
+          changedObjects.insert((*compartmentIt)->getInitialValueReference());
         }
       else
         {
@@ -3830,15 +3828,15 @@ bool SBMLImporter::setInitialValues(CModel* pModel, const std::map<CCopasiObject
           if (((*compartmentIt)->getStatus() == CModelValue::FIXED || (*compartmentIt)->getStatus() == CModelValue::ODE) && (*compartmentIt)->getInitialExpressionPtr() == NULL)
             {
               this->mIncompleteModel = true;
-              (*compartmentIt)->setInitialValue(1.0);
-              pChangedObject = (*compartmentIt)->getObject(CCopasiObjectName("Reference=InitialVolume"));
-              assert(pChangedObject != NULL);
-              if (pChangedObject != NULL) changedObjects.insert(pChangedObject);
               CCopasiMessage::CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 45, pSBMLCompartment->getId().c_str());
+
+              (*compartmentIt)->setInitialValue(1.0);
+              changedObjects.insert((*compartmentIt)->getInitialValueReference());
             }
         }
       ++compartmentIt;
     }
+
   CCopasiVectorNS<CMetab>::iterator metabIt = pModel->getMetabolites().begin();
   CCopasiVectorNS<CMetab>::iterator metabEndit = pModel->getMetabolites().end();
   while (metabIt != metabEndit)
@@ -3854,30 +3852,17 @@ bool SBMLImporter::setInitialValues(CModel* pModel, const std::map<CCopasiObject
             {
               CCopasiMessage Message(CCopasiMessage::ERROR, MCSBML + 20, pSBMLSpecies->getId().c_str());
             }
+
           // set the initial value
           // here we can safely use getSize() regardless of the level of the
           // sbml model
           (*metabIt)->setInitialConcentration(pSBMLSpecies->getInitialConcentration());
-          pChangedObject = (*metabIt)->getObject(CCopasiObjectName("Reference=InitialConcentration"));
-          assert(pChangedObject != NULL);
-          if (pChangedObject != NULL) changedObjects.insert(pChangedObject);
+          changedObjects.insert((*metabIt)->getInitialConcentrationReference());
         }
       else if (pSBMLSpecies->isSetInitialAmount())
         {
-          if (pSBMLSpecies->getInitialAmount() != 0.0)
-            {
-              (*metabIt)->setInitialValue(pSBMLSpecies->getInitialAmount()*pModel->getQuantity2NumberFactor()); // CHECK UNITS !!!
-              pChangedObject = (*metabIt)->getObject(CCopasiObjectName("Reference=InitialParticleNumber"));
-              assert(pChangedObject != NULL);
-              if (pChangedObject != NULL) changedObjects.insert(pChangedObject);
-            }
-          else
-            {
-              (*metabIt)->setInitialConcentration(0.0);
-              pChangedObject = (*metabIt)->getObject(CCopasiObjectName("Reference=InitialConcentration"));
-              assert(pChangedObject != NULL);
-              if (pChangedObject != NULL) changedObjects.insert(pChangedObject);
-            }
+          (*metabIt)->setInitialValue(pSBMLSpecies->getInitialAmount()*pModel->getQuantity2NumberFactor()); // CHECK UNITS !!!
+          changedObjects.insert((*metabIt)->getInitialValueReference());
         }
       else
         {
@@ -3886,16 +3871,16 @@ bool SBMLImporter::setInitialValues(CModel* pModel, const std::map<CCopasiObject
           // error
           if (((*metabIt)->getStatus() == CModelValue::FIXED || (*metabIt)->getStatus() == CModelValue::REACTIONS || (*metabIt)->getStatus() == CModelValue::ODE) && (*metabIt)->getInitialExpressionPtr() == NULL)
             {
-              (*metabIt)->setInitialConcentration(1.0);
-              pChangedObject = (*metabIt)->getObject(CCopasiObjectName("Reference=InitialConcentration"));
-              assert(pChangedObject != NULL);
-              if (pChangedObject != NULL) changedObjects.insert(pChangedObject);
               this->mIncompleteModel = true;
               CCopasiMessage::CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 41, pSBMLSpecies->getId().c_str());
+
+              (*metabIt)->setInitialConcentration(1.0);
+              changedObjects.insert((*metabIt)->getInitialConcentrationReference());
             }
         }
       ++metabIt;
     }
+
   CCopasiVectorN<CModelValue>::iterator mvIt = pModel->getModelValues().begin();
   CCopasiVectorN<CModelValue>::iterator mvEndit = pModel->getModelValues().end();
   while (mvIt != mvEndit)
@@ -3911,9 +3896,7 @@ bool SBMLImporter::setInitialValues(CModel* pModel, const std::map<CCopasiObject
           // here we can safely use getSize() regardless of the level of the
           // sbml model
           (*mvIt)->setInitialValue(pSBMLParameter->getValue());
-          pChangedObject = (*mvIt)->getObject(CCopasiObjectName("Reference=InitialValue"));
-          assert(pChangedObject != NULL);
-          if (pChangedObject != NULL) changedObjects.insert(pChangedObject);
+          changedObjects.insert((*mvIt)->getInitialValueReference());
         }
       else
         {
@@ -3922,16 +3905,16 @@ bool SBMLImporter::setInitialValues(CModel* pModel, const std::map<CCopasiObject
           // error
           if (((*mvIt)->getStatus() == CModelValue::FIXED || (*mvIt)->getStatus() == CModelValue::ODE) && (*mvIt)->getInitialExpressionPtr() == NULL)
             {
-              (*metabIt)->setInitialValue(1.0);
-              pChangedObject = (*mvIt)->getObject(CCopasiObjectName("Reference=InitialValue"));
-              assert(pChangedObject != NULL);
-              if (pChangedObject != NULL) changedObjects.insert(pChangedObject);
               this->mIncompleteModel = true;
               CCopasiMessage::CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 43, pSBMLParameter->getId().c_str());
+
+              (*metabIt)->setInitialValue(1.0);
+              changedObjects.insert((*mvIt)->getInitialValueReference());
             }
         }
       ++mvIt;
     }
+
   CCopasiVectorNS < CReaction >::iterator reactIt = pModel->getReactions().begin();
   CCopasiVectorNS < CReaction >::iterator reactEndit = pModel->getReactions().end();
   while (reactIt != reactEndit)
@@ -3950,7 +3933,7 @@ bool SBMLImporter::setInitialValues(CModel* pModel, const std::map<CCopasiObject
               if (pLocalParameter != NULL)
                 {
                   // it is a local parameter and it is being used
-                  changedObjects.insert(pLocalParameter);
+                  changedObjects.insert(pLocalParameter->getObject(CCopasiObjectName("Reference=Value")));
                 }
               ++keyIt;
             }
@@ -3958,13 +3941,13 @@ bool SBMLImporter::setInitialValues(CModel* pModel, const std::map<CCopasiObject
         }
       ++reactIt;
     }
+
+  pModel->compileIfNecessary(mpImportHandler);
   std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
   std::vector<Refresh*>::iterator refreshIt = refreshes.begin(), refreshEndit = refreshes.end();
   while (refreshIt != refreshEndit)
-    {
-      (**refreshIt)();
-      ++refreshIt;
-    }
+    (**refreshIt++)();
+
   return true;
 }
 
