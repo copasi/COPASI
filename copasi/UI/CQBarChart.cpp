@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQBarChart.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: akoenig $
-//   $Date: 2007/11/13 17:08:51 $
+//   $Date: 2007/11/20 08:27:03 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,9 +35,9 @@ void CQBarChart::activateSlider()
   mpPlot->activateSlider();
 }
 
-void CQBarChart::setData(double** data, int columns, int rows, double maxValue)
+void CQBarChart::setData(double** data, int columns, int rows, double valueDiff)
 {
-  mpPlot->setData(data, columns, rows, maxValue);
+  mpPlot->setData(data, columns, rows, valueDiff);
 }
 
 void CQBarChart::setDescriptions(const std::vector<std::string>* columnsDes, const std::vector<std::string>* rowsDes)
