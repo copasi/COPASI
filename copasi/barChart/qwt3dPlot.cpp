@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/barChart/qwt3dPlot.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: akoenig $
-//   $Date: 2007/11/16 14:38:42 $
+//   $Date: 2007/11/20 08:32:24 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -222,13 +222,14 @@ void Plot3d::setScale(const std::vector<std::string> *columnsDescript, const std
 
 void Plot3d::setColors(std::vector<QColor> mColors, double min, double max)
 {
+  unsigned int i;
   mData.maxValue = max;
   mData.minValue = min;
   Qwt3D::ColorVector cv;
 
   Qwt3D::RGBA rgb;
 
-  for (int i = 0; i < mColors.size(); i++)
+  for (i = 0; i < mColors.size(); i++)
     {
       double r, g, b;
       r = (mColors[i].red()); g = (mColors[i].green()); b = (mColors[i].blue());
@@ -244,6 +245,7 @@ void Plot3d::setColors(std::vector<QColor> mColors, double min, double max)
 
 void Plot3d::setData(double** data, int columns, int rows, double valueZone)
 {
+  unsigned int j;
   mData.valueZone = valueZone;
   mData.columns = columns;
   mData.rows = rows;
@@ -259,7 +261,7 @@ void Plot3d::setData(double** data, int columns, int rows, double valueZone)
       dataExpand[0] = new double[mData.rows];
       dataExpand[1] = new double[mData.rows];
 
-      for (int j = 0; j < rows; j++)
+      for (j = 0; j < rows; j++)
         {
           dataExpand[0][j] = data[0][j];
           dataExpand[1][j] = data[0][j];

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/barChart/qwt3dColor.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: akoenig $
-//   $Date: 2007/11/12 17:01:07 $
+//   $Date: 2007/11/20 08:32:24 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,12 +25,13 @@ BarColor::BarColor(Qwt3D::Plot3D* data, unsigned size, double min, double max)
 
 void BarColor::reset(unsigned size)
 {
+  unsigned int i;
   colors_ = Qwt3D::ColorVector(size);
   Qwt3D::RGBA elem;
 
   double dsize = size;
 
-  for (unsigned int i = 0; i != size; ++i)
+  for (i = 0; i != size; ++i)
     {
       elem.r = i / dsize;
       elem.g = i / dsize / 4;
@@ -50,12 +51,14 @@ void BarColor::setColorVector(Qwt3D::ColorVector const& cv)
 
 void BarColor::setAlpha(double a)
 {
+  unsigned int i;
+
   if (a < 0 || a > 1)
     return;
 
   Qwt3D::RGBA elem;
 
-  for (unsigned int i = 0; i != colors_.size(); ++i)
+  for (i = 0; i != colors_.size(); ++i)
     {
       elem = colors_[i];
       elem.a = a;

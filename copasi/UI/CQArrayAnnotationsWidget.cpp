@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Author: akoenig $
-//   $Date: 2007/11/16 09:48:16 $
+//   $Date: 2007/11/20 08:30:52 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -623,7 +623,7 @@ void CQArrayAnnotationsWidget::fillTable(unsigned C_INT32 rowIndex, unsigned C_I
       int columns = jmax;
       int rows = imax;
       data = new double * [columns];
-      for (int i = 0; i < columns; ++i)
+      for (i = 0; i < columns; ++i)
         data[i] = new double[rows];
 
       //minValue and maxValue help to figure out the min and max value
@@ -668,7 +668,7 @@ void CQArrayAnnotationsWidget::fillTable(unsigned C_INT32 rowIndex, unsigned C_I
       //fill vector mColor with 100 colors, evenly distributed over relevant print section
       double holeSection = maxZ - minZ;
       double step = holeSection / 99;
-      for (int i = 0; i < 100; i++)
+      for (i = 0; i < 100; i++)
         {
           mColors.push_back(i);
           mColors[i] = mpColorScale->getColor(minZ + i * step);
@@ -785,7 +785,7 @@ void CQArrayAnnotationsWidget::fillTable(unsigned C_INT32 rowIndex,
       //fill vector mColor with 100 colors, evenly distributed over relevant print section
       double holeSection = maxZ - minZ;
       double step = holeSection / 99;
-      for (int i = 0; i < 100; i++)
+      for (i = 0; i < 100; i++)
         {
           mColors.push_back(i);
           mColors[i] = mpColorScale->getColor(minZ + i * step);

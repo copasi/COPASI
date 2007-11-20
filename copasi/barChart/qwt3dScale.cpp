@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/barChart/qwt3dScale.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: akoenig $
-//   $Date: 2007/11/12 17:01:07 $
+//   $Date: 2007/11/20 08:32:24 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,13 +29,14 @@ int ValueScale::autoscale(double& a, double& b, double start, double stop, int i
 //! Creates the major and minor vector for the scale
 void ValueScale::calculate()
 {
+  unsigned int i;
+  unsigned int j;
   majors_p.clear();
   minors_p.clear();
 
   double interval = mstop_p - mstart_p;
 
   double runningval;
-  int i = 0;
 
   // majors
 
@@ -86,7 +87,7 @@ void ValueScale::calculate()
   for (i = 0; i != majorintervals_p; ++i)
     {
       runningval = majors_p[i] + step;
-      for (int j = 0; j != minorintervals_p; ++j)
+      for (j = 0; j != minorintervals_p; ++j)
         {
           minors_p.push_back(runningval);
           runningval += step;
