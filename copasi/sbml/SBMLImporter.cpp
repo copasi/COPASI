@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.184 $
+//   $Revision: 1.185 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/11/20 14:25:37 $
+//   $Date: 2007/11/20 15:53:41 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -44,6 +44,7 @@
 #include <sbml/Rule.h>
 #include <sbml/FunctionDefinition.h>
 #include <sbml/units/Utils_UnitDefinition.h>
+#include "report/CKeyFactory.h"
 
 #include "copasi.h"
 
@@ -3930,6 +3931,32 @@ bool SBMLImporter::setInitialValues(CModel* pModel, const std::map<CCopasiObject
             }
         }
       ++mvIt;
+    }
+  CCopasiVectorNS < CReaction >::iterator reactIt = pModel->getReactions().begin();
+  CCopasiVectorNS < CReaction >::iterator reactEndit = pModel->getReactions().end();
+  while (reactIt != reactEndit)
+    {
+      const std::vector<std::vector<std::string> >& parameterMappings = (*reactIt)->getParameterMappings();
+      std::vector<std::vector<std::string> >::const_iterator parameterMappingsIt = parameterMappings.begin();
+      std::vector<std::vector<std::string> >::const_iterator parameterMappingsEndit = parameterMappings.end();
+      CCopasiParameter* pLocalParameter = NULL;
+      while (parameterMappingsIt != parameterMappingsEndit)
+        {
+          std::vector<std::string>::const_iterator keyIt = (*parameterMappingsIt).begin();
+          std::vector<std::string>::const_iterator keyEndit = (*parameterMappingsIt).end();
+          while (keyIt != keyEndit)
+            {
+              pLocalParameter = dynamic_cast<CCopasiParameter*>(GlobalKeys.get(*keyIt));
+              if (pLocalParameter != NULL)
+                {
+                  // it is a local parameter and it is being used
+                  changedObjects.insert(pLocalParameter);
+                }
+              ++keyIt;
+            }
+          ++parameterMappingsIt;
+        }
+      ++reactIt;
     }
   std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
   std::vector<Refresh*>::iterator refreshIt = refreshes.begin(), refreshEndit = refreshes.end();
