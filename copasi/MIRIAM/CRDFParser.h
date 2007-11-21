@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFParser.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/21 16:15:07 $
+//   $Date: 2007/11/21 18:37:22 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,6 +24,15 @@ class CRDFParser
     // Methods
   public:
     /**
+     * Convert an RDF/XML syntax string to an RDF Graph. If the conversion fails a
+     * NULL pointer is returned. Otherwise a pointer to the resulting graph is
+     * returned. It is the responsibility of the caller to destroy the created graph.
+     * @param const std::string & xml
+     * @return CRDFGraph * graphFromXml
+     */
+    static CRDFGraph * graphFromXml(const std::string & xml);
+
+    /**
      * Default Constructor
      */
     CRDFParser();
@@ -36,7 +45,7 @@ class CRDFParser
     /**
      * Parse the stream. If the parsing fails a NULL pointer is returned. Otherwise
      * a pointer to the resulting graph is returned. It is the responsibility of the
-     * caller to destroy the created graph/
+     * caller to destroy the created graph.
      * &param std::istream & stream
      * @return CRDFGraph * pGraph
      */

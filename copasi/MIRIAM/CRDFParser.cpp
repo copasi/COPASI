@@ -1,14 +1,16 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFParser.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/21 16:15:07 $
+//   $Date: 2007/11/21 18:37:22 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+
+#include <sstream>
 
 #include "copasi.h"
 
@@ -23,6 +25,17 @@
 
 // static
 bool CRDFParser::Initialized = false;
+
+// static
+CRDFGraph * CRDFParser::graphFromXml(const std::string & xml)
+{
+  CRDFParser Parser;
+
+  std::istringstream XML;
+  XML.str(xml);
+
+  return Parser.parse(XML);
+}
 
 CRDFParser::CRDFParser() :
     mpParser(NULL),
@@ -99,7 +112,6 @@ CRDFGraph * CRDFParser::parse(std::istream & stream)
 void CRDFParser::TripleHandler(void * pRdfParser, const raptor_statement * pTriple)
 {static_cast< CRDFParser *>(pRdfParser)->TripleHandler(pTriple);}
 
-// virtual
 void CRDFParser::TripleHandler(const raptor_statement * pTriple)
 {
   raptor_print_statement(pTriple, stdout);
@@ -173,5 +185,6 @@ void CRDFParser::TripleHandler(const raptor_statement * pTriple)
       fatalError();
     }
 
+  // Add the triplet to the graph
   mpGraph->addTriplet(Subject, Predicate, Object);
 }
