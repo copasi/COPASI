@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFParser.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/16 20:52:36 $
+//   $Date: 2007/11/21 16:15:07 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,6 +17,8 @@
 
 #include <iostream>
 
+class CRDFGraph;
+
 class CRDFParser
   {
     // Methods
@@ -29,14 +31,16 @@ class CRDFParser
     /**
      * Destructor
      */
-    virtual ~CRDFParser();
+    ~CRDFParser();
 
     /**
-     * Parse the stream
+     * Parse the stream. If the parsing fails a NULL pointer is returned. Otherwise
+     * a pointer to the resulting graph is returned. It is the responsibility of the
+     * caller to destroy the created graph/
      * &param std::istream & stream
-     * @return bool success
+     * @return CRDFGraph * pGraph
      */
-    bool parse(std::istream & stream);
+    CRDFGraph * parse(std::istream & stream);
 
     /**
      * A stantic handler to interface with the C parser library. This is called
@@ -49,9 +53,9 @@ class CRDFParser
 
     /**
      * This method is executed whenever a triple is created by the underlying parser
-      * @param const raptor_statement * pTriple
+     * @param const raptor_statement * pTriple
      */
-    virtual void TripleHandler(const raptor_statement * pTriple);
+    void TripleHandler(const raptor_statement * pTriple);
 
     // Attributes
   private:
@@ -60,6 +64,14 @@ class CRDFParser
      */
     raptor_parser * mpParser;
 
+    /**
+     * A pointer to the created RDF graph
+     */
+    CRDFGraph * mpGraph;
+
+    /**
+     * This attribute indicates whether the rapor library is initialized
+     */
     static bool Initialized;
   };
 

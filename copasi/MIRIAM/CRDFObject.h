@@ -1,41 +1,118 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFObject.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2007/11/21 06:33:48 $
+//   $Author: shoops $
+//   $Date: 2007/11/21 16:15:07 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-/**
- *  CRDFObject: Virtual class for all RDF Objects.
- *
- */
-
-#ifndef COPASI_CRDFOBJECT
-#define COPASI_CRDFOBJECT
+#ifndef COPASI_CRDFObject
+#define COPASI_CRDFObject
 
 #include <string>
-#include "utilities/CCopasiVector.h"
+
+class CRDFLiteral;
 
 class CRDFObject
   {
-    // Attributes
-  protected:
-    std::string mResource;
+    // Enumerations
+  public:
+    /**
+     * The three different types possible for objects
+     */
+    enum eObjectType {RESOURCE = 0, BLANK_NODE, LITERAL};
 
     // Operations
   public:
-    CRDFObject(std::string resource);
-    ~CRDFObject();
-    virtual std::string getResource();
-    virtual CCopasiVector <std::string> getProperties() = 0;
-    virtual CCopasiVector <std::string> getPropertyValues() = 0;
+    /**
+     * Default Constructor
+     */
+    CRDFObject();
 
-    virtual void setResource(std::string resource);
+    /**
+     * Copy Constructor
+     * @param const CRDFObject & src
+     */
+    CRDFObject(const CRDFObject & src);
+
+    /**
+     * Destructor
+     */
+    virtual ~CRDFObject();
+
+    /**
+     * Set the type of the object
+     * @param const eObjectType & type
+     */
+    void setType(const eObjectType & type);
+
+    /**
+     * Retrieve the type of the object
+     * @return const eObjectType & type
+     */
+    const eObjectType & getType() const;
+
+    /**
+     * Set the resource of the object
+     * @param const std::string & resource
+     */
+    void setResource(const std::string & resource);
+
+    /**
+     * Retrieve the resource of the object
+     * @return const std::string & resource
+     */
+    const std::string & getResource() const;
+
+    /**
+     * Set the ID of the blank node of the object
+     * @param const std::string & blankNodeId
+     */
+    void setBlankNodeId(const std::string & blankNodeId);
+
+    /**
+     * Retrieve the ID of the blank node of the object
+     * @return const std::string & blankNodeId
+     */
+    const std::string & getBlankNodeID() const;
+
+    /**
+     * Set the literal of the object
+     * @param const std::string & lexicalData
+     */
+    void setLiteral(const CRDFLiteral & literal);
+
+    /**
+     * Retrieve the literal of the object
+     * @return const CRDFLiteral & literal
+     */
+    const CRDFLiteral & getLiteral() const;
+
+    // Attributes
+  private:
+    /**
+     * The type of the object
+     */
+    eObjectType mType;
+
+    /**
+     * The URI of the resource of type RESOURCE
+     */
+    std::string mResource;
+
+    /**
+     * The Id of the blank node for type BLANK_NODE
+     */
+    std::string mBlankNodeId;
+
+    /**
+     * The pointer to the literal for type LITERAL
+     */
+    mutable CRDFLiteral * mpLiteral;
   };
 
-#endif //COPASI_CRDFOBJECT
+#endif // COPASI_CRDFObject

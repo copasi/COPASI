@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFParser.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/16 20:52:36 $
+//   $Date: 2007/11/21 16:15:07 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,6 +13,10 @@
 #include "copasi.h"
 
 #include "CRDFParser.h"
+#include "CRDFGraph.h"
+#include "CRDFSubject.h"
+#include "CRDFObject.h"
+#include "CRDFLiteral.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "utilities/CCopasiMessage.h"
@@ -21,7 +25,8 @@
 bool CRDFParser::Initialized = false;
 
 CRDFParser::CRDFParser() :
-    mpParser(NULL)
+    mpParser(NULL),
+    mpGraph(NULL)
 {
   if (!Initialized)
     {
@@ -39,7 +44,7 @@ CRDFParser::~CRDFParser()
   if (mpParser) raptor_free_parser(mpParser);
 }
 
-bool CRDFParser::parse(std::istream & stream)
+CRDFGraph * CRDFParser::parse(std::istream & stream)
 {
   bool success = true;
   bool done = false;
@@ -52,6 +57,9 @@ bool CRDFParser::parse(std::istream & stream)
 
   if (raptor_start_parse(mpParser, pURI))
     fatalError();
+
+  // Create the new graph
+  mpGraph = new CRDFGraph;
 
   unsigned C_INT32 BUFFER_SIZE = 0xfffe;
   char * pBuffer = new char[BUFFER_SIZE + 1];
@@ -78,7 +86,13 @@ bool CRDFParser::parse(std::istream & stream)
 
   delete [] pBuffer;
 
-  return success;
+  if (!success)
+    pdelete(mpGraph);
+
+  CRDFGraph * pGraph = mpGraph;
+  mpGraph = NULL;
+
+  return pGraph;
 }
 
 // static
@@ -91,4 +105,73 @@ void CRDFParser::TripleHandler(const raptor_statement * pTriple)
   raptor_print_statement(pTriple, stdout);
   fprintf(stdout, "\n");
   fflush(stdout);
+
+  // We need to create a CRDFSubject, Predicate, and CRDFObject
+  CRDFSubject Subject;
+  std::string Predicate;
+  CRDFObject Object;
+  CRDFLiteral Literal;
+
+  switch (pTriple->subject_type)
+    {
+    case RAPTOR_IDENTIFIER_TYPE_RESOURCE:
+      Subject.setType(CRDFSubject::RESOURCE);
+      Subject.setResource((char *) pTriple->subject);
+      break;
+
+    case RAPTOR_IDENTIFIER_TYPE_ANONYMOUS:
+      Subject.setType(CRDFSubject::BLANK_NODE);
+      Subject.setBlankNodeId((char *) pTriple->subject);
+      break;
+
+    default:
+      fatalError();
+    }
+
+  switch (pTriple->predicate_type)
+    {
+    case RAPTOR_IDENTIFIER_TYPE_RESOURCE:
+      Predicate = (char *) pTriple->predicate;
+      break;
+
+    default:
+      fatalError();
+    }
+
+  switch (pTriple->object_type)
+    {
+    case RAPTOR_IDENTIFIER_TYPE_RESOURCE:
+      Object.setType(CRDFObject::RESOURCE);
+      Object.setResource((char *) pTriple->object);
+      break;
+
+    case RAPTOR_IDENTIFIER_TYPE_ANONYMOUS:
+      Object.setType(CRDFObject::BLANK_NODE);
+      Object.setBlankNodeId((char *) pTriple->object);
+      break;
+
+    case RAPTOR_IDENTIFIER_TYPE_LITERAL:
+      Object.setType(CRDFObject::LITERAL);
+
+      if (pTriple->object_literal_datatype != NULL)
+        {
+          Literal.setType(CRDFLiteral::TYPED);
+          Literal.setDataType((char *) pTriple->object_literal_datatype);
+        }
+      else
+        {
+          Literal.setType(CRDFLiteral::PLAIN);
+          if (pTriple->object_literal_language != NULL)
+            Literal.setLanguage((char *) pTriple->object_literal_language);
+        }
+
+      Literal.setLexicalData((char *) pTriple->object);
+      Object.setLiteral(Literal);
+      break;
+
+    default:
+      fatalError();
+    }
+
+  mpGraph->addTriplet(Subject, Predicate, Object);
 }
