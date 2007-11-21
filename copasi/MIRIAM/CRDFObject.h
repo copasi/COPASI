@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFObject.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2007/11/15 22:33:54 $
+//   $Date: 2007/11/21 06:33:48 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -11,30 +11,31 @@
 // All rights reserved.
 
 /**
- *  CModelMIRIAMInfo: Stores all MIRIAM info for a Model.
+ *  CRDFObject: Virtual class for all RDF Objects.
  *
  */
 
-#ifndef COPASI_CMODELMIRIAMINFO
-#define COPASI_CMODELMIRIAMINFO
+#ifndef COPASI_CRDFOBJECT
+#define COPASI_CRDFOBJECT
 
+#include <string>
 #include "utilities/CCopasiVector.h"
 
-#include "CAuthor.h"
-
-class CModelMIRIAMInfo
+class CRDFObject
   {
     // Attributes
-  private:
-    CCopasiVector <CAuthor> mAuthors;
+  protected:
+    std::string mResource;
 
     // Operations
   public:
-    CModelMIRIAMInfo();
-    ~CModelMIRIAMInfo();
-    CCopasiVector <CAuthor> & getAuthors();
-    CAuthor* createAuthor(const std::string name);
-    bool removeAuthor(const std::string & key);
+    CRDFObject(std::string resource);
+    ~CRDFObject();
+    virtual std::string getResource();
+    virtual CCopasiVector <std::string> getProperties() = 0;
+    virtual CCopasiVector <std::string> getPropertyValues() = 0;
+
+    virtual void setResource(std::string resource);
   };
 
-#endif //COPASI_CMODELMIRIAMINFO
+#endif //COPASI_CRDFOBJECT
