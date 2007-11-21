@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.66 $ 
+#   $Revision: 1.67 $ 
 #   $Name:  $ 
-#   $Author: ssahle $ 
-#   $Date: 2007/11/12 18:37:43 $ 
+#   $Author: shoops $ 
+#   $Date: 2007/11/21 18:36:39 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -11,7 +11,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.66 $ $Author: ssahle $ $Date: 2007/11/12 18:37:43 $  
+# $Revision: 1.67 $ $Author: shoops $ $Date: 2007/11/21 18:36:39 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -126,7 +126,10 @@ contains(BUILD_OS, Darwin) {
     DEFINES += WITH_QWT3D
   }
  
-
+  contains(DEFINES, COPASI_MIRIAM) {
+    LIBS += -lraptor
+  }
+  
   contains(CONFIG, qt) {
   
     !isEmpty(QWT_PATH){
@@ -203,6 +206,10 @@ contains(BUILD_OS, WIN32) {
     error( "SBML_PATH must be specified" )
   }
 
+  contains(DEFINES, COPASI_MIRIAM) {
+    LIBS += raptor.lib
+  }
+  
   contains(CONFIG, qt) {
     LIBS += -lqwt
   }
@@ -252,6 +259,10 @@ contains(STATIC_LINKAGE, yes) {
 
   LIBS += -lsbml -lexpat
 
+  contains(DEFINES, COPASI_MIRIAM) {
+    LIBS += -lraptor
+  }
+  
   contains(CONFIG, qt) {
     !isEmpty(QWT_PATH){
        LIBS+=  -L$${QWT_PATH}/lib
@@ -289,6 +300,10 @@ contains(BUILD_OS, Linux) {
   }
   LIBS += -lexpat
 
+  contains(DEFINES, COPASI_MIRIAM) {
+    LIBS += -lraptor
+  }
+  
   !isEmpty(MKL_PATH) {
     DEFINES += USE_MKL
     INCLUDEPATH += $${MKL_PATH}/include
