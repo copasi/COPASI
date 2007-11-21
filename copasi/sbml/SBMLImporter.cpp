@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.186 $
+//   $Revision: 1.187 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/20 17:21:06 $
+//   $Date: 2007/11/21 16:14:12 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -3800,7 +3800,6 @@ bool SBMLImporter::setInitialValues(CModel* pModel, const std::map<CCopasiObject
   // message
   std::map<CCopasiObject*, SBase*>::const_iterator pos;
   std::set<const CCopasiObject*> changedObjects;
-  const CCopasiObject* pChangedObject = NULL;
   CCopasiVectorNS<CCompartment>::iterator compartmentIt = pModel->getCompartments().begin();
   CCopasiVectorNS<CCompartment>::iterator compartmentEndit = pModel->getCompartments().end();
   while (compartmentIt != compartmentEndit)
