@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/barChart/qwt3dPlot.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: akoenig $
-//   $Date: 2007/11/12 17:01:07 $
+//   $Date: 2007/11/22 17:17:14 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,13 +15,19 @@
 
 #include <qlayout.h>
 #include <qslider.h>
-//#include <iostream>
+#include <qmenubar.h>
+#include <qcursor.h>
 
 #include "qwt3d_surfaceplot.h"
 #include "copasi/barChart/qwt3dBars.h"
 #include "copasi/barChart/qwt3dScale.h"
 #include "copasi/barChart/qwt3dColor.h"
 #include "copasi/barChart/qwt3dBaseWidget.h"
+#include "../UI/CopasiFileDialog.h"
+#include "UI/qtUtilities.h"
+#include "copasi.h"
+#include "qmessagebox.h"
+#include "qregexp.h"
 
 class Plot3d : public BaseWidget
   {
@@ -69,6 +75,14 @@ class Plot3d : public BaseWidget
     void resizeCoordSys();
     int getColSliderPos();
     int getRowSliderPos();
+
+  public slots:
+    void saveDataToFile();
+    void showLegend();
+    void hotKeysWidget();
+
+  private:
+    void contextMenuEvent (QContextMenuEvent *);
 
     //signals:
     //  void sliderPosition(int col, int row);

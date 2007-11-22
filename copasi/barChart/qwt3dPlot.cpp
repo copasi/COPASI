@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/barChart/qwt3dPlot.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: akoenig $
-//   $Date: 2007/11/20 08:32:24 $
+//   $Date: 2007/11/22 17:17:14 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -245,7 +245,7 @@ void Plot3d::setColors(std::vector<QColor> mColors, double min, double max)
 
 void Plot3d::setData(double** data, int columns, int rows, double valueZone)
 {
-  unsigned int j;
+  int j;
   mData.valueZone = valueZone;
   mData.columns = columns;
   mData.rows = rows;
@@ -388,8 +388,6 @@ void Plot3d::sliderMoved(int column, int row)
   //  sliderPosition(column, row);
 }
 
-//void Plot3d::sliderPosition(int col, int row){}
-
 void Plot3d::emptyPlot()
 {
 
@@ -402,4 +400,98 @@ void Plot3d::emptyPlot()
   mTitle = (QString(""));
   mpPlot->showColorLegend(false);
   plotData();
+}
+
+void Plot3d::contextMenuEvent(QContextMenuEvent *)
+{
+  QPopupMenu* mpContextMenu = new QPopupMenu(this);
+  Q_CHECK_PTR(mpContextMenu);
+  if (mColorLegend)
+    mpContextMenu->insertItem("hide legend", this, SLOT(showLegend()));
+  else
+    mpContextMenu->insertItem("show legend", this, SLOT(showLegend()));
+  mpContextMenu->insertItem("show hot keys", this, SLOT(hotKeysWidget()));
+
+  QPopupMenu* mpSubmenu = new QPopupMenu(this);
+  Q_CHECK_PTR(mpSubmenu);
+  //mpSubmenu->insertItem("&Print to printer", this, SLOT(saveDataToFile()));
+  mpSubmenu->insertItem("Print to &file", this, SLOT(saveDataToFile()));
+  mpContextMenu->insertItem("&Print", mpSubmenu);
+
+  mpContextMenu->exec(QCursor::pos());
+  delete mpContextMenu;
+}
+
+void Plot3d::saveDataToFile()
+{
+  C_INT32 Answer = QMessageBox::No;
+  QString fileName, filetype_, newFilter;
+
+  while (Answer == QMessageBox::No)
+    {
+      fileName =
+        CopasiFileDialog::getSaveFileNameAndFilter(newFilter,
+            this, "Save File Dialog",
+            "ILDMResults-barsPrint", "BMP Files (*.bmp);;JPEG Files (*.jpeg);;PDF Files (*.pdf);;", "Save to");
+
+      if (!fileName) return;
+
+      fileName = fileName.remove(QRegExp("\\.$"));
+
+      if (!fileName.endsWith(".bmp") && !fileName.endsWith(".") && !fileName.endsWith(".jpg") && !fileName.endsWith(".jpeg") && !fileName.endsWith(".pdf"))
+        if (newFilter == "BMP Files (*.bmp)")
+          {
+            fileName += ".bmp";
+            filetype_ = "BMP";
+          }
+        else
+          if (newFilter == "JPEG Files (*.jpeg)")
+            {
+              fileName += ".jpeg";
+              filetype_ = "JPEG";
+            }
+          else
+            if (newFilter == "PDF Files (*.pdf)")
+              {
+                fileName += ".pdf";
+                filetype_ = "PDF";
+              }
+
+      fileName = fileName.remove(QRegExp("\\.$"));
+      Answer = checkSelection(fileName);
+
+      if (Answer == QMessageBox::Cancel) return;
+    }
+
+  int failed = 0;
+  QCursor oldCursor = cursor();
+  setCursor(Qt::WaitCursor);
+  failed = !Qwt3D::IO::save(mpPlot, fileName.lower(), filetype_);
+  setCursor(oldCursor);
+
+  if (failed)
+    {
+      std::string s = "Could not save data to ";
+      s += fileName.utf8();
+      QMessageBox::critical(this, "Save Error", FROM_UTF8(s), QMessageBox::Ok, QMessageBox::Cancel);
+    }
+}
+
+void Plot3d::showLegend()
+{
+
+  if (mColorLegend)
+    {
+      mColorLegend = false;
+      mpPlot->showColorLegend(false);
+    }
+  else
+    {
+      mColorLegend = true;
+      mpPlot->showColorLegend(true);
+    }
+}
+
+void Plot3d::hotKeysWidget()
+{
 }
