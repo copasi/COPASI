@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.h,v $
-//   $Revision: 1.50 $
+//   $Revision: 1.51 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/11/19 14:14:25 $
+//   $Date: 2007/11/23 15:35:46 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -73,9 +73,10 @@ class SBMLExporter
     unsigned C_INT32 mTotalSteps;
     unsigned C_INT32 mStep;
 
-    //std::map<CCopasiObject*, SBase*> mCopasi2SBMLMap;
-
     bool mExportExpressions;
+
+    // set of function names that can not be exported to SBML
+    std::set<CEvaluationNodeFunction::SubType> mUnsupportedFunctionTypes;
 
     /**
      **  This method takes a copasi CModel object and generates a SBMLDocument
@@ -265,23 +266,36 @@ class SBMLExporter
     std::set<std::string> getObjectNodeIds(const ASTNode* pNode);
 
     /**
+     * Checks all assignments (initial and transient) for references to objects
+     * that can not be exported to SBML.
+     */
+    static void SBMLExporter::checkForUnsupportedObjectReferences(CCopasiDataModel* pDataModel, std::vector<SBMLIncompatibility>& result);
+
+    /**
      * Checks if the object nodes in a given rule expression are of allowed types.
      */
     bool checkExpressionObjects(const CEvaluationNode* pNode) const;
+
+    /**
+     * Checks wether the given data model can be exported to SBML Level1
+     * If it can be exported, the result vector will be empty, otherwise it will
+     * contain a number of messages that specify why it can't be exported.
+     */
+    static void isModelSBMLL1Compatible(CCopasiDataModel* pDataModel, std::vector<SBMLIncompatibility>& result);
 
     /**
      * Checks wether the given data model can be exported to SBML Level2 Version1.
      * If it can be exported, the result vector will be empty, otherwise it will
      * contain a number of messages that specify why it can't be exported.
      */
-    static std::vector<SBMLIncompatibility> isModelSBMLL2V1Compatible(CCopasiDataModel* pDataModel);
+    static void isModelSBMLL2V1Compatible(CCopasiDataModel* pDataModel, std::vector<SBMLIncompatibility>& result);
 
     /**
      * Checks wether the given data model can be exported to SBML Level2 Version3.
      * If it can be exported, the result vector will be empty, otherwise it will
      * contain a number of messages that specify why it can't be exported.
      */
-    static std::vector<SBMLIncompatibility> isModelSBMLL2V3Compatible(CCopasiDataModel* pDataModel);
+    static void isModelSBMLL2V3Compatible(CCopasiDataModel* pDataModel, std::vector<SBMLIncompatibility>& result);
 
     /**
      * Checks wether the model contains a metabolite that is defined by an ODE
@@ -297,30 +311,37 @@ class SBMLExporter
      * If it can be exported, the result vector will be empty, otherwise it will
      * contain a number of messages that specify why it can't be exported.
      */
-    static std::vector<SBMLIncompatibility> isRuleSBMLCompatible(const CModelEntity* pME, const CCopasiDataModel* pDataModel, int sbmlLevel, int sbmlVersion);
+    static void isExpressionSBMLCompatible(const CExpression* pE, const CCopasiDataModel* pDataModel, int sbmlLevel, int sbmlVersion, std::vector<SBMLIncompatibility>& result);
 
     /**
      * Checks wether the rule in the given model entity can be exported to SBML Level2 Version1.
      * If it can be exported, the result vector will be empty, otherwise it will
      * contain a number of messages that specify why it can't be exported.
      */
-    static std::vector<SBMLIncompatibility> isRuleSBMLL2V1Compatible(const CModelEntity* pME, const CCopasiDataModel* pDataModel);
+    static void isExpressionSBMLL1Compatible(const CExpression* pE, const CCopasiDataModel* pDataModel, std::vector<SBMLIncompatibility>& result);
+
+    /**
+     * Checks wether the rule in the given model entity can be exported to SBML Level2 Version1.
+     * If it can be exported, the result vector will be empty, otherwise it will
+     * contain a number of messages that specify why it can't be exported.
+     */
+    static void isExpressionSBMLL2V1Compatible(const CExpression* pE, const CCopasiDataModel* pDataModel, std::vector<SBMLIncompatibility>& result);
 
     /**
      * Checks wether the rule in the given model entity can be exported to SBML Level2 Version3.
      * If it can be exported, the result vector will be empty, otherwise it will
      * contain a number of messages that specify why it can't be exported.
      */
-    static std::vector<SBMLIncompatibility> isRuleSBMLL2V3Compatible(const CModelEntity* pME, const CCopasiDataModel* pDataModel);
+    static void isExpressionSBMLL2V3Compatible(const CExpression* pE, const CCopasiDataModel* pDataModel, std::vector<SBMLIncompatibility>& result);
 
     /**
      * This static methods checks, wether the model uses any function calls
      * that can not be expressed in SBML like the random distribution
      * functions.
      */
-    static std::vector<SBMLIncompatibility> checkForUnsupportedFunctionCalls(CCopasiDataModel* pDataModel,
+    static void checkForUnsupportedFunctionCalls(CCopasiDataModel* pDataModel,
         const std::set<CEvaluationNodeFunction::SubType>& unsupportedFunctions,
-        std::set<std::string>* pIdSet);
+        std::set<std::string>* pIdSet, std::vector<SBMLIncompatibility>& result);
 
     /**
      * This static methods checks, wether the given CEvaluationTree uses any function calls
@@ -342,15 +363,9 @@ class SBMLExporter
         const char* objectType, const char* objectName);
 
     /**
-     * This method checks wether the given model contains any assignment rules, ode
-     * rules or initial assignments.
-     */
-    //static std::vector<SBMLIncompatibility> checkForRulesOrAssignments(const CCopasiDataModel* pDataModel);
-
-    /**
      * This method checks wether the given model contains any initial assignments.
      */
-    static std::vector<SBMLIncompatibility> checkForInitialAssignments(const CCopasiDataModel* pDataModel);
+    static void checkForInitialAssignments(const CCopasiDataModel* pDataModel, std::vector<SBMLIncompatibility>& result);
 
 #ifdef WITH_LAYOUT
     /**
@@ -423,7 +438,7 @@ class SBMLExporter
      * If it can be exported, the result vector will be empty, otherwise it will
      * contain a number of messages that specify why it can't be exported.
      */
-    static std::vector<SBMLIncompatibility> isModelSBMLCompatible(CCopasiDataModel* pDataModel, int sbmlLevel, int sbmlVersion);
+    std::vector<SBMLIncompatibility> isModelSBMLCompatible(CCopasiDataModel* pDataModel, int sbmlLevel, int sbmlVersion);
   };
 
 #endif
