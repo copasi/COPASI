@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporterXPPAUT.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/07/24 18:40:24 $
+//   $Author: nsimus $
+//   $Date: 2007/11/23 17:02:54 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -323,6 +323,7 @@ bool CODEExporterXPPAUT::exportSingleMetabolite(const CMetab* metab, std::string
           return false;
         break;
       }
+    case CModelEntity::ODE:
     case CModelEntity::REACTIONS:
       {
         if (!metab->isDependent())
@@ -356,13 +357,38 @@ bool CODEExporterXPPAUT::exportSingleMetabolite(const CMetab* metab, std::string
   return true;
 }
 
-bool CODEExporterXPPAUT::exportSingleCompartement(const CCompartment* comp, std::string & expression, std::string & comments)
+bool CODEExporterXPPAUT::exportSingleCompartment(const CCompartment* comp, std::string & expression, std::string & comments)
 {
-  fixed << "#" << comments << std::endl;
 
-  fixed << "param ";
-  if (!exportSingleObject(fixed, NameMap[comp->getKey()], expression, comments)) return false;
-
+  switch (comp->getStatus())
+    {
+    case CModelEntity::FIXED:
+      {
+        fixed << "#" << comments << std::endl;
+        fixed << "param ";
+        if (!exportSingleObject(fixed, NameMap[comp->getKey()], expression, comments))
+          return false;
+        break;
+      }
+    case CModelEntity::ODE:
+      {
+        initial << "#" << comments << std::endl;
+        initial << "init ";
+        if (!exportSingleObject(initial, NameMap[comp->getKey()], expression, comments))
+          return false;
+        break;
+      }
+    case CModelEntity::ASSIGNMENT:
+      {
+        assignment << "#" << comments << std::endl;
+        if (!exportSingleObject(assignment, NameMap[comp->getKey()], expression, comments))
+          return false;
+        break;
+      }
+    default:
+      return false;
+      break;
+    }
   return true;
 }
 
@@ -391,6 +417,42 @@ bool CODEExporterXPPAUT::exportSingleModVal(const CModelValue* modval, std::stri
       {
         assignment << "#" << comments << std::endl;
         if (!exportSingleObject(assignment, NameMap[modval->getKey()], expression, comments))
+          return false;
+        break;
+      }
+    default:
+      return false;
+      break;
+    }
+
+  return true;
+}
+
+bool CODEExporterXPPAUT::exportSingleModelEntity(const CModelEntity* tmp, std::string & expression, std::string & comments)
+{
+
+  switch (tmp->getStatus())
+    {
+    case CModelEntity::FIXED:
+      {
+        fixed << "#" << comments << std::endl;
+        fixed << "param ";
+        if (!exportSingleObject(fixed, NameMap[tmp->getKey()], expression, comments))
+          return false;
+        break;
+      }
+    case CModelEntity::ODE:
+      {
+        initial << "#" << comments << std::endl;
+        initial << "init ";
+        if (!exportSingleObject(initial, NameMap[tmp->getKey()], expression, comments))
+          return false;
+        break;
+      }
+    case CModelEntity::ASSIGNMENT:
+      {
+        assignment << "#" << comments << std::endl;
+        if (!exportSingleObject(assignment, NameMap[tmp->getKey()], expression, comments))
           return false;
         break;
       }

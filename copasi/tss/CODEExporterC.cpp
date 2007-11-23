@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporterC.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/07/24 18:40:24 $
+//   $Author: nsimus $
+//   $Date: 2007/11/23 17:02:54 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -265,7 +265,7 @@ bool CODEExporterC::preprocess(const CModel* copasiModel)
 
         NameMap[metab->getKey()] = name;
 
-        if (metab->getStatus() == CModelEntity::REACTIONS && !dependent)
+        if ((metab->getStatus() == CModelEntity::REACTIONS && !metab->isDependent()) || metab->getStatus() == CModelEntity::ODE)
           {
             std::ostringstream odeKey;
             odeKey << "ode_" << metab->getKey();
@@ -279,7 +279,23 @@ bool CODEExporterC::preprocess(const CModel* copasiModel)
   const CCopasiVector< CCompartment > & comps = copasiModel->getCompartments();
 
   for (i = 0; i < comps_size; i++)
-    NameMap[comps[i]->getKey()] = setExportName(comps[i]->getStatus(), n, 0);
+    {
+      CCompartment * comp = comps[i];
+
+      std::string name;
+      dependent = 0;
+
+      name = setExportName(comp->getStatus(), n, dependent);
+      NameMap[comp->getKey()] = name;
+
+      if (comp->getStatus() == CModelEntity::ODE)
+        {
+          std::ostringstream odeKey;
+          odeKey << "ode_" << comp->getKey();
+
+          NameMap[odeKey.str()] = setODEName(name);
+        }
+    }
 
   unsigned C_INT32 modvals_size = copasiModel->getModelValues().size();
   const CCopasiVector< CModelValue > & modvals = copasiModel->getModelValues();
@@ -382,6 +398,7 @@ bool CODEExporterC::exportSingleMetabolite(const CMetab* metab, std::string & ex
         return false;
       break;
     case CModelEntity::REACTIONS:
+    case CModelEntity::ODE:
       {
         if (metab->isDependent())
           {
@@ -409,9 +426,32 @@ bool CODEExporterC::exportSingleMetabolite(const CMetab* metab, std::string & ex
   return true;
 }
 
-bool CODEExporterC::exportSingleCompartement(const CCompartment* comp, std::string & expression, std::string & comments)
+bool CODEExporterC::exportSingleCompartment(const CCompartment* comp, std::string & expression, std::string & comments)
 {
-  if (!exportSingleObject(fixed, NameMap[comp->getKey()], expression, comments)) return false;
+  switch (comp->getStatus())
+    {
+    case CModelEntity::FIXED:
+      {
+        if (!exportSingleObject(fixed, NameMap[comp->getKey()], expression, comments))
+          return false;
+        break;
+      }
+    case CModelEntity::ODE:
+      {
+        if (!exportSingleObject(initial, NameMap[comp->getKey()], expression, comments))
+          return false;
+        break;
+      }
+    case CModelEntity::ASSIGNMENT:
+      {
+        if (!exportSingleObject(assignment, NameMap[comp->getKey()], expression, comments))
+          return false;
+        break;
+      }
+    default:
+      return false;
+      break;
+    }
 
   return true;
 }
@@ -435,6 +475,36 @@ bool CODEExporterC::exportSingleModVal(const CModelValue* modval, std::string & 
     case CModelEntity::ASSIGNMENT:
       {
         if (!exportSingleObject(assignment, NameMap[modval->getKey()], expression, comments))
+          return false;
+        break;
+      }
+    default:
+      return false;
+      break;
+    }
+
+  return true;
+}
+
+bool CODEExporterC::exportSingleModelEntity(const CModelEntity* tmp, std::string & expression, std::string & comments)
+{
+  switch (tmp->getStatus())
+    {
+    case CModelEntity::FIXED:
+      {
+        if (!exportSingleObject(fixed, NameMap[tmp->getKey()], expression, comments))
+          return false;
+        break;
+      }
+    case CModelEntity::ODE:
+      {
+        if (!exportSingleObject(initial, NameMap[tmp->getKey()], expression, comments))
+          return false;
+        break;
+      }
+    case CModelEntity::ASSIGNMENT:
+      {
+        if (!exportSingleObject(assignment, NameMap[tmp->getKey()], expression, comments))
           return false;
         break;
       }

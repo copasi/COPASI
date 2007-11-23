@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporter.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2007/01/18 12:13:48 $
+//   $Date: 2007/11/23 17:02:54 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -45,21 +45,31 @@ class CODEExporter
 
     virtual bool exportMetabolites(const CModel* copasiModel);
 
-    bool exportCompartements(const CModel* copasiModel);
+    bool exportCompartments(const CModel* copasiModel);
 
     bool exportModelValues(const CModel* copasiModel);
 
-    bool exportModelValuesExpressions(const CModel* copasiModel, std::map< std::string, std::string > & equations);
+#if 1
+    void exportObjectNodesFromModel(const CModel * model);
 
-    std::string isExpressionODEExporterCompatible(CModelEntity* modval, const CExpression* pExpression);
+    CCopasiObject* findObjectFromRefresh(CCopasiObject * tmp, const Refresh* ref);
 
-    std::string exportExpression(const CExpression* pExpression, std::map< std::string, std::string > & equations);
+    void exportSingleObject(CCopasiObject * obj);
+
+    bool exportModelEntityExpression(CCopasiObject * obj);
+
+    std::string isModelEntityExpressionODEExporterCompatible(CModelEntity * tmp, const CExpression* pExpression);
+
+    std::string exportExpression(const CExpression* pExpression);
+
+    virtual bool exportSingleModelEntity(const CModelEntity* tmp, std::string & expression, std::string & comments);
+#endif
 
     virtual std::string getDisplayExpressionString(CExpression* tmp);
 
-    bool exportReacParamsAndFuncs(const CModel* copasiModel, std::map< std::string, std::string > & equations);
+    bool exportReacParamsAndFuncs(const CModel* copasiModel);
 
-    bool exportODEs(const CModel* copasiModel, std::map< std::string, std::string > & equations);
+    bool exportODEs(const CModel* copasiModel);
 
     virtual bool exportClosingData(const CModel* copasiModel, std::ofstream & outFile);
 
@@ -75,7 +85,7 @@ class CODEExporter
 
     virtual bool exportSingleMetabolite(const CMetab* metab, std::string & expression, std::string & comments);
 
-    virtual bool exportSingleCompartement(const CCompartment* comp, std::string & expression, std::string & comments);
+    virtual bool exportSingleCompartment(const CCompartment* comp, std::string & expression, std::string & comments);
 
     virtual bool exportSingleModVal(const CModelValue* modval, std::string & expression, std::string & comments);
 
@@ -116,6 +126,7 @@ class CODEExporter
 
     std::map< std::string, std::string > NameMap;
     std::string timeKey;
+    std::map< std::string, std::string > equations;
 
     std::ostringstream initial;
     std::ostringstream fixed;

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporterBM.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2007/01/18 12:13:48 $
+//   $Date: 2007/11/23 17:02:54 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -42,9 +42,11 @@ class CODEExporterBM: public CODEExporter
 
     virtual bool exportSingleMetabolite(const CMetab* metab, std::string & expression, std::string & comments);
 
-    virtual bool exportSingleCompartement(const CCompartment* comp, std::string & expression, std::string & comments);
+    virtual bool exportSingleCompartment(const CCompartment* comp, std::string & expression, std::string & comments);
 
     virtual bool exportSingleModVal(const CModelValue* modval, std::string & expression, std::string & comments);
+
+    virtual bool exportSingleModelEntity(const CModelEntity* tmp, std::string & expression, std::string & comments);
 
     virtual bool exportSingleParameter(const CCopasiParameter* param, std::string & expression, std::string & comments);
 
