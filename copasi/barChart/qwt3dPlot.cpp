@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/barChart/qwt3dPlot.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: akoenig $
-//   $Date: 2007/11/22 17:17:14 $
+//   $Date: 2007/11/23 10:23:43 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -406,11 +406,11 @@ void Plot3d::contextMenuEvent(QContextMenuEvent *)
 {
   QPopupMenu* mpContextMenu = new QPopupMenu(this);
   Q_CHECK_PTR(mpContextMenu);
+  mpContextMenu->insertItem("handling information", this, SLOT(hotKeysMessage()));
   if (mColorLegend)
     mpContextMenu->insertItem("hide legend", this, SLOT(showLegend()));
   else
     mpContextMenu->insertItem("show legend", this, SLOT(showLegend()));
-  mpContextMenu->insertItem("show hot keys", this, SLOT(hotKeysWidget()));
 
   QPopupMenu* mpSubmenu = new QPopupMenu(this);
   Q_CHECK_PTR(mpSubmenu);
@@ -492,6 +492,14 @@ void Plot3d::showLegend()
     }
 }
 
-void Plot3d::hotKeysWidget()
+void Plot3d::hotKeysMessage()
 {
+
+  QMessageBox::information(this, "Mouse and Keyboard Handling",
+                            "You can perform shifts, turns, scales and zooms. \n \n"
+                            "Try Ctrl, Shift, Alt in combination with your wheel and left mouse \n"
+                            "button to get a clue (or use instead your cursor keys).\n"
+);
+
+  return;
 }

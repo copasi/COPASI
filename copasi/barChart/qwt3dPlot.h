@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/barChart/qwt3dPlot.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: akoenig $
-//   $Date: 2007/11/22 17:17:14 $
+//   $Date: 2007/11/23 10:23:43 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -79,7 +79,7 @@ class Plot3d : public BaseWidget
   public slots:
     void saveDataToFile();
     void showLegend();
-    void hotKeysWidget();
+    void hotKeysMessage();
 
   private:
     void contextMenuEvent (QContextMenuEvent *);
