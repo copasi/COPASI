@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-//   $Revision: 1.116 $
+//   $Revision: 1.117 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/11/23 15:35:46 $
+//   $Date: 2007/11/23 19:29:54 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -2380,7 +2380,7 @@ std::vector<SBMLIncompatibility> SBMLExporter::isModelSBMLCompatible(CCopasiData
   checkForODESpeciesInNonfixedCompartment(pDataModel, result);
 
   // check if the model contains references to normal distributions
-  SBMLExporter::checkForUnsupportedFunctionCalls(pDataModel, mUnsupportedFunctionTypes, mpIdSet, result);
+  //SBMLExporter::checkForUnsupportedFunctionCalls(pDataModel, mUnsupportedFunctionTypes, mpIdSet, result);
   // check if the model contains references to model entities that can not be
   // represented in SBML like the inital value of something as opposed to the
   // transient value
@@ -2458,7 +2458,8 @@ void SBMLExporter::isExpressionSBMLCompatible(const CExpression* pE, const CCopa
           break;
         case 2:
         case 3:
-          SBMLExporter::isExpressionSBMLL2V3Compatible(pE, pDataModel, result);
+          // TODO
+          //SBMLExporter::isExpressionSBMLL2V3Compatible(pE, pDataModel, result);
         default:
           fatalError();
           break;

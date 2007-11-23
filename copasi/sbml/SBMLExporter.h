@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.h,v $
-//   $Revision: 1.51 $
+//   $Revision: 1.52 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/11/23 15:35:46 $
+//   $Date: 2007/11/23 19:29:54 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -438,7 +438,7 @@ class SBMLExporter
      * If it can be exported, the result vector will be empty, otherwise it will
      * contain a number of messages that specify why it can't be exported.
      */
-    std::vector<SBMLIncompatibility> isModelSBMLCompatible(CCopasiDataModel* pDataModel, int sbmlLevel, int sbmlVersion);
+    static std::vector<SBMLIncompatibility> isModelSBMLCompatible(CCopasiDataModel* pDataModel, int sbmlLevel, int sbmlVersion);
   };
 
 #endif
