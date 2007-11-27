@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.pro,v $ 
-#   $Revision: 1.42 $ 
+#   $Revision: 1.43 $ 
 #   $Name:  $ 
-#   $Author: akoenig $ 
-#   $Date: 2007/11/12 16:58:31 $ 
+#   $Author: shoops $ 
+#   $Date: 2007/11/27 00:24:33 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -11,7 +11,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.42 $ $Author: akoenig $ $Date: 2007/11/12 16:58:31 $  
+# $Revision: 1.43 $ $Author: shoops $ $Date: 2007/11/27 00:24:33 $  
 ######################################################################
 
 TEMPLATE = subdirs
@@ -27,6 +27,7 @@ contains(USE_LICENSE, COM) {
 }
 #endif // COPASI_LICENSE_COM
 SUBDIRS += CopasiDataModel
+SUBDIRS += compareExpressions
 SUBDIRS += elementaryFluxModes
 SUBDIRS += function
 SUBDIRS += lyap
@@ -45,10 +46,6 @@ SUBDIRS += trajectory
 SUBDIRS += tss
 SUBDIRS += utilities
 SUBDIRS += xml
-
-!contains(BUILD_OS, WIN32) {
-  SUBDIRS += compareExpressions
-}
 
 contains(DEFINES, COPASI_MIRIAM) {
   SUBDIRS += MIRIAM

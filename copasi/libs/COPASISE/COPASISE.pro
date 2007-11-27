@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/libs/COPASISE/COPASISE.pro,v $ 
-#   $Revision: 1.24 $ 
+#   $Revision: 1.25 $ 
 #   $Name:  $ 
-#   $Author: ssahle $ 
-#   $Date: 2007/10/29 23:03:05 $ 
+#   $Author: shoops $ 
+#   $Date: 2007/11/27 00:24:33 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -26,6 +26,7 @@ contains(USE_LICENSE, COM) {
   COPASI_LIBS += commercial
 }
 #endif // COPASI_LICENSE_COM
+COPASI_LIBS += compareExpressions
 COPASI_LIBS += copasiDM
 COPASI_LIBS += copasiXML
 COPASI_LIBS += elementaryFluxModes
@@ -56,10 +57,6 @@ contains(DEFINES, COPASI_TSSA) {
 
 contains(DEFINES, COPASI_MIRIAM) {
   COPASI_LIBS += MIRIAM
-}
-
-!contains(BUILD_OS, WIN32) {
-  COPASI_LIBS += compareExpressions
 }
 
 include(../lib.pri)
