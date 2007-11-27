@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.h,v $
-//   $Revision: 1.52 $
+//   $Revision: 1.53 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/11/23 19:29:54 $
+//   $Author: ssahle $
+//   $Date: 2007/11/27 10:19:34 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -269,7 +269,7 @@ class SBMLExporter
      * Checks all assignments (initial and transient) for references to objects
      * that can not be exported to SBML.
      */
-    static void SBMLExporter::checkForUnsupportedObjectReferences(CCopasiDataModel* pDataModel, std::vector<SBMLIncompatibility>& result);
+    static void checkForUnsupportedObjectReferences(CCopasiDataModel* pDataModel, std::vector<SBMLIncompatibility>& result);
 
     /**
      * Checks if the object nodes in a given rule expression are of allowed types.
