@@ -1,22 +1,25 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLogical.cpp,v $
-//   $Revision: 1.27 $
+//   $Revision: 1.28 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/10/04 14:35:21 $
+//   $Author: shoops $
+//   $Date: 2007/11/27 00:24:03 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include "CNormalLogical.h"
-#include "CNormalChoiceLogical.h"
-#include "CNormalLogicalItem.h"
 #include <vector>
 #include <bitset>
 #include <sstream>
+#include <algorithm>
+
 #include <assert.h>
+
+#include "CNormalLogical.h"
+#include "CNormalChoiceLogical.h"
+#include "CNormalLogicalItem.h"
 
 CNormalLogical::CNormalLogical(): CNormalBase(), mNot(false)
 {}
@@ -504,7 +507,7 @@ bool CNormalLogical::simplify()
   std::pair<CNormalLogicalItem*, bool> truePair = std::make_pair(pTrueItem, false);
   while (it2 != endit2)
     {
-      ItemSet tmpSet2(it2->first.begin(), it2->first.end());
+      ItemSet tmpSet2(it2->first);
       // while we are at it, we also delete all TRUE items in the inner sets
       // if those have more than one item
       // there can be only one true item per set since it
@@ -545,7 +548,9 @@ bool CNormalLogical::convertAndOrToOrAnd(const std::set<std::pair<std::set<std::
   bool result = true;
   if (source.size() > 1)
     {
-      typename std::set<std::pair<std::set<std::pair<TYPE*, bool>, SETSORTER >, bool>, SETOFSETSSORTER > tmpSourceSet((++source.begin()), source.end());
+      typename std::set<std::pair<std::set<std::pair<TYPE*, bool>, SETSORTER >, bool>, SETOFSETSSORTER > tmpSourceSet;
+      tmpSourceSet.erase(tmpSourceSet.begin());
+
       typename std::set<std::pair<std::set<std::pair<TYPE*, bool>, SETSORTER >, bool>, SETOFSETSSORTER > tmpTargetSet;
       result = ((*source.begin()).second == false);
       if (result == true)
