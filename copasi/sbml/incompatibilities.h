@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/incompatibilities.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/11/15 14:57:13 $
+//   $Date: 2007/11/28 13:42:49 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,6 +23,7 @@ const INCOMPATIBILITY Incompatibilities[] =
      , "The interpretation of ODE rules for metabolites in compartments with variable volume is slightly different between COPASI and SBML. Those rules can be exported, but another Simulation programm will likely come up with different results."},
     {4, 2, 1, SBMLIncompatibility::ERROR, "SBMLIncompatibility (4): Rule found for %s \"%s\".", "Rules were introduced to SBML Level 2 Version 1. Prior versions of SBML do not support this feature and therefor models using rules can not be exported to SBML Level 1"},
     {5, 2, 2, SBMLIncompatibility::ERROR, "SBMLIncompatibility (5): InitialAssignment found for %s \"%s\".", "InitialAssignments were introduced to SBML Level 2 Version 2. Prior versions of SBML do not support this feature and therefor models using rules can not be exported to SBML Level 1 or SBML Level 2 Version 1."},
+    {6, 0, 0, SBMLIncompatibility::ERROR, "SBMLIncompatibility (6): SBML Level %d Version %d is not supported."},
     // This must be the last element of the message list! Do not delete!
     {9999, 0, 0, SBMLIncompatibility::UNDEFINED, NULL, NULL}
   };
