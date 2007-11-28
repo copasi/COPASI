@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-//   $Revision: 1.117 $
+//   $Revision: 1.118 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/11/23 19:29:54 $
+//   $Date: 2007/11/28 13:43:46 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -551,7 +551,7 @@ Model* SBMLExporter::createSBMLModelFromCModel(CCopasiDataModel* pDataModel, int
     {
       CReaction* pCopasiReaction = copasiModel->getReactions()[counter];
       Reaction* sbmlReaction = this->createSBMLReactionFromCReaction(pCopasiReaction, pDataModel);
-      if (!sbmlModel->getReaction(sbmlReaction->getId()))
+      if (sbmlReaction != NULL && !sbmlModel->getReaction(sbmlReaction->getId()))
         {
           sbmlModel->addReaction(sbmlReaction);
           Reaction* pTmpReaction = sbmlModel->getReaction(sbmlReaction->getId());
@@ -923,6 +923,10 @@ Parameter* SBMLExporter::createSBMLParameterFromCModelValue(CModelValue* pModelV
 Reaction* SBMLExporter::createSBMLReactionFromCReaction(CReaction* copasiReaction, CCopasiDataModel* pDataModel)
 {
   Reaction* sbmlReaction = NULL;
+  // if the reaction has nothing set but the name, we don't do anything
+  if (copasiReaction == NULL ||
+      (copasiReaction->getChemEq().getSubstrates().size() == 0 &&
+       copasiReaction->getChemEq().getProducts().size() == 0)) return NULL;
   std::map<CCopasiObject*, SBase*>& copasi2sbmlmap = pDataModel->getCopasi2SBMLMap();
   std::map<CCopasiObject*, SBase*>::iterator pos = copasi2sbmlmap.find(copasiReaction);
   if (pos != copasi2sbmlmap.end())
