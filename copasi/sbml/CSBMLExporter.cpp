@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/11/30 15:06:15 $
+//   $Date: 2007/11/30 19:51:36 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1163,41 +1163,10 @@ void CSBMLExporter::checkForODESpeciesInNonfixedCompartment(const CCopasiDataMod
  * If it can be exported, the result vector will be empty, otherwise it will
  * contain a number of messages that specify why it can't be exported.
  */
-void CSBMLExporter::isExpressionSBMLCompatible(const CExpression& expr, const CCopasiDataModel& dataModel, int sbmlLevel, int sbmlVersion, std::vector<SBMLIncompatibility>& result)
+void CSBMLExporter::isExpressionSBMLCompatible(const CEvaluationTree& expr, const CCopasiDataModel& dataModel, int sbmlLevel, int sbmlVersion, std::vector<SBMLIncompatibility>& result)
 {
   checkForUnsupportedObjectReferences(expr, dataModel, sbmlLevel, sbmlVersion, result);
-  std::set<CEvaluationNodeFunction::SubType> unsupportedFunctionTypes;
-  if (sbmlLevel == 1)
-    {
-      // TODO check what to do with all the functions that are not supported by
-      // TODO SBML Level 1
-      // TODO Also take care of other unsupported nodes in L1
-      // TODO (inf,nan,pi,exponentiale)
-      // TODO root has to be converted to pow
-      // TODO do we actually have root???
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::SEC);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::CSC);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::COT);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::SINH);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::COSH);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::TANH);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::SECH);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::CSCH);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::COTH);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::ARCSINH);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::ARCCOSH);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::ARCTANH);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::ARCSECH);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::ARCCSCH);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::ARCCOTH);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::RNORMAL);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::RUNIFORM);
-    }
-  else
-    {
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::RNORMAL);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::RUNIFORM);
-    }
+  std::set<CEvaluationNodeFunction::SubType> unsupportedFunctionTypes = CSBMLExporter::createUnsupportedFunctionTypeSet(sbmlLevel);
   checkForUnsupportedFunctionCalls(expr, unsupportedFunctionTypes, result);
 }
 
@@ -1211,39 +1180,7 @@ void CSBMLExporter::checkForUnsupportedFunctionCalls(const CCopasiDataModel& dat
 {
   // Fill the set of unsupported functions depending on the level and
   // version
-  std::set<CEvaluationNodeFunction::SubType> unsupportedFunctionTypes;
-  if (sbmlLevel == 1)
-    {
-      // TODO check what to do with all the functions that are not supported by
-      // TODO SBML Level 1
-      // TODO Also take care of other unsupported nodes in L1
-      // TODO (inf,nan,pi,exponentiale)
-      // TODO root has to be converted to pow
-      // TODO do we actually have root???
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::SEC);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::CSC);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::COT);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::SINH);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::COSH);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::TANH);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::SECH);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::CSCH);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::COTH);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::ARCSINH);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::ARCCOSH);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::ARCTANH);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::ARCSECH);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::ARCCSCH);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::ARCCOTH);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::RNORMAL);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::RUNIFORM);
-    }
-  else
-    {
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::RNORMAL);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::RUNIFORM);
-    }
-
+  std::set<CEvaluationNodeFunction::SubType> unsupportedFunctionTypes = CSBMLExporter::createUnsupportedFunctionTypeSet(sbmlLevel);
   // check all metabolites,parameters and compartments
   // TODO make sure the list of assignments and initial assignments is filled
   // before this function is called
@@ -1465,7 +1402,7 @@ void CSBMLExporter::createFunctionDefinitions(CCopasiDataModel& dataModel)
     {
       if (*it != NULL)
         {
-          createFunctionDefinition(**it);
+          createFunctionDefinition(**it, dataModel);
         }
     }
 }
@@ -1473,10 +1410,61 @@ void CSBMLExporter::createFunctionDefinitions(CCopasiDataModel& dataModel)
 /**
  * Create the SBML function definition from the given COPASI function.
  */
-void CSBMLExporter::createFunctionDefinition(CFunction& /*function*/)
+void CSBMLExporter::createFunctionDefinition(CFunction& function, const CCopasiDataModel& dataModel)
 {
-  // TODO check the expression
-  // TODO recursively check for other used functions
+  // check the expression
+  std::map<const CCopasiObject*, SBase*>::iterator pos = this->mCOPASI2SBMLMap.find(&function);
+  FunctionDefinition* pFunDef = NULL;
+  if (pos != this->mCOPASI2SBMLMap.end())
+    {
+      pFunDef = dynamic_cast<FunctionDefinition*>(pos->second);
+      assert(pFunDef);
+    }
+  else
+    {
+      pFunDef = this->mpSBMLDocument->getModel()->createFunctionDefinition();
+      pFunDef->setName(function.getObjectName());
+      std::string id = CSBMLExporter::createUniqueId(this->mIdMap, "function_");
+      this->mIdMap.insert(std::make_pair(id, pFunDef));
+      pFunDef->setId(id);
+      function.setSBMLId(id);
+      this->mCOPASI2SBMLMap[&function] = pFunDef;
+    }
+  if (function.getRoot() == NULL)
+    {
+      std::string errorMessage = std::string("Can not export function");
+      errorMessage += function.getObjectName();
+      errorMessage += std::string(". Function does not have a valid root node.");
+      CCopasiMessage(CCopasiMessage::EXCEPTION, errorMessage.c_str());
+    }
+  else
+    {
+      std::vector<SBMLIncompatibility> result;
+      CSBMLExporter::isExpressionSBMLCompatible(function, dataModel, this->mSBMLLevel, this->mSBMLVersion, result);
+      if (result.empty())
+        {
+          ASTNode* pFunNode = function.getRoot()->toAST();
+          // go through the AST tree and replace all function call nodes with with a call to the sbml id
+          ASTNode* pLambda = new ASTNode(AST_LAMBDA);
+          // add the parameters to the function definition
+          const CFunctionParameters& funParams = function.getVariables();
+          unsigned int i, iMax = funParams.size();
+          ASTNode* pParamNode = NULL;
+          for (i = 0; i < iMax;++i)
+            {
+              pParamNode = new ASTNode(AST_NAME);
+              pParamNode->setName(funParams[i]->getObjectName().c_str());
+              pLambda->addChild(pParamNode);
+            }
+          pLambda->addChild(pFunNode);
+          pFunDef->setMath(pLambda);
+        }
+      else
+        {
+          this->mIncompatibilities.insert(this->mIncompatibilities.end(), result.begin(), result.end());
+          CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 28, function.getObjectName().c_str());
+        }
+    }
 }
 
 /**
@@ -1525,8 +1513,15 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
   createCompartments(dataModel);
   createMetabolites(dataModel);
   createParameters(dataModel);
-  // TODO check for which level and version we do have initial assignments
-  createInitialAssignments(dataModel);
+  // only export initial assignments for Level 2 Version 2 and above
+  if (this->mSBMLLevel != 1 && !(this->mSBMLLevel == 2 && this->mSBMLVersion == 1))
+    {
+      createInitialAssignments(dataModel);
+    }
+  else
+    {
+      checkForInitialAssignments(dataModel, this->mIncompatibilities);
+    }
   createRules(dataModel);
   createReactions(dataModel);
   createEvents(dataModel);
@@ -1535,9 +1530,50 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
     {
       createFunctionDefinitions(dataModel);
     }
-  // TODO do sbml Level1 Voodoo
-  // e.g. replace some of the unsupported nodes with workarounds
+  else
+    {
+      // do sbml Level1 Voodoo
+      // e.g. replace some of the unsupported nodes with workarounds
+      convertToLevel1();
+    }
   this->mpSBMLDocument->setLevelAndVersion(this->mSBMLLevel, this->mSBMLVersion);
+}
+
+const std::set<CEvaluationNodeFunction::SubType> CSBMLExporter::createUnsupportedFunctionTypeSet(unsigned int sbmlLevel)
+{
+  std::set<CEvaluationNodeFunction::SubType> unsupportedFunctionTypes;
+  if (sbmlLevel == 1)
+    {
+      // TODO check what to do with all the functions that are not supported by
+      // TODO SBML Level 1
+      // TODO Also take care of other unsupported nodes in L1
+      // TODO (inf,nan,pi,exponentiale)
+      // TODO root has to be converted to pow
+      // TODO do we actually have root???
+      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::SEC);
+      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::CSC);
+      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::COT);
+      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::SINH);
+      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::COSH);
+      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::TANH);
+      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::SECH);
+      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::CSCH);
+      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::COTH);
+      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::ARCSINH);
+      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::ARCCOSH);
+      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::ARCTANH);
+      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::ARCSECH);
+      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::ARCCSCH);
+      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::ARCCOTH);
+      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::RNORMAL);
+      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::RUNIFORM);
+    }
+  else
+    {
+      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::RNORMAL);
+      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::RUNIFORM);
+    }
+  return unsupportedFunctionTypes;
 }
 
 /**
@@ -2023,24 +2059,6 @@ CEvaluationNode* CSBMLExporter::createExpressionTree(const CEvaluationNode* cons
     case CEvaluationNode::CALL:
       pFun = dynamic_cast<const CFunction*>(const_cast<CFunctionDB*>(dataModel.getFunctionList())->findFunction(pNode->getData()));
       assert(pFun);
-      /*
-      pChildNode = static_cast<const CEvaluationNode*>(pNode->getChild());
-      while (pChildNode)
-        {
-          pos = parameterMap.find(pChildNode->getData());
-          if (pos == parameterMap.end()) fatalError();
-          pObject = CCopasiContainer::ObjectFromName(containerList, pos->second.substr(1, pos->second.size() - 2));
-          assert(pObject);
-          arguments.push_back(std::vector<std::string>());
-          if (pObject->isReference())
-            {
-              pObject = pObject->getObjectParent();
-              assert(pObject);
-            }
-          arguments[arguments.size() - 1].push_back(pObject->getKey());
-          pChildNode = static_cast<const CEvaluationNode*>(pChildNode->getSibling());
-        }
-        */
       pResultNode = CSBMLExporter::createExpressionTree(pFun->getRoot(), parameterMap, dataModel);
       break;
     case CEvaluationNode::VARIABLE:

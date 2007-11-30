@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/11/30 13:49:47 $
+//   $Date: 2007/11/30 19:51:35 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -174,7 +174,7 @@ class CSBMLExporter
     /**
      * Create the SBML function definition from the given COPASI function.
      */
-    void createFunctionDefinition(CFunction& function);
+    void createFunctionDefinition(CFunction& function, const CCopasiDataModel& dataModel);
 
     /**
      * Create a unique id for an SBML object.
@@ -193,7 +193,7 @@ class CSBMLExporter
      * Checks the given expression for references to objects
      * that can not be exported to SBML.
      */
-    static void checkForUnsupportedObjectReferences(const CExpression& expression, const CCopasiDataModel& dataModel, unsigned int sbmlLevel, unsigned int sbmlVersion, std::vector<SBMLIncompatibility>& result);
+    static void checkForUnsupportedObjectReferences(const CEvaluationTree& expression, const CCopasiDataModel& dataModel, unsigned int sbmlLevel, unsigned int sbmlVersion, std::vector<SBMLIncompatibility>& result);
 
     /**
      * Checks all expressions in the given datamodel for piecewise defined
@@ -235,28 +235,28 @@ class CSBMLExporter
      * If it can be exported, the result vector will be empty, otherwise it will
      * contain a number of messages that specify why it can't be exported.
      */
-    static void isExpressionSBMLCompatible(const CExpression& expr, const CCopasiDataModel& dataModel, int sbmlLevel, int sbmlVersion, std::vector<SBMLIncompatibility>& result);
+    static void isExpressionSBMLCompatible(const CEvaluationTree& expr, const CCopasiDataModel& dataModel, int sbmlLevel, int sbmlVersion, std::vector<SBMLIncompatibility>& result);
 
     /**
      * Checks wether the rule in the given model entity can be exported to SBML Level2 Version1.
      * If it can be exported, the result vector will be empty, otherwise it will
      * contain a number of messages that specify why it can't be exported.
      */
-    static void isExpressionSBMLL1Compatible(const CExpression& expr, const CCopasiDataModel& dataModel, std::vector<SBMLIncompatibility>& result);
+    static void isExpressionSBMLL1Compatible(const CEvaluationTree& expr, const CCopasiDataModel& dataModel, std::vector<SBMLIncompatibility>& result);
 
     /**
      * Checks wether the rule in the given model entity can be exported to SBML Level2 Version1.
      * If it can be exported, the result vector will be empty, otherwise it will
      * contain a number of messages that specify why it can't be exported.
      */
-    static void isExpressionSBMLL2V1Compatible(const CExpression& expr, const CCopasiDataModel& dataModel, std::vector<SBMLIncompatibility>& result);
+    static void isExpressionSBMLL2V1Compatible(const CEvaluationTree& expr, const CCopasiDataModel& dataModel, std::vector<SBMLIncompatibility>& result);
 
     /**
      * Checks wether the rule in the given model entity can be exported to SBML Level2 Version3.
      * If it can be exported, the result vector will be empty, otherwise it will
      * contain a number of messages that specify why it can't be exported.
      */
-    static void isExpressionSBMLL2V3Compatible(const CExpression& expression, const CCopasiDataModel& pDataModel, std::vector<SBMLIncompatibility>& result);
+    static void isExpressionSBMLL2V3Compatible(const CEvaluationTree& expression, const CCopasiDataModel& pDataModel, std::vector<SBMLIncompatibility>& result);
 
     /**
      * This static methods checks, wether the model uses any function calls
@@ -289,7 +289,7 @@ class CSBMLExporter
     /**
      * This method checks wether the given model contains any initial assignments.
      */
-    static void checkForInitialAssignments(const CCopasiDataModel& pDataModel, std::vector<SBMLIncompatibility>& result);
+    static void checkForInitialAssignments(const CCopasiDataModel& dataModel, std::vector<SBMLIncompatibility>& result);
 
     /**
      * Goes through the given SBML model and puts all ids with the
@@ -398,6 +398,19 @@ class CSBMLExporter
     static void findUsedFunctions(const CFunction* pFunction , CFunctionDB* pFunctionDB, std::set<CFunction*>& chain, std::vector<CFunction*>& result);
 
     static const std::set<CFunction*> createFunctionSetFromFunctionNames(const std::set<std::string>& names, CFunctionDB* pFunDB);
+
+    /**
+     * This method takes care of expanding all function calls in all
+     * expressions and converting functions that are not supported in Level 1
+     * as well as constants that were not supported in Level 1
+     */
+    void convertToLevel1();
+
+    /**
+     * Creates a set of all function subtypes that can not be exported for a
+     * certain SBML level.
+     */
+    static const std::set<CEvaluationNodeFunction::SubType> createUnsupportedFunctionTypeSet(unsigned int sbmlLevel);
   };
 
 #endif // CSBLExporter_H__
