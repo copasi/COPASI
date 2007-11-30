@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/incompatibilities.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/11/28 13:42:49 $
+//   $Date: 2007/11/30 15:55:54 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,9 +21,10 @@ const INCOMPATIBILITY Incompatibilities[] =
      , "Some functions that can be used in mathematical expressions in COPASI models do not have equivalents in MathML or the subset of MathML used by SBML and there is not easy way to convert the function call to something that is SBML compatible. The random distribution functions available in COPASI are an example for this."},
     {3, 0, 0, SBMLIncompatibility::WARNING, "SBMLIncompatibility (3): Species \"%s\" is defined via an ODE Rule and it is located in compartment \"%s\" which has a variable volume."
      , "The interpretation of ODE rules for metabolites in compartments with variable volume is slightly different between COPASI and SBML. Those rules can be exported, but another Simulation programm will likely come up with different results."},
-    {4, 2, 1, SBMLIncompatibility::ERROR, "SBMLIncompatibility (4): Rule found for %s \"%s\".", "Rules were introduced to SBML Level 2 Version 1. Prior versions of SBML do not support this feature and therefor models using rules can not be exported to SBML Level 1"},
+    {4, 2, 1, SBMLIncompatibility::ERROR, "SBMLIncompatibility (4): Rule found for %s \"%s\".", "Rules were introduced to SBML Level 2 Version 1. Prior versions of SBML do not support this feature and therefor models using rules can not be fully exported to SBML Level 1"},
     {5, 2, 2, SBMLIncompatibility::ERROR, "SBMLIncompatibility (5): InitialAssignment found for %s \"%s\".", "InitialAssignments were introduced to SBML Level 2 Version 2. Prior versions of SBML do not support this feature and therefor models using rules can not be exported to SBML Level 1 or SBML Level 2 Version 1."},
-    {6, 0, 0, SBMLIncompatibility::ERROR, "SBMLIncompatibility (6): SBML Level %d Version %d is not supported."},
+    {6, 0, 0, SBMLIncompatibility::ERROR, "SBMLIncompatibility (6): SBML Level %d Version %d is not supported.", "COPASI only supports export to SBML Level 1 Version 2, SBML Level 2 Version 1 and SBML Level 2 Version 3."},
+    {7, 2, 1, SBMLIncompatibility::ERROR, "SBMLIncompatibility (7): One or more events found.", "Events were introduced to SBML Level 2 Version 1. Prior versions of SBML do not support this feature and therefore models using events can not be fully exported to SBML Level 1"},
     // This must be the last element of the message list! Do not delete!
     {9999, 0, 0, SBMLIncompatibility::UNDEFINED, NULL, NULL}
   };
