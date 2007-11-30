@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.76 $
+//   $Revision: 1.77 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/11/02 18:12:01 $
+//   $Date: 2007/11/30 11:28:15 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,6 +20,9 @@
 #include <qcolor.h>
 #include <qtimer.h>
 #include <qcanvas.h>
+
+#include <qfontinfo.h>
+#include <qfontdatabase.h>
 
 //#include <Q3Canvas>
 //#include <Q3CanvasText>
@@ -374,6 +377,14 @@ void CQGLNetworkPainter::drawGraph()
 
   if (this->mLabelShape == RECTANGLE)
     {
+      // debug: print fonr info
+      this->mf.setPointSize(this->mFontsize);
+      const QFont& mfRef = this->mf;
+      QFontInfo fontInfo = QFontInfo (mfRef);
+      std::cout << "family: " << fontInfo.family();
+      std::cout << "  size: " << fontInfo.pointSize();
+      std::cout << std::endl;
+      // debug end
       for (i = 0;i < viewerLabels.size();i++)
         drawLabel(viewerLabels[i]);
     }
@@ -1709,7 +1720,8 @@ void CQGLNetworkPainter::initializeGraphPainter(QWidget *viewportWidget)
   mLabelShape = RECTANGLE;
   mgraphMin = CLPoint(0.0, 0.0);
   mgraphMax = CLPoint(250.0, 250.0);
-  mFontname = "Helvetica";
+  //mFontname = "Helvetica";
+  mFontname = "Arial";
   mFontsize = 12;
   mFontsizeDouble = 12.0; // to avoid rounding errors due to zooming in and out
   mDataPresentP = false;
@@ -1742,6 +1754,7 @@ void CQGLNetworkPainter::initializeGraphPainter(QWidget *viewportWidget)
 
 void CQGLNetworkPainter::initializeGL()
 {
+  //printAvailableFonts();
   //std::cout << "initialize GL" << std::endl;
   // Set up the rendering context, define display lists etc.:
 
@@ -1809,5 +1822,30 @@ void CQGLNetworkPainter::printNodeMap()
     {
       std::cout << (*nodeIt).first << "  :  " << (*nodeIt).second.getLabelText() << std::endl;
       nodeIt++;
+    }
+}
+
+void CQGLNetworkPainter::printAvailableFonts()
+{
+  QFontDatabase fdb;
+  QStringList families = fdb.families();
+  for (QStringList::Iterator f = families.begin(); f != families.end(); ++f)
+    {
+      QString family = *f;
+      qDebug(family);
+      QStringList styles = fdb.styles(family);
+      for (QStringList::Iterator s = styles.begin(); s != styles.end(); ++s)
+        {
+          QString style = *s;
+          QString dstyle = "\t" + style + " (";
+          QValueList<int> smoothies = fdb.smoothSizes(family, style);
+          for (QValueList<int>::Iterator points = smoothies.begin();
+                points != smoothies.end(); ++points)
+            {
+              dstyle += QString::number(*points) + " ";
+            }
+          dstyle = dstyle.left(dstyle.length() - 1) + ")";
+          qDebug(dstyle);
+        }
     }
 }

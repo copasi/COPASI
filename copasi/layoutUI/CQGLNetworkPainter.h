@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.43 $
+//   $Revision: 1.44 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/11/02 18:12:01 $
+//   $Date: 2007/11/30 11:28:15 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -163,6 +163,7 @@ class CQGLNetworkPainter : public QGLWidget
     shapeOfLabels mLabelShape;
 
     void printNodeMap();
+    void printAvailableFonts();
     //CLDataSet getDataSet(C_INT32 t);
   protected:
 
