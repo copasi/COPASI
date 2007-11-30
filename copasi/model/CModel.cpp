@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.331 $
+//   $Revision: 1.332 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/20 17:19:58 $
+//   $Date: 2007/11/30 19:17:56 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1373,12 +1373,14 @@ bool CModel::buildConstantSequence()
   for (; ppEntity != ppEntityEnd; ++ppEntity)
     {
       Dependencies.clear();
+      // We need to add the value and not the object.
       (*ppEntity)->getValueObject()->getAllDependencies(Dependencies);
 
       itDepend = Dependencies.begin();
       endDepend = Dependencies.end();
 
       for (; itDepend != endDepend; ++itDepend)
+        // We need to check the object and its parent
         if ((pEntity = dynamic_cast< const CModelEntity * >(*itDepend)) != NULL &&
             (pEntity->getStatus() != CModelEntity::ASSIGNMENT &&
              pEntity->getStatus() != CModelEntity::FIXED))
@@ -3194,32 +3196,112 @@ CModel::buildInitialRefreshSequence(std::set< const CCopasiObject * > & changedO
 {
   // First we remove all objects which are of type assignment from the changed objects
   // since this may not be changed as they are under control of the assignment.
-  std::set< const CCopasiObject * >::iterator itSet = changedObjects.begin();
-  std::set< const CCopasiObject * >::iterator endSet = changedObjects.end();
+  std::set< const CCopasiObject * >::iterator itSet;
+  std::set< const CCopasiObject * >::iterator endSet;
   std::set< const CCopasiObject * > Objects;
+
+  CModelEntity **ppEntity;
+  CModelEntity **ppEntityEnd = mStateTemplate.endFixed();
+
   const CModelEntity * pEntity;
+  CMetab * pMetab;
 
-  for (;itSet != endSet; ++itSet)
-    if ((pEntity = dynamic_cast< const CModelEntity * >((*itSet)->getObjectParent())) != NULL &&
-        pEntity->getStatus() == ASSIGNMENT)
-      Objects.insert(*itSet);
+  // If the changed objects are empty we assume that all changable objects have been changed
+  if (changedObjects.size() == 0)
+    {
+      // The objects which are changed are all initial values of of all model entities including
+      // fixed and unused once. Additionally, all kinetic parameters are possibly changed.
+      // This is basically all the parameters in the parameter overview whose value is editable.
 
-  for (itSet = Objects.begin(), endSet = Objects.end(); itSet != endSet; ++itSet)
-    changedObjects.erase(*itSet);
+      // :TODO: Theoretically, it is possible that also task parameters influence the initial
+      // state of a model but that is currently not handled.
 
-  // We need to add all initial values
-  CModelEntity **ppEntity = mStateTemplate.getEntities();
-  CModelEntity **ppEntityEnd = ppEntity + mStateTemplate.size();
-  const CMetab * pMetab;
+      // The initial values of the model entities
+      ppEntity = mStateTemplate.beginIndependent() - 1; // Offset for time
+      for (; ppEntity != ppEntityEnd; ++ppEntity)
+        {
+          // If we have an initial expression we have no initial values
+          if ((*ppEntity)->getInitialExpression() != "" ||
+              (*ppEntity)->getStatus() == ASSIGNMENT)
+            continue;
+
+          // Metabolites have two initial values
+          if ((pMetab = dynamic_cast< CMetab * >(*ppEntity)) != NULL)
+            {
+              // The cocentration is assumed to be fix accept when this would lead to circular dependencies,
+              // for the parent's compartment's initial volume.
+              Objects.insert(pMetab->getInitialConcentrationReference());
+              pMetab->compileInitialValues(false);
+
+              if (pMetab->getCompartment()->getInitialValueReference()->hasCircularDependencies(Objects))
+                changedObjects.insert(pMetab->getInitialValueReference());
+              else
+                changedObjects.insert(pMetab->getInitialConcentrationReference());
+
+              Objects.clear();
+            }
+          else
+            changedObjects.insert((*ppEntity)->getInitialValueReference());
+        }
+
+      // The reaction parameters
+      CCopasiVector< CReaction >::const_iterator itReaction = mSteps.begin();
+      CCopasiVector< CReaction >::const_iterator endReaction = mSteps.end();
+      unsigned C_INT32 i, imax;
+
+      for (; itReaction != endReaction; ++itReaction)
+        {
+          const CCopasiParameterGroup & Group = (*itReaction)->getParameters();
+
+          for (i = 0, imax = Group.size(); i < imax; i++)
+            changedObjects.insert(Group.getParameter(i)->getObject(CCopasiObjectName("Reference=Value")));
+        }
+    }
+  else
+    {
+      // Remove all objects with initial assignments
+      itSet = changedObjects.begin();
+      endSet = changedObjects.end();
+      for (;itSet != endSet; ++itSet)
+        if ((pEntity = dynamic_cast< const CModelEntity * >((*itSet)->getObjectParent())) != NULL &&
+            (pEntity->getInitialExpression() != "" ||
+             pEntity->getStatus() == ASSIGNMENT))
+          Objects.insert(*itSet);
+
+      for (itSet = Objects.begin(), endSet = Objects.end(); itSet != endSet; ++itSet)
+        changedObjects.erase(*itSet);
+    }
+
+  // We need to add all initial values which are dynamically calculated.
+  // These are initial assignments and either a metabolite's initial particle number
+  // or concentration.
+  ppEntity = mStateTemplate.beginIndependent() - 1; // Offset for time
   Objects.clear();
 
   for (; ppEntity != ppEntityEnd; ++ppEntity)
     {
-      Objects.insert((*ppEntity)->getInitialValueReference());
+      if (((*ppEntity)->getInitialExpression() != "" ||
+           (*ppEntity)->getStatus() == ASSIGNMENT))
+        {
+          Objects.insert((*ppEntity)->getInitialValueReference());
+          continue;
+        }
 
-      // For metabolites we also need to add the initial concentration
-      if ((pMetab = dynamic_cast< const CMetab * >(*ppEntity)) != NULL)
-        Objects.insert(pMetab->getInitialConcentrationReference());
+      // For metabolites we need to add the initial concentration or the initial
+      // particle number..
+      if ((pMetab = dynamic_cast< CMetab * >(*ppEntity)) != NULL)
+        {
+          if (changedObjects.count(pMetab->getInitialConcentrationReference()) != 0)
+            {
+              pMetab->compileInitialValues(false);
+              Objects.insert(pMetab->getInitialValueReference());
+            }
+          else
+            {
+              pMetab->compileInitialValues(true);
+              Objects.insert(pMetab->getInitialConcentrationReference());
+            }
+        }
     }
 
   // We need to add the total particle number of moities.
@@ -3254,41 +3336,13 @@ CModel::buildInitialRefreshSequence(std::set< const CCopasiObject * > & changedO
   // refresh method.
   Objects.clear();
 
-  // :TODO: Handle initial assignments.
+  // We now check which objects we need to refresh
   for (itSet = DependencySet.begin(), endSet = DependencySet.end(); itSet != endSet; ++itSet)
     {
       // No refresh method
       if ((*itSet)->getRefresh() == NULL)
         Objects.insert(*itSet);
-      // No changed objects, i.e., we need to update all
-      else if (changedObjects.size() == 0)
-        {
-          // The concentration of a metabolite is constant unless it is given by an
-          // assignment or an initial assignment.
-          if ((pMetab = dynamic_cast< const CMetab * >((*itSet)->getObjectParent())) != NULL &&
-              pMetab->getInitialConcentrationReference() == *itSet &&
-              pMetab->getInitialExpression() == "" &&
-              pMetab->getStatus() != CModelEntity::ASSIGNMENT)
-            Objects.insert(*itSet);
-          else
-            continue;
-        }
-      // The object itself has changed, thus no need to refresh it.
-      else if (changedObjects.count(*itSet) != 0)
-        Objects.insert(*itSet);
-      // Metabolite initial concentration
-      else if ((pMetab = dynamic_cast< const CMetab * >((*itSet)->getObjectParent())) != NULL &&
-               pMetab->getInitialConcentrationReference() == *itSet)
-        {
-          // Particle number not changed, and not dependent on changed values
-          // thus no need to refresh it.
-          if (changedObjects.count(pMetab->getInitialValueReference()) == 0 &&
-              !pMetab->getInitialConcentrationReference()->hasCircularDependencies(changedObjects))
-            Objects.insert(*itSet);
-          else // other must me refreshed
-            continue;
-        }
-      // The object does not depend on the changed values, thus no need to refresh it.
+      // Not dependent on the changed objects.
       else if (!(*itSet)->hasCircularDependencies(changedObjects))
         Objects.insert(*itSet);
     }
