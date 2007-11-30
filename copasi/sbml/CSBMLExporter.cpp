@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/11/30 13:49:47 $
+//   $Date: 2007/11/30 15:06:15 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -644,7 +644,6 @@ void CSBMLExporter::createReaction(CReaction& reaction, CCopasiDataModel& dataMo
 void CSBMLExporter::createInitialAssignments(CCopasiDataModel& dataModel)
 {
   // TODO make sure the mInitialAssignmentVector has been filled already
-  // order the initial assignments
 
   // create the initial assignments
   unsigned int i, iMax = this->mInitialAssignmentVector.size();
@@ -1360,11 +1359,108 @@ void CSBMLExporter::checkForInitialAssignments(const CCopasiDataModel& dataModel
 /**
  * Create all function definitions.
  */
-void CSBMLExporter::createFunctionDefinitions(CCopasiDataModel& /*dataModel*/)
+void CSBMLExporter::createFunctionDefinitions(CCopasiDataModel& dataModel)
 {
   // TODO make sure the list of used functions is filled before this is
-  // called and that the list is ordered
-  std::set<CFunction*>::iterator it = this->mUsedFunctions.begin(), endit = this->mUsedFunctions.end();
+  // called
+  // TODO make sure the mCOPASI2SBMLMap is up to date
+
+  // find all indirectly called functions
+  std::vector<CFunction*> usedFunctions = findUsedFunctions(this->mUsedFunctions, dataModel.getFunctionList());
+  this->mUsedFunctions.clear();
+  this->mUsedFunctions.insert(usedFunctions.begin(), usedFunctions.end());
+
+  // remove the function calls that have been created by copasi solely for use
+  // as a kinetic law term if it is no longer needed
+  Model* pModel = this->mpSBMLDocument->getModel();
+  assert(pModel);
+  if (pModel == NULL) fatalError();
+  std::map<SBase*, const CCopasiObject*> sbml2copasiMap;
+  std::map<const CCopasiObject*, SBase*>::iterator mapIt = this->mCOPASI2SBMLMap.begin();
+  std::map<const CCopasiObject*, SBase*>::iterator mapEndit = this->mCOPASI2SBMLMap.end();
+  while (mapIt != mapEndit)
+    {
+      sbml2copasiMap.insert(std::make_pair(mapIt->second, mapIt->first));
+      ++mapIt;
+    }
+  std::set<CFunction*> unusedFunctions;
+  unsigned int i = i, iMax = pModel->getNumFunctionDefinitions();
+  std::map<SBase*, const CCopasiObject*>::iterator mapPos;
+  std::set<std::string> toRemove;
+  while (i < iMax)
+    {
+      FunctionDefinition* pFunDef = pModel->getFunctionDefinition(i);
+      if (pFunDef != NULL)
+        {
+          mapPos = sbml2copasiMap.find(pFunDef);
+          if (mapPos != sbml2copasiMap.end())
+            {
+              CFunction* pFun = dynamic_cast<CFunction*>(const_cast<CCopasiObject*>(mapPos->second));
+              if (pFun != NULL && this->mUsedFunctions.find(pFun) == this->mUsedFunctions.end())
+                {
+                  // the function exists in the model, but it is not used in any
+                  // expression
+                  if (pFun->getObjectName().find("function_4_") == 0)
+                    {
+                      // store the function definition that is to be removed
+                      toRemove.insert(pFunDef->getId());
+                    }
+                  else
+                    {
+                      // those need to be stored in a separate list since we also
+                      // need to find indirectly called functions
+                      unusedFunctions.insert(pFun);
+                    }
+                }
+            }
+        }
+      ++i;
+    }
+  // find all indirectly called functions for the unused functions
+  std::vector<CFunction*> functionsVect = findUsedFunctions(unusedFunctions, dataModel.getFunctionList());
+  usedFunctions.insert(usedFunctions.end(), functionsVect.begin(), functionsVect.end());
+  // reset the used functions set
+  this->mUsedFunctions.clear();
+  this->mUsedFunctions.insert(usedFunctions.begin(), usedFunctions.end());
+
+  // now we remove the function definitions from the SBML model
+  std::set<std::string>::iterator toRemoveIt = toRemove.begin();
+  std::set<std::string>::iterator toRemoveEndit = toRemove.end();
+  while (toRemoveIt != toRemoveEndit)
+    {
+      FunctionDefinition* pFunDef = pModel->getFunctionDefinition(*toRemoveIt);
+      if (pFunDef != NULL)
+        {
+          mapPos = sbml2copasiMap.find(pFunDef);
+          if (mapPos != sbml2copasiMap.end() &&
+              this->mUsedFunctions.find(dynamic_cast<CFunction*>(const_cast<CCopasiObject*>(mapPos->second))) == this->mUsedFunctions.end())
+            {
+              pModel->getListOfFunctionDefinitions()->remove(*toRemoveIt);
+            }
+        }
+      ++toRemoveIt;
+    }
+
+  // order the remaining function definitions
+  // remove duplicates from the vector, always keep the last one
+  std::vector<CFunction*>::reverse_iterator reverseIt = usedFunctions.rbegin(), reverseEndit = usedFunctions.rend();
+  functionsVect.clear();
+  while (reverseIt != reverseEndit)
+    {
+      if (std::find(functionsVect.begin(), functionsVect.end(), *reverseIt) == functionsVect.end())
+        {
+          functionsVect.insert(functionsVect.begin(), *reverseIt);
+        }
+      ++reverseIt;
+    }
+
+  // remove all existing function definitions from the list
+  while (pModel->getNumFunctionDefinitions() != 0)
+    {
+      pModel->getListOfFunctionDefinitions()->remove(0);
+    }
+
+  std::vector<CFunction*>::iterator it = functionsVect.begin(), endit = functionsVect.end();
   while (it != endit)
     {
       if (*it != NULL)
