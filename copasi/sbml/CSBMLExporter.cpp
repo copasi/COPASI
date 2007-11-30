@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/11/29 21:04:13 $
+//   $Date: 2007/11/30 11:43:00 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -635,11 +635,13 @@ void CSBMLExporter::createReaction(CReaction& reaction, CCopasiDataModel& dataMo
 /**
  * Creates the initial assignments for the model.
  */
-void CSBMLExporter::createInitialAssignments(const CCopasiDataModel& dataModel)
+void CSBMLExporter::createInitialAssignments(const CCopasiDataModel& /*dataModel*/)
 {
   // TODO make sure the mInitialAssignmentVector has been filled already
   // order the initial assignments
-  orderInitialAssignments(dataModel);
+
+  // TODO check if the initial assignments need to be ordered
+  //orderInitialAssignments(dataModel);
 
   // create the initial assignments
   unsigned int i, iMax = this->mInitialAssignmentVector.size();
@@ -672,7 +674,7 @@ void CSBMLExporter::createRules(const CCopasiDataModel& dataModel)
   // TODO make sure the mAssignmentVector has been filled already
   // order the rules for Level 1 export
   // rules in Level 2 are not ordered.
-  if (this->mSBMLLevel == 1)
+  if (this->mSBMLLevel == 1 || (this->mSBMLLevel == 2 && this->mSBMLVersion == 1))
     {
       orderRules(dataModel);
     }
@@ -1077,7 +1079,6 @@ void CSBMLExporter::isExpressionSBMLCompatible(const CExpression& expr, const CC
       unsupportedFunctionTypes.insert(CEvaluationNodeFunction::RNORMAL);
       unsupportedFunctionTypes.insert(CEvaluationNodeFunction::RUNIFORM);
     }
-
   checkForUnsupportedFunctionCalls(expr, unsupportedFunctionTypes, result);
 }
 
@@ -1308,6 +1309,7 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
   createCompartments(dataModel);
   createMetabolites(dataModel);
   createParameters(dataModel);
+  // TODO check for which level and version we do have initial assignments
   createInitialAssignments(dataModel);
   createRules(dataModel);
   createReactions(dataModel);
@@ -1364,7 +1366,9 @@ bool CSBMLExporter::exportModel(CCopasiDataModel& dataModel, const std::string& 
  */
 const std::vector<SBMLIncompatibility> CSBMLExporter::isModelSBMLCompatible(const CCopasiDataModel& dataModel, int sbmlLevel, int sbmlVersion)
 {
+  const CModel* pModel = dataModel.getModel();
   std::vector<SBMLIncompatibility> result;
+  if (pModel == NULL) return result;
   // general checks
   // check if there is a species with an ode rule that is in a nonfixed
   // compartment
@@ -1373,16 +1377,115 @@ const std::vector<SBMLIncompatibility> CSBMLExporter::isModelSBMLCompatible(cons
   // check if the model contains references to model entities that can not be
   // represented in SBML like the inital value of something as opposed to the
   // transient value
-  checkForUnsupportedObjectReferences(, dataModel, sbmlLevel, sbmlVersion, result);
-
   // check if the model contains calls to functions that are not supported in
   // the given version of SBML
-  checkForUnsupportedFunctionCalls(, dataModel, sbmlLevel, sbmlVersion, result);
+  CModelEntity::Status status;
+  const CExpression* pExpression = NULL;
+  std::set<std::string> usedFunctionNames;
+  CCopasiVectorNS<CCompartment>::const_iterator compIt = pModel->getCompartments().begin();
+  CCopasiVectorNS<CCompartment>::const_iterator compEndit = pModel->getCompartments().end();
+  while (compIt != compEndit)
+    {
+      status = (*compIt)->getStatus();
+      if (status == CModelEntity::ODE || status == CModelEntity::ASSIGNMENT)
+        {
+          pExpression = (*compIt)->getExpressionPtr();
+          assert(pExpression != NULL);
+          if (pExpression != NULL)
+            {
+              // check for unsupported object references and unsupported function
+              // calls
+              CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result);
+              CSBMLExporter::findDirectlyUsedFunctions(pExpression->getRoot(), usedFunctionNames);
+            }
+        }
+      pExpression = (*compIt)->getInitialExpressionPtr();
+      if (pExpression != NULL)
+        {
+          // check for unsupported object references and unsupported function
+          // calls
+          CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result);
+          CSBMLExporter::findDirectlyUsedFunctions(pExpression->getRoot(), usedFunctionNames);
+        }
+      ++compIt;
+    }
+
+  CCopasiVector<CMetab>::const_iterator metabIt = pModel->getMetabolites().begin();
+  CCopasiVector<CMetab>::const_iterator metabEndit = pModel->getMetabolites().end();
+  while (metabIt != metabEndit)
+    {
+      status = (*metabIt)->getStatus();
+      if (status == CModelEntity::ODE || status == CModelEntity::ASSIGNMENT)
+        {
+          pExpression = (*metabIt)->getExpressionPtr();
+          assert(pExpression != NULL);
+          if (pExpression != NULL)
+            {
+              // check for unsupported object references and unsupported function
+              // calls
+              CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result);
+              CSBMLExporter::findDirectlyUsedFunctions(pExpression->getRoot(), usedFunctionNames);
+            }
+        }
+      pExpression = (*metabIt)->getInitialExpressionPtr();
+      if (pExpression != NULL)
+        {
+          // check for unsupported object references and unsupported function
+          // calls
+          CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result);
+          CSBMLExporter::findDirectlyUsedFunctions(pExpression->getRoot(), usedFunctionNames);
+        }
+      ++metabIt;
+    }
+
+  CCopasiVectorN<CModelValue>::const_iterator mvIt = pModel->getModelValues().begin();
+  CCopasiVectorN<CModelValue>::const_iterator mvEndit = pModel->getModelValues().end();
+  while (mvIt != mvEndit)
+    {
+      status = (*mvIt)->getStatus();
+      if (status == CModelEntity::ODE || status == CModelEntity::ASSIGNMENT)
+        {
+          pExpression = (*mvIt)->getExpressionPtr();
+          assert(pExpression != NULL);
+          if (pExpression != NULL)
+            {
+              // check for unsupported object references and unsupported function
+              // calls
+              CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result);
+              CSBMLExporter::findDirectlyUsedFunctions(pExpression->getRoot(), usedFunctionNames);
+            }
+        }
+      pExpression = (*mvIt)->getInitialExpressionPtr();
+      if (pExpression != NULL)
+        {
+          // check for unsupported object references and unsupported function
+          // calls
+          CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result);
+          CSBMLExporter::findDirectlyUsedFunctions(pExpression->getRoot(), usedFunctionNames);
+        }
+      ++mvIt;
+    }
+
+  // since all kinetic laws in COPASI are simple function calls and the
+  // arguments to the call can only be parameters or species, the expressions
+  // in kinetic laws are always automatically valid for SBML export
+  // However the functions that are called must not be valid
+
+  // check all functions that are used if they contain invalid function calls
 
   // level dependent checks
+  CCopasiVectorN<CEvent>::const_iterator eventIt, eventEndit;
   switch (sbmlLevel)
     {
     case 2:
+      // check all events
+      eventIt = pModel->getEvents().begin();
+      eventEndit = pModel->getEvents().end();
+      while (eventIt != eventEndit)
+        {
+          // TODO add code to check event expressions
+          ++eventIt;
+        }
       switch (sbmlVersion)
         {
         case 1:
@@ -1540,10 +1643,11 @@ KineticLaw* CSBMLExporter::createKineticLaw(const CReaction& reaction, CCopasiDa
       pTree->setRoot(pTmpRoot);
       pTree->compile();
       // walk the tree and look for function calls
-      std::set<CFunction*> tmpSet = findDirectlyUsedFunctions(pTmpRoot, dataModel);
-      // this is inefficient since the copying is done twice
-      // maybe the find method should get a set where it adds the functions
-      this->mUsedFunctions.insert(tmpSet.begin(), tmpSet.end());
+      std::set<std::string> tmpSet;
+      findDirectlyUsedFunctions(pTmpRoot, tmpSet);
+      CFunctionDB* pFunctionDB = dataModel.getFunctionList();
+      std::set<CFunction*> tmpFunSet = CSBMLExporter::createFunctionSetFromFunctionNames(tmpSet, pFunctionDB);
+      this->mUsedFunctions.insert(tmpFunSet.begin(), tmpFunSet.end());
       pNode = pTmpRoot->toAST();
       pdelete(pTree);
     }
@@ -1614,33 +1718,6 @@ KineticLaw* CSBMLExporter::createKineticLaw(const CReaction& reaction, CCopasiDa
         }
     }
   return pKLaw;
-}
-
-const std::set<CFunction*> findDirectlyUsedFunctions(const CEvaluationNode* pRootNode, CCopasiDataModel& dataModel)
-{
-  std::set<CFunction*> result;
-  CFunctionDB* pFunDB = dataModel.getFunctionList();
-  CCopasiTree<CEvaluationNode>::const_iterator treeIt = pRootNode;
-  CCopasiTree<CEvaluationNode>::const_iterator treeEndIt = NULL;
-
-  while (treeIt != treeEndIt)
-    {
-      if (CEvaluationNode::type(treeIt->getType()) == CEvaluationNode::CALL)
-        {
-          // find used function used in the corresponding function
-          CFunction* pFun = dynamic_cast<CFunction*>(pFunDB->findFunction(treeIt->getData()));
-          if (!pFun)
-            {
-              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 15, treeIt->getData().c_str());
-            }
-          else
-            {
-              result.insert(pFun);
-            }
-        }
-      ++treeIt;
-    }
-  return result;
 }
 
 ASTNode* CSBMLExporter::isDividedByVolume(const ASTNode* pRootNode, const std::string& compartmentId)
@@ -1838,4 +1915,90 @@ ASTNode* CSBMLExporter::createTimesTree(const CCopasiVector<CChemEqElement >& ve
       pNode->addChild(CSBMLExporter::createTimesTree(vect, pos + 1));
     }
   return pNode;
+}
+
+/**
+ * Go through a CEvaluationNode base tree and return a list of
+ * functions directly called in this tree.
+ */
+void CSBMLExporter::findDirectlyUsedFunctions(const CEvaluationNode* pRootNode, std::set<std::string>& result)
+{
+  if (pRootNode == NULL) return;
+  if (CEvaluationNode::type(pRootNode->getType()) == CEvaluationNode::CALL)
+    {
+      result.insert(pRootNode->getData());
+    }
+  const CEvaluationNode* pChild = dynamic_cast<const CEvaluationNode*>(pRootNode->getChild());
+  while (pChild != NULL)
+    {
+      CSBMLExporter::findDirectlyUsedFunctions(pChild, result);
+      pChild = dynamic_cast<const CEvaluationNode*>(pChild->getSibling());
+    }
+}
+
+const std::vector<CFunction*> CSBMLExporter::findUsedFunctions(std::set<CFunction*>& functions, CFunctionDB* pFunctionDB)
+{
+  std::vector<CFunction*> result;
+  std::set<CFunction*>::iterator it = functions.begin();
+  std::set<CFunction*>::iterator endit = functions.end();
+  std::set<CFunction*> chain;
+  while (it != endit)
+    {
+      chain.insert(*it);
+      findUsedFunctions(*it, pFunctionDB, chain, result);
+      chain.clear();
+      ++it;
+    }
+  return result;
+}
+
+void CSBMLExporter::findUsedFunctions(const CFunction* pFunction, CFunctionDB *pFunDB, std::set<CFunction*>& chain, std::vector<CFunction*>& result)
+{
+  if (pFunction == NULL || pFunDB == NULL) return;
+  std::set<std::string> usedFunctionNames;
+  CSBMLExporter::findDirectlyUsedFunctions(pFunction->getRoot(), usedFunctionNames);
+  std::set<CFunction*> usedFunctions = CSBMLExporter::createFunctionSetFromFunctionNames(usedFunctionNames, pFunDB);
+  std::set<CFunction*>::iterator it = usedFunctions.begin();
+  std::set<CFunction*>::iterator endit = usedFunctions.end();
+  while (it != endit)
+    {
+      if (chain.find(*it) != chain.end())
+        {
+          // we have a loop
+          CCopasiMessage::CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 16);
+        }
+      else
+        {
+          result.push_back(*it);
+          chain.insert(*it);
+          findUsedFunctions(*it, pFunDB, chain, result);
+          chain.erase(chain.find(*it));
+        }
+      ++it;
+    }
+}
+
+const std::set<CFunction*> CSBMLExporter::createFunctionSetFromFunctionNames(const std::set<std::string>& names, CFunctionDB* pFunDB)
+{
+  std::set<CFunction*> result;
+  if (pFunDB != NULL)
+    {
+      std::set<std::string>::const_iterator it = names.begin();
+      std::set<std::string>::const_iterator endit = names.end();
+      CFunction* pFun = NULL;
+      while (it != endit)
+        {
+          pFun = dynamic_cast<CFunction*>(pFunDB->findFunction(*it));
+          if (pFun == NULL)
+            {
+              CCopasiMessage::CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 15, (*it).c_str());
+            }
+          else
+            {
+              result.insert(pFun);
+            }
+          ++it;
+        }
+    }
+  return result;
 }

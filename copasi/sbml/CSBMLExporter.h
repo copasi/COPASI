@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/11/29 21:04:13 $
+//   $Date: 2007/11/30 11:43:00 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -37,6 +37,7 @@ class Model;
 class CModelValue;
 class CEvent;
 class CChemEqElement;
+class CFunctionDB;
 
 class CSBMLExporter
   {
@@ -306,7 +307,7 @@ class CSBMLExporter
      * Go through a CEvaluationNode base tree and return a list of
      * functions directly called in this tree.
      */
-    const std::set<CFunction*> findDirectlyUsedFunctions(const CEvaluationNode* pRootNode, CCopasiDataModel& dataModel);
+    static void findDirectlyUsedFunctions(const CEvaluationNode* pRootNode, std::set<std::string>& result);
 
     /**
      * checks if the given ASTNode based tree is divided by the
@@ -387,6 +388,16 @@ class CSBMLExporter
      * definitions that have not been used in the file.
      */
     void removeUnusedObjects(const CCopasiDataModel& pDataModel);
+
+    /**
+     * Takes a set of functions and recursively finds functions used by those
+     * functions
+     */
+    static const std::vector<CFunction*> findUsedFunctions(std::set<CFunction*>& functions, CFunctionDB* pFunctionDB);
+
+    static void findUsedFunctions(const CFunction* pFunction , CFunctionDB* pFunctionDB, std::set<CFunction*>& chain, std::vector<CFunction*>& result);
+
+    static const std::set<CFunction*> createFunctionSetFromFunctionNames(const std::set<std::string>& names, CFunctionDB* pFunDB);
   };
 
 #endif // CSBLExporter_H__
