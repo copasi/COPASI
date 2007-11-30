@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-//   $Revision: 1.129 $
+//   $Revision: 1.130 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/14 19:29:53 $
+//   $Date: 2007/11/30 19:17:18 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -418,9 +418,13 @@ bool CMetab::compile()
       // Rate (particle number rate)
       mpRateReference->setRefresh(this, &CMetab::refreshRate);
       mpRateReference->setDirectDependencies(Dependencies);
+
+      // Transition Time
+      mpTTReference->setRefresh(this, &CMetab::refreshTransitionTime);
+      mpTTReference->setDirectDependencies(Dependencies);
       Dependencies.clear();
 
-      // Concetration Rate
+      // Concentration Rate
       Dependencies.insert(mpRateReference);
       Dependencies.insert(mpConcReference);
       if (pVolumeReference)
@@ -432,38 +436,69 @@ bool CMetab::compile()
       mpConcRateReference->setRefresh(this, &CMetab::refreshConcentrationRate);
       Dependencies.clear();
 
-      // Transition Time
-      mpTTReference->setRefresh(this, &CMetab::refreshTransitionTime);
-      mpTTReference->setDirectDependencies(Dependencies);
       break;
-
     default:
       break;
     }
 
-  // Here we handle initial concentration for all types.
+  success &= compileInitialValues();
+
+  return success;
+}
+
+bool CMetab::compileInitialValues(const bool & updateConcentration)
+{
+  bool success = true;
+  std::set<const CCopasiObject *> Dependencies;
+  std::vector< CCopasiContainer * > listOfContainer;
+  listOfContainer.push_back(getObjectAncestor("Model"));
+
+  // If we have an initial expression we must update both
   if (mpInitialExpression != NULL &&
       mpInitialExpression->getInfix() != "")
     {
+      // Initial concentration
       success &= mpInitialExpression->compile(listOfContainer);
       mpIConcReference->setDirectDependencies(mpInitialExpression->getDirectDependencies());
+      mpIConcReference->setRefresh(this, &CMetab::refreshInitialConcentration);
+
+      // Initial particle number
+      Dependencies.insert(mpIConcReference);
+      if (mpCompartment)
+        Dependencies.insert(mpCompartment->getInitialValueReference());
+      mpIValueReference->setDirectDependencies(Dependencies);
+      mpIValueReference->setRefresh(this, &CMetab::refreshInitialValue);
+      Dependencies.clear();
+
+      return success;
+    }
+
+  if (updateConcentration)
+    {
+      // Initial particle number
+      mpIValueReference->setDirectDependencies(Dependencies);
+      mpIValueReference->clearRefresh();
+
+      // Initial concentration
+      Dependencies.insert(mpIValueReference);
+      if (mpCompartment)
+        Dependencies.insert(mpCompartment->getInitialValueReference());
+      mpIConcReference->setDirectDependencies(Dependencies);
+      mpIConcReference->setRefresh(this, &CMetab::refreshInitialConcentration);
     }
   else
     {
+      // Initial concentration
+      mpIConcReference->setDirectDependencies(Dependencies);
+      mpIConcReference->clearRefresh();
+
+      // Initial particle number
+      Dependencies.insert(mpIConcReference);
       if (mpCompartment)
         Dependencies.insert(mpCompartment->getInitialValueReference());
-
-      mpIConcReference->setDirectDependencies(Dependencies);
-      Dependencies.clear();
+      mpIValueReference->setDirectDependencies(Dependencies);
+      mpIValueReference->setRefresh(this, &CMetab::refreshInitialValue);
     }
-
-  // Handle initial particle number (initial value)
-  Dependencies.insert(mpIConcReference);
-  if (mpCompartment)
-    Dependencies.insert(mpCompartment->getInitialValueReference());
-  mpIValueReference->setDirectDependencies(Dependencies);
-  mpIValueReference->setRefresh(this, &CMetab::refreshInitialValue);
-  Dependencies.clear();
 
   return success;
 }
