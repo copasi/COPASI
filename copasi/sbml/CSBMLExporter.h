@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/11/30 11:43:00 $
+//   $Date: 2007/11/30 13:49:47 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -149,22 +149,22 @@ class CSBMLExporter
     /**
      * Creates the initial assignments for the model.
      */
-    void createInitialAssignments(const CCopasiDataModel& dataModel);
+    void createInitialAssignments(CCopasiDataModel& dataModel);
 
     /**
      * Creates the initial assignment for the given COPASI model entity.
      */
-    void createInitialAssignment(const CModelEntity& modelEntity);
+    void createInitialAssignment(const CModelEntity& modelEntity, CCopasiDataModel& dataModel);
 
     /**
      * Creates the rules for the model.
      */
-    void createRules(const CCopasiDataModel& dataModel);
+    void createRules(CCopasiDataModel& dataModel);
 
     /**
      * Creates the rule for the given COPASI model entity.
      */
-    void createRule(const CModelEntity& modelEntity);
+    void createRule(const CModelEntity& modelEntity, CCopasiDataModel& dataModel);
 
     /**
      * Create all function definitions.

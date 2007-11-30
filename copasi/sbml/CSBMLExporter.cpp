@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/11/30 11:43:00 $
+//   $Date: 2007/11/30 13:49:47 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -288,13 +288,15 @@ void CSBMLExporter::createCompartment(CCompartment& compartment)
       pSBMLCompartment->unsetVolume();
     }
   // fill assignment set
+  // a compartment can either have an assignment or an initial assignment but not
+  // both
   CModelEntity::Status status = compartment.getStatus();
   if (status == CModelEntity::ODE || status == CModelEntity::ASSIGNMENT)
     {
       this->mAssignmentVector.push_back(&compartment);
     }
   // fill initial assignment set
-  if (compartment.getInitialExpressionPtr() != NULL)
+  else if (compartment.getInitialExpressionPtr() != NULL)
     {
       this->mInitialAssignmentVector.push_back(&compartment);
     }
@@ -371,12 +373,14 @@ void CSBMLExporter::createMetabolite(CMetab& metab)
       pSBMLSpecies->unsetInitialAmount();
     }
   CModelEntity::Status status = metab.getStatus();
+  // a species can either have an assignment or an initial assignment but not
+  // both
   if (status == CModelEntity::ODE || status == CModelEntity::ASSIGNMENT)
     {
       this->mAssignmentVector.push_back(&metab);
     }
   // fill initial assignment set
-  if (metab.getInitialExpressionPtr() != NULL)
+  else if (metab.getInitialExpressionPtr() != NULL)
     {
       this->mInitialAssignmentVector.push_back(&metab);
     }
@@ -435,13 +439,15 @@ void CSBMLExporter::createParameter(CModelValue& modelValue)
       pParameter->unsetValue();
     }
   // fill assignment set
+  // a parameter can either have an assignment or an initial assignment but not
+  // both
   CModelEntity::Status status = modelValue.getStatus();
   if (status == CModelEntity::ODE || status == CModelEntity::ASSIGNMENT)
     {
       this->mAssignmentVector.push_back(&modelValue);
     }
   // fill initial assignment set
-  if (modelValue.getInitialExpressionPtr() != NULL)
+  else if (modelValue.getInitialExpressionPtr() != NULL)
     {
       this->mInitialAssignmentVector.push_back(&modelValue);
     }
@@ -635,13 +641,10 @@ void CSBMLExporter::createReaction(CReaction& reaction, CCopasiDataModel& dataMo
 /**
  * Creates the initial assignments for the model.
  */
-void CSBMLExporter::createInitialAssignments(const CCopasiDataModel& /*dataModel*/)
+void CSBMLExporter::createInitialAssignments(CCopasiDataModel& dataModel)
 {
   // TODO make sure the mInitialAssignmentVector has been filled already
   // order the initial assignments
-
-  // TODO check if the initial assignments need to be ordered
-  //orderInitialAssignments(dataModel);
 
   // create the initial assignments
   unsigned int i, iMax = this->mInitialAssignmentVector.size();
@@ -652,7 +655,7 @@ void CSBMLExporter::createInitialAssignments(const CCopasiDataModel& /*dataModel
       assert(pME != NULL);
       if (pME != NULL)
         {
-          createInitialAssignment(*pME);
+          createInitialAssignment(*pME, dataModel);
         }
     }
 }
@@ -660,16 +663,71 @@ void CSBMLExporter::createInitialAssignments(const CCopasiDataModel& /*dataModel
 /**
  * Creates the initial assignment for the given COPASI model entity.
  */
-void CSBMLExporter::createInitialAssignment(const CModelEntity& /*modelEntity*/)
+void CSBMLExporter::createInitialAssignment(const CModelEntity& modelEntity, CCopasiDataModel& dataModel)
 {
-  // TODO check the expression
-  // TODO collect directly used functions
+  // check the expression
+  std::vector<SBMLIncompatibility> result;
+  CSBMLExporter::isExpressionSBMLCompatible(*modelEntity.getInitialExpressionPtr(), dataModel, this->mSBMLLevel, this->mSBMLVersion, result);
+  // collect directly used functions
+  if (result.empty())
+    {
+      std::set<std::string> directlyUsedFunctionNames;
+      CSBMLExporter::findDirectlyUsedFunctions(modelEntity.getInitialExpressionPtr()->getRoot(), directlyUsedFunctionNames);
+      std::set<CFunction*> usedFunctions = CSBMLExporter::createFunctionSetFromFunctionNames(directlyUsedFunctionNames, dataModel.getFunctionList());
+      this->mUsedFunctions.insert(usedFunctions.begin(), usedFunctions.end());
+      // create the actual initial assignment
+      InitialAssignment* pInitialAssignment = this->mpSBMLDocument->getModel()->getInitialAssignment(modelEntity.getSBMLId());
+      if (pInitialAssignment == NULL)
+        {
+          pInitialAssignment = this->mpSBMLDocument->getModel()->createInitialAssignment();
+          pInitialAssignment->setSymbol(modelEntity.getSBMLId());
+        }
+      // set the math
+      ASTNode* pNode = modelEntity.getInitialExpressionPtr()->getRoot()->toAST();
+      if (pNode != NULL)
+        {
+          pInitialAssignment->setMath(pNode);
+          delete pNode;
+        }
+      else
+        {
+          if (this->mIncompleteExport == true)
+            {
+              // remove the initial assignment from the SBML model
+              unsigned int i = 0, iMax = this->mpSBMLDocument->getModel()->getNumInitialAssignments();
+              while (i < iMax)
+                {
+                  if (this->mpSBMLDocument->getModel()->getInitialAssignment(i)->getSymbol() == modelEntity.getSBMLId())
+                    {
+                      this->mpSBMLDocument->getModel()->getListOfInitialAssignments()->remove(i);
+                      break;
+                    }
+                  ++i;
+                }
+            }
+          else
+            {
+              CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 60, "initial assignment", modelEntity.getObjectType().c_str(), modelEntity.getObjectName().c_str());
+            }
+        }
+    }
+  else
+    {
+      if (this->mIncompleteExport)
+        {
+          this->mIncompatibilities.insert(this->mIncompatibilities.end(), result.begin(), result.end());
+        }
+      else
+        {
+          CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 60, "initial assignment", modelEntity.getObjectType().c_str(), modelEntity.getObjectName().c_str());
+        }
+    }
 }
 
 /**
  * Creates the rules for the model.
  */
-void CSBMLExporter::createRules(const CCopasiDataModel& dataModel)
+void CSBMLExporter::createRules(CCopasiDataModel& dataModel)
 {
   // TODO make sure the mAssignmentVector has been filled already
   // order the rules for Level 1 export
@@ -688,7 +746,7 @@ void CSBMLExporter::createRules(const CCopasiDataModel& dataModel)
       assert(pME != NULL);
       if (pME != NULL)
         {
-          createRule(*pME);
+          createRule(*pME, dataModel);
         }
     }
 }
@@ -696,10 +754,72 @@ void CSBMLExporter::createRules(const CCopasiDataModel& dataModel)
 /**
  * Creates the rule for the given COPASI model entity.
  */
-void CSBMLExporter::createRule(const CModelEntity& /*modelEntity*/)
+void CSBMLExporter::createRule(const CModelEntity& modelEntity, CCopasiDataModel& dataModel)
 {
-  // TODO check the expression
-  // TODO collect directly used functions
+  // check the expression
+  std::vector<SBMLIncompatibility> result;
+  CSBMLExporter::isExpressionSBMLCompatible(*modelEntity.getExpressionPtr(), dataModel, this->mSBMLLevel, this->mSBMLVersion, result);
+  // collect directly used functions
+  if (result.empty())
+    {
+      std::set<std::string> directlyUsedFunctionNames;
+      CSBMLExporter::findDirectlyUsedFunctions(modelEntity.getExpressionPtr()->getRoot(), directlyUsedFunctionNames);
+      std::set<CFunction*> usedFunctions = CSBMLExporter::createFunctionSetFromFunctionNames(directlyUsedFunctionNames, dataModel.getFunctionList());
+      this->mUsedFunctions.insert(usedFunctions.begin(), usedFunctions.end());
+      // create the actual initial assignment
+      Rule* pRule = this->mpSBMLDocument->getModel()->getRule(modelEntity.getSBMLId());
+      if (pRule == NULL)
+        {
+          if (modelEntity.getStatus() == CModelEntity::ASSIGNMENT)
+            {
+              pRule = this->mpSBMLDocument->getModel()->createAssignmentRule();
+            }
+          else
+            {
+              pRule = this->mpSBMLDocument->getModel()->createRateRule();
+            }
+          pRule->setVariable(modelEntity.getSBMLId());
+        }
+      // set the math
+      ASTNode* pNode = modelEntity.getExpressionPtr()->getRoot()->toAST();
+      if (pNode != NULL)
+        {
+          pRule->setMath(pNode);
+          delete pNode;
+        }
+      else
+        {
+          if (this->mIncompleteExport == true)
+            {
+              // remove the rule from the SBML model
+              unsigned int i = 0, iMax = this->mpSBMLDocument->getModel()->getNumRules();
+              while (i < iMax)
+                {
+                  if (this->mpSBMLDocument->getModel()->getRule(i)->getVariable() == modelEntity.getSBMLId())
+                    {
+                      this->mpSBMLDocument->getModel()->getListOfRules()->remove(i);
+                      break;
+                    }
+                  ++i;
+                }
+            }
+          else
+            {
+              CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 60, "rule", modelEntity.getObjectType().c_str(), modelEntity.getObjectName().c_str());
+            }
+        }
+    }
+  else
+    {
+      if (this->mIncompleteExport)
+        {
+          this->mIncompatibilities.insert(this->mIncompatibilities.end(), result.begin(), result.end());
+        }
+      else
+        {
+          CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 60, "rule", modelEntity.getObjectType().c_str(), modelEntity.getObjectName().c_str());
+        }
+    }
 }
 
 const std::map<std::string, const SBase*> CSBMLExporter::createIdMap(const Model& sbmlModel)
@@ -1562,7 +1682,7 @@ void CSBMLExporter::updateCOPASI2SBMLMap(const CCopasiDataModel& dataModel)
     }
 }
 
-KineticLaw* CSBMLExporter::createKineticLaw(const CReaction& reaction, CCopasiDataModel& dataModel)
+KineticLaw* CSBMLExporter::createKineticLaw(const CReaction& reaction, CCopasiDataModel& /*dataModel*/)
 {
   KineticLaw* pKLaw = NULL;
   if (!pKLaw)
@@ -1642,12 +1762,10 @@ KineticLaw* CSBMLExporter::createKineticLaw(const CReaction& reaction, CCopasiDa
         }
       pTree->setRoot(pTmpRoot);
       pTree->compile();
-      // walk the tree and look for function calls
-      std::set<std::string> tmpSet;
-      findDirectlyUsedFunctions(pTmpRoot, tmpSet);
-      CFunctionDB* pFunctionDB = dataModel.getFunctionList();
-      std::set<CFunction*> tmpFunSet = CSBMLExporter::createFunctionSetFromFunctionNames(tmpSet, pFunctionDB);
-      this->mUsedFunctions.insert(tmpFunSet.begin(), tmpFunSet.end());
+      // in copasi kinetic laws are always function calls and the function
+      // arguments are either references to species or parameters.
+      // therefore we don't need to look for directly called functions here
+      this->mUsedFunctions.insert(const_cast<CFunction*>(reaction.getFunction()));
       pNode = pTmpRoot->toAST();
       pdelete(pTree);
     }
