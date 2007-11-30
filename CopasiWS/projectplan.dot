@@ -1,0 +1,46 @@
+digraph "Copasi_Web_Services" {
+	graph
+	[
+		center="true"
+		overlap="false"
+		Damping=0.999
+		fontname="Helvetica"
+		fontsize=10
+		size=8,11
+		maxiter=1000000
+		splines="true"
+		sep=0.8
+		epsilon=0.0000001
+		label="Copasi Web Services, task dependencies"
+		ratio="auto"
+	]
+
+	node
+	[
+		fontsize=10
+		fontname="Helvetica"
+		shape=rectangle
+	]
+
+	edge
+	[
+		fontname="Helvetica"
+		arrowhead="normal"
+		len=2.5
+	]
+
+	"SBDML schema" -> "COPASI implementation of SBDML"
+	"SBDML schema" -> "manuscript describing SBDML"
+	"manuscript describing SBDML" -> "Proposal of SBDML as standard to the SBML Forum"
+	"CopasiWS specification" -> "CopasiWS"
+	"wsdl definition" -> "CopasiWS"
+	"jsdl definition" -> "CopasiWS"
+	"COPASI implementation of SBDML" -> "Prototype server @ turing"
+	"CopasiWS" -> "Prototype server @ turing"
+	"Tomcat installation @ turing" -> "Prototype server @ turing"
+	"Prototype server @ turing" -> "manuscript describing CopasiWS"
+	"Prototype server @ turing" -> "Security implementation in CopasiWS"
+	"Security implementation in CopasiWS" -> "Improvements to CopasiWS: security, quotas, etc."
+
+
+}
