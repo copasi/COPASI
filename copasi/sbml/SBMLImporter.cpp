@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.187 $
+//   $Revision: 1.188 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/11/21 16:14:12 $
+//   $Author: gauges $
+//   $Date: 2007/12/03 21:44:04 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1596,7 +1596,7 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
               CCopasiMessage::Type messageType = CCopasiMessage::RAW;
               switch (pSBMLError->getSeverity())
                 {
-                case XMLError::Info:
+                case SEVERITY_INFO:
 
                   if (mIgnoredSBMLMessages.find(pSBMLError->getErrorId()) != mIgnoredSBMLMessages.end())
                     {
@@ -1608,7 +1608,7 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
                     }
                   CCopasiMessage(messageType, MCSBML + 40, "INFO", pSBMLError->getErrorId(), pSBMLError->getLine(), pSBMLError->getColumn(), pSBMLError->getMessage().c_str());
                   break;
-                case XMLError::Warning:
+                case SEVERITY_WARNING:
                   if (mIgnoredSBMLMessages.find(pSBMLError->getErrorId()) != mIgnoredSBMLMessages.end())
                     {
                       messageType = CCopasiMessage::WARNING_FILTERED;
@@ -1619,14 +1619,14 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
                     }
                   CCopasiMessage(messageType, MCSBML + 40, "WARNING", pSBMLError->getErrorId(), pSBMLError->getLine(), pSBMLError->getColumn(), pSBMLError->getMessage().c_str());
                   break;
-                case XMLError::Error:
+                case SEVERITY_ERROR:
                   if (mIgnoredSBMLMessages.find(pSBMLError->getErrorId()) != mIgnoredSBMLMessages.end())
                     {
                       messageType = CCopasiMessage::ERROR_FILTERED;
                     }
                   CCopasiMessage(messageType, MCSBML + 40, "ERROR", pSBMLError->getErrorId(), pSBMLError->getLine(), pSBMLError->getColumn(), pSBMLError->getMessage().c_str());
                   break;
-                case XMLError::Fatal:
+                case SEVERITY_FATAL:
                   // treat unknown as fatal
                 default:
                   //CCopasiMessage(CCopasiMessage::TRACE, MCSBML + 40,"FATAL",pSBMLError->getLine(),pSBMLError->getColumn(),pSBMLError->getMessage().c_str());
