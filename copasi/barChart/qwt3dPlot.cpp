@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/barChart/qwt3dPlot.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: akoenig $
-//   $Date: 2007/11/23 10:23:43 $
+//   $Date: 2007/12/03 12:43:56 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -432,23 +432,23 @@ void Plot3d::saveDataToFile()
       fileName =
         CopasiFileDialog::getSaveFileNameAndFilter(newFilter,
             this, "Save File Dialog",
-            "ILDMResults-barsPrint", "BMP Files (*.bmp);;JPEG Files (*.jpeg);;PDF Files (*.pdf);;", "Save to");
+            "ILDMResults-barsPrint", "BMP Files (*.bmp);;PS Files (*.ps);;PDF Files (*.pdf);;", "Save to");
 
       if (!fileName) return;
 
       fileName = fileName.remove(QRegExp("\\.$"));
 
-      if (!fileName.endsWith(".bmp") && !fileName.endsWith(".") && !fileName.endsWith(".jpg") && !fileName.endsWith(".jpeg") && !fileName.endsWith(".pdf"))
+      if (!fileName.endsWith(".bmp") && !fileName.endsWith(".") && !fileName.endsWith(".ps") && !fileName.endsWith(".png") && !fileName.endsWith(".pdf"))
         if (newFilter == "BMP Files (*.bmp)")
           {
             fileName += ".bmp";
             filetype_ = "BMP";
           }
         else
-          if (newFilter == "JPEG Files (*.jpeg)")
+          if (newFilter == "PS Files (*.ps)")
             {
-              fileName += ".jpeg";
-              filetype_ = "JPEG";
+              fileName += ".ps";
+              filetype_ = "PS";
             }
           else
             if (newFilter == "PDF Files (*.pdf)")
@@ -496,9 +496,9 @@ void Plot3d::hotKeysMessage()
 {
 
   QMessageBox::information(this, "Mouse and Keyboard Handling",
-                            "You can perform shifts, turns, scales and zooms. \n \n"
-                            "Try Ctrl, Shift, Alt in combination with your wheel and left mouse \n"
-                            "button to get a clue (or use instead your cursor keys).\n"
+                           "You can perform shifts, turns, scales and zooms. \n \n"
+                           "Try Ctrl, Shift, Alt in combination with your wheel and left mouse \n"
+                           "button to get a clue (or use instead your cursor keys).\n"
 );
 
   return;
