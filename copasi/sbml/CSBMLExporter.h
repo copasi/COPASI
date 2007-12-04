@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/11/30 19:51:35 $
+//   $Date: 2007/12/04 14:04:32 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -349,11 +349,6 @@ class CSBMLExporter
     void createSBMLDocument(CCopasiDataModel& dataModel);
 
     /**
-     * Sorts the initial assignments.
-     */
-    void orderInitialAssignments(const CCopasiDataModel& dataModel);
-
-    /**
      * Sorts the rules.
      */
     void orderRules(const CCopasiDataModel& dataModel);
@@ -411,6 +406,12 @@ class CSBMLExporter
      * certain SBML level.
      */
     static const std::set<CEvaluationNodeFunction::SubType> createUnsupportedFunctionTypeSet(unsigned int sbmlLevel);
+
+    /**
+     * Find all ModelEntities for which the given node and its children contains
+     * references.
+     */
+    static void findModelEntityDependencies(const CEvaluationNode* pNode, const CCopasiDataModel& dataModel, std::set<const CModelEntity*>& dependencies);
   };
 
 #endif // CSBLExporter_H__

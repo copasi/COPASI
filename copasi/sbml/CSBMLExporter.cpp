@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/11/30 19:51:36 $
+//   $Date: 2007/12/04 14:04:32 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -2233,4 +2233,86 @@ const std::set<CFunction*> CSBMLExporter::createFunctionSetFromFunctionNames(con
         }
     }
   return result;
+}
+
+void CSBMLExporter::orderRules(const CCopasiDataModel& dataModel)
+{
+  // TODO make sure the vector of rules is filled
+  std::map<CModelEntity*, std::set<const CModelEntity*> > dependencyMap;
+  std::vector<CModelEntity*>::iterator it = mAssignmentVector.begin(), endit = this->mAssignmentVector.end();
+  while (it != endit)
+    {
+      const CExpression* pExpr = (*it)->getExpressionPtr();
+      assert(pExpr != NULL);
+      std::set<const CModelEntity*> dependencies;
+      CSBMLExporter::findModelEntityDependencies(pExpr->getRoot(), dataModel, dependencies);
+      std::vector<CModelEntity*>::iterator it2 = this->mAssignmentVector.begin(), endit2 = this->mAssignmentVector.end();
+      while (it2 != endit2)
+        {
+          std::set<const CModelEntity*>::iterator pos = dependencies.find(*it);
+          if (pos == dependencies.end())
+            {
+              dependencies.erase(pos);
+            }
+          ++it2;
+        }
+      dependencyMap[*it] = dependencies;
+    }
+  // now sort the entities according to their dependencies
+  bool error = false;
+  std::vector<CModelEntity*> orderedRules;
+  while (error = false && !dependencyMap.empty())
+    {
+      std::map<CModelEntity*, std::set<const CModelEntity*> >::iterator mapIt = dependencyMap.begin(), mapEndit = dependencyMap.end();
+      // if we cant't remove something in one round, we have a circular
+      // dependency
+      error = true;
+      while (mapIt != mapEndit)
+        {
+          if (!mapIt->second.empty())
+            {
+              std::vector<CModelEntity*>::iterator vIt = orderedRules.begin(), vEndit = orderedRules.end();
+              while (vIt != vEndit)
+                {
+                  std::set<const CModelEntity*>::iterator pos = mapIt->second.find(*vIt);
+                  if (pos != mapIt->second.end())
+                    {
+                      mapIt->second.erase(pos);
+                    }
+                  ++vIt;
+                }
+            }
+          if (mapIt->second.empty())
+            {
+              orderedRules.push_back(mapIt->first);
+              // now we know that we could remove something ion this round
+              error = false;
+            }
+          ++mapIt;
+        }
+    }
+}
+
+void CSBMLExporter::findModelEntityDependencies(const CEvaluationNode* pNode, const CCopasiDataModel& dataModel, std::set<const CModelEntity*>& dependencies)
+{
+  if (pNode == NULL) return;
+  if (CEvaluationNode::type(pNode->getType()) == CEvaluationNode::OBJECT)
+    {
+      const CEvaluationNodeObject* pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pNode);
+      assert(pObjectNode != NULL);
+      if (pObjectNode != NULL)
+        {
+          const CModelEntity* pME = dynamic_cast<const CModelEntity*>(CCopasiContainer::ObjectFromName(pObjectNode->getObjectCN()));
+          if (pME != NULL)
+            {
+              dependencies.insert(pME);
+            }
+        }
+    }
+  const CEvaluationNode* pChild = dynamic_cast<const CEvaluationNode*>(pNode->getChild());
+  while (pChild != NULL)
+    {
+      CSBMLExporter::findModelEntityDependencies(pChild, dataModel, dependencies);
+      pChild = dynamic_cast<const CEvaluationNode*>(pChild->getSibling());
+    }
 }
