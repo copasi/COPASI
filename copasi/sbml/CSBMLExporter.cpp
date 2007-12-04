@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/12/04 14:04:32 $
+//   $Date: 2007/12/04 15:56:54 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,6 +40,10 @@
 #include "utilities/CCopasiTree.h"
 #include "model/CChemEqElement.h"
 #include "utilities/CVersion.h"
+#include "sbml/Trigger.h"
+#include "sbml/Event.h"
+#include "sbml/EventAssignment.h"
+#include "compareExpressions/compare_utilities.h"
 
 // TODO maybe replace checkForUnsupportedFunctionCalls with
 // TODO checkForUnsupportedNodes
@@ -2315,4 +2319,182 @@ void CSBMLExporter::findModelEntityDependencies(const CEvaluationNode* pNode, co
       CSBMLExporter::findModelEntityDependencies(pChild, dataModel, dependencies);
       pChild = dynamic_cast<const CEvaluationNode*>(pChild->getSibling());
     }
+}
+
+void CSBMLExporter::convertToLevel1()
+{
+  // TODO expand all function calls in rules, events and
+  // kinetic laws and delete the functions
+  // initial assignments do not need to be considered since they can not be
+  // exported to Level 1 anyway
+  if (this->mpSBMLDocument == NULL) return;
+  Model* pModel = this->mpSBMLDocument->getModel();
+  Rule* pRule = NULL;
+  Event* pEvent = NULL;
+  Reaction* pReaction = NULL;
+  KineticLaw* pLaw = NULL;
+  unsigned int i, iMax = pModel->getNumRules();
+  for (i = 0;i < iMax;++i)
+    {
+      pRule = pModel->getRule(i);
+      assert(pRule != NULL);
+      const ASTNode* pMath = pRule->getMath();
+      assert(pMath != NULL);
+      std::string message = "rule for object with id \"";
+      message += pRule->getVariable();
+      message += "\"";
+      CSBMLExporter::convertASTTreeToLevel1(pMath, pModel, message);
+    }
+  iMax = pModel->getNumEvents();
+  for (i = 0;i < iMax;++i)
+    {
+      pEvent = pModel->getEvent(i);
+      assert(pEvent != NULL);
+      const Trigger* pTrigger = pEvent->getTrigger();
+      assert(pTrigger != NULL);
+      const ASTNode* pMath = pTrigger->getMath();
+      assert(pMath != NULL);
+      std::string message = "event with id \"";
+      message += pEvent->getId();
+      message += "\"";
+      pMath = CSBMLExporter::convertASTTreeToLevel1(pMath, pModel, message);
+      if (pMath != NULL)
+        {
+          Trigger* pNewTrigger = new Trigger(pMath);
+          delete pMath;
+          pEvent->setTrigger(pNewTrigger);
+          delete pNewTrigger;
+        }
+      else
+        {
+          fatalError();
+        }
+      unsigned int j, jMax = pEvent->getNumEventAssignments();
+      const EventAssignment* pEA = NULL;
+      for (j = 0;j < jMax;++j)
+        {
+          pEA = pEvent->getEventAssignment(i);
+          assert(pEA != NULL);
+          pMath = pEA->getMath();
+          assert(pMath != NULL);
+          message = "event assignment for variable with id \"";
+          message += pEA->getVariable();
+          message += "\" in event with id \"";
+          message += pEvent->getId();
+          message + "\"";
+          pMath = CSBMLExporter::convertASTTreeToLevel1(pMath, pModel, message);
+          if (pMath != NULL)
+            {
+              // delete the old event assignment and create a new one
+              EventAssignment* pNewEA = new EventAssignment(*pEA);
+              pNewEA->setMath(pMath);
+              delete pMath;
+              pEvent->getListOfEventAssignments()->remove(j);
+              delete pEA;
+              pEvent->addEventAssignment(pNewEA);
+              delete pNewEA;
+            }
+          else
+            {
+              fatalError();
+            }
+        }
+    }
+  iMax = pModel->getNumReactions();
+  for (i = 0;i < iMax;++i)
+    {
+      pReaction = pModel->getReaction(i);
+      assert(pReaction != NULL);
+      pLaw = pReaction->getKineticLaw();
+      // maybe we don't have a kinetic law for all reactions
+      if (pLaw != NULL)
+        {
+          const ASTNode* pMath = pLaw->getMath();
+          assert(pMath != NULL);
+          std::string message = "kinetic law in reaction with id \"";
+          message += pReaction->getId();
+          message += "\"";
+          pMath = CSBMLExporter::convertASTTreeToLevel1(pMath, pModel, message);
+          if (pMath != NULL)
+            {
+              pLaw->setMath(pMath);
+              delete pMath;
+            }
+          else
+            {
+              fatalError();
+            }
+        }
+    }
+}
+
+ASTNode* CSBMLExporter::replaceL1IncompatibleNodes(const ASTNode* pNode)
+{
+  // TODO replace all inf, pi, nan and exponentiale nodes
+  // TODO replace all unsupported functions calls: SEC,CSC, COT, SINH, COSH,
+  // TANH, SECH, CSCH, COTH, ARCSINH, ARCCOSH, ARCTANH, ARCSECH, ARCSCSH,
+  // ARCCOTH
+  ASTNode* pResult = NULL;
+  switch (pNode->getType())
+    {
+    case AST_CONSTANT_E:
+      break;
+    case AST_CONSTANT_PI:
+      break;
+    case AST_FUNCTION_SEC:
+      break;
+    case AST_FUNCTION_CSC:
+      break;
+    case AST_FUNCTION_COT:
+      break;
+    case AST_FUNCTION_SINH:
+      break;
+    case AST_FUNCTION_COSH:
+      break;
+    case AST_FUNCTION_TANH:
+      break;
+    case AST_FUNCTION_SECH:
+      break;
+    case AST_FUNCTION_CSCH:
+      break;
+    case AST_FUNCTION_COTH:
+      break;
+    case AST_FUNCTION_ARCSINH:
+      break;
+    case AST_FUNCTION_ARCCOSH:
+      break;
+    case AST_FUNCTION_ARCTANH:
+      break;
+    case AST_FUNCTION_ARCSECH:
+      break;
+    case AST_FUNCTION_ARCCSCH:
+      break;
+    case AST_FUNCTION_ARCCOTH:
+      break;
+    case AST_REAL:
+      // for nan and inf
+      break;
+    default:
+      break;
+    }
+  return pResult;
+}
+
+ASTNode* CSBMLExporter::convertASTTreeToLevel1(const ASTNode* pNode, const Model* pModel, std::string& message)
+{
+  ASTNode* pExpanded = create_expression(pNode, pModel);
+  if (pExpanded != NULL)
+    {
+      ASTNode* pReplaced = CSBMLExporter::replaceL1IncompatibleNodes(pExpanded);
+      delete pExpanded;
+      if (pReplaced == NULL)
+        {
+          CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 62, message.c_str());
+        }
+    }
+  else
+    {
+      CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 61, message.c_str());
+    }
+  return pExpanded;
 }

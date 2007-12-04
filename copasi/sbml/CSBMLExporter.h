@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/12/04 14:04:32 $
+//   $Date: 2007/12/04 15:56:54 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -412,6 +412,21 @@ class CSBMLExporter
      * references.
      */
     static void findModelEntityDependencies(const CEvaluationNode* pNode, const CCopasiDataModel& dataModel, std::set<const CModelEntity*>& dependencies);
+
+    /**
+     * Creates an ASTNode based tree where all occurences of nodes that are not
+     * supported in SBML Level 1 are replaced by supported constructs.
+     * On error an exception is created.
+     * The caller is responsible for freeing the memory of the returned object.
+     */
+    static ASTNode* convertASTTreeToLevel1(const ASTNode* pNode, const Model* pModel, std::string& message);
+
+    /**
+     * This method goes through the ASTNode based tree rooted at pNode and
+     * replaces all unsupported nodes with constructs supported by SBML Level 1
+     * The caller is responsible for freeing the memory of the returned object.
+     */
+    static ASTNode* CSBMLExporter::replaceL1IncompatibleNodes(const ASTNode* pNode);
   };
 
 #endif // CSBLExporter_H__
