@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.h,v $
-//   $Revision: 1.85 $
+//   $Revision: 1.86 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/30 19:17:29 $
+//   $Date: 2007/12/04 19:16:58 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -170,11 +170,11 @@ class CMetab : public CModelEntity
     virtual bool compile();
 
     /**
-     * Compile the initial particle number and initial concentration depending. model value.
+     * Compile the initial particle number and initial concentration dependencies.
      / @param const bool & updateConcentration (default: true)
      * @return bool success
      */
-    bool compileInitialValues(const bool & updateConcentration = true);
+    bool compileInitialValueDependencies(const bool & updateConcentration = true);
 
     /**
      * Calculate the value or the rate depending whether we have an ASIGNMENT or ODE

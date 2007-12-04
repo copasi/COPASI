@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.332 $
+//   $Revision: 1.333 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/30 19:17:56 $
+//   $Date: 2007/12/04 19:16:58 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -3231,7 +3231,7 @@ CModel::buildInitialRefreshSequence(std::set< const CCopasiObject * > & changedO
               // The cocentration is assumed to be fix accept when this would lead to circular dependencies,
               // for the parent's compartment's initial volume.
               Objects.insert(pMetab->getInitialConcentrationReference());
-              pMetab->compileInitialValues(false);
+              pMetab->compileInitialValueDependencies(false);
 
               if (pMetab->getCompartment()->getInitialValueReference()->hasCircularDependencies(Objects))
                 changedObjects.insert(pMetab->getInitialValueReference());
@@ -3293,12 +3293,12 @@ CModel::buildInitialRefreshSequence(std::set< const CCopasiObject * > & changedO
         {
           if (changedObjects.count(pMetab->getInitialConcentrationReference()) != 0)
             {
-              pMetab->compileInitialValues(false);
+              pMetab->compileInitialValueDependencies(false);
               Objects.insert(pMetab->getInitialValueReference());
             }
           else
             {
-              pMetab->compileInitialValues(true);
+              pMetab->compileInitialValueDependencies(true);
               Objects.insert(pMetab->getInitialConcentrationReference());
             }
         }
@@ -3341,6 +3341,9 @@ CModel::buildInitialRefreshSequence(std::set< const CCopasiObject * > & changedO
     {
       // No refresh method
       if ((*itSet)->getRefresh() == NULL)
+        Objects.insert(*itSet);
+      // Is a changed object
+      else if (changedObjects.count(*itSet) != 0)
         Objects.insert(*itSet);
       // Not dependent on the changed objects.
       else if (!(*itSet)->hasCircularDependencies(changedObjects))
