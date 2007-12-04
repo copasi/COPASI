@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.cpp,v $
-//   $Revision: 1.31 $
+//   $Revision: 1.32 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/01 17:51:00 $
+//   $Date: 2007/12/04 15:47:17 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -447,7 +447,7 @@ bool TaskWidget::commonRunTask()
                                QMessageBox::Ignore | QMessageBox::Default,
                                QMessageBox::Abort | QMessageBox::Escape);
 
-      if (Result == 1)
+      if (Result == QMessageBox::Abort)
         {
           success = false;
           goto finish;

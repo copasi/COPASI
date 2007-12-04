@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/SliderSettingsDialog.ui.h,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.31 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/05/15 12:36:53 $
+//   $Date: 2007/12/04 15:47:17 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -208,7 +208,7 @@ void SliderSettingsDialog::minValueChanged()
   if ((value > mOriginalValue) &&
       (CQMessageBox::question(this, "Default value out of range.",
                               "The minimum value you set is larger than the default value of the slider. The new default will be set to the minimum. Do you want to procceed?",
-                              QMessageBox::Yes, QMessageBox::No | QMessageBox::Default | QMessageBox::Escape) != 0)
+                              QMessageBox::Yes, QMessageBox::No | QMessageBox::Default | QMessageBox::Escape) != QMessageBox::Yes)
 )
     {
       mpMinValueEdit->setText(QString::number(mMinValue));
@@ -251,7 +251,7 @@ void SliderSettingsDialog::maxValueChanged()
     {
       if (CQMessageBox::question(this, "Default value out of range.",
                                  "The maximum value you set is smaller than the default value of the slider. The new default will be set to the maximum. Do you want to procceed?",
-                                 QMessageBox::Yes, QMessageBox::No | QMessageBox::Default | QMessageBox::Escape) != 0)
+                                 QMessageBox::Yes, QMessageBox::No | QMessageBox::Default | QMessageBox::Escape) != QMessageBox::Yes)
         {
           mpMaxValueEdit->setText(QString::number(mMaxValue));
           mChanged = NONE;

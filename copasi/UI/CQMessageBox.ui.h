@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMessageBox.ui.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/29 13:17:15 $
+//   $Date: 2007/12/04 15:47:17 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -83,6 +83,7 @@ void CQMessageBox::configureBtn(int index, int type)
     {
       assert(!mBtnFinished); // The used buttons must be consecutive
       mBtn[index]->setText(tr(BtnText[type]));
+      mBtnAnswer[index] = type;
     }
 
   return;
@@ -116,7 +117,7 @@ void CQMessageBox::configureBtn(int index, const QString & text, int btnDefault,
   if (text.isEmpty())
     type = QMessageBox::NoButton;
   else
-    type = QMessageBox::Ok;
+    type = index + 1; // We must not use index 0 as this is equal to QMessageBox::NoButton
 
   if (index == btnDefault)
     type |= QMessageBox::Default;
@@ -128,16 +129,19 @@ void CQMessageBox::configureBtn(int index, const QString & text, int btnDefault,
 
   mBtn[index]->setText(text);
 
+  // Correct for the above introduced offset;
+  mBtnAnswer[index]--;
+
   return;
 }
 
-void CQMessageBox::slotBtn0() {done(0);}
+void CQMessageBox::slotBtn0() {done(mBtnAnswer[0]);}
 
-void CQMessageBox::slotBtn1() {done(1);}
+void CQMessageBox::slotBtn1() {done(mBtnAnswer[1]);}
 
-void CQMessageBox::slotBtn2() {done(2);}
+void CQMessageBox::slotBtn2() {done(mBtnAnswer[2]);}
 
-void CQMessageBox::slotBtn3() {done(3);}
+void CQMessageBox::slotBtn3() {done(mBtnAnswer[3]);}
 
 void CQMessageBox::init()
 {
@@ -151,20 +155,26 @@ void CQMessageBox::init()
   mBtn[2] = mpBtn2;
   mBtn[3] = mpBtn3;
 
+  // Initialize the results
+  mBtnAnswer[0] = QMessageBox::NoButton;
+  mBtnAnswer[1] = QMessageBox::NoButton;
+  mBtnAnswer[2] = QMessageBox::NoButton;
+  mBtnAnswer[3] = QMessageBox::NoButton;
+
   this->enableFilteredMessages(false);
 }
 
 void CQMessageBox::keyPressEvent(QKeyEvent * e)
 {
   if (e->key() == Key_Escape && mBtnEscape != -1)
-    done(mBtnEscape);
+    done(mBtnAnswer[mBtnEscape]);
 }
 
 void CQMessageBox::closeEvent(QCloseEvent * e)
 {
   QDialog::closeEvent(e);
   if (mBtnDefault != -1)
-    setResult(mBtnDefault);
+    setResult(mBtnAnswer[mBtnDefault]);
 }
 
 int CQMessageBox::critical(QWidget * parent, const QString & caption, const QString & message,

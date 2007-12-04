@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportDefinition.ui.h,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/01 17:51:00 $
+//   $Date: 2007/12/04 15:47:17 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -56,7 +56,7 @@ void CQReportDefinition::btnAdvancedClicked()
                                  "Do you want to proceed?",
                                  QMessageBox::Ok,
                                  QMessageBox::Cancel | QMessageBox::Default | QMessageBox::Escape,
-                                 QMessageBox::NoButton) == 0)
+                                 QMessageBox::NoButton) == QMessageBox::Ok)
         {
           // We convert the body without the separators to a table.
           mpTableList->clear();
@@ -296,7 +296,7 @@ void CQReportDefinition::btnDeleteReportClicked()
                                  msg,
                                  QMessageBox::Ok,
                                  QMessageBox::Cancel | QMessageBox::Default | QMessageBox::Escape,
-                                 QMessageBox::NoButton) == 1)
+                                 QMessageBox::NoButton) == QMessageBox::Cancel)
         return;
 
       for (it = TaskKeys.begin(); it != end; ++it)

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ScanWidget.cpp,v $
-//   $Revision: 1.202 $
+//   $Revision: 1.203 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/07/07 21:13:51 $
+//   $Author: shoops $
+//   $Date: 2007/12/04 15:47:17 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -202,7 +202,7 @@ bool ScanWidget::runTask()
 //                                QMessageBox::Ignore | QMessageBox::Default,
 //                                QMessageBox::Abort | QMessageBox::Escape);
 //
-//       if (Result == 1)
+//       if (Result == QMessageBox::Abort)
 //         {
 //           success = false;
 //           goto finish;

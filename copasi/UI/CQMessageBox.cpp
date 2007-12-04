@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMessageBox.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/29 13:17:15 $
+//   $Date: 2007/12/04 15:47:17 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,8 +13,8 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQMessageBox.ui'
  **
- ** Created: Mon Jun 11 13:57:12 2007
- **      by: The User Interface Compiler ($Id: CQMessageBox.cpp,v 1.2 2007/10/29 13:17:15 shoops Exp $)
+ ** Created: Tue Dec 4 10:37:03 2007
+ **      by: The User Interface Compiler ($Id: CQMessageBox.cpp,v 1.3 2007/12/04 15:47:17 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/

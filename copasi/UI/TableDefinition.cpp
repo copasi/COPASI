@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TableDefinition.cpp,v $
-//   $Revision: 1.56 $
+//   $Revision: 1.57 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/16 19:55:37 $
+//   $Date: 2007/12/04 15:47:17 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -144,7 +144,7 @@ void TableDefinition::deleteObjects(const std::vector<std::string> & keys)
                                  msg,
                                  QMessageBox::Ok,
                                  QMessageBox::Cancel | QMessageBox::Default | QMessageBox::Escape,
-                                 QMessageBox::NoButton) == 1)
+                                 QMessageBox::NoButton) == QMessageBox::Cancel)
         return;
 
       for (it = TaskKeys.begin(); it != end; ++it)

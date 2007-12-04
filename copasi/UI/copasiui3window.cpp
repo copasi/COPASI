@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.215 $
+//   $Revision: 1.216 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/11/16 20:22:15 $
+//   $Author: shoops $
+//   $Date: 2007/12/04 15:47:17 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1017,19 +1017,12 @@ void CopasiUI3Window::slotImportSBML(QString file)
 
           CQMessageBox::critical(this, QString("File Error"), Message,
                                  QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
-          CCopasiMessage::clearDeque();
 
           dataModel->createModel();
         }
 
-      /* still check for warnings.
-       * Maybe events or rules were ignored while reading
-       * the file.
-       */
-      if (success)
-        {
-          this->checkPendingMessages();
-        }
+      // We check in all case for warnings. This will help also for unsuccessful imports
+      this->checkPendingMessages();
 
       ListViews::notify(ListViews::MODEL, ListViews::ADD,
                         CCopasiDataModel::Global->getModel()->getKey());
@@ -1099,7 +1092,7 @@ void CopasiUI3Window::slotExportSBML()
               os << (*it).getMessage() << "\n";
               ++it;
             }
-          if (CQMessageBox::question(this, "SBML Incompatible", os.str().c_str(), QMessageBox::Yes, QMessageBox::No | QMessageBox::Default | QMessageBox::Escape, QMessageBox::NoButton) == 0)
+          if (CQMessageBox::question(this, "SBML Incompatible", os.str().c_str(), QMessageBox::Yes, QMessageBox::No | QMessageBox::Default | QMessageBox::Escape, QMessageBox::NoButton) == QMessageBox::Yes)
             {
               exportIncomplete = true;
             }
