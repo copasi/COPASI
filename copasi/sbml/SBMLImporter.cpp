@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.188 $
+//   $Revision: 1.189 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/12/03 21:44:04 $
+//   $Author: shoops $
+//   $Date: 2007/12/04 15:52:13 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -3907,7 +3907,7 @@ bool SBMLImporter::setInitialValues(CModel* pModel, const std::map<CCopasiObject
               this->mIncompleteModel = true;
               CCopasiMessage::CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 43, pSBMLParameter->getId().c_str());
 
-              (*metabIt)->setInitialValue(1.0);
+              (*mvIt)->setInitialValue(1.0);
               changedObjects.insert((*mvIt)->getInitialValueReference());
             }
         }
