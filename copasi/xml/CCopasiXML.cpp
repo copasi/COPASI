@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-//   $Revision: 1.103 $
+//   $Revision: 1.104 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/16 21:06:58 $
+//   $Date: 2007/12/04 20:51:00 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -358,7 +358,7 @@ bool CCopasiXML::saveModel()
     {
       startSaveElement("InitialExpression");
       saveData(mpModel->getInitialExpression());
-      endSaveElement("InitalExpression");
+      endSaveElement("InitialExpression");
     }
 
   startSaveElement("Comment");
@@ -407,7 +407,7 @@ bool CCopasiXML::saveModel()
             {
               startSaveElement("InitialExpression");
               saveData(pComp->getInitialExpression());
-              endSaveElement("InitalExpression");
+              endSaveElement("InitialExpression");
             }
 
           endSaveElement("Compartment");
@@ -460,7 +460,7 @@ bool CCopasiXML::saveModel()
             {
               startSaveElement("InitialExpression");
               saveData(pMetab->getInitialExpression());
-              endSaveElement("InitalExpression");
+              endSaveElement("InitialExpression");
             }
 
           endSaveElement("Metabolite");
@@ -510,7 +510,7 @@ bool CCopasiXML::saveModel()
             {
               startSaveElement("InitialExpression");
               saveData(pMV->getInitialExpression());
-              endSaveElement("InitalExpression");
+              endSaveElement("InitialExpression");
             }
 
           endSaveElement("ModelValue");
