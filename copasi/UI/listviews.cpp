@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.236 $
+//   $Revision: 1.237 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/13 14:46:36 $
+//   $Date: 2007/12/05 20:16:26 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1108,7 +1108,7 @@ bool ListViews::notify(ObjectType objectType, Action action, const std::string &
   for (; it != ende; ++it)
     if (! (*it)->updateCurrentWidget(objectType, action, key)) success = false;
 
-  notifyAllChildWidgets(0, objectType, action, key);
+  notifyAllChildWidgets(objectType, action, key);
 
   return success;
 }
@@ -1149,39 +1149,33 @@ void ListViews::switchAllListViewsToWidget(C_INT32 id, const std::string & key)
   {(*it)->switchToOtherWidget(id, key);}
 }
 
-void ListViews::notifyChildWidgets(FolderListItem * pItem,
-                                   ObjectType objectType,
+void ListViews::notifyChildWidgets(ObjectType objectType,
                                    Action action,
                                    const std::string & key)
 {
-  FolderListItem * pChild = static_cast<FolderListItem * >(pItem->firstChild());
+  QObjectList * pList = queryList("CopasiWidget");
+  QObjectListIt it(*pList); // iterate over the CopasiWidgets
+  CopasiWidget * pCopasiWidget;
 
-  while (pChild)
+  while ((pCopasiWidget = static_cast< CopasiWidget * >(it.current())) != NULL)
     {
-      notifyChildWidgets(pChild, objectType, action, key);
-
-      CopasiWidget * pWidget = findWidgetFromItem(pChild);
-      if (pWidget)
-        pWidget->update(objectType, action, key);
-
-      pChild = static_cast<FolderListItem * >(pChild->nextSibling());
+      pCopasiWidget->update(objectType, action, key);
+      ++it;
     }
+
+  delete pList; // delete the list, not the CopasiWidgets
 }
 
 // static
-void ListViews::notifyAllChildWidgets(C_INT32 id,
-                                      ObjectType objectType,
+void ListViews::notifyAllChildWidgets(ObjectType objectType,
                                       Action action,
                                       const std::string & key)
 {
   std::set<ListViews *>::iterator it = mListOfListViews.begin();
   std::set<ListViews *>::iterator end = mListOfListViews.end();
+
   for (; it != end; ++it)
-    {
-      FolderListItem * pItem = (*it)->findListViewItem(id, "");
-      if (pItem)
-        (*it)->notifyChildWidgets(pItem, objectType, action, key);
-    }
+    (*it)->notifyChildWidgets(objectType, action, key);
 }
 
 void ListViews::setChildWidgetsFramework(int framework)

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/StateSubwidget.ui.h,v $
-//   $Revision: 1.34 $
+//   $Revision: 1.35 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/31 17:57:35 $
+//   $Date: 2007/12/05 20:16:26 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -43,132 +43,152 @@ void StateSubwidget::init()
 {
   topLabel->setText("");
   displayOptimizationTab(false);
-  //bla
+
+  mpModel = NULL;
+  mpTask = NULL;
+
+  setFramework(mFramework);
 }
 
 void StateSubwidget::displayOptimizationTab(bool displayOptTab)
 {
   if (displayOptTab)
     {
-      tabWidget->insertTab(TabPage, "OptimizationResults", 0);
-      tabWidget->setCurrentPage(0);
+      mpTabWidget->insertTab(mpOptimizationPage, "OptimizationResults", 0);
+      mpTabWidget->setCurrentPage(0);
     }
   else
-    tabWidget->removePage(TabPage);
+    mpTabWidget->removePage(mpOptimizationPage);
 }
 
-bool StateSubwidget::loadMetabolites(const CModel* model)
+void StateSubwidget::loadMetabolites()
 {
-  const CCopasiVector<CMetab>& metabs = model->getMetabolites();
-  C_INT32 i, imax = metabs.size();
-
-  concentrationsTable->setNumRows(imax);
-  numbersTable->setNumRows(imax);
-
-  QString name;
-  for (i = 0; i < imax; ++i)
-    {
-      name = FROM_UTF8(CMetabNameInterface::getDisplayName(model, *metabs[i]));
-
-      concentrationsTable->setText(i, 0, name);
-      concentrationsTable->setText(i, 1, QString::number(metabs[i]->getConcentration()));
-      concentrationsTable->setText(i, 2, QString::number(metabs[i]->getConcentrationRate()));
-      concentrationsTable->setText(i, 3, QString::number(metabs[i]->getTransitionTime()));
-
-      numbersTable->setText(i, 0, name);
-      numbersTable->setText(i, 1, QString::number(metabs[i]->getValue()));
-      numbersTable->setText(i, 2, QString::number(metabs[i]->getRate()));
-      numbersTable->setText(i, 3, QString::number(metabs[i]->getTransitionTime()));
-    }
-
-  return true;
-}
-
-bool StateSubwidget::loadReactions(CModel * model)
-{
-  const CCopasiVector<CReaction>& reacs = model->getReactions();
-  C_INT32 i, imax = reacs.size();
-
-  tableFlux->setNumRows(imax);
-
-  for (i = 0; i < imax; ++i)
-    {
-      tableFlux->setText(i, 0, FROM_UTF8(reacs[i]->getObjectName()));
-      tableFlux->setText(i, 1, QString::number(reacs[i]->getFlux()));
-      tableFlux->setText(i, 2, QString::number(reacs[i]->getParticleFlux()));
-      tableFlux->setText(i, 3, FROM_UTF8(CChemEqInterface::getChemEqString(model, *reacs[i], false)));
-    }
-  return true;
-}
-
-void StateSubwidget::loadModelValues(const CModel * model)
-{
-
-  CCopasiVectorN< CModelValue >::const_iterator it = model->getModelValues().begin();
-  CCopasiVectorN< CModelValue >::const_iterator end = model->getModelValues().end();
+  // Fill the table
+  CCopasiVectorN< CMetab >::const_iterator it = mpModel->getMetabolites().begin();
+  CCopasiVectorN< CMetab >::const_iterator end = mpModel->getMetabolites().end();
   C_INT32 i = 0;
 
-  mpModelValueTable->setNumRows(model->getModelValues().size());
+  mpTblMetabolites->setNumRows(mpModel->getMetabolites().size());
+
   for (; it != end; ++it)
     if ((*it)->isUsed())
       {
-        mpModelValueTable->setText(i, 0, FROM_UTF8((*it)->getObjectName()));
-        mpModelValueTable->setText(i, 1, FROM_UTF8(CModelEntity::StatusName[(*it)->getStatus()]));
-        mpModelValueTable->setText(i, 2, QString::number((*it)->getValue()));
-        mpModelValueTable->setText(i, 3, QString::number((*it)->getRate()));
+        mpTblMetabolites->setText(i, 0, FROM_UTF8(CMetabNameInterface::getDisplayName(mpModel, **it)));
+        mpTblMetabolites->setText(i, 1, FROM_UTF8(CModelEntity::StatusName[(*it)->getStatus()]));
+
+        switch (mFramework)
+          {
+          case 0:
+            mpTblMetabolites->setText(i, 2, QString::number((*it)->getConcentration()));
+            mpTblMetabolites->setText(i, 3, QString::number((*it)->getConcentrationRate()));
+            break;
+
+          case 1:
+            mpTblMetabolites->setText(i, 2, QString::number((*it)->getValue()));
+            mpTblMetabolites->setText(i, 3, QString::number((*it)->getRate()));
+            break;
+          }
+
+        mpTblMetabolites->setText(i, 4, QString::number((*it)->getTransitionTime()));
         i++;
       }
 
-  mpModelValueTable->setNumRows(i);
-  return;
+  mpTblMetabolites->setNumRows(i);
+
+  mpTblMetabolites->adjustColumn(0);
+  mpTblMetabolites->adjustColumn(1);
+  mpTblMetabolites->adjustColumn(2);
+  mpTblMetabolites->adjustColumn(3);
+  mpTblMetabolites->adjustColumn(4);
 }
 
-void StateSubwidget::loadJacobian(const CSteadyStateTask * task)
+void StateSubwidget::loadCompartments()
 {
-  /*const CMatrix< C_FLOAT64 > & jacobian = task->getJacobian();
+  CCopasiVectorN< CCompartment >::const_iterator it = mpModel->getCompartments().begin();
+  CCopasiVectorN< CCompartment >::const_iterator end = mpModel->getCompartments().end();
+  C_INT32 i = 0;
 
-  tableJacobian->setNumRows(jacobian.numRows());
-  tableJacobian->setNumCols(jacobian.numCols());
+  mpTblCompartments->setNumRows(mpModel->getCompartments().size());
 
-  C_INT32 i, imax = jacobian.numRows();
-  C_INT32 j, jmax = jacobian.numCols();
-  for (i = 0; i < imax; ++i)
-    for (j = 0; j < jmax; ++j)
+  for (; it != end; ++it)
+    if ((*it)->isUsed())
       {
-        tableJacobian->setText(i, j, QString::number(jacobian(i, j)));
+        mpTblCompartments->setText(i, 0, FROM_UTF8((*it)->getObjectName()));
+        mpTblCompartments->setText(i, 1, FROM_UTF8(CModelEntity::StatusName[(*it)->getStatus()]));
+        mpTblCompartments->setText(i, 2, QString::number((*it)->getValue()));
+        mpTblCompartments->setText(i, 3, QString::number((*it)->getRate()));
+        i++;
       }
 
-  for (j = 0; j < jmax; ++j)
-    tableJacobian->adjustColumn(j);
+  mpTblCompartments->setNumRows(i);
 
-  QString name;
-  CStateTemplate & StateTemplate = task->getProblem()->getModel()->getStateTemplate();
-  CModelEntity **ppEntities = StateTemplate.getEntities();
-  const unsigned C_INT32 * pUserOrder = StateTemplate.getUserOrder().array();
-  const unsigned C_INT32 * pUserOrderEnd = pUserOrder + StateTemplate.getUserOrder().size();
-  CMetab * pMetab;
+  mpTblCompartments->adjustColumn(0);
+  mpTblCompartments->adjustColumn(1);
+  mpTblCompartments->adjustColumn(2);
+  mpTblCompartments->adjustColumn(3);
+}
 
-  pUserOrder++; // We skip the time which is the first.
+void StateSubwidget::loadReactions()
+{
+  // Fill the table
+  CCopasiVectorN< CReaction >::const_iterator it = mpModel->getReactions().begin();
+  CCopasiVectorN< CReaction >::const_iterator end = mpModel->getReactions().end();
+  C_INT32 i = 0;
 
-  for (i = 0; i < imax && pUserOrder != pUserOrderEnd; pUserOrder++)
+  mpTblReactions->setNumRows(mpModel->getReactions().size());
+
+  for (; it != end; ++it)
     {
-      const CModelEntity::Status & Status = ppEntities[*pUserOrder]->getStatus();
-      if (Status == CModelEntity::ODE || Status == CModelEntity::REACTIONS)
+      mpTblReactions->setText(i, 0, FROM_UTF8((*it)->getObjectName()));
+
+      switch (mFramework)
         {
-          if ((pMetab = dynamic_cast<CMetab *>(ppEntities[*pUserOrder])) != NULL)
-            name = FROM_UTF8(CMetabNameInterface::getDisplayName(task->getProblem()->getModel(), *pMetab));
-          else
-            name = FROM_UTF8(ppEntities[*pUserOrder]->getObjectDisplayName());
+        case 0:
+          mpTblReactions->setText(i, 1, QString::number((*it)->getFlux()));
+          break;
 
-          tableJacobian->horizontalHeader()->setLabel(i, name);
-          tableJacobian->verticalHeader()->setLabel(i, name);
-
-          i++;
+        case 1:
+          mpTblReactions->setText(i, 1, QString::number((*it)->getParticleFlux()));
+          break;
         }
-    }
-  */
 
-  const CArrayAnnotation * JacAnn = task->getJacobianAnnotated();
+      mpTblReactions->setText(i, 2, FROM_UTF8(CChemEqInterface::getChemEqString(mpModel, **it, false)));
+      i++;
+    }
+
+  mpTblReactions->adjustColumn(0);
+  mpTblReactions->adjustColumn(1);
+  mpTblReactions->adjustColumn(2);
+}
+
+void StateSubwidget::loadModelValues()
+{
+  CCopasiVectorN< CModelValue >::const_iterator it = mpModel->getModelValues().begin();
+  CCopasiVectorN< CModelValue >::const_iterator end = mpModel->getModelValues().end();
+  C_INT32 i = 0;
+
+  mpTblModelValues->setNumRows(mpModel->getModelValues().size());
+  for (; it != end; ++it)
+    if ((*it)->isUsed())
+      {
+        mpTblModelValues->setText(i, 0, FROM_UTF8((*it)->getObjectName()));
+        mpTblModelValues->setText(i, 1, FROM_UTF8(CModelEntity::StatusName[(*it)->getStatus()]));
+        mpTblModelValues->setText(i, 2, QString::number((*it)->getValue()));
+        mpTblModelValues->setText(i, 3, QString::number((*it)->getRate()));
+        i++;
+      }
+
+  mpTblModelValues->setNumRows(i);
+
+  mpTblModelValues->adjustColumn(0);
+  mpTblModelValues->adjustColumn(1);
+  mpTblModelValues->adjustColumn(2);
+  mpTblModelValues->adjustColumn(3);
+}
+
+void StateSubwidget::loadJacobian()
+{
+  const CArrayAnnotation * JacAnn = mpTask->getJacobianAnnotated();
 
   CColorScaleBiLog * tcs = new CColorScaleBiLog();
   mpJacobianAnnotationWidget->setColorCoding(tcs);
@@ -177,8 +197,8 @@ void StateSubwidget::loadJacobian(const CSteadyStateTask * task)
   mpJacobianAnnotationWidget->setArrayAnnotation(JacAnn);
 
   //Eigenvalues...
-  const CVector< C_FLOAT64 > & eigen_i = task->getEigenValues().getI();
-  const CVector< C_FLOAT64 > & eigen_r = task->getEigenValues().getR();
+  const CVector< C_FLOAT64 > & eigen_i = mpTask->getEigenValues().getI();
+  const CVector< C_FLOAT64 > & eigen_r = mpTask->getEigenValues().getR();
 
   unsigned C_INT32 i, imax = eigen_i.size();
   tableEigenValues->setNumRows(imax);
@@ -194,7 +214,7 @@ void StateSubwidget::loadJacobian(const CSteadyStateTask * task)
 
   //JacobianX
 
-  const CArrayAnnotation * JacXAnn = task->getJacobianXAnnotated();
+  const CArrayAnnotation * JacXAnn = mpTask->getJacobianXAnnotated();
 
   tcs = new CColorScaleBiLog();
   mpJacobianXAnnotationWidget->setColorCoding(tcs);
@@ -202,40 +222,9 @@ void StateSubwidget::loadJacobian(const CSteadyStateTask * task)
   mpJacobianXAnnotationWidget->setLegendEnabled(false);
   mpJacobianXAnnotationWidget->setArrayAnnotation(JacXAnn);
 
-  /*
-  const CMatrix< C_FLOAT64 > & jacobianX = task->getJacobianReduced();
-
-  tableJacobianX->setNumRows(jacobianX.numRows());
-  tableJacobianX->setNumCols(jacobianX.numCols());
-
-  imax = jacobianX.numRows();
-  jmax = jacobianX.numCols();
-  for (i = 0; i < imax; ++i)
-    for (j = 0; j < jmax; ++j)
-      {
-        tableJacobianX->setText(i, j, QString::number(jacobianX(i, j)));
-      }
-
-  ppEntities = StateTemplate.beginIndependent();
-
-  for (i = 0; i < imax; ++i, ++ppEntities)
-    {
-      if ((pMetab = dynamic_cast<CMetab *>(*ppEntities)) != NULL)
-        name = FROM_UTF8(CMetabNameInterface::getDisplayName(task->getProblem()->getModel(), *pMetab));
-      else
-        name = FROM_UTF8((*ppEntities)->getObjectDisplayName());
-
-      tableJacobianX->horizontalHeader()->setLabel(i, name);
-      tableJacobianX->verticalHeader()->setLabel(i, name);
-    }
-
-  for (j = 0; j < jmax; ++j)
-    tableJacobianX->adjustColumn(j);
-  */
-
   //Eigenvalues...
-  const CVector< C_FLOAT64 > & eigen_iX = task->getEigenValuesReduced().getI();
-  const CVector< C_FLOAT64 > & eigen_rX = task->getEigenValuesReduced().getR();
+  const CVector< C_FLOAT64 > & eigen_iX = mpTask->getEigenValuesReduced().getI();
+  const CVector< C_FLOAT64 > & eigen_rX = mpTask->getEigenValuesReduced().getR();
 
   imax = eigen_iX.size();
   tableEigenValuesX->setNumRows(imax);
@@ -252,7 +241,7 @@ void StateSubwidget::loadJacobian(const CSteadyStateTask * task)
   stabilityTextEdit->setReadOnly(true);
 
   std::ostringstream ss;
-  ss << task->getEigenValuesReduced();
+  ss << mpTask->getEigenValuesReduced();
 
   stabilityTextEdit->setText(FROM_UTF8(ss.str()));
   return;
@@ -260,127 +249,189 @@ void StateSubwidget::loadJacobian(const CSteadyStateTask * task)
 
 void StateSubwidget::showUnits()
 {
-  //CCopasiDataModel::Global->getModel()->getVolumeUnit();
+  if (mpModel == NULL)
+    return;
 
-  concentrationsTable->horizontalHeader()->setLabel(concentrationsTable->numCols() - 1, tr("Transition Time\n("\
-      + FROM_UTF8(CCopasiDataModel::Global->getModel()->getTimeUnitName()) + ")"));
+  // Update the column titles
 
-  concentrationsTable->horizontalHeader()->setLabel(concentrationsTable->numCols() - 2, tr("Rate\n(per "\
-      + FROM_UTF8(CCopasiDataModel::Global->getModel()->getTimeUnitName()) + ")"));
+  QString TimeUnits(FROM_UTF8(mpModel->getTimeUnitName()));
+  QString ConcentrationUnits(FROM_UTF8(mpModel->getConcentrationUnitName()));
+  QString VolumeUnits(FROM_UTF8(mpModel->getVolumeUnitName()));
 
-  concentrationsTable->horizontalHeader()->setLabel(concentrationsTable->numCols() - 3, tr("Concentration\n("\
-      + FROM_UTF8(CCopasiDataModel::Global->getModel()->getConcentrationUnitName()) + ")"));
+  mpTblMetabolites->horizontalHeader()
+  ->setLabel(4, "Transition Time\n(" + TimeUnits + ")");
 
-  numbersTable->horizontalHeader()->setLabel(numbersTable->numCols() - 1, tr("Transition Time\n("\
-      + FROM_UTF8(CCopasiDataModel::Global->getModel()->getTimeUnitName()) + ")"));
-  numbersTable->horizontalHeader()->setLabel(numbersTable->numCols() - 2, tr("Rate\n(per "\
-      + FROM_UTF8(CCopasiDataModel::Global->getModel()->getTimeUnitName()) + ")"));
+  mpTblCompartments->horizontalHeader()
+  ->setLabel(2, "Volume\n(" + VolumeUnits + ")");
 
-  tableFlux->horizontalHeader()->setLabel(numbersTable->numCols() - 3, tr("Flux\n("\
-                                          + FROM_UTF8(CCopasiDataModel::Global->getModel()->getQuantityRateUnitName()) + ")"));
+  mpTblCompartments->horizontalHeader()
+  ->setLabel(3, "Rate\n(" + VolumeUnits + "/" + TimeUnits + ")");
 
-  tableFlux->horizontalHeader()->setLabel(numbersTable->numCols() - 2, tr("Particle flux\n(particle/"\
-                                          + FROM_UTF8(CCopasiDataModel::Global->getModel()->getTimeUnitName()) + ")"));
+  switch (mFramework)
+    {
+    case 0:
+      mpTblMetabolites->horizontalHeader()
+      ->setLabel(2, "Concentration\n(" + ConcentrationUnits + ")");
+
+      mpTblMetabolites->horizontalHeader()
+      ->setLabel(3, "Rate\n(" + ConcentrationUnits + "/" + TimeUnits + ")");
+
+      mpTblReactions->horizontalHeader()
+      ->setLabel(1, "Flux\n(" + FROM_UTF8(mpModel->getQuantityRateUnitName()) + ")");
+      break;
+
+    case 1:
+      mpTblMetabolites->horizontalHeader()
+      ->setLabel(2, "Particle Numbers");
+
+      mpTblMetabolites->horizontalHeader()
+      ->setLabel(3, "Rate\n(#/" + TimeUnits + ")");
+
+      mpTblReactions->horizontalHeader()
+      ->setLabel(1, "Particle Flux\n(#/" + TimeUnits + ")");
+      break;
+    }
 }
 
-bool StateSubwidget::loadAll(const CSteadyStateTask * task)
+bool StateSubwidget::loadAll(const CSteadyStateTask * pTask)
 {
-  CState * pState = const_cast<CState *>(task->getState());
-  CModel * pModel = task->getProblem()->getModel();
+  mpTask = pTask;
+  mpModel = CCopasiDataModel::Global->getModel();
 
-  pModel->setState(*pState);
-  pModel->updateSimulatedValues(true);
+  if (mpTask == NULL || mpModel == NULL)
+    {
+      clear();
+      return false;
+    }
 
-  pModel->updateNonSimulatedValues();
+  CState * pState = const_cast<CState *>(mpTask->getState());
+  mpModel->setState(*pState);
+  mpModel->updateSimulatedValues(true);
+  mpModel->updateNonSimulatedValues();
 
-  // editing units here
-
-  if (task->getResult() == CSteadyStateMethod::found)
+  if (mpTask->getResult() == CSteadyStateMethod::found)
     topLabel->setText("A steady state with given resolution was found.");
-  else if (task->getResult() == CSteadyStateMethod::notFound)
+  else if (mpTask->getResult() == CSteadyStateMethod::notFound)
     topLabel->setText("No steady state with given resolution was found!");
-  else if (task->getResult() == CSteadyStateMethod::foundEquilibrium)
+  else if (mpTask->getResult() == CSteadyStateMethod::foundEquilibrium)
     topLabel->setText("An equilibrium steady state (zero fluxes) was found.");
-  else if (task->getResult() == CSteadyStateMethod::foundNegative)
+  else if (mpTask->getResult() == CSteadyStateMethod::foundNegative)
     topLabel->setText("An invalid steady state (negative concentrations) was found.");
-
   else
     topLabel->setText("A steady state with given resolution couldn't be found.");
 
-  if (!loadMetabolites(pModel)) return false;
-  if (!loadReactions(pModel)) return false;
+  setFramework(mFramework);
 
-  loadModelValues(pModel);
+  loadCompartments();
+  loadModelValues();
 
   const CSteadyStateProblem* pProblem =
-    dynamic_cast<const CSteadyStateProblem *>(task->getProblem());
+    dynamic_cast<const CSteadyStateProblem *>(mpTask->getProblem());
   assert(pProblem);
 
-  int Last = tabWidget->count() - 1;
+  int Last = mpTabWidget->count() - 1;
 
   // jacobian and stability
   if (pProblem->isJacobianRequested() ||
       pProblem->isStabilityAnalysisRequested())
     {
-      tabWidget->setTabEnabled(tabWidget->page(Last - 3), true);
-      tabWidget->setTabEnabled(tabWidget->page(Last - 2), true);
-      tabWidget->setTabEnabled(tabWidget->page(Last - 1), true);
-      loadJacobian(task);
+      mpTabWidget->setTabEnabled(mpTabWidget->page(Last - 3), true);
+      mpTabWidget->setTabEnabled(mpTabWidget->page(Last - 2), true);
+      mpTabWidget->setTabEnabled(mpTabWidget->page(Last - 1), true);
+      loadJacobian();
     }
 
   else
     {
-      tabWidget->setTabEnabled(tabWidget->page(Last - 3), false);
-      tabWidget->setTabEnabled(tabWidget->page(Last - 2), false);
-      tabWidget->setTabEnabled(tabWidget->page(Last - 1), false);
+      mpTabWidget->setTabEnabled(mpTabWidget->page(Last - 3), false);
+      mpTabWidget->setTabEnabled(mpTabWidget->page(Last - 2), false);
+      mpTabWidget->setTabEnabled(mpTabWidget->page(Last - 1), false);
     }
 
   // protocol
   if (true /*pProblem->isJacobianRequested() ||
-                                    pProblem->isStabilityAnalysisRequested()*/)
+                                          pProblem->isStabilityAnalysisRequested()*/)
     {
-      tabWidget->setTabEnabled(tabWidget->page(Last), true);
+      mpTabWidget->setTabEnabled(mpTabWidget->page(Last), true);
 
       //stabilityTextEdit->setReadOnly(true);
 
       //std::ostringstream ss;
-      //ss << task->getEigenValuesReduced();
+      //ss << mpTask->getEigenValuesReduced();
       const CSteadyStateMethod * pMethod =
-        dynamic_cast<const CSteadyStateMethod *>(task->getMethod());
+        dynamic_cast<const CSteadyStateMethod *>(mpTask->getMethod());
       assert(pMethod);
       protocolTextEdit->setText(FROM_UTF8(pMethod->getMethodLog()));
     }
 
   else
     {
-      tabWidget->setTabEnabled(tabWidget->page(Last), false);
+      mpTabWidget->setTabEnabled(mpTabWidget->page(Last), false);
     }
 
   return true;
 }
 
-bool StateSubwidget::clear()
+void StateSubwidget::clear()
 {
   topLabel->setText("No result available, please execute the steady-state task.");
 
-  concentrationsTable->setNumRows(0);
-  numbersTable->setNumRows(0);
+  mpTblMetabolites->setNumRows(0);
+  mpTblCompartments->setNumRows(0);
+  mpTblModelValues->setNumRows(0);
+  mpTblReactions->setNumRows(0);
 
-  tableFlux->setNumRows(0);
-
-  //tableJacobian->setNumRows(0);
-  //tableJacobian->setNumCols(0);
   mpJacobianAnnotationWidget->setArrayAnnotation(NULL);
   mpJacobianXAnnotationWidget->setArrayAnnotation(NULL);
 
   tableEigenValues->setNumRows(0);
-
-  //tableJacobianX->setNumRows(0);
-  //tableJacobianX->setNumCols(0);
-
   tableEigenValuesX->setNumRows(0);
 
   stabilityTextEdit->setText("");
+}
+
+void StateSubwidget::setFramework(int framework)
+{
+  CopasiWidget::setFramework(framework);
+
+  showUnits();
+
+  if (mpModel == NULL)
+    return;
+
+  loadMetabolites();
+  loadReactions();
+}
+
+bool StateSubwidget::update(ListViews::ObjectType objectType,
+                            ListViews::Action action,
+                            const std::string & /* key */)
+{
+  switch (objectType)
+    {
+    case ListViews::MODEL:
+      // For a new model we need to remove references to no longer existing metabolites
+      switch (action)
+        {
+        case ListViews::ADD:
+          mpModel = CCopasiDataModel::Global->getModel();
+          clear();
+          showUnits();
+          mpTask = NULL;
+          break;
+
+        case ListViews::CHANGE:
+          showUnits();
+          break;
+
+        default:
+          break;
+        }
+      break;
+
+    default:
+      break;
+    }
 
   return true;
 }

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-//   $Revision: 1.135 $
+//   $Revision: 1.136 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/07 21:14:26 $
+//   $Date: 2007/12/05 20:16:26 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -168,13 +168,11 @@ class ListViews : public QSplitter
     static bool updateDataModelAndListviews(ObjectType objectType, Action action, const std::string & key);
     static bool updateAllListviews(C_INT32 id);
 
-    void notifyChildWidgets(FolderListItem * pItem,
-                            ObjectType objectType,
+    void notifyChildWidgets(ObjectType objectType,
                             Action action,
                             const std::string & key);
 
-    static void notifyAllChildWidgets(C_INT32 id,
-                                      ObjectType objectType,
+    static void notifyAllChildWidgets(ObjectType objectType,
                                       Action action,
                                       const std::string & key);
 

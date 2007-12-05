@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/StateSubwidget.h,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/02 18:18:01 $
+//   $Date: 2007/12/05 20:16:26 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,8 +13,8 @@
 /****************************************************************************
  ** Form interface generated from reading ui file 'StateSubwidget.ui'
  **
- ** Created: Thu Sep 27 00:56:49 2007
- **      by: The User Interface Compiler ($Id: StateSubwidget.h,v 1.16 2007/10/02 18:18:01 shoops Exp $)
+ ** Created: Wed Dec 5 13:31:55 2007
+ **      by: The User Interface Compiler ($Id: StateSubwidget.h,v 1.17 2007/12/05 20:16:26 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -24,7 +24,7 @@
 
 #include <qvariant.h>
 #include <qpixmap.h>
-#include <qwidget.h>
+#include "copasiWidget.h"
 
 class QVBoxLayout;
 class QHBoxLayout;
@@ -33,84 +33,89 @@ class QSpacerItem;
 class CQArrayAnnotationsWidget;
 class QLabel;
 class QTabWidget;
+class QWidget;
 class QTextEdit;
 class QTable;
 class QSplitter;
 class CModel;
 class CSteadyStateTask;
 
-class StateSubwidget : public QWidget
+class StateSubwidget : public CopasiWidget
   {
     Q_OBJECT
 
   public:
-    StateSubwidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+    StateSubwidget(QWidget* parent = 0, const char* name = 0);
     ~StateSubwidget();
 
     QLabel* topLabel;
-    QTabWidget* tabWidget;
-    QWidget* TabPage;
+    QTabWidget* mpTabWidget;
+    QWidget* mpOptimizationPage;
     QTextEdit* optimizationResultText;
-    QWidget* tab;
-    QTable* concentrationsTable;
-    QWidget* tab_2;
-    QTable* numbersTable;
-    QWidget* TabPage_2;
-    QTable* mpModelValueTable;
-    QWidget* TabPage_3;
-    QTable* tableFlux;
-    QWidget* TabPage_4;
+    QWidget* mpMetabolitesPage;
+    QTable* mpTblMetabolites;
+    QWidget* mpCompartmentsPage;
+    QTable* mpTblCompartments;
+    QWidget* mpModelQuantitiesPage;
+    QTable* mpTblModelValues;
+    QWidget* mpReactionsPage;
+    QTable* mpTblReactions;
+    QWidget* mpJacobianPage;
     QSplitter* splitter3;
     CQArrayAnnotationsWidget* mpJacobianAnnotationWidget;
     QLabel* textLabelJacobian;
     QTable* tableEigenValues;
     QLabel* textLabelEigenvalues;
-    QWidget* TabPage_5;
+    QWidget* mpReducedJacobianPage;
     QSplitter* splitter3_2;
     CQArrayAnnotationsWidget* mpJacobianXAnnotationWidget;
     QLabel* textLabelJacobianX;
     QTable* tableEigenValuesX;
     QLabel* textLabelEigenvaluesX;
-    QWidget* TabPage_6;
+    QWidget* mpStabilityPage;
     QTextEdit* stabilityTextEdit;
-    QWidget* TabPage_7;
+    QWidget* mpProtocolPage;
     QTextEdit* protocolTextEdit;
 
-    void displayOptimizationTab(bool display);
-    virtual bool loadMetabolites(const CModel * model);
-    virtual bool loadReactions(CModel * model);
-    virtual void loadModelValues(const CModel * model);
-    virtual bool loadAll(const CSteadyStateTask * task);
-    bool clear();
-
-  public slots:
-    virtual void loadJacobian(const CSteadyStateTask * task);
-    virtual void showUnits();
+    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
+    virtual void setFramework(int framework);
+    void displayOptimizationTab(bool displayOptTab);
+    virtual bool loadAll(const CSteadyStateTask * pTask);
+    void clear();
 
   protected:
+    const CSteadyStateTask * mpTask;
+    CModel * mpModel;
+
+    virtual void init();
+    void loadMetabolites();
+    void loadCompartments();
+    void loadReactions();
+    void loadModelValues();
+    void loadJacobian();
+    void showUnits();
+
     QVBoxLayout* StateSubwidgetLayout;
-    QVBoxLayout* TabPageLayout;
-    QVBoxLayout* tabLayout;
-    QVBoxLayout* tabLayout_2;
-    QHBoxLayout* TabPageLayout_2;
-    QVBoxLayout* TabPageLayout_3;
-    QGridLayout* TabPageLayout_4;
+    QVBoxLayout* mpOptimizationPageLayout;
+    QVBoxLayout* mpMetabolitesPageLayout;
+    QVBoxLayout* mpCompartmentsPageLayout;
+    QHBoxLayout* mpModelQuantitiesPageLayout;
+    QVBoxLayout* mpReactionsPageLayout;
+    QGridLayout* mpJacobianPageLayout;
     QGridLayout* layoutJacobian;
     QSpacerItem* spacer3;
     QGridLayout* layoutEigenvalues;
     QSpacerItem* spacer4;
-    QVBoxLayout* TabPageLayout_5;
+    QVBoxLayout* mpReducedJacobianPageLayout;
     QGridLayout* layoutJacobianX;
     QSpacerItem* spacer3_2;
     QGridLayout* layoutEigenvaluesX;
     QSpacerItem* spacer4_2;
-    QVBoxLayout* TabPageLayout_6;
-    QGridLayout* TabPageLayout_7;
+    QVBoxLayout* mpStabilityPageLayout;
+    QGridLayout* mpProtocolPageLayout;
 
   protected slots:
     virtual void languageChange();
-
-    virtual void init();
 
   private:
     QPixmap image0;

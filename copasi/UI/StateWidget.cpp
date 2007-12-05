@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/StateWidget.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/29 13:17:15 $
+//   $Date: 2007/12/05 20:16:26 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -75,12 +75,17 @@ StateWidget::~StateWidget()
 bool StateWidget::loadFromBackend()
 {
   mUpToDate = true;
-  mCentralWidget->showUnits();
   CSteadyStateTask * pSteadyStateTask
   = dynamic_cast<CSteadyStateTask *>((*CCopasiDataModel::Global->getTaskList())["Steady-State"]);
 
   if (!pSteadyStateTask) return false;
-  if (!pSteadyStateTask->getState()) return mCentralWidget->clear();
+
+  if (!pSteadyStateTask->getState())
+    {
+      mCentralWidget->clear();
+      return true;
+    }
+
   return mCentralWidget->loadAll(pSteadyStateTask);
 }
 

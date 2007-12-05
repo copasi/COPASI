@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationResultWidget.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/12 18:35:35 $
+//   $Date: 2007/12/05 20:16:26 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,7 +48,7 @@ OptimizationResultWidget::OptimizationResultWidget(QWidget* parent, const char* 
   if (comingFrom == 0)
     {
       mCentralWidgetTime = NULL;
-      mCentralWidgetSteady = new StateSubwidget(this, "StateSubwidget", 0);
+      mCentralWidgetSteady = new StateSubwidget(this, "StateSubwidget");
       mWidgetLayout->addWidget(mCentralWidgetSteady, 0, 0);
       mCentralWidgetSteady->displayOptimizationTab(true);
     }
@@ -117,7 +117,6 @@ bool OptimizationResultWidget::loadFromBackend()
       CSteadyStateTask * pSteadyStateTask =
         dynamic_cast<CSteadyStateTask *>((*CCopasiDataModel::Global->getTaskList())["Steady-State"]);
 
-      mCentralWidgetSteady->showUnits();
       mCentralWidgetSteady->optimizationResultText->setText(FROM_UTF8(os.str()));
 
       if (!pSteadyStateTask || !success || !pSteadyStateTask->getState())
