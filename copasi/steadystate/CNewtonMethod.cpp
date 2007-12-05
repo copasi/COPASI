@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-//   $Revision: 1.80 $
+//   $Revision: 1.81 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/31 17:57:35 $
+//   $Date: 2007/12/05 15:16:13 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -631,37 +631,6 @@ void CNewtonMethod::calculateDerivativesX()
   mpModel->calculateDerivativesX(mdxdt.array());
 }
 
-bool CNewtonMethod::allPositive()
-{
-  // We need to check that all metabolites have positive particle numbers
-  // with respect to the given resolution.
-  C_FLOAT64 ParticleResolution =
-    - *mpDerivationResolution * mpModel->getQuantity2NumberFactor();
-
-  const C_FLOAT64 * pEnd = mpSteadyState->endIndependent();
-  const C_FLOAT64 * pIt = pEnd - mpModel->getNumIndependentMetabs() - mpModel->getNumODEMetabs();
-
-  CCopasiVector< CMetab >::const_iterator itMetab
-  = mpModel->getMetabolitesX().begin();
-
-  for (; pIt != pEnd; ++pIt, itMetab++)
-    if (*pIt < ParticleResolution * (*itMetab)->getCompartment()->getValue())
-      return false;
-
-  mpModel->updateSimulatedValues(true);
-
-  pIt = mpSteadyState->beginDependent();
-  pEnd = pIt + mpModel->getNumDependentMetabs();
-
-  for (; pIt != pEnd; ++pIt, itMetab++)
-    if (*pIt < ParticleResolution * (*itMetab)->getCompartment()->getValue())
-      return false;
-
-  // :TODO: we need to implement checking for metabolites determined by assignments
-  // :TODO: when those are implemented.
-  return true;
-}
-
 bool CNewtonMethod::containsNaN() const
   {
     //checks for NaNs
@@ -690,10 +659,12 @@ C_FLOAT64 CNewtonMethod::targetFunction(const CVector< C_FLOAT64 > & particleflu
   {
     C_FLOAT64 tmp, store = 0;
 
-    // First we look at the ODE determined rates
+    // First we look at the ODE determined rates of non metabolites
     const C_FLOAT64 * pIt = particlefluxes.array();
     const C_FLOAT64 * pEnd =
-      pIt + mpModel->getStateTemplate().getNumIndependent() - mpModel->getNumIndependentMetabs();
+      pIt + mpModel->getStateTemplate().getNumIndependent()
+      - mpModel->getNumODEMetabs() - mpModel->getNumIndependentMetabs();
+
     for (; pIt != pEnd; ++pIt)
       {
         tmp = fabs(*pIt);
@@ -705,16 +676,13 @@ C_FLOAT64 CNewtonMethod::targetFunction(const CVector< C_FLOAT64 > & particleflu
       }
 
     // Scale to account for the scaling in the return value.
-    store /= mpModel->getNumber2QuantityFactor();
+    store *= mpModel->getQuantity2NumberFactor();
 
-    // Now we look at the independent metabolites determined by reactions
-    CModelEntity ** ppEnd = mpModel->getStateTemplate().beginDependent();
-    CModelEntity ** ppIt = ppEnd - mpModel->getNumIndependentMetabs();
-
+    // Now all metabolites determined by ODEs and reactions (only independent)
     pEnd += mpModel->getNumIndependentMetabs();
-    for (; pIt != pEnd; ++pIt, ++ppIt)
+    for (; pIt != pEnd; ++pIt)
       {
-        tmp = fabs(*pIt / static_cast< const CMetab * >(*ppIt)->getCompartment()->getValue());
+        tmp = fabs(*pIt);
         if (tmp > store)
           store = tmp;
 

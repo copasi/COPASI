@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.h,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.27 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/12 14:28:48 $
+//   $Date: 2007/12/05 15:16:13 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -161,7 +161,6 @@ class CNewtonMethod : public CSteadyStateMethod
 
     void calculateDerivativesX();
 
-    bool allPositive();
     bool containsNaN() const;
 
     void cleanup();
