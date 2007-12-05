@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateMethod.cpp,v $
-//   $Revision: 1.29 $
+//   $Revision: 1.30 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/31 17:57:35 $
+//   $Date: 2007/12/05 15:13:21 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -170,7 +170,7 @@ CSteadyStateMethod::returnProcess(bool steadyStateFound)
   if (!steadyStateFound)
     return CSteadyStateMethod::notFound;
 
-  if (hasNegativeConcentrations(*mpDerivationResolution))
+  if (!allPositive())
     return CSteadyStateMethod::foundNegative;
 
   if (isEquilibrium(*mpSSResolution))
@@ -200,18 +200,53 @@ bool CSteadyStateMethod::isEquilibrium(const C_FLOAT64 & resolution) const
     return true;
   }
 
-bool CSteadyStateMethod::hasNegativeConcentrations(const C_FLOAT64 & resolution) const
-  {
-    const CCopasiVector < CMetab > & Metabs =
-      mpProblem->getModel()->getMetabolites();
-    unsigned C_INT32 i, imax = Metabs.size();
+bool CSteadyStateMethod::allPositive()
+{
+  // Assure that all values are updated.
+  mpModel->updateSimulatedValues(true);
 
-    for (i = 0; i < imax; i++)
-      if (Metabs[i]->getConcentration() < -resolution)
-        return true;
+  CModelEntity ** ppEntity = mpModel->getStateTemplate().beginIndependent();
+  const C_FLOAT64 * pIt = mpSteadyState->beginIndependent();
+  const C_FLOAT64 * pEnd = mpSteadyState->endDependent();
 
-    return false;
-  }
+  // Skip Model quantities of type ODE
+  for (; pIt != pEnd; ++pIt, ++ppEntity)
+    if (dynamic_cast< CCompartment *>(*ppEntity) != NULL ||
+        dynamic_cast< CMetab *>(*ppEntity) != NULL)
+      break;
+
+  // For all compartments of type ODE we check that the volume is positive
+  for (; pIt != pEnd; ++pIt, ++ppEntity)
+    {
+      if (dynamic_cast< CCompartment *>(*ppEntity) == NULL)
+        break;
+      if (*pIt < - *mpDerivationResolution)
+        return false;
+    }
+
+  // We need to check that all metabolites have positive particle numbers
+  // with respect to the given resolution.
+  C_FLOAT64 ParticleResolution =
+    - *mpDerivationResolution * mpModel->getQuantity2NumberFactor();
+  for (; pIt != pEnd; ++pIt, ++ppEntity)
+    {
+      if (dynamic_cast< CMetab *>(*ppEntity) == NULL)
+        break;
+      if (*pIt < ParticleResolution)
+        return false;
+    }
+
+  // For all compartments of type ASSIGNMENT we check that the volume is positive
+  for (; pIt != pEnd; ++pIt, ++ppEntity)
+    {
+      if (dynamic_cast< CCompartment *>(*ppEntity) == NULL)
+        break;
+      if (*pIt < - *mpDerivationResolution)
+        return false;
+    }
+
+  return true;
+}
 
 //virtual
 bool CSteadyStateMethod::isValidProblem(const CCopasiProblem * pProblem)

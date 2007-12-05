@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateMethod.h,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/12 14:28:48 $
+//   $Date: 2007/12/05 15:13:21 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -206,7 +206,13 @@ class CSteadyStateMethod : public CCopasiMethod
      */
     bool isEquilibrium(const C_FLOAT64 & resolution) const;
 
-    bool hasNegativeConcentrations(const C_FLOAT64 & resolution) const;
+  protected:
+    /**
+     * Check whether all values make physically sence, i.e.,
+     * volumes and particle number are positive
+     * @return bool allPositive
+     */
+    bool allPositive();
 
     void calculateJacobianX(const C_FLOAT64 & oldMaxRate);
   };
