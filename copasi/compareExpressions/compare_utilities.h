@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/compare_utilities.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/10 13:42:20 $
+//   $Date: 2007/12/05 11:46:27 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,5 +35,75 @@ bool replace_variable_names(ASTNode* pNode, const std::map<std::string, ASTNode*
 ASTNode* expand_function_call(const ASTNode* pCall, const Model* pModel);
 
 bool expand_function_calls(ASTNode* pNode, const Model* pModel);
+
+/**
+ * This function replaces a call to SEC by 1/COS.
+ */
+ASTNode* replace_SEC(const ASTNode* pChild);
+
+/**
+ * This function replaces a call to CSC by 1/SIN.
+ */
+ASTNode* replace_CSC(const ASTNode* pChild);
+
+/**
+ * This function replaces a call to COT by COS/SIN.
+ */
+ASTNode* replace_COT(const ASTNode* pChild);
+
+/**
+ * This function replaces a call to SINH by (e^X-e^(-X))/2.
+ */
+ASTNode* replace_SINH(const ASTNode* pChild);
+
+/**
+ * This function replaces a call to COSH by (e^X+e^(-X))/2
+ */
+ASTNode* replace_COSH(const ASTNode* pChild);
+
+/**
+ * This function replaces a call to TANH by (e^X-e^(-X))/(e^X+e^(-X))
+ */
+ASTNode* replace_TANH(const ASTNode* pChild);
+
+/**
+ * This function replaces a call to SECH by 2/(e^X+e^(-X))
+ */
+ASTNode* replace_SECH(const ASTNode* pChild);
+
+/**
+ * This function replaces a call to CSCH by 2/(e^X-e^(-X))
+ */
+ASTNode* replace_CSCH(const ASTNode* pChild);
+
+/**
+ * This function replaces a call to COTH by (e^X+e^(-X))/(e^X-e^(-X))
+ */
+ASTNode* replace_COTH(const ASTNode* pChild);
+
+/**
+ * This function replaces a call to ARCSINH by log(X + sqrt(X^2 + 1))
+ */
+ASTNode* replace_ARCSINH(const ASTNode* pChild);
+
+/**
+ * This function replaces a call to ARCCOSH by log(X + sqrt(X-1) * sqrt(X+1))
+ */
+ASTNode* replace_ARCCOSH(const ASTNode* pChild);
+
+/**
+ * This function replaces a call to ARCTANH by 1/2 * (log(1+X) - log(1-X))
+ */
+ASTNode* replace_ARCTANH(const ASTNode* pChild);
+
+/**
+ * This function replaces a call to ARCSECH by log(sqrt((1/X)-1) * sqrt(1+(1/X)) + 1/X)
+ */
+ASTNode* replace_ARCSECH(const ASTNode* pChild);
+
+/**
+ * This function replaces a call to ARCCSCH by log(sqrt(1+ (1/ (X^2)))+(1/X))
+ */
+ASTNode* replace_ARCCSCH(const ASTNode* pChild);
 
 #endif /* COMPARE_UTILITIES_H__ */
