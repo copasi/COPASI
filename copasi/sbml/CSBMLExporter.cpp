@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/12/04 15:56:54 $
+//   $Date: 2007/12/05 12:05:17 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -2430,52 +2430,170 @@ void CSBMLExporter::convertToLevel1()
 
 ASTNode* CSBMLExporter::replaceL1IncompatibleNodes(const ASTNode* pNode)
 {
-  // TODO replace all inf, pi, nan and exponentiale nodes
-  // TODO replace all unsupported functions calls: SEC,CSC, COT, SINH, COSH,
+  // replace all inf, pi, nan and exponentiale nodes
+  // replace all unsupported functions calls: SEC,CSC, COT, SINH, COSH,
   // TANH, SECH, CSCH, COTH, ARCSINH, ARCCOSH, ARCTANH, ARCSECH, ARCSCSH,
   // ARCCOTH
+  if (pNode == NULL) return NULL;
   ASTNode* pResult = NULL;
+  ASTNode* pChild = NULL;
+  unsigned int i, iMax;
   switch (pNode->getType())
     {
     case AST_CONSTANT_E:
+      // replace by exp(1)
+      pResult = new ASTNode(AST_FUNCTION_EXP);
+      pChild = new ASTNode(AST_REAL);
+      pChild->setValue(1.0);
+      pResult->addChild(pChild);
       break;
     case AST_CONSTANT_PI:
+      // replace by 2*ASIN(1.0)
+      pResult = new ASTNode(AST_TIMES);
+      pChild = new ASTNode(AST_REAL);
+      pChild->setValue(2.0);
+      pResult->addChild(pChild);
+      pResult->addChild(new ASTNode(AST_FUNCTION_ARCSIN));
+      pChild = new ASTNode(AST_REAL);
+      pChild->setValue(1.0);
+      pResult->getChild(1)->addChild(pChild);
       break;
     case AST_FUNCTION_SEC:
+      pChild = CSBMLExporter::replaceL1IncompatibleNodes(pNode->getChild(0));
+      assert(pChild);
+      pResult = replace_SEC(pChild);
+      // replace by 1/cos(X)
+      delete pChild;
       break;
     case AST_FUNCTION_CSC:
+      // replace by 1/sin(X)
+      pChild = CSBMLExporter::replaceL1IncompatibleNodes(pNode->getChild(0));
+      assert(pChild);
+      pResult = replace_CSC(pChild);
+      delete pChild;
       break;
     case AST_FUNCTION_COT:
+      // replace by 1/tan(X)
+      pChild = CSBMLExporter::replaceL1IncompatibleNodes(pNode->getChild(0));
+      assert(pChild);
+      pResult = replace_COT(pChild);
+      delete pChild;
       break;
     case AST_FUNCTION_SINH:
+      // replace by (e^X-e^(-X))/2
+      pChild = CSBMLExporter::replaceL1IncompatibleNodes(pNode->getChild(0));
+      assert(pChild);
+      pResult = replace_SINH(pChild);
+      delete pChild;
       break;
     case AST_FUNCTION_COSH:
+      // replace by (e^X+e^(-X))/2
+      pChild = CSBMLExporter::replaceL1IncompatibleNodes(pNode->getChild(0));
+      assert(pChild);
+      pResult = replace_COSH(pChild);
+      delete pChild;
       break;
     case AST_FUNCTION_TANH:
+      // replace by (e^X-e^(-X))/(e^X+e^(-X))
+      pChild = CSBMLExporter::replaceL1IncompatibleNodes(pNode->getChild(0));
+      assert(pChild);
+      pResult = replace_TANH(pChild);
+      delete pChild;
       break;
     case AST_FUNCTION_SECH:
+      // replace by 2/(e^X+e^(-X))
+      pChild = CSBMLExporter::replaceL1IncompatibleNodes(pNode->getChild(0));
+      assert(pChild);
+      pResult = replace_SECH(pChild);
+      delete pChild;
       break;
     case AST_FUNCTION_CSCH:
+      // replace by 2/(e^X-e^(-X))
+      pChild = CSBMLExporter::replaceL1IncompatibleNodes(pNode->getChild(0));
+      assert(pChild);
+      pResult = replace_CSCH(pChild);
+      delete pChild;
       break;
     case AST_FUNCTION_COTH:
+      // replace by (e^X+e^(-X))/(e^X-e^(-X))
+      pChild = CSBMLExporter::replaceL1IncompatibleNodes(pNode->getChild(0));
+      assert(pChild);
+      pResult = replace_COTH(pChild);
+      delete pChild;
       break;
     case AST_FUNCTION_ARCSINH:
+      // replace by log(X + sqrt(X^2 + 1))
+      pChild = CSBMLExporter::replaceL1IncompatibleNodes(pNode->getChild(0));
+      assert(pChild);
+      pResult = replace_ARCSINH(pChild);
+      delete pChild;
       break;
     case AST_FUNCTION_ARCCOSH:
+      // replace by log(X + sqrt(X-1) * sqrt(X+1))
+      pChild = CSBMLExporter::replaceL1IncompatibleNodes(pNode->getChild(0));
+      assert(pChild);
+      pResult = replace_ARCCOSH(pChild);
+      delete pChild;
       break;
     case AST_FUNCTION_ARCTANH:
+      // replace by 1/2 * (log(1+X) - log(1-X))
+      pChild = CSBMLExporter::replaceL1IncompatibleNodes(pNode->getChild(0));
+      assert(pChild);
+      pResult = replace_ARCTANH(pChild);
+      delete pChild;
       break;
     case AST_FUNCTION_ARCSECH:
+      // replace by log(sqrt((1/X)-1) * sqrt(1+(1/X)) + 1/X)
+      pChild = CSBMLExporter::replaceL1IncompatibleNodes(pNode->getChild(0));
+      assert(pChild);
+      pResult = replace_ARCSECH(pChild);
+      delete pChild;
       break;
     case AST_FUNCTION_ARCCSCH:
+      // replace by log(sqrt(1+ (1/ (X^2)))+(1/X))
+      pChild = CSBMLExporter::replaceL1IncompatibleNodes(pNode->getChild(0));
+      assert(pChild);
+      pResult = replace_ARCCSCH(pChild);
+      delete pChild;
       break;
     case AST_FUNCTION_ARCCOTH:
+      // this one is difficult since it would need a piecewise definition which
+      // is not available in SBML Level 1
+      fatalError();
       break;
     case AST_REAL:
       // for nan and inf
+      if (pNode->getReal() != pNode->getReal()) // NaN
+        {
+          // replace by 0/0
+          pResult = new ASTNode(AST_RATIONAL);
+          pResult->setValue(0L, 0L);
+        }
+      else if (isinf(pNode->getReal()))
+        {
+          // replace by 1/0
+          pResult = new ASTNode(AST_RATIONAL);
+          pResult->setValue(1L, 0L);
+        }
+      else
+        {
+          pResult = new ASTNode(*pNode);
+        }
       break;
     default:
-      break;
+      // copy the node
+      pResult = new ASTNode(*pNode);
+      iMax = pNode->getNumChildren();
+      for (i = 0;i < iMax;++i)
+        {
+          pChild = CSBMLExporter::replaceL1IncompatibleNodes(pNode->getChild(i));
+          assert(pChild != NULL);
+          if (pChild != NULL)
+            {
+              pResult->addChild(pChild);
+            }
+          break;
+        }
     }
   return pResult;
 }
