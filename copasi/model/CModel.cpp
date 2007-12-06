@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.333 $
+//   $Revision: 1.334 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/12/04 19:16:58 $
+//   $Date: 2007/12/06 21:05:10 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1068,19 +1068,19 @@ bool CModel::buildStateTemplate()
       *ppEntity++ = *itMetab;
     }
 
-  itValue = mValues.begin();
-  for (; itValue != endValue; ++itValue)
-    if ((*itValue)->getStatus() == CModelEntity::ASSIGNMENT)
-      {
-        *ppEntity = *itValue;
-        (*ppEntity++)->setUsed(true);
-      }
-
   itCompartment = mCompartments.begin();
   for (; itCompartment != endCompartment; ++itCompartment)
     if ((*itCompartment)->getStatus() == CModelEntity::ASSIGNMENT)
       {
         *ppEntity = *itCompartment;
+        (*ppEntity++)->setUsed(true);
+      }
+
+  itValue = mValues.begin();
+  for (; itValue != endValue; ++itValue)
+    if ((*itValue)->getStatus() == CModelEntity::ASSIGNMENT)
+      {
+        *ppEntity = *itValue;
         (*ppEntity++)->setUsed(true);
       }
 
