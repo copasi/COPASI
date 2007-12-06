@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-//   $Revision: 1.72 $
+//   $Revision: 1.73 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/11/16 20:22:16 $
+//   $Date: 2007/12/06 20:47:30 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -442,13 +442,13 @@ std::string DataModelGUI::exportSBMLToString()
   return str;
 }
 
-bool DataModelGUI::exportSBML(const std::string & fileName, bool overwriteFile, int sbmlLevel, int sbmlVersion, bool exportIncomplete, bool checkSBMLCompatibility)
+bool DataModelGUI::exportSBML(const std::string & fileName, bool overwriteFile, int sbmlLevel, int sbmlVersion, bool exportIncomplete)
 {
   CProgressBar* tmpBar = new CProgressBar();
   bool success = false;
   try
     {
-      success = CCopasiDataModel::Global->exportSBML(fileName, overwriteFile, sbmlLevel, sbmlVersion, exportIncomplete, checkSBMLCompatibility, tmpBar);
+      success = CCopasiDataModel::Global->exportSBML(fileName, overwriteFile, sbmlLevel, sbmlVersion, exportIncomplete, tmpBar);
     }
   catch (CCopasiException except)
     {

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.h,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.33 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/11/16 20:22:16 $
+//   $Date: 2007/12/06 20:47:30 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -83,7 +83,7 @@ class CCopasiDataModel: public COutputHandler
     bool importSBMLFromString(const std::string & sbmlDocumentText, CProcessReport* pImportHandler = NULL);
     bool importSBML(const std::string & fileName, CProcessReport* pImportHandler = NULL);
     std::string exportSBMLToString(CProcessReport* pExportHandler = NULL);
-    bool exportSBML(const std::string & fileName, bool overwriteFile = false, int sbmlLevel = 2, int sbmlVersion = 1, bool exportIncomplete = false, bool checkSBMLConsistency = true, CProcessReport* pExportHandler = NULL);
+    bool exportSBML(const std::string & fileName, bool overwriteFile = false, int sbmlLevel = 2, int sbmlVersion = 1, bool exportIncomplete = false, CProcessReport* pExportHandler = NULL);
     bool exportMathModel(const std::string & fileName, CProcessReport* pProcessReport,
                          const std::string & filter, bool overwriteFile = false);
 
@@ -118,13 +118,6 @@ class CCopasiDataModel: public COutputHandler
     const std::string & getSBMLFileName() const;
 
     std::map<CCopasiObject*, SBase*>& getCopasi2SBMLMap();
-
-    /**
-     * Checks wether the model can be exported to a certain version of SBML.
-     * If it can be exported, the result vector will be empty, otherwise it will
-     * contain a number of messages that specify why it can't be exported.
-     */
-    std::vector<SBMLIncompatibility> isSBMLCompatible(int sbmlLevel = 2, int sbmlVersion = 1);
 
     // Attributes
   protected:
