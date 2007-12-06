@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.cpp,v $
-//   $Revision: 1.36 $
+//   $Revision: 1.37 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/10/26 14:19:14 $
+//   $Date: 2007/12/06 20:44:19 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -200,7 +200,7 @@ CEvaluationNode* CEvaluationNode::copyBranch() const
         children.push_back(newchild);
         child = dynamic_cast<const CEvaluationNode*>(child->getSibling());
       }
-    children.push_back(NULL);
+    //children.push_back(NULL);
     CEvaluationNode *newnode = copyNode(children);
     return newnode;
   }
