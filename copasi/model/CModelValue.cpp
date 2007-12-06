@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-//   $Revision: 1.52 $
+//   $Revision: 1.53 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/15 21:18:07 $
+//   $Date: 2007/12/06 21:05:41 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -168,12 +168,10 @@ bool CModelEntity::compile()
     {
       success &= mpInitialExpression->compile(listOfContainer);
       mpIValueReference->setDirectDependencies(mpInitialExpression->getDirectDependencies());
-      mpIValueReference->setRefresh(this, &CModelEntity::refreshInitialValue);
     }
   else
     {
       mpIValueReference->setDirectDependencies(NoDependencies);
-      mpIValueReference->clearRefresh();
     }
 
   return success;
@@ -362,7 +360,6 @@ void CModelEntity::setStatus(const CModelEntity::Status & status)
       clearRefresh();
 
       mpIValueReference->setDirectDependencies(NoDependencies);
-      mpIValueReference->clearRefresh();
 
       mpValueReference->setDirectDependencies(NoDependencies);
       mpValueReference->clearRefresh();
@@ -443,6 +440,7 @@ void CModelEntity::initObjects()
         Dummy,
         CCopasiObject::ValueDbl));
   mpIValueReference->setUpdateMethod(this, &CModelEntity::setInitialValue);
+  mpIValueReference->setRefresh(this, &CModelEntity::refreshInitialValue);
 
   mpRateReference =
     static_cast<CCopasiObjectReference<C_FLOAT64> *>(addObjectReference("Rate", mRate, CCopasiObject::ValueDbl));

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-//   $Revision: 1.131 $
+//   $Revision: 1.132 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/12/04 19:16:58 $
+//   $Date: 2007/12/06 21:05:41 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -442,9 +442,6 @@ bool CMetab::compile()
     }
 
   // The initial values
-  mpIValueReference->setRefresh(this, &CMetab::refreshInitialValue);
-  mpIConcReference->setRefresh(this, &CMetab::refreshInitialConcentration);
-
   success &= compileInitialValueDependencies();
 
   return success;
@@ -614,6 +611,7 @@ void CMetab::refreshTransitionTime()
 void CMetab::initObjects()
 {
   mpIValueReference->setObjectName("InitialParticleNumber");
+  mpIValueReference->setRefresh(this, &CMetab::refreshInitialValue);
 
   mpValueReference->setObjectName("ParticleNumber");
 
