@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-//   $Revision: 1.119 $
+//   $Revision: 1.120 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/12/06 20:47:31 $
+//   $Date: 2007/12/07 16:26:44 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -2264,12 +2264,39 @@ bool SBMLExporter::checkExpressionObjects(const CEvaluationNode* pNode) const
         CCopasiObjectName cn = dynamic_cast<const CEvaluationNodeObject*>(pNode)->getObjectCN();
         const CCopasiObject* pObject = CCopasiContainer::ObjectFromName(containerList, cn);
         assert(pObject);
-        if (pObject->isReference()) pObject = pObject->getObjectParent();
-        std::string objectType = pObject->getObjectType();
-        if (objectType != "ModelValue" && objectType != "Metabolite" && objectType != "Compartment" && objectType != "Model")
+        if (pObject->isReference())
           {
-            result = false;
-            CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 38);
+            const CCopasiObject* pObjectParent = pObject->getObjectParent();
+            assert(pObjectParent != NULL);
+            std::string objectType = pObjectParent->getObjectType();
+            if (objectType != "ModelValue" && objectType != "Metabolite" && objectType != "Compartment" && objectType != "Model")
+              {
+                result = false;
+                CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 38);
+              }
+            else
+              {
+                if (objectType == "ModelValue" && pObject->getObjectName() != "Value")
+                  {
+                    result = false;
+                    CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 38);
+                  }
+                else if (objectType == "Metabolite" && pObject->getObjectName() != "Concentration")
+                  {
+                    result = false;
+                    CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 38);
+                  }
+                else if (objectType == "Compartment" && pObject->getObjectName() != "Volume")
+                  {
+                    result = false;
+                    CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 38);
+                  }
+                else if (objectType == "Model" && pObject->getObjectName() != "Time")
+                  {
+                    result = false;
+                    CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 38);
+                  }
+              }
           }
       }
     else
@@ -2403,8 +2430,8 @@ std::vector<std::string> SBMLExporter::isRuleSBMLL2V1Compatible(const CModelEnti
               std::string typeString = pObjectParent->getObjectType();
               if (typeString == "Compartment")
                 {
-                  // must be a reference to the (transient) or initial volume
-                  if (pObject->getObjectName() != "Volume" && pObject->getObjectName() != "InitialVolume")
+                  // must be a reference to the transient volume
+                  if (pObject->getObjectName() != "Volume")
                     {
                       result.push_back("Error. Reference to property other than transient volume for compartment \"" + pObjectParent->getObjectName() + "\" in rule for \"" + pME->getObjectType() + "\" \"" + pME->getObjectName() + "\".");
                     }
@@ -2412,15 +2439,15 @@ std::vector<std::string> SBMLExporter::isRuleSBMLL2V1Compatible(const CModelEnti
               else if (typeString == "Metabolite")
                 {
                   // must be a reference to the transient or initial concentration
-                  if (pObject->getObjectName() != "Concentration" && pObject->getObjectName() != "InitialConcentration")
+                  if (pObject->getObjectName() != "Concentration")
                     {
                       result.push_back("Error. Reference to property other than transient concentration for metabolite \"" + pObjectParent->getObjectName() + "\" in rule for \"" + pME->getObjectType() + "\" \"" + pME->getObjectName() + "\".");
                     }
                 }
               else if (typeString == "ModelValue")
                 {
-                  // must be a reference to the transient or initial value
-                  if (pObject->getObjectName() != "Value" && pObject->getObjectName() != "InitialValue")
+                  // must be a reference to the transient
+                  if (pObject->getObjectName() != "Value")
                     {
                       result.push_back("Error. Reference to property other than transient value for \"" + typeString + "\" \"" + pObjectParent->getObjectName() + "\" in rule for \"" + pME->getObjectType() + "\" \"" + pME->getObjectName() + "\".");
                     }
