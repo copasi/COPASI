@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.107 $
+//   $Revision: 1.108 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/11/14 21:25:45 $
+//   $Date: 2007/12/07 16:25:22 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -149,7 +149,7 @@ const MESSAGES Messages[] =
     {MCSBML + 5, "SBML (5): Compartment %s referenced by species %s does not exist."},
     {MCSBML + 6, "SBML (6): Annotations in SBase element of SBML Level 1 files, this is invalid and has been ignored."},
     {MCSBML + 7, "SBML (7): No initial value or initial assignment set for compartment \"%s\"."},
-    {MCSBML + 8, "SBML (8): Expression tree for kinetic of reaction '%s' could not be converted."},
+    {MCSBML + 8, "SBML (8): Expression tree for kinetic law of reaction '%s' could not be converted."},
     {MCSBML + 9, "SBML (9): Could not set function from expression in reaction '%s'."},
     {MCSBML + 10, "SBML (10): COPASI does not support stoichiometric expressions."},
     {MCSBML + 11, "SBML (11): Function '%s' does not start with a Lambda element."},
@@ -165,9 +165,9 @@ const MESSAGES Messages[] =
     {MCSBML + 21, "SBML (21): Setting an initial concentration on species '%s' which is in a compartment with spatial dimensions 0 is not allowed."},
     {MCSBML + 22, "SBML (22): Current versions of COPASI only supports three dimensional compartments. '%s' will be considered to be three dimensional."},
     {MCSBML + 23, "SBML (23): Compartment '%s' has spatial dimensions of 0, setting dimensions to 3.\nConsidering all species in that compartment to have \"hasOnlySubstanceUnits\" flag set."},
-    {MCSBML + 24, "SBML (24): Units for compartment '%s' ignored."},
-    {MCSBML + 25, "SBML (25): Units for species '%s' ignored."},
-    {MCSBML + 26, "SBML (26): Units for parameter '%s' ignored."},
+    {MCSBML + 24, "SBML (24): Units for compartment '%s' ignored. Calculations on this model might lead to incorrect result."},
+    {MCSBML + 25, "SBML (25): Units for species '%s' ignored. Calculations on this model might lead to incorrect result."},
+    {MCSBML + 26, "SBML (26): Units for parameter '%s' ignored. Calculations on this model might lead to incorrect result."},
     {MCSBML + 27, "SBML (27): Error in kinetic law for reaction '%s'."},
     {MCSBML + 28, "SBML (28): Error in function definition with id '%s'."},
     {MCSBML + 29, "SBML (29): Unable to handle reactions with the 'fast' flag set.\nThe flag has been set to false."},
@@ -177,15 +177,15 @@ const MESSAGES Messages[] =
     {MCSBML + 33, "SBML (33): Error: %s is not allowed for local parameter '%s'."},
     {MCSBML + 34, "SBML (34): Error: %s is not allowed for local constant '%s' identified by id '%s'."},
     {MCSBML + 35, "SBML (35): Error: Only one AssignmentRule or RateRule is allowed for id '%s'."},
-    {MCSBML + 36, "SBML (36): COPASI can not handle models that use the delay function correctly."},
+    {MCSBML + 36, "SBML (36): COPASI can not handle models that use the delay function."},
     {MCSBML + 37, "SBML (37): The id '%s' is used in the expression of a rule, although it is later defined by a rule itself."},
-    {MCSBML + 38, "SBML (38): Only references to compartments, species, global parameters or the time are allowed in SBML rule expressions."},
+    {MCSBML + 38, "SBML (38): Only references to compartment volumes, species concentrations, global parameter values or the time are allowed in SBML rule expressions."},
     {MCSBML + 39, "SBML (39): Object with id \"%s\" referenced in kinetic law, but no object with that id found in model."},
     {MCSBML + 40, "SBML (40): LIBSBML %s %d at line %d column %d: %s."},
     {MCSBML + 41, "SBML (41): No initial value set for species \"%s\". Setting initial concentration to 1.0."},
     {MCSBML + 42, "SBML (42): No initial value set for local parameter \"%s\"."},
     {MCSBML + 43, "SBML (43): No initial value set for global parameter \"%s\". Setting initial value to 1.0"},
-    {MCSBML + 44, "SBML (44): Substance unit in kinetic law for reaction \"%s\" ignored."},
+    {MCSBML + 44, "SBML (44): Substance unit in kinetic law for reaction \"%s\" ignored. Calculations on this model might lead to incorrect result."},
     {MCSBML + 45, "SBML (45): Compartment \"%s\" does not set the initial volume. Volume has been set to 1.0."},
     {MCSBML + 46, "SBML (46): COPASI has changed the following function definitions to take the time as an additional argument instead of the function being directly or indirectly dependent on time:\n \"%s\" ."},
     {MCSBML + 47, "SBML (47): COPASI found a call to the function \"%s\" which has not been defined."},
@@ -194,13 +194,16 @@ const MESSAGES Messages[] =
     {MCSBML + 50, "SBML (50): Could not open file \"%s\"."},
     {MCSBML + 51, "SBML (51): The species \"%s\" is defined by a rate rule and its compartments volume is variable. COPASI will probably interpret this incorrectly."},
     {MCSBML + 52, "SBML (52): The metabolite \"%s\" is defined by a rate expression and its compartments volume is variable. The way COPASI interprets this is differently from the way SBML does."},
-    {MCSBML + 53, "SBML (53): The reaction \"%s\" defines a time unit in its kinetic law which has been ignore."},
+    {MCSBML + 53, "SBML (53): The reaction \"%s\" defines a time unit in its kinetic law which has been ignore. Calculations on this model might lead to incorrect result."},
     {MCSBML + 54, "SBML (54): Error while importing volume unit with id \"%s\"."},
     {MCSBML + 55, "SBML (55): Could not find unit definition for unit with id \"%s\" used in \"%s\" attribute of %s with id \"%s\"."},
     {MCSBML + 56, "SBML (56): There was a problem with the kinetic law in reaction \"%s\". Make sure the math element is not empty."},
     {MCSBML + 57, "SBML (57): InitialAssignment defined for object with id \"%s\", but the corresponding object could not be found. Ignoring assignment."},
     {MCSBML + 58, "SBML (58): InitialAssignment for object with id \"%s\" does not set a mathematical expression. Ignoring assignment."},
     {MCSBML + 59, "SBML (59): Error while importing InitialAssignment for object with id \"%s\". Ignoring assignment."},
+    {MCSBML + 60, "SBML (60): Error while exporting %s for %s with name \"%s\"."},
+    {MCSBML + 61, "SBML (61): Error while expanding function calls in mathematical expression for %s."},
+    {MCSBML + 62, "SBML (62): Error while replacing unsupported elements in mathematical expression for %s."},
 
     {MCTrajectoryProblem + 1, "CTrajectoryProblem (1): Invalid step size = '%f'."},
     {MCTrajectoryProblem + 2, "CTrajectoryProblem (2): The step number '%f' "
