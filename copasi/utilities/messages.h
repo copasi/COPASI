@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.108 $
+//   $Revision: 1.109 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/12/07 16:25:22 $
+//   $Date: 2007/12/08 13:10:09 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -204,6 +204,7 @@ const MESSAGES Messages[] =
     {MCSBML + 60, "SBML (60): Error while exporting %s for %s with name \"%s\"."},
     {MCSBML + 61, "SBML (61): Error while expanding function calls in mathematical expression for %s."},
     {MCSBML + 62, "SBML (62): Error while replacing unsupported elements in mathematical expression for %s."},
+    {MCSBML + 63, "SBML (63): Initial assignment for %s \"%s\" can not be exported to SBML Level 2 Version 1."},
 
     {MCTrajectoryProblem + 1, "CTrajectoryProblem (1): Invalid step size = '%f'."},
     {MCTrajectoryProblem + 2, "CTrajectoryProblem (2): The step number '%f' "

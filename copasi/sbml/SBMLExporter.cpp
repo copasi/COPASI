@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-//   $Revision: 1.120 $
+//   $Revision: 1.121 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/12/07 16:26:44 $
+//   $Date: 2007/12/08 13:10:09 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -207,6 +207,12 @@ SBMLDocument* SBMLExporter::createSBMLDocumentFromCModel(CCopasiDataModel* pData
       if (!mpExportHandler->progress(mHStep)) return false;
     }
   this->createFunctionDefinitions();
+  // delete the initial assignments if there are any
+  // because they can not be exported to Level 2 Version 1
+  while (this->sbmlDocument->getModel()->getListOfInitialAssignments()->size() != 0)
+    {
+      delete this->sbmlDocument->getModel()->getListOfInitialAssignments()->remove(0);
+    }
   if (mpExportHandler)
     {
       mpExportHandler->finish(mHStep);
@@ -377,6 +383,10 @@ Model* SBMLExporter::createSBMLModelFromCModel(CCopasiDataModel* pDataModel, int
   for (counter = 0; counter < iMax; counter++)
     {
       CCompartment* pCopasiCompartment = copasiModel->getCompartments()[counter];
+      if (pCopasiCompartment->getInitialExpressionPtr() != NULL)
+        {
+          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 63, "compartment", pCopasiCompartment->getObjectName().c_str());
+        }
       Compartment* sbmlCompartment = this->createSBMLCompartmentFromCCompartment(pCopasiCompartment, pDataModel);
       if (!sbmlModel->getCompartment(sbmlCompartment->getId()))
         {
@@ -408,6 +418,10 @@ Model* SBMLExporter::createSBMLModelFromCModel(CCopasiDataModel* pDataModel, int
   for (counter = 0; counter < iMax; counter++)
     {
       CMetab* pCopasiSpecies = copasiModel->getMetabolites()[counter];
+      if (pCopasiSpecies->getInitialExpressionPtr() != NULL)
+        {
+          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 63, "metabolite", pCopasiSpecies->getObjectName().c_str());
+        }
       Species* sbmlSpecies = this->createSBMLSpeciesFromCMetab(pCopasiSpecies, pDataModel);
       if (!sbmlModel->getSpecies(sbmlSpecies->getId()))
         {
@@ -439,6 +453,10 @@ Model* SBMLExporter::createSBMLModelFromCModel(CCopasiDataModel* pDataModel, int
   for (counter = 0; counter < iMax; counter++)
     {
       CModelValue* pCopasiParameter = copasiModel->getModelValues()[counter];
+      if (pCopasiParameter->getInitialExpressionPtr() != NULL)
+        {
+          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 63, "global parameter", pCopasiParameter->getObjectName().c_str());
+        }
       Parameter* sbmlParameter = this->createSBMLParameterFromCModelValue(pCopasiParameter, pDataModel);
       if (!sbmlModel->getParameter(sbmlParameter->getId()))
         {

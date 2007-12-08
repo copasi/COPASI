@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.217 $
+//   $Revision: 1.218 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/12/06 20:47:30 $
+//   $Date: 2007/12/08 13:10:09 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1112,7 +1112,10 @@ void CopasiUI3Window::slotExportSBML()
                                  QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
           CCopasiMessage::clearDeque();
         }
-
+      else
+        {
+          this->checkPendingMessages();
+        }
       refreshRecentSBMLFileMenu();
     }
 }
