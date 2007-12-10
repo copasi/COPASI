@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.77 $
+//   $Revision: 1.78 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/11/30 11:28:15 $
+//   $Date: 2007/12/10 12:18:58 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -150,12 +150,13 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
         {
           CGraphCurve curve = CGraphCurve(edgesToNodesOfReaction[j2]->getCurve());
           CLMetabReferenceGlyph::Role r = edgesToNodesOfReaction[j2]->getRole();
+          curve.setRole(r);
           if (edgesToNodesOfReaction[j2]->getMetabGlyph() != NULL)
             {
               std::string nodeKey = std::string(edgesToNodesOfReaction[j2]->getMetabGlyph()->getKey());
 
               // if role is product or sideproduct, create arrow for line
-              if ((r == CLMetabReferenceGlyph::PRODUCT) || (r == CLMetabReferenceGlyph::SIDEPRODUCT))
+              if ((r == CLMetabReferenceGlyph::PRODUCT) || (r == CLMetabReferenceGlyph::SIDEPRODUCT) || (r == CLMetabReferenceGlyph::ACTIVATOR) || (r == CLMetabReferenceGlyph::INHIBITOR) || (r == CLMetabReferenceGlyph::MODIFIER))
                 {// create arrows just for edges to products or sideproducts
                   std::vector<CLLineSegment> segments = curve.getCurveSegments();
                   CLLineSegment lastSeg = segments[curve.getNumCurveSegments() - 1];
@@ -554,10 +555,10 @@ void CQGLNetworkPainter::drawEdge(CGraphCurve &c)
         }
     }
   if (c.hasArrowP())
-    drawArrow(c.getArrow());
+    drawArrow(c.getArrow(), c.getRole());
 }
 
-void CQGLNetworkPainter::drawArrow(CArrow a)
+void CQGLNetworkPainter::drawArrow(CArrow a, CLMetabReferenceGlyph::Role role)
 {
   // first get the two points defining the line segment (curve)
   CLPoint p2 = a.getStartOfLine();
@@ -583,7 +584,7 @@ void CQGLNetworkPainter::drawArrow(CArrow a)
   C_FLOAT64 p3X = qX + (unX * a.getArrowWidth());
   C_FLOAT64 p3Y = qY + (unY * a.getArrowWidth());
 
-  // for last point of the triangle: just go into the orther direction
+  // for last point of the triangle: just go into the other direction
   C_FLOAT64 p4X = qX - (unX * a.getArrowWidth());
   C_FLOAT64 p4Y = qY - (unY * a.getArrowWidth());
   // now draw polygon, using vertices from triangle
@@ -593,11 +594,55 @@ void CQGLNetworkPainter::drawArrow(CArrow a)
   //cout << qX << "  " << qY << std::endl;
   //cout << p3X << "  " << p3Y << std::endl;
   //cout << p4X << "  " << p4Y << std::endl;
-  glBegin(GL_POLYGON);
-  glVertex2d(p1.getX(), p1.getY());
-  glVertex2d(p3X, p3Y);
-  glVertex2d(p4X, p4Y);
-  glEnd();
+  if ((role == CLMetabReferenceGlyph::PRODUCT) || (role == CLMetabReferenceGlyph::SIDEPRODUCT))
+    {
+      glBegin(GL_POLYGON);
+      glVertex2d(p1.getX(), p1.getY());
+      glVertex2d(p3X, p3Y);
+      glVertex2d(p4X, p4Y);
+      glEnd();
+    }
+  else
+    {
+      C_FLOAT64 p3X = qX + (unX * a.getArrowWidth());
+      C_FLOAT64 p3Y = qY + (unY * a.getArrowWidth());
+
+      GLfloat params[4];
+      glGetFloatv(GL_CURRENT_COLOR, params);
+
+      if (role == CLMetabReferenceGlyph::MODIFIER)
+        {
+          glBegin(GL_LINES);
+          glVertex2d(p1.getX() + (unX * a.getArrowWidth()),
+                     p1.getY() + (unY * a.getArrowWidth()));
+          glVertex2d(p1.getX() - (unX * a.getArrowWidth()),
+                     p1.getY() - (unY * a.getArrowWidth()));
+          glEnd();
+          glColor3f(params[0], params[1], params[2]);
+        }
+      else if (role == CLMetabReferenceGlyph::ACTIVATOR)
+        {
+          glColor3f(0.3f, 0.75f, 0.3f); // kind of green
+          glBegin(GL_LINES);
+          glVertex2d(p1.getX() + (unX * a.getArrowWidth()),
+                     p1.getY() + (unY * a.getArrowWidth()));
+          glVertex2d(p1.getX() - (unX * a.getArrowWidth()),
+                     p1.getY() - (unY * a.getArrowWidth()));
+          glEnd();
+          glColor3f(params[0], params[1], params[2]);
+        }
+      else if (role == CLMetabReferenceGlyph::INHIBITOR)
+        {
+          glColor3f(1.0f, 0.0f, 0.0f); // red
+          glBegin(GL_LINES);
+          glVertex2d(p1.getX() + (unX * a.getArrowWidth()),
+                     p1.getY() + (unY * a.getArrowWidth()));
+          glVertex2d(p1.getX() - (unX * a.getArrowWidth()),
+                     p1.getY() - (unY * a.getArrowWidth()));
+
+          glEnd();
+        }
+    }
 }
 
 // draws label as a rectangular filled shape with a border and the text inside
@@ -1840,7 +1885,7 @@ void CQGLNetworkPainter::printAvailableFonts()
           QString dstyle = "\t" + style + " (";
           QValueList<int> smoothies = fdb.smoothSizes(family, style);
           for (QValueList<int>::Iterator points = smoothies.begin();
-                points != smoothies.end(); ++points)
+               points != smoothies.end(); ++points)
             {
               dstyle += QString::number(*points) + " ";
             }

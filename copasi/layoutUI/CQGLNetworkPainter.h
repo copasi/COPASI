@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.44 $
+//   $Revision: 1.45 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/11/30 11:28:15 $
+//   $Date: 2007/12/10 12:18:58 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -68,7 +68,7 @@ class CQGLNetworkPainter : public QGLWidget
     void drawEdge(CGraphCurve &c);
     void drawLabel(CLTextGlyph l);
     // void drawStringAt(string s, double x, double y);
-    void drawArrow(CArrow a);
+    void drawArrow(CArrow a, CLMetabReferenceGlyph::Role role);
 
     bool createDataSets();
     bool mDataPresentP; // shows, whether time series data has been load before
