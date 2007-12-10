@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.h,v $
-//   $Revision: 1.58 $
+//   $Revision: 1.59 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/19 17:05:21 $
+//   $Date: 2007/12/10 02:11:23 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -62,7 +62,9 @@
 #else
 #ifdef WIN32
 # define C_INT64 __int64
-# define LLONG_MAX _I64_MAX
+# ifndef LLONG_MAX
+#  define LLONG_MAX _I64_MAX
+# endif
 # define LLONG_CONST(n) n ## i64
 # define C_INT32 int
 # define C_INT16 short
