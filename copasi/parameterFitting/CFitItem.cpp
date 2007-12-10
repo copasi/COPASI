@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitItem.cpp,v $
-   $Revision: 1.16 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/11/16 15:45:13 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitItem.cpp,v $
+//   $Revision: 1.17 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/12/10 19:42:46 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -291,26 +291,25 @@ CFitConstraint::~CFitConstraint() {}
 
 C_INT32 CFitConstraint::checkConstraint() const
   {
-    if (*mpLowerBound > *mpObjectValue)
-      {
-        C_FLOAT64 Delta = *mpLowerBound - *mpObjectValue;
-        if (fabs(mLocalValue) < Delta)
-          const_cast<CFitConstraint *>(this)->mLocalValue = -Delta;
-
-        return - 1;
-      }
-
-    if (*mpObjectValue > *mpUpperBound)
-      {
-        C_FLOAT64 Delta = *mpObjectValue - *mpUpperBound;
-        if (fabs(mLocalValue) < Delta)
-          const_cast<CFitConstraint *>(this)->mLocalValue = Delta;
-
-        return 1;
-      }
-
+    if (*mpLowerBound > mLocalValue) return - 1;
+    if (mLocalValue > *mpUpperBound) return 1;
     return 0;
   }
 
 C_FLOAT64 CFitConstraint::getConstraintViolation() const
-{return mLocalValue;}
+  {
+    switch (checkConstraint())
+      {
+      case - 1:
+        return *mpLowerBound - mLocalValue;
+        break;
+
+      case 1:
+        return mLocalValue - *mpUpperBound;
+        break;
+
+      default:
+        return 0.0;
+        break;
+      }
+  }
