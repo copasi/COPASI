@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGA.cpp,v $
-//   $Revision: 1.47 $
+//   $Revision: 1.48 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/20 14:06:35 $
+//   $Date: 2007/12/10 19:41:45 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -468,7 +468,7 @@ bool COptMethodGA::optimise()
       C_FLOAT64 & mut = (*mIndividual[0])[i];
       COptItem & OptItem = *(*mpOptItem)[i];
 
-      mut = * OptItem.getObjectValue();
+      mut = OptItem.getStartValue();
 
       // force it to be within the bounds
       switch (OptItem.checkConstraint(mut))

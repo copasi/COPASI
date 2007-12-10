@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSA.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/24 18:40:22 $
+//   $Date: 2007/12/10 19:41:45 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -81,7 +81,7 @@ bool COptMethodSA::optimise()
           break;
 
         case 0:
-          mCurrent[i] = *OptItem.getObjectValue();
+          mCurrent[i] = OptItem.getStartValue();
           break;
         }
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodTruncatedNewton.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: jdada $
-//   $Date: 2007/11/06 15:01:39 $
+//   $Author: shoops $
+//   $Date: 2007/12/10 19:41:45 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -77,7 +77,7 @@ bool COptMethodTruncatedNewton::optimise()
       low[i] = *OptItem.getLowerBoundValue();
       up[i] = *OptItem.getUpperBoundValue();
 
-      mCurrent[i] = *OptItem.getObjectValue();
+      mCurrent[i] = OptItem.getStartValue();
 
       switch (OptItem.checkConstraint(mCurrent[i]))
         {

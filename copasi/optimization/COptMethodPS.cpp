@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodPS.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/20 14:06:35 $
+//   $Date: 2007/12/10 19:41:45 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -514,7 +514,7 @@ bool COptMethodPS::optimise()
     {
       COptItem & OptItem = **itOptItem;
 
-      *pIndividual = *OptItem.getObjectValue();
+      *pIndividual = OptItem.getStartValue();
 
       // force it to be within the bounds
       switch (OptItem.checkConstraint(*pIndividual))

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGASR.cpp,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.31 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/20 14:06:35 $
+//   $Date: 2007/12/10 19:41:45 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -501,7 +501,7 @@ bool COptMethodGASR::optimise()
   // initialise the population
   // first individual is the initial guess
   for (i = 0; i < mVariableSize; i++)
-    (*mIndividual[0])[i] = *(*mpOptItem)[i]->getObjectValue();
+    (*mIndividual[0])[i] = (*mpOptItem)[i]->getStartValue();
 
   // calculate the fitness
   unsigned C_INT32 j;

@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodStatistics.cpp,v $
-   $Revision: 1.2 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/11/15 15:57:16 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodStatistics.cpp,v $
+//   $Revision: 1.3 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/12/10 19:41:45 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -80,7 +80,7 @@ bool COptMethodStatistics::optimise()
       C_FLOAT64 & mut = mIndividual[j];
       COptItem & OptItem = *(*mpOptItem)[j];
 
-      mut = * OptItem.getObjectValue();
+      mut = OptItem.getStartValue();
 
       // force it to be within the bounds
       switch (OptItem.checkConstraint(mut))

@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSteepestDescent.cpp,v $
-   $Revision: 1.19 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/11/15 15:57:16 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSteepestDescent.cpp,v $
+//   $Revision: 1.20 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/12/10 19:41:45 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -66,7 +66,7 @@ bool COptMethodSteepestDescent::optimise()
           break;
 
         case 0:
-          mIndividual[i] = *OptItem.getObjectValue();
+          mIndividual[i] = OptItem.getStartValue();
           break;
         }
 
@@ -194,7 +194,7 @@ bool COptMethodSteepestDescent::initialize()
   mIndividual.resize(mVariableSize);
   mGradient.resize(mVariableSize);
 
-  mBestValue = DBL_MAX;
+  mBestValue = 2.0 * DBL_MAX;
 
   return true;
 }

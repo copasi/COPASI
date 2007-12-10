@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodLevenbergMarquardt.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
-//   $Author: jdada $
-//   $Date: 2007/09/21 10:55:00 $
+//   $Author: shoops $
+//   $Date: 2007/12/10 19:41:45 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -99,7 +99,7 @@ bool COptMethodLevenbergMarquardt::optimise()
           break;
 
         case 0:
-          mCurrent[i] = *OptItem.getObjectValue();
+          mCurrent[i] = OptItem.getStartValue();
           break;
         }
 

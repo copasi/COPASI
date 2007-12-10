@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodHookeJeeves.cpp,v $
-   $Revision: 1.9 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/11/15 15:57:16 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodHookeJeeves.cpp,v $
+//   $Revision: 1.10 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/12/10 19:41:45 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -69,7 +69,7 @@ bool COptMethodHookeJeeves::optimise()
       C_FLOAT64 & mut = mIndividual[i];
       COptItem & OptItem = *(*mpOptItem)[i];
 
-      mut = * OptItem.getObjectValue();
+      mut = OptItem.getStartValue();
 
       // force it to be within the bounds
       switch (OptItem.checkConstraint(mut))
@@ -368,7 +368,7 @@ C_FLOAT64 COptMethodHookeJeeves::bestNearby()
 /* improvements suggested by Bell and Pike (CACM v.9, p. 684, Sept */
 /* 1966) and those of Tomlin and Smith, "Remark on Algorithm 178"  */
 /* (CACM v.12).  The original paper, which I don't recommend as    */
-/* highly as the one by A. Kaupe, is:  R. Hooke and T. A. Jeeves,  */
+/* highly as the one by A. Kaupe, is:  R. Hooke and T. A. Jeeves, */
 /* "Direct Search Solution of Numerical and Statistical Problems", */
 /* Journal of the ACM, Vol. 8, April 1961, pp. 212-229.     */
 
@@ -411,7 +411,7 @@ C_FLOAT64 COptMethodHookeJeeves::bestNearby()
 /* The user-supplied objective function f(x,n) should return a C   */
 /* "C_FLOAT64".  Its  arguments are  x -- an array of C_FLOAT64s, and    */
 /* n -- an integer.  x is the point at which f(x) should be    */
-/* evaluated, and n is the number of coordinates of x. That is,   */
+/* evaluated, and n is the number of coordinates of x. That is, */
 /* n is the number of coefficients being fitted.     */
 
 /* mRho, the algorithm convergence control      */
@@ -422,12 +422,12 @@ C_FLOAT64 COptMethodHookeJeeves::bestNearby()
 /*    controlled by a user supplied parameter called mRho.  At each */
 /*    iteration, the stepsize is multiplied by mRho  (0 < mRho < 1), */
 /*    so the stepsize is successively reduced.      */
-/* Small values of mRho correspond to big stepsize changes,    */
+/* Small values of mRho correspond to big stepsize changes, */
 /*    which make the algorithm run more quickly.  However, there   */
 /*    is a chance (especially with highly nonlinear functions)    */
 /*    that these big changes will accidentally overlook a    */
 /*    promising search vector, leading to nonconvergence.    */
-/* Large values of mRho correspond to small stepsize changes,  */
+/* Large values of mRho correspond to small stepsize changes, */
 /*    which force the algorithm to carefully examine nearby points */
 /*    instead of optimistically forging ahead. This improves the  */
 /*    probability of convergence.       */
@@ -436,7 +436,7 @@ C_FLOAT64 COptMethodHookeJeeves::bestNearby()
 /*    Hooke-Jeeves is determined by mRho and epsilon:     */
 /*     mRho**(number_of_iterations) = epsilon     */
 /* In general it is a good idea to set mRho to an aggressively */
-/*    small value like 0.5 (hoping for fast convergence).  Then,   */
+/*    small value like 0.5 (hoping for fast convergence).  Then, */
 /*    if the user suspects that the reported minimum is incorrect  */
 /*    (or perhaps not accurate enough), the program can be run    */
 /*    again with a larger value of mRho such as 0.85, using the    */

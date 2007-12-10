@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CRandomSearch.cpp,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.34 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/20 14:06:35 $
+//   $Date: 2007/12/10 19:41:45 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -121,7 +121,7 @@ bool CRandomSearch::optimise()
       C_FLOAT64 & mut = mIndividual[j];
       COptItem & OptItem = *(*mpOptItem)[j];
 
-      mut = * OptItem.getObjectValue();
+      mut = OptItem.getStartValue();
 
       // force it to be within the bounds
       switch (OptItem.checkConstraint(mut))
