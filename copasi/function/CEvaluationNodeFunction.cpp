@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.cpp,v $
-//   $Revision: 1.44 $
+//   $Revision: 1.45 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/08 20:24:11 $
+//   $Date: 2007/12/10 02:44:30 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1109,7 +1109,7 @@ void CEvaluationNodeFunction::writeMathML(std::ostream & out,
 
         flag = ((mpLeft->getType() == (CEvaluationNode::OPERATOR | PLUS))
                 || (mpLeft->getType() == (CEvaluationNode::OPERATOR | MINUS))
-                || ((mpLeft->getType() & 0xFF000000 == CEvaluationNode::CALL) && expand));
+                || (((mpLeft->getType() & 0xFF000000) == CEvaluationNode::CALL) && expand));
 
         if (flag) out << SPC(l + 1) << "<mfenced>" << std::endl;
 
