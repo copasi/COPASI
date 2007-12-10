@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/compare_utilities.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/12/05 11:46:27 $
+//   $Author: shoops $
+//   $Date: 2007/12/10 02:45:35 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -604,29 +604,29 @@ ASTNode* replace_COTH(const ASTNode* pChild)
 ASTNode* replace_ARCSINH(const ASTNode* pChild)
 {
   ASTNode* pResult = NULL;
-  if (pChild != NULL);
-  {
-    pResult = new ASTNode(AST_FUNCTION_LOG);
-    ASTNode* pTmpNode = new ASTNode(AST_PLUS);
-    pTmpNode->addChild(pChild->deepCopy());
-    ASTNode* pTmpNode2 = new ASTNode(AST_FUNCTION_POWER);
-    ASTNode* pTmpNode3 = new ASTNode(AST_PLUS);
-    ASTNode* pTmpNode4 = new ASTNode(AST_FUNCTION_POWER);
-    pTmpNode4->addChild(pChild->deepCopy());
-    ASTNode* pTmpNode5 = new ASTNode(AST_INTEGER);
-    pTmpNode5->setValue(2);
-    pTmpNode4->addChild(pTmpNode5);
-    pTmpNode3->addChild(pTmpNode4);
-    pTmpNode4 = new ASTNode(AST_INTEGER);
-    pTmpNode4->setValue(1);
-    pTmpNode3->addChild(pTmpNode4);
-    pTmpNode2->addChild(pTmpNode3);
-    pTmpNode3 = new ASTNode(AST_REAL);
-    pTmpNode3->setValue(0.5);
-    pTmpNode2->addChild(pTmpNode3);
-    pTmpNode->addChild(pTmpNode2);
-    pResult->addChild(pTmpNode);
-  }
+  if (pChild != NULL)
+    {
+      pResult = new ASTNode(AST_FUNCTION_LOG);
+      ASTNode* pTmpNode = new ASTNode(AST_PLUS);
+      pTmpNode->addChild(pChild->deepCopy());
+      ASTNode* pTmpNode2 = new ASTNode(AST_FUNCTION_POWER);
+      ASTNode* pTmpNode3 = new ASTNode(AST_PLUS);
+      ASTNode* pTmpNode4 = new ASTNode(AST_FUNCTION_POWER);
+      pTmpNode4->addChild(pChild->deepCopy());
+      ASTNode* pTmpNode5 = new ASTNode(AST_INTEGER);
+      pTmpNode5->setValue(2);
+      pTmpNode4->addChild(pTmpNode5);
+      pTmpNode3->addChild(pTmpNode4);
+      pTmpNode4 = new ASTNode(AST_INTEGER);
+      pTmpNode4->setValue(1);
+      pTmpNode3->addChild(pTmpNode4);
+      pTmpNode2->addChild(pTmpNode3);
+      pTmpNode3 = new ASTNode(AST_REAL);
+      pTmpNode3->setValue(0.5);
+      pTmpNode2->addChild(pTmpNode3);
+      pTmpNode->addChild(pTmpNode2);
+      pResult->addChild(pTmpNode);
+    }
   return pResult;
 }
 
