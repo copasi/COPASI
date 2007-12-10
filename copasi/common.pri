@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.67 $ 
+#   $Revision: 1.68 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2007/11/21 18:36:39 $ 
+#   $Date: 2007/12/10 02:13:24 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -11,7 +11,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.67 $ $Author: shoops $ $Date: 2007/11/21 18:36:39 $  
+# $Revision: 1.68 $ $Author: shoops $ $Date: 2007/12/10 02:13:24 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -201,6 +201,7 @@ contains(BUILD_OS, WIN32) {
   !isEmpty(SBML_PATH) {
     QMAKE_CXXFLAGS   += -I"$${SBML_PATH}\include"
     QMAKE_LFLAGS += /LIBPATH:"$${SBML_PATH}\lib"
+    QMAKE_LFLAGS += /LIBPATH:"$${SBML_PATH}\bin"
     LIBS += libsbml.lib
   } else {
     error( "SBML_PATH must be specified" )
