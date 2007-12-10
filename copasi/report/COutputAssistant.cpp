@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/COutputAssistant.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/09/17 19:44:07 $
+//   $Author: mendes $
+//   $Date: 2007/12/10 17:00:42 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -243,6 +243,14 @@ bool COutputAssistant::initialize()
   tmp.first = 12;
   tmp.second.name = "Plots of Parameter Estimation Results per Dependent Value";
   tmp.second.description = "For each dependent value of the parameter estimation a plot is created. Each plot contains the experimental data, the fitted curves, and the weighted errors for each experiment a dependent value occurs.";
+  tmp.second.isPlot = true;
+  tmp.second.mTaskType = CCopasiTask::parameterFitting;
+  mMap.insert(tmp);
+
+  //fitting result plots
+  tmp.first = 13;
+  tmp.second.name = "Progress of Fit";
+  tmp.second.description = "Plot of the sum of squares of residuals vs. number of function evaluations (for parameter estimation).";
   tmp.second.isPlot = true;
   tmp.second.mTaskType = CCopasiTask::parameterFitting;
   mMap.insert(tmp);
@@ -729,6 +737,42 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
                   }
               }
           }
+        return pPlotSpecification;
+      }
+      break;
+    case 13:
+      {
+        CPlotSpecification * pPlotSpecification = NULL;
+        CCopasiTask * pTask = (*CCopasiDataModel::Global->getTaskList())["Parameter Estimation"];
+        if (pTask == NULL) return NULL;
+
+        CFitProblem * pFitProblem = dynamic_cast< CFitProblem * >(pTask->getProblem());
+        if (pFitProblem == NULL) return NULL;
+
+        //        const C_FLOAT64 & SolutionValue = pFitProblem->getSolutionValue();
+
+        data2 = pFitProblem->getObject(CCopasiObjectName("Reference=Function Evaluations"));
+        data1.clear();
+        data1.push_back(pFitProblem->getObject(CCopasiObjectName("Reference=Best Value")));
+
+        pPlotSpecification =
+          createPlot("Progress of Fit" , data2, data1, getItem(id).mTaskType);
+
+        if (pPlotSpecification != NULL)
+          {
+            pPlotSpecification->setLogY(true);
+            CCopasiVector< CPlotItem > & Items = pPlotSpecification->getItems();
+            CCopasiVector< CPlotItem >::const_iterator itItem = Items.begin();
+            CCopasiVector< CPlotItem >::const_iterator endItem = Items.end();
+
+            while (itItem != endItem)
+              {
+                (*itItem)->setTitle("sum of squares");
+                (*itItem)->setActivity(COutputInterface::DURING);
+                (*itItem++)->setValue("Line type", (unsigned C_INT32) 0);
+              }
+          }
+
         return pPlotSpecification;
       }
       break;
