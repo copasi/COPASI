@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/copasi.i,v $ 
-//   $Revision: 1.20 $ 
+//   $Revision: 1.21 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2007/08/24 10:48:23 $ 
+//   $Date: 2007/12/11 21:10:27 $ 
 // End CVS Header 
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -80,6 +80,13 @@
 %include "CScanMethod.i"
 %include "CScanProblem.i"
 %include "CScanTask.i"
+%include "CLyapMethod.i"
+%include "CLyapProblem.i"
+%include "CLyapTask.i"
+%include "COptItem.i"
+%include "COptMethod.i"
+%include "COptProblem.i"
+%include "COptTask.i"
 %include "compare_utilities.i"
 
 

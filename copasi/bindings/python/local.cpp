@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/local.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/06/23 12:45:46 $
+//   $Date: 2007/12/11 21:10:27 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -79,10 +79,12 @@ struct swig_type_info*
       {
         pInfo = SWIGTYPE_p_CCopasiArray;
       }
+    /* The following code no longer compiles out of some reason
     else if (dynamic_cast<CCopasiMatrixInterface<CMatrix<C_FLOAT64> >*>(array))
       {
         pInfo = SWIGTYPE_p_CCopasiMatrixInterfaceTCMatrixTdouble_t_t;
       }
+      */
     return pInfo;
   }
 
@@ -103,37 +105,41 @@ struct swig_type_info*
       case CCopasiTask::timeCourse:
         pInfo = SWIGTYPE_p_CTrajectoryTask;
         break;
-        /*
-        case CCopasiTask::scan:
-        pInfo=SWIGTYPE_p_CScanTask;
+      case CCopasiTask::scan:
+        pInfo = SWIGTYPE_p_CScanTask;
         break;
+        /*
               case CCopasiTask::fluxMode:
                 pInfo=SWIGTYPE_p_CEFMTask;
                 break;
-              case CCopasiTask::optimization:
-                pInfo=SWIGTYPE_p_COptTask;
-                break;
-              case CCopasiTask::parameterFitting:
-                pInfo=SWIGTYPE_p_CFitTask;
-                break;
-              case CCopasiTask::mca:
-                pInfo=SWIGTYPE_p_CMCATask;
-                break;
-              case CCopasiTask::lyap:
-                pInfo=SWIGTYPE_p_CLyapTask;
-                break;
+                */
+      case CCopasiTask::optimization:
+        pInfo = SWIGTYPE_p_COptTask;
+        break;
+        /*
+        case CCopasiTask::parameterFitting:
+        pInfo=SWIGTYPE_p_CFitTask;
+        break;
+        case CCopasiTask::mca:
+        pInfo=SWIGTYPE_p_CMCATask;
+        break;
+        */
+      case CCopasiTask::lyap:
+        pInfo = SWIGTYPE_p_CLyapTask;
+        break;
+        /*
 #ifdef COPASI_DEBUG
-              case CCopasiTask::tss:
-                pInfo=SWIGTYPE_p_CTSSTask;
-                break;
-              case CCopasiTask::sens:
-                pInfo=SWIGTYPE_p_CSensTask;
-                break;
+        case CCopasiTask::tss:
+        pInfo=SWIGTYPE_p_CTSSTask;
+        break;
+        case CCopasiTask::sens:
+        pInfo=SWIGTYPE_p_CSensTask;
+        break;
 #endif // COPASI_DEBUG
 #ifdef COPASI_SSA
-              case CCopasiTask::ssa:
-                pInfo=SWIGTYPE_p_CSSATask;
-                break;
+        case CCopasiTask::ssa:
+        pInfo=SWIGTYPE_p_CSSATask;
+        break;
 #endif // COPASI_SSA
         */
       default:
@@ -228,31 +234,33 @@ struct swig_type_info*
               case CCopasiMethod::mcaMethodReder:
                 pInfo=SWIGTYPE_p_;
                 break;
-              case CCopasiMethod::scanMethod:
-                pInfo=SWIGTYPE_p_;
-                break;
-              case CCopasiMethod::lyapWolf:
-                pInfo=SWIGTYPE_p_;
-                break;
-              case CCopasiMethod::tssMethod:
-                pInfo=SWIGTYPE_p_;
-                break;
-              case CCopasiMethod::sensMethod:
-                pInfo=SWIGTYPE_p_;
-                break;
+                */
+      case CCopasiMethod::scanMethod:
+        pInfo = SWIGTYPE_p_CScanMethod;
+        break;
+        /*
+        case CCopasiMethod::lyapWolf:
+        pInfo=SWIGTYPE_p_;
+        break;
+        case CCopasiMethod::tssMethod:
+        pInfo=SWIGTYPE_p_;
+        break;
+        case CCopasiMethod::sensMethod:
+        pInfo=SWIGTYPE_p_;
+        break;
 #ifdef COPASI_SSA
-              case CCopasiMethod::ssaMethod:
-                pInfo=SWIGTYPE_p_;
-                break;
+        case CCopasiMethod::ssaMethod:
+        pInfo=SWIGTYPE_p_;
+        break;
 #endif // COPASI_SSA
 #ifdef COPASI_EXTREMECURRENTS
-              case CCopasiMethod::extremeCurrents:
-                pInfo=SWIGTYPE_p_;
-                break;
+        case CCopasiMethod::extremeCurrents:
+        pInfo=SWIGTYPE_p_;
+        break;
 #endif // COPASI_EXTREMECURRENTS
-              case CCopasiMethod::EFMAlgorithm:
-                pInfo=SWIGTYPE_p_;
-                break;
+        case CCopasiMethod::EFMAlgorithm:
+        pInfo=SWIGTYPE_p_;
+        break;
         */
       default:
         break;
@@ -277,37 +285,41 @@ struct swig_type_info*
       case CCopasiTask::timeCourse:
         pInfo = SWIGTYPE_p_CTrajectoryProblem;
         break;
-        /*
-        case CCopasiTask::scan:
-        pInfo=SWIGTYPE_p_CScanProblem;
+      case CCopasiTask::scan:
+        pInfo = SWIGTYPE_p_CScanProblem;
         break;
+        /*
               case CCopasiTask::fluxMode:
                 pInfo=SWIGTYPE_p_CEFMProblem;
                 break;
-              case CCopasiTask::optimization:
-                pInfo=SWIGTYPE_p_COptProblem;
-                break;
-              case CCopasiTask::parameterFitting:
-                pInfo=SWIGTYPE_p_CFitProblem;
-                break;
-              case CCopasiTask::mca:
-                pInfo=SWIGTYPE_p_CMCAProblem;
-                break;
-              case CCopasiTask::lyap:
-                pInfo=SWIGTYPE_p_CLyapProblem;
-                break;
+                */
+      case CCopasiTask::optimization:
+        pInfo = SWIGTYPE_p_COptProblem;
+        break;
+        /*
+        case CCopasiTask::parameterFitting:
+        pInfo=SWIGTYPE_p_CFitProblem;
+        break;
+        case CCopasiTask::mca:
+        pInfo=SWIGTYPE_p_CMCAProblem;
+        break;
+        */
+      case CCopasiTask::lyap:
+        pInfo = SWIGTYPE_p_CLyapProblem;
+        break;
+        /*
 #ifdef COPASI_DEBUG
-              case CCopasiTask::tss:
-                pInfo=SWIGTYPE_p_CTSSProblem;
-                break;
-              case CCopasiTask::sens:
-                pInfo=SWIGTYPE_p_CSensProblem;
-                break;
+        case CCopasiTask::tss:
+        pInfo=SWIGTYPE_p_CTSSProblem;
+        break;
+        case CCopasiTask::sens:
+        pInfo=SWIGTYPE_p_CSensProblem;
+        break;
 #endif // COPASI_DEBUG
 #ifdef COPASI_SSA
-              case CCopasiTask::ssa:
-                pInfo=SWIGTYPE_p_CSSAProblem;
-                break;
+        case CCopasiTask::ssa:
+        pInfo=SWIGTYPE_p_CSSAProblem;
+        break;
 #endif // COPASI_SSA
         */
       default:

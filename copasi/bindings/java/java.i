@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/java.i,v $ 
-//   $Revision: 1.14 $ 
+//   $Revision: 1.15 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2007/06/23 12:45:45 $ 
+//   $Date: 2007/12/11 21:10:26 $ 
 // End CVS Header 
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -41,6 +41,22 @@ void initCopasi();
     }
 }
 
+
+%typemap(jni) CCopasiTask* CCopasiDataModel::addTask "jobject"
+%typemap(jtype) CCopasiTask* CCopasiDataModel::addTask "CCopasiTask"
+%typemap(jstype) CCopasiTask* CCopasiDataModel::addTask "CCopasiTask"
+%typemap(javaout) CCopasiTask* CCopasiDataModel::addTask 
+{
+  return $jnicall;
+}
+%typemap(out) CCopasiTask* CCopasiDataModel::addTask
+{
+    $result = DownCast_CCopasiTask(jenv,$1);
+    if(!$result)
+    {
+        std::cout << "Failed to create new java object" << std::endl;
+    }
+}
 
 %typemap(jni) CCopasiTask* CCopasiDataModel::getTask "jobject"
 %typemap(jtype) CCopasiTask* CCopasiDataModel::getTask "CCopasiTask"

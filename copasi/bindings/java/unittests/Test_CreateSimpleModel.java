@@ -1,3 +1,15 @@
+// Begin CVS Header 
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/unittests/Test_CreateSimpleModel.java,v $ 
+//   $Revision: 1.7 $ 
+//   $Name:  $ 
+//   $Author: gauges $ 
+//   $Date: 2007/12/11 21:10:26 $ 
+// End CVS Header 
+
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
+
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
@@ -19,7 +31,14 @@ public class Test_CreateSimpleModel extends TestCase
 
    public static CModel createModel()
    {
-    CCopasiDataModel.getGlobal().newModel();
+    try
+    {
+      CCopasiDataModel.getGlobal().newModel();
+    }
+    catch(Exception e)
+    {
+        return null;
+    }
     CModel model=CCopasiDataModel.getGlobal().getModel();
     model.setVolumeUnit(CModel.fl);
     model.setTimeUnit(CModel.s);

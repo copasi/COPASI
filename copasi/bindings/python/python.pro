@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/python.pro,v $ 
-#   $Revision: 1.16 $ 
+#   $Revision: 1.17 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2007/08/24 10:48:24 $ 
+#   $Date: 2007/12/11 21:10:27 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -38,7 +38,7 @@ contains(BUILD_OS,Linux){
  LIBS += -llapack
  LIBS += -lblas
  LIBS += -lfl
- LIBS += -lpython2.3
+ LIBS += -lpython2.5
  LIBS += -lsbml
  LIBS += -lexpat
 
@@ -57,7 +57,7 @@ contains(BUILD_OS, Darwin) {
 
 
   !isEmpty(PYTHON_INCLUDE_PATH){
-    INCLUDEPATH += $$PYTHON_INCLUDE_PATH/python2.3/
+    INCLUDEPATH += $$PYTHON_INCLUDE_PATH/python2.5/
   }
 
   QMAKE_POST_LINK += ln -sf libCopasiPython.dylib _COPASI.so
@@ -163,6 +163,7 @@ SWIG_INTERFACE_FILES=../swig/CChemEq.i \
 		     ../swig/CNewtonMethod.i \
                      ../swig/COutputAssistant.i \
                      ../swig/COutputHandler.i \
+                     ../swig/CRandom.i \
                      ../swig/CReaction.i \
                      ../swig/CReport.i \
                      ../swig/CReportDefinition.i \
@@ -178,6 +179,13 @@ SWIG_INTERFACE_FILES=../swig/CChemEq.i \
                      ../swig/CTrajectoryMethod.i \
                      ../swig/CTrajectoryProblem.i \
                      ../swig/CTrajectoryTask.i \
+                     ../swig/CLyapMethod.i \
+                     ../swig/CLyapProblem.i \
+                     ../swig/CLyapTask.i \
+                     ../swig/COptItem.i \
+                     ../swig/COptMethod.i \
+                     ../swig/COptProblem.i \
+                     ../swig/COptTask.i \
                      ../swig/CVersion.i \
                      ../swig/compare_utilities.i \
                      ../swig/copasi.i \

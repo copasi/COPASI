@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/java.pro,v $ 
-#   $Revision: 1.22 $ 
+#   $Revision: 1.23 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2007/08/24 10:48:24 $ 
+#   $Date: 2007/12/11 21:10:26 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -176,6 +176,7 @@ SWIG_INTERFACE_FILES=../swig/CChemEq.i \
 		     ../swig/CNewtonMethod.i \
                      ../swig/COutputAssistant.i \
                      ../swig/COutputHandler.i \
+                     ../swig/CRandom.i \
                      ../swig/CReaction.i \
                      ../swig/CReport.i \
                      ../swig/CReportDefinition.i \
@@ -192,6 +193,13 @@ SWIG_INTERFACE_FILES=../swig/CChemEq.i \
                      ../swig/CTrajectoryProblem.i \
                      ../swig/CTrajectoryTask.i \
                      ../swig/CVersion.i \
+                     ../swig/CLyapMethod.i \
+                     ../swig/CLyapProblem.i \
+                     ../swig/CLyapTask.i \
+                     ../swig/COptItem.i \
+                     ../swig/COptMethod.i \
+                     ../swig/COptProblem.i \
+                     ../swig/COptTask.i \
                      ../swig/compare_utilities.i \
                      ../swig/copasi.i \
 
@@ -207,6 +215,7 @@ SWIG_INTERFACE_FILES=../swig/CChemEq.i \
 #DISTFILES += gui/org/COPASI/gui/FloatVerifier.java
 #DISTFILES += unittests/Test_CreateSimpleModel.java 
 #DISTFILES += unittests/Test_RunSimulations.java
+#DISTFILES += unittests/Test_RunOptimization.java
 
 isEmpty(SWIG_PATH){
     # check if the wrapper file is there

@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiDataModel.i,v $ 
-//   $Revision: 1.16 $ 
+//   $Revision: 1.17 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2007/06/23 12:45:47 $ 
+//   $Date: 2007/12/11 21:10:27 $ 
 // End CVS Header 
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -24,8 +24,8 @@
 
 #include <string>
 
-%ignore CRenameHandler;
 %ignore CDataModelRenameHandler;
+%ignore CRenameHandler;
 
 %ignore CCopasiDataModel::CCopasiDataModel(const bool);
 %ignore CCopasiDataModel::autoSave();
@@ -38,7 +38,6 @@
 %ignore CCopasiDataModel::exportSBMLToString(CProcessReport* pExportHandler);
 %ignore CCopasiDataModel::exportMathModel(const std::string & fileName, CProcessReport* pProcessReport, const std::string & filter, bool overwriteFile = false);
 %ignore CCopasiDataModel::getModel() const;
-%ignore CCopasiDataModel::addTask(const CCopasiTask::Type & taskType);
 %ignore CCopasiDataModel::listTaskDependentOnReport(const std::string & key);
 %ignore CCopasiDataModel::addReport(const CCopasiTask::Type & taskType);
 %ignore CCopasiDataModel::getPlotDefinitionList();
