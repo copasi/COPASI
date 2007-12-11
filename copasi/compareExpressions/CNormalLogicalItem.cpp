@@ -1,18 +1,25 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLogicalItem.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/09/25 14:38:11 $
+//   $Author: shoops $
+//   $Date: 2007/12/11 20:55:55 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include "CNormalLogicalItem.h"
+#ifdef WIN32
+# pragma warning (disable: 4786)
+# pragma warning (disable: 4243)
+// warning C4355: 'this' : used in base member initializer list
+# pragma warning (disable: 4355)
+#endif  // WIN32
 
 #include <sstream>
+
+#include "CNormalLogicalItem.h"
 
 CNormalLogicalItem::CNormalLogicalItem(): CNormalBase(), mType(CNormalLogicalItem::INVALID)
 {}

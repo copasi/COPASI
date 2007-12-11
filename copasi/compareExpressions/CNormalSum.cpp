@@ -1,18 +1,26 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalSum.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/10/04 12:02:33 $
+//   $Author: shoops $
+//   $Date: 2007/12/11 20:55:55 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
+#ifdef WIN32
+# pragma warning (disable: 4786)
+# pragma warning (disable: 4243)
+// warning C4355: 'this' : used in base member initializer list
+# pragma warning (disable: 4355)
+#endif  // WIN32
+
 #include <vector>
 #include <math.h>
 #include <sstream>
+
 #include "copasi.h"
 
 #include "CNormalItemPower.h"

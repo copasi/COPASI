@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/08/07 16:49:49 $
+//   $Author: shoops $
+//   $Date: 2007/12/11 20:55:55 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,6 +14,7 @@
 #define COPASI_CNormalTranslation_H__
 
 class CNormalFraction;
+class CEvaluationTree;
 
 /**
  * The class for simplification and translation of trees into CNormal

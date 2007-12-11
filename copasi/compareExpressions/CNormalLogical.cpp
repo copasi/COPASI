@@ -1,14 +1,21 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLogical.cpp,v $
-//   $Revision: 1.28 $
+//   $Revision: 1.29 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/27 00:24:03 $
+//   $Date: 2007/12/11 20:55:55 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+
+#ifdef WIN32
+# pragma warning (disable: 4786)
+# pragma warning (disable: 4243)
+// warning C4355: 'this' : used in base member initializer list
+# pragma warning (disable: 4355)
+#endif  // WIN32
 
 #include <vector>
 #include <bitset>
@@ -26,7 +33,7 @@ CNormalLogical::CNormalLogical(): CNormalBase(), mNot(false)
 
 CNormalLogical::CNormalLogical(const CNormalLogical& src): CNormalBase(src), mNot(src.mNot)
 {
-  cleanSetOfSets(this->mChoices);
+  cleanSetOfSets(mChoices);
   copySetOfSets(src.mChoices, this->mChoices);
   cleanSetOfSets(this->mAndSets);
   copySetOfSets(src.mAndSets, this->mAndSets);
@@ -541,115 +548,6 @@ bool CNormalLogical::simplify()
  * Converts a set of AND combined sets of OR combined elements into a
  * target set of OR combined sets of AND combined elements.
  */
-template<typename TYPE, typename SETSORTER, typename SETOFSETSSORTER>
-bool CNormalLogical::convertAndOrToOrAnd(const std::set<std::pair<std::set<std::pair<TYPE*, bool>, SETSORTER >, bool>, SETOFSETSSORTER >& source,
-    std::set<std::pair<std::set<std::pair<TYPE*, bool>, SETSORTER >, bool>, SETOFSETSSORTER >& target)
-{
-  bool result = true;
-  if (source.size() > 1)
-    {
-      typename std::set<std::pair<std::set<std::pair<TYPE*, bool>, SETSORTER >, bool>, SETOFSETSSORTER > tmpSourceSet;
-      tmpSourceSet.erase(tmpSourceSet.begin());
-
-      typename std::set<std::pair<std::set<std::pair<TYPE*, bool>, SETSORTER >, bool>, SETOFSETSSORTER > tmpTargetSet;
-      result = ((*source.begin()).second == false);
-      if (result == true)
-        {
-          // recursively call this function
-          // the result returned in tmpTargetSet is a combination of and combined sets of or combined items
-          result = convertAndOrToOrAnd(tmpSourceSet, tmpTargetSet);
-          if (result == true)
-            {
-              // for each item in source.begin().first go through all sets in
-              // tmpTarget
-              typename std::set<std::pair<TYPE*, bool>, SETSORTER >::const_iterator it = (*source.begin()).first.begin(), endit = (*source.begin()).first.end();
-              while (it != endit)
-                {
-                  typename std::set<std::pair<std::set<std::pair<TYPE*, bool>, SETSORTER >, bool>, SETOFSETSSORTER >::const_iterator it2 = tmpTargetSet.begin(), endit2 = tmpTargetSet.end();
-                  while (it2 != endit2)
-                    {
-                      typename std::set<std::pair<TYPE*, bool>, SETSORTER > tmpSet;
-                      TYPE* pNewItem = new TYPE(*(*it).first);
-                      if (tmpSet.insert(std::make_pair(pNewItem, false)).second == false)
-                        {
-                          delete pNewItem;
-                        }
-                      typename std::set<std::pair<TYPE*, bool>, SETSORTER >::const_iterator it3 = (*it2).first.begin(), endit3 = (*it2).first.end();
-                      while (it3 != endit3)
-                        {
-                          pNewItem = new TYPE(*(*it3).first);
-                          if (tmpSet.insert(std::make_pair(pNewItem, false)).second == false)
-                            {
-                              delete pNewItem;
-                            }
-                          ++it3;
-                        }
-                      ++it2;
-                      if (target.insert(std::make_pair(tmpSet, false)).second == false)
-                        {
-                          cleanSet(tmpSet);
-                        }
-                    }
-                  ++it;
-                }
-            }
-        }
-      // cleanup tmpTarget
-      cleanSetOfSets(tmpTargetSet);
-    }
-  else if (source.size() == 1)
-    {
-      // all not flags have to be eliminated at this point
-      if ((*source.begin()).second == true)
-        {
-          result = false;
-        }
-      else
-        {
-          // we have a set of and combined elements in (*source.begin()).first
-          // and we convert them to a set of or combined items
-          // So one set of n items becomes n sets of one item each.
-          const typename std::set<std::pair<TYPE*, bool>, SETSORTER > item = (*source.begin()).first;
-          typename std::set<std::pair<TYPE*, bool>, SETSORTER >::const_iterator it = item.begin(), endit = item.end();
-          while (it != endit && result == true)
-            {
-              if ((*it).second == true)
-                {
-                  result = false;
-                }
-              else
-                {
-                  typename std::set<std::pair<TYPE*, bool>, SETSORTER > tmpSet;
-                  TYPE* pNewItem = new TYPE(*(*it).first);
-                  tmpSet.insert(std::make_pair(pNewItem, false));
-                  if (target.insert(std::make_pair(tmpSet, false)).second == false)
-                    {
-                      // clean up if the insert failed.
-                      delete pNewItem;
-                    }
-                }
-              ++it;
-            }
-        }
-    }
-  if (result == false)
-    {
-      // delete all elements in target
-      typename std::set<std::pair<std::set<std::pair<TYPE*, bool>, SETSORTER >, bool>, SETOFSETSSORTER >::iterator it = target.begin(), endit = target.end();
-      while (it != endit)
-        {
-          typename std::set<std::pair<TYPE*, bool>, SETSORTER >::iterator it2 = (*it).first.begin(), endit2 = (*it).first.end();
-          while (it2 != endit2)
-            {
-              delete (*it2).first;
-              ++it2;
-            }
-          ++it;
-        }
-      target.clear();
-    }
-  return result;
-}
 
 /**
  * Negates a set of elements.
@@ -658,28 +556,6 @@ bool CNormalLogical::convertAndOrToOrAnd(const std::set<std::pair<std::set<std::
  * combined elements, the result is a set of OR combined elements and vice versa.
  * target set.
  */
-template<typename TYPE>
-bool CNormalLogical::negateSets(const std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> >& source, std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> >& target)
-{
-  bool result = true;
-  typename std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> >::const_iterator it = source.begin(), endit = source.end();
-  while (it != endit)
-    {
-      if ((*it).second == false)
-        {
-          TYPE* pItem = new TYPE(*(*it).first);
-          pItem->negate();
-          target.insert(std::make_pair(pItem, false));
-        }
-      else
-        {
-          target.insert(std::make_pair(new TYPE(*(*it).first), false));
-        }
-      ++it;
-    }
-  return result;
-}
-
 /**
  * Negates a set of sets with elements.
  * The result of the operation is returned in target.
@@ -688,107 +564,6 @@ bool CNormalLogical::negateSets(const std::set<std::pair<TYPE*, bool>, CNormalLo
  * elements, the rersult will be a set of OR combined sets with AND combined
  * elements.
  */
-template<typename TYPE>
-bool CNormalLogical::negateSetOfSets(const std::set<std::pair<std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> >, bool>, CNormalLogical::SetOfSetsSorter<TYPE> >& source, std::set<std::pair<std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> >, bool>, CNormalLogical::SetOfSetsSorter<TYPE> >& target)
-{
-  bool result = true;
-  typename std::set<std::pair<std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> >, bool>, CNormalLogical::SetOfSetsSorter<TYPE> >::const_iterator it = source.begin(), endit = source.end();
-  while (it != endit && result == true)
-    {
-      std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> > tmpTarget;
-      if ((*it).second == false)
-        {
-          result = negateSets((*it).first, tmpTarget);
-        }
-      else
-        {
-          typename std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> >::const_iterator it2 = (*it).first.begin(), endit2 = (*it).first.end();
-          while (it2 != endit2)
-            {
-              tmpTarget.insert(std::make_pair(new TYPE(*(*it2).first), (*it2).second));
-              ++it2;
-            }
-        }
-      target.insert(std::make_pair(tmpTarget, false));
-      ++it;
-    }
-  if (result == false)
-    {
-      // cleanup target
-      it = target.begin(), endit = target.end();
-      while (it != endit)
-        {
-          typename std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> >::const_iterator it2 = (*it).first.begin(), endit2 = (*it).first.end();
-          while (it2 != endit2)
-            {
-              delete (*it2).first;
-              ++it2;
-            }
-          ++it;
-        }
-      target.clear();
-    }
-  return result;
-}
-
-template<typename TYPE>
-void CNormalLogical::cleanSet(std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> >& s)
-{
-  typename std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> >::const_iterator it = s.begin(), endit = s.end();
-  while (it != endit)
-    {
-      delete (*it).first;
-      ++it;
-    }
-  s.clear();
-}
-
-template<typename TYPE>
-void CNormalLogical::cleanSetOfSets(std::set<std::pair<std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> >, bool>, CNormalLogical::SetOfSetsSorter<TYPE> >& s)
-{
-  typename std::set<std::pair<std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> >, bool>, CNormalLogical::SetOfSetsSorter<TYPE> >::iterator it = s.begin(), endit = s.end();
-  while (it != endit)
-    {
-      std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> > tmpSet = (*it).first;
-      cleanSet(tmpSet);
-      ++it;
-    }
-  s.clear();
-}
-
-template<typename TYPE>
-void CNormalLogical::copySet(const std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> >& source, std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> >& target)
-{
-  typename std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> >::const_iterator it = source.begin(), endit = source.end();
-  while (it != endit)
-    {
-      TYPE* pNewItem = new TYPE(*(*it).first);
-      if (target.insert(std::make_pair(pNewItem, (*it).second)).second == false)
-        {
-          // clean up the item if the insert failed
-          delete pNewItem;
-        }
-      ++it;
-    }
-}
-
-template<typename TYPE>
-void CNormalLogical::copySetOfSets(const std::set<std::pair<std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> >, bool>, CNormalLogical::SetOfSetsSorter<TYPE> >& source,
-                                   std::set<std::pair<std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> >, bool>, CNormalLogical::SetOfSetsSorter<TYPE> >& target)
-{
-  typename std::set<std::pair<std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> >, bool>, CNormalLogical::SetOfSetsSorter<TYPE> >::const_iterator it = source.begin(), endit = source.end();
-  while (it != endit)
-    {
-      typename std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> > tmpSet;
-      copySet((*it).first, tmpSet);
-      if (target.insert(std::make_pair(tmpSet, (*it).second)).second == false)
-        {
-          // clean the set if the insert failed
-          cleanSet(tmpSet);
-        }
-      ++it;
-    }
-}
 
 /**
  * This routine compares a set of sets and returns true if the first

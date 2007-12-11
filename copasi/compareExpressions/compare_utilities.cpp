@@ -1,18 +1,25 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/compare_utilities.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/12/10 02:45:35 $
+//   $Date: 2007/12/11 20:55:55 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include "compare_utilities.h"
+#ifdef WIN32
+# pragma warning (disable: 4786)
+# pragma warning (disable: 4243)
+// warning C4355: 'this' : used in base member initializer list
+# pragma warning (disable: 4355)
+#endif  // WIN32
 
 #include <sstream>
+
+#include "compare_utilities.h"
 
 #include "sbml/math/ASTNode.h"
 #include "sbml/Model.h"

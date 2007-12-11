@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLogical.h,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/10/04 12:02:33 $
+//   $Author: shoops $
+//   $Date: 2007/12/11 20:55:55 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,15 +13,15 @@
 #ifndef CNormalLogical_H__
 #define CNormalLogical_H__
 
-#include "compareExpressions/CNormalBase.h"
 #include <string>
 #include <iostream>
 #include <set>
 #include <map>
 #include <utility>
 
-class CNormalLogicalItem;
-class CNormalChoiceLogical;
+#include "compareExpressions/CNormalBase.h"
+#include "compareExpressions/CNormalLogicalItem.h"
+#include "compareExpressions/CNormalChoiceLogical.h"
 
 class CNormalLogical : public CNormalBase
   {
@@ -63,10 +63,16 @@ class CNormalLogical : public CNormalBase
         bool isEqual(const std::pair<std::set<std::pair<TYPE*, bool>, SetSorter<TYPE> >, bool>& lhs, const std::pair<std::set<std::pair<TYPE*, bool>, SetSorter<TYPE> >, bool>& rhs) const;
       };
 
-    typedef std::set<std::pair<std::set<std::pair<CNormalChoiceLogical*, bool>, SetSorter<CNormalChoiceLogical> >, bool>, SetOfSetsSorter<CNormalChoiceLogical> > ChoiceSetOfSets;
-    typedef std::set<std::pair<std::set<std::pair<CNormalLogicalItem*, bool>, SetSorter<CNormalLogicalItem> >, bool>, SetOfSetsSorter<CNormalLogicalItem> > ItemSetOfSets;
-    typedef std::set<std::pair<CNormalChoiceLogical*, bool>, SetSorter<CNormalChoiceLogical> > ChoiceSet;
-    typedef std::set<std::pair<CNormalLogicalItem*, bool>, SetSorter<CNormalLogicalItem> > ItemSet;
+  template<typename TYPE> class TemplateSet:
+      public std::set< std::pair< TYPE *, bool >, SetSorter< TYPE > > {};
+
+  template<typename TYPE> class TemplateSetOfSets:
+      public std::set< std::pair< TemplateSet< TYPE >, bool >, SetOfSetsSorter< TYPE > > {};
+
+    typedef TemplateSet< CNormalChoiceLogical > ChoiceSet;
+    typedef TemplateSetOfSets< CNormalChoiceLogical > ChoiceSetOfSets;
+    typedef TemplateSet< CNormalLogicalItem > ItemSet;
+    typedef TemplateSetOfSets< CNormalLogicalItem > ItemSetOfSets;
 
   protected:
     /**
@@ -122,20 +128,52 @@ class CNormalLogical : public CNormalBase
      * This routine calls cleanSet on all inner sets.
      */
     template<typename TYPE>
-    static void cleanSetOfSets(std::set<std::pair<std::set<std::pair<TYPE*, bool>, SetSorter<TYPE> >, bool>, SetOfSetsSorter<TYPE> >& s);
+    static void cleanSetOfSets(TemplateSetOfSets<TYPE> & s)
+    {
+      typename TemplateSetOfSets<TYPE>::iterator it = s.begin(), endit = s.end();
+      while (it != endit)
+        {
+          TemplateSet<TYPE> & tmpSet = it->first;
+          cleanSet(tmpSet);
+          ++it;
+        }
+      s.clear();
+    }
 
     /**
      * This routine makes a deep copy of all elements in the souce set and
      * appends them to the target set.
      */
     template<typename TYPE>
-    static void copySet(const std::set<std::pair<TYPE*, bool>, SetSorter<TYPE> >& source, std::set<std::pair<TYPE*, bool>, SetSorter<TYPE> >& target);
+    static void copySet(const TemplateSet<TYPE> & source, TemplateSet<TYPE> & target)
+    {
+      typename TemplateSet<TYPE>::const_iterator it = source.begin(), endit = source.end();
+      while (it != endit)
+        {
+          TYPE* pNewItem = new TYPE(*it->first);
+          if (target.insert(std::make_pair(pNewItem, it->second)).second == false)
+            {
+              // clean up the item if the insert failed
+              delete pNewItem;
+            }
+          ++it;
+        }
+    }
 
     /**
      * This routine calls delete an all pointers in the set.
      */
     template<typename TYPE>
-    static void cleanSet(std::set<std::pair<TYPE*, bool>, SetSorter<TYPE> >& s);
+    static void cleanSet(TemplateSet<TYPE> & s)
+    {
+      typename std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> >::const_iterator it = s.begin(), endit = s.end();
+      while (it != endit)
+        {
+          delete it->first;
+          ++it;
+        }
+      s.clear();
+    }
 
   protected:
     /**
@@ -146,7 +184,27 @@ class CNormalLogical : public CNormalBase
      * target set.
      */
     template<typename TYPE>
-    static bool negateSets(const std::set<std::pair<TYPE*, bool>, SetSorter<TYPE> >& source, std::set<std::pair<TYPE*, bool>, SetSorter<TYPE> >& target);
+    static bool negateSets(const TemplateSet<TYPE> & source,
+                           TemplateSet<TYPE> & target)
+    {
+      bool result = true;
+      typename TemplateSet<TYPE>::const_iterator it = source.begin(), endit = source.end();
+      while (it != endit)
+        {
+          if (it->second == false)
+            {
+              TYPE* pItem = new TYPE(*it->first);
+              pItem->negate();
+              target.insert(std::make_pair(pItem, false));
+            }
+          else
+            {
+              target.insert(std::make_pair(new TYPE(*it->first), false));
+            }
+          ++it;
+        }
+      return result;
+    }
 
     /**
      * Negates a set of sets with elements.
@@ -157,21 +215,184 @@ class CNormalLogical : public CNormalBase
      * elements.
      */
     template<typename TYPE>
-    static bool negateSetOfSets(const std::set<std::pair<std::set<std::pair<TYPE*, bool>, SetSorter<TYPE> >, bool>, SetOfSetsSorter<TYPE> >& source, std::set<std::pair<std::set<std::pair<TYPE*, bool>, SetSorter<TYPE> >, bool>, SetOfSetsSorter<TYPE> >& target);
+    static bool negateSetOfSets(const TemplateSetOfSets<TYPE> & source,
+                                TemplateSetOfSets<TYPE> & target)
+    {
+      bool result = true;
+      typename TemplateSetOfSets<TYPE>::const_iterator it = source.begin(), endit = source.end();
+      while (it != endit && result == true)
+        {
+          TemplateSet<TYPE> tmpTarget;
+          if (it->second == false)
+            {
+              result = negateSets(it->first, tmpTarget);
+            }
+          else
+            {
+              typename std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> >::const_iterator it2 = it->first.begin(), endit2 = it->first.end();
+              while (it2 != endit2)
+                {
+                  tmpTarget.insert(std::make_pair(new TYPE(*it2->first), it2->second));
+                  ++it2;
+                }
+            }
+          target.insert(std::make_pair(tmpTarget, false));
+          ++it;
+        }
+      if (result == false)
+        {
+          // cleanup target
+          it = target.begin(), endit = target.end();
+          while (it != endit)
+            {
+              typename TemplateSet<TYPE>::const_iterator it2 = it->first.begin(), endit2 = it->first.end();
+              while (it2 != endit2)
+                {
+                  delete it2->first;
+                  ++it2;
+                }
+              ++it;
+            }
+          target.clear();
+        }
+      return result;
+    }
 
     /**
      * Converts a set of AND combined sets of OR combined elements into a
      * target set of OR combined sets of AND combined elements.
      */
-    template<typename TYPE, typename SETSORTER, typename SETOFSETSSORTER>
-    static bool convertAndOrToOrAnd(const std::set<std::pair<std::set<std::pair<TYPE*, bool>, SETSORTER >, bool>, SETOFSETSSORTER >& source, std::set<std::pair<std::set<std::pair<TYPE*, bool>, SETSORTER >, bool>, SETOFSETSSORTER >& target);
+    template<typename TYPE>
+    static bool convertAndOrToOrAnd(const TemplateSetOfSets<TYPE> & source,
+                                    TemplateSetOfSets<TYPE> & target)
+    {
+      bool result = true;
+      if (source.size() > 1)
+        {
+          typename TemplateSetOfSets<TYPE> tmpSourceSet;
+          tmpSourceSet.erase(tmpSourceSet.begin());
+
+          typename TemplateSetOfSets<TYPE> tmpTargetSet;
+          result = ((*source.begin()).second == false);
+          if (result == true)
+            {
+              // recursively call this function
+              // the result returned in tmpTargetSet is a combination of and combined sets of or combined items
+              result = convertAndOrToOrAnd(tmpSourceSet, tmpTargetSet);
+              if (result == true)
+                {
+                  // for each item in source.begin().first go through all sets in
+                  // tmpTarget
+                  typename TemplateSet<TYPE>::const_iterator it = (*source.begin()).first.begin(), endit = (*source.begin()).first.end();
+                  while (it != endit)
+                    {
+                      typename TemplateSetOfSets<TYPE>::const_iterator it2 = tmpTargetSet.begin(), endit2 = tmpTargetSet.end();
+                      while (it2 != endit2)
+                        {
+                          typename TemplateSet<TYPE> tmpSet;
+                          TYPE* pNewItem = new TYPE(*it->first);
+                          if (tmpSet.insert(std::make_pair(pNewItem, false)).second == false)
+                            {
+                              delete pNewItem;
+                            }
+                          typename TemplateSet<TYPE>::const_iterator it3 = it2->first.begin(), endit3 = it2->first.end();
+                          while (it3 != endit3)
+                            {
+                              pNewItem = new TYPE(*(*it3).first);
+                              if (tmpSet.insert(std::make_pair(pNewItem, false)).second == false)
+                                {
+                                  delete pNewItem;
+                                }
+                              ++it3;
+                            }
+                          ++it2;
+                          if (target.insert(std::make_pair(tmpSet, false)).second == false)
+                            {
+                              cleanSet(tmpSet);
+                            }
+                        }
+                      ++it;
+                    }
+                }
+            }
+          // cleanup tmpTarget
+          cleanSetOfSets(tmpTargetSet);
+        }
+      else if (source.size() == 1)
+        {
+          // all not flags have to be eliminated at this point
+          if ((*source.begin()).second == true)
+            {
+              result = false;
+            }
+          else
+            {
+              // we have a set of and combined elements in (*source.begin()).first
+              // and we convert them to a set of or combined items
+              // So one set of n items becomes n sets of one item each.
+              const typename TemplateSet<TYPE> item = (*source.begin()).first;
+              typename TemplateSet<TYPE>::const_iterator it = item.begin(), endit = item.end();
+              while (it != endit && result == true)
+                {
+                  if (it->second == true)
+                    {
+                      result = false;
+                    }
+                  else
+                    {
+                      typename TemplateSet<TYPE> tmpSet;
+                      TYPE* pNewItem = new TYPE(*it->first);
+                      tmpSet.insert(std::make_pair(pNewItem, false));
+                      if (target.insert(std::make_pair(tmpSet, false)).second == false)
+                        {
+                          // clean up if the insert failed.
+                          delete pNewItem;
+                        }
+                    }
+                  ++it;
+                }
+            }
+        }
+      if (result == false)
+        {
+          // delete all elements in target
+          typename TemplateSetOfSets<TYPE>::iterator it = target.begin(), endit = target.end();
+          while (it != endit)
+            {
+              typename TemplateSet<TYPE>::iterator it2 = it->first.begin(), endit2 = it->first.end();
+              while (it2 != endit2)
+                {
+                  delete it2->first;
+                  ++it2;
+                }
+              ++it;
+            }
+          target.clear();
+        }
+      return result;
+    }
 
     /**
      * This routine makes deep copies of all inner sets and appends them to
      * the target set.
      */
     template<typename TYPE>
-    static void copySetOfSets(const std::set<std::pair<std::set<std::pair<TYPE*, bool>, SetSorter<TYPE> >, bool>, SetOfSetsSorter<TYPE> >& source, std::set<std::pair<std::set<std::pair<TYPE*, bool>, SetSorter<TYPE> >, bool>, SetOfSetsSorter<TYPE> >& target);
+    static void copySetOfSets(const TemplateSetOfSets<TYPE> & source,
+                              TemplateSetOfSets<TYPE> & target)
+    {
+      typename TemplateSetOfSets<TYPE>::const_iterator it = source.begin(), endit = source.end();
+      while (it != endit)
+        {
+          typename TemplateSet<TYPE> tmpSet;
+          copySet(it->first, tmpSet);
+          if (target.insert(std::make_pair(tmpSet, it->second)).second == false)
+            {
+              // clean the set if the insert failed
+              cleanSet(tmpSet);
+            }
+          ++it;
+        }
+    }
 
     /**
      * This method creates the canonical disjunctive normalform for a logical
