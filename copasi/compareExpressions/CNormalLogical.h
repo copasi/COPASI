@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLogical.h,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/12/11 20:55:55 $
+//   $Date: 2007/12/11 21:26:31 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -133,7 +133,7 @@ class CNormalLogical : public CNormalBase
       typename TemplateSetOfSets<TYPE>::iterator it = s.begin(), endit = s.end();
       while (it != endit)
         {
-          TemplateSet<TYPE> & tmpSet = it->first;
+          TemplateSet<TYPE> tmpSet = it->first;
           cleanSet(tmpSet);
           ++it;
         }
@@ -269,10 +269,10 @@ class CNormalLogical : public CNormalBase
       bool result = true;
       if (source.size() > 1)
         {
-          typename TemplateSetOfSets<TYPE> tmpSourceSet;
+          TemplateSetOfSets<TYPE> tmpSourceSet;
           tmpSourceSet.erase(tmpSourceSet.begin());
 
-          typename TemplateSetOfSets<TYPE> tmpTargetSet;
+          TemplateSetOfSets<TYPE> tmpTargetSet;
           result = ((*source.begin()).second == false);
           if (result == true)
             {
@@ -289,7 +289,7 @@ class CNormalLogical : public CNormalBase
                       typename TemplateSetOfSets<TYPE>::const_iterator it2 = tmpTargetSet.begin(), endit2 = tmpTargetSet.end();
                       while (it2 != endit2)
                         {
-                          typename TemplateSet<TYPE> tmpSet;
+                          TemplateSet<TYPE> tmpSet;
                           TYPE* pNewItem = new TYPE(*it->first);
                           if (tmpSet.insert(std::make_pair(pNewItem, false)).second == false)
                             {
@@ -330,7 +330,7 @@ class CNormalLogical : public CNormalBase
               // we have a set of and combined elements in (*source.begin()).first
               // and we convert them to a set of or combined items
               // So one set of n items becomes n sets of one item each.
-              const typename TemplateSet<TYPE> item = (*source.begin()).first;
+              const TemplateSet<TYPE> item = (*source.begin()).first;
               typename TemplateSet<TYPE>::const_iterator it = item.begin(), endit = item.end();
               while (it != endit && result == true)
                 {
@@ -340,7 +340,7 @@ class CNormalLogical : public CNormalBase
                     }
                   else
                     {
-                      typename TemplateSet<TYPE> tmpSet;
+                      TemplateSet<TYPE> tmpSet;
                       TYPE* pNewItem = new TYPE(*it->first);
                       tmpSet.insert(std::make_pair(pNewItem, false));
                       if (target.insert(std::make_pair(tmpSet, false)).second == false)
@@ -383,7 +383,7 @@ class CNormalLogical : public CNormalBase
       typename TemplateSetOfSets<TYPE>::const_iterator it = source.begin(), endit = source.end();
       while (it != endit)
         {
-          typename TemplateSet<TYPE> tmpSet;
+          TemplateSet<TYPE> tmpSet;
           copySet(it->first, tmpSet);
           if (target.insert(std::make_pair(tmpSet, it->second)).second == false)
             {
