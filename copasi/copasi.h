@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.h,v $
-//   $Revision: 1.60 $
+//   $Revision: 1.61 $
 //   $Name:  $
-//   $Author: jdada $
-//   $Date: 2007/12/11 13:19:31 $
+//   $Author: shoops $
+//   $Date: 2007/12/11 21:46:08 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,8 +19,6 @@
 #ifndef COPASI_copasi
 #define COPASI_copasi
 
-#define COPASI_PRAXIS
-#define COPASI_TRUNCATED_NEWTON
 /* #define AVOGADRO 6.0221367e23 */
 #define AVOGADRO 6.0221415e23
 

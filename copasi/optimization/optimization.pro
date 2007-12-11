@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/optimization.pro,v $ 
-#   $Revision: 1.30 $ 
+#   $Revision: 1.31 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2007/11/07 14:10:47 $ 
+#   $Date: 2007/12/11 21:46:07 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -11,7 +11,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.30 $ $Author: shoops $ $Date: 2007/11/07 14:10:47 $  
+# $Revision: 1.31 $ $Author: shoops $ $Date: 2007/12/11 21:46:07 $  
 ######################################################################
 
 LIB = optimization
@@ -28,14 +28,18 @@ HEADERS += COptItem.h \
            COptMethodHookeJeeves.h \
            COptMethodLevenbergMarquardt.h \
            COptMethodNelderMead.h \
+           COptMethodPraxis.h \
            COptMethodPS.h \
            COptMethodSA.h \
            COptMethodSRES.h \
            COptMethodSteepestDescent.h \
            COptMethodStatistics.h \
+           COptMethodTruncatedNewton.h \
            COptProblem.h \
            COptTask.h \
+           CPraxis.h \
            CRandomSearch.h \
+           CTruncatedNewton.h \
            FminBrent.h
            
 SOURCES += COptItem.cpp \
@@ -46,30 +50,18 @@ SOURCES += COptItem.cpp \
            COptMethodHookeJeeves.cpp \
            COptMethodLevenbergMarquardt.cpp \
            COptMethodNelderMead.cpp \
+           COptMethodPraxis.cpp \
            COptMethodPS.cpp \
            COptMethodSA.cpp \
            COptMethodSRES.cpp \
            COptMethodSteepestDescent.cpp \
            COptMethodStatistics.cpp \
+           COptMethodTruncatedNewton.cpp \
            COptProblem.cpp \
            COptTask.cpp \
+           CPraxis.cpp \
            CRandomSearch.cpp \
+           CTruncatedNewton.cpp \
            FminBrent.cpp
-
-contains(DEFINES, COPASI_PRAXIS) {
-  HEADERS += COptMethodPraxis.h \
-             CPraxis.h
-           
-  SOURCES += COptMethodPraxis.cpp \
-             CPraxis.cpp
-}
-
-contains(DEFINES, COPASI_TRUNCATED_NEWTON) {
-  HEADERS += COptMethodTruncatedNewton.h \
-             CTruncatedNewton.h
-           
-  SOURCES += COptMethodTruncatedNewton.cpp \
-             CTruncatedNewton.cpp
-}
 
 DISTFILES += optimization.dsp
