@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CPraxis.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/11/07 14:09:33 $
+//   $Author: jdada $
+//   $Date: 2007/12/11 13:19:31 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -56,18 +56,5 @@ C_FLOAT64 praxis_(C_FLOAT64 *t0,
                   C_FLOAT64 *x,
                   FPraxis *f, // Functor for function under investigation
                   C_FLOAT64 *fmin);
-
-#ifdef MUST_BE_REMOVED
-//these external C functions (normally included in f2ch.add header file)
-//are required for the compilation of praxis
-extern "C"
-  {
-    extern C_INT pow_ii(C_INT *, C_INT *);
-    extern C_INT s_wsfe(cilist *);
-    extern C_INT do_fio(C_INT *, char *, ftnlen);
-    extern C_INT e_wsfe(void);
-    double d_lg10(C_FLOAT64 *);
-  }
-#endif // MUST_BE_REMOVED
 
 #endif // COAPSI_CPraxis

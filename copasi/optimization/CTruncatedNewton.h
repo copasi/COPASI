@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CTruncatedNewton.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/11/07 14:09:33 $
+//   $Author: jdada $
+//   $Date: 2007/12/11 13:19:31 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,8 +14,6 @@
 #define COPASI_CTruncatedNewton
 
 #include "copasi.h"
-
-#include "copasi/blaswrap.h"
 
 class FTruncatedNewton
   {
@@ -71,19 +69,4 @@ int tn_(C_INT *,
         C_FLOAT64 *,
         C_INT *,
         FTruncatedNewton *);
-
-#ifdef MUST_BE_REMOVED
-//these external C functions (normally included in f2ch.add header file)
-//are required for the compilation of praxis
-extern "C"
-  {
-    extern double pow_dd(C_FLOAT64 *, C_FLOAT64 *);
-    extern C_INT pow_ii(C_INT *, C_INT *);
-    extern C_INT s_wsfe(cilist *);
-    extern C_INT do_fio(C_INT *, char *, ftnlen);
-    extern C_INT e_wsfe(void);
-    double d_lg10(C_FLOAT64 *);
-  }
-#endif // MUST_BE_REMOVED
-
 #endif // COAPSI_CTruncatedNewton

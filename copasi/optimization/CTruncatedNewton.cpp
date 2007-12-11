@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CTruncatedNewton.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: jdada $
-//   $Date: 2007/11/06 15:01:39 $
+//   $Date: 2007/12/11 13:19:31 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,28 +15,32 @@
  -lf2c -lm   (in that order)
  */
 
+#include <math.h>
+#include <float.h>
+
+#include "copasi.h"
 #include "CTruncatedNewton.h"
 
-#include <float.h>
+#include "blaswrap.h"
 
 /* Common Block Declarations */
 
 union {
     struct
       {
-        integer lgv, lz1, lzk, lv, lsk, lyk, ldiagb, lsr, lyr, loldg, lhg,
+        C_INT lgv, lz1, lzk, lv, lsk, lyk, ldiagb, lsr, lyr, loldg, lhg,
         lhyk, lpk, lemat, lwtest;
       }
     _1;
     struct
       {
-        integer lgv, lz1, lzk, lv, lsk, lyk, ldiagb, lsr, lyr, lhyr, lhg,
+        C_INT lgv, lz1, lzk, lv, lsk, lyk, ldiagb, lsr, lyr, lhyr, lhg,
         lhyk, lpk, lemat, lwtest;
       }
     _2;
     struct
       {
-        integer lsub[14], lwtest;
+        C_INT lsub[14], lwtest;
       }
     _3;
   } subscr_;
@@ -45,12 +49,15 @@ union {
 #define subscr_2 (subscr_._2)
 #define subscr_3 (subscr_._3)
 
+#define TRUE_ (1)
+#define FALSE_ (0)
+
 /* Table of constant values */
 
-static integer c__1 = 1;
-static logical c_false = FALSE_;
-static logical c_true = TRUE_;
-static doublereal c_b246 = .6666;
+static C_INT c__1 = 1;
+static C_INT c_false = FALSE_;
+static C_INT c_true = TRUE_;
+static C_FLOAT64 c_b246 = .6666;
 
 /* %% TRUNCATED-NEWTON METHOD:  SUBROUTINES */
 /*   FOR OTHER MACHINES, MODIFY ROUTINE MCHPR1 (MACHINE EPSILON) */
@@ -59,42 +66,41 @@ static doublereal c_b246 = .6666;
 /*                GEORGE MASON UNIVERSITY */
 /*                FAIRFAX, VA 22030 */
 /* ****************************************************************** */
-/* Subroutine */ int tn_(integer *ierror, integer *n, doublereal *x,
-                         doublereal *f, doublereal *g, doublereal *w, integer *lw, FTruncatedNewton *sfun)
+/* Subroutine */ int tn_(C_INT *ierror, C_INT *n, C_FLOAT64 *x,
+                         C_FLOAT64 *f, C_FLOAT64 *g, C_FLOAT64 *w, C_INT *lw, FTruncatedNewton *sfun)
 {
   /* Format strings */
-  static char fmt_800[] = "(//,\002 ERROR CODE =\002,i3)";
-  static char fmt_810[] = "(//,\002 OPTIMAL FUNCTION VALUE = \002,1pd22.15)"
+  /* static char fmt_800[] = "(//,\002 ERROR CODE =\002,i3)";
+   static char fmt_810[] = "(//,\002 OPTIMAL FUNCTION VALUE = \002,1pd22.15)"
 ;
-  static char fmt_820[] = "(10x,\002CURRENT SOLUTION IS (AT MOST 10 COMPON"
-                          "ENTS)\002,/,14x,\002I\002,11x,\002X(I)\002)";
-  static char fmt_830[] = "(10x,i5,2x,1pd22.15)";
+   static char fmt_820[] = "(10x,\002CURRENT SOLUTION IS (AT MOST 10 COMPON"
+                           "ENTS)\002,/,14x,\002I\002,11x,\002X(I)\002)";
+   static char fmt_830[] = "(10x,i5,2x,1pd22.15)";*/
 
   /* System generated locals */
-  integer i__1;
+  C_INT i__1;
 
   /* Builtin functions */
-  double sqrt(doublereal);
-  integer s_wsfe(cilist *), do_fio(integer *, char *, ftnlen), e_wsfe(void);
+  double sqrt(C_FLOAT64);
 
   /* Local variables */
-  static integer nmax;
-  extern /* Subroutine */ int lmqn_(integer *, integer *, doublereal *,
-                                      doublereal *, doublereal *, doublereal *, integer *, FTruncatedNewton *,
-                                      integer *, integer *, integer *, doublereal *, doublereal *,
-                                      doublereal *, doublereal *);
-  static doublereal xtol;
-  static integer i__, maxit;
-  extern doublereal mchpr1_(void);
-  static doublereal accrcy;
-  static integer maxfun, msglvl;
-  static doublereal stepmx, eta;
+  static C_INT nmax;
+  extern /* Subroutine */ int lmqn_(C_INT *, C_INT *, C_FLOAT64 *,
+                                      C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_INT *, FTruncatedNewton *,
+                                      C_INT *, C_INT *, C_INT *, C_FLOAT64 *, C_FLOAT64 *,
+                                      C_FLOAT64 *, C_FLOAT64 *);
+  static C_FLOAT64 xtol;
+  static C_INT i__, maxit;
+  extern C_FLOAT64 mchpr1_(void);
+  static C_FLOAT64 accrcy;
+  static C_INT maxfun, msglvl;
+  static C_FLOAT64 stepmx, eta;
 
-  /* Fortran I/O blocks */
+  /* Fortran I/O blocks */ /*
   static cilist io___8 = {0, 6, 0, fmt_800, 0 };
   static cilist io___9 = {0, 6, 0, fmt_810, 0 };
   static cilist io___10 = {0, 6, 0, fmt_820, 0 };
-  static cilist io___12 = {0, 6, 0, fmt_830, 0 };
+  static cilist io___12 = {0, 6, 0, fmt_830, 0 };*/
 
   /* THIS ROUTINE SOLVES THE OPTIMIZATION PROBLEM */
 
@@ -114,13 +120,13 @@ static doublereal c_b246 = .6666;
 
   /* SUBROUTINE PARAMETERS: */
 
-  /* IERROR - (INTEGER) ERROR CODE */
+  /* IERROR - (C_INT) ERROR CODE */
   /*          (0 => NORMAL RETURN) */
   /*          (2 => MORE THAN MAXFUN EVALUATIONS) */
   /*          (3 => LINE SEARCH FAILED TO FIND */
   /*          (LOWER POINT (MAY NOT BE SERIOUS) */
   /*          (-1 => ERROR IN INPUT PARAMETERS) */
-  /* N      - (INTEGER) NUMBER OF VARIABLES */
+  /* N      - (C_INT) NUMBER OF VARIABLES */
   /* X      - (REAL*8) VECTOR OF LENGTH AT LEAST N; ON INPUT, AN INITIAL */
   /*          ESTIMATE OF THE SOLUTION; ON OUTPUT, THE COMPUTED SOLUTION. */
   /* G      - (REAL*8) VECTOR OF LENGTH AT LEAST N; ON OUTPUT, THE FINAL */
@@ -129,12 +135,12 @@ static doublereal c_b246 = .6666;
   /*          OBJECTIVE FUNCTION AT THE SOLUTION; ON OUTPUT, THE VALUE */
   /*          OF THE OBJECTIVE FUNCTION AT THE SOLUTION */
   /* W      - (REAL*8) WORK VECTOR OF LENGTH AT LEAST 14*N */
-  /* LW     - (INTEGER) THE DECLARED DIMENSION OF W */
+  /* LW     - (C_INT) THE DECLARED DIMENSION OF W */
   /* SFUN   - A USER-SPECIFIED SUBROUTINE THAT COMPUTES THE FUNCTION */
   /*          AND GRADIENT OF THE OBJECTIVE FUNCTION.  IT MUST HAVE */
   /*          THE CALLING SEQUENCE */
   /*             SUBROUTINE SFUN (N, X, F, G) */
-  /*             INTEGER           N */
+  /*             C_INT           N */
   /*             DOUBLE PRECISION  X(N), G(N), F */
 
   /* THIS IS AN EASY-TO-USE DRIVER FOR THE MAIN OPTIMIZATION ROUTINE */
@@ -185,14 +191,14 @@ static doublereal c_b246 = .6666;
         &maxfun, &eta, &stepmx, &accrcy, &xtol);
 
   /* PRINT THE RESULTS */
-
+  //remove the printing
   /*  if (*ierror != 0) {
   s_wsfe(&io___8);
-  do_fio(&c__1, (char *)&(*ierror), (ftnlen)sizeof(integer));
+  do_fio(&c__1, (char *)&(*ierror), (ftnlen)sizeof(C_INT));
   e_wsfe();
      }
      s_wsfe(&io___9);
-     do_fio(&c__1, (char *)&(*f), (ftnlen)sizeof(doublereal));
+     do_fio(&c__1, (char *)&(*f), (ftnlen)sizeof(C_FLOAT64));
      e_wsfe();
      if (msglvl < 1) {
   return 0;
@@ -206,51 +212,53 @@ static doublereal c_b246 = .6666;
      s_wsfe(&io___12);
      i__1 = nmax;
      for (i__ = 1; i__ <= i__1; ++i__) {
-  do_fio(&c__1, (char *)&i__, (ftnlen)sizeof(integer));
-  do_fio(&c__1, (char *)&x[i__], (ftnlen)sizeof(doublereal));
+  do_fio(&c__1, (char *)&i__, (ftnlen)sizeof(C_INT));
+  do_fio(&c__1, (char *)&x[i__], (ftnlen)sizeof(C_FLOAT64));
      }
      e_wsfe();*/
   return 0;
 }  /* tn_ */
 
-/* Subroutine */ int tnbc_(integer *ierror, integer *n, doublereal *x,
-                           doublereal *f, doublereal *g, doublereal *w, integer *lw, FTruncatedNewton * sfun,
-                           doublereal *low, doublereal *up, integer *ipivot)
+/* Subroutine */ int tnbc_(C_INT *ierror, C_INT *n, C_FLOAT64 *x,
+                           C_FLOAT64 *f, C_FLOAT64 *g, C_FLOAT64 *w, C_INT *lw, FTruncatedNewton * sfun,
+                           C_FLOAT64 *low, C_FLOAT64 *up, C_INT *ipivot)
 {
   /* Format strings */
-  static char fmt_800[] = "(//,\002 ERROR CODE =\002,i3)";
-  static char fmt_810[] = "(//,\002 OPTIMAL FUNCTION VALUE = \002,1pd22.15)"
+  /* static char fmt_800[] = "(//,\002 ERROR CODE =\002,i3)";
+   static char fmt_810[] = "(//,\002 OPTIMAL FUNCTION VALUE = \002,1pd22.15)"
 ;
-  static char fmt_820[] = "(10x,\002CURRENT SOLUTION IS (AT MOST 10 COMPON"
-                          "ENTS)\002,/,14x,\002I\002,11x,\002X(I)\002)";
-  static char fmt_830[] = "(10x,i5,2x,1pd22.15)";
+   static char fmt_820[] = "(10x,\002CURRENT SOLUTION IS (AT MOST 10 COMPON"
+                           "ENTS)\002,/,14x,\002I\002,11x,\002X(I)\002)";
+   static char fmt_830[] = "(10x,i5,2x,1pd22.15)";*/
 
   /* System generated locals */
-  integer i__1;
+  C_INT i__1;
 
   /* Builtin functions */
-  double sqrt(doublereal);
-  integer s_wsfe(cilist *), do_fio(integer *, char *, ftnlen), e_wsfe(void);
+  double sqrt(C_FLOAT64);
+  //  C_INT s_wsfe(cilist *), do_fio(C_INT *, char *, ftnlen), e_wsfe(void);
 
   /* Local variables */
-  static integer nmax;
-  static doublereal xtol;
-  static integer i__, maxit;
-  extern doublereal mchpr1_(void);
-  static doublereal accrcy;
-  extern /* Subroutine */ int lmqnbc_(integer *, integer *, doublereal *,
-                                        doublereal *, doublereal *, doublereal *, integer *, FTruncatedNewton *,
-                                        doublereal *, doublereal *, integer *, integer *, integer *,
-                                        integer *, doublereal *, doublereal *, doublereal *, doublereal *)
+  static C_INT nmax;
+  static C_FLOAT64 xtol;
+  static C_INT i__, maxit;
+  extern C_FLOAT64 mchpr1_(void);
+  static C_FLOAT64 accrcy;
+  extern /* Subroutine */ int lmqnbc_(C_INT *, C_INT *, C_FLOAT64 *,
+                                        C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_INT *, FTruncatedNewton *,
+                                        C_FLOAT64 *, C_FLOAT64 *, C_INT *, C_INT *, C_INT *,
+                                        C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *)
 ;
-  static integer maxfun, msglvl;
-  static doublereal stepmx, eta;
+  static C_INT maxfun, msglvl;
+  static C_FLOAT64 stepmx, eta;
 
   /* Fortran I/O blocks */
+  //remove
+  /*
   static cilist io___21 = {0, 6, 0, fmt_800, 0 };
   static cilist io___22 = {0, 6, 0, fmt_810, 0 };
   static cilist io___23 = {0, 6, 0, fmt_820, 0 };
-  static cilist io___25 = {0, 6, 0, fmt_830, 0 };
+  static cilist io___25 = {0, 6, 0, fmt_830, 0 };*/
 
   /* THIS ROUTINE SOLVES THE OPTIMIZATION PROBLEM */
 
@@ -272,13 +280,13 @@ static doublereal c_b246 = .6666;
 
   /* SUBROUTINE PARAMETERS: */
 
-  /* IERROR  - (INTEGER) ERROR CODE */
+  /* IERROR  - (C_INT) ERROR CODE */
   /*           (0 => NORMAL RETURN */
   /*           (2 => MORE THAN MAXFUN EVALUATIONS */
   /*           (3 => LINE SEARCH FAILED TO FIND LOWER */
   /*           (POINT (MAY NOT BE SERIOUS) */
   /*           (-1 => ERROR IN INPUT PARAMETERS */
-  /* N       - (INTEGER) NUMBER OF VARIABLES */
+  /* N       - (C_INT) NUMBER OF VARIABLES */
   /* X       - (REAL*8) VECTOR OF LENGTH AT LEAST N; ON INPUT, AN INITIAL */
   /*           ESTIMATE OF THE SOLUTION; ON OUTPUT, THE COMPUTED SOLUTION.
   */
@@ -288,18 +296,18 @@ static doublereal c_b246 = .6666;
   /*           OBJECTIVE FUNCTION AT THE SOLUTION; ON OUTPUT, THE VALUE */
   /*           OF THE OBJECTIVE FUNCTION AT THE SOLUTION */
   /* W       - (REAL*8) WORK VECTOR OF LENGTH AT LEAST 14*N */
-  /* LW      - (INTEGER) THE DECLARED DIMENSION OF W */
+  /* LW      - (C_INT) THE DECLARED DIMENSION OF W */
   /* SFUN    - A USER-SPECIFIED SUBROUTINE THAT COMPUTES THE FUNCTION */
   /*           AND GRADIENT OF THE OBJECTIVE FUNCTION.  IT MUST HAVE */
   /*           THE CALLING SEQUENCE */
   /*             SUBROUTINE SFUN (N, X, F, G) */
-  /*             INTEGER           N */
+  /*             C_INT           N */
   /*             DOUBLE PRECISION  X(N), G(N), F */
   /* LOW, UP - (REAL*8) VECTORS OF LENGTH AT LEAST N CONTAINING */
   /*           THE LOWER AND UPPER BOUNDS ON THE VARIABLES.  IF */
   /*           THERE ARE NO BOUNDS ON A PARTICULAR VARIABLE, SET */
   /*           THE BOUNDS TO -1.D38 AND 1.D38, RESPECTIVELY. */
-  /* IPIVOT  - (INTEGER) WORK VECTOR OF LENGTH AT LEAST N, USED */
+  /* IPIVOT  - (C_INT) WORK VECTOR OF LENGTH AT LEAST N, USED */
   /*           TO RECORD WHICH VARIABLES ARE AT THEIR BOUNDS. */
 
   /* THIS IS AN EASY-TO-USE DRIVER FOR THE MAIN OPTIMIZATION ROUTINE */
@@ -355,120 +363,126 @@ static doublereal c_b246 = .6666;
 
   /* PRINT RESULTS */
 
-  /*   if (*ierror != 0) {
-  s_wsfe(&io___21);
-  do_fio(&c__1, (char *)&(*ierror), (ftnlen)sizeof(integer));
-  e_wsfe();
-     }
-     s_wsfe(&io___22);
-     do_fio(&c__1, (char *)&(*f), (ftnlen)sizeof(doublereal));
-     e_wsfe();
-     if (msglvl < 1) {
-  return 0;
-     }
-     s_wsfe(&io___23);
-     e_wsfe();
-     nmax = 10;
-     if (*n < nmax) {
-  nmax = *n;
-     }
-     s_wsfe(&io___25);
-     i__1 = nmax;
-     for (i__ = 1; i__ <= i__1; ++i__) {
-  do_fio(&c__1, (char *)&i__, (ftnlen)sizeof(integer));
-  do_fio(&c__1, (char *)&x[i__], (ftnlen)sizeof(doublereal));
-     }
-     e_wsfe();*/
+  if (*ierror != 0)
+    {
+      // s_wsfe(&io___21);
+      //  do_fio(&c__1, (char *)&(*ierror), (ftnlen)sizeof(C_INT));
+      // e_wsfe();
+    }
+  //    s_wsfe(&io___22);
+  //    do_fio(&c__1, (char *)&(*f), (ftnlen)sizeof(C_FLOAT64));
+  //   e_wsfe();
+  if (msglvl < 1)
+    {
+      return 0;
+    }
+  //   s_wsfe(&io___23);
+  //    e_wsfe();
+  nmax = 10;
+  if (*n < nmax)
+    {
+      nmax = *n;
+    }
+  //   s_wsfe(&io___25);
+  i__1 = nmax;
+  for (i__ = 1; i__ <= i__1; ++i__)
+    {
+      // do_fio(&c__1, (char *)&i__, (ftnlen)sizeof(C_INT));
+      // do_fio(&c__1, (char *)&x[i__], (ftnlen)sizeof(C_FLOAT64));
+    }
+  //   e_wsfe();
   return 0;
 }  /* tnbc_ */
 
-/* Subroutine */ int lmqn_(integer *ifail, integer *n, doublereal *x,
-                           doublereal *f, doublereal *g, doublereal *w, integer *lw, FTruncatedNewton * sfun,
-                           integer *msglvl, integer *maxit, integer *maxfun, doublereal *eta,
-                           doublereal *stepmx, doublereal *accrcy, doublereal *xtol)
+/* Subroutine */ int lmqn_(C_INT *ifail, C_INT *n, C_FLOAT64 *x,
+                           C_FLOAT64 *f, C_FLOAT64 *g, C_FLOAT64 *w, C_INT *lw, FTruncatedNewton * sfun,
+                           C_INT *msglvl, C_INT *maxit, C_INT *maxfun, C_FLOAT64 *eta,
+                           C_FLOAT64 *stepmx, C_FLOAT64 *accrcy, C_FLOAT64 *xtol)
 {
   /* Format strings */
-  static char fmt_800[] = "(//\002 NIT   NF   CG\002,9x,\002F\002,21x,\002"
-                          "GTG\002,//)";
-  static char fmt_810[] = "(\002 \002,i3,1x,i4,1x,i4,1x,1pd22.15,2x,1pd15."
-                          "8)";
+  /* static char fmt_800[] = "(//\002 NIT   NF   CG\002,9x,\002F\002,21x,\002"
+                           "GTG\002,//)";
+   static char fmt_810[] = "(\002 \002,i3,1x,i4,1x,i4,1x,1pd22.15,2x,1pd15."
+                           "8)"; */
 
   /* System generated locals */
-  integer i__1;
+  C_INT i__1;
 
   /* Builtin functions */
-  integer s_wsfe(cilist *), e_wsfe(void), do_fio(integer *, char *, ftnlen);
-  double sqrt(doublereal);
+  // C_INT s_wsfe(cilist *), e_wsfe(void), do_fio(C_INT *, char *, ftnlen);
+  double sqrt(C_FLOAT64);
 
   /* Local variables */
-  static doublereal fold, oldf;
-  extern doublereal ddot_(integer *, doublereal *, integer *, doublereal *,
-                            integer *);
-  static doublereal fnew;
-  static integer numf;
-  static doublereal peps;
-  static integer lhyr;
-  static doublereal zero, rtol, yksk, tiny;
-  extern /* Subroutine */ int dxpy_(integer *, doublereal *, integer *,
-                                      doublereal *, integer *);
-  static integer nwhy;
-  static doublereal yrsr;
-  extern doublereal dnrm2_(integer *, doublereal *, integer *), step1_(
-      doublereal *, doublereal *, doublereal *, doublereal *);
-  static integer i__;
-  static doublereal alpha, fkeep;
-  static integer ioldg;
-  static doublereal small;
-  static integer modet;
-  extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *,
-                                       doublereal *, integer *);
-  static integer niter;
-  static doublereal gnorm, ftest, fstop, pnorm, rteps, xnorm;
-  static integer idiagb;
-  static doublereal fm, pe, difold;
-  static integer icycle, nlincg, nfeval;
-  static doublereal difnew;
-  static integer nmodif;
-  extern /* Subroutine */ int chkucp_(integer *, integer *, integer *,
-                                        integer *, doublereal *, doublereal *, doublereal *, doublereal *,
-                                        doublereal *, doublereal *, doublereal *, doublereal *,
-                                        doublereal *, doublereal *, doublereal *, doublereal *, integer *,
-                                        doublereal *, doublereal *, doublereal *);
-  static doublereal epsmch;
-  extern /* Subroutine */ int linder_(integer *, FTruncatedNewton *, doublereal *,
-                                        doublereal *, doublereal *, doublereal *, doublereal *,
-                                        doublereal *, doublereal *, doublereal *, doublereal *,
-                                        doublereal *, doublereal *, doublereal *, doublereal *,
-                                        doublereal *, integer *, integer *, doublereal *, integer *);
-  static doublereal epsred, abstol, oldgtp;
-  extern /* Subroutine */ int modlnp_(integer *, doublereal *, doublereal *,
-                                        doublereal *, doublereal *, doublereal *, doublereal *,
-                                        doublereal *, doublereal *, doublereal *, integer *, doublereal *,
-                                        integer *, integer *, integer *, integer *, integer *, integer *,
-                                        logical *, doublereal *, doublereal *, doublereal *, logical *,
-                                        FTruncatedNewton *, logical *, integer *, doublereal *, doublereal *,
-                                        doublereal *, doublereal *);
-  static integer ireset;
-  static logical lreset;
-  extern /* Subroutine */ int setpar_(integer *);
-  static doublereal reltol, gtpnew;
-  static integer nftotl;
-  static doublereal toleps;
-  extern /* Subroutine */ int setucr_(doublereal *, integer *, integer *,
-                                        integer *, doublereal *, doublereal *, doublereal *, doublereal *,
-                                        doublereal *, FTruncatedNewton *, doublereal *, doublereal *);
-  static doublereal rtleps;
-  static integer ipivot, nm1;
-  static doublereal rtolsq, tnytol, gtg, one;
-  static integer ipk;
-  static doublereal gsk, spe;
-  static integer isk, iyk;
-  static logical upd1;
+  static C_FLOAT64 fold, oldf;
+  extern C_FLOAT64 ddot_(C_INT *, C_FLOAT64 *, C_INT *, C_FLOAT64 *,
+                           C_INT *);
+  static C_FLOAT64 fnew;
+  static C_INT numf;
+  static C_FLOAT64 peps;
+  static C_INT lhyr;
+  static C_FLOAT64 zero, rtol, yksk, tiny;
+  extern /* Subroutine */ int dxpy_(C_INT *, C_FLOAT64 *, C_INT *,
+                                      C_FLOAT64 *, C_INT *);
+  static C_INT nwhy;
+  static C_FLOAT64 yrsr;
+  extern C_FLOAT64 dnrm2_(C_INT *, C_FLOAT64 *, C_INT *), step1_(
+      C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *);
+  static C_INT i__;
+  static C_FLOAT64 alpha, fkeep;
+  static C_INT ioldg;
+  static C_FLOAT64 small;
+  static C_INT modet;
+  extern /* Subroutine */ int dcopy_(C_INT *, C_FLOAT64 *, C_INT *,
+                                       C_FLOAT64 *, C_INT *);
+  static C_INT niter;
+  static C_FLOAT64 gnorm, ftest, fstop, pnorm, rteps, xnorm;
+  static C_INT idiagb;
+  static C_FLOAT64 fm, pe, difold;
+  static C_INT icycle, nlincg, nfeval;
+  static C_FLOAT64 difnew;
+  static C_INT nmodif;
+  extern /* Subroutine */ int chkucp_(C_INT *, C_INT *, C_INT *,
+                                        C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+                                        C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+                                        C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_INT *,
+                                        C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *);
+  static C_FLOAT64 epsmch;
+  extern /* Subroutine */ int linder_(C_INT *, FTruncatedNewton *, C_FLOAT64 *,
+                                        C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+                                        C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+                                        C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+                                        C_FLOAT64 *, C_INT *, C_INT *, C_FLOAT64 *, C_INT *);
+  static C_FLOAT64 epsred, fabstol, oldgtp;
+  extern /* Subroutine */ int modlnp_(C_INT *, C_FLOAT64 *, C_FLOAT64 *,
+                                        C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+                                        C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_INT *, C_FLOAT64 *,
+                                        C_INT *, C_INT *, C_INT *, C_INT *, C_INT *, C_INT *,
+                                        C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_INT *,
+                                        FTruncatedNewton *, C_INT *, C_INT *, C_FLOAT64 *, C_FLOAT64 *,
+                                        C_FLOAT64 *, C_FLOAT64 *);
+  static C_INT ireset;
+  static C_INT lreset;
+  extern /* Subroutine */ int setpar_(C_INT *);
+  static C_FLOAT64 reltol, gtpnew;
+  static C_INT nftotl;
+  static C_FLOAT64 toleps;
+  extern /* Subroutine */ int setucr_(C_FLOAT64 *, C_INT *, C_INT *,
+                                        C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+                                        C_FLOAT64 *, FTruncatedNewton *, C_FLOAT64 *, C_FLOAT64 *);
+  static C_FLOAT64 rtleps;
+  static C_INT ipivot, nm1;
+  static C_FLOAT64 rtolsq, tnytol, gtg, one;
+  static C_INT ipk;
+  static C_FLOAT64 gsk, spe;
+  static C_INT isk, iyk;
+  static C_INT upd1;
 
   /* Fortran I/O blocks */
-  static cilist io___27 = {0, 6, 0, fmt_800, 0 };
-  static cilist io___56 = {0, 6, 0, fmt_810, 0 };
-  static cilist io___81 = {0, 6, 0, fmt_810, 0 };
+  //remove the blocks
+  /* static cilist io___27 = {0, 6, 0, fmt_800, 0 };
+   static cilist io___56 = {0, 6, 0, fmt_810, 0 };
+   static cilist io___81 = {0, 6, 0, fmt_810, 0 };
+   */
 
   /* THIS ROUTINE IS A TRUNCATED-NEWTON METHOD. */
   /* THE TRUNCATED-NEWTON METHOD IS PRECONDITIONED BY A LIMITED-MEMORY */
@@ -520,18 +534,18 @@ static doublereal c_b246 = .6666;
   fold = fnew;
   if (*msglvl >= 1)
     {
-      s_wsfe(&io___56);
-      do_fio(&c__1, (char *)&niter, (ftnlen)sizeof(integer));
-      do_fio(&c__1, (char *)&nftotl, (ftnlen)sizeof(integer));
-      do_fio(&c__1, (char *)&nlincg, (ftnlen)sizeof(integer));
-      do_fio(&c__1, (char *)&fnew, (ftnlen)sizeof(doublereal));
-      do_fio(&c__1, (char *)&gtg, (ftnlen)sizeof(doublereal));
-      e_wsfe();
+      /*  s_wsfe(&io___56);
+        do_fio(&c__1, (char *)&niter, (ftnlen)sizeof(C_INT));
+        do_fio(&c__1, (char *)&nftotl, (ftnlen)sizeof(C_INT));
+        do_fio(&c__1, (char *)&nlincg, (ftnlen)sizeof(C_INT));
+        do_fio(&c__1, (char *)&fnew, (ftnlen)sizeof(C_FLOAT64));
+        do_fio(&c__1, (char *)&gtg, (ftnlen)sizeof(C_FLOAT64));
+        e_wsfe();*/
     }
 
   /* CHECK FOR SMALL GRADIENT AT THE STARTING POINT. */
 
-  ftest = one + abs(fnew);
+  ftest = one + fabs(fnew);
   if (gtg < epsmch * 1e-4 * ftest * ftest)
     {
       goto L90;
@@ -578,10 +592,10 @@ L20:
 
   pe = pnorm + epsmch;
 
-  /* COMPUTE THE ABSOLUTE AND RELATIVE TOLERANCES FOR THE LINEAR SEARCH */
+  /* COMPUTE THE fabsOLUTE AND RELATIVE TOLERANCES FOR THE LINEAR SEARCH */
 
   reltol = rteps * (xnorm + one) / pe;
-  abstol = -epsmch * ftest / (oldgtp - epsmch);
+  fabstol = -epsmch * ftest / (oldgtp - epsmch);
 
   /* COMPUTE THE SMALLEST ALLOWABLE SPACING BETWEEN POINTS IN */
   /* THE LINEAR SEARCH */
@@ -595,7 +609,7 @@ L20:
 
   /* PERFORM THE LINEAR SEARCH */
 
-  linder_(n, sfun, &small, &epsmch, &reltol, &abstol, &tnytol, eta, &
+  linder_(n, sfun, &small, &epsmch, &reltol, &fabstol, &tnytol, eta, &
           zero, &spe, &w[subscr_1.lpk], &oldgtp, &x[1], &fnew, &alpha, &g[1]
           , &numf, &nwhy, &w[1], lw);
 
@@ -605,13 +619,15 @@ L20:
   gtg = ddot_(n, &g[1], &c__1, &g[1], &c__1);
   if (*msglvl >= 1)
     {
-      s_wsfe(&io___81);
-      do_fio(&c__1, (char *)&niter, (ftnlen)sizeof(integer));
-      do_fio(&c__1, (char *)&nftotl, (ftnlen)sizeof(integer));
-      do_fio(&c__1, (char *)&nlincg, (ftnlen)sizeof(integer));
-      do_fio(&c__1, (char *)&fnew, (ftnlen)sizeof(doublereal));
-      do_fio(&c__1, (char *)&gtg, (ftnlen)sizeof(doublereal));
-      e_wsfe();
+      //remove the printing
+      /*
+         s_wsfe(&io___81);
+         do_fio(&c__1, (char *)&niter, (ftnlen)sizeof(C_INT));
+         do_fio(&c__1, (char *)&nftotl, (ftnlen)sizeof(C_INT));
+         do_fio(&c__1, (char *)&nlincg, (ftnlen)sizeof(C_INT));
+         do_fio(&c__1, (char *)&fnew, (ftnlen)sizeof(C_FLOAT64));
+         do_fio(&c__1, (char *)&gtg, (ftnlen)sizeof(C_FLOAT64));
+         e_wsfe();*/
     }
   if (nwhy < 0)
     {
@@ -666,12 +682,12 @@ L40:
     }
 L50:
   gnorm = sqrt(gtg);
-  ftest = one + abs(fnew);
+  ftest = one + fabs(fnew);
   xnorm = dnrm2_(n, &x[1], &c__1);
 
   /* TEST FOR CONVERGENCE */
 
-  if (alpha * pnorm < toleps * (one + xnorm) && abs(difnew) < rtleps *
+  if (alpha * pnorm < toleps * (one + xnorm) && fabs(difnew) < rtleps *
       ftest && gtg < peps * ftest * ftest || gtg < *accrcy * 1e-4 *
       ftest * ftest)
     {
@@ -772,13 +788,15 @@ L120:
   return 0;
 } /* lmqn_ */
 
-/* Subroutine */ int lmqnbc_(integer *ifail, integer *n, doublereal *x,
-                             doublereal *f, doublereal *g, doublereal *w, integer *lw, FTruncatedNewton *sfun,
-                             doublereal *low, doublereal *up, integer *ipivot, integer *msglvl,
-                             integer *maxit, integer *maxfun, doublereal *eta, doublereal *stepmx,
-                             doublereal *accrcy, doublereal *xtol)
+/* Subroutine */ int lmqnbc_(C_INT *ifail, C_INT *n, C_FLOAT64 *x,
+                             C_FLOAT64 *f, C_FLOAT64 *g, C_FLOAT64 *w, C_INT *lw, FTruncatedNewton *sfun,
+                             C_FLOAT64 *low, C_FLOAT64 *up, C_INT *ipivot, C_INT *msglvl,
+                             C_INT *maxit, C_INT *maxfun, C_FLOAT64 *eta, C_FLOAT64 *stepmx,
+                             C_FLOAT64 *accrcy, C_FLOAT64 *xtol)
 {
   /* Format strings */
+  //remove
+  /*
   static char fmt_800[] = "(\002 THERE IS NO FEASIBLE POINT; TERMINATING A"
                           "LGORITHM\002)";
   static char fmt_810[] = "(//\002  NIT   NF   CG\002,9x,\002F\002,21x,"
@@ -788,109 +806,111 @@ L120:
   static char fmt_830[] = "(\002 UPD1 IS TRUE - TRIVIAL PRECONDITIONING"
                           "\002)";
   static char fmt_840[] = "(\002 NEWCON IS TRUE - CONSTRAINT ADDED IN LINE"
-                          "SEARCH\002)";
+                        "SEARCH\002)";
+  */
 
   /* System generated locals */
-  integer i__1;
-  doublereal d__1;
+  C_INT i__1;
+  C_FLOAT64 d__1;
 
   /* Builtin functions */
-  integer s_wsfe(cilist *), e_wsfe(void);
-  double sqrt(doublereal);
-  integer do_fio(integer *, char *, ftnlen);
+  // C_INT s_wsfe(cilist *), e_wsfe(void);
+  double sqrt(C_FLOAT64);
+  // C_INT do_fio(C_INT *, char *, ftnlen);
 
   /* Local variables */
-  static doublereal fold, oldf;
-  extern doublereal ddot_(integer *, doublereal *, integer *, doublereal *,
-                            integer *);
-  static doublereal fnew;
-  static integer numf;
-  static logical conv;
-  static doublereal peps;
-  extern /* Subroutine */ int modz_(integer *, doublereal *, doublereal *,
-                                      integer *, doublereal *, doublereal *, doublereal *, doublereal *,
-                                      doublereal *);
-  static integer lhyr;
-  static doublereal zero, rtol, yksk, tiny;
-  extern /* Subroutine */ int dxpy_(integer *, doublereal *, integer *,
-                                      doublereal *, integer *);
-  static integer nwhy;
-  static doublereal yrsr;
-  extern doublereal dnrm2_(integer *, doublereal *, integer *), step1_(
-      doublereal *, doublereal *, doublereal *, doublereal *);
-  static integer i__;
-  static doublereal alpha, fkeep;
-  static integer ioldg;
-  extern /* Subroutine */ int crash_(integer *, doublereal *, integer *,
-                                       doublereal *, doublereal *, integer *);
-  static doublereal small, flast;
-  static integer modet;
-  extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *,
-                                       doublereal *, integer *);
-  static integer niter;
-  static doublereal gnorm, ftest;
-  extern int monit_(integer *, doublereal *, doublereal *, doublereal *,
-                      integer *, integer *, integer *, integer *, integer *);
-  extern /* Subroutine */ /* int monit_(),*/ int ztime_(integer *, doublereal *,
-        integer *);
-  static doublereal fstop, pnorm, rteps, xnorm;
-  static integer idiagb;
-  static doublereal fm, pe, difold;
-  static integer icycle, nlincg, nfeval;
-  static doublereal difnew;
-  static integer nmodif;
-  static doublereal epsmch;
-  extern /* Subroutine */ int chkucp_(integer *, integer *, integer *,
-                                        integer *, doublereal *, doublereal *, doublereal *, doublereal *,
-                                        doublereal *, doublereal *, doublereal *, doublereal *,
-                                        doublereal *, doublereal *, doublereal *, doublereal *, integer *,
-                                        doublereal *, doublereal *, doublereal *), linder_(integer *,
-                                            FTruncatedNewton *, doublereal *, doublereal *, doublereal *, doublereal *,
-                                            doublereal *, doublereal *, doublereal *, doublereal *,
-                                            doublereal *, doublereal *, doublereal *, doublereal *,
-                                            doublereal *, doublereal *, integer *, integer *, doublereal *,
-                                            integer *);
-  static doublereal epsred, abstol, oldgtp;
-  static logical newcon;
-  static integer ireset;
-  extern /* Subroutine */ int modlnp_(integer *, doublereal *, doublereal *,
-                                        doublereal *, doublereal *, doublereal *, doublereal *,
-                                        doublereal *, doublereal *, doublereal *, integer *, doublereal *,
-                                        integer *, integer *, integer *, integer *, integer *, integer *,
-                                        logical *, doublereal *, doublereal *, doublereal *, logical *,
-                                        FTruncatedNewton *, logical *, integer *, doublereal *, doublereal *,
-                                        doublereal *, doublereal *);
-  static logical lreset;
-  extern /* Subroutine */ int setpar_(integer *);
-  static doublereal reltol, gtpnew;
-  static integer nftotl;
-  static doublereal toleps;
-  extern /* Subroutine */ int setucr_(doublereal *, integer *, integer *,
-                                        integer *, doublereal *, doublereal *, doublereal *, doublereal *,
-                                        doublereal *, FTruncatedNewton *, doublereal *, doublereal *);
-  static doublereal rtleps;
-  static integer nm1;
-  extern /* Subroutine */ int stpmax_(doublereal *, doublereal *,
-                                        doublereal *, integer *, doublereal *, doublereal *, integer *,
-                                        doublereal *, doublereal *), cnvtst_(logical *, doublereal *,
-                                                                             doublereal *, doublereal *, doublereal *, doublereal *,
-                                                                             doublereal *, doublereal *, doublereal *, doublereal *,
-                                                                             doublereal *, doublereal *, doublereal *, doublereal *,
-                                                                             doublereal *, integer *, integer *, doublereal *);
-  static doublereal rtolsq, tnytol;
-  static integer ier;
-  static doublereal gtg, one;
-  static integer ipk;
-  static doublereal gsk, spe;
-  static integer isk, iyk;
-  static logical upd1;
+  static C_FLOAT64 fold, oldf;
+  extern C_FLOAT64 ddot_(C_INT *, C_FLOAT64 *, C_INT *, C_FLOAT64 *,
+                           C_INT *);
+  static C_FLOAT64 fnew;
+  static C_INT numf;
+  static C_INT conv;
+  static C_FLOAT64 peps;
+  extern /* Subroutine */ int modz_(C_INT *, C_FLOAT64 *, C_FLOAT64 *,
+                                      C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+                                      C_FLOAT64 *);
+  static C_INT lhyr;
+  static C_FLOAT64 zero, rtol, yksk, tiny;
+  extern /* Subroutine */ int dxpy_(C_INT *, C_FLOAT64 *, C_INT *,
+                                      C_FLOAT64 *, C_INT *);
+  static C_INT nwhy;
+  static C_FLOAT64 yrsr;
+  extern C_FLOAT64 dnrm2_(C_INT *, C_FLOAT64 *, C_INT *), step1_(
+      C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *);
+  static C_INT i__;
+  static C_FLOAT64 alpha, fkeep;
+  static C_INT ioldg;
+  extern /* Subroutine */ int crash_(C_INT *, C_FLOAT64 *, C_INT *,
+                                       C_FLOAT64 *, C_FLOAT64 *, C_INT *);
+  static C_FLOAT64 small, flast;
+  static C_INT modet;
+  extern /* Subroutine */ int dcopy_(C_INT *, C_FLOAT64 *, C_INT *,
+                                       C_FLOAT64 *, C_INT *);
+  static C_INT niter;
+  static C_FLOAT64 gnorm, ftest;
+  extern int monit_(C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+                      C_INT *, C_INT *, C_INT *, C_INT *, C_INT *);
+  extern /* Subroutine */ /* int monit_(),*/ int ztime_(C_INT *, C_FLOAT64 *,
+        C_INT *);
+  static C_FLOAT64 fstop, pnorm, rteps, xnorm;
+  static C_INT idiagb;
+  static C_FLOAT64 fm, pe, difold;
+  static C_INT icycle, nlincg, nfeval;
+  static C_FLOAT64 difnew;
+  static C_INT nmodif;
+  static C_FLOAT64 epsmch;
+  extern /* Subroutine */ int chkucp_(C_INT *, C_INT *, C_INT *,
+                                        C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+                                        C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+                                        C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_INT *,
+                                        C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *), linder_(C_INT *,
+                                            FTruncatedNewton *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+                                            C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+                                            C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+                                            C_FLOAT64 *, C_FLOAT64 *, C_INT *, C_INT *, C_FLOAT64 *,
+                                            C_INT *);
+  static C_FLOAT64 epsred, fabstol, oldgtp;
+  static C_INT newcon;
+  static C_INT ireset;
+  extern /* Subroutine */ int modlnp_(C_INT *, C_FLOAT64 *, C_FLOAT64 *,
+                                        C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+                                        C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_INT *, C_FLOAT64 *,
+                                        C_INT *, C_INT *, C_INT *, C_INT *, C_INT *, C_INT *,
+                                        C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_INT *,
+                                        FTruncatedNewton *, C_INT *, C_INT *, C_FLOAT64 *, C_FLOAT64 *,
+                                        C_FLOAT64 *, C_FLOAT64 *);
+  static C_INT lreset;
+  extern /* Subroutine */ int setpar_(C_INT *);
+  static C_FLOAT64 reltol, gtpnew;
+  static C_INT nftotl;
+  static C_FLOAT64 toleps;
+  extern /* Subroutine */ int setucr_(C_FLOAT64 *, C_INT *, C_INT *,
+                                        C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+                                        C_FLOAT64 *, FTruncatedNewton *, C_FLOAT64 *, C_FLOAT64 *);
+  static C_FLOAT64 rtleps;
+  static C_INT nm1;
+  extern /* Subroutine */ int stpmax_(C_FLOAT64 *, C_FLOAT64 *,
+                                        C_FLOAT64 *, C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_INT *,
+                                        C_FLOAT64 *, C_FLOAT64 *), cnvtst_(C_INT *, C_FLOAT64 *,
+                                                                           C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+                                                                           C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+                                                                           C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+                                                                           C_FLOAT64 *, C_INT *, C_INT *, C_FLOAT64 *);
+  static C_FLOAT64 rtolsq, tnytol;
+  static C_INT ier;
+  static C_FLOAT64 gtg, one;
+  static C_INT ipk;
+  static C_FLOAT64 gsk, spe;
+  static C_INT isk, iyk;
+  static C_INT upd1;
 
   /* Fortran I/O blocks */
+  /*
   static cilist io___88 = {0, 6, 0, fmt_800, 0 };
   static cilist io___89 = {0, 6, 0, fmt_810, 0 };
   static cilist io___144 = {0, 6, 0, fmt_820, 0 };
   static cilist io___150 = {0, 6, 0, fmt_830, 0 };
-  static cilist io___151 = {0, 6, 0, fmt_840, 0 };
+  static cilist io___151 = {0, 6, 0, fmt_840, 0 }; */
 
   /* THIS ROUTINE IS A BOUNDS-CONSTRAINED TRUNCATED-NEWTON METHOD. */
   /* THE TRUNCATED-NEWTON METHOD IS PRECONDITIONED BY A LIMITED-MEMORY */
@@ -987,7 +1007,7 @@ L10:
 
   /* CHECK IF THE INITIAL POINT IS A LOCAL MINIMUM. */
 
-  ftest = one + abs(fnew);
+  ftest = one + fabs(fnew);
   if (gtg < epsmch * 1e-4 * ftest * ftest)
     {
       goto L130;
@@ -1038,10 +1058,10 @@ L20:
 
   pe = pnorm + epsmch;
 
-  /* COMPUTE THE ABSOLUTE AND RELATIVE TOLERANCES FOR THE LINEAR SEARCH */
+  /* COMPUTE THE fabsOLUTE AND RELATIVE TOLERANCES FOR THE LINEAR SEARCH */
 
   reltol = rteps * (xnorm + one) / pe;
-  abstol = -epsmch * ftest / (oldgtp - epsmch);
+  fabstol = -epsmch * ftest / (oldgtp - epsmch);
 
   /* COMPUTE THE SMALLEST ALLOWABLE SPACING BETWEEN POINTS IN */
   /* THE LINEAR SEARCH */
@@ -1056,11 +1076,11 @@ L20:
 
   /* PERFORM THE LINEAR SEARCH */
 
-  linder_(n, sfun, &small, &epsmch, &reltol, &abstol, &tnytol, eta, &
+  linder_(n, sfun, &small, &epsmch, &reltol, &fabstol, &tnytol, eta, &
           zero, &spe, &w[subscr_1.lpk], &oldgtp, &x[1], &fnew, &alpha, &g[1]
           , &numf, &nwhy, &w[1], lw);
   newcon = FALSE_;
-  if ((d__1 = alpha - spe, abs(d__1)) > epsmch * 10.)
+  if ((d__1 = alpha - spe, fabs(d__1)) > epsmch * 10.)
     {
       goto L30;
     }
@@ -1073,10 +1093,10 @@ L20:
 L30:
   if (*msglvl >= 3)
     {
-      s_wsfe(&io___144);
-      do_fio(&c__1, (char *)&alpha, (ftnlen)sizeof(doublereal));
-      do_fio(&c__1, (char *)&pnorm, (ftnlen)sizeof(doublereal));
-      e_wsfe();
+      /*  s_wsfe(&io___144);
+        do_fio(&c__1, (char *)&alpha, (ftnlen)sizeof(C_FLOAT64));
+        do_fio(&c__1, (char *)&pnorm, (ftnlen)sizeof(C_FLOAT64));
+        e_wsfe();*/
     }
   fold = fnew;
   ++niter;
@@ -1145,7 +1165,7 @@ L60:
   ztime_(n, &w[subscr_1.lgv], &ipivot[1]);
   gtg = ddot_(n, &w[subscr_1.lgv], &c__1, &w[subscr_1.lgv], &c__1);
   gnorm = sqrt(gtg);
-  ftest = one + abs(fnew);
+  ftest = one + fabs(fnew);
   xnorm = dnrm2_(n, &x[1], &c__1);
 
   /* TEST FOR CONVERGENCE */
@@ -1207,13 +1227,15 @@ L80:
 L90:
   if (upd1 && *msglvl >= 3)
     {
+      /*
       s_wsfe(&io___150);
-      e_wsfe();
+      e_wsfe();*/
     }
   if (newcon && *msglvl >= 3)
     {
-      s_wsfe(&io___151);
-      e_wsfe();
+      /*
+         s_wsfe(&io___151);
+         e_wsfe();*/
     }
   modet = *msglvl - 3;
   modlnp_(&modet, &w[subscr_1.lpk], &w[subscr_1.lgv], &w[subscr_1.lz1], &w[
@@ -1276,26 +1298,22 @@ L160:
   return 0;
 } /* lmqnbc_ */
 
-/* Subroutine */ int monit_(integer *n, doublereal *x, doublereal *f,
-                            doublereal *g, integer *niter, integer *nftotl, integer *nfeval,
-                            integer *ireset, integer *ipivot)
+/* Subroutine */ int monit_(C_INT *n, C_FLOAT64 *x, C_FLOAT64 *f,
+                            C_FLOAT64 *g, C_INT *niter, C_INT *nftotl, C_INT *nfeval,
+                            C_INT *ireset, C_INT *ipivot)
 {
   /* Format strings */
-  static char fmt_800[] = "(\002 \002,i4,1x,i4,1x,i4,1x,1pd22.15,2x,1pd15."
-                          "8)";
+  // static char fmt_800[] = "(\002 \002,i4,1x,i4,1x,i4,1x,1pd22.15,2x,1pd15." "8)";
 
   /* System generated locals */
-  integer i__1;
+  C_INT i__1;
 
   /* Builtin functions */
-  integer s_wsfe(cilist *), do_fio(integer *, char *, ftnlen), e_wsfe(void);
+  //C_INT s_wsfe(cilist *), do_fio(C_INT *, char *, ftnlen), e_wsfe(void);
 
   /* Local variables */
-  static integer i__;
-  static doublereal gtg;
-
-  /* Fortran I/O blocks */
-  static cilist io___154 = {0, 6, 0, fmt_800, 0 };
+  static C_INT i__;
+  static C_FLOAT64 gtg;
 
   /* PRINT RESULTS OF CURRENT ITERATION */
 
@@ -1317,23 +1335,24 @@ L160:
 L10:
 ;
     }
+  //remove the printing
   /* s_wsfe(&io___154);
-   do_fio(&c__1, (char *)&(*niter), (ftnlen)sizeof(integer));
-   do_fio(&c__1, (char *)&(*nftotl), (ftnlen)sizeof(integer));
-   do_fio(&c__1, (char *)&(*nfeval), (ftnlen)sizeof(integer));
-   do_fio(&c__1, (char *)&(*f), (ftnlen)sizeof(doublereal));
-   do_fio(&c__1, (char *)&gtg, (ftnlen)sizeof(doublereal));
+   do_fio(&c__1, (char *)&(*niter), (ftnlen)sizeof(C_INT));
+   do_fio(&c__1, (char *)&(*nftotl), (ftnlen)sizeof(C_INT));
+   do_fio(&c__1, (char *)&(*nfeval), (ftnlen)sizeof(C_INT));
+   do_fio(&c__1, (char *)&(*f), (ftnlen)sizeof(C_FLOAT64));
+   do_fio(&c__1, (char *)&gtg, (ftnlen)sizeof(C_FLOAT64));
    e_wsfe();*/
   return 0;
 } /* monit_ */
 
-/* Subroutine */ int ztime_(integer *n, doublereal *x, integer *ipivot)
+/* Subroutine */ int ztime_(C_INT *n, C_FLOAT64 *x, C_INT *ipivot)
 {
   /* System generated locals */
-  integer i__1;
+  C_INT i__1;
 
   /* Local variables */
-  static integer i__;
+  static C_INT i__;
 
   /* THIS ROUTINE MULTIPLIES THE VECTOR X BY THE CONSTRAINT MATRIX Z */
 
@@ -1354,15 +1373,15 @@ L10:
   return 0;
 } /* ztime_ */
 
-/* Subroutine */ int stpmax_(doublereal *stepmx, doublereal *pe, doublereal *
-                             spe, integer *n, doublereal *x, doublereal *p, integer *ipivot,
-                             doublereal *low, doublereal *up)
+/* Subroutine */ int stpmax_(C_FLOAT64 *stepmx, C_FLOAT64 *pe, C_FLOAT64 *
+                             spe, C_INT *n, C_FLOAT64 *x, C_FLOAT64 *p, C_INT *ipivot,
+                             C_FLOAT64 *low, C_FLOAT64 *up)
 {
   /* System generated locals */
-  integer i__1;
+  C_INT i__1;
   /* Local variables */
-  static integer i__;
-  static doublereal t;
+  static C_INT i__;
+  static C_FLOAT64 t;
 
   /* COMPUTE THE MAXIMUM ALLOWABLE STEP LENGTH */
 
@@ -1389,17 +1408,17 @@ L10:;
   return 0;
 } /* stpmax_ */
 
-/* Subroutine */ int modz_(integer *n, doublereal *x, doublereal *p, integer *
-                           ipivot, doublereal *epsmch, doublereal *low, doublereal *up,
-                           doublereal *flast, doublereal *fnew)
+/* Subroutine */ int modz_(C_INT *n, C_FLOAT64 *x, C_FLOAT64 *p, C_INT *
+                           ipivot, C_FLOAT64 *epsmch, C_FLOAT64 *low, C_FLOAT64 *up,
+                           C_FLOAT64 *flast, C_FLOAT64 *fnew)
 {
   /* System generated locals */
-  integer i__1;
-  doublereal d__1;
+  C_INT i__1;
+  C_FLOAT64 d__1;
 
   /* Local variables */
-  static integer i__;
-  static doublereal tol;
+  static C_INT i__;
+  static C_FLOAT64 tol;
 
   /* UPDATE THE CONSTRAINT MATRIX IF A NEW CONSTRAINT IS ENCOUNTERED */
 
@@ -1426,7 +1445,7 @@ L10:;
         {
           goto L5;
         }
-      tol = *epsmch * 10. * ((d__1 = low[i__], abs(d__1)) + 1.);
+      tol = *epsmch * 10. * ((d__1 = low[i__], fabs(d__1)) + 1.);
       if (x[i__] - low[i__] > tol)
         {
           goto L10;
@@ -1436,7 +1455,7 @@ L10:;
       x[i__] = low[i__];
       goto L10;
 L5:
-      tol = *epsmch * 10. * ((d__1 = up[i__], abs(d__1)) + 1.);
+      tol = *epsmch * 10. * ((d__1 = up[i__], fabs(d__1)) + 1.);
       if (up[i__] - x[i__] > tol)
         {
           goto L10;
@@ -1450,22 +1469,22 @@ L10:
   return 0;
 } /* modz_ */
 
-/* Subroutine */ int cnvtst_(logical *conv, doublereal *alpha, doublereal *
-                             pnorm, doublereal *toleps, doublereal *xnorm, doublereal *difnew,
-                             doublereal *rtleps, doublereal *ftest, doublereal *gtg, doublereal *
-                             peps, doublereal *epsmch, doublereal *gtpnew, doublereal *fnew,
-                             doublereal *flast, doublereal *g, integer *ipivot, integer *n,
-                             doublereal *accrcy)
+/* Subroutine */ int cnvtst_(C_INT *conv, C_FLOAT64 *alpha, C_FLOAT64 *
+                             pnorm, C_FLOAT64 *toleps, C_FLOAT64 *xnorm, C_FLOAT64 *difnew,
+                             C_FLOAT64 *rtleps, C_FLOAT64 *ftest, C_FLOAT64 *gtg, C_FLOAT64 *
+                             peps, C_FLOAT64 *epsmch, C_FLOAT64 *gtpnew, C_FLOAT64 *fnew,
+                             C_FLOAT64 *flast, C_FLOAT64 *g, C_INT *ipivot, C_INT *n,
+                             C_FLOAT64 *accrcy)
 {
   /* System generated locals */
-  integer i__1;
+  C_INT i__1;
 
   /* Local variables */
-  static doublereal cmax;
-  static integer imax, i__;
-  static doublereal t;
-  static logical ltest;
-  static doublereal one;
+  static C_FLOAT64 cmax;
+  static C_INT imax, i__;
+  static C_FLOAT64 t;
+  static C_INT ltest;
+  static C_FLOAT64 one;
 
   /* TEST FOR CONVERGENCE */
 
@@ -1513,7 +1532,7 @@ L10:
 L15:
   *conv = FALSE_;
   one = 1.;
-  if ((*alpha * *pnorm >= *toleps * (one + *xnorm) || abs(*difnew) >= *
+  if ((*alpha * *pnorm >= *toleps * (one + *xnorm) || fabs(*difnew) >= *
        rtleps * *ftest || *gtg >= *peps * *ftest * *ftest) && *gtg >= *
       accrcy * 1e-4 * *ftest * *ftest)
     {
@@ -1529,14 +1548,14 @@ L15:
   return 0;
 } /* cnvtst_ */
 
-/* Subroutine */ int crash_(integer *n, doublereal *x, integer *ipivot,
-                            doublereal *low, doublereal *up, integer *ier)
+/* Subroutine */ int crash_(C_INT *n, C_FLOAT64 *x, C_INT *ipivot,
+                            C_FLOAT64 *low, C_FLOAT64 *up, C_INT *ier)
 {
   /* System generated locals */
-  integer i__1;
+  C_INT i__1;
 
   /* Local variables */
-  static integer i__;
+  static C_INT i__;
 
   /* THIS INITIALIZES THE CONSTRAINT INFORMATION, AND ENSURES THAT THE */
   /* INITIAL POINT SATISFIES  LOW <= X <= UP. */
@@ -1586,71 +1605,63 @@ L15:
 /* THE VECTORS SK AND YK, ALTHOUGH NOT IN THE CALL, */
 /* ARE USED (VIA THEIR POSITION IN W) BY THE ROUTINE MSOLVE. */
 
-/* Subroutine */ int modlnp_(integer *modet, doublereal *zsol, doublereal *gv,
-                             doublereal *r__, doublereal *v, doublereal *diagb, doublereal *emat,
-                             doublereal *x, doublereal *g, doublereal *zk, integer *n, doublereal *
-                             w, integer *lw, integer *niter, integer *maxit, integer *nfeval,
-                             integer *nmodif, integer *nlincg, logical *upd1, doublereal *yksk,
-                             doublereal *gsk, doublereal *yrsr, logical *lreset, FTruncatedNewton *sfun,
-                             logical *bounds, integer *ipivot, doublereal *accrcy, doublereal *gtp,
-                             doublereal *gnorm, doublereal *xnorm)
+/* Subroutine */ int modlnp_(C_INT *modet, C_FLOAT64 *zsol, C_FLOAT64 *gv,
+                             C_FLOAT64 *r__, C_FLOAT64 *v, C_FLOAT64 *diagb, C_FLOAT64 *emat,
+                             C_FLOAT64 *x, C_FLOAT64 *g, C_FLOAT64 *zk, C_INT *n, C_FLOAT64 *
+                             w, C_INT *lw, C_INT *niter, C_INT *maxit, C_INT *nfeval,
+                             C_INT *nmodif, C_INT *nlincg, C_INT *upd1, C_FLOAT64 *yksk,
+                             C_FLOAT64 *gsk, C_FLOAT64 *yrsr, C_INT *lreset, FTruncatedNewton *sfun,
+                             C_INT *bounds, C_INT *ipivot, C_FLOAT64 *accrcy, C_FLOAT64 *gtp,
+                             C_FLOAT64 *gnorm, C_FLOAT64 *xnorm)
 {
   /* Format strings */
-  static char fmt_800[] = "(\002 \002,//,\002 ENTERING MODLNP\002)";
-  static char fmt_810[] = "(\002 \002,//,\002 ### ITERATION \002,i2,\002 #"
-                          "##\002)";
-  static char fmt_820[] = "(\002 ALPHA\002,1pd16.8)";
-  static char fmt_830[] = "(\002 G(T)Z POSITIVE AT ITERATION \002,i2,\002 "
-                          "- TRUNCATING METHOD\002,/)";
-  static char fmt_840[] = "(\002 \002,10x,\002HESSIAN NOT POSITIVE-DEFIN"
-                          "ITE\002)";
-  static char fmt_850[] = "(\002 \002,/,8x,\002MODLAN TRUNCATED AFTER \002"
-                          ",i3,\002 ITERATIONS\002,\002  RNORM = \002,1pd14.6)";
-  static char fmt_860[] = "(\002 PRECONDITIONING NOT POSITIVE-DEFINITE\002)"
-;
+  //remove the format
+  /* static char fmt_800[] = "(\002 \002,//,\002 ENTERING MODLNP\002)";
+   static char fmt_810[] = "(\002 \002,//,\002 ### ITERATION \002,i2,\002 #"
+                           "##\002)";
+   static char fmt_820[] = "(\002 ALPHA\002,1pd16.8)";
+   static char fmt_830[] = "(\002 G(T)Z POSITIVE AT ITERATION \002,i2,\002 "
+                           "- TRUNCATING METHOD\002,/)";
+   static char fmt_840[] = "(\002 \002,10x,\002HESSIAN NOT POSITIVE-DEFIN"
+                           "ITE\002)";
+   static char fmt_850[] = "(\002 \002,/,8x,\002MODLAN TRUNCATED AFTER \002"
+                           ",i3,\002 ITERATIONS\002,\002  RNORM = \002,1pd14.6)";
+   static char fmt_860[] = "(\002 PRECONDITIONING NOT POSITIVE-DEFINITE\002)"
+  ;*/
 
   /* System generated locals */
-  integer i__1, i__2;
-  doublereal d__1;
+  C_INT i__1, i__2;
+  C_FLOAT64 d__1;
 
   /* Builtin functions */
-  integer s_wsfe(cilist *), e_wsfe(void), do_fio(integer *, char *, ftnlen);
+  //  C_INT s_wsfe(cilist *), e_wsfe(void), do_fio(C_INT *, char *, ftnlen);
 
   /* Local variables */
-  static doublereal beta;
-  extern doublereal ddot_(integer *, doublereal *, integer *, doublereal *,
-                            integer *);
-  static doublereal qold, qnew;
-  extern /* Subroutine */ int ndia3_(integer *, doublereal *, doublereal *,
-                                       doublereal *, doublereal *, doublereal *, integer *);
-  static integer i__, k;
-  static doublereal alpha, delta;
-  extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *,
-                                       doublereal *, integer *), gtims_(doublereal *, doublereal *,
-                                                                        integer *, doublereal *, doublereal *, doublereal *, integer *,
-                                                                        FTruncatedNewton *, logical *, doublereal *, doublereal *, doublereal *),
-    daxpy_(integer *, doublereal *, doublereal *, integer *,
-           doublereal *, integer *);
-  static logical first;
-  extern /* Subroutine */ int ztime_(integer *, doublereal *, integer *);
-  static doublereal rzold, rnorm, qtest, pr;
-  extern /* Subroutine */ int negvec_(integer *, doublereal *);
-  static doublereal rz;
-  extern /* Subroutine */ int initpc_(doublereal *, doublereal *, integer *,
-                                        doublereal *, integer *, integer *, logical *, doublereal *,
-                                        doublereal *, doublereal *, logical *), msolve_(doublereal *,
-                                            doublereal *, integer *, doublereal *, integer *, logical *,
-                                            doublereal *, doublereal *, doublereal *, logical *, logical *);
-  static doublereal rhsnrm, tol, vgv;
-
-  /* Fortran I/O blocks */
-  static cilist io___167 = {0, 6, 0, fmt_800, 0 };
-  static cilist io___174 = {0, 6, 0, fmt_810, 0 };
-  static cilist io___181 = {0, 6, 0, fmt_820, 0 };
-  static cilist io___185 = {0, 6, 0, fmt_830, 0 };
-  static cilist io___186 = {0, 6, 0, fmt_840, 0 };
-  static cilist io___187 = {0, 6, 0, fmt_850, 0 };
-  static cilist io___189 = {0, 6, 0, fmt_860, 0 };
+  static C_FLOAT64 beta;
+  extern C_FLOAT64 ddot_(C_INT *, C_FLOAT64 *, C_INT *, C_FLOAT64 *,
+                           C_INT *);
+  static C_FLOAT64 qold, qnew;
+  extern /* Subroutine */ int ndia3_(C_INT *, C_FLOAT64 *, C_FLOAT64 *,
+                                       C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_INT *);
+  static C_INT i__, k;
+  static C_FLOAT64 alpha, delta;
+  extern /* Subroutine */ int dcopy_(C_INT *, C_FLOAT64 *, C_INT *,
+                                       C_FLOAT64 *, C_INT *), gtims_(C_FLOAT64 *, C_FLOAT64 *,
+                                                                     C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_INT *,
+                                                                     FTruncatedNewton *, C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *),
+    daxpy_(C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_INT *,
+           C_FLOAT64 *, C_INT *);
+  static C_INT first;
+  extern /* Subroutine */ int ztime_(C_INT *, C_FLOAT64 *, C_INT *);
+  static C_FLOAT64 rzold, rnorm, qtest, pr;
+  extern /* Subroutine */ int negvec_(C_INT *, C_FLOAT64 *);
+  static C_FLOAT64 rz;
+  extern /* Subroutine */ int initpc_(C_FLOAT64 *, C_FLOAT64 *, C_INT *,
+                                        C_FLOAT64 *, C_INT *, C_INT *, C_INT *, C_FLOAT64 *,
+                                        C_FLOAT64 *, C_FLOAT64 *, C_INT *), msolve_(C_FLOAT64 *,
+                                            C_FLOAT64 *, C_INT *, C_FLOAT64 *, C_INT *, C_INT *,
+                                            C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_INT *, C_INT *);
+  static C_FLOAT64 rhsnrm, tol, vgv;
 
   /* THIS ROUTINE PERFORMS A PRECONDITIONED CONJUGATE-GRADIENT */
   /* ITERATION IN ORDER TO SOLVE THE NEWTON EQUATIONS FOR A SEARCH */
@@ -1660,7 +1671,7 @@ L15:
 
   /* PARAMETERS */
 
-  /* MODET       - INTEGER WHICH CONTROLS AMOUNT OF OUTPUT */
+  /* MODET       - C_INT WHICH CONTROLS AMOUNT OF OUTPUT */
   /* ZSOL        - COMPUTED SEARCH DIRECTION */
   /* G           - CURRENT GRADIENT */
   /* GV,GZ1,V    - SCRATCH VECTORS */
@@ -1691,8 +1702,10 @@ L15:
   /* Function Body */
   if (*modet > 0)
     {
-      s_wsfe(&io___167);
-      e_wsfe();
+      //remove
+      /*
+         s_wsfe(&io___167);
+         e_wsfe();*/
     }
   if (*maxit == 0)
     {
@@ -1726,9 +1739,10 @@ L15:
       ++(*nlincg);
       if (*modet > 1)
         {
-          s_wsfe(&io___174);
-          do_fio(&c__1, (char *)&k, (ftnlen)sizeof(integer));
-          e_wsfe();
+          /*
+             s_wsfe(&io___174);
+             do_fio(&c__1, (char *)&k, (ftnlen)sizeof(C_INT));
+             e_wsfe();*/
         }
 
       /* CG ITERATION TO SOLVE SYSTEM OF EQUATIONS */
@@ -1785,9 +1799,10 @@ L15:
       alpha = rz / vgv;
       if (*modet >= 1)
         {
-          s_wsfe(&io___181);
-          do_fio(&c__1, (char *)&alpha, (ftnlen)sizeof(doublereal));
-          e_wsfe();
+          /*
+             s_wsfe(&io___181);
+             do_fio(&c__1, (char *)&alpha, (ftnlen)sizeof(C_FLOAT64));
+             e_wsfe();*/
         }
 
       /* COMPUTE CURRENT SOLUTION AND RELATED VECTORS */
@@ -1832,9 +1847,10 @@ L15:
 L40:
   if (*modet >= -1)
     {
-      s_wsfe(&io___185);
-      do_fio(&c__1, (char *)&k, (ftnlen)sizeof(integer));
-      e_wsfe();
+      /*
+         s_wsfe(&io___185);
+         do_fio(&c__1, (char *)&k, (ftnlen)sizeof(C_INT));
+         e_wsfe();*/
     }
   d__1 = -alpha;
   daxpy_(n, &d__1, &v[1], &c__1, &zsol[1], &c__1);
@@ -1843,8 +1859,9 @@ L40:
 L50:
   if (*modet > -2)
     {
-      s_wsfe(&io___186);
-      e_wsfe();
+      /*
+         s_wsfe(&io___186);
+         e_wsfe();*/
     }
   /* L60: */
   if (k > 1)
@@ -1862,17 +1879,19 @@ L50:
 L70:
   if (*modet >= -1)
     {
-      s_wsfe(&io___187);
-      do_fio(&c__1, (char *)&k, (ftnlen)sizeof(integer));
-      do_fio(&c__1, (char *)&rnorm, (ftnlen)sizeof(doublereal));
-      e_wsfe();
+      /*
+         s_wsfe(&io___187);
+         do_fio(&c__1, (char *)&k, (ftnlen)sizeof(C_INT));
+         do_fio(&c__1, (char *)&rnorm, (ftnlen)sizeof(C_FLOAT64));
+         e_wsfe();*/
     }
   goto L90;
 L80:
   if (*modet >= -1)
     {
-      s_wsfe(&io___189);
-      e_wsfe();
+      /*
+         s_wsfe(&io___189);
+         e_wsfe();*/
     }
   if (k > 1)
     {
@@ -1894,26 +1913,26 @@ L90:
   return 0;
 } /* modlnp_ */
 
-/* Subroutine */ int ndia3_(integer *n, doublereal *e, doublereal *v,
-                            doublereal *gv, doublereal *r__, doublereal *vgv, integer *modet)
+/* Subroutine */ int ndia3_(C_INT *n, C_FLOAT64 *e, C_FLOAT64 *v,
+                            C_FLOAT64 *gv, C_FLOAT64 *r__, C_FLOAT64 *vgv, C_INT *modet)
 {
   /* Format strings */
-  static char fmt_800[] = "(\002 *** EMAT NEGATIVE:  \002,1pd16.8)";
+  //  static char fmt_800[] = "(\002 *** EMAT NEGATIVE:  \002,1pd16.8)";
 
   /* System generated locals */
-  integer i__1;
+  C_INT i__1;
 
   /* Builtin functions */
-  integer s_wsfe(cilist *), do_fio(integer *, char *, ftnlen), e_wsfe(void);
+  //  C_INT s_wsfe(cilist *), do_fio(C_INT *, char *, ftnlen), e_wsfe(void);
 
   /* Local variables */
-  extern doublereal ddot_(integer *, doublereal *, integer *, doublereal *,
-                            integer *);
-  static integer i__;
-  static doublereal vr;
+  extern C_FLOAT64 ddot_(C_INT *, C_FLOAT64 *, C_INT *, C_FLOAT64 *,
+                           C_INT *);
+  static C_INT i__;
+  static C_FLOAT64 vr;
 
   /* Fortran I/O blocks */
-  static cilist io___192 = {0, 6, 0, fmt_800, 0 };
+  //static cilist io___192 = {0, 6, 0, fmt_800, 0 };
 
   /* UPDATE THE PRECONDITIOING MATRIX BASED ON A DIAGONAL VERSION */
   /* OF THE BFGS QUASI-NEWTON UPDATE. */
@@ -1936,9 +1955,10 @@ L90:
         }
       if (*modet > -2)
         {
-          s_wsfe(&io___192);
-          do_fio(&c__1, (char *)&e[i__], (ftnlen)sizeof(doublereal));
-          e_wsfe();
+          /*
+             s_wsfe(&io___192);
+             do_fio(&c__1, (char *)&e[i__], (ftnlen)sizeof(C_FLOAT64));
+             e_wsfe();*/
         }
       e[i__] = 1.;
 L10:
@@ -1949,13 +1969,13 @@ L10:
 
 /*      SERVICE ROUTINES FOR OPTIMIZATION */
 
-/* Subroutine */ int negvec_(integer *n, doublereal *v)
+/* Subroutine */ int negvec_(C_INT *n, C_FLOAT64 *v)
 {
   /* System generated locals */
-  integer i__1;
+  C_INT i__1;
 
   /* Local variables */
-  static integer i__;
+  static C_INT i__;
 
   /* NEGATIVE OF THE VECTOR V */
 
@@ -1972,38 +1992,28 @@ L10:
   return 0;
 } /* negvec_ */
 
-/* Subroutine */ int lsout_(integer *iloc, integer *itest, doublereal *xmin,
-                            doublereal *fmin, doublereal *gmin, doublereal *xw, doublereal *fw,
-                            doublereal *gw, doublereal *u, doublereal *a, doublereal *b,
-                            doublereal *tol, doublereal *eps, doublereal *scxbd, doublereal *
+/* Subroutine */ int lsout_(C_INT *iloc, C_INT *itest, C_FLOAT64 *xmin,
+                            C_FLOAT64 *fmin, C_FLOAT64 *gmin, C_FLOAT64 *xw, C_FLOAT64 *fw,
+                            C_FLOAT64 *gw, C_FLOAT64 *u, C_FLOAT64 *a, C_FLOAT64 *b,
+                            C_FLOAT64 *tol, C_FLOAT64 *eps, C_FLOAT64 *scxbd, C_FLOAT64 *
                             xlamda)
 {
   /* Format strings */
-  static char fmt_800[] = "(///\002 OUTPUT FROM LINEAR SEARCH\002)";
-  static char fmt_810[] = "(\002  TOL AND EPS\002/2d25.14)";
-  static char fmt_820[] = "(\002  CURRENT UPPER AND LOWER BOUNDS\002/2d25."
-                          "14)";
-  static char fmt_830[] = "(\002  STRICT UPPER BOUND\002/d25.14)";
-  static char fmt_840[] = "(\002  XW, FW, GW\002/3d25.14)";
-  static char fmt_850[] = "(\002  XMIN, FMIN, GMIN\002/3d25.14)";
-  static char fmt_860[] = "(\002  NEW ESTIMATE\002/2d25.14)";
-  static char fmt_870[] = "(\002  ILOC AND ITEST\002/2i3)";
+  /* static char fmt_800[] = "(///\002 OUTPUT FROM LINEAR SEARCH\002)";
+   static char fmt_810[] = "(\002  TOL AND EPS\002/2d25.14)";
+   static char fmt_820[] = "(\002  CURRENT UPPER AND LOWER BOUNDS\002/2d25."
+                           "14)";
+   static char fmt_830[] = "(\002  STRICT UPPER BOUND\002/d25.14)";
+   static char fmt_840[] = "(\002  XW, FW, GW\002/3d25.14)";
+   static char fmt_850[] = "(\002  XMIN, FMIN, GMIN\002/3d25.14)";
+   static char fmt_860[] = "(\002  NEW ESTIMATE\002/2d25.14)";
+   static char fmt_870[] = "(\002  ILOC AND ITEST\002/2i3)"; */
 
   /* Builtin functions */
-  integer s_wsfe(cilist *), e_wsfe(void), do_fio(integer *, char *, ftnlen);
+  // C_INT s_wsfe(cilist *), e_wsfe(void), do_fio(C_INT *, char *, ftnlen);
 
   /* Local variables */
-  static doublereal ybnd, ya, yb, yu, yw;
-
-  /* Fortran I/O blocks */
-  static cilist io___199 = {0, 6, 0, fmt_800, 0 };
-  static cilist io___200 = {0, 6, 0, fmt_810, 0 };
-  static cilist io___201 = {0, 6, 0, fmt_820, 0 };
-  static cilist io___202 = {0, 6, 0, fmt_830, 0 };
-  static cilist io___203 = {0, 6, 0, fmt_840, 0 };
-  static cilist io___204 = {0, 6, 0, fmt_850, 0 };
-  static cilist io___205 = {0, 6, 0, fmt_860, 0 };
-  static cilist io___206 = {0, 6, 0, fmt_870, 0 };
+  static C_FLOAT64 ybnd, ya, yb, yu, yw;
 
   /* ERROR PRINTOUTS FOR GETPTC */
 
@@ -2012,49 +2022,50 @@ L10:
   yb = *b + *xmin;
   yw = *xw + *xmin;
   ybnd = *scxbd + *xmin;
-  s_wsfe(&io___199);
+  //remove the printing
+  /*  s_wsfe(&io___199);
   e_wsfe();
   s_wsfe(&io___200);
-  do_fio(&c__1, (char *)&(*tol), (ftnlen)sizeof(doublereal));
-  do_fio(&c__1, (char *)&(*eps), (ftnlen)sizeof(doublereal));
+  do_fio(&c__1, (char *)&(*tol), (ftnlen)sizeof(C_FLOAT64));
+  do_fio(&c__1, (char *)&(*eps), (ftnlen)sizeof(C_FLOAT64));
   e_wsfe();
   s_wsfe(&io___201);
-  do_fio(&c__1, (char *)&ya, (ftnlen)sizeof(doublereal));
-  do_fio(&c__1, (char *)&yb, (ftnlen)sizeof(doublereal));
+  do_fio(&c__1, (char *)&ya, (ftnlen)sizeof(C_FLOAT64));
+  do_fio(&c__1, (char *)&yb, (ftnlen)sizeof(C_FLOAT64));
   e_wsfe();
   s_wsfe(&io___202);
-  do_fio(&c__1, (char *)&ybnd, (ftnlen)sizeof(doublereal));
+  do_fio(&c__1, (char *)&ybnd, (ftnlen)sizeof(C_FLOAT64));
   e_wsfe();
   s_wsfe(&io___203);
-  do_fio(&c__1, (char *)&yw, (ftnlen)sizeof(doublereal));
-  do_fio(&c__1, (char *)&(*fw), (ftnlen)sizeof(doublereal));
-  do_fio(&c__1, (char *)&(*gw), (ftnlen)sizeof(doublereal));
+  do_fio(&c__1, (char *)&yw, (ftnlen)sizeof(C_FLOAT64));
+  do_fio(&c__1, (char *)&(*fw), (ftnlen)sizeof(C_FLOAT64));
+  do_fio(&c__1, (char *)&(*gw), (ftnlen)sizeof(C_FLOAT64));
   e_wsfe();
   s_wsfe(&io___204);
-  do_fio(&c__1, (char *)&(*xmin), (ftnlen)sizeof(doublereal));
-  do_fio(&c__1, (char *)&(*fmin), (ftnlen)sizeof(doublereal));
-  do_fio(&c__1, (char *)&(*gmin), (ftnlen)sizeof(doublereal));
+  do_fio(&c__1, (char *)&(*xmin), (ftnlen)sizeof(C_FLOAT64));
+  do_fio(&c__1, (char *)&(*fmin), (ftnlen)sizeof(C_FLOAT64));
+  do_fio(&c__1, (char *)&(*gmin), (ftnlen)sizeof(C_FLOAT64));
   e_wsfe();
   s_wsfe(&io___205);
-  do_fio(&c__1, (char *)&yu, (ftnlen)sizeof(doublereal));
+  do_fio(&c__1, (char *)&yu, (ftnlen)sizeof(C_FLOAT64));
   e_wsfe();
   s_wsfe(&io___206);
-  do_fio(&c__1, (char *)&(*iloc), (ftnlen)sizeof(integer));
-  do_fio(&c__1, (char *)&(*itest), (ftnlen)sizeof(integer));
-  e_wsfe();
+  do_fio(&c__1, (char *)&(*iloc), (ftnlen)sizeof(C_INT));
+  do_fio(&c__1, (char *)&(*itest), (ftnlen)sizeof(C_INT));
+  e_wsfe(); */
   return 0;
 } /* lsout_ */
 
-doublereal step1_(doublereal *fnew, doublereal *fm, doublereal *gtp,
-                  doublereal *smax)
+C_FLOAT64 step1_(C_FLOAT64 *fnew, C_FLOAT64 *fm, C_FLOAT64 *gtp,
+                 C_FLOAT64 *smax)
 {
   /* System generated locals */
-  doublereal ret_val, d__1;
+  C_FLOAT64 ret_val, d__1;
 
   /* Local variables */
-  static doublereal d__, alpha;
-  extern doublereal mchpr1_(void);
-  static doublereal epsmch;
+  static C_FLOAT64 d__, alpha;
+  extern C_FLOAT64 mchpr1_(void);
+  static C_FLOAT64 epsmch;
 
   /* ******************************************************** */
   /* STEP1 RETURNS THE LENGTH OF THE INITIAL STEP TO BE TAKEN ALONG THE */
@@ -2062,7 +2073,7 @@ doublereal step1_(doublereal *fnew, doublereal *fm, doublereal *gtp,
   /* ******************************************************** */
 
   epsmch = mchpr1_();
-  d__ = (d__1 = *fnew - *fm, abs(d__1));
+  d__ = (d__1 = *fnew - *fm, fabs(d__1));
   alpha = 1.;
   if (d__ * 2. <= -(*gtp) && d__ >= epsmch)
     {
@@ -2076,10 +2087,10 @@ doublereal step1_(doublereal *fnew, doublereal *fm, doublereal *gtp,
   return ret_val;
 } /* step1_ */
 
-doublereal mchpr1_(void)
+C_FLOAT64 mchpr1_(void)
 {
   /* System generated locals */
-  doublereal ret_val;
+  C_FLOAT64 ret_val;
 
   /* RETURNS THE VALUE OF EPSMCH, WHERE EPSMCH IS THE SMALLEST POSSIBLE */
   /* REAL NUMBER SUCH THAT 1.0 + EPSMCH .GT. 1.0 */
@@ -2091,18 +2102,18 @@ doublereal mchpr1_(void)
   return ret_val;
 } /* mchpr1_ */
 
-/* Subroutine */ int chkucp_(integer *lwtest, integer *maxfun, integer *nwhy,
-                             integer *n, doublereal *alpha, doublereal *epsmch, doublereal *eta,
-                             doublereal *peps, doublereal *rteps, doublereal *rtol, doublereal *
-                             rtolsq, doublereal *stepmx, doublereal *test, doublereal *xtol,
-                             doublereal *xnorm, doublereal *x, integer *lw, doublereal *small,
-                             doublereal *tiny, doublereal *accrcy)
+/* Subroutine */ int chkucp_(C_INT *lwtest, C_INT *maxfun, C_INT *nwhy,
+                             C_INT *n, C_FLOAT64 *alpha, C_FLOAT64 *epsmch, C_FLOAT64 *eta,
+                             C_FLOAT64 *peps, C_FLOAT64 *rteps, C_FLOAT64 *rtol, C_FLOAT64 *
+                             rtolsq, C_FLOAT64 *stepmx, C_FLOAT64 *test, C_FLOAT64 *xtol,
+                             C_FLOAT64 *xnorm, C_FLOAT64 *x, C_INT *lw, C_FLOAT64 *small,
+                             C_FLOAT64 *tiny, C_FLOAT64 *accrcy)
 {
   /* Builtin functions */
-  double sqrt(doublereal), pow_dd(doublereal *, doublereal *);
+  double sqrt(C_FLOAT64), pow_dd(C_FLOAT64 *, C_FLOAT64 *);
 
   /* Local variables */
-  extern doublereal dnrm2_(integer *, doublereal *, integer *), mchpr1_(
+  extern C_FLOAT64 dnrm2_(C_INT *, C_FLOAT64 *, C_INT *), mchpr1_(
       void);
 
   /* CHECKS PARAMETERS AND SETS CONSTANTS WHICH ARE COMMON TO BOTH */
@@ -2118,7 +2129,7 @@ doublereal mchpr1_(void)
   *nwhy = -1;
   *rteps = sqrt(*epsmch);
   *rtol = *xtol;
-  if (abs(*rtol) < *accrcy)
+  if (fabs(*rtol) < *accrcy)
     {
       *rtol = *rteps * 10.;
     }
@@ -2142,13 +2153,13 @@ doublereal mchpr1_(void)
   return 0;
 } /* chkucp_ */
 
-/* Subroutine */ int setucr_(doublereal *small, integer *nftotl, integer *
-                             niter, integer *n, doublereal *f, doublereal *fnew, doublereal *fm,
-                             doublereal *gtg, doublereal *oldf, FTruncatedNewton *sfun, doublereal *g,
-                             doublereal *x)
+/* Subroutine */ int setucr_(C_FLOAT64 *small, C_INT *nftotl, C_INT *
+                             niter, C_INT *n, C_FLOAT64 *f, C_FLOAT64 *fnew, C_FLOAT64 *fm,
+                             C_FLOAT64 *gtg, C_FLOAT64 *oldf, FTruncatedNewton *sfun, C_FLOAT64 *g,
+                             C_FLOAT64 *x)
 {
-  extern doublereal ddot_(integer *, doublereal *, integer *, doublereal *,
-                            integer *);
+  extern C_FLOAT64 ddot_(C_INT *, C_FLOAT64 *, C_INT *, C_FLOAT64 *,
+                           C_INT *);
 
   /* CHECK INPUT PARAMETERS, COMPUTE THE INITIAL FUNCTION VALUE, SET */
   /* CONSTANTS FOR THE SUBSEQUENT MINIMIZATION */
@@ -2173,20 +2184,20 @@ doublereal mchpr1_(void)
   return 0;
 } /* setucr_ */
 
-/* Subroutine */ int gtims_(doublereal *v, doublereal *gv, integer *n,
-                            doublereal *x, doublereal *g, doublereal *w, integer *lw, FTruncatedNewton *sfun,
-                            logical *first, doublereal *delta, doublereal *accrcy, doublereal *
+/* Subroutine */ int gtims_(C_FLOAT64 *v, C_FLOAT64 *gv, C_INT *n,
+                            C_FLOAT64 *x, C_FLOAT64 *g, C_FLOAT64 *w, C_INT *lw, FTruncatedNewton *sfun,
+                            C_INT *first, C_FLOAT64 *delta, C_FLOAT64 *accrcy, C_FLOAT64 *
                             xnorm)
 {
   /* System generated locals */
-  integer i__1;
+  C_INT i__1;
 
   /* Builtin functions */
-  double sqrt(doublereal);
+  double sqrt(C_FLOAT64);
 
   /* Local variables */
-  static doublereal dinv, f;
-  static integer i__, ihg;
+  static C_FLOAT64 dinv, f;
+  static C_INT i__, ihg;
 
   /* THIS ROUTINE COMPUTES THE PRODUCT OF THE MATRIX G TIMES THE VECTOR */
   /* V AND STORES THE RESULT IN THE VECTOR GV (FINITE-DIFFERENCE VERSION) */
@@ -2225,14 +2236,14 @@ L20:
   return 0;
 } /* gtims_ */
 
-/* Subroutine */ int msolve_(doublereal *g, doublereal *y, integer *n,
-                             doublereal *w, integer *lw, logical *upd1, doublereal *yksk,
-                             doublereal *gsk, doublereal *yrsr, logical *lreset, logical *first)
+/* Subroutine */ int msolve_(C_FLOAT64 *g, C_FLOAT64 *y, C_INT *n,
+                             C_FLOAT64 *w, C_INT *lw, C_INT *upd1, C_FLOAT64 *yksk,
+                             C_FLOAT64 *gsk, C_FLOAT64 *yrsr, C_INT *lreset, C_INT *first)
 {
-  extern /* Subroutine */ int mslv_(doublereal *, doublereal *, integer *,
-                                      doublereal *, doublereal *, doublereal *, doublereal *,
-                                      doublereal *, doublereal *, doublereal *, doublereal *, logical *,
-                                      doublereal *, doublereal *, doublereal *, logical *, logical *);
+  extern /* Subroutine */ int mslv_(C_FLOAT64 *, C_FLOAT64 *, C_INT *,
+                                      C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+                                      C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_INT *,
+                                      C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_INT *, C_INT *);
 
   /* THIS ROUTINE SETS UPT THE ARRAYS FOR MSLV */
 
@@ -2249,25 +2260,25 @@ L20:
   return 0;
 } /* msolve_ */
 
-/* Subroutine */ int mslv_(doublereal *g, doublereal *y, integer *n,
-                           doublereal *sk, doublereal *yk, doublereal *diagb, doublereal *sr,
-                           doublereal *yr, doublereal *hyr, doublereal *hg, doublereal *hyk,
-                           logical *upd1, doublereal *yksk, doublereal *gsk, doublereal *yrsr,
-                           logical *lreset, logical *first)
+/* Subroutine */ int mslv_(C_FLOAT64 *g, C_FLOAT64 *y, C_INT *n,
+                           C_FLOAT64 *sk, C_FLOAT64 *yk, C_FLOAT64 *diagb, C_FLOAT64 *sr,
+                           C_FLOAT64 *yr, C_FLOAT64 *hyr, C_FLOAT64 *hg, C_FLOAT64 *hyk,
+                           C_INT *upd1, C_FLOAT64 *yksk, C_FLOAT64 *gsk, C_FLOAT64 *yrsr,
+                           C_INT *lreset, C_INT *first)
 {
   /* System generated locals */
-  integer i__1;
+  C_INT i__1;
 
   /* Local variables */
-  extern doublereal ddot_(integer *, doublereal *, integer *, doublereal *,
-                            integer *);
-  static doublereal ghyk, ghyr, yksr;
-  static integer i__;
-  static doublereal ykhyk, ykhyr, yrhyr, rdiagb;
-  extern /* Subroutine */ int ssbfgs_(integer *, doublereal *, doublereal *,
-                                        doublereal *, doublereal *, doublereal *, doublereal *,
-                                        doublereal *, doublereal *, doublereal *, doublereal *);
-  static doublereal one, gsr;
+  extern C_FLOAT64 ddot_(C_INT *, C_FLOAT64 *, C_INT *, C_FLOAT64 *,
+                           C_INT *);
+  static C_FLOAT64 ghyk, ghyr, yksr;
+  static C_INT i__;
+  static C_FLOAT64 ykhyk, ykhyr, yrhyr, rdiagb;
+  extern /* Subroutine */ int ssbfgs_(C_INT *, C_FLOAT64 *, C_FLOAT64 *,
+                                        C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+                                        C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *);
+  static C_FLOAT64 one, gsr;
 
   /* THIS ROUTINE ACTS AS A PRECONDITIONING STEP FOR THE */
   /* LINEAR CONJUGATE-GRADIENT ROUTINE.  IT IS ALSO THE */
@@ -2375,18 +2386,18 @@ L100:
   return 0;
 } /* mslv_ */
 
-/* Subroutine */ int ssbfgs_(integer *n, doublereal *gamma, doublereal *sj,
-                             doublereal *yj, doublereal *hjv, doublereal *hjyj, doublereal *yjsj,
-                             doublereal *yjhyj, doublereal *vsj, doublereal *vhyj, doublereal *
+/* Subroutine */ int ssbfgs_(C_INT *n, C_FLOAT64 *gamma, C_FLOAT64 *sj,
+                             C_FLOAT64 *yj, C_FLOAT64 *hjv, C_FLOAT64 *hjyj, C_FLOAT64 *yjsj,
+                             C_FLOAT64 *yjhyj, C_FLOAT64 *vsj, C_FLOAT64 *vhyj, C_FLOAT64 *
                              hjp1v)
 {
   /* System generated locals */
-  integer i__1;
+  C_INT i__1;
 
   /* Local variables */
-  static doublereal beta;
-  static integer i__;
-  static doublereal delta;
+  static C_FLOAT64 beta;
+  static C_INT i__;
+  static C_FLOAT64 delta;
 
   /* SELF-SCALED BFGS */
 
@@ -2412,13 +2423,13 @@ L100:
 
 /* ROUTINES TO INITIALIZE PRECONDITIONER */
 
-/* Subroutine */ int initpc_(doublereal *diagb, doublereal *emat, integer *n,
-                             doublereal *w, integer *lw, integer *modet, logical *upd1, doublereal
-                             *yksk, doublereal *gsk, doublereal *yrsr, logical *lreset)
+/* Subroutine */ int initpc_(C_FLOAT64 *diagb, C_FLOAT64 *emat, C_INT *n,
+                             C_FLOAT64 *w, C_INT *lw, C_INT *modet, C_INT *upd1, C_FLOAT64
+                             *yksk, C_FLOAT64 *gsk, C_FLOAT64 *yrsr, C_INT *lreset)
 {
-  extern /* Subroutine */ int initp3_(doublereal *, doublereal *, integer *,
-                                        logical *, doublereal *, doublereal *, doublereal *, doublereal *
-                                        , doublereal *, doublereal *, doublereal *, integer *, logical *);
+  extern /* Subroutine */ int initp3_(C_FLOAT64 *, C_FLOAT64 *, C_INT *,
+                                        C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *
+                                        , C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_INT *, C_INT *);
 
   /* Parameter adjustments */
   --emat;
@@ -2432,33 +2443,33 @@ L100:
   return 0;
 } /* initpc_ */
 
-/* Subroutine */ int initp3_(doublereal *diagb, doublereal *emat, integer *n,
-                             logical *lreset, doublereal *yksk, doublereal *yrsr, doublereal *bsk,
-                             doublereal *sk, doublereal *yk, doublereal *sr, doublereal *yr,
-                             integer *modet, logical *upd1)
+/* Subroutine */ int initp3_(C_FLOAT64 *diagb, C_FLOAT64 *emat, C_INT *n,
+                             C_INT *lreset, C_FLOAT64 *yksk, C_FLOAT64 *yrsr, C_FLOAT64 *bsk,
+                             C_FLOAT64 *sk, C_FLOAT64 *yk, C_FLOAT64 *sr, C_FLOAT64 *yr,
+                             C_INT *modet, C_INT *upd1)
 {
   /* Format strings */
-  static char fmt_800[] = "(\002 \002,//8x,\002DMIN =\002,1pd12.4,\002  DM"
-                          "AX =\002,1pd12.4,\002 COND =\002,1pd12.4,/)";
+  // static char fmt_800[] = "(\002 \002,//8x,\002DMIN =\002,1pd12.4,\002  DM"
+  //                        "AX =\002,1pd12.4,\002 COND =\002,1pd12.4,/)";
 
   /* System generated locals */
-  integer i__1;
+  C_INT i__1;
 
   /* Builtin functions */
-  integer s_wsfe(cilist *), do_fio(integer *, char *, ftnlen), e_wsfe(void);
+  // C_INT s_wsfe(cilist *), do_fio(C_INT *, char *, ftnlen), e_wsfe(void);
 
   /* Local variables */
-  static doublereal cond;
-  extern doublereal ddot_(integer *, doublereal *, integer *, doublereal *,
-                            integer *);
-  static doublereal srds, yrsk;
-  static integer i__;
-  extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *,
-                                       doublereal *, integer *);
-  static doublereal d1, dn, td, sds;
+  static C_FLOAT64 cond;
+  extern C_FLOAT64 ddot_(C_INT *, C_FLOAT64 *, C_INT *, C_FLOAT64 *,
+                           C_INT *);
+  static C_FLOAT64 srds, yrsk;
+  static C_INT i__;
+  extern /* Subroutine */ int dcopy_(C_INT *, C_FLOAT64 *, C_INT *,
+                                       C_FLOAT64 *, C_INT *);
+  static C_FLOAT64 d1, dn, td, sds;
 
   /* Fortran I/O blocks */
-  static cilist io___235 = {0, 6, 0, fmt_800, 0 };
+  // static cilist io___235 = {0, 6, 0, fmt_800, 0 };
 
   /* Parameter adjustments */
   --yr;
@@ -2546,17 +2557,17 @@ L110:
       /* L120: */
     }
   cond = dn / d1;
-  s_wsfe(&io___235);
-  do_fio(&c__1, (char *)&d1, (ftnlen)sizeof(doublereal));
-  do_fio(&c__1, (char *)&dn, (ftnlen)sizeof(doublereal));
-  do_fio(&c__1, (char *)&cond, (ftnlen)sizeof(doublereal));
-  e_wsfe();
+  /*s_wsfe(&io___235);
+  do_fio(&c__1, (char *)&d1, (ftnlen)sizeof(C_FLOAT64));
+  do_fio(&c__1, (char *)&dn, (ftnlen)sizeof(C_FLOAT64));
+  do_fio(&c__1, (char *)&cond, (ftnlen)sizeof(C_FLOAT64));
+  e_wsfe();*/
   return 0;
 } /* initp3_ */
 
-/* Subroutine */ int setpar_(integer *n)
+/* Subroutine */ int setpar_(C_INT *n)
 {
-  static integer i__;
+  static C_INT i__;
 
   /* SET UP PARAMETERS FOR THE OPTIMIZATION ROUTINE */
 
@@ -2571,56 +2582,56 @@ L110:
 
 /*      LINE SEARCH ALGORITHMS OF GILL AND MURRAY */
 
-/* Subroutine */ int linder_(integer *n, FTruncatedNewton *sfun, doublereal *small,
-                             doublereal *epsmch, doublereal *reltol, doublereal *abstol,
-                             doublereal *tnytol, doublereal *eta, doublereal *sftbnd, doublereal *
-                             xbnd, doublereal *p, doublereal *gtp, doublereal *x, doublereal *f,
-                             doublereal *alpha, doublereal *g, integer *nftotl, integer *iflag,
-                             doublereal *w, integer *lw)
+/* Subroutine */ int linder_(C_INT *n, FTruncatedNewton *sfun, C_FLOAT64 *small,
+                             C_FLOAT64 *epsmch, C_FLOAT64 *reltol, C_FLOAT64 *fabstol,
+                             C_FLOAT64 *tnytol, C_FLOAT64 *eta, C_FLOAT64 *sftbnd, C_FLOAT64 *
+                             xbnd, C_FLOAT64 *p, C_FLOAT64 *gtp, C_FLOAT64 *x, C_FLOAT64 *f,
+                             C_FLOAT64 *alpha, C_FLOAT64 *g, C_INT *nftotl, C_INT *iflag,
+                             C_FLOAT64 *w, C_INT *lw)
 {
   /* System generated locals */
-  integer i__1;
+  C_INT i__1;
 
   /* Builtin functions */
-  double sqrt(doublereal);
+  double sqrt(C_FLOAT64);
 
   /* Local variables */
-  static doublereal oldf, fmin, gmin;
-  extern doublereal ddot_(integer *, doublereal *, integer *, doublereal *,
-                            integer *);
-  static integer numf;
-  static doublereal step, xmin, a, b, e;
-  static integer i__, l;
-  static doublereal u;
-  extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *,
-                                       doublereal *, integer *);
-  static integer itcnt;
-  static doublereal b1;
-  static integer itest, nprnt;
-  extern /* Subroutine */ int lsout_(integer *, integer *, doublereal *,
-                                       doublereal *, doublereal *, doublereal *, doublereal *,
-                                       doublereal *, doublereal *, doublereal *, doublereal *,
-                                       doublereal *, doublereal *, doublereal *, doublereal *);
-  static doublereal gtest1, gtest2;
-  static integer lg;
-  static doublereal fu, gu, fw, gw;
-  static integer lx;
-  static logical braktd;
-  static doublereal ualpha, factor, scxbnd, xw;
-  extern /* Subroutine */ int getptc_(doublereal *, doublereal *,
-                                        doublereal *, doublereal *, doublereal *, doublereal *,
-                                        doublereal *, doublereal *, doublereal *, doublereal *,
-                                        doublereal *, doublereal *, doublereal *, doublereal *,
-                                        doublereal *, doublereal *, doublereal *, doublereal *,
-                                        doublereal *, doublereal *, doublereal *, doublereal *,
-                                        doublereal *, doublereal *, doublereal *, doublereal *,
-                                        doublereal *, logical *, doublereal *, doublereal *, doublereal *,
-                                        integer *, integer *);
-  static doublereal fpresn;
-  static integer ientry;
-  static doublereal rtsmll;
-  static integer lsprnt;
-  static doublereal big, tol, rmu;
+  static C_FLOAT64 oldf, fmin, gmin;
+  extern C_FLOAT64 ddot_(C_INT *, C_FLOAT64 *, C_INT *, C_FLOAT64 *,
+                           C_INT *);
+  static C_INT numf;
+  static C_FLOAT64 step, xmin, a, b, e;
+  static C_INT i__, l;
+  static C_FLOAT64 u;
+  extern /* Subroutine */ int dcopy_(C_INT *, C_FLOAT64 *, C_INT *,
+                                       C_FLOAT64 *, C_INT *);
+  static C_INT itcnt;
+  static C_FLOAT64 b1;
+  static C_INT itest, nprnt;
+  extern /* Subroutine */ int lsout_(C_INT *, C_INT *, C_FLOAT64 *,
+                                       C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+                                       C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+                                       C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *);
+  static C_FLOAT64 gtest1, gtest2;
+  static C_INT lg;
+  static C_FLOAT64 fu, gu, fw, gw;
+  static C_INT lx;
+  static C_INT braktd;
+  static C_FLOAT64 ualpha, factor, scxbnd, xw;
+  extern /* Subroutine */ int getptc_(C_FLOAT64 *, C_FLOAT64 *,
+                                        C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+                                        C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+                                        C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+                                        C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+                                        C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+                                        C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+                                        C_FLOAT64 *, C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+                                        C_INT *, C_INT *);
+  static C_FLOAT64 fpresn;
+  static C_INT ientry;
+  static C_FLOAT64 rtsmll;
+  static C_INT lsprnt;
+  static C_FLOAT64 big, tol, rmu;
 
   /*      THE FOLLOWING STANDARD FUNCTIONS AND SYSTEM FUNCTIONS ARE */
   /*      CALLED WITHIN LINDER */
@@ -2666,7 +2677,7 @@ L10:
       goto L50;
     }
   *iflag = 0;
-  getptc_(&big, small, &rtsmll, reltol, abstol, tnytol, &fpresn, eta, &rmu,
+  getptc_(&big, small, &rtsmll, reltol, fabstol, tnytol, &fpresn, eta, &rmu,
           xbnd, &u, &fu, &gu, &xmin, &fmin, &gmin, &xw, &fw, &gw, &a, &b, &
           oldf, &b1, &scxbnd, &e, &step, &factor, &braktd, &gtest1, &gtest2,
           &tol, &ientry, &itest);
@@ -2732,28 +2743,28 @@ L50:
   return 0;
 } /* linder_ */
 
-/* Subroutine */ int getptc_(doublereal *big, doublereal *small, doublereal *
-                             rtsmll, doublereal *reltol, doublereal *abstol, doublereal *tnytol,
-                             doublereal *fpresn, doublereal *eta, doublereal *rmu, doublereal *
-                             xbnd, doublereal *u, doublereal *fu, doublereal *gu, doublereal *xmin,
-                             doublereal *fmin, doublereal *gmin, doublereal *xw, doublereal *fw,
-                             doublereal *gw, doublereal *a, doublereal *b, doublereal *oldf,
-                             doublereal *b1, doublereal *scxbnd, doublereal *e, doublereal *step,
-                             doublereal *factor, logical *braktd, doublereal *gtest1, doublereal *
-                             gtest2, doublereal *tol, integer *ientry, integer *itest)
+/* Subroutine */ int getptc_(C_FLOAT64 *big, C_FLOAT64 *small, C_FLOAT64 *
+                             rtsmll, C_FLOAT64 *reltol, C_FLOAT64 *fabstol, C_FLOAT64 *tnytol,
+                             C_FLOAT64 *fpresn, C_FLOAT64 *eta, C_FLOAT64 *rmu, C_FLOAT64 *
+                             xbnd, C_FLOAT64 *u, C_FLOAT64 *fu, C_FLOAT64 *gu, C_FLOAT64 *xmin,
+                             C_FLOAT64 *fmin, C_FLOAT64 *gmin, C_FLOAT64 *xw, C_FLOAT64 *fw,
+                             C_FLOAT64 *gw, C_FLOAT64 *a, C_FLOAT64 *b, C_FLOAT64 *oldf,
+                             C_FLOAT64 *b1, C_FLOAT64 *scxbnd, C_FLOAT64 *e, C_FLOAT64 *step,
+                             C_FLOAT64 *factor, C_INT *braktd, C_FLOAT64 *gtest1, C_FLOAT64 *
+                             gtest2, C_FLOAT64 *tol, C_INT *ientry, C_INT *itest)
 {
   /* System generated locals */
-  doublereal d__1, d__2;
+  C_FLOAT64 d__1, d__2;
 
   /* Builtin functions */
-  double sqrt(doublereal);
+  double sqrt(C_FLOAT64);
 
   /* Local variables */
-  static doublereal half, abgw, absr, five, zero, p, q, r__, s, scale,
+  static C_FLOAT64 half, abgw, fabsr, five, zero, p, q, r__, s, scale,
   denom, three, a1, d1, d2, sumsq, point1, abgmin, chordm, eleven,
   chordu;
-  static logical convrg;
-  static doublereal xmidpt, twotol, one;
+  static C_INT convrg;
+  static C_FLOAT64 xmidpt, twotol, one;
 
   /* ************************************************************ */
   /* GETPTC, AN ALGORITHM FOR FINDING A STEPLENGTH, CALLED REPEATEDLY BY */
@@ -2762,7 +2773,7 @@ L50:
   /* IN WHICH A LOWER POINT IS TO BE FOUND AND FROM THIS GETPTC COMPUTES A
   */
   /* POINT AT WHICH THE FUNCTION CAN BE EVALUATED BY THE CALLING PROGRAM. */
-  /* THE VALUE OF THE INTEGER PARAMETERS IENTRY DETERMINES THE PATH TAKEN */
+  /* THE VALUE OF THE C_INT PARAMETERS IENTRY DETERMINES THE PATH TAKEN */
   /* THROUGH THE CODE. */
   /* ************************************************************ */
 
@@ -2796,11 +2807,11 @@ L10:
       return 0;
     }
   *itest = 1;
-  if (*xbnd < *abstol)
+  if (*xbnd < *fabstol)
     {
-      *abstol = *xbnd;
+      *fabstol = *xbnd;
     }
-  *tol = *abstol;
+  *tol = *fabstol;
   twotol = *tol + *tol;
 
   /* A AND B DEFINE THE INTERVAL OF UNCERTAINTY, X AND XW ARE POINTS */
@@ -2830,7 +2841,7 @@ L10:
   /* ON THE INTERVAL OF UNCERTAINTY INITIALLY TO XBND + TOL(XBND). */
 
   *scxbnd = *xbnd;
-  *b = *scxbnd + *reltol * abs(*scxbnd) + *abstol;
+  *b = *scxbnd + *reltol * fabs(*scxbnd) + *fabstol;
   *e = *b + *b;
   *b1 = *b;
 
@@ -2872,7 +2883,7 @@ L20:
   chordm = *oldf - *xmin * *gtest1;
   *gu = -(*gmin);
   denom = chordm - *fmin;
-  if (abs(denom) >= 1e-15)
+  if (fabs(denom) >= 1e-15)
     {
       goto L25;
     }
@@ -2912,7 +2923,7 @@ L30:
 L40:
   *a = zero;
 L50:
-  *tol = abs(*xmin) * *reltol + *abstol;
+  *tol = fabs(*xmin) * *reltol + *fabstol;
   goto L90;
 
   /* IF FUNCTION VALUE INCREASED, ORIGIN REMAINS UNCHANGED */
@@ -2938,8 +2949,8 @@ L90:
 
   /* CHECK TERMINATION CRITERIA */
 
-  convrg = abs(xmidpt) <= twotol - half * (*b - *a) || abs(*gmin) <= *
-           gtest2 && *fmin < *oldf && ((d__1 = *xmin - *xbnd, abs(d__1)) > *
+  convrg = fabs(xmidpt) <= twotol - half * (*b - *a) || fabs(*gmin) <= *
+           gtest2 && *fmin < *oldf && ((d__1 = *xmin - *xbnd, fabs(d__1)) > *
                                        tol || ! (*braktd));
   if (! convrg)
     {
@@ -2957,7 +2968,7 @@ L90:
   /* EXPECTED, REDUCE THE VALUE OF TOL. */
 
   *itest = 3;
-  if ((d__1 = *oldf - *fw, abs(d__1)) <= *fpresn * (one + abs(*oldf)))
+  if ((d__1 = *oldf - *fw, fabs(d__1)) <= *fpresn * (one + fabs(*oldf)))
     {
       return 0;
     }
@@ -2967,7 +2978,7 @@ L90:
       return 0;
     }
   *reltol = point1 * *reltol;
-  *abstol = point1 * *abstol;
+  *fabstol = point1 * *fabstol;
   twotol = point1 * twotol;
 
   /* CONTINUE WITH THE COMPUTATION OF A TRIAL STEP LENGTH */
@@ -2976,7 +2987,7 @@ L100:
   r__ = zero;
   q = zero;
   s = zero;
-  if (abs(*e) <= *tol)
+  if (fabs(*e) <= *tol)
     {
       goto L150;
     }
@@ -2984,8 +2995,8 @@ L100:
   /* FIT CUBIC THROUGH XMIN AND XW */
 
   r__ = three * (*fmin - *fw) / *xw + *gmin + *gw;
-  absr = abs(r__);
-  q = absr;
+  fabsr = fabs(r__);
+  q = fabsr;
   if (*gw == zero || *gmin == zero)
     {
       goto L140;
@@ -2994,8 +3005,8 @@ L100:
   /* COMPUTE THE SQUARE ROOT OF (R*R - GMIN*GW) IN A WAY */
   /* WHICH AVOIDS UNDERFLOW AND OVERFLOW. */
 
-  abgw = abs(*gw);
-  abgmin = abs(*gmin);
+  abgw = fabs(*gw);
+  abgmin = fabs(*gmin);
   s = sqrt(abgmin) * sqrt(abgw);
   if (*gw / abgw * *gmin > zero)
     {
@@ -3006,7 +3017,7 @@ L100:
 
   sumsq = one;
   p = zero;
-  if (absr >= s)
+  if (fabsr >= s)
     {
       goto L110;
     }
@@ -3017,10 +3028,10 @@ L100:
     {
       p = s * *rtsmll;
     }
-  if (absr >= p)
+  if (fabsr >= p)
     {
       /* Computing 2nd power */
-      d__1 = absr / s;
+      d__1 = fabsr / s;
       sumsq = one + d__1 * d__1;
     }
   scale = s;
@@ -3029,17 +3040,17 @@ L100:
   /* THERE IS A POSSIBILITY OF UNDERFLOW. */
 
 L110:
-  if (absr > *rtsmll)
+  if (fabsr > *rtsmll)
     {
-      p = absr * *rtsmll;
+      p = fabsr * *rtsmll;
     }
   if (s >= p)
     {
       /* Computing 2nd power */
-      d__1 = s / absr;
+      d__1 = s / fabsr;
       sumsq = one + d__1 * d__1;
     }
-  scale = absr;
+  scale = fabsr;
 L120:
   sumsq = sqrt(sumsq);
   q = *big;
@@ -3052,7 +3063,7 @@ L120:
   /* COMPUTE THE SQUARE ROOT OF R*R - S*S */
 
 L130:
-  q = sqrt((d__1 = r__ + s, abs(d__1))) * sqrt((d__2 = r__ - s, abs(d__2)));
+  q = sqrt((d__1 = r__ + s, fabs(d__1))) * sqrt((d__2 = r__ - s, fabs(d__2)));
   if (r__ >= s || r__ <= -s)
     {
       goto L140;
@@ -3146,7 +3157,7 @@ L170:
   /* DURING THE LAST-BUT-ONE ITERATION. */
 
 L180:
-  if (abs(s) <= (d__1 = half * q * r__, abs(d__1)) || s <= q * a1 || s >= q
+  if (fabs(s) <= (d__1 = half * q * r__, fabs(d__1)) || s <= q * a1 || s >= q
       * *b1)
     {
       goto L200;
@@ -3186,14 +3197,14 @@ L210:
 
   /* MOVE SXBD TO THE LEFT SO THAT SBND + TOL(XBND) = XBND. */
 
-  *scxbnd -= (*reltol * abs(*xbnd) + *abstol) / (one + *reltol);
+  *scxbnd -= (*reltol * fabs(*xbnd) + *fabstol) / (one + *reltol);
 L220:
   *u = *step;
-  if (abs(*step) < *tol && *step < zero)
+  if (fabs(*step) < *tol && *step < zero)
     {
       *u = -(*tol);
     }
-  if (abs(*step) < *tol && *step >= zero)
+  if (fabs(*step) < *tol && *step >= zero)
     {
       *u = *tol;
     }
@@ -3211,14 +3222,14 @@ L220:
 /* ****************************************************************** */
 /* SPECIAL BLAS FOR Y = X+Y */
 /* ****************************************************************** */
-/* Subroutine */ int dxpy_(integer *n, doublereal *dx, integer *incx,
-                           doublereal *dy, integer *incy)
+/* Subroutine */ int dxpy_(C_INT *n, C_FLOAT64 *dx, C_INT *incx,
+                           C_FLOAT64 *dy, C_INT *incy)
 {
   /* System generated locals */
-  integer i__1;
+  C_INT i__1;
 
   /* Local variables */
-  static integer i__, m, ix, iy, mp1;
+  static C_INT i__, m, ix, iy, mp1;
 
   /*     VECTOR PLUS A VECTOR. */
   /*     USES UNROLLED LOOPS FOR INCREMENTS EQUAL TO ONE. */
@@ -3294,3 +3305,8 @@ L40:
     }
   return 0;
 } /* dxpy_ */
+
+C_FLOAT64 pow_dd(C_FLOAT64 *ap, C_FLOAT64 *bp)
+{
+  return(pow(*ap, *bp));
+}

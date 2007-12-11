@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CPraxis.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: jdada $
-//   $Date: 2007/10/15 14:06:53 $
+//   $Date: 2007/12/11 13:19:31 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,22 +15,31 @@
  -lf2c -lm   (in that order)
  */
 
+#include <math.h>
+#include <float.h>
+#include <stdio.h>
+
+#include "copasi.h"
 #include "CPraxis.h"
 
 /* Common Block Declarations */
 
 struct
   {
-    doublereal fx, ldt, dmin__;
-    integer nf, nl;
+    C_FLOAT64 fx, ldt, dmin__;
+    C_INT nf, nl;
   }
 global_;
 
 #define global_1 global_
+#define TRUE_ (1)
+#define FALSE_ (0)
+#define dmax(a1,a2) ((a1 > a2) ? a1 : a2)
+#define dmin(a1,a2) ((a1 < a2) ? a1 : a2)
 
 struct
   {
-    doublereal v[10000] /* was [100][100] */, q0[100], q1[100], qa, qb, qc, qd0,
+    C_FLOAT64 v[10000] /* was [100][100] */, q0[100], q1[100], qa, qb, qc, qd0,
     qd1, qf1;
   }
 q_;
@@ -39,59 +48,59 @@ q_;
 
 /* Table of constant values */
 
-static integer c__1 = 1;
-static integer c__2 = 2;
-static logical c_false = FALSE_;
-static integer c__10 = 10;
-static integer c__4 = 4;
-static logical c_true = TRUE_;
-static integer c__3 = 3;
-static integer c__0 = 0;
+static C_INT c__1 = 1;
+static C_INT c__2 = 2;
+static bool c_false = FALSE_;
+static C_INT c__10 = 10;
+static C_INT c__4 = 4;
+static bool c_true = TRUE_;
+static C_INT c__3 = 3;
+static C_INT c__0 = 0;
 
-doublereal praxis_(doublereal *t0, doublereal *machep, doublereal *h0,
-                   integer *n, integer *prin, doublereal *x, FPraxis *f, doublereal *fmin)
+C_FLOAT64 praxis_(C_FLOAT64 *t0, C_FLOAT64 *machep, C_FLOAT64 *h0,
+                  C_INT *n, C_INT *prin, C_FLOAT64 *x, FPraxis *f, C_FLOAT64 *fmin)
 {
   /* System generated locals */
-  integer i__1, i__2, i__3;
-  doublereal ret_val, d__1;
+  C_INT i__1, i__2, i__3;
+  C_FLOAT64 ret_val, d__1;
 
   /* Builtin functions */
-  double sqrt(doublereal);
-  integer pow_ii(integer *, integer *);
+  double sqrt(C_FLOAT64);
+  C_INT pow_ii(C_INT *, C_INT *);
 
   /* Local variables */
-  static doublereal scbd;
-  static integer idim;
-  static logical illc;
-  extern /* Subroutine */ int quad_(integer *, FPraxis *f, doublereal *,
-                                      doublereal *, doublereal *, doublereal *);
-  static integer klmk;
-  extern /* Subroutine */ int sort_(integer *, integer *, doublereal *,
-                                      doublereal *);
-  static doublereal d__[100], h__, ldfac;
-  static integer i__, j, k;
-  static doublereal s, t, y[100], large, z__[100], small, value, f1;
-  extern /* Subroutine */ int print_(integer *, doublereal *, integer *,
-                                       doublereal *);
-  static integer k2;
-  static doublereal m2, m4, t2, df, dn;
-  static integer kl, ii;
-  static doublereal sf;
-  static integer kt;
-  static doublereal sl, vlarge;
-  extern doublereal random_(integer *);
-  extern /* Subroutine */ int minfit_(integer *, integer *, doublereal *,
-                                        doublereal *, doublereal *, doublereal *);
-  static doublereal vsmall;
-  extern /* Subroutine */ int maprnt_(integer *, doublereal *, integer *,
-                                        integer *);
-  static integer km1, im1;
-  extern /* Subroutine */ int vcprnt_(integer *, doublereal *, integer *);
-  static doublereal dni, lds;
-  extern /* Subroutine */ int min_(integer *, integer *, integer *,
-                                     doublereal *, doublereal *, doublereal *, logical *, FPraxis *f,
-                                     doublereal *, doublereal *, doublereal *, doublereal *);
-  static integer ktm;
+  static C_FLOAT64 scbd;
+  static C_INT idim;
+  static bool illc;
+  extern /* Subroutine */ int quad_(C_INT *, FPraxis *f, C_FLOAT64 *,
+                                      C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *);
+  static C_INT klmk;
+  extern /* Subroutine */ int sort_(C_INT *, C_INT *, C_FLOAT64 *,
+                                      C_FLOAT64 *);
+  static C_FLOAT64 d__[100], h__, ldfac;
+  static C_INT i__, j, k;
+  static C_FLOAT64 s, t, y[100], large, z__[100], small, value, f1;
+  extern /* Subroutine */ int print_(C_INT *, C_FLOAT64 *, C_INT *,
+                                       C_FLOAT64 *);
+  static C_INT k2;
+  static C_FLOAT64 m2, m4, t2, df, dn;
+  static C_INT kl, ii;
+  static C_FLOAT64 sf;
+  static C_INT kt;
+  static C_FLOAT64 sl, vlarge;
+  extern C_FLOAT64 random_(C_INT *);
+  extern /* Subroutine */ int minfit_(C_INT *, C_INT *, C_FLOAT64 *,
+                                        C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *);
+  static C_FLOAT64 vsmall;
+  extern /* Subroutine */ int maprnt_(C_INT *, C_FLOAT64 *, C_INT *,
+                                        C_INT *);
+  static C_INT km1, im1;
+  /* Subroutine */ int vcprnt_(C_INT *, C_FLOAT64 *, C_INT *);
+  static C_FLOAT64 dni, lds;
+  extern /* Subroutine */ int min_(C_INT *, C_INT *, C_INT *,
+                                     C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, bool *, FPraxis *f,
+                                     C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *);
+  static C_INT ktm;
 
   /*                             LAST MODIFIED 3/1/73 */
 
@@ -187,7 +196,7 @@ doublereal praxis_(doublereal *t0, doublereal *machep, doublereal *h0,
   global_1.nf = 1;
   global_1.fx = (*f)(&x[1], n);
   q_1.qf1 = global_1.fx;
-  t = small + abs(*t0);
+  t = small + fabs(*t0);
   t2 = t;
   global_1.dmin__ = small;
   h__ = *h0;
@@ -288,7 +297,7 @@ L80:
       i__2 = *n;
       for (i__ = 1; i__ <= i__2; ++i__)
         {
-          s = (global_1.ldt * .1 + t2 * pow_ii(&c__10, &kt)) * (random_(n)
+          s = (global_1.ldt * .1 + t2 * pow(10, (C_FLOAT64)kt)) * (random_(n)
               - .5);
           z__[i__ - 1] = s;
           i__3 = *n;
@@ -334,7 +343,7 @@ L99:
 L105:
 ;
         }
-      if (illc || df >= (d__1 = *machep * 100 * global_1.fx, abs(d__1)))
+      if (illc || df >= (d__1 = *machep * 100 * global_1.fx, fabs(d__1)))
         {
           goto L110;
         }
@@ -685,29 +694,22 @@ L400:
   return ret_val;
 } /* praxis_ */
 
-/* Subroutine */ int minfit_(integer *m, integer *n, doublereal *machep,
-                             doublereal *tol, doublereal *ab, doublereal *q)
+/* Subroutine */ int minfit_(C_INT *m, C_INT *n, C_FLOAT64 *machep,
+                             C_FLOAT64 *tol, C_FLOAT64 *ab, C_FLOAT64 *q)
 {
-  /* Format strings */
-  static char fmt_1000[] = "(\002 QR FAILED\002)";
-
   /* System generated locals */
-  integer ab_dim1, ab_offset, i__1, i__2, i__3;
-  doublereal d__1, d__2;
+  C_INT ab_dim1, ab_offset, i__1, i__2, i__3;
+  C_FLOAT64 d__1, d__2;
 
   /* Builtin functions */
-  double sqrt(doublereal);
-  integer s_wsfe(cilist *), e_wsfe(void);
+  double sqrt(C_FLOAT64);
 
   /* Local variables */
-  static doublereal temp, c__, e[100], f, g, h__;
-  static integer i__, j, k, l;
-  static doublereal s, x, y, z__;
-  static integer l2, ii, kk, kt, ll2, lp1;
-  static doublereal eps;
-
-  /* Fortran I/O blocks */
-  static cilist io___52 = {0, 6, 0, fmt_1000, 0 };
+  static C_FLOAT64 temp, c__, e[100], f, g, h__;
+  static C_INT i__, j, k, l;
+  static C_FLOAT64 s, x, y, z__;
+  static C_INT l2, ii, kk, kt, ll2, lp1;
+  static C_FLOAT64 eps;
 
   /* ...AN IMPROVED VERSION OF MINFIT (SEE GOLUB AND REINSCH, 1969) */
   /*   RESTRICTED TO M=N,P=0. */
@@ -839,7 +841,7 @@ L16:
             }
         }
 L10:
-      y = (d__1 = q[i__], abs(d__1)) + (d__2 = e[i__ - 1], abs(d__2));
+      y = (d__1 = q[i__], fabs(d__1)) + (d__2 = e[i__ - 1], fabs(d__2));
       /* L11: */
       if (y > x)
         {
@@ -910,15 +912,14 @@ L101:
           goto L102;
         }
       e[k - 1] = 0.;
-      s_wsfe(&io___52);
-      e_wsfe();
+      printf("QR FAILED\n");
 L102:
       i__3 = k;
       for (ll2 = 1; ll2 <= i__3; ++ll2)
         {
           l2 = k - ll2 + 1;
           l = l2;
-          if ((d__1 = e[l - 1], abs(d__1)) <= eps)
+          if ((d__1 = e[l - 1], fabs(d__1)) <= eps)
             {
               goto L120;
             }
@@ -926,7 +927,7 @@ L102:
             {
               goto L103;
             }
-          if ((d__1 = q[l - 1], abs(d__1)) <= eps)
+          if ((d__1 = q[l - 1], fabs(d__1)) <= eps)
             {
               goto L110;
             }
@@ -942,13 +943,13 @@ L110:
         {
           f = s * e[i__ - 1];
           e[i__ - 1] = c__ * e[i__ - 1];
-          if (abs(f) <= eps)
+          if (fabs(f) <= eps)
             {
               goto L120;
             }
           g = q[i__];
           /* ...Q(I) = H = DSQRT(G*G + F*F)... */
-          if (abs(f) < abs(g))
+          if (fabs(f) < fabs(g))
             {
               goto L113;
             }
@@ -966,12 +967,12 @@ L111:
 L112:
           /* Computing 2nd power */
           d__1 = g / f;
-          h__ = abs(f) * sqrt(d__1 * d__1 + 1);
+          h__ = fabs(f) * sqrt(d__1 * d__1 + 1);
           goto L114;
 L113:
           /* Computing 2nd power */
           d__1 = f / g;
-          h__ = abs(g) * sqrt(d__1 * d__1 + 1);
+          h__ = fabs(g) * sqrt(d__1 * d__1 + 1);
 L114:
           q[i__] = h__;
           if (h__ != 0.)
@@ -1020,7 +1021,7 @@ L120:
           y = q[i__];
           h__ = s * g;
           g *= c__;
-          if (abs(f) < abs(h__))
+          if (fabs(f) < fabs(h__))
             {
               goto L123;
             }
@@ -1038,12 +1039,12 @@ L121:
 L122:
           /* Computing 2nd power */
           d__1 = h__ / f;
-          z__ = abs(f) * sqrt(d__1 * d__1 + 1);
+          z__ = fabs(f) * sqrt(d__1 * d__1 + 1);
           goto L124;
 L123:
           /* Computing 2nd power */
           d__1 = f / h__;
-          z__ = abs(h__) * sqrt(d__1 * d__1 + 1);
+          z__ = fabs(h__) * sqrt(d__1 * d__1 + 1);
 L124:
           e[i__ - 2] = z__;
           if (z__ != 0.)
@@ -1068,7 +1069,7 @@ L125:
               /* L126: */
               ab[j + i__ * ab_dim1] = -x * s + z__ * c__;
             }
-          if (abs(f) < abs(h__))
+          if (fabs(f) < fabs(h__))
             {
               goto L129;
             }
@@ -1086,12 +1087,12 @@ L127:
 L128:
           /* Computing 2nd power */
           d__1 = h__ / f;
-          z__ = abs(f) * sqrt(d__1 * d__1 + 1);
+          z__ = fabs(f) * sqrt(d__1 * d__1 + 1);
           goto L130;
 L129:
           /* Computing 2nd power */
           d__1 = f / h__;
-          z__ = abs(h__) * sqrt(d__1 * d__1 + 1);
+          z__ = fabs(h__) * sqrt(d__1 * d__1 + 1);
 L130:
           q[i__ - 1] = z__;
           if (z__ != 0.)
@@ -1135,25 +1136,25 @@ L200:
   return 0;
 } /* minfit_ */
 
-/* Subroutine */ int min_(integer *n, integer *j, integer *nits, doublereal *
-                          d2, doublereal *x1, doublereal *f1, logical *fk, FPraxis *f, doublereal *
-                          x, doublereal *t, doublereal *machep, doublereal *h__)
+/* Subroutine */ int min_(C_INT *n, C_INT *j, C_INT *nits, C_FLOAT64 *
+                          d2, C_FLOAT64 *x1, C_FLOAT64 *f1, bool *fk, FPraxis *f, C_FLOAT64 *
+                          x, C_FLOAT64 *t, C_FLOAT64 *machep, C_FLOAT64 *h__)
 {
   /* System generated locals */
-  integer i__1;
-  doublereal d__1, d__2;
+  C_INT i__1;
+  C_FLOAT64 d__1, d__2;
 
   /* Builtin functions */
-  double sqrt(doublereal);
+  double sqrt(C_FLOAT64);
 
   /* Local variables */
-  extern doublereal flin_(integer *, integer *, doublereal *, FPraxis *,
-                            doublereal *, integer *);
-  static doublereal temp;
-  static integer i__, k;
-  static doublereal s, small, d1, f0, f2, m2, m4, t2, x2, fm;
-  static logical dz;
-  static doublereal xm, sf1, sx1;
+  extern C_FLOAT64 flin_(C_INT *, C_INT *, C_FLOAT64 *, FPraxis *,
+                           C_FLOAT64 *, C_INT *);
+  static C_FLOAT64 temp;
+  static C_INT i__, k;
+  static C_FLOAT64 s, small, d1, f0, f2, m2, m4, t2, x2, fm;
+  static bool dz;
+  static C_FLOAT64 xm, sf1, sx1;
 
   /* ...THE SUBROUTINE MIN MINIMIZES F FROM X IN THE DIRECTION V(*,J) UNLESS */
   /*   J IS LESS THAN 1, WHEN A QUADRATIC SEARCH IS MADE IN THE PLANE */
@@ -1198,17 +1199,17 @@ L200:
     {
       temp = global_1.dmin__;
     }
-  t2 = m4 * sqrt(abs(global_1.fx) / temp + s * global_1.ldt) + m2 *
+  t2 = m4 * sqrt(fabs(global_1.fx) / temp + s * global_1.ldt) + m2 *
        global_1.ldt;
   s = m4 * s + *t;
   if (dz && t2 > s)
     {
       t2 = s;
     }
-  t2 = max(t2, small);
+  t2 = dmax(t2, small);
   /* Computing MIN */
   d__1 = t2, d__2 = *h__ * .01;
-  t2 = min(d__1, d__2);
+  t2 = dmin(d__1, d__2);
   if (! (*fk) || *f1 > fm)
     {
       goto L2;
@@ -1216,7 +1217,7 @@ L200:
   xm = *x1;
   fm = *f1;
 L2:
-  if (*fk && abs(*x1) >= t2)
+  if (*fk && fabs(*x1) >= t2)
     {
       goto L3;
     }
@@ -1273,7 +1274,7 @@ L6:
 L7:
   x2 = d1 * -.5 / *d2;
 L8:
-  if (abs(x2) <= *h__)
+  if (fabs(x2) <= *h__)
     {
       goto L11;
     }
@@ -1318,7 +1319,7 @@ L13:
   fm = f2;
   /* ...GET A NEW ESTIMATE OF THE SECOND DERIVATIVE... */
 L14:
-  if ((d__1 = x2 * (x2 - *x1), abs(d__1)) <= small)
+  if ((d__1 = x2 * (x2 - *x1), fabs(d__1)) <= small)
     {
       goto L15;
     }
@@ -1357,16 +1358,16 @@ L17:
   return 0;
 } /* min_ */
 
-doublereal flin_(integer *n, integer *j, doublereal *l, FPraxis *f, doublereal *x,
-                 integer *nf)
+C_FLOAT64 flin_(C_INT *n, C_INT *j, C_FLOAT64 *l, FPraxis *f, C_FLOAT64 *x,
+                C_INT *nf)
 {
   /* System generated locals */
-  integer i__1;
-  doublereal ret_val;
+  C_INT i__1;
+  C_FLOAT64 ret_val;
 
   /* Local variables */
-  static integer i__;
-  static doublereal t[100];
+  static C_INT i__;
+  static C_FLOAT64 t[100];
 
   /* ...FLIN IS THE FUNCTION OF ONE REAL VARIABLE L THAT IS MINIMIZED */
   /*   BY THE SUBROUTINE MIN... */
@@ -1405,16 +1406,16 @@ L4:
   return ret_val;
 } /* flin_ */
 
-/* Subroutine */ int sort_(integer *m, integer *n, doublereal *d__,
-                           doublereal *v)
+/* Subroutine */ int sort_(C_INT *m, C_INT *n, C_FLOAT64 *d__,
+                           C_FLOAT64 *v)
 {
   /* System generated locals */
-  integer v_dim1, v_offset, i__1, i__2;
+  C_INT v_dim1, v_offset, i__1, i__2;
 
   /* Local variables */
-  static integer i__, j, k;
-  static doublereal s;
-  static integer ip1, nm1;
+  static C_INT i__, j, k;
+  static C_FLOAT64 s;
+  static C_INT ip1, nm1;
 
   /* ...SORTS THE ELEMENTS OF D(N) INTO DESCENDING ORDER AND MOVES THE */
   /*   CORRESPONDING COLUMNS OF V(N,N). */
@@ -1469,22 +1470,22 @@ L3:
   return 0;
 } /* sort_ */
 
-/* Subroutine */ int quad_(integer *n, FPraxis *f, doublereal *x, doublereal *t,
-                           doublereal *machep, doublereal *h__)
+/* Subroutine */ int quad_(C_INT *n, FPraxis *f, C_FLOAT64 *x, C_FLOAT64 *t,
+                           C_FLOAT64 *machep, C_FLOAT64 *h__)
 {
   /* System generated locals */
-  integer i__1;
-  doublereal d__1;
+  C_INT i__1;
+  C_FLOAT64 d__1;
 
   /* Builtin functions */
-  double sqrt(doublereal);
+  double sqrt(C_FLOAT64);
 
   /* Local variables */
-  static integer i__;
-  static doublereal l, s, value;
-  extern /* Subroutine */ int min_(integer *, integer *, integer *,
-                                     doublereal *, doublereal *, doublereal *, logical *, D_fp,
-                                     doublereal *, doublereal *, doublereal *, doublereal *);
+  static C_INT i__;
+  static C_FLOAT64 l, s, value;
+  extern /* Subroutine */ int min_(C_INT *, C_INT *, C_INT *,
+                                     C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, bool *, FPraxis *f,
+                                     C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *);
 
   /* ...QUAD LOOKS FOR THE MINIMUM OF F ALONG A CURVE DEFINED BY Q0,Q1,X...
   */
@@ -1540,37 +1541,19 @@ L3:
   return 0;
 } /* quad_ */
 
-/* Subroutine */ int vcprnt_(integer *option, doublereal *v, integer *n)
+/* Subroutine */ int vcprnt_(C_INT *option, C_FLOAT64 *v, C_INT *n)
 {
-  /* Format strings */
-  static char fmt_101[] = "(/\002 THE SECOND DIFFERENCE ARRAY D(*) IS:\002"
-                          "/(e32.14,4e25.14))";
-  static char fmt_102[] = "(/\002 THE SCALE FACTORS ARE:\002/(e32.14,4e25."
-                          "14))";
-  static char fmt_103[] = "(/\002 THE APPROXIMATING QUADRATIC FORM HAS THE"
-                          " PRINCIPAL VALUES:\002/(e32.14,4e25.14))";
-  static char fmt_104[] = "(/\002 X IS:\002,e26.14/(e32.14))";
-
   /* System generated locals */
-  integer i__1;
-
-  /* Builtin functions */
-  integer s_wsfe(cilist *), do_fio(integer *, char *, ftnlen), e_wsfe(void);
+  C_INT i__1;
 
   /* Local variables */
-  static integer i__;
-
-  /* Fortran I/O blocks */
-  static cilist io___88 = {0, 6, 0, fmt_101, 0 };
-  static cilist io___90 = {0, 6, 0, fmt_102, 0 };
-  static cilist io___91 = {0, 6, 0, fmt_103, 0 };
-  static cilist io___92 = {0, 6, 0, fmt_104, 0 };
+  C_INT i;
 
   /* Parameter adjustments */
   --v;
 
   /* Function Body */
-  switch (*option)
+  switch ((int)*option)
     {
     case 1: goto L1;
     case 2: goto L2;
@@ -1578,136 +1561,99 @@ L3:
     case 4: goto L4;
     }
 L1:
-  s_wsfe(&io___88);
+  printf("THE SECOND DIFFERENCE ARRAY D[*] IS :\n");
   i__1 = *n;
-  for (i__ = 1; i__ <= i__1; ++i__)
+  for (i = 1; i <= i__1; ++i)
     {
-      do_fio(&c__1, (char *)&v[i__], (ftnlen)sizeof(doublereal));
+      printf("%g\n", v[i]);
     }
-  e_wsfe();
   return 0;
 L2:
-  s_wsfe(&io___90);
+  printf("THE SCALE FACTORS ARE:\n");
   i__1 = *n;
-  for (i__ = 1; i__ <= i__1; ++i__)
+  for (i = 1; i <= i__1; ++i)
     {
-      do_fio(&c__1, (char *)&v[i__], (ftnlen)sizeof(doublereal));
+      printf("%g\n", v[i]);
     }
-  e_wsfe();
   return 0;
 L3:
-  s_wsfe(&io___91);
+  printf("THE APPROXIMATING QUADRATIC FORM HAS THE PRINCEPAL VALUES:\n");
   i__1 = *n;
-  for (i__ = 1; i__ <= i__1; ++i__)
+  for (i = 1; i <= i__1; ++i)
     {
-      do_fio(&c__1, (char *)&v[i__], (ftnlen)sizeof(doublereal));
+      printf("%g\n", v[i]);
     }
-  e_wsfe();
   return 0;
 L4:
-  s_wsfe(&io___92);
+  printf("x is:\n");
   i__1 = *n;
-  for (i__ = 1; i__ <= i__1; ++i__)
+  for (i = 1; i <= i__1; ++i)
     {
-      do_fio(&c__1, (char *)&v[i__], (ftnlen)sizeof(doublereal));
+      printf("%g\n", v[i]);
     }
-  e_wsfe();
   return 0;
 } /* vcprnt_ */
 
-/* Subroutine */ int print_(integer *n, doublereal *x, integer *prin,
-                            doublereal *fmin)
+/* Subroutine */ int print_(C_INT *n, C_FLOAT64 *x, C_INT *prin,
+                            C_FLOAT64 *fmin)
 {
-  /* Format strings */
-  static char fmt_101[] = "(/\002 AFTER\002,i6,\002 LINEAR SEARCHES, THE F"
-                          "UNCTION HAS BEEN EVALUATED\002,i6,\002 TIMES.  THE SMALLEST VALU"
-                          "E FOUND IS F(X) = \002,e21.14)";
-  static char fmt_102[] = "(\002 LOG (F(X)-\002,e21.14,\002) = \002,e21.14)"
-;
-  static char fmt_103[] = "(\002 LOG (F(X)-\002,e21.14,\002) IS UNDEFINED"
-                          ".\002)";
-  static char fmt_104[] = "(\002 X IS:\002,e26.14/(e32.14))";
-
   /* System generated locals */
-  integer i__1;
-  doublereal d__1;
-
-  /* Builtin functions */
-  integer s_wsfe(cilist *), do_fio(integer *, char *, ftnlen), e_wsfe(void);
-  double d_lg10(doublereal *);
+  C_INT i__1;
+  C_FLOAT64 d__1;
 
   /* Local variables */
-  static integer i__;
-  static doublereal ln;
+  C_INT i;
+  C_FLOAT64 ln;
 
-  /* Fortran I/O blocks */
-  static cilist io___93 = {0, 6, 0, fmt_101, 0 };
-  static cilist io___95 = {0, 6, 0, fmt_102, 0 };
-  static cilist io___96 = {0, 6, 0, fmt_103, 0 };
-  static cilist io___97 = {0, 6, 0, fmt_104, 0 };
-
+  /* Builtin functions */
+  C_FLOAT64 d_lg10(C_FLOAT64 *);
   /* Parameter adjustments */
   --x;
 
   /* Function Body */
-  s_wsfe(&io___93);
-  do_fio(&c__1, (char *)&global_1.nl, (ftnlen)sizeof(integer));
-  do_fio(&c__1, (char *)&global_1.nf, (ftnlen)sizeof(integer));
-  do_fio(&c__1, (char *)&global_1.fx, (ftnlen)sizeof(doublereal));
-  e_wsfe();
+  printf("AFTER ");
+  printf("%d", global_1.nl);
+  printf(" LINEAR SEARCHES, THE FUNCTION HAS BEEN EVALUATED ");
+  printf("%d TIMES.\n", global_1.nf);
+  printf("THE SMALLEST VALUE FOUND IS F(X) = ");
+  printf("%g\n", global_1.fx);
   if (global_1.fx <= *fmin)
     {
       goto L1;
     }
   d__1 = global_1.fx - *fmin;
-  ln = d_lg10(&d__1);
-  s_wsfe(&io___95);
-  do_fio(&c__1, (char *)&(*fmin), (ftnlen)sizeof(doublereal));
-  do_fio(&c__1, (char *)&ln, (ftnlen)sizeof(doublereal));
-  e_wsfe();
+  //   ln = d_lg10(&d__1);
+  printf("log (f(x)) - ");
+  printf("%g", *fmin);
+  printf(" = ");
+  printf("%g\n", ln);
   goto L2;
 L1:
-  s_wsfe(&io___96);
-  do_fio(&c__1, (char *)&(*fmin), (ftnlen)sizeof(doublereal));
-  e_wsfe();
+  printf("LOG (F(x)) -- ");
+  printf("%g", *fmin);
+  printf(" IS UNDERFINED\n");
 L2:
   if (*n > 4 && *prin <= 2)
     {
       return 0;
     }
-  s_wsfe(&io___97);
   i__1 = *n;
-  for (i__ = 1; i__ <= i__1; ++i__)
+  for (i = 1; i <= i__1; ++i)
     {
-      do_fio(&c__1, (char *)&x[i__], (ftnlen)sizeof(doublereal));
+      printf("x is:");
+      printf("%g\n", x[i]);
     }
-  e_wsfe();
   return 0;
 } /* print_ */
 
-/* Subroutine */ int maprnt_(integer *option, doublereal *v, integer *m,
-                             integer *n)
+/* Subroutine */ int maprnt_(C_INT *option, C_FLOAT64 *v, C_INT *m,
+                             C_INT *n)
 {
-  /* Format strings */
-  static char fmt_101[] = "(/\002 THE NEW DIRECTIONS ARE:\002)";
-  static char fmt_102[] = "(\002 AND THE PRINCIPAL AXES:\002)";
-  static char fmt_104[] = "(e32.14,4e25.14)";
-  static char fmt_103[] = "(\002 \002)";
-
   /* System generated locals */
-  integer v_dim1, v_offset, i__1, i__2;
-
-  /* Builtin functions */
-  integer s_wsfe(cilist *), e_wsfe(void), do_fio(integer *, char *, ftnlen);
+  C_INT v_dim1, v_offset, i__1, i__2;
 
   /* Local variables */
-  static integer i__, j, low, upp;
-
-  /* Fortran I/O blocks */
-  static cilist io___101 = {0, 6, 0, fmt_101, 0 };
-  static cilist io___102 = {0, 6, 0, fmt_102, 0 };
-  static cilist io___104 = {0, 6, 0, fmt_104, 0 };
-  static cilist io___106 = {0, 6, 0, fmt_103, 0 };
+  C_INT i, j, low, upp;
 
   /* ...THE SUBROUTINE MAPRNT PRINTS THE COLUMNS OF THE NXN MATRIX V */
   /*   WITH A HEADING AS SPECIFIED BY OPTION. */
@@ -1720,35 +1666,32 @@ L2:
   /* Function Body */
   low = 1;
   upp = 5;
-  switch (*option)
+  switch ((int)*option)
     {
     case 1: goto L1;
     case 2: goto L2;
     }
 L1:
-  s_wsfe(&io___101);
-  e_wsfe();
+  printf("HE NEW DIRECTIONS ARE:\n");
   goto L3;
 L2:
-  s_wsfe(&io___102);
-  e_wsfe();
+  printf("AND THE PRINCIPAL AXES:\n");
 L3:
   if (*n < upp)
     {
       upp = *n;
     }
   i__1 = *n;
-  for (i__ = 1; i__ <= i__1; ++i__)
+  for (i = 1; i <= i__1; ++i)
     {
       /* L4: */
-      s_wsfe(&io___104);
+      printf("%3d", i);
       i__2 = upp;
       for (j = low; j <= i__2; ++j)
         {
-          do_fio(&c__1, (char *)&v[i__ + j * v_dim1], (ftnlen)sizeof(
-                   doublereal));
+          printf("  %12g", v[i*v_dim1 + j]);
         }
-      e_wsfe();
+      printf("\n");
     }
   low += 5;
   if (*n < low)
@@ -1756,26 +1699,24 @@ L3:
       return 0;
     }
   upp += 5;
-  s_wsfe(&io___106);
-  e_wsfe();
   goto L3;
 } /* maprnt_ */
 
-doublereal random_(integer *naught)
+C_FLOAT64 random_(C_INT *naught)
 {
   /* Initialized data */
 
-  static logical init = FALSE_;
+  static bool init = FALSE_;
 
   /* System generated locals */
-  doublereal ret_val;
+  C_FLOAT64 ret_val;
 
   /* Local variables */
-  static doublereal half;
-  static integer i__, j, q, r__;
-  static doublereal ran1;
-  static integer ran2;
-  static doublereal ran3[127];
+  static C_FLOAT64 half;
+  static C_INT i__, j, q, r__;
+  static C_FLOAT64 ran1;
+  static C_INT ran2;
+  static C_FLOAT64 ran3[127];
 
   if (init)
     {
