@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiVector.i,v $ 
-//   $Revision: 1.16 $ 
+//   $Revision: 1.17 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2007/06/19 15:49:36 $ 
+//   $Date: 2007/12/12 14:53:31 $ 
 // End CVS Header 
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -160,6 +160,12 @@ template < class CType > class CCopasiVectorNS: public CCopasiVectorN < CType >
 
 %template(IntStdVector) std::vector<C_INT32>;
 
+%template(StringStdVector) std::vector<std::string>;
+
+%template(FloatStdVector) std::vector<C_FLOAT64>;
+
+%template(OptItemStdVector) std::vector<COptItem*>;
+
 typedef CCopasiVectorN<CCopasiTask> TaskVectorN;
 
 typedef CCopasiVectorN<CModelValue> ModelValueVectorN;
@@ -184,4 +190,9 @@ typedef CCopasiVector<CChemEqElement> CChemEqElementVector;
 
 typedef std::vector<C_INT32> IntStdVector;
 
+typedef std::vector<C_FLOAT64> FloatStdVector;
+
+typedef std::vector<COptItem*> OptItemStdVector;
+
+typedef std::vector<std::string> StringStdVector;
 

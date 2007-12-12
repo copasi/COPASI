@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/unittests/Test_RunOptimization.java,v $ 
-//   $Revision: 1.1 $ 
+//   $Revision: 1.2 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2007/12/11 21:10:26 $ 
+//   $Date: 2007/12/12 14:53:31 $ 
 // End CVS Header 
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -50,7 +50,8 @@ public class Test_RunOptimization extends TestCase
     this.mVariableModelValue=model.createModelValue("K");
     this.mVariableModelValue.setStatus(CModelEntity.ASSIGNMENT);
     String s=this.mFixedModelValue.getObject(new CCopasiObjectName("Reference=Value")).getCN().getString();
-    s=s+"^2";
+    s="<"+s+">^2";
+    this.mVariableModelValue.setExpression(s);
     model.compileIfNecessary();
     return model;
    }
@@ -188,7 +189,14 @@ public class Test_RunOptimization extends TestCase
         // objective function
         String objectiveFunction=this.mVariableModelValue.getObject(new CCopasiObjectName("Reference=Value")).getCN().getString();
         objectiveFunction="<"+objectiveFunction+">";
-        assertFalse(runOptimization(CCopasiMethod.LevenbergMarquardt,problemParameters,methodParameters,objectiveFunction,optItem)==null);
+        COptTask optTask=runOptimization(CCopasiMethod.LevenbergMarquardt,problemParameters,methodParameters,objectiveFunction,optItem);
+        assertFalse(optTask==null);
+        COptProblem optProblem=(COptProblem)optTask.getProblem();
+        assertFalse(optProblem==null);
+        assertTrue(optProblem.getSolutionVariables().size()==optProblem.getOptItemList().size());
+        assertTrue(optProblem.getSolutionVariables().size()==1);
+        assertTrue(optProblem.getSolutionVariables().get(0) < 1e-6);
+        assertTrue(optProblem.getSolutionValue() < 1e-6);
     }
 
   public static void main(String[] args) {
