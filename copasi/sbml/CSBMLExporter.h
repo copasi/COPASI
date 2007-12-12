@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/12/04 15:56:54 $
+//   $Date: 2007/12/12 09:10:54 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,7 +18,7 @@
 #include <set>
 #include <map>
 
-#include "function/CEvaluationNodeFunction.h";
+#include "copasi/function/CEvaluationNodeFunction.h";
 
 class SBase;
 class SBMLDocument;

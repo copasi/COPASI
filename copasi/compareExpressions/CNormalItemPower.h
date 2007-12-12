@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalItemPower.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/09/18 19:34:00 $
+//   $Author: gauges $
+//   $Date: 2007/12/12 09:11:50 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,9 +13,10 @@
 #ifndef COPASI_CNormalItemPower_H__
 #define COPASI_CNormalItemPower_H__
 
-#include "compareExpressions/CNormalItem.h"
-#include "compareExpressions/CNormalBase.h"
 #include <string>
+
+#include "copasi/compareExpressions/CNormalItem.h"
+#include "copasi/compareExpressions/CNormalBase.h"
 
 /**
  * The class for powers of items with real positive exponent used in CNormal

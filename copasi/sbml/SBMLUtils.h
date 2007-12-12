@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLUtils.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/02/13 16:58:53 $
+//   $Author: gauges $
+//   $Date: 2007/12/12 09:10:54 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,7 +14,7 @@
 #define SBMLUTILS_H__
 
 #include <string>
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 class SBase;
 

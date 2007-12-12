@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/ConvertToCEvaluationNode.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/07 16:49:49 $
+//   $Date: 2007/12/12 09:11:51 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -12,6 +12,9 @@
 
 #ifndef ConvertToCEvaluationNode_H__
 #define ConvertToCEvaluationNode_H__
+
+#include <string>
+#include <map>
 
 class CEvaluationNode;
 class CNormalItem;
@@ -27,9 +30,6 @@ class CNormalLogical;
 class CNormalLogicalItem;
 class CNormalGeneralPower;
 class CNormalFunction;
-
-#include <string>
-#include <map>
 
 extern std::map<std::string, const CEvaluationNode*> str2eval;
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalFunction.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/09/18 19:34:00 $
+//   $Author: gauges $
+//   $Date: 2007/12/12 09:11:50 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 #include <iostream>
 #include <string>
 
-#include "CNormalBase.h"
+#include "copasi/compareExpressions/CNormalBase.h"
 
 class CNormalFraction;
 

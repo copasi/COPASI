@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.h,v $
-//   $Revision: 1.54 $
+//   $Revision: 1.55 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/12/06 20:47:31 $
+//   $Date: 2007/12/12 09:10:54 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,7 +17,7 @@
 #include <string>
 #include <vector>
 
-#include "model/CModel.h"
+#include "copasi/model/CModel.h"
 
 // SBML Classes:
 class Model;

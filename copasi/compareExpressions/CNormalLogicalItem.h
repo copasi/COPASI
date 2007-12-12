@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLogicalItem.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/09/18 19:34:00 $
+//   $Author: gauges $
+//   $Date: 2007/12/12 09:11:51 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,8 +16,8 @@
 #include <iostream>
 #include <string>
 
-#include "compareExpressions/CNormalBase.h"
-#include "compareExpressions/CNormalFraction.h"
+#include "copasi/compareExpressions/CNormalBase.h"
+#include "copasi/compareExpressions/CNormalFraction.h"
 
 class CNormalLogicalItem : public CNormalBase
   {

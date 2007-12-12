@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CEvaluationNodeNormalizer.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/11/13 15:37:50 $
+//   $Author: gauges $
+//   $Date: 2007/12/12 09:11:50 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,10 +14,10 @@
 #define CEVALUATIONNODENORMALIZER_H__
 
 #include <vector>
-#include "copasi.h"
+#include "copasi/copasi.h"
 
-#include "function/CEvaluationNode.h"
-#include "function/CEvaluationNodeOperator.h"
+#include "copasi/function/CEvaluationNode.h"
+#include "copasi/function/CEvaluationNodeOperator.h"
 
 class CEvaluationNodeNumber;
 class CEvaluationNodeConstant;

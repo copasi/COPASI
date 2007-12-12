@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-//   $Revision: 1.62 $
+//   $Revision: 1.63 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/11/14 21:25:46 $
+//   $Date: 2007/12/12 09:10:54 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,10 +18,11 @@
 #include <utility>
 #include "sbml/math/ASTNode.h"
 
-#include "function/CFunctionDB.h"
-#include "sbml/StdException.h"
+#include "copasi/function/CFunctionDB.h"
+#include "copasi/sbml/StdException.h"
+#include "copasi/model/CModel.h"
+
 #include "sbml/UnitDefinition.h"
-#include "model/CModel.h"
 
 class SBMLDocument;
 class CCompartment;

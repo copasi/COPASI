@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalFraction.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/09/18 19:34:00 $
+//   $Author: gauges $
+//   $Date: 2007/12/12 09:11:50 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,10 +13,10 @@
 #ifndef COPASI_CNormalFraction_H__
 #define COPASI_CNormalFraction_H__
 
-#include "copasi.h"
-#include "compareExpressions/CNormalBase.h"
 #include <string>
-//#include <set>
+
+#include "copasi/copasi.h"
+#include "copasi/compareExpressions/CNormalBase.h"
 
 class CNormalSum;
 class CNormalItemPower;
