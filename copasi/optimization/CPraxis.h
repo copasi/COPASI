@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CPraxis.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: jdada $
-//   $Date: 2007/12/11 13:19:31 $
+//   $Author: shoops $
+//   $Date: 2007/12/12 02:41:21 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,7 +13,7 @@
 #ifndef COPASI_CPraxis
 #define COPASI_CPraxis
 
-#include "copasi.h"
+#include <limits>
 
 class FPraxis
   {

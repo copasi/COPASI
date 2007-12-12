@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CTruncatedNewton.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: jdada $
-//   $Date: 2007/12/11 13:19:31 $
+//   $Author: shoops $
+//   $Date: 2007/12/12 02:41:22 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1298,9 +1298,9 @@ L160:
   return 0;
 } /* lmqnbc_ */
 
-/* Subroutine */ int monit_(C_INT *n, C_FLOAT64 *x, C_FLOAT64 *f,
-                            C_FLOAT64 *g, C_INT *niter, C_INT *nftotl, C_INT *nfeval,
-                            C_INT *ireset, C_INT *ipivot)
+/* Subroutine */ int monit_(C_INT *n, C_FLOAT64 *x, C_FLOAT64 * /* f */,
+                            C_FLOAT64 *g, C_INT * /* niter */, C_INT * /* nftotl */, C_INT * /* nfeval */,
+                            C_INT * /* ireset */, C_INT *ipivot)
 {
   /* Format strings */
   // static char fmt_800[] = "(\002 \002,i4,1x,i4,1x,i4,1x,1pd22.15,2x,1pd15." "8)";
@@ -1472,7 +1472,7 @@ L10:
 /* Subroutine */ int cnvtst_(C_INT *conv, C_FLOAT64 *alpha, C_FLOAT64 *
                              pnorm, C_FLOAT64 *toleps, C_FLOAT64 *xnorm, C_FLOAT64 *difnew,
                              C_FLOAT64 *rtleps, C_FLOAT64 *ftest, C_FLOAT64 *gtg, C_FLOAT64 *
-                             peps, C_FLOAT64 *epsmch, C_FLOAT64 *gtpnew, C_FLOAT64 *fnew,
+                             peps, C_FLOAT64 * /* epsmch */, C_FLOAT64 *gtpnew, C_FLOAT64 *fnew,
                              C_FLOAT64 *flast, C_FLOAT64 *g, C_INT *ipivot, C_INT *n,
                              C_FLOAT64 *accrcy)
 {
@@ -1608,8 +1608,8 @@ L15:
 /* Subroutine */ int modlnp_(C_INT *modet, C_FLOAT64 *zsol, C_FLOAT64 *gv,
                              C_FLOAT64 *r__, C_FLOAT64 *v, C_FLOAT64 *diagb, C_FLOAT64 *emat,
                              C_FLOAT64 *x, C_FLOAT64 *g, C_FLOAT64 *zk, C_INT *n, C_FLOAT64 *
-                             w, C_INT *lw, C_INT *niter, C_INT *maxit, C_INT *nfeval,
-                             C_INT *nmodif, C_INT *nlincg, C_INT *upd1, C_FLOAT64 *yksk,
+                             w, C_INT *lw, C_INT * /* niter */, C_INT *maxit, C_INT *nfeval,
+                             C_INT * /* nmodif */, C_INT *nlincg, C_INT *upd1, C_FLOAT64 *yksk,
                              C_FLOAT64 *gsk, C_FLOAT64 *yrsr, C_INT *lreset, FTruncatedNewton *sfun,
                              C_INT *bounds, C_INT *ipivot, C_FLOAT64 *accrcy, C_FLOAT64 *gtp,
                              C_FLOAT64 *gnorm, C_FLOAT64 *xnorm)
@@ -1992,11 +1992,11 @@ L10:
   return 0;
 } /* negvec_ */
 
-/* Subroutine */ int lsout_(C_INT *iloc, C_INT *itest, C_FLOAT64 *xmin,
-                            C_FLOAT64 *fmin, C_FLOAT64 *gmin, C_FLOAT64 *xw, C_FLOAT64 *fw,
-                            C_FLOAT64 *gw, C_FLOAT64 *u, C_FLOAT64 *a, C_FLOAT64 *b,
-                            C_FLOAT64 *tol, C_FLOAT64 *eps, C_FLOAT64 *scxbd, C_FLOAT64 *
-                            xlamda)
+/* Subroutine */ int lsout_(C_INT * /* iloc */, C_INT * /* itest */, C_FLOAT64 *xmin,
+                            C_FLOAT64 * /* fmin */, C_FLOAT64 * /* gmin */, C_FLOAT64 *xw, C_FLOAT64 * /* fw */,
+                            C_FLOAT64 * /* gw */, C_FLOAT64 *u, C_FLOAT64 *a, C_FLOAT64 *b,
+                            C_FLOAT64 * /* tol */, C_FLOAT64 * /* eps */, C_FLOAT64 *scxbd, C_FLOAT64 *
+                            /* xlamda */)
 {
   /* Format strings */
   /* static char fmt_800[] = "(///\002 OUTPUT FROM LINEAR SEARCH\002)";
@@ -2153,7 +2153,7 @@ C_FLOAT64 mchpr1_(void)
   return 0;
 } /* chkucp_ */
 
-/* Subroutine */ int setucr_(C_FLOAT64 *small, C_INT *nftotl, C_INT *
+/* Subroutine */ int setucr_(C_FLOAT64 * /* small */, C_INT *nftotl, C_INT *
                              niter, C_INT *n, C_FLOAT64 *f, C_FLOAT64 *fnew, C_FLOAT64 *fm,
                              C_FLOAT64 *gtg, C_FLOAT64 *oldf, FTruncatedNewton *sfun, C_FLOAT64 *g,
                              C_FLOAT64 *x)
@@ -2185,7 +2185,7 @@ C_FLOAT64 mchpr1_(void)
 } /* setucr_ */
 
 /* Subroutine */ int gtims_(C_FLOAT64 *v, C_FLOAT64 *gv, C_INT *n,
-                            C_FLOAT64 *x, C_FLOAT64 *g, C_FLOAT64 *w, C_INT *lw, FTruncatedNewton *sfun,
+                            C_FLOAT64 *x, C_FLOAT64 *g, C_FLOAT64 *w, C_INT * /* lw */, FTruncatedNewton *sfun,
                             C_INT *first, C_FLOAT64 *delta, C_FLOAT64 *accrcy, C_FLOAT64 *
                             xnorm)
 {
@@ -2237,7 +2237,7 @@ L20:
 } /* gtims_ */
 
 /* Subroutine */ int msolve_(C_FLOAT64 *g, C_FLOAT64 *y, C_INT *n,
-                             C_FLOAT64 *w, C_INT *lw, C_INT *upd1, C_FLOAT64 *yksk,
+                             C_FLOAT64 *w, C_INT * /* lw */, C_INT *upd1, C_FLOAT64 *yksk,
                              C_FLOAT64 *gsk, C_FLOAT64 *yrsr, C_INT *lreset, C_INT *first)
 {
   extern /* Subroutine */ int mslv_(C_FLOAT64 *, C_FLOAT64 *, C_INT *,
@@ -2424,8 +2424,8 @@ L100:
 /* ROUTINES TO INITIALIZE PRECONDITIONER */
 
 /* Subroutine */ int initpc_(C_FLOAT64 *diagb, C_FLOAT64 *emat, C_INT *n,
-                             C_FLOAT64 *w, C_INT *lw, C_INT *modet, C_INT *upd1, C_FLOAT64
-                             *yksk, C_FLOAT64 *gsk, C_FLOAT64 *yrsr, C_INT *lreset)
+                             C_FLOAT64 *w, C_INT * /* lw */, C_INT *modet, C_INT *upd1, C_FLOAT64
+                             *yksk, C_FLOAT64 * /* gsk */, C_FLOAT64 *yrsr, C_INT *lreset)
 {
   extern /* Subroutine */ int initp3_(C_FLOAT64 *, C_FLOAT64 *, C_INT *,
                                         C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *
@@ -2584,10 +2584,10 @@ L110:
 
 /* Subroutine */ int linder_(C_INT *n, FTruncatedNewton *sfun, C_FLOAT64 *small,
                              C_FLOAT64 *epsmch, C_FLOAT64 *reltol, C_FLOAT64 *fabstol,
-                             C_FLOAT64 *tnytol, C_FLOAT64 *eta, C_FLOAT64 *sftbnd, C_FLOAT64 *
+                             C_FLOAT64 *tnytol, C_FLOAT64 *eta, C_FLOAT64 * /* sftbnd */, C_FLOAT64 *
                              xbnd, C_FLOAT64 *p, C_FLOAT64 *gtp, C_FLOAT64 *x, C_FLOAT64 *f,
                              C_FLOAT64 *alpha, C_FLOAT64 *g, C_INT *nftotl, C_INT *iflag,
-                             C_FLOAT64 *w, C_INT *lw)
+                             C_FLOAT64 *w, C_INT * /* lw */)
 {
   /* System generated locals */
   C_INT i__1;
@@ -2743,15 +2743,16 @@ L50:
   return 0;
 } /* linder_ */
 
-/* Subroutine */ int getptc_(C_FLOAT64 *big, C_FLOAT64 *small, C_FLOAT64 *
-                             rtsmll, C_FLOAT64 *reltol, C_FLOAT64 *fabstol, C_FLOAT64 *tnytol,
-                             C_FLOAT64 *fpresn, C_FLOAT64 *eta, C_FLOAT64 *rmu, C_FLOAT64 *
-                             xbnd, C_FLOAT64 *u, C_FLOAT64 *fu, C_FLOAT64 *gu, C_FLOAT64 *xmin,
-                             C_FLOAT64 *fmin, C_FLOAT64 *gmin, C_FLOAT64 *xw, C_FLOAT64 *fw,
-                             C_FLOAT64 *gw, C_FLOAT64 *a, C_FLOAT64 *b, C_FLOAT64 *oldf,
-                             C_FLOAT64 *b1, C_FLOAT64 *scxbnd, C_FLOAT64 *e, C_FLOAT64 *step,
-                             C_FLOAT64 *factor, C_INT *braktd, C_FLOAT64 *gtest1, C_FLOAT64 *
-                             gtest2, C_FLOAT64 *tol, C_INT *ientry, C_INT *itest)
+/* Subroutine */
+int getptc_(C_FLOAT64 *big, C_FLOAT64 * /* small */, C_FLOAT64 *
+            rtsmll, C_FLOAT64 *reltol, C_FLOAT64 *fabstol, C_FLOAT64 *tnytol,
+            C_FLOAT64 *fpresn, C_FLOAT64 *eta, C_FLOAT64 *rmu, C_FLOAT64 *
+            xbnd, C_FLOAT64 *u, C_FLOAT64 *fu, C_FLOAT64 *gu, C_FLOAT64 *xmin,
+            C_FLOAT64 *fmin, C_FLOAT64 *gmin, C_FLOAT64 *xw, C_FLOAT64 *fw,
+            C_FLOAT64 *gw, C_FLOAT64 *a, C_FLOAT64 *b, C_FLOAT64 *oldf,
+            C_FLOAT64 *b1, C_FLOAT64 *scxbnd, C_FLOAT64 *e, C_FLOAT64 *step,
+            C_FLOAT64 *factor, C_INT *braktd, C_FLOAT64 *gtest1, C_FLOAT64 *
+            gtest2, C_FLOAT64 *tol, C_INT *ientry, C_INT *itest)
 {
   /* System generated locals */
   C_FLOAT64 d__1, d__2;

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CPraxis.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: jdada $
-//   $Date: 2007/12/11 13:19:31 $
+//   $Author: shoops $
+//   $Date: 2007/12/12 02:41:21 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1603,7 +1603,7 @@ L4:
 
   /* Local variables */
   C_INT i;
-  C_FLOAT64 ln;
+  C_FLOAT64 ln = 0.0;
 
   /* Builtin functions */
   C_FLOAT64 d_lg10(C_FLOAT64 *);

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodTruncatedNewton.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/12/10 19:41:45 $
+//   $Date: 2007/12/12 02:41:21 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -132,7 +132,7 @@ bool COptMethodTruncatedNewton::optimise()
           repeat = 0;
           mEvaluationValue = fest;
         }
-      catch (unsigned C_INT e)
+      catch (unsigned C_INT)
         {
           C_INT feasibleParams = 0;
 
