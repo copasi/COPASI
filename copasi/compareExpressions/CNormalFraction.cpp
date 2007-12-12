@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalFraction.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/12/11 20:55:55 $
+//   $Date: 2007/12/12 14:30:03 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -262,13 +262,17 @@ bool CNormalFraction::multiply(const C_FLOAT64& number)
 bool CNormalFraction::multiply(const CNormalItemPower& itemPower)
 {
   C_FLOAT64 exp = mpDenominator->checkFactor(itemPower);
+  C_FLOAT64 tmpExp;
   if (fabs(exp) >= 1.0E-100)
     {
+      // :TODO: Memory leak?
       CNormalItemPower* tmp1 = new CNormalItemPower(itemPower.getItem(), exp);
       mpDenominator->divide(*tmp1);
-      if (fabs(itemPower.getExp() - exp) >= 1.0E-100)
+      if ((tmpExp = fabs(itemPower.getExp() - exp)) >= 1.0E-100)
         {
-          CNormalItemPower* tmp2 = new CNormalItemPower(itemPower.getItem(), fabs(itemPower.getExp() - exp));
+          // :TODO: Memory leak?
+          CNormalItemPower * tmp2 =
+            new CNormalItemPower(itemPower.getItem(), tmpExp);
           mpNumerator->multiply(*tmp2);
           return true;
         }
