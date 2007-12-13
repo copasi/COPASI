@@ -30,21 +30,157 @@ escapeinside={\%*}{*)}          % if you want to add a comment within your code
 \parindent=0cm
 \section{Working with the model}
 \subsection{COPASIs Model Concept}
-In COPASI, the top level class in the backend is CCopasiDataModel. This class contains the actual model as well as the tasks, the function database and all the output definitions (plots and reports). Right now, this class defines one global instance of itself and many methods in COPASIs backend rely on and work with this instance. Creating a second instance  of CCopasiDataModel therefore does not make much sense and will most likely lead to crashes sooner or later. If you work with the COPASI bindings, you are restricted to this one global instance which means that working with more than one model at any given time on one machine is not possible right now.
-CCopasiDataModel provides the static method \textit{getGlobal()} to get the global instance of CCopasiDataModel.
+In COPASI, the top level class in the backend is C\textit{CopasiDataModel}. This class contains the actual model as well as the tasks, the function database and all the output definitions (plots and reports). Right now, this class defines one global static instance of itself and many methods in COPASIs backend rely on and work with this instance. Creating a second instance  of \textit{CCopasiDataModel} therefore does not make much sense and will most likely lead to crashes sooner or later. If you work with the COPASI bindings, you are restricted to this one global instance which means that working with more than one model at any given time on one machine is not possible right now.
+\textit{CCopasiDataModel} provides the static method \textit{getGlobal()} to get the global static instance of \textit{CCopasiDataModel}.
 
 \begin{lstlisting}
 CCopasiDataModel globalModel=CCopasiDataModel.getGlobal();
 \end{lstlisting}
 
-\textit{CCopasiDataModel} 
+\textit{CCopasiDataModel} contains the actual model which can be obtained with the method \textit{getModel()}, the defined tasks which can be obtained with the method \textit{getTaskList()}, the reports which are obtained via the method \textit{getReportDefinitionList()} and the function database which can be obtained with the \textit{getFunctionList()}.
+In addition to these methods \textit{CCopasiDataModel} provides some methods for loading COPASI files or importing SBML files, for saving COPASI files or exporting SBML files, for creating new models and for adding tasks to the task list.
 
 \subsection{Model Elements}
-\subsection{The Function Database}
-\section{Working with Tasks}
-\subsection{The Task-Problem-Method Concept in COPASI}
-\subsection{Running Time Course Simulations}
-\subsection{Running Optimizations}
+The class in COPASI that contains the actual model data is \textit{CModel}. The current model can be obtained from the global static instance of \textit{CCopasiDataModel} via the \textit{getModel()} method. To create a new empty model, \textit{CCopasiDataModel} provides the method \textit{newModel()}. There is also the method \textit{loadModel(String filename)} which loads a COPASI model from the given filename, the method \textit{importSBML(String filename)} which imports an SBML model from the file with the given name and last but not least the method \textit{importSBMLFromString(String sbmlModelText)} which imports an SBML model from the given string. The string must be a valid SBML model string. All three methods return a boolean value which is \textbf{true} if the method succeeded and \textbf{false} otherwise.
 
+Once the model has been obtained, it can be manipulated in many ways. New model elements like compartments, metabolites, reactions and/or global parameters can be created, modified or removed. The model also has some methods to manipulate the time-, volume- and substance units of the model. Unlike SBML, models in COPASI only have global units and the units of all elements of the model are made up of thise global units. Units on individual elements are not supported.
+
+To find out how many compartments, metabolites, reactions or global parameters (model values) a model has, \textit{CModel} has the following methods.
+
+\begin{lstlisting}
+long getNumCompartments(); // return the number of compartments in the model
+long getNumMetabs(); // return the number of metabolites in the model
+long getNumModelValues(); // return the number of global parameters in the model
+long getNumReactions(); // return the number of reactions in the model
+\end{lstlisting}
+
+To obtain a specific model element there are the following methods:
+
+\begin{lstlisting}
+CCompartment getCompartment(long index);
+CMetab getMetabolite(long index);
+CModelValue getModelValue(long index);
+CReaction getReaction(long index);
+\end{lstlisting}
+
+New model elements can be created with the following methods:
+
+\begin{lstlisting}
+/**
+ * Creates a new compartment with the given name and an initial volume of 1.0 volume units.
+ * The newly created compartment is added to the model and the method also returns the new instance.
+ * If the method fails, null is returned.
+ */
+CCompartment createCompartment(String name);
+
+/**
+ * Creates a new compartment with the given name and initial volume.
+ * The newly created compartment is added to the model and the method also returns the new instance.
+ * If the method fails, null is returned.
+ */
+CCompartment createCompartment(String name,double volume);
+
+/**
+ * Creates a new metabolite with the given name and an initial concentration of 1.0 substance units/volume units.
+ * The metabolite is added to the compartment that is specified as the second argument.
+ * The newly created metabolite is added to the model and the method also returns the new instance.
+ * If the method fails, null is returned.
+ */
+CMetab createMetabolite(String name, String compartment);
+
+/**
+ * Creates a new metabolite with the given name and initial concentration.
+ * The metabolite is added to the compartment that is specified as the second argument.
+ * The newly created metabolite is added to the model and the method also returns the new instance.
+ * If the method fails, null is returned.
+ */
+CMetab createMetabolite(String name, String compartment, double iconc);
+
+/**
+ * Creates a new model value with the given name and an initial value of 0.0.
+ * The newly created model value is added to the model and the method also returns the new instance.
+ * If the method fails, null is returned.
+ */
+CModelValue createModelValue(String name);
+
+/**
+ * Creates a new model value with the given name and initial value.
+ * The newly created model value is added to the model and the method also returns the new instance.
+ * If the method fails, null is returned.
+ */
+CModelValue createModelValue(String name, double value);
+
+/**
+ * Creates a new reaction with the given name.
+ * The newly created reaction is added to the model and the method also returns the reaction instance.
+ */
+CReaction createReaction(String name);
+\end{lstlisting}
+
+Naturally model elements can also be removed via their keys. Each object in COPASI which is derived from \textit{CCopasiObject} gets a unique id when it is created which in COPASI is called key. To get the key for such an object, \textit{CCopasiObject} provides the method \textit{getKey()}.
+\textit{CModel}, \textit{CCompartment}, \textit{CMetab}, \textit{CModelValue} and \textit{CReaction} are all derived from \textit{CCOpasiObject} and you can therefore get the key for any of them via the \textit{getKey()} method which returns the key in the form of a String.
+
+The methods to delete elements from the model are:
+
+\begin{lstlisting}
+boolean removeCompartment(String key);
+boolean removeMetabolite(String key);
+boolean removeModelValue(String key);
+boolean removeReaction(String key);
+\end{lstlisting}
+
+These methods also delete all dependent objects. So if a compartment is deleted, all metabolites in that compartment are also deleted and if those metabolites were part of reaction those reactions are deleted as well.
+
+For example, to delete the third metabolite in the model you could write the following code (provided that threre are at least three metabolites in the model):
+
+\begin{lstlisting}
+CModel model=globalDataModel.getModel();
+CMetab metab=model.getMetabolite(3);
+String key=metab.getKey();
+model.removeMetabolite(key);
+\end{lstlisting}
+
+\subsubsection{compartments}
+TODO
+
+\subsubsection{metabolites}
+TODO
+
+\subsubsection{model values (global parameters)}
+TODO
+
+\subsubsection{reactions}
+TODO
+
+\subsection{The Function Database}
+TODO
+
+\section{Working with Tasks}
+
+\subsection{The Task-Problem-Method Concept in COPASI}
+In COPASI calculations you can do on the current model are represented by so called tasks. The base class for all tasks is \textit{CCopasiTask}. Each task contains a problem represented by a subclass of \textit{CCopasiProblem} and a method represented by a subclass of \textit{CCopasiMethod}.
+For a given task type, e.g. time course simulation, there is one task class, one problem class and one or more method classes. The problem of a task describes what is going to be done when the task is run and the method describes how it is done.
+Lets make this a little more clear by looking at the task class for running time course simulations on a model. The task class for this is \textit{CTrajectoryTask} and is contains an instance of the problem class \textit{CTrajectoryProblem}. The problem for the time course simulation stores the parameters for the simulation like start time, end time and number of steps. The method class for the time course task is a subclass of \textit{CTrajectoryMethod} which itself is a subclass of \textit{CCopasiMethod}. At the time of writing, there were six method classes derived from \textit{CTrajectoryMethod}. Two of the method classes are for deterministic simulation, two are for stochastic simulation and two are for hybrid simulation. Each of the methods contains parameters that are specific to the method and which can be changed to influence the corresponding method.
+
+All tasks are stored in \textit{CCopasiDataModel}. \textit{CCopasiDataModel} provides the method \textit{getTaskList()} to get the list of tasks. The returned object is of the type \textit{TaskVectorN} and provides a method called \textit{size()} to find out how many tasks it contains and a method \textit{get(long index)} to retieve the task with the given index. The object that is returned is of type \textit{CCopasiTask}. Alternatively, \textit{CCopasiDataModel} has a method called \textit{getTask(long index)} which also returnes the \textit{CCopasiTask} object with the given index.
+
+To get the problem and the method for a given task, \textit{CCopasiTask} provides the methods \textit{getProblem()} and \textit{getMethod()} respectively and the objects returned are of type \textit{CCopasiProblem} and \textit{CCopasiMethod}. Normaly there is no need to cast the task, problem or method objects to the most specific subclass since the base classes already provide all the needed functionality.
+
+All that is needed to run any task is 
+\begin{itemize}
+\item{get the correct task from the instance of \textit{CCopasiDataModel}}
+\item{if the task does not exist yet, create a new one and add it to the instance of \textit{CCopasiDataModel}}
+\item{change the parameters of the problem if the default values are not O.K.}
+\item{change the method for the task if the one set is not the one that is wanted}
+\item{change the parameters on the method if the default values are not O.K.}
+\end{itemize}
+
+The procedure is (almost) the same no matter what the task might be, although some tasks might need some additional steps. What those additional steps are will be explained in the corresponding sections below.   
+
+\subsection{Running Time Course Simulations}
+TODO
+
+\subsection{Running Optimizations}
+TODO
 
 \end{document}
