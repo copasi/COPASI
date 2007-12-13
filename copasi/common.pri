@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.68 $ 
+#   $Revision: 1.69 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2007/12/10 02:13:24 $ 
+#   $Date: 2007/12/13 18:22:43 $ 
 # End CVS Header 
 
 # Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -11,7 +11,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.68 $ $Author: shoops $ $Date: 2007/12/10 02:13:24 $  
+# $Revision: 1.69 $ $Author: shoops $ $Date: 2007/12/13 18:22:43 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -191,8 +191,10 @@ contains(BUILD_OS, WIN32) {
 
   !isEmpty(EXPAT_PATH) {
     QMAKE_CXXFLAGS   += -I"$${EXPAT_PATH}\Source\lib"
+    QMAKE_CXXFLAGS   += -I"$${EXPAT_PATH}\include"
     QMAKE_LFLAGS += /LIBPATH:"$${EXPAT_PATH}\StaticLibs"
     QMAKE_LFLAGS += /LIBPATH:"$${EXPAT_PATH}\bin"
+    QMAKE_LFLAGS += /LIBPATH:"$${EXPAT_PATH}\lib"
     LIBS += libexpatMT.lib
   } else {
     error( "EXPAT_PATH must be specified" )
