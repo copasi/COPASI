@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/blaswrap.h,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/22 19:57:23 $
+//   $Date: 2007/12/13 13:22:38 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,6 +29,7 @@ extern "C"
 #  define dcopy_ dcopy
 #  define ddot_ ddot
 #  define dgemm_ dgemm
+#  define dnrm2_ dnrm2
 #  define dscal_ dscal
 #  define idamax_ idamax
 #endif // USE_MKL
@@ -39,6 +40,7 @@ extern "C"
 #  define dcopy_ f2c_dcopy
 #  define ddot_ f2c_ddot
 #  define dgemm_ f2c_dgemm
+#  define dnrm2_ f2c_dnrm2
 #  define dscal_ f2c_dscal
 #  define idamax_ f2c_idamax
 # endif // USE_CLAPACK
