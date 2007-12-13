@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CTruncatedNewton.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/12/12 02:41:22 $
+//   $Date: 2007/12/13 20:20:16 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,6 +22,95 @@
 #include "CTruncatedNewton.h"
 
 #include "blaswrap.h"
+
+C_FLOAT64 step1_(C_FLOAT64 *fnew, C_FLOAT64 *fm, C_FLOAT64 *gtp,
+                 C_FLOAT64 *smax);
+int gtims_(C_FLOAT64 *v, C_FLOAT64 *gv, C_INT *n,
+           C_FLOAT64 *x, C_FLOAT64 *g, C_FLOAT64 *w, C_INT * /* lw */, FTruncatedNewton *sfun,
+           C_INT *first, C_FLOAT64 *delta, C_FLOAT64 *accrcy, C_FLOAT64 *
+           xnorm);
+int getptc_(C_FLOAT64 *, C_FLOAT64 *,
+            C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+            C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+            C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+            C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+            C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+            C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+            C_FLOAT64 *, C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+            C_INT *, C_INT *);
+int lsout_(C_INT *, C_INT *, C_FLOAT64 *,
+           C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+           C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+           C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *);
+int initp3_(C_FLOAT64 *, C_FLOAT64 *, C_INT *,
+            C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+            C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_INT *, C_INT *);
+int ssbfgs_(C_INT *, C_FLOAT64 *, C_FLOAT64 *,
+            C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+            C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *);
+int mslv_(C_FLOAT64 *, C_FLOAT64 *, C_INT *,
+          C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+          C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_INT *,
+          C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_INT *, C_INT *);
+C_FLOAT64 mchpr1_(void);
+int initpc_(C_FLOAT64 *, C_FLOAT64 *, C_INT *,
+            C_FLOAT64 *, C_INT *, C_INT *, C_INT *, C_FLOAT64 *,
+            C_FLOAT64 *, C_FLOAT64 *, C_INT *);
+int msolve_(C_FLOAT64 *,
+            C_FLOAT64 *, C_INT *, C_FLOAT64 *, C_INT *, C_INT *,
+            C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_INT *, C_INT *);
+int negvec_(C_INT *, C_FLOAT64 *);
+int ztime_(C_INT *, C_FLOAT64 *, C_INT *);
+int ndia3_(C_INT *, C_FLOAT64 *, C_FLOAT64 *,
+           C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_INT *);
+int stpmax_(C_FLOAT64 *, C_FLOAT64 *,
+            C_FLOAT64 *, C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_INT *,
+            C_FLOAT64 *, C_FLOAT64 *);
+int cnvtst_(C_INT *, C_FLOAT64 *,
+            C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+            C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+            C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+            C_FLOAT64 *, C_INT *, C_INT *, C_FLOAT64 *);
+int setucr_(C_FLOAT64 *, C_INT *, C_INT *,
+            C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+            C_FLOAT64 *, FTruncatedNewton *, C_FLOAT64 *, C_FLOAT64 *);
+int setpar_(C_INT *);
+int modlnp_(C_INT *, C_FLOAT64 *, C_FLOAT64 *,
+            C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+            C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_INT *, C_FLOAT64 *,
+            C_INT *, C_INT *, C_INT *, C_INT *, C_INT *, C_INT *,
+            C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_INT *,
+            FTruncatedNewton *, C_INT *, C_INT *, C_FLOAT64 *, C_FLOAT64 *,
+            C_FLOAT64 *, C_FLOAT64 *);
+int chkucp_(C_INT *, C_INT *, C_INT *,
+            C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+            C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+            C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_INT *,
+            C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *);
+int linder_(C_INT *, FTruncatedNewton *, C_FLOAT64 *,
+            C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+            C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+            C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+            C_FLOAT64 *, C_INT *, C_INT *, C_FLOAT64 *, C_INT *);
+int monit_(C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+           C_INT *, C_INT *, C_INT *, C_INT *, C_INT *);
+int crash_(C_INT *, C_FLOAT64 *, C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_INT *);
+int dxpy_(C_INT *, C_FLOAT64 *, C_INT *, C_FLOAT64 *, C_INT *);
+int modz_(C_INT *, C_FLOAT64 *, C_FLOAT64 *,
+          C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+          C_FLOAT64 *);
+int setucr_(C_FLOAT64 *, C_INT *, C_INT *,
+            C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+            C_FLOAT64 *, FTruncatedNewton *, C_FLOAT64 *, C_FLOAT64 *);
+int lmqnbc_(C_INT *, C_INT *, C_FLOAT64 *,
+            C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_INT *, FTruncatedNewton *,
+            C_FLOAT64 *, C_FLOAT64 *, C_INT *, C_INT *, C_INT *,
+            C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *);
+C_FLOAT64 mchpr1_(void);
+int lmqn_(C_INT *, C_INT *, C_FLOAT64 *,
+          C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_INT *, FTruncatedNewton *,
+          C_INT *, C_INT *, C_INT *, C_FLOAT64 *, C_FLOAT64 *,
+          C_FLOAT64 *, C_FLOAT64 *);
 
 /* Common Block Declarations */
 
@@ -77,21 +166,9 @@ static C_FLOAT64 c_b246 = .6666;
                            "ENTS)\002,/,14x,\002I\002,11x,\002X(I)\002)";
    static char fmt_830[] = "(10x,i5,2x,1pd22.15)";*/
 
-  /* System generated locals */
-  C_INT i__1;
-
-  /* Builtin functions */
-  double sqrt(C_FLOAT64);
-
   /* Local variables */
-  static C_INT nmax;
-  extern /* Subroutine */ int lmqn_(C_INT *, C_INT *, C_FLOAT64 *,
-                                      C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_INT *, FTruncatedNewton *,
-                                      C_INT *, C_INT *, C_INT *, C_FLOAT64 *, C_FLOAT64 *,
-                                      C_FLOAT64 *, C_FLOAT64 *);
   static C_FLOAT64 xtol;
-  static C_INT i__, maxit;
-  extern C_FLOAT64 mchpr1_(void);
+  static C_INT maxit;
   static C_FLOAT64 accrcy;
   static C_INT maxfun, msglvl;
   static C_FLOAT64 stepmx, eta;
@@ -234,21 +311,13 @@ static C_FLOAT64 c_b246 = .6666;
   /* System generated locals */
   C_INT i__1;
 
-  /* Builtin functions */
-  double sqrt(C_FLOAT64);
   //  C_INT s_wsfe(cilist *), do_fio(C_INT *, char *, ftnlen), e_wsfe(void);
 
   /* Local variables */
   static C_INT nmax;
   static C_FLOAT64 xtol;
   static C_INT i__, maxit;
-  extern C_FLOAT64 mchpr1_(void);
   static C_FLOAT64 accrcy;
-  extern /* Subroutine */ int lmqnbc_(C_INT *, C_INT *, C_FLOAT64 *,
-                                        C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_INT *, FTruncatedNewton *,
-                                        C_FLOAT64 *, C_FLOAT64 *, C_INT *, C_INT *, C_INT *,
-                                        C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *)
-;
   static C_INT maxfun, msglvl;
   static C_FLOAT64 stepmx, eta;
 
@@ -410,30 +479,21 @@ static C_FLOAT64 c_b246 = .6666;
 
   /* Builtin functions */
   // C_INT s_wsfe(cilist *), e_wsfe(void), do_fio(C_INT *, char *, ftnlen);
-  double sqrt(C_FLOAT64);
 
   /* Local variables */
   static C_FLOAT64 fold, oldf;
-  extern C_FLOAT64 ddot_(C_INT *, C_FLOAT64 *, C_INT *, C_FLOAT64 *,
-                           C_INT *);
   static C_FLOAT64 fnew;
   static C_INT numf;
   static C_FLOAT64 peps;
   static C_INT lhyr;
   static C_FLOAT64 zero, rtol, yksk, tiny;
-  extern /* Subroutine */ int dxpy_(C_INT *, C_FLOAT64 *, C_INT *,
-                                      C_FLOAT64 *, C_INT *);
   static C_INT nwhy;
   static C_FLOAT64 yrsr;
-  extern C_FLOAT64 dnrm2_(C_INT *, C_FLOAT64 *, C_INT *), step1_(
-      C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *);
   static C_INT i__;
   static C_FLOAT64 alpha, fkeep;
   static C_INT ioldg;
   static C_FLOAT64 small;
   static C_INT modet;
-  extern /* Subroutine */ int dcopy_(C_INT *, C_FLOAT64 *, C_INT *,
-                                       C_FLOAT64 *, C_INT *);
   static C_INT niter;
   static C_FLOAT64 gnorm, ftest, fstop, pnorm, rteps, xnorm;
   static C_INT idiagb;
@@ -441,34 +501,13 @@ static C_FLOAT64 c_b246 = .6666;
   static C_INT icycle, nlincg, nfeval;
   static C_FLOAT64 difnew;
   static C_INT nmodif;
-  extern /* Subroutine */ int chkucp_(C_INT *, C_INT *, C_INT *,
-                                        C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
-                                        C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
-                                        C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_INT *,
-                                        C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *);
   static C_FLOAT64 epsmch;
-  extern /* Subroutine */ int linder_(C_INT *, FTruncatedNewton *, C_FLOAT64 *,
-                                        C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
-                                        C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
-                                        C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
-                                        C_FLOAT64 *, C_INT *, C_INT *, C_FLOAT64 *, C_INT *);
   static C_FLOAT64 epsred, fabstol, oldgtp;
-  extern /* Subroutine */ int modlnp_(C_INT *, C_FLOAT64 *, C_FLOAT64 *,
-                                        C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
-                                        C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_INT *, C_FLOAT64 *,
-                                        C_INT *, C_INT *, C_INT *, C_INT *, C_INT *, C_INT *,
-                                        C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_INT *,
-                                        FTruncatedNewton *, C_INT *, C_INT *, C_FLOAT64 *, C_FLOAT64 *,
-                                        C_FLOAT64 *, C_FLOAT64 *);
   static C_INT ireset;
   static C_INT lreset;
-  extern /* Subroutine */ int setpar_(C_INT *);
   static C_FLOAT64 reltol, gtpnew;
   static C_INT nftotl;
   static C_FLOAT64 toleps;
-  extern /* Subroutine */ int setucr_(C_FLOAT64 *, C_INT *, C_INT *,
-                                        C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
-                                        C_FLOAT64 *, FTruncatedNewton *, C_FLOAT64 *, C_FLOAT64 *);
   static C_FLOAT64 rtleps;
   static C_INT ipivot, nm1;
   static C_FLOAT64 rtolsq, tnytol, gtg, one;
@@ -815,43 +854,25 @@ L120:
 
   /* Builtin functions */
   // C_INT s_wsfe(cilist *), e_wsfe(void);
-  double sqrt(C_FLOAT64);
   // C_INT do_fio(C_INT *, char *, ftnlen);
 
   /* Local variables */
   static C_FLOAT64 fold, oldf;
-  extern C_FLOAT64 ddot_(C_INT *, C_FLOAT64 *, C_INT *, C_FLOAT64 *,
-                           C_INT *);
   static C_FLOAT64 fnew;
   static C_INT numf;
   static C_INT conv;
   static C_FLOAT64 peps;
-  extern /* Subroutine */ int modz_(C_INT *, C_FLOAT64 *, C_FLOAT64 *,
-                                      C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
-                                      C_FLOAT64 *);
   static C_INT lhyr;
   static C_FLOAT64 zero, rtol, yksk, tiny;
-  extern /* Subroutine */ int dxpy_(C_INT *, C_FLOAT64 *, C_INT *,
-                                      C_FLOAT64 *, C_INT *);
   static C_INT nwhy;
   static C_FLOAT64 yrsr;
-  extern C_FLOAT64 dnrm2_(C_INT *, C_FLOAT64 *, C_INT *), step1_(
-      C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *);
   static C_INT i__;
   static C_FLOAT64 alpha, fkeep;
   static C_INT ioldg;
-  extern /* Subroutine */ int crash_(C_INT *, C_FLOAT64 *, C_INT *,
-                                       C_FLOAT64 *, C_FLOAT64 *, C_INT *);
   static C_FLOAT64 small, flast;
   static C_INT modet;
-  extern /* Subroutine */ int dcopy_(C_INT *, C_FLOAT64 *, C_INT *,
-                                       C_FLOAT64 *, C_INT *);
   static C_INT niter;
   static C_FLOAT64 gnorm, ftest;
-  extern int monit_(C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
-                      C_INT *, C_INT *, C_INT *, C_INT *, C_INT *);
-  extern /* Subroutine */ /* int monit_(),*/ int ztime_(C_INT *, C_FLOAT64 *,
-        C_INT *);
   static C_FLOAT64 fstop, pnorm, rteps, xnorm;
   static C_INT idiagb;
   static C_FLOAT64 fm, pe, difold;
@@ -859,43 +880,15 @@ L120:
   static C_FLOAT64 difnew;
   static C_INT nmodif;
   static C_FLOAT64 epsmch;
-  extern /* Subroutine */ int chkucp_(C_INT *, C_INT *, C_INT *,
-                                        C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
-                                        C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
-                                        C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_INT *,
-                                        C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *), linder_(C_INT *,
-                                            FTruncatedNewton *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
-                                            C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
-                                            C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
-                                            C_FLOAT64 *, C_FLOAT64 *, C_INT *, C_INT *, C_FLOAT64 *,
-                                            C_INT *);
   static C_FLOAT64 epsred, fabstol, oldgtp;
   static C_INT newcon;
   static C_INT ireset;
-  extern /* Subroutine */ int modlnp_(C_INT *, C_FLOAT64 *, C_FLOAT64 *,
-                                        C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
-                                        C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_INT *, C_FLOAT64 *,
-                                        C_INT *, C_INT *, C_INT *, C_INT *, C_INT *, C_INT *,
-                                        C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_INT *,
-                                        FTruncatedNewton *, C_INT *, C_INT *, C_FLOAT64 *, C_FLOAT64 *,
-                                        C_FLOAT64 *, C_FLOAT64 *);
   static C_INT lreset;
-  extern /* Subroutine */ int setpar_(C_INT *);
   static C_FLOAT64 reltol, gtpnew;
   static C_INT nftotl;
   static C_FLOAT64 toleps;
-  extern /* Subroutine */ int setucr_(C_FLOAT64 *, C_INT *, C_INT *,
-                                        C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
-                                        C_FLOAT64 *, FTruncatedNewton *, C_FLOAT64 *, C_FLOAT64 *);
   static C_FLOAT64 rtleps;
   static C_INT nm1;
-  extern /* Subroutine */ int stpmax_(C_FLOAT64 *, C_FLOAT64 *,
-                                        C_FLOAT64 *, C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_INT *,
-                                        C_FLOAT64 *, C_FLOAT64 *), cnvtst_(C_INT *, C_FLOAT64 *,
-                                                                           C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
-                                                                           C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
-                                                                           C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
-                                                                           C_FLOAT64 *, C_INT *, C_INT *, C_FLOAT64 *);
   static C_FLOAT64 rtolsq, tnytol;
   static C_INT ier;
   static C_FLOAT64 gtg, one;
@@ -1638,29 +1631,12 @@ L15:
 
   /* Local variables */
   static C_FLOAT64 beta;
-  extern C_FLOAT64 ddot_(C_INT *, C_FLOAT64 *, C_INT *, C_FLOAT64 *,
-                           C_INT *);
   static C_FLOAT64 qold, qnew;
-  extern /* Subroutine */ int ndia3_(C_INT *, C_FLOAT64 *, C_FLOAT64 *,
-                                       C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_INT *);
   static C_INT i__, k;
   static C_FLOAT64 alpha, delta;
-  extern /* Subroutine */ int dcopy_(C_INT *, C_FLOAT64 *, C_INT *,
-                                       C_FLOAT64 *, C_INT *), gtims_(C_FLOAT64 *, C_FLOAT64 *,
-                                                                     C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_INT *,
-                                                                     FTruncatedNewton *, C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *),
-    daxpy_(C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_INT *,
-           C_FLOAT64 *, C_INT *);
   static C_INT first;
-  extern /* Subroutine */ int ztime_(C_INT *, C_FLOAT64 *, C_INT *);
-  static C_FLOAT64 rzold, rnorm, qtest, pr;
-  extern /* Subroutine */ int negvec_(C_INT *, C_FLOAT64 *);
+  static C_FLOAT64 rzold, qtest, pr;
   static C_FLOAT64 rz;
-  extern /* Subroutine */ int initpc_(C_FLOAT64 *, C_FLOAT64 *, C_INT *,
-                                        C_FLOAT64 *, C_INT *, C_INT *, C_INT *, C_FLOAT64 *,
-                                        C_FLOAT64 *, C_FLOAT64 *, C_INT *), msolve_(C_FLOAT64 *,
-                                            C_FLOAT64 *, C_INT *, C_FLOAT64 *, C_INT *, C_INT *,
-                                            C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_INT *, C_INT *);
   static C_FLOAT64 rhsnrm, tol, vgv;
 
   /* THIS ROUTINE PERFORMS A PRECONDITIONED CONJUGATE-GRADIENT */
@@ -1926,8 +1902,6 @@ L90:
   //  C_INT s_wsfe(cilist *), do_fio(C_INT *, char *, ftnlen), e_wsfe(void);
 
   /* Local variables */
-  extern C_FLOAT64 ddot_(C_INT *, C_FLOAT64 *, C_INT *, C_FLOAT64 *,
-                           C_INT *);
   static C_INT i__;
   static C_FLOAT64 vr;
 
@@ -2064,7 +2038,6 @@ C_FLOAT64 step1_(C_FLOAT64 *fnew, C_FLOAT64 *fm, C_FLOAT64 *gtp,
 
   /* Local variables */
   static C_FLOAT64 d__, alpha;
-  extern C_FLOAT64 mchpr1_(void);
   static C_FLOAT64 epsmch;
 
   /* ******************************************************** */
@@ -2109,13 +2082,7 @@ C_FLOAT64 mchpr1_(void)
                              C_FLOAT64 *xnorm, C_FLOAT64 *x, C_INT *lw, C_FLOAT64 *small,
                              C_FLOAT64 *tiny, C_FLOAT64 *accrcy)
 {
-  /* Builtin functions */
-  double sqrt(C_FLOAT64), pow_dd(C_FLOAT64 *, C_FLOAT64 *);
-
   /* Local variables */
-  extern C_FLOAT64 dnrm2_(C_INT *, C_FLOAT64 *, C_INT *), mchpr1_(
-      void);
-
   /* CHECKS PARAMETERS AND SETS CONSTANTS WHICH ARE COMMON TO BOTH */
   /* DERIVATIVE AND NON-DERIVATIVE ALGORITHMS */
 
@@ -2146,7 +2113,7 @@ C_FLOAT64 mchpr1_(void)
   /* SET CONSTANTS FOR LATER */
 
   *rtolsq = *rtol * *rtol;
-  *peps = pow_dd(accrcy, &c_b246);
+  *peps = pow(*accrcy, c_b246);
   *xnorm = dnrm2_(n, &x[1], &c__1);
   *alpha = 0.;
   *test = 0.;
@@ -2158,9 +2125,6 @@ C_FLOAT64 mchpr1_(void)
                              C_FLOAT64 *gtg, C_FLOAT64 *oldf, FTruncatedNewton *sfun, C_FLOAT64 *g,
                              C_FLOAT64 *x)
 {
-  extern C_FLOAT64 ddot_(C_INT *, C_FLOAT64 *, C_INT *, C_FLOAT64 *,
-                           C_INT *);
-
   /* CHECK INPUT PARAMETERS, COMPUTE THE INITIAL FUNCTION VALUE, SET */
   /* CONSTANTS FOR THE SUBSEQUENT MINIMIZATION */
 
@@ -2191,9 +2155,6 @@ C_FLOAT64 mchpr1_(void)
 {
   /* System generated locals */
   C_INT i__1;
-
-  /* Builtin functions */
-  double sqrt(C_FLOAT64);
 
   /* Local variables */
   static C_FLOAT64 dinv, f;
@@ -2240,11 +2201,6 @@ L20:
                              C_FLOAT64 *w, C_INT * /* lw */, C_INT *upd1, C_FLOAT64 *yksk,
                              C_FLOAT64 *gsk, C_FLOAT64 *yrsr, C_INT *lreset, C_INT *first)
 {
-  extern /* Subroutine */ int mslv_(C_FLOAT64 *, C_FLOAT64 *, C_INT *,
-                                      C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
-                                      C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_INT *,
-                                      C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_INT *, C_INT *);
-
   /* THIS ROUTINE SETS UPT THE ARRAYS FOR MSLV */
 
   /* Parameter adjustments */
@@ -2270,14 +2226,9 @@ L20:
   C_INT i__1;
 
   /* Local variables */
-  extern C_FLOAT64 ddot_(C_INT *, C_FLOAT64 *, C_INT *, C_FLOAT64 *,
-                           C_INT *);
   static C_FLOAT64 ghyk, ghyr, yksr;
   static C_INT i__;
   static C_FLOAT64 ykhyk, ykhyr, yrhyr, rdiagb;
-  extern /* Subroutine */ int ssbfgs_(C_INT *, C_FLOAT64 *, C_FLOAT64 *,
-                                        C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
-                                        C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *);
   static C_FLOAT64 one, gsr;
 
   /* THIS ROUTINE ACTS AS A PRECONDITIONING STEP FOR THE */
@@ -2427,10 +2378,6 @@ L100:
                              C_FLOAT64 *w, C_INT * /* lw */, C_INT *modet, C_INT *upd1, C_FLOAT64
                              *yksk, C_FLOAT64 * /* gsk */, C_FLOAT64 *yrsr, C_INT *lreset)
 {
-  extern /* Subroutine */ int initp3_(C_FLOAT64 *, C_FLOAT64 *, C_INT *,
-                                        C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *
-                                        , C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_INT *, C_INT *);
-
   /* Parameter adjustments */
   --emat;
   --diagb;
@@ -2460,12 +2407,8 @@ L100:
 
   /* Local variables */
   static C_FLOAT64 cond;
-  extern C_FLOAT64 ddot_(C_INT *, C_FLOAT64 *, C_INT *, C_FLOAT64 *,
-                           C_INT *);
   static C_FLOAT64 srds, yrsk;
   static C_INT i__;
-  extern /* Subroutine */ int dcopy_(C_INT *, C_FLOAT64 *, C_INT *,
-                                       C_FLOAT64 *, C_INT *);
   static C_FLOAT64 d1, dn, td, sds;
 
   /* Fortran I/O blocks */
@@ -2592,41 +2535,21 @@ L110:
   /* System generated locals */
   C_INT i__1;
 
-  /* Builtin functions */
-  double sqrt(C_FLOAT64);
-
   /* Local variables */
   static C_FLOAT64 oldf, fmin, gmin;
-  extern C_FLOAT64 ddot_(C_INT *, C_FLOAT64 *, C_INT *, C_FLOAT64 *,
-                           C_INT *);
   static C_INT numf;
   static C_FLOAT64 step, xmin, a, b, e;
   static C_INT i__, l;
   static C_FLOAT64 u;
-  extern /* Subroutine */ int dcopy_(C_INT *, C_FLOAT64 *, C_INT *,
-                                       C_FLOAT64 *, C_INT *);
   static C_INT itcnt;
   static C_FLOAT64 b1;
   static C_INT itest, nprnt;
-  extern /* Subroutine */ int lsout_(C_INT *, C_INT *, C_FLOAT64 *,
-                                       C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
-                                       C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
-                                       C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *);
   static C_FLOAT64 gtest1, gtest2;
   static C_INT lg;
   static C_FLOAT64 fu, gu, fw, gw;
   static C_INT lx;
   static C_INT braktd;
   static C_FLOAT64 ualpha, factor, scxbnd, xw;
-  extern /* Subroutine */ int getptc_(C_FLOAT64 *, C_FLOAT64 *,
-                                        C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
-                                        C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
-                                        C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
-                                        C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
-                                        C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
-                                        C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
-                                        C_FLOAT64 *, C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
-                                        C_INT *, C_INT *);
   static C_FLOAT64 fpresn;
   static C_INT ientry;
   static C_FLOAT64 rtsmll;
@@ -2756,9 +2679,6 @@ int getptc_(C_FLOAT64 *big, C_FLOAT64 * /* small */, C_FLOAT64 *
 {
   /* System generated locals */
   C_FLOAT64 d__1, d__2;
-
-  /* Builtin functions */
-  double sqrt(C_FLOAT64);
 
   /* Local variables */
   static C_FLOAT64 half, abgw, fabsr, five, zero, p, q, r__, s, scale,

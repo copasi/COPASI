@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CPraxis.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/12/12 02:41:21 $
+//   $Date: 2007/12/13 20:20:16 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,7 +20,23 @@
 #include <stdio.h>
 
 #include "copasi.h"
+
 #include "CPraxis.h"
+
+int min_(C_INT *, C_INT *, C_INT *,
+         C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, bool *, FPraxis *f,
+         C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *);
+C_FLOAT64 flin_(C_INT *, C_INT *, C_FLOAT64 *, FPraxis *,
+                C_FLOAT64 *, C_INT *);
+int maprnt_(C_INT *, C_FLOAT64 *, C_INT *, C_INT *);
+int vcprnt_(C_INT *, C_FLOAT64 *, C_INT *);
+int minfit_(C_INT *, C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *);
+int print_(C_INT *, C_FLOAT64 *, C_INT *, C_FLOAT64 *);
+int sort_(C_INT *, C_INT *, C_FLOAT64 *, C_FLOAT64 *);
+int quad_(C_INT *, FPraxis *f, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *);
+
+/* TODO remove this dependency */
+C_FLOAT64 random_(C_INT *);
 
 /* Common Block Declarations */
 
@@ -51,7 +67,6 @@ q_;
 static C_INT c__1 = 1;
 static C_INT c__2 = 2;
 static bool c_false = FALSE_;
-static C_INT c__10 = 10;
 static C_INT c__4 = 4;
 static bool c_true = TRUE_;
 static C_INT c__3 = 3;
@@ -64,42 +79,23 @@ C_FLOAT64 praxis_(C_FLOAT64 *t0, C_FLOAT64 *machep, C_FLOAT64 *h0,
   C_INT i__1, i__2, i__3;
   C_FLOAT64 ret_val, d__1;
 
-  /* Builtin functions */
-  double sqrt(C_FLOAT64);
-  C_INT pow_ii(C_INT *, C_INT *);
-
   /* Local variables */
   static C_FLOAT64 scbd;
   static C_INT idim;
   static bool illc;
-  extern /* Subroutine */ int quad_(C_INT *, FPraxis *f, C_FLOAT64 *,
-                                      C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *);
   static C_INT klmk;
-  extern /* Subroutine */ int sort_(C_INT *, C_INT *, C_FLOAT64 *,
-                                      C_FLOAT64 *);
   static C_FLOAT64 d__[100], h__, ldfac;
   static C_INT i__, j, k;
   static C_FLOAT64 s, t, y[100], large, z__[100], small, value, f1;
-  extern /* Subroutine */ int print_(C_INT *, C_FLOAT64 *, C_INT *,
-                                       C_FLOAT64 *);
   static C_INT k2;
   static C_FLOAT64 m2, m4, t2, df, dn;
   static C_INT kl, ii;
   static C_FLOAT64 sf;
   static C_INT kt;
   static C_FLOAT64 sl, vlarge;
-  extern C_FLOAT64 random_(C_INT *);
-  extern /* Subroutine */ int minfit_(C_INT *, C_INT *, C_FLOAT64 *,
-                                        C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *);
   static C_FLOAT64 vsmall;
-  extern /* Subroutine */ int maprnt_(C_INT *, C_FLOAT64 *, C_INT *,
-                                        C_INT *);
   static C_INT km1, im1;
-  /* Subroutine */ int vcprnt_(C_INT *, C_FLOAT64 *, C_INT *);
   static C_FLOAT64 dni, lds;
-  extern /* Subroutine */ int min_(C_INT *, C_INT *, C_INT *,
-                                     C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, bool *, FPraxis *f,
-                                     C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *);
   static C_INT ktm;
 
   /*                             LAST MODIFIED 3/1/73 */
@@ -701,9 +697,6 @@ L400:
   C_INT ab_dim1, ab_offset, i__1, i__2, i__3;
   C_FLOAT64 d__1, d__2;
 
-  /* Builtin functions */
-  double sqrt(C_FLOAT64);
-
   /* Local variables */
   static C_FLOAT64 temp, c__, e[100], f, g, h__;
   static C_INT i__, j, k, l;
@@ -1144,12 +1137,7 @@ L200:
   C_INT i__1;
   C_FLOAT64 d__1, d__2;
 
-  /* Builtin functions */
-  double sqrt(C_FLOAT64);
-
   /* Local variables */
-  extern C_FLOAT64 flin_(C_INT *, C_INT *, C_FLOAT64 *, FPraxis *,
-                           C_FLOAT64 *, C_INT *);
   static C_FLOAT64 temp;
   static C_INT i__, k;
   static C_FLOAT64 s, small, d1, f0, f2, m2, m4, t2, x2, fm;
@@ -1477,16 +1465,9 @@ L3:
   C_INT i__1;
   C_FLOAT64 d__1;
 
-  /* Builtin functions */
-  double sqrt(C_FLOAT64);
-
   /* Local variables */
   static C_INT i__;
   static C_FLOAT64 l, s, value;
-  extern /* Subroutine */ int min_(C_INT *, C_INT *, C_INT *,
-                                     C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, bool *, FPraxis *f,
-                                     C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *);
-
   /* ...QUAD LOOKS FOR THE MINIMUM OF F ALONG A CURVE DEFINED BY Q0,Q1,X...
   */
   /* Parameter adjustments */
