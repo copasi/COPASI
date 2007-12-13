@@ -1,0 +1,50 @@
+\documentclass[a4,12pt]{article}
+\usepackage[latin1]{inputenc}
+\usepackage[ngerman]{babel}
+\usepackage[usenames]{color}
+\usepackage{listings}
+\usepackage{hyperref}
+
+\begin{document}
+\lstset{ %
+language=Java,                   % choose the language of the code
+basicstyle=\footnotesize,       % the size of the fonts that are used for the code
+keywordstyle=\color{black}\bfseries, % print keywords bold  
+commentstyle=\color{blue},      % blue comments 
+stringstyle=\ttfamily,          % typewriter type for strings 
+showstringspaces=false,         % underline spaces within strings
+numbers=left,                   % where to put the line-numbers
+numberstyle=\tiny,              % the size of the fonts that are used for the line-numbers
+stepnumber=1,                   % the step between two line-numbers. If it's 1 each line will be numbered
+numbersep=5pt,                  % how far the line-numbers are from the code
+backgroundcolor=\color{white},  % choose the background color. You must add \usepackage{color}
+showspaces=false,               % show spaces within strings adding particular underscores
+showtabs=false,                 % show tabs within strings adding particular underscores
+escapeinside={\%*}{*)}          % if you want to add a comment within your code
+}
+
+\title{Documentation for the Java bindings for COPASI}
+\author{Ralph Gauges}
+\date{\today}
+\maketitle
+\parindent=0cm
+\section{Working with the model}
+\subsection{COPASIs Model Concept}
+In COPASI, the top level class in the backend is CCopasiDataModel. This class contains the actual model as well as the tasks, the function database and all the output definitions (plots and reports). Right now, this class defines one global instance of itself and many methods in COPASIs backend rely on and work with this instance. Creating a second instance  of CCopasiDataModel therefore does not make much sense and will most likely lead to crashes sooner or later. If you work with the COPASI bindings, you are restricted to this one global instance which means that working with more than one model at any given time on one machine is not possible right now.
+CCopasiDataModel provides the static method \textit{getGlobal()} to get the global instance of CCopasiDataModel.
+
+\begin{lstlisting}
+CCopasiDataModel globalModel=CCopasiDataModel.getGlobal();
+\end{lstlisting}
+
+\textit{CCopasiDataModel} 
+
+\subsection{Model Elements}
+\subsection{The Function Database}
+\section{Working with Tasks}
+\subsection{The Task-Problem-Method Concept in COPASI}
+\subsection{Running Time Course Simulations}
+\subsection{Running Optimizations}
+
+
+\end{document}
