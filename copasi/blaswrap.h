@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/blaswrap.h,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/12/13 13:22:38 $
+//   $Date: 2007/12/13 13:31:09 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -68,6 +68,7 @@ extern "C"
                 (*TRANSB == 'N' ? CblasNoTrans: CblasTrans), \
                 *M, *N, *K, *ALPHA, A, *LDA, B, *LDB, *BETA, C, *LDC)
 # define dscal_(N, ALPHA, X, INCX) cblas_dscal(*N, *ALPHA, X *INCX)
+# define dnrm2_(N, X, INCX) cblas_dnrm2(*N, X, *INCX)
 # define idamax_(N, X, INCX) \
     cblas_idamax(*N, X, *INCX)
 # undef vector
