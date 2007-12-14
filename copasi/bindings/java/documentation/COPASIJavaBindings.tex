@@ -177,8 +177,205 @@ All that is needed to run any task is
 
 The procedure is (almost) the same no matter what the task might be, although some tasks might need some additional steps. What those additional steps are will be explained in the corresponding sections below.   
 
+The first thing is to get the correct task. For this the type of the task has to be known. The type of a task is an integer value and a list of all known types can be found in CCopasiTask.java. Some of those tasks are not available from Java yet. If we look at this list, we see that the type for the time course simulation task is CCopasiTask.timeCourse. So in order to find the time course task, we write a loop that checks all tasks that the CCopasiDataModel instance knows if one has the correct type. For each task type, there can be at most one task.
+
+So to find the time course simulation task we could use the following code:
+
+\begin{lstlisting}
+long i=0;
+long iMax=globalDataModel.getTaskList().size();
+CTrajectoryTask task=null;
+for(i=0;i<iMax;i++)
+{
+   if(globalDataModel.getTask(i).getType()==CCopasiTask.timeCourse)
+   {
+       task=globalDataModel.getTask(i);
+       break;
+   }
+}
+if(task==null)
+{
+   // create the task
+   task=globalDataModel.addTask(new CTrajectoryTask());
+}
+\end{lstlisting}
+
+The classes \textit{CCopasiProblem} and \textit{CCopasiMethod} are both derived from \textit{CCopasiParameterGroup}, they inherit all the methods from \textit{CCopasiParameterGroup} to set their parameters.
+There are two ways to get a parameter, the first method retrieves a parameter by its index, the second method gets the parameter via its name.
+
+\begin{lstlisting}
+CCopasiParameter getParameter(long index);
+CCopasiParameter getParameter(String name);
+\end{lstlisting}
+
+\textit{CCopasiParameterGroup}s methods \textit{size()} can be used to find out how many parameters are part of the parameter group.
+Each instance of \textit{CCopasiParameter} has a type that determines what kind of values are allowed for the parameter. E.g. it determines if the parameter represents an integer a float value or a string.
+Depending on the type of the parameter which can be aquired with the \textit{type()} method, the parameters value has to be set with a specific method.
+Let us for example look at the parameter called "Duration" which is a parameter of CTrajectoryProblem and determines up to which time the simulation will be calculated. The parameter itself stores a double value. Assuming you already have the correct task, you can set this parameter as follows.    
+
+\begin{lstlisting}
+CTrajectoryProblem problem=(CTrajectoryProblem)task.getProblem();
+CCopasiParameter parameter=problem.getParameter("Duration");
+if(parameter!=null && parameter.getType()==DOUBLE)
+{
+    parameter.setDblValue(100.3);
+}
+\end{lstlisting}
+
+This would set the parameter so that running a simulation would simulate a time length of $100.3$ time units. 
+
+The types that are allowed for a parameter are defined in CCopasiParameter.java. The defined types as of the time of writing are those listed in \ref{ParameterTypes}
+
+\begin{table}[ht]
+\begin{tabular}{ c | c }
+\hline
+Type & Description \\ \hline \hline
+DOUBLE &  a double value \\ \hline
+UDOUBLE & a positive double value \\ \hline 
+INT & an integer value (long) \\ \hline 
+UINT & a positive integer value (long) \\ \hline 
+BOOL & a boolean value (0 or 1) \\ \hline 
+GROUP & a parameter group (parameter groups can be nested \\ \hline 
+STRING & a String \\ \hline
+CN & a COPASI common name (String) \\ \hline
+KEY & a key (String) \\ \hline
+FILE & a filename (String) \\ \hline
+\end{tabular}
+\label{ParameterTypes}
+\caption{parameter types}
+\end{table}
+
+Most of the time you will only have to deal with the numeric parameters of type DOUBLE, INT, UINT or BOOL.
+
+Next the method has to be set on the task. The method of a task can be set with the \textit{setMethodType(int type)} method of \textit{CCopasiTask} the argument to the method is an integer that specifies the type of the method. All methods known to COPASI hava a specific type and all those types are defined in CCopasiMethod.java. Not all methods are applicable to all tasks, normally a task has a certain set of methods that can be used with the task. If the method type passed to \textit{setMetthodType} is not applicable to the task on which the method has been called, the method return a value of \textbf{false}, otherwise it returns \textbf{true}.
+
+Which method can be used with which task will be described in the documentation for the individual tasks.
+One the correct method has been set, the method parameters can be changed which works exactly the same way as described for the parameter of the problem above, the only difference is that the methods are used in an instance of \textit{CCopasiMethod} which can be obtained from the task with a call to \textit{getMethod()}.
+
+Once everything has been set, the task can be executed by calling the \textit{process(bool useInitialValues)} method. The boolean argument to the method determines if the task will use the current values of all model elements to run or if all values will be reset the the elements initial values. Using the current values rather than the initial values might be usefull if a simulation has already been run, but one wants to extend this simulation to get more data points.
+
+When a task is run, the results are either stored in a report if one was defined, and/or in memory. How reports can be defined and how the results for a specific task can be obtained will be explained in the documentation for the specific tasks below.
+
+
 \subsection{Running Time Course Simulations}
-TODO
+The procedure for running a time course simulation has more or less already been described above. 
+What remains to be explained is what parameters can be used on \textit{CTrajectoryProblem} (table \ref{TrajectoryProblemParameters}) and which methods can be used with \textit{CTrajectoryTask} (table \ref{TrajectoryMethods}).
+
+\begin{table}[ht]
+\begin{tabular}{c|c|l}
+Name & Type & Description \\ \hline \hline
+StepNumber & UINT & number of time steps that are calculated \\ \hline
+StepSize & DOUBLE & size of each time step \\ \hline
+Duration & DOUBLE & length of the simulation \\ \hline
+TimeSeriesRequested & BOOL & determiens if the result is to be stored in memory \\ \hline
+OutputStartTime & DOUBLE & the time at which COPASI begins to produce output \\ \hline
+\end{tabular}
+\label{TrajectoryProblemParameters}
+\caption{trajectory problem parameters}
+\end{table}
+
+\begin{table}[ht]
+\begin{tabular}{c|c|l}
+Type &  Description \\ \hline \hline
+deterministic  & simulation with LSODA \\ \hline
+LSODAR  &  simulation with LSODAR \\ \hline
+stochastic &  simulation with the next reaction method \\ \hline
+hybrid &  hybrid with next reaction method and runke kutta (4th order)\\ \hline
+hybridLSODA & hybrid with next reaction method and LSODA \\ \hline
+tauLeap & stochasitc simulation with the $\tau$-leap method \\ \hline
+\end{tabular}
+\label{TrajectoryMethods}
+\caption{trajectory method types}
+\end{table}
+
+Here a complete example on how it could be done:
+
+\begin{lstlisting}
+long i=0;
+long iMax=globalDataModel.getTaskList().size();
+CTrajectoryTask task=null;
+for(i=0;i<iMax;i++)
+{
+   if(globalDataModel.getTask(i).getType()==CCopasiTask.timeCourse)
+   {
+       task=globalDataModel.getTask(i);
+       break;
+   }
+}
+if(task==null)
+{
+   // create the task
+   task=globalDataModel.addTask(new CTrajectoryTask());
+}
+if(task!=null)
+{
+  CTrajectoryProblem problem=(CTrajectoryProblem)task.getProblem();
+  CCopasiParameter parameter=problem.getParameter("Duration");
+  if(parameter!=null && parameter.getType()==DOUBLE)
+  {
+    parameter.setDblValue(100.3);
+  }
+  if(task.setMethodType(CCopasiMethod.LSODAR))
+  {
+    // maybe change some method parameters
+    task.process(true);
+  }
+  else
+  {
+    // error handling
+  }
+}
+\end{lstlisting}
+
+After running the time course simulation the results are stoed in memory if the "TimeSeriesRequested" parameter was set to \textbf{true}. In order to get the results from the simulation \textit{CtrajectoryTask} provides the method \textit{getTimeSeries()} which returns an instance of \textit{CTimeSeries}.
+\textit{CTimeSeries} itself provides some methods to read out the results.
+
+\begin{lstlisting}
+/**
+ * Returns the number of steps in the time series. This should be the same
+ * number is the "StepNumber" parameter of the CTrajectoryProblem instance plus one for
+ * the initial state.
+ */
+long getNumSteps();
+
+/**
+ * Returns the number of variables in each row of the result.
+ * Which is the same as the number of columns.
+ * This inclues the column for time.
+ */
+long getNumVariables();
+
+/**
+ * Gets the value for a specific row and column of the result.
+ * The rwos are the individual time steps and the columns are the variables.
+ * Indices begin with 0 and the first column (var=0) is the time.
+ * If the column represents a metabolite, this method returns the particle
+ *  number.
+ */
+double getData(long step, long var);
+
+/**
+ * Gets the value for a specific row and column of the result.
+ * The rwos are the individual time steps and the columns are the variables.
+ * Indices begin with 0 and the first column (var=0) is the time.
+ * If the column represents a metabolite, this method returns the concentration.
+ * For all other columns, the value is the same as the one you get with
+ * getData.
+ */
+double getConcentrationData(long step, long var);
+
+/**
+ * Get the key (id) of the element represented by the column with index var.
+ */
+String getKey(long var);
+
+/**
+ * Get the SBML id of the element represented by the column with index var.
+ * Objects only have SBML ids if the model was imported from an SBML file, or
+ * has already been exported to an SBML file.
+ */
+String getSBMLId(long var);
+\end{lstlisting}
 
 \subsection{Running Optimizations}
 TODO
