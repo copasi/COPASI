@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodTruncatedNewton.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.3.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/12/12 02:41:21 $
+//   $Date: 2007/12/14 23:46:29 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -66,6 +66,9 @@ bool COptMethodTruncatedNewton::optimise()
   CVector< C_INT > iPivot(mVariableSize);
   CVector< C_FLOAT64 > dwork(lw);
 
+  up = DBL_MAX;
+  low = - DBL_MAX;
+
   // initial point is the first guess but we have to make sure that
   // we are within the parameter domain
   C_INT i, repeat;
@@ -74,8 +77,11 @@ bool COptMethodTruncatedNewton::optimise()
     {
       const COptItem & OptItem = *(*mpOptItem)[i];
 
-      low[i] = *OptItem.getLowerBoundValue();
-      up[i] = *OptItem.getUpperBoundValue();
+      // :TODO: In COPASI the bounds are not necessarry fixed.
+      // Since evaluate checks for boundaries and constraints this is not
+      // needed. The question remaining is how does tnbc_ handle unconstraint problems?
+      // low[i] = *OptItem.getLowerBoundValue();
+      // up[i] = *OptItem.getUpperBoundValue();
 
       mCurrent[i] = OptItem.getStartValue();
 
@@ -97,29 +103,59 @@ bool COptMethodTruncatedNewton::optimise()
       (*(*mpSetCalculateVariable)[i])(mCurrent[i]);
     }
 
+  // Report the first value as the current best
+  mBestValue = evaluate();
+  mBest = mCurrent;
+  mContinue = mpOptProblem->setSolution(mBestValue, mBest);
+
   repeat = 0;
   do
     {
-      if (repeat > 0)
+      if (repeat > 0) // Try another starting point
         {
           for (i = 0; i < mVariableSize; i++)
             {
-              mCurrent[i] = mCurrent[i] * (1 + 0.2);
+              mCurrent[i] *= 1.2;
+              const COptItem & OptItem = *(*mpOptItem)[i];
+
               //force it to be within the bounds
-              if (mCurrent[i] <= low[i]) mCurrent[i] = low[i] + 5 * DBL_EPSILON;
-              else
-                if (mCurrent[i] >= up[i]) mCurrent[i] = up[i] - 5 * DBL_EPSILON;
+              switch (OptItem.checkConstraint(mCurrent[i]))
+                {
+                case - 1:
+                  mCurrent[i] = *OptItem.getLowerBoundValue();
+                  break;
+
+                case 1:
+                  mCurrent[i] = *OptItem.getUpperBoundValue();
+                  break;
+
+                case 0:
+                  break;
+                }
 
               (*(*mpSetCalculateVariable)[i])(mCurrent[i]);
             }
+
+          evaluate();
+
+          // Check whether we improved
+          if (mEvaluationValue < mBestValue)
+            {
+              // We found a new best value lets report it.
+              // and store that value
+              mBest = mCurrent;
+              mBestValue = mEvaluationValue;
+
+              mContinue = mpOptProblem->setSolution(mBestValue, mBest);
+
+              // We found a new best value lets report it.
+              mpParentTask->output(COutputInterface::DURING);
+            }
         }
 
-      // calculate the function value at this point
-      evaluateFunction(&mVariableSize, mCurrent.array(), &mEvaluationValue);
-      // mBest = mCurrent;
-
       initialParam = mCurrent;
-      if (repeat == 0) initialValue = mEvaluationValue;
+      if (repeat == 0)
+        initialValue = mEvaluationValue;
 
       // estimate minimum is 1/10 initial function value
       fest = 0.1 * mEvaluationValue;
@@ -132,42 +168,33 @@ bool COptMethodTruncatedNewton::optimise()
           repeat = 0;
           mEvaluationValue = fest;
         }
-      catch (unsigned C_INT)
+
+      // This signals that the user opted to interupt
+      catch (bool)
+      {}
+
+      if (ierror < 0)
+        fatalError(); // Invalid parameter values.
+      if (ierror > 0)
         {
-          C_INT feasibleParams = 0;
-
-          //varify adjustable parameter constraints
-          for (i = 0; i < mVariableSize; i++)
+          // Are we within the bounds ?
+          if (mpOptProblem->checkParametricConstraints())
             {
-              mCurrent[i] = mCurrent[i];
-              const COptItem & OptItem = *(*mpOptItem)[i];
-              switch (OptItem.checkConstraint(mCurrent[i]))
-                {
-                case - 1:
-                  feasibleParams = 1;
-                  break;
+              for (i = 0; i < mVariableSize; i++)
+                (*(*mpSetCalculateVariable)[i])(mCurrent[i]);
 
-                case 1:
-                  feasibleParams = 1;
-                  break;
-
-                case 0:
-                  break;
-                }
-            }
-          // caculate the function value at this point
-          if (!feasibleParams)
-            {
-              evaluateFunction(&mVariableSize, mCurrent.array(), &mEvaluationValue);
-              std::cout << "mValues02: \t" << mEvaluationValue << std::endl;
+              evaluate();
 
               // is it better than initial guess?
-              if (mEvaluationValue < initialValue) repeat = 0;
-              else repeat++;
+              if (mEvaluationValue < initialValue)
+                repeat = 0;
+              else
+                repeat++;
             }
           else
             {
-              if (repeat < 3) repeat++;
+              if (repeat < 3)
+                repeat++;
               else
                 {
                   // first guess is our only possible answer
@@ -178,7 +205,21 @@ bool COptMethodTruncatedNewton::optimise()
             }
         }
     }
-  while (repeat);
+  while (repeat && mContinue);
+
+  // Check whether we improved overall
+  if (mEvaluationValue < mBestValue)
+    {
+      // We found a new best value lets report it.
+      // and store that value
+      mBest = mCurrent;
+      mBestValue = mEvaluationValue;
+
+      mContinue = mpOptProblem->setSolution(mBestValue, mBest);
+
+      // We found a new best value lets report it.
+      mpParentTask->output(COutputInterface::DURING);
+    }
 
   return true;
 }
@@ -205,25 +246,27 @@ bool COptMethodTruncatedNewton::cleanup()
   return true;
 }
 
-// objective function evaluation for specified parameter
-bool COptMethodTruncatedNewton::evaluateFunction(C_INT *n, C_FLOAT64 *x, C_FLOAT64 *f)
+// callback function, evaluate the value of the objective function and its gradient
+//(by finite differences), translated by f2c, edited by Pedro and then modified for COPASI by Joseph
+C_INT COptMethodTruncatedNewton::sFun(C_INT *n, C_FLOAT64 *x, C_FLOAT64 *f, C_FLOAT64 *g)
 {
-  C_INT32 i;
+  C_INT i;
 
   // set the parameter values
   for (i = 0; i < *n; i++)
-    {
-      (*(*mpSetCalculateVariable)[i])(x[i]);
-    }
+    (*(*mpSetCalculateVariable)[i])(x[i]);
 
   //carry out the function evaluation
-  mEvaluationValue = evaluate();
+  *f = evaluate();
 
-  // We found a new best value lets report it.
-  mBest = mCurrent;
-  if (!isnan(mEvaluationValue))
+  // Check whether we improved
+  if (mEvaluationValue < mBestValue)
     {
+      // We found a new best value lets report it.
       // and store that value
+      for (i = 0; i < *n; i++)
+        mBest[i] = x[i];
+
       mBestValue = mEvaluationValue;
       mContinue = mpOptProblem->setSolution(mBestValue, mBest);
 
@@ -231,36 +274,27 @@ bool COptMethodTruncatedNewton::evaluateFunction(C_INT *n, C_FLOAT64 *x, C_FLOAT
       mpParentTask->output(COutputInterface::DURING);
     }
 
-  *f = mBestValue;
-  return true;
-}
-
-// callback function, evaluate the value of the objective function and its gradient
-//(by finite differences), translated by f2c, edited by Pedro and then modified for COPASI by Joseph
-C_INT COptMethodTruncatedNewton::sFun(C_INT *n, C_FLOAT64 *x, C_FLOAT64 *f, C_FLOAT64 *g)
-{
-  C_INT i, i_1;
-  C_FLOAT64 h, h1, fh, xh;
-
-  //parameter adjustments
-  --g;
-  --x;
-
-  h = 0.01; h1 = h + 1.0;
-
-  //evaluate function
-  evaluateFunction(n, &x[1], f);
-  i_1 = *n;
-  for (i = 1; i <= i_1; ++i)
+  // Calculate the gradient
+  for (i = 0; i < *n && mContinue; i++)
     {
-      xh = x[i];
-      x[i] *= h1;
+      if (x[i] != 0.0)
+        {
+          (*(*mpSetCalculateVariable)[i])(x[i] * 1.001);
+          g[i] = (evaluate() - *f) / (x[i] * 0.001);
+        }
 
-      // evalute function
-      evaluateFunction(n, &x[1], &fh);
-      g[i] = (fh - *f) / (h * xh);
-      x[i] = xh;
+      else
+        {
+          (*(*mpSetCalculateVariable)[i])(1e-7);
+          g[i] = (evaluate() - *f) / 1e-7;
+        }
+
+      (*(*mpSetCalculateVariable)[i])(x[i]);
     }
+
+  if (!mContinue)
+    throw bool(mContinue);
+
   return 0;
 }
 
@@ -278,5 +312,6 @@ const C_FLOAT64 & COptMethodTruncatedNewton::evaluate()
       (!mpOptProblem->checkParametricConstraints() ||
        !mpOptProblem->checkFunctionalConstraints()))
     mEvaluationValue = mBestValue + mBestValue - mEvaluationValue;
+
   return mEvaluationValue;
 }
