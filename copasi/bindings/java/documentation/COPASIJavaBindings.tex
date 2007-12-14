@@ -140,17 +140,189 @@ String key=metab.getKey();
 model.removeMetabolite(key);
 \end{lstlisting}
 
-\subsubsection{compartments}
-TODO
+\subsubsection{CModelEntity}
+In COPASI the classes for the model itself, for compartments, metabolites and global parameters are derived from \textit{CModelEntity} and inherit all its methods.
+Most of the time, if you manipulate any of those classes, it will be done through methods from \textit{CModelEntity}.
+\textit{CModelEntity} provides the following methods:
+
+\begin{lstlisting}
+  /**
+   * Gets the status of the entity.
+   */
+  int getStatus();
+
+  /**
+   * sets the status of an entity.
+   */
+  void setStatus(int status);
+
+  /**
+   * gets the transient value of an entity.
+   */
+  double getValue();
+
+  /**
+   * Returns the initial value of an entity.
+   */
+  double getInitialValue();
+
+  /**
+   * Sets the initial value of an entity.
+   */
+  void setInitialValue(double initialValue);
+
+  /**
+   * Returns the SBML id of an entity. If none has been set, an empty string is
+   *  returned.
+   */
+  String getSBMLId();
+
+  /**
+   * Sets the SBML id on an entity.
+   * This is either done on importing an SBML file, or
+   * on exporting a model. Don't mess with this since it might break further
+   * exports to SBML.
+   */
+  void setSBMLId(String id);
+
+  /**
+   * If the entity is determined by an assignment or an ode, this
+   * method will return the mathematical expression for the assignment or the
+   * ODE.
+   */
+  String getExpression();
+
+  /**
+   * With this method, the mathematical expression for entities that
+   * are determined by an assignment or an ODE can be set.
+   * You might also have to set the status of the entity to indicate that it is
+   * now determined by an ODE or an assignment. (see setStatus())
+   */
+  boolean setExpression(String expression);
+
+  /**
+   * Returns the mathematical expression for any initial assignment that might
+   * have been set on the entity. This is independent of the status of the
+   * entity.
+   */
+  String getInitialExpression();
+
+  /**
+   * With this method, the mathematical expression for the initial assignment
+   * of an entity can be set.
+   */
+  boolean setInitialExpression(String expression);
+\end{lstlisting}
+
+The \textit{setStatus(int status)} and \textit{getStatus()} methods set and return the status of an entity respectively. The status of an entity determines how it is calculated. E.g. an entity that has a status of FIXED is not changed during a time course simulation, whereas an entity that has a status value of ASSIGNMENT is determined by an assignment expression. For a full list of valid status definitions seee table \ref{ModelEntityStatus}.
+
+\begin{table}[ht]
+\begin{tabular}{c|l}
+state & description \\ \hline \hline
+FIXED & entity is fixed \\ \hline
+ASSIGNMENT & entity is determined by an assignment \\ \hline
+REACTIONS & entity is determined by reactions (only applicable to metabolites) \\ \hline
+ODE & entity is determined by an ode \\ \hline
+TIME & this is the only state the model itself can have \\ \hline
+\end{tabular}
+\caption{model entity status}
+\label{ModelEntityStatus}
+\end{table}
+
+\subsubsection{compartment}
+The \textit{CCompartment} class is derived from \textit{CModelEntity} and inherits all its methods. Compartments can have the status FIXED, ASSIGNMENT or ODE. And you can set the corresponding mathematical expressions for the assignment or ODE through the methods provided by \textit{CModelEntity}. You can also either set an initial value or a mathematical expression that determines the initial value of the compartment.
+In addition to the methods provided by \textit{CmodelEntity}, \textit{CCompartment} provides some methods to handle the metabolites in a compartment.
+
+\begin{lstlisting}
+/**
+ * Returns a MetabVectorNS object which contains all metabolites that are
+ * contained in the compartment.
+ * MetabVectorNS has a size method to determine the number of metabolites and a
+ * get method that takes an index and returnes the metabolite at that index.
+ */
+MetabVectorNS getMetabolites();
+
+/**
+ * Adds the given metabolite to the compartment.
+ * If the operation succeeded, true isreturned, else false.
+ */
+boolean addMetabolite(CMetab metabolite);
+
+/**
+ * Removes the given metabolite from the compartment.
+ * If the operation succeeded, true isreturned, else false.
+ */
+boolean removeMetabolite(CMetab metabolite);
+\end{lstlisting}
 
 \subsubsection{metabolites}
-TODO
+Just like the compartment class, the class for metabolites, \textit{CMetab} is derived from \textit{CModelEntity} and inherits all its methods.
+Metabolites can have the status FIXED, ASSIGNMENT, ODE or REACTIONS. And you can set the corresponding mathematical expressions for the assignment or ODE through the methods provided by \textit{CModelEntity}. You can also either set an initial value or a mathematical expression that determines the initial value of the metabolite. Using the methods from \textit{CmodelEntity} to set or get values from a metabolite means that you get or set the particle number of the metabolite. If you want to work with concentrations rather than particle numbers, \textit{CMetab} provides the methods \textit{getConcentration()}, \textit{getInitialConcentration()} and \textit{setInitialConcentration(double c)} to get the concentration, initial concentration or set thr initial concentration respecitvely. The class also provides the method \textit{getCompartment()} which returns the compartment of the metabolite.
 
 \subsubsection{model values (global parameters)}
-TODO
+In COPASI global parameters are called model values and the corresponding class is \textit{CModelValue} which is also derived from \textit{CModelEntity}. A global parameter can also be determined by an assignment or an ODE or it can be fixed. Global parameters can also have initial assignments.
 
 \subsubsection{reactions}
-TODO
+The class for reaction is called \textit{CReaction}. It contains information on the metabolites taking part in the reaction as substrates, products or modifieres and about the kinetic law.
+
+\begin{lstlisting}
+/**
+ * Returns the current flux of the reaction.
+ */
+double getFlux();
+
+/**
+ * Returns the current flux of the reaction in terms of particle numbers rather
+ *  than concentrations
+ */
+double getParticleFlux();
+
+/**
+ * If the reaction is reversible, this returns true, else false.
+ */
+boolean isReversible();
+
+/**
+ * Sets whether the reaction is reversible or not.
+ */
+void setReversible(boolean reversible);
+
+/**
+ * Returns the number of compartments that are involved in this reaction.
+ */
+long getCompartmentNumber();
+
+/**
+ * Returns the SBML id of the reaction if one has been set, otherwise an empty
+ * string is returned.
+ */
+String getSBMLId();
+
+/**
+ * Sets the SBML id of the reaction.
+ * This is doen during import of an SBML model, or
+ * during the first export of an SBML model.
+ * If you change the SBML id of any entity, further exports to SBML
+ * might fail.
+ */
+void setSBMLId(String id);
+
+/**
+ * Returns the chemical equation object of the reaction.
+ */
+CChemEq getChemEq();
+
+/**
+ * Returns the function for the kinetic law used in the reaction.
+ */
+CFunction getFunction();
+
+/**
+ * Sets the kinetic law of the reaction via a functions name.
+ * A function with that name must exist in the function database.
+ */
+boolean setFunction(String functionName);
+\end{lstlisting}
 
 \subsection{The Function Database}
 TODO
@@ -248,6 +420,7 @@ FILE & a filename (String) \\ \hline
 Most of the time you will only have to deal with the numeric parameters of type DOUBLE, INT, UINT or BOOL.
 
 Next the method has to be set on the task. The method of a task can be set with the \textit{setMethodType(int type)} method of \textit{CCopasiTask} the argument to the method is an integer that specifies the type of the method. All methods known to COPASI hava a specific type and all those types are defined in CCopasiMethod.java. Not all methods are applicable to all tasks, normally a task has a certain set of methods that can be used with the task. If the method type passed to \textit{setMetthodType} is not applicable to the task on which the method has been called, the method return a value of \textbf{false}, otherwise it returns \textbf{true}.
+To find out which method is currently set on a task, you can use a call to \textit{getMethodType()} which will return an integer representing the method.
 
 Which method can be used with which task will be described in the documentation for the individual tasks.
 One the correct method has been set, the method parameters can be changed which works exactly the same way as described for the parameter of the problem above, the only difference is that the methods are used in an instance of \textit{CCopasiMethod} which can be obtained from the task with a call to \textit{getMethod()}.
