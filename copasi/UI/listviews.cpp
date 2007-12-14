@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.237 $
+//   $Revision: 1.237.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/12/05 20:16:26 $
+//   $Date: 2007/12/14 18:07:18 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,8 +30,10 @@
 
 #include "CompartmentsWidget.h"
 #include "CQCompartment.h"
+#ifdef COPASI_DEBUG
 #include "CQEventsWidget.h"
 #include "CQEventWidget1.h"
+#endif // COAPSI_DEBUG
 #include "FunctionWidget.h"
 #include "FunctionWidget1.h"
 #ifdef HAVE_MML
@@ -214,8 +216,10 @@ ListViews::ListViews(QWidget *parent, const char *name):
     compartmentsWidget1(NULL),
     defaultWidget(NULL),
     differentialEquations(NULL),
+#ifdef COPASI_DEBUG
     eventsWidget(NULL),
     eventWidget1(NULL),
+#endif // COPASI_DEBUG
     functionWidget(NULL),
     functionWidget1(NULL),
     lyapWidget(NULL),
@@ -354,11 +358,13 @@ void ListViews::ConstructNodeWidgets()
   differentialEquations->hide();
 #endif // HAVE_MML
 
+#ifdef COPASI_DEBUG
   if (!eventsWidget) eventsWidget = new CQEventsWidget(this);
   eventsWidget->hide();
 
   if (!eventWidget1) eventWidget1 = new CQEventWidget1(this);
   eventWidget1->hide();
+#endif // COPASI_DEBUG
 
   if (!functionWidget) functionWidget = new FunctionWidget(this);
   functionWidget->hide();
@@ -525,9 +531,11 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 115:
         return mpModelValueWidget;
         break;
+#ifdef COPASI_DEBUG
       case 116:
         return eventWidget1;
         break;
+#endif // COPASI_DEBUG
       case 222:
         return moietyWidget1;
         break;
@@ -573,9 +581,11 @@ CopasiWidget* ListViews::findWidgetFromId(const C_INT32 & id) const
       case 115:
         return modelValuesWidget;
         break;
+#ifdef COPASI_DEBUG
       case 116:
         return eventsWidget;
         break;
+#endif // COPASI_DEBUG
       case 117:
         return parametersWidget;
         break;
@@ -683,7 +693,7 @@ CopasiWidget* ListViews::findWidgetFromId(const C_INT32 & id) const
 
 FolderListItem* ListViews::findListViewItem(C_INT32 id, std::string key) //should always return a valid item
 {
-  FolderListItem * item;
+  FolderListItem * item = NULL;
 
   QListViewItemIterator it(folders);
   for (; *it; ++it)
@@ -1046,8 +1056,10 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
   dataModel->updateModelValues();
   updateAllListviews(115);
 
+#ifdef COPASI_DEBUG
   dataModel->updateEvents();
   updateAllListviews(116);
+#endif // COPASI_DEBUG
 
   dataModel->updateMoieties();
   updateAllListviews(222);

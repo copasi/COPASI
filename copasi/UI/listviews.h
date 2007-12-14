@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-//   $Revision: 1.136 $
+//   $Revision: 1.136.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/12/05 20:16:26 $
+//   $Date: 2007/12/14 18:07:18 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,8 +34,10 @@ class DataModelGUI;
 class CQCompartment;
 class CompartmentsWidget;
 class CQDifferentialEquations;
+#ifdef COPASI_DEBUG
 class CQEventsWidget;
 class CQEventWidget1;
+#endif // COPASI_DEBUG
 class FunctionWidget1;
 class FunctionWidget;
 class CMathModel;
@@ -191,8 +193,10 @@ class ListViews : public QSplitter
     CQCompartment *compartmentsWidget1;
     CQSplashWidget *defaultWidget;
     CQDifferentialEquations *differentialEquations;
+#ifdef COPASI_DEBUG
     CQEventsWidget *eventsWidget;
     CQEventWidget1 *eventWidget1;
+#endif // COPASI_DEBUG
     FunctionWidget *functionWidget;
     FunctionWidget1 *functionWidget1;
     CQLyapWidget *lyapWidget;
