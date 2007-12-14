@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodPraxis.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.4.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/12/10 19:41:45 $
+//   $Date: 2007/12/14 21:21:58 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -86,6 +86,14 @@ bool COptMethodPraxis::optimise()
       (*(*mpSetCalculateVariable)[i])(mCurrent[i]);
     }
 
+  // Report the first value as the current best
+  mBestValue = evaluate();
+  mBest = mCurrent;
+  mContinue = mpOptProblem->setSolution(mBestValue, mBest);
+
+  // We found a new best value lets report it.
+  mpParentTask->output(COutputInterface::DURING);
+
   //estimate the machine epsilon
   d1 = 1.0;
   do
@@ -100,9 +108,14 @@ bool COptMethodPraxis::optimise()
   stepmx = 0.6;
 
   //carry out the minimisation
-  mBestValue = praxis_(&mTolerance, &machep, &stepmx, &mVariableSize, &prin, mCurrent.array(), mpPraxis, &tmp);
+  try
+    {
+      praxis_(&mTolerance, &machep, &stepmx, &mVariableSize, &prin, mCurrent.array(), mpPraxis, &tmp);
+    }
+  catch (bool)
+  {}
 
-  return true;
+  return mContinue;
 }
 
 bool COptMethodPraxis::initialize()
@@ -131,41 +144,20 @@ bool COptMethodPraxis::cleanup()
 // evaluate the value of the objective function
 const C_FLOAT64 COptMethodPraxis::evaluateFunction(C_FLOAT64 *x, C_INT *n)
 {
-
   C_INT i;
   for (i = 0; i < *n; i++)
-    {
-      const COptItem & OptItem = *(*mpOptItem)[i];
-
-      //force the new parameter values from the the praxis to be within the bounds
-
-      switch (OptItem.checkConstraint(x[i]))
-        {
-        case - 1:
-          x[i] = *OptItem.getLowerBoundValue() + DBL_EPSILON;
-          break;
-
-        case 1:
-          x[i] = *OptItem.getUpperBoundValue() - DBL_EPSILON;
-          break;
-
-        case 0:
-          break;
-        }
-
-      //set the values
-      (*(*mpSetCalculateVariable)[i])(x[i]);
-    }
+    (*(*mpSetCalculateVariable)[i])(x[i]);
 
   //carry out the function evaluation
-  mEvaluationValue = evaluate();
+  evaluate();
 
-  // We found a new best value lets report it.
-  mBest = mCurrent;
-
-  if (!isnan(mEvaluationValue))
+  if (mEvaluationValue < mBestValue)
     {
+      // We found a new best value lets report it.
       // and store that value
+      for (i = 0; i < *n; i++)
+        mBest[i] = x[i];
+
       mBestValue = mEvaluationValue;
       mContinue = mpOptProblem->setSolution(mBestValue, mBest);
 
@@ -173,7 +165,10 @@ const C_FLOAT64 COptMethodPraxis::evaluateFunction(C_FLOAT64 *x, C_INT *n)
       mpParentTask->output(COutputInterface::DURING);
     }
 
-  return mBestValue;
+  if (!mContinue)
+    throw bool(mContinue);
+
+  return mEvaluationValue;
 }
 
 const C_FLOAT64 & COptMethodPraxis::evaluate()
