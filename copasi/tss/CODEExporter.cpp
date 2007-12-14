@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporter.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2007/11/23 17:02:54 $
+//   $Date: 2007/12/14 10:11:30 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -112,8 +112,6 @@ bool CODEExporter::exportMathModel(const CModel * copasiModel, std::string mmasc
   return true;
 }
 
-#if 1
-
 void CODEExporter::exportObjectNodesFromModel(const CModel * model)
 {
 
@@ -154,7 +152,6 @@ CCopasiObject* CODEExporter::findObjectFromRefresh(CCopasiObject * tmp, const Re
           if (it->second->getRefresh() == ref)
             {
               obj = it->second;
-              std::cout << obj->getObjectName() << std::endl;
 
               return obj;
             }
@@ -179,7 +176,6 @@ CCopasiObject* CODEExporter::findObjectFromRefresh(CCopasiObject * tmp, const Re
 void CODEExporter::exportSingleObject(CCopasiObject * obj)
 {
 
-  std::cout << obj-> getObjectDisplayName() << std::endl;
   if (obj->isReference())
     {
       CCopasiObject* parent = obj->getObjectParent();
@@ -223,7 +219,6 @@ bool CODEExporter::exportModelEntityExpression(CCopasiObject * obj)
           if ((isEmptyString(result)))
             {
               expression << exportExpression(pExpression);
-              std::cout << "expression for \'" << comments.str() << std::endl;
             }
           equations[tmp->getKey()] = expression.str();
         }
@@ -235,7 +230,6 @@ bool CODEExporter::exportModelEntityExpression(CCopasiObject * obj)
         case CModelEntity::ASSIGNMENT:
           {
 
-            //comments << "model entity  \'" << tmp->getObjectName() << "\':" << CModelEntity::StatusName[tmp->getStatus()];
             const CExpression* pExpression = tmp->getExpressionPtr();
             assert(pExpression);
 
@@ -244,9 +238,9 @@ bool CODEExporter::exportModelEntityExpression(CCopasiObject * obj)
             if (!(isEmptyString(result)))
               comments << result;
             else
-              std::cout << "expression for \'" << comments.str() << std::endl;
-            expression << exportExpression(pExpression);
-            std::cout << expression.str() << std::endl;
+              {
+                expression << exportExpression(pExpression);
+              }
 
             str1 = expression.str();
             str2 = comments.str();
@@ -265,15 +259,11 @@ bool CODEExporter::exportModelEntityExpression(CCopasiObject * obj)
             result = isModelEntityExpressionODEExporterCompatible(tmp, pExpression);
             if (!(isEmptyString(result)))
               comments << result;
-            else
-              {
-                str1 = equations[tmp->getKey()];
-                str2 = comments.str();
-              }
 
-            std::cout << "expression for \'" << comments.str() << std::endl;
+            str1 = equations[tmp->getKey()];
+            str2 = comments.str();
+
             if (!exportSingleODE(tmp, str1, str2)) return false;
-            std::cout << str1 << std::endl;
 
             break;
           }
@@ -314,17 +304,27 @@ std::string CODEExporter::isModelEntityExpressionODEExporterCompatible(CModelEnt
                       && pObject->getObjectName() != "InitialVolume"
                       && pObject->getObjectName() != "Rate")
                     {
-                      result << ". Error. Reference to property other than transient volume for compartment \"" << pObjectParent->getObjectName() << "\" in expression  for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\".";
+                      result << std::endl << "WARNING : reference to property other than transient volume for compartment \"" << pObjectParent->getObjectName() << "\" in expression  for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\".";
                     }
                 }
               else if (typeString == "Metabolite")
                 {
+
                   if (pObject->getObjectName() != "Concentration"
                       && pObject->getObjectName() != "InitialConcentration"
                       && pObject->getObjectName() != "Rate")
                     {
 
-                      result << ". Error. Reference to property other than transient concentration, initial concentration or concentrations rate for metabolite \"" << pObjectParent->getObjectName() << "\" in expression for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\".";
+                      result << std::endl << "WARNING : reference to property other than transient concentration, initial concentration or concentrations rate for metabolite \"" << pObjectParent->getObjectName() << "\" in expression for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\".";
+                    }
+
+                  CMetab* metab;
+                  metab = dynamic_cast< CMetab * >(pObjectParent);
+
+                  if ((metab->getStatus() == CModelEntity::REACTIONS && metab->isDependent()) && pObject->getObjectName() == "Rate")
+                    {
+
+                      result << std::endl << "WARNING : reference to rate of dependent (defined from moiety)  metabolite \"" << pObjectParent->getObjectName() << "\" in expression for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\".";
                     }
                 }
               else if (typeString == "ModelValue")
@@ -334,7 +334,7 @@ std::string CODEExporter::isModelEntityExpressionODEExporterCompatible(CModelEnt
                       && pObject->getObjectName() != "Rate")
                     {
 
-                      result << ". Error. Reference to property other than transient value, initial value or rate for \"" << typeString << "\" \"" << pObjectParent->getObjectName() << "\" in expression for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\".";
+                      result << std::endl << "WARNING : reference to property other than transient value, initial value or rate for \"" << typeString << "\" \"" << pObjectParent->getObjectName() << "\" in expression for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\".";
                     }
                 }
               else if (typeString == "Model")
@@ -343,7 +343,7 @@ std::string CODEExporter::isModelEntityExpressionODEExporterCompatible(CModelEnt
                   if (pObject->getObjectName() != "Time" && pObject->getObjectName() != "Initial Time")
                     {
 
-                      result << ". Error. Reference to property other than initial time or transient time for model \"" << pObjectParent->getObjectName() << "\" in expression for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\".";
+                      result << std::endl << "WARNING : reference to property other than initial time or transient time for model \"" << pObjectParent->getObjectName() << "\" in expression for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\".";
                     }
                 }
               else if (typeString == "Parameter")
@@ -352,18 +352,18 @@ std::string CODEExporter::isModelEntityExpressionODEExporterCompatible(CModelEnt
                   if (pObject->getObjectName() != "Value")
                     {
 
-                      result << ". Error. Reference to property other than initial time or transient time for model \"" << pObjectParent->getObjectName() << "\" in expression for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\".";
+                      result << std::endl << "WARNING : reference to property other than initial time or transient time for model \"" << pObjectParent->getObjectName() << "\" in expression for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\".";
                     }
                 }
 
               else
                 {
-                  result << ". Expression for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\" contains reference to a value in object \"" << pObjectParent->getObjectName() << "\" of type \"" << typeString << "\" which is not supported in this ODE exporter Version.";
+                  result << std::endl << "WARNING : expression for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\" contains reference to a value in object \"" << pObjectParent->getObjectName() << "\" of type \"" << typeString << "\" which is not supported in this ODE exporter Version.";
                 }
             }
           else
             {
-              result << ". Expression for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\" contains reference to a object named \"" << pObject->getObjectName() << "\" of type \"" << pObject->getObjectType() << "\" which is not supported in this ODE exporter Version.";
+              result << std::endl << "WARNING : expression for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\" contains reference to a object named \"" << pObject->getObjectName() << "\" of type \"" << pObject->getObjectType() << "\" which is not supported in this ODE exporter Version.";
             }
         }
     }
@@ -534,7 +534,6 @@ std::string CODEExporter::exportExpression(const CExpression* pExpression)
 
   return result;
 }
-#endif
 
 bool CODEExporter::preprocess(const CModel* copasiModel)
 {
@@ -633,6 +632,7 @@ bool CODEExporter::exportMetabolites(const CModel* copasiModel)
 
   unsigned C_INT32 metabs_size = metabs.size();
   unsigned C_INT32 indep_size = copasiModel->getNumIndependentMetabs();
+  unsigned C_INT32 ode_size = copasiModel->getNumODEMetabs();
 
   unsigned C_INT32 i, j;
   C_FLOAT64 value;
@@ -680,27 +680,29 @@ bool CODEExporter::exportMetabolites(const CModel* copasiModel)
             if (metab->isDependent())
               {
                 for (j = 0; j < indep_size; j++)
-                  if (L(i, j) != 0.0)
-                    {
-                      if (L(i, j) < 0.0)
-                        {
-                          tmp << "-";
-                        }
-                      else
-                        {
-                          tmp << "+";
-                        }
-                      if (fabs(L(i, j)) != 1.0)
-                        tmp << fabs(L(i, j)) << "*";
+                  {
 
-                      tmp << NameMap[metabs[j]->getKey()];
+                    if (L(i - ode_size, j) != 0.0)
+                      {
 
-                      value -= L(i, j) * metabs[j]->getInitialConcentration();
-                    }
+                        if (L(i - ode_size, j) < 0.0)
+                          {
+                            tmp << "-";
+                          }
+                        else
+                          {
+                            tmp << "+";
+                          }
+                        if (fabs(L(i - ode_size, j)) != 1.0)
+                          tmp << fabs(L(i - ode_size, j)) << "*";
 
-                comments << "dependent ";
+                        tmp << NameMap[metabs[ode_size + j]->getKey()];
+                        value -= L(i - ode_size, j) * metabs[ode_size + j]->getInitialConcentration();
+                      }
+
+                    // comments << "  dependent ";
+                  }
               }
-
             more.precision(16);
             more << value;
 
@@ -842,6 +844,7 @@ bool CODEExporter::exportReacParamsAndFuncs(const CModel* copasiModel)
 
   unsigned C_INT32 reacs_size = reacs.size();
   unsigned C_INT32 indep_size = copasiModel->getNumIndependentMetabs();
+  unsigned C_INT32 ode_size = copasiModel->getNumODEMetabs();
 
   const CMatrix< C_FLOAT64 > & redStoi = copasiModel->getRedStoi();
 
@@ -887,7 +890,7 @@ bool CODEExporter::exportReacParamsAndFuncs(const CModel* copasiModel)
                 jequation << "-";
               else
                 {
-                  std::string str1 = equations[metabs[j]->getKey()];
+                  std::string str1 = equations[metabs[ode_size + j]->getKey()];
                   if (!(isEmptyString(str1)))
                     jequation << "+";
                 }
@@ -897,9 +900,9 @@ bool CODEExporter::exportReacParamsAndFuncs(const CModel* copasiModel)
 
               jequation << KineticFunction2ODEmember(reac);
 
-              if (reac->getCompartmentNumber() != 1) jequation << "/" << NameMap[metabs[j]->getCompartment()->getKey()];
+              if (reac->getCompartmentNumber() != 1) jequation << "/" << NameMap[metabs[ode_size + j]->getCompartment()->getKey()];
 
-              equations[metabs[j]->getKey()] += jequation.str();
+              equations[metabs[ode_size + j]->getKey()] += jequation.str();
             }
         }
     }
@@ -912,16 +915,18 @@ bool CODEExporter::exportODEs(const CModel* copasiModel)
 {
   const CCopasiVector< CMetab > & metabs = copasiModel->getMetabolitesX();
   unsigned C_INT32 indep_size = copasiModel->getNumIndependentMetabs();
+  unsigned C_INT32 ode_size = copasiModel->getNumODEMetabs();
 
   unsigned C_INT32 i;
 
   for (i = 0; i < indep_size; ++i)
     {
-      std::string str1 = equations[metabs[i]->getKey()];
+
+      std::string str1 = equations[metabs[ode_size + i]->getKey()];
       std::string str2 = " ";
 
-      if (metabs[i]->getStatus() == CModelEntity::REACTIONS && !(metabs[i]->isDependent()))
-        if (!exportSingleODE(metabs[i], str1, str2)) return false;
+      if ((metabs[ode_size + i]->getStatus() == CModelEntity::REACTIONS && !(metabs[ode_size + i]->isDependent())))
+        if (!exportSingleODE(metabs[ode_size + i], str1, str2)) return false;
     }
 
   return true;

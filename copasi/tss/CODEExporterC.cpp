@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporterC.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2007/11/23 17:02:54 $
+//   $Date: 2007/12/14 10:11:30 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -54,6 +54,7 @@ bool CODEExporterC::exportTitleData(const CModel* copasiModel, std::ofstream & o
 
   unsigned C_INT32 metab_size = copasiModel->getMetabolitesX().size();
   unsigned C_INT32 indep_size = copasiModel->getNumIndependentMetabs();
+  unsigned C_INT32 ode_size = copasiModel->getNumODEMetabs();
   unsigned C_INT32 comps_size = copasiModel->getCompartments().size();
   unsigned C_INT32 modvals_size = copasiModel->getModelValues().size();
   unsigned C_INT32 reacs_size = copasiModel->getReactions().size();
@@ -72,6 +73,7 @@ bool CODEExporterC::exportTitleData(const CModel* copasiModel, std::ofstream & o
 
   outFile << "#ifdef SIZE_DEFINITIONS" << std::endl;
   outFile << "#define N_METABS " << metab_size << std::endl;
+  outFile << "#define N_ODE_METABS " << ode_size << std::endl;
   outFile << "#define N_INDEP_METABS " << indep_size << std::endl;
   outFile << "#define N_COMPARTMENTS " << comps_size << std::endl;
   outFile << "#define N_GLOBAL_PARAMS " << modvals_size << std::endl;
