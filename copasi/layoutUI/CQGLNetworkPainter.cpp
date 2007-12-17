@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.78 $
+//   $Revision: 1.79 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/12/10 12:18:58 $
+//   $Date: 2007/12/17 11:07:08 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -417,8 +417,9 @@ void CQGLNetworkPainter::drawGraph()
               C_INT32 xNdCenter = (*itNodeObj).second.getX() + ((*itNodeObj).second.getWidth() / 2.0);
               C_INT32 yNdCenter = (*itNodeObj).second.getY(); // + ((*itNodeObj).second.getHeight() / 2.0);
               //C_INT32 xLabelStartOff = tWid / 2.0;
-              if (tWid > nDiam)
-                {// label wider than size of circle-> place next to circle
+              std::cout << viewerLabels[i].getText() << "  text width: " << tWid << "   diameter of circle: " << nDiam << std::endl;
+              if ((tWid + 4) > nDiam)
+                {// label wider (+ k=4 to avoid crossing circle borders) than size of circle-> place next to circle
 
                   x = xNdCenter + (nDiam / 2.0) + 2.0 - ((viewerLabels[i].getWidth() - tWid) / 2.0); // + nDiam / 2.0 - ((labelWWid - (*itNodeObj).second.getWidth()) / 2.0); // node center + circle radius - texture window overhead
                   y = yNdCenter;
@@ -563,7 +564,7 @@ void CQGLNetworkPainter::drawArrow(CArrow a, CLMetabReferenceGlyph::Role role)
   // first get the two points defining the line segment (curve)
   CLPoint p2 = a.getStartOfLine();
   CLPoint p1 = a.getEndOfLine();
-  // p1 and p2 define a line where the arrow peak can be placed onto
+  // p1 and p2 define a line where the arrow peak can be placed onto,
   // peak should be at p1, the arrow peak is just a triangle
 
   // first compute parameters of equation of line and point on line where arrow intersects line
@@ -581,12 +582,12 @@ void CQGLNetworkPainter::drawArrow(CArrow a, CLMetabReferenceGlyph::Role role)
   C_FLOAT64 unY = (p2.getX() - p1.getX()) / norm;
 
   // for second point of triangle: walk on line from (qX,qY) in direction of norm vector
-  C_FLOAT64 p3X = qX + (unX * a.getArrowWidth());
-  C_FLOAT64 p3Y = qY + (unY * a.getArrowWidth());
+  //C_FLOAT64 p3X = qX + (unX * a.getArrowWidth());
+  //C_FLOAT64 p3Y = qY + (unY * a.getArrowWidth());
 
   // for last point of the triangle: just go into the other direction
-  C_FLOAT64 p4X = qX - (unX * a.getArrowWidth());
-  C_FLOAT64 p4Y = qY - (unY * a.getArrowWidth());
+  //C_FLOAT64 p4X = qX - (unX * a.getArrowWidth());
+  //C_FLOAT64 p4Y = qY - (unY * a.getArrowWidth());
   // now draw polygon, using vertices from triangle
   //glColor3f(0.0f, 0.0f, 1.0f); // set arrow color: blue
   // now create triangle;
@@ -597,49 +598,64 @@ void CQGLNetworkPainter::drawArrow(CArrow a, CLMetabReferenceGlyph::Role role)
   if ((role == CLMetabReferenceGlyph::PRODUCT) || (role == CLMetabReferenceGlyph::SIDEPRODUCT))
     {
       glBegin(GL_POLYGON);
-      glVertex2d(p1.getX(), p1.getY());
-      glVertex2d(p3X, p3Y);
-      glVertex2d(p4X, p4Y);
+      glVertex2d(p1.getX(), p1.getY()); // peak of arrow
+      glVertex2d(qX + (unX * a.getArrowWidth()), qY + (unY * a.getArrowWidth()));
+      glVertex2d(qX - (unX * a.getArrowWidth()), qY - (unY * a.getArrowWidth()));
       glEnd();
     }
   else
     {
-      C_FLOAT64 p3X = qX + (unX * a.getArrowWidth());
-      C_FLOAT64 p3Y = qY + (unY * a.getArrowWidth());
-
       GLfloat params[4];
       glGetFloatv(GL_CURRENT_COLOR, params);
+      GLfloat lineWidth[1];
+      glGetFloatv(GL_LINE_WIDTH, lineWidth);
 
       if (role == CLMetabReferenceGlyph::MODIFIER)
         {
-          glBegin(GL_LINES);
-          glVertex2d(p1.getX() + (unX * a.getArrowWidth()),
-                     p1.getY() + (unY * a.getArrowWidth()));
-          glVertex2d(p1.getX() - (unX * a.getArrowWidth()),
-                     p1.getY() - (unY * a.getArrowWidth()));
-          glEnd();
+          if (this->mLabelShape == CIRCLE)
+            {
+              glBegin(GL_LINES);
+              glVertex2d(p1.getX() + (unX * a.getArrowWidth()),
+                         p1.getY() + (unY * a.getArrowWidth()));
+              glVertex2d(p1.getX() - (unX * a.getArrowWidth()),
+                         p1.getY() - (unY * a.getArrowWidth()));
+              glEnd();
+            }
+          else
+            {
+              glBegin(GL_LINES);
+              glVertex2d(qX + (unX * a.getArrowWidth()),
+                         qY + (unY * a.getArrowWidth()));
+              glVertex2d(qX - (unX * a.getArrowWidth()),
+                         qY - (unY * a.getArrowWidth()));
+              glEnd();
+            }
           glColor3f(params[0], params[1], params[2]);
         }
       else if (role == CLMetabReferenceGlyph::ACTIVATOR)
         {
-          glColor3f(0.3f, 0.75f, 0.3f); // kind of green
+          glColor3f(0.0f, 0.66f, 0.0f); // kind of green
+          glLineWidth(2.0f);
           glBegin(GL_LINES);
           glVertex2d(p1.getX() + (unX * a.getArrowWidth()),
                      p1.getY() + (unY * a.getArrowWidth()));
           glVertex2d(p1.getX() - (unX * a.getArrowWidth()),
                      p1.getY() - (unY * a.getArrowWidth()));
           glEnd();
+
           glColor3f(params[0], params[1], params[2]);
+          glLineWidth(lineWidth[0]);
         }
       else if (role == CLMetabReferenceGlyph::INHIBITOR)
         {
           glColor3f(1.0f, 0.0f, 0.0f); // red
+          glLineWidth(2.0f);
           glBegin(GL_LINES);
           glVertex2d(p1.getX() + (unX * a.getArrowWidth()),
                      p1.getY() + (unY * a.getArrowWidth()));
           glVertex2d(p1.getX() - (unX * a.getArrowWidth()),
                      p1.getY() - (unY * a.getArrowWidth()));
-
+          glLineWidth(lineWidth[0]);
           glEnd();
         }
     }
@@ -1499,6 +1515,7 @@ void CQGLNetworkPainter::mapLabelsToCircles()
   this->updateGL();
 }
 
+// get Point on Circle border on the line from the center of the given rectangle to the given point p
 CLPoint CQGLNetworkPainter::getPointOnCircle(CLBoundingBox r, CLPoint p)
 {
   CLPoint center; // center of rectangle
@@ -1514,6 +1531,22 @@ CLPoint CQGLNetworkPainter::getPointOnCircle(CLBoundingBox r, CLPoint p)
   return CLPoint(onPointX, onPointY);
 }
 
+// get Point  on the line from the center of the given rectangle to the given point p with the distance d to the circle border
+CLPoint CQGLNetworkPainter::getPointNearCircle(CLBoundingBox r, CLPoint p, C_INT16 d)
+{
+  CLPoint center; // center of rectangle
+  center.setX(r.getPosition().getX() + (r.getDimensions().getWidth() / 2.0));
+  center.setY(r.getPosition().getY() + (r.getDimensions().getHeight() / 2.0));
+
+  C_FLOAT64 distance = sqrt(((p.getX() - center.getX()) * (p.getX() - center.getX())) + ((p.getY() - center.getY()) * (p.getY() - center.getY())));
+  //std::cout << "distance: " << distance << "  size: " << msize << std::endl;
+
+  C_FLOAT64 onPointX = center.getX() + ((p.getX() - center.getX()) / distance * ((DEFAULT_NODE_SIZE / 2.0) + d));
+  C_FLOAT64 onPointY = center.getY() + ((p.getY() - center.getY()) / distance * ((DEFAULT_NODE_SIZE / 2.0) + d));
+
+  return CLPoint(onPointX, onPointY);
+}
+
 // move one or two points of a curve, so that the end point of the curve ends at the circle given by the center of the bounding box (where the diagonals intersect) that is given in the parameters and that has the default size
 void CQGLNetworkPainter::adaptCurveForCircle(std::multimap<std::string, CGraphCurve>::iterator it, CLBoundingBox box)
 {
@@ -1521,9 +1554,9 @@ void CQGLNetworkPainter::adaptCurveForCircle(std::multimap<std::string, CGraphCu
   CLPoint pointOnCircle;
 
   if (pLastSeg->isBezier())
-    pointOnCircle = getPointOnCircle(box, pLastSeg->getBase2());
+    pointOnCircle = getPointNearCircle(box, pLastSeg->getBase2(), 4);
   else
-    pointOnCircle = getPointOnCircle(box, pLastSeg->getStart());
+    pointOnCircle = getPointNearCircle(box, pLastSeg->getStart(), 4);
 
   pLastSeg->setEnd(pointOnCircle);
 
