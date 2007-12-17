@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.79 $
+//   $Revision: 1.80 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/12/17 11:07:08 $
+//   $Date: 2007/12/17 11:16:22 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -417,7 +417,7 @@ void CQGLNetworkPainter::drawGraph()
               C_INT32 xNdCenter = (*itNodeObj).second.getX() + ((*itNodeObj).second.getWidth() / 2.0);
               C_INT32 yNdCenter = (*itNodeObj).second.getY(); // + ((*itNodeObj).second.getHeight() / 2.0);
               //C_INT32 xLabelStartOff = tWid / 2.0;
-              std::cout << viewerLabels[i].getText() << "  text width: " << tWid << "   diameter of circle: " << nDiam << std::endl;
+              //std::cout << viewerLabels[i].getText() << "  text width: " << tWid << "   diameter of circle: " << nDiam << std::endl;
               if ((tWid + 4) > nDiam)
                 {// label wider (+ k=4 to avoid crossing circle borders) than size of circle-> place next to circle
 
@@ -1380,8 +1380,9 @@ void CQGLNetworkPainter::setNodeSize(std::string key, C_FLOAT64 val)
           C_FLOAT64 distance = sqrt(((to.getX() - from.getX()) * (to.getX() - from.getX())) + ((to.getY() - from.getY()) * (to.getY() - from.getY())));
           //std::cout << "distance: " << distance << "  size: " << msize << std::endl;
 
-          C_FLOAT64 newX = from.getX() + ((to.getX() - from.getX()) / distance * (*nodeIt).second.getSize() / 2.0);
-          C_FLOAT64 newY = from.getY() + ((to.getY() - from.getY()) / distance * (*nodeIt).second.getSize() / 2.0);
+          C_FLOAT64 circleDist = ((*nodeIt).second.getSize() / 2.0) + 4.0; // near border
+          C_FLOAT64 newX = from.getX() + ((to.getX() - from.getX()) / distance * circleDist);
+          C_FLOAT64 newY = from.getY() + ((to.getY() - from.getY()) / distance * circleDist);
 
           //C_FLOAT64 dx, dy;
           //dx = to.getX() - newX;
