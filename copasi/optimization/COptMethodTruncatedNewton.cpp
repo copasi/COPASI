@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodTruncatedNewton.cpp,v $
-//   $Revision: 1.3.2.1 $
+//   $Revision: 1.3.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/12/14 23:46:29 $
+//   $Date: 2007/12/17 22:32:37 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,10 +23,7 @@
 COptMethodTruncatedNewton::COptMethodTruncatedNewton(const CCopasiContainer * pParent):
     COptMethod(CCopasiTask::optimization, CCopasiMethod::TruncatedNewton, pParent),
     mpTruncatedNewton(new FTruncatedNewtonTemplate<COptMethodTruncatedNewton>(this, &COptMethodTruncatedNewton::sFun))
-
-{
-  initObjects();
-}
+{initObjects();}
 
 COptMethodTruncatedNewton::COptMethodTruncatedNewton(const COptMethodTruncatedNewton & src,
     const CCopasiContainer * pParent):
@@ -36,7 +33,6 @@ COptMethodTruncatedNewton::COptMethodTruncatedNewton(const COptMethodTruncatedNe
 
 COptMethodTruncatedNewton::~COptMethodTruncatedNewton()
 {
-
   pdelete(mpTruncatedNewton);
   cleanup();
 }
@@ -109,56 +105,16 @@ bool COptMethodTruncatedNewton::optimise()
   mContinue = mpOptProblem->setSolution(mBestValue, mBest);
 
   repeat = 0;
-  do
+
+  while (repeat < 3 && mContinue)
     {
-      if (repeat > 0) // Try another starting point
-        {
-          for (i = 0; i < mVariableSize; i++)
-            {
-              mCurrent[i] *= 1.2;
-              const COptItem & OptItem = *(*mpOptItem)[i];
-
-              //force it to be within the bounds
-              switch (OptItem.checkConstraint(mCurrent[i]))
-                {
-                case - 1:
-                  mCurrent[i] = *OptItem.getLowerBoundValue();
-                  break;
-
-                case 1:
-                  mCurrent[i] = *OptItem.getUpperBoundValue();
-                  break;
-
-                case 0:
-                  break;
-                }
-
-              (*(*mpSetCalculateVariable)[i])(mCurrent[i]);
-            }
-
-          evaluate();
-
-          // Check whether we improved
-          if (mEvaluationValue < mBestValue)
-            {
-              // We found a new best value lets report it.
-              // and store that value
-              mBest = mCurrent;
-              mBestValue = mEvaluationValue;
-
-              mContinue = mpOptProblem->setSolution(mBestValue, mBest);
-
-              // We found a new best value lets report it.
-              mpParentTask->output(COutputInterface::DURING);
-            }
-        }
-
       initialParam = mCurrent;
       if (repeat == 0)
         initialValue = mEvaluationValue;
 
       // estimate minimum is 1/10 initial function value
       fest = 0.1 * mEvaluationValue;
+      ierror = 0;
 
       // minimise
       try
@@ -171,41 +127,97 @@ bool COptMethodTruncatedNewton::optimise()
 
       // This signals that the user opted to interupt
       catch (bool)
-      {}
+        {
+          break;
+        }
+
+      if (ierror == 0)
+        break;
 
       if (ierror < 0)
         fatalError(); // Invalid parameter values.
-      if (ierror > 0)
+
+      repeat++;
+
+      for (i = 0; i < mVariableSize; i++)
         {
-          // Are we within the bounds ?
-          if (mpOptProblem->checkParametricConstraints())
-            {
-              for (i = 0; i < mVariableSize; i++)
-                (*(*mpSetCalculateVariable)[i])(mCurrent[i]);
+          const COptItem & OptItem = *(*mpOptItem)[i];
 
-              evaluate();
-
-              // is it better than initial guess?
-              if (mEvaluationValue < initialValue)
-                repeat = 0;
-              else
-                repeat++;
-            }
-          else
+          //force it to be within the bounds
+          switch (OptItem.checkConstraint(mCurrent[i]))
             {
-              if (repeat < 3)
-                repeat++;
-              else
-                {
-                  // first guess is our only possible answer
-                  mEvaluationValue = initialValue;
-                  mCurrent = initialParam;
-                  repeat = 0;
-                }
+            case - 1:
+              mCurrent[i] = *OptItem.getLowerBoundValue();
+              break;
+
+            case 1:
+              mCurrent[i] = *OptItem.getUpperBoundValue();
+              break;
+
+            case 0:
+              break;
             }
+          (*(*mpSetCalculateVariable)[i])(mCurrent[i]);
+        }
+
+      evaluate();
+
+      // is it better than initial guess?
+      if (mEvaluationValue < mBestValue)
+        {
+          // We found a new best value lets report it.
+          // and store that value
+          mBest = mCurrent;
+          mBestValue = mEvaluationValue;
+
+          mContinue = mpOptProblem->setSolution(mBestValue, mBest);
+
+          // We found a new best value lets report it.
+          mpParentTask->output(COutputInterface::DURING);
+
+          continue;
+        }
+
+      // Try another starting point
+      for (i = 0; i < mVariableSize; i++)
+        {
+          mCurrent[i] *= 1.2;
+          const COptItem & OptItem = *(*mpOptItem)[i];
+
+          //force it to be within the bounds
+          switch (OptItem.checkConstraint(mCurrent[i]))
+            {
+            case - 1:
+              mCurrent[i] = *OptItem.getLowerBoundValue();
+              break;
+
+            case 1:
+              mCurrent[i] = *OptItem.getUpperBoundValue();
+              break;
+
+            case 0:
+              break;
+            }
+
+          (*(*mpSetCalculateVariable)[i])(mCurrent[i]);
+        }
+
+      evaluate();
+
+      // Check whether we improved
+      if (mEvaluationValue < mBestValue)
+        {
+          // We found a new best value lets report it.
+          // and store that value
+          mBest = mCurrent;
+          mBestValue = mEvaluationValue;
+
+          mContinue = mpOptProblem->setSolution(mBestValue, mBest);
+
+          // We found a new best value lets report it.
+          mpParentTask->output(COutputInterface::DURING);
         }
     }
-  while (repeat && mContinue);
 
   // Check whether we improved overall
   if (mEvaluationValue < mBestValue)
