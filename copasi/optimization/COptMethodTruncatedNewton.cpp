@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodTruncatedNewton.cpp,v $
-//   $Revision: 1.3.2.2 $
+//   $Revision: 1.3.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/12/17 22:32:37 $
+//   $Date: 2007/12/18 01:33:09 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,11 +52,10 @@ bool COptMethodTruncatedNewton::optimise()
 {
   if (!initialize()) return false;
 
-  C_FLOAT64 initialValue, fest;
+  C_FLOAT64 fest;
   C_INT lw, ierror = 0;
   lw = 14 * mVariableSize;
 
-  CVector< C_FLOAT64 > initialParam(mVariableSize);
   CVector< C_FLOAT64 > up(mVariableSize);
   CVector< C_FLOAT64 > low(mVariableSize);
   CVector< C_INT > iPivot(mVariableSize);
@@ -106,14 +105,12 @@ bool COptMethodTruncatedNewton::optimise()
 
   repeat = 0;
 
-  while (repeat < 3 && mContinue)
+  while (repeat < 10 && mContinue)
     {
-      initialParam = mCurrent;
-      if (repeat == 0)
-        initialValue = mEvaluationValue;
+      repeat++;
 
       // estimate minimum is 1/10 initial function value
-      fest = 0.1 * mEvaluationValue;
+      fest = (1 - pow(0.9, (C_FLOAT64) repeat)) * mEvaluationValue;
       ierror = 0;
 
       // minimise
@@ -121,7 +118,6 @@ bool COptMethodTruncatedNewton::optimise()
         {
           tnbc_(&ierror, &mVariableSize, mCurrent.array(), &fest, mGradient.array(), dwork.array(),
                 &lw, mpTruncatedNewton, low.array(), up.array(), iPivot.array());
-          repeat = 0;
           mEvaluationValue = fest;
         }
 
@@ -131,14 +127,14 @@ bool COptMethodTruncatedNewton::optimise()
           break;
         }
 
-      if (ierror == 0)
-        break;
-
       if (ierror < 0)
         fatalError(); // Invalid parameter values.
 
-      repeat++;
+      // The way the method is currently implemented may lead to parameters just outside the boundaries.
+      // We need to check whether the current value is within the boundaries or whether the corrected
+      // leads to an improved solution.
 
+      bool withinBounds = true;
       for (i = 0; i < mVariableSize; i++)
         {
           const COptItem & OptItem = *(*mpOptItem)[i];
@@ -147,10 +143,12 @@ bool COptMethodTruncatedNewton::optimise()
           switch (OptItem.checkConstraint(mCurrent[i]))
             {
             case - 1:
+              withinBounds = false;
               mCurrent[i] = *OptItem.getLowerBoundValue();
               break;
 
             case 1:
+              withinBounds = false;
               mCurrent[i] = *OptItem.getUpperBoundValue();
               break;
 
@@ -162,7 +160,7 @@ bool COptMethodTruncatedNewton::optimise()
 
       evaluate();
 
-      // is it better than initial guess?
+      // Is the corrected value better than solution?
       if (mEvaluationValue < mBestValue)
         {
           // We found a new best value lets report it.
@@ -174,10 +172,14 @@ bool COptMethodTruncatedNewton::optimise()
 
           // We found a new best value lets report it.
           mpParentTask->output(COutputInterface::DURING);
-
-          continue;
         }
 
+      // We found a solution
+      if (withinBounds)
+        break;
+
+      // Choosing another starting point will be left to the user
+#ifdef XXXX
       // Try another starting point
       for (i = 0; i < mVariableSize; i++)
         {
@@ -217,23 +219,10 @@ bool COptMethodTruncatedNewton::optimise()
           // We found a new best value lets report it.
           mpParentTask->output(COutputInterface::DURING);
         }
+#endif // XXXX
     }
 
-  // Check whether we improved overall
-  if (mEvaluationValue < mBestValue)
-    {
-      // We found a new best value lets report it.
-      // and store that value
-      mBest = mCurrent;
-      mBestValue = mEvaluationValue;
-
-      mContinue = mpOptProblem->setSolution(mBestValue, mBest);
-
-      // We found a new best value lets report it.
-      mpParentTask->output(COutputInterface::DURING);
-    }
-
-  return true;
+  return mContinue;
 }
 
 bool COptMethodTruncatedNewton::initialize()
