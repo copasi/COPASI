@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-//   $Revision: 1.151 $
+//   $Revision: 1.151.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/09 14:27:22 $
+//   $Date: 2007/12/18 17:12:03 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -565,9 +565,6 @@ bool FunctionWidget1::loadFromFunction(const CFunction* func)
   // application table
   loadUsageTable(/*pFunction->getVariables().getUsageRanges()*/);
 
-  //MathML widget
-  updateMmlWidget();
-
   isValid = mpFunction->isUsable();
 
   // make dialogue read only for predefined functions
@@ -600,6 +597,9 @@ bool FunctionWidget1::loadFromFunction(const CFunction* func)
       cancelChanges->setEnabled(true);
       deleteFcn->setEnabled(true);
     }
+
+  //MathML widget
+  updateMmlWidget();
 
   flagChanged = false;
 
