@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-//   $Revision: 1.191 $
+//   $Revision: 1.191.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/01 17:51:00 $
+//   $Date: 2007/12/18 20:30:15 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -293,6 +293,10 @@ void ReactionsWidget1::slotBtnCancelClicked()
 void ReactionsWidget1::slotBtnOKClicked()
 {
   saveToReaction();
+  CReaction* reac = dynamic_cast< CReaction * >(GlobalKeys.get(objKey));
+
+  if (reac == NULL) return;
+  loadFromReaction(reac);
 }
 
 void ReactionsWidget1::slotCheckBoxClicked()
