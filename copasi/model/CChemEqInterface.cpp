@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqInterface.cpp,v $
-//   $Revision: 1.37 $
+//   $Revision: 1.37.10.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/04/02 16:32:23 $
+//   $Date: 2007/12/18 20:27:29 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -581,28 +581,31 @@ std::set< std::pair< std::string, std::string > > CChemEqInterface::listOfNonExi
     return ret;
   }
 
-bool CChemEqInterface::createNonExistingMetabs() const
-  {
-    std::set< std::pair< std::string, std::string > > metabs = listOfNonExistingMetabNames();
-    bool ret;
-    if (metabs.size() == 0) ret = false; else ret = true;
+bool CChemEqInterface::createNonExistingMetabs()
+{
+  std::set< std::pair< std::string, std::string > > metabs = listOfNonExistingMetabNames();
+  bool ret;
+  if (metabs.size() == 0) ret = false; else ret = true;
 
-    std::set< std::pair< std::string, std::string > >::const_iterator it, itEnd;
+  std::set< std::pair< std::string, std::string > >::const_iterator it, itEnd;
 
-    itEnd = metabs.end();
+  itEnd = metabs.end();
 
-    for (it = metabs.begin(); it != itEnd; ++it)
-      {
-        if (mpModel->getCompartments().getIndex(it->second) == C_INVALID_INDEX)
-          mpModel->createCompartment(it->second, 1);
+  for (it = metabs.begin(); it != itEnd; ++it)
+    {
+      if (mpModel->getCompartments().getIndex(it->second) == C_INVALID_INDEX)
+        mpModel->createCompartment(it->second, 1);
 
-        mpModel->createMetabolite(it->first,
-                                  it->second,
-                                  0.1, CModelEntity::REACTIONS);
-      }
+      mpModel->createMetabolite(it->first,
+                                it->second,
+                                0.1, CModelEntity::REACTIONS);
+    }
 
-    return ret;
-  }
+  // Due to the creation of metabolites the display names may have changed.
+  buildDisplayNames();
+
+  return ret;
+}
 
 bool CChemEqInterface::isMulticompartment() const
   {

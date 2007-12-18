@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqInterface.h,v $
-   $Revision: 1.17 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/08/25 18:13:23 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqInterface.h,v $
+//   $Revision: 1.17.14.1 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/12/18 20:27:29 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -101,7 +101,7 @@ class CChemEqInterface
     std::set<std::string> listOfNonUniqueMetabNames() const;
     std::set< std::pair< std::string, std::string > > listOfNonExistingMetabNames() const;
 
-    bool createNonExistingMetabs() const;
+    bool createNonExistingMetabs();
 
     //convenience methods:
     static std::string getChemEqString(CModel * model, const CReaction & rea, bool expanded);
