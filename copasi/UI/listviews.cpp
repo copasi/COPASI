@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.237.2.1 $
+//   $Revision: 1.237.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/12/14 18:07:18 $
+//   $Date: 2007/12/19 13:53:25 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -66,10 +66,10 @@
 #include "CQSplashWidget.h"
 #include "CQTrajectoryWidget.h"
 #include "TimeSeriesWidget.h"
-#ifdef COPASI_DEBUG
+#ifdef COPASI_TSSA
 #include "CQTSSAWidget.h"
 #include "CQTSSAResultWidget.h"
-#endif // COPASI_DEBUG
+#endif // COPASI_TSSA
 #ifdef COPASI_TSS
 # include "TSSWidget.h"
 #endif
@@ -645,14 +645,14 @@ CopasiWidget* ListViews::findWidgetFromId(const C_INT32 & id) const
       case 261:
         return lyapResultWidget;
         break;
-#ifdef COPASI_DEBUG
+#ifdef COPASI_TSSA
       case 27:
         return tssaWidget;
         break;
       case 271:
         return tssaResultWidget;
         break;
-#endif
+#endif // COPASI_TSSA
       case 31:
         return scanWidget;
         break;
