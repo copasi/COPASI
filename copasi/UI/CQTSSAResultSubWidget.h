@@ -13,7 +13,7 @@
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQTSSAResultSubWidget.ui'
  **
- ** Created: Fri Oct 26 14:04:34 2007
+ ** Created: Mon Dec 17 15:41:15 2007
  **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.8   edited Jan 11 14:47 $)
  **
  ** WARNING! All changes made in this file will be lost!
@@ -63,6 +63,8 @@ class CQTSSAResultSubWidget : public QWidget
     CQArrayAnnotationsWidget* pArrayWidget2;
     QWidget* TabPage_2;
     CQArrayAnnotationsWidget* pArrayWidget3;
+    QWidget* TabPage_3;
+    CQArrayAnnotationsWidget* pArrayWidget4;
     QSlider* mSlider;
     QLabel* mLabel7;
     QLabel* pLabel1;
@@ -95,6 +97,7 @@ class CQTSSAResultSubWidget : public QWidget
     QGridLayout* tabLayout_3;
     QGridLayout* tabLayout_4;
     QGridLayout* TabPageLayout_2;
+    QGridLayout* TabPageLayout_3;
 
   protected slots:
     virtual void languageChange();

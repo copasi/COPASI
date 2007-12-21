@@ -1,10 +1,10 @@
 <!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSAResultSubWidget.ui,v $ </comment>
-<comment>   $Revision: 1.4 $ </comment>
+<comment>   $Revision: 1.5 $ </comment>
 <comment>   $Name:  $ </comment>
-<comment>   $Author: akoenig $ </comment>
-<comment>   $Date: 2007/10/26 11:06:32 $ </comment>
+<comment>   $Author: isurovts $ </comment>
+<comment>   $Date: 2007/12/21 11:44:52 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -181,7 +181,7 @@
                                 <cstring>tab</cstring>
                             </property>
                             <attribute name="title">
-                                <string>mVslow_metab</string>
+                                <string>Metabolites</string>
                             </attribute>
                             <grid>
                                 <property name="name">
@@ -199,7 +199,7 @@
                                 <cstring>tab</cstring>
                             </property>
                             <attribute name="title">
-                                <string>mVslow</string>
+                                <string>Modes</string>
                             </attribute>
                             <grid>
                                 <property name="name">
@@ -217,7 +217,7 @@
                                 <cstring>TabPage</cstring>
                             </property>
                             <attribute name="title">
-                                <string>mVslow_space</string>
+                                <string>Slow space</string>
                             </attribute>
                             <grid>
                                 <property name="name">
@@ -226,6 +226,24 @@
                                 <widget class="CQArrayAnnotationsWidget" row="0" column="0">
                                     <property name="name">
                                         <cstring>pArrayWidget3</cstring>
+                                    </property>
+                                </widget>
+                            </grid>
+                        </widget>
+                        <widget class="QWidget">
+                            <property name="name">
+                                <cstring>TabPage</cstring>
+                            </property>
+                            <attribute name="title">
+                                <string>Fast space</string>
+                            </attribute>
+                            <grid>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="CQArrayAnnotationsWidget" row="0" column="0">
+                                    <property name="name">
+                                        <cstring>pArrayWidget4</cstring>
                                     </property>
                                 </widget>
                             </grid>
@@ -320,7 +338,7 @@
                             </sizepolicy>
                         </property>
                         <property name="text">
-                            <string>ILDM operationbehavior at timepoint:</string>
+                            <string>ILDM operation behavior at timepoint:</string>
                         </property>
                     </widget>
                     <widget class="QLabel" row="0" column="1">
@@ -490,6 +508,7 @@
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
     <includehint>CTimeSeriesTable.h</includehint>
+    <includehint>CQArrayAnnotationsWidget.h</includehint>
     <includehint>CQArrayAnnotationsWidget.h</includehint>
     <includehint>CQArrayAnnotationsWidget.h</includehint>
     <includehint>CQArrayAnnotationsWidget.h</includehint>

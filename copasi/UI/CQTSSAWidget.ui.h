@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQTSSAWidget.ui.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/11/01 17:51:00 $
+//   $Author: isurovts $
+//   $Date: 2007/12/21 11:44:52 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -37,13 +37,13 @@
 #include "model/CModel.h"
 #include "report/CKeyFactory.h"
 #include "utilities/CCopasiException.h"
-#include "tssanalysis/CILDMMethod.h"
+#include "tssanalysis/CTSSAMethod.h"
 #include "CQTSSAResultSubWidget.h"
 #include "CQTSSAResultWidget.h"
 
 #define TSSAMAX 10000000
 
-CILDMMethod* pTSSMethod;
+CTSSAMethod* pTSSMethod;
 CQTSSAResultSubWidget* pTSSResultSubWidget;
 CTSSATask * pCTSSATask;
 
@@ -287,7 +287,7 @@ bool CQTSSAWidget::runTask()
   pCTSSATask =
     dynamic_cast<CTSSATask *>((*CCopasiDataModel::Global->getTaskList())["Time Scale Separation Analysis"]);
   if (!pCTSSATask) return false;
-  pTSSMethod = dynamic_cast<CILDMMethod*>(pCTSSATask->getMethod());
+  pTSSMethod = dynamic_cast<CTSSAMethod*>(pCTSSATask->getMethod());
   pTSSMethod->emptyVectors();
 
   checkTimeSeries();

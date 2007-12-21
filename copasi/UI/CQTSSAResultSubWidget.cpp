@@ -13,7 +13,7 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQTSSAResultSubWidget.ui'
  **
- ** Created: Fri Oct 26 14:04:39 2007
+ ** Created: Mon Dec 17 15:41:18 2007
  **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.8   edited Jan 11 14:47 $)
  **
  ** WARNING! All changes made in this file will be lost!
@@ -112,6 +112,14 @@ CQTSSAResultSubWidget::CQTSSAResultSubWidget(QWidget* parent, const char* name, 
   TabPageLayout_2->addWidget(pArrayWidget3, 0, 0);
   mTabWidget->insertTab(TabPage_2, QString::fromLatin1(""));
 
+  TabPage_3 = new QWidget(mTabWidget, "TabPage_3");
+  TabPageLayout_3 = new QGridLayout(TabPage_3, 1, 1, 11, 6, "TabPageLayout_3");
+
+  pArrayWidget4 = new CQArrayAnnotationsWidget(TabPage_3, "pArrayWidget4");
+
+  TabPageLayout_3->addWidget(pArrayWidget4, 0, 0);
+  mTabWidget->insertTab(TabPage_3, QString::fromLatin1(""));
+
   TabPageLayout->addMultiCellWidget(mTabWidget, 2, 2, 0, 7);
 
   mSlider = new QSlider(TabPage, "mSlider");
@@ -202,13 +210,14 @@ void CQTSSAResultSubWidget::languageChange()
   ButtonSaveData->setText(tr("Save data to file"));
   tabWidget2->changeTab(tab, tr("OptimizationResult"));
   tabWidget2->changeTab(tab_2, tr("TimeSeries"));
-  mTabWidget->changeTab(tab_3, tr("mVslow_metab"));
-  mTabWidget->changeTab(tab_4, tr("mVslow"));
-  mTabWidget->changeTab(TabPage_2, tr("mVslow_space"));
+  mTabWidget->changeTab(tab_3, tr("Metabolites"));
+  mTabWidget->changeTab(tab_4, tr("Modes"));
+  mTabWidget->changeTab(TabPage_2, tr("Slow space"));
+  mTabWidget->changeTab(TabPage_3, tr("Fast space"));
   QToolTip::add(mSlider, tr("move mouse-cursor over slider and use scrollwheel to adjust required step accurately"));
   QWhatsThis::add(mSlider, tr("use slider to adjust required step"));
   mLabel7->setText(QString::null);
-  pLabel1->setText(tr("ILDM operationbehavior at timepoint:"));
+  pLabel1->setText(tr("ILDM operation behavior at timepoint:"));
   mLabel2->setText(tr("0"));
   mLabel3->setText(tr("or step:"));
   mLabel4->setText(tr("0"));

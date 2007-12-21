@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQTSSAResultSubWidget.ui.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
-//   $Author: akoenig $
-//   $Date: 2007/11/12 17:10:09 $
+//   $Author: isurovts $
+//   $Date: 2007/12/21 11:44:52 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,18 +30,25 @@
 
 #include "tssanalysis/CTSSATask.h"
 #include "tssanalysis/CTSSAProblem.h"
-#include "tssanalysis/CILDMMethod.h"
+
+//#include "tssanalysis/CILDMMethod.h"
+#include "tssanalysis/CTSSAMethod.h"
+
 #include "utilities/CAnnotatedMatrix.h"
 #include "model/CModel.h"
 
 CTSSATask* pTSSTask;
 CTSSAProblem* pProblem;
-CILDMMethod* pTimeScaleSeperation;
+
+//CILDMMethod* pTimeScaleSeperation;
+CTSSAMethod* pTimeScaleSeperation;
+
 CModel* pModel;
 
 const CArrayAnnotation * pResult;
 const CArrayAnnotation * pResult2;
 const CArrayAnnotation * pResult3;
+const CArrayAnnotation * pResult4; //aaa
 
 void CQTSSAResultSubWidget::saveDataToFile()
 {
@@ -118,6 +125,9 @@ void CQTSSAResultSubWidget::init()
   // mVslow_space widget
   pArrayWidget3->setColorCoding(tcs);
   pArrayWidget3->setColorScalingAutomatic(false);
+  // mVslow_space widget
+  pArrayWidget4->setColorCoding(tcs); //aaa
+  pArrayWidget4->setColorScalingAutomatic(false); //aaa
 
   connect(mSlider, SIGNAL(valueChanged(int)), this, SLOT(changeInterval()));
   connect(tabWidget2, SIGNAL(currentChanged(QWidget *)), this, SLOT(hideButtons()));
@@ -140,7 +150,7 @@ void CQTSSAResultSubWidget::setStepNumber()
   CTSSATask* pTSSTask =
     dynamic_cast<CTSSATask *>((*CCopasiDataModel::Global->getTaskList())["Time Scale Separation Analysis"]);
   if (!pTSSTask) return;
-  pTimeScaleSeperation = dynamic_cast<CILDMMethod*>(pTSSTask->getMethod());
+  pTimeScaleSeperation = dynamic_cast<CTSSAMethod*>(pTSSTask->getMethod());
   pProblem = dynamic_cast<CTSSAProblem*>(pTSSTask->getProblem());
   CModel* pModel = pProblem->getModel();
   QString a = FROM_UTF8(pModel->getTimeUnitName());
@@ -159,6 +169,7 @@ void CQTSSAResultSubWidget::discardOldResults()
   pArrayWidget->setArrayAnnotation(NULL);
   pArrayWidget2->setArrayAnnotation(NULL);
   pArrayWidget3->setArrayAnnotation(NULL);
+  pArrayWidget4->setArrayAnnotation(NULL); //aaa
 
   mLabel2->setNum(0);
   mLabel4->setNum(0);
@@ -184,9 +195,11 @@ void CQTSSAResultSubWidget::changeInterval()
   pResult = pTimeScaleSeperation->getVslowPrintAnn();
   pResult2 = pTimeScaleSeperation->getVslowMetabPrintAnn();
   pResult3 = pTimeScaleSeperation->getVslowSpacePrintAnn();
+  pResult4 = pTimeScaleSeperation->getVfastSpacePrintAnn(); //aaa
   pArrayWidget->setArrayAnnotation(pResult);
   pArrayWidget2->setArrayAnnotation(pResult2);
   pArrayWidget3->setArrayAnnotation(pResult3);
+  pArrayWidget4->setArrayAnnotation(pResult4); //aaa
 }
 
 /**

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSAResultWidget.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: akoenig $
-//   $Date: 2007/10/24 12:39:28 $
+//   $Author: isurovts $
+//   $Date: 2007/12/21 11:44:52 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,11 +23,12 @@
 
 //#include "report/CKeyFactory.h"
 #include "qtUtilities.h"
-#include "tssanalysis/CILDMMethod.h"
+#include "tssanalysis/CTSSAMethod.h"
+
 #include "tssanalysis/CTSSATask.h"
 
 CTSSATask* pTask;
-CILDMMethod* pTSSILDM;
+CTSSAMethod* pTSSILDM;
 
 /*
  *  Constructs a CQTSSAResultWidget which is a child of 'parent', with the
@@ -105,7 +106,7 @@ bool CQTSSAResultWidget::enter(const std::string & C_UNUSED(key))
 {
   pTask =
     dynamic_cast<CTSSATask *>((*CCopasiDataModel::Global->getTaskList())["Time Scale Separation Analysis"]);
-  pTSSILDM = dynamic_cast<CILDMMethod*>(pTask->getMethod());
+  pTSSILDM = dynamic_cast<CTSSAMethod*>(pTask->getMethod());
 
   if (!pTSSILDM->mCurrentStep)
     {
