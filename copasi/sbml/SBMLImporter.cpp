@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.189 $
+//   $Revision: 1.189.2.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/12/04 15:52:13 $
+//   $Author: gauges $
+//   $Date: 2007/12/21 14:25:20 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -133,13 +133,16 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
     {
       this->mpCopasiModel->setModelType(CModel::deterministic);
     }
-  const XMLNode* comment = sbmlModel->getNotes();
-  if (comment != NULL)
+  if (sbmlModel->isSetNotes() && sbmlModel->getNotes() != NULL)
     {
+
       std::ostringstream stream;
-      XMLOutputStream o(stream);
-      o << * comment;
+      for (unsigned int i = 0;i < sbmlModel->getNotes()->getNumChildren();++i)
+        {
+          stream << XMLNode::convertXMLNodeToString(&sbmlModel->getNotes()->getChild(i)) << std::endl;
+        }
       this->mpCopasiModel->setComments(stream.str());
+      //std::string notesString=XMLNode::convertXMLNodeToString(&sbmlModel->getNotes()->getChild(0));
     }
   title = sbmlModel->getName();
   if (title == "")
@@ -1596,7 +1599,7 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
               CCopasiMessage::Type messageType = CCopasiMessage::RAW;
               switch (pSBMLError->getSeverity())
                 {
-                case SEVERITY_INFO:
+                case /*LIBSBML_SEV_INFO*/SEVERITY_INFO:
 
                   if (mIgnoredSBMLMessages.find(pSBMLError->getErrorId()) != mIgnoredSBMLMessages.end())
                     {
@@ -1608,7 +1611,7 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
                     }
                   CCopasiMessage(messageType, MCSBML + 40, "INFO", pSBMLError->getErrorId(), pSBMLError->getLine(), pSBMLError->getColumn(), pSBMLError->getMessage().c_str());
                   break;
-                case SEVERITY_WARNING:
+                case /*LIBSBML_SEV_WARNING*/SEVERITY_WARNING:
                   if (mIgnoredSBMLMessages.find(pSBMLError->getErrorId()) != mIgnoredSBMLMessages.end())
                     {
                       messageType = CCopasiMessage::WARNING_FILTERED;
@@ -1619,14 +1622,14 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
                     }
                   CCopasiMessage(messageType, MCSBML + 40, "WARNING", pSBMLError->getErrorId(), pSBMLError->getLine(), pSBMLError->getColumn(), pSBMLError->getMessage().c_str());
                   break;
-                case SEVERITY_ERROR:
+                case /*LIBSBML_SEV_ERROR*/SEVERITY_ERROR:
                   if (mIgnoredSBMLMessages.find(pSBMLError->getErrorId()) != mIgnoredSBMLMessages.end())
                     {
                       messageType = CCopasiMessage::ERROR_FILTERED;
                     }
                   CCopasiMessage(messageType, MCSBML + 40, "ERROR", pSBMLError->getErrorId(), pSBMLError->getLine(), pSBMLError->getColumn(), pSBMLError->getMessage().c_str());
                   break;
-                case SEVERITY_FATAL:
+                case /*LIBSBML_SEV_FATAL*/SEVERITY_FATAL:
                   // treat unknown as fatal
                 default:
                   //CCopasiMessage(CCopasiMessage::TRACE, MCSBML + 40,"FATAL",pSBMLError->getLine(),pSBMLError->getColumn(),pSBMLError->getMessage().c_str());
