@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-//   $Revision: 1.121.2.1 $
+//   $Revision: 1.121.2.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/12/21 21:32:18 $
+//   $Date: 2007/12/21 21:58:21 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -260,15 +260,22 @@ Model* SBMLExporter::createSBMLModelFromCModel(CCopasiDataModel* pDataModel, int
     }
   if ((!copasiModel->getComments().empty()) && !(this->isEmptyString(copasiModel->getComments())))
     {
-      XMLErrorLog* log = new XMLErrorLog();
-      XMLInputStream stream(copasiModel->getComments().c_str(), false, "", log);
-      XMLNode* c = new XMLNode(stream);
-      if (log->getNumErrors() == 0)
+      //XMLErrorLog* log = new XMLErrorLog();
+      //XMLInputStream stream(copasiModel->getComments().c_str(), false, "", log);
+      //XMLNode* c = new XMLNode(stream);
+      //if (log->getNumErrors() == 0)
+      //  {
+      //    sbmlModel->setNotes(c);
+      //}
+      //if (c != NULL) delete c;
+      //delete log;
+      std::string comments = "<notes>" + copasiModel->getComments() + "</notes>";
+      XMLNode* pNotes = XMLNode::convertStringToXMLNode(comments);
+      if (pNotes != NULL)
         {
-          sbmlModel->setNotes(c);
+          sbmlModel->setNotes(pNotes);
+          delete pNotes;
         }
-      if (c != NULL) delete c;
-      delete log;
     }
   /* if the copasi volume unit does not correspond to the default SBML volume
   ** unit, we have to create a UnitDefinition and make it the default in the

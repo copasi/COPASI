@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.189.2.1 $
+//   $Revision: 1.189.2.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/12/21 14:25:20 $
+//   $Date: 2007/12/21 21:58:21 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1471,6 +1471,8 @@ SBMLImporter::SBMLImporter()
   this->mIgnoredSBMLMessages.insert(10541);
   this->mIgnoredSBMLMessages.insert(10551);
   this->mIgnoredSBMLMessages.insert(10562);
+  this->mIgnoredSBMLMessages.insert(80701);
+  this->mIgnoredSBMLMessages.insert(99505);
 }
 
 /**
