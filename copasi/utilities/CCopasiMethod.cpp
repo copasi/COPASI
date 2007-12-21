@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.cpp,v $
-//   $Revision: 1.47 $
+//   $Revision: 1.48 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/11/27 00:43:45 $
+//   $Author: isurovts $
+//   $Date: 2007/12/21 11:43:26 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -50,7 +50,8 @@ const std::string CCopasiMethod::SubTypeName[] =
     "Hybrid (Runge-Kutta)",
     "Hybrid (LSODA)",
 #ifdef COPASI_TSSA
-    "ILDM (LSODA)",
+    "ILDM (LSODA,Deuflhard)",
+    "ILDM (LSODA,Modified)",
     "CSP (LSODA)",
 #endif // COPASI_TSSA
     "Stochastic (\xcf\x84-Leap)",
@@ -97,7 +98,8 @@ const char* CCopasiMethod::XMLSubType[] =
     "Hybrid",
     "Hybrid (LSODA)",
 #ifdef COPASI_DEBUG
-    "TimeScaleSeparation(ILDM)",
+    "TimeScaleSeparation(ILDM,Deuflhard)",
+    "TimeScaleSeparation(ILDM,Modified)",
     "TimeScaleSeparation(CSP)",
 #endif // COPASI_DEBUG
     "TauLeap",
