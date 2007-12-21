@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-//   $Revision: 1.121 $
+//   $Revision: 1.121.2.1 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/12/08 13:10:09 $
+//   $Date: 2007/12/21 21:32:18 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1072,7 +1072,7 @@ KineticLaw* SBMLExporter::createSBMLKineticLawFromCReaction(CReaction* copasiRea
       // walk the tree and look for function calls
       if (!this->mExportExpressions)
         {
-          CEvaluationTree* pTree = new CEvaluationTree("NoName", NULL, CEvaluationTree::Expression);
+          CExpression* pExpr = new CExpression("NoName", NULL);
           CEvaluationNodeCall* pTmpRoot = new CEvaluationNodeCall(CEvaluationNodeCall::FUNCTION, copasiReaction->getFunction()->getObjectName());
           const std::vector< std::vector<std::string> >& parameterMappings = copasiReaction->getParameterMappings();
           unsigned int i, iMax = parameterMappings.size();
@@ -1081,13 +1081,13 @@ KineticLaw* SBMLExporter::createSBMLKineticLawFromCReaction(CReaction* copasiRea
               CEvaluationNodeObject* pObjectNode = new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + GlobalKeys.get(parameterMappings[i][0])->getCN() + ">");
               pTmpRoot->addChild(pObjectNode);
             }
-          pTree->setRoot(pTmpRoot);
-          pTree->compile();
+          pExpr->setRoot(pTmpRoot);
+          pExpr->compile();
           std::list<const CEvaluationTree*>* usedFunctionList = new std::list<const CEvaluationTree*>;
           this->findUsedFunctions(pTmpRoot, usedFunctionList, pDataModel);
           pdelete(usedFunctionList);
           node = pTmpRoot->toAST();
-          pdelete(pTree);
+          pdelete(pExpr);
         }
       else
         {
