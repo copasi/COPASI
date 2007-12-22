@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-//   $Revision: 1.121.2.3 $
+//   $Revision: 1.121.2.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/12/22 13:51:56 $
+//   $Date: 2007/12/22 19:03:32 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -584,7 +584,6 @@ Model* SBMLExporter::createSBMLModelFromCModel(CCopasiDataModel* pDataModel, int
       ++step;
       if (mpExportHandler && !mpExportHandler->progress(hStep)) return false;
     }
-  SBase* rule = rules[0];
   this->exportRules(rules);
   pdelete(this->mpIdSet);
   if (mpExportHandler)
