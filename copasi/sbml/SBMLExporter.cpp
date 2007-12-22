@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-//   $Revision: 1.121.2.2 $
+//   $Revision: 1.121.2.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/12/21 21:58:21 $
+//   $Date: 2007/12/22 13:51:56 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -584,6 +584,7 @@ Model* SBMLExporter::createSBMLModelFromCModel(CCopasiDataModel* pDataModel, int
       ++step;
       if (mpExportHandler && !mpExportHandler->progress(hStep)) return false;
     }
+  SBase* rule = rules[0];
   this->exportRules(rules);
   pdelete(this->mpIdSet);
   if (mpExportHandler)
@@ -905,13 +906,11 @@ Reaction* SBMLExporter::createSBMLReactionFromCReaction(CReaction* copasiReactio
     {
       CChemEqElement* element = chemicalEquation.getSubstrates()[counter];
       const CMetab* pMetabolite = element->getMetabolite(); assert(pMetabolite);
-      SpeciesReference* sRef = NULL;
-      if (!(sRef = sbmlReaction->getReactant(pMetabolite->getSBMLId())))
+      SpeciesReference* sRef = sbmlReaction->getReactant(pMetabolite->getSBMLId());
+      if (sRef == NULL)
         {
-          sRef = new SpeciesReference();
+          sRef = sbmlReaction->createReactant();
           sRef->setSpecies(pMetabolite->getSBMLId().c_str());
-          sbmlReaction->addReactant(sRef);
-          delete sRef;
         }
       sRef->setStoichiometry(element->getMultiplicity());
       sRef->setDenominator(1);
@@ -931,13 +930,11 @@ Reaction* SBMLExporter::createSBMLReactionFromCReaction(CReaction* copasiReactio
     {
       CChemEqElement* element = chemicalEquation.getProducts()[counter];
       const CMetab* pMetabolite = element->getMetabolite(); assert(pMetabolite);
-      SpeciesReference* sRef = NULL;
-      if (!(sRef = sbmlReaction->getProduct(pMetabolite->getSBMLId())))
+      SpeciesReference* sRef = sbmlReaction->getProduct(pMetabolite->getSBMLId());
+      if (sRef == NULL)
         {
-          sRef = new SpeciesReference();
+          sRef = sbmlReaction->createProduct();
           sRef->setSpecies(pMetabolite->getSBMLId().c_str());
-          sbmlReaction->addProduct(sRef);
-          delete sRef;
         }
       sRef->setStoichiometry(element->getMultiplicity());
       sRef->setDenominator(1);
@@ -957,13 +954,11 @@ Reaction* SBMLExporter::createSBMLReactionFromCReaction(CReaction* copasiReactio
     {
       CChemEqElement* element = chemicalEquation.getModifiers()[counter];
       const CMetab* pMetabolite = element->getMetabolite(); assert(pMetabolite);
-      ModifierSpeciesReference* sRef = NULL;
-      if (!(sRef = sbmlReaction->getModifier(pMetabolite->getSBMLId())))
+      ModifierSpeciesReference* sRef = sbmlReaction->getModifier(pMetabolite->getSBMLId());
+      if (sRef == NULL)
         {
-          sRef = new ModifierSpeciesReference();
+          sRef = sbmlReaction->createModifier();
           sRef->setSpecies(pMetabolite->getSBMLId().c_str());
-          sbmlReaction->addModifier(sRef);
-          delete sRef;
         }
       usedReferences.insert(sRef->getSpecies());
     }
@@ -2134,7 +2129,6 @@ void SBMLExporter::exportRules(std::vector<Rule*>& rules)
   while (it != endIt)
     {
       pModel->addRule((*it));
-      delete (*it);
       ++it;
     }
   // now we add all the RateRules in the order they appear in rules
