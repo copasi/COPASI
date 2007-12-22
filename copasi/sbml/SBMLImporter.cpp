@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.189.2.2 $
+//   $Revision: 1.189.2.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/12/21 21:58:21 $
+//   $Date: 2007/12/22 21:07:20 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -2672,7 +2672,8 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const 
           const CCopasiVector<CChemEqElement>& metabolites = chemicalEquation.getSubstrates();
           unsigned i, iMax = metabolites.size();
           // all metabolites must occur in the muliplicityMap so they have to have the same size
-          if (iMax != multiplicityMap.size()) result = false;
+          // and a mass action must have at least one metabolite
+          if (iMax == 0 || iMax != multiplicityMap.size()) result = false;
           for (i = 0;i < iMax && result;++i)
             {
               // the metabolite has to be present in the multiplicityMap, otherwise it is not a mass action
