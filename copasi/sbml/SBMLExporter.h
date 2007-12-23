@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.h,v $
-//   $Revision: 1.55 $
+//   $Revision: 1.55.2.1 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/12/12 09:10:54 $
+//   $Date: 2007/12/23 16:18:49 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -63,7 +63,7 @@ class SBMLExporter
 
     CModel* mpCopasiModel;
 
-    std::list<const CEvaluationTree*>* mpUsedFunctions;
+    std::set<const CEvaluationTree*>* mpUsedFunctions;
 
     CProcessReport* mpExportHandler;
 
@@ -185,14 +185,20 @@ class SBMLExporter
     /**
      * Create the function definitions for all functions used in the model.
      */
-    void createFunctionDefinitions();
+    void createFunctionDefinitions(CCopasiDataModel* pDataModel);
 
     /**
      * Recursively go through a function tree and find all functions that are used.
      * This also covers function called by function call etc.
      * If a loop is encountered this throws an exception.
      */
-    void findUsedFunctions(CEvaluationNode* pNode, std::list<const CEvaluationTree*>* usedFunctionList, CCopasiDataModel* pDataModel);
+    const std::list<const CEvaluationTree*> SBMLExporter::findUsedFunctions(const CEvaluationNode* pNode, const std::list<const CEvaluationTree*>& predecessors, CCopasiDataModel* pDataModel);
+
+    /**
+     * This method finds all direct function calls in a CEvaluationNode based
+     * tree.
+     */
+    const std::set<const CEvaluationTree*> findDirectlyUsedFunctions(const CEvaluationNode* pNode, CCopasiDataModel* pDataModel);
 
     /**
      * Check if some CEvaluationTree is already in a list.
@@ -355,7 +361,7 @@ class SBMLExporter
 
     void setExportExpressions(bool value);
     bool isSetExportExpressions() const;
-    const std::list<const CEvaluationTree*>* getUsedFunctionList() const;
+    const std::set<const CEvaluationTree*>* getUsedFunctionList() const;
 
     /**
      * Checks wether the given data model can be exported to a certain version of SBML.

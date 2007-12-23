@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-//   $Revision: 1.121.2.4 $
+//   $Revision: 1.121.2.5 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/12/22 19:03:32 $
+//   $Date: 2007/12/23 16:18:49 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -71,7 +71,7 @@ const char* SBMLExporter::HTML_FOOTER = "</body>";
 SBMLExporter::SBMLExporter(): sbmlDocument(NULL), mpIdSet(NULL), mpExportHandler(NULL), mExportExpressions(false)
 {
   this->mpIdSet = new std::set<std::string>;
-  this->mpUsedFunctions = new std::list<const CEvaluationTree*>;
+  this->mpUsedFunctions = new std::set<const CEvaluationTree*>;
 }
 
 /**
@@ -99,6 +99,11 @@ std::string SBMLExporter::exportSBMLToString(CCopasiDataModel* pDataModel,
   if (!compatibilityResult.empty())
     {
       // display the inconsistencies
+      unsigned int i, iMax = compatibilityResult.size();
+      for (i = 0;i < iMax;++i)
+        {
+          std::cerr << compatibilityResult[i] << std::endl;
+        }
       return std::string();
     }
   else
@@ -206,7 +211,7 @@ SBMLDocument* SBMLExporter::createSBMLDocumentFromCModel(CCopasiDataModel* pData
       mStep = 7;
       if (!mpExportHandler->progress(mHStep)) return false;
     }
-  this->createFunctionDefinitions();
+  this->createFunctionDefinitions(pDataModel);
   // delete the initial assignments if there are any
   // because they can not be exported to Level 2 Version 1
   while (this->sbmlDocument->getModel()->getListOfInitialAssignments()->size() != 0)
@@ -1084,9 +1089,8 @@ KineticLaw* SBMLExporter::createSBMLKineticLawFromCReaction(CReaction* copasiRea
             }
           pExpr->setRoot(pTmpRoot);
           pExpr->compile();
-          std::list<const CEvaluationTree*>* usedFunctionList = new std::list<const CEvaluationTree*>;
-          this->findUsedFunctions(pTmpRoot, usedFunctionList, pDataModel);
-          pdelete(usedFunctionList);
+          std::set<const CEvaluationTree*> usedFunctionSet = this->findDirectlyUsedFunctions(pTmpRoot, pDataModel);
+          this->mpUsedFunctions->insert(usedFunctionSet.begin(), usedFunctionSet.end());
           node = pTmpRoot->toAST();
           pdelete(pExpr);
         }
@@ -1529,6 +1533,97 @@ ASTNode* SBMLExporter::isDividedByVolume(const ASTNode* node, const std::string&
   return result;
 }
 
+const std::set<const CEvaluationTree*> SBMLExporter::findDirectlyUsedFunctions(const CEvaluationNode* pNode, CCopasiDataModel* pDataModel)
+{
+  CFunctionDB* pFunDB = pDataModel->getFunctionList();
+  CCopasiTree<CEvaluationNode>::const_iterator treeIt = pNode;
+  CCopasiTree<CEvaluationNode>::const_iterator treeEndIt = NULL;
+  std::set<const CEvaluationTree*> result;
+  while (treeIt != treeEndIt)
+    {
+      if (CEvaluationNode::type((*treeIt).getType()) == CEvaluationNode::CALL)
+        {
+          // find function used in the corresponding function
+          CEvaluationTree* pFun = pFunDB->findFunction((*treeIt).getData());
+          if (!pFun)
+            {
+              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 15, (*treeIt).getData().c_str());
+            }
+          result.insert(pFun);
+          std::string id = pFun->getSBMLId();
+          if (id.empty())
+            {
+              // create a unique id
+              if (SBMLExporter::isValidSId(pFun->getObjectName()) && this->mpIdSet->find(pFun->getObjectName()) == this->mpIdSet->end())
+                {
+                  id = pFun->getObjectName();
+                  pFun->setSBMLId(id);
+                }
+              else
+                {
+                  id = this->createUniqueId(this->mpIdSet, "function_");
+                  pFun->setSBMLId(id);
+                }
+              this->mpIdSet->insert(id);
+            }
+          // TODO check if there would have to be an else branch here that
+          // checks if the set id is actually unique
+        }
+      ++treeIt;
+    }
+  return result;
+}
+
+const std::list<const CEvaluationTree*> SBMLExporter::findUsedFunctions(const CEvaluationNode* pNode, const std::list<const CEvaluationTree*>& predecessors, CCopasiDataModel* pDataModel)
+{
+  std::list<const CEvaluationTree*> result;
+  if (pNode != NULL && pDataModel != NULL)
+    {
+      // first find all direct function calls
+      std::set<const CEvaluationTree*> directlyUsedFunctions = this->findDirectlyUsedFunctions(pNode, pDataModel);
+      // for each function find the functions called from there
+      std::set<const CEvaluationTree*>::iterator it = directlyUsedFunctions.begin(), endit = directlyUsedFunctions.end();
+      while (it != endit)
+        {
+          if (std::find(predecessors.begin(), predecessors.end(), *it) != predecessors.end())
+            {
+              // we have a loop
+              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 16);
+            }
+          std::list<const CEvaluationTree*> newPredecessors(predecessors);
+          newPredecessors.push_back(*it);
+          std::list<const CEvaluationTree*> tmpResult = SBMLExporter::findUsedFunctions((*it)->getRoot(), newPredecessors, pDataModel);
+          // add everything to the end of result
+          result.insert(result.end(), tmpResult.begin(), tmpResult.end());
+          // add *it to the end of result
+          result.push_back(*it);
+          ++it;
+        }
+    }
+  // eliminate all duplicates from result
+  // that is, only keep the first occurance of each function in the list
+  std::set<const CEvaluationTree*> tmpSet;
+  tmpSet.insert(result.begin(), result.end());
+  if (tmpSet.size() != result.size())
+    {
+      std::list<const CEvaluationTree*>::iterator pos;
+      std::set<const CEvaluationTree*>::iterator it = tmpSet.begin(), endit = tmpSet.end();
+      while (it != endit)
+        {
+          pos = std::find(result.begin(), result.end(), *it);
+          pos = std::find(++pos, result.end(), *it);
+          while (pos != result.end())
+            {
+              pos = result.erase(pos);
+              pos = std::find(pos, result.end(), *it);
+            }
+          ++it;
+        }
+    }
+  return result;
+}
+
+/*
 void SBMLExporter::findUsedFunctions(CEvaluationNode* pNode, std::list<const CEvaluationTree*>* usedFunctionList, CCopasiDataModel* pDataModel)
 {
   CFunctionDB* pFunDB = pDataModel->getFunctionList();
@@ -1539,7 +1634,7 @@ void SBMLExporter::findUsedFunctions(CEvaluationNode* pNode, std::list<const CEv
     {
       if (CEvaluationNode::type((*treeIt).getType()) == CEvaluationNode::CALL)
         {
-          // find used function used in the corresponding function
+          // find function used in the corresponding function
           CEvaluationTree* pFun = pFunDB->findFunction((*treeIt).getData());
           if (!pFun)
             {
@@ -1627,30 +1722,96 @@ void SBMLExporter::findUsedFunctions(CEvaluationNode* pNode, std::list<const CEv
       ++treeIt;
     }
 }
+ */
 
-void SBMLExporter::createFunctionDefinitions()
+void SBMLExporter::createFunctionDefinitions(CCopasiDataModel* pDataModel)
 {
   ListOf* listOfFunctionDefinitions = this->sbmlDocument->getModel()->getListOfFunctionDefinitions();
-  std::list<const CEvaluationTree*>::const_iterator it = this->mpUsedFunctions->begin();
-  std::list<const CEvaluationTree*>::const_iterator endIt = this->mpUsedFunctions->end();
+  std::set<const CEvaluationTree*>::const_iterator it = this->mpUsedFunctions->begin();
+  std::set<const CEvaluationTree*>::const_iterator endIt = this->mpUsedFunctions->end();
+  std::list<const CEvaluationTree*> sortedFunctions;
+  // now we have to find all indirectly used functions
   while (it != endIt)
+    {
+      std::list<const CEvaluationTree*> predecessors;
+      predecessors.push_back(*it);
+      std::list<const CEvaluationTree*> tmpList = findUsedFunctions((*it)->getRoot(), predecessors, pDataModel);
+      sortedFunctions.insert(sortedFunctions.end(), tmpList.begin(), tmpList.end());
+      ++it;
+    }
+  // TODO add any additional functions in the sbml model that are not used
+  // unfortunatelly this is not possible right now since it can not be
+  // determined which COPASI function belongs to which SBML function
+  // definition and since the SBML ids on function definitions must not be
+  // unique, we can't find out.
+  // e.g. if two SBML files have been imported and each had a function
+  // definitions with the id "function_1", we have two functions in the
+  // database with this sbml id and we no longer know which of them belongs to
+  // the current model.
+
+  // eliminate all duplicates
+  // only keep the first occurence of each function
+  this->mpUsedFunctions->clear();
+  this->mpUsedFunctions->insert(sortedFunctions.begin(), sortedFunctions.end());
+  if (this->mpUsedFunctions->size() != sortedFunctions.size())
+    {
+      std::list<const CEvaluationTree*>::iterator pos;
+      it = this->mpUsedFunctions->begin();
+      endIt = this->mpUsedFunctions->end();
+      while (it != endIt)
+        {
+          pos = std::find(sortedFunctions.begin(), sortedFunctions.end(), *it);
+          pos = std::find(++pos, sortedFunctions.end(), *it);
+          while (pos != sortedFunctions.end())
+            {
+              pos = sortedFunctions.erase(pos);
+              pos = std::find(pos, sortedFunctions.end(), *it);
+            }
+          ++it;
+        }
+    }
+  assert(this->mpUsedFunctions->size() == sortedFunctions.size());
+  std::list<const CEvaluationTree*>::reverse_iterator rit = sortedFunctions.rbegin();
+  std::list<const CEvaluationTree*>::reverse_iterator rendit = sortedFunctions.rend();
+  while (rit != rendit)
     {
       // delete an existing function definition with this name
       // add the new function definition
       unsigned int i, iMax = listOfFunctionDefinitions->size();
       for (i = 0; i < iMax;++i)
         {
-          if (static_cast<FunctionDefinition*>(listOfFunctionDefinitions->get(i))->getId() == (*it)->getSBMLId())
+          if (static_cast<FunctionDefinition*>(listOfFunctionDefinitions->get(i))->getId() == (*rit)->getSBMLId())
             {
-              listOfFunctionDefinitions->remove(i);
+              delete listOfFunctionDefinitions->remove(i);
               break;
             }
         }
-      const CEvaluationTree* tree = (*it);
-      std::string on = tree->getObjectName();
+      // add a new function definition
+      const CEvaluationTree* tree = (*rit);
+      //std::string on = tree->getObjectName();
       std::string id = tree->getSBMLId();
+      if (id.empty())
+        {
+          // we have a problem since we now would have to go back and change all
+          // occurences
+          fatalError();
+        }
       this->createSBMLFunctionDefinitionFromCEvaluationTree((*it));
-      ++it;
+      ++rit;
+    }
+  // since all new function definitions were added at the end, the function
+  // definitions in the sbml model that did not get removed above might be in
+  // the wrong place, e.g. if they call a function that was newly added.
+  // so we must remove those old function definitions and add them at the end
+  unsigned int i, iMax = listOfFunctionDefinitions->size() - sortedFunctions.size();
+  for (i = 0;i < iMax;++i)
+    {
+      FunctionDefinition* pFunDef = dynamic_cast<FunctionDefinition*>(listOfFunctionDefinitions->remove(0));
+      assert(pFunDef != NULL);
+      if (pFunDef != NULL)
+        {
+          listOfFunctionDefinitions->appendAndOwn(pFunDef);
+        }
     }
 }
 
@@ -1847,7 +2008,7 @@ void SBMLExporter::setExportExpressions(bool value)
   this->mExportExpressions = value;
 }
 
-const std::list<const CEvaluationTree*>* SBMLExporter::getUsedFunctionList() const
+const std::set<const CEvaluationTree*>* SBMLExporter::getUsedFunctionList() const
   {
     return this->mpUsedFunctions;
   }
@@ -1932,9 +2093,8 @@ Rule* SBMLExporter::createRuleFromCModelEntity(CModelEntity* pME, CCopasiDataMod
                 }
             }
           this->checkExpressionObjects(pME->getExpressionPtr()->getRoot());
-          std::list<const CEvaluationTree*>* usedFunctionList = new std::list<const CEvaluationTree*>;
-          this->findUsedFunctions(pME->getExpressionPtr()->getRoot(), usedFunctionList, pDataModel);
-          pdelete(usedFunctionList);
+          std::set<const CEvaluationTree*> usedFunctionSet = this->findDirectlyUsedFunctions(pME->getExpressionPtr()->getRoot(), pDataModel);
+          this->mpUsedFunctions->insert(usedFunctionSet.begin(), usedFunctionSet.end());
           // now we set the new expression
           ASTNode* pRootNode = pME->getExpressionPtr()->getRoot()->toAST();
           pRateRule->setMath(pRootNode);
@@ -2008,9 +2168,8 @@ Rule* SBMLExporter::createRuleFromCModelEntity(CModelEntity* pME, CCopasiDataMod
                 }
             }
           this->checkExpressionObjects(pME->getExpressionPtr()->getRoot());
-          std::list<const CEvaluationTree*>* usedFunctionList = new std::list<const CEvaluationTree*>;
-          this->findUsedFunctions(pME->getExpressionPtr()->getRoot(), usedFunctionList, pDataModel);
-          pdelete(usedFunctionList);
+          std::set<const CEvaluationTree*> usedFunctionSet = this->findDirectlyUsedFunctions(pME->getExpressionPtr()->getRoot(), pDataModel);
+          this->mpUsedFunctions->insert(usedFunctionSet.begin(), usedFunctionSet.end());
           // now we set the new expression
           ASTNode* pRootNode = pME->getExpressionPtr()->getRoot()->toAST();
           pAssignmentRule->setMath(pRootNode);
@@ -2114,8 +2273,8 @@ void SBMLExporter::exportRules(std::vector<Rule*>& rules)
       // there must be some dependency loops
       fatalError();
     }
-  // since we create all rules from scratch and existing rules are deleted when
   Model* pModel = sbmlDocument->getModel();
+  // since we create all rules from scratch and existing rules are deleted when
   // the new rule is created, we now have to clean the remaining rules
   while (pModel->getListOfRules()->size() > 0)
     {

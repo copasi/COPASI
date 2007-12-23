@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-//   $Revision: 1.169 $
+//   $Revision: 1.169.2.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/11/15 21:18:07 $
+//   $Author: gauges $
+//   $Date: 2007/12/23 16:18:48 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -951,6 +951,18 @@ CEvaluationNodeVariable* CReaction::object2variable(CEvaluationNodeObject* objec
                       replacementMap[id] = std::make_pair(object, pFunParam);
                     }
                 }
+              else if (dynamic_cast<CModel*>(object))
+                {
+                  id = object->getObjectName();
+                  id = this->escapeId(id);
+                  pVariableNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, id);
+                  if (replacementMap.find(id) == replacementMap.end())
+                    {
+                      CFunctionParameter* pFunParam = new CFunctionParameter(id, CFunctionParameter::FLOAT64,
+                                                      CFunctionParameter::TIME);
+                      replacementMap[id] = std::make_pair(object, pFunParam);
+                    }
+                }
               else
                 {
                   // error
@@ -970,6 +982,7 @@ CEvaluationNodeVariable* CReaction::object2variable(CEvaluationNodeObject* objec
               replacementMap[id] = std::make_pair(object, pFunParam);
             }
         }
+      /*
       else if (dynamic_cast<CModel*>(object))
         {
           // usage = "TIME"
@@ -982,6 +995,12 @@ CEvaluationNodeVariable* CReaction::object2variable(CEvaluationNodeObject* objec
                                               CFunctionParameter::TIME);
               replacementMap[id] = std::make_pair(object, pFunParam);
             }
+        }
+        */
+      else
+        {
+          // error
+          CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 4);
         }
     }
   return pVariableNode;

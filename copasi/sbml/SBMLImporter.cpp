@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.189.2.3 $
+//   $Revision: 1.189.2.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/12/22 21:07:20 $
+//   $Date: 2007/12/23 16:18:48 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -482,7 +482,22 @@ CFunction* SBMLImporter::createCFunctionFromFunctionDefinition(const FunctionDef
   CFunction* pTmpFunction = this->createCFunctionFromFunctionTree(sbmlFunction);
   if (pTmpFunction)
     {
-      pTmpFunction->setSBMLId(sbmlFunction->getId());
+      std::string sbmlId = sbmlFunction->getId();
+      pTmpFunction->setSBMLId(sbmlId);
+      // check if the id is already taken by another function definition, maybe
+      // from an earlier import, if this is the case, delete the id on the old
+      // function definition
+      // if we don't do this, two functions might have the same SBML id during
+      // export which makes the exporter code so much more difficult
+      unsigned int i, iMax = this->functionDB->loadedFunctions().size();
+      for (i = 0;i < iMax;++i)
+        {
+          CEvaluationTree* pFun = this->functionDB->loadedFunctions()[i];
+          if (pFun->getSBMLId() == sbmlId)
+            {
+              pFun->setSBMLId("");
+            }
+        }
       std::string functionName = sbmlFunction->getName();
       if (functionName == "")
         {
@@ -556,6 +571,8 @@ CFunction* SBMLImporter::createCFunctionFromFunctionTree(const FunctionDefinitio
               ASTNode* pTmpNode = root.removeChild(iMax);
               root.addChild(pVarNode);
               root.addChild(pTmpNode);
+              // increase iMax since we now have one more child
+              ++iMax;
               pFun->addVariable(timeVariableName);
               this->mExplicitelyTimeDependentFunctionDefinitions.insert(pSBMLFunction->getId());
             }
@@ -2321,7 +2338,7 @@ void SBMLImporter::replaceTimeNodeNames(ConverterASTNode* pNode)
   if (!pNode) return;
   if (pNode->getType() == AST_NAME_TIME)
     {
-      pNode->setName(this->mpCopasiModel->getCN().c_str());
+      pNode->setName(this->mpCopasiModel->getObject(CCopasiObjectName("Reference=Time"))->getCN().c_str());
     }
   else
     {
