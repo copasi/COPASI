@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.h,v $
-//   $Revision: 1.55.2.1 $
+//   $Revision: 1.55.2.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/12/23 16:18:49 $
+//   $Date: 2007/12/23 18:50:25 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -192,7 +192,7 @@ class SBMLExporter
      * This also covers function called by function call etc.
      * If a loop is encountered this throws an exception.
      */
-    const std::list<const CEvaluationTree*> SBMLExporter::findUsedFunctions(const CEvaluationNode* pNode, const std::list<const CEvaluationTree*>& predecessors, CCopasiDataModel* pDataModel);
+    const std::list<const CEvaluationTree*> findUsedFunctions(const CEvaluationNode* pNode, const std::list<const CEvaluationTree*>& predecessors, CCopasiDataModel* pDataModel);
 
     /**
      * This method finds all direct function calls in a CEvaluationNode based
