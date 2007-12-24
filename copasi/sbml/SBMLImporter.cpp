@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.189.2.4 $
+//   $Revision: 1.189.2.5 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/12/23 16:18:48 $
+//   $Date: 2007/12/24 06:06:05 $
 // End CVS Header
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -1203,7 +1203,11 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                       tmpNode2->setName(compartment->getSBMLId().c_str());
                       tmpNode1->addChild(tmpNode2);
                       node = tmpNode1;
-                      if (!hasOnlySubstanceUnitPresent && compartment->getInitialValue() == 1.0)
+                      std::map<CCopasiObject*, SBase*>::const_iterator pos = copasi2sbmlmap.find(const_cast<CCompartment*>(compartment));
+                      assert(pos != copasi2sbmlmap.end());
+                      Compartment* pSBMLCompartment = dynamic_cast<Compartment*>(pos->second);
+                      assert(pSBMLCompartment != NULL);
+                      if (!hasOnlySubstanceUnitPresent && ((this->mLevel == 1 && pSBMLCompartment->isSetVolume()) || (this->mLevel >= 2 && pSBMLCompartment->isSetSize())) && pSBMLCompartment->getSize() == 1.0)
                         {
                           // we have to check if all species used in the reaction
                           // have the hasOnlySubstance flag set
@@ -2301,7 +2305,10 @@ void SBMLImporter::restoreFunctionDB()
     {
       CEvaluationTree* pTree = this->functionDB->findFunction(*it2);
       assert(pTree);
-      this->functionDB->removeFunction(pTree->getKey());
+      if (pTree->getType() == CEvaluationTree::UserDefined)
+        {
+          this->functionDB->removeFunction(pTree->getKey());
+        }
       ++it2;
     }
 }
