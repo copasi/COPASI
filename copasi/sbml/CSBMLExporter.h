@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/12/12 09:10:54 $
+//   $Date: 2008/01/02 10:51:50 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -18,7 +18,9 @@
 #include <set>
 #include <map>
 
-#include "copasi/function/CEvaluationNodeFunction.h";
+#include "copasi.h"
+
+#include "copasi/function/CEvaluationNodeFunction.h"
 
 class SBase;
 class SBMLDocument;
@@ -426,7 +428,7 @@ class CSBMLExporter
      * replaces all unsupported nodes with constructs supported by SBML Level 1
      * The caller is responsible for freeing the memory of the returned object.
      */
-    static ASTNode* CSBMLExporter::replaceL1IncompatibleNodes(const ASTNode* pNode);
+    static ASTNode* replaceL1IncompatibleNodes(const ASTNode* pNode);
   };
 
 #endif // CSBLExporter_H__

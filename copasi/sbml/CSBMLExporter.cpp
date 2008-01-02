@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/01/02 09:00:44 $
+//   $Date: 2008/01/02 10:51:50 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -935,11 +935,10 @@ const std::map<std::string, const SBase*> CSBMLExporter::createIdMap(const Model
     {
       idMap.insert(std::make_pair(sbmlModel.getListOfLayouts()->getId(), sbmlModel.getListOfLayouts()));
     }
-  iMax = sbmlModel->getNumLayouts();
+  iMax = sbmlModel.getListOfLayouts()->size();
   for (i = 0;i < iMax;++i)
     {
       const Layout* pLayout = sbmlModel.getLayout(i);
-      const SBase* pSBase = NULL;
       if (pLayout != NULL)
         {
           if (pLayout->isSetId())
@@ -1181,7 +1180,7 @@ void CSBMLExporter::checkForUnsupportedFunctionCalls(const CCopasiDataModel& dat
   // version
   std::set<CEvaluationNodeFunction::SubType> unsupportedFunctionTypes = CSBMLExporter::createUnsupportedFunctionTypeSet(sbmlLevel);
   // check all metabolites,parameters and compartments
-  // TODO make sure the list of assignments and initial assignments is filled
+  // make sure the list of assignments and initial assignments is filled
   // before this function is called
   const CModel* pModel = dataModel.getModel();
   assert(pModel);
@@ -1208,7 +1207,7 @@ void CSBMLExporter::checkForUnsupportedFunctionCalls(const CCopasiDataModel& dat
         }
     }
   // if we already have a list of used functions, we can go through this here
-  // TODO make sure the list of used function has been filled before this is
+  // make sure the list of used function has been filled before this is
   // called
   iMax = mUsedFunctions.size();
   std::set<CFunction*>::iterator it = this->mUsedFunctions.begin(), endit = this->mUsedFunctions.end();
@@ -1297,9 +1296,9 @@ void CSBMLExporter::checkForInitialAssignments(const CCopasiDataModel& dataModel
  */
 void CSBMLExporter::createFunctionDefinitions(CCopasiDataModel& dataModel)
 {
-  // TODO make sure the list of used functions is filled before this is
+  // make sure the list of used functions is filled before this is
   // called
-  // TODO make sure the mCOPASI2SBMLMap is up to date
+  // make sure the mCOPASI2SBMLMap is up to date
 
   // find all indirectly called functions
   std::vector<CFunction*> usedFunctions = findUsedFunctions(this->mUsedFunctions, dataModel.getFunctionList());
@@ -1512,8 +1511,13 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
   createCompartments(dataModel);
   createMetabolites(dataModel);
   createParameters(dataModel);
+
   // TODO here we should check the expressions but the function definitions
-  // TODO have not been created yet, so we can't !!!
+  // TODO have not been created yet, so we can't
+  // TODO Maybe we don't have to do all checks here.
+  // TODO it would probably be enough to check if the expressions are valid and
+  // TODO to check the function calls later on when the functions are created.
+
   // only export initial assignments for Level 2 Version 2 and above
   if (this->mSBMLLevel != 1 && !(this->mSBMLLevel == 2 && this->mSBMLVersion == 1))
     {
@@ -1735,14 +1739,17 @@ const std::vector<SBMLIncompatibility> CSBMLExporter::isModelSBMLCompatible(cons
   switch (sbmlLevel)
     {
     case 2:
+      /*
       // check all events
       eventIt = pModel->getEvents().begin();
       eventEndit = pModel->getEvents().end();
       while (eventIt != eventEndit)
         {
           // TODO add code to check event expressions
+          // TODO this has to be done once events are funktional
           ++eventIt;
         }
+        */
       switch (sbmlVersion)
         {
         case 1:
@@ -1801,13 +1808,13 @@ void CSBMLExporter::checkForEvents(const CCopasiDataModel& dataModel, std::vecto
 
 void CSBMLExporter::updateCOPASI2SBMLMap(const CCopasiDataModel& dataModel)
 {
-  // TODO make sure the idMap is already uptodate
+  // make sure the idMap is already uptodate
   // go through the existing map and create a new one with all SBML
   // objects updated with objects from the copied
   // model
   this->mCOPASI2SBMLMap.clear();
-  std::map<CCopasiObject*, SBase*>::const_iterator it = dataModel.getCopasi2SBMLMap().begin();
-  std::map<CCopasiObject*, SBase*>::const_iterator endit = dataModel.getCopasi2SBMLMap().end();
+  std::map<CCopasiObject*, SBase*>::const_iterator it = const_cast<CCopasiDataModel&>(dataModel).getCopasi2SBMLMap().begin();
+  std::map<CCopasiObject*, SBase*>::const_iterator endit = const_cast<CCopasiDataModel&>(dataModel).getCopasi2SBMLMap().end();
   while (it != endit)
     {
       std::map<std::string, const SBase*>::iterator pos = this->mIdMap.find(it->second->getId());
@@ -2062,7 +2069,7 @@ CEvaluationNode* CSBMLExporter::createExpressionTree(const CEvaluationNode* cons
   switch (CEvaluationNode::type(pNode->getType()))
     {
     case CEvaluationNode::CALL:
-      pFun = dynamic_cast<const CFunction*>(const_cast<CFunctionDB*>(dataModel.getFunctionList())->findFunction(pNode->getData()));
+      pFun = dynamic_cast<const CFunction*>(const_cast<CFunctionDB*>(const_cast<CCopasiDataModel&>(dataModel).getFunctionList())->findFunction(pNode->getData()));
       assert(pFun);
       pResultNode = CSBMLExporter::createExpressionTree(pFun->getRoot(), parameterMap, dataModel);
       break;
@@ -2242,7 +2249,7 @@ const std::set<CFunction*> CSBMLExporter::createFunctionSetFromFunctionNames(con
 
 void CSBMLExporter::orderRules(const CCopasiDataModel& dataModel)
 {
-  // TODO make sure the vector of rules is filled
+  // make sure the vector of rules is filled
   std::map<CModelEntity*, std::set<const CModelEntity*> > dependencyMap;
   std::vector<CModelEntity*>::iterator it = mAssignmentVector.begin(), endit = this->mAssignmentVector.end();
   while (it != endit)
@@ -2328,11 +2335,12 @@ void CSBMLExporter::convertToLevel1()
   // kinetic laws and delete the functions
   // initial assignments do not need to be considered since they can not be
   // exported to Level 1 anyway
-  // TODO check all the resulting expressions for piecewise functions
+  //
+  // checking of the resulting expressions for piecewise functions
+  // is done in the convertASTTreeToLevel1 method
   if (this->mpSBMLDocument == NULL) return;
   Model* pModel = this->mpSBMLDocument->getModel();
   Rule* pRule = NULL;
-  Event* pEvent = NULL;
   Reaction* pReaction = NULL;
   KineticLaw* pLaw = NULL;
   unsigned int i, iMax = pModel->getNumRules();
@@ -2347,6 +2355,8 @@ void CSBMLExporter::convertToLevel1()
       message += "\"";
       CSBMLExporter::convertASTTreeToLevel1(pMath, pModel, message);
     }
+  /*
+  Event* pEvent = NULL;
   iMax = pModel->getNumEvents();
   for (i = 0;i < iMax;++i)
     {
@@ -2402,6 +2412,7 @@ void CSBMLExporter::convertToLevel1()
             }
         }
     }
+    */
   iMax = pModel->getNumReactions();
   for (i = 0;i < iMax;++i)
     {
@@ -2442,6 +2453,8 @@ ASTNode* CSBMLExporter::replaceL1IncompatibleNodes(const ASTNode* pNode)
   unsigned int i, iMax;
   switch (pNode->getType())
     {
+    case AST_FUNCTION_PIECEWISE:
+      break;
     case AST_CONSTANT_E:
       // replace by exp(1)
       pResult = new ASTNode(AST_FUNCTION_EXP);
