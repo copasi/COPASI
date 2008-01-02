@@ -1,5 +1,17 @@
+# Begin CVS Header 
+#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/stochastic-testsuite/stochastic-testsuite.pro,v $ 
+#   $Revision: 1.9 $ 
+#   $Name:  $ 
+#   $Author: gauges $ 
+#   $Date: 2008/01/02 10:16:31 $ 
+# End CVS Header 
+
+# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc. and EML Research, gGmbH. 
+# All rights reserved. 
+
 ######################################################################
-# $Revision: 1.8 $ $Author: shoops $ $Date: 2006/10/30 21:21:19 $  
+# $Revision: 1.9 $ $Author: gauges $ $Date: 2008/01/02 10:16:31 $  
 ######################################################################
 
 TEMPLATE = app
@@ -9,7 +21,8 @@ CONFIG -= qt
 include(../copasi/common.pri)
 
 DEPENDPATH += ../copasi/ 
-INCLUDEPATH += ../copasi/
+INCLUDEPATH += ..
+INCLUDEPATH += ../copasi
 
 COPASI_LIBS += COPASISE
 

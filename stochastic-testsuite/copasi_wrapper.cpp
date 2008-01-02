@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/stochastic-testsuite/copasi_wrapper.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/05/15 14:44:03 $
+//   $Author: gauges $
+//   $Date: 2008/01/02 10:16:31 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -15,24 +15,24 @@
 #include <iostream>
 #include <stdlib.h>
 
-#include "copasi.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiContainer.h"
-#include "model/CMetab.h"
-#include "report/CCopasiObjectName.h"
-#include "utilities/CCopasiVector.h"
-#include "model/CModel.h"
-#include "utilities/CCopasiException.h"
-#include "commandline/COptionParser.h"
-#include "commandline/COptions.h"
+#include "copasi/copasi.h"
+#include "copasi/CopasiDataModel/CCopasiDataModel.h"
+#include "copasi/report/CCopasiContainer.h"
+#include "copasi/model/CMetab.h"
+#include "copasi/report/CCopasiObjectName.h"
+#include "copasi/utilities/CCopasiVector.h"
+#include "copasi/model/CModel.h"
+#include "copasi/utilities/CCopasiException.h"
+#include "copasi/commandline/COptionParser.h"
+#include "copasi/commandline/COptions.h"
 
-#include "trajectory/CTrajectoryTask.h"
-#include "trajectory/CTrajectoryMethod.h"
-#include "trajectory/CTrajectoryProblem.h"
-#include "report/CReportDefinitionVector.h"
-#include "report/CReportDefinition.h"
-#include "scan/CScanTask.h"
-#include "scan/CScanProblem.h"
+#include "copasi/trajectory/CTrajectoryTask.h"
+#include "copasi/trajectory/CTrajectoryMethod.h"
+#include "copasi/trajectory/CTrajectoryProblem.h"
+#include "copasi/report/CReportDefinitionVector.h"
+#include "copasi/report/CReportDefinition.h"
+#include "copasi/scan/CScanTask.h"
+#include "copasi/scan/CScanProblem.h"
 
 int main(int argc, char *argv[])
 {
