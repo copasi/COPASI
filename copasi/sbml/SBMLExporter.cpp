@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-//   $Revision: 1.121.2.5 $
+//   $Revision: 1.121.2.6 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/12/23 16:18:49 $
+//   $Author: shoops $
+//   $Date: 2008/01/02 20:51:28 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -1090,7 +1090,10 @@ KineticLaw* SBMLExporter::createSBMLKineticLawFromCReaction(CReaction* copasiRea
           pExpr->setRoot(pTmpRoot);
           pExpr->compile();
           std::set<const CEvaluationTree*> usedFunctionSet = this->findDirectlyUsedFunctions(pTmpRoot, pDataModel);
-          this->mpUsedFunctions->insert(usedFunctionSet.begin(), usedFunctionSet.end());
+          std::set<const CEvaluationTree*>::iterator it = usedFunctionSet.begin();
+          std::set<const CEvaluationTree*>::iterator end = usedFunctionSet.end();
+          for (; it != end; ++it)
+            this->mpUsedFunctions->insert(*it);
           node = pTmpRoot->toAST();
           pdelete(pExpr);
         }
@@ -1603,7 +1606,11 @@ const std::list<const CEvaluationTree*> SBMLExporter::findUsedFunctions(const CE
   // eliminate all duplicates from result
   // that is, only keep the first occurance of each function in the list
   std::set<const CEvaluationTree*> tmpSet;
-  tmpSet.insert(result.begin(), result.end());
+  std::list<const CEvaluationTree*>::iterator itResult = result.begin();
+  std::list<const CEvaluationTree*>::iterator endResult = result.end();
+  for (; itResult != endResult; ++itResult)
+    tmpSet.insert(*itResult);
+
   if (tmpSet.size() != result.size())
     {
       std::list<const CEvaluationTree*>::iterator pos;
@@ -1752,7 +1759,11 @@ void SBMLExporter::createFunctionDefinitions(CCopasiDataModel* pDataModel)
   // eliminate all duplicates
   // only keep the first occurence of each function
   this->mpUsedFunctions->clear();
-  this->mpUsedFunctions->insert(sortedFunctions.begin(), sortedFunctions.end());
+  std::list<const CEvaluationTree*>::iterator itSortedFunctions = sortedFunctions.begin();
+  std::list<const CEvaluationTree*>::iterator endSortedFunctions = sortedFunctions.end();
+  for (; itSortedFunctions != endSortedFunctions; ++itSortedFunctions)
+    this->mpUsedFunctions->insert(*itSortedFunctions);
+
   if (this->mpUsedFunctions->size() != sortedFunctions.size())
     {
       std::list<const CEvaluationTree*>::iterator pos;
@@ -2094,7 +2105,11 @@ Rule* SBMLExporter::createRuleFromCModelEntity(CModelEntity* pME, CCopasiDataMod
             }
           this->checkExpressionObjects(pME->getExpressionPtr()->getRoot());
           std::set<const CEvaluationTree*> usedFunctionSet = this->findDirectlyUsedFunctions(pME->getExpressionPtr()->getRoot(), pDataModel);
-          this->mpUsedFunctions->insert(usedFunctionSet.begin(), usedFunctionSet.end());
+          std::set<const CEvaluationTree*>::iterator itUsedFunctionSet = usedFunctionSet.begin();
+          std::set<const CEvaluationTree*>::iterator endUsedFunctionSet = usedFunctionSet.end();
+          for (; itUsedFunctionSet != endUsedFunctionSet; ++itUsedFunctionSet)
+            this->mpUsedFunctions->insert(*itUsedFunctionSet);
+
           // now we set the new expression
           ASTNode* pRootNode = pME->getExpressionPtr()->getRoot()->toAST();
           pRateRule->setMath(pRootNode);
@@ -2169,7 +2184,11 @@ Rule* SBMLExporter::createRuleFromCModelEntity(CModelEntity* pME, CCopasiDataMod
             }
           this->checkExpressionObjects(pME->getExpressionPtr()->getRoot());
           std::set<const CEvaluationTree*> usedFunctionSet = this->findDirectlyUsedFunctions(pME->getExpressionPtr()->getRoot(), pDataModel);
-          this->mpUsedFunctions->insert(usedFunctionSet.begin(), usedFunctionSet.end());
+          std::set<const CEvaluationTree*>::iterator itUsedFunctionSet = usedFunctionSet.begin();
+          std::set<const CEvaluationTree*>::iterator endUsedFunctionSet = usedFunctionSet.end();
+          for (; itUsedFunctionSet != endUsedFunctionSet; ++itUsedFunctionSet)
+            this->mpUsedFunctions->insert(*itUsedFunctionSet);
+
           // now we set the new expression
           ASTNode* pRootNode = pME->getExpressionPtr()->getRoot()->toAST();
           pAssignmentRule->setMath(pRootNode);
