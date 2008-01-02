@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/12/05 12:05:17 $
+//   $Date: 2008/01/02 09:00:44 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -44,11 +44,6 @@
 #include "sbml/Event.h"
 #include "sbml/EventAssignment.h"
 #include "compareExpressions/compare_utilities.h"
-
-// TODO maybe replace checkForUnsupportedFunctionCalls with
-// TODO checkForUnsupportedNodes
-// TODO This will check for unsupported function calls, unsupported constant nodes
-// TODO (exponentiale, pi, nan and inf)
 
 /**
  * Creates the units for the SBML model.
@@ -477,7 +472,7 @@ void CSBMLExporter::createReactions(CCopasiDataModel& dataModel)
  */
 void CSBMLExporter::createReaction(CReaction& reaction, CCopasiDataModel& dataModel)
 {
-  // TODO make sure the mCOPASI2SBMLMap is already updated
+  // make sure the mCOPASI2SBMLMap is already updated
   Reaction* pSBMLReaction = NULL;
   // if the reaction has nothing set but the name, we don't do anything
   if (reaction.getChemEq().getSubstrates().size() == 0 &&
@@ -647,7 +642,7 @@ void CSBMLExporter::createReaction(CReaction& reaction, CCopasiDataModel& dataMo
  */
 void CSBMLExporter::createInitialAssignments(CCopasiDataModel& dataModel)
 {
-  // TODO make sure the mInitialAssignmentVector has been filled already
+  // make sure the mInitialAssignmentVector has been filled already
 
   // create the initial assignments
   unsigned int i, iMax = this->mInitialAssignmentVector.size();
@@ -732,7 +727,7 @@ void CSBMLExporter::createInitialAssignment(const CModelEntity& modelEntity, CCo
  */
 void CSBMLExporter::createRules(CCopasiDataModel& dataModel)
 {
-  // TODO make sure the mAssignmentVector has been filled already
+  // make sure the mAssignmentVector has been filled already
   // order the rules for Level 1 export
   // rules in Level 2 are not ordered.
   if (this->mSBMLLevel == 1 || (this->mSBMLLevel == 2 && this->mSBMLVersion == 1))
@@ -1517,6 +1512,8 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
   createCompartments(dataModel);
   createMetabolites(dataModel);
   createParameters(dataModel);
+  // TODO here we should check the expressions but the function definitions
+  // TODO have not been created yet, so we can't !!!
   // only export initial assignments for Level 2 Version 2 and above
   if (this->mSBMLLevel != 1 && !(this->mSBMLLevel == 2 && this->mSBMLVersion == 1))
     {
@@ -1548,26 +1545,30 @@ const std::set<CEvaluationNodeFunction::SubType> CSBMLExporter::createUnsupporte
   std::set<CEvaluationNodeFunction::SubType> unsupportedFunctionTypes;
   if (sbmlLevel == 1)
     {
-      // TODO check what to do with all the functions that are not supported by
-      // TODO SBML Level 1
-      // TODO Also take care of other unsupported nodes in L1
-      // TODO (inf,nan,pi,exponentiale)
-      // TODO root has to be converted to pow
-      // TODO do we actually have root???
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::SEC);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::CSC);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::COT);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::SINH);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::COSH);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::TANH);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::SECH);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::CSCH);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::COTH);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::ARCSINH);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::ARCCOSH);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::ARCTANH);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::ARCSECH);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::ARCCSCH);
+      // check what to do with all the functions that are not supported by
+      // SBML Level 1
+      // Also take care of other unsupported nodes in L1
+      // (inf,nan,pi,exponentiale)
+      // most functions that are not supported by Level 1, but Level 2
+      //  can not be converted to something that can be exported.
+      // Roundtripping of those  will not succeed, but the results should stay
+      // the same. The only function that can not be correctly converted
+      // is ARCCOTH since we would need a piecewise for that which is not
+      // supported in Level 1
+      //unsupportedFunctionTypes.insert(CEvaluationNodeFunction::SEC);
+      //unsupportedFunctionTypes.insert(CEvaluationNodeFunction::CSC);
+      //unsupportedFunctionTypes.insert(CEvaluationNodeFunction::COT);
+      //unsupportedFunctionTypes.insert(CEvaluationNodeFunction::SINH);
+      //unsupportedFunctionTypes.insert(CEvaluationNodeFunction::COSH);
+      //unsupportedFunctionTypes.insert(CEvaluationNodeFunction::TANH);
+      //unsupportedFunctionTypes.insert(CEvaluationNodeFunction::SECH);
+      //unsupportedFunctionTypes.insert(CEvaluationNodeFunction::CSCH);
+      //unsupportedFunctionTypes.insert(CEvaluationNodeFunction::COTH);
+      //unsupportedFunctionTypes.insert(CEvaluationNodeFunction::ARCSINH);
+      //unsupportedFunctionTypes.insert(CEvaluationNodeFunction::ARCCOSH);
+      //unsupportedFunctionTypes.insert(CEvaluationNodeFunction::ARCTANH);
+      //unsupportedFunctionTypes.insert(CEvaluationNodeFunction::ARCSECH);
+      //unsupportedFunctionTypes.insert(CEvaluationNodeFunction::ARCCSCH);
       unsupportedFunctionTypes.insert(CEvaluationNodeFunction::ARCCOTH);
       unsupportedFunctionTypes.insert(CEvaluationNodeFunction::RNORMAL);
       unsupportedFunctionTypes.insert(CEvaluationNodeFunction::RUNIFORM);
@@ -2323,10 +2324,11 @@ void CSBMLExporter::findModelEntityDependencies(const CEvaluationNode* pNode, co
 
 void CSBMLExporter::convertToLevel1()
 {
-  // TODO expand all function calls in rules, events and
+  // expand all function calls in rules, events and
   // kinetic laws and delete the functions
   // initial assignments do not need to be considered since they can not be
   // exported to Level 1 anyway
+  // TODO check all the resulting expressions for piecewise functions
   if (this->mpSBMLDocument == NULL) return;
   Model* pModel = this->mpSBMLDocument->getModel();
   Rule* pRule = NULL;
