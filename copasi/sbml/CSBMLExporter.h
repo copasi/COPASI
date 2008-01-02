@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/01/02 10:51:50 $
+//   $Date: 2008/01/02 17:03:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -66,6 +66,8 @@ class CSBMLExporter
      * Destruktor
      */
     ~CSBMLExporter();
+
+    SBMLDocument* getSBMLDocument(){return this->mpSBMLDocument;};
 
     /**
      * Export the model to SBML.
@@ -199,9 +201,16 @@ class CSBMLExporter
 
     /**
      * Checks all expressions in the given datamodel for piecewise defined
-     *functions.
+     * functions.
      */
     static void checkForPiecewiseFunctions(const CCopasiDataModel& dataModel, std::vector<SBMLIncompatibility>& result);
+
+    /**
+     * Checks the given node and all it's children for the occurence of
+     * piecewise functions.
+     */
+    static void checkForPiecewiseFunctions(const CEvaluationNode& node, std::vector<SBMLIncompatibility>& result, const std::string& objectName, const std::string& objectType);
+
     /**
      * Checks wether the given data model can be exported to SBML Level1
      * If it can be exported, the result vector will be empty, otherwise it will
@@ -237,7 +246,8 @@ class CSBMLExporter
      * If it can be exported, the result vector will be empty, otherwise it will
      * contain a number of messages that specify why it can't be exported.
      */
-    static void isExpressionSBMLCompatible(const CEvaluationTree& expr, const CCopasiDataModel& dataModel, int sbmlLevel, int sbmlVersion, std::vector<SBMLIncompatibility>& result);
+    static void isExpressionSBMLCompatible(const CEvaluationTree& expr, const CCopasiDataModel& dataModel, int sbmlLevel, int sbmlVersion, std::vector<SBMLIncompatibility>& result,
+                                           const std::string& objectName, const std::string& objectType);
 
     /**
      * Checks wether the rule in the given model entity can be exported to SBML Level2 Version1.
@@ -270,15 +280,6 @@ class CSBMLExporter
                                           std::vector<SBMLIncompatibility>& result);
 
     /**
-     * This static methods checks, wether the given CEvaluationTree uses any function calls
-     * that can not be expressed in SBML like the random distribution
-     * functions.
-     */
-    static void checkForUnsupportedFunctionCalls(const CEvaluationTree& tree,
-        const std::set<CEvaluationNodeFunction::SubType>& unsupportedFunctions,
-        std::vector<SBMLIncompatibility>& result);
-
-    /**
      * This static methods checks recursively, whether the given CEvaluationNode constains any function calls
      * that can not be expressed in SBML like the random distribution
      * functions.
@@ -306,8 +307,8 @@ class CSBMLExporter
     KineticLaw* createKineticLaw(const CReaction& reaction, CCopasiDataModel& dataModel);
 
     /**
-     * Go through a CEvaluationNode base tree and return a list of
-     * functions directly called in this tree.
+     * Go through a CEvaluationNode base tree and add the names
+     * of all functions directly called in this tree to the set.
      */
     static void findDirectlyUsedFunctions(const CEvaluationNode* pRootNode, std::set<std::string>& result);
 
@@ -381,10 +382,8 @@ class CSBMLExporter
     /**
      * Remove all compartments, species, parameters and reactions
      * that did not end up in mHandledSBMLObjects during an export.
-     * Additionally remove all function definitions and all unit
-     * definitions that have not been used in the file.
      */
-    void removeUnusedObjects(const CCopasiDataModel& pDataModel);
+    void removeUnusedObjects();
 
     /**
      * Takes a set of functions and recursively finds functions used by those

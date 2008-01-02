@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/incompatibilities.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/11/30 15:55:54 $
+//   $Date: 2008/01/02 17:03:57 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -25,6 +25,7 @@ const INCOMPATIBILITY Incompatibilities[] =
     {5, 2, 2, SBMLIncompatibility::ERROR, "SBMLIncompatibility (5): InitialAssignment found for %s \"%s\".", "InitialAssignments were introduced to SBML Level 2 Version 2. Prior versions of SBML do not support this feature and therefor models using rules can not be exported to SBML Level 1 or SBML Level 2 Version 1."},
     {6, 0, 0, SBMLIncompatibility::ERROR, "SBMLIncompatibility (6): SBML Level %d Version %d is not supported.", "COPASI only supports export to SBML Level 1 Version 2, SBML Level 2 Version 1 and SBML Level 2 Version 3."},
     {7, 2, 1, SBMLIncompatibility::ERROR, "SBMLIncompatibility (7): One or more events found.", "Events were introduced to SBML Level 2 Version 1. Prior versions of SBML do not support this feature and therefore models using events can not be fully exported to SBML Level 1"},
+    {8, 2, 1, SBMLIncompatibility::ERROR, "SBMLIncompatibility (8): Piecewise function definition found in %s with name \"%s\".", "Piecewise function definitions were introduced in SBML Level 2 Version 1. Expressions using them can not be exported to SBML Level 1."},
     // This must be the last element of the message list! Do not delete!
     {9999, 0, 0, SBMLIncompatibility::UNDEFINED, NULL, NULL}
   };
