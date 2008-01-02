@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAMethod.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: isurovts $
-//   $Date: 2007/12/21 11:43:59 $
+//   $Author: ssahle $
+//   $Date: 2008/01/02 11:49:59 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -22,7 +22,7 @@
 
 #include "CTSSAMethod.h"
 #include "CILDMMethod.h"
-#include "CILDMModifiedMethod.h"
+//#include "CILDMModifiedMethod.h"
 #include "CCSPMethod.h"
 
 #include "CTSSAProblem.h"
@@ -47,9 +47,9 @@ CTSSAMethod::createTSSAMethod(CCopasiMethod::SubType subType,
       pMethod = new CILDMMethod();
       break;
 
-    case tssILDMModified:
-      pMethod = new CILDMModifiedMethod();
-      break;
+      //    case tssILDMModified:
+      //      pMethod = new CILDMModifiedMethod();
+      //      break;
 
     case tssCSP:
       pMethod = new CCSPMethod();
