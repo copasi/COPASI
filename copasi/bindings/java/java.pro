@@ -1,12 +1,12 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/java.pro,v $ 
-#   $Revision: 1.24 $ 
+#   $Revision: 1.25 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2007/12/12 14:53:30 $ 
+#   $Date: 2008/01/02 10:18:06 $ 
 # End CVS Header 
 
-# Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc. and EML Research, gGmbH. 
 # All rights reserved. 
 
@@ -23,25 +23,27 @@ COPASI_LIBS += -lCOPASISE
 
 LIBS = $$COPASI_LIBS $$LIBS
 
-INCLUDEPATH += ../..
+INCLUDEPATH += ../../..
 contains(BUILD_OS,Linux){
   !isEmpty(JAVA_HOME){
    isEmpty(JAVA_INCLUDE_PATH){
      INCLUDEPATH += $$JAVA_HOME/include/
+     INCLUDEPATH += $$JAVA_HOME/include/linux
    }
   }
 
   !isEmpty(JAVA_INCLUDE_PATH){
     INCLUDEPATH += $$JAVA_INCLUDE_PATH 
+    INCLUDEPATH += $$JAVA_INCLUDE_PATH/linux
   }
 
 
- LIBS += -llapack
- LIBS += -lblas
- LIBS += -lfl
- LIBS += -lsbml
- LIBS += -lfl
- LIBS += -lexpat
+# LIBS += -llapack
+# LIBS += -lblas
+# LIBS += -lfl
+# LIBS += -lsbml
+# LIBS += -lfl
+# LIBS += -lexpat
 
 
 }

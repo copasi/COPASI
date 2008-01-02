@@ -1,12 +1,12 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/python.pro,v $ 
-#   $Revision: 1.18 $ 
+#   $Revision: 1.19 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2007/12/12 14:53:31 $ 
+#   $Date: 2008/01/02 10:18:06 $ 
 # End CVS Header 
 
-# Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc. and EML Research, gGmbH. 
 # All rights reserved. 
 
@@ -23,7 +23,7 @@ COPASI_LIBS += -lCOPASISE
 
 LIBS = $$COPASI_LIBS $$LIBS
 
-INCLUDEPATH += ../..
+INCLUDEPATH += ../../..
 contains(BUILD_OS,Linux){
 
   !isEmpty(PYTHON_LIB_PATH){
@@ -35,12 +35,12 @@ contains(BUILD_OS,Linux){
   }
 
 
- LIBS += -llapack
- LIBS += -lblas
- LIBS += -lfl
+# LIBS += -llapack
+# LIBS += -lblas
+# LIBS += -lfl
  LIBS += -lpython2.5
- LIBS += -lsbml
- LIBS += -lexpat
+# LIBS += -lsbml
+# LIBS += -lexpat
 
  QMAKE_POST_LINK += ln -sf libCopasiPython.so _COPASI.so
 
@@ -279,5 +279,50 @@ isEmpty(SWIG_PATH){
     PRE_TARGETDEPS += copasi_wrapper.cpp
 }
 
+<<<<<<< python.pro
+PRE_TARGETDEPS += ../../lib/libCOPASISE.a
+#PRE_TARGETDEPS += ../../lib/libCOPASIUI.a
+
+
+contains(BUILD_OS,Linux){
+
+  !isEmpty(PYTHON_LIB_PATH){
+    LIBS += -L$$PYTHON_LIB_PATH
+  }
+
+  !isEmpty(PYTHON_INCLUDE_PATH){
+    INCLUDEPATH += $$PYTHON_INCLUDE_PATH
+  }
+
+
+ LIBS += -llapack
+ LIBS += -lblas
+# LIBS += -lF77
+ LIBS += -lfl
+ LIBS += -lpython2.4
+ LIBS += -lsbml
+ LIBS += -lqwt
+ LIBS += -lexpat
+
+ QMAKE_POST_LINK += ln -sf libCopasiPython.so _COPASI.so
+
+}
+
+contains(BUILD_OS, Darwin) {
+    LIBS += -framework Python
+    LIBS += -framework Quicktime
+    LIBS += -framework Carbon
+    LIBS += -framework Accelerate
+
+  !isEmpty(PYTHON_INCLUDE_PATH){
+    INCLUDEPATH += $$PYTHON_INCLUDE_PATH
+  }
+
+  QMAKE_POST_LINK += ln -sf libCopasiPython.dylib _COPASI.so
+}
+
+
+=======
+>>>>>>> 1.16
 
 SOURCES += copasi_wrapper.cpp
