@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-//   $Revision: 1.121.2.6 $
+//   $Revision: 1.121.2.7 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/01/02 20:51:28 $
+//   $Author: gauges $
+//   $Date: 2008/01/03 20:25:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1093,7 +1093,9 @@ KineticLaw* SBMLExporter::createSBMLKineticLawFromCReaction(CReaction* copasiRea
           std::set<const CEvaluationTree*>::iterator it = usedFunctionSet.begin();
           std::set<const CEvaluationTree*>::iterator end = usedFunctionSet.end();
           for (; it != end; ++it)
-            this->mpUsedFunctions->insert(*it);
+            {
+              this->mpUsedFunctions->insert(*it);
+            }
           node = pTmpRoot->toAST();
           pdelete(pExpr);
         }
@@ -1101,6 +1103,13 @@ KineticLaw* SBMLExporter::createSBMLKineticLawFromCReaction(CReaction* copasiRea
         {
           CEvaluationNode* pExpressionRoot = this->createExpressionTree(copasiReaction->getFunction(), copasiReaction->getParameterMappings(), pDataModel);
           if (!pExpressionRoot) fatalError();
+          std::set<const CEvaluationTree*> usedFunctionSet = this->findDirectlyUsedFunctions(pExpressionRoot, pDataModel);
+          std::set<const CEvaluationTree*>::iterator it = usedFunctionSet.begin();
+          std::set<const CEvaluationTree*>::iterator end = usedFunctionSet.end();
+          for (; it != end; ++it)
+            {
+              this->mpUsedFunctions->insert(*it);
+            }
           node = pExpressionRoot->toAST();
           if (!node) fatalError();
         }
@@ -1744,6 +1753,7 @@ void SBMLExporter::createFunctionDefinitions(CCopasiDataModel* pDataModel)
       predecessors.push_back(*it);
       std::list<const CEvaluationTree*> tmpList = findUsedFunctions((*it)->getRoot(), predecessors, pDataModel);
       sortedFunctions.insert(sortedFunctions.end(), tmpList.begin(), tmpList.end());
+      sortedFunctions.insert(sortedFunctions.end(), *it);
       ++it;
     }
   // TODO add any additional functions in the sbml model that are not used
@@ -1807,7 +1817,7 @@ void SBMLExporter::createFunctionDefinitions(CCopasiDataModel* pDataModel)
           // occurences
           fatalError();
         }
-      this->createSBMLFunctionDefinitionFromCEvaluationTree((*it));
+      this->createSBMLFunctionDefinitionFromCEvaluationTree(tree);
       ++rit;
     }
   // since all new function definitions were added at the end, the function
@@ -2108,8 +2118,9 @@ Rule* SBMLExporter::createRuleFromCModelEntity(CModelEntity* pME, CCopasiDataMod
           std::set<const CEvaluationTree*>::iterator itUsedFunctionSet = usedFunctionSet.begin();
           std::set<const CEvaluationTree*>::iterator endUsedFunctionSet = usedFunctionSet.end();
           for (; itUsedFunctionSet != endUsedFunctionSet; ++itUsedFunctionSet)
-            this->mpUsedFunctions->insert(*itUsedFunctionSet);
-
+            {
+              this->mpUsedFunctions->insert(*itUsedFunctionSet);
+            }
           // now we set the new expression
           ASTNode* pRootNode = pME->getExpressionPtr()->getRoot()->toAST();
           pRateRule->setMath(pRootNode);
