@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.42 $
+//   $Revision: 1.43 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/11/05 15:06:26 $
+//   $Date: 2008/01/04 15:50:30 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -72,6 +72,11 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
           CLPoint c2(dim.getWidth(), dim.getHeight());
           glPainter->setGraphSize(c1, c2);
           glPainter->createGraph(pLayout); // create local data structures
+          // now zoom graph so that it fits into the panel
+          C_FLOAT64 w = 400.0; // initial width of graph panel
+          C_FLOAT64 h = 400.0; // initial height of graph panel
+          C_FLOAT64 z = ((w / dim.getWidth()) < (h / dim.getHeight())) ? w / dim.getWidth() : h / dim.getHeight();
+          glPainter->zoomGraph(z);
           //glPainter->drawGraph(); // create display list
         }
     }
