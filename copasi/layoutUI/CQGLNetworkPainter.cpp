@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.80 $
+//   $Revision: 1.81 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/12/17 11:16:22 $
+//   $Date: 2008/01/04 15:49:36 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -1659,6 +1659,11 @@ void CQGLNetworkPainter::zoomIn()
 void CQGLNetworkPainter::zoomOut()
 {
   zoom(2.0 / 3.0);
+}
+
+void CQGLNetworkPainter::zoomGraph(C_FLOAT64 zoomFactor)
+{
+  this->zoom(zoomFactor);
 }
 
 void CQGLNetworkPainter::zoom(C_FLOAT64 zoomFactor)
