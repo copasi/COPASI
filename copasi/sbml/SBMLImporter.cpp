@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.189.2.5 $
+//   $Revision: 1.189.2.6 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/12/24 06:06:05 $
+//   $Date: 2008/01/04 16:32:26 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -1665,7 +1665,7 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
           if (fatal != -1)
             {
               const XMLError* pSBMLError = sbmlDoc->getError(fatal);
-              CCopasiMessage Message(CCopasiMessage::RAW, MCXML + 2,
+              CCopasiMessage Message(CCopasiMessage::EXCEPTION, MCXML + 2,
                                      pSBMLError->getLine(),
                                      pSBMLError->getColumn(),
                                      pSBMLError->getMessage().c_str());
