@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-//   $Revision: 1.73 $
+//   $Revision: 1.73.2.1 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/12/06 20:47:30 $
+//   $Author: shoops $
+//   $Date: 2008/01/04 17:34:37 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -407,10 +407,17 @@ bool DataModelGUI::importSBML(const std::string & fileName)
     {
       success = CCopasiDataModel::Global->importSBML(fileName, tmpBar);
     }
+
   catch (CCopasiException except)
     {
       pdelete(tmpBar);
       throw except;
+    }
+
+  catch (...)
+    {
+      pdelete(tmpBar);
+      fatalError();
     }
 
   if (success) CCopasiDataModel::Global->getConfiguration()->getRecentSBMLFiles().addFile(fileName);
