@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-//   $Revision: 1.121.2.7 $
+//   $Revision: 1.121.2.8 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/01/03 20:25:31 $
+//   $Date: 2008/01/04 10:40:50 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -68,11 +68,9 @@ const char* SBMLExporter::HTML_FOOTER = "</body>";
 /**
  ** Constructor for the exporter.
  */
-SBMLExporter::SBMLExporter(): sbmlDocument(NULL), mpIdSet(NULL), mpExportHandler(NULL), mExportExpressions(false)
-{
-  this->mpIdSet = new std::set<std::string>;
-  this->mpUsedFunctions = new std::set<const CEvaluationTree*>;
-}
+SBMLExporter::SBMLExporter(): sbmlDocument(NULL), mpIdSet(NULL), mpCopasiModel(NULL),
+    mpUsedFunctions(new std::set<const CEvaluationTree*>), mpExportHandler(NULL), mExportExpressions(false)
+{}
 
 /**
  ** Destructor for the exporter.
@@ -222,6 +220,7 @@ SBMLDocument* SBMLExporter::createSBMLDocumentFromCModel(CCopasiDataModel* pData
     {
       mpExportHandler->finish(mHStep);
     }
+  pdelete(this->mpIdSet);
   return this->sbmlDocument;
 }
 
@@ -590,7 +589,6 @@ Model* SBMLExporter::createSBMLModelFromCModel(CCopasiDataModel* pDataModel, int
       if (mpExportHandler && !mpExportHandler->progress(hStep)) return false;
     }
   this->exportRules(rules);
-  pdelete(this->mpIdSet);
   if (mpExportHandler)
     {
       mpExportHandler->finish(hStep);
@@ -1772,8 +1770,9 @@ void SBMLExporter::createFunctionDefinitions(CCopasiDataModel* pDataModel)
   std::list<const CEvaluationTree*>::iterator itSortedFunctions = sortedFunctions.begin();
   std::list<const CEvaluationTree*>::iterator endSortedFunctions = sortedFunctions.end();
   for (; itSortedFunctions != endSortedFunctions; ++itSortedFunctions)
-    this->mpUsedFunctions->insert(*itSortedFunctions);
-
+    {
+      this->mpUsedFunctions->insert(*itSortedFunctions);
+    }
   if (this->mpUsedFunctions->size() != sortedFunctions.size())
     {
       std::list<const CEvaluationTree*>::iterator pos;
@@ -1792,23 +1791,23 @@ void SBMLExporter::createFunctionDefinitions(CCopasiDataModel* pDataModel)
         }
     }
   assert(this->mpUsedFunctions->size() == sortedFunctions.size());
-  std::list<const CEvaluationTree*>::reverse_iterator rit = sortedFunctions.rbegin();
-  std::list<const CEvaluationTree*>::reverse_iterator rendit = sortedFunctions.rend();
-  while (rit != rendit)
+  itSortedFunctions = sortedFunctions.begin();
+  endSortedFunctions = sortedFunctions.end();
+  while (itSortedFunctions != endSortedFunctions)
     {
       // delete an existing function definition with this name
       // add the new function definition
       unsigned int i, iMax = listOfFunctionDefinitions->size();
       for (i = 0; i < iMax;++i)
         {
-          if (static_cast<FunctionDefinition*>(listOfFunctionDefinitions->get(i))->getId() == (*rit)->getSBMLId())
+          if (static_cast<FunctionDefinition*>(listOfFunctionDefinitions->get(i))->getId() == (*itSortedFunctions)->getSBMLId())
             {
               delete listOfFunctionDefinitions->remove(i);
               break;
             }
         }
       // add a new function definition
-      const CEvaluationTree* tree = (*rit);
+      const CEvaluationTree* tree = (*itSortedFunctions);
       //std::string on = tree->getObjectName();
       std::string id = tree->getSBMLId();
       if (id.empty())
@@ -1818,7 +1817,7 @@ void SBMLExporter::createFunctionDefinitions(CCopasiDataModel* pDataModel)
           fatalError();
         }
       this->createSBMLFunctionDefinitionFromCEvaluationTree(tree);
-      ++rit;
+      ++itSortedFunctions;
     }
   // since all new function definitions were added at the end, the function
   // definitions in the sbml model that did not get removed above might be in
