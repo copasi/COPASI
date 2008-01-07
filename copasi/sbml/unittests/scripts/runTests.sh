@@ -1,15 +1,21 @@
 #!/bin/bash
 
 COPASIDIR=${HOME}/workspace/copasi_build24
-SBMLDIR=${HOME}/Download/libsbml-COPASI-24
-BIOMODELSDIR=${HOME}/Download/biomodels_25September2007_sbmls
+SBMLDIR=${HOME}/Downloads/libsbml-COPASI-24
+BIOMODELSDIR=${HOME}/Downloads/biomodels_25September2007_sbmls
 
 LD_LIBRARY_PATH=$SBMLDIR/src/
 
 VALIDATE=${SBMLDIR}/examples/c++/validateSBML
 PRINT=${SBMLDIR}/examples/c++/printSBML
 
-COPASISE=${COPASIDIR}/copasi/CopasiSE/CopasiSE
+SYSTEM=`uname`
+
+if [ "${SYSTEM}" == "Darwin" ];then
+  COPASISE=${COPASIDIR}/copasi/CopasiSE/CopasiSE.app/Contents/MacOS/CopasiSE;
+#else
+#  COPASISE=${COPASIDIR}/copasi/CopasiSE/CopasiSE;
+fi
 
 
 # import all biomodels models and save them as cps files
