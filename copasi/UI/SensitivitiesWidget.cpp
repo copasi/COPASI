@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SensitivitiesWidget.cpp,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.24.2.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/11/01 17:51:00 $
+//   $Author: ssahle $
+//   $Date: 2008/01/07 20:07:32 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -471,6 +471,11 @@ bool SensitivitiesWidget::loadTask()
       else
         VariableChooser->setCurrentObjectList(tmp.getListType());
     }
+  else
+    {
+      VariableChooser->setCurrentObjectList(CObjectLists::EMPTY_LIST);
+      mpSingleVariable = NULL;
+    }
 
   //variables 2
   if (problem->getNumberOfVariables() > 1)
@@ -485,6 +490,11 @@ bool SensitivitiesWidget::loadTask()
         }
       else
         Variable2Chooser->setCurrentObjectList(tmp.getListType());
+    }
+  else
+    {
+      Variable2Chooser->setCurrentObjectList(CObjectLists::EMPTY_LIST);
+      mpSingleVariable2 = NULL;
     }
 
   //  initCombos(problem);
