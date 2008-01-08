@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.81 $
+//   $Revision: 1.82 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/01/04 15:49:36 $
+//   $Date: 2008/01/08 12:53:55 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -139,8 +139,8 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
   //first get reaction arrow
   for (i = 0;i < reactions.size();i++)
     {
-      CGraphCurve curve = CGraphCurve((reactions[i])->getCurve());
-      viewerCurves.push_back(curve);
+      CGraphCurve curveR = CGraphCurve((reactions[i])->getCurve());
+      viewerCurves.push_back(curveR);
 
       CCopasiVector<CLMetabReferenceGlyph> edgesToNodesOfReaction;
       edgesToNodesOfReaction = reactions[i]->getListOfMetabReferenceGlyphs();
@@ -149,11 +149,18 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
       for (j2 = 0;j2 < edgesToNodesOfReaction.size();j2++)
         {
           CGraphCurve curve = CGraphCurve(edgesToNodesOfReaction[j2]->getCurve());
+          std::string nodeKey = std::string(edgesToNodesOfReaction[j2]->getMetabGlyph()->getKey());
+          std::map<std::string, CGraphNode>::iterator itNode;
+          itNode = nodeMap.find(nodeKey);
+          if (itNode != nodeMap.end())
+            {
+              CLBoundingBox box = (*itNode).second.getBoundingBox();
+              this->checkCurve(curve, curveR, box);
+            }
           CLMetabReferenceGlyph::Role r = edgesToNodesOfReaction[j2]->getRole();
           curve.setRole(r);
           if (edgesToNodesOfReaction[j2]->getMetabGlyph() != NULL)
             {
-              std::string nodeKey = std::string(edgesToNodesOfReaction[j2]->getMetabGlyph()->getKey());
 
               // if role is product or sideproduct, create arrow for line
               if ((r == CLMetabReferenceGlyph::PRODUCT) || (r == CLMetabReferenceGlyph::SIDEPRODUCT) || (r == CLMetabReferenceGlyph::ACTIVATOR) || (r == CLMetabReferenceGlyph::INHIBITOR) || (r == CLMetabReferenceGlyph::MODIFIER))
@@ -228,6 +235,34 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
   CLPoint p2 = CLPoint(lP->getDimensions().getWidth(), lP->getDimensions().getHeight());
   this->setGraphSize(p1, p2);
   //CQGLNetworkPainter::drawGraph();
+}
+
+// decides whether the direction of the curve has to be inverted (meaning the order of the line segments, start and end points and base points have to be inverted
+void CQGLNetworkPainter::checkCurve(CGraphCurve curve, CGraphCurve curveR, CLBoundingBox box)
+{
+  // first checks whether the start point or the end point of the curve is closer to the center of the box defining the reactant node
+  CLPoint center; // center of bounding box for node
+  center.setX(box.getPosition().getX() + (box.getDimensions().getWidth() / 2.0));
+  center.setY(box.getPosition().getY() + (box.getDimensions().getHeight() / 2.0));
+
+  // get start and end point of curve (start point of first segment and end point of last segment)
+  std::vector <CLPoint> points = curve.getListOfPoints();
+  if (points.size() > 1)
+    {// if there are at least 2 points
+      CLPoint s = points[0];
+      CLPoint e = points[points.size() - 1];
+      // now compute the distances from these points to the center
+
+      C_FLOAT64 dist1 = sqrt (((center.getX() - s.getX()) * (center.getX() - s.getX())) +
+                              ((center.getY() - s.getY()) * (center.getY() - s.getY())));
+      C_FLOAT64 dist2 = sqrt(((center.getX() - e.getX()) * (center.getX() - e.getX())) +
+                             ((center.getY() - e.getY()) * (center.getY() - e.getY())));
+
+      if (dist1 > dist2)
+        {// if the end point of the curve is closer to the node than the start point
+          curve.invertOrderOfPoints(); // invert the order of the points in the curve
+        }
+    }
 }
 
 //void CQGLNetworkPainter::storeCurveInCorrespondingNode(std::string nodeKey, int indx)
@@ -1555,9 +1590,9 @@ void CQGLNetworkPainter::adaptCurveForCircle(std::multimap<std::string, CGraphCu
   CLPoint pointOnCircle;
 
   if (pLastSeg->isBezier())
-    pointOnCircle = getPointNearCircle(box, pLastSeg->getBase2(), 4);
+    pointOnCircle = getPointNearCircle(box, pLastSeg->getBase2(), 1);
   else
-    pointOnCircle = getPointNearCircle(box, pLastSeg->getStart(), 4);
+    pointOnCircle = getPointNearCircle(box, pLastSeg->getStart(), 1);
 
   pLastSeg->setEnd(pointOnCircle);
 
