@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/01/02 17:03:57 $
+//   $Date: 2008/01/08 16:18:01 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -87,6 +87,10 @@ void CSBMLExporter::createTimeUnit(const CCopasiDataModel& dataModel)
       unit = Unit(UNIT_KIND_SECOND, 1, 0);
       unit.setMultiplier(60);
       break;
+    case CModel::s:
+      unit = Unit(UNIT_KIND_SECOND, 1, 0);
+      unit.setMultiplier(1);
+      break;
     case CModel::ms:
       unit = Unit(UNIT_KIND_SECOND, 1, -3);
       break;
@@ -140,6 +144,9 @@ void CSBMLExporter::createVolumeUnit(const CCopasiDataModel& dataModel)
   Unit unit;
   switch (dataModel.getModel()->getVolumeUnitEnum())
     {
+    case CModel::l:
+      unit = Unit(UNIT_KIND_LITRE, 1, 0);
+      break;
     case CModel::ml:
       unit = Unit(UNIT_KIND_LITRE, 1, -3);
       break;
@@ -195,6 +202,9 @@ void CSBMLExporter::createSubstanceUnit(const CCopasiDataModel& dataModel)
   Unit unit;
   switch (dataModel.getModel()->getQuantityUnitEnum())
     {
+    case CModel::Mol:
+      unit = Unit(UNIT_KIND_MOLE, 1, 0);
+      break;
     case CModel::mMol:
       unit = Unit(UNIT_KIND_MOLE, 1, -3);
       break;
@@ -1272,7 +1282,7 @@ void CSBMLExporter::checkForInitialAssignments(const CCopasiDataModel& dataModel
       CCopasiVectorNS<CCompartment>::const_iterator compIt = compartments.begin(), compEndit = compartments.end();
       while (compIt != compEndit)
         {
-          if ((*compIt)->getInitialExpression() == "")
+          if ((*compIt)->getInitialExpression() != "")
             {
               result.push_back(SBMLIncompatibility(5, "Compartment", (*compIt)->getObjectName().c_str()));
             }
@@ -1283,7 +1293,7 @@ void CSBMLExporter::checkForInitialAssignments(const CCopasiDataModel& dataModel
       CCopasiVector<CMetab>::const_iterator metabIt = metabs.begin(), metabEndit = metabs.end();
       while (metabIt != metabEndit)
         {
-          if ((*metabIt)->getInitialExpression() == "")
+          if ((*metabIt)->getInitialExpression() != "")
             {
               result.push_back(SBMLIncompatibility(5, "Metabolite", (*metabIt)->getObjectName().c_str()));
             }
@@ -1294,7 +1304,7 @@ void CSBMLExporter::checkForInitialAssignments(const CCopasiDataModel& dataModel
       CCopasiVectorN<CModelValue>::const_iterator mvIt = parameters.begin(), mvEndit = parameters.end();
       while (mvIt != mvEndit)
         {
-          if ((*mvIt)->getInitialExpression() == "")
+          if ((*mvIt)->getInitialExpression() != "")
             {
               result.push_back(SBMLIncompatibility(5, "Parameter", (*mvIt)->getObjectName().c_str()));
             }
@@ -1517,6 +1527,11 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
   if (this->mpSBMLDocument == NULL) fatalError();
   // update the copasi2sbmlmap
   updateCOPASI2SBMLMap(dataModel);
+  if (this->mpSBMLDocument->getModel() == NULL)
+    {
+      std::string id = CSBMLExporter::createUniqueId(this->mIdMap, "model_");
+      this->mpSBMLDocument->createModel(id);
+    }
   // create units, compartments, species, parameters, reactions, initial
   // assignment, assignments, (event) and function definitions
   createUnits(dataModel);
@@ -2054,16 +2069,50 @@ ASTNode* CSBMLExporter::isDividedByVolume(const ASTNode* pRootNode, const std::s
 CEvaluationNode* CSBMLExporter::createExpressionTree(const CFunction* const pFun, const std::vector<std::vector<std::string> >& arguments, const CCopasiDataModel& dataModel)
 {
   if (!pFun || pFun->getVariables().size() != arguments.size()) fatalError();
-  std::map< std::string, std::string > parameterMap;
-  unsigned int i, iMax = arguments.size();
-  for (i = 0;i < iMax;++i)
+  CEvaluationNode* pResult;
+  if (pFun->getType() == CEvaluationTree::MassAction)
     {
-      if (arguments[i].size() != 1) fatalError(); // we can't have arrays here.
-      const CCopasiObject* pObject = GlobalKeys.get(arguments[i][0]);
-      if (!pObject) fatalError();
-      parameterMap[pFun->getVariables()[i]->getObjectName()] = "<" + pObject->getCN() + ">";
+      pResult = CSBMLExporter::createMassActionExpression(arguments, pFun->isReversible() == TriTrue);
     }
-  return CSBMLExporter::createExpressionTree(pFun->getRoot(), parameterMap, dataModel);
+  else
+    {
+      std::map< std::string, std::string > parameterMap;
+      unsigned int i, iMax = arguments.size();
+      std::string cn;
+      for (i = 0;i < iMax;++i)
+        {
+          if (arguments[i].size() != 1) fatalError(); // we can't have arrays here.
+          const CCopasiObject* pObject = GlobalKeys.get(arguments[i][0]);
+          if (!pObject) fatalError();
+          if (dynamic_cast<const CModel*>(pObject) != NULL)
+            {
+              cn = "<" + pObject->getCN() + ",Reference=Time>";
+            }
+          else if (dynamic_cast<const CCompartment*>(pObject) != NULL)
+            {
+              cn = "<" + pObject->getCN() + ",Reference=Volume>";
+            }
+          else if (dynamic_cast<const CMetab*>(pObject) != NULL)
+            {
+              cn = "<" + pObject->getCN() + ",Reference=Concentration>";
+            }
+          else if (dynamic_cast<const CModelValue*>(pObject) != NULL)
+            {
+              cn = "<" + pObject->getCN() + ",Reference=Value>";
+            }
+          else if (dynamic_cast<const CReaction*>(pObject) != NULL)
+            {
+              cn = "<" + pObject->getCN() + ",Reference=Flux>";
+            }
+          else
+            {
+              cn = "<" + pObject->getCN() + ">";
+            }
+          parameterMap[pFun->getVariables()[i]->getObjectName()] = cn;"<" + pObject->getCN() + ">";
+        }
+      pResult = CSBMLExporter::createExpressionTree(pFun->getRoot(), parameterMap, dataModel);
+    }
+  return pResult;
 }
 
 CEvaluationNode* CSBMLExporter::createExpressionTree(const CEvaluationNode* const pNode, const std::map<std::string, std::string>& parameterMap, const CCopasiDataModel& dataModel)
@@ -2075,8 +2124,8 @@ CEvaluationNode* CSBMLExporter::createExpressionTree(const CEvaluationNode* cons
   std::map<std::string, std::string>::const_iterator pos;
   std::vector<std::vector<std::string> > arguments;
   const CEvaluationNode* pChildNode = NULL;
-  std::vector<const CCopasiContainer*> containerList;
-  containerList.push_back(dataModel.getModel());
+  //std::vector<const CCopasiContainer*> containerList;
+  //containerList.push_back(dataModel.getModel());
   //const CCopasiObject* pObject = NULL;
   switch (CEvaluationNode::type(pNode->getType()))
     {
@@ -2850,4 +2899,43 @@ void CSBMLExporter::removeUnusedObjects()
           ++it;
         }
     }
+}
+
+CEvaluationNode* CSBMLExporter::createMassActionExpression(const std::vector<std::vector<std::string> >& arguments, bool isReversible)
+{
+  assert((isReversible && arguments.size() == 4) || arguments.size() == 2);
+  assert(arguments[0].size() == 1 && arguments[1].size() > 0);
+  // create a multiplication of all items in arguments[1] and multiply that
+  // with item arguments[0][0]
+  const CCopasiObject* pObject = GlobalKeys.get(arguments[1][arguments[1].size() - 1]);
+  assert(pObject != NULL);
+  CEvaluationNode* pResult = new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + pObject->getCN() + ",Reference=Concentration>");
+  CEvaluationNode* pTmpNode = NULL;
+  unsigned int i;
+  for (i = arguments[1].size() - 1;i > 0;--i)
+    {
+      pTmpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
+      pObject = GlobalKeys.get(arguments[1][i - 1]);
+      assert(pObject != NULL);
+      pTmpNode->addChild(new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + pObject->getCN() + ",Reference=Concentration>"));
+      pTmpNode->addChild(pResult);
+      pResult = pTmpNode;
+    }
+  pTmpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
+  pObject = GlobalKeys.get(arguments[0][0]);
+  assert(pObject);
+  pTmpNode->addChild(new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + pObject->getCN() + ",Reference=Value>"));
+  pTmpNode->addChild(pResult);
+  pResult = pTmpNode;
+  if (isReversible)
+    {
+      std::vector<std::vector<std::string> > tmpV;
+      tmpV.push_back(arguments[2]);
+      tmpV.push_back(arguments[3]);
+      pTmpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MINUS, "-");
+      pTmpNode->addChild(CSBMLExporter::createMassActionExpression(tmpV, false));
+      pTmpNode->addChild(pResult);
+      pResult = pTmpNode;
+    }
+  return pResult;
 }

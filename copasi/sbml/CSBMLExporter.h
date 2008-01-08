@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/01/02 17:03:57 $
+//   $Date: 2008/01/08 16:18:01 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -428,6 +428,15 @@ class CSBMLExporter
      * The caller is responsible for freeing the memory of the returned object.
      */
     static ASTNode* replaceL1IncompatibleNodes(const ASTNode* pNode);
+
+    /**
+     * This method creates the CEvaluationNode based tree for a reversible or
+     * irreversible Mass Action call.
+     * The first parameter contains the arguments from the COPASI reaction.
+     * The second argument determines whether it is reversible or irreversible
+     * mass action.
+     */
+    static CEvaluationNode* createMassActionExpression(const std::vector<std::vector<std::string> >& arguments, bool isReversible);
   };
 
 #endif // CSBLExporter_H__
