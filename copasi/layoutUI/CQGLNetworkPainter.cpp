@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.78 $
+//   $Revision: 1.78.4.1 $
 //   $Name:  $
-//   $Author: urost $
-//   $Date: 2007/12/10 12:18:58 $
+//   $Author: shoops $
+//   $Date: 2008/01/09 13:51:25 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -766,7 +766,7 @@ int CQGLNetworkPainter::getLabelWindowWidth(int width)
     {
       exponent = 6;
     }
-  width = static_cast<int>(pow(2, exponent + 1));
+  width = static_cast<int>(pow(2.0, exponent + 1));
   return width;
 }
 
@@ -783,13 +783,13 @@ RGTextureSpec* CQGLNetworkPainter::RG_createTextureForText(const std::string& te
     {
       exponent = 6;
     }
-  width = static_cast<int>(pow(2, exponent + 1));
+  width = static_cast<int>(pow(2.0, exponent + 1));
   exponent = static_cast<int>(ceil(log2(height + 2.0)));
   if (exponent < 6)
     {
       exponent = 6;
     }
-  height = static_cast<int>(pow(2, exponent + 1));
+  height = static_cast<int>(pow(2.0, exponent + 1));
 
   QPixmap pixmap(width, height);
   pixmap.fill(QColor(255, 255, 255));
@@ -900,10 +900,10 @@ int CQGLNetworkPainter::round2powN(double d)
   int n = (int)(ceil(d));
   int p = 1;
   int maxP = 12; // max size of images 2*12
-  while ((p <= maxP) && (n > pow(2, p)))
+  while ((p <= maxP) && (n > pow(2.0, p)))
     p++;
   //std::cout << "d: " << d << " p: " << p << std::endl;
-  return (int)pow(2, p);
+  return (int)pow(2.0, p);
 }
 
 // uses FTGL
