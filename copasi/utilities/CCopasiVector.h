@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiVector.h,v $
-//   $Revision: 1.76 $
+//   $Revision: 1.77 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/09 15:49:11 $
+//   $Date: 2008/01/09 14:53:44 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -422,7 +422,7 @@ template < class CType > class CCopasiVector:
        * @param const CCopasiVector<CType> & d
        * @return std::ostream & os
        */
-#ifdef WIN32
+#if defined _MSC_VER && _MSC_VER < 1201 // 1200 Identifies Visual C++ 6.0
       friend std::ostream &operator << (std::ostream &os,
                                         const CCopasiVector<CType> & d);
 #else

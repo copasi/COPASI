@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.109 $
+//   $Revision: 1.110 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/12/08 13:10:09 $
+//   $Author: shoops $
+//   $Date: 2008/01/09 14:53:44 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -290,6 +290,11 @@ const MESSAGES Messages[] =
      "exceeds the limit. The step number and step size have been adjusted to avoid over flow."},
     {MCTSSAProblem + 3, "CTSSAProblem (3): The step size '%f' "
      "is to small for the machine accuracy. The step number and step size have been adjusted."},
+
+    {MCEigen + 1, "CEigen (1): Invalid argument '%d' for dgees."},
+    {MCEigen + 2, "CEigen (2): Failed to compute Eigen value with index '%d'."},
+    {MCEigen + 3, "CEigen (3): Unable to sort Eigen values."},
+    {MCEigen + 4, "CEigen (4): Eigen values do not satify selection criteria after reordering."},
 
     // This must be the last element of the message list! Do not delete!
     {0, NULL}

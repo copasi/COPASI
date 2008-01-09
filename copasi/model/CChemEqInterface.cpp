@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqInterface.cpp,v $
-//   $Revision: 1.37 $
+//   $Revision: 1.38 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/04/02 16:32:23 $
+//   $Date: 2008/01/09 14:53:48 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -581,28 +581,31 @@ std::set< std::pair< std::string, std::string > > CChemEqInterface::listOfNonExi
     return ret;
   }
 
-bool CChemEqInterface::createNonExistingMetabs() const
-  {
-    std::set< std::pair< std::string, std::string > > metabs = listOfNonExistingMetabNames();
-    bool ret;
-    if (metabs.size() == 0) ret = false; else ret = true;
+bool CChemEqInterface::createNonExistingMetabs()
+{
+  std::set< std::pair< std::string, std::string > > metabs = listOfNonExistingMetabNames();
+  bool ret;
+  if (metabs.size() == 0) ret = false; else ret = true;
 
-    std::set< std::pair< std::string, std::string > >::const_iterator it, itEnd;
+  std::set< std::pair< std::string, std::string > >::const_iterator it, itEnd;
 
-    itEnd = metabs.end();
+  itEnd = metabs.end();
 
-    for (it = metabs.begin(); it != itEnd; ++it)
-      {
-        if (mpModel->getCompartments().getIndex(it->second) == C_INVALID_INDEX)
-          mpModel->createCompartment(it->second, 1);
+  for (it = metabs.begin(); it != itEnd; ++it)
+    {
+      if (mpModel->getCompartments().getIndex(it->second) == C_INVALID_INDEX)
+        mpModel->createCompartment(it->second, 1);
 
-        mpModel->createMetabolite(it->first,
-                                  it->second,
-                                  0.1, CModelEntity::REACTIONS);
-      }
+      mpModel->createMetabolite(it->first,
+                                it->second,
+                                0.1, CModelEntity::REACTIONS);
+    }
 
-    return ret;
-  }
+  // Due to the creation of metabolites the display names may have changed.
+  buildDisplayNames();
+
+  return ret;
+}
 
 bool CChemEqInterface::isMulticompartment() const
   {

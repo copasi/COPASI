@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CVector.h,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.33 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/02 23:39:39 $
+//   $Date: 2008/01/09 14:53:44 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -18,9 +18,9 @@
 #include "copasi.h"
 #include "utilities/CCopasiMessage.h"
 
-template<typename CType> class CVector;
+template <typename CType> class CVector;
 
-template <class CType>
+template <typename CType>
 std::ostream &operator<<(std::ostream &os, const CVector< CType > & A);
 
 /**
@@ -247,7 +247,7 @@ template <class CType> class CVector
      * @param const CVector< CType > & A
      * @retrun ostream & os
      */
-#ifdef WIN32
+#if defined _MSC_VER && _MSC_VER < 1201 // 1200 Identifies Visual C++ 6.0
     friend std::ostream &operator << (std::ostream &os,
                                       const CVector< CType > & A);
 #else

@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.cpp,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.31 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/24 18:40:23 $
+//   $Date: 2008/01/09 14:53:48 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -178,79 +178,81 @@ bool CReactionInterface::loadMappingAndValues(const CReaction & rea)
   return success;
 }
 
-bool CReactionInterface::writeBackToReaction(CReaction * rea) const
-  {
-    if (!isValid()) return false; // do nothing
-    if (!(*mpParameters == mpFunction->getVariables())) return false; // do nothing
+bool CReactionInterface::writeBackToReaction(CReaction * rea)
+{
+  if (!isValid()) return false; // do nothing
+  if (!(*mpParameters == mpFunction->getVariables())) return false; // do nothing
 
-    bool success = true;
+  bool success = true;
 
-    //CReaction *rea;
-    if (rea == NULL)
-      rea = dynamic_cast< CReaction *>(GlobalKeys.get(mReactionReferenceKey));
+  //CReaction *rea;
+  if (rea == NULL)
+    rea = dynamic_cast< CReaction *>(GlobalKeys.get(mReactionReferenceKey));
 
-    if (!rea->setObjectName(mReactionName))
-      success = false;
+  if (!rea->setObjectName(mReactionName))
+    success = false;
 
-    mChemEqI.writeToChemEq(rea->getChemEq());
+  // Now we can safely write to the equation as we are sure that only unique metabolites
+  // may have the empty string as compartments
+  mChemEqI.writeToChemEq(rea->getChemEq());
 
-    // TODO. check if function has changed since it was set in the R.I.
-    rea->setFunction(mpFunction->getObjectName());
+  // TODO. check if function has changed since it was set in the R.I.
+  rea->setFunction(mpFunction->getObjectName());
 
-    unsigned C_INT32 j, jmax;
-    unsigned C_INT32 i, imax = size();
-    std::pair< std::string, std::string > Names;
-    for (i = 0; i < imax; ++i)
-      {
-        switch (getUsage(i))
-          {
-          case CFunctionParameter::PARAMETER:
-            if (mIsLocal[i])
-              rea->setParameterValue(getParameterName(i), mValues[i]);
-            else
-              {
-                rea->setParameterValue(getParameterName(i), mValues[i], false);
-                rea->setParameterMapping(i, mpModel->getModelValues()[mNameMap[i][0]]->getKey());
-              }
-            break;
+  unsigned C_INT32 j, jmax;
+  unsigned C_INT32 i, imax = size();
+  std::pair< std::string, std::string > Names;
+  for (i = 0; i < imax; ++i)
+    {
+      switch (getUsage(i))
+        {
+        case CFunctionParameter::PARAMETER:
+          if (mIsLocal[i])
+            rea->setParameterValue(getParameterName(i), mValues[i]);
+          else
+            {
+              rea->setParameterValue(getParameterName(i), mValues[i], false);
+              rea->setParameterMapping(i, mpModel->getModelValues()[mNameMap[i][0]]->getKey());
+            }
+          break;
 
-          case CFunctionParameter::VOLUME:
-            rea->setParameterMapping(i, mpModel->getCompartments()[mNameMap[i][0]]->getKey());
-            break;
+        case CFunctionParameter::VOLUME:
+          rea->setParameterMapping(i, mpModel->getCompartments()[mNameMap[i][0]]->getKey());
+          break;
 
-          case CFunctionParameter::TIME:
-            rea->setParameterMapping(i, mpModel->getKey()); //time is the value of the model
-            break;
+        case CFunctionParameter::TIME:
+          rea->setParameterMapping(i, mpModel->getKey()); //time is the value of the model
+          break;
 
-          case CFunctionParameter::SUBSTRATE:
-          case CFunctionParameter::PRODUCT:
-          case CFunctionParameter::MODIFIER:
-            if (isVector(i))
-              {
-                rea->clearParameterMapping(i);
-                jmax = mNameMap[i].size();
-                for (j = 0; j < jmax; ++j)
-                  {
-                    Names = CMetabNameInterface::splitDisplayName(mNameMap[i][j]);
-                    rea->addParameterMapping(i, CMetabNameInterface::getMetaboliteKey(mpModel, Names.first, Names.second));
-                  }
-              }
-            else
-              {
-                Names = CMetabNameInterface::splitDisplayName(mNameMap[i][0]);
-                rea->setParameterMapping(i, CMetabNameInterface::getMetaboliteKey(mpModel, Names.first, Names.second));
-              }
-            break;
+        case CFunctionParameter::SUBSTRATE:
+        case CFunctionParameter::PRODUCT:
+        case CFunctionParameter::MODIFIER:
+          if (isVector(i))
+            {
+              rea->clearParameterMapping(i);
+              jmax = mNameMap[i].size();
+              for (j = 0; j < jmax; ++j)
+                {
+                  Names = CMetabNameInterface::splitDisplayName(mNameMap[i][j]);
+                  rea->addParameterMapping(i, CMetabNameInterface::getMetaboliteKey(mpModel, Names.first, Names.second));
+                }
+            }
+          else
+            {
+              Names = CMetabNameInterface::splitDisplayName(mNameMap[i][0]);
+              rea->setParameterMapping(i, CMetabNameInterface::getMetaboliteKey(mpModel, Names.first, Names.second));
+            }
+          break;
 
-          default:
-            break;
-          }
-      }
-    rea->compile();
-    mpModel->setCompileFlag(); //TODO: check if really necessary
+        default:
+          break;
+        }
+    }
+  rea->compile();
+  mpModel->setCompileFlag(); //TODO: check if really necessary
 
-    return success;
-  }
+  return success;
+}
 
 void CReactionInterface::clearFunction()
 {
@@ -723,10 +725,15 @@ std::vector<std::string> CReactionInterface::getExpandedMetabList(CFunctionParam
     return ret;
   }
 
-bool CReactionInterface::createMetabolites() const
-  {
-    return mChemEqI.createNonExistingMetabs();
-  }
+bool CReactionInterface::createMetabolites()
+{
+  bool success = mChemEqI.createNonExistingMetabs();
+
+  // Update the parameter mapping to assure that the new names match.
+  setFunctionAndDoMapping(getFunctionName());
+
+  return success;
+}
 
 bool CReactionInterface::createOtherObjects() const
   {

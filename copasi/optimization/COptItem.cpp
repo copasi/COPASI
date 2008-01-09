@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.cpp,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.26 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/12/10 19:41:45 $
+//   $Date: 2008/01/09 14:53:46 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -268,7 +268,8 @@ C_FLOAT64 COptItem::getRandomValue(CRandom * pRandom)
           else
             {
               C_FLOAT64 mean = (mx + mn) * 0.5;
-              C_FLOAT64 sigma = mean * 0.01;
+              C_FLOAT64 sigma = std::min(DBL_MAX, mx - mn) / 3.0;
+
               do
                 {
                   RandomValue = pRandom->getRandomNormal(mean, sigma);

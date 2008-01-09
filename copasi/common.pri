@@ -1,17 +1,17 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.69 $ 
+#   $Revision: 1.70 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2007/12/13 18:22:43 $ 
+#   $Date: 2008/01/09 14:53:49 $ 
 # End CVS Header 
 
-# Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc. and EML Research, gGmbH. 
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.69 $ $Author: shoops $ $Date: 2007/12/13 18:22:43 $  
+# $Revision: 1.70 $ $Author: shoops $ $Date: 2008/01/09 14:53:49 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -47,11 +47,11 @@ QMAKE_LFLAGS  += $$(LDFLAGS)
 
 debug {
   DEFINES += COPASI_DEBUG
-  #DEFINES += WITH_LAYOUT
-  DEFINES += COPASI_TSSA
     
   isEmpty(COPASI_SRC_PACKAGE) {
     DEFINES += COPASI_TSS
+    DEFINES += COPASI_TSSA
+    # DEFINES += WITH_LAYOUT
   }
 }
 
@@ -173,10 +173,9 @@ contains(BUILD_OS, WIN32) {
 
   !isEmpty(MKL_PATH) {
     DEFINES += USE_MKL
-    QMAKE_CXXFLAGS_DEBUG   += -I"$${MKL_PATH}\include"
-    QMAKE_CXXFLAGS_RELEASE += -I"$${MKL_PATH}\include"
-    QMAKE_LFLAGS_WINDOWS += /LIBPATH:"$${MKL_PATH}\32\lib"
-    QMAKE_LFLAGS_CONSOLE += /LIBPATH:"$${MKL_PATH}\32\lib"
+    QMAKE_CXXFLAGS += -I"$${MKL_PATH}\include"
+    QMAKE_LFLAGS += /LIBPATH:"$${MKL_PATH}\ia32\lib"
+    QMAKE_LFLAGS += /LIBPATH:"$${MKL_PATH}\..\Compiler\C++\9.0\IA32\Lib"
     LIBS += mkl_c.lib
   } else {
     !isEmpty(CLAPACK_PATH) {

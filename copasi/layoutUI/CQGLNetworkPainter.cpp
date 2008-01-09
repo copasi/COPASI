@@ -1,14 +1,23 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.82 $
-//   $Name:  $
-//   $Author: urost $
-//   $Date: 2008/01/08 12:53:55 $
-// End CVS Header
+<<< <<< < CQGLNetworkPainter.cpp
+//   $Revision: 1.83 $
+== == == =
+  //   $Revision: 1.83 $
+  >>> >>> > 1.78.4.1
+  //   $Name:  $
+  <<< <<< < CQGLNetworkPainter.cpp
+  //   $Author: shoops $
+  //   $Date: 2008/01/09 14:53:50 $
+  == == == =
+    //   $Author: shoops $
+    //   $Date: 2008/01/09 14:53:50 $
+    >>> >>> > 1.78.4.1
+    // End CVS Header
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+    // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+    // Properties, Inc. and EML Research, gGmbH.
+    // All rights reserved.
 
 #include <qstring.h>
 #include <qbitmap.h>
@@ -24,12 +33,12 @@
 #include <qfontinfo.h>
 #include <qfontdatabase.h>
 
-//#include <Q3Canvas>
-//#include <Q3CanvasText>
-//#include <QPainter>
-//#include <QFont>
-//#include <QFontMetrics>
-//#include <QString>
+    //#include <Q3Canvas>
+    //#include <Q3CanvasText>
+    //#include <QPainter>
+    //#include <QFont>
+    //#include <QFontMetrics>
+    //#include <QString>
 
 #include <iostream>
 #include <math.h>
@@ -39,8 +48,8 @@
 #include "copasi.h"
 
 #if (defined WIN32 && !defined log2)
-C_FLOAT64 log2(const C_FLOAT64 & __x)
-{return log(__x) / log(2.0);}
+    C_FLOAT64 log2(const C_FLOAT64 & __x)
+    {return log(__x) / log(2.0);}
 #endif // WIN32
 
 #include "CQGLNetworkPainter.h"
@@ -53,7 +62,7 @@ C_FLOAT64 log2(const C_FLOAT64 & __x)
 #include "layoutUI/CDataEntity.h"
 #include "layoutUI/BezierCurve.h"
 
-const C_FLOAT64 CQGLNetworkPainter::DEFAULT_NODE_SIZE = 20.0;
+    const C_FLOAT64 CQGLNetworkPainter::DEFAULT_NODE_SIZE = 20.0;
 
 CQGLNetworkPainter::CQGLNetworkPainter(QWidget *parent, const char *name)
     : QGLWidget(parent, name)
@@ -817,7 +826,7 @@ int CQGLNetworkPainter::getLabelWindowWidth(int width)
     {
       exponent = 6;
     }
-  width = static_cast<int>(pow(2, exponent + 1));
+  width = static_cast<int>(pow(2.0, exponent + 1));
   return width;
 }
 
@@ -834,13 +843,13 @@ RGTextureSpec* CQGLNetworkPainter::RG_createTextureForText(const std::string& te
     {
       exponent = 6;
     }
-  width = static_cast<int>(pow(2, exponent + 1));
+  width = static_cast<int>(pow(2.0, exponent + 1));
   exponent = static_cast<int>(ceil(log2(height + 2.0)));
   if (exponent < 6)
     {
       exponent = 6;
     }
-  height = static_cast<int>(pow(2, exponent + 1));
+  height = static_cast<int>(pow(2.0, exponent + 1));
 
   QPixmap pixmap(width, height);
   pixmap.fill(QColor(255, 255, 255));
@@ -951,10 +960,10 @@ int CQGLNetworkPainter::round2powN(double d)
   int n = (int)(ceil(d));
   int p = 1;
   int maxP = 12; // max size of images 2*12
-  while ((p <= maxP) && (n > pow(2, p)))
+  while ((p <= maxP) && (n > pow(2.0, p)))
     p++;
   //std::cout << "d: " << d << " p: " << p << std::endl;
-  return (int)pow(2, p);
+  return (int)pow(2.0, p);
 }
 
 // uses FTGL

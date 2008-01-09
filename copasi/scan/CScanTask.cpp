@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.cpp,v $
-//   $Revision: 1.67 $
+//   $Revision: 1.68 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/04 17:32:39 $
+//   $Date: 2008/01/09 14:53:47 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -133,6 +133,9 @@ bool CScanTask::process(const bool & /* useInitialValues */)
   //if (mpCallBack) mpCallBack->finish();
   //if (mpOutputHandler) mpOutputHandler->finish();
   output(COutputInterface::AFTER);
+
+  if (mpSubtask)
+    mpSubtask->setCallBack(NULL);
 
   return success;
 }

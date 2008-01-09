@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.189 $
+//   $Revision: 1.190 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/12/04 15:52:13 $
+//   $Date: 2008/01/09 14:53:47 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -133,13 +133,16 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
     {
       this->mpCopasiModel->setModelType(CModel::deterministic);
     }
-  const XMLNode* comment = sbmlModel->getNotes();
-  if (comment != NULL)
+  if (sbmlModel->isSetNotes() && sbmlModel->getNotes() != NULL)
     {
+
       std::ostringstream stream;
-      XMLOutputStream o(stream);
-      o << * comment;
+      for (unsigned int i = 0;i < sbmlModel->getNotes()->getNumChildren();++i)
+        {
+          stream << XMLNode::convertXMLNodeToString(&sbmlModel->getNotes()->getChild(i)) << std::endl;
+        }
       this->mpCopasiModel->setComments(stream.str());
+      //std::string notesString=XMLNode::convertXMLNodeToString(&sbmlModel->getNotes()->getChild(0));
     }
   title = sbmlModel->getName();
   if (title == "")
@@ -479,7 +482,22 @@ CFunction* SBMLImporter::createCFunctionFromFunctionDefinition(const FunctionDef
   CFunction* pTmpFunction = this->createCFunctionFromFunctionTree(sbmlFunction);
   if (pTmpFunction)
     {
-      pTmpFunction->setSBMLId(sbmlFunction->getId());
+      std::string sbmlId = sbmlFunction->getId();
+      pTmpFunction->setSBMLId(sbmlId);
+      // check if the id is already taken by another function definition, maybe
+      // from an earlier import, if this is the case, delete the id on the old
+      // function definition
+      // if we don't do this, two functions might have the same SBML id during
+      // export which makes the exporter code so much more difficult
+      unsigned int i, iMax = this->functionDB->loadedFunctions().size();
+      for (i = 0;i < iMax;++i)
+        {
+          CEvaluationTree* pFun = this->functionDB->loadedFunctions()[i];
+          if (pFun->getSBMLId() == sbmlId)
+            {
+              pFun->setSBMLId("");
+            }
+        }
       std::string functionName = sbmlFunction->getName();
       if (functionName == "")
         {
@@ -553,6 +571,8 @@ CFunction* SBMLImporter::createCFunctionFromFunctionTree(const FunctionDefinitio
               ASTNode* pTmpNode = root.removeChild(iMax);
               root.addChild(pVarNode);
               root.addChild(pTmpNode);
+              // increase iMax since we now have one more child
+              ++iMax;
               pFun->addVariable(timeVariableName);
               this->mExplicitelyTimeDependentFunctionDefinitions.insert(pSBMLFunction->getId());
             }
@@ -1183,7 +1203,11 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                       tmpNode2->setName(compartment->getSBMLId().c_str());
                       tmpNode1->addChild(tmpNode2);
                       node = tmpNode1;
-                      if (!hasOnlySubstanceUnitPresent && compartment->getInitialValue() == 1.0)
+                      std::map<CCopasiObject*, SBase*>::const_iterator pos = copasi2sbmlmap.find(const_cast<CCompartment*>(compartment));
+                      assert(pos != copasi2sbmlmap.end());
+                      Compartment* pSBMLCompartment = dynamic_cast<Compartment*>(pos->second);
+                      assert(pSBMLCompartment != NULL);
+                      if (!hasOnlySubstanceUnitPresent && ((this->mLevel == 1 && pSBMLCompartment->isSetVolume()) || (this->mLevel >= 2 && pSBMLCompartment->isSetSize())) && pSBMLCompartment->getSize() == 1.0)
                         {
                           // we have to check if all species used in the reaction
                           // have the hasOnlySubstance flag set
@@ -1468,6 +1492,8 @@ SBMLImporter::SBMLImporter()
   this->mIgnoredSBMLMessages.insert(10541);
   this->mIgnoredSBMLMessages.insert(10551);
   this->mIgnoredSBMLMessages.insert(10562);
+  this->mIgnoredSBMLMessages.insert(80701);
+  this->mIgnoredSBMLMessages.insert(99505);
 }
 
 /**
@@ -1596,7 +1622,7 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
               CCopasiMessage::Type messageType = CCopasiMessage::RAW;
               switch (pSBMLError->getSeverity())
                 {
-                case SEVERITY_INFO:
+                case /*LIBSBML_SEV_INFO*/SEVERITY_INFO:
 
                   if (mIgnoredSBMLMessages.find(pSBMLError->getErrorId()) != mIgnoredSBMLMessages.end())
                     {
@@ -1608,7 +1634,7 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
                     }
                   CCopasiMessage(messageType, MCSBML + 40, "INFO", pSBMLError->getErrorId(), pSBMLError->getLine(), pSBMLError->getColumn(), pSBMLError->getMessage().c_str());
                   break;
-                case SEVERITY_WARNING:
+                case /*LIBSBML_SEV_WARNING*/SEVERITY_WARNING:
                   if (mIgnoredSBMLMessages.find(pSBMLError->getErrorId()) != mIgnoredSBMLMessages.end())
                     {
                       messageType = CCopasiMessage::WARNING_FILTERED;
@@ -1619,14 +1645,14 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
                     }
                   CCopasiMessage(messageType, MCSBML + 40, "WARNING", pSBMLError->getErrorId(), pSBMLError->getLine(), pSBMLError->getColumn(), pSBMLError->getMessage().c_str());
                   break;
-                case SEVERITY_ERROR:
+                case /*LIBSBML_SEV_ERROR*/SEVERITY_ERROR:
                   if (mIgnoredSBMLMessages.find(pSBMLError->getErrorId()) != mIgnoredSBMLMessages.end())
                     {
                       messageType = CCopasiMessage::ERROR_FILTERED;
                     }
                   CCopasiMessage(messageType, MCSBML + 40, "ERROR", pSBMLError->getErrorId(), pSBMLError->getLine(), pSBMLError->getColumn(), pSBMLError->getMessage().c_str());
                   break;
-                case SEVERITY_FATAL:
+                case /*LIBSBML_SEV_FATAL*/SEVERITY_FATAL:
                   // treat unknown as fatal
                 default:
                   //CCopasiMessage(CCopasiMessage::TRACE, MCSBML + 40,"FATAL",pSBMLError->getLine(),pSBMLError->getColumn(),pSBMLError->getMessage().c_str());
@@ -1639,7 +1665,7 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
           if (fatal != -1)
             {
               const XMLError* pSBMLError = sbmlDoc->getError(fatal);
-              CCopasiMessage Message(CCopasiMessage::RAW, MCXML + 2,
+              CCopasiMessage Message(CCopasiMessage::EXCEPTION, MCXML + 2,
                                      pSBMLError->getLine(),
                                      pSBMLError->getColumn(),
                                      pSBMLError->getMessage().c_str());
@@ -2279,7 +2305,10 @@ void SBMLImporter::restoreFunctionDB()
     {
       CEvaluationTree* pTree = this->functionDB->findFunction(*it2);
       assert(pTree);
-      this->functionDB->removeFunction(pTree->getKey());
+      if (pTree->getType() == CEvaluationTree::UserDefined)
+        {
+          this->functionDB->removeFunction(pTree->getKey());
+        }
       ++it2;
     }
 }
@@ -2316,7 +2345,7 @@ void SBMLImporter::replaceTimeNodeNames(ConverterASTNode* pNode)
   if (!pNode) return;
   if (pNode->getType() == AST_NAME_TIME)
     {
-      pNode->setName(this->mpCopasiModel->getCN().c_str());
+      pNode->setName(this->mpCopasiModel->getObject(CCopasiObjectName("Reference=Time"))->getCN().c_str());
     }
   else
     {
@@ -2667,7 +2696,8 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const 
           const CCopasiVector<CChemEqElement>& metabolites = chemicalEquation.getSubstrates();
           unsigned i, iMax = metabolites.size();
           // all metabolites must occur in the muliplicityMap so they have to have the same size
-          if (iMax != multiplicityMap.size()) result = false;
+          // and a mass action must have at least one metabolite
+          if (iMax == 0 || iMax != multiplicityMap.size()) result = false;
           for (i = 0;i < iMax && result;++i)
             {
               // the metabolite has to be present in the multiplicityMap, otherwise it is not a mass action

@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CPraxis.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/12/13 20:20:16 $
+//   $Date: 2008/01/09 14:53:46 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -293,7 +293,7 @@ L80:
       i__2 = *n;
       for (i__ = 1; i__ <= i__2; ++i__)
         {
-          s = (global_1.ldt * .1 + t2 * pow(10, (C_FLOAT64)kt)) * (random_(n)
+          s = (global_1.ldt * .1 + t2 * pow(10.0, (C_FLOAT64)kt)) * (random_(n)
               - .5);
           z__[i__ - 1] = s;
           i__3 = *n;

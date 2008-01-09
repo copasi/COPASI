@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetabNameInterface.cpp,v $
-   $Revision: 1.25 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/08/25 18:13:23 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetabNameInterface.cpp,v $
+//   $Revision: 1.26 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2008/01/09 14:53:48 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -63,9 +63,10 @@ std::string CMetabNameInterface::getDisplayName(const CModel* model,
   if (isNumber(Metabolite))
     Metabolite = "\"" + Metabolite + "\"";
 
-  if (CMetabNameInterface::isUnique(model, metabolite) &&
-      (compartment == DefaultCompartment ||
-       CMetabNameInterface::doesExist(model, metabolite, compartment)))
+  if ((CMetabNameInterface::doesExist(model, metabolite, compartment) &&
+       CMetabNameInterface::isUnique(model, metabolite)) ||
+      (!CMetabNameInterface::doesExist(model, metabolite, "") &&
+       compartment == DefaultCompartment))
     return Metabolite;
 
   std::string Compartment = quote(compartment, "{}");

@@ -1,12 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.h,v $
-   $Revision: 1.15 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/08/25 18:13:23 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.h,v $
+//   $Revision: 1.16 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2008/01/09 14:53:48 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -231,13 +231,13 @@ class CReactionInterface
      * writes the information back to a CReaction.
      * createMetabolites() and createOtherObjects() should be called before.
      */
-    bool writeBackToReaction(CReaction * rea) const;
+    bool writeBackToReaction(CReaction * rea);
 
     /**
      * create all metabolites that are needed by the reaction but do
      * not exist in the model yet.
      */
-    bool createMetabolites() const;
+    bool createMetabolites();
 
     /**
      * create all other objects that are needed by the reaction but do
