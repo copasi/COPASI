@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.h,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/01/08 16:18:01 $
+//   $Date: 2008/01/09 21:32:59 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -322,18 +322,25 @@ class CSBMLExporter
      * Creates an expression from a given node and a set of parameter
      * mappings by
      * replacing the function arguments with the parameters.
-     */
     static CEvaluationNode* createExpressionTree(const CEvaluationNode* const pNode,
         const std::map<std::string, std::string>& parameterMap,
         const CCopasiDataModel& dataModel);
+     */
 
     /**
      * Creates an expression from a given function and a set of parameters by
      * replacing the function arguments with the parameters.
-     */
     static CEvaluationNode* createExpressionTree(const CFunction* const pFun,
         const std::vector<std::vector<std::string> >& arguments,
         const CCopasiDataModel& dataModel);
+     */
+
+    /**
+     * Create an expression that corresponds to a kinetic law.
+     * If the kinetic law was mass action, the expression is a mass action term
+     * , otherwise it is a function call.
+     */
+    CEvaluationNode* createKineticExpression(CFunction* pFun, const std::vector<std::vector<std::string> >& arguments, const CCopasiDataModel& dataModel);
 
     /**
      * Checks if the given datamodel contains events.

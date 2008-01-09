@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/01/08 16:18:01 $
+//   $Date: 2008/01/09 21:32:59 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -43,6 +43,7 @@
 #include "sbml/Trigger.h"
 #include "sbml/Event.h"
 #include "sbml/EventAssignment.h"
+#include <sbml/xml/XMLInputStream.h>
 #include "compareExpressions/compare_utilities.h"
 
 CSBMLExporter::CSBMLExporter(): mpSBMLDocument(NULL), mSBMLLevel(2), mSBMLVersion(1)
@@ -125,7 +126,7 @@ void CSBMLExporter::createTimeUnit(const CCopasiDataModel& dataModel)
     }
   else
     {
-      if (unit.getKind() != UNIT_KIND_SECOND || unit.getScale() != 1 || unit.getExponent() != 0 || unit.getMultiplier() != 1.0)
+      if (unit.getKind() != UNIT_KIND_SECOND || unit.getScale() != 0 || unit.getExponent() != 1 || unit.getMultiplier() != 1.0)
         {
           // set the unit definition
           pSBMLModel->addUnitDefinition(&uDef);
@@ -183,7 +184,7 @@ void CSBMLExporter::createVolumeUnit(const CCopasiDataModel& dataModel)
     }
   else
     {
-      if (unit.getKind() != UNIT_KIND_LITRE || unit.getScale() != 1 || unit.getExponent() != 0 || unit.getMultiplier() != 1.0)
+      if (unit.getKind() != UNIT_KIND_LITRE || unit.getScale() != 0 || unit.getExponent() != 1 || unit.getMultiplier() != 1.0)
         {
           // set the unit definition
           pSBMLModel->addUnitDefinition(&uDef);
@@ -241,7 +242,7 @@ void CSBMLExporter::createSubstanceUnit(const CCopasiDataModel& dataModel)
     }
   else
     {
-      if (unit.getKind() != UNIT_KIND_MOLE || unit.getScale() != 1 || unit.getExponent() != 0 || unit.getMultiplier() != 1.0)
+      if (unit.getKind() != UNIT_KIND_MOLE || unit.getScale() != 0 || unit.getExponent() != 1 || unit.getMultiplier() != 1.0)
         {
           // set the unit definition
           pSBMLModel->addUnitDefinition(&uDef);
@@ -311,6 +312,7 @@ void CSBMLExporter::createCompartment(CCompartment& compartment)
   if (status == CModelEntity::ODE || status == CModelEntity::ASSIGNMENT)
     {
       this->mAssignmentVector.push_back(&compartment);
+      pSBMLCompartment->setConstant(false);
     }
   // fill initial assignment set
   else if (compartment.getInitialExpressionPtr() != NULL)
@@ -396,6 +398,10 @@ void CSBMLExporter::createMetabolite(CMetab& metab)
     {
       this->mAssignmentVector.push_back(&metab);
     }
+  else if (status == CModelEntity::FIXED)
+    {
+      pSBMLSpecies->setConstant(true);
+    }
   // fill initial assignment set
   else if (metab.getInitialExpressionPtr() != NULL)
     {
@@ -462,6 +468,7 @@ void CSBMLExporter::createParameter(CModelValue& modelValue)
   if (status == CModelEntity::ODE || status == CModelEntity::ASSIGNMENT)
     {
       this->mAssignmentVector.push_back(&modelValue);
+      pParameter->setConstant(false);
     }
   // fill initial assignment set
   else if (modelValue.getInitialExpressionPtr() != NULL)
@@ -596,49 +603,16 @@ void CSBMLExporter::createReaction(CReaction& reaction, CCopasiDataModel& dataMo
   /* if there is one on copasi */
   if ((reaction.getFunction()) != dataModel.mpUndefined)
     {
-      // create an expression from the function call and the parameters and
-      // check the expression
-      std::vector<SBMLIncompatibility> result;
-      CEvaluationNode* pExpressionNode = CSBMLExporter::createExpressionTree(reaction.getFunction(), reaction.getParameterMappings(), dataModel);
-      CExpression* pExpression = new CExpression();
-      pExpression->setRoot(pExpressionNode);
-      pExpression->compile();
-      CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, this->mSBMLLevel, this->mSBMLVersion, result, reaction.getObjectName(), "kinetic law for reaction");
-      delete pExpression;
-      if (result.empty())
+      KineticLaw* pKineticLaw = this->createKineticLaw(reaction, dataModel);
+      if (pKineticLaw != NULL)
         {
-          KineticLaw* kLaw = this->createKineticLaw(reaction, dataModel);
-          if (kLaw != NULL)
-            {
-              pSBMLReaction->setKineticLaw(kLaw);
-              delete kLaw;
-            }
-          else
-            {
-              // create an error message and abort
-              // maybe only abort if incomplete export is not wanted
-              if (this->mIncompleteExport != true)
-                {
-                  CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 8, reaction.getObjectName().c_str());
-                }
-              else
-                {
-                  pSBMLReaction->unsetKineticLaw();
-                }
-            }
+          pSBMLReaction->setKineticLaw(pKineticLaw);
+          delete pKineticLaw;
         }
       else
         {
-          // create an error messages
-          //  abort the export if
-          // incomplete export is not wanted
-          // else set the kinetic law to undefined
-          std::vector<SBMLIncompatibility>::iterator it = result.begin(), endit = result.end();
-          while (it != endit)
-            {
-              this->mIncompatibilities.push_back(*it);
-              ++it;
-            }
+          // create an error message and abort
+          // maybe only abort if incomplete export is not wanted
           if (this->mIncompleteExport != true)
             {
               CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 8, reaction.getObjectName().c_str());
@@ -983,13 +957,12 @@ const std::string CSBMLExporter::createUniqueId(const std::map<std::string, cons
 {
   unsigned int i = 0;
   std::ostringstream numberStream;
-  numberStream << i;
+  numberStream << prefix << i;
   while (idMap.find(numberStream.str()) != idMap.end())
     {
       ++i;
-      numberStream.str(prefix);
       numberStream.str("");
-      numberStream << i;
+      numberStream << prefix << i;
     }
   return numberStream.str();
 }
@@ -1424,6 +1397,7 @@ void CSBMLExporter::createFunctionDefinitions(CCopasiDataModel& dataModel)
         {
           createFunctionDefinition(**it, dataModel);
         }
+      ++it;
     }
 }
 
@@ -1444,8 +1418,12 @@ void CSBMLExporter::createFunctionDefinition(CFunction& function, const CCopasiD
     {
       pFunDef = this->mpSBMLDocument->getModel()->createFunctionDefinition();
       pFunDef->setName(function.getObjectName());
-      std::string id = CSBMLExporter::createUniqueId(this->mIdMap, "function_");
-      this->mIdMap.insert(std::make_pair(id, pFunDef));
+      std::string id = function.getSBMLId();
+      if (id.empty())
+        {
+          id = CSBMLExporter::createUniqueId(this->mIdMap, "function_");
+          this->mIdMap.insert(std::make_pair(id, pFunDef));
+        }
       pFunDef->setId(id);
       function.setSBMLId(id);
       this->mCOPASI2SBMLMap[&function] = pFunDef;
@@ -1532,6 +1510,21 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
       std::string id = CSBMLExporter::createUniqueId(this->mIdMap, "model_");
       this->mpSBMLDocument->createModel(id);
     }
+  // update the comments on the model
+  const CModel* pModel = dataModel.getModel();
+  assert(pModel != NULL);
+  this->mpSBMLDocument->getModel()->setName(pModel->getObjectName());
+  if (pModel != NULL && (!pModel->getComments().empty()) && !(pModel->getComments().find_first_not_of(" \n\t\r") == std::string::npos))
+    {
+      std::string comments = "<notes>" + pModel->getComments() + "</notes>";
+      XMLNode* pNotes = XMLNode::convertStringToXMLNode(comments);
+      if (pNotes != NULL)
+        {
+          this->mpSBMLDocument->getModel()->setNotes(pNotes);
+          delete pNotes;
+        }
+    }
+
   // create units, compartments, species, parameters, reactions, initial
   // assignment, assignments, (event) and function definitions
   createUnits(dataModel);
@@ -1853,7 +1846,7 @@ void CSBMLExporter::updateCOPASI2SBMLMap(const CCopasiDataModel& dataModel)
     }
 }
 
-KineticLaw* CSBMLExporter::createKineticLaw(const CReaction& reaction, CCopasiDataModel& /*dataModel*/)
+KineticLaw* CSBMLExporter::createKineticLaw(const CReaction& reaction, CCopasiDataModel& dataModel)
 {
   KineticLaw* pKLaw = NULL;
   if (!pKLaw)
@@ -1861,150 +1854,79 @@ KineticLaw* CSBMLExporter::createKineticLaw(const CReaction& reaction, CCopasiDa
       /* create a new KineticLaw */
       pKLaw = new KineticLaw();
     }
-  /* if the copasi CFunction specifies a mass-action kinetic */
-  ASTNode* pNode = NULL;
-  if (reaction.getFunction()->getType() == CFunction::MassAction)
+  // create the local parameters
+  unsigned int i, iMax = reaction.getFunctionParameters().size();
+  for (i = 0; i < iMax; ++i)
     {
-      const CMassAction cMassAction = *static_cast<const CMassAction*>(reaction.getFunction());
-      /* create the ASTNode that multiplies all substrates with the first
-      ** kinetic constant.
-      */
-      pNode = new ASTNode(AST_TIMES);
-
-      ASTNode* parameterNode1 = new ASTNode(AST_NAME);
-      std::string parameterName1;
-      if (reaction.isLocalParameter(0))
-        {
-          parameterName1 = cMassAction.getVariables()[0]->getObjectName();
-        }
-      else
-        {
-          parameterName1 = reaction.getParameterMappings()[0][0];
-          const CModelValue* pMV = dynamic_cast<const CModelValue*>(GlobalKeys.get(parameterName1));
-          if (!pMV) fatalError();
-          parameterName1 = pMV->getSBMLId();
-        }
-      parameterNode1->setName(parameterName1.c_str());
-      pNode->addChild(parameterNode1);
-      pNode->addChild(CSBMLExporter::createTimesTree(reaction.getChemEq().getSubstrates()));
-      /* if the reaction is reversible, create the ASTNode tree that
-      ** multiplies all products with the second kinetic constant and
-      ** subtract this tree from the tree of the forward reaction.
-      */
-      if (cMassAction.isReversible() == TriTrue)
-        {
-          ASTNode* pBackwardNode = new ASTNode(AST_TIMES);
-
-          ASTNode* pParameterNode2 = new ASTNode(AST_NAME);
-          std::string parameterName2;
-          if (reaction.isLocalParameter(2))
-            {
-              parameterName2 = cMassAction.getVariables()[2]->getObjectName();
-            }
-          else
-            {
-              parameterName2 = reaction.getParameterMappings()[2][0];
-              const CModelValue* pMV = dynamic_cast<const CModelValue*>(GlobalKeys.get(parameterName2));
-              if (!pMV) fatalError();
-              parameterName2 = pMV->getSBMLId();
-            }
-          pParameterNode2->setName(parameterName2.c_str());
-          pBackwardNode->addChild(pParameterNode2);
-
-          pBackwardNode->addChild(CSBMLExporter::createTimesTree(reaction.getChemEq().getProducts()));
-          ASTNode* pTempNode = new ASTNode(AST_MINUS);
-          pTempNode->addChild(pNode);
-          pTempNode->addChild(pBackwardNode);
-          pNode = pTempNode;
-        }
-    }
-  /* if the copasi CFunction does not specify a mass-action kinetic, it is a
-  ** CKinFunction */
-  else
-    {
-      CEvaluationTree* pTree = new CEvaluationTree("NoName", NULL, CEvaluationTree::Expression);
-      CEvaluationNodeCall* pTmpRoot = new CEvaluationNodeCall(CEvaluationNodeCall::FUNCTION, reaction.getFunction()->getObjectName());
-      const std::vector< std::vector<std::string> >& parameterMappings = reaction.getParameterMappings();
-      unsigned int i, iMax = parameterMappings.size();
-      for (i = 0;i < iMax;++i)
-        {
-          CEvaluationNodeObject* pObjectNode = new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + GlobalKeys.get(parameterMappings[i][0])->getCN() + ">");
-          pTmpRoot->addChild(pObjectNode);
-        }
-      pTree->setRoot(pTmpRoot);
-      pTree->compile();
-      // in copasi kinetic laws are always function calls and the function
-      // arguments are either references to species or parameters.
-      // therefore we don't need to look for directly called functions here
-      this->mUsedFunctions.insert(const_cast<CFunction*>(reaction.getFunction()));
-      pNode = pTmpRoot->toAST();
-      pdelete(pTree);
-    }
-
-  /*
-  ** If the reaction takes place in a single compartment, the rate law has
-  ** to be converted from concentration/time to substance/time by
-  ** multiplying the rate law with the volume of the compartment.
-  */
-  if (reaction.getCompartmentNumber() == 1)
-    {
-      const CCompartment& compartment = reaction.getLargestCompartment();
-      // check if the importer has added a division by the volume
-      // if so remove it instead of multiplying again
-      ASTNode* pTNode = CSBMLExporter::isDividedByVolume(pNode, compartment.getSBMLId());
-      if (pTNode)
-        {
-          if (pTNode->getNumChildren() == 0)
-            {
-              fatalError();
-            }
-          if (pTNode->getNumChildren() == 1)
-            {
-              ASTNode* pTmp = static_cast<ConverterASTNode*>(pTNode)->removeChild(0);
-              delete pTNode;
-              pTNode = pTmp;
-            }
-          delete pNode;
-          pNode = pTNode;
-        }
-      else
-        {
-          pTNode = new ASTNode(AST_TIMES);
-          ASTNode* pVNode = new ASTNode(AST_NAME);
-          pVNode->setName(compartment.getSBMLId().c_str());
-          pTNode->addChild(pVNode);
-          pTNode->addChild(pNode);
-          pNode = pTNode;
-        }
-    }
-
-  pKLaw->setMath(pNode);
-  delete pNode;
-  /* add the parameters */
-  unsigned int counter;
-  for (counter = 0; counter < reaction.getFunctionParameters().size(); counter++)
-    {
-      const CFunctionParameter* para = reaction.getFunctionParameters()[counter];
-      if (para->getUsage() == CFunctionParameter::PARAMETER)
+      const CFunctionParameter* pPara = reaction.getFunctionParameters()[i];
+      if (pPara->getUsage() == CFunctionParameter::PARAMETER)
         {
           // only create a parameter if it is a local parameter,
           // otherwise the parameter already has been created
-          if (reaction.isLocalParameter(counter))
+          if (reaction.isLocalParameter(i))
             {
-              Parameter sbmlPara = Parameter();
+              Parameter* pSBMLPara = pKLaw->createParameter();
 
-              std::string parameterKey = reaction.getParameterMappings()[counter][0];
+              //std::string parameterKey = reaction.getParameterMappings()[counter][0];
 
-              sbmlPara.setId(para->getObjectName().c_str());
-              double value = reaction.getParameterValue(para->getObjectName());
+              pSBMLPara->setId(pPara->getObjectName().c_str());
+              double value = reaction.getParameterValue(pPara->getObjectName());
               // if the value is NaN, leave the parameter value unset.
               if (!isnan(value))
                 {
-                  sbmlPara.setValue(value);
+                  pSBMLPara->setValue(value);
                 }
-              pKLaw->addParameter(&sbmlPara);
             }
         }
+    }
+
+  CEvaluationNode* pExpression = CSBMLExporter::createKineticExpression(const_cast<CFunction*>(reaction.getFunction()), reaction.getParameterMappings(), dataModel);
+  if (pExpression == NULL)
+    {
+      delete pKLaw;
+      pKLaw = NULL;
+    }
+  else
+    {
+      /*
+      ** If the reaction takes place in a single compartment, the rate law has
+      ** to be converted from concentration/time to substance/time by
+      ** multiplying the rate law with the volume of the compartment.
+      */
+      ASTNode* pNode = pExpression->toAST();
+      if (reaction.getCompartmentNumber() == 1)
+        {
+          const CCompartment& compartment = reaction.getLargestCompartment();
+          // check if the importer has added a division by the volume
+          // if so remove it instead of multiplying again
+          ASTNode* pTNode = CSBMLExporter::isDividedByVolume(pNode, compartment.getSBMLId());
+          if (pTNode)
+            {
+              if (pTNode->getNumChildren() == 0)
+                {
+                  fatalError();
+                }
+              if (pTNode->getNumChildren() == 1)
+                {
+                  ASTNode* pTmp = static_cast<ConverterASTNode*>(pTNode)->removeChild(0);
+                  delete pTNode;
+                  pTNode = pTmp;
+                }
+              delete pNode;
+              pNode = pTNode;
+            }
+          else
+            {
+              pTNode = new ASTNode(AST_TIMES);
+              ASTNode* pVNode = new ASTNode(AST_NAME);
+              pVNode->setName(compartment.getSBMLId().c_str());
+              pTNode->addChild(pVNode);
+              pTNode->addChild(pNode);
+              pNode = pTNode;
+            }
+        }
+      pKLaw->setMath(pNode);
+      delete pNode;
     }
   return pKLaw;
 }
@@ -2066,6 +1988,72 @@ ASTNode* CSBMLExporter::isDividedByVolume(const ASTNode* pRootNode, const std::s
   return pResult;
 }
 
+CEvaluationNode* CSBMLExporter::createKineticExpression(CFunction* pFun, const std::vector<std::vector<std::string> >& arguments, const CCopasiDataModel& /*dataModel*/)
+{
+  if (!pFun || pFun->getVariables().size() != arguments.size()) fatalError();
+  CEvaluationNode* pResult;
+  if (pFun->getType() == CEvaluationTree::MassAction)
+    {
+      pResult = CSBMLExporter::createMassActionExpression(arguments, pFun->isReversible() == TriTrue);
+    }
+  else
+    {
+      //std::map< std::string, std::string > parameterMap;
+      std::string id = pFun->getSBMLId();
+      if (id.empty())
+        {
+          id = CSBMLExporter::createUniqueId(this->mIdMap, "function_");
+          this->mIdMap.insert(std::make_pair(id, (const SBase*)NULL));
+          pFun->setSBMLId(id);
+        }
+      CEvaluationNodeCall* pFunctionCall = new CEvaluationNodeCall(CEvaluationNodeCall::FUNCTION, pFun->getObjectName());
+      this->mUsedFunctions.insert(pFun);
+      unsigned int i, iMax = arguments.size();
+      std::string cn;
+      for (i = 0;i < iMax;++i)
+        {
+          if (arguments[i].size() != 1) fatalError(); // we can't have arrays here.
+          const CCopasiObject* pObject = GlobalKeys.get(arguments[i][0]);
+          if (!pObject) fatalError();
+          if (dynamic_cast<const CModel*>(pObject) != NULL)
+            {
+              cn = "<" + pObject->getCN() + ",Reference=Time>";
+            }
+          else if (dynamic_cast<const CCompartment*>(pObject) != NULL)
+            {
+              cn = "<" + pObject->getCN() + ",Reference=Volume>";
+            }
+          else if (dynamic_cast<const CMetab*>(pObject) != NULL)
+            {
+              cn = "<" + pObject->getCN() + ",Reference=Concentration>";
+            }
+          else if (dynamic_cast<const CModelValue*>(pObject) != NULL)
+            {
+              cn = "<" + pObject->getCN() + ",Reference=Value>";
+            }
+          else if (dynamic_cast<const CReaction*>(pObject) != NULL)
+            {
+              cn = "<" + pObject->getCN() + ",Reference=Flux>";
+            }
+          else if (dynamic_cast<const CCopasiParameter*>(pObject) != NULL)
+            {
+              // local parameter of a reaction
+              // must set the node content to the SBML id if the parameter
+              cn = "<" + pObject->getCN() + ">";
+            }
+          else
+            {
+              cn = "<" + pObject->getCN() + ">";
+            }
+          //parameterMap[pFun->getVariables()[i]->getObjectName()] = cn;
+          pFunctionCall->addChild(new CEvaluationNodeObject(CEvaluationNodeObject::ANY, cn));
+        }
+      pResult = pFunctionCall; //CSBMLExporter::createExpressionTree(pFun->getRoot(), parameterMap, dataModel);
+    }
+  return pResult;
+}
+
+/*
 CEvaluationNode* CSBMLExporter::createExpressionTree(const CFunction* const pFun, const std::vector<std::vector<std::string> >& arguments, const CCopasiDataModel& dataModel)
 {
   if (!pFun || pFun->getVariables().size() != arguments.size()) fatalError();
@@ -2104,11 +2092,17 @@ CEvaluationNode* CSBMLExporter::createExpressionTree(const CFunction* const pFun
             {
               cn = "<" + pObject->getCN() + ",Reference=Flux>";
             }
+          else if (dynamic_cast<const CCopasiParameter*>(pObject) != NULL)
+           {
+              // local parameter of a reaction
+              // must set the node content to the SBML id if the parameter
+              cn = "<"+pObject->getCN()+">";
+           }
           else
             {
               cn = "<" + pObject->getCN() + ">";
             }
-          parameterMap[pFun->getVariables()[i]->getObjectName()] = cn;"<" + pObject->getCN() + ">";
+          parameterMap[pFun->getVariables()[i]->getObjectName()] = cn;
         }
       pResult = CSBMLExporter::createExpressionTree(pFun->getRoot(), parameterMap, dataModel);
     }
@@ -2155,6 +2149,9 @@ CEvaluationNode* CSBMLExporter::createExpressionTree(const CEvaluationNode* cons
     case CEvaluationNode::LOGICAL:
       pResultNode = new CEvaluationNodeLogical((CEvaluationNodeLogical::SubType)CEvaluationNode::subType(pNode->getType()), pNode->getData());
       break;
+    case CEvaluationNode::FUNCTION:
+      pResultNode = new CEvaluationNodeFunction((CEvaluationNodeFunction::SubType)CEvaluationNode::subType(pNode->getType()), pNode->getData());
+      break;
     default:
       fatalError();
       break;
@@ -2168,6 +2165,7 @@ CEvaluationNode* CSBMLExporter::createExpressionTree(const CEvaluationNode* cons
   assert(pResultNode);
   return pResultNode;
 }
+ */
 
 /**
  * This method creates an ASTNode tree where all the species specified in
@@ -2250,7 +2248,8 @@ const std::vector<CFunction*> CSBMLExporter::findUsedFunctions(std::set<CFunctio
   while (it != endit)
     {
       chain.insert(*it);
-      findUsedFunctions(*it, pFunctionDB, chain, result);
+      CSBMLExporter::findUsedFunctions(*it, pFunctionDB, chain, result);
+      result.push_back(*it);
       chain.clear();
       ++it;
     }
@@ -2312,24 +2311,27 @@ void CSBMLExporter::orderRules(const CCopasiDataModel& dataModel)
 {
   // make sure the vector of rules is filled
   std::map<CModelEntity*, std::set<const CModelEntity*> > dependencyMap;
-  std::vector<CModelEntity*>::iterator it = mAssignmentVector.begin(), endit = this->mAssignmentVector.end();
+  std::vector<CModelEntity*>::iterator it = this->mAssignmentVector.begin(), endit = this->mAssignmentVector.end();
   while (it != endit)
     {
       const CExpression* pExpr = (*it)->getExpressionPtr();
       assert(pExpr != NULL);
       std::set<const CModelEntity*> dependencies;
       CSBMLExporter::findModelEntityDependencies(pExpr->getRoot(), dataModel, dependencies);
+      /*
       std::vector<CModelEntity*>::iterator it2 = this->mAssignmentVector.begin(), endit2 = this->mAssignmentVector.end();
       while (it2 != endit2)
         {
-          std::set<const CModelEntity*>::iterator pos = dependencies.find(*it);
-          if (pos == dependencies.end())
+          std::set<const CModelEntity*>::iterator pos = dependencies.find(*it2);
+          if (pos != dependencies.end())
             {
               dependencies.erase(pos);
             }
           ++it2;
         }
+        */
       dependencyMap[*it] = dependencies;
+      ++it;
     }
   // now sort the entities according to their dependencies
   bool error = false;
@@ -2337,7 +2339,7 @@ void CSBMLExporter::orderRules(const CCopasiDataModel& dataModel)
   while (error = false && !dependencyMap.empty())
     {
       std::map<CModelEntity*, std::set<const CModelEntity*> >::iterator mapIt = dependencyMap.begin(), mapEndit = dependencyMap.end();
-      // if we cant't remove something in one round, we have a circular
+      // if we cant't remove anything in one round, we have a circular
       // dependency
       error = true;
       while (mapIt != mapEndit)
@@ -2358,7 +2360,7 @@ void CSBMLExporter::orderRules(const CCopasiDataModel& dataModel)
           if (mapIt->second.empty())
             {
               orderedRules.push_back(mapIt->first);
-              // now we know that we could remove something ion this round
+              // now we know that we could remove something in this round
               error = false;
             }
           ++mapIt;
@@ -2933,8 +2935,8 @@ CEvaluationNode* CSBMLExporter::createMassActionExpression(const std::vector<std
       tmpV.push_back(arguments[2]);
       tmpV.push_back(arguments[3]);
       pTmpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MINUS, "-");
-      pTmpNode->addChild(CSBMLExporter::createMassActionExpression(tmpV, false));
       pTmpNode->addChild(pResult);
+      pTmpNode->addChild(CSBMLExporter::createMassActionExpression(tmpV, false));
       pResult = pTmpNode;
     }
   return pResult;
