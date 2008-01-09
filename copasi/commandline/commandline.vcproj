@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="8.00"
+	Name="commandline"
+	ProjectGUID="{CD37FAAC-7EA7-49F0-9438-3593CAE7B50E}"
+	Keyword="MakeFileProj"
+	>
+	<Platforms>
+		<Platform
+			Name="Win32"
+		/>
+	</Platforms>
+	<ToolFiles>
+	</ToolFiles>
+	<Configurations>
+		<Configuration
+			Name="Build|Win32"
+			OutputDirectory=".\Build"
+			IntermediateDirectory=".\Build"
+			ConfigurationType="0"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="nmake /f Makefile"
+				ReBuildCommandLine="nmake /f Makefile clean all"
+				CleanCommandLine="nmake /f Makefile clean"
+				Output="../tmp/commandline.lib"
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+		</Configuration>
+	</Configurations>
+	<References>
+	</References>
+	<Files>
+		<Filter
+			Name="Source Files"
+			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
+			>
+			<File
+				RelativePath="CConfigurationFile.cpp"
+				>
+			</File>
+			<File
+				RelativePath="COptionParser.cpp"
+				>
+			</File>
+			<File
+				RelativePath="COptions.cpp"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Header Files"
+			Filter="h;hpp;hxx;hm;inl"
+			>
+			<File
+				RelativePath="CConfigurationFile.h"
+				>
+			</File>
+			<File
+				RelativePath="COptionParser.h"
+				>
+			</File>
+			<File
+				RelativePath="COptions.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Resource Files"
+			Filter="ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
+			>
+		</Filter>
+		<File
+			RelativePath="commandline.pro"
+			>
+		</File>
+		<File
+			RelativePath="..\common.pri"
+			>
+		</File>
+		<File
+			RelativePath="COptionParser.xml"
+			>
+		</File>
+		<File
+			RelativePath="..\lib.pri"
+			>
+		</File>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>

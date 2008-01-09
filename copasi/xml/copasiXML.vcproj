@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="8.00"
+	Name="copasiXML"
+	ProjectGUID="{AD37DA6D-8D6A-4B96-B262-8004CEA9538F}"
+	Keyword="MakeFileProj"
+	>
+	<Platforms>
+		<Platform
+			Name="Win32"
+		/>
+	</Platforms>
+	<ToolFiles>
+	</ToolFiles>
+	<Configurations>
+		<Configuration
+			Name="Build|Win32"
+			OutputDirectory=".\Build"
+			IntermediateDirectory=".\Build"
+			ConfigurationType="0"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="nmake /f &quot;Makefile&quot;"
+				ReBuildCommandLine="nmake /f &quot;Makefile&quot; clean all"
+				CleanCommandLine="nmake /f Makefile clean"
+				Output="../tmp/copasiXML.lib"
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+		</Configuration>
+	</Configurations>
+	<References>
+	</References>
+	<Files>
+		<Filter
+			Name="Source Files"
+			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
+			>
+			<File
+				RelativePath="CCopasiXML.cpp"
+				>
+			</File>
+			<File
+				RelativePath="CCopasiXMLInterface.cpp"
+				>
+			</File>
+			<File
+				RelativePath="CCopasiXMLParser.cpp"
+				>
+			</File>
+			<File
+				RelativePath="CExpat.cpp"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Header Files"
+			Filter="h;hpp;hxx;hm;inl"
+			>
+			<File
+				RelativePath="CCopasiXML.h"
+				>
+			</File>
+			<File
+				RelativePath="CCopasiXMLInterface.h"
+				>
+			</File>
+			<File
+				RelativePath="CCopasiXMLParser.h"
+				>
+			</File>
+			<File
+				RelativePath="CCopasiXMLVersion.h"
+				>
+			</File>
+			<File
+				RelativePath="CExpat.h"
+				>
+			</File>
+			<File
+				RelativePath="CXMLHandler.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Resource Files"
+			Filter="ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
+			>
+		</Filter>
+		<File
+			RelativePath="..\common.pri"
+			>
+		</File>
+		<File
+			RelativePath="..\lib.pri"
+			>
+		</File>
+		<File
+			RelativePath="xml.pro"
+			>
+		</File>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="8.00"
+	Name="commercial"
+	ProjectGUID="{3107B544-2099-430F-8DB0-073D9B2BFE73}"
+	Keyword="MakeFileProj"
+	>
+	<Platforms>
+		<Platform
+			Name="Win32"
+		/>
+	</Platforms>
+	<ToolFiles>
+	</ToolFiles>
+	<Configurations>
+		<Configuration
+			Name="Build|Win32"
+			OutputDirectory=".\Build"
+			IntermediateDirectory=".\Build"
+			ConfigurationType="0"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="nmake /f Makefile"
+				ReBuildCommandLine="nmake /f Makefile clean all"
+				CleanCommandLine=""
+				Output="../tmp/commercial.lib"
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+		</Configuration>
+	</Configurations>
+	<References>
+	</References>
+	<Files>
+		<Filter
+			Name="Source Files"
+			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
+			>
+			<File
+				RelativePath="BigInt.c"
+				>
+			</File>
+			<File
+				RelativePath="Cmd5.cpp"
+				>
+			</File>
+			<File
+				RelativePath="CRegistration.cpp"
+				>
+			</File>
+			<File
+				RelativePath="GenericDecode.c"
+				>
+			</File>
+			<File
+				RelativePath="TestDriver.c"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Header Files"
+			Filter="h;hpp;hxx;hm;inl"
+			>
+			<File
+				RelativePath="BigInt.h"
+				>
+			</File>
+			<File
+				RelativePath="Cmd5.h"
+				>
+			</File>
+			<File
+				RelativePath="CRegistration.h"
+				>
+			</File>
+			<File
+				RelativePath="GenericDecode.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Resource Files"
+			Filter="ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
+			>
+		</Filter>
+		<File
+			RelativePath="commercial.pro"
+			>
+		</File>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>
