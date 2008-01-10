@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.h,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/01/09 21:32:59 $
+//   $Date: 2008/01/10 10:40:36 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -444,6 +444,11 @@ class CSBMLExporter
      * mass action.
      */
     static CEvaluationNode* createMassActionExpression(const std::vector<std::vector<std::string> >& arguments, bool isReversible);
+
+    /**
+     * Checks if the given string is a valid SId
+     */
+    static bool isValidSId(const std::string& id);
   };
 
 #endif // CSBLExporter_H__

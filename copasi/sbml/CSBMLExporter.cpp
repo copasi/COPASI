@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/01/09 21:32:59 $
+//   $Date: 2008/01/10 10:40:36 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -59,8 +59,8 @@ CSBMLExporter::~CSBMLExporter()
  */
 void CSBMLExporter::createUnits(const CCopasiDataModel& dataModel)
 {
-  createTimeUnit(dataModel);
   createVolumeUnit(dataModel);
+  createTimeUnit(dataModel);
   createSubstanceUnit(dataModel);
 }
 
@@ -291,7 +291,6 @@ void CSBMLExporter::createCompartment(CCompartment& compartment)
         }
       pSBMLCompartment->setId(id);
       pSBMLCompartment->setSpatialDimensions(3);
-      pSBMLCompartment->setConstant(true);
     }
   this->mHandledSBMLObjects.insert(pSBMLCompartment);
   pSBMLCompartment->setName(compartment.getObjectName().c_str());
@@ -314,10 +313,16 @@ void CSBMLExporter::createCompartment(CCompartment& compartment)
       this->mAssignmentVector.push_back(&compartment);
       pSBMLCompartment->setConstant(false);
     }
-  // fill initial assignment set
-  else if (compartment.getInitialExpressionPtr() != NULL)
+  else
     {
-      this->mInitialAssignmentVector.push_back(&compartment);
+      // do this expolicitly since we might handle an exisiting object from an
+      // earlier import that had it attribute set already
+      pSBMLCompartment->setConstant(true);
+      // fill initial assignment set
+      if (compartment.getInitialExpressionPtr() != NULL)
+        {
+          this->mInitialAssignmentVector.push_back(&compartment);
+        }
     }
 }
 
@@ -363,8 +368,6 @@ void CSBMLExporter::createMetabolite(CMetab& metab)
     }
   this->mHandledSBMLObjects.insert(pSBMLSpecies);
   pSBMLSpecies->setName(metab.getObjectName().c_str());
-  pSBMLSpecies->setBoundaryCondition(metab.getStatus() == CModelEntity::FIXED);
-  pSBMLSpecies->setConstant(metab.getStatus() == CModelEntity::FIXED);
 
   const Compartment* pSBMLCompartment = dynamic_cast<const Compartment*>(this->mCOPASI2SBMLMap[const_cast<CCompartment*>(metab.getCompartment())]);
   assert(pSBMLCompartment);
@@ -397,15 +400,20 @@ void CSBMLExporter::createMetabolite(CMetab& metab)
   if (status == CModelEntity::ODE || status == CModelEntity::ASSIGNMENT)
     {
       this->mAssignmentVector.push_back(&metab);
+      pSBMLSpecies->setConstant(false);
+      pSBMLSpecies->setBoundaryCondition(true);
     }
   else if (status == CModelEntity::FIXED)
     {
+      // do this expolicitly since we might handle an exisiting object from an
+      // earlier import that had it attribute set already
       pSBMLSpecies->setConstant(true);
-    }
-  // fill initial assignment set
-  else if (metab.getInitialExpressionPtr() != NULL)
-    {
-      this->mInitialAssignmentVector.push_back(&metab);
+      pSBMLSpecies->setBoundaryCondition(true);
+      // fill initial assignment set
+      if (metab.getInitialExpressionPtr() != NULL)
+        {
+          this->mInitialAssignmentVector.push_back(&metab);
+        }
     }
 }
 
@@ -470,10 +478,16 @@ void CSBMLExporter::createParameter(CModelValue& modelValue)
       this->mAssignmentVector.push_back(&modelValue);
       pParameter->setConstant(false);
     }
-  // fill initial assignment set
-  else if (modelValue.getInitialExpressionPtr() != NULL)
+  else
     {
-      this->mInitialAssignmentVector.push_back(&modelValue);
+      // do this expolicitly since we might handle an exisiting object from an
+      // earlier import that had it attribute set already
+      pParameter->setConstant(true);
+      // fill initial assignment set
+      if (modelValue.getInitialExpressionPtr() != NULL)
+        {
+          this->mInitialAssignmentVector.push_back(&modelValue);
+        }
     }
 }
 
@@ -955,7 +969,7 @@ const std::map<std::string, const SBase*> CSBMLExporter::createIdMap(const Model
  */
 const std::string CSBMLExporter::createUniqueId(const std::map<std::string, const SBase*>& idMap, const std::string& prefix)
 {
-  unsigned int i = 0;
+  unsigned int i = 1;
   std::ostringstream numberStream;
   numberStream << prefix << i;
   while (idMap.find(numberStream.str()) != idMap.end())
@@ -1421,8 +1435,20 @@ void CSBMLExporter::createFunctionDefinition(CFunction& function, const CCopasiD
       std::string id = function.getSBMLId();
       if (id.empty())
         {
-          id = CSBMLExporter::createUniqueId(this->mIdMap, "function_");
-          this->mIdMap.insert(std::make_pair(id, pFunDef));
+          id = function.getObjectName();
+          if (CSBMLExporter::isValidSId(id))
+            {
+              if (this->mIdMap.find(id) != this->mIdMap.end())
+                {
+                  id = CSBMLExporter::createUniqueId(this->mIdMap, id + "_");
+                }
+              this->mIdMap.insert(std::make_pair(id, pFunDef));
+            }
+          else
+            {
+              id = CSBMLExporter::createUniqueId(this->mIdMap, "function_");
+              this->mIdMap.insert(std::make_pair(id, pFunDef));
+            }
         }
       pFunDef->setId(id);
       function.setSBMLId(id);
@@ -1507,7 +1533,7 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
   updateCOPASI2SBMLMap(dataModel);
   if (this->mpSBMLDocument->getModel() == NULL)
     {
-      std::string id = CSBMLExporter::createUniqueId(this->mIdMap, "model_");
+      std::string id = CSBMLExporter::createUniqueId(this->mIdMap, "Model_");
       this->mpSBMLDocument->createModel(id);
     }
   // update the comments on the model
@@ -2002,8 +2028,20 @@ CEvaluationNode* CSBMLExporter::createKineticExpression(CFunction* pFun, const s
       std::string id = pFun->getSBMLId();
       if (id.empty())
         {
-          id = CSBMLExporter::createUniqueId(this->mIdMap, "function_");
-          this->mIdMap.insert(std::make_pair(id, (const SBase*)NULL));
+          id = pFun->getObjectName();
+          if (CSBMLExporter::isValidSId(id))
+            {
+              if (this->mIdMap.find(id) != this->mIdMap.end())
+                {
+                  id = CSBMLExporter::createUniqueId(this->mIdMap, id + "_");
+                }
+              this->mIdMap.insert(std::make_pair(id, (const SBase*)NULL));
+            }
+          else
+            {
+              id = CSBMLExporter::createUniqueId(this->mIdMap, "function_");
+              this->mIdMap.insert(std::make_pair(id, (const SBase*)NULL));
+            }
           pFun->setSBMLId(id);
         }
       CEvaluationNodeCall* pFunctionCall = new CEvaluationNodeCall(CEvaluationNodeCall::FUNCTION, pFun->getObjectName());
@@ -2940,4 +2978,25 @@ CEvaluationNode* CSBMLExporter::createMassActionExpression(const std::vector<std
       pResult = pTmpNode;
     }
   return pResult;
+}
+
+bool CSBMLExporter::isValidSId(const std::string& id)
+{
+  bool result = true;
+  if (id.length() > 0)
+    {
+      char c = id[0];
+      result = (c == '_' || (c > 64 && c < 91) || (c > 96 && c < 123));
+      unsigned int i, iMax = id.length();
+      for (i = 1;(i < iMax) && result;++i)
+        {
+          c = id[i];
+          result = (c == '_' || (c > 64 && c < 91) || (c > 96 && c < 123) || (c > 47 && c < 58));
+        }
+    }
+  else
+    {
+      result = false;
+    }
+  return result;
 }
