@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporterBM.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2007/11/23 17:02:54 $
+//   $Date: 2008/01/10 11:47:55 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -33,6 +33,8 @@ class CODEExporterBM: public CODEExporter
     virtual std::string translateTimeVariableName();
 
     std::string setODEName(const std::string & objName);
+
+    std::string setConcentrationName(const std::string & objName);
 
     virtual std::string translateObjectName(const std::string & realName);
 

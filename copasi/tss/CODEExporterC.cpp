@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporterC.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2007/12/14 10:11:30 $
+//   $Date: 2008/01/10 11:47:55 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -133,6 +133,43 @@ std::string CODEExporterC::setExportName(const CModelEntity::Status & status, un
   return name.str();
 }
 
+std::string CODEExporterC::setConcentrationName(const CModelEntity::Status & status, unsigned C_INT32 n[], unsigned C_INT32 dependent)
+{
+  std::ostringstream name;
+  switch (status)
+    {
+    case CModelEntity::FIXED:
+      name << "p_c[" << n[0] << "]";
+      n[0] ++;
+      break;
+    case CModelEntity::REACTIONS:
+      if (!dependent)
+        {
+          name << "x_c[" << n[1] << "]";
+          n[1] ++;
+        }
+      else
+        {
+          name << "y_c[" << n[2] << "]";
+          n[2] ++;
+        }
+      break;
+    case CModelEntity::ODE:
+      name << "x_c[" << n[1] << "]";
+      n[1] ++;
+      break;
+    case CModelEntity::ASSIGNMENT:
+      name << "y_c[" << n[2] << "]";
+      n[2] ++;
+      break;
+    default:
+      return " ";
+      break;
+    }
+
+  return name.str();
+}
+
 /**
  **      This method adapt a Copasi name for C syntax:
  **      Names can not start with a number.
@@ -244,6 +281,7 @@ bool CODEExporterC::preprocess(const CModel* copasiModel)
 
 {
   unsigned C_INT32 n[3] = {0, 0, 0};
+  unsigned C_INT32 n_c[3] = {0, 0, 0};
   unsigned C_INT32 i, j;
   unsigned C_INT32 dependent;
 
@@ -260,19 +298,26 @@ bool CODEExporterC::preprocess(const CModel* copasiModel)
 
       //if (metab->isUsed())
       {
+        std::string smname;
         std::string name;
         dependent = metab->isDependent();
 
-        name = setExportName(metab->getStatus(), n, dependent);
+        smname = setExportName(metab->getStatus(), n, dependent);
+        name = setConcentrationName(metab->getStatus(), n_c, dependent);
 
         NameMap[metab->getKey()] = name;
+
+        std::ostringstream smKey;
+        smKey << "sm_" << metab->getKey();
+
+        NameMap[smKey.str()] = smname;
 
         if ((metab->getStatus() == CModelEntity::REACTIONS && !metab->isDependent()) || metab->getStatus() == CModelEntity::ODE)
           {
             std::ostringstream odeKey;
             odeKey << "ode_" << metab->getKey();
 
-            NameMap[odeKey.str()] = setODEName(name);
+            NameMap[odeKey.str()] = setODEName(smname);
           }
       }
     }
@@ -393,10 +438,18 @@ bool CODEExporterC::exportSingleObject(std::ostringstream & which, std::string &
 
 bool CODEExporterC::exportSingleMetabolite(const CMetab* metab, std::string & expression, std::string & comments)
 {
+
+  std::string name;
+
+  std::ostringstream smKey;
+  smKey << "sm_" << metab->getKey();
+  name = NameMap[smKey.str()];
+
   switch (metab->getStatus())
     {
+
     case CModelEntity::FIXED:
-      if (!exportSingleObject(fixed, NameMap[metab->getKey()], expression, comments))
+      if (!exportSingleObject(fixed, name, expression, comments))
         return false;
       break;
     case CModelEntity::REACTIONS:
@@ -404,19 +457,19 @@ bool CODEExporterC::exportSingleMetabolite(const CMetab* metab, std::string & ex
       {
         if (metab->isDependent())
           {
-            if (!exportSingleObject(assignment, NameMap[metab->getKey()], expression, comments))
+            if (!exportSingleObject(assignment, name, expression, comments))
               return false;
           }
         else
           {
-            if (!exportSingleObject(initial, NameMap[metab->getKey()], expression, comments))
+            if (!exportSingleObject(initial, name, expression, comments))
               return false;
           }
         break;
       }
     case CModelEntity::ASSIGNMENT:
       {
-        if (!exportSingleObject(assignment, NameMap[metab->getKey()], expression, comments))
+        if (!exportSingleObject(assignment, name, expression, comments))
           return false;
         break;
       }
@@ -490,23 +543,37 @@ bool CODEExporterC::exportSingleModVal(const CModelValue* modval, std::string & 
 
 bool CODEExporterC::exportSingleModelEntity(const CModelEntity* tmp, std::string & expression, std::string & comments)
 {
+
+  std::string name;
+
+  const CMetab* metab;
+  metab = dynamic_cast< const CMetab * >(tmp);
+  if (metab)
+    {
+      std::ostringstream smKey;
+      smKey << "sm_" << metab->getKey();
+      name = NameMap[smKey.str()];
+    }
+  else
+    name = NameMap[tmp->getKey()];
+
   switch (tmp->getStatus())
     {
     case CModelEntity::FIXED:
       {
-        if (!exportSingleObject(fixed, NameMap[tmp->getKey()], expression, comments))
+        if (!exportSingleObject(fixed, name, expression, comments))
           return false;
         break;
       }
     case CModelEntity::ODE:
       {
-        if (!exportSingleObject(initial, NameMap[tmp->getKey()], expression, comments))
+        if (!exportSingleObject(initial, name, expression, comments))
           return false;
         break;
       }
     case CModelEntity::ASSIGNMENT:
       {
-        if (!exportSingleObject(assignment, NameMap[tmp->getKey()], expression, comments))
+        if (!exportSingleObject(assignment, name, expression, comments))
           return false;
         break;
       }
