@@ -1,23 +1,14 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-<<< <<< < CQGLNetworkPainter.cpp
-//   $Revision: 1.83 $
-== == == =
-  //   $Revision: 1.83 $
-  >>> >>> > 1.78.4.1
-  //   $Name:  $
-  <<< <<< < CQGLNetworkPainter.cpp
-  //   $Author: shoops $
-  //   $Date: 2008/01/09 14:53:50 $
-  == == == =
-    //   $Author: shoops $
-    //   $Date: 2008/01/09 14:53:50 $
-    >>> >>> > 1.78.4.1
-    // End CVS Header
+//   $Revision: 1.84 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2008/01/10 20:25:44 $
+// End CVS Header
 
-    // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-    // Properties, Inc. and EML Research, gGmbH.
-    // All rights reserved.
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include <qstring.h>
 #include <qbitmap.h>
@@ -33,12 +24,12 @@
 #include <qfontinfo.h>
 #include <qfontdatabase.h>
 
-    //#include <Q3Canvas>
-    //#include <Q3CanvasText>
-    //#include <QPainter>
-    //#include <QFont>
-    //#include <QFontMetrics>
-    //#include <QString>
+//#include <Q3Canvas>
+//#include <Q3CanvasText>
+//#include <QPainter>
+//#include <QFont>
+//#include <QFontMetrics>
+//#include <QString>
 
 #include <iostream>
 #include <math.h>
@@ -48,8 +39,8 @@
 #include "copasi.h"
 
 #if (defined WIN32 && !defined log2)
-    C_FLOAT64 log2(const C_FLOAT64 & __x)
-    {return log(__x) / log(2.0);}
+C_FLOAT64 log2(const C_FLOAT64 & __x)
+{return log(__x) / log(2.0);}
 #endif // WIN32
 
 #include "CQGLNetworkPainter.h"
@@ -62,7 +53,7 @@
 #include "layoutUI/CDataEntity.h"
 #include "layoutUI/BezierCurve.h"
 
-    const C_FLOAT64 CQGLNetworkPainter::DEFAULT_NODE_SIZE = 20.0;
+const C_FLOAT64 CQGLNetworkPainter::DEFAULT_NODE_SIZE = 20.0;
 
 CQGLNetworkPainter::CQGLNetworkPainter(QWidget *parent, const char *name)
     : QGLWidget(parent, name)
@@ -269,7 +260,7 @@ void CQGLNetworkPainter::checkCurve(CGraphCurve curve, CGraphCurve curveR, CLBou
 
       if (dist1 > dist2)
         {// if the end point of the curve is closer to the node than the start point
-          curve.invertOrderOfPoints(); // invert the order of the points in the curve
+          //  curve.invertOrderOfPoints(); // invert the order of the points in the curve
         }
     }
 }
