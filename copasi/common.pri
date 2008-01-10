@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.70 $ 
+#   $Revision: 1.71 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2008/01/09 14:53:49 $ 
+#   $Date: 2008/01/10 20:27:24 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -11,7 +11,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.70 $ $Author: shoops $ $Date: 2008/01/09 14:53:49 $  
+# $Revision: 1.71 $ $Author: shoops $ $Date: 2008/01/10 20:27:24 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -194,7 +194,11 @@ contains(BUILD_OS, WIN32) {
     QMAKE_LFLAGS += /LIBPATH:"$${EXPAT_PATH}\StaticLibs"
     QMAKE_LFLAGS += /LIBPATH:"$${EXPAT_PATH}\bin"
     QMAKE_LFLAGS += /LIBPATH:"$${EXPAT_PATH}\lib"
-    LIBS += libexpatMT.lib
+    contains(STATIC_LINKAGE, yes) {
+      LIBS += libexpatMT.lib
+    } else {
+      LIBS += libexpat.lib
+    }
   } else {
     error( "EXPAT_PATH must be specified" )
   }
@@ -210,6 +214,13 @@ contains(BUILD_OS, WIN32) {
 
   contains(DEFINES, COPASI_MIRIAM) {
     LIBS += raptor.lib
+    
+    !isEmpty(RAPTOR_PATH) {
+      QMAKE_CXXFLAGS   += -I"$${RAPTOR_PATH}\include"
+      QMAKE_LFLAGS += /LIBPATH:"$${RAPTOR_PATH}\lib"
+    } else {
+      error( "SBML_PATH must be specified" )
+    }
   }
   
   contains(CONFIG, qt) {
