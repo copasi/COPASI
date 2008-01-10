@@ -1,27 +1,38 @@
 @echo off 
 
 echo @echo off > config.status.bat
-echo echo running: configure.bat %1 %2 %3 %4 %5 %6 %7 %8 %9 >> config.status.bat
-echo configure.bat %1 %2 %3 %4 %5 %6 %7 %8 %9 >> config.status.bat
 
+echo echo running: configure.bat %* >> config.status.bat
+echo configure.bat %* >> config.status.bat
+
+rem The default is debug build
+set cps_plus=debug
+set cps_minus=release
+
+set arguments=
+
+:LOOP
+if '%1' == ''                      goto QMAKE
 if '%1' == '--enable-debug'        goto DEBUG
 if '%1' == '--disable-debug'       goto RELEASE
 if '%1' == '--enable-release'      goto RELEASE
 if '%1' == '--disable-release'     goto DEBUG
-set cps_plus=debug
-set cps_minus=release
-goto QMAKE
+
+set arguments=%arguments% %1
+shift
+goto LOOP
 
 :DEBUG
 shift
 set cps_plus=debug
 set cps_minus=release
-goto QMAKE
+goto LOOP
 
 :RELEASE
 shift
 set cps_plus=release
 set cps_minus=debug
+goto LOOP
 
 :QMAKE
 cd copasi
@@ -33,8 +44,8 @@ del CopasiUI\main.obj
 del CopasiSE\CopasiSE.obj
 
 echo executing in copasi:
-echo   qmake "CONFIG+=%cps_plus%" "CONFIG-=%cps_minus%" %1 %2 %3 %4 %5 %6 %7 %8 %9
-%QTDIR%\bin\qmake "CONFIG+=%cps_plus%" "CONFIG-=%cps_minus%" %1 %2 %3 %4 %5 %6 %7 %8 %9
+echo   qmake "CONFIG+=%cps_plus%" "CONFIG-=%cps_minus%" %arguments%
+%QTDIR%\bin\qmake "CONFIG+=%cps_plus%" "CONFIG-=%cps_minus%" %arguments%
 
 nmake qmake_all
 
@@ -51,8 +62,8 @@ cd semantic-test-suite
 echo executing in semantic-test-suite:
 rem  echo   for %%d in (%subdirs%) do del %%d\.qmake.internal.cache
 for %%d in (%subdirs%) do del %%d\.qmake.internal.cache
-echo   qmake "CONFIG+=%cps_plus%" "CONFIG-=%cps_minus%" %1 %2 %3 %4 %5 %6 %7 %8 %9
-%QTDIR%\bin\qmake "CONFIG+=%cps_plus%" "CONFIG-=%cps_minus%" %1 %2 %3 %4 %5 %6 %7 %8 %9
+echo   qmake "CONFIG+=%cps_plus%" "CONFIG-=%cps_minus%" %arguments%
+%QTDIR%\bin\qmake "CONFIG+=%cps_plus%" "CONFIG-=%cps_minus%" %arguments%
 
 cd ..
 
@@ -61,7 +72,7 @@ cd stochastic-testsuite
 echo executing in stochastic-testsuite:
 rem  echo   for %%d in (%subdirs%) do del %%d\.qmake.internal.cache
 for %%d in (%subdirs%) do del %%d\.qmake.internal.cache
-echo   qmake "CONFIG+=%cps_plus%" "CONFIG-=%cps_minus%" %1 %2 %3 %4 %5 %6 %7 %8 %9
-%QTDIR%\bin\qmake "CONFIG+=%cps_plus%" "CONFIG-=%cps_minus%" %1 %2 %3 %4 %5 %6 %7 %8 %9
+echo   qmake "CONFIG+=%cps_plus%" "CONFIG-=%cps_minus%" %arguments%
+%QTDIR%\bin\qmake "CONFIG+=%cps_plus%" "CONFIG-=%cps_minus%" %arguments%
 
 cd ..
