@@ -41,7 +41,7 @@ CCopasiDataModel globalModel=CCopasiDataModel.getGlobal();
 In addition to these methods \textit{CCopasiDataModel} provides some methods for loading COPASI files or importing SBML files, for saving COPASI files or exporting SBML files, for creating new models and for adding tasks to the task list.
 
 \subsection{Model Elements}
-The class in COPASI that contains the actual model data is \textit{CModel}. The current model can be obtained from the global static instance of \textit{CCopasiDataModel} via the \textit{getModel()} method. To create a new empty model, \textit{CCopasiDataModel} provides the method \textit{newModel()}. There is also the method \textit{loadModel(String filename)} which loads a COPASI model from the given filename, the method \textit{importSBML(String filename)} which imports an SBML model from the file with the given name and last but not least the method \textit{importSBMLFromString(String sbmlModelText)} which imports an SBML model from the given string. The string must be a valid SBML model string. All three methods return a boolean value which is \textbf{true} if the method succeeded and \textbf{false} otherwise.
+The class in COPASI that contains the actual model data is \textit{CModel}. The current model can be obtained from the global static instance of \textit{CCopasiDataModel} via the \textit{getModel()} method. To create a new empty model, \textit{CCopasiDataModel} provides the method \textit{newModel()}. There is also the method \textit{loadModel(String filename)} which loads a COPASI model from the given filename, the method \textit{importSBML(String filename)} which imports an SBML model from the file with the given name and last but not least the method \textit{importSBMLFromString(String sbmlModelText)} which imports an SBML model from the given string. The string must be a valid SBML model string. All three methods return a boolean value which is \textbf{TRUE} if the method succeeded and \textbf{FALSE} otherwise.
 
 Once the model has been obtained, it can be manipulated in many ways. New model elements like compartments, metabolites, reactions and/or global parameters can be created, modified or removed. The model also has some methods to manipulate the time-, volume- and substance units of the model. Unlike SBML, models in COPASI only have global units and the units of all elements of the model are made up of thise global units. Units on individual elements are not supported.
 
@@ -244,13 +244,13 @@ MetabVectorNS getMetabolites();
 
 /**
  * Adds the given metabolite to the compartment.
- * If the operation succeeded, true isreturned, else false.
+ * If the operation succeeded, TRUE is returned, else FALSE.
  */
 boolean addMetabolite(CMetab metabolite);
 
 /**
  * Removes the given metabolite from the compartment.
- * If the operation succeeded, true isreturned, else false.
+ * If the operation succeeded, TRUE is returned, else FALSE.
  */
 boolean removeMetabolite(CMetab metabolite);
 \end{lstlisting}
@@ -278,7 +278,7 @@ double getFlux();
 double getParticleFlux();
 
 /**
- * If the reaction is reversible, this returns true, else false.
+ * If the reaction is reversible, this returns TRUE, else FALSE.
  */
 boolean isReversible();
 
@@ -324,8 +324,201 @@ CFunction getFunction();
 boolean setFunction(String functionName);
 \end{lstlisting}
 
+The \textit{getFunction} method returns the function that is used as the kinetic law. In COPASI all kinetic laws are determined by function calls. Using an expression as a kinetic law is not supported. All kinetic law expressions that are imported from SBML files are first converted to function definitions with a call to that function as the kinetic law. When those models are reexported, all expressions are exported as function calls.
+There are exceptions to this rule however. If COPASI determines that a given rate law is a Mass Action rate law, no function definition is created but the Mass Action function build into COPASI is used as the kinetic law. On reexport to SBML, the kinetic law is converted to a Mass Action expression again. In the future, similar procedures might be used for other funktion types as for example constant flux.
+
+The chemical equation of a reaction is stored in a \textit{CChemEq} object which can be aquired from the reaction with a call to \textit{getChemEq}.
+The chemical equation object has several methods to query the properties of the chemical equation:
+
+\begin{lstlisting}
+
+/**
+ * Returns TRUE if the chemical reaction is reversible.
+ */
+public boolean getReversibility();
+
+/**
+ * Sets whether the given chemical equation is to be reversible.
+ */
+public void setReversibility(boolean revers);
+
+/**
+ * Adds a new metabolite to the chemical equation.
+ * key is the key of the metabolite (keys are the ids of COPASI objects)
+ * mult is the stoichiometric coefficient
+ * role is the role of the metabolite and it can bei either CChemEq.PRODUCT,
+ * CChemEq.SUBSTRATE, CChemEq.MODIFIER or CChemEq.NOROLE.
+public boolean addMetabolite(String key, double mult, int role);
+
+/**
+ * Gets a container with all the substrates of the chemical equation.
+ * The size of the container can be queried with its size method,
+ * the element with index i can be retrieved with the get method which takes
+ * the index as the only argument.
+ */
+public CChemEqElementVector getSubstrates();
+
+/**
+ * Gets a container with all the products of the chemical equation.
+ * The size of the container can be queried with its size method,
+ * the element with index i can be retrieved with the get method which takes
+ * the index as the only argument.
+ */
+public CChemEqElementVector getProducts();
+
+/**
+ * Gets a container with all the modifiers of the chemical equation.
+ * The size of the container can be queried with its size method,
+ * the element with index i can be retrieved with the get method which takes
+ * the index as the only argument.
+ */
+public CChemEqElementVector getModifiers();
+
+/**
+ * Returns the number of compartments that are involved in this reaction.
+ * If all metabolites that are involved in the reaction are in the same
+ * compartment 1 is returned.
+ */
+public long getCompartmentNumber();
+
+/**
+ * Returns the largest compartment involved in the reaction.
+ */
+public CCompartment getLargestCompartment();
+
+/**
+ * Returns a CChemEqElement that represents the substrate
+ * with the given index.
+ */
+public CChemEqElement getSubstrate(long index);
+
+/**
+ * Returns a CChemEqElement that represents the product
+ * with the given index.
+ */
+public CChemEqElement getProduct(long index);
+
+/**
+ * Returns a CChemEqElement that represents the modifier
+ * with the given index.
+ */
+public CChemEqElement getModifier(long index);
+\end{lstlisting}
+
+The individual entities of the chemical reaction (substrates, products and modifiers) are
+represeneted by \textit{CChemEqElement} instances. A \textit{CChemEqElement} object stores the stoichiometric coefficient of the reaction entity  and the key of the associated \textit{CMetab} object. Those properties can be queried and manipulated with the following methods:
+
+\begin{lstlisting}
+/**
+ * Returns the stoichiometric coefficient of the element.
+ */
+public double getMultiplicity();
+
+/**
+ * Sets the stoichiometric coefficient of the element.
+ */
+public void setMultiplicity(double multiplicity);
+
+/**
+ * Returns the associated CMetab instance.
+ */
+public CMetab getMetabolite();
+
+/**
+ * Returns the key of the associated CMetab instance.
+ */
+public String getMetaboliteKey();
+
+/**
+ * Sets the associated CMetab instance via its key.
+ */
+public void setMetabolite(String key);
+\end{lstlisting}
+
 \subsection{The Function Database}
-TODO
+The function database is the place where COPASI stores all function definitions, that is all builtin functions as well as all used defined functions. There is only one global function database and it is not associated with the current model. If the model is deleted, all functions that were used in the model stay in the function database.
+
+The function database object is an instance of the class \textit{CFunctionDB} and the global function database can be aquired from the global instance of \textit{CCopasiDataModel}:
+
+\begin{lstlisting}
+CFunctionDB funDB=CCopasiDataModel.getGlobal().getFunctionList();
+\end{lstlisting}
+
+The \textit{CFunctionDB} class has a number of methods to get, remove or add new function defiitions.
+
+\begin{lstlisting}
+/**
+ * Finds the function with the given name.
+ * If no function with this name can be found, null is returned.
+ */
+public CEvaluationTree findFunction(String functionName);
+
+/**
+ * Returns a container with all known function definitions.
+ * The size of the container can be queries with the size method and
+ * individual elements of type CEvaluationTree can be aquired with the get
+ * method. The only argument to the get method is the index of the desired function.
+ */  
+public CEvaluationTreeVectorN loadedFunctions();
+
+/**
+ * Returns a container with all functions that are suitable for the given
+ * number of substrates and products and the given reversibility.
+ * noSubstrates: desired number of substrates
+ * noProducts: desired number of products
+ * reversibility: whether the function should be suitable for reversible or
+ *  irreversible reactions.
+ */  
+public CFunctionStdVector suitableFunctions(long noSubstrates, long noProducts, int reversibility);
+
+/**
+ * Removes the function definition with the given key.
+ */
+public boolean removeFunction(String key);
+\end{lstlisting}
+
+The individual function definitions are instances of the class \textit{CEvaluationTree} or of subclasses of that class, e.g. \textit{CFunction}.
+COPASI distinguishes between different types of function definitions:
+
+\begin{description}
+\item[CEvaluationTree.MassAction]{this is the type of the mass action kinetic function definition}
+\item[CEvaluationTree.PreDefined]{this type is set on all builtin function definitions that are not mass action}
+\item[CEvaluationTree.UserDefined]{this type is set on all user defined functon definitions}
+\end{description}
+
+The type of a \textit{CEvaluationTree} object can be queried with the \textit{getType} method. 
+The formula that is associated with a function definition can be queried with the \textit{getInfix} method. This method returns the equation as a ascii string. In order to set the equation one can use the \textit{setInfix} method. This method takes the formula as an ascii string and returns \textit{TRUE} if the equation has been set successfully. If there was an error, the method returns \textit{FALSE}. 
+
+Besides the mass action function definition which is an instance if the class \textit{CMassAction} (for which there are currently no wrapper functions) all function definitions are instances of \textit{CFunction}. In addition to the method from its baseclass \textit{CEvaluationTree}, \textit{CFunction} has some additional methods to handle the function parameters and some other properties.
+
+\begin{lstlisting}
+// TODO
+public int isReversible();
+
+// TODO
+public void setReversible(int reversible);
+
+/**
+ * Returns a CFunctionParameters structure that holds
+ * all parameters for the function definition.
+ */
+public CFunctionParameters getVariables();
+
+/**
+ * Returns the index of the variable with the given name.
+ * If there is no function parameter with that name, -1 is returned.
+ */
+public long getVariableIndex(String name);
+
+/**
+ * Returns true if the function definition is suitable for the given number
+ * of substrates, products and the given reversibility.
+ */
+public boolean isSuitable(long noSubstrates, long noProducts, int reversible);
+\end{lstlisting}
+
+When the equation is set for a function definition, the parameters are parsed and added to the function definition.
+
 
 \section{Working with Tasks}
 
@@ -419,7 +612,7 @@ FILE & a filename (String) \\ \hline
 
 Most of the time you will only have to deal with the numeric parameters of type DOUBLE, INT, UINT or BOOL.
 
-Next the method has to be set on the task. The method of a task can be set with the \textit{setMethodType(int type)} method of \textit{CCopasiTask} the argument to the method is an integer that specifies the type of the method. All methods known to COPASI hava a specific type and all those types are defined in CCopasiMethod.java. Not all methods are applicable to all tasks, normally a task has a certain set of methods that can be used with the task. If the method type passed to \textit{setMetthodType} is not applicable to the task on which the method has been called, the method return a value of \textbf{false}, otherwise it returns \textbf{true}.
+Next the method has to be set on the task. The method of a task can be set with the \textit{setMethodType(int type)} method of \textit{CCopasiTask} the argument to the method is an integer that specifies the type of the method. All methods known to COPASI hava a specific type and all those types are defined in CCopasiMethod.java. Not all methods are applicable to all tasks, normally a task has a certain set of methods that can be used with the task. If the method type passed to \textit{setMetthodType} is not applicable to the task on which the method has been called, the method return a value of \textbf{FALSE}, otherwise it returns \textbf{TRUE}.
 To find out which method is currently set on a task, you can use a call to \textit{getMethodType()} which will return an integer representing the method.
 
 Which method can be used with which task will be described in the documentation for the individual tasks.
@@ -491,7 +684,7 @@ if(task!=null)
   if(task.setMethodType(CCopasiMethod.LSODAR))
   {
     // maybe change some method parameters
-    task.process(true);
+    task.process(TRUE);
   }
   else
   {
@@ -500,7 +693,7 @@ if(task!=null)
 }
 \end{lstlisting}
 
-After running the time course simulation the results are stoed in memory if the "TimeSeriesRequested" parameter was set to \textbf{true}. In order to get the results from the simulation \textit{CtrajectoryTask} provides the method \textit{getTimeSeries()} which returns an instance of \textit{CTimeSeries}.
+After running the time course simulation the results are stoed in memory if the "TimeSeriesRequested" parameter was set to \textbf{TRUE}. In order to get the results from the simulation \textit{CtrajectoryTask} provides the method \textit{getTimeSeries()} which returns an instance of \textit{CTimeSeries}.
 \textit{CTimeSeries} itself provides some methods to read out the results.
 
 \begin{lstlisting}
