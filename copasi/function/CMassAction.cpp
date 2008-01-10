@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CMassAction.cpp,v $
-//   $Revision: 1.38 $
+//   $Revision: 1.38.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/24 18:40:21 $
+//   $Date: 2008/01/10 14:42:30 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -58,39 +58,38 @@ CMassAction::~CMassAction(){DESTRUCTOR_TRACE;}
 
 const C_FLOAT64 & CMassAction::calcValue(const CCallParameters<C_FLOAT64> & callParameters)
 {
-  CCallParameters<C_FLOAT64>::const_iterator Factor;
-  CCallParameters<C_FLOAT64>::const_iterator End;
+  CCallParameters<C_FLOAT64>::const_iterator itParm = callParameters.begin();
 
-  mValue = 0.0;
+  mValue = *itParm++->value;   // k1
 
-  Factor = callParameters[1].vector->begin();
-  End = callParameters[1].vector->end();
+  CCallParameters<C_FLOAT64>::const_iterator Factor = itParm->vector->begin();
+  CCallParameters<C_FLOAT64>::const_iterator End = itParm++->vector->end();
+
   if (Factor != End)
     {
-      mValue = *callParameters[0].value   // k1
-               * *(Factor++)->value;      // first substrate.
-
       while (Factor != End)
         mValue *= *(Factor++)->value;
     }
+  else
+    mValue = 0;
 
   if (isReversible() == TriFalse)
     return mValue;
 
-  C_FLOAT64 Products = 0.0;
+  C_FLOAT64 Products = *itParm++->value;   // k2
 
-  Factor = callParameters[3].vector->begin();
-  End = callParameters[3].vector->end();
+  Factor = itParm->vector->begin();
+  End = itParm->vector->end();
+
   if (Factor != End)
     {
-      Products = *callParameters[2].value // k2
-                 * *(Factor++)->value;    // first product.
-
       while (Factor != End)
         Products *= *(Factor++)->value;
+
+      return mValue -= Products;
     }
 
-  return mValue -= Products;
+  return mValue;
 }
 
 bool CMassAction::dependsOn(const C_FLOAT64 * parameter,
