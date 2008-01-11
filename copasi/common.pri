@@ -1,17 +1,22 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.69.2.1.2.1 $ 
+#   $Revision: 1.69.2.1.2.2 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2008/01/09 13:52:00 $ 
+#   $Date: 2008/01/11 14:30:55 $ 
 # End CVS Header 
 
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
-# Properties, Inc. and EML Research, gGmbH. 
-# All rights reserved. 
+# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+# and The University of Manchester.
+# All rights reserved.
+
+# Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+# Properties, Inc. and EML Research, gGmbH.
+# All rights reserved.
 
 ######################################################################
-# $Revision: 1.69.2.1.2.1 $ $Author: shoops $ $Date: 2008/01/09 13:52:00 $  
+# $Revision: 1.69.2.1.2.2 $ $Author: shoops $ $Date: 2008/01/11 14:30:55 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
