@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.84 $
+//   $Revision: 1.85 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/10 20:25:44 $
+//   $Date: 2008/01/11 15:12:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -1817,7 +1822,7 @@ void CQGLNetworkPainter::testOpenGL()
   glVertex3f(1.5f, 0.5f, 0.0f); // rechte Ecke oben
   glVertex3f(1.5f, -0.5f, 0.0f); // rechte Ecke unten
 
-  glColor3f(0.0f, 1.0f, 0.0f); // grün
+  glColor3f(0.0f, 1.0f, 0.0f); // grï¿½n
   glVertex3f(0.5f, -1.5f, 0.0f); // untere Ecke rechts
   glVertex3f(-0.5f, -1.5f, 0.0f); // untere Ecke links
 

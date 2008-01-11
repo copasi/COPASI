@@ -1,14 +1,19 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/java.pro,v $ 
-#   $Revision: 1.25 $ 
+#   $Revision: 1.26 $ 
 #   $Name:  $ 
-#   $Author: gauges $ 
-#   $Date: 2008/01/02 10:18:06 $ 
+#   $Author: shoops $ 
+#   $Date: 2008/01/11 15:12:24 $ 
 # End CVS Header 
 
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
-# Properties, Inc. and EML Research, gGmbH. 
-# All rights reserved. 
+# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+# and The University of Manchester.
+# All rights reserved.
+
+# Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+# Properties, Inc. and EML Research, gGmbH.
+# All rights reserved.
 
 TEMPLATE = lib
 CONFIG -= qt
