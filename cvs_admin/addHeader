@@ -43,50 +43,65 @@ BEGIN {
 }
 
 {
-  if (Prolog == 0) {      
-  if (CVSHeader == 0) {
-    if ($0 !~ ".*Begin CVS Header.*") {
-      printf "'$CommentStart' Begin CVS Header '$CommentEnd'\n"
-      printf "'$CommentStart'   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/cvs_admin/addHeader,v $ '$CommentEnd'\n"
-      printf "'$CommentStart'   $Revision: 1.4 $ '$CommentEnd'\n"
-      printf "'$CommentStart'   $Name:  $ '$CommentEnd'\n"
-      printf "'$CommentStart'   $Author: shoops $ '$CommentEnd'\n"
-      printf "'$CommentStart'   $Date: 2007/05/31 18:21:38 $ '$CommentEnd'\n"
-      printf "'$CommentStart' End CVS Header '$CommentEnd'\n"
-      printf "\n"
-      printf "'$CommentStart' Copyright (C) '$Date' by Pedro Mendes, Virginia Tech Intellectual '$CommentEnd'\n"
-      printf "'$CommentStart' Properties, Inc. and EML Research, gGmbH. '$CommentEnd'\n"
-      printf "'$CommentStart' All rights reserved. '$CommentEnd'\n"
-      if ($0 !~ "^$") {
+  if (Prolog == 0 && Copyright < 2) {      
+    if (CVSHeader == 0) {
+      if ($0 !~ ".*Begin CVS Header.*") {
+        printf "'$CommentStart' Begin CVS Header '$CommentEnd'\n"
+        printf "'$CommentStart'   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/cvs_admin/addHeader,v $ '$CommentEnd'\n"
+        printf "'$CommentStart'   $Revision: 1.5 $ '$CommentEnd'\n"
+        printf "'$CommentStart'   $Name:  $ '$CommentEnd'\n"
+        printf "'$CommentStart'   $Author: shoops $ '$CommentEnd'\n"
+        printf "'$CommentStart'   $Date: 2008/01/11 14:41:09 $ '$CommentEnd'\n"
+        printf "'$CommentStart' End CVS Header '$CommentEnd'\n"
         printf "\n"
+        printf "'$CommentStart' Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual '$CommentEnd'\n"
+        printf "'$CommentStart' Properties, Inc., EML Research, gGmbH, University of Heidelberg, '$CommentEnd'\n"
+        printf "'$CommentStart' and The University of Manchester. '$CommentEnd'\n"
+        printf "'$CommentStart' All rights reserved. '$CommentEnd'\n"
+        if ($0 !~ "^$") {
+          printf "\n"
+        }
+        CVSHeader = 2
+        Copyright = 2
+      } else {
+        CVSHeader = 1
       }
-      CVSHeader = 2
-      Copyright = 2
-    } else {
-      CVSHeader = 1
-    }
-    printf "%s\n", $0
-  } else if (CVSHeader == 1) {
-    if ($0 ~ ".* End CVS Header.*") {
-      CVSHeader = 2
-    }
-    print $0
-  } else if (Copyright == 0) {
-    if ($0 ~ "Copyright.*by Pedro Mendes") {
-      printf "'$CommentStart' Copyright (C) '$Date' by Pedro Mendes, Virginia Tech Intellectual '$CommentEnd'\n"
-      Copyright = 2
-    } else if ($0 !~ "^$") {
-      printf "'$CommentStart' Copyright (C) '$Date' by Pedro Mendes, Virginia Tech Intellectual '$CommentEnd'\n"
-      printf "'$CommentStart' Properties, Inc. and EML Research, gGmbH. '$CommentEnd'\n"
-      printf "'$CommentStart' All rights reserved. '$CommentEnd'\n"
-      printf "\n"
-      Copyright = 2
-    } else {     
       print $0
+    } else if (CVSHeader == 1) {
+      if ($0 ~ ".* End CVS Header.*") {
+        CVSHeader = 2
+      }
+      print $0
+    } else if (Copyright == 0) {
+      if ($0 ~ "Copyright (C) 2008 by Pedro Mendes") {
+        print $0
+        Copyright = 2
+      } else if ($0 ~ "Copyright.*by Pedro Mendes") {
+        printf "\n"
+        printf "'$CommentStart' Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual '$CommentEnd'\n"
+        printf "'$CommentStart' Properties, Inc., EML Research, gGmbH, University of Heidelberg, '$CommentEnd'\n"
+        printf "'$CommentStart' and The University of Manchester. '$CommentEnd'\n"
+        printf "'$CommentStart' All rights reserved. '$CommentEnd'\n"
+        printf "\n"
+        printf "'$CommentStart' Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual '$CommentEnd'\n"
+        printf "'$CommentStart' Properties, Inc. and EML Research, gGmbH. '$CommentEnd'\n"
+        printf "'$CommentStart' All rights reserved. '$CommentEnd'\n"
+        Copyright = 1
+      } else if ($0 !~ "^$") {
+        printf "\n"
+        printf "'$CommentStart' Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual '$CommentEnd'\n"
+        printf "'$CommentStart' Properties, Inc., EML Research, gGmbH, University of Heidelberg, '$CommentEnd'\n"
+        printf "'$CommentStart' and The University of Manchester. '$CommentEnd'\n"
+        printf "'$CommentStart' All rights reserved. '$CommentEnd'\n"
+        printf "\n"
+        print $0
+        Copyright = 2
+      }        
+    } else if (Copyright == 1) {
+      if ($0 ~ ".* All rights reserved.*") {
+        Copyright = 2
+      }
     }
-  } else {
-    print $0
-  }
   } else {
     print $0
   }
@@ -95,6 +110,7 @@ BEGIN {
 $0 ~ Prolog {
   Prolog = 0
 }
-' $1 > $1.tmp && \
-$MV -f $1.tmp $1
+' $1 
+# > $1.tmp && \
+# $MV -f $1.tmp $1
 fi
