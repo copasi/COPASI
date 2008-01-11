@@ -27,7 +27,7 @@
 			<Tool
 				Name="VCNMakeTool"
 				BuildCommandLine="nmake /f Makefile"
-				ReBuildCommandLine="nmake /f Makefile clean all"
+				ReBuildCommandLine="nmake /f Makefile"
 				CleanCommandLine="nmake /f Makefile clean"
 				Output="../../lib/COPASIUI.lib"
 				PreprocessorDefinitions=""

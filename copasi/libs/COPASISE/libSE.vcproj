@@ -26,7 +26,7 @@
 			<Tool
 				Name="VCNMakeTool"
 				BuildCommandLine="nmake /f Makefile"
-				ReBuildCommandLine="nmake /f Makefile clean all"
+				ReBuildCommandLine="nmake /f Makefilel"
 				CleanCommandLine="nmake /f Makefile clean"
 				Output="../../lib/COPASISE.lib"
 				PreprocessorDefinitions=""
