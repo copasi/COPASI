@@ -693,7 +693,7 @@ if(task!=null)
 }
 \end{lstlisting}
 
-After running the time course simulation the results are stoed in memory if the "TimeSeriesRequested" parameter was set to \textbf{TRUE}. In order to get the results from the simulation \textit{CtrajectoryTask} provides the method \textit{getTimeSeries()} which returns an instance of \textit{CTimeSeries}.
+After running the time course simulation the results are stored in memory if the "TimeSeriesRequested" parameter was set to \textbf{TRUE}. In order to get the results from the simulation \textit{CtrajectoryTask} provides the method \textit{getTimeSeries()} which returns an instance of \textit{CTimeSeries}.
 \textit{CTimeSeries} itself provides some methods to read out the results.
 
 \begin{lstlisting}
@@ -743,7 +743,289 @@ String getKey(long var);
 String getSBMLId(long var);
 \end{lstlisting}
 
-\subsection{Running Optimizations}
+
+\section{Performing Steady State Calculations}
+Performing a steady state calculation is very similar to running a time course simulation. There is a task instance (\textit{CSteadyStateTask}) that contains a problem instance (\textit{CSteadyStateProblem}) and a method instance (\textit{CNewtonMethod}).
+At the time this was written, there is only one method for the steady state calculation, so we have to deal with a fixed set of parameters that can be set on the problem and the method.
+The steady state problem has two parameters. One (\textbf{JacobianRequested}) determines if the Jacobian matrix is to be calculated and the other (\textbf{StabilityAnalysisRequested}) determines if a stability analysis is to be done. Both values are boolean values and per default they are set to \textbf{TRUE}.
+
+The \textit{CNewtonMethod} has the following parameters:
+
+\begin{description}
+\item[Resolution]{Resolution to determine if a steady state has been found (Double)}
+\item[Derivation Factor]{Used to determine the step size for the newton method (Double)}
+\item[Use Newton]{Use the Newton method to find steady states (Boolean) }
+\item[Use Integration]{Use integration to find steady states (Boolean)}
+\item[Use Back Integration]{Use backwards integration to find steady states (Boolean)}
+\item[Accept Negative Concentrations]{Acept a steady state with negative concentrations (Boolean)}
+\item[Iteration Limit]{Maximum number of iterations for the newton method (positive Integer)}
+\end{description}
+
+For a detailed description of all these parameters please have a look in the COPASI manual in the section for the steady state method.
+To run the calculation, the task has to be initialized with a call to the \textit{initialize} method. At them moment the arguments to this method are useless in Java and should always be \textbf{CCopasiTask.NO\_OUTPUT} and \textbf{null}. Now the task can be run with a call to the \textit{process} method. The method takes one argument which is a \textbf{Boolean} value and determines whether the task is started with the current model values or with the initial values of all model entities.
+
+After the task has finished, the results can be queried via several methods provided by the \textit{CSteadyStateTask} instance.
+
+\begin{lstlisting}
+/**
+ * Returns an integer value. The value can either be
+ * CSteadyStateMethod.notFound, CSteadyStateMethd.found,
+ * CSteadyStateMethod.foundEquilibirium or
+ * CSteadyStateMethod.foundNegative depending on whether a steady state was
+ * found and what properties the found steady state has.
+ */
+public int getResult();
+
+/**
+ * If a steady state was found, the corresponding state of the model
+ * can be aquired by this method.
+ */
+public CState getState();
+
+/**
+ * Returns the Jakobian Matrix that was calculated.
+ * The returned FloatMatrix object has the method size
+ * to query its size and the methods numCols() and numRows()
+ * to query for the number of columns and the number of rows
+ * respecitvely.
+ * Individual elements from the matrix can be fetched with the get
+ * method which takes the row and the column index as its two arguments.
+ * Indices are specified as long values, the return values are of type 
+ * double.
+ */
+public FloatMatrix getJacobian();
+
+/**
+ * Returns the Jakobian Matrix together with annotations
+ * as to which column and row corresponds to what.
+ */
+public CArrayAnnotation getJacobianAnnotated();
+
+/**
+ * Returns the Jakobian matrix for the reduced model (removed moieties).
+ * The returned FloatMatrix object has the method size
+ * to query its size and the methods numCols() and numRows()
+ * to query for the number of columns and the number of rows
+ * respecitvely.
+ * Individual elements from the matrix can be fetched with the get
+ * method which takes the row and the column index as its two arguments.
+ * Indices are specified as long values, the return values are of type 
+ * double.
+ */
+ */
+public FloatMatrix getJacobianReduced();
+
+/**
+ * Returns the annotated Jakobian matrix for the reduced model (removed moieties).
+ */
+public CArrayAnnotation getJacobianXAnnotated();
+
+/**
+ * Returns the Eigenvalues for the full model.
+ */
+public CEigen getEigenValues();
+
+/**
+ * Returns the Eigenvalues for the reduced model.
+ */
+public CEigen getEigenValuesReduced();
+\end{lstlisting}
+
+\begin{desctription}
+\item[CSteadyStateMethod.notFound]{no steady state was found}
+\item[CSteadyStateMethod.found]{a steady state was found}
+\item[CSteadyStateMethod.foundEquilibrium]{a steady state was found where all reaction fluxes are zero}
+\item[CSteadyStateMethod.foundNegative]{a steady state with negative concentrations was found}
+\end{description}
+
+The class \texit{CEigen} class provides several methods to determine the charcteristics of the Eigenvalues.
+
+\begin{lstlisting}
+/**
+ * Returns the largest real part in all Eignevalues.
+ */
+public double getMaxrealpart();
+
+/**
+ * Returns the largest imaginary part in all Eignevalues.
+ */
+public double getMaximagpart();
+
+/**
+ * Returns the number of non-zero Eigenvalues.
+ */
+public int getNzero();
+
+/**
+ * Returns the stiffness of the Eigenvalues.
+ */
+public double getStiffness();
+
+/**
+ * Returns the hierarchy of the Eigenvalues.
+ */
+public double getHierarchy();
+
+/**
+ * Returns the number of Eigenvalues with an
+ * imaginary part equal to zero.
+ */
+public int getNreal();
+
+/**
+ * Returns the number of Eigenvalues with an
+ * imaginary part different from zero.
+ */
+public int getNimag();
+
+/**
+ * Get the number of Eigenvalues with
+ * a positive real part.
+ */
+public int getNposreal();
+
+/**
+ * Get the number of Eigenvalues with
+ * a negative real part.
+ */
+public int getNnegreal();
+
+/**
+ * Returns a vector with the imaginary parts of
+ * all Eigenvalues.
+ * The vectors size can be queried with the size method.
+ * Individual elements can be aquired with the get method.
+ */
+public FloatCVector getI();
+
+/**
+ * Returns a vector with the real parts of
+ * all Eigenvalues.
+ * The vectors size can be queried with the size method.
+ * Individual elements can be aquired with the get method.
+ */
+public FloatCVector getR();
+\end{lstlisting}
+
+The \textit{CArrayAnnotation} class provides a matrix of values combined with annotation data that provides information on the rows and columns of the matrix.
+The values of the contained matrix can be aquired the same way as for the float matrix with the \textit{get} method. The method takes two arguments which are the row and the column index.
+The further methods provided are the following:
+
+\begin{lstlisting}
+/**
+ * Returns the number of dimensions of the contained matrix.
+ */
+public long dimensionality();
+
+/**
+ * Returns a vector of common names for the given dimension of the matrix.
+ */
+public ReportItemVector getAnnotationsCN(long d);
+
+/**
+ * Returns a vector of strings that represent the column entries in dimension
+ * d. The display argument determines whether the string contain the display
+ * name or the object name of the object represented in a column.
+ * A value of TRUE means that display names are returned.
+ */
+public StringStdVector getAnnotationsString(long d, boolean display);
+
+/**
+ * Smae as the method above, only that the second argument is assumed to be
+ * true. So the returned vector will contain display names.
+ */
+public StringStdVector getAnnotationsString(long d);
+
+/**
+ * Gets a descruiption of what is represeneted by the dimension given as the
+ * argument to the method.
+ */  
+public String getDimensionDescription(long d);
+
+/**
+ * Returns a description of the matrix.
+ */
+public String getDescription();
+\end{lstlisting}
+
+The result of the steady state calculation is read directly from the state of the model itself, because after the calculation of the steadystate, the model will contain that state in the transient values of all model entities. So if one wants to find the concentration of some metabolite at the steady state, it can be aquired directly by getting the transient concentration from this metabolite.
+This works as long as the model has not been changed by adding or removing model entities or by doing any calculations on the model.
+
+
+\subsection{Running Parameter Scans}
 TODO
+
+\subsection{Running Optimizations}
+In order to run an optimization, the general procdure is the same as with the other tasks. One has to aquire or create an instance of \textit{COptTask}, choose the desired method to use for the task out of the set of methods COPASI provides for the optimization, set the desired parameter values on the instance of \textit{COptProblem} that can be fetched from the \textit{COptTask} instance and maybe set some parameter values on the method to change the methods behaviour.
+At the time of writing, an optimization can either be done with a time course calculation or a steady state calculation. In order to tell the problem which of the two to use, the problem has two parameters that hold the key of the task that should be used for the optimization. If the optimization is to be run with a steady state calculation, the parameter named "Steady-State" has to contain the key of the steady state task, likewise if the optimization is to use a time course calculation, the parameter named "Time-Course" has to be set to the key of the time course task instance. The parameter corresponding to the task that is not going to be used should be set to an empty string. Setting both keys, or setting an invalid key or a key of an object that is not a steady state task or a time course might lead to undesired behaviour.
+The parameters that can be set on the methods very much depend on the method that is being used. So if you want to find out which parameters each method provides you will have to read the COPASI manual which if you are lucky does list them.
+Before running the optimization, two more items have to be set. One is the object that should be optimized, e.g. the initial value of some parameter, the other item is the objective function that the optimization uses the determine the optimal result.
+The object(s) that are going to be optimized are determined by one or more instances of \textit{COptItem}. Each \textit{COptItem} object stores a reference to the model object to optimize, the start value with which the optimization process will begin and an upper and a lower bound for the value of the object. The optimization method will then try to find values for all objects so that the objective function will (in the optimal case) become minimal.
+The objective function itself also needs to be specified before the optimization can be run. The objective function is an expression that COPASI tries to minimize by changing the values of the objects referenced in the specified \textit{COptItem}s. In order to set the objective function, the \textit{COptProblem} instance has a method called \textit{setObjectiveFunction}. This method takes a string that represents the mathematical expression of the function. The mathematical expression can contain all elements that can be used to describe expressions as described in the COPASI manual. Model objects that are used in the expression have to be referenced with their so called common name enclosed in angular brackets (<CN>). To get the common name from an object derived from \textit{CCopasiObject} the method \textit{getCN} can be used.
+
+Here a small example that runs a simple optimization task:
+
+\begin{lstlisting}
+// create the optimization task
+COptTask optTask=(COptTask)CCopasiDataModel.getGlobal().addTask(CCopasiTask.optimization);
+if(optTask==null) return null;
+
+// use the Levenberg-Marquardt method for the optimization
+optTask.setMethodType(CCopasiMethod.LevenbergMarquardt);
+
+// aquire the problem instance from the task
+COptProblem optProblem=(COptProblem)optTask.getProblem();
+if(optProblem==null) return null;
+
+// create the objective function
+// in this case the objective function is the transient
+// value of some model parameter
+// so COPASI will try to find values for all COptItems
+// so that the transient value of the parameter after
+// the simulation is minimal
+String objectiveFunction=SomeVariableModelValue.getObject(new CCopasiObjectName("Reference=Value")).getCN().getString();
+objectiveFunction="<"+objectiveFunction+">";
+// set the objective function on the problem
+optProblem.setObjectiveFunction(objectiveFunction);
+// set the problem parameters to indicate that the optimization
+// is to be run on a time course simulation
+CCopasiParameter param=optProblem.getParameter("Steady-State");
+param.setStringValue("");
+param=optProblem.getParameter("Time-Course");
+param.setStringValue(timeCourseTask.getKey());
+
+// create an optimization item for the 
+// initial value of some model parameter
+CCopasiObjectName optObjectName=new CCopasiObjectName(SomeFixedModelValue.getObject(new CCopasiObjectName("Reference=InitialValue")));
+COptItem optItem2=optProblem.addOptItem()
+optItem2.setStartValue(1.0);
+optItem2.setLowerBound(0.0);
+optItem2.setUpperBound(2.0);
+
+// change some of the parameters of the method
+COptMethod optMethod=optTask.getMethod();
+param=optMethod.getParameter("Iteration Limit");
+param.setIntValue(2000);
+param=optMethod.getParameter("Tolerance");
+param.setDblValue(1.0e-5);
+boolean result=false;
+try
+{
+  // initialize the task
+  if(optTask.initialize(CCopasiTask.NO_OUTPUT,null)!=false)
+  {
+    // run the optimization
+    result=optTask.process(true);
+  }
+}
+catch(Exception e)
+{
+  System.err.println("ERROR: "+e.getMessage());
+}
+\end{lstlisting}
+
+After the optimization has been run, the solution of the optimization is stored in the problem instance.
+In order to get the lowest value COPASI was able to find for the objective function, use athe call to \textit{getSolutionValue}.
+The values for the \textit{COptItem} objects corresponding to that result, use \textit{getSolutionVariables}. This method returns a container with double values. The size of the container can be queried with its \textit{size} method and individual values can be aquired by calling \textit{get} with the index of the value. The value for index \textbf{i} belongs to the \textit{COptItem} with index \textbf{i} in the list of \textit{COptItem}s.  To get a container with all defined \textit{COptItem}s, use \textit{getOptItemList}.
 
 \end{document}
