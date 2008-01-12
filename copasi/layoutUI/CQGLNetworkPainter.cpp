@@ -1,14 +1,18 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.85 $
+//   $Revision: 1.86 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/01/11 15:12:31 $
+//   $Author: urost $
+//   $Date: 2008/01/12 12:38:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 // Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -160,7 +164,7 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
           if (itNode != nodeMap.end())
             {
               CLBoundingBox box = (*itNode).second.getBoundingBox();
-              this->checkCurve(curve, curveR, box);
+              this->checkCurve(&curve, curveR, box);
             }
           CLMetabReferenceGlyph::Role r = edgesToNodesOfReaction[j2]->getRole();
           curve.setRole(r);
@@ -243,7 +247,7 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
 }
 
 // decides whether the direction of the curve has to be inverted (meaning the order of the line segments, start and end points and base points have to be inverted
-void CQGLNetworkPainter::checkCurve(CGraphCurve curve, CGraphCurve curveR, CLBoundingBox box)
+void CQGLNetworkPainter::checkCurve(CGraphCurve *curve, CGraphCurve curveR, CLBoundingBox box)
 {
   // first checks whether the start point or the end point of the curve is closer to the center of the box defining the reactant node
   CLPoint center; // center of bounding box for node
@@ -251,7 +255,7 @@ void CQGLNetworkPainter::checkCurve(CGraphCurve curve, CGraphCurve curveR, CLBou
   center.setY(box.getPosition().getY() + (box.getDimensions().getHeight() / 2.0));
 
   // get start and end point of curve (start point of first segment and end point of last segment)
-  std::vector <CLPoint> points = curve.getListOfPoints();
+  std::vector <CLPoint> points = curve->getListOfPoints();
   if (points.size() > 1)
     {// if there are at least 2 points
       CLPoint s = points[0];
@@ -263,9 +267,10 @@ void CQGLNetworkPainter::checkCurve(CGraphCurve curve, CGraphCurve curveR, CLBou
       C_FLOAT64 dist2 = sqrt(((center.getX() - e.getX()) * (center.getX() - e.getX())) +
                              ((center.getY() - e.getY()) * (center.getY() - e.getY())));
 
-      if (dist1 > dist2)
-        {// if the end point of the curve is closer to the node than the start point
-          //  curve.invertOrderOfPoints(); // invert the order of the points in the curve
+      if (dist1 < dist2)
+        {// if the start point of the curve is closer to the node than the end point
+          // the curve direction should be TOWARDS the node, not away from it
+          curve->invertOrderOfPoints(); // invert the order of the points in the curve
         }
     }
 }

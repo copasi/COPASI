@@ -1,14 +1,18 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.49 $
+//   $Revision: 1.50 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/01/11 15:12:31 $
+//   $Author: urost $
+//   $Date: 2008/01/12 12:38:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 // Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -164,7 +168,7 @@ class CQGLNetworkPainter : public QGLWidget
     void updateGraphWithNodeSizes();
     void updateEdge(CLLineSegment line);
     void resetGraphToLabelView();
-    void checkCurve(CGraphCurve curve, CGraphCurve curveR, CLBoundingBox box);
+    void checkCurve(CGraphCurve *curve, CGraphCurve curveR, CLBoundingBox box);
 
     //bool checkCurveForArrow(CGraphCurve curve);
 
