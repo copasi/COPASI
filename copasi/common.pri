@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.71 $ 
+#   $Revision: 1.72 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2008/01/10 20:27:24 $ 
+#   $Date: 2008/01/12 03:56:27 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -11,7 +11,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.71 $ $Author: shoops $ $Date: 2008/01/10 20:27:24 $  
+# $Revision: 1.72 $ $Author: shoops $ $Date: 2008/01/12 03:56:27 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -63,7 +63,6 @@ contains(STATIC_LINKAGE, yes) {
   DEFINES+=XML_STATIC
   DEFINES+=LIBSBML_STATIC
 }
-
 
 !contains(BUILD_OS, WIN32) {
   #Release code optimization
@@ -158,12 +157,15 @@ contains(BUILD_OS, WIN32) {
   QMAKE_LEX = C:\cygwin\bin\bash ../../admin/flex.sh
   QMAKE_YACC = C:\cygwin\bin\bash ../../admin/yacc.sh
 
-  DEFINES -= UNICODE 
+  DEFINES -= UNICODE
+   
   debug {
-    QMAKE_LFLAGS += /NODEFAULTLIB:"libcmt.lib"
+    !win32-msvc2005 {
+      QMAKE_LFLAGS += /NODEFAULTLIB:"libcmt.lib"
+    }
     QMAKE_LFLAGS += /NODEFAULTLIB:"msvcrt.lib"
   }
-
+  
   #Release code optimization
   QMAKE_CFLAGS_RELEASE -= -O1
   QMAKE_CFLAGS_RELEASE += -O2
@@ -203,17 +205,33 @@ contains(BUILD_OS, WIN32) {
     error( "EXPAT_PATH must be specified" )
   }
 
+  # Add libsbml
+  win32-msvc2005 {
+    release {
+      LIBS += libsbml.lib
+    }
+    debug {
+      LIBS += libsbmlD.lib
+    }
+  } else {
+    LIBS += libsbml.lib
+  }
+  
   !isEmpty(SBML_PATH) {
     QMAKE_CXXFLAGS   += -I"$${SBML_PATH}\include"
     QMAKE_LFLAGS += /LIBPATH:"$${SBML_PATH}\lib"
     QMAKE_LFLAGS += /LIBPATH:"$${SBML_PATH}\bin"
-    LIBS += libsbml.lib
   } else {
     error( "SBML_PATH must be specified" )
   }
 
   contains(DEFINES, COPASI_MIRIAM) {
-    LIBS += raptor.lib
+    release {
+      LIBS += raptor.lib
+    }
+    debug {
+      LIBS += raptorD.lib
+    }
     
     !isEmpty(RAPTOR_PATH) {
       QMAKE_CXXFLAGS   += -I"$${RAPTOR_PATH}\include"
