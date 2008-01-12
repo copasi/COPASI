@@ -53,6 +53,34 @@
 				RelativePath="CModelMIRIAMInfo.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\CRDFEdge.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CRDFGraph.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CRDFLiteral.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CRDFNode.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CRDFObject.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CRDFParser.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CRDFSubject.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -67,7 +95,31 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CRDFEdge.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CRDFGraph.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CRDFLiteral.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CRDFNode.h"
+				>
+			</File>
+			<File
 				RelativePath="CRDFObject.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CRDFParser.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CRDFSubject.h"
 				>
 			</File>
 		</Filter>

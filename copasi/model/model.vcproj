@@ -27,7 +27,7 @@
 				Name="VCNMakeTool"
 				BuildCommandLine="nmake /f Makefile"
 				ReBuildCommandLine="nmake /f Makefile clean all"
-				CleanCommandLine=""
+				CleanCommandLine="nmake /f Makefile clean"
 				Output="../tmp/model.lib"
 				PreprocessorDefinitions=""
 				IncludeSearchPath=""
