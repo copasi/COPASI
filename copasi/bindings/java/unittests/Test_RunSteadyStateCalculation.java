@@ -1,14 +1,18 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/unittests/Test_RunSteadyStateCalculation.java,v $ 
-//   $Revision: 1.3 $ 
+//   $Revision: 1.4 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2008/01/12 13:17:41 $ 
+//   $Date: 2008/01/12 15:40:29 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 // and The University of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
 // All rights reserved. 
 
 // Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -68,6 +72,12 @@ public class Test_RunSteadyStateCalculation extends TestCase
         mapping.add(react.getChemEq().getSubstrate(0).getMetabolite().getKey());
         react.setParameterMappingVector(react.getFunction().getVariables().getParameter(1).getObjectName(),mapping);;
         model.compileIfNecessary();
+        ObjectStdVector changedObjects=new ObjectStdVector();
+        changedObjects.add(comp.getObject(new CCopasiObjectName("Reference=InitialVolume")));
+        changedObjects.add(A.getObject(new CCopasiObjectName("Reference=InitialConcentration")));
+        changedObjects.add(B.getObject(new CCopasiObjectName("Reference=InitialConcentration")));
+        changedObjects.add(react.getParameters().getParameter(0).getObject(new CCopasiObjectName("Reference=Value")));
+        model.updateInitialValues(changedObjects);
         return model;
     }
 
@@ -171,8 +181,8 @@ public class Test_RunSteadyStateCalculation extends TestCase
     public void test_RunSteadyStateCalculation_Newton()
     {
         HashMap<String,Object> problemParameters=new HashMap<String,Object>();
-        problemParameters.put("JacobianRequested",new Boolean(false));
-        problemParameters.put("StabilityAnalysisRequested",new Boolean(false));
+        problemParameters.put("JacobianRequested",new Boolean(true));
+        problemParameters.put("StabilityAnalysisRequested",new Boolean(true));
         // iteration limit
         // tolerance
         HashMap<String,Object> methodParameters=new HashMap<String,Object>();
@@ -186,8 +196,11 @@ public class Test_RunSteadyStateCalculation extends TestCase
         // objective function
         CSteadyStateTask steadyStateTask=runSteadyStateCalculation(problemParameters,methodParameters);
         assertFalse(steadyStateTask==null);
-        CSteadyStateProblem steadyStateProblem=(CSteadyStateProblem)steadyStateTask.getProblem();
-        assertFalse(steadyStateProblem==null);
+        assertTrue(steadyStateTask.getResult()==CSteadyStateMethod.foundEquilibrium);
+        CEigen eigenvalues=steadyStateTask.getEigenValues();
+        assertFalse(eigenvalues==null);
+        assertTrue(eigenvalues.getMaxrealpart() <= 0.0);
+        assertTrue(eigenvalues.getNnegreal()+eigenvalues.getNreal() == eigenvalues.getR().size());
     }
 
     public static void main(String[] args) {
