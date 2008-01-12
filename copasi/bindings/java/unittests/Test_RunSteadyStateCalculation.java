@@ -1,14 +1,18 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/unittests/Test_RunSteadyStateCalculation.java,v $ 
-//   $Revision: 1.2 $ 
+//   $Revision: 1.3 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2008/01/12 10:09:25 $ 
+//   $Date: 2008/01/12 13:17:41 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 // and The University of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
 // All rights reserved. 
 
 // Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -60,7 +64,7 @@ public class Test_RunSteadyStateCalculation extends TestCase
         react.setReversible(false);
         react.setFunction("Mass action (irreversible)");
         react.setParameterValue("k1",0.5);
-        ParameterMapping mapping=new ParameterMapping();
+        StringStdVector mapping=new StringStdVector();
         mapping.add(react.getChemEq().getSubstrate(0).getMetabolite().getKey());
         react.setParameterMappingVector(react.getFunction().getVariables().getParameter(1).getObjectName(),mapping);;
         model.compileIfNecessary();

@@ -1,12 +1,17 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/unittests/Test_CreateSimpleModel.java,v $ 
-//   $Revision: 1.7 $ 
+//   $Revision: 1.8 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2007/12/11 21:10:26 $ 
+//   $Date: 2008/01/12 13:17:41 $ 
 // End CVS Header 
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc. and EML Research, gGmbH. 
 // All rights reserved. 
 
@@ -54,9 +59,9 @@ public class Test_CreateSimpleModel extends TestCase
     react.setReversible(false);
     react.setFunction("Mass action (irreversible)");
     react.setParameterValue("k1",0.5);
-    ParameterMapping mapping=new ParameterMapping();
+    StringStdVector mapping=new StringStdVector();
     mapping.add(react.getChemEq().getSubstrate(0).getMetabolite().getKey());
-    react.setParameterMappingVector(react.getFunction().getVariables().getParameter(1).getObjectName(),mapping);;
+    react.setParameterMappingVector(react.getFunction().getVariables().getParameter(1).getObjectName(),mapping);
     model.compileIfNecessary();
     return model;
    }
@@ -71,7 +76,7 @@ public class Test_CreateSimpleModel extends TestCase
       react.setReversible(false);
       react.setFunction("Mass action (irreversible)");
       react.getParameters().getParameter(0).setDblValue(0.1);
-      ParameterMapping mapping=new ParameterMapping();
+      StringStdVector mapping=new StringStdVector();
       mapping.add(react.getChemEq().getSubstrate(0).getMetabolite().getKey());
       react.setParameterMappingVector(react.getFunction().getVariables().getParameter(1).getObjectName(),mapping);;
       model.compileIfNecessary();

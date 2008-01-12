@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/unittests/unittests.pro,v $ 
-#   $Revision: 1.1 $ 
+#   $Revision: 1.2 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2008/01/12 10:09:25 $ 
+#   $Date: 2008/01/12 13:17:41 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -11,9 +11,13 @@
 # and The University of Manchester. 
 # All rights reserved. 
 
+# Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc. and EML Research, gGmbH. 
+# All rights reserved. 
+
 CONFIG -= qt
 
-TARGET = dummy
+TEMPLATE=subdirs
 
 JAVAC_ARGS=-classpath ../copasi.jar:$$JUNIT_PATH
 JAVA_ARGS=-Djava.library.path=.. $$JAVAC_ARGC
@@ -34,7 +38,7 @@ contains(BUILD_OS, WIN32){
 !contains(BUILD_OS, WIN32){
   unittest_jar.target = unittest.jar
   unittest_jar_source.depends = $$JAVA_SOURCE_FILES
-  unittest_jar.commands = $(DEL_FILE) unittest.jar *.class && $$JAVA_HOME/bin/javac $$JAVAC_ARGS -d . *.java && $$JAVA_HOME/bin/jar cvf unittest.jar *.class 
+  unittest_jar.commands = $(DEL_FILE) unittest.jar *.class && $$JAVA_HOME/bin/javac $$JAVAC_ARGS -d . *.java && $$JAVA_HOME/bin/jar cvf unittest.jar ./org
   QMAKE_EXTRA_UNIX_TARGETS += unittest_jar
   PRE_TARGETDEPS += ../../../lib/libCOPASISE.a
 }
