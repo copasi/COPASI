@@ -1,14 +1,18 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/unittests/Test_RunSteadyStateCalculation.java,v $ 
-//   $Revision: 1.1 $ 
+//   $Revision: 1.2 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2008/01/12 08:52:34 $ 
+//   $Date: 2008/01/12 10:09:25 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 // and The University of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
 // All rights reserved. 
 
 package org.COPASI.unittests;
@@ -68,12 +72,12 @@ public class Test_RunSteadyStateCalculation extends TestCase
         this.mModel=createModel();
     }
 
-    public static COptTask runSteadyStateCalculation(HashMap<String,Object> problemParameters,HashMap<String,Object> methodParameters)
+    public static CSteadyStateTask runSteadyStateCalculation(HashMap<String,Object> problemParameters,HashMap<String,Object> methodParameters)
     {
-        CSteadyStateTask steadyStateTask=(CSteadyStateTask)CCopasiDataModel.getGlobal().addTask(CCopasiTask.steadystate);
+        CSteadyStateTask steadyStateTask=(CSteadyStateTask)CCopasiDataModel.getGlobal().addTask(CCopasiTask.steadyState);
         if(steadyStateTask==null) return null;
         CSteadyStateProblem steadyStateProblem=(CSteadyStateProblem)steadyStateTask.getProblem();
-        if(optProblem==null) return null;
+        if(steadyStateProblem==null) return null;
         Set<String> keySet=problemParameters.keySet();
         for(Iterator<String> it=keySet.iterator();it.hasNext();)
         {
@@ -163,19 +167,20 @@ public class Test_RunSteadyStateCalculation extends TestCase
     public void test_RunSteadyStateCalculation_Newton()
     {
         HashMap<String,Object> problemParameters=new HashMap<String,Object>();
-        problemParameters.put("JacobianRequested",new Boolean(FALSE));
-        problemParameters.put("StabilityAnalysisRequested",new Boolean(FALSE));
+        problemParameters.put("JacobianRequested",new Boolean(false));
+        problemParameters.put("StabilityAnalysisRequested",new Boolean(false));
         // iteration limit
         // tolerance
+        HashMap<String,Object> methodParameters=new HashMap<String,Object>();
         methodParameters.put("Resolution",new Double(1e-9));
         methodParameters.put("Derivation Factor",new Double(1e-3));
-        methodParameters.put("Use Newton",new Boolean(TRUE));
-        methodParameters.put("Use Integration",new Boolean(FALSE));
-        methodParameters.put("Use Back Integration",new Boolean(FALSE));
-        methodParameters.put("Accept Negative Concentrations",new Boolean(FALSE));
+        methodParameters.put("Use Newton",new Boolean(true));
+        methodParameters.put("Use Integration",new Boolean(false));
+        methodParameters.put("Use Back Integration",new Boolean(false));
+        methodParameters.put("Accept Negative Concentrations",new Boolean(false));
         methodParameters.put("Iteration Limit",new Integer(50));
         // objective function
-        COptTask optTask=runOptimization(problemParameters,methodParameters);
+        CSteadyStateTask steadyStateTask=runSteadyStateCalculation(problemParameters,methodParameters);
         assertFalse(steadyStateTask==null);
         CSteadyStateProblem steadyStateProblem=(CSteadyStateProblem)steadyStateTask.getProblem();
         assertFalse(steadyStateProblem==null);
