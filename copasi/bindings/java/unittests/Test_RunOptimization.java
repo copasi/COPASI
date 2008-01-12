@@ -1,12 +1,17 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/unittests/Test_RunOptimization.java,v $ 
-//   $Revision: 1.2 $ 
+//   $Revision: 1.3 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2007/12/12 14:53:31 $ 
+//   $Date: 2008/01/12 16:06:30 $ 
 // End CVS Header 
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc. and EML Research, gGmbH. 
 // All rights reserved. 
 
@@ -53,6 +58,10 @@ public class Test_RunOptimization extends TestCase
     s="<"+s+">^2";
     this.mVariableModelValue.setExpression(s);
     model.compileIfNecessary();
+    ObjectStdVector changedObjects=new ObjectStdVector();
+    changedObjects.add(this.mFixedModelValue.getObject(new CCopasiObjectName("Reference=InitialValue")));
+    changedObjects.add(this.mVariableModelValue.getObject(new CCopasiObjectName("Reference=InitialValue")));
+    model.updateInitialValues(changedObjects);
     return model;
    }
     
