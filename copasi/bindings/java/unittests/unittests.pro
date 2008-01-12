@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/unittests/unittests.pro,v $ 
-#   $Revision: 1.2 $ 
+#   $Revision: 1.3 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2008/01/12 13:17:41 $ 
+#   $Date: 2008/01/12 16:00:32 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -15,33 +15,51 @@
 # Properties, Inc. and EML Research, gGmbH. 
 # All rights reserved. 
 
+# Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc. and EML Research, gGmbH. 
+# All rights reserved. 
+
 CONFIG -= qt
 
-TEMPLATE=subdirs
+TEMPLATE=lib
+
+QMAKE_RUN_CXX = echo
+QMAKE_RUN_CXX_IMP = echo
+QMAKE_LINK_SHLIB_CMD = echo
+QMAKE_LN_SHLIB = echo 
 
 JAVAC_ARGS=-classpath ../copasi.jar:$$JUNIT_PATH
 JAVA_ARGS=-Djava.library.path=.. $$JAVAC_ARGC
 
-JAVA_SOURCE_FILE=Test_CreateSimpleModel.java \
+JAVA_SOURCE_FILES=Test_CreateSimpleModel.java \
                  Test_RunOptimization.java \
                  Test_RunSimulations.java \
                  Test_RunSteadyStateCalculation.java
 
 
 contains(BUILD_OS, WIN32){
-  unittest_jar.target = unittest.jar
-  unittest_jar_source.depends = $$JAVA_SOURCE_FILES
-  unittest_jar.commands = $(DEL_FILE) unittest.jar *.class && $$JAVA_HOME\bin\javac.exe $$JAVAC_ARGS -d . *.java && $$JAVA_HOME\bin\jar.exe cvf unittest.jar *.class 
-  QMAKE_EXTRA_WIN_TARGETS += unittest_jar
+  unittests_jar.target = unittests.jar
+  unittests_jar.depends = $$JAVA_SOURCE_FILES ..\copasi.jar 
+  unittests_jar.commands = $(DEL_FILE)  $$unittests_jar.target org\COPASI\unittests\*.class  && $$JAVA_HOME\bin\javac.exe $$JAVAC_ARGS -d . $$JAVA_SOURCE_FILES && $$JAVA_HOME\bin\jar.exe cvf $$unittests_jar.target *.class 
+  QMAKE_EXTRA_WIN_TARGETS += unittests_jar
   PRE_TARGETDEPS += ..\..\..\lib\COPASISE.lib
 }
 !contains(BUILD_OS, WIN32){
-  unittest_jar.target = unittest.jar
-  unittest_jar_source.depends = $$JAVA_SOURCE_FILES
-  unittest_jar.commands = $(DEL_FILE) unittest.jar *.class && $$JAVA_HOME/bin/javac $$JAVAC_ARGS -d . *.java && $$JAVA_HOME/bin/jar cvf unittest.jar ./org
-  QMAKE_EXTRA_UNIX_TARGETS += unittest_jar
+  unittests_jar.target = unittests.jar
+  unittests_jar.depends = $$JAVA_SOURCE_FILES ../copasi.jar 
+  unittests_jar.commands = $(DEL_FILE) $$unittests_jar.target org/COPASI/unittests/*.class && $$JAVA_HOME/bin/javac $$JAVAC_ARGS -d . $$JAVA_SOURCE_FILES && $$JAVA_HOME/bin/jar cvf $$unittests_jar.target ./org
+  QMAKE_EXTRA_UNIX_TARGETS += unittests_jar
   PRE_TARGETDEPS += ../../../lib/libCOPASISE.a
+
+  contains(BUILD_OS, Darwin)
+  {
+     PRE_TARGETDEPS += ../libCopasiJava.jnilib
+  }
 }
 
-PRE_TARGETDEPS += unittest.jar
 
+PRE_TARGETDEPS += ../copasi.jar
+PRE_TARGETDEPS += unittests.jar
+
+QMAKE_CLEAN += unittests.jar
+QMAKE_CLEAN += org/COPASI/unittests/*.class
