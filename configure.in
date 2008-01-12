@@ -233,6 +233,16 @@ if test x"${JAVA_LIB_PATH}" != x""; then
   QMAKE_ARG="$QMAKE_ARG JAVA_LIB_PATH=$JAVA_LIB_PATH"
 fi
 
+AC_ARG_WITH([junit],
+  AS_HELP_STRING([--with-junit=PATH],
+                 [Path to junit]),
+  [JUNIT_PATH=$withval;])
+
+if test x"${JUNIT_PATH}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG JUNIT_PATH=$JUNIT_PATH"
+fi
+
+
 
 dnl Handle COPASI license
 AC_ARG_WITH([copasi-license],

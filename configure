@@ -1214,7 +1214,7 @@ Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
   --with-qwt=PATH         Path to QWT Library
-  --with-qwt3d=PATH       Path to QwtPlot3D Library
+  --with-qwt3d=PATH       Path to QWT3D Library
   --with-expat=PATH       Path to Expat XML Library
   --with-cppunit=PATH     Path to CPPUNIT Library
   --with-sbml=PATH        Path to SBML Library
@@ -1230,6 +1230,7 @@ Optional Packages:
   --with-java-includes=PATH
                           Path to Java include files
   --with-java-libs=PATH   Path to Java libraries
+  --with-junit=PATH       Path to junit
   --with-copasi-license   Specify whether to use the German (DE), US (US) or
                           Commercial (COM) license.
 
@@ -2215,13 +2216,13 @@ fi
 
 # Check whether --with-qwt3d was given.
 if test "${with_qwt3d+set}" = set; then
-  withval=$with_qwt3d; QWT3D_PATH=$withval; 
-fi;
+  withval=$with_qwt3d; QWT3D_PATH=$withval
+fi
+
 
 if test x"${QWT3D_PATH}" != x""; then
   QMAKE_ARG="$QMAKE_ARG QWT3D_PATH=$QWT3D_PATH"
 fi
-
 
 
 
@@ -2399,6 +2400,18 @@ fi
 if test x"${JAVA_LIB_PATH}" != x""; then
   QMAKE_ARG="$QMAKE_ARG JAVA_LIB_PATH=$JAVA_LIB_PATH"
 fi
+
+
+# Check whether --with-junit was given.
+if test "${with_junit+set}" = set; then
+  withval=$with_junit; JUNIT_PATH=$withval;
+fi
+
+
+if test x"${JUNIT_PATH}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG JUNIT_PATH=$JUNIT_PATH"
+fi
+
 
 
 
