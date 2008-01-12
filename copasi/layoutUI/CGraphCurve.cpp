@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CGraphCurve.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/12/10 12:18:58 $
+//   $Date: 2008/01/12 12:40:33 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -45,3 +50,27 @@ void CGraphCurve::scale (const double & scaleFactor)
   if (mHasArrow)
     mArrow.scale(scaleFactor);
 }
+
+void CGraphCurve::invertOrderOfPoints()
+{
+  std::cout << " invertOrderOfPoints for " << mCurveSegments.size() << " segments" << std::endl;
+  unsigned int i; // invert order of points in each segment
+  CLPoint h; // puffer variable
+  for (i = 0;i < mCurveSegments.size();i++)
+    {
+      h = mCurveSegments[i].getStart();
+      mCurveSegments[i].setStart(mCurveSegments[i].getEnd());
+      mCurveSegments[i].setEnd(h);
+      if (mCurveSegments[i].isBezier())
+        {
+          h = mCurveSegments[i].getBase1();
+          mCurveSegments[i].setBase1(mCurveSegments[i].getBase2());
+          mCurveSegments[i].setBase2(h);
+        }
+    }
+
+  // now invert order of segments
+  reverse(mCurveSegments.begin(), mCurveSegments.end());
+
+  if (mHasArrow)
+  {} //???}}
