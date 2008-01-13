@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/unittests/unittests.pro,v $ 
-#   $Revision: 1.3 $ 
+#   $Revision: 1.4 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2008/01/12 16:00:32 $ 
+#   $Date: 2008/01/13 16:47:46 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -19,9 +19,16 @@
 # Properties, Inc. and EML Research, gGmbH. 
 # All rights reserved. 
 
+# Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc. and EML Research, gGmbH. 
+# All rights reserved. 
+
 CONFIG -= qt
 
 TEMPLATE=lib
+
+include(../../../common.pri)
+
 
 QMAKE_RUN_CXX = echo
 QMAKE_RUN_CXX_IMP = echo
@@ -51,9 +58,11 @@ contains(BUILD_OS, WIN32){
   QMAKE_EXTRA_UNIX_TARGETS += unittests_jar
   PRE_TARGETDEPS += ../../../lib/libCOPASISE.a
 
-  contains(BUILD_OS, Darwin)
-  {
+  contains(BUILD_OS, Darwin){
      PRE_TARGETDEPS += ../libCopasiJava.jnilib
+  }
+  !contains(BUILD_OS, Darwin){
+     PRE_TARGETDEPS += ../libCopasiJava.so
   }
 }
 
