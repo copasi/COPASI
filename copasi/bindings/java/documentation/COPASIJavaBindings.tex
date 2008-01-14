@@ -1177,5 +1177,40 @@ Once the report definition is finished, we have to tell the task to use it. This
 Last but not least, we have to specify a filename where the report is written to which is done with the \textit{setTarget} method of the same report object.
 In the description of the individual tasks and in the accompaniing examples, we have always used \textbf{CCopasiTask.NO\_OUTPUT} as the first argument to the task which meant that we didn't want the task to create reports even if reports have been defined for the task. Now we naturally do want the task to create output, so we now use \textit{CCopasiTask.OUTPUT\_COMPLETE} instead when we call \textit{initialize} on the task before running it.
 
+The following example shows how to create a report for a time course simulation that writes the metabolite concentrations to file for each step of the time course simulation:
+
+\begin{lstlisting}
+...
+CReportDefinitionVector* reports = CCopasiDataModel.getGlobal().getReportDefinitionList();
+CReportDefinition* report = reports.createReportDefinition("Report", "metab concentrations");
+report.setTaskType(CCopasiTask.timeCourse);
+ReportItemVector items=report.getBodyAddr(); 
+// add the time as the first colum
+CModel model=CCopasiDataModel.getGlobal().getModel();
+items.add(CCopasiObjectName(model.getObject(new CCopasiObjectName("Reference=Time")).getCN());
+unsigned int i,iMax=model.getNumMetabs() 
+for (i = 0; i < iMax;++i)
+  {
+     body.add(model.getMetabolite(i).getObject(new CCopasiObjectName("Reference=Concentration")).getCN());
+  }
+CTrajectoryTask trajectoryTask = new CTrajectoryTask();
+// set the properties of the task, method and problem
+...
+// set the report definition and the output file
+trajectoryTask.getReport().setReportDefinition(report);
+String outputFileName=new String("test.txt");
+trajectoryTask.getReport().setTarget(outputFilename);
+// don't append but overwrite
+trajectoryTask.getReport().setAppend(false);
+// remove the old time course task
+// and add the new one
+TaskVectorN taskList = CCopasiDataModel.getGlobal().getTaskList();
+taskList.remove("Time-Course");
+taskList.add(trajectoryTask, true);
+// initialize and run the task
+trajectoryTask.initialize(CCopasiTask.OUTPUT_COMPLETE, null);
+trajectoryTask.process(true);
+...
+\end{lstlisting}
 
 \end{document}
