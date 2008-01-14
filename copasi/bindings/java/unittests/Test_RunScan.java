@@ -1,14 +1,18 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/unittests/Test_RunScan.java,v $ 
-//   $Revision: 1.1 $ 
+//   $Revision: 1.2 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2008/01/12 21:20:44 $ 
+//   $Date: 2008/01/14 10:31:33 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 // and The University of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
 // All rights reserved. 
 
 package org.COPASI.unittests;
@@ -65,89 +69,43 @@ public class Test_RunScan extends TestCase
         this.mModel=createModel();
     }
 
-    public static COptTask runScan(int subTask,Vector<CCopasiParameterGroup> scanItems,bool adjustInitialValues)
+    public static CScanTask runScan(int subTask,Vector<CCopasiParameterGroup> scanItems,boolean adjustInitialValues)
     {
         CScanTask scanTask=(CScanTask)CCopasiDataModel.getGlobal().addTask(CCopasiTask.scan);
         if(scanTask==null) return null;
         CScanProblem scanProblem=(CScanProblem)scanTask.getProblem();
         scanProblem.setSubtask(subTask);
         if(scanProblem==null) return null;
-        Set<String> keySet=problemParameters.keySet();
-        for(Iterator<String> it=keySet.iterator();it.hasNext();)
-        {
-            String key=(String)it.next();
-            CCopasiParameter param=scanProblem.getParameter(key);
-            if(param==null)
-            {
-                return null;
-            }
-            Object o=problemParameters.get(key);
-            if(o instanceof Double)
-            {
-                param.setDblValue(((Double)o).doubleValue());
-            }
-            else if(o instanceof Integer)
-            {
-                param.setIntValue(((Integer)o).intValue());
-            }
-            else if(o instanceof Boolean)
-            {
-                param.setBoolValue(((Boolean)o).booleanValue());
-            }
-            else if(o instanceof String)
-            {
-                param.setStringValue(((String)o));
-            }
-            else
-            {
-                System.err.println("Error. Unknown parameter type.");
-            }
-        }
-        CScanMethod scanMethod=(CScanMethod)scanTask.getMethod();
-        if(scanMethod==null)
-        {
-            return null;
-        }
-        keySet=methodParameters.keySet();
-        for(Iterator<String> it=keySet.iterator();it.hasNext();)
-        {
-            String key=(String)it.next();
-            CCopasiParameter param=scanMethod.getParameter(key);
-            if(param==null)
-            {
-                return null;
-            }
-            Object o=methodParameters.get(key);
-            if(o instanceof Double)
-            {
-                param.setDblValue(((Double)o).doubleValue());
-            }
-            else if(o instanceof Integer)
-            {
-                param.setIntValue(((Integer)o).intValue());
-            }
-            else if(o instanceof Boolean)
-            {
-                param.setBoolValue(((Boolean)o).booleanValue());
-            }
-            else if(o instanceof String)
-            {
-                param.setStringValue(((String)o));
-            }
-            else
-            {
-                System.err.println("Error. Unknown parameter type.");
-            }
-        }
         for(Iterator<CCopasiParameterGroup> it=scanItems.iterator();it.hasNext();)
         {
            CCopasiParameterGroup scanItem=(CCopasiParameterGroup)it.next();
            CCopasiParameter type=scanItem.getParameter("Type");
-           CCopasiParameterGroup newScanItem=scanProblem.createScanItem(type.getUIntValue());
-           for(int i=0;i<scanItem.size(),++i)
+           CCopasiParameter steps=scanItem.getParameter("Number of steps");
+           CCopasiParameterGroup newScanItem=scanProblem.createScanItem((int)type.getUIntValue(),steps.getUIntValue());
+           for(int i=0;i<scanItem.size();++i)
            {
               CCopasiParameter para=scanItem.getParameter(i);
-              newScanItem.addParameter(para);
+              newScanItem.addParameter(para.getObjectName(),para.getType());
+              CCopasiParameter newPara=newScanItem.getParameter(para.getObjectName());
+              switch(para.getType())
+              {
+                 case CCopasiParameter.UINT:
+                 case CCopasiParameter.INT:
+                   newPara.setIntValue(para.getIntValue());
+                   break;
+                 case CCopasiParameter.DOUBLE:
+                 case CCopasiParameter.UDOUBLE:
+                   newPara.setDblValue(para.getDblValue());
+                   break;
+                 case CCopasiParameter.BOOL:
+                   newPara.setBoolValue(para.getBoolValue());
+                 case CCopasiParameter.STRING:
+                 case CCopasiParameter.CN:
+                 case CCopasiParameter.KEY:
+                 case CCopasiParameter.FILE:
+                   newPara.setStringValue(para.getStringValue());
+                   break;
+              }
            }
         }
         boolean result=false;
@@ -172,13 +130,16 @@ public class Test_RunScan extends TestCase
     public void test_Scan_Repeat()
     {
         Vector<CCopasiParameterGroup> scanItems=new Vector<CCopasiParameterGroup>();
-        bool adjustInitialConditions=false;
-        CCopasiParameterGroup parameterGroup=new CCopasiParameterGroup();
-        parameterGroup.addParameter("Number of steps", CCopasiParameter.UINT, 10);
-        parameterGroup.addParameter("Type", CCopasiParameter.UINT, CScanProblem.SCAN_REPEAT);
-        parameterGroup.addParameter("Object", CCopasiParameter.CN, "");
-        scanIems.add(parameterGroup);
-        COptTask optTask=runScan(CCopasiTask.timeCourse,scanItems,adjustInitialConditions);
+        boolean adjustInitialConditions=false;
+        CCopasiParameterGroup parameterGroup=new CCopasiParameterGroup("scanItems");
+        parameterGroup.addParameter("Number of steps", CCopasiParameter.UINT);
+        parameterGroup.getParameter("Number of steps").setUIntValue(10);
+        parameterGroup.addParameter("Type", CCopasiParameter.UINT);
+        parameterGroup.getParameter("Type").setUIntValue(CScanProblem.SCAN_REPEAT);
+        parameterGroup.addParameter("Object", CCopasiParameter.CN);
+        parameterGroup.getParameter("Object").setStringValue("");
+        scanItems.add(parameterGroup);
+        CScanTask optTask=runScan(CCopasiTask.timeCourse,scanItems,adjustInitialConditions);
         assertFalse(optTask==null);
     }
 
