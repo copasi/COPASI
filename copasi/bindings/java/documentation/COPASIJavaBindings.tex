@@ -214,7 +214,7 @@ Most of the time, if you manipulate any of those classes, it will be done throug
   boolean setInitialExpression(String expression);
 \end{lstlisting}
 
-The \textit{setStatus(int status)} and \textit{getStatus()} methods set and return the status of an entity respectively. The status of an entity determines how it is calculated. E.g. an entity that has a status of FIXED is not changed during a time course simulation, whereas an entity that has a status value of ASSIGNMENT is determined by an assignment expression. For a full list of valid status definitions seee table \ref{ModelEntityStatus}.
+The \textit{setStatus(int status)} and \textit{getStatus()} methods set and return the status of an entity respectively. The status of an entity determines how it is calculated. E.g. an entity that has a status of FIXED is not changed during a time course simulation, whereas an entity that has a status value of ASSIGNMENT is determined by an assignment expression. For a full list of valid status definitions see table \ref{ModelEntityStatus}.
 
 \begin{table}[ht]
 \begin{tabular}{c|l}
@@ -1025,19 +1025,20 @@ So in the end the instance of \textit{CScanProblem} holds a parameter group call
 
 The following list shows the properties of the individual scan item types:
 
-\begin{table}
-\begin{tabular}[|r|r|c|]
-Parameter name & description & availability\hline \hline 
-Number of steps (unsigned integer) & The number of steps of the scan item. For a repeat or a random scan item this is the number of repetitions, for the linear scan item this is used to setermine the stepsize & all scan items\hline
-Type (unsigned integer) & The type of the scan item (CScanProblem.SCAN\_RANDOM, CScanProblem.SCAN\_REPEAT or CScanProblem.SCAN\_LINEAR) & all scan items\hline
-Object (String) & The common name of the object associated with the scan item. For the repeat scan item this is usually an empty string & all scan items\hline
-log (boolean) & determines if the value is changed in a logarithmic fashion & linear scan item\hline
-Minimum (double) & lower bound & linear and random scan item\hline
-Maximum (double) & upper bound &  linear and random scan item\hline
-Distribution type (unsigned integer) & determines which distribution the random numbers follow (CScanProblem.SD\_UNIFORM, CScanProblem.SD\_GAUSS and CScanProblem.SD\_BOLTZ) & random scan item \hline
+\begin{table}[ht]
+\begin{tabular}{|r|r|c|}
+Parameter name & description & availability\\ \hline \hline 
+Number of steps (unsigned integer) & The number of steps of the scan item. For a repeat or a random scan item this is the number of repetitions, for the linear scan item this is used to setermine the stepsize & all scan items\\ \hline
+Type (unsigned integer) & The type of the scan item (CScanProblem.SCAN\_RANDOM, CScanProblem.SCAN\_REPEAT or CScanProblem.SCAN\_LINEAR) & all scan items\\ \hline
+Object (String) & The common name of the object associated with the scan item. For the repeat scan item this is usually an empty string & all scan items\\ \hline
+log (boolean) & determines if the value is changed in a logarithmic fashion & linear scan item\\ \hline
+Minimum (double) & lower bound & linear and random scan item\\ \hline
+Maximum (double) & upper bound &  linear and random scan item\\ \hline
+Distribution type (unsigned integer) & determines which distribution the random numbers follow (CScanProblem.SD\_UNIFORM, CScanProblem.SD\_GAUSS and CScanProblem.SD\_BOLTZ) & random scan item\\ \hline
 \end{tabular}
 \label{ScanItemParameters}
 \caption{scan item parameters}
+\end{table}
 
 The following example codes shows how to run a simple parameter scan. It sets up the parameter scan to contain one repeat scan item that repeats the specified subtask 10 times:
 
