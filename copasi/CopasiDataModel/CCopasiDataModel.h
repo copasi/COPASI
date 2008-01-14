@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.h,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.33.2.1 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/12/06 20:47:30 $
+//   $Date: 2008/01/14 08:47:18 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -84,6 +89,7 @@ class CCopasiDataModel: public COutputHandler
     bool importSBML(const std::string & fileName, CProcessReport* pImportHandler = NULL);
     std::string exportSBMLToString(CProcessReport* pExportHandler = NULL);
     bool exportSBML(const std::string & fileName, bool overwriteFile = false, int sbmlLevel = 2, int sbmlVersion = 1, bool exportIncomplete = false, CProcessReport* pExportHandler = NULL);
+    bool newExportSBML(const std::string & fileName, bool overwriteFile = false, int sbmlLevel = 2, int sbmlVersion = 1, bool exportIncomplete = false, CProcessReport* pExportHandler = NULL);
     bool exportMathModel(const std::string & fileName, CProcessReport* pProcessReport,
                          const std::string & filter, bool overwriteFile = false);
 

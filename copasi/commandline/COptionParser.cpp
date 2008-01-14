@@ -1,13 +1,14 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptionParser.cpp,v $
-   $Revision: 1.22 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/12/15 14:14:30 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptionParser.cpp,v $
+//   $Revision: 1.22.12.1 $
+//   $Name:  $
+//   $Author: gauges $
+//   $Date: 2008/01/14 08:47:18 $
+// End CVS Header
 
-// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
 // All rights reserved.
 
 /*
@@ -48,6 +49,7 @@ namespace
     "  --exportC string                The C code file to export.\n"
     "  --home string                   Your home directory.\n"
     "  --license                       Display the license.\n"
+    "  --newExportSBML string          The SBML file to export.\n"
     "  --verbose                       Enable output of messages during runtime\n"
     "                                  to std::error.\n"
     "  -c, --copasidir string          The COPASI installation directory.\n"
@@ -192,6 +194,8 @@ void copasi::COptionParser::finalize (void)
           throw option_error("missing value for 'importSBML' option");
         case option_License:
           throw option_error("missing value for 'license' option");
+        case option_NewExportSBML:
+          throw option_error("missing value for 'newExportSBML' option");
         case option_RegisteredEmail:
           throw option_error("missing value for 'rEmail' option");
         case option_RegisteredUser:
@@ -458,6 +462,18 @@ void copasi::COptionParser::parse_long_option (const char *option, int position,
       options_.License = !options_.License;
       return;
     }
+  else if (strcmp(option, "newExportSBML") == 0)
+    {
+      if (source != source_cl) throw option_error("the 'newExportSBML' option is only allowed on the command line");
+      if (locations_.NewExportSBML)
+        {
+          throw option_error("the 'newExportSBML' option is only allowed once");
+        }
+      openum_ = option_NewExportSBML;
+      locations_.NewExportSBML = position;
+      state_ = state_value;
+      return;
+    }
   else if (strcmp(option, "rCode") == 0)
     {
       if (source != source_cl) throw option_error("the 'rCode' option is only allowed on the command line");
@@ -585,6 +601,11 @@ void copasi::COptionParser::parse_value (const char *value)
       break;
     case option_License:
       break;
+    case option_NewExportSBML:
+      {
+        options_.NewExportSBML = value;
+      }
+      break;
     case option_RegisteredEmail:
       {
         options_.RegisteredEmail = value;
@@ -627,52 +648,55 @@ namespace
     std::string::size_type name_size = name.size();
     std::vector<const char*> matches;
 
-    if (name_size <= 9 && name.compare("configdir") == 0)
+    if (name_size <= 9 && name.compare(0, name_size, "configdir", name_size) == 0)
       matches.push_back("configdir");
 
-    if (name_size <= 10 && name.compare("configfile") == 0)
+    if (name_size <= 10 && name.compare(0, name_size, "configfile", name_size) == 0)
       matches.push_back("configfile");
 
-    if (name_size <= 9 && name.compare("copasidir") == 0)
+    if (name_size <= 9 && name.compare(0, name_size, "copasidir", name_size) == 0)
       matches.push_back("copasidir");
 
-    if (name_size <= 21 && name.compare("exportBerkeleyMadonna") == 0)
+    if (name_size <= 21 && name.compare(0, name_size, "exportBerkeleyMadonna", name_size) == 0)
       matches.push_back("exportBerkeleyMadonna");
 
-    if (name_size <= 7 && name.compare("exportC") == 0)
+    if (name_size <= 7 && name.compare(0, name_size, "exportC", name_size) == 0)
       matches.push_back("exportC");
 
-    if (name_size <= 10 && name.compare("exportSBML") == 0)
+    if (name_size <= 10 && name.compare(0, name_size, "exportSBML", name_size) == 0)
       matches.push_back("exportSBML");
 
-    if (name_size <= 4 && name.compare("home") == 0)
+    if (name_size <= 4 && name.compare(0, name_size, "home", name_size) == 0)
       matches.push_back("home");
 
-    if (name_size <= 10 && name.compare("importSBML") == 0)
+    if (name_size <= 10 && name.compare(0, name_size, "importSBML", name_size) == 0)
       matches.push_back("importSBML");
 
-    if (name_size <= 7 && name.compare("license") == 0)
+    if (name_size <= 7 && name.compare(0, name_size, "license", name_size) == 0)
       matches.push_back("license");
 
-    if (name_size <= 5 && name.compare("rCode") == 0)
+    if (name_size <= 13 && name.compare(0, name_size, "newExportSBML", name_size) == 0)
+      matches.push_back("newExportSBML");
+
+    if (name_size <= 5 && name.compare(0, name_size, "rCode", name_size) == 0)
       matches.push_back("rCode");
 
-    if (name_size <= 6 && name.compare("rEmail") == 0)
+    if (name_size <= 6 && name.compare(0, name_size, "rEmail", name_size) == 0)
       matches.push_back("rEmail");
 
-    if (name_size <= 5 && name.compare("rUser") == 0)
+    if (name_size <= 5 && name.compare(0, name_size, "rUser", name_size) == 0)
       matches.push_back("rUser");
 
-    if (name_size <= 4 && name.compare("save") == 0)
+    if (name_size <= 4 && name.compare(0, name_size, "save", name_size) == 0)
       matches.push_back("save");
 
-    if (name_size <= 3 && name.compare("tmp") == 0)
+    if (name_size <= 3 && name.compare(0, name_size, "tmp", name_size) == 0)
       matches.push_back("tmp");
 
-    if (name_size <= 7 && name.compare("verbose") == 0)
+    if (name_size <= 7 && name.compare(0, name_size, "verbose", name_size) == 0)
       matches.push_back("verbose");
 
-    if (name_size <= 4 && name.compare("help") == 0)
+    if (name_size <= 4 && name.compare(0, name_size, "help", name_size) == 0)
       matches.push_back("help");
 
     if (matches.empty())
