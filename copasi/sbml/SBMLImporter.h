@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-//   $Revision: 1.63 $
+//   $Revision: 1.63.2.1 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/12/12 09:10:54 $
+//   $Date: 2008/01/14 09:24:45 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -39,6 +44,9 @@ class FunctionDefinition;
 class SBase;
 class CProcessReport;
 class Rule;
+#ifdef WITH_LAYOUT
+class CListOfLayouts;
+#endif // WITH_LAYOUT
 
 class SBMLImporter
   {
@@ -331,15 +339,6 @@ class SBMLImporter
     void checkElementUnits(const Model* pSBMLModel, CModel* pCopasiModel, int level, int version);
 
     /**
-     * Enhanced method to identify identical sbml unit definitions.
-     * This method uses the areIdentical method from libSBML, but if the method
-     * return false, it does some extra checks.
-     * Right now it check for example if two volumes, one given in litre and one
-     * given in cubic meters are identical.
-     */
-    static bool areSBMLUnitDefinitionsIdentical(const UnitDefinition* pUdef1, const UnitDefinition* pUdef2);
-
-    /**
      * If the given UnitDefinition can be converted to a form of litres, the
      * funktion return the UnitDefinition in litres, otherwise NULL is returned.
      */
@@ -393,6 +392,15 @@ class SBMLImporter
     void restoreFunctionDB();
 
     void setImportHandler(CProcessReport* pHandler);
+
+    /**
+     * Enhanced method to identify identical sbml unit definitions.
+     * This method uses the areIdentical method from libSBML, but if the method
+     * return false, it does some extra checks.
+     * Right now it check for example if two volumes, one given in litre and one
+     * given in cubic meters are identical.
+     */
+    static bool areSBMLUnitDefinitionsIdentical(const UnitDefinition* pUdef1, const UnitDefinition* pUdef2);
 
     CProcessReport* getImportHandlerAddr();
   };
