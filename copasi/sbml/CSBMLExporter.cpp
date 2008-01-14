@@ -1,12 +1,21 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.8.2.1 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/12/05 12:05:17 $
+//   $Date: 2008/01/14 09:14:49 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -43,20 +52,24 @@
 #include "sbml/Trigger.h"
 #include "sbml/Event.h"
 #include "sbml/EventAssignment.h"
+#include <sbml/xml/XMLInputStream.h>
 #include "compareExpressions/compare_utilities.h"
 
-// TODO maybe replace checkForUnsupportedFunctionCalls with
-// TODO checkForUnsupportedNodes
-// TODO This will check for unsupported function calls, unsupported constant nodes
-// TODO (exponentiale, pi, nan and inf)
+CSBMLExporter::CSBMLExporter(): mpSBMLDocument(NULL), mSBMLLevel(2), mSBMLVersion(1)
+{}
+
+CSBMLExporter::~CSBMLExporter()
+{
+  pdelete(mpSBMLDocument);
+};
 
 /**
  * Creates the units for the SBML model.
  */
 void CSBMLExporter::createUnits(const CCopasiDataModel& dataModel)
 {
-  createTimeUnit(dataModel);
   createVolumeUnit(dataModel);
+  createTimeUnit(dataModel);
   createSubstanceUnit(dataModel);
 }
 
@@ -83,6 +96,10 @@ void CSBMLExporter::createTimeUnit(const CCopasiDataModel& dataModel)
     case CModel::min:
       unit = Unit(UNIT_KIND_SECOND, 1, 0);
       unit.setMultiplier(60);
+      break;
+    case CModel::s:
+      unit = Unit(UNIT_KIND_SECOND, 1, 0);
+      unit.setMultiplier(1);
       break;
     case CModel::ms:
       unit = Unit(UNIT_KIND_SECOND, 1, -3);
@@ -118,7 +135,7 @@ void CSBMLExporter::createTimeUnit(const CCopasiDataModel& dataModel)
     }
   else
     {
-      if (unit.getKind() != UNIT_KIND_SECOND || unit.getScale() != 1 || unit.getExponent() != 0 || unit.getMultiplier() != 1.0)
+      if (unit.getKind() != UNIT_KIND_SECOND || unit.getScale() != 0 || unit.getExponent() != 1 || unit.getMultiplier() != 1.0)
         {
           // set the unit definition
           pSBMLModel->addUnitDefinition(&uDef);
@@ -137,6 +154,9 @@ void CSBMLExporter::createVolumeUnit(const CCopasiDataModel& dataModel)
   Unit unit;
   switch (dataModel.getModel()->getVolumeUnitEnum())
     {
+    case CModel::l:
+      unit = Unit(UNIT_KIND_LITRE, 1, 0);
+      break;
     case CModel::ml:
       unit = Unit(UNIT_KIND_LITRE, 1, -3);
       break;
@@ -173,7 +193,7 @@ void CSBMLExporter::createVolumeUnit(const CCopasiDataModel& dataModel)
     }
   else
     {
-      if (unit.getKind() != UNIT_KIND_LITRE || unit.getScale() != 1 || unit.getExponent() != 0 || unit.getMultiplier() != 1.0)
+      if (unit.getKind() != UNIT_KIND_LITRE || unit.getScale() != 0 || unit.getExponent() != 1 || unit.getMultiplier() != 1.0)
         {
           // set the unit definition
           pSBMLModel->addUnitDefinition(&uDef);
@@ -192,6 +212,9 @@ void CSBMLExporter::createSubstanceUnit(const CCopasiDataModel& dataModel)
   Unit unit;
   switch (dataModel.getModel()->getQuantityUnitEnum())
     {
+    case CModel::Mol:
+      unit = Unit(UNIT_KIND_MOLE, 1, 0);
+      break;
     case CModel::mMol:
       unit = Unit(UNIT_KIND_MOLE, 1, -3);
       break;
@@ -228,7 +251,7 @@ void CSBMLExporter::createSubstanceUnit(const CCopasiDataModel& dataModel)
     }
   else
     {
-      if (unit.getKind() != UNIT_KIND_MOLE || unit.getScale() != 1 || unit.getExponent() != 0 || unit.getMultiplier() != 1.0)
+      if (unit.getKind() != UNIT_KIND_MOLE || unit.getScale() != 0 || unit.getExponent() != 1 || unit.getMultiplier() != 1.0)
         {
           // set the unit definition
           pSBMLModel->addUnitDefinition(&uDef);
@@ -277,7 +300,6 @@ void CSBMLExporter::createCompartment(CCompartment& compartment)
         }
       pSBMLCompartment->setId(id);
       pSBMLCompartment->setSpatialDimensions(3);
-      pSBMLCompartment->setConstant(true);
     }
   this->mHandledSBMLObjects.insert(pSBMLCompartment);
   pSBMLCompartment->setName(compartment.getObjectName().c_str());
@@ -298,11 +320,18 @@ void CSBMLExporter::createCompartment(CCompartment& compartment)
   if (status == CModelEntity::ODE || status == CModelEntity::ASSIGNMENT)
     {
       this->mAssignmentVector.push_back(&compartment);
+      pSBMLCompartment->setConstant(false);
     }
-  // fill initial assignment set
-  else if (compartment.getInitialExpressionPtr() != NULL)
+  else
     {
-      this->mInitialAssignmentVector.push_back(&compartment);
+      // do this expolicitly since we might handle an exisiting object from an
+      // earlier import that had it attribute set already
+      pSBMLCompartment->setConstant(true);
+      // fill initial assignment set
+      if (compartment.getInitialExpressionPtr() != NULL)
+        {
+          this->mInitialAssignmentVector.push_back(&compartment);
+        }
     }
 }
 
@@ -348,8 +377,6 @@ void CSBMLExporter::createMetabolite(CMetab& metab)
     }
   this->mHandledSBMLObjects.insert(pSBMLSpecies);
   pSBMLSpecies->setName(metab.getObjectName().c_str());
-  pSBMLSpecies->setBoundaryCondition(metab.getStatus() == CModelEntity::FIXED);
-  pSBMLSpecies->setConstant(metab.getStatus() == CModelEntity::FIXED);
 
   const Compartment* pSBMLCompartment = dynamic_cast<const Compartment*>(this->mCOPASI2SBMLMap[const_cast<CCompartment*>(metab.getCompartment())]);
   assert(pSBMLCompartment);
@@ -382,11 +409,20 @@ void CSBMLExporter::createMetabolite(CMetab& metab)
   if (status == CModelEntity::ODE || status == CModelEntity::ASSIGNMENT)
     {
       this->mAssignmentVector.push_back(&metab);
+      pSBMLSpecies->setConstant(false);
+      pSBMLSpecies->setBoundaryCondition(true);
     }
-  // fill initial assignment set
-  else if (metab.getInitialExpressionPtr() != NULL)
+  else if (status == CModelEntity::FIXED)
     {
-      this->mInitialAssignmentVector.push_back(&metab);
+      // do this expolicitly since we might handle an exisiting object from an
+      // earlier import that had it attribute set already
+      pSBMLSpecies->setConstant(true);
+      pSBMLSpecies->setBoundaryCondition(true);
+      // fill initial assignment set
+      if (metab.getInitialExpressionPtr() != NULL)
+        {
+          this->mInitialAssignmentVector.push_back(&metab);
+        }
     }
 }
 
@@ -449,11 +485,18 @@ void CSBMLExporter::createParameter(CModelValue& modelValue)
   if (status == CModelEntity::ODE || status == CModelEntity::ASSIGNMENT)
     {
       this->mAssignmentVector.push_back(&modelValue);
+      pParameter->setConstant(false);
     }
-  // fill initial assignment set
-  else if (modelValue.getInitialExpressionPtr() != NULL)
+  else
     {
-      this->mInitialAssignmentVector.push_back(&modelValue);
+      // do this expolicitly since we might handle an exisiting object from an
+      // earlier import that had it attribute set already
+      pParameter->setConstant(true);
+      // fill initial assignment set
+      if (modelValue.getInitialExpressionPtr() != NULL)
+        {
+          this->mInitialAssignmentVector.push_back(&modelValue);
+        }
     }
 }
 
@@ -477,7 +520,7 @@ void CSBMLExporter::createReactions(CCopasiDataModel& dataModel)
  */
 void CSBMLExporter::createReaction(CReaction& reaction, CCopasiDataModel& dataModel)
 {
-  // TODO make sure the mCOPASI2SBMLMap is already updated
+  // make sure the mCOPASI2SBMLMap is already updated
   Reaction* pSBMLReaction = NULL;
   // if the reaction has nothing set but the name, we don't do anything
   if (reaction.getChemEq().getSubstrates().size() == 0 &&
@@ -583,49 +626,16 @@ void CSBMLExporter::createReaction(CReaction& reaction, CCopasiDataModel& dataMo
   /* if there is one on copasi */
   if ((reaction.getFunction()) != dataModel.mpUndefined)
     {
-      // create an expression from the function call and the parameters and
-      // check the expression
-      std::vector<SBMLIncompatibility> result;
-      CEvaluationNode* pExpressionNode = CSBMLExporter::createExpressionTree(reaction.getFunction(), reaction.getParameterMappings(), dataModel);
-      CExpression* pExpression = new CExpression();
-      pExpression->setRoot(pExpressionNode);
-      pExpression->compile();
-      CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, this->mSBMLLevel, this->mSBMLVersion, result);
-      delete pExpression;
-      if (result.empty())
+      KineticLaw* pKineticLaw = this->createKineticLaw(reaction, dataModel);
+      if (pKineticLaw != NULL)
         {
-          KineticLaw* kLaw = this->createKineticLaw(reaction, dataModel);
-          if (kLaw != NULL)
-            {
-              pSBMLReaction->setKineticLaw(kLaw);
-              delete kLaw;
-            }
-          else
-            {
-              // create an error message and abort
-              // maybe only abort if incomplete export is not wanted
-              if (this->mIncompleteExport != true)
-                {
-                  CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 8, reaction.getObjectName().c_str());
-                }
-              else
-                {
-                  pSBMLReaction->unsetKineticLaw();
-                }
-            }
+          pSBMLReaction->setKineticLaw(pKineticLaw);
+          delete pKineticLaw;
         }
       else
         {
-          // create an error messages
-          //  abort the export if
-          // incomplete export is not wanted
-          // else set the kinetic law to undefined
-          std::vector<SBMLIncompatibility>::iterator it = result.begin(), endit = result.end();
-          while (it != endit)
-            {
-              this->mIncompatibilities.push_back(*it);
-              ++it;
-            }
+          // create an error message and abort
+          // maybe only abort if incomplete export is not wanted
           if (this->mIncompleteExport != true)
             {
               CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 8, reaction.getObjectName().c_str());
@@ -647,7 +657,7 @@ void CSBMLExporter::createReaction(CReaction& reaction, CCopasiDataModel& dataMo
  */
 void CSBMLExporter::createInitialAssignments(CCopasiDataModel& dataModel)
 {
-  // TODO make sure the mInitialAssignmentVector has been filled already
+  // make sure the mInitialAssignmentVector has been filled already
 
   // create the initial assignments
   unsigned int i, iMax = this->mInitialAssignmentVector.size();
@@ -670,7 +680,9 @@ void CSBMLExporter::createInitialAssignment(const CModelEntity& modelEntity, CCo
 {
   // check the expression
   std::vector<SBMLIncompatibility> result;
-  CSBMLExporter::isExpressionSBMLCompatible(*modelEntity.getInitialExpressionPtr(), dataModel, this->mSBMLLevel, this->mSBMLVersion, result);
+  std::string type = "initial expression for ";
+  type += modelEntity.getObjectType();
+  CSBMLExporter::isExpressionSBMLCompatible(*modelEntity.getInitialExpressionPtr(), dataModel, this->mSBMLLevel, this->mSBMLVersion, result, modelEntity.getObjectName(), type);
   // collect directly used functions
   if (result.empty())
     {
@@ -732,7 +744,7 @@ void CSBMLExporter::createInitialAssignment(const CModelEntity& modelEntity, CCo
  */
 void CSBMLExporter::createRules(CCopasiDataModel& dataModel)
 {
-  // TODO make sure the mAssignmentVector has been filled already
+  // make sure the mAssignmentVector has been filled already
   // order the rules for Level 1 export
   // rules in Level 2 are not ordered.
   if (this->mSBMLLevel == 1 || (this->mSBMLLevel == 2 && this->mSBMLVersion == 1))
@@ -761,7 +773,9 @@ void CSBMLExporter::createRule(const CModelEntity& modelEntity, CCopasiDataModel
 {
   // check the expression
   std::vector<SBMLIncompatibility> result;
-  CSBMLExporter::isExpressionSBMLCompatible(*modelEntity.getExpressionPtr(), dataModel, this->mSBMLLevel, this->mSBMLVersion, result);
+  std::string type = "rule for ";
+  type += modelEntity.getObjectType();
+  CSBMLExporter::isExpressionSBMLCompatible(*modelEntity.getExpressionPtr(), dataModel, this->mSBMLLevel, this->mSBMLVersion, result, modelEntity.getObjectName(), type);
   // collect directly used functions
   if (result.empty())
     {
@@ -940,11 +954,10 @@ const std::map<std::string, const SBase*> CSBMLExporter::createIdMap(const Model
     {
       idMap.insert(std::make_pair(sbmlModel.getListOfLayouts()->getId(), sbmlModel.getListOfLayouts()));
     }
-  iMax = sbmlModel->getNumLayouts();
+  iMax = sbmlModel.getListOfLayouts()->size();
   for (i = 0;i < iMax;++i)
     {
       const Layout* pLayout = sbmlModel.getLayout(i);
-      const SBase* pSBase = NULL;
       if (pLayout != NULL)
         {
           if (pLayout->isSetId())
@@ -965,15 +978,14 @@ const std::map<std::string, const SBase*> CSBMLExporter::createIdMap(const Model
  */
 const std::string CSBMLExporter::createUniqueId(const std::map<std::string, const SBase*>& idMap, const std::string& prefix)
 {
-  unsigned int i = 0;
+  unsigned int i = 1;
   std::ostringstream numberStream;
-  numberStream << i;
+  numberStream << prefix << i;
   while (idMap.find(numberStream.str()) != idMap.end())
     {
       ++i;
-      numberStream.str(prefix);
       numberStream.str("");
-      numberStream << i;
+      numberStream << prefix << i;
     }
   return numberStream.str();
 }
@@ -1012,15 +1024,14 @@ void CSBMLExporter::checkForUnsupportedObjectReferences(const CCopasiDataModel& 
     }
 }
 
-void checkForUnsupportedObjectReferences(const CExpression* pExpr, const CCopasiDataModel& dataModel, unsigned int sbmlLevel, unsigned int sbmlVersion, std::vector<SBMLIncompatibility>& result)
+void CSBMLExporter::checkForUnsupportedObjectReferences(const CEvaluationTree& expr, const CCopasiDataModel& dataModel, unsigned int sbmlLevel, unsigned int sbmlVersion, std::vector<SBMLIncompatibility>& result)
 {
   // SBML Level 1 and Level 2 Version 1 can have references to transient values of
   // compartments, metabolites and global parameters as well as time (model)
 
   // SBML Level 2 Version 2 and above can have the same references as level 1 plus references to
   // reaction fluxes.
-  if (pExpr == NULL) return;
-  const std::vector<CEvaluationNode*>& objectNodes = pExpr->getNodeList();
+  const std::vector<CEvaluationNode*>& objectNodes = expr.getNodeList();
   unsigned j, jMax = objectNodes.size();
   for (j = 0;j < jMax;++j)
     {
@@ -1167,11 +1178,12 @@ void CSBMLExporter::checkForODESpeciesInNonfixedCompartment(const CCopasiDataMod
  * If it can be exported, the result vector will be empty, otherwise it will
  * contain a number of messages that specify why it can't be exported.
  */
-void CSBMLExporter::isExpressionSBMLCompatible(const CEvaluationTree& expr, const CCopasiDataModel& dataModel, int sbmlLevel, int sbmlVersion, std::vector<SBMLIncompatibility>& result)
+void CSBMLExporter::isExpressionSBMLCompatible(const CEvaluationTree& expr, const CCopasiDataModel& dataModel, int sbmlLevel, int sbmlVersion, std::vector<SBMLIncompatibility>& result,
+    const std::string& objectName, const std::string& objectType)
 {
   checkForUnsupportedObjectReferences(expr, dataModel, sbmlLevel, sbmlVersion, result);
   std::set<CEvaluationNodeFunction::SubType> unsupportedFunctionTypes = CSBMLExporter::createUnsupportedFunctionTypeSet(sbmlLevel);
-  checkForUnsupportedFunctionCalls(expr, unsupportedFunctionTypes, result);
+  checkForUnsupportedFunctionCalls(*expr.getRoot(), unsupportedFunctionTypes, result, objectName, objectType);
 }
 
 /**
@@ -1186,7 +1198,7 @@ void CSBMLExporter::checkForUnsupportedFunctionCalls(const CCopasiDataModel& dat
   // version
   std::set<CEvaluationNodeFunction::SubType> unsupportedFunctionTypes = CSBMLExporter::createUnsupportedFunctionTypeSet(sbmlLevel);
   // check all metabolites,parameters and compartments
-  // TODO make sure the list of assignments and initial assignments is filled
+  // make sure the list of assignments and initial assignments is filled
   // before this function is called
   const CModel* pModel = dataModel.getModel();
   assert(pModel);
@@ -1198,7 +1210,7 @@ void CSBMLExporter::checkForUnsupportedFunctionCalls(const CCopasiDataModel& dat
       assert(pME != NULL);
       if (pME != NULL)
         {
-          checkForUnsupportedFunctionCalls(*pME->getExpressionPtr(), unsupportedFunctionTypes, result);
+          checkForUnsupportedFunctionCalls(*pME->getExpressionPtr()->getRoot(), unsupportedFunctionTypes, result, pME->getObjectName(), pME->getObjectType());
         }
     }
   // check initial assignments
@@ -1209,11 +1221,11 @@ void CSBMLExporter::checkForUnsupportedFunctionCalls(const CCopasiDataModel& dat
       assert(pME != NULL);
       if (pME != NULL)
         {
-          checkForUnsupportedFunctionCalls(*pME->getInitialExpressionPtr(), unsupportedFunctionTypes, result);
+          checkForUnsupportedFunctionCalls(*pME->getInitialExpressionPtr()->getRoot(), unsupportedFunctionTypes, result, pME->getObjectName(), pME->getObjectType());
         }
     }
   // if we already have a list of used functions, we can go through this here
-  // TODO make sure the list of used function has been filled before this is
+  // make sure the list of used function has been filled before this is
   // called
   iMax = mUsedFunctions.size();
   std::set<CFunction*>::iterator it = this->mUsedFunctions.begin(), endit = this->mUsedFunctions.end();
@@ -1222,7 +1234,7 @@ void CSBMLExporter::checkForUnsupportedFunctionCalls(const CCopasiDataModel& dat
       assert(*it != NULL);
       if (*it != NULL)
         {
-          checkForUnsupportedFunctionCalls(**it, unsupportedFunctionTypes, result);
+          checkForUnsupportedFunctionCalls(*(*it)->getRoot(), unsupportedFunctionTypes, result, (*it)->getObjectName(), "function");
         }
       ++it;
     }
@@ -1266,7 +1278,7 @@ void CSBMLExporter::checkForInitialAssignments(const CCopasiDataModel& dataModel
       CCopasiVectorNS<CCompartment>::const_iterator compIt = compartments.begin(), compEndit = compartments.end();
       while (compIt != compEndit)
         {
-          if ((*compIt)->getInitialExpression() == "")
+          if ((*compIt)->getInitialExpression() != "")
             {
               result.push_back(SBMLIncompatibility(5, "Compartment", (*compIt)->getObjectName().c_str()));
             }
@@ -1277,7 +1289,7 @@ void CSBMLExporter::checkForInitialAssignments(const CCopasiDataModel& dataModel
       CCopasiVector<CMetab>::const_iterator metabIt = metabs.begin(), metabEndit = metabs.end();
       while (metabIt != metabEndit)
         {
-          if ((*metabIt)->getInitialExpression() == "")
+          if ((*metabIt)->getInitialExpression() != "")
             {
               result.push_back(SBMLIncompatibility(5, "Metabolite", (*metabIt)->getObjectName().c_str()));
             }
@@ -1288,7 +1300,7 @@ void CSBMLExporter::checkForInitialAssignments(const CCopasiDataModel& dataModel
       CCopasiVectorN<CModelValue>::const_iterator mvIt = parameters.begin(), mvEndit = parameters.end();
       while (mvIt != mvEndit)
         {
-          if ((*mvIt)->getInitialExpression() == "")
+          if ((*mvIt)->getInitialExpression() != "")
             {
               result.push_back(SBMLIncompatibility(5, "Parameter", (*mvIt)->getObjectName().c_str()));
             }
@@ -1302,9 +1314,9 @@ void CSBMLExporter::checkForInitialAssignments(const CCopasiDataModel& dataModel
  */
 void CSBMLExporter::createFunctionDefinitions(CCopasiDataModel& dataModel)
 {
-  // TODO make sure the list of used functions is filled before this is
+  // make sure the list of used functions is filled before this is
   // called
-  // TODO make sure the mCOPASI2SBMLMap is up to date
+  // make sure the mCOPASI2SBMLMap is up to date
 
   // find all indirectly called functions
   std::vector<CFunction*> usedFunctions = findUsedFunctions(this->mUsedFunctions, dataModel.getFunctionList());
@@ -1408,6 +1420,7 @@ void CSBMLExporter::createFunctionDefinitions(CCopasiDataModel& dataModel)
         {
           createFunctionDefinition(**it, dataModel);
         }
+      ++it;
     }
 }
 
@@ -1428,8 +1441,24 @@ void CSBMLExporter::createFunctionDefinition(CFunction& function, const CCopasiD
     {
       pFunDef = this->mpSBMLDocument->getModel()->createFunctionDefinition();
       pFunDef->setName(function.getObjectName());
-      std::string id = CSBMLExporter::createUniqueId(this->mIdMap, "function_");
-      this->mIdMap.insert(std::make_pair(id, pFunDef));
+      std::string id = function.getSBMLId();
+      if (id.empty())
+        {
+          id = function.getObjectName();
+          if (CSBMLExporter::isValidSId(id))
+            {
+              if (this->mIdMap.find(id) != this->mIdMap.end())
+                {
+                  id = CSBMLExporter::createUniqueId(this->mIdMap, id + "_");
+                }
+              this->mIdMap.insert(std::make_pair(id, pFunDef));
+            }
+          else
+            {
+              id = CSBMLExporter::createUniqueId(this->mIdMap, "function_");
+              this->mIdMap.insert(std::make_pair(id, pFunDef));
+            }
+        }
       pFunDef->setId(id);
       function.setSBMLId(id);
       this->mCOPASI2SBMLMap[&function] = pFunDef;
@@ -1444,7 +1473,7 @@ void CSBMLExporter::createFunctionDefinition(CFunction& function, const CCopasiD
   else
     {
       std::vector<SBMLIncompatibility> result;
-      CSBMLExporter::isExpressionSBMLCompatible(function, dataModel, this->mSBMLLevel, this->mSBMLVersion, result);
+      CSBMLExporter::isExpressionSBMLCompatible(function, dataModel, this->mSBMLLevel, this->mSBMLVersion, result, function.getObjectName(), "function");
       if (result.empty())
         {
           ASTNode* pFunNode = function.getRoot()->toAST();
@@ -1484,7 +1513,7 @@ const std::string CSBMLExporter::exportModelToString(CCopasiDataModel& dataModel
   createSBMLDocument(dataModel);
   // export the model to a string
   if (this->mpSBMLDocument == NULL) return std::string();
-  removeUnusedObjects(dataModel);
+  removeUnusedObjects();
   SBMLWriter* writer = new SBMLWriter();
 
   writer->setProgramName("COPASI");
@@ -1511,12 +1540,39 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
   if (this->mpSBMLDocument == NULL) fatalError();
   // update the copasi2sbmlmap
   updateCOPASI2SBMLMap(dataModel);
+  if (this->mpSBMLDocument->getModel() == NULL)
+    {
+      std::string id = CSBMLExporter::createUniqueId(this->mIdMap, "Model_");
+      this->mpSBMLDocument->createModel(id);
+    }
+  // update the comments on the model
+  const CModel* pModel = dataModel.getModel();
+  assert(pModel != NULL);
+  this->mpSBMLDocument->getModel()->setName(pModel->getObjectName());
+  if (pModel != NULL && (!pModel->getComments().empty()) && !(pModel->getComments().find_first_not_of(" \n\t\r") == std::string::npos))
+    {
+      std::string comments = "<notes>" + pModel->getComments() + "</notes>";
+      XMLNode* pNotes = XMLNode::convertStringToXMLNode(comments);
+      if (pNotes != NULL)
+        {
+          this->mpSBMLDocument->getModel()->setNotes(pNotes);
+          delete pNotes;
+        }
+    }
+
   // create units, compartments, species, parameters, reactions, initial
   // assignment, assignments, (event) and function definitions
   createUnits(dataModel);
   createCompartments(dataModel);
   createMetabolites(dataModel);
   createParameters(dataModel);
+
+  // TODO here we should check the expressions but the function definitions
+  // TODO have not been created yet, so we can't
+  // TODO Maybe we don't have to do all checks here.
+  // TODO it would probably be enough to check if the expressions are valid and
+  // TODO to check the function calls later on when the functions are created.
+
   // only export initial assignments for Level 2 Version 2 and above
   if (this->mSBMLLevel != 1 && !(this->mSBMLLevel == 2 && this->mSBMLVersion == 1))
     {
@@ -1548,26 +1604,30 @@ const std::set<CEvaluationNodeFunction::SubType> CSBMLExporter::createUnsupporte
   std::set<CEvaluationNodeFunction::SubType> unsupportedFunctionTypes;
   if (sbmlLevel == 1)
     {
-      // TODO check what to do with all the functions that are not supported by
-      // TODO SBML Level 1
-      // TODO Also take care of other unsupported nodes in L1
-      // TODO (inf,nan,pi,exponentiale)
-      // TODO root has to be converted to pow
-      // TODO do we actually have root???
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::SEC);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::CSC);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::COT);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::SINH);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::COSH);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::TANH);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::SECH);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::CSCH);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::COTH);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::ARCSINH);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::ARCCOSH);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::ARCTANH);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::ARCSECH);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::ARCCSCH);
+      // check what to do with all the functions that are not supported by
+      // SBML Level 1
+      // Also take care of other unsupported nodes in L1
+      // (inf,nan,pi,exponentiale)
+      // most functions that are not supported by Level 1, but Level 2
+      //  can not be converted to something that can be exported.
+      // Roundtripping of those  will not succeed, but the results should stay
+      // the same. The only function that can not be correctly converted
+      // is ARCCOTH since we would need a piecewise for that which is not
+      // supported in Level 1
+      //unsupportedFunctionTypes.insert(CEvaluationNodeFunction::SEC);
+      //unsupportedFunctionTypes.insert(CEvaluationNodeFunction::CSC);
+      //unsupportedFunctionTypes.insert(CEvaluationNodeFunction::COT);
+      //unsupportedFunctionTypes.insert(CEvaluationNodeFunction::SINH);
+      //unsupportedFunctionTypes.insert(CEvaluationNodeFunction::COSH);
+      //unsupportedFunctionTypes.insert(CEvaluationNodeFunction::TANH);
+      //unsupportedFunctionTypes.insert(CEvaluationNodeFunction::SECH);
+      //unsupportedFunctionTypes.insert(CEvaluationNodeFunction::CSCH);
+      //unsupportedFunctionTypes.insert(CEvaluationNodeFunction::COTH);
+      //unsupportedFunctionTypes.insert(CEvaluationNodeFunction::ARCSINH);
+      //unsupportedFunctionTypes.insert(CEvaluationNodeFunction::ARCCOSH);
+      //unsupportedFunctionTypes.insert(CEvaluationNodeFunction::ARCTANH);
+      //unsupportedFunctionTypes.insert(CEvaluationNodeFunction::ARCSECH);
+      //unsupportedFunctionTypes.insert(CEvaluationNodeFunction::ARCCSCH);
       unsupportedFunctionTypes.insert(CEvaluationNodeFunction::ARCCOTH);
       unsupportedFunctionTypes.insert(CEvaluationNodeFunction::RNORMAL);
       unsupportedFunctionTypes.insert(CEvaluationNodeFunction::RUNIFORM);
@@ -1651,7 +1711,7 @@ const std::vector<SBMLIncompatibility> CSBMLExporter::isModelSBMLCompatible(cons
             {
               // check for unsupported object references and unsupported function
               // calls
-              CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result);
+              CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, (*compIt)->getObjectName(), "compartment");
               CSBMLExporter::findDirectlyUsedFunctions(pExpression->getRoot(), usedFunctionNames);
             }
         }
@@ -1660,7 +1720,7 @@ const std::vector<SBMLIncompatibility> CSBMLExporter::isModelSBMLCompatible(cons
         {
           // check for unsupported object references and unsupported function
           // calls
-          CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result);
+          CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, (*compIt)->getObjectName(), "initial expression for compartment");
           CSBMLExporter::findDirectlyUsedFunctions(pExpression->getRoot(), usedFunctionNames);
         }
       ++compIt;
@@ -1679,7 +1739,7 @@ const std::vector<SBMLIncompatibility> CSBMLExporter::isModelSBMLCompatible(cons
             {
               // check for unsupported object references and unsupported function
               // calls
-              CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result);
+              CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, (*metabIt)->getObjectName(), "rule for compartment");
               CSBMLExporter::findDirectlyUsedFunctions(pExpression->getRoot(), usedFunctionNames);
             }
         }
@@ -1688,7 +1748,7 @@ const std::vector<SBMLIncompatibility> CSBMLExporter::isModelSBMLCompatible(cons
         {
           // check for unsupported object references and unsupported function
           // calls
-          CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result);
+          CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, (*metabIt)->getObjectName(), "initial expression for metabolite");
           CSBMLExporter::findDirectlyUsedFunctions(pExpression->getRoot(), usedFunctionNames);
         }
       ++metabIt;
@@ -1707,7 +1767,7 @@ const std::vector<SBMLIncompatibility> CSBMLExporter::isModelSBMLCompatible(cons
             {
               // check for unsupported object references and unsupported function
               // calls
-              CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result);
+              CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, (*mvIt)->getObjectName(), "rule for global parameter");
               CSBMLExporter::findDirectlyUsedFunctions(pExpression->getRoot(), usedFunctionNames);
             }
         }
@@ -1716,7 +1776,7 @@ const std::vector<SBMLIncompatibility> CSBMLExporter::isModelSBMLCompatible(cons
         {
           // check for unsupported object references and unsupported function
           // calls
-          CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result);
+          CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, (*mvIt)->getObjectName(), "initial expression for global parameter");
           CSBMLExporter::findDirectlyUsedFunctions(pExpression->getRoot(), usedFunctionNames);
         }
       ++mvIt;
@@ -1734,14 +1794,17 @@ const std::vector<SBMLIncompatibility> CSBMLExporter::isModelSBMLCompatible(cons
   switch (sbmlLevel)
     {
     case 2:
+      /*
       // check all events
       eventIt = pModel->getEvents().begin();
       eventEndit = pModel->getEvents().end();
       while (eventIt != eventEndit)
         {
           // TODO add code to check event expressions
+          // TODO this has to be done once events are funktional
           ++eventIt;
         }
+        */
       switch (sbmlVersion)
         {
         case 1:
@@ -1800,13 +1863,13 @@ void CSBMLExporter::checkForEvents(const CCopasiDataModel& dataModel, std::vecto
 
 void CSBMLExporter::updateCOPASI2SBMLMap(const CCopasiDataModel& dataModel)
 {
-  // TODO make sure the idMap is already uptodate
+  // make sure the idMap is already uptodate
   // go through the existing map and create a new one with all SBML
   // objects updated with objects from the copied
   // model
   this->mCOPASI2SBMLMap.clear();
-  std::map<CCopasiObject*, SBase*>::const_iterator it = dataModel.getCopasi2SBMLMap().begin();
-  std::map<CCopasiObject*, SBase*>::const_iterator endit = dataModel.getCopasi2SBMLMap().end();
+  std::map<CCopasiObject*, SBase*>::const_iterator it = const_cast<CCopasiDataModel&>(dataModel).getCopasi2SBMLMap().begin();
+  std::map<CCopasiObject*, SBase*>::const_iterator endit = const_cast<CCopasiDataModel&>(dataModel).getCopasi2SBMLMap().end();
   while (it != endit)
     {
       std::map<std::string, const SBase*>::iterator pos = this->mIdMap.find(it->second->getId());
@@ -1818,7 +1881,7 @@ void CSBMLExporter::updateCOPASI2SBMLMap(const CCopasiDataModel& dataModel)
     }
 }
 
-KineticLaw* CSBMLExporter::createKineticLaw(const CReaction& reaction, CCopasiDataModel& /*dataModel*/)
+KineticLaw* CSBMLExporter::createKineticLaw(const CReaction& reaction, CCopasiDataModel& dataModel)
 {
   KineticLaw* pKLaw = NULL;
   if (!pKLaw)
@@ -1826,150 +1889,79 @@ KineticLaw* CSBMLExporter::createKineticLaw(const CReaction& reaction, CCopasiDa
       /* create a new KineticLaw */
       pKLaw = new KineticLaw();
     }
-  /* if the copasi CFunction specifies a mass-action kinetic */
-  ASTNode* pNode = NULL;
-  if (reaction.getFunction()->getType() == CFunction::MassAction)
+  // create the local parameters
+  unsigned int i, iMax = reaction.getFunctionParameters().size();
+  for (i = 0; i < iMax; ++i)
     {
-      const CMassAction cMassAction = *static_cast<const CMassAction*>(reaction.getFunction());
-      /* create the ASTNode that multiplies all substrates with the first
-      ** kinetic constant.
-      */
-      pNode = new ASTNode(AST_TIMES);
-
-      ASTNode* parameterNode1 = new ASTNode(AST_NAME);
-      std::string parameterName1;
-      if (reaction.isLocalParameter(0))
-        {
-          parameterName1 = cMassAction.getVariables()[0]->getObjectName();
-        }
-      else
-        {
-          parameterName1 = reaction.getParameterMappings()[0][0];
-          const CModelValue* pMV = dynamic_cast<const CModelValue*>(GlobalKeys.get(parameterName1));
-          if (!pMV) fatalError();
-          parameterName1 = pMV->getSBMLId();
-        }
-      parameterNode1->setName(parameterName1.c_str());
-      pNode->addChild(parameterNode1);
-      pNode->addChild(CSBMLExporter::createTimesTree(reaction.getChemEq().getSubstrates()));
-      /* if the reaction is reversible, create the ASTNode tree that
-      ** multiplies all products with the second kinetic constant and
-      ** subtract this tree from the tree of the forward reaction.
-      */
-      if (cMassAction.isReversible() == TriTrue)
-        {
-          ASTNode* pBackwardNode = new ASTNode(AST_TIMES);
-
-          ASTNode* pParameterNode2 = new ASTNode(AST_NAME);
-          std::string parameterName2;
-          if (reaction.isLocalParameter(2))
-            {
-              parameterName2 = cMassAction.getVariables()[2]->getObjectName();
-            }
-          else
-            {
-              parameterName2 = reaction.getParameterMappings()[2][0];
-              const CModelValue* pMV = dynamic_cast<const CModelValue*>(GlobalKeys.get(parameterName2));
-              if (!pMV) fatalError();
-              parameterName2 = pMV->getSBMLId();
-            }
-          pParameterNode2->setName(parameterName2.c_str());
-          pBackwardNode->addChild(pParameterNode2);
-
-          pBackwardNode->addChild(CSBMLExporter::createTimesTree(reaction.getChemEq().getProducts()));
-          ASTNode* pTempNode = new ASTNode(AST_MINUS);
-          pTempNode->addChild(pNode);
-          pTempNode->addChild(pBackwardNode);
-          pNode = pTempNode;
-        }
-    }
-  /* if the copasi CFunction does not specify a mass-action kinetic, it is a
-  ** CKinFunction */
-  else
-    {
-      CEvaluationTree* pTree = new CEvaluationTree("NoName", NULL, CEvaluationTree::Expression);
-      CEvaluationNodeCall* pTmpRoot = new CEvaluationNodeCall(CEvaluationNodeCall::FUNCTION, reaction.getFunction()->getObjectName());
-      const std::vector< std::vector<std::string> >& parameterMappings = reaction.getParameterMappings();
-      unsigned int i, iMax = parameterMappings.size();
-      for (i = 0;i < iMax;++i)
-        {
-          CEvaluationNodeObject* pObjectNode = new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + GlobalKeys.get(parameterMappings[i][0])->getCN() + ">");
-          pTmpRoot->addChild(pObjectNode);
-        }
-      pTree->setRoot(pTmpRoot);
-      pTree->compile();
-      // in copasi kinetic laws are always function calls and the function
-      // arguments are either references to species or parameters.
-      // therefore we don't need to look for directly called functions here
-      this->mUsedFunctions.insert(const_cast<CFunction*>(reaction.getFunction()));
-      pNode = pTmpRoot->toAST();
-      pdelete(pTree);
-    }
-
-  /*
-  ** If the reaction takes place in a single compartment, the rate law has
-  ** to be converted from concentration/time to substance/time by
-  ** multiplying the rate law with the volume of the compartment.
-  */
-  if (reaction.getCompartmentNumber() == 1)
-    {
-      const CCompartment& compartment = reaction.getLargestCompartment();
-      // check if the importer has added a division by the volume
-      // if so remove it instead of multiplying again
-      ASTNode* pTNode = CSBMLExporter::isDividedByVolume(pNode, compartment.getSBMLId());
-      if (pTNode)
-        {
-          if (pTNode->getNumChildren() == 0)
-            {
-              fatalError();
-            }
-          if (pTNode->getNumChildren() == 1)
-            {
-              ASTNode* pTmp = static_cast<ConverterASTNode*>(pTNode)->removeChild(0);
-              delete pTNode;
-              pTNode = pTmp;
-            }
-          delete pNode;
-          pNode = pTNode;
-        }
-      else
-        {
-          pTNode = new ASTNode(AST_TIMES);
-          ASTNode* pVNode = new ASTNode(AST_NAME);
-          pVNode->setName(compartment.getSBMLId().c_str());
-          pTNode->addChild(pVNode);
-          pTNode->addChild(pNode);
-          pNode = pTNode;
-        }
-    }
-
-  pKLaw->setMath(pNode);
-  delete pNode;
-  /* add the parameters */
-  unsigned int counter;
-  for (counter = 0; counter < reaction.getFunctionParameters().size(); counter++)
-    {
-      const CFunctionParameter* para = reaction.getFunctionParameters()[counter];
-      if (para->getUsage() == CFunctionParameter::PARAMETER)
+      const CFunctionParameter* pPara = reaction.getFunctionParameters()[i];
+      if (pPara->getUsage() == CFunctionParameter::PARAMETER)
         {
           // only create a parameter if it is a local parameter,
           // otherwise the parameter already has been created
-          if (reaction.isLocalParameter(counter))
+          if (reaction.isLocalParameter(i))
             {
-              Parameter sbmlPara = Parameter();
+              Parameter* pSBMLPara = pKLaw->createParameter();
 
-              std::string parameterKey = reaction.getParameterMappings()[counter][0];
+              //std::string parameterKey = reaction.getParameterMappings()[counter][0];
 
-              sbmlPara.setId(para->getObjectName().c_str());
-              double value = reaction.getParameterValue(para->getObjectName());
+              pSBMLPara->setId(pPara->getObjectName().c_str());
+              double value = reaction.getParameterValue(pPara->getObjectName());
               // if the value is NaN, leave the parameter value unset.
               if (!isnan(value))
                 {
-                  sbmlPara.setValue(value);
+                  pSBMLPara->setValue(value);
                 }
-              pKLaw->addParameter(&sbmlPara);
             }
         }
+    }
+
+  CEvaluationNode* pExpression = CSBMLExporter::createKineticExpression(const_cast<CFunction*>(reaction.getFunction()), reaction.getParameterMappings(), dataModel);
+  if (pExpression == NULL)
+    {
+      delete pKLaw;
+      pKLaw = NULL;
+    }
+  else
+    {
+      /*
+      ** If the reaction takes place in a single compartment, the rate law has
+      ** to be converted from concentration/time to substance/time by
+      ** multiplying the rate law with the volume of the compartment.
+      */
+      ASTNode* pNode = pExpression->toAST();
+      if (reaction.getCompartmentNumber() == 1)
+        {
+          const CCompartment& compartment = reaction.getLargestCompartment();
+          // check if the importer has added a division by the volume
+          // if so remove it instead of multiplying again
+          ASTNode* pTNode = CSBMLExporter::isDividedByVolume(pNode, compartment.getSBMLId());
+          if (pTNode)
+            {
+              if (pTNode->getNumChildren() == 0)
+                {
+                  fatalError();
+                }
+              if (pTNode->getNumChildren() == 1)
+                {
+                  ASTNode* pTmp = static_cast<ConverterASTNode*>(pTNode)->removeChild(0);
+                  delete pTNode;
+                  pTNode = pTmp;
+                }
+              delete pNode;
+              pNode = pTNode;
+            }
+          else
+            {
+              pTNode = new ASTNode(AST_TIMES);
+              ASTNode* pVNode = new ASTNode(AST_NAME);
+              pVNode->setName(compartment.getSBMLId().c_str());
+              pTNode->addChild(pVNode);
+              pTNode->addChild(pNode);
+              pNode = pTNode;
+            }
+        }
+      pKLaw->setMath(pNode);
+      delete pNode;
     }
   return pKLaw;
 }
@@ -2031,19 +2023,137 @@ ASTNode* CSBMLExporter::isDividedByVolume(const ASTNode* pRootNode, const std::s
   return pResult;
 }
 
+CEvaluationNode* CSBMLExporter::createKineticExpression(CFunction* pFun, const std::vector<std::vector<std::string> >& arguments, const CCopasiDataModel& /*dataModel*/)
+{
+  if (!pFun || pFun->getVariables().size() != arguments.size()) fatalError();
+  CEvaluationNode* pResult;
+  if (pFun->getType() == CEvaluationTree::MassAction)
+    {
+      pResult = CSBMLExporter::createMassActionExpression(arguments, pFun->isReversible() == TriTrue);
+    }
+  else
+    {
+      //std::map< std::string, std::string > parameterMap;
+      std::string id = pFun->getSBMLId();
+      if (id.empty())
+        {
+          id = pFun->getObjectName();
+          if (CSBMLExporter::isValidSId(id))
+            {
+              if (this->mIdMap.find(id) != this->mIdMap.end())
+                {
+                  id = CSBMLExporter::createUniqueId(this->mIdMap, id + "_");
+                }
+              this->mIdMap.insert(std::make_pair(id, (const SBase*)NULL));
+            }
+          else
+            {
+              id = CSBMLExporter::createUniqueId(this->mIdMap, "function_");
+              this->mIdMap.insert(std::make_pair(id, (const SBase*)NULL));
+            }
+          pFun->setSBMLId(id);
+        }
+      CEvaluationNodeCall* pFunctionCall = new CEvaluationNodeCall(CEvaluationNodeCall::FUNCTION, pFun->getObjectName());
+      this->mUsedFunctions.insert(pFun);
+      unsigned int i, iMax = arguments.size();
+      std::string cn;
+      for (i = 0;i < iMax;++i)
+        {
+          if (arguments[i].size() != 1) fatalError(); // we can't have arrays here.
+          const CCopasiObject* pObject = GlobalKeys.get(arguments[i][0]);
+          if (!pObject) fatalError();
+          if (dynamic_cast<const CModel*>(pObject) != NULL)
+            {
+              cn = "<" + pObject->getCN() + ",Reference=Time>";
+            }
+          else if (dynamic_cast<const CCompartment*>(pObject) != NULL)
+            {
+              cn = "<" + pObject->getCN() + ",Reference=Volume>";
+            }
+          else if (dynamic_cast<const CMetab*>(pObject) != NULL)
+            {
+              cn = "<" + pObject->getCN() + ",Reference=Concentration>";
+            }
+          else if (dynamic_cast<const CModelValue*>(pObject) != NULL)
+            {
+              cn = "<" + pObject->getCN() + ",Reference=Value>";
+            }
+          else if (dynamic_cast<const CReaction*>(pObject) != NULL)
+            {
+              cn = "<" + pObject->getCN() + ",Reference=Flux>";
+            }
+          else if (dynamic_cast<const CCopasiParameter*>(pObject) != NULL)
+            {
+              // local parameter of a reaction
+              // must set the node content to the SBML id if the parameter
+              cn = "<" + pObject->getCN() + ">";
+            }
+          else
+            {
+              cn = "<" + pObject->getCN() + ">";
+            }
+          //parameterMap[pFun->getVariables()[i]->getObjectName()] = cn;
+          pFunctionCall->addChild(new CEvaluationNodeObject(CEvaluationNodeObject::ANY, cn));
+        }
+      pResult = pFunctionCall; //CSBMLExporter::createExpressionTree(pFun->getRoot(), parameterMap, dataModel);
+    }
+  return pResult;
+}
+
+/*
 CEvaluationNode* CSBMLExporter::createExpressionTree(const CFunction* const pFun, const std::vector<std::vector<std::string> >& arguments, const CCopasiDataModel& dataModel)
 {
   if (!pFun || pFun->getVariables().size() != arguments.size()) fatalError();
-  std::map< std::string, std::string > parameterMap;
-  unsigned int i, iMax = arguments.size();
-  for (i = 0;i < iMax;++i)
+  CEvaluationNode* pResult;
+  if (pFun->getType() == CEvaluationTree::MassAction)
     {
-      if (arguments[i].size() != 1) fatalError(); // we can't have arrays here.
-      const CCopasiObject* pObject = GlobalKeys.get(arguments[i][0]);
-      if (!pObject) fatalError();
-      parameterMap[pFun->getVariables()[i]->getObjectName()] = "<" + pObject->getCN() + ">";
+      pResult = CSBMLExporter::createMassActionExpression(arguments, pFun->isReversible() == TriTrue);
     }
-  return CSBMLExporter::createExpressionTree(pFun->getRoot(), parameterMap, dataModel);
+  else
+    {
+      std::map< std::string, std::string > parameterMap;
+      unsigned int i, iMax = arguments.size();
+      std::string cn;
+      for (i = 0;i < iMax;++i)
+        {
+          if (arguments[i].size() != 1) fatalError(); // we can't have arrays here.
+          const CCopasiObject* pObject = GlobalKeys.get(arguments[i][0]);
+          if (!pObject) fatalError();
+          if (dynamic_cast<const CModel*>(pObject) != NULL)
+            {
+              cn = "<" + pObject->getCN() + ",Reference=Time>";
+            }
+          else if (dynamic_cast<const CCompartment*>(pObject) != NULL)
+            {
+              cn = "<" + pObject->getCN() + ",Reference=Volume>";
+            }
+          else if (dynamic_cast<const CMetab*>(pObject) != NULL)
+            {
+              cn = "<" + pObject->getCN() + ",Reference=Concentration>";
+            }
+          else if (dynamic_cast<const CModelValue*>(pObject) != NULL)
+            {
+              cn = "<" + pObject->getCN() + ",Reference=Value>";
+            }
+          else if (dynamic_cast<const CReaction*>(pObject) != NULL)
+            {
+              cn = "<" + pObject->getCN() + ",Reference=Flux>";
+            }
+          else if (dynamic_cast<const CCopasiParameter*>(pObject) != NULL)
+           {
+              // local parameter of a reaction
+              // must set the node content to the SBML id if the parameter
+              cn = "<"+pObject->getCN()+">";
+           }
+          else
+            {
+              cn = "<" + pObject->getCN() + ">";
+            }
+          parameterMap[pFun->getVariables()[i]->getObjectName()] = cn;
+        }
+      pResult = CSBMLExporter::createExpressionTree(pFun->getRoot(), parameterMap, dataModel);
+    }
+  return pResult;
 }
 
 CEvaluationNode* CSBMLExporter::createExpressionTree(const CEvaluationNode* const pNode, const std::map<std::string, std::string>& parameterMap, const CCopasiDataModel& dataModel)
@@ -2055,13 +2165,13 @@ CEvaluationNode* CSBMLExporter::createExpressionTree(const CEvaluationNode* cons
   std::map<std::string, std::string>::const_iterator pos;
   std::vector<std::vector<std::string> > arguments;
   const CEvaluationNode* pChildNode = NULL;
-  std::vector<const CCopasiContainer*> containerList;
-  containerList.push_back(dataModel.getModel());
+  //std::vector<const CCopasiContainer*> containerList;
+  //containerList.push_back(dataModel.getModel());
   //const CCopasiObject* pObject = NULL;
   switch (CEvaluationNode::type(pNode->getType()))
     {
     case CEvaluationNode::CALL:
-      pFun = dynamic_cast<const CFunction*>(const_cast<CFunctionDB*>(dataModel.getFunctionList())->findFunction(pNode->getData()));
+      pFun = dynamic_cast<const CFunction*>(const_cast<CFunctionDB*>(const_cast<CCopasiDataModel&>(dataModel).getFunctionList())->findFunction(pNode->getData()));
       assert(pFun);
       pResultNode = CSBMLExporter::createExpressionTree(pFun->getRoot(), parameterMap, dataModel);
       break;
@@ -2086,6 +2196,9 @@ CEvaluationNode* CSBMLExporter::createExpressionTree(const CEvaluationNode* cons
     case CEvaluationNode::LOGICAL:
       pResultNode = new CEvaluationNodeLogical((CEvaluationNodeLogical::SubType)CEvaluationNode::subType(pNode->getType()), pNode->getData());
       break;
+    case CEvaluationNode::FUNCTION:
+      pResultNode = new CEvaluationNodeFunction((CEvaluationNodeFunction::SubType)CEvaluationNode::subType(pNode->getType()), pNode->getData());
+      break;
     default:
       fatalError();
       break;
@@ -2099,6 +2212,7 @@ CEvaluationNode* CSBMLExporter::createExpressionTree(const CEvaluationNode* cons
   assert(pResultNode);
   return pResultNode;
 }
+ */
 
 /**
  * This method creates an ASTNode tree where all the species specified in
@@ -2154,8 +2268,8 @@ ASTNode* CSBMLExporter::createTimesTree(const CCopasiVector<CChemEqElement >& ve
 }
 
 /**
- * Go through a CEvaluationNode base tree and return a list of
- * functions directly called in this tree.
+ * Go through a CEvaluationNode base tree and add the names
+ * of all functions directly called in this tree to the set.
  */
 void CSBMLExporter::findDirectlyUsedFunctions(const CEvaluationNode* pRootNode, std::set<std::string>& result)
 {
@@ -2181,7 +2295,8 @@ const std::vector<CFunction*> CSBMLExporter::findUsedFunctions(std::set<CFunctio
   while (it != endit)
     {
       chain.insert(*it);
-      findUsedFunctions(*it, pFunctionDB, chain, result);
+      CSBMLExporter::findUsedFunctions(*it, pFunctionDB, chain, result);
+      result.push_back(*it);
       chain.clear();
       ++it;
     }
@@ -2241,26 +2356,29 @@ const std::set<CFunction*> CSBMLExporter::createFunctionSetFromFunctionNames(con
 
 void CSBMLExporter::orderRules(const CCopasiDataModel& dataModel)
 {
-  // TODO make sure the vector of rules is filled
+  // make sure the vector of rules is filled
   std::map<CModelEntity*, std::set<const CModelEntity*> > dependencyMap;
-  std::vector<CModelEntity*>::iterator it = mAssignmentVector.begin(), endit = this->mAssignmentVector.end();
+  std::vector<CModelEntity*>::iterator it = this->mAssignmentVector.begin(), endit = this->mAssignmentVector.end();
   while (it != endit)
     {
       const CExpression* pExpr = (*it)->getExpressionPtr();
       assert(pExpr != NULL);
       std::set<const CModelEntity*> dependencies;
       CSBMLExporter::findModelEntityDependencies(pExpr->getRoot(), dataModel, dependencies);
+      /*
       std::vector<CModelEntity*>::iterator it2 = this->mAssignmentVector.begin(), endit2 = this->mAssignmentVector.end();
       while (it2 != endit2)
         {
-          std::set<const CModelEntity*>::iterator pos = dependencies.find(*it);
-          if (pos == dependencies.end())
+          std::set<const CModelEntity*>::iterator pos = dependencies.find(*it2);
+          if (pos != dependencies.end())
             {
               dependencies.erase(pos);
             }
           ++it2;
         }
+        */
       dependencyMap[*it] = dependencies;
+      ++it;
     }
   // now sort the entities according to their dependencies
   bool error = false;
@@ -2268,7 +2386,7 @@ void CSBMLExporter::orderRules(const CCopasiDataModel& dataModel)
   while (error = false && !dependencyMap.empty())
     {
       std::map<CModelEntity*, std::set<const CModelEntity*> >::iterator mapIt = dependencyMap.begin(), mapEndit = dependencyMap.end();
-      // if we cant't remove something in one round, we have a circular
+      // if we cant't remove anything in one round, we have a circular
       // dependency
       error = true;
       while (mapIt != mapEndit)
@@ -2289,7 +2407,7 @@ void CSBMLExporter::orderRules(const CCopasiDataModel& dataModel)
           if (mapIt->second.empty())
             {
               orderedRules.push_back(mapIt->first);
-              // now we know that we could remove something ion this round
+              // now we know that we could remove something in this round
               error = false;
             }
           ++mapIt;
@@ -2323,14 +2441,16 @@ void CSBMLExporter::findModelEntityDependencies(const CEvaluationNode* pNode, co
 
 void CSBMLExporter::convertToLevel1()
 {
-  // TODO expand all function calls in rules, events and
+  // expand all function calls in rules, events and
   // kinetic laws and delete the functions
   // initial assignments do not need to be considered since they can not be
   // exported to Level 1 anyway
+  //
+  // checking of the resulting expressions for piecewise functions
+  // is done in the convertASTTreeToLevel1 method
   if (this->mpSBMLDocument == NULL) return;
   Model* pModel = this->mpSBMLDocument->getModel();
   Rule* pRule = NULL;
-  Event* pEvent = NULL;
   Reaction* pReaction = NULL;
   KineticLaw* pLaw = NULL;
   unsigned int i, iMax = pModel->getNumRules();
@@ -2345,6 +2465,8 @@ void CSBMLExporter::convertToLevel1()
       message += "\"";
       CSBMLExporter::convertASTTreeToLevel1(pMath, pModel, message);
     }
+  /*
+  Event* pEvent = NULL;
   iMax = pModel->getNumEvents();
   for (i = 0;i < iMax;++i)
     {
@@ -2400,6 +2522,7 @@ void CSBMLExporter::convertToLevel1()
             }
         }
     }
+    */
   iMax = pModel->getNumReactions();
   for (i = 0;i < iMax;++i)
     {
@@ -2440,6 +2563,8 @@ ASTNode* CSBMLExporter::replaceL1IncompatibleNodes(const ASTNode* pNode)
   unsigned int i, iMax;
   switch (pNode->getType())
     {
+    case AST_FUNCTION_PIECEWISE:
+      break;
     case AST_CONSTANT_E:
       // replace by exp(1)
       pResult = new ASTNode(AST_FUNCTION_EXP);
@@ -2615,4 +2740,272 @@ ASTNode* CSBMLExporter::convertASTTreeToLevel1(const ASTNode* pNode, const Model
       CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 61, message.c_str());
     }
   return pExpanded;
+}
+
+void CSBMLExporter::checkForPiecewiseFunctions(const CCopasiDataModel& dataModel, std::vector<SBMLIncompatibility>& result)
+{
+  std::set<std::string> usedFunctionNames;
+  const CModel* pModel = dataModel.getModel();
+  if (pModel == NULL) return;
+  // go through all model entities and check assignments
+  // we don't have to check initial assignment since those can not be exported
+  // anyway
+  const CModelEntity* pME = NULL;
+  const CCopasiVectorNS<CCompartment>& compartments = pModel->getCompartments();
+  unsigned int i, iMax = compartments.size();
+  for (i = 0;i < iMax;++i)
+    {
+      pME = compartments[i];
+      if (pME->getStatus() == CModelEntity::ODE || pME->getStatus() == CModelEntity::ASSIGNMENT)
+        {
+          const CEvaluationTree* pTree = pME->getExpressionPtr();
+          CSBMLExporter::findDirectlyUsedFunctions(pTree->getRoot(), usedFunctionNames);
+          CSBMLExporter::checkForPiecewiseFunctions(*pTree->getRoot(), result, pME->getObjectName(), "rule for compartment");
+        }
+    }
+  const CCopasiVector<CMetab>& metabolites = pModel->getMetabolites();
+  iMax = metabolites.size();
+  for (i = 0;i < iMax;++i)
+    {
+      pME = metabolites[i];
+      if (pME->getStatus() == CModelEntity::ODE || pME->getStatus() == CModelEntity::ASSIGNMENT)
+        {
+          const CEvaluationTree* pTree = pME->getExpressionPtr();
+          CSBMLExporter::findDirectlyUsedFunctions(pTree->getRoot(), usedFunctionNames);
+          CSBMLExporter::checkForPiecewiseFunctions(*pTree->getRoot(), result, pME->getObjectName(), "rule for metabolite");
+        }
+    }
+  const CCopasiVectorN<CModelValue>& modelvalues = pModel->getModelValues();
+  iMax = modelvalues.size();
+  for (i = 0;i < iMax;++i)
+    {
+      pME = modelvalues[i];
+      if (pME->getStatus() == CModelEntity::ODE || pME->getStatus() == CModelEntity::ASSIGNMENT)
+        {
+          const CEvaluationTree* pTree = pME->getExpressionPtr();
+          CSBMLExporter::findDirectlyUsedFunctions(pTree->getRoot(), usedFunctionNames);
+          CSBMLExporter::checkForPiecewiseFunctions(*pTree->getRoot(), result, pME->getObjectName(), "rule for global parameter");
+        }
+    }
+  // go through all reactions and check the function called in the kinetic
+  // laws.
+  CReaction* pReaction = NULL;
+  const CCopasiVectorNS<CReaction>& reactions = pModel->getReactions();
+  iMax = reactions.size();
+  for (i = 0;i < iMax;++i)
+    {
+      pReaction = reactions[i];
+      if (pReaction->getFunction() != NULL)
+        {
+          CSBMLExporter::findDirectlyUsedFunctions(pReaction->getFunction()->getRoot(), usedFunctionNames);
+          //CSBMLExporter::checkForPiecewiseFunctions(*pTree->getRoot(),result,pME->getObjectName(),"kinetic law for reaction");
+        }
+    }
+  // check indirectly called functions
+  std::set<CFunction*> directlyUsedFunctions = CSBMLExporter::createFunctionSetFromFunctionNames(usedFunctionNames, const_cast<CCopasiDataModel&>(dataModel).getFunctionList());
+  std::vector<CFunction*> functions = CSBMLExporter::findUsedFunctions(directlyUsedFunctions, const_cast<CCopasiDataModel&>(dataModel).getFunctionList());
+  std::vector<CFunction*>::const_iterator it = functions.begin(), endit = functions.end();
+  while (it != endit)
+    {
+      CSBMLExporter::checkForPiecewiseFunctions(*(*it)->getRoot(), result, (*it)->getObjectName(), "function");
+      ++it;
+    }
+}
+
+void CSBMLExporter::checkForPiecewiseFunctions(const CEvaluationNode& node, std::vector<SBMLIncompatibility>& result, const std::string& objectName, const std::string& objectType)
+{
+
+  // no need to go through the children.
+  // one incompatibility warning is enough
+  if (CEvaluationNode::type(node.getType()) == CEvaluationNode::CHOICE)
+    {
+      result.push_back(SBMLIncompatibility(8, objectType.c_str(), objectName.c_str()));
+    }
+  else
+    {
+      // store the old size
+      // if one error has been found, we can stop looking at the other
+      // children
+      unsigned int size = result.size();
+      const CEvaluationNode* pChild = dynamic_cast<const CEvaluationNode*>(node.getChild());
+      while (pChild != NULL && result.size() == size)
+        {
+          CSBMLExporter::checkForPiecewiseFunctions(*pChild, result, objectName, objectType);
+          pChild = dynamic_cast<const CEvaluationNode*>(pChild->getSibling());
+        }
+    }
+}
+
+/**
+ * Remove all compartments, species, parameters and reactions
+ * that did not end up in mHandledSBMLObjects during an export.
+ */
+void CSBMLExporter::removeUnusedObjects()
+{
+  if (this->mpSBMLDocument != NULL || this->mpSBMLDocument->getModel() == NULL)
+    {
+      Model* pModel = this->mpSBMLDocument->getModel();
+      std::list<SBase*> removedObjects;
+      SBase* pSBase = NULL;
+      ListOf* pList = pModel->getListOfCompartments();
+      unsigned int i;
+      for (i = pList->size();i != 0;--i)
+        {
+          pSBase = pList->get(i - 1);
+          if (this->mHandledSBMLObjects.find(pSBase) == this->mHandledSBMLObjects.end())
+            {
+              removedObjects.push_back(pList->remove(i - i));
+            }
+        }
+      pList = pModel->getListOfSpecies();
+      for (i = pList->size();i != 0;--i)
+        {
+          pSBase = pList->get(i - 1);
+          if (this->mHandledSBMLObjects.find(pSBase) == this->mHandledSBMLObjects.end())
+            {
+              removedObjects.push_back(pList->remove(i - i));
+            }
+        }
+      pList = pModel->getListOfParameters();
+      for (i = pList->size();i != 0;--i)
+        {
+          pSBase = pList->get(i - 1);
+          if (this->mHandledSBMLObjects.find(pSBase) == this->mHandledSBMLObjects.end())
+            {
+              removedObjects.push_back(pList->remove(i - i));
+            }
+        }
+      pList = pModel->getListOfReactions();
+      for (i = pList->size();i != 0;--i)
+        {
+          pSBase = pList->get(i - 1);
+          if (this->mHandledSBMLObjects.find(pSBase) == this->mHandledSBMLObjects.end())
+            {
+              // we don't have to store the reactions since
+              // there are no rules or events for reactions
+              delete pList->remove(i - i);
+            }
+        }
+      // check each removed object, if there is a rule or an event in
+      // the SBML model for this object
+      std::list<SBase*>::iterator it = removedObjects.begin(), endit = removedObjects.end();
+      pList = pModel->getListOfRules();
+      ListOf* pEventList = pModel->getListOfEvents();
+      ListOf* pInitialAssignmentList = pModel->getListOfInitialAssignments();
+      Rule* pRule = NULL;
+      Event* pEvent = NULL;
+      InitialAssignment* pIA = NULL;
+      unsigned int iMax;
+      while (it != endit)
+        {
+          iMax = pList->size();
+          for (i = 0;i < iMax;++i)
+            {
+              pRule = dynamic_cast<Rule*>(pList->get(i));
+              if (pRule != NULL && pRule->isSetVariable() && pRule->getVariable() == (*it)->getId())
+                {
+                  delete pList->remove(i);
+                  break;
+                }
+            }
+          iMax = pInitialAssignmentList->size();
+          for (i = 0;i < iMax;++i)
+            {
+              pIA = dynamic_cast<InitialAssignment*>(pInitialAssignmentList->get(i));
+              if (pIA->isSetSymbol() && pIA->getSymbol() == (*it)->getId())
+                {
+                  delete pInitialAssignmentList->remove(i);
+                  break;
+                }
+            }
+          iMax = pEventList->size();
+          for (i = 0;i < iMax;++i)
+            {
+              pEvent = dynamic_cast<Event*>(pEventList->get(i));
+              if (pEvent != NULL)
+                {
+                  ListOfEventAssignments* pEAL = pEvent->getListOfEventAssignments();
+                  EventAssignment* pEA = NULL;
+                  unsigned int j, jMax = pEAL->size();
+                  for (j = 0;j < jMax;++j)
+                    {
+                      pEA = pEvent->getEventAssignment(j);
+                      if (pEA != NULL && pEA->getVariable() == (*it)->getId())
+                        {
+                          delete pEAL->remove(j);
+                          break;
+                        }
+                    }
+                  // if there are no more event assignments, we can delete the
+                  // event
+                  if (pEAL->size() == 0)
+                    {
+                      delete pEventList->remove(i);
+                    }
+                }
+            }
+          delete *it;
+          ++it;
+        }
+    }
+}
+
+CEvaluationNode* CSBMLExporter::createMassActionExpression(const std::vector<std::vector<std::string> >& arguments, bool isReversible)
+{
+  assert((isReversible && arguments.size() == 4) || arguments.size() == 2);
+  assert(arguments[0].size() == 1 && arguments[1].size() > 0);
+  // create a multiplication of all items in arguments[1] and multiply that
+  // with item arguments[0][0]
+  const CCopasiObject* pObject = GlobalKeys.get(arguments[1][arguments[1].size() - 1]);
+  assert(pObject != NULL);
+  CEvaluationNode* pResult = new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + pObject->getCN() + ",Reference=Concentration>");
+  CEvaluationNode* pTmpNode = NULL;
+  unsigned int i;
+  for (i = arguments[1].size() - 1;i > 0;--i)
+    {
+      pTmpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
+      pObject = GlobalKeys.get(arguments[1][i - 1]);
+      assert(pObject != NULL);
+      pTmpNode->addChild(new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + pObject->getCN() + ",Reference=Concentration>"));
+      pTmpNode->addChild(pResult);
+      pResult = pTmpNode;
+    }
+  pTmpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
+  pObject = GlobalKeys.get(arguments[0][0]);
+  assert(pObject);
+  pTmpNode->addChild(new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + pObject->getCN() + ",Reference=Value>"));
+  pTmpNode->addChild(pResult);
+  pResult = pTmpNode;
+  if (isReversible)
+    {
+      std::vector<std::vector<std::string> > tmpV;
+      tmpV.push_back(arguments[2]);
+      tmpV.push_back(arguments[3]);
+      pTmpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MINUS, "-");
+      pTmpNode->addChild(pResult);
+      pTmpNode->addChild(CSBMLExporter::createMassActionExpression(tmpV, false));
+      pResult = pTmpNode;
+    }
+  return pResult;
+}
+
+bool CSBMLExporter::isValidSId(const std::string& id)
+{
+  bool result = true;
+  if (id.length() > 0)
+    {
+      char c = id[0];
+      result = (c == '_' || (c > 64 && c < 91) || (c > 96 && c < 123));
+      unsigned int i, iMax = id.length();
+      for (i = 1;(i < iMax) && result;++i)
+        {
+          c = id[i];
+          result = (c == '_' || (c > 64 && c < 91) || (c > 96 && c < 123) || (c > 47 && c < 58));
+        }
+    }
+  else
+    {
+      result = false;
+    }
+  return result;
 }
