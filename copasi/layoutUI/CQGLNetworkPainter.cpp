@@ -1,14 +1,18 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.86 $
+//   $Revision: 1.87 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/01/12 12:38:35 $
+//   $Date: 2008/01/14 12:01:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 // Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -158,14 +162,21 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
       for (j2 = 0;j2 < edgesToNodesOfReaction.size();j2++)
         {
           CGraphCurve curve = CGraphCurve(edgesToNodesOfReaction[j2]->getCurve());
-          std::string nodeKey = std::string(edgesToNodesOfReaction[j2]->getMetabGlyph()->getKey());
-          std::map<std::string, CGraphNode>::iterator itNode;
-          itNode = nodeMap.find(nodeKey);
-          if (itNode != nodeMap.end())
+          std::string nodeKey = "";
+          if (edgesToNodesOfReaction[j2]->getMetabGlyph() != NULL)
             {
-              CLBoundingBox box = (*itNode).second.getBoundingBox();
-              this->checkCurve(&curve, curveR, box);
+              nodeKey = std::string(edgesToNodesOfReaction[j2]->getMetabGlyph()->getKey());
+              //std::cout << "node key: " << nodeKey << std::endl;
+              std::map<std::string, CGraphNode>::iterator itNode;
+              itNode = nodeMap.find(nodeKey);
+              if (itNode != nodeMap.end())
+                {
+                  CLBoundingBox box = (*itNode).second.getBoundingBox();
+                  this->checkCurve(&curve, curveR, box);
+                }
             }
+          //    else
+          //      std::cout << "null pointer " << std::endl;
           CLMetabReferenceGlyph::Role r = edgesToNodesOfReaction[j2]->getRole();
           curve.setRole(r);
           if (edgesToNodesOfReaction[j2]->getMetabGlyph() != NULL)
@@ -203,9 +214,10 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
                   //viewerArrows.push_back(*ar);
                   //storeCurveInCorrespondingNode(nodeKey, viewerCurves.size() - 1, viewerArrows.size() - 1); //store with arrow index, see below
                 }
-              nodeCurveMap.insert(std::pair<std::string, CGraphCurve>
-                                  (nodeKey,
-                                   curve));
+              if (nodeKey != "")
+                nodeCurveMap.insert(std::pair<std::string, CGraphCurve>
+                                    (nodeKey,
+                                     curve));
             }
           else
             {
