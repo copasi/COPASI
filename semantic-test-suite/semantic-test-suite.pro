@@ -1,5 +1,18 @@
+# Begin CVS Header 
+#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/semantic-test-suite/semantic-test-suite.pro,v $ 
+#   $Revision: 1.12.12.1 $ 
+#   $Name:  $ 
+#   $Author: gauges $ 
+#   $Date: 2008/01/14 09:52:29 $ 
+# End CVS Header 
+
+# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+# and The University of Manchester. 
+# All rights reserved. 
+
 ######################################################################
-# $Revision: 1.12 $ $Author: shoops $ $Date: 2006/10/30 21:12:13 $  
+# $Revision: 1.12.12.1 $ $Author: gauges $ $Date: 2008/01/14 09:52:29 $  
 ######################################################################
 
 TEMPLATE = app
@@ -10,6 +23,7 @@ include(../copasi/common.pri)
 
 DEPENDPATH += ../copasi/ 
 INCLUDEPATH += ../copasi/
+INCLUDEPATH += ..
 
 COPASI_LIBS += COPASISE
 
