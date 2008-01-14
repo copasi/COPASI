@@ -1,3 +1,16 @@
+// Begin CVS Header 
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiParameterGroup.i,v $ 
+//   $Revision: 1.6 $ 
+//   $Name:  $ 
+//   $Author: gauges $ 
+//   $Date: 2008/01/14 10:43:46 $ 
+// End CVS Header 
+
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
+
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
@@ -45,6 +58,14 @@ class CCopasiParameterGroup : public CCopasiParameter
      * Destructor
      */
     virtual ~CCopasiParameterGroup();
+
+    /**
+     * Add a parameter
+     * @param const CCopasiParameter & parameter
+     * @return bool success
+     */
+    bool addParameter(const CCopasiParameter & parameter);
+
 
     /**
      * Add a parameter to the group
