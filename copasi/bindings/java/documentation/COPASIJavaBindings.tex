@@ -28,6 +28,10 @@ escapeinside={\%*}{*)}          % if you want to add a comment within your code
 \date{\today}
 \maketitle
 \parindent=0cm
+\section{Introduction}
+This document tries to give a superficial overview of the API for the JAVA bindings of COPASI. This documentation is in no way meant to give a complete reference to the API. It is only intended to give the programmer that wants to use the JAVA bindings an overview of the classes and some examples on how certain things can be done.
+The JAVA bindings expose parts of the underlying C++ API and so far no attempt has been made to simplify the API to better fit the target language or to make it easier for the programmer. All there is so far is a way to use COPASIs classes and methods from JAVA.
+
 \section{Working with the model}
 \subsection{COPASIs Model Concept}
 In COPASI, the top level class in the backend is C\textit{CopasiDataModel}. This class contains the actual model as well as the tasks, the function database and all the output definitions (plots and reports). Right now, this class defines one global static instance of itself and many methods in COPASIs backend rely on and work with this instance. Creating a second instance  of \textit{CCopasiDataModel} therefore does not make much sense and will most likely lead to crashes sooner or later. If you work with the COPASI bindings, you are restricted to this one global instance which means that working with more than one model at any given time on one machine is not possible right now.
@@ -1158,7 +1162,20 @@ The values for the \textit{COptItem} objects corresponding to that result, use \
 \section{Creating Reports}
 \label{CreatingReports}
 
+Sometimes it is necessary to write the results of a calculation to a file instead of keeping it in memory. In order to achieve this, a report for the results has to be created and this report has to be associated with a task.
+In COPASI reports are represnted by the class \textit{CReport}. A report stored a so called report definition that specifies what is being written and it contains a filename that determines where the report is written to.
+In order to set the filename, you can use the method \textit{setTarget} with the path of the file as the argument. It is up to the programmer to make sure that the directory part of the path exists and that it is writable.
+To set the report definition of a report instance, use the method \textit{setReportDefinition}. The only argument to the call is an instance of class \textit{CReportDefinition}.
+A report definitions consists of three parts a header, a body and a footer. The part that is specified as the header is written before the associated task is executed, the body is executed for each step of the associated task and the footer is finally written after the task has finished.
+Each part is a container that holds zero or more report definition items. To get the individual containers, the \textit{CReportDefinition} class has the methods \textit{GetheaderAddr}, \textit{getBodyAddr} and \textit{getFooterAddr}.
+The individual items are of type \textit{CRegisteredObjectName}. A new instance of \textit{CRegisteredObjectName} can be created by calling the constructor with a string that the registered object name represents.
+If the registered object name should represent a model entity, the string has to be the common name of the object. Otherwise the registered object name will represent a string that will literaly be written to the output.
 
+In COPASI the reports definitions are stored in the global instace of \textit{CCopasiDataModel}. To get this list use the method \textit{getReportDefinitionList} on the global instance of \textit{CCopasiDataModel} (\verb=CCopasiDataModel.getGlobal().getReportDefinitionList()=). The returned object is a container that stores all report definitions. To create a new report definition, use \textit{createReportDefinitons} which is a method of the container. The two arguments to the call are the name of the report definition and a description. Once you have a report definition object, you can use \textit{setTaskType} to set the type of task the report is intended for. The method takes one argument which is one of the task types defined in \textit{CCopasiTask}, e.g. \textit{CCopasiTask.timeCourse} for the time course task.
+Next you can fill the tree sections (header, body, footer) of the report definition with whatever has to be written to the output.
+Once the report definition is finished, we have to tell the task to use it. This is done through the tasks report object which can be aquired with the \textit{getReport()} method of \textit{CCopasiTask}. The returned report object has a method \textit{setReportDefinition} which takes the report definition object as its argument.
+Last but not least, we have to specify a filename where the report is written to which is done with the \textit{setTarget} method of the same report object.
+In the description of the individual tasks and in the accompaniing examples, we have always used \textbf{CCopasiTask.NO\_OUTPUT} as the first argument to the task which meant that we didn't want the task to create reports even if reports have been defined for the task. Now we naturally do want the task to create output, so we now use \textit{CCopasiTask.OUTPUT\_COMPLETE} instead when we call \textit{initialize} on the task before running it.
 
 
 \end{document}
