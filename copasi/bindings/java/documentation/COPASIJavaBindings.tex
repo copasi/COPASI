@@ -519,6 +519,16 @@ public boolean isSuitable(long noSubstrates, long noProducts, int reversible);
 
 When the equation is set for a function definition, the parameters are parsed and added to the function definition.
 
+\subsection{Setting initial values on model entities}
+
+It is not obvoius what consequences it has when the initial values of model entities are changed because changing the initial value of a model entity might influence other initial values, e.g. compartment volumes influence the concentration of the contained metabolites.
+Therefore, it is not enogh to just set the initial values on model entities, but it is necessary to tell COPASI which objects have been changed so that COPASI can update dependent values.
+This update is executed with the \textit{updateInitialValues} method of \textit{CModel}. The method takes one argument which is a container that stores all initial values that have been changed in the model. The container is an instance of \textit{ObjectStdVector} and store objects of type \textit{CCopasiObject}. The objects stored there are the actual values that have been changed, not the model entities the values belong to, e.g. if the initial concentration of a metabolite has been changed, an object representing this initial concentration can be aquired be calling \textit{getObject} on the model entity with a \textit{CCopasiObjectName} as the argument that specifies what value to get.
+So assuming \textbf{container} is an instance of \textit{ObjectStdVector} and \textbf{metab} is an instance of \textit{CMetab} and the initial concentration of \textbf{metab} has been changed, we can add the object that corresponds to the initial concentration of \textbf{metab} with \verb=container.add(metab.getObject(new CCopasiObjectName("Reference=InitialConcentration")))=.
+The same procedure can be used for the initial volume of compartments, he initial value of parameters and the value of local reaction parameters. The respective strings to initialize the CCopasiObjectName instance are \verb="Reference=InitialVolume"=, \verb="Reference=InitialValue"= and \verb="Reference=Value"=.
+Once all changed values have been added to the container, \textit{updateInitialValues} can be called on the instance of \textit{CModel} with the container as the only argument. 
+
+
 
 \section{Working with Tasks}
 
@@ -831,23 +841,23 @@ public CEigen getEigenValues();
 public CEigen getEigenValuesReduced();
 \end{lstlisting}
 
-\begin{desctription}
+\begin{description}
 \item[CSteadyStateMethod.notFound]{no steady state was found}
 \item[CSteadyStateMethod.found]{a steady state was found}
 \item[CSteadyStateMethod.foundEquilibrium]{a steady state was found where all reaction fluxes are zero}
 \item[CSteadyStateMethod.foundNegative]{a steady state with negative concentrations was found}
 \end{description}
 
-The class \texit{CEigen} class provides several methods to determine the charcteristics of the Eigenvalues.
+The class \textit{CEigen} class provides several methods to determine the charcteristics of the Eigenvalues.
 
 \begin{lstlisting}
 /**
- * Returns the largest real part in all Eignevalues.
+ * Returns the largest real part in all Eigenvalues.
  */
 public double getMaxrealpart();
 
 /**
- * Returns the largest imaginary part in all Eignevalues.
+ * Returns the largest imaginary part in all Eigenvalues.
  */
 public double getMaximagpart();
 
@@ -953,7 +963,123 @@ This works as long as the model has not been changed by adding or removing model
 
 
 \subsection{Running Parameter Scans}
-TODO
+The scan task differs somewhat from the other tasks described so far. For example it is not necessary to set method and problem parameters the way it was done for the time course task.
+There are few parameters that have to be set and those can be set by convenience functions.
+The classes that are needed to run a parameter scan are \textit{CScanTask}, \textit{CScanMethod} and \textit{CScanProblem}.
+There are three parameters that can be set on the \textit{CScanProblem} instance through methods of that class.
+
+\begin{lstlisting}
+/**
+ * This method set the subtask for which the scan task can be run.
+ * E.g. whether the scan is run on a steady state calculation or
+ * on a time course.
+ * Allowed types are defined in CCopasiTask.java.
+ */
+public void setSubtask(int type);
+
+/**
+ * Returns the type of the subtask for which the parameter
+ * scan is run.
+ */
+public int getSubtask();
+
+/**
+ * This method sets whether the initial values of the model
+ * are set to the result of each run of the subtask or if the 
+ * initial values should be set to the original initial values
+ * of the model.
+ * A value of false means always use the origininal initial values
+ * and a value of true means use the result of the last run as initial 
+ * state for the next run.
+public void setAdjustInitialConditions(boolean aic);
+
+/**
+ * Returns true or false depending on whether the scan will adjust
+ * the initial values of the model after each run of the subtask.
+ */
+public boolean getAdjustInitialConditions();
+
+/**
+ * This methods sets whether output from the subtask is collected, or
+ * if the output only consists of the endresult of each subtask.
+ * Assuming the subtask is a time course simulation, setting this to true
+ * will produce a time course for each run of the subtask. If the value is set
+ * to false, only the end state of each time course simulation will be written
+ * to the report.
+ */
+public void setOutputInSubtask(boolean ois);
+
+/**
+ * Returns true or false depending on whether output from the
+ * subtask is collected or not.
+ */
+public boolean getOutputInSubtask();
+\end{lstlisting}
+
+In order to run a parameter scan, one or more so called scan items have to be defined. Currently COPASI knows three types of scan items: repeat, linear and random. A parameter scan can define several scan items that are stacked and each scan item is applied to the scan item directly beneath it. The simplest scan item is the repeat type. It repeats the scan item (or if it is the lowest scan item it reapts the subtask) below it a certain number of times. No parameter is changed by this scan item type. This can e.g. be used to run a stochastic simulation several times with different random number seeds. (The stochastic time course simulation has a parameter that determines if it is started with a random seed, if this is set to false, the exactly same stochstic simulation will be run several times.)
+The linear scan item changes an associated model value (usually this will be the initial value of some model entity) within a given range. The stepsize is determined by the number of steps that is given as a parameter. The name of this scan item might be somewhat misleading since it can also change the associated value in a logarighmic fashion rather than in a linear fashion.
+Last but not least the random scan item can be used to initialize the associated value with a random value. The random value is determined by a permitted range and a distribution function.
+The scan items are implemented as a nested parameter group. All parameters for the scan items are actually parameters that are stored in a parameter group which represents a scan item.
+The class \textit{CScanProblem} which itself is also derived from \textit{CCopasiParameterGroup} contains a parameter group called \textbf{ScanItems} which holds all the scan items.
+So in the end the instance of \textit{CScanProblem} holds a parameter group called \textbf{Scanitems} which holds parameter groups that represent the individual scan items and those groups hold the parameters that determine the properties of the scan items.
+
+The following list shows the properties of the individual scan item types:
+
+\begin{table}
+\begin{tabular}[|r|r|c|]
+Parameter name & description & availability\hline \hline 
+Number of steps (unsigned integer) & The number of steps of the scan item. For a repeat or a random scan item this is the number of repetitions, for the linear scan item this is used to setermine the stepsize & all scan items\hline
+Type (unsigned integer) & The type of the scan item (CScanProblem.SCAN\_RANDOM, CScanProblem.SCAN\_REPEAT or CScanProblem.SCAN\_LINEAR) & all scan items\hline
+Object (String) & The common name of the object associated with the scan item. For the repeat scan item this is usually an empty string & all scan items\hline
+log (boolean) & determines if the value is changed in a logarithmic fashion & linear scan item\hline
+Minimum (double) & lower bound & linear and random scan item\hline
+Maximum (double) & upper bound &  linear and random scan item\hline
+Distribution type (unsigned integer) & determines which distribution the random numbers follow (CScanProblem.SD\_UNIFORM, CScanProblem.SD\_GAUSS and CScanProblem.SD\_BOLTZ) & random scan item \hline
+\end{tabular}
+\label{ScanItemParameters}
+\caption{scan item parameters}
+
+The following example codes shows how to run a simple parameter scan. It sets up the parameter scan to contain one repeat scan item that repeats the specified subtask 10 times:
+
+\begin{lstlisting}
+CScanTask scanTask=(CScanTask)CCopasiDataModel.getGlobal().addTask(CCopasiTask.scan);
+CScanProblem scanProblem=(CScanProblem)scanTask.getProblem();
+// set the desired subtask
+scanProblem.setSubtask(CCopasiTask.timeCourse);
+// always use the same initial values
+scanProblem.setAdjustInitialConditions(false);
+// get the ScanItems parameter group from the problem
+CCopasiParameterGroup scanItems=scanProblem.getGroup("ScanItems");
+// create a new parameter group to hold a scan item
+CCopasiParameterGroup scanItem=new CCopasiParameterGroup("scanItem");
+// add the parameters "Number of steps", "Type" and "Object" to the scan item
+// and set their values
+parameterGroup.addParameter("Number of steps", CCopasiParameter.UINT);
+parameterGroup.getParameter("Number of steps").setUIntValue(10);
+parameterGroup.addParameter("Type", CCopasiParameter.UINT);
+parameterGroup.getParameter("Type").setUIntValue(CScanProblem.SCAN_REPEAT);
+parameterGroup.addParameter("Object", CCopasiParameter.CN);
+parameterGroup.getParameter("Object").setStringValue("");
+try
+{
+    if(scanTask.initialize(CCopasiTask.NO_OUTPUT,null)!=false)
+    {
+      result=scanTask.process(true);
+    }
+}
+catch(Exception e)
+{
+    System.err.println("ERROR: "+e.getMessage());
+}
+
+\end{lstlisting}
+
+It is important to note that the subtask that is going to be used by the parameter scan has to be set up properly prior to running the parameter scan. That is, if one wants to run a parameter scan on a stochstic simulation, the time course task has to be set up so that it runs a stochstic simulation. Also all other parameters like start time and end time etc. have to be specified for the trajectory task before running the parameter scan.
+The same applies to all other subtasks that are or will be enabled in the future.
+
+
+For the task describes so far, one was usually interested in the end result of the task. For parameter scans this is usually differnt. Here one is normaly interested in the result of each calculation of the subtask that the parameter scan is being run on.
+Unfortunatelly those results are not stored in memory, so right now the only way to get these results is to create a report that stores them to a file. For a documentation on how to create reports and how they are conncected to a task see the section on reports \ref{CreatingReports}.
 
 \subsection{Running Optimizations}
 In order to run an optimization, the general procdure is the same as with the other tasks. One has to aquire or create an instance of \textit{COptTask}, choose the desired method to use for the task out of the set of methods COPASI provides for the optimization, set the desired parameter values on the instance of \textit{COptProblem} that can be fetched from the \textit{COptTask} instance and maybe set some parameter values on the method to change the methods behaviour.
@@ -1027,5 +1153,11 @@ catch(Exception e)
 After the optimization has been run, the solution of the optimization is stored in the problem instance.
 In order to get the lowest value COPASI was able to find for the objective function, use athe call to \textit{getSolutionValue}.
 The values for the \textit{COptItem} objects corresponding to that result, use \textit{getSolutionVariables}. This method returns a container with double values. The size of the container can be queried with its \textit{size} method and individual values can be aquired by calling \textit{get} with the index of the value. The value for index \textbf{i} belongs to the \textit{COptItem} with index \textbf{i} in the list of \textit{COptItem}s.  To get a container with all defined \textit{COptItem}s, use \textit{getOptItemList}.
+
+\section{Creating Reports}
+\label{CreatingReports}
+
+
+
 
 \end{document}
