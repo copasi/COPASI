@@ -1,14 +1,18 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/unittests/Test_RunScan.java,v $ 
-//   $Revision: 1.2 $ 
+//   $Revision: 1.3 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2008/01/14 10:31:33 $ 
+//   $Date: 2008/01/14 10:45:14 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 // and The University of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
 // All rights reserved. 
 
 // Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
@@ -76,37 +80,12 @@ public class Test_RunScan extends TestCase
         CScanProblem scanProblem=(CScanProblem)scanTask.getProblem();
         scanProblem.setSubtask(subTask);
         if(scanProblem==null) return null;
+        CCopasiParameterGroup problemScanItems=scanProblem.getGroup("ScanItems");
+        if(problemScanItems==null) return null;
         for(Iterator<CCopasiParameterGroup> it=scanItems.iterator();it.hasNext();)
         {
            CCopasiParameterGroup scanItem=(CCopasiParameterGroup)it.next();
-           CCopasiParameter type=scanItem.getParameter("Type");
-           CCopasiParameter steps=scanItem.getParameter("Number of steps");
-           CCopasiParameterGroup newScanItem=scanProblem.createScanItem((int)type.getUIntValue(),steps.getUIntValue());
-           for(int i=0;i<scanItem.size();++i)
-           {
-              CCopasiParameter para=scanItem.getParameter(i);
-              newScanItem.addParameter(para.getObjectName(),para.getType());
-              CCopasiParameter newPara=newScanItem.getParameter(para.getObjectName());
-              switch(para.getType())
-              {
-                 case CCopasiParameter.UINT:
-                 case CCopasiParameter.INT:
-                   newPara.setIntValue(para.getIntValue());
-                   break;
-                 case CCopasiParameter.DOUBLE:
-                 case CCopasiParameter.UDOUBLE:
-                   newPara.setDblValue(para.getDblValue());
-                   break;
-                 case CCopasiParameter.BOOL:
-                   newPara.setBoolValue(para.getBoolValue());
-                 case CCopasiParameter.STRING:
-                 case CCopasiParameter.CN:
-                 case CCopasiParameter.KEY:
-                 case CCopasiParameter.FILE:
-                   newPara.setStringValue(para.getStringValue());
-                   break;
-              }
-           }
+           problemScanItems.addParameter(scanItem);
         }
         boolean result=false;
         try
