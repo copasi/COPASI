@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/unittests/Test_RunScan.java,v $ 
-//   $Revision: 1.4 $ 
+//   $Revision: 1.5 $ 
 //   $Name:  $ 
-//   $Author: shoops $ 
-//   $Date: 2008/01/15 17:53:26 $ 
+//   $Author: gauges $ 
+//   $Date: 2008/01/15 21:08:10 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -50,12 +50,13 @@ public class Test_RunScan extends TestCase
     model.setVolumeUnit(CModel.fl);
     model.setTimeUnit(CModel.s);
     model.setQuantityUnit(CModel.fMol);
-    CModelValue fixedModelValue=model.createModelValue("R",4.0);
+    CModelValue fixedModelValue=model.createModelValue("R",2.0);
     CModelValue variableModelValue=model.createModelValue("K");
-    variableModelValue.setStatus(CModelEntity.ASSIGNMENT);
+    variableModelValue.setStatus(CModelEntity.ODE);
     String s=fixedModelValue.getObject(new CCopasiObjectName("Reference=Value")).getCN().getString();
     s="<"+s+">^2";
     variableModelValue.setExpression(s);
+    variableModelValue.setInitialValue(0.0);
     model.compileIfNecessary();
     ObjectStdVector changedObjects=new ObjectStdVector();
     changedObjects.add(fixedModelValue.getObject(new CCopasiObjectName("Reference=InitialValue")));
@@ -75,6 +76,7 @@ public class Test_RunScan extends TestCase
         if(scanTask==null) return null;
         CScanProblem scanProblem=(CScanProblem)scanTask.getProblem();
         scanProblem.setSubtask(subTask);
+        scanProblem.setAdjustInitialConditions(adjustInitialValues);
         if(scanProblem==null) return null;
         CCopasiParameterGroup problemScanItems=scanProblem.getGroup("ScanItems");
         if(problemScanItems==null) return null;
@@ -104,8 +106,100 @@ public class Test_RunScan extends TestCase
 
     public void test_Scan_Repeat()
     {
+        // set up the time course task
+        CTrajectoryTask task=null;
+        for(int  x=0;x < CCopasiDataModel.getGlobal().getTaskList().size();x++)
+        {
+            if(CCopasiDataModel.getGlobal().getTask(x).getType()==CCopasiTask.timeCourse)
+            {
+                task=(CTrajectoryTask)CCopasiDataModel.getGlobal().getTask(x);
+            }
+        }
+        assertFalse(task==null);
+        task.setMethodType(CCopasiMethod.deterministic);
+        CCopasiProblem problem=task.getProblem();
+        assertFalse(problem==null);
+        CCopasiParameter parameter=problem.getParameter("StepSize");
+        assertFalse(parameter==null);
+        parameter.setDblValue(0.001);
+        parameter=problem.getParameter("Duration");
+        assertFalse(parameter==null);
+        parameter.setDblValue(10.0);
+        // we don't need to set method parameters
+        // we just use the default
+        //CCopasiMethod method=task.getMethod();
+        //assertFalse(method==null);
+        // create a report
+        CReportDefinitionVector reportDefs=CCopasiDataModel.getGlobal().getReportDefinitionList();
+        assertFalse(reportDefs==null);
+        CReportDefinition repDef=reportDefs.createReportDefinition("htmlConc","value table in HTML format");
+        repDef.setIsTable(false);
+        assertFalse(repDef==null);
+        CCopasiStaticString htmlHeader=new CCopasiStaticString("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">\n<body>\n<table>\n");
+        CCopasiStaticString htmlFooter=new CCopasiStaticString("</table>\n</body>\n</html>\n");
+        ReportItemVector header=repDef.getHeaderAddr(); 
+        assertFalse(header==null);
+        header.add(new CRegisteredObjectName(htmlHeader.getCN().getString()));
+        ReportItemVector footer=repDef.getFooterAddr(); 
+        assertFalse(footer==null);
+        footer.add(new CRegisteredObjectName(htmlFooter.getCN().getString()));
+        ReportItemVector body=repDef.getBodyAddr(); 
+        assertFalse(body==null);
+        CModel model=CCopasiDataModel.getGlobal().getModel();
+        assertFalse(model==null);
+        CCopasiObject timeObject=model.getObject(new CCopasiObjectName("Reference=Time"));
+        assertFalse(timeObject==null);
+        body.add(new CRegisteredObjectName(new CCopasiStaticString("<tr>\n<td>").getCN().getString()));
+        body.add(new CRegisteredObjectName(timeObject.getCN().getString()));
+        body.add(new CRegisteredObjectName(new CCopasiStaticString("</td>\n").getCN().getString()));
+        long i,iMax=model.getNumModelValues();
+        for(i=0;i<iMax;++i)
+        {
+            body.add(new CRegisteredObjectName(new CCopasiStaticString("<td>").getCN().getString()));
+            CModelValue mv=model.getModelValue(i);
+            assertFalse(mv==null);
+            CCopasiObject valueObject=mv.getObject(new CCopasiObjectName("Reference=Value"));
+            assertFalse(valueObject==null);
+            body.add(new CRegisteredObjectName(valueObject.getCN().getString()));
+            body.add(new CRegisteredObjectName(new CCopasiStaticString("</td>\n").getCN().getString()));
+        }
+        body.add(new CRegisteredObjectName(new CCopasiStaticString("</tr>\n").getCN().getString()));
+        repDef.setTaskType(CCopasiTask.timeCourse);
+        CReport report=task.getReport();
+        assertFalse(report==null);
+        report.setReportDefinition(repDef);
+        report.setAppend(false);
+        report.setTarget("table.xhtml");
+        //CCopasiDataModel.getGlobal().saveModel("testModel.cps",true);
+        try
+        {
+          task.process(true);
+        }
+        catch(Exception e)
+        {
+            assertFalse(true);
+        }
+        report.setReportDefinition(null);
+        report.setTarget("");
+        // store the result for R and K and set R and K
+        // back to their initial values
+        CModelValue mv=CCopasiDataModel.getGlobal().getModel().getModelValue("R");
+        assertFalse(mv==null);
+        double valueR=mv.getValue();
+        mv=CCopasiDataModel.getGlobal().getModel().getModelValue("K");
+        assertFalse(mv==null);
+        double valueK=mv.getValue();
+        CCopasiDataModel.getGlobal().getModel().applyInitialValues();
+        // now we set the length of the time course to 1/10th
+        // and do 10 repetitions and let the scan use the current values
+        // instead of the initial values
+        // then we should end up with the same result for R and K
+        parameter=problem.getParameter("Duration");
+        assertFalse(parameter==null);
+        parameter.setDblValue(1.0);
+
         Vector<CCopasiParameterGroup> scanItems=new Vector<CCopasiParameterGroup>();
-        boolean adjustInitialConditions=false;
+        boolean adjustInitialConditions=true;
         CCopasiParameterGroup parameterGroup=new CCopasiParameterGroup("scanItems");
         parameterGroup.addParameter("Number of steps", CCopasiParameter.UINT);
         parameterGroup.getParameter("Number of steps").setUIntValue(10);
@@ -116,6 +210,14 @@ public class Test_RunScan extends TestCase
         scanItems.add(parameterGroup);
         CScanTask optTask=runScan(CCopasiTask.timeCourse,scanItems,adjustInitialConditions);
         assertFalse(optTask==null);
+        
+        mv=CCopasiDataModel.getGlobal().getModel().getModelValue("R");
+        assertFalse(mv==null);
+        assertTrue((mv.getValue()-valueR)/valueR < 1e-6);
+        mv=CCopasiDataModel.getGlobal().getModel().getModelValue("K");
+        assertFalse(mv==null);
+        assertTrue((mv.getValue()-valueK)/valueK < 1e-6);
+
     }
 
   public static void main(String[] args) {
