@@ -1,14 +1,18 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.87 $
+//   $Revision: 1.88 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/01/14 12:01:44 $
+//   $Date: 2008/01/15 12:09:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 // Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -163,7 +167,7 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
         {
           CGraphCurve curve = CGraphCurve(edgesToNodesOfReaction[j2]->getCurve());
           std::string nodeKey = "";
-          if (edgesToNodesOfReaction[j2]->getMetabGlyph() != NULL)
+          if (edgesToNodesOfReaction[j2]->getMetabGlyph() != NULL) // i.e. there is an associated node
             {
               nodeKey = std::string(edgesToNodesOfReaction[j2]->getMetabGlyph()->getKey());
               //std::cout << "node key: " << nodeKey << std::endl;
@@ -175,44 +179,46 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
                   this->checkCurve(&curve, curveR, box);
                 }
             }
-          //    else
+
           //      std::cout << "null pointer " << std::endl;
           CLMetabReferenceGlyph::Role r = edgesToNodesOfReaction[j2]->getRole();
           curve.setRole(r);
-          if (edgesToNodesOfReaction[j2]->getMetabGlyph() != NULL)
+          if (edgesToNodesOfReaction[j2]->getMetabGlyph() != NULL)  // if there is an associated scpecies node look, whether an arrow has to be created
             {
-
               // if role is product or sideproduct, create arrow for line
               if ((r == CLMetabReferenceGlyph::PRODUCT) || (r == CLMetabReferenceGlyph::SIDEPRODUCT) || (r == CLMetabReferenceGlyph::ACTIVATOR) || (r == CLMetabReferenceGlyph::INHIBITOR) || (r == CLMetabReferenceGlyph::MODIFIER))
                 {// create arrows just for edges to products or sideproducts
                   std::vector<CLLineSegment> segments = curve.getCurveSegments();
-                  CLLineSegment lastSeg = segments[curve.getNumCurveSegments() - 1];
-                  //std::cout << "number of segments in curve: " << curve.getNumCurveSegments() << std::endl;
-                  CLPoint p = lastSeg.getEnd();
-                  CArrow *ar;
-                  if (lastSeg.isBezier())
+                  if (! segments.empty())
                     {
-                      BezierCurve *bezier = new BezierCurve();
-                      std::vector<CLPoint> pts = std::vector<CLPoint>();
-                      pts.push_back(lastSeg.getStart());
-                      pts.push_back(lastSeg.getBase1());
-                      pts.push_back(lastSeg.getBase2());
-                      pts.push_back(lastSeg.getEnd());
-                      std::vector<CLPoint> bezierPts = bezier->curvePts(pts);
-                      C_INT32 num = bezierPts.size();
-                      CLLineSegment segForArrow = CLLineSegment(bezierPts[num - 2], bezierPts[num - 1]);
-                      ar = new CArrow(segForArrow, bezierPts[num - 1].getX(), bezierPts[num - 1].getY());
-                    }
-                  else
-                    ar = new CArrow(lastSeg, p.getX(), p.getY());
-                  //std::cout << "arrow line: " << ar->getStartOfLine() << ar->getEndOfLine() << std::endl;
-                  //                   nodeArrowMap.insert(std::pair<std::string, CArrow>
-                  //                                       (nodeKey, *ar));
+                      CLLineSegment lastSeg = segments[curve.getNumCurveSegments() - 1];
+                      //std::cout << "number of segments in curve: " << curve.getNumCurveSegments() << std::endl;
+                      CLPoint p = lastSeg.getEnd();
+                      CArrow *ar;
+                      if (lastSeg.isBezier())
+                        {
+                          BezierCurve *bezier = new BezierCurve();
+                          std::vector<CLPoint> pts = std::vector<CLPoint>();
+                          pts.push_back(lastSeg.getStart());
+                          pts.push_back(lastSeg.getBase1());
+                          pts.push_back(lastSeg.getBase2());
+                          pts.push_back(lastSeg.getEnd());
+                          std::vector<CLPoint> bezierPts = bezier->curvePts(pts);
+                          C_INT32 num = bezierPts.size();
+                          CLLineSegment segForArrow = CLLineSegment(bezierPts[num - 2], bezierPts[num - 1]);
+                          ar = new CArrow(segForArrow, bezierPts[num - 1].getX(), bezierPts[num - 1].getY());
+                        }
+                      else
+                        ar = new CArrow(lastSeg, p.getX(), p.getY());
+                      //std::cout << "arrow line: " << ar->getStartOfLine() << ar->getEndOfLine() << std::endl;
+                      //                   nodeArrowMap.insert(std::pair<std::string, CArrow>
+                      //                                       (nodeKey, *ar));
 
-                  curve.setArrowP(true);
-                  curve.setArrow(*ar);
-                  //viewerArrows.push_back(*ar);
-                  //storeCurveInCorrespondingNode(nodeKey, viewerCurves.size() - 1, viewerArrows.size() - 1); //store with arrow index, see below
+                      curve.setArrowP(true);
+                      curve.setArrow(*ar);
+                      //viewerArrows.push_back(*ar);
+                      //storeCurveInCorrespondingNode(nodeKey, viewerCurves.size() - 1, viewerArrows.size() - 1); //store with arrow index, see below
+                    }
                 }
               if (nodeKey != "")
                 nodeCurveMap.insert(std::pair<std::string, CGraphCurve>
@@ -220,11 +226,11 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
                                      curve));
             }
           else
-            {
-              viewerCurves.push_back(curve);
+            {// if no species node is associated with the curve: just store curve
+              //std::string mGKey = edgesToNodesOfReaction[j2]->getKey();
+              std::cout << "reaction with curve (MetabReferenceGlyph) found which has no associated node (MetabGlyph) " << std::endl;
+              viewerCurves.push_back(curve); // just collect curve in order to be shown within the graph
             }
-          //else // store without arrow
-          //storeCurveInCorrespondingNode(nodeKey, viewerCurves.size() - 1); //index of curve derived from the fact that the curve currently is the last element of the vector
         } // end j
     } // end i (reactions)
   //for (i=0;i<viewerNodes.size();i++)
@@ -238,6 +244,7 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
   std::map<std::string, CGraphNode>::iterator itNode;
   for (i = 0;i < labels.size();i++)
     {
+      //std::cout << "XXXXXXXXXX: " << labels[i]->getText() << std::endl;
       labelNodeMap.insert(std::pair<std::string, std::string>
                           (labels[i]->getKey(),
                            labels[i]->getGraphicalObjectKey()));
