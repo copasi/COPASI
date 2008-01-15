@@ -1,14 +1,18 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CGraphCurve.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/01/15 15:15:28 $
+//   $Date: 2008/01/15 15:16:39 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 // Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -77,4 +81,4 @@ void CGraphCurve::invertOrderOfPoints()
   reverse(mCurveSegments.begin(), mCurveSegments.end());
 
   if (mHasArrow)
-  {} //???}
+  {}  //  ? ? ?}
