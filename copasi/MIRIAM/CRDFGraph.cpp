@@ -1,14 +1,21 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraph.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/21 16:15:07 $
+//   $Date: 2008/01/15 17:45:38 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+
+#include "copasi.h"
 
 #include "CRDFGraph.h"
 #include "CRDFNode.h"
@@ -16,7 +23,7 @@
 #include "CRDFObject.h"
 
 CRDFGraph::CRDFGraph():
-    mpAbout(new CRDFNode),
+    mpAbout(NULL),
     mBlankNodeId2Node(),
     mResource2Node(),
     mLiteralNodes()
@@ -24,6 +31,9 @@ CRDFGraph::CRDFGraph():
 
 CRDFGraph::~CRDFGraph()
 {
+  // Note: mpAbout is not explicitely destroyed since it is contained in the map
+  // of resource nodes.
+
   std::map< std::string, CRDFNode * >::iterator itMap;
   std::map< std::string, CRDFNode * >::iterator endMap;
 
@@ -40,6 +50,42 @@ CRDFGraph::~CRDFGraph()
   for (itVector = mLiteralNodes.begin(), endVector = mLiteralNodes.end();
        itVector != endVector; ++itVector)
     delete *itVector;
+}
+
+const CRDFNode * CRDFGraph::getAboutNode() const
+{return mpAbout;}
+
+const std::map< std::string, CRDFNode * > & CRDFGraph::getBlankNodeMap() const
+  {return mBlankNodeId2Node;}
+
+const std::map< std::string, CRDFNode * > & CRDFGraph::getResourceNodeMap() const
+  {return mResource2Node;}
+
+bool CRDFGraph::guessGraphRoot()
+{
+  mpAbout = NULL;
+  CRDFNode * pNode;
+
+  std::map< std::string, CRDFNode * >::iterator itMap = mResource2Node.begin();
+  std::map< std::string, CRDFNode * >::iterator endMap = mResource2Node.end();
+
+  for (;itMap != endMap; ++itMap)
+    {
+      pNode = itMap->second;
+
+      if (pNode->isSubjectNode() && !pNode->isObjectNode())
+        {
+          if (mpAbout != NULL)
+            {
+              mpAbout = NULL;
+              break;
+            }
+
+          mpAbout = pNode;
+        }
+    }
+
+  return mpAbout != NULL;
 }
 
 bool CRDFGraph::addTriplet(const CRDFSubject & subject,
@@ -60,7 +106,7 @@ bool CRDFGraph::addTriplet(const CRDFSubject & subject,
         pSubjectNode = found->second;
       else
         {
-          pSubjectNode = mpAbout;
+          pSubjectNode = new CRDFNode;
           pSubjectNode->setSubject(subject);
           mResource2Node[subject.getResource()] = pSubjectNode;
         }

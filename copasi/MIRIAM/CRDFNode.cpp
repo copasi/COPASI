@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFNode.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/21 16:15:07 $
+//   $Date: 2008/01/15 17:45:38 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -80,6 +85,9 @@ const CRDFObject & CRDFNode::getObject() const
 void CRDFNode::addEdge(const std::string & predicate,
                        CRDFNode * pObject)
 {mEdges.push_back(CRDFEdge(predicate, pObject));}
+
+const std::vector< CRDFEdge > & CRDFNode::getEdges() const
+  {return mEdges;}
 
 bool CRDFNode::isSubjectNode() const
   {return mpSubject != NULL;}

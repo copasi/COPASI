@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFParser.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/21 18:37:22 $
+//   $Date: 2008/01/15 17:45:38 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -24,9 +29,6 @@
 #include "utilities/CCopasiMessage.h"
 
 // static
-bool CRDFParser::Initialized = false;
-
-// static
 CRDFGraph * CRDFParser::graphFromXml(const std::string & xml)
 {
   CRDFParser Parser;
@@ -38,23 +40,16 @@ CRDFGraph * CRDFParser::graphFromXml(const std::string & xml)
 }
 
 CRDFParser::CRDFParser() :
-    mpParser(NULL),
-    mpGraph(NULL)
+    CRaptorInit(),
+    mpParser(NULL)
 {
-  if (!Initialized)
-    {
-      raptor_init();
-      Initialized = true;
-    }
-
   mpParser = raptor_new_parser("rdfxml");
-
-  raptor_set_statement_handler(mpParser, this, &CRDFParser::TripleHandler);
 }
 
 CRDFParser::~CRDFParser()
 {
-  if (mpParser) raptor_free_parser(mpParser);
+  if (mpParser != NULL)
+    raptor_free_parser(mpParser);
 }
 
 CRDFGraph * CRDFParser::parse(std::istream & stream)
@@ -65,14 +60,14 @@ CRDFGraph * CRDFParser::parse(std::istream & stream)
   stream.imbue(std::locale::classic());
   stream.precision(16);
 
-  std::string URI = "file:///home/shoops.local/eclipse/COPASI-gcc3-32/gps/TestKinetics/MassAction.cps";
-  raptor_uri * pURI = raptor_new_uri((unsigned char *) URI.c_str());
+  raptor_uri * pURI = raptor_new_uri((unsigned char *) "#");
 
   if (raptor_start_parse(mpParser, pURI))
     fatalError();
 
   // Create the new graph
-  mpGraph = new CRDFGraph;
+  CRDFGraph * pGraph = new CRDFGraph;
+  raptor_set_statement_handler(mpParser, pGraph, &CRDFParser::TripleHandler);
 
   unsigned C_INT32 BUFFER_SIZE = 0xfffe;
   char * pBuffer = new char[BUFFER_SIZE + 1];
@@ -100,19 +95,19 @@ CRDFGraph * CRDFParser::parse(std::istream & stream)
   delete [] pBuffer;
 
   if (!success)
-    pdelete(mpGraph);
+    {
+      pdelete(pGraph);
+      return NULL;
+    }
 
-  CRDFGraph * pGraph = mpGraph;
-  mpGraph = NULL;
+  if (pGraph)
+    pGraph->guessGraphRoot();
 
   return pGraph;
 }
 
 // static
-void CRDFParser::TripleHandler(void * pRdfParser, const raptor_statement * pTriple)
-{static_cast< CRDFParser *>(pRdfParser)->TripleHandler(pTriple);}
-
-void CRDFParser::TripleHandler(const raptor_statement * pTriple)
+void CRDFParser::TripleHandler(void * pGraph, const raptor_statement * pTriple)
 {
   raptor_print_statement(pTriple, stdout);
   fprintf(stdout, "\n");
@@ -128,7 +123,7 @@ void CRDFParser::TripleHandler(const raptor_statement * pTriple)
     {
     case RAPTOR_IDENTIFIER_TYPE_RESOURCE:
       Subject.setType(CRDFSubject::RESOURCE);
-      Subject.setResource((char *) pTriple->subject);
+      Subject.setResource((char *) raptor_uri_as_string((raptor_uri *) pTriple->subject));
       break;
 
     case RAPTOR_IDENTIFIER_TYPE_ANONYMOUS:
@@ -143,7 +138,7 @@ void CRDFParser::TripleHandler(const raptor_statement * pTriple)
   switch (pTriple->predicate_type)
     {
     case RAPTOR_IDENTIFIER_TYPE_RESOURCE:
-      Predicate = (char *) pTriple->predicate;
+      Predicate = (char *) raptor_uri_as_string((raptor_uri *) pTriple->predicate);
       break;
 
     default:
@@ -154,7 +149,7 @@ void CRDFParser::TripleHandler(const raptor_statement * pTriple)
     {
     case RAPTOR_IDENTIFIER_TYPE_RESOURCE:
       Object.setType(CRDFObject::RESOURCE);
-      Object.setResource((char *) pTriple->object);
+      Object.setResource((char *) raptor_uri_as_string((raptor_uri *) pTriple->object));
       break;
 
     case RAPTOR_IDENTIFIER_TYPE_ANONYMOUS:
@@ -168,13 +163,13 @@ void CRDFParser::TripleHandler(const raptor_statement * pTriple)
       if (pTriple->object_literal_datatype != NULL)
         {
           Literal.setType(CRDFLiteral::TYPED);
-          Literal.setDataType((char *) pTriple->object_literal_datatype);
+          Literal.setDataType((const char *) raptor_uri_as_string(pTriple->object_literal_datatype));
         }
       else
         {
           Literal.setType(CRDFLiteral::PLAIN);
           if (pTriple->object_literal_language != NULL)
-            Literal.setLanguage((char *) pTriple->object_literal_language);
+            Literal.setLanguage((const char *) pTriple->object_literal_language);
         }
 
       Literal.setLexicalData((char *) pTriple->object);
@@ -186,5 +181,5 @@ void CRDFParser::TripleHandler(const raptor_statement * pTriple)
     }
 
   // Add the triplet to the graph
-  mpGraph->addTriplet(Subject, Predicate, Object);
+  static_cast<CRDFGraph *>(pGraph)->addTriplet(Subject, Predicate, Object);
 }
