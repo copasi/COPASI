@@ -532,10 +532,21 @@ The formula that is associated with a function definition can be queried with th
 Besides the mass action function definition which is an instance if the class \textit{CMassAction} (for which there are currently no wrapper functions) all function definitions are instances of \textit{CFunction}. In addition to the method from its base class \textit{CEvaluationTree}, \textit{CFunction} has some additional methods to handle the function parameters and some other properties.
 
 \begin{lstlisting}
-// TODO
+/**
+ * If the reaction is reversible, the return value  COPASIConstants.TriTrue,
+ * if the reaction is not reversible it is COPASIConstants.TriFalse.
+ * If the function is not meant to be used as a kinetic law, the result might 
+ * also be COPASIConstants.TriUnspecified.
+ */
 public int isReversible();
 
-// TODO
+/**
+ * Sets whether the function is meant to be used on reversible
+ * reaction, irreversible reactions, or if it is a general function
+ * not meant to be used as a kinetic law.
+ * The allowed values are COPASIConstants.TriTrue, COPASIConstants.
+ * TriFalse or COPASIConstants.TriUnspecified, respectively.
+ */
 public void setReversible(int reversible);
 
 /**
