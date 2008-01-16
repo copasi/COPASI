@@ -1,12 +1,17 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/libs/COPASISE/COPASISE.pro,v $ 
-#   $Revision: 1.25 $ 
+#   $Revision: 1.26 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2007/11/27 00:24:33 $ 
+#   $Date: 2008/01/16 20:20:23 $ 
 # End CVS Header 
 
-# Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+# and The University of Manchester. 
+# All rights reserved. 
+
+# Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc. and EML Research, gGmbH. 
 # All rights reserved. 
 
@@ -33,6 +38,7 @@ COPASI_LIBS += elementaryFluxModes
 COPASI_LIBS += fitting
 COPASI_LIBS += function
 COPASI_LIBS += lyap
+COPASI_LIBS += MIRIAM
 COPASI_LIBS += model
 COPASI_LIBS += odepack++
 COPASI_LIBS += optimization
@@ -53,10 +59,6 @@ contains(DEFINES, WITH_LAYOUT) {
 
 contains(DEFINES, COPASI_TSSA) {
   COPASI_LIBS += tssanalysis
-}
-
-contains(DEFINES, COPASI_MIRIAM) {
-  COPASI_LIBS += MIRIAM
 }
 
 include(../lib.pri)

@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CAuthorsWidget.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2007/11/10 21:15:53 $
+//   $Author: shoops $
+//   $Date: 2008/01/16 20:20:21 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -52,13 +57,14 @@ CAuthorsWidget::~CAuthorsWidget()
 
 std::vector<const CCopasiObject*> CAuthorsWidget::getObjects() const
   {
-    const CCopasiVector<CAuthor>& tmp = CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getAuthors();
     std::vector<const CCopasiObject*> ret;
+#ifdef XXXX
+    const CCopasiVector<CAuthor>& tmp = CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getAuthors();
 
     C_INT32 i, imax = tmp.size();
     for (i = 0; i < imax; ++i)
       ret.push_back(tmp[i]);
-
+#endif // XXXX
     return ret;
   }
 
@@ -119,13 +125,15 @@ CCopasiObject* CAuthorsWidget::createNewObject(const std::string & name)
 {
   std::string nname = name;
   int i = 0;
-  CAuthor* pAuthor;
+  CAuthor* pAuthor = NULL;
+#ifdef XXXX
   while (!(pAuthor = CCopasiDataModel::Global->getModel()->getMIRIAMInfo().createAuthor(nname)))
     {
       i++;
       nname = name + "_";
       nname += (const char *)QString::number(i).utf8();
     }
+#endif // XXXX
   return pAuthor;
 }
 
@@ -159,7 +167,9 @@ void CAuthorsWidget::deleteObjects(const std::vector<std::string> & keys)
       {
         for (i = 0; i < imax; i++)
           {
+#ifdef XXXX
             CCopasiDataModel::Global->getModel()->getMIRIAMInfo().removeAuthor(keys[i]);
+#endif // XXXX
           }
 
         //for (i = 0; i < imax; i++)

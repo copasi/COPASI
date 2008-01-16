@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-//   $Revision: 1.53 $
+//   $Revision: 1.54 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/12/06 21:05:41 $
+//   $Date: 2008/01/16 20:20:22 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -553,7 +558,22 @@ const bool & CModelEntity::isUsedOnce() const
   {return mUsedOnce;}
 
 void CModelEntity::setMiriamAnnotation(const std::string & miriamAnnotation)
-{mMiriamAnnotation = miriamAnnotation;}
+{
+  mMiriamAnnotation = miriamAnnotation;
+
+  // We need to synchronize the rdf:about attribute with the object key.
+  // :TODO: This assumes a compacted XML presentation, i.e., the top
+  // element is the root of the graph.
+  std::string::size_type Start =
+    mMiriamAnnotation.find("rdf:about=") + 11;
+
+  if (Start != std::string::npos)
+    {
+      std::string::size_type Count =
+        mMiriamAnnotation.find("\"", Start) - Start;
+      mMiriamAnnotation.replace(Start, Count, "#" + getKey());
+    }
+}
 
 const std::string & CModelEntity::getMiriamAnnotation() const
   {return mMiriamAnnotation;}

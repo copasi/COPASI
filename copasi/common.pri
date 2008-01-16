@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.72 $ 
+#   $Revision: 1.73 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2008/01/12 03:56:27 $ 
+#   $Date: 2008/01/16 20:20:22 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -11,7 +11,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.72 $ $Author: shoops $ $Date: 2008/01/12 03:56:27 $  
+# $Revision: 1.73 $ $Author: shoops $ $Date: 2008/01/16 20:20:22 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -125,7 +125,10 @@ contains(BUILD_OS, Darwin) {
     DEFINES += WITH_QWT3D
   }
  
-  contains(DEFINES, COPASI_MIRIAM) {
+  !isEmpty(RAPTOR_PATH){
+    LIBS+=  $${RAPTOR_PATH}/lib/libraptor.a
+    INCLUDEPATH += $${RAPTOR_PATH}/include
+  } else {
     LIBS += -lraptor
   }
   
@@ -225,20 +228,19 @@ contains(BUILD_OS, WIN32) {
     error( "SBML_PATH must be specified" )
   }
 
-  contains(DEFINES, COPASI_MIRIAM) {
-    release {
-      LIBS += raptor.lib
-    }
-    debug {
-      LIBS += raptorD.lib
-    }
+# The raptor library
+  release {
+    LIBS += raptor.lib
+  }
+  debug {
+    LIBS += raptorD.lib
+  }
     
-    !isEmpty(RAPTOR_PATH) {
-      QMAKE_CXXFLAGS   += -I"$${RAPTOR_PATH}\include"
-      QMAKE_LFLAGS += /LIBPATH:"$${RAPTOR_PATH}\lib"
-    } else {
-      error( "SBML_PATH must be specified" )
-    }
+  !isEmpty(RAPTOR_PATH) {
+    QMAKE_CXXFLAGS   += -I"$${RAPTOR_PATH}\include"
+    QMAKE_LFLAGS += /LIBPATH:"$${RAPTOR_PATH}\lib"
+  } else {
+    error( "SBML_PATH must be specified" )
   }
   
   contains(CONFIG, qt) {
@@ -290,8 +292,11 @@ contains(STATIC_LINKAGE, yes) {
 
   LIBS += -lsbml -lexpat
 
-  contains(DEFINES, COPASI_MIRIAM) {
-    LIBS += -lraptor
+# The raptor library
+  LIBS += -lraptor
+  !isEmpty(RAPTOR_PATH){
+      LIBS+=  -L$${RAPTOR_PATH}/lib
+      INCLUDEPATH += $${RAPTOR_PATH}/include
   }
   
   contains(CONFIG, qt) {
@@ -331,8 +336,11 @@ contains(BUILD_OS, Linux) {
   }
   LIBS += -lexpat
 
-  contains(DEFINES, COPASI_MIRIAM) {
-    LIBS += -lraptor
+# The raptor library
+  LIBS += -lraptor
+  !isEmpty(RAPTOR_PATH){
+      LIBS+=  -L$${RAPTOR_PATH}/lib
+      INCLUDEPATH += $${RAPTOR_PATH}/include
   }
   
   !isEmpty(MKL_PATH) {

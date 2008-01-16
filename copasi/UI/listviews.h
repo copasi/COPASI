@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-//   $Revision: 1.138 $
+//   $Revision: 1.139 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/11 15:12:27 $
+//   $Date: 2008/01/16 20:20:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,12 +29,7 @@
 #include "copasi.h"
 #include "UI/Tree.h"
 
-#ifdef COPASI_MIRIAM
 class CTabWidget;
-#else
-class ModelWidget;
-#endif
-
 class DataModelGUI;
 class CQCompartment;
 class CompartmentsWidget;
@@ -208,11 +203,7 @@ class ListViews : public QSplitter
     CQLyapResultWidget *lyapResultWidget;
     MetabolitesWidget *metabolitesWidget;
     CQMetabolite *metabolitesWidget1;
-#ifdef COPASI_MIRIAM
     CTabWidget *modelWidget;
-#else
-    ModelWidget *modelWidget;
-#endif
     ModelValuesWidget *modelValuesWidget;
     CQModelValue *mpModelValueWidget;
     CQEFMWidget *modesWidget;
