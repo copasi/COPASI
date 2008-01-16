@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiTask.i,v $ 
-//   $Revision: 1.16 $ 
+//   $Revision: 1.17 $ 
 //   $Name:  $ 
-//   $Author: shoops $ 
-//   $Date: 2008/01/15 17:53:26 $ 
+//   $Author: gauges $ 
+//   $Date: 2008/01/16 09:03:14 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -170,10 +170,10 @@ class CCopasiTask : public CCopasiContainer
       return validMethods;
     } 
 
-    virtual  bool process(bool useInitialValues) 
+    virtual  bool process(bool useInitialValues,CCopasiTask::OutputFlag outputType=CCopasiTask::NO_OUTPUT) 
       {
         CCopasiMessage::clearDeque();
-        bool result=$self->initialize(CCopasiTask::OUTPUT_COMPLETE,NULL);
+        bool result=$self->initialize(outputType,NULL);
         if(result)
         {
           result=$self->process(useInitialValues);

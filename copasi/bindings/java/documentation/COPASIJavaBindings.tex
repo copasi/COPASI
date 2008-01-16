@@ -1249,10 +1249,12 @@ Sometimes it is necessary to write the results of a calculation to a file instea
 In COPASI reports are represented by the class \textit{CReport}. A report stored a so called report definition that specifies what is being written and it contains a filename that determines where the report is written to.
 In order to set the filename, you can use the method \textit{setTarget} with the path of the file as the argument. It is up to the programmer to make sure that the directory part of the path exists and that it is writable.
 To set the report definition of a report instance, use the method \textit{setReportDefinition}. The only argument to the call is an instance of class \textit{CReportDefinition}.
-A report definitions consists of three parts a header, a body and a footer. The part that is specified as the header is written before the associated task is executed, the body is executed for each step of the associated task and the footer is finally written after the task has finished.
-Each part is a container that holds zero or more report definition items. To get the individual containers, the \textit{CReportDefinition} class has the methods \textit{getHeaderAddr}, \textit{getBodyAddr} and \textit{getFooterAddr}.
-The individual items are of type \textit{CRegisteredObjectName}. A new instance of \textit{CRegisteredObjectName} can be created by calling the constructor with a string that the registered object name represents.
-If the registered object name should represent a model entity, the string has to be the common name of the object. Otherwise the registered object name will represent a string that will literally be written to the output.
+A report definition can work in two modes. In the default mode, the report definition is a table and all objects that are added to the report definition are written separated by a user definable separator.
+In the second mode a report definitions consists of three parts a header, a body and a footer. The part that is specified as the header is written before the associated task is executed, the body is executed for each step of the associated task and the footer is finally written after the task has finished.
+Each part is a container that holds zero or more report definition items. To get the individual containers, the \textit{CReportDefinition} class has the methods \textit{getTableAddr} if the report definition is in table mode or \textit{getHeaderAddr}, \textit{getBodyAddr} and \textit{getFooterAddr} if it is not in table mode.
+To specify whether a report definition is to run in table mode, you can use the method \textit{setIsTable} which takes a boolean value that determines whether the report definition is a table or not. The flag can be queried with the \textit{isTable} method.
+The individual items are of type \textit{CRegisteredObjectName}. A new instance of \textit{CRegisteredObjectName} can be created by calling the constructor with a string that represents the common name of the object that is to written.
+If the registered object name should represent a model entity, the string has to be the common name of the object. If you want to add an element the report that represents a simple stirng, you have to create an instance of \textit{CCopasiStaticString} by calling the constructor of this class with the string that you want to add to the report definition. Once you have an instance of \textit{CCopasiStaticString}, you can create an instance of \textit{CRegisteredObjectName} the same way as it is done for other objects, you take the string representation of the common name of your instance of \textit{CCopasiStaticString} and use it as the argument to the constructor of \textit{CRegisteredObjectName}.
 
 In COPASI the reports definitions are stored in the global instance of \textit{CCopasiDataModel}. To get this list use the method \textit{getReportDefinitionList} on the global instance of \textit{CCopasiDataModel}.
 
@@ -1261,52 +1263,61 @@ CCopasiDataModel.getGlobal().getReportDefinitionList()
 \end{verbatim}
 
 The returned object is a container that stores all report definitions. To create a new report definition, use \textit{createReportDefinitions} which is a method of the container. The two arguments to the call are the name of the report definition and a description. Once you have a report definition object, you can use \textit{setTaskType} to set the type of task the report is intended for. The method takes one argument which is one of the task types defined in \textit{CCopasiTask}, e.g. \textit{CCopasiTask.timeCourse} for the time course task.
-Next you can fill the tree sections (header, body, footer) of the report definition with whatever has to be written to the output.
+Next you can fill the tree sections (header, body, footer) of the report definition or the table  with whatever has to be written to the output.
 Once the report definition is finished, we have to tell the task to use it. This is done through the tasks report object which can be acquire with the \textit{getReport()} method of \textit{CCopasiTask}. The returned report object has a method \textit{setReportDefinition} which takes the report definition object as its argument.
 Last but not least, we have to specify a filename where the report is written to which is done with the \textit{setTarget} method of the same report object.
-In the description of the individual tasks and in the accompanying examples, we have always used \textbf{CCopasiTask.NO\_OUTPUT} as the first argument to the task which meant that we didn't want the task to create reports even if reports have been defined for the task. Now we naturally do want the task to create output, so we now use \textit{CCopasiTask.OUTPUT\_COMPLETE} instead when we call \textit{initialize} on the task before running it.
+In the description of the individual tasks and in the accompanying examples, we have always used \textbf{CCopasiTask.NO\_OUTPUT} as the first argument to the task which meant that we didn't want the task to create reports even if reports have been defined for the task. Now we naturally do want the task to create output, so we now use \textbf{CCopasiTask.OUTPUT\_COMPLETE} instead when we call \textit{initialize} on the task before running it.
 
-The following example shows how to create a report for a time course simulation that writes the metabolite concentrations to file for each step of the time course simulation:
+The following example shows how to create a report for a time course simulation that writes the values of all global parameters as an xhtml file with a table for the values:
 
 \begin{lstlisting}
 ...
-CReportDefinitionVector* reports =
-   CCopasiDataModel.getGlobal().getReportDefinitionList();
-CReportDefinition* report =
-   reports.createReportDefinition("Report", "metab concentrations");
-report.setTaskType(CCopasiTask.timeCourse);
-ReportItemVector body=report.getBodyAddr(); 
-// add the time as the first column
+CCopasiDataModel global=CCopasiDataModel.getGlobal();
+CReportDefinitionVector reportDefs=global.getReportDefinitionList();
+CReportDefinition repDef=reportDefs.createReportDefinition("htmlConc",
+                                        "value table in HTML format");
+repDef.setIsTable(false);
+CCopasiStaticString htmlHeader=new CCopasiStaticString("<?xml version=\"1.0\"" 
+ + " encoding=\"UTF-8\"?>\n<!DOCTYPE html PUBLIC "
+ + "\"-//W3C//DTD XHTML 1.0 Transitional//EN\" "
+ + "\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n"
+ + "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\""
+ + "lang=\"en\">\n<body>\n<table>\n");
+CCopasiStaticString htmlFooter=new CCopasiStaticString(
+                                      "</table>\n</body>\n</html>\n");
+ReportItemVector header=repDef.getHeaderAddr(); 
+header.add(new CRegisteredObjectName(htmlHeader.getCN().getString()));
+ReportItemVector footer=repDef.getFooterAddr(); 
+footer.add(new CRegisteredObjectName(htmlFooter.getCN().getString()));
+ReportItemVector body=repDef.getBodyAddr(); 
 CModel model=CCopasiDataModel.getGlobal().getModel();
-CCopasiObject timeObject=model.getObject(new CCopasiObjectName("Reference=Time");
-body.add(new CRegisteredObjectName(timeObject.getCN()));
-unsigned int i,iMax=model.getNumMetabs() 
-String ref=new String("Reference=Concentration");
-CCopasiObject refObject=null;
-for (i = 0; i < iMax;++i)
-  {
-     refObject=model.getMetabolite(i).getObject(ref);
-     item=new CRegisteredObjectName(refObject.getCN());
-     body.add(item);
-  }
-CTrajectoryTask trajectoryTask = new CTrajectoryTask();
-// set the properties of the task, method and problem
-...
-// set the report definition and the output file
-trajectoryTask.getReport().setReportDefinition(report);
-String outputFileName=new String("test.txt");
-trajectoryTask.getReport().setTarget(outputFilename);
-// don't append but overwrite
-trajectoryTask.getReport().setAppend(false);
-// remove the old time course task
-// and add the new one
-TaskVectorN taskList = CCopasiDataModel.getGlobal().getTaskList();
-taskList.remove("Time-Course");
-taskList.add(trajectoryTask, true);
-// initialize and run the task
-trajectoryTask.initialize(CCopasiTask.OUTPUT_COMPLETE, null);
-trajectoryTask.process(true);
-...
+CCopasiObjectName name=new CCopasiObjectName("Reference=Time");
+CCopasiObject timeObject=model.getObject(name);
+CCopasiStaticString s=new CCopasiStaticString("<tr>\n<td>");
+body.add(new CRegisteredObjectName(s.getCN().getString()));
+body.add(new CRegisteredObjectName(timeObject.getCN().getString()));
+s=new CCopasiStaticString("</td>\n");
+body.add(new CRegisteredObjectName(s.getCN().getString()));
+name=new CCopasiObjectName("Reference=Value")
+long i,iMax=model.getNumModelValues();
+for(i=0;i<iMax;++i)
+{
+    s=new CCopasiStaticString("<td>");
+    body.add(new CRegisteredObjectName(s.getCN().getString()));
+    CModelValue mv=model.getModelValue(i);
+    CCopasiObject valueObject=mv.getObject(name);
+    body.add(new CRegisteredObjectName(valueObject.getCN().getString()));
+    s=new CCopasiStaticString("</td>\n");
+    body.add(new CRegisteredObjectName(s.getCN().getString()));
+}
+s=new CCopasiStaticString("</tr>\n");
+body.add(new CRegisteredObjectName(s.getCN().getString()));
+repDef.setTaskType(CCopasiTask.timeCourse);
+CReport report=task.getReport();
+report.setReportDefinition(repDef);
+report.setAppend(false);
+report.setTarget("table.xhtml");
+ ...
 \end{lstlisting}
 
 \end{document}

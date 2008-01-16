@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/unittests/Test_RunScan.java,v $ 
-//   $Revision: 1.5 $ 
+//   $Revision: 1.6 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2008/01/15 21:08:10 $ 
+//   $Date: 2008/01/16 09:03:13 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -88,10 +88,7 @@ public class Test_RunScan extends TestCase
         boolean result=false;
         try
         {
-            if(scanTask.initialize(CCopasiTask.NO_OUTPUT,null)!=false)
-            {
-              result=scanTask.process(true);
-            }
+          result=scanTask.process(true,CCopasiTask.NO_OUTPUT);
         }
         catch(Exception e)
         {
