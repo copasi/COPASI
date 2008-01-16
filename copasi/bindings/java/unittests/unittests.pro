@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/unittests/unittests.pro,v $ 
-#   $Revision: 1.5 $ 
+#   $Revision: 1.6 $ 
 #   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2008/01/15 17:53:26 $ 
+#   $Author: gauges $ 
+#   $Date: 2008/01/16 16:07:36 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -33,7 +33,8 @@ JAVA_ARGS=-Djava.library.path=.. $$JAVAC_ARGC
 JAVA_SOURCE_FILES=Test_CreateSimpleModel.java \
                  Test_RunOptimization.java \
                  Test_RunSimulations.java \
-                 Test_RunSteadyStateCalculation.java
+                 Test_RunSteadyStateCalculation.java \
+                 Test_RunScan.java
 
 
 contains(BUILD_OS, WIN32){
