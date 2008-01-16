@@ -4,6 +4,8 @@
 \usepackage[usenames]{color}
 \usepackage{listings}
 \usepackage{hyperref}
+\usepackage{array}
+\usepackage{tabularx}
 
 \begin{document}
 \lstset{ %
@@ -712,7 +714,7 @@ OutputStartTime & DOUBLE & the time at which COPASI begins to produce output \\ 
 \end{table}
 }
 \begin{table}[ht]
-\begin{tabular}{c|c|l}
+\begin{tabular}{c|c}
 Type &  Description \\ \hline \hline
 deterministic  & simulation with LSODA \\ \hline
 LSODAR  &  simulation with LSODAR \\ \hline
@@ -1106,16 +1108,16 @@ So in the end the instance of \textit{CScanProblem} holds a parameter group call
 The following list shows the properties of the individual scan item types:
 
 \begin{table}[ht]
-\begin{tabular}{|r|r|c|}
+\begin{tabularx}{\textwidth}[t]{m{0.2\textwidth}|m{0.6\textwidth}|m{0.2\textwidth}}
 Parameter name & description & availability\\ \hline \hline 
-Number of steps (unsigned integer) & The number of steps of the scan item. For a repeat or a random scan item this is the number of repetitions, for the linear scan item this is used to determine the stepsize & all scan items\\ \hline
-Type (unsigned integer) & The type of the scan item (CScanProblem.SCAN\_RANDOM, CScanProblem.SCAN\_REPEAT or CScanProblem.SCAN\_LINEAR) & all scan items\\ \hline
+Number of steps (integer) & The number of steps of the scan item. For a repeat or a random scan item this is the number of repetitions, for the linear scan item this is used to determine the stepsize & all scan items\\ \hline
+Type (integer) & The type of the scan item (CScanProblem.SCAN\_RANDOM, CScanProblem.SCAN\_REPEAT or CScanProblem.SCAN\_LINEAR) & all scan items\\ \hline
 Object (String) & The common name of the object associated with the scan item. For the repeat scan item this is usually an empty string & all scan items\\ \hline
 log (boolean) & determines if the value is changed in a logarithmic fashion & linear scan item\\ \hline
 Minimum (double) & lower bound & linear and random scan item\\ \hline
 Maximum (double) & upper bound &  linear and random scan item\\ \hline
-Distribution type (unsigned integer) & determines which distribution the random numbers follow (CScanProblem.SD\_UNIFORM, CScanProblem.SD\_GAUSS and CScanProblem.SD\_BOLTZ) & random scan item\\ \hline
-\end{tabular}
+Distribution type (integer) & determines which distribution the random numbers follow (CScanProblem.SD\_UNIFORM, CScanProblem.SD\_GAUSS and CScanProblem.SD\_BOLTZ) & random scan item\\ \hline
+\end{tabularx}
 \label{ScanItemParameters}
 \caption{scan item parameters}
 \end{table}
