@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/unittests/Test_RunSteadyStateCalculation.java,v $ 
-//   $Revision: 1.6 $ 
+//   $Revision: 1.7 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2008/01/16 09:03:13 $ 
+//   $Date: 2008/01/16 20:41:09 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -154,7 +154,7 @@ public class Test_RunSteadyStateCalculation extends TestCase
         boolean result=false;
         try
         {
-           result=steadyStateTask.process(true,CCopasiTask.NO_OUTPUT);
+           result=steadyStateTask.process(true);
         }
         catch(Exception e)
         {
