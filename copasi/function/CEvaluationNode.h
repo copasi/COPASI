@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.h,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.33 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/10/26 14:19:14 $
+//   $Author: shoops $
+//   $Date: 2008/01/16 20:22:00 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -47,7 +52,7 @@ class CEvaluationNode : public CCopasiNode< std::string >
       VARIABLE = 0x09000000,
       WHITESPACE = 0x0a000000,
       LOGICAL = 0x0b000000,
-      MV_FUNCTION = 0x0c000000,
+      MV_FUNCTION = 0x0c000000, // This not yet implemented
       VECTOR = 0x0d000000
     };
 
