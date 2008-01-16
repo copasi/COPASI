@@ -533,10 +533,12 @@ Besides the mass action function definition which is an instance if the class \t
 
 \begin{lstlisting}
 /**
- * If the reaction is reversible, the return value  COPASIConstants.TriTrue,
- * if the reaction is not reversible it is COPASIConstants.TriFalse.
- * If the function is not meant to be used as a kinetic law, the result might 
- * also be COPASIConstants.TriUnspecified.
+ * If the reaction is reversible, the return value
+ * COPASIConstants.TriTrue,
+ * if the reaction is not reversible it is
+ * COPASIConstants.TriFalse.
+ * If the function is not meant to be used as a kinetic law,
+ * the result might  also be COPASIConstants.TriUnspecified.
  */
 public int isReversible();
 
@@ -566,7 +568,8 @@ public long getVariableIndex(String name);
  * Returns true if the function definition is suitable for the
  * given number of substrates, products and the given reversibility.
  */
-public boolean isSuitable(long noSubstrates, long noProducts, int reversible);
+public boolean isSuitable(long noSubstrates, long noProducts,
+                          int reversible);
 \end{lstlisting}
 
 When the equation is set for a function definition, the parameters are parsed and added to the function definition.
@@ -686,7 +689,7 @@ Which method can be used with which task will be described in the documentation 
 One the correct method has been set, the method parameters can be changed which works exactly the same way as described for the parameter of the problem above, the only difference is that the methods are used in an instance of \textit{CCopasiMethod} which can be obtained from the task with a call to \textit{getMethod()}.
 
 Once everything has been set, the task can be executed by calling the \textit{process(boolean useInitialValues,int outputType)} method. The boolean argument to the method determines if the task will use the current values of all model elements to run or if all values will be reset the the elements initial values. Using the current values rather than the initial values might be useful if a simulation has already been run, but one wants to extend this simulation to get more data points.
-The second argument determines if the task generates output from  reports if any have been defined for the task. Possible values for the second argument are \textbf{CCopasiTask.NO\_OUTPUT} which tells the task not to generate output and \textbf{CCopasiTask.OUTPUT\COMPLETE} which means that the task should create output as defined in the associated report (see section \ref{CreatingReports}). 
+The second argument determines if the task generates output from  reports if any have been defined for the task. Possible values for the second argument are \textbf{CCopasiTask.NO\_OUTPUT} which tells the task not to generate output and \textbf{CCopasiTask.OUTPUT\_COMPLETE} which means that the task should create output as defined in the associated report (see section \ref{CreatingReports}). 
 When a task is run, the results are either stored in a report if one was defined, and/or in memory. How reports can be defined and how the results for a specific task can be obtained will be explained in the documentation for the specific tasks below.
 
 
