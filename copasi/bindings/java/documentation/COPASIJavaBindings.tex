@@ -685,8 +685,8 @@ To find out which method is currently set on a task, you can use a call to \text
 Which method can be used with which task will be described in the documentation for the individual tasks.
 One the correct method has been set, the method parameters can be changed which works exactly the same way as described for the parameter of the problem above, the only difference is that the methods are used in an instance of \textit{CCopasiMethod} which can be obtained from the task with a call to \textit{getMethod()}.
 
-Once everything has been set, the task can be executed by calling the \textit{process(boolean useInitialValues)} method. The boolean argument to the method determines if the task will use the current values of all model elements to run or if all values will be reset the the elements initial values. Using the current values rather than the initial values might be useful if a simulation has already been run, but one wants to extend this simulation to get more data points.
-
+Once everything has been set, the task can be executed by calling the \textit{process(boolean useInitialValues,int outputType)} method. The boolean argument to the method determines if the task will use the current values of all model elements to run or if all values will be reset the the elements initial values. Using the current values rather than the initial values might be useful if a simulation has already been run, but one wants to extend this simulation to get more data points.
+The second argument determines if the task generates output from  reports if any have been defined for the task. Possible values for the second argument are \textbf{CCopasiTask.NO\_OUTPUT} which tells the task not to generate output and \textbf{CCopasiTask.OUTPUT\COMPLETE} which means that the task should create output as defined in the associated report (see section \ref{CreatingReports}). 
 When a task is run, the results are either stored in a report if one was defined, and/or in memory. How reports can be defined and how the results for a specific task can be obtained will be explained in the documentation for the specific tasks below.
 
 
@@ -838,7 +838,7 @@ The \textit{CNewtonMethod} has the following parameters:
 \end{description}
 
 For a detailed description of all these parameters please have a look in the COPASI manual in the section for the steady state method.
-To run the calculation, the task has to be initialized with a call to the \textit{initialize} method. At them moment the arguments to this method are useless in Java and should always be \textbf{CCopasiTask.NO\_OUTPUT} and \textbf{null}. Now the task can be run with a call to the \textit{process} method. The method takes one argument which is a \textbf{Boolean} value and determines whether the task is started with the current model values or with the initial values of all model entities.
+To run the calculation, the \textit{process} method of the task has to be used. The method takes two arguments. The first argument is a \textbf{boolean} value that determines whether the task is started with the current model values or with the initial values of all model entities. The second argument is an int value that can be either \textbf{CCopasiTask.NO\_OUTPUT} or \textbf{CCopasiTask.OUTPUT\_COMPLETE} which determined if output is generated from the task or not. This is important if reports have been defined for the task (see section \ref{CreatingReports}). 
 
 After the task has finished, the results can be queried via several methods provided by the \textit{CSteadyStateTask} instance.
 
@@ -1145,10 +1145,7 @@ parameter=parameterGroup.getParameter("Object")
 parameter.setStringValue("");
 try
 {
-    if(scanTask.initialize(CCopasiTask.NO_OUTPUT,null)!=false)
-    {
-      result=scanTask.process(true);
-    }
+  result=scanTask.process(true,CCopasiTask.NO_OUTPUT);
 }
 catch(Exception e)
 {
@@ -1225,12 +1222,8 @@ param.setDblValue(1.0e-5);
 boolean result=false;
 try
 {
-  // initialize the task
-  if(optTask.initialize(CCopasiTask.NO_OUTPUT,null)!=false)
-  {
     // run the optimization
-    result=optTask.process(true);
-  }
+  result=optTask.process(true,CCopasiTask.NO_OUTPUT);
 }
 catch(Exception e)
 {
@@ -1266,7 +1259,7 @@ The returned object is a container that stores all report definitions. To create
 Next you can fill the tree sections (header, body, footer) of the report definition or the table  with whatever has to be written to the output.
 Once the report definition is finished, we have to tell the task to use it. This is done through the tasks report object which can be acquire with the \textit{getReport()} method of \textit{CCopasiTask}. The returned report object has a method \textit{setReportDefinition} which takes the report definition object as its argument.
 Last but not least, we have to specify a filename where the report is written to which is done with the \textit{setTarget} method of the same report object.
-In the description of the individual tasks and in the accompanying examples, we have always used \textbf{CCopasiTask.NO\_OUTPUT} as the first argument to the task which meant that we didn't want the task to create reports even if reports have been defined for the task. Now we naturally do want the task to create output, so we now use \textbf{CCopasiTask.OUTPUT\_COMPLETE} instead when we call \textit{initialize} on the task before running it.
+In the description of the individual tasks and in the accompanying examples, we have always used \textbf{CCopasiTask.NO\_OUTPUT} as the second argument to the \textit{process} method of the task which meant that we didn't want the task to create output from reports. Now we naturally do want the task to create output, so we now use \textbf{CCopasiTask.OUTPUT\_COMPLETE} instead when we call \textit{process}.
 
 The following example shows how to create a report for a time course simulation that writes the values of all global parameters as an xhtml file with a table for the values:
 
