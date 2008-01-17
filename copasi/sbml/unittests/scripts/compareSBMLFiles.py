@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/scripts/compareSBMLFiles.py,v $ 
-#   $Revision: 1.1 $ 
+#   $Revision: 1.2 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2008/01/17 19:44:04 $ 
+#   $Date: 2008/01/17 20:06:23 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -101,6 +101,17 @@ def findRules(dom):
         result.append(element)
     return result
 
+def compareEntities(e1,e2,attributes):
+    result=1
+    for attribute in attributes:
+        a1=e1.getAttribute(attribute[0]);
+        a2=e2.getAttribute(attribute[0]);
+        if(a1!=a2):
+            result=0
+            break
+    return result;
+
+
 def compareUnitDefinitions(unitdefinitions1,unitdefinitions2,filename1,filename2):
   if(len(unitdefinitions1)!=len(unitdefinitions2)):
     print "The two files have a different number of unit definitions."
@@ -182,9 +193,18 @@ def compareCompartments(compartments1,compartments2,filename1,filename2):
 
 
 def compare2Compartments(compartment1,compartment2,filename1,filename2):
-  pass
+  id1=compartment1.getAttribute("id")
+  id2=compartment2.getAttribute("id")
+  if(id1==""):
+    print "Error. Compartment without id in "+filename1
+  if(id2==""):
+    print "Error. Compartment without id in "+filename2
+   
+  if(compareEntities(compartment1,compartement2,[("id","string"),("name","string"),("spatialDimensions","int"),("size","double"),("units","string"),("outside","string"),("constant","bool")])==0):
+      print "compartments "+id1+" and "+id2+" differ."
 
-def compare2Species(species1,species2,filename1,filename2):
+
+def compareSpecies(species1,species2,filename1,filename2):
     for key in species1.keys():
         s1=species1[key]
         s2=species2[key]
@@ -197,8 +217,16 @@ def compare2Species(species1,species2,filename1,filename2):
             print "No species with id "+key+" in "+filename1+"."
 
 
-def compareSpecies(species1,species2,filename1,filename2):
-  pass
+def compare2Species(species1,species2,filename1,filename2):
+  id1=species1.getAttribute("id")
+  id2=species2.getAttribute("id")
+  if(id1==""):
+    print "Error. Species without id in "+filename1
+  if(id2==""):
+    print "Error. Species without id in "+filename2
+   
+  if(compareEntities(species1,species2,[("id","string"),("name","string"),("compartment","string"),("initialAmount","double"),("initialConcentration","double"),("substanceUnits","string"),("spatialSizeUnits","string"),("hasOnlySubstanceUnits","bool"),("boundaryCondition","bool"),("charge","int"),("constant","bool")])==0):
+      print "species "+id1+" and "+id2+" differ."
 
 
 def compareParameters(parameters1,parameters2,filename1,filename2):
@@ -215,7 +243,16 @@ def compareParameters(parameters1,parameters2,filename1,filename2):
 
 
 def compare2Parameters(parameter1,parameter2,filename1,filename2):
-  pass
+  id1=parameter1.getAttribute("id")
+  id2=parameter2.getAttribute("id")
+  if(id1==""):
+    print "Error. parameter without id in "+filename1
+  if(id2==""):
+    print "Error. parameter without id in "+filename2
+   
+  if(compareEntities(parameter1,parameter2,[("id","string"),("name","string"),("value","double"),("units","string"),("constant","bool")])==0):
+      print "parameter "+id1+" and "+id2+" differ."
+
 
 def compareReactions(reactions1,reactions2,filename1,filename2):
     for key in reactions1.keys():
