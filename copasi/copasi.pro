@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.pro,v $ 
-#   $Revision: 1.44 $ 
+#   $Revision: 1.45 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2008/01/16 20:20:22 $ 
+#   $Date: 2008/01/17 13:04:57 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -16,7 +16,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.44 $ $Author: shoops $ $Date: 2008/01/16 20:20:22 $  
+# $Revision: 1.45 $ $Author: shoops $ $Date: 2008/01/17 13:04:57 $  
 ######################################################################
 
 TEMPLATE = subdirs
@@ -25,75 +25,92 @@ include(common.pri)
 
 # First build the SE libs
 
-SUBDIRS =  commandline
+COPASISE_DIRS =  commandline
+
 #ifdef COPASI_LICENSE_COM
 contains(USE_LICENSE, COM) {
-  SUBDIRS += commercial
+  COPASISE_DIRS += commercial
 }
 #endif // COPASI_LICENSE_COM
-SUBDIRS += CopasiDataModel
-SUBDIRS += compareExpressions
-SUBDIRS += elementaryFluxModes
-SUBDIRS += function
-SUBDIRS += lyap
-SUBDIRS += model
-SUBDIRS += MIRIAM
-SUBDIRS += odepack++
-SUBDIRS += optimization
-SUBDIRS += parameterFitting
-SUBDIRS += plot
-SUBDIRS += randomGenerator
-SUBDIRS += report
-SUBDIRS += sbml
-SUBDIRS += scan
-SUBDIRS += sensitivities
-SUBDIRS += steadystate
-SUBDIRS += trajectory
-SUBDIRS += tss
-SUBDIRS += utilities
-SUBDIRS += xml
+
+COPASISE_DIRS += CopasiDataModel
+COPASISE_DIRS += compareExpressions
+COPASISE_DIRS += elementaryFluxModes
+COPASISE_DIRS += function
+COPASISE_DIRS += lyap
+COPASISE_DIRS += model
+COPASISE_DIRS += MIRIAM
+COPASISE_DIRS += odepack++
+COPASISE_DIRS += optimization
+COPASISE_DIRS += parameterFitting
+COPASISE_DIRS += plot
+COPASISE_DIRS += randomGenerator
+COPASISE_DIRS += report
+COPASISE_DIRS += sbml
+COPASISE_DIRS += scan
+COPASISE_DIRS += sensitivities
+COPASISE_DIRS += steadystate
+COPASISE_DIRS += trajectory
+COPASISE_DIRS += tss
+COPASISE_DIRS += utilities
+COPASISE_DIRS += xml
 
 
-contains(DEFINES, WITH_LAYOUT) {
-  SUBDIRS += layout
-  SUBDIRS += layoutUI
+!isEmpty(CPPUNIT_PATH) {
+  COPASISE_DIRS += compareExpressions/unittests
 }
 
 contains(DEFINES, COPASI_TSSA) {
-  SUBDIRS += tssanalysis
+  COPASISE_DIRS += tssanalysis
+}
+
+contains(DEFINES, WITH_LAYOUT) {
+  COPASISE_DIRS += layout
+  COPASIUI_DIRS += layoutUI
 }
 
 # Now the UI libraries
+
+COPASIUI_DIRS += plotUI
+COPASIUI_DIRS += UI
+COPASIUI_DIRS += wizard
+  
+contains(DEFINES, HAVE_MML) {
+  COPASIUI_DIRS += mml
+}
+
+contains(DEFINES, WITH_QWT3D) {
+  COPASIUI_DIRS += barChart
+}
+
+SUBDIRS = $${COPASISE_DIRS}
+
 !contains(BUILD_GUI, no) {
-  contains(DEFINES, HAVE_MML) {
-    SUBDIRS += mml
-  }
-  contains(DEFINES, WITH_QWT3D) {
-    SUBDIRS += barChart
-  }
-  SUBDIRS += plotUI
-  SUBDIRS += UI
-  SUBDIRS += wizard
+  SUBDIRS += $${COPASIUI_DIRS}
 }
 
 # Now build the libs
 SUBDIRS += libs
+sub-libs.depends = $$join(COPASISE_DIRS, " sub-", "sub-") 
+sub-libs.depends += $$join(COPASIUI_DIRS, " sub-", "sub-")
+QMAKE_EXTRA_UNIX_TARGETS += sub-libs
 
 # Now the excecutables
 SUBDIRS += CopasiSE
+sub-CopasiSE.depends = sub-libs
+QMAKE_EXTRA_UNIX_TARGETS += sub-CopasiSE
+
 !contains(BUILD_GUI, no) {
   SUBDIRS += CopasiUI
+  sub-CopasiUI.depends = sub-libs
+  QMAKE_EXTRA_UNIX_TARGETS += sub-CopasiUI
 }
+
+#SUBDIRS += test3
 
 # Finally the bindings
 isEmpty(COPASI_SRC_PACKAGE) {
   SUBDIRS += bindings
-}
-  
-#SUBDIRS += test3
-
-!isEmpty(CPPUNIT_PATH) {
-  SUBDIRS += compareExpressions/unittests
 }
 
 DISTDIRS = $${SUBDIRS}
