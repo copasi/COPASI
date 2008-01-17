@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.69.2.1.2.3 $ 
+#   $Revision: 1.69.2.1.2.4 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2008/01/17 15:53:25 $ 
+#   $Date: 2008/01/17 20:06:40 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.69.2.1.2.3 $ $Author: shoops $ $Date: 2008/01/17 15:53:25 $  
+# $Revision: 1.69.2.1.2.4 $ $Author: shoops $ $Date: 2008/01/17 20:06:40 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -68,7 +68,6 @@ contains(STATIC_LINKAGE, yes) {
   DEFINES+=XML_STATIC
   DEFINES+=LIBSBML_STATIC
 }
-
 
 !contains(BUILD_OS, WIN32) {
   #Release code optimization
@@ -164,8 +163,11 @@ contains(BUILD_OS, WIN32) {
   QMAKE_YACC = C:\cygwin\bin\bash ../../admin/yacc.sh
 
   DEFINES -= UNICODE 
+   
   debug {
+    !win32-msvc2005 {
     QMAKE_LFLAGS += /NODEFAULTLIB:"libcmt.lib"
+    }
     QMAKE_LFLAGS += /NODEFAULTLIB:"msvcrt.lib"
   }
 
@@ -208,11 +210,22 @@ contains(BUILD_OS, WIN32) {
     error( "EXPAT_PATH must be specified" )
   }
 
+  # Add libsbml
+  win32-msvc2005 {
+    release {
+      LIBS += libsbml.lib
+    }
+    debug {
+      LIBS += libsbmlD.lib
+    }
+  } else {
+    LIBS += libsbml.lib
+  }
+  
   !isEmpty(SBML_PATH) {
     QMAKE_CXXFLAGS   += -I"$${SBML_PATH}\include"
     QMAKE_LFLAGS += /LIBPATH:"$${SBML_PATH}\lib"
     QMAKE_LFLAGS += /LIBPATH:"$${SBML_PATH}\bin"
-    LIBS += libsbml.lib
   } else {
     error( "SBML_PATH must be specified" )
   }
@@ -272,6 +285,9 @@ contains(STATIC_LINKAGE, yes) {
 
   contains(DEFINES, COPASI_MIRIAM) {
     LIBS += -lraptor
+  !isEmpty(RAPTOR_PATH){
+      LIBS+=  -L$${RAPTOR_PATH}/lib
+      INCLUDEPATH += $${RAPTOR_PATH}/include
   }
   
   contains(CONFIG, qt) {
