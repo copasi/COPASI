@@ -25,8 +25,8 @@
 			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="nmake /f &quot;Makefile&quot;"
-				ReBuildCommandLine="nmake /f &quot;Makefile&quot; clean all"
+				BuildCommandLine="nmake /f Makefile"
+				ReBuildCommandLine="nmake /f Makefile clean all"
 				CleanCommandLine="nmake /f Makefile clean"
 				Output="../tmp/copasiXML.lib"
 				PreprocessorDefinitions=""

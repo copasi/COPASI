@@ -25,9 +25,9 @@
 			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="nmake"
-				ReBuildCommandLine="nmake clean all"
-				CleanCommandLine=""
+				BuildCommandLine="nmake /f Makefile"
+				ReBuildCommandLine="nmake /f Makefile clean all"
+				CleanCommandLine="nmake /f Makefile clean"
 				Output="semantic-test-suite.exe"
 				PreprocessorDefinitions=""
 				IncludeSearchPath=""
