@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGASR.cpp,v $
-//   $Revision: 1.31 $
+//   $Revision: 1.31.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/12/10 19:41:45 $
+//   $Date: 2008/01/17 17:08:05 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -319,17 +324,9 @@ C_FLOAT64 COptMethodGASR::phi(C_INT32 indivNum)
 
   for (; it != end; ++it)
     {
-      switch ((*it)->checkConstraint())
-        {
-        case - 1:
-        case 1:
-          phiCalc = (*it)->getConstraintViolation();
-          phiVal += phiCalc * phiCalc;
-          break;
-
-        default:
-          break;
-        }
+      phiCalc = (*it)->getConstraintViolation();
+      if (phiCalc > 0.0)
+        phiVal += phiCalc * phiCalc;
     }
 
   return phiVal;

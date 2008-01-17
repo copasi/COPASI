@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitItem.h,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.12.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/12/10 19:42:46 $
+//   $Date: 2008/01/17 17:08:05 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -91,6 +96,13 @@ class CFitItem : public COptItem
      * @return C_INT32 result (-1: to small, 0: within boundaries, 1 to large)
      */
     virtual C_INT32 checkConstraint() const;
+
+    /**
+     * Retrieve the magnitude of the constraint violation
+     * This is always a positive number
+     * @return C_FLOAT64 constraintViolation;
+     */
+    virtual C_FLOAT64 getConstraintViolation() const;
 
     /**
      * Output stream operator
