@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitItem.cpp,v $
-//   $Revision: 1.17.4.1 $
+//   $Revision: 1.17.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/17 17:08:05 $
+//   $Date: 2008/01/17 17:24:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -123,7 +123,7 @@ C_INT32 CFitItem::checkConstraint() const
     return 0;
   }
 
-C_FLOAT64 COptItem::getConstraintViolation() const
+C_FLOAT64 CFitItem::getConstraintViolation() const
   {
     switch (checkConstraint())
       {
