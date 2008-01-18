@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.69.2.1.2.4 $ 
+#   $Revision: 1.69.2.1.2.5 $ 
 #   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2008/01/17 20:06:40 $ 
+#   $Author: ssahle $ 
+#   $Date: 2008/01/18 14:32:39 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.69.2.1.2.4 $ $Author: shoops $ $Date: 2008/01/17 20:06:40 $  
+# $Revision: 1.69.2.1.2.5 $ $Author: ssahle $ $Date: 2008/01/18 14:32:39 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -54,7 +54,7 @@ debug {
   DEFINES += COPASI_DEBUG
     
   isEmpty(COPASI_SRC_PACKAGE) {
-    DEFINES += COPASI_TSS
+    #DEFINES += COPASI_TSS
     DEFINES += COPASI_TSSA
     # DEFINES += WITH_LAYOUT
   }
@@ -288,6 +288,7 @@ contains(STATIC_LINKAGE, yes) {
   !isEmpty(RAPTOR_PATH){
       LIBS+=  -L$${RAPTOR_PATH}/lib
       INCLUDEPATH += $${RAPTOR_PATH}/include
+      }
   }
   
   contains(CONFIG, qt) {
