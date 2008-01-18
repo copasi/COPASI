@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeCall.cpp,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.23.4.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/10/30 18:21:36 $
+//   $Author: gauges $
+//   $Date: 2008/01/18 14:32:42 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -267,6 +272,8 @@ ASTNode* CEvaluationNodeCall::toAST() const
     ASTNode* node = new ASTNode(AST_FUNCTION);
     const std::string funName = this->getData();
     CEvaluationTree* pFun = CCopasiDataModel::Global->getFunctionList()->findFunction(funName);
+    assert(pFun != NULL);
+    if (pFun == NULL) fatalError();
     if (pFun->getSBMLId() != "")
       {
         node->setName(pFun->getSBMLId().c_str());

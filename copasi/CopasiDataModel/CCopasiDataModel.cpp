@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.107 $
+//   $Revision: 1.107.4.1 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/12/06 20:47:30 $
+//   $Date: 2008/01/18 14:32:41 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -30,6 +35,7 @@
 #include "report/CKeyFactory.h"
 #include "report/CReportDefinitionVector.h"
 #include "sbml/SBMLExporter.h"
+#include "sbml/CSBMLExporter.h"
 #include "sbml/SBMLImporter.h"
 #include "sbml/SBMLIncompatibility.h"
 #include "scan/CScanTask.h"
@@ -654,6 +660,64 @@ std::string CCopasiDataModel::exportSBMLToString(CProcessReport* pExportHandler)
   mpCurrentSBMLDocument = exporter.getSBMLDocument();
 
   return str;
+}
+
+bool CCopasiDataModel::newExportSBML(const std::string & fileName, bool overwriteFile, int sbmlLevel, int sbmlVersion, bool /*exportIncomplete*/, CProcessReport* pExportHandler)
+{
+  CCopasiMessage::clearDeque();
+
+  if (fileName == "") return false;
+
+  std::string PWD;
+  COptions::getValue("PWD", PWD);
+
+  std::string FileName = fileName;
+
+  if (CDirEntry::isRelativePath(FileName) &&
+      !CDirEntry::makePathAbsolute(FileName, PWD))
+    FileName = CDirEntry::fileName(FileName);
+
+  if (CDirEntry::exist(FileName))
+    {
+      if (!overwriteFile)
+        {
+          CCopasiMessage(CCopasiMessage::ERROR,
+                         MCDirEntry + 1,
+                         FileName.c_str());
+          return false;
+        }
+
+      if (!CDirEntry::isWritable(FileName))
+        {
+          CCopasiMessage(CCopasiMessage::ERROR,
+                         MCDirEntry + 2,
+                         FileName.c_str());
+          return false;
+        }
+    }
+
+  try
+    {
+      if (!mpModel->compileIfNecessary(pExportHandler))
+        return false;
+    }
+
+  catch (...)
+    {
+      return false;
+    }
+
+  CSBMLExporter exporter;
+  //exporter.setExportHandler(pExportHandler);
+  if (!exporter.exportModel(*this, FileName, sbmlLevel, sbmlVersion, overwriteFile)) return false;
+
+  if (mpCurrentSBMLDocument != exporter.getSBMLDocument())
+    pdelete(mpCurrentSBMLDocument);
+
+  mpCurrentSBMLDocument = new SBMLDocument(*exporter.getSBMLDocument());
+  mSBMLFileName = FileName;
+
+  return true;
 }
 
 bool CCopasiDataModel::exportSBML(const std::string & fileName, bool overwriteFile, int sbmlLevel, int sbmlVersion, bool exportIncomplete, CProcessReport* pExportHandler)

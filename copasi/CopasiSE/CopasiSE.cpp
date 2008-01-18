@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
-//   $Revision: 1.39 $
+//   $Revision: 1.39.12.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/04/09 18:56:13 $
+//   $Author: gauges $
+//   $Date: 2008/01/18 14:32:42 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -253,6 +258,13 @@ int main(int argc, char *argv[])
               COptions::getValue("ExportSBML", ExportSBML);
               CCopasiDataModel::Global->exportSBML(ExportSBML, true);
             }
+          if (!COptions::compareValue("NewExportSBML", std::string("")))
+            {
+              // Export the SBML File
+              std::string NewExportSBML;
+              COptions::getValue("NewExportSBML", NewExportSBML);
+              CCopasiDataModel::Global->newExportSBML(NewExportSBML, true);
+            }
 
           // Check whether a save file is given.
           if (!COptions::compareValue("Save", std::string("")))
@@ -316,6 +328,13 @@ int main(int argc, char *argv[])
                   // Since only one export file name can be specified we
                   // stop execution.
                   break;
+                }
+              if (!COptions::compareValue("NewExportSBML", std::string("")))
+                {
+                  // Export the SBML File
+                  std::string NewExportSBML;
+                  COptions::getValue("NewExportSBML", NewExportSBML);
+                  CCopasiDataModel::Global->newExportSBML(NewExportSBML, true);
                 }
 
               // Check whether exporting to C code is requested.

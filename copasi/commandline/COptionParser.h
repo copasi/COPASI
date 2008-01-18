@@ -1,12 +1,17 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptionParser.h,v $
-   $Revision: 1.17 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/12/15 14:14:30 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptionParser.h,v $
+//   $Revision: 1.17.14.1 $
+//   $Name:  $
+//   $Author: gauges $
+//   $Date: 2008/01/18 14:32:42 $
+// End CVS Header
 
-// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -65,6 +70,7 @@ namespace copasi
       std::string Home;
       std::string ImportSBML;
       bool License;
+      std::string NewExportSBML;
       std::string RegisteredEmail;
       std::string RegisteredUser;
       std::string RegistrationCode;
@@ -89,6 +95,7 @@ namespace copasi
       size_type Home;
       size_type ImportSBML;
       size_type License;
+      size_type NewExportSBML;
       size_type RegisteredEmail;
       size_type RegisteredUser;
       size_type RegistrationCode;
@@ -179,6 +186,7 @@ namespace copasi
         option_Save,
         option_ImportSBML,
         option_ExportSBML,
+        option_NewExportSBML,
         option_ExportBerkeleyMadonna,
         option_ExportC,
         option_RegistrationCode,
