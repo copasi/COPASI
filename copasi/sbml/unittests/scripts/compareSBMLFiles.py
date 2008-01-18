@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/scripts/compareSBMLFiles.py,v $ 
-#   $Revision: 1.2 $ 
+#   $Revision: 1.3 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2008/01/17 20:06:23 $ 
+#   $Date: 2008/01/18 17:32:45 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -78,7 +78,12 @@ def findParameters(model):
         break;
     parameters={}
     if(listOfParameters):
-       parameters=listOfParameters.getElementsByTagName("parameter")
+       for parameter in listOfParameters.getElementsByTagName("parameter"):
+            id=parameter.getAttribute("id")
+            if(id==""):
+                print "Error. parameter found without id."
+                sys.exit(1)
+            parameters[id]=parameter
     return parameters
 
 def findReactions(dom):
@@ -136,48 +141,136 @@ def compare2UnitDefinitions(unitDefinition1,unitDefinition2,filename1,filename2)
 
 def compareChildren(node1,node2):
     result=1
-    children1=node1.getChildNodes
-    children2=node2.getChildNodes
+    children1=node1.childNodes
+    children2=node2.childNodes
     if(len(children1)!=len(children2)):
         result=0
     else:
       for i in range(0,len(children1)):
         child1=children1[i]
         child2=children2[i]
-        if(child1.nodeName!=child1.nodeName):
+        if(child1.nodeType != child2.nodeType or child1.nodeName!=child2.nodeName):
             result=0
         else:
-            attributes1=child1.attributes
-            attributes2=child2.attributes
-            if((attributes1 and attributes2)):
-               if(len(attributes1)==len(attributes2)):
-                 attributeMap1={}
-                 attributeMap2={}
-                 for attribute in attributes1:
-                    attributeMap1[attribute.name]=attribute
-                 for attribute in attributes2:
-                    attributeMap2[attribute.name]=attribute
-                 for key in attributeMap1.keys():
-                    attribute=attributeMap2[key]
-                    if(not attribute):
+            if(child1.nodeType==child1.ELEMENT_NODE):
+                attributes1=child1.attributes
+                attributes2=child2.attributes
+                if((attributes1 and attributes2)):
+                  if(len(attributes1)==len(attributes2)):
+                      attributeMap1={}
+                      attributeMap2={}
+                      for attribute in attributes1:
+                          attributeMap1[attribute.name]=attribute
+                      for attribute in attributes2:
+                          attributeMap2[attribute.name]=attribute
+                      for key in attributeMap1.keys():
+                          attribute=attributeMap2[key]
+                          if(not attribute):
+                              return 0
+                      result=compareChildren(child1,child2)
+                  else:
+                      return 0
+                elif ((not attributes1) and (not attributes2)):
+                  result=compareChildren(child1,child2)
+                  if(child1.nodeName=="cn" or child1.nodeName=="ci"):
+                    # check the text element
+                    if(compareTextElements(child1,child2)==0):
                         return 0
-                 result=compareChildren(child1,child2)
-               else:
-                 return 0
-            elif ((not attributes1) and (not attributes2)):
-               result=compareChildren(child1,child2)
-            else:
-               return 0
-
-
+                else:
+                  return 0
     return result
 
 
-def compareFunctionDefinitions(functions1,functions2,filename1,filename2):
-  pass
+def compareTextElements(node1,node2):
+    # concatenate all text elements of both nodes and check if the resulting
+    # strings are the same
+    # this is not always correct, but for the cases we
+    # have here (cn and ci) it should be OK
+    text1=""
+    for child in node1.childNodes:
+        if(child.nodeType==child.TEXT_NODE):
+            text1=text1+child.nodeValue
+    text2=""
+    for child in node2.childNodes:
+        if(child.nodeType==child.TEXT_NODE):
+            text2=text2+child.nodeValue
+    return text1==text2
 
-def compare2FunctionDefinitions(function1,function2,filename1,filename2):
-  pass
+
+
+def compareFunctionDefinitions(functions1,functions2,filename1,filename2):
+  # for each function definition try to find one with the same id in the
+  # other file and check if the y are equal.
+  # if there is none with the same id, try to find one that has a different
+  # id, but has the same tree
+  # if there is one, double check if it does not correspond to one with the
+  # same id from the first file
+  #pdb.set_trace()
+  maps=[{},{}]
+  for key1 in functions1.keys():
+    function1=functions1[key1]
+    if(key1 not in functions2.keys()):
+        for key2 in functions2.keys():
+            function2=functions2[key2]
+            # check if function1 and function2 have the same tree
+            if(compareChildren(function1,function2)==1):
+                # check if function2 has a corresponding function in functions1
+                if(key2 not in functions1.keys()):
+                    maps[0][key1]=key2
+                    maps[1][key2]=key1
+                    del functions2[key2]
+                    break
+                else:
+                    functionTemp=functions1[key2]
+                    if(compareChildren(function2,functionTemp)==0):
+                        maps[0][key1]=key2
+                        maps[1][key2]=key
+                        del functions2[key2]
+                        break
+
+        if(key1 in maps[0].keys()):
+            del functions1[key1]
+            continue
+    else:
+        function2=functions2[key1]
+        if(compareChildren(function1,function2)==1):
+            maps[0][key1]=key2
+            maps[1][key2]=key1
+            del functions1[key1]
+            del functions2[key2]
+        else:
+            # continue the search
+            for key2 in functions2.keys():
+                function2=functions2[key2]
+                # check if function1 and function2 have the same tree
+                if(compareChildren(function1,function2)==1):
+                    # check if function2 has a corresponding function in functions1
+                    if(key2 not in functions1.keys()):
+                        maps[0][key1]=key2
+                        maps[1][key2]=key1
+                        del functions2[key2]
+                        break
+                    else:
+                        functionTemp=functions1[key2]
+                        if(compareChildren(function2,functionTemp)==0):
+                            maps[0][key1]=key2
+                            maps[1][key2]=key1
+                            del functions2[key2]
+                            break
+            if(key1 in maps[0].keys()):
+                del functions1[key1]
+                continue
+  #pdb.set_trace()
+  for key in maps[0].keys():
+    print "Fnction Definition "+key+" in file "+filename1+" maps to function definition "+maps[0][key]+" in file "+filename2
+  for key in functions1.keys():
+    print "No corresponding function to function with id "+key+" found in "+filename2+"."
+  for key in functions2.keys():
+    print "No corresponding function to function with id "+key+" found in "+filename1+"."
+  return maps
+
+#def compare2FunctionDefinitions(function1,function2,filename1,filename2):
+#  pass
 
 def compareCompartments(compartments1,compartments2,filename1,filename2):
     for key in compartments1.keys():
@@ -200,7 +293,7 @@ def compare2Compartments(compartment1,compartment2,filename1,filename2):
   if(id2==""):
     print "Error. Compartment without id in "+filename2
    
-  if(compareEntities(compartment1,compartement2,[("id","string"),("name","string"),("spatialDimensions","int"),("size","double"),("units","string"),("outside","string"),("constant","bool")])==0):
+  if(compareEntities(compartment1,compartment2,[("id","string"),("name","string"),("spatialDimensions","int"),("size","double"),("units","string"),("outside","string"),("constant","bool")])==0):
       print "compartments "+id1+" and "+id2+" differ."
 
 
@@ -229,29 +322,29 @@ def compare2Species(species1,species2,filename1,filename2):
       print "species "+id1+" and "+id2+" differ."
 
 
-def compareParameters(parameters1,parameters2,filename1,filename2):
+def compareParameters(parameters1,parameters2,filename1,filename2,parent):
     for key in parameters1.keys():
         parameter1=parameters1[key]
         parameter2=parameters2[key]
         if(not parameter2):
-            print "No parameter with id "+key+" in "+filename2+"."
+            print "No parameter with id "+key+" in "+parent+" in "+filename2+"."
         else:
-            compare2Parameters(parameter1,parameter2,filename1,filename2)
+            compare2Parameters(parameter1,parameter2,filename1,filename2,parent)
     for key in parameters2.keys():
         if(not parameters1[key]):
-            print "No parameter with id "+key+" in "+filename1+"."
+            print "No parameter with id "+key+" in "+parent+" in "+filename1+"."
 
 
-def compare2Parameters(parameter1,parameter2,filename1,filename2):
+def compare2Parameters(parameter1,parameter2,filename1,filename2,parent):
   id1=parameter1.getAttribute("id")
   id2=parameter2.getAttribute("id")
   if(id1==""):
-    print "Error. parameter without id in "+filename1
+    print "Error. parameter without id in "+parent+" in file "+filename1
   if(id2==""):
-    print "Error. parameter without id in "+filename2
+    print "Error. parameter without id in "+parent+" in file "+filename2
    
   if(compareEntities(parameter1,parameter2,[("id","string"),("name","string"),("value","double"),("units","string"),("constant","bool")])==0):
-      print "parameter "+id1+" and "+id2+" differ."
+      print "parameters with id " + id1 +" in "+parent+" differ."
 
 
 def compareReactions(reactions1,reactions2,filename1,filename2):
@@ -267,24 +360,185 @@ def compareReactions(reactions1,reactions2,filename1,filename2):
             print "No reaction with id "+key+" in "+filename1+"."
 
 def compare2Reactions(reaction1,reaction2,filename1,filename2):
-  pass
+  # compare all attributes
+  id1=reaction1.getAttribute("id")
+  if(id1==""):
+    print "Error. Found reaction without id in file "+filename1+"."
+    sys.exit(1)
+  id2=reaction2.getAttribute("id")
+  if(id2==""):
+    print "Error. Found reaction without id in file "+filename2+"."
+    sys.exit(1)
+  if(compareEntities(reaction1,reaction2,[("id","string"),("name","string"),("reversible","bool"),("fast","bool")])==0):
+      print "reactions "+id1+" and "+id2+" differ."
+  # compare the list of reactants, list of products, list of  modifiers
+  list1=reaction1.getElementsByTagName("listOfReactants")
+  if(len(list1)>1):
+    print "Error. To many listOfReactants elements in reaction "+id1+"."
+    sys.exit(1)
+  list2=reaction2.getElementsByTagName("listOfReactants")
+  if(len(list2)>1):
+    print "Error. To many listOfReactants elements in reaction "+id2+"."
+    sys.exit(1)
+  if(len(list1)==len(list2) and len(list2)!=0):
+    compare2SpeciesReferenceLists(list1[0],list2[0],id1,filename1,filename2)
+  list1=reaction1.getElementsByTagName("listOfProducts")
+  if(len(list1)>1):
+    print "Error. To many listOfProducts elements in reaction "+id1+"."
+    sys.exit(1)
+  list2=reaction2.getElementsByTagName("listOfProducts")
+  if(len(list2)>1):
+    print "Error. To many listOfProducts elements in reaction "+id2+"."
+    sys.exit(1)
+  if(len(list1)==len(list2) and len(list2)!=0):
+    compare2SpeciesReferenceLists(list1[0],list2[0],id1,filename1,filename2)
+  list1=reaction1.getElementsByTagName("listOfModifiers")
+  if(len(list1)>1):
+    print "Error. To many listOfModifiers elements in reaction "+id1+"."
+    sys.exit(1)
+  list2=reaction2.getElementsByTagName("listOfModifiers")
+  if(len(list2)>1):
+    print "Error. To many listOfModifiers elements in reaction "+id2+"."
+    sys.exit(1)
+  if(len(list1)==len(list2) and len(list2)!=0):
+    compare2SpeciesReferenceLists(list1[0],list2[0],id1,filename1,filename2)
+  # compare the kinetic laws
+  kLaw1=reaction1.getElementsByTagName("kineticLaw")
+  kLaw2=reaction2.getElementsByTagName("kineticLaw")
+  if(len(kLaw1)==1 and len(kLaw2)==1):
+    compare2KineticLaws(kLaw1[0],kLaw2[0],id1,filename1,filename2)
+
+
+def compare2SpeciesReferenceLists(list1,list2,reactionId,filename1,filename2):
+    tagName="modifierSpeciesReference"
+    attributes=[("species","string"),("id","string")]
+    if(list1.tagName!="listOfModifiers"):
+        tagName="speciesReference"
+        attributes.append(("stoichiometrie","double"))
+    sRefs1=list1.getElementsByTagName(tagName)
+    sRefs2=list2.getElementsByTagName(tagName)
+    for x in range(len(sRefs1)-1,-1,-1):
+        sRef1=sRefs1[x]
+        species1=sRef1.getAttribute("species")
+        if(species1==""):
+            print "Error. Species reference found in "+list1.tagName+" in reaction "+reactionId+" in file "+filename1+" that does not have a species attribute."
+            sys.exit(1)
+        for y in range(len(sRefs2)-1,-1,-1):
+            sRef2=sRefs2[y]
+            species2=sRef2.getAttribute("species")
+            if(species2==""):
+                print "Error. Species reference found in "+list2.tagName+" in reaction "+reactionId+" in file "+filename2+" that does not have a species attribute."
+                sys.exit(1)
+            if(species1==species2):
+                del sRefs1[x]
+                del sRefs2[y]
+                if(compareEntities(sRef1,sRef2,attributes)==0):
+                    print "speciesReference declaration for species "+species1+" in "+list1.tagName+" for reaction "+reactionId+" differ."
+                else:
+                    # compare the stoichiometry math
+                    math1=sRef1.getElementsByTagName("stoichiometryMath")
+                    math2=sRef2.getElementsByTagName("stoichiometryMath")
+                    if(len(math1)==len(math2) and len(math1)!=0):
+                        if(compareChildren(math1[0],math2[0])==0):
+                            print "the stoichiometryMath elements in the speciesReference declaration for species "+species1+" in "+list1.tagName+" for reaction "+reactionId+" differ."
+                    elif(len(math1)!=0 or len(math2)!=0):
+                        print "the stoichiometryMath elements in the speciesReference declaration for species "+species1+" in "+list1.tagName+" for reaction "+reactionId+" differ."
+
+    for sRef in sRefs1:
+        print "No corresponding speciesReference for species "+sRef.getAttribute("species")+" found in "+list2.tagName+" for reaction "+reactionId+" in file "+filename2+"."
+    for sRef in sRefs2:
+        print "No corresponding speciesReference for species "+sRef.getAttribute("species")+" found in "+list1.tagName+" for reaction "+reactionId+" in file "+filename1+"."
+
+
+
+def compare2KineticLaws(kLaw1,kLaw2,reactionId,filename1,filename2):
+    # compare the attributes
+    if(compareEntities(kLaw1,kLaw2,[("timeUnits","string"),("substanceUnits","string")])==0):
+        print "The attributes of the kineticLaws for reaction "+reactionId+" differ."
+    # compare the parameters
+    parameters1=findParameters(kLaw1)
+    parameters2=findParameters(kLaw2)
+    if(len(parameters1)==len(parameters2)):
+        # compare the individual number of parameters
+        compareParameters(parameters1,parameters2,filename1,filename1,"kinetic law for reaction "+reactionId)
+    # compare the expressions
+    math1=kLaw1.getElementsByTagName("math")
+    if(len(math1)!=1):
+        print "Error. Wrong number of math elements in kineticlaw for reaction "+reactionId+" in file "+filename1+"."
+        sys.exit(1)
+    math2=kLaw2.getElementsByTagName("math")
+    if(len(math2)!=1):
+        print "Error. Wrong number of math elements in kineticlaw for reaction "+reactionId+" in file "+filename2+"."
+        sys.exit(1)
+    if(compareChildren(math1[0],math2[0])==0):
+        print "The mathematical expression for the kineticLaws of reaction "+reactionId+" differ."
 
 
 def compareRules(rules1,rules2,filename1,filename2):
-    for key in rules1.keys():
-        rule1=rules1[key]
-        rule2=rules2[key]
-        if(not rule2):
-            print "No rule for entity with id "+key+" in "+filename2+"."
+    #pdb.set_trace()
+    for x in range(len(rules1)-1,-1,-1):
+        rule1=rules1[x]
+        variable1=""
+        if(rule1.tagName=="assignmentRule" or rule1.tagName=="rateRule"):
+            variable1=rule1.getAttribute("variable")
+            if(variable1==""):
+                print "Error. variable attribute not set on "+rule1.tagName+" in file "+filename1+"."
+                sys.exit(1)
+        elif (rule1.tagName!="algebraicRule"):
+            print "Error. Unknown rule type "+rule1.tagName+" in file "+filename1+"."
+            sys.exit(1)
+        for y in range(len(rules2)-1,-1,-1):
+            rule2=rules2[y]
+            variable2=""
+            if(rule2.tagName=="assignmentRule" or rule2.tagName=="rateRule"):
+                variable2=rule2.getAttribute("variable")
+                if(variable2==""):
+                    print "Error. variable attribute not set on "+rule2.tagName+" in file "+filename2+"."
+                    sys.exit(1)
+            elif (rule2.tagName!="algebraicRule"):
+                print "Error. Unknown rule type "+rule2.tagName+" in file "+filename2+"."
+                sys.exit(1)
+            if(variable1!="" and variable1==variable2):
+                del rules1[x]
+                del rules2[y]
+                if(rule1.tagName != rule2.tagName):
+                    print "Rules for variable "+variable1+" are of diffferent types."
+                else:
+                    if(compareChildren(rule1,rule2)==0):
+                        print "Rules for variable "+variable1+" differ."
+                break
+            elif(variable1=="" and variable2==""):
+                # check if the two algebraic rules are the same
+                if(compareChildren(rule1,rule2)==1):
+                    del rules1[x]
+                    del rules2[y]
+                    break
+    algebraicCounter=0
+    for rule in rules1:
+        if(rule.tagName=="algebraicRule"):
+            algebraicCounter+=1
         else:
-            compare2Rules(rule1,rule2,filename1,filename2)
-    for key in rules2.keys():
-        if(not rules1[key]):
-            print "No rule for entity with id "+key+" in "+filename1+"."
+            variable=rule.getAttribute("variable")
+            print "No corresponding rule for variable " + variable + " found in file "+filename2 +"."
+    if(algebraicCounter!=0):
+        print str(algebraicCounter)+" algebraic rules found in file "+filename1+" with no corresponding rule in file "+filename2+"."
+    for rule in rules2:
+        if(rule.tagName=="algebraicRule"):
+            algebraicCounter+=1
+        else:
+            variable=rule.getAttribute("variable")
+            print "No corresponding rule for variable " + variable + " found in file "+filename1 +"."
+    if(algebraicCounter!=0):
+        print str(algebraicCounter)+" algebraic rules found in file "+filename2+" with no corresponding rule in file "+filename1+"."
 
 
-def compare2Rules(rule1,rule2,filename1,filename2):
-  pass
+
+
+#def compare2Rules(rule1,rule2,filename1,filename2):
+  # check if both rules have the same type
+  # check if the expressions are identical
+  #if(rule1.tagName!=rule2.tagName):
+  #  print "Rules for 
 
 
 def compareDocuments(doc1,doc2,filename1,filename2):
@@ -339,7 +593,6 @@ def compareModels(model1,model2,filename1,filename2):
    if((name1=="" and  name2!="") or (name2=="" and name1!="") or (name1!="" and name2!="" and name1 != name2)):
      print "model elements have differing name attributes."
 
-
    unitDefinitions1=findUnitDefinitions(model1)
    functionDefinitions1=findFunctionDefinitions(model1)
    compartments1=findCompartments(model1)
@@ -355,12 +608,12 @@ def compareModels(model1,model2,filename1,filename2):
    reactions2=findReactions(model2)
    rules2=findRules(model2)
    compareUnitDefinitions(unitDefinitions1,unitDefinitions2,filename1,filename2)
-   compareFunctionDefinitions(unitDefinitions1,unitDefinitions2,filename1,filename2)
-   compareCompartments(unitDefinitions1,unitDefinitions2,filename1,filename2)
-   compareSpecies(unitDefinitions1,unitDefinitions2,filename1,filename2)
-   compareParameters(unitDefinitions1,unitDefinitions2,filename1,filename2)
-   compareReactions(unitDefinitions1,unitDefinitions2,filename1,filename2)
-   compareRules(unitDefinitions1,unitDefinitions2,filename1,filename2)
+   compareFunctionDefinitions(functionDefinitions1,functionDefinitions2,filename1,filename2)
+   compareCompartments(compartments1,compartments2,filename1,filename2)
+   compareSpecies(metabolites1,metabolites2,filename1,filename2)
+   compareParameters(parameters1,parameters2,filename1,filename2,"the list of global parameters")
+   compareReactions(reactions1,reactions2,filename1,filename2)
+   compareRules(rules1,rules2,filename1,filename2)
 
 
 
