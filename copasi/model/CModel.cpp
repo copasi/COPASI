@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.334 $
+//   $Revision: 1.334.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/12/06 21:05:10 $
+//   $Date: 2008/01/18 04:19:31 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -1270,7 +1275,7 @@ bool CModel::buildSimulatedSequence()
 
             for (it = Objects.begin(); it != end; ++it)
               if (*it != pObject &&
-                  (*it)->hasCircularDependencies(Candidate))
+                  (*it)->dependsOn(Candidate))
                 break;
 
             if (it == end)
@@ -2082,7 +2087,7 @@ void CModel::appendDependentReactions(std::set< const CCopasiObject * > candidat
     for (; it != end; ++it)
       if (candidates.find(*it) == candidates.end())
         {
-          if ((*it)->hasCircularDependencies(candidates))
+          if ((*it)->dependsOn(candidates))
             {
               dependentReactions.insert((*it));
               continue;
@@ -2094,7 +2099,7 @@ void CModel::appendDependentReactions(std::set< const CCopasiObject * > candidat
 
           for (; itSet != endSet; ++itSet)
             if (candidates.find(*itSet) == candidates.end() &&
-                (*itSet)->hasCircularDependencies(candidates))
+                (*itSet)->dependsOn(candidates))
               {
                 dependentReactions.insert((*it));
                 break;
@@ -2129,7 +2134,7 @@ void CModel::appendDependentMetabolites(std::set< const CCopasiObject * > candid
           else if (candidates.find(*it) == candidates.end())
             {
               if (candidates.find((*it)->getCompartment()->getObject(CCopasiObjectName("Reference=Volume"))) != candidates.end() ||
-                  (*it)->hasCircularDependencies(candidates))
+                  (*it)->dependsOn(candidates))
                 {
                   dependentMetabolites.insert((*it));
                   continue;
@@ -2149,7 +2154,7 @@ void CModel::appendDependentMetabolites(std::set< const CCopasiObject * > candid
 
               for (; itSet != endSet; ++itSet)
                 if (candidates.find(*itSet) == candidates.end() &&
-                    (*itSet)->hasCircularDependencies(candidates))
+                    (*itSet)->dependsOn(candidates))
                   {
                     dependentMetabolites.insert((*it));
                     break;
@@ -2174,7 +2179,7 @@ void CModel::appendDependentCompartments(std::set< const CCopasiObject * > candi
     for (; it != end; ++it)
       if (candidates.find(*it) == candidates.end())
         {
-          if ((*it)->hasCircularDependencies(candidates))
+          if ((*it)->dependsOn(candidates))
             {
               dependentCompartments.insert((*it));
               continue;
@@ -2186,7 +2191,7 @@ void CModel::appendDependentCompartments(std::set< const CCopasiObject * > candi
 
           for (; itSet != endSet; ++itSet)
             if (candidates.find(*itSet) == candidates.end() &&
-                (*itSet)->hasCircularDependencies(candidates))
+                (*itSet)->dependsOn(candidates))
               {
                 dependentCompartments.insert((*it));
                 break;
@@ -2210,7 +2215,7 @@ void CModel::appendDependentModelValues(std::set< const CCopasiObject * > candid
     for (; it != end; ++it)
       if (candidates.find(*it) == candidates.end())
         {
-          if ((*it)->hasCircularDependencies(candidates))
+          if ((*it)->dependsOn(candidates))
             {
               dependentModelValues.insert((*it));
               continue;
@@ -2222,7 +2227,7 @@ void CModel::appendDependentModelValues(std::set< const CCopasiObject * > candid
 
           for (; itSet != endSet; ++itSet)
             if (candidates.find(*itSet) == candidates.end() &&
-                (*itSet)->hasCircularDependencies(candidates))
+                (*itSet)->dependsOn(candidates))
               {
                 dependentModelValues.insert((*it));
                 break;
@@ -3233,7 +3238,7 @@ CModel::buildInitialRefreshSequence(std::set< const CCopasiObject * > & changedO
               Objects.insert(pMetab->getInitialConcentrationReference());
               pMetab->compileInitialValueDependencies(false);
 
-              if (pMetab->getCompartment()->getInitialValueReference()->hasCircularDependencies(Objects))
+              if (pMetab->getCompartment()->getInitialValueReference()->dependsOn(Objects))
                 changedObjects.insert(pMetab->getInitialValueReference());
               else
                 changedObjects.insert(pMetab->getInitialConcentrationReference());
@@ -3312,13 +3317,14 @@ CModel::buildInitialRefreshSequence(std::set< const CCopasiObject * > & changedO
     Objects.insert((*itMoiety)->getInitialValueReference());
 
   std::set< const CCopasiObject * > DependencySet;
+  std::set< const CCopasiObject * > VerifiedSet;
   std::pair<std::set< const CCopasiObject * >::iterator, bool> InsertedObject;
 
   assert (Objects.count(NULL) == 0);
 
   // Check whether we have any circular dependencies
   for (itSet = Objects.begin(), endSet = Objects.end(); itSet != endSet; ++itSet)
-    if ((*itSet)->hasCircularDependencies(DependencySet))
+    if ((*itSet)->hasCircularDependencies(DependencySet, VerifiedSet))
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCObject + 1, (*itSet)->getCN().c_str());
 
   // Build the complete set of dependencies
@@ -3346,7 +3352,7 @@ CModel::buildInitialRefreshSequence(std::set< const CCopasiObject * > & changedO
       else if (changedObjects.count(*itSet) != 0)
         Objects.insert(*itSet);
       // Not dependent on the changed objects.
-      else if (!(*itSet)->hasCircularDependencies(changedObjects))
+      else if (!(*itSet)->dependsOn(changedObjects))
         Objects.insert(*itSet);
     }
 
