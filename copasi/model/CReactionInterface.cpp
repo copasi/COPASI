@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.cpp,v $
-//   $Revision: 1.30.4.1 $
+//   $Revision: 1.30.4.1.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/12/18 20:27:29 $
+//   $Date: 2008/01/18 18:08:20 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -727,12 +732,13 @@ std::vector<std::string> CReactionInterface::getExpandedMetabList(CFunctionParam
 
 bool CReactionInterface::createMetabolites()
 {
-  bool success = mChemEqI.createNonExistingMetabs();
+  bool created = mChemEqI.createNonExistingMetabs();
 
   // Update the parameter mapping to assure that the new names match.
-  setFunctionAndDoMapping(getFunctionName());
+  if (created)
+    setFunctionAndDoMapping(getFunctionName());
 
-  return success;
+  return created;
 }
 
 bool CReactionInterface::createOtherObjects() const
