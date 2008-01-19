@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/scripts/compareSBMLFiles.py,v $ 
-#   $Revision: 1.3 $ 
+#   $Revision: 1.4 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2008/01/18 17:32:45 $ 
+#   $Date: 2008/01/19 20:14:49 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -16,6 +16,7 @@
 import sys
 import pdb
 from xml.dom.ext.reader import Sax2
+from xml.dom.ext import Print
 
 
 def createDOMTree(file):
@@ -100,10 +101,16 @@ def findReactions(dom):
 
 def findRules(dom):
     result=[]
-    for name in ["rateRule","assignmentRule","algebraicRule"]: 
-      elements=dom.getElementsByTagName(name)
-      for element in elements:
-        result.append(element)
+    listOfRules=dom.getElementsByTagName("listOfRules")
+    if(len(listOfRules)>1):
+        print "Error. More than one listOfRules elements in model."
+        sys.exit(1)
+    if(len(listOfRules)==1):
+        listOfRules=listOfRules[0]
+    tagNames=["rateRule","assignmentRule","algebraicRule"]
+    for child in listOfRules.childNodes: 
+      if(child.tagName in tagNames):
+        result.append(child)
     return result
 
 def compareEntities(e1,e2,attributes):
@@ -476,6 +483,11 @@ def compare2KineticLaws(kLaw1,kLaw2,reactionId,filename1,filename2):
 
 def compareRules(rules1,rules2,filename1,filename2):
     #pdb.set_trace()
+    ruleMappings=[[][]]
+    for X in range(0,len(rules1)):
+        ruleMappings[0].append(-1)
+    for X in range(0,len(rules2)):
+        ruleMappings[1].append(-1)
     for x in range(len(rules1)-1,-1,-1):
         rule1=rules1[x]
         variable1=""
@@ -501,6 +513,8 @@ def compareRules(rules1,rules2,filename1,filename2):
             if(variable1!="" and variable1==variable2):
                 del rules1[x]
                 del rules2[y]
+                ruleMappings[0][x]=y
+                ruleMappings[1][y]=x
                 if(rule1.tagName != rule2.tagName):
                     print "Rules for variable "+variable1+" are of diffferent types."
                 else:
@@ -512,6 +526,8 @@ def compareRules(rules1,rules2,filename1,filename2):
                 if(compareChildren(rule1,rule2)==1):
                     del rules1[x]
                     del rules2[y]
+                    ruleMappings[0][x]=y
+                    ruleMappings[1][y]=x
                     break
     algebraicCounter=0
     for rule in rules1:
@@ -530,7 +546,7 @@ def compareRules(rules1,rules2,filename1,filename2):
             print "No corresponding rule for variable " + variable + " found in file "+filename1 +"."
     if(algebraicCounter!=0):
         print str(algebraicCounter)+" algebraic rules found in file "+filename2+" with no corresponding rule in file "+filename1+"."
-
+    return ruleMappings
 
 
 
@@ -578,7 +594,7 @@ def compareDocuments(doc1,doc2,filename1,filename2):
    if(len(model2)!=1):
      print "Error. More than one model element in the document: "+filename2
      sys.exit(1)
-   compareModels(model1[0],model2[0],filename1,filename2)
+   return compareModels(model1[0],model2[0],filename1,filename2)
 
 def compareModels(model1,model2,filename1,filename2):
   # check if the id and the name are the same
@@ -608,22 +624,86 @@ def compareModels(model1,model2,filename1,filename2):
    reactions2=findReactions(model2)
    rules2=findRules(model2)
    compareUnitDefinitions(unitDefinitions1,unitDefinitions2,filename1,filename2)
-   compareFunctionDefinitions(functionDefinitions1,functionDefinitions2,filename1,filename2)
+   functionMappings=compareFunctionDefinitions(functionDefinitions1,functionDefinitions2,filename1,filename2)
    compareCompartments(compartments1,compartments2,filename1,filename2)
    compareSpecies(metabolites1,metabolites2,filename1,filename2)
    compareParameters(parameters1,parameters2,filename1,filename2,"the list of global parameters")
    compareReactions(reactions1,reactions2,filename1,filename2)
-   compareRules(rules1,rules2,filename1,filename2)
+   ruleMappings=compareRules(rules1,rules2,filename1,filename2)
+   return functionMappings,ruleMappings
+
+def writeReorderedSecond(model2,functionMappings,ruleMappings,outfileName):
+    # go through the file and replace all function ids with the corresponding
+    # id from the other file
+    functionDefinitions=model2.getElementsByTagName("functionDefinition")
+    for functionDefinition in functionDefinitions:
+        id=functionDefinition.getAttribute("id")
+        if(id==""):
+            print "Error. function definition without id found."
+            sys.exit(1)
+        if(id in functionMappings[1].keys()):
+            functionDefinition.setAttribute("id",functionMappings[1][id])
+        else:
+            # if there is no mapping for a specific function, check if the name is
+            # unique, if not, replace it by a unique name and add this to the mappings
+            newId=id
+            if(id in functionMappings[0].keys()):
+              ext=1
+              newId="function_"+str(ext)
+              while((newId in functionMappings[0].keys()) or (newId in functionMappings[1].keys()):
+                ext=ext+1
+                newId="function_"+str(ext)
+                functionDefinition.setAttribute("id",newId)
+            functionMappings[1][id]=newId
+    # replace all functions calls with calls to the mapped function ids
+    ciNodes=model2.getAttributesByTagName("ci")
+    for ciNode in ciNodes:
+        for node in ciNode.childNodes:
+            if(node.nodeType==node.TEXT_NODE and node.nodeValue in functionMappings[1].keys()):
+                node.nodeValue=functionMappings[1][nodeValue]
+    # bring all rules into the same order as in the first file
+    listOfRules=model.getElementsByTagName("listOfRules")
+    if(len(listOfRules)==1):
+        listOfRules=listOfRules[0]
+        # delete all existing rules
+        ruleIndex=0
+        reOrderedRules=[]
+        for x in range(0,len(ruleMappings[1]):
+            reOrderedRules.append(None)
+        tagNames=["algebraicRule","rateRule","assignmentRule"]
+        for child in listOfRules.childNodes:
+            if(child.nodeType==child.ELEMENT_NODE):
+                if(child.tagName in tagNames):
+                    # which position will this rule get
+                    newPosition=ruleMappings[1][ruleIndex]
+                    if(newPosition==-1):
+                        reOrderedRules.append(child)
+                    else:
+                        reOrderedRules[newPosition]=child
+                    ruleIndex=ruleIndex+1 
+        ruleIndex=0
+        for child in listOfRules.childNodes:
+            if(child.nodeType==child.ELEMENT_NODE):
+                if(child.tagName in tagNames):
+                    listOfRules.replaceChild(child,reOrderedRules[ruleIndex])
+                    ruleIndex=ruleIndex+1
+    elif(len(listOfRules)>1):
+        print "Error. More than one listOfRules elements found in model."
+        sys.exit(1)
+    # write the reordered model
+    outfile=open(outfileName,"w")
+    Print(model2,outfile)
 
 
 
 
 if __name__ == "__main__":
-  if(len(sys.argv)!=3):
-     print "Usage: compareSBMLFiles SBMLFILE1 SBMLFILE2"
+  if(len(sys.argv)!=4):
+     print "Usage: compareSBMLFiles SBMLFILE1 SBMLFILE2 OUTFILENAME"
      sys.exit(1)
   FILENAME1=sys.argv[1]
   FILENAME2=sys.argv[2]
+  OUTFILENAME=sys.argv[3]
   FILE1=open(FILENAME1,"r")
   if(not FILE1):
      print "Error. Could not open "+FILENAME1+"."
@@ -656,7 +736,7 @@ if __name__ == "__main__":
     print "Error. To many sbml elements in file "+FILENAME2+"."
     sys.exit(1)
   #pdb.set_trace()
-  compareDocuments(sbmlNode1[0],sbmlNode2[0],FILENAME1,FILENAME2)
-
+  functionMappings,ruleMappings=compareDocuments(sbmlNode1[0],sbmlNode2[0],FILENAME1,FILENAME2)
+  writeReorderedSecond(dom2,functionMappings,ruleMappings,OUTFILENAME)
 
 
