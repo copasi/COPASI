@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporter.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/01/11 15:12:26 $
+//   $Author: nsimus $
+//   $Date: 2008/01/21 15:03:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -119,7 +119,7 @@ class CODEExporter
     /**
     **        This method tests if a string consists only of whitespace characters
     **/
-    bool isEmptyString(std::string & str);
+    virtual bool isEmptyString(std::string & str);
 
     /**
      **      This method modifies the export tree of the function for internal calls of Mass Action

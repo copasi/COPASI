@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporter.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/01/11 15:12:26 $
+//   $Author: nsimus $
+//   $Date: 2008/01/21 15:03:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -806,7 +806,7 @@ bool CODEExporter::exportMetabolitesConcentrations(const CModel* copasiModel)
       std::ostringstream smKey;
       smKey << "sm_" << metab->getKey();
 
-      expression << NameMap[smKey.str()] << " / " << NameMap[metabs[i]->getCompartment()->getKey()];
+      expression << NameMap[smKey.str()] << "/" << NameMap[metabs[i]->getCompartment()->getKey()];
 
       str1 = expression.str();
       str2 = comments.str();

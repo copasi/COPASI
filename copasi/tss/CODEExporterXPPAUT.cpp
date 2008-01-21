@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporterXPPAUT.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/01/11 15:12:26 $
+//   $Author: nsimus $
+//   $Date: 2008/01/21 15:03:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -311,7 +311,7 @@ void CODEExporterXPPAUT::exportSingleLine(const std::string & line, std::ostring
 bool CODEExporterXPPAUT::exportSingleObject(std::ostringstream & which,
     std::string & name,
     std::string & expression,
-    std::string & /* comments */)
+    std::string & comments)
 {
   std::ostringstream line;
 
@@ -528,6 +528,8 @@ std::string CODEExporterXPPAUT::KineticFunction2ODEmember(const CReaction *reac)
 bool CODEExporterXPPAUT::exportSingleODE(const CModelEntity* mentity, std::string & equation, std::string & comments)
 {
   std::ostringstream odeKey;
+
+  if (!isEmptyString(comments)) ode << "#" << comments << std::endl;
 
   odeKey << "ode_" << mentity->getKey();
   if (!exportSingleObject(ode, NameMap[odeKey.str()], equation, comments)) return false;
