@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CTabWidget.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2007/11/01 05:31:30 $
+//   $Author: shoops $
+//   $Date: 2008/01/22 16:58:51 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -16,13 +21,14 @@
 #include "CTabWidget.h"
 #include "ModelWidget.h"
 #include "CMIRIAMModelWidget.h"
+#include "MIRIAMUI/CQRDFListViewWidget.h"
 
 /*
  *  Constructs a CTabWidget as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'. label1 and label2
  *  are the tab names.
  */
-CTabWidget::CTabWidget(const QString& label1, const QString& label2,
+CTabWidget::CTabWidget(const QString & label, CopasiWidget * pCopasiWidget,
                        QWidget* parent, const char* name, WFlags f)
     : CopasiWidget(parent, name, f)
 {
@@ -33,11 +39,14 @@ CTabWidget::CTabWidget(const QString& label1, const QString& label2,
   mTabWidget = new QTabWidget (this, "mTabWidget");
   tabLayout->addWidget(mTabWidget);
 
-  Tab1Widget = new ModelWidget(mTabWidget);
-  Tab2Widget = new CMIRIAMModelWidget(mTabWidget);
+  mPages.push_back(pCopasiWidget);
+  mTabWidget->addTab(pCopasiWidget, label);
 
-  mTabWidget->addTab(Tab1Widget, label1);
-  mTabWidget->addTab(Tab2Widget, label2);
+  mPages.push_back(new CMIRIAMModelWidget(mTabWidget));
+  mTabWidget->addTab(mPages[1], "MIRIAM Info");
+
+  mPages.push_back(new CQRDFListViewWidget(mTabWidget));
+  mTabWidget->addTab(mPages[2], "RDF Browser");
 }
 
 /*
@@ -50,48 +59,33 @@ CTabWidget::~CTabWidget()
 
 bool CTabWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
 {
-  if (Tab1Widget)
-    {
-      Tab1Widget->update(objectType, action, key);
-    }
+  std::vector< CopasiWidget * >::iterator it = mPages.begin();
+  std::vector< CopasiWidget * >::iterator end = mPages.end();
 
-  if (Tab2Widget)
-    {
-      Tab2Widget->update(objectType, action, key);
-    }
+  for (; it != end; ++it)
+    (*it)->update(objectType, action, key);
+
   return true;
 }
 
 bool CTabWidget::leave()
 {
-  if (Tab1Widget)
-    {
-      Tab1Widget->leave();
-    }
+  std::vector< CopasiWidget * >::iterator it = mPages.begin();
+  std::vector< CopasiWidget * >::iterator end = mPages.end();
 
-  if (Tab2Widget)
-    {
-      Tab2Widget->leave();
-    }
+  for (; it != end; ++it)
+    (*it)->leave();
+
   return true;
 }
 
 bool CTabWidget::enter(const std::string & key)
 {
-  if (Tab1Widget)
-    {
-      Tab1Widget->enter(key);
-    }
+  std::vector< CopasiWidget * >::iterator it = mPages.begin();
+  std::vector< CopasiWidget * >::iterator end = mPages.end();
 
-  if (Tab2Widget)
-    {
-      Tab2Widget->enter(key);
-    }
+  for (; it != end; ++it)
+    (*it)->enter(key);
+
   return true;
 }
-
-CopasiWidget* CTabWidget::getTab1Widget()
-{return Tab1Widget;}
-
-CopasiWidget* CTabWidget::getTab2Widget()
-{return Tab2Widget;}

@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CTabWidget.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2007/11/01 05:31:30 $
+//   $Author: shoops $
+//   $Date: 2008/01/22 16:58:51 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -25,20 +30,18 @@
 class CTabWidget : public CopasiWidget
   {
   public:
-    CTabWidget(const QString& label1, const QString& label2,
+    CTabWidget(const QString & label, CopasiWidget * pCopasiWidget,
                QWidget* parent = 0, const char* name = 0, WFlags f = 0);
+
     ~CTabWidget();
 
     virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
     virtual bool leave();
     virtual bool enter(const std::string & key = "");
-    CopasiWidget* getTab1Widget();
-    CopasiWidget* getTab2Widget();
 
   protected:
     QTabWidget *mTabWidget;
-    CopasiWidget* Tab1Widget;
-    CopasiWidget* Tab2Widget;
+    std::vector< CopasiWidget * > mPages;
   };
 
 #endif // CTABWIDGET_H

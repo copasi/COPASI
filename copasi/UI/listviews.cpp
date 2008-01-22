@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.240 $
+//   $Revision: 1.241 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/16 20:20:21 $
+//   $Date: 2008/01/22 16:58:51 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -388,7 +388,7 @@ void ListViews::ConstructNodeWidgets()
   metabolitesWidget1->hide();
 
   if (!modelWidget)
-    modelWidget = new CTabWidget(QString ("Model"), QString ("MIRIAM Info"), this);
+    modelWidget = new CTabWidget(QString ("Model"), new ModelWidget(this), this);
   modelWidget->hide();
 
   if (!mpModelValueWidget) mpModelValueWidget = new CQModelValue(this);
