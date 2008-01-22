@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/DifferentialEquations.cpp,v $
-//   $Revision: 1.35.2.1 $
+//   $Revision: 1.35.2.1.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/05/04 16:57:42 $
+//   $Date: 2008/01/22 18:51:21 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -131,7 +136,7 @@ void DifferentialEquations::writeRHS(std::ostream & out,
 {
   if (!pMetab)
     {
-      out << SPC(l + 0) << "Error: invalid metabolite" << std::endl;
+      out << SPC(l + 0) << "Error: invalid species" << std::endl;
       return;
     }
   if (!pReac)

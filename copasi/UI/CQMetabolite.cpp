@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMetabolite.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.11.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/13 14:47:40 $
+//   $Date: 2008/01/22 18:51:21 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -14,7 +19,7 @@
  ** Form implementation generated from reading ui file 'CQMetabolite.ui'
  **
  ** Created: Tue Nov 13 09:42:52 2007
- **      by: The User Interface Compiler ($Id: CQMetabolite.cpp,v 1.11 2007/11/13 14:47:40 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: CQMetabolite.cpp,v 1.11.4.1 2008/01/22 18:51:21 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -350,14 +355,14 @@ CQMetabolite::~CQMetabolite()
  */
 void CQMetabolite::languageChange()
 {
-  setCaption(tr("Metabolite"));
+  setCaption(tr("Species"));
   mpBtnCommit->setText(tr("Commit"));
   mpBtnRevert->setText(tr("Revert"));
   mpBtnNew->setText(tr("New"));
   mpBtnDelete->setText(tr("Delete"));
   mpLblType->setText(tr("Simulation Type"));
   mpLblCompartment->setText(tr("Compartment"));
-  mpLblName->setText(tr("Metobolite Name"));
+  mpLblName->setText(tr("Species Name"));
   mpLblInitialExpression->setText(tr("Initial Expression"));
   mpBoxUseInitialExpression->setText(tr("Use Initial Expression"));
   mpLblInitialValue->setText(tr("Initial Value"));

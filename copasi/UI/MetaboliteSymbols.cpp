@@ -1,12 +1,17 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetaboliteSymbols.cpp,v $
-   $Revision: 1.41 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:44 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetaboliteSymbols.cpp,v $
+//   $Revision: 1.41.16.1 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2008/01/22 18:51:21 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -59,7 +64,7 @@ MetaboliteSymbols::MetaboliteSymbols(QWidget *parent, const char * name, WFlags 
 
   QHeader *tableHeader = table->horizontalHeader();
   tableHeader->setLabel(0, "Symbol");
-  tableHeader->setLabel(1, "Metabolite");
+  tableHeader->setLabel(1, "Species");
   tableHeader->setLabel(2, "Compartment");
   tableHeader->setLabel(3, "Initial Concentration");
   tableHeader->setLabel(4, "Initial Particle No.");
@@ -141,7 +146,6 @@ void MetaboliteSymbols::loadMetaboliteSymbols(CMathModel *model)
            const CMetab *metab;
         for (i = 0; i < k; i++)
              {
-
 
                metab = metabolite[i];
                table->setText(i, 0, metab->getName().);

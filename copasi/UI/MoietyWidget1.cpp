@@ -1,12 +1,17 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MoietyWidget1.cpp,v $
-   $Revision: 1.49 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:44 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MoietyWidget1.cpp,v $
+//   $Revision: 1.49.20.1 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2008/01/22 18:51:21 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -73,7 +78,7 @@ MoietyWidget1::MoietyWidget1(QWidget *parent, const char * name, WFlags f)
   MoietyWidget1Layout->addWidget(TextLabel2, 0, 0);
 
   TextLabel3 = new QLabel(this, "TextLabel3");
-  TextLabel3->setText(trUtf8("Dependent Metabolite"));
+  TextLabel3->setText(trUtf8("Dependent Species"));
 
   MoietyWidget1Layout->addWidget(TextLabel3, 1, 0);
 

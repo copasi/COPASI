@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-//   $Revision: 1.191.2.1.2.1 $
+//   $Revision: 1.191.2.1.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/17 17:25:09 $
+//   $Date: 2008/01/22 18:51:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -389,7 +389,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
 
   QString reactionList = "Are you sure you want to delete listed REACTION(S) ?\n";
   QString effectedCompartmentList = "Following COMPARTMENT(S) reference above REACTION(S) and will be deleted -\n";
-  QString effectedMetabList = "Following METABOLITE(S) reference above REACTION(S) and will be deleted -\n";
+  QString effectedMetabList = "Following SPECIES reference above REACTION(S) and will be deleted -\n";
   QString effectedReacList = "Following REACTION(S) reference above REACTION(S) and will be deleted -\n";
   QString effectedValueList = "Following MODEL VALUE(S) reference above REACTION(S) and will be deleted -\n";
 

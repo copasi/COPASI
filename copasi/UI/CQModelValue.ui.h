@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQModelValue.ui.h,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.17.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/13 14:48:12 $
+//   $Date: 2008/01/22 18:51:21 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -72,7 +77,7 @@ void CQModelValue::slotBtnDelete()
 
   QString valueList = "Are you sure you want to delete listed MODEL VALUE(S) ?\n";
   QString effectedCompartmentList = "Following COMPARTMENT(S) reference above MODEL VALUE(S) and will be deleted -\n";
-  QString effectedMetabList = "Following METABOLITE(S) reference above MODEL VALUE(S) and will be deleted -\n";
+  QString effectedMetabList = "Following SPECIES reference above MODEL VALUE(S) and will be deleted -\n";
   QString effectedReacList = "Following REACTION(S) reference above MODEL VALUE(S) and will be deleted -\n";
   QString effectedValueList = "Following MODEL VALUE(S) reference above MODEL VALUE(S) and will be deleted -\n";
 

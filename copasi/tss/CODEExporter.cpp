@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporter.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.8.4.1 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2007/12/14 10:11:30 $
+//   $Author: shoops $
+//   $Date: 2008/01/22 18:51:22 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -315,7 +320,7 @@ std::string CODEExporter::isModelEntityExpressionODEExporterCompatible(CModelEnt
                       && pObject->getObjectName() != "Rate")
                     {
 
-                      result << std::endl << "WARNING : reference to property other than transient concentration, initial concentration or concentrations rate for metabolite \"" << pObjectParent->getObjectName() << "\" in expression for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\".";
+                      result << std::endl << "WARNING : reference to property other than transient concentration, initial concentration or concentrations rate for species \"" << pObjectParent->getObjectName() << "\" in expression for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\".";
                     }
 
                   CMetab* metab;
@@ -324,7 +329,7 @@ std::string CODEExporter::isModelEntityExpressionODEExporterCompatible(CModelEnt
                   if ((metab->getStatus() == CModelEntity::REACTIONS && metab->isDependent()) && pObject->getObjectName() == "Rate")
                     {
 
-                      result << std::endl << "WARNING : reference to rate of dependent (defined from moiety)  metabolite \"" << pObjectParent->getObjectName() << "\" in expression for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\".";
+                      result << std::endl << "WARNING : reference to rate of dependent (defined from moiety)  species \"" << pObjectParent->getObjectName() << "\" in expression for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\".";
                     }
                 }
               else if (typeString == "ModelValue")
@@ -648,7 +653,7 @@ bool CODEExporter::exportMetabolites(const CModel* copasiModel)
       std::string str1;
       std::string str2;
 
-      comments << "metabolite \'" << CMetabNameInterface::getDisplayName(copasiModel, *metab)
+      comments << "species \'" << CMetabNameInterface::getDisplayName(copasiModel, *metab)
       << "\': " << CModelEntity::StatusName[metab->getStatus()];
 
       switch (metab->getStatus())

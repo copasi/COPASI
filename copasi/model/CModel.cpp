@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.334.4.1 $
+//   $Revision: 1.334.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/18 04:19:31 $
+//   $Date: 2008/01/22 18:51:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -2794,7 +2794,7 @@ void CModel::initObjects()
   mpStoiAnnotation = new CArrayAnnotation("Stoichiometry(ann)", this, new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mStoiReordered));
   mpStoiAnnotation->setDescription("Stoichiometry Matrix");
   mpStoiAnnotation->setMode(0, CArrayAnnotation::OBJECTS);
-  mpStoiAnnotation->setDimensionDescription(0, "Metabolites that are controlled by reactions");
+  mpStoiAnnotation->setDimensionDescription(0, "Species that are controlled by reactions");
   mpStoiAnnotation->setMode(1, CArrayAnnotation::VECTOR_ON_THE_FLY);
   mpStoiAnnotation->setDimensionDescription(1, "Reactions");
   mpStoiAnnotation->setCopasiVector(1, &mSteps);
@@ -2802,7 +2802,7 @@ void CModel::initObjects()
   mpRedStoiAnnotation = new CArrayAnnotation("Reduced stoichiometry(ann)", this, new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mRedStoi));
   mpRedStoiAnnotation->setDescription("Reduced stoichiometry Matrix");
   mpRedStoiAnnotation->setMode(0, CArrayAnnotation::OBJECTS);
-  mpRedStoiAnnotation->setDimensionDescription(0, "Metabolites (reduced system)");
+  mpRedStoiAnnotation->setDimensionDescription(0, "Species (reduced system)");
   mpRedStoiAnnotation->setMode(1, CArrayAnnotation::VECTOR_ON_THE_FLY);
   mpRedStoiAnnotation->setDimensionDescription(1, "Reactions");
   mpRedStoiAnnotation->setCopasiVector(1, &mSteps);
@@ -2810,9 +2810,9 @@ void CModel::initObjects()
   mpLinkMatrixAnnotation = new CArrayAnnotation("Link matrix(ann)", this, new CCopasiMatrixInterface<CLinkMatrixView>(&mLView));
   mpLinkMatrixAnnotation->setDescription("Link matrix");
   mpLinkMatrixAnnotation->setMode(0, CArrayAnnotation::OBJECTS);
-  mpLinkMatrixAnnotation->setDimensionDescription(0, "Metabolites that are controlled by reactions (full system)");
+  mpLinkMatrixAnnotation->setDimensionDescription(0, "Species that are controlled by reactions (full system)");
   mpLinkMatrixAnnotation->setMode(1, CArrayAnnotation::OBJECTS);
-  mpLinkMatrixAnnotation->setDimensionDescription(1, "Metabolites (reduced system)");
+  mpLinkMatrixAnnotation->setDimensionDescription(1, "Species (reduced system)");
 }
 
 bool CModel::hasReversibleReaction() const

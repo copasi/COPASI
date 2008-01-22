@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget.cpp,v $
-//   $Revision: 1.115 $
+//   $Revision: 1.115.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/13 15:08:15 $
+//   $Date: 2008/01/22 18:51:21 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -207,7 +212,7 @@ void CompartmentsWidget::deleteObjects(const std::vector<std::string> & keys)
 
   QString compartmentList = "Are you sure you want to delete listed COMPARTMENT(S) ?\n";
   QString effectedCompartmentList = "Following COMPARTMENT(S) reference above COMPARTMENT(S) and will be deleted -\n";
-  QString effectedMetabList = "Following METABOLITE(S) reference above COMPARTMENT(S) and will be deleted -\n";
+  QString effectedMetabList = "Following SPECIES reference above COMPARTMENT(S) and will be deleted -\n";
   QString effectedReacList = "Following REACTION(S) reference above COMPARTMENT(S) and will be deleted -\n";
   QString effectedValueList = "Following MODEL VALUE(S) reference above COMPARTMENT(S) and will be deleted -\n";
 

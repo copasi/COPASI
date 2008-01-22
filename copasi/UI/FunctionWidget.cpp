@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/FunctionWidget.cpp,v $
-//   $Revision: 1.72 $
+//   $Revision: 1.72.6.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/08/21 17:31:46 $
+//   $Date: 2008/01/22 18:51:21 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -168,7 +173,7 @@ void FunctionWidget::deleteObjects(const std::vector<std::string> & keys)
   QString functionList;
   QString effectedFunctionList = "Following FUNCTION(S) reference above FUNCTION(S) -\n";
   QString effectedReactionList = "Following REACTION(S) reference above FUNCTION(S) -\n";
-  QString effectedMetaboliteList = "Following METABOLITE(S) reference above FUNCTION(S) -\n";
+  QString effectedMetaboliteList = "Following SPECIES reference above FUNCTION(S) -\n";
   QString effectedCompartmentList = "Following COMPARTMENT(S) reference above FUNCTION(S) -\n";
   QString effectedValueList = "Following MODEL QUANTIT(S) reference above FUNCTION(S) -\n";
 

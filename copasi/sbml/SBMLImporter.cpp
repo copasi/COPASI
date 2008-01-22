@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.189.2.6.2.1 $
+//   $Revision: 1.189.2.6.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/11 14:30:55 $
+//   $Date: 2008/01/22 18:51:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -822,7 +822,7 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
   CMetab* copasiMetabolite = copasiModel->createMetabolite(name + appendix, copasiCompartment->getObjectName());
   if (copasiMetabolite == NULL)
     {
-      //DebugFile << "Could not create Copasi metabolite." << std::endl;
+      //DebugFile << "Could not create Copasi species." << std::endl;
       fatalError();
     }
   if (sbmlSpecies->getConstant() || sbmlSpecies->getBoundaryCondition())
@@ -905,7 +905,7 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
         }
     }
     */
-  //DebugFile << "Created metabolite: " << copasiMetabolite->getObjectName() << std::endl;
+  //DebugFile << "Created species: " << copasiMetabolite->getObjectName() << std::endl;
   copasi2sbmlmap[copasiMetabolite] = const_cast<Species*>(sbmlSpecies);
   if (this->mLevel == 1)
     {
@@ -3433,11 +3433,11 @@ void SBMLImporter::importRule(const Rule* rule, CModelEntity::Status ruleType, s
                 {
                   if (ruleType == CModelEntity::ASSIGNMENT)
                     {
-                      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 34 , "AssignmentRule", "Metabolite", sbmlId.c_str());
+                      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 34 , "AssignmentRule", "Species", sbmlId.c_str());
                     }
                   else if (ruleType == CModelEntity::ODE)
                     {
-                      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 34 , "RateRule", "Metabolite", sbmlId.c_str());
+                      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 34 , "RateRule", "Species", sbmlId.c_str());
                     }
                   else
                     {

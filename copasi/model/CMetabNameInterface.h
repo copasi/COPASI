@@ -1,12 +1,17 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetabNameInterface.h,v $
-   $Revision: 1.12 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/08/25 18:13:23 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetabNameInterface.h,v $
+//   $Revision: 1.12.16.1 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2008/01/22 18:51:25 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -31,8 +36,8 @@ class CModel;
 class CMetab;
 
 /**
- * This class handels the display names of metabolites. It converts "Metabolite" to
- * "Metabolite {Compartment}" if the metabolite name is not unique. If it is unique
+ * This class handels the display names of metabolites. It converts "Species" to
+ * "Species {Compartment}" if the metabolite name is not unique. If it is unique
  * (that means it occurs in only one compartment) then the "{Compartment}" is not added.
  */
 /** @dia:pos 51.5,-17.9 */
@@ -111,7 +116,7 @@ class CMetabNameInterface
 
     /**
      *  This checks if the metabolite name (possibly including the compartment) is valid.
-     * A valid name must be in the format of "metabolite" or "metabolite{compartment}"
+     * A valid name must be in the format of "species" or "species{compartment}"
      * and does not contain white spaces. (Other special characters are not considered yet.)
      * Neither metabolite nor  compartment can be an empty string.
      */

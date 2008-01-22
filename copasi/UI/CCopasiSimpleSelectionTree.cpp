@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CCopasiSimpleSelectionTree.cpp,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.24.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/02 18:18:01 $
+//   $Date: 2008/01/22 18:51:21 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -53,7 +58,7 @@ CCopasiSimpleSelectionTree::CCopasiSimpleSelectionTree(QWidget* parent, const ch
   this->mpReactionParameterSubtree =
     new QListViewItem(this->mpReactionSubtree, "reaction parameters");
 
-  this->mpMetaboliteSubtree = new QListViewItem(this, "metabolites");
+  this->mpMetaboliteSubtree = new QListViewItem(this, "species");
   this->mpMetaboliteRateNumberSubtree =
     new QListViewItem(this->mpMetaboliteSubtree, "rates (particle numbers)");
   this->mpMetaboliteRateConcentrationSubtree =

@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget.cpp,v $
-//   $Revision: 1.148 $
+//   $Revision: 1.148.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/13 15:08:15 $
+//   $Date: 2008/01/22 18:51:21 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -190,12 +195,12 @@ void MetabolitesWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* o
       if (!CCopasiDataModel::Global->getModel()->getCompartments()[(const char *)Compartment.utf8()]->addMetabolite(pMetab))
         {
           QString msg;
-          msg = "Unable to move metabolite '" + FROM_UTF8(pMetab->getObjectName()) + "'\n"
+          msg = "Unable to move species '" + FROM_UTF8(pMetab->getObjectName()) + "'\n"
                 + "from compartment '" + FROM_UTF8(CompartmentToRemove) + "' to compartment '" + Compartment + "'\n"
-                + "since a metabolite with that name already exist in the target compartment.";
+                + "since a species with that name already exist in the target compartment.";
 
           CQMessageBox::information(this,
-                                    "Unable to move Metabolite",
+                                    "Unable to move Species",
                                     msg,
                                     QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
         }
@@ -293,7 +298,7 @@ void MetabolitesWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C
 
 QString MetabolitesWidget::defaultObjectName() const
   {
-    return "metabolite";
+    return "species";
   }
 
 CCopasiObject* MetabolitesWidget::createNewObject(const std::string & name)
@@ -310,7 +315,7 @@ CCopasiObject* MetabolitesWidget::createNewObject(const std::string & name)
       nname = name + "_";
       nname += (const char *)QString::number(i).utf8();
     }
-  //std::cout << " *** created Metabolite: " << nname << " : " << pMetab->getKey() << std::endl;
+  //std::cout << " *** created Species: " << nname << " : " << pMetab->getKey() << std::endl;
   return pMetab;
 }
 
@@ -323,11 +328,11 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
   if (keys.size() == 0)
     return;
 
-  QString metaboliteList = "Are you sure you want to delete listed METABOLITE(S) ?\n";
-  QString effectedCompartmentList = "Following COMPARTMENT(S) reference above METABOLITE(S) and will be deleted -\n";
-  QString effectedMetabList = "Following METABOLITE(S) reference above METABOLITE(S) and will be deleted -\n";
-  QString effectedReacList = "Following REACTION(S) reference above METABOLITE(S) and will be deleted -\n";
-  QString effectedValueList = "Following MODEL VALUE(S) reference above METABOLITE(S) and will be deleted -\n";
+  QString metaboliteList = "Are you sure you want to delete listed SPECIES ?\n";
+  QString effectedCompartmentList = "Following COMPARTMENT(S) reference above SPECIES and will be deleted -\n";
+  QString effectedMetabList = "Following METABOLITE(S) reference above SPECIES and will be deleted -\n";
+  QString effectedReacList = "Following REACTION(S) reference above SPECIES and will be deleted -\n";
+  QString effectedValueList = "Following MODEL VALUE(S) reference above SPECIES and will be deleted -\n";
 
   bool compartmentFound = false;
   bool metabFound = false;

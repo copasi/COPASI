@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMMethod.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.14.4.1 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/10/29 10:28:57 $
+//   $Author: shoops $
+//   $Date: 2008/01/22 18:51:22 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -45,7 +50,7 @@ CILDMMethod::CILDMMethod(const CCopasiContainer * pParent):
   assert((void *) &mData == (void *) &mData.dim);
 
   addObjectReference("Number of slow variables", mSlow, CCopasiObject::ValueInt);
-  addMatrixReference("Contribution of Metabolites to Slow Space", mVslow, CCopasiObject::ValueDbl);
+  addMatrixReference("Contribution of Species to Slow Space", mVslow, CCopasiObject::ValueDbl);
 
   mData.pMethod = this;
   initializeParameter();
@@ -188,22 +193,22 @@ void CILDMMethod::integrationStep(const double & deltaT)
   C_INT ISize = mIWork.size();
 
   mLSODA(&EvalF, //  1. evaluate F
-          &mData.dim, //  2. number of variables
-          mY, //  3. the array of current concentrations
-          &mTime, //  4. the current time
-          &EndTime, //  5. the final time
-          &ITOL, //  6. error control
-          &mRtol, //  7. relative tolerance array
-          mAtol.array(), //  8. absolute tolerance array
-          &mState, //  9. output by overshoot & interpolatation
-          &mLsodaStatus, // 10. the state control variable
-          &one, // 11. futher options (one)
-          mDWork.array(), // 12. the double work array
-          &DSize, // 13. the double work array size
-          mIWork.array(), // 14. the int work array
-          &ISize, // 15. the int work array size
-          NULL, // 16. evaluate J (not given)
-          &mJType);        // 17. the type of jacobian calculate (2)
+         &mData.dim, //  2. number of variables
+         mY, //  3. the array of current concentrations
+         &mTime, //  4. the current time
+         &EndTime, //  5. the final time
+         &ITOL, //  6. error control
+         &mRtol, //  7. relative tolerance array
+         mAtol.array(), //  8. absolute tolerance array
+         &mState, //  9. output by overshoot & interpolatation
+         &mLsodaStatus, // 10. the state control variable
+         &one, // 11. futher options (one)
+         mDWork.array(), // 12. the double work array
+         &DSize, // 13. the double work array size
+         mIWork.array(), // 14. the int work array
+         &ISize, // 15. the int work array size
+         NULL, // 16. evaluate J (not given)
+         &mJType);        // 17. the type of jacobian calculate (2)
 
   if (mLsodaStatus == -1)
     mLsodaStatus = 2;
@@ -424,16 +429,16 @@ void CILDMMethod::step(const double & deltaT)
   //std::cout << "mVslow_metab: " << mVslow << std::endl;
   //std::cout << std::endl;
 
-  std::cout << "Dominance of metabolites in the mode:" << std::endl;
+  std::cout << "Dominance of species in the mode:" << std::endl;
 
   for (i = 0; i < dim; i++)
     {
       j = index_metab[i] - 1;
       std::cout << " Mode number: " << dim - i << " TS: " << - 1 / mR(dim - i - 1, dim - i - 1) << " : ";
       if (j > - 1)
-        std::cout << "  Metabolite : " << mpModel->getMetabolitesX()[j]->getObjectName() << std::endl;
+        std::cout << "  Species : " << mpModel->getMetabolitesX()[j]->getObjectName() << std::endl;
       else
-        std::cout << "   There is no dominant metabolite in this mode" << std::endl;
+        std::cout << "   There is no dominant species in this mode" << std::endl;
     }
 
   C_FLOAT64 y_cons;
@@ -445,7 +450,7 @@ void CILDMMethod::step(const double & deltaT)
   if (number > - 1)
     newton_for_timestep(number, y_cons, info);
   else
-    std::cout << "The are no dominant metabolites in  fastest mode" << std::endl;
+    std::cout << "The are no dominant species in  fastest mode" << std::endl;
 
   C_INT flag_deufl;
   flag_deufl = 1;
@@ -549,7 +554,7 @@ void CILDMMethod::step(const double & deltaT)
             info = 0;
 
           std::cout << std::endl;
-          std::cout << "************* Prove of Deuflhard criterium for metabolite  " << mpModel->getMetabolitesX()[number]->getObjectName() << "  ";
+          std::cout << "************* Prove of Deuflhard criterium for species  " << mpModel->getMetabolitesX()[number]->getObjectName() << "  ";
 
           if (info == 0)
             std::cout << "is satisfied." << " max: " << max << " mDtol: " << mDtol << std::endl;
@@ -703,7 +708,7 @@ integration:
 
       for (i = 0 ; i < dim; i++)
         {
-          std::cout << "Metabolite: " << mpModel->getMetabolitesX()[i]->getObjectName() << std::endl;
+          std::cout << "Species: " << mpModel->getMetabolitesX()[i]->getObjectName() << std::endl;
           for (j = 0; j < dim; j++)
             std::cout << "Mode number" << j + 1 << ": " << mVslow_metab(i, j) << std::endl;
           std::cout << std::endl;
@@ -757,7 +762,7 @@ integration:
       else
         error_prove[number] = 100;
 
-      std::cout << "Metabolite: " << mpModel->getMetabolitesX()[number]->getObjectName() << " error: " << error_prove[number] << std::endl;
+      std::cout << "Species: " << mpModel->getMetabolitesX()[number]->getObjectName() << " error: " << error_prove[number] << std::endl;
     }
 
   transformation_norm(slow, info);
@@ -2246,7 +2251,7 @@ void CILDMMethod::newton_for_timestep(C_INT metabolite_number, C_FLOAT64 & y_con
   if (deriv == 0)
     {
       //  y_consistent = y_newton[metabolite_number];
-      std::cout << "Metabolite: " << mpModel->getMetabolitesX()[metabolite_number]->getObjectName() << " seems to be constant " << std::endl;
+      std::cout << "Species: " << mpModel->getMetabolitesX()[metabolite_number]->getObjectName() << " seems to be constant " << std::endl;
       return;
     }
 
@@ -2545,7 +2550,7 @@ void CILDMMethod::createAnnotationsM()
   pTmp1->setDescription("mVslowPrintAnn matrix");
   //pTmp1->setDimensionDescription(0, "contribution to each mode corresponding to timescale");
   pTmp1->setDimensionDescription(0, "contribution to  mode (TS - corresponding timescale)");
-  pTmp1->setDimensionDescription(1, "metabolites");
+  pTmp1->setDimensionDescription(1, "species");
   pVslowPrintAnn = pTmp1;
 
   CArrayAnnotation *
@@ -2554,7 +2559,7 @@ void CILDMMethod::createAnnotationsM()
   pTmp2->setMode(1, pTmp2->STRINGS);
   pTmp2->setMode(0, pTmp2->VECTOR);
   pTmp2->setDescription("mVslowMetabPrint matrix");
-  pTmp2->setDimensionDescription(0, "mode distribution for each metabolite");
+  pTmp2->setDimensionDescription(0, "mode distribution for each species");
   //pTmp2->setDimensionDescription(1, "modes corresponding to timescale");
   pTmp2->setDimensionDescription(1, "modes (TS - corresponding  timescale)");
   pVslowMetabPrintAnn = pTmp2;
@@ -2565,7 +2570,7 @@ void CILDMMethod::createAnnotationsM()
   pTmp3->setMode(1, pTmp3->STRINGS);
   pTmp3->setMode(0, pTmp3->VECTOR);
   pTmp3->setDescription("mVslowSpacePrint matrix");
-  pTmp3->setDimensionDescription(0, "metabolites");
+  pTmp3->setDimensionDescription(0, "species");
   pTmp3->setDimensionDescription(1, "contribution to slow space");
   pVslowSpacePrintAnn = pTmp3;
 }

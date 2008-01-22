@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModel.txt.h,v $
-//   $Revision: 1.37 $
+//   $Revision: 1.37.4.1 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/10/30 16:44:17 $
+//   $Author: shoops $
+//   $Date: 2008/01/22 18:51:21 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -14,7 +19,7 @@ static char DataModeltxt[] =
   "0:1:Model\n"
   "1:11:Biochemical\n"
   "11:111:Compartments\n"
-  "11:112:Metabolites\n"
+  "11:112:Species\n"
   "11:113:Moiety\n"
   "11:114:Reactions\n"
   "11:115:Global Quantities\n"

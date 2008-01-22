@@ -1,12 +1,17 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentSymbols.cpp,v $
-   $Revision: 1.41 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:42 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentSymbols.cpp,v $
+//   $Revision: 1.41.16.1 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2008/01/22 18:51:21 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -65,7 +70,7 @@ CompartmentSymbols::CompartmentSymbols(QWidget *parent, const char * name, WFlag
   tableHeader->setLabel(1, "Compartment");
   tableHeader->setLabel(2, "Initial Volume");
   tableHeader->setLabel(3, "Volume");
-  tableHeader->setLabel(4, "Metabolite Symbols");
+  tableHeader->setLabel(4, "Species Symbols");
 
   //btnOK = new QPushButton("&OK", this);
   //btnCancel = new QPushButton("&Cancel", this);

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.109.2.1.2.1 $
+//   $Revision: 1.109.2.1.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/11 14:30:54 $
+//   $Date: 2008/01/22 18:51:20 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -60,10 +60,10 @@ const MESSAGES Messages[] =
     {MCReaction + 1, "CReaction (1): Function '%s' not found."},
     {MCReaction + 2, "CReaction (2): In Reaction '%s' the compartment could not be guessed."},
     {MCReaction + 3, "CReaction (3): Reaction '%s' has no substrates and no products."},
-    {MCReaction + 4, "CReaction (4): Only Metabolites, Compartments or Parameter object nodes are allowed in kinetic functions."},
+    {MCReaction + 4, "CReaction (4): Only Species, Compartments or Parameter object nodes are allowed in kinetic functions."},
     {MCReaction + 5, "CReaction (5): Nodes of type '%s' are not implemented yet."},
     {MCReaction + 6, "CReaction (6): Nodes of type VARIABLE must not appear in an expression."},
-    {MCReaction + 7, "CReaction (7): Metabolite object '%s' is neither substrate, product nor modifier to reaction '%s' but it is used in the kinetic law."},
+    {MCReaction + 7, "CReaction (7): Species object '%s' is neither substrate, product nor modifier to reaction '%s' but it is used in the kinetic law."},
     {MCReaction + 8, "CReaction (8): Could not find variable with name '%s'."},
     {MCReaction + 9, "CReaction (9): Could not find object for key '%s'."},
     {MCReaction + 10, "CReaction (10): Parameter '%s' is a vector."},
@@ -105,7 +105,7 @@ const MESSAGES Messages[] =
     {MCTrajectoryMethod + 17, "CTrajectoryMethod (17): At least one reaction is necessary to perform stochastic simulation."},
     {MCTrajectoryMethod + 18, "CTrajectoryMethod (18): The model contains a global quantity with an ODE rule.\nStochastic simulation is not possible."},
     {MCTrajectoryMethod + 19, "CTrajectoryMethod (19): The model contains a global quantity with an assignment rule. \nThe value of the quantity is used in the model. \nStochastic simulation of such models is not possible with this version of COPASI."}, //obsolete
-    {MCTrajectoryMethod + 20, "CTrajectoryMethod (20): The model contains a metabolite with an ODE rule.\nStochastic simulation is not possible."},
+    {MCTrajectoryMethod + 20, "CTrajectoryMethod (20): The model contains a species with an ODE rule.\nStochastic simulation is not possible."},
     {MCTrajectoryMethod + 21, "CTrajectoryMethod (21): The model contains a compartment with an ODE rule.\nStochastic simulation is not possible."},
 
     // XML Package
@@ -198,7 +198,7 @@ const MESSAGES Messages[] =
     {MCSBML + 49, "SBML (49): Constraints ignored because they are not supported yet."},
     {MCSBML + 50, "SBML (50): Could not open file \"%s\"."},
     {MCSBML + 51, "SBML (51): The species \"%s\" is defined by a rate rule and its compartments volume is variable. COPASI will probably interpret this incorrectly."},
-    {MCSBML + 52, "SBML (52): The metabolite \"%s\" is defined by a rate expression and its compartments volume is variable. The way COPASI interprets this is differently from the way SBML does."},
+    {MCSBML + 52, "SBML (52): The species \"%s\" is defined by a rate expression and its compartments volume is variable. The way COPASI interprets this is differently from the way SBML does."},
     {MCSBML + 53, "SBML (53): The reaction \"%s\" defines a time unit in its kinetic law which has been ignore. Calculations on this model might lead to incorrect result."},
     {MCSBML + 54, "SBML (54): Error while importing volume unit with id \"%s\"."},
     {MCSBML + 55, "SBML (55): Could not find unit definition for unit with id \"%s\" used in \"%s\" attribute of %s with id \"%s\"."},

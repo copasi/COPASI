@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget1.cpp,v $
-//   $Revision: 1.138 $
+//   $Revision: 1.138.8.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/04/02 17:58:34 $
+//   $Date: 2008/01/22 18:51:21 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -63,7 +68,7 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
   MetabolitesWidget1Layout = new QGridLayout(this, 1, 1, 11, 6, "MetabolitesWidget1Layout");
 
   mLblName = new QLabel(this, "mLblName");
-  mLblName->setText(trUtf8("Metabolite Name"));
+  mLblName->setText(trUtf8("Species Name"));
   mLblName->setAlignment(int(QLabel::AlignVCenter
                              | QLabel::AlignRight));
   MetabolitesWidget1Layout->addWidget(mLblName, 0, 0);
@@ -81,7 +86,7 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
   MetabolitesWidget1Layout->addMultiCellWidget(mComboCompartment, 1, 1, 1, 2);
 
   mLblInitStatus = new QLabel(this, "mLblInitStatus");
-  mLblInitStatus->setText(trUtf8("Metabolite status"));
+  mLblInitStatus->setText(trUtf8("Species status"));
   mLblInitStatus->setAlignment(int(QLabel::AlignVCenter
                                    | QLabel::AlignRight));
   MetabolitesWidget1Layout->addWidget(mLblInitStatus, 3, 0);
@@ -173,7 +178,7 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
   //***************************************
 
   mReactionsLabel = new QLabel(this, "ReactionsLabel");
-  mReactionsLabel->setText("Reactions\ninvolving this\nmetabolite");
+  mReactionsLabel->setText("Reactions\ninvolving this\nspecies");
   mReactionsLabel->setAlignment(int(QLabel::AlignTop
                                     | QLabel::AlignRight));
   //mReactionsLabel->setAlignment(Qt::AlignTop);
@@ -337,12 +342,12 @@ bool MetabolitesWidget1::saveToMetabolite()
       if (!mpMetab->setObjectName((const char *)name.utf8()))
         {
           QString msg;
-          msg = "Unable to rename metabolite '" + FROM_UTF8(mpMetab->getObjectName()) + "'\n"
-                + "to '" + name + "' since a metabolite with that name already exists\n"
+          msg = "Unable to rename species '" + FROM_UTF8(mpMetab->getObjectName()) + "'\n"
+                + "to '" + name + "' since a species with that name already exists\n"
                 + "in the compartment '" + FROM_UTF8(mpMetab->getCompartment()->getObjectName()) + "'.";
 
           CQMessageBox::information(this,
-                                    "Unable to rename Metabolite",
+                                    "Unable to rename Species",
                                     msg,
                                     QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
 
@@ -360,12 +365,12 @@ bool MetabolitesWidget1::saveToMetabolite()
       if (!CCopasiDataModel::Global->getModel()->getCompartments()[(const char *)Compartment.utf8()]->addMetabolite(mpMetab))
         {
           QString msg;
-          msg = "Unable to move metabolite '" + FROM_UTF8(mpMetab->getObjectName()) + "'\n"
+          msg = "Unable to move species '" + FROM_UTF8(mpMetab->getObjectName()) + "'\n"
                 + "from compartment '" + FROM_UTF8(CompartmentToRemove) + "' to compartment '" + Compartment + "'\n"
-                + "since a metabolite with that name already exist in the target compartment.";
+                + "since a species with that name already exist in the target compartment.";
 
           CQMessageBox::information(this,
-                                    "Unable to move Metabolite",
+                                    "Unable to move Species",
                                     msg,
                                     QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
 
@@ -514,13 +519,13 @@ void MetabolitesWidget1::slotBtnNewClicked()
   if (CCopasiDataModel::Global->getModel()->getCompartments().size() == 0)
     CCopasiDataModel::Global->getModel()->createCompartment("compartment");
 
-  std::string name = "metabolite";
+  std::string name = "species";
   int i = 0;
   CMetab* mpMetab;
   while (!(mpMetab = CCopasiDataModel::Global->getModel()->createMetabolite(name, "", 1.0, CModelEntity::REACTIONS)))
     {
       i++;
-      name = "metabolite_";
+      name = "species_";
       name += (const char *)QString::number(i).utf8();
     }
   enter(mpMetab->getKey());
@@ -537,11 +542,11 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
     dynamic_cast< CMetab * >(GlobalKeys.get(objKey));
   if (pMetab == NULL) return;
 
-  QString metaboliteList = "Are you sure you want to delete listed METABOLITE(S) ?\n";
-  QString effectedCompartmentList = "Following COMPARTMENT(S) reference above METABOLITE(S) and will be deleted -\n";
-  QString effectedMetabList = "Following METABOLITE(S) reference above METABOLITE(S) and will be deleted -\n";
-  QString effectedReacList = "Following REACTION(S) reference above METABOLITE(S) and will be deleted -\n";
-  QString effectedValueList = "Following MODEL VALUE(S) reference above METABOLITE(S) and will be deleted -\n";
+  QString metaboliteList = Are you sure you want to delete listed SPECIES ? \n;
+  QString effectedCompartmentList = Following COMPARTMENT(S) reference above SPECIES and will be deleted - \n;
+  QString effectedMetabList = Following METABOLITE(S) reference above SPECIES and will be deleted - \n;
+  QString effectedReacList = Following REACTION(S) reference above SPECIES and will be deleted - \n;
+  QString effectedValueList = Following MODEL VALUE(S) reference above SPECIES and will be deleted - \n;
 
   bool compartmentFound = false;
   bool metabFound = false;
@@ -665,28 +670,28 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
   switch (choice)
     {
     case 0:                                                     // Yes or Enter
-      {
-        unsigned C_INT32 index =
-          CCopasiDataModel::Global->getModel()->getMetabolites().getIndex(GlobalKeys.get(objKey));
+        {
+          unsigned C_INT32 index =
+            CCopasiDataModel::Global->getModel()->getMetabolites().getIndex(GlobalKeys.get(objKey));
 
-        CCopasiDataModel::Global->getModel()->removeMetabolite(objKey);
+          CCopasiDataModel::Global->getModel()->removeMetabolite(objKey);
 
-        unsigned C_INT32 size =
-          CCopasiDataModel::Global->getModel()->getMetabolites().size();
+          unsigned C_INT32 size =
+            CCopasiDataModel::Global->getModel()->getMetabolites().size();
 
-        if (size > 0)
+          if (size > 0)
           enter(CCopasiDataModel::Global->getModel()->getMetabolites()[std::min(index, size - 1)]->getKey());
-        else
-          enter("");
+          else
+            enter("");
 
 #undef DELETE
-        protectedNotify(ListViews::METABOLITE, ListViews::DELETE, objKey);
-        //TODO notify about reactions
-        break;
-      }
-    default:                                                     // No or Escape
-      break;
-    }
+            protectedNotify(ListViews::METABOLITE, ListViews::DELETE, objKey);
+            //TODO notify about reactions
+            break;
+          }
+        default:                                                     // No or Escape
+    break;
+  }
 }
 
 void MetabolitesWidget1::slotConcChanged()
