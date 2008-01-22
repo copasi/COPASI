@@ -1,12 +1,17 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/libs/COPASIUI/COPASIUI.pro,v $ 
-#   $Revision: 1.15 $ 
+#   $Revision: 1.16 $ 
 #   $Name:  $ 
-#   $Author: akoenig $ 
-#   $Date: 2007/11/13 10:28:52 $ 
+#   $Author: shoops $ 
+#   $Date: 2008/01/22 16:57:58 $ 
 # End CVS Header 
 
-# Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+# and The University of Manchester. 
+# All rights reserved. 
+
+# Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc. and EML Research, gGmbH. 
 # All rights reserved. 
 
@@ -30,6 +35,7 @@ contains(DEFINES, WITH_QWT3D) {
   COPASI_LIBS += barChart
 }
 
+COPASI_LIBS += MIRIAMUI
 COPASI_LIBS += plotUI
 COPASI_LIBS += UI
 COPASI_LIBS += wizard
