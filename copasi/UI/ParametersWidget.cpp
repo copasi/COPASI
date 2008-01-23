@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ParametersWidget.cpp,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.24.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/12 19:27:44 $
+//   $Date: 2008/01/23 16:52:18 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -244,14 +249,26 @@ bool ParametersWidget::loadFromModel()
                            comps[i], comps[i]->getInitialValue(), unit);
 
   //Metabs
-  mMetabItem = new CParameterListItem(listView, "Initial Concentrations");
-  unit = FROM_UTF8(model->getConcentrationUnitName());
   const CCopasiVector< CMetab > & metabs = model->getMetabolites();
   imax = metabs.size();
-  for (i = 0; i < imax; ++i)
-    new CParameterListItem(mMetabItem, FROM_UTF8(CMetabNameInterface::getDisplayName(model, *metabs[i])),
-                           metabs[i], metabs[i]->getInitialConcentration(), unit);
+  switch (mFramework)
+    {
+    case 0:
+      mMetabItem = new CParameterListItem(listView, "Initial Concentrations");
+      unit = FROM_UTF8(model->getConcentrationUnitName());
+      for (i = 0; i < imax; ++i)
+        new CParameterListItem(mMetabItem, FROM_UTF8(CMetabNameInterface::getDisplayName(model, *metabs[i])),
+                               metabs[i], metabs[i]->getInitialConcentration(), unit);
+      break;
 
+    case 1:
+      mMetabItem = new CParameterListItem(listView, "Initial Particle Numbers");
+      unit = "1";
+      for (i = 0; i < imax; ++i)
+        new CParameterListItem(mMetabItem, FROM_UTF8(CMetabNameInterface::getDisplayName(model, *metabs[i])),
+                               metabs[i], metabs[i]->getInitialValue(), unit);
+      break;
+    }
   //Reactions
   mReacItem = new CParameterListItem(listView, "Kinetic Parameters");
   const CCopasiVector< CReaction > & reacs = model->getReactions();
@@ -352,7 +369,17 @@ bool ParametersWidget::saveToModel()
         {
           changed = true;
           CMetab* tmp = dynamic_cast<CMetab*>(child->getObject());
-          if (tmp) tmp->setInitialConcentration(child->getValue());
+          if (tmp)
+            switch (mFramework)
+              {
+              case 0:
+                tmp->setInitialConcentration(child->getValue());
+                break;
+
+              case 1:
+                tmp->setInitialValue(child->getValue());
+                break;
+              }
         }
       child = (CParameterListItem *)child->nextSibling();
     }
@@ -467,4 +494,10 @@ bool ParametersWidget::leave()
   if (!saveToModel()) success = false;
   if (!loadFromModel()) success = false;
   return success;
+}
+
+void ParametersWidget::setFramework(int framework)
+{
+  CopasiWidget::setFramework(framework);
+  loadFromModel();
 }
