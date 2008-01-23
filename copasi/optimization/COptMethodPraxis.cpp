@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodPraxis.cpp,v $
-//   $Revision: 1.4.2.1 $
+//   $Revision: 1.4.2.1.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/12/14 21:21:58 $
+//   $Date: 2008/01/23 13:11:21 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -22,8 +27,8 @@
 
 COptMethodPraxis::COptMethodPraxis(const CCopasiContainer * pParent):
     COptMethod(CCopasiTask::optimization, CCopasiMethod::Praxis, pParent),
-    mpPraxis(new FPraxisTemplate<COptMethodPraxis>(this, &COptMethodPraxis::evaluateFunction))
-
+    mpPraxis(new FPraxisTemplate<COptMethodPraxis>(this, &COptMethodPraxis::evaluateFunction)),
+    mpCPraxis(new CPraxis())
 {
   addParameter("Tolerance", CCopasiParameter::DOUBLE, (C_FLOAT64) 1.e-005);
   initObjects();
@@ -32,13 +37,14 @@ COptMethodPraxis::COptMethodPraxis(const CCopasiContainer * pParent):
 COptMethodPraxis::COptMethodPraxis(const COptMethodPraxis & src,
                                    const CCopasiContainer * pParent):
     COptMethod(src, pParent),
-    mpPraxis(new FPraxisTemplate<COptMethodPraxis>(this, &COptMethodPraxis::evaluateFunction))
+    mpPraxis(new FPraxisTemplate<COptMethodPraxis>(this, &COptMethodPraxis::evaluateFunction)),
+    mpCPraxis(new CPraxis())
 {initObjects();}
 
 COptMethodPraxis::~COptMethodPraxis()
 {
-
   pdelete(mpPraxis);
+  pdelete(mpCPraxis);
   cleanup();
 }
 
@@ -110,7 +116,7 @@ bool COptMethodPraxis::optimise()
   //carry out the minimisation
   try
     {
-      praxis_(&mTolerance, &machep, &stepmx, &mVariableSize, &prin, mCurrent.array(), mpPraxis, &tmp);
+      mpCPraxis->praxis_(&mTolerance, &machep, &stepmx, &mVariableSize, &prin, mCurrent.array(), mpPraxis, &tmp);
     }
   catch (bool)
   {}
