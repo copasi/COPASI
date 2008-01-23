@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
-//   $Revision: 1.39.12.2 $
+//   $Revision: 1.39.12.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/23 18:31:12 $
+//   $Date: 2008/01/23 19:56:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -56,6 +56,7 @@
 #endif // COPASI_LICENSE_COM
 
 void writeLogo();
+int validate();
 
 int main(int argc, char *argv[])
 {
@@ -233,6 +234,10 @@ int main(int argc, char *argv[])
       Expression.setInfix("2*(3+b)");
 #endif
 
+      // Check whether we just have to validate
+      bool Validate = false;
+      COptions::getValue("Validate", Validate);
+
       const COptions::nonOptionType & Files = COptions::getNonOptions();
 
       if (!COptions::compareValue("ImportSBML", std::string("")))
@@ -240,7 +245,17 @@ int main(int argc, char *argv[])
           // Import the SBML File
           std::string ImportSBML;
           COptions::getValue("ImportSBML", ImportSBML);
-          CCopasiDataModel::Global->importSBML(ImportSBML);
+          if (!CCopasiDataModel::Global->importSBML(ImportSBML))
+            {
+              retcode = 1;
+              goto finish;
+            }
+
+          if (Validate)
+            {
+              retcode = validate();
+              goto finish;
+            }
 
           // Check whether exporting to SBML is requested.
           if (!COptions::compareValue("ExportSBML", std::string("")))
@@ -307,7 +322,17 @@ int main(int argc, char *argv[])
 
           for (; it != end; ++it)
             {
-              CCopasiDataModel::Global->loadModel(*it, NULL);
+              if (!CCopasiDataModel::Global->loadModel(*it, NULL))
+                {
+                  retcode = 1;
+                  continue;
+                }
+
+              if (Validate)
+                {
+                  retcode |= validate();
+                  continue;
+                }
 
               // Check whether exporting to SBML is requested.
               if (!COptions::compareValue("ExportSBML", std::string("")))
@@ -427,4 +452,45 @@ void writeLogo()
   << "The use of this software indicates the acceptance of the attached license." << std::endl
   << "To view the license please use the option: --license" << std::endl
   << std::endl;
+}
+
+int validate()
+{
+  int retcode = 0;
+
+  // We are allready sure that the COPASI model compiled. That means
+  // we only need to test the active tasks
+
+  CCopasiVectorN< CCopasiTask > & TaskList = * CCopasiDataModel::Global->getTaskList();
+  unsigned C_INT32 i, imax = TaskList.size();
+
+  for (i = 0; i < imax; i++)
+    if (TaskList[i]->isScheduled())
+      {
+        TaskList[i]->getProblem()->setModel(CCopasiDataModel::Global->getModel());
+
+        try
+          {
+            if (!TaskList[i]->initialize(CCopasiTask::OUTPUT_COMPLETE, NULL))
+              retcode = 1;
+
+            // We need to check whether the result is saved in any form.
+            // If not we need to stop right here to avoid wasting time.
+            if (CCopasiMessage::checkForMessage(MCCopasiTask + 5) &&
+                (!TaskList[i]->isUpdateModel() ||
+                 COptions::compareValue("Save", std::string(""))))
+              retcode = 1;
+
+            TaskList[i]->restore();
+          }
+
+        catch (...)
+          {
+            retcode = 1;
+          }
+
+        CCopasiDataModel::Global->finish();
+      }
+
+  return retcode;
 }
