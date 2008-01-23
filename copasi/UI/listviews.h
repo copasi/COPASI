@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-//   $Revision: 1.136.2.1 $
+//   $Revision: 1.136.2.1.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/12/14 18:07:18 $
+//   $Date: 2008/01/23 16:21:31 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -29,6 +34,9 @@ class CTabWidget;
 #else
 class ModelWidget;
 #endif
+
+class Refresh;
+class CCopasiObject;
 
 class DataModelGUI;
 class CQCompartment;
@@ -155,6 +163,10 @@ class ListViews : public QSplitter
 
   private:
     static DataModelGUI* dataModel;
+    static std::vector< Refresh * > mUpdateVector;
+    static std::set< const CCopasiObject * > mChangedObjects;
+    static int mFramework;
+
     QListViewItem* lastSelection;
     CopasiWidget* currentWidget;
     std::string lastKey;
@@ -179,6 +191,7 @@ class ListViews : public QSplitter
                                       const std::string & key);
 
     static void refreshInitialValues();
+    static void buildChangedObjects();
 
     void setChildWidgetsFramework(int framework);
 

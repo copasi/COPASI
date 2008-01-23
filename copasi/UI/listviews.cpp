@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.237.2.2 $
+//   $Revision: 1.237.2.2.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/12/19 13:53:25 $
+//   $Date: 2008/01/23 16:21:31 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -1086,8 +1091,20 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
 
 //static members **************************
 
+// static
 std::set<ListViews *> ListViews::mListOfListViews;
+
+// static
 DataModelGUI* ListViews::dataModel;
+
+// static
+std::set< const CCopasiObject * > ListViews::mChangedObjects;
+
+// static
+std::vector< Refresh * > ListViews::mUpdateVector;
+
+// static
+int ListViews::mFramework;
 
 bool ListViews::attach()
 {
@@ -1208,6 +1225,8 @@ void ListViews::setChildWidgetsFramework(int framework)
 // static
 void ListViews::setFramework(int framework)
 {
+  mFramework = framework;
+
   std::set<ListViews *>::iterator it = mListOfListViews.begin();
   std::set<ListViews *>::iterator end = mListOfListViews.end();
 
@@ -1215,17 +1234,70 @@ void ListViews::setFramework(int framework)
     (*it)->setChildWidgetsFramework(framework);
 }
 
-void ListViews::refreshInitialValues()
+// static
+void ListViews::buildChangedObjects()
 {
-  std::set< const CCopasiObject * > All;
-
   CModel * pModel = CCopasiDataModel::Global->getModel();
   pModel->compileIfNecessary(NULL);
 
-  std::vector< Refresh * > UpdateVector;
+  mChangedObjects.clear();
+
+  CModelEntity **ppEntity = pModel->getStateTemplate().getEntities();
+  CModelEntity **ppEntityEnd = pModel->getStateTemplate().endFixed();
+
+  CMetab * pMetab;
+  std::set< const CCopasiObject * > Objects;
+
+  // The objects which are changed are all initial values of of all model entities including
+  // fixed and unused once. Additionally, all kinetic parameters are possibly changed.
+  // This is basically all the parameters in the parameter overview whose value is editable.
+
+  // :TODO: Theoretically, it is possible that also task parameters influence the initial
+  // state of a model but that is currently not handled.
+
+  for (; ppEntity != ppEntityEnd; ++ppEntity)
+    {
+      // If we have an initial expression we have no initial values
+      if ((*ppEntity)->getInitialExpression() != "" ||
+          (*ppEntity)->getStatus() == CModelEntity::ASSIGNMENT)
+        continue;
+
+      // Metabolites have two initial values
+      if (mFramework == 0 &&
+          (pMetab = dynamic_cast< CMetab * >(*ppEntity)) != NULL)
+        {
+          // The concentration is assumed to be fix accept when this would lead to circular dependencies,
+          // for the parent's compartment's initial volume.
+          Objects.insert(pMetab->getInitialConcentrationReference());
+          pMetab->compileInitialValueDependencies(false);
+
+          if (pMetab->getCompartment()->getInitialValueReference()->dependsOn(Objects))
+            mChangedObjects.insert(pMetab->getInitialValueReference());
+          else
+            mChangedObjects.insert(pMetab->getInitialConcentrationReference());
+
+          Objects.clear();
+        }
+      else
+        mChangedObjects.insert((*ppEntity)->getInitialValueReference());
+    }
+
+  // The reaction parameters
+  CCopasiVector< CReaction >::const_iterator itReaction = pModel->getReactions().begin();
+  CCopasiVector< CReaction >::const_iterator endReaction = pModel->getReactions().end();
+  unsigned C_INT32 i, imax;
+
+  for (; itReaction != endReaction; ++itReaction)
+    {
+      const CCopasiParameterGroup & Group = (*itReaction)->getParameters();
+
+      for (i = 0, imax = Group.size(); i < imax; i++)
+        mChangedObjects.insert(Group.getParameter(i)->getObject(CCopasiObjectName("Reference=Value")));
+    }
+
   try
     {
-      UpdateVector = pModel->buildInitialRefreshSequence(All);
+      mUpdateVector = pModel->buildInitialRefreshSequence(mChangedObjects);
     }
 
   catch (...)
@@ -1239,9 +1311,15 @@ void ListViews::refreshInitialValues()
 
       return;
     }
+}
 
-  std::vector< Refresh * >::iterator it = UpdateVector.begin();
-  std::vector< Refresh * >::iterator end = UpdateVector.end();
+// static
+void ListViews::refreshInitialValues()
+{
+  buildChangedObjects();
+
+  std::vector< Refresh * >::iterator it = mUpdateVector.begin();
+  std::vector< Refresh * >::iterator end = mUpdateVector.end();
 
   for (; it != end; ++it)
     (**it)();
