@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQTSSAResultSubWidget.ui.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: isurovts $
-//   $Date: 2007/12/21 11:44:52 $
+//   $Author: akoenig $
+//   $Date: 2008/01/23 09:33:48 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -48,7 +53,7 @@ CModel* pModel;
 const CArrayAnnotation * pResult;
 const CArrayAnnotation * pResult2;
 const CArrayAnnotation * pResult3;
-const CArrayAnnotation * pResult4; //aaa
+const CArrayAnnotation * pResult4;
 
 void CQTSSAResultSubWidget::saveDataToFile()
 {
@@ -126,8 +131,8 @@ void CQTSSAResultSubWidget::init()
   pArrayWidget3->setColorCoding(tcs);
   pArrayWidget3->setColorScalingAutomatic(false);
   // mVslow_space widget
-  pArrayWidget4->setColorCoding(tcs); //aaa
-  pArrayWidget4->setColorScalingAutomatic(false); //aaa
+  pArrayWidget4->setColorCoding(tcs);
+  pArrayWidget4->setColorScalingAutomatic(false);
 
   connect(mSlider, SIGNAL(valueChanged(int)), this, SLOT(changeInterval()));
   connect(tabWidget2, SIGNAL(currentChanged(QWidget *)), this, SLOT(hideButtons()));
@@ -169,7 +174,7 @@ void CQTSSAResultSubWidget::discardOldResults()
   pArrayWidget->setArrayAnnotation(NULL);
   pArrayWidget2->setArrayAnnotation(NULL);
   pArrayWidget3->setArrayAnnotation(NULL);
-  pArrayWidget4->setArrayAnnotation(NULL); //aaa
+  pArrayWidget4->setArrayAnnotation(NULL);
 
   mLabel2->setNum(0);
   mLabel4->setNum(0);
@@ -195,11 +200,11 @@ void CQTSSAResultSubWidget::changeInterval()
   pResult = pTimeScaleSeperation->getVslowPrintAnn();
   pResult2 = pTimeScaleSeperation->getVslowMetabPrintAnn();
   pResult3 = pTimeScaleSeperation->getVslowSpacePrintAnn();
-  pResult4 = pTimeScaleSeperation->getVfastSpacePrintAnn(); //aaa
+  pResult4 = pTimeScaleSeperation->getVfastSpacePrintAnn();
   pArrayWidget->setArrayAnnotation(pResult);
   pArrayWidget2->setArrayAnnotation(pResult2);
   pArrayWidget3->setArrayAnnotation(pResult3);
-  pArrayWidget4->setArrayAnnotation(pResult4); //aaa
+  pArrayWidget4->setArrayAnnotation(pResult4);
 }
 
 /**
