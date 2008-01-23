@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
-//   $Revision: 1.39.12.1 $
+//   $Revision: 1.39.12.2 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/01/18 14:32:42 $
+//   $Author: shoops $
+//   $Date: 2008/01/23 18:31:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -55,6 +55,8 @@
 # include "commercial/CRegistration.h"
 #endif // COPASI_LICENSE_COM
 
+void writeLogo();
+
 int main(int argc, char *argv[])
 {
   int retcode = 0;
@@ -74,20 +76,6 @@ int main(int argc, char *argv[])
   return 0;
 #endif // XXXX
 
-  CVersion Version;
-  Version.setVersion(COPASI_VERSION_MAJOR,
-                     COPASI_VERSION_MINOR,
-                     COPASI_VERSION_BUILD,
-                     COPASI_VERSION_COMMENT);
-  std::cout << "COPASI "
-#ifdef COPASI_LICENSE_COM
-  << "(commercial) "
-#endif // COPASI_LICENSE_COM
-  << Version.getVersion() << std::endl
-  << "The use of this software indicates the acceptance of the attached license." << std::endl
-  << "To view the license please use the option: --license" << std::endl
-  << std::endl;
-
   try
     {
       // Parse the commandline options
@@ -96,6 +84,7 @@ int main(int argc, char *argv[])
 
   catch (copasi::autoexcept &e)
     {
+      writeLogo();
       switch (e.get_autothrow_id())
         {
         case copasi::autothrow_help:
@@ -109,12 +98,15 @@ int main(int argc, char *argv[])
 
   catch (copasi::option_error &e)
     {
+      writeLogo();
       std::cerr << CDirEntry::baseName(argv[0]) << ": " << e.what() << "\n";
       std::cerr << e.get_help_comment() << std::endl;
 
       retcode = 1;
       goto finish;
     }
+
+  writeLogo();
 
   bool License;
   COptions::getValue("License", License);
@@ -413,4 +405,26 @@ finish:
 
   //std::cout << "Leaving main program." << std::endl;
   return retcode;
+}
+
+void writeLogo()
+{
+  bool NoLogo = false;
+  COptions::getValue("NoLogo", NoLogo);
+
+  if (NoLogo) return;
+
+  CVersion Version;
+  Version.setVersion(COPASI_VERSION_MAJOR,
+                     COPASI_VERSION_MINOR,
+                     COPASI_VERSION_BUILD,
+                     COPASI_VERSION_COMMENT);
+  std::cout << "COPASI "
+#ifdef COPASI_LICENSE_COM
+  << "(commercial) "
+#endif // COPASI_LICENSE_COM
+  << Version.getVersion() << std::endl
+  << "The use of this software indicates the acceptance of the attached license." << std::endl
+  << "To view the license please use the option: --license" << std::endl
+  << std::endl;
 }
