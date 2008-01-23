@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodPraxis.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/01/11 15:12:31 $
+//   $Author: jdada $
+//   $Date: 2008/01/23 11:46:52 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,6 +27,7 @@
 
 COptMethodPraxis::COptMethodPraxis(const CCopasiContainer * pParent):
     COptMethod(CCopasiTask::optimization, CCopasiMethod::Praxis, pParent),
+    mpCPraxis(new CPraxis()),
     mpPraxis(new FPraxisTemplate<COptMethodPraxis>(this, &COptMethodPraxis::evaluateFunction))
 
 {
@@ -37,6 +38,7 @@ COptMethodPraxis::COptMethodPraxis(const CCopasiContainer * pParent):
 COptMethodPraxis::COptMethodPraxis(const COptMethodPraxis & src,
                                    const CCopasiContainer * pParent):
     COptMethod(src, pParent),
+    mpCPraxis(new CPraxis()),
     mpPraxis(new FPraxisTemplate<COptMethodPraxis>(this, &COptMethodPraxis::evaluateFunction))
 {initObjects();}
 
@@ -44,6 +46,7 @@ COptMethodPraxis::~COptMethodPraxis()
 {
 
   pdelete(mpPraxis);
+  pdelete(mpCPraxis);
   cleanup();
 }
 
@@ -115,7 +118,7 @@ bool COptMethodPraxis::optimise()
   //carry out the minimisation
   try
     {
-      praxis_(&mTolerance, &machep, &stepmx, &mVariableSize, &prin, mCurrent.array(), mpPraxis, &tmp);
+      mpCPraxis->praxis_(&mTolerance, &machep, &stepmx, &mVariableSize, &prin, mCurrent.array(), mpPraxis, &tmp);
     }
   catch (bool)
   {}
