@@ -1,13 +1,18 @@
 <chapter id="model" xreflabel="Model">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_model.xml,v $ -->
-<!--   $Revision: 1.4 $ -->
+<!--   $Revision: 1.4.6.1 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: shoops $ -->
-<!--   $Date: 2007/07/24 13:25:56 $ -->
+<!--   $Date: 2008/01/23 20:23:11 $ -->
 <!-- End CVS Header -->
 
-<!-- Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Properties, Inc., EML Research, gGmbH, University of Heidelberg, -->
+<!-- and The University of Manchester. -->
+<!-- All rights reserved. -->
+
+<!-- Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual -->
 <!-- Properties, Inc. and EML Research, gGmbH. -->
 <!-- All rights reserved. -->
 
@@ -16,8 +21,8 @@
 
 <para>
 This section discusses the general properties of the model in COPASI and its
-mathematical interpretation. Generally a model consists of metabolites which are
-placed in a compartment. Metabolites are produced or consumed by reactions which
+mathematical interpretation. Generally a model consists of species which are
+placed in a compartment. Species are produced or consumed by reactions which
 happen with a speed given by kinetic functions. This model is interpreted
 mathematically in different ways in COPASI. 
 </para>
@@ -25,7 +30,7 @@ mathematically in different ways in COPASI.
 <sect1 id="compartments" xreflabel="Compartments">
 <title>Compartments</title>
 <para>
-Every metabolite in COPASI must be placed in a compartment. The compartment has
+Every species in COPASI must be placed in a compartment. The compartment has
 to have a well defined volume because COPASI relies on being able to calculate
 particle numbers from concentrations and vice versa. 
 COPASI does not really support models without concentrations (i.e. dealing only
@@ -36,32 +41,32 @@ not correct.
 The volumes of compartments are constant in this version of COPASI. 
 </para>
 <para>
-If the (chemically) same metabolite is present in several compartments it is
-treated as several metabolites in COPASI. E.g. if you have a model that contains
-glucose inside a cell and outside a cell these are two metabolites in the model.
+If the (chemically) same species is present in several compartments it is
+treated as several species in COPASI. E.g. if you have a model that contains
+glucose inside a cell and outside a cell these are two species in the model.
 They can however have the same name.
 </para>
 </sect1>
 
-<sect1 id="Metabolites" xreflabel="Metabolites">
-<title>Metabolites</title>
+<sect1 id="Species" xreflabel="Species">
+<title>Species</title>
 <para>
-A metabolite is characterized by how much of it is present at a given time. This
+A species is characterized by how much of it is present at a given time. This
 can be expressed as a particle number or as a concentration. COPASI makes sure
 that those two are consistent at any time. An initial value can be provided for
-concentration or particle number of each metabolite. This initial value will be
+concentration or particle number of each species. This initial value will be
 used as a starting point for simulations or other calculations. 
-A metabolite can be defined to be "fixed" which means it current value will
-always be the same as the initial value, even if the metabolite participates in
+A species can be defined to be "fixed" which means it current value will
+always be the same as the initial value, even if the species participates in
 a reaction.
 </para>
 <para>
-Associated to the metabolites is also a value called transition time. It is
-calculated as the current particle number of the metabolite devided by either
-the sum of all reaction fluxes going into the metabolite or the sum of all
-reaction fluxes going out of the metabolite, whichever is smaller (the fluxes
+Associated to the species is also a value called transition time. It is
+calculated as the current particle number of the species devided by either
+the sum of all reaction fluxes going into the species or the sum of all
+reaction fluxes going out of the species, whichever is smaller (the fluxes
 also epxressed in number of particles per second). The transition time gives a
-rough heuristic measure for how long a particle of this metabolite will exist on
+rough heuristic measure for how long a particle of this species will exist on
 average before it is consumed. A short transition time in a stable steady state
 may indicate that the equilibrium is a "fast" equilibrium which could be used
 for a simplification of the model. Note however that this calculation is inexact
@@ -102,9 +107,9 @@ Since there is no obvious probabilistic interpretation of a general ode stochast
 <sect1 id="Reactions" xreflabel="Reactions">
 <title>Reactions</title>
 <para>
-A reaction is a process by which metabolites will be consumed or produced. It is
+A reaction is a process by which species will be consumed or produced. It is
 characterized by a description of how fast this happens. It contains a list of
-substrates, i.e. the metabolites that are consumed if the reaction takes place,
+substrates, i.e. the species that are consumed if the reaction takes place,
 along with the information about how many molecules of each substrate are
 consumed when the reaction event happens once (the stoichiometry).
 Correspondingly there is a list of products with the respective stoichiometries.
@@ -164,7 +169,7 @@ restrictions like irreversible kinetics having to be strictly positive.
 <para>
   One possible mathematical interpretation of the model is to convert it into a
 set of ordinary differential equations. The variables of the equation are the
-particle numbers of the metabolites in the model. The right hand side of the
+particle numbers of the species in the model. The right hand side of the
 differential equation are constructed as follows: The particle numbers are
 converted to concentrations taking into acount the unit for amounts of substance
 and dividing by compartment volume. These concentrations are used to calculate
@@ -177,7 +182,7 @@ reactions are assumed to already be expressed in units of amount of substance
 (e.g. moles) per time. The resulting value is then multiplied by a factor to
 convert amount of substance per time to particle numbers per time. Linear
 combinations of these values, using the stoichiometries as coefficients, result
-in particel number rates for all metabolites. These form the right hand side of
+in particel number rates for all species. These form the right hand side of
 the differential equations.
 </para>
 <para>
@@ -188,7 +193,7 @@ conservation relation can be used to eliminate one variable of the system,
 leading to a reduced system with a smaller number of variables. These variables
 are called the independent variables of the system; the dependent variables are
 defined as linear combinations of independent variables. COPASI handles this
-model reduction transparently, but it is displayed in the GUI which metabolites
+model reduction transparently, but it is displayed in the GUI which species
 are treated as independent or dependent variables.
 Technically finding the conservation relation means finding rows in the
 stoichiometry matrix that can be expressed as linear combinations of other rows.
@@ -205,7 +210,7 @@ this<citation>Vallabhajosyula06</citation>.
 process. In this case the reaction kinetics are not considered to describe the
 rates of change for the concentrations of involved species, but rather as a
 specification about the probability that a reaction event happens. If a reaction
-event happens the particle numbers of the involved metabolites are updated
+event happens the particle numbers of the involved species are updated
 according to their stoichiometries. That means particle numbers are always
 integer numbers and change discretely. 
 </para>

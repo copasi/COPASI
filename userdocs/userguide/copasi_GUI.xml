@@ -1,13 +1,18 @@
 <chapter id="modelCreation" xreflabel="Model Creation">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_GUI.xml,v $ -->
-<!--   $Revision: 1.49 $ -->
+<!--   $Revision: 1.49.4.1 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: shoops $ -->
-<!--   $Date: 2007/10/29 13:17:20 $ -->
+<!--   $Date: 2008/01/23 20:23:11 $ -->
 <!-- End CVS Header -->
 
-<!-- Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Properties, Inc., EML Research, gGmbH, University of Heidelberg, -->
+<!-- and The University of Manchester. -->
+<!-- All rights reserved. -->
+
+<!-- Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual -->
 <!-- Properties, Inc. and EML Research, gGmbH. -->
 <!-- All rights reserved. -->
 
@@ -552,7 +557,7 @@ the volume.
 <para>
 If there are already species defined that are part of the compartment
 being edited, they are listed in the text widget at the bottom of the
-dialog called "Metabolite Name".
+dialog called "Species Name".
 </para>
 <para>
 The field labeled <guilabel>Transient Volume</guilabel> specifies the
@@ -583,56 +588,56 @@ differences between adding a compartment and adding a species.
 <screeninfo>Produced with COPASI Build 18 on Linux on 05/18/2006</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/Metabolites_01.png" format="PNG" scale="50" align="center" />
+  <imagedata fileref="images/Species_01.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/Metabolites_01.ps" format="EPS" scale="50" align="center" />
+  <imagedata fileref="images/Species_01.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>metabolites table</phrase>
+   <phrase>species table</phrase>
  </textobject>
  <caption>
-  <para>metabolites table with one entries</para>
+  <para>species table with one entries</para>
  </caption> 
 </mediaobject>
 </screenshot>
 </para>
 <para>
-First of all in order to add a new species or metabolite, as it is
+First of all in order to add a new species or species, as it is
 called in COPASI, you have to navigate to the
-<guibutton>Metabolites</guibutton> branch of the object tree which is
+<guibutton>Species</guibutton> branch of the object tree which is
 located in the <guibutton>Model-&gt;Biochemical</guibutton> branch
 directly below the <guibutton>Compartments</guibutton> branch. Here
 again you see a table, but this table consists of eight columns. This
-is due to the fact that a metabolite has more parameters than a
+is due to the fact that a species has more parameters than a
 compartment. The <guilabel>Status</guilabel> and
 <guilabel>Name</guilabel> columns should already be familiar from the
 compartments table. The other six columns specify the initial
-concentration of the metabolite, the transient concentration and if
-the metabolite is fixed (i.e. its concentration does not change during
+concentration of the species, the transient concentration and if
+the species is fixed (i.e. its concentration does not change during
 the course of a simulation). The second <guilabel>Status</guilabel>
 column might be a little confusing, but it indicates whether the
-metabolite is an independent or a dependent metabolite as opposed to
+species is an independent or a dependent species as opposed to
 the first <guilabel>Status</guilabel> column that indicates whether a
-metabolite has been added to the model yet or is about to be deleted
+species has been added to the model yet or is about to be deleted
 from the model as described in the <xref linkend="addingCompartments"
 /> section. The column named <guilabel>Compartment</guilabel> shows
-the name of the compartment the metabolite belongs to and the
+the name of the compartment the species belongs to and the
 <guilabel>Rate</guilabel> column shows the reaction rate of the
-metabolite. For newly created metabolites the rate will be empty since
+species. For newly created species the rate will be empty since
 it needs to be calculated first, e.g. during a <link
 linkend="calculatingTrajectory">time course simulation</link>.
 </para>
 <para>
-When a metabolite is added and the model does not contain a
+When a species is added and the model does not contain a
 compartment yet, COPASI will automatically add a new compartment to
-the model and the metabolite will be added to this compartment. If
-there already is one or more compartments, the metabolite will be
+the model and the species will be added to this compartment. If
+there already is one or more compartments, the species will be
 added to the first compartment in the list. This can be changed
 later. 
 </para>
 <para>
-To add a new metabolite you have the same three ways as for adding
+To add a new species you have the same three ways as for adding
 compartments and if you are not familiar with those, I recommend
 reading the <xref linkend="addingCompartments" /> section.
 </para> 
@@ -641,44 +646,44 @@ reading the <xref linkend="addingCompartments" /> section.
 <screeninfo>Produced with COPASI Build 18 on Linux on 05/18/2006</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/Metabolites_02.png" format="PNG" scale="50" align="center" />
+  <imagedata fileref="images/Species_02.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/Metabolites_02.ps" format="EPS" scale="50" align="center" />
+  <imagedata fileref="images/Species_02.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>dialog for changing metabolite parameters</phrase>
+   <phrase>dialog for changing species parameters</phrase>
  </textobject>
  <caption>
-  <para>metabolite definition dialog</para>
+  <para>species definition dialog</para>
  </caption> 
 </mediaobject>
 </screenshot>
 </para>
 <para>
-Editing the parameters of a metabolite also works exactly the way it
-does for compartments. Either you double click on a metabolite entry
-in the table, or you use the object tree to navigate to the metabolite
-leaf you intend to edit. Some of the parameters of a metabolite like
+Editing the parameters of a species also works exactly the way it
+does for compartments. Either you double click on a species entry
+in the table, or you use the object tree to navigate to the species
+leaf you intend to edit. Some of the parameters of a species like
 the <guilabel>Model Status</guilabel> are calculated automatically and
 can not be changed by the user. The parameters that you can change are
-the <guilabel>Name</guilabel> of the metabolite, the
+the <guilabel>Name</guilabel> of the species, the
 <guilabel>Compartment</guilabel> it belongs to, whether it is a fixed
-metabolite and its <guilabel>initial concentration</guilabel>. Instead
+species and its <guilabel>initial concentration</guilabel>. Instead
 of changing the <guilabel>initial concentration</guilabel>, you can
 also change the <guilabel>initial particle number</guilabel>. If you
 change one of those two, the other will be updated automatically. The
 volume to calculate particle numbers from concentration and vice versa
-comes from the compartment associated with the metabolite. The list at
-the bottom of the metabolite widget shows the reactions in which this
-metabolite participates. 
+comes from the compartment associated with the species. The list at
+the bottom of the species widget shows the reactions in which this
+species participates. 
 </para>
 </sect1>
 <sect1 id="addingReactions" xreflabel="Reactions">
 <title>Reactions</title>
 <para>
 Again adding reactions essentially works the same way as adding
-compartments or metabolites. When you navigate to the
+compartments or species. When you navigate to the
 <guibutton>Reactions</guibutton> branch of the object tree which is
 located under the <guibutton>Model-&gt;Biochemical</guibutton> branch,
 you will see a table with five columns. The first two are again
@@ -718,21 +723,21 @@ equation, you hit the return key and automatically land in the next
 row where you can type the next reaction equation. This way you can
 enter all the reactions that make up your model. When you are finished
 with typing the reaction equations, you commit all the reactions. If
-any of the reactions contain metabolites that are not already present
+any of the reactions contain species that are not already present
 in the model, they are added automatically. If there was no
 compartment before, a compartment is also added and all new
-metabolites get added to this compartment. If there is already one or
-more compartments, all new metabolites get added to the first
+species get added to this compartment. If there is already one or
+more compartments, all new species get added to the first
 compartment that is listed in the object tree. 
 </para>
 <caution>
 <para>
-When typing reaction equations you should keep in mind that metabolite
+When typing reaction equations you should keep in mind that species
 names in COPASI can contain characters like "+" or even
 white-spaces. Since these characters would make it very hard if not
 impossible to parse the chemical reaction equation, you have to place
-those metabolite names in double quotes. E.g. "Metabolite 1" +
-"Metabolite 2" -> "Metabolite 3". No matter if your species names
+those species names in double quotes. E.g. "Species 1" +
+"Species 2" -> "Species 3". No matter if your species names
 contain special characters or not, the species names have to be
 separated from the reaction symbols ( "+" , "=" and "->" ) by
 white-spaces. 
@@ -815,8 +820,8 @@ be specified. Chemical equations have a simple schema. First you state
 all the substrates separated by  "+" characters. Please make sure that
 you separate the name of the substrate and the "+" character by at
 least one space character, otherwise COPASI will interpret the "+"
-sign as belonging to the metabolites name. (Having the "+" character
-as part of a metabolites name is allowed in COPASI!) after the list of
+sign as belonging to the species name. (Having the "+" character
+as part of a species name is allowed in COPASI!) after the list of
 substrates, you specify either an equals ("=") character if the
 reaction is reversible or the character combination "-&gt;" if the
 reaction is irreversible. This is followed by the list of products
@@ -828,11 +833,11 @@ products may also be empty, but at least one of them must be
 present. Lets look at two examples: 
 <orderedlist numeration="loweralpha" >
 <listitem><para>
-Metabolite A is irreversibly converted into Metabolite B. The chemical
+Species A is irreversibly converted into Species B. The chemical
 equation you would type is "A -&gt; B".
 </para></listitem> 
 <listitem><para>
-Metabolite A and B are reversibly converted to Metabolite C, the
+Species A and B are reversibly converted to Species C, the
 reaction has 2 modifiers C and D. The chemical equation for this in
 COPASI would be: "A + B = C; C D"</para><para>Note that one of the
 modifiers is the product!
@@ -967,9 +972,9 @@ which is located right underneath the <guilabel>Global
 Quantities</guilabel> leaf. This widget allows you to view and edit
 all parameters of the model in one place. This saves you from moving
 around the model tree if you e.g. first have to edit the initial
-concentrations for some metabolites and afterward parameters of one or
+concentrations for some species and afterward parameters of one or
 more reactions. The view shows you the initial concentrations for the
-metabolites at the top followed by the initial time and the volumes of
+species at the top followed by the initial time and the volumes of
 all the compartments and at the bottom the kinetic parameters of all
 reactions. In order to change some value, you double click on it which
 lets you input a new value. On hitting the return key or clicking
@@ -2048,7 +2053,7 @@ Next you have to define the objects that you want to appear in the
 report. There are two modes to define a report definition. Per
 default, the report is laid out as a table. E.g. the report for a time
 course simulation will write one line per time step and each line will
-typically contain the time followed by one or more metabolite
+typically contain the time followed by one or more species
 concentrations. In the advanced mode, which you enter by clicking on
 the button labeled <guibutton>Advanced</guibutton>, the report is
 split up into three sections, a header, a body and a footer. You can
@@ -2142,28 +2147,28 @@ tree. So if you select some object, you should not be surprised, if
 more than the selected object suddenly change their selection
 state. E.g. if you select the whole
 <guibutton>Compartments</guibutton> subtree of your model, all the
-metabolites which are part of the compartments get selected as well
+species which are part of the compartments get selected as well
 which means that on selecting the <guibutton>Compartments</guibutton>
-branch, the whole <guibutton>Metabolites</guibutton> branch changes
+branch, the whole <guibutton>Species</guibutton> branch changes
 its state to selected.
 </para>
 <para>
 Let's assume you want to define the report for a trajectory task. In
 this case, you will probably want the time and some or all of the
-transient concentrations of the metabolites in your report. The time
+transient concentrations of the species in your report. The time
 for the time course is the last item in the model branch, you select
 it by clicking on the check box in front of the name. If you want to
-add the concentrations of all metabolites, you open the
-<guibutton>Metabolites</guibutton> sub-branch in the
+add the concentrations of all species, you open the
+<guibutton>Species</guibutton> sub-branch in the
 <guibutton>Model</guibutton> branch and open the <guibutton>Select by
 attribute</guibutton> branch. There you can select the
 <guibutton>Concentration</guibutton> attribute. Selecting the
 <guibutton>Concentration</guibutton> attribute will select the
-concentrations for all metabolites. If you only want to have some of
-the metabolites in your report, you open the sub-branches of the
-metabolites you want in the <guibutton>Metabolites</guibutton> branch
+concentrations for all species. If you only want to have some of
+the species in your report, you open the sub-branches of the
+species you want in the <guibutton>Species</guibutton> branch
 and select the <guibutton>Concentration</guibutton> attribute only for
-those metabolites. If your model contains many metabolites and you
+those species. If your model contains many species and you
 want to have all but one in your report, it is often easier to first
 select all concentrations via the <guibutton>Select by
 attribute</guibutton> branch and then deselect the ones you don't
@@ -2248,7 +2253,7 @@ task, e.g. for the time course once every time step and the footer is
 written once after the task has finished. In this sense, the standard
 table report definition is nothing but an advanced report definition
 with a title header and a body that consists of the time and some
-metabolite concentrations separated by separator items. The footer is
+species concentrations separated by separator items. The footer is
 empty. If you write your own advanced report definition, you are
 responsible to add separator tags where appropriate. An advantage to
 the standard report definition is that you can add arbitrary text to
@@ -2268,7 +2273,7 @@ definition dialog.
 <title>Plots</title>
 <para>
 Plotting is another form of output that COPASI can do. Most of the
-time, you probably want to plot some or all of the metabolites
+time, you probably want to plot some or all of the species
 concentrations during a time course simulation and as described above,
 this is easiest done by choosing that predefined plot template from
 the <link linkend="outputAssistant">Output Assistant</link>. But since
@@ -2291,7 +2296,7 @@ to be drawn along the x axis. For a plot of concentration against time
 this would be the simulation time. The right tree is again a
 multi-selection tree that lets you specify what is to be drawn along
 the y-axis. Again for a plot of concentrations against time this would
-be one or more concentrations of metabolites. Just as described for
+be one or more concentrations of species. Just as described for
 the report definitions, you can switch between a simple tree and the
 full tree, but for most plots the simple tree will be enough.
 </para>
@@ -2501,7 +2506,7 @@ linkend="outputGeneration" /> section or you use the default report
 named "Steady State". The default report prints a message telling
 whether a steady state was found. It also reports the concentration,
 concentration rate, particle number, particle number rate, and
-transition time of all metabolites as well as the flux for all
+transition time of all species as well as the flux for all
 reactions. The easiest way to get a customized output is probably to
 use the output assistant which you activate via the <guibutton>Output
 Assistant</guibutton> button. This is described in the <xref
@@ -2819,10 +2824,10 @@ the object tree. In this widget you can choose whether you want the
 results to be displayed as concentrations or as particle numbers and
 you have the possibility to store the results to a file. The advantage
 a report has over writing a file in the results widget is that you can
-choose exactly which metabolite concentrations you want to store
-whereas the results dialog always stores all metabolites
+choose exactly which species concentrations you want to store
+whereas the results dialog always stores all species
 concentrations. You also can't change the order in which the
-metabolite concentrations are written if you store the result from
+species concentrations are written if you store the result from
 this dialog.
 </para>
 <sect2 id="workingWithPlots" xreflabel="Working with Plots">
@@ -3010,7 +3015,7 @@ the corresponding widget will be displayed. The first input field in
 the widget labeled <guilabel>Number of exponents</guilabel> lets you
 specify how many Lyapunov Exponents are to be calculated. This number
 should be between 1 and the number of independent variables in the
-system (that is the number of metabolites that are not constant minus
+system (that is the number of species that are not constant minus
 the number of mass conservation relations). If you specify a number
 that is higher than the number of independent variables in the system,
 COPASI will issue a warning telling you to lower the number and it
@@ -3618,7 +3623,7 @@ In addition to parameters COPASI knows also about
 constraints. Constraints are applied to the solution. i.e., they are
 evaluated after the simulation which can currently be either a time
 course or a steady state calculation. A possible constraint could be
-that the steady state concentration of a metabolite has to be within a
+that the steady state concentration of a species has to be within a
 certain range that can b specified by the user. The widget for
 specifying these constraints can be found under the tab called
 <guilabel>Constraints</guilabel> and the constraints are specified in
@@ -4215,7 +4220,7 @@ C source code, XPPaut, or Berkeley Madonna files.
 Notes and Annotations from the original SBML file should be preserved when you import and reexport an SBML file as long as you do not delete the objects that contain the annotation in COPASI. But still if you have important annotations or notes in your SBML file make a backup of the file before you open it in COPASI since we can not guarantee that they will survive an import/export cycle.
 </para>
 <para>Likewise, SBML does not support all of the elements of a COPASI model so some information from the COPASI model also gets lost when exporting an SBML file. For example tasks, reports and plot definitions are not exported to the SBML file.</para>
-<para>This is normally not a big problem since the essential parts of a model normally get imported or exported. A consequence however one should keep in mind is that if you import an SBML file into COPASI and later export it again, it might have lost some of the original information. So if your SBML model depends on rules on metabolites and compartments and events, it is not suitable for import into COPASI. This will change in future versions of COPASI.
+<para>This is normally not a big problem since the essential parts of a model normally get imported or exported. A consequence however one should keep in mind is that if you import an SBML file into COPASI and later export it again, it might have lost some of the original information. So if your SBML model depends on rules on species and compartments and events, it is not suitable for import into COPASI. This will change in future versions of COPASI.
 </para>
 <para>
 We hope that we will be able to support even more different file
@@ -4303,9 +4308,9 @@ The file contains the following sections:
  </row>
  <row>
    <entry>METABOLITES</entry>
-   <entry>Contains assignments for the metabolites initial
+   <entry>Contains assignments for the species initial
    concentrations. The assignments are of the form y[INDEX]=VALUE
-   where INDEX is the index of the metabolite and VALUE is the initial
+   where INDEX is the index of the species and VALUE is the initial
    concentration. This assumes that the including code has generated
    an array of double values of size N_METABS called y. N_METABS is
    part of the SIZE_DEFINITIONS section (see SIZE_DEFINITIONS
@@ -4313,9 +4318,9 @@ The file contains the following sections:
  </row>
  <row>
    <entry>INDEP_METABOLITES</entry>
-   <entry>Contains assignments for the independent metabolites initial
+   <entry>Contains assignments for the independent species initial
    concentrations. The assignments are of the form x[INDEX]=VALUE
-   where INDEX is the index of the independent metabolite and VALUE is
+   where INDEX is the index of the independent species and VALUE is
    the initial concentration. This assumes that the including code has
    generated an array of double values of size N_INDEP_METABS called
    x. N_INDEP_METABS is part of the SIZE_DEFINITIONS section (see
@@ -4325,8 +4330,8 @@ The file contains the following sections:
    <entry>MOIETY</entry>
    <entry>Contains assignments for the moieties. The assignments are
    of the form y[INDEX]=RSIDE where INDEX is the index of the
-   metabolite and RSIDE is the calculated value for the moiety,
-   e.g. 0.2 - y[INDEX2]. y is the vector of metabolites (see
+   species and RSIDE is the calculated value for the moiety,
+   e.g. 0.2 - y[INDEX2]. y is the vector of species (see
    METABOLITES above).</entry> 
  </row>
  <row>

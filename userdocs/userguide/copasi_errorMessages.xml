@@ -1,13 +1,18 @@
 <!-- Please don't remove, I want to use this to easily be able to check if messages has been changed in order to be able to update this file. -->
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_errorMessages.xml,v $ -->
-<!--   $Revision: 1.8 $ -->
+<!--   $Revision: 1.8.4.1 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: shoops $ -->
-<!--   $Date: 2007/10/29 13:17:20 $ -->
+<!--   $Date: 2008/01/23 20:23:11 $ -->
 <!-- End CVS Header -->
 
-<!-- Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Properties, Inc., EML Research, gGmbH, University of Heidelberg, -->
+<!-- and The University of Manchester. -->
+<!-- All rights reserved. -->
+
+<!-- Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual -->
 <!-- Properties, Inc. and EML Research, gGmbH. -->
 <!-- All rights reserved. -->
 
@@ -171,8 +176,8 @@ CReaction is COPASIs internal reaction representation. Many of the error message
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>CReaction (4)</para></listitem></varlistentry>
-<varlistentry><term>Error Message:</term><listitem><para> Only Metabolites, Compartments or Parameter object nodes are allowed in kinetic functions.</para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>In kinetic functions, only references to compartments, metabolites and/or parameters are allowed. For explicit time dependent models, time can also be referenced from a kinetic function. If this error message occurs, COPASI has found a reference that is neither a reference to a compartment, a metabolite, a parameter or the time.</para></listitem></varlistentry>
+<varlistentry><term>Error Message:</term><listitem><para> Only Species, Compartments or Parameter object nodes are allowed in kinetic functions.</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>In kinetic functions, only references to compartments, species and/or parameters are allowed. For explicit time dependent models, time can also be referenced from a kinetic function. If this error message occurs, COPASI has found a reference that is neither a reference to a compartment, a species, a parameter or the time.</para></listitem></varlistentry>
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>CReaction (5)</para></listitem></varlistentry>
@@ -186,7 +191,7 @@ CReaction is COPASIs internal reaction representation. Many of the error message
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>CReaction (7)</para></listitem></varlistentry>
-<varlistentry><term>Error Message:</term><listitem><para> Metabolite object 'OBJECTNAME' is neither substrate, product nor modifier to reaction 'REACTIONNAME' but it is used in the kinetic law.</para></listitem></varlistentry>
+<varlistentry><term>Error Message:</term><listitem><para> Species object 'OBJECTNAME' is neither substrate, product nor modifier to reaction 'REACTIONNAME' but it is used in the kinetic law.</para></listitem></varlistentry>
 <varlistentry><term>Description:</term><listitem><para>During SBML import COPASI found a name in a kinetic law that is neither a parameter, a substrate, product or modifier to the reaction. The most likely cause for this that a modifier has not been declared in the listOfModifiers of the reaction.</para></listitem></varlistentry>
 </variablelist>
 <variablelist>
@@ -757,7 +762,7 @@ If COPASI finds a species reference in a reaction that has the hasOnlySubstanceU
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>SBML (45)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para>Compartment \"%s\" does not set the initial volume. Volume has been set to 1.0.</para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>COPASI has found a compartment in the model that does not specify an initial volume. Since COPASI needs this information, it would normally not be able to read those models. In certain cases when all metabolites of the compartment in question have the hasOnylSubstanceUnits flag set, it is save to set the volume of that compartment to 1.0 in order to be able to read the model.</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>COPASI has found a compartment in the model that does not specify an initial volume. Since COPASI needs this information, it would normally not be able to read those models. In certain cases when all species of the compartment in question have the hasOnylSubstanceUnits flag set, it is save to set the volume of that compartment to 1.0 in order to be able to read the model.</para></listitem></varlistentry>
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>SBML (46)</para></listitem></varlistentry>
