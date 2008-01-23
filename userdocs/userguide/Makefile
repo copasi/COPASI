@@ -32,8 +32,8 @@ IMAGES = images/Compartments_01.png \
          images/MCATask_03.png \
          images/MassConservationTask_01.png \
          images/MassConservationTask_02.png \
-         images/Metabolites_01.png \
-         images/Metabolites_02.png \
+         images/Species_01.png \
+         images/Species_02.png \
          images/ParameterEstimation_01.png \
          images/ParameterEstimation_02.png \
          images/ParameterEstimation_05.png \
