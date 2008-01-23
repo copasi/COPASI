@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.cpp,v $
-//   $Revision: 1.38.4.1 $
+//   $Revision: 1.38.4.2 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/01/18 14:32:42 $
+//   $Author: shoops $
+//   $Date: 2008/01/23 18:27:53 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,10 +17,10 @@
 
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.cpp,v $
-   $Revision: 1.38.4.1 $
+   $Revision: 1.38.4.2 $
    $Name:  $
-   $Author: gauges $
-   $Date: 2008/01/18 14:32:42 $
+   $Author: shoops $
+   $Date: 2008/01/23 18:27:53 $
    End CVS Header */
 
 // Copyright � 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -127,13 +127,17 @@ void COptions::init(C_INT argc, char *argv[])
      setValue("OptionId", Options.OptionID); */
 
   if (Options.Tmp != "") setValue("Tmp", Options.Tmp);
+  setValue("NoLogo", Options.NoLogo);
+  setValue("Validate", Options.Validate);
   setValue("Verbose", Options.Verbose);
   setValue("License", Options.License);
   setValue("Save", localeToUtf8(Options.Save));
   setValue("ImportSBML", localeToUtf8(Options.ImportSBML));
   setValue("ExportSBML", localeToUtf8(Options.ExportSBML));
+  setValue("SBMLSchema", Options.SBMLSchema);
   setValue("NewExportSBML", localeToUtf8(Options.NewExportSBML));
   setValue("ExportC", localeToUtf8(Options.ExportC));
+  setValue("ExportXPPAUT", localeToUtf8(Options.ExportXPPAUT));
   setValue("ExportBerkeleyMadonna", localeToUtf8(Options.ExportBerkeleyMadonna));
 
 #ifdef COPASI_LICENSE_COM

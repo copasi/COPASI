@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptionParser.cpp,v $
-//   $Revision: 1.22.14.2 $
+//   $Revision: 1.22.14.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/19 03:57:00 $
+//   $Date: 2008/01/23 18:27:52 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -47,6 +47,7 @@ namespace
     "                                default is copasi in the ConfigDir.\n"
     "  --exportBerkeleyMadonna file  The Berkeley Madonna file to export.\n"
     "  --exportC file                The C code file to export.\n"
+    "  --exportXPPAUT file           The XPPAUT file to export.\n"
     "  --home dir                    Your home directory.\n"
     "  --license                     Display the license.\n"
     "  --newExportSBML string        The SBML file to export.\n"
@@ -191,6 +192,8 @@ void copasi::COptionParser::finalize (void)
           throw option_error("missing value for 'exportC' option");
         case option_ExportSBML:
           throw option_error("missing value for 'exportSBML' option");
+        case option_ExportXPPAUT:
+          throw option_error("missing value for 'exportXPPAUT' option");
         case option_Home:
           throw option_error("missing value for 'home' option");
         case option_ImportSBML:
@@ -447,6 +450,18 @@ void copasi::COptionParser::parse_long_option (const char *option, int position,
       state_ = state_value;
       return;
     }
+  else if (strcmp(option, "exportXPPAUT") == 0)
+    {
+      if (source != source_cl) throw option_error("the 'exportXPPAUT' option is only allowed on the command line");
+      if (locations_.ExportXPPAUT)
+        {
+          throw option_error("the 'exportXPPAUT' option is only allowed once");
+        }
+      openum_ = option_ExportXPPAUT;
+      locations_.ExportXPPAUT = position;
+      state_ = state_value;
+      return;
+    }
   else if (strcmp(option, "home") == 0)
     {
       if (source != source_cl) throw option_error("the 'home' option is only allowed on the command line");
@@ -634,6 +649,11 @@ void copasi::COptionParser::parse_value (const char *value)
         options_.ExportSBML = value;
       }
       break;
+    case option_ExportXPPAUT:
+      {
+        options_.ExportXPPAUT = value;
+      }
+      break;
     case option_Home:
       {
         options_.Home = value;
@@ -750,6 +770,9 @@ namespace
 
     if (name_size <= 10 && name.compare("exportSBML") == 0)
       matches.push_back("exportSBML");
+
+    if (name_size <= 12 && name.compare("exportXPPAUT") == 0)
+      matches.push_back("exportXPPAUT");
 
     if (name_size <= 4 && name.compare("home") == 0)
       matches.push_back("home");

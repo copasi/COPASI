@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptionParser.h,v $
-//   $Revision: 1.17.14.2 $
+//   $Revision: 1.17.14.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/19 03:57:00 $
+//   $Date: 2008/01/23 18:27:53 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -75,6 +75,7 @@ namespace copasi
       std::string ExportBerkeleyMadonna;
       std::string ExportC;
       std::string ExportSBML;
+      std::string ExportXPPAUT;
       std::string Home;
       std::string ImportSBML;
       bool License;
@@ -103,6 +104,7 @@ namespace copasi
       size_type ExportBerkeleyMadonna;
       size_type ExportC;
       size_type ExportSBML;
+      size_type ExportXPPAUT;
       size_type Home;
       size_type ImportSBML;
       size_type License;
@@ -206,6 +208,7 @@ namespace copasi
         option_NewExportSBML,
         option_ExportBerkeleyMadonna,
         option_ExportC,
+        option_ExportXPPAUT,
         option_RegistrationCode,
         option_RegisteredEmail,
         option_RegisteredUser
