@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CCopasiSimpleSelectionTree.cpp,v $
-//   $Revision: 1.24.4.1 $
+//   $Revision: 1.24.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/22 18:51:21 $
+//   $Date: 2008/01/24 21:20:59 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -553,9 +553,9 @@ bool CCopasiSimpleSelectionTree::filter(const SelectionFlag & flag, const CCopas
       if (!pObject->isValueDbl() && !pObject->isValueInt())
         return false;
     }
-  else if ((flag & DOUBLE) && !pObject->isValueDbl())
+  else if ((flag & BASE_DOUBLE) && !pObject->isValueDbl())
     return false;
-  else if ((flag & INTEGER) && !pObject->isValueInt())
+  else if ((flag & BASE_INTEGER) && !pObject->isValueInt())
     return false;
 
   if (pObject->isReference())
@@ -579,17 +579,17 @@ bool CCopasiSimpleSelectionTree::filter(const SelectionFlag & flag, const CCopas
 
           // CModelEntity are handled differently dependent on the type
           // of EXPRESSION.
-          if (flag & EXPRESSION)
+          if (flag & BASE_EXPRESSION)
             {
               // TRANSIENT_EXPRESSION
-              if (flag & TRANSIENT)
+              if (flag & BASE_TRANSIENT)
                 {
                   if (pEntity->getStatus() == CModelEntity::FIXED &&
                       pObject->getObjectName().compare(0, 7, "Initial") == 0)
                     return false;
                 }
               // INITIAL_EXPRESSION
-              else if (flag & INITIAL)
+              else if (flag & BASE_INITIAL)
                 {
                   if (pEntity->getStatus() != CModelEntity::ASSIGNMENT &&
                       pObject->getObjectName().compare(0, 7, "Initial") != 0)
@@ -601,12 +601,12 @@ bool CCopasiSimpleSelectionTree::filter(const SelectionFlag & flag, const CCopas
             }
 
           // INITIAL_VALUE
-          if ((flag & INITIAL)
+          if ((flag & BASE_INITIAL)
               && pObject->getObjectName().compare(0, 7, "Initial") != 0)
             return false;
 
           // TRANSIENT_VALUE
-          if ((flag & TRANSIENT)
+          if ((flag & BASE_TRANSIENT)
               && pObject->getObjectName().compare(0, 7, "Initial") == 0)
             return false;
 
@@ -620,9 +620,9 @@ bool CCopasiSimpleSelectionTree::filter(const SelectionFlag & flag, const CCopas
 
       if (pReaction)
         {
-          // INITIAL_VALUE
-          if ((flag & INITIAL) &&
-              !(flag & EXPRESSION))
+          // These are transient values which may be used in expressions.
+          if ((flag & BASE_INITIAL) &&
+              !(flag & BASE_EXPRESSION))
             return false;
 
           // Every other value of CReaction is valid.
@@ -635,17 +635,21 @@ bool CCopasiSimpleSelectionTree::filter(const SelectionFlag & flag, const CCopas
 
       if (pReaction)
         {
-          if (!(flag & EXPRESSION) &&
-              (flag & TRANSIENT))
+          // Local reaction parameters may not be used in any expression in the model.
+          if ((flag & BASE_MODEL))
+            return false;
+
+          // These are initial values which may be used in expressions.
+          if (!(flag & BASE_EXPRESSION) &&
+              (flag & BASE_TRANSIENT))
             return false;
 
           return true;
         }
     }
-  // CCopasiTimer may not be used for initial or transient values.
+  // CCopasiTimer may not be used in the model.
   else if (dynamic_cast< const CCopasiTimer * >(pObject) &&
-           !(flag & EXPRESSION) &&
-           ((flag & INITIAL) || (flag & TRANSIENT)))
+           (flag & BASE_MODEL))
     return false;
 
   // All tests passed :)

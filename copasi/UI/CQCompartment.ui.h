@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQCompartment.ui.h,v $
-//   $Revision: 1.7.4.1 $
+//   $Revision: 1.7.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/22 18:51:21 $
+//   $Date: 2008/01/24 21:20:59 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -50,6 +50,7 @@ void CQCompartment::init()
 
   mpMetaboliteTable->header()->hide();
 
+  mpEditExpression->setExpressionType(CCopasiSimpleSelectionTree::TRANSIENT_EXPRESSION);
   mpEditInitialExpression->setExpressionType(CCopasiSimpleSelectionTree::INITIAL_EXPRESSION);
 }
 

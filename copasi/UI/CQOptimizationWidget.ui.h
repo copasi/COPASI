@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQOptimizationWidget.ui.h,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.21.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/01 17:51:00 $
+//   $Date: 2008/01/24 21:21:00 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -161,6 +166,8 @@ void CQOptimizationWidget::slotConstraintNumberChanged(int number)
 void CQOptimizationWidget::init()
 {
   mpHeaderWidget->setTaskName("Optimization");
+
+  mpEditExpression->setExpressionType(CCopasiSimpleSelectionTree::OBJECTIVE_EXPRESSION);
 
   CQOptimizationWidgetLayout->insertWidget(0, mpHeaderWidget);
   CQOptimizationWidgetLayout->addWidget(mpBtnWidget);
