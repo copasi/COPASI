@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDirEntry.cpp,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.23.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/02 23:38:57 $
+//   $Date: 2008/01/24 17:20:29 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -216,6 +221,13 @@ bool CDirEntry::move(const std::string & from,
   // filename of from
   if (isDir(To))
     To += Separator + fileName(from);
+  if (isDir(To)) return false;
+
+#ifdef WIN32
+  // The target must not exist under WIN32 for rename to succeed.
+  if (exist(To) && !remove(To))
+    return false;
+#endif // WIN32
 
   bool success =
     (rename(utf8ToLocale(from).c_str(), utf8ToLocale(To).c_str()) == 0);
