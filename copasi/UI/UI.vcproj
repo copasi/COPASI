@@ -130,6 +130,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CQBarChart.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CQBarChart.h"
+				>
+			</File>
+			<File
 				RelativePath="CQCompartment.cpp"
 				>
 			</File>
@@ -138,7 +146,35 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CQDifferentialEquations.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CQDifferentialEquations.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CQDifferentialEquations.ui.h"
+				>
+			</File>
+			<File
 				RelativePath="CQEFMWidget.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CQEventsWidget.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CQEventsWidget.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CQEventWidget1.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CQEventWidget1.h"
 				>
 			</File>
 			<File
@@ -171,6 +207,30 @@
 			</File>
 			<File
 				RelativePath="CQFittingWidget.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CQFunctionBottomWidget.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CQFunctionBottomWidget.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CQFunctionBottomWidget.ui.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CQFunctionTopWidget.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CQFunctionTopWidget.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CQFunctionTopWidget.ui.h"
 				>
 			</File>
 			<File
@@ -238,6 +298,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CQSBMLFileDialog.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CQSBMLFileDialog.h"
+				>
+			</File>
+			<File
 				RelativePath="CQSensResultWidget.cpp"
 				>
 			</File>
@@ -263,6 +331,38 @@
 			</File>
 			<File
 				RelativePath="CQTrajectoryWidget.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CQTSSAResultSubWidget.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CQTSSAResultSubWidget.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CQTSSAResultSubWidget.ui.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CQTSSAResultWidget.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CQTSSAResultWidget.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CQTSSAWidget.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CQTSSAWidget.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CQTSSAWidget.ui.h"
 				>
 			</File>
 			<File
