@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CRDFListViewItem.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/01/24 16:08:50 $
+//   $Author: urost $
+//   $Date: 2008/01/25 10:34:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -11,7 +11,7 @@
 // and The University of Manchester.
 // All rights reserved.
 
-#include "UI/qtutilities.h"
+#include "UI/qtUtilities.h"
 
 #include "CRDFListViewItem.h"
 #include "CRDFListView.h"
