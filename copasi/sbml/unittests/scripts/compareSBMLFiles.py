@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/scripts/compareSBMLFiles.py,v $ 
-#   $Revision: 1.4 $ 
+#   $Revision: 1.5 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2008/01/19 20:14:49 $ 
+#   $Date: 2008/01/28 14:33:50 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -107,10 +107,10 @@ def findRules(dom):
         sys.exit(1)
     if(len(listOfRules)==1):
         listOfRules=listOfRules[0]
-    tagNames=["rateRule","assignmentRule","algebraicRule"]
-    for child in listOfRules.childNodes: 
-      if(child.tagName in tagNames):
-        result.append(child)
+        tagNames=["rateRule","assignmentRule","algebraicRule"]
+        for child in listOfRules.childNodes: 
+          if(child.nodeName in tagNames):
+             result.append(child)
     return result
 
 def compareEntities(e1,e2,attributes):
@@ -140,11 +140,11 @@ def compareUnitDefinitions(unitdefinitions1,unitdefinitions2,filename1,filename2
 
 
 def compare2UnitDefinitions(unitDefinition1,unitDefinition2,filename1,filename2):
-   name1=unitdefinition1.getAttribute("name") 
-   name2=unitdefinition2.getAttribute("name")
+   name1=unitDefinition1.getAttribute("name") 
+   name2=unitDefinition2.getAttribute("name")
    if(name1!=name2):
      print "the names of "+unitDefinition1.getAttribute("id")+" and "+unitdefinition2.getAttribute("id")+" differ."
-   compareChildren(unitdefinition1,unitdefinition2)
+   compareChildren(unitDefinition1,unitDefinition2)
 
 def compareChildren(node1,node2):
     result=1
@@ -231,7 +231,7 @@ def compareFunctionDefinitions(functions1,functions2,filename1,filename2):
                     functionTemp=functions1[key2]
                     if(compareChildren(function2,functionTemp)==0):
                         maps[0][key1]=key2
-                        maps[1][key2]=key
+                        maps[1][key2]=key1
                         del functions2[key2]
                         break
 
@@ -240,6 +240,7 @@ def compareFunctionDefinitions(functions1,functions2,filename1,filename2):
             continue
     else:
         function2=functions2[key1]
+        key2=key1
         if(compareChildren(function1,function2)==1):
             maps[0][key1]=key2
             maps[1][key2]=key1
@@ -269,7 +270,7 @@ def compareFunctionDefinitions(functions1,functions2,filename1,filename2):
                 continue
   #pdb.set_trace()
   for key in maps[0].keys():
-    print "Fnction Definition "+key+" in file "+filename1+" maps to function definition "+maps[0][key]+" in file "+filename2
+    print "Function definition "+key+" in file "+filename1+" maps to function definition "+maps[0][key]+" in file "+filename2
   for key in functions1.keys():
     print "No corresponding function to function with id "+key+" found in "+filename2+"."
   for key in functions2.keys():
@@ -483,11 +484,12 @@ def compare2KineticLaws(kLaw1,kLaw2,reactionId,filename1,filename2):
 
 def compareRules(rules1,rules2,filename1,filename2):
     #pdb.set_trace()
-    ruleMappings=[[][]]
+    ruleMappings=[[],[]]
     for X in range(0,len(rules1)):
         ruleMappings[0].append(-1)
     for X in range(0,len(rules2)):
         ruleMappings[1].append(-1)
+    mappedRules=[]
     for x in range(len(rules1)-1,-1,-1):
         rule1=rules1[x]
         variable1=""
@@ -500,6 +502,8 @@ def compareRules(rules1,rules2,filename1,filename2):
             print "Error. Unknown rule type "+rule1.tagName+" in file "+filename1+"."
             sys.exit(1)
         for y in range(len(rules2)-1,-1,-1):
+            if(y in mappedRules):
+                continue
             rule2=rules2[y]
             variable2=""
             if(rule2.tagName=="assignmentRule" or rule2.tagName=="rateRule"):
@@ -512,7 +516,8 @@ def compareRules(rules1,rules2,filename1,filename2):
                 sys.exit(1)
             if(variable1!="" and variable1==variable2):
                 del rules1[x]
-                del rules2[y]
+                #del rules2[y]
+                mappedRules.append(y)
                 ruleMappings[0][x]=y
                 ruleMappings[1][y]=x
                 if(rule1.tagName != rule2.tagName):
@@ -525,7 +530,8 @@ def compareRules(rules1,rules2,filename1,filename2):
                 # check if the two algebraic rules are the same
                 if(compareChildren(rule1,rule2)==1):
                     del rules1[x]
-                    del rules2[y]
+                    #del rules2[y]
+                    mappedRules.append(y)
                     ruleMappings[0][x]=y
                     ruleMappings[1][y]=x
                     break
@@ -546,6 +552,7 @@ def compareRules(rules1,rules2,filename1,filename2):
             print "No corresponding rule for variable " + variable + " found in file "+filename1 +"."
     if(algebraicCounter!=0):
         print str(algebraicCounter)+" algebraic rules found in file "+filename2+" with no corresponding rule in file "+filename1+"."
+    #pdb.set_trace()
     return ruleMappings
 
 
@@ -650,25 +657,25 @@ def writeReorderedSecond(model2,functionMappings,ruleMappings,outfileName):
             if(id in functionMappings[0].keys()):
               ext=1
               newId="function_"+str(ext)
-              while((newId in functionMappings[0].keys()) or (newId in functionMappings[1].keys()):
+              while((newId in functionMappings[0].keys()) or (newId in functionMappings[1].keys())):
                 ext=ext+1
                 newId="function_"+str(ext)
                 functionDefinition.setAttribute("id",newId)
             functionMappings[1][id]=newId
     # replace all functions calls with calls to the mapped function ids
-    ciNodes=model2.getAttributesByTagName("ci")
+    ciNodes=model2.getElementsByTagName("ci")
     for ciNode in ciNodes:
         for node in ciNode.childNodes:
-            if(node.nodeType==node.TEXT_NODE and node.nodeValue in functionMappings[1].keys()):
-                node.nodeValue=functionMappings[1][nodeValue]
+            if(node.nodeType==node.TEXT_NODE and node.nodeValue.strip() in functionMappings[1].keys()):
+                node.nodeValue=functionMappings[1][node.nodeValue.strip()]
     # bring all rules into the same order as in the first file
-    listOfRules=model.getElementsByTagName("listOfRules")
+    listOfRules=model2.getElementsByTagName("listOfRules")
     if(len(listOfRules)==1):
         listOfRules=listOfRules[0]
         # delete all existing rules
         ruleIndex=0
         reOrderedRules=[]
-        for x in range(0,len(ruleMappings[1]):
+        for x in range(0,len(ruleMappings[1])):
             reOrderedRules.append(None)
         tagNames=["algebraicRule","rateRule","assignmentRule"]
         for child in listOfRules.childNodes:
@@ -682,11 +689,14 @@ def writeReorderedSecond(model2,functionMappings,ruleMappings,outfileName):
                         reOrderedRules[newPosition]=child
                     ruleIndex=ruleIndex+1 
         ruleIndex=0
-        for child in listOfRules.childNodes:
+        #pdb.set_trace()
+        for X in range(0,len(listOfRules.childNodes)):
+            child=listOfRules.childNodes[X]
             if(child.nodeType==child.ELEMENT_NODE):
                 if(child.tagName in tagNames):
-                    listOfRules.replaceChild(child,reOrderedRules[ruleIndex])
-                    ruleIndex=ruleIndex+1
+                  if(child!=reOrderedRules[ruleIndex]):
+                    listOfRules.replaceChild(reOrderedRules[ruleIndex].cloneNode(1),child)
+                ruleIndex=ruleIndex+1
     elif(len(listOfRules)>1):
         print "Error. More than one listOfRules elements found in model."
         sys.exit(1)

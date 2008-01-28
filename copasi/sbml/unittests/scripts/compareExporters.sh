@@ -1,6 +1,6 @@
 #!/bin/bash
 
-COPASIDIR=${HOME}/workspace/copasi_build24
+COPASIDIR=${HOME}/workspace/copasi_build25
 SBMLDIR=${HOME}/Downloads/libsbml-COPASI-24
 BIOMODELSDIR=${HOME}/Downloads/biomodels_25September2007_sbmls
 
@@ -53,8 +53,8 @@ if [ -e ${BIOMODELSDIR} ];then
       fi
       if [ -e ${CPSFILE} ];then
         LOGFILE=result_export/${FILENAME%%.xml}.c2slog;
-        ./convertCPSToSBML.sh $COPASISE $CPSFILE result_export/${FILENAME%%.xml}-old.xml ${LOGFILE}.old;
-        ./convertCPSToNewSBML.sh $COPASISE $CPSFILE result_export/${FILENAME%%.xml}-new.xml ${LOGFILE}.new;
+        ./convertCPSToSBML.sh $COPASISE $CPSFILE result_export/${FILENAME%%.xml}.old.xml ${LOGFILE}.old;
+        ./convertCPSToNewSBML.sh $COPASISE $CPSFILE result_export/${FILENAME%%.xml}.new.xml ${LOGFILE}.new;
         if [ ! -s ${LOGFILE}.old ];then
           rm ${LOGFILE}.old
         fi
@@ -62,59 +62,66 @@ if [ -e ${BIOMODELSDIR} ];then
           rm ${LOGFILE}.new
         fi
         if [ -e result_export/${FILENAME%%.xml}.old.xml ];then
+          /sw/bin/python ./rewriteXML.py result_export/${FILENAME%%.xml}.old.xml ./tmp.xml
+          xmllint --format ./tmp.xml > result_export/${FILENAME%%.xml}.old.xml 
+          rm ./tmp.xml
           if [ -e ${PRINT} ];then
             LOGFILE=statistics/${FILENAME%%.xml}.old.print;
-            $PRINT result_export/${FILENAME%%.xml}-old.xml &> ${LOGFILE};
+            $PRINT result_export/${FILENAME%%.xml}.old.xml &> ${LOGFILE};
           else
             echo "Error. $PRINT does not exist.";
           fi
           if [ -e ${VALIDATE} ];then
             LOGFILE=validation/${FILENAME%%.xml}.exported-old.valid;
-            $VALIDATE result_export/${FILENAME%%.xml}-old.xml &> $LOGFILE;
+            $VALIDATE result_export/${FILENAME%%.xml}.old.xml &> $LOGFILE;
             # remove some of the warnings
             ./filterSBMLWarnings.sh ${LOGFILE}; 
           else
             echo "Error. $VALIDATE does not exist.";
           fi
         else
-          echo "Could not create ${FILENAME%%.xml}-old.xml from $CPSFILE."
+          echo "Could not create ${FILENAME%%.xml}.old.xml from $CPSFILE."
         fi
         if [ -e result_export/${FILENAME%%.xml}.new.xml ];then
-          if [ -e ${PRINT} ];then
+          /sw/bin/python ./compareSBMLFiles.py result_export/${FILENAME%%.xml}.old.xml result_export/${FILENAME%%.xml}.new.xml result_export/${FILENAME%%.xml}.new.reordered.xml 
+          xmllint --format result_export/${FILENAME%%.xml}.new.reordered.xml > ./tmp.xml 
+          mv ./tmp.xml result_export/${FILENAME%%.xml}.new.reordered.xml
+ if [ -e ${PRINT} ];then
             LOGFILE=statistics/${FILENAME%%.xml}.orig.new.print;
-            $PRINT result_export/${FILENAME%%.xml}-new.xml &> ${LOGFILE};
+            $PRINT result_export/${FILENAME%%.xml}.new.xml &> ${LOGFILE};
           else
             echo "Error. $PRINT does not exist.";
           fi
           if [ -e ${VALIDATE} ];then
             LOGFILE=validation/${FILENAME%%.xml}.exported-new.valid;
-            $VALIDATE result_export/${FILENAME%%.xml}-new.xml &> $LOGFILE;
+            $VALIDATE result_export/${FILENAME%%.xml}.new.xml &> $LOGFILE;
             # remove some of the warnings
             ./filterSBMLWarnings.sh ${LOGFILE}; 
           else
             echo "Error. $VALIDATE does not exist.";
           fi
         else
-          echo "Could not create ${FILENAME%%.xml}-new.xml from $CPSFILE."
+          echo "Could not create ${FILENAME%%.xml}.new.xml from $CPSFILE."
         fi
       else
         echo "$CPSFILE could not be created."
       fi
       LOGFILE=result_reexport/${FILENAME%%.xml}.s2slog;
-      ./convertSBMLToSBML.sh $COPASISE $SBMLMODEL result_reexport/${FILENAME%%.xml}-old.xml ${LOGFILE}.old;
-      ./convertSBMLToNewSBML.sh $COPASISE $SBMLMODEL result_reexport/${FILENAME%%.xml-new.xml} ${LOGFILE}.new;
+      ./convertSBMLToSBML.sh $COPASISE $SBMLMODEL result_reexport/${FILENAME%%.xml}.old.xml ${LOGFILE}.old;
+      ./convertSBMLToNewSBML.sh $COPASISE $SBMLMODEL result_reexport/${FILENAME%%.xml}.new.xml ${LOGFILE}.new;
       if [ ! -s ${LOGFILE}.old ];then
         rm ${LOGFILE}.old
       fi
-      if [ ! -e result_reexport/${FILENAME%%.xml}-old.xml ];then
-        echo "${FILENAME%%.xml}-old.xml could not be reexported."
+      if [ ! -e result_reexport/${FILENAME%%.xml}.old.xml ];then
+        echo "${FILENAME%%.xml}.old.xml could not be reexported."
       fi
       if [ ! -s ${LOGFILE}.new ];then
         rm ${LOGFILE}.new
       fi
-      if [ ! -e result_reexport/${FILENAME%%.xml}-new.xml ];then
-        echo "${FILENAME%%.xml}-new.xml could not be reexported."
+      if [ ! -e result_reexport/${FILENAME%%.xml}.new.xml ];then
+        echo "${FILENAME%%.xml}.new.xml could not be reexported."
       fi
+      #/sw/bin/python ./compareSBMLFiles.py result_reexport/${FILENAME%%.xml}.old.xml result_reexport/${FILENAME%%.xml}.new.xml result_reexport/${FILENAME%%.xml}.new.reordered.xml 
       if [ -e ${PRINT} ];then
         LOGFILE=statistics/${FILENAME%%.xml}.orig.print;
         $PRINT $SBMLMODEL &> ${LOGFILE};
