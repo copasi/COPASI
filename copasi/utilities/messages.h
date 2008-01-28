@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.109.2.1.2.2 $
+//   $Revision: 1.109.2.1.2.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/01/22 18:51:20 $
+//   $Author: gauges $
+//   $Date: 2008/01/28 05:29:49 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -170,9 +170,9 @@ const MESSAGES Messages[] =
     {MCSBML + 21, "SBML (21): Setting an initial concentration on species '%s' which is in a compartment with spatial dimensions 0 is not allowed."},
     {MCSBML + 22, "SBML (22): Current versions of COPASI only supports three dimensional compartments. '%s' will be considered to be three dimensional."},
     {MCSBML + 23, "SBML (23): Compartment '%s' has spatial dimensions of 0, setting dimensions to 3.\nConsidering all species in that compartment to have \"hasOnlySubstanceUnits\" flag set."},
-    {MCSBML + 24, "SBML (24): Units for compartment '%s' ignored. Calculations on this model might lead to incorrect result."},
-    {MCSBML + 25, "SBML (25): Units for species '%s' ignored. Calculations on this model might lead to incorrect result."},
-    {MCSBML + 26, "SBML (26): Units for parameter '%s' ignored. Calculations on this model might lead to incorrect result."},
+    {MCSBML + 24, "SBML (24): Units for some compartments were ignored. Units might be displayed incorrectly.\nCompartments: %s"},
+    {MCSBML + 25, "SBML (25): Units for some species were ignored. Units might be displayed incorrectly.\nSpecies: %s"},
+    {MCSBML + 26, "SBML (26): Units for some parameters were ignored. Units might be displayed incorrectly.\nParameters: %s"},
     {MCSBML + 27, "SBML (27): Error in kinetic law for reaction '%s'."},
     {MCSBML + 28, "SBML (28): Error in function definition with id '%s'."},
     {MCSBML + 29, "SBML (29): Unable to handle reactions with the 'fast' flag set.\nThe flag has been set to false."},
@@ -190,7 +190,7 @@ const MESSAGES Messages[] =
     {MCSBML + 41, "SBML (41): No initial value set for species \"%s\". Setting initial concentration to 1.0."},
     {MCSBML + 42, "SBML (42): No initial value set for local parameter \"%s\"."},
     {MCSBML + 43, "SBML (43): No initial value set for global parameter \"%s\". Setting initial value to 1.0"},
-    {MCSBML + 44, "SBML (44): Substance unit in kinetic law for reaction \"%s\" ignored. Calculations on this model might lead to incorrect result."},
+    {MCSBML + 44, "SBML (44): Substance unit in kinetic law for some reactions were ignored. Units might be displayed incorrectly.\nReactions: %s"},
     {MCSBML + 45, "SBML (45): Compartment \"%s\" does not set the initial volume. Volume has been set to 1.0."},
     {MCSBML + 46, "SBML (46): COPASI has changed the following function definitions to take the time as an additional argument instead of the function being directly or indirectly dependent on time:\n \"%s\" ."},
     {MCSBML + 47, "SBML (47): COPASI found a call to the function \"%s\" which has not been defined."},
@@ -199,7 +199,7 @@ const MESSAGES Messages[] =
     {MCSBML + 50, "SBML (50): Could not open file \"%s\"."},
     {MCSBML + 51, "SBML (51): The species \"%s\" is defined by a rate rule and its compartments volume is variable. COPASI will probably interpret this incorrectly."},
     {MCSBML + 52, "SBML (52): The species \"%s\" is defined by a rate expression and its compartments volume is variable. The way COPASI interprets this is differently from the way SBML does."},
-    {MCSBML + 53, "SBML (53): The reaction \"%s\" defines a time unit in its kinetic law which has been ignore. Calculations on this model might lead to incorrect result."},
+    {MCSBML + 53, "SBML (53): The time units of kinetic laws in some reactions were ignored. Units might be displayed incorrectly.\nReactions: %s"},
     {MCSBML + 54, "SBML (54): Error while importing volume unit with id \"%s\"."},
     {MCSBML + 55, "SBML (55): Could not find unit definition for unit with id \"%s\" used in \"%s\" attribute of %s with id \"%s\"."},
     {MCSBML + 56, "SBML (56): There was a problem with the kinetic law in reaction \"%s\". Make sure the math element is not empty."},

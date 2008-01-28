@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.189.2.6.2.2 $
+//   $Revision: 1.189.2.6.2.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/01/22 18:51:23 $
+//   $Author: gauges $
+//   $Date: 2008/01/28 05:29:49 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -374,6 +374,18 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       this->createCModelValueFromParameter(sbmlParameter, this->mpCopasiModel, copasi2sbmlmap);
       ++step;
       if (mpImportHandler && !mpImportHandler->progress(hStep)) return false;
+    }
+  if (!this->mIgnoredParameterUnits.empty())
+    {
+      std::ostringstream os;
+      std::vector<std::string>::iterator errorIt = this->mIgnoredParameterUnits.begin();
+      while (errorIt != this->mIgnoredParameterUnits.end())
+        {
+          os << *errorIt << ", ";
+          ++errorIt;
+        }
+      std::string s = os.str();
+      CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 26, s.substr(0, s.size() - 2).c_str());
     }
   if (sbmlModel->getNumInitialAssignments() > 0)
     {
@@ -2084,7 +2096,8 @@ CModelValue* SBMLImporter::createCModelValueFromParameter(const Parameter* sbmlP
   if (sbmlParameter->isSetUnits())
     {
       /* !!!! create a warning that the units will be ignored. */
-      CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 26, sbmlParameter->getId().c_str());
+      //CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 26, sbmlParameter->getId().c_str());
+      mIgnoredParameterUnits.push_back(sbmlParameter->getId());
       const_cast<Parameter*>(sbmlParameter)->unsetUnits();
     }
   std::string name = sbmlParameter->getName();
@@ -4082,11 +4095,14 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
       // report the actual units used
       // one warning for every entry in nonDefaultCompartment
       std::vector<std::string>::iterator errorIt = nonDefaultCompartments.begin(), errorEndit = nonDefaultCompartments.end();
+      std::ostringstream os;
       while (errorIt != errorEndit)
         {
-          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 24, (*errorIt).c_str());
+          os << *errorIt << ", ";
           ++errorIt;
         }
+      std::string s = os.str();
+      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 24 , s.substr(0, s.size() - 2).c_str());
     }
   inconsistentUnits = false;
   lastUnit = "";
@@ -4253,17 +4269,23 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
       // one warning SBML + 25 for each species in nonDefaultSpecies
       // and one for each KineticLaw in nonDefaultKineticSubstance
       std::vector<std::string>::iterator errorIt = nonDefaultSpecies.begin(), errorEndit = nonDefaultSpecies.end();
+      std::ostringstream os;
       while (errorIt != errorEndit)
         {
-          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 25, (*errorIt).c_str());
+          os << *errorIt << ", ";
           ++errorIt;
         }
+      std::string s = os.str();
+      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 25 , s.substr(0, s.size() - 2).c_str());
+      os.str("");
       errorIt = nonDefaultKineticSubstance.begin(), errorEndit = nonDefaultKineticSubstance.end();
       while (errorIt != errorEndit)
         {
-          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 44, (*errorIt).c_str());
+          os << *errorIt << ", ";
           ++errorIt;
         }
+      s = os.str();
+      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 44 , s.substr(0, s.size() - 2).c_str());
     }
   if (!inconsistentTimeUnits && lastTimeUnits != "" && lastTimeUnits != "time")
     {
@@ -4286,12 +4308,15 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
     {
       // warn about inconsistent time unit
       // one error for each entry in nonDefaultKineticTime
+      std::ostringstream os;
       std::vector<std::string>::iterator errorIt = nonDefaultKineticTime.begin(), errorEndit = nonDefaultKineticTime.end();
       while (errorIt != errorEndit)
         {
-          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 53, (*errorIt).c_str());
+          os << *errorIt << ", ";
           ++errorIt;
         }
+      std::string s = os.str();
+      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 53, s.substr(0, s.size() - 2).c_str());
     }
   // delete the units we created
   delete pTimeUnits;

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-//   $Revision: 1.63.4.1 $
+//   $Revision: 1.63.4.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/01/18 14:32:43 $
+//   $Date: 2008/01/28 05:29:50 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -75,7 +75,7 @@ class SBMLImporter
     std::map<Species*, Compartment*> mSubstanceOnlySpecies;
     bool mFastReactionsEncountered;
     std::set<std::string> mExplicitelyTimeDependentFunctionDefinitions;
-
+    std::vector<std::string> mIgnoredParameterUnits;
     /**
      * Creates and returns a Copasi CModel from the SBMLDocument given as argument.
      */
