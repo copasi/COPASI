@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFParser.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/15 17:45:38 $
+//   $Date: 2008/01/29 20:14:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -66,6 +66,41 @@ class CRDFParser : private CRaptorInit
      * @param const raptor_statement * pTriple
      */
     static void TripleHandler(void * pGraph, const raptor_statement * pTriple);
+
+    /**
+     * A stantic handler to interface with the C parser library. This is called
+     * whenever a namespace is declared.
+     * @param void * pGraph
+     * @param raptor_namespace * pNameSpace
+     */
+    static void NameSpaceHandler(void * pGraph, raptor_namespace * pNameSpace);
+
+    /**
+     * A stantic handler to interface with the C parser library. This is called
+     * whenever the parser encounters a fatal error;
+     * @param void * userdata (ignored)
+     * @param raptor_locator * pLocator
+     * @param const char * message
+     */
+    static void FatalErrorHandler(void *, raptor_locator * pLocator, const char * message);
+
+    /**
+     * A stantic handler to interface with the C parser library. This is called
+     * whenever the parser encounters an error;
+     * @param void * userdata (ignored)
+     * @param raptor_locator * pLocator
+     * @param const char * message
+     */
+    static void ErrorHandler(void *, raptor_locator * pLocator, const char * message);
+
+    /**
+     * A stantic handler to interface with the C parser library. This is called
+     * whenever the parser encounters a warning;
+     * @param void * userdata (ignored)
+     * @param raptor_locator * pLocator
+     * @param const char * message
+     */
+    static void WarningHandler(void *, raptor_locator * pLocator, const char * message);
 
     // Attributes
   private:

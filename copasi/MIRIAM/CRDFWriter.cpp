@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFWriter.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/29 15:00:39 $
+//   $Date: 2008/01/29 20:14:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -51,8 +51,6 @@ CRDFWriter::CRDFWriter():
 
   // We do not want <?xml version="1.0" encoding="utf-8"?>
   raptor_serializer_set_feature(mpWriter, RAPTOR_FEATURE_WRITER_XML_DECLARATION, 0);
-
-  initNamespaces();
 }
 
 CRDFWriter::~CRDFWriter()
@@ -61,27 +59,21 @@ CRDFWriter::~CRDFWriter()
     raptor_free_serializer(mpWriter);
 }
 
-void CRDFWriter::initNamespaces()
+void CRDFWriter::initNamespaces(const CRDFGraph * pGraph)
 {
+  std::map< std::string, std::string >::const_iterator it =
+    pGraph->getNameSpaceMap().begin();
+  std::map< std::string, std::string >::const_iterator end =
+    pGraph->getNameSpaceMap().end();
+
   raptor_uri* pURI = NULL;
 
-  pURI = raptor_new_uri((const unsigned char *) "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
-  raptor_serialize_set_namespace(mpWriter, pURI, (const unsigned char *) "rdf");
-
-  pURI = raptor_new_uri((const unsigned char *) "http://purl.org/dc/elements/1.1/");
-  raptor_serialize_set_namespace(mpWriter, pURI, (const unsigned char *) "dc");
-
-  pURI = raptor_new_uri((const unsigned char *) "http://purl.org/dc/terms/");
-  raptor_serialize_set_namespace(mpWriter, pURI, (const unsigned char *) "dcterms");
-
-  pURI = raptor_new_uri((const unsigned char *) "http://www.w3.org/2001/vcard-rdf/3.0#");
-  raptor_serialize_set_namespace(mpWriter, pURI, (const unsigned char *) "vcard");
-
-  pURI = raptor_new_uri((const unsigned char *) "http://biomodels.net/biology-qualifiers/");
-  raptor_serialize_set_namespace(mpWriter, pURI, (const unsigned char *) "bqbiol");
-
-  pURI = raptor_new_uri((const unsigned char *) "http://biomodels.net/model-qualifiers/");
-  raptor_serialize_set_namespace(mpWriter, pURI, (const unsigned char *) "bqmodel");
+  for (; it != end; ++it)
+    {
+      pURI = raptor_new_uri((const unsigned char *) it->second.c_str());
+      raptor_serialize_set_namespace(mpWriter, pURI, (const unsigned char *) it->first.c_str());
+      pRaptorFreeUri(pURI);
+    }
 }
 
 char * CRDFWriter::write(const CRDFGraph * pGraph)
@@ -90,6 +82,8 @@ char * CRDFWriter::write(const CRDFGraph * pGraph)
 
   char * XML;  /* destination for string */
   size_t Length;  /* length of constructed string */
+
+  initNamespaces(pGraph);
 
   raptor_uri * pURI = raptor_new_uri((const unsigned char *) "");
 

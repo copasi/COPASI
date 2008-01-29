@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFParser.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/29 15:00:39 $
+//   $Date: 2008/01/29 20:14:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -44,6 +44,10 @@ CRDFParser::CRDFParser() :
     mpParser(NULL)
 {
   mpParser = raptor_new_parser("rdfxml");
+
+  raptor_set_fatal_error_handler(mpParser, NULL, &CRDFParser::FatalErrorHandler);
+  raptor_set_error_handler(mpParser, NULL, &CRDFParser::ErrorHandler);
+  raptor_set_warning_handler(mpParser, NULL, &CRDFParser::WarningHandler);
 }
 
 CRDFParser::~CRDFParser()
@@ -60,33 +64,40 @@ CRDFGraph * CRDFParser::parse(std::istream & stream)
   stream.imbue(std::locale::classic());
   stream.precision(16);
 
-  raptor_uri * pURI = raptor_new_uri((unsigned char *) "#");
-
-  if (raptor_start_parse(mpParser, pURI))
-    fatalError();
-
   // Create the new graph
   CRDFGraph * pGraph = new CRDFGraph;
-  raptor_set_statement_handler(mpParser, pGraph, &CRDFParser::TripleHandler);
 
   unsigned C_INT32 BUFFER_SIZE = 0xfffe;
   char * pBuffer = new char[BUFFER_SIZE + 1];
 
-  while (!done)
-    {
-      stream.get(pBuffer, BUFFER_SIZE, 0);
+  stream.get(pBuffer, BUFFER_SIZE, 0);
 
-      if (stream.eof()) done = true;
-      if (stream.fail() && !done)
+  if (stream.gcount() != 0)
+    {
+      raptor_uri * pURI = raptor_new_uri((unsigned char *) "#");
+
+      if (raptor_start_parse(mpParser, pURI))
         fatalError();
 
-      if (raptor_parse_chunk(mpParser,
-                             (unsigned char *) pBuffer,
-                             strlen(pBuffer),
-                             done ? 1 : 0))
+      raptor_set_statement_handler(mpParser, pGraph, &CRDFParser::TripleHandler);
+      raptor_set_namespace_handler(mpParser, pGraph, &CRDFParser::NameSpaceHandler);
+
+      while (!done)
         {
-          done = true;
-          success = false;
+          if (stream.eof()) done = true;
+          if (stream.fail() && !done)
+            fatalError();
+
+          if (raptor_parse_chunk(mpParser,
+                                 (unsigned char *) pBuffer,
+                                 strlen(pBuffer),
+                                 done ? 1 : 0))
+            {
+              done = true;
+              success = false;
+            }
+
+          stream.get(pBuffer, BUFFER_SIZE, 0);
         }
     }
 
@@ -178,4 +189,47 @@ void CRDFParser::TripleHandler(void * pGraph, const raptor_statement * pTriple)
 
   // Add the triplet to the graph
   static_cast<CRDFGraph *>(pGraph)->addTriplet(Subject, Predicate, Object);
+}
+
+// static
+void CRDFParser::NameSpaceHandler(void * pGraph, raptor_namespace * pNameSpace)
+{
+  const unsigned char * pURI =
+    raptor_uri_as_string(raptor_namespace_get_uri(pNameSpace));
+  std::string URI("");
+  if (pURI) URI = (const char *) pURI;
+
+  const unsigned char * pPrefix =
+    raptor_namespace_get_prefix(pNameSpace);
+  std::string Prefix("");
+  if (pPrefix) Prefix = (const char *) pPrefix;
+
+  static_cast<CRDFGraph *>(pGraph)->addNameSpace(Prefix, URI);
+}
+
+// static
+void CRDFParser::FatalErrorHandler(void *, raptor_locator * pLocator, const char * message)
+{
+  CCopasiMessage(CCopasiMessage::ERROR, MCMiriam + 1,
+                 raptor_locator_line(pLocator),
+                 raptor_locator_column(pLocator),
+                 message);
+}
+
+// static
+void CRDFParser::ErrorHandler(void *, raptor_locator * pLocator, const char * message)
+{
+  CCopasiMessage(CCopasiMessage::ERROR, MCMiriam + 1,
+                 raptor_locator_line(pLocator),
+                 raptor_locator_column(pLocator),
+                 message);
+}
+
+// static
+void CRDFParser::WarningHandler(void *, raptor_locator * pLocator, const char * message)
+{
+  CCopasiMessage(CCopasiMessage::WARNING, MCMiriam + 1,
+                 raptor_locator_line(pLocator),
+                 raptor_locator_column(pLocator),
+                 message);
 }

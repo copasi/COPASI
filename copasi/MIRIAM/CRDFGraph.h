@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraph.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2008/01/29 15:43:44 $
+//   $Author: shoops $
+//   $Date: 2008/01/29 20:14:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -44,6 +44,12 @@ class CRDFGraph
     const CRDFNode * getAboutNode() const;
 
     /**
+     * Retrieve the map of prefixes to namespaces
+     * @return const std::map< std::string, std::string > & nameSpaceMap
+     */
+    const std::map< std::string, std::string > & getNameSpaceMap() const;
+
+    /**
      * Retrieve the map of IDs to blank nodes
      * @return const std::map< std::string, CRDFNode * > & blankNodeMap
      */
@@ -67,6 +73,15 @@ class CRDFGraph
      * @return bool success
      */
     bool guessGraphRoot();
+
+    /**
+     * Add a name space including prefix to the graph. It returns false if the
+     * prefix was already used with another namespace
+     * @param const std::string & prefix
+     * @param const std::string & namespace
+     * @return bool success;
+     */
+    bool addNameSpace(const std::string & prefix, const std::string & uri);
 
     /**
      * Add a triplet to the graph
@@ -148,6 +163,11 @@ class CRDFGraph
      * The subject node this RDF graph is about
      */
     CRDFNode * mpAbout;
+
+    /**
+     * A map of prefixes to namespaces
+     */
+    std::map< std::string, std::string > mPrefix2Namespace;
 
     /**
      * A map of blank node ids to nodes of the graph.

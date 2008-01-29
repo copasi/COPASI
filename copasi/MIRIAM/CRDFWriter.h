@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFWriter.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/15 17:45:38 $
+//   $Date: 2008/01/29 20:14:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -64,8 +64,9 @@ class CRDFWriter: private CRaptorInit
   private:
     /**
      * This adds the default name spaces to the writer
+     * @param const CRDFGraph * pGraph
      */
-    void initNamespaces();
+    void initNamespaces(const CRDFGraph * pGraph);
 
     // Attributes
   private:

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraph.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2008/01/29 16:02:18 $
+//   $Author: shoops $
+//   $Date: 2008/01/29 20:14:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,12 +27,13 @@
 #include "CRDFObject.h"
 #include "CRDFLiteral.h"
 
-using namespace std;
+#include "utilities/CCopasiMessage.h"
 
 unsigned int CRDFGraph::nodeIDCounter = 0;
 
 CRDFGraph::CRDFGraph():
     mpAbout(NULL),
+    mPrefix2Namespace(),
     mBlankNodeId2Node(),
     mLocalResource2Node(),
     mRemoteResourceNodes(),
@@ -70,6 +71,9 @@ CRDFGraph::~CRDFGraph()
 const CRDFNode * CRDFGraph::getAboutNode() const
 {return mpAbout;}
 
+const std::map< std::string, std::string > & CRDFGraph::getNameSpaceMap() const
+  {return mPrefix2Namespace;}
+
 const std::map< std::string, CRDFNode * > & CRDFGraph::getBlankNodeMap() const
   {return mBlankNodeId2Node;}
 
@@ -104,6 +108,19 @@ bool CRDFGraph::guessGraphRoot()
     }
 
   return mpAbout != NULL;
+}
+
+bool CRDFGraph::addNameSpace(const std::string & prefix, const std::string & uri)
+{
+  std::pair< std::map< std::string, std::string >::iterator, bool > inserted =
+    mPrefix2Namespace.insert(std::pair< std::string, std::string >(prefix, uri));
+
+  if (inserted.second || (inserted.first->second == uri))
+    return true;
+
+  CCopasiMessage(CCopasiMessage::ERROR, MCMiriam + 2,
+                 prefix.c_str(), inserted.first->second.c_str(), uri.c_str());
+  return false;
 }
 
 bool CRDFGraph::addTriplet(const CRDFSubject & subject,
@@ -209,29 +226,29 @@ bool CRDFGraph::printGraph()
 
   if (mpAbout)
     {
-      outFile << mpAbout->stringFromNode() << endl;
-      outFile << endl;
+      outFile << mpAbout->stringFromNode() << std::endl;
+      outFile << std::endl;
     }
 
-  map<string, CRDFNode *>::iterator iter;
+  std::map< std::string, CRDFNode *>::iterator iter;
   for (iter = mBlankNodeId2Node.begin(); iter != mBlankNodeId2Node.end(); iter++)
     {
-      outFile << "String: " << iter->first << ", Node: " << iter->second->stringFromNode() << endl;
+      outFile << "String: " << iter->first << ", Node: " << iter->second->stringFromNode() << std::endl;
     }
-  outFile << endl;
+  outFile << std::endl;
 
   for (iter = mLocalResource2Node.begin(); iter != mLocalResource2Node.end(); iter++)
     {
-      outFile << "String: " << iter->first << ", Node: " << iter->second->stringFromNode() << endl;
+      outFile << "String: " << iter->first << ", Node: " << iter->second->stringFromNode() << std::endl;
     }
-  outFile << endl;
+  outFile << std::endl;
 
-  vector<CRDFNode *>::iterator it;
+  std::vector< CRDFNode * >::iterator it;
   for (it = mLiteralNodes.begin(); it != mLiteralNodes.end(); it++)
     {
-      outFile << "Node: " << (*it)->stringFromNode() << endl;
+      outFile << "Node: " << (*it)->stringFromNode() << std::endl;
     }
-  outFile << endl;
+  outFile << std::endl;
 
   outFile.close();
   return true;
@@ -247,7 +264,7 @@ bool CRDFGraph::getNodeIDsForTable(const std::string& tableName, std::vector<std
 
   bool isBagNode = false;
   std::string bagPredicate = getNameSpaceURI("rdf") + "type";
-  vector<CRDFEdge>::const_iterator it;
+  std::vector< CRDFEdge >::const_iterator it;
   const std::vector<CRDFEdge> & edges = tableBlankNode->getEdges();
   for (it = edges.begin(); it != edges.end(); it++)
     {
@@ -629,7 +646,7 @@ CRDFNode* CRDFGraph::getNodeForPredicate(const std::string& predicate, const CRD
   {return NULL;}
 
   CRDFNode * nodeForPredicate = NULL;
-  vector<CRDFEdge>::const_iterator it;
+  std::vector< CRDFEdge >::const_iterator it;
   const std::vector<CRDFEdge> & edges = startNode->getEdges();
   for (it = edges.begin(); it != edges.end(); it++)
     {
