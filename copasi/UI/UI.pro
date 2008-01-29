@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $ 
-#   $Revision: 1.165 $ 
+#   $Revision: 1.166 $ 
 #   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2008/01/16 20:20:21 $ 
+#   $Author: aekamal $ 
+#   $Date: 2008/01/29 16:44:17 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -16,7 +16,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.165 $ $Author: shoops $ $Date: 2008/01/16 20:20:21 $  
+# $Revision: 1.166 $ $Author: aekamal $ $Date: 2008/01/29 16:44:17 $  
 ######################################################################
 
 LIB = UI
@@ -47,6 +47,7 @@ HEADERS += \
            copasiWidget.h \
            copasiui3window.h \
            CProgressBar.h \
+           CTabWidget.h \
            CQArrayAnnotationsWidget.h \
            CQBarChart.h \
            CQEventsWidget.h \
@@ -109,6 +110,7 @@ SOURCES += \
            copasiWidget.cpp \
            copasiui3window.cpp \
            CProgressBar.cpp \
+           CTabWidget.cpp \
            OptimizationResultWidget.cpp \
            CQArrayAnnotationsWidget.cpp \
            CQBarChart.cpp \
@@ -369,15 +371,6 @@ HEADERS += CQRegistrationDialog.h \
 SOURCES += CQRegistrationDialog.cpp
 }
 #endif // COPAS_LICENSE_COM
-
-# Miriam Annotation Support
-HEADERS += CTabWidget.h \
-           CAuthorsWidget.h \
-           CMIRIAMModelWidget.h
-
-SOURCES += CTabWidget.cpp \
-           CAuthorsWidget.cpp \
-           CMIRIAMModelWidget.cpp
 
 DISTFILES += UI.dsp \
              icons/Copasi.ico \

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CTabWidget.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/01/29 15:43:44 $
+//   $Date: 2008/01/29 16:44:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,7 +20,7 @@
 
 #include "CTabWidget.h"
 #include "ModelWidget.h"
-#include "CMIRIAMModelWidget.h"
+#include "MIRIAMUI/CMIRIAMModelWidget.h"
 #include "MIRIAMUI/CQRDFListViewWidget.h"
 
 /*

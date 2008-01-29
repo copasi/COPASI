@@ -45,6 +45,22 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath="..\UI\CAuthorsWidget.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CAuthorsWidget.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\UI\CMIRIAMModelWidget.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CMIRIAMModelWidget.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\CQRDFListViewWidget.cpp"
 				>
 			</File>
@@ -62,6 +78,14 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath=".\CAuthorsWidget.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CMIRIAMModelWidget.h"
+				>
+			</File>
 			<File
 				RelativePath=".\CQRDFListViewWidget.h"
 				>
@@ -87,6 +111,10 @@
 		</Filter>
 		<File
 			RelativePath=".\CQRDFListViewWidget.ui"
+			>
+		</File>
+		<File
+			RelativePath=".\MIRIAMUI.pro"
 			>
 		</File>
 		<File

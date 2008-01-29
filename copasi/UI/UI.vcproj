@@ -27,7 +27,7 @@
 				Name="VCNMakeTool"
 				BuildCommandLine="nmake /f Makefile"
 				ReBuildCommandLine="nmake /f Makefile clean all"
-				CleanCommandLine="nmake /f Makefile clean"
+				CleanCommandLine=""
 				Output="../tmp/UI.lib"
 				PreprocessorDefinitions=""
 				IncludeSearchPath=""
@@ -47,10 +47,6 @@
 			>
 			<File
 				RelativePath="AboutDialog.cpp"
-				>
-			</File>
-			<File
-				RelativePath="CAuthorsWidget.cpp"
 				>
 			</File>
 			<File
@@ -75,10 +71,6 @@
 			</File>
 			<File
 				RelativePath="CMCAResultWidget.cpp"
-				>
-			</File>
-			<File
-				RelativePath="CMIRIAMModelWidget.cpp"
 				>
 			</File>
 			<File
@@ -595,10 +587,6 @@
 				>
 			</File>
 			<File
-				RelativePath="CAuthorsWidget.h"
-				>
-			</File>
-			<File
 				RelativePath="CCopasiPlotSelectionDialog.h"
 				>
 			</File>
@@ -628,10 +616,6 @@
 			</File>
 			<File
 				RelativePath="CMCAResultWidget.h"
-				>
-			</File>
-			<File
-				RelativePath="CMIRIAMModelWidget.h"
 				>
 			</File>
 			<File

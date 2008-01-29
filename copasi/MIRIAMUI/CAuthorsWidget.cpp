@@ -1,9 +1,9 @@
 // Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CAuthorsWidget.cpp,v $
-//   $Revision: 1.8 $
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CAuthorsWidget.cpp,v $
+//   $Revision: 1.1 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/01/29 15:43:44 $
+//   $Date: 2008/01/29 16:44:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,10 +24,10 @@
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiObject.h"
 #include "report/CKeyFactory.h"
+#include "UI/qtUtilities.h"
+#include "UI/CQMessageBox.h"
 
 #include "CAuthorsWidget.h"
-#include "qtUtilities.h"
-#include "CQMessageBox.h"
 
 #define COL_MARK               0
 #define COL_FAMILY_NAME        1
