@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/Attic/CAuthor.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2007/11/08 22:26:35 $
+//   $Date: 2008/01/29 15:43:44 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -29,35 +34,20 @@ class CAuthor : public CCopasiContainer
   private:
 
     std::string mKey;
-    /**
-    * The Family Name of the author - (only Required field,
-    * everything else is optional).
-    */
-    std::string mFamilyName;
-    /** The first name.
-    */
-    std::string mGivenName;
 
-    /**
-        * The email address of the author.
-        */
-    std::string mEmail;
-
-    /**
-        * The email address of the author.
-        */
-    std::string mURL;
+    /** ID in RDF Graph corresponding to this object.*/
+    std::string mRDFGraphNodeID;
 
     // Operations
   public:
     /**
      * Default constructor
-     * @param const std::string & familyName
+     * @param const std::string & objectName
+    * @param const std::string & RDFGraphNodeID
      * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CAuthor(const std::string & familyName,
-            const CCopasiContainer * pParent = NULL,
-            const std::string & givenName = "NoGivenName");
+    CAuthor(const std::string & objectName, const CCopasiContainer * pParent = NULL,
+            const std::string & RDFGraphNodeID = "");
 
     /**
      * Copy constructor
@@ -73,15 +63,14 @@ class CAuthor : public CCopasiContainer
     /** Add the given name to Last name to get the full Name.
          *
          */
-    std::string getFullName() const;
 
-    const std::string & getFamilyName() const;
+    const std::string getFamilyName() const;
 
-    const std::string & getGivenName() const;
+    const std::string getGivenName() const;
 
-    const std::string & getEmail() const;
+    const std::string getEmail() const;
 
-    const std::string & getURL() const;
+    const std::string getORG() const;
 
     void setFamilyName(const std::string familyName);
 
@@ -89,7 +78,11 @@ class CAuthor : public CCopasiContainer
 
     void setEmail(const std::string Email);
 
-    void setURL(const std::string URL);
+    void setORG(const std::string Orgname);
+
+    std::string getRDFGraphNodeID();
+
+    const std::string getObjectName() const;
 
     /**
         *  Returns a string with the name of this Author.

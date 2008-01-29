@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFObject.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/01/29 15:00:39 $
+//   $Author: aekamal $
+//   $Date: 2008/01/29 15:43:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -103,6 +103,11 @@ class CRDFObject
      * @return const CRDFLiteral & literal
      */
     const CRDFLiteral & getLiteral() const;
+
+    /**
+     * Reset all Data
+     */
+    void clearData();
 
     // Attributes
   private:

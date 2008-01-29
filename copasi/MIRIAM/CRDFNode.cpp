@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFNode.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/01/15 17:45:38 $
+//   $Author: aekamal $
+//   $Date: 2008/01/29 15:43:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,6 +20,9 @@
 #include "CRDFNode.h"
 #include "CRDFSubject.h"
 #include "CRDFObject.h"
+#include "CRDFLiteral.h"
+
+using namespace std;
 
 CRDFNode::CRDFNode():
     mId(""),
@@ -68,10 +71,19 @@ const CRDFSubject & CRDFNode::getSubject() const
 
 void CRDFNode::setObject(const CRDFObject & object)
 {
-  if (mIsBlankNode) return;
-
   pdelete(mpObject);
   mpObject = new CRDFObject(object);
+
+  if (mpObject->getType() == CRDFObject::BLANK_NODE)
+    {
+      mIsBlankNode = true;
+      mId = mpObject->getBlankNodeID();
+
+      pdelete(mpSubject);
+      mpSubject = new CRDFSubject;
+      mpSubject->setType(CRDFSubject::BLANK_NODE);
+      mpSubject->setBlankNodeId(mId);
+    }
 }
 
 const CRDFObject & CRDFNode::getObject() const
@@ -86,6 +98,17 @@ void CRDFNode::addEdge(const std::string & predicate,
                        CRDFNode * pObject)
 {mEdges.push_back(CRDFEdge(predicate, pObject));}
 
+bool CRDFNode::removeEdge(const std::string & predicate)
+{
+  std::vector< CRDFEdge >::iterator it;
+  for (it = mEdges.begin(); it != mEdges.end(); it++)
+    {
+      if (it->getPredicate() == predicate)
+      {mEdges.erase(it); return true;}
+    }
+  return false;
+}
+
 const std::vector< CRDFEdge > & CRDFNode::getEdges() const
   {return mEdges;}
 
@@ -94,3 +117,51 @@ bool CRDFNode::isSubjectNode() const
 
 bool CRDFNode::isObjectNode() const
   {return mpObject != NULL;}
+
+bool CRDFNode::isBlankNode() const
+  {return mIsBlankNode;}
+
+std::string CRDFNode::stringFromNode(bool recurse)
+{
+  string str;
+  str = "ID: " + mId + " Subject: ";
+
+  if (isSubjectNode())
+  {str += "Y";}
+  else
+  {str += "N";}
+
+  str += " Object: ";
+  if (isObjectNode())
+  {str += "Y";}
+  else
+  {str += "N";}
+
+  str += " BlankNode: ";
+  if (mIsBlankNode)
+  {str += "Y";}
+  else
+  {str += "N";}
+
+  str += " Edges: ";
+  vector<CRDFEdge>::iterator iter;
+  for (iter = mEdges.begin(); iter != mEdges.end(); iter++)
+    {
+      str += iter->getPredicate();
+      if (recurse)
+        {
+          CRDFNode *PropertyNode = iter->getPropertyNode();
+          str += " Property Node: " + PropertyNode->stringFromNode(false) + ";";
+        }
+    }
+
+  if (mpSubject)
+    str += "Sub Details BlankNodeID: " + mpSubject->getBlankNodeID() + " Resource: " + mpSubject->getResource();
+  if (mpObject)
+    {
+      str += "Obj Details BlankNodeID: " + mpObject->getBlankNodeID() + " Resource: " + mpObject->getResource();
+      str += " Literal: Lexical Data: " + mpObject->getLiteral().getLexicalData() + "Data Type: " + mpObject->getLiteral().getDataType() + "Language: " + mpObject->getLiteral().getLanguage();
+    }
+
+  return str;
+}

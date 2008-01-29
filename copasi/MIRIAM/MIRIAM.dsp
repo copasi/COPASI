@@ -61,6 +61,42 @@ SOURCE=.\CAuthor.cpp
 
 SOURCE=.\CModelMIRIAMInfo.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=.\CRaptorInit.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CRDFEdge.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CRDFGraph.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CRDFLiteral.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CRDFNode.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CRDFObject.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CRDFParser.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CRDFSubject.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CRDFWriter.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -75,7 +111,39 @@ SOURCE=.\CModelMIRIAMInfo.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\CRaptorInit.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CRDFEdge.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CRDFGraph.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CRDFLiteral.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CRDFNode.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\CRDFObject.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CRDFParser.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CRDFSubject.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CRDFWriter.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

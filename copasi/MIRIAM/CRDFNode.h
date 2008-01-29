@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFNode.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/11/21 16:15:07 $
+//   $Author: aekamal $
+//   $Date: 2008/01/29 15:43:44 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -82,6 +87,14 @@ class CRDFNode
                  CRDFNode * pObject);
 
     /**
+        * Remvoe a property edge from the node
+        * @param const std::string & predicate
+     * @return std::string success
+        */
+
+    bool CRDFNode::removeEdge(const std::string & predicate);
+
+    /**
      * Retrieve the property edges of the node
      * @return const std::vector< CRDFEdge > & edges
      */
@@ -98,6 +111,14 @@ class CRDFNode
      * @return bool isObjectNode
      */
     bool isObjectNode() const;
+
+    /**
+        * Check whether this is a Blank node
+        * @return bool isBlankNode
+        */
+    bool isBlankNode() const;
+
+    std::string stringFromNode(bool recurse = true);
 
     // Attributes
   private:

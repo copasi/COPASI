@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFSubject.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/01/29 15:00:39 $
+//   $Author: aekamal $
+//   $Date: 2008/01/29 15:43:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -89,6 +89,11 @@ class CRDFSubject
      * @return const std::string & blankNodeId
      */
     const std::string & getBlankNodeID() const;
+
+    /**
+     * Reset all Data
+     */
+    void clearData();
 
     // Attributes
   private:

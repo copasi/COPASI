@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CAuthorsWidget.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/01/16 20:20:21 $
+//   $Author: aekamal $
+//   $Date: 2008/01/29 15:43:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,7 +33,7 @@
 #define COL_FAMILY_NAME        1
 #define COL_GIVEN_NAME         2
 #define COL_EMAIL              3
-#define COL_URL                4
+#define COL_ORG                4
 
 /*
  *  Constructs a CAuthorsWidget as a child of 'parent', with the
@@ -58,13 +58,13 @@ CAuthorsWidget::~CAuthorsWidget()
 std::vector<const CCopasiObject*> CAuthorsWidget::getObjects() const
   {
     std::vector<const CCopasiObject*> ret;
-#ifdef XXXX
+
     const CCopasiVector<CAuthor>& tmp = CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getAuthors();
 
     C_INT32 i, imax = tmp.size();
     for (i = 0; i < imax; ++i)
       ret.push_back(tmp[i]);
-#endif // XXXX
+
     return ret;
   }
 
@@ -79,7 +79,7 @@ void CAuthorsWidget::init()
   tableHeader->setLabel(COL_FAMILY_NAME, "Family Name");
   tableHeader->setLabel(COL_GIVEN_NAME, "Given Name");
   tableHeader->setLabel(COL_EMAIL, "Email");
-  tableHeader->setLabel(COL_URL, "URL");
+  tableHeader->setLabel(COL_ORG, "Organization");
 }
 
 void CAuthorsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_INT32 row)
@@ -89,7 +89,7 @@ void CAuthorsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_IN
   table->setText(row, COL_FAMILY_NAME, FROM_UTF8(pAuthor->getFamilyName()));
   table->setText(row, COL_GIVEN_NAME, FROM_UTF8(pAuthor->getGivenName()));
   table->setText(row, COL_EMAIL, FROM_UTF8(pAuthor->getEmail()));
-  table->setText(row, COL_URL, FROM_UTF8(pAuthor->getURL()));
+  table->setText(row, COL_ORG, FROM_UTF8(pAuthor->getORG()));
 }
 
 void CAuthorsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj)
@@ -100,7 +100,7 @@ void CAuthorsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj)
   pAuthor->setFamilyName((const char *) table->text(row, COL_FAMILY_NAME).utf8());
   pAuthor->setGivenName((const char *) table->text(row, COL_GIVEN_NAME).utf8());
   pAuthor->setEmail((const char *) table->text(row, COL_EMAIL).utf8());
-  pAuthor->setURL((const char *) table->text(row, COL_URL).utf8());
+  pAuthor->setORG((const char *) table->text(row, COL_ORG).utf8());
 }
 
 void CAuthorsWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT32 exc)
@@ -111,10 +111,10 @@ void CAuthorsWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_IN
   if (exc != COL_EMAIL)
     table->clearCell(row, COL_EMAIL);
 
-  if (exc != COL_URL)
+  if (exc != COL_ORG)
     {
-      //table->setText(row, COL_URL, "abcd.com");
-      table->clearCell(row, COL_URL);
+      //table->setText(row, COL_ORG, "abcd.com");
+      table->clearCell(row, COL_ORG);
     }
 }
 
@@ -126,14 +126,14 @@ CCopasiObject* CAuthorsWidget::createNewObject(const std::string & name)
   std::string nname = name;
   int i = 0;
   CAuthor* pAuthor = NULL;
-#ifdef XXXX
-  while (!(pAuthor = CCopasiDataModel::Global->getModel()->getMIRIAMInfo().createAuthor(nname)))
+
+  while (!(pAuthor = CCopasiDataModel::Global->getModel()->getMIRIAMInfo().createAuthor(name)))
     {
       i++;
       nname = name + "_";
       nname += (const char *)QString::number(i).utf8();
     }
-#endif // XXXX
+
   return pAuthor;
 }
 
@@ -167,9 +167,7 @@ void CAuthorsWidget::deleteObjects(const std::vector<std::string> & keys)
       {
         for (i = 0; i < imax; i++)
           {
-#ifdef XXXX
             CCopasiDataModel::Global->getModel()->getMIRIAMInfo().removeAuthor(keys[i]);
-#endif // XXXX
           }
 
         //for (i = 0; i < imax; i++)

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/Attic/CRDFEdge.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/01/15 17:45:38 $
+//   $Author: aekamal $
+//   $Date: 2008/01/29 15:43:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -47,5 +47,5 @@ const std::string & CRDFEdge::getPredicate() const
 void CRDFEdge::setPropertyNode(CRDFNode * pPropertyNode)
 {mpPropertyNode = pPropertyNode;}
 
-const CRDFNode * CRDFEdge::getPropertyNode() const
+CRDFNode * CRDFEdge::getPropertyNode() const
   {return mpPropertyNode;}

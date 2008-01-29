@@ -1,18 +1,26 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CMIRIAMModelWidget.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2007/11/10 21:15:53 $
+//   $Date: 2008/01/29 15:43:44 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #include <qlayout.h>
 #include <qlabel.h>
 #include <qpushbutton.h>
+
+#include "model/CModel.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 
 #include "CMIRIAMModelWidget.h"
 #include "CAuthorsWidget.h"
@@ -28,7 +36,7 @@ CMIRIAMModelWidget::CMIRIAMModelWidget(QWidget* parent, const char* name, WFlags
     CopasiWidget::setName("CMIRIAMModelWidget");
 
   //Create new widgets
-  QLabel *pLblAuthors = new QLabel("Authors: ", this);
+  QLabel *pLblAuthors = new QLabel("Creators: ", this);
   mAuthorsWidget = new CAuthorsWidget(this, "AuthorsWidgetForModel");
   pLblAuthors->setBuddy(mAuthorsWidget);
 
@@ -136,6 +144,7 @@ bool CMIRIAMModelWidget::update(ListViews::ObjectType objectType, ListViews::Act
 
 bool CMIRIAMModelWidget::enter(const std::string & key)
 {
+  CCopasiDataModel::Global->getModel()->getMIRIAMInfo().loadGraph(key);
   mAuthorsWidget->enter(key);
   mPublicationsWidget->enter(key);
   return true;
