@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CRDFListViewItem.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/29 15:01:35 $
+//   $Date: 2008/01/29 20:16:42 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -49,19 +49,8 @@ class CRDFListViewItem: public QListViewItem
      */
     void setNode(const CRDFNode * pNode);
 
-    /**
-     * Retreive the list view the item is part of
-     * @param CRDFListView * listView
-     */
-    CRDFListView * getListView() const;
-
     // Attributes
   private:
-    /**
-     * The list view this item is part of
-     */
-    CRDFListView * mpListView;
-
     /**
      * The node presented by this item
      */
