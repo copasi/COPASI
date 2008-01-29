@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.73 $ 
+#   $Revision: 1.74 $ 
 #   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2008/01/16 20:20:22 $ 
+#   $Author: aekamal $ 
+#   $Date: 2008/01/29 15:44:23 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -11,7 +11,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.73 $ $Author: shoops $ $Date: 2008/01/16 20:20:22 $  
+# $Revision: 1.74 $ $Author: aekamal $ $Date: 2008/01/29 15:44:23 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -240,7 +240,7 @@ contains(BUILD_OS, WIN32) {
     QMAKE_CXXFLAGS   += -I"$${RAPTOR_PATH}\include"
     QMAKE_LFLAGS += /LIBPATH:"$${RAPTOR_PATH}\lib"
   } else {
-    error( "SBML_PATH must be specified" )
+    error( "RAPTOR_PATH must be specified" )
   }
   
   contains(CONFIG, qt) {
