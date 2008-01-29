@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CModelMIRIAMInfo.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/01/29 15:43:44 $
+//   $Date: 2008/01/29 17:12:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -56,10 +56,15 @@ CModelMIRIAMInfo::~CModelMIRIAMInfo()
 
 void CModelMIRIAMInfo::loadGraph(const std::string& key)
 {
-  CModelEntity * pEntity = NULL;
-  if ((pEntity = dynamic_cast< CModelEntity * >(GlobalKeys.get(key))) != NULL)
-  {mpRDFGraph = CRDFParser::graphFromXml(pEntity->getMiriamAnnotation());}
-  fillInfoFromGraph();
+  if (!mpRDFGraph)
+    {
+      CModelEntity * pEntity = NULL;
+      if ((pEntity = dynamic_cast< CModelEntity * >(GlobalKeys.get(key))) != NULL)
+      {mpRDFGraph = CRDFParser::graphFromXml(pEntity->getMiriamAnnotation());}
+      if (!mpRDFGraph)
+      {mpRDFGraph = new CRDFGraph();}
+      fillInfoFromGraph();
+    }
 }
 
 CRDFGraph * CModelMIRIAMInfo::getRDFGraph()
