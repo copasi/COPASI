@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.8.4.3 $
+//   $Revision: 1.8.4.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/01/23 13:12:15 $
+//   $Author: gauges $
+//   $Date: 2008/01/29 13:18:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -2958,24 +2958,55 @@ CEvaluationNode* CSBMLExporter::createMassActionExpression(const std::vector<std
   assert(arguments[0].size() == 1 && arguments[1].size() > 0);
   // create a multiplication of all items in arguments[1] and multiply that
   // with item arguments[0][0]
-  const CCopasiObject* pObject = GlobalKeys.get(arguments[1][arguments[1].size() - 1]);
+  std::set<std::string> finishedElements;
+  std::vector<CEvaluationNode*> multiplicants;
+  const CCopasiObject* pObject = GlobalKeys.get(arguments[0][0]);
   assert(pObject != NULL);
-  CEvaluationNode* pResult = new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + pObject->getCN() + ",Reference=Concentration>");
-  CEvaluationNode* pTmpNode = NULL;
-  unsigned int i;
-  for (i = arguments[1].size() - 1;i > 0;--i)
+  multiplicants.push_back(new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + pObject->getCN() + ",Reference=Value>"));
+  std::vector<std::string>::const_iterator it = arguments[1].begin(), endit = arguments[1].end();
+  while (it != endit)
     {
-      pTmpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
-      pObject = GlobalKeys.get(arguments[1][i - 1]);
-      assert(pObject != NULL);
-      pTmpNode->addChild(new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + pObject->getCN() + ",Reference=Concentration>"));
-      pTmpNode->addChild(pResult);
-      pResult = pTmpNode;
+      if (finishedElements.find(*it) == finishedElements.end())
+        {
+          unsigned int num = std::count(arguments[1].begin(), arguments[1].end(), *it);
+          assert(num != 0);
+          finishedElements.insert(*it);
+          pObject = GlobalKeys.get(*it);
+          assert(pObject != NULL);
+          if (num == 1)
+            {
+              multiplicants.push_back(new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + pObject->getCN() + ",Reference=Concentration>"));
+            }
+          else
+            {
+              std::ostringstream os;
+              os << num;
+              CEvaluationNodeOperator* pOperator = new CEvaluationNodeOperator(CEvaluationNodeOperator::POWER, "^");
+              pOperator->addChild(new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + pObject->getCN() + ",Reference=Concentration>"));
+              pOperator->addChild(new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, os.str()));
+              multiplicants.push_back(pOperator);
+            }
+        }
+      ++it;
+    }
+  std::vector<CEvaluationNode*>::reverse_iterator rIt = multiplicants.rbegin(), rEndit = multiplicants.rend();
+  CEvaluationNode* pResult = *rIt;
+  ++rIt;
+  CEvaluationNode* pTmpNode = NULL;
+  if (rIt != rEndit)
+    {
+      --rEndit;
+      while (rIt != rEndit)
+        {
+          pTmpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
+          pTmpNode->addChild(*rIt);
+          pTmpNode->addChild(pResult);
+          pResult = pTmpNode;
+          ++rIt;
+        }
     }
   pTmpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
-  pObject = GlobalKeys.get(arguments[0][0]);
-  assert(pObject);
-  pTmpNode->addChild(new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + pObject->getCN() + ",Reference=Value>"));
+  pTmpNode->addChild(*rIt);
   pTmpNode->addChild(pResult);
   pResult = pTmpNode;
   if (isReversible)
