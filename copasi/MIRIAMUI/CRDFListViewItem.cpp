@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CRDFListViewItem.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: urost $
-//   $Date: 2008/01/25 10:34:35 $
+//   $Author: shoops $
+//   $Date: 2008/01/29 15:01:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,14 +26,23 @@
 #define COL_OBJECT     2
 
 CRDFListViewItem::CRDFListViewItem(CRDFListView * pParent, CRDFListViewItem * pAfter):
-    QListViewItem(pParent, pAfter)
+    QListViewItem(pParent, pAfter),
+    mpListView(pParent),
+    mpNode(NULL),
+    mpEdge(NULL)
 {
+  assert(pParent != NULL);
   setOpen(true);
 }
 
 CRDFListViewItem::CRDFListViewItem(CRDFListViewItem * pParent, CRDFListViewItem * pAfter):
-    QListViewItem(pParent, pAfter)
+    QListViewItem(pParent, pAfter),
+    mpListView(NULL),
+    mpNode(NULL),
+    mpEdge(NULL)
 {
+  assert(pParent != NULL);
+  mpListView = pParent->getListView();
   setOpen(true);
 }
 
@@ -42,9 +51,11 @@ CRDFListViewItem::~CRDFListViewItem()
 
 void CRDFListViewItem::setNode(const CRDFNode * pNode)
 {
-  if (pNode->isSubjectNode())
+  mpNode = const_cast< CRDFNode * >(pNode);
+
+  if (mpNode->isSubjectNode())
     {
-      const CRDFSubject & Subject = pNode->getSubject();
+      const CRDFSubject & Subject = mpNode->getSubject();
       switch (Subject.getType())
         {
         case CRDFSubject::RESOURCE:
@@ -85,8 +96,14 @@ void CRDFListViewItem::setNode(const CRDFNode * pNode)
         case CRDFObject::RESOURCE:
           pItem->setText(COL_OBJECT, FROM_UTF8(Object.getResource()));
         case CRDFObject::BLANK_NODE:
-          pItem->setNode(it->getPropertyNode());
+          if (!this->mpListView->visited(it->getPropertyNode()))
+            pItem->setNode(it->getPropertyNode());
+          else
+            pItem->setText(COL_OBJECT, pItem->text(COL_OBJECT) + " (recursive)");
           break;
         }
     }
 }
+
+CRDFListView * CRDFListViewItem::getListView() const
+{return mpListView;}

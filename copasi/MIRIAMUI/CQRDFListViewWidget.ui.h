@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CQRDFListViewWidget.ui.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/24 16:08:49 $
+//   $Date: 2008/01/29 15:01:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,6 +41,7 @@ bool CQRDFListViewWidget::leave()
 void CQRDFListViewWidget::load()
 {
   mpListView->clear();
+  mpListView->clearVisitedNodes();
 
   CRDFGraph * pGraph = NULL;
   CModelEntity * pEntity = NULL;
@@ -51,12 +52,18 @@ void CQRDFListViewWidget::load()
   if (pGraph == NULL)
     return;
 
-  const CRDFNode * pAbout = NULL;
+  std::map< std::string, CRDFNode * >::const_iterator itMap = pGraph->getLocalResourceNodeMap().begin();
+  std::map< std::string, CRDFNode * >::const_iterator endMap = pGraph->getLocalResourceNodeMap().end();
 
-  if ((pAbout = pGraph->getAboutNode()) != NULL)
+  const CRDFNode * pNode;
+  for (;itMap != endMap; ++itMap)
     {
-      CRDFListViewItem * pItem = new CRDFListViewItem(mpListView, NULL);
-      pItem->setNode(pAbout);
+      pNode = itMap->second;
+      if (pNode->isSubjectNode() && !pNode->isObjectNode())
+        {
+          CRDFListViewItem * pItem = new CRDFListViewItem(mpListView, NULL);
+          pItem->setNode(pNode);
+        }
     }
 }
 
