@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRaptorInit.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/15 17:45:38 $
+//   $Date: 2008/01/29 15:00:39 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,9 +24,16 @@ class CRaptorInit
     CRaptorInit();
 
     /**
-      * Constructor
-      */
+     * Constructor
+     */
     ~CRaptorInit();
+
+    /**
+     * Checks whether the given URI is resolved locally;
+     * @param raptor_uri * pURI
+     * @return bool isLocalURI
+     */
+    static bool isLocalURI(raptor_uri * pURI);
 
     // Attributes
   private:

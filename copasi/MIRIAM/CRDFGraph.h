@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraph.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/15 17:45:38 $
+//   $Date: 2008/01/29 15:00:39 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -49,10 +49,16 @@ class CRDFGraph
     const std::map< std::string, CRDFNode * > & getBlankNodeMap() const;
 
     /**
-     * Retrieve the map of URIs to resource nodes
-     * @return const std::map< std::string, CRDFNode * > & resourceNodeMap
+     * Retrieve the map of URIs to local resource nodes
+     * @return const std::map< std::string, CRDFNode * > & localResourceNodeMap
      */
-    const std::map< std::string, CRDFNode * > & getResourceNodeMap() const;
+    const std::map< std::string, CRDFNode * > & getLocalResourceNodeMap() const;
+
+    /**
+     * Retreive the vector of remote resource nodes
+     * @return const std::vector< CRDFNode * > & remoteResourceNodes
+     */
+    const std::vector< CRDFNode * > & getRemoteResourceNodes() const;
 
     /**
      * Guess the graph root element. If a unique root element is found
@@ -80,14 +86,19 @@ class CRDFGraph
     CRDFNode * mpAbout;
 
     /**
-     * A map of blank node ids to nodes in the graph.
+     * A map of blank node ids to nodes of the graph.
      */
     std::map< std::string, CRDFNode * > mBlankNodeId2Node;
 
     /**
-     * A map of resource URIs to nodes in the graph
+     * A map of resource URIs to local resource nodes of the graph
      */
-    std::map< std::string, CRDFNode * > mResource2Node;
+    std::map< std::string, CRDFNode * > mLocalResource2Node;
+
+    /**
+     * A vector of all remote resource nodes of the graph
+     */
+    std::vector< CRDFNode * > mRemoteResourceNodes;
 
     /**
      * A vector of all literal nodes of the graph

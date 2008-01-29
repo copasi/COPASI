@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFWriter.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/15 17:45:38 $
+//   $Date: 2008/01/29 15:00:39 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -107,11 +107,19 @@ char * CRDFWriter::write(const CRDFGraph * pGraph)
     if (itMap->second->isSubjectNode())
       success &= addSubjectNode(itMap->second);
 
-  itMap = pGraph->getResourceNodeMap().begin();
-  endMap = pGraph->getResourceNodeMap().end();
+  itMap = pGraph->getLocalResourceNodeMap().begin();
+  endMap = pGraph->getLocalResourceNodeMap().end();
   for (; itMap != endMap; ++itMap)
     if (itMap->second->isSubjectNode())
       success &= addSubjectNode(itMap->second);
+
+  // We might be describing a remote resource
+  std::vector< CRDFNode *>::const_iterator itVector;
+  std::vector< CRDFNode *>::const_iterator endVector;
+  for (itVector = pGraph->getRemoteResourceNodes().begin(), endVector = pGraph->getRemoteResourceNodes().end();
+       itVector != endVector; ++itVector)
+    if ((*itVector)->isSubjectNode())
+      success &= addSubjectNode((*itVector));
 
   if (raptor_serialize_end(mpWriter))
     fatalError();

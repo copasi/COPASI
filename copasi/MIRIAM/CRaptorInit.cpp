@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRaptorInit.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/15 17:45:38 $
+//   $Date: 2008/01/29 15:00:39 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -12,6 +12,8 @@
 // All rights reserved.
 
 #include <raptor.h>
+
+#include "copasi.h"
 
 #include "CRaptorInit.h"
 
@@ -29,3 +31,17 @@ CRaptorInit::CRaptorInit()
 
 CRaptorInit::~CRaptorInit()
 {}
+
+// static
+bool CRaptorInit::isLocalURI(raptor_uri * pURI)
+{
+  raptor_uri * pTmp =
+    raptor_new_uri_for_retrieval(pURI);
+
+  bool isLocal =
+    (strcmp("/", (char *) raptor_uri_as_string(pTmp)) == 0);
+
+  pRaptorFreeUri(pTmp);
+
+  return isLocal;
+}

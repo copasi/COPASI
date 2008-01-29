@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFParser.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/24 16:08:50 $
+//   $Date: 2008/01/29 15:00:39 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -107,10 +107,6 @@ CRDFGraph * CRDFParser::parse(std::istream & stream)
 // static
 void CRDFParser::TripleHandler(void * pGraph, const raptor_statement * pTriple)
 {
-  raptor_print_statement(pTriple, stdout);
-  fprintf(stdout, "\n");
-  fflush(stdout);
-
   // We need to create a CRDFSubject, Predicate, and CRDFObject
   CRDFSubject Subject;
   std::string Predicate;
@@ -121,7 +117,8 @@ void CRDFParser::TripleHandler(void * pGraph, const raptor_statement * pTriple)
     {
     case RAPTOR_IDENTIFIER_TYPE_RESOURCE:
       Subject.setType(CRDFSubject::RESOURCE);
-      Subject.setResource((char *) raptor_uri_as_string((raptor_uri *) pTriple->subject));
+      Subject.setResource((char *) raptor_uri_as_string((raptor_uri *) pTriple->subject),
+                          CRaptorInit::isLocalURI((raptor_uri *) pTriple->subject));
       break;
 
     case RAPTOR_IDENTIFIER_TYPE_ANONYMOUS:
@@ -147,7 +144,8 @@ void CRDFParser::TripleHandler(void * pGraph, const raptor_statement * pTriple)
     {
     case RAPTOR_IDENTIFIER_TYPE_RESOURCE:
       Object.setType(CRDFObject::RESOURCE);
-      Object.setResource((char *) raptor_uri_as_string((raptor_uri *) pTriple->object));
+      Object.setResource((char *) raptor_uri_as_string((raptor_uri *) pTriple->object),
+                         CRaptorInit::isLocalURI((raptor_uri *) pTriple->object));
       break;
 
     case RAPTOR_IDENTIFIER_TYPE_ANONYMOUS:

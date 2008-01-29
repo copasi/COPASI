@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFObject.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/21 16:15:07 $
+//   $Date: 2008/01/29 15:00:39 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -59,14 +64,21 @@ class CRDFObject
     /**
      * Set the resource of the object
      * @param const std::string & resource
+     * @param const bool & isLocal
      */
-    void setResource(const std::string & resource);
+    void setResource(const std::string & resource, const bool & isLocal);
 
     /**
      * Retrieve the resource of the object
      * @return const std::string & resource
      */
     const std::string & getResource() const;
+
+    /**
+     * Check whehter the resource is local
+     * @return const bool & isLocal
+     */
+    const bool & isLocal() const;
 
     /**
      * Set the ID of the blank node of the object
@@ -103,6 +115,11 @@ class CRDFObject
      * The URI of the resource of type RESOURCE
      */
     std::string mResource;
+
+    /**
+     * Stores whether the reources is resolve locally or remotely.
+     */
+    bool mIsLocalResource;
 
     /**
      * The Id of the blank node for type BLANK_NODE
