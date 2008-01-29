@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraph.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/01/29 15:43:44 $
+//   $Date: 2008/01/29 16:02:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -220,7 +220,7 @@ bool CRDFGraph::printGraph()
     }
   outFile << endl;
 
-  for (iter = mResource2Node.begin(); iter != mResource2Node.end(); iter++)
+  for (iter = mLocalResource2Node.begin(); iter != mLocalResource2Node.end(); iter++)
     {
       outFile << "String: " << iter->first << ", Node: " << iter->second->stringFromNode() << endl;
     }
@@ -280,10 +280,10 @@ void CRDFGraph::addObjectToTable(const std::string& tableName, std::string& tabl
       mpAbout = new CRDFNode();
       std::string aboutResource = getGeneratedId();
       subject.setType(CRDFSubject::RESOURCE);
-      subject.setResource(aboutResource);
+      subject.setResource(aboutResource, true);
       mpAbout->setSubject(subject);
       subject.clearData();
-      mResource2Node[aboutResource] = mpAbout;
+      mLocalResource2Node[aboutResource] = mpAbout;
     }
   CRDFNode * pTableNode = NULL;
   found = mBlankNodeId2Node.find(tableNodeID);
@@ -295,7 +295,7 @@ void CRDFGraph::addObjectToTable(const std::string& tableName, std::string& tabl
       predicate = tableName2Predicate(tableName);
       tableNodeID = childNodeID;
       subject.setType(CRDFSubject::RESOURCE);
-      subject.setResource(mpAbout->getSubject().getResource());
+      subject.setResource(mpAbout->getSubject().getResource(), true);
       object.setType(CRDFObject::BLANK_NODE);
       object.setBlankNodeId(tableNodeID);
       addTriplet(subject, predicate, object);
@@ -467,7 +467,7 @@ bool CRDFGraph::addBagNodeToTable(const std::string& tableName, std::string& tab
   //create new tableNode
   std::string tableBlnkNodeId = getGeneratedId();
   subject.setType(CRDFSubject::RESOURCE);
-  subject.setResource(mpAbout->getSubject().getResource());
+  subject.setResource(mpAbout->getSubject().getResource(), true);
   object.setType(CRDFObject::BLANK_NODE);
   object.setBlankNodeId(tableBlnkNodeId);
   addTriplet(subject, tablePredicate, object);
@@ -480,7 +480,7 @@ bool CRDFGraph::addBagNodeToTable(const std::string& tableName, std::string& tab
   subject.setType(CRDFSubject::BLANK_NODE);
   subject.setBlankNodeId(pTableNode->getId());
   object.setType(CRDFObject::RESOURCE);
-  object.setResource(getNameSpaceURI("rdf") + "Bag");
+  object.setResource(getNameSpaceURI("rdf") + "Bag", true);
   addTriplet(subject, predicate, object);
   subject.clearData(); object.clearData();
 
@@ -605,7 +605,7 @@ bool CRDFGraph::setFieldValue(const std::string& fieldName, const std::string& g
       }
       break;
     case CRDFObject::RESOURCE:
-      newObject->setResource(fieldValue);
+      newObject->setResource(fieldValue, true);
       break;
     case CRDFObject::BLANK_NODE:
       newObject->setBlankNodeId(fieldValue);
@@ -662,11 +662,11 @@ bool CRDFGraph::removeNode(const std::string& nodeIdOrResourceOrLiteral, CRDFObj
     }
   else if (nodeType == CRDFObject::RESOURCE)
     {
-      std::map< std::string, CRDFNode * >::iterator it = mResource2Node.find(nodeIdOrResourceOrLiteral);
-      if (it != mResource2Node.end())
+      std::map< std::string, CRDFNode * >::iterator it = mLocalResource2Node.find(nodeIdOrResourceOrLiteral);
+      if (it != mLocalResource2Node.end())
       {pNodeToDel = it->second;}
       if (!pNodeToDel){return false;}
-      mResource2Node.erase(it);
+      mLocalResource2Node.erase(it);
     }
   else if (nodeType == CRDFObject::LITERAL)
     {
