@@ -4,6 +4,7 @@
 	Version="8.00"
 	Name="MIRIAMUI"
 	ProjectGUID="{CC498A00-1DCE-43B8-B81C-3B930F010CE3}"
+	RootNamespace="MIRIAMUI"
 	Keyword="MakeFileProj"
 	>
 	<Platforms>
@@ -25,8 +26,8 @@
 				BuildCommandLine="nmake /f Makefile"
 				ReBuildCommandLine="nmake /f Makefile clean all"
 				CleanCommandLine="nmake /f Makefile clean"
-				Output=""
-				PreprocessorDefinitions="WIN32;_DEBUG"
+				Output="../tmp/MIRIAMUI.lib"
+				PreprocessorDefinitions=""
 				IncludeSearchPath=""
 				ForcedIncludes=""
 				AssemblySearchPath=""
