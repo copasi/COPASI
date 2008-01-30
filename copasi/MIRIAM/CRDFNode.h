@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFNode.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2008/01/29 15:43:44 $
+//   $Author: ssahle $
+//   $Date: 2008/01/30 03:01:00 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -92,7 +92,7 @@ class CRDFNode
      * @return std::string success
         */
 
-    bool CRDFNode::removeEdge(const std::string & predicate);
+    bool removeEdge(const std::string & predicate);
 
     /**
      * Retrieve the property edges of the node

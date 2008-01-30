@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraph.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/01/29 20:14:44 $
+//   $Author: ssahle $
+//   $Date: 2008/01/30 03:01:00 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -110,7 +110,7 @@ class CRDFGraph
      * @param const std::string& graphNodeID
         * @return std::string fieldValue
      */
-    std::string CRDFGraph::getFieldValue(const std::string& fieldName, const std::string& graphNodeId);
+    std::string getFieldValue(const std::string& fieldName, const std::string& graphNodeId);
 
     /**
      *Set the value of the field for a given fieldName.
