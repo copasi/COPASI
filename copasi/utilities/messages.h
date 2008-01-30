@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.111 $
+//   $Revision: 1.112 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/11 15:12:24 $
+//   $Date: 2008/01/30 22:26:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -300,6 +300,9 @@ const MESSAGES Messages[] =
     {MCEigen + 2, "CEigen (2): Failed to compute Eigen value with index '%d'."},
     {MCEigen + 3, "CEigen (3): Unable to sort Eigen values."},
     {MCEigen + 4, "CEigen (4): Eigen values do not satify selection criteria after reordering."},
+
+    {MCMiriam + 1, "CMiriam (1): Problem parsing RDF at line '%d', colume '%d':\n %s"},
+    {MCMiriam + 2, "CMiriam (2): Namespace prefix redefinition for '%s' from '%s' to '%s'."},
 
     // This must be the last element of the message list! Do not delete!
     {0, NULL}
