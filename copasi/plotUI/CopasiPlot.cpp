@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-//   $Revision: 1.50 $
+//   $Revision: 1.50.4.1 $
 //   $Name:  $
-//   $Author: akoenig $
-//   $Date: 2007/10/25 13:02:05 $
+//   $Author: shoops $
+//   $Date: 2008/01/30 17:01:29 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -58,27 +63,46 @@ QwtDoubleRect MyQwtCPointerData::boundingRect() const
     const double *yIt = yData();
     const double *end = xIt + sz;
 
+    // Unfortunately this may be NaN
     minX = maxX = *xIt++;
     minY = maxY = *yIt++;
+
+    // We have to rememember whether we have an initial NaN
+    bool isNaNminX = isnan(minX);
+    bool isNaNmaxX = isnan(maxX);
+    bool isNaNminY = isnan(minY);
+    bool isNaNmaxY = isnan(maxY);
 
     while (xIt < end)
       {
         const double xv = *xIt++;
         if (!isnan(xv))
           {
-            if (xv < minX)
-              minX = xv;
-            if (xv > maxX)
-              maxX = xv;
+            if (xv < minX || isNaNminX)
+              {
+                minX = xv;
+                isNaNminX = false;
+              }
+            if (xv > maxX || isNaNmaxX)
+              {
+                maxX = xv;
+                isNaNmaxX = false;
+              }
           }
 
         const double yv = *yIt++;
         if (!isnan(yv))
           {
-            if (yv < minY)
-              minY = yv;
-            if (yv > maxY)
-              maxY = yv;
+            if (yv < minY || isNaNminY)
+              {
+                minY = yv;
+                isNaNminY = false;
+              }
+            if (yv > maxY || isNaNmaxY)
+              {
+                maxY = yv;
+                isNaNmaxY = false;
+              }
           }
       }
 
