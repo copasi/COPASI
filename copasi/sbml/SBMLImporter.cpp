@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.189.2.6.2.3 $
+//   $Revision: 1.189.2.6.2.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/01/28 05:29:49 $
+//   $Date: 2008/01/31 05:04:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -99,6 +99,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   this->mpCopasiModel->setVolumeUnit(CModel::l);
   this->mpCopasiModel->setTimeUnit(CModel::s);
   this->mpCopasiModel->setQuantityUnit(CModel::Mol);
+  this->mpCopasiModel->setSBMLId(sbmlModel->getId());
   /* Set standard units to match the standard units of SBML files. */
 
   if (sbmlModel->getNumUnitDefinitions() != 0)
