@@ -45,10 +45,6 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\UI\CAuthorsWidget.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\CAuthorsWidget.cpp"
 				>
 			</File>
@@ -58,6 +54,10 @@
 			</File>
 			<File
 				RelativePath=".\CMIRIAMModelWidget.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CPublicationsWidget.cpp"
 				>
 			</File>
 			<File
@@ -84,6 +84,10 @@
 			</File>
 			<File
 				RelativePath=".\CMIRIAMModelWidget.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CPublicationsWidget.h"
 				>
 			</File>
 			<File

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFObject.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/01/29 15:43:44 $
+//   $Date: 2008/01/31 05:01:50 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -43,6 +43,10 @@ class CRDFObject
      * @param const CRDFObject & src
      */
     CRDFObject(const CRDFObject & src);
+
+    CRDFObject& operator =(const CRDFObject& rhs);
+
+    bool operator ==(const CRDFObject& rhs) const;
 
     /**
      * Destructor

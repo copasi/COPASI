@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CMIRIAMModelWidget.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/01/29 16:44:16 $
+//   $Date: 2008/01/31 05:01:51 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,6 +22,7 @@
 #include "UI/listviews.h"
 
 class CAuthorsWidget;
+class CPublicationsWidget;
 class QPushButton;
 
 class CMIRIAMModelWidget : public CopasiWidget
@@ -32,7 +33,7 @@ class CMIRIAMModelWidget : public CopasiWidget
 
   private:
     CAuthorsWidget *mAuthorsWidget;
-    CAuthorsWidget *mPublicationsWidget;
+    CPublicationsWidget *mPublicationsWidget;
 
     QPushButton* btnOK;
     QPushButton* btnCancel;

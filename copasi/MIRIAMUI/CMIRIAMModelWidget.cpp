@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CMIRIAMModelWidget.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/01/29 16:44:16 $
+//   $Date: 2008/01/31 05:01:51 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,6 +24,7 @@
 
 #include "CMIRIAMModelWidget.h"
 #include "CAuthorsWidget.h"
+#include "CPublicationsWidget.h"
 
 /*
  *  Constructs a CMIRIAMModelWidget as a child of 'parent', with the
@@ -41,7 +42,7 @@ CMIRIAMModelWidget::CMIRIAMModelWidget(QWidget* parent, const char* name, WFlags
   pLblAuthors->setBuddy(mAuthorsWidget);
 
   QLabel *pLblPublications = new QLabel("Publications: ", this);
-  mPublicationsWidget = new CAuthorsWidget(this, "PublicationsWidgetForModel");
+  mPublicationsWidget = new CPublicationsWidget(this, "PublicationsWidgetForModel");
   pLblPublications->setBuddy(mPublicationsWidget);
 
   btnOK = new QPushButton("Commit", this);

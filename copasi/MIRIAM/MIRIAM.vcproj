@@ -55,6 +55,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CPublication.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\CRaptorInit.cpp"
 				>
 			</File>
@@ -104,6 +108,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CPublication.h"
+				>
+			</File>
+			<File
 				RelativePath=".\CRaptorInit.h"
 				>
 			</File>
@@ -145,6 +153,10 @@
 			Filter="ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
 			>
 		</Filter>
+		<File
+			RelativePath=".\MIRIAM.pro"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFObject.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/01/29 15:43:44 $
+//   $Date: 2008/01/31 05:01:50 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,6 +24,7 @@ CRDFObject::CRDFObject():
     mType(RESOURCE),
     mResource(""),
     mBlankNodeId(""),
+    mIsLocalResource(false),
     mpLiteral(NULL)
 {}
 
@@ -31,8 +32,45 @@ CRDFObject::CRDFObject(const CRDFObject & src):
     mType(src.mType),
     mResource(src.mResource),
     mBlankNodeId(src.mBlankNodeId),
+    mIsLocalResource(src.mIsLocalResource),
     mpLiteral(src.mpLiteral == NULL ? NULL : new CRDFLiteral(*src.mpLiteral))
 {}
+
+CRDFObject& CRDFObject::operator =(const CRDFObject& rhs)
+{
+  if (this != &rhs)
+    {
+      mType = rhs.mType;
+      mResource = rhs.mResource;
+      mBlankNodeId = rhs.mBlankNodeId;
+      mIsLocalResource = rhs.mIsLocalResource;
+      mpLiteral = (rhs.mpLiteral == NULL ? NULL : new CRDFLiteral(*rhs.mpLiteral));
+    }
+  return *this;
+}
+
+bool CRDFObject::operator ==(const CRDFObject& rhs) const
+  {
+    if (mType == rhs.mType)
+      {
+        switch (mType)
+          {
+          case CRDFObject::BLANK_NODE:
+            if (mBlankNodeId == rhs.mBlankNodeId)
+            {return true;}
+            break;
+          case CRDFObject::RESOURCE:
+            if (mResource == rhs.mResource && mIsLocalResource == rhs.mIsLocalResource)
+            {return true;}
+            break;
+          case CRDFObject::LITERAL:
+            if (mpLiteral->getLexicalData() == rhs.mpLiteral->getLexicalData())
+            {return true;}
+            break;
+          }
+      }
+    return false;
+  }
 
 CRDFObject::~CRDFObject()
 {pdelete(mpLiteral);}

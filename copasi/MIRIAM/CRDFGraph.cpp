@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraph.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/01/29 20:14:44 $
+//   $Author: aekamal $
+//   $Date: 2008/01/31 05:01:50 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -254,18 +254,20 @@ bool CRDFGraph::printGraph()
   return true;
 }
 
-bool CRDFGraph::getNodeIDsForTable(const std::string& tableName, std::vector<std::string>& nodeIds, std::string& tableNodeID)
+bool CRDFGraph::getNodeIDsForTable(const std::string& tableName, std::vector<CRDFObject>& objects, CRDFObject& tableObj)
 {
   std::string predicate = tableName2Predicate(tableName);
-  CRDFNode* tableBlankNode = getNodeForPredicate(predicate);
-  if (!tableBlankNode)
+  CRDFNode* pTableNode = getNodeForPredicate(predicate);
+  if (!pTableNode)
   {return false;}
-  tableNodeID = tableBlankNode->getId();
+  tableObj = pTableNode->getObject();
+  objects.clear();
 
   bool isBagNode = false;
   std::string bagPredicate = getNameSpaceURI("rdf") + "type";
-  std::vector< CRDFEdge >::const_iterator it;
-  const std::vector<CRDFEdge> & edges = tableBlankNode->getEdges();
+  CRDFObject object;
+  vector<CRDFEdge>::const_iterator it;
+  const std::vector<CRDFEdge> & edges = pTableNode->getEdges();
   for (it = edges.begin(); it != edges.end(); it++)
     {
       if (it->getPredicate() == bagPredicate)
@@ -276,20 +278,58 @@ bool CRDFGraph::getNodeIDsForTable(const std::string& tableName, std::vector<std
       for (it = edges.begin(); it != edges.end(); it++)
         {
           if (it->getPredicate() != bagPredicate)
-          {nodeIds.push_back(it->getPropertyNode()->getId());}
+          {objects.push_back(it->getPropertyNode()->getObject());}
         }
     }
   else
-  {nodeIds.push_back(tableBlankNode->getId());}
+    {
+      objects.push_back(pTableNode->getObject());
+    }
   return true;
 }
 
-void CRDFGraph::addObjectToTable(const std::string& tableName, std::string& tableNodeID, const std::string& childNodeID)
+void CRDFGraph::addObjectToTable(const std::string& tableName, CRDFObject& tableObj, const CRDFObject& childObj)
 {
   CRDFSubject subject; CRDFObject object; std::string predicate = "";
   std::map< std::string, CRDFNode * >::iterator found;
-  if (strlen(childNodeID.c_str()) == 0)
-  {return;}
+
+  CRDFNode * pTableNode = NULL;
+  switch (tableObj.getType())
+    {
+    case CRDFObject::BLANK_NODE:
+      if (strlen(tableObj.getBlankNodeID().c_str()) == 0) break;
+      found = mBlankNodeId2Node.find(tableObj.getBlankNodeID());
+      if (found != mBlankNodeId2Node.end())
+      {pTableNode = found->second;}
+      break;
+    case CRDFObject::RESOURCE:
+      if (strlen(tableObj.getResource().c_str()) == 0) break;
+      if (tableObj.isLocal())
+        {
+          found = mLocalResource2Node.find(tableObj.getResource());
+          if (found != mLocalResource2Node.end())
+          {pTableNode = found->second;}
+        }
+      else
+        {
+          std::vector< CRDFNode * >::iterator it;
+          for (it = mRemoteResourceNodes.begin(); it != mRemoteResourceNodes.end(); it++)
+            {
+              if ((*it)->getObject().getResource() == tableObj.getResource())
+              {pTableNode = *it; break;}
+            }
+        }
+      break;
+    case CRDFObject::LITERAL:
+      if (strlen(tableObj.getLiteral().getLexicalData().c_str()) == 0) break;
+      std::vector< CRDFNode * >::iterator it;
+      for (it = mLiteralNodes.begin(); it != mLiteralNodes.end(); it++)
+        {
+          if ((*it)->getObject().getLiteral().getLexicalData() == tableObj.getLiteral().getLexicalData())
+          {pTableNode = *it; break;}
+        }
+      break;
+    }
 
   //create the about node if it does not exist.
   if (!mpAbout)
@@ -302,39 +342,89 @@ void CRDFGraph::addObjectToTable(const std::string& tableName, std::string& tabl
       subject.clearData();
       mLocalResource2Node[aboutResource] = mpAbout;
     }
-  CRDFNode * pTableNode = NULL;
-  found = mBlankNodeId2Node.find(tableNodeID);
-  if (found != mBlankNodeId2Node.end())
-  {pTableNode = found->second;}
-  //create the table node if it does not exist.
+  //create the table node as a blank node if it does not exist.
   if (!pTableNode)
     {
       predicate = tableName2Predicate(tableName);
-      tableNodeID = childNodeID;
       subject.setType(CRDFSubject::RESOURCE);
-      subject.setResource(mpAbout->getSubject().getResource(), true);
-      object.setType(CRDFObject::BLANK_NODE);
-      object.setBlankNodeId(tableNodeID);
-      addTriplet(subject, predicate, object);
+      subject.setResource(mpAbout->getSubject().getResource(), mpAbout->getSubject().isLocal());
+      if (tableName == "Creators")
+        {
+          object.setType(CRDFObject::BLANK_NODE);
+          object.setBlankNodeId(childObj.getBlankNodeID());
+          addTriplet(subject, predicate, object);
+          pTableNode = mBlankNodeId2Node[childObj.getBlankNodeID()];
+        }
+      else if (tableName == "Publications")
+        {
+          object.setType(CRDFObject::RESOURCE);
+          object.setResource(childObj.getResource(), childObj.isLocal());
+          addTriplet(subject, predicate, object);
+          std::vector< CRDFNode * >::iterator it;
+          for (it = mRemoteResourceNodes.begin(); it != mRemoteResourceNodes.end(); it++)
+            {
+              if ((*it)->getObject().getResource() == childObj.getResource())
+              {pTableNode = *it; break;}
+            }
+        }
+      tableObj = object;
       subject.clearData(); object.clearData();
-      pTableNode = mBlankNodeId2Node[tableNodeID];
     }
 
   if (isBagNode(pTableNode))
     {
-      predicate = getNameSpaceURI("rdf") + "_" + childNodeID;
-
+      CRDFNode * pObjNode = NULL;
+      predicate = getNameSpaceURI("rdf") + "_" + getGeneratedId();
       subject.setType(CRDFSubject::BLANK_NODE);
       subject.setBlankNodeId(pTableNode->getId());
-      object.setType(CRDFObject::BLANK_NODE);
-      object.setBlankNodeId(childNodeID);
-      addTriplet(subject, predicate, object);
+
+      switch (childObj.getType())
+        {
+        case CRDFObject::BLANK_NODE:
+          if (strlen(childObj.getBlankNodeID().c_str()) == 0) return;
+          object.setType(CRDFObject::BLANK_NODE);
+          object.setBlankNodeId(childObj.getBlankNodeID());
+          addTriplet(subject, predicate, object);
+          found = mBlankNodeId2Node.find(childObj.getBlankNodeID());
+          if (found != mBlankNodeId2Node.end())
+          {pObjNode = found->second;}
+          break;
+        case CRDFObject::RESOURCE:
+          if (strlen(childObj.getResource().c_str()) == 0) return;
+          object.setType(CRDFObject::RESOURCE);
+          object.setResource(childObj.getResource(), childObj.isLocal());
+          addTriplet(subject, predicate, object);
+          if (childObj.isLocal())
+            {
+              found = mLocalResource2Node.find(childObj.getResource());
+              if (found != mLocalResource2Node.end())
+              {pObjNode = found->second;}
+            }
+          else
+            {
+              std::vector< CRDFNode * >::iterator it;
+              for (it = mRemoteResourceNodes.begin(); it != mRemoteResourceNodes.end(); it++)
+                {
+                  if ((*it)->getObject().getResource() == childObj.getResource())
+                  {pObjNode = *it; break;}
+                }
+            }
+          break;
+        case CRDFObject::LITERAL:
+          if (strlen(childObj.getLiteral().getLexicalData().c_str()) == 0) return;
+          object.setType(CRDFObject::LITERAL);
+          object.setLiteral(childObj.getLiteral());
+          addTriplet(subject, predicate, object);
+          std::vector< CRDFNode * >::iterator it;
+          for (it = mLiteralNodes.begin(); it != mLiteralNodes.end(); it++)
+            {
+              if ((*it)->getObject().getLiteral().getLexicalData() == childObj.getLiteral().getLexicalData())
+              {pObjNode = *it; break;}
+            }
+          break;
+        }
       subject.clearData(); object.clearData();
 
-      CRDFNode * pObjNode = NULL;
-      found = mBlankNodeId2Node.find(childNodeID);
-      if (found != mBlankNodeId2Node.end())
-      {pObjNode = found->second;}
       if (tableName == "Creators")
       {addNewCreatorNodes(pObjNode);}
     }
@@ -409,14 +499,47 @@ void CRDFGraph::addNewCreatorNodes(const CRDFNode * pObjNode)
   subject.clearData(); object.clearData();
 }
 
-bool CRDFGraph::removeObjectFromTable(const std::string& tableName, std::string& tableNodeID, const std::string& childNodeID)
+bool CRDFGraph::removeObjectFromTable(const std::string& tableName, CRDFObject& tableObj, const CRDFObject& childObj)
 {
-  if (strlen(tableNodeID.c_str()) == 0 || strlen(childNodeID.c_str()) == 0)
-  {return false;}
+  //if (strlen(tableNodeID.c_str()) == 0 || strlen(childNodeID.c_str()) == 0)
+  //{return false;}
 
   std::string bagPredicate = getNameSpaceURI("rdf") + "type";
   std::vector< CRDFEdge >::const_iterator it;
-  CRDFNode * tableNode = mBlankNodeId2Node[tableNodeID];
+  CRDFNode * tableNode = NULL;
+  switch (tableObj.getType())
+    {
+    case CRDFObject::BLANK_NODE:
+      if (strlen(tableObj.getBlankNodeID().c_str()) == 0) return false;
+      tableNode = mBlankNodeId2Node[tableObj.getBlankNodeID()];
+      break;
+    case CRDFObject::RESOURCE:
+      if (strlen(tableObj.getResource().c_str()) == 0) return false;
+      if (tableObj.isLocal())
+      {tableNode = mLocalResource2Node[tableObj.getResource()];}
+      else
+        {
+          std::vector< CRDFNode * >::iterator it;
+          for (it = mRemoteResourceNodes.begin(); it != mRemoteResourceNodes.end(); it++)
+            {
+              if ((*it)->getObject().getResource() == tableObj.getResource())
+              {tableNode = *it; break;}
+            }
+        }
+      break;
+    case CRDFObject::LITERAL:
+      if (strlen(tableObj.getLiteral().getLexicalData().c_str()) == 0) return false;
+      {
+        std::vector< CRDFNode * >::iterator it;
+        for (it = mLiteralNodes.begin(); it != mLiteralNodes.end(); it++)
+          {
+            if ((*it)->getObject().getLiteral().getLexicalData() == tableObj.getLiteral().getLexicalData())
+            {tableNode = *it; break;}
+          }
+      }
+      break;
+    }
+
   bool IsBagNode = isBagNode(tableNode);
   if (tableNode)
     {
@@ -425,19 +548,20 @@ bool CRDFGraph::removeObjectFromTable(const std::string& tableName, std::string&
         {
           for (it = tableEdges.begin(); it != tableEdges.end(); it++)
             {
-              if (it->getPropertyNode()->getId() == childNodeID)
+              if (it->getPropertyNode()->getObject() == childObj)
               {break;}
             }
         }
-    }
-  if (removeNode(childNodeID, CRDFObject::BLANK_NODE))
-    {
-      if (tableNode && IsBagNode)
-      {tableNode->removeEdge(it->getPredicate());}
-      else if (!IsBagNode && mpAbout)
+
+      if (removeNode(it->getPropertyNode()))
         {
-          mpAbout->removeEdge(tableName2Predicate(tableName));
-          tableNodeID = "";
+          if (tableNode && IsBagNode)
+          {tableNode->removeEdge(it->getPredicate());}
+          else if (!IsBagNode && mpAbout)
+            {
+              mpAbout->removeEdge(tableName2Predicate(tableName));
+              tableObj.clearData();
+            }
         }
     }
   return true;
@@ -456,7 +580,7 @@ bool CRDFGraph::isBagNode(const CRDFNode * pNode)
   return false;
 }
 
-bool CRDFGraph::addBagNodeToTable(const std::string& tableName, std::string& tableGraphID)
+bool CRDFGraph::addBagNodeToTable(const std::string& tableName, CRDFObject& tableObj)
 {
   std::string tablePredicate = tableName2Predicate(tableName);
   CRDFSubject subject; CRDFObject object; std::string predicate;
@@ -473,9 +597,8 @@ bool CRDFGraph::addBagNodeToTable(const std::string& tableName, std::string& tab
 
   CRDFNode * pTableNode = it->getPropertyNode();
 
-  //Add bag node only if 1 object present in table.
-  /*if (getNoOfObjectsInTable(pTableNode) != 1)
-  {return false;}*/
+  if (isBagNode(pTableNode))
+  {return true;}
 
   //point pObjectNode to pTableNode.
   CRDFNode * pObjectNode = pTableNode;
@@ -484,7 +607,7 @@ bool CRDFGraph::addBagNodeToTable(const std::string& tableName, std::string& tab
   //create new tableNode
   std::string tableBlnkNodeId = getGeneratedId();
   subject.setType(CRDFSubject::RESOURCE);
-  subject.setResource(mpAbout->getSubject().getResource(), true);
+  subject.setResource(mpAbout->getSubject().getResource(), mpAbout->getSubject().isLocal());
   object.setType(CRDFObject::BLANK_NODE);
   object.setBlankNodeId(tableBlnkNodeId);
   addTriplet(subject, tablePredicate, object);
@@ -497,23 +620,23 @@ bool CRDFGraph::addBagNodeToTable(const std::string& tableName, std::string& tab
   subject.setType(CRDFSubject::BLANK_NODE);
   subject.setBlankNodeId(pTableNode->getId());
   object.setType(CRDFObject::RESOURCE);
-  object.setResource(getNameSpaceURI("rdf") + "Bag", true);
+  object.setResource(getNameSpaceURI("rdf") + "Bag", false);
   addTriplet(subject, predicate, object);
   subject.clearData(); object.clearData();
 
   predicate = getNameSpaceURI("rdf") + "_1";
   subject.setType(CRDFSubject::BLANK_NODE);
   subject.setBlankNodeId(pTableNode->getId());
-  object.setType(CRDFObject::BLANK_NODE);
-  object.setBlankNodeId(pObjectNode->getId());
+  if (pObjectNode && pObjectNode->isObjectNode())
+  {object = pObjectNode->getObject();}
   addTriplet(subject, predicate, object);
   subject.clearData(); object.clearData();
 
-  tableGraphID = pTableNode->getId();
+  tableObj = pTableNode->getObject();
   return true;
 }
 
-bool CRDFGraph::removeBagNodeFromTable(const std::string& tableName, std::string& tableGraphID)
+bool CRDFGraph::removeBagNodeFromTable(const std::string& tableName, CRDFObject& tableObj)
 {
   std::string tablePredicate = tableName2Predicate(tableName);
 
@@ -529,6 +652,9 @@ bool CRDFGraph::removeBagNodeFromTable(const std::string& tableName, std::string
 
   CRDFNode * pTableNode = it->getPropertyNode();
 
+  if (!isBagNode(pTableNode))
+  {return true;}
+
   if (getNoOfObjectsInTable(pTableNode) > 1)
   {return false;}
 
@@ -542,15 +668,20 @@ bool CRDFGraph::removeBagNodeFromTable(const std::string& tableName, std::string
     }
 
   //First point about to object Node
-  CRDFNode * pObjectNode = tit->getPropertyNode();
-  mpAbout->removeEdge(tablePredicate);
-  mpAbout->addEdge(tablePredicate, pObjectNode);
-  //Remove Edge between table and object node
-  pTableNode->removeEdge(tit->getPredicate());
-  //Now delete the table node and its children.
-  removeNode(pTableNode->getId(), CRDFObject::BLANK_NODE);
-  //Finally return the ID of object as the new tableNodeID.
-  tableGraphID = pObjectNode->getId();
+  CRDFNode * pObjectNode = NULL;
+  if (tit != tableNodeEdges.end())
+  {pObjectNode = tit->getPropertyNode();}
+  if (pObjectNode)
+    {
+      mpAbout->removeEdge(tablePredicate);
+      mpAbout->addEdge(tablePredicate, pObjectNode);
+      //Remove Edge between table and object node
+      pTableNode->removeEdge(tit->getPredicate());
+      //Now delete the table node and its children.
+      removeNode(pTableNode);
+      //Finally return the object as the new tableObj.
+      tableObj = pObjectNode->getObject();
+    }
   return true;
 }
 
@@ -558,25 +689,26 @@ unsigned int CRDFGraph::getNoOfObjectsInTable(const CRDFNode * pTableNode)
 {
   std::string bagPredicate = getNameSpaceURI("rdf") + "type";
   unsigned int count = 0;
-  const std::vector< CRDFEdge >& nodeEdges = pTableNode->getEdges();
-  std::vector< CRDFEdge >::const_iterator it;
-  for (it = nodeEdges.begin(); it != nodeEdges.end(); it++)
+  if (isBagNode(pTableNode))
     {
-      if (it->getPredicate() != bagPredicate)
-      {count++;}
+      const std::vector< CRDFEdge >& nodeEdges = pTableNode->getEdges();
+      std::vector< CRDFEdge >::const_iterator it;
+      for (it = nodeEdges.begin(); it != nodeEdges.end(); it++)
+        {
+          if (it->getPredicate() != bagPredicate)
+          {count++;}
+        }
     }
   return count;
 }
 
-std::string CRDFGraph::getFieldValue(const std::string& fieldName, const std::string& graphNodeId)
+std::string CRDFGraph::getFieldValue(const std::string& fieldName, const CRDFObject& obj)
 {
-  std::string predicate = fieldName2Predicate(fieldName);
-  CRDFNode* fieldNode = getNodeForPredicate(predicate, mBlankNodeId2Node[graphNodeId]);
-
-  if (!fieldNode)
+  CRDFNode * pFieldNode = findFieldNodeFromObject(fieldName, obj);
+  if (!pFieldNode)
   {return "Field Not Found";}
 
-  const CRDFObject & Object = fieldNode->getObject();
+  const CRDFObject & Object = pFieldNode->getObject();
   switch (Object.getType())
     {
     case CRDFObject::LITERAL:
@@ -602,34 +734,73 @@ std::string CRDFGraph::getFieldValue(const std::string& fieldName, const std::st
   return "";
 }
 
-bool CRDFGraph::setFieldValue(const std::string& fieldName, const std::string& graphNodeId, const std::string& fieldValue)
+bool CRDFGraph::setFieldValue(const std::string& fieldName, CRDFObject& obj, const std::string& fieldValue)
 {
-  std::string predicate = fieldName2Predicate(fieldName);
-  CRDFNode* fieldNode = getNodeForPredicate(predicate, mBlankNodeId2Node[graphNodeId]);
-  if (!fieldNode)
+  CRDFNode * pFieldNode = findFieldNodeFromObject(fieldName, obj);
+  if (!pFieldNode || !pFieldNode->isObjectNode())
   {return false;}
 
-  const CRDFObject & Object = fieldNode->getObject();
-  CRDFObject * newObject = new CRDFObject (Object);
-  switch (Object.getType())
+  CRDFObject object; CRDFLiteral lit;
+  switch (pFieldNode->getObject().getType())
     {
     case CRDFObject::LITERAL:
-      {
-        CRDFLiteral* Literal = new CRDFLiteral(Object.getLiteral());
-        Literal->setLexicalData(fieldValue);
-        newObject->setLiteral(*Literal);
-        break;
-      }
+      lit.setLexicalData(fieldValue);
+      object.setType(CRDFObject::LITERAL);
+      object.setLiteral(lit);
+      obj.setLiteral(lit);
       break;
     case CRDFObject::RESOURCE:
-      newObject->setResource(fieldValue, true);
+      object.setType(CRDFObject::RESOURCE);
+      object.setResource(fieldValue, pFieldNode->getObject().isLocal());
+      obj.setResource(fieldValue, pFieldNode->getObject().isLocal());
       break;
     case CRDFObject::BLANK_NODE:
-      newObject->setBlankNodeId(fieldValue);
+      object.setType(CRDFObject::BLANK_NODE);
+      object.setBlankNodeId(fieldValue);
+      obj.setBlankNodeId(fieldValue);
       break;
     }
-  fieldNode->setObject(*newObject);
+  pFieldNode->setObject(object);
   return true;
+}
+
+CRDFNode* CRDFGraph::findFieldNodeFromObject(const std::string& fieldName, const CRDFObject& obj)
+{
+  CRDFNode* fieldNode = NULL;
+  std::string predicate = "";
+  switch (obj.getType())
+    {
+    case CRDFObject::BLANK_NODE:
+      predicate = fieldName2Predicate(fieldName);
+      fieldNode = getNodeForPredicate(predicate, mBlankNodeId2Node[obj.getBlankNodeID()]);
+      break;
+    case CRDFObject::RESOURCE:
+      if (obj.isLocal())
+        {
+          std::map< std::string, CRDFNode * >::iterator it = mLocalResource2Node.find(obj.getResource());
+          if (it != mLocalResource2Node.end())
+          {fieldNode = it->second;}
+        }
+      else
+        {
+          std::vector< CRDFNode * >::iterator it;
+          for (it = mRemoteResourceNodes.begin(); it != mRemoteResourceNodes.end(); it++)
+            {
+              if ((*it)->getObject().getResource() == obj.getResource())
+              {fieldNode = *it; break;}
+            }
+        }
+      break;
+    case CRDFObject::LITERAL:
+      std::vector< CRDFNode * >::iterator it;
+      for (it = mLiteralNodes.begin(); it != mLiteralNodes.end(); it++)
+        {
+          if ((*it)->getObject().getLiteral().getLexicalData() == obj.getLiteral().getLexicalData())
+          {fieldNode = *it; break;}
+        }
+      break;
+    }
+  return fieldNode;
 }
 
 CRDFNode* CRDFGraph::getNodeForPredicate(const std::string& predicate, const CRDFNode * startNode)
@@ -665,60 +836,40 @@ CRDFNode* CRDFGraph::getNodeForPredicate(const std::string& predicate, const CRD
   return nodeForPredicate;
 }
 
-bool CRDFGraph::removeNode(const std::string& nodeIdOrResourceOrLiteral, CRDFObject::eObjectType nodeType)
+bool CRDFGraph::removeNode(CRDFNode *pNode)
 {
-  CRDFNode * pNodeToDel = NULL;
-
-  if (nodeType == CRDFObject::BLANK_NODE)
+  if (pNode->getObject().getType() == CRDFObject::BLANK_NODE)
+  {mBlankNodeId2Node.erase(pNode->getObject().getBlankNodeID());}
+  else if (pNode->getObject().getType() == CRDFObject::RESOURCE)
     {
-      std::map< std::string, CRDFNode * >::iterator it = mBlankNodeId2Node.find(nodeIdOrResourceOrLiteral);
-      if (it != mBlankNodeId2Node.end())
-      {pNodeToDel = it->second;}
-      if (!pNodeToDel){return false;}
-      mBlankNodeId2Node.erase(it);
+      if (pNode->getObject().isLocal())
+      {mLocalResource2Node.erase(pNode->getObject().getResource());}
+      else
+        {
+          std::vector< CRDFNode * >::iterator it;
+          for (it = mRemoteResourceNodes.begin(); it != mRemoteResourceNodes.end(); it++)
+            {
+              if (*it == pNode)
+              {mRemoteResourceNodes.erase(it); break;}
+            }
+        }
     }
-  else if (nodeType == CRDFObject::RESOURCE)
-    {
-      std::map< std::string, CRDFNode * >::iterator it = mLocalResource2Node.find(nodeIdOrResourceOrLiteral);
-      if (it != mLocalResource2Node.end())
-      {pNodeToDel = it->second;}
-      if (!pNodeToDel){return false;}
-      mLocalResource2Node.erase(it);
-    }
-  else if (nodeType == CRDFObject::LITERAL)
+  else if (pNode->getObject().getType() == CRDFObject::LITERAL)
     {
       std::vector< CRDFNode * >::iterator it;
       for (it = mLiteralNodes.begin(); it != mLiteralNodes.end(); it++)
         {
-          if ((*it)->getObject().getLiteral().getLexicalData() == nodeIdOrResourceOrLiteral)
-            {
-              pNodeToDel = *it;
-              mLiteralNodes.erase(it); break;
-            }
+          if (*it == pNode)
+          {mLiteralNodes.erase(it); break;}
         }
-      if (!pNodeToDel){return false;}
     }
 
-  if (pNodeToDel)
+  if (pNode)
     {
       std::vector< CRDFEdge >::const_iterator vit;
-      for (vit = pNodeToDel->getEdges().begin(); vit != pNodeToDel->getEdges().end(); vit++)
-        {
-          CRDFObject::eObjectType childNodeType = vit->getPropertyNode()->getObject().getType();
-          switch (childNodeType)
-            {
-            case CRDFObject::BLANK_NODE:
-              removeNode(vit->getPropertyNode()->getId(), childNodeType);
-              break;
-            case CRDFObject::RESOURCE:
-              removeNode(vit->getPropertyNode()->getObject().getResource(), childNodeType);
-              break;
-            case CRDFObject::LITERAL:
-              removeNode(vit->getPropertyNode()->getObject().getLiteral().getLexicalData(), childNodeType);
-              break;
-            }
-        }
-      pdelete(pNodeToDel);
+      for (vit = pNode->getEdges().begin(); vit != pNode->getEdges().end(); vit++)
+      {removeNode(vit->getPropertyNode());}
+      pdelete(pNode);
     }
   return true;
 }
@@ -767,5 +918,7 @@ std::string CRDFGraph::tableName2Predicate(const std::string& tableName)
   std::string predicate;
   if (tableName == "Creators")
   {predicate = getNameSpaceURI("dc") + "creator";}
+  else if (tableName == "Publications")
+  {predicate = getNameSpaceURI("bqmodel") + "isDescribedBy";}
   return predicate;
 }

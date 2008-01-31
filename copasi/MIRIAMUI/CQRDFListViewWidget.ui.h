@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CQRDFListViewWidget.ui.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/01/29 20:17:02 $
+//   $Author: aekamal $
+//   $Date: 2008/01/31 05:01:51 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -61,7 +61,7 @@ void CQRDFListViewWidget::load()
   for (;itMap != endMap; ++itMap)
     {
       pNode = itMap->second;
-      if (pNode->isSubjectNode() && !pNode->isObjectNode())
+      if (pNode && pNode->isSubjectNode() && !pNode->isObjectNode())
         {
           CRDFListViewItem * pItem = new CRDFListViewItem(mpListView, NULL);
           pItem->setNode(pNode);

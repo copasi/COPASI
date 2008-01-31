@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/Attic/CAuthor.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/01/29 15:43:44 $
+//   $Date: 2008/01/31 05:01:50 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,6 +28,8 @@
 
 #include "report/CCopasiContainer.h"
 
+#include "CRDFObject.h"
+
 class CAuthor : public CCopasiContainer
   {
     // Attributes
@@ -35,19 +37,19 @@ class CAuthor : public CCopasiContainer
 
     std::string mKey;
 
-    /** ID in RDF Graph corresponding to this object.*/
-    std::string mRDFGraphNodeID;
+    /** Object in RDF Graph corresponding to this Author.*/
+    CRDFObject* mpRDFObj;
 
     // Operations
   public:
     /**
      * Default constructor
      * @param const std::string & objectName
-    * @param const std::string & RDFGraphNodeID
+     * @param CRDFObject * pRDFObj
      * @param const CCopasiContainer * pParent (default: NULL)
      */
     CAuthor(const std::string & objectName, const CCopasiContainer * pParent = NULL,
-            const std::string & RDFGraphNodeID = "");
+            CRDFObject * pRDFObj = NULL);
 
     /**
      * Copy constructor
@@ -80,7 +82,7 @@ class CAuthor : public CCopasiContainer
 
     void setORG(const std::string Orgname);
 
-    std::string getRDFGraphNodeID();
+    CRDFObject& getRDFObject();
 
     const std::string getObjectName() const;
 
