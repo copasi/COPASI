@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-//   $Revision: 1.132.4.1 $
+//   $Revision: 1.132.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/22 18:51:25 $
+//   $Date: 2008/01/31 16:14:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -338,6 +338,7 @@ bool CMetab::compile()
       // Implicit initial expression
       pdelete(mpInitialExpression);
       mpInitialExpression = CExpression::createInitialExpression(*mpExpression);
+      mpInitialExpression->setObjectName("InitialExpression");
 
       // Fixed values
       mRate = std::numeric_limits< C_FLOAT64 >::quiet_NaN();

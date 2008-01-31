@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CFixLocalReactionParameters.cpp,v $
-//   $Revision: 1.1.2.1 $
+//   $Revision: 1.1.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/28 17:44:57 $
+//   $Date: 2008/01/31 16:14:24 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -88,6 +88,7 @@ void CFixLocalReactionParameters::changeModel()
   std::stringstream Message;
 
   std::string OldCN;
+  std::string NewCNBase;
   std::string NewCN;
   std::string Infix;
 
@@ -103,7 +104,7 @@ void CFixLocalReactionParameters::changeModel()
         {
           // We have a new parameter
           pParameter = itChanges->first;
-          OldCN = "<" + pParameter->getCN(); // We do not need + ",Reference=Value>";
+          OldCN = "<" + pParameter->getCN() + ",Reference=";
 
           // Create a global quantity of type FIXED.
           std::string Name = pParameter->getObjectName();
@@ -123,7 +124,7 @@ void CFixLocalReactionParameters::changeModel()
               pModelValue = mpModel->createModelValue(NameStream.str(),
                                                       *pParameter->getValue().pDOUBLE);
             }
-          NewCN = "<" + pModelValue->getCN(); // We do not need + ",Reference=Value>";
+          NewCNBase = "<" + pModelValue->getCN() + ",Reference=";
 
           // If the parameter is actually used in the reaction
           // it is changed to the global quantity.
@@ -131,8 +132,14 @@ void CFixLocalReactionParameters::changeModel()
             pReaction->setParameterMapping(pParameter->getObjectName(), pModelValue->getKey());
 
           Message << "  " << pParameter->getObjectName() << " in " << pReaction->getObjectName()
-          << " replaced by " << pModelValue->getObjectName() << std::endl;
+          << " is replaced by " << pModelValue->getObjectName() << std::endl;
         }
+
+      // We need to destinguish between initial and other expressions.
+      if (itChanges->second->getObjectName().compare(0, 7, "Initial") == 0)
+        NewCN = NewCNBase + "Initial";
+      else
+        NewCN = NewCNBase;
 
       // Replace the OldCN of the parameter with the NewCN of global quantity in all expressions.
       Infix = itChanges->second->getInfix();
