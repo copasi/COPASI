@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CGraphCurve.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/01/22 20:27:17 $
+//   $Author: urost $
+//   $Date: 2008/01/31 13:58:42 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,7 +20,7 @@
 #include "copasi.h"
 
 #include "CGraphCurve.h"
-
+#include "BezierCurve.h"
 CGraphCurve::CGraphCurve()
     : CLCurve()
 {
@@ -75,5 +75,29 @@ void CGraphCurve::invertOrderOfPoints()
   reverse(mCurveSegments.begin(), mCurveSegments.end());
 
   if (mHasArrow)
-  {};  //  ? ? ?
+    {// exchange line segment and end point
+      CLLineSegment lastSeg = mCurveSegments[mCurveSegments.size() - 1];
+      CLPoint p = lastSeg.getEnd();
+      if (lastSeg.isBezier())
+        {
+          BezierCurve *bezier = new BezierCurve();
+          std::vector<CLPoint> pts = std::vector<CLPoint>();
+          pts.push_back(lastSeg.getStart());
+          pts.push_back(lastSeg.getBase1());
+          pts.push_back(lastSeg.getBase2());
+          pts.push_back(lastSeg.getEnd());
+          std::vector<CLPoint> bezierPts = bezier->curvePts(pts);
+          C_INT32 num = bezierPts.size();
+          CLLineSegment segForArrow = CLLineSegment(bezierPts[num - 2], bezierPts[num - 1]);
+          mArrow.setLine(segForArrow);
+          mArrow.setPoint(CLPoint(bezierPts[num - 1].getX(), bezierPts[num - 1].getY()));
+          //ar = new CArrow(segForArrow, bezierPts[num - 1].getX(), bezierPts[num - 1].getY(), this->currentZoom);
+        }
+      else
+        {
+          mArrow.setLine(lastSeg);
+          mArrow.setPoint(CLPoint(p.getX(), p.getY()));
+        }
+      //ar = new CArrow(lastSeg, p.getX(), p.getY(), this->currentZoom);
+    }
 }

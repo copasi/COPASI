@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CArrow.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/01/31 13:13:23 $
+//   $Date: 2008/01/31 13:58:42 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,6 +34,10 @@ class CArrow
 
     CLPoint getStartOfLine() {return line.getStart();}
     CLPoint getEndOfLine() {return line.getEnd();}
+    CLLineSegment getLine(){return line;}
+    void setLine(CLLineSegment l){line = l;}
+    CLPoint getPoint(){return endPoint;}
+    void setPoint(CLPoint p){endPoint = p;}
     C_FLOAT64 getArrowWidth(){return arrowWidth;}
     C_FLOAT64 getArrowLength(){return arrowLength;}
     void scale(C_FLOAT64 zoomFactor);
