@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.109.2.1.2.4 $
+//   $Revision: 1.109.2.1.2.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/28 17:44:56 $
+//   $Date: 2008/01/31 16:26:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -126,7 +126,7 @@ const MESSAGES Messages[] =
     {MCXML + 12, "XML (12): Order '%d' out of range for variable '%s' in function '%s' encountered at line '%d'. "},
     {MCXML + 13, "XML (13): Unrecognized format in file '%s'."},
     {MCXML + 14, "XML (14): Local reaction parameters may no longer be used in any expression in the model. "
-     " The following automatic corrections have been applied: \n'%s'"
+     " The following automatic corrections have been applied:\n%s"
      " Please note: Tasks, reports, and plots may have been affected by these changes and may no longer work as expected."},
 
     // CCopasiMessage
