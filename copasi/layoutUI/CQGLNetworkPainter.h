@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.51 $
+//   $Revision: 1.52 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/01/15 17:53:27 $
+//   $Author: urost $
+//   $Date: 2008/01/31 13:13:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -111,6 +111,9 @@ class CQGLNetworkPainter : public QGLWidget
 
     CLPoint mgraphMin;
     CLPoint mgraphMax;
+
+    C_FLOAT64 currentZoom ; // current zoom factor
+
     std::vector<std::string> viewerNodes; // contains node keys
     std::vector<CGraphCurve> viewerCurves; // contains curves defining a reaction (not directly associated with a node)
     //std::vector<CArrow> viewerArrows;

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.89 $
+//   $Revision: 1.90 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/01/15 17:53:27 $
+//   $Author: urost $
+//   $Date: 2008/01/31 13:13:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -194,10 +194,10 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
                           std::vector<CLPoint> bezierPts = bezier->curvePts(pts);
                           C_INT32 num = bezierPts.size();
                           CLLineSegment segForArrow = CLLineSegment(bezierPts[num - 2], bezierPts[num - 1]);
-                          ar = new CArrow(segForArrow, bezierPts[num - 1].getX(), bezierPts[num - 1].getY());
+                          ar = new CArrow(segForArrow, bezierPts[num - 1].getX(), bezierPts[num - 1].getY(), this->currentZoom);
                         }
                       else
-                        ar = new CArrow(lastSeg, p.getX(), p.getY());
+                        ar = new CArrow(lastSeg, p.getX(), p.getY(), this->currentZoom);
                       //std::cout << "arrow line: " << ar->getStartOfLine() << ar->getEndOfLine() << std::endl;
                       //                   nodeArrowMap.insert(std::pair<std::string, CArrow>
                       //                                       (nodeKey, *ar));
@@ -1450,7 +1450,7 @@ void CQGLNetworkPainter::setNodeSize(std::string key, C_FLOAT64 val)
           CLPoint p = pLastSeg->getEnd();
           if (pCurve->hasArrowP())
             {
-              CArrow *ar = new CArrow(*pLastSeg, p.getX(), p.getY());
+              CArrow *ar = new CArrow(*pLastSeg, p.getX(), p.getY(), this->currentZoom);
               nodeArrowMap.insert(std::pair<std::string, CArrow>
                                   (key, *ar));
               pCurve->setArrow(*ar);
@@ -1629,10 +1629,10 @@ void CQGLNetworkPainter::adaptCurveForCircle(std::multimap<std::string, CGraphCu
           std::vector<CLPoint> bezierPts = bezier->curvePts(pts);
           C_INT32 num = bezierPts.size();
           CLLineSegment segForArrow = CLLineSegment(bezierPts[num - 2], bezierPts[num - 1]);
-          ar = new CArrow(segForArrow, bezierPts[num - 1].getX(), bezierPts[num - 1].getY());
+          ar = new CArrow(segForArrow, bezierPts[num - 1].getX(), bezierPts[num - 1].getY(), this->currentZoom);
         }
       else
-        ar = new CArrow(*pLastSeg, p.getX(), p.getY());
+        ar = new CArrow(*pLastSeg, p.getX(), p.getY(), this->currentZoom);
 
       nodeArrowMap.insert(std::pair<std::string, CArrow>
                           ((*it).first, *ar));
@@ -1670,10 +1670,10 @@ void CQGLNetworkPainter::adaptCurveForRectangles(std::multimap<std::string, CGra
           std::vector<CLPoint> bezierPts = bezier->curvePts(pts);
           C_INT32 num = bezierPts.size();
           CLLineSegment segForArrow = CLLineSegment(bezierPts[num - 2], bezierPts[num - 1]);
-          ar = new CArrow(segForArrow, bezierPts[num - 1].getX(), bezierPts[num - 1].getY());
+          ar = new CArrow(segForArrow, bezierPts[num - 1].getX(), bezierPts[num - 1].getY(), this->currentZoom);
         }
       else
-        ar = new CArrow(*pLastSeg, p.getX(), p.getY());
+        ar = new CArrow(*pLastSeg, p.getX(), p.getY(), this->currentZoom);
 
       nodeArrowMap.insert(std::pair<std::string, CArrow>
                           ((*it).first, *ar));
@@ -1721,6 +1721,7 @@ void CQGLNetworkPainter::zoomGraph(C_FLOAT64 zoomFactor)
 void CQGLNetworkPainter::zoom(C_FLOAT64 zoomFactor)
 {
   //cout << "zoom  "  << zoomFactor << std::endl;
+  this->currentZoom *= zoomFactor;
 
   CLPoint cMax = CLPoint(this->mgraphMax.getX() * zoomFactor, this->mgraphMax.getY() * zoomFactor);
   this->setGraphSize(this->mgraphMin, cMax);
@@ -1755,6 +1756,7 @@ void CQGLNetworkPainter::zoom(C_FLOAT64 zoomFactor)
           this->viewerCurves[i].scale(zoomFactor);
         }
       //scale curves that are associated with a reactant/species node (i.e. directly points to it)
+      std::cout << "scale curves: " << std::endl;
       for (i = 0; i < viewerNodes.size();i++)
         {
           std::pair<std::multimap<std::string, CGraphCurve>::iterator, std::multimap<std::string, CGraphCurve>::iterator> curveRangeIt;
@@ -1765,13 +1767,14 @@ void CQGLNetworkPainter::zoom(C_FLOAT64 zoomFactor)
           curveIt = curveRangeIt.first;
           while (curveIt != curveRangeIt.second)
             {
-              ((*curveIt).second).scale(zoomFactor);
+              ((*curveIt).second).scale(zoomFactor); // scale curve
               curveIt++;
             }
         }
       // common fontname and size for all labels are stored in this class
       this->mFontsizeDouble = this->mFontsizeDouble * zoomFactor;
       this->mFontsize = (int)this->mFontsizeDouble;
+      //std::cout << "new fontsize: " << this->mFontsize << std::endl;
       for (i = 0;i < viewerLabels.size();i++)
         {
           this->viewerLabels[i].scale(zoomFactor);
@@ -1784,7 +1787,7 @@ void CQGLNetworkPainter::zoom(C_FLOAT64 zoomFactor)
           arrowIt = arrowRangeIt.first;
           while (arrowIt != arrowRangeIt.second)
             {
-              (*arrowIt).second.scale(zoomFactor);
+              (*arrowIt).second.scale(zoomFactor); //scale arrow
               arrowIt++;
             }
 
@@ -1853,6 +1856,7 @@ bool CQGLNetworkPainter::isCircleMode()
 
 void CQGLNetworkPainter::initializeGraphPainter(QWidget *viewportWidget)
 {
+  currentZoom = 1.0;
   mLabelShape = RECTANGLE;
   mgraphMin = CLPoint(0.0, 0.0);
   mgraphMax = CLPoint(250.0, 250.0);
@@ -1925,6 +1929,7 @@ void CQGLNetworkPainter::initializeGL()
 void CQGLNetworkPainter::resizeGL(int w, int h)
 {
   //std::cout << "resize GL" << std::endl;
+  std::cout << "GL size:  w x h:    " << w << "  x  " << h << std::endl;
   // setup viewport, projection etc.:
   glViewport(0, 0, (GLint)w, (GLint)h);
 

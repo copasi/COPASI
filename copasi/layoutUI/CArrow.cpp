@@ -1,34 +1,48 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CArrow.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/03/02 10:56:33 $
+//   $Date: 2008/01/31 13:13:23 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #include "CArrow.h"
+#include <iostream>
 
-// scale line segment (curve) and end point, a curve (with basepoints will not be scaled correclty)
+CArrow::CArrow(CLLineSegment l, C_FLOAT64 x, C_FLOAT64 y, C_FLOAT64 currentZoomFactor)
+{
+  line = l;
+  endPoint = CLPoint(x, y);
+  arrowLength = 12.0;
+  arrowWidth = 5.0;
+  scaleHeadSize(currentZoomFactor);
+}
+
+// scale line segment (curve) and end point, a curve (with basepoints) will not be scaled correctly
 void CArrow::scale(C_FLOAT64 zoomFactor)
+{
+  this->scaleHeadSize(zoomFactor);
+  this->scalePosition(zoomFactor);
+}
+
+void CArrow::scalePosition(C_FLOAT64 zoomFactor)
+{
+  this->line.scale(zoomFactor);
+  this->endPoint.setX(this->endPoint.getX() * zoomFactor);
+  this->endPoint.setY(this->endPoint.getY() * zoomFactor);
+}
+
+void CArrow::scaleHeadSize(C_FLOAT64 zoomFactor)
 {
   this->arrowWidth *= zoomFactor;
   this->arrowLength *= zoomFactor;
-
-  this->line.scale(zoomFactor);
-  // scale start and end Point
-  //  CLPoint p1 = this->line.getStart();
-  //  CLPoint p2 = this->line.getEnd();
-  //
-  //  p1.setX(p1.getX() * zoomFactor);
-  //  p1.setY(p1.getY() * zoomFactor);
-  //  p2.setX(p2.getX() * zoomFactor);
-  //  p2.setY(p2.getY() * zoomFactor);
-
-  // now scale end point
-  this->endPoint.setX(this->endPoint.getX() * zoomFactor);
-  this->endPoint.setY(this->endPoint.getY() * zoomFactor);
 }
