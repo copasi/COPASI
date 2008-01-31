@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraph.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/01/31 05:01:50 $
+//   $Date: 2008/01/31 05:17:27 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -118,8 +118,8 @@ bool CRDFGraph::addNameSpace(const std::string & prefix, const std::string & uri
   if (inserted.second || (inserted.first->second == uri))
     return true;
 
-  CCopasiMessage(CCopasiMessage::ERROR, MCMiriam + 2,
-                 prefix.c_str(), inserted.first->second.c_str(), uri.c_str());
+  //CCopasiMessage(CCopasiMessage::ERROR, MCMiriam + 2,
+  //prefix.c_str(), inserted.first->second.c_str(), uri.c_str());
   return false;
 }
 
@@ -266,7 +266,7 @@ bool CRDFGraph::getNodeIDsForTable(const std::string& tableName, std::vector<CRD
   bool isBagNode = false;
   std::string bagPredicate = getNameSpaceURI("rdf") + "type";
   CRDFObject object;
-  vector<CRDFEdge>::const_iterator it;
+  std::vector<CRDFEdge>::const_iterator it;
   const std::vector<CRDFEdge> & edges = pTableNode->getEdges();
   for (it = edges.begin(); it != edges.end(); it++)
     {
