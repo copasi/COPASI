@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.8.4.4 $
+//   $Revision: 1.8.4.5 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/01/29 13:18:15 $
+//   $Date: 2008/01/31 05:44:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1161,7 +1161,6 @@ void CSBMLExporter::checkForODESpeciesInNonfixedCompartment(const CCopasiDataMod
           if (pCompartment->getStatus() != CModelValue::FIXED)
             {
               result.push_back(SBMLIncompatibility(3, (*it)->getObjectName().c_str(), pCompartment->getObjectName().c_str()));
-              //CCopasiMessage::CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 52, (*it)->getObjectName().c_str());
             }
         }
       ++it;
@@ -1610,20 +1609,6 @@ const std::set<CEvaluationNodeFunction::SubType> CSBMLExporter::createUnsupporte
       // the same. The only function that can not be correctly converted
       // is ARCCOTH since we would need a piecewise for that which is not
       // supported in Level 1
-      //unsupportedFunctionTypes.insert(CEvaluationNodeFunction::SEC);
-      //unsupportedFunctionTypes.insert(CEvaluationNodeFunction::CSC);
-      //unsupportedFunctionTypes.insert(CEvaluationNodeFunction::COT);
-      //unsupportedFunctionTypes.insert(CEvaluationNodeFunction::SINH);
-      //unsupportedFunctionTypes.insert(CEvaluationNodeFunction::COSH);
-      //unsupportedFunctionTypes.insert(CEvaluationNodeFunction::TANH);
-      //unsupportedFunctionTypes.insert(CEvaluationNodeFunction::SECH);
-      //unsupportedFunctionTypes.insert(CEvaluationNodeFunction::CSCH);
-      //unsupportedFunctionTypes.insert(CEvaluationNodeFunction::COTH);
-      //unsupportedFunctionTypes.insert(CEvaluationNodeFunction::ARCSINH);
-      //unsupportedFunctionTypes.insert(CEvaluationNodeFunction::ARCCOSH);
-      //unsupportedFunctionTypes.insert(CEvaluationNodeFunction::ARCTANH);
-      //unsupportedFunctionTypes.insert(CEvaluationNodeFunction::ARCSECH);
-      //unsupportedFunctionTypes.insert(CEvaluationNodeFunction::ARCCSCH);
       unsupportedFunctionTypes.insert(CEvaluationNodeFunction::ARCCOTH);
       unsupportedFunctionTypes.insert(CEvaluationNodeFunction::RNORMAL);
       unsupportedFunctionTypes.insert(CEvaluationNodeFunction::RUNIFORM);
@@ -1898,8 +1883,6 @@ KineticLaw* CSBMLExporter::createKineticLaw(const CReaction& reaction, CCopasiDa
             {
               Parameter* pSBMLPara = pKLaw->createParameter();
 
-              //std::string parameterKey = reaction.getParameterMappings()[counter][0];
-
               pSBMLPara->setId(pPara->getObjectName().c_str());
               double value = reaction.getParameterValue(pPara->getObjectName());
               // if the value is NaN, leave the parameter value unset.
@@ -2029,7 +2012,6 @@ CEvaluationNode* CSBMLExporter::createKineticExpression(CFunction* pFun, const s
     }
   else
     {
-      //std::map< std::string, std::string > parameterMap;
       std::string id = pFun->getSBMLId();
       if (id.empty())
         {
@@ -2088,127 +2070,12 @@ CEvaluationNode* CSBMLExporter::createKineticExpression(CFunction* pFun, const s
             {
               cn = "<" + pObject->getCN() + ">";
             }
-          //parameterMap[pFun->getVariables()[i]->getObjectName()] = cn;
           pFunctionCall->addChild(new CEvaluationNodeObject(CEvaluationNodeObject::ANY, cn));
         }
-      pResult = pFunctionCall; //CSBMLExporter::createExpressionTree(pFun->getRoot(), parameterMap, dataModel);
+      pResult = pFunctionCall;
     }
   return pResult;
 }
-
-/*
-CEvaluationNode* CSBMLExporter::createExpressionTree(const CFunction* const pFun, const std::vector<std::vector<std::string> >& arguments, const CCopasiDataModel& dataModel)
-{
-  if (!pFun || pFun->getVariables().size() != arguments.size()) fatalError();
-  CEvaluationNode* pResult;
-  if (pFun->getType() == CEvaluationTree::MassAction)
-    {
-      pResult = CSBMLExporter::createMassActionExpression(arguments, pFun->isReversible() == TriTrue);
-    }
-  else
-    {
-      std::map< std::string, std::string > parameterMap;
-      unsigned int i, iMax = arguments.size();
-      std::string cn;
-      for (i = 0;i < iMax;++i)
-        {
-          if (arguments[i].size() != 1) fatalError(); // we can't have arrays here.
-          const CCopasiObject* pObject = GlobalKeys.get(arguments[i][0]);
-          if (!pObject) fatalError();
-          if (dynamic_cast<const CModel*>(pObject) != NULL)
-            {
-              cn = "<" + pObject->getCN() + ",Reference=Time>";
-            }
-          else if (dynamic_cast<const CCompartment*>(pObject) != NULL)
-            {
-              cn = "<" + pObject->getCN() + ",Reference=Volume>";
-            }
-          else if (dynamic_cast<const CMetab*>(pObject) != NULL)
-            {
-              cn = "<" + pObject->getCN() + ",Reference=Concentration>";
-            }
-          else if (dynamic_cast<const CModelValue*>(pObject) != NULL)
-            {
-              cn = "<" + pObject->getCN() + ",Reference=Value>";
-            }
-          else if (dynamic_cast<const CReaction*>(pObject) != NULL)
-            {
-              cn = "<" + pObject->getCN() + ",Reference=Flux>";
-            }
-          else if (dynamic_cast<const CCopasiParameter*>(pObject) != NULL)
-           {
-              // local parameter of a reaction
-              // must set the node content to the SBML id if the parameter
-              cn = "<"+pObject->getCN()+">";
-           }
-          else
-            {
-              cn = "<" + pObject->getCN() + ">";
-            }
-          parameterMap[pFun->getVariables()[i]->getObjectName()] = cn;
-        }
-      pResult = CSBMLExporter::createExpressionTree(pFun->getRoot(), parameterMap, dataModel);
-    }
-  return pResult;
-}
-
-CEvaluationNode* CSBMLExporter::createExpressionTree(const CEvaluationNode* const pNode, const std::map<std::string, std::string>& parameterMap, const CCopasiDataModel& dataModel)
-{
-  if (dataModel.getModel() == NULL) return NULL;
-  if (!pNode) fatalError();
-  CEvaluationNode* pResultNode = NULL;
-  const CFunction* pFun = NULL;
-  std::map<std::string, std::string>::const_iterator pos;
-  std::vector<std::vector<std::string> > arguments;
-  const CEvaluationNode* pChildNode = NULL;
-  //std::vector<const CCopasiContainer*> containerList;
-  //containerList.push_back(dataModel.getModel());
-  //const CCopasiObject* pObject = NULL;
-  switch (CEvaluationNode::type(pNode->getType()))
-    {
-    case CEvaluationNode::CALL:
-      pFun = dynamic_cast<const CFunction*>(const_cast<CFunctionDB*>(const_cast<CCopasiDataModel&>(dataModel).getFunctionList())->findFunction(pNode->getData()));
-      assert(pFun);
-      pResultNode = CSBMLExporter::createExpressionTree(pFun->getRoot(), parameterMap, dataModel);
-      break;
-    case CEvaluationNode::VARIABLE:
-      // replace the variable node with an object node
-      pos = parameterMap.find(pNode->getData());
-      if (pos == parameterMap.end()) fatalError();
-      pResultNode = new CEvaluationNodeObject(CEvaluationNodeObject::ANY, pos->second);
-      break;
-    case CEvaluationNode::NUMBER:
-      pResultNode = new CEvaluationNodeNumber((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pNode->getType()), pNode->getData());
-      break;
-    case CEvaluationNode::CONSTANT:
-      pResultNode = new CEvaluationNodeConstant((CEvaluationNodeConstant::SubType)CEvaluationNode::subType(pNode->getType()), pNode->getData());
-      break;
-    case CEvaluationNode::OPERATOR:
-      pResultNode = new CEvaluationNodeOperator((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pNode->getType()), pNode->getData());
-      break;
-    case CEvaluationNode::CHOICE:
-      pResultNode = new CEvaluationNodeChoice((CEvaluationNodeChoice::SubType)CEvaluationNode::subType(pNode->getType()), pNode->getData());
-      break;
-    case CEvaluationNode::LOGICAL:
-      pResultNode = new CEvaluationNodeLogical((CEvaluationNodeLogical::SubType)CEvaluationNode::subType(pNode->getType()), pNode->getData());
-      break;
-    case CEvaluationNode::FUNCTION:
-      pResultNode = new CEvaluationNodeFunction((CEvaluationNodeFunction::SubType)CEvaluationNode::subType(pNode->getType()), pNode->getData());
-      break;
-    default:
-      fatalError();
-      break;
-    }
-  pChildNode = static_cast<const CEvaluationNode*>(pNode->getChild());
-  while (pChildNode)
-    {
-      pResultNode->addChild(CSBMLExporter::createExpressionTree(pChildNode, parameterMap, dataModel));
-      pChildNode = static_cast<const CEvaluationNode*>(pChildNode->getSibling());
-    }
-  assert(pResultNode);
-  return pResultNode;
-}
- */
 
 /**
  * This method creates an ASTNode tree where all the species specified in
@@ -2284,45 +2151,94 @@ void CSBMLExporter::findDirectlyUsedFunctions(const CEvaluationNode* pRootNode, 
 
 const std::vector<CFunction*> CSBMLExporter::findUsedFunctions(std::set<CFunction*>& functions, CFunctionDB* pFunctionDB)
 {
-  std::vector<CFunction*> result;
-  std::set<CFunction*>::iterator it = functions.begin();
-  std::set<CFunction*>::iterator endit = functions.end();
-  std::set<CFunction*> chain;
-  while (it != endit)
+  std::map<CFunction*, std::set<CFunction*> > functionDependencyMap;
+  std::set<CFunction*>::iterator setit = functions.begin(), setendit = functions.end();
+  // create the dependency map
+  while (setit != setendit)
     {
-      chain.insert(*it);
-      CSBMLExporter::findUsedFunctions(*it, pFunctionDB, chain, result);
-      result.push_back(*it);
-      chain.clear();
-      ++it;
+      std::set<std::string> usedFunctionNames;
+      CSBMLExporter::findDirectlyUsedFunctions(const_cast<CFunction*>(*setit)->getRoot(), usedFunctionNames);
+      std::set<CFunction*> usedFunctions = CSBMLExporter::createFunctionSetFromFunctionNames(usedFunctionNames, pFunctionDB);
+      functionDependencyMap[*setit] = usedFunctions;
+      ++setit;
     }
-  return result;
-}
-
-void CSBMLExporter::findUsedFunctions(const CFunction* pFunction, CFunctionDB *pFunDB, std::set<CFunction*>& chain, std::vector<CFunction*>& result)
-{
-  if (pFunction == NULL || pFunDB == NULL) return;
-  std::set<std::string> usedFunctionNames;
-  CSBMLExporter::findDirectlyUsedFunctions(pFunction->getRoot(), usedFunctionNames);
-  std::set<CFunction*> usedFunctions = CSBMLExporter::createFunctionSetFromFunctionNames(usedFunctionNames, pFunDB);
-  std::set<CFunction*>::iterator it = usedFunctions.begin();
-  std::set<CFunction*>::iterator endit = usedFunctions.end();
-  while (it != endit)
+  bool found = true;
+  while (found)
     {
-      if (chain.find(*it) != chain.end())
+      found = false;
+      std::map<CFunction*, std::set<CFunction*> >::iterator mapIt = functionDependencyMap.begin(), mapEndit = functionDependencyMap.end();
+      while (mapIt != mapEndit)
         {
-          // we have a loop
-          CCopasiMessage::CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 16);
+          setit = mapIt->second.begin(), setendit = mapIt->second.end();
+          while (setit != setendit)
+            {
+              // check if we already have the dependencies for the function
+              if (functionDependencyMap.find(*setit) == functionDependencyMap.end())
+                {
+                  found = true;
+                  std::set<std::string> usedFunctionNames;
+                  CSBMLExporter::findDirectlyUsedFunctions(const_cast<CFunction*>(*setit)->getRoot(), usedFunctionNames);
+                  std::set<CFunction*> usedFunctions = CSBMLExporter::createFunctionSetFromFunctionNames(usedFunctionNames, pFunctionDB);
+                  functionDependencyMap[*setit] = usedFunctions;
+                }
+              ++setit;
+            }
+          // if we changed the map, we have to stop the inner loop since the
+          // map iterator is now invalid
+          if (found)
+            {
+              break;
+            }
+          ++mapIt;
         }
-      else
-        {
-          result.push_back(*it);
-          chain.insert(*it);
-          findUsedFunctions(*it, pFunDB, chain, result);
-          chain.erase(chain.find(*it));
-        }
-      ++it;
     }
+  bool removed = true;
+  std::vector<CFunction*> functionVector;
+  while (!functionDependencyMap.empty() && removed == true)
+    {
+      std::map<CFunction*, std::set<CFunction*> >::iterator mapIt = functionDependencyMap.begin(), mapEndit = functionDependencyMap.end();
+      removed = false;
+      // go through the map and find functions that have no dependencies
+      while (mapIt != mapEndit)
+        {
+          if (mapIt->second.empty())
+            {
+              // set remove to true so that we know that at least one
+              // function definition without dependencies has been found
+              // otherwise we might end up in an endless loop
+              removed = true;
+              // add the function to the front
+              functionVector.push_back(mapIt->first);
+              // remove this function from the dependency list of all other
+              // functions
+              std::map<CFunction*, std::set<CFunction*> >::iterator mapIt2 = functionDependencyMap.begin(), mapEndit2 = functionDependencyMap.end();
+              while (mapIt2 != mapEndit2)
+                {
+                  std::set<CFunction*>::iterator pos = mapIt2->second.find(mapIt->first);
+                  if (pos != mapIt2->second.end())
+                    {
+                      mapIt2->second.erase(pos);
+                    }
+                  ++mapIt2;
+                }
+              // delete the entry of this function from the depenency map
+              std::map<CFunction*, std::set<CFunction*> >::iterator pos = mapIt;
+              ++mapIt;
+              functionDependencyMap.erase(pos);
+            }
+          else
+            {
+              ++mapIt;
+            }
+        }
+    }
+  // check if the dependency map is empty. If not, there must be a dependency
+  // loop
+  if (!functionDependencyMap.empty())
+    {
+      CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, "Dependency loop found in function definitions.");
+    }
+  return functionVector;
 }
 
 const std::set<CFunction*> CSBMLExporter::createFunctionSetFromFunctionNames(const std::set<std::string>& names, CFunctionDB* pFunDB)
@@ -2800,7 +2716,6 @@ void CSBMLExporter::checkForPiecewiseFunctions(const CCopasiDataModel& dataModel
       if (pReaction->getFunction() != NULL)
         {
           CSBMLExporter::findDirectlyUsedFunctions(pReaction->getFunction()->getRoot(), usedFunctionNames);
-          //CSBMLExporter::checkForPiecewiseFunctions(*pTree->getRoot(),result,pME->getObjectName(),"kinetic law for reaction");
         }
     }
   // check indirectly called functions

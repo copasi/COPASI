@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.h,v $
-//   $Revision: 1.7.4.1 $
+//   $Revision: 1.7.4.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/01/18 14:32:43 $
+//   $Date: 2008/01/31 05:44:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -402,8 +402,6 @@ class CSBMLExporter
      * functions
      */
     static const std::vector<CFunction*> findUsedFunctions(std::set<CFunction*>& functions, CFunctionDB* pFunctionDB);
-
-    static void findUsedFunctions(const CFunction* pFunction , CFunctionDB* pFunctionDB, std::set<CFunction*>& chain, std::vector<CFunction*>& result);
 
     static const std::set<CFunction*> createFunctionSetFromFunctionNames(const std::set<std::string>& names, CFunctionDB* pFunDB);
 
