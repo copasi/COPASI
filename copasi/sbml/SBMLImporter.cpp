@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.189.2.6.2.4 $
+//   $Revision: 1.189.2.6.2.5 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/01/31 05:04:35 $
+//   $Date: 2008/02/01 07:54:59 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1674,7 +1674,17 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
                   // treat unknown as fatal
                 default:
                   //CCopasiMessage(CCopasiMessage::TRACE, MCSBML + 40,"FATAL",pSBMLError->getLine(),pSBMLError->getColumn(),pSBMLError->getMessage().c_str());
-                  fatal = i;
+                  if (pSBMLError->getErrorId() == 10804)
+                    {
+                      // this error indicates a problem with a notes element
+                      // although libsbml flags this as fatal, we would still
+                      // like to read the model
+                      CCopasiMessage(messageType, MCSBML + 40, "ERROR", pSBMLError->getErrorId(), pSBMLError->getLine(), pSBMLError->getColumn(), pSBMLError->getMessage().c_str());
+                    }
+                  else
+                    {
+                      fatal = i;
+                    }
                   break;
                 }
               //std::cerr << pSBMLError->getMessage() << std::endl;
@@ -1691,34 +1701,6 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
               return NULL;
             }
         }
-      /*
-      else if (sbmlDoc->getNumErrors() > 0)
-          {
-          ParseMessage * pSBMLMessage = sbmlDoc->getError(0);
-          // some level 1 files have an annotation in the wrong place
-          // This is considered an error by libsbml, but
-          // it does not really affect the model, so we try to
-          // read it anyway.
-          //
-          if ((sbmlDoc->getNumErrors() > 1) ||
-              (strncmp(pSBMLMessage->getMessage().c_str(),
-                      "The <sbml> element cannot contain an <annotation>.  Use the <model> element instead."
-                      , 85) != 0))
-              {
-              CCopasiMessage Message(CCopasiMessage::RAW, MCXML + 2,
-                                      pSBMLMessage->getLine(),
-                                      pSBMLMessage->getColumn(),
-                                      pSBMLMessage->getMessage().c_str());
-
-              if (mpImportHandler) mpImportHandler->finish(mhImportStep);
-              return NULL;
-              }
-          else
-              {
-              CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 6);
-              }
-          }
-      */
       if (sbmlDoc->getModel() == NULL)
         {
           CCopasiMessage Message(CCopasiMessage::ERROR, MCSBML + 2);
