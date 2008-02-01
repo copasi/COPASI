@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.52 $
+//   $Revision: 1.53 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/01/31 13:13:23 $
+//   $Date: 2008/02/01 11:25:00 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -67,6 +67,8 @@ class CQGLNetworkPainter : public QGLWidget
     CSimSummaryInfo *pSummaryInfo;
 
     void setGraphSize(const CLPoint & min, const CLPoint & max);
+    const CLPoint& getGraphMin();
+    const CLPoint& getGraphMax();
     void createGraph(CLayout *lP); // create local data structures
     void drawGraph(); // create OpenGL display list with graph objects
     void drawNode(CGraphNode &n);

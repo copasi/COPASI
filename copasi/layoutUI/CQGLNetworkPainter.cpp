@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.90 $
+//   $Revision: 1.91 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/01/31 13:13:23 $
+//   $Date: 2008/02/01 11:25:00 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -67,6 +67,18 @@ CQGLNetworkPainter::CQGLNetworkPainter(QWidget *parent, const char *name)
 CQGLNetworkPainter::~CQGLNetworkPainter()
 {
   std::cout << "destroy network painter" << std::endl;
+}
+
+const CLPoint& CQGLNetworkPainter::getGraphMin()
+{
+  const CLPoint& mi = mgraphMin;
+  return mi;
+}
+
+const CLPoint& CQGLNetworkPainter::getGraphMax()
+{
+  const CLPoint& ma = mgraphMax;
+  return ma;
 }
 
 // set graph size and reset projection to fit new size
