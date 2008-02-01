@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraph.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/01/31 05:17:27 $
+//   $Date: 2008/02/01 02:01:04 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -374,7 +374,16 @@ void CRDFGraph::addObjectToTable(const std::string& tableName, CRDFObject& table
   if (isBagNode(pTableNode))
     {
       CRDFNode * pObjNode = NULL;
-      predicate = getNameSpaceURI("rdf") + "_" + getGeneratedId();
+      unsigned int noOfObjects = getNoOfObjectsInTable(pTableNode);
+      do
+        {
+          std::stringstream sstr;
+          noOfObjects++;
+          sstr << getNameSpaceURI("rdf") << "_" << noOfObjects;
+          predicate = sstr.str();
+        }
+      while (edgeExists(pTableNode, predicate));
+
       subject.setType(CRDFSubject::BLANK_NODE);
       subject.setBlankNodeId(pTableNode->getId());
 
@@ -575,6 +584,17 @@ bool CRDFGraph::isBagNode(const CRDFNode * pNode)
   for (it = nodeEdges.begin(); it != nodeEdges.end(); it++)
     {
       if (it->getPredicate() == bagPredicate)
+      {return true;}
+    }
+  return false;
+}
+
+bool CRDFGraph::edgeExists(const CRDFNode* pNode, const std::string predicate)
+{
+  std::vector< CRDFEdge >::const_iterator it;
+  for (it = pNode->getEdges().begin(); it != pNode->getEdges().end(); it++)
+    {
+      if (it->getPredicate() == predicate)
       {return true;}
     }
   return false;

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFSubject.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/01/31 05:01:50 $
+//   $Date: 2008/02/01 02:01:04 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -61,4 +61,9 @@ const std::string & CRDFSubject::getBlankNodeID() const
   {return mBlankNodeId;}
 
 void CRDFSubject::clearData()
-{mBlankNodeId = ""; mResource = ""; mType = CRDFSubject::RESOURCE;}
+{
+  mBlankNodeId = "";
+  mResource = "";
+  mType = CRDFSubject::RESOURCE;
+  mIsLocalResource = false;
+}

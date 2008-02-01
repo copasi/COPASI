@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFObject.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/01/31 05:01:50 $
+//   $Date: 2008/02/01 02:01:04 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -64,7 +64,12 @@ bool CRDFObject::operator ==(const CRDFObject& rhs) const
             {return true;}
             break;
           case CRDFObject::LITERAL:
-            if (mpLiteral->getLexicalData() == rhs.mpLiteral->getLexicalData())
+            if (mpLiteral && rhs.mpLiteral)
+              {
+                if (mpLiteral->getLexicalData() == rhs.mpLiteral->getLexicalData())
+                {return true;}
+              }
+            else if (mpLiteral == NULL && rhs.mpLiteral == NULL)
             {return true;}
             break;
           }
@@ -118,5 +123,6 @@ void CRDFObject::clearData()
   mType = RESOURCE;
   mResource = "";
   mBlankNodeId = "";
+  mIsLocalResource = false;
   mpLiteral = NULL;
 }

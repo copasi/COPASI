@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraph.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/01/31 05:01:50 $
+//   $Date: 2008/02/01 02:01:04 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -201,6 +201,7 @@ class CRDFGraph
     CRDFNode* getNodeForPredicate(const std::string& predicate, const CRDFNode * startNode = NULL);
     bool removeNode(CRDFNode * pNode);
     bool isBagNode(const CRDFNode * pNode);
+    bool edgeExists(const CRDFNode* pNode, const std::string predicate);
     std::string getGeneratedId();
     unsigned int getNoOfObjectsInTable(const CRDFNode * pTableNode);
   };
