@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.h,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/11/05 15:06:26 $
+//   $Date: 2008/02/01 11:07:46 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -33,6 +38,7 @@
 #include <qiconset.h>
 #include <qpixmap.h>
 #include <qimage.h>
+#include <qevent.h>
 //#include <qlayout.h>
 //#include <qslider.h>
 //#include <qwt_slider.h>
@@ -137,6 +143,8 @@ class CQLayoutMainWindow : public QMainWindow
 
     QIconSet createStartIcon();
     QIconSet createStopIcon();
+
+    void resizeEvent(QResizeEvent *ev);
   };
 
 #endif /*SIMGUI_H_*/
