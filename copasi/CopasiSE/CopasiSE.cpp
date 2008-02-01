@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
-//   $Revision: 1.39.12.3 $
+//   $Revision: 1.39.12.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/01/23 19:56:26 $
+//   $Author: gauges $
+//   $Date: 2008/02/01 13:04:36 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -265,12 +265,12 @@ int main(int argc, char *argv[])
               COptions::getValue("ExportSBML", ExportSBML);
               CCopasiDataModel::Global->exportSBML(ExportSBML, true);
             }
-          if (!COptions::compareValue("NewExportSBML", std::string("")))
+          if (!COptions::compareValue("OldExportSBML", std::string("")))
             {
               // Export the SBML File
-              std::string NewExportSBML;
-              COptions::getValue("NewExportSBML", NewExportSBML);
-              CCopasiDataModel::Global->newExportSBML(NewExportSBML, true);
+              std::string OldExportSBML;
+              COptions::getValue("OldExportSBML", OldExportSBML);
+              CCopasiDataModel::Global->oldExportSBML(OldExportSBML, true);
             }
 
           // Check whether a save file is given.
@@ -346,12 +346,12 @@ int main(int argc, char *argv[])
                   // stop execution.
                   break;
                 }
-              if (!COptions::compareValue("NewExportSBML", std::string("")))
+              if (!COptions::compareValue("OldExportSBML", std::string("")))
                 {
                   // Export the SBML File
-                  std::string NewExportSBML;
-                  COptions::getValue("NewExportSBML", NewExportSBML);
-                  CCopasiDataModel::Global->newExportSBML(NewExportSBML, true);
+                  std::string OldExportSBML;
+                  COptions::getValue("OldExportSBML", OldExportSBML);
+                  CCopasiDataModel::Global->oldExportSBML(OldExportSBML, true);
                 }
 
               // Check whether exporting to C code is requested.
