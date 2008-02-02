@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.h,v $
-//   $Revision: 1.7.4.3 $
+//   $Revision: 1.7.4.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/02 06:58:45 $
+//   $Date: 2008/02/02 09:19:29 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -452,6 +452,12 @@ class CSBMLExporter
      * Checks if the given string is a valid SId
      */
     static bool isValidSId(const std::string& id);
+
+    /**
+     * Remove the initial assignment for the entity with the given id
+     * if there is any.
+     */
+    void removeInitialAssignment(const std::string& sbmlId);
   };
 
 #endif // CSBLExporter_H__
