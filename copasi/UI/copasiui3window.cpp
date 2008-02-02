@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.218 $
+//   $Revision: 1.218.4.1 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/12/08 13:10:09 $
+//   $Date: 2008/02/02 06:58:45 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -1095,14 +1100,16 @@ void CopasiUI3Window::slotExportSBML()
       catch (CCopasiException except)
         {
           success = false;
-          setCursor(oldCursor); resetMenus;
-          CQMessageBox::critical(this, QString("File Error"),
-                                 QString("Error. Could not export file ") + tmp + QString("!"),
-                                 QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+          setCursor(oldCursor);
+          resetMenus;
+          //CQMessageBox::critical(this, QString("File Error"),
+          //                       QString("Error. Could not export file ") + tmp + QString("!"),
+          //                       QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
         }
 
       setCursor(oldCursor); resetMenus;
 
+      /*
       if (!success)
         {
           QString Message = "Error while saving file " + tmp + QString("!\n\n");
@@ -1114,8 +1121,11 @@ void CopasiUI3Window::slotExportSBML()
         }
       else
         {
-          this->checkPendingMessages();
-        }
+        */
+      this->checkPendingMessages();
+      /*
+      }
+      */
       refreshRecentSBMLFileMenu();
     }
 }

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.8.4.5 $
+//   $Revision: 1.8.4.6 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/01/31 05:44:23 $
+//   $Date: 2008/02/02 06:58:45 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,6 +18,7 @@
 #include "CSBMLExporter.h"
 
 #include "SBMLImporter.h"
+#include "utilities/CCopasiException.h"
 #include "sbml/SBMLDocument.h"
 #include "sbml/Compartment.h"
 #include "sbml/Model.h"
@@ -678,7 +679,7 @@ void CSBMLExporter::createInitialAssignment(const CModelEntity& modelEntity, CCo
   std::vector<SBMLIncompatibility> result;
   std::string type = "initial expression for ";
   type += modelEntity.getObjectType();
-  CSBMLExporter::isExpressionSBMLCompatible(*modelEntity.getInitialExpressionPtr(), dataModel, this->mSBMLLevel, this->mSBMLVersion, result, modelEntity.getObjectName(), type);
+  CSBMLExporter::isExpressionSBMLCompatible(*modelEntity.getInitialExpressionPtr(), dataModel, this->mSBMLLevel, this->mSBMLVersion, result, modelEntity.getObjectName(), type, true);
   // collect directly used functions
   if (result.empty())
     {
@@ -1020,7 +1021,7 @@ void CSBMLExporter::checkForUnsupportedObjectReferences(const CCopasiDataModel& 
     }
 }
 
-void CSBMLExporter::checkForUnsupportedObjectReferences(const CEvaluationTree& expr, const CCopasiDataModel& dataModel, unsigned int sbmlLevel, unsigned int sbmlVersion, std::vector<SBMLIncompatibility>& result)
+void CSBMLExporter::checkForUnsupportedObjectReferences(const CEvaluationTree& expr, const CCopasiDataModel& dataModel, unsigned int sbmlLevel, unsigned int sbmlVersion, std::vector<SBMLIncompatibility>& result, bool initialExpression)
 {
   // SBML Level 1 and Level 2 Version 1 can have references to transient values of
   // compartments, metabolites and global parameters as well as time (model)
@@ -1048,25 +1049,55 @@ void CSBMLExporter::checkForUnsupportedObjectReferences(const CEvaluationTree& e
               if (typeString == "Compartment")
                 {
                   // must be a reference to the (transient) or initial volume
-                  if (pObject->getObjectName() != "Volume")
+                  if (initialExpression == true)
                     {
-                      result.push_back(SBMLIncompatibility(1, pObject->getObjectName().c_str(), "compartment", pObjectParent->getObjectName().c_str()));
+                      if (pObject->getObjectName() != "InitialVolume")
+                        {
+                          result.push_back(SBMLIncompatibility(1, pObject->getObjectName().c_str(), "compartment", pObjectParent->getObjectName().c_str()));
+                        }
+                    }
+                  else
+                    {
+                      if (pObject->getObjectName() != "Volume")
+                        {
+                          result.push_back(SBMLIncompatibility(1, pObject->getObjectName().c_str(), "compartment", pObjectParent->getObjectName().c_str()));
+                        }
                     }
                 }
               else if (typeString == "Metabolite")
                 {
                   // must be a reference to the transient or initial concentration
-                  if (pObject->getObjectName() != "Concentration")
+                  if (initialExpression == true)
                     {
-                      result.push_back(SBMLIncompatibility(1, pObject->getObjectName().c_str(), "metabolite", pObjectParent->getObjectName().c_str()));
+                      if (pObject->getObjectName() != "InitialConcentration")
+                        {
+                          result.push_back(SBMLIncompatibility(1, pObject->getObjectName().c_str(), "metabolite", pObjectParent->getObjectName().c_str()));
+                        }
+                    }
+                  else
+                    {
+                      if (pObject->getObjectName() != "Concentration")
+                        {
+                          result.push_back(SBMLIncompatibility(1, pObject->getObjectName().c_str(), "metabolite", pObjectParent->getObjectName().c_str()));
+                        }
                     }
                 }
               else if (typeString == "ModelValue")
                 {
                   // must be a reference to the transient or initial value
-                  if (pObject->getObjectName() != "Value")
+                  if (initialExpression == true)
                     {
-                      result.push_back(SBMLIncompatibility(1, pObject->getObjectName().c_str(), "parameter", pObjectParent->getObjectName().c_str()));
+                      if (pObject->getObjectName() != "InitialValue")
+                        {
+                          result.push_back(SBMLIncompatibility(1, pObject->getObjectName().c_str(), "parameter", pObjectParent->getObjectName().c_str()));
+                        }
+                    }
+                  else
+                    {
+                      if (pObject->getObjectName() != "Value")
+                        {
+                          result.push_back(SBMLIncompatibility(1, pObject->getObjectName().c_str(), "parameter", pObjectParent->getObjectName().c_str()));
+                        }
                     }
                 }
               else if (typeString == "Model")
@@ -1174,9 +1205,9 @@ void CSBMLExporter::checkForODESpeciesInNonfixedCompartment(const CCopasiDataMod
  * contain a number of messages that specify why it can't be exported.
  */
 void CSBMLExporter::isExpressionSBMLCompatible(const CEvaluationTree& expr, const CCopasiDataModel& dataModel, int sbmlLevel, int sbmlVersion, std::vector<SBMLIncompatibility>& result,
-    const std::string& objectName, const std::string& objectType)
+    const std::string& objectName, const std::string& objectType, bool initialExpression)
 {
-  checkForUnsupportedObjectReferences(expr, dataModel, sbmlLevel, sbmlVersion, result);
+  checkForUnsupportedObjectReferences(expr, dataModel, sbmlLevel, sbmlVersion, result, initialExpression);
   std::set<CEvaluationNodeFunction::SubType> unsupportedFunctionTypes = CSBMLExporter::createUnsupportedFunctionTypeSet(sbmlLevel);
   checkForUnsupportedFunctionCalls(*expr.getRoot(), unsupportedFunctionTypes, result, objectName, objectType);
 }
@@ -1592,6 +1623,18 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
       convertToLevel1();
     }
   this->mpSBMLDocument->setLevelAndVersion(this->mSBMLLevel, this->mSBMLVersion);
+  unsigned int i, iMax = this->mIncompatibilities.size();
+  for (i = 0;i < iMax;++i)
+    {
+      SBMLIncompatibility& incompat = this->mIncompatibilities[i];
+      std::ostringstream os;
+      os << incompat.getMessage() << "\n";
+      os << incompat.getDetails() << "\n";
+      os << "Please export to SBML Level " << incompat.minSBMLLevel();
+      os << " Version " << incompat.minSBMLVersion() << " or higher.";
+      CCopasiMessage::CCopasiMessage(CCopasiMessage::RAW, os.str().c_str());
+    }
+  if (iMax > 0) CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, "Model incompatible with chosen version and/or level of SBML.");
 }
 
 const std::set<CEvaluationNodeFunction::SubType> CSBMLExporter::createUnsupportedFunctionTypeSet(unsigned int sbmlLevel)

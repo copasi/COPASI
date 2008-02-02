@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.h,v $
-//   $Revision: 1.7.4.2 $
+//   $Revision: 1.7.4.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/01/31 05:44:23 $
+//   $Date: 2008/02/02 06:58:45 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -202,7 +202,7 @@ class CSBMLExporter
      * Checks the given expression for references to objects
      * that can not be exported to SBML.
      */
-    static void checkForUnsupportedObjectReferences(const CEvaluationTree& expression, const CCopasiDataModel& dataModel, unsigned int sbmlLevel, unsigned int sbmlVersion, std::vector<SBMLIncompatibility>& result);
+    static void checkForUnsupportedObjectReferences(const CEvaluationTree& expression, const CCopasiDataModel& dataModel, unsigned int sbmlLevel, unsigned int sbmlVersion, std::vector<SBMLIncompatibility>& result, bool initialExpression = false);
 
     /**
      * Checks all expressions in the given datamodel for piecewise defined
@@ -252,7 +252,7 @@ class CSBMLExporter
      * contain a number of messages that specify why it can't be exported.
      */
     static void isExpressionSBMLCompatible(const CEvaluationTree& expr, const CCopasiDataModel& dataModel, int sbmlLevel, int sbmlVersion, std::vector<SBMLIncompatibility>& result,
-                                           const std::string& objectName, const std::string& objectType);
+                                           const std::string& objectName, const std::string& objectType, bool initialExression = false);
 
     /**
      * Checks wether the rule in the given model entity can be exported to SBML Level2 Version1.
