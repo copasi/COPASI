@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFNode.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/01/30 03:01:00 $
+//   $Author: shoops $
+//   $Date: 2008/02/04 17:28:01 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,7 +19,7 @@
 #define COPASI_CRDFNode
 
 #include <string>
-#include <vector>
+#include <map>
 
 #include "MIRIAM/CRDFEdge.h"
 
@@ -28,6 +28,12 @@ class CRDFObject;
 
 class CRDFNode
   {
+  public:
+    typedef std::multimap< std::string, CRDFNode * > multimap;
+    typedef std::multimap< std::string, CRDFNode * >::iterator iterator;
+    typedef std::multimap< std::string, CRDFNode * >::const_iterator const_iterator;
+    typedef std::multimap< std::string, CRDFNode * >::value_type value_type;
+
     // Operations
   public:
     /**
@@ -83,22 +89,22 @@ class CRDFNode
      * @param const std::string & predicate
      * @param CRDFNode * pObject
      */
-    void addEdge(const std::string & predicate,
-                 CRDFNode * pObject);
+    void addEdge(const std::string & predicate, CRDFNode * pObject);
 
     /**
-        * Remvoe a property edge from the node
-        * @param const std::string & predicate
+     * Remove a property edge from the node, if no object node is
+     * given all object nodes with the predicate are removed.
+     * @param const std::string & predicate
+     * @param CRDFNode * pObject (default: NULL)
      * @return std::string success
-        */
-
-    bool removeEdge(const std::string & predicate);
+     */
+    bool removeEdge(const std::string & predicate, CRDFNode * pObject = NULL);
 
     /**
      * Retrieve the property edges of the node
-     * @return const std::vector< CRDFEdge > & edges
+     * @return const CRDFNode::multimap & edges
      */
-    const std::vector< CRDFEdge > & getEdges() const;
+    const multimap & getEdges() const;
 
     /**
      * Check whether this is a subject node
@@ -113,12 +119,10 @@ class CRDFNode
     bool isObjectNode() const;
 
     /**
-        * Check whether this is a Blank node
-        * @return bool isBlankNode
-        */
+     * Check whether this is a Blank node
+     * @return bool isBlankNode
+     */
     bool isBlankNode() const;
-
-    std::string stringFromNode(bool recurse = true);
 
     // Attributes
   private:
@@ -138,9 +142,9 @@ class CRDFNode
     mutable CRDFObject * mpObject;
 
     /**
-     * A vector of property edges
+     * A map between the predicates and property nodes
      */
-    std::vector< CRDFEdge > mEdges;
+    multimap mEdges;
 
     /**
      * Stores whether this is a blank node

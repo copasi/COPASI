@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFWriter.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/29 20:14:44 $
+//   $Date: 2008/02/04 17:28:01 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -148,18 +148,18 @@ bool CRDFWriter::addSubjectNode(const CRDFNode * pSubjectNode)
       break;
     }
 
-  std::vector< CRDFEdge >::const_iterator it = pSubjectNode->getEdges().begin();
-  std::vector< CRDFEdge >::const_iterator end = pSubjectNode->getEdges().end();
+  CRDFNode::const_iterator it = pSubjectNode->getEdges().begin();
+  CRDFNode::const_iterator end = pSubjectNode->getEdges().end();
 
   for (; it != end; ++it)
     {
       // Set the predicate of the triplet
       Triplet.predicate_type = RAPTOR_IDENTIFIER_TYPE_RESOURCE;
-      pPredicateURI = raptor_new_uri((const unsigned char *) it->getPredicate().c_str());
+      pPredicateURI = raptor_new_uri((const unsigned char *) it->first.c_str());
       Triplet.predicate = pPredicateURI;
 
       // Set the object of the triplet
-      const CRDFNode * pProperty = it->getPropertyNode();
+      const CRDFNode * pProperty = it->second;
       if (!pProperty->isObjectNode())
         {
           success = false;

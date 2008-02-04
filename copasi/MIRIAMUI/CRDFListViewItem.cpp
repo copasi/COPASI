@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CRDFListViewItem.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/29 20:16:42 $
+//   $Date: 2008/02/04 17:28:00 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -66,15 +66,15 @@ void CRDFListViewItem::setNode(const CRDFNode * pNode)
     }
 
   // TODO We need to iterate over the edges and insert each predicate
-  std::vector< CRDFEdge >::const_iterator it = pNode->getEdges().begin();
-  std::vector< CRDFEdge >::const_iterator end = pNode->getEdges().end();
+  CRDFNode::const_iterator it = pNode->getEdges().begin();
+  CRDFNode::const_iterator end = pNode->getEdges().end();
 
   for (; it != end; ++it)
     {
       CRDFListViewItem * pItem = new CRDFListViewItem(this, NULL);
-      pItem->setText(COL_PREDICATE, FROM_UTF8(it->getPredicate()));
+      pItem->setText(COL_PREDICATE, FROM_UTF8(it->first));
 
-      const CRDFObject & Object = it->getPropertyNode()->getObject();
+      const CRDFObject & Object = it->second->getObject();
       switch (Object.getType())
         {
         case CRDFObject::LITERAL:
@@ -93,8 +93,8 @@ void CRDFListViewItem::setNode(const CRDFNode * pNode)
         case CRDFObject::RESOURCE:
           pItem->setText(COL_OBJECT, FROM_UTF8(Object.getResource()));
         case CRDFObject::BLANK_NODE:
-          if (!static_cast< CRDFListView * >(listView())->visited(it->getPropertyNode()))
-            pItem->setNode(it->getPropertyNode());
+          if (!static_cast< CRDFListView * >(listView())->visited(it->second))
+            pItem->setNode(it->second);
           else
             pItem->setText(COL_OBJECT, pItem->text(COL_OBJECT) + " (recursive)");
           break;

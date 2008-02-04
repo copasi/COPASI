@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraph.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2008/02/01 02:01:04 $
+//   $Author: shoops $
+//   $Date: 2008/02/04 17:28:01 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,6 +19,7 @@
 #define COPASI_CRDFGraph
 
 #include <map>
+#include <vector>
 
 #include "MIRIAM/CRDFNode.h"
 #include "MIRIAM/CRDFObject.h"
@@ -155,8 +156,6 @@ class CRDFGraph
      * @return std::string success
      */
     bool removeBagNodeFromTable(const std::string& tableName, CRDFObject& tableObj);
-
-    bool printGraph();
 
     // Attributes
   private:

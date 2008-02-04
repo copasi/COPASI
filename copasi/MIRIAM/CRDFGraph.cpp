@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraph.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/02/01 13:50:29 $
+//   $Date: 2008/02/04 17:28:01 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -219,41 +219,6 @@ bool CRDFGraph::addTriplet(const CRDFSubject & subject,
   return success;
 }
 
-bool CRDFGraph::printGraph()
-{
-  std::ofstream outFile;
-  outFile.open ("output.txt");
-
-  if (mpAbout)
-    {
-      outFile << mpAbout->stringFromNode() << std::endl;
-      outFile << std::endl;
-    }
-
-  std::map< std::string, CRDFNode *>::iterator iter;
-  for (iter = mBlankNodeId2Node.begin(); iter != mBlankNodeId2Node.end(); iter++)
-    {
-      outFile << "String: " << iter->first << ", Node: " << iter->second->stringFromNode() << std::endl;
-    }
-  outFile << std::endl;
-
-  for (iter = mLocalResource2Node.begin(); iter != mLocalResource2Node.end(); iter++)
-    {
-      outFile << "String: " << iter->first << ", Node: " << iter->second->stringFromNode() << std::endl;
-    }
-  outFile << std::endl;
-
-  std::vector< CRDFNode * >::iterator it;
-  for (it = mLiteralNodes.begin(); it != mLiteralNodes.end(); it++)
-    {
-      outFile << "Node: " << (*it)->stringFromNode() << std::endl;
-    }
-  outFile << std::endl;
-
-  outFile.close();
-  return true;
-}
-
 bool CRDFGraph::getNodeIDsForTable(const std::string& tableName, std::vector<CRDFObject>& objects, CRDFObject& tableObj)
 {
   std::string predicate = tableName2Predicate(tableName);
@@ -266,19 +231,20 @@ bool CRDFGraph::getNodeIDsForTable(const std::string& tableName, std::vector<CRD
   bool isBagNode = false;
   std::string bagPredicate = getNameSpaceURI("rdf") + "type";
   CRDFObject object;
-  std::vector<CRDFEdge>::const_iterator it;
-  const std::vector<CRDFEdge> & edges = pTableNode->getEdges();
+  const CRDFNode::multimap & edges = pTableNode->getEdges();
+  CRDFNode::const_iterator it;
+
   for (it = edges.begin(); it != edges.end(); it++)
     {
-      if (it->getPredicate() == bagPredicate)
+      if (it->first == bagPredicate)
       {isBagNode = true; break;}
     }
   if (isBagNode)
     {
       for (it = edges.begin(); it != edges.end(); it++)
         {
-          if (it->getPredicate() != bagPredicate)
-          {objects.push_back(it->getPropertyNode()->getObject());}
+          if (it->first != bagPredicate)
+          {objects.push_back(it->second->getObject());}
         }
     }
   else
@@ -514,7 +480,7 @@ bool CRDFGraph::removeObjectFromTable(const std::string& tableName, CRDFObject& 
   //{return false;}
 
   std::string bagPredicate = getNameSpaceURI("rdf") + "type";
-  std::vector< CRDFEdge >::const_iterator it;
+  CRDFNode::multimap::const_iterator it;
   CRDFNode * tableNode = NULL;
   switch (tableObj.getType())
     {
@@ -552,20 +518,20 @@ bool CRDFGraph::removeObjectFromTable(const std::string& tableName, CRDFObject& 
   bool IsBagNode = isBagNode(tableNode);
   if (tableNode)
     {
-      const std::vector< CRDFEdge >& tableEdges = tableNode->getEdges();
+      const CRDFNode::multimap& tableEdges = tableNode->getEdges();
       if (IsBagNode)
         {
           for (it = tableEdges.begin(); it != tableEdges.end(); it++)
             {
-              if (it->getPropertyNode()->getObject() == childObj)
+              if (it->second->getObject() == childObj)
               {break;}
             }
         }
 
-      if (removeNode(it->getPropertyNode()))
+      if (removeNode(it->second))
         {
           if (tableNode && IsBagNode)
-          {tableNode->removeEdge(it->getPredicate());}
+          {tableNode->removeEdge(it->first);}
           else if (!IsBagNode && mpAbout)
             {
               mpAbout->removeEdge(tableName2Predicate(tableName));
@@ -579,11 +545,11 @@ bool CRDFGraph::removeObjectFromTable(const std::string& tableName, CRDFObject& 
 bool CRDFGraph::isBagNode(const CRDFNode * pNode)
 {
   std::string bagPredicate = getNameSpaceURI("rdf") + "type";
-  const std::vector< CRDFEdge >& nodeEdges = pNode->getEdges();
-  std::vector< CRDFEdge >::const_iterator it;
+  const CRDFNode::multimap& nodeEdges = pNode->getEdges();
+  CRDFNode::multimap::const_iterator it;
   for (it = nodeEdges.begin(); it != nodeEdges.end(); it++)
     {
-      if (it->getPredicate() == bagPredicate)
+      if (it->first == bagPredicate)
       {return true;}
     }
   return false;
@@ -591,10 +557,10 @@ bool CRDFGraph::isBagNode(const CRDFNode * pNode)
 
 bool CRDFGraph::edgeExists(const CRDFNode* pNode, const std::string predicate)
 {
-  std::vector< CRDFEdge >::const_iterator it;
+  CRDFNode::multimap::const_iterator it;
   for (it = pNode->getEdges().begin(); it != pNode->getEdges().end(); it++)
     {
-      if (it->getPredicate() == predicate)
+      if (it->first == predicate)
       {return true;}
     }
   return false;
@@ -605,17 +571,17 @@ bool CRDFGraph::addBagNodeToTable(const std::string& tableName, CRDFObject& tabl
   std::string tablePredicate = tableName2Predicate(tableName);
   CRDFSubject subject; CRDFObject object; std::string predicate;
 
-  const std::vector< CRDFEdge >& nodeEdges = mpAbout->getEdges();
-  std::vector< CRDFEdge >::const_iterator it;
+  const CRDFNode::multimap& nodeEdges = mpAbout->getEdges();
+  CRDFNode::multimap::const_iterator it;
   for (it = nodeEdges.begin(); it != nodeEdges.end(); it++)
     {
-      if (it->getPredicate() == tablePredicate)
+      if (it->first == tablePredicate)
       {break;}
     }
   if (it == nodeEdges.end())
   {return false;}
 
-  CRDFNode * pTableNode = it->getPropertyNode();
+  CRDFNode * pTableNode = it->second;
 
   if (isBagNode(pTableNode))
   {return true;}
@@ -660,17 +626,17 @@ bool CRDFGraph::removeBagNodeFromTable(const std::string& tableName, CRDFObject&
 {
   std::string tablePredicate = tableName2Predicate(tableName);
 
-  const std::vector< CRDFEdge >& nodeEdges = mpAbout->getEdges();
-  std::vector< CRDFEdge >::const_iterator it;
+  const CRDFNode::multimap& nodeEdges = mpAbout->getEdges();
+  CRDFNode::multimap::const_iterator it;
   for (it = nodeEdges.begin(); it != nodeEdges.end(); it++)
     {
-      if (it->getPredicate() == tablePredicate)
+      if (it->first == tablePredicate)
       {break;}
     }
   if (it == nodeEdges.end())
   {return false;}
 
-  CRDFNode * pTableNode = it->getPropertyNode();
+  CRDFNode * pTableNode = it->second;
 
   if (!isBagNode(pTableNode))
   {return true;}
@@ -679,24 +645,24 @@ bool CRDFGraph::removeBagNodeFromTable(const std::string& tableName, CRDFObject&
   {return false;}
 
   std::string bagPredicate = getNameSpaceURI("rdf") + "type";
-  const std::vector< CRDFEdge >& tableNodeEdges = pTableNode->getEdges();
-  std::vector< CRDFEdge >::const_iterator tit;
+  const CRDFNode::multimap& tableNodeEdges = pTableNode->getEdges();
+  CRDFNode::multimap::const_iterator tit;
   for (tit = tableNodeEdges.begin(); tit != tableNodeEdges.end(); tit++)
     {
-      if (tit->getPredicate() != bagPredicate)
+      if (tit->first != bagPredicate)
       {break;}
     }
 
   //First point about to object Node
   CRDFNode * pObjectNode = NULL;
   if (tit != tableNodeEdges.end())
-  {pObjectNode = tit->getPropertyNode();}
+  {pObjectNode = tit->second;}
   if (pObjectNode)
     {
       mpAbout->removeEdge(tablePredicate);
       mpAbout->addEdge(tablePredicate, pObjectNode);
       //Remove Edge between table and object node
-      pTableNode->removeEdge(tit->getPredicate());
+      pTableNode->removeEdge(tit->first);
       //Now delete the table node and its children.
       removeNode(pTableNode);
       //Finally return the object as the new tableObj.
@@ -711,11 +677,11 @@ unsigned int CRDFGraph::getNoOfObjectsInTable(const CRDFNode * pTableNode)
   unsigned int count = 0;
   if (isBagNode(pTableNode))
     {
-      const std::vector< CRDFEdge >& nodeEdges = pTableNode->getEdges();
-      std::vector< CRDFEdge >::const_iterator it;
+      const CRDFNode::multimap& nodeEdges = pTableNode->getEdges();
+      CRDFNode::multimap::const_iterator it;
       for (it = nodeEdges.begin(); it != nodeEdges.end(); it++)
         {
-          if (it->getPredicate() != bagPredicate)
+          if (it->first != bagPredicate)
           {count++;}
         }
     }
@@ -837,18 +803,18 @@ CRDFNode* CRDFGraph::getNodeForPredicate(const std::string& predicate, const CRD
   {return NULL;}
 
   CRDFNode * nodeForPredicate = NULL;
-  std::vector< CRDFEdge >::const_iterator it;
-  const std::vector<CRDFEdge> & edges = startNode->getEdges();
+  CRDFNode::multimap::const_iterator it;
+  const CRDFNode::multimap & edges = startNode->getEdges();
   for (it = edges.begin(); it != edges.end(); it++)
     {
-      if (it->getPredicate() == predicate)
+      if (it->first == predicate)
         {
-          nodeForPredicate = it->getPropertyNode();
+          nodeForPredicate = it->second;
           break;
         }
       else
         {
-          CRDFNode* ret = getNodeForPredicate(predicate, it->getPropertyNode());
+          CRDFNode* ret = getNodeForPredicate(predicate, it->second);
           if (ret != NULL)
           {return ret;}
         }
@@ -886,9 +852,9 @@ bool CRDFGraph::removeNode(CRDFNode *pNode)
 
   if (pNode)
     {
-      std::vector< CRDFEdge >::const_iterator vit;
+      CRDFNode::multimap::const_iterator vit;
       for (vit = pNode->getEdges().begin(); vit != pNode->getEdges().end(); vit++)
-      {removeNode(vit->getPropertyNode());}
+      {removeNode(vit->second);}
       pdelete(pNode);
     }
   return true;

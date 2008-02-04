@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CQRDFListViewWidget.ui.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2008/01/31 05:01:51 $
+//   $Author: shoops $
+//   $Date: 2008/02/04 17:28:00 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,14 +13,19 @@
 
 #include "CRDFListViewItem.h"
 
-#include "model/CModel.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CKeyFactory.h"
-#include "model/CModelValue.h"
+#include "UI/CQMessageBox.h"
+#include "UI/qtUtilities.h"
+
 #include "MIRIAM/CRDFGraph.h"
 #include "MIRIAM/CRDFNode.h"
 #include "MIRIAM/CRDFParser.h"
 #include "MIRIAM/CRDFWriter.h"
+
+#include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CKeyFactory.h"
+#include "model/CModel.h"
+#include "model/CModelValue.h"
+#include "utilities/CCopasiMessage.h"
 
 void CQRDFListViewWidget::init()
 {}
@@ -48,8 +53,17 @@ void CQRDFListViewWidget::load()
   CRDFGraph * pGraph = NULL;
   CModelEntity * pEntity = NULL;
 
+  CCopasiMessage::clearDeque();
+
   if ((pEntity = dynamic_cast< CModelEntity * >(GlobalKeys.get(mKey))) != NULL)
     pGraph = CRDFParser::graphFromXml(pEntity->getMiriamAnnotation());
+
+  if (CCopasiMessage::size() != 0)
+    {
+      QString Message = FROM_UTF8(CCopasiMessage::getAllMessageText());
+      CQMessageBox::warning(this, QString("RDF Warning"), Message,
+                            QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+    }
 
   if (pGraph == NULL)
     return;
