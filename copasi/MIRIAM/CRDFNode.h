@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFNode.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/02/04 17:28:01 $
+//   $Date: 2008/02/04 17:39:32 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -105,6 +105,20 @@ class CRDFNode
      * @return const CRDFNode::multimap & edges
      */
     const multimap & getEdges() const;
+
+    /**
+     * Retreive all object nodes with the given predicate
+     * @param const std::string & predicate
+     * @return std::pair<CRDFNode::iterator, CRDFNode::iterator> objectNodes
+     */
+    std::pair< iterator, iterator > getObjectNodes(const std::string & predicate);
+
+    /**
+     * Retreive all object nodes with the given predicate
+     * @param const std::string & predicate
+     * @return std::pair<CRDFNode::const_iterator, CRDFNode::const_iterator> objectNodes
+     */
+    std::pair< const_iterator, const_iterator > getObjectNodes(const std::string & predicate) const;
 
     /**
      * Check whether this is a subject node
