@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLogical.h,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.14.4.1 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/12/12 09:11:51 $
+//   $Author: shoops $
+//   $Date: 2008/02/04 22:20:53 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -54,7 +59,33 @@ class CNormalLogical : public CNormalBase
          * This routine compares a set of sets and returns true if the first
          * argument is smaller than the second.
          */
-        bool operator()(const std::pair<std::set<std::pair<TYPE*, bool>, SetSorter<TYPE> >, bool>& lhs, const std::pair<std::set<std::pair<TYPE*, bool>, SetSorter<TYPE> >, bool>& rhs) const;
+        bool operator()(const std::pair<std::set<std::pair<TYPE*, bool>, SetSorter<TYPE> >, bool>& lhs, const std::pair<std::set<std::pair<TYPE*, bool>, SetSorter<TYPE> >, bool>& rhs) const
+          {
+            bool result = false;
+            if (lhs.second == rhs.second)
+              {
+                if (lhs.first.size() == rhs.first.size())
+                  {
+                    typename std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> >::const_iterator it = lhs.first.begin(), endit = lhs.first.end(), it2 = rhs.first.begin();
+                    SetSorter<TYPE> sorter;
+                    while (it != endit && result == false)
+                      {
+                        result = sorter(*it, *it2);
+                        ++it;
+                        ++it2;
+                      }
+                  }
+                else if (lhs.first.size() < rhs.first.size())
+                  {
+                    result = true;
+                  }
+              }
+            else if (lhs.second == true)
+              {
+                result = true;
+              }
+            return result;
+          }
 
         /**
          * This routine compares a set of sets and returns true if the first
