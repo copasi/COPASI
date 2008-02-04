@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/SBMLDocumentLoader.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: urost $
-//   $Date: 2007/12/04 11:22:09 $
+//   $Author: shoops $
+//   $Date: 2008/02/04 19:21:01 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -49,7 +54,7 @@ CLayout* SBMLDocumentLoader::loadDocument(const char *filename)
   while (!fatalFound && i < iMax)
     {
       const XMLError* pError = this->sbmlDocP->getError(i);
-      fatalFound = (pError->getSeverity() == SEVERITY_FATAL);
+      fatalFound = (pError->getSeverity() == LIBSBML_SEV_FATAL);
       ++i;
     }
   if (!fatalFound)
@@ -74,7 +79,7 @@ CLayout* SBMLDocumentLoader::loadDocument(const char *filename)
       while (i < iMax)
         {
           const XMLError* pError = this->sbmlDocP->getError(i);
-          if (pError->getSeverity() == SEVERITY_FATAL)
+          if (pError->getSeverity() == LIBSBML_SEV_FATAL)
             {
               ++numberOfErrors;
               std::cerr << "LIBSBML Error " << pError->getErrorId() << "at line " << pError->getLine() << " column " << pError->getColumn() << ": " << pError->getMessage() << std::endl;
