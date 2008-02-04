@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CModelMIRIAMInfo.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/01/31 05:01:50 $
+//   $Date: 2008/02/04 20:41:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -38,7 +38,8 @@ class CModelMIRIAMInfo
     CRDFObject mAuthorsObj;
     CCopasiVector <CPublication> mPublications;
     CRDFObject mPublicationsObj;
-    CRDFGraph * mpRDFGraph;
+    CRDFGraph* mpRDFGraph;
+    CModelEntity* mpEntity;
 
     bool fillInfoFromGraph();
 
@@ -47,6 +48,7 @@ class CModelMIRIAMInfo
     CModelMIRIAMInfo();
     ~CModelMIRIAMInfo();
     void loadGraph(const std::string& key);
+    bool saveGraph();
     CRDFGraph * getRDFGraph();
     CCopasiVector <CAuthor> & getAuthors();
     CAuthor* createAuthor(const std::string& objectName);

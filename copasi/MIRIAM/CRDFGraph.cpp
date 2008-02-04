@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraph.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/02/04 17:28:01 $
+//   $Author: aekamal $
+//   $Date: 2008/02/04 20:41:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -418,7 +418,7 @@ void CRDFGraph::addNewCreatorNodes(const CRDFNode * pObjNode)
 
   std::string nameBlnkNodeId = getGeneratedId();
 
-  std::string predicate = getNameSpaceURI("vcard") + "N";
+  std::string predicate = getNameSpaceURI("vCard") + "N";
   subject.setType(CRDFSubject::BLANK_NODE);
   subject.setBlankNodeId(pObjNode->getId());
   object.setType(CRDFObject::BLANK_NODE);
@@ -426,7 +426,7 @@ void CRDFGraph::addNewCreatorNodes(const CRDFNode * pObjNode)
   addTriplet(subject, predicate, object);
   subject.clearData(); object.clearData();
 
-  predicate = getNameSpaceURI("vcard") + "Family";
+  predicate = getNameSpaceURI("vCard") + "Family";
   subject.setType(CRDFSubject::BLANK_NODE);
   subject.setBlankNodeId(nameBlnkNodeId);
   object.setType(CRDFObject::LITERAL);
@@ -435,7 +435,7 @@ void CRDFGraph::addNewCreatorNodes(const CRDFNode * pObjNode)
   addTriplet(subject, predicate, object);
   subject.clearData(); object.clearData();
 
-  predicate = getNameSpaceURI("vcard") + "Given";
+  predicate = getNameSpaceURI("vCard") + "Given";
   subject.setType(CRDFSubject::BLANK_NODE);
   subject.setBlankNodeId(nameBlnkNodeId);
   object.setType(CRDFObject::LITERAL);
@@ -444,7 +444,7 @@ void CRDFGraph::addNewCreatorNodes(const CRDFNode * pObjNode)
   addTriplet(subject, predicate, object);
   subject.clearData(); object.clearData();
 
-  predicate = getNameSpaceURI("vcard") + "EMAIL";
+  predicate = getNameSpaceURI("vCard") + "EMAIL";
   subject.setType(CRDFSubject::BLANK_NODE);
   subject.setBlankNodeId(pObjNode->getId());
   object.setType(CRDFObject::LITERAL);
@@ -453,7 +453,7 @@ void CRDFGraph::addNewCreatorNodes(const CRDFNode * pObjNode)
   addTriplet(subject, predicate, object);
   subject.clearData(); object.clearData();
 
-  predicate = getNameSpaceURI("vcard") + "ORG";
+  predicate = getNameSpaceURI("vCard") + "ORG";
   nameBlnkNodeId = getGeneratedId();
   subject.setType(CRDFSubject::BLANK_NODE);
   subject.setBlankNodeId(pObjNode->getId());
@@ -464,7 +464,7 @@ void CRDFGraph::addNewCreatorNodes(const CRDFNode * pObjNode)
 
   CRDFNode * pOrgNode = mBlankNodeId2Node[nameBlnkNodeId];
 
-  predicate = getNameSpaceURI("vcard") + "Orgname";
+  predicate = getNameSpaceURI("vCard") + "Orgname";
   subject.setType(CRDFSubject::BLANK_NODE);
   subject.setBlankNodeId(pOrgNode->getId());
   object.setType(CRDFObject::LITERAL);
@@ -869,13 +869,17 @@ std::string CRDFGraph::getGeneratedId()
 
 std::string CRDFGraph::getNameSpaceURI(const std::string& lookupStr)
 {
+  std::map<std::string, std::string>::const_iterator it = mPrefix2Namespace.find(lookupStr);
+  if (it != mPrefix2Namespace.end())
+  {return it->second;}
+
   if (lookupStr == "rdf")
   {return "http://www.w3.org/1999/02/22-rdf-syntax-ns#";}
   else if (lookupStr == "dc")
   {return "http://purl.org/dc/elements/1.1/";}
   else if (lookupStr == "dcterms")
   {return "http://purl.org/dc/terms/";}
-  else if (lookupStr == "vcard")
+  else if (lookupStr == "vCard")
   {return "http://www.w3.org/2001/vcard-rdf/3.0#";}
   else if (lookupStr == "bqbiol")
   {return "http://biomodels.net/biology-qualifiers/";}
@@ -889,13 +893,13 @@ std::string CRDFGraph::fieldName2Predicate(const std::string& fieldName)
 {
   std::string predicate = "";
   if (fieldName == "FamilyName")
-  {predicate = getNameSpaceURI("vcard") + "Family";}
+  {predicate = getNameSpaceURI("vCard") + "Family";}
   else if (fieldName == "GivenName")
-  {predicate = getNameSpaceURI("vcard") + "Given";}
+  {predicate = getNameSpaceURI("vCard") + "Given";}
   else if (fieldName == "Email")
-  {predicate = getNameSpaceURI("vcard") + "EMAIL";}
+  {predicate = getNameSpaceURI("vCard") + "EMAIL";}
   else if (fieldName == "Orgname")
-  {predicate = getNameSpaceURI("vcard") + "Orgname";}
+  {predicate = getNameSpaceURI("vCard") + "Orgname";}
   return predicate;
 }
 
