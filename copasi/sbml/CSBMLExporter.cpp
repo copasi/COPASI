@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.8.4.7 $
+//   $Revision: 1.8.4.8 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/02 09:19:29 $
+//   $Date: 2008/02/04 02:05:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -277,26 +277,31 @@ void CSBMLExporter::createCompartments(CCopasiDataModel& dataModel)
 void CSBMLExporter::createCompartment(CCompartment& compartment)
 {
   Compartment* pSBMLCompartment = NULL;
-  std::map<const CCopasiObject*, SBase*>::iterator pos = this->mCOPASI2SBMLMap.find(&compartment);
-  if (pos != this->mCOPASI2SBMLMap.end())
+  std::string sbmlId = compartment.getSBMLId();
+  if (!sbmlId.empty())
     {
-      pSBMLCompartment = dynamic_cast<Compartment*>(pos->second);
-      assert(pSBMLCompartment);
+      pSBMLCompartment = this->mpSBMLDocument->getModel()->getCompartment(sbmlId);
+      if (pSBMLCompartment == NULL)
+        {
+          pSBMLCompartment = this->mpSBMLDocument->getModel()->createCompartment();
+          this->mCOPASI2SBMLMap[&compartment] = pSBMLCompartment;
+          if (sbmlId == "")
+            {
+              sbmlId = CSBMLExporter::createUniqueId(this->mIdMap, "comparment");
+              compartment.setSBMLId(sbmlId);
+              this->mIdMap.insert(std::make_pair(sbmlId, pSBMLCompartment));
+            }
+          pSBMLCompartment->setId(sbmlId);
+        }
     }
   else
     {
       pSBMLCompartment = this->mpSBMLDocument->getModel()->createCompartment();
       this->mCOPASI2SBMLMap[&compartment] = pSBMLCompartment;
-
-      std::string id = compartment.getSBMLId();
-      if (id == "")
-        {
-          id = CSBMLExporter::createUniqueId(this->mIdMap, "compartment_");
-          this->mIdMap.insert(std::make_pair(id, pSBMLCompartment));
-          compartment.setSBMLId(id);
-        }
-      pSBMLCompartment->setId(id);
-      pSBMLCompartment->setSpatialDimensions(3);
+      sbmlId = CSBMLExporter::createUniqueId(this->mIdMap, "compartment_");
+      compartment.setSBMLId(sbmlId);
+      this->mIdMap.insert(std::make_pair(sbmlId, pSBMLCompartment));
+      pSBMLCompartment->setId(sbmlId);
     }
   this->mHandledSBMLObjects.insert(pSBMLCompartment);
   pSBMLCompartment->setName(compartment.getObjectName().c_str());
@@ -314,17 +319,31 @@ void CSBMLExporter::createCompartment(CCompartment& compartment)
   // a compartment can either have an assignment or an initial assignment but not
   // both
   CModelEntity::Status status = compartment.getStatus();
-  if (status == CModelEntity::ODE || status == CModelEntity::ASSIGNMENT)
+  if (status == CModelEntity::ASSIGNMENT)
     {
       this->mAssignmentVector.push_back(&compartment);
       pSBMLCompartment->setConstant(false);
       removeInitialAssignment(pSBMLCompartment->getId());
+    }
+  else if (status == CModelEntity::ODE)
+    {
+      this->mAssignmentVector.push_back(&compartment);
+      pSBMLCompartment->setConstant(false);
+      if (compartment.getInitialExpression() != "")
+        {
+          this->mInitialAssignmentVector.push_back(&compartment);
+        }
+      else
+        {
+          removeInitialAssignment(pSBMLCompartment->getId());
+        }
     }
   else
     {
       // do this expolicitly since we might handle an exisiting object from an
       // earlier import that had it attribute set already
       pSBMLCompartment->setConstant(true);
+      removeRule(pSBMLCompartment->getId());
       // fill initial assignment set
       if (compartment.getInitialExpression() != "")
         {
@@ -358,29 +377,32 @@ void CSBMLExporter::createMetabolites(CCopasiDataModel& dataModel)
 void CSBMLExporter::createMetabolite(CMetab& metab)
 {
   Species* pSBMLSpecies = NULL;
-  std::map<const CCopasiObject*, SBase*>::iterator pos = this->mCOPASI2SBMLMap.find(&metab);
-  if (pos != mCOPASI2SBMLMap.end())
+  std::string sbmlId = metab.getSBMLId();
+  if (!sbmlId.empty())
     {
-      pSBMLSpecies = dynamic_cast<Species*>(pos->second);
-      assert(pSBMLSpecies);
+      pSBMLSpecies = this->mpSBMLDocument->getModel()->getSpecies(sbmlId);
+      if (pSBMLSpecies == NULL)
+        {
+          pSBMLSpecies = this->mpSBMLDocument->getModel()->createSpecies();
+          this->mCOPASI2SBMLMap[&metab] = pSBMLSpecies;
+          pSBMLSpecies->setId(sbmlId);
+        }
+      this->mIdMap.insert(std::make_pair(sbmlId, pSBMLSpecies));
     }
   else
     {
       pSBMLSpecies = this->mpSBMLDocument->getModel()->createSpecies();
       this->mCOPASI2SBMLMap[&metab] = pSBMLSpecies;
-      std::string id = metab.getSBMLId();
-      if (id == "")
-        {
-          id = CSBMLExporter::createUniqueId(this->mIdMap, "species_");
-          metab.setSBMLId(id);
-          this->mIdMap.insert(std::make_pair(id, pSBMLSpecies));
-        }
-      pSBMLSpecies->setId(id);
+      sbmlId = CSBMLExporter::createUniqueId(this->mIdMap, "species_");
+      metab.setSBMLId(sbmlId);
+      this->mIdMap.insert(std::make_pair(sbmlId, pSBMLSpecies));
+      pSBMLSpecies->setId(sbmlId);
     }
   this->mHandledSBMLObjects.insert(pSBMLSpecies);
   pSBMLSpecies->setName(metab.getObjectName().c_str());
 
-  const Compartment* pSBMLCompartment = dynamic_cast<const Compartment*>(this->mCOPASI2SBMLMap[const_cast<CCompartment*>(metab.getCompartment())]);
+  //const Compartment* pSBMLCompartment = dynamic_cast<const Compartment*>(this->mCOPASI2SBMLMap[const_cast<CCompartment*>(metab.getCompartment())]);
+  const Compartment* pSBMLCompartment = this->mpSBMLDocument->getModel()->getCompartment(metab.getCompartment()->getSBMLId());
   assert(pSBMLCompartment);
   pSBMLSpecies->setCompartment(pSBMLCompartment->getId());
   double value = metab.getInitialConcentration();
@@ -408,12 +430,26 @@ void CSBMLExporter::createMetabolite(CMetab& metab)
   CModelEntity::Status status = metab.getStatus();
   // a species can either have an assignment or an initial assignment but not
   // both
-  if (status == CModelEntity::ODE || status == CModelEntity::ASSIGNMENT)
+  if (status == CModelEntity::ASSIGNMENT)
     {
       this->mAssignmentVector.push_back(&metab);
       pSBMLSpecies->setConstant(false);
       pSBMLSpecies->setBoundaryCondition(true);
       removeInitialAssignment(pSBMLSpecies->getId());
+    }
+  else if (status == CModelEntity::ODE)
+    {
+      this->mAssignmentVector.push_back(&metab);
+      pSBMLSpecies->setConstant(false);
+      pSBMLSpecies->setBoundaryCondition(true);
+      if (metab.getInitialExpression() != "")
+        {
+          this->mInitialAssignmentVector.push_back(&metab);
+        }
+      else
+        {
+          removeInitialAssignment(pSBMLSpecies->getId());
+        }
     }
   else if (status == CModelEntity::FIXED)
     {
@@ -421,6 +457,7 @@ void CSBMLExporter::createMetabolite(CMetab& metab)
       // earlier import that had it attribute set already
       pSBMLSpecies->setConstant(true);
       pSBMLSpecies->setBoundaryCondition(true);
+      removeRule(pSBMLSpecies->getId());
       // fill initial assignment set
       if (metab.getInitialExpression() != "")
         {
@@ -429,6 +466,13 @@ void CSBMLExporter::createMetabolite(CMetab& metab)
       else
         {
           removeInitialAssignment(pSBMLSpecies->getId());
+        }
+    }
+  else if (status == CModelEntity::REACTIONS)
+    {
+      if (metab.getInitialExpression() != "")
+        {
+          this->mInitialAssignmentVector.push_back(&metab);
         }
     }
 }
@@ -454,25 +498,14 @@ void CSBMLExporter::createParameters(CCopasiDataModel& dataModel)
 void CSBMLExporter::createParameter(CModelValue& modelValue)
 {
   Parameter* pParameter = NULL;
-  //std::map<const CCopasiObject*, SBase*>::iterator pos = this->mCOPASI2SBMLMap.find(&modelValue);
   std::string sbmlId = modelValue.getSBMLId();
   if (!sbmlId.empty())
     {
       pParameter = this->mpSBMLDocument->getModel()->getParameter(sbmlId);
       if (pParameter == NULL)
         {
-          /*
-          if (pos != this->mCOPASI2SBMLMap.end())
-            {
-              pParameter = dynamic_cast<Parameter*>(pos->second);
-              assert(pParameter);
-            }
-          else
-            {
-            */
           pParameter = this->mpSBMLDocument->getModel()->createParameter();
           this->mCOPASI2SBMLMap[&modelValue] = pParameter;
-          //std::string sbmlId = modelValue.getSBMLId();
           if (sbmlId == "")
             {
               sbmlId = CSBMLExporter::createUniqueId(this->mIdMap, "parameter_");
@@ -481,6 +514,15 @@ void CSBMLExporter::createParameter(CModelValue& modelValue)
             }
           pParameter->setId(sbmlId);
         }
+    }
+  else
+    {
+      pParameter = this->mpSBMLDocument->getModel()->createParameter();
+      this->mCOPASI2SBMLMap[&modelValue] = pParameter;
+      sbmlId = CSBMLExporter::createUniqueId(this->mIdMap, "parameter_");
+      modelValue.setSBMLId(sbmlId);
+      this->mIdMap.insert(std::make_pair(sbmlId, pParameter));
+      pParameter->setId(sbmlId);
     }
   this->mHandledSBMLObjects.insert(pParameter);
   pParameter->setName(modelValue.getObjectName());
@@ -498,11 +540,24 @@ void CSBMLExporter::createParameter(CModelValue& modelValue)
   // a parameter can either have an assignment or an initial assignment but not
   // both
   CModelEntity::Status status = modelValue.getStatus();
-  if (status == CModelEntity::ODE || status == CModelEntity::ASSIGNMENT)
+  if (status == CModelEntity::ASSIGNMENT)
     {
       this->mAssignmentVector.push_back(&modelValue);
       pParameter->setConstant(false);
       removeInitialAssignment(pParameter->getId());
+    }
+  else if (status == CModelEntity::ODE)
+    {
+      this->mAssignmentVector.push_back(&modelValue);
+      pParameter->setConstant(false);
+      if (modelValue.getInitialExpression() != "")
+        {
+          this->mInitialAssignmentVector.push_back(&modelValue);
+        }
+      else
+        {
+          removeInitialAssignment(pParameter->getId());
+        }
     }
   else
     {
@@ -510,6 +565,7 @@ void CSBMLExporter::createParameter(CModelValue& modelValue)
       // earlier import that had it attribute set already
       pParameter->setConstant(true);
       // fill initial assignment set
+      removeRule(pParameter->getId());
       if (modelValue.getInitialExpression() != "")
         {
           this->mInitialAssignmentVector.push_back(&modelValue);
@@ -3037,6 +3093,25 @@ void CSBMLExporter::removeInitialAssignment(const std::string& sbmlId)
     {
       InitialAssignment* pIA = dynamic_cast<InitialAssignment*>(pList->get(i));
       if (pIA->getSymbol() == sbmlId)
+        {
+          pList->remove(i);
+          break;
+        }
+    }
+}
+
+/**
+ * Remove the rule for the entity with the given id
+ * if there is any.
+ */
+void CSBMLExporter::removeRule(const std::string& sbmlId)
+{
+  ListOfRules* pList = this->mpSBMLDocument->getModel()->getListOfRules();
+  unsigned int i, iMax = pList->size();
+  for (i = 0;i < iMax;++i)
+    {
+      Rule* pR = dynamic_cast<Rule*>(pList->get(i));
+      if (pR->getVariable() == sbmlId)
         {
           pList->remove(i);
           break;

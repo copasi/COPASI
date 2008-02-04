@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.h,v $
-//   $Revision: 1.7.4.4 $
+//   $Revision: 1.7.4.5 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/02 09:19:29 $
+//   $Date: 2008/02/04 02:05:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -458,6 +458,12 @@ class CSBMLExporter
      * if there is any.
      */
     void removeInitialAssignment(const std::string& sbmlId);
+
+    /**
+     * Remove the rule for the entity with the given id
+     * if there is any.
+     */
+    void removeRule(const std::string& sbmlId);
   };
 
 #endif // CSBLExporter_H__
