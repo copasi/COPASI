@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.8.4.9 $
+//   $Revision: 1.8.4.10 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/02/04 10:10:34 $
+//   $Author: shoops $
+//   $Date: 2008/02/04 21:05:49 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -766,7 +766,19 @@ void CSBMLExporter::createInitialAssignment(const CModelEntity& modelEntity, CCo
       std::set<std::string> directlyUsedFunctionNames;
       CSBMLExporter::findDirectlyUsedFunctions(modelEntity.getInitialExpressionPtr()->getRoot(), directlyUsedFunctionNames);
       std::set<CFunction*> usedFunctions = CSBMLExporter::createFunctionSetFromFunctionNames(directlyUsedFunctionNames, dataModel.getFunctionList());
+
+#if defined _MSC_VER && _MSC_VER < 1201 // 1200 Identifies Visual C++ 6.0
+      {
+        std::set<CFunction*>::const_iterator it = usedFunctions.begin();
+        std::set<CFunction*>::const_iterator end = usedFunctions.end();
+
+        for (; it != end; ++it)
+          this->mUsedFunctions.insert(*it);
+      }
+#else
       this->mUsedFunctions.insert(usedFunctions.begin(), usedFunctions.end());
+#endif
+
       // create the actual initial assignment
       InitialAssignment* pInitialAssignment = this->mpSBMLDocument->getModel()->getInitialAssignment(modelEntity.getSBMLId());
       if (pInitialAssignment == NULL)
@@ -859,7 +871,19 @@ void CSBMLExporter::createRule(const CModelEntity& modelEntity, CCopasiDataModel
       std::set<std::string> directlyUsedFunctionNames;
       CSBMLExporter::findDirectlyUsedFunctions(modelEntity.getExpressionPtr()->getRoot(), directlyUsedFunctionNames);
       std::set<CFunction*> usedFunctions = CSBMLExporter::createFunctionSetFromFunctionNames(directlyUsedFunctionNames, dataModel.getFunctionList());
+
+# if defined _MSC_VER && _MSC_VER < 1201 // 1200 Identifies Visual C++ 6.0
+      {
+        std::set<CFunction*>::const_iterator it = usedFunctions.begin();
+        std::set<CFunction*>::const_iterator end = usedFunctions.end();
+
+        for (; it != end; ++it)
+          this->mUsedFunctions.insert(*it);
+      }
+#else
       this->mUsedFunctions.insert(usedFunctions.begin(), usedFunctions.end());
+#endif
+
       // create the actual rule
       Rule* pRule = this->mpSBMLDocument->getModel()->getRule(modelEntity.getSBMLId());
       if (pRule == NULL)
