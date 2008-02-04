@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.8.4.8 $
+//   $Revision: 1.8.4.9 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/04 02:05:26 $
+//   $Date: 2008/02/04 10:10:34 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -860,7 +860,7 @@ void CSBMLExporter::createRule(const CModelEntity& modelEntity, CCopasiDataModel
       CSBMLExporter::findDirectlyUsedFunctions(modelEntity.getExpressionPtr()->getRoot(), directlyUsedFunctionNames);
       std::set<CFunction*> usedFunctions = CSBMLExporter::createFunctionSetFromFunctionNames(directlyUsedFunctionNames, dataModel.getFunctionList());
       this->mUsedFunctions.insert(usedFunctions.begin(), usedFunctions.end());
-      // create the actual initial assignment
+      // create the actual rule
       Rule* pRule = this->mpSBMLDocument->getModel()->getRule(modelEntity.getSBMLId());
       if (pRule == NULL)
         {
@@ -870,6 +870,15 @@ void CSBMLExporter::createRule(const CModelEntity& modelEntity, CCopasiDataModel
             }
           else
             {
+              const CMetab* pMetab = dynamic_cast<const CMetab*>(&modelEntity);
+              if (pMetab != NULL)
+                {
+                  // check if the compartment is fixed
+                  if (pMetab->getCompartment()->getStatus() != CModelEntity::FIXED)
+                    {
+                      CCopasiMessage::CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 52, pMetab->getObjectName().c_str());
+                    }
+                }
               pRule = this->mpSBMLDocument->getModel()->createRateRule();
             }
           pRule->setVariable(modelEntity.getSBMLId());
