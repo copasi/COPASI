@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionDialog.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.9.12.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/13 19:56:56 $
+//   $Date: 2008/02/04 20:33:35 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -51,7 +56,7 @@ class CCopasiSelectionDialog: public QDialog
     void modeButton_toggled(bool checked);
 
   public:
-    CCopasiSelectionDialog(QWidget * parent = 0, const char * name = 0, bool modal = FALSE);
+    CCopasiSelectionDialog(QWidget * parent = 0, const char * name = 0, bool modal = false);
     ~CCopasiSelectionDialog();
     void setOutputVector(std::vector< const CCopasiObject * > * outputVector);
     void setModel(const CModel* model,
