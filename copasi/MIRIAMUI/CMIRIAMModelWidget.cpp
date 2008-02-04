@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CMIRIAMModelWidget.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/01/31 05:01:51 $
+//   $Date: 2008/02/04 21:20:38 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -153,6 +153,7 @@ bool CMIRIAMModelWidget::enter(const std::string & key)
 
 bool CMIRIAMModelWidget::leave()
 {
+  CCopasiDataModel::Global->getModel()->getMIRIAMInfo().saveGraph();
   mAuthorsWidget->leave();
   mPublicationsWidget->leave();
   return true;

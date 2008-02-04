@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraph.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/02/04 20:41:13 $
+//   $Date: 2008/02/04 21:20:38 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -526,13 +526,13 @@ bool CRDFGraph::removeObjectFromTable(const std::string& tableName, CRDFObject& 
               if (it->second->getObject() == childObj)
               {break;}
             }
-        }
 
-      if (removeNode(it->second))
-        {
-          if (tableNode && IsBagNode)
+          if (removeNode(it->second))
           {tableNode->removeEdge(it->first);}
-          else if (!IsBagNode && mpAbout)
+        }
+      else
+        {
+          if (removeNode(tableNode))
             {
               mpAbout->removeEdge(tableName2Predicate(tableName));
               tableObj.clearData();
