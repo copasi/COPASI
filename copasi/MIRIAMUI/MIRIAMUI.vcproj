@@ -49,7 +49,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\UI\CMIRIAMModelWidget.cpp"
+				RelativePath=".\CMIRIAMModelWidget.cpp"
 				>
 			</File>
 			<File
