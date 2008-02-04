@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.189.2.6.2.5 $
+//   $Revision: 1.189.2.6.2.6 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/01 07:54:59 $
+//   $Date: 2008/02/04 02:34:24 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -228,9 +228,6 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
             }
         }
 
-      // import the initial assignments
-      //importInitialAssignments(sbmlModel,copasi2sbmlmap);
-
       num = sbmlModel->getNumRules();
       for (counter = 0;counter < num;++counter)
         {
@@ -388,11 +385,16 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       std::string s = os.str();
       CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 26, s.substr(0, s.size() - 2).c_str());
     }
+
+  // import the initial assignments
+  importInitialAssignments(sbmlModel, copasi2sbmlmap);
+
+  /*
   if (sbmlModel->getNumInitialAssignments() > 0)
     {
       CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 48);
     }
-
+  */
   /* Create the rules */
   this->areRulesUnique(sbmlModel);
   num = sbmlModel->getNumRules();
@@ -651,29 +653,7 @@ SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartme
   if (sbmlCompartment->isSetUnits())
     {
       std::string cU = sbmlCompartment->getUnits();
-      // this is now check in checkElementUnits
-      //if (cU != "volume" /* && cU != "area" && cU != "length" */)
-      //  {
-      //    //fatalError();
-      //    CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 24, sbmlCompartment->getId().c_str());
-      //    const_cast<Compartment*>(sbmlCompartment)->unsetUnits();
-      //}
-      //else if (cU == "area" || cU == "length")
-      //  {
-      //    /* !!!! create a warning that the units will be ignored. */
-      //    CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 22, sbmlCompartment->getId().c_str());
-      //}
     }
-  /* those are now checked in checkElementUnits
-  if (sbmlCompartment->getSpatialDimensions() == 0)
-    {
-      CCopasiMessage Message(CCopasiMessage::EXCEPTION, MCSBML + 23, sbmlCompartment->getId().c_str());
-    }
-  if (sbmlCompartment->getSpatialDimensions() != 3)
-    {
-      CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 22, sbmlCompartment->getId().c_str());
-    }
-   */
   std::string name = sbmlCompartment->getName();
   if (name == "")
     {
@@ -691,89 +671,6 @@ SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartme
       appendix = numberStream.str();
     }
   double value;
-  /*
-  if (mLevel == 1)
-    {
-      value = sbmlCompartment->getVolume();
-    }
-  else
-    {
-      if (sbmlCompartment->isSetSize() && sbmlCompartment->getSize() == sbmlCompartment->getSize()) // make sure it is not set to NaN
-        {
-          value = sbmlCompartment->getSize();
-        }
-      else
-        {
-          // check if the size of the compartment is determined by a rule
-          std::string sbmlId = sbmlCompartment->getId();
-          bool ruleFound = false;
-          unsigned int k, kMax = pSBMLModel->getNumRules();
-          for (k = 0;k < kMax && !ruleFound;++k)
-            {
-              const Rule* pRule = pSBMLModel->getRule(k);
-              switch (pRule->getTypeCode())
-                {
-                case SBML_ASSIGNMENT_RULE:
-                  if (dynamic_cast<const AssignmentRule*>(pRule)->getVariable() == sbmlId)
-                    {
-                      ruleFound = true;
-                      break;
-                    }
-                  break;
-                case SBML_RATE_RULE:
-                  if (dynamic_cast<const RateRule*>(pRule)->getVariable() == sbmlId)
-                    {
-                      ruleFound = true;
-                      break;
-                    }
-                  break;
-                case SBML_ALGEBRAIC_RULE:
-                  break;
-                default:
-                  fatalError();
-                  break;
-                }
-            }
-          if (!ruleFound)
-            {
-              // go through all species of the model and check if the ones that are
-              // in this compartment have the hasOnlySubstanceUnits flag set.
-              const SBMLDocument* pSBMLDocument = sbmlCompartment->getSBMLDocument();
-              assert(pSBMLDocument != NULL);
-              const Model* pSBMLModel = pSBMLDocument->getModel();
-              assert(pSBMLModel != NULL);
-              bool onlySubstanceCompartment = true;
-              unsigned int i, iMax = pSBMLModel->getNumSpecies();
-              for (i = 0;i < iMax;++i)
-                {
-                  const Species* pSpecies = pSBMLModel->getSpecies(i);
-                  if (pSpecies->getCompartment() == sbmlCompartment->getId() && pSpecies->getHasOnlySubstanceUnits() == false)
-                    {
-                      onlySubstanceCompartment = false;
-                      break;
-                    }
-                }
-              // Set value to NaN and create a warning if it is the first time
-              // this happend
-              if (onlySubstanceCompartment)
-                {
-                  value = 1.0;
-                  CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 45, sbmlCompartment->getId().c_str());
-                }
-              else
-                {
-                  value = std::numeric_limits<C_FLOAT64>::quiet_NaN();
-                  if (!this->mIncompleteModel)
-                    {
-                      this->mIncompleteModel = true;
-                      CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 7, sbmlCompartment->getId().c_str());
-                    }
-                }
-            }
-        }
-    }
-  */
-
   CCompartment* copasiCompartment = copasiModel->createCompartment(name + appendix, value);
   if (this->mLevel == 1)
     {
@@ -797,14 +694,6 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
   if (sbmlSpecies->isSetSubstanceUnits())
     {
       std::string cU = sbmlSpecies->getSubstanceUnits();
-      /* this is now checked in checkElementUnits
-      if (cU != "substance")
-        {
-          //fatalError();
-          CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 25, sbmlSpecies->getId().c_str());
-          const_cast<Species*>(sbmlSpecies)->unsetUnits();
-        }
-        */
     }
   std::map<CCopasiObject*, SBase*>::iterator it = copasi2sbmlmap.find(copasiCompartment);
   if (it == copasi2sbmlmap.end())
@@ -852,72 +741,6 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
       this->mSubstanceOnlySpecies.insert(std::make_pair(const_cast<Species*>(sbmlSpecies), pSBMLCompartment));
     }
 
-  /* The initial values are now set by a new routine after all other things
-   * have been done.
-  if (sbmlSpecies->isSetInitialAmount() && sbmlSpecies->getInitialAmount() == sbmlSpecies->getInitialAmount()) // make sure it's not set to NaN
-    {
-      if (sbmlSpecies->getInitialAmount() != 0.0)
-        {
-          copasiMetabolite->setInitialValue(sbmlSpecies->getInitialAmount()*copasiModel->getQuantity2NumberFactor()); // CHECK UNITS !!!
-        }
-      else
-        {
-          copasiMetabolite->setInitialConcentration(0.0);
-        }
-    }
-  else if (sbmlSpecies->isSetInitialConcentration() && sbmlSpecies->getInitialConcentration() == sbmlSpecies->getInitialConcentration()) // make sure it is not set to NaN
-    {
-      if (sbmlSpecies->getHasOnlySubstanceUnits())
-        {
-          pdelete(copasiMetabolite);
-          CCopasiMessage Message(CCopasiMessage::EXCEPTION, MCSBML + 20, sbmlSpecies->getId().c_str());
-        }
-      if (pSBMLCompartment->getSpatialDimensions() == 0)
-        {
-          pdelete(copasiMetabolite);
-          CCopasiMessage Message(CCopasiMessage::EXCEPTION, MCSBML + 21, sbmlSpecies->getId().c_str());
-        }
-      copasiMetabolite->setInitialConcentration(sbmlSpecies->getInitialConcentration());      // CHECK UNITS !!!
-    }
-  else
-    {
-      copasiMetabolite->setInitialConcentration(std::numeric_limits<C_FLOAT64>::quiet_NaN());      // CHECK UNITS !!!
-      std::string sbmlId = sbmlSpecies->getId();
-      bool ruleFound = false;
-      unsigned int k, kMax = pSBMLModel->getNumRules();
-      for (k = 0;k < kMax && !ruleFound;++k)
-        {
-          const Rule* pRule = pSBMLModel->getRule(k);
-          switch (pRule->getTypeCode())
-            {
-            case SBML_ASSIGNMENT_RULE:
-              if (dynamic_cast<const AssignmentRule*>(pRule)->getVariable() == sbmlId)
-                {
-                  ruleFound = true;
-                  break;
-                }
-              break;
-            case SBML_RATE_RULE:
-              if (dynamic_cast<const RateRule*>(pRule)->getVariable() == sbmlId)
-                {
-                  ruleFound = true;
-                  break;
-                }
-              break;
-            case SBML_ALGEBRAIC_RULE:
-              break;
-            default:
-              fatalError();
-              break;
-            }
-        }
-      if (!this->mIncompleteModel && !ruleFound)
-        {
-          this->mIncompleteModel = true;
-          CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 41, sbmlSpecies->getId().c_str());
-        }
-    }
-    */
   //DebugFile << "Created species: " << copasiMetabolite->getObjectName() << std::endl;
   copasi2sbmlmap[copasiMetabolite] = const_cast<Species*>(sbmlSpecies);
   if (this->mLevel == 1)
@@ -1113,27 +936,6 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
   const KineticLaw* kLaw = sbmlReaction->getKineticLaw();
   if (kLaw != NULL)
     {
-      /* this is now done in checkElementUnits
-      if (kLaw->isSetSubstanceUnits())
-        {
-          std::string cU = kLaw->getSubstanceUnits();
-          if (cU != "substance")
-            {
-              delete copasiReaction;
-              CCopasiMessage Message(CCopasiMessage::EXCEPTION, MCSBML + 44, sbmlReaction->getId().c_str());
-            }
-        }
-      if (kLaw->isSetTimeUnits())
-        {
-          std::string cU = kLaw->getTimeUnits();
-          if (cU != "time")
-            {
-              delete copasiReaction;
-              fatalError();
-            }
-        }
-        */
-
       for (counter = 0; counter < kLaw->getNumParameters();++counter)
         {
           const Parameter* pSBMLParameter = kLaw->getParameter(counter);
@@ -1737,7 +1539,6 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
     }
   else
     {
-      //throw StdException("Error. readSBML needs a valid CFunctionDB object.");
       if (mpImportHandler) mpImportHandler->finish(mhImportStep);
       fatalError();
     }
@@ -2108,58 +1909,7 @@ CModelValue* SBMLImporter::createCModelValueFromParameter(const Parameter* sbmlP
     {
       sbmlId = sbmlParameter->getId();
     }
-  /*
-  double value;
-  if (sbmlParameter->isSetValue() && sbmlParameter->getValue() == sbmlParameter->getValue()) // make sure it is not set to NaN
-      {
-      value = sbmlParameter->getValue();
-      }
-  else
-      {
-      // check if there is an assignment rule for this entity
-      std::map<CCopasiObject*, SBase*>::iterator pos = copasi2sbmlmap.find(copasiModel);
-      if (pos == copasi2sbmlmap.end()) fatalError();
-      bool ruleFound = false;
-      Model* pSBMLModel = dynamic_cast<Model*>(pos->second);
-      unsigned int k, kMax = pSBMLModel->getNumRules();
-      for (k = 0;k < kMax && !ruleFound;++k)
-          {
-          Rule* pRule = pSBMLModel->getRule(k);
-          switch (pRule->getTypeCode())
-              {
-              case SBML_ASSIGNMENT_RULE:
-              if (dynamic_cast<AssignmentRule*>(pRule)->getVariable() == sbmlId)
-                  {
-                  ruleFound = true;
-                  break;
-                  }
-              break;
-              case SBML_RATE_RULE:
-              if (dynamic_cast<RateRule*>(pRule)->getVariable() == sbmlId)
-                  {
-                  ruleFound = true;
-                  break;
-                  }
-              break;
-              case SBML_ALGEBRAIC_RULE:
-              break;
-              default:
-              fatalError();
-              break;
-              }
-          }
-
-      // Set value to NaN and create a warning if it is the first time
-      // this happend
-      value = std::numeric_limits<C_FLOAT64>::quiet_NaN();
-      if ((!ruleFound) && (!this->mIncompleteModel))
-          {
-          this->mIncompleteModel = true;
-          CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 43, sbmlParameter->getId().c_str());
-          }
-      }
-      */
-  CModelValue* pMV = copasiModel->createModelValue(name + appendix, /*value*/ 0.0);
+  CModelValue* pMV = copasiModel->createModelValue(name + appendix, 0.0);
   copasi2sbmlmap[pMV] = const_cast<Parameter*>(sbmlParameter);
   pMV->setSBMLId(sbmlId);
   return pMV;
@@ -3250,15 +3000,6 @@ bool SBMLImporter::removeUnusedFunctions(CFunctionDB* pTmpFunctionDB, std::map<C
                                            & step,
                                            &totalSteps);
         }
-      /*
-      std::set<std::string>::iterator it=functionNameSet.begin();
-      std::cout << "used functions: " << std::endl;
-      while(it!=functionNameSet.end())
-      {
-          std::cout << (*it) << std::endl;
-          ++it;
-      }
-      */
       // here we could have a dialog asking the user if unused functions should
       // be removed.
       while (pTmpFunctionDB->loadedFunctions().size() != 0)
@@ -3484,8 +3225,6 @@ void SBMLImporter::importRule(const Rule* rule, CModelEntity::Status ruleType, s
       switch (type)
         {
         case SBML_PARAMETER:
-          // activate the next two lines if rules for compartments and
-          // metabolites should be imported.
         case SBML_SPECIES:
         case SBML_COMPARTMENT:
           // check if it really is a global parameter, a metabolite or a
@@ -3517,24 +3256,6 @@ void SBMLImporter::importRule(const Rule* rule, CModelEntity::Status ruleType, s
           // now that compartments, metabolites and global parameters are
           // supported, everything else should produce a fatal error.
           fatalError();
-
-          // remove the rest of this block and activate the code above if rules
-          // for metabolites and compartments are supported.
-          /*
-          if (ruleType == CModelEntity::ASSIGNMENT)
-              {
-              mUnsupportedAssignmentRuleFound = true;
-              }
-          else if (ruleType == CModelEntity::ODE)
-              {
-              mUnsupportedRateRuleFound = true;
-              }
-          else
-              {
-              // should never happen
-              fatalError();
-              }
-          */
           break;
         }
     }
