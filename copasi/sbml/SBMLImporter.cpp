@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.189.2.6.2.6 $
+//   $Revision: 1.189.2.6.2.7 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/02/04 02:34:24 $
+//   $Author: shoops $
+//   $Date: 2008/02/04 19:20:29 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1442,7 +1442,7 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
               CCopasiMessage::Type messageType = CCopasiMessage::RAW;
               switch (pSBMLError->getSeverity())
                 {
-                case /*LIBSBML_SEV_INFO*/SEVERITY_INFO:
+                case LIBSBML_SEV_INFO:
 
                   if (mIgnoredSBMLMessages.find(pSBMLError->getErrorId()) != mIgnoredSBMLMessages.end())
                     {
@@ -1454,7 +1454,7 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
                     }
                   CCopasiMessage(messageType, MCSBML + 40, "INFO", pSBMLError->getErrorId(), pSBMLError->getLine(), pSBMLError->getColumn(), pSBMLError->getMessage().c_str());
                   break;
-                case /*LIBSBML_SEV_WARNING*/SEVERITY_WARNING:
+                case LIBSBML_SEV_WARNING:
                   if (mIgnoredSBMLMessages.find(pSBMLError->getErrorId()) != mIgnoredSBMLMessages.end())
                     {
                       messageType = CCopasiMessage::WARNING_FILTERED;
@@ -1465,14 +1465,14 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
                     }
                   CCopasiMessage(messageType, MCSBML + 40, "WARNING", pSBMLError->getErrorId(), pSBMLError->getLine(), pSBMLError->getColumn(), pSBMLError->getMessage().c_str());
                   break;
-                case /*LIBSBML_SEV_ERROR*/SEVERITY_ERROR:
+                case LIBSBML_SEV_ERROR:
                   if (mIgnoredSBMLMessages.find(pSBMLError->getErrorId()) != mIgnoredSBMLMessages.end())
                     {
                       messageType = CCopasiMessage::ERROR_FILTERED;
                     }
                   CCopasiMessage(messageType, MCSBML + 40, "ERROR", pSBMLError->getErrorId(), pSBMLError->getLine(), pSBMLError->getColumn(), pSBMLError->getMessage().c_str());
                   break;
-                case /*LIBSBML_SEV_FATAL*/SEVERITY_FATAL:
+                case LIBSBML_SEV_FATAL:
                   // treat unknown as fatal
                 default:
                   //CCopasiMessage(CCopasiMessage::TRACE, MCSBML + 40,"FATAL",pSBMLError->getLine(),pSBMLError->getColumn(),pSBMLError->getMessage().c_str());
