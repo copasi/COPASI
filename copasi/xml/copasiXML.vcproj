@@ -4,6 +4,7 @@
 	Version="8.00"
 	Name="copasiXML"
 	ProjectGUID="{AD37DA6D-8D6A-4B96-B262-8004CEA9538F}"
+	RootNamespace="copasiXML"
 	Keyword="MakeFileProj"
 	>
 	<Platforms>
@@ -99,6 +100,18 @@
 		<File
 			RelativePath="..\common.pri"
 			>
+		</File>
+		<File
+			RelativePath=".\copasi.xsd"
+			>
+			<File
+				RelativePath=".\copasi.h"
+				>
+			</File>
+			<File
+				RelativePath=".\copasi.xsx"
+				>
+			</File>
 		</File>
 		<File
 			RelativePath="..\lib.pri"
