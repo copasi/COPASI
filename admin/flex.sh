@@ -11,7 +11,7 @@ TARGET_FILE=lex.${SOURCE_FILE/%.*/.c}
 echo compiling $SOURCE_FILE '==>' ${SOURCE_FILE/%.*/_lex.cpp}
 
 flex  -t $SOURCE_FILE | \
-     sed -e 's/<FlexLexer.h>/"FlexLexer.h"/' \
+     sed -e 's/<FlexLexer.h>/"copasi/FlexLexer.h"/' \
          -e 's/include <fstream>/include <iostream>/' \
          -e 's/using std::istream;/using namespace std;/' \
          -e '/using std::ostream;/d' \
