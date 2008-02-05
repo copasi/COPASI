@@ -1,12 +1,17 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqParser.h,v $
-   $Revision: 1.3 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/08/25 18:13:23 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqParser.h,v $
+//   $Revision: 1.3.16.1 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2008/02/05 17:04:17 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -17,8 +22,9 @@
 #include <string>
 
 #undef yyFlexLexer
-#define yyFlexLexer CChemEqParser
 #include "FlexLexer.h"
+
+#define yyFlexLexer CChemEqParser
 
 #undef yyYaccParser
 #define yyYaccParser CChemEqParserBase
@@ -112,6 +118,9 @@ class CChemEqParser: public FlexLexer, public yyYaccParser
     void yy_delete_buffer(struct yy_buffer_state* b);
     void yyrestart(std::istream* s);
 
+    void yypush_buffer_state(struct yy_buffer_state* new_buffer);
+    void yypop_buffer_state(void);
+
     virtual int yylex();
     virtual void switch_streams(std::istream* new_in, std::ostream* new_out);
 
@@ -161,6 +170,11 @@ class CChemEqParser: public FlexLexer, public yyYaccParser
     // Flag which is used to allow yywrap()'s to do buffer switches
     // instead of setting up a fresh yyin.  A bit of a hack ...
     int yy_did_buffer_switch_on_eof;
+
+    size_t yy_buffer_stack_top; /**< index of top of stack. */
+    size_t yy_buffer_stack_max; /**< capacity of stack. */
+    struct yy_buffer_state ** yy_buffer_stack; /**< Stack as an array. */
+    void yyensure_buffer_stack(void);
 
     // The following are not always needed, but may be depending
     // on use of certain flex features (like REJECT or yymore()).
