@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLogical.h,v $
-//   $Revision: 1.14.4.1 $
+//   $Revision: 1.14.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/02/04 22:20:53 $
+//   $Date: 2008/02/05 01:16:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,9 +31,6 @@
 class CNormalLogical : public CNormalBase
   {
   public:
-    //std::string debug() const;
-    //std::set<const CNormalLogical*> findLogicals() const;
-
     template<typename TYPE>
     class SetSorter
       {
@@ -42,13 +39,35 @@ class CNormalLogical : public CNormalBase
          * This routine compares a set and returns true if the first
          * argument is smaller than the second.
          */
-        bool operator()(const std::pair<TYPE*, bool>& lhs, const std::pair<TYPE*, bool>& rhs) const;
+        bool operator()(const std::pair<TYPE*, bool>& lhs,
+                        const std::pair<TYPE*, bool>& rhs) const
+          {
+            bool result = false;
+            if (lhs.second == rhs.second)
+              {
+                result = ((*lhs.first) < (*rhs.first));
+              }
+            else if (lhs.second == true)
+              {
+                result = true;
+              }
+            return result;
+          }
 
         /**
          * This routine compares a set and returns true if the first
          * argument is equal to the second.
          */
-        bool isEqual(const std::pair<TYPE*, bool>& lhs, const std::pair<TYPE*, bool>& rhs) const;
+        bool isEqual(const std::pair<TYPE*, bool>& lhs,
+                     const std::pair<TYPE*, bool>& rhs) const
+          {
+            bool result = true;
+            if (!(lhs.second == rhs.second && (*lhs.first) == (*rhs.first)))
+              {
+                result = false;
+              }
+            return result;
+          }
       };
 
     template<typename TYPE>
@@ -91,7 +110,38 @@ class CNormalLogical : public CNormalBase
          * This routine compares a set of sets and returns true if the first
          * argument is smaller than the second.
          */
-        bool isEqual(const std::pair<std::set<std::pair<TYPE*, bool>, SetSorter<TYPE> >, bool>& lhs, const std::pair<std::set<std::pair<TYPE*, bool>, SetSorter<TYPE> >, bool>& rhs) const;
+        bool isEqual(const std::pair<std::set<std::pair<TYPE*, bool>, SetSorter<TYPE> >, bool>& lhs,
+                     const std::pair<std::set<std::pair<TYPE*, bool>, SetSorter<TYPE> >, bool>& rhs) const
+          {
+            bool result = true;
+            if (lhs.second == rhs.second)
+              {
+                if (lhs.first.size() == rhs.first.size())
+                  {
+                    typename std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter <TYPE> >::const_iterator
+                    it = lhs.first.begin(),
+                         endit = lhs.first.end(),
+                                 it2 = rhs.first.begin();
+
+                    SetSorter<TYPE> sorter;
+                    while (it != endit && result == true)
+                      {
+                        result = sorter.isEqual(*it, *it2);
+                        ++it;
+                        ++it2;
+                      }
+                  }
+                else
+                  {
+                    result = false;
+                  }
+              }
+            else
+              {
+                result = false;
+              }
+            return result;
+          }
       };
 
   template<typename TYPE> class TemplateSet:
