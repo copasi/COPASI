@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CTruncatedNewton.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.4.4.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/12/13 20:20:16 $
+//   $Author: jdada $
+//   $Date: 2008/02/06 13:38:41 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -25,19 +30,6 @@
 
 C_FLOAT64 step1_(C_FLOAT64 *fnew, C_FLOAT64 *fm, C_FLOAT64 *gtp,
                  C_FLOAT64 *smax);
-int gtims_(C_FLOAT64 *v, C_FLOAT64 *gv, C_INT *n,
-           C_FLOAT64 *x, C_FLOAT64 *g, C_FLOAT64 *w, C_INT * /* lw */, FTruncatedNewton *sfun,
-           C_INT *first, C_FLOAT64 *delta, C_FLOAT64 *accrcy, C_FLOAT64 *
-           xnorm);
-int getptc_(C_FLOAT64 *, C_FLOAT64 *,
-            C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
-            C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
-            C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
-            C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
-            C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
-            C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
-            C_FLOAT64 *, C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
-            C_INT *, C_INT *);
 int lsout_(C_INT *, C_INT *, C_FLOAT64 *,
            C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
            C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
@@ -53,12 +45,6 @@ int mslv_(C_FLOAT64 *, C_FLOAT64 *, C_INT *,
           C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_INT *,
           C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_INT *, C_INT *);
 C_FLOAT64 mchpr1_(void);
-int initpc_(C_FLOAT64 *, C_FLOAT64 *, C_INT *,
-            C_FLOAT64 *, C_INT *, C_INT *, C_INT *, C_FLOAT64 *,
-            C_FLOAT64 *, C_FLOAT64 *, C_INT *);
-int msolve_(C_FLOAT64 *,
-            C_FLOAT64 *, C_INT *, C_FLOAT64 *, C_INT *, C_INT *,
-            C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_INT *, C_INT *);
 int negvec_(C_INT *, C_FLOAT64 *);
 int ztime_(C_INT *, C_FLOAT64 *, C_INT *);
 int ndia3_(C_INT *, C_FLOAT64 *, C_FLOAT64 *,
@@ -71,27 +57,12 @@ int cnvtst_(C_INT *, C_FLOAT64 *,
             C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
             C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
             C_FLOAT64 *, C_INT *, C_INT *, C_FLOAT64 *);
-int setucr_(C_FLOAT64 *, C_INT *, C_INT *,
-            C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
-            C_FLOAT64 *, FTruncatedNewton *, C_FLOAT64 *, C_FLOAT64 *);
-int setpar_(C_INT *);
-int modlnp_(C_INT *, C_FLOAT64 *, C_FLOAT64 *,
-            C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
-            C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_INT *, C_FLOAT64 *,
-            C_INT *, C_INT *, C_INT *, C_INT *, C_INT *, C_INT *,
-            C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_INT *,
-            FTruncatedNewton *, C_INT *, C_INT *, C_FLOAT64 *, C_FLOAT64 *,
-            C_FLOAT64 *, C_FLOAT64 *);
+
 int chkucp_(C_INT *, C_INT *, C_INT *,
             C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
             C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
             C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_INT *,
             C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *);
-int linder_(C_INT *, FTruncatedNewton *, C_FLOAT64 *,
-            C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
-            C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
-            C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
-            C_FLOAT64 *, C_INT *, C_INT *, C_FLOAT64 *, C_INT *);
 int monit_(C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
            C_INT *, C_INT *, C_INT *, C_INT *, C_INT *);
 int crash_(C_INT *, C_FLOAT64 *, C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_INT *);
@@ -99,45 +70,14 @@ int dxpy_(C_INT *, C_FLOAT64 *, C_INT *, C_FLOAT64 *, C_INT *);
 int modz_(C_INT *, C_FLOAT64 *, C_FLOAT64 *,
           C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
           C_FLOAT64 *);
-int setucr_(C_FLOAT64 *, C_INT *, C_INT *,
-            C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
-            C_FLOAT64 *, FTruncatedNewton *, C_FLOAT64 *, C_FLOAT64 *);
-int lmqnbc_(C_INT *, C_INT *, C_FLOAT64 *,
-            C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_INT *, FTruncatedNewton *,
-            C_FLOAT64 *, C_FLOAT64 *, C_INT *, C_INT *, C_INT *,
-            C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *);
+
 C_FLOAT64 mchpr1_(void);
-int lmqn_(C_INT *, C_INT *, C_FLOAT64 *,
-          C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_INT *, FTruncatedNewton *,
-          C_INT *, C_INT *, C_INT *, C_FLOAT64 *, C_FLOAT64 *,
-          C_FLOAT64 *, C_FLOAT64 *);
+
+#define subscr_1 (mpsubscr_->_1)
+#define subscr_2 (mpsubscr_->_2)
+#define subscr_3 (mpsubscr_->_3)
 
 /* Common Block Declarations */
-
-union {
-    struct
-      {
-        C_INT lgv, lz1, lzk, lv, lsk, lyk, ldiagb, lsr, lyr, loldg, lhg,
-        lhyk, lpk, lemat, lwtest;
-      }
-    _1;
-    struct
-      {
-        C_INT lgv, lz1, lzk, lv, lsk, lyk, ldiagb, lsr, lyr, lhyr, lhg,
-        lhyk, lpk, lemat, lwtest;
-      }
-    _2;
-    struct
-      {
-        C_INT lsub[14], lwtest;
-      }
-    _3;
-  } subscr_;
-
-#define subscr_1 (subscr_._1)
-#define subscr_2 (subscr_._2)
-#define subscr_3 (subscr_._3)
-
 #define TRUE_ (1)
 #define FALSE_ (0)
 
@@ -148,6 +88,16 @@ static C_INT c_false = FALSE_;
 static C_INT c_true = TRUE_;
 static C_FLOAT64 c_b246 = .6666;
 
+CTruncatedNewton::CTruncatedNewton()
+{
+  mpsubscr_ = new subscr_;
+}
+
+CTruncatedNewton::~CTruncatedNewton()
+{
+  if (mpsubscr_ != NULL) {delete mpsubscr_; mpsubscr_ = NULL;}
+}
+
 /* %% TRUNCATED-NEWTON METHOD:  SUBROUTINES */
 /*   FOR OTHER MACHINES, MODIFY ROUTINE MCHPR1 (MACHINE EPSILON) */
 /*   WRITTEN BY:  STEPHEN G. NASH */
@@ -155,8 +105,8 @@ static C_FLOAT64 c_b246 = .6666;
 /*                GEORGE MASON UNIVERSITY */
 /*                FAIRFAX, VA 22030 */
 /* ****************************************************************** */
-/* Subroutine */ int tn_(C_INT *ierror, C_INT *n, C_FLOAT64 *x,
-                         C_FLOAT64 *f, C_FLOAT64 *g, C_FLOAT64 *w, C_INT *lw, FTruncatedNewton *sfun)
+/* Subroutine */ int CTruncatedNewton::tn_(C_INT *ierror, C_INT *n, C_FLOAT64 *x,
+    C_FLOAT64 *f, C_FLOAT64 *g, C_FLOAT64 *w, C_INT *lw, FTruncatedNewton *sfun)
 {
   /* Format strings */
   /* static char fmt_800[] = "(//,\002 ERROR CODE =\002,i3)";
@@ -264,8 +214,8 @@ static C_FLOAT64 c_b246 = .6666;
 
   /* MINIMIZE THE FUNCTION */
 
-  lmqn_(ierror, n, &x[1], f, &g[1], &w[1], lw, sfun, &msglvl, &maxit,
-        &maxfun, &eta, &stepmx, &accrcy, &xtol);
+  CTruncatedNewton::lmqn_(ierror, n, &x[1], f, &g[1], &w[1], lw, sfun, &msglvl, &maxit,
+                          &maxfun, &eta, &stepmx, &accrcy, &xtol);
 
   /* PRINT THE RESULTS */
   //remove the printing
@@ -296,9 +246,9 @@ static C_FLOAT64 c_b246 = .6666;
   return 0;
 }  /* tn_ */
 
-/* Subroutine */ int tnbc_(C_INT *ierror, C_INT *n, C_FLOAT64 *x,
-                           C_FLOAT64 *f, C_FLOAT64 *g, C_FLOAT64 *w, C_INT *lw, FTruncatedNewton * sfun,
-                           C_FLOAT64 *low, C_FLOAT64 *up, C_INT *ipivot)
+/* Subroutine */ int CTruncatedNewton::tnbc_(C_INT *ierror, C_INT *n, C_FLOAT64 *x,
+    C_FLOAT64 *f, C_FLOAT64 *g, C_FLOAT64 *w, C_INT *lw, FTruncatedNewton * sfun,
+    C_FLOAT64 *low, C_FLOAT64 *up, C_INT *ipivot)
 {
   /* Format strings */
   /* static char fmt_800[] = "(//,\002 ERROR CODE =\002,i3)";
@@ -426,9 +376,9 @@ static C_FLOAT64 c_b246 = .6666;
 
   /* MINIMIZE FUNCTION */
 
-  lmqnbc_(ierror, n, &x[1], f, &g[1], &w[1], lw, sfun, &low[1], &up[1]
-          , &ipivot[1], &msglvl, &maxit, &maxfun, &eta, &stepmx, &accrcy, &
-          xtol);
+  CTruncatedNewton::lmqnbc_(ierror, n, &x[1], f, &g[1], &w[1], lw, sfun, &low[1], &up[1]
+                            , &ipivot[1], &msglvl, &maxit, &maxfun, &eta, &stepmx, &accrcy, &
+                            xtol);
 
   /* PRINT RESULTS */
 
@@ -463,10 +413,10 @@ static C_FLOAT64 c_b246 = .6666;
   return 0;
 }  /* tnbc_ */
 
-/* Subroutine */ int lmqn_(C_INT *ifail, C_INT *n, C_FLOAT64 *x,
-                           C_FLOAT64 *f, C_FLOAT64 *g, C_FLOAT64 *w, C_INT *lw, FTruncatedNewton * sfun,
-                           C_INT *msglvl, C_INT *maxit, C_INT *maxfun, C_FLOAT64 *eta,
-                           C_FLOAT64 *stepmx, C_FLOAT64 *accrcy, C_FLOAT64 *xtol)
+/* Subroutine */ int CTruncatedNewton::lmqn_(C_INT *ifail, C_INT *n, C_FLOAT64 *x,
+    C_FLOAT64 *f, C_FLOAT64 *g, C_FLOAT64 *w, C_INT *lw, FTruncatedNewton * sfun,
+    C_INT *msglvl, C_INT *maxit, C_INT *maxfun, C_FLOAT64 *eta,
+    C_FLOAT64 *stepmx, C_FLOAT64 *accrcy, C_FLOAT64 *xtol)
 {
   /* Format strings */
   /* static char fmt_800[] = "(//\002 NIT   NF   CG\002,9x,\002F\002,21x,\002"
@@ -568,8 +518,8 @@ static C_FLOAT64 c_b246 = .6666;
     {
       goto L120;
     }
-  setucr_(&small, &nftotl, &niter, n, f, &fnew, &fm, &gtg, &oldf,
-          sfun, &g[1], &x[1]);
+  CTruncatedNewton::setucr_(&small, &nftotl, &niter, n, f, &fnew, &fm, &gtg, &oldf,
+                            sfun, &g[1], &x[1]);
   fold = fnew;
   if (*msglvl >= 1)
     {
@@ -616,11 +566,11 @@ static C_FLOAT64 c_b246 = .6666;
   /* COMPUTE THE NEW SEARCH DIRECTION */
 
   modet = *msglvl - 3;
-  modlnp_(&modet, &w[subscr_1.lpk], &w[subscr_1.lgv], &w[subscr_1.lz1], &w[
-            subscr_1.lv], &w[subscr_1.ldiagb], &w[subscr_1.lemat], &x[1], &g[
-            1], &w[subscr_1.lzk], n, &w[1], lw, &niter, maxit, &nfeval, &
-          nmodif, &nlincg, &upd1, &yksk, &gsk, &yrsr, &lreset, sfun, &
-          c_false, &ipivot, accrcy, &gtpnew, &gnorm, &xnorm);
+  CTruncatedNewton::modlnp_(&modet, &w[subscr_1.lpk], &w[subscr_1.lgv], &w[subscr_1.lz1], &w[
+                              subscr_1.lv], &w[subscr_1.ldiagb], &w[subscr_1.lemat], &x[1], &g[
+                              1], &w[subscr_1.lzk], n, &w[1], lw, &niter, maxit, &nfeval, &
+                            nmodif, &nlincg, &upd1, &yksk, &gsk, &yrsr, &lreset, sfun, &
+                            c_false, &ipivot, accrcy, &gtpnew, &gnorm, &xnorm);
 L20:
   dcopy_(n, &g[1], &c__1, &w[subscr_1.loldg], &c__1);
   pnorm = dnrm2_(n, &w[subscr_1.lpk], &c__1);
@@ -648,9 +598,9 @@ L20:
 
   /* PERFORM THE LINEAR SEARCH */
 
-  linder_(n, sfun, &small, &epsmch, &reltol, &fabstol, &tnytol, eta, &
-          zero, &spe, &w[subscr_1.lpk], &oldgtp, &x[1], &fnew, &alpha, &g[1]
-          , &numf, &nwhy, &w[1], lw);
+  CTruncatedNewton::linder_(n, sfun, &small, &epsmch, &reltol, &fabstol, &tnytol, eta, &
+                            zero, &spe, &w[subscr_1.lpk], &oldgtp, &x[1], &fnew, &alpha, &g[1]
+                            , &numf, &nwhy, &w[1], lw);
 
   fold = fnew;
   ++niter;
@@ -775,11 +725,11 @@ L70:
   /*      COMPUTE THE NEW SEARCH DIRECTION */
 
   modet = *msglvl - 3;
-  modlnp_(&modet, &w[subscr_1.lpk], &w[subscr_1.lgv], &w[subscr_1.lz1], &w[
-            subscr_1.lv], &w[subscr_1.ldiagb], &w[subscr_1.lemat], &x[1], &g[
-            1], &w[subscr_1.lzk], n, &w[1], lw, &niter, maxit, &nfeval, &
-          nmodif, &nlincg, &upd1, &yksk, &gsk, &yrsr, &lreset, sfun, &
-          c_false, &ipivot, accrcy, &gtpnew, &gnorm, &xnorm);
+  CTruncatedNewton::modlnp_(&modet, &w[subscr_1.lpk], &w[subscr_1.lgv], &w[subscr_1.lz1], &w[
+                              subscr_1.lv], &w[subscr_1.ldiagb], &w[subscr_1.lemat], &x[1], &g[
+                              1], &w[subscr_1.lzk], n, &w[1], lw, &niter, maxit, &nfeval, &
+                            nmodif, &nlincg, &upd1, &yksk, &gsk, &yrsr, &lreset, sfun, &
+                            c_false, &ipivot, accrcy, &gtpnew, &gnorm, &xnorm);
   if (lreset)
     {
       goto L80;
@@ -827,11 +777,11 @@ L120:
   return 0;
 } /* lmqn_ */
 
-/* Subroutine */ int lmqnbc_(C_INT *ifail, C_INT *n, C_FLOAT64 *x,
-                             C_FLOAT64 *f, C_FLOAT64 *g, C_FLOAT64 *w, C_INT *lw, FTruncatedNewton *sfun,
-                             C_FLOAT64 *low, C_FLOAT64 *up, C_INT *ipivot, C_INT *msglvl,
-                             C_INT *maxit, C_INT *maxfun, C_FLOAT64 *eta, C_FLOAT64 *stepmx,
-                             C_FLOAT64 *accrcy, C_FLOAT64 *xtol)
+/* Subroutine */ int CTruncatedNewton::lmqnbc_(C_INT *ifail, C_INT *n, C_FLOAT64 *x,
+    C_FLOAT64 *f, C_FLOAT64 *g, C_FLOAT64 *w, C_INT *lw, FTruncatedNewton *sfun,
+    C_FLOAT64 *low, C_FLOAT64 *up, C_INT *ipivot, C_INT *msglvl,
+    C_INT *maxit, C_INT *maxfun, C_FLOAT64 *eta, C_FLOAT64 *stepmx,
+    C_FLOAT64 *accrcy, C_FLOAT64 *xtol)
 {
   /* Format strings */
   //remove
@@ -965,8 +915,8 @@ L120:
     {
       goto L160;
     }
-  setucr_(&small, &nftotl, &niter, n, f, &fnew, &fm, &gtg, &oldf,
-          sfun, &g[1], &x[1]);
+  CTruncatedNewton::setucr_(&small, &nftotl, &niter, n, f, &fnew, &fm, &gtg, &oldf,
+                            sfun, &g[1], &x[1]);
   fold = fnew;
   flast = fnew;
 
@@ -1032,11 +982,11 @@ L10:
   /* COMPUTE THE NEW SEARCH DIRECTION */
 
   modet = *msglvl - 3;
-  modlnp_(&modet, &w[subscr_1.lpk], &w[subscr_1.lgv], &w[subscr_1.lz1], &w[
-            subscr_1.lv], &w[subscr_1.ldiagb], &w[subscr_1.lemat], &x[1], &g[
-            1], &w[subscr_1.lzk], n, &w[1], lw, &niter, maxit, &nfeval, &
-          nmodif, &nlincg, &upd1, &yksk, &gsk, &yrsr, &lreset, sfun, &
-          c_true, &ipivot[1], accrcy, &gtpnew, &gnorm, &xnorm);
+  CTruncatedNewton::modlnp_(&modet, &w[subscr_1.lpk], &w[subscr_1.lgv], &w[subscr_1.lz1], &w[
+                              subscr_1.lv], &w[subscr_1.ldiagb], &w[subscr_1.lemat], &x[1], &g[
+                              1], &w[subscr_1.lzk], n, &w[1], lw, &niter, maxit, &nfeval, &
+                            nmodif, &nlincg, &upd1, &yksk, &gsk, &yrsr, &lreset, sfun, &
+                            c_true, &ipivot[1], accrcy, &gtpnew, &gnorm, &xnorm);
 L20:
 
   /* added manually by Pedro Mendes 12/2/1998 */
@@ -1069,9 +1019,9 @@ L20:
 
   /* PERFORM THE LINEAR SEARCH */
 
-  linder_(n, sfun, &small, &epsmch, &reltol, &fabstol, &tnytol, eta, &
-          zero, &spe, &w[subscr_1.lpk], &oldgtp, &x[1], &fnew, &alpha, &g[1]
-          , &numf, &nwhy, &w[1], lw);
+  CTruncatedNewton::linder_(n, sfun, &small, &epsmch, &reltol, &fabstol, &tnytol, eta, &
+                            zero, &spe, &w[subscr_1.lpk], &oldgtp, &x[1], &fnew, &alpha, &g[1]
+                            , &numf, &nwhy, &w[1], lw);
   newcon = FALSE_;
   if ((d__1 = alpha - spe, fabs(d__1)) > epsmch * 10.)
     {
@@ -1231,11 +1181,11 @@ L90:
          e_wsfe();*/
     }
   modet = *msglvl - 3;
-  modlnp_(&modet, &w[subscr_1.lpk], &w[subscr_1.lgv], &w[subscr_1.lz1], &w[
-            subscr_1.lv], &w[subscr_1.ldiagb], &w[subscr_1.lemat], &x[1], &g[
-            1], &w[subscr_1.lzk], n, &w[1], lw, &niter, maxit, &nfeval, &
-          nmodif, &nlincg, &upd1, &yksk, &gsk, &yrsr, &lreset, sfun, &
-          c_true, &ipivot[1], accrcy, &gtpnew, &gnorm, &xnorm);
+  CTruncatedNewton::modlnp_(&modet, &w[subscr_1.lpk], &w[subscr_1.lgv], &w[subscr_1.lz1], &w[
+                              subscr_1.lv], &w[subscr_1.ldiagb], &w[subscr_1.lemat], &x[1], &g[
+                              1], &w[subscr_1.lzk], n, &w[1], lw, &niter, maxit, &nfeval, &
+                            nmodif, &nlincg, &upd1, &yksk, &gsk, &yrsr, &lreset, sfun, &
+                            c_true, &ipivot[1], accrcy, &gtpnew, &gnorm, &xnorm);
   if (newcon)
     {
       goto L20;
@@ -1598,14 +1548,14 @@ L15:
 /* THE VECTORS SK AND YK, ALTHOUGH NOT IN THE CALL, */
 /* ARE USED (VIA THEIR POSITION IN W) BY THE ROUTINE MSOLVE. */
 
-/* Subroutine */ int modlnp_(C_INT *modet, C_FLOAT64 *zsol, C_FLOAT64 *gv,
-                             C_FLOAT64 *r__, C_FLOAT64 *v, C_FLOAT64 *diagb, C_FLOAT64 *emat,
-                             C_FLOAT64 *x, C_FLOAT64 *g, C_FLOAT64 *zk, C_INT *n, C_FLOAT64 *
-                             w, C_INT *lw, C_INT * /* niter */, C_INT *maxit, C_INT *nfeval,
-                             C_INT * /* nmodif */, C_INT *nlincg, C_INT *upd1, C_FLOAT64 *yksk,
-                             C_FLOAT64 *gsk, C_FLOAT64 *yrsr, C_INT *lreset, FTruncatedNewton *sfun,
-                             C_INT *bounds, C_INT *ipivot, C_FLOAT64 *accrcy, C_FLOAT64 *gtp,
-                             C_FLOAT64 *gnorm, C_FLOAT64 *xnorm)
+/* Subroutine */ int CTruncatedNewton::modlnp_(C_INT *modet, C_FLOAT64 *zsol, C_FLOAT64 *gv,
+    C_FLOAT64 *r__, C_FLOAT64 *v, C_FLOAT64 *diagb, C_FLOAT64 *emat,
+    C_FLOAT64 *x, C_FLOAT64 *g, C_FLOAT64 *zk, C_INT *n, C_FLOAT64 *
+    w, C_INT *lw, C_INT * /* niter */, C_INT *maxit, C_INT *nfeval,
+    C_INT * /* nmodif */, C_INT *nlincg, C_INT *upd1, C_FLOAT64 *yksk,
+    C_FLOAT64 *gsk, C_FLOAT64 *yrsr, C_INT *lreset, FTruncatedNewton *sfun,
+    C_INT *bounds, C_INT *ipivot, C_FLOAT64 *accrcy, C_FLOAT64 *gtp,
+    C_FLOAT64 *gnorm, C_FLOAT64 *xnorm)
 {
   /* Format strings */
   //remove the format
@@ -1694,8 +1644,8 @@ L15:
 
   /* INITIALIZATION FOR PRECONDITIONED CONJUGATE-GRADIENT ALGORITHM */
 
-  initpc_(&diagb[1], &emat[1], n, &w[1], lw, modet, upd1, yksk, gsk, yrsr,
-          lreset);
+  CTruncatedNewton::initpc_(&diagb[1], &emat[1], n, &w[1], lw, modet, upd1, yksk, gsk, yrsr,
+                            lreset);
   i__1 = *n;
   for (i__ = 1; i__ <= i__1; ++i__)
     {
@@ -1727,8 +1677,8 @@ L15:
         {
           ztime_(n, &r__[1], &ipivot[1]);
         }
-      msolve_(&r__[1], &zk[1], n, &w[1], lw, upd1, yksk, gsk, yrsr, lreset,
-              &first);
+      CTruncatedNewton::msolve_(&r__[1], &zk[1], n, &w[1], lw, upd1, yksk, gsk, yrsr, lreset,
+                                &first);
       if (*bounds)
         {
           ztime_(n, &zk[1], &ipivot[1]);
@@ -1756,8 +1706,8 @@ L15:
         {
           ztime_(n, &v[1], &ipivot[1]);
         }
-      gtims_(&v[1], &gv[1], n, &x[1], &g[1], &w[1], lw, sfun, &first,
-             &delta, accrcy, xnorm);
+      CTruncatedNewton::gtims_(&v[1], &gv[1], n, &x[1], &g[1], &w[1], lw, sfun, &first,
+                               &delta, accrcy, xnorm);
       if (*bounds)
         {
           ztime_(n, &gv[1], &ipivot[1]);
@@ -1844,8 +1794,8 @@ L50:
     {
       goto L70;
     }
-  msolve_(&g[1], &zsol[1], n, &w[1], lw, upd1, yksk, gsk, yrsr, lreset, &
-          first);
+  CTruncatedNewton::msolve_(&g[1], &zsol[1], n, &w[1], lw, upd1, yksk, gsk, yrsr, lreset, &
+                            first);
   negvec_(n, &zsol[1]);
   if (*bounds)
     {
@@ -2120,10 +2070,10 @@ C_FLOAT64 mchpr1_(void)
   return 0;
 } /* chkucp_ */
 
-/* Subroutine */ int setucr_(C_FLOAT64 * /* small */, C_INT *nftotl, C_INT *
-                             niter, C_INT *n, C_FLOAT64 *f, C_FLOAT64 *fnew, C_FLOAT64 *fm,
-                             C_FLOAT64 *gtg, C_FLOAT64 *oldf, FTruncatedNewton *sfun, C_FLOAT64 *g,
-                             C_FLOAT64 *x)
+/* Subroutine */ int CTruncatedNewton::setucr_(C_FLOAT64 * /* small */, C_INT *nftotl, C_INT *
+    niter, C_INT *n, C_FLOAT64 *f, C_FLOAT64 *fnew, C_FLOAT64 *fm,
+    C_FLOAT64 *gtg, C_FLOAT64 *oldf, FTruncatedNewton *sfun, C_FLOAT64 *g,
+    C_FLOAT64 *x)
 {
   /* CHECK INPUT PARAMETERS, COMPUTE THE INITIAL FUNCTION VALUE, SET */
   /* CONSTANTS FOR THE SUBSEQUENT MINIMIZATION */
@@ -2148,10 +2098,10 @@ C_FLOAT64 mchpr1_(void)
   return 0;
 } /* setucr_ */
 
-/* Subroutine */ int gtims_(C_FLOAT64 *v, C_FLOAT64 *gv, C_INT *n,
-                            C_FLOAT64 *x, C_FLOAT64 *g, C_FLOAT64 *w, C_INT * /* lw */, FTruncatedNewton *sfun,
-                            C_INT *first, C_FLOAT64 *delta, C_FLOAT64 *accrcy, C_FLOAT64 *
-                            xnorm)
+/* Subroutine */ int CTruncatedNewton::gtims_(C_FLOAT64 *v, C_FLOAT64 *gv, C_INT *n,
+    C_FLOAT64 *x, C_FLOAT64 *g, C_FLOAT64 *w, C_INT * /* lw */, FTruncatedNewton *sfun,
+    C_INT *first, C_FLOAT64 *delta, C_FLOAT64 *accrcy, C_FLOAT64 *
+    xnorm)
 {
   /* System generated locals */
   C_INT i__1;
@@ -2197,9 +2147,9 @@ L20:
   return 0;
 } /* gtims_ */
 
-/* Subroutine */ int msolve_(C_FLOAT64 *g, C_FLOAT64 *y, C_INT *n,
-                             C_FLOAT64 *w, C_INT * /* lw */, C_INT *upd1, C_FLOAT64 *yksk,
-                             C_FLOAT64 *gsk, C_FLOAT64 *yrsr, C_INT *lreset, C_INT *first)
+/* Subroutine */ int CTruncatedNewton::msolve_(C_FLOAT64 *g, C_FLOAT64 *y, C_INT *n,
+    C_FLOAT64 *w, C_INT * /* lw */, C_INT *upd1, C_FLOAT64 *yksk,
+    C_FLOAT64 *gsk, C_FLOAT64 *yrsr, C_INT *lreset, C_INT *first)
 {
   /* THIS ROUTINE SETS UPT THE ARRAYS FOR MSLV */
 
@@ -2374,9 +2324,9 @@ L100:
 
 /* ROUTINES TO INITIALIZE PRECONDITIONER */
 
-/* Subroutine */ int initpc_(C_FLOAT64 *diagb, C_FLOAT64 *emat, C_INT *n,
-                             C_FLOAT64 *w, C_INT * /* lw */, C_INT *modet, C_INT *upd1, C_FLOAT64
-                             *yksk, C_FLOAT64 * /* gsk */, C_FLOAT64 *yrsr, C_INT *lreset)
+/* Subroutine */ int CTruncatedNewton::initpc_(C_FLOAT64 *diagb, C_FLOAT64 *emat, C_INT *n,
+    C_FLOAT64 *w, C_INT * /* lw */, C_INT *modet, C_INT *upd1, C_FLOAT64
+    *yksk, C_FLOAT64 * /* gsk */, C_FLOAT64 *yrsr, C_INT *lreset)
 {
   /* Parameter adjustments */
   --emat;
@@ -2508,7 +2458,7 @@ L110:
   return 0;
 } /* initp3_ */
 
-/* Subroutine */ int setpar_(C_INT *n)
+/* Subroutine */ int CTruncatedNewton::setpar_(C_INT *n)
 {
   static C_INT i__;
 
@@ -2525,12 +2475,12 @@ L110:
 
 /*      LINE SEARCH ALGORITHMS OF GILL AND MURRAY */
 
-/* Subroutine */ int linder_(C_INT *n, FTruncatedNewton *sfun, C_FLOAT64 *small,
-                             C_FLOAT64 *epsmch, C_FLOAT64 *reltol, C_FLOAT64 *fabstol,
-                             C_FLOAT64 *tnytol, C_FLOAT64 *eta, C_FLOAT64 * /* sftbnd */, C_FLOAT64 *
-                             xbnd, C_FLOAT64 *p, C_FLOAT64 *gtp, C_FLOAT64 *x, C_FLOAT64 *f,
-                             C_FLOAT64 *alpha, C_FLOAT64 *g, C_INT *nftotl, C_INT *iflag,
-                             C_FLOAT64 *w, C_INT * /* lw */)
+/* Subroutine */ int CTruncatedNewton::linder_(C_INT *n, FTruncatedNewton *sfun, C_FLOAT64 *small,
+    C_FLOAT64 *epsmch, C_FLOAT64 *reltol, C_FLOAT64 *fabstol,
+    C_FLOAT64 *tnytol, C_FLOAT64 *eta, C_FLOAT64 * /* sftbnd */, C_FLOAT64 *
+    xbnd, C_FLOAT64 *p, C_FLOAT64 *gtp, C_FLOAT64 *x, C_FLOAT64 *f,
+    C_FLOAT64 *alpha, C_FLOAT64 *g, C_INT *nftotl, C_INT *iflag,
+    C_FLOAT64 *w, C_INT * /* lw */)
 {
   /* System generated locals */
   C_INT i__1;
@@ -2600,10 +2550,10 @@ L10:
       goto L50;
     }
   *iflag = 0;
-  getptc_(&big, small, &rtsmll, reltol, fabstol, tnytol, &fpresn, eta, &rmu,
-          xbnd, &u, &fu, &gu, &xmin, &fmin, &gmin, &xw, &fw, &gw, &a, &b, &
-          oldf, &b1, &scxbnd, &e, &step, &factor, &braktd, &gtest1, &gtest2,
-          &tol, &ientry, &itest);
+  CTruncatedNewton::getptc_(&big, small, &rtsmll, reltol, fabstol, tnytol, &fpresn, eta, &rmu,
+                            xbnd, &u, &fu, &gu, &xmin, &fmin, &gmin, &xw, &fw, &gw, &a, &b, &
+                            oldf, &b1, &scxbnd, &e, &step, &factor, &braktd, &gtest1, &gtest2,
+                            &tol, &ientry, &itest);
   /* LSOUT */
   if (lsprnt >= nprnt)
     {
@@ -2667,15 +2617,15 @@ L50:
 } /* linder_ */
 
 /* Subroutine */
-int getptc_(C_FLOAT64 *big, C_FLOAT64 * /* small */, C_FLOAT64 *
-            rtsmll, C_FLOAT64 *reltol, C_FLOAT64 *fabstol, C_FLOAT64 *tnytol,
-            C_FLOAT64 *fpresn, C_FLOAT64 *eta, C_FLOAT64 *rmu, C_FLOAT64 *
-            xbnd, C_FLOAT64 *u, C_FLOAT64 *fu, C_FLOAT64 *gu, C_FLOAT64 *xmin,
-            C_FLOAT64 *fmin, C_FLOAT64 *gmin, C_FLOAT64 *xw, C_FLOAT64 *fw,
-            C_FLOAT64 *gw, C_FLOAT64 *a, C_FLOAT64 *b, C_FLOAT64 *oldf,
-            C_FLOAT64 *b1, C_FLOAT64 *scxbnd, C_FLOAT64 *e, C_FLOAT64 *step,
-            C_FLOAT64 *factor, C_INT *braktd, C_FLOAT64 *gtest1, C_FLOAT64 *
-            gtest2, C_FLOAT64 *tol, C_INT *ientry, C_INT *itest)
+int CTruncatedNewton::getptc_(C_FLOAT64 *big, C_FLOAT64 * /* small */, C_FLOAT64 *
+                              rtsmll, C_FLOAT64 *reltol, C_FLOAT64 *fabstol, C_FLOAT64 *tnytol,
+                              C_FLOAT64 *fpresn, C_FLOAT64 *eta, C_FLOAT64 *rmu, C_FLOAT64 *
+                              xbnd, C_FLOAT64 *u, C_FLOAT64 *fu, C_FLOAT64 *gu, C_FLOAT64 *xmin,
+                              C_FLOAT64 *fmin, C_FLOAT64 *gmin, C_FLOAT64 *xw, C_FLOAT64 *fw,
+                              C_FLOAT64 *gw, C_FLOAT64 *a, C_FLOAT64 *b, C_FLOAT64 *oldf,
+                              C_FLOAT64 *b1, C_FLOAT64 *scxbnd, C_FLOAT64 *e, C_FLOAT64 *step,
+                              C_FLOAT64 *factor, C_INT *braktd, C_FLOAT64 *gtest1, C_FLOAT64 *
+                              gtest2, C_FLOAT64 *tol, C_INT *ientry, C_INT *itest)
 {
   /* System generated locals */
   C_FLOAT64 d__1, d__2;

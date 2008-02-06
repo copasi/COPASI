@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodTruncatedNewton.cpp,v $
-//   $Revision: 1.3.2.3 $
+//   $Revision: 1.3.2.3.2.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/12/18 01:33:09 $
+//   $Author: jdada $
+//   $Date: 2008/02/06 13:38:41 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -22,18 +27,21 @@
 
 COptMethodTruncatedNewton::COptMethodTruncatedNewton(const CCopasiContainer * pParent):
     COptMethod(CCopasiTask::optimization, CCopasiMethod::TruncatedNewton, pParent),
-    mpTruncatedNewton(new FTruncatedNewtonTemplate<COptMethodTruncatedNewton>(this, &COptMethodTruncatedNewton::sFun))
+    mpTruncatedNewton(new FTruncatedNewtonTemplate<COptMethodTruncatedNewton>(this, &COptMethodTruncatedNewton::sFun)),
+    mpCTruncatedNewton(new CTruncatedNewton())
 {initObjects();}
 
 COptMethodTruncatedNewton::COptMethodTruncatedNewton(const COptMethodTruncatedNewton & src,
     const CCopasiContainer * pParent):
     COptMethod(src, pParent),
-    mpTruncatedNewton(new FTruncatedNewtonTemplate<COptMethodTruncatedNewton>(this, &COptMethodTruncatedNewton::sFun))
+    mpTruncatedNewton(new FTruncatedNewtonTemplate<COptMethodTruncatedNewton>(this, &COptMethodTruncatedNewton::sFun)),
+    mpCTruncatedNewton(new CTruncatedNewton())
 {initObjects();}
 
 COptMethodTruncatedNewton::~COptMethodTruncatedNewton()
 {
   pdelete(mpTruncatedNewton);
+  pdelete(mpCTruncatedNewton);
   cleanup();
 }
 
@@ -116,8 +124,8 @@ bool COptMethodTruncatedNewton::optimise()
       // minimise
       try
         {
-          tnbc_(&ierror, &mVariableSize, mCurrent.array(), &fest, mGradient.array(), dwork.array(),
-                &lw, mpTruncatedNewton, low.array(), up.array(), iPivot.array());
+          mpCTruncatedNewton->tnbc_(&ierror, &mVariableSize, mCurrent.array(), &fest, mGradient.array(), dwork.array(),
+                                    &lw, mpTruncatedNewton, low.array(), up.array(), iPivot.array());
           mEvaluationValue = fest;
         }
 
