@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMathMatrixWidget.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.2.12.1 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/12 00:04:23 $
+//   $Date: 2008/02/06 06:47:30 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -44,16 +49,16 @@ CQMathMatrixWidget::CQMathMatrixWidget(QWidget* parent, const char* name, WFlags
   mWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "CQMathMatrixWidgetLayout");
 
   // **********  Label **************
-  mLabelTitle = new QLabel(this, "SensLabel");
-  mLabelTitle->setText("Sensitivities");
-  mLabelTitle->setAlignment(int(QLabel::AlignVCenter
-                                | QLabel::AlignLeft));
-  mLabelTitle->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-  mWidgetLayout->addWidget(mLabelTitle, 0, 0);
+  //mLabelTitle = new QLabel(this, "MatrixLabel");
+  //mLabelTitle->setText("Matrices");
+  //mLabelTitle->setAlignment(int(QLabel::AlignVCenter
+  //                              | QLabel::AlignLeft));
+  //mLabelTitle->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+  //mWidgetLayout->addWidget(mLabelTitle, 0, 0);
 
   // tab widget
   mpTab = new QTabWidget(this, "TabWidget");
-  mWidgetLayout->addMultiCellWidget(mpTab, 1, 2, 0, 2);
+  mWidgetLayout->addMultiCellWidget(mpTab, 0, 2, 0, 2);
 
   // 1
   mArrayWidget1 = new CQArrayAnnotationsWidget(mpTab, "ArrayWidget1");
@@ -101,20 +106,6 @@ CQMathMatrixWidget::~CQMathMatrixWidget()
 
 void CQMathMatrixWidget::loadMatrices()
 {
-  //   CSensTask * pTask =
-  //     dynamic_cast<CSensTask*>((*CCopasiDataModel::Global->getTaskList())["Sensitivities"]);
-  //   if (!pTask)
-  //     {
-  //       clearArrays();
-  //       return;
-  //}
-  //
-  //   CSensProblem * pProblem = dynamic_cast< CSensProblem * >(pTask->getProblem());
-  //   if (!pProblem)
-  //     {
-  //       clearArrays();
-  //       return;
-  //}
 
   const CModel* pModel = CCopasiDataModel::Global->getModel();
 
@@ -148,10 +139,6 @@ void CQMathMatrixWidget::clearArrays()
 bool CQMathMatrixWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action
                                 C_UNUSED(action), const std::string & C_UNUSED(key))
 {
-  /*  if (this->isShown())
-      return loadFromBackend();
-    else
-      return true;*/
   return true;
 }
 
@@ -162,28 +149,6 @@ bool CQMathMatrixWidget::leave()
 
 bool CQMathMatrixWidget::enter(const std::string & C_UNUSED(key))
 {
-  //clear the widget if the pointer to the result has changed
-  /*  CSensTask * pTask =
-      dynamic_cast<CSensTask*>((*CCopasiDataModel::Global->getTaskList())["Sensitivities"]);
-    if (!pTask)
-      {
-        clearArrays();
-        return false;
-      }
-
-    CSensProblem * pProblem = dynamic_cast< CSensProblem * >(pTask->getProblem());
-    if (!pProblem)
-      {
-        clearArrays();
-        return false;
-      }
-
-    if (mpResult != pProblem->getResultAnnotated())
-      {
-        clearArrays();
-        return false;
-      }
-  */
   loadMatrices();
 
   return true;
