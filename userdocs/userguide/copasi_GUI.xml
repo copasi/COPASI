@@ -1,10 +1,10 @@
 <chapter id="modelCreation" xreflabel="Model Creation">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_GUI.xml,v $ -->
-<!--   $Revision: 1.49.4.2 $ -->
+<!--   $Revision: 1.49.4.3 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: gauges $ -->
-<!--   $Date: 2008/02/06 03:18:19 $ -->
+<!--   $Date: 2008/02/06 03:49:03 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -4454,6 +4454,13 @@ experiments, and fitted values can be found under the corresponding
 tabs. In addition, you may look at the correlation matrix of the
 parameters or the Fisher information matrix. 
 </para>
+
+<caution>
+<para>
+Changing the data files, or more specifically, changing the number or order of the columns in the data file after associating them with model values or creating output definitions, invalidates those associations and output definitions.
+</para>
+</caution>
+
 </sect2>
 </sect1>
 
