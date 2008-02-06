@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.334.4.2 $
+//   $Revision: 1.334.4.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/01/22 18:51:25 $
+//   $Author: ssahle $
+//   $Date: 2008/02/06 06:27:19 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -3186,6 +3186,9 @@ bool CModel::isAutonomous() const
 
     return (TimeDependent.begin() == TimeDependent.end());
   }
+
+const std::vector< Refresh * > & CModel::getListOfInitialRefreshes() const
+  {return mInitialRefreshes;}
 
 const std::vector< Refresh * > & CModel::getListOfSimulatedRefreshes() const
   {return mSimulatedRefreshes;}
