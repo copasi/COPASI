@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-//   $Revision: 1.69.4.1 $
+//   $Revision: 1.69.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/18 04:19:32 $
+//   $Date: 2008/02/07 16:42:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -267,6 +267,9 @@ bool CCopasiObject::hasCircularDependencies(std::set< const CCopasiObject * > & 
 
     std::pair<std::set< const CCopasiObject * >::iterator, bool> Inserted;
 
+    // The element has been checked and does not need to be checked again.
+    verified.insert(this);
+
     // Dual purpose insert
     Inserted = candidates.insert(this);
 
@@ -275,19 +278,21 @@ bool CCopasiObject::hasCircularDependencies(std::set< const CCopasiObject * > & 
     // a circular dependency
     if (!Inserted.second) return true;
 
+    bool hasCircularDependencies = false;
+
     for (; it != end; ++it)
       if (verified.count(*it) == 0 &&
           (*it)->hasCircularDependencies(candidates, verified))
-        return true;
+        {
+          hasCircularDependencies = true;
+          break;
+        }
 
-    // Remove the inserted object this from the candidates.
+    // Remove the inserted object this from the candidates to avoid any
+    // side effects.
     candidates.erase(Inserted.first);
 
-    // The element has been verified as not being part of any
-    // circular dependency
-    verified.insert(this);
-
-    return false;
+    return hasCircularDependencies;
   }
 
 //static
