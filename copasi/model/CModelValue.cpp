@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-//   $Revision: 1.53.4.1 $
+//   $Revision: 1.53.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/31 16:14:23 $
+//   $Date: 2008/02/07 17:31:52 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -268,6 +268,9 @@ bool CModelEntity::setInitialExpressionPtr(CExpression* pExpression)
 {
   if (mStatus == ASSIGNMENT) return false;
 
+  if (mpModel)
+    mpModel->setCompileFlag(true);
+
   if (mpInitialExpression)
     pdelete(mpInitialExpression);
 
@@ -280,6 +283,9 @@ bool CModelEntity::setInitialExpressionPtr(CExpression* pExpression)
 bool CModelEntity::setInitialExpression(const std::string & expression)
 {
   if (mStatus == ASSIGNMENT) return false;
+
+  if (mpModel)
+    mpModel->setCompileFlag(true);
 
   if (mpInitialExpression == NULL)
     {
