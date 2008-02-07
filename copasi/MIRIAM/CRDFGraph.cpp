@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraph.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/02/04 21:20:38 $
+//   $Date: 2008/02/07 18:58:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -228,29 +228,19 @@ bool CRDFGraph::getNodeIDsForTable(const std::string& tableName, std::vector<CRD
   tableObj = pTableNode->getObject();
   objects.clear();
 
-  bool isBagNode = false;
-  std::string bagPredicate = getNameSpaceURI("rdf") + "type";
-  CRDFObject object;
-  const CRDFNode::multimap & edges = pTableNode->getEdges();
-  CRDFNode::const_iterator it;
-
-  for (it = edges.begin(); it != edges.end(); it++)
+  if (isBagNode(pTableNode))
     {
-      if (it->first == bagPredicate)
-      {isBagNode = true; break;}
-    }
-  if (isBagNode)
-    {
-      for (it = edges.begin(); it != edges.end(); it++)
+      std::string bagPredicate = getNameSpaceURI("rdf") + "type";
+      CRDFNode::const_iterator it = pTableNode->getEdges().begin();
+      CRDFNode::const_iterator end = pTableNode->getEdges().end();
+      for (; it != end; it++)
         {
           if (it->first != bagPredicate)
           {objects.push_back(it->second->getObject());}
         }
     }
   else
-    {
-      objects.push_back(pTableNode->getObject());
-    }
+  {objects.push_back(pTableNode->getObject());}
   return true;
 }
 
@@ -692,7 +682,7 @@ std::string CRDFGraph::getFieldValue(const std::string& fieldName, const CRDFObj
 {
   CRDFNode * pFieldNode = findFieldNodeFromObject(fieldName, obj);
   if (!pFieldNode)
-  {return "Field Not Found";}
+  {return "";}
 
   const CRDFObject & Object = pFieldNode->getObject();
   switch (Object.getType())
@@ -858,6 +848,61 @@ bool CRDFGraph::removeNode(CRDFNode *pNode)
       pdelete(pNode);
     }
   return true;
+}
+
+void CRDFGraph::compressGraph()
+{
+  if (mpAbout)
+  {compressNode(mpAbout);}
+}
+
+bool CRDFGraph::compressNode(CRDFNode* pNode)
+{
+  if (pNode == NULL)
+  {return false;}
+
+  CRDFNode::multimap edgesToRemove;
+  CRDFNode::const_iterator it = pNode->getEdges().begin();
+  CRDFNode::const_iterator end = pNode->getEdges().end();
+  //first recurse
+  for (; it != end; it++)
+    {
+      std::pair< std::string, CRDFNode * > pr(it->first, it->second);
+      if (compressNode(it->second))
+      {edgesToRemove.insert(pr);}
+    }
+
+  end = edgesToRemove.end();
+  for (it = edgesToRemove.begin(); it != end; it++)
+  {pNode->removeEdge(it->first, it->second);}
+
+  //compress
+  CRDFSubject subject; CRDFObject object; CRDFLiteral lit;
+  subject.clearData(); object.clearData(); lit.setLexicalData("");
+
+  subject.setType(CRDFSubject::RESOURCE);
+  CRDFObject::eObjectType nodeType = CRDFObject::RESOURCE;
+  if (pNode != mpAbout)
+  {nodeType = pNode->getObject().getType();}
+  object.setType(nodeType);
+  if (object.getType() == CRDFObject::LITERAL)
+  {object.setLiteral(lit);}
+
+  //If this is empty node - first check for about node.
+  if (pNode == mpAbout)
+    {
+      if (pNode->getSubject() == subject)
+      {return removeNode(pNode);}
+    }
+  else if (nodeType == CRDFObject::BLANK_NODE)
+    {
+      bool IsBagNode = isBagNode(pNode);
+      if ((IsBagNode && pNode->getEdges().size() == 1) || (!IsBagNode && pNode->getEdges().size() == 0))
+      {return removeNode(pNode);}
+    }
+  else if ((nodeType == CRDFObject::RESOURCE || nodeType == CRDFObject::LITERAL) && pNode->getObject() == object)
+  {return removeNode(pNode);}
+  return false;
 }
 
 std::string CRDFGraph::getGeneratedId()

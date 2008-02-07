@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFSubject.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/01/29 15:43:44 $
+//   $Date: 2008/02/07 18:58:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -46,6 +46,10 @@ class CRDFSubject
      * Destructor
      */
     ~CRDFSubject();
+
+    CRDFSubject& operator =(const CRDFSubject& rhs);
+
+    bool operator ==(const CRDFSubject& rhs) const;
 
     /**
      * Set the type of the subject

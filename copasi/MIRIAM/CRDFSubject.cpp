@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFSubject.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/02/01 02:01:04 $
+//   $Date: 2008/02/07 18:58:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,6 +35,37 @@ CRDFSubject::CRDFSubject(const CRDFSubject & src):
 
 CRDFSubject::~CRDFSubject()
 {}
+
+CRDFSubject& CRDFSubject::operator =(const CRDFSubject& rhs)
+{
+  if (this != &rhs)
+    {
+      mType = rhs.mType;
+      mResource = rhs.mResource;
+      mBlankNodeId = rhs.mBlankNodeId;
+      mIsLocalResource = rhs.mIsLocalResource;
+    }
+  return *this;
+}
+
+bool CRDFSubject::operator ==(const CRDFSubject& rhs) const
+  {
+    if (mType == rhs.mType)
+      {
+        switch (mType)
+          {
+          case CRDFSubject::BLANK_NODE:
+            if (mBlankNodeId == rhs.mBlankNodeId)
+            {return true;}
+            break;
+          case CRDFSubject::RESOURCE:
+            if (mResource == rhs.mResource && mIsLocalResource == rhs.mIsLocalResource)
+            {return true;}
+            break;
+          }
+      }
+    return false;
+  }
 
 void CRDFSubject::setType(const CRDFSubject::eSubjectType & type)
 {mType = type;}

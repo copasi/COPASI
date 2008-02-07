@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraph.h,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/02/04 17:28:01 $
+//   $Author: aekamal $
+//   $Date: 2008/02/07 18:58:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -157,6 +157,11 @@ class CRDFGraph
      */
     bool removeBagNodeFromTable(const std::string& tableName, CRDFObject& tableObj);
 
+    /**
+    * Remove all empty Nodes from the graph;
+    */
+    void compressGraph();
+
     // Attributes
   private:
     /**
@@ -199,6 +204,15 @@ class CRDFGraph
     std::string tableName2Predicate(const std::string& tableName);
     CRDFNode* getNodeForPredicate(const std::string& predicate, const CRDFNode * startNode = NULL);
     bool removeNode(CRDFNode * pNode);
+
+    /**
+    * Remove all nodes with empty values at
+    * and below this node.
+    * @param CRDFNode* pNode The node to compress
+    * @return bool success
+    */
+    bool compressNode(CRDFNode* pNode);
+
     bool isBagNode(const CRDFNode * pNode);
     bool edgeExists(const CRDFNode* pNode, const std::string predicate);
     std::string getGeneratedId();

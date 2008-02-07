@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CModelMIRIAMInfo.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/02/04 20:41:13 $
+//   $Date: 2008/02/07 18:58:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -73,6 +73,7 @@ bool CModelMIRIAMInfo::saveGraph()
 {
   if (mpEntity)
     {
+      mpRDFGraph->compressGraph();
       mpEntity->setMiriamAnnotation(CRDFWriter::xmlFromGraph(mpRDFGraph));
       return true;
     }
