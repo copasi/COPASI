@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-//   $Revision: 1.169.2.1 $
+//   $Revision: 1.169.2.1.2.1 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/12/23 16:18:48 $
+//   $Date: 2008/02/08 13:09:32 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -1061,6 +1066,24 @@ CEvaluationNode* CReaction::objects2variables(CEvaluationNode* expression, std::
           delete pTmpNode;
           pTmpNode = NULL;
         }
+      // delay has a second child
+      /*
+      if((CEvaluationNodeFunction::SubType)CEvaluationNode::subType(expression->getType())==CEvaluationNodeFunction::DELAY)
+      {
+          pChildNode=dynamic_cast<CEvaluationNode*>(expression->getChild()->getSibling());
+          assert(pChildNode!=NULL);
+          pChildNode = this->objects2variables(pChildNode, replacementMap, copasi2sbmlmap);
+          if (pChildNode)
+          {
+              pTmpNode->addChild(pChildNode);
+          }
+          else
+          {
+              delete pTmpNode;
+              pTmpNode = NULL;
+          }
+      }
+      */
       break;
     case CEvaluationNode::CALL:
       pTmpNode = new CEvaluationNodeCall(static_cast<CEvaluationNodeCall::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
