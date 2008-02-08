@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-//   $Revision: 1.53.4.2 $
+//   $Revision: 1.53.4.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/02/07 17:31:52 $
+//   $Date: 2008/02/08 14:07:53 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -201,7 +201,7 @@ void CModelEntity::calculate()
 
 void CModelEntity::refreshInitialValue()
 {
-  if (mpInitialExpression != NULL)
+  if (getInitialExpression() != "")
     *mpIValue = mpInitialExpression->calcValue();
 }
 
