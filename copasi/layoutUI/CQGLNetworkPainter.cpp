@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.91 $
+//   $Revision: 1.92 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/02/01 11:25:00 $
+//   $Date: 2008/02/08 11:47:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -122,6 +122,7 @@ void CQGLNetworkPainter::draw()
 //void CQGLNetworkPainter::createGraph(network *netP){
 void CQGLNetworkPainter::createGraph(CLayout *lP)
 {
+  int numberOfInvertedCurves = 0;
   // copy graph to local variables
   //cout << "now create graph" << endl;
   CCopasiVector<CLMetabGlyph> nodes;
@@ -176,7 +177,8 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
               if (itNode != nodeMap.end())
                 {
                   CLBoundingBox box = (*itNode).second.getBoundingBox();
-                  this->checkCurve(&curve, curveR, box);
+                  if (this->checkCurve(&curve, curveR, box))
+                    numberOfInvertedCurves++;
                 }
             }
 
@@ -263,11 +265,14 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
   CLPoint p2 = CLPoint(lP->getDimensions().getWidth(), lP->getDimensions().getHeight());
   this->setGraphSize(p1, p2);
   //CQGLNetworkPainter::drawGraph();
+  if (numberOfInvertedCurves > 0)
+    std::cout << "Number of curves which have been inverted: " << numberOfInvertedCurves << std::endl;
 }
 
 // decides whether the direction of the curve has to be inverted (meaning the order of the line segments, start and end points and base points have to be inverted
-void CQGLNetworkPainter::checkCurve(CGraphCurve *curve, CGraphCurve curveR, CLBoundingBox box)
+bool CQGLNetworkPainter::checkCurve(CGraphCurve *curve, CGraphCurve curveR, CLBoundingBox box)
 {
+  bool inverted = false;
   // first checks whether the start point or the end point of the curve is closer to the center of the box defining the reactant node
   CLPoint center; // center of bounding box for node
   center.setX(box.getPosition().getX() + (box.getDimensions().getWidth() / 2.0));
@@ -290,8 +295,10 @@ void CQGLNetworkPainter::checkCurve(CGraphCurve *curve, CGraphCurve curveR, CLBo
         {// if the start point of the curve is closer to the node than the end point
           // the curve direction should be TOWARDS the node, not away from it
           curve->invertOrderOfPoints(); // invert the order of the points in the curve
+          inverted = true;
         }
     }
+  return inverted;
 }
 
 //void CQGLNetworkPainter::storeCurveInCorrespondingNode(std::string nodeKey, int indx)
