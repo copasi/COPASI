@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.8.4.10 $
+//   $Revision: 1.8.4.11 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/02/04 21:05:49 $
+//   $Author: gauges $
+//   $Date: 2008/02/08 13:13:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1743,8 +1743,11 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
       std::ostringstream os;
       os << incompat.getMessage() << "\n";
       os << incompat.getDetails() << "\n";
-      os << "Please export to SBML Level " << incompat.minSBMLLevel();
-      os << " Version " << incompat.minSBMLVersion() << " or higher.";
+      if (incompat.minSBMLLevel() != 0 && incompat.minSBMLVersion() != 0)
+        {
+          os << "Please export to SBML Level " << incompat.minSBMLLevel();
+          os << " Version " << incompat.minSBMLVersion() << " or higher.";
+        }
       CCopasiMessage::CCopasiMessage(CCopasiMessage::RAW, os.str().c_str());
     }
   if (iMax > 0) CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, "Model incompatible with chosen version and/or level of SBML.");
