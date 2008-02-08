@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraph.h,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/02/07 18:58:16 $
+//   $Date: 2008/02/08 23:06:53 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -129,7 +129,7 @@ class CRDFGraph
      * @param CRDFObject& tableObj
      * @param const CRDFObject& childObj
      */
-    void addObjectToTable(const std::string& tableName, CRDFObject& tableObj, const CRDFObject& childObj);
+    void addRecordToTable(const std::string& tableName, CRDFObject& tableObj, const CRDFObject& childObj);
 
     /**
      * Remove a child node from a table node.
@@ -139,7 +139,7 @@ class CRDFGraph
      * @param const CRDFObject& childObj
      * @return std::string success
      */
-    bool removeObjectFromTable(const std::string& tableName, CRDFObject& tableObj, const CRDFObject& childObj);
+    bool removeRecordFromTable(const std::string& tableName, CRDFObject& tableObj, const CRDFObject& childObj);
 
     /**
      * Add a Bag node to a table node.
@@ -197,7 +197,7 @@ class CRDFGraph
     static unsigned int nodeIDCounter;
 
   protected:
-    void addNewCreatorNodes(const CRDFNode * pObjNode);
+    void buildCreatorRecord(const CRDFNode * pObjNode);
     std::string getNameSpaceURI(const std::string& lookupStr);
     CRDFNode* findFieldNodeFromObject(const std::string& fieldName, const CRDFObject& obj);
     std::string fieldName2Predicate(const std::string& fieldName);
@@ -214,7 +214,6 @@ class CRDFGraph
     bool compressNode(CRDFNode* pNode);
 
     bool isBagNode(const CRDFNode * pNode);
-    bool edgeExists(const CRDFNode* pNode, const std::string predicate);
     std::string getGeneratedId();
     unsigned int getNoOfObjectsInTable(const CRDFNode * pTableNode);
   };

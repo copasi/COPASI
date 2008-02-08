@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFNode.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/02/04 17:39:32 $
+//   $Author: aekamal $
+//   $Date: 2008/02/08 23:06:53 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -132,6 +132,16 @@ bool CRDFNode::removeEdge(const std::string & predicate,
 
 const CRDFNode::multimap & CRDFNode::getEdges() const
   {return mEdges;}
+
+bool CRDFNode::edgeExists(const std::string predicate) const
+  {
+    std::pair<const_iterator, const_iterator> Range = mEdges.equal_range(predicate);
+
+    // Predicate not found;
+    if (Range.first == Range.second)
+    {return false;}
+    return true;
+  }
 
 std::pair< CRDFNode::iterator, CRDFNode::iterator > CRDFNode::getObjectNodes(const std::string & predicate)
 {return mEdges.equal_range(predicate);}

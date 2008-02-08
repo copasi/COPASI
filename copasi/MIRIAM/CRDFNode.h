@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFNode.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/02/07 18:58:16 $
+//   $Date: 2008/02/08 23:06:53 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -105,6 +105,12 @@ class CRDFNode
      * @return const CRDFNode::multimap & edges
      */
     const multimap & getEdges() const;
+
+    /**
+        * Does this node have an edge with predicate?
+        * @return bool edgeExists
+        */
+    bool edgeExists(const std::string predicate) const;
 
     /**
      * Retreive all object nodes with the given predicate

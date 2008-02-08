@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraph.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/02/07 18:58:16 $
+//   $Date: 2008/02/08 23:06:53 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -244,7 +244,7 @@ bool CRDFGraph::getNodeIDsForTable(const std::string& tableName, std::vector<CRD
   return true;
 }
 
-void CRDFGraph::addObjectToTable(const std::string& tableName, CRDFObject& tableObj, const CRDFObject& childObj)
+void CRDFGraph::addRecordToTable(const std::string& tableName, CRDFObject& tableObj, const CRDFObject& childObj)
 {
   CRDFSubject subject; CRDFObject object; std::string predicate = "";
   std::map< std::string, CRDFNode * >::iterator found;
@@ -338,7 +338,7 @@ void CRDFGraph::addObjectToTable(const std::string& tableName, CRDFObject& table
           sstr << getNameSpaceURI("rdf") << "_" << noOfObjects;
           predicate = sstr.str();
         }
-      while (edgeExists(pTableNode, predicate));
+      while (pTableNode->edgeExists(predicate));
 
       subject.setType(CRDFSubject::BLANK_NODE);
       subject.setBlankNodeId(pTableNode->getId());
@@ -391,80 +391,110 @@ void CRDFGraph::addObjectToTable(const std::string& tableName, CRDFObject& table
       subject.clearData(); object.clearData();
 
       if (tableName == "Creators")
-      {addNewCreatorNodes(pObjNode);}
+      {buildCreatorRecord(pObjNode);}
     }
   else
     {
       if (tableName == "Creators")
-      {addNewCreatorNodes(pTableNode);}
+      {buildCreatorRecord(pTableNode);}
     }
 }
 
-void CRDFGraph::addNewCreatorNodes(const CRDFNode * pObjNode)
+void CRDFGraph::buildCreatorRecord(const CRDFNode * pObjNode)
 {
   CRDFSubject subject;
   CRDFObject object;
   CRDFLiteral lit;
+  std::string predicate, blankNodeId;
+  std::pair< CRDFNode::const_iterator, CRDFNode::const_iterator > pr;
 
-  std::string nameBlnkNodeId = getGeneratedId();
+  predicate = getNameSpaceURI("vCard") + "N";
 
-  std::string predicate = getNameSpaceURI("vCard") + "N";
-  subject.setType(CRDFSubject::BLANK_NODE);
-  subject.setBlankNodeId(pObjNode->getId());
-  object.setType(CRDFObject::BLANK_NODE);
-  object.setBlankNodeId(nameBlnkNodeId);
-  addTriplet(subject, predicate, object);
-  subject.clearData(); object.clearData();
+  if (!pObjNode->edgeExists(predicate))
+    {
+      blankNodeId = getGeneratedId();
+      subject.setType(CRDFSubject::BLANK_NODE);
+      subject.setBlankNodeId(pObjNode->getId());
+      object.setType(CRDFObject::BLANK_NODE);
+      object.setBlankNodeId(blankNodeId);
+      addTriplet(subject, predicate, object);
+      subject.clearData(); object.clearData();
+      pr = pObjNode->getObjectNodes(predicate);
+    }
+  else
+    {
+      pr = pObjNode->getObjectNodes(predicate);
+      blankNodeId = pr.first->second->getId();
+    }
 
   predicate = getNameSpaceURI("vCard") + "Family";
-  subject.setType(CRDFSubject::BLANK_NODE);
-  subject.setBlankNodeId(nameBlnkNodeId);
-  object.setType(CRDFObject::LITERAL);
-  lit.setType(CRDFLiteral::PLAIN);
-  object.setLiteral(lit);
-  addTriplet(subject, predicate, object);
-  subject.clearData(); object.clearData();
+  if (!pr.first->second->edgeExists(predicate))
+    {
+      subject.setType(CRDFSubject::BLANK_NODE);
+      subject.setBlankNodeId(blankNodeId);
+      object.setType(CRDFObject::LITERAL);
+      lit.setType(CRDFLiteral::PLAIN);
+      object.setLiteral(lit);
+      addTriplet(subject, predicate, object);
+      subject.clearData(); object.clearData();
+    }
 
   predicate = getNameSpaceURI("vCard") + "Given";
-  subject.setType(CRDFSubject::BLANK_NODE);
-  subject.setBlankNodeId(nameBlnkNodeId);
-  object.setType(CRDFObject::LITERAL);
-  lit.setType(CRDFLiteral::PLAIN);
-  object.setLiteral(lit);
-  addTriplet(subject, predicate, object);
-  subject.clearData(); object.clearData();
+  if (!pr.first->second->edgeExists(predicate))
+    {
+      subject.setType(CRDFSubject::BLANK_NODE);
+      subject.setBlankNodeId(blankNodeId);
+      object.setType(CRDFObject::LITERAL);
+      lit.setType(CRDFLiteral::PLAIN);
+      object.setLiteral(lit);
+      addTriplet(subject, predicate, object);
+      subject.clearData(); object.clearData();
+    }
 
   predicate = getNameSpaceURI("vCard") + "EMAIL";
-  subject.setType(CRDFSubject::BLANK_NODE);
-  subject.setBlankNodeId(pObjNode->getId());
-  object.setType(CRDFObject::LITERAL);
-  lit.setType(CRDFLiteral::PLAIN);
-  object.setLiteral(lit);
-  addTriplet(subject, predicate, object);
-  subject.clearData(); object.clearData();
+  if (!pObjNode->edgeExists(predicate))
+    {
+      subject.setType(CRDFSubject::BLANK_NODE);
+      subject.setBlankNodeId(pObjNode->getId());
+      object.setType(CRDFObject::LITERAL);
+      lit.setType(CRDFLiteral::PLAIN);
+      object.setLiteral(lit);
+      addTriplet(subject, predicate, object);
+      subject.clearData(); object.clearData();
+    }
 
   predicate = getNameSpaceURI("vCard") + "ORG";
-  nameBlnkNodeId = getGeneratedId();
-  subject.setType(CRDFSubject::BLANK_NODE);
-  subject.setBlankNodeId(pObjNode->getId());
-  object.setType(CRDFObject::BLANK_NODE);
-  object.setBlankNodeId(nameBlnkNodeId);
-  addTriplet(subject, predicate, object);
-  subject.clearData(); object.clearData();
-
-  CRDFNode * pOrgNode = mBlankNodeId2Node[nameBlnkNodeId];
+  if (!pObjNode->edgeExists(predicate))
+    {
+      blankNodeId = getGeneratedId();
+      subject.setType(CRDFSubject::BLANK_NODE);
+      subject.setBlankNodeId(pObjNode->getId());
+      object.setType(CRDFObject::BLANK_NODE);
+      object.setBlankNodeId(blankNodeId);
+      addTriplet(subject, predicate, object);
+      subject.clearData(); object.clearData();
+      pr = pObjNode->getObjectNodes(predicate);
+    }
+  else
+    {
+      pr = pObjNode->getObjectNodes(predicate);
+      blankNodeId = pr.first->second->getId();
+    }
 
   predicate = getNameSpaceURI("vCard") + "Orgname";
-  subject.setType(CRDFSubject::BLANK_NODE);
-  subject.setBlankNodeId(pOrgNode->getId());
-  object.setType(CRDFObject::LITERAL);
-  lit.setType(CRDFLiteral::PLAIN);
-  object.setLiteral(lit);
-  addTriplet(subject, predicate, object);
-  subject.clearData(); object.clearData();
+  if (!pr.first->second->edgeExists(predicate))
+    {
+      subject.setType(CRDFSubject::BLANK_NODE);
+      subject.setBlankNodeId(blankNodeId);
+      object.setType(CRDFObject::LITERAL);
+      lit.setType(CRDFLiteral::PLAIN);
+      object.setLiteral(lit);
+      addTriplet(subject, predicate, object);
+      subject.clearData(); object.clearData();
+    }
 }
 
-bool CRDFGraph::removeObjectFromTable(const std::string& tableName, CRDFObject& tableObj, const CRDFObject& childObj)
+bool CRDFGraph::removeRecordFromTable(const std::string& tableName, CRDFObject& tableObj, const CRDFObject& childObj)
 {
   //if (strlen(tableNodeID.c_str()) == 0 || strlen(childNodeID.c_str()) == 0)
   //{return false;}
@@ -540,17 +570,6 @@ bool CRDFGraph::isBagNode(const CRDFNode * pNode)
   for (it = nodeEdges.begin(); it != nodeEdges.end(); it++)
     {
       if (it->first == bagPredicate)
-      {return true;}
-    }
-  return false;
-}
-
-bool CRDFGraph::edgeExists(const CRDFNode* pNode, const std::string predicate)
-{
-  CRDFNode::multimap::const_iterator it;
-  for (it = pNode->getEdges().begin(); it != pNode->getEdges().end(); it++)
-    {
-      if (it->first == predicate)
       {return true;}
     }
   return false;
@@ -714,7 +733,15 @@ bool CRDFGraph::setFieldValue(const std::string& fieldName, CRDFObject& obj, con
 {
   CRDFNode * pFieldNode = findFieldNodeFromObject(fieldName, obj);
   if (!pFieldNode || !pFieldNode->isObjectNode())
-  {return false;}
+    {
+      //Since no field found, build the record.
+      if (fieldName == "FamilyName" || fieldName == "GivenName" || fieldName == "Email" || fieldName == "Orgname")
+      {buildCreatorRecord(mBlankNodeId2Node[obj.getBlankNodeID()]);}
+      //try again
+      pFieldNode = findFieldNodeFromObject(fieldName, obj);
+      if (!pFieldNode || !pFieldNode->isObjectNode())
+      {return false;}
+    }
 
   CRDFObject object; CRDFLiteral lit;
   switch (pFieldNode->getObject().getType())

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CModelMIRIAMInfo.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/02/07 18:58:15 $
+//   $Date: 2008/02/08 23:06:53 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -141,7 +141,7 @@ CAuthor* CModelMIRIAMInfo::createAuthor(const std::string & objectName)
 
   if (mAuthors.size() == 2)
   {mpRDFGraph->addBagNodeToTable("Creators", mAuthorsObj);}
-  mpRDFGraph->addObjectToTable("Creators", mAuthorsObj, pAuthor->getRDFObject());
+  mpRDFGraph->addRecordToTable("Creators", mAuthorsObj, pAuthor->getRDFObject());
   return pAuthor;
 }
 
@@ -160,7 +160,7 @@ bool CModelMIRIAMInfo::removeAuthor(const std::string & key)
   if (index == C_INVALID_INDEX)
     return false;
 
-  mpRDFGraph->removeObjectFromTable("Creators", mAuthorsObj, pAuthor->getRDFObject());
+  mpRDFGraph->removeRecordFromTable("Creators", mAuthorsObj, pAuthor->getRDFObject());
   mAuthors.CCopasiVector< CAuthor >::remove(index);
   if (mAuthors.size() == 1)
   {mpRDFGraph->removeBagNodeFromTable("Creators", mAuthorsObj);}
@@ -182,7 +182,7 @@ CPublication* CModelMIRIAMInfo::createPublication(const std::string & objectName
 
   if (mPublications.size() == 2)
   {mpRDFGraph->addBagNodeToTable("Publications", mPublicationsObj);}
-  mpRDFGraph->addObjectToTable("Publications", mPublicationsObj, pPublication->getRDFObject());
+  mpRDFGraph->addRecordToTable("Publications", mPublicationsObj, pPublication->getRDFObject());
   return pPublication;
 }
 
@@ -201,7 +201,7 @@ bool CModelMIRIAMInfo::removePublication(const std::string & key)
   if (index == C_INVALID_INDEX)
     return false;
 
-  mpRDFGraph->removeObjectFromTable("Publications", mPublicationsObj, pPublication->getRDFObject());
+  mpRDFGraph->removeRecordFromTable("Publications", mPublicationsObj, pPublication->getRDFObject());
   mPublications.CCopasiVector< CPublication >::remove(index);
   if (mPublications.size() == 1)
   {mpRDFGraph->removeBagNodeFromTable("Publications", mPublicationsObj);}
