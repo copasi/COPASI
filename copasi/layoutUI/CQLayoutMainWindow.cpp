@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.45 $
+//   $Revision: 1.46 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/01/31 14:35:17 $
+//   $Date: 2008/02/08 11:45:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -530,7 +530,19 @@ void CQLayoutMainWindow::closeEvent(QCloseEvent *event)
 
 void CQLayoutMainWindow::resizeEvent(QResizeEvent *ev)
 {
-  std::cout << "RESIZE" << std::endl;
+  int w = ev->size().width(); // glPainter->width()
+  int h = ev->size().height(); // glPainter->height()
+  //std::cout << "(w x h) "  << w << "  "  << h << std::endl;
+
+  const CLPoint& c1 = glPainter->getGraphMin();
+  const CLPoint& c2 = glPainter->getGraphMax();
+  //std::cout << "c2 "  << c2.getX() << "  "  << c2.getY() << std::endl;
+
+  // now zoom graph according to new panel size
+  C_FLOAT64 z = ((w / c2.getX()) < (h / c2.getY())) ? w / c2.getX() : h / c2.getY();
+  //std::cout << "zoom factor: "  << z << std::endl;
+  glPainter->zoomGraph(z);
+  //std::cout << "RESIZE" << std::endl;
 }
 
 QIconSet CQLayoutMainWindow::createStartIcon()
