@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.237.2.2.2.1 $
+//   $Revision: 1.237.2.2.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/23 16:21:31 $
+//   $Date: 2008/02/08 21:36:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1309,6 +1309,7 @@ void ListViews::buildChangedObjects()
                              QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
       CCopasiMessage::clearDeque();
 
+      mUpdateVector.clear();
       return;
     }
 }

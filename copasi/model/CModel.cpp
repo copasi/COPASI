@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.334.4.3 $
+//   $Revision: 1.334.4.4 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/02/06 06:27:19 $
+//   $Author: shoops $
+//   $Date: 2008/02/08 21:36:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -388,17 +388,19 @@ bool CModel::compile()
   CompileStep = 5;
   if (mpCompileHandler && !mpCompileHandler->progress(hCompileStep)) return false;
 
+  bool success = true;
   try
     {
-      buildInitialSequence();
-      buildConstantSequence();
-      buildSimulatedSequence();
-      buildNonSimulatedSequence();
+      success &= buildInitialSequence();
+      success &= buildConstantSequence();
+      success &= buildSimulatedSequence();
+      success &= buildNonSimulatedSequence();
     }
   catch (...)
     {
-      return false;
+      success = false;
     }
+
   CompileStep = 6;
   if (mpCompileHandler && !mpCompileHandler->progress(hCompileStep)) return false;
 
@@ -407,6 +409,9 @@ bool CModel::compile()
 
   //update annotations
   updateMatrixAnnotations();
+
+  if (!success)
+    return false;
 
   mCompileIsNecessary = false;
 
@@ -1161,6 +1166,8 @@ bool CModel::buildUserOrder()
 
 bool CModel::buildInitialSequence()
 {
+  bool success = true;
+
   // The objects which are changed are all initial values of of all model entities including
   // fixed and unused once. Additionally, all kinetic parameters are possibly changed.
   // This is basically all the parameters in the parameter overview whose value is editable.
@@ -1192,9 +1199,17 @@ bool CModel::buildInitialSequence()
         Objects.insert(Group.getParameter(i)->getObject(CCopasiObjectName("Reference=Value")));
     }
 
-  mInitialRefreshes = buildInitialRefreshSequence(Objects);
+  try
+    {
+      mInitialRefreshes = buildInitialRefreshSequence(Objects);
+    }
+  catch (...)
+    {
+      mInitialRefreshes.clear();
+      success = false;
+    }
 
-  return true;
+  return success;
 }
 
 bool CModel::updateInitialValues()
@@ -1214,6 +1229,8 @@ bool CModel::updateInitialValues()
 
 bool CModel::buildSimulatedSequence()
 {
+  bool success = true;
+
   // We need to add each used model entity to the objects which need to be updated.
   std::set< const CCopasiObject * > Objects;
 
@@ -1336,7 +1353,16 @@ bool CModel::buildSimulatedSequence()
 
   mSimulatedUpToDateObjects.clear();
   //std::cout << "Simulated: " ; //debug
-  mSimulatedRefreshes = CCopasiObject::buildUpdateSequence(Objects, mSimulatedUpToDateObjects);
+
+  try
+    {
+      mSimulatedRefreshes = CCopasiObject::buildUpdateSequence(Objects, mSimulatedUpToDateObjects);
+    }
+  catch (...)
+    {
+      mSimulatedRefreshes.clear();
+      success = false;
+    }
 
   // We have to remove the refresh calls already covered by mConstantRefreshes
   std::vector< Refresh * >::const_iterator itInitialRefresh = mConstantRefreshes.begin();
@@ -1358,11 +1384,13 @@ bool CModel::buildSimulatedSequence()
           }
     }
 
-  return true;
+  return success;
 }
 
 bool CModel::buildConstantSequence()
 {
+  bool success = true;
+
   // Now find all model entities which are assignments and which do
   // not depend on simulated values, i.e., on model entities of type
   // time, ode, reaction
@@ -1403,14 +1431,27 @@ bool CModel::buildConstantSequence()
     }
 
   mSimulatedUpToDateObjects.clear();
-  mConstantRefreshes = CCopasiObject::buildUpdateSequence(Objects, mSimulatedUpToDateObjects);
-  mSimulatedUpToDateObjects = Objects;
 
-  return true;
+  try
+    {
+      mConstantRefreshes = CCopasiObject::buildUpdateSequence(Objects, mSimulatedUpToDateObjects);
+    }
+  catch (...)
+    {
+      mConstantRefreshes.clear();
+      success = true;
+    }
+
+  if (success)
+    mSimulatedUpToDateObjects = Objects;
+
+  return success;
 }
 
 bool CModel::buildNonSimulatedSequence()
 {
+  bool success = true;
+
   std::set< const CCopasiObject * > Objects;
 
   // Compartments
@@ -1485,13 +1526,21 @@ bool CModel::buildNonSimulatedSequence()
     }
 
   //std::cout << "Non Simulated: " ; //debug
-  mNonSimulatedRefreshes = CCopasiObject::buildUpdateSequence(Objects, mSimulatedUpToDateObjects);
+  try
+    {
+      mNonSimulatedRefreshes = CCopasiObject::buildUpdateSequence(Objects, mSimulatedUpToDateObjects);
+    }
+  catch (...)
+    {
+      mNonSimulatedRefreshes.clear();
+      success = false;
+    }
 
-  return true;
+  return success;
 }
 
 const CState & CModel::getInitialState() const
-{return mInitialState;}
+  {return mInitialState;}
 
 const CState & CModel::getState() const
   {return mCurrentState;}

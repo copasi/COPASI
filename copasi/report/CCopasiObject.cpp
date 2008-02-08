@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-//   $Revision: 1.69.4.2 $
+//   $Revision: 1.69.4.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/02/07 16:42:35 $
+//   $Date: 2008/02/08 21:36:24 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -262,13 +262,15 @@ bool CCopasiObject::dependsOn(std::set< const CCopasiObject * > & candidates) co
 bool CCopasiObject::hasCircularDependencies(std::set< const CCopasiObject * > & candidates,
     std::set< const CCopasiObject * > & verified) const
   {
+    bool hasCircularDependencies = false;
+
+    if (verified.count(this) != 0)
+      return hasCircularDependencies;
+
     std::set< const CCopasiObject * >::const_iterator it = mDependencies.begin();
     std::set< const CCopasiObject * >::const_iterator end = mDependencies.end();
 
     std::pair<std::set< const CCopasiObject * >::iterator, bool> Inserted;
-
-    // The element has been checked and does not need to be checked again.
-    verified.insert(this);
 
     // Dual purpose insert
     Inserted = candidates.insert(this);
@@ -276,21 +278,20 @@ bool CCopasiObject::hasCircularDependencies(std::set< const CCopasiObject * > & 
     // Check whether the insert was successfull, if not
     // the object "this" was among the candidates. Thus we have a dedected
     // a circular dependency
-    if (!Inserted.second) return true;
+    if (Inserted.second)
+      {
+        for (; it != end && !hasCircularDependencies; ++it)
+          hasCircularDependencies = (*it)->hasCircularDependencies(candidates, verified);
 
-    bool hasCircularDependencies = false;
+        // Remove the inserted object this from the candidates to avoid any
+        // side effects.
+        candidates.erase(this);
+      }
+    else
+      hasCircularDependencies = true;
 
-    for (; it != end; ++it)
-      if (verified.count(*it) == 0 &&
-          (*it)->hasCircularDependencies(candidates, verified))
-        {
-          hasCircularDependencies = true;
-          break;
-        }
-
-    // Remove the inserted object this from the candidates to avoid any
-    // side effects.
-    candidates.erase(Inserted.first);
+    // The element has been checked and does not need to be checked again.
+    verified.insert(this);
 
     return hasCircularDependencies;
   }
