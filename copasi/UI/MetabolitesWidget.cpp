@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget.cpp,v $
-//   $Revision: 1.148.4.1 $
+//   $Revision: 1.148.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/22 18:51:21 $
+//   $Date: 2008/02/08 18:40:51 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -43,8 +43,9 @@
 #define COL_NUMBER             7
 #define COL_CRATE              8
 #define COL_NRATE              9
-#define COL_EXPRESSION        10
-#define COL_CURRENTCOMPARTMENT    11
+#define COL_IEXPRESSION       10
+#define COL_EXPRESSION        11
+#define COL_CURRENTCOMPARTMENT    12
 
 std::vector<const CCopasiObject*> MetabolitesWidget::getObjects() const
   {
@@ -61,7 +62,7 @@ std::vector<const CCopasiObject*> MetabolitesWidget::getObjects() const
 void MetabolitesWidget::init()
 {
   mOT = ListViews::METABOLITE;
-  numCols = 12; //+ 1; //+1 for sbml id
+  numCols = 13; //+ 1; //+1 for sbml id
   table->setNumCols(numCols);
 
   //Setting table headers
@@ -76,6 +77,7 @@ void MetabolitesWidget::init()
   tableHeader->setLabel(COL_NUMBER, "Number");
   // tableHeader->setLabel(COL_CRATE, "Rate");
   tableHeader->setLabel(COL_NRATE, "Number Rate");
+  tableHeader->setLabel(COL_IEXPRESSION, "Initial Expression");
   tableHeader->setLabel(COL_EXPRESSION, "Expression");
 
   // Hide columns
@@ -86,6 +88,7 @@ void MetabolitesWidget::init()
   table->setColumnReadOnly (COL_NUMBER, true);
   table->setColumnReadOnly (COL_CRATE, true);
   table->setColumnReadOnly (COL_NRATE, true);
+  table->setColumnReadOnly (COL_IEXPRESSION, true);
   table->setColumnReadOnly (COL_EXPRESSION, true);
 
   // We start with the concentration showing.
@@ -167,12 +170,19 @@ void MetabolitesWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C
   // Number Rate
   table->setText(row, COL_NRATE, QString::number(pMetab->getRate()));
 
+  // Initial Expression
+  const CExpression * pExpression = pMetab->getInitialExpressionPtr();
+  if (pExpression != NULL)
+    table->setText(row, COL_IEXPRESSION, FROM_UTF8(pExpression->getDisplayString()));
+  else
+    table->clearCell(row, COL_IEXPRESSION);
+
   // Expression
-  const CExpression * pExpression = pMetab->getExpressionPtr();
+  pExpression = pMetab->getExpressionPtr();
   if (pExpression != NULL)
     table->setText(row, COL_EXPRESSION, FROM_UTF8(pExpression->getDisplayString()));
   else
-    table->setText(row, COL_EXPRESSION, "");
+    table->clearCell(row, COL_EXPRESSION);
 
   // Current Compartment
   table->setText(row, COL_CURRENTCOMPARTMENT,
@@ -271,29 +281,33 @@ void MetabolitesWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C
       if (exc != COL_INUMBER)
         table->setText(row, COL_INUMBER, QString::number(100.0));
 
-      table->setText(row, COL_ICONCENTRATION, "");
+      table->clearCell(row, COL_ICONCENTRATION);
       initialNumberChanged(row);
     }
 
   // Concentration
   if (exc != COL_CONCENTRATION)
-    table->setText(row, COL_CONCENTRATION, "");
+    table->clearCell(row, COL_CONCENTRATION);
 
   // Number
   if (exc != COL_NUMBER)
-    table->setText(row, COL_NUMBER, "");
+    table->clearCell(row, COL_NUMBER);
 
   // Concentration Rate
   if (exc != COL_CRATE)
-    table->setText(row, COL_CRATE, "");
+    table->clearCell(row, COL_CRATE);
 
   // Number Rate
   if (exc != COL_NRATE)
-    table->setText(row, COL_NRATE, "");
+    table->clearCell(row, COL_NRATE);
+
+  // Initial Expression
+  if (exc != COL_IEXPRESSION)
+    table->clearCell(row, COL_IEXPRESSION);
 
   // Expression
   if (exc != COL_EXPRESSION)
-    table->setText(row, COL_EXPRESSION, "");
+    table->clearCell(row, COL_EXPRESSION);
 }
 
 QString MetabolitesWidget::defaultObjectName() const

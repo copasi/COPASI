@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget.cpp,v $
-//   $Revision: 1.115.4.1 $
+//   $Revision: 1.115.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/22 18:51:21 $
+//   $Date: 2008/02/08 18:40:51 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,7 +48,8 @@
 #define COL_IVOLUME      3
 #define COL_VOLUME       4
 #define COL_RATE         5
-#define COL_EXPRESSION   6
+#define COL_IEXPRESSION  6
+#define COL_EXPRESSION   7
 
 std::vector<const CCopasiObject*> CompartmentsWidget::getObjects() const
   {
@@ -65,7 +66,7 @@ std::vector<const CCopasiObject*> CompartmentsWidget::getObjects() const
 void CompartmentsWidget::init()
 {
   mOT = ListViews::COMPARTMENT;
-  numCols = 7;
+  numCols = 8;
   table->setNumCols(numCols);
 
   //Setting table headers
@@ -76,11 +77,13 @@ void CompartmentsWidget::init()
   // tableHeader->setLabel(COL_IVOLUME, "Initial Volume");
   // tableHeader->setLabel(COL_VOLUME, "Volume");
   // tableHeader->setLabel(COL_RATE, "Rate");
+  tableHeader->setLabel(COL_IEXPRESSION, "Initial Expression");
   tableHeader->setLabel(COL_EXPRESSION, "Expression");
 
   // Set readonly
   table->setColumnReadOnly (COL_VOLUME, true);
   table->setColumnReadOnly (COL_RATE, true);
+  table->setColumnReadOnly (COL_IEXPRESSION, true);
   table->setColumnReadOnly (COL_EXPRESSION, true);
 
   mTypes.push_back(FROM_UTF8(CModelEntity::StatusName[CModelEntity::FIXED]));
@@ -133,12 +136,19 @@ void CompartmentsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned 
   // Rate
   table->setText(row, COL_RATE, QString::number(pComp->getRate()));
 
+  // Initial Expression
+  const CExpression * pExpression = pComp->getInitialExpressionPtr();
+  if (pExpression != NULL)
+    table->setText(row, COL_IEXPRESSION, FROM_UTF8(pExpression->getDisplayString()));
+  else
+    table->clearCell(row, COL_IEXPRESSION);
+
   // Expression
-  const CExpression * pExpression = pComp->getExpressionPtr();
+  pExpression = pComp->getExpressionPtr();
   if (pExpression != NULL)
     table->setText(row, COL_EXPRESSION, FROM_UTF8(pExpression->getDisplayString()));
   else
-    table->setText(row, COL_EXPRESSION, "");
+    table->clearCell(row, COL_EXPRESSION);
 }
 
 void CompartmentsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj)
@@ -175,6 +185,10 @@ void CompartmentsWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned 
   // Rate
   if (exc != COL_RATE)
     table->clearCell(row, COL_RATE);
+
+  // Initial Expression
+  if (exc != COL_IEXPRESSION)
+    table->clearCell(row, COL_IEXPRESSION);
 
   // Expression
   if (exc != COL_EXPRESSION)
