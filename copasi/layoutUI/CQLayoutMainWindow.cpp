@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.46 $
+//   $Revision: 1.47 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/02/08 11:45:23 $
+//   $Date: 2008/02/08 15:55:32 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -528,8 +528,10 @@ void CQLayoutMainWindow::closeEvent(QCloseEvent *event)
     }
 }
 
+// when resize of panel occurs, the graph should be resized accordingly
 void CQLayoutMainWindow::resizeEvent(QResizeEvent *ev)
 {
+
   int w = ev->size().width(); // glPainter->width()
   int h = ev->size().height(); // glPainter->height()
   //std::cout << "(w x h) "  << w << "  "  << h << std::endl;
