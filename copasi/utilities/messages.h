@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.109.2.1.2.5 $
+//   $Revision: 1.109.2.1.2.6 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/01/31 16:26:13 $
+//   $Author: gauges $
+//   $Date: 2008/02/08 13:14:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -213,6 +213,8 @@ const MESSAGES Messages[] =
     {MCSBML + 61, "SBML (61): Error while expanding function calls in mathematical expression for %s."},
     {MCSBML + 62, "SBML (62): Error while replacing unsupported elements in mathematical expression for %s."},
     {MCSBML + 63, "SBML (63): Initial assignment for %s \"%s\" can not be exported to SBML Level 2 Version 1."},
+    {MCSBML + 64, "SBML (64): One or more stoichiometric expressions were evaluated and converted to constants values."},
+    {MCSBML + 65, "SBML (65): The stoichiometric expression for a species reference for species \"%s\" in reaction \"%s\" could not be evaluated. The value has therefore been set to 1.0."},
 
     {MCTrajectoryProblem + 1, "CTrajectoryProblem (1): Invalid step size = '%f'."},
     {MCTrajectoryProblem + 2, "CTrajectoryProblem (2): The step number '%f' "
