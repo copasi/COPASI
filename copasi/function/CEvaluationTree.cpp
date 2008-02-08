@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-//   $Revision: 1.51.4.2 $
+//   $Revision: 1.51.4.3 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/02/08 13:07:37 $
+//   $Author: shoops $
+//   $Date: 2008/02/08 13:51:43 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -423,13 +423,11 @@ CEvaluationNode* CEvaluationTree::convertASTNode(const ASTNode& node)
     case AST_FUNCTION_PIECEWISE:
       pResultNode = CEvaluationNodeChoice::createNodeFromASTTree(node);
       break;
-      /*
-      case AST_FUNCTION_DELAY:
+    case AST_FUNCTION_DELAY:
       // create an unsupported element error
-      Message = CCopasiMessage(CCopasiMessage::EXCEPTION, MCMathML + 1,
-                               node.getName());
+      // Message = CCopasiMessage(CCopasiMessage::EXCEPTION, MCMathML + 1,
+      //                          node.getName());
       break;
-      */
     case AST_UNKNOWN:
       // create an unknown element error
       Message = CCopasiMessage(CCopasiMessage::EXCEPTION, MCMathML + 2);
