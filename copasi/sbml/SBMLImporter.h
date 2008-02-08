@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-//   $Revision: 1.63.4.2 $
+//   $Revision: 1.63.4.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/01/28 05:29:50 $
+//   $Date: 2008/02/08 13:12:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -76,6 +76,8 @@ class SBMLImporter
     bool mFastReactionsEncountered;
     std::set<std::string> mExplicitelyTimeDependentFunctionDefinitions;
     std::vector<std::string> mIgnoredParameterUnits;
+    std::map<const ASTNode*, std::pair<CCopasiObjectName, CChemEq::MetaboliteRole> > mStoichiometricExpressionMap;
+
     /**
      * Creates and returns a Copasi CModel from the SBMLDocument given as argument.
      */
@@ -360,6 +362,12 @@ class SBMLImporter
      * Imports all initial assignments if there are any.
      */
     void importInitialAssignments(const Model* pSBMLModel, const std::map<CCopasiObject*, SBase*>& copasi2sbmlMap);
+
+    /**
+     * This method evaluates all stoichiometric expressions and sets them as
+     * constants on the CChemEqElement.
+     */
+    void applyStoichiometricExpressions(std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
 
   public:
     SBMLImporter();

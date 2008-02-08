@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.189.2.6.2.7 $
+//   $Revision: 1.189.2.6.2.8 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/02/04 19:20:29 $
+//   $Author: gauges $
+//   $Date: 2008/02/08 13:12:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -479,8 +479,6 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       if (!mpImportHandler->progress(mhImportStep)) return false;
     }
 
-  this->removeUnusedFunctions(pTmpFunctionDB, copasi2sbmlmap);
-
   // unset the hasOnlySubstanceUnits flag on all such species
   std::map<Species*, Compartment*>::iterator it = this->mSubstanceOnlySpecies.begin();
   std::map<Species*, Compartment*>::iterator endIt = this->mSubstanceOnlySpecies.end();
@@ -490,6 +488,10 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       ++it;
     }
   setInitialValues(this->mpCopasiModel, copasi2sbmlmap);
+  // evaluate and apply the initial expressions
+  this->applyStoichiometricExpressions(copasi2sbmlmap);
+
+  this->removeUnusedFunctions(pTmpFunctionDB, copasi2sbmlmap);
 
   delete pTmpFunctionDB;
 
@@ -817,15 +819,15 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
       const SpeciesReference* sr = sbmlReaction->getReactant(counter);
       if (sr == NULL)
         {
+
           delete copasiReaction;
           fatalError();
         }
-      if (sr->isSetStoichiometryMath())
+      float stoi = 1.0;
+      if (!sr->isSetStoichiometryMath())
         {
-          delete copasiReaction;
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 10);
+          stoi = sr->getStoichiometry() / sr->getDenominator();
         }
-      float stoich = sr->getStoichiometry() / sr->getDenominator();
       std::map<std::string, CMetab*>::iterator pos;
       pos = this->speciesMap.find(sr->getSpecies());
       if (pos == this->speciesMap.end())
@@ -849,7 +851,28 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
               singleCompartment = false;
             }
         }
-      copasiReaction->addSubstrate(pos->second->getKey(), stoich);
+      copasiReaction->addSubstrate(pos->second->getKey(), stoi);
+      // find the CChemEqElement that belongs to the added substrate
+      if (sr->isSetStoichiometryMath())
+        {
+          CChemEq& chemEq = copasiReaction->getChemEq();
+          CCopasiVector < CChemEqElement >::const_iterator it = chemEq.getSubstrates().begin();
+          CCopasiVector < CChemEqElement >::const_iterator end = chemEq.getSubstrates().end();
+          CChemEqElement* pChemEqElement = NULL;
+          while (it != end)
+            {
+              if ((*it)->getMetabolite() == pos->second)
+                {
+                  pChemEqElement = (*it);
+                  break;
+                }
+              ++it;
+            }
+          assert(pChemEqElement != NULL);
+          mStoichiometricExpressionMap.insert(std::make_pair(sr->getStoichiometryMath()->getMath(), std::make_pair(pChemEqElement->getCN(), CChemEq::SUBSTRATE)));
+          //delete copasiReaction;
+          //CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 10);
+        }
     }
 
   /* Add all products to the reaction */
@@ -862,12 +885,11 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
           delete copasiReaction;
           fatalError();
         }
-      if (sr->isSetStoichiometryMath())
+      float stoi = 1.0f;
+      if (!sr->isSetStoichiometryMath())
         {
-          delete copasiReaction;
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 10);
+          stoi = sr->getStoichiometry() / sr->getDenominator();
         }
-      float stoich = sr->getStoichiometry() / sr->getDenominator();
       std::map<std::string, CMetab*>::iterator pos;
       pos = this->speciesMap.find(sr->getSpecies());
       if (pos == this->speciesMap.end())
@@ -891,7 +913,27 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
               singleCompartment = false;
             }
         }
-      copasiReaction->addProduct(pos->second->getKey(), stoich);
+      copasiReaction->addProduct(pos->second->getKey(), stoi);
+      if (sr->isSetStoichiometryMath())
+        {
+          CChemEq& chemEq = copasiReaction->getChemEq();
+          CCopasiVector < CChemEqElement >::const_iterator it = chemEq.getProducts().begin();
+          CCopasiVector < CChemEqElement >::const_iterator end = chemEq.getProducts().end();
+          CChemEqElement* pChemEqElement = NULL;
+          while (it != end)
+            {
+              if ((*it)->getMetabolite() == pos->second)
+                {
+                  pChemEqElement = (*it);
+                  break;
+                }
+              ++it;
+            }
+          assert(pChemEqElement != NULL);
+          mStoichiometricExpressionMap.insert(std::make_pair(sr->getStoichiometryMath()->getMath(), std::make_pair(pChemEqElement->getCN(), CChemEq::PRODUCT)));
+          //delete copasiReaction;
+          //CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 10);
+        }
     }
 
   /* Add all modifiers to the reaction */
@@ -2068,7 +2110,7 @@ void SBMLImporter::preprocessNode(ConverterASTNode* pNode)
 {
   // this function goes through the tree three times.
   // this can probably be handled more intelligently
-  this->isDelayFunctionUsed(pNode);
+  //this->isDelayFunctionUsed(pNode);
   this->replaceCallNodeNames(pNode);
   this->replaceTimeNodeNames(pNode);
 }
@@ -2082,7 +2124,7 @@ void SBMLImporter::isDelayFunctionUsed(ConverterASTNode* pNode)
     }
   else
     {
-      // go through all children and replace the time nodes names
+      // go through all children and check if the delay functin is used there
       unsigned int i, iMax = pNode->getNumChildren();
       for (i = 0;i < iMax;++i)
         {
@@ -4506,5 +4548,59 @@ void SBMLImporter::importInitialAssignments(const Model* pSBMLModel, const std::
               CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 47 , symbol.c_str());
             }
         }
+    }
+}
+
+void SBMLImporter::applyStoichiometricExpressions(std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
+{
+  std::map<const ASTNode*, std::pair<CCopasiObjectName, CChemEq::MetaboliteRole> >::iterator it = this->mStoichiometricExpressionMap.begin(), end = this->mStoichiometricExpressionMap.end();
+  std::vector<CCopasiContainer*> listOfContainers;
+  listOfContainers.push_back(this->mpCopasiModel);
+  while (it != end)
+    {
+      CCopasiObject* pObject = CCopasiContainer::ObjectFromName(listOfContainers, it->second.first);
+      assert(pObject != NULL);
+      CChemEqElement* pChemEqElement = dynamic_cast<CChemEqElement*>(pObject);
+      assert(pChemEqElement != NULL);
+      ConverterASTNode* pNode = new ConverterASTNode(*it->first);
+      this->preprocessNode(pNode);
+      this->replaceSubstanceOnlySpeciesNodes(pNode, this->mSubstanceOnlySpecies);
+      this->replaceObjectNames(pNode, copasi2sbmlmap);
+      CExpression* pExpr = new CExpression();
+      pExpr->setTree(*pNode);
+      pExpr->compile(listOfContainers);
+      delete pNode;
+      if (pExpr->getRoot() == NULL)
+        {
+          const CReaction* pR = dynamic_cast<const CReaction*>(pChemEqElement->getObjectParent()->getObjectParent()->getObjectParent());
+          std::string id = pChemEqElement->getMetabolite()->getSBMLId();
+          // create an error message that some stoichiometric expression
+          // could not be evaluated that the value for the stoichiometry has
+          // been set to 1.0
+          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 65, id.c_str(), pR->getSBMLId().c_str());
+        }
+      else
+        {
+          double value = pExpr->calcValue();
+          // find out if the metabolite is a substrate or a product
+          delete pExpr;
+          if (it->second.second == CChemEq::SUBSTRATE)
+            {
+              // add 1.0 that has been subtracted before and substract the value
+              pChemEqElement->addToMultiplicity(1.0);
+              pChemEqElement->addToMultiplicity(-value);
+            }
+          else
+            {
+              // subtract the 1.0 that has been added before and add the value
+              pChemEqElement->addToMultiplicity(-1.0);
+              pChemEqElement->addToMultiplicity(value);
+            }
+        }
+      if (!this->mStoichiometricExpressionMap.empty())
+        {
+          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 64);
+        }
+      ++it;
     }
 }
