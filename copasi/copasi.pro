@@ -1,17 +1,22 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.pro,v $ 
-#   $Revision: 1.43 $ 
+#   $Revision: 1.43.4.1 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2007/11/27 00:24:33 $ 
+#   $Date: 2008/02/09 00:58:30 $ 
 # End CVS Header 
 
-# Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+# and The University of Manchester. 
+# All rights reserved. 
+
+# Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc. and EML Research, gGmbH. 
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.43 $ $Author: shoops $ $Date: 2007/11/27 00:24:33 $  
+# $Revision: 1.43.4.1 $ $Author: shoops $ $Date: 2008/02/09 00:58:30 $  
 ######################################################################
 
 TEMPLATE = subdirs
@@ -32,6 +37,7 @@ SUBDIRS += elementaryFluxModes
 SUBDIRS += function
 SUBDIRS += lyap
 SUBDIRS += model
+SUBDIRS += moieties
 SUBDIRS += odepack++
 SUBDIRS += optimization
 SUBDIRS += parameterFitting

@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.h,v $
-//   $Revision: 1.42 $
+//   $Revision: 1.42.8.1 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2007/04/12 12:42:51 $
+//   $Author: shoops $
+//   $Date: 2008/02/09 00:57:28 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -60,6 +65,7 @@ class CCopasiTask : public CCopasiContainer
 #ifdef COPASI_SSA
       ssa,
 #endif // COPASI_SSA
+      moieties,
       unset
     };
 
@@ -91,8 +97,8 @@ class CCopasiTask : public CCopasiContainer
 
     enum OutputFlag
     {
-      NO_OUTPUT = 0,                       //do no output
-      OUTPUT,                              //do output, but do not initialize/finish
+      NO_OUTPUT = 0, //do no output
+      OUTPUT, //do output, but do not initialize/finish
       OUTPUT_COMPLETE          //do output, including initialization and closing
     };
 
