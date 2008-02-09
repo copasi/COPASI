@@ -1,12 +1,17 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiProblem.h,v $
-   $Revision: 1.20 $
-   $Name:  $
-   $Author: gauges $
-   $Date: 2006/10/15 08:31:12 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiProblem.h,v $
+//   $Revision: 1.20.14.1 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2008/02/09 00:56:12 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -155,7 +160,7 @@ class CCopasiProblem : public CCopasiParameterGroup
      * CalculateResults with the results.
      * @result bool succes
      */
-    virtual bool calculate();
+    // virtual bool calculate();
 
     /**
      * Do all neccessary restore procedures so that the
@@ -169,13 +174,13 @@ class CCopasiProblem : public CCopasiParameterGroup
      * calculate function for optimization
      * @result bool fullfilled
      */
-    virtual bool checkParametricConstraints();
+    // virtual bool checkParametricConstraints();
 
     /**
      * calculate function for optimization
      * @result bool fullfilled
      */
-    virtual bool checkFunctionalConstraints();
+    // virtual bool checkFunctionalConstraints();
 
     /**
      * This is the output method for any object. The default implementation
