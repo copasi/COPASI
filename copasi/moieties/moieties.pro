@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/moieties/moieties.pro,v $ 
-#   $Revision: 1.1.2.1 $ 
+#   $Revision: 1.1.2.2 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2008/02/09 00:58:16 $ 
+#   $Date: 2008/02/09 03:09:10 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -12,10 +12,10 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.1.2.1 $ $Author: shoops $ $Date: 2008/02/09 00:58:16 $  
+# $Revision: 1.1.2.2 $ $Author: shoops $ $Date: 2008/02/09 03:09:10 $  
 ######################################################################
 
-LIB = utilities
+LIB = moieties
 
 include(../lib.pri)
 include(../common.pri)
