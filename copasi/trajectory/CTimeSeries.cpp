@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTimeSeries.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.14.6.1 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/06/20 15:38:02 $
+//   $Author: shoops $
+//   $Date: 2008/02/11 20:34:45 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -25,8 +30,8 @@
 #include "sbml/Parameter.h"
 #include "sbml/Model.h"
 
-CTimeSeries::CTimeSeries()
-    : mIt(begin()),
+CTimeSeries::CTimeSeries():
+    mpIt(array()),
     mpState(NULL),
     mDummyString(""),
     mDummyFloat(0)
@@ -43,7 +48,9 @@ bool CTimeSeries::init(C_INT32 n, CModel * pModel)
   CModelEntity **end = Template.endDependent();
 
   resize(n + 1);
-  mIt = begin();
+
+  mpIt = array();
+  mpEnd = mpIt + size();
 
   C_INT32 i, imax = Template.getNumVariable() + 1;
 
@@ -88,33 +95,26 @@ bool CTimeSeries::init(C_INT32 n, CModel * pModel)
 
 bool CTimeSeries::add()
 {
-  //std::cout << mpState->getTime() << std::endl;;
-  if (mIt == end())
+  if (mpIt != mpEnd)
     {
-      C_INT32 dummy = mIt - begin();
-      resize(size() + 256);
-      mIt = begin() + dummy;
-      //std::cout << " resize " << dummy << std::endl;
+      *mpIt = *mpState;
+      ++mpIt;
+
+      return true;
     }
 
-  *mIt = *mpState;
-
-  ++mIt;
-
-  return true;
+  return false;
 }
 
 bool CTimeSeries::finish()
 {
-  //std::cout << mCounter << std::endl;
-  erase(mIt, end());
   return true;
 }
 
 //*** the methods to retrieve data from the CTimeSeries *******
 
 unsigned C_INT32 CTimeSeries::getNumSteps() const
-  {return mIt - begin();}
+  {return mpIt - array();}
 
 unsigned C_INT32 CTimeSeries::getNumVariables() const
   {

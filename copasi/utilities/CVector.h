@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CVector.h,v $
-//   $Revision: 1.32.4.2 $
+//   $Revision: 1.32.4.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/11 14:30:54 $
+//   $Date: 2008/02/11 20:34:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -108,7 +108,15 @@ template <class CType> class CVector
 
       if (mSize)
         {
-          mVector = new CType[mSize];
+          try
+            {
+              mVector = new CType[mSize];
+            }
+
+          catch (...)
+            {
+              mVector = NULL;
+            }
 
           if (mVector == NULL)
             {

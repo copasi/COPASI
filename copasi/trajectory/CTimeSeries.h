@@ -1,26 +1,29 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTimeSeries.h,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.12.6.1 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/06/29 14:47:10 $
+//   $Author: shoops $
+//   $Date: 2008/02/11 20:34:45 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #ifndef TIMESERIES_H
 #define TIMESERIES_H
 
-#include <vector>
-
 #include "model/CState.h"
 #include "utilities/CVector.h"
 
 class CModel;
 
-class CTimeSeries : private std::vector<CState>
+class CTimeSeries : private CVector< CState >
   {
   public:
     CTimeSeries();
@@ -72,14 +75,15 @@ class CTimeSeries : private std::vector<CState>
     std::string getSBMLId(unsigned C_INT32 var) const;
 
   private:
-    //C_INT32 mN;
-    //C_INT32 mCounter;
-    std::vector<CState>::iterator mIt;
+    CState * mpIt;
+    CState * mpEnd;
+
     const CState * mpState;
-    std::vector<std::string> mTitles;
-    std::vector<C_FLOAT64> mFactors;
-    CVector<unsigned C_INT32> mPivot;
-    std::vector<std::string> mKeys;
+
+    CVector< std::string > mTitles;
+    CVector< C_FLOAT64 > mFactors;
+    CVector< unsigned C_INT32 > mPivot;
+    CVector< std::string > mKeys;
     std::string mDummyString;
     C_FLOAT64 mDummyFloat;
   };

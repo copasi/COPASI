@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CMatrix.h,v $
-//   $Revision: 1.31.4.2 $
+//   $Revision: 1.31.4.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/11 14:30:54 $
+//   $Date: 2008/02/11 20:34:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -157,7 +157,15 @@ class CMatrix
             }
           if (rows && cols)
             {
-              mArray = new CType[rows * cols];
+              try
+                {
+                  mArray = new CType[rows * cols];
+                }
+
+              catch (...)
+                {
+                  mArray = NULL;
+                }
 
               if (mArray == NULL)
                 {

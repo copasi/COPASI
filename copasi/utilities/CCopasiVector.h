@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiVector.h,v $
-//   $Revision: 1.76.4.2 $
+//   $Revision: 1.76.4.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/11 14:30:54 $
+//   $Date: 2008/02/11 20:34:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -82,7 +82,15 @@ template < class CType > class CCopasiVector:
 
         for (i = 0; i < imax; i++, Target++, Source++)
           {
-            *Target = new CType(**Source, this);
+            try
+              {
+                *Target = new CType(**Source, this);
+              }
+            catch (...)
+              {
+                *Target = NULL;
+              }
+
             if (*Target == NULL)
               CCopasiMessage(CCopasiMessage::EXCEPTION, MCopasiBase + 1, imax * sizeof(CType));
           }
@@ -151,7 +159,15 @@ template < class CType > class CCopasiVector:
 
         for (i = 0; i < imax; i++, Target++, Source++)
           {
-            *Target = new CType(**Source, this);
+            try
+              {
+                *Target = new CType(**Source, this);
+              }
+            catch (...)
+              {
+                *Target = NULL;
+              }
+
             if (*Target == NULL)
               CCopasiMessage(CCopasiMessage::EXCEPTION, MCopasiBase + 1, imax * sizeof(CType));
           }
@@ -198,7 +214,15 @@ template < class CType > class CCopasiVector:
        */
       virtual bool add(const CType & src)
       {
-        CType * Element = new CType(src);
+        CType * Element;
+        try
+          {
+            Element = new CType(src);
+          }
+        catch (...)
+          {
+            Element = NULL;
+          }
 
         if (Element == NULL)
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCopasiBase + 1, sizeof(CType));
@@ -374,7 +398,15 @@ template < class CType > class CCopasiVector:
             if (allocate)
               for (i = OldSize; i < newSize; i++, Target++)
                 {
-                  *Target = new CType("NoName", this);
+                  try
+                    {
+                      *Target = new CType("NoName", this);
+                    }
+                  catch (...)
+                    {
+                      *Target = NULL;
+                    }
+
                   if (*Target == NULL)
                     CCopasiMessage(CCopasiMessage::EXCEPTION, MCopasiBase + 1, newSize * sizeof(CType));
                 }
@@ -486,7 +518,15 @@ template < class CType > class CCopasiVectorS: public CCopasiVector < CType >
 
         for (i = 0, Target = CCopasiVector< CType >::begin(); i < size; i++, Target++)
           {
-            *Target = new CType("NoName", this);
+            try
+              {
+                *Target = new CType("NoName", this);
+              }
+            catch (...)
+              {
+                *Target = NULL;
+              }
+
             if (*Target == NULL)
               CCopasiMessage(CCopasiMessage::EXCEPTION, MCopasiBase + 1, size * sizeof(CType));
             (*Target)->load(configbuffer);
@@ -556,7 +596,16 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
             return false;
           }
 
-        CType * Element = new CType(src);
+        CType * Element;
+        try
+          {
+            Element = new CType(src);
+          }
+        catch (...)
+          {
+            Element = NULL;
+          }
+
         if (Element == NULL)
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCopasiBase + 1, sizeof(CType));
 
@@ -765,7 +814,15 @@ template < class CType > class CCopasiVectorNS: public CCopasiVectorN < CType >
 
         for (i = 0, Target = CCopasiVector< CType >::begin(); i < size; i++, Target++)
           {
-            *Target = new CType("NoName", this);
+            try
+              {
+                *Target = new CType("NoName", this);
+              }
+            catch (...)
+              {
+                *Target = NULL;
+              }
+
             if (*Target == NULL)
               CCopasiMessage(CCopasiMessage::EXCEPTION, MCopasiBase + 1, size * sizeof(CType));
             (*Target)->load(configbuffer);
