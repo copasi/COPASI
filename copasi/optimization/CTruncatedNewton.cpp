@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CTruncatedNewton.cpp,v $
-//   $Revision: 1.4.4.1 $
+//   $Revision: 1.4.4.2 $
 //   $Name:  $
 //   $Author: jdada $
-//   $Date: 2008/02/06 13:38:41 $
+//   $Date: 2008/02/11 13:18:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -117,17 +117,17 @@ CTruncatedNewton::~CTruncatedNewton()
    static char fmt_830[] = "(10x,i5,2x,1pd22.15)";*/
 
   /* Local variables */
-  static C_FLOAT64 xtol;
-  static C_INT maxit;
-  static C_FLOAT64 accrcy;
-  static C_INT maxfun, msglvl;
-  static C_FLOAT64 stepmx, eta;
+  C_FLOAT64 xtol;
+  C_INT maxit;
+  C_FLOAT64 accrcy;
+  C_INT maxfun, msglvl;
+  C_FLOAT64 stepmx, eta;
 
   /* Fortran I/O blocks */ /*
-  static cilist io___8 = {0, 6, 0, fmt_800, 0 };
-  static cilist io___9 = {0, 6, 0, fmt_810, 0 };
-  static cilist io___10 = {0, 6, 0, fmt_820, 0 };
-  static cilist io___12 = {0, 6, 0, fmt_830, 0 };*/
+   cilist io___8 = {0, 6, 0, fmt_800, 0 };
+   cilist io___9 = {0, 6, 0, fmt_810, 0 };
+   cilist io___10 = {0, 6, 0, fmt_820, 0 };
+   cilist io___12 = {0, 6, 0, fmt_830, 0 };*/
 
   /* THIS ROUTINE SOLVES THE OPTIMIZATION PROBLEM */
 
@@ -251,12 +251,12 @@ CTruncatedNewton::~CTruncatedNewton()
     C_FLOAT64 *low, C_FLOAT64 *up, C_INT *ipivot)
 {
   /* Format strings */
-  /* static char fmt_800[] = "(//,\002 ERROR CODE =\002,i3)";
-   static char fmt_810[] = "(//,\002 OPTIMAL FUNCTION VALUE = \002,1pd22.15)"
+  /*  char fmt_800[] = "(//,\002 ERROR CODE =\002,i3)";
+    char fmt_810[] = "(//,\002 OPTIMAL FUNCTION VALUE = \002,1pd22.15)"
 ;
-   static char fmt_820[] = "(10x,\002CURRENT SOLUTION IS (AT MOST 10 COMPON"
+    char fmt_820[] = "(10x,\002CURRENT SOLUTION IS (AT MOST 10 COMPON"
                            "ENTS)\002,/,14x,\002I\002,11x,\002X(I)\002)";
-   static char fmt_830[] = "(10x,i5,2x,1pd22.15)";*/
+    char fmt_830[] = "(10x,i5,2x,1pd22.15)";*/
 
   /* System generated locals */
   C_INT i__1;
@@ -264,20 +264,20 @@ CTruncatedNewton::~CTruncatedNewton()
   //  C_INT s_wsfe(cilist *), do_fio(C_INT *, char *, ftnlen), e_wsfe(void);
 
   /* Local variables */
-  static C_INT nmax;
-  static C_FLOAT64 xtol;
-  static C_INT i__, maxit;
-  static C_FLOAT64 accrcy;
-  static C_INT maxfun, msglvl;
-  static C_FLOAT64 stepmx, eta;
+  C_INT nmax;
+  C_FLOAT64 xtol;
+  C_INT i__, maxit;
+  C_FLOAT64 accrcy;
+  C_INT maxfun, msglvl;
+  C_FLOAT64 stepmx, eta;
 
   /* Fortran I/O blocks */
   //remove
   /*
-  static cilist io___21 = {0, 6, 0, fmt_800, 0 };
-  static cilist io___22 = {0, 6, 0, fmt_810, 0 };
-  static cilist io___23 = {0, 6, 0, fmt_820, 0 };
-  static cilist io___25 = {0, 6, 0, fmt_830, 0 };*/
+   cilist io___21 = {0, 6, 0, fmt_800, 0 };
+   cilist io___22 = {0, 6, 0, fmt_810, 0 };
+   cilist io___23 = {0, 6, 0, fmt_820, 0 };
+   cilist io___25 = {0, 6, 0, fmt_830, 0 };*/
 
   /* THIS ROUTINE SOLVES THE OPTIMIZATION PROBLEM */
 
@@ -419,9 +419,9 @@ CTruncatedNewton::~CTruncatedNewton()
     C_FLOAT64 *stepmx, C_FLOAT64 *accrcy, C_FLOAT64 *xtol)
 {
   /* Format strings */
-  /* static char fmt_800[] = "(//\002 NIT   NF   CG\002,9x,\002F\002,21x,\002"
+  /*  char fmt_800[] = "(//\002 NIT   NF   CG\002,9x,\002F\002,21x,\002"
                            "GTG\002,//)";
-   static char fmt_810[] = "(\002 \002,i3,1x,i4,1x,i4,1x,1pd22.15,2x,1pd15."
+    char fmt_810[] = "(\002 \002,i3,1x,i4,1x,i4,1x,1pd22.15,2x,1pd15."
                            "8)"; */
 
   /* System generated locals */
@@ -431,46 +431,46 @@ CTruncatedNewton::~CTruncatedNewton()
   // C_INT s_wsfe(cilist *), e_wsfe(void), do_fio(C_INT *, char *, ftnlen);
 
   /* Local variables */
-  static C_FLOAT64 fold, oldf;
-  static C_FLOAT64 fnew;
-  static C_INT numf;
-  static C_FLOAT64 peps;
-  static C_INT lhyr;
-  static C_FLOAT64 zero, rtol, yksk, tiny;
-  static C_INT nwhy;
-  static C_FLOAT64 yrsr;
-  static C_INT i__;
-  static C_FLOAT64 alpha, fkeep;
-  static C_INT ioldg;
-  static C_FLOAT64 small;
-  static C_INT modet;
-  static C_INT niter;
-  static C_FLOAT64 gnorm, ftest, fstop, pnorm, rteps, xnorm;
-  static C_INT idiagb;
-  static C_FLOAT64 fm, pe, difold;
-  static C_INT icycle, nlincg, nfeval;
-  static C_FLOAT64 difnew;
-  static C_INT nmodif;
-  static C_FLOAT64 epsmch;
-  static C_FLOAT64 epsred, fabstol, oldgtp;
-  static C_INT ireset;
-  static C_INT lreset;
-  static C_FLOAT64 reltol, gtpnew;
-  static C_INT nftotl;
-  static C_FLOAT64 toleps;
-  static C_FLOAT64 rtleps;
-  static C_INT ipivot, nm1;
-  static C_FLOAT64 rtolsq, tnytol, gtg, one;
-  static C_INT ipk;
-  static C_FLOAT64 gsk, spe;
-  static C_INT isk, iyk;
-  static C_INT upd1;
+  C_FLOAT64 fold, oldf;
+  C_FLOAT64 fnew;
+  C_INT numf;
+  C_FLOAT64 peps;
+  C_INT lhyr;
+  C_FLOAT64 zero, rtol, yksk, tiny;
+  C_INT nwhy;
+  C_FLOAT64 yrsr;
+  C_INT i__;
+  C_FLOAT64 alpha, fkeep;
+  C_INT ioldg;
+  C_FLOAT64 small;
+  C_INT modet;
+  C_INT niter;
+  C_FLOAT64 gnorm, ftest, fstop, pnorm, rteps, xnorm;
+  C_INT idiagb;
+  C_FLOAT64 fm, pe, difold;
+  C_INT icycle, nlincg, nfeval;
+  C_FLOAT64 difnew;
+  C_INT nmodif;
+  C_FLOAT64 epsmch;
+  C_FLOAT64 epsred, fabstol, oldgtp;
+  C_INT ireset;
+  C_INT lreset;
+  C_FLOAT64 reltol, gtpnew;
+  C_INT nftotl;
+  C_FLOAT64 toleps;
+  C_FLOAT64 rtleps;
+  C_INT ipivot, nm1;
+  C_FLOAT64 rtolsq, tnytol, gtg, one;
+  C_INT ipk;
+  C_FLOAT64 gsk, spe;
+  C_INT isk, iyk;
+  C_INT upd1;
 
   /* Fortran I/O blocks */
   //remove the blocks
-  /* static cilist io___27 = {0, 6, 0, fmt_800, 0 };
-   static cilist io___56 = {0, 6, 0, fmt_810, 0 };
-   static cilist io___81 = {0, 6, 0, fmt_810, 0 };
+  /*  cilist io___27 = {0, 6, 0, fmt_800, 0 };
+    cilist io___56 = {0, 6, 0, fmt_810, 0 };
+    cilist io___81 = {0, 6, 0, fmt_810, 0 };
    */
 
   /* THIS ROUTINE IS A TRUNCATED-NEWTON METHOD. */
@@ -786,15 +786,15 @@ L120:
   /* Format strings */
   //remove
   /*
-  static char fmt_800[] = "(\002 THERE IS NO FEASIBLE POINT; TERMINATING A"
+   char fmt_800[] = "(\002 THERE IS NO FEASIBLE POINT; TERMINATING A"
                           "LGORITHM\002)";
-  static char fmt_810[] = "(//\002  NIT   NF   CG\002,9x,\002F\002,21x,"
+   char fmt_810[] = "(//\002  NIT   NF   CG\002,9x,\002F\002,21x,"
                           "\002GTG\002,//)";
-  static char fmt_820[] = "(\002        LINESEARCH RESULTS:  ALPHA,PNOR"
+   char fmt_820[] = "(\002        LINESEARCH RESULTS:  ALPHA,PNOR"
                           "M\002,2(1pd12.4))";
-  static char fmt_830[] = "(\002 UPD1 IS TRUE - TRIVIAL PRECONDITIONING"
+   char fmt_830[] = "(\002 UPD1 IS TRUE - TRIVIAL PRECONDITIONING"
                           "\002)";
-  static char fmt_840[] = "(\002 NEWCON IS TRUE - CONSTRAINT ADDED IN LINE"
+   char fmt_840[] = "(\002 NEWCON IS TRUE - CONSTRAINT ADDED IN LINE"
                         "SEARCH\002)";
   */
 
@@ -807,53 +807,53 @@ L120:
   // C_INT do_fio(C_INT *, char *, ftnlen);
 
   /* Local variables */
-  static C_FLOAT64 fold, oldf;
-  static C_FLOAT64 fnew;
-  static C_INT numf;
-  static C_INT conv;
-  static C_FLOAT64 peps;
-  static C_INT lhyr;
-  static C_FLOAT64 zero, rtol, yksk, tiny;
-  static C_INT nwhy;
-  static C_FLOAT64 yrsr;
-  static C_INT i__;
-  static C_FLOAT64 alpha, fkeep;
-  static C_INT ioldg;
-  static C_FLOAT64 small, flast;
-  static C_INT modet;
-  static C_INT niter;
-  static C_FLOAT64 gnorm, ftest;
-  static C_FLOAT64 fstop, pnorm, rteps, xnorm;
-  static C_INT idiagb;
-  static C_FLOAT64 fm, pe, difold;
-  static C_INT icycle, nlincg, nfeval;
-  static C_FLOAT64 difnew;
-  static C_INT nmodif;
-  static C_FLOAT64 epsmch;
-  static C_FLOAT64 epsred, fabstol, oldgtp;
-  static C_INT newcon;
-  static C_INT ireset;
-  static C_INT lreset;
-  static C_FLOAT64 reltol, gtpnew;
-  static C_INT nftotl;
-  static C_FLOAT64 toleps;
-  static C_FLOAT64 rtleps;
-  static C_INT nm1;
-  static C_FLOAT64 rtolsq, tnytol;
-  static C_INT ier;
-  static C_FLOAT64 gtg, one;
-  static C_INT ipk;
-  static C_FLOAT64 gsk, spe;
-  static C_INT isk, iyk;
-  static C_INT upd1;
+  C_FLOAT64 fold, oldf;
+  C_FLOAT64 fnew;
+  C_INT numf;
+  C_INT conv;
+  C_FLOAT64 peps;
+  C_INT lhyr;
+  C_FLOAT64 zero, rtol, yksk, tiny;
+  C_INT nwhy;
+  C_FLOAT64 yrsr;
+  C_INT i__;
+  C_FLOAT64 alpha, fkeep;
+  C_INT ioldg;
+  C_FLOAT64 small, flast;
+  C_INT modet;
+  C_INT niter;
+  C_FLOAT64 gnorm, ftest;
+  C_FLOAT64 fstop, pnorm, rteps, xnorm;
+  C_INT idiagb;
+  C_FLOAT64 fm, pe, difold;
+  C_INT icycle, nlincg, nfeval;
+  C_FLOAT64 difnew;
+  C_INT nmodif;
+  C_FLOAT64 epsmch;
+  C_FLOAT64 epsred, fabstol, oldgtp;
+  C_INT newcon;
+  C_INT ireset;
+  C_INT lreset;
+  C_FLOAT64 reltol, gtpnew;
+  C_INT nftotl;
+  C_FLOAT64 toleps;
+  C_FLOAT64 rtleps;
+  C_INT nm1;
+  C_FLOAT64 rtolsq, tnytol;
+  C_INT ier;
+  C_FLOAT64 gtg, one;
+  C_INT ipk;
+  C_FLOAT64 gsk, spe;
+  C_INT isk, iyk;
+  C_INT upd1;
 
   /* Fortran I/O blocks */
   /*
-  static cilist io___88 = {0, 6, 0, fmt_800, 0 };
-  static cilist io___89 = {0, 6, 0, fmt_810, 0 };
-  static cilist io___144 = {0, 6, 0, fmt_820, 0 };
-  static cilist io___150 = {0, 6, 0, fmt_830, 0 };
-  static cilist io___151 = {0, 6, 0, fmt_840, 0 }; */
+   cilist io___88 = {0, 6, 0, fmt_800, 0 };
+   cilist io___89 = {0, 6, 0, fmt_810, 0 };
+   cilist io___144 = {0, 6, 0, fmt_820, 0 };
+   cilist io___150 = {0, 6, 0, fmt_830, 0 };
+   cilist io___151 = {0, 6, 0, fmt_840, 0 }; */
 
   /* THIS ROUTINE IS A BOUNDS-CONSTRAINED TRUNCATED-NEWTON METHOD. */
   /* THE TRUNCATED-NEWTON METHOD IS PRECONDITIONED BY A LIMITED-MEMORY */
@@ -1246,7 +1246,7 @@ L160:
                             C_INT * /* ireset */, C_INT *ipivot)
 {
   /* Format strings */
-  // static char fmt_800[] = "(\002 \002,i4,1x,i4,1x,i4,1x,1pd22.15,2x,1pd15." "8)";
+  //  char fmt_800[] = "(\002 \002,i4,1x,i4,1x,i4,1x,1pd22.15,2x,1pd15." "8)";
 
   /* System generated locals */
   C_INT i__1;
@@ -1255,8 +1255,8 @@ L160:
   //C_INT s_wsfe(cilist *), do_fio(C_INT *, char *, ftnlen), e_wsfe(void);
 
   /* Local variables */
-  static C_INT i__;
-  static C_FLOAT64 gtg;
+  C_INT i__;
+  C_FLOAT64 gtg;
 
   /* PRINT RESULTS OF CURRENT ITERATION */
 
@@ -1295,7 +1295,7 @@ L10:
   C_INT i__1;
 
   /* Local variables */
-  static C_INT i__;
+  C_INT i__;
 
   /* THIS ROUTINE MULTIPLIES THE VECTOR X BY THE CONSTRAINT MATRIX Z */
 
@@ -1323,8 +1323,8 @@ L10:
   /* System generated locals */
   C_INT i__1;
   /* Local variables */
-  static C_INT i__;
-  static C_FLOAT64 t;
+  C_INT i__;
+  C_FLOAT64 t;
 
   /* COMPUTE THE MAXIMUM ALLOWABLE STEP LENGTH */
 
@@ -1360,8 +1360,8 @@ L10:;
   C_FLOAT64 d__1;
 
   /* Local variables */
-  static C_INT i__;
-  static C_FLOAT64 tol;
+  C_INT i__;
+  C_FLOAT64 tol;
 
   /* UPDATE THE CONSTRAINT MATRIX IF A NEW CONSTRAINT IS ENCOUNTERED */
 
@@ -1423,11 +1423,11 @@ L10:
   C_INT i__1;
 
   /* Local variables */
-  static C_FLOAT64 cmax;
-  static C_INT imax, i__;
-  static C_FLOAT64 t;
-  static C_INT ltest;
-  static C_FLOAT64 one;
+  C_FLOAT64 cmax;
+  C_INT imax, i__;
+  C_FLOAT64 t;
+  C_INT ltest;
+  C_FLOAT64 one;
 
   /* TEST FOR CONVERGENCE */
 
@@ -1498,7 +1498,7 @@ L15:
   C_INT i__1;
 
   /* Local variables */
-  static C_INT i__;
+  C_INT i__;
 
   /* THIS INITIALIZES THE CONSTRAINT INFORMATION, AND ENSURES THAT THE */
   /* INITIAL POINT SATISFIES  LOW <= X <= UP. */
@@ -1559,17 +1559,17 @@ L15:
 {
   /* Format strings */
   //remove the format
-  /* static char fmt_800[] = "(\002 \002,//,\002 ENTERING MODLNP\002)";
-   static char fmt_810[] = "(\002 \002,//,\002 ### ITERATION \002,i2,\002 #"
+  /*  char fmt_800[] = "(\002 \002,//,\002 ENTERING MODLNP\002)";
+    char fmt_810[] = "(\002 \002,//,\002 ### ITERATION \002,i2,\002 #"
                            "##\002)";
-   static char fmt_820[] = "(\002 ALPHA\002,1pd16.8)";
-   static char fmt_830[] = "(\002 G(T)Z POSITIVE AT ITERATION \002,i2,\002 "
+    char fmt_820[] = "(\002 ALPHA\002,1pd16.8)";
+    char fmt_830[] = "(\002 G(T)Z POSITIVE AT ITERATION \002,i2,\002 "
                            "- TRUNCATING METHOD\002,/)";
-   static char fmt_840[] = "(\002 \002,10x,\002HESSIAN NOT POSITIVE-DEFIN"
+    char fmt_840[] = "(\002 \002,10x,\002HESSIAN NOT POSITIVE-DEFIN"
                            "ITE\002)";
-   static char fmt_850[] = "(\002 \002,/,8x,\002MODLAN TRUNCATED AFTER \002"
+    char fmt_850[] = "(\002 \002,/,8x,\002MODLAN TRUNCATED AFTER \002"
                            ",i3,\002 ITERATIONS\002,\002  RNORM = \002,1pd14.6)";
-   static char fmt_860[] = "(\002 PRECONDITIONING NOT POSITIVE-DEFINITE\002)"
+    char fmt_860[] = "(\002 PRECONDITIONING NOT POSITIVE-DEFINITE\002)"
   ;*/
 
   /* System generated locals */
@@ -1580,14 +1580,14 @@ L15:
   //  C_INT s_wsfe(cilist *), e_wsfe(void), do_fio(C_INT *, char *, ftnlen);
 
   /* Local variables */
-  static C_FLOAT64 beta;
-  static C_FLOAT64 qold, qnew;
-  static C_INT i__, k;
-  static C_FLOAT64 alpha, delta;
-  static C_INT first;
-  static C_FLOAT64 rzold, qtest, pr;
-  static C_FLOAT64 rz;
-  static C_FLOAT64 rhsnrm, tol, vgv;
+  C_FLOAT64 beta;
+  C_FLOAT64 qold, qnew;
+  C_INT i__, k;
+  C_FLOAT64 alpha, delta;
+  C_INT first;
+  C_FLOAT64 rzold, qtest, pr;
+  C_FLOAT64 rz;
+  C_FLOAT64 rhsnrm, tol, vgv;
 
   /* THIS ROUTINE PERFORMS A PRECONDITIONED CONJUGATE-GRADIENT */
   /* ITERATION IN ORDER TO SOLVE THE NEWTON EQUATIONS FOR A SEARCH */
@@ -1843,7 +1843,7 @@ L90:
                             C_FLOAT64 *gv, C_FLOAT64 *r__, C_FLOAT64 *vgv, C_INT *modet)
 {
   /* Format strings */
-  //  static char fmt_800[] = "(\002 *** EMAT NEGATIVE:  \002,1pd16.8)";
+  //   char fmt_800[] = "(\002 *** EMAT NEGATIVE:  \002,1pd16.8)";
 
   /* System generated locals */
   C_INT i__1;
@@ -1852,11 +1852,11 @@ L90:
   //  C_INT s_wsfe(cilist *), do_fio(C_INT *, char *, ftnlen), e_wsfe(void);
 
   /* Local variables */
-  static C_INT i__;
-  static C_FLOAT64 vr;
+  C_INT i__;
+  C_FLOAT64 vr;
 
   /* Fortran I/O blocks */
-  //static cilist io___192 = {0, 6, 0, fmt_800, 0 };
+  // cilist io___192 = {0, 6, 0, fmt_800, 0 };
 
   /* UPDATE THE PRECONDITIOING MATRIX BASED ON A DIAGONAL VERSION */
   /* OF THE BFGS QUASI-NEWTON UPDATE. */
@@ -1899,7 +1899,7 @@ L10:
   C_INT i__1;
 
   /* Local variables */
-  static C_INT i__;
+  C_INT i__;
 
   /* NEGATIVE OF THE VECTOR V */
 
@@ -1923,21 +1923,21 @@ L10:
                             /* xlamda */)
 {
   /* Format strings */
-  /* static char fmt_800[] = "(///\002 OUTPUT FROM LINEAR SEARCH\002)";
-   static char fmt_810[] = "(\002  TOL AND EPS\002/2d25.14)";
-   static char fmt_820[] = "(\002  CURRENT UPPER AND LOWER BOUNDS\002/2d25."
+  /*  char fmt_800[] = "(///\002 OUTPUT FROM LINEAR SEARCH\002)";
+    char fmt_810[] = "(\002  TOL AND EPS\002/2d25.14)";
+    char fmt_820[] = "(\002  CURRENT UPPER AND LOWER BOUNDS\002/2d25."
                            "14)";
-   static char fmt_830[] = "(\002  STRICT UPPER BOUND\002/d25.14)";
-   static char fmt_840[] = "(\002  XW, FW, GW\002/3d25.14)";
-   static char fmt_850[] = "(\002  XMIN, FMIN, GMIN\002/3d25.14)";
-   static char fmt_860[] = "(\002  NEW ESTIMATE\002/2d25.14)";
-   static char fmt_870[] = "(\002  ILOC AND ITEST\002/2i3)"; */
+    char fmt_830[] = "(\002  STRICT UPPER BOUND\002/d25.14)";
+    char fmt_840[] = "(\002  XW, FW, GW\002/3d25.14)";
+    char fmt_850[] = "(\002  XMIN, FMIN, GMIN\002/3d25.14)";
+    char fmt_860[] = "(\002  NEW ESTIMATE\002/2d25.14)";
+    char fmt_870[] = "(\002  ILOC AND ITEST\002/2i3)"; */
 
   /* Builtin functions */
   // C_INT s_wsfe(cilist *), e_wsfe(void), do_fio(C_INT *, char *, ftnlen);
 
   /* Local variables */
-  static C_FLOAT64 ybnd, ya, yb, yu, yw;
+  C_FLOAT64 ybnd, ya, yb, yu, yw;
 
   /* ERROR PRINTOUTS FOR GETPTC */
 
@@ -1987,8 +1987,8 @@ C_FLOAT64 step1_(C_FLOAT64 *fnew, C_FLOAT64 *fm, C_FLOAT64 *gtp,
   C_FLOAT64 ret_val, d__1;
 
   /* Local variables */
-  static C_FLOAT64 d__, alpha;
-  static C_FLOAT64 epsmch;
+  C_FLOAT64 d__, alpha;
+  C_FLOAT64 epsmch;
 
   /* ******************************************************** */
   /* STEP1 RETURNS THE LENGTH OF THE INITIAL STEP TO BE TAKEN ALONG THE */
@@ -2107,8 +2107,8 @@ C_FLOAT64 mchpr1_(void)
   C_INT i__1;
 
   /* Local variables */
-  static C_FLOAT64 dinv, f;
-  static C_INT i__, ihg;
+  C_FLOAT64 dinv, f;
+  C_INT i__, ihg;
 
   /* THIS ROUTINE COMPUTES THE PRODUCT OF THE MATRIX G TIMES THE VECTOR */
   /* V AND STORES THE RESULT IN THE VECTOR GV (FINITE-DIFFERENCE VERSION) */
@@ -2176,10 +2176,10 @@ L20:
   C_INT i__1;
 
   /* Local variables */
-  static C_FLOAT64 ghyk, ghyr, yksr;
-  static C_INT i__;
-  static C_FLOAT64 ykhyk, ykhyr, yrhyr, rdiagb;
-  static C_FLOAT64 one, gsr;
+  C_FLOAT64 ghyk, ghyr, yksr;
+  C_INT i__;
+  C_FLOAT64 ykhyk, ykhyr, yrhyr, rdiagb;
+  C_FLOAT64 one, gsr;
 
   /* THIS ROUTINE ACTS AS A PRECONDITIONING STEP FOR THE */
   /* LINEAR CONJUGATE-GRADIENT ROUTINE.  IT IS ALSO THE */
@@ -2296,9 +2296,9 @@ L100:
   C_INT i__1;
 
   /* Local variables */
-  static C_FLOAT64 beta;
-  static C_INT i__;
-  static C_FLOAT64 delta;
+  C_FLOAT64 beta;
+  C_INT i__;
+  C_FLOAT64 delta;
 
   /* SELF-SCALED BFGS */
 
@@ -2346,7 +2346,7 @@ L100:
                              C_INT *modet, C_INT *upd1)
 {
   /* Format strings */
-  // static char fmt_800[] = "(\002 \002,//8x,\002DMIN =\002,1pd12.4,\002  DM"
+  //  char fmt_800[] = "(\002 \002,//8x,\002DMIN =\002,1pd12.4,\002  DM"
   //                        "AX =\002,1pd12.4,\002 COND =\002,1pd12.4,/)";
 
   /* System generated locals */
@@ -2356,13 +2356,13 @@ L100:
   // C_INT s_wsfe(cilist *), do_fio(C_INT *, char *, ftnlen), e_wsfe(void);
 
   /* Local variables */
-  static C_FLOAT64 cond;
-  static C_FLOAT64 srds, yrsk;
-  static C_INT i__;
-  static C_FLOAT64 d1, dn, td, sds;
+  C_FLOAT64 cond;
+  C_FLOAT64 srds, yrsk;
+  C_INT i__;
+  C_FLOAT64 d1, dn, td, sds;
 
   /* Fortran I/O blocks */
-  // static cilist io___235 = {0, 6, 0, fmt_800, 0 };
+  //  cilist io___235 = {0, 6, 0, fmt_800, 0 };
 
   /* Parameter adjustments */
   --yr;
@@ -2460,7 +2460,7 @@ L110:
 
 /* Subroutine */ int CTruncatedNewton::setpar_(C_INT *n)
 {
-  static C_INT i__;
+  C_INT i__;
 
   /* SET UP PARAMETERS FOR THE OPTIMIZATION ROUTINE */
 
@@ -2486,25 +2486,25 @@ L110:
   C_INT i__1;
 
   /* Local variables */
-  static C_FLOAT64 oldf, fmin, gmin;
-  static C_INT numf;
-  static C_FLOAT64 step, xmin, a, b, e;
-  static C_INT i__, l;
-  static C_FLOAT64 u;
-  static C_INT itcnt;
-  static C_FLOAT64 b1;
-  static C_INT itest, nprnt;
-  static C_FLOAT64 gtest1, gtest2;
-  static C_INT lg;
-  static C_FLOAT64 fu, gu, fw, gw;
-  static C_INT lx;
-  static C_INT braktd;
-  static C_FLOAT64 ualpha, factor, scxbnd, xw;
-  static C_FLOAT64 fpresn;
-  static C_INT ientry;
-  static C_FLOAT64 rtsmll;
-  static C_INT lsprnt;
-  static C_FLOAT64 big, tol, rmu;
+  C_FLOAT64 oldf, fmin, gmin;
+  C_INT numf;
+  C_FLOAT64 step, xmin, a, b, e;
+  C_INT i__, l;
+  C_FLOAT64 u;
+  C_INT itcnt;
+  C_FLOAT64 b1;
+  C_INT itest, nprnt;
+  C_FLOAT64 gtest1, gtest2;
+  C_INT lg;
+  C_FLOAT64 fu, gu, fw, gw;
+  C_INT lx;
+  C_INT braktd;
+  C_FLOAT64 ualpha, factor, scxbnd, xw;
+  C_FLOAT64 fpresn;
+  C_INT ientry;
+  C_FLOAT64 rtsmll;
+  C_INT lsprnt;
+  C_FLOAT64 big, tol, rmu;
 
   /*      THE FOLLOWING STANDARD FUNCTIONS AND SYSTEM FUNCTIONS ARE */
   /*      CALLED WITHIN LINDER */
@@ -2631,11 +2631,11 @@ int CTruncatedNewton::getptc_(C_FLOAT64 *big, C_FLOAT64 * /* small */, C_FLOAT64
   C_FLOAT64 d__1, d__2;
 
   /* Local variables */
-  static C_FLOAT64 half, abgw, fabsr, five, zero, p, q, r__, s, scale,
+  C_FLOAT64 half, abgw, fabsr, five, zero, p, q, r__, s, scale,
   denom, three, a1, d1, d2, sumsq, point1, abgmin, chordm, eleven,
   chordu;
-  static C_INT convrg;
-  static C_FLOAT64 xmidpt, twotol, one;
+  C_INT convrg;
+  C_FLOAT64 xmidpt, twotol, one;
 
   /* ************************************************************ */
   /* GETPTC, AN ALGORITHM FOR FINDING A STEPLENGTH, CALLED REPEATEDLY BY */
@@ -3100,7 +3100,7 @@ L220:
   C_INT i__1;
 
   /* Local variables */
-  static C_INT i__, m, ix, iy, mp1;
+  C_INT i__, m, ix, iy, mp1;
 
   /*     VECTOR PLUS A VECTOR. */
   /*     USES UNROLLED LOOPS FOR INCREMENTS EQUAL TO ONE. */
