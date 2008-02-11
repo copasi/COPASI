@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/moieties/CMoietiesTask.cpp,v $
-//   $Revision: 1.1.2.1 $
+//   $Revision: 1.1.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/02/09 00:58:16 $
+//   $Date: 2008/02/11 18:30:54 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -67,10 +67,10 @@ bool CMoietiesTask::initialize(const OutputFlag & of,
 
   if (!pProblem || !pMethod) return false;
 
-  bool success = true;
+  pMethod->setProblem(pProblem);
 
-  //initialize reporting
-  if (!CCopasiTask::initialize(of, pOstream)) success = false;
+  // Default initialization
+  bool success = CCopasiTask::initialize(of, pOstream);
 
   success &= mpMethod->isValidProblem(mpProblem);
 
@@ -83,7 +83,7 @@ bool CMoietiesTask::process(const bool & /* useInitialValues */)
 
   output(COutputInterface::BEFORE);
 
-  // success = pMethod->...;
+  success = static_cast< CMoietiesMethod * >(mpMethod)->process();
 
   output(COutputInterface::AFTER);
 

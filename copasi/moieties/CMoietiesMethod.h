@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/moieties/CMoietiesMethod.h,v $
-//   $Revision: 1.1.2.1 $
+//   $Revision: 1.1.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/02/09 00:58:16 $
+//   $Date: 2008/02/11 18:30:54 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,6 +17,7 @@
 #include "copasi/utilities/CCopasiMethod.h"
 
 class CProcessReport;
+class CMoietiesProblem;
 
 class CMoietiesMethod : public CCopasiMethod
   {
@@ -63,26 +64,22 @@ class CMoietiesMethod : public CCopasiMethod
     virtual ~CMoietiesMethod();
 
     /**
-     * Set the call back of the problem
-     * @param CProcessReport * pCallBack
-     * @result bool succes
+     * Determine the independent metabolites.
      */
-    virtual bool setCallBack(CProcessReport * pCallBack);
+    virtual bool process();
 
     /**
-     * Check if the method is suitable for this problem
-     * @return bool suitability of the method
+     * Set the problem
+     * @param CMoietiesProblem * pProblem
      */
-    virtual bool isValidProblem(const CCopasiProblem * pProblem);
+    void setProblem(CMoietiesProblem * pProblem);
 
+    // Attributes
+  protected:
     /**
-     * This is the output method for any object. The default implementation
-     * provided with CCopasiObject uses the ostream operator<< of the object
-     * to print the object.To overide this default behaviour one needs to
-     * reimplement the virtual print function.
-     * @param std::ostream * ostream
+     * The problem to be processed
      */
-    virtual void print(std::ostream * ostream) const;
+    CMoietiesProblem * mpProblem;
   };
 
 #endif // COPASI_CMoietiesMethod

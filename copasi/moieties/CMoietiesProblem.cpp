@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/moieties/CMoietiesProblem.cpp,v $
-//   $Revision: 1.1.2.1 $
+//   $Revision: 1.1.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/02/09 00:58:16 $
+//   $Date: 2008/02/11 18:30:54 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -11,11 +11,12 @@
 // and The University of Manchester.
 // All rights reserved.
 
-#include <float.h>
-
 #include "copasi.h"
 
 #include "CMoietiesProblem.h"
+
+#include "model/CModel.h"
+#include "utilities/CAnnotatedMatrix.h"
 
 //  Default constructor
 CMoietiesProblem::CMoietiesProblem(const CCopasiTask::Type & type,
@@ -24,7 +25,7 @@ CMoietiesProblem::CMoietiesProblem(const CCopasiTask::Type & type,
 {}
 
 // copy constructor
-CMoietiesProblem::CMoietiesProblem(const CMoietiesProblem& src,
+CMoietiesProblem::CMoietiesProblem(const CMoietiesProblem & src,
                                    const CCopasiContainer * pParent):
     CCopasiProblem(src, pParent)
 {}
@@ -33,46 +34,36 @@ CMoietiesProblem::CMoietiesProblem(const CMoietiesProblem& src,
 CMoietiesProblem::~CMoietiesProblem()
 {}
 
-// virtual
-bool CMoietiesProblem::setModel(CModel * pModel)
-{
-  // TODO Implement or delete.
-  return true;
-}
-
-// virtual
-bool CMoietiesProblem::setCallBack(CProcessReport * pCallBack)
-{
-  // TODO Implement or delete.
-  return true;
-}
-
-bool CMoietiesProblem::initialize()
-{
-  // TODO Implement or delete.
-  return true;
-}
-
-bool CMoietiesProblem::restore(const bool & updateModel)
-{
-  // TODO Implement or delete.
-  return true;
-}
-
-void CMoietiesProblem::print(std::ostream * ostream) const
+void CMoietiesProblem::printResult(std::ostream * pOstream) const
   {
-    // TODO Implement or delete.
+    if (mpModel == NULL) return;
+
+    // Print all Moieties
+    *pOstream << "Dependent Species" << "\t";
+    *pOstream << "Equation" << "\t";
+    *pOstream << "Preserved Particle Number" << std::endl;
+
+    CCopasiVector< CMoiety >::const_iterator it = mpModel->getMoieties().begin();
+    CCopasiVector< CMoiety >::const_iterator end = mpModel->getMoieties().end();
+    for (; it != end; ++it)
+      {
+        *pOstream << (*it)->getObjectName() << "\t";
+        *pOstream << (*it)->getDescription(mpModel) << "\t";
+        *pOstream << (*it)->getNumber() << std::endl;
+      }
+    *pOstream << std::endl;
+
+    // Print Reordered Stoichiometry Matrix
+    *pOstream << "Stoichiometry Matrix" << std::endl;
+    *pOstream << dynamic_cast<const CArrayAnnotation *>(mpModel->getObject(CCopasiObjectName("Array=Stoichiometry(ann)"))) << std::endl;
+
+    // Print Link Matrix
+    *pOstream << "Link Matrix" << std::endl;
+    *pOstream << dynamic_cast<const CArrayAnnotation *>(mpModel->getObject(CCopasiObjectName("Array=Link matrix(ann)"))) << std::endl;
+
+    // Print Reduced Stoichiometry Matrix
+    *pOstream << "Reduced Stoichiometry Matrix" << std::endl;
+    *pOstream << dynamic_cast<const CArrayAnnotation *>(mpModel->getObject(CCopasiObjectName("Array=Reduced stoichiometry(ann)"))) << std::endl;
+
     return;
   }
-
-void CMoietiesProblem::printResult(std::ostream * ostream) const
-  {
-    // TODO Implement or delete.
-    return;
-  }
-
-std::ostream &operator<<(std::ostream &os, const CMoietiesProblem & o)
-{
-  // TODO Implement or delete.
-  return os;
-}
