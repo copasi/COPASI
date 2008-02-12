@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.47 $
+//   $Revision: 1.48 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/02/08 15:55:32 $
+//   $Date: 2008/02/12 11:53:42 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -78,10 +78,12 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
           glPainter->setGraphSize(c1, c2);
           glPainter->createGraph(pLayout); // create local data structures
           // now zoom graph so that it fits into the panel
-          C_FLOAT64 w = 400.0; // initial width of graph panel
-          C_FLOAT64 h = 400.0; // initial height of graph panel
-          C_FLOAT64 z = ((w / dim.getWidth()) < (h / dim.getHeight())) ? w / dim.getWidth() : h / dim.getHeight();
-          glPainter->zoomGraph(z);
+          // --> is done in resize method
+          //C_FLOAT64 w = 200.0; // initial width of graph panel
+          //C_FLOAT64 h = 250.0; // initial height of graph panel
+          //C_FLOAT64 z = ((w / dim.getWidth()) < (h / dim.getHeight())) ? w / dim.getWidth() : h / dim.getHeight();
+          //std::cout << "zoom by. " << z << std::endl;
+          //glPainter->zoomGraph(z);
           //glPainter->drawGraph(); // create display list
         }
     }
@@ -531,20 +533,18 @@ void CQLayoutMainWindow::closeEvent(QCloseEvent *event)
 // when resize of panel occurs, the graph should be resized accordingly
 void CQLayoutMainWindow::resizeEvent(QResizeEvent *ev)
 {
-
-  int w = ev->size().width(); // glPainter->width()
-  int h = ev->size().height(); // glPainter->height()
-  //std::cout << "(w x h) "  << w << "  "  << h << std::endl;
+  std::cout << "event type: " << ev->type() << std::endl;
+  int w = scrollView->width(); // ev->size().width();
+  int h = scrollView->height(); // ev->size().height();
+  //std::cout << "scroll view "  << w << "  "  << h << std::endl;
 
   const CLPoint& c1 = glPainter->getGraphMin();
   const CLPoint& c2 = glPainter->getGraphMax();
-  //std::cout << "c2 "  << c2.getX() << "  "  << c2.getY() << std::endl;
 
   // now zoom graph according to new panel size
   C_FLOAT64 z = ((w / c2.getX()) < (h / c2.getY())) ? w / c2.getX() : h / c2.getY();
-  //std::cout << "zoom factor: "  << z << std::endl;
+  //std::cout << "zoom factor in RESIZE: "  << z << std::endl;
   glPainter->zoomGraph(z);
-  //std::cout << "RESIZE" << std::endl;
 }
 
 QIconSet CQLayoutMainWindow::createStartIcon()
