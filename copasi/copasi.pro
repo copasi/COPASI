@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.pro,v $ 
-#   $Revision: 1.43.4.1 $ 
+#   $Revision: 1.43.4.2 $ 
 #   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2008/02/09 00:58:30 $ 
+#   $Author: gauges $ 
+#   $Date: 2008/02/14 10:53:37 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -16,7 +16,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.43.4.1 $ $Author: shoops $ $Date: 2008/02/09 00:58:30 $  
+# $Revision: 1.43.4.2 $ $Author: gauges $ $Date: 2008/02/14 10:53:37 $  
 ######################################################################
 
 TEMPLATE = subdirs
@@ -97,6 +97,7 @@ isEmpty(COPASI_SRC_PACKAGE) {
 
 !isEmpty(CPPUNIT_PATH) {
   SUBDIRS += compareExpressions/unittests
+  SUBDIRS += sbml/unittests
 }
 
 DISTDIRS = $${SUBDIRS}
