@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraph.h,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/02/08 23:06:53 $
+//   $Date: 2008/02/14 22:57:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -142,22 +142,6 @@ class CRDFGraph
     bool removeRecordFromTable(const std::string& tableName, CRDFObject& tableObj, const CRDFObject& childObj);
 
     /**
-     * Add a Bag node to a table node.
-     * @param const std::string tableName
-     * @param CRDFObject& tableObj
-     * @return std::string success
-     */
-    bool addBagNodeToTable(const std::string& tableName, CRDFObject& tableObj);
-
-    /**
-     * Remove a Bag node from a table node.
-     * @param const std::string tableName
-     * @param CRDFObject& tableObj
-     * @return std::string success
-     */
-    bool removeBagNodeFromTable(const std::string& tableName, CRDFObject& tableObj);
-
-    /**
     * Remove all empty Nodes from the graph;
     */
     void compressGraph();
@@ -197,8 +181,27 @@ class CRDFGraph
     static unsigned int nodeIDCounter;
 
   protected:
+    /**
+        * Add a Bag node to a table node.
+        * @param const std::string tableName
+        * @param CRDFObject& tableObj
+        * @return std::string success
+        */
+    bool addBagNodeToTable(const std::string& tableName, CRDFObject& tableObj);
+
+    /**
+     * Remove a Bag node from a table node.
+     * @param const std::string tableName
+     * @param CRDFObject& tableObj
+     * @return std::string success
+     */
+    bool removeBagNodeFromTable(const std::string& tableName, CRDFObject& tableObj);
+
+    void addObjectToBagNode(const std::string& tableName, CRDFNode* pTableNode, const CRDFObject& object);
     void buildCreatorRecord(const CRDFNode * pObjNode);
+    void buildPublicationRecord(const CRDFNode * pObjNode);
     std::string getNameSpaceURI(const std::string& lookupStr);
+    CRDFNode* findNodeFromObject(const CRDFObject& object);
     CRDFNode* findFieldNodeFromObject(const std::string& fieldName, const CRDFObject& obj);
     std::string fieldName2Predicate(const std::string& fieldName);
     std::string tableName2Predicate(const std::string& tableName);

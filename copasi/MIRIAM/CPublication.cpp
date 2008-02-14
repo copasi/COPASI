@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/Attic/CPublication.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/02/02 13:35:26 $
+//   $Date: 2008/02/14 22:57:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,8 +28,8 @@ CPublication::CPublication(const std::string & objectName, const CCopasiContaine
   else
     {
       mpRDFObj = new CRDFObject();
-      mpRDFObj->setType(CRDFObject::RESOURCE);
-      mpRDFObj->setResource(mKey, false);
+      mpRDFObj->setType(CRDFObject::BLANK_NODE);
+      mpRDFObj->setBlankNodeId(mKey);
     }
   initObjects();
   CONSTRUCTOR_TRACE;
@@ -57,12 +57,12 @@ const std::string CPublication::getObjectName() const
   {return getURL();}
 
 const std::string CPublication::getURL() const
-  {return CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getRDFGraph()->getFieldValue("URL", *mpRDFObj);}
+  {return CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getRDFGraph()->getFieldValue("PubmedID", *mpRDFObj);}
 
 CRDFObject& CPublication::getRDFObject()
 {return *mpRDFObj;}
 
 void CPublication::setURL(const std::string URL)
-{CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getRDFGraph()->setFieldValue("URL", *mpRDFObj, URL);}
+{CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getRDFGraph()->setFieldValue("PubmedID", *mpRDFObj, URL);}
 
 const std::string & CPublication::getKey() const {return mKey;} //By G

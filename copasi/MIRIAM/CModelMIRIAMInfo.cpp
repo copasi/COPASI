@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CModelMIRIAMInfo.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/02/08 23:06:53 $
+//   $Date: 2008/02/14 22:57:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -139,8 +139,6 @@ CAuthor* CModelMIRIAMInfo::createAuthor(const std::string & objectName)
       return NULL;
     }
 
-  if (mAuthors.size() == 2)
-  {mpRDFGraph->addBagNodeToTable("Creators", mAuthorsObj);}
   mpRDFGraph->addRecordToTable("Creators", mAuthorsObj, pAuthor->getRDFObject());
   return pAuthor;
 }
@@ -162,8 +160,6 @@ bool CModelMIRIAMInfo::removeAuthor(const std::string & key)
 
   mpRDFGraph->removeRecordFromTable("Creators", mAuthorsObj, pAuthor->getRDFObject());
   mAuthors.CCopasiVector< CAuthor >::remove(index);
-  if (mAuthors.size() == 1)
-  {mpRDFGraph->removeBagNodeFromTable("Creators", mAuthorsObj);}
   return true;
 }
 
@@ -180,8 +176,6 @@ CPublication* CModelMIRIAMInfo::createPublication(const std::string & objectName
       return NULL;
     }
 
-  if (mPublications.size() == 2)
-  {mpRDFGraph->addBagNodeToTable("Publications", mPublicationsObj);}
   mpRDFGraph->addRecordToTable("Publications", mPublicationsObj, pPublication->getRDFObject());
   return pPublication;
 }
@@ -203,7 +197,5 @@ bool CModelMIRIAMInfo::removePublication(const std::string & key)
 
   mpRDFGraph->removeRecordFromTable("Publications", mPublicationsObj, pPublication->getRDFObject());
   mPublications.CCopasiVector< CPublication >::remove(index);
-  if (mPublications.size() == 1)
-  {mpRDFGraph->removeBagNodeFromTable("Publications", mPublicationsObj);}
   return true;
 }
