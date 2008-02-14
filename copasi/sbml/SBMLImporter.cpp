@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.189.2.6.2.8 $
+//   $Revision: 1.189.2.6.2.9 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/08 13:12:18 $
+//   $Date: 2008/02/14 10:49:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -197,6 +197,10 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       ++step;
       if (mpImportHandler && !mpImportHandler->progress(hStep)) return false;
     }
+
+  // try to find global parameters that represent avogadros number
+  this->findAvogadroConstant(sbmlModel, this->mpCopasiModel->getQuantity2NumberFactor());
+
   // now we go through all initial assignments, rules, constraints, kinetic
   // laws and events and replace function calls to functions in mExplicitelyTimeDependentFunctionDefinitions
   // by a call with the extra parameter that is the time.
@@ -389,12 +393,6 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   // import the initial assignments
   importInitialAssignments(sbmlModel, copasi2sbmlmap);
 
-  /*
-  if (sbmlModel->getNumInitialAssignments() > 0)
-    {
-      CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 48);
-    }
-  */
   /* Create the rules */
   this->areRulesUnique(sbmlModel);
   num = sbmlModel->getNumRules();
@@ -490,9 +488,23 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   setInitialValues(this->mpCopasiModel, copasi2sbmlmap);
   // evaluate and apply the initial expressions
   this->applyStoichiometricExpressions(copasi2sbmlmap);
-
+  this->createDelayFunctionDefinition();
   this->removeUnusedFunctions(pTmpFunctionDB, copasi2sbmlmap);
-
+  // remove the temporary avogadro parameter if one was created
+  if (this->mAvogadroCreated == true)
+    {
+      const Parameter* pParameter = *this->mPotentialAvogadroNumbers.begin();
+      ListOf* pList = sbmlModel->getListOfParameters();
+      unsigned i, iMax = pList->size();
+      for (i = 0;i < iMax;++i)
+        {
+          if (pList->get(i)->getId() == pParameter->getId())
+            {
+              pList->remove(i);
+              break;
+            }
+        }
+    }
   delete pTmpFunctionDB;
 
   return this->mpCopasiModel;
@@ -1029,8 +1041,10 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
               delete copasiReaction;
               fatalError();
             }
-
+          /**
+           * Removed because this no longer works for variable volumes
           this->replaceSubstanceOnlySpeciesNodes(node, mSubstanceOnlySpecies);
+          */
 
           /* if it is a single compartment reaction, we have to divide the whole kinetic
           ** equation by the compartment because copasi expects
@@ -1347,6 +1361,8 @@ SBMLImporter::SBMLImporter()
   this->mUnsupportedAssignmentRuleFound = false;
   this->mpImportHandler = NULL;
   this->mFastReactionsEncountered = false;
+  this->mDelayFound = false;
+  this->mAvogadroCreated = false;
   this->mIgnoredSBMLMessages.insert(10501);
   this->mIgnoredSBMLMessages.insert(10512);
   this->mIgnoredSBMLMessages.insert(10513);
@@ -1367,7 +1383,6 @@ SBMLImporter::~SBMLImporter()
 /**
  * This functions replaces all species nodes for species that are in the substanceOnlySpeciesVector.
  * With the node multiplied by the volume of the species compartment.
- */
 void SBMLImporter::replaceSubstanceOnlySpeciesNodes(ConverterASTNode* node, const std::map<Species*, Compartment*>& substanceOnlySpecies)
 {
   if (node != NULL)
@@ -1405,6 +1420,7 @@ void SBMLImporter::replaceSubstanceOnlySpeciesNodes(ConverterASTNode* node, cons
         }
     }
 }
+ */
 
 /**
  * Function reads an SBML file with libsbml and converts it to a Copasi CModel
@@ -2110,9 +2126,181 @@ void SBMLImporter::preprocessNode(ConverterASTNode* pNode)
 {
   // this function goes through the tree three times.
   // this can probably be handled more intelligently
-  //this->isDelayFunctionUsed(pNode);
+  if (!this->mDelayFound)
+    {
+      this->isDelayFunctionUsed(pNode);
+    }
   this->replaceCallNodeNames(pNode);
   this->replaceTimeNodeNames(pNode);
+  this->replaceAmountReferences(pNode, this->mpCopasiModel->getQuantity2NumberFactor());
+}
+
+/**
+ * This method replaces references to the id of species which have the
+ * hasOnlySubstanceUnits flag set with the reference divided by avogadros
+ * number.
+ * The method tries to determine if there already is a multiplication with
+ * avogadros number and removes this multiplication rather than adding a new division.
+ */
+void SBMLImporter::replaceAmountReferences(ConverterASTNode* pNode, double factor)
+{
+  if (!pNode) return;
+  if (pNode->getType() == AST_NAME)
+    {
+      // check if pNode is a reference to a hasOnlySubstance species
+      std::string id = pNode->getName();
+      std::map<Species*, Compartment*>::const_iterator it = this->mSubstanceOnlySpecies.begin(), endit = this->mSubstanceOnlySpecies.end();
+      while (it != endit)
+        {
+          if (it->first->getId() == id)
+            {
+              break;
+            }
+          ++it;
+        }
+      if (it != endit)
+        {
+          // replace pNode by a division by the quantity to number
+          // factor
+          pNode->setType(AST_DIVIDE);
+          pNode->setCharacter('/');
+          ConverterASTNode* pChild = new ConverterASTNode(AST_NAME);
+          pChild->setName(id.c_str());
+          pNode->addChild(pChild);
+          id = (*this->mPotentialAvogadroNumbers.begin())->getId();
+          pChild = new ConverterASTNode(AST_NAME);
+          pChild->setName(id.c_str());
+          pNode->addChild(pChild);
+        }
+    }
+  else if (pNode->getType() == AST_TIMES)
+    {
+      // for now we ignore multiplication nodes with more than two children
+      if (pNode->getNumChildren() == 2)
+        {
+          if ((pNode->getChild(0)->getType() == AST_NAME))
+            {
+              // check if child0 is a reference to a hasOnlySubstance species
+              std::string id = pNode->getChild(0)->getName();
+              std::map<Species*, Compartment*>::const_iterator it = this->mSubstanceOnlySpecies.begin(), endit = this->mSubstanceOnlySpecies.end();
+              while (it != endit)
+                {
+                  if (it->first->getId() == id)
+                    {
+                      break;
+                    }
+                  ++it;
+                }
+              if (it != endit)
+                {
+                  // check if child1 is a number that is equal to avogadros number
+                  if (pNode->getChild(1)->getType() == AST_REAL || pNode->getChild(1)->getType() == AST_REAL_E)
+                    {
+                      double value = pNode->getChild(0)->getMantissa() * pow(10.0, (double)pNode->getChild(0)->getExponent());
+                      if (fabs((factor - value) / factor) <= 1e-3)
+                        {
+                          // replace the times node with child0
+                          pNode->removeChild(0);
+                          pNode->removeChild(1);
+                          pNode->setType(AST_NAME);
+                          pNode->setName(id.c_str());
+                          return;
+                        }
+                    }
+                  else if (pNode->getChild(1)->getType() == AST_NAME)
+                    {
+                      // check if child1 is a global parameter that is equal to avogadros number
+                      std::set<const Parameter*>::const_iterator sit = this->mPotentialAvogadroNumbers.begin(), sendit = this->mPotentialAvogadroNumbers.end();
+                      while (sit != sendit)
+                        {
+                          if ((*sit)->getId() == pNode->getChild(1)->getName())
+                            {
+                              // replace pNode by child0
+                              pNode->removeChild(0);
+                              pNode->removeChild(1);
+                              pNode->setType(AST_NAME);
+                              pNode->setName(id.c_str());
+                              return;
+                            }
+                          ++sit;
+                        }
+                    }
+                }
+              else
+                {
+                  // check if child1 is a reference to a hasOnlySubstanceUnits
+                  // species
+                  id = pNode->getChild(1)->getName();
+                  std::map<Species*, Compartment*>::const_iterator it = this->mSubstanceOnlySpecies.begin(), endit = this->mSubstanceOnlySpecies.end();
+                  while (it != endit)
+                    {
+                      if (it->first->getId() == id)
+                        {
+                          break;
+                        }
+                      ++it;
+                    }
+                  if (it != endit)
+                    {
+                      // check if child0 is a parameter that represents avogadros
+                      // number
+                      std::set<const Parameter*>::const_iterator sit = this->mPotentialAvogadroNumbers.begin(), sendit = this->mPotentialAvogadroNumbers.end();
+                      while (sit != sendit)
+                        {
+                          if ((*sit)->getId() == pNode->getChild(0)->getName())
+                            {
+                              // replace pNode by child1
+                              pNode->removeChild(0);
+                              pNode->removeChild(1);
+                              pNode->setType(AST_NAME);
+                              pNode->setName(id.c_str());
+                              return;
+                            }
+                          ++sit;
+                        }
+                    }
+                }
+            }
+          else if (pNode->getChild(1)->getType() == AST_NAME)
+            {
+              // check if child1 is a reference to a hasOnlySubstance species
+              std::string id = pNode->getChild(1)->getName();
+              std::map<Species*, Compartment*>::const_iterator it = this->mSubstanceOnlySpecies.begin(), endit = this->mSubstanceOnlySpecies.end();
+              while (it != endit)
+                {
+                  if (it->first->getId() == id)
+                    {
+                      break;
+                    }
+                  ++it;
+                }
+              if (it != endit)
+                {
+                  // check if child0 is a number that is equal to avogadros number
+                  if (pNode->getChild(0)->getType() == AST_REAL || pNode->getChild(0)->getType() == AST_REAL_E)
+                    {
+                      double value = pNode->getChild(0)->getMantissa() * pow(10.0, (double)pNode->getChild(0)->getExponent());
+                      if (fabs((factor - value) / factor) <= 1e-3)
+                        {
+                          // replace pNode by child1
+                          pNode->removeChild(0);
+                          pNode->removeChild(1);
+                          pNode->setType(AST_NAME);
+                          pNode->setName(id.c_str());
+                        }
+                    }
+                }
+            }
+        }
+    }
+  // go through the children
+  unsigned int i, iMax = pNode->getNumChildren();
+  for (i = 0;i < iMax;++i)
+    {
+      ConverterASTNode* pChild = dynamic_cast<ConverterASTNode*>(pNode->getChild(i));
+      assert(pChild != NULL);
+      this->replaceAmountReferences(pChild, this->mpCopasiModel->getQuantity2NumberFactor());
+    }
 }
 
 void SBMLImporter::isDelayFunctionUsed(ConverterASTNode* pNode)
@@ -2120,7 +2308,8 @@ void SBMLImporter::isDelayFunctionUsed(ConverterASTNode* pNode)
   if (!pNode) return;
   if (pNode->getType() == AST_FUNCTION_DELAY)
     {
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 36);
+      //CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 36);
+      this->mDelayFound = true;
     }
   else
     {
@@ -3361,7 +3550,7 @@ void SBMLImporter::importRuleForModelEntity(const Rule* rule, CModelEntity* pME,
   ConverterASTNode tmpNode(*rule->getMath());
   // replace all the nodes that represent species with the
   // hasOnlySubstanceUnits flag set with the node divided by the volume
-  replaceSubstanceOnlySpeciesNodes(&tmpNode, mSubstanceOnlySpecies);
+  //replaceSubstanceOnlySpeciesNodes(&tmpNode, mSubstanceOnlySpecies);
   this->preprocessNode(&tmpNode);
   // replace the object names
   this->replaceObjectNames(&tmpNode, copasi2sbmlmap);
@@ -3464,7 +3653,7 @@ void SBMLImporter::getIdsFromNode(const ASTNode* pNode, std::set<std::string>& i
     }
 }
 
-void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
+void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, bool initialExpression)
 {
   if (pNode->getType() == AST_NAME)
     {
@@ -3480,6 +3669,7 @@ void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<CCopasiObje
           CCopasiObject* pObject = it->first;
           pReaction = dynamic_cast<CReaction*>(pObject);
           pModelEntity = dynamic_cast<CModelEntity*>(pObject);
+          Species* pSpecies = dynamic_cast<Species*>(it->second);
           std::string sbmlId;
           if (pReaction)
             {
@@ -3495,17 +3685,53 @@ void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<CCopasiObje
               switch (it->second->getTypeCode())
                 {
                 case SBML_COMPARTMENT:
-                  pNode->setName((pObject->getCN() + ",Reference=Volume").c_str());
+                  if (!initialExpression)
+                    {
+                      pNode->setName((pObject->getCN() + ",Reference=Volume").c_str());
+                    }
+                  else
+                    {
+                      pNode->setName((pObject->getCN() + ",Reference=InitialVolume").c_str());
+                    }
                   break;
                 case SBML_SPECIES:
                   // !!!! Check if this is always correct. Maybe if
                   // hasOnlySubstanceUnits is set we have to use the amount
                   // instead. !!!!
-                  pNode->setName((pObject->getCN() + ",Reference=Concentration").c_str());
+                  assert(pSpecies != NULL);
+                  if (this->mSubstanceOnlySpecies.find(pSpecies) == this->mSubstanceOnlySpecies.end())
+                    {
+                      if (!initialExpression)
+                        {
+                          pNode->setName((pObject->getCN() + ",Reference=Concentration").c_str());
+                        }
+                      else
+                        {
+                          pNode->setName((pObject->getCN() + ",Reference=InitialConcentration").c_str());
+                        }
+                    }
+                  else
+                    {
+                      if (!initialExpression)
+                        {
+                          pNode->setName((pObject->getCN() + ",Reference=Amount").c_str());
+                        }
+                      else
+                        {
+                          pNode->setName((pObject->getCN() + ",Reference=InitialAmount").c_str());
+                        }
+                    }
                   break;
                   //case SBML_REACTION:
                 case SBML_PARAMETER:
-                  pNode->setName((pObject->getCN() + ",Reference=Value").c_str());
+                  if (!initialExpression)
+                    {
+                      pNode->setName((pObject->getCN() + ",Reference=Value").c_str());
+                    }
+                  else
+                    {
+                      pNode->setName((pObject->getCN() + ",Reference=InitialValue").c_str());
+                    }
                   break;
                 default:
                   fatalError();
@@ -4502,12 +4728,15 @@ void SBMLImporter::importInitialAssignments(const Model* pSBMLModel, const std::
                   const ASTNode* pMath = pInitialAssignment->getMath();
                   assert(pMath != NULL);
                   ConverterASTNode tmpNode(*pMath);
+                  /**
+                   * Removed because this no longer works for variable volumes
                   // replace all the nodes that represent species with the
                   // hasOnlySubstanceUnits flag set with the node divided by the volume
                   replaceSubstanceOnlySpeciesNodes(&tmpNode, mSubstanceOnlySpecies);
+                  */
                   this->preprocessNode(&tmpNode);
                   // replace the object names
-                  this->replaceObjectNames(&tmpNode, copasi2sbmlMap);
+                  this->replaceObjectNames(&tmpNode, copasi2sbmlMap, true);
                   // now we convert the node to a CEvaluationNode
                   CExpression* pExpression = new CExpression;
                   pExpression->setTree(tmpNode);
@@ -4564,7 +4793,10 @@ void SBMLImporter::applyStoichiometricExpressions(std::map<CCopasiObject*, SBase
       assert(pChemEqElement != NULL);
       ConverterASTNode* pNode = new ConverterASTNode(*it->first);
       this->preprocessNode(pNode);
-      this->replaceSubstanceOnlySpeciesNodes(pNode, this->mSubstanceOnlySpecies);
+      /**
+       * Removed because this no longer works for variable volumes
+       this->replaceSubstanceOnlySpeciesNodes(pNode, this->mSubstanceOnlySpecies);
+       */
       this->replaceObjectNames(pNode, copasi2sbmlmap);
       CExpression* pExpr = new CExpression();
       pExpr->setTree(*pNode);
@@ -4602,5 +4834,54 @@ void SBMLImporter::applyStoichiometricExpressions(std::map<CCopasiObject*, SBase
           CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 64);
         }
       ++it;
+    }
+}
+
+void SBMLImporter::createDelayFunctionDefinition()
+{
+  // TODO
+}
+
+void SBMLImporter::findAvogadroConstant(Model* pSBMLModel, double factor)
+{
+  unsigned int i, iMax = pSBMLModel->getListOfParameters()->size();
+  for (i = 0;i < iMax;++i)
+    {
+      const Parameter* pParameter = dynamic_cast<const Parameter*>(pSBMLModel->getListOfParameters()->get(i));
+      if (pParameter->getConstant() == true && pParameter->isSetValue() == true)
+        {
+          double value = pParameter->getValue();
+          if (fabs((factor - value) / factor) < 1e-3)
+            {
+              this->mPotentialAvogadroNumbers.insert(pParameter);
+            }
+        }
+    }
+  if (this->mPotentialAvogadroNumbers.empty())
+    {
+      // find an ID that is unique at least within the list of parameters
+      // since we remove this created parameter after import, it does not
+      // have to be unique within the whole model
+      std::set<std::string> ids;
+      for (i = 0;i < iMax;++i)
+        {
+          ids.insert(pSBMLModel->getListOfParameters()->get(i)->getId());
+        }
+      std::ostringstream os;
+      i = 1;
+      os << "parameter_" << i;
+      while (ids.find(os.str()) != ids.end())
+        {
+          ++i;
+          os.str("");
+          os << "parameter_" << i;
+        }
+      Parameter *pParameter = pSBMLModel->createParameter();
+      pParameter->setId(os.str());
+      pParameter->setName("amount to particle factor");
+      pParameter->setConstant(true);
+      pParameter->setValue(factor);
+      this->mAvogadroCreated = true;
+      this->mPotentialAvogadroNumbers.insert(pParameter);
     }
 }

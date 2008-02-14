@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-//   $Revision: 1.63.4.3 $
+//   $Revision: 1.63.4.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/08 13:12:18 $
+//   $Date: 2008/02/14 10:49:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -77,6 +77,9 @@ class SBMLImporter
     std::set<std::string> mExplicitelyTimeDependentFunctionDefinitions;
     std::vector<std::string> mIgnoredParameterUnits;
     std::map<const ASTNode*, std::pair<CCopasiObjectName, CChemEq::MetaboliteRole> > mStoichiometricExpressionMap;
+    bool mDelayFound;
+    std::set<const Parameter*> mPotentialAvogadroNumbers;
+    bool mAvogadroCreated;
 
     /**
      * Creates and returns a Copasi CModel from the SBMLDocument given as argument.
@@ -175,8 +178,8 @@ class SBMLImporter
     /**
      * This functions replaces all species nodes for species that are in the substanceOnlySpeciesVector.
      * With the node multiplied by the volume of the species compartment.
-     */
     void replaceSubstanceOnlySpeciesNodes(ConverterASTNode* node, const std::map<Species*, Compartment*>& substanceOnlySpecies);
+     */
 
     /**
      * Returns the copasi VolumeUnit corresponding to the given SBML Volume
@@ -307,7 +310,7 @@ class SBMLImporter
      */
     bool isStochasticModel(const Model* pSBMLModel);
 
-    void replaceObjectNames(ASTNode* pNode, const std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+    void replaceObjectNames(ASTNode* pNode, const std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, bool initialExpression = false);
 
     /**
      * For function definitions that use the time symbol we have to make this a
@@ -368,6 +371,26 @@ class SBMLImporter
      * constants on the CChemEqElement.
      */
     void applyStoichiometricExpressions(std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+
+    /**
+     * Creates a function definition for the delay function.
+     */
+    void createDelayFunctionDefinition();
+
+    /**
+     * This method goes through the list of global parameters and tries to find
+     * a parameter that could correspond to avogadros number.
+     */
+    void findAvogadroConstant(Model* pSBMLModel, double factor);
+
+    /**
+     * This method replaces references to the id of species which have the
+     * hasOnlySubstanceUnits flag set with the reference divided by avogadros
+     * number.
+     * The method tries to determine if there already is a multiplication with
+     * avogadros number and removes this multiplication rather than adding a new division.
+     */
+    void replaceAmountReferences(ConverterASTNode* pNode, double factor);
 
   public:
     SBMLImporter();

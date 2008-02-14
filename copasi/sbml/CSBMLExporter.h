@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.h,v $
-//   $Revision: 1.7.4.5 $
+//   $Revision: 1.7.4.6 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/04 02:05:26 $
+//   $Date: 2008/02/14 10:49:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -60,6 +60,9 @@ class CSBMLExporter
     std::map<std::string, const SBase*> mIdMap;
     std::vector<SBMLIncompatibility> mIncompatibilities;
     bool mIncompleteExport;
+    bool mVariableVolumes;
+    const CModelValue* mpAvogadro;
+    bool mAvogadroCreated;
 
   public:
     /**
@@ -464,6 +467,20 @@ class CSBMLExporter
      * if there is any.
      */
     void removeRule(const std::string& sbmlId);
+
+    /**
+     * Replaces references to species with reference to species divided by
+     * volume if it is a reference to a concentration or by a reference to the
+     * species times avogadros number if it is a reference to the amount.
+     * The method also takes into consideration the substance units of the
+     * model.
+     */
+    CEvaluationNode* replaceSpeciesReferences(const CEvaluationNode* pOrigNode, const CCopasiDataModel& dataModel);
+
+    /**
+     * Try to find a global parameter that represents avogadros number.
+     */
+    void findAvogadro(const CCopasiDataModel& dataModel);
   };
 
 #endif // CSBLExporter_H__

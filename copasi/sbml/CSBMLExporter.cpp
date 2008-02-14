@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.8.4.11 $
+//   $Revision: 1.8.4.12 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/08 13:13:16 $
+//   $Date: 2008/02/14 10:49:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,7 +52,7 @@
 #include <sbml/xml/XMLInputStream.h>
 #include "compareExpressions/compare_utilities.h"
 
-CSBMLExporter::CSBMLExporter(): mpSBMLDocument(NULL), mSBMLLevel(2), mSBMLVersion(1)
+CSBMLExporter::CSBMLExporter(): mpSBMLDocument(NULL), mSBMLLevel(2), mSBMLVersion(1), mVariableVolumes(false), mpAvogadro(NULL), mAvogadroCreated(false)
 {}
 
 CSBMLExporter::~CSBMLExporter()
@@ -321,12 +321,14 @@ void CSBMLExporter::createCompartment(CCompartment& compartment)
   CModelEntity::Status status = compartment.getStatus();
   if (status == CModelEntity::ASSIGNMENT)
     {
+      this->mVariableVolumes = true;
       this->mAssignmentVector.push_back(&compartment);
       pSBMLCompartment->setConstant(false);
       removeInitialAssignment(pSBMLCompartment->getId());
     }
   else if (status == CModelEntity::ODE)
     {
+      this->mVariableVolumes = true;
       this->mAssignmentVector.push_back(&compartment);
       pSBMLCompartment->setConstant(false);
       if (compartment.getInitialExpression() != "")
@@ -347,6 +349,12 @@ void CSBMLExporter::createCompartment(CCompartment& compartment)
       // fill initial assignment set
       if (compartment.getInitialExpression() != "")
         {
+          // only set the flag if the initial assignments would actually be
+          // exported.
+          if (this->mSBMLLevel > 2 || (this->mSBMLLevel == 2 && this->mSBMLVersion >= 2))
+            {
+              this->mVariableVolumes = true;
+            }
           this->mInitialAssignmentVector.push_back(&compartment);
         }
       else
@@ -405,15 +413,22 @@ void CSBMLExporter::createMetabolite(CMetab& metab)
   const Compartment* pSBMLCompartment = this->mpSBMLDocument->getModel()->getCompartment(metab.getCompartment()->getSBMLId());
   assert(pSBMLCompartment);
   pSBMLSpecies->setCompartment(pSBMLCompartment->getId());
+  if (this->mVariableVolumes == true)
+    {
+      pSBMLSpecies->setHasOnlySubstanceUnits(true);
+    }
   double value = metab.getInitialConcentration();
-  // if the value is NaN, pnset the initial amount
+  // if the value is NaN, unset the initial amount
   if (!isnan(value))
     {
       // if we set the concentration on a species that had the amount
       // set, the meaning of the model is different when the user changed
       // to size of the corresponding compartment
       // So if the amount had been set, we try to keep this.
-      if (pSBMLSpecies->isSetInitialAmount())
+      // we also have to set the iniital amount if the model has variable
+      // volumes since those models export all species with the
+      // hasOnlySubstanceUnits flag set to true
+      if (pSBMLSpecies->isSetInitialAmount() || this->mVariableVolumes == true)
         {
           pSBMLSpecies->setInitialAmount(value*metab.getCompartment()->getInitialValue());
         }
@@ -787,7 +802,15 @@ void CSBMLExporter::createInitialAssignment(const CModelEntity& modelEntity, CCo
           pInitialAssignment->setSymbol(modelEntity.getSBMLId());
         }
       // set the math
-      ASTNode* pNode = modelEntity.getInitialExpressionPtr()->getRoot()->toAST();
+      const CEvaluationNode* pOrigNode = modelEntity.getInitialExpressionPtr()->getRoot();
+      // the next few lines replace references to species depending on whether
+      // it is a reference to an amount or a reference to a concentration.
+      // Other factors that influence this replacement are if the model
+      // contains variable volumes or if the quantity units are set to CModel::number
+      pOrigNode = CSBMLExporter::replaceSpeciesReferences(pOrigNode, dataModel);
+      assert(pOrigNode != NULL);
+      ASTNode* pNode = pOrigNode->toAST();
+      delete pOrigNode;
       if (pNode != NULL)
         {
           pInitialAssignment->setMath(pNode);
@@ -908,7 +931,15 @@ void CSBMLExporter::createRule(const CModelEntity& modelEntity, CCopasiDataModel
           pRule->setVariable(modelEntity.getSBMLId());
         }
       // set the math
-      ASTNode* pNode = modelEntity.getExpressionPtr()->getRoot()->toAST();
+      const CEvaluationNode* pOrigNode = modelEntity.getExpressionPtr()->getRoot();
+      // the next few lines replace references to species depending on whether
+      // it is a reference to an amount or a reference to a concentration.
+      // Other factors that influence this replacement are if the model
+      // contains variable volumes or if the quantity units are set to CModel::number
+      pOrigNode = CSBMLExporter::replaceSpeciesReferences(pOrigNode, dataModel);
+      assert(pOrigNode != NULL);
+      ASTNode* pNode = pOrigNode->toAST();
+      delete pOrigNode;
       if (pNode != NULL)
         {
           pRule->setMath(pNode);
@@ -1702,6 +1733,9 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
   // create units, compartments, species, parameters, reactions, initial
   // assignment, assignments, (event) and function definitions
   createUnits(dataModel);
+  // try to find a parameter that represents avogadros number
+  findAvogadro(dataModel);
+
   createCompartments(dataModel);
   createMetabolites(dataModel);
   createParameters(dataModel);
@@ -1737,6 +1771,13 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
     }
   this->mpSBMLDocument->setLevelAndVersion(this->mSBMLLevel, this->mSBMLVersion);
   unsigned int i, iMax = this->mIncompatibilities.size();
+  // remove mpAvogadro from the model again
+  if (this->mAvogadroCreated == true)
+    {
+      std::map<const CCopasiObject*, SBase*>::iterator pos = this->mCOPASI2SBMLMap.find(this->mpAvogadro);
+      this->mCOPASI2SBMLMap.erase(pos);
+      dataModel.getModel()->removeModelValue(this->mpAvogadro->getKey(), true);
+    }
   for (i = 0;i < iMax;++i)
     {
       SBMLIncompatibility& incompat = this->mIncompatibilities[i];
@@ -1991,6 +2032,8 @@ void CSBMLExporter::createEvents(CCopasiDataModel& dataModel)
 void CSBMLExporter::createEvent(CEvent& /*event*/)
 {
   // TODO once events are functional, we create them here
+  // TODO don't forget to call replaceSpeciesReferences
+  // TODO on all mathematical expressions
 }
 
 void CSBMLExporter::checkForEvents(const CCopasiDataModel& dataModel, std::vector<SBMLIncompatibility>& result)
@@ -2052,8 +2095,16 @@ KineticLaw* CSBMLExporter::createKineticLaw(const CReaction& reaction, CCopasiDa
             }
         }
     }
-
-  CEvaluationNode* pExpression = CSBMLExporter::createKineticExpression(const_cast<CFunction*>(reaction.getFunction()), reaction.getParameterMappings(), dataModel);
+  CFunction* pTmpFunction = new CFunction(*reaction.getFunction());
+  CEvaluationNode* pOrigNode = pTmpFunction->getRoot();
+  // the next few lines replace references to species depending on whether
+  // it is a reference to an amount or a reference to a concentration.
+  // Other factors that influence this replacement are if the model
+  // contains variable volumes or if the quantity units are set to CModel::number
+  pOrigNode = CSBMLExporter::replaceSpeciesReferences(pOrigNode, dataModel);
+  assert(pOrigNode != NULL);
+  pTmpFunction->setRoot(pOrigNode);
+  CEvaluationNode* pExpression = CSBMLExporter::createKineticExpression(pTmpFunction, reaction.getParameterMappings(), dataModel);
   if (pExpression == NULL)
     {
       delete pKLaw;
@@ -3152,5 +3203,254 @@ void CSBMLExporter::removeRule(const std::string& sbmlId)
           pList->remove(i);
           break;
         }
+    }
+}
+
+/**
+ * Replaces references to species with reference to species divided by
+ * volume if it is a reference to a concentration or by a reference to the
+ * species times avogadros number if it is a reference to the amount.
+ * The method also takes into consideration the substance units of the
+ * model.
+ */
+CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* pOrigNode, const CCopasiDataModel& dataModel)
+{
+  CEvaluationNode* pResult = NULL;
+  double factor = dataModel.getModel()->getQuantity2NumberFactor();
+  if (CEvaluationNodeObject::type(pOrigNode->getType()) == CEvaluationNodeObject::OBJECT)
+    {
+      std::vector<CCopasiContainer*> containers;
+      containers.push_back(const_cast<CModel*>(dataModel.getModel()));
+      const CCopasiObject* pObject = CCopasiContainer::ObjectFromName(containers, dynamic_cast<const CEvaluationNodeObject*>(pOrigNode)->getObjectCN());
+      assert(pObject);
+      if (pObject->isReference())
+        {
+          const CCopasiObject* pParent = pObject->getObjectParent();
+          // check if the parent is a metabolite
+          const CMetab* pMetab = dynamic_cast<const CMetab*>(pParent);
+          if (pMetab != NULL)
+            {
+              // check if the reference is to the concentration or to the
+              // amount
+              if (pObject->getObjectName() == "InitialConcentration" || pObject->getObjectName() == "Concentration")
+                {
+                  // the concentration nodes only need to be replaced if we
+                  // are dealing with a model that has variable volumes
+                  if (this->mVariableVolumes == true)
+                    {
+                      // replace the node by the concentration node divided the the volume of
+                      // the (initial) volume of the node
+                      // although this is semantically incorrect, the result when
+                      // converted to SBML will be OK since the concentration ode
+                      // is converted to a reference to the species id which will
+                      // be interpreted as the amount due to the
+                      // hasOnlySubstanceUnits flag being set
+                      const CCompartment* pCompartment = pMetab->getCompartment();
+                      assert(pCompartment != NULL);
+                      pResult = new CEvaluationNodeOperator(CEvaluationNodeOperator::DIVIDE, "/");
+                      // copy branch should be fine since the object node does
+                      // not have children
+                      pResult->addChild(pOrigNode->copyBranch());
+                      if (pObject->getObjectName() == "InitialConcentration")
+                        {
+                          pResult->addChild(new CEvaluationNodeObject(CEvaluationNodeObject::ANY, pCompartment->getObject(CCopasiObjectName("Reference=InitialVolume"))->getCN()));
+                        }
+                      else
+                        {
+                          pResult->addChild(new CEvaluationNodeObject(CEvaluationNodeObject::ANY, pCompartment->getObject(CCopasiObjectName("Reference=Volume"))->getCN()));
+                        }
+                    }
+                  else
+                    {
+                      // do nothing
+                      pResult = pOrigNode->copyBranch();
+                    }
+                }
+              else if (pObject->getObjectName() == "InitialAmount" || pObject->getObjectName() == "Amount")
+                {
+                  // if the units are not set to particle numbers anyway,
+                  // replace the node by the node times avogadros number
+                  if (dataModel.getModel()->getQuantityUnitEnum() != CModel::number)
+                    {
+                      if (this->mpAvogadro == NULL)
+                        {
+                          this->mpAvogadro = const_cast<CModel*>(dataModel.getModel())->createModelValue("quantity to number factor", dataModel.getModel()->getQuantity2NumberFactor());
+                          Parameter* pSBMLAvogadro = this->mpSBMLDocument->getModel()->createParameter();
+                          pSBMLAvogadro->setName("quantity to number factor");
+                          std::string sbmlId = CSBMLExporter::createUniqueId(this->mIdMap, "parameter_");
+                          pSBMLAvogadro->setId(sbmlId);
+                          this->mIdMap.insert(std::make_pair(sbmlId, pSBMLAvogadro));
+                          pSBMLAvogadro->setConstant(true);
+                          pSBMLAvogadro->setValue(dataModel.getModel()->getQuantity2NumberFactor());
+                          this->mHandledSBMLObjects.insert(pSBMLAvogadro);
+                          this->mCOPASI2SBMLMap[this->mpAvogadro] = pSBMLAvogadro;
+                          this->mAvogadroCreated = true;
+                        }
+                      pResult = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
+                      // copyBranch should be save here since object nodes can't
+                      // have children
+                      pResult->addChild(pOrigNode->copyBranch());
+                      pResult->addChild(new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + this->mpAvogadro->getCN() + ",Reference=InitialValue>"));
+                    }
+                  else
+                    {
+                      // the result is the same as the original node
+                      pResult = pOrigNode->copyBranch();
+                    }
+                }
+              else
+                {
+                  fatalError();
+                }
+            }
+        }
+    }
+  // check if there is a division by avogadros number and if so, just
+  // drop the division instead of introducing a new multiplication
+  else if (CEvaluationNodeObject::type(pOrigNode->getType()) == CEvaluationNodeObject::OPERATOR && ((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pOrigNode->getType())) == CEvaluationNodeOperator::DIVIDE)
+    {
+      // check if one of the child nodes is a reference to a species
+      const CEvaluationNode* pLeft = dynamic_cast<const CEvaluationNodeOperator*>(pOrigNode)->getLeft();
+      const CEvaluationNode* pRight = dynamic_cast<const CEvaluationNodeOperator*>(pOrigNode)->getRight();
+      if (CEvaluationNode::type(pLeft->getType()) == CEvaluationNode::OBJECT)
+        {
+          std::vector<CCopasiContainer*> containers;
+          containers.push_back(const_cast<CModel*>(dataModel.getModel()));
+          const CCopasiObject* pObject = CCopasiContainer::ObjectFromName(containers, dynamic_cast<const CEvaluationNodeObject*>(pLeft)->getObjectCN());
+          assert(pObject);
+          if (pObject->isReference())
+            {
+              const CCopasiObject* pParent = pObject->getObjectParent();
+              // check if the parent is a metabolite
+              const CMetab* pMetab = dynamic_cast<const CMetab*>(pParent);
+              if (pMetab != NULL)
+                {
+                  // check if pRight is a number or a parameter that
+                  // corresponds to avogadros number
+                  if (CEvaluationNode::type(pRight->getType()) == CEvaluationNode::NUMBER && (((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pRight->getType())) == CEvaluationNodeNumber::DOUBLE || ((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pRight->getType())) == CEvaluationNodeNumber::ENOTATION))
+                    {
+                      double value = dynamic_cast<const CEvaluationNodeNumber*>(pLeft)->value();
+                      if (fabs((factor - value) / factor) <= 1e-3)
+                        {
+                          // copyBranch should be OK since the node has no
+                          // children anyway
+                          pResult = pLeft->copyBranch();
+                        }
+                    }
+                  else if (CEvaluationNode::type(pRight->getType()) == CEvaluationNode::OBJECT)
+                    {
+                      const CCopasiObject* pObject2 = CCopasiContainer::ObjectFromName(containers, dynamic_cast<const CEvaluationNodeObject*>(pRight)->getObjectCN());
+                      assert(pObject2);
+                      if (pObject2->isReference())
+                        {
+                          const CCopasiObject* pObjectParent2 = pObject2->getObjectParent();
+                          const CModelValue* pMV = dynamic_cast<const CModelValue*>(pObjectParent2);
+                          if (pMV != NULL && pMV->getStatus() == CModelEntity::FIXED)
+                            {
+                              double value = pMV->getValue();
+                              if (fabs((factor - value) / factor) <= 1e-3)
+                                {
+                                  pResult = pLeft->copyBranch();
+                                }
+                            }
+                        }
+                    }
+                }
+              else
+                {
+                  // check if pRight is a reference to a species
+                  const CCopasiObject* pObject2 = CCopasiContainer::ObjectFromName(containers, dynamic_cast<const CEvaluationNodeObject*>(pRight)->getObjectCN());
+                  assert(pObject2);
+                  if (pObject2->isReference())
+                    {
+                      const CCopasiObject* pParent2 = pObject2->getObjectParent();
+                      // check if the parent is a metabolite
+                      pMetab = dynamic_cast<const CMetab*>(pParent2);
+                      if (pMetab != NULL)
+                        {
+                          // if yes, check if pLeft is a parameter that corresponds
+                          // to avogadros number
+                          if (CEvaluationNode::type(pLeft->getType()) == CEvaluationNode::OBJECT)
+                            {
+                              const CCopasiObject* pObject2 = CCopasiContainer::ObjectFromName(containers, dynamic_cast<const CEvaluationNodeObject*>(pLeft)->getObjectCN());
+                              assert(pObject2);
+                              if (pObject2->isReference())
+                                {
+                                  const CCopasiObject* pObjectParent2 = pObject2->getObjectParent();
+                                  const CModelValue* pMV = dynamic_cast<const CModelValue*>(pObjectParent2);
+                                  if (pMV != NULL && pMV->getStatus() == CModelEntity::FIXED)
+                                    {
+                                      double value = pMV->getValue();
+                                      if (fabs((factor - value) / factor) <= 1e-3)
+                                        {
+                                          pResult = pRight->copyBranch();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+      else if (CEvaluationNode::type(pRight->getType()) == CEvaluationNode::OBJECT)
+        {
+          std::vector<CCopasiContainer*> containers;
+          containers.push_back(const_cast<CModel*>(dataModel.getModel()));
+          const CCopasiObject* pObject = CCopasiContainer::ObjectFromName(containers, dynamic_cast<const CEvaluationNodeObject*>(pRight)->getObjectCN());
+          assert(pObject);
+          if (pObject->isReference())
+            {
+              const CCopasiObject* pParent = pObject->getObjectParent();
+              // check if the parent is a metabolite
+              const CMetab* pMetab = dynamic_cast<const CMetab*>(pParent);
+              if (pMetab != NULL)
+                {
+                  // check if pLeft is a number node that
+                  // corresponds to Avogadros number
+                  if (CEvaluationNode::type(pLeft->getType()) == CEvaluationNode::NUMBER && (((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pLeft->getType())) == CEvaluationNodeNumber::DOUBLE || ((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pLeft->getType())) == CEvaluationNodeNumber::ENOTATION))
+                    {
+                      double value = dynamic_cast<const CEvaluationNodeNumber*>(pLeft)->value();
+                      if ((factor - value) / factor <= 1e-3)
+                        {
+                          // copyBranch should be OK since the node has no
+                          // children anyway
+                          pResult = pRight->copyBranch();
+                        }
+                    }
+                }
+            }
+        }
+    }
+  if (pResult == NULL)
+    {
+      pResult = pOrigNode->copyNode(NULL, NULL);
+      const CEvaluationNode* pChild = dynamic_cast<const CEvaluationNode*>(pOrigNode->getChild());
+      while (pChild != NULL)
+        {
+          CEvaluationNode* pNewChild = this->replaceSpeciesReferences(pChild, dataModel);
+          assert(pNewChild != NULL);
+          pResult->addChild(pNewChild);
+          pChild = dynamic_cast<const CEvaluationNode*>(pChild->getSibling());
+        }
+    }
+  return pResult;
+}
+
+void CSBMLExporter::findAvogadro(const CCopasiDataModel& dataModel)
+{
+  double factor = dataModel.getModel()->getQuantity2NumberFactor();
+  CCopasiVectorN<CModelValue>::const_iterator it = dataModel.getModel()->getModelValues().begin(), endit = dataModel.getModel()->getModelValues().end();
+  while (it != endit)
+    {
+      if ((*it)->getStatus() == CModelEntity::FIXED)
+        {
+          double value = (*it)->getInitialValue();
+          if (fabs((factor - value) / factor) <= 1e-3)
+            {
+              this->mpAvogadro = *it;
+            }
+        }
+      ++it;
     }
 }
