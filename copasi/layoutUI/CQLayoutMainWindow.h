@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.h,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.26 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/02/01 11:07:46 $
+//   $Date: 2008/02/14 15:16:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,6 +35,7 @@
 #include <qvbox.h>
 #include <qframe.h>
 #include <qpushbutton.h>
+#include <qcheckbox.h>
 #include <qiconset.h>
 #include <qpixmap.h>
 #include <qimage.h>
@@ -96,6 +97,7 @@ class CQLayoutMainWindow : public QMainWindow
     void mapLabelsToRectangles();
 
     void changeMinMaxNodeSizes();
+    void toggleAutomaticRescaling(bool isChecked);
 
     void showStep(double i);
     void startAnimation();
@@ -124,6 +126,9 @@ class CQLayoutMainWindow : public QMainWindow
     QAction *circularShape;
 
     QAction *miMaNodeSizes;
+    QAction *automaticRescaleToggle;
+
+    //QCheckBox *automaticRescaleToggle;
 
     //CQParameterWindow *paraWin;
     ParaPanel *paraPanel;
@@ -145,6 +150,7 @@ class CQLayoutMainWindow : public QMainWindow
     QIconSet createStopIcon();
 
     void resizeEvent(QResizeEvent *ev);
+    bool resizeToggle;
   };
 
 #endif /*SIMGUI_H_*/

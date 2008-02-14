@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.48 $
+//   $Revision: 1.49 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/02/12 11:53:42 $
+//   $Date: 2008/02/14 15:16:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,6 +34,7 @@ using namespace std;
 
 CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMainWindow(parent, name)
 {
+  resizeToggle = true;
   pVisParameters = new CVisParameters();
   setCaption(tr("Reaction network graph"));
   createActions();
@@ -285,8 +286,22 @@ void CQLayoutMainWindow::createActions()
                                "Set Min/Max Node Sizes",
                                CTRL + Key_M,
                                this);
+
   connect(miMaNodeSizes, SIGNAL(activated()), this, SLOT(changeMinMaxNodeSizes()));
-  miMaNodeSizes->setStatusTip("Change Min/Max for Node Sizes within animation");
+  miMaNodeSizes->setToolTip("Change Min/Max for node sizes within animation");
+
+  automaticRescaleToggle = new QAction ("autoresize",
+                                        "Automatic Rescaling of Graph",
+                                        CTRL + Key_R,
+                                        this);
+
+  automaticRescaleToggle->setToggleAction(true);
+  automaticRescaleToggle->setOn(true);
+  //automaticRescaleToggle = new QCheckBox("Automatic Rescaling of Graph", this);
+  //automaticRescaleToggle->setChecked(true);
+
+  connect(automaticRescaleToggle, SIGNAL(toggled(bool)), this, SLOT(toggleAutomaticRescaling(bool)));
+  automaticRescaleToggle->setToolTip("Enable/disable automatic rescaling of graph when panel is resized");
 }
 
 void CQLayoutMainWindow::createMenus()
@@ -308,6 +323,7 @@ void CQLayoutMainWindow::createMenus()
   optionsMenu = new QPopupMenu(this);
   optionsMenu->insertItem("Shape of Label", labelShapeMenu);
   miMaNodeSizes->addTo(optionsMenu);
+  automaticRescaleToggle->addTo(optionsMenu);
 
   menuBar()->insertItem("File", fileMenu);
   menuBar()->insertItem("Actions", actionsMenu);
@@ -530,21 +546,29 @@ void CQLayoutMainWindow::closeEvent(QCloseEvent *event)
     }
 }
 
+void CQLayoutMainWindow::toggleAutomaticRescaling(bool isChecked)
+{
+  resizeToggle = isChecked;
+}
+
 // when resize of panel occurs, the graph should be resized accordingly
 void CQLayoutMainWindow::resizeEvent(QResizeEvent *ev)
 {
-  std::cout << "event type: " << ev->type() << std::endl;
-  int w = scrollView->width(); // ev->size().width();
-  int h = scrollView->height(); // ev->size().height();
-  //std::cout << "scroll view "  << w << "  "  << h << std::endl;
+  //std::cout << "event type: " << ev->type() << std::endl;
+  if (resizeToggle)
+    {// if automatic rescaling of graph is enabled
+      int w = scrollView->width(); // ev->size().width();
+      int h = scrollView->height(); // ev->size().height();
+      //std::cout << "scroll view "  << w << "  "  << h << std::endl;
 
-  const CLPoint& c1 = glPainter->getGraphMin();
-  const CLPoint& c2 = glPainter->getGraphMax();
+      const CLPoint& c1 = glPainter->getGraphMin();
+      const CLPoint& c2 = glPainter->getGraphMax();
 
-  // now zoom graph according to new panel size
-  C_FLOAT64 z = ((w / c2.getX()) < (h / c2.getY())) ? w / c2.getX() : h / c2.getY();
-  //std::cout << "zoom factor in RESIZE: "  << z << std::endl;
-  glPainter->zoomGraph(z);
+      // now zoom graph according to new panel size
+      C_FLOAT64 z = ((w / c2.getX()) < (h / c2.getY())) ? w / c2.getX() : h / c2.getY();
+      //std::cout << "zoom factor in RESIZE: "  << z << std::endl;
+      glPainter->zoomGraph(z);
+    }
 }
 
 QIconSet CQLayoutMainWindow::createStartIcon()
