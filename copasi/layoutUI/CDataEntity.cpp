@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CDataEntity.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/09/07 16:12:24 $
+//   $Date: 2008/02/14 18:24:30 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -68,4 +73,23 @@ C_FLOAT64 CDataEntity::getOrigValueForSpecies(std::string nodeKey)
     return (*it).second;
   else
     return - DBL_MAX;
+}
+
+std::ostream & operator<<(std::ostream &os, const CDataEntity & de)
+{
+  os << "time: " << de.mTime << "  size: " << std::endl;
+  std::map<std::string, C_FLOAT64>::const_iterator it1;
+  std::map<std::string, C_FLOAT64>::const_iterator it2;
+  for (it1 = de.mSpeciesValueMap.begin() ; it1 != de.mSpeciesValueMap.end() ; it1++)
+    {
+      it2 = de.mOrigValueMap.find((*it1).first);
+      if (it2 != de.mOrigValueMap.end())
+        os << (*it1).first << "  : " << (*it1).second << "  orig: " << (*it2).second << std::endl;
+      else
+        os << (*it1).first << "  : " << (*it1).second << "  orig: not found" << std::endl;
+    }
+  //for (int i=0;i<gn.mConnectedCurveIndices.size();i++)
+  // os << gn.mConnectedCurveIndices[i] << std::endl;;
+
+  return os;
 }
