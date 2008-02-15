@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-//   $Revision: 1.50.4.1 $
+//   $Revision: 1.50.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/30 17:01:29 $
+//   $Date: 2008/02/15 20:54:59 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -234,9 +234,9 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
   mCurveActivities.resize(kmax);
   mHistoIndices.resize(kmax);
 
-  std::map< CRegisteredObjectName, QwtPlotCurve * >::iterator found;
+  std::map< std::string, QwtPlotCurve * >::iterator found;
 
-  std::map< CRegisteredObjectName, QwtPlotCurve * > CurveMap = mCurveMap;
+  std::map< std::string, QwtPlotCurve * > CurveMap = mCurveMap;
   mCurveMap.clear();
 
   for (k = 0; k < kmax; k++)
@@ -248,7 +248,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
 
       // Qwt does not like it to reuse the curve as this may lead to access
       // violation. We therefore delete the curves but remember their visibility.
-      if ((found = CurveMap.find(pItem->getObjectName())) != CurveMap.end())
+      if ((found = CurveMap.find(pItem->CCopasiParameter::getKey())) != CurveMap.end())
         {
           pCurve = found->second;
           Visible = pCurve->isVisible();
@@ -259,7 +259,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
       // set up the curve
       pCurve = new MyQwtPlotCurve(FROM_UTF8(pItem->getTitle()));
       mCurves[k] = pCurve;
-      mCurveMap[pItem->getObjectName()] = pCurve;
+      mCurveMap[pItem->CCopasiParameter::getKey()] = pCurve;
 
       pCurve->setPen(curveColours[k % 5]);
       pCurve->attach(this);
@@ -303,8 +303,8 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
     }
 
   // Remove unused curves if definitioan has changed
-  std::map< CRegisteredObjectName, QwtPlotCurve * >::iterator it = CurveMap.begin();
-  std::map< CRegisteredObjectName, QwtPlotCurve * >::iterator end = CurveMap.end();
+  std::map< std::string, QwtPlotCurve * >::iterator it = CurveMap.begin();
+  std::map< std::string, QwtPlotCurve * >::iterator end = CurveMap.end();
   for (; it != end; ++it)
     pdelete(it->second);
 
