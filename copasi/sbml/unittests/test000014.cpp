@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000014.cpp,v $
-//   $Revision: 1.1.2.1 $
+//   $Revision: 1.1.2.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/15 13:11:24 $
+//   $Date: 2008/02/15 14:15:29 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,10 +48,16 @@ void test000014::test_references_to_species()
   CPPUNIT_ASSERT(pDocument != NULL);
   Model* pModel = pDocument->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
+  // assert that there is only one compartment and
+  // assert the compartment is constant
+  CPPUNIT_ASSERT(pModel->getNumCompartments() == 1);
+  Compartment* pCompartment = pModel->getCompartment(0);
+  CPPUNIT_ASSERT(pCompartment->getConstant() == true);
   CPPUNIT_ASSERT(pModel->getNumSpecies() == 2);
   Species* pSpecies = pModel->getSpecies(1);
   CPPUNIT_ASSERT(pSpecies->getHasOnlySubstanceUnits() == false);
   pSpecies = pModel->getSpecies(0);
+  std::string idSpeciesA = pSpecies->getId();
   CPPUNIT_ASSERT(pSpecies->getHasOnlySubstanceUnits() == false);
   CPPUNIT_ASSERT(pModel->getNumRules() == 1);
   AssignmentRule* pRule = dynamic_cast<AssignmentRule*>(pModel->getRule(0));
@@ -66,6 +72,63 @@ void test000014::test_references_to_species()
   // reference to the species
   CPPUNIT_ASSERT(pMath->getType() == AST_NAME);
   CPPUNIT_ASSERT(pMath->getName() == pSpecies->getId());
+  CPPUNIT_ASSERT(pModel->getNumReactions() == 2);
+  Reaction* pReaction = pModel->getReaction(0);
+  // make sure this is reaction A ->
+  CPPUNIT_ASSERT(pReaction != NULL);
+  CPPUNIT_ASSERT(pReaction->getNumReactants() == 1);
+  CPPUNIT_ASSERT(pReaction->getNumProducts() == 0);
+  // check if all references in the kinetic law are unmodified
+  // math element must be a multiplication of the mass action term by
+  // the compartment volume
+  // the mass action term is a multiplication of the parameter node by
+  // the species node
+  CPPUNIT_ASSERT(pReaction->isSetKineticLaw() == true);
+  KineticLaw* pLaw = pReaction->getKineticLaw();
+  CPPUNIT_ASSERT(pLaw != NULL);
+  CPPUNIT_ASSERT(pLaw->isSetMath() == true);
+  pMath = pLaw->getMath();
+  CPPUNIT_ASSERT(pMath->getType() == AST_TIMES);
+  CPPUNIT_ASSERT(pMath->getNumChildren() == 2);
+  CPPUNIT_ASSERT(pMath->getChild(0)->getType() == AST_NAME);
+  CPPUNIT_ASSERT(pMath->getChild(0)->getName() == pCompartment->getId());
+  pMath = pMath->getChild(1);
+  CPPUNIT_ASSERT(pMath != NULL);
+  CPPUNIT_ASSERT(pMath->getType() == AST_TIMES);
+  CPPUNIT_ASSERT(pMath->getNumChildren() == 2);
+  CPPUNIT_ASSERT(pMath->getChild(0)->getType() == AST_NAME);
+  CPPUNIT_ASSERT(pMath->getChild(0)->getName() == std::string("k1"));
+  pMath = pMath->getChild(1);
+  CPPUNIT_ASSERT(pMath != NULL);
+  CPPUNIT_ASSERT(pMath->getType() == AST_NAME);
+  CPPUNIT_ASSERT(pMath->getName() == idSpeciesA);
+
+  pReaction = pModel->getReaction(1);
+  // make sure this is reaction A -> S
+  CPPUNIT_ASSERT(pReaction != NULL);
+  CPPUNIT_ASSERT(pReaction->getNumReactants() == 1);
+  CPPUNIT_ASSERT(pReaction->getNumProducts() == 1);
+  // check if all references in the kinetic law are unmodified
+  // math element must be a multiplication of the compartments volume with
+  // a function call with three arguments
+  // the first argument is the reference to the species
+  CPPUNIT_ASSERT(pReaction->isSetKineticLaw() == true);
+  pLaw = pReaction->getKineticLaw();
+  CPPUNIT_ASSERT(pLaw != NULL);
+  CPPUNIT_ASSERT(pLaw->isSetMath() == true);
+  pMath = pLaw->getMath();
+  CPPUNIT_ASSERT(pMath->getType() == AST_TIMES);
+  CPPUNIT_ASSERT(pMath->getNumChildren() == 2);
+  CPPUNIT_ASSERT(pMath->getChild(0)->getType() == AST_NAME);
+  CPPUNIT_ASSERT(pMath->getChild(0)->getName() == pCompartment->getId());
+  pMath = pMath->getChild(1);
+  CPPUNIT_ASSERT(pMath != NULL);
+  CPPUNIT_ASSERT(pMath->getType() == AST_FUNCTION);
+  CPPUNIT_ASSERT(pMath->getNumChildren() == 3);
+  pMath = pMath->getChild(0);
+  CPPUNIT_ASSERT(pMath != NULL);
+  CPPUNIT_ASSERT(pMath->getType() == AST_NAME);
+  CPPUNIT_ASSERT(pMath->getName() == idSpeciesA);
 }
 
 const char* test000014::MODEL_STRING =
