@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000003.cpp,v $
-//   $Revision: 1.1.2.2 $
+//   $Revision: 1.1.2.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/15 14:15:29 $
+//   $Date: 2008/02/15 17:50:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,6 +16,7 @@
 #include <sstream>
 #include "utilities.hpp"
 #include "copasi/CopasiDataModel/CCopasiDataModel.h"
+#include "copasi/model/CModel.h"
 
 #include "sbml/SBMLDocument.h"
 #include "sbml/Model.h"
@@ -43,6 +44,7 @@ void test000003::test_references_to_species()
   CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
   std::istringstream iss(test000003::MODEL_STRING);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
+  CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
   CPPUNIT_ASSERT(pDataModel->exportSBMLToString().empty() == false);
   SBMLDocument* pDocument = pDataModel->getCurrentSBMLDocument();
   CPPUNIT_ASSERT(pDocument != NULL);
@@ -70,8 +72,19 @@ void test000003::test_references_to_species()
   CPPUNIT_ASSERT(pMath != NULL);
   // make sure the mathematical expression contains only one node that is a
   // reference to the species
-  CPPUNIT_ASSERT(pMath->getType() == AST_NAME);
-  CPPUNIT_ASSERT(pMath->getName() == pSpecies->getId());
+  CPPUNIT_ASSERT(pMath->getType() == AST_TIMES);
+  CPPUNIT_ASSERT(pMath->getNumChildren() == 2);
+  CPPUNIT_ASSERT(pMath->getChild(0)->getType() == AST_NAME);
+  CPPUNIT_ASSERT(pMath->getChild(0)->getName() == pSpecies->getId());
+  pMath = pMath->getChild(1);
+  CPPUNIT_ASSERT(pMath != NULL);
+  CPPUNIT_ASSERT(pMath->getType() == AST_TIMES);
+  CPPUNIT_ASSERT(pMath->getNumChildren() == 2);
+  CPPUNIT_ASSERT(pMath->getChild(0)->getType() == AST_REAL);
+  CPPUNIT_ASSERT(fabs((pMath->getChild(0)->getReal() - pDataModel->getModel()->getQuantity2NumberFactor()) / pDataModel->getModel()->getQuantity2NumberFactor()) <= 1e-3);
+
+  CPPUNIT_ASSERT(pMath->getChild(1)->getType() == AST_NAME);
+  CPPUNIT_ASSERT(pMath->getChild(1)->getName() == pCompartment->getId());
   CPPUNIT_ASSERT(pModel->getNumReactions() == 2);
   Reaction* pReaction = pModel->getReaction(0);
   // make sure this is reaction A ->
