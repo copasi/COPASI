@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.92 $
+//   $Revision: 1.93 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/02/08 11:47:09 $
+//   $Date: 2008/02/15 11:48:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,6 +25,7 @@
 #include <qcolor.h>
 #include <qtimer.h>
 #include <qcanvas.h>
+//#include <qmessagebox.h>
 
 #include <qfontinfo.h>
 #include <qfontdatabase.h>
@@ -1158,6 +1159,8 @@ void CQGLNetworkPainter::rescaleDataSets(C_INT16 scaleMode)
     }
 }
 
+//tries to load data from time series,
+//if this is successful true is returned, else false
 bool CQGLNetworkPainter::createDataSets()
 {
   int counter = 0;
@@ -1278,7 +1281,10 @@ bool CQGLNetworkPainter::createDataSets()
             std::cout << "empty time series: no variables present" << std::endl;
         }
       else
-        std::cout << "no simulation steps found: you have to create a time course first" << std::endl;
+        {
+          //QMessageBox::warning (this, "Missing Data", "No data found: \nYou first have to create a time course.", QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+          //std::cout << "no simulation steps found: you have to create a time course first" << std::endl;
+        }
     }
   //std::cout << *pSummaryInfo << std::endl;
   //std::cout << "number of data sets created: " << dataSets.size() << std::endl;
@@ -1775,7 +1781,7 @@ void CQGLNetworkPainter::zoom(C_FLOAT64 zoomFactor)
           this->viewerCurves[i].scale(zoomFactor);
         }
       //scale curves that are associated with a reactant/species node (i.e. directly points to it)
-      std::cout << "scale curves: " << std::endl;
+      //std::cout << "scale curves: " << std::endl;
       for (i = 0; i < viewerNodes.size();i++)
         {
           std::pair<std::multimap<std::string, CGraphCurve>::iterator, std::multimap<std::string, CGraphCurve>::iterator> curveRangeIt;

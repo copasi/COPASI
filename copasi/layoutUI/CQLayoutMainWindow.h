@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.h,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.27 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/02/14 15:16:15 $
+//   $Date: 2008/02/15 11:48:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -119,7 +119,7 @@ class CQLayoutMainWindow : public QMainWindow
 
     QAction *runAnimation;
     QAction *openSBMLFile;
-    QAction *openDataFile;
+    //QAction *openDataFile;
     QAction *closeAction;
 
     QAction *rectangularShape;
@@ -151,6 +151,7 @@ class CQLayoutMainWindow : public QMainWindow
 
     void resizeEvent(QResizeEvent *ev);
     bool resizeToggle;
+    bool dataPresent; // shows whether time series data already load
   };
 
 #endif /*SIMGUI_H_*/

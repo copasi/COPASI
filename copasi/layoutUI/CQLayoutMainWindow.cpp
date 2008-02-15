@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.49 $
+//   $Revision: 1.50 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/02/14 15:16:15 $
+//   $Date: 2008/02/15 11:48:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,6 +17,7 @@
 
 #include <qwt_slider.h>
 #include <qvaluelist.h>
+#include <qmessagebox.h>
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "layout/CListOfLayouts.h"
@@ -35,6 +36,7 @@ using namespace std;
 CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMainWindow(parent, name)
 {
   resizeToggle = true;
+  dataPresent = false;
   pVisParameters = new CVisParameters();
   setCaption(tr("Reaction network graph"));
   createActions();
@@ -113,7 +115,7 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
 
   connect(startStopButton, SIGNAL(clicked()), this, SLOT(startAnimation()));
   startStopButton->setIconSet(startIcon);
-  startStopButton->setEnabled(false);
+  startStopButton->setEnabled(true);
 
   timeSlider = new QwtSlider(frame, Qt::Horizontal, QwtSlider::BottomScale, QwtSlider::BgTrough);
   timeSlider->setRange(0, 100, 1, 0);
@@ -246,12 +248,12 @@ void CQLayoutMainWindow::createActions()
   openSBMLFile->setStatusTip("Load SBML file with/without layout");
   connect(openSBMLFile, SIGNAL(activated()) , this, SLOT(loadSBMLFile()));
 
-  openDataFile = new QAction("data",
-                             "Load Simulation Data",
-                             CTRL + Key_D,
-                             this);
-  openDataFile->setStatusTip("Load simulation data");
-  connect(openDataFile, SIGNAL(activated()), this, SLOT(loadData()));
+  //   openDataFile = new QAction("data",
+  //                              "Load Simulation Data",
+  //                              CTRL + Key_D,
+  //                              this);
+  //   openDataFile->setStatusTip("Load simulation data");
+  //   connect(openDataFile, SIGNAL(activated()), this, SLOT(loadData()));
 
   closeAction = new QAction ("close",
                              "Close Window",
@@ -266,7 +268,8 @@ void CQLayoutMainWindow::createActions()
                              this);
   runAnimation->setStatusTip("show complete animation sequence of current times series");
   connect(runAnimation, SIGNAL(activated()), this, SLOT(showAnimation()));
-  runAnimation->setEnabled(false);
+  runAnimation->setEnabled(true);
+  dataPresent = false;
 
   rectangularShape = new QAction ("rectangle",
                                   "rectangle",
@@ -308,7 +311,7 @@ void CQLayoutMainWindow::createMenus()
 {
   fileMenu = new QPopupMenu(this);
   openSBMLFile->addTo(fileMenu);
-  openDataFile->addTo(fileMenu);
+  //openDataFile->addTo(fileMenu);
   fileMenu->insertSeparator();
   closeAction->addTo(fileMenu);
 
@@ -401,8 +404,9 @@ void CQLayoutMainWindow::loadData()
   if (successfulP)
     {
       this->timeSlider->setEnabled(true);
-      this->runAnimation->setEnabled(true);
-      this->startStopButton->setEnabled(true);
+      //this->runAnimation->setEnabled(true);
+      //this->startStopButton->setEnabled(true);
+      this->dataPresent = true;
       paraPanel->enableStepNumberChoice();
       int maxVal = glPainter->getNumberOfSteps();
       //std::cout << "number of steps: " << maxVal << std::endl;
@@ -421,16 +425,25 @@ void CQLayoutMainWindow::showAnimation()
 
 void CQLayoutMainWindow::startAnimation()
 {
-  pVisParameters->animationRunning = true;
-  this->timeSlider->setEnabled(false);
-  glPainter->runAnimation();
+  if (!this->dataPresent)
+    this->loadData(); // look for data
+  if (this->dataPresent)
+    {// only if time series data present
+      pVisParameters->animationRunning = true;
+      this->timeSlider->setEnabled(false);
+      glPainter->runAnimation();
 
-  //exchange icon and callback for start/stop button
-  disconnect(startStopButton, SIGNAL(clicked()), this, SLOT(startAnimation()));
-  connect(startStopButton, SIGNAL(clicked()), this, SLOT(stopAnimation()));
-  startStopButton->setIconSet(stopIcon);
-  paraPanel->disableParameterChoice();
-  paraPanel->disableStepNumberChoice();
+      //exchange icon and callback for start/stop button
+      disconnect(startStopButton, SIGNAL(clicked()), this, SLOT(startAnimation()));
+      connect(startStopButton, SIGNAL(clicked()), this, SLOT(stopAnimation()));
+      startStopButton->setIconSet(stopIcon);
+      paraPanel->disableParameterChoice();
+      paraPanel->disableStepNumberChoice();
+    }
+  else
+    {
+      QMessageBox::warning (this, "Missing Data", "No data found: \nYou first have to create a time course.", QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+    }
 }
 
 void CQLayoutMainWindow::stopAnimation()
