@@ -1,6 +1,6 @@
 // Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000001.cpp,v $
-//   $Revision: 1.1.2.2 $
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000002.cpp,v $
+//   $Revision: 1.1.2.1 $
 //   $Name:  $
 //   $Author: gauges $
 //   $Date: 2008/02/15 13:11:23 $
@@ -11,7 +11,7 @@
 // and The University of Manchester.
 // All rights reserved.
 
-#include "test000001.hpp"
+#include "test000002.hpp"
 
 #include <sstream>
 #include "utilities.hpp"
@@ -24,7 +24,7 @@
 #include "sbml/Parameter.h"
 #include "sbml/math/ASTNode.h"
 
-void test000001::setUp()
+void test000002::setUp()
 {
   // Create the root container.
   CCopasiContainer::init();
@@ -33,15 +33,15 @@ void test000001::setUp()
   CCopasiDataModel::Global = new CCopasiDataModel;
 }
 
-void test000001::tearDown(){}
+void test000002::tearDown(){}
 
-void test000001::test_references_to_species()
+void test000002::test_references_to_species()
 {
   // load the CPS file
   // export to SBML
   // check the resulting SBML model
   CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
-  std::istringstream iss(test000001::MODEL_STRING);
+  std::istringstream iss(test000002::MODEL_STRING);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->exportSBMLToString().empty() == false);
   SBMLDocument* pDocument = pDataModel->getCurrentSBMLDocument();
@@ -68,9 +68,9 @@ void test000001::test_references_to_species()
   CPPUNIT_ASSERT(pMath->getName() == pSpecies->getId());
 }
 
-const char* test000001::MODEL_STRING =
+const char* test000002::MODEL_STRING =
   "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-  "<!-- generated with COPASI 4.3.25 (Debug) (http://www.copasi.org) at 2008-02-15 09:26:14 UTC -->\n"
+  "<!-- generated with COPASI 4.3.25 (Debug) (http://www.copasi.org) at 2008-02-15 09:26:39 UTC -->\n"
   "<COPASI xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"http://www.copasi.org/static/schema.xsd\" versionMajor=\"1\" versionMinor=\"0\" versionDevel=\"25\">\n"
   "  <ListOfFunctions>\n"
   "    <Function key=\"Function_8\" name=\"Henri-Michaelis-Menten (irreversible)\" type=\"PreDefined\" reversible=\"false\">\n"
@@ -93,11 +93,11 @@ const char* test000001::MODEL_STRING =
   "      </ListOfParameterDescriptions>\n"
   "    </Function>\n"
   "  </ListOfFunctions>\n"
-  "  <Model key=\"Model_1\" name=\"New Model\" timeUnit=\"s\" volumeUnit=\"ml\" quantityUnit=\"mmol\" type=\"deterministic\">\n"
+  "  <Model key=\"Model_1\" name=\"New Model\" timeUnit=\"s\" volumeUnit=\"ml\" quantityUnit=\"#\" type=\"deterministic\">\n"
   "    <Comment>\n"
   "      <html xmlns=\"http://www.w3.org/1999/xhtml\"><head><meta name=\"qrichtext\" content=\"1\" /></head><body style=\"font-size:13pt;font-family:Lucida Grande\">\n"
-  "<p>Model with constant volume compartment, mmol quantity units and a reference to the species transient concentration.</p>\n"
-  "<p>On export this should create an SBML file with the hasOnlySubstanceUnits flag on the species unset. </p>\n"
+  "<p>Model with constant volume compartment,# quantity units and a reference to the species transient concentration.</p>\n"
+  "<p>On export this should create an SBML file with the hasOnlySubstanceUnits flag on the species unset.</p>\n"
   "<p>All references to the species should be unmodified.</p>\n"
   "</body></html>\n"
   "    </Comment>\n"
@@ -171,7 +171,7 @@ const char* test000001::MODEL_STRING =
   "      <StateTemplateVariable objectReference=\"Compartment_0\"/>\n"
   "    </StateTemplate>\n"
   "    <InitialState type=\"initialState\">\n"
-  "      0 6.022141500000001e+20 6.022141500000001e+19 1 1\n"
+  "      0 1 0.1 1 1\n"
   "    </InitialState>\n"
   "  </Model>\n"
   "  <ListOfTasks>\n"

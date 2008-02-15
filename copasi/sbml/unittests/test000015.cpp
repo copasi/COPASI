@@ -1,9 +1,9 @@
 // Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000001.cpp,v $
-//   $Revision: 1.1.2.2 $
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000015.cpp,v $
+//   $Revision: 1.1.2.1 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/15 13:11:23 $
+//   $Date: 2008/02/15 13:11:24 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -11,7 +11,7 @@
 // and The University of Manchester.
 // All rights reserved.
 
-#include "test000001.hpp"
+#include "test000015.hpp"
 
 #include <sstream>
 #include "utilities.hpp"
@@ -24,7 +24,7 @@
 #include "sbml/Parameter.h"
 #include "sbml/math/ASTNode.h"
 
-void test000001::setUp()
+void test000015::setUp()
 {
   // Create the root container.
   CCopasiContainer::init();
@@ -33,15 +33,15 @@ void test000001::setUp()
   CCopasiDataModel::Global = new CCopasiDataModel;
 }
 
-void test000001::tearDown(){}
+void test000015::tearDown(){}
 
-void test000001::test_references_to_species()
+void test000015::test_references_to_species()
 {
   // load the CPS file
   // export to SBML
   // check the resulting SBML model
   CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
-  std::istringstream iss(test000001::MODEL_STRING);
+  std::istringstream iss(test000015::MODEL_STRING);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->exportSBMLToString().empty() == false);
   SBMLDocument* pDocument = pDataModel->getCurrentSBMLDocument();
@@ -68,9 +68,9 @@ void test000001::test_references_to_species()
   CPPUNIT_ASSERT(pMath->getName() == pSpecies->getId());
 }
 
-const char* test000001::MODEL_STRING =
+const char* test000015::MODEL_STRING =
   "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-  "<!-- generated with COPASI 4.3.25 (Debug) (http://www.copasi.org) at 2008-02-15 09:26:14 UTC -->\n"
+  "<!-- generated with COPASI 4.3.25 (Debug) (http://www.copasi.org) at 2008-02-15 09:41:38 UTC -->\n"
   "<COPASI xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"http://www.copasi.org/static/schema.xsd\" versionMajor=\"1\" versionMinor=\"0\" versionDevel=\"25\">\n"
   "  <ListOfFunctions>\n"
   "    <Function key=\"Function_8\" name=\"Henri-Michaelis-Menten (irreversible)\" type=\"PreDefined\" reversible=\"false\">\n"
@@ -96,13 +96,16 @@ const char* test000001::MODEL_STRING =
   "  <Model key=\"Model_1\" name=\"New Model\" timeUnit=\"s\" volumeUnit=\"ml\" quantityUnit=\"mmol\" type=\"deterministic\">\n"
   "    <Comment>\n"
   "      <html xmlns=\"http://www.w3.org/1999/xhtml\"><head><meta name=\"qrichtext\" content=\"1\" /></head><body style=\"font-size:13pt;font-family:Lucida Grande\">\n"
-  "<p>Model with constant volume compartment, mmol quantity units and a reference to the species transient concentration.</p>\n"
-  "<p>On export this should create an SBML file with the hasOnlySubstanceUnits flag on the species unset. </p>\n"
-  "<p>All references to the species should be unmodified.</p>\n"
+  "<p>Model with variable volume compartment,mmol quantity units and a reference to the species initial amount.</p>\n"
+  "<p>On export this should create an SBML file with the hasOnlySubstanceUnits flag on the species set.</p>\n"
+  "<p>The reference in the initial assignment should be multiplied by a factor (6.023e20), the references in the reactions should be divided by the volume.</p>\n"
   "</body></html>\n"
   "    </Comment>\n"
   "    <ListOfCompartments>\n"
-  "      <Compartment key=\"Compartment_0\" name=\"compartment\" simulationType=\"fixed\">\n"
+  "      <Compartment key=\"Compartment_0\" name=\"compartment\" simulationType=\"assignment\">\n"
+  "        <Expression>\n"
+  "          3+4\n"
+  "        </Expression>\n"
   "      </Compartment>\n"
   "    </ListOfCompartments>\n"
   "    <ListOfMetabolites>\n"
@@ -112,10 +115,10 @@ const char* test000001::MODEL_STRING =
   "      </Metabolite>\n"
   "    </ListOfMetabolites>\n"
   "    <ListOfModelValues>\n"
-  "      <ModelValue key=\"ModelValue_0\" name=\"K\" simulationType=\"assignment\">\n"
-  "        <Expression>\n"
-  "          &lt;CN=Root,Model=New Model,Vector=Compartments[compartment],Vector=Metabolites[A],Reference=Concentration&gt;\n"
-  "        </Expression>\n"
+  "      <ModelValue key=\"ModelValue_0\" name=\"K\" simulationType=\"fixed\">\n"
+  "        <InitialExpression>\n"
+  "          &lt;CN=Root,Model=New Model,Vector=Compartments[compartment],Vector=Metabolites[A],Reference=InitialParticleNumber&gt;\n"
+  "        </InitialExpression>\n"
   "      </ModelValue>\n"
   "    </ListOfModelValues>\n"
   "    <ListOfReactions>\n"
@@ -167,11 +170,11 @@ const char* test000001::MODEL_STRING =
   "      <StateTemplateVariable objectReference=\"Model_1\"/>\n"
   "      <StateTemplateVariable objectReference=\"Metabolite_0\"/>\n"
   "      <StateTemplateVariable objectReference=\"Metabolite_1\"/>\n"
-  "      <StateTemplateVariable objectReference=\"ModelValue_0\"/>\n"
   "      <StateTemplateVariable objectReference=\"Compartment_0\"/>\n"
+  "      <StateTemplateVariable objectReference=\"ModelValue_0\"/>\n"
   "    </StateTemplate>\n"
   "    <InitialState type=\"initialState\">\n"
-  "      0 6.022141500000001e+20 6.022141500000001e+19 1 1\n"
+  "      0 4.215499050000001e+21 4.215499050000002e+20 7 4.215499050000001e+21\n"
   "    </InitialState>\n"
   "  </Model>\n"
   "  <ListOfTasks>\n"
