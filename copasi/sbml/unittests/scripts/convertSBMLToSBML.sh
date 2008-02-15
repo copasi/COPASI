@@ -10,6 +10,6 @@ LOGFILE=$4
 
 if [ -e $COPASISE ];then
   if [ -e $FILENAME ];then
-    $COPASISE --importSBML ${FILENAME} -e ${OUTFILE} 2>&1 | sed '1,4d' > ${LOGFILE}
+    $COPASISE --importSBML ${FILENAME} --oldExportSBML ${OUTFILE} 2>&1 | sed '1,4d' > ${LOGFILE}
   fi
 fi

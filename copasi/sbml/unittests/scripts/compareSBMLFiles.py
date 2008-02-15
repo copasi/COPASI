@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/scripts/compareSBMLFiles.py,v $ 
-#   $Revision: 1.5 $ 
+#   $Revision: 1.6 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2008/01/28 14:33:50 $ 
+#   $Date: 2008/02/15 13:11:24 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -270,7 +270,8 @@ def compareFunctionDefinitions(functions1,functions2,filename1,filename2):
                 continue
   #pdb.set_trace()
   for key in maps[0].keys():
-    print "Function definition "+key+" in file "+filename1+" maps to function definition "+maps[0][key]+" in file "+filename2
+    # print "Function definition "+key+" in file "+filename1+" maps to function definition "+maps[0][key]+" in file "+filename2
+    pass
   for key in functions1.keys():
     print "No corresponding function to function with id "+key+" found in "+filename2+"."
   for key in functions2.keys():
@@ -479,7 +480,8 @@ def compare2KineticLaws(kLaw1,kLaw2,reactionId,filename1,filename2):
         print "Error. Wrong number of math elements in kineticlaw for reaction "+reactionId+" in file "+filename2+"."
         sys.exit(1)
     if(compareChildren(math1[0],math2[0])==0):
-        print "The mathematical expression for the kineticLaws of reaction "+reactionId+" differ."
+        pass
+        #print "The mathematical expression for the kineticLaws of reaction "+reactionId+" differ."
 
 
 def compareRules(rules1,rules2,filename1,filename2):
@@ -502,9 +504,9 @@ def compareRules(rules1,rules2,filename1,filename2):
             print "Error. Unknown rule type "+rule1.tagName+" in file "+filename1+"."
             sys.exit(1)
         for y in range(len(rules2)-1,-1,-1):
-            if(y in mappedRules):
-                continue
             rule2=rules2[y]
+            if(rules2 in mappedRules):
+                continue
             variable2=""
             if(rule2.tagName=="assignmentRule" or rule2.tagName=="rateRule"):
                 variable2=rule2.getAttribute("variable")
@@ -516,8 +518,7 @@ def compareRules(rules1,rules2,filename1,filename2):
                 sys.exit(1)
             if(variable1!="" and variable1==variable2):
                 del rules1[x]
-                #del rules2[y]
-                mappedRules.append(y)
+                mappedRules.append(rule2)
                 ruleMappings[0][x]=y
                 ruleMappings[1][y]=x
                 if(rule1.tagName != rule2.tagName):
@@ -530,8 +531,7 @@ def compareRules(rules1,rules2,filename1,filename2):
                 # check if the two algebraic rules are the same
                 if(compareChildren(rule1,rule2)==1):
                     del rules1[x]
-                    #del rules2[y]
-                    mappedRules.append(y)
+                    mappedRules.append(rule2)
                     ruleMappings[0][x]=y
                     ruleMappings[1][y]=x
                     break
@@ -544,6 +544,9 @@ def compareRules(rules1,rules2,filename1,filename2):
             print "No corresponding rule for variable " + variable + " found in file "+filename2 +"."
     if(algebraicCounter!=0):
         print str(algebraicCounter)+" algebraic rules found in file "+filename1+" with no corresponding rule in file "+filename2+"."
+    # now delete the rules that have already ben mapped from rules2
+    for rule in mappedRules:
+        del rules2[rules2.index(rule)]
     for rule in rules2:
         if(rule.tagName=="algebraicRule"):
             algebraicCounter+=1
@@ -667,7 +670,7 @@ def writeReorderedSecond(model2,functionMappings,ruleMappings,outfileName):
     for ciNode in ciNodes:
         for node in ciNode.childNodes:
             if(node.nodeType==node.TEXT_NODE and node.nodeValue.strip() in functionMappings[1].keys()):
-                node.nodeValue=functionMappings[1][node.nodeValue.strip()]
+                node.nodeValue=" "+functionMappings[1][node.nodeValue.strip()]+" "
     # bring all rules into the same order as in the first file
     listOfRules=model2.getElementsByTagName("listOfRules")
     if(len(listOfRules)==1):

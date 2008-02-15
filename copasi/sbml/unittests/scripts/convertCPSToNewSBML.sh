@@ -9,6 +9,6 @@ LOGFILE=$4
 
 if [ -e $COPASISE ];then
   if [ -e $FILENAME ];then
-    $COPASISE --newExportSBML ${OUTFILE} ${FILENAME} 2>&1 | sed '1,4d' > ${LOGFILE}
+    $COPASISE --exportSBML ${OUTFILE} ${FILENAME} 2>&1 | sed '1,4d' > ${LOGFILE}
   fi
 fi

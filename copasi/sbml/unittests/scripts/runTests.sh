@@ -1,6 +1,6 @@
 #!/bin/bash
 
-COPASIDIR=${HOME}/workspace/copasi_build24
+COPASIDIR=${HOME}/workspace/copasi_build25
 SBMLDIR=${HOME}/Downloads/libsbml-COPASI-24
 BIOMODELSDIR=${HOME}/Downloads/biomodels_25September2007_sbmls
 

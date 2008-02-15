@@ -63,7 +63,7 @@ if [ -e ${BIOMODELSDIR} ];then
         fi
         if [ -e result_export/${FILENAME%%.xml}.old.xml ];then
           /sw/bin/python ./rewriteXML.py result_export/${FILENAME%%.xml}.old.xml ./tmp.xml
-          xmllint --format ./tmp.xml > result_export/${FILENAME%%.xml}.old.xml 
+          xmllint --format --noblanks ./tmp.xml > result_export/${FILENAME%%.xml}.old.xml 
           rm ./tmp.xml
           if [ -e ${PRINT} ];then
             LOGFILE=statistics/${FILENAME%%.xml}.old.print;
@@ -84,7 +84,7 @@ if [ -e ${BIOMODELSDIR} ];then
         fi
         if [ -e result_export/${FILENAME%%.xml}.new.xml ];then
           /sw/bin/python ./compareSBMLFiles.py result_export/${FILENAME%%.xml}.old.xml result_export/${FILENAME%%.xml}.new.xml result_export/${FILENAME%%.xml}.new.reordered.xml 
-          xmllint --format result_export/${FILENAME%%.xml}.new.reordered.xml > ./tmp.xml 
+          xmllint --noblanks --format result_export/${FILENAME%%.xml}.new.reordered.xml > ./tmp.xml 
           mv ./tmp.xml result_export/${FILENAME%%.xml}.new.reordered.xml
  if [ -e ${PRINT} ];then
             LOGFILE=statistics/${FILENAME%%.xml}.orig.new.print;
