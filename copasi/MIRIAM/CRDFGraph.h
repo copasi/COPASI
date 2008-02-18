@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraph.h,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/02/14 22:57:12 $
+//   $Date: 2008/02/18 16:27:45 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -117,11 +117,11 @@ class CRDFGraph
      *Set the value of the field for a given fieldName.
      * @param const std::string& fieldName
      * @param const std::string& fieldValue
-    * @param CRDFObject& obj
+    * @param const CRDFObject& obj
     * @param const bool& isResource
      * @return std::string success
      */
-    bool setFieldValue(const std::string& fieldName, CRDFObject& obj, const std::string& fieldValue);
+    bool setFieldValue(const std::string& fieldName, const CRDFObject& obj, const std::string& fieldValue);
 
     /**
      * Add a child node to a table node.
@@ -200,12 +200,29 @@ class CRDFGraph
     void addObjectToBagNode(const std::string& tableName, CRDFNode* pTableNode, const CRDFObject& object);
     void buildCreatorRecord(const CRDFNode * pObjNode);
     void buildPublicationRecord(const CRDFNode * pObjNode);
+    void buildCreatedRecord(const CRDFNode * pObjNode);
+    void createAboutNode();
     std::string getNameSpaceURI(const std::string& lookupStr);
+    CRDFNode* findFieldNodeFromObject(const std::string& fieldName, const CRDFObject& startObj);
+    /**
+       * Find a node in the graph which has attributes similar
+    * to the given object.
+       * @param CRDFObject& object
+       * @return CRDFNode* (NULL when not found)
+       */
     CRDFNode* findNodeFromObject(const CRDFObject& object);
-    CRDFNode* findFieldNodeFromObject(const std::string& fieldName, const CRDFObject& obj);
+
+    /**
+        * Find a node in the graph with a given predicate
+     * and a start node
+        * @param const std::string& predicate
+     * @param const CRDFNode * startNode
+        * @return CRDFNode* (NULL when not found)
+        */
+    CRDFNode* getNodeForPredicate(const std::string& predicate, const CRDFNode * startNode = NULL);
+
     std::string fieldName2Predicate(const std::string& fieldName);
     std::string tableName2Predicate(const std::string& tableName);
-    CRDFNode* getNodeForPredicate(const std::string& predicate, const CRDFNode * startNode = NULL);
     bool removeNode(CRDFNode * pNode);
 
     /**

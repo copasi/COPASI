@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CMIRIAMModelWidget.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/01/31 05:01:51 $
+//   $Date: 2008/02/18 16:27:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,9 +18,12 @@
 #ifndef COPASI_CMIRIAMMODELWIDGET
 #define COPASI_CMIRIAMMODELWIDGET
 
+#include <qdatetimeedit.h>
+
 #include "UI/copasiWidget.h"
 #include "UI/listviews.h"
 
+class CModelMIRIAMInfo;
 class CAuthorsWidget;
 class CPublicationsWidget;
 class QPushButton;
@@ -32,8 +35,9 @@ class CMIRIAMModelWidget : public CopasiWidget
     CMIRIAMModelWidget(QWidget *parent, const char * name = 0, WFlags f = 0);
 
   private:
-    CAuthorsWidget *mAuthorsWidget;
-    CPublicationsWidget *mPublicationsWidget;
+    CAuthorsWidget* mpAuthorsWidget;
+    CPublicationsWidget* mpPublicationsWidget;
+    QDateTimeEdit* mpCreatedWidget;
 
     QPushButton* btnOK;
     QPushButton* btnCancel;
@@ -47,8 +51,8 @@ class CMIRIAMModelWidget : public CopasiWidget
     virtual void slotBtnDeleteClicked();
     virtual void slotBtnNewClicked();
     virtual void slotBtnClearClicked();
-
     virtual void slotEnableOKAndCancel(bool e);
+    virtual void slotCreatedValueChanged(const QDateTime & dt);
 
   public:
     virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);

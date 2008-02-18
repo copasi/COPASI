@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.336 $
+//   $Revision: 1.337 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/01/29 15:43:45 $
+//   $Date: 2008/02/18 16:27:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -93,6 +93,7 @@ CModel::CModel():
     mCompartments("Compartments", this),
     mMetabolites("Metabolites", this),
     mMetabolitesX("Reduced Model Metabolites", this),
+    mMIRIAMInfo(),
     mSteps("Reactions", this),
     mParticleFluxes(),
     mValues("Values", this),

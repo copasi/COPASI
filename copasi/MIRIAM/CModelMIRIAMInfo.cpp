@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CModelMIRIAMInfo.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/02/14 22:57:12 $
+//   $Date: 2008/02/18 16:27:45 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,52 +28,58 @@
 #include "CModelMIRIAMInfo.h"
 #include "CRDFParser.h"
 #include "CRDFWriter.h"
+#include "CRDFLiteral.h"
 
 CModelMIRIAMInfo::CModelMIRIAMInfo() :
     mAuthors(),
     mAuthorsObj(),
     mPublications(),
     mPublicationsObj(),
+    mCreatedObj(),
     mpRDFGraph(NULL),
     mpEntity(NULL)
 {
-  /*
-  std::string buf;
-  std::string line;
-  std::ifstream xmlFile("example.xml");
-  while(std::getline(xmlFile, line))
-   buf += line + '\n';
+  mCreatedObj.setType(CRDFObject::BLANK_NODE);
+  mCreatedObj.setBlankNodeId("CreatedNode");
 
-  //mpRDFParser = new CRDFParser();
-  mpRDFGraph = CRDFParser::graphFromXml(buf);
-  if (mpRDFGraph)
-  {
-   fillInfoFromGraph();
-   std::string reprint = CRDFWriter::xmlFromGraph(mpRDFGraph);
-  }
-  xmlFile.close();*/
+  mpRDFGraph = new CRDFGraph();
+
+  /*std::string buf;
+   std::string line;
+   std::ifstream xmlFile("example.xml");
+   while(std::getline(xmlFile, line))
+    buf += line + '\n';
+
+   mpRDFGraph = CRDFParser::graphFromXml(buf);
+   if (mpRDFGraph)
+   {
+    fillInfoFromGraph();
+    std::string reprint = CRDFWriter::xmlFromGraph(mpRDFGraph);
+   }
+   xmlFile.close();*/
 }
 
 CModelMIRIAMInfo::~CModelMIRIAMInfo()
-{delete mpRDFGraph;}
+{pdelete(mpRDFGraph);}
 
 void CModelMIRIAMInfo::loadGraph(const std::string& key)
 {
-  if (!mpRDFGraph)
+  if (!mpEntity)
     {
       if ((mpEntity = dynamic_cast< CModelEntity * >(GlobalKeys.get(key))) != NULL)
-      {mpRDFGraph = CRDFParser::graphFromXml(mpEntity->getMiriamAnnotation());}
-      if (!mpRDFGraph)
-      {mpRDFGraph = new CRDFGraph();}
-      fillInfoFromGraph();
+        {
+          pdelete(mpRDFGraph);
+          mpRDFGraph = CRDFParser::graphFromXml(mpEntity->getMiriamAnnotation());
+          fillInfoFromGraph();
+        }
     }
 }
 
 bool CModelMIRIAMInfo::saveGraph()
 {
-  if (mpEntity)
+  mpRDFGraph->compressGraph();
+  if (mpEntity && mpRDFGraph)
     {
-      mpRDFGraph->compressGraph();
       mpEntity->setMiriamAnnotation(CRDFWriter::xmlFromGraph(mpRDFGraph));
       return true;
     }
@@ -123,6 +129,7 @@ bool CModelMIRIAMInfo::fillInfoFromGraph()
             mPublications.add(new CPublication((*it).getResource(), NULL, new CRDFObject(*it)), true);
         }
     }
+  mpRDFGraph->getNodeIDsForTable("Created", objects, mCreatedObj);
   return true;
 }
 
@@ -199,3 +206,9 @@ bool CModelMIRIAMInfo::removePublication(const std::string & key)
   mPublications.CCopasiVector< CPublication >::remove(index);
   return true;
 }
+
+const std::string CModelMIRIAMInfo::getCreatedDT() const
+{return mpRDFGraph->getFieldValue("Created", mCreatedObj);}
+
+void CModelMIRIAMInfo::setCreatedDT(const std::string& dt)
+{mpRDFGraph->setFieldValue("Created", mCreatedObj, dt);}

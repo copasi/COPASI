@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CMIRIAMModelWidget.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/02/04 21:20:38 $
+//   $Date: 2008/02/18 16:27:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -38,12 +38,18 @@ CMIRIAMModelWidget::CMIRIAMModelWidget(QWidget* parent, const char* name, WFlags
 
   //Create new widgets
   QLabel *pLblAuthors = new QLabel("Creators: ", this);
-  mAuthorsWidget = new CAuthorsWidget(this, "AuthorsWidgetForModel");
-  pLblAuthors->setBuddy(mAuthorsWidget);
+  mpAuthorsWidget = new CAuthorsWidget(this, "AuthorsWidgetForModel");
+  pLblAuthors->setBuddy(mpAuthorsWidget);
 
   QLabel *pLblPublications = new QLabel("Publications: ", this);
-  mPublicationsWidget = new CPublicationsWidget(this, "PublicationsWidgetForModel");
-  pLblPublications->setBuddy(mPublicationsWidget);
+  mpPublicationsWidget = new CPublicationsWidget(this, "PublicationsWidgetForModel");
+  pLblPublications->setBuddy(mpPublicationsWidget);
+
+  QLabel *pLblCreated = new QLabel("Created: ", this);
+  mpCreatedWidget = new QDateTimeEdit(this, "CreatedWidgetForModel");
+  pLblCreated->setBuddy(mpCreatedWidget);
+  mpCreatedWidget->setFixedWidth(200);
+  mpCreatedWidget->dateEdit()->setRange(QDate(), QDate::currentDate());
 
   btnOK = new QPushButton("Commit", this);
   btnCancel = new QPushButton("Revert", this);
@@ -54,10 +60,13 @@ CMIRIAMModelWidget::CMIRIAMModelWidget(QWidget* parent, const char* name, WFlags
   //Layout Widgets
   QVBoxLayout *vBoxLayout = new QVBoxLayout(this, 6);
   vBoxLayout->addWidget(pLblAuthors);
-  vBoxLayout->addWidget(mAuthorsWidget);
+  vBoxLayout->addWidget(mpAuthorsWidget);
 
   vBoxLayout->addWidget(pLblPublications);
-  vBoxLayout->addWidget(mPublicationsWidget);
+  vBoxLayout->addWidget(mpPublicationsWidget);
+
+  vBoxLayout->addWidget(pLblCreated);
+  vBoxLayout->addWidget(mpCreatedWidget);
 
   QHBoxLayout* hLayout = new QHBoxLayout(vBoxLayout, 0);
 
@@ -83,51 +92,60 @@ CMIRIAMModelWidget::CMIRIAMModelWidget(QWidget* parent, const char* name, WFlags
   connect(btnNew, SIGNAL(clicked ()), this,
           SLOT(slotBtnNewClicked()));
 
-  connect(mAuthorsWidget, SIGNAL(setEnableOKAndCancel(bool)), this,
+  connect(mpAuthorsWidget, SIGNAL(setEnableOKAndCancel(bool)), this,
           SLOT(slotEnableOKAndCancel(bool)));
-  connect(mAuthorsWidget, SIGNAL(delKeyPressed()), this,
+  connect(mpAuthorsWidget, SIGNAL(delKeyPressed()), this,
           SLOT(slotBtnDeleteClicked()));
 
-  connect(mPublicationsWidget, SIGNAL(setEnableOKAndCancel(bool)), this,
+  connect(mpPublicationsWidget, SIGNAL(setEnableOKAndCancel(bool)), this,
           SLOT(slotEnableOKAndCancel(bool)));
-  connect(mPublicationsWidget, SIGNAL(delKeyPressed()), this,
+  connect(mpPublicationsWidget, SIGNAL(delKeyPressed()), this,
           SLOT(slotBtnDeleteClicked()));
+
+  connect(mpCreatedWidget, SIGNAL(valueChanged(const QDateTime &)), this,
+          SLOT(slotCreatedValueChanged(const QDateTime &)));
 }
 
 void CMIRIAMModelWidget::slotBtnOKClicked()
 {
-  mAuthorsWidget->slotBtnOKClicked();
-  mPublicationsWidget->slotBtnOKClicked();
+  mpAuthorsWidget->slotBtnOKClicked();
+  mpPublicationsWidget->slotBtnOKClicked();
+
+  std::string dt = "";
+  if (mpCreatedWidget->dateTime().toString(Qt::ISODate).ascii())
+  {dt = mpCreatedWidget->dateTime().toString(Qt::ISODate).ascii();}
+  CCopasiDataModel::Global->getModel()->getMIRIAMInfo().setCreatedDT(dt);
 }
 
 void CMIRIAMModelWidget::slotBtnCancelClicked()
 {
-  mAuthorsWidget->slotBtnCancelClicked();
-  mPublicationsWidget->slotBtnCancelClicked();
+  mpAuthorsWidget->slotBtnCancelClicked();
+  mpPublicationsWidget->slotBtnCancelClicked();
+  mpCreatedWidget->setDateTime(QDateTime::fromString(CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getCreatedDT().c_str(), Qt::ISODate));
 }
 
 void CMIRIAMModelWidget::slotBtnClearClicked()
 {
-  if (mAuthorsWidget->isTableInFocus())
-  {mAuthorsWidget->slotBtnClearClicked();}
-  else if (mPublicationsWidget->isTableInFocus())
-  {mPublicationsWidget->slotBtnClearClicked();}
+  if (mpAuthorsWidget->isTableInFocus())
+  {mpAuthorsWidget->slotBtnClearClicked();}
+  else if (mpPublicationsWidget->isTableInFocus())
+  {mpPublicationsWidget->slotBtnClearClicked();}
 }
 
 void CMIRIAMModelWidget::slotBtnDeleteClicked()
 {
-  if (mAuthorsWidget->isTableInFocus())
-  {mAuthorsWidget->slotBtnDeleteClicked();}
-  else if (mPublicationsWidget->isTableInFocus())
-  {mPublicationsWidget->slotBtnDeleteClicked();}
+  if (mpAuthorsWidget->isTableInFocus())
+  {mpAuthorsWidget->slotBtnDeleteClicked();}
+  else if (mpPublicationsWidget->isTableInFocus())
+  {mpPublicationsWidget->slotBtnDeleteClicked();}
 }
 
 void CMIRIAMModelWidget::slotBtnNewClicked()
 {
-  if (mAuthorsWidget->isTableInFocus())
-  {mAuthorsWidget->slotBtnNewClicked();}
-  else if (mPublicationsWidget->isTableInFocus())
-  {mPublicationsWidget->slotBtnNewClicked();}
+  if (mpAuthorsWidget->isTableInFocus())
+  {mpAuthorsWidget->slotBtnNewClicked();}
+  else if (mpPublicationsWidget->isTableInFocus())
+  {mpPublicationsWidget->slotBtnNewClicked();}
 }
 
 void CMIRIAMModelWidget::slotEnableOKAndCancel(bool e)
@@ -136,25 +154,29 @@ void CMIRIAMModelWidget::slotEnableOKAndCancel(bool e)
   btnCancel->setEnabled(e);
 }
 
+void CMIRIAMModelWidget::slotCreatedValueChanged(const QDateTime & dt)
+{slotEnableOKAndCancel(true);}
+
 bool CMIRIAMModelWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
 {
-  mAuthorsWidget->update(objectType, action, key);
-  mPublicationsWidget->update(objectType, action, key);
+  mpAuthorsWidget->update(objectType, action, key);
+  mpPublicationsWidget->update(objectType, action, key);
+  mpCreatedWidget->setDateTime(QDateTime::fromString(CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getCreatedDT().c_str(), Qt::ISODate));
   return true;
 }
 
 bool CMIRIAMModelWidget::enter(const std::string & key)
 {
   CCopasiDataModel::Global->getModel()->getMIRIAMInfo().loadGraph(key);
-  mAuthorsWidget->enter(key);
-  mPublicationsWidget->enter(key);
+  mpAuthorsWidget->enter(key);
+  mpPublicationsWidget->enter(key);
   return true;
 }
 
 bool CMIRIAMModelWidget::leave()
 {
   CCopasiDataModel::Global->getModel()->getMIRIAMInfo().saveGraph();
-  mAuthorsWidget->leave();
-  mPublicationsWidget->leave();
+  mpAuthorsWidget->leave();
+  mpPublicationsWidget->leave();
   return true;
 }
