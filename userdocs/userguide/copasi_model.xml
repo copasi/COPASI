@@ -1,10 +1,10 @@
 <chapter id="model" xreflabel="Model">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_model.xml,v $ -->
-<!--   $Revision: 1.4.6.1 $ -->
+<!--   $Revision: 1.4.6.2 $ -->
 <!--   $Name:  $ -->
-<!--   $Author: shoops $ -->
-<!--   $Date: 2008/01/23 20:23:11 $ -->
+<!--   $Author: pwilly $ -->
+<!--   $Date: 2008/02/18 07:46:10 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -245,7 +245,7 @@ However there are subtle differences between reaction rates and reaction propens
     </mml:mfenced>
   </mml:mrow>
 </mml:math></inlineequation>
-. Copasi will apply this kind of corrections automatically. In cases where these corrections have already been done by the modeler explicitly COPASI needs to be told not to apply this correction. This is described in the section
+. COPASI will apply this kind of corrections automatically. In cases where these corrections have already been done by the modeler explicitly COPASI needs to be told not to apply this correction. This is described in the section
 <xref linkend="generalSettings"/>
 </para>
 <para>
