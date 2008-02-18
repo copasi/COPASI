@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.8.4.12 $
+//   $Revision: 1.8.4.13 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/14 10:49:23 $
+//   $Date: 2008/02/18 06:44:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -2096,14 +2096,17 @@ KineticLaw* CSBMLExporter::createKineticLaw(const CReaction& reaction, CCopasiDa
         }
     }
   CFunction* pTmpFunction = new CFunction(*reaction.getFunction());
-  CEvaluationNode* pOrigNode = pTmpFunction->getRoot();
-  // the next few lines replace references to species depending on whether
-  // it is a reference to an amount or a reference to a concentration.
-  // Other factors that influence this replacement are if the model
-  // contains variable volumes or if the quantity units are set to CModel::number
-  pOrigNode = CSBMLExporter::replaceSpeciesReferences(pOrigNode, dataModel);
-  assert(pOrigNode != NULL);
-  pTmpFunction->setRoot(pOrigNode);
+  if (dynamic_cast<const CMassAction*>(reaction.getFunction()) == NULL)
+    {
+      CEvaluationNode* pOrigNode = pTmpFunction->getRoot();
+      // the next few lines replace references to species depending on whether
+      // it is a reference to an amount or a reference to a concentration.
+      // Other factors that influence this replacement are if the model
+      // contains variable volumes or if the quantity units are set to CModel::number
+      pOrigNode = CSBMLExporter::replaceSpeciesReferences(pOrigNode, dataModel);
+      assert(pOrigNode != NULL);
+      pTmpFunction->setRoot(pOrigNode);
+    }
   CEvaluationNode* pExpression = CSBMLExporter::createKineticExpression(pTmpFunction, reaction.getParameterMappings(), dataModel);
   if (pExpression == NULL)
     {
@@ -2212,13 +2215,13 @@ ASTNode* CSBMLExporter::isDividedByVolume(const ASTNode* pRootNode, const std::s
   return pResult;
 }
 
-CEvaluationNode* CSBMLExporter::createKineticExpression(CFunction* pFun, const std::vector<std::vector<std::string> >& arguments, const CCopasiDataModel& /*dataModel*/)
+CEvaluationNode* CSBMLExporter::createKineticExpression(CFunction* pFun, const std::vector<std::vector<std::string> >& arguments, const CCopasiDataModel& dataModel)
 {
   if (!pFun || pFun->getVariables().size() != arguments.size()) fatalError();
   CEvaluationNode* pResult;
   if (pFun->getType() == CEvaluationTree::MassAction)
     {
-      pResult = CSBMLExporter::createMassActionExpression(arguments, pFun->isReversible() == TriTrue);
+      pResult = CSBMLExporter::createMassActionExpression(arguments, pFun->isReversible() == TriTrue, dataModel);
     }
   else
     {
@@ -3077,8 +3080,11 @@ void CSBMLExporter::removeUnusedObjects()
     }
 }
 
-CEvaluationNode* CSBMLExporter::createMassActionExpression(const std::vector<std::vector<std::string> >& arguments, bool isReversible)
+CEvaluationNode* CSBMLExporter::createMassActionExpression(const std::vector<std::vector<std::string> >& arguments, bool isReversible, const CCopasiDataModel& dataModel)
 {
+  // TODO divide by the species references by the compartment volume.
+  // TODO check if this has to be done for single compartment reactions only
+  // TODO check if the stoichiometry is considered for the species
   assert((isReversible && arguments.size() == 4) || arguments.size() == 2);
   assert(arguments[0].size() == 1 && arguments[1].size() > 0);
   // create a multiplication of all items in arguments[1] and multiply that
@@ -3215,6 +3221,7 @@ void CSBMLExporter::removeRule(const std::string& sbmlId)
  */
 CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* pOrigNode, const CCopasiDataModel& dataModel)
 {
+  // TODO check if we have to consider the stoichiometry somehow
   CEvaluationNode* pResult = NULL;
   double factor = dataModel.getModel()->getQuantity2NumberFactor();
   if (CEvaluationNodeObject::type(pOrigNode->getType()) == CEvaluationNodeObject::OBJECT)

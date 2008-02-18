@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.h,v $
-//   $Revision: 1.7.4.6 $
+//   $Revision: 1.7.4.7 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/14 10:49:23 $
+//   $Date: 2008/02/18 06:44:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -449,7 +449,7 @@ class CSBMLExporter
      * The second argument determines whether it is reversible or irreversible
      * mass action.
      */
-    static CEvaluationNode* createMassActionExpression(const std::vector<std::vector<std::string> >& arguments, bool isReversible);
+    static CEvaluationNode* createMassActionExpression(const std::vector<std::vector<std::string> >& arguments, bool isReversible, const CCopasiDataModel& dataModel);
 
     /**
      * Checks if the given string is a valid SId
