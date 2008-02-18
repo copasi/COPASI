@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000015.cpp,v $
-//   $Revision: 1.1.2.4 $
+//   $Revision: 1.1.2.5 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/18 06:42:25 $
+//   $Date: 2008/02/18 20:09:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -56,10 +56,10 @@ void test000015::test_references_to_species()
   CPPUNIT_ASSERT(pCompartment->getConstant() == false);
   CPPUNIT_ASSERT(pModel->getNumSpecies() == 2);
   Species* pSpecies = pModel->getSpecies(1);
-  CPPUNIT_ASSERT(pSpecies->getHasOnlySubstanceUnits() == false);
+  CPPUNIT_ASSERT(pSpecies->getHasOnlySubstanceUnits() == true);
   pSpecies = pModel->getSpecies(0);
   std::string idSpeciesA = pSpecies->getId();
-  CPPUNIT_ASSERT(pSpecies->getHasOnlySubstanceUnits() == false);
+  CPPUNIT_ASSERT(pSpecies->getHasOnlySubstanceUnits() == true);
   CPPUNIT_ASSERT(pModel->getNumRules() == 1);
   AssignmentRule* pRule = dynamic_cast<AssignmentRule*>(pModel->getRule(0));
   CPPUNIT_ASSERT(pRule != NULL);
@@ -69,8 +69,10 @@ void test000015::test_references_to_species()
   CPPUNIT_ASSERT(pRule->getVariable() == pParameter->getId());
   const ASTNode* pMath = pRule->getMath();
   CPPUNIT_ASSERT(pMath != NULL);
-  // make sure the mathematical expression contains only one node that is a
-  // reference to the species
+
+  CPPUNIT_ASSERT(false);
+
+  // TODO finish the expressions
   CPPUNIT_ASSERT(pMath->getType() == AST_NAME);
   CPPUNIT_ASSERT(pMath->getName() == pSpecies->getId());
   CPPUNIT_ASSERT(pModel->getNumReactions() == 2);

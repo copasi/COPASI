@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000003.cpp,v $
-//   $Revision: 1.1.2.4 $
+//   $Revision: 1.1.2.5 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/18 06:42:25 $
+//   $Date: 2008/02/18 20:09:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -64,9 +64,12 @@ void test000003::test_references_to_species()
   CPPUNIT_ASSERT(pModel->getNumRules() == 1);
   AssignmentRule* pRule = dynamic_cast<AssignmentRule*>(pModel->getRule(0));
   CPPUNIT_ASSERT(pRule != NULL);
-  CPPUNIT_ASSERT(pModel->getNumParameters() == 1);
+  CPPUNIT_ASSERT(pModel->getNumParameters() == 2);
   Parameter* pParameter = pModel->getParameter(0);
   CPPUNIT_ASSERT(pParameter != NULL);
+  Parameter* pFactor = pModel->getParameter(1);
+  CPPUNIT_ASSERT(pFactor != NULL);
+  CPPUNIT_ASSERT(fabs((pFactor->getValue() - pDataModel->getModel()->getQuantity2NumberFactor()) / pDataModel->getModel()->getQuantity2NumberFactor()) < 1e-3);
   CPPUNIT_ASSERT(pRule->getVariable() == pParameter->getId());
   const ASTNode* pMath = pRule->getMath();
   CPPUNIT_ASSERT(pMath != NULL);
@@ -80,8 +83,8 @@ void test000003::test_references_to_species()
   CPPUNIT_ASSERT(pMath != NULL);
   CPPUNIT_ASSERT(pMath->getType() == AST_TIMES);
   CPPUNIT_ASSERT(pMath->getNumChildren() == 2);
-  CPPUNIT_ASSERT(pMath->getChild(0)->getType() == AST_REAL);
-  CPPUNIT_ASSERT(fabs((pMath->getChild(0)->getReal() - pDataModel->getModel()->getQuantity2NumberFactor()) / pDataModel->getModel()->getQuantity2NumberFactor()) <= 1e-3);
+  CPPUNIT_ASSERT(pMath->getChild(0)->getType() == AST_NAME);
+  CPPUNIT_ASSERT(pMath->getChild(0)->getName() == pFactor->getId());
 
   CPPUNIT_ASSERT(pMath->getChild(1)->getType() == AST_NAME);
   CPPUNIT_ASSERT(pMath->getChild(1)->getName() == pCompartment->getId());

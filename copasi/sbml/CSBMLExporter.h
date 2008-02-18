@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.h,v $
-//   $Revision: 1.7.4.8 $
+//   $Revision: 1.7.4.9 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/18 10:40:58 $
+//   $Date: 2008/02/18 20:09:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -312,7 +312,7 @@ class CSBMLExporter
      * Create the kinetic law for the given reaction.
      * On failure NULL is returned.
      */
-    KineticLaw* createKineticLaw(const CReaction& reaction, CCopasiDataModel& dataModel);
+    KineticLaw* createKineticLaw(CReaction& reaction, CCopasiDataModel& dataModel);
 
     /**
      * Go through a CEvaluationNode base tree and add the names

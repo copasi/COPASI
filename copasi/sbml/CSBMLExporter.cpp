@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.8.4.15 $
+//   $Revision: 1.8.4.16 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/18 10:40:58 $
+//   $Date: 2008/02/18 20:09:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1213,14 +1213,14 @@ void CSBMLExporter::checkForUnsupportedObjectReferences(const CEvaluationTree& e
                   // must be a reference to the transient or initial concentration
                   if (initialExpression == true)
                     {
-                      if (pObject->getObjectName() != "InitialConcentration")
+                      if (pObject->getObjectName() != "InitialConcentration" && pObject->getObjectName() != "InitialParticleNumber")
                         {
                           result.push_back(SBMLIncompatibility(1, pObject->getObjectName().c_str(), "metabolite", pObjectParent->getObjectName().c_str()));
                         }
                     }
                   else
                     {
-                      if (pObject->getObjectName() != "Concentration")
+                      if (pObject->getObjectName() != "Concentration" && pObject->getObjectName() != "ParticleNumber")
                         {
                           result.push_back(SBMLIncompatibility(1, pObject->getObjectName().c_str(), "metabolite", pObjectParent->getObjectName().c_str()));
                         }
@@ -1770,7 +1770,6 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
       convertToLevel1();
     }
   this->mpSBMLDocument->setLevelAndVersion(this->mSBMLLevel, this->mSBMLVersion);
-  unsigned int i, iMax = this->mIncompatibilities.size();
   // remove mpAvogadro from the model again
   if (this->mAvogadroCreated == true)
     {
@@ -1778,6 +1777,7 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
       this->mCOPASI2SBMLMap.erase(pos);
       dataModel.getModel()->removeModelValue(this->mpAvogadro->getKey(), true);
     }
+  unsigned int i, iMax = this->mIncompatibilities.size();
   for (i = 0;i < iMax;++i)
     {
       SBMLIncompatibility& incompat = this->mIncompatibilities[i];
@@ -2064,7 +2064,7 @@ void CSBMLExporter::updateCOPASI2SBMLMap(const CCopasiDataModel& dataModel)
     }
 }
 
-KineticLaw* CSBMLExporter::createKineticLaw(const CReaction& reaction, CCopasiDataModel& dataModel)
+KineticLaw* CSBMLExporter::createKineticLaw(CReaction& reaction, CCopasiDataModel& dataModel)
 {
   KineticLaw* pKLaw = NULL;
   if (!pKLaw)
@@ -2095,16 +2095,11 @@ KineticLaw* CSBMLExporter::createKineticLaw(const CReaction& reaction, CCopasiDa
             }
         }
     }
-  CFunction* pTmpFunction = new CFunction(*reaction.getFunction());
-  CEvaluationNode* pOrigNode = pTmpFunction->getRoot();
   // the next few lines replace references to species depending on whether
   // it is a reference to an amount or a reference to a concentration.
   // Other factors that influence this replacement are if the model
   // contains variable volumes or if the quantity units are set to CModel::number
-  //pOrigNode = CSBMLExporter::replaceSpeciesReferences(pOrigNode, dataModel);
-  //assert(pOrigNode != NULL);
-  pTmpFunction->setRoot(pOrigNode);
-  CEvaluationNode* pExpression = CSBMLExporter::createKineticExpression(pTmpFunction, reaction.getParameterMappings());
+  CEvaluationNode* pExpression = CSBMLExporter::createKineticExpression(const_cast<CFunction*>(reaction.getFunction()), reaction.getParameterMappings());
   if (pExpression == NULL)
     {
       delete pKLaw;
@@ -2117,7 +2112,7 @@ KineticLaw* CSBMLExporter::createKineticLaw(const CReaction& reaction, CCopasiDa
       ** to be converted from concentration/time to substance/time by
       ** multiplying the rate law with the volume of the compartment.
       */
-      pOrigNode = CSBMLExporter::replaceSpeciesReferences(pExpression, dataModel);
+      CEvaluationNode* pOrigNode = CSBMLExporter::replaceSpeciesReferences(pExpression, dataModel);
       delete pExpression;
       assert(pOrigNode != NULL);
       ASTNode* pNode = pOrigNode->toAST();
@@ -2125,7 +2120,7 @@ KineticLaw* CSBMLExporter::createKineticLaw(const CReaction& reaction, CCopasiDa
       assert(pNode != NULL);
       if (reaction.getCompartmentNumber() == 1)
         {
-          const CCompartment& compartment = reaction.getLargestCompartment();
+          const CCompartment& compartment = (reaction.getChemEq().getSubstrates().size() != 0) ? (*reaction.getChemEq().getSubstrates()[0]->getMetabolite()->getCompartment()) : (*reaction.getChemEq().getProducts()[0]->getMetabolite()->getCompartment());
           // check if the importer has added a division by the volume
           // if so remove it instead of multiplying again
           ASTNode* pTNode = CSBMLExporter::isDividedByVolume(pNode, compartment.getSBMLId());
@@ -3258,11 +3253,11 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
                       pResult->addChild(pOrigNode->copyBranch());
                       if (pObject->getObjectName() == "InitialConcentration")
                         {
-                          pResult->addChild(new CEvaluationNodeObject(CEvaluationNodeObject::ANY, pCompartment->getObject(CCopasiObjectName("Reference=InitialVolume"))->getCN()));
+                          pResult->addChild(new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + pCompartment->getObject(CCopasiObjectName("Reference=InitialVolume"))->getCN() + ">"));
                         }
                       else
                         {
-                          pResult->addChild(new CEvaluationNodeObject(CEvaluationNodeObject::ANY, pCompartment->getObject(CCopasiObjectName("Reference=Volume"))->getCN()));
+                          pResult->addChild(new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + pCompartment->getObject(CCopasiObjectName("Reference=Volume"))->getCN() + ">"));
                         }
                     }
                   else
@@ -3271,7 +3266,7 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
                       pResult = pOrigNode->copyBranch();
                     }
                 }
-              else if (pObject->getObjectName() == "InitialAmount" || pObject->getObjectName() == "Amount")
+              else if (pObject->getObjectName() == "InitialParticleNumber" || pObject->getObjectName() == "ParticleNumber")
                 {
                   // if the units are not set to particle numbers anyway,
                   // replace the node by the node times avogadros number
