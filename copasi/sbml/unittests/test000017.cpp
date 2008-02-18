@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000017.cpp,v $
-//   $Revision: 1.1.2.3 $
+//   $Revision: 1.1.2.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/15 17:50:23 $
+//   $Date: 2008/02/18 06:42:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -44,7 +44,7 @@ void test000017::test_references_to_species()
   std::istringstream iss(test000017::MODEL_STRING);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
-  CPPUNIT_ASSERT(pDataModel->exportSBMLToString().empty() == false);
+  CPPUNIT_ASSERT(pDataModel->exportSBMLToString(NULL, 2, 3).empty() == false);
   SBMLDocument* pDocument = pDataModel->getCurrentSBMLDocument();
   CPPUNIT_ASSERT(pDocument != NULL);
   Model* pModel = pDocument->getModel();
@@ -53,15 +53,16 @@ void test000017::test_references_to_species()
   // assert the compartment is constant
   CPPUNIT_ASSERT(pModel->getNumCompartments() == 1);
   Compartment* pCompartment = pModel->getCompartment(0);
-  CPPUNIT_ASSERT(pCompartment->getConstant() == true);
+  CPPUNIT_ASSERT(pCompartment->getConstant() == false);
   CPPUNIT_ASSERT(pModel->getNumSpecies() == 2);
   Species* pSpecies = pModel->getSpecies(1);
   CPPUNIT_ASSERT(pSpecies->getHasOnlySubstanceUnits() == false);
   pSpecies = pModel->getSpecies(0);
   std::string idSpeciesA = pSpecies->getId();
   CPPUNIT_ASSERT(pSpecies->getHasOnlySubstanceUnits() == false);
-  CPPUNIT_ASSERT(pModel->getNumRules() == 1);
-  AssignmentRule* pRule = dynamic_cast<AssignmentRule*>(pModel->getRule(0));
+  CPPUNIT_ASSERT(pModel->getNumRules() == 2);
+  // there are two rules, the first is the one for the compartment
+  AssignmentRule* pRule = dynamic_cast<AssignmentRule*>(pModel->getRule(1));
   CPPUNIT_ASSERT(pRule != NULL);
   CPPUNIT_ASSERT(pModel->getNumParameters() == 1);
   Parameter* pParameter = pModel->getParameter(0);

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000004.cpp,v $
-//   $Revision: 1.1.2.3 $
+//   $Revision: 1.1.2.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/15 17:50:23 $
+//   $Date: 2008/02/18 06:42:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -44,7 +44,7 @@ void test000004::test_references_to_species()
   std::istringstream iss(test000004::MODEL_STRING);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
-  CPPUNIT_ASSERT(pDataModel->exportSBMLToString().empty() == false);
+  CPPUNIT_ASSERT(pDataModel->exportSBMLToString(NULL, 2, 3).empty() == false);
   SBMLDocument* pDocument = pDataModel->getCurrentSBMLDocument();
   CPPUNIT_ASSERT(pDocument != NULL);
   Model* pModel = pDocument->getModel();

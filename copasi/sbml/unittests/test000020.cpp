@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000020.cpp,v $
-//   $Revision: 1.1.2.3 $
+//   $Revision: 1.1.2.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/15 17:50:23 $
+//   $Date: 2008/02/18 06:42:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -43,7 +43,7 @@ void test000020::test_references_to_species()
   CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
   std::istringstream iss(test000020::MODEL_STRING);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
-  CPPUNIT_ASSERT(pDataModel->exportSBMLToString().empty() == false);
+  CPPUNIT_ASSERT(pDataModel->exportSBMLToString(NULL, 2, 3).empty() == false);
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
   SBMLDocument* pDocument = pDataModel->getCurrentSBMLDocument();
   CPPUNIT_ASSERT(pDocument != NULL);
@@ -53,7 +53,7 @@ void test000020::test_references_to_species()
   // assert the compartment is constant
   CPPUNIT_ASSERT(pModel->getNumCompartments() == 1);
   Compartment* pCompartment = pModel->getCompartment(0);
-  CPPUNIT_ASSERT(pCompartment->getConstant() == true);
+  CPPUNIT_ASSERT(pCompartment->getConstant() == false);
   CPPUNIT_ASSERT(pModel->getNumSpecies() == 2);
   Species* pSpecies = pModel->getSpecies(1);
   CPPUNIT_ASSERT(pSpecies->getHasOnlySubstanceUnits() == false);
