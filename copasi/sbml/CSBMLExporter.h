@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.h,v $
-//   $Revision: 1.7.4.7 $
+//   $Revision: 1.7.4.8 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/18 06:44:40 $
+//   $Date: 2008/02/18 10:40:58 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -348,7 +348,7 @@ class CSBMLExporter
      * If the kinetic law was mass action, the expression is a mass action term
      * , otherwise it is a function call.
      */
-    CEvaluationNode* createKineticExpression(CFunction* pFun, const std::vector<std::vector<std::string> >& arguments, const CCopasiDataModel& dataModel);
+    CEvaluationNode* createKineticExpression(CFunction* pFun, const std::vector<std::vector<std::string> >& arguments);
 
     /**
      * Checks if the given datamodel contains events.
@@ -449,7 +449,7 @@ class CSBMLExporter
      * The second argument determines whether it is reversible or irreversible
      * mass action.
      */
-    static CEvaluationNode* createMassActionExpression(const std::vector<std::vector<std::string> >& arguments, bool isReversible, const CCopasiDataModel& dataModel);
+    static CEvaluationNode* createMassActionExpression(const std::vector<std::vector<std::string> >& arguments, bool isReversible);
 
     /**
      * Checks if the given string is a valid SId
