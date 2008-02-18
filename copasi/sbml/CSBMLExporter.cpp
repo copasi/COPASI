@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.8.4.13 $
+//   $Revision: 1.8.4.14 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/18 06:44:40 $
+//   $Date: 2008/02/18 08:21:19 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -3147,7 +3147,7 @@ CEvaluationNode* CSBMLExporter::createMassActionExpression(const std::vector<std
       tmpV.push_back(arguments[3]);
       pTmpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MINUS, "-");
       pTmpNode->addChild(pResult);
-      pTmpNode->addChild(CSBMLExporter::createMassActionExpression(tmpV, false));
+      pTmpNode->addChild(CSBMLExporter::createMassActionExpression(tmpV, false, dataModel));
       pResult = pTmpNode;
     }
   return pResult;
