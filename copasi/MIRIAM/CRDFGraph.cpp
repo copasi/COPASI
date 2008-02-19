@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraph.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2008/02/18 16:27:45 $
+//   $Author: ssahle $
+//   $Date: 2008/02/19 12:16:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -671,7 +671,8 @@ bool CRDFGraph::setFieldValue(const std::string& fieldName, const CRDFObject& ob
           CRDFNode * pTableNode = findNodeFromObject(obj);
           if (!pTableNode)
             {
-              addRecordToTable("Created", CRDFObject(obj), obj);
+              //addRecordToTable("Created", CRDFObject(obj), obj);
+              //Do you really want to pass a temporary object as reference?
               pTableNode = findNodeFromObject(obj);
             }
           else
