@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.8.4.16 $
+//   $Revision: 1.8.4.17 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/18 20:09:12 $
+//   $Date: 2008/02/19 14:40:39 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -807,7 +807,7 @@ void CSBMLExporter::createInitialAssignment(const CModelEntity& modelEntity, CCo
       // it is a reference to an amount or a reference to a concentration.
       // Other factors that influence this replacement are if the model
       // contains variable volumes or if the quantity units are set to CModel::number
-      pOrigNode = CSBMLExporter::replaceSpeciesReferences(pOrigNode, dataModel);
+      pOrigNode = this->replaceSpeciesReferences(pOrigNode, dataModel);
       assert(pOrigNode != NULL);
       ASTNode* pNode = pOrigNode->toAST();
       delete pOrigNode;
@@ -936,7 +936,7 @@ void CSBMLExporter::createRule(const CModelEntity& modelEntity, CCopasiDataModel
       // it is a reference to an amount or a reference to a concentration.
       // Other factors that influence this replacement are if the model
       // contains variable volumes or if the quantity units are set to CModel::number
-      pOrigNode = CSBMLExporter::replaceSpeciesReferences(pOrigNode, dataModel);
+      pOrigNode = this->replaceSpeciesReferences(pOrigNode, dataModel);
       assert(pOrigNode != NULL);
       ASTNode* pNode = pOrigNode->toAST();
       delete pOrigNode;
@@ -2112,7 +2112,7 @@ KineticLaw* CSBMLExporter::createKineticLaw(CReaction& reaction, CCopasiDataMode
       ** to be converted from concentration/time to substance/time by
       ** multiplying the rate law with the volume of the compartment.
       */
-      CEvaluationNode* pOrigNode = CSBMLExporter::replaceSpeciesReferences(pExpression, dataModel);
+      CEvaluationNode* pOrigNode = this->replaceSpeciesReferences(pExpression, dataModel);
       delete pExpression;
       assert(pOrigNode != NULL);
       ASTNode* pNode = pOrigNode->toAST();
@@ -3279,6 +3279,7 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
                           pSBMLAvogadro->setName("quantity to number factor");
                           std::string sbmlId = CSBMLExporter::createUniqueId(this->mIdMap, "parameter_");
                           pSBMLAvogadro->setId(sbmlId);
+                          const_cast<CModelValue*>(this->mpAvogadro)->setSBMLId(sbmlId);
                           this->mIdMap.insert(std::make_pair(sbmlId, pSBMLAvogadro));
                           pSBMLAvogadro->setConstant(true);
                           pSBMLAvogadro->setValue(dataModel.getModel()->getQuantity2NumberFactor());
@@ -3296,6 +3297,22 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
                     {
                       // the result is the same as the original node
                       pResult = pOrigNode->copyBranch();
+                    }
+                  if (this->mVariableVolumes == false)
+                    {
+                      // multiply by the volume as well
+                      const CCompartment* pCompartment = pMetab->getCompartment();
+                      CEvaluationNode* pTmpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
+                      pTmpNode->addChild(pResult);
+                      if (pObject->getObjectName() == "InitialParticleNumber")
+                        {
+                          pTmpNode->addChild(new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + pCompartment->getObject(CCopasiObjectName("Reference=InitialVolume"))->getCN() + ">"));
+                        }
+                      else
+                        {
+                          pTmpNode->addChild(new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + pCompartment->getObject(CCopasiObjectName("Reference=Volume"))->getCN() + ">"));
+                        }
+                      pResult = pTmpNode;
                     }
                 }
               else

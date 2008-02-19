@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000003.cpp,v $
-//   $Revision: 1.1.2.6 $
+//   $Revision: 1.1.2.7 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/19 12:58:04 $
+//   $Date: 2008/02/19 14:40:42 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -77,17 +77,17 @@ void test000003::test_references_to_species()
   // factor as well as the volume of the compartment
   CPPUNIT_ASSERT(pMath->getType() == AST_TIMES);
   CPPUNIT_ASSERT(pMath->getNumChildren() == 2);
-  CPPUNIT_ASSERT(pMath->getChild(0)->getType() == AST_NAME);
-  CPPUNIT_ASSERT(pMath->getChild(0)->getName() == pSpecies->getId());
-  pMath = pMath->getChild(1);
+  CPPUNIT_ASSERT(pMath->getChild(1)->getType() == AST_NAME);
+  CPPUNIT_ASSERT(pMath->getChild(1)->getName() == pCompartment->getId());
+  pMath = pMath->getChild(0);
   CPPUNIT_ASSERT(pMath != NULL);
   CPPUNIT_ASSERT(pMath->getType() == AST_TIMES);
   CPPUNIT_ASSERT(pMath->getNumChildren() == 2);
   CPPUNIT_ASSERT(pMath->getChild(0)->getType() == AST_NAME);
-  CPPUNIT_ASSERT(pMath->getChild(0)->getName() == pFactor->getId());
+  CPPUNIT_ASSERT(pMath->getChild(0)->getName() == pSpecies->getId());
 
   CPPUNIT_ASSERT(pMath->getChild(1)->getType() == AST_NAME);
-  CPPUNIT_ASSERT(pMath->getChild(1)->getName() == pCompartment->getId());
+  CPPUNIT_ASSERT(pMath->getChild(1)->getName() == pFactor->getId());
   CPPUNIT_ASSERT(pModel->getNumReactions() == 2);
   Reaction* pReaction = pModel->getReaction(0);
   // make sure this is reaction A ->

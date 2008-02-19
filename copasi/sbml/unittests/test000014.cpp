@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000014.cpp,v $
-//   $Revision: 1.1.2.6 $
+//   $Revision: 1.1.2.7 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/19 12:58:04 $
+//   $Date: 2008/02/19 14:40:43 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -70,9 +70,15 @@ void test000014::test_references_to_species()
   CPPUNIT_ASSERT(pAssignment->getSymbol() == pParameter->getId());
   const ASTNode* pMath = pAssignment->getMath();
   CPPUNIT_ASSERT(pMath != NULL);
-  // the expression should be the species
-  CPPUNIT_ASSERT(pMath->getType() == AST_NAME);
-  CPPUNIT_ASSERT(pMath->getName() == pSpecies->getId());
+  // the expression should be the species divided by the initial volume
+  CPPUNIT_ASSERT(pMath->getType() == AST_DIVIDE);
+  CPPUNIT_ASSERT(pMath->getNumChildren() == 2);
+  CPPUNIT_ASSERT(pMath->getChild(0) != NULL);
+  CPPUNIT_ASSERT(pMath->getChild(0)->getType() == AST_NAME);
+  CPPUNIT_ASSERT(pMath->getChild(0)->getName() == pSpecies->getId());
+  CPPUNIT_ASSERT(pMath->getChild(1) != NULL);
+  CPPUNIT_ASSERT(pMath->getChild(1)->getType() == AST_NAME);
+  CPPUNIT_ASSERT(pMath->getChild(1)->getName() == pCompartment->getId());
   CPPUNIT_ASSERT(pModel->getNumReactions() == 2);
   Reaction* pReaction = pModel->getReaction(0);
   // make sure this is reaction A ->
@@ -91,24 +97,12 @@ void test000014::test_references_to_species()
   pMath = pLaw->getMath();
   CPPUNIT_ASSERT(pMath->getType() == AST_TIMES);
   CPPUNIT_ASSERT(pMath->getNumChildren() == 2);
-  CPPUNIT_ASSERT(pMath->getChild(0)->getType() == AST_NAME);
-  CPPUNIT_ASSERT(pMath->getChild(0)->getName() == pCompartment->getId());
-  pMath = pMath->getChild(1);
-  CPPUNIT_ASSERT(pMath != NULL);
-  CPPUNIT_ASSERT(pMath->getType() == AST_TIMES);
-  CPPUNIT_ASSERT(pMath->getNumChildren() == 2);
-  CPPUNIT_ASSERT(pMath->getChild(0)->getType() == AST_NAME);
-  CPPUNIT_ASSERT(pMath->getChild(0)->getName() == std::string("k1"));
-  pMath = pMath->getChild(1);
-  CPPUNIT_ASSERT(pMath != NULL);
-  CPPUNIT_ASSERT(pMath->getType() == AST_DIVIDE);
-  CPPUNIT_ASSERT(pMath->getNumChildren() == 2);
   CPPUNIT_ASSERT(pMath->getChild(0) != NULL);
   CPPUNIT_ASSERT(pMath->getChild(0)->getType() == AST_NAME);
-  CPPUNIT_ASSERT(pMath->getChild(0)->getName() == idSpeciesA);
+  CPPUNIT_ASSERT(pMath->getChild(0)->getName() == std::string("k1"));
   CPPUNIT_ASSERT(pMath->getChild(1) != NULL);
   CPPUNIT_ASSERT(pMath->getChild(1)->getType() == AST_NAME);
-  CPPUNIT_ASSERT(pMath->getChild(1)->getName() == pCompartment->getId());
+  CPPUNIT_ASSERT(pMath->getChild(1)->getName() == idSpeciesA);
 
   pReaction = pModel->getReaction(1);
   // make sure this is reaction A -> S
@@ -174,7 +168,7 @@ const char* test000014::MODEL_STRING =
   "      <html xmlns=\"http://www.w3.org/1999/xhtml\"><head><meta name=\"qrichtext\" content=\"1\" /></head><body style=\"font-size:13pt;font-family:Lucida Grande\">\n"
   "<p>Model with variable volume compartment,# quantity units and a reference to the species initial concentration.</p>\n"
   "<p>On export this should create an SBML file with the hasOnlySubstanceUnits flag on the species set.</p>\n"
-  "<p>The reference in the initial assignment should be unmodified, the references in the reactions should be divied by the volume.</p>\n"
+  "<p>The reference in the initial assignment should be divided by the initial volume of the compartment, the references in the reactions should be divided by the volume.</p>\n"
   "</body></html>\n"
   "    </Comment>\n"
   "    <ListOfCompartments>\n"

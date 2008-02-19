@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000008.cpp,v $
-//   $Revision: 1.1.2.5 $
+//   $Revision: 1.1.2.6 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/18 20:09:13 $
+//   $Date: 2008/02/19 14:40:43 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -64,28 +64,20 @@ void test000008::test_references_to_species()
   CPPUNIT_ASSERT(pModel->getNumInitialAssignments() == 1);
   InitialAssignment* pAssignment = pModel->getInitialAssignment(0);
   CPPUNIT_ASSERT(pAssignment != NULL);
-  CPPUNIT_ASSERT(pModel->getNumParameters() == 2);
+  CPPUNIT_ASSERT(pModel->getNumParameters() == 1);
   Parameter* pParameter = pModel->getParameter(0);
   CPPUNIT_ASSERT(pParameter != NULL);
-  Parameter* pFactor = pModel->getParameter(1);
-  CPPUNIT_ASSERT(pFactor != NULL);
-  CPPUNIT_ASSERT(fabs((pDataModel->getModel()->getQuantity2NumberFactor() - (1.0)) / (1.0)) < 1e-3);
-  CPPUNIT_ASSERT(fabs((pFactor->getValue() - pDataModel->getModel()->getQuantity2NumberFactor()) / pDataModel->getModel()->getQuantity2NumberFactor()) < 1e-3);
   CPPUNIT_ASSERT(pAssignment->getSymbol() == pParameter->getId());
   const ASTNode* pMath = pAssignment->getMath();
   CPPUNIT_ASSERT(pMath != NULL);
-  // the mathematical expression should be a multiplication of the species, a
-  // constant and the compartment
+  // the mathematical expression should be a multiplication of the species
+  // and the compartment
   CPPUNIT_ASSERT(pMath->getType() == AST_TIMES);
   CPPUNIT_ASSERT(pMath->getNumChildren() == 2);
+  CPPUNIT_ASSERT(pMath->getChild(0) != NULL);
   CPPUNIT_ASSERT(pMath->getChild(0)->getType() == AST_NAME);
   CPPUNIT_ASSERT(pMath->getChild(0)->getName() == pSpecies->getId());
-  pMath = pMath->getChild(1);
-  CPPUNIT_ASSERT(pMath != NULL);
-  CPPUNIT_ASSERT(pMath->getType() == AST_TIMES);
-  CPPUNIT_ASSERT(pMath->getNumChildren() == 2);
-  CPPUNIT_ASSERT(pMath->getChild(0)->getType() == AST_NAME);
-  CPPUNIT_ASSERT(pMath->getChild(0)->getName() == pFactor->getId());
+  CPPUNIT_ASSERT(pMath->getChild(1) != NULL);
   CPPUNIT_ASSERT(pMath->getChild(1)->getType() == AST_NAME);
   CPPUNIT_ASSERT(pMath->getChild(1)->getName() == pCompartment->getId());
   CPPUNIT_ASSERT(pModel->getNumReactions() == 2);
@@ -177,7 +169,7 @@ const char* test000008::MODEL_STRING =
   "      <html xmlns=\"http://www.w3.org/1999/xhtml\"><head><meta name=\"qrichtext\" content=\"1\" /></head><body style=\"font-size:13pt;font-family:Lucida Grande\">\n"
   "<p>Model with constant volume compartment,# quantity units and a reference to the species initial amount.</p>\n"
   "<p>On export this should create an SBML file with the hasOnlySubstanceUnits flag on the species unset.</p>\n"
-  "<p>The reference to the species in the initial assignment should be multiplied by 1 as well as the volume of the compartment.</p>\n"
+  "<p>The reference to the species in the initial assignment should be multiplied by the volume of the compartment.</p>\n"
   "</body></html>\n"
   "    </Comment>\n"
   "    <ListOfCompartments>\n"
@@ -193,7 +185,7 @@ const char* test000008::MODEL_STRING =
   "    <ListOfModelValues>\n"
   "      <ModelValue key=\"ModelValue_0\" name=\"K\" simulationType=\"fixed\">\n"
   "        <InitialExpression>\n"
-  "          &lt;CN=Root,Model=New Model,Vector=Compartments[compartment],Vector=Metabolites[A],Reference=InitialConcentration&gt;\n"
+  "          &lt;CN=Root,Model=New Model,Vector=Compartments[compartment],Vector=Metabolites[A],Reference=InitialParticleNumber&gt;\n"
   "        </InitialExpression>\n"
   "      </ModelValue>\n"
   "    </ListOfModelValues>\n"

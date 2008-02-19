@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000016.cpp,v $
-//   $Revision: 1.1.2.6 $
+//   $Revision: 1.1.2.7 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/19 12:58:04 $
+//   $Date: 2008/02/19 14:40:43 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -91,24 +91,12 @@ void test000016::test_references_to_species()
   pMath = pLaw->getMath();
   CPPUNIT_ASSERT(pMath->getType() == AST_TIMES);
   CPPUNIT_ASSERT(pMath->getNumChildren() == 2);
-  CPPUNIT_ASSERT(pMath->getChild(0)->getType() == AST_NAME);
-  CPPUNIT_ASSERT(pMath->getChild(0)->getName() == pCompartment->getId());
-  pMath = pMath->getChild(1);
-  CPPUNIT_ASSERT(pMath != NULL);
-  CPPUNIT_ASSERT(pMath->getType() == AST_TIMES);
-  CPPUNIT_ASSERT(pMath->getNumChildren() == 2);
-  CPPUNIT_ASSERT(pMath->getChild(0)->getType() == AST_NAME);
-  CPPUNIT_ASSERT(pMath->getChild(0)->getName() == std::string("k1"));
-  pMath = pMath->getChild(1);
-  CPPUNIT_ASSERT(pMath != NULL);
-  CPPUNIT_ASSERT(pMath->getType() == AST_DIVIDE);
-  CPPUNIT_ASSERT(pMath->getNumChildren() == 2);
   CPPUNIT_ASSERT(pMath->getChild(0) != NULL);
   CPPUNIT_ASSERT(pMath->getChild(0)->getType() == AST_NAME);
-  CPPUNIT_ASSERT(pMath->getChild(0)->getName() == idSpeciesA);
+  CPPUNIT_ASSERT(pMath->getChild(0)->getName() == std::string("k1"));
   CPPUNIT_ASSERT(pMath->getChild(1) != NULL);
   CPPUNIT_ASSERT(pMath->getChild(1)->getType() == AST_NAME);
-  CPPUNIT_ASSERT(pMath->getChild(1)->getName() == pCompartment->getId());
+  CPPUNIT_ASSERT(pMath->getChild(1)->getName() == idSpeciesA);
 
   pReaction = pModel->getReaction(1);
   // make sure this is reaction A -> S

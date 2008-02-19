@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000007.cpp,v $
-//   $Revision: 1.1.2.5 $
+//   $Revision: 1.1.2.6 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/18 20:09:13 $
+//   $Date: 2008/02/19 14:40:43 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -78,16 +78,16 @@ void test000007::test_references_to_species()
   // the compartments volume
   CPPUNIT_ASSERT(pMath->getType() == AST_TIMES);
   CPPUNIT_ASSERT(pMath->getNumChildren() == 2);
-  CPPUNIT_ASSERT(pMath->getChild(0)->getType() == AST_NAME);
-  CPPUNIT_ASSERT(pMath->getChild(0)->getName() == pSpecies->getId());
-  pMath = pMath->getChild(1);
+  CPPUNIT_ASSERT(pMath->getChild(1)->getType() == AST_NAME);
+  CPPUNIT_ASSERT(pMath->getChild(1)->getName() == pCompartment->getId());
+  pMath = pMath->getChild(0);
   CPPUNIT_ASSERT(pMath != NULL);
   CPPUNIT_ASSERT(pMath->getType() == AST_TIMES);
   CPPUNIT_ASSERT(pMath->getNumChildren() == 2);
   CPPUNIT_ASSERT(pMath->getChild(0)->getType() == AST_NAME);
-  CPPUNIT_ASSERT(pMath->getChild(0)->getName() == pFactor->getId());
+  CPPUNIT_ASSERT(pMath->getChild(0)->getName() == idSpeciesA);
   CPPUNIT_ASSERT(pMath->getChild(1)->getType() == AST_NAME);
-  CPPUNIT_ASSERT(pMath->getChild(1)->getName() == pCompartment->getId());
+  CPPUNIT_ASSERT(pMath->getChild(1)->getName() == pFactor->getId());
   CPPUNIT_ASSERT(pModel->getNumReactions() == 2);
   Reaction* pReaction = pModel->getReaction(0);
   // make sure this is reaction A ->
@@ -193,7 +193,7 @@ const char* test000007::MODEL_STRING =
   "    <ListOfModelValues>\n"
   "      <ModelValue key=\"ModelValue_0\" name=\"K\" simulationType=\"fixed\">\n"
   "        <InitialExpression>\n"
-  "          &lt;CN=Root,Model=New Model,Vector=Compartments[compartment],Vector=Metabolites[A],Reference=InitialConcentration&gt;\n"
+  "          &lt;CN=Root,Model=New Model,Vector=Compartments[compartment],Vector=Metabolites[A],Reference=InitialParticleNumber&gt;\n"
   "        </InitialExpression>\n"
   "      </ModelValue>\n"
   "    </ListOfModelValues>\n"
@@ -250,7 +250,7 @@ const char* test000007::MODEL_STRING =
   "      <StateTemplateVariable objectReference=\"Compartment_0\"/>\n"
   "    </StateTemplate>\n"
   "    <InitialState type=\"initialState\">\n"
-  "      0 6.022141500000001e+20 6.022141500000001e+19 1 1\n"
+  "      0 6.0e+19 6.022141500000001e+19 1 1\n"
   "    </InitialState>\n"
   "  </Model>\n"
   "  <ListOfTasks>\n"
