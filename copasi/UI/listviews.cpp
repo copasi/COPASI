@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.237.2.2.2.2 $
+//   $Revision: 1.237.2.2.2.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/02/08 21:36:23 $
+//   $Author: ssahle $
+//   $Date: 2008/02/19 15:37:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -75,6 +75,9 @@
 #include "CQTSSAWidget.h"
 #include "CQTSSAResultWidget.h"
 #endif // COPASI_TSSA
+#ifdef COPASI_DEBUG
+#include "CQUpdatesWidget.h"
+#endif //COPASI_DEBUG
 #ifdef COPASI_TSS
 # include "TSSWidget.h"
 #endif
@@ -259,9 +262,12 @@ ListViews::ListViews(QWidget *parent, const char *name):
 #endif
     timeSeriesWidget(NULL),
     trajectoryWidget(NULL),
-#ifdef COPASI_DEBUG
+#ifdef COPASI_TSSA
     tssaWidget(NULL),
     tssaResultWidget(NULL),
+#endif
+#ifdef COPASI_DEBUG
+    mpUpdatesWidget(NULL),
 #endif
 #ifdef COPASI_SSA
     mSSAWidget(NULL),
@@ -493,6 +499,11 @@ void ListViews::ConstructNodeWidgets()
   tssaResultWidget->hide();
 #endif // COPASI_TSSA
 
+#ifdef COPASI_DEBUG
+  if (!mpUpdatesWidget) mpUpdatesWidget = new CQUpdatesWidget(this);
+  mpUpdatesWidget->hide();
+#endif // COPASI_DEBUG
+
   if (!mpMathMatrixWidget) mpMathMatrixWidget = new CQMathMatrixWidget(this);
   mpMathMatrixWidget->hide();
 
@@ -605,6 +616,11 @@ CopasiWidget* ListViews::findWidgetFromId(const C_INT32 & id) const
       case 127:
         return mpMathMatrixWidget;
         break;
+#ifdef COPASI_DEBUG
+      case 128:
+        return mpUpdatesWidget;
+        break;
+#endif
 #ifdef WITH_LAYOUT
       case 131:
         return mpCopasiLayoutWidget;

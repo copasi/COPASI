@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-//   $Revision: 1.136.2.1.2.1 $
+//   $Revision: 1.136.2.1.2.2 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/01/23 16:21:31 $
+//   $Author: ssahle $
+//   $Date: 2008/02/19 15:37:04 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -69,10 +69,13 @@ class TableDefinition;
 #ifdef COPASI_TSS
 class TSSWidget;
 #endif // COPASI_TSS
-#ifdef COPASI_DEBUG
+#ifdef COPASI_TSSA
 class CQTSSAWidget;
 class CQTSSAResultWidget;
 class CQTSSAResultSubWidget;
+#endif
+#ifdef COPASI_DEBUG
+class CQUpdatesWidget;
 #endif
 class CQOptimizationWidget;
 class OptimizationResultWidget;
@@ -248,9 +251,12 @@ class ListViews : public QSplitter
 #endif // COPASI_TSS
     TimeSeriesWidget *timeSeriesWidget;
     CQTrajectoryWidget *trajectoryWidget;
-#ifdef COPASI_DEBUG
+#ifdef COPASI_TSSA
     CQTSSAWidget *tssaWidget;
     CQTSSAResultWidget *tssaResultWidget;
+#endif // COPASI_DEBUG
+#ifdef COPASI_DEBUG
+    CQUpdatesWidget *mpUpdatesWidget;
 #endif // COPASI_DEBUG
 #ifdef COPASI_SSA
     SSAWidget * mSSAWidget;
