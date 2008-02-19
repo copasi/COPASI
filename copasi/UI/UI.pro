@@ -1,17 +1,22 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $ 
-#   $Revision: 1.164 $ 
+#   $Revision: 1.164.4.1 $ 
 #   $Name:  $ 
-#   $Author: gauges $ 
-#   $Date: 2007/11/15 21:42:24 $ 
+#   $Author: ssahle $ 
+#   $Date: 2008/02/19 15:25:41 $ 
 # End CVS Header 
 
-# Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+# and The University of Manchester. 
+# All rights reserved. 
+
+# Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc. and EML Research, gGmbH. 
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.164 $ $Author: gauges $ $Date: 2007/11/15 21:42:24 $  
+# $Revision: 1.164.4.1 $ $Author: ssahle $ $Date: 2008/02/19 15:25:41 $  
 ######################################################################
 
 LIB = UI
@@ -52,6 +57,7 @@ HEADERS += \
            CQReportListItem.h \
            CQSBMLFileDialog.h \
            CQSensResultWidget.h \
+           CQUpdatesWidget.h \
            CQValidator.h \
            CScanContainerWidget.h \
            CTimeSeriesTable.h \
@@ -116,6 +122,7 @@ SOURCES += \
            CQReportListItem.cpp \
            CQSBMLFileDialog.cpp \
            CQSensResultWidget.cpp \
+           CQUpdatesWidget.cpp \
            CQValidator.cpp \
            CScanContainerWidget.cpp \
            CTimeSeriesTable.cpp \
