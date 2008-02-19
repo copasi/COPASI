@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000011.cpp,v $
-//   $Revision: 1.1.2.5 $
+//   $Revision: 1.1.2.6 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/18 20:09:13 $
+//   $Date: 2008/02/19 12:58:04 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -60,21 +60,29 @@ void test000011::test_references_to_species()
   pSpecies = pModel->getSpecies(0);
   std::string idSpeciesA = pSpecies->getId();
   CPPUNIT_ASSERT(pSpecies->getHasOnlySubstanceUnits() == true);
-  CPPUNIT_ASSERT(pModel->getNumRules() == 1);
-  AssignmentRule* pRule = dynamic_cast<AssignmentRule*>(pModel->getRule(0));
+  // two rules, the first rule is for the compartment
+  CPPUNIT_ASSERT(pModel->getNumRules() == 2);
+  AssignmentRule* pRule = dynamic_cast<AssignmentRule*>(pModel->getRule(1));
   CPPUNIT_ASSERT(pRule != NULL);
-  CPPUNIT_ASSERT(pModel->getNumParameters() == 1);
+  CPPUNIT_ASSERT(pModel->getNumParameters() == 2);
   Parameter* pParameter = pModel->getParameter(0);
   CPPUNIT_ASSERT(pParameter != NULL);
+  Parameter* pFactor = pModel->getParameter(1);
+  CPPUNIT_ASSERT(pFactor != NULL);
+  CPPUNIT_ASSERT(pFactor->getConstant() == true);
+  CPPUNIT_ASSERT(fabs((pFactor->getValue() - (AVOGADRO / 1000.0)) / (AVOGADRO / 1000.0)) < 1e-3);
   CPPUNIT_ASSERT(pRule->getVariable() == pParameter->getId());
   const ASTNode* pMath = pRule->getMath();
   CPPUNIT_ASSERT(pMath != NULL);
-
-  CPPUNIT_ASSERT(false);
-
-  // TODO finish the expressions
-  CPPUNIT_ASSERT(pMath->getType() == AST_NAME);
-  CPPUNIT_ASSERT(pMath->getName() == pSpecies->getId());
+  // the expression should be the species multiplied by a factor
+  CPPUNIT_ASSERT(pMath->getType() == AST_TIMES);
+  CPPUNIT_ASSERT(pMath->getNumChildren() == 2);
+  CPPUNIT_ASSERT(pMath->getChild(0) != NULL);
+  CPPUNIT_ASSERT(pMath->getChild(0)->getType() == AST_NAME);
+  CPPUNIT_ASSERT(pMath->getChild(0)->getName() == pSpecies->getId());
+  CPPUNIT_ASSERT(pMath->getChild(1) != NULL);
+  CPPUNIT_ASSERT(pMath->getChild(1)->getType() == AST_NAME);
+  CPPUNIT_ASSERT(pMath->getChild(1)->getName() == pFactor->getId());
   CPPUNIT_ASSERT(pModel->getNumReactions() == 2);
   Reaction* pReaction = pModel->getReaction(0);
   // make sure this is reaction A ->
@@ -103,8 +111,14 @@ void test000011::test_references_to_species()
   CPPUNIT_ASSERT(pMath->getChild(0)->getName() == std::string("k1"));
   pMath = pMath->getChild(1);
   CPPUNIT_ASSERT(pMath != NULL);
-  CPPUNIT_ASSERT(pMath->getType() == AST_NAME);
-  CPPUNIT_ASSERT(pMath->getName() == idSpeciesA);
+  CPPUNIT_ASSERT(pMath->getType() == AST_DIVIDE);
+  CPPUNIT_ASSERT(pMath->getNumChildren() == 2);
+  CPPUNIT_ASSERT(pMath->getChild(0) != NULL);
+  CPPUNIT_ASSERT(pMath->getChild(0)->getType() == AST_NAME);
+  CPPUNIT_ASSERT(pMath->getChild(0)->getName() == idSpeciesA);
+  CPPUNIT_ASSERT(pMath->getChild(1) != NULL);
+  CPPUNIT_ASSERT(pMath->getChild(1)->getType() == AST_NAME);
+  CPPUNIT_ASSERT(pMath->getChild(1)->getName() == pCompartment->getId());
 
   pReaction = pModel->getReaction(1);
   // make sure this is reaction A -> S
@@ -130,8 +144,14 @@ void test000011::test_references_to_species()
   CPPUNIT_ASSERT(pMath->getNumChildren() == 3);
   pMath = pMath->getChild(0);
   CPPUNIT_ASSERT(pMath != NULL);
-  CPPUNIT_ASSERT(pMath->getType() == AST_NAME);
-  CPPUNIT_ASSERT(pMath->getName() == idSpeciesA);
+  CPPUNIT_ASSERT(pMath->getType() == AST_DIVIDE);
+  CPPUNIT_ASSERT(pMath->getNumChildren() == 2);
+  CPPUNIT_ASSERT(pMath->getChild(0) != NULL);
+  CPPUNIT_ASSERT(pMath->getChild(0)->getType() == AST_NAME);
+  CPPUNIT_ASSERT(pMath->getChild(0)->getName() == idSpeciesA);
+  CPPUNIT_ASSERT(pMath->getChild(1) != NULL);
+  CPPUNIT_ASSERT(pMath->getChild(1)->getType() == AST_NAME);
+  CPPUNIT_ASSERT(pMath->getChild(1)->getName() == pCompartment->getId());
 }
 
 const char* test000011::MODEL_STRING =

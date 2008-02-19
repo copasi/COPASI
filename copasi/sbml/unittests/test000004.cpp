@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000004.cpp,v $
-//   $Revision: 1.1.2.5 $
+//   $Revision: 1.1.2.6 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/18 20:09:13 $
+//   $Date: 2008/02/19 12:58:04 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -74,8 +74,8 @@ void test000004::test_references_to_species()
   CPPUNIT_ASSERT(pRule->getVariable() == pParameter->getId());
   const ASTNode* pMath = pRule->getMath();
   CPPUNIT_ASSERT(pMath != NULL);
-  // make sure the mathematical expression contains only one node that is a
-  // reference to the species
+  // the mathematical expression should by the species reference multiplied by
+  // a factor as well as the compartments volume
   CPPUNIT_ASSERT(pMath->getType() == AST_TIMES);
   CPPUNIT_ASSERT(pMath->getNumChildren() == 2);
   CPPUNIT_ASSERT(pMath->getChild(0)->getType() == AST_NAME);
