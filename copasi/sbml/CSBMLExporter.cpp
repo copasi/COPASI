@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.8.4.17 $
+//   $Revision: 1.8.4.18 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/19 14:40:39 $
+//   $Date: 2008/02/20 20:20:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1507,7 +1507,7 @@ void CSBMLExporter::createFunctionDefinitions(CCopasiDataModel& dataModel)
       ++mapIt;
     }
   std::set<CFunction*> unusedFunctions;
-  unsigned int i = i, iMax = pModel->getNumFunctionDefinitions();
+  unsigned int i = 0, iMax = pModel->getNumFunctionDefinitions();
   std::map<SBase*, const CCopasiObject*>::iterator mapPos;
   std::set<std::string> toRemove;
   while (i < iMax)
