@@ -44,12 +44,36 @@
 			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
+			<File
+				RelativePath=".\CMoietiesMethod.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CMoietiesProblem.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CMoietiesTask.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath=".\CMoietiesMethod.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CMoietiesProblem.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CMoietiesTask.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"
@@ -58,7 +82,7 @@
 			>
 		</Filter>
 		<File
-			RelativePath=".\readme.txt"
+			RelativePath=".\moieties.pro"
 			>
 		</File>
 	</Files>

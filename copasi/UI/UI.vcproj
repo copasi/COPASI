@@ -4,6 +4,7 @@
 	Version="8.00"
 	Name="UI"
 	ProjectGUID="{F6F52B26-93F4-4905-AA79-627093632CB4}"
+	RootNamespace="UI"
 	Keyword="MakeFileProj"
 	>
 	<Platforms>
@@ -202,6 +203,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CQMoietiesTaskResult.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CQMoietiesTaskWidget.cpp"
+				>
+			</File>
+			<File
 				RelativePath="CQOptimizationWidget.cpp"
 				>
 			</File>
@@ -363,14 +372,6 @@
 			</File>
 			<File
 				RelativePath="ModelWidget.cpp"
-				>
-			</File>
-			<File
-				RelativePath="MoietyWidget.cpp"
-				>
-			</File>
-			<File
-				RelativePath="MoietyWidget1.cpp"
 				>
 			</File>
 			<File
@@ -707,6 +708,22 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CQMoietiesTaskResult.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CQMoietiesTaskResult.ui.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CQMoietiesTaskWidget.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CQMoietiesTaskWidget.ui.h"
+				>
+			</File>
+			<File
 				RelativePath="CQOptimizationWidget.h"
 				>
 			</File>
@@ -955,14 +972,6 @@
 				>
 			</File>
 			<File
-				RelativePath="MoietyWidget.h"
-				>
-			</File>
-			<File
-				RelativePath="MoietyWidget1.h"
-				>
-			</File>
-			<File
 				RelativePath="MyLineEdit.h"
 				>
 			</File>
@@ -1162,6 +1171,14 @@
 		</File>
 		<File
 			RelativePath="CQModelValue.ui"
+			>
+		</File>
+		<File
+			RelativePath=".\CQMoietiesTaskResult.ui"
+			>
+		</File>
+		<File
+			RelativePath=".\CQMoietiesTaskWidget.ui"
 			>
 		</File>
 		<File
