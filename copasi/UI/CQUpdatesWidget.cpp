@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQUpdatesWidget.cpp,v $
-//   $Revision: 1.1.2.1 $
+//   $Revision: 1.1.2.2 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/02/19 15:00:38 $
+//   $Date: 2008/02/20 16:42:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -131,10 +131,10 @@ void CQUpdatesWidget::loadOneTable(QTable* pTable, const std::vector< Refresh * 
     {
       std::map<const Refresh*, const CCopasiObject*>::const_iterator it = mRefreshsMap.find(list[i]);
       if (it != mRefreshsMap.end() && it->second)
-        pTable->setText(i, 0, it->second->getObjectDisplayName());
+        pTable->setText(i, 0, FROM_UTF8(it->second->getObjectDisplayName()));
       const CCopasiObject* tmp = list[i]->getObject();
       if (tmp)
-        pTable->setText(i, 1, tmp->getObjectDisplayName());
+        pTable->setText(i, 1, FROM_UTF8(tmp->getObjectDisplayName()));
     }
 }
 
