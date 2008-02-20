@@ -1,0 +1,186 @@
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000021.cpp,v $
+//   $Revision: 1.1.2.1 $
+//   $Name:  $
+//   $Author: gauges $
+//   $Date: 2008/02/20 19:13:07 $
+// End CVS Header
+
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+#include "test000021.h"
+
+#include <sstream>
+#include "utilities.hpp"
+#include "copasi/CopasiDataModel/CCopasiDataModel.h"
+#include "copasi/model/CModel.h"
+#include "copasi/model/CMetab.h"
+#include "copasi/model/CCompartment.h"
+#include "copasi/model/CModelValue.h"
+#include "copasi/model/CReaction.h"
+#include "copasi/function/CEvaluationNode.h"
+
+void test000021::setUp()
+{
+  // Create the root container.
+  CCopasiContainer::init();
+
+  // Create the global data model.
+  CCopasiDataModel::Global = new CCopasiDataModel;
+}
+
+void test000021::tearDown(){}
+
+void test000021::test_hasOnlySubstanceUnits()
+{
+  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING));
+  const CModel* pModel = pDataModel->getModel();
+  CPPUNIT_ASSERT(pModel != NULL);
+  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CModel::mMol);
+  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CModel::ml);
+  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CModel::s);
+  CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
+  const CCompartment* pCompartment = pModel->getCompartments()[0];
+  CPPUNIT_ASSERT(pCompartment != NULL);
+  CPPUNIT_ASSERT(pCompartment->getStatus() == CModelEntity::FIXED);
+  CPPUNIT_ASSERT(pModel->getMetabolites().size() == 2);
+  CMetab* pA = pModel->getMetabolites()[0];
+  CPPUNIT_ASSERT(pA != NULL);
+  CPPUNIT_ASSERT(pA->getStatus() == CModelEntity::REACTIONS);
+  const CMetab* pB = pModel->getMetabolites()[1];
+  CPPUNIT_ASSERT(pB != NULL);
+  CPPUNIT_ASSERT(pB->getStatus() == CModelEntity::REACTIONS);
+  CPPUNIT_ASSERT(pModel->getModelValues().size() == 1);
+  const CModelValue* pModelValue = pModel->getModelValues()[0];
+  CPPUNIT_ASSERT(pModelValue != NULL);
+  CPPUNIT_ASSERT(pModelValue->getStatus() == CModelEntity::ASSIGNMENT);
+  const CExpression* pExpr = pModelValue->getExpressionPtr();
+  // TODO check the expression
+  CPPUNIT_ASSERT(false);
+  CPPUNIT_ASSERT(pModel->getReactions().size() == 2);
+  const CReaction* pReaction1 = pModel->getReactions()[0];
+  CPPUNIT_ASSERT(pReaction1 != NULL);
+  // TODO check the kinetic law
+  CPPUNIT_ASSERT(false);
+  const CReaction* pReaction2 = pModel->getReactions()[1];
+  CPPUNIT_ASSERT(pReaction2 != NULL);
+  // TODO check the kinetic law
+  CPPUNIT_ASSERT(false);
+}
+
+const char* test000021::MODEL_STRING =
+  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+  "<sbml xmlns=\"http://www.sbml.org/sbml/level2/version3\" level=\"2\" version=\"3\">"
+  "  <model id=\"Model_1\" name=\"New Model\">"
+  "    <listOfFunctionDefinitions>"
+  "      <functionDefinition id=\"function_1\" name=\"Henri-Michaelis-Menten (irreversible)\">"
+  "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+  "          <lambda>"
+  "            <bvar>"
+  "              <ci> substrate </ci>"
+  "            </bvar>"
+  "            <bvar>"
+  "              <ci> Km </ci>"
+  "            </bvar>"
+  "            <bvar>"
+  "              <ci> V </ci>"
+  "            </bvar>"
+  "            <apply>"
+  "              <divide/>"
+  "              <apply>"
+  "                <times/>"
+  "                <ci> V </ci>"
+  "                <ci> substrate </ci>"
+  "              </apply>"
+  "              <apply>"
+  "                <plus/>"
+  "                <ci> Km </ci>"
+  "                <ci> substrate </ci>"
+  "              </apply>"
+  "            </apply>"
+  "          </lambda>"
+  "        </math>"
+  "      </functionDefinition>"
+  "    </listOfFunctionDefinitions>"
+  "    <listOfUnitDefinitions>"
+  "      <unitDefinition id=\"volume\">"
+  "        <listOfUnits>"
+  "          <unit kind=\"litre\" scale=\"-3\"/>"
+  "        </listOfUnits>"
+  "      </unitDefinition>"
+  "      <unitDefinition id=\"substance\">"
+  "        <listOfUnits>"
+  "          <unit kind=\"mole\" scale=\"-3\"/>"
+  "        </listOfUnits>"
+  "      </unitDefinition>"
+  "    </listOfUnitDefinitions>"
+  "    <listOfCompartments>"
+  "      <compartment id=\"compartment_1\" name=\"compartment\" size=\"1\"/>"
+  "    </listOfCompartments>"
+  "    <listOfSpecies>"
+  "      <species id=\"species_1\" name=\"A\" compartment=\"compartment_1\" initialConcentration=\"1\"/>"
+  "      <species id=\"species_2\" name=\"B\" compartment=\"compartment_1\" initialConcentration=\"1\"/>"
+  "    </listOfSpecies>"
+  "    <listOfParameters>"
+  "      <parameter id=\"parameter_1\" name=\"K\" value=\"0\" constant=\"false\"/>"
+  "    </listOfParameters>"
+  "    <listOfRules>"
+  "      <assignmentRule variable=\"parameter_1\">"
+  "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+  "          <ci> species_1 </ci>"
+  "        </math>"
+  "      </assignmentRule>"
+  "    </listOfRules>"
+  "    <listOfReactions>"
+  "      <reaction id=\"reaction_1\" name=\"reaction_0\" reversible=\"false\">"
+  "        <listOfReactants>"
+  "          <speciesReference species=\"species_1\"/>"
+  "        </listOfReactants>"
+  "        <kineticLaw>"
+  "          <math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+  "            <apply>"
+  "              <times/>"
+  "              <ci> compartment_1 </ci>"
+  "              <ci> k1 </ci>"
+  "              <ci> species_1 </ci>"
+  "            </apply>"
+  "          </math>"
+  "          <listOfParameters>"
+  "            <parameter id=\"k1\" value=\"0.1\"/>"
+  "          </listOfParameters>"
+  "        </kineticLaw>"
+  "      </reaction>"
+  "      <reaction id=\"reaction_2\" name=\"reaction_1\" reversible=\"false\">"
+  "        <listOfReactants>"
+  "          <speciesReference species=\"species_1\"/>"
+  "        </listOfReactants>"
+  "        <listOfProducts>"
+  "          <speciesReference species=\"species_2\"/>"
+  "        </listOfProducts>"
+  "        <kineticLaw>"
+  "          <math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+  "            <apply>"
+  "              <times/>"
+  "              <ci> compartment_1 </ci>"
+  "              <apply>"
+  "                <ci> function_1 </ci>"
+  "                <ci> species_1 </ci>"
+  "                <ci> Km </ci>"
+  "                <ci> V </ci>"
+  "              </apply>"
+  "            </apply>"
+  "          </math>"
+  "          <listOfParameters>"
+  "            <parameter id=\"Km\" value=\"0.1\"/>"
+  "            <parameter id=\"V\" value=\"0.1\"/>"
+  "          </listOfParameters>"
+  "        </kineticLaw>"
+  "      </reaction>"
+  "    </listOfReactions>"
+  "  </model>"
+  "</sbml>"
+;
