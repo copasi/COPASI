@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraph.cpp,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/02/20 19:06:27 $
+//   $Date: 2008/02/20 20:28:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -222,7 +222,7 @@ bool CRDFGraph::addTriplet(const CRDFSubject & subject,
 bool CRDFGraph::getNodeIDsForTable(const std::string& tableName, std::vector<CRDFObject>& objects, CRDFObject& tableObj)
 {
   std::string predicate = tableName2Predicate(tableName);
-  CRDFNode* pTableNode = getNodeForPredicate(predicate);
+  CRDFNode* pTableNode = getNodeForPredicate(predicate, mpAbout);
   if (!pTableNode)
   {return false;}
   tableObj = pTableNode->getObject();

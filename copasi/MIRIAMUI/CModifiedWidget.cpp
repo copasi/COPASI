@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CModifiedWidget.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/02/20 19:29:12 $
+//   $Date: 2008/02/20 20:28:32 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -84,6 +84,12 @@ void CModifiedWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_I
     {
       pDTE = static_cast<CQDateTimeEditTableItem *>(table->cellWidget(row, COL_DATE_MODIFIED));
       pDTE->setDateTime(QDateTime::fromString(FROM_UTF8(pModified->getDateModified()), Qt::ISODate));
+    }
+  else
+    {
+      pDTE = new CQDateTimeEditTableItem(this, row, COL_DATE_MODIFIED, table);
+      pDTE->dateEdit()->setRange(QDate(), QDate::currentDate());
+      table->setCellWidget(row, COL_DATE_MODIFIED, pDTE);
     }
 }
 

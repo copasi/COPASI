@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CModelMIRIAMInfo.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/02/20 19:06:27 $
+//   $Date: 2008/02/20 20:28:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -44,21 +44,21 @@ CModelMIRIAMInfo::CModelMIRIAMInfo() :
   mCreatedObj.setType(CRDFObject::BLANK_NODE);
   mCreatedObj.setBlankNodeId("CreatedNode");
 
-  mpRDFGraph = new CRDFGraph();
+  //mpRDFGraph = new CRDFGraph();
 
-  /*std::string buf;
-   std::string line;
-   std::ifstream xmlFile("example.xml");
-   while(std::getline(xmlFile, line))
+  std::string buf;
+  std::string line;
+  std::ifstream xmlFile("example.xml");
+  while (std::getline(xmlFile, line))
     buf += line + '\n';
 
-   mpRDFGraph = CRDFParser::graphFromXml(buf);
-   if (mpRDFGraph)
-   {
-    fillInfoFromGraph();
-    std::string reprint = CRDFWriter::xmlFromGraph(mpRDFGraph);
-   }
-   xmlFile.close();*/
+  mpRDFGraph = CRDFParser::graphFromXml(buf);
+  if (mpRDFGraph)
+    {
+      fillInfoFromGraph();
+      std::string reprint = CRDFWriter::xmlFromGraph(mpRDFGraph);
+    }
+  xmlFile.close();
 }
 
 CModelMIRIAMInfo::~CModelMIRIAMInfo()
@@ -66,7 +66,7 @@ CModelMIRIAMInfo::~CModelMIRIAMInfo()
 
 void CModelMIRIAMInfo::loadGraph(const std::string& key)
 {
-  if (!mpEntity)
+  /*if (!mpEntity)
     {
       if ((mpEntity = dynamic_cast< CModelEntity * >(GlobalKeys.get(key))) != NULL)
         {
@@ -74,7 +74,7 @@ void CModelMIRIAMInfo::loadGraph(const std::string& key)
           mpRDFGraph = CRDFParser::graphFromXml(mpEntity->getMiriamAnnotation());
           fillInfoFromGraph();
         }
-    }
+    }*/
 }
 
 bool CModelMIRIAMInfo::saveGraph()
@@ -132,6 +132,24 @@ bool CModelMIRIAMInfo::fillInfoFromGraph()
         }
     }
   mpRDFGraph->getNodeIDsForTable("Created", objects, mCreatedObj);
+  if (mpRDFGraph->getNodeIDsForTable("Modifieds", objects, mModifiedsObj))
+    {
+      std::vector<CRDFObject>::iterator it;
+      for (it = objects.begin(); it != objects.end(); it++)
+        {
+          //try finding this nodeId
+          CCopasiVector<CModified>::iterator ait;
+          bool found = false;
+          for (ait = mModifieds.begin(); ait != mModifieds.end(); ait++)
+            {
+              if ((*ait)->getRDFObject() == *it)
+              {found = true;}
+            }
+          if (!found)
+            mModifieds.add(new CModified((*it).getResource(), NULL, new CRDFObject(*it)), true);
+        }
+    }
+
   return true;
 }
 

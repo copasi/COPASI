@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraph.h,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/02/20 19:06:27 $
+//   $Date: 2008/02/20 20:28:32 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -214,13 +214,13 @@ class CRDFGraph
     CRDFNode* findNodeFromObject(const CRDFObject& object);
 
     /**
-        * Find a node in the graph with a given predicate
+     * Find a node in the graph with a given predicate
      * and a start node
-        * @param const std::string& predicate
+     * @param const std::string& predicate
      * @param const CRDFNode * startNode
-        * @return CRDFNode* (NULL when not found)
-        */
-    CRDFNode* getNodeForPredicate(const std::string& predicate, const CRDFNode * startNode = NULL);
+     * @return CRDFNode* (NULL when not found)
+     */
+    CRDFNode* getNodeForPredicate(const std::string& predicate, const CRDFNode * startNode);
 
     std::string fieldName2Predicate(const std::string& fieldName);
     std::string tableName2Predicate(const std::string& tableName);
