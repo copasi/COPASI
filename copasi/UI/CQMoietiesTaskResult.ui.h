@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMoietiesTaskResult.ui.h,v $
-//   $Revision: 1.1.2.1 $
+//   $Revision: 1.1.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/02/20 20:25:40 $
+//   $Date: 2008/02/20 22:36:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -237,7 +237,7 @@ void CQMoietiesTaskResult::slotCreateGlobalQuantity(int row)
 
   int i = 0;
   while (pMV == NULL)
-    pMV = pModel->createModelValue("Moiety[" + pMoiety->getObjectName() + "].TotalAmount_" + QString::number(++i).utf8());
+    pMV = pModel->createModelValue("Moiety[" + pMoiety->getObjectName() + "].TotalAmount_" + std::string(QString::number(++i).utf8()));
 
   pMV->setInitialExpression(pMoiety->getExpression());
   protectedNotify(ListViews::MODELVALUE, ListViews::ADD);
