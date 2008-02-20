@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.237.2.2.2.3 $
+//   $Revision: 1.237.2.2.2.4 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/02/19 15:37:03 $
+//   $Author: shoops $
+//   $Date: 2008/02/20 20:25:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,8 +52,8 @@
 #include "ModelValuesWidget.h"
 #include "CQModelValue.h"
 #include "CQEFMWidget.h"
-#include "MoietyWidget.h"
-#include "MoietyWidget1.h"
+#include "CQMoietiesTaskResult.h"
+#include "CQMoietiesTaskWidget.h"
 #ifdef COPASI_SSA
 #include "SSAWidget.h"
 #endif
@@ -238,8 +238,8 @@ ListViews::ListViews(QWidget *parent, const char *name):
     modelValuesWidget(NULL),
     mpModelValueWidget(NULL),
     modesWidget(NULL),
-    moietyWidget(NULL),
-    moietyWidget1(NULL),
+    mpMoietiesTaskResult(NULL),
+    mpMoietiesTaskWidget(NULL),
     optimizationWidget(NULL),
     optResultWidgetS(NULL),
     optResultWidgetT(NULL),
@@ -412,11 +412,13 @@ void ListViews::ConstructNodeWidgets()
   if (!modesWidget) modesWidget = new CQEFMWidget(this);
   modesWidget->hide();
 
-  if (!moietyWidget) moietyWidget = new MoietyWidget(this);
-  moietyWidget->hide();
+  if (!mpMoietiesTaskResult)
+    mpMoietiesTaskResult = new CQMoietiesTaskResult(this);
+  mpMoietiesTaskResult->hide();
 
-  if (!moietyWidget1) moietyWidget1 = new MoietyWidget1(this);
-  moietyWidget1->hide();
+  if (!mpMoietiesTaskWidget)
+    mpMoietiesTaskWidget = new CQMoietiesTaskWidget(this);
+  mpMoietiesTaskWidget->hide();
 
 #ifdef COPASI_SSA
   if (!mSSAWidget) mSSAWidget = new SSAWidget(this);
@@ -538,9 +540,6 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 112:
         return metabolitesWidget1;
         break;
-      case 113:
-        return moietyWidget1;
-        break;
       case 114:
         return reactionsWidget1;
         break;
@@ -552,9 +551,6 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
         return eventWidget1;
         break;
 #endif // COPASI_DEBUG
-      case 222:
-        return moietyWidget1;
-        break;
       case 43:
         return tableDefinition1;
         break;
@@ -587,9 +583,6 @@ CopasiWidget* ListViews::findWidgetFromId(const C_INT32 & id) const
         break;
       case 112:
         return metabolitesWidget;
-        break;
-      case 113:
-        return moietyWidget;
         break;
       case 114:
         return reactionsWidget;
@@ -636,7 +629,10 @@ CopasiWidget* ListViews::findWidgetFromId(const C_INT32 & id) const
         return modesWidget;
         break;
       case 222:
-        return moietyWidget;
+        return mpMoietiesTaskWidget;
+        break;
+      case 2221:
+        return mpMoietiesTaskResult;
         break;
 #ifdef COPASI_SSA
       case 223:
@@ -1081,9 +1077,6 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
   dataModel->updateEvents();
   updateAllListviews(116);
 #endif // COPASI_DEBUG
-
-  dataModel->updateMoieties();
-  updateAllListviews(222);
 
   dataModel->updateFunctions();
   updateAllListviews(5);

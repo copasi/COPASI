@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/moieties/CMoietiesProblem.cpp,v $
-//   $Revision: 1.1.2.2 $
+//   $Revision: 1.1.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/02/11 18:30:54 $
+//   $Date: 2008/02/20 20:25:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,30 +40,27 @@ void CMoietiesProblem::printResult(std::ostream * pOstream) const
 
     // Print all Moieties
     *pOstream << "Dependent Species" << "\t";
-    *pOstream << "Equation" << "\t";
-    *pOstream << "Preserved Particle Number" << std::endl;
+    *pOstream << "Total Amount" << "\t";
+    *pOstream << "Expression" << std::endl;
 
     CCopasiVector< CMoiety >::const_iterator it = mpModel->getMoieties().begin();
     CCopasiVector< CMoiety >::const_iterator end = mpModel->getMoieties().end();
     for (; it != end; ++it)
       {
         *pOstream << (*it)->getObjectName() << "\t";
-        *pOstream << (*it)->getDescription(mpModel) << "\t";
-        *pOstream << (*it)->getNumber() << std::endl;
+        *pOstream << (*it)->getNumber() << "\t";
+        *pOstream << (*it)->getDescription(mpModel) << std::endl;
       }
     *pOstream << std::endl;
 
     // Print Reordered Stoichiometry Matrix
-    *pOstream << "Stoichiometry Matrix" << std::endl;
-    *pOstream << dynamic_cast<const CArrayAnnotation *>(mpModel->getObject(CCopasiObjectName("Array=Stoichiometry(ann)"))) << std::endl;
+    *pOstream << *dynamic_cast<const CArrayAnnotation *>(mpModel->getObject(CCopasiObjectName("Array=Stoichiometry(ann)"))) << std::endl;
 
     // Print Link Matrix
-    *pOstream << "Link Matrix" << std::endl;
-    *pOstream << dynamic_cast<const CArrayAnnotation *>(mpModel->getObject(CCopasiObjectName("Array=Link matrix(ann)"))) << std::endl;
+    *pOstream << *dynamic_cast<const CArrayAnnotation *>(mpModel->getObject(CCopasiObjectName("Array=Link matrix(ann)"))) << std::endl;
 
     // Print Reduced Stoichiometry Matrix
-    *pOstream << "Reduced Stoichiometry Matrix" << std::endl;
-    *pOstream << dynamic_cast<const CArrayAnnotation *>(mpModel->getObject(CCopasiObjectName("Array=Reduced stoichiometry(ann)"))) << std::endl;
+    *pOstream << *dynamic_cast<const CArrayAnnotation *>(mpModel->getObject(CCopasiObjectName("Array=Reduced stoichiometry(ann)"))) << std::endl;
 
     return;
   }

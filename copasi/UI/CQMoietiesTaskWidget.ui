@@ -1,0 +1,67 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<comment> Begin CVS Header </comment>
+<comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMoietiesTaskWidget.ui,v $ </comment>
+<comment>   $Revision: 1.1.2.1 $ </comment>
+<comment>   $Name:  $ </comment>
+<comment>   $Author: shoops $ </comment>
+<comment>   $Date: 2008/02/20 20:25:40 $ </comment>
+<comment> End CVS Header </comment>
+
+<comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., EML Research, gGmbH, University of Heidelberg, </comment>
+<comment> and The University of Manchester. </comment>
+<comment> All rights reserved. </comment>
+
+<class>CQMoietiesTaskWidget</class>
+<widget class="TaskWidget">
+    <property name="name">
+        <cstring>CQMoietiesTaskWidget</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>260</width>
+            <height>23</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Mass Conservation</string>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <spacer>
+            <property name="name">
+                <cstring>mpSpacer</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>20</width>
+                    <height>40</height>
+                </size>
+            </property>
+        </spacer>
+    </vbox>
+</widget>
+<includes>
+    <include location="local" impldecl="in declaration">TaskWidget.h</include>
+    <include location="local" impldecl="in implementation">CQMoietiesTaskWidget.ui.h</include>
+</includes>
+<functions>
+    <function access="private" specifier="non virtual">init()</function>
+    <function access="private" specifier="non virtual">destroy()</function>
+    <function returnType="bool">runTask()</function>
+    <function returnType="bool">saveTask()</function>
+    <function returnType="bool">loadTask()</function>
+    <function returnType="CCopasiMethod *">createMethod( const CCopasiMethod::SubType &amp; type )</function>
+</functions>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>
