@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraph.h,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/02/18 16:27:45 $
+//   $Date: 2008/02/20 19:06:27 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -201,6 +201,7 @@ class CRDFGraph
     void buildCreatorRecord(const CRDFNode * pObjNode);
     void buildPublicationRecord(const CRDFNode * pObjNode);
     void buildCreatedRecord(const CRDFNode * pObjNode);
+    void buildModifiedRecord(const CRDFNode * pObjNode);
     void createAboutNode();
     std::string getNameSpaceURI(const std::string& lookupStr);
     CRDFNode* findFieldNodeFromObject(const std::string& fieldName, const CRDFObject& startObj);

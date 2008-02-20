@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQPreferenceDialog.ui.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2007/09/26 21:11:41 $
+//   $Date: 2008/02/20 19:06:28 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -93,9 +98,7 @@ void CQPreferenceDialog::init()
       //QMessageBox::information(this, "maxFiles", QString::number(maxFiles));
     }
   if (maxFiles > 0)
-    {
-      CPreferenceListViewItem *item = new CPreferenceListViewItem(mpListView, "Max Last Visited Files", QString::number(maxFiles));
-    }
+  {new CPreferenceListViewItem(mpListView, "Max Last Visited Files", QString::number(maxFiles));}
 }
 
 //slot

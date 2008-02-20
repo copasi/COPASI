@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CModelMIRIAMInfo.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/02/18 16:27:45 $
+//   $Date: 2008/02/20 19:06:27 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,6 +27,7 @@
 
 #include "CAuthor.h"
 #include "CPublication.h"
+#include "CModified.h"
 #include "CRDFGraph.h"
 #include "CRDFObject.h"
 
@@ -39,6 +40,8 @@ class CModelMIRIAMInfo
     CCopasiVector <CPublication> mPublications;
     CRDFObject mPublicationsObj;
     CRDFObject mCreatedObj;
+    CCopasiVector <CModified> mModifieds;
+    CRDFObject mModifiedsObj;
 
     CRDFGraph* mpRDFGraph;
     CModelEntity* mpEntity;
@@ -60,6 +63,9 @@ class CModelMIRIAMInfo
     bool removePublication(const std::string& key);
     const std::string getCreatedDT() const;
     void setCreatedDT(const std::string& dt);
+    CCopasiVector <CModified> & getModifieds();
+    CModified* createModified(const std::string& objectName);
+    bool removeModified(const std::string& key);
   };
 
 #endif //COPASI_CMODELMIRIAMINFO

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CModelMIRIAMInfo.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/02/18 16:27:45 $
+//   $Date: 2008/02/20 19:06:27 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,6 +36,8 @@ CModelMIRIAMInfo::CModelMIRIAMInfo() :
     mPublications(),
     mPublicationsObj(),
     mCreatedObj(),
+    mModifieds(),
+    mModifiedsObj(),
     mpRDFGraph(NULL),
     mpEntity(NULL)
 {
@@ -212,3 +214,40 @@ const std::string CModelMIRIAMInfo::getCreatedDT() const
 
 void CModelMIRIAMInfo::setCreatedDT(const std::string& dt)
 {mpRDFGraph->setFieldValue("Created", mCreatedObj, dt);}
+
+CCopasiVector <CModified> & CModelMIRIAMInfo::getModifieds()
+{return mModifieds;}
+
+CModified* CModelMIRIAMInfo::createModified(const std::string & objectName)
+{
+  CModified * pModified = new CModified(objectName);
+
+  if (!mModifieds.add(pModified, true))
+    {
+      delete pModified;
+      return NULL;
+    }
+
+  mpRDFGraph->addRecordToTable("Modifieds", mModifiedsObj, pModified->getRDFObject());
+  return pModified;
+}
+
+bool CModelMIRIAMInfo::removeModified(const std::string & key)
+{
+  CModified * pModified =
+    dynamic_cast< CModified * >(GlobalKeys.get(key));
+
+  if (!pModified)
+    return false;
+
+  //Check if Publication exists
+  unsigned C_INT32 index =
+    mModifieds.getIndex(pModified);
+
+  if (index == C_INVALID_INDEX)
+    return false;
+
+  mpRDFGraph->removeRecordFromTable("Modifieds", mModifiedsObj, pModified->getRDFObject());
+  mModifieds.CCopasiVector< CModified >::remove(index);
+  return true;
+}

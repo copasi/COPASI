@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.h,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2007/11/10 21:15:53 $
+//   $Date: 2008/02/20 19:06:28 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -49,9 +54,7 @@ class CopasiTableWidget : public CopasiWidget
     bool isTableInFocus();
 
   protected slots:
-    virtual void slotDoubleClicked(int, int, int, const QPoint &);
     virtual void slotTableSelectionChanged();
-    virtual void slotValueChanged(int, int);
     virtual void slotCurrentChanged(int, int);
     virtual void slotTableDelKey();
 
@@ -61,6 +64,8 @@ class CopasiTableWidget : public CopasiWidget
     virtual void slotBtnDeleteClicked();
     virtual void slotBtnNewClicked();
     virtual void slotBtnClearClicked();
+    virtual void slotDoubleClicked(int, int, int, const QPoint &);
+    virtual void slotValueChanged(int, int);
 
     //void resizeEvent(QResizeEvent * re);
 
@@ -103,6 +108,9 @@ class CopasiTableWidget : public CopasiWidget
      The flag to be set if columns in the table need to be justified
     */
     bool flagtoAdjust;
+
+    /*Flag for showing or hiding 'object renamed to No Name' warning.*/
+    bool mShowNewObjectWarning;
 
     //These are the methods that need to be implemented by specialized widgets:
 

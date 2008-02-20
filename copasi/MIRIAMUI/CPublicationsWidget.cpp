@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CPublicationsWidget.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/02/08 23:06:52 $
+//   $Date: 2008/02/20 19:06:27 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -87,11 +87,11 @@ void CPublicationsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject*
   pPublication->setURL((const char *) table->text(row, COL_URL).utf8());
 }
 
-void CPublicationsWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT32 exc)
+void CPublicationsWidget::defaultTableLineContent(unsigned C_INT32 C_UNUSED(row), unsigned C_INT32 C_UNUSED(exc))
 {}
 
 QString CPublicationsWidget::defaultObjectName() const
-  {return "";}
+  {return "Publication";}
 
 CCopasiObject* CPublicationsWidget::createNewObject(const std::string & name)
 {

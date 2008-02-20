@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.cpp,v $
-//   $Revision: 1.58 $
+//   $Revision: 1.59 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2007/11/10 21:15:53 $
+//   $Date: 2008/02/20 19:06:28 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -27,7 +32,8 @@
 #include "report/CKeyFactory.h"
 
 CopasiTableWidget::CopasiTableWidget(QWidget *parent, bool ro, const char * name, WFlags f, bool showButtons)
-    : CopasiWidget(parent, name, f)
+    : CopasiWidget(parent, name, f),
+    mShowNewObjectWarning(true)
 {
   mRO = ro;
   mShowButtons = showButtons;
@@ -240,7 +246,7 @@ void CopasiTableWidget::saveTable()
           if (!mFlagDelete[j])
             {
               CCopasiObject* pObj = createNewObject((const char *)table->text(j, 1).utf8());
-              if (pObj->getObjectName() != (const char *)table->text(j, 1).utf8())
+              if (mShowNewObjectWarning && pObj->getObjectName() != (const char *)table->text(j, 1).utf8())
                 {
                   QString msg;
                   msg = "Unable to create object '" + table->text(j, 1)

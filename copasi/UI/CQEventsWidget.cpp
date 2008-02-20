@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventsWidget.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/10/30 16:08:52 $
+//   $Author: aekamal $
+//   $Date: 2008/02/20 19:06:28 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -69,7 +74,7 @@ void CQEventsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_IN
   table->setText(row, 2, "abc");
 }
 
-void CQEventsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj)
+void CQEventsWidget::tableLineToObject(unsigned C_INT32 C_UNUSED(row), CCopasiObject* obj)
 {
   if (!obj) return;
 }
