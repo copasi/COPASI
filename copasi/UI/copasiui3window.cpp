@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.218.4.1 $
+//   $Revision: 1.218.4.2 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/02/02 06:58:45 $
+//   $Author: ssahle $
+//   $Date: 2008/02/20 11:47:55 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -269,9 +269,13 @@ void CopasiUI3Window::createToolBar()
   mpaApplyInitialState->addTo(tbMain);
   mpaUpdateInitialState->addTo(tbMain);
 
+  tbMain->addSeparator();
+
   mpBoxSelectFramework = new QComboBox(tbMain);
   mpBoxSelectFramework->insertItem("Concentrations");
   mpBoxSelectFramework->insertItem("Particle Numbers");
+
+  tbMain->setCloseMode(QDockWindow::Never);
 
   connect(mpBoxSelectFramework, SIGNAL(activated(int)), this, SLOT(slotFrameworkChanged(int)));
 
