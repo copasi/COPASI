@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000010.cpp,v $
-//   $Revision: 1.1.2.7 $
+//   $Revision: 1.1.2.8 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/19 14:40:43 $
+//   $Date: 2008/02/21 10:09:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,7 +33,13 @@ void test000010::setUp()
   CCopasiDataModel::Global = new CCopasiDataModel;
 }
 
-void test000010::tearDown(){}
+void test000010::tearDown()
+{
+  delete CCopasiDataModel::Global;
+  CCopasiDataModel::Global = NULL;
+  delete CCopasiContainer::Root;
+  CCopasiContainer::Root = NULL;
+}
 
 void test000010::test_references_to_species()
 {
