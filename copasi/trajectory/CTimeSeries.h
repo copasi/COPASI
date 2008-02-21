@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTimeSeries.h,v $
-//   $Revision: 1.12.6.1 $
+//   $Revision: 1.12.6.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/02/11 20:34:45 $
+//   $Date: 2008/02/21 19:12:55 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,23 +18,38 @@
 #ifndef TIMESERIES_H
 #define TIMESERIES_H
 
+#include <vector>
+
 #include "model/CState.h"
 #include "utilities/CVector.h"
+#include "utilities/CMatrix.h"
 
 class CModel;
 
-class CTimeSeries : private CVector< CState >
+class CTimeSeries : protected CMatrix< C_FLOAT64 >
   {
-  public:
-    CTimeSeries();
-
   private:
-
-    //since copy concstructor and assignment operator are not properly implemented
+    //since the assignment operator are not properly implemented
     //they should be inaccesible
 
-    CTimeSeries(const CTimeSeries &);
     CTimeSeries & operator= (const CTimeSeries &);
+
+  public:
+    /**
+     * Default constructor
+     */
+    CTimeSeries();
+
+    /**
+     * Copy constructor
+     * @param const CTimeSeries & src
+     */
+    CTimeSeries(const CTimeSeries & src);
+
+    /**
+     * Destructor
+     */
+    ~CTimeSeries();
 
   public:
 
@@ -58,34 +73,35 @@ class CTimeSeries : private CVector< CState >
 
     unsigned C_INT32 getNumSteps() const;
     unsigned C_INT32 getNumVariables() const;
-    const C_FLOAT64 & getData(unsigned C_INT32 step, unsigned C_INT32 var) const;
-    C_FLOAT64 getConcentrationData(unsigned C_INT32 step, unsigned C_INT32 var) const;
-    const std::string & getTitle(unsigned C_INT32 var) const;
+    const C_FLOAT64 & getData(const unsigned C_INT32 & step, const unsigned C_INT32 & var) const;
+    C_FLOAT64 getConcentrationData(const unsigned C_INT32 & step, const unsigned C_INT32 & var) const;
+    const std::string & getTitle(const unsigned C_INT32 & var) const;
 
     /**
      * get the key of the object correspoding to column indexed by var
      */
-    const std::string & getKey(unsigned C_INT32 var) const;
+    const std::string & getKey(const unsigned C_INT32 & var) const;
 
     /**
      * get the id of the sbml object correspoding to column indexed by var.
      * If there is no corresponding SBML object (e.g. if the model comes from a
      * COPASI file) the empty string is returned.
      */
-    std::string getSBMLId(unsigned C_INT32 var) const;
+    std::string getSBMLId(const unsigned C_INT32 & var) const;
 
   private:
-    CState * mpIt;
-    CState * mpEnd;
+    unsigned C_INT32 mNumSteps;
+    C_FLOAT64 * mpIt;
+    C_FLOAT64 * mpEnd;
 
     const CState * mpState;
-
-    CVector< std::string > mTitles;
+    std::vector< std::string > mTitles;
     CVector< C_FLOAT64 > mFactors;
     CVector< unsigned C_INT32 > mPivot;
-    CVector< std::string > mKeys;
-    std::string mDummyString;
-    C_FLOAT64 mDummyFloat;
+    std::vector< std::string > mKeys;
+
+    static std::string mDummyString;
+    static C_FLOAT64 mDummyFloat;
   };
 
 #endif

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTimeSeries.cpp,v $
-//   $Revision: 1.14.6.1 $
+//   $Revision: 1.14.6.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/02/11 20:34:45 $
+//   $Date: 2008/02/21 19:12:55 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,11 +30,33 @@
 #include "sbml/Parameter.h"
 #include "sbml/Model.h"
 
+// static
+std::string CTimeSeries::mDummyString("");
+
+// static
+C_FLOAT64 CTimeSeries::mDummyFloat(0.0);
+
 CTimeSeries::CTimeSeries():
-    mpIt(array()),
-    mpState(NULL),
-    mDummyString(""),
-    mDummyFloat(0)
+    CMatrix< C_FLOAT64 >(),
+    mNumSteps(0),
+    mpIt(mArray),
+    mpEnd(mArray + size()),
+    mpState(NULL)
+{}
+
+CTimeSeries::CTimeSeries(const CTimeSeries & src):
+    CMatrix< C_FLOAT64 >(src),
+    mNumSteps(src.mNumSteps),
+    mpIt(mArray + mNumSteps * mCols),
+    mpEnd(mArray + size()),
+    mpState(src.mpState),
+    mTitles(src.mTitles),
+    mFactors(src.mFactors),
+    mPivot(src.mPivot),
+    mKeys(src.mKeys)
+{}
+
+CTimeSeries::~CTimeSeries()
 {}
 
 bool CTimeSeries::init(C_INT32 n, CModel * pModel)
@@ -47,17 +69,18 @@ bool CTimeSeries::init(C_INT32 n, CModel * pModel)
   CModelEntity **it = Template.getEntities();
   CModelEntity **end = Template.endDependent();
 
-  resize(n + 1);
+  C_INT32 i, imax = end - it;
 
-  mpIt = array();
-  mpEnd = mpIt + size();
-
-  C_INT32 i, imax = Template.getNumVariable() + 1;
+  resize(n + 1, imax);
 
   mPivot.resize(imax);
   mTitles.resize(imax);
   mFactors.resize(imax);
   mKeys.resize(imax);
+
+  mNumSteps = 0;
+  mpIt = mArray;
+  mpEnd = mArray + size();
 
   C_FLOAT64 Number2QuantityFactor = pModel->getNumber2QuantityFactor();
 
@@ -97,8 +120,9 @@ bool CTimeSeries::add()
 {
   if (mpIt != mpEnd)
     {
-      *mpIt = *mpState;
-      ++mpIt;
+      memcpy(mpIt, &mpState->getTime(), mCols * sizeof(C_FLOAT64));
+      mpIt += mCols;
+      mNumSteps++;
 
       return true;
     }
@@ -114,58 +138,51 @@ bool CTimeSeries::finish()
 //*** the methods to retrieve data from the CTimeSeries *******
 
 unsigned C_INT32 CTimeSeries::getNumSteps() const
-  {return mpIt - array();}
+  {return mNumSteps;}
 
 unsigned C_INT32 CTimeSeries::getNumVariables() const
+  {return mCols;}
+
+const C_FLOAT64 & CTimeSeries::getData(const unsigned C_INT32 & step,
+                                       const unsigned C_INT32 & var) const
   {
-    if (mpState)
-      return mpState->getNumVariable() + 1;
-
-    return 0;
-  }
-
-const C_FLOAT64 & CTimeSeries::getData(unsigned C_INT32 step, unsigned C_INT32 var) const
-  {
-    if (step >= getNumSteps()) return mDummyFloat;
-
-    if (var < mPivot.size()) return *(&(*this)[step].getTime() + mPivot[var]);
+    if (step < mNumSteps && var < mCols)
+      return *(mArray + step * mCols + mPivot[var]);
 
     return mDummyFloat;
   }
 
-C_FLOAT64 CTimeSeries::getConcentrationData(unsigned C_INT32 step, unsigned C_INT32 var) const
+C_FLOAT64 CTimeSeries::getConcentrationData(const unsigned C_INT32 & step,
+    const unsigned C_INT32 & var) const
   {
-    static C_FLOAT64 tmp;
-
-    if (step >= getNumSteps()) return mDummyFloat;
-
-    if (var < mPivot.size())
-      return tmp = *(&(*this)[step].getTime() + mPivot[var]) * mFactors[mPivot[var]];
+    if (step < mNumSteps && var < mCols)
+      return *(mArray + step * mCols + mPivot[var]) * mFactors[mPivot[var]];
 
     return mDummyFloat;
   }
 
-const std::string & CTimeSeries::getTitle(unsigned C_INT32 var) const
+const std::string & CTimeSeries::getTitle(const unsigned C_INT32 & var) const
   {
-    if (var < mPivot.size())
+    if (var < mCols)
       return mTitles[mPivot[var]];
-    else
-      return mDummyString;
+
+    return mDummyString;
   }
 
-const std::string & CTimeSeries::getKey(unsigned C_INT32 var) const
+const std::string & CTimeSeries::getKey(const unsigned C_INT32 & var) const
   {
-    if (var < mPivot.size())
+    if (var < mCols)
       return mKeys[mPivot[var]];
-    else
-      return mDummyString;
+
+    return mDummyString;
   }
 
-std::string CTimeSeries::getSBMLId(unsigned C_INT32 var) const
+std::string CTimeSeries::getSBMLId(const unsigned C_INT32 & var) const
   {
-    std::string key = this->getKey(var);
+    std::string key = getKey(var);
     std::string result("");
-    if (key != this->mDummyString)
+
+    if (key != mDummyString)
       {
         CCopasiObject* pObject = GlobalKeys.get(key);
         if (pObject != NULL)
@@ -232,7 +249,7 @@ int CTimeSeries::save(const std::string& fileName, bool writeParticleNumbers, co
     fileStream << stringStream->str();
     if (!fileStream.good()) return 1;
     unsigned int counter;
-    unsigned int maxCount = this->getNumSteps();
+    unsigned int maxCount = mNumSteps;
     for (counter = 0; counter < maxCount;++counter)
       {
         delete stringStream;

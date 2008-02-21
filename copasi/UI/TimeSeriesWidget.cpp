@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TimeSeriesWidget.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.11.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/07 19:46:35 $
+//   $Date: 2008/02/21 19:12:55 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -66,7 +71,7 @@ bool TimeSeriesWidget::loadFromBackend()
 {
   //  mCentralWidget->table()->setTimeSeries(CCopasiDataModel::Global->getTrajectoryTask()->getTimeSeries());
   mCentralWidget->displayOptimizationTab(false);
-  mCentralWidget->table()->setTimeSeries(dynamic_cast<CTrajectoryTask *>((*CCopasiDataModel::Global->getTaskList())["Time-Course"])->getTimeSeries());
+  mCentralWidget->table()->setTimeSeries(&dynamic_cast<CTrajectoryTask *>((*CCopasiDataModel::Global->getTaskList())["Time-Course"])->getTimeSeries());
   return true;
 }
 
@@ -89,8 +94,9 @@ bool TimeSeriesWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListVi
 {
   if (this->isShown())
     return loadFromBackend();
-  else
-    return true;
+
+  mCentralWidget->table()->setTimeSeries(NULL);
+  return true;
 }
 
 bool TimeSeriesWidget::leave()
