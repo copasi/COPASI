@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.107.4.4 $
+//   $Revision: 1.107.4.5 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/18 06:41:38 $
+//   $Date: 2008/02/21 14:00:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -657,7 +657,7 @@ std::string CCopasiDataModel::exportSBMLToString(CProcessReport* /*pExportHandle
   if (mpCurrentSBMLDocument != exporter.getSBMLDocument())
     pdelete(mpCurrentSBMLDocument);
 
-  mpCurrentSBMLDocument = exporter.getSBMLDocument();
+  mpCurrentSBMLDocument = new SBMLDocument(*exporter.getSBMLDocument());
 
   return str;
 }
