@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000037.cpp,v $
-//   $Revision: 1.1.2.1 $
+//   $Revision: 1.1.2.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/21 10:09:31 $
+//   $Date: 2008/02/21 15:40:01 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -136,8 +136,8 @@ const char* test000037::MODEL_STRING =
   "  <model id=\"Model_1\" name=\"New Model\">\n"
   "    <notes>\n"
   "      <body xmlns=\"http://www.w3.org/1999/xhtml\">\n"
-  "        <p>Model with fixed compartment volume, two species with hasOnlySubstanceUnits flag set to false. The units are set to ml and mMol. There is an assignment ruile for the global parameter that contains a reference to species A.</p>\n"
-  "        <p>The imported model should contain an assignment for the global parameter that consists of the reference to species A. The species references in the reactions should be imported unmodified.</p>\n"
+  "        <p>Model with fixed compartment volume, two species with hasOnlySubstanceUnits flag set to true. The units are set to ml and mMol. There is an initial assignment for the global parameter that contains a reference to species A multiplied by a factor.</p>\n"
+  "        <p>The imported model should contain an assignment for the global parameter that consists of the reference to the particle number of species A. The species references in the reactions should be imported multiplied by the volume.</p>\n"
   "      </body>\n"
   "    </notes>\n"
   "    <listOfFunctionDefinitions>\n"

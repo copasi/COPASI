@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000027.cpp,v $
-//   $Revision: 1.1.2.1 $
+//   $Revision: 1.1.2.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/21 10:09:31 $
+//   $Date: 2008/02/21 15:40:01 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -61,9 +61,11 @@ void test000027::test_hasOnlySubstanceUnits()
   const CMetab* pB = pModel->getMetabolites()[1];
   CPPUNIT_ASSERT(pB != NULL);
   CPPUNIT_ASSERT(pB->getStatus() == CModelEntity::REACTIONS);
-  CPPUNIT_ASSERT(pModel->getModelValues().size() == 1);
+  CPPUNIT_ASSERT(pModel->getModelValues().size() == 2);
   const CModelValue* pModelValue = pModel->getModelValues()[0];
   CPPUNIT_ASSERT(pModelValue != NULL);
+  // TODO check the second model value
+  CPPUNIT_ASSERT(false);
   CPPUNIT_ASSERT(pModelValue->getStatus() == CModelEntity::ASSIGNMENT);
   const CExpression* pExpr = pModelValue->getExpressionPtr();
   // check the expression
@@ -78,14 +80,15 @@ void test000027::test_hasOnlySubstanceUnits()
   const CCopasiObject* pObject = CCopasiContainer::ObjectFromName(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
-  CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Concentration"));
+  CPPUNIT_ASSERT(pObject->getObjectName() == std::string("ParticleNumber"));
   CPPUNIT_ASSERT(pObject->getObjectParent() == pA);
 
   CPPUNIT_ASSERT(pModel->getReactions().size() == 2);
   const CReaction* pReaction1 = pModel->getReactions()[0];
   CPPUNIT_ASSERT(pReaction1 != NULL);
   CPPUNIT_ASSERT(pReaction1->isReversible() == false);
-  // check the kinetic law
+  // TODO check the kinetic law
+  CPPUNIT_ASSERT(false);
   const CFunction* pKineticFunction = pReaction1->getFunction();
   CPPUNIT_ASSERT(pKineticFunction != NULL);
   const CMassAction* pMassAction = dynamic_cast<const CMassAction*>(pKineticFunction);
@@ -136,8 +139,8 @@ const char* test000027::MODEL_STRING =
   "  <model id=\"Model_1\" name=\"New Model\">\n"
   "    <notes>\n"
   "      <body xmlns=\"http://www.w3.org/1999/xhtml\">\n"
-  "        <p>Model with fixed compartment volume, two species with hasOnlySubstanceUnits flag set to false. The units are set to ml and mMol. There is an assignment ruile for the global parameter that contains a reference to species A.</p>\n"
-  "        <p>The imported model should contain an assignment for the global parameter that consists of the reference to species A. The species references in the reactions should be imported unmodified.</p>\n"
+  "        <p>Model with fixed compartment volume, two species with hasOnlySubstanceUnits flag set to true. The units are set to ml and mMol. There is an assignment ruile for the global parameter that contains a reference to species A multiplied by a constant parameter.</p>\n"
+  "        <p>The imported model should contain an assignment for the global parameter that consists of the reference to the particle number of species A. The species references in the reactions should be imported multiplied by the volume.</p>\n"
   "      </body>\n"
   "    </notes>\n"
   "    <listOfFunctionDefinitions>\n"
@@ -178,7 +181,7 @@ const char* test000027::MODEL_STRING =
   "      </unitDefinition>\n"
   "      <unitDefinition id=\"substance\">\n"
   "        <listOfUnits>\n"
-  "          <unit kind=\"model\" scale=\"-3\"/>\n"
+  "          <unit kind=\"mole\" scale=\"-3\"/>\n"
   "        </listOfUnits>\n"
   "      </unitDefinition>\n"
   "    </listOfUnitDefinitions>\n"

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000025.cpp,v $
-//   $Revision: 1.1.2.1 $
+//   $Revision: 1.1.2.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/21 10:09:31 $
+//   $Date: 2008/02/21 15:40:01 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -47,7 +47,7 @@ void test000025::test_hasOnlySubstanceUnits()
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
-  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CModel::mMol);
+  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CModel::microMol);
   CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CModel::ml);
   CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CModel::s);
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
@@ -61,11 +61,13 @@ void test000025::test_hasOnlySubstanceUnits()
   const CMetab* pB = pModel->getMetabolites()[1];
   CPPUNIT_ASSERT(pB != NULL);
   CPPUNIT_ASSERT(pB->getStatus() == CModelEntity::REACTIONS);
-  CPPUNIT_ASSERT(pModel->getModelValues().size() == 1);
+  CPPUNIT_ASSERT(pModel->getModelValues().size() == 2);
   const CModelValue* pModelValue = pModel->getModelValues()[0];
   CPPUNIT_ASSERT(pModelValue != NULL);
   CPPUNIT_ASSERT(pModelValue->getStatus() == CModelEntity::ASSIGNMENT);
   const CExpression* pExpr = pModelValue->getExpressionPtr();
+  // TODO check second model value
+  CPPUNIT_ASSERT(false);
   // check the expression
   const CEvaluationNode* pNode = pExpr->getRoot();
   CPPUNIT_ASSERT(pNode != NULL);
@@ -78,7 +80,7 @@ void test000025::test_hasOnlySubstanceUnits()
   const CCopasiObject* pObject = CCopasiContainer::ObjectFromName(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
-  CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Concentration"));
+  CPPUNIT_ASSERT(pObject->getObjectName() == std::string("ParticleNumber"));
   CPPUNIT_ASSERT(pObject->getObjectParent() == pA);
 
   CPPUNIT_ASSERT(pModel->getReactions().size() == 2);
@@ -136,8 +138,8 @@ const char* test000025::MODEL_STRING =
   "  <model id=\"Model_1\" name=\"New Model\">\n"
   "    <notes>\n"
   "      <body xmlns=\"http://www.w3.org/1999/xhtml\">\n"
-  "        <p>Model with fixed compartment volume, two species with hasOnlySubstanceUnits flag set to false. The units are set to ml and mMol. There is an assignment ruile for the global parameter that contains a reference to species A.</p>\n"
-  "        <p>The imported model should contain an assignment for the global parameter that consists of the reference to species A. The species references in the reactions should be imported unmodified.</p>\n"
+  "        <p>Model with fixed compartment volume, two species with hasOnlySubstanceUnits flag set to true. The units are set to ml and microMol. There is an assignment rule for the global parameter that contains a reference to species A.</p>\n"
+  "        <p>The imported model should contain an assignment for the global parameter that consists of the reference to the particle number of species A divided by a constant (6.023e17). The species references in the reactions should be imported multiplied by the volume.</p>\n"
   "      </body>\n"
   "    </notes>\n"
   "    <listOfFunctionDefinitions>\n"
@@ -178,7 +180,7 @@ const char* test000025::MODEL_STRING =
   "      </unitDefinition>\n"
   "      <unitDefinition id=\"substance\">\n"
   "        <listOfUnits>\n"
-  "          <unit kind=\"model\" scale=\"-6\"/>\n"
+  "          <unit kind=\"mole\" scale=\"-6\"/>\n"
   "        </listOfUnits>\n"
   "      </unitDefinition>\n"
   "    </listOfUnitDefinitions>\n"
