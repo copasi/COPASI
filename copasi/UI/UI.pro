@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $ 
-#   $Revision: 1.164.4.2 $ 
+#   $Revision: 1.164.4.3 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2008/02/20 20:25:40 $ 
+#   $Date: 2008/02/21 14:30:45 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -16,7 +16,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.164.4.2 $ $Author: shoops $ $Date: 2008/02/20 20:25:40 $  
+# $Revision: 1.164.4.3 $ $Author: shoops $ $Date: 2008/02/21 14:30:45 $  
 ######################################################################
 
 LIB = UI
@@ -187,8 +187,8 @@ SOURCES += \
 # FORMS += CQMessageBox.ui
 # FORMS += CQMetabolite.ui
 # FORMS += CQModelValue.ui
-FORMS += CQMoietiesTaskWidget.ui
-FORMS += CQMoietiesTaskResult.ui
+# FORMS += CQMoietiesTaskWidget.ui
+# FORMS += CQMoietiesTaskResult.ui
 # FORMS += CQOptimizationWidget.ui
 # FORMS += CQPreferenceDialog.ui
 # FORMS += CQProgressDialog.ui

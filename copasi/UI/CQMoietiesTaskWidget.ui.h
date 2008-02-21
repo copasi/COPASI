@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMoietiesTaskWidget.ui.h,v $
-//   $Revision: 1.1.2.1 $
+//   $Revision: 1.1.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/02/20 20:25:40 $
+//   $Date: 2008/02/21 14:30:45 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -53,9 +53,6 @@ bool CQMoietiesTaskWidget::runTask()
   bool success = commonRunTask();
 
   commonAfterRunTask();
-
-  // TODO update the result widget
-  // if (success) loadFluxModes();
 
   return success;
 }
