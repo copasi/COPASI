@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.218.4.2 $
+//   $Revision: 1.218.4.3 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/02/20 11:47:55 $
+//   $Date: 2008/02/22 16:05:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -206,22 +206,22 @@ void CopasiUI3Window::createActions()
   mpaNew = new QAction(QPixmap(filenew), "&New", CTRL + Key_N, this, "new");
   connect(mpaNew, SIGNAL(activated()), this, SLOT(newDoc()));
 
-  mpaOpen = new QAction(QPixmap(fileopen), "&Open", CTRL + Key_O, this, "open");
+  mpaOpen = new QAction(QPixmap(fileopen), "&Open...", CTRL + Key_O, this, "open");
   connect(mpaOpen, SIGNAL(activated()), this, SLOT(slotFileOpen()));
 
   mpaSave = new QAction(QPixmap(filesave), "&Save", CTRL + Key_S, this, "save");
   connect(mpaSave, SIGNAL(activated()), this, SLOT(slotFileSave()));
 
-  mpaSaveAs = new QAction(QPixmap(filesave), "Save &As", CTRL + Key_A, this, "saveas");
+  mpaSaveAs = new QAction(QPixmap(filesave), "Save &As...", CTRL + Key_A, this, "saveas");
   connect(mpaSaveAs, SIGNAL(activated()), this, SLOT(slotFileSaveAs()));
 
-  mpaImportSBML = new QAction(QPixmap(fileopen), "&Import SBML", CTRL + Key_I, this, "importsbml");
+  mpaImportSBML = new QAction(QPixmap(fileopen), "&Import SBML...", CTRL + Key_I, this, "importsbml");
   connect(mpaImportSBML, SIGNAL(activated()), this, SLOT(slotImportSBML()));
 
-  mpaExportSBML = new QAction(QPixmap(filesave), "&Export SBML", CTRL + Key_E, this, "exportsbml");
+  mpaExportSBML = new QAction(QPixmap(filesave), "&Export SBML...", CTRL + Key_E, this, "exportsbml");
   connect(mpaExportSBML, SIGNAL(activated()), this, SLOT(slotExportSBML()));
 
-  mpaExportODE = new QAction(QPixmap(filesave), "Export ODEs", CTRL + Key_M, this, "exportode");
+  mpaExportODE = new QAction(QPixmap(filesave), "Export ODEs...", CTRL + Key_M, this, "exportode");
   connect(mpaExportODE, SIGNAL(activated()), this, SLOT(slotExportMathModel()));
 
   mpaSliders = new QAction(QPixmap(toggleSliderDialog), "Show sliders", 0, this, "showsliders");
