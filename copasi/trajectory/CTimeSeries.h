@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTimeSeries.h,v $
-//   $Revision: 1.12.6.2 $
+//   $Revision: 1.12.6.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/02/21 19:12:55 $
+//   $Date: 2008/02/22 14:14:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -96,9 +96,10 @@ class CTimeSeries : protected CMatrix< C_FLOAT64 >
 
     const CState * mpState;
     std::vector< std::string > mTitles;
-    CVector< C_FLOAT64 > mFactors;
+    CVector< unsigned C_INT32 > mCompartment;
     CVector< unsigned C_INT32 > mPivot;
     std::vector< std::string > mKeys;
+    C_FLOAT64 mNumberToQuantityFactor;
 
     static std::string mDummyString;
     static C_FLOAT64 mDummyFloat;

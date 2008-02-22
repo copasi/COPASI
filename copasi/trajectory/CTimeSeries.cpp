@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTimeSeries.cpp,v $
-//   $Revision: 1.14.6.2 $
+//   $Revision: 1.14.6.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/02/21 19:12:55 $
+//   $Date: 2008/02/22 14:14:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,7 +41,12 @@ CTimeSeries::CTimeSeries():
     mNumSteps(0),
     mpIt(mArray),
     mpEnd(mArray + size()),
-    mpState(NULL)
+    mpState(NULL),
+    mTitles(),
+    mCompartment(),
+    mPivot(),
+    mKeys(),
+    mNumberToQuantityFactor(0.0)
 {}
 
 CTimeSeries::CTimeSeries(const CTimeSeries & src):
@@ -51,9 +56,10 @@ CTimeSeries::CTimeSeries(const CTimeSeries & src):
     mpEnd(mArray + size()),
     mpState(src.mpState),
     mTitles(src.mTitles),
-    mFactors(src.mFactors),
+    mCompartment(src.mCompartment),
     mPivot(src.mPivot),
-    mKeys(src.mKeys)
+    mKeys(src.mKeys),
+    mNumberToQuantityFactor(src.mNumberToQuantityFactor)
 {}
 
 CTimeSeries::~CTimeSeries()
@@ -66,8 +72,10 @@ bool CTimeSeries::init(C_INT32 n, CModel * pModel)
 
   CStateTemplate & Template = pModel->getStateTemplate();
 
+  // We store all variables of the system.
+  // The reason for this is that events will be able to change even fixed values.
   CModelEntity **it = Template.getEntities();
-  CModelEntity **end = Template.endDependent();
+  CModelEntity **end = Template.endFixed();
 
   C_INT32 i, imax = end - it;
 
@@ -75,14 +83,15 @@ bool CTimeSeries::init(C_INT32 n, CModel * pModel)
 
   mPivot.resize(imax);
   mTitles.resize(imax);
-  mFactors.resize(imax);
+  mCompartment.resize(imax);
   mKeys.resize(imax);
 
   mNumSteps = 0;
   mpIt = mArray;
   mpEnd = mArray + size();
+  mCompartment = C_INVALID_INDEX;
 
-  C_FLOAT64 Number2QuantityFactor = pModel->getNumber2QuantityFactor();
+  mNumberToQuantityFactor = pModel->getNumber2QuantityFactor();
 
   CMetab * pMetab;
 
@@ -91,14 +100,13 @@ bool CTimeSeries::init(C_INT32 n, CModel * pModel)
       if ((pMetab = dynamic_cast<CMetab *>(*it)) != NULL)
         {
           mTitles[i] = CMetabNameInterface::getDisplayName(pModel, *pMetab);
-          mFactors[i] =
-            Number2QuantityFactor / pMetab->getCompartment()->getValue();
+          mCompartment[i] = Template.getIndex(pMetab->getCompartment());
         }
       else
         {
           mTitles[i] = (*it)->getObjectDisplayName();
-          mFactors[i] = 1.0;
         }
+
       mKeys[i] = (*it)->getKey();
     }
 
@@ -110,8 +118,8 @@ bool CTimeSeries::init(C_INT32 n, CModel * pModel)
   it = Template.getEntities();
 
   for (i = 0; pUserOrder != pUserOrderEnd; ++pUserOrder)
-    if (it[*pUserOrder]->isUsed())
-      mPivot[i++] = *pUserOrder;
+    //    if (it[*pUserOrder]->isUsed())
+    mPivot[i++] = *pUserOrder;
 
   return true;
 }
@@ -156,7 +164,13 @@ C_FLOAT64 CTimeSeries::getConcentrationData(const unsigned C_INT32 & step,
     const unsigned C_INT32 & var) const
   {
     if (step < mNumSteps && var < mCols)
-      return *(mArray + step * mCols + mPivot[var]) * mFactors[mPivot[var]];
+      {
+        const unsigned C_INT32 & Col = mPivot[var];
+        if (mCompartment[Col] != C_INVALID_INDEX)
+          return *(mArray + step * mCols + Col) * mNumberToQuantityFactor / *(mArray + step * mCols + mCompartment[Col]);
+        else
+          return *(mArray + step * mCols + Col);
+      }
 
     return mDummyFloat;
   }
