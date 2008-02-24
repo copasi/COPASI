@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAMethod.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/01/11 15:12:28 $
+//   $Author: akoenig $
+//   $Date: 2008/02/24 16:24:38 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -153,8 +153,6 @@ void CTSSAMethod::initializeILDMParameter()
   addMatrixReference("Contribution of Metabolites to Slow Space", mVslow, CCopasiObject::ValueDbl);
 
   CCopasiParameter *pParm;
-
-  assertParameter("Deuflhard Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-6);
 
   assertParameter("Integrate Reduced Model", CCopasiParameter::BOOL, (bool) true);
   assertParameter("Relative Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-6);
@@ -1335,7 +1333,7 @@ void CTSSAMethod::ILDMstart(const CState * initialState)
 
   /* Tolerance for Deuflhard criterium  */
 
-  mDtol = * getValue("Deuflhard Tolerance").pUDOUBLE;
+  mDtol = * mpProblem->getValue("Deuflhard Tolerance").pUDOUBLE;
 
   mVslow.resize(mData.dim, mData.dim);
   mVslow_metab.resize(mData.dim, mData.dim);

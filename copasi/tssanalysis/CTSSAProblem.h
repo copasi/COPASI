@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAProblem.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2007/04/12 12:47:49 $
+//   $Author: akoenig $
+//   $Date: 2008/02/24 16:24:38 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -166,6 +171,16 @@ class CTSSAProblem : public CCopasiProblem
      */
     void load(CReadConfig & configBuffer,
               CReadConfig::Mode mode = CReadConfig::NEXT);
+
+    /**
+     * Set the Deufelhard Tolerance.
+     */
+    void setDeufelhardTol(C_FLOAT64 value);
+
+    /**
+     * Get the Deufelhard Tolerance.
+     */
+    C_FLOAT64 getDeufelhardTol();
 
   private:
     /**
