@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAMethod.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: isurovts $
-//   $Date: 2007/12/21 11:43:59 $
+//   $Author: akoenig $
+//   $Date: 2008/02/24 17:35:40 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -471,6 +476,12 @@ class CTSSAMethod : public CCopasiMethod
       {return pVfastSpacePrintAnn;}
     const CArrayAnnotation* getVslowMetabPrintAnn() const
       {return pVslowMetabPrintAnn;}
+
+    /**
+    * return mVec_TimeScale for visualization in ILDM-tab
+    * in the CQTSSAResultSubWidget
+    **/
+    CVector< C_FLOAT64> getVec_TimeScale(int step);
 
     /**
     * upgrade all vectors with values from actually calculalion for current step

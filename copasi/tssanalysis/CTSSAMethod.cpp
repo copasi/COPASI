@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAMethod.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: akoenig $
-//   $Date: 2008/02/24 16:24:38 $
+//   $Date: 2008/02/24 17:35:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1583,4 +1583,13 @@ void CTSSAMethod::setVectors(int slowMode)
 
   mCurrentTime.push_back(mCurrentStep);
   mCurrentTime[mCurrentStep] = mTime;
+}
+
+/**
+ * return mVec_TimeScale for visualization in ILDM-tab
+ * in the CQTSSAResultSubWidget
+ **/
+CVector< C_FLOAT64> CTSSAMethod::getVec_TimeScale(int step)
+{
+  return mVec_TimeScale[step - 1];
 }
