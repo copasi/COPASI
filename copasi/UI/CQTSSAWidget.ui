@@ -1,17 +1,19 @@
 <!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSAWidget.ui,v $ </comment>
-<comment>   $Revision: 1.2 $ </comment>
+<comment>   $Revision: 1.3 $ </comment>
 <comment>   $Name:  $ </comment>
-<comment>   $Author: ssahle $ </comment>
-<comment>   $Date: 2007/05/21 12:27:27 $ </comment>
+<comment>   $Author: akoenig $ </comment>
+<comment>   $Date: 2008/02/24 16:19:15 $ </comment>
 <comment> End CVS Header </comment>
 
-<comment> Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual </comment>
-<comment> Properties, Inc. and EML Research, gGmbH. </comment>
+<comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., EML Research, gGmbH, University of Heidelberg, </comment>
+<comment> and The University of Manchester. </comment>
 <comment> All rights reserved. </comment>
 
 <class>CQTSSAWidget</class>
+<comment> All rights reserved. </comment>
 <widget class="TaskWidget">
     <property name="name">
         <cstring>CQTSSAWidget</cstring>
@@ -20,7 +22,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>358</width>
+            <width>363</width>
             <height>141</height>
         </rect>
     </property>
@@ -51,10 +53,10 @@
                 </widget>
                 <widget class="QLabel" row="2" column="0">
                     <property name="name">
-                        <cstring>mpLblDeltaT</cstring>
+                        <cstring>mpLbDeuflTol</cstring>
                     </property>
                     <property name="text">
-                        <string>Start Output Time</string>
+                        <string>Deufelhard Tolerance</string>
                     </property>
                     <property name="alignment">
                         <set>AlignVCenter|AlignRight</set>
@@ -76,17 +78,9 @@
                         <set>AlignVCenter|AlignRight</set>
                     </property>
                 </widget>
-                <widget class="QCheckBox" row="2" column="2">
-                    <property name="name">
-                        <cstring>mpCheckDelay</cstring>
-                    </property>
-                    <property name="text">
-                        <string>delayed</string>
-                    </property>
-                </widget>
                 <widget class="QLineEdit" row="2" column="1">
                     <property name="name">
-                        <cstring>mpEditDelay</cstring>
+                        <cstring>mpEditDeufelTol</cstring>
                     </property>
                     <property name="frameShape">
                         <enum>LineEditPanel</enum>
@@ -163,7 +157,7 @@
 </customwidgets>
 <images>
     <image name="image0">
-        <data format="PNG" length="872">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b0000032f49444154388db59531681c4714863f992dde8004b320c32e38700732f80a176acfa8b04a81c016a809a8496b42208454098604d2c4904a6954a410511ae75c18ac42e61208a76b442488600332ec15825dd0c10c58300f32e0142b4591e2538a38af99dd99e1db6fdffec34e0d76079cd7bdeebd37bc831aec0ea6a6cec1fd9dfe9bf65c1bef3d555de1bcc36008846b47e71dc551c1706f08f1029e9c9b3efdfe29690e791b5a51cf961d2402384c2240b898e7e2be3812f8ce327ce92f83016a5f93be07e5f847f47549888a3110fe005f0b55ad08829985f66d105188a080cc407a53f97bfd0576b523dcf5e8eb9a103d66c652ee437f5bd9dfab9104342a9258b239616935a5bb10109a793b2d348fb902ae7cc53c4a8815c658767794ad0d0f11ac15f2394104aa91327aa57cfb6549bd96b1b206220dfcadc6263180626684721f7a67d0a50719f79721cf0d2401d594fe76a0b7e1e96d8ec8b20e8b0f0d92e825e31be71721064008015e3cf76854961e64ac7c0069ae6852e14f0c2f9e39965653deffd042226c6d56e8f89f91bb6c9c387c9d521c9458db988a3416fe3467fd6b4779e87127f0e8d39ce18ea7fc5d298a80c865f02563930855ed2081bc05e94d5014ef53d6bfa8280e3d6285ee420ad38ecebc45a3521d83c609e0a6c7200844c54e9f7d94939cf5af1ce561132f3b2de4b72095e67d251134825c51bed26330b3406229468aaaa1ff3234a6d34276cb321ad53c795c51eca754a5a25169b70c5c9f0a47e736b45a423d52fadb8195b51477a274efa7e4193c790ca357359f7d54a1a79e2cb374e6a1aaafe9310888b2b42a68547a1b9efeb6e3d1c739f30b81d67ce093cf73b2cce2c73544e82e5bda77fe35c701a2d05d80fa38a3b73962eb1b18ee783a772d2450950e3fd6a6b728c52f4a7160b032e1e4b9b13b3bfb8a002b6b429675e8fd50511c2ac5c1a8d91dc1ce5a161f5a7efd49a94e3d1a53eaf104e3e2a8a02805491b1349607139d05dc8298a4075dc40f396a1330fed3b502c1b8839248ef237de0e1eee0d614348f32652aabec91b1e39db250994c7bec9edf3a61dde43b1af54f50463220c7f3e5fbc3a4eaac9eb3726aefcc7ba01cd3fea7f01bf6bf8607730f52706519bdbb66077eb0000000049454e44ae426082</data>
+        <data format="PNG" length="871">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b0000032e49444154789cb59531681c4714863f892dde8004b320c32e38700732f80a17d71ea8b04a81c016a809a8716b42208454098604d2c4904a6954a410511ae75c18ac42b61230dc35221244b00119f60ac12ee860062c980719708a95a248f129459cd7cceeccf0edb76fff61a7068301e7d5ebf5def21e6a30184c4d9d835feebc7cdb9e6fe3bda7aa2b9c77180c8170ede8bca3382a18ee0d215ec09373d3273f3c21cd216f432bead9b28344008749040817f35cdc174702df5b862ffc653040ed6bd20fa01cff84be2909513106c21fe06ba1aa15413073d0be05220a11149059486f287fafbfc0ae76843b1e7d5313a2c7cc5aca7dd8dd56f6f76a24018d8a24966c5e585a4de92d048466dece08cd63ae802b5fd14509b1c218cb6047d9daf010c15a219f1744a01a29a3d7ca775f95d46b192b6b20d2c0df696c120328665628f7a17f065dba97717719f2dc4012504dd9dd0ef4373cfdcd1159d661f1be4112bd643c7d7e1162008410e0f9338f4665e95ec6ca03487345930a7f6278fed4b1b49af2e1471612616bb342c7ff8cdc65e3c4e1eb94e2a0c4dac654a4b1f0a739ebdf38ca438f3b81879fe50c773ce5ef4a5104442e832f199b44a86a0709e42d486f80a2789fb2fe654571e8112bf41652987174ba168d4a750c1a27809b1e832010153b73f6514e72d6bf7694874dbcec8c90df84549af79544d0087245f94a8fc1cc0189a51829aa86dd17a1319d11b29b96d1a8e6f1a38a623fa52a158d4abb65e0fa54383ab7a0d512ea91b2bb1d58594b71274aef6e4a9ec1e347307a5df3f9c7157aeac9324ba70b557d4d8f414094a55541a3d2dff0ec6e3b1e7e92d35d08b4ba814fbfc8c9328b1fd710a1b76c69dffed71c0788426f01eae38cfee688ad6f61b8e3e9dcb19040553afc589bdea214af94e2c06065c2c973637776f6150156d6842cebd0ffb1a238548a8351b33b829db32cdeb7fcfab3529d7a34a6d4e309c6c55141510a92362692c0e272a0b790531481eab881e62d43a70beddb502c1b8839248ef237de0d1eee0d614348f32652aabec91b1e39db250994c7bec9edb3a61dde43b1af54f50463220c7f395fbc3a4eaac9ebd31357fe634d43f38ffa5fc0ef1b3e180ca6fe0409399be112f7858f0000000049454e44ae426082</data>
     </image>
 </images>
 <connections>
@@ -185,24 +179,16 @@
         <receiver>CQTSSAWidget</receiver>
         <slot>slotIntervals()</slot>
     </connection>
-    <connection>
-        <sender>mpCheckDelay</sender>
-        <signal>toggled(bool)</signal>
-        <receiver>CQTSSAWidget</receiver>
-        <slot>slotOutputDelay(bool)</slot>
-    </connection>
 </connections>
 <tabstops>
     <tabstop>mpEditDuration</tabstop>
     <tabstop>mpEditIntervalSize</tabstop>
     <tabstop>mpEditIntervals</tabstop>
-    <tabstop>mpCheckDelay</tabstop>
-    <tabstop>mpEditDelay</tabstop>
+    <tabstop>mpEditDeufelTol</tabstop>
     <tabstop>mpCheckSave</tabstop>
 </tabstops>
 <includes>
     <include location="local" impldecl="in declaration">TaskWidget.h</include>
-    <include location="local" impldecl="in implementation">CQTSSAWidget.ui.h</include>
 </includes>
 <forwards>
     <forward>class CTSSAProblem;</forward>
@@ -220,7 +206,6 @@
     <slot specifier="non virtual">slotDuration()</slot>
     <slot specifier="non virtual">slotIntervalSize()</slot>
     <slot specifier="non virtual">slotIntervals()</slot>
-    <slot>slotOutputDelay( bool checked )</slot>
 </slots>
 <functions>
     <function access="private" specifier="non virtual">init()</function>

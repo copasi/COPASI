@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQTSSAWidget.ui.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: isurovts $
-//   $Date: 2007/12/21 11:44:52 $
+//   $Author: akoenig $
+//   $Date: 2008/02/24 16:19:15 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -23,6 +28,10 @@
  *****************************************************************************/
 
 #include "copasi.h"
+
+#include <qtable.h>
+#include <qcombobox.h>
+#include <qheader.h>
 
 #include "UI/CQTaskBtnWidget.h"
 #include "UI/CQTaskHeaderWidget.h"
@@ -61,21 +70,12 @@ void CQTSSAWidget::init()
   addMethodSelectionBox(CTSSATask::ValidMethods);
   addMethodParameterTable(0);
 
-  slotOutputDelay(false);
-
   mpValidatorDuration = new CQValidatorDouble(mpEditDuration);
   mpEditDuration->setValidator(mpValidatorDuration);
 
   mpValidatorIntervalSize = new CQValidatorDouble(mpEditIntervalSize);
   mpValidatorIntervalSize->setRange(0, DBL_MAX);
   mpEditIntervalSize->setValidator(mpValidatorIntervalSize);
-
-  mpValidatorIntervals = new CQValidatorInt(mpEditIntervals);
-  mpValidatorIntervals->setRange(0, LONG_MAX);
-  mpEditIntervals->setValidator(mpValidatorIntervals);
-
-  mpValidatorDelay = new CQValidatorDouble(mpEditDelay);
-  mpEditDelay->setValidator(mpValidatorDelay);
 }
 
 void CQTSSAWidget::destroy()
@@ -101,7 +101,6 @@ void CQTSSAWidget::slotDuration()
   mpEditIntervalSize->setText(QString::number(mpTSSAProblem->getStepSize()));
   mpValidatorIntervalSize->revalidate();
   mpEditIntervals->setText(QString::number(mpTSSAProblem->getStepNumber()));
-  mpValidatorIntervals->revalidate();
 
   checkTimeSeries();
 }
@@ -125,7 +124,6 @@ void CQTSSAWidget::slotIntervalSize()
   mpEditIntervalSize->setText(QString::number(mpTSSAProblem->getStepSize()));
   mpValidatorIntervalSize->revalidate();
   mpEditIntervals->setText(QString::number(mpTSSAProblem->getStepNumber()));
-  mpValidatorIntervals->revalidate();
 
   checkTimeSeries();
 }
@@ -151,11 +149,6 @@ void CQTSSAWidget::slotIntervals()
   checkTimeSeries();
 }
 
-void CQTSSAWidget::slotOutputDelay(bool checked)
-{
-  mpEditDelay->setEnabled(checked);
-}
-
 bool CQTSSAWidget::saveTask()
 {
   CTSSATask * pTask =
@@ -168,6 +161,9 @@ bool CQTSSAWidget::saveTask()
   CTSSAProblem* tssaproblem =
     dynamic_cast<CTSSAProblem *>(pTask->getProblem());
   assert(tssaproblem);
+
+  //set the Deufelhard Tolerance
+  tssaproblem->setDeufelhardTol(mpEditDeufelTol->text().toDouble());
 
   //numbers
   if (tssaproblem->getStepSize() != mpEditIntervalSize->text().toDouble())
@@ -187,38 +183,6 @@ bool CQTSSAWidget::saveTask()
       mChanged = true;
     }
 
-  C_FLOAT64 StartTime = mpEditDelay->text().toDouble();
-
-  if (mpCheckDelay->isChecked())
-    {
-      if (StartTime != tssaproblem->getOutputStartTime())
-        {
-          tssaproblem->setOutputStartTime(StartTime);
-          mChanged = true;
-        }
-    }
-  else
-    {
-      C_FLOAT64 InitialTime =
-        CCopasiDataModel::Global->getModel()->getInitialTime();
-      if (tssaproblem->getStepSize() > 0.0)
-        {
-          if (StartTime > InitialTime)
-            {
-              tssaproblem->setOutputStartTime(InitialTime);
-              mChanged = true;
-            }
-        }
-      else
-        {
-          if (StartTime < InitialTime)
-            {
-              tssaproblem->setOutputStartTime(InitialTime);
-              mChanged = true;
-            }
-        }
-    }
-
   if (tssaproblem->timeSeriesRequested() != mpCheckSave->isChecked())
     {
       tssaproblem->setTimeSeriesRequested(mpCheckSave->isChecked());
@@ -227,8 +191,7 @@ bool CQTSSAWidget::saveTask()
 
   mpValidatorDuration->saved();
   mpValidatorIntervalSize->saved();
-  mpValidatorIntervals->saved();
-  mpValidatorDelay->saved();
+
   return true;
 }
 
@@ -253,18 +216,8 @@ bool CQTSSAWidget::loadTask()
   mpEditIntervals->setText(QString::number(tssaproblem->getStepNumber()));
   mpEditDuration->setText(QString::number(tssaproblem->getDuration()));
 
-  bool Delayed;
-  if (tssaproblem->getStepSize() > 0.0)
-    Delayed =
-      (tssaproblem->getOutputStartTime() - CCopasiDataModel::Global->getModel()->getInitialTime()) > DBL_MIN;
-  else
-    Delayed =
-      (CCopasiDataModel::Global->getModel()->getInitialTime() - tssaproblem->getOutputStartTime()) > DBL_MIN;
-
-  mpCheckDelay->setChecked(Delayed);
-  mpEditDelay->setEnabled(Delayed);
-
-  mpEditDelay->setText(QString::number(tssaproblem->getOutputStartTime()));
+  //get the Deufelhard Tolerance
+  mpEditDeufelTol->setText(QString::number(tssaproblem->getDeufelhardTol()));
 
   //store time series checkbox
   mpCheckSave->setChecked(tssaproblem->timeSeriesRequested());
@@ -272,8 +225,7 @@ bool CQTSSAWidget::loadTask()
 
   mpValidatorDuration->saved();
   mpValidatorIntervalSize->saved();
-  mpValidatorIntervals->saved();
-  mpValidatorDelay->saved();
+
   return true;
 }
 

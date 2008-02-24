@@ -1,20 +1,21 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSAWidget.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: urost $
-//   $Date: 2007/07/06 10:14:00 $
+//   $Author: akoenig $
+//   $Date: 2008/02/24 16:19:15 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
 // All rights reserved.
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQTSSAWidget.ui'
  **
- ** Created: Thu May 31 17:58:04 2007
- **      by: The User Interface Compiler ($Id: CQTSSAWidget.h,v 1.4 2007/07/06 10:14:00 urost Exp $)
+ ** Created: Sun Feb 24 16:58:46 2008
+ **      by: The User Interface Compiler ($Id: CQTSSAWidget.h,v 1.5 2008/02/24 16:19:15 akoenig Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -48,11 +49,10 @@ class CQTSSAWidget : public TaskWidget
 
     QLineEdit* mpEditIntervals;
     QLineEdit* mpEditIntervalSize;
-    QLabel* mpLblDeltaT;
+    QLabel* mpLbDeuflTol;
     QLineEdit* mpEditDuration;
     QLabel* mpLblIntervals;
-    QCheckBox* mpCheckDelay;
-    QLineEdit* mpEditDelay;
+    QLineEdit* mpEditDeufelTol;
     QLabel* mpLblDuration;
     QLabel* mpLblIntervalSize;
     QCheckBox* mpCheckSave;
@@ -64,7 +64,6 @@ class CQTSSAWidget : public TaskWidget
     void slotDuration();
     void slotIntervalSize();
     void slotIntervals();
-    virtual void slotOutputDelay(bool checked);
 
   protected:
     virtual bool saveTask();
