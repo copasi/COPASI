@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQTSSAResultSubWidget.ui.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: akoenig $
-//   $Date: 2008/01/23 09:33:48 $
+//   $Date: 2008/02/24 17:44:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,7 +32,7 @@
 #include "optimization/COptProblem.h"
 #include "optimization/COptTask.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
-
+#include "CQTSSATimeScaleWidget.h"
 #include "tssanalysis/CTSSATask.h"
 #include "tssanalysis/CTSSAProblem.h"
 
@@ -44,9 +44,9 @@
 
 CTSSATask* pTSSTask;
 CTSSAProblem* pProblem;
-
-//CILDMMethod* pTimeScaleSeperation;
 CTSSAMethod* pTimeScaleSeperation;
+
+CQTSSATimeScaleWidget* mpTimeScaleWidget;
 
 CModel* pModel;
 
@@ -117,7 +117,8 @@ void CQTSSAResultSubWidget::toggleView()
 
 void CQTSSAResultSubWidget::init()
 {
-
+  mpTimeScaleWidget = new CQTSSATimeScaleWidget();
+  mTabWidget->addTab(mpTimeScaleWidget, "Timescale");
   //set colorsettings for ArrayAnnotationWidgets
   CColorScaleSimple * tcs = new CColorScaleSimple();
   tcs->setMinMax(-100, 100);
@@ -176,6 +177,8 @@ void CQTSSAResultSubWidget::discardOldResults()
   pArrayWidget3->setArrayAnnotation(NULL);
   pArrayWidget4->setArrayAnnotation(NULL);
 
+  mpTimeScaleWidget->clearWidget();
+
   mLabel2->setNum(0);
   mLabel4->setNum(0);
   mLabel6->setNum(0);
@@ -205,6 +208,7 @@ void CQTSSAResultSubWidget::changeInterval()
   pArrayWidget2->setArrayAnnotation(pResult2);
   pArrayWidget3->setArrayAnnotation(pResult3);
   pArrayWidget4->setArrayAnnotation(pResult4);
+  mpTimeScaleWidget->paintTimeScale(pTimeScaleSeperation->getVec_TimeScale(step));
 }
 
 /**
