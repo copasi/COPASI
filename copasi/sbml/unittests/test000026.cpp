@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000026.cpp,v $
-//   $Revision: 1.1.2.4 $
+//   $Revision: 1.1.2.5 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/25 14:17:09 $
+//   $Date: 2008/02/25 15:52:58 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -66,14 +66,23 @@ void test000026::test_hasOnlySubstanceUnits()
   CPPUNIT_ASSERT(pModelValue != NULL);
   const CModelValue* pFactor = pModel->getModelValues()[1];
   CPPUNIT_ASSERT(pFactor != NULL);
-  // test if the factor has the correct value
-  CPPUNIT_ASSERT(false);
+  CPPUNIT_ASSERT(pFactor->getStatus() == CModelEntity::FIXED);
+  CPPUNIT_ASSERT(fabs((pFactor->getValue() - pModel->getQuantity2NumberFactor()) / pModel->getQuantity2NumberFactor()) < 1e-3);
   CPPUNIT_ASSERT(pModelValue->getStatus() == CModelEntity::ASSIGNMENT);
   const CExpression* pExpr = pModelValue->getExpressionPtr();
   // check the expression
   const CEvaluationNode* pNode = pExpr->getRoot();
   CPPUNIT_ASSERT(pNode != NULL);
-  const CEvaluationNodeObject* pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pNode);
+  const CEvaluationNodeOperator* pOperatorNode = dynamic_cast<const CEvaluationNodeOperator*>(pNode);
+  CPPUNIT_ASSERT(pOperatorNode != NULL);
+  CPPUNIT_ASSERT(((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pOperatorNode->getType())) == CEvaluationNodeOperator::MULTIPLY);
+  const CEvaluationNodeNumber* pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pNode->getChild()->getSibling());
+  CPPUNIT_ASSERT(pNumberNode != NULL);
+  CPPUNIT_ASSERT(((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pNumberNode->getType())) == CEvaluationNodeNumber::DOUBLE);
+  pOperatorNode = dynamic_cast<const CEvaluationNodeOperator*>(pOperatorNode->getChild());
+  CPPUNIT_ASSERT(pOperatorNode != NULL);
+  CPPUNIT_ASSERT(((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pOperatorNode->getType())) == CEvaluationNodeOperator::DIVIDE);
+  const CEvaluationNodeObject* pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pOperatorNode->getChild());
   CPPUNIT_ASSERT(pObjectNode != NULL);
   CCopasiObjectName objectCN = pObjectNode->getObjectCN();
   CPPUNIT_ASSERT(!objectCN.empty());
@@ -82,8 +91,17 @@ void test000026::test_hasOnlySubstanceUnits()
   const CCopasiObject* pObject = CCopasiContainer::ObjectFromName(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
-  CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Concentration"));
+  CPPUNIT_ASSERT(pObject->getObjectName() == std::string("ParticleNumber"));
   CPPUNIT_ASSERT(pObject->getObjectParent() == pA);
+  pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pOperatorNode->getChild()->getSibling());
+  CPPUNIT_ASSERT(pObjectNode != NULL);
+  objectCN = pObjectNode->getObjectCN();
+  CPPUNIT_ASSERT(!objectCN.empty());
+  pObject = CCopasiContainer::ObjectFromName(listOfContainers, objectCN);
+  CPPUNIT_ASSERT(pObject != NULL);
+  CPPUNIT_ASSERT(pObject->isReference() == true);
+  CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Value"));
+  CPPUNIT_ASSERT(pObject->getObjectParent() == pFactor);
 
   CPPUNIT_ASSERT(pModel->getReactions().size() == 2);
   const CReaction* pReaction1 = pModel->getReactions()[0];

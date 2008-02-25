@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000024.cpp,v $
-//   $Revision: 1.1.2.3 $
+//   $Revision: 1.1.2.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/25 14:17:09 $
+//   $Date: 2008/02/25 15:52:58 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -100,8 +100,7 @@ void test000024::test_hasOnlySubstanceUnits()
   CPPUNIT_ASSERT(pElement->getMetabolite() == pA);
   CPPUNIT_ASSERT(pChemEq->getProducts().size() == 0);
   CPPUNIT_ASSERT(pChemEq->getModifiers().size() == 0);
-  // TODO check the reactions
-  CPPUNIT_ASSERT(false);
+  // check the reactions
   const CReaction* pReaction2 = pModel->getReactions()[1];
   CPPUNIT_ASSERT(pReaction2 != NULL);
   CPPUNIT_ASSERT(pReaction2->isReversible() == false);

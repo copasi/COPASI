@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000027.cpp,v $
-//   $Revision: 1.1.2.3 $
+//   $Revision: 1.1.2.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/25 10:41:32 $
+//   $Date: 2008/02/25 15:52:58 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -62,10 +62,13 @@ void test000027::test_hasOnlySubstanceUnits()
   CPPUNIT_ASSERT(pB != NULL);
   CPPUNIT_ASSERT(pB->getStatus() == CModelEntity::REACTIONS);
   CPPUNIT_ASSERT(pModel->getModelValues().size() == 2);
+  // check the kinetic law
+  const CModelValue* pFactor = pModel->getModelValues()[1];
+  CPPUNIT_ASSERT(pFactor != NULL);
+  CPPUNIT_ASSERT(pFactor->getStatus() == CModelEntity::FIXED);
+  CPPUNIT_ASSERT(fabs((pFactor->getValue() - pModel->getQuantity2NumberFactor()) / pModel->getQuantity2NumberFactor()) < 1e-3);
   const CModelValue* pModelValue = pModel->getModelValues()[0];
   CPPUNIT_ASSERT(pModelValue != NULL);
-  // TODO check the second model value
-  CPPUNIT_ASSERT(false);
   CPPUNIT_ASSERT(pModelValue->getStatus() == CModelEntity::ASSIGNMENT);
   const CExpression* pExpr = pModelValue->getExpressionPtr();
   // check the expression
@@ -87,8 +90,6 @@ void test000027::test_hasOnlySubstanceUnits()
   const CReaction* pReaction1 = pModel->getReactions()[0];
   CPPUNIT_ASSERT(pReaction1 != NULL);
   CPPUNIT_ASSERT(pReaction1->isReversible() == false);
-  // TODO check the kinetic law
-  CPPUNIT_ASSERT(false);
   const CFunction* pKineticFunction = pReaction1->getFunction();
   CPPUNIT_ASSERT(pKineticFunction != NULL);
   const CMassAction* pMassAction = dynamic_cast<const CMassAction*>(pKineticFunction);
