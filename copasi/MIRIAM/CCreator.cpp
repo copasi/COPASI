@@ -1,9 +1,9 @@
 // Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/Attic/CAuthor.cpp,v $
-//   $Revision: 1.6 $
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CCreator.cpp,v $
+//   $Revision: 1.1 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/01/31 05:01:50 $
+//   $Date: 2008/02/25 20:37:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,12 +19,12 @@
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "model/CModel.h"
 
-#include "CAuthor.h"
+#include "CCreator.h"
 
-CAuthor::CAuthor(const std::string & objectName, const CCopasiContainer * pParent,
-                 CRDFObject * pRDFObj) :
-    CCopasiContainer(objectName, pParent, "Author"),
-    mKey(GlobalKeys.add("Author", this)),
+CCreator::CCreator(const std::string & objectName, const CCopasiContainer * pParent,
+                   CRDFObject * pRDFObj) :
+    CCopasiContainer(objectName, pParent, "Creator"),
+    mKey(GlobalKeys.add("Creator", this)),
     mpRDFObj(NULL)
 {
   if (pRDFObj)
@@ -39,52 +39,57 @@ CAuthor::CAuthor(const std::string & objectName, const CCopasiContainer * pParen
   CONSTRUCTOR_TRACE;
 }
 
-CAuthor::CAuthor(const CAuthor & src,
-                 const CCopasiContainer * pParent):
+CCreator::CCreator(const CCreator & src,
+                   const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
-    mKey(GlobalKeys.add("Author", this))
+    mKey(GlobalKeys.add("Creator", this))
 {
   CONSTRUCTOR_TRACE;
   initObjects();
 }
 
-void CAuthor::initObjects()
+void CCreator::initObjects()
 {}
 
-CAuthor::~CAuthor()
+CCreator::~CCreator()
 {
   GlobalKeys.remove(mKey);
   pdelete(mpRDFObj);
 }
 
-const std::string CAuthor::getObjectName() const
+const std::string CCreator::getObjectName() const
   {return getFamilyName();}
 
-const std::string CAuthor::getFamilyName() const
+const std::string CCreator::getFamilyName() const
   {return CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getRDFGraph()->getFieldValue("FamilyName", *mpRDFObj);}
 
-const std::string CAuthor::getGivenName() const
+const std::string CCreator::getGivenName() const
   {return CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getRDFGraph()->getFieldValue("GivenName", *mpRDFObj);}
 
-const std::string CAuthor::getEmail() const
+const std::string CCreator::getEmail() const
   {return CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getRDFGraph()->getFieldValue("Email", *mpRDFObj);}
 
-const std::string CAuthor::getORG() const
+const std::string CCreator::getORG() const
   {return CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getRDFGraph()->getFieldValue("Orgname", *mpRDFObj);}
 
-CRDFObject& CAuthor::getRDFObject()
+CRDFObject& CCreator::getRDFObject()
 {return *mpRDFObj;}
 
-void CAuthor::setFamilyName(const std::string familyName)
+bool CCreator::setObjectName(const std::string & name)
+{
+  setFamilyName(name);
+  return true;
+}
+void CCreator::setFamilyName(const std::string familyName)
 {CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getRDFGraph()->setFieldValue("FamilyName", *mpRDFObj, familyName);}
 
-void CAuthor::setGivenName(const std::string givenName)
+void CCreator::setGivenName(const std::string givenName)
 {CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getRDFGraph()->setFieldValue("GivenName", *mpRDFObj, givenName);}
 
-void CAuthor::setEmail(const std::string Email)
+void CCreator::setEmail(const std::string Email)
 {CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getRDFGraph()->setFieldValue("Email", *mpRDFObj, Email);}
 
-void CAuthor::setORG(const std::string Orgname)
+void CCreator::setORG(const std::string Orgname)
 {CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getRDFGraph()->setFieldValue("Orgname", *mpRDFObj, Orgname);}
 
-const std::string & CAuthor::getKey() const {return mKey;} //By G
+const std::string & CCreator::getKey() const {return mKey;} //By G

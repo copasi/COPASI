@@ -1,9 +1,9 @@
 // Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CAuthorsWidget.cpp,v $
-//   $Revision: 1.3 $
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CCreatorsWidget.cpp,v $
+//   $Revision: 1.1 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/02/20 19:06:27 $
+//   $Date: 2008/02/25 20:37:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,7 +19,7 @@
 #include <qpushbutton.h>
 
 #include "model/CModel.h"
-#include "MIRIAM/CAuthor.h"
+#include "MIRIAM/CCreator.h"
 #include "utilities/CCopasiVector.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiObject.h"
@@ -27,7 +27,7 @@
 #include "UI/qtUtilities.h"
 #include "UI/CQMessageBox.h"
 
-#include "CAuthorsWidget.h"
+#include "CCreatorsWidget.h"
 
 #define COL_MARK               0
 #define COL_FAMILY_NAME        1
@@ -36,30 +36,30 @@
 #define COL_ORG                4
 
 /*
- *  Constructs a CAuthorsWidget as a child of 'parent', with the
+ *  Constructs a CCreatorsWidget as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-CAuthorsWidget::CAuthorsWidget(QWidget* parent, const char* name, WFlags f)
+CCreatorsWidget::CCreatorsWidget(QWidget* parent, const char* name, WFlags f)
     : CopasiTableWidget(parent, false, name, f, false)
 {
   if (!name)
-    CopasiTableWidget::setName("AuthorsWidget");
+    CopasiTableWidget::setName("CreatorsWidget");
   init();
 }
 
 /*
  *  Destroys the object and frees any allocated resources
  */
-CAuthorsWidget::~CAuthorsWidget()
+CCreatorsWidget::~CCreatorsWidget()
 {
   // no need to delete child widgets, Qt does it all for us
 }
 
-std::vector<const CCopasiObject*> CAuthorsWidget::getObjects() const
+std::vector<const CCopasiObject*> CCreatorsWidget::getObjects() const
   {
     std::vector<const CCopasiObject*> ret;
 
-    const CCopasiVector<CAuthor>& tmp = CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getAuthors();
+    const CCopasiVector<CCreator>& tmp = CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getCreators();
 
     C_INT32 i, imax = tmp.size();
     for (i = 0; i < imax; ++i)
@@ -68,7 +68,7 @@ std::vector<const CCopasiObject*> CAuthorsWidget::getObjects() const
     return ret;
   }
 
-void CAuthorsWidget::init()
+void CCreatorsWidget::init()
 {
   numCols = 5;
   table->setNumCols(numCols);
@@ -82,28 +82,28 @@ void CAuthorsWidget::init()
   tableHeader->setLabel(COL_ORG, "Organization");
 }
 
-void CAuthorsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_INT32 row)
+void CCreatorsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_INT32 row)
 {
   if (!obj) return;
-  const CAuthor *pAuthor = (const CAuthor*)obj;
-  table->setText(row, COL_FAMILY_NAME, FROM_UTF8(pAuthor->getFamilyName()));
-  table->setText(row, COL_GIVEN_NAME, FROM_UTF8(pAuthor->getGivenName()));
-  table->setText(row, COL_EMAIL, FROM_UTF8(pAuthor->getEmail()));
-  table->setText(row, COL_ORG, FROM_UTF8(pAuthor->getORG()));
+  const CCreator *pCreator = (const CCreator*)obj;
+  table->setText(row, COL_FAMILY_NAME, FROM_UTF8(pCreator->getFamilyName()));
+  table->setText(row, COL_GIVEN_NAME, FROM_UTF8(pCreator->getGivenName()));
+  table->setText(row, COL_EMAIL, FROM_UTF8(pCreator->getEmail()));
+  table->setText(row, COL_ORG, FROM_UTF8(pCreator->getORG()));
 }
 
-void CAuthorsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj)
+void CCreatorsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj)
 {
   if (!obj) return;
-  CAuthor * pAuthor = static_cast< CAuthor * >(obj);
+  CCreator * pCreator = static_cast< CCreator * >(obj);
 
-  pAuthor->setFamilyName((const char *) table->text(row, COL_FAMILY_NAME).utf8());
-  pAuthor->setGivenName((const char *) table->text(row, COL_GIVEN_NAME).utf8());
-  pAuthor->setEmail((const char *) table->text(row, COL_EMAIL).utf8());
-  pAuthor->setORG((const char *) table->text(row, COL_ORG).utf8());
+  pCreator->setFamilyName((const char *) table->text(row, COL_FAMILY_NAME).utf8());
+  pCreator->setGivenName((const char *) table->text(row, COL_GIVEN_NAME).utf8());
+  pCreator->setEmail((const char *) table->text(row, COL_EMAIL).utf8());
+  pCreator->setORG((const char *) table->text(row, COL_ORG).utf8());
 }
 
-void CAuthorsWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT32 exc)
+void CCreatorsWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT32 exc)
 {
   if (exc != COL_GIVEN_NAME)
     table->clearCell(row, COL_GIVEN_NAME);
@@ -115,36 +115,36 @@ void CAuthorsWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_IN
   {table->clearCell(row, COL_ORG);}
 }
 
-QString CAuthorsWidget::defaultObjectName() const
-  {return "Creator";}
+QString CCreatorsWidget::defaultObjectName() const
+  {return "";}
 
-CCopasiObject* CAuthorsWidget::createNewObject(const std::string & name)
+CCopasiObject* CCreatorsWidget::createNewObject(const std::string & name)
 {
   std::string nname = name;
   int i = 0;
-  CAuthor* pAuthor = NULL;
+  CCreator* pCreator = NULL;
 
-  while (!(pAuthor = CCopasiDataModel::Global->getModel()->getMIRIAMInfo().createAuthor(name)))
+  while (!(pCreator = CCopasiDataModel::Global->getModel()->getMIRIAMInfo().createCreator(name)))
     {
       i++;
       nname = name + "_";
       nname += (const char *)QString::number(i).utf8();
     }
 
-  return pAuthor;
+  return pCreator;
 }
 
-void CAuthorsWidget::deleteObjects(const std::vector<std::string> & keys)
+void CCreatorsWidget::deleteObjects(const std::vector<std::string> & keys)
 {
 
   QString authorList = "Are you sure you want to delete listed AUTHOR(S) ?\n";
   unsigned C_INT32 i, imax = keys.size();
   for (i = 0; i < imax; i++) //all compartments
     {
-      CAuthor * pAuthor =
-        dynamic_cast< CAuthor *>(GlobalKeys.get(keys[i]));
+      CCreator * pCreator =
+        dynamic_cast< CCreator *>(GlobalKeys.get(keys[i]));
 
-      authorList.append(FROM_UTF8(pAuthor->getObjectName()));
+      authorList.append(FROM_UTF8(pCreator->getObjectName()));
       authorList.append(", ");
     }
 
@@ -164,7 +164,7 @@ void CAuthorsWidget::deleteObjects(const std::vector<std::string> & keys)
       {
         for (i = 0; i < imax; i++)
           {
-            CCopasiDataModel::Global->getModel()->getMIRIAMInfo().removeAuthor(keys[i]);
+            CCopasiDataModel::Global->getModel()->getMIRIAMInfo().removeCreator(keys[i]);
           }
 
         //for (i = 0; i < imax; i++)

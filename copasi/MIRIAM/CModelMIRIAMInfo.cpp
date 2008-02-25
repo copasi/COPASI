@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CModelMIRIAMInfo.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/02/20 20:42:26 $
+//   $Date: 2008/02/25 20:37:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,33 +19,20 @@
 #include <fstream>
 #include <string>
 
-#include "model/CModel.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CKeyFactory.h"
 #include "model/CModelValue.h"
+#include "report/CKeyFactory.h"
 #include "utilities/CCopasiVector.h"
 
 #include "CModelMIRIAMInfo.h"
-#include "CRDFParser.h"
 #include "CRDFWriter.h"
 #include "CRDFLiteral.h"
 
 CModelMIRIAMInfo::CModelMIRIAMInfo() :
-    mAuthors(),
-    mAuthorsObj(),
-    mPublications(),
-    mPublicationsObj(),
-    mCreatedObj(),
-    mModifieds(),
-    mModifiedsObj(),
     mpRDFGraph(NULL),
     mpEntity(NULL)
 {
-  mCreatedObj.setType(CRDFObject::BLANK_NODE);
-  mCreatedObj.setBlankNodeId("CreatedNode");
-
+  clearMembers();
   mpRDFGraph = new CRDFGraph();
-
   /*
   std::string buf;
   std::string line;
@@ -65,30 +52,6 @@ CModelMIRIAMInfo::CModelMIRIAMInfo() :
 CModelMIRIAMInfo::~CModelMIRIAMInfo()
 {pdelete(mpRDFGraph);}
 
-void CModelMIRIAMInfo::loadGraph(const std::string& key)
-{
-  if (!mpEntity)
-    {
-      if ((mpEntity = dynamic_cast< CModelEntity * >(GlobalKeys.get(key))) != NULL)
-        {
-          pdelete(mpRDFGraph);
-          mpRDFGraph = CRDFParser::graphFromXml(mpEntity->getMiriamAnnotation());
-          fillInfoFromGraph();
-        }
-    }
-}
-
-bool CModelMIRIAMInfo::saveGraph()
-{
-  mpRDFGraph->compressGraph();
-  if (mpEntity && mpRDFGraph)
-    {
-      mpEntity->setMiriamAnnotation(CRDFWriter::xmlFromGraph(mpRDFGraph));
-      return true;
-    }
-  return false;
-}
-
 CRDFGraph * CModelMIRIAMInfo::getRDFGraph()
 {return mpRDFGraph;}
 
@@ -97,139 +60,95 @@ bool CModelMIRIAMInfo::fillInfoFromGraph()
   if (!mpRDFGraph)
     return false;
 
+  clearMembers();
   std::vector<CRDFObject> objects;
-  if (mpRDFGraph->getNodeIDsForTable("Creators", objects, mAuthorsObj))
-    {
-      std::vector<CRDFObject>::iterator it;
-      for (it = objects.begin(); it != objects.end(); it++)
-        {
-          //try finding this nodeId
-          CCopasiVector<CAuthor>::iterator ait;
-          bool found = false;
-          for (ait = mAuthors.begin(); ait != mAuthors.end(); ait++)
-            {
-              if ((*ait)->getRDFObject() == *it)
-              {found = true;}
-            }
-          if (!found)
-            mAuthors.add(new CAuthor((*it).getBlankNodeID(), NULL, new CRDFObject(*it)), true);
-        }
-    }
-  if (mpRDFGraph->getNodeIDsForTable("Publications", objects, mPublicationsObj))
-    {
-      std::vector<CRDFObject>::iterator it;
-      for (it = objects.begin(); it != objects.end(); it++)
-        {
-          //try finding this nodeId
-          CCopasiVector<CPublication>::iterator ait;
-          bool found = false;
-          for (ait = mPublications.begin(); ait != mPublications.end(); ait++)
-            {
-              if ((*ait)->getRDFObject() == *it)
-              {found = true;}
-            }
-          if (!found)
-            mPublications.add(new CPublication((*it).getResource(), NULL, new CRDFObject(*it)), true);
-        }
-    }
+  fillObjects("Creators", objects);
+  objects.clear();
+  fillObjects("References", objects);
+  objects.clear();
   mpRDFGraph->getNodeIDsForTable("Created", objects, mCreatedObj);
-  if (mpRDFGraph->getNodeIDsForTable("Modifieds", objects, mModifiedsObj))
-    {
-      std::vector<CRDFObject>::iterator it;
-      for (it = objects.begin(); it != objects.end(); it++)
-        {
-          //try finding this nodeId
-          CCopasiVector<CModified>::iterator ait;
-          bool found = false;
-          for (ait = mModifieds.begin(); ait != mModifieds.end(); ait++)
-            {
-              if ((*ait)->getRDFObject() == *it)
-              {found = true;}
-            }
-          if (!found)
-            mModifieds.add(new CModified((*it).getResource(), NULL, new CRDFObject(*it)), true);
-        }
-    }
-
+  objects.clear();
+  fillObjects("Modifieds", objects);
+  objects.clear();
   return true;
 }
 
-CCopasiVector <CAuthor> & CModelMIRIAMInfo::getAuthors()
-{return mAuthors;}
+CCopasiVector <CCreator> & CModelMIRIAMInfo::getCreators()
+{return mCreators;}
 
-CAuthor* CModelMIRIAMInfo::createAuthor(const std::string & objectName)
+CCreator* CModelMIRIAMInfo::createCreator(const std::string & objectName)
 {
-  CAuthor * pAuthor = new CAuthor(objectName);
+  CCreator * pCreator = new CCreator(objectName);
 
-  if (!mAuthors.add(pAuthor, true))
+  if (!mCreators.add(pCreator, true))
     {
-      delete pAuthor;
+      delete pCreator;
       return NULL;
     }
 
-  mpRDFGraph->addRecordToTable("Creators", mAuthorsObj, pAuthor->getRDFObject());
-  return pAuthor;
+  mpRDFGraph->addRecordToTable("Creators", mCreatorsObj, pCreator->getRDFObject());
+  return pCreator;
 }
 
-bool CModelMIRIAMInfo::removeAuthor(const std::string & key)
+bool CModelMIRIAMInfo::removeCreator(const std::string & key)
 {
-  CAuthor * pAuthor =
-    dynamic_cast< CAuthor * >(GlobalKeys.get(key));
+  CCreator * pCreator =
+    dynamic_cast< CCreator * >(GlobalKeys.get(key));
 
-  if (!pAuthor)
+  if (!pCreator)
     return false;
 
-  //Check if Author exists
+  //Check if Creator exists
   unsigned C_INT32 index =
-    mAuthors.getIndex(pAuthor);
+    mCreators.getIndex(pCreator);
 
   if (index == C_INVALID_INDEX)
     return false;
 
-  mpRDFGraph->removeRecordFromTable("Creators", mAuthorsObj, pAuthor->getRDFObject());
-  mAuthors.CCopasiVector< CAuthor >::remove(index);
+  if (mpRDFGraph->removeRecordFromTable("Creators", mCreatorsObj, pCreator->getRDFObject()))
+  {mCreators.CCopasiVector< CCreator >::remove(index);}
   return true;
 }
 
-CCopasiVector <CPublication> & CModelMIRIAMInfo::getPublications()
-{return mPublications;}
+CCopasiVector <CReference> & CModelMIRIAMInfo::getReferences()
+{return mReferences;}
 
-CPublication* CModelMIRIAMInfo::createPublication(const std::string & objectName)
+CReference* CModelMIRIAMInfo::createReference(const std::string & objectName)
 {
-  CPublication * pPublication = new CPublication(objectName);
+  CReference * pReference = new CReference(objectName);
 
-  if (!mPublications.add(pPublication, true))
+  if (!mReferences.add(pReference, true))
     {
-      delete pPublication;
+      delete pReference;
       return NULL;
     }
 
-  mpRDFGraph->addRecordToTable("Publications", mPublicationsObj, pPublication->getRDFObject());
-  return pPublication;
+  mpRDFGraph->addRecordToTable("References", mReferencesObj, pReference->getRDFObject());
+  return pReference;
 }
 
-bool CModelMIRIAMInfo::removePublication(const std::string & key)
+bool CModelMIRIAMInfo::removeReference(const std::string & key)
 {
-  CPublication * pPublication =
-    dynamic_cast< CPublication * >(GlobalKeys.get(key));
+  CReference * pReference =
+    dynamic_cast< CReference * >(GlobalKeys.get(key));
 
-  if (!pPublication)
+  if (!pReference)
     return false;
 
-  //Check if Publication exists
+  //Check if Reference exists
   unsigned C_INT32 index =
-    mPublications.getIndex(pPublication);
+    mReferences.getIndex(pReference);
 
   if (index == C_INVALID_INDEX)
     return false;
 
-  mpRDFGraph->removeRecordFromTable("Publications", mPublicationsObj, pPublication->getRDFObject());
-  mPublications.CCopasiVector< CPublication >::remove(index);
+  if (mpRDFGraph->removeRecordFromTable("References", mReferencesObj, pReference->getRDFObject()))
+  {mReferences.CCopasiVector< CReference >::remove(index);}
   return true;
 }
 
 const std::string CModelMIRIAMInfo::getCreatedDT() const
-{return mpRDFGraph->getFieldValue("Created", mCreatedObj);}
+  {return mpRDFGraph->getFieldValue("Created", mCreatedObj);}
 
 void CModelMIRIAMInfo::setCreatedDT(const std::string& dt)
 {mpRDFGraph->setFieldValue("Created", mCreatedObj, dt);}
@@ -259,14 +178,107 @@ bool CModelMIRIAMInfo::removeModified(const std::string & key)
   if (!pModified)
     return false;
 
-  //Check if Publication exists
+  //Check if Reference exists
   unsigned C_INT32 index =
     mModifieds.getIndex(pModified);
 
   if (index == C_INVALID_INDEX)
     return false;
 
-  mpRDFGraph->removeRecordFromTable("Modifieds", mModifiedsObj, pModified->getRDFObject());
-  mModifieds.CCopasiVector< CModified >::remove(index);
+  if (mpRDFGraph->removeRecordFromTable("Modifieds", mModifiedsObj, pModified->getRDFObject()))
+  {mModifieds.CCopasiVector< CModified >::remove(index);}
   return true;
+}
+
+void CModelMIRIAMInfo::clearMembers()
+{
+  mCreators.cleanup(),
+  mCreatorsObj.clearData(),
+  mReferences.cleanup(),
+  mReferencesObj.clearData(),
+  mCreatedObj.clearData(),
+  mModifieds.cleanup(),
+  mModifiedsObj.clearData(),
+  mCreatedObj.setType(CRDFObject::BLANK_NODE);
+  mCreatedObj.setBlankNodeId("CreatedNode");
+}
+
+void CModelMIRIAMInfo::loadGraph(const std::string& key)
+{
+  if (!mpEntity)
+    {
+      if ((mpEntity = dynamic_cast< CModelEntity * >(GlobalKeys.get(key))) != NULL)
+        {
+          CRDFGraph * oldGraph = mpRDFGraph;
+          mpRDFGraph = mpRDFGraph->loadGraph(mpEntity);
+          pdelete(oldGraph);
+          fillInfoFromGraph();
+        }
+    }
+}
+
+bool CModelMIRIAMInfo::saveGraph()
+{
+  if (mpEntity && mpRDFGraph)
+    {
+      if (mpRDFGraph->saveGraph(mpEntity))
+        {
+          fillInfoFromGraph();
+          return true;
+        }
+    }
+  return false;
+}
+
+void CModelMIRIAMInfo::fillObjects(std::string tableName, std::vector<CRDFObject>& objects)
+{
+  std::vector<CRDFObject>::iterator it;
+  if (tableName == "Creators" && mpRDFGraph->getNodeIDsForTable(tableName, objects, mCreatorsObj))
+    {
+      for (it = objects.begin(); it != objects.end(); it++)
+        {
+          //try finding this nodeId
+          CCopasiVector<CCreator>::iterator ait;
+          bool found = false;
+          for (ait = mCreators.begin(); ait != mCreators.end(); ait++)
+            {
+              if ((*ait)->getRDFObject() == *it)
+              {found = true;}
+            }
+          if (!found)
+            mCreators.add(new CCreator((*it).getBlankNodeID(), NULL, new CRDFObject(*it)), true);
+        }
+    }
+  else if (tableName == "References" && mpRDFGraph->getNodeIDsForTable("References", objects, mReferencesObj))
+    {
+      for (it = objects.begin(); it != objects.end(); it++)
+        {
+          //try finding this nodeId
+          CCopasiVector<CReference>::iterator ait;
+          bool found = false;
+          for (ait = mReferences.begin(); ait != mReferences.end(); ait++)
+            {
+              if ((*ait)->getRDFObject() == *it)
+              {found = true;}
+            }
+          if (!found)
+            mReferences.add(new CReference((*it).getBlankNodeID(), NULL, new CRDFObject(*it)), true);
+        }
+    }
+  else if (tableName == "Modifieds" && mpRDFGraph->getNodeIDsForTable("Modifieds", objects, mModifiedsObj))
+    {
+      for (it = objects.begin(); it != objects.end(); it++)
+        {
+          //try finding this nodeId
+          CCopasiVector<CModified>::iterator ait;
+          bool found = false;
+          for (ait = mModifieds.begin(); ait != mModifieds.end(); ait++)
+            {
+              if ((*ait)->getRDFObject() == *it)
+              {found = true;}
+            }
+          if (!found)
+            mModifieds.add(new CModified((*it).getBlankNodeID(), NULL, new CRDFObject(*it)), true);
+        }
+    }
 }

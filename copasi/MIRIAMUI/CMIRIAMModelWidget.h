@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CMIRIAMModelWidget.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/02/20 19:06:27 $
+//   $Date: 2008/02/25 20:37:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,14 +18,15 @@
 #ifndef COPASI_CMIRIAMMODELWIDGET
 #define COPASI_CMIRIAMMODELWIDGET
 
+#include <vector>
 #include <qdatetimeedit.h>
 
-#include "UI/copasiWidget.h"
+#include "UI/CopasiTableWidget.h"
 #include "UI/listviews.h"
 
 class CModelMIRIAMInfo;
-class CAuthorsWidget;
-class CPublicationsWidget;
+class CCreatorsWidget;
+class CReferencesWidget;
 class CModifiedWidget;
 class QPushButton;
 
@@ -36,10 +37,9 @@ class CMIRIAMModelWidget : public CopasiWidget
     CMIRIAMModelWidget(QWidget *parent, const char * name = 0, WFlags f = 0);
 
   private:
-    CAuthorsWidget* mpAuthorsWidget;
-    CPublicationsWidget* mpPublicationsWidget;
+    bool mChanged;
+    std::vector<CopasiTableWidget*> mWidgets;
     QDateTimeEdit* mpCreatedWidget;
-    CModifiedWidget* mpModifiedWidget;
 
     QPushButton* btnOK;
     QPushButton* btnCancel;

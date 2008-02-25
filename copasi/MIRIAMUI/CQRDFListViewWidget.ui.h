@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CQRDFListViewWidget.ui.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2008/02/04 21:20:38 $
+//   $Creator: aekamal $
+//   $Date: 2008/02/25 20:37:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -95,6 +95,7 @@ void CQRDFListViewWidget::destroy()
 
 bool CQRDFListViewWidget::update(ListViews::ObjectType, ListViews::Action, const std::string&)
 {
-  qWarning("CQRDFListViewWidget::update(ListViews::ObjectType,ListViews::Action,const std::string&): Not implemented yet");
+  load();
+  //qWarning("CQRDFListViewWidget::update(ListViews::ObjectType,ListViews::Action,const std::string&): Not implemented yet");
   return FALSE;
 }

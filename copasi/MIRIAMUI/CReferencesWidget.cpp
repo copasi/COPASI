@@ -1,9 +1,9 @@
 // Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CPublicationsWidget.cpp,v $
-//   $Revision: 1.3 $
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CReferencesWidget.cpp,v $
+//   $Revision: 1.1 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/02/20 19:06:27 $
+//   $Date: 2008/02/25 20:37:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,7 +15,7 @@
 #include <qpushbutton.h>
 
 #include "model/CModel.h"
-#include "MIRIAM/CPublication.h"
+#include "MIRIAM/CReference.h"
 #include "utilities/CCopasiVector.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiObject.h"
@@ -23,36 +23,36 @@
 #include "UI/qtUtilities.h"
 #include "UI/CQMessageBox.h"
 
-#include "CPublicationsWidget.h"
+#include "CReferencesWidget.h"
 
 #define COL_MARK               0
 #define COL_URL                1
 
 /*
- *  Constructs a CPublicationsWidget as a child of 'parent', with the
+ *  Constructs a CReferencesWidget as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-CPublicationsWidget::CPublicationsWidget(QWidget* parent, const char* name, WFlags f)
+CReferencesWidget::CReferencesWidget(QWidget* parent, const char* name, WFlags f)
     : CopasiTableWidget(parent, false, name, f, false)
 {
   if (!name)
-    CopasiTableWidget::setName("PublicationsWidget");
+    CopasiTableWidget::setName("ReferencesWidget");
   init();
 }
 
 /*
  *  Destroys the object and frees any allocated resources
  */
-CPublicationsWidget::~CPublicationsWidget()
+CReferencesWidget::~CReferencesWidget()
 {
   // no need to delete child widgets, Qt does it all for us
 }
 
-std::vector<const CCopasiObject*> CPublicationsWidget::getObjects() const
+std::vector<const CCopasiObject*> CReferencesWidget::getObjects() const
   {
     std::vector<const CCopasiObject*> ret;
 
-    const CCopasiVector<CPublication>& tmp = CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getPublications();
+    const CCopasiVector<CReference>& tmp = CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getReferences();
 
     C_INT32 i, imax = tmp.size();
     for (i = 0; i < imax; ++i)
@@ -61,7 +61,7 @@ std::vector<const CCopasiObject*> CPublicationsWidget::getObjects() const
     return ret;
   }
 
-void CPublicationsWidget::init()
+void CReferencesWidget::init()
 {
   numCols = 2;
   table->setNumCols(numCols);
@@ -72,60 +72,60 @@ void CPublicationsWidget::init()
   tableHeader->setLabel(COL_URL, "URL");
 }
 
-void CPublicationsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_INT32 row)
+void CReferencesWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_INT32 row)
 {
   if (!obj) return;
-  const CPublication *pPublication = (const CPublication*)obj;
-  table->setText(row, COL_URL, FROM_UTF8(pPublication->getURL()));
+  const CReference *pReference = (const CReference*)obj;
+  table->setText(row, COL_URL, FROM_UTF8(pReference->getURL()));
 }
 
-void CPublicationsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj)
+void CReferencesWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj)
 {
   if (!obj) return;
-  CPublication * pPublication = static_cast< CPublication * >(obj);
+  CReference * pReference = static_cast< CReference * >(obj);
 
-  pPublication->setURL((const char *) table->text(row, COL_URL).utf8());
+  pReference->setURL((const char *) table->text(row, COL_URL).utf8());
 }
 
-void CPublicationsWidget::defaultTableLineContent(unsigned C_INT32 C_UNUSED(row), unsigned C_INT32 C_UNUSED(exc))
+void CReferencesWidget::defaultTableLineContent(unsigned C_INT32 C_UNUSED(row), unsigned C_INT32 C_UNUSED(exc))
 {}
 
-QString CPublicationsWidget::defaultObjectName() const
-  {return "Publication";}
+QString CReferencesWidget::defaultObjectName() const
+  {return "";}
 
-CCopasiObject* CPublicationsWidget::createNewObject(const std::string & name)
+CCopasiObject* CReferencesWidget::createNewObject(const std::string & name)
 {
   std::string nname = name;
   int i = 0;
-  CPublication* pPublication = NULL;
+  CReference* pReference = NULL;
 
-  while (!(pPublication = CCopasiDataModel::Global->getModel()->getMIRIAMInfo().createPublication(name)))
+  while (!(pReference = CCopasiDataModel::Global->getModel()->getMIRIAMInfo().createReference(name)))
     {
       i++;
       nname = name + "_";
       nname += (const char *)QString::number(i).utf8();
     }
 
-  return pPublication;
+  return pReference;
 }
 
-void CPublicationsWidget::deleteObjects(const std::vector<std::string> & keys)
+void CReferencesWidget::deleteObjects(const std::vector<std::string> & keys)
 {
 
-  QString PublicationList = "Are you sure you want to delete listed PUBLICATION(S) ?\n";
+  QString ReferenceList = "Are you sure you want to delete listed PUBLICATION(S) ?\n";
   unsigned C_INT32 i, imax = keys.size();
   for (i = 0; i < imax; i++) //all compartments
     {
-      CPublication * pPublication =
-        dynamic_cast< CPublication *>(GlobalKeys.get(keys[i]));
+      CReference * pReference =
+        dynamic_cast< CReference *>(GlobalKeys.get(keys[i]));
 
-      PublicationList.append(FROM_UTF8(pPublication->getObjectName()));
-      PublicationList.append(", ");
+      ReferenceList.append(FROM_UTF8(pReference->getObjectName()));
+      ReferenceList.append(", ");
     }
 
-  PublicationList.remove(PublicationList.length() - 2, 2);
+  ReferenceList.remove(ReferenceList.length() - 2, 2);
 
-  QString msg = PublicationList;
+  QString msg = ReferenceList;
 
   C_INT32 choice = 0;
   choice = CQMessageBox::question(this,
@@ -139,7 +139,7 @@ void CPublicationsWidget::deleteObjects(const std::vector<std::string> & keys)
       {
         for (i = 0; i < imax; i++)
           {
-            CCopasiDataModel::Global->getModel()->getMIRIAMInfo().removePublication(keys[i]);
+            CCopasiDataModel::Global->getModel()->getMIRIAMInfo().removeReference(keys[i]);
           }
 
         //for (i = 0; i < imax; i++)

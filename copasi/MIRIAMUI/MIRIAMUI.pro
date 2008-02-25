@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/MIRIAMUI.pro,v $ 
-#   $Revision: 1.4 $ 
+#   $Revision: 1.5 $ 
 #   $Name:  $ 
 #   $Author: aekamal $ 
-#   $Date: 2008/02/20 19:06:27 $ 
+#   $Date: 2008/02/25 20:37:26 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -19,19 +19,19 @@ include(../common.pri)
 CONFIG += qt
 
 HEADERS += \
-		CAuthorsWidget.h \
+		CCreatorsWidget.h \
         CMIRIAMModelWidget.h \
         CModifiedWidget.h \
-        CPublicationsWidget.h \
+        CReferencesWidget.h \
 		CRDFListView.h \
 		CRDFListViewItem.h 
 		
 
 SOURCES += \
-		CAuthorsWidget.cpp \
+		CCreatorsWidget.cpp \
         CMIRIAMModelWidget.cpp \
         CModifiedWidget.cpp \
-        CPublicationsWidget.cpp \
+        CReferencesWidget.cpp \
 		CRDFListView.cpp \
 		CRDFListViewItem.cpp
 

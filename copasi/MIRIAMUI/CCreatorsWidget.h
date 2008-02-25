@@ -1,9 +1,9 @@
 // Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CPublicationsWidget.h,v $
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CCreatorsWidget.h,v $
 //   $Revision: 1.1 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/02/02 13:35:27 $
+//   $Date: 2008/02/25 20:37:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -11,18 +11,22 @@
 // and The University of Manchester.
 // All rights reserved.
 
-#ifndef COPASI_CPUBLICATIONSWIDGET
-#define COPASI_CPUBLICATIONSWIDGET
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
+
+#ifndef COPASI_CCreatorsWidget
+#define COPASI_CCreatorsWidget
 
 #include <vector>
 #include "UI/CopasiTableWidget.h"
 
-class CPublicationsWidget : public CopasiTableWidget
+class CCreatorsWidget : public CopasiTableWidget
   {
     Q_OBJECT
   public:
-    CPublicationsWidget(QWidget *parent, const char * name = 0, WFlags f = 0);
-    ~CPublicationsWidget();
+    CCreatorsWidget(QWidget *parent, const char * name = 0, WFlags f = 0);
+    ~CCreatorsWidget();
     /**
     * This initializes the widget
     */
@@ -65,4 +69,4 @@ class CPublicationsWidget : public CopasiTableWidget
     virtual QString defaultObjectName() const;
   };
 
-#endif // COPASI_CPUBLICATIONSWIDGET
+#endif // COPASI_CCreatorsWidget

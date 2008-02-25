@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.cpp,v $
-//   $Revision: 1.59 $
+//   $Revision: 1.60 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/02/20 19:06:28 $
+//   $Date: 2008/02/25 20:37:27 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,7 +33,8 @@
 
 CopasiTableWidget::CopasiTableWidget(QWidget *parent, bool ro, const char * name, WFlags f, bool showButtons)
     : CopasiWidget(parent, name, f),
-    mShowNewObjectWarning(true)
+    mShowNewObjectWarning(true),
+    mSaveOnLeave(true)
 {
   mRO = ro;
   mShowButtons = showButtons;
@@ -565,7 +566,8 @@ bool CopasiTableWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListV
 
 bool CopasiTableWidget::leave()
 {
-  saveTable();
+  if (mSaveOnLeave)
+  {saveTable();}
 
   //this is not strictly necessary if you actually leave the widget
   //but the leave() method is also used to force a commit - even if the widget
@@ -594,9 +596,10 @@ void CopasiTableWidget::keyPressEvent (QKeyEvent * e)
 }
 
 bool CopasiTableWidget::isTableInFocus()
-{
-  return table->hasFocus();
-}
+{return table->hasFocus();}
+
+bool CopasiTableWidget::isChanged()
+{return mChanged;}
 
 void CopasiTableWidget::updateHeaderUnits()
 {}

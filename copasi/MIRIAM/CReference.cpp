@@ -1,9 +1,9 @@
 // Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/Attic/CPublication.cpp,v $
-//   $Revision: 1.2 $
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CReference.cpp,v $
+//   $Revision: 1.1 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/02/14 22:57:12 $
+//   $Date: 2008/02/25 20:37:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,12 +15,12 @@
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "model/CModel.h"
 
-#include "CPublication.h"
+#include "CReference.h"
 
-CPublication::CPublication(const std::string & objectName, const CCopasiContainer * pParent,
-                           CRDFObject* pRDFObj) :
-    CCopasiContainer(objectName, pParent, "Publication"),
-    mKey(GlobalKeys.add("Publication", this)),
+CReference::CReference(const std::string & objectName, const CCopasiContainer * pParent,
+                       CRDFObject* pRDFObj) :
+    CCopasiContainer(objectName, pParent, "Reference"),
+    mKey(GlobalKeys.add("Reference", this)),
     mpRDFObj(NULL)
 {
   if (pRDFObj)
@@ -35,34 +35,39 @@ CPublication::CPublication(const std::string & objectName, const CCopasiContaine
   CONSTRUCTOR_TRACE;
 }
 
-CPublication::CPublication(const CPublication & src,
-                           const CCopasiContainer * pParent):
+CReference::CReference(const CReference & src,
+                       const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
-    mKey(GlobalKeys.add("Publication", this))
+    mKey(GlobalKeys.add("Reference", this))
 {
   CONSTRUCTOR_TRACE;
   initObjects();
 }
 
-void CPublication::initObjects()
+void CReference::initObjects()
 {}
 
-CPublication::~CPublication()
+CReference::~CReference()
 {
   GlobalKeys.remove(mKey);
   pdelete(mpRDFObj);
 }
 
-const std::string CPublication::getObjectName() const
+const std::string CReference::getObjectName() const
   {return getURL();}
 
-const std::string CPublication::getURL() const
+const std::string CReference::getURL() const
   {return CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getRDFGraph()->getFieldValue("PubmedID", *mpRDFObj);}
 
-CRDFObject& CPublication::getRDFObject()
+CRDFObject& CReference::getRDFObject()
 {return *mpRDFObj;}
 
-void CPublication::setURL(const std::string URL)
+void CReference::setURL(const std::string URL)
 {CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getRDFGraph()->setFieldValue("PubmedID", *mpRDFObj, URL);}
 
-const std::string & CPublication::getKey() const {return mKey;} //By G
+bool CReference::setObjectName(const std::string & name)
+{
+  setURL(name);
+  return true;
+}
+const std::string & CReference::getKey() const {return mKey;} //By G

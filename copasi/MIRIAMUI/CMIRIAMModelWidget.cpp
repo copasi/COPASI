@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CMIRIAMModelWidget.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/02/20 19:06:27 $
+//   $Date: 2008/02/25 20:37:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,8 +24,8 @@
 #include "UI/qtUtilities.h"
 
 #include "CMIRIAMModelWidget.h"
-#include "CAuthorsWidget.h"
-#include "CPublicationsWidget.h"
+#include "CCreatorsWidget.h"
+#include "CReferencesWidget.h"
 #include "CModifiedWidget.h"
 
 /*
@@ -33,19 +33,23 @@
  *  name 'name' and widget flags set to 'f'.
  */
 CMIRIAMModelWidget::CMIRIAMModelWidget(QWidget* parent, const char* name, WFlags f)
-    : CopasiWidget(parent, name, f)
+    : CopasiWidget(parent, name, f),
+    mWidgets(),
+    mChanged(false)
 {
   if (!name)
     CopasiWidget::setName("CMIRIAMModelWidget");
 
   //Create new widgets
-  QLabel *pLblAuthors = new QLabel("Creators: ", this);
-  mpAuthorsWidget = new CAuthorsWidget(this, "AuthorsWidgetForModel");
-  pLblAuthors->setBuddy(mpAuthorsWidget);
+  QLabel *pLblCreators = new QLabel("Creators: ", this);
+  CopasiTableWidget* pCreatorsWidget = new CCreatorsWidget(this, "CreatorsWidgetForModel");
+  pLblCreators->setBuddy(pCreatorsWidget);
+  mWidgets.push_back(pCreatorsWidget);
 
-  QLabel *pLblPublications = new QLabel("Publications: ", this);
-  mpPublicationsWidget = new CPublicationsWidget(this, "PublicationsWidgetForModel");
-  pLblPublications->setBuddy(mpPublicationsWidget);
+  QLabel *pLblReferences = new QLabel("References: ", this);
+  CopasiTableWidget* pReferencesWidget = new CReferencesWidget(this, "ReferencesWidgetForModel");
+  pLblReferences->setBuddy(pReferencesWidget);
+  mWidgets.push_back(pReferencesWidget);
 
   QLabel *pLblCreated = new QLabel("Created: ", this);
   mpCreatedWidget = new QDateTimeEdit(this, "CreatedWidgetForModel");
@@ -53,8 +57,9 @@ CMIRIAMModelWidget::CMIRIAMModelWidget(QWidget* parent, const char* name, WFlags
   mpCreatedWidget->dateEdit()->setRange(QDate(), QDate::currentDate());
 
   QLabel *pLblModified = new QLabel("Modified: ", this);
-  mpModifiedWidget = new CModifiedWidget(this, "ModifiedWidgetForModel");
-  pLblModified->setBuddy(mpModifiedWidget);
+  CopasiTableWidget* pModifiedsWidget = new CModifiedWidget(this, "ModifiedWidgetForModel");
+  pLblModified->setBuddy(pModifiedsWidget);
+  mWidgets.push_back(pModifiedsWidget);
 
   btnOK = new QPushButton("Commit", this);
   btnCancel = new QPushButton("Revert", this);
@@ -62,24 +67,20 @@ CMIRIAMModelWidget::CMIRIAMModelWidget(QWidget* parent, const char* name, WFlags
   btnNew = new QPushButton("New", this);
   btnClear = new QPushButton("Clear", this);
 
-  //Layout Widgets
   QVBoxLayout *vBoxLayout = new QVBoxLayout(this, 6);
-  vBoxLayout->addWidget(pLblAuthors);
-  vBoxLayout->addWidget(mpAuthorsWidget);
-
-  vBoxLayout->addWidget(pLblPublications);
-  vBoxLayout->addWidget(mpPublicationsWidget);
+  vBoxLayout->addWidget(pLblCreators);
+  vBoxLayout->addWidget(pCreatorsWidget);
+  vBoxLayout->addWidget(pLblReferences);
+  vBoxLayout->addWidget(pReferencesWidget);
 
   QHBoxLayout* hLayoutDT = new QHBoxLayout(vBoxLayout, 0);
-
   hLayoutDT->addWidget(pLblCreated);
   hLayoutDT->addWidget(mpCreatedWidget);
   hLayoutDT->addStretch();
   hLayoutDT->addWidget(pLblModified);
-  hLayoutDT->addWidget(mpModifiedWidget);
+  hLayoutDT->addWidget(pModifiedsWidget);
 
   QHBoxLayout* hLayout = new QHBoxLayout(vBoxLayout, 0);
-
   hLayout->addWidget(btnOK);
   hLayout->addSpacing(5);
   hLayout->addWidget(btnCancel);
@@ -102,74 +103,78 @@ CMIRIAMModelWidget::CMIRIAMModelWidget(QWidget* parent, const char* name, WFlags
   connect(btnNew, SIGNAL(clicked ()), this,
           SLOT(slotBtnNewClicked()));
 
-  connect(mpAuthorsWidget, SIGNAL(setEnableOKAndCancel(bool)), this,
+  connect(pCreatorsWidget, SIGNAL(setEnableOKAndCancel(bool)), this,
           SLOT(slotEnableOKAndCancel(bool)));
-  connect(mpAuthorsWidget, SIGNAL(delKeyPressed()), this,
+  connect(pCreatorsWidget, SIGNAL(delKeyPressed()), this,
           SLOT(slotBtnDeleteClicked()));
 
-  connect(mpPublicationsWidget, SIGNAL(setEnableOKAndCancel(bool)), this,
+  connect(pReferencesWidget, SIGNAL(setEnableOKAndCancel(bool)), this,
           SLOT(slotEnableOKAndCancel(bool)));
-  connect(mpPublicationsWidget, SIGNAL(delKeyPressed()), this,
-          SLOT(slotBtnDeleteClicked()));
-
-  connect(mpModifiedWidget, SIGNAL(setEnableOKAndCancel(bool)), this,
-          SLOT(slotEnableOKAndCancel(bool)));
-  connect(mpModifiedWidget, SIGNAL(delKeyPressed()), this,
+  connect(pReferencesWidget, SIGNAL(delKeyPressed()), this,
           SLOT(slotBtnDeleteClicked()));
 
   connect(mpCreatedWidget, SIGNAL(valueChanged(const QDateTime &)), this,
           SLOT(slotCreatedValueChanged(const QDateTime &)));
+
+  connect(pModifiedsWidget, SIGNAL(setEnableOKAndCancel(bool)), this,
+          SLOT(slotEnableOKAndCancel(bool)));
+  connect(pModifiedsWidget, SIGNAL(delKeyPressed()), this,
+          SLOT(slotBtnDeleteClicked()));
 }
 
 void CMIRIAMModelWidget::slotBtnOKClicked()
 {
-  mpAuthorsWidget->slotBtnOKClicked();
-  mpPublicationsWidget->slotBtnOKClicked();
+  std::vector<CopasiTableWidget*>::const_iterator it = mWidgets.begin();
+  std::vector<CopasiTableWidget*>::const_iterator end = mWidgets.end();
+  for (; it != end; it++)
+  {(*it)->slotBtnOKClicked();}
 
   std::string dt = "";
   if (mpCreatedWidget->dateTime().toString(Qt::ISODate).ascii())
   {dt = mpCreatedWidget->dateTime().toString(Qt::ISODate).ascii();}
   CCopasiDataModel::Global->getModel()->getMIRIAMInfo().setCreatedDT(dt);
-
-  mpModifiedWidget->slotBtnOKClicked();
 }
 
 void CMIRIAMModelWidget::slotBtnCancelClicked()
 {
-  mpAuthorsWidget->slotBtnCancelClicked();
-  mpPublicationsWidget->slotBtnCancelClicked();
+  std::vector<CopasiTableWidget*>::const_iterator it = mWidgets.begin();
+  std::vector<CopasiTableWidget*>::const_iterator end = mWidgets.end();
+  for (; it != end; it++)
+  {(*it)->slotBtnCancelClicked();}
   mpCreatedWidget->setDateTime(QDateTime::fromString(FROM_UTF8(CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getCreatedDT()), Qt::ISODate));
-  mpModifiedWidget->slotBtnCancelClicked();
 }
 
 void CMIRIAMModelWidget::slotBtnClearClicked()
 {
-  if (mpAuthorsWidget->isTableInFocus())
-  {mpAuthorsWidget->slotBtnClearClicked();}
-  else if (mpPublicationsWidget->isTableInFocus())
-  {mpPublicationsWidget->slotBtnClearClicked();}
-  else if (mpModifiedWidget->isTableInFocus())
-  {mpModifiedWidget->slotBtnClearClicked();}
+  std::vector<CopasiTableWidget*>::const_iterator it = mWidgets.begin();
+  std::vector<CopasiTableWidget*>::const_iterator end = mWidgets.end();
+  for (; it != end; it++)
+    {
+      if ((*it)->isTableInFocus())
+      {(*it)->slotBtnClearClicked();}
+    }
 }
 
 void CMIRIAMModelWidget::slotBtnDeleteClicked()
 {
-  if (mpAuthorsWidget->isTableInFocus())
-  {mpAuthorsWidget->slotBtnDeleteClicked();}
-  else if (mpPublicationsWidget->isTableInFocus())
-  {mpPublicationsWidget->slotBtnDeleteClicked();}
-  else if (mpModifiedWidget->isTableInFocus())
-  {mpModifiedWidget->slotBtnDeleteClicked();}
+  std::vector<CopasiTableWidget*>::const_iterator it = mWidgets.begin();
+  std::vector<CopasiTableWidget*>::const_iterator end = mWidgets.end();
+  for (; it != end; it++)
+    {
+      if ((*it)->isTableInFocus())
+      {(*it)->slotBtnDeleteClicked();}
+    }
 }
 
 void CMIRIAMModelWidget::slotBtnNewClicked()
 {
-  if (mpAuthorsWidget->isTableInFocus())
-  {mpAuthorsWidget->slotBtnNewClicked();}
-  else if (mpPublicationsWidget->isTableInFocus())
-  {mpPublicationsWidget->slotBtnNewClicked();}
-  else if (mpModifiedWidget->isTableInFocus())
-  {mpModifiedWidget->slotBtnNewClicked();}
+  std::vector<CopasiTableWidget*>::const_iterator it = mWidgets.begin();
+  std::vector<CopasiTableWidget*>::const_iterator end = mWidgets.end();
+  for (; it != end; it++)
+    {
+      if ((*it)->isTableInFocus())
+      {(*it)->slotBtnNewClicked();}
+    }
 }
 
 void CMIRIAMModelWidget::slotEnableOKAndCancel(bool e)
@@ -183,27 +188,31 @@ void CMIRIAMModelWidget::slotCreatedValueChanged(const QDateTime & C_UNUSED(dt))
 
 bool CMIRIAMModelWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
 {
-  mpAuthorsWidget->update(objectType, action, key);
-  mpPublicationsWidget->update(objectType, action, key);
+  std::vector<CopasiTableWidget*>::const_iterator it = mWidgets.begin();
+  std::vector<CopasiTableWidget*>::const_iterator end = mWidgets.end();
+  for (; it != end; it++)
+  {(*it)->update(objectType, action, key);}
   mpCreatedWidget->setDateTime(QDateTime::fromString(FROM_UTF8(CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getCreatedDT()), Qt::ISODate));
-  mpModifiedWidget->update(objectType, action, key);
   return true;
 }
 
 bool CMIRIAMModelWidget::enter(const std::string & key)
 {
   CCopasiDataModel::Global->getModel()->getMIRIAMInfo().loadGraph(key);
-  mpAuthorsWidget->enter(key);
-  mpPublicationsWidget->enter(key);
-  mpModifiedWidget->enter(key);
+  std::vector<CopasiTableWidget*>::const_iterator it = mWidgets.begin();
+  std::vector<CopasiTableWidget*>::const_iterator end = mWidgets.end();
+  for (; it != end; it++)
+  {(*it)->enter(key);}
   return true;
 }
 
 bool CMIRIAMModelWidget::leave()
 {
+  std::vector<CopasiTableWidget*>::const_iterator it = mWidgets.begin();
+  std::vector<CopasiTableWidget*>::const_iterator end = mWidgets.end();
+  for (; it != end; it++)
+  {(*it)->leave();}
+
   CCopasiDataModel::Global->getModel()->getMIRIAMInfo().saveGraph();
-  mpAuthorsWidget->leave();
-  mpPublicationsWidget->leave();
-  mpModifiedWidget->leave();
   return true;
 }

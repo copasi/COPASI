@@ -47,7 +47,7 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 			>
 			<File
-				RelativePath="CAuthor.cpp"
+				RelativePath=".\CCreator.cpp"
 				>
 			</File>
 			<File
@@ -55,7 +55,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\CPublication.cpp"
+				RelativePath=".\CModified.cpp"
 				>
 			</File>
 			<File
@@ -94,13 +94,17 @@
 				RelativePath=".\CRDFWriter.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\CReference.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl"
 			>
 			<File
-				RelativePath="CAuthor.h"
+				RelativePath=".\CCreator.h"
 				>
 			</File>
 			<File
@@ -108,7 +112,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\CPublication.h"
+				RelativePath=".\CModified.h"
 				>
 			</File>
 			<File
@@ -145,6 +149,10 @@
 			</File>
 			<File
 				RelativePath=".\CRDFWriter.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CReference.h"
 				>
 			</File>
 		</Filter>

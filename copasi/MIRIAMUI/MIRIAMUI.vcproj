@@ -45,7 +45,7 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\CAuthorsWidget.cpp"
+				RelativePath=".\CCreatorsWidget.cpp"
 				>
 			</File>
 			<File
@@ -57,7 +57,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\CPublicationsWidget.cpp"
+				RelativePath=".\CModifiedWidget.cpp"
 				>
 			</File>
 			<File
@@ -72,6 +72,10 @@
 				RelativePath=".\CRDFListViewItem.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\CReferencesWidget.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -79,7 +83,7 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\CAuthorsWidget.h"
+				RelativePath=".\CCreatorsWidget.h"
 				>
 			</File>
 			<File
@@ -87,7 +91,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\CPublicationsWidget.h"
+				RelativePath=".\CModifiedWidget.h"
 				>
 			</File>
 			<File
@@ -104,6 +108,10 @@
 			</File>
 			<File
 				RelativePath=".\CRDFListViewItem.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CReferencesWidget.h"
 				>
 			</File>
 		</Filter>

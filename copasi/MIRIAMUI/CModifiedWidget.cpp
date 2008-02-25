@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CModifiedWidget.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/02/20 20:28:32 $
+//   $Date: 2008/02/25 20:37:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,7 +15,7 @@
 #include <qpushbutton.h>
 
 #include "model/CModel.h"
-#include "MIRIAM/CAuthor.h"
+#include "MIRIAM/CCreator.h"
 #include "utilities/CCopasiVector.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiObject.h"
@@ -27,7 +27,8 @@
 #include "CModifiedWidget.h"
 
 #define COL_MARK               0
-#define COL_DATE_MODIFIED      1
+#define COL_DUMMY              1
+#define COL_DATE_MODIFIED      2
 
 /*
  *  Constructs a CModifiedWidget as a child of 'parent', with the
@@ -65,13 +66,15 @@ std::vector<const CCopasiObject*> CModifiedWidget::getObjects() const
 void CModifiedWidget::init()
 {
   mShowNewObjectWarning = false;
-  numCols = 2;
+  numCols = 3;
   table->setNumCols(numCols);
 
   //Setting table headers
   QHeader *tableHeader = table->horizontalHeader();
   tableHeader->setLabel(COL_MARK, "Status");
+  tableHeader->setLabel(COL_DUMMY, "Dummy");
   tableHeader->setLabel(COL_DATE_MODIFIED, "Date and Time Modified");
+  table->hideColumn(COL_DUMMY);
 }
 
 void CModifiedWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_INT32 row)
@@ -112,17 +115,15 @@ void CModifiedWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_I
 {
   if (exc != COL_DATE_MODIFIED)
     {
-      if (!dynamic_cast<CQDateTimeEditTableItem *>(table->cellWidget(row, COL_DATE_MODIFIED)))
-        {
-          CQDateTimeEditTableItem* pDTE = new CQDateTimeEditTableItem(this, row, COL_DATE_MODIFIED, table);
-          pDTE->dateEdit()->setRange(QDate(), QDate::currentDate());
-          table->setCellWidget(row, COL_DATE_MODIFIED, pDTE);
-        }
+      CQDateTimeEditTableItem* pDTE = NULL;
+      pDTE = new CQDateTimeEditTableItem(this, row, COL_DATE_MODIFIED, table);
+      pDTE->dateEdit()->setRange(QDate(), QDate::currentDate());
+      table->setCellWidget(row, COL_DATE_MODIFIED, pDTE);
     }
 }
 
 QString CModifiedWidget::defaultObjectName() const
-  {return "Modified";}
+  {return "";}
 
 CCopasiObject* CModifiedWidget::createNewObject(const std::string & name)
 {

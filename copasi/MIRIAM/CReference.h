@@ -1,9 +1,9 @@
 // Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/Attic/CPublication.h,v $
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CReference.h,v $
 //   $Revision: 1.1 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/02/02 13:35:26 $
+//   $Date: 2008/02/25 20:37:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -12,13 +12,13 @@
 // All rights reserved.
 
 /**
- *  CPublications: Stores publication details such as pubmed URL.
+ *  CReferences: Stores publication details such as pubmed URL.
  *
  *
  */
 
-#ifndef COPASI_CPUBLICATION
-#define COPASI_CPUBLICATION
+#ifndef COPASI_CReference
+#define COPASI_CReference
 
 #include <string>
 
@@ -26,7 +26,7 @@
 
 #include "CRDFObject.h"
 
-class CPublication : public CCopasiContainer
+class CReference : public CCopasiContainer
   {
     // Attributes
   private:
@@ -44,18 +44,18 @@ class CPublication : public CCopasiContainer
      * @param CRDFObject* pRDFObj
      * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CPublication(const std::string & objectName, const CCopasiContainer * pParent = NULL,
-                 CRDFObject* pRDFObj = NULL);
+    CReference(const std::string & objectName, const CCopasiContainer * pParent = NULL,
+               CRDFObject* pRDFObj = NULL);
 
     /**
      * Copy constructor
-     * @param "const CPublication &" src
+     * @param "const CReference &" src
      * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CPublication(const CPublication & src,
-                 const CCopasiContainer * pParent = NULL);
+    CReference(const CReference & src,
+               const CCopasiContainer * pParent = NULL);
 
-    ~CPublication();
+    ~CReference();
     void initObjects();
 
     /** Add the given name to Last name to get the full Name.
@@ -69,12 +69,13 @@ class CPublication : public CCopasiContainer
     CRDFObject& getRDFObject();
 
     const std::string getObjectName() const;
+    bool setObjectName(const std::string & name);
 
     /**
-        *  Returns a string with the name of this Publication.
+        *  Returns a string with the name of this Reference.
         *  @return std::string key
         */
     virtual const std::string & getKey() const;
   };
 
-#endif //COPASI_CPUBLICATION
+#endif //COPASI_CReference

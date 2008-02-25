@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CModelMIRIAMInfo.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/02/20 19:06:27 $
+//   $Date: 2008/02/25 20:37:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,8 +25,8 @@
 
 #include "utilities/CCopasiVector.h"
 
-#include "CAuthor.h"
-#include "CPublication.h"
+#include "CCreator.h"
+#include "CReference.h"
 #include "CModified.h"
 #include "CRDFGraph.h"
 #include "CRDFObject.h"
@@ -35,10 +35,10 @@ class CModelMIRIAMInfo
   {
     // Attributes
   private:
-    CCopasiVector <CAuthor> mAuthors;
-    CRDFObject mAuthorsObj;
-    CCopasiVector <CPublication> mPublications;
-    CRDFObject mPublicationsObj;
+    CCopasiVector <CCreator> mCreators;
+    CRDFObject mCreatorsObj;
+    CCopasiVector <CReference> mReferences;
+    CRDFObject mReferencesObj;
     CRDFObject mCreatedObj;
     CCopasiVector <CModified> mModifieds;
     CRDFObject mModifiedsObj;
@@ -46,21 +46,24 @@ class CModelMIRIAMInfo
     CRDFGraph* mpRDFGraph;
     CModelEntity* mpEntity;
 
+  protected:
     bool fillInfoFromGraph();
+    void fillObjects(std::string tableName, std::vector<CRDFObject>& objects);
+    void clearMembers();
 
     // Operations
   public:
     CModelMIRIAMInfo();
     ~CModelMIRIAMInfo();
-    void loadGraph(const std::string& key);
+    void loadGraph(const std::string& key = "");
     bool saveGraph();
-    CRDFGraph * getRDFGraph();
-    CCopasiVector <CAuthor> & getAuthors();
-    CAuthor* createAuthor(const std::string& objectName);
-    bool removeAuthor(const std::string& key);
-    CCopasiVector <CPublication> & getPublications();
-    CPublication* createPublication(const std::string& objectName);
-    bool removePublication(const std::string& key);
+    CRDFGraph* getRDFGraph();
+    CCopasiVector <CCreator> & getCreators();
+    CCreator* createCreator(const std::string& objectName);
+    bool removeCreator(const std::string& key);
+    CCopasiVector <CReference> & getReferences();
+    CReference* createReference(const std::string& objectName);
+    bool removeReference(const std::string& key);
     const std::string getCreatedDT() const;
     void setCreatedDT(const std::string& dt);
     CCopasiVector <CModified> & getModifieds();

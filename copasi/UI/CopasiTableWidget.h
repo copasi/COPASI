@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.h,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.26 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/02/20 19:06:28 $
+//   $Date: 2008/02/25 20:37:27 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,6 +52,7 @@ class CopasiTableWidget : public CopasiWidget
     virtual bool leave();
     virtual bool enter(const std::string & key = "");
     bool isTableInFocus();
+    bool isChanged();
 
   protected slots:
     virtual void slotTableSelectionChanged();
@@ -111,6 +112,9 @@ class CopasiTableWidget : public CopasiWidget
 
     /*Flag for showing or hiding 'object renamed to No Name' warning.*/
     bool mShowNewObjectWarning;
+
+    /*Whether to call saveTable() when leave() is called.*/
+    bool mSaveOnLeave;
 
     //These are the methods that need to be implemented by specialized widgets:
 
