@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test.cpp,v $
-//   $Revision: 1.1.2.3 $
+//   $Revision: 1.1.2.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/20 19:13:07 $
+//   $Date: 2008/02/25 10:41:32 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,6 +34,26 @@
 #include "test000019.hpp"
 #include "test000020.hpp"
 #include "test000021.h"
+#include "test000022.h"
+#include "test000023.h"
+#include "test000024.h"
+#include "test000025.h"
+#include "test000026.h"
+#include "test000027.h"
+#include "test000028.h"
+#include "test000029.h"
+#include "test000030.h"
+#include "test000031.h"
+#include "test000032.h"
+#include "test000033.h"
+#include "test000034.h"
+#include "test000035.h"
+#include "test000036.h"
+#include "test000037.h"
+#include "test000038.h"
+#include "test000039.h"
+#include "test000040.h"
+#include "test000041.h"
 
 #define COPASI_MAIN
 
@@ -63,6 +83,26 @@ int main(int /*argc*/, char ** /*argv*/)
   runner.addTest(test000019::suite());
   runner.addTest(test000020::suite());
   runner.addTest(test000021::suite());
+  runner.addTest(test000022::suite());
+  runner.addTest(test000023::suite());
+  runner.addTest(test000024::suite());
+  runner.addTest(test000025::suite());
+  runner.addTest(test000026::suite());
+  runner.addTest(test000027::suite());
+  runner.addTest(test000028::suite());
+  runner.addTest(test000029::suite());
+  runner.addTest(test000030::suite());
+  runner.addTest(test000031::suite());
+  runner.addTest(test000032::suite());
+  runner.addTest(test000033::suite());
+  runner.addTest(test000034::suite());
+  runner.addTest(test000035::suite());
+  runner.addTest(test000036::suite());
+  runner.addTest(test000037::suite());
+  runner.addTest(test000038::suite());
+  runner.addTest(test000039::suite());
+  runner.addTest(test000040::suite());
+  runner.addTest(test000041::suite());
   runner.run();
   return 0;
 }

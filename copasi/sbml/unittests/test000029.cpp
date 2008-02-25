@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000029.cpp,v $
-//   $Revision: 1.1.2.2 $
+//   $Revision: 1.1.2.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/21 15:40:01 $
+//   $Date: 2008/02/25 10:41:32 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -64,7 +64,7 @@ void test000029::test_hasOnlySubstanceUnits()
   CPPUNIT_ASSERT(pModel->getModelValues().size() == 1);
   const CModelValue* pModelValue = pModel->getModelValues()[0];
   CPPUNIT_ASSERT(pModelValue != NULL);
-  CPPUNIT_ASSERT(pModelValue->getStatus() == CModelEntity::ASSIGNMENT);
+  CPPUNIT_ASSERT(pModelValue->getStatus() == CModelEntity::ODE);
   const CExpression* pExpr = pModelValue->getExpressionPtr();
   // check the expression
   const CEvaluationNode* pNode = pExpr->getRoot();
@@ -137,7 +137,7 @@ const char* test000029::MODEL_STRING =
   "    <notes>\n"
   "      <body xmlns=\"http://www.w3.org/1999/xhtml\">\n"
   "        <p>Model with fixed compartment volume, two species with hasOnlySubstanceUnits flag set to false. The units are set to ml and item. There is an rate rule for the global parameter that contains a reference to species A.</p>\n"
-  "        <p>The imported model should contain an assignment for the global parameter that consists of the reference to the concentration of species A. The species references in the reactions should be imported unmodified.</p>\n"
+  "        <p>The imported model should contain an ode rule for the global parameter that consists of the reference to the concentration of species A. The species references in the reactions should be imported unmodified.</p>\n"
   "      </body>\n"
   "    </notes>\n"
   "    <listOfFunctionDefinitions>\n"

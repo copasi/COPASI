@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000033.cpp,v $
-//   $Revision: 1.1.2.2 $
+//   $Revision: 1.1.2.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/21 15:40:01 $
+//   $Date: 2008/02/25 10:41:32 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -201,6 +201,7 @@ const char* test000033::MODEL_STRING =
   "            <times/>\n"
   "            <ci> species_1 </ci>\n"
   "            <cn type=\"e-notation\"> 3.0221415e20 </cn>\n"
+  "          </apply>\n"
   "        </math>\n"
   "      </rateRule>\n"
   "    </listOfRules>\n"

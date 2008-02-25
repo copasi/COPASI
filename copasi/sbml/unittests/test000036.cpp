@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000036.cpp,v $
-//   $Revision: 1.1.2.2 $
+//   $Revision: 1.1.2.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/21 15:40:01 $
+//   $Date: 2008/02/25 10:41:32 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -47,7 +47,7 @@ void test000036::test_hasOnlySubstanceUnits()
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
-  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CModel::mMol);
+  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CModel::number);
   CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CModel::ml);
   CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CModel::s);
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
@@ -64,8 +64,10 @@ void test000036::test_hasOnlySubstanceUnits()
   CPPUNIT_ASSERT(pModel->getModelValues().size() == 1);
   const CModelValue* pModelValue = pModel->getModelValues()[0];
   CPPUNIT_ASSERT(pModelValue != NULL);
-  CPPUNIT_ASSERT(pModelValue->getStatus() == CModelEntity::ASSIGNMENT);
-  const CExpression* pExpr = pModelValue->getExpressionPtr();
+  CPPUNIT_ASSERT(pModelValue->getStatus() == CModelEntity::FIXED);
+  CPPUNIT_ASSERT(pModelValue->getInitialExpression() != "");
+  const CExpression* pExpr = pModelValue->getInitialExpressionPtr();
+  CPPUNIT_ASSERT(pExpr != NULL);
   // check the expression
   const CEvaluationNode* pNode = pExpr->getRoot();
   CPPUNIT_ASSERT(pNode != NULL);

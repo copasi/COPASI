@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000039.cpp,v $
-//   $Revision: 1.1.2.2 $
+//   $Revision: 1.1.2.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/21 15:40:01 $
+//   $Date: 2008/02/25 10:41:32 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -47,7 +47,7 @@ void test000039::test_hasOnlySubstanceUnits()
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
-  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CModel::mMol);
+  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CModel::microMol);
   CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CModel::ml);
   CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CModel::s);
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
@@ -199,6 +199,7 @@ const char* test000039::MODEL_STRING =
   "            <times/>\n"
   "            <ci> species_1 </ci>\n"
   "            <cn type=\"e-notation\"> 6.0221415e17 </cn>\n"
+  "          </apply>\n"
   "        </math>\n"
   "      </initialAssignment>\n"
   "    </listOfInitialAssignments>\n"
