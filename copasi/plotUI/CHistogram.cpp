@@ -1,12 +1,17 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/CHistogram.cpp,v $
-   $Revision: 1.6 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:30:41 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/CHistogram.cpp,v $
+//   $Revision: 1.6.20.1 $
+//   $Name:  $
+//   $Author: ssahle $
+//   $Date: 2008/02/25 16:16:17 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -54,8 +59,8 @@ void CHistogram::addValue(const C_FLOAT64 & val)
 
   mUptodate = false;
   //std::cout << val<< "  " << (C_INT32)(val/mIncrement)<< std::endl;
-  mMap[(C_INT32)(val * mInvIncrement)]++;
-  mMap[(((C_INT32)(val * mInvIncrement))) + 1];
+  mMap[(C_INT32)floor(val * mInvIncrement)]++;
+  mMap[(((C_INT32)floor(val * mInvIncrement))) + 1];
   ++mCount;
 }
 
@@ -93,20 +98,25 @@ void CHistogram::updateArray()
     delete[] mYArray;
 
   //construct arrays
-  mXArray = new double[mMap.size()];
-  mYArray = new double[mMap.size()];
-  mArraySize = mMap.size();
+  mXArray = new double[mMap.size() + 1];
+  mYArray = new double[mMap.size() + 1];
+  mArraySize = mMap.size() + 1;
 
   C_FLOAT64 tmpFactor = 1 / (mCount * mIncrement);
 
+  //add one bin to the left
+  mXArray[0] = (mMap.begin()->first - 1) * mIncrement;
+  mYArray[0] = 0.0;
+
   C_INT32 i;
   std::map<C_INT32, C_INT32>::const_iterator it, itEnd = mMap.end();
-  for (it = mMap.begin(), i = 0; it != itEnd; ++it, ++i)
+  for (it = mMap.begin(), i = 1; it != itEnd; ++it, ++i)
     {//TODO use pointer increments instead of [...]
       mXArray[i] = it->first * mIncrement;
       mYArray[i] = (double)it->second * tmpFactor;
-      //std::cout <<it->first <<" " <<it->second << std::endl;
+      //std::cout <<it->first <<" " <<it->second << " : " << mXArray[i] << " " << mYArray[i] << std::endl;
     }
+  //std::cout << std::endl;
 
   mUptodate = true;
 }
