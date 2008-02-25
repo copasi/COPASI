@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.cpp,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
 //   $Author: akoenig $
-//   $Date: 2007/11/20 08:30:52 $
+//   $Date: 2008/02/25 18:19:53 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -309,6 +314,7 @@ CQArrayAnnotationsWidget::CQArrayAnnotationsWidget(QWidget* parent, const char* 
   connect(mpButton, SIGNAL(clicked()), this, SLOT(changeContents()));
   connect(mpSelectionTable, SIGNAL(valueChanged(int, int)),
           this, SLOT(selectionTableChanged(int, int)));
+  connect(mpContentTable->horizontalHeader(), SIGNAL(sizeChange(int, int, int)), this, SLOT(setColumnSize(int, int, int)));
 }
 
 CQArrayAnnotationsWidget::~CQArrayAnnotationsWidget()
@@ -984,4 +990,11 @@ void CQArrayAnnotationsWidget::tableDoubleClicked()
   if (plot3d->sliderActive())
     switchToBarChart();
 #endif
+}
+
+void CQArrayAnnotationsWidget::setColumnSize(int dummy1, int dummy2, int size)
+{
+  int i;
+  for (i = 0; i < mpContentTable->numCols(); i++)
+    mpContentTable->horizontalHeader()->resizeSection(i, size);
 }
