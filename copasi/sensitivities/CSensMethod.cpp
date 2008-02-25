@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensMethod.cpp,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.23.4.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/10/02 18:18:06 $
+//   $Author: ssahle $
+//   $Date: 2008/02/25 13:53:39 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -83,6 +88,12 @@ CSensMethod::~CSensMethod()
 
 bool CSensMethod::do_target_calculation(CCopasiArray & result, bool first)
 {
+  //perform the necessary updates
+  std::vector< Refresh * >::iterator it = mInitialRefreshes.begin();
+  std::vector< Refresh * >::iterator end = mInitialRefreshes.end();
+  while (it != end)
+    (**it++)();
+
   //****** do subtask ******************
   if (mpSubTask)
     {
@@ -90,7 +101,7 @@ bool CSensMethod::do_target_calculation(CCopasiArray & result, bool first)
         mpSubTask->process(first);
       else
         mpSubTask->process(true);
-      //only for steady state calculation the first calculation is done from
+      // for steady state calculation only the first calculation is done from
       //initial state, the remaining from the current state
     }
   else
@@ -479,12 +490,20 @@ bool CSensMethod::initialize(CSensProblem* problem)
     }
 
   //initialize the variables pointers
+  std::set< const CCopasiObject * > ObjectSet;
   C_INT32 i, imax = mpProblem->getNumberOfVariables();
   mLocalData.resize(imax);
   for (i = 0; i < imax; ++i)
     {
       mLocalData[i].variables = mpProblem->getVariables(i).getVariablesPointerList(mpProblem->getModel());
+
+      ObjectSet.insert(mLocalData[i].variables.begin(), mLocalData[i].variables.end());
     }
+
+  //determine which refreshes need to be called when the variables are changed
+  ObjectSet.erase(NULL);
+  mInitialRefreshes.clear();
+  mInitialRefreshes = mpProblem->getModel()->buildInitialRefreshSequence(ObjectSet);
 
   //initialize the target function pointers
   mTargetfunctionPointers = mpProblem->getTargetFunctions().getVariablesPointerList(mpProblem->getModel());

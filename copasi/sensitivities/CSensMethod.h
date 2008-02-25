@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensMethod.h,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.12.8.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/05/15 12:36:26 $
+//   $Author: ssahle $
+//   $Date: 2008/02/25 13:53:39 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -112,6 +117,8 @@ class CSensMethod : public CCopasiMethod
     std::vector<CCopasiObject*> mTargetfunctionPointers;
 
     CCopasiTask * mpSubTask;
+
+    std::vector< Refresh * > mInitialRefreshes;
 
     C_FLOAT64 * mpDeltaFactor;
     C_FLOAT64 * mpMinDelta;
