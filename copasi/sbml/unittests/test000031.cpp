@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000031.cpp,v $
-//   $Revision: 1.1.2.3 $
+//   $Revision: 1.1.2.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/25 10:41:32 $
+//   $Date: 2008/02/25 14:17:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -64,7 +64,7 @@ void test000031::test_hasOnlySubstanceUnits()
   CPPUNIT_ASSERT(pModel->getModelValues().size() == 1);
   const CModelValue* pModelValue = pModel->getModelValues()[0];
   CPPUNIT_ASSERT(pModelValue != NULL);
-  CPPUNIT_ASSERT(pModelValue->getStatus() == CModelEntity::ASSIGNMENT);
+  CPPUNIT_ASSERT(pModelValue->getStatus() == CModelEntity::ODE);
   const CExpression* pExpr = pModelValue->getExpressionPtr();
   // check the expression
   const CEvaluationNode* pNode = pExpr->getRoot();
@@ -137,7 +137,7 @@ const char* test000031::MODEL_STRING =
   "    <notes>\n"
   "      <body xmlns=\"http://www.w3.org/1999/xhtml\">\n"
   "        <p>Model with fixed compartment volume, two species with hasOnlySubstanceUnits flag set to true. The units are set to ml and item. There is a rate rule for the global parameter that contains a reference to species A.</p>\n"
-  "        <p>The imported model should contain an assignment for the global parameter that consists of the reference to the particle number of species A. The species references in the reactions should be imported multiplied by the volume.</p>\n"
+  "        <p>The imported model should contain an rate rule for the global parameter that consists of the reference to the particle number of species A. The species references in the reactions should be imported multiplied by the volume.</p>\n"
   "      </body>\n"
   "    </notes>\n"
   "  <model id=\"Model_1\" name=\"New Model\">\n"

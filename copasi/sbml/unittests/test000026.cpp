@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000026.cpp,v $
-//   $Revision: 1.1.2.3 $
+//   $Revision: 1.1.2.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/25 10:41:32 $
+//   $Date: 2008/02/25 14:17:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -61,9 +61,13 @@ void test000026::test_hasOnlySubstanceUnits()
   const CMetab* pB = pModel->getMetabolites()[1];
   CPPUNIT_ASSERT(pB != NULL);
   CPPUNIT_ASSERT(pB->getStatus() == CModelEntity::REACTIONS);
-  CPPUNIT_ASSERT(pModel->getModelValues().size() == 1);
+  CPPUNIT_ASSERT(pModel->getModelValues().size() == 2);
   const CModelValue* pModelValue = pModel->getModelValues()[0];
   CPPUNIT_ASSERT(pModelValue != NULL);
+  const CModelValue* pFactor = pModel->getModelValues()[1];
+  CPPUNIT_ASSERT(pFactor != NULL);
+  // test if the factor has the correct value
+  CPPUNIT_ASSERT(false);
   CPPUNIT_ASSERT(pModelValue->getStatus() == CModelEntity::ASSIGNMENT);
   const CExpression* pExpr = pModelValue->getExpressionPtr();
   // check the expression
@@ -136,8 +140,8 @@ const char* test000026::MODEL_STRING =
   "  <model id=\"Model_1\" name=\"New Model\">\n"
   "    <notes>\n"
   "      <body xmlns=\"http://www.w3.org/1999/xhtml\">\n"
-  "        <p>Model with fixed compartment volume, two species with hasOnlySubstanceUnits flag set to true. The units are set to ml and mMol. There is an assignment rule for the global parameter that contains a reference to species A multiplied by a constant.</p>\n"
-  "        <p>The imported model should contain an assignment for the global parameter that consists of the reference to the particle number of species A. The species references in the reactions should be imported multiplied by the volume.</p>\n"
+  "        <p>Model with fixed compartment volume, two species with hasOnlySubstanceUnits flag set to true. The units are set to ml and mMol. There is an assignment rule for the global parameter that contains a reference to species A multiplied by a constant that is not the quantity2number factor.</p>\n"
+  "        <p>The imported model should contain an assignment for the global parameter that consists of the reference to the particle number of species A multiplied by the factor and divided by the quantity2unit factor. The species references in the reactions should be imported multiplied by the volume.</p>\n"
   "      </body>\n"
   "    </notes>\n"
   "    <listOfFunctionDefinitions>\n"
@@ -198,7 +202,7 @@ const char* test000026::MODEL_STRING =
   "          <apply>\n"
   "            <times/>\n"
   "            <ci> species_1 </ci>\n"
-  "            <cn type=\"e-notation\"> 3.0221415e20 </cn>\n"
+  "            <cn> 3.0221415e20 </cn>\n"
   "          </apply>\n"
   "        </math>\n"
   "      </assignmentRule>\n"

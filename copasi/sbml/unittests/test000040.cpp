@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000040.cpp,v $
-//   $Revision: 1.1.2.3 $
+//   $Revision: 1.1.2.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/25 10:41:32 $
+//   $Date: 2008/02/25 14:17:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -61,14 +61,17 @@ void test000040::test_hasOnlySubstanceUnits()
   const CMetab* pB = pModel->getMetabolites()[1];
   CPPUNIT_ASSERT(pB != NULL);
   CPPUNIT_ASSERT(pB->getStatus() == CModelEntity::REACTIONS);
-  CPPUNIT_ASSERT(pModel->getModelValues().size() == 1);
+  CPPUNIT_ASSERT(pModel->getModelValues().size() == 2);
   const CModelValue* pModelValue = pModel->getModelValues()[0];
   CPPUNIT_ASSERT(pModelValue != NULL);
-  CPPUNIT_ASSERT(pModelValue->getStatus() == CModelEntity::ASSIGNMENT);
-  const CExpression* pExpr = pModelValue->getExpressionPtr();
+  CPPUNIT_ASSERT(pModelValue->getStatus() == CModelEntity::FIXED);
+  CPPUNIT_ASSERT(pModelValue->getInitialExpression() != "");
+  const CExpression* pExpr = pModelValue->getInitialExpressionPtr();
   // check the expression
   const CEvaluationNode* pNode = pExpr->getRoot();
   CPPUNIT_ASSERT(pNode != NULL);
+  // TODO check the expression and the reactions
+  CPPUNIT_ASSERT(false);
   const CEvaluationNodeObject* pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pNode);
   CPPUNIT_ASSERT(pObjectNode != NULL);
   CCopasiObjectName objectCN = pObjectNode->getObjectCN();
@@ -198,7 +201,7 @@ const char* test000040::MODEL_STRING =
   "          <apply>\n"
   "            <times/>\n"
   "            <ci> species_1 </ci>\n"
-  "            <cn type=\"e-notation\"> 3.0221415e20 </cn>\n"
+  "            <cn> 3.0221415e20 </cn>\n"
   "          </apply>\n"
   "        </math>\n"
   "      </initialAssignment>\n"

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000035.cpp,v $
-//   $Revision: 1.1.2.3 $
+//   $Revision: 1.1.2.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/25 10:41:32 $
+//   $Date: 2008/02/25 14:17:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -80,9 +80,8 @@ void test000035::test_hasOnlySubstanceUnits()
   const CCopasiObject* pObject = CCopasiContainer::ObjectFromName(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
-  CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Concentration"));
+  CPPUNIT_ASSERT(pObject->getObjectName() == std::string("InitialConcentration"));
   CPPUNIT_ASSERT(pObject->getObjectParent() == pA);
-
   CPPUNIT_ASSERT(pModel->getReactions().size() == 2);
   const CReaction* pReaction1 = pModel->getReactions()[0];
   CPPUNIT_ASSERT(pReaction1 != NULL);
@@ -138,7 +137,7 @@ const char* test000035::MODEL_STRING =
   "    <notes>\n"
   "      <body xmlns=\"http://www.w3.org/1999/xhtml\">\n"
   "        <p>Model with fixed compartment volume, two species with hasOnlySubstanceUnits flag set to false. The units are set to ml and mMol. There is an initial assignment for the global parameter that contains a reference to species A.</p>\n"
-  "        <p>The imported model should contain an initial assignment for the global parameter that consists of the reference to species A. The species references in the reactions should be imported unmodified.</p>\n"
+  "        <p>The imported model should contain an initial assignment for the global parameter that consists of the reference to the initial concentration species A. The species references in the reactions should be imported unmodified.</p>\n"
   "      </body>\n"
   "    </notes>\n"
   "  <model id=\"Model_1\" name=\"New Model\">\n"

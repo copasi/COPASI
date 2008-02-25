@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000034.cpp,v $
-//   $Revision: 1.1.2.3 $
+//   $Revision: 1.1.2.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/25 10:41:32 $
+//   $Date: 2008/02/25 14:17:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -61,10 +61,15 @@ void test000034::test_hasOnlySubstanceUnits()
   const CMetab* pB = pModel->getMetabolites()[1];
   CPPUNIT_ASSERT(pB != NULL);
   CPPUNIT_ASSERT(pB->getStatus() == CModelEntity::REACTIONS);
-  CPPUNIT_ASSERT(pModel->getModelValues().size() == 1);
+  CPPUNIT_ASSERT(pModel->getModelValues().size() == 2);
+  // check the factor
+  const CModelValue* pFactor = pModel->getModelValues()[1];
+  CPPUNIT_ASSERT(pFactor != NULL);
+  CPPUNIT_ASSERT(pFactor->getStatus() == CModelEntity::FIXED);
+  CPPUNIT_ASSERT(fabs((pFactor->getValue() - pModel->getQuantity2NumberFactor()) / pModel->getQuantity2NumberFactor()) < 1e-3);
   const CModelValue* pModelValue = pModel->getModelValues()[0];
   CPPUNIT_ASSERT(pModelValue != NULL);
-  CPPUNIT_ASSERT(pModelValue->getStatus() == CModelEntity::ASSIGNMENT);
+  CPPUNIT_ASSERT(pModelValue->getStatus() == CModelEntity::ODE);
   const CExpression* pExpr = pModelValue->getExpressionPtr();
   // check the expression
   const CEvaluationNode* pNode = pExpr->getRoot();
@@ -78,9 +83,10 @@ void test000034::test_hasOnlySubstanceUnits()
   const CCopasiObject* pObject = CCopasiContainer::ObjectFromName(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
-  CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Concentration"));
+  CPPUNIT_ASSERT(pObject->getObjectName() == std::string("ParticleNumber"));
   CPPUNIT_ASSERT(pObject->getObjectParent() == pA);
-
+  // TODO check the kinetic laws
+  CPPUNIT_ASSERT(false);
   CPPUNIT_ASSERT(pModel->getReactions().size() == 2);
   const CReaction* pReaction1 = pModel->getReactions()[0];
   CPPUNIT_ASSERT(pReaction1 != NULL);
@@ -136,7 +142,7 @@ const char* test000034::MODEL_STRING =
   "    <notes>\n"
   "      <body xmlns=\"http://www.w3.org/1999/xhtml\">\n"
   "        <p>Model with fixed compartment volume, two species with hasOnlySubstanceUnits flag set to true. The units are set to ml and mMol. There is an ode rule for the global parameter that contains a reference to species A multiplied by a constant parameter.</p>\n"
-  "        <p>The imported model should contain a ode rule for the global parameter that consists of the reference to the particle number of species A. The species references in the reactions should be imported multiplied by the volume.</p>\n"
+  "        <p>The imported model should contain an ode rule for the global parameter that consists of the reference to the particle number of species A. The species references in the reactions should be imported multiplied by the volume.</p>\n"
   "      </body>\n"
   "    </notes>\n"
   "  <model id=\"Model_1\" name=\"New Model\">\n"

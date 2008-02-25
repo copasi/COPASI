@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000039.cpp,v $
-//   $Revision: 1.1.2.3 $
+//   $Revision: 1.1.2.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/25 10:41:32 $
+//   $Date: 2008/02/25 14:17:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -64,8 +64,9 @@ void test000039::test_hasOnlySubstanceUnits()
   CPPUNIT_ASSERT(pModel->getModelValues().size() == 1);
   const CModelValue* pModelValue = pModel->getModelValues()[0];
   CPPUNIT_ASSERT(pModelValue != NULL);
-  CPPUNIT_ASSERT(pModelValue->getStatus() == CModelEntity::ASSIGNMENT);
-  const CExpression* pExpr = pModelValue->getExpressionPtr();
+  CPPUNIT_ASSERT(pModelValue->getStatus() == CModelEntity::FIXED);
+  CPPUNIT_ASSERT(pModelValue->getInitialExpression() != "");
+  const CExpression* pExpr = pModelValue->getInitialExpressionPtr();
   // check the expression
   const CEvaluationNode* pNode = pExpr->getRoot();
   CPPUNIT_ASSERT(pNode != NULL);
@@ -78,9 +79,10 @@ void test000039::test_hasOnlySubstanceUnits()
   const CCopasiObject* pObject = CCopasiContainer::ObjectFromName(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
-  CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Concentration"));
+  CPPUNIT_ASSERT(pObject->getObjectName() == std::string("InitialParticleNumber"));
   CPPUNIT_ASSERT(pObject->getObjectParent() == pA);
-
+  // TODO check reactions
+  CPPUNIT_ASSERT(false);
   CPPUNIT_ASSERT(pModel->getReactions().size() == 2);
   const CReaction* pReaction1 = pModel->getReactions()[0];
   CPPUNIT_ASSERT(pReaction1 != NULL);
@@ -137,7 +139,7 @@ const char* test000039::MODEL_STRING =
   "    <notes>\n"
   "      <body xmlns=\"http://www.w3.org/1999/xhtml\">\n"
   "        <p>Model with fixed compartment volume, two species with hasOnlySubstanceUnits flag set to true. The units are set to ml and microMol. There is an initial assignment for the global parameter that contains a reference to species A multiplied by a constant.</p>\n"
-  "        <p>The imported model should contain an assignment for the global parameter that consists of the reference to the particle number of species A. The species references in the reactions should be imported multiplied by the volume.</p>\n"
+  "        <p>The imported model should contain an initial assignment for the global parameter that consists of the reference to the particle number of species A. The species references in the reactions should be imported multiplied by the volume.</p>\n"
   "      </body>\n"
   "    </notes>\n"
   "    <listOfFunctionDefinitions>\n"
@@ -198,7 +200,7 @@ const char* test000039::MODEL_STRING =
   "          <apply>\n"
   "            <times/>\n"
   "            <ci> species_1 </ci>\n"
-  "            <cn type=\"e-notation\"> 6.0221415e17 </cn>\n"
+  "            <cn> 6.0221415e17 </cn>\n"
   "          </apply>\n"
   "        </math>\n"
   "      </initialAssignment>\n"

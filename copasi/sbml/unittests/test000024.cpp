@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000024.cpp,v $
-//   $Revision: 1.1.2.2 $
+//   $Revision: 1.1.2.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/21 15:40:01 $
+//   $Date: 2008/02/25 14:17:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -61,13 +61,11 @@ void test000024::test_hasOnlySubstanceUnits()
   const CMetab* pB = pModel->getMetabolites()[1];
   CPPUNIT_ASSERT(pB != NULL);
   CPPUNIT_ASSERT(pB->getStatus() == CModelEntity::REACTIONS);
-  CPPUNIT_ASSERT(pModel->getModelValues().size() == 2);
+  CPPUNIT_ASSERT(pModel->getModelValues().size() == 1);
   const CModelValue* pModelValue = pModel->getModelValues()[0];
   CPPUNIT_ASSERT(pModelValue != NULL);
   CPPUNIT_ASSERT(pModelValue->getStatus() == CModelEntity::ASSIGNMENT);
   const CExpression* pExpr = pModelValue->getExpressionPtr();
-  // TODO check the second model value
-  CPPUNIT_ASSERT(false);
   // check the expression
   const CEvaluationNode* pNode = pExpr->getRoot();
   CPPUNIT_ASSERT(pNode != NULL);
@@ -102,7 +100,8 @@ void test000024::test_hasOnlySubstanceUnits()
   CPPUNIT_ASSERT(pElement->getMetabolite() == pA);
   CPPUNIT_ASSERT(pChemEq->getProducts().size() == 0);
   CPPUNIT_ASSERT(pChemEq->getModifiers().size() == 0);
-
+  // TODO check the reactions
+  CPPUNIT_ASSERT(false);
   const CReaction* pReaction2 = pModel->getReactions()[1];
   CPPUNIT_ASSERT(pReaction2 != NULL);
   CPPUNIT_ASSERT(pReaction2->isReversible() == false);

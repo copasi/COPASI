@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000041.cpp,v $
-//   $Revision: 1.1.2.3 $
+//   $Revision: 1.1.2.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/25 10:41:32 $
+//   $Date: 2008/02/25 14:17:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -61,11 +61,18 @@ void test000041::test_hasOnlySubstanceUnits()
   const CMetab* pB = pModel->getMetabolites()[1];
   CPPUNIT_ASSERT(pB != NULL);
   CPPUNIT_ASSERT(pB->getStatus() == CModelEntity::REACTIONS);
-  CPPUNIT_ASSERT(pModel->getModelValues().size() == 1);
+  CPPUNIT_ASSERT(pModel->getModelValues().size() == 2);
+  // check the factor
+  const CModelValue* pFactor = pModel->getModelValues()[1];
+  CPPUNIT_ASSERT(pFactor != NULL);
+  CPPUNIT_ASSERT(pFactor->getStatus() == CModelEntity::FIXED);
+  CPPUNIT_ASSERT(fabs((pFactor->getValue() - pModel->getQuantity2NumberFactor()) / pModel->getQuantity2NumberFactor()) < 1e-3);
+  // check the first parameter and its initial assignment
   const CModelValue* pModelValue = pModel->getModelValues()[0];
   CPPUNIT_ASSERT(pModelValue != NULL);
-  CPPUNIT_ASSERT(pModelValue->getStatus() == CModelEntity::ASSIGNMENT);
-  const CExpression* pExpr = pModelValue->getExpressionPtr();
+  CPPUNIT_ASSERT(pModelValue->getStatus() == CModelEntity::FIXED);
+  CPPUNIT_ASSERT(pModelValue->getInitialExpression() != "");
+  const CExpression* pExpr = pModelValue->getInitialExpressionPtr();
   // check the expression
   const CEvaluationNode* pNode = pExpr->getRoot();
   CPPUNIT_ASSERT(pNode != NULL);
@@ -78,7 +85,7 @@ void test000041::test_hasOnlySubstanceUnits()
   const CCopasiObject* pObject = CCopasiContainer::ObjectFromName(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
-  CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Concentration"));
+  CPPUNIT_ASSERT(pObject->getObjectName() == std::string("InitialParticleNumber"));
   CPPUNIT_ASSERT(pObject->getObjectParent() == pA);
 
   CPPUNIT_ASSERT(pModel->getReactions().size() == 2);
@@ -86,6 +93,8 @@ void test000041::test_hasOnlySubstanceUnits()
   CPPUNIT_ASSERT(pReaction1 != NULL);
   CPPUNIT_ASSERT(pReaction1->isReversible() == false);
   // check the kinetic law
+  // TODO check the reactions
+  CPPUNIT_ASSERT(false);
   const CFunction* pKineticFunction = pReaction1->getFunction();
   CPPUNIT_ASSERT(pKineticFunction != NULL);
   const CMassAction* pMassAction = dynamic_cast<const CMassAction*>(pKineticFunction);
@@ -137,7 +146,7 @@ const char* test000041::MODEL_STRING =
   "    <notes>\n"
   "      <body xmlns=\"http://www.w3.org/1999/xhtml\">\n"
   "        <p>Model with fixed compartment volume, two species with hasOnlySubstanceUnits flag set to true. The units are set to ml and mMol. There is an initial assignment for the global parameter that contains a reference to species A multiplied by a constant parameter.</p>\n"
-  "        <p>The imported model should contain an assignment for the global parameter that consists of the reference to the particel number of species A. The species references in the reactions should be imported multiplied by the volume.</p>\n"
+  "        <p>The imported model should contain an initial assignment for the global parameter that consists of the reference to the particel number of species A. The species references in the reactions should be imported multiplied by the volume.</p>\n"
   "      </body>\n"
   "    </notes>\n"
   "    <listOfFunctionDefinitions>\n"

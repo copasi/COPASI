@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000038.cpp,v $
-//   $Revision: 1.1.2.3 $
+//   $Revision: 1.1.2.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/25 10:41:32 $
+//   $Date: 2008/02/25 14:17:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -66,7 +66,7 @@ void test000038::test_hasOnlySubstanceUnits()
   CPPUNIT_ASSERT(pModelValue != NULL);
   CPPUNIT_ASSERT(pModelValue->getStatus() == CModelEntity::FIXED);
   CPPUNIT_ASSERT(pModelValue->getInitialExpression() != "");
-  const CExpression* pExpr = pModelValue->getExpressionPtr();
+  const CExpression* pExpr = pModelValue->getInitialExpressionPtr();
   CPPUNIT_ASSERT(pExpr != NULL);
   // check the expression
   const CEvaluationNode* pNode = pExpr->getRoot();
@@ -80,9 +80,10 @@ void test000038::test_hasOnlySubstanceUnits()
   const CCopasiObject* pObject = CCopasiContainer::ObjectFromName(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
-  CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Concentration"));
+  CPPUNIT_ASSERT(pObject->getObjectName() == std::string("InitialParticleNumber"));
   CPPUNIT_ASSERT(pObject->getObjectParent() == pA);
-
+  // TODO check the reactions
+  CPPUNIT_ASSERT(false);
   CPPUNIT_ASSERT(pModel->getReactions().size() == 2);
   const CReaction* pReaction1 = pModel->getReactions()[0];
   CPPUNIT_ASSERT(pReaction1 != NULL);

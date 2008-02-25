@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-//   $Revision: 1.63.4.5 $
+//   $Revision: 1.63.4.6 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/25 10:43:02 $
+//   $Date: 2008/02/25 14:17:08 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -245,7 +245,7 @@ class SBMLImporter
      * is preprocessed to replace some of the nodes data.
      * See also replaceCallNodeNames and replaceTimeNodeNames.
      */
-    void preprocessNode(ConverterASTNode* pNode, Model* pSBMLModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+    void preprocessNode(ConverterASTNode* pNode, Model* pSBMLModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, bool isKineticLaw = false);
 
     CFunction* findCorrespondingFunction(const CFunction* tree, const CReaction* reaction);
 
@@ -400,6 +400,16 @@ class SBMLImporter
      * model, the parameter is deleted from the COPASI model again.
      */
     void createHasOnlySubstanceUnitFactor(Model* pSBMLModel, double factor, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+
+    /**
+     * Multiplies all species nodes that belong to species with the
+     * hasSubstanceOnlyUnits flag set with the volume of the compartment that
+     * the species belongs to.
+     * This is only done for kineticLaw, all other mathematical expressions
+     * import those references as particle number nodes divied by the
+     * quantity2unit factor.
+     */
+    void multiplySubstanceOnlySpeciesByVolume(ConverterASTNode* pNode);
 
   public:
     SBMLImporter();

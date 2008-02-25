@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.189.2.6.2.10 $
+//   $Revision: 1.189.2.6.2.11 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/25 10:43:02 $
+//   $Date: 2008/02/25 14:17:08 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1034,7 +1034,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, Model* p
       else
         {
           ConverterASTNode* node = new ConverterASTNode(*kLawMath);
-          this->preprocessNode(node, pSBMLModel, copasi2sbmlmap);
+          this->preprocessNode(node, pSBMLModel, copasi2sbmlmap, true);
 
           if (node == NULL)
             {
@@ -2122,7 +2122,7 @@ void SBMLImporter::restoreFunctionDB()
     }
 }
 
-void SBMLImporter::preprocessNode(ConverterASTNode* pNode, Model* pSBMLModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
+void SBMLImporter::preprocessNode(ConverterASTNode* pNode, Model* pSBMLModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, bool isKineticLaw)
 {
   // this function goes through the tree three times.
   // this can probably be handled more intelligently
@@ -2132,7 +2132,14 @@ void SBMLImporter::preprocessNode(ConverterASTNode* pNode, Model* pSBMLModel, st
     }
   this->replaceCallNodeNames(pNode);
   this->replaceTimeNodeNames(pNode);
-  this->replaceAmountReferences(pNode, pSBMLModel, this->mpCopasiModel->getQuantity2NumberFactor(), copasi2sbmlmap);
+  if (isKineticLaw && !mSubstanceOnlySpecies.empty())
+    {
+      this->multiplySubstanceOnlySpeciesByVolume(pNode);
+    }
+  if (this->mpCopasiModel->getQuantityUnitEnum() != CModel::number && !isKineticLaw)
+    {
+      this->replaceAmountReferences(pNode, pSBMLModel, this->mpCopasiModel->getQuantity2NumberFactor(), copasi2sbmlmap);
+    }
 }
 
 /**
@@ -2201,7 +2208,7 @@ void SBMLImporter::replaceAmountReferences(ConverterASTNode* pNode, Model* pSBML
                   // check if child1 is a number that is equal to avogadros number
                   if (pNode->getChild(1)->getType() == AST_REAL || pNode->getChild(1)->getType() == AST_REAL_E)
                     {
-                      double value = pNode->getChild(0)->getMantissa() * pow(10.0, (double)pNode->getChild(0)->getExponent());
+                      double value = pNode->getChild(1)->getMantissa() * pow(10.0, (double)pNode->getChild(1)->getExponent());
                       if (fabs((factor - value) / factor) <= 1e-3)
                         {
                           // replace the times node with child0
@@ -4930,4 +4937,44 @@ void SBMLImporter::createHasOnlySubstanceUnitFactor(Model* pSBMLModel, double fa
   this->mAvogadroCreated = true;
   this->mPotentialAvogadroNumbers.insert(pParameter);
   this->createCModelValueFromParameter(pParameter, this->mpCopasiModel, copasi2sbmlmap);
+}
+
+void SBMLImporter::multiplySubstanceOnlySpeciesByVolume(ConverterASTNode* pNode)
+{
+  if (!pNode) return;
+  if (pNode->getType() == AST_NAME)
+    {
+      std::string id = pNode->getName();
+      std::map<Species*, Compartment*>::iterator it = this->mSubstanceOnlySpecies.begin(), endit = this->mSubstanceOnlySpecies.end();
+      while (it != endit)
+        {
+          if (it->first->getId() == id)
+            {
+              break;
+            }
+          ++it;
+        }
+      if (it != endit)
+        {
+          ConverterASTNode* pChild1 = new ConverterASTNode();
+          pChild1->setType(AST_NAME);
+          pChild1->setName(pNode->getName());
+          ConverterASTNode* pChild2 = new ConverterASTNode();
+          pChild2->setType(AST_NAME);
+          pChild2->setName(it->second->getId().c_str());
+          pNode->setType(AST_TIMES);
+          pNode->addChild(pChild1);
+          pNode->addChild(pChild2);
+        }
+    }
+  else
+    {
+      unsigned int i, iMax = pNode->getNumChildren();
+      for (i = 0;i < iMax;++i)
+        {
+          ConverterASTNode* pChild = dynamic_cast<ConverterASTNode*>(pNode->getChild(i));
+          assert(pChild != NULL);
+          this->multiplySubstanceOnlySpeciesByVolume(pChild);
+        }
+    }
 }
