@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-//   $Revision: 1.50 $
+//   $Revision: 1.51 $
 //   $Name:  $
 //   $Author: akoenig $
-//   $Date: 2007/10/25 13:02:05 $
+//   $Date: 2008/02/25 09:30:44 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -203,7 +208,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
   setTitle(FROM_UTF8(mpPlotSpecification->getTitle()));
 
   CPlotItem* pItem;
-  QColor curveColours[5] = {red, blue, green, cyan, magenta} ; //TODO
+  QColor curveColours[7] = {darkRed, blue, darkGreen, cyan, magenta, yellow, gray} ; //TODO
 
   mCurves.resize(kmax);
   mCurveTypes.resize(kmax);
