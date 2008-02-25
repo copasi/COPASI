@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.189.2.6.2.11 $
+//   $Revision: 1.189.2.6.2.12 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/25 14:17:08 $
+//   $Date: 2008/02/25 15:23:01 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -2212,8 +2212,8 @@ void SBMLImporter::replaceAmountReferences(ConverterASTNode* pNode, Model* pSBML
                       if (fabs((factor - value) / factor) <= 1e-3)
                         {
                           // replace the times node with child0
-                          pNode->removeChild(0);
-                          pNode->removeChild(1);
+                          delete pNode->removeChild(0);
+                          delete pNode->removeChild(1);
                           pNode->setType(AST_NAME);
                           pNode->setName(id.c_str());
                           return;
@@ -2232,8 +2232,8 @@ void SBMLImporter::replaceAmountReferences(ConverterASTNode* pNode, Model* pSBML
                           if ((*sit)->getId() == pNode->getChild(1)->getName())
                             {
                               // replace pNode by child0
-                              pNode->removeChild(0);
-                              pNode->removeChild(1);
+                              delete pNode->removeChild(0);
+                              delete pNode->removeChild(1);
                               pNode->setType(AST_NAME);
                               pNode->setName(id.c_str());
                               return;
@@ -2270,8 +2270,8 @@ void SBMLImporter::replaceAmountReferences(ConverterASTNode* pNode, Model* pSBML
                           if ((*sit)->getId() == pNode->getChild(0)->getName())
                             {
                               // replace pNode by child1
-                              pNode->removeChild(0);
-                              pNode->removeChild(1);
+                              delete pNode->removeChild(0);
+                              delete pNode->removeChild(1);
                               pNode->setType(AST_NAME);
                               pNode->setName(id.c_str());
                               return;
@@ -2303,8 +2303,8 @@ void SBMLImporter::replaceAmountReferences(ConverterASTNode* pNode, Model* pSBML
                       if (fabs((factor - value) / factor) <= 1e-3)
                         {
                           // replace pNode by child1
-                          pNode->removeChild(0);
-                          pNode->removeChild(1);
+                          delete pNode->removeChild(0);
+                          delete pNode->removeChild(1);
                           pNode->setType(AST_NAME);
                           pNode->setName(id.c_str());
                         }
@@ -4942,6 +4942,35 @@ void SBMLImporter::createHasOnlySubstanceUnitFactor(Model* pSBMLModel, double fa
 void SBMLImporter::multiplySubstanceOnlySpeciesByVolume(ConverterASTNode* pNode)
 {
   if (!pNode) return;
+  if (pNode->getType() == AST_DIVIDE)
+    {
+      // check if it is a division of a hasOnlySubstanceUnits species by the volume
+      ASTNode* pChild1 = pNode->getChild(0);
+      if (pChild1->getType() == AST_NAME)
+        {
+          std::map<Species*, Compartment*>::iterator it = this->mSubstanceOnlySpecies.begin(), endit = this->mSubstanceOnlySpecies.end();
+          while (it != endit)
+            {
+              if (it->first->getId() == pChild1->getName())
+                {
+                  break;
+                }
+              ++it;
+            }
+          if (it != endit)
+            {
+              ASTNode* pChild2 = pNode->getChild(1);
+              if (pChild2->getType() == AST_NAME && pChild2->getName() == it->second->getId())
+                {
+                  delete pNode->removeChild(0);
+                  delete pNode->removeChild(1);
+                  pNode->setType(AST_NAME);
+                  pNode->setName(it->first->getId().c_str());
+                  return;
+                }
+            }
+        }
+    }
   if (pNode->getType() == AST_NAME)
     {
       std::string id = pNode->getName();
