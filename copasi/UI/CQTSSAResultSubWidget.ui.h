@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQTSSAResultSubWidget.ui.h,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: akoenig $
-//   $Date: 2008/02/24 17:44:23 $
+//   $Date: 2008/02/25 15:42:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -121,6 +121,8 @@ void CQTSSAResultSubWidget::init()
   mTabWidget->addTab(mpTimeScaleWidget, "Timescale");
   //set colorsettings for ArrayAnnotationWidgets
   CColorScaleSimple * tcs = new CColorScaleSimple();
+  CColorScaleAverage * tcs2 = new CColorScaleAverage();
+
   tcs->setMinMax(-100, 100);
   // mVslow_metab widget
   pArrayWidget->setColorCoding(tcs);
@@ -129,11 +131,11 @@ void CQTSSAResultSubWidget::init()
   pArrayWidget2->setColorCoding(tcs);
   pArrayWidget2->setColorScalingAutomatic(false);
   // mVslow_space widget
-  pArrayWidget3->setColorCoding(tcs);
-  pArrayWidget3->setColorScalingAutomatic(false);
+  pArrayWidget3->setColorCoding(tcs2);
+  pArrayWidget3->setColorScalingAutomatic(true);
   // mVslow_space widget
-  pArrayWidget4->setColorCoding(tcs);
-  pArrayWidget4->setColorScalingAutomatic(false);
+  pArrayWidget4->setColorCoding(tcs2);
+  pArrayWidget4->setColorScalingAutomatic(true);
 
   connect(mSlider, SIGNAL(valueChanged(int)), this, SLOT(changeInterval()));
   connect(tabWidget2, SIGNAL(currentChanged(QWidget *)), this, SLOT(hideButtons()));
