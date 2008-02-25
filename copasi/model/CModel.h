@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.155.4.1 $
+//   $Revision: 1.155.4.2 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/02/06 06:27:19 $
+//   $Author: shoops $
+//   $Date: 2008/02/25 14:54:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1068,13 +1068,6 @@ class CModel : public CModelEntity
      * @return CModel::CStateTemplate & stateTemplate
      */
     CStateTemplate & getStateTemplate();
-
-    /**
-     * Retrieve the list of objects which are up to date after a call
-     * to apply assignment.
-     * @return std::set< const CCopasiObject * > & uptoDateObjects
-     */
-    std::set< const CCopasiObject * > & getUptoDateObjects();
 
     /**
      * Retrieve the list of objects which are up to date after a call

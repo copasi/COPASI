@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.334.4.4 $
+//   $Revision: 1.334.4.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/02/08 21:36:23 $
+//   $Date: 2008/02/25 14:54:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -949,9 +949,6 @@ const CMatrix< C_FLOAT64 > & CModel::getL0() const
 
 CStateTemplate & CModel::getStateTemplate()
 {CCHECK return mStateTemplate;}
-
-std::set< const CCopasiObject * > & CModel::getUptoDateObjects()
-{CCHECK return mSimulatedUpToDateObjects;}
 
 const std::set< const CCopasiObject * > & CModel::getUptoDateObjects() const
   {return mSimulatedUpToDateObjects;}
