@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/moieties/CMoietiesMethod.cpp,v $
-//   $Revision: 1.1.2.2 $
+//   $Revision: 1.1.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/02/11 18:30:54 $
+//   $Date: 2008/02/25 23:03:53 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,7 +34,7 @@ CMoietiesMethod * CMoietiesMethod::createMethod(const CCopasiMethod::SubType & s
 }
 
 CMoietiesMethod::CMoietiesMethod():
-    CCopasiMethod(CCopasiTask::moieties, CCopasiMethod::unset),
+    CCopasiMethod(CCopasiTask::moieties, CCopasiMethod::Householder),
     mpProblem(NULL)
 {}
 
