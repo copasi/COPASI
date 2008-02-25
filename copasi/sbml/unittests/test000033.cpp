@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000033.cpp,v $
-//   $Revision: 1.1.2.4 $
+//   $Revision: 1.1.2.5 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/25 14:17:09 $
+//   $Date: 2008/02/25 19:13:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -62,16 +62,28 @@ void test000033::test_hasOnlySubstanceUnits()
   CPPUNIT_ASSERT(pB != NULL);
   CPPUNIT_ASSERT(pB->getStatus() == CModelEntity::REACTIONS);
   CPPUNIT_ASSERT(pModel->getModelValues().size() == 2);
+  // check the second model value
+  const CModelValue* pFactor = pModel->getModelValues()[1];
+  CPPUNIT_ASSERT(pFactor != NULL);
+  CPPUNIT_ASSERT(pFactor->getStatus() == CModelEntity::FIXED);
+  CPPUNIT_ASSERT(fabs((pFactor->getValue() - pModel->getQuantity2NumberFactor()) / pModel->getQuantity2NumberFactor()) < 1e-3);
   const CModelValue* pModelValue = pModel->getModelValues()[0];
   CPPUNIT_ASSERT(pModelValue != NULL);
   CPPUNIT_ASSERT(pModelValue->getStatus() == CModelEntity::ODE);
-  // TODO check the second model value
-  CPPUNIT_ASSERT(false);
   const CExpression* pExpr = pModelValue->getExpressionPtr();
   // check the expression
   const CEvaluationNode* pNode = pExpr->getRoot();
   CPPUNIT_ASSERT(pNode != NULL);
-  const CEvaluationNodeObject* pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pNode);
+  const CEvaluationNodeOperator* pOperatorNode = dynamic_cast<const CEvaluationNodeOperator*>(pNode);
+  CPPUNIT_ASSERT(pOperatorNode != NULL);
+  CPPUNIT_ASSERT(((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pOperatorNode->getType())) == CEvaluationNodeOperator::MULTIPLY);
+  const CEvaluationNodeNumber* pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pNode->getChild()->getSibling());
+  CPPUNIT_ASSERT(pNumberNode != NULL);
+  CPPUNIT_ASSERT(((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pNumberNode->getType())) == CEvaluationNodeNumber::DOUBLE);
+  pOperatorNode = dynamic_cast<const CEvaluationNodeOperator*>(pOperatorNode->getChild());
+  CPPUNIT_ASSERT(pOperatorNode != NULL);
+  CPPUNIT_ASSERT(((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pOperatorNode->getType())) == CEvaluationNodeOperator::DIVIDE);
+  const CEvaluationNodeObject* pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pOperatorNode->getChild());
   CPPUNIT_ASSERT(pObjectNode != NULL);
   CCopasiObjectName objectCN = pObjectNode->getObjectCN();
   CPPUNIT_ASSERT(!objectCN.empty());
@@ -82,6 +94,15 @@ void test000033::test_hasOnlySubstanceUnits()
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("ParticleNumber"));
   CPPUNIT_ASSERT(pObject->getObjectParent() == pA);
+  pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pOperatorNode->getChild()->getSibling());
+  CPPUNIT_ASSERT(pObjectNode != NULL);
+  objectCN = pObjectNode->getObjectCN();
+  CPPUNIT_ASSERT(!objectCN.empty());
+  pObject = CCopasiContainer::ObjectFromName(listOfContainers, objectCN);
+  CPPUNIT_ASSERT(pObject != NULL);
+  CPPUNIT_ASSERT(pObject->isReference() == true);
+  CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Value"));
+  CPPUNIT_ASSERT(pObject->getObjectParent() == pFactor);
 
   CPPUNIT_ASSERT(pModel->getReactions().size() == 2);
   const CReaction* pReaction1 = pModel->getReactions()[0];
@@ -137,7 +158,7 @@ const char* test000033::MODEL_STRING =
   "<sbml xmlns=\"http://www.sbml.org/sbml/level2/version3\" level=\"2\" version=\"3\">\n"
   "    <notes>\n"
   "      <body xmlns=\"http://www.w3.org/1999/xhtml\">\n"
-  "        <p>Model with fixed compartment volume, two species with hasOnlySubstanceUnits flag set to true. The units are set to ml and mMol. There is an assignment ruile for the global parameter that contains a reference to species A multiplied by an arbitrary value.</p>\n"
+  "        <p>Model with fixed compartment volume, two species with hasOnlySubstanceUnits flag set to true. The units are set to ml and mMol. There is an assignment rule for the global parameter that contains a reference to species A multiplied by an arbitrary value.</p>\n"
   "        <p>The imported model should contain an assignment for the global parameter that consists of the reference to the particle number of species A divided by a constant and multiplied by the arbitrary value. The species references in the reactions should be imported multiplied by the volume.</p>\n"
   "      </body>\n"
   "    </notes>\n"

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.189.2.6.2.12 $
+//   $Revision: 1.189.2.6.2.13 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/25 15:23:01 $
+//   $Date: 2008/02/25 19:13:20 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -2132,11 +2132,11 @@ void SBMLImporter::preprocessNode(ConverterASTNode* pNode, Model* pSBMLModel, st
     }
   this->replaceCallNodeNames(pNode);
   this->replaceTimeNodeNames(pNode);
-  if (isKineticLaw && !mSubstanceOnlySpecies.empty())
+  if (isKineticLaw && !this->mSubstanceOnlySpecies.empty())
     {
       this->multiplySubstanceOnlySpeciesByVolume(pNode);
     }
-  if (this->mpCopasiModel->getQuantityUnitEnum() != CModel::number && !isKineticLaw)
+  if (!this->mSubstanceOnlySpecies.empty() && this->mpCopasiModel->getQuantityUnitEnum() != CModel::number && !isKineticLaw)
     {
       this->replaceAmountReferences(pNode, pSBMLModel, this->mpCopasiModel->getQuantity2NumberFactor(), copasi2sbmlmap);
     }
@@ -3772,7 +3772,7 @@ void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<CCopasiObje
       unsigned int i, iMax = pNode->getNumChildren();
       for (i = 0;i < iMax;++i)
         {
-          this->replaceObjectNames(pNode->getChild(i), copasi2sbmlmap);
+          this->replaceObjectNames(pNode->getChild(i), copasi2sbmlmap, initialExpression);
         }
     }
 }
