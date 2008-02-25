@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
-//   $Revision: 1.39.12.4 $
+//   $Revision: 1.39.12.5 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/02/01 13:04:36 $
+//   $Author: shoops $
+//   $Date: 2008/02/25 21:15:19 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -388,7 +388,7 @@ int main(int argc, char *argv[])
                   {
                     TaskList[i]->getProblem()->setModel(CCopasiDataModel::Global->getModel());
 
-                    TaskList[i]->initialize(CCopasiTask::OUTPUT_COMPLETE, NULL);
+                    TaskList[i]->initialize(CCopasiTask::OUTPUT_COMPLETE, CCopasiDataModel::Global, NULL);
                     // We need to check whether the result is saved in any form.
                     // If not we need to stop right here to avoid wasting time.
                     if (CCopasiMessage::checkForMessage(MCCopasiTask + 5) &&
@@ -471,7 +471,7 @@ int validate()
 
         try
           {
-            if (!TaskList[i]->initialize(CCopasiTask::OUTPUT_COMPLETE, NULL))
+            if (!TaskList[i]->initialize(CCopasiTask::OUTPUT_COMPLETE, CCopasiDataModel::Global, NULL))
               retcode = 1;
 
             // We need to check whether the result is saved in any form.

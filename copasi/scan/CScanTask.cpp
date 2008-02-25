@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.cpp,v $
-//   $Revision: 1.67.2.1.2.1 $
+//   $Revision: 1.67.2.1.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/11 14:30:56 $
+//   $Date: 2008/02/25 21:15:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -67,6 +67,7 @@ void CScanTask::cleanup()
 {}
 
 bool CScanTask::initialize(const OutputFlag & of,
+                           COutputHandler * pOutputHandler,
                            std::ostream * pOstream)
 {
   assert(mpProblem && mpMethod);
@@ -74,7 +75,7 @@ bool CScanTask::initialize(const OutputFlag & of,
   mpMethod->isValidProblem(mpProblem);
 
   bool success = true;
-  if (!CCopasiTask::initialize(of, pOstream)) success = false;
+  if (!CCopasiTask::initialize(of, pOutputHandler, pOstream)) success = false;
 
   return success;
 }
@@ -225,9 +226,9 @@ bool CScanTask::initSubtask()
   mpSubtask->setCallBack(NULL);
 
   if (mOutputInSubtask)
-    mpSubtask->initialize(OUTPUT, NULL);
+    mpSubtask->initialize(OUTPUT, mpOutputHandler, NULL);
   else
-    mpSubtask->initialize(NO_OUTPUT, NULL);
+    mpSubtask->initialize(NO_OUTPUT, mpOutputHandler, NULL);
 
   return true;
 }

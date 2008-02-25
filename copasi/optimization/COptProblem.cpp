@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-//   $Revision: 1.94 $
+//   $Revision: 1.94.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/15 17:51:27 $
+//   $Date: 2008/02/25 21:15:18 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -73,7 +78,10 @@ COptProblem::COptProblem(const CCopasiTask::Type & type,
     mFailedCounter(0),
     mCPUTime(CCopasiTimer::CPU, this),
     mhSolutionValue(C_INVALID_INDEX),
-    mhCounter(C_INVALID_INDEX)
+    mhCounter(C_INVALID_INDEX),
+    mStoreResults(false),
+    mHaveStatistics(false),
+    mGradient(0)
 {
   initializeParameter();
   initObjects();
@@ -106,7 +114,10 @@ COptProblem::COptProblem(const COptProblem& src,
     mFailedCounter(0),
     mCPUTime(CCopasiTimer::CPU, this),
     mhSolutionValue(C_INVALID_INDEX),
-    mhCounter(C_INVALID_INDEX)
+    mhCounter(C_INVALID_INDEX),
+    mStoreResults(src.mStoreResults),
+    mHaveStatistics(src.mHaveStatistics),
+    mGradient(src.mGradient)
 {
   initializeParameter();
   initObjects();
@@ -248,7 +259,7 @@ bool COptProblem::initialize()
       if (!mpReport->getStream()) mpReport = NULL;
     }
 
-  // This is extemely vulnerable to human COPASI file manipulations
+  // This is extremely vulnerable to human COPASI file manipulations
   mpSteadyState =
     dynamic_cast< CSteadyStateTask * >(GlobalKeys.get(* getValue("Steady-State").pKEY));
   if (!mpSteadyState && * getValue("Steady-State").pKEY != "")
@@ -277,12 +288,12 @@ bool COptProblem::initialize()
 
   if (mpSteadyState)
     {
-      mpSteadyState->initialize(CCopasiTask::NO_OUTPUT, NULL);
+      mpSteadyState->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
       ContainerList.push_back(mpSteadyState);
     }
   if (mpTrajectory)
     {
-      mpTrajectory->initialize(CCopasiTask::NO_OUTPUT, NULL);
+      mpTrajectory->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
       ContainerList.push_back(mpTrajectory);
     }
 
@@ -432,6 +443,15 @@ bool COptProblem::calculate()
 {
   mCounter++;
   bool success = false;
+  COutputHandler * pOutputHandler = NULL;
+
+  if (mStoreResults && mpTrajectory != NULL)
+    {
+      static_cast< CTrajectoryProblem * >(mpTrajectory->getProblem())->setTimeSeriesRequested(true);
+
+      pOutputHandler = new COutputHandler();
+      mpTrajectory->initialize(CCopasiTask::ONLY_TIME_SERIES, pOutputHandler, NULL);
+    }
 
   try
     {
@@ -470,6 +490,13 @@ bool COptProblem::calculate()
       success = false;
     }
 
+  if (mStoreResults && mpTrajectory != NULL)
+    {
+      mStoreResults = false;
+      mpTrajectory->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
+      pdelete(pOutputHandler);
+    }
+
   if (!success || isnan(mCalculateValue)) mCalculateValue = mInfinity;
 
   if (mpCallBack) return mpCallBack->progress(mhCounter);
@@ -477,12 +504,14 @@ bool COptProblem::calculate()
   return true;
 }
 
-bool COptProblem::calculateStatistics(const C_FLOAT64 & /* factor */,
-                                      const C_FLOAT64 & /* resolution */)
+bool COptProblem::calculateStatistics(const C_FLOAT64 & factor,
+                                      const C_FLOAT64 & resolution)
 {
-#ifdef XXXX // The gradient is also meanigful for optimization.
+  // Set the current values to the solution values.
   unsigned C_INT32 i, imax = mSolutionVariables.size();
+
   mGradient.resize(imax);
+  mGradient = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
   // Recalcuate the best solution.
   for (i = 0; i < imax; i++)
@@ -490,8 +519,10 @@ bool COptProblem::calculateStatistics(const C_FLOAT64 & /* factor */,
 
   calculate();
 
-  // Keep the results
-  assert (mSolutionValue == mCalculateValue);
+  if (mSolutionValue == mInfinity)
+    return false;
+
+  mHaveStatistics = true;
 
   C_FLOAT64 Current;
   C_FLOAT64 Delta;
@@ -519,7 +550,11 @@ bool COptProblem::calculateStatistics(const C_FLOAT64 & /* factor */,
       // Restore the value
       (*mUpdateMethods[i])(Current);
     }
-#endif // XXXX
+
+  // This is necessary so that the result can be displayed.
+  mStoreResults = true;
+  calculate();
+  mStoreResults = false;
 
   // Make sure the timer is acurate.
   (*mCPUTime.getRefresh())();

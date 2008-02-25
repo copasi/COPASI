@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSAResultWidget.cpp,v $
-//   $Revision: 1.3.4.1 $
+//   $Revision: 1.3.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/02/21 19:12:55 $
+//   $Date: 2008/02/25 21:15:14 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -73,7 +73,7 @@ CQTSSAResultWidget::~CQTSSAResultWidget()
 bool CQTSSAResultWidget::loadFromBackend()
 {
   mCentralWidget->displayOptimizationTab(false);
-  mCentralWidget->table()->setTimeSeries(&dynamic_cast<CTSSATask *>((*CCopasiDataModel::Global->getTaskList())["Time Scale Separation Analysis"])->getTimeSeries());
+  mCentralWidget->table()->setTimeSeries(dynamic_cast<CTSSATask *>((*CCopasiDataModel::Global->getTaskList())["Time Scale Separation Analysis"])->getTimeSeries());
   return true;
 }
 
@@ -97,7 +97,7 @@ bool CQTSSAResultWidget::update(ListViews::ObjectType C_UNUSED(objectType), List
   if (this->isShown())
     return loadFromBackend();
 
-  mCentralWidget->table()->setTimeSeries(NULL);
+  mCentralWidget->table()->setTimeSeries(CTimeSeries());
   return true;
 }
 

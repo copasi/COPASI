@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapTask.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.12.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/12 18:40:21 $
+//   $Date: 2008/02/25 21:15:23 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -108,6 +113,7 @@ void CLyapTask::initObjects()
 }
 
 bool CLyapTask::initialize(const OutputFlag & of,
+                           COutputHandler * pOutputHandler,
                            std::ostream * pOstream)
 {
   assert(mpProblem && mpMethod);
@@ -140,7 +146,7 @@ bool CLyapTask::initialize(const OutputFlag & of,
       mvLocExpRef[i]->setReference(mLocalExponents.array()[i]);
     }
 
-  if (!CCopasiTask::initialize(of, pOstream)) success = false;
+  if (!CCopasiTask::initialize(of, pOutputHandler, pOstream)) success = false;
   //mTimeSeriesRequested = mpLyapProblem->timeSeriesRequested();
 
   return success;

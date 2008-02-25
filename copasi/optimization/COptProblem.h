@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.h,v $
-//   $Revision: 1.54 $
+//   $Revision: 1.54.6.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/04 17:31:39 $
+//   $Date: 2008/02/25 21:15:18 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -419,6 +424,23 @@ class COptProblem : public CCopasiProblem
      * Handle of "Function Evaluations" process report item
      */
     unsigned C_INT32 mhCounter;
+
+    /**
+     * Indicates whether the results shall be stored. The default
+     * is false.
+     */
+    bool mStoreResults;
+
+    /**
+     * Indicates whether the statistics have been calculated for
+     * the current result
+     */
+    bool mHaveStatistics;
+
+    /**
+     * The gradient vector for the parameters
+     */
+    CVector< C_FLOAT64 > mGradient;
   };
 
 #endif  // the end

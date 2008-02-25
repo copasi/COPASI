@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CTimeSeriesTable.cpp,v $
-//   $Revision: 1.7.4.1 $
+//   $Revision: 1.7.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/02/21 19:12:55 $
+//   $Date: 2008/02/25 21:15:14 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,12 +18,28 @@
 #include "CTimeSeriesTable.h"
 #include "qtUtilities.h"
 
-void CTimeSeriesTable::setTimeSeries(const CTimeSeries * pTS)
+CTimeSeriesTable::CTimeSeriesTable(QWidget* p, const char * name):
+    QTable(3, 3, p, name),
+    mpTS(NULL),
+    mFlagConc(true)
 {
-  mpTS = pTS;
+  setLeftMargin(0);
+  mItem = new QTableItem(this, QTableItem::Never);
+}
+
+CTimeSeriesTable::~CTimeSeriesTable()
+{
+  pdelete(mpTS)
+}
+
+void CTimeSeriesTable::setTimeSeries(const CTimeSeries & TS)
+{
+  pdelete(mpTS);
+  mpTS = new CTimeSeries(TS);
+
   if (mpTS != NULL)
     {
-      setNumRows(mpTS->getNumSteps());
+      setNumRows(mpTS->getRecordedSteps());
       setNumCols(mpTS->getNumVariables());
 
       QHeader *tableHeader = horizontalHeader();
@@ -36,13 +52,12 @@ void CTimeSeriesTable::setTimeSeries(const CTimeSeries * pTS)
       setNumRows(0);
       setNumCols(0);
     }
-  // :TODO: save old current cell and set afterwards
 }
 
 QString CTimeSeriesTable::textForCell(unsigned int row, unsigned int col)
 {
   if (mpTS == NULL) return "";
-  if (row > mpTS->getNumSteps()) return "";
+  if (row > mpTS->getRecordedSteps()) return "";
   if (col > mpTS->getNumVariables()) return "";
 
   if (mFlagConc)

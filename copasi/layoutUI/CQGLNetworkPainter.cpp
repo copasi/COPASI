@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.78.4.2 $
+//   $Revision: 1.78.4.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/11 14:30:56 $
+//   $Date: 2008/02/25 21:15:14 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1084,14 +1084,14 @@ bool CQGLNetworkPainter::createDataSets()
     {
       CTrajectoryTask *ptask = dynamic_cast< CTrajectoryTask * >((*CCopasiDataModel::Global->getTaskList())["Time-Course"]);
       const CTimeSeries & timeSer = ptask->getTimeSeries();
-      if (timeSer.getNumSteps() > 0)
+      if (timeSer.getRecordedSteps() > 0)
         {
           if (timeSer.getNumVariables() > 0)
             {
               dataSets.clear(); // remove old data sets
-              pSummaryInfo = new CSimSummaryInfo(timeSer.getNumSteps(), timeSer.getNumVariables(),
-                                                 timeSer.getConcentrationData(timeSer.getNumSteps() - 1, 0) - timeSer.getConcentrationData(0, 0));
-              //C_FLOAT64 tt = timeSer.getConcentrationData(timeSer.getNumSteps() - 1, 0) - timeSer.getConcentrationData(0, 0);
+              pSummaryInfo = new CSimSummaryInfo(timeSer.getRecordedSteps(), timeSer.getNumVariables(),
+                                                 timeSer.getConcentrationData(timeSer.getRecordedSteps() - 1, 0) - timeSer.getConcentrationData(0, 0));
+              //C_FLOAT64 tt = timeSer.getConcentrationData(timeSer.getRecordedSteps() - 1, 0) - timeSer.getConcentrationData(0, 0);
               //std::cout << "summary: no of steps: " << pSummaryInfo->getNumberOfSteps() << std::endl,
               //std::cout << "total time: " << tt << std::endl;
               //std::cout << "number of steps in time series: " << timeSer.getNumSteps() << std::endl;
@@ -1116,7 +1116,7 @@ bool CQGLNetworkPainter::createDataSets()
                   if (iter != keyMap.end())
                     {// if there is a node (key)
                       ndKey = (keyMap.find(objKey))->second;
-                      for (t = 0;t <= timeSer.getNumSteps();t++) // iterate on time steps t=0..n
+                      for (t = 0;t <= timeSer.getRecordedSteps();t++) // iterate on time steps t=0..n
                         {
                           val = timeSer.getConcentrationData(t, i);
                           if (val > maxR)
@@ -1134,7 +1134,7 @@ bool CQGLNetworkPainter::createDataSets()
               pSummaryInfo->setMaxOverallConcentration(maxAll);
               //std::cout << *pSummaryInfo;
               //this->printNodeMap();
-              //dataSets.resize(timeSer.getNumSteps());
+              //dataSets.resize(timeSer.getRecordedSteps());
               // now create data sets for visualization/animation
               // try to get VisParameters from parent (CQLayoutMainWindow)
               C_FLOAT64 minNodeSize = 10;
@@ -1144,7 +1144,7 @@ bool CQGLNetworkPainter::createDataSets()
                   minNodeSize = pParentLayoutWindow->getMinNodeSize();
                   maxNodeSize = pParentLayoutWindow->getMaxNodeSize();
                 }
-              for (t = 0; t < timeSer.getNumSteps(); t++)  // iterate on time steps t=0..n
+              for (t = 0; t < timeSer.getRecordedSteps(); t++)  // iterate on time steps t=0..n
                 {
                   CDataEntity dataSet;
                   for (i = 0;i < timeSer.getNumVariables();i++) // iterate on reactants

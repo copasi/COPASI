@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/moieties/CMoietiesTask.cpp,v $
-//   $Revision: 1.1.2.2 $
+//   $Revision: 1.1.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/02/11 18:30:54 $
+//   $Date: 2008/02/25 21:15:22 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -60,6 +60,7 @@ bool CMoietiesTask::setCallBack(CProcessReport * pCallBack)
 }
 
 bool CMoietiesTask::initialize(const OutputFlag & of,
+                               COutputHandler * pOutputHandler,
                                std::ostream * pOstream)
 {
   CMoietiesProblem * pProblem = dynamic_cast<CMoietiesProblem *>(mpProblem);
@@ -70,7 +71,7 @@ bool CMoietiesTask::initialize(const OutputFlag & of,
   pMethod->setProblem(pProblem);
 
   // Default initialization
-  bool success = CCopasiTask::initialize(of, pOstream);
+  bool success = CCopasiTask::initialize(of, pOutputHandler, pOstream);
 
   success &= mpMethod->isValidProblem(mpProblem);
 

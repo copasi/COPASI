@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.h,v $
-//   $Revision: 1.42.8.1 $
+//   $Revision: 1.42.8.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/02/09 00:57:28 $
+//   $Date: 2008/02/25 21:15:19 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -95,11 +95,26 @@ class CCopasiTask : public CCopasiContainer
     static bool isValidMethod(const unsigned C_INT32 & method,
                               const unsigned C_INT32 * validMethods);
 
+    enum eOutputFlagBase
+    {
+      INITIALIZE = 0x01,
+      STREAM = 0x02,
+      FINISH = 0x04,
+      REPORT = 0x10,
+      PLOT = 0x20,
+      TIME_SERIES = 0x40,
+    };
+
     enum OutputFlag
     {
-      NO_OUTPUT = 0, //do no output
-      OUTPUT, //do output, but do not initialize/finish
-      OUTPUT_COMPLETE          //do output, including initialization and closing
+      //do no output
+      NO_OUTPUT = 0,
+      //do output, but do not initialize/finish
+      OUTPUT = REPORT | PLOT | TIME_SERIES | STREAM,
+      //do output, including initialization and closing
+      OUTPUT_COMPLETE = REPORT | PLOT | TIME_SERIES | INITIALIZE | STREAM | FINISH,
+      // only do time series
+      ONLY_TIME_SERIES = TIME_SERIES | INITIALIZE | STREAM | FINISH
     };
 
   class CDescription: public CCopasiObject
@@ -340,10 +355,13 @@ class CCopasiTask : public CCopasiContainer
      * instead of the target specified in the report. This allows nested
      * tasks to share the same output device.
      * @param const OutputFlag & of
+     * @param COutputHandler * pOutputHandler
      * @param std::ostream * pOstream (default: NULL)
      * @return bool success
      */
-    virtual bool initialize(const OutputFlag & of, std::ostream * pOstream);
+    virtual bool initialize(const OutputFlag & of,
+                            COutputHandler * pOutputHandler,
+                            std::ostream * pOstream);
 
     /**
      * Process the task with or without initializing to the initial state.
@@ -430,6 +448,7 @@ class CCopasiTask : public CCopasiContainer
 
   protected:
     OutputFlag mDoOutput;
+    COutputHandler * mpOutputHandler;
     unsigned C_INT32 mOutputCounter;
 
   private:

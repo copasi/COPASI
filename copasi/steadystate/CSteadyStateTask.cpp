@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-//   $Revision: 1.69.4.1 $
+//   $Revision: 1.69.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/22 18:51:23 $
+//   $Date: 2008/02/25 21:15:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -143,6 +143,7 @@ const CEigen & CSteadyStateTask::getEigenValuesReduced() const
   }
 
 bool CSteadyStateTask::initialize(const OutputFlag & of,
+                                  COutputHandler * pOutputHandler,
                                   std::ostream * pOstream)
 {
   assert(mpProblem && mpMethod);
@@ -151,7 +152,7 @@ bool CSteadyStateTask::initialize(const OutputFlag & of,
 
   bool success = true;
 
-  success &= CCopasiTask::initialize(of, pOstream);
+  success &= CCopasiTask::initialize(of, pOutputHandler, pOstream);
 
   //init states
   if (!mpProblem->getModel()) return false;

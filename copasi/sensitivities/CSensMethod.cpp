@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensMethod.cpp,v $
-//   $Revision: 1.23.4.1 $
+//   $Revision: 1.23.4.2 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/02/25 13:53:39 $
+//   $Author: shoops $
+//   $Date: 2008/02/25 21:15:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -486,7 +486,7 @@ bool CSensMethod::initialize(CSensProblem* problem)
     {
       mpSubTask->getProblem()->setModel(mpProblem->getModel());
       mpSubTask->setCallBack(NULL);
-      mpSubTask->initialize(CCopasiTask::NO_OUTPUT, NULL);
+      mpSubTask->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
     }
 
   //initialize the variables pointers

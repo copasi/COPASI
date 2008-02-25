@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/moieties/CMoietiesTask.h,v $
-//   $Revision: 1.1.2.1 $
+//   $Revision: 1.1.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/02/09 00:58:16 $
+//   $Date: 2008/02/25 21:15:22 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -60,10 +60,13 @@ class CMoietiesTask : public CCopasiTask
      * instead of the target specified in the report. This allows nested
      * tasks to share the same output device.
      * @param const OutputFlag & of
+     * @param COutputHandler * pOutputHandler
      * @param std::ostream * pOstream (default: NULL)
      * @return bool success
      */
-    virtual bool initialize(const OutputFlag & of, std::ostream * pOstream);
+    virtual bool initialize(const OutputFlag & of,
+                            COutputHandler * pOutputHandler,
+                            std::ostream * pOstream);
 
     /**
      * Process the task with or without initializing to the initial state.

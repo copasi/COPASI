@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSATask.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.1.8.1 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2007/04/12 12:47:49 $
+//   $Author: shoops $
+//   $Date: 2008/02/25 21:15:21 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -97,10 +102,13 @@ class CTSSATask : public CCopasiTask
      * instead of the target specified in the report. This allows nested
      * tasks to share the same output device.
      * @param const OutputFlag & of
+     * @param COutputHandler * pOutputHandler
      * @param std::ostream * pOstream (default: NULL)
      * @return bool success
      */
-    virtual bool initialize(const OutputFlag & of, std::ostream * pOstream);
+    virtual bool initialize(const OutputFlag & of,
+                            COutputHandler * pOutputHandler,
+                            std::ostream * pOstream);
 
     /**
      * Process the task with or without initializing to the initial state.
@@ -152,12 +160,6 @@ class CTSSATask : public CCopasiTask
      * @return time series
      */
     const CTimeSeries & getTimeSeries() const;
-
-    /**
-     * Perform an output event for the current activity
-     * @param const Activity & activity
-     */
-    virtual void output(const COutputInterface::Activity & activity);
 
   private:
     /**

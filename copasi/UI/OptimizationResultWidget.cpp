@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationResultWidget.cpp,v $
-//   $Revision: 1.7.4.1 $
+//   $Revision: 1.7.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/02/21 19:12:55 $
+//   $Date: 2008/02/25 21:15:14 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -92,42 +92,22 @@ bool OptimizationResultWidget::loadFromBackend()
 
   // We need to use the solution and run Steady-State or Time-Course.
   const CVector< C_FLOAT64 > & Solution = pProblem->getSolutionVariables();
-  const std::vector< UpdateMethod * > & SetCalculateVariable =
-    pProblem->getCalculateVariableUpdateMethods();
 
-  const C_FLOAT64 * pIt = Solution.array();
-  const C_FLOAT64 * pEnd = pIt + Solution.size();
-  std::vector< UpdateMethod * >::const_iterator itUpdate = SetCalculateVariable.begin();
-
-  success = (pIt != pEnd);
   success &= (pProblem->getSolutionValue() < DBL_MAX);
-
-  for (; pIt != pEnd; ++pIt, ++itUpdate) (**itUpdate)(*pIt);
-
-  if (success)
-    {
-      pProblem->calculate();
-      success = (pProblem->getCalculateValue() != DBL_MAX);
-    }
 
   if (success)
     pProblem->printResult(&os);
   else
     os << "<h2>No result available, please execute the optimization task.</h2>";
 
-  if (mCentralWidgetSteady == NULL)
+  if (mCentralWidgetTime != NULL)
     {
-      pdelete(mpTimeSeries);
-      mpTimeSeries = new CTimeSeries(dynamic_cast<CTrajectoryTask *>((*CCopasiDataModel::Global->getTaskList())["Time-Course"])->getTimeSeries());
-
-      mCentralWidgetTime->table()->setTimeSeries(mpTimeSeries);
-
+      mCentralWidgetTime->table()->setTimeSeries(dynamic_cast<CTrajectoryTask *>((*CCopasiDataModel::Global->getTaskList())["Time-Course"])->getTimeSeries());
       mCentralWidgetTime->optimizationResultText->setText(FROM_UTF8(os.str()));
     }
-  else
-    {
-      pdelete(mpTimeSeries);
 
+  if (mCentralWidgetSteady != NULL)
+    {
       CSteadyStateTask * pSteadyStateTask =
         dynamic_cast<CSteadyStateTask *>((*CCopasiDataModel::Global->getTaskList())["Steady-State"]);
 
@@ -164,10 +144,9 @@ bool OptimizationResultWidget::update(ListViews::ObjectType objectType,
   if (objectType == ListViews::MODEL &&
       action == ListViews::ADD)
     {
-      pdelete(mpTimeSeries);
       if (mCentralWidgetTime != NULL)
         {
-          mCentralWidgetTime->table()->setTimeSeries(NULL);
+          mCentralWidgetTime->table()->setTimeSeries(CTimeSeries());
           mCentralWidgetTime->optimizationResultText->setText("<h2>No result available, please execute the optimization task.</h2>");
         }
 

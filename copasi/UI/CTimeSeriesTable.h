@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CTimeSeriesTable.h,v $
-//   $Revision: 1.6.4.1 $
+//   $Revision: 1.6.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/02/21 19:12:55 $
+//   $Date: 2008/02/25 21:15:14 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,18 +28,10 @@ class CTimeSeriesTable : public QTable
   {
   public:
 
-    CTimeSeriesTable(QWidget* p, const char * name = 0)
-        : QTable(3, 3, p, name),
-        mpTS(NULL),
-        mFlagConc(true)
-    {
-      //setCaption("TimeSeries Table");
-      //setLeftMargin(fontMetrics().width("W999999W"));
-      setLeftMargin(0);
-      mItem = new QTableItem(this, QTableItem::Never);
-    }
+    CTimeSeriesTable(QWidget* p, const char * name = 0);
+    ~CTimeSeriesTable();
 
-    void setTimeSeries(const CTimeSeries * pTS);
+    void setTimeSeries(const CTimeSeries & TS);
     const CTimeSeries * getTimeSeries();
     void showConcentrations(bool conc = true);
     bool doShowConcentrations() const;

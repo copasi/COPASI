@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TimeSeriesWidget.cpp,v $
-//   $Revision: 1.11.4.1 $
+//   $Revision: 1.11.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/02/21 19:12:55 $
+//   $Date: 2008/02/25 21:15:14 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -71,7 +71,7 @@ bool TimeSeriesWidget::loadFromBackend()
 {
   //  mCentralWidget->table()->setTimeSeries(CCopasiDataModel::Global->getTrajectoryTask()->getTimeSeries());
   mCentralWidget->displayOptimizationTab(false);
-  mCentralWidget->table()->setTimeSeries(&dynamic_cast<CTrajectoryTask *>((*CCopasiDataModel::Global->getTaskList())["Time-Course"])->getTimeSeries());
+  mCentralWidget->table()->setTimeSeries(dynamic_cast<CTrajectoryTask *>((*CCopasiDataModel::Global->getTaskList())["Time-Course"])->getTimeSeries());
   return true;
 }
 
@@ -95,7 +95,7 @@ bool TimeSeriesWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListVi
   if (this->isShown())
     return loadFromBackend();
 
-  mCentralWidget->table()->setTimeSeries(NULL);
+  mCentralWidget->table()->setTimeSeries(CTimeSeries());
   return true;
 }
 
