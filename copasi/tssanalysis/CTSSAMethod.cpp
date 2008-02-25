@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAMethod.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: akoenig $
-//   $Date: 2008/02/24 17:35:40 $
+//   $Date: 2008/02/25 18:47:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1487,7 +1487,10 @@ void CTSSAMethod::setAnnotationM(int step)
   for (i = 0; i < mData.dim; i++)
     {
       timeScale = mVec_TimeScale[step][i];
-      sstr << "TS: ";
+      if (i < mVec_SlowModes[step])
+        sstr << "Slow: ";
+      else
+        sstr << "Fast: ";
       sstr << timeScale;
       str = sstr.str();
       pVslowPrintAnn->setAnnotationString(0, i, str);
@@ -1502,7 +1505,10 @@ void CTSSAMethod::setAnnotationM(int step)
   for (i = 0; i < mData.dim; i++)
     {
       timeScale = mVec_TimeScale[step][i];
-      sstr << "TS: ";
+      if (i < mVec_SlowModes[step])
+        sstr << "Slow: ";
+      else
+        sstr << "Fast: ";
       sstr << timeScale;
       str = sstr.str();
       pVslowMetabPrintAnn->setAnnotationString(1, i, str);
