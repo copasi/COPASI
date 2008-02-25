@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-//   $Revision: 1.121.2.8.2.2 $
+//   $Revision: 1.121.2.8.2.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/01/22 18:51:23 $
+//   $Author: gauges $
+//   $Date: 2008/02/25 10:43:01 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1042,6 +1042,7 @@ KineticLaw* SBMLExporter::createSBMLKineticLawFromCReaction(CReaction* copasiRea
         }
       parameterNode1->setName(parameterName1.c_str());
       node->addChild(parameterNode1);
+      if (copasiReaction->getChemEq().getSubstrates().size() == 0) fatalError();
       node->addChild(this->createTimesTree(copasiReaction->getChemEq().getSubstrates()));
       /* if the reaction is reversible, create the ASTNode tree that
       ** multiplies all products with the second kinetic constant and

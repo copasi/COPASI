@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.189.2.6.2.9 $
+//   $Revision: 1.189.2.6.2.10 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/14 10:49:23 $
+//   $Date: 2008/02/25 10:43:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -191,7 +191,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   for (counter = 0; counter < num;++counter)
     {
       FunctionDefinition* pSBMLFunDef = sbmlModel->getFunctionDefinition(counter);
-      CFunction* pFun = this->createCFunctionFromFunctionDefinition(pSBMLFunDef, pTmpFunctionDB);
+      CFunction* pFun = this->createCFunctionFromFunctionDefinition(pSBMLFunDef, pTmpFunctionDB, sbmlModel, copasi2sbmlmap);
       copasi2sbmlmap[pFun] = pSBMLFunDef;
       this->mFunctionNameMapping[pSBMLFunDef->getId()] = pFun->getObjectName();
       ++step;
@@ -415,7 +415,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
         {
           fatalError();
         }
-      this->importSBMLRule(sbmlRule, copasi2sbmlmap);
+      this->importSBMLRule(sbmlRule, copasi2sbmlmap, sbmlModel);
       ++step;
       if (mpImportHandler && !mpImportHandler->progress(hStep)) return false;
     }
@@ -487,7 +487,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
     }
   setInitialValues(this->mpCopasiModel, copasi2sbmlmap);
   // evaluate and apply the initial expressions
-  this->applyStoichiometricExpressions(copasi2sbmlmap);
+  this->applyStoichiometricExpressions(copasi2sbmlmap, sbmlModel);
   this->createDelayFunctionDefinition();
   this->removeUnusedFunctions(pTmpFunctionDB, copasi2sbmlmap);
   // remove the temporary avogadro parameter if one was created
@@ -510,10 +510,10 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   return this->mpCopasiModel;
 }
 
-CFunction* SBMLImporter::createCFunctionFromFunctionDefinition(const FunctionDefinition* sbmlFunction, CFunctionDB* pTmpFunctionDB)
+CFunction* SBMLImporter::createCFunctionFromFunctionDefinition(const FunctionDefinition* sbmlFunction, CFunctionDB* pTmpFunctionDB, Model* pSBMLModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
 {
 
-  CFunction* pTmpFunction = this->createCFunctionFromFunctionTree(sbmlFunction);
+  CFunction* pTmpFunction = this->createCFunctionFromFunctionTree(sbmlFunction, pSBMLModel, copasi2sbmlmap);
   if (pTmpFunction)
     {
       std::string sbmlId = sbmlFunction->getId();
@@ -558,13 +558,13 @@ CFunction* SBMLImporter::createCFunctionFromFunctionDefinition(const FunctionDef
   return pTmpFunction;
 }
 
-CFunction* SBMLImporter::createCFunctionFromFunctionTree(const FunctionDefinition* pSBMLFunction)
+CFunction* SBMLImporter::createCFunctionFromFunctionTree(const FunctionDefinition* pSBMLFunction, Model* pSBMLModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
 {
   CFunction* pFun = NULL;
   if (pSBMLFunction->isSetMath())
     {
       ConverterASTNode root(*pSBMLFunction->getMath());
-      this->preprocessNode(&root);
+      this->preprocessNode(&root, pSBMLModel, copasi2sbmlmap);
       if (root.getType() == AST_LAMBDA)
         {
           // get the number of children.
@@ -773,7 +773,7 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
  * Reaction object.
  */
 CReaction*
-SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Model* C_UNUSED(pSBMLModel), CModel* copasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, CFunctionDB* pTmpFunctionDB)
+SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, Model* pSBMLModel, CModel* copasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, CFunctionDB* pTmpFunctionDB)
 {
   if (sbmlReaction == NULL)
     {
@@ -1034,7 +1034,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
       else
         {
           ConverterASTNode* node = new ConverterASTNode(*kLawMath);
-          this->preprocessNode(node);
+          this->preprocessNode(node, pSBMLModel, copasi2sbmlmap);
 
           if (node == NULL)
             {
@@ -2122,7 +2122,7 @@ void SBMLImporter::restoreFunctionDB()
     }
 }
 
-void SBMLImporter::preprocessNode(ConverterASTNode* pNode)
+void SBMLImporter::preprocessNode(ConverterASTNode* pNode, Model* pSBMLModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
 {
   // this function goes through the tree three times.
   // this can probably be handled more intelligently
@@ -2132,7 +2132,7 @@ void SBMLImporter::preprocessNode(ConverterASTNode* pNode)
     }
   this->replaceCallNodeNames(pNode);
   this->replaceTimeNodeNames(pNode);
-  this->replaceAmountReferences(pNode, this->mpCopasiModel->getQuantity2NumberFactor());
+  this->replaceAmountReferences(pNode, pSBMLModel, this->mpCopasiModel->getQuantity2NumberFactor(), copasi2sbmlmap);
 }
 
 /**
@@ -2142,7 +2142,7 @@ void SBMLImporter::preprocessNode(ConverterASTNode* pNode)
  * The method tries to determine if there already is a multiplication with
  * avogadros number and removes this multiplication rather than adding a new division.
  */
-void SBMLImporter::replaceAmountReferences(ConverterASTNode* pNode, double factor)
+void SBMLImporter::replaceAmountReferences(ConverterASTNode* pNode, Model* pSBMLModel, double factor, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
 {
   if (!pNode) return;
   if (pNode->getType() == AST_NAME)
@@ -2162,6 +2162,10 @@ void SBMLImporter::replaceAmountReferences(ConverterASTNode* pNode, double facto
         {
           // replace pNode by a division by the quantity to number
           // factor
+          if (this->mPotentialAvogadroNumbers.empty())
+            {
+              this->createHasOnlySubstanceUnitFactor(pSBMLModel, factor, copasi2sbmlmap);
+            }
           pNode->setType(AST_DIVIDE);
           pNode->setCharacter('/');
           ConverterASTNode* pChild = new ConverterASTNode(AST_NAME);
@@ -2172,6 +2176,7 @@ void SBMLImporter::replaceAmountReferences(ConverterASTNode* pNode, double facto
           pChild->setName(id.c_str());
           pNode->addChild(pChild);
         }
+      return;
     }
   else if (pNode->getType() == AST_TIMES)
     {
@@ -2209,6 +2214,10 @@ void SBMLImporter::replaceAmountReferences(ConverterASTNode* pNode, double facto
                     }
                   else if (pNode->getChild(1)->getType() == AST_NAME)
                     {
+                      if (this->mPotentialAvogadroNumbers.empty())
+                        {
+                          this->createHasOnlySubstanceUnitFactor(pSBMLModel, factor, copasi2sbmlmap);
+                        }
                       // check if child1 is a global parameter that is equal to avogadros number
                       std::set<const Parameter*>::const_iterator sit = this->mPotentialAvogadroNumbers.begin(), sendit = this->mPotentialAvogadroNumbers.end();
                       while (sit != sendit)
@@ -2242,6 +2251,10 @@ void SBMLImporter::replaceAmountReferences(ConverterASTNode* pNode, double facto
                     }
                   if (it != endit)
                     {
+                      if (this->mPotentialAvogadroNumbers.empty())
+                        {
+                          this->createHasOnlySubstanceUnitFactor(pSBMLModel, factor, copasi2sbmlmap);
+                        }
                       // check if child0 is a parameter that represents avogadros
                       // number
                       std::set<const Parameter*>::const_iterator sit = this->mPotentialAvogadroNumbers.begin(), sendit = this->mPotentialAvogadroNumbers.end();
@@ -2299,7 +2312,7 @@ void SBMLImporter::replaceAmountReferences(ConverterASTNode* pNode, double facto
     {
       ConverterASTNode* pChild = dynamic_cast<ConverterASTNode*>(pNode->getChild(i));
       assert(pChild != NULL);
-      this->replaceAmountReferences(pChild, this->mpCopasiModel->getQuantity2NumberFactor());
+      this->replaceAmountReferences(pChild, pSBMLModel, this->mpCopasiModel->getQuantity2NumberFactor(), copasi2sbmlmap);
     }
 }
 
@@ -3299,7 +3312,7 @@ bool SBMLImporter::isStochasticModel(const Model* pSBMLModel)
   return stochastic;
 }
 
-void SBMLImporter::importSBMLRule(const Rule* sbmlRule, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
+void SBMLImporter::importSBMLRule(const Rule* sbmlRule, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, Model* pSBMLModel)
 {
   // so far we only support assignment rules and rate rules
   SBMLTypeCode_t type = sbmlRule->getTypeCode();
@@ -3308,7 +3321,7 @@ void SBMLImporter::importSBMLRule(const Rule* sbmlRule, std::map<CCopasiObject*,
       const AssignmentRule* pAssignmentRule = dynamic_cast<const AssignmentRule*>(sbmlRule);
       if (pAssignmentRule && pAssignmentRule->isSetVariable())
         {
-          this->importRule(pAssignmentRule, CModelEntity::ASSIGNMENT, copasi2sbmlmap);
+          this->importRule(pAssignmentRule, CModelEntity::ASSIGNMENT, copasi2sbmlmap, pSBMLModel);
         }
       else
         {
@@ -3320,7 +3333,7 @@ void SBMLImporter::importSBMLRule(const Rule* sbmlRule, std::map<CCopasiObject*,
       const RateRule* pRateRule = dynamic_cast<const RateRule*>(sbmlRule);
       if (pRateRule && pRateRule->isSetVariable())
         {
-          this->importRule(pRateRule, CModelEntity::ODE, copasi2sbmlmap);
+          this->importRule(pRateRule, CModelEntity::ODE, copasi2sbmlmap, pSBMLModel);
         }
       else
         {
@@ -3333,7 +3346,7 @@ void SBMLImporter::importSBMLRule(const Rule* sbmlRule, std::map<CCopasiObject*,
     }
 }
 
-void SBMLImporter::importRule(const Rule* rule, CModelEntity::Status ruleType, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
+void SBMLImporter::importRule(const Rule* rule, CModelEntity::Status ruleType, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, Model* pSBMLModel)
 {
   std::string sbmlId;
   const AssignmentRule* pARule = dynamic_cast<const AssignmentRule*>(rule);
@@ -3481,7 +3494,7 @@ void SBMLImporter::importRule(const Rule* rule, CModelEntity::Status ruleType, s
                   fatalError();
                 }
             }
-          this->importRuleForModelEntity(rule, pME, ruleType, copasi2sbmlmap);
+          this->importRuleForModelEntity(rule, pME, ruleType, copasi2sbmlmap, pSBMLModel);
           break;
         default:
           // now that compartments, metabolites and global parameters are
@@ -3541,7 +3554,7 @@ void SBMLImporter::areRulesUnique(const Model* sbmlModel)
     }
 }
 
-void SBMLImporter::importRuleForModelEntity(const Rule* rule, CModelEntity* pME, CModelEntity::Status status, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
+void SBMLImporter::importRuleForModelEntity(const Rule* rule, CModelEntity* pME, CModelEntity::Status status, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, Model* pSBMLModel)
 {
   if (rule->getTypeCode() == SBML_ASSIGNMENT_RULE)
     {
@@ -3551,7 +3564,7 @@ void SBMLImporter::importRuleForModelEntity(const Rule* rule, CModelEntity* pME,
   // replace all the nodes that represent species with the
   // hasOnlySubstanceUnits flag set with the node divided by the volume
   //replaceSubstanceOnlySpeciesNodes(&tmpNode, mSubstanceOnlySpecies);
-  this->preprocessNode(&tmpNode);
+  this->preprocessNode(&tmpNode, pSBMLModel, copasi2sbmlmap);
   // replace the object names
   this->replaceObjectNames(&tmpNode, copasi2sbmlmap);
   // now we convert the node to a CEvaluationNode
@@ -3714,11 +3727,11 @@ void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<CCopasiObje
                     {
                       if (!initialExpression)
                         {
-                          pNode->setName((pObject->getCN() + ",Reference=Amount").c_str());
+                          pNode->setName((pObject->getCN() + ",Reference=ParticleNumber").c_str());
                         }
                       else
                         {
-                          pNode->setName((pObject->getCN() + ",Reference=InitialAmount").c_str());
+                          pNode->setName((pObject->getCN() + ",Reference=InitialParticleNumber").c_str());
                         }
                     }
                   break;
@@ -3742,7 +3755,10 @@ void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<CCopasiObje
           ++it;
         }
       // not found
-      if (it == endit) fatalError();
+      if (it == endit)
+        {
+          fatalError();
+        }
     }
   else
     {
@@ -4698,7 +4714,7 @@ UnitDefinition* SBMLImporter::getSBMLUnitDefinitionForId(const std::string& unit
   return pUnitDefinition;
 }
 
-void SBMLImporter::importInitialAssignments(const Model* pSBMLModel, const std::map<CCopasiObject*, SBase*>& copasi2sbmlMap)
+void SBMLImporter::importInitialAssignments(Model* pSBMLModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlMap)
 {
   unsigned int i, iMax = pSBMLModel->getNumInitialAssignments();
   std::map<std::string, CCopasiObject*> id2copasiMap;
@@ -4734,7 +4750,7 @@ void SBMLImporter::importInitialAssignments(const Model* pSBMLModel, const std::
                   // hasOnlySubstanceUnits flag set with the node divided by the volume
                   replaceSubstanceOnlySpeciesNodes(&tmpNode, mSubstanceOnlySpecies);
                   */
-                  this->preprocessNode(&tmpNode);
+                  this->preprocessNode(&tmpNode, pSBMLModel, copasi2sbmlMap);
                   // replace the object names
                   this->replaceObjectNames(&tmpNode, copasi2sbmlMap, true);
                   // now we convert the node to a CEvaluationNode
@@ -4780,7 +4796,7 @@ void SBMLImporter::importInitialAssignments(const Model* pSBMLModel, const std::
     }
 }
 
-void SBMLImporter::applyStoichiometricExpressions(std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
+void SBMLImporter::applyStoichiometricExpressions(std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, Model* pSBMLModel)
 {
   std::map<const ASTNode*, std::pair<CCopasiObjectName, CChemEq::MetaboliteRole> >::iterator it = this->mStoichiometricExpressionMap.begin(), end = this->mStoichiometricExpressionMap.end();
   std::vector<CCopasiContainer*> listOfContainers;
@@ -4792,7 +4808,7 @@ void SBMLImporter::applyStoichiometricExpressions(std::map<CCopasiObject*, SBase
       CChemEqElement* pChemEqElement = dynamic_cast<CChemEqElement*>(pObject);
       assert(pChemEqElement != NULL);
       ConverterASTNode* pNode = new ConverterASTNode(*it->first);
-      this->preprocessNode(pNode);
+      this->preprocessNode(pNode, pSBMLModel, copasi2sbmlmap);
       /**
        * Removed because this no longer works for variable volumes
        this->replaceSubstanceOnlySpeciesNodes(pNode, this->mSubstanceOnlySpecies);
@@ -4857,31 +4873,61 @@ void SBMLImporter::findAvogadroConstant(Model* pSBMLModel, double factor)
             }
         }
     }
-  if (this->mPotentialAvogadroNumbers.empty())
+  //  if (this->mPotentialAvogadroNumbers.empty())
+  //    {
+  //      // find an ID that is unique at least within the list of parameters
+  //      // since we remove this created parameter after import, it does not
+  //      // have to be unique within the whole model
+  //      std::set<std::string> ids;
+  //      for (i = 0;i < iMax;++i)
+  //        {
+  //          ids.insert(pSBMLModel->getListOfParameters()->get(i)->getId());
+  //}
+  //      std::ostringstream os;
+  //      i = 1;
+  //      os << "parameter_" << i;
+  //      while (ids.find(os.str()) != ids.end())
+  //        {
+  //          ++i;
+  //          os.str("");
+  //          os << "parameter_" << i;
+  //}
+  //      Parameter *pParameter = pSBMLModel->createParameter();
+  //      pParameter->setId(os.str());
+  //      pParameter->setName("amount to particle factor");
+  //      pParameter->setConstant(true);
+  //      pParameter->setValue(factor);
+  //      this->mAvogadroCreated = true;
+  //      this->mPotentialAvogadroNumbers.insert(pParameter);
+  //}
+}
+
+void SBMLImporter::createHasOnlySubstanceUnitFactor(Model* pSBMLModel, double factor, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
+{
+  // find an ID that is unique at least within the list of parameters
+  // since we remove this created parameter after import, it does not
+  // have to be unique within the whole model
+  std::set<std::string> ids;
+  unsigned int i, iMax = pSBMLModel->getListOfParameters()->size();
+  for (i = 0;i < iMax;++i)
     {
-      // find an ID that is unique at least within the list of parameters
-      // since we remove this created parameter after import, it does not
-      // have to be unique within the whole model
-      std::set<std::string> ids;
-      for (i = 0;i < iMax;++i)
-        {
-          ids.insert(pSBMLModel->getListOfParameters()->get(i)->getId());
-        }
-      std::ostringstream os;
-      i = 1;
-      os << "parameter_" << i;
-      while (ids.find(os.str()) != ids.end())
-        {
-          ++i;
-          os.str("");
-          os << "parameter_" << i;
-        }
-      Parameter *pParameter = pSBMLModel->createParameter();
-      pParameter->setId(os.str());
-      pParameter->setName("amount to particle factor");
-      pParameter->setConstant(true);
-      pParameter->setValue(factor);
-      this->mAvogadroCreated = true;
-      this->mPotentialAvogadroNumbers.insert(pParameter);
+      ids.insert(pSBMLModel->getListOfParameters()->get(i)->getId());
     }
+  std::ostringstream os;
+  i = 1;
+  os << "parameter_" << i;
+  while (ids.find(os.str()) != ids.end())
+    {
+      ++i;
+      os.str("");
+      os << "parameter_" << i;
+    }
+  Parameter *pParameter = pSBMLModel->createParameter();
+  pParameter->setId(os.str());
+  pParameter->setName("amount to particle factor");
+  pParameter->setConstant(true);
+  pParameter->setValue(factor);
+  this->mAvogadroCreated = true;
+  this->mPotentialAvogadroNumbers.insert(pParameter);
+  this->createCModelValueFromParameter(pParameter, this->mpCopasiModel, copasi2sbmlmap);
 }

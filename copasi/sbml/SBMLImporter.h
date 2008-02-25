@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-//   $Revision: 1.63.4.4 $
+//   $Revision: 1.63.4.5 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/14 10:49:23 $
+//   $Date: 2008/02/25 10:43:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -90,9 +90,9 @@ class SBMLImporter
      * Creates and returns a Copasi CFunction from the SBML FunctionDefinition
      * given as argument.
      */
-    CFunction* createCFunctionFromFunctionDefinition(const FunctionDefinition* sbmlFunction, CFunctionDB* pTmpFunctionDB);
+    CFunction* createCFunctionFromFunctionDefinition(const FunctionDefinition* sbmlFunction, CFunctionDB* pTmpFunctionDB, Model* pSBMLModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
 
-    CFunction* createCFunctionFromFunctionTree(const FunctionDefinition* pSBMLFunction);
+    CFunction* createCFunctionFromFunctionTree(const FunctionDefinition* pSBMLFunction, Model* pSBMLModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
 
     /**
      * Creates and returns a Copasi CCompartment from the SBML Compartment
@@ -113,17 +113,17 @@ class SBMLImporter
     /**
      * Imports the given Rule if Copasi supports this kind of Rule, otherwise a warning is created.
      */
-    void importSBMLRule(const Rule* sbmlRule, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+    void importSBMLRule(const Rule* sbmlRule, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, Model* pSBMLModel);
 
     /**
      * Imports the given AssignmentRule which is for a global parameter.
      */
-    void importRuleForModelEntity(const Rule* rule, CModelEntity* pMV, CModelEntity::Status ruleType, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+    void importRuleForModelEntity(const Rule* rule, CModelEntity* pMV, CModelEntity::Status ruleType, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, Model* pSBMLModel);
 
     /**
      * Imports the given RateRule if Copasi supports this kind of RateRule, otherwise a warning is created.
      */
-    void importRule(const Rule* rule, CModelEntity::Status ruleType, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+    void importRule(const Rule* rule, CModelEntity::Status ruleType, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, Model* pSBMLModel);
 
     /**
      * Recurses an ASTNode tree and gets all SBML Ids in the tree.
@@ -148,7 +148,7 @@ class SBMLImporter
      * Creates and returns a Copasi CReaction object from the given SBML
      * Reaction object.
      */
-    CReaction* createCReactionFromReaction(const Reaction* sbmlReaction, const Model* sbmlModel, CModel* cmodel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, CFunctionDB* pTmpFunctionDB);
+    CReaction* createCReactionFromReaction(const Reaction* sbmlReaction, Model* sbmlModel, CModel* cmodel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, CFunctionDB* pTmpFunctionDB);
 
     /**
      * Creates a map of each parameter of the function definition and its
@@ -245,7 +245,7 @@ class SBMLImporter
      * is preprocessed to replace some of the nodes data.
      * See also replaceCallNodeNames and replaceTimeNodeNames.
      */
-    void preprocessNode(ConverterASTNode* pNode);
+    void preprocessNode(ConverterASTNode* pNode, Model* pSBMLModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
 
     CFunction* findCorrespondingFunction(const CFunction* tree, const CReaction* reaction);
 
@@ -364,13 +364,13 @@ class SBMLImporter
     /**
      * Imports all initial assignments if there are any.
      */
-    void importInitialAssignments(const Model* pSBMLModel, const std::map<CCopasiObject*, SBase*>& copasi2sbmlMap);
+    void importInitialAssignments(Model* pSBMLModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlMap);
 
     /**
      * This method evaluates all stoichiometric expressions and sets them as
      * constants on the CChemEqElement.
      */
-    void applyStoichiometricExpressions(std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+    void applyStoichiometricExpressions(std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, Model* pSBMLModel);
 
     /**
      * Creates a function definition for the delay function.
@@ -390,7 +390,16 @@ class SBMLImporter
      * The method tries to determine if there already is a multiplication with
      * avogadros number and removes this multiplication rather than adding a new division.
      */
-    void replaceAmountReferences(ConverterASTNode* pNode, double factor);
+    void replaceAmountReferences(ConverterASTNode* pNode, Model* pSBMLModel, double factor, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+
+    /**
+     * This method creates a global parameter the represents the factor that is
+     * used to convert a particle number into the amount units set on the
+     * model.
+     * The parameter is only created if it is needed and after exporting the
+     * model, the parameter is deleted from the COPASI model again.
+     */
+    void createHasOnlySubstanceUnitFactor(Model* pSBMLModel, double factor, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
 
   public:
     SBMLImporter();
