@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-//   $Revision: 1.50.4.2 $
+//   $Revision: 1.50.4.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/02/15 20:54:59 $
+//   $Author: ssahle $
+//   $Date: 2008/02/25 16:17:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -295,6 +295,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
 
           pCurve->setStyle(QwtPlotCurve::Steps);
           pCurve->setYAxis(QwtPlot::yRight);
+          pCurve->setCurveAttribute(QwtPlotCurve::Inverted);
           break;
 
         default :
