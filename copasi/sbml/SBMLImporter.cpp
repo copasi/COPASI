@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.189.2.6.2.13 $
+//   $Revision: 1.189.2.6.2.14 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/25 19:13:20 $
+//   $Date: 2008/02/26 20:06:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -4805,6 +4805,7 @@ void SBMLImporter::importInitialAssignments(Model* pSBMLModel, std::map<CCopasiO
 
 void SBMLImporter::applyStoichiometricExpressions(std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, Model* pSBMLModel)
 {
+  bool warningDone = false;
   std::map<const ASTNode*, std::pair<CCopasiObjectName, CChemEq::MetaboliteRole> >::iterator it = this->mStoichiometricExpressionMap.begin(), end = this->mStoichiometricExpressionMap.end();
   std::vector<CCopasiContainer*> listOfContainers;
   listOfContainers.push_back(this->mpCopasiModel);
@@ -4837,24 +4838,33 @@ void SBMLImporter::applyStoichiometricExpressions(std::map<CCopasiObject*, SBase
       else
         {
           double value = pExpr->calcValue();
+          value -= pChemEqElement->getMultiplicity();
           // find out if the metabolite is a substrate or a product
           delete pExpr;
-          if (it->second.second == CChemEq::SUBSTRATE)
+          CChemEq* pChemEq = dynamic_cast<CChemEq*>(pChemEqElement->getObjectParent()->getObjectParent());
+          assert(pChemEq != NULL);
+          if (pChemEq != NULL)
             {
-              // add 1.0 that has been subtracted before and substract the value
-              pChemEqElement->addToMultiplicity(1.0);
-              pChemEqElement->addToMultiplicity(-value);
+              if (it->second.second == CChemEq::SUBSTRATE)
+                {
+                  pChemEq->addMetabolite(pChemEqElement->getMetaboliteKey(), value, CChemEq::SUBSTRATE);
+                }
+              else
+                {
+                  pChemEq->addMetabolite(pChemEqElement->getMetaboliteKey(), value, CChemEq::PRODUCT);
+                }
+              // give a warning that an stoichiometric expression has been
+              // converted into a constant
+              if (!warningDone && !this->mStoichiometricExpressionMap.empty())
+                {
+                  CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 64);
+                  warningDone = true;
+                }
             }
           else
             {
-              // subtract the 1.0 that has been added before and add the value
-              pChemEqElement->addToMultiplicity(-1.0);
-              pChemEqElement->addToMultiplicity(value);
+              fatalError();
             }
-        }
-      if (!this->mStoichiometricExpressionMap.empty())
-        {
-          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 64);
         }
       ++it;
     }
