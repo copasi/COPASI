@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-//   $Revision: 1.132.4.2 $
+//   $Revision: 1.132.4.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/31 16:14:23 $
+//   $Date: 2008/02/26 02:16:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -177,7 +177,8 @@ void CMetab::refreshInitialValue()
 
 void CMetab::refreshInitialConcentration()
 {
-  if (getInitialExpression() != "")
+  if (mpInitialExpression != NULL &&
+      mpInitialExpression->getInfix() != "")
     mIConc = mpInitialExpression->calcValue();
   else
     mIConc =
