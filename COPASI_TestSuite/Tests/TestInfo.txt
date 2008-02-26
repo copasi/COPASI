@@ -1,0 +1,4 @@
+The following directories will be automatically tested
+
+TEST000001
+TEST000002
