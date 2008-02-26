@@ -1,9 +1,9 @@
 // Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000044.cpp,v $
-//   $Revision: 1.1.2.3 $
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000045.cpp,v $
+//   $Revision: 1.1.2.1 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/26 19:32:27 $
+//   $Date: 2008/02/26 19:32:28 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -11,7 +11,7 @@
 // and The University of Manchester.
 // All rights reserved.
 
-#include "test000044.h"
+#include "test000045.h"
 
 #include <sstream>
 #include "utilities.hpp"
@@ -24,7 +24,7 @@
 #include "copasi/function/CEvaluationNode.h"
 #include "copasi/function/CExpression.h"
 
-void test000044::setUp()
+void test000045::setUp()
 {
   // Create the root container.
   CCopasiContainer::init();
@@ -33,7 +33,7 @@ void test000044::setUp()
   CCopasiDataModel::Global = new CCopasiDataModel;
 }
 
-void test000044::tearDown()
+void test000045::tearDown()
 {
   delete CCopasiDataModel::Global;
   CCopasiDataModel::Global = NULL;
@@ -41,7 +41,7 @@ void test000044::tearDown()
   CCopasiContainer::Root = NULL;
 }
 
-void test000044::test_stoichiometricExpression()
+void test000045::test_stoichiometricExpression()
 {
   CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING));
@@ -81,17 +81,17 @@ void test000044::test_stoichiometricExpression()
   CPPUNIT_ASSERT(pChemEq->getSubstrates().size() == 1);
   const CChemEqElement* pElement = pChemEq->getSubstrates()[0];
   CPPUNIT_ASSERT(pElement != NULL);
-  CPPUNIT_ASSERT(fabs((pElement->getMultiplicity() - 2.0) / 2.0) < 1e-3);
+  CPPUNIT_ASSERT(fabs((pElement->getMultiplicity() - 3.0) / 3.0) < 1e-3);
   CPPUNIT_ASSERT(pElement->getMetabolite() == pA);
   CPPUNIT_ASSERT(pChemEq->getProducts().size() == 1);
   pElement = pChemEq->getProducts()[0];
   CPPUNIT_ASSERT(pElement != NULL);
-  CPPUNIT_ASSERT(fabs((pElement->getMultiplicity() - 3.0) / 3.0) < 1e-3);
+  CPPUNIT_ASSERT(fabs((pElement->getMultiplicity() - 1.3) / 1.3) < 1e-3);
   CPPUNIT_ASSERT(pElement->getMetabolite() == pB);
   CPPUNIT_ASSERT(pChemEq->getModifiers().size() == 0);
 }
 
-const char* test000044::MODEL_STRING =
+const char* test000045::MODEL_STRING =
   "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
   "<sbml xmlns=\"http://www.sbml.org/sbml/level2/version3\" level=\"2\" version=\"3\">\n"
   "  <model id=\"Model_1\" name=\"New Model\">\n"
@@ -129,7 +129,11 @@ const char* test000044::MODEL_STRING =
   "          <speciesReference species=\"species_1\">\n"
   "            <stoichiometryMath>\n"
   "            <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-  "             <cn>2.0</cn>\n"
+  "             <apply>\n"
+  "               <times/>\n"
+  "               <cn>2.0</cn>\n"
+  "               <cn>1.5</cn>\n"
+  "             </apply>\n"
   "            </math>\n"
   "            </stoichiometryMath>\n"
   "          </speciesReference>\n"
@@ -138,7 +142,15 @@ const char* test000044::MODEL_STRING =
   "          <speciesReference species=\"species_2\">\n"
   "            <stoichiometryMath>\n"
   "            <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-  "             <cn>3.0</cn>\n"
+  "              <apply>\n"
+  "                <minus/>\n"
+  "                <apply>\n"
+  "                  <divide/>\n"
+  "                  <cn>3.0</cn>\n"
+  "                  <cn>2.0</cn>\n"
+  "                </apply>\n"
+  "                <cn>0.2</cn>\n"
+  "              </apply>\n"
   "            </math>\n"
   "            </stoichiometryMath>\n"
   "          </speciesReference>\n"

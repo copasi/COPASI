@@ -1,9 +1,9 @@
 // Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000044.cpp,v $
-//   $Revision: 1.1.2.3 $
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000046.cpp,v $
+//   $Revision: 1.1.2.1 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/26 19:32:27 $
+//   $Date: 2008/02/26 19:32:28 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -11,7 +11,7 @@
 // and The University of Manchester.
 // All rights reserved.
 
-#include "test000044.h"
+#include "test000046.h"
 
 #include <sstream>
 #include "utilities.hpp"
@@ -24,7 +24,7 @@
 #include "copasi/function/CEvaluationNode.h"
 #include "copasi/function/CExpression.h"
 
-void test000044::setUp()
+void test000046::setUp()
 {
   // Create the root container.
   CCopasiContainer::init();
@@ -33,7 +33,7 @@ void test000044::setUp()
   CCopasiDataModel::Global = new CCopasiDataModel;
 }
 
-void test000044::tearDown()
+void test000046::tearDown()
 {
   delete CCopasiDataModel::Global;
   CCopasiDataModel::Global = NULL;
@@ -41,7 +41,7 @@ void test000044::tearDown()
   CCopasiContainer::Root = NULL;
 }
 
-void test000044::test_stoichiometricExpression()
+void test000046::test_stoichiometricExpression()
 {
   CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING));
@@ -65,6 +65,7 @@ void test000044::test_stoichiometricExpression()
   const CModelValue* pModelValue = pModel->getModelValues()[0];
   CPPUNIT_ASSERT(pModelValue != NULL);
   CPPUNIT_ASSERT(pModelValue->getStatus() == CModelEntity::FIXED);
+  CPPUNIT_ASSERT(fabs((pModelValue->getValue() - 3.7) / 3.7) < 1e-3);
 
   CPPUNIT_ASSERT(pModel->getReactions().size() == 1);
   const CReaction* pReaction1 = pModel->getReactions()[0];
@@ -81,17 +82,17 @@ void test000044::test_stoichiometricExpression()
   CPPUNIT_ASSERT(pChemEq->getSubstrates().size() == 1);
   const CChemEqElement* pElement = pChemEq->getSubstrates()[0];
   CPPUNIT_ASSERT(pElement != NULL);
-  CPPUNIT_ASSERT(fabs((pElement->getMultiplicity() - 2.0) / 2.0) < 1e-3);
+  CPPUNIT_ASSERT(fabs((pElement->getMultiplicity() - 1.85) / 1.85) < 1e-3);
   CPPUNIT_ASSERT(pElement->getMetabolite() == pA);
   CPPUNIT_ASSERT(pChemEq->getProducts().size() == 1);
   pElement = pChemEq->getProducts()[0];
   CPPUNIT_ASSERT(pElement != NULL);
-  CPPUNIT_ASSERT(fabs((pElement->getMultiplicity() - 3.0) / 3.0) < 1e-3);
+  CPPUNIT_ASSERT(fabs((pElement->getMultiplicity() - 3.35) / 3.35) / 3.35 < 1e-3);
   CPPUNIT_ASSERT(pElement->getMetabolite() == pB);
   CPPUNIT_ASSERT(pChemEq->getModifiers().size() == 0);
 }
 
-const char* test000044::MODEL_STRING =
+const char* test000046::MODEL_STRING =
   "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
   "<sbml xmlns=\"http://www.sbml.org/sbml/level2/version3\" level=\"2\" version=\"3\">\n"
   "  <model id=\"Model_1\" name=\"New Model\">\n"
@@ -121,7 +122,7 @@ const char* test000044::MODEL_STRING =
   "      <species id=\"species_2\" name=\"B\" compartment=\"compartment_1\" initialConcentration=\"1\"/>\n"
   "    </listOfSpecies>\n"
   "    <listOfParameters>\n"
-  "      <parameter id=\"parameter_1\" name=\"K\" value=\"0\"/>\n"
+  "      <parameter id=\"parameter_1\" name=\"K\" value=\"3.7\"/>\n"
   "    </listOfParameters>\n"
   "    <listOfReactions>\n"
   "      <reaction id=\"reaction_1\" name=\"reaction_0\" reversible=\"true\">\n"
@@ -129,7 +130,11 @@ const char* test000044::MODEL_STRING =
   "          <speciesReference species=\"species_1\">\n"
   "            <stoichiometryMath>\n"
   "            <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-  "             <cn>2.0</cn>\n"
+  "              <apply>\n"
+  "                <divide/>\n"
+  "                <ci> parameter_1 </ci>\n"
+  "                <cn> 2.0 </cn>\n"
+  "              </apply>\n"
   "            </math>\n"
   "            </stoichiometryMath>\n"
   "          </speciesReference>\n"
@@ -138,7 +143,15 @@ const char* test000044::MODEL_STRING =
   "          <speciesReference species=\"species_2\">\n"
   "            <stoichiometryMath>\n"
   "            <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-  "             <cn>3.0</cn>\n"
+  "              <apply>\n"
+  "                <times/>\n"
+  "                <apply>\n"
+  "                  <plus/>\n"
+  "                  <ci> parameter_1 </ci>\n"
+  "                  <cn> 3.0 </cn>\n"
+  "                </apply>\n"
+  "                <cn> 0.5 </cn>\n"
+  "              </apply>\n"
   "            </math>\n"
   "            </stoichiometryMath>\n"
   "          </speciesReference>\n"
