@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: akoenig $
-//   $Date: 2008/02/25 18:19:53 $
+//   $Date: 2008/02/26 12:22:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -125,6 +125,28 @@ class CColorScaleSimple : public CColorScale
     C_FLOAT64 mMax;
     bool mLog;
     bool mSym;
+  };
+
+/**
+ * The same mapping as in the base class.
+ * Option to set user defined colors for the min and
+ * max value.
+ */
+class CColorScaleAdvanced : public CColorScaleSimple
+  {
+  public:
+
+    CColorScaleAdvanced();
+
+    virtual QColor getColor(const C_FLOAT64 & number);
+
+    void setColorMin(QColor col);
+    void setColorMax(QColor col);
+
+  protected:
+
+    QColor mColorMin;
+    QColor mColorMax;
   };
 
 /**
