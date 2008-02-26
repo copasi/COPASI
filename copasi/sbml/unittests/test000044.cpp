@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000044.cpp,v $
-//   $Revision: 1.1.2.1 $
+//   $Revision: 1.1.2.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/26 12:38:06 $
+//   $Date: 2008/02/26 17:02:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -93,8 +93,8 @@ const char* test000044::MODEL_STRING =
   "  <model id=\"Model_1\" name=\"New Model\">\n"
   "    <notes>\n"
   "      <body xmlns=\"http://www.w3.org/1999/xhtml\">\n"
-  "        <p>Model with fixed compartment volume, two species with hasOnlySubstanceUnits flag set to false. The units are set to ml and item. There is an assignment rule for the global parameter that contains a reference to species A.</p>\n"
-  "        <p>The imported model should contain an assignment for the global parameter that consists of the reference to species A. The species references in the reactions should be imported unmodified.</p>\n"
+  "        <p>Model with fixed compartment volume, two species with hasOnlySubstanceUnits flag set to false. The units are set to ml and item. There is a stoichiometric expression for the only species in the only reaction. The expression consists of the number 2.0</p>\n"
+  "        <p>The substrate of the reaction in the imported model should have a multiplicity of 2.</p>\n"
   "      </body>\n"
   "    </notes>\n"
   "    <listOfUnitDefinitions>\n"

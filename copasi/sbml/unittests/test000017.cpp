@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000017.cpp,v $
-//   $Revision: 1.1.2.8 $
+//   $Revision: 1.1.2.9 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/21 10:09:30 $
+//   $Date: 2008/02/26 17:02:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -411,12 +411,6 @@ const char* test000017::MODEL_STRING =
   "      <Method name=\"Sensitivities Method\" type=\"SensitivitiesMethod\">\n"
   "        <Parameter name=\"Delta factor\" type=\"unsignedFloat\" value=\"1e-06\"/>\n"
   "        <Parameter name=\"Delta minimum\" type=\"unsignedFloat\" value=\"1e-12\"/>\n"
-  "      </Method>\n"
-  "    </Task>\n"
-  "    <Task key=\"Task_0\" name=\"Moieties\" type=\"moieties\" scheduled=\"false\" updateModel=\"false\">\n"
-  "      <Problem>\n"
-  "      </Problem>\n"
-  "      <Method name=\"Not set\" type=\"NotSet\">\n"
   "      </Method>\n"
   "    </Task>\n"
   "  </ListOfTasks>\n"
