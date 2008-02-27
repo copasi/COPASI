@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQCompartment.ui.h,v $
-//   $Revision: 1.7.4.3 $
+//   $Revision: 1.7.4.4 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/02/27 14:43:38 $
+//   $Author: shoops $
+//   $Date: 2008/02/27 15:20:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,9 +40,6 @@
 
 void CQCompartment::init()
 {
-  mInitialExpressionValid = false;
-  mExpressionValid = false;
-
   mpComboBoxType->insertItem(FROM_UTF8(CModelEntity::StatusName[CModelEntity::FIXED]));
   mpComboBoxType->insertItem(FROM_UTF8(CModelEntity::StatusName[CModelEntity::ASSIGNMENT]));
   mpComboBoxType->insertItem(FROM_UTF8(CModelEntity::StatusName[CModelEntity::ODE]));
@@ -53,7 +50,10 @@ void CQCompartment::init()
 
   mpMetaboliteTable->header()->hide();
 
+  mExpressionValid = false;
   mpEditExpression->setExpressionType(CCopasiSimpleSelectionTree::TRANSIENT_EXPRESSION);
+
+  mInitialExpressionValid = false;
   mpEditInitialExpression->setExpressionType(CCopasiSimpleSelectionTree::INITIAL_EXPRESSION);
 }
 

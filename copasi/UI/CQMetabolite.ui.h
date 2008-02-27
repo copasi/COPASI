@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMetabolite.ui.h,v $
-//   $Revision: 1.14.4.2 $
+//   $Revision: 1.14.4.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/24 21:21:00 $
+//   $Date: 2008/02/27 15:20:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -59,7 +59,10 @@ void CQMetabolite::init()
                                   ")");
   mpLblValue->setMinimumWidth(Width);
 
+  mExpressionValid = false;
   mpEditExpression->setExpressionType(CCopasiSimpleSelectionTree::TRANSIENT_EXPRESSION);
+
+  mInitialExpressionValid = false;
   mpEditInitialExpression->setExpressionType(CCopasiSimpleSelectionTree::INITIAL_EXPRESSION);
 }
 
