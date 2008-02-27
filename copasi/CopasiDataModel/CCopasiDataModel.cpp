@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.107.4.5 $
+//   $Revision: 1.107.4.6 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/21 14:00:16 $
+//   $Date: 2008/02/27 10:45:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -142,6 +142,16 @@ CCopasiDataModel::CCopasiDataModel(const bool withGUI):
 
   GlobalKeys.remove(mpUndefined->getKey());
   GlobalKeys.addFix("UndefinedFunction_0", mpUndefined);
+
+  mpDelay = new CFunction("delay");
+  mpDelay->addVariable("variable");
+  mpDelay->addVariable("timeDelay");
+  CEvaluationNodeConstant* pRoot = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "NAN");
+  mpDelay->setRoot(pRoot);
+  mpDelay->compile();
+
+  GlobalKeys.remove(mpDelay->getKey());
+  GlobalKeys.addFix("DelayDummyFunction_0", mpDelay);
 
   mpFunctionList->load();
   newModel(NULL, NULL);

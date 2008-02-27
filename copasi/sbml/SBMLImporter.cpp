@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.189.2.6.2.14 $
+//   $Revision: 1.189.2.6.2.15 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/26 20:06:33 $
+//   $Date: 2008/02/27 10:45:24 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -488,7 +488,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   setInitialValues(this->mpCopasiModel, copasi2sbmlmap);
   // evaluate and apply the initial expressions
   this->applyStoichiometricExpressions(copasi2sbmlmap, sbmlModel);
-  this->createDelayFunctionDefinition();
+  //this->createDelayFunctionDefinition();
   this->removeUnusedFunctions(pTmpFunctionDB, copasi2sbmlmap);
   // remove the temporary avogadro parameter if one was created
   if (this->mAvogadroCreated == true)
@@ -1361,7 +1361,7 @@ SBMLImporter::SBMLImporter()
   this->mUnsupportedAssignmentRuleFound = false;
   this->mpImportHandler = NULL;
   this->mFastReactionsEncountered = false;
-  this->mDelayFound = false;
+  //this->mDelayFound = false;
   this->mAvogadroCreated = false;
   this->mIgnoredSBMLMessages.insert(10501);
   this->mIgnoredSBMLMessages.insert(10512);
@@ -2126,10 +2126,12 @@ void SBMLImporter::preprocessNode(ConverterASTNode* pNode, Model* pSBMLModel, st
 {
   // this function goes through the tree three times.
   // this can probably be handled more intelligently
+  /*
   if (!this->mDelayFound)
     {
       this->isDelayFunctionUsed(pNode);
     }
+  */
   this->replaceCallNodeNames(pNode);
   this->replaceTimeNodeNames(pNode);
   if (isKineticLaw && !this->mSubstanceOnlySpecies.empty())
@@ -2323,6 +2325,7 @@ void SBMLImporter::replaceAmountReferences(ConverterASTNode* pNode, Model* pSBML
     }
 }
 
+/*
 void SBMLImporter::isDelayFunctionUsed(ConverterASTNode* pNode)
 {
   if (!pNode) return;
@@ -2333,7 +2336,7 @@ void SBMLImporter::isDelayFunctionUsed(ConverterASTNode* pNode)
     }
   else
     {
-      // go through all children and check if the delay functin is used there
+      // go through all children and check if the delay function is used there
       unsigned int i, iMax = pNode->getNumChildren();
       for (i = 0;i < iMax;++i)
         {
@@ -2341,6 +2344,7 @@ void SBMLImporter::isDelayFunctionUsed(ConverterASTNode* pNode)
         }
     }
 }
+ */
 
 void SBMLImporter::replaceTimeNodeNames(ConverterASTNode* pNode)
 {
@@ -3286,7 +3290,7 @@ void SBMLImporter::findFunctionCalls(const CEvaluationNode* pNode, std::set<std:
       CCopasiTree<const CEvaluationNode>::iterator treeIt = pNode;
       while (treeIt != NULL)
         {
-          if (CEvaluationNode::type((*treeIt).getType()) == CEvaluationNode::CALL)
+          if (CEvaluationNode::type((*treeIt).getType()) == CEvaluationNode::CALL && ((CEvaluationNodeCall::SubType)CEvaluationNode::subType(treeIt->getType())) != CEvaluationNodeCall::DELAY)
             {
               // unQuote not necessary since getIndex in CCopasiVector takes care of this.
               CEvaluationTree* pTree = pFunctionDB->findFunction((*treeIt).getData());
@@ -4870,10 +4874,12 @@ void SBMLImporter::applyStoichiometricExpressions(std::map<CCopasiObject*, SBase
     }
 }
 
+/*
 void SBMLImporter::createDelayFunctionDefinition()
 {
   // TODO
 }
+ */
 
 void SBMLImporter::findAvogadroConstant(Model* pSBMLModel, double factor)
 {

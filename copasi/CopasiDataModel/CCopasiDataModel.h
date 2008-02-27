@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.h,v $
-//   $Revision: 1.33.4.3 $
+//   $Revision: 1.33.4.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/18 06:41:38 $
+//   $Date: 2008/02/27 10:45:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -169,6 +169,7 @@ class CCopasiDataModel: public COutputHandler
   public:
     static CCopasiDataModel * Global;
     CFunction * mpUndefined;
+    CFunction * mpDelay;
 
     /**
      *  This is a hack at the moment to be able to read Gepasi model files
