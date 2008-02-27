@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQCompartment.ui.h,v $
-//   $Revision: 1.7.4.2 $
+//   $Revision: 1.7.4.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/01/24 21:20:59 $
+//   $Author: ssahle $
+//   $Date: 2008/02/27 14:43:38 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,6 +40,9 @@
 
 void CQCompartment::init()
 {
+  mInitialExpressionValid = false;
+  mExpressionValid = false;
+
   mpComboBoxType->insertItem(FROM_UTF8(CModelEntity::StatusName[CModelEntity::FIXED]));
   mpComboBoxType->insertItem(FROM_UTF8(CModelEntity::StatusName[CModelEntity::ASSIGNMENT]));
   mpComboBoxType->insertItem(FROM_UTF8(CModelEntity::StatusName[CModelEntity::ODE]));
