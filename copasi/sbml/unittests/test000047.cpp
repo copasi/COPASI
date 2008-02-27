@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000047.cpp,v $
-//   $Revision: 1.1.2.1 $
+//   $Revision: 1.1.2.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/27 10:45:24 $
+//   $Date: 2008/02/27 15:17:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -90,6 +90,14 @@ void test000047::test_delay()
   CPPUNIT_ASSERT(pModelValue != NULL);
   CPPUNIT_ASSERT(pModelValue->getStatus() == CModelEntity::FIXED);
   CPPUNIT_ASSERT(pModel->getReactions().size() == 0);
+  CPPUNIT_ASSERT(CCopasiMessage::size() == 2);
+  CCopasiMessage message = CCopasiMessage::getLastMessage();
+  CPPUNIT_ASSERT(message.getType() == CCopasiMessage::WARNING);
+  std::string s = message.getText();
+  CPPUNIT_ASSERT(!s.empty());
+  CPPUNIT_ASSERT(s.find(std::string("COPASI does not support time delays. Calculations on this model will most likely lead to unusable results.")) != std::string::npos);
+  // right now, we don't care about the last message since it is a units
+  // warning from libSBML
 }
 
 const char* test000047::MODEL_STRING =

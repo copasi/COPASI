@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000044.cpp,v $
-//   $Revision: 1.1.2.3 $
+//   $Revision: 1.1.2.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/26 19:32:27 $
+//   $Date: 2008/02/27 15:17:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -89,6 +89,14 @@ void test000044::test_stoichiometricExpression()
   CPPUNIT_ASSERT(fabs((pElement->getMultiplicity() - 3.0) / 3.0) < 1e-3);
   CPPUNIT_ASSERT(pElement->getMetabolite() == pB);
   CPPUNIT_ASSERT(pChemEq->getModifiers().size() == 0);
+  CPPUNIT_ASSERT(CCopasiMessage::size() == 5);
+  CCopasiMessage message = CCopasiMessage::getLastMessage();
+  CPPUNIT_ASSERT(message.getType() == CCopasiMessage::WARNING);
+  std::string s = message.getText();
+  CPPUNIT_ASSERT(!s.empty());
+  CPPUNIT_ASSERT(s.find(std::string("One or more stoichiometric expressions were evaluated and converted to constants values.")) != std::string::npos);
+  // the other four messages are libSBML unit warnings I don't care about right
+  // now.
 }
 
 const char* test000044::MODEL_STRING =
