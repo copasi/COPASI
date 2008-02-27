@@ -1,10 +1,10 @@
 <!-- Please don't remove, I want to use this to easily be able to check if messages has been changed in order to be able to update this file. -->
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_errorMessages.xml,v $ -->
-<!--   $Revision: 1.8.4.2 $ -->
+<!--   $Revision: 1.8.4.3 $ -->
 <!--   $Name:  $ -->
-<!--   $Author: pwilly $ -->
-<!--   $Date: 2008/02/14 14:37:53 $ -->
+<!--   $Author: gauges $ -->
+<!--   $Date: 2008/02/27 15:00:25 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -812,8 +812,8 @@ If COPASI finds a species reference in a reaction that has the hasOnlySubstanceU
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>SBML (36)</para></listitem></varlistentry>
-<varlistentry><term>Error Message:</term><listitem><para>COPASI can not handle models that use the delay function.</para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>The delay function is not supported in COPASI.</para></listitem></varlistentry>
+<varlistentry><term>Error Message:</term><listitem><para>COPASI does not support time delays. Calculations on this model will most likely lead to unusable results.</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>COPASI currently does has no possibility to calculate time delays as they are supported in SBML models. If COPASI encounters a model with such a time delay, the delay is converted to a normal function call that evaluates to NaN (Not a number). This might lead to calculation results containing a large amount of NaN values instead of numerical values. If you want to work with the model, you have to remove all calls to the delay function from the mathematical expressions in the model.</para></listitem></varlistentry>
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>SBML (37)</para></listitem></varlistentry>
