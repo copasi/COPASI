@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.189.2.6.2.15 $
+//   $Revision: 1.189.2.6.2.16 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/27 10:45:24 $
+//   $Date: 2008/02/27 14:55:56 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -2126,12 +2126,10 @@ void SBMLImporter::preprocessNode(ConverterASTNode* pNode, Model* pSBMLModel, st
 {
   // this function goes through the tree three times.
   // this can probably be handled more intelligently
-  /*
   if (!this->mDelayFound)
     {
       this->isDelayFunctionUsed(pNode);
     }
-  */
   this->replaceCallNodeNames(pNode);
   this->replaceTimeNodeNames(pNode);
   if (isKineticLaw && !this->mSubstanceOnlySpecies.empty())
@@ -2325,13 +2323,12 @@ void SBMLImporter::replaceAmountReferences(ConverterASTNode* pNode, Model* pSBML
     }
 }
 
-/*
 void SBMLImporter::isDelayFunctionUsed(ConverterASTNode* pNode)
 {
   if (!pNode) return;
   if (pNode->getType() == AST_FUNCTION_DELAY)
     {
-      //CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 36);
+      CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 36);
       this->mDelayFound = true;
     }
   else
@@ -2344,7 +2341,6 @@ void SBMLImporter::isDelayFunctionUsed(ConverterASTNode* pNode)
         }
     }
 }
- */
 
 void SBMLImporter::replaceTimeNodeNames(ConverterASTNode* pNode)
 {

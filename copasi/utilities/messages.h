@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.109.2.1.2.6 $
+//   $Revision: 1.109.2.1.2.7 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/08 13:14:23 $
+//   $Date: 2008/02/27 14:55:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -185,7 +185,7 @@ const MESSAGES Messages[] =
     {MCSBML + 33, "SBML (33): Error: %s is not allowed for local parameter '%s'."},
     {MCSBML + 34, "SBML (34): Error: %s is not allowed for local constant '%s' identified by id '%s'."},
     {MCSBML + 35, "SBML (35): Error: Only one AssignmentRule or RateRule is allowed for id '%s'."},
-    {MCSBML + 36, "SBML (36): COPASI can not handle models that use the delay function."},
+    {MCSBML + 36, "SBML (36): COPASI does not support time delays. Calculations on this model will most likely lead to unusable results."},
     {MCSBML + 37, "SBML (37): The id '%s' is used in the expression of a rule, although it is later defined by a rule itself."},
     {MCSBML + 38, "SBML (38): Only references to compartment volumes, species concentrations, global parameter values or the time are allowed in SBML rule expressions."},
     {MCSBML + 39, "SBML (39): Object with id \"%s\" referenced in kinetic law, but no object with that id found in model."},
