@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget.cpp,v $
-//   $Revision: 1.148.4.2 $
+//   $Revision: 1.148.4.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/02/08 18:40:51 $
+//   $Date: 2008/02/27 21:09:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -170,12 +170,16 @@ void MetabolitesWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C
   // Number Rate
   table->setText(row, COL_NRATE, QString::number(pMetab->getRate()));
 
+  const CExpression * pExpression = NULL;
   // Initial Expression
-  const CExpression * pExpression = pMetab->getInitialExpressionPtr();
-  if (pExpression != NULL)
-    table->setText(row, COL_IEXPRESSION, FROM_UTF8(pExpression->getDisplayString()));
-  else
-    table->clearCell(row, COL_IEXPRESSION);
+  if (pMetab->getInitialExpression() != "")
+    {
+      pExpression = pMetab->getInitialExpressionPtr();
+      if (pExpression != NULL)
+        table->setText(row, COL_IEXPRESSION, FROM_UTF8(pExpression->getDisplayString()));
+      else
+        table->clearCell(row, COL_IEXPRESSION);
+    }
 
   // Expression
   pExpression = pMetab->getExpressionPtr();
