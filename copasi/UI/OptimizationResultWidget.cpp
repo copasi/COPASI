@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationResultWidget.cpp,v $
-//   $Revision: 1.7.4.2 $
+//   $Revision: 1.7.4.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/02/25 21:15:14 $
+//   $Date: 2008/02/27 19:02:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -153,9 +153,6 @@ bool OptimizationResultWidget::update(ListViews::ObjectType objectType,
       if (mCentralWidgetSteady != NULL)
         mCentralWidgetSteady->optimizationResultText->setText("<h2>No result available, please execute the optimization task.</h2>");
     }
-
-  if (isShown())
-    return loadFromBackend();
 
   return true;
 }

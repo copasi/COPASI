@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TimeSeriesWidget.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.6.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/07 19:46:35 $
+//   $Date: 2008/02/27 19:02:09 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -39,13 +44,13 @@ class TimeSeriesWidget : public CopasiWidget
     //virtual void slotBtnCancelClicked();
     //virtual void slotBtnOKClicked();
 
-  protected:
+  public:
     bool loadFromBackend();
     bool saveToBackend();
+
+  protected:
     std::string objKey;
-
     QGridLayout* mWidgetLayout;
-
     TimeSeriesSubWidget* mCentralWidget;
   };
 

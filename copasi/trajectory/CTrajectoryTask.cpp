@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-//   $Revision: 1.91.4.1 $
+//   $Revision: 1.91.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/02/25 21:15:15 $
+//   $Date: 2008/02/27 19:02:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -156,15 +156,12 @@ bool CTrajectoryTask::initialize(const OutputFlag & of,
 
   // Handle the time series as a regular output.
   mTimeSeriesRequested = mpTrajectoryProblem->timeSeriesRequested();
-  if (pOutputHandler != NULL)
+  if ((pOutputHandler != NULL) &&
+      mTimeSeriesRequested &&
+      (of & CCopasiTask::TIME_SERIES))
     {
-      if (mTimeSeriesRequested && (of & CCopasiTask::TIME_SERIES))
-        {
-          mTimeSeries.allocate(mpTrajectoryProblem->getStepNumber());
-          pOutputHandler->addInterface(&mTimeSeries);
-        }
-      else
-        pOutputHandler->removeInterface(&mTimeSeries);
+      mTimeSeries.allocate(mpTrajectoryProblem->getStepNumber());
+      pOutputHandler->addInterface(&mTimeSeries);
     }
 
   if (!CCopasiTask::initialize(of, pOutputHandler, pOstream)) success = false;
