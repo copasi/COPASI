@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.cpp,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
 //   $Author: akoenig $
-//   $Date: 2008/02/26 12:22:18 $
+//   $Date: 2008/02/27 12:24:59 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -305,7 +305,7 @@ CQArrayAnnotationsWidget::CQArrayAnnotationsWidget(QWidget* parent, const char* 
     mpColorScale(NULL)
 {
   showBarChart = false;
-
+  mBarChartFilled = false;
   //barChart=false;
 
 #ifdef WITH_QWT3D
@@ -337,7 +337,13 @@ CQArrayAnnotationsWidget::CQArrayAnnotationsWidget(QWidget* parent, const char* 
       plot3d->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
       if (slider) plot3d->activateSlider();
       mpStack->addWidget(plot3d, 1);
-      if (barChartFirst) switchToBarChart();
+      if (barChartFirst)
+        if (showBarChart)
+          {
+            setFocusOnBars();
+            mpStack->raiseWidget(1);
+            mpButton->setText("table");
+          }
     }
 #else
   disableBarChart();
@@ -654,83 +660,14 @@ void CQArrayAnnotationsWidget::fillTable(unsigned C_INT32 rowIndex, unsigned C_I
                                     QString::number(number)));
           }
       }
-#ifdef WITH_QWT3D
-  if (showBarChart && (jmax > 0 && imax > 0))
-    {
 
-      //create a new array data, witch holds the hole numeric data
-      int columns = jmax;
-      int rows = imax;
-      data = new double * [columns];
-      for (i = 0; i < columns; ++i)
-        data[i] = new double[rows];
+  mRowIndex = rowIndex;
+  mColIndex = colIndex;
+  mIndex = index;
 
-      //minValue and maxValue help to figure out the min and max value
-      index[rowIndex] = 0;
-      index[colIndex] = 0;
-      double maxValue = (double)(*mpArray->array())[index];
-      double minValue = (double)(*mpArray->array())[index];
-
-      //fill array data with values and figure out min/max value
-      for (i = 0; i < imax; ++i)
-        for (j = 0; j < jmax; ++j)
-          {
-            index[rowIndex] = i;
-            index[colIndex] = j;
-
-            data[j][i] = (double)(*mpArray->array())[index];
-            if ((double)(*mpArray->array())[index] > maxValue) maxValue = (double)(*mpArray->array())[index];
-            if ((double)(*mpArray->array())[index] < minValue) minValue = (double)(*mpArray->array())[index];
-          }
-
-      //figure out the min/max print section
-      double minZ, maxZ;
-      if ((minValue < 0) && (maxValue < 0))
-        {//(all values < 0)
-          minZ = minValue;
-          maxZ = 0;
-        }
-      else
-        {
-          if ((minValue > 0) && (maxValue > 0))
-            {//(all values > 0)
-              minZ = 0;
-              maxZ = maxValue;
-            }
-          else
-            {//(values <> 0)
-              minZ = minValue;
-              maxZ = maxValue;
-            }
-        }
-
-      //fill vector mColor with 100 colors, evenly distributed over relevant print section
-      double holeSection = maxZ - minZ;
-      double step = holeSection / 99;
-      for (i = 0; i < 100; i++)
-        {
-          mColors.push_back(i);
-          mColors[i] = mpColorScale->getColor(minZ + i * step);
-        }
-
-      //deliver plot3D contents, colors and annotations
-      if ((maxValue == 0) && (minValue == 0))
-        {
-          enableBarChart(false);
-          //  plot3d->emptyPlot();
-        }
-      else
-        {
-          plot3d->setPlotTitle(QString(""));
-          plot3d->setColors(mColors, minZ, maxZ);
-          mColors.erase(mColors.begin(), mColors.end());
-          plot3d->showColorLegend(true);
-          plot3d->setDescriptions(&mpArray->getAnnotationsString(colIndex), &mpArray->getAnnotationsString(rowIndex));
-          plot3d->setData(data, columns, rows, holeSection);
-          enableBarChart(true);
-        }
-    }
-#endif
+  mOneDimensional = false;
+  if (mpStack->id(mpStack->visibleWidget()) == 1)
+    fillBarChart(mOneDimensional);
 }
 
 void CQArrayAnnotationsWidget::fillTable(unsigned C_INT32 rowIndex,
@@ -778,76 +715,15 @@ void CQArrayAnnotationsWidget::fillTable(unsigned C_INT32 rowIndex,
                                   QString::number(number)));
         }
     }
-#ifdef WITH_QWT3D
-  if (showBarChart && (imax > 0))
-    {
-      //create a new array data, witch holds the hole numeric data
-      int rows = imax;
-      data = new double * [1];
-      data[0] = new double[rows];
 
-      //minValue and maxValue help to figure out the min and max value
-      index[rowIndex] = 0;
-      double maxValue = (double)(*mpArray->array())[index];
-      double minValue = (double)(*mpArray->array())[index];
+  mRowIndex = rowIndex;
+  mColIndex = 1;
+  mIndex = index;
 
-      for (i = 0; i < imax; ++i)
-        {
-          index[rowIndex] = i;
+  mOneDimensional = true;
 
-          data[0][i] = (double)(*mpArray->array())[index];
-          if ((double)(*mpArray->array())[index] > maxValue) maxValue = (double)(*mpArray->array())[index];
-          if ((double)(*mpArray->array())[index] < minValue) minValue = (double)(*mpArray->array())[index];
-        }
-
-      //figure out the min/max print section
-      double minZ, maxZ;
-      if ((minValue < 0) && (maxValue < 0))
-        {//(all values < 0)
-          minZ = minValue;
-          maxZ = 0;
-        }
-      else
-        {
-          if ((minValue > 0) && (maxValue > 0))
-            {//(all values > 0)
-              minZ = 0;
-              maxZ = maxValue;
-            }
-          else
-            {//(values <> 0)
-              minZ = minValue;
-              maxZ = maxValue;
-            }
-        }
-
-      //fill vector mColor with 100 colors, evenly distributed over relevant print section
-      double holeSection = maxZ - minZ;
-      double step = holeSection / 99;
-      for (i = 0; i < 100; i++)
-        {
-          mColors.push_back(i);
-          mColors[i] = mpColorScale->getColor(minZ + i * step);
-        }
-
-      //deliver plot3D contents, colors and annotations
-      if ((maxValue == 0) && (minValue == 0))
-        {
-          enableBarChart(false);
-          // plot3d->emptyPlot();
-        }
-      else
-        {
-          plot3d->setPlotTitle(QString(""));
-          plot3d->showColorLegend(true);
-          plot3d->setColors(mColors, minZ, maxZ);
-          mColors.erase(mColors.begin(), mColors.end());
-          plot3d->setDescriptions(NULL, &mpArray->getAnnotationsString(rowIndex));
-          plot3d->setData(data, 1, rows, holeSection);
-          enableBarChart(true);
-        }
-    }
-#endif
+  if (mpStack->id(mpStack->visibleWidget()) == 1)
+    fillBarChart(mOneDimensional);
 }
 
 void CQArrayAnnotationsWidget::fillTable()
@@ -912,6 +788,10 @@ void CQArrayAnnotationsWidget::switchToBarChart()
   if (showBarChart)
     {
       setFocusOnBars();
+
+      if (!mBarChartFilled)
+        fillBarChart(mOneDimensional);
+
       mpStack->raiseWidget(1);
       mpButton->setText("table");
     }
@@ -1030,4 +910,120 @@ void CQArrayAnnotationsWidget::setColumnSize(int dummy1, int dummy2, int size)
   int i;
   for (i = 0; i < mpContentTable->numCols(); i++)
     mpContentTable->horizontalHeader()->resizeSection(i, size);
+}
+
+void CQArrayAnnotationsWidget::fillBarChart(bool oneDim)
+{
+
+#ifdef WITH_QWT3D
+
+  mBarChartFilled = true;
+
+  if (!mpArray) return;
+
+  assert(mRowIndex < mIndex.size());
+  if (!oneDim)
+    assert(mColIndex < mIndex.size());
+
+  mpContentTable->setNumRows(mpArray->size()[mRowIndex]);
+  if (oneDim)
+    mpContentTable->setNumCols(1);
+  else
+    mpContentTable->setNumCols(mpArray->size()[mColIndex]);
+
+  mpContentTable->horizontalHeader()->setLabel(0, "");
+
+  std::vector<std::string> rowdescr = mpArray->getAnnotationsString(mRowIndex);
+  if (!oneDim)
+    std::vector<std::string> coldescr = mpArray->getAnnotationsString(mColIndex);
+
+  unsigned C_INT32 i, imax = mpArray->size()[mRowIndex];
+  unsigned C_INT32 j, jmax;
+  if (oneDim)
+    jmax = 1;
+  else
+    jmax = mpArray->size()[mColIndex];
+
+  if (showBarChart && (jmax > 0 && imax > 0))
+    {
+      //create a new array data, witch holds the hole numeric data
+      int columns = jmax;
+      int rows = imax;
+      data = new double * [columns];
+      for (i = 0; i < columns; ++i)
+        data[i] = new double[rows];
+
+      //minValue and maxValue help to figure out the min and max value
+      mIndex[mRowIndex] = 0;
+      if (!oneDim)
+        mIndex[mColIndex] = 0;
+      double maxValue = (double)(*mpArray->array())[mIndex];
+      double minValue = (double)(*mpArray->array())[mIndex];
+
+      //fill array data with values and figure out min/max value
+      for (i = 0; i < imax; ++i)
+        for (j = 0; j < jmax; ++j)
+          {
+            mIndex[mRowIndex] = i;
+            if (!oneDim)
+              mIndex[mColIndex] = j;
+
+            data[j][i] = (double)(*mpArray->array())[mIndex];
+            if ((double)(*mpArray->array())[mIndex] > maxValue) maxValue = (double)(*mpArray->array())[mIndex];
+            if ((double)(*mpArray->array())[mIndex] < minValue) minValue = (double)(*mpArray->array())[mIndex];
+          }
+
+      //figure out the min/max print section
+      double minZ, maxZ;
+      if ((minValue < 0) && (maxValue < 0))
+        {//(all values < 0)
+          minZ = minValue;
+          maxZ = 0;
+        }
+      else
+        {
+          if ((minValue > 0) && (maxValue > 0))
+            {//(all values > 0)
+              minZ = 0;
+              maxZ = maxValue;
+            }
+          else
+            {//(values <> 0)
+              minZ = minValue;
+              maxZ = maxValue;
+            }
+        }
+
+      //fill vector mColor with 100 colors, evenly distributed over relevant print section
+      double holeSection = maxZ - minZ;
+      double step = holeSection / 99;
+      for (i = 0; i < 100; i++)
+        {
+          mColors.push_back(i);
+          mColors[i] = mpColorScale->getColor(minZ + i * step);
+        }
+
+      //deliver plot3D contents, colors and annotations
+      if ((maxValue == 0) && (minValue == 0))
+        {
+          // enableBarChart(false);
+          // plot3d->emptyPlot();
+        }
+      else
+        {
+          plot3d->setPlotTitle(QString(""));
+          plot3d->setColors(mColors, minZ, maxZ);
+          mColors.erase(mColors.begin(), mColors.end());
+          plot3d->showColorLegend(true);
+
+          if (oneDim)
+            plot3d->setDescriptions(NULL, &mpArray->getAnnotationsString(mRowIndex));
+          else
+            plot3d->setDescriptions(&mpArray->getAnnotationsString(mColIndex), &mpArray->getAnnotationsString(mRowIndex));
+
+          plot3d->setData(data, columns, rows, holeSection);
+          enableBarChart(true);
+        }
+    }
+#endif
 }

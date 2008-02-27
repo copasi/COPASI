@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: akoenig $
-//   $Date: 2008/02/26 12:22:18 $
+//   $Date: 2008/02/27 12:24:59 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -266,6 +266,8 @@ class CQArrayAnnotationsWidget : public QVBox
                    CCopasiAbstractArray::index_type & index);
     void fillTable();
 
+    void fillBarChart(bool oneDim);
+
     /**
      *  only for dimensionality > 2
      */
@@ -314,6 +316,11 @@ class CQArrayAnnotationsWidget : public QVBox
     CColorScale* mpColorScale;
     bool mAutomaticColorScaling;
 
+    unsigned C_INT32 mRowIndex;
+    unsigned C_INT32 mColIndex;
+    CCopasiAbstractArray::index_type mIndex;
+    bool mBarChartFilled;
+    bool mOneDimensional;
     /**
      * the current active item of all the combo boxes
      */
