@@ -1,10 +1,10 @@
 <!-- Please don't remove, I want to use this to easily be able to check if messages has been changed in order to be able to update this file. -->
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_errorMessages.xml,v $ -->
-<!--   $Revision: 1.8.4.3 $ -->
+<!--   $Revision: 1.8.4.4 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: gauges $ -->
-<!--   $Date: 2008/02/27 15:00:25 $ -->
+<!--   $Date: 2008/02/28 10:57:31 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -222,7 +222,7 @@ CReaction is COPASIs internal reaction representation. Many of the error message
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>CReaction (2)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para> In Reaction 'REACTIONNAME' the compartment could not be guessed.</para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>!!!UNDOCUMENTED!!!</para></listitem></varlistentry>
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>CReaction (3)</para></listitem></varlistentry>
@@ -267,7 +267,7 @@ CReaction is COPASIs internal reaction representation. Many of the error message
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>CReaction (11)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para> Reaction 'REACTIONNAME' refers to unusable Function 'FUNCTIONNAME'.</para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>!!!UNDOCUMENTED!!!</para></listitem></varlistentry>
 </variablelist>
 </para>
 
@@ -283,17 +283,17 @@ These error messages come from chemical equation problem.
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>CChemEq (1)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para>No Substrates and no Products. </para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>!!!UNDOCUMENTED!!!</para></listitem></varlistentry>
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>CChemEq (2)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para>Substrates in different Compartments. </para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>!!!UNDOCUMENTED!!!</para></listitem></varlistentry>
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>CChemEq (3)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para>No Substrates and Products are in different compartments. </para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>!!!UNDOCUMENTED!!!</para></listitem></varlistentry>
 </variablelist>
 </para>
 
@@ -309,7 +309,7 @@ Errors on defining method parameters are reported here.
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>CCopasiParameter (1)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para> Invalid value 'VALUE' for 'PARAMETERNAME' </para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>!!!UNDOCUMENTED!!!</para></listitem></varlistentry>
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>CCopasiParameter (2)</para></listitem></varlistentry>
@@ -415,32 +415,32 @@ These error messages can occur when running a trajectory task. All of them depen
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>CTrajectoryMethod (16)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para>Numerical Error encountered. </para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>!!!UNDOCUMENTED!!!</para></listitem></varlistentry>
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>CTrajectoryMethod (17)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para>At least one reaction is necessary to perform stochastic simulation. </para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>!!!UNDOCUMENTED!!!</para></listitem></varlistentry>
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>CTrajectoryMethod (18)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para>The model contains a global quantity with an ODE rule. Stochastic simulation is not possible. </para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>!!!UNDOCUMENTED!!!</para></listitem></varlistentry>
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>CTrajectoryMethod (19)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para>The model contains a global quantity with an assignment rule. The value of the quantity is used in the model. Stochastic simulation of such models is not possible with this version of COPASI. </para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>!!!UNDOCUMENTED!!!</para></listitem></varlistentry>
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>CTrajectoryMethod (20)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para>The model contains a species with an ODE rule. Stochastic simulation is not possible. </para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>!!!UNDOCUMENTED!!!</para></listitem></varlistentry>
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>CTrajectoryMethod (21)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para>The model contains a compartment with an ODE rule. Stochastic simulation is not possible. </para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>!!!UNDOCUMENTED!!!</para></listitem></varlistentry>
 </variablelist>
 </para>
 
@@ -511,17 +511,17 @@ These error messages can occur when reading COPASI files. Many of the error mess
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>XML (12)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para> Order 'INDEX' out of range for variable 'VARIABLENAME' in function 'FUNCTIONNAME' encountered at line 'LINENUMBER'.</para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>!!!UNDOCUMENTED!!!</para></listitem></varlistentry>
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>XML (13)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para> Unrecognized format in file 'FILENAME'.</para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>!!!UNDOCUMENTED!!!</para></listitem></varlistentry>
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>XML (14)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para> Local reaction parameters may no longer be used in any expression in the model. The following automatic corrections have been applied: AUTOMATIC_CORRECTIONS Please note: Tasks, reports, and plots may have been affected by these changes and may no longer work as expected.</para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>!!!UNDOCUMENTED!!!</para></listitem></varlistentry>
 </variablelist>
 </para>
 
@@ -635,8 +635,7 @@ The following errors are generated by the SBML importer and exporter. If you enc
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>SBML (3)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para> The SBML document contains algebraic rules that were ignored. Entities determined by those rules are probably undetermined now.</para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented.
-<!--COPASI does not support SBML rules for species and compartments yet, so if you load an SBML file that contains rules for those model elements, COPASI will warn you that the rules have been ignored. Please be aware that this will very likely change simulation results. -->
+<varlistentry><term>Description:</term><listitem><para>COPASI does not support SBML algebraic rules yet, so if you load an SBML file that contains algebraic rules, COPASI will warn you that the rules have been ignored. Please be aware that this will very likely change simulation results.
 </para></listitem></varlistentry>
 </variablelist>
 <variablelist>
@@ -669,11 +668,13 @@ The following errors are generated by the SBML importer and exporter. If you enc
 <varlistentry><term>Error Message:</term><listitem><para> Could not set function from expression in reaction 'REACTIONID'.</para></listitem></varlistentry>
 <varlistentry><term>Description:</term><listitem><para>Somehow COPASI was able to generate in internal representation for a function formula, but could not use it with a reaction. If you get such an error, please send as a bug report with the SBML file so we can look at it.</para></listitem></varlistentry>
 </variablelist>
+<!--
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>SBML (10)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para> COPASI does not support stoichiometric expressions.</para></listitem></varlistentry>
 <varlistentry><term>Description:</term><listitem><para>Although COPASI does support fractional stoichiometries, arbitrary stoichiometric expressions are not supported yet. If such a stoichiometry is encountered, COPASI will not read the file.</para></listitem></varlistentry>
 </variablelist>
+-->
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>SBML (11)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para> Function 'FUNCTIONID' does not start with a Lambda element.</para></listitem></varlistentry>
@@ -713,8 +714,7 @@ If COPASI finds a species reference in a reaction that has the hasOnlySubstanceU
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>SBML (18)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para> Support for 'hasOnlySubstanceUnit' flag on species is experimental. Species in compartments of dimension 0 are also considered to have this flag set.</para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented.
-<!-- The latest versions of COPASI support the hasOnlySubstanceUnits flag on species in SBML files. It should work just fine, but it has not been heavily tested yet.-->
+<varlistentry><term>Description:</term><listitem><para>Dealing with species in SBML files that have the "hasOnlySubstanceUnits" flag set has changed in recent versions of COPASI. We are pretty sure that the way it is handled now is correct. If you think that you found a case where COPASI does it incorrectly, please let us know.
 </para></listitem></varlistentry>
 </variablelist>
 <variablelist>
@@ -740,29 +740,27 @@ If COPASI finds a species reference in a reaction that has the hasOnlySubstanceU
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>SBML (23)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para> Compartment 'COMPARTMENTID' has spatial dimensions of 0, setting dimensions to 3. Considering all species in that compartment to have \"hasOnlySubstanceUnits\" flag set.</para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented.
-<!-- COPASI does not handle models that include compartments with spatial dimensions set to 0. This might change in future versions. -->
+<varlistentry><term>Description:</term><listitem><para>If the compartment in an SBML file has a spatial dimension of 0, all species in the compartment are considered to have the "hasOnlySpeciesUnits" flag set. This means that if such a species is referenced within a mathematical expression, the amount of the species is referenced and not the concentration. Since COPASI only knows threedimensional compartments, the dimensionality of the compartment is ignored, this can lead to incorrect display of units within COPASI, but it should not affect numerical values of the kodel of of calculations done on the model Since COPASI only knows threedimensional compartments, the dimensionality of the compartment is ignored, this can lead to incorrect display of units within COPASI, but it should not affect numerical values of the kodel of of calculations done on the model.
 </para></listitem></varlistentry>
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>SBML (24)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para> Units for some compartments were ignored. Units might be displayed incorrectly. Compartments: COMPARTMENTSID.</para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented.
-<!-- COPASI refuses to read models where units other than 'volume' are specified for a compartment since COPASI can not convert units yet. -->
+<varlistentry><term>Description:</term><listitem><para>If COPASI finds a compartment that has units different from the default volume units of the model, the units are ignored. This might lead to the display of incorrect units in the GUI.
 </para></listitem></varlistentry>
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>SBML (25)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para> Units for some species were ignored. Units might be displayed incorrectly. Species: SPECIESID.</para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented.
-<!-- COPASI refuses to read models where units other than 'substance' are specified for a species since COPASI can not convert units yet. -->
+If COPASI finds a species that has units different from the default substance units of the model, the units are ignored. This might lead to the display of incorrect units in the GUI.
+<varlistentry><term>Description:</term><listitem><para>
 </para></listitem></varlistentry>
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>SBML (26)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para> Units for some parameters were ignored. Units might be displayed incorrectly. Parameters: PARAMETERSID.</para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented.
-<!-- COPASI ignores units set on individual compartments since unit conversion is not supported in COPASI yet. Please be aware that depending on the units results generated from such a model might be incorrect. -->
+<varlistentry><term>Description:</term><listitem><para>
+If COPASI finds a parameter that has units set, the units are ignored. This might lead to the display of incorrect units in the GUI.
 </para></listitem></varlistentry>
 </variablelist>
 <variablelist>
@@ -855,8 +853,8 @@ If COPASI finds a species reference in a reaction that has the hasOnlySubstanceU
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>SBML (44)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para>Substance unit in kinetic law for some reactions were ignored. Units might be displayed incorrectly. Reactions: REACTIONSID.</para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented.
-<!-- Kinetic laws in reaction in SBML files can set the substance units for the result of the kinetic law to a unit different from the global substance units. Since COPASI does not do unit conversion yet, these reactions can not be handled. If you know that the substance units set on the kinetic law in question are the same as the global substance units, please delete the attribute in a text editor and reload the model in COPASI. -->
+<varlistentry><term>Description:</term><listitem><para>
+If COPASI finds substance units in a kinetic law that differ from the default substance units of the model, those units are ignored. This might lead to the display of incorrect units in the GUI.
 </para></listitem></varlistentry>
 </variablelist>
 <variablelist>
@@ -874,11 +872,13 @@ If COPASI finds a species reference in a reaction that has the hasOnlySubstanceU
 <varlistentry><term>Error Message:</term><listitem><para>COPASI found a call to the function \"FUNCTIONID\" which has not been defined.</para></listitem></varlistentry>
 <varlistentry><term>Description:</term><listitem><para>In some MathML term in the SBML file, COPASI found a term that is used as a function, but where it does not correspond to a predefined MathML function or the id of any function definition in the file.</para></listitem></varlistentry>
 </variablelist>
+<!--
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>SBML (48)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para>Initial assignments ignored because they are not supported yet.</para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>The current versions of COPASI do not support initial assignments yet. We hope to chnage that in the future.</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>The current versions of COPASI do not support initial assignments yet. We hope to change that in the future.</para></listitem></varlistentry>
 </variablelist>
+-->
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>SBML (49)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para>Constraints ignored because they are not supported yet.</para></listitem></varlistentry>
@@ -887,82 +887,82 @@ If COPASI finds a species reference in a reaction that has the hasOnlySubstanceU
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>SBML (50)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para>Could not open file \"FILENAME\".</para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented.</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>Out of some reason, COPASI could not open the file. Reasons for this can be for example that the file does not exist, the user does not have sufficient permissions to open the file or that the file isn't an SBML file.</para></listitem></varlistentry>
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>SBML (51)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para>The species \"SPECIESID\" is defined by a rate rule and its compartments volume is variable. COPASI will probably interpret this incorrectly.</para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented.</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>COPASIs interpretation of species that are defined by a rate rule and that are located in a non-constant compartment differes slightly from the interpretation intended by the SBML specification. This difference might lead to calculation results that are not consistent with the given SBML file. We hope to fix this in future version of COPASI.</para></listitem></varlistentry>
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>SBML (52)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para>The species \"SPECIESID\" is defined by a rate expression and its compartments volume is variable. The way COPASI interprets this is differently from the way SBML does.</para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented.</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>COPASIs interpretation of species that are defined by a rate rule and that are located in a non-constant compartment differes slightly from the interpretation intended by the SBML specification. If such a model is exported to SBML, the resulting SBML model is not identical to the original COPASI model. We hope to fix this in future versions of COPASI.</para></listitem></varlistentry>
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>SBML (53)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para>The time units of kinetic laws in some reactions were ignored. Units might be displayed incorrectly. Reactions: REACTIONSID.</para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented.</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>If COPASI finds a kinetic law in an SBL file that has time units different from the global time units, they are ignored. This might lead to incorrect units being displayed in the GUI.</para></listitem></varlistentry>
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>SBML (54)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para>Error while importing volume unit with id \"ID\".</para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented.</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>COPASI could not convert the given volume unit to one of its own volume units. This might lead to incorrect units being displayed in the GUI.</para></listitem></varlistentry>
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>SBML (55)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para>Could not find unit definition for unit with id \"ID\" used in \"ATTRIBUTE\" attribute of UNIT with id \"ID\".</para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented.</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>COPASI found a reference to a unit definition that has not been defined in the file.</para></listitem></varlistentry>
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>SBML (56)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para>There was a problem with the kinetic law in reaction \"REACTIONSID\". Make sure the math element is not empty.</para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented.</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>Out of some reason COPASI could not import the kinetic law of some reaction. Most often this means that the kinetic law has some error. If you think that the kinetic law is correct, please send us a bug report.</para></listitem></varlistentry>
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>SBML (57)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para>InitialAssignment defined for object with id \"ID\", but the corresponding object could not be found. Ignoring assignment.</para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented.</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>The SBML file contains an initial assignment for an object that is not defined in the SBML file.</para></listitem></varlistentry>
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>SBML (58)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para>InitialAssignment for object with id \"ID\" does not set a mathematical expression. Ignoring assignment.</para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented.</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>The SBML file contains an initial assignment that does not define a mathematical expression for the assignment.</para></listitem></varlistentry>
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>SBML (59)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para>Error while importing InitialAssignment for object with id \"ID\". Ignoring assignment.</para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented.</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>If this error message comes up, the initial assignment is incorrect, or you have found a bug in COPASI. If you think the initial assignment is actually correct, please send us a bug report.</para></listitem></varlistentry>
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>SBML (60)</para></listitem></varlistentry>
-<varlistentry><term>Error Message:</term><listitem><para>Error while exporting FILENAME for FILE with name \"NAME\".</para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented.</para></listitem></varlistentry>
+<varlistentry><term>Error Message:</term><listitem><para>Error while exporting EXPRESSIONTYPE for ELEMENTTYPE with name \"ELEMENTNAME\".</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>This error means that there were problems when exporting a rule or an initial assignment. If you see this message, it is very likely that you have found a bug in COPASI. Please send us a bug report that includes the COPASI file for reproducing this error.</para></listitem></varlistentry>
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>SBML (61)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para>Error while expanding function calls in mathematical expression for EXPRESSIONID.</para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented.</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>This error means that there were problems when exporting a mathematical expression the SBML Level 1. If you see this message, it is very likely that you have found a bug in COPASI. Please send us a bug report that includes the COPASI file for reproducing this error.</para></listitem></varlistentry>
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>SBML (62)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para>Error while replacing unsupported elements in mathematical expression for EXPRESSIONID.</para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented.</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>This error means that there were problems when exporting a mathematical expression the SBML Level 1. Either the expression that was exported contained elements that could not be represented  in SBML Level 1, or you have found a bug in COPASI. Since exporting to SBML Level 1 is a new feature, it would be nice, if you could provide us with a bug report if you see this message.</para></listitem></varlistentry>
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>SBML (63)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para>Initial assignment for ASSIGNMENTID \"ASSIGNMENT\" can not be exported to SBML Level 2 Version 1.</para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented.</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>Initial assignment have been introduced in SBML Level 2 Version 2, so models that contain initial assignments can not be exporter to SBML Level 2 Version 1.</para></listitem></varlistentry>
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>SBML (64)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para>One or more stoichiometric expressions were evaluated and converted to constants values.</para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented.</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>COPASI does not support stoichiometric expression, so when an SBML file contains a stoichiometric expression, the expression is evaluated and converted to a constant. This will lead to incorrect calculation results if the expression contained a variable element.</para></listitem></varlistentry>
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>SBML (65)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para>The stoichiometric expression for a species reference for species \"SPECIESID\" in reaction \"REACTIONID\" could not be evaluated. The value has therefore been set to 1.0..</para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented.</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>COPASI was not able to evaluate the stoichiometric expression for some species reference. This either means that the expression was incorrect, or that you found a bug in COPASI. If you think that the expression is correct, please sned us a bug report.</para></listitem></varlistentry>
 </variablelist>
 </para>
 
@@ -1126,7 +1126,7 @@ All tasks in COPASI are derived from one base class called CCopasiTask. These er
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>CCopasiTask (7)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para> Problems compiling output.</para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>!!!UNDOCUMENTED!!!</para></listitem></varlistentry>
 </variablelist>
 </para>
 
@@ -1198,27 +1198,27 @@ These errors messages can occur when doing a parameter estimation.
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>CFitting (9)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para>Experiment 'EXPERIMENTID' has no data rows.</para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>!!!UNDOCUMENTED!!!</para></listitem></varlistentry>
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>CFitting (10)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para>Experiment 'EXPERIMENTID' has no dependent data.</para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>!!!UNDOCUMENTED!!!</para></listitem></varlistentry>
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>CFitting (11)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para>Missing independent data for Experiment 'EXPERIMENTID' in row 'ROWNUMBER'.</para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>!!!UNDOCUMENTED!!!</para></listitem></varlistentry>
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>CFitting (12)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para>The Fisher information matrix is singular. Therefore, the correlation matrix can not be calculated.</para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>!!!UNDOCUMENTED!!!</para></listitem></varlistentry>
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>CFitting (13)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para>Not enough memory available to calculate the Fisher Information Matrix.</para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>!!!UNDOCUMENTED!!!</para></listitem></varlistentry>
 </variablelist>
 </para>
 
@@ -1294,7 +1294,7 @@ These error messages can occur when exporting a model to a set of ODEs either as
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>CODEExporter (2)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para>The export was incomplete since the model depends on model quantities, which can currently not be exported.</para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>!!!UNDOCUMENTED!!!</para></listitem></varlistentry>
 </variablelist>
 </para>
 
@@ -1311,17 +1311,17 @@ These error messages can only occur in the commercial version and have to do wit
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>CRegistration (1)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para>Invalid registration code.</para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>!!!UNDOCUMENTED!!!</para></listitem></varlistentry>
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>CRegistration (2)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para>Email and/or user name do not match registration code.</para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>!!!UNDOCUMENTED!!!</para></listitem></varlistentry>
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>CRegistration (3)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para>Trial license expired on: 'DATE'.</para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>!!!UNDOCUMENTED!!!</para></listitem></varlistentry>
 </variablelist>
 </para>
 </sect1>
@@ -1340,22 +1340,22 @@ These error messages can only occur when doing a time scale separation analysis 
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>CTSSAMethod (1)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para>Deterministic integration failed. LSODA reported: LSODAERRORMESSAGE HERE Please see result for indications of numerical instability.</para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>!!!UNDOCUMENTED!!!</para></listitem></varlistentry>
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>CTSSAMethod (2)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para>Problem is not a time scale separation analysis problem.</para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>!!!UNDOCUMENTED!!!</para></listitem></varlistentry>
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>CTSSAMethod (3)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para>Internal step limit exceeded.</para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>!!!UNDOCUMENTED!!!</para></listitem></varlistentry>
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>CTSSAMethod (4)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para>Numerical Error encountered.</para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>!!!UNDOCUMENTED!!!</para></listitem></varlistentry>
 </variablelist>
 </para>
 
@@ -1367,17 +1367,17 @@ These error messages can only occur when doing a time scale separation analysis 
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>CTSSAProblem (1)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para>Invalid step size = 'VALUE'. </para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>!!!UNDOCUMENTED!!!</para></listitem></varlistentry>
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>CTSSAProblem (2)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para>The step number 'VALUE' exceeds the limit. The step number and step size have been adjusted to avoid over flow.</para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>!!!UNDOCUMENTED!!!</para></listitem></varlistentry>
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>CTSSAProblem (3)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para>The step size 'VALUE' is too small for the machine accuracy. The step number and step size have been adjusted.</para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>!!!UNDOCUMENTED!!!</para></listitem></varlistentry>
 </variablelist>
 </para>
 </sect2>
@@ -1393,22 +1393,22 @@ Errors on Eigen value.
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>CEigen (1)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para> Invalid argument 'ARGUMENTID' for dgees.</para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>!!!UNDOCUMENTED!!!</para></listitem></varlistentry>
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>CEigen (2)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para> Failed to compute Eigen value with index 'INDEX'.</para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>!!!UNDOCUMENTED!!!</para></listitem></varlistentry>
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>CEigen (3)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para> Unable to sort Eigen values.</para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>!!!UNDOCUMENTED!!!</para></listitem></varlistentry>
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem><para>CEigen (4)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para> Eigen values do not satify selection criteria after reordering.</para></listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem><para>Undocumented</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>!!!UNDOCUMENTED!!!</para></listitem></varlistentry>
 </variablelist>
 </para>
 
