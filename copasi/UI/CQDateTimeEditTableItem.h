@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQDateTimeEditTableItem.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2008/02/20 19:06:28 $
+//   $Author: ssahle $
+//   $Date: 2008/02/28 15:26:49 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,7 +15,7 @@
 #define COPASI_CQDateTimeEditTableItem
 
 #include <qdatetimeedit.h>
-#include "copasitablewidget.h"
+#include "CopasiTableWidget.h"
 
 class CQDateTimeEditTableItem : public QDateTimeEdit
   {
