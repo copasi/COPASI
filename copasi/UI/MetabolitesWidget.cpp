@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget.cpp,v $
-//   $Revision: 1.148.4.3 $
+//   $Revision: 1.148.4.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/02/27 21:09:46 $
+//   $Date: 2008/02/28 21:38:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -154,7 +154,7 @@ void MetabolitesWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C
     }
   else
     {
-      table->item(row, COL_ICONCENTRATION)->setEnabled(true);
+      table->item(row, COL_ICONCENTRATION)->setEnabled(const_cast< CMetab * >(pMetab)->isInitialConcentrationChangeAllowed());
       table->item(row, COL_INUMBER)->setEnabled(true);
     }
 

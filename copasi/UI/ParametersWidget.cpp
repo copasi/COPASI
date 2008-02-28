@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ParametersWidget.cpp,v $
-//   $Revision: 1.24.4.1 $
+//   $Revision: 1.24.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/23 16:52:18 $
+//   $Date: 2008/02/28 21:38:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -63,7 +63,7 @@ class CParameterListItem : public QListViewItem
     }
 
     CParameterListItem(CParameterListItem *parent, const QString & name,
-                       CCopasiObject* obj, C_FLOAT64 value, const QString & unit)
+                       CCopasiObject* obj, C_FLOAT64 value, const QString & unit, int framework = 0)
         : QListViewItem(parent, name, "", QString::number(value), unit),
         mpObject(obj),
         mIsChanged(false)
@@ -73,16 +73,23 @@ class CParameterListItem : public QListViewItem
       CModelEntity* me = dynamic_cast<CModelEntity*>(obj);
       if (me) //object is a CModelEntity
         {
+          bool InitiaValueChangeAllowed = (me->getInitialExpression() == "");
+
+          CMetab * pMetab = dynamic_cast< CMetab * >(me);
+
+          if (pMetab != NULL && framework == 0)
+            InitiaValueChangeAllowed &= pMetab->isInitialConcentrationChangeAllowed();
+
           switch (me->getStatus())
             {
             case CModelEntity::FIXED:
               setText(COL_STATUS, "fixed");
-              setRenameEnabled(COL_VALUE, me->getInitialExpression() == "");
+              setRenameEnabled(COL_VALUE, InitiaValueChangeAllowed);
               break;
 
             case CModelEntity::ODE:
               setText(COL_STATUS, "ode");
-              setRenameEnabled(COL_VALUE, me->getInitialExpression() == "");
+              setRenameEnabled(COL_VALUE, InitiaValueChangeAllowed);
               break;
 
             case CModelEntity::ASSIGNMENT:
@@ -98,7 +105,7 @@ class CParameterListItem : public QListViewItem
               else
                 setText(COL_STATUS, "unused");
 
-              setRenameEnabled(COL_VALUE, me->getInitialExpression() == "");
+              setRenameEnabled(COL_VALUE, InitiaValueChangeAllowed);
               break;
 
             default:
@@ -258,7 +265,7 @@ bool ParametersWidget::loadFromModel()
       unit = FROM_UTF8(model->getConcentrationUnitName());
       for (i = 0; i < imax; ++i)
         new CParameterListItem(mMetabItem, FROM_UTF8(CMetabNameInterface::getDisplayName(model, *metabs[i])),
-                               metabs[i], metabs[i]->getInitialConcentration(), unit);
+                               metabs[i], metabs[i]->getInitialConcentration(), unit, mFramework);
       break;
 
     case 1:
@@ -266,7 +273,7 @@ bool ParametersWidget::loadFromModel()
       unit = "1";
       for (i = 0; i < imax; ++i)
         new CParameterListItem(mMetabItem, FROM_UTF8(CMetabNameInterface::getDisplayName(model, *metabs[i])),
-                               metabs[i], metabs[i]->getInitialValue(), unit);
+                               metabs[i], metabs[i]->getInitialValue(), unit, mFramework);
       break;
     }
   //Reactions

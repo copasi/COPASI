@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.155.4.2 $
+//   $Revision: 1.155.4.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/02/25 14:54:23 $
+//   $Date: 2008/02/28 21:38:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -442,6 +442,12 @@ class CModel : public CModelEntity
      * @return bool success
      */
     bool forceCompile(CProcessReport* pProcessReport);
+
+    /**
+     * Compile the default initial value dependencies, which is that the
+     * initial concentration is updated.
+     */
+    void compileDefaultMetabInitialValueDependencies();
 
     /**
      *  Build the Stoichiometry Matrix from the chemical equations of the steps

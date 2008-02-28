@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.334.4.6 $
+//   $Revision: 1.334.4.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/02/28 18:20:59 $
+//   $Date: 2008/02/28 21:38:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -420,6 +420,17 @@ bool CModel::compile()
   return true;
 }
 
+void CModel::compileDefaultMetabInitialValueDependencies()
+{
+  CCopasiVector< CMetab >::iterator it = mMetabolites.begin();
+  CCopasiVector< CMetab >::iterator end = mMetabolites.end();
+
+  for (; it != end; ++it)
+    (*it)->compileInitialValueDependencies(true);
+
+  return;
+}
+
 void CModel::setCompileFlag(bool flag)
 {
   mCompileIsNecessary = flag;
@@ -439,7 +450,11 @@ bool CModel::compileIfNecessary(CProcessReport* pProcessReport)
     std::cout << " " << std::endl;
   */
 
-  if (!mCompileIsNecessary) return true;
+  if (!mCompileIsNecessary)
+    {
+      this->compileDefaultMetabInitialValueDependencies();
+      return true;
+    }
 
   mpCompileHandler = pProcessReport;
 
@@ -3284,15 +3299,10 @@ CModel::buildInitialRefreshSequence(std::set< const CCopasiObject * > & changedO
             {
               // The cocentration is assumed to be fix accept when this would lead to circular dependencies,
               // for the parent's compartment's initial volume.
-              Objects.insert(pMetab->getInitialConcentrationReference());
-              pMetab->compileInitialValueDependencies(false);
-
-              if (pMetab->getCompartment()->getInitialValueReference()->dependsOn(Objects))
-                changedObjects.insert(pMetab->getInitialValueReference());
-              else
+              if (pMetab->isInitialConcentrationChangeAllowed())
                 changedObjects.insert(pMetab->getInitialConcentrationReference());
-
-              Objects.clear();
+              else
+                changedObjects.insert(pMetab->getInitialValueReference());
             }
           else
             changedObjects.insert((*ppEntity)->getInitialValueReference());

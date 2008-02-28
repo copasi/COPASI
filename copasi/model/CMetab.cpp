@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-//   $Revision: 1.132.4.3 $
+//   $Revision: 1.132.4.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/02/26 02:16:35 $
+//   $Date: 2008/02/28 21:38:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -503,6 +503,21 @@ bool CMetab::compileInitialValueDependencies(const bool & updateConcentration)
     }
 
   return success;
+}
+
+bool CMetab::isInitialConcentrationChangeAllowed()
+{
+  compileInitialValueDependencies(false);
+
+  std::set< const CCopasiObject * > Candidates;
+  std::set< const CCopasiObject * > Verified;
+
+  bool Allowed = !mpIValueReference->hasCircularDependencies(Candidates, Verified);
+
+  if (!Allowed)
+    compileInitialValueDependencies(true);
+
+  return Allowed;
 }
 
 void CMetab::calculate()

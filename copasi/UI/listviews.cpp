@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.237.2.2.2.4 $
+//   $Revision: 1.237.2.2.2.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/02/20 20:25:40 $
+//   $Date: 2008/02/28 21:38:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -762,7 +762,7 @@ void ListViews::slotFolderChanged(QListViewItem *i)
   folders->ensureItemVisible(i);
 
   // get the qlistview item in form of folderlistitem...
-  FolderListItem *item = (FolderListItem*)i; //TODO dynamic cast?
+  FolderListItem *item = static_cast< FolderListItem * >(i); //TODO dynamic cast?
 
   // find the widget
   CopasiWidget* newWidget = findWidgetFromItem(item);
@@ -1277,15 +1277,10 @@ void ListViews::buildChangedObjects()
         {
           // The concentration is assumed to be fix accept when this would lead to circular dependencies,
           // for the parent's compartment's initial volume.
-          Objects.insert(pMetab->getInitialConcentrationReference());
-          pMetab->compileInitialValueDependencies(false);
-
-          if (pMetab->getCompartment()->getInitialValueReference()->dependsOn(Objects))
-            mChangedObjects.insert(pMetab->getInitialValueReference());
-          else
+          if (pMetab->isInitialConcentrationChangeAllowed())
             mChangedObjects.insert(pMetab->getInitialConcentrationReference());
-
-          Objects.clear();
+          else
+            mChangedObjects.insert(pMetab->getInitialValueReference());
         }
       else
         mChangedObjects.insert((*ppEntity)->getInitialValueReference());

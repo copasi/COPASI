@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMetabolite.ui.h,v $
-//   $Revision: 1.14.4.3 $
+//   $Revision: 1.14.4.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/02/27 15:20:47 $
+//   $Date: 2008/02/28 21:38:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -756,11 +756,13 @@ void CQMetabolite::setFramework(int framework)
 
       if (mpMetab != NULL)
         {
+          mpEditInitialValue->setReadOnly(!mpMetab->isInitialConcentrationChangeAllowed());
           mpEditCurrentValue->setText(QString::number(mpMetab->getConcentration()));
           mpEditRate->setText(QString::number(mpMetab->getConcentrationRate()));
         }
       else
         {
+          mpEditInitialValue->setReadOnly(false);
           mpEditCurrentValue->setText("");
           mpEditRate->setText("");
         }
@@ -777,6 +779,8 @@ void CQMetabolite::setFramework(int framework)
       mpLblRate->setText("Rate (1/"
                          + FROM_UTF8(CCopasiDataModel::Global->getModel()->getTimeUnitName()) + ")");
       mpEditInitialValue->setText(QString::number(mInitialNumber, 'g', 10));
+      mpEditInitialValue->setReadOnly(false);
+
       if (mpMetab != NULL)
         {
           mpEditCurrentValue->setText(QString::number(mpMetab->getValue()));
