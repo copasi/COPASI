@@ -20,10 +20,30 @@ this reaction overview in the tree on the left under <code>Model-&gt;Biochemical
 </center>
 	</p>
   <p>
-To create a new reaction just click on the empty cell in the <em>Equation</em> column and start typing. When you are finished with typing the reaction equation, hit the return key. Now you are in the next row and can type the next reaction.
-Once you have created all reaction, you click the <b><code>"commit"</code></b> button at the bottom
+To create a new reaction just click on the empty cell in the <em>Equation</em> column and start typing. A reaction equation usually consists of three parts.</p>
+<p>First comes the set of substrates. Several substrates can be combined with the "+" sign.</p>
+<p>After the substrates you either write "-&gt;" if it is a irreversible reaction or "=" if it is a reversible reaction.</p>
+<p>The third part consists of the set of products. Just as the substrates, the individual products are combined with the "+" character.</p>
+<p>There are several things to watch out for when writing reaction equations.
+First the individual elements of the reaction equation have to be separated by
+whitespaces. Since it is perfectly valid to have the "+" sign as part of a
+species name, this is the only way for COPASI to know where one species name
+ends and the next one starts. If you actually plan to use whitespaces in the
+species names themselves, those whitespaces have to be escaped with the "\" character.
+</p>
+<p>Examples of valid reaction equation would be <code>Gluose + Phosphate -&gt; Glucose-6-phosphate</code> or <code>F16BP = F26BP</code>. 
+</p>
+<p>
+It is also possible to either ommit the set of products or the set of
+substrates, but not both. If the reaction involves so called modifiers, they
+are added to the end of the reaction equation, separated by a semicolon.
+Individual mdofiers are separated by spaces (e.g. <code>A = B ; C D</code> ).
+</p>
+<p>
+When you are finished with typing the reaction equation, hit the return key. Now you are in the next row and can type the next reaction.</p>
+<p>Once you have created all reaction, you click the <b><code>"commit"</code></b> button at the bottom
 of the screen, this will create all the reactions as well as the necessary metabolites and compartments.
-All reactions are created with an irreversible mass-action kinetic with a
+All reactions are created with a reversible or irreversible mass-action kinetic with a
 kinetic constant of 0.1, all
 metabolites have an initial concentration of 0.1 standard concentration units (the ones
 specified in the <em>Model Settings</em> dialog.) and the single compartment has a
