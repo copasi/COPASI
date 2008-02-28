@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CCopasiSimpleSelectionTree.cpp,v $
-//   $Revision: 1.24.4.2 $
+//   $Revision: 1.24.4.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/24 21:20:59 $
+//   $Date: 2008/02/28 18:51:19 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,51 +36,51 @@ CCopasiSimpleSelectionTree::CCopasiSimpleSelectionTree(QWidget* parent, const ch
   this->setRootIsDecorated(true);
   this->addColumn("");
   this->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)7, (QSizePolicy::SizeType)7, 0, 0, this->sizePolicy().hasHeightForWidth()));
-  this->mpExpertSubtree = new QListViewItem(this, "expert");
+  this->mpExpertSubtree = new QListViewItem(this, "Expert");
 
 #ifdef COPASI_DEBUG
-  this->matrixSubtree = new QListViewItem(this, "matrices");
+  this->matrixSubtree = new QListViewItem(this, "Matrices");
 #endif // COPASI_DEBUG
 
-  this->mpModelQuantitySubtree = new QListViewItem(this, "global quantities");
+  this->mpModelQuantitySubtree = new QListViewItem(this, "Global Quantities");
   this->mpModelQuantityRateSubtree =
-    new QListViewItem(this->mpModelQuantitySubtree, "rates");
+    new QListViewItem(this->mpModelQuantitySubtree, "Rates");
   this->mpModelQuantityTransientValueSubtree =
-    new QListViewItem(this->mpModelQuantitySubtree, "transient values");
+    new QListViewItem(this->mpModelQuantitySubtree, "Transient Values");
   this->mpModelQuantityInitialValueSubtree =
-    new QListViewItem(this->mpModelQuantitySubtree, "initial values");
+    new QListViewItem(this->mpModelQuantitySubtree, "Initial Values");
 
-  this->mpReactionSubtree = new QListViewItem(this, "reactions");
+  this->mpReactionSubtree = new QListViewItem(this, "Reactions");
   this->mpReactionFluxNumberSubtree =
-    new QListViewItem(this->mpReactionSubtree, "particle fluxes");
+    new QListViewItem(this->mpReactionSubtree, "Fluxes (Particle Numbers)");
   this->mpReactionFluxConcentrationSubtree =
-    new QListViewItem(this->mpReactionSubtree, "concentration fluxes");
+    new QListViewItem(this->mpReactionSubtree, "Fluxes (Concentration)");
   this->mpReactionParameterSubtree =
-    new QListViewItem(this->mpReactionSubtree, "reaction parameters");
+    new QListViewItem(this->mpReactionSubtree, "Reaction Parameters");
 
-  this->mpMetaboliteSubtree = new QListViewItem(this, "species");
+  this->mpMetaboliteSubtree = new QListViewItem(this, "Species");
   this->mpMetaboliteRateNumberSubtree =
-    new QListViewItem(this->mpMetaboliteSubtree, "rates (particle numbers)");
+    new QListViewItem(this->mpMetaboliteSubtree, "Rates (Particle Numbers)");
   this->mpMetaboliteRateConcentrationSubtree =
-    new QListViewItem(this->mpMetaboliteSubtree, "rates (concentrations)");
+    new QListViewItem(this->mpMetaboliteSubtree, "Rates (Concentrations)");
   this->mpMetaboliteTransientNumberSubtree =
-    new QListViewItem(this->mpMetaboliteSubtree, "transient particle numbers");
+    new QListViewItem(this->mpMetaboliteSubtree, "Transient Particle Numbers");
   this->mpMetaboliteTransientConcentrationSubtree =
-    new QListViewItem(this->mpMetaboliteSubtree, "transient concentrations");
+    new QListViewItem(this->mpMetaboliteSubtree, "Transient Concentrations");
   this->mpMetaboliteInitialNumberSubtree =
-    new QListViewItem(this->mpMetaboliteSubtree, "initial particle numbers");
+    new QListViewItem(this->mpMetaboliteSubtree, "Initial Particle Numbers");
   this->mpMetaboliteInitialConcentrationSubtree =
-    new QListViewItem(this->mpMetaboliteSubtree, "initial concentrations");
+    new QListViewItem(this->mpMetaboliteSubtree, "Initial Concentrations");
 
-  this->mpCompartmentSubtree = new QListViewItem(this, "compartments");
+  this->mpCompartmentSubtree = new QListViewItem(this, "Compartments");
   this->mpCompartmentRateSubtree =
-    new QListViewItem(this->mpCompartmentSubtree, "rates");
+    new QListViewItem(this->mpCompartmentSubtree, "Rates");
   this->mpCompartmentTransientVolumeSubtree =
-    new QListViewItem(this->mpCompartmentSubtree, "transient volumes");
+    new QListViewItem(this->mpCompartmentSubtree, "Transient Volumes");
   this->mpCompartmentInitialVolumeSubtree =
-    new QListViewItem(this->mpCompartmentSubtree, "initial volumes");
+    new QListViewItem(this->mpCompartmentSubtree, "Initial Volumes");
 
-  this->mpTimeSubtree = new QListViewItem(this, "time");
+  this->mpTimeSubtree = new QListViewItem(this, "Time");
 
   //TODO enable initial values for compartments and global parameters when we need them.
 }
@@ -95,7 +95,6 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * pModel,
 
   const CCopasiObject * pObject;
   QListViewItem * pItem;
-
   pObject = pModel->getObject(CCopasiObjectName("Reference=Time"));
   if (filter(flag, pObject))
     {
@@ -325,6 +324,13 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * pModel,
   removeEmptySubTree(&mpCompartmentInitialVolumeSubtree);
   removeEmptySubTree(&mpCompartmentTransientVolumeSubtree);
   removeEmptySubTree(&mpCompartmentSubtree);
+
+  pObject = pModel->getObject(CCopasiObjectName("Reference=Quantity Conversion Factor"));
+  if (filter(flag, pObject))
+    {
+      pItem = new QListViewItem(this, "Quantity Conversion Factor");
+      treeItems[pItem] = pObject;
+    }
 
 #ifdef COPASI_DEBUG
 
@@ -592,7 +598,8 @@ bool CCopasiSimpleSelectionTree::filter(const SelectionFlag & flag, const CCopas
               else if (flag & BASE_INITIAL)
                 {
                   if (pEntity->getStatus() != CModelEntity::ASSIGNMENT &&
-                      pObject->getObjectName().compare(0, 7, "Initial") != 0)
+                      (pObject->getObjectName().compare(0, 7, "Initial") != 0 &&
+                       pObject->getObjectName() != "Quantity Conversion Factor"))
                     return false;
                 }
 
