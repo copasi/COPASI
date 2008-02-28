@@ -1,10 +1,10 @@
 <chapter id="modelCreation" xreflabel="Model Creation">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_GUI.xml,v $ -->
-<!--   $Revision: 1.49.4.3 $ -->
+<!--   $Revision: 1.49.4.4 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: gauges $ -->
-<!--   $Date: 2008/02/06 03:49:03 $ -->
+<!--   $Date: 2008/02/28 10:10:19 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -4517,7 +4517,7 @@ C source code, XPPaut, or Berkeley Madonna files.
 <para>
 Notes and Annotations from the original SBML file should be preserved when you import and reexport an SBML file as long as you do not delete the objects that contain the annotation. But still if you have important annotations or notes in your SBML file make a backup of the file before you open it in COPASI since we can not guarantee that they will survive an import/export cycle.
 </para>
-<para>This is normally not a big problem since the essential parts of a model normally get imported or exported. A consequence however one should keep in mind is that if you import an SBML file into COPASI and later export it again, it might have lost some of the original information. So if your SBML model depends on algebraic rules, stoichiometric expressions, delays and/or events, it is not suitable for simulation with COPASI. This will change in future versions of COPASI.
+<para>This is normally not a big problem since the essential parts of a model normally get imported or exported. A consequence however one should keep in mind is that if you import an SBML file into COPASI and later export it again, it might have lost some of the original information. So if your SBML model depends on algebraic rules, stoichiometric expressions, delays and/or events, it might not be suitable for simulation with COPASI. This will change in future versions of COPASI.
 </para>
 <para>Likewise, SBML does not support all of the elements of a COPASI model so some information from the COPASI model also gets lost when exporting an SBML file. For example tasks, reports and plot definitions are not exported to the SBML file. Currently efforts are undertaken in cooperation with developers of other tools to come up with a way to exchange some of those elements as well.</para>
 <para>
@@ -4560,13 +4560,12 @@ There is one special case where a model with rules does not lead to the results 
 The handling of stoichiometric expressions is slightly different. Version of COPASI prior to Build-25 refused to load SBML files that contain stoichiometric expressions. Starting with COPASI Build-15 those stoichiometric expressions are evaluated after importing the model and the result of the evaluation is used as the stoichiometry of the corresponding element. This means that if stoichiometric expression only referenced constant entities of the model, COPASI should be able to simulate the model correctly. However if the stoichiometric expression references non constant model entities, the simulation result will most likely not be correct.
 Currently those stoichiometric expressions are also not reexported when the model is written to an SBML file.
 </para>
-<!--
 <para>
 As was the case with stoichiometric expressions, versions of COPASI prior to Build-25 refused to load models that use the delay function.
 Starting with Build-25 those models are no longer rejected. Since COPASI is not able to handle the delay function, we only create a dummy delay function that evaluates to not-a-number (NaN). This means that if the model is simulated, all values depending on the delay either directly or indirectly will appear as NaN in the result.
 On he other hand, the model can be edited and if the delay is removed from the model, it should again give meaningful results when simulated.
+If a model using delay functions is written to a COPASI file, the information about the original delay gets lost. The SBML delay is converted to a function definition that evaluates to NaN. 
 </para>
--->
 
 <para>
 In SBML each  entity in the model can have units associated with it. In COPASI units are globally defined and all entities have units defined in terms of those global units. When importing an SBML files, COPASI reads the global unit definitions and tries to convert those to units supported in COPASI which works fine most of the times. If COPASI encounters units on individual entities, it checks if those units correspond to the global units and if they don't a warning is generated.
