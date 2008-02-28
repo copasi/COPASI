@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.334.4.5 $
+//   $Revision: 1.334.4.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/02/25 14:54:23 $
+//   $Date: 2008/02/28 18:20:59 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1123,7 +1123,7 @@ bool CModel::buildStateTemplate()
 
 bool CModel::buildUserOrder()
 {
-  CVector<CModelEntity *> Entities(mMetabolitesX.size() + mCompartments.size() + mValues.size());
+  CVector<CModelEntity *> Entities(mMetabolites.size() + mCompartments.size() + mValues.size());
   CModelEntity ** ppEntity = Entities.array();
 
   CCopasiVector< CMetab >::iterator itMetab = mMetabolites.begin();
@@ -1721,10 +1721,14 @@ void CModel::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
     {
       Store = *pX;
 
-      if (fabs(Store * 2.0 * derivationFactor) < resolution)
+      // We only need to make sure that we do not have an underflow problem
+      if (fabs(Store) < 100 * DBL_MIN)
         {
-          X1 = resolution;
-          X2 = -resolution;
+          X1 = 0.0;
+          if (Store < 0.0)
+            X2 = -200.0 * DBL_MIN;
+          else
+            X2 = 200.0 * DBL_MIN;;
         }
       else
         {
@@ -1808,18 +1812,14 @@ void CModel::calculateJacobianX(CMatrix< C_FLOAT64 > & jacobianX,
     {
       Store = *pX;
 
-      if (fabs(Store * 2.0 * derivationFactor) < resolution)
+      // We only need to make sure that we do not have an underflow problem
+      if (fabs(Store) < 100 * DBL_MIN)
         {
-          /*          X1 = + resolution;
-                    X2 = - resolution;*/
-          X1 = Store + 0.5 * resolution;
-          X2 = Store - 0.5 * resolution;
-
-          if ((Store >= 0) && (Store < 0.5*resolution))
-            {
-              X1 = resolution;
-              X2 = 0;
-            }
+          X1 = 0.0;
+          if (Store < 0.0)
+            X2 = -200.0 * DBL_MIN;
+          else
+            X2 = 200.0 * DBL_MIN;;
         }
       else
         {

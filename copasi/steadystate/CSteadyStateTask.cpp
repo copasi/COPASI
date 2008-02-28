@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-//   $Revision: 1.69.4.2 $
+//   $Revision: 1.69.4.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/02/25 21:15:17 $
+//   $Date: 2008/02/28 18:21:00 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -182,7 +182,8 @@ bool CSteadyStateTask::initialize(const OutputFlag & of,
   for (i = 0; i < imax && pUserOrder != pUserOrderEnd; pUserOrder++)
     {
       const CModelEntity::Status & Status = ppEntities[*pUserOrder]->getStatus();
-      if (Status == CModelEntity::ODE || Status == CModelEntity::REACTIONS)
+      if (Status == CModelEntity::ODE ||
+          (Status == CModelEntity::REACTIONS && ppEntities[*pUserOrder]->isUsed()))
         {
           mpJacobianAnn->setAnnotationCN(0 , i, ppEntities[*pUserOrder]->getCN());
           mpJacobianAnn->setAnnotationCN(1 , i, ppEntities[*pUserOrder]->getCN());
