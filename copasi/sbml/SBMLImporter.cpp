@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.189.2.6.2.16 $
+//   $Revision: 1.189.2.6.2.17 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/27 14:55:56 $
+//   $Date: 2008/02/29 13:50:58 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1361,7 +1361,7 @@ SBMLImporter::SBMLImporter()
   this->mUnsupportedAssignmentRuleFound = false;
   this->mpImportHandler = NULL;
   this->mFastReactionsEncountered = false;
-  //this->mDelayFound = false;
+  this->mDelayFound = false;
   this->mAvogadroCreated = false;
   this->mIgnoredSBMLMessages.insert(10501);
   this->mIgnoredSBMLMessages.insert(10512);
@@ -2246,37 +2246,40 @@ void SBMLImporter::replaceAmountReferences(ConverterASTNode* pNode, Model* pSBML
                 {
                   // check if child1 is a reference to a hasOnlySubstanceUnits
                   // species
-                  id = pNode->getChild(1)->getName();
-                  std::map<Species*, Compartment*>::const_iterator it = this->mSubstanceOnlySpecies.begin(), endit = this->mSubstanceOnlySpecies.end();
-                  while (it != endit)
+                  if (pNode->getChild(1)->getType() == AST_NAME)
                     {
-                      if (it->first->getId() == id)
+                      id = pNode->getChild(1)->getName();
+                      std::map<Species*, Compartment*>::const_iterator it = this->mSubstanceOnlySpecies.begin(), endit = this->mSubstanceOnlySpecies.end();
+                      while (it != endit)
                         {
-                          break;
-                        }
-                      ++it;
-                    }
-                  if (it != endit)
-                    {
-                      if (this->mPotentialAvogadroNumbers.empty())
-                        {
-                          this->createHasOnlySubstanceUnitFactor(pSBMLModel, factor, copasi2sbmlmap);
-                        }
-                      // check if child0 is a parameter that represents avogadros
-                      // number
-                      std::set<const Parameter*>::const_iterator sit = this->mPotentialAvogadroNumbers.begin(), sendit = this->mPotentialAvogadroNumbers.end();
-                      while (sit != sendit)
-                        {
-                          if ((*sit)->getId() == pNode->getChild(0)->getName())
+                          if (it->first->getId() == id)
                             {
-                              // replace pNode by child1
-                              delete pNode->removeChild(0);
-                              delete pNode->removeChild(1);
-                              pNode->setType(AST_NAME);
-                              pNode->setName(id.c_str());
-                              return;
+                              break;
                             }
-                          ++sit;
+                          ++it;
+                        }
+                      if (it != endit)
+                        {
+                          if (this->mPotentialAvogadroNumbers.empty())
+                            {
+                              this->createHasOnlySubstanceUnitFactor(pSBMLModel, factor, copasi2sbmlmap);
+                            }
+                          // check if child0 is a parameter that represents avogadros
+                          // number
+                          std::set<const Parameter*>::const_iterator sit = this->mPotentialAvogadroNumbers.begin(), sendit = this->mPotentialAvogadroNumbers.end();
+                          while (sit != sendit)
+                            {
+                              if ((*sit)->getId() == pNode->getChild(0)->getName())
+                                {
+                                  // replace pNode by child1
+                                  delete pNode->removeChild(0);
+                                  delete pNode->removeChild(1);
+                                  pNode->setType(AST_NAME);
+                                  pNode->setName(id.c_str());
+                                  return;
+                                }
+                              ++sit;
+                            }
                         }
                     }
                 }
