@@ -7,6 +7,9 @@
   <h3>Step 6: Plotting</h3><br>
 	</center>
 	<p>
+Just like report, plots can be edited or created from scratch if the predefined
+plots from the <em>Output Assistant</em> don&#8217;t fit your needs.
+<p>
 In the object tree on the left in the <em>Output</em> node, you can find the entry
 called <em>Plots</em>. Selecting this will bring you to the plot definition overview
 which will probably be empty. <br>
@@ -15,21 +18,43 @@ which will probably be empty. <br>
 </center>
 <br>
 <center>
-<img alt="figure: Plot definition overview" vspace="20" src="./figures/DefaultPlotAdded.jpg"/>
+<img alt="figure: Plot definition overview" vspace="20" src="./figures/NewPlotAdded.png"/>
 </center>
 </p>
 <p>
-If you click on the <b><code>"Add default plot"</code></b> button at
-the bottom, a default plot that contains the concentrations of all metabolites
-against the time will be created. To edit this plot definition, double click on
-the entry.
+Now you can either create a new plot by clicking on the <em>New</em> button, or
+you can edit one of the existing plots if there are any. To edit a plot, double
+click on its entry in the table. (For newly created plots, you have to double
+click twice since the first double click will only "commit" the plot.)
 <br>
 <center>
 <img alt="figure: Plot definition dialog" vspace="20" src="./figures/PlotDefinition.png"/>
 </center>
 <br>
 In this dialog you can add more curves, delete curves or change the way
-individual curves are plotted. Once you are finished with the plot definition,
+individual curves are plotted.
+</p>
+<p>
+In order to add new curves to the plot, you click on the <em>New curve</em>
+button. This will open a selection dialog where you can select one item for the
+x-axis of the plot on the left side of the dialog and one or more items for
+the y-axis on the right side of the dialog. E.g. to define a plot of all
+species concentrations against time , you would select the <em>Model Time</em>
+for the x-axis and the transient concentrations of all species for the y-axis. 
+<br>
+<br>
+<center>
+<img alt="figure: Curve Selection Dialog" vspace="20" src="./figures/PlotCurveSelectionDialog.png"/>
+</center>
+
+</p>
+<p>
+Each curve item gets its own tab in the plot definition dialog and you can edit
+attributes of the curve by selecting the corresponding tab. If you click the
+<em>Delete curve</em> button while a tab is selcted, the corresponding curve
+item is deleted from the plot.
+</p>
+<p>Once you are finished with the plot definition,
 you go back to the <em>Time Course</em> dialog and push the <big><b><code>"Run"</code></b></big> button again.
 Now you a new plot window like the one below, with the concentrations of all metabolites on the y axis plotted against the time on the x axis, should pop up.
 <br>

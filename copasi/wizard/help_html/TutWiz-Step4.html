@@ -1,57 +1,76 @@
 <html>
 <head>
-<title>Step 4: Creating a Report Definition</title>
+<title>Step 5: Calculating a Time Course</title>
 </head>
 <body>
   <center>
-  <h3>Step 4: Creating a Report Definition</h3><br>
+  <h3>Step 5: Calculating a Time Course</h3><br>
 	</center>
 	<p>
-Now that we have a model, we could actually go ahead and do a simulation. But
-in order for copasi to know what to do with the calculated data from the
-simulation, we have to define some which kind of output we want. This can
-either be a plot (which we will do a later) or a report. If we
-don&#8217;t define an output , copasi will not store the results.
-In order to create a report definition, you navigate in the tree to
-<code>Output-&gt;Reports</code> and click the <b><code>"new"</code></b> button on the bottom and then on the <b><code>"commit"</code></b> button. If you now double click on the new entry in the table you will find
-yourself in the dialog for the report definition.<br>
+In the tree on the left under Tasks you can find the entry called <em>Time
+Course</em>. Selecting this entry in the tree will bring you to the time course
+settings dialog.<br>
 <center>
-(<a href="#" name="Report Definition">Click here</a> to go to the Report definition dialog.)
+(<a href="#" name="Time Course">Click here</a> to go to the <em>Time Course</em> dialog)
 </center>
 <br>
+Here you can set all parameters for calculating a time course
+like starting time, end time, how many data points are to be stored and last
+but not least the method for calculating the trajectory. So far you can choose between
+deterministic simulation or stochastic simulation. Depending on the simulation
+method, you have some more parameters that can be changed in the table toward
+the bottom of the dialog, but the default values should suffice most of the
+time.
+<br>
+<br>
 <center>
-<img alt="figure: empty Report Definition Dialog" vspace="20" src="./figures/ReportDefinitionDialog.png"/>
+<img alt="figure: Time Course dialog" vspace="20" src="./figures/TimeCourseDialog.png"/>
 </center>
 	</p>
-<p>
-At first the list widget is empty, that means that nothing will be put into the
-report. In order to add items for the output, you click on the <big><b><code>"+"</code></b></big> button which
-is located to the right of the empty list. This will open the <em>Object Browser</em>
-dialog where you can select any available object. For now, we will limit
-ourselves to the <em>time</em> object and the concentrations of the metabolites.
-If you look at the tree, you will see one node that has the name of your model
-as specified in <a href="#" name="Step 1">Step 1</a>. Opening this node will show you all the objects
-available in the model. Now open the <em>Metabolites</em> node and in the metabolites
-subtree you open the <em>Attribute list</em> node and in there you will find the
-<em>Concentration</em> node. Open the <em>Concentration</em> node and click the check boxes with the names of the metabolites.
-<center>
-<img alt="figure: Object Browser dialog" vspace="20" src="./figures/ObjectBrowserTree.png"/>
-</center>
-<br>
-Likewise click the check box for the <em>time</em> attribute which you will find
-directly under the node for the model (same level as the <em>Metabolites</em> node).
-Once you have selected all the attributes for the output, you finish the
-selection by clicking the <big><b><code>"OK"</code></b></big> button.
+	<p>
+Once all values are set, the run button can be used to excecute the timecourse
+calculation. To see the results for the calculation, the <em>Time Course</em> node
+in the tree on the left has a subnode called <em>Result</em>, it contains a
+table with the calculated values for all variables (This only works if the <em>Save Result in Memory</em> checkbox is checked). The <em>Result</em>-dialog
+also has a button that allows saving the results to a file.
 </p>
 <p>
-The attributes that you see in the list widget now, will be written to file
-in same the order as the appear in the list. If you want the time
-to appear in the first column of your output instead of the last, you have to change the order of the selected elements.
-You can change the order of the elements by selecting an item in the list and moving it up or down via the arrow buttons on the left.
-You can also delete an element by selecting it and then pushing the <big><b><code>"-"</code></b></big> button.
+Sometimes the results of a calculation are to large to be stored in memory, or
+you might want to have other items in the result that are not in the <em>Result</em> table.
+For those cases, COPASI provides means to specify so called reports in which
+the user can specify the items that are to be written to a file.
+</p>
+<p>
+The easiest way to create a report is to choose one of the predefined report
+with COPASIs <em>Output Assistant</em> which can be started by clicking the
+buttn with the same name at the bottom of the screen.
+<br>
+<br>
 <center>
-<img alt="figure: Report Definition dialog with entries" vspace="20" src="./figures/ObjectBrowserSelection.png"/>
+<img alt="figure: Output Assistant dialog" vspace="20"
+src="./figures/OutputAssistant.png"/>
 </center>
+</p>
+<p>
+The dialog features a large number of predefined reports as well as plots. Eacht item on the right side of the dialog, when selected, provides a description on the left side of the dialog.
+By clicking the <em>Create!</em> button, when a item has been selected, the
+corresponding plot or report is created.
+</p>
+<p>
+If the item that has been created was a plot, everything is set and next time,
+the corresponding task is run, a plot window should appear that shows the
+selected plot.
+</p>
+<p>
+If the selected item however was a report, you have to choose a file to which
+the report will write its contents. This can be done by clicking on the
+<em>Report</em> button at the bottom of the <em>Time Course</em> dialog. The
+dialog that pops up lets you choose the report which you want to associate with
+a file (since a task can have more than one report) and it lets you specify a
+filename.
+</p>
+<p>Once you are done, just click the <em>Confirm</em> button and nexttime you
+run the task, a file with the contents of the report will be written to disk.
 </p>
 </body>
 </html>
