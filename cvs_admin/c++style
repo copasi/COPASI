@@ -15,35 +15,6 @@ else
   }
 fi
 
-$GAWK -- '
-BEGIN {
-  CVSHeader = 0
-}
-
-{
-  if (CVSHeader == 0) {
-    if ($0 ~ "/\\* Begin CVS Header.*") {
-      printf "// Begin CVS Header \n"
-      printf "//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/cvs_admin/c++style,v $ \n"
-      printf "//   $Revision: 1.31 $ \n"
-      printf "//   $Name:  $ \n"
-      printf "//   $Author: shoops $ \n"
-      printf "//   $Date: 2007/05/31 18:26:42 $ \n"
-      printf "// End CVS Header \n"
-      CVSHeader = 1
-    } else if ($0 ~ "// Begin CVS Header.*") {
-      print $0
-      CVSHeader = 2
-    }
-  } else if (CVSHeader == 1) {
-    if ($0 ~ ".* End CVS Header.*") {
-      CVSHeader = 2
-    }
-  } else {
-    print $0
-  }
-}
-' $1 | \
 $ASTYLE --mode=c \
         --style=gnu \
         --one-line=keep-statements \
@@ -51,7 +22,7 @@ $ASTYLE --mode=c \
         --pad=oper \
         --convert-tabs \
         --min-conditional-indent=0 \
-        |\
+        $1
 $GAWK -- '
 BEGIN {
   lastEmpty = 0
@@ -118,6 +89,6 @@ $0 !~ "^ *$" {
     lastOpenBracket = 0
   }
 }
-' > $1.tmp && \
+' $1 > $1.tmp && \
 ConvertToUnix $1.tmp && \
 $MV -f $1.tmp $1 
