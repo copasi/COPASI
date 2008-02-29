@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/franks_testsuite/copasi_wrapper.cpp,v $
-//   $Revision: 1.1.2.1 $
+//   $Revision: 1.1.2.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/26 08:43:00 $
+//   $Date: 2008/02/29 11:35:53 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -205,16 +205,16 @@ int main(int argc, char *argv[])
 
       // Run the trajectory task
 
-      pTrajectoryTask->initialize(CCopasiTask::OUTPUT_COMPLETE, NULL);
-      pTrajectoryTask->process(true);
-      pTrajectoryTask->restore();
+      //pTrajectoryTask->initialize(CCopasiTask::OUTPUT_COMPLETE, NULL,NULL);
+      //pTrajectoryTask->process(true);
+      //pTrajectoryTask->restore();
 
       // create another report that will write to the directory where the input file came from
       // this can be used for debugging
       // create a trajectory task
       pTrajectoryTask->getReport().setTarget(pOutputFilename);
 
-      pTrajectoryTask->initialize(CCopasiTask::OUTPUT_COMPLETE, NULL);
+      pTrajectoryTask->initialize(CCopasiTask::OUTPUT_COMPLETE, CCopasiDataModel::Global, NULL);
       pTrajectoryTask->process(true);
       pTrajectoryTask->restore();
     }
