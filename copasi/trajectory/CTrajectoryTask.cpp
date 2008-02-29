@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-//   $Revision: 1.91.4.2 $
+//   $Revision: 1.91.4.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/02/27 19:02:10 $
+//   $Date: 2008/02/29 15:01:50 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -162,6 +162,10 @@ bool CTrajectoryTask::initialize(const OutputFlag & of,
     {
       mTimeSeries.allocate(mpTrajectoryProblem->getStepNumber());
       pOutputHandler->addInterface(&mTimeSeries);
+    }
+  else
+    {
+      mTimeSeries.clear();
     }
 
   if (!CCopasiTask::initialize(of, pOutputHandler, pOstream)) success = false;

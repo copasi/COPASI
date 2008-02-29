@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTimeSeries.cpp,v $
-//   $Revision: 1.14.6.4 $
+//   $Revision: 1.14.6.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/02/25 21:15:15 $
+//   $Date: 2008/02/29 15:01:49 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -75,6 +75,22 @@ void CTimeSeries::allocate(const unsigned C_INT32 & steps)
 {
   // The actual allocation is deferred to compile
   mAllocatedSteps = steps;
+}
+
+void CTimeSeries::clear()
+{
+  mObjects.clear();
+  CMatrix< C_FLOAT64 >::resize(0, 0);
+  mAllocatedSteps = mRows;
+  mRecordedSteps = 0;
+  mpIt = mArray;
+  mpEnd = mArray + size();
+  mpState = NULL;
+  mTitles.clear();
+  mCompartment.resize(0);
+  mPivot.resize(0);
+  mKeys.clear();
+  mNumberToQuantityFactor = 0.0;
 }
 
 // virtual
@@ -181,10 +197,10 @@ void CTimeSeries::finish()
 
 //*** the methods to retrieve data from the CTimeSeries *******
 
-unsigned C_INT32 CTimeSeries::getRecordedSteps() const
+const unsigned C_INT32 & CTimeSeries::getRecordedSteps() const
   {return mRecordedSteps;}
 
-unsigned C_INT32 CTimeSeries::getNumVariables() const
+const unsigned C_INT32 & CTimeSeries::getNumVariables() const
   {return mCols;}
 
 const C_FLOAT64 & CTimeSeries::getData(const unsigned C_INT32 & step,

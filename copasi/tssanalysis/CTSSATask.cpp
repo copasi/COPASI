@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSATask.cpp,v $
-//   $Revision: 1.4.4.1 $
+//   $Revision: 1.4.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/02/25 21:15:21 $
+//   $Date: 2008/02/29 15:01:50 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -155,7 +155,9 @@ bool CTSSATask::initialize(const OutputFlag & of,
           pOutputHandler->addInterface(&mTimeSeries);
         }
       else
-        pOutputHandler->removeInterface(&mTimeSeries);
+        {
+          mTimeSeries.clear();
+        }
     }
 
   if (!CCopasiTask::initialize(of, pOutputHandler, pOstream)) success = false;
