@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.189.2.6.2.17 $
+//   $Revision: 1.189.2.6.2.18 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/29 13:50:58 $
+//   $Date: 2008/02/29 14:46:59 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,7 +48,7 @@
 #include <sbml/InitialAssignment.h>
 #include <sbml/Rule.h>
 #include <sbml/FunctionDefinition.h>
-#include <sbml/units/Utils_UnitDefinition.h>
+#include <sbml/UnitDefinition.h>
 #include "report/CKeyFactory.h"
 
 #include "copasi.h"
@@ -4329,11 +4329,11 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
  */
 bool SBMLImporter::areSBMLUnitDefinitionsIdentical(const UnitDefinition* pUdef1, const UnitDefinition* pUdef2)
 {
-  UnitDefinition* pTmpUdef1 = convertToSI(pUdef1);
-  simplifyUnitDefinition(pTmpUdef1);
-  UnitDefinition* pTmpUdef2 = convertToSI(pUdef2);
-  simplifyUnitDefinition(pTmpUdef2);
-  bool result = areIdentical(pUdef1, pUdef2);
+  UnitDefinition* pTmpUdef1 = UnitDefinition::convertToSI(pUdef1);
+  UnitDefinition::simplify(pTmpUdef1);
+  UnitDefinition* pTmpUdef2 = UnitDefinition::convertToSI(pUdef2);
+  UnitDefinition::simplify(pTmpUdef2);
+  bool result = UnitDefinition::areIdentical(pUdef1, pUdef2);
   if (result == false)
     {
       // check if maybe everything is the same, only the multipliers are
@@ -4341,8 +4341,8 @@ bool SBMLImporter::areSBMLUnitDefinitionsIdentical(const UnitDefinition* pUdef1,
       bool newResult = true;
       if (pTmpUdef1->getNumUnits() == pTmpUdef2->getNumUnits())
         {
-          orderUnitDefinition(pTmpUdef1);
-          orderUnitDefinition(pTmpUdef2);
+          UnitDefinition::reorder(pTmpUdef1);
+          UnitDefinition::reorder(pTmpUdef2);
           unsigned int i = 0, iMax = pTmpUdef1->getNumUnits();
           const Unit *pU1, *pU2;
           while (newResult == true && i != iMax)
@@ -4375,7 +4375,7 @@ Unit* SBMLImporter::convertSBMLCubicmetresToLitres(const Unit* pU)
         {
           pResult = dynamic_cast<Unit*>(pU->clone());
           assert(pResult != NULL);
-          removeScale(pResult);
+          Unit::removeScale(pResult);
           pResult->setExponent(pResult->getExponent() / 3);
           pResult->setKind(UNIT_KIND_LITRE);
           pResult->setMultiplier(pow(pResult->getMultiplier(), 3));
