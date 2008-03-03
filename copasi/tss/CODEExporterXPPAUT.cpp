@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporterXPPAUT.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.3.4.1 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2007/11/23 17:02:54 $
+//   $Author: ssahle $
+//   $Date: 2008/03/03 12:10:36 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -232,6 +237,11 @@ std::string CODEExporterXPPAUT::setODEName(const std::string & objName)
   return "d" + objName + "/dt";
 }
 
+std::string CODEExporterXPPAUT::setConcentrationName(const std::string & objName)
+{
+  return objName + "_c";
+}
+
 /*
  **   The line length in XPPAUT ODE files (ASCII readable files) is limited to 256 characters.
  **   Individual lines can be continued with the UNIX backslash character, "\".
@@ -301,7 +311,7 @@ void CODEExporterXPPAUT::exportSingleLine(const std::string & line, std::ostring
 bool CODEExporterXPPAUT::exportSingleObject(std::ostringstream & which,
     std::string & name,
     std::string & expression,
-    std::string & /* comments */)
+    std::string & comments)
 {
   std::ostringstream line;
 
@@ -313,13 +323,19 @@ bool CODEExporterXPPAUT::exportSingleObject(std::ostringstream & which,
 
 bool CODEExporterXPPAUT::exportSingleMetabolite(const CMetab* metab, std::string & expression, std::string & comments)
 {
+  std::string name;
+
+  std::ostringstream smKey;
+  smKey << "sm_" << metab->getKey();
+  name = NameMap[smKey.str()];
+
   switch (metab->getStatus())
     {
     case CModelEntity::FIXED:
       {
         fixed << "#" << comments << std::endl;
         fixed << "param ";
-        if (!exportSingleObject(fixed, NameMap[metab->getKey()], expression, comments))
+        if (!exportSingleObject(fixed, name, expression, comments))
           return false;
         break;
       }
@@ -330,13 +346,13 @@ bool CODEExporterXPPAUT::exportSingleMetabolite(const CMetab* metab, std::string
           {
             initial << "#" << comments << std::endl;
             initial << "init ";
-            if (!exportSingleObject(initial, NameMap[metab->getKey()], expression, comments))
+            if (!exportSingleObject(initial, name, expression, comments))
               return false;
           }
         else
           {
             assignment << "#" << comments << std::endl;
-            if (!exportSingleObject(assignment, NameMap[metab->getKey()], expression, comments))
+            if (!exportSingleObject(assignment, name, expression, comments))
               return false;
           }
 
@@ -345,7 +361,7 @@ bool CODEExporterXPPAUT::exportSingleMetabolite(const CMetab* metab, std::string
     case CModelEntity::ASSIGNMENT:
       {
         assignment << "#" << comments << std::endl;
-        if (!exportSingleObject(assignment, NameMap[metab->getKey()], expression, comments))
+        if (!exportSingleObject(assignment, name, expression, comments))
           return false;
         break;
       }
@@ -430,6 +446,18 @@ bool CODEExporterXPPAUT::exportSingleModVal(const CModelValue* modval, std::stri
 
 bool CODEExporterXPPAUT::exportSingleModelEntity(const CModelEntity* tmp, std::string & expression, std::string & comments)
 {
+  std::string name;
+
+  const CMetab* metab;
+  metab = dynamic_cast< const CMetab * >(tmp);
+  if (metab)
+    {
+      std::ostringstream smKey;
+      smKey << "sm_" << metab->getKey();
+      name = NameMap[smKey.str()];
+    }
+  else
+    name = NameMap[tmp->getKey()];
 
   switch (tmp->getStatus())
     {
@@ -437,7 +465,7 @@ bool CODEExporterXPPAUT::exportSingleModelEntity(const CModelEntity* tmp, std::s
       {
         fixed << "#" << comments << std::endl;
         fixed << "param ";
-        if (!exportSingleObject(fixed, NameMap[tmp->getKey()], expression, comments))
+        if (!exportSingleObject(fixed, name, expression, comments))
           return false;
         break;
       }
@@ -445,14 +473,14 @@ bool CODEExporterXPPAUT::exportSingleModelEntity(const CModelEntity* tmp, std::s
       {
         initial << "#" << comments << std::endl;
         initial << "init ";
-        if (!exportSingleObject(initial, NameMap[tmp->getKey()], expression, comments))
+        if (!exportSingleObject(initial, name, expression, comments))
           return false;
         break;
       }
     case CModelEntity::ASSIGNMENT:
       {
         assignment << "#" << comments << std::endl;
-        if (!exportSingleObject(assignment, NameMap[tmp->getKey()], expression, comments))
+        if (!exportSingleObject(assignment, name, expression, comments))
           return false;
         break;
       }
@@ -500,6 +528,8 @@ std::string CODEExporterXPPAUT::KineticFunction2ODEmember(const CReaction *reac)
 bool CODEExporterXPPAUT::exportSingleODE(const CModelEntity* mentity, std::string & equation, std::string & comments)
 {
   std::ostringstream odeKey;
+
+  if (!isEmptyString(comments)) ode << "#" << comments << std::endl;
 
   odeKey << "ode_" << mentity->getKey();
   if (!exportSingleObject(ode, NameMap[odeKey.str()], equation, comments)) return false;

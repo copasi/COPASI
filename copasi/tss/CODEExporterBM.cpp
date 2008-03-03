@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporterBM.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.3.4.1 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2007/11/23 17:02:54 $
+//   $Author: ssahle $
+//   $Date: 2008/03/03 12:10:36 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -180,6 +185,11 @@ std::string CODEExporterBM::testName(const std::string & name)
 void CODEExporterBM::setReservedNames()
 {return;}  // TODO
 
+std::string CODEExporterBM::setConcentrationName(const std::string & objName)
+{
+  return objName + "_c";
+}
+
 std::string CODEExporterBM::setODEName(const std::string & objName)
 {
   return "d/dt(" + objName + ")";
@@ -195,33 +205,43 @@ bool CODEExporterBM::exportSingleObject(std::ostringstream & which, std::string 
 
 bool CODEExporterBM::exportSingleMetabolite(const CMetab* metab, std::string & expression, std::string & comments)
 {
+  std::string name;
+
+  std::ostringstream smKey;
+  smKey << "sm_" << metab->getKey();
+  name = NameMap[smKey.str()];
+
   switch (metab->getStatus())
     {
     case CModelEntity::FIXED:
-      {
-        if (!exportSingleObject(fixed, NameMap[metab->getKey()], expression, comments))
-          return false;
-        break;
-      }
-    case CModelEntity::ODE:
+      if (!exportSingleObject(fixed, name, expression, comments))
+        return false;
+      break;
     case CModelEntity::REACTIONS:
       {
-        if (!metab->isDependent())
+        if (metab->isDependent())
           {
-            initial << "init ";
-            if (!exportSingleObject(initial, NameMap[metab->getKey()], expression, comments))
+            if (!exportSingleObject(assignment, name, expression, comments))
               return false;
           }
         else
           {
-            if (!exportSingleObject(assignment, NameMap[metab->getKey()], expression, comments))
+            initial << "init ";
+            if (!exportSingleObject(initial, name, expression, comments))
               return false;
           }
         break;
       }
+    case CModelEntity::ODE:
+      {
+        initial << "init ";
+        if (!exportSingleObject(initial, name, expression, comments))
+          return false;
+        break;
+      }
     case CModelEntity::ASSIGNMENT:
       {
-        if (!exportSingleObject(assignment, NameMap[metab->getKey()], expression, comments))
+        if (!exportSingleObject(assignment, name, expression, comments))
           return false;
         break;
       }
@@ -297,24 +317,37 @@ bool CODEExporterBM::exportSingleModVal(const CModelValue* modval, std::string &
 
 bool CODEExporterBM::exportSingleModelEntity(const CModelEntity* tmp, std::string & expression, std::string & comments)
 {
+
+  std::string name;
+
+  const CMetab* metab;
+  metab = dynamic_cast< const CMetab * >(tmp);
+  if (metab)
+    {
+      std::ostringstream smKey;
+      smKey << "sm_" << metab->getKey();
+      name = NameMap[smKey.str()];
+    }
+  else
+    name = NameMap[tmp->getKey()];
+
   switch (tmp->getStatus())
     {
     case CModelEntity::FIXED:
       {
-        if (!exportSingleObject(fixed, NameMap[tmp->getKey()], expression, comments))
+        if (!exportSingleObject(fixed, name, expression, comments))
           return false;
         break;
       }
     case CModelEntity::ODE:
       {
-        initial << "init ";
-        if (!exportSingleObject(initial, NameMap[tmp->getKey()], expression, comments))
+        if (!exportSingleObject(initial, name, expression, comments))
           return false;
         break;
       }
     case CModelEntity::ASSIGNMENT:
       {
-        if (!exportSingleObject(assignment, NameMap[tmp->getKey()], expression, comments))
+        if (!exportSingleObject(assignment, name, expression, comments))
           return false;
         break;
       }

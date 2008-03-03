@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporter.cpp,v $
-//   $Revision: 1.8.4.1 $
+//   $Revision: 1.8.4.2 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/01/22 18:51:22 $
+//   $Author: ssahle $
+//   $Date: 2008/03/03 12:10:36 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -105,6 +105,8 @@ bool CODEExporter::exportMathModel(const CModel * copasiModel, std::string mmasc
 
   exportObjectNodesFromModel(copasiModel);
 
+  if (!exportMetabolitesConcentrations(copasiModel)) return false;
+
   outFile << std::endl << exportTitleString(INITIAL) << std::endl << initial.str() << exportClosingString(INITIAL);
   outFile << std::endl << exportTitleString(FIXED) << std::endl << fixed.str() << exportClosingString(FIXED);
   outFile << std::endl << exportTitleString(ASSIGNMENT) << std::endl << assignment.str() << exportClosingString(ASSIGNMENT);
@@ -128,7 +130,7 @@ void CODEExporter::exportObjectNodesFromModel(const CModel * model)
       CCopasiObject * tmp = CCopasiContainer::Root;
 
       CCopasiObject * obj = findObjectFromRefresh(tmp, model->getListOfSimulatedRefreshes()[i]);
-      if (obj) exportSingleObject(obj);
+      if (obj) exportSimulatedObject(obj);
       else
         std::cout << "Object for Refresh method is not found!" << std::endl;
     }
@@ -178,7 +180,7 @@ CCopasiObject* CODEExporter::findObjectFromRefresh(CCopasiObject * tmp, const Re
   return NULL;
 }
 
-void CODEExporter::exportSingleObject(CCopasiObject * obj)
+void CODEExporter::exportSimulatedObject(CCopasiObject * obj)
 {
 
   if (obj->isReference())
@@ -250,6 +252,16 @@ bool CODEExporter::exportModelEntityExpression(CCopasiObject * obj)
             str1 = expression.str();
             str2 = comments.str();
 
+            CMetab* metab;
+            metab = dynamic_cast< CMetab * >(tmp);
+            if (metab)
+              {
+                std::ostringstream convert;
+                const CCompartment * comp = metab->getCompartment();
+                convert << " * " << NameMap[comp->getKey()];
+                str1 += convert.str();
+              }
+
             if (!exportSingleModelEntity(tmp, str1, str2)) return false;
 
             break;
@@ -267,6 +279,16 @@ bool CODEExporter::exportModelEntityExpression(CCopasiObject * obj)
 
             str1 = equations[tmp->getKey()];
             str2 = comments.str();
+
+            CMetab* metab;
+            metab = dynamic_cast< CMetab * >(tmp);
+            if (metab)
+              {
+                std::ostringstream convert;
+                const CCompartment * comp = metab->getCompartment();
+                convert << " * " << NameMap[comp->getKey()];
+                str1 += convert.str();
+              }
 
             if (!exportSingleODE(tmp, str1, str2)) return false;
 
@@ -320,7 +342,7 @@ std::string CODEExporter::isModelEntityExpressionODEExporterCompatible(CModelEnt
                       && pObject->getObjectName() != "Rate")
                     {
 
-                      result << std::endl << "WARNING : reference to property other than transient concentration, initial concentration or concentrations rate for species \"" << pObjectParent->getObjectName() << "\" in expression for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\".";
+                      result << std::endl << "WARNING : reference to property other than transient concentration, initial concentration or concentrations rate for metabolite \"" << pObjectParent->getObjectName() << "\" in expression for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\".";
                     }
 
                   CMetab* metab;
@@ -329,7 +351,7 @@ std::string CODEExporter::isModelEntityExpressionODEExporterCompatible(CModelEnt
                   if ((metab->getStatus() == CModelEntity::REACTIONS && metab->isDependent()) && pObject->getObjectName() == "Rate")
                     {
 
-                      result << std::endl << "WARNING : reference to rate of dependent (defined from moiety)  species \"" << pObjectParent->getObjectName() << "\" in expression for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\".";
+                      result << std::endl << "WARNING : reference to rate of dependent (defined from moiety)  metabolite \"" << pObjectParent->getObjectName() << "\" in expression for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\".";
                     }
                 }
               else if (typeString == "ModelValue")
@@ -561,7 +583,13 @@ bool CODEExporter::preprocess(const CModel* copasiModel)
       {
 
         std::string name = translateObjectName(metab->getObjectName());
-        NameMap[metab->getKey()] = name;
+
+        std::ostringstream smKey;
+        smKey << "sm_" << metab->getKey();
+
+        NameMap[smKey.str()] = name; // mass fraction
+
+        NameMap[metab->getKey()] = setConcentrationName(name); //concentration
 
         if (metab->getStatus() == CModelEntity::REACTIONS && !metab->isDependent() || metab->getStatus() == CModelEntity::ODE)
           {
@@ -653,14 +681,20 @@ bool CODEExporter::exportMetabolites(const CModel* copasiModel)
       std::string str1;
       std::string str2;
 
-      comments << "species \'" << CMetabNameInterface::getDisplayName(copasiModel, *metab)
+      comments << "metabolite \'" << CMetabNameInterface::getDisplayName(copasiModel, *metab)
       << "\': " << CModelEntity::StatusName[metab->getStatus()];
 
       switch (metab->getStatus())
         {
         case CModelEntity::FIXED:
           {
-            expression << metab->getValue();
+            const CCompartment * comp;
+            comp = metab->getCompartment();
+            C_FLOAT64 volume = comp->getInitialValue();
+
+            value = metab->getInitialConcentration() * volume;
+
+            expression << value;
 
             break;
           }
@@ -671,16 +705,25 @@ bool CODEExporter::exportMetabolites(const CModel* copasiModel)
         case CModelEntity::ODE:
           {
 
-            expression << metab->getInitialConcentration();
+            const CCompartment * comp;
+            comp = metab->getCompartment();
+            C_FLOAT64 volume = comp->getInitialValue();
+
+            value = metab->getInitialConcentration() * volume;
+
+            expression << value;
 
             break;
           }
         case CModelEntity::REACTIONS:
           {
+            const CCompartment * comp;
+            comp = metab->getCompartment();
+            C_FLOAT64 volume = comp->getInitialValue();
 
             std::ostringstream tmp;
             std::ostringstream more;
-            value = metab->getInitialConcentration();
+            value = metab->getInitialConcentration() * volume;
 
             if (metab->isDependent())
               {
@@ -701,8 +744,13 @@ bool CODEExporter::exportMetabolites(const CModel* copasiModel)
                         if (fabs(L(i - ode_size, j)) != 1.0)
                           tmp << fabs(L(i - ode_size, j)) << "*";
 
-                        tmp << NameMap[metabs[ode_size + j]->getKey()];
-                        value -= L(i - ode_size, j) * metabs[ode_size + j]->getInitialConcentration();
+                        std::ostringstream jsmKey;
+                        jsmKey << "sm_" << metabs[ode_size + j]->getKey();
+
+                        tmp << NameMap[jsmKey.str()];
+                        const CCompartment * compj = metabs[ode_size + j]->getCompartment();
+
+                        value -= L(i - ode_size, j) * metabs[ode_size + j]->getInitialConcentration() * compj->getInitialValue();
                       }
 
                     // comments << "  dependent ";
@@ -727,6 +775,44 @@ bool CODEExporter::exportMetabolites(const CModel* copasiModel)
 
       if (metab->getStatus() != CModelEntity::ASSIGNMENT)
         if (!exportSingleMetabolite(metab, str1, str2)) return false;
+    }
+  return true;
+}
+
+/* export metabolites concentrations */
+bool CODEExporter::exportMetabolitesConcentrations(const CModel* copasiModel)
+{
+
+  const CCopasiVector< CMetab > & metabs = copasiModel->getMetabolitesX();
+
+  unsigned C_INT32 metabs_size = metabs.size();
+
+  unsigned C_INT32 i;
+
+  for (i = 0; i < metabs_size; i++)
+    {
+      const CMetab * metab;
+      metab = metabs[i];
+
+      std::string str1;
+      std::string str2;
+
+      std::ostringstream expression;
+      std::ostringstream comments;
+
+      comments << "concentration of metabolite \'" << CMetabNameInterface::getDisplayName(copasiModel, *metab)
+      << "\': " << CModelEntity::StatusName[metab->getStatus()];
+
+      std::ostringstream smKey;
+      smKey << "sm_" << metab->getKey();
+
+      expression << NameMap[smKey.str()] << "/" << NameMap[metabs[i]->getCompartment()->getKey()];
+
+      str1 = expression.str();
+      str2 = comments.str();
+
+      if (!exportSingleObject(assignment, NameMap[metab->getKey()], str1, str2))
+        return false;
     }
   return true;
 }
@@ -905,7 +991,11 @@ bool CODEExporter::exportReacParamsAndFuncs(const CModel* copasiModel)
 
               jequation << KineticFunction2ODEmember(reac);
 
-              if (reac->getCompartmentNumber() != 1) jequation << "/" << NameMap[metabs[ode_size + j]->getCompartment()->getKey()];
+              //std::cout << "reaction  " <<  reac->getObjectName() << " compartment number "  << reac->getCompartmentNumber() << std::endl;
+
+              if (reac->getCompartmentNumber() == 1) jequation << "*" << NameMap[metabs[ode_size + j]->getCompartment()->getKey()];
+
+              //std::cout << " member:    " <<  jequation.str() << std::endl;
 
               equations[metabs[ode_size + j]->getKey()] += jequation.str();
             }
@@ -951,6 +1041,9 @@ std::string CODEExporter::translateObjectName(const std::string & /* realName */
 {return " ";}
 
 std::string CODEExporter::setODEName(const std::string & /* objName */)
+{return " ";}
+
+std::string CODEExporter::setConcentrationName(const std::string & /* objName */)
 {return " ";}
 
 bool CODEExporter::exportSingleObject(std::ostringstream & /* which */,

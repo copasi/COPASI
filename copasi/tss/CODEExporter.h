@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporter.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.2.4.1 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2007/11/23 17:02:54 $
+//   $Author: ssahle $
+//   $Date: 2008/03/03 12:10:36 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -45,6 +50,8 @@ class CODEExporter
 
     virtual bool exportMetabolites(const CModel* copasiModel);
 
+    virtual bool exportMetabolitesConcentrations(const CModel* copasiModel);
+
     bool exportCompartments(const CModel* copasiModel);
 
     bool exportModelValues(const CModel* copasiModel);
@@ -54,7 +61,7 @@ class CODEExporter
 
     CCopasiObject* findObjectFromRefresh(CCopasiObject * tmp, const Refresh* ref);
 
-    void exportSingleObject(CCopasiObject * obj);
+    void exportSimulatedObject(CCopasiObject * obj);
 
     bool exportModelEntityExpression(CCopasiObject * obj);
 
@@ -78,6 +85,8 @@ class CODEExporter
     virtual std::string translateTimeVariableName();
 
     virtual std::string translateObjectName(const std::string & realName);
+
+    virtual std::string setConcentrationName(const std::string & objName);
 
     virtual std::string setODEName(const std::string & objName);
 
@@ -110,7 +119,7 @@ class CODEExporter
     /**
     **        This method tests if a string consists only of whitespace characters
     **/
-    bool isEmptyString(std::string & str);
+    virtual bool isEmptyString(std::string & str);
 
     /**
      **      This method modifies the export tree of the function for internal calls of Mass Action
