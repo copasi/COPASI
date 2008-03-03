@@ -59,9 +59,9 @@ if [ x"$#" = x1 ]; then
     cp ../copasi/wizard/help_html/*.html copasi/share/copasi/doc/html
     chmod 644 copasi/share/copasi/doc/html/*.html
 
-    cp ../copasi/wizard/help_html/figures/*.jpg \
+    cp ../copasi/wizard/help_html/figures/*.png \
        copasi/share/copasi/doc/html/figures
-    chmod 644 copasi/share/copasi/doc/html/figures/*.jpg
+    chmod 644 copasi/share/copasi/doc/html/figures/*.png
 
     cd ../admin
 
@@ -238,9 +238,9 @@ echo "Set the icon in the Info.plist file."
     cp ../copasi/wizard/help_html/*.html copasi/share/copasi/doc/html
     chmod 644 copasi/share/copasi/doc/html/*.html
 
-    cp ../copasi/wizard/help_html/figures/*.jpg \
+    cp ../copasi/wizard/help_html/figures/*.png \
        copasi/share/copasi/doc/html/figures
-    chmod 644 copasi/share/copasi/doc/html/figures/*.jpg
+    chmod 644 copasi/share/copasi/doc/html/figures/*.png
 
     tar -czf ../Copasi-$build-$1.tar.gz copasi
 
