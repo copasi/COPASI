@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/StateSubwidget.ui.h,v $
-//   $Revision: 1.35.4.1 $
+//   $Revision: 1.35.4.2 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/02/27 23:22:57 $
+//   $Author: ssahle $
+//   $Date: 2008/03/03 00:27:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -355,21 +355,15 @@ bool StateSubwidget::loadAll(const CSteadyStateTask * pTask)
     }
 
   // protocol
-  if (true /*pProblem->isJacobianRequested() ||
-                                                pProblem->isStabilityAnalysisRequested()*/)
+  if (true)
     {
       mpTabWidget->setTabEnabled(mpTabWidget->page(Last), true);
 
-      //stabilityTextEdit->setReadOnly(true);
-
-      //std::ostringstream ss;
-      //ss << mpTask->getEigenValuesReduced();
       const CSteadyStateMethod * pMethod =
         dynamic_cast<const CSteadyStateMethod *>(mpTask->getMethod());
       assert(pMethod);
       protocolTextEdit->setText(FROM_UTF8(pMethod->getMethodLog()));
     }
-
   else
     {
       mpTabWidget->setTabEnabled(mpTabWidget->page(Last), false);
@@ -394,6 +388,7 @@ void StateSubwidget::clear()
   tableEigenValuesX->setNumRows(0);
 
   stabilityTextEdit->setText("");
+  protocolTextEdit->setText("");
 }
 
 void StateSubwidget::setFramework(int framework)
