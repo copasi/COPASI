@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.93 $
+//   $Revision: 1.94 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/02/15 11:48:46 $
+//   $Date: 2008/03/03 12:30:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -353,82 +353,29 @@ void CQGLNetworkPainter::drawGraph()
   if ((pParentLayoutWindow != NULL) &&
       (pParentLayoutWindow->getMappingMode() == CVisParameters::COLOR_MODE)) // draw color legend
     {
-
-      C_INT32 sx = 40; //start at position (sx,sy)
-      C_INT32 sy = 20;
-      C_INT32 w = 120; // size of legend rectangle w x h
-      C_INT32 h = 15;
-      C_FLOAT64 dHue = 240.0 / w;
-      C_FLOAT64 hue = 0.0;
-
-      // QGLWidget::renderText (10, sy + 15, "MIN", mf, graphObjList);
-      // QGLWidget::renderText (165, sy + 15, "MAX", mf, graphObjList);
-      RG_drawStringAt("MIN", 7, sy + 3, 32, 16);
-      RG_drawStringAt("MAX", 165, sy + 3, 32, 16);
-
-      C_INT16 i;
-      QColor col = QColor();
-      for (i = sx;i <= (w + sx);i++)
-        {
-          col.setHsv((int)(240 - hue), 255, 255);
-          //std::cout << "------------" << std::endl;
-          //std::cout << "color hsv value: "  << (int) hue << std::endl;
-          //std::cout << "r: " << col.red() << "   g: " << col.green() << "   b: " << col.blue() << std::endl;
-          //glColor3d((C_FLOAT64)col.red(), (C_FLOAT64)col.green(), (C_FLOAT64)col.blue()); does not work properly
-          QGLWidget::qglColor(col);
-          // draw colored line in rectangle
-          glBegin(GL_LINES);
-          glVertex2d(i, sy);
-          glVertex2d(i, sy + h);
-          glEnd();
-
-          hue += dHue;
-        }
+      drawColorLegend();
     } // end color mode
 
   // draw curves to (reactant) nodes and arrows and circular nodes when in appropriate mode
-
-  //std::cout << "draw node in circle mode" << std::endl;
   std::map<std::string, CGraphNode>::iterator itNode;
   std::multimap<std::string, CGraphCurve>::iterator itCurve;
   std::multimap<std::string, CArrow>::iterator itArrow;
   std::pair<std::multimap<std::string, CGraphCurve>::iterator, std::multimap<std::string, CGraphCurve>::iterator> curveRangeIt;;
   std::pair<std::multimap<std::string, CArrow>::iterator, std::multimap<std::string, CArrow>::iterator> arrowRangeIt;
-  //std::cout << nodeCurveMap.size() << " elements in nodeCurveMap" << std::endl;
+
   for (i = 0;i < viewerNodes.size();i++)
     {
       itNode = nodeMap.find(viewerNodes[i]);
       // draw curves of node
-      //std::cout << "node: " << viewerNodes[i] << std::endl;
       curveRangeIt = nodeCurveMap.equal_range(viewerNodes[i]);
-      //          std::multimap<std::string, CLCurve>::iterator lowerB;
-      //          std::multimap<std::string, CLCurve>::iterator upperB;
-      //          lowerB = nodeCurveMap.lower_bound(viewerNodes[i]);
-      //          upperB = nodeCurveMap.upper_bound(viewerNodes[i]);
-      //          itCurve = lowerB;
-      //          while (itCurve != upperB){
-      //          drawEdge((*itCurve).second);
-      //          itCurve++;
-      //}
-
       itCurve = curveRangeIt.first;
       glColor3f(0.0f, 0.0f, 0.5f); // edges in dark blue
       while (itCurve != curveRangeIt.second)
         {
-          //for(itCurve = curveRangeIt.first;itCurve==curveRangeIt.second; ++itCurve){
           drawEdge((*itCurve).second);
           itCurve++;
         }
 
-      // draw arrows of node
-      //arrowRangeIt = nodeArrowMap.equal_range(viewerNodes[i]);
-      //itArrow = arrowRangeIt.first;
-      //       while (itArrow != arrowRangeIt.second)
-      //         {
-      //           //std::cout << "draw arrow " << std::endl;
-      //           drawArrow((*itArrow).second);
-      //           itArrow++;
-      //}
       if (this->mLabelShape == CIRCLE)
         {
           //draw node as a circle
@@ -469,27 +416,15 @@ void CQGLNetworkPainter::drawGraph()
           int labelWWid = getLabelWindowWidth(tWid);
           C_FLOAT64 nDiam = 0.0;
           C_FLOAT64 x, y;
-          //XXXXXXXXXXXX
           const std::string& nodeKey = viewerLabels[i].getGraphicalObjectKey();
           if (!nodeKey.empty())
             {
-              //               std::map<std::string, std::string>::iterator itNode;
-              //               itNode = labelNodeMap.find(labelKey);
-
-              //               if (itNode != labelNodeMap.end()) {// node is corresponding graphical object
               std::map<std::string, CGraphNode>::iterator itNodeObj;
-              //   std::string ndKey = (*itNode).second;
               itNodeObj = nodeMap.find(nodeKey);
               if (itNodeObj != nodeMap.end())
                 nDiam = (*itNodeObj).second.getSize();
-              //std::cout << "size of node: " << (*itNodeObj).second.getSize() << std::endl;
-              //}
-
-              //std::cout << viewerLabels[i].getText() << " node  key: " << nodeKey << std::endl;
               C_INT32 xNdCenter = (*itNodeObj).second.getX() + ((*itNodeObj).second.getWidth() / 2.0);
               C_INT32 yNdCenter = (*itNodeObj).second.getY(); // + ((*itNodeObj).second.getHeight() / 2.0);
-              //C_INT32 xLabelStartOff = tWid / 2.0;
-              //std::cout << viewerLabels[i].getText() << "  text width: " << tWid << "   diameter of circle: " << nDiam << std::endl;
               if ((tWid + 4) > nDiam)
                 {// label wider (+ k=4 to avoid crossing circle borders) than size of circle-> place next to circle
 
@@ -515,6 +450,40 @@ void CQGLNetworkPainter::drawGraph()
 
   glEndList();
   //this->updateGL();
+}
+
+void CQGLNetworkPainter::drawColorLegend()
+{
+      C_INT32 sx = 40; //start at position (sx,sy)
+      C_INT32 sy = 20;
+      C_INT32 w = 120; // size of legend rectangle w x h
+      C_INT32 h = 15;
+      C_FLOAT64 dHue = 240.0 / w;
+      C_FLOAT64 hue = 0.0;
+
+      // QGLWidget::renderText (10, sy + 15, "MIN", mf, graphObjList);
+      // QGLWidget::renderText (165, sy + 15, "MAX", mf, graphObjList);
+      RG_drawStringAt("MIN", 7, sy + 3, 32, 16);
+      RG_drawStringAt("MAX", 165, sy + 3, 32, 16);
+
+      C_INT16 i;
+      QColor col = QColor();
+      for (i = sx;i <= (w + sx);i++)
+        {
+          col.setHsv((int)(240 - hue), 255, 255);
+          //std::cout << "------------" << std::endl;
+          //std::cout << "color hsv value: "  << (int) hue << std::endl;
+          //std::cout << "r: " << col.red() << "   g: " << col.green() << "   b: " << col.blue() << std::endl;
+          //glColor3d((C_FLOAT64)col.red(), (C_FLOAT64)col.green(), (C_FLOAT64)col.blue()); does not work properly
+          QGLWidget::qglColor(col);
+          // draw colored line in rectangle
+          glBegin(GL_LINES);
+          glVertex2d(i, sy);
+          glVertex2d(i, sy + h);
+          glEnd();
+
+          hue += dHue;
+        }
 }
 
 // draw node as circle
@@ -788,7 +757,7 @@ void CQGLNetworkPainter::drawLabel(CLTextGlyph l)
 
 void CQGLNetworkPainter::RG_drawStringAt(std::string s, C_INT32 x, C_INT32 y, C_INT32 w, C_INT32 h)
 {
-  RGTextureSpec* texSpec = RG_createTextureForText(s, mFontname, h);
+  RGTextureSpec* texSpec = getTextureForText(s, mFontname, h);
   if (texSpec == NULL)
     {
       return;
@@ -858,8 +827,35 @@ int CQGLNetworkPainter::getLabelWindowWidth(int width)
   return width;
 }
 
+void CQGLNetworkPainter::createTextureForAllLabels()
+{ 
+  //std::cout << "createTextureForAllLabels" << std::endl;
+  labelTextureMap.clear();
+  unsigned int i=0;
+  for (i=0;i<viewerLabels.size();i++){
+   RGTextureSpec* pTexture = RG_createTextureForText(viewerLabels[i].getText(),mFontname,static_cast<C_INT32>(viewerLabels[i].getHeight()));
+   labelTextureMap.insert(std::pair<std::string,RGTextureSpec*>
+			 (viewerLabels[i].getText(),
+			  pTexture));
+  }
+}
+
+RGTextureSpec* CQGLNetworkPainter::getTextureForText(const std::string& text, const std::string& fontName, unsigned int fontSize)
+{
+  std::cout << "get texture for text: " << text <<std::endl;
+  std::map<std::string, RGTextureSpec*>::iterator it;
+  it = labelTextureMap.find(text);
+  if (it != labelTextureMap.end())
+    return ((*it).second);
+  else
+    return RG_createTextureForText(text,fontName,fontSize);
+  //return RG_createTextureForText(text, fontName,fontSize);
+}
+
+
 RGTextureSpec* CQGLNetworkPainter::RG_createTextureForText(const std::string& text, const std::string& fontName, unsigned int fontSize)
 {
+  std::cout << "create texture for: " << text << std::endl;
   QFont font(QString(fontName.c_str()), fontSize);
   QFontMetrics fontMetrics = QFontMetrics(font);
 
@@ -1131,7 +1127,7 @@ void CQGLNetworkPainter::rescaleDataSets(C_INT16 scaleMode)
                              (maxNodeSize - minNodeSize) /
                              (pSummaryInfo->getMaxForSpecies(viewerNodes[i]) - pSummaryInfo->getMinForSpecies(viewerNodes[i])))
                             + minNodeSize;
-                  std::cout << "new value: " << val_new << std::endl;
+                  //std::cout << "new value: " << val_new << std::endl;
                 }
               else
                 {// individual mode -> global mode
@@ -1314,7 +1310,7 @@ void CQGLNetworkPainter::runAnimation()
     }
 
   //CVisParameters::animationRunning = true;
-
+  std::cout << "steps per second: " << stepsPerSecond << std::endl;
   regularTimer->start((int)(1000 / stepsPerSecond), false); // emit signal in chosen framerate
 
   //while ((stepShown <= CVisParameters::numberOfSteps) &&
@@ -1358,7 +1354,7 @@ void CQGLNetworkPainter::triggerAnimationStep()
 void CQGLNetworkPainter::showStep(C_INT32 stepNumber)
 {
   this->stepShown = stepNumber;
-  //std::cout << "show step " << i << std::endl;
+  //std::cout << "show step " << stepNumber << std::endl;
   if (this->mLabelShape != CIRCLE)
     this->mLabelShape = CIRCLE;
   if ((0 <= stepNumber) && (static_cast<unsigned int>(stepNumber) < dataSets.size()))
@@ -1368,6 +1364,7 @@ void CQGLNetworkPainter::showStep(C_INT32 stepNumber)
       std::map<C_INT32, CDataEntity>::iterator iter = dataSets.find(stepNumber);
       if (iter != dataSets.end())
         {
+	  //std::cout << "data entity: " << (*iter).second << std::endl;
           CDataEntity dataSet = (*iter).second;
           unsigned int i;
           for (i = 0; i < viewerNodes.size();i++)
@@ -1382,7 +1379,7 @@ void CQGLNetworkPainter::showStep(C_INT32 stepNumber)
                       if (val != -DBL_MAX)
                         if (isnan(val)) // test for nan
                           {
-                            std::cout << "nan value found" << std::endl;
+                            //std::cout << "nan value found for " << viewerNodes[i] << std::endl;
                             setNodeSize(viewerNodes[i], DEFAULT_NODE_SIZE);
                           }
                         else
@@ -1396,7 +1393,7 @@ void CQGLNetworkPainter::showStep(C_INT32 stepNumber)
                       if (val != -DBL_MAX)
                         if (isnan(val)) // test for nan
                           {
-                            std::cout << "nan value found" << std::endl;
+                            std::cout << "nan value found" << viewerNodes[i] << std::endl;
                             setNodeSize(viewerNodes[i], DEFAULT_NODE_SIZE);
                           }
                         else
@@ -1820,6 +1817,7 @@ void CQGLNetworkPainter::zoom(C_FLOAT64 zoomFactor)
         }
       //}
     }
+  createTextureForAllLabels();
   this->drawGraph();
 }
 
@@ -1862,7 +1860,7 @@ void CQGLNetworkPainter::testOpenGL()
   glVertex3f(1.5f, 0.5f, 0.0f); // rechte Ecke oben
   glVertex3f(1.5f, -0.5f, 0.0f); // rechte Ecke unten
 
-  glColor3f(0.0f, 1.0f, 0.0f); // gr�n
+  glColor3f(0.0f, 1.0f, 0.0f); // grï¿½n
   glVertex3f(0.5f, -1.5f, 0.0f); // untere Ecke rechts
   glVertex3f(-0.5f, -1.5f, 0.0f); // untere Ecke links
 
@@ -1954,7 +1952,7 @@ void CQGLNetworkPainter::initializeGL()
 void CQGLNetworkPainter::resizeGL(int w, int h)
 {
   //std::cout << "resize GL" << std::endl;
-  std::cout << "GL size:  w x h:    " << w << "  x  " << h << std::endl;
+  //std::cout << "GL size:  w x h:    " << w << "  x  " << h << std::endl;
   // setup viewport, projection etc.:
   glViewport(0, 0, (GLint)w, (GLint)h);
 
