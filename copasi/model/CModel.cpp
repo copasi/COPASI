@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.334.4.7 $
+//   $Revision: 1.334.4.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/02/28 21:38:16 $
+//   $Date: 2008/03/03 17:12:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1051,7 +1051,7 @@ void CModel::applyInitialValues()
     (**itRefresh++)();
 
   // Update all dependend objects needed for simulation.
-  updateSimulatedValues(true);
+  updateSimulatedValues(false);
 }
 
 void CModel::clearMoieties()
