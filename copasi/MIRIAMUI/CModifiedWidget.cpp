@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CModifiedWidget.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/02/25 20:37:26 $
+//   $Date: 2008/03/03 16:58:29 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -86,7 +86,9 @@ void CModifiedWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_I
   if (dynamic_cast<CQDateTimeEditTableItem *>(table->cellWidget(row, COL_DATE_MODIFIED)))
     {
       pDTE = static_cast<CQDateTimeEditTableItem *>(table->cellWidget(row, COL_DATE_MODIFIED));
-      pDTE->setDateTime(QDateTime::fromString(FROM_UTF8(pModified->getDateModified()), Qt::ISODate));
+	  const std::string strDT = pModified->getDateModified();
+	  if (strDT.length())
+	  {	pDTE->setDateTime(QDateTime::fromString(FROM_UTF8(strDT), Qt::ISODate));	}
     }
   else
     {
@@ -174,8 +176,8 @@ void CModifiedWidget::deleteObjects(const std::vector<std::string> & keys)
             CCopasiDataModel::Global->getModel()->getMIRIAMInfo().removeModified(keys[i]);
           }
 
-        //for (i = 0; i < imax; i++)
-        //protectedNotify(ListViews::MODEL, ListViews::DELETE, keys[i]);
+        for (i = 0; i < imax; i++)
+			protectedNotify(mOT, ListViews::DELETE, keys[i]);
 
         mChanged = true;
         break;

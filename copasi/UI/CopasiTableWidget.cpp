@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.cpp,v $
-//   $Revision: 1.60 $
+//   $Revision: 1.61 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/02/25 20:37:27 $
+//   $Date: 2008/03/03 16:58:29 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -600,6 +600,25 @@ bool CopasiTableWidget::isTableInFocus()
 
 bool CopasiTableWidget::isChanged()
 {return mChanged;}
+
+bool CopasiTableWidget::isTableChanged()
+{
+  bool changeMade = false;
+  C_INT32 j, jmax = table->numRows() - 1;
+  for (j = 0; j < jmax; ++j)
+    {
+      if (mFlagNew[j] && !mFlagDelete[j])
+	  {	changeMade = true;	}
+      else if (mFlagDelete[j])
+        {	changeMade = true;	}
+      else
+        {
+          if (mFlagChanged[j] || mFlagRenamed[j])
+            {	changeMade = true;	}
+        }
+    }
+  return changeMade;
+}
 
 void CopasiTableWidget::updateHeaderUnits()
 {}

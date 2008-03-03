@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CReferencesWidget.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/02/25 20:37:26 $
+//   $Date: 2008/03/03 16:58:29 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,7 +26,11 @@
 #include "CReferencesWidget.h"
 
 #define COL_MARK               0
-#define COL_URL                1
+#define COL_DUMMY              1
+#define COL_PUBMED_ID          2
+#define COL_DOI                3
+#define COL_DESCRIPTION        4
+
 
 /*
  *  Constructs a CReferencesWidget as a child of 'parent', with the
@@ -63,20 +67,29 @@ std::vector<const CCopasiObject*> CReferencesWidget::getObjects() const
 
 void CReferencesWidget::init()
 {
-  numCols = 2;
+  //flagtoAdjust = false;
+  mShowNewObjectWarning = false;
+  numCols = 5;
   table->setNumCols(numCols);
-
+  
   //Setting table headers
   QHeader *tableHeader = table->horizontalHeader();
   tableHeader->setLabel(COL_MARK, "Status");
-  tableHeader->setLabel(COL_URL, "URL");
+  tableHeader->setLabel(COL_DUMMY, "Dummy");
+  tableHeader->setLabel(COL_PUBMED_ID, "Pubmed ID");
+  tableHeader->setLabel(COL_DOI, "DOI");
+  tableHeader->setLabel(COL_DESCRIPTION, "Description");
+  table->hideColumn(COL_DUMMY);
+  //table->setColumnWidth(COL_DESCRIPTION, 200);
 }
 
 void CReferencesWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_INT32 row)
 {
   if (!obj) return;
   const CReference *pReference = (const CReference*)obj;
-  table->setText(row, COL_URL, FROM_UTF8(pReference->getURL()));
+  table->setText(row, COL_PUBMED_ID, FROM_UTF8(pReference->getPubmedId()));
+  table->setText(row, COL_DOI, FROM_UTF8(pReference->getDOI()));
+  table->setText(row, COL_DESCRIPTION, FROM_UTF8(pReference->getDescription()));
 }
 
 void CReferencesWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj)
@@ -84,11 +97,19 @@ void CReferencesWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* o
   if (!obj) return;
   CReference * pReference = static_cast< CReference * >(obj);
 
-  pReference->setURL((const char *) table->text(row, COL_URL).utf8());
+  pReference->setPubmedId((const char *) table->text(row, COL_PUBMED_ID).utf8());
+  pReference->setDOI((const char *) table->text(row, COL_DOI).utf8());
+  pReference->setDescription((const char *) table->text(row, COL_DESCRIPTION).utf8());
 }
 
-void CReferencesWidget::defaultTableLineContent(unsigned C_INT32 C_UNUSED(row), unsigned C_INT32 C_UNUSED(exc))
-{}
+void CReferencesWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT32 exc)
+{
+  if (exc != COL_DOI)
+    table->clearCell(row, COL_DOI);
+
+  if (exc != COL_DESCRIPTION)
+    table->clearCell(row, COL_DESCRIPTION);
+}
 
 QString CReferencesWidget::defaultObjectName() const
   {return "";}
@@ -112,7 +133,7 @@ CCopasiObject* CReferencesWidget::createNewObject(const std::string & name)
 void CReferencesWidget::deleteObjects(const std::vector<std::string> & keys)
 {
 
-  QString ReferenceList = "Are you sure you want to delete listed PUBLICATION(S) ?\n";
+  QString ReferenceList = "Are you sure you want to delete listed REFERENCES(S) ?\n";
   unsigned C_INT32 i, imax = keys.size();
   for (i = 0; i < imax; i++) //all compartments
     {
@@ -142,8 +163,8 @@ void CReferencesWidget::deleteObjects(const std::vector<std::string> & keys)
             CCopasiDataModel::Global->getModel()->getMIRIAMInfo().removeReference(keys[i]);
           }
 
-        //for (i = 0; i < imax; i++)
-        //protectedNotify(ListViews::MODEL, ListViews::DELETE, keys[i]);
+        for (i = 0; i < imax; i++)
+			protectedNotify(mOT, ListViews::DELETE, keys[i]);
 
         mChanged = true;
         break;
@@ -151,4 +172,26 @@ void CReferencesWidget::deleteObjects(const std::vector<std::string> & keys)
     default:                                           // No or Escape
       break;
     }
+}
+
+void CReferencesWidget::saveTable()
+{
+	std::map<std::string, std::string> movedReferences;
+	
+	if (isTableChanged())
+	{	movedReferences = CCopasiDataModel::Global->getModel()->getMIRIAMInfo().moveOldReferences();	}
+	
+	if (movedReferences.size() > 0)
+	{
+		std::vector<std::string>::iterator it = mKeys.begin();
+		std::vector<std::string>::const_iterator end = mKeys.end();
+		for (; it != end; it++)
+		{
+		  std::map<std::string, std::string>::const_iterator mit = 
+			  movedReferences.find(*it);
+		  if (mit != movedReferences.end())
+		  {	*it = mit->second;	}
+		}
+	}
+	CopasiTableWidget::saveTable();
 }

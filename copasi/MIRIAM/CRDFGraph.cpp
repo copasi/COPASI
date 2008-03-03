@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraph.cpp,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/02/25 20:37:25 $
+//   $Date: 2008/03/03 16:58:28 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -234,7 +234,7 @@ void CRDFGraph::addRecordToTable(const std::string& tableName, CRDFObject& table
   //create the table node as a blank node if it does not exist.
   if (!pTableNode)
     {
-      std::string predicate = tableName2Predicate(tableName);
+      std::string predicate = tagName2Predicate(tableName);
       addTriplet(mpAbout->getSubject(), predicate, childObj);
       pTableNode = findNodeFromObject(childObj);
       tableObj = childObj;
@@ -253,13 +253,13 @@ void CRDFGraph::addRecordToTable(const std::string& tableName, CRDFObject& table
         }
       else
         {
-          if (tableName == "Creators")
+          if (tableName == "dc:creator")
           {buildCreatorRecord(pTableNode);}
-          else if (tableName == "References")
+          else if (tableName == "dcterms:references")
           {buildReferenceRecord(pTableNode);}
-          else if (tableName == "Created")
+          else if (tableName == "dcterms:created")
           {buildCreatedRecord(pTableNode);}
-          else if (tableName == "Modifieds")
+          else if (tableName == "dcterms:modified")
           {buildModifiedRecord(pTableNode);}
         }
     }
@@ -268,7 +268,7 @@ void CRDFGraph::addRecordToTable(const std::string& tableName, CRDFObject& table
 
 bool CRDFGraph::getNodeIDsForTable(const std::string& tableName, std::vector<CRDFObject>& objects, CRDFObject& tableObj)
 {
-  std::string predicate = tableName2Predicate(tableName);
+  std::string predicate = tagName2Predicate(tableName);
   CRDFNode* pTableNode = getNodeForPredicate(predicate, mpAbout);
   if (!pTableNode)
   {return false;}
@@ -312,11 +312,11 @@ void CRDFGraph::addObjectToBagNode(const std::string& tableName, CRDFNode* pTabl
   if (object.getType() == CRDFObject::BLANK_NODE)
     // A Bag Node should be a BLANK_NODE anyway
     {
-      if (tableName == "Creators")
+      if (tableName == "dc:creator")
       {buildCreatorRecord(pObjNode);}
-      else if (tableName == "References")
+      else if (tableName == "dcterms:references")
       {buildReferenceRecord(pObjNode);}
-      else if (tableName == "Modifieds")
+      else if (tableName == "dcterms:modified")
       {buildModifiedRecord(pObjNode);}
     }
 }
@@ -334,11 +334,9 @@ void CRDFGraph::buildCreatorRecord(const CRDFNode * pObjNode)
   if (!pObjNode->edgeExists(predicate))
     {
       blankNodeId = getGeneratedId();
-      subject.setType(CRDFSubject::BLANK_NODE);
-      subject.setBlankNodeId(pObjNode->getId());
       object.setType(CRDFObject::BLANK_NODE);
       object.setBlankNodeId(blankNodeId);
-      addTriplet(subject, predicate, object);
+	  addTriplet(pObjNode->getSubject(), predicate, object);
       subject.clearData(); object.clearData();
       pr = pObjNode->getObjectNodes(predicate);
     }
@@ -375,25 +373,21 @@ void CRDFGraph::buildCreatorRecord(const CRDFNode * pObjNode)
   predicate = getNameSpaceURI("vCard") + "EMAIL";
   if (!pObjNode->edgeExists(predicate))
     {
-      subject.setType(CRDFSubject::BLANK_NODE);
-      subject.setBlankNodeId(pObjNode->getId());
       object.setType(CRDFObject::LITERAL);
       lit.setType(CRDFLiteral::PLAIN);
       object.setLiteral(lit);
-      addTriplet(subject, predicate, object);
-      subject.clearData(); object.clearData();
+	  addTriplet(pObjNode->getSubject(), predicate, object);
+      object.clearData();
     }
 
   predicate = getNameSpaceURI("vCard") + "ORG";
   if (!pObjNode->edgeExists(predicate))
     {
       blankNodeId = getGeneratedId();
-      subject.setType(CRDFSubject::BLANK_NODE);
-      subject.setBlankNodeId(pObjNode->getId());
       object.setType(CRDFObject::BLANK_NODE);
       object.setBlankNodeId(blankNodeId);
-      addTriplet(subject, predicate, object);
-      subject.clearData(); object.clearData();
+	  addTriplet(pObjNode->getSubject(), predicate, object);
+      object.clearData();
       pr = pObjNode->getObjectNodes(predicate);
     }
   else
@@ -423,16 +417,25 @@ void CRDFGraph::buildReferenceRecord(const CRDFNode * pObjNode)
   std::string predicate, blankNodeId;
   std::pair< CRDFNode::const_iterator, CRDFNode::const_iterator > pr;
 
-  predicate = getNameSpaceURI("dc") + "bibliographicCitation";
+  predicate = getNameSpaceURI("rdf") + "type";
+  std::string bibURI = getNameSpaceURI("dcterms") + "bibliographicCitation";
+  if (!isTypeNode(pObjNode, bibURI))
+  {
+	  object.setType(CRDFObject::RESOURCE);
+	  object.setResource(bibURI, false);
+	  addTriplet(pObjNode->getSubject(), predicate, object);
+	  object.clearData();
+  }
+
+  predicate = getNameSpaceURI("dcterms") + "identifier";
+
   if (!pObjNode->edgeExists(predicate))
     {
       blankNodeId = getGeneratedId();
-      subject.setType(CRDFSubject::BLANK_NODE);
-      subject.setBlankNodeId(pObjNode->getId());
       object.setType(CRDFObject::BLANK_NODE);
       object.setBlankNodeId(blankNodeId);
-      addTriplet(subject, predicate, object);
-      subject.clearData(); object.clearData();
+	  addTriplet(pObjNode->getSubject(), predicate, object);
+      object.clearData();
       pr = pObjNode->getObjectNodes(predicate);
     }
   else
@@ -441,52 +444,79 @@ void CRDFGraph::buildReferenceRecord(const CRDFNode * pObjNode)
       blankNodeId = pr.first->second->getId();
     }
 
-  predicate = getNameSpaceURI("vCard") + "Family";
-  if (!pObjNode->edgeExists(predicate))
+  predicate = getNameSpaceURI("rdf") + "type";
+  if (!isBagNode(pr.first->second))
+  {
+	  object.setType(CRDFObject::RESOURCE);
+	  object.setResource(getNameSpaceURI("rdf") + "Bag", false);
+	  addTriplet(pr.first->second->getSubject(), predicate, object);
+	  object.clearData();
+  }
+  
+  predicate = getNameSpaceURI("rdf") + "_1";
+  if (!pr.first->second->edgeExists(predicate))
     {
       subject.setType(CRDFSubject::BLANK_NODE);
-      subject.setBlankNodeId(pObjNode->getId());
-      object.setType(CRDFObject::RESOURCE);
+      subject.setBlankNodeId(blankNodeId);
+	  object.setType(CRDFObject::RESOURCE);
+	  object.setResource("", false);
       addTriplet(subject, predicate, object);
       subject.clearData(); object.clearData();
+    }
+
+  predicate = getNameSpaceURI("rdf") + "_2";
+  if (!pr.first->second->edgeExists(predicate))
+    {
+      subject.setType(CRDFSubject::BLANK_NODE);
+      subject.setBlankNodeId(blankNodeId);
+	  object.setType(CRDFObject::RESOURCE);
+	  object.setResource("", false);
+      addTriplet(subject, predicate, object);
+      subject.clearData(); object.clearData();
+    }
+
+  predicate = getNameSpaceURI("dcterms") + "description";
+  if (!pObjNode->edgeExists(predicate))
+    {
+      object.setType(CRDFObject::LITERAL);
+      lit.setType(CRDFLiteral::PLAIN);
+      object.setLiteral(lit);
+	  addTriplet(pObjNode->getSubject(), predicate, object);
+      object.clearData();
     }
 }
 
 void CRDFGraph::buildCreatedRecord(const CRDFNode * pObjNode)
 {
-  CRDFSubject subject; CRDFObject object; CRDFLiteral lit;
+  CRDFObject object; CRDFLiteral lit;
   std::string predicate;
   std::pair< CRDFNode::const_iterator, CRDFNode::const_iterator > pr;
 
   predicate = getNameSpaceURI("dcterms") + "W3CDTF";
   if (!pObjNode->edgeExists(predicate))
     {
-      subject.setType(CRDFSubject::BLANK_NODE);
-      subject.setBlankNodeId(pObjNode->getId());
       object.setType(CRDFObject::LITERAL);
       lit.setType(CRDFLiteral::PLAIN);
       object.setLiteral(lit);
-      addTriplet(subject, predicate, object);
-      subject.clearData(); object.clearData();
+	  addTriplet(pObjNode->getSubject(), predicate, object);
+      object.clearData();
     }
 }
 
 void CRDFGraph::buildModifiedRecord(const CRDFNode * pObjNode)
 {
-  CRDFSubject subject; CRDFObject object; CRDFLiteral lit;
+  CRDFObject object; CRDFLiteral lit;
   std::string predicate;
   std::pair< CRDFNode::const_iterator, CRDFNode::const_iterator > pr;
 
   predicate = getNameSpaceURI("dcterms") + "W3CDTF";
   if (!pObjNode->edgeExists(predicate))
     {
-      subject.setType(CRDFSubject::BLANK_NODE);
-      subject.setBlankNodeId(pObjNode->getId());
       object.setType(CRDFObject::LITERAL);
       lit.setType(CRDFLiteral::PLAIN);
       object.setLiteral(lit);
-      addTriplet(subject, predicate, object);
-      subject.clearData(); object.clearData();
+	  addTriplet(pObjNode->getSubject(), predicate, object);
+      object.clearData();
     }
 }
 
@@ -533,7 +563,7 @@ bool CRDFGraph::removeRecordFromTable(const std::string& tableName, CRDFObject& 
     {
       if (tableObj == childObj && removeNode(tableNode))
         {
-          mpAbout->removeEdge(tableName2Predicate(tableName));
+          mpAbout->removeEdge(tagName2Predicate(tableName));
           tableObj.clearData();
         }
       else
@@ -543,22 +573,32 @@ bool CRDFGraph::removeRecordFromTable(const std::string& tableName, CRDFObject& 
   return true;
 }
 
+
 bool CRDFGraph::isBagNode(const CRDFNode * pNode)
+{ return isTypeNode(pNode, getNameSpaceURI("rdf") + "Bag");	}
+
+
+bool CRDFGraph::isTypeNode(const CRDFNode * pNode, std::string typeResource)
 {
-  std::string bagPredicate = getNameSpaceURI("rdf") + "type";
+  std::string typePredicate = getNameSpaceURI("rdf") + "type";
   const CRDFNode::multimap& nodeEdges = pNode->getEdges();
   CRDFNode::multimap::const_iterator it;
   for (it = nodeEdges.begin(); it != nodeEdges.end(); it++)
     {
-      if (it->first == bagPredicate)
-      {return true;}
+		if (it->first == typePredicate)
+		{	
+			if (typeResource == "" )
+			{	return true;	}
+			else if(it->second->getObject().getResource() == typeResource)
+			{return true;}
+		}
     }
   return false;
 }
 
 bool CRDFGraph::addBagNodeToTable(const std::string& tableName, CRDFObject& tableObj)
 {
-  std::string tablePredicate = tableName2Predicate(tableName);
+  std::string tablePredicate = tagName2Predicate(tableName);
   CRDFSubject subject; CRDFObject object; std::string predicate;
 
   const CRDFNode::multimap& nodeEdges = mpAbout->getEdges();
@@ -614,7 +654,7 @@ bool CRDFGraph::addBagNodeToTable(const std::string& tableName, CRDFObject& tabl
 
 bool CRDFGraph::removeBagNodeFromTable(const std::string& tableName, CRDFObject& tableObj)
 {
-  std::string tablePredicate = tableName2Predicate(tableName);
+  std::string tablePredicate = tagName2Predicate(tableName);
 
   const CRDFNode::multimap& nodeEdges = mpAbout->getEdges();
   CRDFNode::multimap::const_iterator it;
@@ -812,17 +852,17 @@ bool CRDFGraph::setFieldValue(const std::string& fieldName, const CRDFObject& ob
   if (!pFieldNode || !pFieldNode->isObjectNode())
     {
       //Since no field found, build the record.
-      if (fieldName == "FamilyName" || fieldName == "GivenName" || fieldName == "Email" || fieldName == "Orgname")
+      if (fieldName == "vCard:Family" || fieldName == "vCard:Given" || fieldName == "vCard:EMAIL" || fieldName == "vCard:Orgname")
         {
           buildCreatorRecord(mBlankNodeId2Node[obj.getBlankNodeID()]);
           mChanged = true;
         }
-      else if (fieldName == "PubmedID")
+	  else if (fieldName == "PubmedId" || fieldName == "DOI" || fieldName == "dcterms:description")
         {
           buildReferenceRecord(mBlankNodeId2Node[obj.getBlankNodeID()]);
           mChanged = true;
         }
-      else if (fieldName == "Created")
+      else if (fieldName == "dcterms:W3CDTF")
         {
           CRDFNode * pTableNode = findNodeFromObject(obj);
           if (!pTableNode)
@@ -837,7 +877,7 @@ bool CRDFGraph::setFieldValue(const std::string& fieldName, const CRDFObject& ob
               mChanged = true;
             }
         }
-      else if (fieldName == "DateModified")
+      else if (fieldName == "dcterms:W3CDTF")
         {
           buildModifiedRecord(mBlankNodeId2Node[obj.getBlankNodeID()]);
           mChanged = true;
@@ -920,8 +960,51 @@ CRDFNode* CRDFGraph::findNodeFromObject(const CRDFObject& object)
 CRDFNode* CRDFGraph::findFieldNodeFromObject(const std::string& fieldName, const CRDFObject& startObj)
 {
   CRDFNode* fieldNode = NULL;
+  CRDFNode* fieldNode2 = NULL;
   std::string predicate = "";
-  predicate = fieldName2Predicate(fieldName);
+  std::string prefix = "";
+  if (fieldName == "PubmedId")
+  {	prefix = "http://www.pubmed.gov/#";	}
+  else if (fieldName == "DOI")
+  {	prefix = "http://dx.doi.org/";	}
+  if (fieldName == "PubmedId" || fieldName == "DOI")
+  {
+	  if (startObj.getType() == CRDFObject::BLANK_NODE)
+	  {
+		  predicate = tagName2Predicate("rdf:_1");
+		  fieldNode = getNodeForPredicate(predicate, findNodeFromObject(startObj));
+	  
+		  if (fieldNode == NULL)
+		  {	return fieldNode;	}
+		  if (fieldNode->getObject().getResource().find(prefix, 0) != std::string::npos)
+		  {	return fieldNode;	}
+		  else
+		  {	
+			  predicate = tagName2Predicate("rdf:_2");
+			  fieldNode2 = getNodeForPredicate(predicate, findNodeFromObject(startObj));
+			  if (fieldNode2 == NULL)
+			  {	return fieldNode2;	}
+			  if (fieldNode2->getObject().getResource().find(prefix, 0) != std::string::npos)
+			  {	return fieldNode2;	}
+			  else
+			  {		
+				  if (fieldName == "PubmedId" && fieldNode->getObject().getResource() == "")
+				  {	return fieldNode;	}
+				  else if (fieldName == "DOI" && fieldNode2->getObject().getResource() == "")
+				  {	return fieldNode2;	}
+				  else
+				  {	return NULL;	}
+			  }
+		  }
+	  }
+	  else if (startObj.getType() == CRDFObject::RESOURCE)
+	  {	
+		  fieldNode = findNodeFromObject(startObj);	  
+		  return fieldNode;
+	  }
+  }
+  
+  predicate = tagName2Predicate(fieldName);
   fieldNode = getNodeForPredicate(predicate, findNodeFromObject(startObj));
   return fieldNode;
 }
@@ -1038,8 +1121,8 @@ bool CRDFGraph::compressNode(CRDFNode* pNode)
     }
   else if (nodeType == CRDFObject::BLANK_NODE)
     {
-      bool IsBagNode = isBagNode(pNode);
-      if ((IsBagNode && pNode->getEdges().size() == 1) || (!IsBagNode && pNode->getEdges().size() == 0))
+      bool IsTypeNode = isTypeNode(pNode);
+      if ((IsTypeNode && pNode->getEdges().size() == 1) || (!IsTypeNode && pNode->getEdges().size() == 0))
       {return removeNode(pNode);}
     }
   else if ((nodeType == CRDFObject::RESOURCE || nodeType == CRDFObject::LITERAL) && pNode->getObject() == object)
@@ -1076,36 +1159,14 @@ std::string CRDFGraph::getNameSpaceURI(const std::string& lookupStr)
   {return "";}
 }
 
-std::string CRDFGraph::fieldName2Predicate(const std::string& fieldName)
-{
-  std::string predicate = "";
-  if (fieldName == "FamilyName")
-  {predicate = getNameSpaceURI("vCard") + "Family";}
-  else if (fieldName == "GivenName")
-  {predicate = getNameSpaceURI("vCard") + "Given";}
-  else if (fieldName == "Email")
-  {predicate = getNameSpaceURI("vCard") + "EMAIL";}
-  else if (fieldName == "Orgname")
-  {predicate = getNameSpaceURI("vCard") + "Orgname";}
-  else if (fieldName == "PubmedID")
-  {predicate = getNameSpaceURI("bqmodel") + "isDescribedBy";}
-  else if (fieldName == "Created" || fieldName == "DateModified")
-  {predicate = getNameSpaceURI("dcterms") + "W3CDTF";}
-  return predicate;
-}
-
-std::string CRDFGraph::tableName2Predicate(const std::string& tableName)
+std::string CRDFGraph::tagName2Predicate(const std::string& tableName)
 {
   std::string predicate;
-  if (tableName == "Creators")
-  {predicate = getNameSpaceURI("dc") + "creator";}
-  else if (tableName == "References")
-  {predicate = getNameSpaceURI("bqmodel") + "isDescribedBy";}
-  else if (tableName == "Created")
-  {predicate = getNameSpaceURI("dcterms") + "created";}
-  else if (tableName == "Modifieds")
-  {predicate = getNameSpaceURI("dcterms") + "modified";}
-  return predicate;
+  std::string::size_type loc = tableName.find(":", 0 );
+  if( loc == std::string::npos ) 
+  {	return "";	}
+  predicate = getNameSpaceURI(tableName.substr(0, loc)) + tableName.substr(loc + 1);
+  return predicate; 
 }
 
 CRDFGraph* CRDFGraph::loadGraph(CModelEntity* pEntity)

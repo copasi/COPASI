@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CModelMIRIAMInfo.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/02/25 20:37:25 $
+//   $Date: 2008/03/03 16:58:28 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,6 +23,8 @@
 #ifndef COPASI_CMODELMIRIAMINFO
 #define COPASI_CMODELMIRIAMINFO
 
+#include <map>
+
 #include "utilities/CCopasiVector.h"
 
 #include "CCreator.h"
@@ -38,7 +40,8 @@ class CModelMIRIAMInfo
     CCopasiVector <CCreator> mCreators;
     CRDFObject mCreatorsObj;
     CCopasiVector <CReference> mReferences;
-    CRDFObject mReferencesObj;
+	std::map<std::string, CRDFObject> mReferenceObjs;
+	bool mOldReferencesMoved;
     CRDFObject mCreatedObj;
     CCopasiVector <CModified> mModifieds;
     CRDFObject mModifiedsObj;
@@ -48,7 +51,7 @@ class CModelMIRIAMInfo
 
   protected:
     bool fillInfoFromGraph();
-    void fillObjects(std::string tableName, std::vector<CRDFObject>& objects);
+    void fillObjects(std::string tableName);
     void clearMembers();
 
     // Operations
@@ -69,6 +72,7 @@ class CModelMIRIAMInfo
     CCopasiVector <CModified> & getModifieds();
     CModified* createModified(const std::string& objectName);
     bool removeModified(const std::string& key);
+	std::map<std::string, std::string> moveOldReferences();
   };
 
 #endif //COPASI_CMODELMIRIAMINFO

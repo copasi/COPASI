@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CCreatorsWidget.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/02/25 20:37:26 $
+//   $Date: 2008/03/03 16:58:29 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,10 +30,11 @@
 #include "CCreatorsWidget.h"
 
 #define COL_MARK               0
-#define COL_FAMILY_NAME        1
-#define COL_GIVEN_NAME         2
-#define COL_EMAIL              3
-#define COL_ORG                4
+#define COL_DUMMY              1
+#define COL_FAMILY_NAME        2
+#define COL_GIVEN_NAME         3
+#define COL_EMAIL              4
+#define COL_ORG                5
 
 /*
  *  Constructs a CCreatorsWidget as a child of 'parent', with the
@@ -70,16 +71,19 @@ std::vector<const CCopasiObject*> CCreatorsWidget::getObjects() const
 
 void CCreatorsWidget::init()
 {
-  numCols = 5;
+  mShowNewObjectWarning = false;
+  numCols = 6;
   table->setNumCols(numCols);
 
   //Setting table headers
   QHeader *tableHeader = table->horizontalHeader();
   tableHeader->setLabel(COL_MARK, "Status");
+  tableHeader->setLabel(COL_DUMMY, "Dummy");
   tableHeader->setLabel(COL_FAMILY_NAME, "Family Name");
   tableHeader->setLabel(COL_GIVEN_NAME, "Given Name");
   tableHeader->setLabel(COL_EMAIL, "Email");
   tableHeader->setLabel(COL_ORG, "Organization");
+  table->hideColumn(COL_DUMMY);
 }
 
 void CCreatorsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_INT32 row)
@@ -167,8 +171,8 @@ void CCreatorsWidget::deleteObjects(const std::vector<std::string> & keys)
             CCopasiDataModel::Global->getModel()->getMIRIAMInfo().removeCreator(keys[i]);
           }
 
-        //for (i = 0; i < imax; i++)
-        //protectedNotify(ListViews::MODEL, ListViews::DELETE, keys[i]);
+        for (i = 0; i < imax; i++)
+			protectedNotify(mOT, ListViews::DELETE, keys[i]);
 
         mChanged = true;
         break;

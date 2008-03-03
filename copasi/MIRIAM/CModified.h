@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CModified.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/02/25 20:37:25 $
+//   $Date: 2008/03/03 16:58:28 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -67,7 +67,6 @@ class CModified : public CCopasiContainer
     CRDFObject& getRDFObject();
 
     const std::string getObjectName() const;
-    bool setObjectName(const std::string & name);
 
     /**
         *  Returns a string with the name of this Modified.

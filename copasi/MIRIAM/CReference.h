@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CReference.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/02/25 20:37:25 $
+//   $Date: 2008/03/03 16:58:28 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,6 +36,9 @@ class CReference : public CCopasiContainer
     /** Object in RDF Graph corresponding to this object.*/
     CRDFObject* mpRDFObj;
 
+	/** The XML parent tag under which this object comes under.*/
+	std::string mParentTag;
+
     // Operations
   public:
     /**
@@ -62,14 +65,21 @@ class CReference : public CCopasiContainer
          *
          */
 
-    const std::string getURL() const;
+	const std::string getPubmedId() const;
+	void setPubmedId(const std::string pubmedId);
+	
+	const std::string getDOI() const;
+	void setDOI(const std::string DOI);
 
-    void setURL(const std::string URL);
+	const std::string getDescription() const;
+	void setDescription(const std::string d);
 
     CRDFObject& getRDFObject();
 
+	const std::string getParentTag() const;
+    void setParentTag(const std::string pt);
+
     const std::string getObjectName() const;
-    bool setObjectName(const std::string & name);
 
     /**
         *  Returns a string with the name of this Reference.

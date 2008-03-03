@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CModified.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/02/25 20:37:25 $
+//   $Date: 2008/03/03 16:58:28 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -57,15 +57,12 @@ const std::string CModified::getObjectName() const
   {return getDateModified();}
 
 const std::string CModified::getDateModified() const
-  {return CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getRDFGraph()->getFieldValue("DateModified", *mpRDFObj);}
+  {return CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getRDFGraph()->getFieldValue("dcterms:W3CDTF", *mpRDFObj);}
 
 CRDFObject& CModified::getRDFObject()
 {return *mpRDFObj;}
 
 void CModified::setDateModified(const std::string dateModified)
-{CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getRDFGraph()->setFieldValue("DateModified", *mpRDFObj, dateModified);}
-
-bool CModified::setObjectName(const std::string &)
-{return true;}
+{CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getRDFGraph()->setFieldValue("dcterms:W3CDTF", *mpRDFObj, dateModified);}
 
 const std::string & CModified::getKey() const {return mKey;} //By G
