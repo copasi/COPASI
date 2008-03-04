@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.107.4.7 $
+//   $Revision: 1.107.4.8 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/02/27 14:45:11 $
+//   $Author: shoops $
+//   $Date: 2008/03/04 17:10:41 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -129,7 +129,9 @@ CCopasiDataModel::CCopasiDataModel(const bool withGUI):
     mRenameHandler(this),
     mpCurrentSBMLDocument(NULL),
     mSBMLFileName(""),
-    pOldMetabolites(new CCopasiVectorS < CMetabOld >)
+    pOldMetabolites(new CCopasiVectorS < CMetabOld >),
+    mpUnsupportedDelay(NULL),
+    mpUndefined(NULL)
 {
   mpVersion->setVersion(COPASI_VERSION_MAJOR,
                         COPASI_VERSION_MINOR,
@@ -143,25 +145,9 @@ CCopasiDataModel::CCopasiDataModel(const bool withGUI):
   GlobalKeys.remove(mpUndefined->getKey());
   GlobalKeys.addFix("UndefinedFunction_0", mpUndefined);
 
-  mpDelay = new CFunction("delay");
-  mpDelay->addVariable("variable");
-  mpDelay->addVariable("timeDelay");
-  CEvaluationNodeOperator* pTmpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
-  pTmpNode->addChild(new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, "variable"));
-  pTmpNode->addChild(new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, "timeDelay"));
-  CEvaluationNodeOperator* pRoot = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
-  pRoot->addChild(pTmpNode);
-  pRoot->addChild(new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "NAN"));
-  mpDelay->setRoot(pRoot);
-  mpDelay->compile();
-
-  GlobalKeys.remove(mpDelay->getKey());
-  GlobalKeys.addFix("DelayDummyFunction_0", mpDelay);
-
   mpFunctionList->load();
   newModel(NULL, NULL);
   CCopasiObject::setRenameHandler(&mRenameHandler); //TODO where in the contructor should this be called?
-  mpFunctionList->add(mpDelay, false);
   mpConfiguration->load();
 }
 
@@ -1222,4 +1208,27 @@ void CCopasiDataModel::removeSBMLIdFromFunctions()
     {
       pFunDB->loadedFunctions()[i]->setSBMLId("");
     }
+}
+
+CFunction * CCopasiDataModel::getUnsupportedDelay()
+{
+  if (mpUnsupportedDelay == NULL)
+    {
+      mpUnsupportedDelay = new CFunction("delay");
+      mpUnsupportedDelay->addVariable("variable");
+      mpUnsupportedDelay->addVariable("timeDelay");
+      CEvaluationNodeOperator* pTmpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
+      pTmpNode->addChild(new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, "variable"));
+      pTmpNode->addChild(new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, "timeDelay"));
+      CEvaluationNodeOperator* pRoot = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
+      pRoot->addChild(pTmpNode);
+      pRoot->addChild(new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "NAN"));
+      mpUnsupportedDelay->setRoot(pRoot);
+      mpUnsupportedDelay->compile();
+
+      if (mpFunctionList != NULL)
+        mpFunctionList->addAndAdaptName(mpUnsupportedDelay);
+    }
+
+  return mpUnsupportedDelay;
 }

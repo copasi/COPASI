@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeCall.cpp,v $
-//   $Revision: 1.23.4.2 $
+//   $Revision: 1.23.4.3 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/02/27 10:45:24 $
+//   $Author: shoops $
+//   $Date: 2008/03/04 17:10:41 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -77,6 +77,7 @@ const C_FLOAT64 & CEvaluationNodeCall::value() const
     switch (mType & 0x00FFFFFF)
       {
       case FUNCTION:
+      case DELAY:
         {
           std::vector< CEvaluationNode * >::const_iterator it = mCallNodes.begin();
           std::vector< CEvaluationNode * >::const_iterator end = mCallNodes.end();
@@ -89,7 +90,6 @@ const C_FLOAT64 & CEvaluationNodeCall::value() const
       case EXPRESSION:
         return Value = mpExpression->calcValue();
         break;
-      case DELAY:
       default:
         return Value = std::numeric_limits<C_FLOAT64>::quiet_NaN();
         break;
@@ -116,7 +116,13 @@ bool CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
 
       break;
     case DELAY:
-      mpFunction = CCopasiDataModel::Global->mpDelay;
+      mpFunction = CCopasiDataModel::Global->getUnsupportedDelay();
+      if (!mpFunction) return false;
+
+      // Since it is not guarantied that the function name is "delay",
+      // we need to update the data.
+      mData = mpFunction->getObjectName();
+
       if (!verifyParameters(mCallNodes, mpFunction->getVariables())) return false;
 
       clearParameters(mpCallParameters, mCallNodes);
@@ -225,6 +231,7 @@ std::string CEvaluationNodeCall::getDisplay_C_String(const CEvaluationTree * pTr
     std::string DisplayString = quote(mData, "-+^*/%(){},\t\r\n") + "(";
     switch (mType & 0x00FFFFFF)
       {
+      case DELAY:
       case FUNCTION:
         {
           std::vector< CEvaluationNode * >::const_iterator it = mCallNodes.begin();
@@ -240,7 +247,6 @@ std::string CEvaluationNodeCall::getDisplay_C_String(const CEvaluationTree * pTr
 
       case EXPRESSION:
         break;
-      case DELAY:
       default:
         return "@";
         break;
@@ -422,6 +428,7 @@ void CEvaluationNodeCall::writeMathML(std::ostream & out,
     switch (mType & 0x00FFFFFF)
       {
       case FUNCTION:
+      case DELAY:
         {
 
 #if 0
@@ -462,7 +469,6 @@ void CEvaluationNodeCall::writeMathML(std::ostream & out,
 
       case EXPRESSION:
         break;
-      case DELAY:
       default:
         break;
       }

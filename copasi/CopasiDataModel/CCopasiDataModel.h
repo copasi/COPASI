@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.h,v $
-//   $Revision: 1.33.4.4 $
+//   $Revision: 1.33.4.5 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/02/27 10:45:23 $
+//   $Author: shoops $
+//   $Date: 2008/03/04 17:10:41 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -125,6 +125,13 @@ class CCopasiDataModel: public COutputHandler
 
     std::map<CCopasiObject*, SBase*>& getCopasi2SBMLMap();
 
+    /**
+     * Retrieve the pointer for the function used for importing the
+     * unsupported SBML symbol delay
+     * @return CFunction * pUnsupportedDelay
+     */
+    CFunction * getUnsupportedDelay();
+
     // Attributes
   protected:
     CVersion * mpVersion;
@@ -166,10 +173,15 @@ class CCopasiDataModel: public COutputHandler
      */
     std::map<CCopasiObject*, SBase*> mCopasi2SBMLMap;
 
+    /**
+     * Pointer to a function created for supporting the load SBML models
+     * using the delay symbol
+     */
+    CFunction * mpUnsupportedDelay;
+
   public:
     static CCopasiDataModel * Global;
     CFunction * mpUndefined;
-    CFunction * mpDelay;
 
     /**
      *  This is a hack at the moment to be able to read Gepasi model files
