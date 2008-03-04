@@ -10,10 +10,10 @@
     <ROW Property="BannerBitmap" Value="default_banner.bmp"/>
     <ROW Property="DialogBitmap" Value="default_dialog.bmp"/>
     <ROW Property="Manufacturer" Value="copasi.org" ValueLocId="*"/>
-    <ROW Property="ProductCode" Value="1033:{181D78B1-FD19-4394-B459-25{3}432DDC6} "/>
+    <ROW Property="ProductCode" Value="1033:{181D78B1-FD19-4394-B459-32DDC6BEE41C} "/>
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="COPASI" ValueLocId="*"/>
-    <ROW Property="ProductVersion" Value="4.3.25"/>
+    <ROW Property="ProductVersion" Value="4.0.17"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND"/>
     <ROW Property="UpgradeCode" Value="{17299245-A8D4-4648-B164-383A65DD6F76}"/>
   </COMPONENT>
@@ -146,7 +146,7 @@
     <ATTRIBUTE name="MediaSize" value="0"/>
     <ATTRIBUTE name="MediaSizeUnit" value="0"/>
     <ATTRIBUTE name="Package" value="1"/>
-    <ATTRIBUTE name="PackageName" value="..\Copasi-25-WIN32"/>
+    <ATTRIBUTE name="PackageName" value="..\Copasi-17-WIN32"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiRegsComponent">
     <ROW Registry="Content_Type_1" Root="0" Key=".cps" Name="Content Type" Value="text/xml" Component_="Content_Type_1"/>
