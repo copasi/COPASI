@@ -1,10 +1,10 @@
 <chapter id="modelCreation" xreflabel="Model Creation">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_GUI.xml,v $ -->
-<!--   $Revision: 1.49.4.5 $ -->
+<!--   $Revision: 1.49.4.6 $ -->
 <!--   $Name:  $ -->
-<!--   $Author: pwilly $ -->
-<!--   $Date: 2008/03/04 10:16:36 $ -->
+<!--   $Author: shoops $ -->
+<!--   $Date: 2008/03/04 13:27:02 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -80,7 +80,7 @@ located. Normally you don't have to use this.
 <listitem>
 <para>
 This can be used to specify the directory where COPASI stores its
-configuration files. Normally this is called .COPASI and is located in
+configuration files. Normally this is called .copasi and is located in
 the users home directory. But if you want COPASI to use a different
 one, you can specify it with this switch. 
 </para>
@@ -99,7 +99,7 @@ a different filename, you can specify it with this switch.
 </varlistentry>
 
 
-<varlistentry><term>-c</term><term>--COPASIdir</term>
+<varlistentry><term>-c</term><term>--copasidir</term>
 <listitem>
 <para>
 This specifies the directory where COPASI  has been installed. It is
