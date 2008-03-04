@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.cpp,v $
-//   $Revision: 1.45.4.1 $
+//   $Revision: 1.45.4.2 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/02/08 13:07:37 $
+//   $Author: shoops $
+//   $Date: 2008/03/04 19:06:54 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -386,10 +386,12 @@ std::string CEvaluationNodeFunction::getDisplay_C_String(const CEvaluationTree *
           case FACTORIAL:
             data = "factorial";
             break;
-            // case RUNIFORM:
-            // case RNORMAL:
-            // case DELAY:
-            // :TODO: Bug 895: Implement me
+          case RUNIFORM:
+            data = "user_provided_uniform";
+            break;
+          case RNORMAL:
+            data = "user_provided_normal";
+            break;
           default:
             data = "@";
             break;
@@ -400,10 +402,15 @@ std::string CEvaluationNodeFunction::getDisplay_C_String(const CEvaluationTree *
           case MINUS:
             return "(" + data + mpLeft->getDisplay_C_String(pTree) + ")";
             break;
+
           case PLUS:
             //return handleSign(mpLeft->getDisplay_C_String(pTree));
             return mpLeft->getDisplay_C_String(pTree);
             break;
+
+          case RUNIFORM:
+          case RNORMAL:
+            return data + "(" + mpLeft->getDisplay_C_String(pTree) + "," + mpRight->getDisplay_C_String(pTree) + ")";
 
           default:
             return data + "(" + mpLeft->getDisplay_C_String(pTree) + ")";
@@ -743,7 +750,7 @@ CEvaluationNode* CEvaluationNodeFunction::createNodeFromASTTree(const ASTNode& n
       convertedNode->addChild(convertedChildNode);
       return convertedNode;
   }
-  else*/ if  (subType !=  INVALID)
+  else*/ if   (subType !=   INVALID)
     {
       CEvaluationNodeFunction* convertedNode = new CEvaluationNodeFunction(subType, data);
       ASTNode* child = node.getLeftChild();
@@ -893,7 +900,7 @@ ASTNode* CEvaluationNodeFunction::toAST() const
            child = dynamic_cast<const CEvaluationNode*>(this->getChild()->getSibling());
            node->addChild(child->toAST());
        }
-       else*/ if  (subType !=  INVALID)
+       else*/ if   (subType !=   INVALID)
       {
         const CEvaluationNode* child = dynamic_cast<const CEvaluationNode*>(this->getChild());
         node->addChild(child->toAST());
