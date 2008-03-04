@@ -1,10 +1,10 @@
 <chapter id="modelCreation" xreflabel="Model Creation">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_GUI.xml,v $ -->
-<!--   $Revision: 1.49.4.4 $ -->
+<!--   $Revision: 1.49.4.5 $ -->
 <!--   $Name:  $ -->
-<!--   $Author: gauges $ -->
-<!--   $Date: 2008/02/28 10:10:19 $ -->
+<!--   $Author: pwilly $ -->
+<!--   $Date: 2008/03/04 10:16:36 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -80,7 +80,7 @@ located. Normally you don't have to use this.
 <listitem>
 <para>
 This can be used to specify the directory where COPASI stores its
-configuration files. Normally this is called .copasi and is located in
+configuration files. Normally this is called .COPASI and is located in
 the users home directory. But if you want COPASI to use a different
 one, you can specify it with this switch. 
 </para>
@@ -91,7 +91,7 @@ one, you can specify it with this switch.
 <listitem>
 <para>
 This can be used to specify the filename where COPASI loads and stores
-its configuration. Normally this is called copasi and is located in
+its configuration. Normally this is called COPASI and is located in
 the directory specified with --configdir. But if you want COPASI to use
 a different filename, you can specify it with this switch. 
 </para>
@@ -99,7 +99,7 @@ a different filename, you can specify it with this switch.
 </varlistentry>
 
 
-<varlistentry><term>-c</term><term>--copasidir</term>
+<varlistentry><term>-c</term><term>--COPASIdir</term>
 <listitem>
 <para>
 This specifies the directory where COPASI  has been installed. It is
@@ -217,7 +217,7 @@ elements.
  <para>  
 <screenshot>
 <screeninfo>
-Produced with COPASI 4.1 (Build 21) on Darwin on 05/18/2007
+Produced with COPASI 4.3 (Build 25) on Leopard on 02/06/2008
 </screeninfo>
 <mediaobject>
  <imageobject>
@@ -237,7 +237,7 @@ Produced with COPASI 4.1 (Build 21) on Darwin on 05/18/2007
 </para>
 <para>
 On the top of the main window, you have the menu bar (on the Mac, the
-menu bar is on the top of the screen), below that, you have a tool bar
+menu bar is on the top of the screen). Below that, you have a tool bar
 with some common tasks like opening a file or saving a file. The rest
 of the window is vertically divided into two parts by a slider. The
 size of the two elements can be adjusted by moving the bar that
@@ -289,7 +289,7 @@ your models.
 </para>
 <para>   
 <screenshot>
-<screeninfo>Produced with COPASI Build 18 on MacOS X on 05/19/2006</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/06/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/General_01.png" format="PNG" scale="50" align="center" />
@@ -310,7 +310,7 @@ your models.
 <caution>
 <para>
 You should be aware that changing the default units actually changes
-the model. If you for example change the default volume units from
+the model. If you, for example, change the default volume units from
 liters to milliliters, all the particle numbers in your model change
 by a factor of 1000.
 </para>
@@ -351,6 +351,9 @@ So COPASI would display a concentration of
 </mml:mi><mml:mfrac><mml:mi>nMol</mml:mi><mml:mi>fl</mml:mi></mml:mfrac></mml:mrow></mml:math></inlineequation>. 
 </para>
 <para>
+You are able to easily change the display between concentrations and particle numbers by selecting the dropdown list in the menu bar at the top. COPASI, per default, displays the concentrations.
+</para>
+<para>
 With the drop-down list labeled <guilabel>Rate Law
 Interpretation</guilabel> you can specify how COPASI should interpret
 the kinetic rate laws you specify for your reactions. Per default,
@@ -368,9 +371,10 @@ to the rate laws specified in the model when doing stochastic
 simulation. 
 </para>
 <para>
-With the edit field labeled <guilabel>Initial Time</guilabel> the user
+With the edit field labeled <guilabel>Time (s)</guilabel> under
+the text of <guilabel>Initial</guilabel> the user
 can tell COPASI to take the given value as the initial time for tasks
-like time course. For example if you already have run a time course
+like time course. For example, if you already have run a time course
 simulation for 1000 seconds in another program and your model values
 reflect the state of the model after those 1000 seconds of simulation,
 you can continue your simulation at that time point by setting the
@@ -392,7 +396,7 @@ defining the elements of the model.
 <para>
 Actually if you are just defining a model that has a single
 compartment, you will most likely not even bother to add the
-compartment explicitly, but I will come back to this in the <xref
+compartment explicitly, but we will come back to this in the <xref
 linkend="addingSpecies" /> and <xref linkend="addingReactions" />
 sections.
 </para>
@@ -413,7 +417,7 @@ clicking on the branch name.
 </para>
 <para>  
 <screenshot>
-<screeninfo>Produced with COPASI Build 25 on MacOS X 10.5 on 02/06/2008</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/18/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Compartments_01.png" format="PNG" scale="50" align="center" />
@@ -422,10 +426,10 @@ clicking on the branch name.
   <imagedata fileref="images/Compartments_01.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>compartment table without entries</phrase>
+   <phrase>Compartment table without entries</phrase>
  </textobject>
  <caption>
-  <para>empty compartment table</para>
+  <para>Empty compartment table</para>
  </caption> 
 </mediaobject>
 </screenshot>
@@ -433,29 +437,28 @@ clicking on the branch name.
 <para>
 If you start with a new model and you select the
 <guibutton>Compartments</guibutton> branch, you will get an empty
-table with seven columns. The columns are named
+table with eight columns (see above). The columns are named
 <guilabel>Status</guilabel>, <guilabel>Name</guilabel>, <guilabel>Type</guilabel> 
-<guilabel>Initial Volume</guilabel>, <guilabel>Volume</guilabel>, <guilabel>Rate</guilabel>
+<guilabel>Initial Volume</guilabel>, <guilabel>Volume</guilabel>, <guilabel>Rate</guilabel>, <guilabel>Initial Expression</guilabel>
  and <guilabel>Expression</guilabel>.  The meaning of the
-<guilabel>Status</guilabel> column will be explained shortly.
+<guilabel>Status</guilabel> column will be explained below.
 <guilabel>Name</guilabel> is the actual
 name of the compartment.
 The <guilabel>Type</guilabel> specifies how the transient volume of the compartment is
-determined (see below) whereas the <guilabel>Initial Volume</guilabel> and the <guilabel>Volume</guilabel> columns
-show the volume of the compartment before any calculations have been done and the volume after it has been recalculated.
-Those two values should be the same if the type is set to <emphasis>fixed</emphasis>.
-The <guilabel>Rate</guilabel> column show the rate of change of the compartment (if it has been set by a calculation) and the <guilabel>Expression</guilabel> column shows the mathematical expression that is used to calculate the compartments volume. This field is empty if no expression has been set (see below).
-given in the volume units defined in the <xref
-linkend="generalSettings" /> dialog.</para>
+determined whereas the <guilabel>Initial Volume</guilabel> and the <guilabel>Volume</guilabel> columns
+show the volume of the compartment before any calculations and after re-calculation, respectively.
+These two values, given in the volume units defined in the <xref
+linkend="generalSettings" /> dialog, should be the same if the type is set to <emphasis>fixed</emphasis>.
+The <guilabel>Rate</guilabel> column show the rate of change of the compartment (if it has been set by a calculation). The <guilabel>Initial Expression</guilabel> and the <guilabel>Expression</guilabel> columns show the mathematical expressions used to calculate the initial compartments volume and the transient one, respectively. These fields are empty if no expressions has been set.</para>
 <para>
 The most obvious way to add a new compartment is to click the
 <guibutton>New</guibutton> button on the bottom of the window. This
 will create a new compartment that is added to the table with a status
-of <emphasis>new</emphasis>. 
+of <emphasis>new</emphasis> (see below). 
 </para>
 <para>
 <screenshot>
-<screeninfo>Produced with COPASI Build 25 on MacOS X 10.5 on 02/06/2008</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/18/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Compartments_02.png" format="PNG" scale="50" align="center" />
@@ -464,34 +467,33 @@ of <emphasis>new</emphasis>.
   <imagedata fileref="images/Compartments_02.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>compartment table with newly added compartment</phrase>
+   <phrase>Compartment table with newly added compartment</phrase>
  </textobject>
  <caption>
-  <para>compartment table with new compartment</para>
+  <para>Compartment table with new compartment</para>
  </caption> 
 </mediaobject>
 </screenshot>
 </para>
 <para>
-A status of new means that the compartment has been created, but it
+A status of <emphasis>new</emphasis> means that the compartment has been created, but it
 has not been added to the model yet. It will get added to the model if
-you either click on the <guibutton>commit</guibutton> button on the
+you either click on the <guibutton>Commit</guibutton> button on the
 bottom of the screen, if you select another element in the object tree
-on the left, or if you double click on the table. Lets assume you
-clicked on the <guibutton>commit</guibutton> button, you will notice
-that the status of the new compartment is no longer defined as new
+on the left, or if you double click on the table. In case of clicking on the <guibutton>Commit</guibutton> button, you will notice
+that the status of the new compartment is no longer defined as <emphasis>new</emphasis>
 since it has been added to the model.
 </para> 
 <para>
 While the status of a compartment is shown as
 <emphasis>new</emphasis>, you can remove the compartment from the
-table by clicking the <guibutton>revert</guibutton> button which will
+table by clicking the <guibutton>Revert</guibutton> button which will
 cancel all modifications you made to the compartments that have not
 been committed yet.
 </para>
 <para>
 <screenshot>
-<screeninfo>Produced with COPASI Build 25 on MacOS X 10.5 on 02/06/2008</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/18/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Compartments_03.png" format="PNG" scale="50" align="center" />
@@ -500,10 +502,10 @@ been committed yet.
   <imagedata fileref="images/Compartments_03.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>compartment table with deleted compartment entry</phrase>
+   <phrase>Compartment table with deleted compartment entry</phrase>
  </textobject>
  <caption>
-  <para>compartment table with deleted compartment</para>
+  <para>Compartment table with deleted compartment</para>
  </caption> 
 </mediaobject>
 </screenshot>
@@ -512,22 +514,22 @@ been committed yet.
 If you have already committed the compartment, you can delete it by
 selecting the table row (or one cell of the table row) that contains
 the compartment you want to delete and clicking the
-<guibutton>delete</guibutton> button. You will notice that the
+<guibutton>Delete</guibutton> button. You will notice that the
 compartment does not get deleted at once, but rather the status
-changes to <emphasis>deleted</emphasis>. You can still undo the delete
-by clicking the <guibutton>revert</guibutton> button or the
-<guibutton>delete/undelete</guibutton> button, or you can finalize the
-delete action by clicking on the <guibutton>commit</guibutton>
+changes to <emphasis>delete</emphasis> (see above). You can still undo the delete
+by clicking the <guibutton>Revert</guibutton> button or the
+<guibutton>Delete/Undelete</guibutton> button, or you can finalize the
+delete action by clicking on the <guibutton>Commit</guibutton>
 button. Again leaving this dialog by selecting another object in the
 object tree or double clicking on the table has the same effect as
-clicking on the <guibutton>commit</guibutton> button. 
+clicking on the <guibutton>Commit</guibutton> button. 
 </para>
 <para>
 The <guibutton>clear</guibutton> button is just a convenience function
 to delete all compartments. If you click on it, the status of all
 compartments in the table will be changed to
-<emphasis>deleted</emphasis> and a subsequent
-<guibutton>commit</guibutton> will remove the compartments from the
+<emphasis>delete</emphasis> and a subsequent
+<guibutton>Commit</guibutton> will remove the compartments from the
 model.
 </para>
 <para>
@@ -544,12 +546,12 @@ ways mentioned above and all the compartments get added to the model.
 <para>
 The third way to add a new compartment is to double click on an empty
 row in the table. This is essentially the same as clicking the
-<guibutton>new</guibutton> button and double clicking on the newly
+<guibutton>New</guibutton> button and double clicking on the newly
 added compartment entry.
 </para>
 <para>    
 <screenshot>
-<screeninfo>Produced with COPASI Build 25 on MacOS X 10.5 on 02/06/2008</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/18/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Compartments_04.png" format="PNG" scale="50" align="center" />
@@ -558,10 +560,10 @@ added compartment entry.
   <imagedata fileref="images/Compartments_04.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>dialog for changing compartment parameters</phrase>
+   <phrase>Dialog for changing compartment parameters</phrase>
  </textobject>
  <caption>
-  <para>compartment definition dialog</para>
+  <para>Compartment definition dialog</para>
  </caption> 
 </mediaobject>
 </screenshot>
@@ -569,29 +571,25 @@ added compartment entry.
 <para>
 Double clicking on any compartment entry in the table will bring you
 to another input dialog that lets you specify the parameters of the
-compartment. For a compartment, there are only two parameters that the
-user can change. One is the name of the compartment and the other is
-the volume.
+compartment (see above). For each compartment, you are able to change 
+the name of the compartment, the type of simulation specifying how 
+the compartment volume, or its rate of change, will be determined, and 
+the initial volume.
 </para>
 <para>
-If there are already species defined that are part of the compartment
-being edited, they are listed in the text widget at the bottom of the
-dialog called "Species Name".
-</para>
-<para>
-The field labeled <guilabel>Transient Volume</guilabel> specifies the
+The field labeled <guilabel>Volume</guilabel> specifies the
 volume the compartment has right now, e.g. during or at the end of a
-simulation. Since COPASI supports compartments with varying volume, this
-value is not necessarily the same as the value given for the initial 
-volume.
+simulation. Since the current version of COPASI does not support
+variable compartment volumes yet, this will always be the same as the
+initial volume. 
 </para>
 <para>
 As stated above, compartment volumes don't have to have a constant value
 but they can be reassigned during e.g. a time course simulation depending 
-the values of one or more model entities. In order to specify if a compartment has a constant volume 
-or if the volume is calculated on the fly according to a mathematical expression,
+the values of one or more model entities. In order to specify whether a compartment has a constant volume 
+or the volume is calculated on the fly according to a mathematical expression,
 the dropdown list called <guilabel>Simulation Type</guilabel> can be used.
-I contains three entries:
+It contains three entries:
 <table frame="all"><title>Simulation Types</title>
 <tgroup cols="2" align="left" colsep="1" rowsep="1">
 <colspec colwidth="1*" />
@@ -624,7 +622,7 @@ If you want the compartment to be calculated from a given mathematical expressio
 </para>
 <para>    
 <screenshot>
-<screeninfo>Produced with COPASI Build 25 on MacOS 10.5 on 02/06/2008</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/18/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Compartments_05.png" format="PNG" scale="50" align="center" />
@@ -633,10 +631,10 @@ If you want the compartment to be calculated from a given mathematical expressio
   <imagedata fileref="images/Compartments_05.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>compartment widget with assignment rule</phrase>
+   <phrase>Compartment widget with assignment rule</phrase>
  </textobject>
  <caption>
-  <para>compartment widget with assignment rule</para>
+  <para>Compartment widget with assignment rule</para>
  </caption> 
 </mediaobject>
 </screenshot>
@@ -645,13 +643,13 @@ If you want the compartment to be calculated from a given mathematical expressio
 Likewise if you want the rate of change of the compartments volume to be determined by an ordinary differential equation (ode) you select the entry called <emphasis>ode</emphasis> from the dropdown list.
 </para>
 <para>
-Not only the transient volume of a compartment can be specified as a mathematical expression, but also the initial volume of the compartment.
-If you want do specify such a mathematical expression for the initial volume of a compartment, check the checkbox called <guilabel>Use Initial Expression</guilabel>.
+Not only the transient volume of a compartment can be specified as a mathematical expression (see above), but also the initial one (see below).
+If you want to specify such a mathematical expression for the initial volume of a compartment, check the checkbox called <guilabel>Use Initial Expression</guilabel>.
 An initial expression can only be specified if the <guilabel>Simulation Type</guilabel> dropdown list is either set to <emphasis>fixed</emphasis> or to <emphasis>ode</emphasis>. If the list is set to <emphasis>assignment</emphasis>, the given assignment automatically acts as an initial assignment and there is no need to specify an additional initial assignment.
 </para>
 <para>    
 <screenshot>
-<screeninfo>Produced with COPASI Build 25 on MacOS 10.5 on 02/06/2008</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/18/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Compartments_06.png" format="PNG" scale="50" align="center" />
@@ -660,21 +658,28 @@ An initial expression can only be specified if the <guilabel>Simulation Type</gu
   <imagedata fileref="images/Compartments_06.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>compartment widget with initial assignment</phrase>
+   <phrase>Compartment widget with initial assignment</phrase>
  </textobject>
  <caption>
-  <para>compartment widget with initial assignment</para>
+  <para>Compartment widget with initial assignment</para>
  </caption> 
 </mediaobject>
 </screenshot>
 </para>
 <para>
 The mathematical expressions that can be specified for rules and initial assignments may contain the same elements as the expressions used to defined function definitions. For a detailed description of the elements see <xref linkend="addingFunctions" />.
-When it comes to referencing values of other model entities within mathematical expressions, there is a slight difference between the mathematical expression for a rule and the mathematical expression for an initial assignment. The mathematical expression for a rule may only reference transient values of other model entities whereas the mathematical expression for an initial assignment may only reference initial values of other model entities.
+When it comes to referencing values of other model entities within mathematical expressions, there is a slight difference between the mathematical expression for a rule and that for an initial assignment. The mathematical expression for a rule may only reference transient values of other model entities whereas the mathematical expression for an initial assignment may only reference initial values of other model entities.
+</para>
+<para>
+As you might already have noticed, this dialog for changing
+compartment parameters is associated with the individual compartment
+leaves in the object tree. So if you want to change the parameters, you can also navigate to the leave in the object tree
+that represents the compartment you want to change instead of double
+clicking on an entry in the compartment table. 
 </para>
 <para>    
 <screenshot>
-<screeninfo>Produced with COPASI Build 25 on MacOS X 10.5 on 02/06/2008</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/18/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Compartments_07.png" format="PNG" scale="50" align="center" />
@@ -683,35 +688,33 @@ When it comes to referencing values of other model entities within mathematical 
   <imagedata fileref="images/Compartments_07.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>compartment widget with ode rule and initial assignment</phrase>
+   <phrase>Compartment widget with ode rule and initial assignment</phrase>
  </textobject>
  <caption>
-  <para>compartment widget with ode rule and initial assignment</para>
+  <para>Compartment widget with ode rule and initial assignment</para>
  </caption> 
 </mediaobject>
 </screenshot>
 </para>
-
 <para>
-As you might already have noticed, this dialog for changing
-compartment parameters is associated with the individual compartment
-leaves in the object tree. So if you want to change the parameters of
-a compartment, you can also navigate to the leave in the object tree
-that represents the compartment you want to change instead of double
-clicking on an entry in the compartment table. 
+If there are already species defined that are part of the compartment
+being edited, they will be listed in the text widget at the bottom of the
+dialog called <guilabel>Contained Species</guilabel>. Otherwise, you should add new species.
 </para>
+
 </sect1>
+
 <sect1 id="addingSpecies" xreflabel="Species">
 <title>Species</title>
 <para>
 Adding new species works exactly the same as adding new compartment,
-so I suggest reading the <xref linkend="addingCompartments" /> section
+so we strongly suggest reading the <xref linkend="addingCompartments" /> section
 if you haven't already done so. Here we will just cover the
 differences between adding a compartment and adding a species. 
 </para>
 <para>    
 <screenshot>
-<screeninfo>Produced with COPASI Build 25 on MacOS X 10.5  on 02/06/2008</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/18/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Species_01.png" format="PNG" scale="50" align="center" />
@@ -720,10 +723,10 @@ differences between adding a compartment and adding a species.
   <imagedata fileref="images/Species_01.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>species table with one new entry</phrase>
+   <phrase>Species table with new entry</phrase>
  </textobject>
  <caption>
-  <para>species table with one new entry</para>
+  <para>Species table with new entry</para>
  </caption> 
 </mediaobject>
 </screenshot>
@@ -733,14 +736,15 @@ First of all in order to add a new species, as it is
 called in COPASI, you have to navigate to the
 <guibutton>Species</guibutton> branch of the object tree which is
 located in the <guibutton>Model-&gt;Biochemical</guibutton> branch
-directly below the <guibutton>Compartments</guibutton> branch. Here
-again you see a table, but this table consists of eight columns. This
+directly below the <guibutton>Compartments</guibutton>. Here
+again you see a table (see above), but this table consists of nine columns. This
 is due to the fact that a species has more parameters than a
 compartment. The <guilabel>Status</guilabel> and
 <guilabel>Name</guilabel> columns should already be familiar from the
-compartments table. The other six columns specify the compartment the species is located in,
+compartments table. The other columns specify the compartment where
+the species is located in,
 the way the concentration of the species is calculated, initial
-concentration of the species, the transient concentration, the rate of change of the species as well as the expression used to determine the concentration if such an expression was given (see below).
+concentration of the species, the transient concentration, the rate of change of the species as well as two mathematical expressions used to determine the initial concentration and the transient one, respectively.
 For newly created species the rate will be empty since
 it needs to be calculated first, e.g. during a <link
 linkend="calculatingTrajectory">time course simulation</link>.
@@ -755,12 +759,12 @@ later.
 </para>
 <para>
 To add a new species you have the same three ways as for adding
-compartments and if you are not familiar with those, I recommend
-reading the <xref linkend="addingCompartments" /> section.
+compartments and if you are not familiar with those, we recommend to
+read the <xref linkend="addingCompartments" /> section first.
 </para> 
 <para>    
 <screenshot>
-<screeninfo>Produced with COPASI Build 25 on MacOS X 10.5 on 02/06/2008</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/18/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Species_02.png" format="PNG" scale="50" align="center" />
@@ -769,10 +773,10 @@ reading the <xref linkend="addingCompartments" /> section.
   <imagedata fileref="images/Species_02.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>dialog for changing species parameters</phrase>
+   <phrase>Dialog for changing species parameters</phrase>
  </textobject>
  <caption>
-  <para>species definition dialog</para>
+  <para>Species definition dialog</para>
  </caption> 
 </mediaobject>
 </screenshot>
@@ -781,31 +785,31 @@ reading the <xref linkend="addingCompartments" /> section.
 Editing the parameters of a species also works exactly the way it
 does for compartments. Either you double click on a species entry
 in the table, or you use the object tree to navigate to the species
-leaf you intend to edit. Some of the parameters of a species like
-the <guilabel>Model Status</guilabel> are calculated automatically and
+leaf you intend to edit. The parameters of a species lying on below
+the separator line are determined automatically and
 can not be changed by the user. The parameters that you can change are
-the <guilabel>Name</guilabel> of the species, the
-<guilabel>Compartment</guilabel> it belongs to, how the concentration is calculated
- and its <guilabel>initial concentration</guilabel>. If you would rather change the initial particle 
- number instead
-of the <guilabel>initial concentration</guilabel>, you will have to select <emphasis>Particle Numbers</emphasis>
+the <guilabel>Species Name</guilabel>, the
+<guilabel>Compartment</guilabel> the species belongs to, and how the concentration is calculated.
+Unless the Simulation Type is set to <emphasis>assignment</emphasis>, its <guilabel>Initial Concentration</guilabel> could also be changed. 
+<!-- As the given assignment automatically acts as an initial assignment, there is no need to specify an additional initial assignment.
+-->
+</para>
+<para>
+If you would rather change the initial particle number instead
+of the <guilabel>Initial Concentration</guilabel>, you should select <emphasis>Particle Numbers</emphasis>
 in the dropdown list in the menu bar at the top. This will change all displays in the program to use particle numbers
-rather than concentrations and you can now enter the initial particle numbers (note the changed label).
-also change the <guilabel>initial particle number</guilabel>. If you change to initial concentration, COPASI will internally recalculate the
-initial particle number and vice versa.
-The
-volume to calculate particle numbers from concentration 
-comes from the compartment associated with the species. The list at
-the bottom of the species widget shows the reactions in which this
-species participates. 
+rather than concentrations and you can now enter the 
+<guilabel> Initial Particle Number</guilabel> (note the label will be changed).
+The volume used to calculate particle numbers from concentration 
+comes from the compartment associated with the species. 
+<!-- Although per default COPASI displays the concentrations, it internally represents amount of species by particle numbers. -->
+If you change back to initial concentration, COPASI will internally recalculate the initial particle number.
 </para>
 
 <para>
-Normally the concentration of a species is determined by its initial concentration and by the reaction kinetics of the reactions it participates in either as a substrate or a product. Newer versions of COPASI also allow the concentration of a species to be determined by a mathematical expression or by providing an ordinary differential equation for its rate of change.
-In order to specify if a species has a constant volume, is determined by reactions
-or if the volume is calculated on the fly according to a mathematical expression,
-the dropdown list called <guilabel>Simulation Type</guilabel> can be used.
-I contains four entries:
+Normally the concentration of a species is determined by its initial concentration and by the reaction kinetics of the reactions it participates in either as a substrate or a product. The reactions are listed at the bottom of the species widget (see above).
+</para>
+<para>
 <table frame="all"><title>Simulation Types</title>
 <tgroup cols="2" align="left" colsep="1" rowsep="1">
 <colspec colwidth="1*" />
@@ -819,7 +823,7 @@ I contains four entries:
 <tbody>
  <row>
    <entry>reactions</entry>
-   <entry> the concentration/amount of the species is determined by the kinetic laws of the reactions that modify the metabolite</entry>
+   <entry> the concentration/amount of the species is determined by the kinetic laws of the reactions that modify the species</entry>
  </row>
  <row>
    <entry>fixed</entry>
@@ -836,13 +840,17 @@ I contains four entries:
 </tbody>
 </tgroup>
 </table>
+Newer versions of COPASI also allow the concentration of a species to be determined by a mathematical expression or by providing an ordinary differential equation for its rate of change.
+In order to specify whether a species has a constant volume, it is determined by reactions, 
+or its volume is calculated on the fly according to a mathematical expression,
+the dropdown list called <guilabel>Simulation Type</guilabel> should be used. It contains four entries listed on the above table.
 </para>
 <para>
-If you want the species to be calculated from a given mathematical expression you select the entry called <emphasis>assignment</emphasis> from the dropdown list. This enables a text field where the mathematical expression can be entered.
+If you want the species to be calculated from a given mathematical expression you select the entry called <emphasis>assignment</emphasis> from the dropdown list. This enables a text field where the mathematical expression can be entered (see below). Likewise if you want the rate of change of the species concentration to be determined by an ordinary differential equation (ode) you select the entry called <emphasis>ode</emphasis> from the dropdown list.
 </para>
 <para>    
 <screenshot>
-<screeninfo>Produced with COPASI Build 25 on MacOS 10.5 on 02/06/2008</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/18/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Species_03.png" format="PNG" scale="50" align="center" />
@@ -851,25 +859,22 @@ If you want the species to be calculated from a given mathematical expression yo
   <imagedata fileref="images/Species_03.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>species widget with assignment rule</phrase>
+   <phrase>Species widget with assignment rule</phrase>
  </textobject>
  <caption>
-  <para>species widget with assignment rule</para>
+  <para>Species widget with assignment rule</para>
  </caption> 
 </mediaobject>
 </screenshot>
 </para>
+<!--
 <para>
 Likewise if you want the rate of change of the species concentration to be determined by an ordinary differential equation (ode) you select the entry called <emphasis>ode</emphasis> from the dropdown list.
 </para>
-<para>
-Not only the transient concentration of a species can be specified as a mathematical expression, but also the initial concentration of the compartment.
-If you want do specify such a mathematical expression for the initial concentration of a species, check the checkbox called <guilabel>Use Initial Expression</guilabel>.
-An initial expression can only be specified if the <guilabel>Simulation Type</guilabel> dropdown list is either set to <emphasis>fixed</emphasis>, <emphasis>reactions</emphasis> or to <emphasis>ode</emphasis>. If the list is set to <emphasis>assignment</emphasis>, the given assignment automatically acts as an initial assignment and there is no need to specify an additional initial assignment.
-</para>
+-->
 <para>    
 <screenshot>
-<screeninfo>Produced with COPASI Build 25 on MacOS 10.5 on 02/06/2008</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/18/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Species_04.png" format="PNG" scale="50" align="center" />
@@ -878,21 +883,24 @@ An initial expression can only be specified if the <guilabel>Simulation Type</gu
   <imagedata fileref="images/Species_04.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>species widget with constant species and initial assignment</phrase>
+   <phrase>Species widget with constant species and initial assignment</phrase>
  </textobject>
  <caption>
-  <para>species widget with constant species and initial assignment</para>
+  <para>Species widget with constant species and initial assignment</para>
  </caption> 
 </mediaobject>
 </screenshot>
 </para>
 <para>
-The mathematical expressions that can be specified for rules and initial assignments may contain the same elements as the expressions used to defined function definitions. For a detailed description of the elements see <xref linkend="addingFunctions" />.
-When it comes to referencing values of other model entities within mathematical expressions, there is a slight difference between the mathematical expression for a rule and the mathematical expression for an initial assignment. The mathematical expression for a rule may only reference transient values of other model entities whereas the mathematical expression for an initial assignment may only reference initial values of other model entities.
+Not only the transient concentration of a species can be specified as a mathematical expression, but also the initial concentration of the compartment.
+If you want to specify such a mathematical expression for the initial concentration of a species, check the checkbox called <guilabel>Use Initial Expression</guilabel>.
+<!-- An initial expression can only be specified if the <guilabel>Simulation Type</guilabel> dropdown list is either set to <emphasis>fixed</emphasis>, <emphasis>reactions</emphasis> or to <emphasis>ode</emphasis>. If the list is set to <emphasis>assignment</emphasis>, the given assignment automatically acts as an initial assignment and there is no need to specify an additional initial assignment.
+-->
+An initial expression can be specified unless the <guilabel>Simulation Type</guilabel> dropdown list is set to <emphasis>assignment</emphasis>. Since the given assignment automatically acts as an initial assignment, there is no need to specify an additional initial assignment.
 </para>
 <para>    
 <screenshot>
-<screeninfo>Produced with COPASI Build 25 on MacOS 10.5 on 02/06/2008</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/18/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Species_05.png" format="PNG" scale="50" align="center" />
@@ -901,13 +909,19 @@ When it comes to referencing values of other model entities within mathematical 
   <imagedata fileref="images/Species_05.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>species widget with ode rule and initial assignment</phrase>
+   <phrase>Species widget with ode rule and initial assignment</phrase>
  </textobject>
  <caption>
-  <para>species widget with ode rule and initial assignment</para>
+  <para>Species widget with ode rule and initial assignment</para>
  </caption> 
 </mediaobject>
 </screenshot>
+</para>
+<para>
+The mathematical expressions that can be specified for rules and initial assignments may contain the same elements as the expressions used to defined function definitions. For a detailed description of the elements see <xref linkend="addingFunctions" />.
+<!-- When it comes to referencing values of other model entities within mathematical expressions, there is a slight difference between the mathematical expression for a rule and that for an initial assignment. The mathematical expression for a rule may only reference transient values of other model entities whereas the mathematical expression for an initial assignment may only reference initial values of other model entities.
+-->
+When it comes to referencing values of other model entities within mathematical expressions, there is a slight difference between the mathematical expression for a rule and that for an initial assignment. The former may only reference transient values of other model entities whereas the latter may only reference initial values of other model entities.
 </para>
 
 </sect1>
@@ -915,10 +929,11 @@ When it comes to referencing values of other model entities within mathematical 
 <title>Reactions</title>
 <para>
 Again adding reactions essentially works the same way as adding
-compartments or species. When you navigate to the
+compartments or species. 
+When you navigate to the
 <guibutton>Reactions</guibutton> branch of the object tree which is
 located under the <guibutton>Model-&gt;Biochemical</guibutton> branch,
-you will see a table with five columns. The first two are again
+you will see a table with five columns. The first two are
 <guilabel>Status</guilabel> and <guilabel>Name</guilabel> of the
 reaction. The third column called <guilabel>Equation</guilabel>
 describes the chemical formula and maybe additional modifiers of the
@@ -927,26 +942,7 @@ reaction which depends on the equation. We will come to this in a
 second. The last column shows the <guilabel>flux</guilabel> through
 this reaction. The flux can not be set by  the user but is calculated
 automatically when you <link linkend="calculatingTrajectory">do a time
-course simulation</link>. 
-</para>
-<para>    
-<screenshot>
-<screeninfo>Produced with COPASI Build 18 on Darwin on 05/18/2006</screeninfo>
-<mediaobject>
- <imageobject>
-  <imagedata fileref="images/Reactions_01.png" format="PNG" scale="50" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/Reactions_01.ps" format="EPS" scale="50" align="center" />
- </imageobject> 
- <textobject>
-   <phrase>reaction table without entries</phrase>
- </textobject>
- <caption>
-  <para>empty reaction table</para>
- </caption> 
-</mediaobject>
-</screenshot>
+course simulation</link>.
 </para>
 <para>
 The easiest way to add a reaction is to type the chemical equation
@@ -975,6 +971,25 @@ separated from the reaction symbols ( "+" , "=" and "->" ) by
 white-spaces. 
 </para>
 </caution>
+<para>    
+<screenshot>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/18/2008</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/Reactions_01.png" format="PNG" scale="50" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/Reactions_01.ps" format="EPS" scale="50" align="center" />
+ </imageobject> 
+ <textobject>
+   <phrase>Reaction table with new entry</phrase>
+ </textobject>
+ <caption>
+  <para>Reaction table with new entry</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
 <para>
 Each new reaction gets a default kinetic which is irreversible mass
 action for reactions that contain a substrate. For reaction that only
@@ -983,7 +998,7 @@ chosen.
 </para>  
 <para>    
 <screenshot>
-<screeninfo>Produced with COPASI Build 18 on Darwin on 05/18/2006</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/18/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Reactions_02.png" format="PNG" scale="50" align="center" />
@@ -992,10 +1007,10 @@ chosen.
   <imagedata fileref="images/Reactions_02.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>dialog for changing reaction parameters</phrase>
+   <phrase>Dialog for changing reaction parameters</phrase>
  </textobject>
  <caption>
-  <para>reaction definition dialog</para>
+  <para>Reaction definition dialog</para>
  </caption> 
 </mediaobject>
 </screenshot>
@@ -1030,7 +1045,9 @@ the rate laws for several reactions. This way if you want to change to
 value of this parameter, you only have to change it in once instead of
 having to change it in every reaction it occurs in
 individually. Parameters that can be used in more than one reaction
-are called global quantities (of type "fixed") in COPASI. How you add
+are called global quantities
+<!-- (of type <emphasis>fixed</emphasis>) --> in COPASI.
+How you add
 a global quantity to your model is described in the section called
 <xref linkend="globalQuantities" />. Let us for the moment assume you
 already added such a global quantity to your model and now want to use
@@ -1052,8 +1069,8 @@ be specified. Chemical equations have a simple schema. First you state
 all the substrates separated by  "+" characters. Please make sure that
 you separate the name of the substrate and the "+" character by at
 least one space character, otherwise COPASI will interpret the "+"
-sign as belonging to the species name. (Having the "+" character
-as part of a species name is allowed in COPASI!) after the list of
+sign as belonging to the speciess name. (Having the "+" character
+as part of a species name is allowed in COPASI !) after the list of
 substrates, you specify either an equals ("=") character if the
 reaction is reversible or the character combination "-&gt;" if the
 reaction is irreversible. This is followed by the list of products
@@ -1086,12 +1103,13 @@ of substance change over time.
 <para>
 E.g. in the reaction A -> B, if A and B are in the same compartment,
 the kinetic function for the reaction returns its result in
-Mol/(l*s). If A and B reside in different compartments, the result is
-returned in Mol/s. (This assumes that your default units are set to
-Mol, l and s.)
+mol/(l*s). If A and B reside in different compartments, the result is
+returned in mol/s. (This assumes that your default units are set to
+mol, l and s.)
 </para>
 </caution>
 </sect1>
+
 <sect1 id="globalQuantities" xreflabel="Global Quantities">
 <title>Global Quantities</title>
 <para>
@@ -1099,18 +1117,18 @@ In the model tree right below the <guibutton>Reaction</guibutton>
 branch is the <guibutton>Global Quantities</guibutton> branch. If you
 select this branch, you see a table with all the global quantities
 that have been defined in your model. When you start a new model this
-table, just like all the others so far, is empty. The table has six
+table, just like all the others so far, is empty (see below). The table has eight
 columns and the ones named <guilabel>Status</guilabel> and
 <guilabel>Name</guilabel> should by now be already familiar. The third
 column specifies the type of the global quantity. There are three
-alternatives for that: <emphasis>fixed</emphasis> means the global quantity has a
-constant value (that can be used as a global parameter). <emphasis>assignment</emphasis>
-means the value of the quantity is calculated from a mathematical
-expression. If the type is <emphasis>ode</emphasis> the quantity is treated as a variable
-of the model and a differential equation for this variable can be
+alternatives for that: 
+<emphasis>fixed</emphasis> means the global quantity has a
+constant value (that can be used as a global parameter), 
+<emphasis>assignment</emphasis> means the value of the quantity is calculated from a mathematical expression, and <emphasis>ode</emphasis>.
+If the type is <emphasis>ode</emphasis> the quantity is treated as a variable of the model and a differential equation for this variable can be
 provided. The forth and fifth column contain the initial and transient
-value of the global quantity. The sixth column contains the
-mathematical expression if the type is not <emphasis>fixed</emphasis>.
+value of the global quantity as well as the rate of change of the value is displayed on the sixth column. 
+The last two columns contains the mathematical expressions which may be required as long as the type is not <emphasis>fixed</emphasis>.
 </para>
 <para>
 As with all other model elements, you can choose how you want to add a
@@ -1119,49 +1137,48 @@ an empty cell of the column termed <guilabel>Name</guilabel>.
 </para>
 <para>
 <screenshot>
-<screeninfo>Produced with COPASI Build 25 on MacOS X 10.5 on 02/06/2008</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/18/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/GlobalQuantities_01.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>global quantities table with three entries</phrase>
+   <phrase>Global quantities table with three entries</phrase>
  </textobject>
  <caption>
-  <para>global quantities table with three entries</para>
+  <para>Global quantities table with three entries</para>
  </caption> 
 </mediaobject>
 </screenshot>
 </para>
 <para>
 If you click on the name of a global quantity in the tree on the left
-or double click on a row of the table the information for only one of
-the global quantities is displayed. 
+or double click on a row of the table only the information correlated with 
+the chosen global quantity will be displayed. 
 </para>
 <para>
 <screenshot>
-<screeninfo>Produced with COPASI Build 25 on MacOS X 10.5 on 02/06/2008</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/18/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/GlobalQuantities_02.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>global quantity user interface with ode rule</phrase>
+   <phrase>Global quantity user interface with ode rule</phrase>
  </textobject>
  <caption>
-  <para>global quantity user interface with ode rule</para>
+  <para>Global quantity user interface with ode rule</para>
  </caption> 
 </mediaobject>
 </screenshot>
 </para>
-
 <para>
-Just as compartments and species, parameter values don't have to have a constant
+Just as compartments and species, parameter values do not have to have a constant
 but can be reassigned during e.g. a time course simulation depending 
-the values of one or more model entities. In order to specify if a parameter has a constant value 
-or if the value is calculated on the fly according to a mathematical expression,
-the dropdown list called <guilabel>Simulation Type</guilabel> can be used.
-I contains three entries:
+the values of one or more model entities. In order to specify whether a parameter has a constant value 
+or the value is calculated on the fly according to a mathematical expression,
+the dropdown list called <guilabel>Simulation Type</guilabel> should be used.
+The dropdown list contains three following entries:
 <table frame="all"><title>Simulation Types</title>
 <tgroup cols="2" align="left" colsep="1" rowsep="1">
 <colspec colwidth="1*" />
@@ -1190,11 +1207,16 @@ I contains three entries:
 </table>
 </para>
 <para>
-If you want the parameters value to be calculated from a given mathematical expression you select the entry called <emphasis>assignment</emphasis> from the dropdown list. This enables a text field where the mathematical expression can be entered.
+If you want the parameters value to be calculated from a given mathematical expression you select the entry called <emphasis>assignment</emphasis> from the dropdown list. This enables a text field where the mathematical expression can be entered. Likewise if you want the rate of change of the parameters value to be determined by an ordinary differential equation (ode) you select the entry called <emphasis>ode</emphasis> from the dropdown list.
+</para>
+<para>
+Not only the transient value of a parameter can be specified as a mathematical expression, but also the initial value of the parameter.
+If you want do specify such a mathematical expression for the initial volume of a compartment, check the checkbox called <guilabel>Use Initial Expression</guilabel>.
+An initial expression can only be specified if the <guilabel>Simulation Type</guilabel> dropdown list is either set to <emphasis>fixed</emphasis> or to <emphasis>ode</emphasis>. If the list is set to <emphasis>assignment</emphasis>, the given assignment automatically acts as an initial assignment and there is no need to specify an additional initial assignment.
 </para>
 <para>    
 <screenshot>
-<screeninfo>Produced with COPASI Build 25 on MacOS 10.5 on 02/06/2008</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/18/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/GlobalQuantities_03.png" format="PNG" scale="50" align="center" />
@@ -1203,39 +1225,58 @@ If you want the parameters value to be calculated from a given mathematical expr
   <imagedata fileref="images/GlobalQuantities_03.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>global quantity widget with an initial assignment</phrase>
+   <phrase>Global quantity widget with an initial assignment</phrase>
  </textobject>
  <caption>
-  <para>global quantity widget with an initial assignment</para>
+  <para>Global quantity widget with an initial assignment</para>
  </caption> 
 </mediaobject>
 </screenshot>
 </para>
 <para>
-Likewise if you want the rate of change of the parameters value to be determined by an ordinary differential equation (ode) you select the entry called <emphasis>ode</emphasis> from the dropdown list.
-</para>
-<para>
-Not only the transient value of a parameter can be specified as a mathematical expression, but also the initial value of the parameter.
-If you want do specify such a mathematical expression for the initial volume of a compartment, check the checkbox called <guilabel>Use Initial Expression</guilabel>.
-An initial expression can only be specified if the <guilabel>Simulation Type</guilabel> dropdown list is either set to <emphasis>fixed</emphasis> or to <emphasis>ode</emphasis>. If the list is set to <emphasis>assignment</emphasis>, the given assignment automatically acts as an initial assignment and there is no need to specify an additional initial assignment.
-</para>
-<para>
 The mathematical expressions that can be specified for rules and initial assignments may contain the same elements as the expressions used to defined function definitions. For a detailed description of the elements see <xref linkend="addingFunctions" />.
-When it comes to referencing values of other model entities within mathematical expressions, there is a slight difference between the mathematical expression for a rule and the mathematical expression for an initial assignment. The mathematical expression for a rule may only reference transient values of other model entities whereas the mathematical expression for an initial assignment may only reference initial values of other model entities.
+When it comes to referencing values of other model entities within mathematical expressions, there is a slight difference between the mathematical expression for a rule and that for an initial assignment. 
+<!--
+The mathematical expression for a rule may only reference transient values of other model entities whereas the mathematical expression for an initial assignment may only reference initial values of other model entities.
+-->
+The former may only reference transient values of other model entities whereas the latter may only reference initial values of other model entities.
 </para>
 
 <para>
 Even so COPASI does not support building models from ordinary
 differential equations, one can specify a model as a set of
 differential equations using a set of global parameters which have the
-simulation type ode.
+type ode.
 </para>
 </sect1>
+
 <sect1 id="parameterView" xreflabel="Parameter View">
 <title>Parameter View</title>
 <para>
+The parameter view widget can be displayed by selecting the leaf
+called <guilabel>Parameter Overview</guilabel> on the <guibutton>Model-&gt;Biochemical</guibutton> branch (see below).
+<!--which is located right underneath the <guilabel>Global
+Quantities</guilabel> leaf. --> This widget allows you to view and edit
+all parameters of the model in one place. This saves you from moving
+around the model tree if you e.g. first have to edit the initial
+concentrations for some species and afterward parameters of one or
+more reactions. The view shows you the initial concentrations for the
+species at the top followed by the initial time and the volumes of
+all the compartments and at the bottom the kinetic parameters of all
+reactions. 
+</para>
+<para>
+In order to change a value, you double click on it which
+lets you input a new value. On hitting the return key or clicking
+somewhere else, the new value is not written to the object directly,
+but a '*' character appears in front of the name of the changed
+parameter. If you now leave this widget or press the <guibutton>Commit</guibutton> button at
+the bottom of the dialog, the new value is written to the
+corresponding object in the model. 
+</para>
+<para>
 <screenshot>
-<screeninfo>Produced with COPASI CVS on Mac OS X on 03/31/2005</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/18/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Parameters_01.png" format="PNG" scale="50" align="center" />
@@ -1252,38 +1293,17 @@ simulation type ode.
 </mediaobject>
 </screenshot>
 </para>
-<para>
-The parameter view widget can be displayed by selecting the leaf
-called <guilabel>Parameter overview</guilabel> on the Model branch
-which is located right underneath the <guilabel>Global
-Quantities</guilabel> leaf. This widget allows you to view and edit
-all parameters of the model in one place. This saves you from moving
-around the model tree if you e.g. first have to edit the initial
-concentrations for some species and afterward parameters of one or
-more reactions. The view shows you the initial concentrations for the
-species at the top followed by the initial time and the volumes of
-all the compartments and at the bottom the kinetic parameters of all
-reactions. In order to change some value, you double click on it which
-lets you input a new value. On hitting the return key or clicking
-somewhere else, the new value is not written to the object directly,
-but a '*' character appears in front of the name of the changed
-parameter. If you now leave this widget or press the commit button at
-the bottom of the dialog, the new value is written to the
-corresponding object in the model. 
-</para>
 </sect1>
 
 <sect1 id="addingFunctions" xreflabel="User Defined Functions">
 <title>User Defined Functions</title>
 <para>
 COPASI already defines a large set of commonly used kinetic functions
-to choose from. Nevertheless sometimes you will have to define your
-own kinetic function to solve a specific problem. The list of defined
-functions is located at the last branch in the object tree.
+to choose from. The list of defined functions is located at the last branch in the object tree. 
 </para>
 <para>
 <screenshot>
-<screeninfo>Produced with COPASI Build 18 on MacOS X on 05/19/2006</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/18/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Functions_01.png" format="PNG" scale="50" align="center" />
@@ -1292,17 +1312,25 @@ functions is located at the last branch in the object tree.
   <imagedata fileref="images/Functions_01.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>function table with predefined functions</phrase>
+   <phrase>Function table with predefined functions</phrase>
  </textobject>
  <caption>
-  <para>function table</para>
+  <para>Function table</para>
  </caption> 
 </mediaobject>
 </screenshot>
 </para>
 <para>
+Nevertheless sometimes you need to define your own kinetic function to solve a specific problem. COPASI enables you to add a new function either by double clicking on an empty table row or by clicking on the <guibutton>New</guibutton> button on the bottom of the screen. 
+In the function definition dialog, you give your function a name in the <guilabel>Function Name</guilabel> field. 
+This name has to be unique within the list of defined functions. Next, you
+have to specify a formula that defines the reaction rate of your
+kinetic function in the <guilabel>Formula</guilabel> field. The
+function string only covers the right side of the rate function. 
+</para>
+<para>
 <screenshot>
-<screeninfo>Produced with COPASI Build 18 on MacOS X on 05/19/2006</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/18/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Functions_02.png" format="PNG" scale="50" align="center" />
@@ -1311,17 +1339,86 @@ functions is located at the last branch in the object tree.
   <imagedata fileref="images/Functions_02.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>dialog for the definition of functions</phrase>
+   <phrase>Dialog for the definition of functions</phrase>
  </textobject>
  <caption>
-  <para>function definition dialog</para>
+  <para>Function definition dialog</para>
  </caption> 
 </mediaobject>
 </screenshot>
 </para>
 <para>
+So for Michaelis-W-Enzyme which is defined as <!-- <phrase -->
+<!-- role="math">v=(V*E*S)/(Km+S)</phrase> --> 
+  <inlineequation><mml:math>
+    <mml:mrow>
+      <mml:mi>v</mml:mi>
+      <mml:mo>=</mml:mo>
+      <mml:mrow>
+        <mml:mo>(</mml:mo>
+		<mml:mi>V</mml:mi>
+        <mml:mo>*</mml:mo>
+		<mml:mi>E</mml:mi>
+        <mml:mo>*</mml:mo>
+		<mml:mi>S</mml:mi>
+        <mml:mo>)</mml:mo>
+		<mml:mrow>
+          <mml:mo>/</mml:mo> 
+          <mml:mrow>
+            <mml:mo>(</mml:mo>
+            <mml:mrow>
+              <mml:msub>
+                <mml:mi>K</mml:mi>
+                <mml:mi>m</mml:mi>
+              </mml:msub>
+              <mml:mo>+</mml:mo>
+              <mml:mi>S</mml:mi>
+            </mml:mrow>    
+            <mml:mo>)</mml:mo>    
+          </mml:mrow>
+        </mml:mrow>
+      </mml:mrow>
+    </mml:mrow>
+  </mml:math></inlineequation>
+ you would enter <!-- <phrase role="math">(V*E*S)/(Km+S)</phrase> -->
+  <inlineequation><mml:math>
+    <mml:mrow>
+      <mml:mi>v</mml:mi>
+      <mml:mo>=</mml:mo>
+      <mml:mrow>
+        <mml:mo>(</mml:mo>
+		<mml:mi>V</mml:mi>
+        <mml:mo>*</mml:mo>
+		<mml:mi>E</mml:mi>
+        <mml:mo>*</mml:mo>
+		<mml:mi>S</mml:mi>
+        <mml:mo>)</mml:mo>
+		<mml:mrow>
+          <mml:mo>/</mml:mo> 
+          <mml:mrow>
+            <mml:mo>(</mml:mo>
+            <mml:mrow>
+              <mml:msub>
+                <mml:mi>K</mml:mi>
+                <mml:mi>m</mml:mi>
+              </mml:msub>
+              <mml:mo>+</mml:mo>
+              <mml:mi>S</mml:mi>
+            </mml:mrow>    
+            <mml:mo>)</mml:mo>    
+          </mml:mrow>
+        </mml:mrow>
+      </mml:mrow>
+    </mml:mrow>
+  </mml:math></inlineequation>
+into the <guilabel>Formula</guilabel> field. While you are typing the
+formula, COPASI already tries to parse the equation and extract the
+parameters. All parameters that COPASI finds are listed in the
+<guilabel>Parameters</guilabel> table. 
+</para>
+<para>
 <screenshot>
-<screeninfo>Produced with COPASI Build 18 on MacOS X on 05/19/2006</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/18/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Functions_03.png" format="PNG" scale="50" align="center" />
@@ -1330,102 +1427,41 @@ functions is located at the last branch in the object tree.
   <imagedata fileref="images/Functions_03.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>function definition dialog with committed function</phrase>
+   <phrase>Function definition dialog with committed function</phrase>
  </textobject>
  <caption>
-  <para>function definition dialog with graphical display of the function</para>
+  <para>Function definition dialog with graphical display of the function</para>
  </caption> 
 </mediaobject>
 </screenshot>
 </para>
 <para>
-You can add a new function either by double clicking on an empty table
-row or by clicking on the <guibutton>New</guibutton> button on the
-bottom of the screen. In the function definition dialog, you give your
-function a name in the <guilabel>Function Name</guilabel> field. This
-name has to be unique within the list of defined functions. Next, you
-have to specify a formula that defines the reaction rate of your
-kinetic function in the <guilabel>Formula</guilabel> field. The
-function string only covers the right side of the rate function. So
-for Michaelis-Menten which is defined as <!-- <phrase -->
-<!-- role="math">v=V*(S/(Km+S))</phrase> --> 
-  <inlineequation><mml:math>
-    <mml:mrow>
-      <mml:mi>v</mml:mi>
-      <mml:mo>=</mml:mo>
-      <mml:mrow>
-        <mml:mi>V</mml:mi>
-        <mml:mo>*</mml:mo>
-        <mml:mrow>
-          <mml:mo>(</mml:mo>
-            <mml:mrow>
-             <mml:mi>S</mml:mi>
-             <mml:mo>/</mml:mo> 
-              <mml:mrow>
-                <mml:mo>(</mml:mo>
-                  <mml:mrow>
-                    <mml:msub>
-                      <mml:mi>K</mml:mi>
-                      <mml:mi>m</mml:mi>
-                    </mml:msub>
-                    <mml:mo>+</mml:mo>
-                    <mml:mi>S</mml:mi>
-                  </mml:mrow>    
-                <mml:mo>)</mml:mo>    
-              </mml:mrow>
-            </mml:mrow>      
-          <mml:mo>)</mml:mo>
-        </mml:mrow>
-      </mml:mrow>
-    </mml:mrow>
-  </mml:math></inlineequation>
- you would enter <!-- <phrase role="math">V*(S/Km+S))</phrase> -->
-  <inlineequation><mml:math>
-    <mml:mrow>
-      <mml:mi>V</mml:mi>
-      <mml:mo>*</mml:mo>
-      <mml:mrow>
-        <mml:mo>(</mml:mo>
-          <mml:mrow>
-            <mml:mi>S</mml:mi>
-	    <mml:mo>/</mml:mo>
-            <mml:mrow>
-              <mml:mo>(</mml:mo>
-                <mml:mrow>
-                  <mml:msub>
-                    <mml:mi>K</mml:mi>
-                    <mml:mi>m</mml:mi>
-                  </mml:msub>
-                  <mml:mo>+</mml:mo>
-                  <mml:mi>S</mml:mi>
-                </mml:mrow>    
-              <mml:mo>)</mml:mo>    
-            </mml:mrow>
-          </mml:mrow>      
-        <mml:mo>)</mml:mo>
-      </mml:mrow>
-    </mml:mrow>
-  </mml:math></inlineequation>
-into the <guilabel>Formula</guilabel> field. While you are typing the
-formula, COPASI already tries to parse the equation and extract the
-parameters. All parameters COPASI finds are listed in the
-<guilabel>Parameters</guilabel> table below the
-<guilabel>Formula</guilabel> field. In COPASI parameters can have
+In COPASI parameters can have
 arbitrary names, there are only a few rules that one has to be aware
 of. If a parameter starts with a letter or underscore character and
 contains only letters, digits and underscore characters all is well,
 if however the parameter name contains other characters, the whole
 parameter name has to be enclosed in double quotes. If the parameter
 name contains double quotes or backslashes those have to be escaped by
-a backslash. Per default, all variables found are defined as being
-<emphasis>Parameters</emphasis>. You have to specify which of them
-really are parameters and which are substrates, products or
-modifiers. This mapping of variable names to a specific function
+a backslash. 
+</para>
+<para>
+<!-- Per default all variables found are defined as being
+<emphasis>Parameters</emphasis>. You have to specify the correct type of variables by selecting one from the dropdown list called <guilabel>Description</guilabel>. -->
+<!-- You have to specify which of them
+really are parameters and which are substrates, products,
+modifiers, time or volume by selecting one from the dropdown list called <guilabel>Description</guilabel>. -->
+As all variables found are defined, per default, as
+<emphasis>Parameters</emphasis>, you should specify their correct types by selecting one from the dropdown list <guilabel>Description</guilabel>.
+<!-- This mapping of variable names to a specific function
 within the equation also defines the type of reactions this function
-can be used for. E.g. if you define your function to contain two
+can be used for. -->
+However, the specific type of variables <!-- within the formula equation --> will affect to the type of reactions the function can be used for.
+E.g, if you define the function to contain two
 substrates and a modifier, you can later only use it for reactions
-that really do have two substrates. <note><para>The restrictions on
-the number of modifiers is not as strict since substrates and
+that really do have two substrates.
+<note><para>The restrictions on
+the number of modifiers is not strict since substrates and
 reactants could act as modifiers. So the above mentioned rate law
 could be used on reactions that do not explicitly specify a
 modifier.</para></note> You can also see this in the
@@ -1444,7 +1480,7 @@ substrates, you will see that the <guilabel>Application
 restrictions</guilabel> say that there must be exactly two substrates
 in the reaction for that kinetics to be applicable. After defining
 this function, you will be able to use it for all chemical reaction
-that have exactly two substrates. Last, but not least, you have to
+that have exactly two substrates. Last but not least, you have to
 define whether this function can be applied to reversible,
 irreversible or both reaction types by selecting the
 <guilabel>reversible</guilabel>, <guilabel>irreversible</guilabel> or
@@ -1470,8 +1506,7 @@ You have to specify the correct number of arguments to the function called.
 You have to specify the correct argument types to the function
 call. I.e. if you call "Henry-Michaelis-Menten (irreversible)" from
 within another function, you have to make sure that the first call
-argument has a usage of "Substrate" and the other two have the usage
-"Parameter". 
+argument has a usage of <emphasis>Substrate</emphasis> and the other two have the usage <emphasis>Parameter</emphasis>. 
 </para>
 </listitem>
 <listitem>
@@ -1544,7 +1579,7 @@ used to create user defined functions are the following:
 </table>
 </para>
 <para>
-<table frame="all"><title>Misc. Functions</title>
+<table frame="all"><title>Miscellaneous Functions</title>
 <tgroup cols="2" align="left" colsep="1" rowsep="1">
 <colspec colwidth="1*" />
 <colspec colwidth="2*" />
@@ -1582,10 +1617,6 @@ used to create user defined functions are the following:
  <row>
    <entry>exp / EXP</entry>
    <entry>exponent function</entry>
- </row>
- <row>
-   <entry>sqrt / SQRT</entry>
-   <entry>square root</entry>
  </row>
 </tbody>
 </tgroup>
@@ -1785,7 +1816,7 @@ used to create user defined functions are the following:
 
 </para>
 <para>
-Basic function names can be written with either all lowercase letters
+The functions name can be written with either all lowercase letters
 or all letters uppercase. Mixing of upper and lowercase letters is not
 allowed and will lead to errors. 
 </para>
@@ -1891,26 +1922,8 @@ COPASI:
 <sect1 id="usingSliders" xreflabel="Sliders">
 <title>Sliders</title>
 <para>
-Sliders are user interface elements that let the user change model
-values without having to go to the corresponding dialog first. This
-way the user can change certain model values and immediately see the
-result this has on e.g. a time course simulation. The use of sliders
-is not limited to the time course task, but they can also be used for
-the steady state task and the metabolic control analysis.
-</para>
-<para>
-Per default, the slider dialog is hidden, if you want it to be
-displayed, you have to activate it by toggling the corresponding menu
-entry in the <guimenu>tools</guimenu> menu or through the slider
-button in the tool-bar. Depending on what element is selected in the
-object tree, the dialog will be disabled and a text will be displayed
-within the dialog that tells you so. If you select a task (or an
-element below the task) that supports sliders, the sliders dialog will
-be enabled.
-</para>
-<para>
 <screenshot>
-<screeninfo>Produced with COPASI Build 18 on MacOS X on 05/19/2006</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/19/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Sliders_01.png" format="PNG" scale="30" align="center" />
@@ -1926,6 +1939,24 @@ be enabled.
  </caption> 
 </mediaobject>
 </screenshot>
+</para>
+<para>
+Sliders are user interface elements that let the user change model
+values without having to go to the corresponding dialog first. This
+way the user can change certain model values and immediately see the
+result this has on e.g. a time course simulation. The use of sliders
+is not limited to the <guibutton>Time Course</guibutton> task, but they can also be used for
+the <guibutton>Steady-State</guibutton> task and the <guibutton>Metabolic Control Analysis</guibutton>.
+</para>
+<para>
+Per default the slider dialog is hidden, if you want it to be
+displayed, you have to activate it by toggling the corresponding menu
+entry in the <guimenu>Tools</guimenu> menu or through the <guibutton>slider</guibutton>
+button in the tool-bar. Depending on what element is selected in the
+object tree, the dialog will be disabled and a text will be displayed
+within the dialog that tells you so. If you select a task (or an
+element below the task) that supports sliders, the sliders dialog will
+be enabled.
 </para>
 <!-- Could not reproduce that with the current version
 <caution><para>
@@ -1943,19 +1974,19 @@ slider dialog. To edit the parameters of an already defined slider,
 just click on the <guibutton>edit</guibutton> button, which is located
 on the right side of the slider towards the bottom. If you no longer
 need a slider you have defined, you can close it by clicking on the
-<guibutton>close</guibutton> button which is the top button on the
-right side of the slider. Alternatively you can now add and modify
+<guibutton>remove</guibutton> button which is the top button on the
+right side of the slider. Alternatively you can add or modify the
 existing sliders via a context menu. The context menu can be activated
 with the right mouse button (CTRL + Mouse button for single button
 mice on Macs!). If you right click on an existing slider, the menu
-will offer the possibilities to <guisubmenu>delete</guisubmenu> this
+will offer the possibilities to <guisubmenu>remove</guisubmenu> this
 slider or to <guisubmenu>edit</guisubmenu> it. If you right click into
 the dialog window where there is no slider, you will be offered the
 possibility to define a new slider.
 </para>
 <para>
 <screenshot>
-<screeninfo>Produced with COPASI CVS on Mac OS X on 05/19/2006</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/19/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Sliders_02.png" format="PNG" scale="50" align="center" />
@@ -1964,16 +1995,16 @@ possibility to define a new slider.
   <imagedata fileref="images/Sliders_02.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>basic dialog for the definition of a slider</phrase>
+   <phrase>Basic dialog for the definition of a slider</phrase>
  </textobject>
  <caption>
-  <para>basic slider definition dialog</para>
+  <para>Basic slider definition dialog</para>
  </caption> 
 </mediaobject>
 </screenshot>
 </para>
 <para>
-Once you are in the dialog for the definition of a new slider, you
+Once you are in the dialog for the definition of a new slider (see above), you
 have to choose an object to manipulate via the slider. This object can
 be selected from the selection dialog that pops up when you click on
 the <guibutton>choose object</guibutton> button. The selection tree is
@@ -1989,7 +2020,7 @@ combination with plots this is a very powerful way to examine the
 behavior of your model.
 </para>
 <para>
-After you have selected an object, you can set the parameters for the
+After selecting an object, you can set the parameters for the
 slider. You specify the range the slider has to cover in the
 <guilabel>Minimum Value</guilabel> and <guilabel>Maximum
 Value</guilabel> fields. Additionally you can specify if the slider
@@ -2004,7 +2035,7 @@ in a time series, if you choose such an object for a slider, the
 slider will only be available for this task.
 </para><para>
 <screenshot>
-<screeninfo>Produced with COPASI CVS on Mac OS X on 05/19/2006</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/19/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Sliders_03.png" format="PNG" scale="50" align="center" />
@@ -2013,24 +2044,24 @@ slider will only be available for this task.
   <imagedata fileref="images/Sliders_03.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>extended dialog for the definition of a slider</phrase>
+   <phrase>Extended dialog for the definition of a slider</phrase>
  </textobject>
  <caption>
-  <para>extended slider definition dialog</para>
+  <para>Extended slider definition dialog</para>
  </caption> 
 </mediaobject>
 </screenshot>
 </para><para>
 At the bottom of the dialog there is a button labeled
 <guilabel>Advanced</guilabel>. If you click on this button more
-options that influence the sliders behavior will show up. Clicking the
+options that influence the sliders behavior will show up (see above). Clicking the
 button a second time will hide these options again. The advanced
 options contain mostly fields that let you modify how many steps the
 slider has (see explanation below). The <guilabel>Object
 Value</guilabel> field determines the current value of the object that
-is associated with the slider. In the <guilabel>Number of minor
-ticks</guilabel> field you specify how many minor ticks your slider
-will have. And in the <guilabel>Tick-size factor</guilabel> field you
+is associated with the slider. In the <guilabel>Number of Minor
+Ticks</guilabel> field you specify how many minor ticks your slider
+will have. And in the <guilabel>Ticksize factor</guilabel> field you
 specify how many minor ticks make a major tick. Major ticks can be
 used to coarsely go through the range of the slider whereas minor
 ticks allow you to step through the range in a more fine grained
@@ -2062,7 +2093,7 @@ the slider dialog.
 </para>
 <para>
 <screenshot>
-<screeninfo>Produced with COPASI CVS on Mac OS X on 05/19/2006</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/19/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Sliders_04.png" format="PNG" scale="50" align="center" />
@@ -2071,17 +2102,17 @@ the slider dialog.
   <imagedata fileref="images/Sliders_04.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>slider dialog with three sliders</phrase>
+   <phrase>Slider dialog with three sliders</phrase>
  </textobject>
  <caption>
-  <para>slider dialog with three sliders</para>
+  <para>Slider dialog with three sliders</para>
  </caption> 
 </mediaobject>
 </screenshot>
 </para>
 <para>
 Each slider shows the name of the object, the current value and the
-range in its label. If the current value of the slider is outside of
+range in its label (see above). If the current value of the slider is outside of
 the defined range, a corresponding warning will be shown. The slider
 dialog has a check box called <guilabel>update
 automatically</guilabel> if this box is checked, COPASI will run the
@@ -2132,30 +2163,6 @@ from the <guimenu>help</guimenu> menu. The corresponding menu entry is
 called <guimenuitem>Simple Wizard</guimenuitem>.
 </para>
 <para>
-<screenshot>
-<screeninfo>Produced with COPASI Build 18 on MacOS X on 05/19/2006</screeninfo>
-<mediaobject>
- <imageobject>
-  <imagedata fileref="images/Wizard_01.png" format="PNG" scale="50" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/Wizard_01.ps" format="EPS" scale="50" align="center" />
- </imageobject> 
- <textobject>
-   <phrase>tutorial wizard dialog screenshot</phrase>
- </textobject>
- <caption>
-  <para>tutorial wizard</para>
- </caption> 
-</mediaobject>
-</screenshot>
-</para>
-<para>
-The wizard leads you in six steps from creating a model to doing a
-time course simulation of the model and plotting the results of the
-time course.
-</para>
-<para>
 On the left side of the wizard there are six buttons that correspond
 to the six steps. When you first open the wizard, step one is selected
 and the widget on the right shows some documentation that you should
@@ -2165,8 +2172,32 @@ corresponds to step 2, or you can click the
 <guibutton>forward</guibutton> button which will always bring you to
 the next step. If you would like to reread something from an earlier
 step, you can move to the specific step with the buttons or use the
-<guibutton>forward</guibutton> and <guibutton>backward</guibutton>
+<guibutton>forward</guibutton> and <guibutton>back</guibutton>
 buttons to navigate. 
+</para>
+<para>
+The wizard leads you in six steps from creating a model to doing a
+time course simulation of the model and plotting the results of the
+time course.
+</para>
+<para>
+<screenshot>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/28/2008</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/Wizard_01.png" format="PNG" scale="50" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/Wizard_01.ps" format="EPS" scale="50" align="center" />
+ </imageobject> 
+ <textobject>
+   <phrase>Tutorial wizard dialog screenshot</phrase>
+ </textobject>
+ <caption>
+  <para>Tutorial wizard</para>
+ </caption> 
+</mediaobject>
+</screenshot>
 </para>
 </sect1>
 </chapter>
@@ -2245,7 +2276,7 @@ can be created.
 </para>
 <para>
 <screenshot>
-<screeninfo>Produced with COPASI Build 18 on MacOS X on 05/19/2006</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/28/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/OutputAssistant_01.png" format="PNG" scale="50" align="center" />
@@ -2257,7 +2288,7 @@ can be created.
    <phrase>Output Assistant Window</phrase>
  </textobject>
  <caption>
-  <para>output assistant selection dialog</para>
+  <para>Output assistant selection dialog</para>
  </caption> 
 </mediaobject>
 </screenshot>
@@ -2294,7 +2325,7 @@ in the sections about the different tasks.
 </para>
 <para>
 <screenshot>
-<screeninfo>Produced with COPASI Build 18 on Linux on 05/18/2006</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/28/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Reports_01.png" format="PNG" scale="50" align="center" />
@@ -2303,7 +2334,7 @@ in the sections about the different tasks.
   <imagedata fileref="images/Reports_01.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>report table with default reports</phrase>
+   <phrase>Report table with default reports</phrase>
  </textobject>
  <caption>
   <para>Report Table with default Reports</para>
@@ -2364,7 +2395,7 @@ dialog.
 </para>  
 <para>
 <screenshot>
-<screeninfo>Produced with COPASI Build 18 on WIN32 on 05/18/2006</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/28/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Reports_02.png" format="PNG" scale="50" align="center" />
@@ -2373,10 +2404,10 @@ dialog.
   <imagedata fileref="images/Report_SimpleSelectionDialog.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>simple selection dialog</phrase>
+   <phrase>Simple selection dialog</phrase>
  </textobject>
  <caption>
-  <para>simple selection dialog</para>
+  <para>Simple selection dialog</para>
  </caption> 
 </mediaobject>
 </screenshot>
@@ -2415,7 +2446,7 @@ subtree is selected.
 </para>
 <para>
 <screenshot>
-<screeninfo>Produced with COPASI Build 18 on WIN32 on 05/18/2006</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/28/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Reports_03.png" format="PNG" scale="50" align="center" />
@@ -2424,10 +2455,10 @@ subtree is selected.
   <imagedata fileref="images/Reports_03.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>object browser dialog expert mode</phrase>
+   <phrase>Object browser dialog expert mode</phrase>
  </textobject>
  <caption>
-  <para>object browser dialog expert mode</para>
+  <para>Object browser dialog expert mode</para>
  </caption> 
 </mediaobject>
 </screenshot>
@@ -2472,7 +2503,7 @@ dialog.
 </para>
 <para>
 <screenshot>
-<screeninfo>Produced with COPASI Build 18 on Linux on 05/18/2006</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/28/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Reports_04.png" format="PNG" scale="50" align="center" />
@@ -2481,10 +2512,10 @@ dialog.
   <imagedata fileref="images/Reports_04.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>report definition dialog</phrase>
+   <phrase>Report definition dialog</phrase>
  </textobject>
  <caption>
-  <para>report definition dialog</para>
+  <para>Report definition dialog</para>
  </caption> 
 </mediaobject>
 </screenshot></para>
@@ -2519,7 +2550,7 @@ deactivate this check box.
 </para>
 <para>
 <screenshot>
-<screeninfo>Produced with COPASI Build 18 on Linux on 05/18/2006</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/28/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Reports_05.png" format="PNG" scale="50" align="center" />
@@ -2528,10 +2559,10 @@ deactivate this check box.
   <imagedata fileref="images/Reports_05.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>advanced report definition dialog</phrase>
+   <phrase>Advanced report definition dialog</phrase>
  </textobject>
  <caption>
-  <para>advanced report definition</para>
+  <para>Advanced report definition</para>
  </caption> 
 </mediaobject>
 </screenshot></para>
@@ -2605,7 +2636,7 @@ you define a plot as being active will be explained below.
 </para>
 <para>
 <screenshot>
-<screeninfo>Produced with COPASI Build 18 on Mac OS X on 05/19/2006</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/28/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Plots_01.png" format="PNG" scale="50" align="center" />
@@ -2614,17 +2645,17 @@ you define a plot as being active will be explained below.
   <imagedata fileref="images/Plots_01.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>empty plot widget</phrase>
+   <phrase>Empty plot widget</phrase>
  </textobject>
  <caption>
-  <para>empty plot widget</para>
+  <para>Empty plot widget</para>
  </caption> 
 </mediaobject>
 </screenshot>
 </para>
 <para>
 <screenshot>
-<screeninfo>Produced with COPASI Build 18 on Mac OS X on 05/19/2006</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/28/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Plots_03.png" format="PNG" scale="50" align="center" />
@@ -2633,17 +2664,17 @@ you define a plot as being active will be explained below.
   <imagedata fileref="images/Plots_03.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>selection dialog with some items selected</phrase>
+   <phrase>Selection dialog with some items selected</phrase>
  </textobject>
  <caption>
-  <para>simple selection dialog with selected items</para>
+  <para>Simple selection dialog with selected items</para>
  </caption> 
 </mediaobject>
 </screenshot>
 </para>
 <para>
 <screenshot>
-<screeninfo>Produced with COPASI Build 18 on MacOS X on 05/19/2006</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/28/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Plots_04.png" format="PNG" scale="50" align="center" />
@@ -2652,10 +2683,10 @@ you define a plot as being active will be explained below.
   <imagedata fileref="images/Plots_04.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>expert selection dialog for curve objects</phrase>
+   <phrase>Expert selection dialog for curve objects</phrase>
  </textobject>
  <caption>
-  <para>selection dialog in expert mode</para>
+  <para>Selection dialog in expert mode</para>
  </caption> 
 </mediaobject>
 </screenshot>
@@ -2723,7 +2754,7 @@ tree.
 </para>
 <para>
 <screenshot>
-<screeninfo>Produced with COPASI Build 18 on MacOS X on 05/19/2006</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/28/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/SteadyStateTask_01.png" format="PNG" scale="50" align="center" />
@@ -2732,10 +2763,10 @@ tree.
   <imagedata fileref="images/SteadyStateTask_01.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>dialog for doing calculating a stability analysis</phrase>
+   <phrase>Dialog for doing calculating a stability analysis</phrase>
  </textobject>
  <caption>
-  <para>steady state task dialog</para>
+  <para>Steady state task dialog</para>
  </caption> 
 </mediaobject>
 </screenshot></para>
@@ -2745,7 +2776,7 @@ influence the way the steady state analysis is calculated. First of
 all, you can decide whether COPASI should calculate the Jacobian
 matrix and/or do a stability analysis as well by checking the
 corresponding check box. The <guilabel>executable</guilabel> check box
-is used to instruct the commandline version CopasiSE to run this task
+is used to instruct the commandline version COPASISE to run this task
 if run on the corresponding file. In the <guilabel>Parameter
 value</guilabel> table you can also make several settings that
 influence the method for calculating the steady state itself. For a
@@ -2758,7 +2789,7 @@ results widget.
 </para>
 <para>
 <screenshot>
-<screeninfo>Produced with COPASI Build 18 on MacOS X on 05/19/2006</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/28/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/SteadyStateTask_02.png" format="PNG" scale="50" align="center" />
@@ -2767,10 +2798,10 @@ results widget.
   <imagedata fileref="images/SteadyStateTask_02.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>dialog that displays the results of the stability analysis</phrase>
+   <phrase>Dialog that displays the results of the stability analysis</phrase>
  </textobject>
  <caption>
-  <para>results of the stability analysis</para>
+  <para>Results of the stability analysis</para>
  </caption> 
 </mediaobject>
 </screenshot>
@@ -2834,7 +2865,7 @@ the dialog that appears.
 </para>
 <para>
 <screenshot>
-<screeninfo>Produced with COPASI Build 18 on Linux on 05/18/2006</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/28/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/ElementaryModesTask_01.png" format="PNG" scale="50" align="center" />
@@ -2843,10 +2874,10 @@ the dialog that appears.
   <imagedata fileref="images/ElementaryModesTask_01.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>dialog showing the calculated elementary modes for a model</phrase>
+   <phrase>Dialog showing the calculated elementary modes for a model</phrase>
  </textobject>
  <caption>
-  <para>elementary analysis dialog with results</para>
+  <para>Elementary analysis dialog with results</para>
  </caption> 
 </mediaobject>
 </screenshot>
@@ -2891,7 +2922,7 @@ Conservation</guibutton> branch in the object tree and click on the
 </para>  
 <para>
 <screenshot>
-<screeninfo>Produced with COPASI Build 18 on MacOS X on 05/19/2006</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/28/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/MassConservationTask_01.png" format="PNG" scale="50" align="center" />
@@ -2900,10 +2931,10 @@ Conservation</guibutton> branch in the object tree and click on the
   <imagedata fileref="images/MassConservationTask_01.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>dialog showing the results of a mass conservation calculation</phrase>
+   <phrase>Dialog showing the results of a mass conservation calculation</phrase>
  </textobject>
  <caption>
-  <para>mass conservation task dialog with results</para>
+  <para>Mass conservation task dialog with results</para>
  </caption> 
 </mediaobject>
 </screenshot>
@@ -2912,7 +2943,7 @@ Conservation</guibutton> branch in the object tree and click on the
 If the model contains any mass conservation relations they will be listed in a table directly in this dialog. </para>
 <para>
 <screenshot>
-<screeninfo>Produced with COPASI Build 18 on MacOS X on 05/19/2006</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/28/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/MassConservationTask_02.png" format="PNG" scale="50" align="center" />
@@ -2921,10 +2952,10 @@ If the model contains any mass conservation relations they will be listed in a t
   <imagedata fileref="images/MassConservationTask_02.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>dialog that shows one single mass conservation relation</phrase>
+   <phrase>Dialog that shows one single mass conservation relation</phrase>
  </textobject>
  <caption>
-  <para>single mass conservation dialog</para>
+  <para>Single mass conservation dialog</para>
  </caption> 
 </mediaobject>
 </screenshot>
@@ -2945,7 +2976,7 @@ corresponding task branch in the object tree which is located at
 </para>
 <para>
 <screenshot>
-<screeninfo>Produced with COPASI Build 18 on MacOS X on 05/19/2006</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/28/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/TimeCourseTask_01.png" format="PNG" scale="50" align="center" />
@@ -2954,10 +2985,10 @@ corresponding task branch in the object tree which is located at
   <imagedata fileref="images/TimeCourseTask_01.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>dialog for calculating a trajectory</phrase>
+   <phrase>Dialog for calculating a trajectory</phrase>
  </textobject>
  <caption>
-  <para>trajectory task dialog</para>
+  <para>Trajectory task dialog</para>
  </caption> 
 </mediaobject>
 </screenshot>
@@ -3054,7 +3085,7 @@ able to write the results to that file. To do that, you click on the
 </para>
 <para>
 <screenshot>
-<screeninfo>Produced with COPASI Build 18 on MacOS X on 05/19/2006</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/28/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/TimeCourseTask_02.png" format="PNG" scale="50" align="center" />
@@ -3063,10 +3094,10 @@ able to write the results to that file. To do that, you click on the
   <imagedata fileref="images/TimeCourseTask_02.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>dialog to associate a report with a file</phrase>
+   <phrase>Dialog to associate a report with a file</phrase>
  </textobject>
  <caption>
-  <para>file association dialog for a time course report</para>
+  <para>File association dialog for a time course report</para>
  </caption> 
 </mediaobject>
 </screenshot>
@@ -3092,7 +3123,7 @@ you told COPASI to keep the results in memory.
 </para>
 <para>
 <screenshot>
-<screeninfo>Produced with COPASI Build 18 on MacOS X on 05/19/2006</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/28/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/TimeCourseTask_03.png" format="PNG" scale="50" align="center" />
@@ -3101,10 +3132,10 @@ you told COPASI to keep the results in memory.
   <imagedata fileref="images/TimeCourseTask_03.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>dialog that shows the results of the trajectory task</phrase>
+   <phrase>Dialog that shows the results of the trajectory task</phrase>
  </textobject>
  <caption>
-  <para>trajectory results</para>
+  <para>Trajectory results</para>
  </caption> 
 </mediaobject>
 </screenshot>
@@ -3153,7 +3184,7 @@ Mac OS X
 </para></caution>
 <para>
 <screenshot>
-<screeninfo>Produced with COPASI Build 18 on MacOS X on 05/19/2006</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/28/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/PlotWindow_01.png" format="PNG" scale="50" align="center" />
@@ -3162,7 +3193,7 @@ Mac OS X
   <imagedata fileref="images/PlotWindow_01.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>dialog window showing a plot</phrase>
+   <phrase>Dialog window showing a plot</phrase>
  </textobject>
  <caption>
   <para>COPASI plot window</para>
@@ -3181,7 +3212,7 @@ Control Analysis</guibutton>.
 </para>
 <para>
 <screenshot>
-<screeninfo>Produced with COPASI Build 18 on MacOS X on 05/19/2006</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/28/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/MCATask_01.png" format="PNG" scale="50" align="center" />
@@ -3190,7 +3221,7 @@ Control Analysis</guibutton>.
   <imagedata fileref="images/MCATask_01.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>dialog for running a metabolic control analysis</phrase>
+   <phrase>Dialog for running a metabolic control analysis</phrase>
  </textobject>
  <caption>
   <para>MCA task dialog</para>
@@ -3219,7 +3250,7 @@ linkend="methodSteadyState" />, <xref linkend="methodMCA" />)
 </para>
 <para>
 <screenshot>
-<screeninfo>Produced with COPASI Build 18 on MacOS X on 05/19/2006</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/28/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/MCATask_02.png" format="PNG" scale="50" align="center" />
@@ -3228,7 +3259,7 @@ linkend="methodSteadyState" />, <xref linkend="methodMCA" />)
   <imagedata fileref="images/MCATask_02.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>dialog showing the results of the metabolic control analysis</phrase>
+   <phrase>Dialog showing the results of the metabolic control analysis</phrase>
  </textobject>
  <caption>
   <para>MCA results</para>
@@ -3245,7 +3276,7 @@ and concentration control coefficients.
 </para>
 <para>
 <screenshot>
-<screeninfo>Produced with COPASI Build 18 on MacOS X on 05/19/2006</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/28/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/MCATask_03.png" format="PNG" scale="50" align="center" />
@@ -3254,7 +3285,7 @@ and concentration control coefficients.
   <imagedata fileref="images/MCATask_03.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>dialog showing the results of the MCA after no steady state was found</phrase>
+   <phrase>Dialog showing the results of the MCA after no steady state was found</phrase>
  </textobject>
  <caption>
   <para>MCA results at none steady state</para>
@@ -3344,7 +3375,7 @@ section.
 </para>
 <para>
 <screenshot>
-<screeninfo>Produced with COPASI Build-18 on Mac OS X on 05/22/2006</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/28/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Lyapunov_01.png" format="PNG" scale="50" align="center" />
@@ -3378,7 +3409,7 @@ that the divergence and the sum differ in those cases.
 </para>
 <para>
 <screenshot>
-<screeninfo>Produced with COPASI Build-18 on Mac OS X on 05/22/2006</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/28/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Lyapunov_02.png" format="PNG" scale="50" align="center" />
@@ -3417,7 +3448,7 @@ from subtask</guilabel>.
 </para>
 <para>
 <screenshot>
-<screeninfo>Produced with COPASI CVS on Mac OS X on 04/06/2005</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/28/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/ParameterScan_01.png" format="PNG" scale="50" align="center" />
@@ -3426,7 +3457,7 @@ from subtask</guilabel>.
   <imagedata fileref="images/ParameterScan_01.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>dialog showing scan task dialog when first opened</phrase>
+   <phrase>Dialog showing scan task dialog when first opened</phrase>
  </textobject>
  <caption>
   <para>Initial scan task dialog</para>
@@ -3457,7 +3488,7 @@ contains some empty line edit fields and a button labeled
 </para>
 <para>
 <screenshot>
-<screeninfo>Produced with COPASI CVS on Mac OS X on 04/06/2005</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/28/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/ParameterScan_02.png" format="PNG" scale="50" align="center" />
@@ -3466,10 +3497,10 @@ contains some empty line edit fields and a button labeled
   <imagedata fileref="images/ParameterScan_02.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>dialog showing scan task dialog with a Parameter Scan item</phrase>
+   <phrase>Dialog showing scan task dialog with a Parameter Scan item</phrase>
  </textobject>
  <caption>
-  <para>scan task dialog with scan item</para>
+  <para>Scan task dialog with scan item</para>
  </caption> 
 </mediaobject>
 </screenshot>
@@ -3536,7 +3567,7 @@ button.
 </para>
 <para>
 <screenshot>
-<screeninfo>Produced with COPASI CVS on Mac OS X on 04/06/2005</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/28/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/ParameterScan_03.png" format="PNG" scale="50" align="center" />
@@ -3545,10 +3576,10 @@ button.
   <imagedata fileref="images/ParameterScan_03.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>dialog showing scan task dialog with two Parameter Scan items</phrase>
+   <phrase>Dialog showing scan task dialog with two Parameter Scan items</phrase>
  </textobject>
  <caption>
-  <para>scan task dialog with two scan items</para>
+  <para>Scan task dialog with two scan items</para>
  </caption> 
 </mediaobject>
 </screenshot>
@@ -3567,7 +3598,7 @@ long time.
 </para>
 <para>
 <screenshot>
-<screeninfo>Produced with COPASI CVS on Mac OS X on 04/06/2005</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/28/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/ParameterScan_04.png" format="PNG" scale="50" align="center" />
@@ -3576,10 +3607,10 @@ long time.
   <imagedata fileref="images/ParameterScan_04.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>dialog showing scan task dialog with a Random distribution item</phrase>
+   <phrase>Dialog showing scan task dialog with a Random distribution item</phrase>
  </textobject>
  <caption>
-  <para>scan task dialog with random distribution item</para>
+  <para>Scan task dialog with random distribution item</para>
  </caption> 
 </mediaobject>
 </screenshot>
@@ -3601,7 +3632,7 @@ course simulation.
 </para>
 <para>
 <screenshot>
-<screeninfo>Produced with COPASI CVS on Mac OS X on 04/06/2005</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/28/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/ParameterScan_05.png" format="PNG" scale="50" align="center" />
@@ -3610,10 +3641,10 @@ course simulation.
   <imagedata fileref="images/ParameterScan_05.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>dialog showing scan task dialog with a Random distribution and Repeat item</phrase>
+   <phrase>Dialog showing scan task dialog with a Random distribution and Repeat item</phrase>
  </textobject>
  <caption>
-  <para>scan task dialog with random distribution and repeat item</para>
+  <para>Scan task dialog with random distribution and repeat item</para>
  </caption> 
 </mediaobject>
 </screenshot>
@@ -3629,7 +3660,7 @@ widget.
 </para>
 <para>
 <screenshot>
-<screeninfo>Produced with COPASI CVS on Mac OS X on 04/06/2005</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/28/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/ParameterScan_06.png" format="PNG" scale="50" align="center" />
@@ -3638,10 +3669,10 @@ widget.
   <imagedata fileref="images/ParameterScan_06.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>dialog showing scan task dialog with a more complex combination of actions</phrase>
+   <phrase>Dialog showing scan task dialog with a more complex combination of actions</phrase>
  </textobject>
  <caption>
-  <para>scan task dialog with combination of actions</para>
+  <para>Scan task dialog with combination of actions</para>
  </caption> 
 </mediaobject>
 </screenshot>
@@ -3686,7 +3717,7 @@ curve.
 </para>
 <para>
 <screenshot>
-<screeninfo>Produced with COPASI CVS on Mac OS X on 04/06/2005</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/29/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/ParameterScan_07.png" format="PNG" scale="50" align="center" />
@@ -3695,15 +3726,15 @@ curve.
   <imagedata fileref="images/ParameterScan_07.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>dialog showing scan task dialog with a repeated random distribution</phrase>
+   <phrase>Dialog showing scan task dialog with a repeated random distribution</phrase>
  </textobject>
  <caption>
-  <para>scan task dialog with repeated random distribution</para>
+  <para>Scan task dialog with repeated random distribution</para>
  </caption> 
 </mediaobject>
 </screenshot>
 <screenshot>
-<screeninfo>Produced with COPASI CVS on Mac OS X on 04/06/2005</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/29/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/ParameterScan_08.png" format="PNG" scale="50" align="center" />
@@ -3712,15 +3743,15 @@ curve.
   <imagedata fileref="images/ParameterScan_08.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>plot with 10 different curves</phrase>
+   <phrase>Plot with 10 different curves</phrase>
  </textobject>
  <caption>
-  <para>plot with 10 different curves</para>
+  <para>Plot with 10 different curves</para>
  </caption> 
 </mediaobject>
 </screenshot>
 <screenshot>
-<screeninfo>Produced with COPASI CVS on Mac OS X on 04/06/2005</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/29/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/ParameterScan_09.png" format="PNG" scale="50" align="center" />
@@ -3729,15 +3760,15 @@ curve.
   <imagedata fileref="images/ParameterScan_09.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>dialog showing scan task dialog with a random distribution where the time course task is repeated</phrase>
+   <phrase>Dialog showing scan task dialog with a random distribution where the time course task is repeated</phrase>
  </textobject>
  <caption>
-  <para>scan task dialog with with random distribution where time course task is repeated</para>
+  <para>Scan task dialog with with random distribution where time course task is repeated</para>
  </caption> 
 </mediaobject>
 </screenshot>
 <screenshot>
-<screeninfo>Produced with COPASI CVS on Mac OS X on 04/06/2005</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/29/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/ParameterScan_10.png" format="PNG" scale="50" align="center" />
@@ -3746,10 +3777,10 @@ curve.
   <imagedata fileref="images/ParameterScan_10.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>plot with 10 times the same curve</phrase>
+   <phrase>Plot with 10 times the same curve</phrase>
  </textobject>
  <caption>
-  <para>plot with 10 identical curves</para>
+  <para>Plot with 10 identical curves</para>
  </caption> 
 </mediaobject>
 </screenshot>
@@ -3799,7 +3830,7 @@ see how you would do this in COPASI.
 
 <para>
 <screenshot>
-<screeninfo>Produced with COPASI Build 18 on MacOS X on 05/19/2006</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/29/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Optimization_01.png" format="PNG" scale="50" align="center" />
@@ -3926,7 +3957,7 @@ parameters, several constraints can be specified.
 
 <para>
 <screenshot>
-<screeninfo>Produced with COPASI Build 18 on MacOS X on 05/19/2006</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/29/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Optimization_02.png" format="PNG" scale="50" align="center" />
@@ -3990,7 +4021,7 @@ document.
 </para>
 <para>
 <screenshot>
-<screeninfo>Produced with COPASI 4.1 (Build 21) on MacOS X on 05/19/2006</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/29/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/ParameterEstimation_01.png" format="PNG" scale="50" align="center" />
@@ -4139,7 +4170,7 @@ is a point in the dataset, and
   <mml:mi>P</mml:mi>
   <mml:mo>)</mml:mo>
   </mml:mrow>
-</mml:math></inlineequation> the corresponding simulated value. The indices's
+</mml:math></inlineequation> the corresponding simulated value. The indeces
 <inlineequation><mml:math><mml:mi>i</mml:mi></mml:math></inlineequation> and
 <inlineequation><mml:math><mml:mi>j</mml:mi></mml:math></inlineequation>
 denote columns and rows in the dataset.
@@ -4280,7 +4311,7 @@ dialog. A new dialog opens that lets you enter experimental data.
 
 <para>
 <screenshot>
-<screeninfo>Produced with COPASI Build 18 on MacOS X on 05/19/2006</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/29/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/ParameterEstimation_02.png" format="PNG" scale="50" align="center" />
@@ -4426,7 +4457,7 @@ file you specified.
 
 <para>
 <screenshot>
-<screeninfo>Produced with COPASI Build 18 on MacOS X on 05/19/2006</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/29/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/ParameterEstimation_05.png" format="PNG" scale="50" align="center" />
@@ -4454,13 +4485,6 @@ experiments, and fitted values can be found under the corresponding
 tabs. In addition, you may look at the correlation matrix of the
 parameters or the Fisher information matrix. 
 </para>
-
-<caution>
-<para>
-Changing the data files, or more specifically, changing the number or order of the columns in the data file after associating them with model values or creating output definitions, invalidates those associations and output definitions.
-</para>
-</caution>
-
 </sect2>
 </sect1>
 
@@ -4471,7 +4495,7 @@ Changing the data files, or more specifically, changing the number or order of t
 
 <para>
 <screenshot>
-<screeninfo>Produced with COPASI 4.1 (Build 21) on MacOS X on 05/21/2007</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/29/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Sensitivities_01.png" format="PNG" scale="50" align="center" />
@@ -4507,28 +4531,28 @@ Gepasi files.
 </para>
 <para>
 In addition to those two file formats, COPASI can import SBML Level 1
-and 2 files and it can export models as SBML Level 1 and SBML Level 2 files as well as
+and 2 files and it can export models as SBML Level 2 files as well as
 C source code, XPPaut, or Berkeley Madonna files.
 </para>
 <sect1 id="sbmlImportExport" xreflabel="Importing and Exporting SBML files">
 <title>Importing and Exporting SBML files</title>
-<para>COPASI is able to import <ulink url="http://www.sbml.org">SBML</ulink> Level 1 and Level 2 files as well as export SBML Level 1 Version 2, SBML Level 2 Versions 1, 2 and 3 files through the corresponding entries in the <guimenu>File</guimenu> menu. For the import and export the SBML Model is read with <ulink url="http://www.sbml.org/libSBML.html">libSBML</ulink> and converted to the COPASI model structure and vice versa.</para>
-<para>On exporting, COPASI converts its native model structure to an SBML model that is again written out using libSBML. Since the SBML model structure is converted into the COPASI model structure upon import, some of the information in the SBML file gets lost because COPASI does not support the corresponding model elements. Examples of data that gets lost are algebraic rules and events.</para>
+<para>COPASI is able to import <ulink url="http://www.sbml.org">SBML</ulink> level 1 and level 2 files as well as export SBML level 2 files through the corresponding entries in the <guimenu>File</guimenu> menu. For the import and export the SBML Model is read with <ulink url="http://www.sbml.org/libsbml.html">libsbml</ulink> and converted to the COPASI model structure and vice versa.</para>
+<para>On exporting, COPASI converts its native model structure to an SBML model that is again written out using libsbml. Since the SBML model structure is converted into the COPASI model structure upon import, some of the information in the SBML file gets lost because COPASI does not support the corresponding model elements. Examples of data that gets lost are certain rules and events.</para>
 <para>
-Notes and Annotations from the original SBML file should be preserved when you import and reexport an SBML file as long as you do not delete the objects that contain the annotation. But still if you have important annotations or notes in your SBML file make a backup of the file before you open it in COPASI since we can not guarantee that they will survive an import/export cycle.
+Notes and Annotations from the original SBML file should be preserved when you import and reexport an SBML file as long as you do not delete the objects that contain the annotation in COPASI. But still if you have important annotations or notes in your SBML file make a backup of the file before you open it in COPASI since we can not guarantee that they will survive an import/export cycle.
 </para>
-<para>This is normally not a big problem since the essential parts of a model normally get imported or exported. A consequence however one should keep in mind is that if you import an SBML file into COPASI and later export it again, it might have lost some of the original information. So if your SBML model depends on algebraic rules, stoichiometric expressions, delays and/or events, it might not be suitable for simulation with COPASI. This will change in future versions of COPASI.
+<para>Likewise, SBML does not support all of the elements of a COPASI model so some information from the COPASI model also gets lost when exporting an SBML file. For example tasks, reports and plot definitions are not exported to the SBML file.</para>
+<para>This is normally not a big problem since the essential parts of a model normally get imported or exported. A consequence however one should keep in mind is that if you import an SBML file into COPASI and later export it again, it might have lost some of the original information. So if your SBML model depends on rules on species and compartments and events, it is not suitable for import into COPASI. This will change in future versions of COPASI.
 </para>
-<para>Likewise, SBML does not support all of the elements of a COPASI model so some information from the COPASI model also gets lost when exporting an SBML file. For example tasks, reports and plot definitions are not exported to the SBML file. Currently efforts are undertaken in cooperation with developers of other tools to come up with a way to exchange some of those elements as well.</para>
 <para>
 We hope that we will be able to support even more different file
 formats in the future.
 </para>
 <para>
-Current versions of COPASI use libSBML version 3 which supports SBML files up to Level 2 Version 3. libSBML 3 also has a lot of builtin tests to check the validity of a model. Upon import COPASI will display most of those errors to the user. libSBML 3 also gives a lot of warnings, especially concerning units in SBML files, which should help the user in generating better, more consistent models. Even so this is a good thing, it can happen that the real errors are hidden by the large amount of warnings. COPASI now uses a new error message dialog that splits the messages in filtered and unfiltered messages. The unfiltered messages are what the user sees when the dialog comes up. In order the see the filtered messages the second tab in the message dialog has to be selected. If there are no filtered messages, this tab is disabled. In the labels of the individual tabs, COPASI also shows you the number of messages that for the corresponding tab.
+Current versions of COPASI use libSBML version 3 which supports SBML files up to Level 2 Version 3. LibSBML 3 also has a lot of builtin tests to check the validity of a model. Upon import COPASI will display most of those errors to the user. LibSBML 3 also gives a lot of warnings, especially concerning units in SBML files, which should help the user in generating better, more consistent models. Even so this is a good thing, it can happen that the real errors are hidden by the large amount of warnings. COPASI now uses a new error message dialog that splits the messages in filtered and unfiltered messages. The unfiltered messages are what the user sees when the dialog comes up. In order the see the filtered messages the second tab in the message dialog has to be selected. If there are no filtered messages, this tab is disabled. In the labels of the individual tabs, COPASI also shows you the number of messages that for the corresponding tab.
 </para>
 <screenshot>
-<screeninfo>Produced with COPASI Build 21 on MacOS X on 06/08/2007</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/29/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/MessageDialog_01.png" format="PNG" scale="50" align="center" />
@@ -4551,112 +4575,8 @@ In the current version, the errors that are filtered are hard coded and they are
 Although COPASI now uses libSBML 3, not all features found in the different versions of SBML are currently supported. If an unsupported feature is encountered during import, COPASI will usually notify the user. Depending on which parts of the model have been ignored, ignored, the result of timecourse simulations and other tasks might not be what you expect.
 </para>
 <para>
-Newer versions of COPASI support all SBML rules other than algebraic rules. If an algebraic rules is encountered in a file, COPASI will just ignore it and report this to the user. The same is true for events. 
+This is still very rudimentary and we hope to improve this function recognition in the future so that also functions exported from other programs can be recognized.
 </para>
-<para>
-There is one special case where a model with rules does not lead to the results that might have been expected. If a model contains a rate rule for a species that is located in a variable compartment, the interpretation of the generated differential equations differs between COPASI and SBML. So if the result don't look like what you expected them be, check if this restriction applies to your current model.
-</para>
-<para>
-The handling of stoichiometric expressions is slightly different. Version of COPASI prior to Build-25 refused to load SBML files that contain stoichiometric expressions. Starting with COPASI Build-15 those stoichiometric expressions are evaluated after importing the model and the result of the evaluation is used as the stoichiometry of the corresponding element. This means that if stoichiometric expression only referenced constant entities of the model, COPASI should be able to simulate the model correctly. However if the stoichiometric expression references non constant model entities, the simulation result will most likely not be correct.
-Currently those stoichiometric expressions are also not reexported when the model is written to an SBML file.
-</para>
-<para>
-As was the case with stoichiometric expressions, versions of COPASI prior to Build-25 refused to load models that use the delay function.
-Starting with Build-25 those models are no longer rejected. Since COPASI is not able to handle the delay function, we only create a dummy delay function that evaluates to not-a-number (NaN). This means that if the model is simulated, all values depending on the delay either directly or indirectly will appear as NaN in the result.
-On he other hand, the model can be edited and if the delay is removed from the model, it should again give meaningful results when simulated.
-If a model using delay functions is written to a COPASI file, the information about the original delay gets lost. The SBML delay is converted to a function definition that evaluates to NaN. 
-</para>
-
-<para>
-In SBML each  entity in the model can have units associated with it. In COPASI units are globally defined and all entities have units defined in terms of those global units. When importing an SBML files, COPASI reads the global unit definitions and tries to convert those to units supported in COPASI which works fine most of the times. If COPASI encounters units on individual entities, it checks if those units correspond to the global units and if they don't a warning is generated.
-</para>
-<para>
-The reason why we don't convert units on individual model entities is that the SBML specification says that units are purely informative and that the model should be treated with the assumption that all units are correct. The units on an element, even though they may not be given in the terms that were expected do not require simulation tools to convert the numerical values of the associated entity.
-</para>
-
-<table frame="all"><title>Supported SBML features</title>
-<tgroup cols="2" align="left" colsep="1" rowsep="1">
-<colspec colwidth="1*" />
-<colspec colwidth="3*" />
-<thead>
- <row>
-   <entry>Name</entry>
-   <entry>Remark</entry>
- </row>
-</thead>
-<tbody>
- <row>
-   <entry>Function Definitions</entry>
-   <entry>
-   Yes
-   </entry> 
- </row>
- <row>
-   <entry>Compartments</entry>
-   <entry>
-   Yes, but in COPASI compartments always have 3 dimensions.
-   </entry> 
- </row>
- <row>
-   <entry>Species</entry>
-   <entry>
-   Yes. The hasOnlySubstanceUnits flag is lost on reexport.
-   </entry> 
- </row>
- <row>
-   <entry>Parameters</entry>
-   Yes
-   <entry>
-   </entry> 
- </row>
- <row>
-   <entry>Reactions</entry>
-   <entry>
-   Yes (notes and annotations on kinetic laws are lost on import)
-   </entry> 
- </row>
- <row>
-   <entry>Initial Assignments</entry>
-   <entry>
-   Yes
-   </entry> 
- </row>
- <row>
-   <entry>Rules</entry>
-   <entry>
-   Yes (All but algebraic rules.)
-   </entry> 
- </row>
- <row>
-   <entry>Events</entry>
-   <entry>
-   No. Events are ignored on import.
-   </entry> 
- </row>
- <row>
-   <entry>Stoichiometric Expressions</entry>
-   <entry>Partially. Stoichiometric expressions are only evaluated once on import. So they only provide correct results if all referenced model entities are constant. Stoichiometric expressions are not exported.
-   </entry> 
- </row>
- <row>
-   <entry>Delays</entry>
-   <entry>
-   No. The delay function is converted to a dummy function that returns NaN (see text above).
-   </entry> 
- </row>
- <row>
-   <entry>Units</entry>
-   <entry>
-   Partially. (see text above) 
-   </entry> 
- </row>
-</tbody>
-</tgroup>
-</table>
-
-
-
-
 </sect1>
 <sect1 id="cExport" xreflabel="Exporting C Source files">
 <title>Exporting C Source files</title>
@@ -4709,7 +4629,7 @@ The file contains the following sections:
    preprocessor #define statements.</entry> 
  </row>
  <row>
-   <entry>METABOLITES</entry>
+   <entry>SPECIES</entry>
    <entry>Contains assignments for the species initial
    concentrations. The assignments are of the form y[INDEX]=VALUE
    where INDEX is the index of the species and VALUE is the initial
@@ -4719,7 +4639,7 @@ The file contains the following sections:
    above).</entry> 
  </row>
  <row>
-   <entry>INDEP_METABOLITES</entry>
+   <entry>INDEP_SPECIES</entry>
    <entry>Contains assignments for the independent species initial
    concentrations. The assignments are of the form x[INDEX]=VALUE
    where INDEX is the index of the independent species and VALUE is
@@ -4734,7 +4654,7 @@ The file contains the following sections:
    of the form y[INDEX]=RSIDE where INDEX is the index of the
    species and RSIDE is the calculated value for the moiety,
    e.g. 0.2 - y[INDEX2]. y is the vector of species (see
-   METABOLITES above).</entry> 
+   SPECIES above).</entry> 
  </row>
  <row>
    <entry>COMPARTMENTS</entry>
@@ -4887,8 +4807,8 @@ the ODEs will be saved to the specified file.
 <ulink
 url="http://www.math.pitt.edu/~bard/xpp/xpp.html">XPPAUT</ulink> is a
 program to to solve differential equations. It is freely available for
-Windows, MacOS X, Linux/Unix and probably others. Its input format is
-very similar to the one from Madonna and COPASI starting from Version
+Windows, MacOS X, Linux/Unix and probabyl others. Its input format is
+very similar to the one from madonna and COPASI starting from Version
 4.1 Build21 can export models as a set of differential equations for
 use in XPPAUT.
 </para>
@@ -4933,5 +4853,4 @@ loaded in XPPAUT.
 </caution>
 </sect1>
 </chapter>  
-
 
