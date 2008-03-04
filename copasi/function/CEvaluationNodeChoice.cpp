@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeChoice.cpp,v $
-//   $Revision: 1.15.6.1 $
+//   $Revision: 1.15.6.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/03/04 12:34:33 $
+//   $Date: 2008/03/04 13:03:56 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -133,11 +133,13 @@ CEvaluationNode* CEvaluationNodeChoice::createNodeFromASTTree(const ASTNode& nod
     }
 
   CEvaluationNodeChoice* convertedNode = new CEvaluationNodeChoice(subType, data);
-  // convert the two children
+  // convert the three children
+  assert(node.getNumChildren()==3);
   if (subType != INVALID)
     {
-      convertedNode->addChild(CEvaluationTree::convertASTNode(*node.getLeftChild()));
-      convertedNode->addChild(CEvaluationTree::convertASTNode(*node.getRightChild()));
+      convertedNode->addChild(CEvaluationTree::convertASTNode(*node.getChild(1)));
+      convertedNode->addChild(CEvaluationTree::convertASTNode(*node.getChild(0)));
+      convertedNode->addChild(CEvaluationTree::convertASTNode(*node.getChild(2)));
     }
   return convertedNode;
 }
