@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMModifiedMethod.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/01/11 15:12:28 $
+//   $Author: nsimus $
+//   $Date: 2008/03/04 16:54:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -60,6 +60,11 @@ class CILDMModifiedMethod : public CTSSAMethod
      *  Destructor.
      */
     ~CILDMModifiedMethod();
+
+    /**
+     * Intialize the method parameter
+     */
+    virtual void initializeParameter();
 
     /**
      *  This instructs the method to calculate a time step of deltaT

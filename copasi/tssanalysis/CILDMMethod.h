@@ -1,14 +1,19 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMMethod.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: isurovts $
-//   $Date: 2007/12/21 11:43:59 $
+//   $Author: nsimus $
+//   $Date: 2008/03/04 16:54:18 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 #ifndef COPASI_CILDMMethod
 #define COPASI_CILDMMethod
@@ -53,6 +58,11 @@ class CILDMMethod : public CTSSAMethod
      *  Destructor.
      */
     ~CILDMMethod();
+
+    /**
+     *  Intialize the method parameter
+     */
+    virtual void initializeParameter();
 
     /**
      *  This instructs the method to calculate a time step of deltaT

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMModifiedMethod.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/01/11 15:12:28 $
+//   $Author: nsimus $
+//   $Date: 2008/03/04 16:54:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -42,7 +42,7 @@ CILDMModifiedMethod::CILDMModifiedMethod(const CCopasiContainer * pParent):
   //  addMatrixReference("Contribution of Metabolites to Slow Space", mVslow, CCopasiObject::ValueDbl);
 
   mData.pMethod = this;
-  initializeILDMParameter();
+  initializeParameter();
 }
 
 CILDMModifiedMethod::CILDMModifiedMethod(const CILDMModifiedMethod & src,
@@ -54,7 +54,7 @@ CILDMModifiedMethod::CILDMModifiedMethod(const CILDMModifiedMethod & src,
   //  assert((void *) &mData == (void *) &mData.dim);
 
   mData.pMethod = this;
-  initializeILDMParameter();
+  initializeParameter();
 }
 
 CILDMModifiedMethod::~CILDMModifiedMethod()
@@ -62,12 +62,36 @@ CILDMModifiedMethod::~CILDMModifiedMethod()
   pdelete(mpState);
 }
 
+
+void CILDMModifiedMethod::initializeParameter()
+{
+  addObjectReference("Number of slow variables", mSlow, CCopasiObject::ValueInt);
+  addMatrixReference("Contribution of Metabolites to Slow Space", mVslow, CCopasiObject::ValueDbl);
+
+  assertParameter("Deuflhard Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-6);
+
+  initializeIntegrationsParameter();
+
+  createAnnotationsM();
+  emptyVectors();
+}
+
+
 void CILDMModifiedMethod::start(const CState * initialState)
 {
 
-  ILDMstart(initialState);
+  integrationMethodStart(initialState);
 
-  return;
+  /* ILDM related staff  */
+
+   mDtol = * mpProblem->getValue("Deuflhard Tolerance").pUDOUBLE;
+
+   mVslow.resize(mData.dim, mData.dim);
+   mVslow_metab.resize(mData.dim, mData.dim);
+   mVslow_space.resize(mData.dim);
+   mVfast_space.resize(mData.dim);
+
+   return;
 }
 
 void CILDMModifiedMethod::step(const double & deltaT)
@@ -665,7 +689,6 @@ void CILDMModifiedMethod::deuflhard_metab(C_INT & slow, C_INT & info)
   C_INT fast = dim - slow;
 
   C_INT flag_deufl;
-  C_INT number;
 
   flag_deufl = 1;  // set flag_deufl=0  to print temporaly steps for this function
 
@@ -911,8 +934,6 @@ void CILDMModifiedMethod::newton_new(C_INT *index_metab, C_INT & slow, C_INT & i
 
   for (i = 0; i < dim; i++)
     d_yf[i] = 0.;
-
-  C_INT i_fast;
 
   while (err > tol)
     {

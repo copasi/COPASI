@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAMethod.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: akoenig $
-//   $Date: 2008/02/25 18:47:17 $
+//   $Author: nsimus $
+//   $Date: 2008/03/04 16:54:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -145,13 +145,12 @@ bool CTSSAMethod::isValidProblem(const CCopasiProblem * pProblem)
 
   return true;
 }
-//common function for both ILDM Methods, can later used in CSP
 
-void CTSSAMethod::initializeILDMParameter()
+void CTSSAMethod::initializeParameter()
+{return;}
+
+void CTSSAMethod::initializeIntegrationsParameter()
 {
-  addObjectReference("Number of slow variables", mSlow, CCopasiObject::ValueInt);
-  addMatrixReference("Contribution of Metabolites to Slow Space", mVslow, CCopasiObject::ValueDbl);
-
   CCopasiParameter *pParm;
 
   assertParameter("Integrate Reduced Model", CCopasiParameter::BOOL, (bool) true);
@@ -234,13 +233,11 @@ void CTSSAMethod::initializeILDMParameter()
       removeParameter("Use Default Absolute Tolerance");
     }
 
-  createAnnotationsM();
-  emptyVectors();
 }
 
 bool CTSSAMethod::elevateChildren()
 {
-  initializeILDMParameter();
+  initializeParameter();
   return true;
 }
 
@@ -1296,7 +1293,7 @@ void CTSSAMethod::update_pid(C_INT *index, C_INT *pid, const C_INT & dim)
   return;
 }
 
-void CTSSAMethod::ILDMstart(const CState * initialState)
+void CTSSAMethod::integrationMethodStart(const CState * initialState)
 {
   /* Retrieve the model to calculate */
   mpModel = mpProblem->getModel();
@@ -1330,15 +1327,6 @@ void CTSSAMethod::ILDMstart(const CState * initialState)
   mYdot.resize(mData.dim);
   // mY_initial.resize(mData.dim);
   mJacobian.resize(mData.dim, mData.dim);
-
-  /* Tolerance for Deuflhard criterium  */
-
-  mDtol = * mpProblem->getValue("Deuflhard Tolerance").pUDOUBLE;
-
-  mVslow.resize(mData.dim, mData.dim);
-  mVslow_metab.resize(mData.dim, mData.dim);
-  mVslow_space.resize(mData.dim);
-  mVfast_space.resize(mData.dim);
 
   /* Configure lsoda */
   mRtol = * getValue("Relative Tolerance").pUDOUBLE;

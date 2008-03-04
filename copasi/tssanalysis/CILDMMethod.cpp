@@ -1,14 +1,19 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMMethod.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
-//   $Author: isurovts $
-//   $Date: 2007/12/21 11:43:59 $
+//   $Author: nsimus $
+//   $Date: 2008/03/04 16:54:18 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 #include "copasi.h"
 
@@ -37,7 +42,7 @@ CILDMMethod::CILDMMethod(const CCopasiContainer * pParent):
   // addMatrixReference("Contribution of Metabolites to Slow Space", mVslow, CCopasiObject::ValueDbl);
 
   mData.pMethod = this;
-  initializeILDMParameter();
+  initializeParameter();
 }
 
 CILDMMethod::CILDMMethod(const CILDMMethod & src,
@@ -49,12 +54,25 @@ CILDMMethod::CILDMMethod(const CILDMMethod & src,
   //assert((void *) &mData == (void *) &mData.dim);
 
   mData.pMethod = this;
-  initializeILDMParameter();
+  initializeParameter();
 }
 
 CILDMMethod::~CILDMMethod()
 {
   pdelete(mpState);
+}
+
+void CILDMMethod::initializeParameter()
+{
+  addObjectReference("Number of slow variables", mSlow, CCopasiObject::ValueInt);
+  addMatrixReference("Contribution of Metabolites to Slow Space", mVslow, CCopasiObject::ValueDbl);
+
+  assertParameter("Deuflhard Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-6);
+
+  initializeIntegrationsParameter();
+
+  createAnnotationsM();
+  emptyVectors();
 }
 
 void CILDMMethod::step(const double & deltaT)
@@ -165,7 +183,7 @@ void CILDMMethod::step(const double & deltaT)
   C_INT flag_orthog = 1;
   C_INT info;
 
-  schur(info_schur);
+  schur(info_schur); // TO DO : move the test to the TSSAMethod
 
   std::cout << "info_schur: " << info_schur << std::endl;
 
@@ -789,8 +807,17 @@ void CILDMMethod::newton(C_FLOAT64 *ys, C_INT & slow, C_INT & info)
 void CILDMMethod::start(const CState * initialState)
 {
 
-  ILDMstart(initialState);
+  integrationMethodStart(initialState);
 
+  /* ILDM related staff  */
+
+  mDtol = * mpProblem->getValue("Deuflhard Tolerance").pUDOUBLE;
+
+  mVslow.resize(mData.dim, mData.dim);
+  mVslow_metab.resize(mData.dim, mData.dim);
+  mVslow_space.resize(mData.dim);
+  mVfast_space.resize(mData.dim);
+  
   return;
 }
 

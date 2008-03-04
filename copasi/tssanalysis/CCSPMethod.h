@@ -1,14 +1,19 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CCSPMethod.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2007/04/12 12:47:49 $
+//   $Date: 2008/03/04 16:54:18 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 #ifndef COPASI_CCSPMethod
 #define COPASI_CCSPMethod
@@ -131,15 +136,14 @@ class CCSPMethod : public CTSSAMethod
      */
 
     /**
+     * Unit matrix 
+     */
+    CMatrix<C_FLOAT64> mI;
+
+    /**
      *  A value related to a mesure of the time scale separation of the fast and slow modes
      */
     C_FLOAT64 mEps;
-
-    /**
-     *  The way CSP chooses the default column basis vectors,
-     *  either stoichiometric vectors  or Schur vectors
-     */
-    bool mStoi;
 
     /**
      *  A maximux relative error
@@ -184,13 +188,6 @@ class CCSPMethod : public CTSSAMethod
     ~CCSPMethod();
 
     /**
-     * This methods must be called to elevate subgroups to
-     * derived objects. The default implementation does nothing.
-     * @return bool success
-     */
-    virtual bool elevateChildren();
-
-    /**
      *  This instructs the method to calculate a time step of deltaT
      *  starting with the current state, i.e., the result of the previous
      *  step.
@@ -201,27 +198,11 @@ class CCSPMethod : public CTSSAMethod
     virtual void step(const double & deltaT);
 
     /**
-     **/
-    virtual void integrationStep(const double & deltaT);
-
-    /**
      *  This instructs the method to prepare for integration
      *  starting with the initialState given.
      *  @param "const CState *" initialState
      */
     virtual void start(const CState * initialState);
-
-    /**
-     * Calculate the individual absolute tolerance
-     */
-    void initializeAtol();
-
-    static void EvalF(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot);
-
-    /**
-     *  This evaluates the derivatives
-     */
-    void evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot);
 
     /**
      * Intialize the method parameter
@@ -262,23 +243,6 @@ class CCSPMethod : public CTSSAMethod
 
     void sminverse(C_INT & n, C_INT & m, CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B);
 
-    /**
-     *   Schur decomposition related staff
-     */
-
-    void schur(C_INT & n, CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & P, CMatrix< C_FLOAT64 > & S);
-
-    void map_index(C_FLOAT64 *eval_r, C_INT *index, C_INT & dim);
-
-    void update_nid(C_INT *index, C_INT *nid, C_INT & dim);
-
-    void update_pid(C_INT *index, C_INT *pid, C_INT & dim);
-
-    /**
-     *   Sort out fast time-scales  according to the time-scale separation ratio
-     */
-
-    void sortOutTimeScales(C_INT & n, C_INT & M, C_INT & k, CVector< C_FLOAT64 > & tsc);
 
     /**
     * the CSP refinement procedure, step 1 :
@@ -307,7 +271,7 @@ class CCSPMethod : public CTSSAMethod
      *  S.H. Lam and D.A. Gaussis, International Journal of Chemical Kinetics,
      *  26, pp. 461-486, 1994
      */
-    void cspstep0(C_INT & n, C_INT & m, CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B);
+    void cspstep(C_INT & n, C_INT & m, CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B);
 
     /**
      *  correct for the contribution of the fast time-scales  to y
@@ -315,19 +279,9 @@ class CCSPMethod : public CTSSAMethod
     void yCorrection(C_INT & n, C_INT & m, CVector< C_FLOAT64 > & y, CVector< C_FLOAT64 > & g, CMatrix< C_FLOAT64 > & J, CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B);
 
     /**
-     * evaluate derivatives for the current y
-     **/
-    void calculateDerivativesX(C_INT & n, CVector<C_FLOAT64> & y, CVector <C_FLOAT64> & g);
-
-    /**
      * evaluate Jacobian for the current y
      **/
     void calculateJacobianX(C_INT & n, CVector<C_FLOAT64> & y, CMatrix <C_FLOAT64> & J);
-
-    /**
-     * detection of  new fast modes
-     **/
-    void fastModesDetection(C_INT & n, C_INT & m, C_FLOAT64 & tisc, CMatrix< C_FLOAT64 > & J, CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B);
 
     /**
      * enforce the criterion to declare a mode exhausted
@@ -335,10 +289,8 @@ class CCSPMethod : public CTSSAMethod
     void exhaustedFastModesDetection(C_INT & n, C_INT & m, C_INT & tot, C_FLOAT64 & tisc , CVector< C_FLOAT64 > & g, CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B);
 
     /**
-     *  Step procedure of the CSP algorithm.
-     *  S.H. Lam and D.A. Gaussis, International Journal of Chemical Kinetics,
-     *  26, pp. 461-486, 1994
-     */
-    void cspstep(C_INT & n, C_INT & m, CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B);
+     * find the new number of  dead modes  according to the time-scale separation ratio 
+     **/
+    void findNewNumberOfDeadModes(C_INT & n, C_INT & m, C_INT & k, CVector< C_FLOAT64 > & tsc);
   };
 #endif // COPASI_CCSPMethod

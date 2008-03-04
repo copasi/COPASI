@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAMethod.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: akoenig $
-//   $Date: 2008/02/24 17:35:40 $
+//   $Author: nsimus $
+//   $Date: 2008/03/04 16:54:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -136,7 +136,12 @@ class CTSSAMethod : public CCopasiMethod
      */
     virtual bool isValidProblem(const CCopasiProblem * pProblem);
 
-    /************ The following concerns the both ILDM Methods *******************************/
+    /**
+     *  Intialize the method parameter
+     */
+    virtual void initializeParameter();
+
+  /************ The following concerns the both ILDM Methods *******************************/
 
   protected:
 
@@ -325,10 +330,10 @@ class CTSSAMethod : public CCopasiMethod
     // Operations
 
     /**
-     * Intialize the method parameter
+     * Intialize integration method parameters
      */
 
-    void initializeILDMParameter();
+    void initializeIntegrationsParameter();
 
     /**
      * This methods must be called to elevate subgroups to
@@ -355,7 +360,7 @@ class CTSSAMethod : public CCopasiMethod
      *  starting with the initialState given.
      *  @param "const CState *" initialState
      */
-    void ILDMstart(const CState * initialState);
+    void integrationMethodStart(const CState * initialState);
 
     /**
      * Calculate the individual absolute tolerance
