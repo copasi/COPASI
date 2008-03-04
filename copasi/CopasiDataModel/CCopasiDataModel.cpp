@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.107.4.8 $
+//   $Revision: 1.107.4.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/04 17:10:41 $
+//   $Date: 2008/03/04 17:25:51 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -129,9 +129,9 @@ CCopasiDataModel::CCopasiDataModel(const bool withGUI):
     mRenameHandler(this),
     mpCurrentSBMLDocument(NULL),
     mSBMLFileName(""),
-    pOldMetabolites(new CCopasiVectorS < CMetabOld >),
     mpUnsupportedDelay(NULL),
-    mpUndefined(NULL)
+    mpUndefined(NULL),
+    pOldMetabolites(new CCopasiVectorS < CMetabOld >)
 {
   mpVersion->setVersion(COPASI_VERSION_MAJOR,
                         COPASI_VERSION_MINOR,
