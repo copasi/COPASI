@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.107.4.9 $
+//   $Revision: 1.107.4.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/04 17:25:51 $
+//   $Date: 2008/03/05 16:38:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -233,7 +233,7 @@ bool CCopasiDataModel::loadModel(const std::string & fileName, CProcessReport* p
 
       CCopasiXML XML;
 
-      XML.setFunctionList(mpFunctionList->loadedFunctions());
+      XML.setFunctionList(&mpFunctionList->loadedFunctions());
 
       SCopasiXMLGUI *pGUI = NULL;
       std::string SBMLFileNameBkp = mSBMLFileName;
@@ -241,7 +241,7 @@ bool CCopasiDataModel::loadModel(const std::string & fileName, CProcessReport* p
       if (mWithGUI)
         {
           pGUI = new SCopasiXMLGUI;
-          XML.setGUI(*pGUI);
+          XML.setGUI(pGUI);
         }
 
       // save the copasi2sbml map somewhere and clear it
@@ -373,11 +373,11 @@ bool CCopasiDataModel::saveModel(const std::string & fileName, CProcessReport* p
 
   CCopasiXML XML;
 
-  XML.setModel(*mpModel);
-  XML.setTaskList(*mpTaskList);
-  XML.setReportList(*mpReportDefinitionList);
-  XML.setPlotList(*mpPlotDefinitionList);
-  XML.setGUI(*mpGUI);
+  XML.setModel(mpModel);
+  XML.setTaskList(mpTaskList);
+  XML.setReportList(mpReportDefinitionList);
+  XML.setPlotList(mpPlotDefinitionList);
+  XML.setGUI(mpGUI);
 #ifdef WITH_LAYOUT
   XML.setLayoutList(*mpListOfLayouts);
 #endif //WITH_LAYOUT

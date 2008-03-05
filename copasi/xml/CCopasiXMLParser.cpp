@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.170.2.1.2.2 $
+//   $Revision: 1.170.2.1.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/02/25 23:03:53 $
+//   $Date: 2008/03/05 16:38:32 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -375,7 +375,7 @@ void CCopasiXMLParser::UnknownElement::end(const XML_Char *pszName)
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
       {
-        CCopasiMessage(CCopasiMessage::RAW, MCXML + 3,
+        CCopasiMessage(CCopasiMessage::WARNING, MCXML + 3,
                        pszName, mLineNumber);
       }
 
@@ -500,6 +500,8 @@ void CCopasiXMLParser::COPASIElement::end(const XML_Char * pszName)
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
     }
+  else if (!strcmp(pszName, "GUI") && mCommon.pGUI == NULL)
+    CCopasiMessage::getLastMessage();
   else
     pdelete(mpCurrentHandler);
 
@@ -2263,7 +2265,7 @@ void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
         mpCurrentHandler = &mParser.mCharacterDataElement;
       break;
 
-    case MathML:                             // Old file format support
+    case MathML:                              // Old file format support
       if (!strcmp(pszName, "MathML"))
         {
           /* If we do not have a MathML element handler we create one. */
@@ -2356,7 +2358,7 @@ void CCopasiXMLParser::ModelValueElement::end(const XML_Char *pszName)
       mCurrentElement = ModelValue;
       break;
 
-    case MathML:                             // Old file format support
+    case MathML:                              // Old file format support
       if (strcmp(pszName, "MathML"))
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                        pszName, "MathML", mParser.getCurrentLineNumber());
