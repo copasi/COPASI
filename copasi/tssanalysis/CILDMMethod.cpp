@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMMethod.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2008/03/04 16:54:18 $
+//   $Date: 2008/03/05 11:04:14 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -66,8 +66,6 @@ void CILDMMethod::initializeParameter()
 {
   addObjectReference("Number of slow variables", mSlow, CCopasiObject::ValueInt);
   addMatrixReference("Contribution of Metabolites to Slow Space", mVslow, CCopasiObject::ValueDbl);
-
-  assertParameter("Deuflhard Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-6);
 
   initializeIntegrationsParameter();
 
@@ -811,7 +809,7 @@ void CILDMMethod::start(const CState * initialState)
 
   /* ILDM related staff  */
 
-  mDtol = * mpProblem->getValue("Deuflhard Tolerance").pUDOUBLE;
+  mDtol = mpProblem->getDeufelhardTol(); 
 
   mVslow.resize(mData.dim, mData.dim);
   mVslow_metab.resize(mData.dim, mData.dim);
