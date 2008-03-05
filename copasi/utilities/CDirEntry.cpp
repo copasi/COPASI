@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDirEntry.cpp,v $
-//   $Revision: 1.23.4.1 $
+//   $Revision: 1.23.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/24 17:20:29 $
+//   $Date: 2008/03/05 16:19:07 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -402,6 +402,10 @@ bool CDirEntry::makePathRelative(std::string & absolutePath,
 
   for (i = 0; i < imax; i++)
     if (absolutePath[i] != RelativeTo[i]) break;
+
+  // We need to retract to the beginning of the current directory.
+  if (i != imax)
+    i = absolutePath.find_last_of('/', i) + 1;
 
 #ifdef WIN32
   if (i == 0) return false; // A different drive letter we cannot do anything
