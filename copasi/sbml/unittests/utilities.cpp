@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/utilities.cpp,v $
-//   $Revision: 1.1.2.1 $
+//   $Revision: 1.1.2.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/14 10:52:44 $
+//   $Date: 2008/03/06 14:44:42 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,7 +33,7 @@ bool load_cps_model_from_stream(std::istream& is, CCopasiDataModel& dataModel)
 
       CCopasiXML XML;
 
-      XML.setFunctionList(dataModel.getFunctionList()->loadedFunctions());
+      XML.setFunctionList(&dataModel.getFunctionList()->loadedFunctions());
 
       if (!XML.load(is, std::string("")))
         {
