@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.8.4.18 $
+//   $Revision: 1.8.4.19 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/02/20 20:20:06 $
+//   $Author: shoops $
+//   $Date: 2008/03/06 19:30:52 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -3344,9 +3344,11 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
                 {
                   // check if pRight is a number or a parameter that
                   // corresponds to avogadros number
-                  if (CEvaluationNode::type(pRight->getType()) == CEvaluationNode::NUMBER && (((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pRight->getType())) == CEvaluationNodeNumber::DOUBLE || ((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pRight->getType())) == CEvaluationNodeNumber::ENOTATION))
+                  if (CEvaluationNode::type(pRight->getType()) == CEvaluationNode::NUMBER &&
+                      (((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pRight->getType())) == CEvaluationNodeNumber::DOUBLE ||
+                       ((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pRight->getType())) == CEvaluationNodeNumber::ENOTATION))
                     {
-                      double value = dynamic_cast<const CEvaluationNodeNumber*>(pLeft)->value();
+                      double value = dynamic_cast<const CEvaluationNodeNumber*>(pRight)->value();
                       if (fabs((factor - value) / factor) <= 1e-3)
                         {
                           // copyBranch should be OK since the node has no
@@ -3375,32 +3377,36 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
                 }
               else
                 {
-                  // check if pRight is a reference to a species
-                  const CCopasiObject* pObject2 = CCopasiContainer::ObjectFromName(containers, dynamic_cast<const CEvaluationNodeObject*>(pRight)->getObjectCN());
-                  assert(pObject2);
-                  if (pObject2->isReference())
+                  // Check if pRight is an object node
+                  if (CEvaluationNode::type(pRight->getType()) == CEvaluationNode::OBJECT)
                     {
-                      const CCopasiObject* pParent2 = pObject2->getObjectParent();
-                      // check if the parent is a metabolite
-                      pMetab = dynamic_cast<const CMetab*>(pParent2);
-                      if (pMetab != NULL)
+                      // check if pRight is a reference to a species
+                      const CCopasiObject* pObject2 = CCopasiContainer::ObjectFromName(containers, dynamic_cast<const CEvaluationNodeObject*>(pRight)->getObjectCN());
+                      assert(pObject2);
+                      if (pObject2->isReference())
                         {
-                          // if yes, check if pLeft is a parameter that corresponds
-                          // to avogadros number
-                          if (CEvaluationNode::type(pLeft->getType()) == CEvaluationNode::OBJECT)
+                          const CCopasiObject* pParent2 = pObject2->getObjectParent();
+                          // check if the parent is a metabolite
+                          pMetab = dynamic_cast<const CMetab*>(pParent2);
+                          if (pMetab != NULL)
                             {
-                              const CCopasiObject* pObject2 = CCopasiContainer::ObjectFromName(containers, dynamic_cast<const CEvaluationNodeObject*>(pLeft)->getObjectCN());
-                              assert(pObject2);
-                              if (pObject2->isReference())
+                              // if yes, check if pLeft is a parameter that corresponds
+                              // to avogadros number
+                              if (CEvaluationNode::type(pLeft->getType()) == CEvaluationNode::OBJECT)
                                 {
-                                  const CCopasiObject* pObjectParent2 = pObject2->getObjectParent();
-                                  const CModelValue* pMV = dynamic_cast<const CModelValue*>(pObjectParent2);
-                                  if (pMV != NULL && pMV->getStatus() == CModelEntity::FIXED)
+                                  const CCopasiObject* pObject2 = CCopasiContainer::ObjectFromName(containers, dynamic_cast<const CEvaluationNodeObject*>(pLeft)->getObjectCN());
+                                  assert(pObject2);
+                                  if (pObject2->isReference())
                                     {
-                                      double value = pMV->getValue();
-                                      if (fabs((factor - value) / factor) <= 1e-3)
+                                      const CCopasiObject* pObjectParent2 = pObject2->getObjectParent();
+                                      const CModelValue* pMV = dynamic_cast<const CModelValue*>(pObjectParent2);
+                                      if (pMV != NULL && pMV->getStatus() == CModelEntity::FIXED)
                                         {
-                                          pResult = pRight->copyBranch();
+                                          double value = pMV->getValue();
+                                          if (fabs((factor - value) / factor) <= 1e-3)
+                                            {
+                                              pResult = pRight->copyBranch();
+                                            }
                                         }
                                     }
                                 }
