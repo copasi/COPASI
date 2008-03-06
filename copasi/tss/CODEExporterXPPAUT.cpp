@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporterXPPAUT.cpp,v $
-//   $Revision: 1.3.4.1 $
+//   $Revision: 1.3.4.2 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/03/03 12:10:36 $
+//   $Date: 2008/03/06 15:05:29 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -57,15 +57,15 @@ CODEExporterXPPAUT::CODEExporterXPPAUT()
 bool CODEExporterXPPAUT::exportTitleData(const CModel* /* copasiModel */, std::ofstream & outFile)
 {
 
-  outFile << "@ t0=0,";
-
+  outFile << "@ t0=0,";  //TODO
   CTrajectoryTask * pTrajectory =
     dynamic_cast<CTrajectoryTask *>((*CCopasiDataModel::Global->getTaskList())["Time-Course"]);
   CTrajectoryProblem * pTrajectoryProblem =
     dynamic_cast<CTrajectoryProblem *>(pTrajectory->getProblem());
 
   outFile << "total=" << pTrajectoryProblem->getDuration() << ",";
-  outFile << "dt=" << pTrajectoryProblem->getStepSize() << std::endl;
+  outFile << "dt=" << pTrajectoryProblem->getStepSize()
+  << ",METH=gear" << std::endl; //gear is the only method with automatic step size
 
   return true;
 }
@@ -134,10 +134,10 @@ std::string CODEExporterXPPAUT::translateObjectName(const std::string & realName
   newName = tmpName.str();
 
   unsigned C_INT32 newName_size = newName.size();
-  if (newName_size > 9)
+  if (newName_size > 7)
     {
       std::ostringstream cutName;
-      for (i = 0; i < 9; i++)
+      for (i = 0; i < 7; i++)
         cutName << newName[i];
 
       newName = cutName.str();
@@ -193,15 +193,15 @@ std::string CODEExporterXPPAUT::testName(const std::string & name)
 
       ecount_size = ecount.size();
 
-      if (ecount_size > 8)
+      if (ecount_size > 6)
         {
           CCopasiMessage(CCopasiMessage::ERROR, "too many repeated names to modify to XPP syntax"); //TODO
           fatalError();
         }
       tmpname_size = name_size + ecount_size;
-      if (tmpname_size > 9)
+      if (tmpname_size > 7)
         {
-          for (i = 0; i < (9 - ecount_size); i++)
+          for (i = 0; i < (7 - ecount_size); i++)
             tmpname << name[i];
         }
       else
@@ -215,15 +215,15 @@ void CODEExporterXPPAUT::setReservedNames()
 {
   unsigned C_INT32 i;
 
-  const std::string reserved[46] =
-    {"sin", "cos", "tan", "atan", "atan2", "sinh", "exp", "delay", "ln", "log10",
-     "log", "t", "pi", "if", "then", "else", "asin", "acos", "heav", "sign",
-     "ceil", "flr", "ran", "abs", "max", "min", "normal", "besselj", "bessely", "erf",
-     "erfs", "arg1", "arg2", "arg2", "arg4", "arg5", "arg6", "arg7", "arg8", "arg9",
-     "shift", "not", "int", "sum", "of", "t"
+  const std::string reserved[45] =
+    {"SIN", "COS", "TAN", "ATAN", "ATAN2", "SINH", "EXP", "DELAY", "LN", "LOG10",
+     "LOG", "T", "PI", "IF", "THEN", "ELSE", "ASIN", "ACOS", "HEAV", "SIGN",
+     "CEIL", "FLR", "RAN", "ABS", "MAX", "MIN", "NORMAL", "BESSELJ", "BESSELY", "ERF",
+     "ERFS", "ARG1", "ARG2", "ARG2", "ARG4", "ARG5", "ARG6", "ARG7", "ARG8", "ARG9",
+     "SHIFT", "NOT", "INT", "SUM", "OF"
     };
 
-  for (i = 0; i < 46; i++)
+  for (i = 0; i < 45; i++)
     {
       NameSet.insert(reserved[i]);
       Frequancy[reserved[i]] = 0;
@@ -360,9 +360,11 @@ bool CODEExporterXPPAUT::exportSingleMetabolite(const CMetab* metab, std::string
       }
     case CModelEntity::ASSIGNMENT:
       {
+#if 0
         assignment << "#" << comments << std::endl;
         if (!exportSingleObject(assignment, name, expression, comments))
           return false;
+#endif
         break;
       }
     default:
@@ -396,9 +398,11 @@ bool CODEExporterXPPAUT::exportSingleCompartment(const CCompartment* comp, std::
       }
     case CModelEntity::ASSIGNMENT:
       {
+#if 0
         assignment << "#" << comments << std::endl;
         if (!exportSingleObject(assignment, NameMap[comp->getKey()], expression, comments))
           return false;
+#endif
         break;
       }
     default:
@@ -431,9 +435,11 @@ bool CODEExporterXPPAUT::exportSingleModVal(const CModelValue* modval, std::stri
       }
     case CModelEntity::ASSIGNMENT:
       {
+#if 0
         assignment << "#" << comments << std::endl;
         if (!exportSingleObject(assignment, NameMap[modval->getKey()], expression, comments))
           return false;
+#endif
         break;
       }
     default:
