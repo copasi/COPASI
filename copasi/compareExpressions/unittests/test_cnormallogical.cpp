@@ -1,14 +1,19 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_cnormallogical.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/09/26 19:45:53 $
+//   $Date: 2008/03/06 11:28:49 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 #include "test_cnormallogical.hpp"
 #include "compareExpressions/CNormalLogicalItem.h"
@@ -20,6 +25,8 @@
 #include "compareExpressions/CNormalItemPower.h"
 #include "compareExpressions/CNormalProduct.h"
 #include "compareExpressions/CNormalItem.h"
+
+template void CNormalLogical::cleanSet(CNormalLogical::ItemSet&);
 
 void test_cnormallogical::setUp(){}
 

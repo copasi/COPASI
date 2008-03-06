@@ -1,14 +1,19 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_normalform.hpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/10/25 08:25:22 $
+//   $Date: 2008/03/06 11:28:49 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 #ifndef TEST_NORMALFORM_HPP__
 #define TEST_NORMALFORM_HPP__
@@ -24,6 +29,7 @@ class CNormalLogicalItem;
 class test_normalform : public CppUnit::TestFixture
   {
     CPPUNIT_TEST_SUITE(test_normalform);
+/*    
     CPPUNIT_TEST(test_item_number);
     CPPUNIT_TEST(test_item_variable);
     CPPUNIT_TEST(test_item_constant);
@@ -89,9 +95,10 @@ class test_normalform : public CppUnit::TestFixture
     CPPUNIT_TEST(test_nested_stepwise_numbers_2levels_2);
     CPPUNIT_TEST(test_nested_stepwise_numbers_2levels_3);
     CPPUNIT_TEST(test_nested_stepwise_fractions_3levels);
-
     CPPUNIT_TEST(test_nested_fractions_itempowers_1level);
+*/
     CPPUNIT_TEST(test_nested_fractions_itempower_generalpower_1level);
+    CPPUNIT_TEST(test_nested_fractions_itempower_generalpower_1level_2);/*
     CPPUNIT_TEST(test_nested_fractions_generalpower_itempower_1level);
     CPPUNIT_TEST(test_nested_fractions_generalpowers_1level);
 
@@ -104,7 +111,7 @@ class test_normalform : public CppUnit::TestFixture
     CPPUNIT_TEST(test_nested_fractions_itempower_generalpower_2level_complex);
     CPPUNIT_TEST(test_nested_fractions_generalpower_itempower_2level_complex);
     CPPUNIT_TEST(test_nested_fractions_generalpowers_2level_complex);
-
+*/
     CPPUNIT_TEST_SUITE_END();
 
   protected:
@@ -183,6 +190,7 @@ class test_normalform : public CppUnit::TestFixture
 
     void test_nested_fractions_itempowers_1level();
     void test_nested_fractions_itempower_generalpower_1level();
+    void test_nested_fractions_itempower_generalpower_1level_2();
     void test_nested_fractions_generalpower_itempower_1level();
     void test_nested_fractions_generalpowers_1level();
 
