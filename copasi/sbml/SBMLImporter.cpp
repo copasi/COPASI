@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.189.2.6.2.18 $
+//   $Revision: 1.189.2.6.2.19 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/02/29 14:46:59 $
+//   $Author: shoops $
+//   $Date: 2008/03/06 02:01:39 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -835,7 +835,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, Model* p
           delete copasiReaction;
           fatalError();
         }
-      float stoi = 1.0;
+      C_FLOAT64 stoi = 1.0;
       if (!sr->isSetStoichiometryMath())
         {
           stoi = sr->getStoichiometry() / sr->getDenominator();
@@ -897,7 +897,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, Model* p
           delete copasiReaction;
           fatalError();
         }
-      float stoi = 1.0f;
+      C_FLOAT64 stoi = 1.0;
       if (!sr->isSetStoichiometryMath())
         {
           stoi = sr->getStoichiometry() / sr->getDenominator();
