@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSBMLFileDialog.cpp,v $
-//   $Revision: 1.3.4.1 $
+//   $Revision: 1.3.4.2 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/02/01 13:04:36 $
+//   $Author: shoops $
+//   $Date: 2008/03/06 14:43:49 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -37,7 +37,7 @@ CQSBMLFileDialog::CQSBMLFileDialog(QWidget * parent ,
       this->mpSBMLVersionBox->insertItem(QString("Level %1 Version %2").arg((*it).first).arg((*it).second));
       ++it;
     }
-  this->mpSBMLVersionBox->setCurrentItem(2);
+  this->mpSBMLVersionBox->setCurrentItem(0);
   this->mpSBMLVersionBox->hide();
   this->mpSBMLVersionLabel = new QLabel("SBML Version: ", this);
   this->mpSBMLVersionLabel->hide();
