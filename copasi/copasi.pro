@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.pro,v $ 
-#   $Revision: 1.46 $ 
+#   $Revision: 1.47 $ 
 #   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2008/01/22 16:57:57 $ 
+#   $Author: gauges $ 
+#   $Date: 2008/03/06 11:24:54 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -16,7 +16,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.46 $ $Author: shoops $ $Date: 2008/01/22 16:57:57 $  
+# $Revision: 1.47 $ $Author: gauges $ $Date: 2008/03/06 11:24:54 $  
 ######################################################################
 
 TEMPLATE = subdirs
@@ -56,10 +56,6 @@ COPASISE_DIRS += utilities
 COPASISE_DIRS += xml
 
 
-!isEmpty(CPPUNIT_PATH) {
-  COPASISE_DIRS += compareExpressions/unittests
-}
-
 contains(DEFINES, COPASI_TSSA) {
   COPASISE_DIRS += tssanalysis
 }
@@ -83,7 +79,7 @@ contains(DEFINES, WITH_QWT3D) {
   COPASIUI_DIRS += barChart
 }
 
-SUBDIRS = $${COPASISE_DIRS}
+SUBDIRS += $${COPASISE_DIRS}
 
 !contains(BUILD_GUI, no) {
   SUBDIRS += $${COPASIUI_DIRS}
@@ -111,7 +107,11 @@ QMAKE_EXTRA_UNIX_TARGETS += sub-CopasiSE
 # Finally the bindings
 isEmpty(COPASI_SRC_PACKAGE) {
   SUBDIRS += bindings
+  !isEmpty(CPPUNIT_PATH) {
+    SUBDIRS += compareExpressions/unittests
+  }
 }
+  
 
 DISTDIRS = $${SUBDIRS}
 DISTDIRS -= mml
