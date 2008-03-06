@@ -4,6 +4,7 @@
 	Version="8.00"
 	Name="CopasiUI"
 	ProjectGUID="{BF155A26-1E9B-4A14-BA8D-71A8842F7839}"
+	RootNamespace="CopasiUI"
 	Keyword="MakeFileProj"
 	>
 	<Platforms>
