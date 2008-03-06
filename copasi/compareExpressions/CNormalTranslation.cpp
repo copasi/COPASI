@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/03/06 13:23:34 $
+//   $Date: 2008/03/06 20:18:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -69,7 +69,7 @@ CEvaluationNode* CNormalTranslation::simplifyTree(const CEvaluationNode* node)
 CEvaluationNode * CNormalTranslation::simplifyTreeReptdly(const CEvaluationNode* root0)
 {
   //std::cout << "<p>simplifyTreeReptly called.</p>" << std::endl;
-  std::cout << root0->getInfix() << std::endl;
+  //std::cout << root0->getInfix() << std::endl;
   CEvaluationNode * root1 = simplifyTree(root0);
   //std::cout << "<p>" << root1->getInfix() << "</p>" << std::endl;
   //std::cout << "<p>";
@@ -79,7 +79,7 @@ CEvaluationNode * CNormalTranslation::simplifyTreeReptdly(const CEvaluationNode*
   //root1->writeMathML(std::cout,std::vector<std::vector<std::string> >());
   //std::cout << "</math></p>" << std::endl;
   //root1->printRecursively(std::cout,0);
-  std::cout << root1->getInfix() << std::endl;
+  //std::cout << root1->getInfix() << std::endl;
   if (root1->getInfix() != root0->getInfix())
     {
       CEvaluationNode * root2 = simplifyTreeReptdly(root1);
