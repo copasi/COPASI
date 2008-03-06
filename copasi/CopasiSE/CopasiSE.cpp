@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
-//   $Revision: 1.39.12.5 $
+//   $Revision: 1.39.12.6 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/02/25 21:15:19 $
+//   $Author: ssahle $
+//   $Date: 2008/03/06 15:07:20 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -374,6 +374,19 @@ int main(int argc, char *argv[])
                   std::string ExportBerkeleyMadonna;
                   COptions::getValue("ExportBerkeleyMadonna", ExportBerkeleyMadonna);
                   CCopasiDataModel::Global->exportMathModel(ExportBerkeleyMadonna, NULL, "Berkeley Madonna Files (*.mmd)", true);
+
+                  // Since only one export file name can be specified we
+                  // stop execution.
+                  break;
+                }
+
+              // Check whether exporting to XPPAUT is requested.
+              if (!COptions::compareValue("ExportXPPAUT", std::string("")))
+                {
+                  // Export the Berkeley Madonna File
+                  std::string ExportXPPAUT;
+                  COptions::getValue("ExportXPPAUT", ExportXPPAUT);
+                  CCopasiDataModel::Global->exportMathModel(ExportXPPAUT, NULL, "XPPAUT (*.ode)", true);
 
                   // Since only one export file name can be specified we
                   // stop execution.
