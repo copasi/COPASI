@@ -1,19 +1,19 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_normalform.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/03/06 11:28:49 $
+//   $Date: 2008/03/06 20:17:53 $
 // End CVS Header
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include "test_normalform.hpp"
 
@@ -5152,7 +5152,6 @@ void test_normalform::test_nested_fractions_itempowers_1level()
   CPPUNIT_ASSERT(pItem != NULL);
   CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
   CPPUNIT_ASSERT(pItem->getName() == "B");
-
 }
 
 void test_normalform::test_nested_fractions_itempower_generalpower_1level()
@@ -5185,7 +5184,7 @@ void test_normalform::test_nested_fractions_itempower_generalpower_1level()
   CPPUNIT_ASSERT(pFraction2->checkDenominatorOne() == true);
   pNumerator = &pFraction2->getNumerator();
   CPPUNIT_ASSERT(pNumerator->getFractions().size() == 0);
-  pProducts=&pNumerator->getProducts();
+  pProducts = &pNumerator->getProducts();
   CPPUNIT_ASSERT(pProducts->size() == 2);
   pProduct = *(pProducts->begin());
   CPPUNIT_ASSERT(pProduct != NULL);
@@ -5216,7 +5215,7 @@ void test_normalform::test_nested_fractions_itempower_generalpower_1level()
   CPPUNIT_ASSERT(pFraction2->checkDenominatorOne() == true);
   pNumerator = &pFraction2->getNumerator();
   CPPUNIT_ASSERT(pNumerator->getFractions().size() == 0);
-  pProducts=&pNumerator->getProducts();
+  pProducts = &pNumerator->getProducts();
   CPPUNIT_ASSERT(pProducts->size() == 1);
   pProduct = *(pProducts->begin());
   CPPUNIT_ASSERT(pProduct != NULL);
@@ -5232,7 +5231,7 @@ void test_normalform::test_nested_fractions_itempower_generalpower_1level()
   CPPUNIT_ASSERT(pItem->getName() == "n");
   const CNormalSum* pDenominator = &pFraction->getDenominator();
   CPPUNIT_ASSERT(pDenominator->getFractions().size() == 0);
-  pProducts = &pNumerator->getProducts();
+  pProducts = &pDenominator->getProducts();
   CPPUNIT_ASSERT(pProducts->size() == 1);
   pProduct = *(pProducts->begin());
   CPPUNIT_ASSERT(pProduct != NULL);
@@ -5251,7 +5250,7 @@ void test_normalform::test_nested_fractions_itempower_generalpower_1level()
   CPPUNIT_ASSERT(pFraction2->checkDenominatorOne() == true);
   pNumerator = &pFraction2->getNumerator();
   CPPUNIT_ASSERT(pNumerator->getFractions().size() == 0);
-  pProducts=&pNumerator->getProducts();
+  pProducts = &pNumerator->getProducts();
   CPPUNIT_ASSERT(pProducts->size() == 2);
   pProduct = *(pProducts->begin());
   CPPUNIT_ASSERT(pProduct != NULL);
@@ -5282,7 +5281,7 @@ void test_normalform::test_nested_fractions_itempower_generalpower_1level()
   CPPUNIT_ASSERT(pFraction2->checkDenominatorOne() == true);
   pNumerator = &pFraction2->getNumerator();
   CPPUNIT_ASSERT(pNumerator->getFractions().size() == 0);
-  pProducts=&pNumerator->getProducts();
+  pProducts = &pNumerator->getProducts();
   CPPUNIT_ASSERT(pProducts->size() == 1);
   pProduct = *(pProducts->begin());
   CPPUNIT_ASSERT(pProduct != NULL);
@@ -5328,7 +5327,7 @@ void test_normalform::test_nested_fractions_itempower_generalpower_1level_2()
   CPPUNIT_ASSERT(pFraction2->checkDenominatorOne() == true);
   pNumerator = &pFraction2->getNumerator();
   CPPUNIT_ASSERT(pNumerator->getFractions().size() == 0);
-  pProducts=&pNumerator->getProducts();
+  pProducts = &pNumerator->getProducts();
   CPPUNIT_ASSERT(pProducts->size() == 2);
   pProduct = *(pProducts->begin());
   CPPUNIT_ASSERT(pProduct != NULL);
@@ -5359,7 +5358,7 @@ void test_normalform::test_nested_fractions_itempower_generalpower_1level_2()
   CPPUNIT_ASSERT(pFraction2->checkDenominatorOne() == true);
   pNumerator = &pFraction2->getNumerator();
   CPPUNIT_ASSERT(pNumerator->getFractions().size() == 0);
-  pProducts=&pNumerator->getProducts();
+  pProducts = &pNumerator->getProducts();
   CPPUNIT_ASSERT(pProducts->size() == 1);
   pProduct = *(pProducts->begin());
   CPPUNIT_ASSERT(pProduct != NULL);
@@ -5375,7 +5374,7 @@ void test_normalform::test_nested_fractions_itempower_generalpower_1level_2()
   CPPUNIT_ASSERT(pItem->getName() == "n");
   const CNormalSum* pDenominator = &pFraction->getDenominator();
   CPPUNIT_ASSERT(pDenominator->getFractions().size() == 0);
-  pProducts = &pNumerator->getProducts();
+  pProducts = &pDenominator->getProducts();
   CPPUNIT_ASSERT(pProducts->size() == 1);
   pProduct = *(pProducts->begin());
   CPPUNIT_ASSERT(pProduct != NULL);
@@ -5394,7 +5393,7 @@ void test_normalform::test_nested_fractions_itempower_generalpower_1level_2()
   CPPUNIT_ASSERT(pFraction2->checkDenominatorOne() == true);
   pNumerator = &pFraction2->getNumerator();
   CPPUNIT_ASSERT(pNumerator->getFractions().size() == 0);
-  pProducts=&pNumerator->getProducts();
+  pProducts = &pNumerator->getProducts();
   CPPUNIT_ASSERT(pProducts->size() == 2);
   pProduct = *(pProducts->begin());
   CPPUNIT_ASSERT(pProduct != NULL);
@@ -5425,7 +5424,7 @@ void test_normalform::test_nested_fractions_itempower_generalpower_1level_2()
   CPPUNIT_ASSERT(pFraction2->checkDenominatorOne() == true);
   pNumerator = &pFraction2->getNumerator();
   CPPUNIT_ASSERT(pNumerator->getFractions().size() == 0);
-  pProducts=&pNumerator->getProducts();
+  pProducts = &pNumerator->getProducts();
   CPPUNIT_ASSERT(pProducts->size() == 1);
   pProduct = *(pProducts->begin());
   CPPUNIT_ASSERT(pProduct != NULL);
@@ -5443,7 +5442,7 @@ void test_normalform::test_nested_fractions_itempower_generalpower_1level_2()
 
 void test_normalform::test_nested_fractions_generalpower_itempower_1level()
 {
-  std::string infix("(A+B)^n/(A+B)^2");
+  std::string infix("(A+B)^n/(A+B)^2"); // -> (A+B)^n/(A+B)^2
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
@@ -5455,7 +5454,7 @@ void test_normalform::test_nested_fractions_generalpower_itempower_1level()
 
 void test_normalform::test_nested_fractions_generalpowers_1level()
 {
-  std::string infix("(A+B)^2/(A+B)^l");
+  std::string infix("(A+B)^2/(A+B)^l"); // -> (A+B)^2/(A+B)^l
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
@@ -5467,7 +5466,7 @@ void test_normalform::test_nested_fractions_generalpowers_1level()
 
 void test_normalform::test_nested_fractions_itempowers_2level()
 {
-  std::string infix("((A+B)/F)^3/((A+B)/F)");
+  std::string infix("((A+B)/F)^3/((A+B)/F)"); // -> ((A+B)/F)^2
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
@@ -5479,7 +5478,7 @@ void test_normalform::test_nested_fractions_itempowers_2level()
 
 void test_normalform::test_nested_fractions_itempower_generalpower_2level()
 {
-  std::string infix("((A+B)/F)^(n-2)/((A+B)/F)^3");
+  std::string infix("((A+B)/F)^(n-2)/((A+B)/F)^3"); // -> ((A+B)/F)^n/((A+B)/F)^5 I don't know if the current code gets rid of the double fraction
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
@@ -5491,7 +5490,7 @@ void test_normalform::test_nested_fractions_itempower_generalpower_2level()
 
 void test_normalform::test_nested_fractions_generalpower_itempower_2level()
 {
-  std::string infix("((A+B)/F)^3/((A+B)/F)^(n+3)");
+  std::string infix("((A+B)/F)^3/((A+B)/F)^(n+3)"); // -> 1/((A+B)/F)^n
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
@@ -5503,7 +5502,7 @@ void test_normalform::test_nested_fractions_generalpower_itempower_2level()
 
 void test_normalform::test_nested_fractions_generalpowers_2level()
 {
-  std::string infix("((A+B)/F)^(n-2)/((A+B)/F)^(x+3)");
+  std::string infix("((A+B)/F)^(n-2)/((A+B)/F)^(x+3)"); // -> ((A+B)/F)^n/(((A+B)/F)^x*((A+B)/F)^5)
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
@@ -5515,7 +5514,7 @@ void test_normalform::test_nested_fractions_generalpowers_2level()
 
 void test_normalform::test_nested_fractions_itempowers_2level_complex()
 {
-  std::string infix("(((A*B)+(C*D))/((E*F)+(G*H)))^4/(((A*B)+(C*D))/((E*F)+(G*H)))^5");
+  std::string infix("(((A*B)+(C*D))/((E*F)+(G*H)))^4/(((A*B)+(C*D))/((E*F)+(G*H)))^5"); // -> 1/(((A*B)+(C*D))/((E*F)+(G*H)))
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
@@ -5527,7 +5526,7 @@ void test_normalform::test_nested_fractions_itempowers_2level_complex()
 
 void test_normalform::test_nested_fractions_itempower_generalpower_2level_complex()
 {
-  std::string infix("(((A*B)+(C*D))/((E*F)+(G*H)))^4/(((A*B)+(C*D))/((E*F)+(G*H)))^(n-3)");
+  std::string infix("(((A*B)+(C*D))/((E*F)+(G*H)))^4/(((A*B)+(C*D))/((E*F)+(G*H)))^(n-3)"); // -> (((A*B)+(C*D))/((E*F)+(G*H)))/(((A*B)+(C*D))/((E*F)+(G*H)))^n
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
@@ -5539,7 +5538,7 @@ void test_normalform::test_nested_fractions_itempower_generalpower_2level_comple
 
 void test_normalform::test_nested_fractions_generalpower_itempower_2level_complex()
 {
-  std::string infix("(((A*B)+(C*D))/((E*F)+(G*H)))^(n-3)/(((A*B)+(C*D))/((E*F)+(G*H)))^5");
+  std::string infix("(((A*B)+(C*D))/((E*F)+(G*H)))^(n-3)/(((A*B)+(C*D))/((E*F)+(G*H)))^5"); // -> (((A*B)+(C*D))/((E*F)+(G*H)))^n/(((A*B)+(C*D))/((E*F)+(G*H)))^8
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
@@ -5551,7 +5550,7 @@ void test_normalform::test_nested_fractions_generalpower_itempower_2level_comple
 
 void test_normalform::test_nested_fractions_generalpowers_2level_complex()
 {
-  std::string infix("(((A*B)+(C*D))/((E*F)+(G*H)))^(n-3)/(((A*B)+(C*D))/((E*F)+(G*H)))^(x+7)");
+  std::string infix("(((A*B)+(C*D))/((E*F)+(G*H)))^(n-3)/(((A*B)+(C*D))/((E*F)+(G*H)))^(x+7)"); // -> (((A*B)+(C*D))/((E*F)+(G*H)))^n/((((A*B)+(C*D))/((E*F)+(G*H)))^x*(((A*B)+(C*D))/((E*F)+(G*H)))^10)
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
