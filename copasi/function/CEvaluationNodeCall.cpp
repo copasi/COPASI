@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeCall.cpp,v $
-//   $Revision: 1.23.4.3 $
+//   $Revision: 1.23.4.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/04 17:10:41 $
+//   $Author: ssahle $
+//   $Date: 2008/03/06 16:29:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -431,10 +431,8 @@ void CEvaluationNodeCall::writeMathML(std::ostream & out,
       case DELAY:
         {
 
-#if 0
-          if (!expand)
+          if (!expand || !mpFunction)
             {
-#endif
               out << SPC(l) << "<mrow>" << std::endl;
 
               out << SPC(l + 1) << "<mi>" << mData << "</mi>" << std::endl;
@@ -460,10 +458,25 @@ void CEvaluationNodeCall::writeMathML(std::ostream & out,
 
               out << SPC(l + 1) << "</mrow>" << std::endl;
               out << SPC(l) << "</mrow>" << std::endl;
-#if 0
             }
-          // else  :TODO
-#endif
+          else
+            {
+              //construct the environment for the nested function
+              std::vector<std::vector<std::string> > env2;
+
+              std::vector< CEvaluationNode * >::const_iterator it = mCallNodes.begin();
+              std::vector< CEvaluationNode * >::const_iterator end = mCallNodes.end();
+              for (; it != end; ++it)
+                {
+                  std::ostringstream oss;
+                  (*it)->writeMathML(oss, env, expand, l + 3);
+                  std::vector<std::string> tmpvector; tmpvector.push_back(oss.str());
+                  env2.push_back(tmpvector);
+                }
+              out << SPC(l) << "<mfenced>" << std::endl;
+              mpFunction->writeMathML(out, env2, expand, expand, l + 1);
+              out << SPC(l) << "</mfenced>" << std::endl;
+            }
         }
         break;
 
