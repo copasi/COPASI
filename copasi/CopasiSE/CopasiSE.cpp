@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
-//   $Revision: 1.39.12.6 $
+//   $Revision: 1.39.12.7 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/03/06 15:07:20 $
+//   $Author: shoops $
+//   $Date: 2008/03/06 17:42:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -57,6 +57,7 @@
 
 void writeLogo();
 int validate();
+int exportSBML();
 
 int main(int argc, char *argv[])
 {
@@ -259,12 +260,8 @@ int main(int argc, char *argv[])
 
           // Check whether exporting to SBML is requested.
           if (!COptions::compareValue("ExportSBML", std::string("")))
-            {
-              // Export the SBML File
-              std::string ExportSBML;
-              COptions::getValue("ExportSBML", ExportSBML);
-              CCopasiDataModel::Global->exportSBML(ExportSBML, true);
-            }
+            retcode = exportSBML();
+
           if (!COptions::compareValue("OldExportSBML", std::string("")))
             {
               // Export the SBML File
@@ -336,16 +333,7 @@ int main(int argc, char *argv[])
 
               // Check whether exporting to SBML is requested.
               if (!COptions::compareValue("ExportSBML", std::string("")))
-                {
-                  // Export the SBML File
-                  std::string ExportSBML;
-                  COptions::getValue("ExportSBML", ExportSBML);
-                  CCopasiDataModel::Global->exportSBML(ExportSBML, true);
-
-                  // Since only one export file name can be specified we
-                  // stop execution.
-                  break;
-                }
+                retcode = exportSBML();
               if (!COptions::compareValue("OldExportSBML", std::string("")))
                 {
                   // Export the SBML File
@@ -504,6 +492,54 @@ int validate()
 
         CCopasiDataModel::Global->finish();
       }
+
+  return retcode;
+}
+
+int exportSBML()
+{
+  int retcode = 0;
+
+  // Export the SBML File
+  std::string ExportSBML;
+  COptions::getValue("ExportSBML", ExportSBML);
+  copasi::SBMLSchema_enum SBMLSchema;
+  COptions::getValue("SBMLSchema", SBMLSchema);
+
+  int Level;
+  int Version;
+
+  switch (SBMLSchema)
+    {
+    case copasi::SBMLSchema_L1V1:
+      Level = 1;
+      Version = 1;
+      break;
+
+    case copasi::SBMLSchema_L1V2:
+      Level = 1;
+      Version = 2;
+      break;
+
+    case copasi::SBMLSchema_L2V1:
+      Level = 2;
+      Version = 1;
+      break;
+
+    case copasi::SBMLSchema_L2V2:
+      Level = 2;
+      Version = 2;
+      break;
+
+    case copasi::SBMLSchema_L2V3:
+    default:
+      Level = 2;
+      Version = 3;
+      break;
+    }
+
+  if (!CCopasiDataModel::Global->exportSBML(ExportSBML, true, Level, Version))
+    retcode = 1;
 
   return retcode;
 }
