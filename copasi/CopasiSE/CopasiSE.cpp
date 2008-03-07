@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
-//   $Revision: 1.39.12.8 $
+//   $Revision: 1.39.12.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/07 15:11:20 $
+//   $Date: 2008/03/07 18:28:05 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -255,22 +255,17 @@ int main(int argc, char *argv[])
               goto finish;
             }
 
+          // Check whether exporting to SBML is requested.
+          if (!COptions::compareValue("ExportSBML", std::string("")))
+            {
+              retcode = exportSBML();
+              goto finish;
+            }
+
           if (Validate)
             {
               retcode = validate();
               goto finish;
-            }
-
-          // Check whether exporting to SBML is requested.
-          if (!COptions::compareValue("ExportSBML", std::string("")))
-            retcode = exportSBML();
-
-          if (!COptions::compareValue("OldExportSBML", std::string("")))
-            {
-              // Export the SBML File
-              std::string OldExportSBML;
-              COptions::getValue("OldExportSBML", OldExportSBML);
-              CCopasiDataModel::Global->oldExportSBML(OldExportSBML, true);
             }
 
           // If no export file was given, we write to the save file or
@@ -333,22 +328,14 @@ int main(int argc, char *argv[])
                   continue;
                 }
 
-              if (Validate)
-                {
-                  retcode |= validate();
-                  continue;
-                }
-
               // Check whether exporting to SBML is requested.
               if (!COptions::compareValue("ExportSBML", std::string("")))
-                retcode = exportSBML();
-
-              if (!COptions::compareValue("OldExportSBML", std::string("")))
                 {
-                  // Export the SBML File
-                  std::string OldExportSBML;
-                  COptions::getValue("OldExportSBML", OldExportSBML);
-                  CCopasiDataModel::Global->oldExportSBML(OldExportSBML, true);
+                  retcode = exportSBML();
+
+                  // Since only one export file name can be specified we
+                  // stop execution.
+                  break;
                 }
 
               // Check whether exporting to C code is requested.
@@ -406,6 +393,12 @@ int main(int argc, char *argv[])
                   // Since only one export file name can be specified we
                   // stop execution.
                   break;
+                }
+
+              if (Validate)
+                {
+                  retcode |= validate();
+                  continue;
                 }
 
               CCopasiVectorN< CCopasiTask > & TaskList = * CCopasiDataModel::Global->getTaskList();

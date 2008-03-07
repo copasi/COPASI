@@ -3,10 +3,10 @@
 -->
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptionParser.xml,v $ -->
-<!--   $Revision: 1.14.14.4 $ -->
+<!--   $Revision: 1.14.14.5 $ -->
 <!--   $Name:  $ -->
-<!--   $Author: gauges $ -->
-<!--   $Date: 2008/02/01 13:04:36 $ -->
+<!--   $Author: shoops $ -->
+<!--   $Date: 2008/03/07 18:27:52 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -227,15 +227,6 @@
      <enum id="L2V3" name="L2V3" />
      <name>SBMLSchema</name>
      <comment>The Schema of the SBML file to export.</comment>
-   </option>
-   <option id="OldExportSBML"
-           type="string"
-           mandatory="no"
-           strict="yes"
-           location="commandline"
-           hidden="no">
-    <name>oldExportSBML</name>
-    <comment>The SBML file to export.</comment>
    </option>
    <option id="ExportBerkeleyMadonna"
            type="string"
