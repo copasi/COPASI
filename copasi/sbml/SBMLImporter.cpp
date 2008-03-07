@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.189.2.6.2.21 $
+//   $Revision: 1.189.2.6.2.22 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/03/07 09:44:49 $
+//   $Date: 2008/03/07 16:26:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -3767,40 +3767,40 @@ void SBMLImporter::importRuleForModelEntity(const Rule* rule, CModelEntity* pME,
 
 void SBMLImporter::checkRuleMathConsistency(const Rule* pRule, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
 {
-  // only check if Level2 Version1 ?????
-  //if(this->mLevel==2 && this->mVersion==1)
-  {
-    // check if no nodes with ids of objects are used in an assignmet that are
-    // set in another assignment rule later on
-    std::set<std::string> idSet;
-    const ASTNode* pNode = pRule->getMath();
-    this->getIdsFromNode(pNode, idSet);
-    Model* sbmlModel = dynamic_cast<Model*>(copasi2sbmlmap[mpCopasiModel]);
-    if (!sbmlModel) fatalError();
-    unsigned int i, iMax = sbmlModel->getNumRules();
-    for (i = 0;i < iMax;++i)
-      {
-        if (sbmlModel->getRule(i) == pRule)
-          {
-            break;
-          }
-      }
-    Rule* pR;
-    SBMLTypeCode_t type;
-    while (i < iMax)
-      {
-        pR = sbmlModel->getRule(i);
-        type = pR->getTypeCode();
-        if (type == SBML_ASSIGNMENT_RULE)
-          {
-            if (idSet.find(dynamic_cast<AssignmentRule*>(pR)->getVariable()) != idSet.end())
-              {
-                CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 37, dynamic_cast<AssignmentRule*>(pR)->getVariable().c_str());
-              }
-          }
-        ++i;
-      }
-  }
+  // only check if Level2 Version1
+  if (this->mLevel == 2 && this->mVersion == 1)
+    {
+      // check if no nodes with ids of objects are used in an assignmet that are
+      // set in another assignment rule later on
+      std::set<std::string> idSet;
+      const ASTNode* pNode = pRule->getMath();
+      this->getIdsFromNode(pNode, idSet);
+      Model* sbmlModel = dynamic_cast<Model*>(copasi2sbmlmap[mpCopasiModel]);
+      if (!sbmlModel) fatalError();
+      unsigned int i, iMax = sbmlModel->getNumRules();
+      for (i = 0;i < iMax;++i)
+        {
+          if (sbmlModel->getRule(i) == pRule)
+            {
+              break;
+            }
+        }
+      Rule* pR;
+      SBMLTypeCode_t type;
+      while (i < iMax)
+        {
+          pR = sbmlModel->getRule(i);
+          type = pR->getTypeCode();
+          if (type == SBML_ASSIGNMENT_RULE)
+            {
+              if (idSet.find(dynamic_cast<AssignmentRule*>(pR)->getVariable()) != idSet.end())
+                {
+                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 37, dynamic_cast<AssignmentRule*>(pR)->getVariable().c_str());
+                }
+            }
+          ++i;
+        }
+    }
 }
 
 void SBMLImporter::getIdsFromNode(const ASTNode* pNode, std::set<std::string>& idSet)
