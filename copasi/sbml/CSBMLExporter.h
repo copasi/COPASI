@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.h,v $
-//   $Revision: 1.7.4.9 $
+//   $Revision: 1.7.4.10 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/18 20:09:12 $
+//   $Date: 2008/03/07 20:42:05 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -53,6 +53,7 @@ class CSBMLExporter
     unsigned int mSBMLLevel;
     unsigned int mSBMLVersion;
     std::vector<CModelEntity*> mAssignmentVector;
+    std::vector<CModelEntity*> mODEVector;
     std::vector<CModelEntity*> mInitialAssignmentVector;
     std::map<const CCopasiObject*, SBase*> mCOPASI2SBMLMap;
     std::set<SBase*> mHandledSBMLObjects;
@@ -369,7 +370,7 @@ class CSBMLExporter
     /**
      * Sorts the rules.
      */
-    void orderRules(const CCopasiDataModel& dataModel);
+    std::vector<CModelEntity*> orderRules(const CCopasiDataModel& dataModel);
 
     /**
      * Creates a new COPASI2SBMLMap baed on the old map and the copied

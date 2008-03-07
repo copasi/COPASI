@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.8.4.19 $
+//   $Revision: 1.8.4.20 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/06 19:30:52 $
+//   $Author: gauges $
+//   $Date: 2008/03/07 20:42:05 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -329,7 +329,7 @@ void CSBMLExporter::createCompartment(CCompartment& compartment)
   else if (status == CModelEntity::ODE)
     {
       this->mVariableVolumes = true;
-      this->mAssignmentVector.push_back(&compartment);
+      this->mODEVector.push_back(&compartment);
       pSBMLCompartment->setConstant(false);
       if (compartment.getInitialExpression() != "")
         {
@@ -454,7 +454,7 @@ void CSBMLExporter::createMetabolite(CMetab& metab)
     }
   else if (status == CModelEntity::ODE)
     {
-      this->mAssignmentVector.push_back(&metab);
+      this->mODEVector.push_back(&metab);
       pSBMLSpecies->setConstant(false);
       pSBMLSpecies->setBoundaryCondition(true);
       if (metab.getInitialExpression() != "")
@@ -563,7 +563,7 @@ void CSBMLExporter::createParameter(CModelValue& modelValue)
     }
   else if (status == CModelEntity::ODE)
     {
-      this->mAssignmentVector.push_back(&modelValue);
+      this->mODEVector.push_back(&modelValue);
       pParameter->setConstant(false);
       if (modelValue.getInitialExpression() != "")
         {
@@ -857,19 +857,30 @@ void CSBMLExporter::createInitialAssignment(const CModelEntity& modelEntity, CCo
 void CSBMLExporter::createRules(CCopasiDataModel& dataModel)
 {
   // make sure the mAssignmentVector has been filled already
+  // make sure the mODEVector has been filled already
   // order the rules for Level 1 export
   // rules in Level 2 are not ordered.
-  if (this->mSBMLLevel == 1 || (this->mSBMLLevel == 2 && this->mSBMLVersion == 1))
-    {
-      orderRules(dataModel);
-    }
+  //if (this->mSBMLLevel == 1 || (this->mSBMLLevel == 2 && this->mSBMLVersion == 1))
+  //  {
+  std::vector<CModelEntity*> orderedAssignmentRules = orderRules(dataModel);
+  //}
 
   // create the rules
-  unsigned int i, iMax = mAssignmentVector.size();
   const CModelEntity* pME = NULL;
+  unsigned int i, iMax = orderedAssignmentRules.size();
   for (i = 0;i < iMax;++i)
     {
-      pME = mAssignmentVector[i];
+      pME = orderedAssignmentRules[i];
+      assert(pME != NULL);
+      if (pME != NULL)
+        {
+          createRule(*pME, dataModel);
+        }
+    }
+  iMax = mODEVector.size();
+  for (i = 0;i < iMax;++i)
+    {
+      pME = mODEVector[i];
       assert(pME != NULL);
       if (pME != NULL)
         {
@@ -1152,6 +1163,17 @@ void CSBMLExporter::checkForUnsupportedObjectReferences(const CCopasiDataModel& 
           checkForUnsupportedObjectReferences(*pME->getExpressionPtr(), dataModel, sbmlLevel, sbmlVersion, result);
         }
     }
+  // check ode rules
+  iMax = this->mODEVector.size();
+  for (i = 0;i < iMax;++i)
+    {
+      pME = this->mODEVector[i];
+      assert(pME != NULL);
+      if (pME != NULL)
+        {
+          checkForUnsupportedObjectReferences(*pME->getExpressionPtr(), dataModel, sbmlLevel, sbmlVersion, result);
+        }
+    }
   // check initial assignments
   iMax = this->mInitialAssignmentVector.size();
   for (i = 0;i < iMax;++i)
@@ -1377,6 +1399,17 @@ void CSBMLExporter::checkForUnsupportedFunctionCalls(const CCopasiDataModel& dat
   for (i = 0;i < iMax;++i)
     {
       pME = mAssignmentVector[i];
+      assert(pME != NULL);
+      if (pME != NULL)
+        {
+          checkForUnsupportedFunctionCalls(*pME->getExpressionPtr()->getRoot(), unsupportedFunctionTypes, result, pME->getObjectName(), pME->getObjectType());
+        }
+    }
+  // check ode rules
+  iMax = mODEVector.size();
+  for (i = 0;i < iMax;++i)
+    {
+      pME = mODEVector[i];
       assert(pME != NULL);
       if (pME != NULL)
         {
@@ -2476,7 +2509,7 @@ const std::set<CFunction*> CSBMLExporter::createFunctionSetFromFunctionNames(con
   return result;
 }
 
-void CSBMLExporter::orderRules(const CCopasiDataModel& dataModel)
+std::vector<CModelEntity*> CSBMLExporter::orderRules(const CCopasiDataModel& dataModel)
 {
   // make sure the vector of rules is filled
   std::map<CModelEntity*, std::set<const CModelEntity*> > dependencyMap;
@@ -2505,14 +2538,34 @@ void CSBMLExporter::orderRules(const CCopasiDataModel& dataModel)
   // now sort the entities according to their dependencies
   bool error = false;
   std::vector<CModelEntity*> orderedRules;
-  while (error = false && !dependencyMap.empty())
+  // remove all dependencies that don't have assignment rules themselves
+  std::map<CModelEntity*, std::set<const CModelEntity*> > reducedDependencyMap;
+  std::map<CModelEntity*, std::set<const CModelEntity*> >::iterator mapIt = dependencyMap.begin(), mapEndit = dependencyMap.end();
+  while (mapIt != mapEndit)
     {
-      std::map<CModelEntity*, std::set<const CModelEntity*> >::iterator mapIt = dependencyMap.begin(), mapEndit = dependencyMap.end();
+      std::set<const CModelEntity*> dependencies;
+      std::set<const CModelEntity*>::const_iterator setIt = mapIt->second.begin(), setEndit = mapIt->second.end();
+      while (setIt != setEndit)
+        {
+          if (dependencyMap.find(const_cast<CModelEntity*>(*setIt)) != dependencyMap.end())
+            {
+              dependencies.insert(*setIt);
+            }
+          ++setIt;
+        }
+      reducedDependencyMap[mapIt->first] = dependencies;
+      ++mapIt;
+    }
+  while (error == false && !reducedDependencyMap.empty())
+    {
+      mapIt = reducedDependencyMap.begin(), mapEndit = reducedDependencyMap.end();
       // if we cant't remove anything in one round, we have a circular
       // dependency
       error = true;
       while (mapIt != mapEndit)
         {
+          // if the dependency list of the item is not empty
+          // we remove all entities that have been removed already
           if (!mapIt->second.empty())
             {
               std::vector<CModelEntity*>::iterator vIt = orderedRules.begin(), vEndit = orderedRules.end();
@@ -2528,13 +2581,21 @@ void CSBMLExporter::orderRules(const CCopasiDataModel& dataModel)
             }
           if (mapIt->second.empty())
             {
+              // since the dependencies are empty, we can add the rule to be
+              // exported
               orderedRules.push_back(mapIt->first);
               // now we know that we could remove something in this round
               error = false;
+              break;
             }
           ++mapIt;
         }
+      if (error == false)
+        {
+          reducedDependencyMap.erase(mapIt);
+        }
     }
+  return orderedRules;
 }
 
 void CSBMLExporter::findModelEntityDependencies(const CEvaluationNode* pNode, const CCopasiDataModel& dataModel, std::set<const CModelEntity*>& dependencies)
@@ -2546,7 +2607,14 @@ void CSBMLExporter::findModelEntityDependencies(const CEvaluationNode* pNode, co
       assert(pObjectNode != NULL);
       if (pObjectNode != NULL)
         {
-          const CModelEntity* pME = dynamic_cast<const CModelEntity*>(CCopasiContainer::ObjectFromName(pObjectNode->getObjectCN()));
+          const CCopasiObject* pObject = CCopasiContainer::ObjectFromName(pObjectNode->getObjectCN());
+          assert(pObject);
+          if (pObject->isReference())
+            {
+              pObject = pObject->getObjectParent();
+              assert(pObject != NULL);
+            }
+          const CModelEntity* pME = dynamic_cast<const CModelEntity*>(pObject);
           if (pME != NULL)
             {
               dependencies.insert(pME);
