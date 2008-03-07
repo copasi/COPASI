@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMessage.cpp,v $
-//   $Revision: 1.37 $
+//   $Revision: 1.37.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/29 13:17:19 $
+//   $Date: 2008/03/07 15:11:19 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -306,7 +311,7 @@ void CCopasiMessage::handler(const bool & /* _throw */)
   if (COptions::compareValue("Verbose", true) &&
       mNumber != MCCopasiMessage + 1)
     {
-      std::cerr << mText << std::endl;
+      std::cout << mText << std::endl;
 
 #ifdef COPASI_DEBUG
       DebugFile << mText << std::endl;
