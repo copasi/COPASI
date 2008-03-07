@@ -1,10 +1,10 @@
 <chapter id="modelCreation" xreflabel="Model Creation">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_GUI.xml,v $ -->
-<!--   $Revision: 1.49.4.7 $ -->
+<!--   $Revision: 1.49.4.8 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: pwilly $ -->
-<!--   $Date: 2008/03/07 07:54:20 $ -->
+<!--   $Date: 2008/03/07 10:49:42 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -354,7 +354,7 @@ So COPASI would display a concentration of
 You are able to easily change the display between concentrations and particle numbers by selecting the dropdown list in the menu bar at the top. COPASI, per default, displays the concentrations.
 </para>
 <para>
-With the drop-down list labeled <guilabel>Rate Law
+With the dropdown list labeled <guilabel>Rate Law
 Interpretation</guilabel> you can specify how COPASI should interpret
 the kinetic rate laws you specify for your reactions. Per default,
 COPASI will interpret all rate laws as deterministic rate laws. Since
@@ -366,7 +366,7 @@ written for stochastic simulation and where the before mentioned
 corrections have already been made by the modeler. So if you have a
 model with rate laws that have been written be used in a stochastic
 simulation, you have to specify this by selecting stochastic from this
-drop-down list. If you do this, COPASI will not apply any corrections
+dropdown list. If you do this, COPASI will not apply any corrections
 to the rate laws specified in the model when doing stochastic
 simulation. 
 </para>
@@ -1330,7 +1330,7 @@ function string only covers the right side of the rate function.
 </para>
 <para>
 <screenshot>
-<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/18/2008</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 03/07/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Functions_02.png" format="PNG" scale="50" align="center" />
@@ -1418,7 +1418,7 @@ parameters. All parameters that COPASI finds are listed in the
 </para>
 <para>
 <screenshot>
-<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/18/2008</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 03/07/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Functions_03.png" format="PNG" scale="50" align="center" />
@@ -2176,7 +2176,7 @@ corresponds to step 2, or you can click the
 <guibutton>forward</guibutton> button which will always bring you to
 the next step. If you would like to reread something from an earlier
 step, you can move to the specific step with the buttons or use the
-<guibutton>forward</guibutton> and <guibutton>back</guibutton>
+<guibutton>forward&gt;&gt;</guibutton> and <guibutton>&lt;&lt;back</guibutton>
 buttons to navigate. 
 </para>
 <para>
@@ -2241,8 +2241,8 @@ For some of the calculation tasks predefined reports exist in
 COPASI. They are automatically created when COPASI is started or when
 a file is loaded that does not already contain them. These reports
 have the same name as the task they are suitable for. E.g. the
-predefined report for steady state calculations is "Steady-State". The
-predefined reports print a description of the settings you provided
+predefined report for Steady-State calculations is <emphasis>Steady-State</emphasis>. 
+The predefined reports print a description of the settings you provided
 for the calculation, usually (if it applies for the specific
 calculation) a table with intermediate results, and in the end a
 detailed report of the result. The report definitions can be changed
@@ -2250,13 +2250,13 @@ or deleted using the mechanism described in the <xref
 linkend="manualOutputDefinitions" /> section. If you changed one of
 the predefined reports and want to go back to the original, just
 delete the report definition and save the file. When you load it again
-the now missing default report will be generated automatically. 
+the current missing default report will be generated automatically. 
 </para>
 <para>
 If you want to use the predefined reports you have to make sure that
 the report is selected for a task and that a filename is associated
-with it. For this you can use the "Report" button as described in the
-sections about the specific calculation tasks below. 
+with the report. For this you can use the <guibutton>Report</guibutton> button as 
+described in the sections about the specific calculation tasks below. 
 </para>
 </sect1>
 	
@@ -2267,8 +2267,8 @@ The output assistant presents the easiest way to generate your own
 output definitions which you can later adapt to your wishes using the
 techniques described in <xref linkend="manualOutputDefinitions"
 />. Almost all task dialogs in COPASI have a button at the lower right
-that is labeled <guibutton>Output Assistant</guibutton>. If you click
-on this button, a new dialog will open that presents you with a list
+that is labeled <guilabel>Output Assistant</guilabel>. If you click
+on this button, a new dialog will open with a list
 of predefined output definitions on the left. If you select one of the
 output definitions from the list, you will get a short description of
 what the output does on the right side of the dialog. Above the
@@ -2277,6 +2277,26 @@ changed in order to be able to identify the different output
 definitions in case you are planning on creating more than one output
 definition of a certain type. Using this dialog both plots and reports
 can be created. 
+</para>
+<para>
+Creating an instance of the selected output objects is as easy as
+clicking on <guibutton>Create!</guibutton> at the bottom of the
+dialog. Once you clicked this button, a new report or plot, depending
+on what you selected in the dialog, will appear in the corresponding
+branch of the <guibutton>Output</guibutton> section of the model
+tree. The <guibutton>Output</guibutton> branch is the second to last branch 
+in the tree on
+the left. The name of the output definitions will be the title of the
+object which you selected from the list. If another output definition
+in this section already has the same name, a postfix will be appended
+to the name. The so created output can now be edited or deleted. If
+the newly created output is a report it will automatically be selected
+as the active report for the current task. You then still have to
+select a filename for the output using the <guibutton>Report</guibutton> button. 
+This is
+described in the sections about the specific calculation tasks
+below. How output definitions are created, edit and deleted manually
+is the topic of the next sections. 
 </para>
 <para>
 <screenshot>
@@ -2297,24 +2317,7 @@ can be created.
 </mediaobject>
 </screenshot>
 </para>
-<para>
-Creating an instance of the selected output objects is as easy a
-clicking on <guibutton>Create!</guibutton> at the bottom of the
-dialog. Once you clicked this button, a new report or plot, depending
-on what you selected in the dialog, will appear in the corresponding
-branch of the <guilabel>Output</guilabel> section of the model
-tree. The Output branch is the second to last branch in the tree on
-the left. The name of the output definitions will be the title of the
-object which you selected from the list. If another output definition
-in this section already has the same name, a postfix will be appended
-to the name. The so created output can now be edited or deleted. If
-the newly created output is a report it will automatically be selected
-as the active report for the current task. You then still have to
-select a filename for the output using the "report" button. This is
-described in the sections about the specific calculation tasks
-below. How output definitions are created, edit and deleted manually
-is the topic of the next sections. 
-</para>
+
 </sect1>
 <sect1 id="manualOutputDefinitions" xreflabel="Manual Definition">
 <title>Manual Definition</title>
@@ -2324,7 +2327,7 @@ is the topic of the next sections.
 This section describes how to create or edit a report definition. Keep
 in mind that you still have to select this report for the specific
 calculation task you want to perform. You can do this (and also choose
-a filename to write to) using the "Report" button as described below
+a filename to write to) using the <guibutton>Report</guibutton> button as described below
 in the sections about the different tasks. 
 </para>
 <para>
@@ -2353,20 +2356,19 @@ tree. Double clicking on an empty row in the table creates a new
 report object and opens the dialog for modifying the report
 definition. In this dialog, you can specify a name for the report in
 the <guilabel>Name</guilabel> field. From the
-<guilabel>Task</guilabel> drop-down list, you can choose for which
-kind of task this report should be written, so if you want to store
-the result of a time course, you choose
+<guilabel>Task</guilabel> dropdown list, you can choose for which
+kind of task this report should be written. So if you want to store
+the result of a time course, you should choose
 <emphasis>Time-Course</emphasis> here. The report usually stores the
 results of its task as a table; the standard separator character for
 elements in this table is the tab character (\t). If you want to have
 another character as the separator field, you have to uncheck the
-<guilabel>&lt;tab&gt;</guilabel> check box and specify the separator
-character or string you want in the <guilabel>Separator</guilabel>
-field.
+<guilabel>&lt;tab&gt;</guilabel> checkbox and specify the separator
+character or string you want in the <guilabel>Separator</guilabel> field.
 </para>
 <para>
-Beside the <guilabel>&lt;tab&gt;</guilabel> check box there is another
-input field labeled <guilabel>Precision</guilabel> with this field you
+Beside the <guilabel>&lt;tab&gt;</guilabel> checkbox there is another
+input field labeled <guilabel>Precision</guilabel>. With this field you
 can specify how many significant digits are used for numerical
 output. The default value is 6. 
 </para>
@@ -2374,29 +2376,6 @@ output. The default value is 6.
 If you want to, you can also add a comment for the report, e.g. you
 could state what this report is supposed to represent. 
 </para>
-<para>
-Next you have to define the objects that you want to appear in the
-report. There are two modes to define a report definition. Per
-default, the report is laid out as a table. E.g. the report for a time
-course simulation will write one line per time step and each line will
-typically contain the time followed by one or more species
-concentrations. In the advanced mode, which you enter by clicking on
-the button labeled <guibutton>Advanced</guibutton>, the report is
-split up into three sections, a header, a body and a footer. You can
-define the output for each of the sections separately by clicking on
-the corresponding tab. In order to get back to the standard table
-layout, you have to click on the <guibutton>Advanced</guibutton>
-again. COPASI will warn you that you might loose some information by
-converting from the advanced report definition format to the table
-format. 
-</para>
-<para>
-Let's discuss how to define a report definition with table layout
-first since you will probably use this most of the time. To add a new
-object to the report definition, you have to click on the button
-labeled <guibutton>item</guibutton>. This will open the object browser
-dialog.
-</para>  
 <para>
 <screenshot>
 <screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/28/2008</screeninfo>
@@ -2412,6 +2391,48 @@ dialog.
  </textobject>
  <caption>
   <para>Simple selection dialog</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+<para>
+Next you have to define the objects that you want to appear in the
+report. There are two modes to define a report definition. Per
+default, the report is laid out as a table. For example, the report for a time
+course simulation will write one line per time step and each line will
+typically contain the time followed by one or more species
+concentrations. In the advanced mode activated by clicking on
+the button labeled <guibutton>Advanced</guibutton>, the report is
+split up into three sections, a header, a body and a footer. You can
+define the output for each of the sections separately by clicking on
+the corresponding tab. In order to get back to the standard table
+layout, you have to click on the <guibutton>Advanced</guibutton>
+again. COPASI will warn you that you might loose some information by
+converting from the advanced report definition format to the table
+format. 
+</para>
+<para>
+Le us discuss how to define a report definition with table layout
+first since you will probably use this most of the time. To add a new
+object to the report definition, you have to click on the button
+labeled <guibutton>Item</guibutton>. This will open the object browser
+dialog.
+</para>  
+<para>
+<screenshot>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/28/2008</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/Reports_03.png" format="PNG" scale="50" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/Reports_03.ps" format="EPS" scale="50" align="center" />
+ </imageobject> 
+ <textobject>
+   <phrase>Object browser dialog expert mode</phrase>
+ </textobject>
+ <caption>
+  <para>Object browser dialog expert mode</para>
  </caption> 
 </mediaobject>
 </screenshot>
@@ -2433,15 +2454,15 @@ will select all the leaves under that branch.
 <para>
 If this simple selection dialog does not contain the object that you
 want to include in your report, you can activate an extended selection
-tree by activating the <guibutton>expert mode</guibutton> check
-box. The tree you now see contains all objects COPASI knows about. In
-this tree, the objects that belong to your model are located in the
+tree by activating the <guilabel>expert mode</guilabel> checkbox. 
+The tree you now see contains all objects COPASI knows about. In
+this tree, the objects belonging to your model are located in the
 branch that corresponds to the name of your model. The position of
 that branch varies since the branches are sorted alphabetically. The
-selection you might already might have made in the simple selection
-tree should be preserved and vice versa. Any selection you make in the
+selection that you have already made in the simple selection
+tree should be preserved, and vice versa. Any selection you make in the
 full tree is preserved when you switch back to the simple tree. Each
-branch of the full tree has a check box up front which can assume
+branch of the full tree has a checkbox up front which can assume
 three states. The unchecked state means that no objects in this
 subtree are selected. A check mark on a black background means that
 the whole subtree is selected, i.e. all objects in this subtree are
@@ -2449,41 +2470,27 @@ selected. A check mark on a gray background means that part of the
 subtree is selected.
 </para>
 <para>
-<screenshot>
-<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/28/2008</screeninfo>
-<mediaobject>
- <imageobject>
-  <imagedata fileref="images/Reports_03.png" format="PNG" scale="50" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/Reports_03.ps" format="EPS" scale="50" align="center" />
- </imageobject> 
- <textobject>
-   <phrase>Object browser dialog expert mode</phrase>
- </textobject>
- <caption>
-  <para>Object browser dialog expert mode</para>
- </caption> 
-</mediaobject>
-</screenshot>
-</para>
-<para>
 Due to the model structure, most objects appear more than once in the
-tree. So if you select some object, you should not be surprised, if
+tree. 
+<!-- So if you select some object, you should not be surprised, if
 more than the selected object suddenly change their selection
+state. E.g. if you select the whole -->
+So do not be surprised if you select some objects you may be see that
+not only the selected objects will suddenly change their selection
 state. E.g. if you select the whole
 <guibutton>Compartments</guibutton> subtree of your model, all the
-species which are part of the compartments get selected as well
+species which are part of the compartments get selected as well,
 which means that on selecting the <guibutton>Compartments</guibutton>
 branch, the whole <guibutton>Species</guibutton> branch changes
-its state to selected.
+its state to be selected.
 </para>
 <para>
-Let's assume you want to define the report for a trajectory task. In
-this case, you will probably want the time and some or all of the
-transient concentrations of the species in your report. The time
-for the time course is the last item in the model branch, you select
-it by clicking on the check box in front of the name. If you want to
+Let us assume you want to define the report for a trajectory task in 
+expert mode. In this case, you will probably want the time and some or 
+all of the transient concentrations of the species in your report. 
+The time for the time course is the last item in the 
+<guibutton>Model</guibutton> branch, you select
+it by clicking on the checkbox in front of the name. If you want to
 add the concentrations of all species, you open the
 <guibutton>Species</guibutton> sub-branch in the
 <guibutton>Model</guibutton> branch and open the <guibutton>Select by
@@ -2492,12 +2499,12 @@ attribute</guibutton> branch. There you can select the
 <guibutton>Concentration</guibutton> attribute will select the
 concentrations for all species. If you only want to have some of
 the species in your report, you open the sub-branches of the
-species you want in the <guibutton>Species</guibutton> branch
+wanted species in the <guibutton>Species</guibutton> branch
 and select the <guibutton>Concentration</guibutton> attribute only for
 those species. If your model contains many species and you
-want to have all but one in your report, it is often easier to first
+want to have all except one species in your report, it is often easier to first
 select all concentrations via the <guibutton>Select by
-attribute</guibutton> branch and then deselect the ones you don't
+attribute</guibutton> branch and then deselect the one you don't
 want, rather then selecting the individual concentrations you
 want. Once you are finished with selecting the objects for your
 report, you confirm the selection by clicking the
@@ -2527,7 +2534,7 @@ dialog.
 They will appear in the report in the same order as they appear in
 this list. To reorder the entries in the list, you can select
 individual entries and move them up and down in the list with the
-according buttons to the left of the list. For example it might be a
+corresponding buttons on the left of the list. For example it might be a
 good idea to move the time object to the top of the list so that it
 will appear as the first table column in the file since this is the
 way most programs would expect it. Also in order to delete unnecessary
@@ -2539,18 +2546,18 @@ run the individual tasks.
 </para>
 <para>
 The report we just defined will be written in the form of a table. So
-if this was a report for a time course simulation, the final output
+if this is a report for a time course simulation, the final output
 would have one line per time step of the simulation and in each line,
 each object that is in the list would be written once separated by
-whatever you defined as your separation character (Normally this would
-be the &lt;TAB&gt; character). 
+whatever you defined as your separator character (Normally this would
+be the &lt;tab&gt; character). 
 </para>
 <para>
-Per default, the check box labeled <guilabel>Title Row</guilabel> is
-activated which means that COPASI will write a header line before the
+Per default, the checkbox labeled <guilabel>Title Row</guilabel> is
+activated, which means that COPASI will write a header line before the
 table with the names of the objects that make up the individual
 columns. If you don't want such a header in the output you have to
-deactivate this check box. 
+deactivate this checkbox. 
 </para>
 <para>
 <screenshot>
@@ -2572,35 +2579,35 @@ deactivate this check box.
 </screenshot></para>
 <para>
 As stated above, the advanced report definition allows you to define
-the output for the three parts of the report separately. The header
+the output for the three parts of the report separately. The <emphasis>header</emphasis>
 part of the report is written once before the corresponding task, the
-output of the body elements occurs once per step of the corresponding
-task, e.g. for the time course once every time step and the footer is
+output of the <emphasis>body</emphasis> elements occurs once per step of the corresponding
+task, e.g. for the time course once every time step, and the <emphasis>footer</emphasis> is
 written once after the task has finished. In this sense, the standard
 table report definition is nothing but an advanced report definition
 with a title header and a body that consists of the time and some
 species concentrations separated by separator items. The footer is
 empty. If you write your own advanced report definition, you are
 responsible to add separator tags where appropriate. An advantage to
-the standard report definition is that you can add arbitrary text to
+the advanced report definition is that you can add arbitrary text to
 any of the three sections. Everything else works as described for the
 standard report definition, you can add and delete items by selecting
-them from the object browser dialog. And just like in the standard
-report definition, you can move these items up and down by selecting
-them and clicking on the <guibutton>up</guibutton> or
-<guibutton>down</guibutton> button. Separator items can be added by
+them from the object browser dialog. You can also move these items up and down 
+by selecting them and clicking on the <guibutton>Up</guibutton> or
+<guibutton>Down</guibutton> button. Separator items can be added by
 clicking on the <guibutton>Separator</guibutton> button. The symbol or
-text that makes up the separator item is again defined by the check
-box and the adjacent input field towards the top of the report
+text that makes up the separator item is again defined by the checkbox 
+and the adjacent input field towards the top of the report
 definition dialog. 
 </para>
 </sect2>
+
 <sect2 id="plotDefinitions" xreflabel="Plots">
 <title>Plots</title>
 <para>
 Plotting is another form of output that COPASI can do. Most of the
 time, you probably want to plot some or all of the species
-concentrations during a time course simulation and as described above,
+concentrations during a time course simulation and, as described above,
 this is easiest done by choosing that predefined plot template from
 the <link linkend="outputAssistant">Output Assistant</link>. But since
 the output assistant can not cover all possible plots sometimes you
@@ -2608,35 +2615,11 @@ will have to define your own plots.
 </para>
 <para>
 Currently, COPASI only supports two dimensional plotting. To define a
-plot, you open the plot definition dialog which you reach by selecting
+plot, you open the plot definition dialog by selecting
 the <guibutton>Output-&gt;Plots</guibutton> branch in the object
 tree. A plot in COPASI is made up of a number of curve or histogram
 objects. In order to add a new curve object you click on the
-<guibutton>New curve...</guibutton> button. A selection dialog similar
-to the one described for the <link
-linkend="reportDefinitions">creation of reports</link> will
-appear. The major difference is that you now have two tree views side
-by side instead of one as for the report definitions. The left tree is
-a single selection dialog and it lets you specify the object that is
-to be drawn along the x axis. For a plot of concentration against time
-this would be the simulation time. The right tree is again a
-multi-selection tree that lets you specify what is to be drawn along
-the y-axis. Again for a plot of concentrations against time this would
-be one or more concentrations of species. Just as described for
-the report definitions, you can switch between a simple tree and the
-full tree, but for most plots the simple tree will be enough.
-</para>
-<para>
-Once you have finished your selection, you click on the
-<guibutton>OK</guibutton> button which will take you back to the curve
-definition dialog. For each object selected in the right tree, you
-will now see one tab which represent the corresponding curve object
-for the plot. To remove one of the curves, you have to select the tab
-that corresponds to the curve you want to remove and then click on the
-<guibutton>Delete curve</guibutton> button. The next time you do a
-<link linkend="calculatingTrajectory">time course simulation</link>,
-each plot that is marked as active will be plotted automatically. How
-you define a plot as being active will be explained below.
+<guibutton>New curve...</guibutton> button. 
 </para>
 <para>
 <screenshot>
@@ -2658,25 +2641,18 @@ you define a plot as being active will be explained below.
 </screenshot>
 </para>
 <para>
-Each curve object has a title, and the information what will be drawn
-on the x- and y-axis. Additionally you can specify whether the curve
-should be drawn as a line, as points or as symbols. This has to be
-specified for each curve separately. You can also specify if the plot
-should be drawn with a logarithmic scale for one or both of the
-axis. <!-- What is this Capture Data thing? !!! -->
-</para>
-<caution><para>
-On Mac OS X, the tab widget does not handle very wide tabs or many
-tabs well. This problem will be dealt with in upcoming versions of
-COPASI.
-</para></caution>
-<para>
-In the plot definition dialog, in addition to adding and removing
-curve objects, you can specify a name for the plot definition and you
-can specify whether the plot should be active or not with the
-<guilabel>active</guilabel> check box. (Only plots that are active are
-drawn when a <link linkend="calculatingTrajectory">time course
-simulation</link> is run!)
+A selection dialog similar to the one described for the <link
+linkend="reportDefinitions">creation of reports</link> will
+appear. The major difference is that you now have two tree views side
+by side instead of only one. The left tree is
+a single selection dialog that lets you specify the object 
+to be drawn along the x-axis. For a plot of concentration against time
+this would be the simulation time. The right tree is, again, a
+multi-selection tree that lets you specify what would be drawn along
+the y-axis. In case of plotting concentrations against time, this would
+be one or more concentrations of species. Just as described for
+the report definitions, you can switch between a simple tree and the
+full tree, but for most plots the simple tree will be enough.
 </para>
 <para>
 <screenshot>
@@ -2717,9 +2693,44 @@ simulation</link> is run!)
 </screenshot>
 </para>
 <para>
+Once you have finished your selection, you click on the
+<guibutton>OK</guibutton> button which will take you back to the curve
+definition dialog. For each object selected in the right tree, you
+will now see one tab which represent the corresponding curve object
+for the plot. To remove one of the curves, select the tab
+that corresponds to the curve you want to remove and then click on the
+<guibutton>Delete curve</guibutton> button. The next time you do a
+<link linkend="calculatingTrajectory">time course simulation</link>,
+each plot that is marked as active will be plotted automatically. How
+you define a plot as being active will be explained below.
+</para>
+<para>
+Each curve object has a title, and the information what will be drawn
+on the x- and y-axis. Additionally you can specify whether the curve
+should be drawn as a line, as points or as symbols. This has to be
+specified for each curve separately. You can also specify if the plot
+should be drawn with a logarithmic scale for one or both of the
+axis. <!-- What is this Capture Data thing? !!! -->
+</para>
+<!-- 
+<caution><para>
+On Mac OS X, the tab widget does not handle very wide tabs or many
+tabs well. This problem will be dealt with in upcoming versions of
+COPASI.
+</para></caution> 
+-->
+<para>
+In the plot definition dialog, in addition to adding and removing
+curve objects, you can give a name for the plot definition and 
+specify whether the plot should be active or not with the
+<guilabel>active</guilabel> checkbox. (Only plots that are active are
+drawn when a <link linkend="calculatingTrajectory">time course
+simulation</link> is run!)
+</para>
+<para>
 Another way to specify whether a plot is active or not is in the plot
 table where all the plots are listed. Each row in the table contains a
-column named <guilabel>active</guilabel> that contains a check box
+column named <guilabel>active</guilabel> that contains a checkbox
 with which you can toggle the state of a plot. If you changed the
 state of one or more plots, you have to commit these changes either by
 clicking the <guibutton>Commit</guibutton> button or any other action
@@ -2732,10 +2743,10 @@ the data generated during a time course simulation (see <xref
 linkend="calculatingTrajectory" />) or a parameter scan (see <xref
 linkend="parameterScan" />). A histogram draws a bar graph that shows
 how often the parameter took a certain value. To define a histogram
-instead of a curve you click on the <guibutton>New
-Histogram...</guibutton> button in the plot definition dialog. For the
+instead of a curve, you click on the <guibutton>New
+histogram...</guibutton> button in the plot definition dialog. For the
 new histogram you can specify a title, the variable for which the
-histogram should be drawn and the increment of the value. The
+histogram should be drawn, and the increment of the value. The
 increment parameter tells COPASI how wide the individual bars of the
 histogram are going to be. Let's say the value of the parameter was in
 the range of 3 to 8 and you set the increment to 0.1, COPASI will draw
@@ -2746,19 +2757,18 @@ units. Curves and histograms can be combined in a single plot.
 </sect1>
 </chapter>
 
-
 <chapter id="simpleTasks" xreflabel="Simple Tasks">
 <title>Simple Tasks</title>
-<sect1 id="steadyStateAnalysis" xreflabel="Steady State Analysis">
-<title>Steady State Analysis</title>
+<sect1 id="steadyStateAnalysis" xreflabel="Steady-State Analysis">
+<title>Steady-State Analysis</title>
 <para>
-In order to run a steady state analysis, you have to navigate to the
+In order to run a Steady-State analysis, you have to navigate to the
 <guibutton>Task-&gt;Steady-State</guibutton> branch in the object
 tree.
 </para>
 <para>
 <screenshot>
-<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/28/2008</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 03/07/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/SteadyStateTask_01.png" format="PNG" scale="50" align="center" />
@@ -2770,33 +2780,34 @@ tree.
    <phrase>Dialog for doing calculating a stability analysis</phrase>
  </textobject>
  <caption>
-  <para>Steady state task dialog</para>
+  <para>Steady-State task dialog</para>
  </caption> 
 </mediaobject>
 </screenshot></para>
 <para>
 In the dialog that appears there, you can make several settings that
-influence the way the steady state analysis is calculated. First of
+influence the way the Steady-State analysis is calculated. First of
 all, you can decide whether COPASI should calculate the Jacobian
 matrix and/or do a stability analysis as well by checking the
-corresponding check box. The <guilabel>executable</guilabel> check box
-is used to instruct the commandline version COPASISE to run this task
-if run on the corresponding file. In the <guilabel>Parameter
-value</guilabel> table you can also make several settings that
-influence the method for calculating the steady state itself. For a
-detailed description of those parameters see the corresponding 
+corresponding checkbox. The <guilabel>executable</guilabel> checkbox
+is used to instruct the commandline version CopasiSE to do this task
+if running on the corresponding file. In the <guilabel>Method Parameter</guilabel> 
+table you can also make several settings that influence the method for calculating 
+the Steady-State. For a detailed description of those parameters see the corresponding 
 <!-- <xref linkend=" -->methods<!-- " /> -->
-part of this documentation.  To finally run the steady state
+part of this documentation.  To finally run the Steady-State
 calculation, click on the <guibutton>Run</guibutton> button at the
 bottom of the screen. After the calculation, COPASI will jump to the
-results widget.
+<guilabel>Result</guilabel> widget.
 </para>
 <para>
-The results widget for the steady state calculation contains several
-tabs for the individual results. The first and the second tab contain
-the concentrations and the particle number at the steady state
+The <guilabel>Result</guilabel> widget for the Steady-State calculation 
+contains several tabs for the individual results. 
+<!-- 
+The first and the second tab contain
+the concentrations and the particle number at the Steady-State
 respectively. The third tab contains the fluxes for the reactions at
-the steady state. It contains concentration fluxes as well as particle
+the Steady-State. It contains concentration fluxes as well as particle
 fluxes. The fourth and fifth tab only contain results if you told
 COPASI to calculate the Jacobian matrix. The fourth tab then shows the
 Jacobian for the full system and the fifth tab contains the Jacobian
@@ -2804,18 +2815,36 @@ matrix for the reduced system. For both Jacobian matrices also the
 eigenvalues are shown. The sixth tab contains the results for the
 stability analysis if a stability analysis was requested. The seventh
 and last tab shows a log that lists the calculation steps COPASI took
-while trying to find a steady state.
+while trying to find a Steady-State.
+-->
+The first tab contains information about the species at the Steady-State
+condition as well as the compartments at the second tab. The third tab
+shows the model quantities whereas the reactions and their fluxes are 
+displayed at the fourth one. The display between the concentration fluxes
+and the particle one is depending on what you have selected on the dropdown 
+list at the tab menu. As mentioned at the very beginning this documentation,
+you are able to easily change the display everytime.
+</para>
+<para>
+The fifth and the sixth tab only contain results if you told
+COPASI to calculate the Jacobian matrix. The fifth tab then shows the
+Jacobian matrix for the full system and the sixth one contains that 
+for the reduced system. For both Jacobian matrices, the
+eigenvalues are also shown. The seventh tab contains the results for the
+stability analysis if a stability analysis was requested. The last tab 
+shows protocol that lists the calculation steps COPASI took
+while trying to find a Steady-State.
 </para>
 <para>
 <screenshot>
-<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/28/2008</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 03/07/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/SteadyStateTask_02.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <imageobject>
   <imagedata fileref="images/SteadyStateTask_02.ps" format="EPS" scale="50" align="center" />
- </imageobject> 
+ </imageobject> Steady-State
  <textobject>
    <phrase>Dialog that displays the results of the stability analysis</phrase>
  </textobject>
@@ -2826,29 +2855,30 @@ while trying to find a steady state.
 </screenshot>
 </para>
 <para>
-If you want to have output from the Steady State Task, you have to
+In order to have an output from the Steady-State Task, you have to
 create an output definition as described in the <xref
 linkend="outputGeneration" /> section or you use the default report
-named "Steady State". The default report prints a message telling
-whether a steady state was found. It also reports the concentration,
+named <emphasis>Steady-State</emphasis>. The default report prints a message telling
+whether a Steady-State was found. It also reports the concentration,
 concentration rate, particle number, particle number rate, and
 transition time of all species as well as the flux for all
-reactions. The easiest way to get a customized output is probably to
-use the output assistant which you activate via the <guibutton>Output
+reactions. If they have been requested, the Jacobian matrix and the eigenvalues are 
+also reported. The easiest way to get a customized output is probably to
+use the output assistant activated via the <guibutton>Output
 Assistant</guibutton> button. This is described in the <xref
 linkend="outputAssistant" /> section. All that is left to do in order
-to write the output to a specific file is to connect an output
+to write the output to a specific file is to connect output
 definition with a file. This can be achieved by clicking on the
 <guibutton>Report</guibutton> button. This opens a dialog that lets
-you connect the report for a specific task to a file on your hard
-disk. First we choose a report that is suitable for the Steady State
-task from the drop down list at the top of the dialog. Next, we
+you connect the report of a specific task to a file on your hard
+disk. First we choose a report that is suitable for the Steady-State
+task from the dropdown list at the top of the dialog. Next, we
 specify a file that will be used to store the report by clicking on
 the <guibutton>browse</guibutton> button and selecting the destination
 in the file dialog that opens. Per default, COPASI creates a new file
 or overwrites an existing file with the same name. Alternatively, you
 can tell COPASI to append the report to the end of an existing file by
-selecting the corresponding check box labeled
+selecting the corresponding checkbox labeled
 <guilabel>Append</guilabel> at the bottom of the dialog. Once you are
 finished, you click on the <guilabel>Confirm</guilabel> button. If you
 now run the task, COPASI will write the output to the file you
@@ -2861,7 +2891,7 @@ xreflabel="Stoichiometric State Analysis">
 <sect2 id="elementaryModes" xreflabel="Elementary Flux Modes">
 <title>Elementary Flux Modes</title>
 <para>
-Letting COPASI calculate the elementary modes for the system is
+Letting COPASI calculate the elementary flux modes for the system is
 very easy. Select the
 <guibutton>Tasks-&gt;Stoichiometry-&gt;Elementary Modes</guibutton> in
 the object tree and click on the <guibutton>Run</guibutton> button in
@@ -2876,22 +2906,22 @@ together with their chemical equations.
 If you want to have output from the Elementary Mode calculation, you
 have to create an output definition as described in the <xref
 linkend="manualOutputDefinitions" /> section. The easiest way is
-probably to use the output assistant which you activate via the
+probably to use the output assistant which activated via the
 <guibutton>Output Assistant</guibutton> button. This is described in
 the <xref linkend="outputAssistant" /> section. All that is left to do
 in order to write the output to a specific file is to connect an
 output definition  with a file. This can be achieved by clicking on
 the <guibutton>Report</guibutton> button. This opens a dialog that
-lets you connect the report for a specific task to a file on your hard
-disk. First we choose a report that is suitable for the elementary
-mode analysis task from the drop-down list at the top of the
+lets you connect the report of a specific task to a file on your hard
+disk. First we choose a report that is suitable for the Elementary Flux
+Modes analysis task from the dropdown list at the top of the
 dialog. Next, we specify a file that will be used to store the report
 by clicking on the <guibutton>browse</guibutton> button and selection
 the destination in the file dialog that opens. Per default, COPASI
-creates a new file if the file does not exist, or asks whether the
-file should be overwritten. Alternatively, you can tell COPASI to
+creates a new file, if the file does not exist, or overwrites the existing
+file whose the same name. Alternatively, you can tell COPASI to
 append the report to the end of an existing file by selecting the
-corresponding check box labeled <guilabel>Append</guilabel> at the
+corresponding checkbox labeled <guilabel>Append</guilabel> at the
 bottom of the dialog. Once you are finished, you click on the
 <guilabel>Confirm</guilabel> button. If you now run the task, COPASI
 will write the output to the file you specified. 
@@ -2910,12 +2940,13 @@ will write the output to the file you specified.
    <phrase>Dialog showing the calculated elementary modes for a model</phrase>
  </textobject>
  <caption>
-  <para>Elementary analysis dialog with results</para>
+  <para>Elementary flux modes analysis dialog with results</para>
  </caption> 
 </mediaobject>
 </screenshot>
 </para>
 </sect2>
+
 <sect2 id="massConservation" xreflabel="Mass Conservations">
 <title>Mass Conservations</title>
 <para>
@@ -2944,7 +2975,7 @@ Conservation</guibutton> branch in the object tree and click on the
 </screenshot>
 </para>
 <para>
-If the model contains any mass conservation relations they will be listed in a table directly in this dialog. </para>
+If the model contains any mass conservation relations, they will be listed in a table directly in this dialog. </para>
 <para>
 <screenshot>
 <screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/28/2008</screeninfo>
@@ -2974,7 +3005,7 @@ there in the object tree or double click on the entry in the table.
 <sect1 id="calculatingTrajectory" xreflabel="Time Course Simulation">
 <title>Time Course Simulation</title>
 <para>
-To do a time course simulation, you have to navigate to the
+In order to do a time course simulation, you have to navigate to the
 corresponding task branch in the object tree which is located at
 <guibutton>Tasks-&gt;Time Course</guibutton>.
 </para>
@@ -2998,35 +3029,35 @@ corresponding task branch in the object tree which is located at
 </screenshot>
 </para>
 <para>
-In the Time-Course widget you can change several parameters for the
+In the <emphasis>Time Course</emphasis> widget you can change several parameters for the
 time course, e.g. the duration of the simulation and the number of
 intervals that are being calculated in the time range. Alternatively
 to setting the number of intervals, you can also set the size of the
 interval. If you set either one, the other will be updated
-accordingly. Also if you change the duration the number of intervals
+accordingly. Because if you change the duration, the number of intervals
 will stay the same, which means that the interval size will be
-adjusted. The check box labeled <guilabel>store time series in
-memory</guilabel> tells COPASI to keep the result of the time series
+adjusted. The checkbox labeled <guilabel>Save Result in
+Memory</guilabel> tells COPASI to keep the result of the time series
 calculation in memory in order to display it in a result dialog. Since
 this can be a large amount of data depending on the size of your model
-and/or the number of intervals you want COPASI to calculate, you
+and/or on the number of intervals you want COPASI to calculate, you
 should disable this if you think the result might not fit into
-memory. The consequence of disabling this check box is that you need
+memory. The consequence of disabling this checkbox is that you need
 to <link linkend="reportDefinitions">define a report</link> in order
 to store the results of the time course simulation.
 </para>
 <para>
 Another thing that you can adjust in this dialog is the time at which
 COPASI starts to record the output. Normally COPASI will store all
-output and display it in the plot and reports if there are any or in
-the results dialog if that feature was not disabled (see above). With
-the <guilabel>Start Output Delayed</guilabel> check box and input
-field, you can specify that COPASI shall drop all results prior to a
-certain time point. E.g. you could decide that you want to run a time
-course simulation for 100 seconds but that you are only interested in
+output and display it in the plot and reports, if there are any, or in
+the results dialog, if that feature was not disabled. With
+the <guilabel>delayed</guilabel> checkbox and input field of 
+<guilabel>Start Output Time</guilabel>, you can specify that COPASI shall 
+drop all results prior to a certain time point. For example, you could decide 
+that you want to run a time course simulation for 100 seconds but only interested in
 the last 50 seconds of the simulation. In this case you would activate
-the <guilabel>Start Output Delayed</guilabel> check box and specify a
-delay of lets say 50. This delay will be used for all kinds of output.
+the <guilabel>delayed</guilabel> checkbox and specify a
+delay of, lets say, 50. This delay will be used for all kinds of output.
 </para>
 <para>The time course simulation does not necessarily start with 
 <inlineequation><mml:math>
@@ -3042,11 +3073,13 @@ model time which can be specified in the <link
 linkend="generalSettings">general model settings dialog</link>.
 </para>
 <para>
-COPASI supports four different methods for calculating time course
-simulations. COPASI can use the LSODA solver to calculate the time
-course deterministically or it can use a stochastic solver which uses
-the method described by <emphasis>Gibson and Bruck</emphasis> to
-calculate the time course stochastically. Depending on the solver you
+COPASI supports six different methods for calculating time course
+simulations. COPASI can use the <emphasis>LSODA</emphasis> solver, or 
+its variant called <emphasis>LSODAR</emphasis>, 
+to calculate the time course deterministically. COPASI is able
+to calculate the time course stochastically by means of one of two stochastic 
+solvers: the <emphasis>Gibson and Bruck</emphasis> method or 
+the <emphasis>&tgr;-Leap</emphasis> one. Depending on the solver you
 have chosen, you can set several parameters in the <guilabel>Parameter
 value</guilabel> table that influence the way the method works. A
 detailed explanation of those parameters will follow in the 
@@ -3060,7 +3093,7 @@ calculate a trajectory. This hybrid method splits the model in two
 segments according to the number of particles participating in a
 reaction. Reactions with many particles are simulated
 deterministically and those reactions with only a few particles are
-simulated stochastically. The boundaries of what is considered many or
+simulated stochastically. The boundaries of what is considered as to many or
 few particles can be set by the user. Depending on the nature of the
 model, the hybrid simulation can lead to significant simulation
 speedup compared to purely stochastic simulation while still being
@@ -3113,29 +3146,29 @@ store the report to. Additionally, you can choose if you want to
 append the report to an already existing file. The default is to
 create a new file, or to overwrite an existing file. If you want to
 append to the selected file, you have to check the
-<guilabel>Append</guilabel> check box.
+<guilabel>Append</guilabel> checkbox.
 </para>
 <para>
 Once you made all the desired changes to the parameters, you can start
-the time course simulation by clicking on the run button. COPASI will
-show a progress bar while running the simulation, which might take
-some time depending on several factors like the hardware you are
-using, the simulation method you chose and/or the size of your
-model. Once COPASI finishes the calculation, you will find the results
-in the report file you defined and/or in a separate result dialog if
+the time course simulation by clicking on the <guibutton>Run</guibutton> button. 
+COPASI will show a progress bar while running the simulation, which might take
+some time depending on several factors, like the hardware you are
+using, the simulation method you chose, and/or the size of your
+model. Once COPASI finishes the calculation, the results will be displayed
+in the report file you defined and/or in a separate result dialog, if
 you told COPASI to keep the results in memory.
 </para>
 <para>
-The results dialog is located directly below the time course branch in
+The <guilabel>Result</guilabel> dialog is located directly below the 
+<guibutton>Time Course</guibutton> branch in
 the object tree. In this widget you can choose whether you want the
-results to be displayed as concentrations or as particle numbers and
-you have the possibility to store the results to a file. The advantage
-a report has over writing a file in the results widget is that you can
-choose exactly which species concentrations you want to store
-whereas the results dialog always stores all species
+results to be displayed as concentrations or as particle numbers, and
+you have the possibility to store the results to a file. The advantage that
+a report has rather than writing a file in the <guilabel>Result</guilabel>
+widget is that you can choose exactly which species concentrations you want 
+to store whereas the <guilabel>Result</guilabel> dialog always stores all species
 concentrations. You also can't change the order in which the
-species concentrations are written if you store the result from
-this dialog.
+species concentrations are written, if you store the result from this dialog.
 </para>
 <para>
 <screenshot>
@@ -3160,12 +3193,12 @@ this dialog.
 <sect2 id="workingWithPlots" xreflabel="Working with Plots">
 <title>Working with Plots</title>
 <para>
-If you have an active plot defined while calculating a trajectory
+If you have defined an active plot before calculating a trajectory,
 COPASI will draw the plot. The plot window has three elements. A tool
 bar at the top, that lets you print the plot or save the data into a
-file. The actual plot and a legend at the bottom. The legend at the
-bottom is interactive and drawing of certain curves can be toggled by
-clicking on the corresponding legend entry.
+file; the legend, which is interactive such that the drawing of certain 
+curves can be toggled by clicking on the corresponding legend entry;
+and the actual plot.
 </para>
 <para>
 <screenshot>
@@ -3187,9 +3220,9 @@ clicking on the corresponding legend entry.
 </screenshot>
 </para>
 <para>
-While moving the mouse cursor inside a plot widget, the mouse
-coordinates are displayed beside the mouse cursor. The numbers
-represent coordinates from the coordinate system of the plot.
+During moving the mouse cursor inside a plot widget, the mouse
+coordinates with respect to the coordinate system of the plot 
+are displayed beside the mouse cursor.
 </para>
 <para>
 In order to zoom further into a plot, you can select a rectangular
@@ -3198,7 +3231,7 @@ pointer. The plot will now zoom into the area you just selected. To go
 back to the original plot, right click on the plot area.
 </para>
 <note><para>
-Macintosh users with single button mice use CTRL-click.
+Macintosh users with single button mice should use CTRL-click.
 </para></note>
 <caution><para>
 The qwt plot widget has some problems under Mac OS X. Especially
@@ -3208,11 +3241,12 @@ Mac OS X
 </para></caution>
 </sect2>
 </sect1>
+
 <sect1 id="calculatingMCA" xreflabel="Metabolic Control Analysis">
 <title>Metabolic Control Analysis (MCA)</title>
 <para>
-COPASI can also do a Metabolic Control Analysis (MCA) for your
-model. The MCA task is located under <guibutton>Tasks-&gt;Metabolic
+COPASI can also do a <emphasis>Metabolic Control Analysis (MCA)</emphasis> 
+for your model. The MCA task is located under <guibutton>Tasks-&gt;Metabolic
 Control Analysis</guibutton>.
 </para>
 <para>
@@ -3236,16 +3270,16 @@ Control Analysis</guibutton>.
 </para>
 <para>
 In order to do a full MCA (elasticities and control coefficients),
-COPASI needs to look for a steady state first, otherwise COPASI can
+COPASI needs to look for a Steady-State first, otherwise COPASI can
 only calculate the elasticities. If you did not already <link
-linkend="steadyStateAnalysis">do a steady state calculation</link>
-right before so that the system already is in the steady state if one
-was found, you should enable the check box that tells COPASI to do a
-steady state calculation before calculating the MCA. Depending on
-whether COPASI needs to do a steady state analysis or not, you can
+linkend="steadyStateAnalysis">do a Steady-State calculation</link>
+right before so that the system already is in the Steady-State, if one
+was found, you should enable the checkbox that tells COPASI to do a
+Steady-State calculation before calculating the MCA. Depending on
+whether COPASI needs to do a Steady-State analysis or not, you can
 change one or more parameters that influence the way the MCA and the
-steady state are calculated. The parameters for the steady state
-calculation or the same as for the steady state widget explained in
+Steady-State are calculated. The parameters for the Steady-State
+calculation or that for the Steady-State widget explained in
 the <xref linkend="steadyStateAnalysis" /> section.
 <!-- 
 For a detailed description of the parameters, I have to refer to the
@@ -3256,36 +3290,37 @@ linkend="methodSteadyState" />, <xref linkend="methodMCA" />)
 <para>
 To start the calculation, you click the <guibutton>Run</guibutton>
 button. After the calculation is finished, COPASI will automatically
-switch to the results dialog. The results dialog shows three tabs that
-contain the results for the elasticities, flux control coefficients
-and concentration control coefficients.
+switch to the <guilabel>Result</guilabel> dialog. The dialog shows 
+three tabs that contain the results of the <emphasis>Elasticities</emphasis>, 
+<emphasis>Flux Control Coefficients</emphasis> and <emphasis>Concentration 
+Control Coefficients</emphasis>.
 </para>
 <para>
-Depending on whether a steady state was found or not, only the
-elasticities tab might be enabled. COPASI will state that it could not
-find a steady state in a label right above the tabs. For all of the
-results, you can choose if you want COPASI to display them scaled or
-unscaled.
+Depending on whether a steady state condition was found or not, only the
+<emphasis>Elasticities</emphasis> tab might be enabled. COPASI will 
+state the status of finding a steady state in a label right above the tabs. 
+For all of the results, you can choose if you want COPASI to display them 
+scaled or unscaled.
 </para>
 <para>
-If you want to have output from the MCA, you have to create a report
+In order to have an output from the MCA, you have to create a report
 as described in the <xref linkend="outputGeneration" /> section or you
 decide to use the default report. The default report will output all
-matrices that are calculated as well as the steady state, if steady
+matrices that are calculated as well as the Steady-State, if steady
 state calculation is requested.  All that is left to do in order to
-write the output to a specific file is to connect an output definition
+write the output to a specific file is to connect output definition
 with a file. This can be achieved by clicking on the
 <guibutton>Report</guibutton> button. This opens a dialog that lets
-you connect the report for a specific task to a file on your hard
+you connect the report of a specific task to a file on your hard
 disk. First we choose a report that is suitable for the MCA task from
-the drop down list at the top of the dialog. The default report for
-MCA is called "Metabolic Control Analysis". Next, we specify a file
-that will be used to store the report by clicking on the
+the dropdown list at the top of the dialog. The default report for
+MCA is called <emphasis>Metabolic Control Analysis</emphasis>. Next, 
+we specify a file that will be used to store the report by clicking on the
 <guibutton>browse</guibutton> button and selecting the destination in
 the file dialog that opens. Per default, COPASI creates a new file or
 overwrites an existing file with the same name. Alternatively, you can
 tell COPASI to append the report to the end of an existing file by
-selecting the corresponding check box labeled
+selecting the corresponding checkbox labeled
 <guilabel>Append</guilabel> at the bottom of the dialog. Once you are
 finished, you click on the <guilabel>Confirm</guilabel> button. If you
 now run the task, COPASI will write the output to the file you
@@ -3312,7 +3347,7 @@ specified.
 </para>
 <para>
 <screenshot>
-<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/28/2008</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 03/07/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/MCATask_03.png" format="PNG" scale="50" align="center" />
@@ -3321,10 +3356,10 @@ specified.
   <imagedata fileref="images/MCATask_03.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>Dialog showing the results of the MCA after no steady state was found</phrase>
+   <phrase>Dialog showing the results of the MCA after no Steady-State was found</phrase>
  </textobject>
  <caption>
-  <para>MCA results at none steady state</para>
+  <para>MCA results at none Steady-State</para>
  </caption> 
 </mediaobject>
 </screenshot>
@@ -3339,27 +3374,30 @@ The widget to calculate Lyapunov exponents in COPASI is located in the
 <guibutton>Task</guibutton> branch of COPASI's tree view. If you
 select the <guibutton>Lyapunov Exponents</guibutton> item in the tree,
 the corresponding widget will be displayed. The first input field in
-the widget labeled <guilabel>Number of exponents</guilabel> lets you
-specify how many Lyapunov Exponents are to be calculated. This number
-should be between 1 and the number of independent variables in the
+the widget labeled <guilabel>Number of Exponents</guilabel> lets you
+specify how many Lyapunov exponents are to be calculated. This number
+should be between one and the number of independent variables in the
 system (that is the number of species that are not constant minus
 the number of mass conservation relations). If you specify a number
 that is higher than the number of independent variables in the system,
-COPASI will issue a warning telling you to lower the number and it
+COPASI will issue a warning telling you to lower the number and 
 will also tell what the maximal number should be. During the
-calculation of the Lyapunov Exponents, a time course simulation is
+calculation of the Lyapunov exponents, a time course simulation is
 carried out. If your model shows a long transient, you might want to
 exclude the beginning of the trajectory from the calculation of the
 Lyapunov exponents. For this, COPASI lets you specify at which time
 point the averaging for the Lyapunov exponents should start. You can
-specify this delay in the field labeled <guilabel>"Start averaging
-after t= "</guilabel>. If you check the <guibutton>Use result as new
-initial state</guibutton> check box, COPASI will use the state of the
+specify this delay in the field labeled <guilabel>start averaging
+after t= "</guilabel>. 
+<!--
+If you check the <guibutton>Use result as new
+initial state</guibutton> checkbox, COPASI will use the state of the
 model after the simulation as the new initial state for all following
 calculation. Please note that all old model values are replaced.
+-->
 </para>
 <para>
-With the check box labeled <guilabel>calculate Divergence</guilabel>
+With the checkbox labeled <guilabel>calculate Divergence</guilabel>,
 you can activate the calculation of the average divergence. The
 divergence is calculated as the average over the trace of the Jacobian
 (see
@@ -3369,8 +3407,12 @@ Lyapunov calculation method
 ).  
 </para>
 <para>
+<!--
 So far there is only one method available to calculate Lyapunov
 Exponents and this method is called <emphasis>Wolf
+Method</emphasis>. For a more detailed description of the method and
+-->
+The method behind of calculating Lyapunov exponents is called <emphasis>Wolf
 Method</emphasis>. For a more detailed description of the method and
 its parameters please see the
 <!-- <link linkend=""> -->
@@ -3400,16 +3442,17 @@ section.
 <para>
 After clicking the <guibutton>Run</guibutton> button, COPASI will
 start the time course simulation in order to calculate the Lyapunov
-Exponents. Once the calculation is finished, COPASI will jump to the
-results window. The result window shows the calculated Lyapunov
+exponents. Once the calculation is finished, COPASI will jump to the
+<guilabel>Result</guilabel> window. The window shows the calculated Lyapunov
 exponents in a table and beneath the table it shows the sum of the
 calculated exponents. If you told COPASI to calculate the divergence
-as well, this will be displayed underneath the sum display. If you
+as well, this will be shown underneath the <guilabel>Sum of Lyapunov 
+Exponents</guilabel> display. If you
 told COPASI to calculate all Lyapunov exponents (as many as there are
 independent variables in the model), the sum of the exponents and the
 divergence should be equal; if it isn't COPASI will display a
 warning. Since the warning only makes sense if all exponents have been
-calculated, it will not be displayed otherwise because it is expected
+calculated, it will not be displayed otherwise. It is expected
 that the divergence and the sum differ in those cases.
 </para>
 <para>
@@ -3446,9 +3489,9 @@ the dialog displays a box called <guilabel>New scan item</guilabel>
 together with a <guibutton>create...</guibutton>. and when the dialog
 is opened for the first time, the only item in the widget below is a
 green box called <guilabel>Task</guilabel>. This widget contains a
-drop down list with all the tasks that can be used in a
-scan. Additionally there is a check box called <guilabel>always use
-initial conditions</guilabel> and a check box called <guilabel>output
+dropdown list with all the tasks that can be used in a
+scan. Additionally there is a checkbox called <guilabel>always use
+initial conditions</guilabel> and a checkbox called <guilabel>output
 from subtask</guilabel>.
 </para>
 <para>
@@ -3471,24 +3514,24 @@ from subtask</guilabel>.
 </screenshot>
 </para>
 <para>
-The tasks for which scans can be conducted are steady state, time
+The tasks for which scans can be conducted are Steady-State, time
 course, metabolic control analysis, and Lyapunov exponents
 calculations. So if we want to do a scan for a time course
-calculation, we choose "Time Course" from the drop down list in the
-<guilabel>Task</guilabel> widget. We will ignore the two check boxes
-for the time being and take a look at the drop down list at the top of
-the <guilabel>Scan Task</guilabel> dialog. This drop down list
+calculation, we choose "Time Course" from the dropdown list in the
+<guilabel>Task</guilabel> widget. We will ignore the two checkboxes
+for the time being and take a look at the dropdown list at the top of
+the <guilabel>Scan Task</guilabel> dialog. This dropdown list
 contains three entries named "Parameter Scan", "Repeat" and "Random
 distribution". Those are additional elements that can be added to the
 main widget below to form complex tasks. Let's look at one after the
 other and start with the "Parameter Scan". As it is right now, the
 scan task does not do anything since we haven't told it yet which
 parameter we want to scan. To define a parameter for the scan, you
-choose "Parameter Scan" from the drop down list at the top and press
+choose "Parameter Scan" from the dropdown list at the top and press
 the create button. COPASI will add a new widget to the dialog that is
 called <guilabel>Scan</guilabel>. The <guilabel>Scan</guilabel> widget
 contains some empty line edit fields and a button labeled
-<guibutton>...</guibutton> and a check box labeled
+<guibutton>...</guibutton> and a checkbox labeled
 <guilabel>logarithmic</guilabel>.
 </para>
 <para>
@@ -3525,7 +3568,7 @@ double the objects value for the maximum. In the
 <guilabel>Interval</guilabel> you can specify how many intervals
 COPASI uses during the scan to raise the value from minimum to
 maximum. Last but not least, the <guilabel>logarithmic</guilabel>
-check box determines whether the value is raised in linear steps if
+checkbox determines whether the value is raised in linear steps if
 the box is unchecked or in logarithmic steps if the box is checked.
 Now you are set to run your first simple scan by clicking on the
 <guibutton>Run</guibutton> at the bottom of the dialog. In order to
@@ -3549,13 +3592,13 @@ definition with a file. This can be achieved by clicking on the
 <guibutton>Report</guibutton> button. This opens a dialog that lets
 you connect the report for a specific task to a file on your hard
 disk. First we choose a report that is suitable for the parameter scan
-task from the drop down list at the top of the dialog. Next, we
+task from the dropdown list at the top of the dialog. Next, we
 specify a file that will be used to store the report by clicking on
 the <guibutton>browse</guibutton> button and selecting the destination
 in the file dialog that opens. Per default, COPASI creates a new file
 or overwrites an existing file with the same name. Alternatively, you
 can tell COPASI to append the report to the end of an existing file by
-selecting the corresponding check box labeled
+selecting the corresponding checkbox labeled
 <guilabel>Append</guilabel> at the bottom of the dialog. Once you are
 finished, you click on the <guilabel>Confirm</guilabel> button. If you
 now run the task, COPASI will write the output to the file you
@@ -3567,7 +3610,7 @@ you want to do a two-dimensional scan, i.e. a scan where two
 parameters are independently scanned, you can add a second
 <guilabel>Scan</guilabel> widget by adding it to the main dialog just
 like you did for the first parameter. You select "Parameter Scan" in
-the drop down list and push the <guibutton>... Create!</guibutton>
+the dropdown list and push the <guibutton>... Create!</guibutton>
 button.
 </para>
 <para>
@@ -3791,27 +3834,27 @@ curve.
 </screenshot>
 </para>
 <para>
-What we have left out so far are the two check boxes at the bottom of
-the <guilabel>Task</guilabel> widget. The first check box is labeled
-<guilabel>always use initial conditions</guilabel>. If this check box
+What we have left out so far are the two checkboxes at the bottom of
+the <guilabel>Task</guilabel> widget. The first checkbox is labeled
+<guilabel>always use initial conditions</guilabel>. If this checkbox
 is checked, each task that is run runs with the same initial
-conditions. If the check box is not checked, only the first task that
+conditions. If the checkbox is not checked, only the first task that
 runs uses the initial conditions from the model, each subsequent task
 uses the conditions as they are after the preceding task has
 finished. 
 </para>
 <para>
-The second check box is labeled <guilabel>output from
+The second checkbox is labeled <guilabel>output from
 subtask</guilabel>. If it is checked, COPASI will plot or write the
 complete time series result each time a time series task
 runs. Correspondingly it will output intermediate results for the
 other tasks. So if during your scan, 10 time series are calculated,
-all ten are overloaded in the same window. If the check box is
+all ten are overloaded in the same window. If the checkbox is
 unchecked, COPASI will only plot the end result, i.e. the
 concentrations after the last step, of each time series. This applies
 to reports correspondingly. This feature is useful if you want to plot
 some calculation results as a function of the parameter that is
-scanned. So e.g. you could plot the end result of a steady state
+scanned. So e.g. you could plot the end result of a Steady-State
 calculation on the y-Axis versus a kinetic parameter on the x-Axis.
 </para>
 </sect1>
@@ -3893,14 +3936,14 @@ solution in upcoming releases.
 </para>
 <para>
 You can run an optimization task with several different methods which
-can be selected via the drop down list below the input field for the
+can be selected via the dropdown list below the input field for the
 objective function. Each of those methods has a number of parameters
 which are documented in the methods chapter.
 </para>
 <para>
 The optimization task can also be run on either the "Time Course" or
 the "Steady-state" subtask. Which one is used for the optimization run
-can be selected via the correspondingly named check boxes. So for our
+can be selected via the correspondingly named checkboxes. So for our
 example we would choose the "Time Course" subtask. 
 </para>
 <para>
@@ -3914,13 +3957,13 @@ the correct parameter from the object browser. Please note that is
 possible to create multiple parameters at once. Below the Object you
 can specify the upper and lower 
 bounds for the parameter during the optimization. Those bounds can also be
-expressions depending on other parameters. Per default, the check boxes
+expressions depending on other parameters. Per default, the checkboxes
 for -Infinity and +Infinity are selected as the boundaries. Since a
 computer can't handle infinitely small or large numbers, 
 the search will effectively proceed from the lowest possible to the
 largest possible double precision number. If you want to specify your
 own range, you first have to deselect the <guilabel>+Inf</guilabel> or
-<guilabel>-Inf</guilabel> check box and then you can set your own
+<guilabel>-Inf</guilabel> checkbox and then you can set your own
 bounds. As a matter of convenience you may enter -X% or +X% as the
 lower and upper limits. This instructs COPASI to calculate the limits
 based on the start value.
@@ -3949,8 +3992,8 @@ to order the parameters appropriately.
 In addition to parameters COPASI knows also about
 constraints. Constraints are applied to the solution. i.e., they are
 evaluated after the simulation which can currently be either a time
-course or a steady state calculation. A possible constraint could be
-that the steady state concentration of a species has to be within a
+course or a Steady-State calculation. A possible constraint could be
+that the Steady-State concentration of a species has to be within a
 certain range that can b specified by the user. The widget for
 specifying these constraints can be found under the tab called
 <guilabel>Constraints</guilabel> and the constraints are specified in
@@ -3999,7 +4042,7 @@ described in the <xref linkend="outputGeneration" /> section. Once you
 have created a report definition for the optimization task, you click
 on the <guibutton>report</guibutton> button at the bottom of the
 dialog. In the dialog that opens, you select the report you just
-created from the drop down list labeled <guilabel>Report
+created from the dropdown list labeled <guilabel>Report
 Definitions</guilabel> and then you select a filename where the report
 is to be stored in the field labeled <guilabel>Target</guilabel>. You
 can either type a filename manually, or you can select one by clicking
@@ -4057,7 +4100,7 @@ you can choose the parameter. Additionally you can specify an upper
 and a lower bound for the parameter. COPASI will only try to fit the
 parameter within those bounds. Per default, the upper and lower bound
 are + Infinity and - Infinity respectively. 
-If you want to set your own bounds, disable the check boxes and enter
+If you want to set your own bounds, disable the checkboxes and enter
 your own value in the edit field. The value for the lower bound goes
 into the correspondingly labeled edit field, likewise for the upper
 bound. As a matter of convenience you may enter -X% or +X% as the
@@ -4354,7 +4397,7 @@ no header row is included uncheck the box next to the header. Once
 COPASI has read a file, you have to specify some information for each
 experiment included in the file. To select an experiment you choose it
 from the right selection box. The first thing you need to specify is
-whether the data belongs to a steady state analysis or to a time
+whether the data belongs to a Steady-State analysis or to a time
 course simulation. You also have to associate the individual rows of
 input data to elements of the model. For this, you click on the
 <guibutton>...</guibutton> button in each row and select the
@@ -4411,9 +4454,9 @@ current or form the current to the
 next experiment within a file by selecting <guibutton>from
 previous</guibutton> and <guibutton>to next</guibutton>. If COPASI
 detects that experimental data descriptions are identical it will
-automatically set the <guibutton>from previous</guibutton> check box
+automatically set the <guibutton>from previous</guibutton> checkbox
 and disable editing the current experiment. Should you want to modify
-it you will have to unmark the check box first.
+it you will have to unmark the checkbox first.
 </para>
 <para>
 If you have more than one file, you can load additional data files and
@@ -4423,7 +4466,7 @@ datasets for the fitting, you close the data dialog with the
 estimation process, you have to choose the method by which the fitting
 will be done and maybe set some method parameters. Most of the time,
 the default parameter values should do. The method choosing is done at
-the bottom of the dialog by selecting the method from the drop down
+the bottom of the dialog by selecting the method from the dropdown
 list. For an explanation of the individual methods, please consult the
 methods section. 
 </para>
@@ -4447,13 +4490,13 @@ definition  with a file. This can be achieved by clicking on the
 <guibutton>Report</guibutton> button. This opens a dialog that lets
 you connect the report for a specific task to a file on your hard
 disk. First we choose a report that is suitable for the parameter
-estimation task from the drop down list at the top of the
+estimation task from the dropdown list at the top of the
 dialog. Next, we specify a file that will be used to store the report
 by clicking on the <guibutton>browse</guibutton> button and selecting
 the destination in the file dialog that opens. Per default, COPASI
 creates a new file or overwrites an existing file with the same
 name. Alternatively, you can tell COPASI to append the report to the
-end of an existing file by selecting the corresponding check box
+end of an existing file by selecting the corresponding checkbox
 labeled <guilabel>Append</guilabel> at the bottom of the dialog. Once
 you are finished, you click on the <guilabel>Confirm</guilabel>
 button. If you now run the task, COPASI will write the output to the
@@ -4734,7 +4777,7 @@ In order to export the set of differential equations to a C source
 code file, you select the <guisubmenu>Export ODEs</guisubmenu> menu
 entry from COPASI's <guimenu>File</guimenu> menu. In the save dialog
 that shows up, you select <emphasis>C Files (*.c)</emphasis> from the
-<guilabel>File type</guilabel> drop down and specify the name of the
+<guilabel>File type</guilabel> dropdown and specify the name of the
 file you want to write the ODEs to. After clicking on the
 <guibutton>Save</guibutton> the ODEs will be saved to the specified
 file.</para> 
@@ -4801,7 +4844,7 @@ Madonna<!--&trade;--> file, you select the <guisubmenu>Export
 ODEs</guisubmenu> menu entry from COPASI's <guimenu>File</guimenu>
 menu. In the save dialog that shows up, you select <emphasis>Berkeley
 Madonna Files (*.mmd)</emphasis> from the <guilabel>File
-type</guilabel> drop down and specify the name of the file you want to
+type</guilabel> dropdown and specify the name of the file you want to
 write the ODEs to. After clicking on the <guibutton>Save</guibutton>
 the ODEs will be saved to the specified file.
 </para>
@@ -4822,7 +4865,7 @@ In order to export the set of differential equations to an XPPAUT
 file, you select the <guisubmenu>Export ODEs</guisubmenu> menu entry
 from COPASI's <guimenu>File</guimenu> menu. In the save dialog that
 shows up, you select <emphasis>XPPAUT (*.ode)</emphasis> from the
-<guilabel>File type</guilabel> drop down and specify the name of the
+<guilabel>File type</guilabel> dropdown and specify the name of the
 file you want to write the ODEs to. After clicking on the
 <guibutton>Save</guibutton> the ODEs will be saved to the specified
 file.
