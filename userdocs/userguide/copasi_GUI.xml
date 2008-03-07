@@ -1,10 +1,10 @@
 <chapter id="modelCreation" xreflabel="Model Creation">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_GUI.xml,v $ -->
-<!--   $Revision: 1.49.4.6 $ -->
+<!--   $Revision: 1.49.4.7 $ -->
 <!--   $Name:  $ -->
-<!--   $Author: shoops $ -->
-<!--   $Date: 2008/03/04 13:27:02 $ -->
+<!--   $Author: pwilly $ -->
+<!--   $Date: 2008/03/07 07:54:20 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -1348,34 +1348,34 @@ function string only covers the right side of the rate function.
 </screenshot>
 </para>
 <para>
-So for Michaelis-W-Enzyme which is defined as <!-- <phrase -->
+So for Michaelis-Menten which is defined as <!-- <phrase -->
 <!-- role="math">v=(V*E*S)/(Km+S)</phrase> --> 
   <inlineequation><mml:math>
     <mml:mrow>
       <mml:mi>v</mml:mi>
       <mml:mo>=</mml:mo>
       <mml:mrow>
-        <mml:mo>(</mml:mo>
-		<mml:mi>V</mml:mi>
+        <mml:mi>V</mml:mi>
         <mml:mo>*</mml:mo>
-		<mml:mi>E</mml:mi>
-        <mml:mo>*</mml:mo>
-		<mml:mi>S</mml:mi>
-        <mml:mo>)</mml:mo>
-		<mml:mrow>
-          <mml:mo>/</mml:mo> 
-          <mml:mrow>
-            <mml:mo>(</mml:mo>
+        <mml:mrow>
+          <mml:mo>(</mml:mo>
             <mml:mrow>
-              <mml:msub>
-                <mml:mi>K</mml:mi>
-                <mml:mi>m</mml:mi>
-              </mml:msub>
-              <mml:mo>+</mml:mo>
-              <mml:mi>S</mml:mi>
-            </mml:mrow>    
-            <mml:mo>)</mml:mo>    
-          </mml:mrow>
+             <mml:mi>S</mml:mi>
+             <mml:mo>/</mml:mo> 
+              <mml:mrow>
+                <mml:mo>(</mml:mo>
+                  <mml:mrow>
+                    <mml:msub>
+                      <mml:mi>K</mml:mi>
+                      <mml:mi>m</mml:mi>
+                    </mml:msub>
+                    <mml:mo>+</mml:mo>
+                    <mml:mi>S</mml:mi>
+                  </mml:mrow>    
+                <mml:mo>)</mml:mo>    
+              </mml:mrow>
+            </mml:mrow>      
+          <mml:mo>)</mml:mo>
         </mml:mrow>
       </mml:mrow>
     </mml:mrow>
@@ -1386,27 +1386,27 @@ So for Michaelis-W-Enzyme which is defined as <!-- <phrase -->
       <mml:mi>v</mml:mi>
       <mml:mo>=</mml:mo>
       <mml:mrow>
-        <mml:mo>(</mml:mo>
-		<mml:mi>V</mml:mi>
+        <mml:mi>V</mml:mi>
         <mml:mo>*</mml:mo>
-		<mml:mi>E</mml:mi>
-        <mml:mo>*</mml:mo>
-		<mml:mi>S</mml:mi>
-        <mml:mo>)</mml:mo>
-		<mml:mrow>
-          <mml:mo>/</mml:mo> 
-          <mml:mrow>
-            <mml:mo>(</mml:mo>
+        <mml:mrow>
+          <mml:mo>(</mml:mo>
             <mml:mrow>
-              <mml:msub>
-                <mml:mi>K</mml:mi>
-                <mml:mi>m</mml:mi>
-              </mml:msub>
-              <mml:mo>+</mml:mo>
-              <mml:mi>S</mml:mi>
-            </mml:mrow>    
-            <mml:mo>)</mml:mo>    
-          </mml:mrow>
+             <mml:mi>S</mml:mi>
+             <mml:mo>/</mml:mo> 
+              <mml:mrow>
+                <mml:mo>(</mml:mo>
+                  <mml:mrow>
+                    <mml:msub>
+                      <mml:mi>K</mml:mi>
+                      <mml:mi>m</mml:mi>
+                    </mml:msub>
+                    <mml:mo>+</mml:mo>
+                    <mml:mi>S</mml:mi>
+                  </mml:mrow>    
+                <mml:mo>)</mml:mo>    
+              </mml:mrow>
+            </mml:mrow>      
+          <mml:mo>)</mml:mo>
         </mml:mrow>
       </mml:mrow>
     </mml:mrow>
@@ -1922,25 +1922,6 @@ COPASI:
 <sect1 id="usingSliders" xreflabel="Sliders">
 <title>Sliders</title>
 <para>
-<screenshot>
-<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/19/2008</screeninfo>
-<mediaobject>
- <imageobject>
-  <imagedata fileref="images/Sliders_01.png" format="PNG" scale="30" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/Sliders_01.ps" format="EPS" scale="30" align="center" />
- </imageobject> 
- <textobject>
-   <phrase>Linux screenshot that shows COPASI with a plot window and the slider dialog</phrase>
- </textobject>
- <caption>
-  <para>COPASI with plot window and sliders</para>
- </caption> 
-</mediaobject>
-</screenshot>
-</para>
-<para>
 Sliders are user interface elements that let the user change model
 values without having to go to the corresponding dialog first. This
 way the user can change certain model values and immediately see the
@@ -1989,16 +1970,16 @@ possibility to define a new slider.
 <screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/19/2008</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/Sliders_02.png" format="PNG" scale="50" align="center" />
+  <imagedata fileref="images/Sliders_01.png" format="PNG" scale="30" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/Sliders_02.ps" format="EPS" scale="50" align="center" />
+  <imagedata fileref="images/Sliders_01.ps" format="EPS" scale="30" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>Basic dialog for the definition of a slider</phrase>
+   <phrase>Linux screenshot that shows COPASI with a plot window and the slider dialog</phrase>
  </textobject>
  <caption>
-  <para>Basic slider definition dialog</para>
+  <para>COPASI with plot window and sliders</para>
  </caption> 
 </mediaobject>
 </screenshot>
@@ -2033,25 +2014,27 @@ that support sliders. An exception to this are slider for objects that
 are directly associated with a specific task, e.g. the number of steps
 in a time series, if you choose such an object for a slider, the
 slider will only be available for this task.
-</para><para>
+</para>
+<para>
 <screenshot>
 <screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/19/2008</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/Sliders_03.png" format="PNG" scale="50" align="center" />
+  <imagedata fileref="images/Sliders_02.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/Sliders_03.ps" format="EPS" scale="50" align="center" />
+  <imagedata fileref="images/Sliders_02.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>Extended dialog for the definition of a slider</phrase>
+   <phrase>Basic dialog for the definition of a slider</phrase>
  </textobject>
  <caption>
-  <para>Extended slider definition dialog</para>
+  <para>Basic slider definition dialog</para>
  </caption> 
 </mediaobject>
 </screenshot>
-</para><para>
+</para>
+<para>
 At the bottom of the dialog there is a button labeled
 <guilabel>Advanced</guilabel>. If you click on this button more
 options that influence the sliders behavior will show up (see above). Clicking the
@@ -2087,6 +2070,27 @@ values, the other one will be adjusted accordingly. The formula is
       </mml:mrow>
     </mml:mrow>
   </mml:math></inlineequation>.
+</para>
+<para>
+<screenshot>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/19/2008</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/Sliders_03.png" format="PNG" scale="50" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/Sliders_03.ps" format="EPS" scale="50" align="center" />
+ </imageobject> 
+ <textobject>
+   <phrase>Extended dialog for the definition of a slider</phrase>
+ </textobject>
+ <caption>
+  <para>Extended slider definition dialog</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+<para>
 Once you have made all the settings, you confirm the slider definition
 with the <guibutton>OK</guibutton> button. A new slider will appear in
 the slider dialog. 
@@ -2654,6 +2658,27 @@ you define a plot as being active will be explained below.
 </screenshot>
 </para>
 <para>
+Each curve object has a title, and the information what will be drawn
+on the x- and y-axis. Additionally you can specify whether the curve
+should be drawn as a line, as points or as symbols. This has to be
+specified for each curve separately. You can also specify if the plot
+should be drawn with a logarithmic scale for one or both of the
+axis. <!-- What is this Capture Data thing? !!! -->
+</para>
+<caution><para>
+On Mac OS X, the tab widget does not handle very wide tabs or many
+tabs well. This problem will be dealt with in upcoming versions of
+COPASI.
+</para></caution>
+<para>
+In the plot definition dialog, in addition to adding and removing
+curve objects, you can specify a name for the plot definition and you
+can specify whether the plot should be active or not with the
+<guilabel>active</guilabel> check box. (Only plots that are active are
+drawn when a <link linkend="calculatingTrajectory">time course
+simulation</link> is run!)
+</para>
+<para>
 <screenshot>
 <screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/28/2008</screeninfo>
 <mediaobject>
@@ -2690,27 +2715,6 @@ you define a plot as being active will be explained below.
  </caption> 
 </mediaobject>
 </screenshot>
-</para>
-<para>
-Each curve object has a title, and the information what will be drawn
-on the x- and y-axis. Additionally you can specify whether the curve
-should be drawn as a line, as points or as symbols. This has to be
-specified for each curve separately. You can also specify if the plot
-should be drawn with a logarithmic scale for one or both of the
-axis. <!-- What is this Capture Data thing? !!! -->
-</para>
-<caution><para>
-On Mac OS X, the tab widget does not handle very wide tabs or many
-tabs well. This problem will be dealt with in upcoming versions of
-COPASI.
-</para></caution>
-<para>
-In the plot definition dialog, in addition to adding and removing
-curve objects, you can specify a name for the plot definition and you
-can specify whether the plot should be active or not with the
-<guilabel>active</guilabel> check box. (Only plots that are active are
-drawn when a <link linkend="calculatingTrajectory">time course
-simulation</link> is run!)
 </para>
 <para>
 Another way to specify whether a plot is active or not is in the plot
@@ -2788,6 +2792,21 @@ bottom of the screen. After the calculation, COPASI will jump to the
 results widget.
 </para>
 <para>
+The results widget for the steady state calculation contains several
+tabs for the individual results. The first and the second tab contain
+the concentrations and the particle number at the steady state
+respectively. The third tab contains the fluxes for the reactions at
+the steady state. It contains concentration fluxes as well as particle
+fluxes. The fourth and fifth tab only contain results if you told
+COPASI to calculate the Jacobian matrix. The fourth tab then shows the
+Jacobian for the full system and the fifth tab contains the Jacobian
+matrix for the reduced system. For both Jacobian matrices also the
+eigenvalues are shown. The sixth tab contains the results for the
+stability analysis if a stability analysis was requested. The seventh
+and last tab shows a log that lists the calculation steps COPASI took
+while trying to find a steady state.
+</para>
+<para>
 <screenshot>
 <screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/28/2008</screeninfo>
 <mediaobject>
@@ -2805,21 +2824,6 @@ results widget.
  </caption> 
 </mediaobject>
 </screenshot>
-</para>
-<para>
-The results widget for the steady state calculation contains several
-tabs for the individual results. The first and the second tab contain
-the concentrations and the particle number at the steady state
-respectively. The third tab contains the fluxes for the reactions at
-the steady state. It contains concentration fluxes as well as particle
-fluxes. The fourth and fifth tab only contain results if you told
-COPASI to calculate the Jacobian matrix. The fourth tab then shows the
-Jacobian for the full system and the fifth tab contains the Jacobian
-matrix for the reduced system. For both Jacobian matrices also the
-eigenvalues are shown. The sixth tab contains the results for the
-stability analysis if a stability analysis was requested. The seventh
-and last tab shows a log that lists the calculation steps COPASI took
-while trying to find a steady state.
 </para>
 <para>
 If you want to have output from the Steady State Task, you have to
@@ -2864,25 +2868,6 @@ the object tree and click on the <guibutton>Run</guibutton> button in
 the dialog that appears.   
 </para>
 <para>
-<screenshot>
-<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/28/2008</screeninfo>
-<mediaobject>
- <imageobject>
-  <imagedata fileref="images/ElementaryModesTask_01.png" format="PNG" scale="50" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/ElementaryModesTask_01.ps" format="EPS" scale="50" align="center" />
- </imageobject> 
- <textobject>
-   <phrase>Dialog showing the calculated elementary modes for a model</phrase>
- </textobject>
- <caption>
-  <para>Elementary analysis dialog with results</para>
- </caption> 
-</mediaobject>
-</screenshot>
-</para>
-<para>
 The elementary modes found will be displayed directly in this
 dialog. Each elementary mode lists the reactions it consists of
 together with their chemical equations. 
@@ -2910,6 +2895,25 @@ corresponding check box labeled <guilabel>Append</guilabel> at the
 bottom of the dialog. Once you are finished, you click on the
 <guilabel>Confirm</guilabel> button. If you now run the task, COPASI
 will write the output to the file you specified. 
+</para>
+<para>
+<screenshot>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/28/2008</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/ElementaryModesTask_01.png" format="PNG" scale="50" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/ElementaryModesTask_01.ps" format="EPS" scale="50" align="center" />
+ </imageobject> 
+ <textobject>
+   <phrase>Dialog showing the calculated elementary modes for a model</phrase>
+ </textobject>
+ <caption>
+  <para>Elementary analysis dialog with results</para>
+ </caption> 
+</mediaobject>
+</screenshot>
 </para>
 </sect2>
 <sect2 id="massConservation" xreflabel="Mass Conservations">
@@ -3122,6 +3126,18 @@ in the report file you defined and/or in a separate result dialog if
 you told COPASI to keep the results in memory.
 </para>
 <para>
+The results dialog is located directly below the time course branch in
+the object tree. In this widget you can choose whether you want the
+results to be displayed as concentrations or as particle numbers and
+you have the possibility to store the results to a file. The advantage
+a report has over writing a file in the results widget is that you can
+choose exactly which species concentrations you want to store
+whereas the results dialog always stores all species
+concentrations. You also can't change the order in which the
+species concentrations are written if you store the result from
+this dialog.
+</para>
+<para>
 <screenshot>
 <screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/28/2008</screeninfo>
 <mediaobject>
@@ -3140,18 +3156,7 @@ you told COPASI to keep the results in memory.
 </mediaobject>
 </screenshot>
 </para>
-<para>
-The results dialog is located directly below the time course branch in
-the object tree. In this widget you can choose whether you want the
-results to be displayed as concentrations or as particle numbers and
-you have the possibility to store the results to a file. The advantage
-a report has over writing a file in the results widget is that you can
-choose exactly which species concentrations you want to store
-whereas the results dialog always stores all species
-concentrations. You also can't change the order in which the
-species concentrations are written if you store the result from
-this dialog.
-</para>
+
 <sect2 id="workingWithPlots" xreflabel="Working with Plots">
 <title>Working with Plots</title>
 <para>
@@ -3161,6 +3166,25 @@ bar at the top, that lets you print the plot or save the data into a
 file. The actual plot and a legend at the bottom. The legend at the
 bottom is interactive and drawing of certain curves can be toggled by
 clicking on the corresponding legend entry.
+</para>
+<para>
+<screenshot>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/28/2008</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/PlotWindow_01.png" format="PNG" scale="50" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/PlotWindow_01.ps" format="EPS" scale="50" align="center" />
+ </imageobject> 
+ <textobject>
+   <phrase>Dialog window showing a plot</phrase>
+ </textobject>
+ <caption>
+  <para>COPASI plot window</para>
+ </caption> 
+</mediaobject>
+</screenshot>
 </para>
 <para>
 While moving the mouse cursor inside a plot widget, the mouse
@@ -3182,25 +3206,6 @@ zooming often leads to strange artifacts. Also the mouse coordinates
 that are normally drawn with the cursor are unreadable on COPASI for
 Mac OS X
 </para></caution>
-<para>
-<screenshot>
-<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/28/2008</screeninfo>
-<mediaobject>
- <imageobject>
-  <imagedata fileref="images/PlotWindow_01.png" format="PNG" scale="50" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/PlotWindow_01.ps" format="EPS" scale="50" align="center" />
- </imageobject> 
- <textobject>
-   <phrase>Dialog window showing a plot</phrase>
- </textobject>
- <caption>
-  <para>COPASI plot window</para>
- </caption> 
-</mediaobject>
-</screenshot>
-</para>
 </sect2>
 </sect1>
 <sect1 id="calculatingMCA" xreflabel="Metabolic Control Analysis">
@@ -3249,49 +3254,11 @@ linkend="methodSteadyState" />, <xref linkend="methodMCA" />)
 -->
 </para>
 <para>
-<screenshot>
-<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/28/2008</screeninfo>
-<mediaobject>
- <imageobject>
-  <imagedata fileref="images/MCATask_02.png" format="PNG" scale="50" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/MCATask_02.ps" format="EPS" scale="50" align="center" />
- </imageobject> 
- <textobject>
-   <phrase>Dialog showing the results of the metabolic control analysis</phrase>
- </textobject>
- <caption>
-  <para>MCA results</para>
- </caption> 
-</mediaobject>
-</screenshot>
-</para>
-<para>
 To start the calculation, you click the <guibutton>Run</guibutton>
 button. After the calculation is finished, COPASI will automatically
 switch to the results dialog. The results dialog shows three tabs that
 contain the results for the elasticities, flux control coefficients
 and concentration control coefficients.
-</para>
-<para>
-<screenshot>
-<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/28/2008</screeninfo>
-<mediaobject>
- <imageobject>
-  <imagedata fileref="images/MCATask_03.png" format="PNG" scale="50" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/MCATask_03.ps" format="EPS" scale="50" align="center" />
- </imageobject> 
- <textobject>
-   <phrase>Dialog showing the results of the MCA after no steady state was found</phrase>
- </textobject>
- <caption>
-  <para>MCA results at none steady state</para>
- </caption> 
-</mediaobject>
-</screenshot>
 </para>
 <para>
 Depending on whether a steady state was found or not, only the
@@ -3323,6 +3290,44 @@ selecting the corresponding check box labeled
 finished, you click on the <guilabel>Confirm</guilabel> button. If you
 now run the task, COPASI will write the output to the file you
 specified.
+</para>
+<para>
+<screenshot>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/28/2008</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/MCATask_02.png" format="PNG" scale="50" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/MCATask_02.ps" format="EPS" scale="50" align="center" />
+ </imageobject> 
+ <textobject>
+   <phrase>Dialog showing the results of the metabolic control analysis</phrase>
+ </textobject>
+ <caption>
+  <para>MCA results</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+<para>
+<screenshot>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/28/2008</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/MCATask_03.png" format="PNG" scale="50" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/MCATask_03.ps" format="EPS" scale="50" align="center" />
+ </imageobject> 
+ <textobject>
+   <phrase>Dialog showing the results of the MCA after no steady state was found</phrase>
+ </textobject>
+ <caption>
+  <para>MCA results at none steady state</para>
+ </caption> 
+</mediaobject>
+</screenshot>
 </para>
 </sect1>
 
@@ -3585,18 +3590,6 @@ button.
 </screenshot>
 </para>
 <para>
-After adjusting the minimum and maximum as well as the number of
-intervals, you can run the scan task again. COPASI will now do a scan
-for the first parameter while holding the second parameter constant at
-the minimum. Next, COPASI will raise the second parameter and do
-another scan from minimum to maximum for the first parameter. This way
-a full scan for the first parameter is done for every value of the
-second parameter. You have to be careful because assuming that you
-chose 10 intervals for both parameters, COPASI will run 100 time
-course simulations during this two-dimensional scan which can take a
-long time.
-</para>
-<para>
 <screenshot>
 <screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/28/2008</screeninfo>
 <mediaobject>
@@ -3614,6 +3607,18 @@ long time.
  </caption> 
 </mediaobject>
 </screenshot>
+</para>
+<para>
+After adjusting the minimum and maximum as well as the number of
+intervals, you can run the scan task again. COPASI will now do a scan
+for the first parameter while holding the second parameter constant at
+the minimum. Next, COPASI will raise the second parameter and do
+another scan from minimum to maximum for the first parameter. This way
+a full scan for the first parameter is done for every value of the
+second parameter. You have to be careful because assuming that you
+chose 10 intervals for both parameters, COPASI will run 100 time
+course simulations during this two-dimensional scan which can take a
+long time.
 </para>
 <para>
 The "Random distribution" item is similar to the "Parameter Scan"
