@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporter.cpp,v $
-//   $Revision: 1.8.4.2 $
+//   $Revision: 1.8.4.3 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/03/03 12:10:36 $
+//   $Date: 2008/03/07 19:40:04 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -188,10 +188,14 @@ void CODEExporter::exportSimulatedObject(CCopasiObject * obj)
       CCopasiObject* parent = obj->getObjectParent();
       assert(parent);
       std::string typeString = parent->getObjectType();
+      std::string name = obj->getObjectName();
 
       if (typeString == "Metabolite" || typeString == "ModelValue" || typeString == "Compartment")
-        if (!exportModelEntityExpression(obj)) return;
-        else return;
+        if (name == "Concentration" || name == "Value" || name == "Volume" || name == "Rate")
+          if (!exportModelEntityExpression(obj)) return;
+          else return;
+
+      //TODO warning for initial assignments
     }
   return;
 }
@@ -579,7 +583,7 @@ bool CODEExporter::preprocess(const CModel* copasiModel)
     {
       CMetab * metab = metabs[i];
 
-      //if (metab->isUsed())
+      //if (metab->isUsed()) //changed
       {
 
         std::string name = translateObjectName(metab->getObjectName());
@@ -674,6 +678,8 @@ bool CODEExporter::exportMetabolites(const CModel* copasiModel)
     {
       const CMetab * metab;
       metab = metabs[i];
+
+      //if (!metab->isUsed()) continue;
 
       std::ostringstream expression;
       std::ostringstream comments;
@@ -793,6 +799,8 @@ bool CODEExporter::exportMetabolitesConcentrations(const CModel* copasiModel)
     {
       const CMetab * metab;
       metab = metabs[i];
+
+      //if (!metab->isUsed()) continue;
 
       std::string str1;
       std::string str2;
