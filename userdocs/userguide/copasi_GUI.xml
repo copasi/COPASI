@@ -1,10 +1,10 @@
 <chapter id="modelCreation" xreflabel="Model Creation">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_GUI.xml,v $ -->
-<!--   $Revision: 1.49.4.8 $ -->
+<!--   $Revision: 1.49.4.9 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: pwilly $ -->
-<!--   $Date: 2008/03/07 10:49:42 $ -->
+<!--   $Date: 2008/03/07 11:51:36 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -2918,8 +2918,8 @@ Modes analysis task from the dropdown list at the top of the
 dialog. Next, we specify a file that will be used to store the report
 by clicking on the <guibutton>browse</guibutton> button and selection
 the destination in the file dialog that opens. Per default, COPASI
-creates a new file, if the file does not exist, or overwrites the existing
-file whose the same name. Alternatively, you can tell COPASI to
+creates a new file, if the file does not exist, or overwrites an existing
+file with the same name. Alternatively, you can tell COPASI to
 append the report to the end of an existing file by selecting the
 corresponding checkbox labeled <guilabel>Append</guilabel> at the
 bottom of the dialog. Once you are finished, you click on the
@@ -3483,14 +3483,14 @@ that the divergence and the sum differ in those cases.
 <sect1 id="parameterScan" xreflabel="Parameter Scan">
 <title>Parameter Scan</title>
 <para>
-The leaf for parameter scans in the object tree is located under
-<guibutton>Multiple Tasks -> Parameter Scan</guibutton>. At the top
+The leaf for <guibutton>Parameter Scan</guibutton> in the object tree is 
+located under <guibutton>Multiple Tasks</guibutton>. At the top,
 the dialog displays a box called <guilabel>New scan item</guilabel>
-together with a <guibutton>create...</guibutton>. and when the dialog
+together with a <guibutton>...Create!</guibutton> button. When the dialog
 is opened for the first time, the only item in the widget below is a
 green box called <guilabel>Task</guilabel>. This widget contains a
 dropdown list with all the tasks that can be used in a
-scan. Additionally there is a checkbox called <guilabel>always use
+scan. Additionally there are a checkbox called <guilabel>always use
 initial conditions</guilabel> and a checkbox called <guilabel>output
 from subtask</guilabel>.
 </para>
@@ -3514,24 +3514,27 @@ from subtask</guilabel>.
 </screenshot>
 </para>
 <para>
-The tasks for which scans can be conducted are Steady-State, time
-course, metabolic control analysis, and Lyapunov exponents
-calculations. So if we want to do a scan for a time course
-calculation, we choose "Time Course" from the dropdown list in the
-<guilabel>Task</guilabel> widget. We will ignore the two checkboxes
-for the time being and take a look at the dropdown list at the top of
+The tasks for which scans can be conducted are <emphasis>Steady-State</emphasis>, 
+<emphasis>Time Course</emphasis>, <emphasis>Metabolic Control Analysis</emphasis>, 
+and <emphasis>Lyapunov Exponents</emphasis>. So if you want to do a scan for a 
+time course calculation, you should choose <emphasis>Time Course</emphasis> from 
+the dropdown list in the <guilabel>Task</guilabel> widget. We will ignore the 
+two checkboxes for the time being and take a look at the dropdown list at the top of
 the <guilabel>Scan Task</guilabel> dialog. This dropdown list
-contains three entries named "Parameter Scan", "Repeat" and "Random
-distribution". Those are additional elements that can be added to the
-main widget below to form complex tasks. Let's look at one after the
-other and start with the "Parameter Scan". As it is right now, the
-scan task does not do anything since we haven't told it yet which
-parameter we want to scan. To define a parameter for the scan, you
-choose "Parameter Scan" from the dropdown list at the top and press
-the create button. COPASI will add a new widget to the dialog that is
-called <guilabel>Scan</guilabel>. The <guilabel>Scan</guilabel> widget
-contains some empty line edit fields and a button labeled
-<guibutton>...</guibutton> and a checkbox labeled
+contains three entries named <emphasis>Parameter Scan</emphasis>, 
+<emphasis>Repeat</emphasis> and <emphasis>Random distribution</emphasis>. 
+Those are additional elements that can be added to the
+main widget below to form complex tasks. 
+</para>
+<para>
+Let us look at one after the other and start with the <emphasis>Parameter 
+Scan</emphasis>. As it is right now, the scan task does not do anything since 
+we have not told it yet which parameter we want to scan. To define a parameter 
+for the scan, you choose <emphasis>Parameter Scan</emphasis> from the dropdown 
+list at the top and press the <guibutton>...Create!</guibutton> button. COPASI 
+will add a new widget to the dialog that is called <guilabel>Scan</guilabel>. 
+The <guilabel>Scan</guilabel> widget contains some empty line edit fields and 
+a button labeled <guibutton>...</guibutton> and a checkbox labeled
 <guilabel>logarithmic</guilabel>.
 </para>
 <para>
@@ -3556,7 +3559,7 @@ contains some empty line edit fields and a button labeled
 <para>
 The first thing you have to do is to select the parameter for the
 scan. You do this by clicking on the <guibutton>...</guibutton> button
-and selecting some parameter from the selection dialog that
+and selecting a parameter from the selection dialog that
 appears. Once you are finished with your selection and pressed the
 <guibutton>OK</guibutton> button, the name of the object you chose
 will appear in the line edit field beside the
@@ -3565,7 +3568,7 @@ can now specify the minimal value the parameter will have during the
 scan as well as the maximal value. After choosing the object, these
 values will be set to half the objects value for the minimum and
 double the objects value for the maximum. In the
-<guilabel>Interval</guilabel> you can specify how many intervals
+<guilabel>Intervals</guilabel>, you can specify how many intervals
 COPASI uses during the scan to raise the value from minimum to
 maximum. Last but not least, the <guilabel>logarithmic</guilabel>
 checkbox determines whether the value is raised in linear steps if
@@ -3590,7 +3593,7 @@ linkend="outputAssistant" /> section. All that is left to do in order
 to write the output to a specific file is to connect an output
 definition with a file. This can be achieved by clicking on the
 <guibutton>Report</guibutton> button. This opens a dialog that lets
-you connect the report for a specific task to a file on your hard
+you connect the report of a specific task to a file on your hard
 disk. First we choose a report that is suitable for the parameter scan
 task from the dropdown list at the top of the dialog. Next, we
 specify a file that will be used to store the report by clicking on
@@ -3609,8 +3612,8 @@ So far we have only scratched the surface of the scan dialog. E.g. if
 you want to do a two-dimensional scan, i.e. a scan where two
 parameters are independently scanned, you can add a second
 <guilabel>Scan</guilabel> widget by adding it to the main dialog just
-like you did for the first parameter. You select "Parameter Scan" in
-the dropdown list and push the <guibutton>... Create!</guibutton>
+like you did for the first parameter. You select <emphasis>Parameter 
+Scan</emphasis> in the dropdown list and push the <guibutton>...Create!</guibutton>
 button.
 </para>
 <para>
@@ -3664,19 +3667,30 @@ course simulations during this two-dimensional scan which can take a
 long time.
 </para>
 <para>
-The "Random distribution" item is similar to the "Parameter Scan"
-item. With the random distribution a parameter can be given a random
-value. After adding a "Random distribution" widget to the main dialog,
+The <emphasis>Random distribution</emphasis> item is similar to the 
+<emphasis>Parameter Scan</emphasis> item. With the random distribution,
+a parameter can be given a random value. After adding a <guilabel>Random 
+distribution</guilabel> widget to the main dialog,
 you first have to choose a parameter for which a random value will be
 set. You can then choose from three distribution types to generate the
-random value. The three distributions are "Uniform distribution",
-"Normal Distribution" and "Poisson Distribution". Additionally you
+random value. The three distributions are <emphasis>Uniform 
+distribution</emphasis>, <emphasis>Normal distribution</emphasis> and 
+<emphasis>Poisson distribution</emphasis>. Additionally, you
 have to set the bounds within which the random value will be set
-(Uniform Distribution) or the mean and average values (Normal
-Distribution and Poisson Distribution). If all has been set and you
-press the <guibutton>Run</guibutton>, COPASI will set the parameter
-value to a random value from the chosen distribution and run one time
-course simulation.
+(uniform distribution) or the mean and average values (normal
+distribution) or just the mean value (Poisson distribution). If all has 
+been set and you press the <guibutton>Run</guibutton>, COPASI will set 
+the parameter value to a random value from the chosen distribution and 
+run one time course simulation.
+</para>
+<para>
+The <emphasis>Repeat</emphasis> item can be used to repeat a certain 
+action several times. For example, if you add a <guilabel>Repeat</guilabel> 
+widget above a <guilabel>Random distribution</guilabel> one, the parameter 
+will be given a random value as many times as specified in the 
+<guilabel>Repeat</guilabel> widget and time course simulation, or one of the 
+other tasks specified in the <guilabel>Task</guilabel> one at the bottom 
+of the main widget, is run with this value.
 </para>
 <para>
 <screenshot>
@@ -3698,13 +3712,46 @@ course simulation.
 </screenshot>
 </para>
 <para>
-The "Repeat" item can be used to repeat a certain action several
-times. E.g. if you add a <guilabel>Repeat</guilabel> widget above a
-"Random distribution" item, the parameter will be given a random value
-as many times as specified in the "Repeat" item and time course
-simulation is run with this value or one of the other tasks specified
-in the <guilabel>Task</guilabel> item at the bottom of the main
-widget.
+Different items can be combined in many ways to achieve certain
+goals. For instance, you could run 10 parameter scans for a certain value,
+each with a different random value for another parameter, by combining a
+<guilabel>Scan</guilabel> widget with a <guibutton>Random distribution</guibutton>
+and a <guilabel>Repeat</guilabel> ones.
+</para>
+<para>
+With the buttons on the left of each item, except the
+<guilabel>Task</guilabel> at the bottom, you can move the items up or
+down in the list or close an item you no longer need. The order of the
+items in the main widgets determines in which order COPASI will handle
+the actions. A widget is controlled by the widget above it. Thus, it 
+can be rather important, if a <guilabel>Repeat</guilabel> acts on 
+the widget directly below it. 
+</para>
+<para>
+Consider you have added a <guilabel>Repeat</guilabel> widget and 
+a <guilabel>Random distribution</guilabel> one to the main widget. 
+Now the <guilabel>Repeat</guilabel> widget can be either above the
+<guilabel>Random distribution</guilabel> widget or below it, and the
+results you get after pushing the <guibutton>Run</guibutton> button 
+are very different. 
+</para>
+<para>
+Lets first look at the case where the <guilabel>Repeat</guilabel> widget 
+is above the <guilabel>Random distribution</guilabel> widget. If you push
+the <guibutton>Run</guibutton> button, COPASI will run the task as many 
+times as you have specified in the <guilabel>Repeat</guilabel> widget, 
+each time with a different random value for the parameter you have chosen 
+in the <guilabel>Random distribution</guilabel> widget. Now lets assume the
+<guilabel>Repeat</guilabel> is below the <guilabel>Random
+distribution</guilabel>. If you push the <guibutton>Run</guibutton> button 
+now, COPASI will also run the task as many times as you specified in the
+<guilabel>Repeat</guilabel> widget. The difference is that this time,
+the parameter value gets a random value before the repeat takes
+effect, i.e. all runs are done with the same random value for the
+chosen parameter. If you do this for a deterministic time course
+simulation and a concentration plot is defined, the difference becomes
+obvious because in the first case, you will probably get X different
+curves, whereas in the second case you may get X times the same curve.
 </para>
 <para>
 <screenshot>
@@ -3725,44 +3772,7 @@ widget.
 </mediaobject>
 </screenshot>
 </para>
-<para>
-Different items can be combined in many ways to achieve certain
-goals. E.g. you could run 10 parameter scans for a certain value each
-with a different random value for another parameter by combining a
-"Parameter Scan" item with a "Random distribution" item and a repeat
-item.
-</para>
-<para>
-With the buttons on the left of each item other than the
-<guilabel>Task</guilabel> at the bottom, you can move the items up or
-down in the list or close an item you no longer need. The order of the
-items in the main widgets determines in which order COPASI will handle
-the actions. A widget is controlled by the widget above it. So a
-<guilabel>Repeat</guilabel> item acts on the widget directly below
-it. This can be rather important. Consider you have added a
-<guilabel>Repeat</guilabel> widget and a <guilabel>Random
-distribution</guilabel> widget to the main widget. Now the
-<guilabel>Repeat</guilabel> widget can be either above the
-<guilabel>Random distribution</guilabel> widget or below it and the
-results you get when you push the run button are very different. Lets
-first look at the case where the <guilabel>Repeat</guilabel> widget is
-above the <guilabel>Random distribution</guilabel> widget. If you push
-the run button, COPASI will run the task as many times as you have
-specified in the <guilabel>Repeat</guilabel> widget, each time with a
-different random value for the parameter you have chosen in the
-<guilabel>Random distribution</guilabel> widget. Now lets assume the
-<guilabel>Repeat</guilabel> is below the <guilabel>Random
-distribution</guilabel>. If you push the run button now, COPASI will
-also run the task as many times as you specified in the
-<guilabel>Repeat</guilabel> widget, the difference is that this time,
-the parameter value gets a random value before the repeat takes
-effect, i.e. all runs are done with the same random value for the
-chosen parameter. If you do this for a deterministic time course
-simulation and a concentration plot is defined, the difference becomes
-obvious because in the first case, you will probably get X different
-curves, whereas in the second case you will get X times the same
-curve.
-</para>
+
 <para>
 <screenshot>
 <screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/29/2008</screeninfo>
