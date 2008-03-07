@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.94 $
+//   $Revision: 1.95 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/03/03 12:30:40 $
+//   $Date: 2008/03/07 12:25:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -454,36 +454,36 @@ void CQGLNetworkPainter::drawGraph()
 
 void CQGLNetworkPainter::drawColorLegend()
 {
-      C_INT32 sx = 40; //start at position (sx,sy)
-      C_INT32 sy = 20;
-      C_INT32 w = 120; // size of legend rectangle w x h
-      C_INT32 h = 15;
-      C_FLOAT64 dHue = 240.0 / w;
-      C_FLOAT64 hue = 0.0;
+  C_INT32 sx = 40; //start at position (sx,sy)
+  C_INT32 sy = 20;
+  C_INT32 w = 120; // size of legend rectangle w x h
+  C_INT32 h = 15;
+  C_FLOAT64 dHue = 240.0 / w;
+  C_FLOAT64 hue = 0.0;
 
-      // QGLWidget::renderText (10, sy + 15, "MIN", mf, graphObjList);
-      // QGLWidget::renderText (165, sy + 15, "MAX", mf, graphObjList);
-      RG_drawStringAt("MIN", 7, sy + 3, 32, 16);
-      RG_drawStringAt("MAX", 165, sy + 3, 32, 16);
+  // QGLWidget::renderText (10, sy + 15, "MIN", mf, graphObjList);
+  // QGLWidget::renderText (165, sy + 15, "MAX", mf, graphObjList);
+  RG_drawStringAt("MIN", 7, sy + 3, 32, 16);
+  RG_drawStringAt("MAX", 165, sy + 3, 32, 16);
 
-      C_INT16 i;
-      QColor col = QColor();
-      for (i = sx;i <= (w + sx);i++)
-        {
-          col.setHsv((int)(240 - hue), 255, 255);
-          //std::cout << "------------" << std::endl;
-          //std::cout << "color hsv value: "  << (int) hue << std::endl;
-          //std::cout << "r: " << col.red() << "   g: " << col.green() << "   b: " << col.blue() << std::endl;
-          //glColor3d((C_FLOAT64)col.red(), (C_FLOAT64)col.green(), (C_FLOAT64)col.blue()); does not work properly
-          QGLWidget::qglColor(col);
-          // draw colored line in rectangle
-          glBegin(GL_LINES);
-          glVertex2d(i, sy);
-          glVertex2d(i, sy + h);
-          glEnd();
+  C_INT16 i;
+  QColor col = QColor();
+  for (i = sx;i <= (w + sx);i++)
+    {
+      col.setHsv((int)(240 - hue), 255, 255);
+      //std::cout << "------------" << std::endl;
+      //std::cout << "color hsv value: "  << (int) hue << std::endl;
+      //std::cout << "r: " << col.red() << "   g: " << col.green() << "   b: " << col.blue() << std::endl;
+      //glColor3d((C_FLOAT64)col.red(), (C_FLOAT64)col.green(), (C_FLOAT64)col.blue()); does not work properly
+      QGLWidget::qglColor(col);
+      // draw colored line in rectangle
+      glBegin(GL_LINES);
+      glVertex2d(i, sy);
+      glVertex2d(i, sy + h);
+      glEnd();
 
-          hue += dHue;
-        }
+      hue += dHue;
+    }
 }
 
 // draw node as circle
@@ -703,25 +703,68 @@ void CQGLNetworkPainter::drawArrow(CArrow a, CLMetabReferenceGlyph::Role role)
 }
 
 // draws label as a rectangular filled shape with a border and the text inside
+// void CQGLNetworkPainter::drawLabel(CLTextGlyph l)
+// {
+//   //glColor3f(0.5f, 1.0f, 0.69f); // label background color somehow green
+//   glColor3f(0.23f, 0.92f, 0.7f); // label background color (61,237,181)
+//   // draw rectangle as background for text
+//   glBegin(GL_POLYGON);
+//   glVertex2d(l.getX(), l.getY());
+//   glVertex2d(l.getX() + l.getWidth(), l.getY());
+//   glVertex2d(l.getX() + l.getWidth(), l.getY() + l.getHeight());
+//   glVertex2d(l.getX(), l.getY() + l.getHeight());
+//   glEnd();
+//   // draw frame for rectangle
+//   glColor3f(0.0f, 0.0f, 0.3f);
+//   glBegin(GL_LINE_LOOP);
+//   glVertex2d(l.getX(), l.getY());
+//   glVertex2d(l.getX() + l.getWidth(), l.getY());
+//   glVertex2d(l.getX() + l.getWidth(), l.getY() + l.getHeight());
+//   glVertex2d(l.getX(), l.getY() + l.getHeight());
+//   glEnd();
+//   RG_drawStringAt(l.getText(), static_cast<C_INT32>(l.getX()), static_cast<C_INT32>(l.getY()), static_cast<C_INT32>(l.getWidth()), static_cast<C_INT32>(l.getHeight()));
+//}
+
+// draws label as a rectangular filled shape with a border and the text inside
 void CQGLNetworkPainter::drawLabel(CLTextGlyph l)
 {
   //glColor3f(0.5f, 1.0f, 0.69f); // label background color somehow green
-  glColor3f(0.23f, 0.92f, 0.7f); // label background color (61,237,181)
+  glColor3f(0.7f, 0.8f, 1.0f); // label background color (61,237,181)
   // draw rectangle as background for text
+  double CORNER_RADIUS_FRACTION = 0.1;
+  double cornerRadius = (l.getWidth() > l.getHeight()) ? l.getHeight() * CORNER_RADIUS_FRACTION : l.getWidth() * CORNER_RADIUS_FRACTION;
   glBegin(GL_POLYGON);
-  glVertex2d(l.getX(), l.getY());
-  glVertex2d(l.getX() + l.getWidth(), l.getY());
-  glVertex2d(l.getX() + l.getWidth(), l.getY() + l.getHeight());
-  glVertex2d(l.getX(), l.getY() + l.getHeight());
+  glVertex2d(l.getX() + cornerRadius, l.getY());
+  glVertex2d(l.getX() + l.getWidth() - cornerRadius, l.getY());
+  glVertex2d(l.getX() + l.getWidth(), l.getY() + cornerRadius);
+  glVertex2d(l.getX() + l.getWidth(), l.getY() + l.getHeight() - cornerRadius);
+  glVertex2d(l.getX() + l.getWidth() - cornerRadius, l.getY() + l.getHeight());
+  glVertex2d(l.getX() + cornerRadius, l.getY() + l.getHeight());
+  glVertex2d(l.getX(), l.getY() + l.getHeight() - cornerRadius);
+  glVertex2d(l.getX(), l.getY() + cornerRadius);
   glEnd();
+  GLUquadricObj* qobj = NULL;
+  qobj = gluNewQuadric();
+  gluQuadricDrawStyle(qobj, GLU_FILL);
+  glPushMatrix();
+  glTranslatef(l.getX() + cornerRadius, l.getY() + cornerRadius , 0.0f);
+  gluPartialDisk(qobj, 0.0, cornerRadius, 10, 10, 180, 90);
+  glTranslatef(l.getWidth() - 2.0 * cornerRadius, 0.0f , 0.0f);
+  gluPartialDisk(qobj, 0.0, cornerRadius, 10, 10, 90, 90);
+  glTranslatef(0.0f, l.getHeight() - 2.0 * cornerRadius, 0.0f);
+  gluPartialDisk(qobj, 0.0, cornerRadius, 10, 10, 0, 90);
+  glTranslatef(-l.getWidth() + 2 * cornerRadius , 0.0 , 0.0f);
+  gluPartialDisk(qobj, 0.0, cornerRadius, 10, 10, 270, 90);
+  glPopMatrix();
   // draw frame for rectangle
-  glColor3f(0.0f, 0.0f, 0.3f);
-  glBegin(GL_LINE_LOOP);
-  glVertex2d(l.getX(), l.getY());
-  glVertex2d(l.getX() + l.getWidth(), l.getY());
-  glVertex2d(l.getX() + l.getWidth(), l.getY() + l.getHeight());
-  glVertex2d(l.getX(), l.getY() + l.getHeight());
-  glEnd();
+  //glColor3f(1.0f, 1.0f, 1.0f);
+  //glBegin(GL_LINE_LOOP);
+  //glVertex2d(l.getX(), l.getY());
+  //glVertex2d(l.getX() + l.getWidth(), l.getY());
+  //glVertex2d(l.getX() + l.getWidth(), l.getY() + l.getHeight());
+  //glVertex2d(l.getX(), l.getY() + l.getHeight());
+  //glEnd();
+  //std::cout << "X: " << l.getX() << "  y: " << l.getY() << "  w: " << l.getWidth() << "  h: " << l.getHeight() << std::endl;
   //std::cout << "X: " << l.getX() << "  y: " << l.getY() << "  w: " << l.getWidth() << "  h: " << l.getHeight() << std::endl;
   // now draw text
   //drawStringAt(l.getText(), l.getX(), l.getY(), l.getWidth(), l.getHeight(), QColor(61, 237, 181, QColor::Rgb));
@@ -801,8 +844,8 @@ void CQGLNetworkPainter::RG_drawStringAt(std::string s, C_INT32 x, C_INT32 y, C_
   //      RectangleSpec* frame=this->mSelectionFrameDict[pTextGlyph->getId()];
   //      this->drawSelectionFrame(frame,this->mSelectionFrameDictHandles[frame]);
   //}
-  delete[] texSpec->textureData;
-  delete texSpec;
+  //delete[] texSpec->textureData;
+  //delete texSpec;
 }
 
 int CQGLNetworkPainter::getTextWidth(const std::string& text, const std::string& fontName, unsigned int fontSize)
@@ -828,34 +871,34 @@ int CQGLNetworkPainter::getLabelWindowWidth(int width)
 }
 
 void CQGLNetworkPainter::createTextureForAllLabels()
-{ 
+{
   //std::cout << "createTextureForAllLabels" << std::endl;
   labelTextureMap.clear();
-  unsigned int i=0;
-  for (i=0;i<viewerLabels.size();i++){
-   RGTextureSpec* pTexture = RG_createTextureForText(viewerLabels[i].getText(),mFontname,static_cast<C_INT32>(viewerLabels[i].getHeight()));
-   labelTextureMap.insert(std::pair<std::string,RGTextureSpec*>
-			 (viewerLabels[i].getText(),
-			  pTexture));
-  }
+  unsigned int i = 0;
+  for (i = 0;i < viewerLabels.size();i++)
+    {
+      RGTextureSpec* pTexture = RG_createTextureForText(viewerLabels[i].getText(), mFontname, static_cast<C_INT32>(viewerLabels[i].getHeight()));
+      labelTextureMap.insert(std::pair<std::string, RGTextureSpec*>
+                             (viewerLabels[i].getText(),
+                              pTexture));
+    }
 }
 
 RGTextureSpec* CQGLNetworkPainter::getTextureForText(const std::string& text, const std::string& fontName, unsigned int fontSize)
 {
-  std::cout << "get texture for text: " << text <<std::endl;
+  //std::cout << "get texture for text: " << text <<std::endl;
   std::map<std::string, RGTextureSpec*>::iterator it;
   it = labelTextureMap.find(text);
   if (it != labelTextureMap.end())
     return ((*it).second);
   else
-    return RG_createTextureForText(text,fontName,fontSize);
+    return RG_createTextureForText(text, fontName, fontSize);
   //return RG_createTextureForText(text, fontName,fontSize);
 }
 
-
 RGTextureSpec* CQGLNetworkPainter::RG_createTextureForText(const std::string& text, const std::string& fontName, unsigned int fontSize)
 {
-  std::cout << "create texture for: " << text << std::endl;
+  //std::cout << "create texture for: " << text << std::endl;
   QFont font(QString(fontName.c_str()), fontSize);
   QFontMetrics fontMetrics = QFontMetrics(font);
 
@@ -1364,7 +1407,7 @@ void CQGLNetworkPainter::showStep(C_INT32 stepNumber)
       std::map<C_INT32, CDataEntity>::iterator iter = dataSets.find(stepNumber);
       if (iter != dataSets.end())
         {
-	  //std::cout << "data entity: " << (*iter).second << std::endl;
+          //std::cout << "data entity: " << (*iter).second << std::endl;
           CDataEntity dataSet = (*iter).second;
           unsigned int i;
           for (i = 0; i < viewerNodes.size();i++)
