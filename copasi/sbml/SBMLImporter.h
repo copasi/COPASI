@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-//   $Revision: 1.63.4.6 $
+//   $Revision: 1.63.4.7 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/02/25 14:17:08 $
+//   $Author: shoops $
+//   $Date: 2008/03/07 18:16:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -51,7 +51,11 @@ class CListOfLayouts;
 class SBMLImporter
   {
   protected:
-    static const double UNIT_MULTIPLIER_TOLERANCE;
+    static
+    C_FLOAT64 round(const C_FLOAT64 & x);
+
+    static
+    bool areApproximatelyEqual(const double & x, const double & y, const double & t = 1e-9);
 
   protected:
     std::set<unsigned int> mIgnoredSBMLMessages;

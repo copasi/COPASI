@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.189.2.6.2.22 $
+//   $Revision: 1.189.2.6.2.23 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/03/07 16:26:02 $
+//   $Author: shoops $
+//   $Date: 2008/03/07 18:16:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -80,11 +80,25 @@
 
 #include "utilities/CCopasiMessage.h"
 
-/**
- * This determines the relative difference two SBML Units can have for their
- * multiplier to be recognized as identical if everything else is the same.
- */
-const double SBMLImporter::UNIT_MULTIPLIER_TOLERANCE = 1e-9;
+// static
+C_FLOAT64 SBMLImporter::round(const C_FLOAT64 & x)
+{
+  return
+  fabs(x) < 0.0 ? -floor(-x + 0.5) : floor(x + 0.5);
+}
+
+// static
+bool SBMLImporter::areApproximatelyEqual(const double & x, const double & y, const double & t)
+{
+  double Scale =
+    (fabs(x) + fabs(y)) * t;
+
+  // Avoid underflow
+  if (Scale < 100.0 * DBL_MIN)
+    return true;
+
+  return 2 * fabs(x - y) < Scale;
+}
 
 /**
  * Creates and returns a Copasi CModel from the SBMLDocument given as argument.
@@ -1645,7 +1659,6 @@ std::pair<CModel::QuantityUnit, bool>
 SBMLImporter::handleSubstanceUnit(const UnitDefinition* uDef)
 {
   bool result = false;
-  const double TOLERANCE = 1e-25;
   CModel::QuantityUnit qUnit = CModel::Mol;
   if (uDef == NULL)
     {
@@ -1670,13 +1683,17 @@ SBMLImporter::handleSubstanceUnit(const UnitDefinition* uDef)
               // so that we might be able to convert it to a scale that makes
               // sense
               double tmp = log10(multiplier);
-              if (fabs(tmp - round(tmp)) <= TOLERANCE)
+              if (areApproximatelyEqual(tmp, round(tmp)))
                 {
-                  scale += (int)round(tmp);
+                  scale += (int) round(tmp);
                   multiplier = 1;
                 }
             }
-          if ((u->getExponent() == 1) && (fabs(multiplier - 1.0) <= TOLERANCE) && ((scale % 3) == 0) && (scale < 1) && (scale > -16))
+          if ((u->getExponent() == 1) &&
+              areApproximatelyEqual(multiplier, 1.0) &&
+              ((scale % 3) == 0) &&
+              (scale < 1) &&
+              (scale > -16))
             {
               switch (scale)
                 {
@@ -1725,13 +1742,15 @@ SBMLImporter::handleSubstanceUnit(const UnitDefinition* uDef)
               // so that we might be able to convert it to a scale that makes
               // sense
               double tmp = log10(multiplier);
-              if (fabs(tmp - round(tmp)) <= TOLERANCE)
+              if (areApproximatelyEqual(tmp, round(tmp)))
                 {
                   scale += (int)round(tmp);
                   multiplier = 1;
                 }
             }
-          if ((u->getExponent() == 1) && (fabs(multiplier - 1.0) <= TOLERANCE) && (scale == 0 || scale == 1))
+          if ((u->getExponent() == 1) &&
+              areApproximatelyEqual(multiplier, 1.0) &&
+              (scale == 0 || scale == 1))
             {
               if (u->getScale() == 1)
                 {
@@ -1768,7 +1787,6 @@ std::pair<CModel::TimeUnit, bool>
 SBMLImporter::handleTimeUnit(const UnitDefinition* uDef)
 {
   bool result = false;
-  const double TOLERANCE = 1e-25;
   CModel::TimeUnit tUnit = CModel::s;
   if (uDef == NULL)
     {
@@ -1795,13 +1813,14 @@ SBMLImporter::handleTimeUnit(const UnitDefinition* uDef)
             {
               // check if the multiplier is 1, 60, 3600 or 86400
               // if not, try to make the multiplier 1
-              if ((fabs(multiplier - 1.0) > TOLERANCE) &&
-                  (fabs(multiplier - 60.0) > TOLERANCE) &&
-                  (fabs(multiplier - 3600.0) > TOLERANCE) &&
-                  (fabs(multiplier - 86400.0) > TOLERANCE))
+              if (!areApproximatelyEqual(multiplier, 1.0) &&
+                  !areApproximatelyEqual(multiplier, 60.0) &&
+                  !areApproximatelyEqual(multiplier, 3600.0) &&
+                  !areApproximatelyEqual(multiplier, 86400.0))
                 {
                   double tmp = log10(multiplier);
-                  if (fabs(tmp - round(tmp)) > TOLERANCE)
+
+                  if (!areApproximatelyEqual(tmp, round(tmp)))
                     {
                       result = false;
                     }
@@ -1815,13 +1834,13 @@ SBMLImporter::handleTimeUnit(const UnitDefinition* uDef)
           else
             {
               // the multiplier must be 1
-              if (fabs(multiplier - 1.0) > TOLERANCE)
+              if (!areApproximatelyEqual(multiplier, 1.0))
                 {
                   // make the multiplier 1 and check if the scale is an integer,
                   // if not, try to make the 0 and check if the multiplier becomes one
                   // of the valid multipliers 1,60, 3600 or 86400
                   double tmp = log10(multiplier);
-                  if (fabs(tmp - round(tmp)) > TOLERANCE)
+                  if (!areApproximatelyEqual(tmp, round(tmp)))
                     {
                       // try to make the scale 0
                       multiplier *= pow(10.0, (double)scale);
@@ -1831,13 +1850,13 @@ SBMLImporter::handleTimeUnit(const UnitDefinition* uDef)
                     {
                       // make the multiplier 1
                       multiplier = 1;
-                      scale += (int)round(tmp);
+                      scale += (int) round(tmp);
                     }
                 }
             }
           if ((u->getExponent() == 1) && ((scale % 3) == 0) && (scale < 1) && (scale > -16))
             {
-              if (fabs(multiplier - 1.0) <= TOLERANCE)
+              if (areApproximatelyEqual(multiplier, 1.0))
                 {
                   switch (scale)
                     {
@@ -1871,17 +1890,20 @@ SBMLImporter::handleTimeUnit(const UnitDefinition* uDef)
                       break;
                     }
                 }
-              else if ((scale == 0) && (fabs(multiplier - 60.0) <= TOLERANCE))
+              else if ((scale == 0) &&
+                       areApproximatelyEqual(multiplier, 60.0))
                 {
                   tUnit = CModel::min;
                   result = true;
                 }
-              else if ((scale == 0) && (fabs(multiplier - 3600.0) <= TOLERANCE))
+              else if ((scale == 0) &&
+                       areApproximatelyEqual(multiplier, 3600.0))
                 {
                   tUnit = CModel::h;
                   result = true;
                 }
-              else if ((scale == 0) && (fabs(multiplier - 86400.0) <= TOLERANCE))
+              else if ((scale == 0) &&
+                       areApproximatelyEqual(multiplier, 86400.0))
                 {
                   tUnit = CModel::d;
                   result = true;
@@ -1918,7 +1940,6 @@ SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef)
   // simplify the Unitdefiniton first if this normalizes
   // the scale and the multiplier
   bool result = false;
-  const double TOLERANCE = 1e-25;
   CModel::VolumeUnit vUnit = CModel::l;
   if (uDef == NULL)
     {
@@ -1943,13 +1964,17 @@ SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef)
               // so that we might be able to convert it to a scale that makes
               // sense
               double tmp = log10(multiplier);
-              if (floor(tmp - round(tmp)) <= TOLERANCE)
+              if (areApproximatelyEqual(tmp, round(tmp)))
                 {
                   scale += (int)round(tmp);
                   multiplier = 1;
                 }
             }
-          if ((u->getExponent() == 1) && (fabs(multiplier - 1.0) <= TOLERANCE) && ((scale % 3) == 0) && (scale < 1) && (scale > -16))
+          if ((u->getExponent() == 1) &&
+              areApproximatelyEqual(multiplier, 1.0) &&
+              ((scale % 3) == 0) &&
+              (scale < 1) &&
+              (scale > -16))
             {
               switch (scale)
                 {
@@ -2000,13 +2025,13 @@ SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef)
                   // so that we might be able to convert it to a scale that makes
                   // sense
                   double tmp = log10(multiplier);
-                  if (fabs(tmp - round(tmp)) <= TOLERANCE)
+                  if (areApproximatelyEqual(tmp, round(tmp)))
                     {
                       scale += (int)round(tmp);
                       multiplier = 1;
                     }
                 }
-              if ((fabs(multiplier - 1.0) <= TOLERANCE) &&
+              if (areApproximatelyEqual(multiplier, 1.0) &&
                   (scale == 0))
                 {
                   vUnit = CModel::m3;
@@ -2021,7 +2046,7 @@ SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef)
                       (pLitreUnit->getScale() % 3 == 0) &&
                       (pLitreUnit->getScale() < 1) &&
                       (pLitreUnit->getScale() > -16) &&
-                      fabs(pLitreUnit->getMultiplier()) - 1.0 <= TOLERANCE)
+                      areApproximatelyEqual(pLitreUnit->getMultiplier(), 1.0))
                     {
                       switch (pLitreUnit->getScale())
                         {
@@ -2350,7 +2375,7 @@ void SBMLImporter::replaceAmountReferences(ConverterASTNode* pNode, Model* pSBML
                   if (pNode->getChild(1)->getType() == AST_REAL || pNode->getChild(1)->getType() == AST_REAL_E)
                     {
                       double value = pNode->getChild(1)->getMantissa() * pow(10.0, (double)pNode->getChild(1)->getExponent());
-                      if (fabs((factor - value) / factor) <= 1e-3)
+                      if (areApproximatelyEqual(factor, value, 1e-3))
                         {
                           // replace the times node with child0
                           delete pNode->removeChild(0);
@@ -2444,7 +2469,7 @@ void SBMLImporter::replaceAmountReferences(ConverterASTNode* pNode, Model* pSBML
                   if (pNode->getChild(0)->getType() == AST_REAL || pNode->getChild(0)->getType() == AST_REAL_E)
                     {
                       double value = pNode->getChild(0)->getMantissa() * pow(10.0, (double)pNode->getChild(0)->getExponent());
-                      if (fabs((factor - value) / factor) <= 1e-3)
+                      if (areApproximatelyEqual(factor, value, 1e-3))
                         {
                           // replace pNode by child1
                           delete pNode->removeChild(0);
@@ -2850,7 +2875,7 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const 
               // the stoichiometry also has to fit
               std::map<const CMetab*, C_FLOAT64>::iterator pos = multiplicityMap.find(metabolites[i]->getMetabolite());
               if (pos == multiplicityMap.end() ||
-                  fabs(pos->second - metabolites[i]->getMultiplicity()) >= 0.01)
+                  !areApproximatelyEqual(pos->second, metabolites[i]->getMultiplicity(), 0.01))
                 {
                   result = false;
                   break;
@@ -4494,7 +4519,7 @@ bool SBMLImporter::areSBMLUnitDefinitionsIdentical(const UnitDefinition* pUdef1,
               if (pU1->getKind() != pU2->getKind() ||
                   pU1->getExponent() != pU2->getExponent() ||
                   pU1->getScale() != pU2->getScale() ||
-                  fabs((pU2->getMultiplier() - pU1->getMultiplier()) / pU1->getMultiplier()) > UNIT_MULTIPLIER_TOLERANCE)
+                  !areApproximatelyEqual(pU2->getMultiplier(), pU1->getMultiplier()))
                 {
                   newResult = false;
                 }
@@ -5031,7 +5056,7 @@ void SBMLImporter::findAvogadroConstant(Model* pSBMLModel, double factor)
       if (pParameter->getConstant() == true && pParameter->isSetValue() == true)
         {
           double value = pParameter->getValue();
-          if (fabs((factor - value) / factor) < 1e-3)
+          if (areApproximatelyEqual(factor, value, 1e-3))
             {
               this->mPotentialAvogadroNumbers.insert(pParameter);
             }
