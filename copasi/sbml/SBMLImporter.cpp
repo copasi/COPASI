@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.189.2.6.2.19 $
+//   $Revision: 1.189.2.6.2.20 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/06 02:01:39 $
+//   $Author: gauges $
+//   $Date: 2008/03/07 07:51:51 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -4072,7 +4072,8 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
   if (!inconsistentUnits && lastUnit != "volume")
     {
       // try to set the default volume unit to the unit defined by lastUnit
-      const UnitDefinition* pUdef = pSBMLModel->getUnitDefinition(lastUnit);
+      //const UnitDefinition* pUdef = pSBMLModel->getUnitDefinition(lastUnit);
+      const UnitDefinition* pUdef = SBMLImporter::getSBMLUnitDefinitionForId(lastUnit, pSBMLModel);
       assert(pUdef != NULL);
       std::pair<CModel::VolumeUnit, bool> volume = this->handleVolumeUnit(pUdef);
       if (volume.second == true)
