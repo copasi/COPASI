@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.189.2.6.2.20 $
+//   $Revision: 1.189.2.6.2.21 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/03/07 07:51:51 $
+//   $Date: 2008/03/07 09:44:49 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -111,15 +111,48 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
           std::string unitId = uDef->getId();
           if (unitId == "substance")
             {
-              this->mpCopasiModel->setQuantityUnit(this->handleSubstanceUnit(uDef).first);
+              std::pair<CModel::QuantityUnit, bool> qUnit = this->handleSubstanceUnit(uDef);
+              if (qUnit.second == false)
+                {
+                  // the unit could not be handled, give an error message and
+                  // set the units to mole
+                  CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 66, "substance", "Mole");
+                  this->mpCopasiModel->setQuantityUnit(CModel::Mol);
+                }
+              else
+                {
+                  this->mpCopasiModel->setQuantityUnit(qUnit.first);
+                }
             }
           else if (unitId == "time")
             {
-              this->mpCopasiModel->setTimeUnit(this->handleTimeUnit(uDef).first);
+              std::pair<CModel::TimeUnit, bool> tUnit = this->handleTimeUnit(uDef);
+              if (tUnit.second == false)
+                {
+                  // the unit could not be handled, give an error message and
+                  // set the units to second
+                  CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 66, "time", "second");
+                  this->mpCopasiModel->setTimeUnit(CModel::s);
+                }
+              else
+                {
+                  this->mpCopasiModel->setTimeUnit(tUnit.first);
+                }
             }
           else if (unitId == "volume")
             {
-              this->mpCopasiModel->setVolumeUnit(this->handleVolumeUnit(uDef).first);
+              std::pair<CModel::VolumeUnit, bool> vUnit = this->handleVolumeUnit(uDef);
+              if (vUnit.second == false)
+                {
+                  // the unit could not be handled, give an error message and
+                  // set the units to litre
+                  CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 66, "volume", "litre");
+                  this->mpCopasiModel->setVolumeUnit(CModel::l);
+                }
+              else
+                {
+                  this->mpCopasiModel->setVolumeUnit(vUnit.first);
+                }
             }
           else if ((unitId == "area") || (unitId == "length"))
             {
@@ -1612,6 +1645,7 @@ std::pair<CModel::QuantityUnit, bool>
 SBMLImporter::handleSubstanceUnit(const UnitDefinition* uDef)
 {
   bool result = false;
+  const double TOLERANCE = 1e-25;
   CModel::QuantityUnit qUnit = CModel::Mol;
   if (uDef == NULL)
     {
@@ -1628,9 +1662,23 @@ SBMLImporter::handleSubstanceUnit(const UnitDefinition* uDef)
         }
       if ((u->getKind() == UNIT_KIND_MOLE))
         {
-          if ((u->getExponent() == 1) && (u->getMultiplier() == 1) && ((u->getScale() % 3) == 0) && (u->getScale() < 1) && (u->getScale() > -16))
+          double multiplier = u->getMultiplier();
+          int scale = u->getScale();
+          if (multiplier != 1)
             {
-              switch (u->getScale())
+              // check if the multiplier is a multiple of 10
+              // so that we might be able to convert it to a scale that makes
+              // sense
+              double tmp = log10(multiplier);
+              if (fabs(tmp - round(tmp)) <= TOLERANCE)
+                {
+                  scale += (int)round(tmp);
+                  multiplier = 1;
+                }
+            }
+          if ((u->getExponent() == 1) && (fabs(multiplier - 1.0) <= TOLERANCE) && ((scale % 3) == 0) && (scale < 1) && (scale > -16))
+            {
+              switch (scale)
                 {
                 case 0:
                   qUnit = CModel::Mol;
@@ -1658,18 +1706,32 @@ SBMLImporter::handleSubstanceUnit(const UnitDefinition* uDef)
                   break;
                 default:
                   //DebugFile << "Error. This value should never have been reached for the scale of the liter unit." << std::endl;
-                  exit(1);
+                  fatalError();
                   break;
                 }
             }
           else
             {
-              fatalError();
+              result = false;
             }
         }
       else if ((u->getKind() == UNIT_KIND_ITEM))
         {
-          if ((u->getExponent() == 1) && (u->getMultiplier() == 1) && (u->getScale() == 0 || u->getScale() == 1))
+          double multiplier = u->getMultiplier();
+          int scale = u->getScale();
+          if (multiplier != 1)
+            {
+              // check if the multiplier is a multiple of 10
+              // so that we might be able to convert it to a scale that makes
+              // sense
+              double tmp = log10(multiplier);
+              if (fabs(tmp - round(tmp)) <= TOLERANCE)
+                {
+                  scale += (int)round(tmp);
+                  multiplier = 1;
+                }
+            }
+          if ((u->getExponent() == 1) && (fabs(multiplier - 1.0) <= TOLERANCE) && (scale == 0 || scale == 1))
             {
               if (u->getScale() == 1)
                 {
@@ -1683,17 +1745,17 @@ SBMLImporter::handleSubstanceUnit(const UnitDefinition* uDef)
             }
           else
             {
-              fatalError();
+              result = false;
             }
         }
       else
         {
-          fatalError();
+          result = false;
         }
     }
   else
     {
-      fatalError();
+      result = false;
     }
   return std::make_pair(qUnit, result);
 }
@@ -1706,6 +1768,7 @@ std::pair<CModel::TimeUnit, bool>
 SBMLImporter::handleTimeUnit(const UnitDefinition* uDef)
 {
   bool result = false;
+  const double TOLERANCE = 1e-25;
   CModel::TimeUnit tUnit = CModel::s;
   if (uDef == NULL)
     {
@@ -1722,11 +1785,61 @@ SBMLImporter::handleTimeUnit(const UnitDefinition* uDef)
         }
       if ((u->getKind() == UNIT_KIND_SECOND))
         {
-          if ((u->getExponent() == 1) && ((u->getScale() % 3) == 0) && (u->getScale() < 1) && (u->getScale() > -16))
+          double multiplier = u->getMultiplier();
+          int scale = u->getScale();
+          // this is more difficult, we have to check several possible
+          // combinations of scales and multipliers.
+          // Valid multipliers are 60, 3600 and 86400 which correspond to a
+          // minute an hour and a day each of those has to have a scale of 0
+          if (scale == 0)
             {
-              if (u->getMultiplier() == 1.0)
+              // check if the multiplier is 1, 60, 3600 or 86400
+              // if not, try to make the multiplier 1
+              if ((fabs(multiplier - 1.0) > TOLERANCE) &&
+                  (fabs(multiplier - 60.0) > TOLERANCE) &&
+                  (fabs(multiplier - 3600.0) > TOLERANCE) &&
+                  (fabs(multiplier - 86400.0) > TOLERANCE))
                 {
-                  switch (u->getScale())
+                  double tmp = log10(multiplier);
+                  if (fabs(tmp - round(tmp)) > TOLERANCE)
+                    {
+                      result = false;
+                    }
+                  else
+                    {
+                      multiplier = 1;
+                      scale += (int)round(tmp);
+                    }
+                }
+            }
+          else
+            {
+              // the multiplier must be 1
+              if (fabs(multiplier - 1.0) > TOLERANCE)
+                {
+                  // make the multiplier 1 and check if the scale is an integer,
+                  // if not, try to make the 0 and check if the multiplier becomes one
+                  // of the valid multipliers 1,60, 3600 or 86400
+                  double tmp = log10(multiplier);
+                  if (fabs(tmp - round(tmp)) > TOLERANCE)
+                    {
+                      // try to make the scale 0
+                      multiplier *= pow(10.0, (double)scale);
+                      scale = 0;
+                    }
+                  else
+                    {
+                      // make the multiplier 1
+                      multiplier = 1;
+                      scale += (int)round(tmp);
+                    }
+                }
+            }
+          if ((u->getExponent() == 1) && ((scale % 3) == 0) && (scale < 1) && (scale > -16))
+            {
+              if (fabs(multiplier - 1.0) <= TOLERANCE)
+                {
+                  switch (scale)
                     {
                     case 0:
                       tUnit = CModel::s;
@@ -1754,43 +1867,43 @@ SBMLImporter::handleTimeUnit(const UnitDefinition* uDef)
                       break;
                     default:
                       //DebugFile << "Error. This value should never have been reached for the scale of the time unit." << std::endl;
-                      exit(1);
+                      fatalError();
                       break;
                     }
                 }
-              else if (u->getMultiplier() == 60.0)
+              else if ((scale == 0) && (fabs(multiplier - 60.0) <= TOLERANCE))
                 {
                   tUnit = CModel::min;
                   result = true;
                 }
-              else if (u->getMultiplier() == 3600.0)
+              else if ((scale == 0) && (fabs(multiplier - 3600.0) <= TOLERANCE))
                 {
                   tUnit = CModel::h;
                   result = true;
                 }
-              else if (u->getMultiplier() == 86400.0)
+              else if ((scale == 0) && (fabs(multiplier - 86400.0) <= TOLERANCE))
                 {
                   tUnit = CModel::d;
                   result = true;
                 }
               else
                 {
-                  fatalError();
+                  result = false;
                 }
             }
           else
             {
-              fatalError();
+              result = false;
             }
         }
       else
         {
-          fatalError();
+          result = false;
         }
     }
   else
     {
-      fatalError();
+      result = false;
     }
   return std::make_pair(tUnit, result);
 }
@@ -1802,7 +1915,7 @@ SBMLImporter::handleTimeUnit(const UnitDefinition* uDef)
 std::pair<CModel::VolumeUnit, bool>
 SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef)
 {
-  // TODO maybe we should simplify the Unitdefiniton first if this normalizes
+  // simplify the Unitdefiniton first if this normalizes
   // the scale and the multiplier
   bool result = false;
   const double TOLERANCE = 1e-25;
@@ -1822,9 +1935,23 @@ SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef)
         }
       if ((u->getKind() == UNIT_KIND_LITER) || (u->getKind() == UNIT_KIND_LITRE))
         {
-          if ((u->getExponent() == 1) && (u->getMultiplier() - 1.0 < TOLERANCE) && ((u->getScale() % 3) == 0) && (u->getScale() < 1) && (u->getScale() > -16))
+          double multiplier = u->getMultiplier();
+          int scale = u->getScale();
+          if (multiplier != 1)
             {
-              switch (u->getScale())
+              // check if the multiplier is a multiple of 10
+              // so that we might be able to convert it to a scale that makes
+              // sense
+              double tmp = log10(multiplier);
+              if (floor(tmp - round(tmp)) <= TOLERANCE)
+                {
+                  scale += (int)round(tmp);
+                  multiplier = 1;
+                }
+            }
+          if ((u->getExponent() == 1) && (fabs(multiplier - 1.0) <= TOLERANCE) && ((scale % 3) == 0) && (scale < 1) && (scale > -16))
+            {
+              switch (scale)
                 {
                 case 0:
                   vUnit = CModel::l;
@@ -1852,21 +1979,35 @@ SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef)
                   break;
                 default:
                   //DebugFile << "Error. This value should never have been reached for the scale of the liter unit." << std::endl;
-                  exit(1);
+                  fatalError();
                   break;
                 }
             }
           else
             {
-              fatalError();
+              result = false;
             }
         }
       else if ((u->getKind() == UNIT_KIND_METER) || (u->getKind() == UNIT_KIND_METRE))
         {
           if (u->getExponent() == 3)
             {
-              if ((fabs(u->getMultiplier()) - 1.0 < TOLERANCE) &&
-                  (u->getScale() == 0))
+              double multiplier = u->getMultiplier();
+              int scale = u->getScale();
+              if (multiplier != 1)
+                {
+                  // check if the multiplier is a multiple of 10
+                  // so that we might be able to convert it to a scale that makes
+                  // sense
+                  double tmp = log10(multiplier);
+                  if (fabs(tmp - round(tmp)) <= TOLERANCE)
+                    {
+                      scale += (int)round(tmp);
+                      multiplier = 1;
+                    }
+                }
+              if ((fabs(multiplier - 1.0) <= TOLERANCE) &&
+                  (scale == 0))
                 {
                   vUnit = CModel::m3;
                   result = true;
@@ -1880,7 +2021,7 @@ SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef)
                       (pLitreUnit->getScale() % 3 == 0) &&
                       (pLitreUnit->getScale() < 1) &&
                       (pLitreUnit->getScale() > -16) &&
-                      fabs(pLitreUnit->getMultiplier()) - 1.0 < TOLERANCE)
+                      fabs(pLitreUnit->getMultiplier()) - 1.0 <= TOLERANCE)
                     {
                       switch (pLitreUnit->getScale())
                         {

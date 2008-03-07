@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.109.2.1.2.7 $
+//   $Revision: 1.109.2.1.2.8 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/27 14:55:47 $
+//   $Date: 2008/03/07 09:44:49 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -215,6 +215,7 @@ const MESSAGES Messages[] =
     {MCSBML + 63, "SBML (63): Initial assignment for %s \"%s\" can not be exported to SBML Level 2 Version 1."},
     {MCSBML + 64, "SBML (64): One or more stoichiometric expressions were evaluated and converted to constants values."},
     {MCSBML + 65, "SBML (65): The stoichiometric expression for a species reference for species \"%s\" in reaction \"%s\" could not be evaluated. The value has therefore been set to 1.0."},
+    {MCSBML + 66, "SBML (66): COPASI was not able to import the global %s unit. Unit has been set to %s."},
 
     {MCTrajectoryProblem + 1, "CTrajectoryProblem (1): Invalid step size = '%f'."},
     {MCTrajectoryProblem + 2, "CTrajectoryProblem (2): The step number '%f' "
