@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-//   $Revision: 1.169.2.1.2.1 $
+//   $Revision: 1.169.2.1.2.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/08 13:09:32 $
+//   $Date: 2008/03/07 11:59:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1105,7 +1105,7 @@ CEvaluationNode* CReaction::objects2variables(CEvaluationNode* expression, std::
       break;
     case CEvaluationNode::CHOICE:
       pTmpNode = new CEvaluationNodeChoice(static_cast<CEvaluationNodeChoice::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
-      // convert the two children as well
+      // convert the three children as well
       pChildNode = this->objects2variables(static_cast<CEvaluationNode*>(expression->getChild()), replacementMap, copasi2sbmlmap);
       if (pChildNode)
         {
@@ -1114,6 +1114,16 @@ CEvaluationNode* CReaction::objects2variables(CEvaluationNode* expression, std::
           if (pChildNode)
             {
               pTmpNode->addChild(pChildNode);
+              pChildNode = this->objects2variables(static_cast<CEvaluationNode*>(expression->getChild()->getSibling()->getSibling()), replacementMap, copasi2sbmlmap);
+              if (pChildNode)
+                {
+                  pTmpNode->addChild(pChildNode);
+                }
+              else
+                {
+                  delete pTmpNode;
+                  pTmpNode = NULL;
+                }
             }
           else
             {
