@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000055.cpp,v $
-//   $Revision: 1.1.2.2 $
+//   $Revision: 1.1.2.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/03/08 20:19:56 $
+//   $Date: 2008/03/08 20:27:04 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -217,19 +217,19 @@ void test000055::test_bug1004()
   CPPUNIT_ASSERT(pMV3 != NULL);
   CPPUNIT_ASSERT(pMV4 != NULL);
   CPPUNIT_ASSERT(pMV5 != NULL);
-  CEvaluationNodeObject* pObjectNode = new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + pMV3->getCN() + ">");
+  CEvaluationNodeObject* pObjectNode = new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + pMV3->getCN() + ",Reference=Value>");
   CExpression* pExpr = new CExpression;
   pExpr->setRoot(pObjectNode);
   pMV1->setExpressionPtr(pExpr);
-  pObjectNode = new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + pMV2->getCN() + ">");
+  pObjectNode = new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + pMV2->getCN() + ",Reference=Value>");
   pExpr = new CExpression;
   pExpr->setRoot(pObjectNode);
   pMV3->setExpressionPtr(pExpr);
-  pObjectNode = new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + pMV5->getCN() + ">");
+  pObjectNode = new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + pMV5->getCN() + ",Reference=Value>");
   pExpr = new CExpression;
   pExpr->setRoot(pObjectNode);
   pMV4->setExpressionPtr(pExpr);
-  pObjectNode = new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + pMV4->getCN() + ">");
+  pObjectNode = new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + pMV4->getCN() + ",Reference=Value>");
   pExpr = new CExpression;
   pExpr->setRoot(pObjectNode);
   pMV2->setExpressionPtr(pExpr);
