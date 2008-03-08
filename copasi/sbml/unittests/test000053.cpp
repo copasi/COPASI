@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000053.cpp,v $
-//   $Revision: 1.1.2.3 $
+//   $Revision: 1.1.2.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/03/08 21:27:21 $
+//   $Date: 2008/03/08 21:39:28 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -463,7 +463,7 @@ const char* test000053::MODEL_STRING_5 =
   "            <piece>\n"
   "              <cn> 0.5 </cn>\n"
   "              <apply>\n"
-  "                <ge/>\n"
+  "                <lt/>\n"
   "                <cn> 3 </cn>\n"
   "                <cn> 4 </cn>\n"
   "              </apply>\n"
@@ -479,7 +479,7 @@ const char* test000053::MODEL_STRING_5 =
   "            <piece>\n"
   "              <cn> 0.5 </cn>\n"
   "              <apply>\n"
-  "                <le/>\n"
+  "                <leq/>\n"
   "                <cn> 3 </cn>\n"
   "                <cn> 4 </cn>\n"
   "              </apply>\n"
