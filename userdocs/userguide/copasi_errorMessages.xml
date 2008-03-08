@@ -1,10 +1,10 @@
 <!-- Please don't remove, I want to use this to easily be able to check if messages has been changed in order to be able to update this file. -->
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_errorMessages.xml,v $ -->
-<!--   $Revision: 1.8.4.4 $ -->
+<!--   $Revision: 1.8.4.5 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: gauges $ -->
-<!--   $Date: 2008/02/28 10:57:31 $ -->
+<!--   $Date: 2008/03/08 12:56:36 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -963,6 +963,11 @@ If COPASI finds substance units in a kinetic law that differ from the default su
 <varlistentry><term>Error Code:</term><listitem><para>SBML (65)</para></listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem><para>The stoichiometric expression for a species reference for species \"SPECIESID\" in reaction \"REACTIONID\" could not be evaluated. The value has therefore been set to 1.0..</para></listitem></varlistentry>
 <varlistentry><term>Description:</term><listitem><para>COPASI was not able to evaluate the stoichiometric expression for some species reference. This either means that the expression was incorrect, or that you found a bug in COPASI. If you think that the expression is correct, please sned us a bug report.</para></listitem></varlistentry>
+</variablelist>
+<variablelist>
+<varlistentry><term>Error Code:</term><listitem><para>SBML (66)</para></listitem></varlistentry>
+<varlistentry><term>Error Message:</term><listitem><para>COPASI was not able to import the global UNITTYPE unit. Unit has been set to UNIT.</para></listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem><para>This error means that COPASI has encountered some problem while importing one of the global units for either substance, time or volume. Most likely this is due to the fact that the unit in the SBML file could not be converted to a unit COPASI understands. The corresponding unit has therefore been set to a default unit. As a consequence, the units displayed in the GUI might be incorrect. It has however no influence on any calculations with the model or the numerical values generated during those calculations.</para></listitem></varlistentry>
 </variablelist>
 </para>
 
