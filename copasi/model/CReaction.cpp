@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-//   $Revision: 1.169.2.1.2.2 $
+//   $Revision: 1.169.2.1.2.3 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/03/07 11:59:17 $
+//   $Author: shoops $
+//   $Date: 2008/03/08 03:13:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -417,18 +417,21 @@ void CReaction::initializeParameters()
     }
 
   /* Remove parameters not fitting current function */
-  CCopasiParameterGroup::index_iterator begin = mParameters.beginIndex();
-  CCopasiParameterGroup::index_iterator it = mParameters.endIndex();
+  CCopasiParameterGroup::index_iterator it = mParameters.beginIndex();
+  CCopasiParameterGroup::index_iterator end = mParameters.endIndex();
   CFunctionParameter::DataType Type;
-
-  while (it != begin)
+  std::vector< std::string > ToBeDeleted;
+  for (; it != end; ++it)
     {
-      --it;
-
       name = (*it)->getObjectName();
       if (mMap.findParameterByName(name, Type) == C_INVALID_INDEX)
-        mParameters.removeParameter(name);
+        ToBeDeleted.push_back(name);
     }
+
+  std::vector< std::string >::const_iterator itToBeDeleted = ToBeDeleted.begin();
+  std::vector< std::string >::const_iterator endToBeDeleted = ToBeDeleted.end();
+  for (; itToBeDeleted != endToBeDeleted; ++itToBeDeleted)
+    mParameters.removeParameter(*itToBeDeleted);
 }
 
 void CReaction::initializeMetaboliteKeyMap()
