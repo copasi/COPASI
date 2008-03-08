@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000010.cpp,v $
-//   $Revision: 1.1.2.9 $
+//   $Revision: 1.1.2.10 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/26 17:02:21 $
+//   $Date: 2008/03/08 21:27:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -68,13 +68,19 @@ void test000010::test_references_to_species()
   CPPUNIT_ASSERT(pSpecies->getHasOnlySubstanceUnits() == true);
   CPPUNIT_ASSERT(pModel->getNumRules() == 2);
   // there are two rules
-  // the first is the one for the compartment
-  AssignmentRule* pRule = dynamic_cast<AssignmentRule*>(pModel->getRule(1));
+  // one is the one for the compartment
+  AssignmentRule* pRule = dynamic_cast<AssignmentRule*>(pModel->getRule(0));
   CPPUNIT_ASSERT(pRule != NULL);
   CPPUNIT_ASSERT(pModel->getNumParameters() == 1);
   Parameter* pParameter = pModel->getParameter(0);
   CPPUNIT_ASSERT(pParameter != NULL);
-  CPPUNIT_ASSERT(pRule->getVariable() == pParameter->getId());
+  if (pRule->getVariable() != pParameter->getId())
+    {
+      CPPUNIT_ASSERT(pRule->getVariable() != pCompartment->getId());
+      pRule = dynamic_cast<AssignmentRule*>(pModel->getRule(1));
+      CPPUNIT_ASSERT(pRule != NULL);
+      CPPUNIT_ASSERT(pRule->getVariable() == pParameter->getId());
+    }
   const ASTNode* pMath = pRule->getMath();
   CPPUNIT_ASSERT(pMath != NULL);
   // the expression should be the species divided by the compartment

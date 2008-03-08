@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000011.cpp,v $
-//   $Revision: 1.1.2.10 $
+//   $Revision: 1.1.2.11 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/03/08 19:58:29 $
+//   $Date: 2008/03/08 21:27:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -73,11 +73,17 @@ void test000011::test_references_to_species()
   CPPUNIT_ASSERT(pFactor != NULL);
   CPPUNIT_ASSERT(pFactor->getConstant() == true);
   CPPUNIT_ASSERT(fabs((pFactor->getValue() - (AVOGADRO / 1000.0)) / (AVOGADRO / 1000.0)) < 1e-3);
-  // two rules, the second rule is for the compartment
+  // two rules, one rule is for the compartment
   CPPUNIT_ASSERT(pModel->getNumRules() == 2);
   AssignmentRule* pRule = dynamic_cast<AssignmentRule*>(pModel->getRule(0));
   CPPUNIT_ASSERT(pRule != NULL);
-  CPPUNIT_ASSERT(pRule->getVariable() == pParameter->getId());
+  if (pRule->getVariable() != pParameter->getId())
+    {
+      CPPUNIT_ASSERT(pRule->getVariable() == pCompartment->getId());
+      pRule = dynamic_cast<AssignmentRule*>(pModel->getRule(1));
+      CPPUNIT_ASSERT(pRule != NULL);
+      CPPUNIT_ASSERT(pRule->getVariable() == pParameter->getId());
+    }
   const ASTNode* pMath = pRule->getMath();
   CPPUNIT_ASSERT(pMath != NULL);
   // the expression should be the species multiplied by a factor

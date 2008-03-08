@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000053.cpp,v $
-//   $Revision: 1.1.2.2 $
+//   $Revision: 1.1.2.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/03/08 20:19:56 $
+//   $Date: 2008/03/08 21:27:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,6 +16,15 @@
 #include <sstream>
 #include "utilities.hpp"
 #include "copasi/CopasiDataModel/CCopasiDataModel.h"
+#include "copasi/model/CModel.h"
+#include "copasi/model/CModelValue.h"
+#include "copasi/model/CMetab.h"
+#include "copasi/function/CExpression.h"
+#include "copasi/function/CEvaluationNode.h"
+#include "copasi/function/CEvaluationNodeLogical.h"
+#include "copasi/function/CEvaluationNodeChoice.h"
+#include "copasi/function/CEvaluationNodeNumber.h"
+#include "copasi/function/CEvaluationNodeConstant.h"
 
 #include "sbml/SBMLDocument.h"
 #include "sbml/Model.h"
@@ -48,11 +57,56 @@ void test000053::test1_bug1000()
   // check the resulting SBML model
   CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(test000053::MODEL_STRING_1));
-  SBMLDocument* pDocument = pDataModel->getCurrentSBMLDocument();
-  CPPUNIT_ASSERT(pDocument != NULL);
-  Model* pModel = pDocument->getModel();
+  const CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
-  CPPUNIT_ASSERT(false);
+  CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
+  CPPUNIT_ASSERT(pModel->getModelValues().size() == 0);
+  CPPUNIT_ASSERT(pModel->getReactions().size() == 0);
+  CPPUNIT_ASSERT(pModel->getMetabolites().size() == 1);
+  const CMetab* pMetab = pModel->getMetabolites()[0];
+  CPPUNIT_ASSERT(pMetab != NULL);
+  CPPUNIT_ASSERT(pMetab->getObjectName() == "A");
+  CPPUNIT_ASSERT(pMetab->getStatus() == CModelEntity::ASSIGNMENT);
+  const CExpression* pExpr = pMetab->getExpressionPtr();
+  CPPUNIT_ASSERT(pExpr != NULL);
+  const CEvaluationNode* pRoot = pExpr->getRoot();
+  CPPUNIT_ASSERT(pRoot != NULL);
+  CPPUNIT_ASSERT(CEvaluationNode::type(pRoot->getType()) == CEvaluationNode::CHOICE);
+  const CEvaluationNodeChoice* pChoiceNode = dynamic_cast<const CEvaluationNodeChoice*>(pRoot);
+  CPPUNIT_ASSERT(pChoiceNode != NULL);
+  const CEvaluationNode* pChild1 = dynamic_cast<const CEvaluationNode*>(pChoiceNode->getChild());
+  CPPUNIT_ASSERT(pChild1 != NULL);
+  const CEvaluationNode* pChild2 = dynamic_cast<const CEvaluationNode*>(pChild1->getSibling());
+  CPPUNIT_ASSERT(pChild2 != NULL);
+  CPPUNIT_ASSERT(CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::NUMBER);
+  CPPUNIT_ASSERT(((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pChild2->getType())) == CEvaluationNodeNumber::DOUBLE);
+  const CEvaluationNodeNumber* pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pChild2);
+  CPPUNIT_ASSERT(pNumberNode != NULL);
+  CPPUNIT_ASSERT(fabs((pNumberNode->value() - 0.5) / 0.5) < 1e-6);
+  const CEvaluationNode* pChild3 = dynamic_cast<const CEvaluationNode*>(pChild2->getSibling());
+  CPPUNIT_ASSERT(pChild3 != NULL);
+  CPPUNIT_ASSERT(CEvaluationNode::type(pChild3->getType()) == CEvaluationNode::NUMBER);
+  CPPUNIT_ASSERT(((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pChild3->getType())) == CEvaluationNodeNumber::DOUBLE);
+  pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pChild3);
+  CPPUNIT_ASSERT(pNumberNode != NULL);
+  CPPUNIT_ASSERT(fabs((pNumberNode->value() - 1.5) / 1.5) < 1e-6);
+  CPPUNIT_ASSERT(pChild3->getSibling() == NULL);
+  CPPUNIT_ASSERT(CEvaluationNode::type(pChild1->getType()) == CEvaluationNode::LOGICAL);
+  CPPUNIT_ASSERT(((CEvaluationNodeLogical::SubType)CEvaluationNode::subType(pChild1->getType())) == CEvaluationNodeLogical::GT);
+  pChild1 = dynamic_cast<const CEvaluationNode*>(pChild1->getChild());
+  CPPUNIT_ASSERT(pChild1 != NULL);
+  CPPUNIT_ASSERT(CEvaluationNode::type(pChild1->getType()) == CEvaluationNode::NUMBER);
+  CPPUNIT_ASSERT(((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pChild1->getType())) == CEvaluationNodeNumber::DOUBLE);
+  pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pChild1);
+  CPPUNIT_ASSERT(pNumberNode != NULL);
+  CPPUNIT_ASSERT(fabs((pNumberNode->value() - 3.0) / 3.0) < 1e-6);
+  pChild2 = dynamic_cast<const CEvaluationNode*>(pChild1->getSibling());
+  CPPUNIT_ASSERT(pChild2 != NULL);
+  CPPUNIT_ASSERT(CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::NUMBER);
+  CPPUNIT_ASSERT(((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pChild2->getType())) == CEvaluationNodeNumber::DOUBLE);
+  pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pChild2);
+  CPPUNIT_ASSERT(pNumberNode != NULL);
+  CPPUNIT_ASSERT(fabs((pNumberNode->value() - 4.0) / 4.0) < 1e-6);
 }
 
 const char* test000053::MODEL_STRING_1 =
@@ -100,6 +154,33 @@ const char* test000053::MODEL_STRING_1 =
   "</sbml>\n"
 ;
 
+void test000053::test2_bug1000()
+{
+  // load the CPS file
+  // export to SBML
+  // check the resulting SBML model
+  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CPPUNIT_ASSERT(pDataModel->importSBMLFromString(test000053::MODEL_STRING_2));
+  const CModel* pModel = pDataModel->getModel();
+  CPPUNIT_ASSERT(pModel != NULL);
+  CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
+  CPPUNIT_ASSERT(pModel->getModelValues().size() == 0);
+  CPPUNIT_ASSERT(pModel->getReactions().size() == 0);
+  CPPUNIT_ASSERT(pModel->getMetabolites().size() == 1);
+  const CMetab* pMetab = pModel->getMetabolites()[0];
+  CPPUNIT_ASSERT(pMetab != NULL);
+  CPPUNIT_ASSERT(pMetab->getObjectName() == "A");
+  CPPUNIT_ASSERT(pMetab->getStatus() == CModelEntity::ASSIGNMENT);
+  const CExpression* pExpr = pMetab->getExpressionPtr();
+  CPPUNIT_ASSERT(pExpr != NULL);
+  const CEvaluationNode* pRoot = pExpr->getRoot();
+  CPPUNIT_ASSERT(pRoot != NULL);
+  CPPUNIT_ASSERT(CEvaluationNode::type(pRoot->getType()) == CEvaluationNode::CONSTANT);
+  const CEvaluationNodeConstant* pConstantNode = dynamic_cast<const CEvaluationNodeConstant*>(pRoot);
+  CPPUNIT_ASSERT(pConstantNode != NULL);
+  CPPUNIT_ASSERT(((CEvaluationNodeConstant::SubType)CEvaluationNode::subType(pConstantNode->getType())) == CEvaluationNodeConstant::_NaN);
+}
+
 const char* test000053::MODEL_STRING_2 =
   "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
   "<sbml xmlns=\"http://www.sbml.org/sbml/level2\" level=\"2\" version=\"1\">\n"
@@ -133,6 +214,59 @@ const char* test000053::MODEL_STRING_2 =
   "  </model>\n"
   "</sbml>\n"
 ;
+
+void test000053::test3_bug1000()
+{
+  // load the CPS file
+  // export to SBML
+  // check the resulting SBML model
+  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CPPUNIT_ASSERT(pDataModel->importSBMLFromString(test000053::MODEL_STRING_3));
+  const CModel* pModel = pDataModel->getModel();
+  CPPUNIT_ASSERT(pModel != NULL);
+  CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
+  CPPUNIT_ASSERT(pModel->getModelValues().size() == 0);
+  CPPUNIT_ASSERT(pModel->getReactions().size() == 0);
+  CPPUNIT_ASSERT(pModel->getMetabolites().size() == 1);
+  const CMetab* pMetab = pModel->getMetabolites()[0];
+  CPPUNIT_ASSERT(pMetab != NULL);
+  CPPUNIT_ASSERT(pMetab->getObjectName() == "A");
+  CPPUNIT_ASSERT(pMetab->getStatus() == CModelEntity::ASSIGNMENT);
+  const CExpression* pExpr = pMetab->getExpressionPtr();
+  CPPUNIT_ASSERT(pExpr != NULL);
+  const CEvaluationNode* pRoot = pExpr->getRoot();
+  CPPUNIT_ASSERT(pRoot != NULL);
+  CPPUNIT_ASSERT(CEvaluationNode::type(pRoot->getType()) == CEvaluationNode::CHOICE);
+  const CEvaluationNodeChoice* pChoiceNode = dynamic_cast<const CEvaluationNodeChoice*>(pRoot);
+  CPPUNIT_ASSERT(pChoiceNode != NULL);
+  const CEvaluationNode* pChild1 = dynamic_cast<const CEvaluationNode*>(pChoiceNode->getChild());
+  CPPUNIT_ASSERT(pChild1 != NULL);
+  const CEvaluationNode* pChild2 = dynamic_cast<const CEvaluationNode*>(pChild1->getSibling());
+  CPPUNIT_ASSERT(pChild2 != NULL);
+  CPPUNIT_ASSERT(CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::NUMBER);
+  CPPUNIT_ASSERT(((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pChild2->getType())) == CEvaluationNodeNumber::DOUBLE);
+  const CEvaluationNodeNumber* pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pChild2);
+  CPPUNIT_ASSERT(pNumberNode != NULL);
+  CPPUNIT_ASSERT(fabs((pNumberNode->value() - 0.5) / 0.5) < 1e-6);
+  const CEvaluationNode* pChild3 = dynamic_cast<const CEvaluationNode*>(pChild2->getSibling());
+  CPPUNIT_ASSERT(pChild3 != NULL);
+  CPPUNIT_ASSERT(CEvaluationNode::type(pChild3->getType()) == CEvaluationNode::CONSTANT);
+  CPPUNIT_ASSERT(((CEvaluationNodeConstant::SubType)CEvaluationNode::subType(pChild3->getType())) == CEvaluationNodeConstant::_NaN);
+  pChild1 = dynamic_cast<const CEvaluationNode*>(pChild1->getChild());
+  CPPUNIT_ASSERT(pChild1 != NULL);
+  CPPUNIT_ASSERT(CEvaluationNode::type(pChild1->getType()) == CEvaluationNode::NUMBER);
+  CPPUNIT_ASSERT(((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pChild1->getType())) == CEvaluationNodeNumber::DOUBLE);
+  pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pChild1);
+  CPPUNIT_ASSERT(pNumberNode != NULL);
+  CPPUNIT_ASSERT(fabs((pNumberNode->value() - 3.0) / 3.0) < 1e-6);
+  pChild2 = dynamic_cast<const CEvaluationNode*>(pChild1->getSibling());
+  CPPUNIT_ASSERT(pChild2 != NULL);
+  CPPUNIT_ASSERT(CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::NUMBER);
+  CPPUNIT_ASSERT(((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pChild2->getType())) == CEvaluationNodeNumber::DOUBLE);
+  pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pChild2);
+  CPPUNIT_ASSERT(pNumberNode != NULL);
+  CPPUNIT_ASSERT(fabs((pNumberNode->value() - 4.0) / 4.0) < 1e-6);
+}
 
 const char* test000053::MODEL_STRING_3 =
   "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -176,6 +310,34 @@ const char* test000053::MODEL_STRING_3 =
   "</sbml>\n"
 ;
 
+void test000053::test4_bug1000()
+{
+  // load the CPS file
+  // export to SBML
+  // check the resulting SBML model
+  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CPPUNIT_ASSERT(pDataModel->importSBMLFromString(test000053::MODEL_STRING_4));
+  const CModel* pModel = pDataModel->getModel();
+  CPPUNIT_ASSERT(pModel != NULL);
+  CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
+  CPPUNIT_ASSERT(pModel->getModelValues().size() == 0);
+  CPPUNIT_ASSERT(pModel->getReactions().size() == 0);
+  CPPUNIT_ASSERT(pModel->getMetabolites().size() == 1);
+  const CMetab* pMetab = pModel->getMetabolites()[0];
+  CPPUNIT_ASSERT(pMetab != NULL);
+  CPPUNIT_ASSERT(pMetab->getObjectName() == "A");
+  CPPUNIT_ASSERT(pMetab->getStatus() == CModelEntity::ASSIGNMENT);
+  const CExpression* pExpr = pMetab->getExpressionPtr();
+  CPPUNIT_ASSERT(pExpr != NULL);
+  const CEvaluationNode* pRoot = pExpr->getRoot();
+  CPPUNIT_ASSERT(pRoot != NULL);
+  CPPUNIT_ASSERT(CEvaluationNode::type(pRoot->getType()) == CEvaluationNode::NUMBER);
+  CPPUNIT_ASSERT(((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pRoot->getType())) == CEvaluationNodeNumber::DOUBLE);
+  const CEvaluationNodeNumber* pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pRoot);
+  CPPUNIT_ASSERT(pNumberNode != NULL);
+  CPPUNIT_ASSERT(fabs((pNumberNode->value() - 1.5) / 1.5) < 1e-6);
+}
+
 const char* test000053::MODEL_STRING_4 =
   "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
   "<sbml xmlns=\"http://www.sbml.org/sbml/level2\" level=\"2\" version=\"1\">\n"
@@ -212,6 +374,65 @@ const char* test000053::MODEL_STRING_4 =
   "  </model>\n"
   "</sbml>\n"
 ;
+
+void test000053::test5_bug1000()
+{
+  // load the CPS file
+  // export to SBML
+  // check the resulting SBML model
+  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CPPUNIT_ASSERT(pDataModel->importSBMLFromString(test000053::MODEL_STRING_5));
+  const CModel* pModel = pDataModel->getModel();
+  CPPUNIT_ASSERT(pModel != NULL);
+  CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
+  CPPUNIT_ASSERT(pModel->getModelValues().size() == 0);
+  CPPUNIT_ASSERT(pModel->getReactions().size() == 0);
+  CPPUNIT_ASSERT(pModel->getMetabolites().size() == 1);
+  const CMetab* pMetab = pModel->getMetabolites()[0];
+  CPPUNIT_ASSERT(pMetab != NULL);
+  CPPUNIT_ASSERT(pMetab->getObjectName() == "A");
+  CPPUNIT_ASSERT(pMetab->getStatus() == CModelEntity::ASSIGNMENT);
+  const CExpression* pExpr = pMetab->getExpressionPtr();
+  CPPUNIT_ASSERT(pExpr != NULL);
+  const CEvaluationNode* pRoot = pExpr->getRoot();
+  CPPUNIT_ASSERT(pRoot != NULL);
+  CPPUNIT_ASSERT(CEvaluationNode::type(pRoot->getType()) == CEvaluationNode::CHOICE);
+  const CEvaluationNodeChoice* pChoiceNode = dynamic_cast<const CEvaluationNodeChoice*>(pRoot);
+  CPPUNIT_ASSERT(pChoiceNode != NULL);
+  const CEvaluationNode* pChild1 = dynamic_cast<const CEvaluationNode*>(pChoiceNode->getChild());
+  CPPUNIT_ASSERT(pChild1 != NULL);
+  const CEvaluationNode* pChild2 = dynamic_cast<const CEvaluationNode*>(pChild1->getSibling());
+  CPPUNIT_ASSERT(pChild2 != NULL);
+  CPPUNIT_ASSERT(CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::NUMBER);
+  CPPUNIT_ASSERT(((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pChild2->getType())) == CEvaluationNodeNumber::DOUBLE);
+  const CEvaluationNodeNumber* pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pChild2);
+  CPPUNIT_ASSERT(pNumberNode != NULL);
+  CPPUNIT_ASSERT(fabs((pNumberNode->value() - 0.5) / 0.5) < 1e-6);
+  const CEvaluationNode* pChild3 = dynamic_cast<const CEvaluationNode*>(pChild2->getSibling());
+  CPPUNIT_ASSERT(pChild3 != NULL);
+  CPPUNIT_ASSERT(CEvaluationNode::type(pChild3->getType()) == CEvaluationNode::NUMBER);
+  CPPUNIT_ASSERT(((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pChild3->getType())) == CEvaluationNodeNumber::DOUBLE);
+  pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pChild3);
+  CPPUNIT_ASSERT(pNumberNode != NULL);
+  CPPUNIT_ASSERT(fabs((pNumberNode->value() - 1.5) / 1.5) < 1e-6);
+  CPPUNIT_ASSERT(pChild3->getSibling() == NULL);
+  CPPUNIT_ASSERT(CEvaluationNode::type(pChild1->getType()) == CEvaluationNode::LOGICAL);
+  CPPUNIT_ASSERT(((CEvaluationNodeLogical::SubType)CEvaluationNode::subType(pChild1->getType())) == CEvaluationNodeLogical::GT);
+  pChild1 = dynamic_cast<const CEvaluationNode*>(pChild1->getChild());
+  CPPUNIT_ASSERT(pChild1 != NULL);
+  CPPUNIT_ASSERT(CEvaluationNode::type(pChild1->getType()) == CEvaluationNode::NUMBER);
+  CPPUNIT_ASSERT(((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pChild1->getType())) == CEvaluationNodeNumber::DOUBLE);
+  pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pChild1);
+  CPPUNIT_ASSERT(pNumberNode != NULL);
+  CPPUNIT_ASSERT(fabs((pNumberNode->value() - 3.0) / 3.0) < 1e-6);
+  pChild2 = dynamic_cast<const CEvaluationNode*>(pChild1->getSibling());
+  CPPUNIT_ASSERT(pChild2 != NULL);
+  CPPUNIT_ASSERT(CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::NUMBER);
+  CPPUNIT_ASSERT(((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pChild2->getType())) == CEvaluationNodeNumber::DOUBLE);
+  pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pChild2);
+  CPPUNIT_ASSERT(pNumberNode != NULL);
+  CPPUNIT_ASSERT(fabs((pNumberNode->value() - 4.0) / 4.0) < 1e-6);
+}
 
 const char* test000053::MODEL_STRING_5 =
   "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
