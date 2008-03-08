@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000054.cpp,v $
-//   $Revision: 1.1.2.1 $
+//   $Revision: 1.1.2.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/03/08 19:38:09 $
+//   $Date: 2008/03/08 20:19:56 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -133,7 +133,7 @@ void test000054::test_bug1002()
   pMath = pARule->getMath();
   CPPUNIT_ASSERT(pMath != NULL);
   CPPUNIT_ASSERT(pMath->getType() == AST_NAME);
-  CPPUNIT_ASSERT(pMath->getName() == pParameter1->getId());
+  CPPUNIT_ASSERT(pMath->getName() == pParameter3->getId());
   CPPUNIT_ASSERT(pMath->getNumChildren() == 0);
 
   pRule = pSBMLModel->getRule(4);
@@ -163,17 +163,17 @@ const char* test000054::MODEL_STRING =
   "    <ListOfModelValues>\n"
   "      <ModelValue key=\"ModelValue_0\" name=\"A\" simulationType=\"assignment\">\n"
   "        <Expression>\n"
-  "          3*&lt;CN=Root,Model=New Model,Vector=Values[D],Reference=Value&gt;\n"
+  "          &lt;CN=Root,Model=New Model,Vector=Values[D],Reference=Value&gt;\n"
   "        </Expression>\n"
   "      </ModelValue>\n"
   "      <ModelValue key=\"ModelValue_1\" name=\"B\" simulationType=\"assignment\">\n"
   "        <Expression>\n"
-  "          &lt;CN=Root,Model=New Model,Vector=Values[E],Reference=Value&gt;+9\n"
+  "          &lt;CN=Root,Model=New Model,Vector=Values[E],Reference=Value&gt;\n"
   "        </Expression>\n"
   "      </ModelValue>\n"
   "      <ModelValue key=\"ModelValue_2\" name=\"C\" simulationType=\"assignment\">\n"
   "        <Expression>\n"
-  "          8-&lt;CN=Root,Model=New Model,Vector=Values[A],Reference=Value&gt;\n"
+  "          &lt;CN=Root,Model=New Model,Vector=Values[A],Reference=Value&gt;\n"
   "        </Expression>\n"
   "      </ModelValue>\n"
   "      <ModelValue key=\"ModelValue_3\" name=\"D\" simulationType=\"assignment\">\n"
@@ -183,7 +183,7 @@ const char* test000054::MODEL_STRING =
   "      </ModelValue>\n"
   "      <ModelValue key=\"ModelValue_4\" name=\"E\" simulationType=\"assignment\">\n"
   "        <Expression>\n"
-  "          8-&lt;CN=Root,Model=New Model,Vector=Values[C],Reference=Value&gt;\n"
+  "          &lt;CN=Root,Model=New Model,Vector=Values[C],Reference=Value&gt;\n"
   "        </Expression>\n"
   "      </ModelValue>\n"
   "    </ListOfModelValues>\n"

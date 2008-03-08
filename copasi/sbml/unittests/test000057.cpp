@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000057.cpp,v $
-//   $Revision: 1.1.2.1 $
+//   $Revision: 1.1.2.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/03/08 19:38:09 $
+//   $Date: 2008/03/08 20:19:56 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -46,8 +46,7 @@ void test000057::tearDown()
 void test000057::test_bug1006()
 {
   CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
-  std::istringstream iss(test000057::MODEL_STRING);
-  CPPUNIT_ASSERT(import_sbml_model_from_stream(iss, *pDataModel) == true);
+  CPPUNIT_ASSERT(pDataModel->importSBMLFromString(test000057::MODEL_STRING));
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
   const SBMLDocument* pDocument = pDataModel->getCurrentSBMLDocument();
   const Model* pSBMLModel = pDocument->getModel();
@@ -59,19 +58,19 @@ void test000057::test_bug1006()
   CPPUNIT_ASSERT(pSBMLModel->getNumParameters() == 5);
   const Parameter* pParameter1 = pSBMLModel->getParameter(0);
   CPPUNIT_ASSERT(pParameter1 != NULL);
-  CPPUNIT_ASSERT(pParameter1->getConstant() == false);
+  CPPUNIT_ASSERT(pParameter1->getConstant() == true);
   const Parameter* pParameter2 = pSBMLModel->getParameter(1);
   CPPUNIT_ASSERT(pParameter2 != NULL);
-  CPPUNIT_ASSERT(pParameter2->getConstant() == false);
+  CPPUNIT_ASSERT(pParameter2->getConstant() == true);
   const Parameter* pParameter3 = pSBMLModel->getParameter(2);
   CPPUNIT_ASSERT(pParameter3 != NULL);
-  CPPUNIT_ASSERT(pParameter3->getConstant() == false);
+  CPPUNIT_ASSERT(pParameter3->getConstant() == true);
   const Parameter* pParameter4 = pSBMLModel->getParameter(3);
   CPPUNIT_ASSERT(pParameter4 != NULL);
-  CPPUNIT_ASSERT(pParameter4->getConstant() == false);
+  CPPUNIT_ASSERT(pParameter4->getConstant() == true);
   const Parameter* pParameter5 = pSBMLModel->getParameter(4);
   CPPUNIT_ASSERT(pParameter5 != NULL);
-  CPPUNIT_ASSERT(pParameter5->getConstant() == false);
+  CPPUNIT_ASSERT(pParameter5->getConstant() == true);
   CPPUNIT_ASSERT(pSBMLModel->getNumInitialAssignments() == 5);
   const InitialAssignment* pIA = pSBMLModel->getInitialAssignment(0);
   CPPUNIT_ASSERT(pIA != NULL);
@@ -101,11 +100,11 @@ void test000057::test_bug1006()
   pChild1 = pMath->getChild(0);
   CPPUNIT_ASSERT(pChild1 != NULL);
   CPPUNIT_ASSERT(pChild1->getType() == AST_REAL);
-  CPPUNIT_ASSERT(fabs((pChild1->getReal() - 2.0) / 2.0) < 1e-15);
+  CPPUNIT_ASSERT(fabs((pChild1->getReal() - 9.0) / 9.0) < 1e-15);
   pChild2 = pMath->getChild(1);
   CPPUNIT_ASSERT(pChild2 != NULL);
   CPPUNIT_ASSERT(pChild2->getType() == AST_REAL);
-  CPPUNIT_ASSERT(fabs((pChild2->getReal() - 9.0) / 9.0) < 1e-15);
+  CPPUNIT_ASSERT(fabs((pChild2->getReal() - 2.0) / 2.0) < 1e-15);
 
   pIA = pSBMLModel->getInitialAssignment(2);
   CPPUNIT_ASSERT(pIA != NULL);
@@ -210,19 +209,19 @@ void test000057::test_bug1006()
   CPPUNIT_ASSERT(pSBMLModel->getNumParameters() == 5);
   pParameter1 = pSBMLModel->getParameter(0);
   CPPUNIT_ASSERT(pParameter1 != NULL);
-  CPPUNIT_ASSERT(pParameter1->getConstant() == false);
+  CPPUNIT_ASSERT(pParameter1->getConstant() == true);
   pParameter2 = pSBMLModel->getParameter(1);
   CPPUNIT_ASSERT(pParameter2 != NULL);
-  CPPUNIT_ASSERT(pParameter2->getConstant() == false);
+  CPPUNIT_ASSERT(pParameter2->getConstant() == true);
   pParameter3 = pSBMLModel->getParameter(2);
   CPPUNIT_ASSERT(pParameter3 != NULL);
-  CPPUNIT_ASSERT(pParameter3->getConstant() == false);
+  CPPUNIT_ASSERT(pParameter3->getConstant() == true);
   pParameter4 = pSBMLModel->getParameter(3);
   CPPUNIT_ASSERT(pParameter4 != NULL);
-  CPPUNIT_ASSERT(pParameter4->getConstant() == false);
+  CPPUNIT_ASSERT(pParameter4->getConstant() == true);
   pParameter5 = pSBMLModel->getParameter(4);
   CPPUNIT_ASSERT(pParameter5 != NULL);
-  CPPUNIT_ASSERT(pParameter5->getConstant() == false);
+  CPPUNIT_ASSERT(pParameter5->getConstant() == true);
   CPPUNIT_ASSERT(pSBMLModel->getNumInitialAssignments() == 2);
   pIA = pSBMLModel->getInitialAssignment(0);
   CPPUNIT_ASSERT(pIA != NULL);
@@ -235,11 +234,11 @@ void test000057::test_bug1006()
   pChild1 = pMath->getChild(0);
   CPPUNIT_ASSERT(pChild1 != NULL);
   CPPUNIT_ASSERT(pChild1->getType() == AST_REAL);
-  CPPUNIT_ASSERT(fabs((pChild1->getReal() - 2.0) / 2.0) < 1e-15);
+  CPPUNIT_ASSERT(fabs((pChild1->getReal() - 9.0) / 9.0) < 1e-15);
   pChild2 = pMath->getChild(1);
   CPPUNIT_ASSERT(pChild2 != NULL);
   CPPUNIT_ASSERT(pChild2->getType() == AST_REAL);
-  CPPUNIT_ASSERT(fabs((pChild2->getReal() - 9.0) / 9.0) < 1e-15);
+  CPPUNIT_ASSERT(fabs((pChild2->getReal() - 2.0) / 2.0) < 1e-15);
 
   pIA = pSBMLModel->getInitialAssignment(1);
   CPPUNIT_ASSERT(pIA != NULL);

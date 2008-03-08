@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000056.cpp,v $
-//   $Revision: 1.1.2.1 $
+//   $Revision: 1.1.2.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/03/08 19:38:09 $
+//   $Date: 2008/03/08 20:19:56 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -45,10 +45,9 @@ void test000056::test_bug1005()
 {
   // make sure models without compartments don't lead to a crash
   CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
-  std::istringstream iss(test000056::MODEL_STRING);
   try
     {
-      CPPUNIT_ASSERT(import_sbml_model_from_stream(iss, *pDataModel) == true);
+      CPPUNIT_ASSERT(pDataModel->importSBMLFromString(test000056::MODEL_STRING));
     }
   catch (...)
     {

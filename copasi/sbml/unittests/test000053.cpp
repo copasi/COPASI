@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000053.cpp,v $
-//   $Revision: 1.1.2.1 $
+//   $Revision: 1.1.2.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/03/08 19:38:09 $
+//   $Date: 2008/03/08 20:19:56 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -47,51 +47,12 @@ void test000053::test1_bug1000()
   // export to SBML
   // check the resulting SBML model
   CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
-  std::istringstream iss(test000053::MODEL_STRING_1);
-  CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
-  CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
-  CPPUNIT_ASSERT(pDataModel->exportSBMLToString(NULL, 2, 3).empty() == false);
+  CPPUNIT_ASSERT(pDataModel->importSBMLFromString(test000053::MODEL_STRING_1));
   SBMLDocument* pDocument = pDataModel->getCurrentSBMLDocument();
   CPPUNIT_ASSERT(pDocument != NULL);
   Model* pModel = pDocument->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
-  // assert that there is only one compartment and
-  // assert the compartment is constant
-  CPPUNIT_ASSERT(pModel->getNumCompartments() == 1);
-  Compartment* pCompartment = pModel->getCompartment(0);
-  CPPUNIT_ASSERT(pCompartment->getConstant() == true);
-  CPPUNIT_ASSERT(pModel->getNumParameters() == 0);
-  CPPUNIT_ASSERT(pModel->getNumSpecies() == 1);
-  const Species* pSpecies = pModel->getSpecies(0);
-  std::string idSpeciesA = pSpecies->getId();
-  CPPUNIT_ASSERT(pSpecies->getHasOnlySubstanceUnits() == false);
-  CPPUNIT_ASSERT(pModel->getNumRules() == 1);
-  AssignmentRule* pRule = dynamic_cast<AssignmentRule*>(pModel->getRule(0));
-  CPPUNIT_ASSERT(pRule != NULL);
-  CPPUNIT_ASSERT(pRule->getVariable() == idSpeciesA);
-  const ASTNode* pMath = pRule->getMath();
-  CPPUNIT_ASSERT(pMath != NULL);
-  // make sure the mathematical expression contains a piecewise
-  // function definition
-  CPPUNIT_ASSERT(pMath->getType() == AST_FUNCTION_PIECEWISE);
-  CPPUNIT_ASSERT(pMath->getNumChildren() == 3);
-  CPPUNIT_ASSERT(pMath->getChild(0) != NULL);
-  CPPUNIT_ASSERT(pMath->getChild(0)->getType() == AST_REAL);
-  CPPUNIT_ASSERT(fabs((pMath->getChild(0)->getReal() - 0.5) / 0.5) < 1e-6);
-  CPPUNIT_ASSERT(pMath->getChild(2) != NULL);
-  CPPUNIT_ASSERT(pMath->getChild(2)->getType() == AST_REAL);
-  CPPUNIT_ASSERT(fabs((pMath->getChild(2)->getReal() - 1.5) / 1.5) < 1e-6);
-  pMath = pMath->getChild(1);
-  CPPUNIT_ASSERT(pMath != NULL);
-  CPPUNIT_ASSERT(pMath->getType() == AST_RELATIONAL_GT);
-  CPPUNIT_ASSERT(pMath->getNumChildren() == 2);
-  CPPUNIT_ASSERT(pMath->getChild(0) != NULL);
-  CPPUNIT_ASSERT(pMath->getChild(0)->getType() == AST_REAL);
-  CPPUNIT_ASSERT(fabs((pMath->getChild(1)->getReal() - 3.0) / 3.0) < 1e-6);
-  CPPUNIT_ASSERT(pMath->getChild(1) != NULL);
-  CPPUNIT_ASSERT(pMath->getChild(1)->getType() == AST_REAL);
-  CPPUNIT_ASSERT(fabs((pMath->getChild(1)->getReal() - 4.0) / 4.0) < 1e-6);
-  CPPUNIT_ASSERT(pModel->getNumReactions() == 0);
+  CPPUNIT_ASSERT(false);
 }
 
 const char* test000053::MODEL_STRING_1 =
