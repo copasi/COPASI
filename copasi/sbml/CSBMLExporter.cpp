@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.8.4.20 $
+//   $Revision: 1.8.4.21 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/03/07 20:42:05 $
+//   $Date: 2008/03/08 09:31:42 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -802,6 +802,7 @@ void CSBMLExporter::createInitialAssignment(const CModelEntity& modelEntity, CCo
           pInitialAssignment->setSymbol(modelEntity.getSBMLId());
         }
       // set the math
+      this->mHandledSBMLObjects.insert(pInitialAssignment);
       const CEvaluationNode* pOrigNode = modelEntity.getInitialExpressionPtr()->getRoot();
       // the next few lines replace references to species depending on whether
       // it is a reference to an amount or a reference to a concentration.
@@ -864,7 +865,31 @@ void CSBMLExporter::createRules(CCopasiDataModel& dataModel)
   //  {
   std::vector<CModelEntity*> orderedAssignmentRules = orderRules(dataModel);
   //}
-
+  //
+  // remove all rules from the SBML model
+  // and put them in a map
+  std::map<std::string, Rule*> ruleMap;
+  Model* pSBMLModel = this->mpSBMLDocument->getModel();
+  assert(pSBMLModel != NULL);
+  while (pSBMLModel->getNumRules() != 0)
+    {
+      Rule* pRule = pSBMLModel->getRule(0);
+      assert(pRule != NULL);
+      // ignore algebraic rules
+      if (pRule->getTypeCode() == SBML_ASSIGNMENT_RULE)
+        {
+          AssignmentRule* pARule = dynamic_cast<AssignmentRule*>(pRule);
+          assert(pARule != NULL);
+          ruleMap[pARule->getVariable()] = pARule;
+        }
+      else if (pRule->getTypeCode() == SBML_RATE_RULE)
+        {
+          RateRule* pRRule = dynamic_cast<RateRule*>(pRule);
+          assert(pRRule != NULL);
+          ruleMap[pRRule->getVariable()] = pRRule;
+        }
+      pSBMLModel->getListOfRules()->remove(0);
+    }
   // create the rules
   const CModelEntity* pME = NULL;
   unsigned int i, iMax = orderedAssignmentRules.size();
@@ -874,7 +899,15 @@ void CSBMLExporter::createRules(CCopasiDataModel& dataModel)
       assert(pME != NULL);
       if (pME != NULL)
         {
-          createRule(*pME, dataModel);
+          std::map<std::string, Rule*>::const_iterator pos = ruleMap.find(pME->getSBMLId());
+          Rule* pOldRule = NULL;
+          if (pos != ruleMap.end())
+            {
+              pOldRule = pos->second;
+              assert(pOldRule != NULL);
+              ruleMap.erase(pos->first);
+            }
+          createRule(*pME, dataModel, pOldRule);
         }
     }
   iMax = mODEVector.size();
@@ -884,15 +917,31 @@ void CSBMLExporter::createRules(CCopasiDataModel& dataModel)
       assert(pME != NULL);
       if (pME != NULL)
         {
-          createRule(*pME, dataModel);
+          std::map<std::string, Rule*>::const_iterator pos = ruleMap.find(pME->getSBMLId());
+          Rule* pOldRule = NULL;
+          if (pos != ruleMap.end())
+            {
+              pOldRule = pos->second;
+              assert(pOldRule != NULL);
+              ruleMap.erase(pos->first);
+            }
+          createRule(*pME, dataModel, pOldRule);
         }
     }
+  // delete the remaining rules
+  std::map<std::string, Rule*>::iterator mapIt = ruleMap.begin(), mapEndit = ruleMap.end();
+  while (mapIt != mapEndit)
+    {
+      delete mapIt->second;
+      ++mapIt;
+    }
+  ruleMap.clear();
 }
 
 /**
  * Creates the rule for the given COPASI model entity.
  */
-void CSBMLExporter::createRule(const CModelEntity& modelEntity, CCopasiDataModel& dataModel)
+void CSBMLExporter::createRule(const CModelEntity& modelEntity, CCopasiDataModel& dataModel, Rule* pOldRule)
 {
   // check the expression
   std::vector<SBMLIncompatibility> result;
@@ -919,12 +968,12 @@ void CSBMLExporter::createRule(const CModelEntity& modelEntity, CCopasiDataModel
 #endif
 
       // create the actual rule
-      Rule* pRule = this->mpSBMLDocument->getModel()->getRule(modelEntity.getSBMLId());
-      if (pRule == NULL)
+      //Rule* pRule = this->mpSBMLDocument->getModel()->getRule(modelEntity.getSBMLId());
+      if (pOldRule == NULL)
         {
           if (modelEntity.getStatus() == CModelEntity::ASSIGNMENT)
             {
-              pRule = this->mpSBMLDocument->getModel()->createAssignmentRule();
+              pOldRule = this->mpSBMLDocument->getModel()->createAssignmentRule();
             }
           else
             {
@@ -937,9 +986,14 @@ void CSBMLExporter::createRule(const CModelEntity& modelEntity, CCopasiDataModel
                       CCopasiMessage::CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 52, pMetab->getObjectName().c_str());
                     }
                 }
-              pRule = this->mpSBMLDocument->getModel()->createRateRule();
+              pOldRule = this->mpSBMLDocument->getModel()->createRateRule();
             }
-          pRule->setVariable(modelEntity.getSBMLId());
+          pOldRule->setVariable(modelEntity.getSBMLId());
+        }
+      else
+        {
+          // readd the rule to the model
+          this->mpSBMLDocument->getModel()->getListOfRules()->appendAndOwn(pOldRule);
         }
       // set the math
       const CEvaluationNode* pOrigNode = modelEntity.getExpressionPtr()->getRoot();
@@ -953,7 +1007,7 @@ void CSBMLExporter::createRule(const CModelEntity& modelEntity, CCopasiDataModel
       delete pOrigNode;
       if (pNode != NULL)
         {
-          pRule->setMath(pNode);
+          pOldRule->setMath(pNode);
           delete pNode;
         }
       else
@@ -961,6 +1015,8 @@ void CSBMLExporter::createRule(const CModelEntity& modelEntity, CCopasiDataModel
           if (this->mIncompleteExport == true)
             {
               // remove the rule from the SBML model
+              /* This is no longer necessary since we already remove all rules
+               * prior to calling createRules.
               unsigned int i = 0, iMax = this->mpSBMLDocument->getModel()->getNumRules();
               while (i < iMax)
                 {
@@ -971,6 +1027,7 @@ void CSBMLExporter::createRule(const CModelEntity& modelEntity, CCopasiDataModel
                     }
                   ++i;
                 }
+               */
             }
           else
             {
@@ -3032,8 +3089,8 @@ void CSBMLExporter::checkForPiecewiseFunctions(const CEvaluationNode& node, std:
 }
 
 /**
- * Remove all compartments, species, parameters and reactions
- * that did not end up in mHandledSBMLObjects during an export.
+ * Remove all compartments, species, parameters and reactions and initial
+ * assignments that did not end up in mHandledSBMLObjects during an export.
  */
 void CSBMLExporter::removeUnusedObjects()
 {
@@ -3068,6 +3125,17 @@ void CSBMLExporter::removeUnusedObjects()
           if (this->mHandledSBMLObjects.find(pSBase) == this->mHandledSBMLObjects.end())
             {
               removedObjects.push_back(pList->remove(i - i));
+            }
+        }
+      pList = pModel->getListOfInitialAssignments();
+      for (i = pList->size();i != 0;--i)
+        {
+          pSBase = pList->get(i - 1);
+          if (this->mHandledSBMLObjects.find(pSBase) == this->mHandledSBMLObjects.end())
+            {
+              // we don't have to store the initial assignments since
+              // there are no rules or events for initial assignments
+              delete pList->remove(i - i);
             }
         }
       pList = pModel->getListOfReactions();

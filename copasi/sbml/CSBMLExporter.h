@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.h,v $
-//   $Revision: 1.7.4.10 $
+//   $Revision: 1.7.4.11 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/03/07 20:42:05 $
+//   $Date: 2008/03/08 09:31:42 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -45,6 +45,7 @@ class CModelValue;
 class CEvent;
 class CChemEqElement;
 class CFunctionDB;
+class Rule;
 
 class CSBMLExporter
   {
@@ -177,7 +178,7 @@ class CSBMLExporter
     /**
      * Creates the rule for the given COPASI model entity.
      */
-    void createRule(const CModelEntity& modelEntity, CCopasiDataModel& dataModel);
+    void createRule(const CModelEntity& modelEntity, CCopasiDataModel& dataModel, Rule* pOldRule);
 
     /**
      * Create all function definitions.
