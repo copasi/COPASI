@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.189.2.6.2.23 $
+//   $Revision: 1.189.2.6.2.24 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/07 18:16:44 $
+//   $Author: gauges $
+//   $Date: 2008/03/08 09:20:45 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -4235,7 +4235,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
             }
         }
     }
-  if (!inconsistentUnits && lastUnit != "volume")
+  if (!inconsistentUnits && lastUnit != "" && lastUnit != "volume")
     {
       // try to set the default volume unit to the unit defined by lastUnit
       //const UnitDefinition* pUdef = pSBMLModel->getUnitDefinition(lastUnit);
