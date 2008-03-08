@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000011.cpp,v $
-//   $Revision: 1.1.2.9 $
+//   $Revision: 1.1.2.10 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/02/26 17:02:21 $
+//   $Date: 2008/03/08 19:58:29 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -66,10 +66,6 @@ void test000011::test_references_to_species()
   pSpecies = pModel->getSpecies(0);
   std::string idSpeciesA = pSpecies->getId();
   CPPUNIT_ASSERT(pSpecies->getHasOnlySubstanceUnits() == true);
-  // two rules, the first rule is for the compartment
-  CPPUNIT_ASSERT(pModel->getNumRules() == 2);
-  AssignmentRule* pRule = dynamic_cast<AssignmentRule*>(pModel->getRule(1));
-  CPPUNIT_ASSERT(pRule != NULL);
   CPPUNIT_ASSERT(pModel->getNumParameters() == 2);
   Parameter* pParameter = pModel->getParameter(0);
   CPPUNIT_ASSERT(pParameter != NULL);
@@ -77,6 +73,10 @@ void test000011::test_references_to_species()
   CPPUNIT_ASSERT(pFactor != NULL);
   CPPUNIT_ASSERT(pFactor->getConstant() == true);
   CPPUNIT_ASSERT(fabs((pFactor->getValue() - (AVOGADRO / 1000.0)) / (AVOGADRO / 1000.0)) < 1e-3);
+  // two rules, the second rule is for the compartment
+  CPPUNIT_ASSERT(pModel->getNumRules() == 2);
+  AssignmentRule* pRule = dynamic_cast<AssignmentRule*>(pModel->getRule(0));
+  CPPUNIT_ASSERT(pRule != NULL);
   CPPUNIT_ASSERT(pRule->getVariable() == pParameter->getId());
   const ASTNode* pMath = pRule->getMath();
   CPPUNIT_ASSERT(pMath != NULL);
