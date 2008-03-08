@@ -1,10 +1,10 @@
 <chapter id="modelCreation" xreflabel="Model Creation">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_GUI.xml,v $ -->
-<!--   $Revision: 1.49.4.9 $ -->
+<!--   $Revision: 1.49.4.10 $ -->
 <!--   $Name:  $ -->
-<!--   $Author: pwilly $ -->
-<!--   $Date: 2008/03/07 11:51:36 $ -->
+<!--   $Author: gauges $ -->
+<!--   $Date: 2008/03/08 12:50:57 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -59,10 +59,17 @@ file at a time, it only makes sense to specify one file after the
 commandline options. 
 </para>
 <variablelist><title>Commandline options</title>
-<varlistentry><term>--help</term>
+<varlistentry><term>--SBMLSchema</term>
 <listitem>
 <para>
-Shows the usage of the program and the allowed commandline options. 
+This switch works in combination with the --exportSBML switch and
+determines which SBML level and version is going to be used for SBML export.
+Currently the folowing schemas are supported L1V2 for SBML Level 1 Version 2,
+L2V1 for SBML Level 2 Version 1, L2V2 for SBML Level 2 Version 2 and L2V3 for 
+SBML Level 2 Version 3. 
+</para>
+<para>
+If no schema is given, the exported creates SBML Level 2 Version 3 files. 
 </para>
 </listitem>
 </varlistentry>
@@ -146,15 +153,14 @@ version and it will be ignored by the GUI version.
 </listitem>
 </varlistentry>
 
-<varlistentry><term>--oldExportSBML</term>
+<varlistentry><term>--exportXPPAUT</term>
 <listitem>
 <para>
-With this option you can specify a name for the SBML file COPASI
-should export. This is useful if you want to export some COPASI files
-to SBML in a batch job. This only makes sense for the commandline
-version and it will be ignored by the GUI version.
-This switch uses the old SBML exporter to write the SBML file. This is a fallback solution in case
-the new SBML exporter does not behave as expected.
+With this option you can specify a name for the XPPAUT file
+COPASI should export. This is useful if you want to export some COPASI
+files to XPPAUTs ODE file format in a batch job. This only makes
+sense for the commandline version and it will be ignored by the GUI
+version.
 </para>
 </listitem>
 </varlistentry>
@@ -203,6 +209,24 @@ is doing to stdout.
 </para>
 </listitem>
 </varlistentry>
+
+<varlistentry><term>--nologo</term>
+<listitem>
+<para>
+This option supresses the output of the "Logo" when CopasiSE is run. The "Logo" usually consits of the version of COPASI and some license statement.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry><term>--validate</term>
+<listitem>
+<para>
+This commandline version can be used to validate the given file. The file can either be a COPASI file or an SBML file.
+</para>
+</listitem>
+</varlistentry>
+
+
 
 </variablelist>
 
