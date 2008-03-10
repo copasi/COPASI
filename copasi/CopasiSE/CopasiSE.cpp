@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
-//   $Revision: 1.39.12.10 $
+//   $Revision: 1.39.12.11 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/03/10 17:00:41 $
+//   $Author: shoops $
+//   $Date: 2008/03/10 17:09:38 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -255,6 +255,13 @@ int main(int argc, char *argv[])
               goto finish;
             }
 
+          // Validate and exit
+          if (Validate)
+            {
+              retcode = validate();
+              goto finish;
+            }
+
           // Check whether exporting to SBML is requested.
           if (!COptions::compareValue("ExportSBML", std::string("")))
             {
@@ -304,12 +311,6 @@ int main(int argc, char *argv[])
                   std::cerr << CCopasiMessage::getAllMessageText() << std::endl;
                   retcode = 1;
                 }
-              goto finish;
-            }
-
-          if (Validate)
-            {
-              retcode = validate();
               goto finish;
             }
 
@@ -370,6 +371,13 @@ int main(int argc, char *argv[])
                   std::cerr << CCopasiMessage::getAllMessageText() << std::endl;
 
                   retcode = 1;
+                  continue;
+                }
+
+              // Validate and exit
+              if (Validate)
+                {
+                  retcode |= validate();
                   continue;
                 }
 
@@ -438,12 +446,6 @@ int main(int argc, char *argv[])
                   // Since only one export file name can be specified we
                   // stop execution.
                   break;
-                }
-
-              if (Validate)
-                {
-                  retcode |= validate();
-                  continue;
                 }
 
               CCopasiVectorN< CCopasiTask > & TaskList = * CCopasiDataModel::Global->getTaskList();
