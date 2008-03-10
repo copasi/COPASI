@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraph.h,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/03/03 16:58:28 $
+//   $Date: 2008/03/10 15:49:56 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -100,30 +100,27 @@ class CRDFGraph
     /**
      * Add a child node to a table node.
      * @param const std::string tableName
-     * @param CRDFObject& tableObj
      * @param const CRDFObject& childObj
      */
-    void addRecordToTable(const std::string& tableName, CRDFObject& tableObj, const CRDFObject& childObj);
+    void addRecordToTable(const std::string& tableName, const CRDFObject& childObj);
 
     /**
      * Remove a child node from a table node.
      * Both are assumed to be Blank nodes.
      * @param const std::string tableName
-     * @param CRDFObject& tableObj
      * @param const CRDFObject& childObj
      * @return std::string success
      */
-    bool removeRecordFromTable(const std::string& tableName, CRDFObject& tableObj, const CRDFObject& childObj);
+    bool removeRecordFromTable(const std::string& tableName, const CRDFObject& childObj);
 
     /**
         * Get all objects corresponding to a given
         * table name.
         * @param const std::string& tableName
         * @param std::vector<std::string> & nodeIds
-        * @param CRDFObject& tableObj
            * @return bool success
         */
-    bool getNodeIDsForTable(const std::string& tableName, std::vector<CRDFObject>& objects, CRDFObject& tableObj);
+    bool getNodeIDsForTable(const std::string& tableName, std::vector<CRDFObject>& objects);
 
     /**
      *Get the value of the field for a given fieldName.
@@ -137,11 +134,10 @@ class CRDFGraph
      *Set the value of the field for a given fieldName.
      * @param const std::string& fieldName
      * @param const std::string& fieldValue
-    * @param const CRDFObject& obj
-    * @param const bool& isResource
+    * @param CRDFObject& obj
      * @return std::string success
      */
-    bool setFieldValue(const std::string& fieldName, const CRDFObject& obj, const std::string& fieldValue);
+    bool setFieldValue(const std::string& fieldName, CRDFObject& obj, const std::string& fieldValue);
 
     CRDFGraph* loadGraph(CModelEntity* pEntity);
     bool saveGraph(CModelEntity* pEntity);
@@ -188,18 +184,16 @@ class CRDFGraph
     /**
      * Add a Bag node to a table node.
      * @param const std::string tableName
-     * @param CRDFObject& tableObj
      * @return std::string success
      */
-    bool addBagNodeToTable(const std::string& tableName, CRDFObject& tableObj);
+    bool addBagNodeToTable(const std::string& tableName);
 
     /**
      * Remove a Bag node from a table node.
      * @param const std::string tableName
-     * @param CRDFObject& tableObj
      * @return std::string success
      */
-    bool removeBagNodeFromTable(const std::string& tableName, CRDFObject& tableObj);
+    bool removeBagNodeFromTable(const std::string& tableName);
 
     void addObjectToBagNode(const std::string& tableName, CRDFNode* pTableNode, const CRDFObject& object);
     void buildCreatorRecord(const CRDFNode * pObjNode);
@@ -242,7 +236,7 @@ class CRDFGraph
     bool compressNode(CRDFNode* pNode);
 
     bool isBagNode(const CRDFNode* pNode);
-	bool isTypeNode(const CRDFNode * pNode, std::string typeResource = "");
+    bool isTypeNode(const CRDFNode * pNode, std::string typeResource = "");
     void bagTheNode(CRDFNode* pNode, CRDFObject* pChildObj = NULL);
     bool unbagTheNode(CRDFNode* pNode, CRDFObject* pChildObj = NULL);
     std::string getGeneratedId();

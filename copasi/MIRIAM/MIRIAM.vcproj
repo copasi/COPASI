@@ -47,6 +47,14 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 			>
 			<File
+				RelativePath=".\CBiologicalDescription.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CConstants.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\CCreator.cpp"
 				>
 			</File>
@@ -103,6 +111,14 @@
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl"
 			>
+			<File
+				RelativePath=".\CBiologicalDescription.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CConstants.h"
+				>
+			</File>
 			<File
 				RelativePath=".\CCreator.h"
 				>

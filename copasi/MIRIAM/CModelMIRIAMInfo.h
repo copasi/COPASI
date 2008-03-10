@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CModelMIRIAMInfo.h,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/03/03 16:58:28 $
+//   $Date: 2008/03/10 15:49:56 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,6 +30,7 @@
 #include "CCreator.h"
 #include "CReference.h"
 #include "CModified.h"
+#include "CBiologicalDescription.h"
 #include "CRDFGraph.h"
 #include "CRDFObject.h"
 
@@ -38,13 +39,11 @@ class CModelMIRIAMInfo
     // Attributes
   private:
     CCopasiVector <CCreator> mCreators;
-    CRDFObject mCreatorsObj;
     CCopasiVector <CReference> mReferences;
-	std::map<std::string, CRDFObject> mReferenceObjs;
-	bool mOldReferencesMoved;
+    bool mOldReferencesMoved;
     CRDFObject mCreatedObj;
     CCopasiVector <CModified> mModifieds;
-    CRDFObject mModifiedsObj;
+    CCopasiVector <CBiologicalDescription> mBiologicalDescriptions;
 
     CRDFGraph* mpRDFGraph;
     CModelEntity* mpEntity;
@@ -72,7 +71,11 @@ class CModelMIRIAMInfo
     CCopasiVector <CModified> & getModifieds();
     CModified* createModified(const std::string& objectName);
     bool removeModified(const std::string& key);
-	std::map<std::string, std::string> moveOldReferences();
+    CCopasiVector <CBiologicalDescription> & getBiologicalDescriptions();
+    CBiologicalDescription* createBiologicalDescription(const std::string& objectName, std::string parentTable = "");
+    bool removeBiologicalDescription(const std::string& key);
+    std::map<std::string, std::string> moveOldReferences();
+    std::string moveBiologicalDescription(const std::string key, const std::string newTable);
   };
 
 #endif //COPASI_CMODELMIRIAMINFO

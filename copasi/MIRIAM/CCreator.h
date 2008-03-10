@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CCreator.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/03/03 16:58:28 $
+//   $Date: 2008/03/10 15:49:56 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -56,11 +56,10 @@ class CCreator : public CCopasiContainer
              const CCopasiContainer * pParent = NULL);
 
     ~CCreator();
-    void initObjects();
 
     /** Add the given name to Last name to get the full Name.
-         *
-         */
+            *
+            */
 
     const std::string getFamilyName() const;
 
@@ -79,8 +78,8 @@ class CCreator : public CCopasiContainer
     void setORG(const std::string Orgname);
 
     CRDFObject& getRDFObject();
-	    
-	const std::string getObjectName() const;
+
+    const std::string getObjectName() const;
 
     /**
         *  Returns a string with the name of this Creator.

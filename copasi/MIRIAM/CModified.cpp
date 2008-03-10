@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CModified.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/03/03 16:58:28 $
+//   $Date: 2008/03/10 15:49:56 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,20 +31,13 @@ CModified::CModified(const std::string & objectName, const CCopasiContainer * pP
       mpRDFObj->setType(CRDFObject::BLANK_NODE);
       mpRDFObj->setBlankNodeId(mKey);
     }
-  initObjects();
-  CONSTRUCTOR_TRACE;
 }
 
 CModified::CModified(const CModified & src,
                      const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
-    mKey(GlobalKeys.add("Modified", this))
-{
-  CONSTRUCTOR_TRACE;
-  initObjects();
-}
-
-void CModified::initObjects()
+    mKey(GlobalKeys.add("Modified", this)),
+    mpRDFObj(src.mpRDFObj == NULL ? NULL : new CRDFObject(*src.mpRDFObj))
 {}
 
 CModified::~CModified()

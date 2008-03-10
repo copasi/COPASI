@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CModifiedWidget.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/03/03 16:58:29 $
+//   $Date: 2008/03/10 15:49:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -68,6 +68,8 @@ void CModifiedWidget::init()
   mShowNewObjectWarning = false;
   numCols = 3;
   table->setNumCols(numCols);
+  table->setMinimumHeight(70);
+  table->setMinimumWidth(300);
 
   //Setting table headers
   QHeader *tableHeader = table->horizontalHeader();
@@ -86,9 +88,9 @@ void CModifiedWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_I
   if (dynamic_cast<CQDateTimeEditTableItem *>(table->cellWidget(row, COL_DATE_MODIFIED)))
     {
       pDTE = static_cast<CQDateTimeEditTableItem *>(table->cellWidget(row, COL_DATE_MODIFIED));
-	  const std::string strDT = pModified->getDateModified();
-	  if (strDT.length())
-	  {	pDTE->setDateTime(QDateTime::fromString(FROM_UTF8(strDT), Qt::ISODate));	}
+      const std::string strDT = pModified->getDateModified();
+      if (strDT.length())
+      {pDTE->setDateTime(QDateTime::fromString(FROM_UTF8(strDT), Qt::ISODate));}
     }
   else
     {
@@ -177,7 +179,7 @@ void CModifiedWidget::deleteObjects(const std::vector<std::string> & keys)
           }
 
         for (i = 0; i < imax; i++)
-			protectedNotify(mOT, ListViews::DELETE, keys[i]);
+          protectedNotify(mOT, ListViews::DELETE, keys[i]);
 
         mChanged = true;
         break;

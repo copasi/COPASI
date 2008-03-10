@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CCreatorsWidget.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/03/03 16:58:29 $
+//   $Date: 2008/03/10 15:49:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -109,6 +109,10 @@ void CCreatorsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj
 
 void CCreatorsWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT32 exc)
 {
+
+  if (exc != COL_FAMILY_NAME)
+    table->clearCell(row, COL_FAMILY_NAME);
+
   if (exc != COL_GIVEN_NAME)
     table->clearCell(row, COL_GIVEN_NAME);
 
@@ -172,7 +176,7 @@ void CCreatorsWidget::deleteObjects(const std::vector<std::string> & keys)
           }
 
         for (i = 0; i < imax; i++)
-			protectedNotify(mOT, ListViews::DELETE, keys[i]);
+          protectedNotify(mOT, ListViews::DELETE, keys[i]);
 
         mChanged = true;
         break;
