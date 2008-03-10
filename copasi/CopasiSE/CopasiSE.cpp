@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
-//   $Revision: 1.39.12.9 $
+//   $Revision: 1.39.12.10 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/07 18:28:05 $
+//   $Author: ssahle $
+//   $Date: 2008/03/10 17:00:41 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -259,6 +259,51 @@ int main(int argc, char *argv[])
           if (!COptions::compareValue("ExportSBML", std::string("")))
             {
               retcode = exportSBML();
+              goto finish;
+            }
+
+          // Check whether exporting to C code is requested.
+          if (!COptions::compareValue("ExportC", std::string("")))
+            {
+              // Export the C code File
+              std::string ExportC;
+              COptions::getValue("ExportC", ExportC);
+              if (!CCopasiDataModel::Global->exportMathModel(ExportC, NULL, "C Files (*.c)", true))
+                {
+                  std::cerr << "C File: " << ExportC << std::endl;
+                  std::cerr << CCopasiMessage::getAllMessageText() << std::endl;
+                  retcode = 1;
+                }
+              goto finish;
+            }
+
+          // Check whether exporting to Berkeley Madonna is requested.
+          if (!COptions::compareValue("ExportBerkeleyMadonna", std::string("")))
+            {
+              // Export the Berkeley Madonna File
+              std::string ExportBerkeleyMadonna;
+              COptions::getValue("ExportBerkeleyMadonna", ExportBerkeleyMadonna);
+              if (!CCopasiDataModel::Global->exportMathModel(ExportBerkeleyMadonna, NULL, "Berkeley Madonna Files (*.mmd)", true))
+                {
+                  std::cerr << "Berkeley Madonna File: " << ExportBerkeleyMadonna << std::endl;
+                  std::cerr << CCopasiMessage::getAllMessageText() << std::endl;
+                  retcode = 1;
+                }
+              goto finish;
+            }
+
+          // Check whether exporting to XPPAUT is requested.
+          if (!COptions::compareValue("ExportXPPAUT", std::string("")))
+            {
+              // Export the Berkeley Madonna File
+              std::string ExportXPPAUT;
+              COptions::getValue("ExportXPPAUT", ExportXPPAUT);
+              if (!CCopasiDataModel::Global->exportMathModel(ExportXPPAUT, NULL, "XPPAUT (*.ode)", true))
+                {
+                  std::cerr << "XPPAUT File: " << ExportXPPAUT << std::endl;
+                  std::cerr << CCopasiMessage::getAllMessageText() << std::endl;
+                  retcode = 1;
+                }
               goto finish;
             }
 
