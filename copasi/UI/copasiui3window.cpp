@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.218.4.4 $
+//   $Revision: 1.218.4.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/10 18:00:54 $
+//   $Date: 2008/03/10 21:05:05 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1029,9 +1029,9 @@ void CopasiUI3Window::slotImportSBML(QString file)
 
           dataModel->createModel();
         }
-
-      // We check in all case for warnings. This will help also for unsuccessful imports
-      this->checkPendingMessages();
+      else
+        // We check in all case for warnings. This will help also for unsuccessful imports
+        this->checkPendingMessages();
 
       ListViews::notify(ListViews::MODEL, ListViews::ADD,
                         CCopasiDataModel::Global->getModel()->getKey());
