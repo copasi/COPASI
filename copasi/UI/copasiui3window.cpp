@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.218.4.3 $
+//   $Revision: 1.218.4.4 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/02/22 16:05:33 $
+//   $Author: shoops $
+//   $Date: 2008/03/10 18:00:54 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1291,11 +1291,15 @@ void CopasiUI3Window::checkPendingMessages()
       if (numFilteredMessages != 0)
         {
           CQMessageBox box(this);
+          if (text.isEmpty())
+            text = "There were no serious issues encountered during the import of SBML. "
+                   "However some minor issues have occured, which can be viewed in the Minor "
+                   "Issues tab.";
           box.configure(QString("COPASI Message"), text, QMessageBox::Information, QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton, QMessageBox::NoButton);
           box.enableFilteredMessages(true);
           box.setFilteredMessageText(filteredText);
-          box.setMessageTabLabel(QString::number(numMessages) + QString(" messages"));
-          box.setFilteredTabLabel(QString::number(numFilteredMessages) + QString(" filtered messages"));
+          box.setMessageTabLabel(QString::number(numMessages) + QString(" Messages"));
+          box.setFilteredTabLabel(QString::number(numFilteredMessages) + QString(" Minor Issues"));
           box.exec();
         }
       else
