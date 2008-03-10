@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.189.2.6.2.24 $
+//   $Revision: 1.189.2.6.2.25 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/03/08 09:20:45 $
+//   $Date: 2008/03/10 08:26:39 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1017,17 +1017,20 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, Model* p
       Species* pSBMLSpecies = dynamic_cast<Species*>(spos->second);
       assert(pSBMLSpecies != NULL);
       hasOnlySubstanceUnitPresent = (hasOnlySubstanceUnitPresent | (pSBMLSpecies->getHasOnlySubstanceUnits() == true));
+      /*
       if (compartment == NULL)
         {
           compartment = pos->second->getCompartment();
         }
       else
         {
+
           if (singleCompartment && compartment != pos->second->getCompartment())
             {
               singleCompartment = false;
             }
         }
+        */
       copasiReaction->addModifier(pos->second->getKey());
     }
 
