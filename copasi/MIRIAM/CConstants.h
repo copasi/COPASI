@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CConstants.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2008/03/10 15:49:56 $
+//   $Author: gauges $
+//   $Date: 2008/03/11 09:06:08 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,7 +20,7 @@
 class CConstants
   {
   public:
-    CConstants::CConstants();
+    CConstants();
     static std::map<std::string, std::string> getReferencePredicates();
     static std::map<std::string, std::string> getPrefix2URI();
     static std::map<std::string, std::string> getRelationships();
