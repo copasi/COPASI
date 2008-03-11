@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CBiologicalDescription.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2008/03/10 15:49:56 $
+//   $Author: gauges $
+//   $Date: 2008/03/11 09:12:51 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,8 +22,8 @@ CBiologicalDescription::CBiologicalDescription(const std::string & objectName, c
     CRDFObject* pRDFObj) :
     CCopasiContainer(objectName, pParent, "BiologicalDescription"),
     mKey(GlobalKeys.add("BiologicalDescription", this)),
-    mParentTag(""),
-    mpRDFObj(NULL)
+    mpRDFObj(NULL),
+    mParentTag("")
 {
   if (pRDFObj)
   {mpRDFObj = pRDFObj;}
