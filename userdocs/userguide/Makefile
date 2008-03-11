@@ -1,8 +1,10 @@
 # The following variables need to be adjusted to suit your installation
-# od dblatex:
+# of dblatex:
 
 # The dblatex installation directory
-DBLATEX_PATH=/sw/
+# DBLATEX_PATH=/home/usr
+# DBLATEX_PATH=/sw
+
 
 # These should be correct after DBLATEX_PATH
 DBLATEX=$(DBLATEX_PATH)/bin/dblatex

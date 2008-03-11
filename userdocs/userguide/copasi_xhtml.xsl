@@ -3,14 +3,10 @@
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns="http://www.w3.org/1999/xhtml" version="1.0">
 
-<!--
-<xsl:import href="/usr/share/xml/docbook/stylesheet/nwalsh/xhtml/profile-docbook.xsl"/>
--->
-<!--
-<xsl:import href="/sw/share/xml/xsl/docbook-xsl/xhtml/profile-docbook.xsl"/>
--->
-
-<xsl:import href="/usr/share/sgml/docbook/xsl-stylesheets-1.69.1-5/xhtml/chunk.xsl"/>
+<!-- This needs to be adjusted to point to xhtml/chunk.xsl -->
+<!-- <xsl:import href="/usr/share/xml/docbook/stylesheet/nwalsh/xhtml/profile-docbook.xsl"/> -->
+<!-- <xsl:import href="/sw/share/xml/xsl/docbook-xsl/xhtml/profile-docbook.xsl"/> -->
+<xsl:import href="/usr/share/xml/docbook/xsl-stylesheets-1.72.0/xhtml/chunk.xsl"/>
 
 <!-- ==================================================================== -->
 
