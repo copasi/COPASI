@@ -1,10 +1,10 @@
 <chapter id="modelCreation" xreflabel="Model Creation">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_GUI.xml,v $ -->
-<!--   $Revision: 1.49.4.10 $ -->
+<!--   $Revision: 1.49.4.11 $ -->
 <!--   $Name:  $ -->
-<!--   $Author: gauges $ -->
-<!--   $Date: 2008/03/08 12:50:57 $ -->
+<!--   $Author: shoops $ -->
+<!--   $Date: 2008/03/11 17:55:56 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -2861,14 +2861,14 @@ while trying to find a Steady-State.
 </para>
 <para>
 <screenshot>
-<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 03/07/2008</screeninfo>
+<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/28/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/SteadyStateTask_02.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <imageobject>
   <imagedata fileref="images/SteadyStateTask_02.ps" format="EPS" scale="50" align="center" />
- </imageobject> Steady-State
+ </imageobject> 
  <textobject>
    <phrase>Dialog that displays the results of the stability analysis</phrase>
  </textobject>
@@ -3103,7 +3103,7 @@ its variant called <emphasis>LSODAR</emphasis>,
 to calculate the time course deterministically. COPASI is able
 to calculate the time course stochastically by means of one of two stochastic 
 solvers: the <emphasis>Gibson and Bruck</emphasis> method or 
-the <emphasis>&tgr;-Leap</emphasis> one. Depending on the solver you
+the <emphasis>Tau-Leap</emphasis> one. Depending on the solver you
 have chosen, you can set several parameters in the <guilabel>Parameter
 value</guilabel> table that influence the way the method works. A
 detailed explanation of those parameters will follow in the 
