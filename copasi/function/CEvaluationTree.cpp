@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-//   $Revision: 1.51 $
+//   $Revision: 1.52 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/15 21:18:07 $
+//   $Date: 2008/03/11 23:32:12 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -105,6 +110,7 @@ CEvaluationTree::CEvaluationTree(const std::string & name,
                                  const CCopasiContainer * pParent,
                                  const CEvaluationTree::Type & type):
     CCopasiContainer(name, pParent, "Function"),
+    mSBMLId(""),
     mType(type),
     mKey(GlobalKeys.add("Function", this)),
     mInfix(),
@@ -122,6 +128,7 @@ CEvaluationTree::CEvaluationTree(const std::string & name,
 CEvaluationTree::CEvaluationTree(const CEvaluationTree & src,
                                  const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
+    mSBMLId(src.mSBMLId),
     mType(src.mType),
     mKey(GlobalKeys.add("Function", this)),
     mInfix(),
@@ -361,6 +368,7 @@ CEvaluationNode* CEvaluationTree::convertASTNode(const ASTNode& node)
       pResultNode = CEvaluationNodeConstant::createNodeFromASTTree(node);
       break;
     case AST_FUNCTION:
+    case AST_FUNCTION_DELAY:
       // create a function call node
       pResultNode = CEvaluationNodeCall::createNodeFromASTTree(node);
       break;
@@ -397,6 +405,7 @@ CEvaluationNode* CEvaluationTree::convertASTNode(const ASTNode& node)
     case AST_FUNCTION_TAN:
     case AST_FUNCTION_TANH:
     case AST_LOGICAL_NOT:
+      //case AST_FUNCTION_DELAY:
       // create a CEvaluationNodeFunction
       pResultNode = CEvaluationNodeFunction::createNodeFromASTTree(node);
       break;
@@ -415,12 +424,12 @@ CEvaluationNode* CEvaluationTree::convertASTNode(const ASTNode& node)
     case AST_FUNCTION_PIECEWISE:
       pResultNode = CEvaluationNodeChoice::createNodeFromASTTree(node);
       break;
-    case AST_FUNCTION_DELAY:
+      //case AST_FUNCTION_DELAY:
+      //  pResultNode=new CEvaluationNodeCall();
       // create an unsupported element error
-      Message = CCopasiMessage(CCopasiMessage::EXCEPTION, MCMathML + 1,
-                               node.getName());
-      break;
-
+      // Message = CCopasiMessage(CCopasiMessage::EXCEPTION, MCMathML + 1,
+      //                          node.getName());
+      //break;
     case AST_UNKNOWN:
       // create an unknown element error
       Message = CCopasiMessage(CCopasiMessage::EXCEPTION, MCMathML + 2);

@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CState.cpp,v $
-//   $Revision: 1.69 $
+//   $Revision: 1.70 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/31 17:57:34 $
+//   $Date: 2008/03/11 23:32:35 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -210,9 +215,10 @@ unsigned C_INT32 CStateTemplate::getNumVariable() const
 unsigned C_INT32 CStateTemplate::getNumFixed() const
   {return mpEnd - mpBeginFixed;}
 
-unsigned C_INT32 CStateTemplate::getIndex(CModelEntity * entity) const
+unsigned C_INT32 CStateTemplate::getIndex(const CModelEntity * entity) const
   {
-    std::map< CModelEntity *, unsigned C_INT32 >::const_iterator found = mIndexMap.find(entity);
+    std::map< CModelEntity *, unsigned C_INT32 >::const_iterator found =
+      mIndexMap.find(const_cast< CModelEntity * >(entity));
     if (found != mIndexMap.end())
       return found->second;
 

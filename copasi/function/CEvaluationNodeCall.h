@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeCall.h,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/10/23 09:45:35 $
+//   $Author: shoops $
+//   $Date: 2008/03/11 23:32:12 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -37,7 +42,8 @@ class CEvaluationNodeCall : public CEvaluationNode
     {
       INVALID = 0x00FFFFFF,
       FUNCTION = 0x00000000,
-      EXPRESSION = 0x00000001
+      EXPRESSION = 0x00000001,
+      DELAY = 0x00000002
     };
 
     // Operations

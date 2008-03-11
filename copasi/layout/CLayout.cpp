@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLayout.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/10/30 11:53:53 $
+//   $Author: shoops $
+//   $Date: 2008/03/11 23:32:33 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -118,7 +123,7 @@ std::ostream & operator<<(std::ostream &os, const CLayout & l)
   imax = l.mvMetabs.size();
   if (imax)
     {
-      os << "\nList of metabolite glyphs: \n\n";
+      os << "\nList of species glyphs: \n\n";
       for (i = 0; i < imax; ++i)
         os << *l.mvMetabs[i];
     }

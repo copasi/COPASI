@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLIncompatibility.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/12/12 09:10:54 $
+//   $Author: shoops $
+//   $Date: 2008/03/11 23:36:34 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -48,7 +53,7 @@ class SBMLIncompatibility
     unsigned C_INT32 minSBMLLevel() const;
   };
 
-typedef struct INCOMPATIBILITY
+struct INCOMPATIBILITY
   {
     unsigned C_INT32 mNo;
     unsigned C_INT32 mSBMLLevel;

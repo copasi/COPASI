@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CTruncatedNewton.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/12/12 02:41:22 $
+//   $Date: 2008/03/11 23:32:54 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -49,24 +54,110 @@ template <class CType> class FTruncatedNewtonTemplate : public FTruncatedNewton
     {return (*mpType.*mMethod)(n, value, value1, value2);}    ;  // execute member function
   };
 
-int tnbc_(C_INT *,
-          C_INT *,
-          C_FLOAT64 *,
-          C_FLOAT64 *,
-          C_FLOAT64 *,
-          C_FLOAT64 *,
-          C_INT *,
-          FTruncatedNewton *, // Functor for function under investigation
-          C_FLOAT64 *,
-          C_FLOAT64 *,
-          C_INT *);
+union subscr_ {
+    struct
+      {
+        C_INT lgv, lz1, lzk, lv, lsk, lyk, ldiagb, lsr, lyr, loldg, lhg,
+        lhyk, lpk, lemat, lwtest;
+      }
+    _1;
+    struct
+      {
+        C_INT lgv, lz1, lzk, lv, lsk, lyk, ldiagb, lsr, lyr, lhyr, lhg,
+        lhyk, lpk, lemat, lwtest;
+      }
+    _2;
+    struct
+      {
+        C_INT lsub[14], lwtest;
+      }
+    _3;
+  };
 
-int tn_(C_INT *,
-        C_INT *,
-        C_FLOAT64 *,
-        C_FLOAT64 *,
-        C_FLOAT64 *,
-        C_FLOAT64 *,
-        C_INT *,
-        FTruncatedNewton *);
+class CTruncatedNewton
+  {
+
+  public:
+
+    CTruncatedNewton();
+    ~CTruncatedNewton();
+
+    int tnbc_(C_INT *,
+              C_INT *,
+              C_FLOAT64 *,
+              C_FLOAT64 *,
+              C_FLOAT64 *,
+              C_FLOAT64 *,
+              C_INT *,
+              FTruncatedNewton *, // Functor for function under investigation
+              C_FLOAT64 *,
+              C_FLOAT64 *,
+              C_INT *);
+
+    int tn_(C_INT *,
+            C_INT *,
+            C_FLOAT64 *,
+            C_FLOAT64 *,
+            C_FLOAT64 *,
+            C_FLOAT64 *,
+            C_INT *,
+            FTruncatedNewton *);
+
+    int getptc_(C_FLOAT64 *, C_FLOAT64 *,
+                C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+                C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+                C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+                C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+                C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+                C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+                C_FLOAT64 *, C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+                C_INT *, C_INT *);
+
+    int linder_(C_INT *, FTruncatedNewton *, C_FLOAT64 *,
+                C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+                C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+                C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+                C_FLOAT64 *, C_INT *, C_INT *, C_FLOAT64 *, C_INT *);
+
+    int gtims_(C_FLOAT64 *v, C_FLOAT64 *gv, C_INT *n,
+               C_FLOAT64 *x, C_FLOAT64 *g, C_FLOAT64 *w, C_INT * /* lw */, FTruncatedNewton *sfun,
+               C_INT *first, C_FLOAT64 *delta, C_FLOAT64 *accrcy, C_FLOAT64 *
+               xnorm);
+
+    int msolve_(C_FLOAT64 *,
+                C_FLOAT64 *, C_INT *, C_FLOAT64 *, C_INT *, C_INT *,
+                C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_INT *, C_INT *);
+
+    int initpc_(C_FLOAT64 *, C_FLOAT64 *, C_INT *,
+                C_FLOAT64 *, C_INT *, C_INT *, C_INT *, C_FLOAT64 *,
+                C_FLOAT64 *, C_FLOAT64 *, C_INT *);
+
+    int setucr_(C_FLOAT64 *, C_INT *, C_INT *,
+                C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+                C_FLOAT64 *, FTruncatedNewton *, C_FLOAT64 *, C_FLOAT64 *);
+
+    int setpar_(C_INT *);
+
+    int modlnp_(C_INT *, C_FLOAT64 *, C_FLOAT64 *,
+                C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
+                C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_INT *, C_FLOAT64 *,
+                C_INT *, C_INT *, C_INT *, C_INT *, C_INT *, C_INT *,
+                C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_INT *,
+                FTruncatedNewton *, C_INT *, C_INT *, C_FLOAT64 *, C_FLOAT64 *,
+                C_FLOAT64 *, C_FLOAT64 *);
+
+    int lmqnbc_(C_INT *, C_INT *, C_FLOAT64 *,
+                C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_INT *, FTruncatedNewton *,
+                C_FLOAT64 *, C_FLOAT64 *, C_INT *, C_INT *, C_INT *,
+                C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *);
+
+    int lmqn_(C_INT *, C_INT *, C_FLOAT64 *,
+              C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_INT *, FTruncatedNewton *,
+              C_INT *, C_INT *, C_INT *, C_FLOAT64 *, C_FLOAT64 *,
+              C_FLOAT64 *, C_FLOAT64 *);
+
+  private:
+    subscr_ * mpsubscr_;
+  };
+
 #endif // COAPSI_CTruncatedNewton

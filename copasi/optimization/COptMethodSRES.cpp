@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSRES.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/12/10 19:41:45 $
+//   $Date: 2008/03/11 23:32:54 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -76,16 +81,15 @@ bool COptMethodSRES::evaluate(const CVector< C_FLOAT64 > & /* individual */)
   bool Continue = true;
 
   // We do not need to check whether the parametric constraints are fulfilled
-  // since the parameters are created within the bounds.
+  // since this method allows for parameters outside the bounds
 
   // evaluate the fitness
-  Continue &= mpOptProblem->calculate();
+  Continue = mpOptProblem->calculate();
 
-  // check wheter the functional constraints are fulfilled
-  if (!mpOptProblem->checkFunctionalConstraints())
-    mEvaluationValue = DBL_MAX;
-  else
-    mEvaluationValue = mpOptProblem->getCalculateValue();
+  // We do not need to check whether the functional constraints are fulfilled
+  // since this method allows for solutions outside the bounds.
+
+  mEvaluationValue = mpOptProblem->getCalculateValue();
 
   return Continue;
 }
@@ -587,52 +591,39 @@ bool COptMethodSRES::cleanup()
 }
 
 // evaluate the distance of parameters and constraints to boundaries
-C_FLOAT64 COptMethodSRES::phi(C_INT32 /* indivNum */)
+C_FLOAT64 COptMethodSRES::phi(C_INT32 indivNum)
 {
   C_FLOAT64 phiVal = 0.0;
   C_FLOAT64 phiCalc;
 
-  std::vector< COptItem * >::const_iterator it;
-  std::vector< COptItem * >::const_iterator end;
+  std::vector< COptItem * >::const_iterator it = mpOptItem->begin();
+  std::vector< COptItem * >::const_iterator end = mpOptItem->end();
+  C_FLOAT64 * pValue = mIndividual[indivNum]->array();
 
-#ifdef XXXX // We force the variables to be within the domain
-  it = mpOptItem->begin();
-  end = mpOptItem->end();
-  C_FLOAT64 * pVariable = mIndividual[indivNum]->array();
-
-  for (; it != end; ++it, pVariable++)
+  for (; it != end; ++it, pValue++)
     {
       switch ((*it)->checkConstraint())
         {
         case - 1:
-          phiCalc = *(*it)->getLowerBoundValue() - *pVariable;
+          phiCalc = *(*it)->getLowerBoundValue() - *pValue;
           phiVal += phiCalc * phiCalc;
           break;
 
         case 1:
-          phiCalc = *pVariable - *(*it)->getUpperBoundValue();
+          phiCalc = *pValue - *(*it)->getUpperBoundValue();
           phiVal += phiCalc * phiCalc;
           break;
         }
     }
-#endif // XXXX
 
   it = mpOptContraints->begin();
   end = mpOptContraints->end();
 
   for (; it != end; ++it)
     {
-      switch ((*it)->checkConstraint())
-        {
-        case - 1:
-        case 1:
-          phiCalc = (*it)->getConstraintViolation();
-          phiVal += phiCalc * phiCalc;
-          break;
-
-        default:
-          break;
-        }
+      phiCalc = (*it)->getConstraintViolation();
+      if (phiCalc > 0.0)
+        phiVal += phiCalc * phiCalc;
     }
 
   return phiVal;

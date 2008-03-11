@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMoiety.h,v $
-//   $Revision: 1.31 $
+//   $Revision: 1.32 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/04 14:56:53 $
+//   $Date: 2008/03/11 23:32:35 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -152,6 +157,13 @@ class CMoiety : public CCopasiContainer
      * Refreshes the value of the dependent number
      */
     void refreshDependentNumber();
+
+    /**
+     * Retrieve the infix expression, which can be used to calculate the
+     * total ammount.
+     * @return std::string expression
+     */
+    std::string getExpression() const;
 
   private:
     /**

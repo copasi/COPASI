@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-//   $Revision: 1.69 $
+//   $Revision: 1.70 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/15 17:51:27 $
+//   $Date: 2008/03/11 23:36:33 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -248,8 +253,20 @@ void CCopasiObject::getAllDependencies(std::set< const CCopasiObject * > & depen
       }
   }
 
-bool CCopasiObject::hasCircularDependencies(std::set<const CCopasiObject * > & candidates) const
+bool CCopasiObject::dependsOn(std::set< const CCopasiObject * > & candidates) const
   {
+    std::set< const CCopasiObject * > verified;
+    return hasCircularDependencies(candidates, verified);
+  }
+
+bool CCopasiObject::hasCircularDependencies(std::set< const CCopasiObject * > & candidates,
+    std::set< const CCopasiObject * > & verified) const
+  {
+    bool hasCircularDependencies = false;
+
+    if (verified.count(this) != 0)
+      return hasCircularDependencies;
+
     std::set< const CCopasiObject * >::const_iterator it = mDependencies.begin();
     std::set< const CCopasiObject * >::const_iterator end = mDependencies.end();
 
@@ -261,17 +278,22 @@ bool CCopasiObject::hasCircularDependencies(std::set<const CCopasiObject * > & c
     // Check whether the insert was successfull, if not
     // the object "this" was among the candidates. Thus we have a dedected
     // a circular dependency
-    if (!Inserted.second) return true;
+    if (Inserted.second)
+      {
+        for (; it != end && !hasCircularDependencies; ++it)
+          hasCircularDependencies = (*it)->hasCircularDependencies(candidates, verified);
 
-    for (; it != end; ++it)
-      // Check whether the dependency *it depends on the candidates or this
-      if ((*it)->hasCircularDependencies(candidates))
-        break;
+        // Remove the inserted object this from the candidates to avoid any
+        // side effects.
+        candidates.erase(this);
+      }
+    else
+      hasCircularDependencies = true;
 
-    // Remove the inserted object this from the candidates.
-    candidates.erase(Inserted.first);
+    // The element has been checked and does not need to be checked again.
+    verified.insert(this);
 
-    return it != end;
+    return hasCircularDependencies;
   }
 
 //static
@@ -280,6 +302,7 @@ CCopasiObject::buildUpdateSequence(const std::set< const CCopasiObject * > & obj
                                    const std::set< const CCopasiObject * > & uptoDateObjects)
 {
   std::set< const CCopasiObject * > DependencySet;
+  std::set< const CCopasiObject * > VerifiedSet;
 
   std::set< const CCopasiObject * >::const_iterator itSet;
   std::set< const CCopasiObject * >::const_iterator endSet = objects.end();
@@ -289,7 +312,7 @@ CCopasiObject::buildUpdateSequence(const std::set< const CCopasiObject * > & obj
 
   // Check whether we have any circular dependencies
   for (itSet = objects.begin(); itSet != endSet; ++itSet)
-    if ((*itSet)->hasCircularDependencies(DependencySet))
+    if ((*itSet)->hasCircularDependencies(DependencySet, VerifiedSet))
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCObject + 1, (*itSet)->getCN().c_str());
 
   // Build the complete set of dependencies
@@ -360,9 +383,11 @@ bool CCopasiObject::compare(const CCopasiObject * lhs, const CCopasiObject * rhs
   if (lhs != rhs)
     {
       std::set< const CCopasiObject * > Candidates;
+      std::set< const CCopasiObject * > VerifiedSet;
+
       Candidates.insert(lhs);
 
-      if (rhs->hasCircularDependencies(Candidates))
+      if (rhs->hasCircularDependencies(Candidates, VerifiedSet))
         return true;
     }
 

@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.107 $
+//   $Revision: 1.108 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/12/06 20:47:30 $
+//   $Author: shoops $
+//   $Date: 2008/03/11 23:31:51 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -30,6 +35,7 @@
 #include "report/CKeyFactory.h"
 #include "report/CReportDefinitionVector.h"
 #include "sbml/SBMLExporter.h"
+#include "sbml/CSBMLExporter.h"
 #include "sbml/SBMLImporter.h"
 #include "sbml/SBMLIncompatibility.h"
 #include "scan/CScanTask.h"
@@ -54,6 +60,7 @@
 #include "tss/CODEExporterC.h"
 #include "tss/CODEExporterBM.h"
 #include "tss/CODEExporterXPPAUT.h"
+#include "moieties/CMoietiesTask.h"
 
 #include "utilities/CCopasiException.h"
 #include "utilities/CCopasiProblem.h"
@@ -122,6 +129,8 @@ CCopasiDataModel::CCopasiDataModel(const bool withGUI):
     mRenameHandler(this),
     mpCurrentSBMLDocument(NULL),
     mSBMLFileName(""),
+    mpUnsupportedDelay(NULL),
+    mpUndefined(NULL),
     pOldMetabolites(new CCopasiVectorS < CMetabOld >)
 {
   mpVersion->setVersion(COPASI_VERSION_MAJOR,
@@ -139,7 +148,6 @@ CCopasiDataModel::CCopasiDataModel(const bool withGUI):
   mpFunctionList->load();
   newModel(NULL, NULL);
   CCopasiObject::setRenameHandler(&mRenameHandler); //TODO where in the contructor should this be called?
-
   mpConfiguration->load();
 }
 
@@ -225,7 +233,7 @@ bool CCopasiDataModel::loadModel(const std::string & fileName, CProcessReport* p
 
       CCopasiXML XML;
 
-      XML.setFunctionList(mpFunctionList->loadedFunctions());
+      XML.setFunctionList(&mpFunctionList->loadedFunctions());
 
       SCopasiXMLGUI *pGUI = NULL;
       std::string SBMLFileNameBkp = mSBMLFileName;
@@ -233,7 +241,7 @@ bool CCopasiDataModel::loadModel(const std::string & fileName, CProcessReport* p
       if (mWithGUI)
         {
           pGUI = new SCopasiXMLGUI;
-          XML.setGUI(*pGUI);
+          XML.setGUI(pGUI);
         }
 
       // save the copasi2sbml map somewhere and clear it
@@ -365,11 +373,11 @@ bool CCopasiDataModel::saveModel(const std::string & fileName, CProcessReport* p
 
   CCopasiXML XML;
 
-  XML.setModel(*mpModel);
-  XML.setTaskList(*mpTaskList);
-  XML.setReportList(*mpReportDefinitionList);
-  XML.setPlotList(*mpPlotDefinitionList);
-  XML.setGUI(*mpGUI);
+  XML.setModel(mpModel);
+  XML.setTaskList(mpTaskList);
+  XML.setReportList(mpReportDefinitionList);
+  XML.setPlotList(mpPlotDefinitionList);
+  XML.setGUI(mpGUI);
 #ifdef WITH_LAYOUT
   XML.setLayoutList(*mpListOfLayouts);
 #endif //WITH_LAYOUT
@@ -640,23 +648,80 @@ bool CCopasiDataModel::importSBML(const std::string & fileName, CProcessReport* 
 );
 }
 
-std::string CCopasiDataModel::exportSBMLToString(CProcessReport* pExportHandler)
+std::string CCopasiDataModel::exportSBMLToString(CProcessReport* /*pExportHandler*/, int sbmlLevel, int sbmlVersion)
 {
   CCopasiMessage::clearDeque();
 
-  SBMLExporter exporter;
-  exporter.setExportHandler(pExportHandler);
-  std::string str = exporter.exportSBMLToString(this);
+  CSBMLExporter exporter;
+  std::string str = exporter.exportModelToString(*this, sbmlLevel, sbmlVersion);
 
   if (mpCurrentSBMLDocument != exporter.getSBMLDocument())
     pdelete(mpCurrentSBMLDocument);
 
-  mpCurrentSBMLDocument = exporter.getSBMLDocument();
+  mpCurrentSBMLDocument = new SBMLDocument(*exporter.getSBMLDocument());
 
   return str;
 }
 
-bool CCopasiDataModel::exportSBML(const std::string & fileName, bool overwriteFile, int sbmlLevel, int sbmlVersion, bool exportIncomplete, CProcessReport* pExportHandler)
+bool CCopasiDataModel::exportSBML(const std::string & fileName, bool overwriteFile, int sbmlLevel, int sbmlVersion, bool /*exportIncomplete*/, CProcessReport* pExportHandler)
+{
+  CCopasiMessage::clearDeque();
+
+  if (fileName == "") return false;
+
+  std::string PWD;
+  COptions::getValue("PWD", PWD);
+
+  std::string FileName = fileName;
+
+  if (CDirEntry::isRelativePath(FileName) &&
+      !CDirEntry::makePathAbsolute(FileName, PWD))
+    FileName = CDirEntry::fileName(FileName);
+
+  if (CDirEntry::exist(FileName))
+    {
+      if (!overwriteFile)
+        {
+          CCopasiMessage(CCopasiMessage::ERROR,
+                         MCDirEntry + 1,
+                         FileName.c_str());
+          return false;
+        }
+
+      if (!CDirEntry::isWritable(FileName))
+        {
+          CCopasiMessage(CCopasiMessage::ERROR,
+                         MCDirEntry + 2,
+                         FileName.c_str());
+          return false;
+        }
+    }
+
+  try
+    {
+      if (!mpModel->compileIfNecessary(pExportHandler))
+        return false;
+    }
+
+  catch (...)
+    {
+      return false;
+    }
+
+  CSBMLExporter exporter;
+  //exporter.setExportHandler(pExportHandler);
+  if (!exporter.exportModel(*this, FileName, sbmlLevel, sbmlVersion, overwriteFile)) return false;
+
+  if (mpCurrentSBMLDocument != exporter.getSBMLDocument())
+    pdelete(mpCurrentSBMLDocument);
+
+  mpCurrentSBMLDocument = new SBMLDocument(*exporter.getSBMLDocument());
+  mSBMLFileName = FileName;
+
+  return true;
+}
+
+bool CCopasiDataModel::oldExportSBML(const std::string & fileName, bool overwriteFile, int sbmlLevel, int sbmlVersion, bool exportIncomplete, CProcessReport* pExportHandler)
 {
   CCopasiMessage::clearDeque();
 
@@ -851,6 +916,10 @@ CCopasiTask * CCopasiDataModel::addTask(const CCopasiTask::Type & taskType)
       pTask = new CTSSATask(mpTaskList);
       break;
 #endif // COPASI_TSSA
+
+    case CCopasiTask::moieties:
+      pTask = new CMoietiesTask(taskType, mpTaskList);
+      break;
 
     default:
       return pTask;
@@ -1139,4 +1208,27 @@ void CCopasiDataModel::removeSBMLIdFromFunctions()
     {
       pFunDB->loadedFunctions()[i]->setSBMLId("");
     }
+}
+
+CFunction * CCopasiDataModel::getUnsupportedDelay()
+{
+  if (mpUnsupportedDelay == NULL)
+    {
+      mpUnsupportedDelay = new CFunction("delay");
+      mpUnsupportedDelay->addVariable("variable");
+      mpUnsupportedDelay->addVariable("timeDelay");
+      CEvaluationNodeOperator* pTmpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
+      pTmpNode->addChild(new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, "variable"));
+      pTmpNode->addChild(new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, "timeDelay"));
+      CEvaluationNodeOperator* pRoot = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
+      pRoot->addChild(pTmpNode);
+      pRoot->addChild(new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "NAN"));
+      mpUnsupportedDelay->setRoot(pRoot);
+      mpUnsupportedDelay->compile();
+
+      if (mpFunctionList != NULL)
+        mpFunctionList->addAndAdaptName(mpUnsupportedDelay);
+    }
+
+  return mpUnsupportedDelay;
 }

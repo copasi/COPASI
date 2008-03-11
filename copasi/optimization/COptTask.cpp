@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptTask.cpp,v $
-//   $Revision: 1.36 $
+//   $Revision: 1.37 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/12/11 21:46:07 $
+//   $Date: 2008/03/11 23:32:54 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -91,6 +96,7 @@ bool COptTask::setCallBack(CProcessReport * pCallBack)
 }
 
 bool COptTask::initialize(const OutputFlag & of,
+                          COutputHandler * pOutputHandler,
                           std::ostream * pOstream)
 {
   COptProblem * pProblem = dynamic_cast<COptProblem *>(mpProblem);
@@ -101,7 +107,7 @@ bool COptTask::initialize(const OutputFlag & of,
   //initialize reporting
   bool success = true;
 
-  if (!CCopasiTask::initialize(of, pOstream)) success = false;
+  if (!CCopasiTask::initialize(of, pOutputHandler, pOstream)) success = false;
   //if (!mReport.open(pOstream)) success = false;
   //if (!mReport.compile()) success = false;
 
@@ -115,9 +121,6 @@ bool COptTask::initialize(const OutputFlag & of,
 
 bool COptTask::process(const bool & /* useInitialValues */)
 {
-  std::vector< UpdateMethod * > mUpdateMethods;
-  CVector< C_FLOAT64 > mSolutionVariables;
-
   COptProblem * pProblem = dynamic_cast<COptProblem *>(mpProblem);
   COptMethod * pMethod = dynamic_cast<COptMethod *>(mpMethod);
 
@@ -129,18 +132,9 @@ bool COptTask::process(const bool & /* useInitialValues */)
 
   bool success = pMethod->optimise();
 
+  pProblem->calculateStatistics();
+
   output(COutputInterface::AFTER);
-
-  mSolutionVariables = pProblem->getSolutionVariables();
-  mUpdateMethods = pProblem->getCalculateVariableUpdateMethods();
-
-  std::vector< UpdateMethod * >::iterator it = mUpdateMethods.begin();
-  std::vector< UpdateMethod * >::iterator end = mUpdateMethods.end();
-
-  for (int i = 0; it != end; ++it, i++)
-    (*mUpdateMethods[i])(mSolutionVariables[i]);
-
-  pProblem->calculate();
 
   return success;
 }

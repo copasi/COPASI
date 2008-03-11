@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-//   $Revision: 1.53 $
+//   $Revision: 1.54 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/20 18:10:42 $
+//   $Date: 2008/03/11 23:32:55 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -55,9 +60,6 @@ CFitProblem::CFitProblem(const CCopasiTask::Type & type,
     mpTrajectoryProblem(NULL),
     mpInitialState(NULL),
     mResiduals(0),
-    mStoreResults(false),
-    mHaveStatistics(false),
-    mGradient(0),
     mRMS(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
     mSD(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
     mParameterSD(0),
@@ -94,9 +96,6 @@ CFitProblem::CFitProblem(const CFitProblem& src,
     mpTrajectoryProblem(NULL),
     mpInitialState(NULL),
     mResiduals(src.mResiduals),
-    mStoreResults(src.mStoreResults),
-    mHaveStatistics(src.mHaveStatistics),
-    mGradient(src.mGradient),
     mRMS(src.mRMS),
     mSD(src.mSD),
     mParameterSD(src.mParameterSD),
@@ -310,10 +309,10 @@ bool CFitProblem::initialize()
             {
               mpSteadyState =
                 static_cast<CSteadyStateTask *>((*CCopasiDataModel::Global->getTaskList())["Steady-State"]);
-              mpSteadyState->initialize(CCopasiTask::NO_OUTPUT, NULL);
+              mpSteadyState->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
               mpTrajectory =
                 static_cast<CTrajectoryTask *>((*CCopasiDataModel::Global->getTaskList())["Time-Course"]);
-              mpTrajectory->initialize(CCopasiTask::NO_OUTPUT, NULL);
+              mpTrajectory->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
             }
 
           CCopasiMessage::getLastMessage();
@@ -541,7 +540,7 @@ bool CFitProblem::initialize()
       if (mpSteadyState == NULL) fatalError();
 
       setValue("Steady-State", mpSteadyState->getKey());
-      mpSteadyState->initialize(CCopasiTask::NO_OUTPUT, NULL);
+      mpSteadyState->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
       ContainerList.push_back(mpSteadyState);
     }
 
@@ -553,7 +552,7 @@ bool CFitProblem::initialize()
       if (mpTrajectory == NULL) fatalError();
 
       setValue("Time-Course", mpTrajectory->getKey());
-      mpTrajectory->initialize(CCopasiTask::NO_OUTPUT, NULL);
+      mpTrajectory->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
       ContainerList.push_back(mpTrajectory);
     }
 
@@ -1008,6 +1007,9 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
 
   if (!CalculateFIM)
     {
+      // Make sure the timer is acurate.
+      (*mCPUTime.getRefresh())();
+
       CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 13);
       return false;
     }

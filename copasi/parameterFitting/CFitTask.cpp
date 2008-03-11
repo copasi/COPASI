@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitTask.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
-//   $Author: jdada $
-//   $Date: 2007/10/15 14:06:53 $
+//   $Author: shoops $
+//   $Date: 2008/03/11 23:32:55 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -78,9 +83,10 @@ bool CFitTask::setCallBack(CProcessReport * pCallBack)
 }
 
 bool CFitTask::initialize(const OutputFlag & of,
+                          COutputHandler * pOutputHandler,
                           std::ostream * pOstream)
 {
-  return COptTask::initialize(of, pOstream);
+  return COptTask::initialize(of, pOutputHandler, pOstream);
 }
 
 bool CFitTask::process(const bool & /* useInitialValues */)

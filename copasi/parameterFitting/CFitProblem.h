@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.h,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/04 17:31:39 $
+//   $Date: 2008/03/11 23:32:55 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -357,23 +362,6 @@ class CFitProblem : public COptProblem
      * Matrix of the residuals.
      */
     CVector< C_FLOAT64 > mResiduals;
-
-    /**
-     * Indicates whether the results shall be stored. The default
-     * is false.
-     */
-    bool mStoreResults;
-
-    /**
-     * Indicates whether the statistics have been calculated for
-     * the current result
-     */
-    bool mHaveStatistics;
-
-    /**
-     * The gradient vector for the parameters
-     */
-    CVector< C_FLOAT64 > mGradient;
 
     /**
      * The root mean square of the solution

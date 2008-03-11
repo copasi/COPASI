@@ -1,12 +1,17 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptTask.h,v $
-   $Revision: 1.8 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:29:53 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptTask.h,v $
+//   $Revision: 1.9 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2008/03/11 23:32:54 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -76,10 +81,13 @@ class COptTask : public CCopasiTask
      * instead of the target specified in the report. This allows nested
      * tasks to share the same output device.
      * @param const OutputFlag & of
+     * @param COutputHandler * pOutputHandler
      * @param std::ostream * pOstream (default: NULL)
      * @return bool success
      */
-    virtual bool initialize(const OutputFlag & of, std::ostream * pOstream);
+    virtual bool initialize(const OutputFlag & of,
+                            COutputHandler * pOutputHandler,
+                            std::ostream * pOstream);
 
     /**
      * Process the task with or without initializing to the initial state.

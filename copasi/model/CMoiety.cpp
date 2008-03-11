@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMoiety.cpp,v $
-//   $Revision: 1.46 $
+//   $Revision: 1.47 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/14 19:29:53 $
+//   $Date: 2008/03/11 23:32:35 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -18,9 +23,10 @@
 #include "CMoiety.h"
 #include "CCompartment.h"
 #include "CMetabNameInterface.h"
+
 #include "report/CCopasiObjectReference.h"
 #include "report/CKeyFactory.h"//By G
-
+#include "function/CExpression.h"
 #include "utilities/CCopasiMessage.h"
 #include "utilities/CReadConfig.h"
 #include "utilities/CCopasiVector.h"
@@ -124,6 +130,7 @@ std::string CMoiety::getDescription(const CModel * model) const
 
     std::vector< std::pair< C_FLOAT64, CMetab * > >::const_iterator it = mEquation.begin();
     std::vector< std::pair< C_FLOAT64, CMetab * > >::const_iterator end = mEquation.end();
+
     for (; it != end; ++it)
       {
         if (it != mEquation.begin())
@@ -160,4 +167,31 @@ CCopasiObject * CMoiety::getInitialValueReference() const
 C_FLOAT64 CMoiety::getNumber() const
   {
     return mINumber;
+  }
+
+std::string CMoiety::getExpression() const
+  {
+    std::string Infix;
+
+    std::vector< std::pair< C_FLOAT64, CMetab * > >::const_iterator it = mEquation.begin();
+    std::vector< std::pair< C_FLOAT64, CMetab * > >::const_iterator end = mEquation.end();
+
+    for (; it != end; ++it)
+      {
+        if (it != mEquation.begin())
+          {
+            if (it->first < 0.0)
+              Infix += "-";
+            else
+              Infix += "+";
+          }
+
+        if (fabs(it->first) > 1.0 + 100 * DBL_EPSILON ||
+            fabs(it->first) < 1.0 - 100 * DBL_EPSILON)
+          Infix += StringPrint("%g*", fabs(it->first));
+
+        Infix += "<" + it->second->getInitialValueReference()->getCN() + ">";
+      }
+
+    return Infix;
   }

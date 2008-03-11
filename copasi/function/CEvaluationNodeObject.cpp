@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.cpp,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.31 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2007/11/27 10:40:33 $
+//   $Author: shoops $
+//   $Date: 2008/03/11 23:32:12 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -148,47 +153,35 @@ ASTNode* CEvaluationNodeObject::toAST() const
       {
         object = object->getObjectParent();
       }
-    // actually we need to get the name from the key of the copasi object
-    SBase* pSBase = CCopasiDataModel::Global->getCopasi2SBMLMap()[object];
-    CModel* pModel = NULL;
-    if (pSBase)
+    CModelEntity* pME = dynamic_cast<CModelEntity*>(object);
+    if (pME != NULL)
       {
-        switch (pSBase->getTypeCode())
+        CModel* pModel = dynamic_cast<CModel*>(pME);
+        if (pModel != NULL)
           {
-          case SBML_COMPARTMENT:
-            node->setName(dynamic_cast<Compartment*>(pSBase)->getId().c_str());
-            break;
-          case SBML_SPECIES:
-            node->setName(dynamic_cast<Species*>(pSBase)->getId().c_str());
-            break;
-          case SBML_PARAMETER:
-            node->setName(dynamic_cast<Parameter*>(pSBase)->getId().c_str());
-            break;
-          case SBML_REACTION:
-            node->setName(dynamic_cast<Reaction*>(pSBase)->getId().c_str());
-            break;
-          case SBML_MODEL:
             node->setType(AST_NAME_TIME);
             node->setName("time");
-            pModel = dynamic_cast<CModel*>(object);
-            if (pModel == NULL)
-              {
-                fatalError();
-              }
             if (pModel->getInitialTime() != 0.0)
               {
                 CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 1);
               }
-            break;
-          default:
-            CCopasiMessage(CCopasiMessage::EXCEPTION, MCEvaluationNodeObject + 1);
-            break;
+          }
+        else
+          {
+            node->setName(pME->getSBMLId().c_str());
           }
       }
     else
       {
-        // it must be a local parameter
-        node->setName(object->getObjectName().c_str());
+        CCopasiParameter* pPara = dynamic_cast<CCopasiParameter*>(object);
+        if (pPara != NULL)
+          {
+            node->setName(pPara->getObjectName().c_str());
+          }
+        else
+          {
+            fatalError();
+          }
       }
     return node;
   }

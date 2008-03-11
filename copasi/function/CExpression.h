@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.h,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/08/24 19:13:53 $
+//   $Date: 2008/03/11 23:32:12 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -22,10 +27,10 @@ class CExpression: public CEvaluationTree
   public:
     /**
      * Default constructor
-     * @param const std::string & name (default: "NoName")
+     * @param const std::string & name (default: "Expression")
      * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CExpression(const std::string & name = "NoName",
+    CExpression(const std::string & name = "Expression",
                 const CCopasiContainer * pParent = NULL);
 
     /**

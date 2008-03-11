@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeChoice.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/08/12 16:36:43 $
+//   $Author: shoops $
+//   $Date: 2008/03/11 23:32:12 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -127,13 +132,66 @@ CEvaluationNode* CEvaluationNodeChoice::createNodeFromASTTree(const ASTNode& nod
       break;
     }
 
-  CEvaluationNodeChoice* convertedNode = new CEvaluationNodeChoice(subType, data);
-  // convert the two children
+  CEvaluationNode* convertedNode = new CEvaluationNodeChoice(subType, data);
+  /*
+  // convert the three children
+  assert(node.getNumChildren()==3);
+  */
+  // a piecewise function definition can have zero or more children.
+  if (node.getNumChildren() == 0)
+    {
+      // create a NaN node
+      delete convertedNode;
+      convertedNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "NaN");
+    }
+  else if (node.getNumChildren() == 1)
+    {
+      // this must be the otherwise
+      // It is not clearly specified what happens if there are no pieces, but
+      // an otherwise. I would assume that in this case, the otherwise always
+      // takes effect
+      convertedNode = CEvaluationTree::convertASTNode(*node.getChild(0));
+    }
+  else
+    {
+      unsigned int i, iMax = node.getNumChildren();
+      // the first iMax-(iMax%2) children must be piece elements
+      CEvaluationNode* pPiecewise = convertedNode;
+      for (i = 0;i < iMax / 2;++i)
+        {
+          ASTNode* pChild1 = node.getChild(i * 2); // the value, child 1 if the piecewise
+          ASTNode* pChild2 = node.getChild(i * 2 + 1); // the condition, child 0 of the piecewise
+          pPiecewise->addChild(CEvaluationTree::convertASTNode(*pChild2)); // add the condition
+          pPiecewise->addChild(CEvaluationTree::convertASTNode(*pChild1));
+          if (i != (iMax / 2) - 1)
+            {
+              // create a new piecewise as the else element
+              CEvaluationNode* pTmp = new CEvaluationNodeChoice(CEvaluationNodeChoice::IF, "if");
+              pPiecewise->addChild(pTmp);
+              pPiecewise = pTmp;
+            }
+        }
+      // if iMax%2 == 1, we have an otherwise element
+      CEvaluationNode* pOtherwise = NULL;
+      if ((iMax % 2) == 1)
+        {
+          pOtherwise = CEvaluationTree::convertASTNode(*node.getChild(iMax - 1));
+        }
+      else
+        {
+          pOtherwise = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "NaN");
+        }
+      // add the otherwise to the deepest piecewise node
+      pPiecewise->addChild(pOtherwise);
+    }
+  /*
   if (subType != INVALID)
     {
-      convertedNode->addChild(CEvaluationTree::convertASTNode(*node.getLeftChild()));
-      convertedNode->addChild(CEvaluationTree::convertASTNode(*node.getRightChild()));
+      convertedNode->addChild(CEvaluationTree::convertASTNode(*node.getChild(1)));
+      convertedNode->addChild(CEvaluationTree::convertASTNode(*node.getChild(0)));
+      convertedNode->addChild(CEvaluationTree::convertASTNode(*node.getChild(2)));
     }
+  */
   return convertedNode;
 }
 
@@ -141,9 +199,16 @@ ASTNode* CEvaluationNodeChoice::toAST() const
   {
     ASTNode* node = new ASTNode(AST_FUNCTION_PIECEWISE);
     const CEvaluationNode* child1 = dynamic_cast<const CEvaluationNode*>(this->getChild());
+    assert(child1 != NULL);
     const CEvaluationNode* child2 = dynamic_cast<const CEvaluationNode*>(child1->getSibling());
-    node->addChild(child1->toAST());
+    assert(child2 != NULL);
+    const CEvaluationNode* child3 = dynamic_cast<const CEvaluationNode*>(child2->getSibling());
+    assert(child3 != NULL);
+    // the condition is the second child to the AST node but the first child in
+    // the CEvaluationNode
     node->addChild(child2->toAST());
+    node->addChild(child1->toAST());
+    node->addChild(child3->toAST());
     return node;
   }
 

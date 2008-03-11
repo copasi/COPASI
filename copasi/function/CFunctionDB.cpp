@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionDB.cpp,v $
-//   $Revision: 1.77 $
+//   $Revision: 1.78 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/08/21 16:18:51 $
+//   $Date: 2008/03/11 23:32:12 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -339,7 +344,7 @@ void CFunctionDB::appendDependentFunctions(std::set< const CCopasiObject * > can
 
     for (; it != end; ++it)
       if (candidates.find(*it) == candidates.end() &&
-          (*it)->hasCircularDependencies(candidates))
+          (*it)->dependsOn(candidates))
         dependentFunctions.insert((*it));
 
     return;

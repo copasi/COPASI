@@ -1,12 +1,17 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationLexer.h,v $
-   $Revision: 1.11 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:28:25 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationLexer.h,v $
+//   $Revision: 1.12 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2008/03/11 23:32:11 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -16,8 +21,9 @@
 #include <vector>
 
 #undef yyFlexLexer
-#define yyFlexLexer CEvaluationLexer
 #include "FlexLexer.h"
+
+#define yyFlexLexer CEvaluationLexer
 
 #undef yyYaccParser
 #define yyYaccParser CEvaluationParserBase
@@ -120,19 +126,20 @@ class CEvaluationLexer : public FlexLexer, public yyYaccParser
   public:
     // arg_yyin and arg_yyout default to the cin and cout, but we
     // only make that assignment when initializing in yylex().
-    CEvaluationLexer(std::istream* arg_yyin = 0, std::ostream* arg_yyout = 0);
+    yyFlexLexer(FLEX_STD istream* arg_yyin = 0, FLEX_STD ostream* arg_yyout = 0);
 
-    virtual ~CEvaluationLexer();
+    virtual ~yyFlexLexer();
 
     void yy_switch_to_buffer(struct yy_buffer_state* new_buffer);
-
-    struct yy_buffer_state* yy_create_buffer(std::istream* s, int size);
-
+    struct yy_buffer_state* yy_create_buffer(FLEX_STD istream* s, int size);
     void yy_delete_buffer(struct yy_buffer_state* b);
-    void yyrestart(std::istream* s);
+    void yyrestart(FLEX_STD istream* s);
+
+    void yypush_buffer_state(struct yy_buffer_state* new_buffer);
+    void yypop_buffer_state(void);
 
     virtual int yylex();
-    virtual void switch_streams(std::istream* new_in, std::ostream* new_out);
+    virtual void switch_streams(FLEX_STD istream* new_in, FLEX_STD ostream* new_out);
 
   protected:
     virtual int LexerInput(char* buf, int max_size);
@@ -180,6 +187,11 @@ class CEvaluationLexer : public FlexLexer, public yyYaccParser
     // Flag which is used to allow yywrap()'s to do buffer switches
     // instead of setting up a fresh yyin.  A bit of a hack ...
     int yy_did_buffer_switch_on_eof;
+
+    size_t yy_buffer_stack_top; /**< index of top of stack. */
+    size_t yy_buffer_stack_max; /**< capacity of stack. */
+    struct yy_buffer_state ** yy_buffer_stack; /**< Stack as an array. */
+    void yyensure_buffer_stack(void);
 
     // The following are not always needed, but may be depending
     // on use of certain flex features (like REJECT or yymore()).

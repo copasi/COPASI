@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitItem.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/12/10 19:42:46 $
+//   $Date: 2008/03/11 23:32:55 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -116,6 +121,24 @@ C_INT32 CFitItem::checkConstraint() const
     if (*mpLowerBound > mLocalValue) return - 1;
     if (mLocalValue > *mpUpperBound) return 1;
     return 0;
+  }
+
+C_FLOAT64 CFitItem::getConstraintViolation() const
+  {
+    switch (checkConstraint())
+      {
+      case - 1:
+        return *mpLowerBound - mLocalValue;
+        break;
+
+      case 1:
+        return mLocalValue - *mpUpperBound;
+        break;
+
+      default:
+        return 0.0;
+        break;
+      }
   }
 
 std::ostream &operator<<(std::ostream &os, const CFitItem & o)
