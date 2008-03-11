@@ -1,5 +1,18 @@
+# Begin CVS Header 
+#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/commandline.pro,v $ 
+#   $Revision: 1.12 $ 
+#   $Name:  $ 
+#   $Author: shoops $ 
+#   $Date: 2008/03/11 22:47:57 $ 
+# End CVS Header 
+
+# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+# and The University of Manchester. 
+# All rights reserved. 
+
 ######################################################################
-# $Revision: 1.11 $ $Author: shoops $ $Date: 2006/10/30 21:12:20 $  
+# $Revision: 1.12 $ $Author: shoops $ $Date: 2008/03/11 22:47:57 $  
 ######################################################################
 
 LIB = commandline
@@ -17,22 +30,16 @@ SOURCES += CConfigurationFile.cpp \
            COptions.cpp
 
 contains(BUILD_PARSER, yes) {
-  CLOPP = $$system(which clo++)
-  count(CLOPP, 1) {
-    1.target = COptionParser.cpp
-    1.depends = COptionParser.xml
-    1.commands = \
-          rm $@ $*.h; \
-          clo++ -o c++ $< && \
-          cat $@ | \
-          sed -e 's/compare([^,]*,[^,]*, *\([^,]*\) *,[^)]*)/compare(\1)/g' \
-              > $@.tmp && \
-          mv $@.tmp $@; \
-          ../../cvs_admin/c++style $@; \
-          ../../cvs_admin/c++style $*.h
-        
-    QMAKE_EXTRA_UNIX_TARGETS += 1
+  clo.target = COptionParser.cpp
+  clo.depends = COptionParser.xml
+  win32:{
+    clo.commands = C:\cygwin\bin\bash ../../admin/clo++.sh $$clo.depends
+  } else {
+    clo.commands = ../../admin/clo++.sh $$clo.depends
   }
+
+  QMAKE_EXTRA_UNIX_TARGETS += clo
+  QMAKE_EXTRA_WIN_TARGETS += clo
 }
 
 

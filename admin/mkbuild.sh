@@ -44,6 +44,11 @@ if [ x"$#" = x1 ]; then
     cp ../copasi/CopasiSE/CopasiSE.exe  copasi/bin
     chmod 755 copasi/bin/CopasiSE.exe
 
+    if [ x"$license" = xUS ]; then
+      scp copasi/bin/CopasiSE.exe \
+        copasi@gorbag.bioinformatics.vt.edu:www/integrator/snapshots/$license/Copasi-AllSE/$1/CopasiSE-$build.exe
+    fi
+    
     cp ../TestSuite/distribution/* copasi/share/copasi/examples
     chmod 444 copasi/share/copasi/examples/*
 
@@ -54,9 +59,9 @@ if [ x"$#" = x1 ]; then
     cp ../copasi/wizard/help_html/*.html copasi/share/copasi/doc/html
     chmod 644 copasi/share/copasi/doc/html/*.html
 
-    cp ../copasi/wizard/help_html/figures/*.jpg \
+    cp ../copasi/wizard/help_html/figures/*.png \
        copasi/share/copasi/doc/html/figures
-    chmod 644 copasi/share/copasi/doc/html/figures/*.jpg
+    chmod 644 copasi/share/copasi/doc/html/figures/*.png
 
     cd ../admin
 
@@ -123,6 +128,11 @@ if [ x"$#" = x1 ]; then
     if [ -e copasi/CopasiSE/CopasiSE.app/Contents/MacOS/CopasiSE ] ; then    
       cp copasi/CopasiSE/CopasiSE.app/Contents/MacOS/CopasiSE ${TMPDIR}/copasi/
       strip ${TMPDIR}/copasi/CopasiSE
+      
+      if [ x"$license" = xUS ]; then
+        scp ${TMPDIR}/copasi/CopasiSE \
+          copasi@gorbag.bioinformatics.vt.edu:www/integrator/snapshots/$license/Copasi-AllSE/$1/CopasiSE-$build
+       fi
     fi  
     
 # copy the icon into the Resources directory
@@ -213,6 +223,11 @@ echo "Set the icon in the Info.plist file."
     cp ../copasi/CopasiSE/CopasiSE  copasi/bin
     chmod 755 copasi/bin/CopasiSE
 
+    if [ x"$license" = xUS ]; then
+      scp copasi/bin/CopasiSE \
+        copasi@gorbag.bioinformatics.vt.edu:www/integrator/snapshots/$license/Copasi-AllSE/$1/CopasiSE-$build
+    fi
+    
     cp ../TestSuite/distribution/* copasi/share/copasi/examples
     chmod 444 copasi/share/copasi/examples/*
 
@@ -223,17 +238,24 @@ echo "Set the icon in the Info.plist file."
     cp ../copasi/wizard/help_html/*.html copasi/share/copasi/doc/html
     chmod 644 copasi/share/copasi/doc/html/*.html
 
-    cp ../copasi/wizard/help_html/figures/*.jpg \
+    cp ../copasi/wizard/help_html/figures/*.png \
        copasi/share/copasi/doc/html/figures
-    chmod 644 copasi/share/copasi/doc/html/figures/*.jpg
+    chmod 644 copasi/share/copasi/doc/html/figures/*.png
 
     tar -czf ../Copasi-$build-$1.tar.gz copasi
 
     if [ x"$1" == "xLinux" ]; then
       cp ../copasi/CopasiUI/CopasiUI-dynamic  copasi/bin/CopasiUI
-      cp ../copasi/CopasiSE/CopasiSE-dynamic  copasi/bin/CopasiSE
       chmod 755 copasi/bin/CopasiUI
 
+      cp ../copasi/CopasiSE/CopasiSE-dynamic  copasi/bin/CopasiSE
+      chmod 755 copasi/bin/CopasiSE
+
+      if [ x"$license" = xUS ]; then
+        scp copasi/bin/CopasiSE \
+          copasi@gorbag.bioinformatics.vt.edu:www/integrator/snapshots/$license/Copasi-AllSE/$1-Dynamic/CopasiSE-$build
+      fi
+      
       tar -czf ../Copasi-$build-$1-Dynamic.tar.gz copasi
     fi
 

@@ -1,13 +1,14 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptionParser.cpp,v $
-   $Revision: 1.22 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/12/15 14:14:30 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptionParser.cpp,v $
+//   $Revision: 1.23 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2008/03/11 22:47:57 $
+// End CVS Header
 
-// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
 // All rights reserved.
 
 /*
@@ -39,22 +40,26 @@
 namespace
   {
   const char const_usage[] =
-    "  --configdir string              The configuration directory for copasi.\n"
-    "                                  The default is .copasi in the home\n"
-    "                                  directory.\n"
-    "  --configfile string             The configuration file for copasi. The\n"
-    "                                  default is copasi in the ConfigDir.\n"
-    "  --exportBerkeleyMadonna string  The Berkeley Madonna file to export.\n"
-    "  --exportC string                The C code file to export.\n"
-    "  --home string                   Your home directory.\n"
-    "  --license                       Display the license.\n"
-    "  --verbose                       Enable output of messages during runtime\n"
-    "                                  to std::error.\n"
-    "  -c, --copasidir string          The COPASI installation directory.\n"
-    "  -e, --exportSBML string         The SBML file to export.\n"
-    "  -i, --importSBML string         A SBML file to import.\n"
-    "  -s, --save string               The file the model is saved to after work.\n"
-    "  -t, --tmp string                The temp directory used for autosave.\n";
+    "  --SBMLSchema schema           The Schema of the SBML file to export.\n"
+    "  --configdir dir               The configuration directory for copasi. The\n"
+    "                                default is .copasi in the home directory.\n"
+    "  --configfile file             The configuration file for copasi. The\n"
+    "                                default is copasi in the ConfigDir.\n"
+    "  --exportBerkeleyMadonna file  The Berkeley Madonna file to export.\n"
+    "  --exportC file                The C code file to export.\n"
+    "  --exportXPPAUT file           The XPPAUT file to export.\n"
+    "  --home dir                    Your home directory.\n"
+    "  --license                     Display the license.\n"
+    "  --nologo                      Surpresses the startup message.\n"
+    "  --validate                    Validate the given input file (COPASI or\n"
+    "                                SBML).\n"
+    "  --verbose                     Enable output of messages during runtime to\n"
+    "                                std::error.\n"
+    "  -c, --copasidir dir           The COPASI installation directory.\n"
+    "  -e, --exportSBML file         The SBML file to export.\n"
+    "  -i, --importSBML file         A SBML file to import.\n"
+    "  -s, --save file               The file the model is saved to after work.\n"
+    "  -t, --tmp dir                 The temp directory used for autosave.\n";
 
   const char const_help_comment[] =
     "use the -h option for help";
@@ -186,22 +191,30 @@ void copasi::COptionParser::finalize (void)
           throw option_error("missing value for 'exportC' option");
         case option_ExportSBML:
           throw option_error("missing value for 'exportSBML' option");
+        case option_ExportXPPAUT:
+          throw option_error("missing value for 'exportXPPAUT' option");
         case option_Home:
           throw option_error("missing value for 'home' option");
         case option_ImportSBML:
           throw option_error("missing value for 'importSBML' option");
         case option_License:
           throw option_error("missing value for 'license' option");
+        case option_NoLogo:
+          throw option_error("missing value for 'nologo' option");
         case option_RegisteredEmail:
           throw option_error("missing value for 'rEmail' option");
         case option_RegisteredUser:
           throw option_error("missing value for 'rUser' option");
         case option_RegistrationCode:
           throw option_error("missing value for 'rCode' option");
+        case option_SBMLSchema:
+          throw option_error("missing value for 'SBMLSchema' option");
         case option_Save:
           throw option_error("missing value for 'save' option");
         case option_Tmp:
           throw option_error("missing value for 'tmp' option");
+        case option_Validate:
+          throw option_error("missing value for 'validate' option");
         case option_Verbose:
           throw option_error("missing value for 'verbose' option");
         }
@@ -350,7 +363,19 @@ void copasi::COptionParser::parse_long_option (const char *option, int position,
 {
   option = expand_long_name(option);
 
-  if (strcmp(option, "configdir") == 0)
+  if (strcmp(option, "SBMLSchema") == 0)
+    {
+      if (source != source_cl) throw option_error("the 'SBMLSchema' option is only allowed on the command line");
+      if (locations_.SBMLSchema)
+        {
+          throw option_error("the 'SBMLSchema' option is only allowed once");
+        }
+      openum_ = option_SBMLSchema;
+      locations_.SBMLSchema = position;
+      state_ = state_value;
+      return;
+    }
+  else if (strcmp(option, "configdir") == 0)
     {
       if (source != source_cl) throw option_error("the 'configdir' option is only allowed on the command line");
       if (locations_.ConfigDir)
@@ -422,6 +447,18 @@ void copasi::COptionParser::parse_long_option (const char *option, int position,
       state_ = state_value;
       return;
     }
+  else if (strcmp(option, "exportXPPAUT") == 0)
+    {
+      if (source != source_cl) throw option_error("the 'exportXPPAUT' option is only allowed on the command line");
+      if (locations_.ExportXPPAUT)
+        {
+          throw option_error("the 'exportXPPAUT' option is only allowed once");
+        }
+      openum_ = option_ExportXPPAUT;
+      locations_.ExportXPPAUT = position;
+      state_ = state_value;
+      return;
+    }
   else if (strcmp(option, "home") == 0)
     {
       if (source != source_cl) throw option_error("the 'home' option is only allowed on the command line");
@@ -456,6 +493,18 @@ void copasi::COptionParser::parse_long_option (const char *option, int position,
       openum_ = option_License;
       locations_.License = position;
       options_.License = !options_.License;
+      return;
+    }
+  else if (strcmp(option, "nologo") == 0)
+    {
+      source = source; // kill compiler unused variable warning
+      if (locations_.NoLogo)
+        {
+          throw option_error("the 'nologo' option is only allowed once");
+        }
+      openum_ = option_NoLogo;
+      locations_.NoLogo = position;
+      options_.NoLogo = !options_.NoLogo;
       return;
     }
   else if (strcmp(option, "rCode") == 0)
@@ -518,6 +567,18 @@ void copasi::COptionParser::parse_long_option (const char *option, int position,
       state_ = state_value;
       return;
     }
+  else if (strcmp(option, "validate") == 0)
+    {
+      source = source; // kill compiler unused variable warning
+      if (locations_.Validate)
+        {
+          throw option_error("the 'validate' option is only allowed once");
+        }
+      openum_ = option_Validate;
+      locations_.Validate = position;
+      options_.Validate = !options_.Validate;
+      return;
+    }
   else if (strcmp(option, "verbose") == 0)
     {
       source = source; // kill compiler unused variable warning
@@ -573,6 +634,11 @@ void copasi::COptionParser::parse_value (const char *value)
         options_.ExportSBML = value;
       }
       break;
+    case option_ExportXPPAUT:
+      {
+        options_.ExportXPPAUT = value;
+      }
+      break;
     case option_Home:
       {
         options_.Home = value;
@@ -584,6 +650,8 @@ void copasi::COptionParser::parse_value (const char *value)
       }
       break;
     case option_License:
+      break;
+    case option_NoLogo:
       break;
     case option_RegisteredEmail:
       {
@@ -600,6 +668,39 @@ void copasi::COptionParser::parse_value (const char *value)
         options_.RegistrationCode = value;
       }
       break;
+    case option_SBMLSchema:
+      {
+        SBMLSchema_enum evalue;
+
+        if (strcmp(value, "L1V1") == 0)
+          {
+            evalue = SBMLSchema_L1V1;
+          }
+        else if (strcmp(value, "L1V2") == 0)
+          {
+            evalue = SBMLSchema_L1V2;
+          }
+        else if (strcmp(value, "L2V1") == 0)
+          {
+            evalue = SBMLSchema_L2V1;
+          }
+        else if (strcmp(value, "L2V2") == 0)
+          {
+            evalue = SBMLSchema_L2V2;
+          }
+        else if (strcmp(value, "L2V3") == 0)
+          {
+            evalue = SBMLSchema_L2V3;
+          }
+        else
+          {
+            std::string error("'"); error += value; error += "' is an invalid value for the 'SBMLSchema' option";
+            throw option_error(error);
+          }
+
+        options_.SBMLSchema = evalue;
+      }
+      break;
     case option_Save:
       {
         options_.Save = value;
@@ -609,6 +710,8 @@ void copasi::COptionParser::parse_value (const char *value)
       {
         options_.Tmp = value;
       }
+      break;
+    case option_Validate:
       break;
     case option_Verbose:
       break;
@@ -626,6 +729,9 @@ namespace
   {
     std::string::size_type name_size = name.size();
     std::vector<const char*> matches;
+
+    if (name_size <= 10 && name.compare("SBMLSchema") == 0)
+      matches.push_back("SBMLSchema");
 
     if (name_size <= 9 && name.compare("configdir") == 0)
       matches.push_back("configdir");
@@ -645,6 +751,9 @@ namespace
     if (name_size <= 10 && name.compare("exportSBML") == 0)
       matches.push_back("exportSBML");
 
+    if (name_size <= 12 && name.compare("exportXPPAUT") == 0)
+      matches.push_back("exportXPPAUT");
+
     if (name_size <= 4 && name.compare("home") == 0)
       matches.push_back("home");
 
@@ -653,6 +762,9 @@ namespace
 
     if (name_size <= 7 && name.compare("license") == 0)
       matches.push_back("license");
+
+    if (name_size <= 6 && name.compare("nologo") == 0)
+      matches.push_back("nologo");
 
     if (name_size <= 5 && name.compare("rCode") == 0)
       matches.push_back("rCode");
@@ -668,6 +780,9 @@ namespace
 
     if (name_size <= 3 && name.compare("tmp") == 0)
       matches.push_back("tmp");
+
+    if (name_size <= 8 && name.compare("validate") == 0)
+      matches.push_back("validate");
 
     if (name_size <= 7 && name.compare("verbose") == 0)
       matches.push_back("verbose");

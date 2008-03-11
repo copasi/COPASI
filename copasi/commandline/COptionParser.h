@@ -1,13 +1,14 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptionParser.h,v $
-   $Revision: 1.17 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/12/15 14:14:30 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptionParser.h,v $
+//   $Revision: 1.18 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2008/03/11 22:47:57 $
+// End CVS Header
 
-// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
 // All rights reserved.
 
 /*
@@ -25,8 +26,8 @@
 
 // you can control the include guard
 // name with the cxx_header_def variable
-#ifndef COPASI_options
-#define COPASI_options
+#ifndef COPASI_COptionParser
+#define COPASI_COptionParser
 
 // standard includes
 #include <stdexcept>
@@ -45,6 +46,15 @@ namespace copasi
     autothrow_help
   };
 
+  enum SBMLSchema_enum
+  {
+    SBMLSchema_L1V1,
+    SBMLSchema_L1V2,
+    SBMLSchema_L2V1,
+    SBMLSchema_L2V2,
+    SBMLSchema_L2V3
+  };
+
   /**
    * the following struct is used to hold the values of
    * the options. It has a constructor that sets all the option
@@ -54,6 +64,9 @@ namespace copasi
     {
       options(void) :
           License(false),
+          NoLogo(false),
+          SBMLSchema(SBMLSchema_L2V3),
+          Validate(false),
           Verbose(false)
       {}
       std::string ConfigDir;
@@ -62,14 +75,18 @@ namespace copasi
       std::string ExportBerkeleyMadonna;
       std::string ExportC;
       std::string ExportSBML;
+      std::string ExportXPPAUT;
       std::string Home;
       std::string ImportSBML;
       bool License;
+      bool NoLogo;
       std::string RegisteredEmail;
       std::string RegisteredUser;
       std::string RegistrationCode;
+      SBMLSchema_enum SBMLSchema;
       std::string Save;
       std::string Tmp;
+      bool Validate;
       bool Verbose;
     }  ; // end options struct
 
@@ -86,14 +103,18 @@ namespace copasi
       size_type ExportBerkeleyMadonna;
       size_type ExportC;
       size_type ExportSBML;
+      size_type ExportXPPAUT;
       size_type Home;
       size_type ImportSBML;
       size_type License;
+      size_type NoLogo;
       size_type RegisteredEmail;
       size_type RegisteredUser;
       size_type RegistrationCode;
+      size_type SBMLSchema;
       size_type Save;
       size_type Tmp;
+      size_type Validate;
       size_type Verbose;
     }  ; // end option location struct
 
@@ -175,12 +196,16 @@ namespace copasi
         option_Home,
         option_Tmp,
         option_Verbose,
+        option_NoLogo,
         option_License,
+        option_Validate,
         option_Save,
         option_ImportSBML,
         option_ExportSBML,
+        option_SBMLSchema,
         option_ExportBerkeleyMadonna,
         option_ExportC,
+        option_ExportXPPAUT,
         option_RegistrationCode,
         option_RegisteredEmail,
         option_RegisteredUser
@@ -200,4 +225,4 @@ namespace copasi
       void parse_value (const char *value);
     }  ; // end copasi::COptionParser class
 } // end copasi namespace
-#endif // COPASI_options
+#endif // COPASI_COptionParser
