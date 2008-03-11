@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/AboutDialog.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.12.6.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/09/20 18:35:42 $
+//   $Author: ssahle $
+//   $Date: 2008/03/11 15:12:32 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -41,9 +46,9 @@ const char* AboutDialog::text =
   "\n"
   "The following software and algorithms are being used by Copasi:\n"
   "  - Qt3 GUI framework\n"
-  "  - QWT 5.0 Beta (Snapshot 2006-01-25)\n"
+  "  - QWT 5.0.2\n"
   "  - Expat 1.95.7 XML parser\n"
-  "  - libsbml 2.3.4\n"
+  "  - libsbml 3.1.1\n"
   "  - CLAPACK 3.0, LAPACK 3.1.0, or Intel Math Kernel Library\n"
   "  - LSODA from ODEPACK\n"
   "  - Mersenne Twister random number generator,\n"
