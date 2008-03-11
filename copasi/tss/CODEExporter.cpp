@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporter.cpp,v $
-//   $Revision: 1.8.4.3 $
+//   $Revision: 1.8.4.4 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/03/07 19:40:04 $
+//   $Date: 2008/03/11 15:15:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1019,17 +1019,34 @@ bool CODEExporter::exportODEs(const CModel* copasiModel)
   const CCopasiVector< CMetab > & metabs = copasiModel->getMetabolitesX();
   unsigned C_INT32 indep_size = copasiModel->getNumIndependentMetabs();
   unsigned C_INT32 ode_size = copasiModel->getNumODEMetabs();
+  unsigned C_INT32 metabs_size = metabs.size();
 
   unsigned C_INT32 i;
 
   for (i = 0; i < indep_size; ++i)
     {
+      CMetab * metab;
+      metab = metabs[ode_size + i];
 
-      std::string str1 = equations[metabs[ode_size + i]->getKey()];
+      std::string str1 = equations[metab->getKey()];
       std::string str2 = " ";
 
-      if ((metabs[ode_size + i]->getStatus() == CModelEntity::REACTIONS && !(metabs[ode_size + i]->isDependent())))
-        if (!exportSingleODE(metabs[ode_size + i], str1, str2)) return false;
+      if ((metab->getStatus() == CModelEntity::REACTIONS && !(metab->isDependent())))
+        if (!exportSingleODE(metab, str1, str2)) return false;
+    }
+
+  for (i = indep_size; i < metabs_size; ++i)
+    {
+      CMetab * metab;
+      metab = metabs[ode_size + i];
+
+      if (metab->getStatus() == CModelEntity::REACTIONS && !metab->isDependent())
+        {
+          std::string str1 = "0";
+          std::string str2 = " ";
+
+          if (!exportSingleODE(metab, str1, str2)) return false;
+        }
     }
 
   return true;

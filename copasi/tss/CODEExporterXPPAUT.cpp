@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporterXPPAUT.cpp,v $
-//   $Revision: 1.3.4.2 $
+//   $Revision: 1.3.4.3 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/03/06 15:05:29 $
+//   $Date: 2008/03/11 15:15:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -65,7 +65,7 @@ bool CODEExporterXPPAUT::exportTitleData(const CModel* /* copasiModel */, std::o
 
   outFile << "total=" << pTrajectoryProblem->getDuration() << ",";
   outFile << "dt=" << pTrajectoryProblem->getStepSize()
-  << ",METH=gear" << std::endl; //gear is the only method with automatic step size
+  << ",METH=stiff" << std::endl; //gear is the only method with automatic step size
 
   return true;
 }
@@ -360,11 +360,9 @@ bool CODEExporterXPPAUT::exportSingleMetabolite(const CMetab* metab, std::string
       }
     case CModelEntity::ASSIGNMENT:
       {
-#if 0
         assignment << "#" << comments << std::endl;
         if (!exportSingleObject(assignment, name, expression, comments))
           return false;
-#endif
         break;
       }
     default:
