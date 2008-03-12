@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.242 $
+//   $Revision: 1.243 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/12 01:47:38 $
+//   $Date: 2008/03/12 03:31:04 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -545,9 +545,6 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
         return eventWidget1;
         break;
 #endif // COPASI_DEBUG
-      case 222:
-        return moietyWidget1;
-        break;
       case 43:
         return tableDefinition1;
         break;
@@ -1074,9 +1071,6 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
   dataModel->updateEvents();
   updateAllListviews(116);
 #endif // COPASI_DEBUG
-
-  dataModel->updateMoieties();
-  updateAllListviews(222);
 
   dataModel->updateFunctions();
   updateAllListviews(5);

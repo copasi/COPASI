@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.h,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/12 01:30:46 $
+//   $Date: 2008/03/12 03:31:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -483,7 +483,6 @@ class CSBMLExporter
      * Try to find a global parameter that represents avogadros number.
      */
     void findAvogadro(const CCopasiDataModel& dataModel);
-    >>> >>> > 1.7.4.11
   };
 
 #endif // CSBLExporter_H__

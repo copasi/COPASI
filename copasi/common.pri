@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.75 $ 
+#   $Revision: 1.76 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2008/03/12 00:51:45 $ 
+#   $Date: 2008/03/12 03:31:05 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.75 $ $Author: shoops $ $Date: 2008/03/12 00:51:45 $  
+# $Revision: 1.76 $ $Author: shoops $ $Date: 2008/03/12 03:31:05 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -165,7 +165,6 @@ contains(BUILD_OS, WIN32) {
   QMAKE_LEX = C:\cygwin\bin\bash ../../admin/flex.sh
   QMAKE_YACC = C:\cygwin\bin\bash ../../admin/yacc.sh
 
-<<<<<<< common.pri
   DEFINES -= UNICODE
    
   debug {
