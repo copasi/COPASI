@@ -1,0 +1,19 @@
+TEST_000001
+
+Description of model
+
+Description of expected result  
+
+test
+
+test1.cps
+test2.cps
+
+test1.txt
+test2.txt
+
+paul
+
+general
+
+comment

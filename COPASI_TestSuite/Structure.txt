@@ -1,0 +1,15 @@
+Structure of COPASI_TestSuite:
+
+COPASI_TestSuite
+- Tests
+  - TESTxxxxxx (xxxxxx: 6 digits of test number)
+    - Model (???)
+    - Info file (.info)
+    - Input files (.cps, .gps, .sbml)
+  - Testinfo.txt (describing which directory will be tested)
+- Results
+  - Reference (containing the ideal result, independent from release version)
+  - Buildxxyy (xx: release version, yy: OS type)
+    - TESTxxxxxx (xxxxxx: 6 digits of test number)
+    - Results (.txt - depending on release version)
+    - ResultComparison.txt (compare between ideal and reality)
