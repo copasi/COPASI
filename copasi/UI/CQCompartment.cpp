@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartment.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/13 14:46:02 $
+//   $Date: 2008/03/12 00:32:58 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -14,7 +19,7 @@
  ** Form implementation generated from reading ui file 'CQCompartment.ui'
  **
  ** Created: Tue Nov 13 09:15:14 2007
- **      by: The User Interface Compiler ($Id: CQCompartment.cpp,v 1.4 2007/11/13 14:46:02 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: CQCompartment.cpp,v 1.5 2008/03/12 00:32:58 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -323,7 +328,7 @@ void CQCompartment::languageChange()
   mpLblType->setText(tr("Simulation Type"));
   mpLblName->setText(tr("Compartment Name"));
   mpMetaboliteTable->header()->setLabel(0, tr("Name"));
-  mpLblMetabolites->setText(tr("Contained Metabolites"));
+  mpLblMetabolites->setText(tr("Contained Species"));
   mpLblRate->setText(tr("Rate"));
   mpLblVolume->setText(tr("Volume"));
   mpLblExpression->setText(tr("Expression"));

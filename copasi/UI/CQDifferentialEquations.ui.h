@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQDifferentialEquations.ui.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/08/05 12:24:53 $
+//   $Author: shoops $
+//   $Date: 2008/03/12 00:32:58 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -84,7 +89,14 @@ void CQDifferentialEquations::slotSaveMML()
 
   std::ofstream ofile;
   ofile.open(utf8ToLocale((const char *)outfilename.utf8()).c_str(), std::ios::trunc);
+
+  ofile << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl;
+  ofile << "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN\" \"HTMLFiles/xhtml-math11-f.dtd\">" << std::endl;
+  ofile << "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">" << std::endl;
+
   ofile << mml.str();
+
+  ofile << "</math>" << std::endl;
 
   ofile.close();
 }

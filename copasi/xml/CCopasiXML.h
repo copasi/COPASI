@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.h,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/07/25 16:17:48 $
+//   $Author: shoops $
+//   $Date: 2008/03/12 00:34:41 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -84,10 +89,10 @@ class CCopasiXML : public CCopasiXMLInterface
 
     /**
      * Set the model.
-     * @param const CModel & model
+     * @param CModel * pModel
      * @return bool success
      */
-    bool setModel(const CModel & model);
+    bool setModel(CModel * pModel);
 
     /**
      * Retreive the model.
@@ -109,14 +114,14 @@ class CCopasiXML : public CCopasiXMLInterface
 
     /**
      * Set the function list.
-     * @param const CCopasiVectorN< CEvaluationTree > & functionList
+     * @param CopasiVectorN< CEvaluationTree > * pFunctionList
      * @return bool success
      */
-    bool setFunctionList(const CCopasiVectorN< CEvaluationTree > & functionList);
+    bool setFunctionList(CCopasiVectorN< CEvaluationTree > *pFunctionList);
 
     /**
      * Retreive the function list.
-     * @return CCopasiVectorN< CEvaluationTree > * functionList
+     * @return CCopasiVectorN< CEvaluationTree > * pFunctionList
      */
     CCopasiVectorN< CEvaluationTree > * getFunctionList() const;
 
@@ -134,10 +139,10 @@ class CCopasiXML : public CCopasiXMLInterface
 
     /**
      * Set the task list.
-     * @param const CCopasiVectorN< CCopasiTask > & taskList
+     * @param CCopasiVectorN< CCopasiTask > *pTaskList
      * @return bool success
      */
-    bool setTaskList(const CCopasiVectorN< CCopasiTask > & taskList);
+    bool setTaskList(CCopasiVectorN< CCopasiTask > *pTaskList);
 
     /**
      * Retreive the task list.
@@ -159,10 +164,10 @@ class CCopasiXML : public CCopasiXMLInterface
 
     /**
      * Set the plot list.
-     * @param const COutputDefinitionVector & plotList
+     * @param COutputDefinitionVector * pPlotList
      * @return bool success
      */
-    bool setPlotList(const COutputDefinitionVector & plotList);
+    bool setPlotList(COutputDefinitionVector * pPlotList);
 
     /**
      * Retreive the plot list.
@@ -184,10 +189,10 @@ class CCopasiXML : public CCopasiXMLInterface
 
     /**
      * Set the report list.
-     * @param const CReportDefinitionVector & reportList
+     * @param CReportDefinitionVector *pReportList
      * @return bool success
      */
-    bool setReportList(const CReportDefinitionVector & reportList);
+    bool setReportList(CReportDefinitionVector * pReportList);
 
     /**
      * Retreive the report list.
@@ -209,10 +214,10 @@ class CCopasiXML : public CCopasiXMLInterface
 
     /**
      * Set the GUI.
-     * @param const SCopasiXMLGUI & GUI
+     * @param SCopasiXMLGUI *pGUI
      * @return bool success
      */
-    bool setGUI(const SCopasiXMLGUI & GUI);
+    bool setGUI(SCopasiXMLGUI *pGUI);
 
     /**
      * Retreive the SCopasiXMLGUI.

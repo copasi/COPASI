@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CCopasiSimpleSelectionTree.h,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/13 19:56:56 $
+//   $Date: 2008/03/12 00:32:58 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -30,18 +35,24 @@ class CCopasiSimpleSelectionTree: public QListView
   {
     Q_OBJECT
 
+  private:
+    enum SelectionFlagBase {
+      BASE_DOUBLE = 0x01,
+      BASE_INTEGER = 0x02,
+      BASE_INITIAL = 0x04,
+      BASE_TRANSIENT = 0x08,
+      BASE_EXPRESSION = 0x10,
+      BASE_MODEL = 0x20
+    };
+
   public:
     enum SelectionFlag {
-      DOUBLE = 0x01,
-      INTEGER = 0x02,
-      NUMERIC = DOUBLE | INTEGER,
-      INITIAL = 0x04,
-      INITIAL_VALUE = DOUBLE | INITIAL,
-      TRANSIENT = 0x08,
-      TRANSIENT_VALUE = DOUBLE | TRANSIENT,
-      EXPRESSION = 0x10,
-      INITIAL_EXPRESSION = DOUBLE | INITIAL | EXPRESSION,
-      TRANSIENT_EXPRESSION = DOUBLE | TRANSIENT | EXPRESSION,
+      NUMERIC = BASE_DOUBLE | BASE_INTEGER,
+      INITIAL_VALUE = BASE_DOUBLE | BASE_INITIAL,
+      TRANSIENT_VALUE = BASE_DOUBLE | BASE_TRANSIENT,
+      INITIAL_EXPRESSION = BASE_DOUBLE | BASE_INITIAL | BASE_EXPRESSION | BASE_MODEL,
+      TRANSIENT_EXPRESSION = BASE_DOUBLE | BASE_TRANSIENT | BASE_EXPRESSION | BASE_MODEL,
+      OBJECTIVE_EXPRESSION = BASE_DOUBLE | BASE_EXPRESSION,
       NO_RESTRICTION = -1
     };
 

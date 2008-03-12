@@ -1,12 +1,17 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/wizard/wizard.cpp,v $
-   $Revision: 1.10 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/28 00:32:50 $
-   End CVS Header */
+ $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/wizard/wizard.cpp,v $
+ $Revision: 1.11 $
+ $Name:  $
+ $Author: shoops $
+ $Date: 2008/03/12 00:33:31 $
+ End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -14,7 +19,7 @@
  ** Form implementation generated from reading ui file 'wizard.ui'
  **
  ** Created: Tue Sep 28 23:32:28 2004
- **      by: The User Interface Compiler ($Id: wizard.cpp,v 1.10 2006/10/28 00:32:50 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: wizard.cpp,v 1.11 2008/03/12 00:33:31 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -180,9 +185,9 @@ void WizardDialog::languageChange()
   button3->setText(tr("Step 3\n"
                       "Refining the Model"));
   button4->setText(tr("Step 4\n"
-                      "Defining the Output"));
-  button5->setText(tr("Step 5\n"
                       "Calculating a Time Course"));
+  button5->setText(tr("Step 5\n"
+                      "Defining the Output"));
   backButton->setText(tr("<< back"));
   forwardButton->setText(tr("forward >>"));
   cancelButton->setText(tr("Close"));

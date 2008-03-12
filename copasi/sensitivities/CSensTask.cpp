@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensTask.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/24 18:40:23 $
+//   $Date: 2008/03/12 00:31:44 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -58,7 +63,9 @@ void CSensTask::cleanup()
 //TODO: really necessary?
 void CSensTask::print(std::ostream * ostream) const {(*ostream) << (*this);}
 
-bool CSensTask::initialize(const OutputFlag & of, std::ostream * pOstream)
+bool CSensTask::initialize(const OutputFlag & of,
+                           COutputHandler * pOutputHandler,
+                           std::ostream * pOstream)
 {
   assert(mpProblem && mpMethod);
 
@@ -68,7 +75,7 @@ bool CSensTask::initialize(const OutputFlag & of, std::ostream * pOstream)
 
   bool success = true;
 
-  if (!CCopasiTask::initialize(of, pOstream)) success = false;
+  if (!CCopasiTask::initialize(of, pOutputHandler, pOstream)) success = false;
 
   if (!pProblem->getModel()->compileIfNecessary(mpCallBack)) success = false;
   //pProblem->setInitialState(pProblem->getModel()->getInitialState());

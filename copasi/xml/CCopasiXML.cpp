@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-//   $Revision: 1.104 $
+//   $Revision: 1.105 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/12/04 20:51:00 $
+//   $Date: 2008/03/12 00:34:41 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -27,6 +32,7 @@
 #include "CCopasiXML.h"
 #include "CCopasiXMLParser.h"
 #include "CCopasiXMLVersion.h"
+#include "CFixLocalReactionParameters.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "utilities/CCopasiVector.h"
@@ -184,6 +190,9 @@ bool CCopasiXML::load(std::istream & is,
 #ifdef WITH_LAYOUT
       mpLayoutList = Parser.getLayoutList();
 #endif //WITH_LAYOUT
+
+      CFixLocalReactionParameters FixLocalReactionParameters;
+      FixLocalReactionParameters.fixModel(mpModel);
     }
 
   if (FileVersion.getVersionDevel() > mVersion.getVersionDevel())
@@ -196,9 +205,9 @@ bool CCopasiXML::load(std::istream & is,
 const CVersion & CCopasiXML::getVersion() const
 {return mVersion;}
 
-bool CCopasiXML::setModel(const CModel & model)
+bool CCopasiXML::setModel(CModel * pModel)
 {
-  mpModel = const_cast<CModel *>(&model);
+  mpModel = pModel;
   return true;
 }
 
@@ -212,9 +221,9 @@ bool CCopasiXML::freeModel()
   return true;
 }
 
-bool CCopasiXML::setFunctionList(const CCopasiVectorN< CEvaluationTree > & functionList)
+bool CCopasiXML::setFunctionList(CCopasiVectorN< CEvaluationTree > *pFunctionList)
 {
-  mpFunctionList = const_cast<CCopasiVectorN< CEvaluationTree > *>(&functionList);
+  mpFunctionList = pFunctionList;
   return true;
 }
 
@@ -230,9 +239,9 @@ bool CCopasiXML::freeFunctionList()
   return true;
 }
 
-bool CCopasiXML::setTaskList(const CCopasiVectorN< CCopasiTask > & taskList)
+bool CCopasiXML::setTaskList(CCopasiVectorN< CCopasiTask > * pTaskList)
 {
-  mpTaskList = const_cast<CCopasiVectorN< CCopasiTask > *>(&taskList);
+  mpTaskList = pTaskList;
   return true;
 }
 
@@ -250,9 +259,9 @@ bool CCopasiXML::freeTaskList()
 
 //************
 
-bool CCopasiXML::setPlotList(const COutputDefinitionVector & plotList)
+bool CCopasiXML::setPlotList(COutputDefinitionVector * pPlotList)
 {
-  mpPlotList = const_cast<COutputDefinitionVector *>(&plotList);
+  mpPlotList = pPlotList;
   return true;
 }
 
@@ -270,9 +279,9 @@ bool CCopasiXML::freePlotList()
 
 //************
 
-bool CCopasiXML::setReportList(const CReportDefinitionVector & reportList)
+bool CCopasiXML::setReportList(CReportDefinitionVector * pReportList)
 {
-  mpReportList = const_cast<CReportDefinitionVector *>(&reportList);
+  mpReportList = pReportList;
   return true;
 }
 
@@ -290,9 +299,9 @@ bool CCopasiXML::freeReportList()
 
 //************
 
-bool CCopasiXML::setGUI(const SCopasiXMLGUI & GUI)
+bool CCopasiXML::setGUI(SCopasiXMLGUI * pGUI)
 {
-  mpGUI = const_cast<SCopasiXMLGUI *>(&GUI);
+  mpGUI = pGUI;
   return true;
 }
 
@@ -1407,7 +1416,7 @@ bool CCopasiXML::buildFunctionList()
 
   *pFunctionList = CCopasiDataModel::Global->getFunctionList()->getUsedFunctions();
 
-  if (!setFunctionList(*pFunctionList)) success = false;
+  if (!setFunctionList(pFunctionList)) success = false;
 
   return success;
 }

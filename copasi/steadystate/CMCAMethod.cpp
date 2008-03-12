@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.cpp,v $
-//   $Revision: 1.42 $
+//   $Revision: 1.43 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/02 18:18:04 $
+//   $Date: 2008/03/12 00:31:45 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -62,14 +67,14 @@ void CMCAMethod::initObjects()
   tmp->setMode(CArrayAnnotation::VECTOR);
   tmp->setDescription("Unscaled elasticity matrix");
   tmp->setDimensionDescription(0, "Reactions (reduced system)");
-  tmp->setDimensionDescription(1, "Metabolites (reduced system)");
+  tmp->setDimensionDescription(1, "Species (reduced system)");
   mUnscaledElasticitiesAnn = tmp;
 
   tmp = new CArrayAnnotation("Unscaled concentration control coefficients", this,
                              new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mUnscaledConcCC));
   tmp->setMode(CArrayAnnotation::VECTOR);
   tmp->setDescription("Unscaled concentration control coefficients");
-  tmp->setDimensionDescription(0, "Metabolites (reduced system)");
+  tmp->setDimensionDescription(0, "Species (reduced system)");
   tmp->setDimensionDescription(1, "Reactions (reduced system)");
   mUnscaledConcCCAnn = tmp;
 
@@ -86,14 +91,14 @@ void CMCAMethod::initObjects()
   tmp->setMode(CArrayAnnotation::VECTOR);
   tmp->setDescription("Scaled elasticity matrix");
   tmp->setDimensionDescription(0, "Reactions (reduced system)");
-  tmp->setDimensionDescription(1, "Metabolites (reduced system)");
+  tmp->setDimensionDescription(1, "Species (reduced system)");
   mScaledElasticitiesAnn = tmp;
 
   tmp = new CArrayAnnotation("Scaled concentration control coefficients", this,
                              new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mScaledConcCC));
   tmp->setMode(CArrayAnnotation::VECTOR);
   tmp->setDescription("Scaled concentration control coefficients");
-  tmp->setDimensionDescription(0, "Metabolites (reduced system)");
+  tmp->setDimensionDescription(0, "Species (reduced system)");
   tmp->setDimensionDescription(1, "Reactions (reduced system)");
   mScaledConcCCAnn = tmp;
 

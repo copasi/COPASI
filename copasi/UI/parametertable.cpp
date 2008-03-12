@@ -1,12 +1,17 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/parametertable.cpp,v $
-   $Revision: 1.23 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/06 16:03:42 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/parametertable.cpp,v $
+//   $Revision: 1.24 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2008/03/12 00:32:59 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -322,8 +327,8 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
                 {
                   //combo = new ComboItem(this, QTableItem::WhenCurrent, color, qsl);
                   combo = new QComboTableItem(this, qsl);
-                  //combo->setText("add metabolite");
-                  combo->setCurrentItem("add metabolite");
+                  //combo->setText("add species");
+                  combo->setCurrentItem("add species");
                   setItem(rowCounter, 3, combo);
                 }
               // add lines for vector parameters

@@ -1,4 +1,17 @@
 <!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<comment> Begin CVS Header </comment>
+<comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/wizard/wizard.ui,v $ </comment>
+<comment>   $Revision: 1.5 $ </comment>
+<comment>   $Name:  $ </comment>
+<comment>   $Author: shoops $ </comment>
+<comment>   $Date: 2008/03/12 00:33:31 $ </comment>
+<comment> End CVS Header </comment>
+
+<comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., EML Research, gGmbH, University of Heidelberg, </comment>
+<comment> and The University of Manchester. </comment>
+<comment> All rights reserved. </comment>
+
 <class>WizardDialog</class>
 <widget class="QDialog">
     <property name="name">
@@ -243,7 +256,7 @@ Refining the Model</string>
                         </property>
                         <property name="text">
                             <string>Step 4
-Defining the Output</string>
+Calculating a Time Course</string>
                         </property>
                         <property name="toggleButton">
                             <bool>true</bool>
@@ -280,7 +293,7 @@ Defining the Output</string>
                         </property>
                         <property name="text">
                             <string>Step 5
-Calculating a Time Course</string>
+Defining the Output</string>
                         </property>
                         <property name="toggleButton">
                             <bool>true</bool>

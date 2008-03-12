@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Begin CVS Header -->
+<!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/models/Bug1006.xml,v $ -->
+<!--   $Revision: 1.2 $ -->
+<!--   $Name:  $ -->
+<!--   $Author: shoops $ -->
+<!--   $Date: 2008/03/12 00:31:44 $ -->
+<!-- End CVS Header -->
+
+<!-- Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Properties, Inc., EML Research, gGmbH, University of Heidelberg, -->
+<!-- and The University of Manchester. -->
+<!-- All rights reserved. -->
+
+<sbml xmlns="http://www.sbml.org/sbml/level2/version3" level="2" version="3">
+  <model id="Model_1" name="New Model">
+    <listOfUnitDefinitions>
+      <unitDefinition id="volume">
+        <listOfUnits>
+          <unit kind="litre" scale="-3"/>
+        </listOfUnits>
+      </unitDefinition>
+      <unitDefinition id="substance">
+        <listOfUnits>
+          <unit kind="mole" scale="-3"/>
+        </listOfUnits>
+      </unitDefinition>
+    </listOfUnitDefinitions>
+    <listOfParameters>
+      <parameter id="parameter_1" name="A" value="12"/>
+      <parameter id="parameter_2" name="B" value="11"/>
+      <parameter id="parameter_3" name="C" value="4"/>
+      <parameter id="parameter_4" name="D" value="3"/>
+      <parameter id="parameter_5" name="E" value="7"/>
+    </listOfParameters>
+    <listOfInitialAssignments>
+      <initialAssignment symbol="parameter_1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 3 </cn>
+            <cn> 4 </cn>
+          </apply>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="parameter_2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <cn> 9 </cn>
+            <cn> 2 </cn>
+          </apply>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="parameter_3">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <cn> 8 </cn>
+            <cn> 4 </cn>
+          </apply>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="parameter_4">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <cn> 9 </cn>
+            <cn> 3 </cn>
+          </apply>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="parameter_5">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <cn> 6 </cn>
+            <cn> 1 </cn>
+          </apply>
+        </math>
+      </initialAssignment>
+    </listOfInitialAssignments>
+  </model>
+</sbml>

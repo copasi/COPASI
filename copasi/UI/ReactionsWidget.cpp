@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ReactionsWidget.cpp,v $
-//   $Revision: 1.98 $
+//   $Revision: 1.99 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/08/21 17:31:46 $
+//   $Date: 2008/03/12 00:32:59 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -173,7 +178,7 @@ void ReactionsWidget::deleteObjects(const std::vector<std::string> & keys)
 
   QString reactionList = "Are you sure you want to delete listed REACTION(S) ?\n";
   QString effectedCompartmentList = "Following COMPARTMENT(S) reference above REACTION(S) and will be deleted -\n";
-  QString effectedMetabList = "Following METABOLITE(S) reference above REACTION(S) and will be deleted -\n";
+  QString effectedMetabList = "Following SPECIES reference above REACTION(S) and will be deleted -\n";
   QString effectedReacList = "Following REACTION(S) reference above REACTION(S) and will be deleted -\n";
   QString effectedValueList = "Following MODEL VALUE(S) reference above REACTION(S) and will be deleted -\n";
 

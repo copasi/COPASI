@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/COutputHandler.cpp,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/29 13:17:19 $
+//   $Date: 2008/03/12 00:33:30 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -14,9 +19,11 @@
 
 #include "COutputHandler.h"
 #include "CCopasiTask.h"
+
 #include "report/CCopasiTimer.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "model/CModel.h"
+#include "trajectory/CTimeSeries.h"
 
 COutputHandler::COutputHandler():
     COutputInterface(),
@@ -103,7 +110,9 @@ void COutputHandler::finish()
     {
       (*it)->finish();
 
-      if (dynamic_cast< CReport * >(*it) != NULL)
+      // CTimesSeries and CReport are only used once.
+      if (dynamic_cast< CReport * >(*it) != NULL ||
+          dynamic_cast< CTimeSeries * >(*it) != NULL)
         ToBeRemoved.push_back(*it);
     }
 

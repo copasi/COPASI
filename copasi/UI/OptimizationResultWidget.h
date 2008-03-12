@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationResultWidget.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/12 18:35:35 $
+//   $Date: 2008/03/12 00:32:59 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -22,13 +27,16 @@
 class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
-class StateSubwidget;
-class TimeSeriesSubWidget;
 class QPushButton;
 class QHBoxLayout;
 class QVBoxLayout;
 class OptimizationWidget;
 class QTextEdit;
+
+class StateSubwidget;
+class TimeSeriesSubWidget;
+
+class CTimeSeries;
 
 class OptimizationResultWidget : public CopasiWidget
   {
@@ -59,6 +67,8 @@ class OptimizationResultWidget : public CopasiWidget
     QVBoxLayout* parentLayout;
     StateSubwidget* mCentralWidgetSteady;
     TimeSeriesSubWidget* mCentralWidgetTime;
+
+    CTimeSeries * mpTimeSeries;
   };
 
 #endif

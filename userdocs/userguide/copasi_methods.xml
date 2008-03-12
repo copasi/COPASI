@@ -1,13 +1,18 @@
 <chapter id="methods" xreflabel="Methods">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_methods.xml,v $ -->
-<!--   $Revision: 1.13 $ -->
+<!--   $Revision: 1.14 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: shoops $ -->
-<!--   $Date: 2007/07/24 13:25:56 $ -->
+<!--   $Date: 2008/03/12 00:35:05 $ -->
 <!-- End CVS Header -->
 
-<!-- Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Properties, Inc., EML Research, gGmbH, University of Heidelberg, -->
+<!-- and The University of Manchester. -->
+<!-- All rights reserved. -->
+
+<!-- Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual -->
 <!-- Properties, Inc. and EML Research, gGmbH. -->
 <!-- All rights reserved. -->
 
@@ -231,7 +236,7 @@ To be written
 <sect3 id="HybridRungeKutta" xreflabel="Hybrid Runge Kutta">
 <title>Hybrid (Runge-Kutta)</title>
 <para>
-This hybrid simulation method developed by us combines a deterministic numerical integration of ODEs with a stochastic simulation algorithm. The whole biochemical network is partitioned into a deterministic and a stochastic subnet internally. The deterministic subnet contains all reactions, in which only metabolites with high particle numbers take part. All reactions with at least one low-numbered metabolite are in the stochastic subnet, because here stochastic effects are expected. Which particle numbers are considered low or high can be specified by the user with the Lower Limit and the Upper Limit parameters (Metabolites with particle numbers between those limits do not change their status. This leads to a hysteresis-like behavior and avoids many unnecessary swaps, if the particle numbers fluctuate in the middle range). The partitioning of the biochemical network can change dynamically during the simulation. After a certain number of steps, which the user can define using the parameter Partitioning Interval, the partitioning is recalculated using the current particle numbers in the system. During one run the deterministic subnet and the stochastic subnet are simulated in parallel. A 4th-order Runge-Kutta method is used to numerically integrate the deterministic part of the system. For the stochastic part the simulation method by Gibson and Bruck (<citation>Gibson00</citation>) is utilized. The reaction probabilities of the stochastic subnet are approximated as constant during one stochastic step, even though in theory they can change due to the effects of the deterministic subnet.
+This hybrid simulation method developed by us combines a deterministic numerical integration of ODEs with a stochastic simulation algorithm. The whole biochemical network is partitioned into a deterministic and a stochastic subnet internally. The deterministic subnet contains all reactions, in which only species with high particle numbers take part. All reactions with at least one low-numbered species are in the stochastic subnet, because here stochastic effects are expected. Which particle numbers are considered low or high can be specified by the user with the Lower Limit and the Upper Limit parameters (Species with particle numbers between those limits do not change their status. This leads to a hysteresis-like behavior and avoids many unnecessary swaps, if the particle numbers fluctuate in the middle range). The partitioning of the biochemical network can change dynamically during the simulation. After a certain number of steps, which the user can define using the parameter Partitioning Interval, the partitioning is recalculated using the current particle numbers in the system. During one run the deterministic subnet and the stochastic subnet are simulated in parallel. A 4th-order Runge-Kutta method is used to numerically integrate the deterministic part of the system. For the stochastic part the simulation method by Gibson and Bruck (<citation>Gibson00</citation>) is utilized. The reaction probabilities of the stochastic subnet are approximated as constant during one stochastic step, even though in theory they can change due to the effects of the deterministic subnet.
 </para>
 
 <variablelist><title>Options for Hybrid (Runge-Kutta)</title>
@@ -249,7 +254,7 @@ next desired reporting time. The default value is '1000000'.
 <varlistentry><term>Lower Limit</term>
 <listitem>
 <para>
-This parameter is a double value specifying the lower limit for particle numbers. Metabolites with a particle number below this value are considered as having a low particle number. The lower limit cannot be higher than the upper limit. The default value is '800'.
+This parameter is a double value specifying the lower limit for particle numbers. Species with a particle number below this value are considered as having a low particle number. The lower limit cannot be higher than the upper limit. The default value is '800'.
 </para>
 </listitem>
 </varlistentry>
@@ -257,7 +262,7 @@ This parameter is a double value specifying the lower limit for particle numbers
 <varlistentry><term>Upper Limit</term>
 <listitem>
 <para>
-This parameter is a double value specifying the upper limit for particle numbers. Metabolites with a particle number above this value are considered as having a high particle number. The upper limit cannot be lower than the lower limit. The default value is '1000'.
+This parameter is a double value specifying the upper limit for particle numbers. Species with a particle number above this value are considered as having a high particle number. The upper limit cannot be lower than the lower limit. The default value is '1000'.
 </para>
 </listitem>
 </varlistentry>
@@ -302,7 +307,7 @@ This unsigned integer is used as random seed in the calculations, if the flag Us
 <title>Steady State Calculation</title>
 <para>
 The steady state is the state in which the state variables of the
-model, e.g. the metabolite concentrations do not change in
+model, e.g. the species concentrations do not change in
 time. Mathematically this is expressed 
 by setting the differential equations that describe the time evolution
 of the metabolic system to zero. This forms a system of algebraic
@@ -579,7 +584,7 @@ Note that this value is interpreted as a concentration value, even though the ca
 <para>
 Metabolic control analysis (MCA) is a sensitivity analysis of
 metabolic systems. In MCA one studies the relative control exerted by
-each step on the system's variables (e.g. fluxes and metabolite
+each step on the system's variables (e.g. fluxes and species
 concentrations). This control is measured by applying a perturbation
 to the step being studied and then measuring the effect on the
 variable of interest after the system has settled to a new steady
@@ -631,7 +636,7 @@ concentrations). It is defined <citation>Kacser73</citation>
  </mml:math></equation>
 where A is the variable, i the step (enzyme) and v the steady-state
 rate of the perturbed step. The most common control coefficients are
-those for fluxes and metabolite concentrations, but any variable of
+those for fluxes and species concentrations, but any variable of
 the system can be analyzed with MCA and have control coefficients
 defined by equations analogous to equation 1. In fact, there is no
 need even for the system to be in a steady state. Gepasi only
@@ -673,7 +678,7 @@ of all flux-control coefficients (of all steps) is equal to unity:
    </mml:mrow>
   </mml:mrow>
  </mml:math></equation>
-For a given reference metabolite concentration the sum of all
+For a given reference species concentration the sum of all
 concentration-control coefficients is zero: 
  <equation><mml:math display="block">
   <mml:mrow>
@@ -796,12 +801,12 @@ properties) with (global) properties of the whole intact pathway. This
 is done through the connectivity theorems 
 <citation>Kacser73</citation> that
 relate the control coefficients and the elasticity coefficients of
-steps with common intermediate metabolites. 
+steps with common intermediate species. 
 </para>
 
 <para>
 The connectivity theorem for flux-control coefficients
-<citation>Kacser73</citation> states that, for a common metabolite S,
+<citation>Kacser73</citation> states that, for a common species S,
 the sum of the 
 products of the flux-control coefficient of all (i) steps affected by
 S and its elasticity coefficients towards S, is zero: 
@@ -896,15 +901,15 @@ equations apply <citation>Westerhoff84</citation>:
    </mml:mrow>
   </mml:mrow>
  </mml:math></equation>
-The first equation applies to the case in which the reference metabolite (A)
-is different from the perturbed metabolite (S). Whereas the second applies to
-the case in which the reference metabolite is the same as the
-perturbed metabolite. 
+The first equation applies to the case in which the reference species (A)
+is different from the perturbed species (S). Whereas the second applies to
+the case in which the reference species is the same as the
+perturbed species. 
 </para>
 
 <para>
 The connectivity theorems allow MCA to describe how perturbations on
-metabolites of a pathway propagate through the chain of enzymes. The
+species of a pathway propagate through the chain of enzymes. The
 local (kinetic) properties of each enzyme effectively propagate the
 perturbation to and from its immediate neighbors. 
 </para>

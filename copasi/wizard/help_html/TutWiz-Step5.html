@@ -1,44 +1,56 @@
 <html>
 <head>
-<title>Step 5: Calculating a Time Course</title>
+<title>Step 4: Creating a Report Definition</title>
 </head>
 <body>
   <center>
-  <h3>Step 5: Calculating a Time Course</h3><br>
+  <h3>Step 4: Creating a Report Definition</h3><br>
 	</center>
 	<p>
-In the tree on the left under Tasks you can find the entry called <em>Time
-Course</em>. Selecting this entry in the tree will bring you to the time course
-settings dialog.<br>
+Sometimes, the predefined report and plots that are provided by the <em>Output
+Assistant</em> are not what you want. In this case, we can either start with
+one of the predefined report (or plots) and change it to our needs, or we can
+create a new report (or plot) from scratch.
+In order to create or edit an exisiting report definition, you navigate in the tree to
+<code>Output-&gt;Reports</code>. If you want to edit an exisiting report, just double click on the report you want to edit in the table. If you want to create a new report, click the <big><b><code>New</code></b></big> button on the bottom and then on the <big><b><code>Commit</code></b></big> button and then double click on the new entry in the table. You will now find
+yourself in the dialog for the report definition.<br>
 <center>
-(<a href="#" name="Time Course">Click here</a> to go to the <em>Time Course</em> dialog)
+(<a href="#" name="Report Definition">Click here</a> to go to the Report definition dialog.)
 </center>
 <br>
-Here you can set all parameters for calculating a time course
-like starting time, end time, how many data points are to be stored and last
-but not least the method for calculating the trajectory. So far you can choose between
-deterministic simulation or stochastic simulation. Depending on the simulation
-method, you have some more parameters that can be changed in the table toward
-the bottom of the dialog, but the default values should suffice most of the
-time.
-<br>
-<br>
 <center>
-<img alt="figure: Time Course dialog" vspace="20" src="./figures/TimeCourseDialog.jpg"/>
+<img alt="figure: empty Report Definition Dialog" vspace="20" src="./figures/ReportDefinitionDialog.png"/>
 </center>
 	</p>
-	<p>
-Before we can calculate the actual trajectory, we have to specify a report
-definition to use for the output and a filename for this report definition. To
-do this, you have to click on the <b><code>"ReportDefinition"</code></b> button at the bottom.
-In the dialog that pops up, you choose the report definition that you created
-in the last step and specify a file name in the <em>Target</em> field. You can either
-type the filename, or browse the file system by clicking the <b><code>"browse"</code></b> button.
-When you are finished, click the <b><code>"confirm"</code></b> button.
-You are now ready to calculate the time course by clicking the <big><b><code>"Run"</code></b></big> button at
-the bottom of the <em>Time Course</em> dialog.
-To verify that copasi really did calculate something, look at the file you just
-specified, it should now contain the data of the time course simulation.
-	</p>
+<p>
+If you have created a new report the list widget is empty, that means that nothing will be put into the
+report. In order to add items for the output, you click on the <big><b><code>Item</code></b></big> button which
+is located to the right of the empty list. This will open the <em>Object Browser</em>
+dialog where you can select any available object. We will now limit
+ourselves to the <em>time</em> object and the concentrations of the species.
+If you work in <em>expert mode</em> by checking the checkbox and look at the tree, you will see one node that has the name of your model
+as specified in <a href="#" name="Step 1">Step 1</a>. Opening this node will show you all the objects
+available in the model. Now open the <em>Species</em> node and in the species
+subtree you open the <em>Select by attribute</em> node and in there you will find the
+<em>Concentration</em> node. Open the <em>Concentration</em> node and click the check boxes with the names of the species.
+<center>
+<img alt="figure: Object Browser dialog" vspace="20" src="./figures/ObjectBrowserTree.png"/>
+</center>
+<br>
+Likewise click the check box for the <em>time</em> attribute which you will find
+directly under the node for the model (same level as the <em>Species</em> node).
+Once you have selected all the attributes for the output, you finish the
+selection by clicking the <big><b><code>"OK"</code></b></big> button.
+</p>
+<p>
+The attributes that you see in the list widget now, will be written to file
+in same the order as the appear in the list. If you want the time
+to appear in the first column of your output instead of the last, you have to change the order of the selected elements.
+You can change the order of the elements by selecting an item in the list and moving it up or down via the arrow buttons on the left.
+You can also delete an element by selecting it and then pushing the <big><b><code>Delete</code></b></big> button.
+<center>
+<img alt="figure: Report Definition dialog with entries" vspace="20" src="./figures/ObjectBrowserSelection.png"/>
+</center>
+</p>
 </body>
 </html>

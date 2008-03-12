@@ -1,13 +1,18 @@
 ﻿<bibliography>
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_bibliography.xml,v $ -->
-<!--   $Revision: 1.6 $ -->
+<!--   $Revision: 1.7 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: shoops $ -->
-<!--   $Date: 2007/07/24 13:25:56 $ -->
+<!--   $Date: 2008/03/12 00:35:04 $ -->
 <!-- End CVS Header -->
 
-<!-- Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Properties, Inc., EML Research, gGmbH, University of Heidelberg, -->
+<!-- and The University of Manchester. -->
+<!-- All rights reserved. -->
+
+<!-- Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual -->
 <!-- Properties, Inc. and EML Research, gGmbH. -->
 <!-- All rights reserved. -->
 
@@ -692,7 +697,7 @@ This may be used as a template:
      <surname>Chen</surname>
     </author>
    </authorgroup>
-   <title>How do enzyme activities control metabolite concentrations? An additional theorem in the theory of metabolic control</title>
+   <title>How do enzyme activities control species concentrations? An additional theorem in the theory of metabolic control</title>
    <publisher>
     <publishername>Eur. J. Biochem.</publishername>
    </publisher>
