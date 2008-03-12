@@ -4,6 +4,7 @@
 	Version="8.00"
 	Name="utilities"
 	ProjectGUID="{3F7E4EA0-D668-4541-86DF-0D4C7B3BFE32}"
+	RootNamespace="utilities"
 	Keyword="MakeFileProj"
 	>
 	<Platforms>

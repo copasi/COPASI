@@ -4,6 +4,7 @@
 	Version="8.00"
 	Name="compareExpressions"
 	ProjectGUID="{07AFEDE6-6983-435D-8F07-DC10C3E8B499}"
+	RootNamespace="compareExpressions"
 	Keyword="MakeFileProj"
 	>
 	<Platforms>
@@ -27,7 +28,7 @@
 				Name="VCNMakeTool"
 				BuildCommandLine="nmake /f Makefile"
 				ReBuildCommandLine="nmake /f Makefile clean all"
-				CleanCommandLine="nmake /f Makefile"
+				CleanCommandLine="nmake /f Makefile clean"
 				Output="../tmp/compareExpressions.lib"
 				PreprocessorDefinitions=""
 				IncludeSearchPath=""
@@ -45,6 +46,10 @@
 			Name="Source Files"
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 			>
+			<File
+				RelativePath=".\CEvaluationNodeNormalizer.cpp"
+				>
+			</File>
 			<File
 				RelativePath="CNormalBase.cpp"
 				>
@@ -115,6 +120,10 @@
 			Filter="h;hpp;hxx;hm;inl"
 			>
 			<File
+				RelativePath=".\CEvaluationNodeNormalizer.h"
+				>
+			</File>
+			<File
 				RelativePath="CNormalBase.h"
 				>
 			</File>
@@ -184,6 +193,10 @@
 			Filter="ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
 			>
 		</Filter>
+		<File
+			RelativePath=".\compareExpressions.pro"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>
