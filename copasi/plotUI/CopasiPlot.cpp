@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-//   $Revision: 1.51 $
+//   $Revision: 1.52 $
 //   $Name:  $
-//   $Author: akoenig $
-//   $Date: 2008/02/25 09:30:44 $
+//   $Author: shoops $
+//   $Date: 2008/03/12 01:27:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -63,27 +63,46 @@ QwtDoubleRect MyQwtCPointerData::boundingRect() const
     const double *yIt = yData();
     const double *end = xIt + sz;
 
+    // Unfortunately this may be NaN
     minX = maxX = *xIt++;
     minY = maxY = *yIt++;
+
+    // We have to rememember whether we have an initial NaN
+    bool isNaNminX = isnan(minX);
+    bool isNaNmaxX = isnan(maxX);
+    bool isNaNminY = isnan(minY);
+    bool isNaNmaxY = isnan(maxY);
 
     while (xIt < end)
       {
         const double xv = *xIt++;
         if (!isnan(xv))
           {
-            if (xv < minX)
-              minX = xv;
-            if (xv > maxX)
-              maxX = xv;
+            if (xv < minX || isNaNminX)
+              {
+                minX = xv;
+                isNaNminX = false;
+              }
+            if (xv > maxX || isNaNmaxX)
+              {
+                maxX = xv;
+                isNaNmaxX = false;
+              }
           }
 
         const double yv = *yIt++;
         if (!isnan(yv))
           {
-            if (yv < minY)
-              minY = yv;
-            if (yv > maxY)
-              maxY = yv;
+            if (yv < minY || isNaNminY)
+              {
+                minY = yv;
+                isNaNminY = false;
+              }
+            if (yv > maxY || isNaNmaxY)
+              {
+                maxY = yv;
+                isNaNmaxY = false;
+              }
           }
       }
 
@@ -215,9 +234,9 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
   mCurveActivities.resize(kmax);
   mHistoIndices.resize(kmax);
 
-  std::map< CRegisteredObjectName, QwtPlotCurve * >::iterator found;
+  std::map< std::string, QwtPlotCurve * >::iterator found;
 
-  std::map< CRegisteredObjectName, QwtPlotCurve * > CurveMap = mCurveMap;
+  std::map< std::string, QwtPlotCurve * > CurveMap = mCurveMap;
   mCurveMap.clear();
 
   for (k = 0; k < kmax; k++)
@@ -229,7 +248,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
 
       // Qwt does not like it to reuse the curve as this may lead to access
       // violation. We therefore delete the curves but remember their visibility.
-      if ((found = CurveMap.find(pItem->getObjectName())) != CurveMap.end())
+      if ((found = CurveMap.find(pItem->CCopasiParameter::getKey())) != CurveMap.end())
         {
           pCurve = found->second;
           Visible = pCurve->isVisible();
@@ -240,7 +259,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
       // set up the curve
       pCurve = new MyQwtPlotCurve(FROM_UTF8(pItem->getTitle()));
       mCurves[k] = pCurve;
-      mCurveMap[pItem->getObjectName()] = pCurve;
+      mCurveMap[pItem->CCopasiParameter::getKey()] = pCurve;
 
       pCurve->setPen(curveColours[k % 5]);
       pCurve->attach(this);
@@ -276,6 +295,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
 
           pCurve->setStyle(QwtPlotCurve::Steps);
           pCurve->setYAxis(QwtPlot::yRight);
+          pCurve->setCurveAttribute(QwtPlotCurve::Inverted);
           break;
 
         default :
@@ -284,8 +304,8 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
     }
 
   // Remove unused curves if definitioan has changed
-  std::map< CRegisteredObjectName, QwtPlotCurve * >::iterator it = CurveMap.begin();
-  std::map< CRegisteredObjectName, QwtPlotCurve * >::iterator end = CurveMap.end();
+  std::map< std::string, QwtPlotCurve * >::iterator it = CurveMap.begin();
+  std::map< std::string, QwtPlotCurve * >::iterator end = CurveMap.end();
   for (; it != end; ++it)
     pdelete(it->second);
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporter.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2008/01/21 15:03:17 $
+//   $Author: shoops $
+//   $Date: 2008/03/12 01:34:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -188,10 +188,14 @@ void CODEExporter::exportSimulatedObject(CCopasiObject * obj)
       CCopasiObject* parent = obj->getObjectParent();
       assert(parent);
       std::string typeString = parent->getObjectType();
+      std::string name = obj->getObjectName();
 
       if (typeString == "Metabolite" || typeString == "ModelValue" || typeString == "Compartment")
-        if (!exportModelEntityExpression(obj)) return;
-        else return;
+        if (name == "Concentration" || name == "Value" || name == "Volume" || name == "Rate")
+          if (!exportModelEntityExpression(obj)) return;
+          else return;
+
+      //TODO warning for initial assignments
     }
   return;
 }
@@ -579,7 +583,7 @@ bool CODEExporter::preprocess(const CModel* copasiModel)
     {
       CMetab * metab = metabs[i];
 
-      //if (metab->isUsed())
+      //if (metab->isUsed()) //changed
       {
 
         std::string name = translateObjectName(metab->getObjectName());
@@ -674,6 +678,8 @@ bool CODEExporter::exportMetabolites(const CModel* copasiModel)
     {
       const CMetab * metab;
       metab = metabs[i];
+
+      //if (!metab->isUsed()) continue;
 
       std::ostringstream expression;
       std::ostringstream comments;
@@ -793,6 +799,8 @@ bool CODEExporter::exportMetabolitesConcentrations(const CModel* copasiModel)
     {
       const CMetab * metab;
       metab = metabs[i];
+
+      //if (!metab->isUsed()) continue;
 
       std::string str1;
       std::string str2;
@@ -1011,17 +1019,34 @@ bool CODEExporter::exportODEs(const CModel* copasiModel)
   const CCopasiVector< CMetab > & metabs = copasiModel->getMetabolitesX();
   unsigned C_INT32 indep_size = copasiModel->getNumIndependentMetabs();
   unsigned C_INT32 ode_size = copasiModel->getNumODEMetabs();
+  unsigned C_INT32 metabs_size = metabs.size();
 
   unsigned C_INT32 i;
 
   for (i = 0; i < indep_size; ++i)
     {
+      CMetab * metab;
+      metab = metabs[ode_size + i];
 
-      std::string str1 = equations[metabs[ode_size + i]->getKey()];
+      std::string str1 = equations[metab->getKey()];
       std::string str2 = " ";
 
-      if ((metabs[ode_size + i]->getStatus() == CModelEntity::REACTIONS && !(metabs[ode_size + i]->isDependent())))
-        if (!exportSingleODE(metabs[ode_size + i], str1, str2)) return false;
+      if ((metab->getStatus() == CModelEntity::REACTIONS && !(metab->isDependent())))
+        if (!exportSingleODE(metab, str1, str2)) return false;
+    }
+
+  for (i = indep_size; i < metabs_size; ++i)
+    {
+      CMetab * metab;
+      metab = metabs[ode_size + i];
+
+      if (metab->getStatus() == CModelEntity::REACTIONS && !metab->isDependent())
+        {
+          std::string str1 = "0";
+          std::string str2 = " ";
+
+          if (!exportSingleODE(metab, str1, str2)) return false;
+        }
     }
 
   return true;

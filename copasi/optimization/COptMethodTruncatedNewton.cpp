@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodTruncatedNewton.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/11 15:12:31 $
+//   $Date: 2008/03/12 01:25:56 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,18 +27,21 @@
 
 COptMethodTruncatedNewton::COptMethodTruncatedNewton(const CCopasiContainer * pParent):
     COptMethod(CCopasiTask::optimization, CCopasiMethod::TruncatedNewton, pParent),
-    mpTruncatedNewton(new FTruncatedNewtonTemplate<COptMethodTruncatedNewton>(this, &COptMethodTruncatedNewton::sFun))
+    mpTruncatedNewton(new FTruncatedNewtonTemplate<COptMethodTruncatedNewton>(this, &COptMethodTruncatedNewton::sFun)),
+    mpCTruncatedNewton(new CTruncatedNewton())
 {initObjects();}
 
 COptMethodTruncatedNewton::COptMethodTruncatedNewton(const COptMethodTruncatedNewton & src,
     const CCopasiContainer * pParent):
     COptMethod(src, pParent),
-    mpTruncatedNewton(new FTruncatedNewtonTemplate<COptMethodTruncatedNewton>(this, &COptMethodTruncatedNewton::sFun))
+    mpTruncatedNewton(new FTruncatedNewtonTemplate<COptMethodTruncatedNewton>(this, &COptMethodTruncatedNewton::sFun)),
+    mpCTruncatedNewton(new CTruncatedNewton())
 {initObjects();}
 
 COptMethodTruncatedNewton::~COptMethodTruncatedNewton()
 {
   pdelete(mpTruncatedNewton);
+  pdelete(mpCTruncatedNewton);
   cleanup();
 }
 
@@ -121,8 +124,8 @@ bool COptMethodTruncatedNewton::optimise()
       // minimise
       try
         {
-          tnbc_(&ierror, &mVariableSize, mCurrent.array(), &fest, mGradient.array(), dwork.array(),
-                &lw, mpTruncatedNewton, low.array(), up.array(), iPivot.array());
+          mpCTruncatedNewton->tnbc_(&ierror, &mVariableSize, mCurrent.array(), &fest, mGradient.array(), dwork.array(),
+                                    &lw, mpTruncatedNewton, low.array(), up.array(), iPivot.array());
           mEvaluationValue = fest;
         }
 

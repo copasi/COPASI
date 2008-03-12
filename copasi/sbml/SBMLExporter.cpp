@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-//   $Revision: 1.123 $
+//   $Revision: 1.124 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/11 15:12:25 $
+//   $Date: 2008/03/12 01:30:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -436,7 +436,7 @@ Model* SBMLExporter::createSBMLModelFromCModel(CCopasiDataModel* pDataModel, int
       CMetab* pCopasiSpecies = copasiModel->getMetabolites()[counter];
       if (pCopasiSpecies->getInitialExpressionPtr() != NULL)
         {
-          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 63, "metabolite", pCopasiSpecies->getObjectName().c_str());
+          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 63, "species", pCopasiSpecies->getObjectName().c_str());
         }
       Species* sbmlSpecies = this->createSBMLSpeciesFromCMetab(pCopasiSpecies, pDataModel);
       if (!sbmlModel->getSpecies(sbmlSpecies->getId()))
@@ -555,7 +555,7 @@ Model* SBMLExporter::createSBMLModelFromCModel(CCopasiDataModel* pDataModel, int
       mpExportHandler->progress(mHStep);
       totalSteps = iMax;
       step = 0;
-      hStep = mpExportHandler->addItem("Creating rate rules and assignment rules for metabolites...",
+      hStep = mpExportHandler->addItem("Creating rate rules and assignment rules for species...",
                                        CCopasiParameter::UINT,
                                        & step,
                                        &totalSteps);
@@ -1042,6 +1042,7 @@ KineticLaw* SBMLExporter::createSBMLKineticLawFromCReaction(CReaction* copasiRea
         }
       parameterNode1->setName(parameterName1.c_str());
       node->addChild(parameterNode1);
+      if (copasiReaction->getChemEq().getSubstrates().size() == 0) fatalError();
       node->addChild(this->createTimesTree(copasiReaction->getChemEq().getSubstrates()));
       /* if the reaction is reversible, create the ASTNode tree that
       ** multiplies all products with the second kinetic constant and
@@ -2652,7 +2653,7 @@ std::vector<std::string> SBMLExporter::isRuleSBMLL2V1Compatible(const CModelEnti
                   // must be a reference to the transient or initial concentration
                   if (pObject->getObjectName() != "Concentration")
                     {
-                      result.push_back("Error. Reference to property other than transient concentration for metabolite \"" + pObjectParent->getObjectName() + "\" in rule for \"" + pME->getObjectType() + "\" \"" + pME->getObjectName() + "\".");
+                      result.push_back("Error. Reference to property other than transient concentration for species \"" + pObjectParent->getObjectName() + "\" in rule for \"" + pME->getObjectType() + "\" \"" + pME->getObjectName() + "\".");
                     }
                 }
               else if (typeString == "ModelValue")
@@ -2707,7 +2708,7 @@ void SBMLExporter::checkForODESpeciesInNonfixedCompartment(const CCopasiDataMode
           assert(pCompartment != NULL);
           if (pCompartment->getStatus() != CModelValue::FIXED)
             {
-              result.push_back("The metabolite \"" + (*it)->getObjectName() + "\" is defined by a rate expression and its compartments volume is variable. The way COPASI interprets this is differently from the way SBML does.");
+              result.push_back("The species \"" + (*it)->getObjectName() + "\" is defined by a rate expression and its compartments volume is variable. The way COPASI interprets this is differently from the way SBML does.");
               CCopasiMessage::CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 52, (*it)->getObjectName().c_str());
             }
         }
