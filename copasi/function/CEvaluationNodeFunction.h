@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.h,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.34 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/11 15:12:30 $
+//   $Date: 2008/03/12 00:57:08 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -85,7 +85,8 @@ class CEvaluationNodeFunction : public CEvaluationNode
       PLUS = 0x00000021,
       NOT = 0x00000022,
       RUNIFORM = 0x00000023,
-      RNORMAL = 0x00000024
+      RNORMAL = 0x00000024 /*,
+                                      DELAY = 0x00000025*/
     };
 
     // Operations
@@ -261,6 +262,11 @@ class CEvaluationNodeFunction : public CEvaluationNode
 
     static inline C_FLOAT64 plus(C_FLOAT64 value)
     {return value;}
+
+    //static inline C_FLOAT64 delay(const C_FLOAT64& /*delay_expr*/,const C_FLOAT64& /*expr*/)
+    //{
+    //    return nan("");
+    //}
 
     static inline C_FLOAT64 copasiNot(C_FLOAT64 value)
   {return (value != 0.0) ? 0.0 : 1.0;}

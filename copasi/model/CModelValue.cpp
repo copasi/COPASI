@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-//   $Revision: 1.54 $
+//   $Revision: 1.55 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/16 20:20:22 $
+//   $Date: 2008/03/12 01:05:41 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -154,7 +154,7 @@ bool CModelEntity::compile()
 
       pdelete(mpInitialExpression);
       mpInitialExpression = CExpression::createInitialExpression(*mpExpression);
-
+      mpInitialExpression->setObjectName("InitialExpression");
       break;
 
     case ODE:
@@ -201,7 +201,8 @@ void CModelEntity::calculate()
 
 void CModelEntity::refreshInitialValue()
 {
-  if (mpInitialExpression != NULL)
+  if (mpInitialExpression != NULL &&
+      mpInitialExpression->getInfix() != "")
     *mpIValue = mpInitialExpression->calcValue();
 }
 
@@ -268,10 +269,14 @@ bool CModelEntity::setInitialExpressionPtr(CExpression* pExpression)
 {
   if (mStatus == ASSIGNMENT) return false;
 
+  if (mpModel)
+    mpModel->setCompileFlag(true);
+
   if (mpInitialExpression)
     pdelete(mpInitialExpression);
 
   mpInitialExpression = pExpression;
+  mpInitialExpression->setObjectName("InitialExpression");
 
   return compile();
 }
@@ -280,8 +285,14 @@ bool CModelEntity::setInitialExpression(const std::string & expression)
 {
   if (mStatus == ASSIGNMENT) return false;
 
+  if (mpModel)
+    mpModel->setCompileFlag(true);
+
   if (mpInitialExpression == NULL)
-    mpInitialExpression = new CExpression;
+    {
+      mpInitialExpression = new CExpression;
+      mpInitialExpression->setObjectName("InitialExpression");
+    }
 
   if (!mpInitialExpression->setInfix(expression)) return false;
 
@@ -380,6 +391,7 @@ void CModelEntity::setStatus(const CModelEntity::Status & status)
 
           pdelete(mpInitialExpression);
           mpInitialExpression = CExpression::createInitialExpression(*mpExpression);
+          mpInitialExpression->setObjectName("InitialExpression");
 
           mpValueReference->setDirectDependencies(mpExpression->getDirectDependencies());
           mpValueReference->setRefresh(this, &CModelEntity::calculate);

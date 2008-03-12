@@ -1,17 +1,22 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.74 $ 
+#   $Revision: 1.75 $ 
 #   $Name:  $ 
-#   $Author: aekamal $ 
-#   $Date: 2008/01/29 15:44:23 $ 
+#   $Author: shoops $ 
+#   $Date: 2008/03/12 00:51:45 $ 
 # End CVS Header 
 
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
-# Properties, Inc. and EML Research, gGmbH. 
-# All rights reserved. 
+# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+# and The University of Manchester.
+# All rights reserved.
+
+# Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+# Properties, Inc. and EML Research, gGmbH.
+# All rights reserved.
 
 ######################################################################
-# $Revision: 1.74 $ $Author: aekamal $ $Date: 2008/01/29 15:44:23 $  
+# $Revision: 1.75 $ $Author: shoops $ $Date: 2008/03/12 00:51:45 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -49,7 +54,7 @@ debug {
   DEFINES += COPASI_DEBUG
     
   isEmpty(COPASI_SRC_PACKAGE) {
-    DEFINES += COPASI_TSS
+    #DEFINES += COPASI_TSS
     DEFINES += COPASI_TSSA
     # DEFINES += WITH_LAYOUT
   }
@@ -160,12 +165,14 @@ contains(BUILD_OS, WIN32) {
   QMAKE_LEX = C:\cygwin\bin\bash ../../admin/flex.sh
   QMAKE_YACC = C:\cygwin\bin\bash ../../admin/yacc.sh
 
+<<<<<<< common.pri
   DEFINES -= UNICODE
    
   debug {
     !win32-msvc2005 {
       QMAKE_LFLAGS += /NODEFAULTLIB:"libcmt.lib"
     }
+
     QMAKE_LFLAGS += /NODEFAULTLIB:"msvcrt.lib"
   }
   
