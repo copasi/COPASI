@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-//   $Revision: 1.153 $
+//   $Revision: 1.154 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/11 15:12:27 $
+//   $Date: 2008/03/12 01:47:38 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -872,7 +872,7 @@ void FunctionWidget1::slotCommitButtonClicked()
       QString functionList;
       QString effectedFunctionList = "Following FUNCTION(S) reference above FUNCTION(S) -\n";
       QString effectedReactionList = "Following REACTION(S) reference above FUNCTION(S) -\n";
-      QString effectedMetaboliteList = "Following METABOLITE(S) reference above FUNCTION(S) -\n";
+      QString effectedMetaboliteList = "Following SPECIES reference above FUNCTION(S) -\n";
       QString effectedCompartmentList = "Following COMPARTMENT(S) reference above FUNCTION(S) -\n";
       QString effectedValueList = "Following MODEL QUANTIT(S) reference above FUNCTION(S) -\n";
 
@@ -1086,7 +1086,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
   QString functionList;
   QString effectedFunctionList = "Following FUNCTION(S) reference above FUNCTION(S) -\n";
   QString effectedReactionList = "Following REACTION(S) reference above FUNCTION(S) -\n";
-  QString effectedMetaboliteList = "Following METABOLITE(S) reference above FUNCTION(S) -\n";
+  QString effectedMetaboliteList = "Following SPECIES reference above FUNCTION(S) -\n";
   QString effectedCompartmentList = "Following COMPARTMENT(S) reference above FUNCTION(S) -\n";
   QString effectedValueList = "Following MODEL QUANTIT(S) reference above FUNCTION(S) -\n";
 

@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/semantic-test-suite/semantic-test-suite.pro,v $ 
-#   $Revision: 1.14 $ 
+#   $Revision: 1.15 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2008/01/11 15:12:26 $ 
+#   $Date: 2008/03/12 01:53:46 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.14 $ $Author: shoops $ $Date: 2008/01/11 15:12:26 $  
+# $Revision: 1.15 $ $Author: shoops $ $Date: 2008/03/12 01:53:46 $  
 ######################################################################
 
 TEMPLATE = app

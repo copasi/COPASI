@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/semantic-test-suite/copasi_wrapper.cpp,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/11 15:12:26 $
+//   $Date: 2008/03/12 01:53:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -167,7 +167,7 @@ int main(int argc, char *argv[])
 
       // Run the trajectory task
 
-      pTrajectoryTask->initialize(CCopasiTask::OUTPUT_COMPLETE, NULL);
+      pTrajectoryTask->initialize(CCopasiTask::OUTPUT_COMPLETE, CCopasiDataModel::Global, NULL);
       pTrajectoryTask->process(true);
       pTrajectoryTask->restore();
 
@@ -176,7 +176,7 @@ int main(int argc, char *argv[])
       // create a trajectory task
       pTrajectoryTask->getReport().setTarget(pOutputFilename);
 
-      pTrajectoryTask->initialize(CCopasiTask::OUTPUT_COMPLETE, NULL);
+      pTrajectoryTask->initialize(CCopasiTask::OUTPUT_COMPLETE, CCopasiDataModel::Global, NULL);
       pTrajectoryTask->process(true);
       pTrajectoryTask->restore();
     }

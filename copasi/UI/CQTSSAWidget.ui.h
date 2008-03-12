@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQTSSAWidget.ui.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: akoenig $
-//   $Date: 2008/02/24 16:19:15 $
+//   $Author: shoops $
+//   $Date: 2008/03/12 01:47:38 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,6 +33,8 @@
 #include <qcombobox.h>
 #include <qheader.h>
 
+#include "UI/CQTSSAResultSubWidget.h"
+#include "UI/CQTSSAResultWidget.h"
 #include "UI/CQTaskBtnWidget.h"
 #include "UI/CQTaskHeaderWidget.h"
 #include "UI/CProgressBar.h"
@@ -250,14 +252,27 @@ bool CQTSSAWidget::runTask()
 
   if (!commonAfterRunTask()) success = false;
 
-  pTSSResultSubWidget =
-    dynamic_cast< CQTSSAResultWidget * >(mpListView->findWidgetFromId(271))->getSubWidget();
-  if (!pTSSResultSubWidget) return false;
+  // We need to load the result here as this is the only place where
+  // we know that it is correct.
+  CQTSSAResultWidget * pResult =
+    dynamic_cast< CQTSSAResultWidget * >(mpListView->findWidgetFromId(271));
+
+  if (pResult == NULL)
+    return false;
+
+  success &= pResult->loadFromBackend();
+
+  pTSSResultSubWidget = pResult->getSubWidget();
+  if (!pTSSResultSubWidget)
+    return false;
+
   pTSSResultSubWidget->activateTab(1);
   pTSSResultSubWidget->discardOldResults();
   pTSSResultSubWidget->setStepNumber();
 
-  if (success) mpListView->switchToOtherWidget(271, ""); //change to the results window
+  if (success)
+    mpListView->switchToOtherWidget(271, ""); //change to the results window
+
   return success;
 }
 

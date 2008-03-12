@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-//   $Revision: 1.193 $
+//   $Revision: 1.194 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/11 15:12:27 $
+//   $Date: 2008/03/12 01:47:38 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -297,6 +297,9 @@ void ReactionsWidget1::slotBtnCancelClicked()
 
 void ReactionsWidget1::slotBtnOKClicked()
 {
+  // This assures that even the last edit is regocnized.
+  commitChanges->setFocus();
+
   saveToReaction();
   CReaction* reac = dynamic_cast< CReaction * >(GlobalKeys.get(objKey));
 
@@ -386,7 +389,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
 
   QString reactionList = "Are you sure you want to delete listed REACTION(S) ?\n";
   QString effectedCompartmentList = "Following COMPARTMENT(S) reference above REACTION(S) and will be deleted -\n";
-  QString effectedMetabList = "Following METABOLITE(S) reference above REACTION(S) and will be deleted -\n";
+  QString effectedMetabList = "Following SPECIES reference above REACTION(S) and will be deleted -\n";
   QString effectedReacList = "Following REACTION(S) reference above REACTION(S) and will be deleted -\n";
   QString effectedValueList = "Following MODEL VALUE(S) reference above REACTION(S) and will be deleted -\n";
 

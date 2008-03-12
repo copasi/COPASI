@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $ 
-#   $Revision: 1.168 $ 
+#   $Revision: 1.169 $ 
 #   $Name:  $ 
-#   $Author: akoenig $ 
-#   $Date: 2008/02/24 17:31:14 $ 
+#   $Author: shoops $ 
+#   $Date: 2008/03/12 01:47:38 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -16,7 +16,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.168 $ $Author: akoenig $ $Date: 2008/02/24 17:31:14 $  
+# $Revision: 1.169 $ $Author: shoops $ $Date: 2008/03/12 01:47:38 $  
 ######################################################################
 
 LIB = UI
@@ -59,6 +59,7 @@ HEADERS += \
            CQReportListItem.h \
            CQSBMLFileDialog.h \
            CQSensResultWidget.h \
+           CQUpdatesWidget.h \
            CQValidator.h \
            CScanContainerWidget.h \
            CTimeSeriesTable.h \
@@ -70,8 +71,6 @@ HEADERS += \
            MetabolitesWidget.h \
            ModelWidget.h \
            ModelValuesWidget.h \
-           MoietyWidget.h \
-           MoietyWidget1.h \
            MyLineEdit.h \
            listviews.h \
            ObjectBrowserDialog.h \
@@ -125,6 +124,7 @@ SOURCES += \
            CQReportListItem.cpp \
            CQSBMLFileDialog.cpp \
            CQSensResultWidget.cpp \
+           CQUpdatesWidget.cpp \
            CQValidator.cpp \
            CScanContainerWidget.cpp \
            CTimeSeriesTable.cpp \
@@ -136,8 +136,6 @@ SOURCES += \
            MetabolitesWidget.cpp \
            ModelValuesWidget.cpp \
            ModelWidget.cpp \
-           MoietyWidget.cpp \
-           MoietyWidget1.cpp \
            MyLineEdit.cpp \
            ObjectBrowserDialog.cpp \
            ObjectBrowserItem.cpp \
@@ -193,6 +191,8 @@ SOURCES += \
 # FORMS += CQMessageBox.ui
 # FORMS += CQMetabolite.ui
 # FORMS += CQModelValue.ui
+# FORMS += CQMoietiesTaskWidget.ui
+# FORMS += CQMoietiesTaskResult.ui
 # FORMS += CQOptimizationWidget.ui
 # FORMS += CQPreferenceDialog.ui
 # FORMS += CQProgressDialog.ui
@@ -250,6 +250,10 @@ HEADERS += \
            CQMetabolite.ui.h \
            CQModelValue.h \
            CQModelValue.ui.h \
+           CQMoietiesTaskResult.h \
+           CQMoietiesTaskResult.ui.h \
+           CQMoietiesTaskWidget.h \
+           CQMoietiesTaskWidget.ui.h \
            CQOptimizationWidget.h \
            CQOptimizationWidget.ui.h \
            CQPreferenceDialog.h \
@@ -316,6 +320,8 @@ SOURCES += \
            CQMessageBox.cpp \
            CQMetabolite.cpp \
            CQModelValue.cpp \
+           CQMoietiesTaskResult.cpp \
+           CQMoietiesTaskWidget.cpp \
            CQOptimizationWidget.cpp \
            CQProgressItem.cpp \
            CQProgressItemBar.cpp \
@@ -371,7 +377,7 @@ contains(USE_LICENSE, COM) {
 HEADERS += CQRegistrationDialog.h \
            CQRegistrationDialog.ui.h
 
-SOURCES += CQRegistrationDialog.cpp
+  SOURCES += CQRegistrationDialog.cpp
 }
 #endif // COPAS_LICENSE_COM
 

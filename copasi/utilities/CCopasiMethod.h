@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.h,v $
-//   $Revision: 1.42 $
+//   $Revision: 1.43 $
 //   $Name:  $
-//   $Author: isurovts $
-//   $Date: 2007/12/21 11:43:26 $
+//   $Author: shoops $
+//   $Date: 2008/03/12 01:49:55 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -79,7 +84,8 @@ class CCopasiMethod : public CCopasiParameterGroup
 #ifdef COPASI_EXTREMECURRENTS
       extremeCurrents,
 #endif
-      EFMAlgorithm
+      EFMAlgorithm,
+      Householder
     };
 
     /**

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.112 $
+//   $Revision: 1.113 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/30 22:26:37 $
+//   $Date: 2008/03/12 01:49:55 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -60,10 +60,10 @@ const MESSAGES Messages[] =
     {MCReaction + 1, "CReaction (1): Function '%s' not found."},
     {MCReaction + 2, "CReaction (2): In Reaction '%s' the compartment could not be guessed."},
     {MCReaction + 3, "CReaction (3): Reaction '%s' has no substrates and no products."},
-    {MCReaction + 4, "CReaction (4): Only Metabolites, Compartments or Parameter object nodes are allowed in kinetic functions."},
+    {MCReaction + 4, "CReaction (4): Only Species, Compartments or Parameter object nodes are allowed in kinetic functions."},
     {MCReaction + 5, "CReaction (5): Nodes of type '%s' are not implemented yet."},
     {MCReaction + 6, "CReaction (6): Nodes of type VARIABLE must not appear in an expression."},
-    {MCReaction + 7, "CReaction (7): Metabolite object '%s' is neither substrate, product nor modifier to reaction '%s' but it is used in the kinetic law."},
+    {MCReaction + 7, "CReaction (7): Species object '%s' is neither substrate, product nor modifier to reaction '%s' but it is used in the kinetic law."},
     {MCReaction + 8, "CReaction (8): Could not find variable with name '%s'."},
     {MCReaction + 9, "CReaction (9): Could not find object for key '%s'."},
     {MCReaction + 10, "CReaction (10): Parameter '%s' is a vector."},
@@ -105,7 +105,7 @@ const MESSAGES Messages[] =
     {MCTrajectoryMethod + 17, "CTrajectoryMethod (17): At least one reaction is necessary to perform stochastic simulation."},
     {MCTrajectoryMethod + 18, "CTrajectoryMethod (18): The model contains a global quantity with an ODE rule.\nStochastic simulation is not possible."},
     {MCTrajectoryMethod + 19, "CTrajectoryMethod (19): The model contains a global quantity with an assignment rule. \nThe value of the quantity is used in the model. \nStochastic simulation of such models is not possible with this version of COPASI."}, //obsolete
-    {MCTrajectoryMethod + 20, "CTrajectoryMethod (20): The model contains a metabolite with an ODE rule.\nStochastic simulation is not possible."},
+    {MCTrajectoryMethod + 20, "CTrajectoryMethod (20): The model contains a species with an ODE rule.\nStochastic simulation is not possible."},
     {MCTrajectoryMethod + 21, "CTrajectoryMethod (21): The model contains a compartment with an ODE rule.\nStochastic simulation is not possible."},
 
     // XML Package
@@ -125,6 +125,9 @@ const MESSAGES Messages[] =
     {MCXML + 11, "XML (11): Invalid closing element '</%s>' expecting '</%s>' encountered at line '%d'."},
     {MCXML + 12, "XML (12): Order '%d' out of range for variable '%s' in function '%s' encountered at line '%d'. "},
     {MCXML + 13, "XML (13): Unrecognized format in file '%s'."},
+    {MCXML + 14, "XML (14): Local reaction parameters may no longer be used in any expression in the model. "
+     " The following automatic corrections have been applied:\n%s"
+     " Please note: Tasks, reports, and plots may have been affected by these changes and may no longer work as expected."},
 
     // CCopasiMessage
     {MCCopasiMessage + 1, "Message (1): No more messages."},
@@ -170,9 +173,9 @@ const MESSAGES Messages[] =
     {MCSBML + 21, "SBML (21): Setting an initial concentration on species '%s' which is in a compartment with spatial dimensions 0 is not allowed."},
     {MCSBML + 22, "SBML (22): Current versions of COPASI only supports three dimensional compartments. '%s' will be considered to be three dimensional."},
     {MCSBML + 23, "SBML (23): Compartment '%s' has spatial dimensions of 0, setting dimensions to 3.\nConsidering all species in that compartment to have \"hasOnlySubstanceUnits\" flag set."},
-    {MCSBML + 24, "SBML (24): Units for compartment '%s' ignored. Calculations on this model might lead to incorrect result."},
-    {MCSBML + 25, "SBML (25): Units for species '%s' ignored. Calculations on this model might lead to incorrect result."},
-    {MCSBML + 26, "SBML (26): Units for parameter '%s' ignored. Calculations on this model might lead to incorrect result."},
+    {MCSBML + 24, "SBML (24): Units for some compartments were ignored. Units might be displayed incorrectly.\nCompartments: %s"},
+    {MCSBML + 25, "SBML (25): Units for some species were ignored. Units might be displayed incorrectly.\nSpecies: %s"},
+    {MCSBML + 26, "SBML (26): Units for some parameters were ignored. Units might be displayed incorrectly.\nParameters: %s"},
     {MCSBML + 27, "SBML (27): Error in kinetic law for reaction '%s'."},
     {MCSBML + 28, "SBML (28): Error in function definition with id '%s'."},
     {MCSBML + 29, "SBML (29): Unable to handle reactions with the 'fast' flag set.\nThe flag has been set to false."},
@@ -182,7 +185,7 @@ const MESSAGES Messages[] =
     {MCSBML + 33, "SBML (33): Error: %s is not allowed for local parameter '%s'."},
     {MCSBML + 34, "SBML (34): Error: %s is not allowed for local constant '%s' identified by id '%s'."},
     {MCSBML + 35, "SBML (35): Error: Only one AssignmentRule or RateRule is allowed for id '%s'."},
-    {MCSBML + 36, "SBML (36): COPASI can not handle models that use the delay function."},
+    {MCSBML + 36, "SBML (36): COPASI does not support time delays. Calculations on this model will most likely lead to unusable results."},
     {MCSBML + 37, "SBML (37): The id '%s' is used in the expression of a rule, although it is later defined by a rule itself."},
     {MCSBML + 38, "SBML (38): Only references to compartment volumes, species concentrations, global parameter values or the time are allowed in SBML rule expressions."},
     {MCSBML + 39, "SBML (39): Object with id \"%s\" referenced in kinetic law, but no object with that id found in model."},
@@ -190,7 +193,7 @@ const MESSAGES Messages[] =
     {MCSBML + 41, "SBML (41): No initial value set for species \"%s\". Setting initial concentration to 1.0."},
     {MCSBML + 42, "SBML (42): No initial value set for local parameter \"%s\"."},
     {MCSBML + 43, "SBML (43): No initial value set for global parameter \"%s\". Setting initial value to 1.0"},
-    {MCSBML + 44, "SBML (44): Substance unit in kinetic law for reaction \"%s\" ignored. Calculations on this model might lead to incorrect result."},
+    {MCSBML + 44, "SBML (44): Substance unit in kinetic law for some reactions were ignored. Units might be displayed incorrectly.\nReactions: %s"},
     {MCSBML + 45, "SBML (45): Compartment \"%s\" does not set the initial volume. Volume has been set to 1.0."},
     {MCSBML + 46, "SBML (46): COPASI has changed the following function definitions to take the time as an additional argument instead of the function being directly or indirectly dependent on time:\n \"%s\" ."},
     {MCSBML + 47, "SBML (47): COPASI found a call to the function \"%s\" which has not been defined."},
@@ -198,8 +201,8 @@ const MESSAGES Messages[] =
     {MCSBML + 49, "SBML (49): Constraints ignored because they are not supported yet."},
     {MCSBML + 50, "SBML (50): Could not open file \"%s\"."},
     {MCSBML + 51, "SBML (51): The species \"%s\" is defined by a rate rule and its compartments volume is variable. COPASI will probably interpret this incorrectly."},
-    {MCSBML + 52, "SBML (52): The metabolite \"%s\" is defined by a rate expression and its compartments volume is variable. The way COPASI interprets this is differently from the way SBML does."},
-    {MCSBML + 53, "SBML (53): The reaction \"%s\" defines a time unit in its kinetic law which has been ignore. Calculations on this model might lead to incorrect result."},
+    {MCSBML + 52, "SBML (52): The species \"%s\" is defined by a rate expression and its compartments volume is variable. The way COPASI interprets this is differently from the way SBML does."},
+    {MCSBML + 53, "SBML (53): The time units of kinetic laws in some reactions were ignored. Units might be displayed incorrectly.\nReactions: %s"},
     {MCSBML + 54, "SBML (54): Error while importing volume unit with id \"%s\"."},
     {MCSBML + 55, "SBML (55): Could not find unit definition for unit with id \"%s\" used in \"%s\" attribute of %s with id \"%s\"."},
     {MCSBML + 56, "SBML (56): There was a problem with the kinetic law in reaction \"%s\". Make sure the math element is not empty."},
@@ -210,6 +213,9 @@ const MESSAGES Messages[] =
     {MCSBML + 61, "SBML (61): Error while expanding function calls in mathematical expression for %s."},
     {MCSBML + 62, "SBML (62): Error while replacing unsupported elements in mathematical expression for %s."},
     {MCSBML + 63, "SBML (63): Initial assignment for %s \"%s\" can not be exported to SBML Level 2 Version 1."},
+    {MCSBML + 64, "SBML (64): One or more stoichiometric expressions were evaluated and converted to constants values."},
+    {MCSBML + 65, "SBML (65): The stoichiometric expression for a species reference for species \"%s\" in reaction \"%s\" could not be evaluated. The value has therefore been set to 1.0."},
+    {MCSBML + 66, "SBML (66): COPASI was not able to import the global %s unit. Unit has been set to %s."},
 
     {MCTrajectoryProblem + 1, "CTrajectoryProblem (1): Invalid step size = '%f'."},
     {MCTrajectoryProblem + 2, "CTrajectoryProblem (2): The step number '%f' "

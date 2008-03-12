@@ -48,10 +48,10 @@ BEGIN {
       if ($0 !~ ".*Begin CVS Header.*") {
         printf "'$CommentStart' Begin CVS Header '$CommentEnd'\n"
         printf "'$CommentStart'   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/cvs_admin/addHeader,v $ '$CommentEnd'\n"
-        printf "'$CommentStart'   $Revision: 1.8 $ '$CommentEnd'\n"
+        printf "'$CommentStart'   $Revision: 1.9 $ '$CommentEnd'\n"
         printf "'$CommentStart'   $Name:  $ '$CommentEnd'\n"
         printf "'$CommentStart'   $Author: shoops $ '$CommentEnd'\n"
-        printf "'$CommentStart'   $Date: 2008/01/15 17:42:13 $ '$CommentEnd'\n"
+        printf "'$CommentStart'   $Date: 2008/03/12 01:53:45 $ '$CommentEnd'\n"
         printf "'$CommentStart' End CVS Header '$CommentEnd'\n"
         printf "\n"
         printf "'$CommentStart' Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual '$CommentEnd'\n"
@@ -73,8 +73,7 @@ BEGIN {
       }
       print $0
     } else if (Copyright == 0) {
-      if ($0 ~ /Copyright \(C\) 2008 by Pedro Mendes/) {
-        printf "\n"
+      if ($0 ~ "Copyright (C) 2008 by Pedro Mendes") {
         print $0
         Copyright = 2
       } else if ($0 ~ "Copyright.*by Pedro Mendes") {
@@ -111,6 +110,7 @@ BEGIN {
 $0 ~ Prolog {
   Prolog = 0
 }
-' $1 > $1.tmp && \
-$MV -f $1.tmp $1
+' $1 
+# > $1.tmp && \
+# $MV -f $1.tmp $1
 fi

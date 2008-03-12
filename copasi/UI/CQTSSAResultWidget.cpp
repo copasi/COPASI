@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSAResultWidget.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: isurovts $
-//   $Date: 2007/12/21 11:44:52 $
+//   $Author: shoops $
+//   $Date: 2008/03/12 01:47:38 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -88,12 +93,15 @@ bool CQTSSAResultWidget::saveToBackend()
   saveToCompartment();
 }*/
 
-bool CQTSSAResultWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
+bool CQTSSAResultWidget::update(ListViews::ObjectType objectType,
+                                ListViews::Action action,
+                                const std::string & /* key */)
 {
-  if (this->isShown())
-    return loadFromBackend();
-  else
-    return true;
+  if (objectType == ListViews::MODEL &&
+      action == ListViews::ADD)
+    mCentralWidget->table()->setTimeSeries(CTimeSeries());
+
+  return true;
 }
 
 bool CQTSSAResultWidget::leave()

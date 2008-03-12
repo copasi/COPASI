@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.172 $
+//   $Revision: 1.173 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/11 15:12:33 $
+//   $Date: 2008/03/12 01:53:45 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -58,6 +58,7 @@
 #include "trajectory/CTrajectoryTask.h"
 #include "lyap/CLyapTask.h"
 #include "sensitivities/CSensTask.h"
+#include "moieties/CMoietiesTask.h"
 #include "plot/COutputDefinitionVector.h"
 #include "plot/CPlotSpecification.h"
 #include "plot/CPlotItem.h"
@@ -374,7 +375,7 @@ void CCopasiXMLParser::UnknownElement::end(const XML_Char *pszName)
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
       {
-        CCopasiMessage(CCopasiMessage::RAW, MCXML + 3,
+        CCopasiMessage(CCopasiMessage::WARNING, MCXML + 3,
                        pszName, mLineNumber);
       }
 
@@ -499,6 +500,8 @@ void CCopasiXMLParser::COPASIElement::end(const XML_Char * pszName)
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
     }
+  else if (!strcmp(pszName, "GUI") && mCommon.pGUI == NULL)
+    CCopasiMessage::getLastMessage();
   else
     pdelete(mpCurrentHandler);
 
@@ -2262,7 +2265,7 @@ void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
         mpCurrentHandler = &mParser.mCharacterDataElement;
       break;
 
-    case MathML:                             // Old file format support
+    case MathML:                              // Old file format support
       if (!strcmp(pszName, "MathML"))
         {
           /* If we do not have a MathML element handler we create one. */
@@ -2355,7 +2358,7 @@ void CCopasiXMLParser::ModelValueElement::end(const XML_Char *pszName)
       mCurrentElement = ModelValue;
       break;
 
-    case MathML:                             // Old file format support
+    case MathML:                              // Old file format support
       if (strcmp(pszName, "MathML"))
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                        pszName, "MathML", mParser.getCurrentLineNumber());
@@ -6802,6 +6805,9 @@ void CCopasiXMLParser::TaskElement::start(const XML_Char *pszName, const XML_Cha
           mCommon.pCurrentTask = new CTSSATask(mCommon.pTaskList);
           break;
 #endif // COPASI_TSSA
+        case CCopasiTask::moieties:
+          mCommon.pCurrentTask = new CMoietiesTask(Type, mCommon.pTaskList);
+          break;
         default:
           mParser.pushElementHandler(&mParser.mUnknownElement);
           mParser.onStartElement(pszName, papszAttrs);

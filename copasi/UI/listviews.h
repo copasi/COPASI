@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-//   $Revision: 1.139 $
+//   $Revision: 1.140 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/16 20:20:21 $
+//   $Date: 2008/03/12 01:47:38 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,6 +30,10 @@
 #include "UI/Tree.h"
 
 class CTabWidget;
+
+class Refresh;
+class CCopasiObject;
+
 class DataModelGUI;
 class CQCompartment;
 class CompartmentsWidget;
@@ -46,8 +50,8 @@ class MetabolitesWidget;
 class CQEFMWidget;
 //class ModelWidget;
 class ModelValuesWidget;
-class MoietyWidget1;
-class MoietyWidget;
+class CQMoietiesTaskResult;
+class CQMoietiesTaskWidget;
 class ParametersWidget;
 class ReactionsWidget1;
 class ReactionsWidget;
@@ -61,10 +65,13 @@ class TableDefinition;
 #ifdef COPASI_TSS
 class TSSWidget;
 #endif // COPASI_TSS
-#ifdef COPASI_DEBUG
+#ifdef COPASI_TSSA
 class CQTSSAWidget;
 class CQTSSAResultWidget;
 class CQTSSAResultSubWidget;
+#endif
+#ifdef COPASI_DEBUG
+class CQUpdatesWidget;
 #endif
 class CQOptimizationWidget;
 class OptimizationResultWidget;
@@ -155,6 +162,10 @@ class ListViews : public QSplitter
 
   private:
     static DataModelGUI* dataModel;
+    static std::vector< Refresh * > mUpdateVector;
+    static std::set< const CCopasiObject * > mChangedObjects;
+    static int mFramework;
+
     QListViewItem* lastSelection;
     CopasiWidget* currentWidget;
     std::string lastKey;
@@ -179,6 +190,7 @@ class ListViews : public QSplitter
                                       const std::string & key);
 
     static void refreshInitialValues();
+    static void buildChangedObjects();
 
     void setChildWidgetsFramework(int framework);
 
@@ -207,8 +219,8 @@ class ListViews : public QSplitter
     ModelValuesWidget *modelValuesWidget;
     CQModelValue *mpModelValueWidget;
     CQEFMWidget *modesWidget;
-    MoietyWidget *moietyWidget;
-    MoietyWidget1 *moietyWidget1;
+    CQMoietiesTaskResult *mpMoietiesTaskResult;
+    CQMoietiesTaskWidget *mpMoietiesTaskWidget;
     CQOptimizationWidget *optimizationWidget;
     OptimizationResultWidget *optResultWidgetS;
     OptimizationResultWidget *optResultWidgetT;
@@ -231,9 +243,12 @@ class ListViews : public QSplitter
 #endif // COPASI_TSS
     TimeSeriesWidget *timeSeriesWidget;
     CQTrajectoryWidget *trajectoryWidget;
-#ifdef COPASI_DEBUG
+#ifdef COPASI_TSSA
     CQTSSAWidget *tssaWidget;
     CQTSSAResultWidget *tssaResultWidget;
+#endif // COPASI_DEBUG
+#ifdef COPASI_DEBUG
+    CQUpdatesWidget *mpUpdatesWidget;
 #endif // COPASI_DEBUG
 #ifdef COPASI_SSA
     SSAWidget * mSSAWidget;

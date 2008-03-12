@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-//   $Revision: 1.75 $
+//   $Revision: 1.76 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/11 15:12:27 $
+//   $Date: 2008/03/12 01:47:38 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -73,6 +73,8 @@ void DataModelGUI::linkDataModelToGUI()
   mTree.findNodeFromId(1)->setObjectKey(CCopasiDataModel::Global->getModel()->getKey());
   mTree.findNodeFromId(21)->setObjectKey((*CCopasiDataModel::Global->getTaskList())["Steady-State"]->getKey());
   mTree.findNodeFromId(221)->setObjectKey((*CCopasiDataModel::Global->getTaskList())["Elementary Flux Modes"]->getKey());
+  mTree.findNodeFromId(222)->setObjectKey((*CCopasiDataModel::Global->getTaskList())["Moieties"]->getKey());
+  mTree.findNodeFromId(2221)->setObjectKey((*CCopasiDataModel::Global->getTaskList())["Moieties"]->getKey());
 #ifdef COPASI_SSA
   mTree.findNodeFromId(223)->setObjectKey((*CCopasiDataModel::Global->getTaskList())["Stoichiometric Stability Analysis"]->getKey());
 #endif // COPASI_SSA
@@ -202,25 +204,6 @@ void DataModelGUI::updateModelValues()
   const CCopasiVectorN< CModelValue > & objects = CCopasiDataModel::Global->getModel()->getModelValues();
   C_INT32 j, jmax = objects.size();
   CModelValue *obj;
-  for (j = 0; j < jmax; j++)
-    {
-      obj = objects[j];
-      parent->addChild(-1,
-                        FROM_UTF8(obj->getObjectName()),
-                        obj->getKey());
-    }
-}
-
-void DataModelGUI::updateMoieties()
-{
-  IndexedNode * parent = mTree.findNodeFromId(222);
-
-  parent->removeChildren();
-
-  const CCopasiVector< CMoiety > & objects = CCopasiDataModel::Global->getModel()->getMoieties();
-
-  C_INT32 j, jmax = objects.size();
-  CMoiety *obj;
   for (j = 0; j < jmax; j++)
     {
       obj = objects[j];
