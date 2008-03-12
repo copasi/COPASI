@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.338 $
+//   $Revision: 1.339 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/12 01:05:40 $
+//   $Date: 2008/03/12 13:28:05 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -93,7 +93,6 @@ CModel::CModel():
     mCompartments("Compartments", this),
     mMetabolites("Metabolites", this),
     mMetabolitesX("Reduced Model Metabolites", this),
-    mMIRIAMInfo(),
     mSteps("Reactions", this),
     mParticleFluxes(),
     mValues("Values", this),
@@ -115,7 +114,8 @@ CModel::CModel():
     mSimulatedRefreshes(),
     mConstantRefreshes(),
     mNonSimulatedRefreshes(),
-    mReorderNeeded(false)
+    mReorderNeeded(false),
+    mMIRIAMInfo()
 {
   initObjects();
 
@@ -1705,7 +1705,7 @@ void CModel::calculateElasticityMatrix(const C_FLOAT64 & factor,
 
 void CModel::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
                                const C_FLOAT64 & derivationFactor,
-                               const C_FLOAT64 & resolution)
+                               const C_FLOAT64 & /* resolution */)
 {
   unsigned C_INT32 Dim =
     mCurrentState.getNumIndependent() + mNumMetabolitesDependent;
@@ -1798,7 +1798,7 @@ void CModel::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
 
 void CModel::calculateJacobianX(CMatrix< C_FLOAT64 > & jacobianX,
                                 const C_FLOAT64 & derivationFactor,
-                                const C_FLOAT64 & resolution)
+                                const C_FLOAT64 & /* resolution */)
 {
   unsigned C_INT32 Dim = mCurrentState.getNumIndependent();
   unsigned C_INT32 Col;

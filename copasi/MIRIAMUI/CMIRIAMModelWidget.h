@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CMIRIAMModelWidget.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2008/03/10 15:49:57 $
+//   $Author: shoops $
+//   $Date: 2008/03/12 13:28:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -37,8 +37,8 @@ class CMIRIAMModelWidget : public CopasiWidget
     CMIRIAMModelWidget(QWidget *parent, const char * name = 0, WFlags f = 0);
 
   private:
-    bool mChanged;
     std::vector<CopasiTableWidget*> mWidgets;
+    bool mChanged;
     QDateTimeEdit* mpCreatedWidget;
     QHBoxLayout* mpHLayoutDT;
 

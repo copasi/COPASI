@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CEvaluationNodeNormalizer.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/12 00:53:48 $
+//   $Date: 2008/03/12 13:28:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -269,6 +269,7 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeCEvaluationNodeCall(const C
           break;
         case CEvaluationNodeCall::EXPRESSION:
         case CEvaluationNodeCall::FUNCTION:
+        case CEvaluationNodeCall::DELAY:
           pResult = new CEvaluationNodeCall(*pNode);
           // remove all call nodes
           while (!pResult->getListOfChildNodes().empty())

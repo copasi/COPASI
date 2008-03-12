@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.cpp,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
-//   $Author: akoenig $
-//   $Date: 2008/02/27 12:24:59 $
+//   $Author: shoops $
+//   $Date: 2008/03/12 13:28:05 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -148,9 +148,9 @@ QColor CColorScaleAdvanced::getColor(const C_FLOAT64 & number)
   if (tmp > 1) tmp = 1;
   if (tmp < 0) tmp = 0;
 
-  int r = mColorMin.red() * (1 - tmp) + mColorMax.red() * (tmp);
-  int g = mColorMin.green() * (1 - tmp) + mColorMax.green() * (tmp);
-  int b = mColorMin.blue() * (1 - tmp) + mColorMax.blue() * (tmp);
+  int r = (int) (mColorMin.red() * (1 - tmp) + mColorMax.red() * tmp);
+  int g = (int) (mColorMin.green() * (1 - tmp) + mColorMax.green() * tmp);
+  int b = (int) (mColorMin.blue() * (1 - tmp) + mColorMax.blue() * tmp);
 
   QColor color(r, g, b);
   return color;

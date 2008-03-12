@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CReference.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2008/03/10 15:49:56 $
+//   $Author: shoops $
+//   $Date: 2008/03/12 13:28:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,8 +22,8 @@ CReference::CReference(const std::string & objectName, const CCopasiContainer * 
                        CRDFObject* pRDFObj) :
     CCopasiContainer(objectName, pParent, "Reference"),
     mKey(GlobalKeys.add("Reference", this)),
-    mParentTag(""),
-    mpRDFObj(NULL)
+    mpRDFObj(NULL),
+    mParentTag("")
 {
   if (pRDFObj)
   {mpRDFObj = pRDFObj;}
@@ -39,10 +39,9 @@ CReference::CReference(const CReference & src,
                        const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
     mKey(GlobalKeys.add("Reference", this)),
-    mpRDFObj(src.mpRDFObj == NULL ? NULL : new CRDFObject(*src.mpRDFObj))
-{
-  mParentTag = src.mParentTag;
-}
+    mpRDFObj(src.mpRDFObj == NULL ? NULL : new CRDFObject(*src.mpRDFObj)),
+    mParentTag(src.mParentTag)
+{}
 
 CReference::~CReference()
 {

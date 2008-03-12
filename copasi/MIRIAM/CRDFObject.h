@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFObject.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2008/01/31 05:01:50 $
+//   $Author: shoops $
+//   $Date: 2008/03/12 13:28:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -126,14 +126,14 @@ class CRDFObject
     std::string mResource;
 
     /**
-     * Stores whether the reources is resolve locally or remotely.
-     */
-    bool mIsLocalResource;
-
-    /**
      * The Id of the blank node for type BLANK_NODE
      */
     std::string mBlankNodeId;
+
+    /**
+     * Stores whether the reources is resolve locally or remotely.
+     */
+    bool mIsLocalResource;
 
     /**
      * The pointer to the literal for type LITERAL

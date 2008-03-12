@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraph.cpp,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2008/03/10 15:49:56 $
+//   $Author: shoops $
+//   $Date: 2008/03/12 13:28:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -888,7 +888,7 @@ bool CRDFGraph::setFieldValue(const std::string& fieldName, CRDFObject& obj, con
       if (!pFieldNode || !pFieldNode->isObjectNode()
           || pFieldNode->getObject().getType() == CRDFObject::BLANK_NODE)
         //Field Node is a leaf and cannot be a BLANK_NODE
-      {return false;}
+        return false;
     }
 
   CRDFObject object; CRDFLiteral lit;
@@ -909,9 +909,13 @@ bool CRDFGraph::setFieldValue(const std::string& fieldName, CRDFObject& obj, con
           mRemoteResourceNodes.push_back(pFieldNode);
         }
       object.setResource(fieldValue, false);
+      break;
 
+    case CRDFObject::BLANK_NODE:
+      return false;
       break;
     }
+
   pFieldNode->setObject(object);
   //Since RESOURCE and LITERAL don't recurse and the object's value has changed.
   if (obj.getType() == CRDFObject::RESOURCE || obj.getType() == CRDFObject::LITERAL)
@@ -1000,31 +1004,36 @@ CRDFNode* CRDFGraph::findFieldNodeFromObject(const std::string& fieldName, const
               predicate = tagName2Predicate("rdf:_2");
               fieldNode2 = getNodeForPredicate(predicate, findNodeFromObject(startObj));
               if (fieldNode2 == NULL)
-              {return fieldNode2;}
+                return fieldNode2;
               if (fieldNode2->getObject().getResource().find(prefix, 0) != std::string::npos)
-              {return fieldNode2;}
+                return fieldNode2;
               else
                 {
                   if (fieldName == "PubmedId" && fieldNode->getObject().getResource() == "")
-                  {return fieldNode;}
+                    return fieldNode;
                   else if (fieldName == "DOI" && fieldNode2->getObject().getResource() == "")
-                  {return fieldNode2;}
+                    return fieldNode2;
                   else
-                  {return NULL;}
+                    return NULL;
                 }
             }
         }
     }
 
   //if RESOURCE or LITERAL just return the startObj
-  if (startObj.getType() == CRDFObject::RESOURCE || startObj.getType() == CRDFObject::LITERAL)
-  {return findNodeFromObject(startObj);}
+  if (startObj.getType() == CRDFObject::RESOURCE ||
+      startObj.getType() == CRDFObject::LITERAL)
+    {
+      return findNodeFromObject(startObj);
+    }
   else if (startObj.getType() == CRDFObject::BLANK_NODE)
     {
       predicate = tagName2Predicate(fieldName);
       fieldNode = getNodeForPredicate(predicate, findNodeFromObject(startObj));
       return fieldNode;
     }
+
+  return NULL;
 }
 
 CRDFNode* CRDFGraph::getNodeForPredicate(const std::string& predicate, const CRDFNode * startNode)
