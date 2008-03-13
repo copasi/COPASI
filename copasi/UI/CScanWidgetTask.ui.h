@@ -1,12 +1,17 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CScanWidgetTask.ui.h,v $
-   $Revision: 1.12 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/28 00:26:44 $
-   End CVS Header */
+  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CScanWidgetTask.ui.h,v $
+  $Revision: 1.13 $
+  $Name:  $
+  $Author: ssahle $
+  $Date: 2008/03/13 10:32:44 $
+  End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -59,6 +64,15 @@ bool CScanWidgetTask::initFromScanProblem(CScanProblem * pg, const CModel* model
     case CCopasiTask::lyap:
       n = 3;
       break;
+    case CCopasiTask::optimization:
+      n = 4;
+      break;
+    case CCopasiTask::parameterFitting:
+      n = 5;
+      break;
+    case CCopasiTask::sens:
+      n = 6;
+      break;
     default :
       //std::cout << "unknown subtask in scan. Should not happen." << std::endl;
       n = 0;
@@ -89,6 +103,15 @@ bool CScanWidgetTask::saveToScanProblem(CScanProblem * pg) const
         break;
       case 3:
         pg->setSubtask(CCopasiTask::lyap);
+        break;
+      case 4:
+        pg->setSubtask(CCopasiTask::optimization);
+        break;
+      case 5:
+        pg->setSubtask(CCopasiTask::parameterFitting);
+        break;
+      case 6:
+        pg->setSubtask(CCopasiTask::sens);
         break;
       default :
         //std::cout << "unknown subtask in scan. Should not happen." << std::endl;

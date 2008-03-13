@@ -1,20 +1,21 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanWidgetTask.cpp,v $
-   $Revision: 1.9 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/06/20 13:18:06 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanWidgetTask.cpp,v $
+//   $Revision: 1.10 $
+//   $Name:  $
+//   $Author: ssahle $
+//   $Date: 2008/03/13 10:32:44 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
 // All rights reserved.
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CScanWidgetTask.ui'
  **
- ** Created: Mi Mai 10 22:10:35 2006
- **      by: The User Interface Compiler ($Id: CScanWidgetTask.cpp,v 1.9 2006/06/20 13:18:06 shoops Exp $)
+ ** Created: Thu Feb 21 14:54:19 2008
+ **      by: The User Interface Compiler ($Id: CScanWidgetTask.cpp,v 1.10 2008/03/13 10:32:44 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -109,10 +110,12 @@ void CScanWidgetTask::languageChange()
   setCaption(tr("Form1"));
   labelTitle->setText(tr("<h2>Task</h2>"));
   comboType->clear();
-  comboType->insertItem(tr("Steady-State"));
-  comboType->insertItem(tr("Time-Course"));
-  comboType->insertItem(tr("Metabolic Control Analysis"));
-  comboType->insertItem(tr("Lyapunov Exponents"));
+  comboType->insertItem(tr("Steady State"));
+  comboType->insertItem(tr("Time course"));
+  comboType->insertItem(tr("Lyapunov exponents"));
+  comboType->insertItem(tr("Optimization"));
+  comboType->insertItem(tr("Prameter Estimation"));
+  comboType->insertItem(tr("Sensitivities"));
   comboType->setCurrentItem(1);
   buttonEdit->setText(tr("..."));
   checkInitialConditions->setText(tr("always use initial conditions"));

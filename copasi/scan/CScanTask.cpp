@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.cpp,v $
-//   $Revision: 1.70 $
+//   $Revision: 1.71 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/12 01:31:50 $
+//   $Author: ssahle $
+//   $Date: 2008/03/13 10:31:22 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -198,6 +198,21 @@ bool CScanTask::initSubtask()
     case CCopasiTask::lyap:
       mpSubtask = dynamic_cast<CCopasiTask*>
                   ((*CCopasiDataModel::Global->getTaskList())["Lyapunov Exponents"]);
+      break;
+
+    case CCopasiTask::optimization:
+      mpSubtask = dynamic_cast<CCopasiTask*>
+                  ((*CCopasiDataModel::Global->getTaskList())["Optimization"]);
+      break;
+
+    case CCopasiTask::parameterFitting:
+      mpSubtask = dynamic_cast<CCopasiTask*>
+                  ((*CCopasiDataModel::Global->getTaskList())["Parameter Estimation"]);
+      break;
+
+    case CCopasiTask::sens:
+      mpSubtask = dynamic_cast<CCopasiTask*>
+                  ((*CCopasiDataModel::Global->getTaskList())["Sensitivities"]);
       break;
 
     default:
