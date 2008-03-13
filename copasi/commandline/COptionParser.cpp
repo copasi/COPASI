@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptionParser.cpp,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/03/13 10:45:17 $
+//   $Author: shoops $
+//   $Date: 2008/03/13 17:23:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -51,8 +51,9 @@ namespace
     "  --home dir                    Your home directory.\n"
     "  --license                     Display the license.\n"
     "  --nologo                      Surpresses the startup message.\n"
-    "  --validate                    Only validate the given input file (COPASI or\n"
-    "                                SBML) without performing any calculations.\n"
+    "  --validate                    Only validate the given input file (COPASI,\n"
+    "                                Gepasi, or SBML) without performing any\n"
+    "                                calculations.\n"
     "  --verbose                     Enable output of messages during runtime to\n"
     "                                std::error.\n"
     "  -c, --copasidir dir           The COPASI installation directory.\n"
