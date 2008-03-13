@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporterXPPAUT.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/12 01:34:30 $
+//   $Date: 2008/03/13 17:23:56 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -311,7 +311,7 @@ void CODEExporterXPPAUT::exportSingleLine(const std::string & line, std::ostring
 bool CODEExporterXPPAUT::exportSingleObject(std::ostringstream & which,
     std::string & name,
     std::string & expression,
-    std::string & comments)
+    std::string & /* comments */)
 {
   std::ostringstream line;
 

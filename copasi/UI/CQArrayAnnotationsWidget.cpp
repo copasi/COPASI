@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.cpp,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/12 13:28:05 $
+//   $Date: 2008/03/13 17:23:55 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -905,14 +905,14 @@ void CQArrayAnnotationsWidget::tableDoubleClicked()
 #endif
 }
 
-void CQArrayAnnotationsWidget::setColumnSize(int dummy1, int dummy2, int size)
+void CQArrayAnnotationsWidget::setColumnSize(int /* dummy1 */, int /* dummy2 */, int size)
 {
   int i;
   for (i = 0; i < mpContentTable->numCols(); i++)
     mpContentTable->horizontalHeader()->resizeSection(i, size);
 }
 
-void CQArrayAnnotationsWidget::fillBarChart(bool oneDim)
+void CQArrayAnnotationsWidget::fillBarChart(bool /* oneDim */)
 {
 
 #ifdef WITH_QWT3D
