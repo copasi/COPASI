@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQUpdatesWidget.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/03/14 16:32:28 $
+//   $Date: 2008/03/14 23:40:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -294,6 +294,16 @@ void CQUpdatesWidget::loadObjectsTable(CModel* pModel)
                             FROM_UTF8(tmpString)));
       //mpTableState->setText(i, 1, FROM_UTF8(tmpString));
     }
+
+  QColor c(200, 250, 250);
+  for (i = st.beginIndependent() - st.getEntities(); i < st.endIndependent() - st.getEntities(); ++i)
+    mpTableState->setItem(i, 2, new ColorTableItem(mpTableState, QTableItem::Never, c, ""));
+  c = QColor(250, 200, 250);
+  for (i = st.beginDependent() - st.getEntities(); i < st.endDependent() - st.getEntities(); ++i)
+    mpTableState->setItem(i, 2, new ColorTableItem(mpTableState, QTableItem::Never, c, ""));
+  c = QColor(200, 200, 200);
+  for (i = st.beginFixed() - st.getEntities(); i < st.endFixed() - st.getEntities(); ++i)
+    mpTableState->setItem(i, 2, new ColorTableItem(mpTableState, QTableItem::Never, c, ""));
 
   int tmpint = st.beginIndependent() - st.getEntities();
   mpTableState->setText(tmpint, 2, "beginIndependent ");
