@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQUpdatesWidget.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/12 00:32:59 $
+//   $Author: ssahle $
+//   $Date: 2008/03/14 16:32:28 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,6 +27,8 @@ class QGridLayout;
 class QLabel;
 class QTabWidget;
 class QTable;
+
+class CModel;
 
 /**
  * This widget displays tables representing the refresh lists. It will probably only
@@ -52,6 +54,7 @@ class CQUpdatesWidget : public CopasiWidget
     void clearArrays();
 
     void loadOneTable(QTable* pTable, const std::vector< Refresh * > & list);
+    void loadObjectsTable(CModel* pModel);
 
     std::map<const Refresh*, const CCopasiObject*> mRefreshsMap;
 
@@ -61,12 +64,17 @@ class CQUpdatesWidget : public CopasiWidget
 
     QLabel* mLabelTitle;
 
+    QTabWidget* mpMainTab;
     QTabWidget* mpTab;
+    QTabWidget* mpTab2;
 
     QTable* mpTable0;
     QTable* mpTable1;
     QTable* mpTable2;
     QTable* mpTable3;
+
+    QTable* mpTableObj;
+    QTable* mpTableState;
   };
 
 #endif
