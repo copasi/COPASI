@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.cpp,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/13 17:23:55 $
+//   $Author: akoenig $
+//   $Date: 2008/03/14 10:38:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -306,7 +306,6 @@ CQArrayAnnotationsWidget::CQArrayAnnotationsWidget(QWidget* parent, const char* 
 {
   showBarChart = false;
   mBarChartFilled = false;
-  //barChart=false;
 
 #ifdef WITH_QWT3D
   showBarChart = barChart;
@@ -338,12 +337,13 @@ CQArrayAnnotationsWidget::CQArrayAnnotationsWidget(QWidget* parent, const char* 
       if (slider) plot3d->activateSlider();
       mpStack->addWidget(plot3d, 1);
       if (barChartFirst)
-        if (showBarChart)
-          {
-            setFocusOnBars();
-            mpStack->raiseWidget(1);
-            mpButton->setText("table");
-          }
+        {
+          setFocusOnBars();
+          mpStack->raiseWidget(1);
+          mpButton->setText("table");
+        }
+      else
+        mpButton->setText("bars");
     }
 #else
   disableBarChart();
@@ -667,7 +667,7 @@ void CQArrayAnnotationsWidget::fillTable(unsigned C_INT32 rowIndex, unsigned C_I
 
   mOneDimensional = false;
   if (mpStack->id(mpStack->visibleWidget()) == 1)
-    fillBarChart(mOneDimensional);
+    fillBarChart();
 }
 
 void CQArrayAnnotationsWidget::fillTable(unsigned C_INT32 rowIndex,
@@ -723,7 +723,7 @@ void CQArrayAnnotationsWidget::fillTable(unsigned C_INT32 rowIndex,
   mOneDimensional = true;
 
   if (mpStack->id(mpStack->visibleWidget()) == 1)
-    fillBarChart(mOneDimensional);
+    fillBarChart();
 }
 
 void CQArrayAnnotationsWidget::fillTable()
@@ -790,7 +790,7 @@ void CQArrayAnnotationsWidget::switchToBarChart()
       setFocusOnBars();
 
       if (!mBarChartFilled)
-        fillBarChart(mOneDimensional);
+        fillBarChart();
 
       mpStack->raiseWidget(1);
       mpButton->setText("table");
@@ -912,21 +912,20 @@ void CQArrayAnnotationsWidget::setColumnSize(int /* dummy1 */, int /* dummy2 */,
     mpContentTable->horizontalHeader()->resizeSection(i, size);
 }
 
-void CQArrayAnnotationsWidget::fillBarChart(bool /* oneDim */)
+void CQArrayAnnotationsWidget::fillBarChart()
 {
 
 #ifdef WITH_QWT3D
-
   mBarChartFilled = true;
 
   if (!mpArray) return;
 
   assert(mRowIndex < mIndex.size());
-  if (!oneDim)
+  if (!mOneDimensional)
     assert(mColIndex < mIndex.size());
 
   mpContentTable->setNumRows(mpArray->size()[mRowIndex]);
-  if (oneDim)
+  if (mOneDimensional)
     mpContentTable->setNumCols(1);
   else
     mpContentTable->setNumCols(mpArray->size()[mColIndex]);
@@ -934,12 +933,12 @@ void CQArrayAnnotationsWidget::fillBarChart(bool /* oneDim */)
   mpContentTable->horizontalHeader()->setLabel(0, "");
 
   std::vector<std::string> rowdescr = mpArray->getAnnotationsString(mRowIndex);
-  if (!oneDim)
+  if (!mOneDimensional)
     std::vector<std::string> coldescr = mpArray->getAnnotationsString(mColIndex);
 
   unsigned C_INT32 i, imax = mpArray->size()[mRowIndex];
   unsigned C_INT32 j, jmax;
-  if (oneDim)
+  if (mOneDimensional)
     jmax = 1;
   else
     jmax = mpArray->size()[mColIndex];
@@ -947,15 +946,15 @@ void CQArrayAnnotationsWidget::fillBarChart(bool /* oneDim */)
   if (showBarChart && (jmax > 0 && imax > 0))
     {
       //create a new array data, witch holds the hole numeric data
-      int columns = jmax;
-      int rows = imax;
+      unsigned C_INT32 columns = jmax;
+      unsigned C_INT32 rows = imax;
       data = new double * [columns];
       for (i = 0; i < columns; ++i)
         data[i] = new double[rows];
 
       //minValue and maxValue help to figure out the min and max value
       mIndex[mRowIndex] = 0;
-      if (!oneDim)
+      if (!mOneDimensional)
         mIndex[mColIndex] = 0;
       double maxValue = (double)(*mpArray->array())[mIndex];
       double minValue = (double)(*mpArray->array())[mIndex];
@@ -965,7 +964,7 @@ void CQArrayAnnotationsWidget::fillBarChart(bool /* oneDim */)
         for (j = 0; j < jmax; ++j)
           {
             mIndex[mRowIndex] = i;
-            if (!oneDim)
+            if (!mOneDimensional)
               mIndex[mColIndex] = j;
 
             data[j][i] = (double)(*mpArray->array())[mIndex];
@@ -1016,7 +1015,7 @@ void CQArrayAnnotationsWidget::fillBarChart(bool /* oneDim */)
           mColors.erase(mColors.begin(), mColors.end());
           plot3d->showColorLegend(true);
 
-          if (oneDim)
+          if (mOneDimensional)
             plot3d->setDescriptions(NULL, &mpArray->getAnnotationsString(mRowIndex));
           else
             plot3d->setDescriptions(&mpArray->getAnnotationsString(mColIndex), &mpArray->getAnnotationsString(mRowIndex));

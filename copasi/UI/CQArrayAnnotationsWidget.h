@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.h,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: akoenig $
-//   $Date: 2008/02/27 12:24:59 $
+//   $Date: 2008/03/14 10:38:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -215,7 +215,7 @@ class CQArrayAnnotationsWidget : public QVBox
 
   public:
 
-    CQArrayAnnotationsWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0, bool barChart = true, bool slider = true, bool barChartFirst = true);
+    CQArrayAnnotationsWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0, bool barChart = true, bool slider = true, bool barChartFirst = false);
     ~CQArrayAnnotationsWidget();
 
     void setArrayAnnotation(const CArrayAnnotation * pArray);
@@ -266,7 +266,7 @@ class CQArrayAnnotationsWidget : public QVBox
                    CCopasiAbstractArray::index_type & index);
     void fillTable();
 
-    void fillBarChart(bool oneDim);
+    void fillBarChart();
 
     /**
      *  only for dimensionality > 2
