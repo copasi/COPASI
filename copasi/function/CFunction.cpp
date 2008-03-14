@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.cpp,v $
-//   $Revision: 1.76 $
+//   $Revision: 1.77 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/09/21 15:40:22 $
+//   $Author: shoops $
+//   $Date: 2008/03/14 19:05:45 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -14,13 +19,16 @@
 
 #include "CFunction.h"
 
+#include "utilities/copasimathml.h"
+
 CFunction::CFunction(const std::string & name,
                      const CCopasiContainer * pParent,
                      const CEvaluationTree::Type & type):
     CEvaluationTree(name, pParent, type),
     mVariables("Function Parameters", this),
     mpCallParameters(NULL),
-    mReversible(TriUnspecified)
+    mReversible(TriUnspecified),
+    mMiriamAnnotation("")
 {}
 
 CFunction::CFunction(const CFunction & src,
@@ -28,8 +36,10 @@ CFunction::CFunction(const CFunction & src,
     CEvaluationTree(src, pParent),
     mVariables(src.mVariables, this),
     mpCallParameters(NULL),
-    mReversible(src.mReversible)
+    mReversible(src.mReversible),
+    mMiriamAnnotation("")
 {
+  setMiriamAnnotation(src.mMiriamAnnotation);
   compile();
 }
 
@@ -213,7 +223,26 @@ bool CFunction::isSuitable(const unsigned C_INT32 noSubstrates,
   return true;
 }
 
-#include "utilities/copasimathml.h"
+void CFunction::setMiriamAnnotation(const std::string & miriamAnnotation)
+{
+  mMiriamAnnotation = miriamAnnotation;
+
+  // We need to synchronize the rdf:about attribute with the object key.
+  // :TODO: This assumes a compacted XML presentation, i.e., the top
+  // element is the root of the graph.
+  std::string::size_type Start =
+    mMiriamAnnotation.find("rdf:about=") + 11;
+
+  if (Start != std::string::npos)
+    {
+      std::string::size_type Count =
+        mMiriamAnnotation.find("\"", Start) - Start;
+      mMiriamAnnotation.replace(Start, Count, "#" + getKey());
+    }
+}
+
+const std::string & CFunction::getMiriamAnnotation() const
+  {return mMiriamAnnotation;}
 
 void CFunction::createListOfParametersForMathML(std::vector<std::vector<std::string> > & env)
 {

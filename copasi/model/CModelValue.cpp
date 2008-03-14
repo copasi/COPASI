@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-//   $Revision: 1.55 $
+//   $Revision: 1.56 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/12 01:05:41 $
+//   $Date: 2008/03/14 19:05:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -95,7 +95,7 @@ CModelEntity::CModelEntity(const CModelEntity & src,
     mStatus(FIXED),
     mUsed(false),
     mUsedOnce(false),
-    mMiriamAnnotation(src.mMiriamAnnotation),
+    mMiriamAnnotation(""),
     mpModel(NULL)
 {
   initObjects();
@@ -105,7 +105,7 @@ CModelEntity::CModelEntity(const CModelEntity & src,
   *mpValueData = *src.mpValueData;
   *mpIValue = *src.mpIValue;
 
-  CONSTRUCTOR_TRACE;
+  setMiriamAnnotation(src.mMiriamAnnotation);
 }
 
 CModelEntity::~CModelEntity()
