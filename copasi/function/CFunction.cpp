@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.cpp,v $
-//   $Revision: 1.77 $
+//   $Revision: 1.78 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/14 19:05:45 $
+//   $Date: 2008/03/15 14:26:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -231,10 +231,11 @@ void CFunction::setMiriamAnnotation(const std::string & miriamAnnotation)
   // :TODO: This assumes a compacted XML presentation, i.e., the top
   // element is the root of the graph.
   std::string::size_type Start =
-    mMiriamAnnotation.find("rdf:about=") + 11;
+    mMiriamAnnotation.find("rdf:about=");
 
   if (Start != std::string::npos)
     {
+      Start += 11;
       std::string::size_type Count =
         mMiriamAnnotation.find("\"", Start) - Start;
       mMiriamAnnotation.replace(Start, Count, "#" + getKey());
