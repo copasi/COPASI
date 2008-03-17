@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.194 $
+//   $Revision: 1.195 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/03/17 16:03:29 $
+//   $Date: 2008/03/17 20:29:00 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -5202,6 +5202,7 @@ void SBMLImporter::multiplySubstanceOnlySpeciesByVolume(ConverterASTNode* pNode)
 bool SBMLImporter::importMIRIAM(const SBase* pSBMLObject, CCopasiObject* pCOPASIObject)
 {
   bool result = true;
+  if (pSBMLObject == NULL || pCOPASIObject == NULL) return false;
   // search for the MIRIAM annotation
   const XMLNode* pMIRIAMNode = NULL;
   // this const cast is needed because getAnnotation only works on non-const

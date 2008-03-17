@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.h,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/12 03:31:03 $
+//   $Author: gauges $
+//   $Date: 2008/03/17 20:29:00 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -46,6 +46,7 @@ class CEvent;
 class CChemEqElement;
 class CFunctionDB;
 class Rule;
+class XMLNode;
 
 class CSBMLExporter
   {
@@ -65,6 +66,7 @@ class CSBMLExporter
     bool mVariableVolumes;
     const CModelValue* mpAvogadro;
     bool mAvogadroCreated;
+    std::set<std::string> mMetaIds;
 
   public:
     /**
@@ -483,6 +485,18 @@ class CSBMLExporter
      * Try to find a global parameter that represents avogadros number.
      */
     void findAvogadro(const CCopasiDataModel& dataModel);
+
+    /**
+     * This method gets the MIRIAM annotation from the given COPASI object and
+     * sets it on the given SBML object.
+     */
+    bool updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, SBase* pSBMLObject, std::set<std::string>& mMetaIds);
+    /**
+     * This method creates a copy of parent where the child with the given index is
+     * replaced by the new child given as the second argument.
+     * If index is greater than the number of children - 1, NULL is returned.
+     */
+    XMLNode* replaceChild(const XMLNode* pParent, const XMLNode* pNewChild, unsigned int index);
   };
 
 #endif // CSBLExporter_H__

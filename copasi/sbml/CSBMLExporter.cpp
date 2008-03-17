@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/12 03:31:03 $
+//   $Author: gauges $
+//   $Date: 2008/03/17 20:29:00 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -362,6 +362,7 @@ void CSBMLExporter::createCompartment(CCompartment& compartment)
           removeInitialAssignment(pSBMLCompartment->getId());
         }
     }
+  CSBMLExporter::updateMIRIAMAnnotation(&compartment, pSBMLCompartment, this->mMetaIds);
 }
 
 /**
@@ -490,6 +491,7 @@ void CSBMLExporter::createMetabolite(CMetab& metab)
           this->mInitialAssignmentVector.push_back(&metab);
         }
     }
+  CSBMLExporter::updateMIRIAMAnnotation(&metab, pSBMLSpecies, this->mMetaIds);
 }
 
 /**
@@ -590,6 +592,7 @@ void CSBMLExporter::createParameter(CModelValue& modelValue)
           removeInitialAssignment(pParameter->getId());
         }
     }
+  CSBMLExporter::updateMIRIAMAnnotation(&modelValue, pParameter, this->mMetaIds);
 }
 
 /**
@@ -742,6 +745,7 @@ void CSBMLExporter::createReaction(CReaction& reaction, CCopasiDataModel& dataMo
     {
       pSBMLReaction->unsetKineticLaw();
     }
+  CSBMLExporter::updateMIRIAMAnnotation(&reaction, pSBMLReaction, this->mMetaIds);
 }
 
 /**
@@ -1758,6 +1762,7 @@ void CSBMLExporter::createFunctionDefinition(CFunction& function, const CCopasiD
           CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 28, function.getObjectName().c_str());
         }
     }
+  CSBMLExporter::updateMIRIAMAnnotation(&function, pFunDef, this->mMetaIds);
 }
 
 /**
@@ -1819,6 +1824,8 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
           delete pNotes;
         }
     }
+  // update the MIRIAM annotation on the model
+  CSBMLExporter::updateMIRIAMAnnotation(pModel, this->mpSBMLDocument->getModel(), this->mMetaIds);
 
   // create units, compartments, species, parameters, reactions, initial
   // assignment, assignments, (event) and function definitions
@@ -3612,4 +3619,54 @@ void CSBMLExporter::findAvogadro(const CCopasiDataModel& dataModel)
         }
       ++it;
     }
+}
+
+bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, SBase* pSBMLObject, std::set<std::string>& mMetaIds)
+{
+  bool result = true;
+  if (pCOPASIObject == NULL || pSBMLObject == NULL) return false;
+  // we have to check if the COPASI object has MIRIAM annotation
+  // if not, we have to delete the MIRIAM annotation in the SBase
+  // object
+  // if it does, we have to check if the SBase object has a MIRIAM annotation
+  // and we have to replace it
+  // if the SBase object has no annotation we have to create one with the
+  // miriam annotation
+  // if the SBase object has an annotation but no MIRIAM annotation, we have
+  // to add the MIRIAM annotation
+  // we have to check if the SBase object has a meta id and if it doesn't we
+  // have to create one
+  // we have to change the meta ids within the MIRIAM annotation
+  return result;
+}
+
+/**
+ * This method creates a copy of parent where the child with the given index is
+ * replaced by the new child given as the second argument.
+ * If index is greater than the number of children - 1, NULL is returned.
+ */
+XMLNode* CSBMLExporter::replaceChild(const XMLNode* pParent, const XMLNode* pNewChild, unsigned int index)
+{
+  XMLNode* pResult = NULL;
+  if (index < pParent->getNumChildren())
+    {
+      // make a shallow copy of pParent
+      pResult = new XMLNode(*pParent);
+      unsigned int i, iMax = pParent->getNumChildren();
+      for (i = 0;i < iMax;++i)
+        {
+          // make a deep copy of each child, but if the index of child is the
+          // given index, we add pNewChild instead of making a copy of the
+          // current child
+          if (i == index)
+            {
+              pResult->addChild(*pNewChild);
+            }
+          else
+            {
+              pResult->addChild(pParent->getChild(i));
+            }
+        }
+    }
+  return pResult;
 }
