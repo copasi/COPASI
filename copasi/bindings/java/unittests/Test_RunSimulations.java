@@ -1,12 +1,17 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/unittests/Test_RunSimulations.java,v $ 
-//   $Revision: 1.7 $ 
+//   $Revision: 1.8 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2007/02/12 15:26:46 $ 
+//   $Date: 2008/03/17 15:18:14 $ 
 // End CVS Header 
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc. and EML Research, gGmbH. 
 // All rights reserved. 
 
@@ -173,7 +178,7 @@ public class Test_RunSimulations extends TestCase
       CTimeSeries timeseries=task.getTimeSeries();
       assertTrue(timeseries!=null);
       assertTrue(timeseries.getClass().getName().equals("org.COPASI.CTimeSeries"));
-      assertTrue(timeseries.getNumSteps()==10001);
+      assertTrue(timeseries.getRecordedSteps()==10001);
       assertTrue(timeseries.getNumVariables()==3);
       values[x][0]=timeseries.getConcentrationData(1386,0);
       values[x][1]=timeseries.getConcentrationData(1386,1);
@@ -205,7 +210,7 @@ public class Test_RunSimulations extends TestCase
       CTimeSeries timeseries=task.getTimeSeries();
       assertTrue(timeseries!=null);
       assertTrue(timeseries.getClass().getName().equals("org.COPASI.CTimeSeries"));
-      assertTrue(timeseries.getNumSteps()==10001);
+      assertTrue(timeseries.getRecordedSteps()==10001);
       assertTrue(timeseries.getNumVariables()==3);
       values[x][0]=timeseries.getConcentrationData(1386,0);
       values[x][1]=timeseries.getConcentrationData(1386,1);
@@ -234,7 +239,7 @@ public class Test_RunSimulations extends TestCase
     CTimeSeries timeseries=task.getTimeSeries();
     assertTrue(timeseries!=null);
     assertTrue(timeseries.getClass().getName().equals("org.COPASI.CTimeSeries"));
-    assertTrue(timeseries.getNumSteps()==10001);
+    assertTrue(timeseries.getRecordedSteps()==10001);
     assertTrue(timeseries.getNumVariables()==3);
     double value=timeseries.getConcentrationData(1386,0);
     assertTrue(Math.abs((value-1.386)/1.386)<0.001);
@@ -256,7 +261,7 @@ public class Test_RunSimulations extends TestCase
       CTimeSeries timeseries=task.getTimeSeries();
       assertTrue(timeseries!=null);
       assertTrue(timeseries.getClass().getName().equals("org.COPASI.CTimeSeries"));
-      assertTrue(timeseries.getNumSteps()==10001);
+      assertTrue(timeseries.getRecordedSteps()==10001);
       assertTrue(timeseries.getNumVariables()==4);
       values[x][0]=timeseries.getConcentrationData(3574,0);
       values[x][1]=timeseries.getConcentrationData(3574,1);
@@ -288,7 +293,7 @@ public class Test_RunSimulations extends TestCase
       CTimeSeries timeseries=task.getTimeSeries();
       assertTrue(timeseries!=null);
       assertTrue(timeseries.getClass().getName().equals("org.COPASI.CTimeSeries"));
-      assertTrue(timeseries.getNumSteps()==10001);
+      assertTrue(timeseries.getRecordedSteps()==10001);
       assertTrue(timeseries.getNumVariables()==4);
       values[x][0]=timeseries.getConcentrationData(3574,0);
       values[x][1]=timeseries.getConcentrationData(3574,1);
@@ -317,7 +322,7 @@ public class Test_RunSimulations extends TestCase
     CTimeSeries timeseries=task.getTimeSeries();
     assertTrue(timeseries!=null);
     assertTrue(timeseries.getClass().getName().equals("org.COPASI.CTimeSeries"));
-    assertTrue(timeseries.getNumSteps()==10001);
+    assertTrue(timeseries.getRecordedSteps()==10001);
     assertTrue(timeseries.getNumVariables()==4);
     double value=timeseries.getConcentrationData(3574,0);
     assertTrue(Math.abs((value-3.574)/3.574)<0.001);
