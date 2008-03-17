@@ -1,3 +1,16 @@
+# Begin CVS Header 
+#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/Test_RunSimulations.py,v $ 
+#   $Revision: 1.5 $ 
+#   $Name:  $ 
+#   $Author: gauges $ 
+#   $Date: 2008/03/17 15:58:01 $ 
+# End CVS Header 
+
+# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+# and The University of Manchester. 
+# All rights reserved. 
+
 # Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
 # Properties, Inc. and EML Research, gGmbH.
 # All rights reserved.
@@ -65,7 +78,7 @@ class Test_RunSimulations(unittest.TestCase):
       timeseries=task.getTimeSeries()
       self.assert_(timeseries!=None)
       self.assert_(timeseries.__class__==COPASI.CTimeSeries)
-      self.assert_(timeseries.getNumSteps()==10001)
+      self.assert_(timeseries.getRecordedSteps()==10001)
       self.assert_(timeseries.getNumVariables()==3)
       values.append([timeseries.getConcentrationData(1386,0),timeseries.getConcentrationData(1386,1),timeseries.getConcentrationData(1386,2)])
     average=[0.0,0.0,0.0]
@@ -89,7 +102,7 @@ class Test_RunSimulations(unittest.TestCase):
       timeseries=task.getTimeSeries()
       self.assert_(timeseries!=None)
       self.assert_(timeseries.__class__==COPASI.CTimeSeries)
-      self.assert_(timeseries.getNumSteps()==10001)
+      self.assert_(timeseries.getRecordedSteps()==10001)
       self.assert_(timeseries.getNumVariables()==3)
       values.append([timeseries.getConcentrationData(1386,0),timeseries.getConcentrationData(1386,1),timeseries.getConcentrationData(1386,2)])
     average=[0.0,0.0,0.0]
@@ -112,7 +125,7 @@ class Test_RunSimulations(unittest.TestCase):
     timeseries=task.getTimeSeries()
     self.assert_(timeseries!=None)
     self.assert_(timeseries.__class__==COPASI.CTimeSeries)
-    self.assert_(timeseries.getNumSteps()==10001)
+    self.assert_(timeseries.getRecordedSteps()==10001)
     self.assert_(timeseries.getNumVariables()==3)
     value=timeseries.getConcentrationData(1386,0)
     self.assert_(math.fabs((value-1.386)/1.386)<0.001)
@@ -132,7 +145,7 @@ class Test_RunSimulations(unittest.TestCase):
       timeseries=task.getTimeSeries()
       self.assert_(timeseries!=None)
       self.assert_(timeseries.__class__==COPASI.CTimeSeries)
-      self.assert_(timeseries.getNumSteps()==10001)
+      self.assert_(timeseries.getRecordedSteps()==10001)
       self.assert_(timeseries.getNumVariables()==4)
       values.append([timeseries.getConcentrationData(3574,0),timeseries.getConcentrationData(3574,1),timeseries.getConcentrationData(3574,3)])
     average=[0.0,0.0,0.0]
@@ -157,7 +170,7 @@ class Test_RunSimulations(unittest.TestCase):
       timeseries=task.getTimeSeries()
       self.assert_(timeseries!=None)
       self.assert_(timeseries.__class__==COPASI.CTimeSeries)
-      self.assert_(timeseries.getNumSteps()==10001)
+      self.assert_(timeseries.getRecordedSteps()==10001)
       self.assert_(timeseries.getNumVariables()==4)
       values.append([timeseries.getConcentrationData(3574,0),timeseries.getConcentrationData(3574,1),timeseries.getConcentrationData(3574,3)])
     average=[0.0,0.0,0.0]
@@ -180,7 +193,7 @@ class Test_RunSimulations(unittest.TestCase):
     timeseries=task.getTimeSeries()
     self.assert_(timeseries!=None)
     self.assert_(timeseries.__class__==COPASI.CTimeSeries)
-    self.assert_(timeseries.getNumSteps()==10001)
+    self.assert_(timeseries.getRecordedSteps()==10001)
     self.assert_(timeseries.getNumVariables()==4)
     value=timeseries.getConcentrationData(3574,0)
     self.assert_(math.fabs((value-3.574)/3.574)<0.001)

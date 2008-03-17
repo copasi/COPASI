@@ -1,3 +1,16 @@
+# Begin CVS Header 
+#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/Test_CTimeSeries.py,v $ 
+#   $Revision: 1.10 $ 
+#   $Name:  $ 
+#   $Author: gauges $ 
+#   $Date: 2008/03/17 15:58:01 $ 
+# End CVS Header 
+
+# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+# and The University of Manchester. 
+# All rights reserved. 
+
 # Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
 # Properties, Inc. and EML Research, gGmbH.
 # All rights reserved.
@@ -15,8 +28,8 @@ class Test_CTimeSeries(unittest.TestCase):
     self.ctimeseries.add()
     self.ctimeseries.finish()
 
-  def test_getNumSteps(self):
-    steps=self.ctimeseries.getNumSteps()
+  def test_getRecordedSteps(self):
+    steps=self.ctimeseries.getRecordedSteps()
     self.assert_(type(steps)==IntType)
     self.assert_(steps==1)
 
@@ -53,7 +66,7 @@ class Test_CTimeSeries(unittest.TestCase):
 
 def suite():
   tests=[
-          'test_getNumSteps'
+          'test_getRecordedSteps'
          ,'test_getNumVariables'
          ,'test_getData'
          ,'test_getConcentrationData'
