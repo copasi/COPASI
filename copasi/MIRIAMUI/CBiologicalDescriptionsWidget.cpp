@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CBiologicalDescriptionsWidget.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/03/10 15:49:57 $
+//   $Date: 2008/03/17 20:33:55 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -100,6 +100,8 @@ void CBiologicalDescriptionsWidget::tableLineFromObject(const CCopasiObject* obj
   if (!obj) return;
   const CBiologicalDescription *pBiologicalDescription = (const CBiologicalDescription*)obj;
 
+  table->setText(row, COL_DUMMY, QString::number(row));
+
   QComboTableItem * pComboBox = NULL;
   if (dynamic_cast<QComboTableItem *>(table->item(row, COL_RELATIONSHIP)))
     {
@@ -178,7 +180,14 @@ CCopasiObject* CBiologicalDescriptionsWidget::createNewObject(const std::string 
   int i = 0;
   CBiologicalDescription* pBiologicalDescription = NULL;
 
-  while (!(pBiologicalDescription = CCopasiDataModel::Global->getModel()->getMIRIAMInfo().createBiologicalDescription(name)))
+  std::istringstream ss(name);
+  unsigned C_INT32 row;
+  ss >> row;
+  const std::string relationship = (const char *) static_cast<QComboTableItem *>(table->item(row, COL_RELATIONSHIP))->currentText().utf8();
+  const std::map<std::string, std::string> relationships = CConstants::getRelationships();
+  std::string newTableName = CConstants::getKey(relationships, relationship);
+
+  while (!(pBiologicalDescription = CCopasiDataModel::Global->getModel()->getMIRIAMInfo().createBiologicalDescription(name, newTableName)))
     {
       i++;
       nname = name + "_";

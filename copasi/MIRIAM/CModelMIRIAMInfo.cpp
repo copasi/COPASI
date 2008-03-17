@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CModelMIRIAMInfo.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/03/10 15:49:56 $
+//   $Date: 2008/03/17 20:33:56 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,7 +35,7 @@ CModelMIRIAMInfo::CModelMIRIAMInfo() :
   clearMembers();
   mpRDFGraph = new CRDFGraph();
 
-  std::string buf;
+  /*std::string buf;
   std::string line;
   std::ifstream xmlFile("example.xml");
   while (std::getline(xmlFile, line))
@@ -47,7 +47,7 @@ CModelMIRIAMInfo::CModelMIRIAMInfo() :
       fillInfoFromGraph();
       std::string reprint = CRDFWriter::xmlFromGraph(mpRDFGraph);
     }
-  xmlFile.close();
+  xmlFile.close();*/
 }
 
 CModelMIRIAMInfo::~CModelMIRIAMInfo()
@@ -273,16 +273,16 @@ void CModelMIRIAMInfo::clearMembers()
 void CModelMIRIAMInfo::loadGraph(const std::string& key)
 {
   mpEntity = dynamic_cast< CModelEntity * >(GlobalKeys.get(key));
-  /*if (!mpEntity)
-     {
-       if ((mpEntity = dynamic_cast< CModelEntity * >(GlobalKeys.get(key))) != NULL)
-         {
-           CRDFGraph * oldGraph = mpRDFGraph;
-           mpRDFGraph = mpRDFGraph->loadGraph(mpEntity);
-           pdelete(oldGraph);
-           fillInfoFromGraph();
-         }
-     }*/
+  if (!mpEntity)
+    {
+      if ((mpEntity = dynamic_cast< CModelEntity * >(GlobalKeys.get(key))) != NULL)
+        {
+          CRDFGraph * oldGraph = mpRDFGraph;
+          mpRDFGraph = mpRDFGraph->loadGraph(mpEntity);
+          pdelete(oldGraph);
+          fillInfoFromGraph();
+        }
+    }
 }
 
 bool CModelMIRIAMInfo::saveGraph()
