@@ -1,3 +1,16 @@
+// Begin CVS Header 
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CModelValue.i,v $ 
+//   $Revision: 1.8 $ 
+//   $Name:  $ 
+//   $Author: gauges $ 
+//   $Date: 2008/03/17 19:12:44 $ 
+// End CVS Header 
+
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
+
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
@@ -132,13 +145,13 @@ class CModelEntity : public CCopasiContainer
      * Set whether the model entity is used once prior to simulation
      * @param const bool & used
      */
-    void setUsedOnce(const bool & usedOnce);
+    void setCalculatedOnce(const bool & usedOnce);
 
     /**
      * Retreive whether the model value is used once prior to simulation
      * @return const bool & usedOnce
      */
-    const bool & isUsedOnce() const;
+    const bool & isCalculatedOnce() const;
 
 };
 

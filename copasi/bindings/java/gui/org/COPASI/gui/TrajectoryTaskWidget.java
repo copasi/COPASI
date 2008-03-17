@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/gui/org/COPASI/gui/TrajectoryTaskWidget.java,v $ 
-//   $Revision: 1.9 $ 
+//   $Revision: 1.10 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2008/03/17 15:58:01 $ 
+//   $Date: 2008/03/17 19:12:44 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -70,10 +70,10 @@ public class TrajectoryTaskWidget extends TaskWidget  implements FocusListener{
 			GridBagConstraints gbc=new GridBagConstraints();
 			
 			// Festlegen, dass die GUI-Elemente die Gitterfelder in 
-	                // waagerechter Richtung ausfüllen:
+	                // waagerechter Richtung ausfuellen:
 			gbc.fill=GridBagConstraints.NONE;
 			
-			// Die Abständer der einzelnen GUI-Elemente zu den gedachten 
+			// Die Abstaende der der einzelnen GUI-Elemente zu den gedachten 
 	                // Gitterlinien festgelegen:
 			gbc.insets = new Insets(2,2,2,2);  
 
@@ -357,7 +357,7 @@ public class TrajectoryTaskWidget extends TaskWidget  implements FocusListener{
                                CTimeSeries timeSeries=task.getTimeSeries();
                                JFrame mainFrame=new JFrame("Time Course Result");
                                long i,j;
-                               long iMax=timeSeries.getNumSteps();
+                               long iMax=timeSeries.getRecordedSteps();
                                long jMax=timeSeries.getNumVariables();
                                Vector<String> columnNames=new Vector<String>();
                                Vector<Vector<Double>> data=new Vector<Vector<Double>>();
