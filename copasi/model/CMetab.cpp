@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-//   $Revision: 1.133 $
+//   $Revision: 1.134 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/11 23:32:34 $
+//   $Date: 2008/03/17 19:05:36 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -475,6 +475,10 @@ bool CMetab::compileInitialValueDependencies(const bool & updateConcentration)
         Dependencies.insert(mpCompartment->getInitialValueReference());
       mpIValueReference->setDirectDependencies(Dependencies);
       Dependencies.clear();
+
+      // If we have constant initial expression, we update the initial concentration.
+      if (mpIConcReference->getDirectDependencies().size() == 0)
+        mIConc = mpInitialExpression->calcValue();
 
       return success;
     }
