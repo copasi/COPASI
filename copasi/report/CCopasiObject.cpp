@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-//   $Revision: 1.70 $
+//   $Revision: 1.71 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/11 23:36:33 $
+//   $Date: 2008/03/17 16:23:34 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -338,11 +338,20 @@ CCopasiObject::buildUpdateSequence(const std::set< const CCopasiObject * > & obj
     else
       ++itSet;
 
-  // Remove the items in the ignore list
-  itSet = uptoDateObjects.begin();
-  endSet = uptoDateObjects.end();
+  // Build the list of all up to date objects
+  std::set< const CCopasiObject * > UpToDateSet;
+  for (itSet = uptoDateObjects.begin(), endSet = uptoDateObjects.end(); itSet != endSet; ++itSet)
+    {
+      // At least the object itself is up to date.
+      InsertedObject = UpToDateSet.insert(*itSet);
 
-  for (; itSet != endSet; ++itSet)
+      // Add all its dependencies too
+      if (InsertedObject.second)
+        (*itSet)->getAllDependencies(UpToDateSet);
+    }
+
+  // Now remove all objects in the dependency set which are up to date
+  for (itSet = UpToDateSet.begin(), endSet = UpToDateSet.end(); itSet != endSet; ++itSet)
     DependencySet.erase(*itSet);
 
   // Create a properly sorted list.

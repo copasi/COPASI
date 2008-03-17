@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-//   $Revision: 1.57 $
+//   $Revision: 1.58 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/15 14:26:40 $
+//   $Date: 2008/03/17 16:23:34 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -70,7 +70,7 @@ CModelEntity::CModelEntity(const std::string & name,
     mpInitialExpression(NULL),
     mStatus(FIXED),
     mUsed(false),
-    mUsedOnce(false),
+    mCalculatedOnce(false),
     mMiriamAnnotation(""),
     mpModel(NULL)
 {
@@ -94,7 +94,7 @@ CModelEntity::CModelEntity(const CModelEntity & src,
     mpInitialExpression(new CExpression(*src.mpInitialExpression)),
     mStatus(FIXED),
     mUsed(false),
-    mUsedOnce(false),
+    mCalculatedOnce(false),
     mMiriamAnnotation(""),
     mpModel(NULL)
 {
@@ -399,7 +399,7 @@ void CModelEntity::setStatus(const CModelEntity::Status & status)
           mRate = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
           mUsed = true;
-          mUsedOnce = false;
+          mCalculatedOnce = false;
           break;
 
         case ODE:
@@ -410,21 +410,21 @@ void CModelEntity::setStatus(const CModelEntity::Status & status)
           mpRateReference->setRefresh(this, &CModelEntity::calculate);
 
           mUsed = true;
-          mUsedOnce = false;
+          mCalculatedOnce = false;
           break;
 
         case REACTIONS:
           pdelete(mpExpression);
 
           mUsed = true;
-          mUsedOnce = false;
+          mCalculatedOnce = false;
           break;
 
         case TIME:
           pdelete(mpExpression);
 
           mUsed = true;
-          mUsedOnce = false;
+          mCalculatedOnce = false;
           break;
 
         case FIXED:
@@ -433,7 +433,7 @@ void CModelEntity::setStatus(const CModelEntity::Status & status)
           mRate = 0.0;
 
           mUsed = false;
-          mUsedOnce = false;
+          mCalculatedOnce = false;
           break;
         }
     }
@@ -563,11 +563,11 @@ void CModelEntity::setUsed(const bool & used)
 const bool & CModelEntity::isUsed() const
   {return mUsed;}
 
-void CModelEntity::setUsedOnce(const bool & usedOnce)
-{mUsedOnce = usedOnce;}
+void CModelEntity::setCalculatedOnce(const bool & calculatedOnce)
+{mCalculatedOnce = calculatedOnce;}
 
-const bool & CModelEntity::isUsedOnce() const
-  {return mUsedOnce;}
+const bool & CModelEntity::isCalculatedOnce() const
+  {return mCalculatedOnce;}
 
 void CModelEntity::setMiriamAnnotation(const std::string & miriamAnnotation)
 {

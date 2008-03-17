@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQUpdatesWidget.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/03/14 23:40:13 $
+//   $Author: shoops $
+//   $Date: 2008/03/17 16:23:34 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -198,10 +198,10 @@ void CQUpdatesWidget::loadObjectsTable(CModel* pModel)
         tmpString += " (Used = true, ";
       else
         tmpString += " (Used = false, ";
-      if (pM->isUsedOnce())
-        tmpString += "UsedOnce = true)";
+      if (pM->isCalculatedOnce())
+        tmpString += "CalculatedOnce = true)";
       else
-        tmpString += "UsedOnce = false)";
+        tmpString += "CalculatedOnce = false)";
 
       mpTableObj->setItem(i, 1, new ColorTableItem(mpTableObj, QTableItem::Never, c,
                           FROM_UTF8(tmpString)));
@@ -234,10 +234,10 @@ void CQUpdatesWidget::loadObjectsTable(CModel* pModel)
         tmpString += " (Used = true, ";
       else
         tmpString += " (Used = false, ";
-      if (pM->isUsedOnce())
-        tmpString += "UsedOnce = true)";
+      if (pM->isCalculatedOnce())
+        tmpString += "CalculatedOnce = true)";
       else
-        tmpString += "UsedOnce = false)";
+        tmpString += "CalculatedOnce = false)";
       mpTableObj->setItem(i, 4, new ColorTableItem(mpTableObj, QTableItem::Never, c,
                           FROM_UTF8(tmpString)));
       //      mpTableObj->setText(i, 4, FROM_UTF8(tmpString));
@@ -278,10 +278,10 @@ void CQUpdatesWidget::loadObjectsTable(CModel* pModel)
         tmpString += " (Used = true, ";
       else
         tmpString += " (Used = false, ";
-      if (pME->isUsedOnce())
-        tmpString += "UsedOnce = true)";
+      if (pME->isCalculatedOnce())
+        tmpString += "CalculatedOnce = true)";
       else
-        tmpString += "UsedOnce = false)";
+        tmpString += "CalculatedOnce = false)";
 
       c = QColor(100, 100, 100);
       if (pME->getStatus() == CModelEntity::FIXED) c = QColor(150, 150, 150);

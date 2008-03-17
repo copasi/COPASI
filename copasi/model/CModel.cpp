@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.339 $
+//   $Revision: 1.340 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/12 13:28:05 $
+//   $Date: 2008/03/17 16:23:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -815,22 +815,22 @@ void CModel::initializeMetabolites()
   for (; itMetab != endMetab; ++itMetab)
     switch ((*itMetab)->getStatus())
       {
-      case CModelEntity::FIXED:
+      case FIXED:
         FixedMetabs.push_back(*itMetab);
         (*itMetab)->setUsed(false);
         break;
 
-      case CModelEntity::ASSIGNMENT:
+      case ASSIGNMENT:
         AssignmentMetabs.push_back(*itMetab);
         (*itMetab)->setUsed(true);
         break;
 
-      case CModelEntity::ODE:
+      case ODE:
         ODEMetabs.push_back(*itMetab);
         (*itMetab)->setUsed(true);
         break;
 
-      case CModelEntity::REACTIONS:
+      case REACTIONS:
         ReactionMetabs.push_back(*itMetab);
         (*itMetab)->setUsed(true);
         break;
@@ -1066,7 +1066,7 @@ bool CModel::buildStateTemplate()
   CCopasiVector< CModelValue >::iterator itValue = mValues.begin();
   CCopasiVector< CModelValue >::iterator endValue = mValues.end();
   for (; itValue != endValue; ++itValue)
-    if ((*itValue)->getStatus() == CModelEntity::ODE)
+    if ((*itValue)->getStatus() == ODE)
       {
         *ppEntity = *itValue;
         (*ppEntity++)->setUsed(true);
@@ -1075,7 +1075,7 @@ bool CModel::buildStateTemplate()
   CCopasiVector< CCompartment >::iterator itCompartment = mCompartments.begin();
   CCopasiVector< CCompartment >::iterator endCompartment = mCompartments.end();
   for (; itCompartment != endCompartment; ++itCompartment)
-    if ((*itCompartment)->getStatus() == CModelEntity::ODE)
+    if ((*itCompartment)->getStatus() == ODE)
       {
         *ppEntity = *itCompartment;
         (*ppEntity++)->setUsed(true);
@@ -1091,7 +1091,7 @@ bool CModel::buildStateTemplate()
 
   itCompartment = mCompartments.begin();
   for (; itCompartment != endCompartment; ++itCompartment)
-    if ((*itCompartment)->getStatus() == CModelEntity::ASSIGNMENT)
+    if ((*itCompartment)->getStatus() == ASSIGNMENT)
       {
         *ppEntity = *itCompartment;
         (*ppEntity++)->setUsed(true);
@@ -1099,7 +1099,7 @@ bool CModel::buildStateTemplate()
 
   itValue = mValues.begin();
   for (; itValue != endValue; ++itValue)
-    if ((*itValue)->getStatus() == CModelEntity::ASSIGNMENT)
+    if ((*itValue)->getStatus() == ASSIGNMENT)
       {
         *ppEntity = *itValue;
         (*ppEntity++)->setUsed(true);
@@ -1166,9 +1166,9 @@ bool CModel::buildUserOrder()
 
   for (unsigned C_INT32 i = 0; pUserOrder != pUserOrderEnd; ++pUserOrder)
     {
-      const CModelEntity::Status & Status = ppEntity[*pUserOrder]->getStatus();
-      if (Status == CModelEntity::ODE ||
-          (Status == CModelEntity::REACTIONS && ppEntity[*pUserOrder]->isUsed()))
+      const Status & Status = ppEntity[*pUserOrder]->getStatus();
+      if (Status == ODE ||
+          (Status == REACTIONS && ppEntity[*pUserOrder]->isUsed()))
         mJacobianPivot[i++] = *pUserOrder - 1;
     }
 
@@ -1243,14 +1243,14 @@ bool CModel::buildSimulatedSequence()
   bool success = true;
 
   // We need to add each used model entity to the objects which need to be updated.
-  std::set< const CCopasiObject * > Objects;
+  mSimulatedUpToDateObjects.clear();
 
   // For CModelValues and CCompartment ODEs we need to add the Rate
   // For CMetab ODEs we need to add the Particle Rate
   CModelEntity **ppEntity = mStateTemplate.beginIndependent();
   CModelEntity **ppEntityEnd = mStateTemplate.endIndependent() - mNumMetabolitesIndependent;
   for (; ppEntity != ppEntityEnd; ++ppEntity)
-    Objects.insert((*ppEntity)->getRateReference());
+    mSimulatedUpToDateObjects.insert((*ppEntity)->getRateReference());
 
   // We do not add the rates for metabolites of type REACTION. These are automatically calculated
   // with dgemm in calculate derivatives based on the reaction fluxes added below.
@@ -1260,19 +1260,11 @@ bool CModel::buildSimulatedSequence()
   // in assignments or ODEs. However this is acceptable and more than compensated by the performance
   // gains of dgemm.
 
-  // For CMetab ASSIGNMENTs we technincally need only to add the Concentration
-  // however for completeness we calculate the state value.
-  // For CModelValues and CCompartment ASSIGNMENTs we need to add the Value
-  ppEntity = mStateTemplate.beginDependent() + mNumMetabolitesDependent;
-  ppEntityEnd = mStateTemplate.endDependent();
-  for (; ppEntity != ppEntityEnd; ++ppEntity)
-    Objects.insert((*ppEntity)->getValueReference());
-
   // Further more all reaction fluxes have to be calculated too (see CMetab REACTION above)
   CCopasiVector< CReaction >::iterator itReaction = mSteps.begin();
   CCopasiVector< CReaction >::iterator endReaction = mSteps.end();
   for (; itReaction != endReaction; ++itReaction)
-    Objects.insert((*itReaction)->getParticleFluxReference());
+    mSimulatedUpToDateObjects.insert((*itReaction)->getParticleFluxReference());
 
   // We now detect unused assignments, i.e., the result of an assignment is not
   // used during updateSimulatedValues except for itself or another unused assignment.
@@ -1280,9 +1272,10 @@ bool CModel::buildSimulatedSequence()
 
   std::set<const CCopasiObject * > Candidate;
   std::set< const CCopasiObject * >::iterator it;
-  std::set< const CCopasiObject * >::iterator end = Objects.end();
+  std::set< const CCopasiObject * >::iterator end = mSimulatedUpToDateObjects.end();
   CCopasiObject * pObject;
   CMetab * pMetab;
+  ppEntityEnd = mStateTemplate.endDependent();
 
   while (UnusedFound)
     {
@@ -1301,7 +1294,7 @@ bool CModel::buildSimulatedSequence()
 
             Candidate.insert(pObject);
 
-            for (it = Objects.begin(); it != end; ++it)
+            for (it = mSimulatedUpToDateObjects.begin(), end = mSimulatedUpToDateObjects.end(); it != end; ++it)
               if (*it != pObject &&
                   (*it)->dependsOn(Candidate))
                 break;
@@ -1311,7 +1304,6 @@ bool CModel::buildSimulatedSequence()
                 UnusedFound = true;
                 mReorderNeeded = true;
                 (*ppEntity)->setUsed(false);
-                Objects.erase(pObject);
               }
 
             Candidate.erase(pObject);
@@ -1362,12 +1354,10 @@ bool CModel::buildSimulatedSequence()
       buildConstantSequence();
     }
 
-  mSimulatedUpToDateObjects.clear();
-  //std::cout << "Simulated: " ; //debug
-
+  std::set< const CCopasiObject * > UpToDate;
   try
     {
-      mSimulatedRefreshes = CCopasiObject::buildUpdateSequence(Objects, mSimulatedUpToDateObjects);
+      mSimulatedRefreshes = CCopasiObject::buildUpdateSequence(mSimulatedUpToDateObjects, UpToDate);
     }
   catch (...)
     {
@@ -1376,19 +1366,19 @@ bool CModel::buildSimulatedSequence()
     }
 
   // We have to remove the refresh calls already covered by mConstantRefreshes
-  std::vector< Refresh * >::const_iterator itInitialRefresh = mConstantRefreshes.begin();
-  std::vector< Refresh * >::const_iterator endInitialRefresh = mConstantRefreshes.end();
+  std::vector< Refresh * >::const_iterator itConstantRefresh = mConstantRefreshes.begin();
+  std::vector< Refresh * >::const_iterator endConstantRefresh = mConstantRefreshes.end();
 
   std::vector< Refresh * >::iterator itRefresh;
   std::vector< Refresh * >::iterator endRefresh;
 
-  for (; itInitialRefresh != endInitialRefresh; ++itInitialRefresh)
+  for (; itConstantRefresh != endConstantRefresh; ++itConstantRefresh)
     {
       itRefresh = mSimulatedRefreshes.begin();
       endRefresh = mSimulatedRefreshes.end();
 
       for (; itRefresh != endRefresh; ++itRefresh)
-        if ((*itRefresh)->isEqual(*itInitialRefresh))
+        if ((*itRefresh)->isEqual(*itConstantRefresh))
           {
             mSimulatedRefreshes.erase(itRefresh);
             break;
@@ -1413,12 +1403,12 @@ bool CModel::buildConstantSequence()
 
   CModelEntity ** ppEntity =
     mStateTemplate.beginDependent() + mNumMetabolitesDependent;
-  CModelEntity ** ppEntityEnd = mStateTemplate.endDependent();
-  for (; ppEntity != ppEntityEnd; ++ppEntity)
+  CModelEntity ** ppEntityEnd = mStateTemplate.endFixed();
+  for (; ppEntity != ppEntityEnd && (*ppEntity)->getStatus() == ASSIGNMENT; ++ppEntity)
     {
       Dependencies.clear();
       // We need to add the value and not the object.
-      (*ppEntity)->getValueObject()->getAllDependencies(Dependencies);
+      (*ppEntity)->getValueReference()->getAllDependencies(Dependencies);
 
       itDepend = Dependencies.begin();
       endDepend = Dependencies.end();
@@ -1426,35 +1416,33 @@ bool CModel::buildConstantSequence()
       for (; itDepend != endDepend; ++itDepend)
         // We need to check the object and its parent
         if ((pEntity = dynamic_cast< const CModelEntity * >(*itDepend)) != NULL &&
-            (pEntity->getStatus() != CModelEntity::ASSIGNMENT &&
-             pEntity->getStatus() != CModelEntity::FIXED))
+            (pEntity->getStatus() != ASSIGNMENT &&
+             pEntity->getStatus() != FIXED))
           break;
 
       if (itDepend == endDepend)
         {
           mReorderNeeded = true;
           (*ppEntity)->setUsed(false);
-          (*ppEntity)->setUsedOnce(true);
-          Objects.insert(*ppEntity);
+          (*ppEntity)->setCalculatedOnce(true);
+          // For CMetab it would suffice to get the concentration.
+          Objects.insert((*ppEntity)->getValueReference());
         }
       else
-        (*ppEntity)->setUsedOnce(false);
+        (*ppEntity)->setCalculatedOnce(false);
     }
 
-  mSimulatedUpToDateObjects.clear();
+  std::set< const CCopasiObject * > UpToDate;
 
   try
     {
-      mConstantRefreshes = CCopasiObject::buildUpdateSequence(Objects, mSimulatedUpToDateObjects);
+      mConstantRefreshes = CCopasiObject::buildUpdateSequence(Objects, UpToDate);
     }
   catch (...)
     {
       mConstantRefreshes.clear();
       success = true;
     }
-
-  if (success)
-    mSimulatedUpToDateObjects = Objects;
 
   return success;
 }
@@ -1545,6 +1533,26 @@ bool CModel::buildNonSimulatedSequence()
     {
       mNonSimulatedRefreshes.clear();
       success = false;
+    }
+
+  // We have to remove the refresh calls already covered by mConstantRefreshes
+  std::vector< Refresh * >::const_iterator itConstantRefresh = mConstantRefreshes.begin();
+  std::vector< Refresh * >::const_iterator endConstantRefresh = mConstantRefreshes.end();
+
+  std::vector< Refresh * >::iterator itRefresh;
+  std::vector< Refresh * >::iterator endRefresh;
+
+  for (; itConstantRefresh != endConstantRefresh; ++itConstantRefresh)
+    {
+      itRefresh = mNonSimulatedRefreshes.begin();
+      endRefresh = mNonSimulatedRefreshes.end();
+
+      for (; itRefresh != endRefresh; ++itRefresh)
+        if ((*itRefresh)->isEqual(*itConstantRefresh))
+          {
+            mNonSimulatedRefreshes.erase(itRefresh);
+            break;
+          }
     }
 
   return success;
