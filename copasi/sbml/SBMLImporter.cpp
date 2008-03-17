@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.193 $
+//   $Revision: 1.194 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/12 01:30:46 $
+//   $Author: gauges $
+//   $Date: 2008/03/17 16:03:29 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -114,6 +114,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   this->mpCopasiModel->setTimeUnit(CModel::s);
   this->mpCopasiModel->setQuantityUnit(CModel::Mol);
   this->mpCopasiModel->setSBMLId(sbmlModel->getId());
+  SBMLImporter::importMIRIAM(sbmlModel, this->mpCopasiModel);
   /* Set standard units to match the standard units of SBML files. */
 
   if (sbmlModel->getNumUnitDefinitions() != 0)
@@ -602,6 +603,7 @@ CFunction* SBMLImporter::createCFunctionFromFunctionDefinition(const FunctionDef
     {
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 14, sbmlFunction->getId().c_str());
     }
+  SBMLImporter::importMIRIAM(sbmlFunction, pTmpFunction);
   return pTmpFunction;
 }
 
@@ -742,6 +744,7 @@ SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartme
       copasiCompartment->setSBMLId(sbmlCompartment->getId());
     }
   //DebugFile << "Created Compartment: " << copasiCompartment->getObjectName() << std::endl;
+  SBMLImporter::importMIRIAM(sbmlCompartment, copasiCompartment);
   copasi2sbmlmap[copasiCompartment] = const_cast<Compartment*>(sbmlCompartment);
   return copasiCompartment;
 }
@@ -812,6 +815,7 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
     {
       copasiMetabolite->setSBMLId(sbmlSpecies->getId());
     }
+  SBMLImporter::importMIRIAM(sbmlSpecies, copasiMetabolite);
   return copasiMetabolite;
 }
 
@@ -1313,6 +1317,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, Model* p
       copasiReaction->setFunction(NULL);
     }
   //DebugFile << "Created reaction: " << copasiReaction->getObjectName() << std::endl;
+  SBMLImporter::importMIRIAM(sbmlReaction, copasiReaction);
   return copasiReaction;
 }
 
@@ -2139,6 +2144,7 @@ CModelValue* SBMLImporter::createCModelValueFromParameter(const Parameter* sbmlP
   CModelValue* pMV = copasiModel->createModelValue(name + appendix, 0.0);
   copasi2sbmlmap[pMV] = const_cast<Parameter*>(sbmlParameter);
   pMV->setSBMLId(sbmlId);
+  SBMLImporter::importMIRIAM(sbmlParameter, pMV);
   return pMV;
 }
 
@@ -5191,4 +5197,71 @@ void SBMLImporter::multiplySubstanceOnlySpeciesByVolume(ConverterASTNode* pNode)
           this->multiplySubstanceOnlySpeciesByVolume(pChild);
         }
     }
+}
+
+bool SBMLImporter::importMIRIAM(const SBase* pSBMLObject, CCopasiObject* pCOPASIObject)
+{
+  bool result = true;
+  // search for the MIRIAM annotation
+  const XMLNode* pMIRIAMNode = NULL;
+  // this const cast is needed because getAnnotation only works on non-const
+  // objects.
+  const XMLNode* pAnnotation = const_cast<SBase*>(pSBMLObject)->getAnnotation();
+  if (pAnnotation != NULL)
+    {
+      unsigned int i, iMax = pAnnotation->getNumChildren();
+      // the top level MIRIAM node must be a diret child to the annotation
+      // node and since there can be only one in a valid SBML file, we can
+      // stop after we found one
+      std::string nameSpace;
+      for (i = 0;i < iMax;++i)
+        {
+          if (pAnnotation->getChild(i).getURI() == "http://www.w3.org/1999/02/22-rdf-syntax-ns#")
+            {
+              pMIRIAMNode = &pAnnotation->getChild(i);
+              break;
+            }
+        }
+      if (pMIRIAMNode != NULL)
+        {
+          std::string miriamString = XMLNode::convertXMLNodeToString(pMIRIAMNode);
+          switch (pSBMLObject->getTypeCode())
+            {
+            case SBML_MODEL:
+              assert(dynamic_cast<const Model*>(pSBMLObject) != NULL);
+              assert(dynamic_cast<CModel*>(pCOPASIObject) != NULL);
+              dynamic_cast<CModel*>(pCOPASIObject)->setMiriamAnnotation(miriamString);
+              break;
+            case SBML_COMPARTMENT:
+              assert(dynamic_cast<const Compartment*>(pSBMLObject) != NULL);
+              assert(dynamic_cast<CCompartment*>(pCOPASIObject) != NULL);
+              dynamic_cast<CCompartment*>(pCOPASIObject)->setMiriamAnnotation(miriamString);
+              break;
+            case SBML_SPECIES:
+              assert(dynamic_cast<const Species*>(pSBMLObject) != NULL);
+              assert(dynamic_cast<CMetab*>(pCOPASIObject) != NULL);
+              dynamic_cast<CMetab*>(pCOPASIObject)->setMiriamAnnotation(miriamString);
+              break;
+            case SBML_PARAMETER:
+              assert(dynamic_cast<const Parameter*>(pSBMLObject) != NULL);
+              assert(dynamic_cast<CModelValue*>(pCOPASIObject) != NULL);
+              dynamic_cast<CModelValue*>(pCOPASIObject)->setMiriamAnnotation(miriamString);
+              break;
+            case SBML_REACTION:
+              assert(dynamic_cast<const Reaction*>(pSBMLObject) != NULL);
+              assert(dynamic_cast<CReaction*>(pCOPASIObject) != NULL);
+              dynamic_cast<CReaction*>(pCOPASIObject)->setMiriamAnnotation(miriamString);
+              break;
+            case SBML_FUNCTION_DEFINITION:
+              assert(dynamic_cast<const FunctionDefinition*>(pSBMLObject) != NULL);
+              assert(dynamic_cast<CFunction*>(pCOPASIObject) != NULL);
+              dynamic_cast<CFunction*>(pCOPASIObject)->setMiriamAnnotation(miriamString);
+              break;
+            default:
+              result = false;
+              break;
+            }
+        }
+    }
+  return result;
 }

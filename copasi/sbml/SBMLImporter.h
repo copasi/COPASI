@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-//   $Revision: 1.66 $
+//   $Revision: 1.67 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/12 01:30:46 $
+//   $Author: gauges $
+//   $Date: 2008/03/17 16:03:29 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -414,6 +414,12 @@ class SBMLImporter
      * quantity2unit factor.
      */
     void multiplySubstanceOnlySpeciesByVolume(ConverterASTNode* pNode);
+
+    /**
+     * Imports the MIRIAM annotation from the given SBML object and sets it on
+     * the given COPASI object.
+     */
+    bool importMIRIAM(const SBase* pSBMLObject, CCopasiObject* pCOPASIObject);
 
   public:
     SBMLImporter();
