@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFUtilities.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/18 19:48:05 $
+//   $Date: 2008/03/18 20:27:43 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -97,20 +97,27 @@ unsigned C_INT32 CRDFUtilities::fixLocalFileAboutReference(std::string & rdfXml,
         {
           pos += Qualifier.length() + 7;
           const char Quote = rdfXml[pos];
-          pos += 2; // for Quote and #
+          pos++; // advance past Quote
 
-          // Check whether we have a local file reference to the old id
-          if (rdfXml.substr(pos, oldId.length() + 1) == oldId + Quote)
+          // Check whether we have a local id indicate by #
+          if (rdfXml[pos] == '#')
             {
-              rdfXml.replace(pos, oldId.length(), newId);
-              count++;
+              pos++; // advance past #
+              std::string::size_type len = rdfXml.find(Quote, pos) - pos;
+
+              // Check whether we have a local file reference to the old id
+              // or the old id was not given
+              if (oldId == "" ||
+                  rdfXml.substr(pos, len) == oldId)
+                {
+                  rdfXml.replace(pos, len, newId);
+                  count++;
+                }
             }
         }
 
       start = end;
     }
-
-  std::cout << rdfXml << std::endl;
 
   return count;
 }

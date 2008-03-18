@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.196 $
+//   $Revision: 1.197 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/18 19:49:35 $
+//   $Date: 2008/03/18 20:27:43 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -5225,9 +5225,9 @@ bool SBMLImporter::importMIRIAM(const SBase* pSBMLObject, CCopasiObject* pCOPASI
         }
       if (pMIRIAMNode != NULL)
         {
-          std::string metaid = "?";
+          std::string metaid = "";
           if (pSBMLObject->isSetMetaId())
-            pSBMLObject->getMetaId();
+            metaid = pSBMLObject->getMetaId();
           std::string miriamString = XMLNode::convertXMLNodeToString(pMIRIAMNode);
           switch (pSBMLObject->getTypeCode())
             {
