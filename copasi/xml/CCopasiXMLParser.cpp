@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.173 $
+//   $Revision: 1.174 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/12 01:53:45 $
+//   $Date: 2008/03/18 19:49:34 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -628,7 +628,6 @@ CCopasiXMLParser::FunctionElement::~FunctionElement()
 void CCopasiXMLParser::FunctionElement::start(const XML_Char *pszName,
     const XML_Char **papszAttrs)
 {
-  const char * Key;
   const char * type;
   CEvaluationTree::Type Type;
   const char * Name;
@@ -646,7 +645,7 @@ void CCopasiXMLParser::FunctionElement::start(const XML_Char *pszName,
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
                        pszName, "Function", mParser.getCurrentLineNumber());
 
-      Key = mParser.getAttributeValue("key", papszAttrs);
+      mKey = mParser.getAttributeValue("key", papszAttrs);
       Name = mParser.getAttributeValue("name", papszAttrs);
       type = mParser.getAttributeValue("type", papszAttrs);
       Type = (CEvaluationTree::Type)toEnum(type, CEvaluationTree::XMLType);
@@ -727,7 +726,7 @@ void CCopasiXMLParser::FunctionElement::start(const XML_Char *pszName,
       else
         mCommon.pFunctionList->add(mCommon.pFunction, true);
 
-      mCommon.KeyMap.addFix(Key , mCommon.pFunction);
+      mCommon.KeyMap.addFix(mKey , mCommon.pFunction);
       return;
 
     case MiriamAnnotation:
@@ -811,7 +810,7 @@ void CCopasiXMLParser::FunctionElement::end(const XML_Char *pszName)
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                        pszName, "MiriamAnnotation", mParser.getCurrentLineNumber());
 
-      mCommon.pFunction->setMiriamAnnotation(mCommon.CharacterData);
+      mCommon.pFunction->setMiriamAnnotation(mCommon.CharacterData, mKey);
       mCommon.CharacterData = "";
       break;
 
@@ -1252,7 +1251,6 @@ CCopasiXMLParser::ModelElement::~ModelElement()
 void CCopasiXMLParser::ModelElement::start(const XML_Char *pszName,
     const XML_Char **papszAttrs)
 {
-  const char * Key;
   const char * Name;
   const char * timeUnit;
   CModel::TimeUnit TimeUnit;
@@ -1273,7 +1271,7 @@ void CCopasiXMLParser::ModelElement::start(const XML_Char *pszName,
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
                        pszName, "Model", mParser.getCurrentLineNumber());
 
-      Key = mParser.getAttributeValue("key", papszAttrs);
+      mKey = mParser.getAttributeValue("key", papszAttrs);
       Name = mParser.getAttributeValue("name", papszAttrs);
 
       timeUnit = mParser.getAttributeValue("timeUnit", papszAttrs);
@@ -1307,7 +1305,7 @@ void CCopasiXMLParser::ModelElement::start(const XML_Char *pszName,
       StateVariable = mParser.getAttributeValue("stateVariable", papszAttrs, "");
 
       if (!mCommon.pModel) mCommon.pModel = new CModel();
-      mCommon.KeyMap.addFix(Key, mCommon.pModel);
+      mCommon.KeyMap.addFix(mKey, mCommon.pModel);
       mCommon.pModel->setTitle(Name);
       mCommon.pModel->setTimeUnit(TimeUnit);
       mCommon.pModel->setVolumeUnit(VolumeUnit);
@@ -1397,7 +1395,7 @@ void CCopasiXMLParser::ModelElement::end(const XML_Char *pszName)
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                        pszName, "MiriamAnnotation", mParser.getCurrentLineNumber());
 
-      mCommon.pModel->setMiriamAnnotation(mCommon.CharacterData);
+      mCommon.pModel->setMiriamAnnotation(mCommon.CharacterData, mKey);
       mCommon.CharacterData = "";
       break;
 
@@ -1720,7 +1718,6 @@ CCopasiXMLParser::CompartmentElement::~CompartmentElement()
 void CCopasiXMLParser::CompartmentElement::start(const XML_Char *pszName,
     const XML_Char **papszAttrs)
 {
-  const char * Key;
   const char * Name;
   const char * simulationType;
   CModelEntity::Status SimulationType;
@@ -1735,13 +1732,13 @@ void CCopasiXMLParser::CompartmentElement::start(const XML_Char *pszName,
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
                        pszName, "Compartment", mParser.getCurrentLineNumber());
 
-      Key = mParser.getAttributeValue("key", papszAttrs);
+      mKey = mParser.getAttributeValue("key", papszAttrs);
       Name = mParser.getAttributeValue("name", papszAttrs);
       simulationType = mParser.getAttributeValue("simulationType", papszAttrs, "fixed");
       SimulationType = (CModelEntity::Status)toEnum(simulationType, CModelEntity::XMLStatus);
 
       mpCompartment = new CCompartment();
-      mCommon.KeyMap.addFix(Key, mpCompartment);
+      mCommon.KeyMap.addFix(mKey, mpCompartment);
 
       mpCompartment->setObjectName(Name);
       mpCompartment->setStatus(SimulationType);
@@ -1808,7 +1805,7 @@ void CCopasiXMLParser::CompartmentElement::end(const XML_Char *pszName)
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                        pszName, "MiriamAnnotation", mParser.getCurrentLineNumber());
 
-      mpCompartment->setMiriamAnnotation(mCommon.CharacterData);
+      mpCompartment->setMiriamAnnotation(mCommon.CharacterData, mKey);
       mCommon.CharacterData = "";
       break;
 
@@ -1955,7 +1952,6 @@ void CCopasiXMLParser::MetaboliteElement::start(const XML_Char *pszName,
     const XML_Char **papszAttrs)
 {
   CCompartment * pCompartment = NULL;
-  const char * Key;
   const char * Name;
   const char * simulationType;
   CModelEntity::Status SimulationType;
@@ -1972,7 +1968,7 @@ void CCopasiXMLParser::MetaboliteElement::start(const XML_Char *pszName,
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
                        pszName, "Metabolite", mParser.getCurrentLineNumber());
 
-      Key = mParser.getAttributeValue("key", papszAttrs);
+      mKey = mParser.getAttributeValue("key", papszAttrs);
       Name = mParser.getAttributeValue("name", papszAttrs);
 
       simulationType = mParser.getAttributeValue("simulationType", papszAttrs, false);
@@ -1991,7 +1987,7 @@ void CCopasiXMLParser::MetaboliteElement::start(const XML_Char *pszName,
       Compartment = mParser.getAttributeValue("compartment", papszAttrs);
 
       mpMetabolite = new CMetab();
-      mCommon.KeyMap.addFix(Key, mpMetabolite);
+      mCommon.KeyMap.addFix(mKey, mpMetabolite);
       mpMetabolite->setObjectName(Name);
       mpMetabolite->setStatus(SimulationType);
 
@@ -2063,7 +2059,7 @@ void CCopasiXMLParser::MetaboliteElement::end(const XML_Char *pszName)
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                        pszName, "MiriamAnnotation", mParser.getCurrentLineNumber());
 
-      mpMetabolite->setMiriamAnnotation(mCommon.CharacterData);
+      mpMetabolite->setMiriamAnnotation(mCommon.CharacterData, mKey);
       mCommon.CharacterData = "";
       break;
 
@@ -2213,7 +2209,6 @@ CCopasiXMLParser::ModelValueElement::~ModelValueElement()
 void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
     const XML_Char **papszAttrs)
 {
-  const char * Key;
   const char * Name;
   const char * simulationType;
   CModelEntity::Status SimulationType;
@@ -2228,7 +2223,7 @@ void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
                        pszName, "ModelValue", mParser.getCurrentLineNumber());
 
-      Key = mParser.getAttributeValue("key", papszAttrs);
+      mKey = mParser.getAttributeValue("key", papszAttrs);
       Name = mParser.getAttributeValue("name", papszAttrs);
       simulationType = mParser.getAttributeValue("simulationType", papszAttrs, false);
 
@@ -2243,7 +2238,7 @@ void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
       SimulationType = (CModelEntity::Status)toEnum(simulationType, CModelEntity::XMLStatus);
 
       mpMV = new CModelValue();
-      mCommon.KeyMap.addFix(Key, mpMV);
+      mCommon.KeyMap.addFix(mKey, mpMV);
       mpMV->setObjectName(Name);
       mpMV->setStatus(SimulationType);
 
@@ -2265,7 +2260,7 @@ void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
         mpCurrentHandler = &mParser.mCharacterDataElement;
       break;
 
-    case MathML:                              // Old file format support
+    case MathML:                               // Old file format support
       if (!strcmp(pszName, "MathML"))
         {
           /* If we do not have a MathML element handler we create one. */
@@ -2320,7 +2315,7 @@ void CCopasiXMLParser::ModelValueElement::end(const XML_Char *pszName)
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                        pszName, "MiriamAnnotation", mParser.getCurrentLineNumber());
 
-      mpMV->setMiriamAnnotation(mCommon.CharacterData);
+      mpMV->setMiriamAnnotation(mCommon.CharacterData, mKey);
       mCommon.CharacterData = "";
       break;
 
@@ -2358,7 +2353,7 @@ void CCopasiXMLParser::ModelValueElement::end(const XML_Char *pszName)
       mCurrentElement = ModelValue;
       break;
 
-    case MathML:                              // Old file format support
+    case MathML:                               // Old file format support
       if (strcmp(pszName, "MathML"))
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                        pszName, "MathML", mParser.getCurrentLineNumber());
@@ -2494,7 +2489,6 @@ void CCopasiXMLParser::ReactionElement::start(const XML_Char *pszName,
     const XML_Char **papszAttrs)
 {
   CCompartment * pCompartment;
-  const char * Key;
   const char * Name;
   const char * Compartment; // Default Compartment_00
   const char * reversible;
@@ -2510,7 +2504,7 @@ void CCopasiXMLParser::ReactionElement::start(const XML_Char *pszName,
       if (strcmp(pszName, "Reaction"))
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
                        pszName, "Reaction", mParser.getCurrentLineNumber());
-      Key = mParser.getAttributeValue("key", papszAttrs);
+      mKey = mParser.getAttributeValue("key", papszAttrs);
       Name = mParser.getAttributeValue("name", papszAttrs);
       Compartment = mParser.getAttributeValue("compartment", papszAttrs,
                                               "Compartment_00");
@@ -2519,7 +2513,7 @@ void CCopasiXMLParser::ReactionElement::start(const XML_Char *pszName,
       Reversible = mParser.toBool(reversible);
 
       mCommon.pReaction = new CReaction();
-      mCommon.KeyMap.addFix(Key, mCommon.pReaction);
+      mCommon.KeyMap.addFix(mKey, mCommon.pReaction);
       mCommon.pReaction->setObjectName(Name);
       mCommon.pReaction->setReversible(Reversible);
       SBMLId = mParser.getAttributeValue("sbmlid", papszAttrs, "");
@@ -2641,7 +2635,7 @@ void CCopasiXMLParser::ReactionElement::end(const XML_Char *pszName)
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                        pszName, "MiriamAnnotation", mParser.getCurrentLineNumber());
 
-      mCommon.pReaction->setMiriamAnnotation(mCommon.CharacterData);
+      mCommon.pReaction->setMiriamAnnotation(mCommon.CharacterData, mKey);
       mCommon.CharacterData = "";
       break;
 

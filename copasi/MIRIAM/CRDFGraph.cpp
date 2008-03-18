@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraph.cpp,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.27 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2008/03/18 05:05:07 $
+//   $Author: shoops $
+//   $Date: 2008/03/18 19:49:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1214,7 +1214,7 @@ bool CRDFGraph::saveGraph(CModelEntity* pEntity)
   if (mChanged)
     {
       compressGraph();
-      pEntity->setMiriamAnnotation(CRDFWriter::xmlFromGraph(this));
+      pEntity->setMiriamAnnotation(CRDFWriter::xmlFromGraph(this), pEntity->getKey());
       mChanged = false;
       return true;
     }

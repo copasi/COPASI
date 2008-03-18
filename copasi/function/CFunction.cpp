@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.cpp,v $
-//   $Revision: 1.78 $
+//   $Revision: 1.79 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/15 14:26:40 $
+//   $Date: 2008/03/18 19:49:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,8 +27,7 @@ CFunction::CFunction(const std::string & name,
     CEvaluationTree(name, pParent, type),
     mVariables("Function Parameters", this),
     mpCallParameters(NULL),
-    mReversible(TriUnspecified),
-    mMiriamAnnotation("")
+    mReversible(TriUnspecified)
 {}
 
 CFunction::CFunction(const CFunction & src,
@@ -36,10 +35,8 @@ CFunction::CFunction(const CFunction & src,
     CEvaluationTree(src, pParent),
     mVariables(src.mVariables, this),
     mpCallParameters(NULL),
-    mReversible(src.mReversible),
-    mMiriamAnnotation("")
+    mReversible(src.mReversible)
 {
-  setMiriamAnnotation(src.mMiriamAnnotation);
   compile();
 }
 
@@ -222,28 +219,6 @@ bool CFunction::isSuitable(const unsigned C_INT32 noSubstrates,
 
   return true;
 }
-
-void CFunction::setMiriamAnnotation(const std::string & miriamAnnotation)
-{
-  mMiriamAnnotation = miriamAnnotation;
-
-  // We need to synchronize the rdf:about attribute with the object key.
-  // :TODO: This assumes a compacted XML presentation, i.e., the top
-  // element is the root of the graph.
-  std::string::size_type Start =
-    mMiriamAnnotation.find("rdf:about=");
-
-  if (Start != std::string::npos)
-    {
-      Start += 11;
-      std::string::size_type Count =
-        mMiriamAnnotation.find("\"", Start) - Start;
-      mMiriamAnnotation.replace(Start, Count, "#" + getKey());
-    }
-}
-
-const std::string & CFunction::getMiriamAnnotation() const
-  {return mMiriamAnnotation;}
 
 void CFunction::createListOfParametersForMathML(std::vector<std::vector<std::string> > & env)
 {

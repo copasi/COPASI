@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.195 $
+//   $Revision: 1.196 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/03/17 20:29:00 $
+//   $Author: shoops $
+//   $Date: 2008/03/18 19:49:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -5225,38 +5225,41 @@ bool SBMLImporter::importMIRIAM(const SBase* pSBMLObject, CCopasiObject* pCOPASI
         }
       if (pMIRIAMNode != NULL)
         {
+          std::string metaid = "?";
+          if (pSBMLObject->isSetMetaId())
+            pSBMLObject->getMetaId();
           std::string miriamString = XMLNode::convertXMLNodeToString(pMIRIAMNode);
           switch (pSBMLObject->getTypeCode())
             {
             case SBML_MODEL:
               assert(dynamic_cast<const Model*>(pSBMLObject) != NULL);
               assert(dynamic_cast<CModel*>(pCOPASIObject) != NULL);
-              dynamic_cast<CModel*>(pCOPASIObject)->setMiriamAnnotation(miriamString);
+              dynamic_cast<CModel*>(pCOPASIObject)->setMiriamAnnotation(miriamString, metaid);
               break;
             case SBML_COMPARTMENT:
               assert(dynamic_cast<const Compartment*>(pSBMLObject) != NULL);
               assert(dynamic_cast<CCompartment*>(pCOPASIObject) != NULL);
-              dynamic_cast<CCompartment*>(pCOPASIObject)->setMiriamAnnotation(miriamString);
+              dynamic_cast<CCompartment*>(pCOPASIObject)->setMiriamAnnotation(miriamString, metaid);
               break;
             case SBML_SPECIES:
               assert(dynamic_cast<const Species*>(pSBMLObject) != NULL);
               assert(dynamic_cast<CMetab*>(pCOPASIObject) != NULL);
-              dynamic_cast<CMetab*>(pCOPASIObject)->setMiriamAnnotation(miriamString);
+              dynamic_cast<CMetab*>(pCOPASIObject)->setMiriamAnnotation(miriamString, metaid);
               break;
             case SBML_PARAMETER:
               assert(dynamic_cast<const Parameter*>(pSBMLObject) != NULL);
               assert(dynamic_cast<CModelValue*>(pCOPASIObject) != NULL);
-              dynamic_cast<CModelValue*>(pCOPASIObject)->setMiriamAnnotation(miriamString);
+              dynamic_cast<CModelValue*>(pCOPASIObject)->setMiriamAnnotation(miriamString, metaid);
               break;
             case SBML_REACTION:
               assert(dynamic_cast<const Reaction*>(pSBMLObject) != NULL);
               assert(dynamic_cast<CReaction*>(pCOPASIObject) != NULL);
-              dynamic_cast<CReaction*>(pCOPASIObject)->setMiriamAnnotation(miriamString);
+              dynamic_cast<CReaction*>(pCOPASIObject)->setMiriamAnnotation(miriamString, metaid);
               break;
             case SBML_FUNCTION_DEFINITION:
               assert(dynamic_cast<const FunctionDefinition*>(pSBMLObject) != NULL);
               assert(dynamic_cast<CFunction*>(pCOPASIObject) != NULL);
-              dynamic_cast<CFunction*>(pCOPASIObject)->setMiriamAnnotation(miriamString);
+              dynamic_cast<CFunction*>(pCOPASIObject)->setMiriamAnnotation(miriamString, metaid);
               break;
             default:
               result = false;

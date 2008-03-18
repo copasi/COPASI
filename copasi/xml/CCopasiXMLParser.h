@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-//   $Revision: 1.58 $
+//   $Revision: 1.59 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/15 21:18:50 $
+//   $Date: 2008/03/18 19:49:34 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -1069,6 +1074,11 @@ class CCopasiXMLParser : public CExpat
          */
         KineticLawElement * mpKineticLawElement;
 
+        /**
+         * The key in the CopasiML gile
+         */
+        std::string mKey;
+
         // Operations
       public:
         /**
@@ -1187,6 +1197,11 @@ class CCopasiXMLParser : public CExpat
          * A pointer to the current metabolite.
          */
         CMetab * mpMetabolite;
+
+        /**
+         * The key in the CopasiML file
+         */
+        std::string mKey;
       };
 
   class ListOfMetabolitesElement:
@@ -1279,6 +1294,11 @@ class CCopasiXMLParser : public CExpat
          * A pointer to the current compartment
          */
         CCompartment * mpCompartment;
+
+        /**
+         * The key in the CopasiML file
+         */
+        std::string mKey;
       };
 
   class ListOfCompartmentsElement:
@@ -1344,6 +1364,11 @@ class CCopasiXMLParser : public CExpat
 
         CModelValue * mpMV;
         MathMLElement * mpMathMLElement;
+
+        /**
+         * The key in the CopasiML file
+         */
+        std::string mKey;
 
         // Operations
       public:
@@ -1501,6 +1526,11 @@ class CCopasiXMLParser : public CExpat
           StateTemplate,
           InitialState
         };
+
+        /**
+         * The key in the CopasiML file
+         */
+        std::string mKey;
 
         // Operations
       public:
@@ -2765,6 +2795,11 @@ class CCopasiXMLParser : public CExpat
          *
          */
         ListOfParameterDescriptionsElement * mpListOfParameterDescriptionsElement;
+
+        /**
+         * The key in the CopasiML file
+         */
+        std::string mKey;
 
         // Operations
       public:

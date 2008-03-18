@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.h,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.33 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/17 16:23:34 $
+//   $Date: 2008/03/18 19:49:34 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -304,8 +304,10 @@ class CModelEntity : public CCopasiContainer
     /**
      * Set the RDF/XML representation of the MIRIAM annotation
      * @param const std::string & miriamAnnotation
+     * @param const std::string & oldId
      */
-    void setMiriamAnnotation(const std::string & miriamAnnotation);
+    void setMiriamAnnotation(const std::string & miriamAnnotation,
+                             const std::string & oldId);
 
     /**
      * Retreive the RDF/XML representation of the MIRIAM annotation

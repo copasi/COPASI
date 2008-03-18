@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-//   $Revision: 1.60 $
+//   $Revision: 1.61 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/18 16:47:46 $
+//   $Date: 2008/03/18 19:49:34 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,6 +25,7 @@
 #include "CModel.h"
 #include "CModelValue.h"
 
+#include "MIRIAM/CRDFUtilities.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "function/CExpression.h"
 #include "report/CCopasiObjectReference.h"
@@ -105,7 +106,7 @@ CModelEntity::CModelEntity(const CModelEntity & src,
   *mpValueData = *src.mpValueData;
   *mpIValue = *src.mpIValue;
 
-  setMiriamAnnotation(src.mMiriamAnnotation);
+  setMiriamAnnotation(src.mMiriamAnnotation, src.mKey);
 }
 
 CModelEntity::~CModelEntity()
@@ -569,23 +570,11 @@ void CModelEntity::setCalculatedOnce(const bool & calculatedOnce)
 const bool & CModelEntity::isCalculatedOnce() const
   {return mCalculatedOnce;}
 
-void CModelEntity::setMiriamAnnotation(const std::string & miriamAnnotation)
+void CModelEntity::setMiriamAnnotation(const std::string & miriamAnnotation,
+                                       const std::string & oldId)
 {
   mMiriamAnnotation = miriamAnnotation;
-
-  // We need to synchronize the rdf:about attribute with the object key.
-  // :TODO: This assumes a compacted XML presentation, i.e., the top
-  // element is the root of the graph.
-  std::string::size_type Start =
-    mMiriamAnnotation.find("rdf:about=");
-
-  if (Start != std::string::npos)
-    {
-      Start += 11;
-      std::string::size_type Count =
-        mMiriamAnnotation.find("\"", Start) - Start;
-      mMiriamAnnotation.replace(Start, Count, "#" + getKey());
-    }
+  CRDFUtilities::fixLocalFileAboutReference(mMiriamAnnotation, mKey, oldId);
 }
 
 const std::string & CModelEntity::getMiriamAnnotation() const

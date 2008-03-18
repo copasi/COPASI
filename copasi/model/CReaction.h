@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.h,v $
-//   $Revision: 1.99 $
+//   $Revision: 1.100 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/15 21:18:07 $
+//   $Date: 2008/03/18 19:49:34 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -398,8 +403,10 @@ class CReaction : public CCopasiContainer
     /**
      * Set the RDF/XML representation of the MIRIAM annotation
      * @param const std::string & miriamAnnotation
+     * @param const std::string & oldId
      */
-    void setMiriamAnnotation(const std::string & miriamAnnotation);
+    void setMiriamAnnotation(const std::string & miriamAnnotation,
+                             const std::string & oldId);
 
     /**
      * Retreive the RDF/XML representation of the MIRIAM annotation

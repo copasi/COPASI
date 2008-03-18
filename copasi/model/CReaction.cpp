@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-//   $Revision: 1.174 $
+//   $Revision: 1.175 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/15 14:26:40 $
+//   $Date: 2008/03/18 19:49:34 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,6 +31,7 @@
 #include "CReaction.h"
 #include "CCompartment.h"
 #include "CModel.h"
+#include "MIRIAM/CRDFUtilities.h"
 #include "utilities/CReadConfig.h"
 #include "utilities/CCopasiMessage.h"
 #include "utilities/CCopasiException.h"
@@ -93,7 +94,7 @@ CReaction::CReaction(const CReaction & src,
     {
       //compileParameters();
     }
-  setMiriamAnnotation(src.mMiriamAnnotation);
+  setMiriamAnnotation(src.mMiriamAnnotation, src.mKey);
 }
 
 CReaction::~CReaction()
@@ -1437,23 +1438,11 @@ const std::string& CReaction::getSBMLId() const
     return this->mSBMLId;
   }
 
-void CReaction::setMiriamAnnotation(const std::string & miriamAnnotation)
+void CReaction::setMiriamAnnotation(const std::string & miriamAnnotation,
+                                    const std::string & oldId)
 {
   mMiriamAnnotation = miriamAnnotation;
-
-  // We need to synchronize the rdf:about attribute with the object key.
-  // :TODO: This assumes a compacted XML presentation, i.e., the top
-  // element is the root of the graph.
-  std::string::size_type Start =
-    mMiriamAnnotation.find("rdf:about=");
-
-  if (Start != std::string::npos)
-    {
-      Start += 11;
-      std::string::size_type Count =
-        mMiriamAnnotation.find("\"", Start) - Start;
-      mMiriamAnnotation.replace(Start, Count, "#" + getKey());
-    }
+  CRDFUtilities::fixLocalFileAboutReference(mMiriamAnnotation, mKey, oldId);
 }
 
 const std::string & CReaction::getMiriamAnnotation() const

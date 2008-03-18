@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.h,v $
-//   $Revision: 1.48 $
+//   $Revision: 1.49 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/14 19:05:45 $
+//   $Date: 2008/03/18 19:49:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -141,18 +141,6 @@ class CFunction:
                     const unsigned C_INT32 noProducts,
                     const TriLogic reversible);
 
-    /**
-     * Set the RDF/XML representation of the MIRIAM annotation
-     * @param const std::string & miriamAnnotation
-     */
-    void setMiriamAnnotation(const std::string & miriamAnnotation);
-
-    /**
-     * Retreive the RDF/XML representation of the MIRIAM annotation
-     * @return const std::string & miriamAnnotation
-     */
-    const std::string & getMiriamAnnotation() const;
-
   protected:
     bool initVariables();
 
@@ -175,11 +163,6 @@ class CFunction:
      *  Whether the function is reversible
      */
     TriLogic mReversible;
-
-    /**
-     * The RDF/XML representation of the MIRIAM annotation
-     */
-    std::string mMiriamAnnotation;
 
   public:
     virtual void writeMathML(std::ostream & out, unsigned C_INT32 l = 0) const;

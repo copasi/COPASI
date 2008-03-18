@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-//   $Revision: 1.52 $
+//   $Revision: 1.53 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/11 23:32:12 $
+//   $Date: 2008/03/18 19:49:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,6 +28,7 @@
 #include "CEvaluationLexer.h"
 #include "CFunctionDB.h"
 
+#include "MIRIAM/CRDFUtilities.h"
 #include "report/CKeyFactory.h"
 #include "report/CCopasiObjectReference.h"
 #include "sbml/math/ASTNode.h"
@@ -134,11 +135,12 @@ CEvaluationTree::CEvaluationTree(const CEvaluationTree & src,
     mInfix(),
     mUsable(false),
     mErrorPosition(std::string::npos),
-    mMiriamAnnotation(src.mMiriamAnnotation),
+    mMiriamAnnotation(""),
     mpNodeList(NULL),
     mpRoot(NULL),
     mValue(src.mValue)
 {
+  setMiriamAnnotation(src.mMiriamAnnotation, src.mKey);
   initObjects();
   setInfix(src.mInfix);
 }
@@ -558,8 +560,12 @@ bool CEvaluationTree::calls(std::set< std::string > & list) const
     return Calls;
   }
 
-void CEvaluationTree::setMiriamAnnotation(const std::string & miriamAnnotation)
-{mMiriamAnnotation = miriamAnnotation;}
+void CEvaluationTree::setMiriamAnnotation(const std::string & miriamAnnotation,
+    const std::string & oldId)
+{
+  mMiriamAnnotation = miriamAnnotation;
+  CRDFUtilities::fixLocalFileAboutReference(mMiriamAnnotation, mKey, oldId);
+}
 
 const std::string & CEvaluationTree::getMiriamAnnotation() const
   {return mMiriamAnnotation;}
