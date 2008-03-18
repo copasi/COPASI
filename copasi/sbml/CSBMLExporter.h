@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.h,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/03/17 20:29:00 $
+//   $Date: 2008/03/18 16:56:59 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -66,7 +66,7 @@ class CSBMLExporter
     bool mVariableVolumes;
     const CModelValue* mpAvogadro;
     bool mAvogadroCreated;
-    std::set<std::string> mMetaIds;
+    std::map<std::string, const SBase*> mMetaIdMap;
 
   public:
     /**
@@ -490,13 +490,20 @@ class CSBMLExporter
      * This method gets the MIRIAM annotation from the given COPASI object and
      * sets it on the given SBML object.
      */
-    bool updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, SBase* pSBMLObject, std::set<std::string>& mMetaIds);
+    bool updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, SBase* pSBMLObject, std::map<std::string, const SBase*>& metaIds);
+
     /**
      * This method creates a copy of parent where the child with the given index is
      * replaced by the new child given as the second argument.
      * If index is greater than the number of children - 1, NULL is returned.
      */
     XMLNode* replaceChild(const XMLNode* pParent, const XMLNode* pNewChild, unsigned int index);
+
+    /**
+     * This method goes through the given SBML model and collects all ids and
+     * meta ids used in the model.
+     */
+    void collectIds(Model* pModel, std::map<std::string, const SBase*>& ids, std::map<std::string, const SBase*>& metaIds);
   };
 
 #endif // CSBLExporter_H__

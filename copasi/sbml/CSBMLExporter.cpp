@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/03/17 20:29:00 $
+//   $Date: 2008/03/18 16:56:59 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -362,7 +362,7 @@ void CSBMLExporter::createCompartment(CCompartment& compartment)
           removeInitialAssignment(pSBMLCompartment->getId());
         }
     }
-  CSBMLExporter::updateMIRIAMAnnotation(&compartment, pSBMLCompartment, this->mMetaIds);
+  CSBMLExporter::updateMIRIAMAnnotation(&compartment, pSBMLCompartment, this->mMetaIdMap);
 }
 
 /**
@@ -491,7 +491,7 @@ void CSBMLExporter::createMetabolite(CMetab& metab)
           this->mInitialAssignmentVector.push_back(&metab);
         }
     }
-  CSBMLExporter::updateMIRIAMAnnotation(&metab, pSBMLSpecies, this->mMetaIds);
+  CSBMLExporter::updateMIRIAMAnnotation(&metab, pSBMLSpecies, this->mMetaIdMap);
 }
 
 /**
@@ -592,7 +592,7 @@ void CSBMLExporter::createParameter(CModelValue& modelValue)
           removeInitialAssignment(pParameter->getId());
         }
     }
-  CSBMLExporter::updateMIRIAMAnnotation(&modelValue, pParameter, this->mMetaIds);
+  CSBMLExporter::updateMIRIAMAnnotation(&modelValue, pParameter, this->mMetaIdMap);
 }
 
 /**
@@ -745,7 +745,7 @@ void CSBMLExporter::createReaction(CReaction& reaction, CCopasiDataModel& dataMo
     {
       pSBMLReaction->unsetKineticLaw();
     }
-  CSBMLExporter::updateMIRIAMAnnotation(&reaction, pSBMLReaction, this->mMetaIds);
+  CSBMLExporter::updateMIRIAMAnnotation(&reaction, pSBMLReaction, this->mMetaIdMap);
 }
 
 /**
@@ -1762,7 +1762,7 @@ void CSBMLExporter::createFunctionDefinition(CFunction& function, const CCopasiD
           CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 28, function.getObjectName().c_str());
         }
     }
-  CSBMLExporter::updateMIRIAMAnnotation(&function, pFunDef, this->mMetaIds);
+  CSBMLExporter::updateMIRIAMAnnotation(&function, pFunDef, this->mMetaIdMap);
 }
 
 /**
@@ -1825,7 +1825,7 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
         }
     }
   // update the MIRIAM annotation on the model
-  CSBMLExporter::updateMIRIAMAnnotation(pModel, this->mpSBMLDocument->getModel(), this->mMetaIds);
+  CSBMLExporter::updateMIRIAMAnnotation(pModel, this->mpSBMLDocument->getModel(), this->mMetaIdMap);
 
   // create units, compartments, species, parameters, reactions, initial
   // assignment, assignments, (event) and function definitions
@@ -3621,7 +3621,7 @@ void CSBMLExporter::findAvogadro(const CCopasiDataModel& dataModel)
     }
 }
 
-bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, SBase* pSBMLObject, std::set<std::string>& mMetaIds)
+bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, SBase* pSBMLObject, std::map<std::string, const SBase*>& metaIds)
 {
   bool result = true;
   if (pCOPASIObject == NULL || pSBMLObject == NULL) return false;
@@ -3669,4 +3669,978 @@ XMLNode* CSBMLExporter::replaceChild(const XMLNode* pParent, const XMLNode* pNew
         }
     }
   return pResult;
+}
+
+/**
+ * This method goes through the given SBML model and collects all ids and
+ * meta ids used in the model.
+ */
+void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*>& ids, std::map<std::string, const SBase*>& metaIds)
+{
+  if (pModel != NULL)
+    {
+      // the model itself
+      SBase* pSBase = NULL;
+      std::string id;
+      if (pModel->isSetId())
+        {
+          id = pModel->getId();
+          if (ids.find(id) == ids.end())
+            {
+              ids.insert(std::make_pair(id, pModel));
+            }
+          else
+            {
+              fatalError();
+            }
+        }
+      if (pModel->isSetMetaId())
+        {
+          id = pModel->getMetaId();
+          if (metaIds.find(id) == metaIds.end())
+            {
+              metaIds.insert(std::make_pair(id, pModel));
+            }
+          else
+            {
+              fatalError();
+            }
+        }
+      // ListOfFunctionDefinitions
+      pSBase = pModel->getListOfFunctionDefinitions();
+      if (pSBase != NULL)
+        {
+          if (pSBase->isSetId())
+            {
+              id = pSBase->getId();
+              if (ids.find(id) == ids.end())
+                {
+                  ids.insert(std::make_pair(id, pModel));
+                }
+              else
+                {
+                  fatalError();
+                }
+            }
+          if (pSBase->isSetMetaId())
+            {
+              id = pSBase->getMetaId();
+              if (metaIds.find(id) == metaIds.end())
+                {
+                  metaIds.insert(std::make_pair(id, pModel));
+                }
+              else
+                {
+                  fatalError();
+                }
+              // TODO all FunctionDefinitions
+            }
+        }
+      // ListOfUnitDefinition
+      pSBase = pModel->getListOfUnitDefinitions();
+      if (pSBase != NULL)
+        {
+          if (pSBase->isSetMetaId())
+            {
+              id = pSBase->getMetaId();
+              if (metaIds.find(id) == metaIds.end())
+                {
+                  metaIds.insert(std::make_pair(id, pModel));
+                }
+              else
+                {
+                  fatalError();
+                }
+              // all UnitDefinitions
+              // for each UnitDefinition: ListOfUnits, each Unit in ListOfUnits
+              unsigned int i, iMax = pModel->getListOfUnitDefinitions()->size();
+              for (i = 0;i < iMax;++i)
+                {
+                  /* UnitDefinitions have their ids in a different namespace
+                     so we only consider meta ids.
+                   */
+                  UnitDefinition* pUDef = pModel->getUnitDefinition(i);
+                  assert(pUDef != NULL);
+                  if (pUDef->isSetMetaId())
+                    {
+                      id = pUDef->getMetaId();
+                      if (metaIds.find(id) == metaIds.end())
+                        {
+                          metaIds.insert(std::make_pair(id, pUDef));
+                        }
+                      else
+                        {
+                          fatalError();
+                        }
+                    }
+                  ListOf* pList = pUDef->getListOfUnits();
+                  if (pList != NULL)
+                    {
+                      if (pList->isSetMetaId())
+                        {
+                          id = pList->getMetaId();
+                          if (metaIds.find(id) == metaIds.end())
+                            {
+                              metaIds.insert(std::make_pair(id, pList));
+                            }
+                          else
+                            {
+                              fatalError();
+                            }
+                        }
+                      unsigned j, jMax = pList->size();
+                      for (j = 0;j < jMax;++j)
+                        {
+                          pSBase = pList->get(j);
+                          assert(pSBase != NULL);
+                          if (pSBase->isSetMetaId())
+                            {
+                              id = pSBase->getMetaId();
+                              if (metaIds.find(id) == metaIds.end())
+                                {
+                                  metaIds.insert(std::make_pair(id, pSBase));
+                                }
+                              else
+                                {
+                                  fatalError();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+      // ListOfCompartmentTypes
+      pSBase = pModel->getListOfCompartmentTypes();
+      if (pSBase != NULL)
+        {
+          if (pSBase->isSetId())
+            {
+              id = pSBase->getId();
+              if (ids.find(id) == ids.end())
+                {
+                  ids.insert(std::make_pair(id, pModel));
+                }
+              else
+                {
+                  fatalError();
+                }
+            }
+          if (pSBase->isSetMetaId())
+            {
+              id = pSBase->getMetaId();
+              if (metaIds.find(id) == metaIds.end())
+                {
+                  metaIds.insert(std::make_pair(id, pModel));
+                }
+              else
+                {
+                  fatalError();
+                }
+            }
+          // each compartment type
+          unsigned int i, iMax = pModel->getListOfCompartmentTypes()->size();
+          for (i = 0;i < iMax;++i)
+            {
+              pSBase = pModel->getCompartmentType(i);
+              assert(pSBase != NULL);
+              if (pSBase->isSetId())
+                {
+                  id = pSBase->getId();
+                  if (ids.find(id) == ids.end())
+                    {
+                      ids.insert(std::make_pair(id, pSBase));
+                    }
+                  else
+                    {
+                      fatalError();
+                    }
+                }
+              if (pSBase->isSetMetaId())
+                {
+                  id = pSBase->getMetaId();
+                  if (metaIds.find(id) == metaIds.end())
+                    {
+                      metaIds.insert(std::make_pair(id, pSBase));
+                    }
+                  else
+                    {
+                      fatalError();
+                    }
+                }
+            }
+        }
+      // ListOfSpeciesTypes
+      pSBase = pModel->getListOfSpeciesTypes();
+      if (pSBase != NULL)
+        {
+          if (pSBase->isSetId())
+            {
+              id = pSBase->getId();
+              if (ids.find(id) == ids.end())
+                {
+                  ids.insert(std::make_pair(id, pModel));
+                }
+              else
+                {
+                  fatalError();
+                }
+            }
+          if (pSBase->isSetMetaId())
+            {
+              id = pSBase->getMetaId();
+              if (metaIds.find(id) == metaIds.end())
+                {
+                  metaIds.insert(std::make_pair(id, pModel));
+                }
+              else
+                {
+                  fatalError();
+                }
+            }
+          // each species type
+          unsigned int i, iMax = pModel->getListOfSpeciesTypes()->size();
+          for (i = 0;i < iMax;++i)
+            {
+              pSBase = pModel->getSpeciesType(i);
+              assert(pSBase != NULL);
+              if (pSBase->isSetId())
+                {
+                  id = pSBase->getId();
+                  if (ids.find(id) == ids.end())
+                    {
+                      ids.insert(std::make_pair(id, pSBase));
+                    }
+                  else
+                    {
+                      fatalError();
+                    }
+                }
+              if (pSBase->isSetMetaId())
+                {
+                  id = pSBase->getMetaId();
+                  if (metaIds.find(id) == metaIds.end())
+                    {
+                      metaIds.insert(std::make_pair(id, pSBase));
+                    }
+                  else
+                    {
+                      fatalError();
+                    }
+                }
+            }
+        }
+      // ListOfCompartments
+      pSBase = pModel->getListOfCompartments();
+      if (pSBase != NULL)
+        {
+          if (pSBase->isSetId())
+            {
+              id = pSBase->getId();
+              if (ids.find(id) == ids.end())
+                {
+                  ids.insert(std::make_pair(id, pModel));
+                }
+              else
+                {
+                  fatalError();
+                }
+            }
+          if (pSBase->isSetMetaId())
+            {
+              id = pSBase->getMetaId();
+              if (metaIds.find(id) == metaIds.end())
+                {
+                  metaIds.insert(std::make_pair(id, pModel));
+                }
+              else
+                {
+                  fatalError();
+                }
+            }
+          // all compartments
+          unsigned int i, iMax = pModel->getListOfCompartments()->size();
+          for (i = 0;i < iMax;++i)
+            {
+              pSBase = pModel->getCompartment(i);
+              assert(pSBase != NULL);
+              if (pSBase->isSetId())
+                {
+                  id = pSBase->getId();
+                  if (ids.find(id) == ids.end())
+                    {
+                      ids.insert(std::make_pair(id, pSBase));
+                    }
+                  else
+                    {
+                      fatalError();
+                    }
+                }
+              if (pSBase->isSetMetaId())
+                {
+                  id = pSBase->getMetaId();
+                  if (metaIds.find(id) == metaIds.end())
+                    {
+                      metaIds.insert(std::make_pair(id, pSBase));
+                    }
+                  else
+                    {
+                      fatalError();
+                    }
+                }
+            }
+        }
+      // ListOfSpecies
+      pSBase = pModel->getListOfSpecies();
+      if (pSBase != NULL)
+        {
+          if (pSBase->isSetId())
+            {
+              id = pSBase->getId();
+              if (ids.find(id) == ids.end())
+                {
+                  ids.insert(std::make_pair(id, pModel));
+                }
+              else
+                {
+                  fatalError();
+                }
+            }
+          if (pSBase->isSetMetaId())
+            {
+              id = pSBase->getMetaId();
+              if (metaIds.find(id) == metaIds.end())
+                {
+                  metaIds.insert(std::make_pair(id, pModel));
+                }
+              else
+                {
+                  fatalError();
+                }
+            }
+          // all species
+          unsigned int i, iMax = pModel->getListOfSpecies()->size();
+          for (i = 0;i < iMax;++i)
+            {
+              pSBase = pModel->getSpecies(i);
+              assert(pSBase != NULL);
+              if (pSBase->isSetId())
+                {
+                  id = pSBase->getId();
+                  if (ids.find(id) == ids.end())
+                    {
+                      ids.insert(std::make_pair(id, pSBase));
+                    }
+                  else
+                    {
+                      fatalError();
+                    }
+                }
+              if (pSBase->isSetMetaId())
+                {
+                  id = pSBase->getMetaId();
+                  if (metaIds.find(id) == metaIds.end())
+                    {
+                      metaIds.insert(std::make_pair(id, pSBase));
+                    }
+                  else
+                    {
+                      fatalError();
+                    }
+                }
+            }
+        }
+      // ListOfParameters
+      pSBase = pModel->getListOfParameters();
+      if (pSBase != NULL)
+        {
+          if (pSBase->isSetId())
+            {
+              id = pSBase->getId();
+              if (ids.find(id) == ids.end())
+                {
+                  ids.insert(std::make_pair(id, pModel));
+                }
+              else
+                {
+                  fatalError();
+                }
+            }
+          if (pSBase->isSetMetaId())
+            {
+              id = pSBase->getMetaId();
+              if (metaIds.find(id) == metaIds.end())
+                {
+                  metaIds.insert(std::make_pair(id, pModel));
+                }
+              else
+                {
+                  fatalError();
+                }
+            }
+          // each parameter
+          unsigned int i, iMax = pModel->getListOfParameters()->size();
+          for (i = 0;i < iMax;++i)
+            {
+              pSBase = pModel->getParameter(i);
+              assert(pSBase != NULL);
+              if (pSBase->isSetId())
+                {
+                  id = pSBase->getId();
+                  if (ids.find(id) == ids.end())
+                    {
+                      ids.insert(std::make_pair(id, pSBase));
+                    }
+                  else
+                    {
+                      fatalError();
+                    }
+                }
+              if (pSBase->isSetMetaId())
+                {
+                  id = pSBase->getMetaId();
+                  if (metaIds.find(id) == metaIds.end())
+                    {
+                      metaIds.insert(std::make_pair(id, pSBase));
+                    }
+                  else
+                    {
+                      fatalError();
+                    }
+                }
+            }
+        }
+      // ListOfInitialAssignments
+      pSBase = pModel->getListOfInitialAssignments();
+      if (pSBase != NULL)
+        {
+          if (pSBase->isSetId())
+            {
+              id = pSBase->getId();
+              if (ids.find(id) == ids.end())
+                {
+                  ids.insert(std::make_pair(id, pModel));
+                }
+              else
+                {
+                  fatalError();
+                }
+            }
+          if (pSBase->isSetMetaId())
+            {
+              id = pSBase->getMetaId();
+              if (metaIds.find(id) == metaIds.end())
+                {
+                  metaIds.insert(std::make_pair(id, pModel));
+                }
+              else
+                {
+                  fatalError();
+                }
+            }
+          // each initial assignment
+          unsigned int i, iMax = pModel->getListOfInitialAssignments()->size();
+          for (i = 0;i < iMax;++i)
+            {
+              pSBase = pModel->getInitialAssignment(i);
+              assert(pSBase != NULL);
+              // initial assignments have no ids
+              if (pSBase->isSetMetaId())
+                {
+                  id = pSBase->getMetaId();
+                  if (metaIds.find(id) == metaIds.end())
+                    {
+                      metaIds.insert(std::make_pair(id, pSBase));
+                    }
+                  else
+                    {
+                      fatalError();
+                    }
+                }
+            }
+        }
+      // ListOfRules
+      pSBase = pModel->getListOfRules();
+      if (pSBase != NULL)
+        {
+          if (pSBase->isSetId())
+            {
+              id = pSBase->getId();
+              if (ids.find(id) == ids.end())
+                {
+                  ids.insert(std::make_pair(id, pModel));
+                }
+              else
+                {
+                  fatalError();
+                }
+            }
+          if (pSBase->isSetMetaId())
+            {
+              id = pSBase->getMetaId();
+              if (metaIds.find(id) == metaIds.end())
+                {
+                  metaIds.insert(std::make_pair(id, pModel));
+                }
+              else
+                {
+                  fatalError();
+                }
+            }
+          // each rule
+          unsigned int i, iMax = pModel->getListOfRules()->size();
+          for (i = 0;i < iMax;++i)
+            {
+              pSBase = pModel->getRule(i);
+              assert(pSBase != NULL);
+              // rules don't have ids
+              if (pSBase->isSetMetaId())
+                {
+                  id = pSBase->getMetaId();
+                  if (metaIds.find(id) == metaIds.end())
+                    {
+                      metaIds.insert(std::make_pair(id, pSBase));
+                    }
+                  else
+                    {
+                      fatalError();
+                    }
+                }
+            }
+        }
+      // ListOfConstraints
+      pSBase = pModel->getListOfConstraints();
+      if (pSBase != NULL)
+        {
+          if (pSBase->isSetId())
+            {
+              id = pSBase->getId();
+              if (ids.find(id) == ids.end())
+                {
+                  ids.insert(std::make_pair(id, pModel));
+                }
+              else
+                {
+                  fatalError();
+                }
+            }
+          if (pSBase->isSetMetaId())
+            {
+              id = pSBase->getMetaId();
+              if (metaIds.find(id) == metaIds.end())
+                {
+                  metaIds.insert(std::make_pair(id, pModel));
+                }
+              else
+                {
+                  fatalError();
+                }
+            }
+          // each constraint
+          unsigned int i, iMax = pModel->getListOfConstraints()->size();
+          for (i = 0;i < iMax;++i)
+            {
+              pSBase = pModel->getConstraint(i);
+              assert(pSBase != NULL);
+              // constraints don't have ids
+              if (pSBase->isSetMetaId())
+                {
+                  id = pSBase->getMetaId();
+                  if (metaIds.find(id) == metaIds.end())
+                    {
+                      metaIds.insert(std::make_pair(id, pSBase));
+                    }
+                  else
+                    {
+                      fatalError();
+                    }
+                }
+            }
+        }
+      // ListOfReactions
+      pSBase = pModel->getListOfReactions();
+      if (pSBase != NULL)
+        {
+          if (pSBase->isSetId())
+            {
+              id = pSBase->getId();
+              if (ids.find(id) == ids.end())
+                {
+                  ids.insert(std::make_pair(id, pModel));
+                }
+              else
+                {
+                  fatalError();
+                }
+            }
+          if (pSBase->isSetMetaId())
+            {
+              id = pSBase->getMetaId();
+              if (metaIds.find(id) == metaIds.end())
+                {
+                  metaIds.insert(std::make_pair(id, pModel));
+                }
+              else
+                {
+                  fatalError();
+                }
+            }
+          // all reactions
+          unsigned int i, iMax = pModel->getListOfReactions()->size();
+          for (i = 0;i < iMax;++i)
+            {
+              Reaction* pReaction = pModel->getReaction(i);
+              assert(pReaction != NULL);
+              if (pReaction->isSetId())
+                {
+                  id = pReaction->getId();
+                  if (ids.find(id) == ids.end())
+                    {
+                      ids.insert(std::make_pair(id, pReaction));
+                    }
+                  else
+                    {
+                      fatalError();
+                    }
+                }
+              if (pReaction->isSetMetaId())
+                {
+                  id = pReaction->getMetaId();
+                  if (metaIds.find(id) == metaIds.end())
+                    {
+                      metaIds.insert(std::make_pair(id, pReaction));
+                    }
+                  else
+                    {
+                      fatalError();
+                    }
+                }
+              // for each reaction: ListOfSubstrates, each substrate, ListOfProducts, each
+              // Product, ListOfModifieres, each modifier, KineticLaw, ListOfparameters,
+              // each parameter
+              if (pReaction->getListOfReactants() != NULL)
+                {
+                  pSBase = pReaction->getListOfReactants();
+                  if (pSBase->isSetMetaId())
+                    {
+                      id = pSBase->getMetaId();
+                      if (metaIds.find(id) == metaIds.end())
+                        {
+                          metaIds.insert(std::make_pair(id, pSBase));
+                        }
+                      else
+                        {
+                          fatalError();
+                        }
+                    }
+                  unsigned int j, jMax = pReaction->getListOfReactants()->size();
+                  for (j = 0;j < jMax;++j)
+                    {
+                      pSBase = pReaction->getReactant(j);
+                      assert(pSBase != NULL);
+                      // since L2V2 species references can have ids
+                      if (pSBase->isSetId())
+                        {
+                          id = pSBase->getId();
+                          if (ids.find(id) == ids.end())
+                            {
+                              ids.insert(std::make_pair(id, pSBase));
+                            }
+                          else
+                            {
+                              fatalError();
+                            }
+                        }
+                      if (pSBase->isSetMetaId())
+                        {
+                          id = pSBase->getMetaId();
+                          if (metaIds.find(id) == metaIds.end())
+                            {
+                              metaIds.insert(std::make_pair(id, pSBase));
+                            }
+                          else
+                            {
+                              fatalError();
+                            }
+                        }
+                    }
+                }
+              if (pReaction->getListOfProducts() != NULL)
+                {
+                  pSBase = pReaction->getListOfProducts();
+                  if (pSBase->isSetMetaId())
+                    {
+                      id = pSBase->getMetaId();
+                      if (metaIds.find(id) == metaIds.end())
+                        {
+                          metaIds.insert(std::make_pair(id, pSBase));
+                        }
+                      else
+                        {
+                          fatalError();
+                        }
+                    }
+                  unsigned int j, jMax = pReaction->getListOfProducts()->size();
+                  for (j = 0;j < jMax;++j)
+                    {
+                      pSBase = pReaction->getProduct(j);
+                      assert(pSBase != NULL);
+                      // since L2V2 species references can have ids
+                      if (pSBase->isSetId())
+                        {
+                          id = pSBase->getId();
+                          if (ids.find(id) == ids.end())
+                            {
+                              ids.insert(std::make_pair(id, pSBase));
+                            }
+                          else
+                            {
+                              fatalError();
+                            }
+                        }
+                      if (pSBase->isSetMetaId())
+                        {
+                          id = pSBase->getMetaId();
+                          if (metaIds.find(id) == metaIds.end())
+                            {
+                              metaIds.insert(std::make_pair(id, pSBase));
+                            }
+                          else
+                            {
+                              fatalError();
+                            }
+                        }
+                    }
+                }
+              if (pReaction->getListOfModifiers() != NULL)
+                {
+                  pSBase = pReaction->getListOfModifiers();
+                  if (pSBase->isSetMetaId())
+                    {
+                      id = pSBase->getMetaId();
+                      if (metaIds.find(id) == metaIds.end())
+                        {
+                          metaIds.insert(std::make_pair(id, pSBase));
+                        }
+                      else
+                        {
+                          fatalError();
+                        }
+                    }
+                  unsigned int j, jMax = pReaction->getListOfModifiers()->size();
+                  for (j = 0;j < jMax;++j)
+                    {
+                      pSBase = pReaction->getModifier(j);
+                      assert(pSBase != NULL);
+                      // since L2V2 species references can have ids
+                      if (pSBase->isSetId())
+                        {
+                          id = pSBase->getId();
+                          if (ids.find(id) == ids.end())
+                            {
+                              ids.insert(std::make_pair(id, pSBase));
+                            }
+                          else
+                            {
+                              fatalError();
+                            }
+                        }
+                      if (pSBase->isSetMetaId())
+                        {
+                          id = pSBase->getMetaId();
+                          if (metaIds.find(id) == metaIds.end())
+                            {
+                              metaIds.insert(std::make_pair(id, pSBase));
+                            }
+                          else
+                            {
+                              fatalError();
+                            }
+                        }
+                    }
+                }
+              KineticLaw* pKLaw = pReaction->getKineticLaw();
+              if (pKLaw != NULL)
+                {
+                  if (pKLaw->isSetMetaId())
+                    {
+                      id = pKLaw->getMetaId();
+                      if (metaIds.find(id) == metaIds.end())
+                        {
+                          metaIds.insert(std::make_pair(id, pKLaw));
+                        }
+                      else
+                        {
+                          fatalError();
+                        }
+                    }
+                  pSBase = pKLaw->getListOfParameters();
+                  if (pSBase != NULL)
+                    {
+                      if (pSBase->isSetMetaId())
+                        {
+                          id = pSBase->getMetaId();
+                          if (metaIds.find(id) == metaIds.end())
+                            {
+                              metaIds.insert(std::make_pair(id, pSBase));
+                            }
+                          else
+                            {
+                              fatalError();
+                            }
+                          unsigned int j, jMax = pKLaw->getListOfParameters()->size();
+                          for (j = 0;j < jMax;++j)
+                            {
+                              pSBase = pKLaw->getParameter(j);
+                              assert(pSBase != NULL);
+                              // local parameters have their ids in a
+                              // differerent namespace
+                              if (pSBase->isSetMetaId())
+                                {
+                                  id = pSBase->getMetaId();
+                                  if (metaIds.find(id) == metaIds.end())
+                                    {
+                                      metaIds.insert(std::make_pair(id, pSBase));
+                                    }
+                                  else
+                                    {
+                                      fatalError();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+      // ListOfEvents
+      pSBase = pModel->getListOfEvents();
+      if (pSBase != NULL)
+        {
+          if (pSBase->isSetId())
+            {
+              id = pSBase->getId();
+              if (ids.find(id) == ids.end())
+                {
+                  ids.insert(std::make_pair(id, pModel));
+                }
+              else
+                {
+                  fatalError();
+                }
+            }
+          if (pSBase->isSetMetaId())
+            {
+              id = pSBase->getMetaId();
+              if (metaIds.find(id) == metaIds.end())
+                {
+                  metaIds.insert(std::make_pair(id, pModel));
+                }
+              else
+                {
+                  fatalError();
+                }
+            }
+          // each event
+          unsigned int i, iMax = pModel->getListOfEvents()->size();
+          for (i = 0;i < iMax;++i)
+            {
+              Event* pEvent = pModel->getEvent(i);
+              assert(pEvent != NULL);
+              if (pEvent->isSetId())
+                {
+                  id = pEvent->getId();
+                  if (ids.find(id) == ids.end())
+                    {
+                      ids.insert(std::make_pair(id, pEvent));
+                    }
+                  else
+                    {
+                      fatalError();
+                    }
+                }
+              if (pEvent->isSetMetaId())
+                {
+                  id = pEvent->getMetaId();
+                  if (metaIds.find(id) == metaIds.end())
+                    {
+                      metaIds.insert(std::make_pair(id, pEvent));
+                    }
+                  else
+                    {
+                      fatalError();
+                    }
+                }
+              // in each event Trigger,Delay,ListOfEventAssignments, each event assignment
+              if (pEvent->isSetTrigger())
+                {
+                  pSBase = pEvent->getTrigger();
+                  assert(pSBase != NULL);
+                  if (pSBase->isSetMetaId())
+                    {
+                      id = pSBase->getMetaId();
+                      if (metaIds.find(id) == metaIds.end())
+                        {
+                          metaIds.insert(std::make_pair(id, pSBase));
+                        }
+                      else
+                        {
+                          fatalError();
+                        }
+                    }
+                }
+              if (pEvent->isSetDelay())
+                {
+                  pSBase = pEvent->getDelay();
+                  assert(pSBase != NULL);
+                  if (pSBase->isSetMetaId())
+                    {
+                      id = pSBase->getMetaId();
+                      if (metaIds.find(id) == metaIds.end())
+                        {
+                          metaIds.insert(std::make_pair(id, pSBase));
+                        }
+                      else
+                        {
+                          fatalError();
+                        }
+                    }
+                }
+              if (pEvent->getListOfEventAssignments() != NULL)
+                {
+                  pSBase = pEvent->getListOfEventAssignments();
+                  if (pSBase->isSetMetaId())
+                    {
+                      id = pSBase->getMetaId();
+                      if (metaIds.find(id) == metaIds.end())
+                        {
+                          metaIds.insert(std::make_pair(id, pSBase));
+                        }
+                      else
+                        {
+                          fatalError();
+                        }
+                    }
+                  unsigned int j, jMax = pEvent->getListOfEventAssignments()->size();
+                  for (j = 0;j < jMax;++j)
+                    {
+                      pSBase = pEvent->getEventAssignment(j);
+                      assert(pSBase != NULL);
+                      if (pSBase->isSetMetaId())
+                        {
+                          id = pSBase->getMetaId();
+                          if (metaIds.find(id) == metaIds.end())
+                            {
+                              metaIds.insert(std::make_pair(id, pSBase));
+                            }
+                          else
+                            {
+                              fatalError();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
