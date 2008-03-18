@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-//   $Revision: 1.59 $
+//   $Revision: 1.60 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/17 19:05:36 $
+//   $Date: 2008/03/18 16:47:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -170,7 +170,8 @@ bool CModelEntity::compile()
       mpIValueReference->setDirectDependencies(mpInitialExpression->getDirectDependencies());
 
       // If we have constant initial expression, we update the initial value.
-      if (mpIValueReference->getDirectDependencies().size() == 0)
+      if (mpInitialExpression->isUsable() &&
+          mpIValueReference->getDirectDependencies().size() == 0)
         *mpIValue = mpInitialExpression->calcValue();
     }
   else
