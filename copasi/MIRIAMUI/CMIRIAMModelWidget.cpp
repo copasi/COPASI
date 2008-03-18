@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CMIRIAMModelWidget.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/03/11 09:14:00 $
+//   $Author: aekamal $
+//   $Date: 2008/03/18 05:05:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -138,15 +138,26 @@ CMIRIAMModelWidget::CMIRIAMModelWidget(QWidget* parent, const char* name, WFlags
 
 void CMIRIAMModelWidget::slotBtnOKClicked()
 {
+  std::string dt = "";
+  if (mpCreatedWidget->dateTime().toString(Qt::ISODate).ascii())
+  {dt = mpCreatedWidget->dateTime().toString(Qt::ISODate).ascii();}
+
+  const std::string strDT = CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getCreatedDT();
+  if (strDT.length())
+    {
+      QDateTime dtWidget = mpCreatedWidget->dateTime();
+      QDateTime dtBackEnd = QDateTime::fromString(FROM_UTF8(strDT), Qt::ISODate);
+      if (dtWidget != dtBackEnd)
+        {
+          CCopasiDataModel::Global->getModel()->getMIRIAMInfo().setCreatedDT(dt);
+          protectedNotify(ListViews::MODEL, ListViews::CHANGE);
+        }
+    }
+
   std::vector<CopasiTableWidget*>::const_iterator it = mWidgets.begin();
   std::vector<CopasiTableWidget*>::const_iterator end = mWidgets.end();
   for (; it != end; it++)
   {(*it)->slotBtnOKClicked();}
-
-  std::string dt = "";
-  if (mpCreatedWidget->dateTime().toString(Qt::ISODate).ascii())
-  {dt = mpCreatedWidget->dateTime().toString(Qt::ISODate).ascii();}
-  CCopasiDataModel::Global->getModel()->getMIRIAMInfo().setCreatedDT(dt);
 }
 
 void CMIRIAMModelWidget::slotBtnCancelClicked()
@@ -213,6 +224,7 @@ bool CMIRIAMModelWidget::update(ListViews::ObjectType objectType, ListViews::Act
 bool CMIRIAMModelWidget::enter(const std::string & key)
 {
   CCopasiDataModel::Global->getModel()->getMIRIAMInfo().loadGraph(key);
+  updateCreatedWidget();
   std::vector<CopasiTableWidget*>::const_iterator it = mWidgets.begin();
   std::vector<CopasiTableWidget*>::const_iterator end = mWidgets.end();
   for (; it != end; it++)

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CModelMIRIAMInfo.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/03/17 20:33:56 $
+//   $Date: 2008/03/18 05:05:07 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -166,10 +166,10 @@ bool CModelMIRIAMInfo::removeReference(const std::string & key)
 }
 
 const std::string CModelMIRIAMInfo::getCreatedDT() const
-  {return mpRDFGraph->getFieldValue("dcterms:W3CDTF", mCreatedObj);}
+  {return mpRDFGraph->getFieldValue("dcterms:created.dcterms:W3CDTF", mCreatedObj);}
 
 void CModelMIRIAMInfo::setCreatedDT(const std::string& dt)
-{mpRDFGraph->setFieldValue("dcterms:W3CDTF", mCreatedObj, dt);}
+{mpRDFGraph->setFieldValue("dcterms:created.dcterms:W3CDTF", mCreatedObj, dt);}
 
 CCopasiVector <CModified> & CModelMIRIAMInfo::getModifieds()
 {return mModifieds;}
@@ -272,16 +272,14 @@ void CModelMIRIAMInfo::clearMembers()
 
 void CModelMIRIAMInfo::loadGraph(const std::string& key)
 {
-  mpEntity = dynamic_cast< CModelEntity * >(GlobalKeys.get(key));
-  if (!mpEntity)
+  CModelEntity* pNewEntity = dynamic_cast< CModelEntity * >(GlobalKeys.get(key));
+  if (pNewEntity && mpEntity != pNewEntity)
     {
-      if ((mpEntity = dynamic_cast< CModelEntity * >(GlobalKeys.get(key))) != NULL)
-        {
-          CRDFGraph * oldGraph = mpRDFGraph;
-          mpRDFGraph = mpRDFGraph->loadGraph(mpEntity);
-          pdelete(oldGraph);
-          fillInfoFromGraph();
-        }
+      mpEntity = pNewEntity;
+      CRDFGraph* oldGraph = mpRDFGraph;
+      mpRDFGraph = mpRDFGraph->loadGraph(mpEntity);
+      pdelete(oldGraph);
+      fillInfoFromGraph();
     }
 }
 

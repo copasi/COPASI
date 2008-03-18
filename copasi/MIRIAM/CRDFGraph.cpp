@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraph.cpp,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.26 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/12 13:28:06 $
+//   $Author: aekamal $
+//   $Date: 2008/03/18 05:05:07 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -849,42 +849,44 @@ std::string CRDFGraph::getFieldValue(const std::string& fieldName, const CRDFObj
 
 bool CRDFGraph::setFieldValue(const std::string& fieldName, CRDFObject& obj, const std::string& fieldValue)
 {
-  CRDFNode * pFieldNode = findFieldNodeFromObject(fieldName, obj);
+  std::string table = ""; std::string field = "";
+  std::string::size_type loc = fieldName.find('.', 0);
+  if (loc != std::string::npos)
+    {
+      table = fieldName.substr(0, loc);
+      field = fieldName.substr(loc + 1);
+    }
+  else
+  {field = fieldName;}
+
+  CRDFNode * pFieldNode = findFieldNodeFromObject(field, obj);
   if (!pFieldNode || !pFieldNode->isObjectNode())
     {
       //Since no field found, build the record.
-      if (fieldName == "vCard:Family" || fieldName == "vCard:Given" || fieldName == "vCard:EMAIL" || fieldName == "vCard:Orgname")
+      if (field == "vCard:Family" || field == "vCard:Given" || field == "vCard:EMAIL" || field == "vCard:Orgname")
         {
           buildCreatorRecord(mBlankNodeId2Node[obj.getBlankNodeID()]);
           mChanged = true;
         }
-      else if (fieldName == "PubmedId" || fieldName == "DOI" || fieldName == "dcterms:description")
+      else if (field == "PubmedId" || field == "DOI" || field == "dcterms:description")
         {
           buildReferenceRecord(mBlankNodeId2Node[obj.getBlankNodeID()]);
           mChanged = true;
         }
-      else if (fieldName == "dcterms:W3CDTF")
+      else if (field == "dcterms:W3CDTF" && table == "dcterms:created")
         {
-          CRDFNode * pTableNode = findNodeFromObject(obj);
-          if (!pTableNode)
-            {
-              //addRecordToTable("Created", CRDFObject(obj), obj);
-              pTableNode = findNodeFromObject(obj);
-            }
-          else
-            {
-              buildCreatedRecord(mBlankNodeId2Node[obj.getBlankNodeID()]);
-              mChanged = true;
-            }
+          //Since addRecordToTable is never called for created Table.
+          addRecordToTable(table, obj);
+          mChanged = true;
         }
-      else if (fieldName == "dcterms:W3CDTF")
+      else if (field == "dcterms:W3CDTF") //Modified table
         {
           buildModifiedRecord(mBlankNodeId2Node[obj.getBlankNodeID()]);
           mChanged = true;
         }
 
       //try again
-      pFieldNode = findFieldNodeFromObject(fieldName, obj);
+      pFieldNode = findFieldNodeFromObject(field, obj);
       if (!pFieldNode || !pFieldNode->isObjectNode()
           || pFieldNode->getObject().getType() == CRDFObject::BLANK_NODE)
         //Field Node is a leaf and cannot be a BLANK_NODE
@@ -972,16 +974,27 @@ CRDFNode* CRDFGraph::findFieldNodeFromObject(const std::string& fieldName, const
 {
   CRDFNode* fieldNode = NULL;
   CRDFNode* fieldNode2 = NULL;
+  std::string table = ""; std::string field = "";
   std::string predicate = "";
   std::string prefix = "";
 
   std::map<std::string, std::string> referencePredicates = CConstants::getReferencePredicates();
-  if (fieldName == "PubmedId")
+
+  std::string::size_type loc = fieldName.find('.', 0);
+  if (loc != std::string::npos)
+    {
+      table = fieldName.substr(0, loc);
+      field = fieldName.substr(loc + 1);
+    }
+  else
+  {field = fieldName;}
+
+  if (field == "PubmedId")
   {prefix = referencePredicates["Pubmed"];}
-  else if (fieldName == "DOI")
+  else if (field == "DOI")
   {prefix = referencePredicates["DOI"];}
 
-  if (fieldName == "PubmedId" || fieldName == "DOI")
+  if (field == "PubmedId" || field == "DOI")
     {
       if (startObj.getType() == CRDFObject::RESOURCE)
         {
@@ -1009,9 +1022,9 @@ CRDFNode* CRDFGraph::findFieldNodeFromObject(const std::string& fieldName, const
                 return fieldNode2;
               else
                 {
-                  if (fieldName == "PubmedId" && fieldNode->getObject().getResource() == "")
+                  if (field == "PubmedId" && fieldNode->getObject().getResource() == "")
                     return fieldNode;
-                  else if (fieldName == "DOI" && fieldNode2->getObject().getResource() == "")
+                  else if (field == "DOI" && fieldNode2->getObject().getResource() == "")
                     return fieldNode2;
                   else
                     return NULL;
@@ -1028,7 +1041,7 @@ CRDFNode* CRDFGraph::findFieldNodeFromObject(const std::string& fieldName, const
     }
   else if (startObj.getType() == CRDFObject::BLANK_NODE)
     {
-      predicate = tagName2Predicate(fieldName);
+      predicate = tagName2Predicate(field);
       fieldNode = getNodeForPredicate(predicate, findNodeFromObject(startObj));
       return fieldNode;
     }
