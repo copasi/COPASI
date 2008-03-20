@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/ConvertToCEvaluationNode.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/03/13 19:29:26 $
+//   $Date: 2008/03/20 20:31:36 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -51,6 +51,7 @@
 #include "CNormalLogicalItem.h"
 #include "CNormalFunction.h"
 #include "CNormalGeneralPower.h"
+#include "CNormalTranslation.h"
 
 std::map<std::string, const CEvaluationNode*> str2eval;
 
@@ -558,7 +559,31 @@ CNormalProduct * createProduct(const CEvaluationNode* node)
 CNormalSum* createSum(const CEvaluationNode* node)
 {
   CNormalSum* sum = new CNormalSum();
-  if (node->getData() != "+")
+  if (node->getData() == "+")
+    {
+      CNormalSum* sum1 = createSum(static_cast<const CEvaluationNode*>(node->getChild()));
+      CNormalSum* sum2 = createSum(static_cast<const CEvaluationNode*>(node->getChild()->getSibling()));
+      sum->add(*sum1);
+      sum->add(*sum2);
+      delete sum1;
+      delete sum2;
+      return sum;
+    }
+  else if (node->getData() == "-")
+    {
+      CNormalSum* sum1 = createSum(static_cast<const CEvaluationNode*>(node->getChild()));
+      CEvaluationNodeOperator* pOperatorNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
+      pOperatorNode->addChild(new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "-1.0"));
+      pOperatorNode->addChild(static_cast<const CEvaluationNode*>(node->getChild()->getSibling())->copyBranch());
+      CNormalSum* sum2 = createSum(pOperatorNode);
+      delete pOperatorNode;
+      sum->add(*sum1);
+      sum->add(*sum2);
+      delete sum1;
+      delete sum2;
+      return sum;
+    }
+  else
     {
       if (node->getData() == "/")
         {
@@ -574,16 +599,6 @@ CNormalSum* createSum(const CEvaluationNode* node)
           delete product;
           return sum;
         }
-    }
-  else
-    {
-      CNormalSum* sum1 = createSum(static_cast<const CEvaluationNode*>(node->getChild()));
-      CNormalSum* sum2 = createSum(static_cast<const CEvaluationNode*>(node->getChild()->getSibling()));
-      sum->add(*sum1);
-      sum->add(*sum2);
-      delete sum1;
-      delete sum2;
-      return sum;
     }
 }
 
