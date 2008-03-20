@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/03/14 15:18:13 $
+//   $Date: 2008/03/20 09:59:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -88,7 +88,7 @@ class CNormalTranslation
      * This routine is responsible for recursively simplifying a given
      * CEvaluationNode based tree.
      */
-    CEvaluationNode* simplify(const CEvaluationNode* pOrig);
+    static CEvaluationNode* simplify(const CEvaluationNode* pOrig);
 
     /**
      * This routine is responsible for all elementary eliminations, e.g. addition
@@ -96,94 +96,94 @@ class CNormalTranslation
      * These steps can not lead to new simplifications in the children of the node
      * being simplified, so it is not necessary to run this on the children again.
      */
-    CEvaluationNode* elementaryElimination(const CEvaluationNode* pOrig);
+    static CEvaluationNode* elementaryElimination(const CEvaluationNode* pOrig);
 
     /**
      * This method makes elementary eliminations on function nodes
      */
-    CEvaluationNode* elementaryEliminationFunction(const CEvaluationNode* pFunctionNode, std::vector<CEvaluationNode*>& children);
+    static CEvaluationNode* elementaryEliminationFunction(const CEvaluationNode* pFunctionNode, std::vector<CEvaluationNode*>& children);
 
     /**
      * This method makes the elementary elimination on a power node.
      */
-    CEvaluationNode* elementaryEliminationPower(const CEvaluationNode* pPowerNode, const std::vector<CEvaluationNode*>& children);
+    static CEvaluationNode* elementaryEliminationPower(const CEvaluationNode* pPowerNode, const std::vector<CEvaluationNode*>& children);
 
     /**
      * This method makes the elementary elimination on a modulus node.
      */
-    CEvaluationNode* elementaryEliminationModulus(const CEvaluationNode* pModulusNode, const std::vector<CEvaluationNode*>& children);
+    static CEvaluationNode* elementaryEliminationModulus(const CEvaluationNode* pModulusNode, const std::vector<CEvaluationNode*>& children);
 
     /**
      * This method makes the elementary elimination on a multiply node.
      */
-    CEvaluationNode* elementaryEliminationMultiply(const CEvaluationNode* pMultiplyNode, const std::vector<CEvaluationNode*>& children);
+    static CEvaluationNode* elementaryEliminationMultiply(const CEvaluationNode* pMultiplyNode, const std::vector<CEvaluationNode*>& children);
 
     /**
      * This method makes the elementary elimination on a divide node.
      */
-    CEvaluationNode* elementaryEliminationDivide(const CEvaluationNode* pDivideNode, const std::vector<CEvaluationNode*>& children);
+    static CEvaluationNode* elementaryEliminationDivide(const CEvaluationNode* pDivideNode, const std::vector<CEvaluationNode*>& children);
 
     /**
      * This method makes the elementary elimination on a plus node.
      */
-    CEvaluationNode* elementaryEliminationPlus(const CEvaluationNode* pPlusNode, const std::vector<CEvaluationNode*>& children);
+    static CEvaluationNode* elementaryEliminationPlus(const CEvaluationNode* pPlusNode, const std::vector<CEvaluationNode*>& children);
 
     /**
      * This method makes the elementary elimination on a minus node.
      */
-    CEvaluationNode* elementaryEliminationMinus(const CEvaluationNode* pMinusNode, const std::vector<CEvaluationNode*>& children);
+    static CEvaluationNode* elementaryEliminationMinus(const CEvaluationNode* pMinusNode, const std::vector<CEvaluationNode*>& children);
 
     /**
      * This method evaluates operators acting on two numbers
      */
-    CEvaluationNode* evaluateNumbers(const CEvaluationNode* pOrig);
+    static CEvaluationNode* evaluateNumbers(const CEvaluationNode* pOrig);
 
     /**
      * This method removes nested power nodes, e.g. (a^b)^c -> a^(b*c)
      */
-    CEvaluationNode* eliminateNestedPowers(const CEvaluationNode* pOrig);
+    static CEvaluationNode* eliminateNestedPowers(const CEvaluationNode* pOrig);
 
     /**
      * This method splits a product into the individual elements
      */
-    void splitProduct(const CEvaluationNode* pRoot, std::vector<const CEvaluationNode*>& multiplications, std::vector<const CEvaluationNode*>& divisions, bool division);
+    static void splitProduct(const CEvaluationNode* pRoot, std::vector<const CEvaluationNode*>& multiplications, std::vector<const CEvaluationNode*>& divisions, bool division);
 
     /**
      * This method splits a sum into the individual elements
      */
-    void splitSum(const CEvaluationNode* pRoot, std::vector<const CEvaluationNode*>& additions, std::vector<const CEvaluationNode*>& substractions, bool minus);
+    static void splitSum(const CEvaluationNode* pRoot, std::vector<const CEvaluationNode*>& additions, std::vector<const CEvaluationNode*>& substractions, bool minus);
 
     /**
      * This method expands the exponents of power nodes, e.g. A^(x+y) -> A^x * A^y
      */
-    CEvaluationNode* expandPowerNodes(const CEvaluationNode* pOrig);
+    static CEvaluationNode* expandPowerNodes(const CEvaluationNode* pOrig);
 
     /**
      * The methods get a vector of multiplication elements and a vector of division
      * elements and tries to find elements with the same power base in those two vectors.
      */
-    std::vector<std::pair<CEvaluationNode*, CEvaluationNode*> > matchPowerBases(const std::vector<const CEvaluationNode*>& multiplications, const std::vector<const CEvaluationNode*>& divisions);
+    static std::vector<std::pair<CEvaluationNode*, CEvaluationNode*> > matchPowerBases(const std::vector<const CEvaluationNode*>& multiplications, const std::vector<const CEvaluationNode*>& divisions);
 
     /**
      * The methods get a vector of addition elements and a vector of subtractions
      * elements and tries to find equal elements in those two vectors.
      */
-    std::vector<std::pair<CEvaluationNode*, CEvaluationNode*> > matchSummands(const std::vector<const CEvaluationNode*>& additions, const std::vector<const CEvaluationNode*>& subtractions);
+    static std::vector<std::pair<CEvaluationNode*, CEvaluationNode*> > matchSummands(const std::vector<const CEvaluationNode*>& additions, const std::vector<const CEvaluationNode*>& subtractions);
 
     /**
      * This method expands products. (A+B)*(C+D) -> (A*C)+(A*D)+(B*C)+(B*D)
      */
-    CEvaluationNode* expandProducts(const CEvaluationNode* pOrig);
+    static CEvaluationNode* expandProducts(const CEvaluationNode* pOrig);
 
     /**
      * Multiplies the two given nodes and returns the result.
      */
-    CEvaluationNode* multiply(const CEvaluationNode* pNode1, const CEvaluationNode* pNode2);
+    static CEvaluationNode* multiply(const CEvaluationNode* pNode1, const CEvaluationNode* pNode2);
 
     /**
      * This method does all the canceling on a given node and its children.
      */
-    CEvaluationNode* cancel(const CEvaluationNode* pOrig);
+    static CEvaluationNode* cancel(const CEvaluationNode* pOrig);
 
     static const double ZERO;
   };
