@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/03/18 16:56:59 $
+//   $Date: 2008/03/20 08:42:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -51,6 +51,7 @@
 #include "sbml/EventAssignment.h"
 #include <sbml/xml/XMLInputStream.h>
 #include "compareExpressions/compare_utilities.h"
+#include "MIRIAM/CRDFUtilities.h"
 
 CSBMLExporter::CSBMLExporter(): mpSBMLDocument(NULL), mSBMLLevel(2), mSBMLVersion(1), mVariableVolumes(false), mpAvogadro(NULL), mAvogadroCreated(false)
 {}
@@ -1809,6 +1810,10 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
     {
       std::string id = CSBMLExporter::createUniqueId(this->mIdMap, "Model_");
       this->mpSBMLDocument->createModel(id);
+    }
+  else
+    {
+      CSBMLExporter::collectIds(this->mpSBMLDocument->getModel(), this->mIdMap, this->mMetaIdMap);
     }
   // update the comments on the model
   const CModel* pModel = dataModel.getModel();
@@ -3625,6 +3630,42 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
 {
   bool result = true;
   if (pCOPASIObject == NULL || pSBMLObject == NULL) return false;
+  const CModel* pModel = dynamic_cast<const CModel*>(pCOPASIObject);
+  const CCompartment* pCompartment = dynamic_cast<const CCompartment*>(pCOPASIObject);
+  const CFunction* pFunction = dynamic_cast<const CFunction*>(pCOPASIObject);
+  const CModelValue* pMV = dynamic_cast<const CModelValue*>(pCOPASIObject);
+  const CReaction* pReaction = dynamic_cast<const CReaction*>(pCOPASIObject);
+  const CMetab* pMetab = dynamic_cast<const CMetab*>(pCOPASIObject);
+  std::string miriamAnnotation;
+  if (pMetab != NULL)
+    {
+      miriamAnnotation = pMetab->getMiriamAnnotation();
+    }
+  else if (pMV != NULL)
+    {
+      miriamAnnotation = pMV->getMiriamAnnotation();
+    }
+  else if (pReaction != NULL)
+    {
+      miriamAnnotation = pReaction->getMiriamAnnotation();
+    }
+  else if (pCompartment != NULL)
+    {
+      miriamAnnotation = pCompartment->getMiriamAnnotation();
+    }
+  else if (pFunction != NULL)
+    {
+      miriamAnnotation = pFunction->getMiriamAnnotation();
+    }
+  else if (pModel != NULL)
+    {
+      miriamAnnotation = pModel->getMiriamAnnotation();
+    }
+  else
+    {
+      // we should never end up here
+      fatalError();
+    }
   // we have to check if the COPASI object has MIRIAM annotation
   // if not, we have to delete the MIRIAM annotation in the SBase
   // object
@@ -3637,6 +3678,53 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
   // we have to check if the SBase object has a meta id and if it doesn't we
   // have to create one
   // we have to change the meta ids within the MIRIAM annotation
+  XMLNode* pAnnotation = NULL;
+  if (pSBMLObject->isSetAnnotation())
+    {
+      pAnnotation = new XMLNode(*pSBMLObject->getAnnotation());
+      // delete any old rdf annotations
+      unsigned int i, iMax = pAnnotation->getNumChildren();
+      for (i = 0;i < iMax;++i)
+        {
+          if (pSBMLObject->getAnnotation()->getChild(i).getURI() != "http://www.w3.org/1999/02/22-rdf-syntax-ns#")
+            {
+              pAnnotation->addChild(pSBMLObject->getAnnotation()->getChild(i));
+            }
+        }
+    }
+  if (miriamAnnotation.find_first_not_of("\t\r\n ") != std::string::npos)
+    {
+      std::string metaId;
+      if (pSBMLObject->isSetMetaId())
+        {
+          metaId = pSBMLObject->getMetaId();
+        }
+      else
+        {
+          CSBMLExporter::createUniqueId(metaIds, "metaid");
+          metaIds.insert(std::make_pair(metaId, pSBMLObject));
+          pSBMLObject->setMetaId(metaId);
+        }
+      // now we have to replace the metaid
+      CRDFUtilities::fixLocalFileAboutReference(miriamAnnotation, metaId, pCOPASIObject->getKey());
+      // the new annotation is not empty, so we have to convert it
+      XMLNode* pMIRIAMNode = XMLNode::convertStringToXMLNode(miriamAnnotation);
+      assert(pMIRIAMNode != NULL);
+      if (pAnnotation == NULL)
+        {
+          pAnnotation = XMLNode::convertStringToXMLNode("<annotation/>");
+          assert(pAnnotation != NULL);
+        }
+      pAnnotation->addChild(*pMIRIAMNode);
+      // delete pMIRIAMNode since addChild made a copy
+      delete pMIRIAMNode;
+    }
+  if (pAnnotation != NULL)
+    {
+      pSBMLObject->setAnnotation(pAnnotation);
+      // delete the old annotation since it has been copied by setAnnotation
+      delete pAnnotation;
+    }
   return result;
 }
 
