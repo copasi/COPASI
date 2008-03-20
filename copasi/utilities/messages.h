@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.113 $
+//   $Revision: 1.114 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/12 01:49:55 $
+//   $Author: gauges $
+//   $Date: 2008/03/20 09:57:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -216,6 +216,8 @@ const MESSAGES Messages[] =
     {MCSBML + 64, "SBML (64): One or more stoichiometric expressions were evaluated and converted to constants values."},
     {MCSBML + 65, "SBML (65): The stoichiometric expression for a species reference for species \"%s\" in reaction \"%s\" could not be evaluated. The value has therefore been set to 1.0."},
     {MCSBML + 66, "SBML (66): COPASI was not able to import the global %s unit. Unit has been set to %s."},
+    {MCSBML + 67, "SBML (67): Metaid \"%s\" is not unique, please check the metaids."},
+    {MCSBML + 68, "SBML (68): Id \"%s\" is not unique, please check the ids in your SBML file."},
 
     {MCTrajectoryProblem + 1, "CTrajectoryProblem (1): Invalid step size = '%f'."},
     {MCTrajectoryProblem + 2, "CTrajectoryProblem (2): The step number '%f' "

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/03/20 08:42:30 $
+//   $Date: 2008/03/20 09:57:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -3779,7 +3779,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
             }
           else
             {
-              fatalError();
+              CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
             }
         }
       if (pModel->isSetMetaId())
@@ -3791,7 +3791,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
             }
           else
             {
-              fatalError();
+              CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
             }
         }
       // ListOfFunctionDefinitions
@@ -3807,7 +3807,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                 }
               else
                 {
-                  fatalError();
+                  CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
                 }
             }
           if (pSBase->isSetMetaId())
@@ -3819,9 +3819,38 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                 }
               else
                 {
-                  fatalError();
+                  CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                 }
-              // TODO all FunctionDefinitions
+              // all FunctionDefinitions
+              unsigned int i, iMax = pModel->getListOfFunctionDefinitions()->size();
+              for (i = 0;i < iMax;++i)
+                {
+                  pSBase = pModel->getListOfFunctionDefinitions()->get(i);
+                  if (pSBase->isSetId())
+                    {
+                      id = pSBase->getId();
+                      if (ids.find(id) == ids.end())
+                        {
+                          ids.insert(std::make_pair(id, pSBase));
+                        }
+                      else
+                        {
+                          CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
+                        }
+                    }
+                  if (pSBase->isSetMetaId())
+                    {
+                      id = pSBase->getMetaId();
+                      if (metaIds.find(id) == metaIds.end())
+                        {
+                          metaIds.insert(std::make_pair(id, pSBase));
+                        }
+                      else
+                        {
+                          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
+                        }
+                    }
+                }
             }
         }
       // ListOfUnitDefinition
@@ -3837,7 +3866,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                 }
               else
                 {
-                  fatalError();
+                  CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                 }
               // all UnitDefinitions
               // for each UnitDefinition: ListOfUnits, each Unit in ListOfUnits
@@ -3846,7 +3875,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                 {
                   /* UnitDefinitions have their ids in a different namespace
                      so we only consider meta ids.
-                   */
+                     */
                   UnitDefinition* pUDef = pModel->getUnitDefinition(i);
                   assert(pUDef != NULL);
                   if (pUDef->isSetMetaId())
@@ -3858,7 +3887,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                         }
                       else
                         {
-                          fatalError();
+                          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                         }
                     }
                   ListOf* pList = pUDef->getListOfUnits();
@@ -3873,7 +3902,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                             }
                           else
                             {
-                              fatalError();
+                              CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                             }
                         }
                       unsigned j, jMax = pList->size();
@@ -3890,7 +3919,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                                 }
                               else
                                 {
-                                  fatalError();
+                                  CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                                 }
                             }
                         }
@@ -3911,7 +3940,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                 }
               else
                 {
-                  fatalError();
+                  CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
                 }
             }
           if (pSBase->isSetMetaId())
@@ -3923,7 +3952,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                 }
               else
                 {
-                  fatalError();
+                  CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                 }
             }
           // each compartment type
@@ -3941,7 +3970,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                     }
                   else
                     {
-                      fatalError();
+                      CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
                     }
                 }
               if (pSBase->isSetMetaId())
@@ -3953,7 +3982,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                     }
                   else
                     {
-                      fatalError();
+                      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                     }
                 }
             }
@@ -3971,7 +4000,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                 }
               else
                 {
-                  fatalError();
+                  CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
                 }
             }
           if (pSBase->isSetMetaId())
@@ -3983,7 +4012,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                 }
               else
                 {
-                  fatalError();
+                  CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                 }
             }
           // each species type
@@ -4001,7 +4030,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                     }
                   else
                     {
-                      fatalError();
+                      CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
                     }
                 }
               if (pSBase->isSetMetaId())
@@ -4013,7 +4042,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                     }
                   else
                     {
-                      fatalError();
+                      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                     }
                 }
             }
@@ -4031,7 +4060,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                 }
               else
                 {
-                  fatalError();
+                  CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
                 }
             }
           if (pSBase->isSetMetaId())
@@ -4043,7 +4072,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                 }
               else
                 {
-                  fatalError();
+                  CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                 }
             }
           // all compartments
@@ -4061,7 +4090,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                     }
                   else
                     {
-                      fatalError();
+                      CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
                     }
                 }
               if (pSBase->isSetMetaId())
@@ -4073,7 +4102,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                     }
                   else
                     {
-                      fatalError();
+                      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                     }
                 }
             }
@@ -4091,7 +4120,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                 }
               else
                 {
-                  fatalError();
+                  CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
                 }
             }
           if (pSBase->isSetMetaId())
@@ -4103,7 +4132,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                 }
               else
                 {
-                  fatalError();
+                  CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                 }
             }
           // all species
@@ -4121,7 +4150,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                     }
                   else
                     {
-                      fatalError();
+                      CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
                     }
                 }
               if (pSBase->isSetMetaId())
@@ -4133,7 +4162,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                     }
                   else
                     {
-                      fatalError();
+                      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                     }
                 }
             }
@@ -4151,7 +4180,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                 }
               else
                 {
-                  fatalError();
+                  CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
                 }
             }
           if (pSBase->isSetMetaId())
@@ -4163,7 +4192,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                 }
               else
                 {
-                  fatalError();
+                  CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                 }
             }
           // each parameter
@@ -4181,7 +4210,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                     }
                   else
                     {
-                      fatalError();
+                      CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
                     }
                 }
               if (pSBase->isSetMetaId())
@@ -4193,7 +4222,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                     }
                   else
                     {
-                      fatalError();
+                      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                     }
                 }
             }
@@ -4211,7 +4240,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                 }
               else
                 {
-                  fatalError();
+                  CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
                 }
             }
           if (pSBase->isSetMetaId())
@@ -4223,7 +4252,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                 }
               else
                 {
-                  fatalError();
+                  CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                 }
             }
           // each initial assignment
@@ -4242,7 +4271,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                     }
                   else
                     {
-                      fatalError();
+                      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                     }
                 }
             }
@@ -4260,7 +4289,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                 }
               else
                 {
-                  fatalError();
+                  CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
                 }
             }
           if (pSBase->isSetMetaId())
@@ -4272,7 +4301,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                 }
               else
                 {
-                  fatalError();
+                  CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                 }
             }
           // each rule
@@ -4291,7 +4320,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                     }
                   else
                     {
-                      fatalError();
+                      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                     }
                 }
             }
@@ -4309,7 +4338,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                 }
               else
                 {
-                  fatalError();
+                  CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
                 }
             }
           if (pSBase->isSetMetaId())
@@ -4321,7 +4350,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                 }
               else
                 {
-                  fatalError();
+                  CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                 }
             }
           // each constraint
@@ -4340,7 +4369,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                     }
                   else
                     {
-                      fatalError();
+                      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                     }
                 }
             }
@@ -4358,7 +4387,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                 }
               else
                 {
-                  fatalError();
+                  CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
                 }
             }
           if (pSBase->isSetMetaId())
@@ -4370,7 +4399,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                 }
               else
                 {
-                  fatalError();
+                  CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                 }
             }
           // all reactions
@@ -4388,7 +4417,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                     }
                   else
                     {
-                      fatalError();
+                      CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
                     }
                 }
               if (pReaction->isSetMetaId())
@@ -4400,7 +4429,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                     }
                   else
                     {
-                      fatalError();
+                      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                     }
                 }
               // for each reaction: ListOfSubstrates, each substrate, ListOfProducts, each
@@ -4418,7 +4447,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                         }
                       else
                         {
-                          fatalError();
+                          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                         }
                     }
                   unsigned int j, jMax = pReaction->getListOfReactants()->size();
@@ -4436,7 +4465,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                             }
                           else
                             {
-                              fatalError();
+                              CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
                             }
                         }
                       if (pSBase->isSetMetaId())
@@ -4448,7 +4477,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                             }
                           else
                             {
-                              fatalError();
+                              CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                             }
                         }
                     }
@@ -4465,7 +4494,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                         }
                       else
                         {
-                          fatalError();
+                          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                         }
                     }
                   unsigned int j, jMax = pReaction->getListOfProducts()->size();
@@ -4483,7 +4512,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                             }
                           else
                             {
-                              fatalError();
+                              CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
                             }
                         }
                       if (pSBase->isSetMetaId())
@@ -4495,7 +4524,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                             }
                           else
                             {
-                              fatalError();
+                              CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                             }
                         }
                     }
@@ -4512,7 +4541,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                         }
                       else
                         {
-                          fatalError();
+                          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                         }
                     }
                   unsigned int j, jMax = pReaction->getListOfModifiers()->size();
@@ -4530,7 +4559,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                             }
                           else
                             {
-                              fatalError();
+                              CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
                             }
                         }
                       if (pSBase->isSetMetaId())
@@ -4542,7 +4571,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                             }
                           else
                             {
-                              fatalError();
+                              CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                             }
                         }
                     }
@@ -4559,7 +4588,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                         }
                       else
                         {
-                          fatalError();
+                          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                         }
                     }
                   pSBase = pKLaw->getListOfParameters();
@@ -4574,7 +4603,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                             }
                           else
                             {
-                              fatalError();
+                              CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                             }
                           unsigned int j, jMax = pKLaw->getListOfParameters()->size();
                           for (j = 0;j < jMax;++j)
@@ -4592,7 +4621,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                                     }
                                   else
                                     {
-                                      fatalError();
+                                      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                                     }
                                 }
                             }
@@ -4614,7 +4643,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                 }
               else
                 {
-                  fatalError();
+                  CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
                 }
             }
           if (pSBase->isSetMetaId())
@@ -4626,7 +4655,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                 }
               else
                 {
-                  fatalError();
+                  CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                 }
             }
           // each event
@@ -4644,7 +4673,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                     }
                   else
                     {
-                      fatalError();
+                      CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
                     }
                 }
               if (pEvent->isSetMetaId())
@@ -4656,7 +4685,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                     }
                   else
                     {
-                      fatalError();
+                      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                     }
                 }
               // in each event Trigger,Delay,ListOfEventAssignments, each event assignment
@@ -4673,7 +4702,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                         }
                       else
                         {
-                          fatalError();
+                          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                         }
                     }
                 }
@@ -4690,7 +4719,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                         }
                       else
                         {
-                          fatalError();
+                          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                         }
                     }
                 }
@@ -4706,7 +4735,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                         }
                       else
                         {
-                          fatalError();
+                          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                         }
                     }
                   unsigned int j, jMax = pEvent->getListOfEventAssignments()->size();
@@ -4723,7 +4752,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                             }
                           else
                             {
-                              fatalError();
+                              CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                             }
                         }
                     }
