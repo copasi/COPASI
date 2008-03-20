@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/03/20 09:59:09 $
+//   $Date: 2008/03/20 15:07:27 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -472,22 +472,22 @@ CEvaluationNode* CNormalTranslation::elementaryElimination(const CEvaluationNode
       switch ((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pOrig->getType()))
         {
         case CEvaluationNodeOperator::POWER:
-          CNormalTranslation::elementaryEliminationPower(pOrig, children);
+          pResult = CNormalTranslation::elementaryEliminationPower(pOrig, children);
           break;
         case CEvaluationNodeOperator::MODULUS:
-          CNormalTranslation::elementaryEliminationModulus(pOrig, children);
+          pResult = CNormalTranslation::elementaryEliminationModulus(pOrig, children);
           break;
         case CEvaluationNodeOperator::MULTIPLY:
-          CNormalTranslation::elementaryEliminationMultiply(pOrig, children);
+          pResult = CNormalTranslation::elementaryEliminationMultiply(pOrig, children);
           break;
         case CEvaluationNodeOperator::DIVIDE:
-          CNormalTranslation::elementaryEliminationDivide(pOrig, children);
+          pResult = CNormalTranslation::elementaryEliminationDivide(pOrig, children);
           break;
         case CEvaluationNodeOperator::PLUS:
-          CNormalTranslation::elementaryEliminationPlus(pOrig, children);
+          pResult = CNormalTranslation::elementaryEliminationPlus(pOrig, children);
           break;
         case CEvaluationNodeOperator::MINUS:
-          CNormalTranslation::elementaryEliminationMinus(pOrig, children);
+          pResult = CNormalTranslation::elementaryEliminationMinus(pOrig, children);
           break;
         default:
           // we should never end up here
@@ -495,7 +495,7 @@ CEvaluationNode* CNormalTranslation::elementaryElimination(const CEvaluationNode
           break;
         }
     }
-  if (CEvaluationNode::type(pOrig->getType()) == CEvaluationNode::FUNCTION)
+  else if (CEvaluationNode::type(pOrig->getType()) == CEvaluationNode::FUNCTION)
     {
       pResult = CNormalTranslation::elementaryEliminationFunction(pOrig, children);
     }
@@ -1317,7 +1317,7 @@ CEvaluationNode* CNormalTranslation::evaluateNumbers(const CEvaluationNode* pOri
   if (CEvaluationNode::type(pOrig->getType()) == CEvaluationNode::OPERATOR)
     {
       assert(children.size() == 2);
-      if (CEvaluationNode::type(children[0]->getType()) == CEvaluationNode::NUMBER && CEvaluationNode::type(children[0]->getType()) == CEvaluationNode::NUMBER)
+      if (CEvaluationNode::type(children[0]->getType()) == CEvaluationNode::NUMBER && CEvaluationNode::type(children[1]->getType()) == CEvaluationNode::NUMBER)
         {
           const CEvaluationNodeNumber* pNumberNode1 = dynamic_cast<const CEvaluationNodeNumber*>(children[0]);
           const CEvaluationNodeNumber* pNumberNode2 = dynamic_cast<const CEvaluationNodeNumber*>(children[1]);
@@ -1784,7 +1784,7 @@ std::vector<std::pair<CEvaluationNode*, CEvaluationNode*> > CNormalTranslation::
         }
       if (i == iMax)
         {
-          CEvaluationNode* pTmpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MINUS, "*");
+          CEvaluationNode* pTmpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
           pTmpNode->addChild(new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "-1.0"));
           pTmpNode->addChild(pNode);
           result.push_back(std::make_pair(pTmpNode, mapIt->first->copyBranch()));
@@ -1839,6 +1839,10 @@ std::vector<std::pair<CEvaluationNode*, CEvaluationNode*> > CNormalTranslation::
             {
               pFactor = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "1.0");
             }
+        }
+      else
+        {
+          pFactor = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "1.0");
         }
       // check if a node with the same infix is already in the map.
       // if not, add the base
@@ -1967,7 +1971,7 @@ std::vector<std::pair<CEvaluationNode*, CEvaluationNode*> > CNormalTranslation::
         }
       if (i == iMax)
         {
-          CEvaluationNode* pTmpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MINUS, "*");
+          CEvaluationNode* pTmpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
           pTmpNode->addChild(new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "-1.0"));
           pTmpNode->addChild(pNode);
           result.push_back(std::make_pair(pTmpNode, mapIt->first->copyBranch()));
