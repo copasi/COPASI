@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/miase/CMiaseParser.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: aruff $
-//   $Date: 2008/03/20 14:28:52 $
+//   $Author: akoenig $
+//   $Date: 2008/03/20 15:17:34 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -201,22 +201,22 @@ void CMiaseParser::newSimulation(const char *el, const char **attr)
       ÊÊÊÊ Êif (strcmp(attr[i], "initialTime") == 0)
       ÊÊ Ê {
         ÊÊÊÊÊÊ ÊmyParser->mMiase->getSed->getLastSimulation()
-        ÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊ->setInitialTime(attr[i + 1]);
+        ÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊ->setInitialTime(attr[i + 1]);
         ÊÊÊÊÊ}
       ÊÊÊÊÊ else if (strcmp(attr[i], "outputStartTime") == 0)
         ÊÊ Ê {
           ÊÊÊÊÊÊ myParser->mMiase->getSed->getLastSimulation()
-          ÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊ->setOutputStartTime(attr[i + 1]);
+          ÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊ->setOutputStartTime(attr[i + 1]);
           Ê Ê}
         Ê Ê else if (strcmp(attr[i], "outputEndTime") == 0)
           ÊÊ Ê {
             ÊÊÊÊÊÊ myParser->mMiase->getSed->getLastSimulation()
-            ÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊ->setOutputEndTime(attr[i + 1]);
+            ÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊ->setOutputEndTime(attr[i + 1]);
             Ê Ê}
           Ê Ê else if (strcmp(attr[i], "numberOfPoints") == 0)
             ÊÊ Ê {
               ÊÊÊÊÊÊ myParser->mMiase->getSed->getLastSimulation()
-              ÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊ->setNumberOfPoints(attr[i + 1]);
+              ÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊ->setNumberOfPoints(attr[i + 1]);
               Ê Ê}
             ÊÊÊ}
           Ê}
@@ -244,6 +244,16 @@ void CMiaseParser::newTask(const char **attr)
       else if (strcmp(attr[i], "name") == 0)
         {
           myParser->mMiase->getSed->getLastTask()->setName(attr[i + 1]);
+        }
+      else if (strcmp(attr[i], "modelReference") == 0)
+        {
+          myParser->mMiase->getSed->getLastTask()->setModelReference(
+            myParser->mMiase->getSed->getModel(attr[i + 1]));
+        }
+      else if (strcmp(attr[i], "simulationReference") == 0)
+        {
+          myParser->mMiase->getSed->getLastTask()->setSimulationReference(
+            myParser->mMiase->getSed->getModel(attr[i + 1]));
         }
     }
 }
