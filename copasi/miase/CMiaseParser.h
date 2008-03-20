@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/miase/CMiaseParser.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: aruff $
-//   $Date: 2008/03/20 14:28:52 $
+//   $Author: akoenig $
+//   $Date: 2008/03/20 16:08:05 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -125,7 +125,11 @@ class CMiaseParser
 
     void newSimulation(const char *el, const char **attr);
 
+    void newChange(const char *el, const char **attr);
+
     void newTask(const char **attr);
+
+    void newMeasurementData(const char **attr);
 
     void newOutput(const char **attr);
 

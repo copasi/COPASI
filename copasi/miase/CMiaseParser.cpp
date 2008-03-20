@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/miase/CMiaseParser.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: akoenig $
-//   $Date: 2008/03/20 15:17:34 $
+//   $Date: 2008/03/20 16:08:05 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -230,6 +230,46 @@ void CMiaseParser::newSimulation(const char *el, const char **attr)
                 Ê}
             }
 
+void CMiaseParser::newChange(const char *el, const char **attr)
+{
+  Êif (strcmp(el, "ChangeAttribute") == 0)
+  {
+    myParser->mMiase->getSed()->getLastModel()
+    ->addChange(new CMiaseChangeAttribute());
+    for (i = 0; attr[i]; i += 2)
+      {
+        if (strcmp(attr[i], "newValue") == 0)
+          {
+            myParser->mMiase->getSed->getLastModel()
+            ÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊ->getLastChange()->setNewValue([i + 1]);
+          }
+        else if (strcmp(attr[i], "target") == 0)
+          {
+            myParser->mMiase->getSed->getLastModel()
+            ÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊ->getLastChange()->setNewTarget([i + 1]);
+          }
+      }
+  }
+  else if (strcmp(el, "ChangeMath") == 0)
+    {
+      myParser->mMiase->getSed()->getLastModel()
+      ->addChange(new CMiaseChangeMath());
+      for (i = 0; attr[i]; i += 2)
+        {
+          if (strcmp(attr[i], "newMath") == 0)
+            {
+              myParser->mMiase->getSed->getLastModel()
+              ÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊ->getLastChange()->setNewMath([i + 1]);
+            }
+          else if (strcmp(attr[i], "target") == 0)
+            {
+              myParser->mMiase->getSed->getLastModel()
+              ÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊÊ->getLastChange()->setNewTarget([i + 1]);
+            }
+        }
+    }
+}
+
 void CMiaseParser::newTask(const char **attr)
 {
   myParser->newState(STATE_TASK);
@@ -254,6 +294,25 @@ void CMiaseParser::newTask(const char **attr)
         {
           myParser->mMiase->getSed->getLastTask()->setSimulationReference(
             myParser->mMiase->getSed->getModel(attr[i + 1]));
+        }
+    }
+}
+
+void CMiaseParser::newMeasurementData(const char **attr)
+{
+  myParser->mMiase->getSed->getLastTask()
+  ->addMeasurement(new CMiaseMeasurementData());
+  for (i = 0; attr[i]; i += 2)
+    {
+      if (strcmp(attr[i], "name") == 0)
+        {
+          myParser->mMiase->getSed->getLastTask()
+          ->getLastMeasurement()->setName(attr[i + 1]);
+        }
+      else if (strcmp(attr[i], "source") == 0)
+        {
+          myParser->mMiase->getSed->getLastTask()
+          ->getLastMeasurement()->setSource(attr[i + 1]);
         }
     }
 }
@@ -524,10 +583,4 @@ bool CMiaseParser::isValid(const char *el)
     }
   myParser->error("PARSE ERROR");
   return false;
-}
-
-int main(int argc, char *argv[])
-{
-  CMiaseParser* p = new CMiaseParser();
-  p->load("/Users/anton/Documents/SoPraKummer/miase_simple.xml");
 }
