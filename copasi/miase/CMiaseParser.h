@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/miase/CMiaseParser.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: akoenig $
-//   $Date: 2008/03/20 16:08:05 $
+//   $Author: aruff $
+//   $Date: 2008/03/20 16:11:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -80,6 +80,7 @@ class CMiaseParser
       STATE_TASK,
       STATE_LIST_OF_MEASUREMENT,
       STATE_LIST_OF_OUTPUTS,
+      STATE_OUTPUT,
       STATE_NOTES,
       STATE_ANNOTATION,
       STATE_STOPPED,
