@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CEvent.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/10/30 14:40:23 $
+//   $Date: 2008/03/20 12:45:57 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -25,6 +30,7 @@
 #include <vector>
 
 #include "utilities/CCopasiVector.h"
+#include "function/CExpression.h"
 
 class SBase;
 
@@ -109,10 +115,57 @@ class CEvent : public CCopasiContainer
      */
     const std::string& getSBMLId() const;
 
+    void setDelay(const C_FLOAT64 & d);
+    const C_FLOAT64 & getDelay() const;
+
+    /**
+     * set the trigger expression from a string. The return value indicates if
+     * parsing the expression was succesful.
+     */
+    bool setTriggerExpression(const std::string & s);
+
+    std::string getTriggerExpressionString() const;
+    const CExpression & getTriggerExpression() const;
+
+    unsigned C_INT32 getNumActions() const;
+    const std::string & getActionObjectKey(unsigned C_INT32 i) const;
+    std::string getActionAssignmentString(unsigned C_INT32 i) const;
+    const CExpression & getActionAssignment(unsigned C_INT32 i) const;
+
+    /**
+     * add an action to the event. The actions is described by the key of a copasi
+     * object and a mathematical expression, given as a string.
+     */
+    bool addAction(const std::string & key, const std::string & expression);
+
+    /**
+     * delete all actions
+     */
+    void clearActions();
+
     /**
      * insert operator
      */
     friend std::ostream & operator<<(std::ostream &os, const CEvent & d);
+
+  protected:
+
+    /**
+     * Expression to trigger the event
+     */
+    CExpression mTriggerExpression;
+
+    /**
+     * Delay before the action takes place.
+     */
+    C_FLOAT64 mDelay;
+
+    /**
+     *  List of actions that need to be applied after the event triggers.
+     *  The std::string is the key of a copasi object, the expression is an assignment
+     *  to this object.
+     */
+    std::vector < std::pair <std::string, CExpression> > mActions;
 
   private:
 
