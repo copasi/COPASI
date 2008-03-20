@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/miase/CMiaseML.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: aruff $
-//   $Date: 2008/03/20 14:28:52 $
+//   $Author: akoenig $
+//   $Date: 2008/03/20 18:33:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,7 +35,7 @@ void CMiaseSed::addTask (CMiaseTask* task)
   mListofTasks.push_back(task);
 }
 
-void CMiaseSed::addModelt (CMiaseModel* model)
+void CMiaseSed::addModel (CMiaseModel* model)
 {
   mListofModels.push_back(model);
 }
@@ -77,7 +77,7 @@ CMiaseTask* CMiaseSed::getTask(int num)
   return mListofTasks[ num ];
 }
 
-CMiaseSimulation* CMiaseSed::getTask(std::string id)
+CMiaseTask* CMiaseSed::getTask(std::string id)
 {
   int i;
   CMiaseTask* tmp;
@@ -104,7 +104,7 @@ CMiaseModel* CMiaseSed::getModel(int num)
   return mListofModels[ num ];
 }
 
-CMiaseSimulation* CMiaseSed::getModel(std::string id)
+CMiaseModel* CMiaseSed::getModel(std::string id)
 {
   int i;
   CMiaseModel* tmp;
@@ -131,7 +131,7 @@ CMiaseOutput* CMiaseSed::getOutput(int num)
   return mListofOutputs[ num ];
 }
 
-CMiaseSimulation* CMiaseSed::getOutput(std::string id)
+CMiaseOutput* CMiaseSed::getOutput(std::string id)
 {
   int i;
   CMiaseOutput* tmp;

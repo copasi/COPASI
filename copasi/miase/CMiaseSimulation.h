@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/miase/CMiaseSimulation.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: aruff $
-//   $Date: 2008/03/20 14:28:52 $
+//   $Author: akoenig $
+//   $Date: 2008/03/20 18:33:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,14 +26,14 @@ class CMiaseSimulation : public CMiaseBaseEnhanced
     ~CMiaseSimulation();
   };
 
-class UniformTimeCourse : public CMiaseSimulation
+class CMiaseUniformTimeCourse : public CMiaseSimulation
   {
 
   public:
 
-    UniformTimeCourse();
+    CMiaseUniformTimeCourse();
 
-    ~UniformTimeCourse();
+    ~CMiaseUniformTimeCourse();
 
     double returnInitialTime();
     double returnOutputStartTime();

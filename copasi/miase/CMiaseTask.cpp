@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/miase/CMiaseTask.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: aruff $
-//   $Date: 2008/03/20 14:28:52 $
+//   $Author: akoenig $
+//   $Date: 2008/03/20 18:33:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,9 +19,9 @@ CMiaseMeasurementData::CMiaseMeasurementData() : CMiaseBase()
 CMiaseMeasurementData::~CMiaseMeasurementData()
 {}
 
-std::string CMiaseMeasurementData::getXLink()
+std::string CMiaseMeasurementData::getSource()
 {
-  return mXLink;
+  return mSource;
 }
 
 std::string CMiaseMeasurementData::getName()
@@ -29,9 +29,9 @@ std::string CMiaseMeasurementData::getName()
   return mName;
 }
 
-void CMiaseMeasurementData::setXLink(std::string xLink)
+void CMiaseMeasurementData::setSource(std::string source)
 {
-  mXLink = xLink;
+  mSource = source;
 }
 
 void CMiaseMeasurementData::setName(std::string name)

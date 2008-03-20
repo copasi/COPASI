@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/miase/CMiaseSimulation.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: aruff $
-//   $Date: 2008/03/20 14:28:52 $
+//   $Author: akoenig $
+//   $Date: 2008/03/20 18:33:36 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,48 +21,48 @@ CMiaseSimulation::~CMiaseSimulation()
 
 //*****************************************************************************
 
-UniformTimeCourse::UniformTimeCourse() : CMiaseSimulation()
+CMiaseUniformTimeCourse::CMiaseUniformTimeCourse() : CMiaseSimulation()
 {}
 
-UniformTimeCourse::~UniformTimeCourse()
+CMiaseUniformTimeCourse::~CMiaseUniformTimeCourse()
 {}
 
-double UniformTimeCourse::returnInitialTime()
+double CMiaseUniformTimeCourse::returnInitialTime()
 {
   return mInitialTime;
 }
 
-double UniformTimeCourse::returnOutputStartTime()
+double CMiaseUniformTimeCourse::returnOutputStartTime()
 {
   return mOutputStartTime;
 }
 
-double UniformTimeCourse::returnOutputEndTime()
+double CMiaseUniformTimeCourse::returnOutputEndTime()
 {
   return mOutputEndTime;
 }
 
-int UniformTimeCourse::returnNumberOfPoints()
+int CMiaseUniformTimeCourse::returnNumberOfPoints()
 {
   return mNumberOfPoints;
 }
 
-void UniformTimeCourse::setInitialTime(double initialTime)
+void CMiaseUniformTimeCourse::setInitialTime(double initialTime)
 {
   mInitialTime = initialTime;
 }
 
-void UniformTimeCourse::setOutputStartTime(double outputStartTime)
+void CMiaseUniformTimeCourse::setOutputStartTime(double outputStartTime)
 {
   mOutputStartTime = outputStartTime;
 }
 
-void UniformTimeCourse::setOutputEndTime(double outputEndTime)
+void CMiaseUniformTimeCourse::setOutputEndTime(double outputEndTime)
 {
   mOutputEndTime = outputEndTime;
 }
 
-void UniformTimeCourse::setNumberOfPoints(double numberOfPoints)
+void CMiaseUniformTimeCourse::setNumberOfPoints(double numberOfPoints)
 {
   mNumberOfPoints = numberOfPoints;
 }

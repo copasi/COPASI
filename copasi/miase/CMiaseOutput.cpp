@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/miase/CMiaseOutput.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: aruff $
-//   $Date: 2008/03/20 14:28:52 $
+//   $Author: akoenig $
+//   $Date: 2008/03/20 18:33:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -112,12 +112,17 @@ CMiaseColumn* CMiaseOutput::getLastColumn()
   return mListOfColumns[ mListOfColumns.size() ];
 }
 
-void CMiaseOutput::setPlot2D (CMiasePlot2D* plot2d)
+void CMiaseOutput::addPlot2D (CMiasePlot2D* plot2d)
 {
-  mPlot2D = plot2d;
+  mListOfPlots.push_back(plot2d);
 }
 
-CMiasePlot2D* CMiaseOutput::getPlot2D()
+CMiasePlot2D* CMiaseOutput::getPlot2D(int num)
 {
-  return mPlot2D;
+  return mListOfPlots[ num ];
+}
+
+CMiasePlot2D* CMiaseOutput::getLastPlot2D()
+{
+  return mListOfPlots[ mListOfPlots.size() ];
 }

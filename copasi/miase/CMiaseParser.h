@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/miase/CMiaseParser.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: aruff $
-//   $Date: 2008/03/20 16:11:17 $
+//   $Author: akoenig $
+//   $Date: 2008/03/20 18:33:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,6 +18,7 @@
 #include <stdio.h>
 #include <expat.h>
 #include "CMiaseBase.h"
+#include "CMiaseML.h"
 
 #if defined(__amigaos__) && defined(__USE_INLINE__)
 #include <proto/expat.h>
@@ -40,9 +41,9 @@ class CMiaseParser
 
   public:
 
-    const static XML_Char mVersion_1_0[];
-    const static char mNameSpace[];
-    const static char mEncoding[];
+    static XML_Char mVersion_1_0[];
+    static char mNameSpace[];
+    static char mEncoding[];
 
     CMiaseParser();
 
@@ -93,7 +94,7 @@ class CMiaseParser
      */
     std::istream *mpIstream;
 
-    CMiaseML * mMiase;
+    CMiaseML* mMiase;
     States mActState;
     States mLastState;
     int mDepth;
@@ -138,7 +139,7 @@ class CMiaseParser
 
     void newState(States newState);
 
-    void error(std::string errorString)
+    void error(std::string errorString);
   };
 
 static CMiaseParser* myParser;

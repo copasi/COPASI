@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/miase/CMiaseOutput.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: aruff $
-//   $Date: 2008/03/20 14:28:51 $
+//   $Author: akoenig $
+//   $Date: 2008/03/20 18:33:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -77,7 +77,10 @@ class CMiaseOutput : public CMiaseBaseEnhanced
     void addPlot2D (CMiasePlot2D* plot);
 
     CMiaseColumn* getColumn(int num);
+    CMiaseColumn* getLastColumn();
+
     CMiasePlot2D* getPlot2D(int num);
+    CMiasePlot2D* getLastPlot2D();
 
   private:
 

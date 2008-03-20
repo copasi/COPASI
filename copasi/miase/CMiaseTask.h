@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/miase/CMiaseTask.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: aruff $
-//   $Date: 2008/03/20 14:28:52 $
+//   $Author: akoenig $
+//   $Date: 2008/03/20 18:33:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,15 +27,15 @@ class CMiaseMeasurementData : public CMiaseBase
 
     ~CMiaseMeasurementData();
 
-    std::string getXLink();
+    std::string getSource();
     std::string getName();
 
-    void setXLink(std::string xLink);
+    void setSource(std::string source);
     void setName(std::string name);
 
   private:
 
-    std::string mXLink;
+    std::string mSource;
     std::string mName;
   };
 

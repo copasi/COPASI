@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/miase/CMiaseModel.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: aruff $
-//   $Date: 2008/03/20 14:28:52 $
+//   $Author: akoenig $
+//   $Date: 2008/03/20 18:33:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -89,11 +89,11 @@ class CMiaseModel : public CMiaseBaseEnhanced
 
     ~CMiaseModel();
 
-    std::string returnType();
-    std::string returnXLink();
+    std::string getType();
+    std::string getSource();
 
-    void setType(double type);
-    void setXLink(double xLink);
+    void setType(std::string type);
+    void setSource(std::string source);
 
     void addChange (CMiaseChange* chnage);
 
@@ -103,7 +103,7 @@ class CMiaseModel : public CMiaseBaseEnhanced
   private:
 
     std::string mType;
-    std::string mXLink;
+    std::string mSource;
 
     std::vector < CMiaseChange* > mListOfChanges;
   };
