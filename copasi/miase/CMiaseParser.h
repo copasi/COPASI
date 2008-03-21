@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/miase/CMiaseParser.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: akoenig $
-//   $Date: 2008/03/20 18:33:37 $
+//   $Author: aruff $
+//   $Date: 2008/03/21 20:08:01 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,15 +52,12 @@ class CMiaseParser
     static void XMLCALL
     start(void *data, const char *el, const char **attr);
 
-    static void XMLCALL
-    end(void *data, const char *el);
+    static void XMLCALL end(void *data, const char *el);
 
-    static void XMLCALL
-    xmldecl_handler(void *userData, const XML_Char *version,
-                    const XML_Char *encoding, int standalone);
+    static void XMLCALL xmldecl_handler(void *userData, const XML_Char *version,
+                                        const XML_Char *encoding, int standalone);
 
-    static void XMLCALL
-    charhndl(void *userData, const XML_Char *s, int len);
+    static void XMLCALL charhndl(void *userData, const XML_Char *s, int len);
 
     void load(std::string filename);
 
@@ -71,22 +68,22 @@ class CMiaseParser
     enum States
     {
       STATE_READY_TO_READ,
-      STATE_MIASE,
-      STATE_SED,
-      STATE_LIST_OF_SIMULATIONS,
       STATE_LIST_OF_MODELS,
-      STATE_MODEL,
-      STATE_LIST_OF_CHANGES,
       STATE_LIST_OF_TASKS,
-      STATE_TASK,
-      STATE_LIST_OF_MEASUREMENT,
       STATE_LIST_OF_OUTPUTS,
-      STATE_OUTPUT,
       STATE_NOTES,
       STATE_ANNOTATION,
       STATE_STOPPED,
+      STATE_MIASE,
+      STATE_SED,
+      STATE_LIST_OF_SIMULATIONS,
+      STATE_MODEL,
+      STATE_LIST_OF_CHANGES,
+      STATE_TASK,
+      STATE_LIST_OF_MEASUREMENT,
+      STATE_OUTPUT,
       //more states for output lists
-      LAST
+      STATE_LAST
     };
 
     /**
@@ -97,6 +94,7 @@ class CMiaseParser
     CMiaseML* mMiase;
     States mActState;
     States mLastState;
+    int mTmpDepth;
     int mDepth;
     XML_Parser mXmlParser;
     char mBuff[BUFFSIZE];
@@ -140,6 +138,10 @@ class CMiaseParser
     void newState(States newState);
 
     void error(std::string errorString);
+
+    void addContent(const char *el, const char **attr);
+
+    void getLastObj(const char *el);
   };
 
 static CMiaseParser* myParser;
