@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/miase/CMiaseParser.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
-//   $Author: aruff $
-//   $Date: 2008/03/21 20:08:01 $
+//   $Author: akoenig $
+//   $Date: 2008/03/23 14:45:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -141,7 +141,7 @@ class CMiaseParser
 
     void addContent(const char *el, const char **attr);
 
-    void getLastObj(const char *el);
+    CMiaseBase* getLastObj(const char *el);
   };
 
 static CMiaseParser* myParser;

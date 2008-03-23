@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/miase/CMiaseBase.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: akoenig $
-//   $Date: 2008/03/20 18:33:37 $
+//   $Date: 2008/03/23 14:45:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,14 +20,14 @@ CMiaseNotes::CMiaseNotes()
 CMiaseNotes::~CMiaseNotes()
 {}
 
-std::string CMiaseNotes::getAnyNote()
+std::string CMiaseNotes::getNotes()
 {
-  return mAnyNote;
+  return mNotes;
 }
 
-void CMiaseNotes::setAnyNote(std::string anyNote)
+void CMiaseNotes::setNotes(std::string notes)
 {
-  mAnyNote = anyNote;
+  mNotes = notes;
 }
 
 std::string CMiaseNotes::getXmlNs()
@@ -53,9 +53,19 @@ std::string CMiaseAnnotation::getAnyNote()
   return mAnyAnnotation;
 }
 
+std::string CMiaseAnnotation::getXmlNs()
+{
+  return mXmlNs;
+}
+
 void CMiaseAnnotation::setAnyNote(std::string anyAnnotation)
 {
   mAnyAnnotation = anyAnnotation;
+}
+
+void CMiaseAnnotation::setXmlNs(std::string xmlNs)
+{
+  mXmlNs = xmlNs;
 }
 
 //*****************************************************************************
@@ -116,10 +126,15 @@ std::string CMiaseBaseEnhanced::getName()
 
 void CMiaseBaseEnhanced::setId(std::string id)
 {
+  std::cout << "::::::::::::::::CMiaseBaseEnhanced1  id=" << id << std::endl;
+
   mId = id;
+  std::cout << "::::::::::::::::CMiaseBaseEnhanced2  id=" << mId << std::endl;
 }
 
 void CMiaseBaseEnhanced::setName(std::string name)
 {
+  std::cout << "::::::::::::::::CMiaseBaseEnhanced  name=" << name << std::endl;
   mName = name;
+  std::cout << "::::::::::::::::CMiaseBaseEnhanced2  name=" << name << std::endl;
 }

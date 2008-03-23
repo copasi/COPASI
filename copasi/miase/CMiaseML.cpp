@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/miase/CMiaseML.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: akoenig $
-//   $Date: 2008/03/20 18:33:37 $
+//   $Date: 2008/03/23 14:45:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,7 +14,7 @@
 #include "CMiaseML.h"
 #include <iostream>
 
-CMiaseSed::CMiaseSed()
+CMiaseSed::CMiaseSed() : CMiaseBase()
 {}
 
 CMiaseSed::~CMiaseSed()

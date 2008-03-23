@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/miase/CMiaseBase.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: aruff $
-//   $Date: 2008/03/20 14:28:52 $
+//   $Author: akoenig $
+//   $Date: 2008/03/23 14:45:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,15 +26,15 @@ class CMiaseNotes
 
     ~CMiaseNotes();
 
-    std::string getAnyNote();
+    std::string getNotes();
     std::string getXmlNs();
 
-    void setAnyNote(std::string anyNote);
+    void setNotes(std::string notes);
     void setXmlNs(std::string xmlNs);
 
   private:
 
-    std::string mAnyNote;
+    std::string mNotes;
     std::string mXmlNs;
   };
 
