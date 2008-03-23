@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/miase/CMiaseBase.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: aruff $
-//   $Date: 2008/03/23 20:39:15 $
+//   $Date: 2008/03/23 23:31:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -74,6 +74,9 @@ class CMiaseBase
 
     void addAnnotation (CMiaseAnnotation* ann);
     void addNotes (CMiaseNotes* notes);
+
+    void setAnyNote(std::string anyAnnotation);
+    void setXmlNs(std::string xmlNs);
 
     void setAnyNote(std::string anyAnnotation);
     void setXmlNs(std::string xmlNs);
