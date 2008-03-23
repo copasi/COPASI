@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/miase/CMiaseML.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: akoenig $
-//   $Date: 2008/03/23 14:45:30 $
+//   $Author: aruff $
+//   $Date: 2008/03/23 20:39:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -64,7 +64,7 @@ CMiaseSimulation* CMiaseSed::getSimulation(std::string id)
 
 CMiaseSimulation* CMiaseSed::getLastSimulation()
 {
-  return mListofSimulations[ mListofSimulations.size() ];
+  return mListofSimulations[ mListofSimulations.size() - 1 ];
 }
 
 int CMiaseSed::getNumOfSimulations ()
@@ -91,7 +91,7 @@ CMiaseTask* CMiaseSed::getTask(std::string id)
 
 CMiaseTask* CMiaseSed::getLastTask()
 {
-  return mListofTasks[ mListofTasks.size() ];
+  return mListofTasks[ mListofTasks.size() - 1 ];
 }
 
 int CMiaseSed::getNumOfTasks ()
@@ -118,7 +118,7 @@ CMiaseModel* CMiaseSed::getModel(std::string id)
 
 CMiaseModel* CMiaseSed::getLastModel()
 {
-  return mListofModels[ mListofModels.size() ];
+  return mListofModels[ mListofModels.size() - 1 ];
 }
 
 int CMiaseSed::getNumOfModels ()
@@ -145,7 +145,7 @@ CMiaseOutput* CMiaseSed::getOutput(std::string id)
 
 CMiaseOutput* CMiaseSed::getLastOutput()
 {
-  return mListofOutputs[ mListofOutputs.size() ];
+  return mListofOutputs[ mListofOutputs.size() - 1 ];
 }
 
 int CMiaseSed::getNumOfOutputs ()
@@ -184,7 +184,6 @@ std::string CMiaseML::getVersion()
 void CMiaseML::setXmlns(std::string xmlns)
 {
   mXmlns = xmlns;
-  std::cout << "::::::::::::::miaseML" << mXmlns << std::endl;
 }
 
 void CMiaseML::setVersion(std::string version)

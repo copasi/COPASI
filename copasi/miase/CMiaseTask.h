@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/miase/CMiaseTask.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: akoenig $
-//   $Date: 2008/03/20 18:33:37 $
+//   $Date: 2008/04/02 12:14:39 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,11 +48,11 @@ class CMiaseTask : public CMiaseBaseEnhanced
 
     ~CMiaseTask();
 
-    void setModelReference (CMiaseModel* model);
-    void setSimulationReference (CMiaseSimulation* simulation);
+    void setModelReference (std::string model);
+    void setSimulationReference (std::string simulation);
 
-    CMiaseModel* getModelReference ();
-    CMiaseSimulation* getSimulationReference ();
+    std::string getModelReference ();
+    std::string getSimulationReference ();
 
     void addMeasurement (CMiaseMeasurementData* measurement);
 
@@ -64,8 +64,8 @@ class CMiaseTask : public CMiaseBaseEnhanced
 
   private:
 
-    CMiaseModel* mModelReference;
-    CMiaseSimulation* mSimulationReference;
+    std::string mModelReference;
+    std::string mSimulationReference;
 
     std::vector < CMiaseMeasurementData* > mListOfMeasurements;
   };

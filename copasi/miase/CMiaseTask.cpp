@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/miase/CMiaseTask.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: akoenig $
-//   $Date: 2008/03/20 18:33:37 $
+//   $Author: aruff $
+//   $Date: 2008/03/23 20:39:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -66,25 +66,25 @@ int CMiaseTask::getNumberOfMeasurements()
 
 CMiaseMeasurementData* CMiaseTask::getLastMeasurement()
 {
-  return mListOfMeasurements[ mListOfMeasurements.size() ];
+  return mListOfMeasurements[ mListOfMeasurements.size() - 1];
 }
 
-void CMiaseTask::setModelReference (CMiaseModel* model)
+void CMiaseTask::setModelReference (std::string model)
 {
   mModelReference = model;
 }
 
-void CMiaseTask::setSimulationReference (CMiaseSimulation* simulation)
+void CMiaseTask::setSimulationReference (std::string simulation)
 {
   mSimulationReference = simulation;
 }
 
-CMiaseModel* CMiaseTask::getModelReference ()
+std::string CMiaseTask::getModelReference ()
 {
   mModelReference;
 }
 
-CMiaseSimulation* CMiaseTask::getSimulationReference ()
+std::string CMiaseTask::getSimulationReference ()
 {
   mSimulationReference;
 }

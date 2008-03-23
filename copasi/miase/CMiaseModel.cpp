@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/miase/CMiaseModel.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: akoenig $
-//   $Date: 2008/03/20 18:33:37 $
+//   $Author: aruff $
+//   $Date: 2008/03/23 20:39:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -121,7 +121,7 @@ CMiaseChange* CMiaseModel::getChange(int num)
 
 CMiaseChange* CMiaseModel::getLastChange()
 {
-  return mListOfChanges[ mListOfChanges.size() ];
+  return mListOfChanges[ mListOfChanges.size() - 1];
 }
 
 //*****************************************************************************

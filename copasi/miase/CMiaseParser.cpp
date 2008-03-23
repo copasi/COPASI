@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/miase/CMiaseParser.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
-//   $Author: akoenig $
-//   $Date: 2008/03/23 14:45:30 $
+//   $Author: aruff $
+//   $Date: 2008/03/23 20:39:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,6 +35,7 @@ CMiaseParser::CMiaseParser()
   this->mContent = "";
   this->createAllowedStateTags();
   this->mTmpDepth = 0;
+  this->mDepth = 0;
 
   XML_SetXmlDeclHandler(myParser->mXmlParser, myParser->xmldecl_handler);
   XML_SetElementHandler(myParser->mXmlParser, myParser->start, myParser->end);
@@ -127,6 +128,7 @@ void CMiaseParser::newNotes(const char **attr)
 {
   int i;
   myParser->mContent = "";
+  myParser->mTmpDepth = 0;
   CMiaseBase * tmpMiaseObj;
 
   CMiaseNotes *newNotes = new CMiaseNotes();
@@ -182,6 +184,7 @@ void CMiaseParser::newAnnotation(const char **attr)
 {
   int i;
   myParser->mContent = "";
+  myParser->mTmpDepth = 0;
   CMiaseBase * tmpMiaseObj;
 
   CMiaseAnnotation *newAnnotation = new CMiaseAnnotation();
@@ -352,12 +355,12 @@ void CMiaseParser::newTask(const char **attr)
       else if (strcmp(attr[i], "modelReference") == 0)
         {
           myParser->mMiase->getSed()->getLastTask()->setModelReference(
-            myParser->mMiase->getSed()->getModel(attr[i + 1]));
+            attr[i + 1]);
         }
       else if (strcmp(attr[i], "simulationReference") == 0)
         {
           myParser->mMiase->getSed()->getLastTask()->setSimulationReference(
-            myParser->mMiase->getSed()->getSimulation(attr[i + 1]));
+            attr[i + 1]);
         }
     }
 }
@@ -385,6 +388,7 @@ void CMiaseParser::newMeasurementData(const char **attr)
 void CMiaseParser::newOutput(const char **attr)
 {
   myParser->mContent = "";
+  myParser->mTmpDepth = 0;
   int i;
   myParser->newState(STATE_OUTPUT);
 
@@ -415,8 +419,6 @@ void CMiaseParser::newMiase(const char **attr)
 
 void CMiaseParser::startElement(void *data, const char *el, const char **attr)
 {
-  std::string tmpTag = el;
-
   if (myParser->isValid(el))
     {
       if ((strcmp(el, "Notes") == 0) && (myParser->mActState != STATE_NOTES))
@@ -485,30 +487,30 @@ void CMiaseParser::startElement(void *data, const char *el, const char **attr)
               {myParser->newMiase(attr);}
               break;
             case STATE_NOTES:
-              myParser->mTmpDepth = 0;
+              //myParser->mTmpDepth = 0;
               myParser->addContent(el, attr);
               break;
             case STATE_ANNOTATION:
-              myParser->mTmpDepth = 0;
+              //myParser->mTmpDepth = 0;
               myParser->addContent(el, attr);
               break;
             case STATE_OUTPUT:
-              myParser->mTmpDepth = 0;
+              //myParser->mTmpDepth = 0;
               myParser->addContent(el, attr);
               break;
             }
-
-          int i;
-          //            for (i = 0; i < myParser->mDepth; i++)
-          //             printf("  ");
-
-          printf("%s", el);
-          for (i = 0; attr[i]; i += 2)
-            printf(" %s='%s'", attr[i], attr[i + 1]);
-
-          printf("\n");
         }
     }
+  int i;
+  for (i = 0; i < myParser->mDepth; i++)
+    printf("  ");
+
+  printf("%s", el);
+  for (i = 0; attr[i]; i += 2)
+    printf(" %s='%s'", attr[i], attr[i + 1]);
+
+  printf("\n");
+
   myParser->mDepth++;
   myParser->mTmpDepth++;
 }
@@ -535,53 +537,77 @@ void CMiaseParser::endElement(void *data, const char *el)
 {
   int i;
   CMiaseBase *tmpObj;
-  if (((myParser->mActState == STATE_NOTES) && (strcmp(el, "Notes") != 0))
-      || ((myParser->mActState == STATE_ANNOTATION) && (strcmp(el, "Annotation") != 0))
-      || ((myParser->mActState == STATE_OUTPUT) && (strcmp(el, "Output") != 0)))
-    {
-      for (i = 0; i < myParser->mTmpDepth; i++)
-        myParser->mContent += "  ";
-      myParser->mContent += "</";
-      myParser->mContent += el;
-      myParser->mContent += ">\n";
-    }
-  else if ((strcmp(el, "listOfSimulations") == 0)
-           || (strcmp(el, "listOfModels") == 0)
-           || (strcmp(el, "listOfOutputs") == 0)
-           || (strcmp(el, "listOfTasks") == 0)
-           || (strcmp(el, "Model") == 0)
-           || (strcmp(el, "listOfChanges") == 0)
-           || (strcmp(el, "Task") == 0)
-           || (strcmp(el, "listOfMeasurement") == 0))
-  {myParser->newState(myParser->mLastState);}
-  else if (strcmp(el, "Output") == 0)
-    {
-      myParser->newState(myParser->mLastState);
-      //TODO: addContent to Output
-    }
+
+  myParser->mDepth--;
+  myParser->mTmpDepth--;
+
   if (strcmp(el, "Notes") == 0)
     {
-      tmpObj = myParser->getLastObj(el);
-      tmpObj->getNotes()->setNotes(myParser->mContent);
-      myParser->newState(myParser->mLastState);
-      myParser->mContent = "";
+      if (myParser->mTmpDepth == 0)
+        {
+          tmpObj = myParser->getLastObj();
+          myParser->newState(myParser->mLastState);
+          //tmpObj->getNotes()->setNotes(myParser->mContent);
+        }
+      else
+        {
+          for (i = 0; i < myParser->mTmpDepth; i++)
+            myParser->mContent += "  ";
+          myParser->mContent += "</";
+          myParser->mContent += el;
+          myParser->mContent += ">\n";
+        }
     }
   else if (strcmp(el, "Annotation") == 0)
     {
-      tmpObj = myParser->getLastObj(el);
-      tmpObj->getAnnotation()->setAnyNote(myParser->mContent);
-      myParser->newState(myParser->mLastState);
-      myParser->mContent = "";
+      if (myParser->mTmpDepth == 0)
+        {
+          tmpObj = myParser->getLastObj();
+          tmpObj->getAnnotation()->setAnyNote(myParser->mContent);
+          myParser->newState(myParser->mLastState);
+        }
+      else
+        {
+          for (i = 0; i < myParser->mTmpDepth; i++)
+            myParser->mContent += "  ";
+          myParser->mContent += "</";
+          myParser->mContent += el;
+          myParser->mContent += ">\n";
+        }
     }
+  else if ((strcmp(el, "listOfModels") == 0)
+           || (strcmp(el, "Model") == 0)
+           || (strcmp(el, "listOfChanges") == 0)
+           || (strcmp(el, "listOfMeasurement") == 0))
+  {myParser->newState(myParser->mLastState);}
+  else if ((strcmp(el, "listOfSimulations") == 0)
+           || (strcmp(el, "listOfTasks") == 0)
+           || (strcmp(el, "listOfModels") == 0)
+           || (strcmp(el, "listOfOutputs") == 0))
+  {myParser->newState(STATE_SED);}
+  else if (strcmp(el, "Task") == 0)
+  {myParser->newState(STATE_LIST_OF_TASKS);}
+  else if (strcmp(el, "Output") == 0)
+    if (myParser->mTmpDepth == 0)
+      {
+        myParser->newState(myParser->mLastState);
+        //TODO: addContent to Output
+      }
+    else
+      {
+        for (i = 0; i < myParser->mTmpDepth; i++)
+          myParser->mContent += "  ";
+        myParser->mContent += "</";
+        myParser->mContent += el;
+        myParser->mContent += ">\n";
+      }
   else if ((strcmp(el, "Sed") == 0) || (strcmp(el, "Miase") == 0))
   {myParser->newState(STATE_LAST);}
-  myParser->mDepth--;
-  myParser->mTmpDepth--;
 }
 
-CMiaseBase *CMiaseParser::getLastObj(const char *el)
+CMiaseBase *CMiaseParser::getLastObj()
 {
-  switch (myParser->mActState)
+  switch (myParser->mLastState)
     {
     case STATE_OUTPUT:
       return myParser->mMiase->getSed()->getLastOutput();
@@ -589,7 +615,7 @@ CMiaseBase *CMiaseParser::getLastObj(const char *el)
     case STATE_LIST_OF_MEASUREMENT:
       return myParser->mMiase->getSed()->getLastTask()->getLastMeasurement();
       break;
-    case STATE_LIST_OF_TASKS:
+    case STATE_TASK:
       return myParser->mMiase->getSed()->getLastTask();
       break;
     case STATE_LIST_OF_CHANGES:
@@ -608,7 +634,7 @@ CMiaseBase *CMiaseParser::getLastObj(const char *el)
       return myParser->mMiase;
       break;
     }
-  myParser->error("");
+  myParser->error("Last Obj is NULL");
   return NULL;
 }
 
@@ -698,7 +724,10 @@ bool CMiaseParser::isValid(const char *el)
       || (myParser->mActState == STATE_OUTPUT))
   {return true;}
   else if (myParser->mActState == STATE_STOPPED)
-  {return false;}
+    {
+      myParser->error("PARSE ERROR");
+      return false;
+    }
 
   std::vector<std::string> tmpAllowedStateTags =
     myParser->mAllowedStateTags[myParser->mActState];
