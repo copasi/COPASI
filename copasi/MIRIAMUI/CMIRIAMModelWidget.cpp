@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CMIRIAMModelWidget.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/03/18 05:05:06 $
+//   $Date: 2008/03/24 15:51:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -138,26 +138,27 @@ CMIRIAMModelWidget::CMIRIAMModelWidget(QWidget* parent, const char* name, WFlags
 
 void CMIRIAMModelWidget::slotBtnOKClicked()
 {
-  std::string dt = "";
-  if (mpCreatedWidget->dateTime().toString(Qt::ISODate).ascii())
-  {dt = mpCreatedWidget->dateTime().toString(Qt::ISODate).ascii();}
-
-  const std::string strDT = CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getCreatedDT();
-  if (strDT.length())
-    {
-      QDateTime dtWidget = mpCreatedWidget->dateTime();
-      QDateTime dtBackEnd = QDateTime::fromString(FROM_UTF8(strDT), Qt::ISODate);
-      if (dtWidget != dtBackEnd)
-        {
-          CCopasiDataModel::Global->getModel()->getMIRIAMInfo().setCreatedDT(dt);
-          protectedNotify(ListViews::MODEL, ListViews::CHANGE);
-        }
-    }
-
+  //First Ignore updates for all widgets or else we will
+  //lose user entered data if data is entered/updated for more than one widget.
   std::vector<CopasiTableWidget*>::const_iterator it = mWidgets.begin();
   std::vector<CopasiTableWidget*>::const_iterator end = mWidgets.end();
   for (; it != end; it++)
-  {(*it)->slotBtnOKClicked();}
+  {(*it)->setIgnoreUpdates(true);}
+
+  std::string dt = "";
+  if (mpCreatedWidget->dateTime().toString(Qt::ISODate).ascii())
+  {dt = mpCreatedWidget->dateTime().toString(Qt::ISODate).ascii();}
+  if (dt.length())
+  {CCopasiDataModel::Global->getModel()->getMIRIAMInfo().setCreatedDT(dt);}
+
+  //Now call the slotBtnOkClicked() for each widget and reset the
+  //mIgnoreUpdates after we have processed that widget.
+  for (it = mWidgets.begin(); it != end; it++)
+    {
+      (*it)->slotBtnOKClicked();
+      (*it)->setIgnoreUpdates(false);
+    }
+  protectedNotify(ListViews::MODEL, ListViews::CHANGE);
 }
 
 void CMIRIAMModelWidget::slotBtnCancelClicked()
@@ -247,8 +248,8 @@ void CMIRIAMModelWidget::updateCreatedWidget()
   const std::string strDT = CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getCreatedDT();
   if (strDT.length())
     {
-      QDateTime dtWidget = mpCreatedWidget->dateTime();
-      QDateTime dtBackEnd = QDateTime::fromString(FROM_UTF8(strDT), Qt::ISODate);
+      QDateTime& dtWidget = mpCreatedWidget->dateTime();
+      QDateTime& dtBackEnd = QDateTime::fromString(FROM_UTF8(strDT), Qt::ISODate);
       if (dtWidget != dtBackEnd)
         {
           mpCreatedWidget->setDateTime(dtBackEnd);

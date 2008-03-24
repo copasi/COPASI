@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiWidget.cpp,v $
-//   $Revision: 1.27 $
+//   $Revision: 1.28 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/11/01 17:51:00 $
+//   $Author: aekamal $
+//   $Date: 2008/03/24 15:51:21 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -47,3 +52,8 @@ bool CopasiWidget::protectedNotify(ListViews::ObjectType objectType, ListViews::
 
   return true;
 }
+
+bool CopasiWidget::getIgnoreUpdates()
+{return mIgnoreUpdates;}
+void CopasiWidget::setIgnoreUpdates(bool v)
+{mIgnoreUpdates = v;}

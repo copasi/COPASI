@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiWidget.h,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/11/07 19:45:40 $
+//   $Author: aekamal $
+//   $Date: 2008/03/24 15:51:21 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -37,6 +42,8 @@ class CopasiWidget : public QWidget
     virtual bool leave();
     virtual bool enter(const std::string & key = "");
     virtual void setFramework(int framework);
+    bool getIgnoreUpdates();
+    void setIgnoreUpdates(bool v);
 
   protected:
     bool protectedNotify(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key = "");
