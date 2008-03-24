@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CMIRIAMModelWidget.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/03/24 15:51:21 $
+//   $Date: 2008/03/24 16:25:07 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,6 +40,8 @@ CMIRIAMModelWidget::CMIRIAMModelWidget(QWidget* parent, const char* name, WFlags
 {
   if (!name)
     CopasiWidget::setName("CMIRIAMModelWidget");
+
+  mOT = ListViews::MODEL;
 
   //Create new widgets
   QLabel *pLblCreators = new QLabel("Creators: ", this);
@@ -151,14 +153,15 @@ void CMIRIAMModelWidget::slotBtnOKClicked()
   if (dt.length())
   {CCopasiDataModel::Global->getModel()->getMIRIAMInfo().setCreatedDT(dt);}
 
-  //Now call the slotBtnOkClicked() for each widget and reset the
-  //mIgnoreUpdates after we have processed that widget.
+  //Now call the slotBtnOkClicked() for each widget
   for (it = mWidgets.begin(); it != end; it++)
-    {
-      (*it)->slotBtnOKClicked();
-      (*it)->setIgnoreUpdates(false);
-    }
-  protectedNotify(ListViews::MODEL, ListViews::CHANGE);
+  {(*it)->slotBtnOKClicked();}
+  //Finally reset the mIgnoreUpdates.
+  for (it = mWidgets.begin(); it != end; it++)
+  {(*it)->setIgnoreUpdates(false);}
+
+  //Now update.
+  protectedNotify(mOT, ListViews::CHANGE);
 }
 
 void CMIRIAMModelWidget::slotBtnCancelClicked()

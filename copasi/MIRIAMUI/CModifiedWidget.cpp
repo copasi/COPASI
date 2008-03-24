@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CModifiedWidget.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/03/10 15:49:57 $
+//   $Date: 2008/03/24 16:25:08 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -188,3 +188,7 @@ void CModifiedWidget::deleteObjects(const std::vector<std::string> & keys)
       break;
     }
 }
+
+void CModifiedWidget::slotDoubleClicked(int C_UNUSED(row), int C_UNUSED(col),
+                                        int C_UNUSED(m), const QPoint & C_UNUSED(n))
+{}

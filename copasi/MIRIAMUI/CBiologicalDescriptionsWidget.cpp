@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CBiologicalDescriptionsWidget.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/03/17 20:33:55 $
+//   $Date: 2008/03/24 16:25:07 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -271,3 +271,7 @@ void CBiologicalDescriptionsWidget::saveTable()
   if (newKey.length())
   {protectedNotify(mOT, ListViews::CHANGE, changeKey);}
 }
+
+void CBiologicalDescriptionsWidget::slotDoubleClicked(int C_UNUSED(row), int C_UNUSED(col),
+    int C_UNUSED(m), const QPoint & C_UNUSED(n))
+{}

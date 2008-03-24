@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CCreatorsWidget.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/03/10 15:49:57 $
+//   $Date: 2008/03/24 16:25:07 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -185,3 +185,7 @@ void CCreatorsWidget::deleteObjects(const std::vector<std::string> & keys)
       break;
     }
 }
+
+void CCreatorsWidget::slotDoubleClicked(int C_UNUSED(row), int C_UNUSED(col),
+                                        int C_UNUSED(m), const QPoint & C_UNUSED(n))
+{}

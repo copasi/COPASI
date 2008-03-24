@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CBiologicalDescriptionsWidget.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/03/10 15:49:57 $
+//   $Date: 2008/03/24 16:25:08 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -69,6 +69,8 @@ class CBiologicalDescriptionsWidget : public CopasiTableWidget
     virtual QString defaultObjectName() const;
 
     virtual void saveTable();
+
+    virtual void slotDoubleClicked(int, int, int, const QPoint &);
   };
 
 #endif // COPASI_CBiologicalDescriptionsWidget
