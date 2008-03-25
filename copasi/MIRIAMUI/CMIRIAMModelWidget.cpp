@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CMIRIAMModelWidget.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2008/03/24 16:25:07 $
+//   $Author: shoops $
+//   $Date: 2008/03/25 17:47:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -251,8 +251,8 @@ void CMIRIAMModelWidget::updateCreatedWidget()
   const std::string strDT = CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getCreatedDT();
   if (strDT.length())
     {
-      QDateTime& dtWidget = mpCreatedWidget->dateTime();
-      QDateTime& dtBackEnd = QDateTime::fromString(FROM_UTF8(strDT), Qt::ISODate);
+      QDateTime dtWidget = mpCreatedWidget->dateTime();
+      QDateTime dtBackEnd = QDateTime::fromString(FROM_UTF8(strDT), Qt::ISODate);
       if (dtWidget != dtBackEnd)
         {
           mpCreatedWidget->setDateTime(dtBackEnd);
