@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/11/12 19:27:44 $
+//   $Author: pwilly $
+//   $Date: 2008/03/26 02:53:15 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -26,6 +31,9 @@
 class CQExpressionWidget;
 class CCopasiObject;
 
+/*!
+    \brief The class for highlighting the expression syntax
+ */
 class CQExpressionHighlighter: public QSyntaxHighlighter
   {
   public:
@@ -35,17 +43,31 @@ class CQExpressionHighlighter: public QSyntaxHighlighter
     virtual int highlightParagraph (const QString & text, int endStateOfLastPara);
   };
 
+/*!
+    \brief The class for checking the validity of a given mathematical expression
+ */
 class CQValidatorExpression: public CQValidator< QTextEdit >
   {
   public:
     CQValidatorExpression(QTextEdit * parent, const char * name = 0);
 
+    /**
+     * Function to validate a string input
+     */
     virtual State validate(QString & input, int & pos) const;
+
+    /**
+     * Function to get CExpression object
+     */
+    virtual CExpression *getExpression();
 
   protected:
     CExpression mExpression;
   };
 
+/*!
+    \brief The class for writing/editing a mathematical expression
+ */
 class CQExpressionWidget: public QTextEdit
   {
     Q_OBJECT
@@ -64,7 +86,7 @@ class CQExpressionWidget: public QTextEdit
     int mOldPos2;
 
     /**
-     * Indecates whether we are dealing with an INITIAL or TRANSIENT expression
+     * Function to indecate whether we are dealing with an INITIAL or TRANSIENT expression
      */
     CCopasiSimpleSelectionTree::SelectionFlag mExpressionType;
 
@@ -93,10 +115,15 @@ class CQExpressionWidget: public QTextEdit
     void setExpression(const std::string & expression);
 
     /**
-     * Retrieve the expression from the widget
+     * Retrieve the expression from the widget in string format
      * @return std::string expression
      */
     std::string getExpression() const;
+
+    /**
+     * Function to get CExpression object
+     */
+    //    CExpression *getExpression();
 
     /**
      * This function must be called when the current object is renamed
@@ -115,6 +142,10 @@ class CQExpressionWidget: public QTextEdit
   protected slots:
     void slotCursorPositionChanged(int para, int pos);
     void slotSelectionChanged();
+
+    /**
+     * Slot for being activated whenever the text on Expression Widget is changed
+     */
     void slotTextChanged();
 
     //void slotLostFocus();

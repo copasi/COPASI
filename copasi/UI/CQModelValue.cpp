@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQModelValue.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/11/13 14:48:12 $
+//   $Author: pwilly $
+//   $Date: 2008/03/26 02:51:27 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -14,7 +19,7 @@
  ** Form implementation generated from reading ui file 'CQModelValue.ui'
  **
  ** Created: Tue Nov 13 09:15:21 2007
- **      by: The User Interface Compiler ($Id: CQModelValue.cpp,v 1.6 2007/11/13 14:48:12 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: CQModelValue.cpp,v 1.7 2008/03/26 02:51:27 pwilly Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -36,7 +41,12 @@
 #include <qpixmap.h>
 
 #include "CQExpressionWidget.h"
+//#include "FunctionWidget2.h"
+//#include "test1.h"
 #include "CQModelValue.ui.h"
+
+#include "icons/editIcon.xpm"
+
 static const unsigned char image0_data[] =
   {
     0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d,
@@ -96,6 +106,8 @@ static const unsigned char image0_data[] =
 CQModelValue::CQModelValue(QWidget* parent, const char* name)
     : CopasiWidget(parent, name)
 {
+  std::cout << "CQModelValue start" << std::endl;
+
   QImage img;
   img.loadFromData(image0_data, sizeof(image0_data), "PNG");
   image0 = img;
@@ -127,7 +139,7 @@ CQModelValue::CQModelValue(QWidget* parent, const char* name)
 
   CQModelValueLayout->addMultiCellLayout(mpBtnLayout, 11, 11, 0, 2);
 
-  mpComboBoxType = new QComboBox(FALSE, this, "mpComboBoxType");
+  mpComboBoxType = new QComboBox(FALSE, this, "CQExpressionMmlWidgetStack");
   mpComboBoxType->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)3, (QSizePolicy::SizeType)0, 0, 0, mpComboBoxType->sizePolicy().hasHeightForWidth()));
 
   CQModelValueLayout->addWidget(mpComboBoxType, 1, 1);
@@ -222,7 +234,14 @@ CQModelValue::CQModelValue(QWidget* parent, const char* name)
   mpEditInitialExpression = new CQExpressionWidget(this, "mpEditInitialExpression");
   mpEditInitialExpression->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)5, 0, 0, mpEditInitialExpression->sizePolicy().hasHeightForWidth()));
   mpHBoxLayoutInitialExpression->addWidget(mpEditInitialExpression);
+  /*-----
+    mpEditFcnInitialExpression = new CQExpressionWidget(this, "mpEditFcnInitialExpression");
+    mpEditInitialExpression->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)5, 0, 0, mpEditInitialExpression->sizePolicy().hasHeightForWidth()));
+    mpHBoxLayoutInitialExpression->addWidget(mpEditInitialExpression);
 
+    mpEditFcnExpression = new CQExpressionMmlWidgetStack(this, "mpEditFcnExpression");
+    mpHBoxLayoutExpression->addWidget(mpEditFcnExpression);
+  */
   mpVBoxLayoutInitialExpression = new QVBoxLayout(0, 0, 6, "mpVBoxLayoutInitialExpression");
 
   mpBtnInitialExpressionObject = new QToolButton(this, "mpBtnInitialExpressionObject");
@@ -235,22 +254,60 @@ CQModelValue::CQModelValue(QWidget* parent, const char* name)
 
   CQModelValueLayout->addMultiCellLayout(mpHBoxLayoutInitialExpression, 4, 4, 1, 2);
 
+  // --- box layout containing expression widget stack, object-selecting push button, spacer item
+
   mpHBoxLayoutExpression = new QHBoxLayout(0, 0, 6, "mpHBoxLayoutExpression");
 
-  mpEditExpression = new CQExpressionWidget(this, "mpEditExpression");
-  mpHBoxLayoutExpression->addWidget(mpEditExpression);
+  // expression widget stack
+  std::cout << "Before" << std::endl;
+  //  mpEditExpression = new CQExpressionWidget(this, "mpEditExpression");
+  //  mpEditExpression = new QTextEdit(this, "mpEditExpression");
+  //  mpEditExpression->setText("HAHAHA");
+  std::cout << "After" << std::endl;
+  //  mpHBoxLayoutExpression->addWidget(mpEditExpression);
+  ///  mpEditFcnExpression = new FunctionWidget2(this);
+  //  mpEditFcnExpression = new QTextEdit(this, "mpEditFcnExpression");
+  /*
+    mpEditFcnExpression = new QWidgetStack(this, "mpEditFcnExpression");
+    mpEditFcnExpression->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    mpTextEditExpression = new QTextEdit(mpEditFcnExpression, "textEditExpression");
+    std::cout << mpTextEditExpression->width() << " x2 " << mpTextEditExpression->height() << std::endl;
+    mpTextEditExpression->setText(tr("Edit"));
+    mpEditFcnExpression->addWidget(mpTextEditExpression, 0);
+  */
+  //  mpEditFcnExpression->setText("HAHAHA");
+  mpEditFcnExpression = new CQExpressionMmlWidgetStack(this, "mpEditFcnExpression");
 
+  mpHBoxLayoutExpression->addWidget(mpEditFcnExpression);
+
+  // --- vertical box layout ---
   mpVBoxLayoutExpression = new QVBoxLayout(0, 0, 6, "mpVBoxLayoutExpression");
 
+  // button for selecting object(s)
   mpBtnExpressionObject = new QToolButton(this, "mpBtnExpressionObject");
   mpBtnExpressionObject->setMaximumSize(QSize(20, 20));
   mpBtnExpressionObject->setIconSet(QIconSet(image0));
   mpVBoxLayoutExpression->addWidget(mpBtnExpressionObject);
+
+  // button for going back to the editor page of widget stack
+  mpBtnEditExpression = new QToolButton(this);
+  mpBtnEditExpression->setPixmap(editIcon);
+  //  mpEditButton->setFixedSize(13, 13);
+  mpBtnEditExpression->setMaximumSize(QSize(20, 20));
+  mpVBoxLayoutExpression->addWidget(mpBtnEditExpression);
+
+  // spacer item
   mpSpacerExpressionObject = new QSpacerItem(20, 35, QSizePolicy::Minimum, QSizePolicy::Expanding);
   mpVBoxLayoutExpression->addItem(mpSpacerExpressionObject);
+
+  // add the vertical box layout into the horizontal one
   mpHBoxLayoutExpression->addLayout(mpVBoxLayoutExpression);
 
+  // add the horizontal box layout to the main one
   CQModelValueLayout->addMultiCellLayout(mpHBoxLayoutExpression, 2, 2, 1, 2);
+
+  // ---
+
   languageChange();
   resize(QSize(460, 364).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
@@ -261,8 +318,12 @@ CQModelValue::CQModelValue(QWidget* parent, const char* name)
   connect(mpBtnNew, SIGNAL(clicked()), this, SLOT(slotBtnNew()));
   connect(mpBtnRevert, SIGNAL(clicked()), this, SLOT(slotBtnRevert()));
   connect(mpComboBoxType, SIGNAL(activated(int)), this, SLOT(slotTypeChanged(int)));
-  connect(mpBtnExpressionObject, SIGNAL(clicked()), mpEditExpression, SLOT(slotSelectObject()));
-  connect(mpEditExpression, SIGNAL(valid(bool)), this, SLOT(slotExpressionValid(bool)));
+  //  connect(mpBtnExpressionObject, SIGNAL(clicked()), mpEditExpression, SLOT(slotSelectObject()));
+  //  connect(mpEditExpression, SIGNAL(valid(bool)), this, SLOT(slotExpressionValid(bool)));
+  connect(mpBtnExpressionObject, SIGNAL(clicked()), ((CQExpressionWidget *)mpEditFcnExpression->widget(0)), SLOT(slotSelectObject()));
+  connect(((CQExpressionWidget *)mpEditFcnExpression->widget(0)), SIGNAL(valid(bool)), this, SLOT(slotExpressionValid(bool)));
+  //  connect(mpBtnEditExpression, SIGNAL(clicked()), mpEditFcnExpression, SLOT(slotEditExpression()));
+  connect(mpBtnEditExpression, SIGNAL(clicked()), this, SLOT(slotEditExpression()));
   connect(mpEditInitialExpression, SIGNAL(valid(bool)), this, SLOT(slotInitialExpressionValid(bool)));
   connect(mpBtnInitialExpressionObject, SIGNAL(clicked()), mpEditInitialExpression, SLOT(slotSelectObject()));
   connect(mpBoxUseInitialExpression, SIGNAL(toggled(bool)), this, SLOT(slotInitialTypeChanged(bool)));
@@ -270,18 +331,21 @@ CQModelValue::CQModelValue(QWidget* parent, const char* name)
 
   // tab order
   setTabOrder(mpEditName, mpComboBoxType);
-  setTabOrder(mpComboBoxType, mpEditExpression);
-  setTabOrder(mpEditExpression, mpBtnExpressionObject);
+  //  setTabOrder(mpComboBoxType, mpEditExpression);
+  //  setTabOrder(mpEditExpression, mpBtnExpressionObject);
+  //  setTabOrder(mpComboBoxType, mpEditFcnExpression);
+  //  setTabOrder(mpEditFcnExpression, mpBtnExpressionObject);
   setTabOrder(mpBtnExpressionObject, mpEditInitialValue);
   setTabOrder(mpEditInitialValue, mpBoxUseInitialExpression);
-  setTabOrder(mpBoxUseInitialExpression, mpEditInitialExpression);
-  setTabOrder(mpEditInitialExpression, mpBtnInitialExpressionObject);
+  //  setTabOrder(mpBoxUseInitialExpression, mpEditInitialExpression);
+  //  setTabOrder(mpEditInitialExpression, mpBtnInitialExpressionObject);
   setTabOrder(mpBtnInitialExpressionObject, mpEditRate);
   setTabOrder(mpEditRate, mpBtnCommit);
   setTabOrder(mpBtnCommit, mpBtnRevert);
   setTabOrder(mpBtnRevert, mpBtnNew);
   setTabOrder(mpBtnNew, mpBtnDelete);
   init();
+  std::cout << "CQModelValue end" << std::endl;
 }
 
 /*
@@ -316,4 +380,6 @@ void CQModelValue::languageChange()
   mpBtnInitialExpressionObject->setTextLabel(tr("select"));
   mpBtnExpressionObject->setText(QString::null);
   mpBtnExpressionObject->setTextLabel(tr("select"));
+  mpBtnEditExpression->setText(QString::null);
+  mpBtnEditExpression->setTextLabel(tr("edit"));
 }

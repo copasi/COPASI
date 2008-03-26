@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQModelValue.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/11/13 14:48:12 $
+//   $Author: pwilly $
+//   $Date: 2008/03/26 02:51:56 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -14,7 +19,7 @@
  ** Form interface generated from reading ui file 'CQModelValue.ui'
  **
  ** Created: Tue Nov 13 09:15:09 2007
- **      by: The User Interface Compiler ($Id: CQModelValue.h,v 1.8 2007/11/13 14:48:12 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: CQModelValue.h,v 1.9 2008/03/26 02:51:56 pwilly Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -26,6 +31,9 @@
 #include <qpixmap.h>
 #include <string>
 #include "copasiWidget.h"
+#include "CQExpressionMmlWidgetStack.h"
+
+#include <qwidgetstack.h>
 
 class QVBoxLayout;
 class QHBoxLayout;
@@ -40,6 +48,8 @@ class QLabel;
 class QCheckBox;
 class QToolButton;
 class CQExpressionWidget;
+class FunctionWidget2;
+//class Form1;
 class CModelValue;
 class CExpression;
 
@@ -72,8 +82,16 @@ class CQModelValue : public CopasiWidget
     QLabel* mpLblInitialExpression;
     CQExpressionWidget* mpEditInitialExpression;
     QToolButton* mpBtnInitialExpressionObject;
-    CQExpressionWidget* mpEditExpression;
+    //    CQExpressionWidget* mpEditExpression;
+    //    QTextEdit* mpEditFcnExpression;
+    /*
+        QWidgetStack* mpEditFcnExpression;
+        QTextEdit *mpTextEditExpression;
+    */
+    // FunctionWidget2 *mpEditFcnExpression;
+    CQExpressionMmlWidgetStack *mpEditFcnExpression;
     QToolButton* mpBtnExpressionObject;
+    QToolButton *mpBtnEditExpression;
 
     virtual bool enter(const std::string & key);
     virtual bool leave();
@@ -110,15 +128,26 @@ class CQModelValue : public CopasiWidget
     void destroy();
 
   private slots:
+    /// Slot for being activated whenever the Commit button is clicked
     void slotBtnCommit();
+    ///
     void slotBtnRevert();
+    ///
     void slotBtnNew();
+    ///
     void slotBtnDelete();
+    ///
     void slotTypeChanged(int type);
+    ///
     void slotInitialTypeChanged(bool useInitialAssignment);
+    ///
     void slotNameLostFocus();
+    ///
     void slotExpressionValid(bool valid);
+    ///
     void slotInitialExpressionValid(bool valid);
+    ///
+    void slotEditExpression();
   };
 
 #endif // CQMODELVALUE_H

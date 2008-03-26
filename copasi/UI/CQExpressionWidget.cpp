@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.cpp,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/12 00:32:58 $
+//   $Author: pwilly $
+//   $Date: 2008/03/26 02:53:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -71,18 +71,34 @@ CQValidatorExpression::CQValidatorExpression(QTextEdit * parent, const char * na
     mExpression()
 {}
 
+/**
+  *  This function ensures that any characters on Expression Widget are validated
+  *  to go to further processes.
+  */
 QValidator::State CQValidatorExpression::validate(QString & input, int & pos) const
   {
+    //    std::cout << "CQVE::validate(__) " << (const char *) input.utf8() << std::endl;
+
     if (const_cast< CExpression * >(&mExpression)->setInfix((const char *) input.utf8()) &&
         const_cast< CExpression * >(&mExpression)->compile())
       {
         QString Input = mpLineEdit->text();
+        //     std::cout << mpLineEdit->text() << std::endl;
         return CQValidator< QTextEdit >::validate(Input, pos);
       }
 
     setColor(Invalid);
     return Intermediate;
   }
+
+/**
+  * Function to get CExpression object
+  */
+CExpression *CQValidatorExpression::getExpression()
+{
+  //  return const_cast< CExpression * >(&mExpression);
+  return &mExpression;
+}
 
 //***********************************************************************
 
@@ -166,8 +182,12 @@ void CQExpressionWidget::slotSelectionChanged()
   getSelection(&mOldPar1, &mOldPos1, &mOldPar2, &mOldPos2);
 }
 
+/**
+  *  This slot checks any characters that are newly typed on Expression Widget.
+  */
 void CQExpressionWidget::slotTextChanged()
 {
+  //  std::cout << "CQEW::slotTextChanged()" << std::endl;
   int pos = 0;
   QString Expression = FROM_UTF8(getExpression());
   emit valid(mpValidator->validate(Expression, pos) == QValidator::Acceptable);
@@ -412,6 +432,12 @@ std::string CQExpressionWidget::getExpression() const
 
     return InfixCN;
   }
+/*
+CExpression *CQExpressionWidget::getExpression()
+{
+//  return const_cast< CExpression * >(&mExpression);
+  return &(mpValidator->mExpression);
+}*/
 
 void CQExpressionWidget::setExpressionType(const CCopasiSimpleSelectionTree::SelectionFlag & expressionType)
 {
