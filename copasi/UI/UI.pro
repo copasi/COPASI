@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $ 
-#   $Revision: 1.169 $ 
+#   $Revision: 1.170 $ 
 #   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2008/03/12 01:47:38 $ 
+#   $Author: pwilly $ 
+#   $Date: 2008/03/27 12:36:41 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -16,7 +16,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.169 $ $Author: shoops $ $Date: 2008/03/12 01:47:38 $  
+# $Revision: 1.170 $ $Author: pwilly $ $Date: 2008/03/27 12:36:41 $  
 ######################################################################
 
 LIB = UI
@@ -92,7 +92,8 @@ HEADERS += \
            TaskWidget.h \
            TimeSeriesWidget.h \
            Tree.h \
-           TSSWidget.h
+           TSSWidget.h \
+           CQExpressionMmlWidgetStack.h 
 
 
 SOURCES += \
@@ -155,7 +156,8 @@ SOURCES += \
            TaskWidget.cpp \
            TimeSeriesWidget.cpp \
            Tree.cpp \
-           TSSWidget.cpp
+           TSSWidget.cpp \
+           CQExpressionMmlWidgetStack.cpp
 
 
 !contains(DEFINES, COPASI_TSS) {
