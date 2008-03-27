@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.76 $ 
+#   $Revision: 1.77 $ 
 #   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2008/03/12 03:31:05 $ 
+#   $Author: pwilly $ 
+#   $Date: 2008/03/27 11:21:28 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.76 $ $Author: shoops $ $Date: 2008/03/12 03:31:05 $  
+# $Revision: 1.77 $ $Author: pwilly $ $Date: 2008/03/27 11:21:28 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -270,7 +270,8 @@ contains(STATIC_LINKAGE, yes) {
   !isEmpty(CLAPACK_PATH) {
     DEFINES += USE_CLAPACK
     INCLUDEPATH += $${CLAPACK_PATH}/include
-    LIBS += -llapack -lblas -lF77 -lfl
+#    LIBS += -llapack -lblas -lF77 -lfl
+    LIBS += -llapack -lblas -lF77
     LIBS += -L$${CLAPACK_PATH}/lib
   } else {
     !isEmpty(LAPACK_PATH) {
@@ -360,7 +361,8 @@ contains(BUILD_OS, Linux) {
       DEFINES += USE_CLAPACK
       INCLUDEPATH += $${CLAPACK_PATH}/include
       INCLUDEPATH += /usr/include/qt3
-      LIBS += -llapack -lblas -lF77 -lfl
+#      LIBS += -llapack -lblas -lF77 -lfl
+      LIBS += -llapack -lblas -lF77
       LIBS += -L$${CLAPACK_PATH}/lib 
     } else {
       !isEmpty(LAPACK_PATH) {
@@ -380,7 +382,7 @@ contains(BUILD_OS, Linux) {
        LIBS+=  -L$${QWT_PATH}/lib
        INCLUDEPATH += $${QWT_PATH}/include
     }
-    LIBS += -lqwt
+    LIBS += -lqwt-qt3
   }
 }
 

@@ -1,5 +1,18 @@
+# Begin CVS Header 
+#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotUI.pro,v $ 
+#   $Revision: 1.2 $ 
+#   $Name:  $ 
+#   $Author: pwilly $ 
+#   $Date: 2008/03/27 11:21:29 $ 
+# End CVS Header 
+
+# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+# and The University of Manchester. 
+# All rights reserved. 
+
 ######################################################################
-# $Revision: 1.1 $ $Author: shoops $ $Date: 2006/10/28 00:31:05 $  
+# $Revision: 1.2 $ $Author: pwilly $ $Date: 2008/03/27 11:21:29 $  
 ######################################################################
 
 LIB = plotUI
@@ -31,7 +44,8 @@ FORMS +=  HistoWidget.ui
 HEADERS += curve2dwidget.ui.h
 HEADERS +=  HistoWidget.ui.h
 
-INCLUDEPATH += $${QWT_PATH}/include
+#INCLUDEPATH += $${QWT_PATH}/include
+INCLUDEPATH += $${QWT_PATH}/include/qwt-qt3
 
 DISTFILES += plotUI.dsp
 DISTFILES += QwtLicense
