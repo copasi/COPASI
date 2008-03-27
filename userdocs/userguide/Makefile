@@ -88,7 +88,7 @@ COPASI_TEXINPUTS=.:$(COPASI_DBLATEX):$(DBLATEX_TEXINPUTS):$(TEXINPUTS)
 
 .PHONY: clean all
 
-all: copasi.pdf copasi.xhtml 
+all: copasi.pdf copasi.xhtml
 
 copasi.tex: $(SOURCES)
 	SGML_CATALOG_FILES=$(DBLATEX_SGML_CATALOG_FILES) $(DBLATEX) -p $(COPASI_DBLATEX)/copasi.xsl -t tex copasi.xml
@@ -103,18 +103,31 @@ copasi.xhtml: $(SOURCES) $(IMAGES) copasi_xhtml.xsl
 	@[ -d $@/images ] || mkdir $@/images
 	@cp images/*.png $@/images
 	(cd $@; \
-	xsltproc ../copasi_xhtml.xsl ../copasi.xml; \
+	  xsltproc ../copasi_xhtml.xsl ../copasi.xml; \
+	  for f in *.html; do \
+	    echo Fixing XML in $$f; \
+	    sed -e 's/mml://g' \
+                -e 's/ xmlns:mml/ xmlns/g' $$f > $$f.tmp; \
+	    mv $$f.tmp $$f; \
+	  done; \
 	cd ..)
+
+copasi.html: copasi.tex $(IMAGES) 
+	@[ -d $@ ] || rm -rf copasi.html
+	TEXINPUTS=$(COPASI_TEXINPUTS) \
+	latex2html -white -split +0 -show_section_numbers -image_type gif \
+		   -no_navigation -local_icons -discard \
+		   -mkdir -dir $@ $<
 
 clean:
 	-rm -f copasi.tex
 	-rm -f copasi.pdf
-	-rm -f copasi.html
 	-rm -f copasi.out
 	-rm -f copasi.idx
 	-rm -f copasi.log
 	-rm -f copasi.aux
 	-rm -f copasi.glo
 	-rm -f fotex.log
+	-rm -rf copasi.html
 	-rm -rf copasi.xhtml
 

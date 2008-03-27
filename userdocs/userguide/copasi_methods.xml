@@ -1,10 +1,10 @@
 <chapter id="methods" xreflabel="Methods">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_methods.xml,v $ -->
-<!--   $Revision: 1.14 $ -->
+<!--   $Revision: 1.15 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: shoops $ -->
-<!--   $Date: 2008/03/12 00:35:05 $ -->
+<!--   $Date: 2008/03/27 20:41:19 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -111,7 +111,7 @@ Please note that best achievable relative tolerance is approximately
 <para>
 This parameter is a positive numeric value specifying the desired
 absolute tolerance the user wants to achieve. Please note that for
-metbolites the absolute tolerance is applied to the concentration
+species the absolute tolerance is applied to the concentration
 value. The default value is
 <inlineequation><mml:math><mml:mn>1.0</mml:mn><mml:mo>*</mml:mo>
 <mml:msup><mml:mn>10</mml:mn><mml:mn>-12</mml:mn></mml:msup></mml:math></inlineequation>.
@@ -156,6 +156,10 @@ next desired reporting time. The default value is '10000'.
 <para>
 This stochastic simulation method utilizes the algorithm developed by Gibson and Bruck (see <citation>Gibson00</citation> for details). For each reaction a putative stochastic reaction time is calculated and the reaction with the shortest reaction time will be realized. The set of reactions is organized in a priority queue to allow for the efficient search for the fastest reaction. In addition, by using a so-called dependency graph only those reaction times are recalculated in each step, that are dependent on the reaction, which has been realized. This simulation method requires all the reactions to be irreversible. However, COPASI provides a tool, that converts all reversible reactions into irreversible ones. Because the algorithm internally works on discrete particle numbers rather than concentrations, the particle numbers in the system must not exceed a value of approximately <inlineequation><mml:math><mml:msup><mml:mn>2</mml:mn><mml:mn>64</mml:mn></mml:msup></mml:math></inlineequation>.
 </para>
+<caution><para>
+  The current implementation of the Next Reaction Method is very inefficient when the model contains assignment rules, which leads to extended calculation times. 
+</para></caution>
+
 <para>
 There is a restriction regarding global quantities: If a differential equation is provided for a global quantity (the quantity is of type "ode") the model cannot be simulated stochastically with the current version of COPASI. If the global quantity is of type "assignment" stochastic simulation is possible but not as efficient as for models without assignments. No restrictions apply for "fixed" global quantities.
 </para>
@@ -238,6 +242,9 @@ To be written
 <para>
 This hybrid simulation method developed by us combines a deterministic numerical integration of ODEs with a stochastic simulation algorithm. The whole biochemical network is partitioned into a deterministic and a stochastic subnet internally. The deterministic subnet contains all reactions, in which only species with high particle numbers take part. All reactions with at least one low-numbered species are in the stochastic subnet, because here stochastic effects are expected. Which particle numbers are considered low or high can be specified by the user with the Lower Limit and the Upper Limit parameters (Species with particle numbers between those limits do not change their status. This leads to a hysteresis-like behavior and avoids many unnecessary swaps, if the particle numbers fluctuate in the middle range). The partitioning of the biochemical network can change dynamically during the simulation. After a certain number of steps, which the user can define using the parameter Partitioning Interval, the partitioning is recalculated using the current particle numbers in the system. During one run the deterministic subnet and the stochastic subnet are simulated in parallel. A 4th-order Runge-Kutta method is used to numerically integrate the deterministic part of the system. For the stochastic part the simulation method by Gibson and Bruck (<citation>Gibson00</citation>) is utilized. The reaction probabilities of the stochastic subnet are approximated as constant during one stochastic step, even though in theory they can change due to the effects of the deterministic subnet.
 </para>
+<caution><para>
+  The current implementation of the Hybrid Runge Kutta Method is very inefficient when the model contains assignment rules, which leads to extended calculation times. 
+</para></caution>
 
 <variablelist><title>Options for Hybrid (Runge-Kutta)</title>
 
@@ -337,7 +344,7 @@ halts without a solution.
 </para>
 <para>
 The iteration of the plain Newton  method is:
-<equation><mml:math display="block">
+<equation id="eq.NewtonMethod" ><mml:math display="block">
  <mml:mrow>
   <mml:msub>
    <mml:mi>x</mml:mi>
@@ -408,7 +415,7 @@ has a larger residual error than
   <mml:mi>i</mml:mi>
  </mml:msub>
 </mml:math></inlineequation> one looks at
-<equation><mml:math display="block">
+<equation id="eq.DampedNewtonMethod"><mml:math display="block">
  <mml:mrow>
   <mml:msub>
    <mml:mi>x</mml:mi>
@@ -572,7 +579,7 @@ decide whether the current state is acceptable as a steady-state. If
 the absolute change of each state variable is smaller than the
 resolutions the state is accepted. The default is <inlineequation><mml:math>
 <mml:msup><mml:mn>10</mml:mn><mml:mn>-9</mml:mn></mml:msup></mml:math></inlineequation>.
-Note that this value is interpreted as a concentration value, even though the calculation internally uses particle numbers. The reason for that is purely heuristic: In many cases the modeler will choose the units in a way that concentration values are neither extremely large not extremely small numerically so that the default value for this parameter leads to useful results. However generally it is not save to just keep the default value without checking. 
+Note that this value is interpreted as a concentration value, even though the calculation internally uses particle numbers. The reason for that is purely heuristic: In many cases the modeler will choose the units in a way that concentration values are neither extremely large nor extremely small numerically so that the default value for this parameter leads to useful results. However generally it is not save to just keep the default value without checking. 
 </para>
 </listitem>
 </varlistentry>
@@ -599,7 +606,7 @@ on a parameter affects a system variable (e.g. fluxes or
 concentrations). It is defined <citation>Kacser73</citation>
 <citation>Heinrich74</citation>
 <citation>Burns85</citation> as: 
- <equation><mml:math display="block">
+ <equation id="eq.ControlCoefficient"><mml:math display="block">
   <mml:mrow>
    <mml:mrow>
     <mml:msubsup>
@@ -658,7 +665,7 @@ the flux control coefficients of a pathway. By various procedures
 <citation>Reder88</citation> it
  can be demonstrated that for a given reference flux the sum 
 of all flux-control coefficients (of all steps) is equal to unity: 
- <equation><mml:math display="block">
+ <equation id="eq.SummationTheorem1"><mml:math display="block">
   <mml:mrow>
    <mml:msub>
     <mml:mo>&sum;</mml:mo>
@@ -680,7 +687,7 @@ of all flux-control coefficients (of all steps) is equal to unity:
  </mml:math></equation>
 For a given reference species concentration the sum of all
 concentration-control coefficients is zero: 
- <equation><mml:math display="block">
+ <equation id="eq.SummationTheorem2"><mml:math display="block">
   <mml:mrow>
    <mml:msub>
     <mml:mo>&sum;</mml:mo>
@@ -742,7 +749,7 @@ interest. The elasticity coefficients are defined as the ratio of
 relative change in local rate to the relative change in one parameter
 (normally the concentration of an effector). Infinitesimally, this is
 written as:  
- <equation><mml:math display="block">
+ <equation id="eq.ElasticityCoefficient"><mml:math display="block">
   <mml:mrow>
    <mml:mrow>
     <mml:msubsup>
@@ -810,7 +817,7 @@ The connectivity theorem for flux-control coefficients
 the sum of the 
 products of the flux-control coefficient of all (i) steps affected by
 S and its elasticity coefficients towards S, is zero: 
- <equation><mml:math display="block">
+ <equation id="eq.SummationTheorem3"><mml:math display="block">
   <mml:mrow>
    <mml:msub>
     <mml:mo>&sum;</mml:mo>
@@ -840,7 +847,7 @@ S and its elasticity coefficients towards S, is zero:
  </mml:math></equation>
 For the concentration-control coefficients, the following two
 equations apply <citation>Westerhoff84</citation>: 
- <equation><mml:math display="block">
+ <equation id="eq.ConcentrationControlCoefficient1"><mml:math display="block">
   <mml:mrow>
    <mml:msub>
     <mml:mo>&sum;</mml:mo>
@@ -873,7 +880,7 @@ equations apply <citation>Westerhoff84</citation>:
   </mml:mrow>
  </mml:math></equation>
 
- <equation><mml:math display="block">
+ <equation id="eq.ConcentrationControlCoefficient2"><mml:math display="block">
   <mml:mrow>
    <mml:msub>
     <mml:mo>&sum;</mml:mo>
@@ -1112,7 +1119,7 @@ from a normal distribution with zero mean and a standard deviation of
 10% of the parameter value. Parameters may exceed boundaries. Whenever
 this happens or a constraint to the solution is violated the square of
 the size of the violation is summed up, i.e., we calculate 
-<equation><mml:math display="block">
+<equation id="eq.GeneticAlgorithmSR1"><mml:math display="block">
  <mml:mrow>
   <mml:mo>&phi;</mml:mo>
   <mml:mo>=</mml:mo>
@@ -1511,7 +1518,7 @@ values of the function calculated in a number of previous iterations.
 <listitem>
 <para>
 This parameter is positive integer determining the maximum number of
-iterations the algorithm Sharl perform. The default is '50'.
+iterations the algorithm shall perform. The default is '50'.
 </para>
 </listitem>
 </varlistentry>
@@ -1941,7 +1948,7 @@ mutations. The algorithm assures that each parameter value will be
 within its boundaries. But constraints to the solutions may be
 violated. Whenever this happens the square of the size of the
 violation is summed up, i.e., we calculate  
-<equation><mml:math display="block">
+<equation id="eq.EvolutionaryStrategySRES"><mml:math display="block">
  <mml:mrow>
   <mml:mo>&phi;</mml:mo>
   <mml:mo>=</mml:mo>
@@ -2133,7 +2140,7 @@ by statistical mechanics
 and the way in which perfect crystals are formed. Perfect crystals are
 formed by first melting the substance of interest, and then cooling it
 very slowly. At large temperatures the particles vibrate with wide
-amplitude and this allows a search for global optima. As the
+amplitude and this allows a search for global optimum. As the
 temperature decreases so do the vibrations until the system settles to
 the global optimum (the perfect crystal).
 </para>

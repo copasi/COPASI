@@ -7,7 +7,6 @@
 <!-- <xsl:import href="/usr/share/xml/docbook/stylesheet/nwalsh/xhtml/profile-docbook.xsl"/> -->
 <!-- <xsl:import href="/sw/share/xml/xsl/docbook-xsl/xhtml/profile-docbook.xsl"/> -->
 <xsl:import href="/usr/share/xml/docbook/xsl-stylesheets-1.72.0/xhtml/chunk.xsl"/>
-
 <!-- ==================================================================== -->
 
 <xsl:template name="header.navigation">
@@ -18,11 +17,21 @@
   <xsl:variable name="home" select="/*[1]"/>
   <xsl:variable name="up" select="parent::*"/>
 
-  <xsl:variable name="row1" select="count($prev) &gt; 0                                     or count($up) &gt; 0                                     or count($next) &gt; 0"/>
+  <xsl:variable name="row1" 
+        select="count($prev) &gt; 0
+        or count($up) &gt; 0
+        or count($next) &gt; 0"/>
 
-  <xsl:variable name="row2" select="($prev and $navig.showtitles != 0)                                     or (generate-id($home) != generate-id(.)                                         or $nav.context = 'toc')                                     or ($chunk.tocs.and.lots != 0                                         and $nav.context != 'toc')                                     or ($next and $navig.showtitles != 0)"/>
+  <xsl:variable name="row2"
+      select="($prev and $navig.showtitles != 0)
+      or (generate-id($home) != generate-id(.)
+          or $nav.context = 'toc')
+      or ($chunk.tocs.and.lots != 0
+          and $nav.context != 'toc')
+      or ($next and $navig.showtitles != 0)"/>
 
-  <xsl:if test="$suppress.navigation = '0' and $suppress.footer.navigation = '0'">
+  <xsl:if test="$suppress.navigation = '0' 
+                and $suppress.footer.navigation = '0'">
     <div class="navfooter">
       <xsl:if test="$footer.rule != 0">
         <hr/>
@@ -49,7 +58,8 @@
               </td>
               <td width="20%" align="center">
                 <xsl:choose>
-                  <xsl:when test="count($up)&gt;0                                   and generate-id($up) != generate-id($home)">
+                  <xsl:when test="count($up)&gt;0
+                            and generate-id($up) != generate-id($home)">
                     <a accesskey="u">
                       <xsl:attribute name="href">
                         <xsl:call-template name="href.target">
@@ -103,7 +113,8 @@
                         <xsl:with-param name="direction" select="'home'"/>
                       </xsl:call-template>
                     </a>
-                    <xsl:if test="$chunk.tocs.and.lots != 0 and $nav.context != 'toc'">
+                    <xsl:if test="$chunk.tocs.and.lots != 0 
+                                  and $nav.context != 'toc'">
                       <xsl:text>&#160;|&#160;</xsl:text>
                     </xsl:if>
                   </xsl:when>
@@ -144,13 +155,13 @@
 
 <!-- ==================================================================== -->
 
-<xsl:param name="html.ext" select="'.xhtml'"/>
-<!-- <xsl:param name="use.extensions" select="1" />
-<xsl:param name="tablecolumns.extension" select="1" />
-<xsl:param name="graphicsize.extension" select="1" /> -->
+<xsl:param name="html.ext" select="'.html'"/>
+<!-- <xsl:param name="use.extensions" select="1" /> -->
+<!-- <xsl:param name="tablecolumns.extension" select="1" /> -->
+<!-- <xsl:param name="graphicsize.extension" select="1" /> -->
 <xsl:param name="ignore.image.scaling" select="1" />
-<xsl:param name="default.image.width" select="50" />
-<xsl:param name="nominal.image.width" select="50" />
+<xsl:param name="default.image.width" select="500" />
+<!-- <xsl:param name="nominal.image.width" select="50" /> -->
 <xsl:param name="l10n.gentext.language" select="'en'" />
 </xsl:stylesheet>
 

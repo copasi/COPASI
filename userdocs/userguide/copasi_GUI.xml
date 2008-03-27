@@ -1,10 +1,10 @@
 <chapter id="modelCreation" xreflabel="Model Creation">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_GUI.xml,v $ -->
-<!--   $Revision: 1.50 $ -->
+<!--   $Revision: 1.51 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: shoops $ -->
-<!--   $Date: 2008/03/12 00:35:04 $ -->
+<!--   $Date: 2008/03/27 20:41:19 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -64,7 +64,7 @@ commandline options.
 <para>
 This switch works in combination with the --exportSBML switch and
 determines which SBML level and version is going to be used for SBML export.
-Currently the folowing schemas are supported L1V2 for SBML Level 1 Version 2,
+Currently the following schemas are supported L1V2 for SBML Level 1 Version 2,
 L2V1 for SBML Level 2 Version 1, L2V2 for SBML Level 2 Version 2 and L2V3 for 
 SBML Level 2 Version 3. 
 </para>
@@ -205,7 +205,7 @@ systems temporary directory (e.g. /tmp/ under Linux).
 <listitem>
 <para>
 This commandline option tells COPASI to print more output on what it
-is doing to stdout.
+is doing to std::out.
 </para>
 </listitem>
 </varlistentry>
@@ -213,7 +213,7 @@ is doing to stdout.
 <varlistentry><term>--nologo</term>
 <listitem>
 <para>
-This option supresses the output of the "Logo" when CopasiSE is run. The "Logo" usually consits of the version of COPASI and some license statement.
+This option suppresses the output of the "Logo" when CopasiSE is run. The "Logo" usually consist of the version of COPASI and some license statement.
 </para>
 </listitem>
 </varlistentry>
@@ -246,9 +246,6 @@ Produced with COPASI 4.3 (Build 25) on Leopard on 02/06/2008
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Layout_01.png" format="PNG" scale="50" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/Layout_01.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>COPASI GUI elements.</phrase>
@@ -318,9 +315,6 @@ your models.
  <imageobject>
   <imagedata fileref="images/General_01.png" format="PNG" scale="50" align="center" />
  </imageobject> 
- <imageobject>
-  <imagedata fileref="images/General_01.ps" format="EPS" scale="50" align="center" />
- </imageobject> 
  <textobject>
    <phrase>Dialog for general model settings</phrase>
  </textobject>
@@ -375,10 +369,10 @@ So COPASI would display a concentration of
 </mml:mi><mml:mfrac><mml:mi>nMol</mml:mi><mml:mi>fl</mml:mi></mml:mfrac></mml:mrow></mml:math></inlineequation>. 
 </para>
 <para>
-You are able to easily change the display between concentrations and particle numbers by selecting the dropdown list in the menu bar at the top. COPASI, per default, displays the concentrations.
+You are able to easily change the display between concentrations and particle numbers by selecting the drop down list in the menu bar at the top. COPASI, per default, displays the concentrations.
 </para>
 <para>
-With the dropdown list labeled <guilabel>Rate Law
+With the drop down list labeled <guilabel>Rate Law
 Interpretation</guilabel> you can specify how COPASI should interpret
 the kinetic rate laws you specify for your reactions. Per default,
 COPASI will interpret all rate laws as deterministic rate laws. Since
@@ -390,7 +384,7 @@ written for stochastic simulation and where the before mentioned
 corrections have already been made by the modeler. So if you have a
 model with rate laws that have been written be used in a stochastic
 simulation, you have to specify this by selecting stochastic from this
-dropdown list. If you do this, COPASI will not apply any corrections
+drop down list. If you do this, COPASI will not apply any corrections
 to the rate laws specified in the model when doing stochastic
 simulation. 
 </para>
@@ -446,9 +440,6 @@ clicking on the branch name.
  <imageobject>
   <imagedata fileref="images/Compartments_01.png" format="PNG" scale="50" align="center" />
  </imageobject> 
- <imageobject>
-  <imagedata fileref="images/Compartments_01.ps" format="EPS" scale="50" align="center" />
- </imageobject> 
  <textobject>
    <phrase>Compartment table without entries</phrase>
  </textobject>
@@ -487,9 +478,6 @@ of <emphasis>new</emphasis> (see below).
  <imageobject>
   <imagedata fileref="images/Compartments_02.png" format="PNG" scale="50" align="center" />
  </imageobject> 
- <imageobject>
-  <imagedata fileref="images/Compartments_02.ps" format="EPS" scale="50" align="center" />
- </imageobject> 
  <textobject>
    <phrase>Compartment table with newly added compartment</phrase>
  </textobject>
@@ -521,9 +509,6 @@ been committed yet.
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Compartments_03.png" format="PNG" scale="50" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/Compartments_03.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>Compartment table with deleted compartment entry</phrase>
@@ -580,9 +565,6 @@ added compartment entry.
  <imageobject>
   <imagedata fileref="images/Compartments_04.png" format="PNG" scale="50" align="center" />
  </imageobject> 
- <imageobject>
-  <imagedata fileref="images/Compartments_04.ps" format="EPS" scale="50" align="center" />
- </imageobject> 
  <textobject>
    <phrase>Dialog for changing compartment parameters</phrase>
  </textobject>
@@ -612,9 +594,9 @@ As stated above, compartment volumes don't have to have a constant value
 but they can be reassigned during e.g. a time course simulation depending 
 the values of one or more model entities. In order to specify whether a compartment has a constant volume 
 or the volume is calculated on the fly according to a mathematical expression,
-the dropdown list called <guilabel>Simulation Type</guilabel> can be used.
+the drop down list called <guilabel>Simulation Type</guilabel> can be used.
 It contains three entries:
-<table frame="all"><title>Simulation Types</title>
+<table id="tbl.CompartmentSimulationType" frame="all"><title>Simulation Types</title>
 <tgroup cols="2" align="left" colsep="1" rowsep="1">
 <colspec colwidth="1*" />
 <colspec colwidth="4*" />
@@ -642,7 +624,7 @@ It contains three entries:
 </table>
 </para>
 <para>
-If you want the compartment to be calculated from a given mathematical expression you select the entry called <emphasis>assignment</emphasis> from the dropdown list. This enables a text field where the mathematical expression can be entered.
+If you want the compartment to be calculated from a given mathematical expression you select the entry called <emphasis>assignment</emphasis> from the drop down list. This enables a text field where the mathematical expression can be entered.
 </para>
 <para>    
 <screenshot>
@@ -650,9 +632,6 @@ If you want the compartment to be calculated from a given mathematical expressio
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Compartments_05.png" format="PNG" scale="50" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/Compartments_05.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>Compartment widget with assignment rule</phrase>
@@ -663,13 +642,49 @@ If you want the compartment to be calculated from a given mathematical expressio
 </mediaobject>
 </screenshot>
 </para>
+<caution>
 <para>
-Likewise if you want the rate of change of the compartments volume to be determined by an ordinary differential equation (ode) you select the entry called <emphasis>ode</emphasis> from the dropdown list.
+Please note, it is not possible in COPASI to calculate the volume of a compartment through an assignment based on the concentration of a species contained in the compartment. The reason for this restriction is that COPASI preserves the amount of a species during calculation, which leads to the following equation for the concentration <inlineequation><mml:math>
+  <mml:mrow>
+    <mml:mi>[S]</mml:mi>
+    <mml:mo>=</mml:mo>
+    <mml:msup>
+      <mml:mi>S</mml:mi>
+      <mml:mi>#</mml:mi>
+    </mml:msup>
+    <mml:mo>/</mml:mo>
+    <mml:mi>V</mml:mi>
+  </mml:mrow>
+</mml:math></inlineequation> and therefore <inlineequation><mml:math>
+  <mml:mrow>
+    <mml:mi>V</mml:mi>
+    <mml:mo>=</mml:mo>
+    <mml:msup>
+      <mml:mi>S</mml:mi>
+      <mml:mi>#</mml:mi>
+    </mml:msup>
+    <mml:mo>/</mml:mo>
+    <mml:mi>[S]</mml:mi>
+  </mml:mrow>
+</mml:math></inlineequation>. Obviously, specifying any assignment for the compartment volume like <inlineequation><mml:math>
+  <mml:mrow>
+    <mml:mi>V</mml:mi>
+    <mml:mo>=</mml:mo>
+    <mml:mi>f</mml:mi>
+    <mml:mo>(</mml:mo>
+    <mml:mi>[S]</mml:mi>
+    <mml:mo>)</mml:mo>
+  </mml:mrow>
+</mml:math></inlineequation> would lead to conflicting values.
+</para>
+</caution>
+<para>
+Likewise if you want the rate of change of the compartments volume to be determined by an ordinary differential equation (ode) you select the entry called <emphasis>ode</emphasis> from the drop down list.
 </para>
 <para>
 Not only the transient volume of a compartment can be specified as a mathematical expression (see above), but also the initial one (see below).
-If you want to specify such a mathematical expression for the initial volume of a compartment, check the checkbox called <guilabel>Use Initial Expression</guilabel>.
-An initial expression can only be specified if the <guilabel>Simulation Type</guilabel> dropdown list is either set to <emphasis>fixed</emphasis> or to <emphasis>ode</emphasis>. If the list is set to <emphasis>assignment</emphasis>, the given assignment automatically acts as an initial assignment and there is no need to specify an additional initial assignment.
+If you want to specify such a mathematical expression for the initial volume of a compartment, check the check box called <guilabel>Use Initial Expression</guilabel>.
+An initial expression can only be specified if the <guilabel>Simulation Type</guilabel> drop down list is either set to <emphasis>fixed</emphasis> or to <emphasis>ode</emphasis>. If the list is set to <emphasis>assignment</emphasis>, the given assignment automatically acts as an initial assignment and there is no need to specify an additional initial assignment.
 </para>
 <para>    
 <screenshot>
@@ -677,9 +692,6 @@ An initial expression can only be specified if the <guilabel>Simulation Type</gu
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Compartments_06.png" format="PNG" scale="50" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/Compartments_06.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>Compartment widget with initial assignment</phrase>
@@ -692,7 +704,7 @@ An initial expression can only be specified if the <guilabel>Simulation Type</gu
 </para>
 <para>
 The mathematical expressions that can be specified for rules and initial assignments may contain the same elements as the expressions used to defined function definitions. For a detailed description of the elements see <xref linkend="addingFunctions" />.
-When it comes to referencing values of other model entities within mathematical expressions, there is a slight difference between the mathematical expression for a rule and that for an initial assignment. The mathematical expression for a rule may only reference transient values of other model entities whereas the mathematical expression for an initial assignment may only reference initial values of other model entities.
+When it comes to referencing values of other model entities within mathematical expressions, there is a slight difference between the mathematical expression for a rule and that for an initial assignment. The mathematical expression for a rule may reference transient values of other model entities whereas the mathematical expression for an initial assignment may only reference initial values of other model entities.
 </para>
 <para>
 As you might already have noticed, this dialog for changing
@@ -707,9 +719,6 @@ clicking on an entry in the compartment table.
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Compartments_07.png" format="PNG" scale="50" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/Compartments_07.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>Compartment widget with ode rule and initial assignment</phrase>
@@ -742,9 +751,6 @@ differences between adding a compartment and adding a species.
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Species_01.png" format="PNG" scale="50" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/Species_01.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>Species table with new entry</phrase>
@@ -793,9 +799,6 @@ read the <xref linkend="addingCompartments" /> section first.
  <imageobject>
   <imagedata fileref="images/Species_02.png" format="PNG" scale="50" align="center" />
  </imageobject> 
- <imageobject>
-  <imagedata fileref="images/Species_02.ps" format="EPS" scale="50" align="center" />
- </imageobject> 
  <textobject>
    <phrase>Dialog for changing species parameters</phrase>
  </textobject>
@@ -821,20 +824,23 @@ Unless the Simulation Type is set to <emphasis>assignment</emphasis>, its <guila
 <para>
 If you would rather change the initial particle number instead
 of the <guilabel>Initial Concentration</guilabel>, you should select <emphasis>Particle Numbers</emphasis>
-in the dropdown list in the menu bar at the top. This will change all displays in the program to use particle numbers
+in the drop down list in the menu bar at the top. This will change all displays in the program to use particle numbers
 rather than concentrations and you can now enter the 
 <guilabel> Initial Particle Number</guilabel> (note the label will be changed).
 The volume used to calculate particle numbers from concentration 
 comes from the compartment associated with the species. 
 <!-- Although per default COPASI displays the concentrations, it internally represents amount of species by particle numbers. -->
 If you change back to initial concentration, COPASI will internally recalculate the initial particle number.
+<caution><para>
+  In some situations COPASI will prevent the user from changing the initial concentration. This is done when changing the concentration would lead to circular dependencies during the calculation of all initial values. The cause for this is most likely an assignment rule for the containing compartment. In such a case it is still possible to change the initial particle number.
+</para></caution>
 </para>
 
 <para>
 Normally the concentration of a species is determined by its initial concentration and by the reaction kinetics of the reactions it participates in either as a substrate or a product. The reactions are listed at the bottom of the species widget (see above).
 </para>
 <para>
-<table frame="all"><title>Simulation Types</title>
+<table id="tbl.SpeciesSimulationType" frame="all"><title>Simulation Types</title>
 <tgroup cols="2" align="left" colsep="1" rowsep="1">
 <colspec colwidth="1*" />
 <colspec colwidth="4*" />
@@ -867,10 +873,10 @@ Normally the concentration of a species is determined by its initial concentrati
 Newer versions of COPASI also allow the concentration of a species to be determined by a mathematical expression or by providing an ordinary differential equation for its rate of change.
 In order to specify whether a species has a constant volume, it is determined by reactions, 
 or its volume is calculated on the fly according to a mathematical expression,
-the dropdown list called <guilabel>Simulation Type</guilabel> should be used. It contains four entries listed on the above table.
+the drop down list called <guilabel>Simulation Type</guilabel> should be used. It contains four entries listed on the above table.
 </para>
 <para>
-If you want the species to be calculated from a given mathematical expression you select the entry called <emphasis>assignment</emphasis> from the dropdown list. This enables a text field where the mathematical expression can be entered (see below). Likewise if you want the rate of change of the species concentration to be determined by an ordinary differential equation (ode) you select the entry called <emphasis>ode</emphasis> from the dropdown list.
+If you want the species to be calculated from a given mathematical expression you select the entry called <emphasis>assignment</emphasis> from the drop down list. This enables a text field where the mathematical expression can be entered (see below). Likewise if you want the rate of change of the species concentration to be determined by an ordinary differential equation (ode) you select the entry called <emphasis>ode</emphasis> from the drop down list.
 </para>
 <para>    
 <screenshot>
@@ -878,9 +884,6 @@ If you want the species to be calculated from a given mathematical expression yo
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Species_03.png" format="PNG" scale="50" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/Species_03.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>Species widget with assignment rule</phrase>
@@ -893,7 +896,7 @@ If you want the species to be calculated from a given mathematical expression yo
 </para>
 <!--
 <para>
-Likewise if you want the rate of change of the species concentration to be determined by an ordinary differential equation (ode) you select the entry called <emphasis>ode</emphasis> from the dropdown list.
+Likewise if you want the rate of change of the species concentration to be determined by an ordinary differential equation (ode) you select the entry called <emphasis>ode</emphasis> from the drop down list.
 </para>
 -->
 <para>    
@@ -902,9 +905,6 @@ Likewise if you want the rate of change of the species concentration to be deter
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Species_04.png" format="PNG" scale="50" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/Species_04.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>Species widget with constant species and initial assignment</phrase>
@@ -917,10 +917,10 @@ Likewise if you want the rate of change of the species concentration to be deter
 </para>
 <para>
 Not only the transient concentration of a species can be specified as a mathematical expression, but also the initial concentration of the compartment.
-If you want to specify such a mathematical expression for the initial concentration of a species, check the checkbox called <guilabel>Use Initial Expression</guilabel>.
-<!-- An initial expression can only be specified if the <guilabel>Simulation Type</guilabel> dropdown list is either set to <emphasis>fixed</emphasis>, <emphasis>reactions</emphasis> or to <emphasis>ode</emphasis>. If the list is set to <emphasis>assignment</emphasis>, the given assignment automatically acts as an initial assignment and there is no need to specify an additional initial assignment.
+If you want to specify such a mathematical expression for the initial concentration of a species, check the check box called <guilabel>Use Initial Expression</guilabel>.
+<!-- An initial expression can only be specified if the <guilabel>Simulation Type</guilabel> drop down list is either set to <emphasis>fixed</emphasis>, <emphasis>reactions</emphasis> or to <emphasis>ode</emphasis>. If the list is set to <emphasis>assignment</emphasis>, the given assignment automatically acts as an initial assignment and there is no need to specify an additional initial assignment.
 -->
-An initial expression can be specified unless the <guilabel>Simulation Type</guilabel> dropdown list is set to <emphasis>assignment</emphasis>. Since the given assignment automatically acts as an initial assignment, there is no need to specify an additional initial assignment.
+An initial expression can be specified unless the <guilabel>Simulation Type</guilabel> drop down list is set to <emphasis>assignment</emphasis>. Since the given assignment automatically acts as an initial assignment, there is no need to specify an additional initial assignment.
 </para>
 <para>    
 <screenshot>
@@ -928,9 +928,6 @@ An initial expression can be specified unless the <guilabel>Simulation Type</gui
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Species_05.png" format="PNG" scale="50" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/Species_05.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>Species widget with ode rule and initial assignment</phrase>
@@ -945,7 +942,7 @@ An initial expression can be specified unless the <guilabel>Simulation Type</gui
 The mathematical expressions that can be specified for rules and initial assignments may contain the same elements as the expressions used to defined function definitions. For a detailed description of the elements see <xref linkend="addingFunctions" />.
 <!-- When it comes to referencing values of other model entities within mathematical expressions, there is a slight difference between the mathematical expression for a rule and that for an initial assignment. The mathematical expression for a rule may only reference transient values of other model entities whereas the mathematical expression for an initial assignment may only reference initial values of other model entities.
 -->
-When it comes to referencing values of other model entities within mathematical expressions, there is a slight difference between the mathematical expression for a rule and that for an initial assignment. The former may only reference transient values of other model entities whereas the latter may only reference initial values of other model entities.
+When it comes to referencing values of other model entities within mathematical expressions, there is a slight difference between the mathematical expression for a rule and that for an initial assignment. The former may reference transient values of other model entities whereas the latter may only reference initial values of other model entities.
 </para>
 
 </sect1>
@@ -1002,9 +999,6 @@ white-spaces.
  <imageobject>
   <imagedata fileref="images/Reactions_01.png" format="PNG" scale="50" align="center" />
  </imageobject> 
- <imageobject>
-  <imagedata fileref="images/Reactions_01.ps" format="EPS" scale="50" align="center" />
- </imageobject> 
  <textobject>
    <phrase>Reaction table with new entry</phrase>
  </textobject>
@@ -1026,9 +1020,6 @@ chosen.
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Reactions_02.png" format="PNG" scale="50" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/Reactions_02.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>Dialog for changing reaction parameters</phrase>
@@ -1093,7 +1084,7 @@ be specified. Chemical equations have a simple schema. First you state
 all the substrates separated by  "+" characters. Please make sure that
 you separate the name of the substrate and the "+" character by at
 least one space character, otherwise COPASI will interpret the "+"
-sign as belonging to the speciess name. (Having the "+" character
+sign as belonging to the species name. (Having the "+" character
 as part of a species name is allowed in COPASI !) after the list of
 substrates, you specify either an equals ("=") character if the
 reaction is reversible or the character combination "-&gt;" if the
@@ -1197,13 +1188,13 @@ the chosen global quantity will be displayed.
 </screenshot>
 </para>
 <para>
-Just as compartments and species, parameter values do not have to have a constant
+Just as compartments and species, global quantities do not have to be a constant
 but can be reassigned during e.g. a time course simulation depending 
 the values of one or more model entities. In order to specify whether a parameter has a constant value 
 or the value is calculated on the fly according to a mathematical expression,
-the dropdown list called <guilabel>Simulation Type</guilabel> should be used.
-The dropdown list contains three following entries:
-<table frame="all"><title>Simulation Types</title>
+the drop down list called <guilabel>Simulation Type</guilabel> should be used.
+The drop down list contains three following entries:
+<table id="tbl.GlobalQuantitiesSimulationType" frame="all"><title>Simulation Types</title>
 <tgroup cols="2" align="left" colsep="1" rowsep="1">
 <colspec colwidth="1*" />
 <colspec colwidth="4*" />
@@ -1231,12 +1222,12 @@ The dropdown list contains three following entries:
 </table>
 </para>
 <para>
-If you want the parameters value to be calculated from a given mathematical expression you select the entry called <emphasis>assignment</emphasis> from the dropdown list. This enables a text field where the mathematical expression can be entered. Likewise if you want the rate of change of the parameters value to be determined by an ordinary differential equation (ode) you select the entry called <emphasis>ode</emphasis> from the dropdown list.
+If you want the parameters value to be calculated from a given mathematical expression you select the entry called <emphasis>assignment</emphasis> from the drop down list. This enables a text field where the mathematical expression can be entered. Likewise if you want the rate of change of the parameters value to be determined by an ordinary differential equation (ode) you select the entry called <emphasis>ode</emphasis> from the drop down list.
 </para>
 <para>
 Not only the transient value of a parameter can be specified as a mathematical expression, but also the initial value of the parameter.
-If you want do specify such a mathematical expression for the initial volume of a compartment, check the checkbox called <guilabel>Use Initial Expression</guilabel>.
-An initial expression can only be specified if the <guilabel>Simulation Type</guilabel> dropdown list is either set to <emphasis>fixed</emphasis> or to <emphasis>ode</emphasis>. If the list is set to <emphasis>assignment</emphasis>, the given assignment automatically acts as an initial assignment and there is no need to specify an additional initial assignment.
+If you want do specify such a mathematical expression for the initial volume of a compartment, check the check box called <guilabel>Use Initial Expression</guilabel>.
+An initial expression can only be specified if the <guilabel>Simulation Type</guilabel> drop down list is either set to <emphasis>fixed</emphasis> or to <emphasis>ode</emphasis>. If the list is set to <emphasis>assignment</emphasis>, the given assignment automatically acts as an initial assignment and there is no need to specify an additional initial assignment.
 </para>
 <para>    
 <screenshot>
@@ -1244,9 +1235,6 @@ An initial expression can only be specified if the <guilabel>Simulation Type</gu
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/GlobalQuantities_03.png" format="PNG" scale="50" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/GlobalQuantities_03.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>Global quantity widget with an initial assignment</phrase>
@@ -1260,10 +1248,7 @@ An initial expression can only be specified if the <guilabel>Simulation Type</gu
 <para>
 The mathematical expressions that can be specified for rules and initial assignments may contain the same elements as the expressions used to defined function definitions. For a detailed description of the elements see <xref linkend="addingFunctions" />.
 When it comes to referencing values of other model entities within mathematical expressions, there is a slight difference between the mathematical expression for a rule and that for an initial assignment. 
-<!--
-The mathematical expression for a rule may only reference transient values of other model entities whereas the mathematical expression for an initial assignment may only reference initial values of other model entities.
--->
-The former may only reference transient values of other model entities whereas the latter may only reference initial values of other model entities.
+The former may reference transient values of other model entities whereas the latter may only reference initial values of other model entities.
 </para>
 
 <para>
@@ -1305,9 +1290,6 @@ corresponding object in the model.
  <imageobject>
   <imagedata fileref="images/Parameters_01.png" format="PNG" scale="50" align="center" />
  </imageobject> 
- <imageobject>
-  <imagedata fileref="images/Parameters_01.ps" format="EPS" scale="50" align="center" />
- </imageobject> 
  <textobject>
    <phrase>Parameter View</phrase>
  </textobject>
@@ -1332,9 +1314,6 @@ to choose from. The list of defined functions is located at the last branch in t
  <imageobject>
   <imagedata fileref="images/Functions_01.png" format="PNG" scale="50" align="center" />
  </imageobject> 
- <imageobject>
-  <imagedata fileref="images/Functions_01.ps" format="EPS" scale="50" align="center" />
- </imageobject> 
  <textobject>
    <phrase>Function table with predefined functions</phrase>
  </textobject>
@@ -1358,9 +1337,6 @@ function string only covers the right side of the rate function.
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Functions_02.png" format="PNG" scale="50" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/Functions_02.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>Dialog for the definition of functions</phrase>
@@ -1447,9 +1423,6 @@ parameters. All parameters that COPASI finds are listed in the
  <imageobject>
   <imagedata fileref="images/Functions_03.png" format="PNG" scale="50" align="center" />
  </imageobject> 
- <imageobject>
-  <imagedata fileref="images/Functions_03.ps" format="EPS" scale="50" align="center" />
- </imageobject> 
  <textobject>
    <phrase>Function definition dialog with committed function</phrase>
  </textobject>
@@ -1471,12 +1444,12 @@ a backslash.
 </para>
 <para>
 <!-- Per default all variables found are defined as being
-<emphasis>Parameters</emphasis>. You have to specify the correct type of variables by selecting one from the dropdown list called <guilabel>Description</guilabel>. -->
+<emphasis>Parameters</emphasis>. You have to specify the correct type of variables by selecting one from the drop down list called <guilabel>Description</guilabel>. -->
 <!-- You have to specify which of them
 really are parameters and which are substrates, products,
 modifiers, time or volume by selecting one from the dropdown list called <guilabel>Description</guilabel>. -->
 As all variables found are defined, per default, as
-<emphasis>Parameters</emphasis>, you should specify their correct types by selecting one from the dropdown list <guilabel>Description</guilabel>.
+<emphasis>Parameters</emphasis>, you should specify their correct types by selecting one from the drop down list <guilabel>Description</guilabel>.
 <!-- This mapping of variable names to a specific function
 within the equation also defines the type of reactions this function
 can be used for. -->
@@ -1540,7 +1513,7 @@ COPASI often use characters like "-" or even spaces, so if you want to
 call one of those functions, you have to quote this function name. So
 calling "Henry-Michaelis-Menten (irreversible)" from another function
 would look like this: 
-<equation><mml:math display="block">
+<equation id="eq.HenryMichaelisMenten"><mml:math display="block">
     <mml:mrow>
       <mml:mi>"Henry-Michaelis-Menten (irreversible)"</mml:mi>
       <mml:mo> &ApplyFunction; </mml:mo>
@@ -1563,7 +1536,7 @@ reactions.
 The operators and functions that COPASI knows and therefore can be
 used to create user defined functions are the following: 
 
-<table frame="all"><title>Standard Operators</title>
+<table id="tbl.StandardOperators" frame="all"><title>Standard Operators</title>
 <tgroup cols="2" align="left" colsep="1" rowsep="1">
 <colspec colwidth="1*" />
 <colspec colwidth="2*" />
@@ -1603,7 +1576,7 @@ used to create user defined functions are the following:
 </table>
 </para>
 <para>
-<table frame="all"><title>Miscellaneous Functions</title>
+<table id="tbl.MiscellaneousFunctions" frame="all"><title>Miscellaneous Functions</title>
 <tgroup cols="2" align="left" colsep="1" rowsep="1">
 <colspec colwidth="1*" />
 <colspec colwidth="2*" />
@@ -1647,7 +1620,7 @@ used to create user defined functions are the following:
 </table>
 </para>
 <para>
-<table frame="all"><title>Trigonometric Functions</title>
+<table id="tbl.TrigonometricFunctions" frame="all"><title>Trigonometric Functions</title>
 <tgroup cols="2" align="left" colsep="1" rowsep="1">
 <colspec colwidth="1*" />
 <colspec colwidth="2*" />
@@ -1759,7 +1732,7 @@ used to create user defined functions are the following:
 </table>
 </para>
 <para>
-<table frame="all"><title>Logical Functions</title>
+<table id="tbl.LogicalFunctions" frame="all"><title>Logical Functions</title>
 <tgroup cols="2" align="left" colsep="1" rowsep="1">
 <colspec colwidth="1*" />
 <colspec colwidth="2*" />
@@ -1815,7 +1788,7 @@ used to create user defined functions are the following:
 </table>
 </para>
 <para>
-<table frame="all"><title>Miscellaneous</title>
+<table id="tbl.Miscellaneous" frame="all"><title>Miscellaneous</title>
 <tgroup cols="2" align="left" colsep="1" rowsep="1">
 <colspec colwidth="1*" />
 <colspec colwidth="2*" />
@@ -1858,7 +1831,7 @@ functions.
 </caution>
 <para>
 In addition to the function above, COPASI knows some predefined constant names:
-<table frame="all"><title>Built-in Constants</title>
+<table id="tbl.BuiltinConstants" frame="all"><title>Built-in Constants</title>
 <tgroup cols="2" align="left" colsep="1" rowsep="1">
 <colspec colwidth="1*" />
 <colspec colwidth="2*" />
@@ -1913,7 +1886,7 @@ argument. On the other hand, the second and third arguments themselves
 can be IF statements. So in order to make this a little more clear, we
 will look at how one would implement the Heaviside step function in
 COPASI: 
- <equation><mml:math display="block">
+ <equation id="eq.Heaviside"><mml:math display="block">
     <mml:mrow>
       <mml:mi>if</mml:mi>
       <mml:mo>(</mml:mo>
@@ -1996,9 +1969,6 @@ possibility to define a new slider.
  <imageobject>
   <imagedata fileref="images/Sliders_01.png" format="PNG" scale="30" align="center" />
  </imageobject> 
- <imageobject>
-  <imagedata fileref="images/Sliders_01.ps" format="EPS" scale="30" align="center" />
- </imageobject> 
  <textobject>
    <phrase>Linux screenshot that shows COPASI with a plot window and the slider dialog</phrase>
  </textobject>
@@ -2046,9 +2016,6 @@ slider will only be available for this task.
  <imageobject>
   <imagedata fileref="images/Sliders_02.png" format="PNG" scale="50" align="center" />
  </imageobject> 
- <imageobject>
-  <imagedata fileref="images/Sliders_02.ps" format="EPS" scale="50" align="center" />
- </imageobject> 
  <textobject>
    <phrase>Basic dialog for the definition of a slider</phrase>
  </textobject>
@@ -2068,7 +2035,7 @@ slider has (see explanation below). The <guilabel>Object
 Value</guilabel> field determines the current value of the object that
 is associated with the slider. In the <guilabel>Number of Minor
 Ticks</guilabel> field you specify how many minor ticks your slider
-will have. And in the <guilabel>Ticksize factor</guilabel> field you
+will have. And in the <guilabel>Tick size factor</guilabel> field you
 specify how many minor ticks make a major tick. Major ticks can be
 used to coarsely go through the range of the slider whereas minor
 ticks allow you to step through the range in a more fine grained
@@ -2102,9 +2069,6 @@ values, the other one will be adjusted accordingly. The formula is
  <imageobject>
   <imagedata fileref="images/Sliders_03.png" format="PNG" scale="50" align="center" />
  </imageobject> 
- <imageobject>
-  <imagedata fileref="images/Sliders_03.ps" format="EPS" scale="50" align="center" />
- </imageobject> 
  <textobject>
    <phrase>Extended dialog for the definition of a slider</phrase>
  </textobject>
@@ -2125,9 +2089,6 @@ the slider dialog.
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Sliders_04.png" format="PNG" scale="50" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/Sliders_04.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>Slider dialog with three sliders</phrase>
@@ -2214,9 +2175,6 @@ time course.
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Wizard_01.png" format="PNG" scale="50" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/Wizard_01.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>Tutorial wizard dialog screenshot</phrase>
@@ -2329,9 +2287,6 @@ is the topic of the next sections.
  <imageobject>
   <imagedata fileref="images/OutputAssistant_01.png" format="PNG" scale="50" align="center" />
  </imageobject> 
- <imageobject>
-  <imagedata fileref="images/OutputAssistant_01.ps" format="EPS" scale="50" align="center" />
- </imageobject> 
  <textobject>
    <phrase>Output Assistant Window</phrase>
  </textobject>
@@ -2361,9 +2316,6 @@ in the sections about the different tasks.
  <imageobject>
   <imagedata fileref="images/Reports_01.png" format="PNG" scale="50" align="center" />
  </imageobject> 
- <imageobject>
-  <imagedata fileref="images/Reports_01.ps" format="EPS" scale="50" align="center" />
- </imageobject> 
  <textobject>
    <phrase>Report table with default reports</phrase>
  </textobject>
@@ -2380,18 +2332,18 @@ tree. Double clicking on an empty row in the table creates a new
 report object and opens the dialog for modifying the report
 definition. In this dialog, you can specify a name for the report in
 the <guilabel>Name</guilabel> field. From the
-<guilabel>Task</guilabel> dropdown list, you can choose for which
+<guilabel>Task</guilabel> drop down list, you can choose for which
 kind of task this report should be written. So if you want to store
 the result of a time course, you should choose
 <emphasis>Time-Course</emphasis> here. The report usually stores the
 results of its task as a table; the standard separator character for
 elements in this table is the tab character (\t). If you want to have
 another character as the separator field, you have to uncheck the
-<guilabel>&lt;tab&gt;</guilabel> checkbox and specify the separator
+<guilabel>&lt;tab&gt;</guilabel> check box and specify the separator
 character or string you want in the <guilabel>Separator</guilabel> field.
 </para>
 <para>
-Beside the <guilabel>&lt;tab&gt;</guilabel> checkbox there is another
+Beside the <guilabel>&lt;tab&gt;</guilabel> check box there is another
 input field labeled <guilabel>Precision</guilabel>. With this field you
 can specify how many significant digits are used for numerical
 output. The default value is 6. 
@@ -2406,9 +2358,6 @@ could state what this report is supposed to represent.
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Reports_02.png" format="PNG" scale="50" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/Report_SimpleSelectionDialog.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>Simple selection dialog</phrase>
@@ -2449,9 +2398,6 @@ dialog.
  <imageobject>
   <imagedata fileref="images/Reports_03.png" format="PNG" scale="50" align="center" />
  </imageobject> 
- <imageobject>
-  <imagedata fileref="images/Reports_03.ps" format="EPS" scale="50" align="center" />
- </imageobject> 
  <textobject>
    <phrase>Object browser dialog expert mode</phrase>
  </textobject>
@@ -2478,7 +2424,7 @@ will select all the leaves under that branch.
 <para>
 If this simple selection dialog does not contain the object that you
 want to include in your report, you can activate an extended selection
-tree by activating the <guilabel>expert mode</guilabel> checkbox. 
+tree by activating the <guilabel>expert mode</guilabel> check box. 
 The tree you now see contains all objects COPASI knows about. In
 this tree, the objects belonging to your model are located in the
 branch that corresponds to the name of your model. The position of
@@ -2486,7 +2432,7 @@ that branch varies since the branches are sorted alphabetically. The
 selection that you have already made in the simple selection
 tree should be preserved, and vice versa. Any selection you make in the
 full tree is preserved when you switch back to the simple tree. Each
-branch of the full tree has a checkbox up front which can assume
+branch of the full tree has a check box up front which can assume
 three states. The unchecked state means that no objects in this
 subtree are selected. A check mark on a black background means that
 the whole subtree is selected, i.e. all objects in this subtree are
@@ -2514,7 +2460,7 @@ expert mode. In this case, you will probably want the time and some or
 all of the transient concentrations of the species in your report. 
 The time for the time course is the last item in the 
 <guibutton>Model</guibutton> branch, you select
-it by clicking on the checkbox in front of the name. If you want to
+it by clicking on the check box in front of the name. If you want to
 add the concentrations of all species, you open the
 <guibutton>Species</guibutton> sub-branch in the
 <guibutton>Model</guibutton> branch and open the <guibutton>Select by
@@ -2542,9 +2488,6 @@ dialog.
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Reports_04.png" format="PNG" scale="50" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/Reports_04.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>Report definition dialog</phrase>
@@ -2577,11 +2520,11 @@ whatever you defined as your separator character (Normally this would
 be the &lt;tab&gt; character). 
 </para>
 <para>
-Per default, the checkbox labeled <guilabel>Title Row</guilabel> is
+Per default, the check box labeled <guilabel>Title Row</guilabel> is
 activated, which means that COPASI will write a header line before the
 table with the names of the objects that make up the individual
 columns. If you don't want such a header in the output you have to
-deactivate this checkbox. 
+deactivate this check box. 
 </para>
 <para>
 <screenshot>
@@ -2589,9 +2532,6 @@ deactivate this checkbox.
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Reports_05.png" format="PNG" scale="50" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/Reports_05.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>Advanced report definition dialog</phrase>
@@ -2620,7 +2560,7 @@ them from the object browser dialog. You can also move these items up and down
 by selecting them and clicking on the <guibutton>Up</guibutton> or
 <guibutton>Down</guibutton> button. Separator items can be added by
 clicking on the <guibutton>Separator</guibutton> button. The symbol or
-text that makes up the separator item is again defined by the checkbox 
+text that makes up the separator item is again defined by the check box 
 and the adjacent input field towards the top of the report
 definition dialog. 
 </para>
@@ -2652,9 +2592,6 @@ objects. In order to add a new curve object you click on the
  <imageobject>
   <imagedata fileref="images/Plots_01.png" format="PNG" scale="50" align="center" />
  </imageobject> 
- <imageobject>
-  <imagedata fileref="images/Plots_01.ps" format="EPS" scale="50" align="center" />
- </imageobject> 
  <textobject>
    <phrase>Empty plot widget</phrase>
  </textobject>
@@ -2685,9 +2622,6 @@ full tree, but for most plots the simple tree will be enough.
  <imageobject>
   <imagedata fileref="images/Plots_03.png" format="PNG" scale="50" align="center" />
  </imageobject> 
- <imageobject>
-  <imagedata fileref="images/Plots_03.ps" format="EPS" scale="50" align="center" />
- </imageobject> 
  <textobject>
    <phrase>Selection dialog with some items selected</phrase>
  </textobject>
@@ -2703,9 +2637,6 @@ full tree, but for most plots the simple tree will be enough.
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Plots_04.png" format="PNG" scale="50" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/Plots_04.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>Expert selection dialog for curve objects</phrase>
@@ -2747,14 +2678,14 @@ COPASI.
 In the plot definition dialog, in addition to adding and removing
 curve objects, you can give a name for the plot definition and 
 specify whether the plot should be active or not with the
-<guilabel>active</guilabel> checkbox. (Only plots that are active are
+<guilabel>active</guilabel> check box. (Only plots that are active are
 drawn when a <link linkend="calculatingTrajectory">time course
 simulation</link> is run!)
 </para>
 <para>
 Another way to specify whether a plot is active or not is in the plot
 table where all the plots are listed. Each row in the table contains a
-column named <guilabel>active</guilabel> that contains a checkbox
+column named <guilabel>active</guilabel> that contains a check box
 with which you can toggle the state of a plot. If you changed the
 state of one or more plots, you have to commit these changes either by
 clicking the <guibutton>Commit</guibutton> button or any other action
@@ -2797,9 +2728,6 @@ tree.
  <imageobject>
   <imagedata fileref="images/SteadyStateTask_01.png" format="PNG" scale="50" align="center" />
  </imageobject> 
- <imageobject>
-  <imagedata fileref="images/SteadyStateTask_01.ps" format="EPS" scale="50" align="center" />
- </imageobject> 
  <textobject>
    <phrase>Dialog for doing calculating a stability analysis</phrase>
  </textobject>
@@ -2813,7 +2741,7 @@ In the dialog that appears there, you can make several settings that
 influence the way the Steady-State analysis is calculated. First of
 all, you can decide whether COPASI should calculate the Jacobian
 matrix and/or do a stability analysis as well by checking the
-corresponding checkbox. The <guilabel>executable</guilabel> checkbox
+corresponding check box. The <guilabel>executable</guilabel> check box
 is used to instruct the commandline version CopasiSE to do this task
 if running on the corresponding file. In the <guilabel>Method Parameter</guilabel> 
 table you can also make several settings that influence the method for calculating 
@@ -2845,9 +2773,9 @@ The first tab contains information about the species at the Steady-State
 condition as well as the compartments at the second tab. The third tab
 shows the model quantities whereas the reactions and their fluxes are 
 displayed at the fourth one. The display between the concentration fluxes
-and the particle one is depending on what you have selected on the dropdown 
+and the particle one is depending on what you have selected on the drop down 
 list at the tab menu. As mentioned at the very beginning this documentation,
-you are able to easily change the display everytime.
+you are able to easily change the display at any time.
 </para>
 <para>
 The fifth and the sixth tab only contain results if you told
@@ -2865,9 +2793,6 @@ while trying to find a Steady-State.
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/SteadyStateTask_02.png" format="PNG" scale="50" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/SteadyStateTask_02.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>Dialog that displays the results of the stability analysis</phrase>
@@ -2896,13 +2821,13 @@ definition with a file. This can be achieved by clicking on the
 <guibutton>Report</guibutton> button. This opens a dialog that lets
 you connect the report of a specific task to a file on your hard
 disk. First we choose a report that is suitable for the Steady-State
-task from the dropdown list at the top of the dialog. Next, we
+task from the drop down list at the top of the dialog. Next, we
 specify a file that will be used to store the report by clicking on
 the <guibutton>browse</guibutton> button and selecting the destination
 in the file dialog that opens. Per default, COPASI creates a new file
 or overwrites an existing file with the same name. Alternatively, you
 can tell COPASI to append the report to the end of an existing file by
-selecting the corresponding checkbox labeled
+selecting the corresponding check box labeled
 <guilabel>Append</guilabel> at the bottom of the dialog. Once you are
 finished, you click on the <guilabel>Confirm</guilabel> button. If you
 now run the task, COPASI will write the output to the file you
@@ -2938,14 +2863,14 @@ output definition  with a file. This can be achieved by clicking on
 the <guibutton>Report</guibutton> button. This opens a dialog that
 lets you connect the report of a specific task to a file on your hard
 disk. First we choose a report that is suitable for the Elementary Flux
-Modes analysis task from the dropdown list at the top of the
+Modes analysis task from the drop down list at the top of the
 dialog. Next, we specify a file that will be used to store the report
 by clicking on the <guibutton>browse</guibutton> button and selection
 the destination in the file dialog that opens. Per default, COPASI
 creates a new file, if the file does not exist, or overwrites an existing
 file with the same name. Alternatively, you can tell COPASI to
 append the report to the end of an existing file by selecting the
-corresponding checkbox labeled <guilabel>Append</guilabel> at the
+corresponding check box labeled <guilabel>Append</guilabel> at the
 bottom of the dialog. Once you are finished, you click on the
 <guilabel>Confirm</guilabel> button. If you now run the task, COPASI
 will write the output to the file you specified. 
@@ -2956,9 +2881,6 @@ will write the output to the file you specified.
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/ElementaryModesTask_01.png" format="PNG" scale="50" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/ElementaryModesTask_01.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>Dialog showing the calculated elementary modes for a model</phrase>
@@ -2986,9 +2908,6 @@ Conservation</guibutton> branch in the object tree and click on the
  <imageobject>
   <imagedata fileref="images/MassConservationTask_01.png" format="PNG" scale="50" align="center" />
  </imageobject> 
- <imageobject>
-  <imagedata fileref="images/MassConservationTask_01.ps" format="EPS" scale="50" align="center" />
- </imageobject> 
  <textobject>
    <phrase>Dialog showing the results of a mass conservation calculation</phrase>
  </textobject>
@@ -3006,9 +2925,6 @@ If the model contains any mass conservation relations, they will be listed in a 
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/MassConservationTask_02.png" format="PNG" scale="50" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/MassConservationTask_02.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>Dialog that shows one single mass conservation relation</phrase>
@@ -3040,9 +2956,6 @@ corresponding task branch in the object tree which is located at
  <imageobject>
   <imagedata fileref="images/TimeCourseTask_01.png" format="PNG" scale="50" align="center" />
  </imageobject> 
- <imageobject>
-  <imagedata fileref="images/TimeCourseTask_01.ps" format="EPS" scale="50" align="center" />
- </imageobject> 
  <textobject>
    <phrase>Dialog for calculating a trajectory</phrase>
  </textobject>
@@ -3060,13 +2973,13 @@ to setting the number of intervals, you can also set the size of the
 interval. If you set either one, the other will be updated
 accordingly. Because if you change the duration, the number of intervals
 will stay the same, which means that the interval size will be
-adjusted. The checkbox labeled <guilabel>Save Result in
+adjusted. The check box labeled <guilabel>Save Result in
 Memory</guilabel> tells COPASI to keep the result of the time series
 calculation in memory in order to display it in a result dialog. Since
 this can be a large amount of data depending on the size of your model
 and/or on the number of intervals you want COPASI to calculate, you
 should disable this if you think the result might not fit into
-memory. The consequence of disabling this checkbox is that you need
+memory. The consequence of disabling this check box is that you need
 to <link linkend="reportDefinitions">define a report</link> in order
 to store the results of the time course simulation.
 </para>
@@ -3075,12 +2988,12 @@ Another thing that you can adjust in this dialog is the time at which
 COPASI starts to record the output. Normally COPASI will store all
 output and display it in the plot and reports, if there are any, or in
 the results dialog, if that feature was not disabled. With
-the <guilabel>delayed</guilabel> checkbox and input field of 
+the <guilabel>delayed</guilabel> check box and input field of 
 <guilabel>Start Output Time</guilabel>, you can specify that COPASI shall 
 drop all results prior to a certain time point. For example, you could decide 
 that you want to run a time course simulation for 100 seconds but only interested in
 the last 50 seconds of the simulation. In this case you would activate
-the <guilabel>delayed</guilabel> checkbox and specify a
+the <guilabel>delayed</guilabel> check box and specify a
 delay of, lets say, 50. This delay will be used for all kinds of output.
 </para>
 <para>The time course simulation does not necessarily start with 
@@ -3151,9 +3064,6 @@ able to write the results to that file. To do that, you click on the
  <imageobject>
   <imagedata fileref="images/TimeCourseTask_02.png" format="PNG" scale="50" align="center" />
  </imageobject> 
- <imageobject>
-  <imagedata fileref="images/TimeCourseTask_02.ps" format="EPS" scale="50" align="center" />
- </imageobject> 
  <textobject>
    <phrase>Dialog to associate a report with a file</phrase>
  </textobject>
@@ -3170,7 +3080,7 @@ store the report to. Additionally, you can choose if you want to
 append the report to an already existing file. The default is to
 create a new file, or to overwrite an existing file. If you want to
 append to the selected file, you have to check the
-<guilabel>Append</guilabel> checkbox.
+<guilabel>Append</guilabel> check box.
 </para>
 <para>
 Once you made all the desired changes to the parameters, you can start
@@ -3201,9 +3111,6 @@ species concentrations are written, if you store the result from this dialog.
  <imageobject>
   <imagedata fileref="images/TimeCourseTask_03.png" format="PNG" scale="50" align="center" />
  </imageobject> 
- <imageobject>
-  <imagedata fileref="images/TimeCourseTask_03.ps" format="EPS" scale="50" align="center" />
- </imageobject> 
  <textobject>
    <phrase>Dialog that shows the results of the trajectory task</phrase>
  </textobject>
@@ -3230,9 +3137,6 @@ and the actual plot.
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/PlotWindow_01.png" format="PNG" scale="50" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/PlotWindow_01.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>Dialog window showing a plot</phrase>
@@ -3280,9 +3184,6 @@ Control Analysis</guibutton>.
  <imageobject>
   <imagedata fileref="images/MCATask_01.png" format="PNG" scale="50" align="center" />
  </imageobject> 
- <imageobject>
-  <imagedata fileref="images/MCATask_01.ps" format="EPS" scale="50" align="center" />
- </imageobject> 
  <textobject>
    <phrase>Dialog for running a metabolic control analysis</phrase>
  </textobject>
@@ -3298,7 +3199,7 @@ COPASI needs to look for a Steady-State first, otherwise COPASI can
 only calculate the elasticities. If you did not already <link
 linkend="steadyStateAnalysis">do a Steady-State calculation</link>
 right before so that the system already is in the Steady-State, if one
-was found, you should enable the checkbox that tells COPASI to do a
+was found, you should enable the check box that tells COPASI to do a
 Steady-State calculation before calculating the MCA. Depending on
 whether COPASI needs to do a Steady-State analysis or not, you can
 change one or more parameters that influence the way the MCA and the
@@ -3337,14 +3238,14 @@ with a file. This can be achieved by clicking on the
 <guibutton>Report</guibutton> button. This opens a dialog that lets
 you connect the report of a specific task to a file on your hard
 disk. First we choose a report that is suitable for the MCA task from
-the dropdown list at the top of the dialog. The default report for
+the drop down list at the top of the dialog. The default report for
 MCA is called <emphasis>Metabolic Control Analysis</emphasis>. Next, 
 we specify a file that will be used to store the report by clicking on the
 <guibutton>browse</guibutton> button and selecting the destination in
 the file dialog that opens. Per default, COPASI creates a new file or
 overwrites an existing file with the same name. Alternatively, you can
 tell COPASI to append the report to the end of an existing file by
-selecting the corresponding checkbox labeled
+selecting the corresponding check box labeled
 <guilabel>Append</guilabel> at the bottom of the dialog. Once you are
 finished, you click on the <guilabel>Confirm</guilabel> button. If you
 now run the task, COPASI will write the output to the file you
@@ -3356,9 +3257,6 @@ specified.
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/MCATask_02.png" format="PNG" scale="50" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/MCATask_02.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>Dialog showing the results of the metabolic control analysis</phrase>
@@ -3375,9 +3273,6 @@ specified.
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/MCATask_03.png" format="PNG" scale="50" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/MCATask_03.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>Dialog showing the results of the MCA after no Steady-State was found</phrase>
@@ -3415,13 +3310,13 @@ specify this delay in the field labeled <guilabel>start averaging
 after t= "</guilabel>. 
 <!--
 If you check the <guibutton>Use result as new
-initial state</guibutton> checkbox, COPASI will use the state of the
+initial state</guibutton> check box, COPASI will use the state of the
 model after the simulation as the new initial state for all following
 calculation. Please note that all old model values are replaced.
 -->
 </para>
 <para>
-With the checkbox labeled <guilabel>calculate Divergence</guilabel>,
+With the check box labeled <guilabel>calculate Divergence</guilabel>,
 you can activate the calculation of the average divergence. The
 divergence is calculated as the average over the trace of the Jacobian
 (see
@@ -3450,9 +3345,6 @@ section.
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Lyapunov_01.png" format="PNG" scale="50" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/Lyapunov_01.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>Lyapunov task widget</phrase>
@@ -3486,9 +3378,6 @@ that the divergence and the sum differ in those cases.
  <imageobject>
   <imagedata fileref="images/Lyapunov_02.png" format="PNG" scale="50" align="center" />
  </imageobject> 
- <imageobject>
-  <imagedata fileref="images/Lyapunov_02.ps" format="EPS" scale="50" align="center" />
- </imageobject> 
  <textobject>
    <phrase>Results window for the Lyapunov Exponent calculation.</phrase>
  </textobject>
@@ -3513,9 +3402,9 @@ the dialog displays a box called <guilabel>New scan item</guilabel>
 together with a <guibutton>...Create!</guibutton> button. When the dialog
 is opened for the first time, the only item in the widget below is a
 green box called <guilabel>Task</guilabel>. This widget contains a
-dropdown list with all the tasks that can be used in a
-scan. Additionally there are a checkbox called <guilabel>always use
-initial conditions</guilabel> and a checkbox called <guilabel>output
+drop down list with all the tasks that can be used in a
+scan. Additionally there are a check box called <guilabel>always use
+initial conditions</guilabel> and a check box called <guilabel>output
 from subtask</guilabel>.
 </para>
 <para>
@@ -3524,9 +3413,6 @@ from subtask</guilabel>.
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/ParameterScan_01.png" format="PNG" scale="50" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/ParameterScan_01.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>Dialog showing scan task dialog when first opened</phrase>
@@ -3542,9 +3428,9 @@ The tasks for which scans can be conducted are <emphasis>Steady-State</emphasis>
 <emphasis>Time Course</emphasis>, <emphasis>Metabolic Control Analysis</emphasis>, 
 and <emphasis>Lyapunov Exponents</emphasis>. So if you want to do a scan for a 
 time course calculation, you should choose <emphasis>Time Course</emphasis> from 
-the dropdown list in the <guilabel>Task</guilabel> widget. We will ignore the 
-two checkboxes for the time being and take a look at the dropdown list at the top of
-the <guilabel>Scan Task</guilabel> dialog. This dropdown list
+the drop down list in the <guilabel>Task</guilabel> widget. We will ignore the 
+two check boxes for the time being and take a look at the drop down list at the top of
+the <guilabel>Scan Task</guilabel> dialog. This drop down list
 contains three entries named <emphasis>Parameter Scan</emphasis>, 
 <emphasis>Repeat</emphasis> and <emphasis>Random distribution</emphasis>. 
 Those are additional elements that can be added to the
@@ -3554,11 +3440,11 @@ main widget below to form complex tasks.
 Let us look at one after the other and start with the <emphasis>Parameter 
 Scan</emphasis>. As it is right now, the scan task does not do anything since 
 we have not told it yet which parameter we want to scan. To define a parameter 
-for the scan, you choose <emphasis>Parameter Scan</emphasis> from the dropdown 
+for the scan, you choose <emphasis>Parameter Scan</emphasis> from the drop down 
 list at the top and press the <guibutton>...Create!</guibutton> button. COPASI 
 will add a new widget to the dialog that is called <guilabel>Scan</guilabel>. 
 The <guilabel>Scan</guilabel> widget contains some empty line edit fields and 
-a button labeled <guibutton>...</guibutton> and a checkbox labeled
+a button labeled <guibutton>...</guibutton> and a check box labeled
 <guilabel>logarithmic</guilabel>.
 </para>
 <para>
@@ -3567,9 +3453,6 @@ a button labeled <guibutton>...</guibutton> and a checkbox labeled
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/ParameterScan_02.png" format="PNG" scale="50" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/ParameterScan_02.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>Dialog showing scan task dialog with a Parameter Scan item</phrase>
@@ -3595,7 +3478,7 @@ double the objects value for the maximum. In the
 <guilabel>Intervals</guilabel>, you can specify how many intervals
 COPASI uses during the scan to raise the value from minimum to
 maximum. Last but not least, the <guilabel>logarithmic</guilabel>
-checkbox determines whether the value is raised in linear steps if
+check box determines whether the value is raised in linear steps if
 the box is unchecked or in logarithmic steps if the box is checked.
 Now you are set to run your first simple scan by clicking on the
 <guibutton>Run</guibutton> at the bottom of the dialog. In order to
@@ -3619,13 +3502,13 @@ definition with a file. This can be achieved by clicking on the
 <guibutton>Report</guibutton> button. This opens a dialog that lets
 you connect the report of a specific task to a file on your hard
 disk. First we choose a report that is suitable for the parameter scan
-task from the dropdown list at the top of the dialog. Next, we
+task from the drop down list at the top of the dialog. Next, we
 specify a file that will be used to store the report by clicking on
 the <guibutton>browse</guibutton> button and selecting the destination
 in the file dialog that opens. Per default, COPASI creates a new file
 or overwrites an existing file with the same name. Alternatively, you
 can tell COPASI to append the report to the end of an existing file by
-selecting the corresponding checkbox labeled
+selecting the corresponding check box labeled
 <guilabel>Append</guilabel> at the bottom of the dialog. Once you are
 finished, you click on the <guilabel>Confirm</guilabel> button. If you
 now run the task, COPASI will write the output to the file you
@@ -3637,7 +3520,7 @@ you want to do a two-dimensional scan, i.e. a scan where two
 parameters are independently scanned, you can add a second
 <guilabel>Scan</guilabel> widget by adding it to the main dialog just
 like you did for the first parameter. You select <emphasis>Parameter 
-Scan</emphasis> in the dropdown list and push the <guibutton>...Create!</guibutton>
+Scan</emphasis> in the drop down list and push the <guibutton>...Create!</guibutton>
 button.
 </para>
 <para>
@@ -3646,9 +3529,6 @@ button.
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/ParameterScan_03.png" format="PNG" scale="50" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/ParameterScan_03.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>Dialog showing scan task dialog with two Parameter Scan items</phrase>
@@ -3665,9 +3545,6 @@ button.
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/ParameterScan_04.png" format="PNG" scale="50" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/ParameterScan_04.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>Dialog showing scan task dialog with a Random distribution item</phrase>
@@ -3722,9 +3599,6 @@ of the main widget, is run with this value.
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/ParameterScan_05.png" format="PNG" scale="50" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/ParameterScan_05.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>Dialog showing scan task dialog with a Random distribution and Repeat item</phrase>
@@ -3784,9 +3658,6 @@ curves, whereas in the second case you may get X times the same curve.
  <imageobject>
   <imagedata fileref="images/ParameterScan_06.png" format="PNG" scale="50" align="center" />
  </imageobject> 
- <imageobject>
-  <imagedata fileref="images/ParameterScan_06.ps" format="EPS" scale="50" align="center" />
- </imageobject> 
  <textobject>
    <phrase>Dialog showing scan task dialog with a more complex combination of actions</phrase>
  </textobject>
@@ -3804,9 +3675,6 @@ curves, whereas in the second case you may get X times the same curve.
  <imageobject>
   <imagedata fileref="images/ParameterScan_07.png" format="PNG" scale="50" align="center" />
  </imageobject> 
- <imageobject>
-  <imagedata fileref="images/ParameterScan_07.ps" format="EPS" scale="50" align="center" />
- </imageobject> 
  <textobject>
    <phrase>Dialog showing scan task dialog with a repeated random distribution</phrase>
  </textobject>
@@ -3820,9 +3688,6 @@ curves, whereas in the second case you may get X times the same curve.
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/ParameterScan_08.png" format="PNG" scale="50" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/ParameterScan_08.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>Plot with 10 different curves</phrase>
@@ -3838,9 +3703,6 @@ curves, whereas in the second case you may get X times the same curve.
  <imageobject>
   <imagedata fileref="images/ParameterScan_09.png" format="PNG" scale="50" align="center" />
  </imageobject> 
- <imageobject>
-  <imagedata fileref="images/ParameterScan_09.ps" format="EPS" scale="50" align="center" />
- </imageobject> 
  <textobject>
    <phrase>Dialog showing scan task dialog with a random distribution where the time course task is repeated</phrase>
  </textobject>
@@ -3855,9 +3717,6 @@ curves, whereas in the second case you may get X times the same curve.
  <imageobject>
   <imagedata fileref="images/ParameterScan_10.png" format="PNG" scale="50" align="center" />
  </imageobject> 
- <imageobject>
-  <imagedata fileref="images/ParameterScan_10.ps" format="EPS" scale="50" align="center" />
- </imageobject> 
  <textobject>
    <phrase>Plot with 10 times the same curve</phrase>
  </textobject>
@@ -3868,22 +3727,22 @@ curves, whereas in the second case you may get X times the same curve.
 </screenshot>
 </para>
 <para>
-What we have left out so far are the two checkboxes at the bottom of
-the <guilabel>Task</guilabel> widget. The first checkbox is labeled
-<guilabel>always use initial conditions</guilabel>. If this checkbox
+What we have left out so far are the two check boxes at the bottom of
+the <guilabel>Task</guilabel> widget. The first check box is labeled
+<guilabel>always use initial conditions</guilabel>. If this check box
 is checked, each task that is run runs with the same initial
-conditions. If the checkbox is not checked, only the first task that
+conditions. If the check box is not checked, only the first task that
 runs uses the initial conditions from the model, each subsequent task
 uses the conditions as they are after the preceding task has
 finished. 
 </para>
 <para>
-The second checkbox is labeled <guilabel>output from
+The second check box is labeled <guilabel>output from
 subtask</guilabel>. If it is checked, COPASI will plot or write the
 complete time series result each time a time series task
 runs. Correspondingly it will output intermediate results for the
 other tasks. So if during your scan, 10 time series are calculated,
-all ten are overloaded in the same window. If the checkbox is
+all ten are overloaded in the same window. If the check box is
 unchecked, COPASI will only plot the end result, i.e. the
 concentrations after the last step, of each time series. This applies
 to reports correspondingly. This feature is useful if you want to plot
@@ -3916,9 +3775,6 @@ see how you would do this in COPASI.
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Optimization_01.png" format="PNG" scale="50" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/Optimization_01.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>MacOS screenshot that shows COPASI optimization dialog</phrase>
@@ -3970,14 +3826,14 @@ solution in upcoming releases.
 </para>
 <para>
 You can run an optimization task with several different methods which
-can be selected via the dropdown list below the input field for the
+can be selected via the drop down list below the input field for the
 objective function. Each of those methods has a number of parameters
 which are documented in the methods chapter.
 </para>
 <para>
 The optimization task can also be run on either the "Time Course" or
 the "Steady-state" subtask. Which one is used for the optimization run
-can be selected via the correspondingly named checkboxes. So for our
+can be selected via the correspondingly named check boxes. So for our
 example we would choose the "Time Course" subtask. 
 </para>
 <para>
@@ -3991,13 +3847,13 @@ the correct parameter from the object browser. Please note that is
 possible to create multiple parameters at once. Below the Object you
 can specify the upper and lower 
 bounds for the parameter during the optimization. Those bounds can also be
-expressions depending on other parameters. Per default, the checkboxes
+expressions depending on other parameters. Per default, the check boxes
 for -Infinity and +Infinity are selected as the boundaries. Since a
 computer can't handle infinitely small or large numbers, 
 the search will effectively proceed from the lowest possible to the
 largest possible double precision number. If you want to specify your
 own range, you first have to deselect the <guilabel>+Inf</guilabel> or
-<guilabel>-Inf</guilabel> checkbox and then you can set your own
+<guilabel>-Inf</guilabel> check box and then you can set your own
 bounds. As a matter of convenience you may enter -X% or +X% as the
 lower and upper limits. This instructs COPASI to calculate the limits
 based on the start value.
@@ -4006,7 +3862,7 @@ value used by COPASI in any fitting attempt. Per default COPASI
 selects the current model value of the parameter to be estimated as
 the starting value. You may manually override this default or use the
 <guibutton>...</guibutton> to reset it to model values, randomize it, or
-set it to the last estimated values.
+set it to the last estimated values. Please note, if the start value of a parameter is outside the boundaries specified, COPASI will force it to the nearest boundary during th optimization.
 If you want to delete a parameter from the scan list, you just
 select it and click on the <guilabel>delete</guilabel> button which
 you find at the right side. If you want to scan more than one
@@ -4044,9 +3900,6 @@ parameters, several constraints can be specified.
  <imageobject>
   <imagedata fileref="images/Optimization_02.png" format="PNG" scale="50" align="center" />
  </imageobject> 
- <imageobject>
-  <imagedata fileref="images/Optimization_02.ps" format="EPS" scale="50" align="center" />
- </imageobject> 
  <textobject>
    <phrase>MacOS screenshot that shows the progress dialog during an optimization task run </phrase>
  </textobject>
@@ -4076,7 +3929,7 @@ described in the <xref linkend="outputGeneration" /> section. Once you
 have created a report definition for the optimization task, you click
 on the <guibutton>report</guibutton> button at the bottom of the
 dialog. In the dialog that opens, you select the report you just
-created from the dropdown list labeled <guilabel>Report
+created from the drop down list labeled <guilabel>Report
 Definitions</guilabel> and then you select a filename where the report
 is to be stored in the field labeled <guilabel>Target</guilabel>. You
 can either type a filename manually, or you can select one by clicking
@@ -4108,9 +3961,6 @@ document.
  <imageobject>
   <imagedata fileref="images/ParameterEstimation_01.png" format="PNG" scale="50" align="center" />
  </imageobject> 
- <imageobject>
-  <imagedata fileref="images/ParameterEstimation_01.ps" format="EPS" scale="50" align="center" />
- </imageobject> 
  <textobject>
    <phrase>MacOS screenshot that shows COPASI Parameter Estimation dialog</phrase>
  </textobject>
@@ -4134,7 +3984,7 @@ you can choose the parameter. Additionally you can specify an upper
 and a lower bound for the parameter. COPASI will only try to fit the
 parameter within those bounds. Per default, the upper and lower bound
 are + Infinity and - Infinity respectively. 
-If you want to set your own bounds, disable the checkboxes and enter
+If you want to set your own bounds, disable the check boxes and enter
 your own value in the edit field. The value for the lower bound goes
 into the correspondingly labeled edit field, likewise for the upper
 bound. As a matter of convenience you may enter -X% or +X% as the
@@ -4148,7 +3998,7 @@ value used by COPASI in any fitting attempt. Per default COPASI
 selects the current model value of the parameter to be estimated as
 the starting value. You may manually override this default or use the
 <guibutton>...</guibutton> to reset it to model values, randomize it, or
-set it to the last estimated values. Additionally, you can restrict
+set it to the last estimated values. Please note, if the start value of a parameter is outside the boundaries specified, COPASI will force it to the nearest boundary during th parameter estimation. Additionally, you can restrict
 the effect of a parameter to a subset of the experiments you are
 attempting to fit. To do this select the <guibutton>...</guibutton> to
 the right of <guilabel>Affected Experiments</guilabel>. A possible
@@ -4166,7 +4016,7 @@ Before you can execute a parameter estimation task you need to specify
 the dataset which COPASI will use to fit the parameters you have
 specified. Each experiment of your dataset contributes to the objective
 function with the following weighted sum of squares: 
-<equation><mml:math display="block">
+<equation id="eq.SumOfSquares"><mml:math display="block">
   <mml:mrow>
    <mml:mrow>
     <mml:mi>E</mml:mi>
@@ -4252,7 +4102,7 @@ is a point in the dataset, and
   <mml:mi>P</mml:mi>
   <mml:mo>)</mml:mo>
   </mml:mrow>
-</mml:math></inlineequation> the corresponding simulated value. The indeces
+</mml:math></inlineequation> the corresponding simulated value. The indices
 <inlineequation><mml:math><mml:mi>i</mml:mi></mml:math></inlineequation> and
 <inlineequation><mml:math><mml:mi>j</mml:mi></mml:math></inlineequation>
 denote columns and rows in the dataset.
@@ -4270,7 +4120,7 @@ calculated are not satisfactory you are able to manually override them
 individually. 
 </para>
 <para>
-<table frame="all"><title>Weight Calculation Methods</title>
+<table id="tbl.WeightCalculationMethods" frame="all"><title>Weight Calculation Methods</title>
 <tgroup cols="2" align="left" colsep="1" rowsep="1">
 <colspec colwidth="1*" />
 <colspec colwidth="3*" />
@@ -4398,9 +4248,6 @@ dialog. A new dialog opens that lets you enter experimental data.
  <imageobject>
   <imagedata fileref="images/ParameterEstimation_02.png" format="PNG" scale="50" align="center" />
  </imageobject> 
- <imageobject>
-  <imagedata fileref="images/ParameterEstimation_02.ps" format="EPS" scale="50" align="center" />
- </imageobject> 
  <textobject>
    <phrase>MacOS screenshot that shows COPASI Experimental Data dialog</phrase>
  </textobject>
@@ -4488,9 +4335,9 @@ current or form the current to the
 next experiment within a file by selecting <guibutton>from
 previous</guibutton> and <guibutton>to next</guibutton>. If COPASI
 detects that experimental data descriptions are identical it will
-automatically set the <guibutton>from previous</guibutton> checkbox
+automatically set the <guibutton>from previous</guibutton> check box
 and disable editing the current experiment. Should you want to modify
-it you will have to unmark the checkbox first.
+it you will have to unmark the check box first.
 </para>
 <para>
 If you have more than one file, you can load additional data files and
@@ -4500,7 +4347,7 @@ datasets for the fitting, you close the data dialog with the
 estimation process, you have to choose the method by which the fitting
 will be done and maybe set some method parameters. Most of the time,
 the default parameter values should do. The method choosing is done at
-the bottom of the dialog by selecting the method from the dropdown
+the bottom of the dialog by selecting the method from the drop down
 list. For an explanation of the individual methods, please consult the
 methods section. 
 </para>
@@ -4524,13 +4371,13 @@ definition  with a file. This can be achieved by clicking on the
 <guibutton>Report</guibutton> button. This opens a dialog that lets
 you connect the report for a specific task to a file on your hard
 disk. First we choose a report that is suitable for the parameter
-estimation task from the dropdown list at the top of the
+estimation task from the drop down list at the top of the
 dialog. Next, we specify a file that will be used to store the report
 by clicking on the <guibutton>browse</guibutton> button and selecting
 the destination in the file dialog that opens. Per default, COPASI
 creates a new file or overwrites an existing file with the same
 name. Alternatively, you can tell COPASI to append the report to the
-end of an existing file by selecting the corresponding checkbox
+end of an existing file by selecting the corresponding check box
 labeled <guilabel>Append</guilabel> at the bottom of the dialog. Once
 you are finished, you click on the <guilabel>Confirm</guilabel>
 button. If you now run the task, COPASI will write the output to the
@@ -4543,9 +4390,6 @@ file you specified.
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/ParameterEstimation_05.png" format="PNG" scale="50" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/ParameterEstimation_05.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>MacOS screenshot that shows COPASI Parameter Estimation Results</phrase>
@@ -4581,9 +4425,6 @@ parameters or the Fisher information matrix.
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Sensitivities_01.png" format="PNG" scale="50" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/Sensitivities_01.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>MacOS screenshot that shows the sensitivity analysis task</phrase>
@@ -4631,16 +4472,13 @@ We hope that we will be able to support even more different file
 formats in the future.
 </para>
 <para>
-Current versions of COPASI use libSBML version 3 which supports SBML files up to Level 2 Version 3. LibSBML 3 also has a lot of builtin tests to check the validity of a model. Upon import COPASI will display most of those errors to the user. LibSBML 3 also gives a lot of warnings, especially concerning units in SBML files, which should help the user in generating better, more consistent models. Even so this is a good thing, it can happen that the real errors are hidden by the large amount of warnings. COPASI now uses a new error message dialog that splits the messages in filtered and unfiltered messages. The unfiltered messages are what the user sees when the dialog comes up. In order the see the filtered messages the second tab in the message dialog has to be selected. If there are no filtered messages, this tab is disabled. In the labels of the individual tabs, COPASI also shows you the number of messages that for the corresponding tab.
+Current versions of COPASI use libsbml version 3 which supports SBML files up to Level 2 Version 3. Libsbml 3 also has a lot of built-in tests to check the validity of a model. Upon import COPASI will display most of those errors to the user. Libsbml 3 also gives a lot of warnings, especially concerning units in SBML files, which should help the user in generating better, more consistent models. Even so this is a good thing, it can happen that the real errors are hidden by the large amount of warnings. COPASI now uses a new error message dialog that splits the messages in filtered and unfiltered messages. The unfiltered messages are what the user sees when the dialog comes up. In order the see the filtered messages the second tab in the message dialog has to be selected. If there are no filtered messages, this tab is disabled. In the labels of the individual tabs, COPASI also shows you the number of messages that for the corresponding tab.
 </para>
 <screenshot>
 <screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/29/2008</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/MessageDialog_01.png" format="PNG" scale="50" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/MessageDialog_01.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>Error Message Dialog after import of an SBML file</phrase>
@@ -4654,7 +4492,7 @@ Current versions of COPASI use libSBML version 3 which supports SBML files up to
 In the current version, the errors that are filtered are hard coded and they are all warnings that have to do with unit inconsistencies within the model. In future version of COPASI, we will have a mechanism that will let the user manage which error messages should be filtered.
 </para>
 <para>
-Although COPASI now uses libSBML 3, not all features found in the different versions of SBML are currently supported. If an unsupported feature is encountered during import, COPASI will usually notify the user. Depending on which parts of the model have been ignored, ignored, the result of timecourse simulations and other tasks might not be what you expect.
+Although COPASI now uses libsbml 3, not all features found in the different versions of SBML are currently supported. If an unsupported feature is encountered during import, COPASI will usually notify the user. Depending on which parts of the model have been ignored, ignored, the result of time course simulations and other tasks might not be what you expect.
 </para>
 <para>
 This is still very rudimentary and we hope to improve this function recognition in the future so that also functions exported from other programs can be recognized.
@@ -4692,7 +4530,7 @@ constants at the place of inclusion. Example:
 The file contains the following sections: 
 </para>
 <para>
-<table frame="all"><title>Preprocessor defines</title>
+<table id="tbl.PreprocessorDefines" frame="all"><title>Preprocessor Defines</title>
 <tgroup cols="2" align="left" colsep="1" rowsep="1">
 <colspec colwidth="1*" />
 <colspec colwidth="2*" />
@@ -4811,7 +4649,7 @@ In order to export the set of differential equations to a C source
 code file, you select the <guisubmenu>Export ODEs</guisubmenu> menu
 entry from COPASI's <guimenu>File</guimenu> menu. In the save dialog
 that shows up, you select <emphasis>C Files (*.c)</emphasis> from the
-<guilabel>File type</guilabel> dropdown and specify the name of the
+<guilabel>File type</guilabel> drop down and specify the name of the
 file you want to write the ODEs to. After clicking on the
 <guibutton>Save</guibutton> the ODEs will be saved to the specified
 file.</para> 
@@ -4836,7 +4674,7 @@ Since the way ordinary differential equations are specified is similar
 between different programs that take such input, it should be rather
 easy to adjust the exported file for import in other programs as for
 example the free <ulink
-url="http://www.math.pitt.edu/~bard/xpp/xpp.html">xppaut</ulink>
+url="http://www.math.pitt.edu/~bard/xpp/xpp.html">XPPaut</ulink>
 program or even <ulink
 url="http://www.wolfram.com/">Mathematica<!--&trade;--></ulink>.
 </para>
@@ -4878,7 +4716,7 @@ Madonna<!--&trade;--> file, you select the <guisubmenu>Export
 ODEs</guisubmenu> menu entry from COPASI's <guimenu>File</guimenu>
 menu. In the save dialog that shows up, you select <emphasis>Berkeley
 Madonna Files (*.mmd)</emphasis> from the <guilabel>File
-type</guilabel> dropdown and specify the name of the file you want to
+type</guilabel> drop down and specify the name of the file you want to
 write the ODEs to. After clicking on the <guibutton>Save</guibutton>
 the ODEs will be saved to the specified file.
 </para>
@@ -4889,8 +4727,8 @@ the ODEs will be saved to the specified file.
 <ulink
 url="http://www.math.pitt.edu/~bard/xpp/xpp.html">XPPAUT</ulink> is a
 program to to solve differential equations. It is freely available for
-Windows, MacOS X, Linux/Unix and probabyl others. Its input format is
-very similar to the one from madonna and COPASI starting from Version
+Windows, MacOS X, Linux/Unix and probably others. Its input format is
+very similar to the one from Madonna and COPASI starting from Version
 4.1 Build21 can export models as a set of differential equations for
 use in XPPAUT.
 </para>
@@ -4899,7 +4737,7 @@ In order to export the set of differential equations to an XPPAUT
 file, you select the <guisubmenu>Export ODEs</guisubmenu> menu entry
 from COPASI's <guimenu>File</guimenu> menu. In the save dialog that
 shows up, you select <emphasis>XPPAUT (*.ode)</emphasis> from the
-<guilabel>File type</guilabel> dropdown and specify the name of the
+<guilabel>File type</guilabel> drop down and specify the name of the
 file you want to write the ODEs to. After clicking on the
 <guibutton>Save</guibutton> the ODEs will be saved to the specified
 file.
