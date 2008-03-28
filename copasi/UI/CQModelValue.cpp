@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQModelValue.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2008/03/26 02:51:27 $
+//   $Date: 2008/03/28 20:44:59 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,7 +19,7 @@
  ** Form implementation generated from reading ui file 'CQModelValue.ui'
  **
  ** Created: Tue Nov 13 09:15:21 2007
- **      by: The User Interface Compiler ($Id: CQModelValue.cpp,v 1.7 2008/03/26 02:51:27 pwilly Exp $)
+ **      by: The User Interface Compiler ($Id: CQModelValue.cpp,v 1.8 2008/03/28 20:44:59 pwilly Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -41,8 +41,7 @@
 #include <qpixmap.h>
 
 #include "CQExpressionWidget.h"
-//#include "FunctionWidget2.h"
-//#include "test1.h"
+#include "CQExpressionMmlWidgetStack.h"
 #include "CQModelValue.ui.h"
 
 #include "icons/editIcon.xpm"
@@ -199,12 +198,44 @@ CQModelValue::CQModelValue(QWidget* parent, const char* name)
 
   CQModelValueLayout->addWidget(mpLblExpression, 2, 0);
 
-  mpLine1 = new QFrame(this, "mpLine1");
-  mpLine1->setFrameShape(QFrame::HLine);
-  mpLine1->setFrameShadow(QFrame::Sunken);
-  mpLine1->setFrameShape(QFrame::HLine);
+  // --- box layout containing expression widget stack, push button (either object-selector or one for going back to the editor page) and spacer item
 
-  CQModelValueLayout->addMultiCellWidget(mpLine1, 5, 5, 0, 2);
+  // --- expression widget stack ---
+
+  mpHBoxLayoutExpression = new QHBoxLayout(0, 0, 6, "mpHBoxLayoutExpression");
+
+  // mpEditExpression = new CQExpressionWidget(this, "mpEditExpression");
+  // mpHBoxLayoutExpression->addWidget(mpEditExpression);
+
+  mpEditFcnExpression = new CQExpressionMmlWidgetStack(this, "mpEditFcnExpression");
+  mpHBoxLayoutExpression->addWidget(mpEditFcnExpression);
+
+  // --- vertical box layout ---
+  mpVBoxLayoutExpression = new QVBoxLayout(0, 0, 6, "mpVBoxLayoutExpression");
+
+  // --- button for selecting object(s) ---
+  mpBtnExpressionObject = new QToolButton(this, "mpBtnExpressionObject");
+  mpBtnExpressionObject->setMaximumSize(QSize(20, 20));
+  mpBtnExpressionObject->setIconSet(QIconSet(image0));
+  mpVBoxLayoutExpression->addWidget(mpBtnExpressionObject);
+
+  // --- button for going back to the editor page of widget stack ---
+  mpBtnEditExpression = new QToolButton(this);
+  mpBtnEditExpression->setPixmap(editIcon);
+  mpBtnEditExpression->setMaximumSize(QSize(20, 20));
+  mpVBoxLayoutExpression->addWidget(mpBtnEditExpression);
+
+  // --- spacer item ---
+  mpSpacerExpressionObject = new QSpacerItem(20, 35, QSizePolicy::Minimum, QSizePolicy::Expanding);
+  mpVBoxLayoutExpression->addItem(mpSpacerExpressionObject);
+
+  // add the vertical box layout into the horizontal one
+  mpHBoxLayoutExpression->addLayout(mpVBoxLayoutExpression);
+
+  // add the horizontal box layout to the main one
+  CQModelValueLayout->addMultiCellLayout(mpHBoxLayoutExpression, 2, 2, 1, 2);
+
+  // ---
 
   mpLblInitialValue = new QLabel(this, "mpLblInitialValue");
   mpLblInitialValue->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)5, 0, 0, mpLblInitialValue->sizePolicy().hasHeightForWidth()));
@@ -229,84 +260,51 @@ CQModelValue::CQModelValue(QWidget* parent, const char* name)
 
   CQModelValueLayout->addWidget(mpLblInitialExpression, 4, 0);
 
+  // --- box layout containing [initial] expression widget stack, push button (either object-selector or one for going back to the editor page) and spacer item
+
+  // --- [initial] expression widget stack ---
+
   mpHBoxLayoutInitialExpression = new QHBoxLayout(0, 0, 6, "mpHBoxLayoutInitialExpression");
 
-  mpEditInitialExpression = new CQExpressionWidget(this, "mpEditInitialExpression");
-  mpEditInitialExpression->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)5, 0, 0, mpEditInitialExpression->sizePolicy().hasHeightForWidth()));
-  mpHBoxLayoutInitialExpression->addWidget(mpEditInitialExpression);
-  /*-----
-    mpEditFcnInitialExpression = new CQExpressionWidget(this, "mpEditFcnInitialExpression");
-    mpEditInitialExpression->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)5, 0, 0, mpEditInitialExpression->sizePolicy().hasHeightForWidth()));
-    mpHBoxLayoutInitialExpression->addWidget(mpEditInitialExpression);
+  // mpEditInitialExpression = new CQExpressionWidget(this, "mpEditInitialExpression");
+  // mpEditInitialExpression->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)5, 0, 0, mpEditInitialExpression->sizePolicy().hasHeightForWidth()));
+  // mpHBoxLayoutInitialExpression->addWidget(mpEditInitialExpression);
+  mpEditFcnInitialExpression = new CQExpressionMmlWidgetStack(this, "mpEditFcnInitialExpression");
+  mpHBoxLayoutInitialExpression->addWidget(mpEditFcnInitialExpression);
 
-    mpEditFcnExpression = new CQExpressionMmlWidgetStack(this, "mpEditFcnExpression");
-    mpHBoxLayoutExpression->addWidget(mpEditFcnExpression);
-  */
+  // --- vertical box layout ---
   mpVBoxLayoutInitialExpression = new QVBoxLayout(0, 0, 6, "mpVBoxLayoutInitialExpression");
 
+  // --- button for selecting object(s) ---
   mpBtnInitialExpressionObject = new QToolButton(this, "mpBtnInitialExpressionObject");
   mpBtnInitialExpressionObject->setMaximumSize(QSize(20, 20));
   mpBtnInitialExpressionObject->setIconSet(QIconSet(image0));
   mpVBoxLayoutInitialExpression->addWidget(mpBtnInitialExpressionObject);
+
+  // --- button for going back to the editor page of widget stack ---
+  mpBtnEditInitialExpression = new QToolButton(this);
+  mpBtnEditInitialExpression->setPixmap(editIcon);
+  mpBtnEditInitialExpression->setMaximumSize(QSize(20, 20));
+  mpVBoxLayoutInitialExpression->addWidget(mpBtnEditInitialExpression);
+
+  // --- spacer item ---
   mpSpacerObjectInitialExpression = new QSpacerItem(20, 35, QSizePolicy::Minimum, QSizePolicy::Expanding);
   mpVBoxLayoutInitialExpression->addItem(mpSpacerObjectInitialExpression);
-  mpHBoxLayoutInitialExpression->addLayout(mpVBoxLayoutInitialExpression);
-
-  CQModelValueLayout->addMultiCellLayout(mpHBoxLayoutInitialExpression, 4, 4, 1, 2);
-
-  // --- box layout containing expression widget stack, object-selecting push button, spacer item
-
-  mpHBoxLayoutExpression = new QHBoxLayout(0, 0, 6, "mpHBoxLayoutExpression");
-
-  // expression widget stack
-  std::cout << "Before" << std::endl;
-  //  mpEditExpression = new CQExpressionWidget(this, "mpEditExpression");
-  //  mpEditExpression = new QTextEdit(this, "mpEditExpression");
-  //  mpEditExpression->setText("HAHAHA");
-  std::cout << "After" << std::endl;
-  //  mpHBoxLayoutExpression->addWidget(mpEditExpression);
-  ///  mpEditFcnExpression = new FunctionWidget2(this);
-  //  mpEditFcnExpression = new QTextEdit(this, "mpEditFcnExpression");
-  /*
-    mpEditFcnExpression = new QWidgetStack(this, "mpEditFcnExpression");
-    mpEditFcnExpression->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    mpTextEditExpression = new QTextEdit(mpEditFcnExpression, "textEditExpression");
-    std::cout << mpTextEditExpression->width() << " x2 " << mpTextEditExpression->height() << std::endl;
-    mpTextEditExpression->setText(tr("Edit"));
-    mpEditFcnExpression->addWidget(mpTextEditExpression, 0);
-  */
-  //  mpEditFcnExpression->setText("HAHAHA");
-  mpEditFcnExpression = new CQExpressionMmlWidgetStack(this, "mpEditFcnExpression");
-
-  mpHBoxLayoutExpression->addWidget(mpEditFcnExpression);
-
-  // --- vertical box layout ---
-  mpVBoxLayoutExpression = new QVBoxLayout(0, 0, 6, "mpVBoxLayoutExpression");
-
-  // button for selecting object(s)
-  mpBtnExpressionObject = new QToolButton(this, "mpBtnExpressionObject");
-  mpBtnExpressionObject->setMaximumSize(QSize(20, 20));
-  mpBtnExpressionObject->setIconSet(QIconSet(image0));
-  mpVBoxLayoutExpression->addWidget(mpBtnExpressionObject);
-
-  // button for going back to the editor page of widget stack
-  mpBtnEditExpression = new QToolButton(this);
-  mpBtnEditExpression->setPixmap(editIcon);
-  //  mpEditButton->setFixedSize(13, 13);
-  mpBtnEditExpression->setMaximumSize(QSize(20, 20));
-  mpVBoxLayoutExpression->addWidget(mpBtnEditExpression);
-
-  // spacer item
-  mpSpacerExpressionObject = new QSpacerItem(20, 35, QSizePolicy::Minimum, QSizePolicy::Expanding);
-  mpVBoxLayoutExpression->addItem(mpSpacerExpressionObject);
 
   // add the vertical box layout into the horizontal one
-  mpHBoxLayoutExpression->addLayout(mpVBoxLayoutExpression);
+  mpHBoxLayoutInitialExpression->addLayout(mpVBoxLayoutInitialExpression);
 
   // add the horizontal box layout to the main one
-  CQModelValueLayout->addMultiCellLayout(mpHBoxLayoutExpression, 2, 2, 1, 2);
+  CQModelValueLayout->addMultiCellLayout(mpHBoxLayoutInitialExpression, 4, 4, 1, 2);
 
   // ---
+
+  mpLine1 = new QFrame(this, "mpLine1");
+  mpLine1->setFrameShape(QFrame::HLine);
+  mpLine1->setFrameShadow(QFrame::Sunken);
+  mpLine1->setFrameShape(QFrame::HLine);
+
+  CQModelValueLayout->addMultiCellWidget(mpLine1, 5, 5, 0, 2);
 
   languageChange();
   resize(QSize(460, 364).expandedTo(minimumSizeHint()));
@@ -324,8 +322,13 @@ CQModelValue::CQModelValue(QWidget* parent, const char* name)
   connect(((CQExpressionWidget *)mpEditFcnExpression->widget(0)), SIGNAL(valid(bool)), this, SLOT(slotExpressionValid(bool)));
   //  connect(mpBtnEditExpression, SIGNAL(clicked()), mpEditFcnExpression, SLOT(slotEditExpression()));
   connect(mpBtnEditExpression, SIGNAL(clicked()), this, SLOT(slotEditExpression()));
-  connect(mpEditInitialExpression, SIGNAL(valid(bool)), this, SLOT(slotInitialExpressionValid(bool)));
-  connect(mpBtnInitialExpressionObject, SIGNAL(clicked()), mpEditInitialExpression, SLOT(slotSelectObject()));
+  //  connect(mpBtnInitialExpressionObject, SIGNAL(clicked()), mpEditInitialExpression, SLOT(slotSelectObject()));
+  //  connect(mpEditInitialExpression, SIGNAL(valid(bool)), this, SLOT(slotInitialExpressionValid(bool)));
+  connect(mpBtnInitialExpressionObject, SIGNAL(clicked()), ((CQExpressionWidget *)mpEditFcnInitialExpression->widget(0)), SLOT(slotSelectObject()));
+  connect(((CQExpressionWidget *)mpEditFcnInitialExpression->widget(0)), SIGNAL(valid(bool)), this, SLOT(slotInitialExpressionValid(bool)));
+
+  connect(mpBtnEditInitialExpression, SIGNAL(clicked()), this, SLOT(slotEditInitialExpression()));
+
   connect(mpBoxUseInitialExpression, SIGNAL(toggled(bool)), this, SLOT(slotInitialTypeChanged(bool)));
   connect(mpEditName, SIGNAL(lostFocus()), this, SLOT(slotNameLostFocus()));
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQModelValue.ui.h,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2008/03/26 02:52:15 $
+//   $Date: 2008/03/28 20:44:52 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -37,19 +37,13 @@
 #include "report/CKeyFactory.h"
 
 /*!
+    After clicking the Commit button, COPASI will internally, automatically save any inputs and load them.
  */
 void CQModelValue::slotBtnCommit()
 {
+  std::cout << "CQMV::slotBtnCommit()" << std::endl;
   save();
   load();
-  /*
-    // activate the button of object selector
-    mpBtnExpressionObject->hide();
-    // hide the button of expression editor
-    mpBtnEditExpression->show();
-    // update the expression widget
-    mpEditFcnExpression->updateExpressionWidget();
-  */
 }
 
 void CQModelValue::slotBtnRevert()
@@ -234,54 +228,110 @@ void CQModelValue::slotBtnDelete()
     }
 }
 
+/*!
+    If the simulation type is changed then COPASI will automatically adjust its appearance,
+ especially correlating to the Expression Widget and its buttons.
+ */
 void CQModelValue::slotTypeChanged(int type)
 {
   switch ((CModelEntity::Status) mItemToType[type])
     {
     case CModelEntity::FIXED:
+      // remove expression layout from GUI screen
       CQModelValueLayout->removeItem(mpHBoxLayoutExpression);
       CQModelValueLayout->remove(mpLblExpression);
 
+      // hide label, widget, and all buttons
       mpLblExpression->hide();
       //      mpEditExpression->hide();
       mpEditFcnExpression->hide();
       mpBtnExpressionObject->hide();
       mpBtnEditExpression->hide();
 
+      // enable the option of use Initial Expression
       mpBoxUseInitialExpression->setEnabled(true);
       slotInitialTypeChanged(mpBoxUseInitialExpression->isChecked());
+
+      // we don't need to update the expression widget as it is already hidden
+
       break;
 
     case CModelEntity::ASSIGNMENT:
+      // add expression layout
       CQModelValueLayout->addWidget(mpLblExpression, 2, 0);
       CQModelValueLayout->addMultiCellLayout(mpHBoxLayoutExpression, 2, 2, 1, 2);
 
-      mpLblExpression->show();
+      // show label, widget, and correct buttons
+      mpLblExpression->show();   // show the label
       //      mpEditExpression->show();
-      mpEditFcnExpression->show();
-      mpBtnExpressionObject->show();
-      mpBtnEditExpression->hide();
+      mpEditFcnExpression->show();  // show the widget
+      showCorrectButtonsExpression(); // depending on emptiness the Expression Widget
+      /*      mpBtnExpressionObject->show();
+            mpBtnEditExpression->hide();
+      */
 
+      // disable the option of use Initial Expression
       mpBoxUseInitialExpression->setEnabled(false);
       slotInitialTypeChanged(false);
+
+      // update the expression widget
+      mpEditFcnExpression->updateExpressionWidget();
+      //      mpEditFcnInitialExpression->updateInitialExpressionWidget();
+
       break;
 
     case CModelEntity::ODE:
+      // add expression layout
       CQModelValueLayout->addWidget(mpLblExpression, 2, 0);
       CQModelValueLayout->addMultiCellLayout(mpHBoxLayoutExpression, 2, 2, 1, 2);
 
-      mpLblExpression->show();
+      // show label, widget, and correct buttons
+      mpLblExpression->show();   // show the label
       //      mpEditExpression->show();
-      mpEditFcnExpression->show();
-      mpBtnExpressionObject->show();
-      mpBtnEditExpression->hide();
+      mpEditFcnExpression->show();  // show the widget
+      showCorrectButtonsExpression(); // depending on emptiness the Expression Widget
+      /*      mpBtnExpressionObject->show();
+            mpBtnEditExpression->hide();
+      */
 
+      // enable the option of use Initial Expression
       mpBoxUseInitialExpression->setEnabled(true);
       slotInitialTypeChanged(mpBoxUseInitialExpression->isChecked());
+
+      // update the expression widget
+      mpEditFcnExpression->updateExpressionWidget();
+      //      mpEditFcnInitialExpression->updateInitialExpressionWidget();
+
       break;
 
     default:
       break;
+    }
+}
+
+/*!
+    This function is used in case of not FIXED type
+ */
+void CQModelValue::showCorrectButtonsExpression()
+{
+  // Update Button correlated to Expression Widget
+  if (((CQExpressionWidget *)mpEditFcnExpression->widget(0))->text().isEmpty())
+    {
+      std::cout << "empty" << std::endl;
+
+      std::cout << "simulation type: " << mpComboBoxType->currentItem() << std::endl;
+      // show the button of object selector
+      mpBtnExpressionObject->show();
+      // hide the button of expression editor
+      mpBtnEditExpression->hide();
+    }
+  else
+    {// not empty
+      std::cout << "not empty -> " << ((CQExpressionWidget *)mpEditFcnExpression->widget(0))->text() << std::endl;
+      // hide the button of object selector
+      mpBtnExpressionObject->hide();
+      // show the button of expression editor
+      mpBtnEditExpression->show();
     }
 }
 
@@ -312,7 +362,8 @@ void CQModelValue::init()
   ((CQExpressionWidget *)mpEditFcnExpression->widget(0))->setExpressionType(CCopasiSimpleSelectionTree::TRANSIENT_EXPRESSION);
 
   mInitialExpressionValid = false;
-  mpEditInitialExpression->setExpressionType(CCopasiSimpleSelectionTree::INITIAL_EXPRESSION);
+  //  mpEditInitialExpression->setExpressionType(CCopasiSimpleSelectionTree::INITIAL_EXPRESSION);
+  ((CQExpressionWidget *)mpEditFcnInitialExpression->widget(0))->setExpressionType(CCopasiSimpleSelectionTree::TRANSIENT_EXPRESSION);
 }
 
 void CQModelValue::destroy()
@@ -329,12 +380,24 @@ bool CQModelValue::leave()
 {
   if (mpBtnCommit->isEnabled())
     {
-      // activate the button of object selector
-      mpBtnExpressionObject->hide();
-      // hide the button of expression editor
-      mpBtnEditExpression->show();
-      // update the expression widget
+      // -- Expression --
+      //      slotTypeChanged(mpComboBoxType->currentItem());
+      showCorrectButtonsExpression();
+      /*      // hide the button of object selector
+            mpBtnExpressionObject->hide();
+            // show the button of expression editor
+            mpBtnEditExpression->show();
+      */      // update the expression widget
       mpEditFcnExpression->updateExpressionWidget();
+
+      // -- Initial Expression --
+      showCorrectButtonsInitialExpression();
+      /*      // hide the button of object selector
+            mpBtnInitialExpressionObject->hide();
+            // show the button of expression editor
+            mpBtnEditInitialExpression->show();
+      */      // update the expression widget
+      mpEditFcnInitialExpression->updateExpressionWidget();
 
       save();
     }
@@ -357,6 +420,9 @@ bool CQModelValue::enter(const std::string & key)
   return true;
 }
 
+/*!
+    Load any saved values to the screen
+ */
 void CQModelValue::load()
 {
   std::cout << "CQMV::load" << std::endl;
@@ -367,7 +433,6 @@ void CQModelValue::load()
 
   // Type
   mpComboBoxType->setCurrentText(FROM_UTF8(CModelEntity::StatusName[mpModelValue->getStatus()]));
-  slotTypeChanged(mpComboBoxType->currentItem());
 
   // Initial Value
   mpEditInitialValue->setText(QString::number(mpModelValue->getInitialValue()));
@@ -381,38 +446,39 @@ void CQModelValue::load()
   // Expression
   //  mpEditExpression->setExpression(mpModelValue->getExpression());
   ((CQExpressionWidget *)mpEditFcnExpression->widget(0))->setExpression(mpModelValue->getExpression());
+  slotTypeChanged(mpComboBoxType->currentItem());
+  /*
+    // Update Button correlated to Expression Widget
+    if (((CQExpressionWidget *)mpEditFcnExpression->widget(0))->text().isEmpty())
+      {
+        std::cout << "empty" << std::endl;
 
-  // Update Button correlated to Expression Widget
-  if (((CQExpressionWidget *)mpEditFcnExpression->widget(0))->text().isEmpty())
-    {
-      std::cout << "empty" << std::endl;
-
-      if (((CModelEntity::Status) mItemToType[mpComboBoxType->currentItem()]) == CModelEntity::FIXED)
-        {
-          std::cout << "simulation type: fixed - " << mpComboBoxType->currentItem() << std::endl;
-          // activate the button of object selector
-          mpBtnExpressionObject->hide();
-          // hide the button of expression editor
-          mpBtnEditExpression->hide();
-        }
-      else
-        {
-          std::cout << "simulation type: " << mpComboBoxType->currentItem() << std::endl;
-          // activate the button of object selector
-          mpBtnExpressionObject->show();
-          // hide the button of expression editor
-          mpBtnEditExpression->hide();
-        }
-    }
-  else
-    {
-      std::cout << "not empty" << std::endl;
-      // activate the button of object selector
-      mpBtnExpressionObject->hide();
-      // hide the button of expression editor
-      mpBtnEditExpression->show();
-    }
-
+        if (((CModelEntity::Status) mItemToType[mpComboBoxType->currentItem()]) == CModelEntity::FIXED)
+          {
+            std::cout << "simulation type: fixed - " << mpComboBoxType->currentItem() << std::endl;
+            // activate the button of object selector
+            mpBtnExpressionObject->hide();
+            // hide the button of expression editor
+            mpBtnEditExpression->hide();
+          }
+        else
+          {// other types
+            std::cout << "simulation type: " << mpComboBoxType->currentItem() << std::endl;
+            // show the button of object selector
+            mpBtnExpressionObject->show();
+            // hide the button of expression editor
+            mpBtnEditExpression->hide();
+          }
+      }
+    else
+      {// not empty
+        std::cout << "not empty" << std::endl;
+        // hide the button of object selector
+        mpBtnExpressionObject->hide();
+        // show the button of expression editor
+        mpBtnEditExpression->show();
+      }
+  */
   // Update Expression Widget
   mpEditFcnExpression->updateExpressionWidget();
 
@@ -420,25 +486,70 @@ void CQModelValue::load()
   if (mpModelValue->getStatus() == CModelEntity::ASSIGNMENT ||
       mpModelValue->getInitialExpression() == "")
     {
+      std::cout << "ASSIGNMENT: mpModelValue->getStatus(): " << mpModelValue->getStatus() << " - "
+      << "mpModelValue->getInitialExpression() = " << mpModelValue->getInitialExpression() << std::endl;
       mpBoxUseInitialExpression->setChecked(false);
-      slotInitialTypeChanged(false);
+      //      slotInitialTypeChanged(false);
     }
   else
     {
+      std::cout << "mpModelValue->getStatus(): " << mpModelValue->getStatus() << " - "
+      << "mpModelValue->getInitialExpression() = " << mpModelValue->getInitialExpression() << std::endl;
       mpBoxUseInitialExpression->setChecked(true);
-      slotInitialTypeChanged(true);
+      //      slotInitialTypeChanged(true);
     }
 
   // Initial Expression
-  mpEditInitialExpression->setExpression(mpModelValue->getInitialExpression());
+  //  mpEditInitialExpression->setExpression(mpModelValue->getInitialExpression());
+  ((CQExpressionWidget *)mpEditFcnInitialExpression->widget(0))->setExpression(mpModelValue->getInitialExpression());
+  /*
+    // Update Button correlated to Initial Expression Widget
+    if (((CQExpressionWidget *)mpEditFcnInitialExpression->widget(0))->text().isEmpty())
+      {
+        std::cout << "initial empty" << std::endl;
+
+        if (mpBoxUseInitialExpression->isChecked())
+          {
+            std::cout << "mpBoxUseInitialExpression->isChecked(): " << mpBoxUseInitialExpression->isChecked() << std::endl;
+            // show the button of object selector
+            mpBtnInitialExpressionObject->show();
+            // hide the button of expression editor
+            mpBtnEditInitialExpression->hide();
+          }
+        else
+          {// not checked
+            std::cout << "mpBoxUseInitialExpression->isChecked(): " << mpBoxUseInitialExpression->isChecked() << std::endl;
+            // hide the button of object selector
+            mpBtnInitialExpressionObject->hide();
+            // hide the button of expression editor
+            mpBtnEditInitialExpression->hide();
+          }
+      }
+    else // not empty
+      {
+        std::cout << "not empty" << std::endl;
+        // hide the button of object selector
+        mpBtnInitialExpressionObject->hide();
+        // show the button of expression editor
+        mpBtnEditInitialExpression->show();
+      }
+  */
+  // Update Initial Expression Widget
+  mpEditFcnInitialExpression->updateExpressionWidget();
 
   mChanged = false;
 }
 
+/*!
+    Save any inputs and set them as initial setting values
+ */
 void CQModelValue::save()
 {
+  std::cout << "CQNV::save" << std::endl;
+
   if (mpModelValue == NULL) return;
 
+  // set text
   if (mpModelValue->getObjectName() != (const char *) mpEditName->text().utf8())
     {
       if (!mpModelValue->setObjectName((const char *) mpEditName->text().utf8()))
@@ -461,18 +572,22 @@ void CQModelValue::save()
         }
     }
 
+  // set status
   if (mpModelValue->getStatus() != (CModelEntity::Status) mItemToType[mpComboBoxType->currentItem()])
     {
       mpModelValue->setStatus((CModelEntity::Status) mItemToType[mpComboBoxType->currentItem()]);
       mChanged = true;
     }
 
+  // set initial value
   if (QString::number(mpModelValue->getInitialValue()) != mpEditInitialValue->text() &&
       mpModelValue->getStatus() != CModelEntity::ASSIGNMENT)
     {
       mpModelValue->setInitialValue(mpEditInitialValue->text().toDouble());
       mChanged = true;
     }
+
+  // set expression
   /*
     if (mpModelValue->getExpression() != mpEditExpression->getExpression())
       {
@@ -480,23 +595,35 @@ void CQModelValue::save()
         mChanged = true;
       }
   */
+  std::cout << ((CQExpressionWidget *)mpEditFcnExpression->widget(0))->getExpression() << std::endl;
   if (mpModelValue->getExpression() != ((CQExpressionWidget *)mpEditFcnExpression->widget(0))->getExpression())
     {
       mpModelValue->setExpression(((CQExpressionWidget *)mpEditFcnExpression->widget(0))->getExpression());
       mChanged = true;
     }
-  // Initial Expression
+
+  // set initial expression
   if ((CModelEntity::Status) mItemToType[mpComboBoxType->currentItem()] != CModelEntity::ASSIGNMENT)
     {
+      /*  if (mpBoxUseInitialExpression->isChecked() &&
+            mpModelValue->getInitialExpression() != mpEditInitialExpression->getExpression())
+          {
+            mpModelValue->setInitialExpression(mpEditInitialExpression->getExpression());
+            mChanged = true;
+          }
+      */
+      std::cout << ((CQExpressionWidget *)mpEditFcnInitialExpression->widget(0))->getExpression() << std::endl;
       if (mpBoxUseInitialExpression->isChecked() &&
-          mpModelValue->getInitialExpression() != mpEditInitialExpression->getExpression())
+          mpModelValue->getInitialExpression() != ((CQExpressionWidget *)mpEditFcnInitialExpression->widget(0))->getExpression())
         {
-          mpModelValue->setInitialExpression(mpEditInitialExpression->getExpression());
+          std::cout << "true" << std::endl;
+          mpModelValue->setInitialExpression(((CQExpressionWidget *)mpEditFcnInitialExpression->widget(0))->getExpression());
           mChanged = true;
         }
       else if (!mpBoxUseInitialExpression->isChecked() &&
                mpModelValue->getInitialExpression() != "")
         {
+          std::cout << "false" << std::endl;
           mpModelValue->setInitialExpression("");
           mChanged = true;
         }
@@ -515,49 +642,110 @@ void CQModelValue::slotNameLostFocus()
 {
   if (mpEditName->text() != FROM_UTF8(mpModelValue->getObjectName()))
     {
-      //      mpEditExpression->currentObjectRenamed(mpModelValue, mpEditName->text());
+      //  mpEditExpression->currentObjectRenamed(mpModelValue, mpEditName->text());
       ((CQExpressionWidget *)mpEditFcnExpression->widget(0))->currentObjectRenamed(mpModelValue, mpEditName->text());
-      mpEditInitialExpression->currentObjectRenamed(mpModelValue, mpEditName->text());
-    }
-}
-
-void CQModelValue::slotInitialTypeChanged(bool useInitialAssignment)
-{
-  if (useInitialAssignment)
-    {
-      CQModelValueLayout->addWidget(mpLblInitialExpression, 4, 0);
-      CQModelValueLayout->addMultiCellLayout(mpHBoxLayoutInitialExpression, 4, 4, 1, 2);
-
-      mpLblInitialExpression->show();
-      mpEditInitialExpression->show();
-      mpBtnInitialExpressionObject->show();
-
-      mpEditInitialValue->setEnabled(false);
-    }
-  else
-    {
-      CQModelValueLayout->removeItem(mpHBoxLayoutInitialExpression);
-      CQModelValueLayout->remove(mpLblInitialExpression);
-
-      mpLblInitialExpression->hide();
-      mpEditInitialExpression->hide();
-      mpBtnInitialExpressionObject->hide();
-
-      mpEditInitialValue->setEnabled((CModelEntity::Status) mItemToType[mpComboBoxType->currentItem()] != CModelEntity::ASSIGNMENT);
+      //  mpEditInitialExpression->currentObjectRenamed(mpModelValue, mpEditName->text());
+      ((CQExpressionWidget *)mpEditFcnInitialExpression->widget(0))->currentObjectRenamed(mpModelValue, mpEditName->text());
     }
 }
 
 /*!
-    The slot to activate the text edit of type CQExpressionWidget
-    for typing a new mathematical expression or editing the existing one
+    If the initial expression is chosen to be used by checking the mpBoxUseInitialExpression check box being represented by
+ the boolean parameter useInitialAssignment (true if checked; false otherwise), COPASI will show the Initial Expression
+ Widget with its correct push buttons. Otherwise, the widget and its buttons will be hidden.
+ */
+void CQModelValue::slotInitialTypeChanged(bool useInitialAssignment)
+{
+  if (useInitialAssignment)  // use Initial Expression (ie. the mpBoxUseInitialExpression is checked)
+    {
+      // add the layout of initial expression to the CQModelValueLayout
+      CQModelValueLayout->addWidget(mpLblInitialExpression, 4, 0);
+      CQModelValueLayout->addMultiCellLayout(mpHBoxLayoutInitialExpression, 4, 4, 1, 2);
+
+      // show label, widget, and the correct buttons
+      mpLblInitialExpression->show();  // show the label
+      //  mpEditInitialExpression->show();
+      mpEditFcnInitialExpression->show(); // show the widget
+      /*   mpBtnEditInitialExpression->hide();
+            mpBtnInitialExpressionObject->show();
+      */
+      showCorrectButtonsInitialExpression();
+
+      // enable the option of use Initial Value
+      mpEditInitialValue->setEnabled(false);
+
+      // update the Initial Expression Widget
+      mpEditFcnInitialExpression->updateExpressionWidget();
+    }
+  else  // mpBoxUseInitialExpression is not checked
+    {
+      // remove the layout of initial expression from GUI screen
+      CQModelValueLayout->removeItem(mpHBoxLayoutInitialExpression);
+      CQModelValueLayout->remove(mpLblInitialExpression);
+
+      // hide label, widget, and all buttons
+      mpLblInitialExpression->hide();
+      // mpEditInitialExpression->hide();
+      mpEditFcnInitialExpression->hide();
+      mpBtnEditInitialExpression->hide();
+      mpBtnInitialExpressionObject->hide();
+
+      // enable the option of use Initial Value
+      mpEditInitialValue->setEnabled((CModelEntity::Status) mItemToType[mpComboBoxType->currentItem()] != CModelEntity::ASSIGNMENT);
+
+      // we don't need to update the Initial Expression Widget
+    }
+}
+
+/*!
+ */
+void CQModelValue::showCorrectButtonsInitialExpression()
+{
+  // Update Button correlated to Initial Expression Widget
+  if (((CQExpressionWidget *)mpEditFcnInitialExpression->widget(0))->text().isEmpty())  // widget is empty
+    {
+      std::cout << "initial widget is empty" << std::endl;
+
+      // show the button of object selector
+      mpBtnInitialExpressionObject->show();
+      // hide the button of expression editor
+      mpBtnEditInitialExpression->hide();
+    }
+  else // not empty
+    {
+      std::cout << "initial widget is not empty" << std::endl;
+      // hide the button of object selector
+      mpBtnInitialExpressionObject->hide();
+      // show the button of expression editor
+      mpBtnEditInitialExpression->show();
+    }
+}
+
+/*!
+    The slot to activate the editor page of type CQExpressionWidget
+    for being able to type a new mathematical expression or edit the existing one
  */
 void CQModelValue::slotEditExpression()
 {
   // activate editor page of the Expression widget stack
   //  mpEditFcnExpression->raiseWidget(mpEditExpression);
   mpEditFcnExpression->raiseWidget(0);
-  // activate the button of object selector
+  // show the button of object selector
   mpBtnExpressionObject->show();
-  // hide the button of expression editor
+  // hide the button of going back to the expression editor
   mpBtnEditExpression->hide();
+}
+
+/*!
+    The slot to activate the editor page of type CQExpressionWidget
+    for being able to type a new mathematical expression or edit the existing one
+ */
+void CQModelValue::slotEditInitialExpression()
+{
+  // activate editor page of the Initial Expression widget stack
+  mpEditFcnInitialExpression->raiseWidget(0);
+  // show the button of object selector
+  mpBtnInitialExpressionObject->show();
+  // hide the button of going back to the expression editor
+  mpBtnEditInitialExpression->hide();
 }
