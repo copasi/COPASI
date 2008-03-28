@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.77 $ 
+#   $Revision: 1.78 $ 
 #   $Name:  $ 
-#   $Author: pwilly $ 
-#   $Date: 2008/03/27 11:21:28 $ 
+#   $Author: shoops $ 
+#   $Date: 2008/03/28 14:01:20 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.77 $ $Author: pwilly $ $Date: 2008/03/27 11:21:28 $  
+# $Revision: 1.78 $ $Author: shoops $ $Date: 2008/03/28 14:01:20 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -382,7 +382,7 @@ contains(BUILD_OS, Linux) {
        LIBS+=  -L$${QWT_PATH}/lib
        INCLUDEPATH += $${QWT_PATH}/include
     }
-    LIBS += -lqwt-qt3
+    LIBS += -lqwt
   }
 }
 
