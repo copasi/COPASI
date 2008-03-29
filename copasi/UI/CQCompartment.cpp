@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartment.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/12 00:32:58 $
+//   $Author: pwilly $
+//   $Date: 2008/03/29 02:00:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,7 +19,7 @@
  ** Form implementation generated from reading ui file 'CQCompartment.ui'
  **
  ** Created: Tue Nov 13 09:15:14 2007
- **      by: The User Interface Compiler ($Id: CQCompartment.cpp,v 1.5 2008/03/12 00:32:58 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: CQCompartment.cpp,v 1.6 2008/03/29 02:00:30 pwilly Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -43,7 +43,11 @@
 #include <qpixmap.h>
 
 #include "CQExpressionWidget.h"
+#include "CQExpressionMmlWidgetStack.h"
 #include "CQCompartment.ui.h"
+
+#include "icons/editIcon.xpm"
+
 static const unsigned char image0_data[] =
   {
     0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d,
@@ -236,9 +240,10 @@ CQCompartment::CQCompartment(QWidget* parent, const char* name)
 
   CQCompartmentLayout->addWidget(mpLblInitialExpression, 4, 0);
 
+  // --- initial expression layout
   mpHBoxLayoutInitialExpression = new QHBoxLayout(0, 0, 6, "mpHBoxLayoutInitialExpression");
 
-  mpEditInitialExpression = new CQExpressionWidget(this, "mpEditInitialExpression");
+  mpEditInitialExpression = new CQExpressionMmlWidgetStack(this, "mpEditInitialExpression");
   mpEditInitialExpression->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)5, 0, 0, mpEditInitialExpression->sizePolicy().hasHeightForWidth()));
   mpHBoxLayoutInitialExpression->addWidget(mpEditInitialExpression);
 
@@ -248,15 +253,22 @@ CQCompartment::CQCompartment(QWidget* parent, const char* name)
   mpBtnInitialExpressionObject->setMaximumSize(QSize(20, 20));
   mpBtnInitialExpressionObject->setIconSet(QIconSet(image0));
   mpVBoxLayoutInitialExpression->addWidget(mpBtnInitialExpressionObject);
+
+  mpBtnEditInitialExpression = new QToolButton(this);
+  mpBtnEditInitialExpression->setPixmap(editIcon);
+  mpBtnEditInitialExpression->setMaximumSize(QSize(20, 20));
+  mpVBoxLayoutInitialExpression->addWidget(mpBtnEditInitialExpression);
+
   mpSpacerObjectInitialExpression = new QSpacerItem(20, 35, QSizePolicy::Minimum, QSizePolicy::Expanding);
   mpVBoxLayoutInitialExpression->addItem(mpSpacerObjectInitialExpression);
   mpHBoxLayoutInitialExpression->addLayout(mpVBoxLayoutInitialExpression);
 
   CQCompartmentLayout->addMultiCellLayout(mpHBoxLayoutInitialExpression, 4, 4, 1, 2);
 
+  // --- expression layout
   mpHBoxLayoutExpression = new QHBoxLayout(0, 0, 6, "mpHBoxLayoutExpression");
 
-  mpEditExpression = new CQExpressionWidget(this, "mpEditExpression");
+  mpEditExpression = new CQExpressionMmlWidgetStack(this, "mpEditExpression");
   mpHBoxLayoutExpression->addWidget(mpEditExpression);
 
   mpVBoxLayoutExpression = new QVBoxLayout(0, 0, 6, "mpVBoxLayoutExpression");
@@ -265,11 +277,20 @@ CQCompartment::CQCompartment(QWidget* parent, const char* name)
   mpBtnExpressionObject->setMaximumSize(QSize(20, 20));
   mpBtnExpressionObject->setIconSet(QIconSet(image0));
   mpVBoxLayoutExpression->addWidget(mpBtnExpressionObject);
+
+  mpBtnEditExpression = new QToolButton(this);
+  mpBtnEditExpression->setPixmap(editIcon);
+  mpBtnEditExpression->setMaximumSize(QSize(20, 20));
+  mpVBoxLayoutExpression->addWidget(mpBtnEditExpression);
+
   mpSpacerExpressionObject = new QSpacerItem(20, 35, QSizePolicy::Minimum, QSizePolicy::Expanding);
   mpVBoxLayoutExpression->addItem(mpSpacerExpressionObject);
   mpHBoxLayoutExpression->addLayout(mpVBoxLayoutExpression);
 
   CQCompartmentLayout->addMultiCellLayout(mpHBoxLayoutExpression, 2, 2, 1, 2);
+
+  // ---
+
   languageChange();
   resize(QSize(460, 364).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
@@ -280,22 +301,28 @@ CQCompartment::CQCompartment(QWidget* parent, const char* name)
   connect(mpBtnNew, SIGNAL(clicked()), this, SLOT(slotBtnNew()));
   connect(mpBtnRevert, SIGNAL(clicked()), this, SLOT(slotBtnRevert()));
   connect(mpComboBoxType, SIGNAL(activated(int)), this, SLOT(slotTypeChanged(int)));
-  connect(mpBtnExpressionObject, SIGNAL(clicked()), mpEditExpression, SLOT(slotSelectObject()));
-  connect(mpEditExpression, SIGNAL(valid(bool)), this, SLOT(slotExpressionValid(bool)));
-  connect(mpEditInitialExpression, SIGNAL(valid(bool)), this, SLOT(slotInitialExpressionValid(bool)));
+
+  connect(mpBtnExpressionObject, SIGNAL(clicked()), ((CQExpressionWidget *)mpEditExpression->widget(0)), SLOT(slotSelectObject()));
+  connect(((CQExpressionWidget *)mpEditExpression->widget(0)), SIGNAL(valid(bool)), this, SLOT(slotExpressionValid(bool)));
+  connect(mpBtnEditExpression, SIGNAL(clicked()), this, SLOT(slotEditExpression()));
+
   connect(mpMetaboliteTable, SIGNAL(doubleClicked(QListViewItem*)), this, SLOT(slotMetaboliteTableCurrentChanged(QListViewItem*)));
-  connect(mpBtnInitialExpressionObject, SIGNAL(clicked()), mpEditInitialExpression, SLOT(slotSelectObject()));
+
+  connect(mpBtnInitialExpressionObject, SIGNAL(clicked()), ((CQExpressionWidget *)mpEditInitialExpression->widget(0)), SLOT(slotSelectObject()));
+  connect(((CQExpressionWidget *)mpEditInitialExpression->widget(0)), SIGNAL(valid(bool)), this, SLOT(slotInitialExpressionValid(bool)));
+  connect(mpBtnEditInitialExpression, SIGNAL(clicked()), this, SLOT(slotEditInitialExpression()));
+
   connect(mpBoxUseInitialExpression, SIGNAL(toggled(bool)), this, SLOT(slotInitialTypeChanged(bool)));
   connect(mpEditName, SIGNAL(lostFocus()), this, SLOT(slotNameLostFocus()));
 
   // tab order
   setTabOrder(mpEditName, mpComboBoxType);
-  setTabOrder(mpComboBoxType, mpEditExpression);
-  setTabOrder(mpEditExpression, mpBtnExpressionObject);
+  setTabOrder(mpComboBoxType, ((CQExpressionWidget *)mpEditExpression->widget(0)));
+  setTabOrder(((CQExpressionWidget *)mpEditExpression->widget(0)), mpBtnExpressionObject);
   setTabOrder(mpBtnExpressionObject, mpEditInitialVolume);
   setTabOrder(mpEditInitialVolume, mpBoxUseInitialExpression);
-  setTabOrder(mpBoxUseInitialExpression, mpEditInitialExpression);
-  setTabOrder(mpEditInitialExpression, mpBtnInitialExpressionObject);
+  setTabOrder(mpBoxUseInitialExpression, ((CQExpressionWidget *)mpEditInitialExpression->widget(0)));
+  setTabOrder(((CQExpressionWidget *)mpEditInitialExpression->widget(0)), mpBtnInitialExpressionObject);
   setTabOrder(mpBtnInitialExpressionObject, mpEditRate);
   setTabOrder(mpEditRate, mpMetaboliteTable);
   setTabOrder(mpMetaboliteTable, mpBtnCommit);
