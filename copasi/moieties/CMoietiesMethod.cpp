@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/moieties/CMoietiesMethod.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/12 02:12:24 $
+//   $Date: 2008/03/31 22:28:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -57,21 +57,15 @@ CMoietiesMethod::~CMoietiesMethod()
 
 // virtual
 bool CMoietiesMethod::process()
+{return true;}
+
+void CMoietiesMethod::setProblem(CMoietiesProblem * pProblem)
 {
-  bool success = true;
+  mpProblem = pProblem;
 
   try
     {
-      success = mpProblem->getModel()->forceCompile(mpCallBack);
+      mpProblem->getModel()->forceCompile(mpCallBack);
     }
 
-  catch (...)
-    {
-      success = false;
-    }
-
-  return success;
-}
-
-void CMoietiesMethod::setProblem(CMoietiesProblem * pProblem)
-{mpProblem = pProblem;}
+  catch (...) {}}
