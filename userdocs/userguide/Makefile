@@ -104,12 +104,14 @@ copasi.xhtml: $(SOURCES) $(IMAGES) copasi_xhtml.xsl
 	@cp images/*.png $@/images
 	(cd $@; \
 	  xsltproc ../copasi_xhtml.xsl ../copasi.xml; \
+	  echo Preparing for mml to png conversion.; \
 	  for f in *.html; do \
-	    echo Fixing XML in $$f; \
-	    sed -e 's/mml://g' \
-                -e 's/ xmlns:mml/ xmlns/g' $$f > $$f.tmp; \
-	    mv $$f.tmp $$f; \
-	  done; \
+	    sed -e 's?<mml:math?\n<mml:math?g' \
+	        -e 's?</mml:math>?</mml:math>\n?g' $$f > $$f.tmp \
+            && mv $$f.tmp $$f; \
+          done; \
+	  ../../../admin/mml2png.php *.html; \
+	  rm *.mml;\
 	cd ..)
 
 copasi.html: copasi.tex $(IMAGES) 
