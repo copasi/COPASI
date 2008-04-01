@@ -1,12 +1,17 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQOptimizationWidget.h,v $
-   $Revision: 1.9 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/28 00:26:44 $
-   End CVS Header */
+  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQOptimizationWidget.h,v $
+  $Revision: 1.10 $
+  $Name:  $
+  $Author: pwilly $
+  $Date: 2008/04/01 00:12:02 $
+  End CVS Header */
 
-// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2006 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -14,7 +19,7 @@
  ** Form interface generated from reading ui file 'CQOptimizationWidget.ui'
  **
  ** Created: Thu Jul 13 13:57:39 2006
- **      by: The User Interface Compiler ($Id: CQOptimizationWidget.h,v 1.9 2006/10/28 00:26:44 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: CQOptimizationWidget.h,v 1.10 2008/04/01 00:12:02 pwilly Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -31,6 +36,7 @@ class QHBoxLayout;
 class QGridLayout;
 class QSpacerItem;
 class CQExpressionWidget;
+class CQExpressionMmlWidgetStack;
 class QToolButton;
 class QLabel;
 class QButtonGroup;
@@ -39,16 +45,29 @@ class QTabWidget;
 class QWidget;
 class CQFittingItemWidget;
 
+/*!
+    \brief The class for user-friendly handling the optimization task.
+
+ This class inherits TaskWidget with specific efforts to handle the optimization process.
+ */
 class CQOptimizationWidget : public TaskWidget
   {
     Q_OBJECT
 
   public:
+    /// Constructor
     CQOptimizationWidget(QWidget* parent = 0, const char* name = 0);
+    /// Destructor
     ~CQOptimizationWidget();
 
-    CQExpressionWidget* mpEditExpression;
+    //CQExpressionWidget* mpEditExpression;
+    CQExpressionMmlWidgetStack *mpEditExpression;
     QToolButton* mpBtnObject;
+    QToolButton *mpBtnEdit;
+    QHBoxLayout *mpHBoxLayoutExpression;
+    QVBoxLayout *mpVBoxLayoutExpression;
+    QSpacerItem *mpSpacerExpressionObject;
+
     QLabel* mpLblType;
     QLabel* mpLblExpression;
     QButtonGroup* mpBtnGroup;
@@ -89,7 +108,10 @@ class CQOptimizationWidget : public TaskWidget
     virtual void languageChange();
 
     void slotPageChange(QWidget * currentPage);
+    /// Slot for validating mathematical formula of Expression
     void slotExpressionValid(bool valid);
+    /// Slot for being activated whenever the Edit button of Expression is clicked
+    void slotEditExpression();
 
   private:
     QPixmap image0;

@@ -1,12 +1,17 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQOptimizationWidget.cpp,v $
-   $Revision: 1.7 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/07/13 18:02:22 $
-   End CVS Header */
+  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQOptimizationWidget.cpp,v $
+  $Revision: 1.8 $
+  $Name:  $
+  $Author: pwilly $
+  $Date: 2008/04/01 00:10:56 $
+  End CVS Header */
 
-// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright ï¿½ 2006 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -14,7 +19,7 @@
  ** Form implementation generated from reading ui file 'CQOptimizationWidget.ui'
  **
  ** Created: Thu Jul 13 13:58:22 2006
- **      by: The User Interface Compiler ($Id: CQOptimizationWidget.cpp,v 1.7 2006/07/13 18:02:22 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: CQOptimizationWidget.cpp,v 1.8 2008/04/01 00:10:56 pwilly Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -36,7 +41,11 @@
 
 #include "TaskWidget.h"
 #include "CQExpressionWidget.h"
+#include "CQExpressionMmlWidgetStack.h"
 #include "CQOptimizationWidget.ui.h"
+
+#include "icons/editIcon.xpm"
+
 static const unsigned char image0_data[] =
   {
     0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d,
@@ -115,15 +124,36 @@ CQOptimizationWidget::CQOptimizationWidget(QWidget* parent, const char* name)
 
   mpGridLayout = new QGridLayout(0, 1, 1, 0, 6, "mpGridLayout");
 
-  mpEditExpression = new CQExpressionWidget(this, "mpEditExpression");
+  // --- expression layout
+  mpHBoxLayoutExpression = new QHBoxLayout(0, 0, 6, "mpHBoxLayoutExpression");
+
+  //mpEditExpression = new CQExpressionWidget(this, "mpEditExpression");
+  mpEditExpression = new CQExpressionMmlWidgetStack(this, "mpEditExpression");
+  //  mpHBoxLayoutExpression->addWidget(mpEditExpression);
 
   mpGridLayout->addMultiCellWidget(mpEditExpression, 0, 1, 1, 2);
+
+  mpVBoxLayoutExpression = new QVBoxLayout(0, 0, 6, "mpVBoxLayoutExpression");
 
   mpBtnObject = new QToolButton(this, "mpBtnObject");
   mpBtnObject->setMaximumSize(QSize(20, 20));
   mpBtnObject->setIconSet(QIconSet(image0));
+  mpVBoxLayoutExpression->addWidget(mpBtnObject);
 
-  mpGridLayout->addWidget(mpBtnObject, 0, 3);
+  mpBtnEdit = new QToolButton(this, "mpBtnObject");
+  mpBtnEdit->setMaximumSize(QSize(20, 20));
+  mpBtnEdit->setPixmap(editIcon);
+  mpVBoxLayoutExpression->addWidget(mpBtnEdit);
+
+  mpSpacerExpressionObject = new QSpacerItem(20, 35, QSizePolicy::Minimum, QSizePolicy::Expanding);
+  mpVBoxLayoutExpression->addItem(mpSpacerExpressionObject);
+  //  mpHBoxLayoutExpression->addLayout(mpVBoxLayoutExpression);
+
+  //mpGridLayout->addWidget(mpBtnObject, 0, 3);
+  mpGridLayout->addLayout(mpVBoxLayoutExpression, 0, 3);
+  //mpGridLayout->addMultiCellLayout(mpHBoxLayoutExpression, 0, 1, 1, 2);
+
+  // ---
 
   mpLblType = new QLabel(this, "mpLblType");
   mpLblType->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)0, (QSizePolicy::SizeType)5, 0, 0, mpLblType->sizePolicy().hasHeightForWidth()));
@@ -170,14 +200,18 @@ CQOptimizationWidget::CQOptimizationWidget(QWidget* parent, const char* name)
   mpConstraintsPage = new QWidget(mpTabWidget, "mpConstraintsPage");
   mpTabWidget->insertTab(mpConstraintsPage, QString::fromLatin1(""));
   CQOptimizationWidgetLayout->addWidget(mpTabWidget);
+
   languageChange();
   resize(QSize(627, 412).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
 
   // signals and slots connections
   connect(mpTabWidget, SIGNAL(currentChanged(QWidget*)), this, SLOT(slotPageChange(QWidget*)));
-  connect(mpEditExpression, SIGNAL(valid(bool)), this, SLOT(slotExpressionValid(bool)));
-  connect(mpBtnObject, SIGNAL(clicked()), mpEditExpression, SLOT(slotSelectObject()));
+
+  connect(mpBtnObject, SIGNAL(clicked()), ((CQExpressionWidget *)mpEditExpression->widget(0)), SLOT(slotSelectObject()));
+  connect(((CQExpressionWidget *)mpEditExpression->widget(0)), SIGNAL(valid(bool)), this, SLOT(slotExpressionValid(bool)));
+  connect(mpBtnEdit, SIGNAL(clicked()), this, SLOT(slotEditExpression()));
+
   init();
 }
 
