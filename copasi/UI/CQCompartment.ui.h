@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQCompartment.ui.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2008/03/29 02:02:15 $
+//   $Date: 2008/04/01 11:22:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -306,7 +306,7 @@ void CQCompartment::showCorrectButtonsExpression()
   // Update Button correlated to Expression Widget
   if (((CQExpressionWidget *)mpEditExpression->widget(0))->text().isEmpty())
     {
-      std::cout << "empty" << std::endl;
+      std::cout << "expression empty" << std::endl;
 
       std::cout << "simulation type: " << mpComboBoxType->currentItem() << std::endl;
       // show the button of object selector
@@ -316,7 +316,7 @@ void CQCompartment::showCorrectButtonsExpression()
     }
   else
     {// not empty
-      std::cout << "not empty -> " << ((CQExpressionWidget *)mpEditExpression->widget(0))->text() << std::endl;
+      std::cout << "expression not empty -> " << ((CQExpressionWidget *)mpEditExpression->widget(0))->text() << std::endl;
       // hide the button of object selector
       mpBtnExpressionObject->hide();
       // show the button of expression editor
@@ -359,7 +359,7 @@ void CQCompartment::showCorrectButtonsInitialExpression()
   // Update Button correlated to Initial Expression Widget
   if (((CQExpressionWidget *)mpEditInitialExpression->widget(0))->text().isEmpty())  // widget is empty
     {
-      std::cout << "initial widget is empty" << std::endl;
+      std::cout << "initial widget empty" << std::endl;
 
       // show the button of object selector
       mpBtnInitialExpressionObject->show();
@@ -368,7 +368,7 @@ void CQCompartment::showCorrectButtonsInitialExpression()
     }
   else // not empty
     {
-      std::cout << "initial widget is not empty" << std::endl;
+      std::cout << "initial widget not empty -> " << ((CQExpressionWidget *)mpEditInitialExpression->widget(0))->text() << std::endl;
       // hide the button of object selector
       mpBtnInitialExpressionObject->hide();
       // show the button of expression editor
@@ -444,7 +444,17 @@ bool CQCompartment::enter(const std::string & key)
 bool CQCompartment::leave()
 {
   if (mpBtnCommit->isEnabled())
-    save();
+    {
+      // -- Expression --
+      showCorrectButtonsExpression();
+      mpEditExpression->updateExpressionWidget();
+
+      // -- Initial Expression --
+      showCorrectButtonsInitialExpression();
+      mpEditInitialExpression->updateExpressionWidget();
+
+      save();
+    }
 
   return true;
 }
@@ -510,8 +520,14 @@ void CQCompartment::load()
 
   // Expression
   ((CQExpressionWidget *)mpEditExpression->widget(0))->setExpression(mpCompartment->getExpression());
+  std::cout << "EXP: " << ((CQExpressionWidget *)mpEditExpression->widget(0))->getExpression() << std::endl;
   slotTypeChanged(mpComboBoxType->currentItem());
   mpEditExpression->updateExpressionWidget();
+
+  // Initial Expression
+  ((CQExpressionWidget *)mpEditInitialExpression->widget(0))->setExpression(mpCompartment->getInitialExpression());
+  std::cout << "INIT EXP: " << ((CQExpressionWidget *)mpEditInitialExpression->widget(0))->getExpression() << std::endl;
+  mpEditInitialExpression->updateExpressionWidget();
 
   // Use Initial Expression
   if (mpCompartment->getStatus() == CModelEntity::ASSIGNMENT ||
@@ -525,9 +541,6 @@ void CQCompartment::load()
       mpBoxUseInitialExpression->setChecked(true);
       // slotInitialTypeChanged(true);
     }
-
-  // Initial Expression
-  ((CQExpressionWidget *)mpEditInitialExpression->widget(0))->setExpression(mpCompartment->getInitialExpression());
 
   loadMetaboliteTable();
 
