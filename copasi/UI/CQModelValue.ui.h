@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQModelValue.ui.h,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2008/04/01 11:22:57 $
+//   $Date: 2008/04/01 11:23:20 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -435,7 +435,6 @@ void CQModelValue::load()
   // Expression
   //  mpEditExpression->setExpression(mpModelValue->getExpression());
   ((CQExpressionWidget *)mpEditExpression->widget(0))->setExpression(mpModelValue->getExpression());
-  //  std::cout << "EXP: " << mpModelValue->getExpression() << " vs " << ((CQExpressionWidget *)mpEditExpression->widget(0))->getExpression() << std::endl;
   std::cout << "EXP: " << ((CQExpressionWidget *)mpEditExpression->widget(0))->getExpression() << std::endl;
   slotTypeChanged(mpComboBoxType->currentItem());
   /*
