@@ -1,10 +1,10 @@
-﻿<bibliography>
+<bibliography>
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_bibliography.xml,v $ -->
-<!--   $Revision: 1.7 $ -->
+<!--   $Revision: 1.8 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: shoops $ -->
-<!--   $Date: 2008/03/12 00:35:04 $ -->
+<!--   $Date: 2008/04/01 20:24:53 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -49,11 +49,11 @@ This may be used as a template:
   </biblioentry>
 -->
 
- <title>Bibliography</title>
+ <title id="bibliography">Bibliography</title>
  <bibliodiv>
-  <title>References </title>
+  <title id="references">References</title>
 
-  <biblioentry id="Baeck93" xreflabel="Baeck93">
+  <biblioentry id="Baeck93" xreflabel="Baeck93" abbrev="Baeck93">
    <authorgroup>
     <author>
      <firstname>T.</firstname>
@@ -74,7 +74,7 @@ This may be used as a template:
    <pubdate>1997</pubdate>
   </biblioentry>
 
-  <biblioentry id="Baeck97" xreflabel="Baeck97">
+  <biblioentry id="Baeck97" xreflabel="Baeck97" abbrev="Baeck97">
    <authorgroup>
     <author>
      <firstname>T.</firstname>
@@ -97,7 +97,7 @@ This may be used as a template:
    <pubdate>1997</pubdate>
   </biblioentry>
 
-  <biblioentry id="Bell66" xreflabel="Bell66">
+  <biblioentry id="Bell66" xreflabel="Bell66" abbrev="Bell66">
    <authorgroup>
     <author>
      <firstname>M.</firstname>
@@ -118,7 +118,7 @@ This may be used as a template:
    <pubdate>1966</pubdate>
   </biblioentry>
 
-  <biblioentry id="Burns85" xreflabel="Burns85">
+  <biblioentry id="Burns85" xreflabel="Burns85" abbrev="Burns85">
    <authorgroup>
     <author>
      <firstname>J.A.</firstname>
@@ -178,7 +178,7 @@ This may be used as a template:
    <pubdate>1985</pubdate>
   </biblioentry>
 
-  <biblioentry id="Corana87" xreflabel="Corana87">
+  <biblioentry id="Corana87" xreflabel="Corana87" abbrev="Corana87">
    <authorgroup>
     <author>
      <firstname>A.</firstname>
@@ -207,7 +207,7 @@ This may be used as a template:
    <pubdate>1987</pubdate>
   </biblioentry>
 
-  <biblioentry id="Fletcher87" xreflabel="Fletcher87">
+  <biblioentry id="Fletcher87" xreflabel="Fletcher87" abbrev="Fletcher87">
    <author>
     <firstname>R.</firstname>
     <surname>Fletcher</surname>
@@ -220,7 +220,7 @@ This may be used as a template:
    <pubdate>1987</pubdate>
   </biblioentry>
 
-  <biblioentry id="Fogel92" xreflabel="Fogel92">
+  <biblioentry id="Fogel92" xreflabel="Fogel92" abbrev="Fogel92">
    <authorgroup>
     <author>
      <firstname>D.B.</firstname>
@@ -245,7 +245,7 @@ This may be used as a template:
    <pubdate>1992</pubdate>
   </biblioentry>
 
-  <biblioentry id="Gibson00" xreflabel="Gibson00">
+  <biblioentry id="Gibson00" xreflabel="Gibson00" abbrev="Gibson00">
    <authorgroup>
     <author>
      <firstname>M.A.</firstname>
@@ -266,7 +266,7 @@ This may be used as a template:
    <pubdate>2000</pubdate>
   </biblioentry>
 
-  <biblioentry id="Giersch88" xreflabel="Giersch88">
+  <biblioentry id="Giersch88" xreflabel="Giersch88" abbrev="Giersch88">
    <author>
     <firstname>C.</firstname>
     <surname>Giersch</surname>
@@ -281,7 +281,7 @@ This may be used as a template:
    <pubdate>1988</pubdate>
   </biblioentry>
 
-  <biblioentry id="Gillespie76" xreflabel="Gillespie76">
+  <biblioentry id="Gillespie76" xreflabel="Gillespie76" abbrev="Gillespie76">
    <author>
     <firstname>D.T.</firstname>
     <surname>Gillespie</surname>
@@ -296,7 +296,7 @@ This may be used as a template:
    <pubdate>1976</pubdate>
   </biblioentry>
 
-  <biblioentry id="Goldberg89" xreflabel="Goldberg89">
+  <biblioentry id="Goldberg89" xreflabel="Goldberg89" abbrev="Goldberg89">
    <author>
     <firstname>D.E.</firstname>
     <surname>Goldberg</surname>
@@ -309,7 +309,7 @@ This may be used as a template:
    <pubdate>1989</pubdate>
   </biblioentry>
 
-  <biblioentry id="Goldfeld66" xreflabel="Goldfeld66">
+  <biblioentry id="Goldfeld66" xreflabel="Goldfeld66" abbrev="Goldfeld66">
    <authorgroup>
     <author>
      <firstname>S. M.</firstname>
@@ -332,7 +332,7 @@ This may be used as a template:
    <pubdate>1966</pubdate>
   </biblioentry>
 
-  <biblioentry id="Heinrich74" xreflabel="Heinrich74">
+  <biblioentry id="Heinrich74" xreflabel="Heinrich74" abbrev="Heinrich74">
    <authorgroup>
     <author>
      <firstname>R.</firstname>
@@ -353,7 +353,7 @@ This may be used as a template:
    <pubdate>1974</pubdate>
   </biblioentry>
 
-  <biblioentry id="Heinrich75" xreflabel="Heinrich75">
+  <biblioentry id="Heinrich75" xreflabel="Heinrich75" abbrev="Heinrich75">
    <authorgroup>
     <author>
      <firstname>R.</firstname>
@@ -375,7 +375,7 @@ This may be used as a template:
   </biblioentry>
 	
 
-  <biblioentry id="Hindmarsh83" xreflabel="Hindmarsh83">
+  <biblioentry id="Hindmarsh83" xreflabel="Hindmarsh83" abbrev="Hindmarsh83">
    <author>
     <firstname>A.C.</firstname>
     <surname>Hindmarsh</surname>
@@ -391,7 +391,7 @@ This may be used as a template:
    <pubdate>1983</pubdate>
   </biblioentry>
 
-  <biblioentry id="Hooke61" xreflabel="Hooke61">
+  <biblioentry id="Hooke61" xreflabel="Hooke61" abbrev="Hooke61">
    <authorgroup>
     <author>
      <firstname>R.</firstname>
@@ -412,7 +412,7 @@ This may be used as a template:
    <pubdate>1961</pubdate>
   </biblioentry>
 
-  <biblioentry id="Kacser73" xreflabel="Kacser73">
+  <biblioentry id="Kacser73" xreflabel="Kacser73" abbrev="Kacser73">
    <authorgroup>
     <author>
      <firstname> H.</firstname>
@@ -432,7 +432,7 @@ This may be used as a template:
    <pubdate>1973</pubdate>
   </biblioentry>
 
-  <biblioentry id="Kaupe63" xreflabel="Kaupe63">
+  <biblioentry id="Kaupe63" xreflabel="Kaupe63" abbrev="Kaupe63">
    <author>
     <firstname></firstname>
     <surname>Kaupe</surname>
@@ -447,7 +447,7 @@ This may be used as a template:
    <pubdate>1963</pubdate>
   </biblioentry>
 
-  <biblioentry id="Kennedy95" xreflabel="Kennedy95">
+  <biblioentry id="Kennedy95" xreflabel="Kennedy95" abbrev="Kennedy95">
    <authorgroup>
     <author>
      <firstname>J.</firstname>
@@ -467,7 +467,7 @@ This may be used as a template:
    <pubdate>1995</pubdate>
   </biblioentry>
 
-  <biblioentry id="Kirkpatrick83" xreflabel="Kirkpatrick83">
+  <biblioentry id="Kirkpatrick83" xreflabel="Kirkpatrick83" abbrev="Kirkpatrick83">
    <authorgroup>
     <author>
      <firstname>S.</firstname>
@@ -491,7 +491,7 @@ This may be used as a template:
    <pubdate>1983</pubdate>
   </biblioentry>
 
-  <biblioentry id="Levenberg44" xreflabel="Levenberg44">
+  <biblioentry id="Levenberg44" xreflabel="Levenberg44" abbrev="Levenberg44">
    <author>
     <firstname>K.</firstname>
     <surname>Levenberg</surname>
@@ -506,7 +506,7 @@ This may be used as a template:
    <pubdate>1944</pubdate>
   </biblioentry>
 
-  <biblioentry id="Maier91" xreflabel="Maier91">
+  <biblioentry id="Maier91" xreflabel="Maier91" abbrev="Maier91">
    <author>
     <firstname>W.L.</firstname>
     <surname>Maier</surname>
@@ -520,7 +520,7 @@ This may be used as a template:
    <pubdate>1991</pubdate>
   </biblioentry>
 
-  <biblioentry id="Marquardt63" xreflabel="Marquardt63">
+  <biblioentry id="Marquardt63" xreflabel="Marquardt63" abbrev="Marquardt63">
    <author>
     <firstname>D.W.</firstname>
     <surname>Marquardt</surname>
@@ -535,7 +535,7 @@ This may be used as a template:
    <pubdate>1963</pubdate>
   </biblioentry>
 
-  <biblioentry id="Matsumoto98" xreflabel="Matsumoto98">
+  <biblioentry id="Matsumoto98" xreflabel="Matsumoto98" abbrev="Matsumoto98">
    <authorgroup>
     <author>
      <firstname>M.</firstname>
@@ -554,7 +554,7 @@ This may be used as a template:
    <pubdate>1998</pubdate>
   </biblioentry>
 
-  <biblioentry id="Michalewicz94" xreflabel="Michalewicz94">
+  <biblioentry id="Michalewicz94" xreflabel="Michalewicz94" abbrev="Michalewicz94">
    <author>
     <firstname>Z.</firstname>
     <surname>Michalewicz</surname>
@@ -567,7 +567,7 @@ This may be used as a template:
    <pubdate>1994</pubdate>
   </biblioentry>
 
-  <biblioentry id="Mitchell95" xreflabel="Mitchell95">
+  <biblioentry id="Mitchell95" xreflabel="Mitchell95" abbrev="Mitchell95">
    <author>
     <firstname>M.</firstname>
     <surname>Mitchell</surname>
@@ -577,7 +577,7 @@ This may be used as a template:
    <pubdate>1995</pubdate>
   </biblioentry>
 
-  <biblioentry id="Petzold83" xreflabel="Petzold83">
+  <biblioentry id="Petzold83" xreflabel="Petzold83" abbrev="Petzold83">
    <author>
     <firstname>L.</firstname>
     <surname>Petzold</surname>
@@ -592,7 +592,7 @@ This may be used as a template:
    <pubdate>1983</pubdate>
   </biblioentry>
 
-  <biblioentry id="Nelder65" xreflabel="Nelder65">
+  <biblioentry id="Nelder65" xreflabel="Nelder65" abbrev="Nelder65">
    <authorgroup>
     <author>
      <firstname>J. A.</firstname>
@@ -613,7 +613,7 @@ This may be used as a template:
   </biblioentry>
 
 
-  <biblioentry id="Reder88" xreflabel="Reder88">
+  <biblioentry id="Reder88" xreflabel="Reder88" abbrev="Reder88">
     <author>
       <firstname>C.</firstname>
       <surname>Reder</surname>
@@ -628,7 +628,7 @@ This may be used as a template:
   </biblioentry>
   
   
-  <biblioentry id="Runarsson00" xreflabel="Runarsson00">
+  <biblioentry id="Runarsson00" xreflabel="Runarsson00" abbrev="Runarsson00">
    <authorgroup>
     <author>
      <firstname>T.</firstname>
@@ -648,7 +648,7 @@ This may be used as a template:
    <pubdate>2000</pubdate>
   </biblioentry>
 
-  <biblioentry id="Swann72" xreflabel="Swann72">
+  <biblioentry id="Swann72" xreflabel="Swann72" abbrev="Swann72">
    <author>
     <firstname>W.H.</firstname>
     <surname>Swann</surname>
@@ -662,7 +662,7 @@ This may be used as a template:
    <pubdate>1972</pubdate>
   </biblioentry>
 
-  <biblioentry id="Vallabhajosyula06" xreflabel="Vallabhajosyula06">
+  <biblioentry id="Vallabhajosyula06" xreflabel="Vallabhajosyula06" abbrev="Vallabhajosyula06">
     <authorgroup>
       <author>
         <firstname>R. R.</firstname>
@@ -686,7 +686,7 @@ This may be used as a template:
     <pubdate>2006</pubdate>
   </biblioentry>
   
-  <biblioentry id="Westerhoff84" xreflabel="Westerhoff84">
+  <biblioentry id="Westerhoff84" xreflabel="Westerhoff84" abbrev="Westerhoff84">
    <authorgroup>
     <author>
      <firstname>H.V.</firstname>
@@ -706,7 +706,7 @@ This may be used as a template:
    <pubdate>1984</pubdate>
   </biblioentry>
 
-  <biblioentry id="Wolf85" xreflabel="Wolf85">
+  <biblioentry id="Wolf85" xreflabel="Wolf85" abbrev="Wolf85">
     <authorgroup>
       <author>
         <firstname>A.</firstname>
