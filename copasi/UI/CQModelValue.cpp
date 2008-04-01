@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQModelValue.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2008/03/28 20:44:59 $
+//   $Date: 2008/04/01 11:50:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,7 +19,7 @@
  ** Form implementation generated from reading ui file 'CQModelValue.ui'
  **
  ** Created: Tue Nov 13 09:15:21 2007
- **      by: The User Interface Compiler ($Id: CQModelValue.cpp,v 1.8 2008/03/28 20:44:59 pwilly Exp $)
+ **      by: The User Interface Compiler ($Id: CQModelValue.cpp,v 1.9 2008/04/01 11:50:15 pwilly Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -204,11 +204,8 @@ CQModelValue::CQModelValue(QWidget* parent, const char* name)
 
   mpHBoxLayoutExpression = new QHBoxLayout(0, 0, 6, "mpHBoxLayoutExpression");
 
-  // mpEditExpression = new CQExpressionWidget(this, "mpEditExpression");
-  // mpHBoxLayoutExpression->addWidget(mpEditExpression);
-
-  mpEditFcnExpression = new CQExpressionMmlWidgetStack(this, "mpEditFcnExpression");
-  mpHBoxLayoutExpression->addWidget(mpEditFcnExpression);
+  mpEditExpression = new CQExpressionMmlWidgetStack(this, "mpEditExpression");
+  mpHBoxLayoutExpression->addWidget(mpEditExpression);
 
   // --- vertical box layout ---
   mpVBoxLayoutExpression = new QVBoxLayout(0, 0, 6, "mpVBoxLayoutExpression");
@@ -266,11 +263,8 @@ CQModelValue::CQModelValue(QWidget* parent, const char* name)
 
   mpHBoxLayoutInitialExpression = new QHBoxLayout(0, 0, 6, "mpHBoxLayoutInitialExpression");
 
-  // mpEditInitialExpression = new CQExpressionWidget(this, "mpEditInitialExpression");
-  // mpEditInitialExpression->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)5, 0, 0, mpEditInitialExpression->sizePolicy().hasHeightForWidth()));
-  // mpHBoxLayoutInitialExpression->addWidget(mpEditInitialExpression);
-  mpEditFcnInitialExpression = new CQExpressionMmlWidgetStack(this, "mpEditFcnInitialExpression");
-  mpHBoxLayoutInitialExpression->addWidget(mpEditFcnInitialExpression);
+  mpEditInitialExpression = new CQExpressionMmlWidgetStack(this, "mpEditInitialExpression");
+  mpHBoxLayoutInitialExpression->addWidget(mpEditInitialExpression);
 
   // --- vertical box layout ---
   mpVBoxLayoutInitialExpression = new QVBoxLayout(0, 0, 6, "mpVBoxLayoutInitialExpression");
@@ -316,17 +310,13 @@ CQModelValue::CQModelValue(QWidget* parent, const char* name)
   connect(mpBtnNew, SIGNAL(clicked()), this, SLOT(slotBtnNew()));
   connect(mpBtnRevert, SIGNAL(clicked()), this, SLOT(slotBtnRevert()));
   connect(mpComboBoxType, SIGNAL(activated(int)), this, SLOT(slotTypeChanged(int)));
-  //  connect(mpBtnExpressionObject, SIGNAL(clicked()), mpEditExpression, SLOT(slotSelectObject()));
-  //  connect(mpEditExpression, SIGNAL(valid(bool)), this, SLOT(slotExpressionValid(bool)));
-  connect(mpBtnExpressionObject, SIGNAL(clicked()), ((CQExpressionWidget *)mpEditFcnExpression->widget(0)), SLOT(slotSelectObject()));
-  connect(((CQExpressionWidget *)mpEditFcnExpression->widget(0)), SIGNAL(valid(bool)), this, SLOT(slotExpressionValid(bool)));
-  //  connect(mpBtnEditExpression, SIGNAL(clicked()), mpEditFcnExpression, SLOT(slotEditExpression()));
-  connect(mpBtnEditExpression, SIGNAL(clicked()), this, SLOT(slotEditExpression()));
-  //  connect(mpBtnInitialExpressionObject, SIGNAL(clicked()), mpEditInitialExpression, SLOT(slotSelectObject()));
-  //  connect(mpEditInitialExpression, SIGNAL(valid(bool)), this, SLOT(slotInitialExpressionValid(bool)));
-  connect(mpBtnInitialExpressionObject, SIGNAL(clicked()), ((CQExpressionWidget *)mpEditFcnInitialExpression->widget(0)), SLOT(slotSelectObject()));
-  connect(((CQExpressionWidget *)mpEditFcnInitialExpression->widget(0)), SIGNAL(valid(bool)), this, SLOT(slotInitialExpressionValid(bool)));
 
+  connect(mpBtnExpressionObject, SIGNAL(clicked()), ((CQExpressionWidget *)mpEditExpression->widget(0)), SLOT(slotSelectObject()));
+  connect(((CQExpressionWidget *)mpEditExpression->widget(0)), SIGNAL(valid(bool)), this, SLOT(slotExpressionValid(bool)));
+  connect(mpBtnEditExpression, SIGNAL(clicked()), this, SLOT(slotEditExpression()));
+
+  connect(mpBtnInitialExpressionObject, SIGNAL(clicked()), ((CQExpressionWidget *)mpEditInitialExpression->widget(0)), SLOT(slotSelectObject()));
+  connect(((CQExpressionWidget *)mpEditInitialExpression->widget(0)), SIGNAL(valid(bool)), this, SLOT(slotInitialExpressionValid(bool)));
   connect(mpBtnEditInitialExpression, SIGNAL(clicked()), this, SLOT(slotEditInitialExpression()));
 
   connect(mpBoxUseInitialExpression, SIGNAL(toggled(bool)), this, SLOT(slotInitialTypeChanged(bool)));
@@ -334,14 +324,12 @@ CQModelValue::CQModelValue(QWidget* parent, const char* name)
 
   // tab order
   setTabOrder(mpEditName, mpComboBoxType);
-  //  setTabOrder(mpComboBoxType, mpEditExpression);
-  //  setTabOrder(mpEditExpression, mpBtnExpressionObject);
-  //  setTabOrder(mpComboBoxType, mpEditFcnExpression);
-  //  setTabOrder(mpEditFcnExpression, mpBtnExpressionObject);
+  setTabOrder(mpComboBoxType, ((CQExpressionWidget *)mpEditExpression->widget(0)));
+  setTabOrder(((CQExpressionWidget *)mpEditExpression->widget(0)), mpBtnExpressionObject);
   setTabOrder(mpBtnExpressionObject, mpEditInitialValue);
   setTabOrder(mpEditInitialValue, mpBoxUseInitialExpression);
-  //  setTabOrder(mpBoxUseInitialExpression, mpEditInitialExpression);
-  //  setTabOrder(mpEditInitialExpression, mpBtnInitialExpressionObject);
+  setTabOrder(mpBoxUseInitialExpression, ((CQExpressionWidget *)mpEditInitialExpression->widget(0)));
+  setTabOrder(((CQExpressionWidget *)mpEditInitialExpression->widget(0)), mpBtnInitialExpressionObject);
   setTabOrder(mpBtnInitialExpressionObject, mpEditRate);
   setTabOrder(mpEditRate, mpBtnCommit);
   setTabOrder(mpBtnCommit, mpBtnRevert);

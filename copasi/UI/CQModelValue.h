@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQModelValue.h,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2008/03/28 20:45:06 $
+//   $Date: 2008/04/01 11:49:27 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,7 +19,7 @@
  ** Form interface generated from reading ui file 'CQModelValue.ui'
  **
  ** Created: Tue Nov 13 09:15:09 2007
- **      by: The User Interface Compiler ($Id: CQModelValue.h,v 1.10 2008/03/28 20:45:06 pwilly Exp $)
+ **      by: The User Interface Compiler ($Id: CQModelValue.h,v 1.11 2008/04/01 11:49:27 pwilly Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -38,7 +38,6 @@ class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
 class QSpacerItem;
-class CQExpressionWidget;
 class QFrame;
 class QPushButton;
 class QComboBox;
@@ -48,11 +47,15 @@ class QCheckBox;
 class QToolButton;
 class CQExpressionWidget;
 class CQExpressionMmlWidgetStack;
-class FunctionWidget2;
-//class Form1;
 class CModelValue;
 class CExpression;
 
+/*!
+    \brief The class for user-friendly organising all values of a chosen global quantity.
+
+ This class inherits CopasiWidget to provide an ability for editing and displaying
+ all values of a chosen global quantity.
+ */
 class CQModelValue : public CopasiWidget
   {
     Q_OBJECT
@@ -82,12 +85,14 @@ class CQModelValue : public CopasiWidget
     QLineEdit* mpEditInitialValue;
     QCheckBox* mpBoxUseInitialExpression;
     QLabel* mpLblInitialExpression;
+
     // CQExpressionWidget* mpEditInitialExpression;
-    CQExpressionMmlWidgetStack *mpEditFcnInitialExpression;
+    CQExpressionMmlWidgetStack *mpEditInitialExpression;
     QToolButton* mpBtnInitialExpressionObject;
     QToolButton *mpBtnEditInitialExpression;
+
     // CQExpressionWidget* mpEditExpression;
-    CQExpressionMmlWidgetStack *mpEditFcnExpression;
+    CQExpressionMmlWidgetStack *mpEditExpression;
     QToolButton* mpBtnExpressionObject;
     QToolButton *mpBtnEditExpression;
 
@@ -146,7 +151,7 @@ class CQModelValue : public CopasiWidget
     void slotTypeChanged(int type);
     /// Slot for being activated whenever the Use Initial Expression check box is checked
     void slotInitialTypeChanged(bool useInitialAssignment);
-    /// Slot for being activated whenever
+    /// Slot for being activated whenever the line edit mpEditName has lost focus
     void slotNameLostFocus();
     /// Slot for validating mathematical formula of Expression
     void slotExpressionValid(bool valid);
