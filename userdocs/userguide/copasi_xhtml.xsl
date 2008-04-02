@@ -158,7 +158,7 @@
   
   <xsl:template match="citation">
     <!-- todo: integrate with bibliography collection -->
-    <xsl:variable name="targets" select="(//biblioentry | //bibliomixed)[@abbrev=string(current())]"/>
+    <xsl:variable name="targets" select="(//biblioentry | //bibliomixed)[abbrev=string(current())]"/>
     <xsl:variable name="target" select="$targets[1]"/>
   
     <xsl:choose>
@@ -167,22 +167,20 @@
   
         <xsl:text>[</xsl:text>
         <a>
-          <xsl:apply-templates select="." mode="class.attribute"/>
           <xsl:attribute name="href">
             <xsl:call-template name="href.target">
               <xsl:with-param name="object" select="$target"/>
             </xsl:call-template>
           </xsl:attribute>
   
-  	<xsl:choose>
-  	  <xsl:when test="$bibliography.numbered != 0">
-  	    <xsl:apply-templates select="$target" mode="citation"/>
-  	  </xsl:when>
-  	  <xsl:otherwise>
-  	    <xsl:call-template name="inline.charseq"/>
-  	  </xsl:otherwise>
-  	</xsl:choose>
-  
+	  	  <xsl:choose>
+	  	    <xsl:when test="$bibliography.numbered != 0">
+	  	      <xsl:apply-templates select="$target" mode="citation"/>
+	  	    </xsl:when>
+	  	    <xsl:otherwise>
+        	  <xsl:call-template name="inline.charseq"/>
+	  	    </xsl:otherwise>
+	  	  </xsl:choose>
         </a>
         <xsl:text>]</xsl:text>
       </xsl:when>
