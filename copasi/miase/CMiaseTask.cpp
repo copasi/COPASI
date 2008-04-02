@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/miase/CMiaseTask.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: aruff $
-//   $Date: 2008/03/23 20:39:15 $
+//   $Author: akoenig $
+//   $Date: 2008/04/02 12:14:39 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -46,7 +46,8 @@ CMiaseTask::CMiaseTask() : CMiaseBaseEnhanced()
 
 CMiaseTask::~CMiaseTask()
 {
-  mListOfMeasurements.clear();
+  //TODO:
+  //delete content of following vector:  mListOfMeasurements
 }
 
 void CMiaseTask::addMeasurement (CMiaseMeasurementData* measurement)

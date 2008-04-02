@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/miase/CMiaseParser.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: aruff $
-//   $Date: 2008/03/23 20:39:15 $
+//   $Author: akoenig $
+//   $Date: 2008/04/02 12:14:39 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -61,6 +61,7 @@ class CMiaseParser
 
     void load(std::string filename);
 
+    void testDataStructure();
   protected:
 
   private:
@@ -101,14 +102,14 @@ class CMiaseParser
     std::string mContent;
     std::vector< std::vector<std::string> > mAllowedStateTags;
 
-    void startElement(void *data, const char *el, const char **attr);
+    void startElement(const char *el, const char **attr);
 
-    void endElement(void *data, const char *el);
+    void endElement(const char *el);
 
-    void xmlDecl(void *userData, const XML_Char *version,
-                 const XML_Char *encoding, int standalone);
+    void xmlDecl(const XML_Char *version,
+                 const XML_Char *encoding);
 
-    void xmlNameSpace(void *userData, const XML_Char *prefix,
+    void xmlNameSpace(void *, const XML_Char *prefix,
                       const XML_Char *uri);
 
     void newContent(const XML_Char *s, int len);

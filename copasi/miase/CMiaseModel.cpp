@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/miase/CMiaseModel.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: aruff $
-//   $Date: 2008/03/23 20:39:15 $
+//   $Author: akoenig $
+//   $Date: 2008/04/02 12:14:39 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,7 +19,7 @@ CMiaseChange::CMiaseChange() : CMiaseBase()
 CMiaseChange::~CMiaseChange()
 {}
 
-std::string CMiaseChange::returnTarget()
+std::string CMiaseChange::getTarget()
 {
   return mTarget;
 }
@@ -44,7 +44,7 @@ CMiaseChange::TYPE CMiaseChangeAttribute::getType()
   return mType;
 }
 
-std::string CMiaseChangeAttribute::returnNewValue()
+std::string CMiaseChangeAttribute::getNewValue()
 {
   return mNewValue;
 }
@@ -69,7 +69,7 @@ CMiaseChange::TYPE CMiaseChangeMath::getType()
   return mType;
 }
 
-std::string CMiaseChangeMath::returnNewMath()
+std::string CMiaseChangeMath::getNewMath()
 {
   return mNewMath;
 }
@@ -86,7 +86,8 @@ CMiaseModel::CMiaseModel() : CMiaseBaseEnhanced()
 
 CMiaseModel::~CMiaseModel()
 {
-  mListOfChanges.clear();
+  //TODO:
+  //delete content of following vector:  mListOfChanges
 }
 
 std::string CMiaseModel::getType()
@@ -124,4 +125,8 @@ CMiaseChange* CMiaseModel::getLastChange()
   return mListOfChanges[ mListOfChanges.size() - 1];
 }
 
+int CMiaseModel::getNumOfChanges()
+{
+  return mListOfChanges.size();
+}
 //*****************************************************************************

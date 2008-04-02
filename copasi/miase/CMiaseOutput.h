@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/miase/CMiaseOutput.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: akoenig $
-//   $Date: 2008/03/20 18:33:37 $
+//   $Date: 2008/04/02 12:14:39 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,6 +15,7 @@
 #define CMIASEOUTPUT
 
 #include "CMiaseBase.h"
+#include <string>
 
 class CMiaseColumn : public CMiaseBase
   {
@@ -82,10 +83,14 @@ class CMiaseOutput : public CMiaseBaseEnhanced
     CMiasePlot2D* getPlot2D(int num);
     CMiasePlot2D* getLastPlot2D();
 
+    void saveWholeOutput(std::string output);
+    std::string getWholeOutput();
+
   private:
 
     std::vector < CMiaseColumn* > mListOfColumns;
     std::vector < CMiasePlot2D* > mListOfPlots;
+    std::string mWholeOutput;
   };
 
 #endif //CMIASEOUTPUT

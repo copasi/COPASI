@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/miase/CMiaseOutput.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: akoenig $
-//   $Date: 2008/03/20 18:33:37 $
+//   $Date: 2008/04/02 12:14:39 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -94,7 +94,8 @@ CMiaseOutput::CMiaseOutput() : CMiaseBaseEnhanced()
 
 CMiaseOutput::~CMiaseOutput()
 {
-  mListOfColumns.clear();
+  //TODO:
+  //delete content of following vector:  mListOfColumns, mListOfPlots
 }
 
 void CMiaseOutput::addColumn (CMiaseColumn* column)
@@ -125,4 +126,14 @@ CMiasePlot2D* CMiaseOutput::getPlot2D(int num)
 CMiasePlot2D* CMiaseOutput::getLastPlot2D()
 {
   return mListOfPlots[ mListOfPlots.size() ];
+}
+
+void CMiaseOutput::saveWholeOutput(std::string output)
+{
+  mWholeOutput = output;
+}
+
+std::string CMiaseOutput::getWholeOutput()
+{
+  return mWholeOutput;
 }

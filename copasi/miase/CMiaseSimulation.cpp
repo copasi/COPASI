@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/miase/CMiaseSimulation.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: akoenig $
-//   $Date: 2008/03/20 18:33:36 $
+//   $Date: 2008/04/02 12:14:39 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,22 +27,22 @@ CMiaseUniformTimeCourse::CMiaseUniformTimeCourse() : CMiaseSimulation()
 CMiaseUniformTimeCourse::~CMiaseUniformTimeCourse()
 {}
 
-double CMiaseUniformTimeCourse::returnInitialTime()
+double CMiaseUniformTimeCourse::getInitialTime()
 {
   return mInitialTime;
 }
 
-double CMiaseUniformTimeCourse::returnOutputStartTime()
+double CMiaseUniformTimeCourse::getOutputStartTime()
 {
   return mOutputStartTime;
 }
 
-double CMiaseUniformTimeCourse::returnOutputEndTime()
+double CMiaseUniformTimeCourse::getOutputEndTime()
 {
   return mOutputEndTime;
 }
 
-int CMiaseUniformTimeCourse::returnNumberOfPoints()
+int CMiaseUniformTimeCourse::getNumberOfPoints()
 {
   return mNumberOfPoints;
 }

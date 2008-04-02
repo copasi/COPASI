@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/miase/CMiaseModel.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: akoenig $
-//   $Date: 2008/03/20 18:33:37 $
+//   $Date: 2008/04/02 12:14:39 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,7 +25,7 @@ class CMiaseChange : public CMiaseBase
 
     ~CMiaseChange();
 
-    std::string returnTarget();
+    std::string getTarget();
 
     void setTarget(std::string target);
 
@@ -49,7 +49,7 @@ class CMiaseChangeAttribute : public CMiaseChange
 
     ~CMiaseChangeAttribute();
 
-    std::string returnNewValue();
+    std::string getNewValue();
 
     void setNewValue(std::string newValue);
 
@@ -69,7 +69,7 @@ class CMiaseChangeMath : public CMiaseChange
 
     ~CMiaseChangeMath();
 
-    std::string returnNewMath();
+    std::string getNewMath();
 
     void setNewMath(std::string newMath);
 
@@ -99,6 +99,7 @@ class CMiaseModel : public CMiaseBaseEnhanced
 
     CMiaseChange* getChange(int num);
     CMiaseChange* getLastChange();
+    int getNumOfChanges();
 
   private:
 
