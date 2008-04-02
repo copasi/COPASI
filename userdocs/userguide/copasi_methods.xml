@@ -1,10 +1,10 @@
 <chapter id="methods" xreflabel="Methods">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_methods.xml,v $ -->
-<!--   $Revision: 1.15 $ -->
+<!--   $Revision: 1.16 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: shoops $ -->
-<!--   $Date: 2008/03/27 20:41:19 $ -->
+<!--   $Date: 2008/04/02 22:11:07 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -310,6 +310,7 @@ This unsigned integer is used as random seed in the calculations, if the flag Us
 </sect3>
 </sect2>
 </sect1>
+
 <sect1 id="methodSteadyState" xreflabel="Steady State">
 <title>Steady State Calculation</title>
 <para>
@@ -586,6 +587,7 @@ Note that this value is interpreted as a concentration value, even though the ca
 </variablelist>
 
 </sect1>
+
 <sect1 id="methodMCA" xreflabel="Metabolic Control Analysis">
 <title>Metabolic Control Analysis</title>
 <para>
@@ -951,13 +953,275 @@ This parameter is ignored in the current version of COPASI.
 </sect2>
 </sect1>
 
-
 <sect1 id="optimizationMethod" xreflabel="Optimization Method">
 <title>Optimization Methods</title>
 <para>The optimization methods described in this chapter attempt to minimize a given
 objective function. There are several ways to do this and COPASI
 supports many different methods for the minimization of an objective
 function.</para>
+
+<sect2 id="EvolutionaryProgramming" xreflabel="Evolutionary Programming">
+<title>Evolutionary Programming</title>
+
+<para>
+Evolutionary programming (EP)
+<citation>Fogel92</citation><citation>Baeck93</citation><citation>Baeck97</citation>
+is a computational technique that mimics evolution and is based on
+reproduction and selection. An EP algorithm is composed of individuals
+that reproduce and compete, each one is a potential solution to the
+(optimization) problem and is represented by a "genome" where each
+gene corresponds to one adjustable parameter. At each generation of
+the EP, each individual reproduces asexually, i.e. divides into two
+individuals. One of these contains exactly the same "genome" as the
+parent while the other suffers some mutations (the parameter values of
+each gene change slightly). At the end of the generation, the
+algorithm has double the number of individuals. Then each of the
+individuals is confronted with a number of others to count how many
+does it outperform (the number of wins is the number of these
+competitors that represent worse solutions than itself). All the
+individuals are ranked by their number of wins, and the population is
+again reduced to the original number of individuals by eliminating
+those which have worse fitness (solutions).  
+</para>
+
+<variablelist><title>Options for Evolutionary Programming</title>
+<varlistentry><term>Number of Generations</term>
+<listitem>
+<para>
+The parameter is a positive integer value to determine the number of
+generations the algorithm shall evolve the population. The default is
+'200'. 
+</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>Population Size</term>
+<listitem>
+<para>
+The parameter is a positive integer value to determine the size of the
+population, i.e., the number of individuals that survive after each
+generation. The default is '20'.
+</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>Random Number Generator</term>
+<listitem>
+<para>
+The parameter is an enumeration value to determine which random number
+generator this method shall use. COPASI provides two random number
+generators R250 <citation>Maier91</citation>
+ (selected through the value 0) and the
+<ulink url="http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/emt.html">Mersenne
+Twister </ulink><citation>Matsumoto98</citation>
+ (selected through the value 1 (default)).
+</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>Seed</term>
+<listitem>
+<para>
+The parameter is a positive integer value to determine the seed for the
+random number generator. A value of zero instructs COPASI to select a
+"random" value.
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</sect2>
+
+<sect2 id="EvolutionaryStrategySRES" xreflabel="Evolutionary Strategy (SRES)">
+<title>Evolutionary Strategy (SRES)</title>
+
+<para>
+Evolutionary Strategies with Stochastic Ranking (SRES)
+<citation>Runarsson00</citation> is similar to <xref
+linkend="EvolutionaryProgramming"/>. However, a parent has multiple
+offsprings during each generation. Each offspring will contain a
+recombination of genes with another parent and additional
+mutations. The algorithm assures that each parameter value will be
+within its boundaries. But constraints to the solutions may be
+violated. Whenever this happens the square of the size of the
+violation is summed up, i.e., we calculate  
+<equation id="eq.EvolutionaryStrategySRES"><mml:math display="block">
+ <mml:mrow>
+  <mml:mo>&phi;</mml:mo>
+  <mml:mo>=</mml:mo>
+  <mml:mrow>
+   <mml:mrow>
+    <mml:mrow>
+     <mml:msub>
+      <mml:mo>&sum;</mml:mo>
+      <mml:mrow>
+       <mml:msub>
+        <mml:mi>c</mml:mi>
+        <mml:mi>j</mml:mi>
+       </mml:msub>
+       <mml:mo>&lt;</mml:mo>
+       <mml:msub>
+        <mml:mi>l</mml:mi>
+        <mml:msub>
+         <mml:mi>c</mml:mi>
+         <mml:mi>j</mml:mi>
+        </mml:msub>
+       </mml:msub>
+      </mml:mrow>
+     </mml:msub>
+     <mml:msup>
+      <mml:mrow>
+       <mml:mo>(</mml:mo>
+       <mml:mrow>
+        <mml:msub>
+         <mml:mi>l</mml:mi>
+         <mml:msub>
+          <mml:mi>c</mml:mi>
+          <mml:mi>j</mml:mi>
+         </mml:msub>
+        </mml:msub>
+        <mml:mo>-</mml:mo>
+        <mml:msub>
+         <mml:mi>c</mml:mi>
+         <mml:mi>j</mml:mi>
+        </mml:msub>
+       </mml:mrow>
+       <mml:mo>)</mml:mo>
+      </mml:mrow>
+      <mml:mn>2</mml:mn>
+     </mml:msup>
+    </mml:mrow>
+   </mml:mrow>
+   <mml:mo>+</mml:mo>
+   <mml:mrow>
+    <mml:msub>
+     <mml:mo>&sum;</mml:mo>
+     <mml:mrow>
+      <mml:msub>
+       <mml:mi>c</mml:mi>
+       <mml:mi>j</mml:mi>
+      </mml:msub>
+      <mml:mo>&gt;</mml:mo>
+      <mml:msub>
+       <mml:mi>u</mml:mi>
+       <mml:msub>
+        <mml:mi>c</mml:mi>
+        <mml:mi>j</mml:mi>
+       </mml:msub>
+      </mml:msub>
+     </mml:mrow>
+    </mml:msub>
+    <mml:msup>
+     <mml:mrow>
+      <mml:mo>(</mml:mo>
+      <mml:mrow>
+       <mml:msub>
+        <mml:mi>c</mml:mi>
+        <mml:mi>j</mml:mi>
+       </mml:msub>
+       <mml:mo>-</mml:mo>
+       <mml:msub>
+        <mml:mi>u</mml:mi>
+        <mml:msub>
+         <mml:mi>c</mml:mi>
+         <mml:mi>j</mml:mi>
+        </mml:msub>
+       </mml:msub>
+      </mml:mrow>
+      <mml:mo>)</mml:mo>
+     </mml:mrow>
+     <mml:mn>2</mml:mn>
+    </mml:msup>
+   </mml:mrow>
+  </mml:mrow>
+ </mml:mrow>
+</mml:math></equation>
+where the constraints are given by
+<inlineequation><mml:math>
+  <mml:mrow>
+   <mml:msub>
+    <mml:mi>c</mml:mi>
+    <mml:mi>j</mml:mi>
+   </mml:msub>
+   <mml:mo>&in;</mml:mo>
+   <mml:mrow>
+    <mml:mo>(</mml:mo>
+    <mml:mrow>
+     <mml:msub>
+      <mml:mi>l</mml:mi>
+      <mml:msub>
+       <mml:mi>c</mml:mi>
+       <mml:mi>i</mml:mi>
+      </mml:msub>
+     </mml:msub>
+     <mml:mi>,</mml:mi>
+     <mml:mtext>&ThinSpace;</mml:mtext>
+     <mml:msub>
+      <mml:mi>u</mml:mi>
+      <mml:msub>
+       <mml:mi>c</mml:mi>
+       <mml:mi>i</mml:mi>
+      </mml:msub>
+     </mml:msub>
+    </mml:mrow>
+    <mml:mo>)</mml:mo>
+   </mml:mrow>
+  </mml:mrow>
+</mml:math></inlineequation>.
+The value <inlineequation><mml:math><mml:mo>&phi;</mml:mo></mml:math></inlineequation> is used within
+the selection, which is performed as described in <xref
+linkend="GeneticAlgorithmSR"/> 
+</para>
+
+<variablelist><title>Options for Evolutionary Strategy (SRES)</title>
+<varlistentry><term>Number of Generations</term>
+<listitem>
+<para>
+The parameter is a positive integer value to determine the number of
+generations the algorithm shall evolve the population. The default is
+'200.' 
+</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>Population Size</term>
+<listitem>
+<para>
+The parameter is a positive integer value to determine the size of the
+population, i.e., the number of individuals that survive after each
+generation. The default is '20'.
+</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>Random Number Generator</term>
+<listitem>
+<para>
+The parameter is an enumeration value to determine which random number
+generator this method shall use. COPASI provides two random number
+generators R250 <citation>Maier91</citation>
+ (selected through the value 0) and the
+<ulink url="http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/emt.html">Mersenne
+Twister </ulink><citation>Matsumoto98</citation>
+ (selected through the value 1 (default)).
+</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>Seed</term>
+<listitem>
+<para>
+The parameter is a positive integer value to determine the seed for the
+random number generator. A value of zero instructs COPASI to select a
+"random" value.
+</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>Pf</term>
+<listitem>
+<para>
+This parameter is a numerical value in the interval (0, 1) determining
+the chance that individuals either outside the parameter boundaries or
+violating the constraints are compared during the selection. The
+default is '4.75'. 
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</sect2>
 
 <sect2 id="GeneticAlgorithm" xreflabel="Genetic Algorithm">
 <title>Genetic Algorithm</title>
@@ -1622,74 +1886,6 @@ steps is less than the tolerance the algorithm stops. The default is
 </variablelist>
 </sect2>
 
-<sect2 id="EvolutionaryProgramming" xreflabel="Evolutionary Programming">
-<title>Evolutionary Programming</title>
-
-<para>
-Evolutionary programming (EP)
-<citation>Fogel92</citation><citation>Baeck93</citation><citation>Baeck97</citation>
-is a computational technique that mimics evolution and is based on
-reproduction and selection. An EP algorithm is composed of individuals
-that reproduce and compete, each one is a potential solution to the
-(optimization) problem and is represented by a "genome" where each
-gene corresponds to one adjustable parameter. At each generation of
-the EP, each individual reproduces asexually, i.e. divides into two
-individuals. One of these contains exactly the same "genome" as the
-parent while the other suffers some mutations (the parameter values of
-each gene change slightly). At the end of the generation, the
-algorithm has double the number of individuals. Then each of the
-individuals is confronted with a number of others to count how many
-does it outperform (the number of wins is the number of these
-competitors that represent worse solutions than itself). All the
-individuals are ranked by their number of wins, and the population is
-again reduced to the original number of individuals by eliminating
-those which have worse fitness (solutions).  
-</para>
-
-<variablelist><title>Options for Evolutionary Programming</title>
-<varlistentry><term>Number of Generations</term>
-<listitem>
-<para>
-The parameter is a positive integer value to determine the number of
-generations the algorithm shall evolve the population. The default is
-'200'. 
-</para>
-</listitem>
-</varlistentry>
-<varlistentry><term>Population Size</term>
-<listitem>
-<para>
-The parameter is a positive integer value to determine the size of the
-population, i.e., the number of individuals that survive after each
-generation. The default is '20'.
-</para>
-</listitem>
-</varlistentry>
-<varlistentry><term>Random Number Generator</term>
-<listitem>
-<para>
-The parameter is an enumeration value to determine which random number
-generator this method shall use. COPASI provides two random number
-generators R250 <citation>Maier91</citation>
- (selected through the value 0) and the
-<ulink url="http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/emt.html">Mersenne
-Twister </ulink><citation>Matsumoto98</citation>
- (selected through the value 1 (default)).
-</para>
-</listitem>
-</varlistentry>
-<varlistentry><term>Seed</term>
-<listitem>
-<para>
-The parameter is a positive integer value to determine the seed for the
-random number generator. A value of zero instructs COPASI to select a
-"random" value.
-</para>
-</listitem>
-</varlistentry>
-</variablelist>
-</sect2>
-
 <sect2 id="NelderMead" xreflabel="Nelder - Mead">
 <title>Nelder - Mead</title>
 
@@ -1841,7 +2037,7 @@ particles in the swarm. The default value is '50'.
 This parameter is a positive number and provides an alternative
 termination criteria. If the standard deviation of the
 values of the objective function of each particle and the standard
-deviation the best positions is smaller than the provided value the
+deviation of the best positions is smaller than the provided value the
 algorithm stops. The default value is '<inlineequation>
  <mml:math>
   <mml:mn>1.0</mml:mn>
@@ -1878,6 +2074,36 @@ random number generator. A value of zero instructs COPASI to select a
 </listitem>
 </varlistentry>
 </variablelist>
+</sect2>
+
+<sect2 id="Praxis" xreflabel="Praxis">
+<title>Praxis</title>
+<para>
+Praxis is a direct search method (for a review see <citation>Swann72</citation>) that searches for the minimum of a nonlinear function without requiring (or attempting to calculate) derivatives of that function. Praxis was developed by Brent <citation>Brent72</citation> after the method proposed by Powell <citation>Powel64</citation>. The inspiration for Praxis was the well-known method of minimising each adjustable parameter (direction) at a time - the principal axes method. In Praxis directions are chosen that do not coincide with the principal axes, in fact if the objective function is quadratic then these will be conjugate directions, assuring a fast convergence rate.
+</para>
+<para>
+This implementation of the Praxis method was originally written in FORTRAN at the Stanford Linear Accelerator Center (dated 3/1/73). The original FORTRAN code is available from <ulink url="http://www.netlib.org/opt/praxis">http://www.netlib.org/opt/praxis</ulink>. 
+The original code was translated automatically by the F2C program from AT&amp;T Bell Labs (available at <ulink url="http://www.netlib.org/f2c/">http://www.netlib.org/f2c/</ulink>). The C code was then enhanced to suite COPASI's reentrant optimization methods interface.
+</para>
+<variablelist><title>Options for Praxis</title>
+<varlistentry><term>Tolerance</term>
+<listitem>
+<para>
+Convergence stopping criterium: the method stops when two consecutive estimates differ by less than Tolerance. This parameter is a positive integer to determine the number of parameter sets to be drawn before the algorithm stops. The default value is '<inlineequation>
+ <mml:math>
+  <mml:mn>1.0</mml:mn>
+  <mml:mo>*</mml:mo>
+  <mml:msup>
+   <mml:mn>10</mml:mn>
+   <mml:mn>-5</mml:mn>
+  </mml:msup>
+ </mml:math>
+</inlineequation>'.
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+
 </sect2>
 
 <sect2 id="RandomSearch" xreflabel="Random Search">
@@ -1929,201 +2155,6 @@ Twister </ulink><citation>Matsumoto98</citation>
 The parameter is a positive integer value to determine the seed for the
 random number generator. A value of zero instructs COPASI to select a
 "random" value.
-</para>
-</listitem>
-</varlistentry>
-</variablelist>
-</sect2>
-
-<sect2 id="EvolutionaryStrategySRES" xreflabel="Evolutionary Strategy (SRES)">
-<title>Evolutionary Strategy (SRES)</title>
-
-<para>
-Evolutionary Strategies with Stochastic Ranking (SRES)
-<citation>Runarsson00</citation> is similar to <xref
-linkend="EvolutionaryProgramming"/>. However, a parent has multiple
-offsprings during each generation. Each offspring will contain a
-recombination of genes with another parent and additional
-mutations. The algorithm assures that each parameter value will be
-within its boundaries. But constraints to the solutions may be
-violated. Whenever this happens the square of the size of the
-violation is summed up, i.e., we calculate  
-<equation id="eq.EvolutionaryStrategySRES"><mml:math display="block">
- <mml:mrow>
-  <mml:mo>&phi;</mml:mo>
-  <mml:mo>=</mml:mo>
-  <mml:mrow>
-   <mml:mrow>
-    <mml:mrow>
-     <mml:msub>
-      <mml:mo>&sum;</mml:mo>
-      <mml:mrow>
-       <mml:msub>
-        <mml:mi>c</mml:mi>
-        <mml:mi>j</mml:mi>
-       </mml:msub>
-       <mml:mo>&lt;</mml:mo>
-       <mml:msub>
-        <mml:mi>l</mml:mi>
-        <mml:msub>
-         <mml:mi>c</mml:mi>
-         <mml:mi>j</mml:mi>
-        </mml:msub>
-       </mml:msub>
-      </mml:mrow>
-     </mml:msub>
-     <mml:msup>
-      <mml:mrow>
-       <mml:mo>(</mml:mo>
-       <mml:mrow>
-        <mml:msub>
-         <mml:mi>l</mml:mi>
-         <mml:msub>
-          <mml:mi>c</mml:mi>
-          <mml:mi>j</mml:mi>
-         </mml:msub>
-        </mml:msub>
-        <mml:mo>-</mml:mo>
-        <mml:msub>
-         <mml:mi>c</mml:mi>
-         <mml:mi>j</mml:mi>
-        </mml:msub>
-       </mml:mrow>
-       <mml:mo>)</mml:mo>
-      </mml:mrow>
-      <mml:mn>2</mml:mn>
-     </mml:msup>
-    </mml:mrow>
-   </mml:mrow>
-   <mml:mo>+</mml:mo>
-   <mml:mrow>
-    <mml:msub>
-     <mml:mo>&sum;</mml:mo>
-     <mml:mrow>
-      <mml:msub>
-       <mml:mi>c</mml:mi>
-       <mml:mi>j</mml:mi>
-      </mml:msub>
-      <mml:mo>&gt;</mml:mo>
-      <mml:msub>
-       <mml:mi>u</mml:mi>
-       <mml:msub>
-        <mml:mi>c</mml:mi>
-        <mml:mi>j</mml:mi>
-       </mml:msub>
-      </mml:msub>
-     </mml:mrow>
-    </mml:msub>
-    <mml:msup>
-     <mml:mrow>
-      <mml:mo>(</mml:mo>
-      <mml:mrow>
-       <mml:msub>
-        <mml:mi>c</mml:mi>
-        <mml:mi>j</mml:mi>
-       </mml:msub>
-       <mml:mo>-</mml:mo>
-       <mml:msub>
-        <mml:mi>u</mml:mi>
-        <mml:msub>
-         <mml:mi>c</mml:mi>
-         <mml:mi>j</mml:mi>
-        </mml:msub>
-       </mml:msub>
-      </mml:mrow>
-      <mml:mo>)</mml:mo>
-     </mml:mrow>
-     <mml:mn>2</mml:mn>
-    </mml:msup>
-   </mml:mrow>
-  </mml:mrow>
- </mml:mrow>
-</mml:math></equation>
-where the constraints are given by
-<inlineequation><mml:math>
-  <mml:mrow>
-   <mml:msub>
-    <mml:mi>c</mml:mi>
-    <mml:mi>j</mml:mi>
-   </mml:msub>
-   <mml:mo>&in;</mml:mo>
-   <mml:mrow>
-    <mml:mo>(</mml:mo>
-    <mml:mrow>
-     <mml:msub>
-      <mml:mi>l</mml:mi>
-      <mml:msub>
-       <mml:mi>c</mml:mi>
-       <mml:mi>i</mml:mi>
-      </mml:msub>
-     </mml:msub>
-     <mml:mi>,</mml:mi>
-     <mml:mtext>&ThinSpace;</mml:mtext>
-     <mml:msub>
-      <mml:mi>u</mml:mi>
-      <mml:msub>
-       <mml:mi>c</mml:mi>
-       <mml:mi>i</mml:mi>
-      </mml:msub>
-     </mml:msub>
-    </mml:mrow>
-    <mml:mo>)</mml:mo>
-   </mml:mrow>
-  </mml:mrow>
-</mml:math></inlineequation>.
-The value <inlineequation><mml:math><mml:mo>&phi;</mml:mo></mml:math></inlineequation> is used within
-the selection, which is performed as described in <xref
-linkend="GeneticAlgorithmSR"/> 
-</para>
-
-<variablelist><title>Options for Evolutionary Strategy (SRES)</title>
-<varlistentry><term>Number of Generations</term>
-<listitem>
-<para>
-The parameter is a positive integer value to determine the number of
-generations the algorithm shall evolve the population. The default is
-'200.' 
-</para>
-</listitem>
-</varlistentry>
-<varlistentry><term>Population Size</term>
-<listitem>
-<para>
-The parameter is a positive integer value to determine the size of the
-population, i.e., the number of individuals that survive after each
-generation. The default is '20'.
-</para>
-</listitem>
-</varlistentry>
-<varlistentry><term>Random Number Generator</term>
-<listitem>
-<para>
-The parameter is an enumeration value to determine which random number
-generator this method shall use. COPASI provides two random number
-generators R250 <citation>Maier91</citation>
- (selected through the value 0) and the
-<ulink url="http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/emt.html">Mersenne
-Twister </ulink><citation>Matsumoto98</citation>
- (selected through the value 1 (default)).
-</para>
-</listitem>
-</varlistentry>
-<varlistentry><term>Seed</term>
-<listitem>
-<para>
-The parameter is a positive integer value to determine the seed for the
-random number generator. A value of zero instructs COPASI to select a
-"random" value.
-</para>
-</listitem>
-</varlistentry>
-<varlistentry><term>Pf</term>
-<listitem>
-<para>
-This parameter is a numerical value in the interval (0, 1) determining
-the chance that individuals either outside the parameter boundaries or
-violating the constraints are compared during the selection. The
-default is '4.75'. 
 </para>
 </listitem>
 </varlistentry>
@@ -2368,8 +2399,30 @@ steps is less than the tolerance the algorithm stops. The default is
 </varlistentry>
 </variablelist>
 </sect2>
-</sect1>
 
+<sect2 id="TruncatedNewton" xreflabel="Truncated Newton">
+<title>Truncated Newton</title>
+
+<para>
+The Truncated Newton method is a sophisticated variant of the Newton optimisation method. The Newton optimisation method searches for the minimum of a nonlinear function by following descent directions determined from the function’s first and second partial derivatives. The Truncated Newton method does an incomplete (truncated) solution of a system of linear equations to calculate the Newton direction. This means that the actual direction chosen for the descent is between the steepest descent direction and the true Newton direction. A more complete description of the method can be found in <citation>Gill81</citation> and <citation>Nash84</citation>.
+</para>
+<para>
+The particular implementation of the Truncated Newton method used here takes into account simple bounds on the optimisation parameters.
+Like the Newton method itself, the Truncated Newton variant converges quadratically when in the vicinity of the minimum. On average this method is one of the best gradient descent methods.
+</para> 
+<para>This implementation of the Truncated Newton method was originally written in FORTRAN by Stephen Nash (Operations Research and Applied Statistics Dept., George Mason University, Fairfax, VA 22030, USA). The original code is available from <ulink url="http://www.netlib.org/opt/tn">http://www.netlib.org/opt/tn</ulink>). The original code was translated automatically to C by the F2C program from AT&amp;T Bell Labs (available at <ulink url="http://www.netlib.org/f2c/">http://www.netlib.org/f2c/</ulink> ). The C code was then enhanced to suite COPASI's reentrant optimization methods interface.
+</para>
+<variablelist><title>Options for Truncated Newton</title>
+<varlistentry><term>None</term>
+<listitem>
+<para>
+The algorithm is not tunable.
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</sect2>
+</sect1>
 
 <sect1 id="lyapunovExponentsMethod" xreflabel="Lyapunov exponents">
   <title>Lyapunov Exponents Calculation</title>
@@ -2410,7 +2463,6 @@ steps is less than the tolerance the algorithm stops. The default is
   </para>
 </sect1>
 
-
 <sect1 id="sensitivitiesMethod" xreflabel="Sensitivities">
   <title>Sensitivities Calculation</title>
   <para>
@@ -2445,7 +2497,6 @@ steps is less than the tolerance the algorithm stops. The default is
   </variablelist>
 </sect2>
 </sect1>
-
 
 </chapter>
 
