@@ -1,12 +1,17 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/gui/org/COPASI/gui/TrajectoryTaskWidget.java,v $ 
-//   $Revision: 1.8 $ 
+//   $Revision: 1.8.6.1 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2007/06/20 15:39:26 $ 
+//   $Date: 2008/04/02 07:50:04 $ 
 // End CVS Header 
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc. and EML Research, gGmbH. 
 // All rights reserved. 
 
@@ -65,10 +70,10 @@ public class TrajectoryTaskWidget extends TaskWidget  implements FocusListener{
 			GridBagConstraints gbc=new GridBagConstraints();
 			
 			// Festlegen, dass die GUI-Elemente die Gitterfelder in 
-	                // waagerechter Richtung ausfüllen:
+	                // waagerechter Richtung ausfuellen:
 			gbc.fill=GridBagConstraints.NONE;
 			
-			// Die Abständer der einzelnen GUI-Elemente zu den gedachten 
+			// Die Abstaende der der einzelnen GUI-Elemente zu den gedachten 
 	                // Gitterlinien festgelegen:
 			gbc.insets = new Insets(2,2,2,2);  
 
@@ -333,7 +338,7 @@ public class TrajectoryTaskWidget extends TaskWidget  implements FocusListener{
                              if(event.getSource() instanceof CTrajectoryTask)
                              {
                                CTrajectoryTask task=(CTrajectoryTask)event.getSource();
-                               System.out.println("Number of time steps: " + task.getTimeSeries().getNumSteps()); 
+                               System.out.println("Number of time steps: " + task.getTimeSeries().getRecordedSteps()); 
                                System.out.println("Number of variables: " + task.getTimeSeries().getNumVariables()); 
                              }
                            }
@@ -352,7 +357,7 @@ public class TrajectoryTaskWidget extends TaskWidget  implements FocusListener{
                                CTimeSeries timeSeries=task.getTimeSeries();
                                JFrame mainFrame=new JFrame("Time Course Result");
                                long i,j;
-                               long iMax=timeSeries.getNumSteps();
+                               long iMax=timeSeries.getRecordedSteps();
                                long jMax=timeSeries.getNumVariables();
                                Vector<String> columnNames=new Vector<String>();
                                Vector<Vector<Double>> data=new Vector<Vector<Double>>();

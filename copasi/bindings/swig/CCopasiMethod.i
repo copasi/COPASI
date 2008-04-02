@@ -1,3 +1,16 @@
+// Begin CVS Header 
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiMethod.i,v $ 
+//   $Revision: 1.6.14.1 $ 
+//   $Name:  $ 
+//   $Author: gauges $ 
+//   $Date: 2008/04/02 07:50:04 $ 
+// End CVS Header 
+
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
+
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
@@ -42,7 +55,9 @@ class CCopasiMethod : public CCopasiParameterGroup
       mcaMethodReder,
       scanMethod,
       lyapWolf,
+#ifdef COPASI_TSS      
       tssMethod,
+#endif // COPASI_TSS      
       sensMethod,
 #ifdef COPASI_SSA
       ssaMethod,

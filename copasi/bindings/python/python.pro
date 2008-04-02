@@ -1,12 +1,17 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/python.pro,v $ 
-#   $Revision: 1.18 $ 
+#   $Revision: 1.18.4.1 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2007/12/12 14:53:31 $ 
+#   $Date: 2008/04/02 07:50:03 $ 
 # End CVS Header 
 
-# Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+# and The University of Manchester. 
+# All rights reserved. 
+
+# Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc. and EML Research, gGmbH. 
 # All rights reserved. 
 
@@ -23,7 +28,7 @@ COPASI_LIBS += -lCOPASISE
 
 LIBS = $$COPASI_LIBS $$LIBS
 
-INCLUDEPATH += ../..
+INCLUDEPATH += ../../..
 contains(BUILD_OS,Linux){
 
   !isEmpty(PYTHON_LIB_PATH){
@@ -35,12 +40,7 @@ contains(BUILD_OS,Linux){
   }
 
 
- LIBS += -llapack
- LIBS += -lblas
- LIBS += -lfl
  LIBS += -lpython2.5
- LIBS += -lsbml
- LIBS += -lexpat
 
  QMAKE_POST_LINK += ln -sf libCopasiPython.so _COPASI.so
 

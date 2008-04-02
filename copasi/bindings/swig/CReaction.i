@@ -1,12 +1,17 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CReaction.i,v $ 
-//   $Revision: 1.9 $ 
+//   $Revision: 1.9.4.1 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2007/12/12 14:53:31 $ 
+//   $Date: 2008/04/02 07:50:04 $ 
 // End CVS Header 
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc. and EML Research, gGmbH. 
 // All rights reserved. 
 
@@ -28,7 +33,6 @@
 typedef std::vector<std::string> ParameterMapping;
 typedef std::vector<ParameterMapping> ParameterMappings;
 */
-
 
 class CReaction : public CCopasiContainer
 {
@@ -198,9 +202,12 @@ class CReaction : public CCopasiContainer
     void clearParameterMapping(const std::string & parameterName);
     void clearParameterMapping(C_INT32 index);
 
+    /*const VectorOfStringVectors & getParameterMappings() const;*/
     const std::vector<std::vector<std::string> > & getParameterMappings() const;
 
-    const std::vector<std::string> & getParameterMapping(const std::string & parameterName) const;
+    /*const StringStdVector& getParameterMapping(const std::string &
+    ** parameterName) const;*/
+    const std::vector<std::string> & getParameterMapping(const std::string &parameterName) const;
 
 
     /**
