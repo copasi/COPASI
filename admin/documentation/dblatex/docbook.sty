@@ -1,15 +1,21 @@
-
+%%
+%% Default dblatex DocBook style
+%%
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{docbook}[2001/05/11 DocBook Style]
+\ProvidesPackage{docbook}[2007/04/04 DocBook Style]
 
 % The defined options
 \DeclareOption{hyperlink}{ \def\DBKhyperlink{yes} }
 \DeclareOption{nohyperlink}{ \def\DBKhyperlink{no} }
-\DeclareOption{article}{ \def\DBKisarticle{yes} }
-\DeclareOption{report}{ \def\DBKisarticle{no} }
+
+\ifx\undefined\chapter
+  \def\DBKisarticle{1}
+\else
+  \def\DBKisarticle{0}
+\fi
 
 % Default values
-\ExecuteOptions{nohyperlink,report}
+\ExecuteOptions{nohyperlink}
 
 % If defined, process the options
 \ProcessOptions\relax
@@ -53,6 +59,7 @@
   \end{stdabstract}
 }
 
+
 % We want paragraph + subparagraph headers like the others
 \renewcommand\paragraph{\@startsection{paragraph}{4}{\z@}%
                                      {-3.25ex\@plus -1ex \@minus -.2ex}%
@@ -67,6 +74,22 @@
 % To have title rendering changed
 \usepackage[sf,bf]{titlesec}
 
+
+% Display ``DRAFT'' as a water mark:
+\usepackage{ifpdf}
+\ifpdf
+\usepackage{pdfpages}
+\usepackage{color}
+\def\showwatermark#1{%
+  \AddToShipoutPicture{
+  \AtTextCenter{%
+  \makebox(0,0)[c]{\resizebox{\textwidth}{!}{%
+  \rotatebox{45}{\textsf{\textbf{\color[gray]{0.8}#1}}}}}%
+  }}
+}
+\else
+\def\showwatermark#1{}%
+\fi
 
 % ##############################################################################
 % ### Page Parameters
@@ -99,6 +122,8 @@
 \usepackage{subfigure}
 \usepackage{ifthen}
 \usepackage{tabularx}
+% Before hyperlink to have consistent links to footnotes
+\usepackage{footmisc}
 
 \usepackage{dbk_fonts}
 \usepackage{dbk_hyper}
@@ -115,7 +140,7 @@
 %% Inclusion of float package after hyperref to have its definitions!
 \usepackage{float}
 
-\ifthenelse{\equal{\DBKisarticle}{yes}}{
+\if1\DBKisarticle
 
 \floatstyle{ruled}
 \newfloat{example}{htb}{loe}[section]
@@ -129,7 +154,7 @@
 \let\stdtoc=\tableofcontents
 \def\tableofcontents{ \newpage \stdtoc{} \newpage} 
 
-}{
+\else
 
 \floatstyle{ruled}
 \newfloat{example}{htb}{loe}[chapter]
@@ -139,8 +164,7 @@
 \newfloat{dbequation}{htb}{loe}[chapter]
 \floatname{dbequation}{{\scshape Equation }}
 
-}
-
+\fi
 % Sidebar is a boxed minipage that can contain verbatim
 \newenvironment{sidebar}[1][0.95\textwidth]{
   \hspace{0mm}\newline%
@@ -231,7 +255,6 @@
     \addcontentsline{toc}{chapter}{\numberline{\thechapter}\indexname}
   }
 }{
-  \label{LastPage}%
   \end{stdindex}
 }
 
@@ -243,10 +266,8 @@
          65 rotate /Times-Roman findfont 216 scalefont setfont %
          0 0 moveto 0.8 setgray (DRAFT) show grestore}def end}}
 
-\AtEndDocument{%
-  \label{LastPage}%
-}
 \usepackage{refcount}
+\usepackage{lastpage}
 
 \usepackage{dbk_locale}
 % \usepackage{dbk_title}

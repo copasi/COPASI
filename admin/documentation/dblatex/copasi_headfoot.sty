@@ -14,6 +14,18 @@
   {\framebox{\textsc{\textsf{\DBKreleaseinfo}}}}%
 }
 
+% Define front/main/back matter if not available
+\@ifundefined{frontmatter}{
+  \def\frontmatter{\cleardoublepage\pagenumbering{roman}\chead[]{\DBKcheadfront}}
+}{}
+\@ifundefined{mainmatter}{
+  \def\mainmatter{\cleardoublepage\pagenumbering{arabic}\chead[]{\DBKcheadbody}}
+}{}
+\@ifundefined{backmatter}{
+  \def\backmatter{\if@openright\cleardoublepage\else\clearpage\fi}
+}{}
+
+
 % Fancy header/footer for the first page
 
 \chead[]{%
@@ -30,6 +42,19 @@
 \lfoot[]{\@ifundefined{DBKpublisher}{}{\DBKpublisher}}
 \rfoot[]{}
 \cfoot[]{}
+
+% Fancy header/footer for the front matter
+
+\def\DBKcheadfront{%
+  \begin{tabular}{
+    >{\raggedright}p{5.6cm} >{\centering}p{5.6cm} >{\raggedleft}p{5.6cm}} %
+    \multirow{3}{5.6cm}{\DBKtitle}
+    & & \textsf{\DBKreference{} \edhead} \tabularnewline%
+    & \releasebox & \tabularnewline %
+    & & \textsf{\thepage}
+  \tabularnewline%
+  \end{tabular}%
+}
 
 % Fancy header/footer for the doc body
 
