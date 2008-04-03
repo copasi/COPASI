@@ -1,10 +1,10 @@
 <chapter id="modelCreation" xreflabel="Model Creation">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_GUI.xml,v $ -->
-<!--   $Revision: 1.51 $ -->
+<!--   $Revision: 1.52 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: shoops $ -->
-<!--   $Date: 2008/03/27 20:41:19 $ -->
+<!--   $Date: 2008/04/03 14:46:51 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -238,7 +238,7 @@ This commandline version can be used to validate the given file. The file can ei
 The COPASI graphical user interface essentially consists of four
 elements.
 </para>
- <para>  
+ <para> 
 <screenshot>
 <screeninfo>
 Produced with COPASI 4.3 (Build 25) on Leopard on 02/06/2008
@@ -254,7 +254,7 @@ Produced with COPASI 4.3 (Build 25) on Leopard on 02/06/2008
   <para>Elements of the COPASI user interface</para>
  </caption> 
 </mediaobject>
-</screenshot>
+</screenshot> 
 </para>
 <para>
 On the top of the main window, you have the menu bar (on the Mac, the
@@ -596,7 +596,7 @@ the values of one or more model entities. In order to specify whether a compartm
 or the volume is calculated on the fly according to a mathematical expression,
 the drop down list called <guilabel>Simulation Type</guilabel> can be used.
 It contains three entries:
-<table id="tbl.CompartmentSimulationType" frame="all"><title>Simulation Types</title>
+<table id="tbl.CompartmentSimulationType" frame="all"><title>Compartments Simulation Types</title>
 <tgroup cols="2" align="left" colsep="1" rowsep="1">
 <colspec colwidth="1*" />
 <colspec colwidth="4*" />
@@ -840,7 +840,7 @@ If you change back to initial concentration, COPASI will internally recalculate 
 Normally the concentration of a species is determined by its initial concentration and by the reaction kinetics of the reactions it participates in either as a substrate or a product. The reactions are listed at the bottom of the species widget (see above).
 </para>
 <para>
-<table id="tbl.SpeciesSimulationType" frame="all"><title>Simulation Types</title>
+<table id="tbl.SpeciesSimulationType" frame="all"><title>Species Simulation Types</title>
 <tgroup cols="2" align="left" colsep="1" rowsep="1">
 <colspec colwidth="1*" />
 <colspec colwidth="4*" />
@@ -1194,7 +1194,7 @@ the values of one or more model entities. In order to specify whether a paramete
 or the value is calculated on the fly according to a mathematical expression,
 the drop down list called <guilabel>Simulation Type</guilabel> should be used.
 The drop down list contains three following entries:
-<table id="tbl.GlobalQuantitiesSimulationType" frame="all"><title>Simulation Types</title>
+<table id="tbl.GlobalQuantitiesSimulationType" frame="all"><title>Global Quantities Simulation Types</title>
 <tgroup cols="2" align="left" colsep="1" rowsep="1">
 <colspec colwidth="1*" />
 <colspec colwidth="4*" />
@@ -2899,7 +2899,7 @@ will write the output to the file you specified.
 Calculating mass conservations in COPASI is also very easy. Navigate
 to the <guibutton>Tasks-&gt;Stoichiometry-&gt;Mass
 Conservation</guibutton> branch in the object tree and click on the
-<guibutton>Recalculate</guibutton> button.
+<guibutton>Run</guibutton> button as with every other task.
 </para>  
 <para>
 <screenshot>
@@ -2918,27 +2918,10 @@ Conservation</guibutton> branch in the object tree and click on the
 </screenshot>
 </para>
 <para>
-If the model contains any mass conservation relations, they will be listed in a table directly in this dialog. </para>
-<para>
-<screenshot>
-<screeninfo>Produced with COPASI 4.3 (Build 25) on Leopard on 02/28/2008</screeninfo>
-<mediaobject>
- <imageobject>
-  <imagedata fileref="images/MassConservationTask_02.png" format="PNG" scale="50" align="center" />
- </imageobject> 
- <textobject>
-   <phrase>Dialog that shows one single mass conservation relation</phrase>
- </textobject>
- <caption>
-  <para>Single mass conservation dialog</para>
- </caption> 
-</mediaobject>
-</screenshot>
+  Moieties are the result of stoichiometric analysis. The result of this analysis is not unique it depends on the algorithm chosen. COPASI uses the Householder reduction method described in <citation>Vallabhajosyula06</citation>. To make matters worse it even depends on the implementation of the Householder reduction for which COPASI relies on platform specific libraries for performance reasons, i.e., the result may differ on Windows and MacOS X. These differences are not crucial as the moieties build a basis of the linear dependent subspace of the solution and the choice of such a base system is obviously not unique. 
 </para>
 <para>
-Every mass conservation relation also has a separate leave in the
-object tree below the current dialog. To see those, either navigate
-there in the object tree or double click on the entry in the table.
+  However, often people like to know the total preserved amount of a moiety. Since the moiety calculation is not unique COPASI provides a convenience method to create a global quantity of type assignment to calculate this value. This method is accessible through the <guibutton>tool</guibutton> button. The result of this assignment is now independent from the algorithm chosen to calculate the moieties and thus may even be exported to SBML.
 </para>
 </sect2>
 </sect1>
@@ -3819,10 +3802,6 @@ only those parts of the expression that do not belong to object
 representation strings. That means everything that has been inserted
 via selection from the object browser may not be modified. You may
 however delete complete identifier expressions.
-</para>
-<para>
-This interface is work in progress and we hope to have a better
-solution in upcoming releases. 
 </para>
 <para>
 You can run an optimization task with several different methods which
