@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.220 $
+//   $Revision: 1.221 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/17 22:09:42 $
+//   $Author: pwilly $
+//   $Date: 2008/04/07 08:56:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -492,7 +492,7 @@ bool CopasiUI3Window::slotFileSaveAs(QString str)
       tmp =
         CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
                                           str, "COPASI Files (*.cps);;All Files (*.*);;",
-                                          "Choose a filename to save under.");
+                                          "Choose a filename to save under");
 
       if (!tmp) return false;
 
@@ -725,12 +725,15 @@ void CopasiUI3Window::slotFileOpen(QString file)
  *******************************************************************************************/
 bool CopasiUI3Window::slotFileSave()
 {
-  ListViews::commit();
+  //  ListViews::commit(); --> remove to the line after checking the following condition (07.04.08)
+
   std::string FileName = CCopasiDataModel::Global->getFileName();
   if (mSaveAsRequired || FileName == "")
     {
       return slotFileSaveAs(FROM_UTF8(FileName));
     }
+
+  ListViews::commit();
 
   std::ifstream File(utf8ToLocale(FileName).c_str());
   std::string Line;
