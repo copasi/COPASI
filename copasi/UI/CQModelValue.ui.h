@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQModelValue.ui.h,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2008/04/01 11:23:20 $
+//   $Date: 2008/04/07 09:04:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,12 +41,14 @@
  */
 void CQModelValue::slotBtnCommit()
 {
+  std::cout << "CQMV::slotBtnCommit()" << std::endl;
   save();
   load();
 }
 
 void CQModelValue::slotBtnRevert()
 {
+  std::cout << "CQMV::slotBtnRevert()" << std::endl;
   load();
 }
 
@@ -233,6 +235,7 @@ void CQModelValue::slotBtnDelete()
  */
 void CQModelValue::slotTypeChanged(int type)
 {
+  std::cout << "CWMV::slotTypeChanged" << std::endl;
   switch ((CModelEntity::Status) mItemToType[type])
     {
     case CModelEntity::FIXED:
@@ -367,6 +370,8 @@ bool CQModelValue::update(ListViews::ObjectType /* objectType */,
 
 bool CQModelValue::leave()
 {
+  std::cout << "CQMV::leave" << std::endl;
+
   if (mpBtnCommit->isEnabled())
     {
       // -- Expression --
@@ -379,14 +384,17 @@ bool CQModelValue::leave()
       */      // update the expression widget
       mpEditExpression->updateExpressionWidget();
 
-      // -- Initial Expression --
-      showCorrectButtonsInitialExpression();
-      /*      // hide the button of object selector
-            mpBtnInitialExpressionObject->hide();
-            // show the button of expression editor
-            mpBtnEditInitialExpression->show();
-      */      // update the expression widget
-      mpEditInitialExpression->updateExpressionWidget();
+      if (mpBoxUseInitialExpression->isChecked())
+        {
+          // -- Initial Expression --
+          showCorrectButtonsInitialExpression();
+          /*      // hide the button of object selector
+                mpBtnInitialExpressionObject->hide();
+                // show the button of expression editor
+                mpBtnEditInitialExpression->show();
+          */      // update the expression widget
+          mpEditInitialExpression->updateExpressionWidget();
+        }
 
       save();
     }
@@ -396,6 +404,7 @@ bool CQModelValue::leave()
 
 bool CQModelValue::enter(const std::string & key)
 {
+  std::cout << "CQMV::enter(_)" << std::endl;
   mKey = key;
   mpModelValue = dynamic_cast< CModelValue * >(GlobalKeys.get(key));
 
@@ -534,27 +543,27 @@ void CQModelValue::load()
  */
 void CQModelValue::save()
 {
-  std::cout << "CQNV::save" << std::endl;
+  std::cout << "CQMV::save" << std::endl;
 
   if (mpModelValue == NULL) return;
 
-  // set text
+  // set name of quantitiy
   if (mpModelValue->getObjectName() != (const char *) mpEditName->text().utf8())
     {
-      if (!mpModelValue->setObjectName((const char *) mpEditName->text().utf8()))
+      if (!mpModelValue->setObjectName((const char *) mpEditName->text().utf8()))  // the new name is rejected as it has been used
         {
           QString msg;
           msg = "Unable to rename quantity '" + FROM_UTF8(mpModelValue->getObjectName()) + "'\n"
                 + "to '" + mpEditName->text() + "' since a quantity with that name already exists.\n";
 
-          QMessageBox::information(this,
-                                   "Unable to rename Quantity",
-                                   msg,
-                                   QMessageBox::Ok | QMessageBox::Default | QMessageBox::Escape, QMessageBox::NoButton, QMessageBox::NoButton);
+          CQMessageBox::information(this,
+                                    "Unable to rename Quantity",
+                                    msg,
+                                    QMessageBox::Ok | QMessageBox::Default | QMessageBox::Escape, QMessageBox::NoButton, QMessageBox::NoButton);
 
           mpEditName->setText(FROM_UTF8(mpModelValue->getObjectName()));
         }
-      else
+      else  // the new name is accepted
         {
           protectedNotify(ListViews::MODELVALUE, ListViews::RENAME, mKey);
           mChanged = true;
@@ -641,6 +650,8 @@ void CQModelValue::slotNameLostFocus()
  */
 void CQModelValue::slotInitialTypeChanged(bool useInitialAssignment)
 {
+  std::cout << "CWMV::slotInitialTypeChanged" << std::endl;
+
   if (useInitialAssignment)  // use Initial Expression (ie. the mpBoxUseInitialExpression is checked)
     {
       // add the layout of initial expression to the CQModelValueLayout
@@ -713,6 +724,8 @@ void CQModelValue::showCorrectButtonsInitialExpression()
  */
 void CQModelValue::slotEditExpression()
 {
+  std::cout << "CWMV::slotEditExpression" << std::endl;
+
   // activate editor page of the Expression widget stack
   //  mpEditFcnExpression->raiseWidget(mpEditExpression);
   mpEditExpression->raiseWidget(0);
@@ -728,6 +741,8 @@ void CQModelValue::slotEditExpression()
  */
 void CQModelValue::slotEditInitialExpression()
 {
+  std::cout << "CWMV::slotEditInitialExpression" << std::endl;
+
   // activate editor page of the Initial Expression widget stack
   mpEditInitialExpression->raiseWidget(0);
   // show the button of object selector
