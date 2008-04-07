@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMetabolite.ui.h,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2008/04/01 11:21:15 $
+//   $Date: 2008/04/07 09:50:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -500,15 +500,23 @@ bool CQMetabolite::enter(const std::string & key)
 
 bool CQMetabolite::leave()
 {
+  std::cout << "CQM::leave" << std::endl;
   if (mpBtnCommit->isEnabled())
     {
-      // -- Expression --
-      showCorrectButtonsExpression();
-      mpEditExpression->updateExpressionWidget();
+      if ((CModelEntity::Status) mItemToType[mpComboBoxType->currentItem()] != CModelEntity::FIXED &&
+          (CModelEntity::Status) mItemToType[mpComboBoxType->currentItem()] != CModelEntity::REACTIONS)
+        {
+          // -- Expression --
+          showCorrectButtonsExpression();
+          mpEditExpression->updateExpressionWidget();
+        }
 
-      // -- Initial Expression --
-      showCorrectButtonsInitialExpression();
-      mpEditInitialExpression->updateExpressionWidget();
+      if (mpBoxUseInitialExpression->isChecked())
+        {
+          // -- Initial Expression --
+          showCorrectButtonsInitialExpression();
+          mpEditInitialExpression->updateExpressionWidget();
+        }
 
       save();
     }
@@ -634,6 +642,7 @@ void CQMetabolite::load()
 
 void CQMetabolite::save()
 {
+  std::cout << "CQM::save" << std::endl;
   if (mpMetab == NULL) return;
 
   // Name

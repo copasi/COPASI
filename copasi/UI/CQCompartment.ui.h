@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQCompartment.ui.h,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2008/04/01 11:22:26 $
+//   $Date: 2008/04/07 09:50:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -382,6 +382,7 @@ void CQCompartment::showCorrectButtonsInitialExpression()
  */
 void CQCompartment::slotEditExpression()
 {
+  std::cout << "CQC::slotEditExpression" << std::endl;
   // activate editor page of the Expression widget stack
   //  mpEditFcnExpression->raiseWidget(mpEditExpression);
   mpEditExpression->raiseWidget(0);
@@ -443,15 +444,22 @@ bool CQCompartment::enter(const std::string & key)
 
 bool CQCompartment::leave()
 {
+  std::cout << "CQC::leave" << std::endl;
   if (mpBtnCommit->isEnabled())
     {
-      // -- Expression --
-      showCorrectButtonsExpression();
-      mpEditExpression->updateExpressionWidget();
+      if ((CModelEntity::Status) mItemToType[mpComboBoxType->currentItem()] != CModelEntity::FIXED)
+        {
+          // -- Expression --
+          showCorrectButtonsExpression();
+          mpEditExpression->updateExpressionWidget();
+        }
 
-      // -- Initial Expression --
-      showCorrectButtonsInitialExpression();
-      mpEditInitialExpression->updateExpressionWidget();
+      if (mpBoxUseInitialExpression->isChecked())
+        {
+          // -- Initial Expression --
+          showCorrectButtonsInitialExpression();
+          mpEditInitialExpression->updateExpressionWidget();
+        }
 
       save();
     }
@@ -550,6 +558,7 @@ void CQCompartment::load()
 
 void CQCompartment::save()
 {
+  std::cout << "CQC::save" << std::endl;
   if (mpCompartment == NULL) return;
 
   // Name
