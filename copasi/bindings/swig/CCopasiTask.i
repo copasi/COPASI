@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiTask.i,v $ 
-//   $Revision: 1.14.6.1 $ 
+//   $Revision: 1.14.6.2 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2008/04/02 07:50:04 $ 
+//   $Date: 2008/04/07 09:02:27 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -45,14 +45,18 @@ class CCopasiTask : public CCopasiContainer
       parameterFitting,
       mca,
       lyap,
+#ifdef COPASI_DEBUG
+      tssAnalysis,
+#endif // COPASI_DEBUG
 #ifdef COPASI_TSS
       tss,
-#endif // COPASI_TSS     
+#endif // COPASI_TSS
       sens,
 #ifdef COPASI_SSA
       ssa,
 #endif // COPASI_SSA
-      unset,
+      moieties,
+      unset
     };
 
     enum OutputFlag
