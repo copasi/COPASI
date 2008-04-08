@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/Test_CFunctionDB.py,v $ 
-#   $Revision: 1.6.14.1 $ 
+#   $Revision: 1.6.14.2 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2008/04/08 15:01:33 $ 
+#   $Date: 2008/04/08 15:07:15 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -14,7 +14,6 @@
 import COPASI
 import unittest
 from types import *
-import pdb
 
 class Test_CFunctionDB(unittest.TestCase):
   def setUp(self):
@@ -59,9 +58,8 @@ class Test_CFunctionDB(unittest.TestCase):
   def test_suitableFunctions(self):
     sfs=self.functions.suitableFunctions(2,1,COPASI.TriFalse)
     self.assert_(sfs!=None)
-    pdb.set_trace()
-    self.assert_(sfs.__class__==COPASI.CFunctionStdVector)
-    self.assert_(sfs.size()!=0)
+    self.assert_(type(sfs)==TupleType) 
+    self.assert_(len(sfs)!=0)
 
 def suite():
   tests=[
