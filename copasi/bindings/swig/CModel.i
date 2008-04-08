@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CModel.i,v $ 
-//   $Revision: 1.10.6.1 $ 
+//   $Revision: 1.10.6.2 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2008/04/02 07:50:04 $ 
+//   $Date: 2008/04/08 15:01:34 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -60,12 +60,6 @@ class CModel : public CModelEntity
      *  Default constructor
      */
     CModel();
-
-    /**
-     *  Copy construnctor
-     *  @param "const CModel &" src
-     */
-    CModel(const CModel & src);
 
     /**
      * Destructor

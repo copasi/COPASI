@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/python.pro,v $ 
-#   $Revision: 1.18.4.1 $ 
+#   $Revision: 1.18.4.2 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2008/04/02 07:50:03 $ 
+#   $Date: 2008/04/08 15:01:32 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -57,7 +57,7 @@ contains(BUILD_OS, Darwin) {
 
 
   !isEmpty(PYTHON_INCLUDE_PATH){
-    INCLUDEPATH += $$PYTHON_INCLUDE_PATH/python2.5/
+    INCLUDEPATH += $$PYTHON_INCLUDE_PATH
   }
 
   QMAKE_POST_LINK += ln -sf libCopasiPython.dylib _COPASI.so

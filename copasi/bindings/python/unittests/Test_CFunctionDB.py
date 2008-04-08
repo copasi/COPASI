@@ -1,11 +1,20 @@
-# Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
-# Properties, Inc. and EML Research, gGmbH.
-# All rights reserved.
+# Begin CVS Header 
+#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/Test_CFunctionDB.py,v $ 
+#   $Revision: 1.6.14.1 $ 
+#   $Name:  $ 
+#   $Author: gauges $ 
+#   $Date: 2008/04/08 15:01:33 $ 
+# End CVS Header 
+
+# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+# and The University of Manchester. 
+# All rights reserved. 
 
 import COPASI
 import unittest
 from types import *
-
+import pdb
 
 class Test_CFunctionDB(unittest.TestCase):
   def setUp(self):
@@ -50,6 +59,7 @@ class Test_CFunctionDB(unittest.TestCase):
   def test_suitableFunctions(self):
     sfs=self.functions.suitableFunctions(2,1,COPASI.TriFalse)
     self.assert_(sfs!=None)
+    pdb.set_trace()
     self.assert_(sfs.__class__==COPASI.CFunctionStdVector)
     self.assert_(sfs.size()!=0)
 

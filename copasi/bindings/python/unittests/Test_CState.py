@@ -1,6 +1,15 @@
-# Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
-# Properties, Inc. and EML Research, gGmbH.
-# All rights reserved.
+# Begin CVS Header 
+#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/Test_CState.py,v $ 
+#   $Revision: 1.7.14.1 $ 
+#   $Name:  $ 
+#   $Author: gauges $ 
+#   $Date: 2008/04/08 15:01:33 $ 
+# End CVS Header 
+
+# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+# and The University of Manchester. 
+# All rights reserved. 
 
 import COPASI
 import unittest
@@ -35,17 +44,17 @@ class Test_CState(unittest.TestCase):
     result=self.cstate.getNumFixed()
     self.assert_(type(result)==IntType)
 
-  def test_isUpdateDependentRequired(self):
-    result=self.cstate.isUpdateDependentRequired()
-    self.assert_(type(result)==BooleanType)
+#  def test_isUpdateDependentRequired(self):
+#    result=self.cstate.isUpdateDependentRequired()
+#    self.assert_(type(result)==BooleanType)
 
-  def test_setUpdateDependentRequired(self):
-    UPDATE_REQUIRED=False
-    self.cstate.setUpdateDependentRequired(UPDATE_REQUIRED)
-    self.assert_(self.cstate.isUpdateDependentRequired()==UPDATE_REQUIRED)
-    UPDATE_REQUIRED=True
-    self.cstate.setUpdateDependentRequired(UPDATE_REQUIRED)
-    self.assert_(self.cstate.isUpdateDependentRequired()==UPDATE_REQUIRED)
+#  def test_setUpdateDependentRequired(self):
+#    UPDATE_REQUIRED=False
+#    self.cstate.setUpdateDependentRequired(UPDATE_REQUIRED)
+#    self.assert_(self.cstate.isUpdateDependentRequired()==UPDATE_REQUIRED)
+#    UPDATE_REQUIRED=True
+#    self.cstate.setUpdateDependentRequired(UPDATE_REQUIRED)
+#    self.assert_(self.cstate.isUpdateDependentRequired()==UPDATE_REQUIRED)
 
 def suite():
   tests=[
@@ -55,8 +64,8 @@ def suite():
          ,'test_getNumDependent'
          ,'test_getNumVariable'
          ,'test_getNumFixed'
-         ,'test_isUpdateDependentRequired'
-         ,'test_setUpdateDependentRequired'
+#         ,'test_isUpdateDependentRequired'
+#         ,'test_setUpdateDependentRequired'
         ]
   return unittest.TestSuite(map(Test_CState,tests))
 

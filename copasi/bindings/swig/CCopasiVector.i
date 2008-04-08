@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiVector.i,v $ 
-//   $Revision: 1.17.4.1 $ 
+//   $Revision: 1.17.4.2 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2008/04/02 07:50:04 $ 
+//   $Date: 2008/04/08 15:01:34 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -172,6 +172,8 @@ template < class CType > class CCopasiVectorNS: public CCopasiVectorN < CType >
 
 %template(OptItemStdVector) std::vector<COptItem*>;
 
+%template(ContainerStdVector) std::vector<CCopasiContainer*>;
+
 typedef CCopasiVectorN<CCopasiTask> TaskVectorN;
 
 typedef CCopasiVectorN<CModelValue> ModelValueVectorN;
@@ -202,4 +204,6 @@ typedef std::vector<COptItem*> OptItemStdVector;
 
 typedef std::vector<std::string> StringStdVector;
 typedef std::vector<std::vector<std::string> > VectorOfStringVectors;
+
+typedef std::vector<CCopasiContainer*> ContainerStdVector;
 

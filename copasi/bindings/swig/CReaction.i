@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CReaction.i,v $ 
-//   $Revision: 1.9.4.1 $ 
+//   $Revision: 1.9.4.2 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2008/04/02 07:50:04 $ 
+//   $Date: 2008/04/08 15:01:34 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -25,14 +25,6 @@
 
 %}
 
-
-/*
-%template(ParameterMapping) std::vector<std::string>;
-%template(ParameterMappings) std::vector<std::vector<std::string> >;
-
-typedef std::vector<std::string> ParameterMapping;
-typedef std::vector<ParameterMapping> ParameterMappings;
-*/
 
 class CReaction : public CCopasiContainer
 {
