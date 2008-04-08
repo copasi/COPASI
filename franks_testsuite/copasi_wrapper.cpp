@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/franks_testsuite/copasi_wrapper.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/12 02:18:23 $
+//   $Author: gauges $
+//   $Date: 2008/04/08 13:39:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -222,6 +222,19 @@ int main(int argc, char *argv[])
     {
       std::cerr << Exception.getMessage().getText() << std::endl;
     }
+
+  std::string Text = "";
+  while (CCopasiMessage::size() > 0)
+    {
+      const CCopasiMessage& message = CCopasiMessage::getLastMessage();
+      if (message.getType() < CCopasiMessage::RAW_FILTERED)
+        {
+          if (Text != "") Text += "\n";
+          Text += message.getText();
+        }
+    }
+
+  if (Text != "") std::cerr << Text << std::endl;
 
   pdelete(CCopasiDataModel::Global);
   pdelete(CCopasiContainer::Root);
