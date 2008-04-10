@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/python.pro,v $ 
-#   $Revision: 1.18.4.3 $ 
+#   $Revision: 1.18.4.4 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2008/04/10 09:14:45 $ 
+#   $Date: 2008/04/10 10:02:48 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -43,14 +43,21 @@ contains(BUILD_OS,Linux){
 
   !isEmpty(PYTHON_LIB_PATH){
     LIBS += -L$$PYTHON_LIB_PATH
+    LIBS += -lpython2.5
+  } else {
+    LIBS += `python-config --libs`
   }
 
   !isEmpty(PYTHON_INCLUDE_PATH){
     INCLUDEPATH += $$PYTHON_INCLUDE_PATH
+  } else {
+    QMAKE_CFLAGS_RELEASE += `python-config --includes` 
+    QMAKE_CXXFLAGS_RELEASE += `python-config --includes` 
+    QMAKE_CFLAGS_DEBUG += `python-config --includes` 
+    QMAKE_CXXFLAGS_DEBUG += `python-config --includes` 
   }
 
 
- LIBS += -lpython2.5
 
  QMAKE_POST_LINK += ln -sf libCopasiPython.so _COPASI.so
 
