@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.96 $
+//   $Revision: 1.97 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/12 00:59:45 $
+//   $Author: urost $
+//   $Date: 2008/04/10 12:12:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -59,7 +59,7 @@ C_FLOAT64 log2(const C_FLOAT64 & __x)
 #include "layoutUI/CDataEntity.h"
 #include "layoutUI/BezierCurve.h"
 
-const C_FLOAT64 CQGLNetworkPainter::DEFAULT_NODE_SIZE = 20.0;
+const C_FLOAT64 CQGLNetworkPainter::DEFAULT_NODE_SIZE = 20.0; // default DIAMETER (e.g. used in COLOR mode)
 
 CQGLNetworkPainter::CQGLNetworkPainter(QWidget *parent, const char *name)
     : QGLWidget(parent, name)
@@ -416,6 +416,7 @@ void CQGLNetworkPainter::drawGraph()
           int labelWWid = getLabelWindowWidth(tWid);
           C_FLOAT64 nDiam = 0.0;
           C_FLOAT64 x, y;
+
           const std::string& nodeKey = viewerLabels[i].getGraphicalObjectKey();
           if (!nodeKey.empty())
             {
@@ -425,7 +426,12 @@ void CQGLNetworkPainter::drawGraph()
                 nDiam = (*itNodeObj).second.getSize();
               C_INT32 xNdCenter = (*itNodeObj).second.getX() + ((*itNodeObj).second.getWidth() / 2.0);
               C_INT32 yNdCenter = (*itNodeObj).second.getY(); // + ((*itNodeObj).second.getHeight() / 2.0);
-              if ((tWid + 4) > nDiam)
+              if (pParentLayoutWindow->getMappingMode() == CVisParameters::COLOR_MODE)
+                {
+                  x = xNdCenter + (DEFAULT_NODE_SIZE / 2.0 * this->currentZoom) + 2.0 - ((viewerLabels[i].getWidth() - tWid) / 2.0); // node center + circle radius + 2.0 - texture window overhead
+                  y = yNdCenter;
+                }
+              else if ((tWid + 4) > nDiam)
                 {// label wider (+ k=4 to avoid crossing circle borders) than size of circle-> place next to circle
 
                   x = xNdCenter + (nDiam / 2.0) + 2.0 - ((viewerLabels[i].getWidth() - tWid) / 2.0); // + nDiam / 2.0 - ((labelWWid - (*itNodeObj).second.getWidth()) / 2.0); // node center + circle radius - texture window overhead
@@ -447,7 +453,6 @@ void CQGLNetworkPainter::drawGraph()
           RG_drawStringAt(viewerLabels[i].getText(), static_cast<C_INT32>(x), static_cast<C_INT32>(y), static_cast<C_INT32>(viewerLabels[i].getWidth()), static_cast<C_INT32>(viewerLabels[i].getHeight()));
         }
     }
-
   glEndList();
   //this->updateGL();
 }
