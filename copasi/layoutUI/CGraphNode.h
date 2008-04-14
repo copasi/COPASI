@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CGraphNode.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/05/14 08:33:43 $
+//   $Date: 2008/04/14 10:23:03 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -77,6 +82,13 @@ class CGraphNode : public CLMetabGlyph
     {
       this->mBBox.scale(scaleFactor);
       this->msize = this->msize * scaleFactor;
+    }
+
+    virtual void scale (const double & scaleFactor, bool changeSizeP)
+    {
+      this->mBBox.scale(scaleFactor);
+      if (changeSizeP)
+        this->msize = this->msize * scaleFactor;
     }
 
     friend std::ostream & operator<<(std::ostream &os, const CGraphNode & gn);

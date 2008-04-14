@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CGraphNode.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/05/10 18:14:22 $
+//   $Date: 2008/04/14 10:23:03 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -15,13 +20,14 @@
 #include "copasi.h"
 
 #include "CGraphNode.h"
+#include "CVisParameters.h"
 #include "layout/CLBase.h"
 
 CGraphNode::CGraphNode(const std::string & name,
                        const CCopasiContainer * pParent)
     : CLMetabGlyph(name, pParent)
 {
-  msize = 20.0;
+  msize = CVisParameters::DEFAULT_NODE_SIZE;
   morigNodeKey = "";
   mObjectKey = "";
 }
@@ -30,7 +36,7 @@ CGraphNode::CGraphNode(const CLMetabGlyph & src,
                        const CCopasiContainer * pParent)
     : CLMetabGlyph(src, pParent)
 {
-  msize = 20.0;
+  msize = CVisParameters::DEFAULT_NODE_SIZE;
   morigNodeKey = src.getKey();
   mObjectKey = src.getModelObjectKey();
 }
