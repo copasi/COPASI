@@ -1,11 +1,11 @@
+# -*- coding: utf-8 -*-
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/Test_CTrajectoryTask.py,v $ 
-#   $Revision: 1.9.14.1 $ 
+#   $Revision: 1.9.14.2 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2008/04/08 15:01:33 $ 
+#   $Date: 2008/04/14 08:19:40 $ 
 # End CVS Header 
-
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 # and The University of Manchester. 
