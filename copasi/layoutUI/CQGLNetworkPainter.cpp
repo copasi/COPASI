@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.97 $
+//   $Revision: 1.98 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/04/10 12:12:11 $
+//   $Date: 2008/04/14 10:25:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -59,7 +59,7 @@ C_FLOAT64 log2(const C_FLOAT64 & __x)
 #include "layoutUI/CDataEntity.h"
 #include "layoutUI/BezierCurve.h"
 
-const C_FLOAT64 CQGLNetworkPainter::DEFAULT_NODE_SIZE = 20.0; // default DIAMETER (e.g. used in COLOR mode)
+// const C_FLOAT64 CQGLNetworkPainter::DEFAULT_NODE_SIZE = 20.0; // default DIAMETER (e.g. used in COLOR mode)
 
 CQGLNetworkPainter::CQGLNetworkPainter(QWidget *parent, const char *name)
     : QGLWidget(parent, name)
@@ -428,7 +428,7 @@ void CQGLNetworkPainter::drawGraph()
               C_INT32 yNdCenter = (*itNodeObj).second.getY(); // + ((*itNodeObj).second.getHeight() / 2.0);
               if (pParentLayoutWindow->getMappingMode() == CVisParameters::COLOR_MODE)
                 {
-                  x = xNdCenter + (DEFAULT_NODE_SIZE / 2.0 * this->currentZoom) + 2.0 - ((viewerLabels[i].getWidth() - tWid) / 2.0); // node center + circle radius + 2.0 - texture window overhead
+                  x = xNdCenter + (CVisParameters::DEFAULT_NODE_SIZE / 2.0 * this->currentZoom) + 2.0 - ((viewerLabels[i].getWidth() - tWid) / 2.0); // node center + circle radius + 2.0 - texture window overhead
                   y = yNdCenter;
                 }
               else if ((tWid + 4) > nDiam)
@@ -494,7 +494,7 @@ void CQGLNetworkPainter::drawColorLegend()
 // draw node as circle
 void CQGLNetworkPainter::drawNode(CGraphNode &n) // draw node as filled circle
 {
-  float scaledValue = DEFAULT_NODE_SIZE;
+  float scaledValue = CVisParameters::DEFAULT_NODE_SIZE * currentZoom;
   C_INT16 mappingMode = CVisParameters::SIZE_DIAMETER_MODE;
   if (pParentLayoutWindow != NULL)
     {
@@ -526,7 +526,7 @@ void CQGLNetworkPainter::drawNode(CGraphNode &n) // draw node as filled circle
 
   if ((mappingMode == CVisParameters::SIZE_DIAMETER_MODE) ||
       (mappingMode == CVisParameters::SIZE_AREA_MODE))
-    glColor3f(1.0f, 0.0f, 0.0f); // red as default color for all nodes
+    glColor3f(1.0f, 0.0f, 0.0f); // red as default color for all nodes in non-color modes
   else
     {// color mapping
       QColor col = QColor();
@@ -1428,21 +1428,21 @@ void CQGLNetworkPainter::showStep(C_INT32 stepNumber)
                         if (isnan(val)) // test for nan
                           {
                             //std::cout << "nan value found for " << viewerNodes[i] << std::endl;
-                            setNodeSize(viewerNodes[i], DEFAULT_NODE_SIZE);
+                            setNodeSize(viewerNodes[i], CVisParameters::DEFAULT_NODE_SIZE);
                           }
                         else
                           setNodeSize(viewerNodes[i], val);
                     }
                   else // COLOR_MODE
                     {
-                      setNodeSize(viewerNodes[i], DEFAULT_NODE_SIZE);
+                      setNodeSize(viewerNodes[i], CVisParameters::DEFAULT_NODE_SIZE);
                       //C_FLOAT64 val = dataSet.getValueForSpecies(viewerNodes[i]);
                       //std::cout << "node size value: " << val << std::endl;
                       if (val != -DBL_MAX)
                         if (isnan(val)) // test for nan
                           {
                             std::cout << "nan value found" << viewerNodes[i] << std::endl;
-                            setNodeSize(viewerNodes[i], DEFAULT_NODE_SIZE);
+                            setNodeSize(viewerNodes[i], CVisParameters::DEFAULT_NODE_SIZE);
                           }
                         else
                           setNodeSizeWithoutChangingCurves(viewerNodes[i], val);
@@ -1648,8 +1648,8 @@ CLPoint CQGLNetworkPainter::getPointOnCircle(CLBoundingBox r, CLPoint p)
   C_FLOAT64 distance = sqrt(((p.getX() - center.getX()) * (p.getX() - center.getX())) + ((p.getY() - center.getY()) * (p.getY() - center.getY())));
   //std::cout << "distance: " << distance << "  size: " << msize << std::endl;
 
-  C_FLOAT64 onPointX = center.getX() + ((p.getX() - center.getX()) / distance * DEFAULT_NODE_SIZE / 2.0);
-  C_FLOAT64 onPointY = center.getY() + ((p.getY() - center.getY()) / distance * DEFAULT_NODE_SIZE / 2.0);
+  C_FLOAT64 onPointX = center.getX() + ((p.getX() - center.getX()) / distance * CVisParameters::DEFAULT_NODE_SIZE / 2.0);
+  C_FLOAT64 onPointY = center.getY() + ((p.getY() - center.getY()) / distance * CVisParameters::DEFAULT_NODE_SIZE / 2.0);
 
   return CLPoint(onPointX, onPointY);
 }
@@ -1664,8 +1664,8 @@ CLPoint CQGLNetworkPainter::getPointNearCircle(CLBoundingBox r, CLPoint p, C_INT
   C_FLOAT64 distance = sqrt(((p.getX() - center.getX()) * (p.getX() - center.getX())) + ((p.getY() - center.getY()) * (p.getY() - center.getY())));
   //std::cout << "distance: " << distance << "  size: " << msize << std::endl;
 
-  C_FLOAT64 onPointX = center.getX() + ((p.getX() - center.getX()) / distance * ((DEFAULT_NODE_SIZE / 2.0) + d));
-  C_FLOAT64 onPointY = center.getY() + ((p.getY() - center.getY()) / distance * ((DEFAULT_NODE_SIZE / 2.0) + d));
+  C_FLOAT64 onPointX = center.getX() + ((p.getX() - center.getX()) / distance * ((CVisParameters::DEFAULT_NODE_SIZE / 2.0) + d));
+  C_FLOAT64 onPointY = center.getY() + ((p.getY() - center.getY()) / distance * ((CVisParameters::DEFAULT_NODE_SIZE / 2.0) + d));
 
   return CLPoint(onPointX, onPointY);
 }
@@ -1804,21 +1804,20 @@ void CQGLNetworkPainter::zoom(C_FLOAT64 zoomFactor)
       pParentLayoutWindow->setMaxNodeSize(pParentLayoutWindow->getMaxNodeSize() * zoomFactor);
       unsigned int i;
 
-      if (mDataPresentP)
+      if ((mDataPresentP) && (pParentLayoutWindow->getMappingMode() != CVisParameters::COLOR_MODE)) // only rescale in size mode and when data to be rescaled is present
         {
           rescaleDataSetsWithNewMinMax(oldMin, oldMax, pParentLayoutWindow->getMinNodeSize(), pParentLayoutWindow->getMaxNodeSize(), pParentLayoutWindow->getScalingMode());
         }
       //else {// just scale nodes and curves in graph (and not the whole data set)
-      //scale nodes
+      //scale nodes if not in color mode
       for (i = 0;i < this->viewerNodes.size();i++)
         {
           std::map<std::string, CGraphNode>::iterator nodeIt;
           nodeIt = nodeMap.find(viewerNodes[i]);
           if (nodeIt != nodeMap.end())
-            (*nodeIt).second.scale(zoomFactor);
+            (*nodeIt).second.scale(zoomFactor, (pParentLayoutWindow->getMappingMode() != CVisParameters::COLOR_MODE)); // change position in any way, but size only when not in color mode
           //this->viewerNodes[i].scale(zoomFactor);
         }
-      //}
 
       //scale curves not directly pointing to a reactant/species node
       for (i = 0;i < viewerCurves.size();i++)
