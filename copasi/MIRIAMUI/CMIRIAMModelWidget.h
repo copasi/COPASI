@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CMIRIAMModelWidget.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/03/24 16:25:08 $
+//   $Date: 2008/04/14 16:29:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -51,6 +51,7 @@ class CMIRIAMModelWidget : public CopasiWidget
     ListViews::ObjectType mOT;
 
     void updateCreatedWidget();
+    void showMessages();
 
   protected slots:
     virtual void slotBtnOKClicked();

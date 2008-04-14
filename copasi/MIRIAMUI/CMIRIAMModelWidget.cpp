@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CMIRIAMModelWidget.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/25 17:47:12 $
+//   $Author: aekamal $
+//   $Date: 2008/04/14 16:29:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,6 +22,8 @@
 #include "model/CModel.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "UI/qtUtilities.h"
+#include "UI/CQMessageBox.h"
+#include "utilities/CCopasiMessage.h"
 
 #include "CMIRIAMModelWidget.h"
 #include "CCreatorsWidget.h"
@@ -233,6 +235,8 @@ bool CMIRIAMModelWidget::enter(const std::string & key)
   std::vector<CopasiTableWidget*>::const_iterator end = mWidgets.end();
   for (; it != end; it++)
   {(*it)->enter(key);}
+
+  showMessages();
   return true;
 }
 
@@ -273,5 +277,31 @@ void CMIRIAMModelWidget::updateCreatedWidget()
 
       connect(mpCreatedWidget, SIGNAL(valueChanged(const QDateTime &)), this,
               SLOT(slotCreatedValueChanged(const QDateTime &)));
+    }
+}
+
+void CMIRIAMModelWidget::showMessages()
+{
+  CCopasiMessage msg_pending = CCopasiMessage::getLastMessage();
+  if (msg_pending.getNumber() != MCCopasiMessage + 1)
+    {
+      QString text = "Following messages were encountered while parsing MIRIAM annotation for Model: \n";
+      unsigned int numMessages = 0;
+      while (msg_pending.getNumber() != MCCopasiMessage + 1)
+        {
+          if (msg_pending.getType() == CCopasiMessage::ERROR || msg_pending.getType() == CCopasiMessage::WARNING)
+            {
+              if (numMessages)
+                text += "\n";
+              ++numMessages;
+              text += FROM_UTF8(msg_pending.getText());
+            }
+          msg_pending = CCopasiMessage::getLastMessage();
+        }
+      if (numMessages > 0)
+        {
+          CQMessageBox::information(this, QString("COPASI Message"), text,
+                                    QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+        }
     }
 }
