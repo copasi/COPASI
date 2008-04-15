@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.56 $
+//   $Revision: 1.57 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/04/15 11:08:23 $
+//   $Date: 2008/04/15 11:18:36 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -200,6 +200,8 @@ class CQGLNetworkPainter : public QGLWidget
     void resizeGL(int w, int h);
 
     void paintGL();
+
+  void printNodeInfoForKey(std: .string key); // just for debugging
   };
 
 #endif /*GLGRAPHPAINTER_H_*/

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.99 $
+//   $Revision: 1.100 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/04/15 11:06:58 $
+//   $Date: 2008/04/15 11:18:36 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1124,10 +1124,10 @@ void CQGLNetworkPainter::rescaleDataSetsWithNewMinMax(C_FLOAT64 oldMin, C_FLOAT6
                   val_new = newMin + ((val_orig - a) / (b - a) * (newMax - newMin));
                 }
               else
-                {// no scaling if differences are too small, just set middle value
+                {// no scaling if differences are too small, just set mid value
                   val_new = (newMax + newMin) / 2.0;
                   setOfConstantMetabolites.insert(viewerNodes[i]);
-                  std::cout << "constant value  for: " << viewerNodes[i] << std::endl;
+                  //std::cout << "constant value  for: " << viewerNodes[i] << std::endl;
                 }
               //std::cout << "----------- " << std::endl;
 
@@ -2078,6 +2078,13 @@ void CQGLNetworkPainter::printNodeMap()
       std::cout << (*nodeIt).first << "  :  " << (*nodeIt).second.getLabelText() << std::endl;
       nodeIt++;
     }
+}
+
+void CQGLNetworkPainter::printNodeInfoForKey(std: .string key)
+{
+  std::map<std::string, CGraphNode>::iterator itNodeObj = nodeMap.find(key);
+  if (itNodeObj != nodeMap.end())
+    std::cout << (*itNodeObj).second;
 }
 
 void CQGLNetworkPainter::printAvailableFonts()
