@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.55 $
+//   $Revision: 1.56 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/03/03 12:30:40 $
+//   $Date: 2008/04/15 11:08:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -135,11 +135,13 @@ class CQGLNetworkPainter : public QGLWidget
     std::map<std::string, CGraphNode>nodeMap;
     std::map<std::string, std::string>labelNodeMap; // maps label keys to node keys
 
-    std::map<std::string,RGTextureSpec*>labelTextureMap; // maps label texts to texture info
+    std::map<std::string, RGTextureSpec*>labelTextureMap; // maps label texts to texture info
     //std::multimap<std::string, CLCurve*> curveMap; // maps mMetabGlyphKey of CLMetabReferenceGlyph to curve in reaction
-    std::multimap<std::string, CGraphCurve> nodeCurveMap; // maps mKey of viewer node (CGraphNode, originally from CLMetabGlyph, to curves (stored in viewerCurves) that point to thid node)
+    std::multimap<std::string, CGraphCurve> nodeCurveMap; // maps mKey of viewer node (CGraphNode, originally from CLMetabGlyph) to curves (stored in viewerCurves) that point to this node)
     std::multimap<std::string, CArrow> nodeArrowMap; // maps mKey of viewer node (CGraphNode, originally from CLMetabGlyph, to arrows (stored in viewerArrows) that point to thid node)
     //std::map<std::string, float> nodeSizeMap; // maps mKey of viewer node to size of this node in circular view
+
+    std::set<std::string>setOfConstantMetabolites;
 
     //CGraphNode* findNodeWithKey(std::string nodeKey);
     //void storeCurveInCorrespondingNode(std::string nodeKey, int indx);
@@ -169,7 +171,6 @@ class CQGLNetworkPainter : public QGLWidget
     RGTextureSpec* getTextureForText(const std::string& text, const std::string& fontName, unsigned int fontSize);
 
     void createTextureForAllLabels();
-
 
     int getTextWidth(const std::string& text, const std::string& fontName, unsigned int fontSize);
     int getLabelWindowWidth(int width);
