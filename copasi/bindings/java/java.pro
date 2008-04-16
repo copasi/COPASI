@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/java.pro,v $ 
-#   $Revision: 1.24.4.2 $ 
+#   $Revision: 1.24.4.3 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2008/04/10 09:14:45 $ 
+#   $Date: 2008/04/16 20:09:20 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -50,10 +50,8 @@ contains(BUILD_OS,Linux){
     INCLUDEPATH += $$JAVA_INCLUDE_PATH 
     INCLUDEPATH += $$JAVA_INCLUDE_PATH/linux
   }
-
-
-
 }
+
 
 contains(BUILD_OS, Darwin) {
     LIBS += -framework JavaVM
@@ -269,3 +267,5 @@ isEmpty(SWIG_PATH){
 
 
 SOURCES += copasi_wrapper.cpp
+# under windows qmake seems to ignore the last line of progject files
+
