@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CModel.i,v $ 
-//   $Revision: 1.10.6.2 $ 
+//   $Revision: 1.10.6.3 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2008/04/08 15:01:34 $ 
+//   $Date: 2008/04/16 20:08:32 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -30,6 +30,7 @@ typedef std::vector<CCopasiObject*> ObjectStdVector;
 
 %ignore CModel::compileIfNecessary(CProcessReport* pProcessReport);
 %ignore CModel::forceCompile(CProcessReport* pProcessReport);
+%ignore _cpp_min;
 
 class CModel : public CModelEntity
 {
