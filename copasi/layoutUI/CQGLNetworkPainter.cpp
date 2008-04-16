@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.100 $
+//   $Revision: 1.101 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/04/15 11:18:36 $
+//   $Date: 2008/04/16 11:21:07 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1088,6 +1088,7 @@ void CQGLNetworkPainter::rescaleDataSetsWithNewMinMax(C_FLOAT64 oldMin, C_FLOAT6
   unsigned int s; // step number
   C_FLOAT64 val, val_new;
   setOfConstantMetabolites.clear();
+  std::cout << *pSummaryInfo << std::endl;
   for (s = 0; s < dataSets.size(); s++) // for all steps
     {
       //std:: cout << "rescale step: " << s << std::endl;
@@ -1122,6 +1123,15 @@ void CQGLNetworkPainter::rescaleDataSetsWithNewMinMax(C_FLOAT64 oldMin, C_FLOAT6
                   //std::cout << "orig val: " << orig_value  << "  recalculated val: " << val_orig << std::endl;
                   // now scale value
                   val_new = newMin + ((val_orig - a) / (b - a) * (newMax - newMin));
+                  // if (getNameForNodeKey(viewerNodes[i]) == "PER3+"){
+                  //       std::cout << ">>>>>" << "  step: " << s << std::endl;
+                  //       std::cout << "a: " << a << "  b: " << b << std::endl;
+
+                  //       printNodeInfoForKey(viewerNodes[i]);
+                  //       std::cout << "orig val: " << val_orig << "  new val.:  " << val_new << std::endl;
+                  //       std::cout << "-----" << std::endl;
+
+                  //}
                 }
               else
                 {// no scaling if differences are too small, just set mid value
@@ -1293,7 +1303,7 @@ bool CQGLNetworkPainter::createDataSets()
                           if (val < minR)
                             minR = val;
                         }
-                      //std::cout << name << " : " << key << " : " << val << std::endl;
+                      std::cout << name << " : " << getNameForNodeKey(ndKey) << " : " << val << std::endl;
                       pSummaryInfo->storeMax(ndKey, maxR);
                       pSummaryInfo->storeMin(ndKey, minR);
                       if (maxR > maxAll)
@@ -2080,11 +2090,20 @@ void CQGLNetworkPainter::printNodeMap()
     }
 }
 
-void CQGLNetworkPainter::printNodeInfoForKey(std: .string key)
+void CQGLNetworkPainter::printNodeInfoForKey(std::string key)
 {
   std::map<std::string, CGraphNode>::iterator itNodeObj = nodeMap.find(key);
   if (itNodeObj != nodeMap.end())
     std::cout << (*itNodeObj).second;
+}
+
+std::string CQGLNetworkPainter::getNameForNodeKey(std::string key)
+{
+  std::string s = "UNKNOWN";
+  std::map<std::string, CGraphNode>::iterator itNodeObj = nodeMap.find(key);
+  if (itNodeObj != nodeMap.end())
+    s = (*itNodeObj).second.getLabelText();
+  return s;
 }
 
 void CQGLNetworkPainter::printAvailableFonts()
