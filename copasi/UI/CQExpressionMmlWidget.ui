@@ -1,0 +1,303 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<comment> Begin CVS Header </comment>
+<comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExpressionMmlWidget.ui,v $ </comment>
+<comment>   $Revision: 1.1 $ </comment>
+<comment>   $Name:  $ </comment>
+<comment>   $Author: pwilly $ </comment>
+<comment>   $Date: 2008/04/18 08:33:49 $ </comment>
+<comment> End CVS Header </comment>
+
+<comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., EML Research, gGmbH, University of Heidelberg, </comment>
+<comment> and The University of Manchester. </comment>
+<comment> All rights reserved. </comment>
+
+<class>CQExpressionMmlWidget</class>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>CQExpressionMmlWidget</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>290</width>
+            <height>125</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Expression-Mml Widget</string>
+    </property>
+    <grid>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QWidgetStack" row="0" column="0">
+            <property name="name">
+                <cstring>mpWidgetStackExpressionMml</cstring>
+            </property>
+            <property name="minimumSize">
+                <size>
+                    <width>0</width>
+                    <height>0</height>
+                </size>
+            </property>
+            <widget class="QWidget">
+                <property name="name">
+                    <cstring>mpExpressionPage</cstring>
+                </property>
+                <attribute name="id">
+                    <number>0</number>
+                </attribute>
+                <grid>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="CQExpressionWidget" row="0" column="0">
+                        <property name="name">
+                            <cstring>mpExpressionWidget</cstring>
+                        </property>
+                    </widget>
+                    <widget class="QLayoutWidget" row="0" column="1">
+                        <property name="name">
+                            <cstring>layout4</cstring>
+                        </property>
+                        <vbox>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <widget class="QToolButton">
+                                <property name="name">
+                                    <cstring>mpBtnExpressionObject</cstring>
+                                </property>
+                                <property name="maximumSize">
+                                    <size>
+                                        <width>20</width>
+                                        <height>20</height>
+                                    </size>
+                                </property>
+                                <property name="text">
+                                    <string></string>
+                                </property>
+                                <property name="iconSet">
+                                    <iconset>image0</iconset>
+                                </property>
+                                <property name="IconSet" stdset="0">
+                                    <iconset>image0</iconset>
+                                </property>
+                                <property name="toolTip" stdset="0">
+                                    <string>select object</string>
+                                </property>
+                            </widget>
+                            <widget class="QToolButton">
+                                <property name="name">
+                                    <cstring>mpBtnViewExpression</cstring>
+                                </property>
+                                <property name="enabled">
+                                    <bool>false</bool>
+                                </property>
+                                <property name="maximumSize">
+                                    <size>
+                                        <width>20</width>
+                                        <height>20</height>
+                                    </size>
+                                </property>
+                                <property name="text">
+                                    <string></string>
+                                </property>
+                                <property name="iconSet">
+                                    <iconset>image1</iconset>
+                                </property>
+                                <property name="toolTip" stdset="0">
+                                    <string>view expression</string>
+                                </property>
+                            </widget>
+                            <spacer>
+                                <property name="name">
+                                    <cstring>mpSpacerExpressionObject</cstring>
+                                </property>
+                                <property name="orientation">
+                                    <enum>Vertical</enum>
+                                </property>
+                                <property name="sizeType">
+                                    <enum>Expanding</enum>
+                                </property>
+                                <property name="sizeHint">
+                                    <size>
+                                        <width>20</width>
+                                        <height>20</height>
+                                    </size>
+                                </property>
+                            </spacer>
+                        </vbox>
+                    </widget>
+                </grid>
+            </widget>
+            <widget class="QWidget">
+                <property name="name">
+                    <cstring>mpMmlPage</cstring>
+                </property>
+                <attribute name="id">
+                    <number>1</number>
+                </attribute>
+                <grid>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QLayoutWidget" row="0" column="1">
+                        <property name="name">
+                            <cstring>mpVBLayoutMml</cstring>
+                        </property>
+                        <vbox>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <widget class="QToolButton">
+                                <property name="name">
+                                    <cstring>mpBtnEditExpression</cstring>
+                                </property>
+                                <property name="maximumSize">
+                                    <size>
+                                        <width>20</width>
+                                        <height>20</height>
+                                    </size>
+                                </property>
+                                <property name="text">
+                                    <string></string>
+                                </property>
+                                <property name="iconSet">
+                                    <iconset>image2</iconset>
+                                </property>
+                                <property name="toolTip" stdset="0">
+                                    <string>edit expression</string>
+                                </property>
+                            </widget>
+                            <spacer>
+                                <property name="name">
+                                    <cstring>mpSpacerMmlObject</cstring>
+                                </property>
+                                <property name="orientation">
+                                    <enum>Vertical</enum>
+                                </property>
+                                <property name="sizeType">
+                                    <enum>Expanding</enum>
+                                </property>
+                                <property name="sizeHint">
+                                    <size>
+                                        <width>20</width>
+                                        <height>30</height>
+                                    </size>
+                                </property>
+                            </spacer>
+                        </vbox>
+                    </widget>
+                    <widget class="CQMmlScrollView" row="0" column="0">
+                        <property name="name">
+                            <cstring>mpMmlScrollView</cstring>
+                        </property>
+                    </widget>
+                </grid>
+            </widget>
+        </widget>
+    </grid>
+</widget>
+<customwidgets>
+    <customwidget>
+        <class>CQExpressionWidget</class>
+        <header location="local">CQExpressionWidget.h</header>
+        <sizehint>
+            <width>-1</width>
+            <height>-1</height>
+        </sizehint>
+        <container>0</container>
+        <sizepolicy>
+            <hordata>5</hordata>
+            <verdata>5</verdata>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+        </sizepolicy>
+        <pixmap>image3</pixmap>
+        <signal>valid(bool)</signal>
+        <slot access="public" specifier="">slotSelectObject()</slot>
+    </customwidget>
+    <customwidget>
+        <class>CQMmlScrollView</class>
+        <header location="local">CQMmlScrollView.h</header>
+        <sizehint>
+            <width>-1</width>
+            <height>-1</height>
+        </sizehint>
+        <container>0</container>
+        <sizepolicy>
+            <hordata>5</hordata>
+            <verdata>5</verdata>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+        </sizepolicy>
+        <pixmap>image4</pixmap>
+    </customwidget>
+</customwidgets>
+<images>
+    <image name="image0">
+        <data format="PNG" length="650">89504e470d0a1a0a0000000d49484452000000100000001008060000001ff3ff610000025149444154388d8d93db53525114877f1b3717e32e8e9897220151b0cb288c3aa6654d33dda69e7de9efebc5e9b197a65131727286d120062727ec88e08140e0409ca370560f8d3427a3da8f7badef9bbdd6da8bc56231fccf298897499155d86c7ad89d59767ecfff067dd91f20e1a0817cae89625100d33178bd663c7ef62ba7ab60fdad99d2a91c0c068ec9290796ee98307cf598018a26ef8f82d5977a3a3aaac2ebb3e0c973990195aeafd40892bb0efaf0fe0492d4c474d889c5658975032f0876e326da8c0a301a2d585ceec774b8f24f5823d88a89b05a55cc2f38e00f5c84bd8d0c29cd1a949604a6d7a3e09a651dc1abd50aa94488cc8ec21fa869e0a1bd752aa5134889395465052744601c18f64469e2e10a78ee90d3e1d71c66c27e4c86ea1d78bc16273116c55e3a8bfc9905adc129b86f78e0ebb7e2b494c151721b7d8719f05a59c440df191696f41d78acbc45c2c66b6404a07d651e9ed02d1802639d789b19e9584ec05ed681ab6d050eabaaa9b79458c727c10843e80146ef472ef423ba16475154e033b9c00d662bc492d00906757b943a2920ab8b2012f06bc06a2a4e3befb690fd9c87772a88c1608071a7c30e55d56173ad44b7efba5893f7c36433a3b795060926d86423495509897401fbe903c80ac7a8ef26eebd58f93905975b6581e0354a7e14203538cd5c77c2ee7e04a76d033b6f36b1adb4d1623da8cb3d20db087cb373083f9deb94c5ceb731befd9d12c96f288a15b0b3325a8d3aead553f01e6068c482f1801b13a111b8c75d9a9eb0dfd7399f3352a3de00b575e09ca3f7920183c372d75ff9035105f9b717f5665a0000000049454e44ae426082</data>
+    </image>
+    <image name="image1">
+        <data format="PNG" length="475">89504e470d0a1a0a0000000d49484452000000100000001008060000001ff3ff61000001a249444154388d9d933b4b2b4118869f5976738fd72818055104e180851a2c160b7f8017309d200801b5b0b0f1570836da9c9c26a4b4b3b6109ba95c41441021955710a332129378598b4d964d34caf1ab66be99e7fdde99f9464829f92ecc8ccff6cee5425978e7fa4fe0f2fc0800f7a56afed0f60a89af1c98199fbdb53acc4054c3d0207b064779506578b5411790dbb3900b65d1d0418ba1d1ea83b14eb829c076ce81fd75c427816af57c19ce0bf07009390583edd01182800ec55720398a99b1ec860e2e9fe1b6048517676c7643571882063cbf387b76bfbc44cba22b3cc2fd1b5c3cc15d11fa5aa0b7097a2210f5832a812abc8365357e85b600bc01cd418887a13304b110c42370f504b1900680560fcacd21919cfd87df809e287447a03d0861c359cf179d7b189f482337876a5fe13863569ae62fa9de8ae0033cbe3b50ab0e7f02b505752f3c999c26de3fc3d4690a9170f2f6c1620d201269d7a92b50856331c1f5690aa5602eb0c4caba142291ae6de50ae83af0c277573b28054a3506ea43033ec11b59585997df82aec0fe09bf86a1f299b6d64cf79cff03037c007953a224a1d8e8a20000000049454e44ae426082</data>
+    </image>
+    <image name="image2">
+        <data format="PNG" length="262">89504e470d0a1a0a0000000d4948445200000009000000090806000000e0910610000000cd4944415418956dceb14b025100c7f1ef7b5e220477a791b707a18390100dde2804e276db99ff8b7fc84de10d81535b868b43bc686972b0a9d93b870e8e3ab07a0d91d0d3dffce1f7fb09a514667cdfd70e302a97e9cce7c2da075e1e5bbc659f5cf69644ddae96fbc02ad9f0f094339b36098b026982f78f6fa238e5a27d88ebfc0e49138c276bc2a086573fa0d159a0941202d84e44714a18d4383da96c0180b839b37575e072ff5a10f4abff1afeae48f22f92db8ca128e11d593b004000fafadce6580bae9e33ee0c00f0033a05589bd4ab74d10000000049454e44ae426082</data>
+    </image>
+    <image name="image3">
+        <data format="PNG" length="871">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b0000032e49444154388db59531681c4714863f892dde8004b320c32e38700732f80a17d71ea8b04a81c016a809a8716b42208454098604d2c4904a6954a410511ae75c18ac42b61230dc35221244b00119f60ac12ee860062c980719708a95a248f129459cd7cceeccf0edb76fff61a7068301e7d5ebf5def21e6a30184c4d9d835feebc7cdb9e6fe3bda7aa2b9c77180c8170ede8bca3382a18ee0d215ec09373d3273f3c21cd216f432bead9b28344008749040817f35cdc174702df5b862ffc653040ed6bd20fa01cff84be2909513106c21fe06ba1aa15413073d0be05220a11149059486f287fafbfc0ae76843b1e7d5313a2c7cc5aca7dd8dd56f6f76a24018d8a24966c5e585a4de92d048466dece08cd63ae802b5fd14509b1c218cb6047d9daf010c15a219f1744a01a29a3d7ca775f95d46b192b6b20d2c0df696c120328665628f7a17f065dba97717719f2dc4012504dd9dd0ef4373cfdcd1159d661f1be4112bd643c7d7e1162008410e0f9338f4665e95ec6ca03487345930a7f6278fed4b1b49af2e1471612616bb342c7ff8cdc65e3c4e1eb94e2a0c4dac654a4b1f0a739ebdf38ca438f3b81879fe50c773ce5ef4a5104442e832f199b44a86a0709e42d486f80a2789fb2fe654571e8112bf41652987174ba168d4a750c1a27809b1e832010153b73f6514e72d6bf7694874dbcec8c90df84549af79544d0087245f94a8fc1cc0189a51829aa86dd17a1319d11b29b96d1a8e6f1a38a623fa52a158d4abb65e0fa54383ab7a0d512ea91b2bb1d58594b71274aef6e4a9ec1e347307a5df3f9c7157aeac9324ba70b557d4d8f414094a55541a3d2dff0ec6e3b1e7e92d35d08b4ba814fbfc8c9328b1fd710a1b76c69dffed71c0788426f01eae38cfee688ad6f61b8e3e9dcb19040553afc589bdea214af94e2c06065c2c973637776f6150156d6842cebd0ffb1a238548a8351b33b829db32cdeb7fcfab3529d7a34a6d4e309c6c55141510a92362692c0e272a0b790531481eab881e62d43a70beddb502c1b8839248ef237de0d1eee0d614348f32652aabec91b1e39db250994c7bec9edb3a61dde43b1af54f50463220c7f395fbc3a4eaac9ebd31357fe634d43f38ffa5fc0ef1b3e180ca6fe0409399be159e5ea280000000049454e44ae426082</data>
+    </image>
+    <image name="image4">
+        <data format="PNG" length="1125">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b0000042c49444154388db5954f6c14551cc73fefcd7476b65bdaae4bb78bb5502a14d404e4801c88182d1c4c2c693da847400f9c24c68b878684238660e2b1e01f12c19493012ef2478c814412d354a46017a8a564bb6da5bbedccee767776e63d0ffb073751d483bfe49799974c3eeffb7ebf37df9fd05a530b2184040cc0042420aaf9a4d0d554800f045a6b256ae0e1e1e1d6bebebe838ee31c48a7d39b5cd7fd075e251cc7617272f2ded8d8d819cff33e0316819259537aead4a9839d5dd6d1784f91f55b0a94830242088404d304292bef68a89f520802a598fecddaa04f1a876f5c250c7c0a64cdeac686e33807e23d45e6b297c8b877f1831542614550b6599835c83c2a81b6786a75134faf2f1169f12997350881d9021d0903e06de0745d3160a6d3e94dbd5b0a64dcbb94b5831d0e3375ab892b1772dcf9790528543f8dd0d367b36768153b5e31503a0f1aecb004580b44ffac58baae8b1714f0833c7638cc8dab303a320f4822ab4c7a37c69196203de3319d5ce1c4d13c733331dedc67a129a154fd128401ab0616d55a130ac3d42d93d1913940d13fd0c9ee0183685c60da01c5421bd72f7a8c8efccef9afd374267ad93d642365be0636a0d28ec7600941d9e6f23917f0e97f23ce5bef35d19ec863da0ed9059b2be70bec196c66dfa10ec0e49b338f7017258651bf95021035c595429bb0903248fe52a2b5b595dd7b4d945cc2340cdca536be389ee3f67886c5798f773fe8e0dac508c989659277a2180da4ca4ff07821058b8b251445d63d6b13ed1098a6417e39cac85197dbe31962ab9bd9f1f22a226d45366f6d0620fdb08c900d281af6110284b20085b414861d905d88f2e52739ee8cbb8022143259d3dd84691730aa2d52da441a8de0c6958068870022a41e9629ad3473fd3b8fdbe319dadb9b4924da994d2d716c7896fbe35152f78b48245d6b2da4507faf582be8eaf159b721cc837b05ae7debb1f79d08cb8b515edad942a22bc4b1c33eb3d34b1c797f06af90a72d16e2f96d9a74aa11dca8586b222d01af0fb60070f6c402d72f15d97f28c6f6d7027a5f5ce6c3233dc4e2ede496b278be4fff608cee8d3e1add806aeca51094cbb06397c1ecc328e746537c7e3ccdb5cb1136bf60635882d4d41c6ec6836ab37efa214f72208ed9f4d7cdd38ee310280542e38b1c43fb6de26b3672e1ec3cc99bcb246f66a938a3241ab3e91f7c861fbf77710b1e5e49915bae974203ba0e9e9c9cbc373d6d6d305a040a89c2a77f50b27d5782bbbf7acccf28349235dd16cf6dd374f7295e1de8a45c02d37499182b01cc0201a085d61a2144d8b2ac8fb6ed340e77240c4261890e04c250185262546d534a032154b59e0ad394e41c98182bf268ce6721ed9f064e0253356f6da2e24c1f030f783c15fe6da680af8021602bd051532ca9b8521488559f61aa86c29343578fbf0264a94c906c7d3409214c20043457a116ff6de6795578012889ff6b98fe016ea0ce1c6a2573410000000049454e44ae426082</data>
+    </image>
+</images>
+<connections>
+    <connection>
+        <sender>mpBtnEditExpression</sender>
+        <signal>clicked()</signal>
+        <receiver>CQExpressionMmlWidget</receiver>
+        <slot>slotGoExpressionWidget()</slot>
+    </connection>
+    <connection>
+        <sender>mpBtnExpressionObject</sender>
+        <signal>clicked()</signal>
+        <receiver>mpExpressionWidget</receiver>
+        <slot>slotSelectObject()</slot>
+    </connection>
+    <connection>
+        <sender>mpBtnViewExpression</sender>
+        <signal>clicked()</signal>
+        <receiver>CQExpressionMmlWidget</receiver>
+        <slot>updateWidget()</slot>
+    </connection>
+    <connection>
+        <sender>mpExpressionWidget</sender>
+        <signal>valid(bool)</signal>
+        <receiver>mpBtnViewExpression</receiver>
+        <slot>setEnabled(bool)</slot>
+    </connection>
+</connections>
+<includes>
+    <include location="global" impldecl="in declaration">qwidgetstack.h</include>
+    <include location="local" impldecl="in implementation">mml/qtmmlwidget.h</include>
+    <include location="local" impldecl="in implementation">CQExpressionWidget.h</include>
+    <include location="local" impldecl="in implementation">utilities/CCopasiException.h</include>
+    <include location="local" impldecl="in implementation">CQExpressionMmlWidget.ui.h</include>
+</includes>
+<signals>
+    <signal>signalCheckValidity(bool)</signal>
+</signals>
+<slots>
+    <slot access="protected" specifier="non virtual">slotGoExpressionWidget()</slot>
+    <slot access="protected" specifier="non virtual">slotGoMmlWidget()</slot>
+    <slot specifier="non virtual">updateWidget()</slot>
+</slots>
+<layoutdefaults spacing="6" margin="0"/>
+<includehints>
+    <includehint>CQExpressionWidget.h</includehint>
+    <includehint>CQMmlScrollView.h</includehint>
+</includehints>
+</UI>
