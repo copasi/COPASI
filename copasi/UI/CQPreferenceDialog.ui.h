@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQPreferenceDialog.ui.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2008/02/20 19:06:28 $
+//   $Author: shoops $
+//   $Date: 2008/04/18 18:20:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,8 +15,11 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include "copasiui3window.h"
 #include <qmessagebox.h>
+
+#include "copasiui3window.h"
+#include "qtUtilities.h"
+
 #include "commandline/CConfigurationFile.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 
@@ -92,14 +95,15 @@ void CQPreferenceDialog::init()
   if (CCopasiDataModel::Global)
     {
       CConfigurationFile * configFile = CCopasiDataModel::Global->getConfiguration();
-      CRecentFiles & recentFiles = configFile->getRecentFiles();
-      CCopasiParameter * par = recentFiles.getParameter("MaxFiles");
-      maxFiles = *par->getValue().pUINT;
-      //QMessageBox::information(this, "maxFiles", QString::number(maxFiles));
+      new CPreferenceListViewItem(mpListView,
+                                  "Max Last Visited Files",
+                                  getParameterValue(&configFile->getRecentFiles(), "MaxFiles"));
+      new CPreferenceListViewItem(mpListView,
+                                  "Max Last Visited SBML Files",
+                                  getParameterValue(&configFile->getRecentSBMLFiles(), "MaxFiles"));
     }
   if (maxFiles > 0)
-  {new CPreferenceListViewItem(mpListView, "Max Last Visited Files", QString::number(maxFiles));}
-}
+    {}}
 
 //slot
 void CQPreferenceDialog::editItem(QListViewItem * item, const QPoint & C_UNUSED(pnt), int c)
