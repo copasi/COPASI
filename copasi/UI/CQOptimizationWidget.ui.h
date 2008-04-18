@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQOptimizationWidget.ui.h,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2008/04/01 00:12:19 $
+//   $Date: 2008/04/18 09:13:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,6 +18,7 @@
 #include <qlabel.h>
 #include <qpushbutton.h>
 #include <qtoolbutton.h>
+#include <qlayout.h>
 
 #include "UI/CQTaskBtnWidget.h"
 #include "UI/CQTaskHeaderWidget.h"
@@ -26,6 +27,7 @@
 #include "UI/CCopasiSelectionDialog.h"
 #include "UI/OptimizationResultWidget.h"
 #include "UI/qtUtilities.h"
+#include "UI/CQExpressionWidget.h"
 
 #include "report/CKeyFactory.h"
 #include "optimization/COptTask.h"
@@ -49,9 +51,11 @@ bool CQOptimizationWidget::saveTask()
   if (!pProblem) return false;
 
   // expression
-  if (pProblem->getObjectiveFunction() != ((CQExpressionWidget *)mpEditExpression->widget(0))->getExpression())
+  //  if (pProblem->getObjectiveFunction() != ((CQExpressionWidget *)mpEditExpression->widget(0))->getExpression())
+  if (pProblem->getObjectiveFunction() != mpExpressionEMW->mpExpressionWidget->getExpression())
     {
-      if (!pProblem->setObjectiveFunction(((CQExpressionWidget *)mpEditExpression->widget(0))->getExpression()))
+      //      if (!pProblem->setObjectiveFunction(((CQExpressionWidget *)mpEditExpression->widget(0))->getExpression()))
+      if (!pProblem->setObjectiveFunction(mpExpressionEMW->mpExpressionWidget->getExpression()))
         {
           CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 5);
           return false;
@@ -101,22 +105,24 @@ bool CQOptimizationWidget::loadTask()
   if (!pProblem) return false;
 
   // expression
-  ((CQExpressionWidget *)mpEditExpression->widget(0))->setExpression(pProblem->getObjectiveFunction());
+  //  ((CQExpressionWidget *)mpEditExpression->widget(0))->setExpression(pProblem->getObjectiveFunction());
+  mpExpressionEMW->mpExpressionWidget->setExpression(pProblem->getObjectiveFunction());
   std::cout << ">> " << pProblem->getObjectiveFunction() << std::endl;
-  if (pProblem->getObjectiveFunction().empty())
-    {
-      // empty
-      mpBtnObject->show();
-      mpBtnEdit->hide();
-    }
-  else
-    {
-      // not-empty
-      mpBtnObject->hide();
-      mpBtnEdit->show();
-    }
-
-  mpEditExpression->updateExpressionWidget();
+  /*  if (pProblem->getObjectiveFunction().empty())
+      {
+        // empty
+        mpBtnObject->show();
+        mpBtnEdit->hide();
+      }
+    else
+      {
+        // not-empty
+        mpBtnObject->hide();
+        mpBtnEdit->show();
+      }
+  */
+  //  mpEditExpression->updateExpressionWidget();
+  mpExpressionEMW->updateWidget();
 
   if (*pProblem->getValue("Steady-State").pSTRING != "")
     {
@@ -143,10 +149,11 @@ bool CQOptimizationWidget::runTask()
   // --- expression
 
   // objective function exist !!
-  mpBtnObject->hide();
-  mpBtnEdit->show();
+  //  mpBtnObject->hide();
+  //  mpBtnEdit->show();
 
-  mpEditExpression->updateExpressionWidget();
+  //  mpEditExpression->updateExpressionWidget();
+  mpExpressionEMW->updateWidget();
 
   // ----
 
@@ -194,7 +201,8 @@ void CQOptimizationWidget::init()
 {
   mpHeaderWidget->setTaskName("Optimization");
 
-  ((CQExpressionWidget *)mpEditExpression->widget(0))->setExpressionType(CCopasiSimpleSelectionTree::OBJECTIVE_EXPRESSION);
+  //  ((CQExpressionWidget *)mpEditExpression->widget(0))->setExpressionType(CCopasiSimpleSelectionTree::OBJECTIVE_EXPRESSION);
+  mpExpressionEMW->mpExpressionWidget->setExpressionType(CCopasiSimpleSelectionTree::OBJECTIVE_EXPRESSION);
 
   CQOptimizationWidgetLayout->insertWidget(0, mpHeaderWidget);
   CQOptimizationWidgetLayout->addWidget(mpBtnWidget);
@@ -236,11 +244,12 @@ void CQOptimizationWidget::slotExpressionValid(bool valid)
  */
 void CQOptimizationWidget::slotEditExpression()
 {
-  // activate editor page of the Expression widget stack
-  //  mpEditFcnExpression->raiseWidget(mpEditExpression);
-  mpEditExpression->raiseWidget(0);
-  // show the button of object selector
-  mpBtnObject->show();
-  // hide the button of going back to the expression editor
-  mpBtnEdit->hide();
+  /*  // activate editor page of the Expression widget stack
+    //  mpEditFcnExpression->raiseWidget(mpEditExpression);
+    mpEditExpression->raiseWidget(0);
+    // show the button of object selector
+    mpBtnObject->show();
+    // hide the button of going back to the expression editor
+    mpBtnEdit->hide();
+  */
 }
