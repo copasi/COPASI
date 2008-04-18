@@ -1,14 +1,15 @@
 <!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMetabolite.ui,v $ </comment>
-<comment>   $Revision: 1.10 $ </comment>
+<comment>   $Revision: 1.11 $ </comment>
 <comment>   $Name:  $ </comment>
-<comment>   $Author: shoops $ </comment>
-<comment>   $Date: 2007/11/13 14:47:40 $ </comment>
+<comment>   $Author: pwilly $ </comment>
+<comment>   $Date: 2008/04/18 08:38:39 $ </comment>
 <comment> End CVS Header </comment>
 
-<comment> Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual </comment>
-<comment> Properties, Inc. and EML Research, gGmbH. </comment>
+<comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., EML Research, gGmbH, University of Heidelberg, </comment>
+<comment> and The University of Manchester. </comment>
 <comment> All rights reserved. </comment>
 
 <class>CQMetabolite</class>
@@ -263,76 +264,6 @@
                 <set>AlignVCenter|AlignRight</set>
             </property>
         </widget>
-        <widget class="QLayoutWidget" row="5" column="1" rowspan="1" colspan="2">
-            <property name="name">
-                <cstring>mpHBoxLayoutInitialExpression</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="CQExpressionWidget">
-                    <property name="name">
-                        <cstring>mpEditInitialExpression</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>5</hsizetype>
-                            <vsizetype>5</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                </widget>
-                <widget class="QLayoutWidget">
-                    <property name="name">
-                        <cstring>mpVBoxLayoutInitialExpression</cstring>
-                    </property>
-                    <vbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="QToolButton">
-                            <property name="name">
-                                <cstring>mpBtnObjectInitialExpression</cstring>
-                            </property>
-                            <property name="maximumSize">
-                                <size>
-                                    <width>20</width>
-                                    <height>20</height>
-                                </size>
-                            </property>
-                            <property name="text">
-                                <string></string>
-                            </property>
-                            <property name="iconSet">
-                                <iconset>image0</iconset>
-                            </property>
-                            <property name="textLabel">
-                                <string>select</string>
-                            </property>
-                        </widget>
-                        <spacer>
-                            <property name="name">
-                                <cstring>mpSpacerObjectInitialExpression</cstring>
-                            </property>
-                            <property name="orientation">
-                                <enum>Vertical</enum>
-                            </property>
-                            <property name="sizeType">
-                                <enum>Expanding</enum>
-                            </property>
-                            <property name="sizeHint">
-                                <size>
-                                    <width>20</width>
-                                    <height>35</height>
-                                </size>
-                            </property>
-                        </spacer>
-                    </vbox>
-                </widget>
-            </hbox>
-        </widget>
         <widget class="QLabel" row="3" column="0">
             <property name="name">
                 <cstring>mpLblExpression</cstring>
@@ -351,76 +282,6 @@
             <property name="alignment">
                 <set>AlignTop|AlignRight</set>
             </property>
-        </widget>
-        <widget class="QLayoutWidget" row="3" column="1" rowspan="1" colspan="2">
-            <property name="name">
-                <cstring>mpHBoxLayoutExpression</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="CQExpressionWidget">
-                    <property name="name">
-                        <cstring>mpEditExpression</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>5</hsizetype>
-                            <vsizetype>5</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                </widget>
-                <widget class="QLayoutWidget">
-                    <property name="name">
-                        <cstring>mpVBoxLayoutExpression</cstring>
-                    </property>
-                    <vbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="QToolButton">
-                            <property name="name">
-                                <cstring>mpBtnObjectExpression</cstring>
-                            </property>
-                            <property name="maximumSize">
-                                <size>
-                                    <width>20</width>
-                                    <height>20</height>
-                                </size>
-                            </property>
-                            <property name="text">
-                                <string></string>
-                            </property>
-                            <property name="iconSet">
-                                <iconset>image0</iconset>
-                            </property>
-                            <property name="textLabel">
-                                <string>select</string>
-                            </property>
-                        </widget>
-                        <spacer>
-                            <property name="name">
-                                <cstring>mpSpacerObjectExpression</cstring>
-                            </property>
-                            <property name="orientation">
-                                <enum>Vertical</enum>
-                            </property>
-                            <property name="sizeType">
-                                <enum>Expanding</enum>
-                            </property>
-                            <property name="sizeHint">
-                                <size>
-                                    <width>20</width>
-                                    <height>35</height>
-                                </size>
-                            </property>
-                        </spacer>
-                    </vbox>
-                </widget>
-            </hbox>
         </widget>
         <widget class="QLabel" row="10" column="0">
             <property name="name">
@@ -612,7 +473,7 @@
             <property name="sizeHint">
                 <size>
                     <width>20</width>
-                    <height>30</height>
+                    <height>16</height>
                 </size>
             </property>
         </spacer>
@@ -630,12 +491,34 @@
                 <enum>Horizontal</enum>
             </property>
         </widget>
+        <widget class="CQExpressionMmlWidget" row="3" column="1" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>mpExpressionEMW</cstring>
+            </property>
+            <property name="minimumSize">
+                <size>
+                    <width>300</width>
+                    <height>30</height>
+                </size>
+            </property>
+        </widget>
+        <widget class="CQExpressionMmlWidget" row="5" column="1" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>mpInitialExpressionEMW</cstring>
+            </property>
+            <property name="minimumSize">
+                <size>
+                    <width>300</width>
+                    <height>30</height>
+                </size>
+            </property>
+        </widget>
     </grid>
 </widget>
 <customwidgets>
     <customwidget>
-        <class>CQExpressionWidget</class>
-        <header location="local">CQExpressionWidget.h</header>
+        <class>CQExpressionMmlWidget</class>
+        <header location="local">CQExpressionMmlWidget.h</header>
         <sizehint>
             <width>-1</width>
             <height>-1</height>
@@ -647,17 +530,12 @@
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
         </sizepolicy>
-        <pixmap>image1</pixmap>
-        <signal>valid(bool)</signal>
-        <slot access="public" specifier="">slotSelectObject()</slot>
+        <pixmap>image0</pixmap>
     </customwidget>
 </customwidgets>
 <images>
     <image name="image0">
-        <data format="PNG" length="612">89504e470d0a1a0a0000000d49484452000000100000001008060000001ff3ff610000022b49444154388d9593bf6b144114c73f0b53bcc015b390e206146e21821b9262458b048bc4329d82ffa1b61622b15072852427897103094ca1b0010f668bc00ee420af58188be4f2c36861f5e50deff1beefcb67b2c3fd43e80103da2b62e4bf6a337ffc9bda8126d50ed54813027601f2e17a76bbcfdc2ee8418c20121233188f3d610a18c50d055b2ce016358533b279ff3d0798987c1d991c35d88150ade5944b25aa1d2210cee4be83f9e670d6a4faa0a599763c792c8c4a875b2c339d01c61167779ddec9c0fb3aed1d057211b6364a5ce1b27f6573cf81f775f2271dcb4b399b6b15516f6e1423485fa71ca13bae617681da05cad54d1a759969a675dafb16585eca59ab46d7c3da2b0e9fc2694338f69c9e2addb925f6604d4b38f2acbf7e958caf3db915aad5214a7ebdd9b63b69efa0a6995a18588aa78eea5181b5166d5b261f77f05fde619a36b0be5282dcdc6c7feca4f1e709dd6048f1bca0aad689fd65fab157c44a0a2a8c6277c50137e99656d3f6d709d8215b2fb7605064f1162736fab4fdc9638de09e6d61722b8416425b2737acb2386bd0d905325272134127498cd09d05dadae34f026a1cd546050f5e64d987f76fd278dc305c84a2741416fce42df167cbc52f8128a8511858a2388a55c7a82a70a3b54c7b25dbdddb853ea4baaef97e22a0a0aae87987461060f81096571628574b64511029b33907d9e1fee16570d2255585392408f40a260711c4283ab3d99fbff29ac4a8f97df2e44a7b212ac8ade1b9fe0604b464e5b58cd03a0000000049454e44ae426082</data>
-    </image>
-    <image name="image1">
-        <data format="PNG" length="872">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b0000032f49444154388db59531681c4714863f992dde8004b320c32e38700732f80a176acfa8b04a81c016a809a8496b42208454098604d2c4904a6954a410511ae75c18ac42e61208a76b442488600332ec15825dd0c10c58300f32e0142b4591e2538a38af99dd99e1db6fdffec34e0d76079cd7bdeebd37bc831aec0ea6a6cec1fd9dfe9bf65c1bef3d555de1bcc36008846b47e71dc551c1706f08f1029e9c9b3efdfe29690e791b5a51cf961d2402384c2240b898e7e2be3812f8ce327ce92f83016a5f93be07e5f847f47549888a3110fe005f0b55ad08829985f66d105188a080cc407a53f97bfd0576b523dcf5e8eb9a103d66c652ee437f5bd9dfab9104342a9258b239616935a5bb10109a793b2d348fb902ae7cc53c4a8815c658767794ad0d0f11ac15f2394104aa91327aa57cfb6549bd96b1b206220dfcadc6263180626684721f7a67d0a50719f79721cf0d2401d594fe76a0b7e1e96d8ec8b20e8b0f0d92e825e31be71721064008015e3cf76854961e64ac7c0069ae6852e14f0c2f9e39965653deffd042226c6d56e8f89f91bb6c9c387c9d521c9458db988a3416fe3467fd6b4779e87127f0e8d39ce18ea7fc5d298a80c865f02563930855ed2081bc05e94d5014ef53d6bfa8280e3d6285ee420ad38ecebc45a3521d83c609e0a6c7200844c54e9f7d94939cf5af1ce561132f3b2de4b72095e67d251134825c51bed26330b3406229468aaaa1ff3234a6d34276cb321ad53c795c51eca754a5a25169b70c5c9f0a47e736b45a423d52fadb8195b51477a274efa7e4193c790ca357359f7d54a1a79e2cb374e6a1aaafe9310888b2b42a68547a1b9efeb6e3d1c739f30b81d67ce093cf73b2cce2c73544e82e5bda77fe35c701a2d05d80fa38a3b73962eb1b18ee783a772d2450950e3fd6a6b728c52f4a7160b032e1e4b9b13b3bfb8a002b6b429675e8fd50511c2ac5c1a8d91dc1ce5a161f5a7efd49a94e3d1a53eaf104e3e2a8a02805491b1349607139d05dc8298a4075dc40f396a1330fed3b502c1b8839248ef237de0e1eee0d614348f32652aabec91b1e39db250994c7bec9edf3a61dde43b1af54f50463220c7f3e5fbc3a4eaac9eb3726aefcc7ba01cd3fea7f01bf6bf8607730f52706519bdbb66077eb0000000049454e44ae426082</data>
+        <data format="PNG" length="1002">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b000003b149444154388dad945f4c5b551cc73fe7dc4b7b4bcba0762d45c43114323599ee6192609c51d883892ce083f1718b3ebb185f8dc91e972cf39d2d2a2f1af664b6f1e0fe3863a0718969700eb0c52142da0242a1bd6d696f7bcff101585203ceb8fd9ece39f99dcff9fe7edf939f88c562ec465f5f9fe609442c161362173c3e3eae7b7a7ac8e7f36432196cdbfe4f907c3e4f2291201e8fe338cec3737357e9e8e828aded1e229d650e1f2d51754b082110124c13a4dc5ea341eb9dc284c0558a853f3ce8cb0677ef500fde7d39d2596679e326597b8e9abb85d7a770ab16ab6983ec5a05b487a70e36f0f4e10afe408d6a558310980108478dba4a1e8233990c5d474b64ed39aa3a8fe5f3317fbf81dbd70bccfeb205947632fd74f6589c1c6ea2f70d03a58ba0c1f2c9bdc1b66de3b8256a6e11cbe7e3ee1d181b590124fe2693aeee08d223c82c3a2c24b7b874bec8f26288774f7bd054504aef0dde6e99c0eb83f9fb266323cb80a27fb0958141836044605a2ee5523393371cc646fee2da37195aa35d0c0c5b4859ac03d7e91712dcaac5adab3650a3ff9d08ef7dd8404bb48869e5d958b5b87dadc4c9a1464e9f0d0326df7ebd86bd2e310cb1bf62d384d59441f2d70a070e1c60e09489929b988681bdd9cc97170bcc4c65595f71f8e0e3301337fc24a7732467831875a47f289652b0be5e4151e6d07316c1b0c0340d8ab92023e76d66a6b2840e36d2fb7a13fee632475e6edc367ea98a90fb98b7dd6310ca0328a44761582e1bab41befabcc0ec940d28bc5e93b68e064cab84e1d9beaeb48934eac1f53b01c1b000fca496aa54b61a99fcde61662a4b4b4b23d1680be9d426173e4df3602a48ea411989a4fd590f52a8fd156b05ed9d350e3defe3cfdf4b4c7ce770ea7d3fb9f520afbe1620daeee5c26735d20b9b9cfb6811a754a439e4e5c5639a4caa1e5caf586bfc0197b78702005cb9b4cae4cd3267ce8638fe964bd72b393e39d74928d242617303a756a37f284447770dcdbffc6384a05a85de1306e9a52057c7527c7131c3c42d3f475eb2303c82d4fc3276d6811db37efeb148723082d9b08f79f97c1e5729109a9a28307cc622d2d6cdf52b2b24efe548dedb00142009862cfa879ee1a71f6cec928353511472fbf4389148b0b0e0c108081412458dfe21c9f11351e67e7358595468246d1d1e5e38a6e9e851bc39d84ab502a669331dafec0d8ec7e3e8cb06e1a881d727d1ae40180a434a8c9db129a54126ad48a7358c2b4c5352c8c374bcccdab2bb37d8719cba79fab8211f9df218e0582c261e95f8bfc04f1a1e8bc5c4dfe0a190172af6a9690000000049454e44ae426082</data>
     </image>
 </images>
 <connections>
@@ -698,24 +576,6 @@
         <slot>slotTypeChanged(int)</slot>
     </connection>
     <connection>
-        <sender>mpBtnObjectExpression</sender>
-        <signal>clicked()</signal>
-        <receiver>mpEditExpression</receiver>
-        <slot>slotSelectObject()</slot>
-    </connection>
-    <connection>
-        <sender>mpEditExpression</sender>
-        <signal>valid(bool)</signal>
-        <receiver>CQMetabolite</receiver>
-        <slot>slotExpressionValid(bool)</slot>
-    </connection>
-    <connection>
-        <sender>mpEditInitialExpression</sender>
-        <signal>valid(bool)</signal>
-        <receiver>CQMetabolite</receiver>
-        <slot>slotInitialExpressionValid(bool)</slot>
-    </connection>
-    <connection>
         <sender>mpEditInitialValue</sender>
         <signal>lostFocus()</signal>
         <receiver>CQMetabolite</receiver>
@@ -734,12 +594,6 @@
         <slot>slotInitialTypeChanged(bool)</slot>
     </connection>
     <connection>
-        <sender>mpBtnObjectInitialExpression</sender>
-        <signal>pressed()</signal>
-        <receiver>mpEditInitialExpression</receiver>
-        <slot>slotSelectObject()</slot>
-    </connection>
-    <connection>
         <sender>mpEditName</sender>
         <signal>lostFocus()</signal>
         <receiver>CQMetabolite</receiver>
@@ -750,12 +604,8 @@
     <tabstop>mpEditName</tabstop>
     <tabstop>mpComboBoxCompartment</tabstop>
     <tabstop>mpComboBoxType</tabstop>
-    <tabstop>mpEditExpression</tabstop>
-    <tabstop>mpBtnObjectExpression</tabstop>
     <tabstop>mpEditInitialValue</tabstop>
     <tabstop>mpBoxUseInitialExpression</tabstop>
-    <tabstop>mpEditInitialExpression</tabstop>
-    <tabstop>mpBtnObjectInitialExpression</tabstop>
     <tabstop>mpEditCurrentValue</tabstop>
     <tabstop>mpEditRate</tabstop>
     <tabstop>mpEditTransitionTime</tabstop>
@@ -816,7 +666,7 @@
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
-    <includehint>CQExpressionWidget.h</includehint>
-    <includehint>CQExpressionWidget.h</includehint>
+    <includehint>CQExpressionMmlWidget.h</includehint>
+    <includehint>CQExpressionMmlWidget.h</includehint>
 </includehints>
 </UI>
