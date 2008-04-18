@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $ 
-#   $Revision: 1.170 $ 
+#   $Revision: 1.171 $ 
 #   $Name:  $ 
 #   $Author: pwilly $ 
-#   $Date: 2008/03/27 12:36:41 $ 
+#   $Date: 2008/04/18 08:57:46 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -16,7 +16,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.170 $ $Author: pwilly $ $Date: 2008/03/27 12:36:41 $  
+# $Revision: 1.171 $ $Author: pwilly $ $Date: 2008/04/18 08:57:46 $  
 ######################################################################
 
 LIB = UI
@@ -24,141 +24,141 @@ LIB = UI
 include(../lib.pri)
 include(../common.pri)
 
-CONFIG += qt
+CONFIG	+= qt
 
 DEPENDPATH += .. 
-INCLUDEPATH += .. 
+INCLUDEPATH	+= ..
 
 
 # Input
-HEADERS += \
-           AboutDialog.h \
-           CCopasiPlotSelectionDialog.h \
-           CCopasiSelectionDialog.h \
-           CCopasiSelectionWidget.h \
-           CCopasiSimpleSelectionTree.h \
-           ChemEqValidator.h \
-           CMCAResultWidget.h \
-           CReportDefinitionSelect.h \
-           CompartmentsWidget.h \
-           CopasiFileDialog.h \
-           CopasiSlider.h \
-           CopasiTableWidget.h \
-           copasiWidget.h \
-           copasiui3window.h \
-           CProgressBar.h \
-           CTabWidget.h \
-           CQArrayAnnotationsWidget.h \
-           CQBarChart.h \
-           CQDateTimeEditTableItem.h \
-           CQEventsWidget.h \
-           CQEventWidget1.h \
-           CQExpressionWidget.h \
-           CQLyapResultWidget.h \
-           CQMathMatrixWidget.h \
-           CQReportListItem.h \
-           CQSBMLFileDialog.h \
-           CQSensResultWidget.h \
-           CQUpdatesWidget.h \
-           CQValidator.h \
-           CScanContainerWidget.h \
-           CTimeSeriesTable.h \
-           DataModelGUI.h \
-           DataModel.txt.h \
-           FunctionItemWidget.h \
-           FunctionWidget.h \
-           FunctionWidget1.h \
-           MetabolitesWidget.h \
-           ModelWidget.h \
-           ModelValuesWidget.h \
-           MyLineEdit.h \
-           listviews.h \
-           ObjectBrowserDialog.h \
-           ObjectBrowserItem.h \
-           ObjectBrowserWidget.h \
-           ParametersWidget.h \
-           parametertable.h \
-           PlotWidget.h \
-           qtUtilities.h \
-           ReactionsWidget.h \
-           ReactionsWidget1.h \
-           ScanWidget.h \
-           SensitivitiesWidget.h \
-           SliderDialog.h \
-           StateWidget.h \
-           SteadyStateWidget.h \
-           TableDefinition.h \
-           OptimizationResultWidget.h \
-           TaskWidget.h \
-           TimeSeriesWidget.h \
-           Tree.h \
-           TSSWidget.h \
-           CQExpressionMmlWidgetStack.h 
+HEADERS	+= \
+        AboutDialog.h \
+	CCopasiPlotSelectionDialog.h \
+	CCopasiSelectionDialog.h \
+	CCopasiSelectionWidget.h \
+	CCopasiSimpleSelectionTree.h \
+	ChemEqValidator.h \
+	CMCAResultWidget.h \
+	CReportDefinitionSelect.h \
+	CompartmentsWidget.h \
+	CopasiFileDialog.h \
+	CopasiSlider.h \
+	CopasiTableWidget.h \
+	copasiWidget.h \
+	copasiui3window.h \
+	CProgressBar.h \
+	CTabWidget.h \
+	CQArrayAnnotationsWidget.h \
+	CQBarChart.h \
+	CQDateTimeEditTableItem.h \
+	CQEventsWidget.h \
+	CQEventWidget1.h \
+	CQExpressionWidget.h \
+	CQLyapResultWidget.h \
+	CQMathMatrixWidget.h \
+	CQReportListItem.h \
+	CQSBMLFileDialog.h \
+	CQSensResultWidget.h \
+	CQUpdatesWidget.h \
+	CQValidator.h \
+	CScanContainerWidget.h \
+	CTimeSeriesTable.h \
+	DataModelGUI.h \
+	DataModel.txt.h \
+	FunctionItemWidget.h \
+	FunctionWidget.h \
+	FunctionWidget1.h \
+	MetabolitesWidget.h \
+	ModelWidget.h \
+	ModelValuesWidget.h \
+	MyLineEdit.h \
+	listviews.h \
+	ObjectBrowserDialog.h \
+	ObjectBrowserItem.h \
+	ObjectBrowserWidget.h \
+	ParametersWidget.h \
+	parametertable.h \
+	PlotWidget.h \
+	qtUtilities.h \
+	ReactionsWidget.h \
+	ReactionsWidget1.h \
+	ScanWidget.h \
+	SensitivitiesWidget.h \
+	SliderDialog.h \
+	StateWidget.h \
+	SteadyStateWidget.h \
+	TableDefinition.h \
+	OptimizationResultWidget.h \
+	TaskWidget.h \
+	TimeSeriesWidget.h \
+	Tree.h \
+	TSSWidget.h \
+        CQExpressionMmlWidgetStack.h \
+	CQMmlScrollView.h
 
-
-SOURCES += \
-           AboutDialog.cpp \
-           CCopasiPlotSelectionDialog.cpp \
-           CCopasiSelectionDialog.cpp \
-           CCopasiSelectionWidget.cpp \
-           CCopasiSimpleSelectionTree.cpp \
-           CMCAResultWidget.cpp \
-           CReportDefinitionSelect.cpp \
-           CompartmentsWidget.cpp \
-           CopasiFileDialog.cpp \
-           CopasiSlider.cpp \
-           CopasiTableWidget.cpp \
-           copasiWidget.cpp \
-           copasiui3window.cpp \
-           CProgressBar.cpp \
-           CTabWidget.cpp \
-           OptimizationResultWidget.cpp \
-           CQArrayAnnotationsWidget.cpp \
-           CQBarChart.cpp \
-           CQDateTimeEditTableItem.cpp \
-           CQEventsWidget.cpp \
-           CQEventWidget1.cpp \
-           CQExpressionWidget.cpp \
-           CQLyapResultWidget.cpp \
-           CQMathMatrixWidget.cpp \
-           CQPreferenceDialog.cpp \
-           CQReportListItem.cpp \
-           CQSBMLFileDialog.cpp \
-           CQSensResultWidget.cpp \
-           CQUpdatesWidget.cpp \
-           CQValidator.cpp \
-           CScanContainerWidget.cpp \
-           CTimeSeriesTable.cpp \
-           DataModelGUI.cpp \
-           FunctionItemWidget.cpp \
-           FunctionWidget.cpp \
-           FunctionWidget1.cpp \
-           listviews.cpp \
-           MetabolitesWidget.cpp \
-           ModelValuesWidget.cpp \
-           ModelWidget.cpp \
-           MyLineEdit.cpp \
-           ObjectBrowserDialog.cpp \
-           ObjectBrowserItem.cpp \
-           ObjectBrowserWidget.cpp \
-           ParametersWidget.cpp \
-           parametertable.cpp \
-           PlotWidget.cpp \
-           qtUtilities.cpp \
-           ReactionsWidget.cpp \
-           ReactionsWidget1.cpp \
-           ScanWidget.cpp \
-           SensitivitiesWidget.cpp \
-           SliderDialog.cpp \
-           StateWidget.cpp \
-           SteadyStateWidget.cpp \
-           TableDefinition.cpp \
-           TaskWidget.cpp \
-           TimeSeriesWidget.cpp \
-           Tree.cpp \
-           TSSWidget.cpp \
-           CQExpressionMmlWidgetStack.cpp
-
+SOURCES	+= \
+        AboutDialog.cpp \
+	CCopasiPlotSelectionDialog.cpp \
+	CCopasiSelectionDialog.cpp \
+	CCopasiSelectionWidget.cpp \
+	CCopasiSimpleSelectionTree.cpp \
+	CMCAResultWidget.cpp \
+	CReportDefinitionSelect.cpp \
+	CompartmentsWidget.cpp \
+	CopasiFileDialog.cpp \
+	CopasiSlider.cpp \
+	CopasiTableWidget.cpp \
+	copasiWidget.cpp \
+	copasiui3window.cpp \
+	CProgressBar.cpp \
+	CTabWidget.cpp \
+	OptimizationResultWidget.cpp \
+	CQArrayAnnotationsWidget.cpp \
+	CQBarChart.cpp \
+	CQDateTimeEditTableItem.cpp \
+	CQEventsWidget.cpp \
+	CQEventWidget1.cpp \
+	CQExpressionWidget.cpp \
+	CQLyapResultWidget.cpp \
+	CQMathMatrixWidget.cpp \
+	CQPreferenceDialog.cpp \
+	CQReportListItem.cpp \
+	CQSBMLFileDialog.cpp \
+	CQSensResultWidget.cpp \
+	CQUpdatesWidget.cpp \
+	CQValidator.cpp \
+	CScanContainerWidget.cpp \
+	CTimeSeriesTable.cpp \
+	DataModelGUI.cpp \
+	FunctionItemWidget.cpp \
+	FunctionWidget.cpp \
+	FunctionWidget1.cpp \
+	listviews.cpp \
+	MetabolitesWidget.cpp \
+	ModelValuesWidget.cpp \
+	ModelWidget.cpp \
+	MyLineEdit.cpp \
+	ObjectBrowserDialog.cpp \
+	ObjectBrowserItem.cpp \
+	ObjectBrowserWidget.cpp \
+	ParametersWidget.cpp \
+	parametertable.cpp \
+	PlotWidget.cpp \
+	qtUtilities.cpp \
+	ReactionsWidget.cpp \
+	ReactionsWidget1.cpp \
+	ScanWidget.cpp \
+	SensitivitiesWidget.cpp \
+	SliderDialog.cpp \
+	StateWidget.cpp \
+	SteadyStateWidget.cpp \
+	TableDefinition.cpp \
+	TaskWidget.cpp \
+	TimeSeriesWidget.cpp \
+	Tree.cpp \
+	TSSWidget.cpp \
+        CQExpressionMmlWidgetStack.cpp \
+	CQMmlScrollView.cpp
 
 !contains(DEFINES, COPASI_TSS) {
   HEADERS -= TSSWidget.h
@@ -219,6 +219,7 @@ SOURCES += \
 # FORMS += StateSubwidget.ui
 # FORMS += TimeSeriesSubwidget.ui
 # FORMS += objectdebug.ui
+# FORMS += CQExpressionMmlWidget.ui
 
 # headers generated from .ui files   
 HEADERS += \
@@ -233,6 +234,8 @@ HEADERS += \
            CQExperimentData.ui.h \
            CQExperimentSelection.h \
            CQExperimentSelection.ui.h \
+	   CQExpressionMmlWidget.ui.h \
+	   CQExpressionMmlWidget.h \
            CQFileDialogBtnGrp.h \
            CQFittingItemWidget.h \
            CQFittingItemWidget.ui.h \
@@ -302,7 +305,7 @@ HEADERS += \
            TimeSeriesSubwidget.h \
            TimeSeriesSubwidget.ui.h \
            objectdebug.h \
-           objectdebug.ui.h 
+           objectdebug.ui.h
 
 # sources generated from .ui files   
 SOURCES += \
@@ -312,6 +315,7 @@ SOURCES += \
            CQEFMWidget.cpp \
            CQExperimentData.cpp \
            CQExperimentSelection.cpp \
+	   CQExpressionMmlWidget.cpp \
            CQFileDialogBtnGrp.cpp \
            CQFittingItemWidget.cpp \
            CQFittingResult.cpp \
@@ -346,8 +350,7 @@ SOURCES += \
            objectdebug.cpp \
            SliderSettingsDialog.cpp \
            StateSubwidget.cpp \
-           TimeSeriesSubwidget.cpp 
-
+           TimeSeriesSubwidget.cpp
 
 !contains(DEFINES, HAVE_MML) {
   HEADERS -= CQDifferentialEquations.h
