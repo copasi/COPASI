@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CQRDFListViewWidget.ui.h,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Creator: aekamal $
-//   $Date: 2008/04/21 20:12:32 $
+//   $Date: 2008/04/21 21:26:53 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,6 +26,8 @@
 #include "model/CModel.h"
 #include "model/CModelValue.h"
 #include "utilities/CCopasiMessage.h"
+
+#include "MIRIAM/CModelMIRIAMInfo.h"
 
 void CQRDFListViewWidget::init()
 {}
@@ -54,8 +56,8 @@ void CQRDFListViewWidget::load()
 
   //if ((pEntity = dynamic_cast< CModelEntity * >(GlobalKeys.get(mKey))) != NULL)
   //pGraph = CRDFParser::graphFromXml(pEntity->getMiriamAnnotation());
-  if (mpMIRIAMWidget)
-  {pGraph = mpMIRIAMWidget->getMIRIAMInfo().getRDFGraph();}
+  if (mpMIRIAMInfo)
+  {pGraph = mpMIRIAMInfo->getRDFGraph();}
 
   CCopasiMessage::clearDeque();
 
@@ -100,3 +102,6 @@ bool CQRDFListViewWidget::update(ListViews::ObjectType, ListViews::Action, const
   //qWarning("CQRDFListViewWidget::update(ListViews::ObjectType,ListViews::Action,const std::string&): Not implemented yet");
   return FALSE;
 }
+
+void CQRDFListViewWidget::setMIRIAMInfo(CModelMIRIAMInfo* pMIRIAMInfo)
+{mpMIRIAMInfo = pMIRIAMInfo;}
