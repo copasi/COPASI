@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/03/20 09:59:09 $
+//   $Date: 2008/04/21 15:10:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -82,6 +82,11 @@ class CNormalTranslation
      * All items in the vector are children of pRoot.
      */
     static void findSummands(const CEvaluationNode* pRoot, std::vector<const CEvaluationNode*>& summands);
+
+    /**
+     * This method expands products. (A+B)*(C+D) -> (A*C)+(A*D)+(B*C)+(B*D)
+     */
+    static CEvaluationNode* expandProducts(const CEvaluationNode* pOrig);
 
   protected:
     /**
@@ -171,11 +176,6 @@ class CNormalTranslation
     static std::vector<std::pair<CEvaluationNode*, CEvaluationNode*> > matchSummands(const std::vector<const CEvaluationNode*>& additions, const std::vector<const CEvaluationNode*>& subtractions);
 
     /**
-     * This method expands products. (A+B)*(C+D) -> (A*C)+(A*D)+(B*C)+(B*D)
-     */
-    static CEvaluationNode* expandProducts(const CEvaluationNode* pOrig);
-
-    /**
      * Multiplies the two given nodes and returns the result.
      */
     static CEvaluationNode* multiply(const CEvaluationNode* pNode1, const CEvaluationNode* pNode2);
@@ -184,6 +184,11 @@ class CNormalTranslation
      * This method does all the canceling on a given node and its children.
      */
     static CEvaluationNode* cancel(const CEvaluationNode* pOrig);
+
+    /**
+     * This method elminates subexpressions from an expression
+     */
+    static CEvaluationNode* eliminate(const CEvaluationNode* pOrig);
 
     static const double ZERO;
   };
