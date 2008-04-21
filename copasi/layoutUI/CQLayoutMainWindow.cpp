@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.50 $
+//   $Revision: 1.51 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/02/15 11:48:46 $
+//   $Date: 2008/04/21 11:12:54 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,6 +26,7 @@
 #include "CQLayoutMainWindow.h"
 #include "CQGLNetworkPainter.h"
 #include "NodeSizePanel.h"
+#include "UI/CopasiFileDialog.h"
 
 //#include "sbmlDocumentLoader.h"
 #include <string>
@@ -35,6 +36,7 @@ using namespace std;
 
 CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMainWindow(parent, name)
 {
+  currentPlace = QString::null;
   resizeToggle = true;
   dataPresent = false;
   pVisParameters = new CVisParameters();
@@ -271,6 +273,13 @@ void CQLayoutMainWindow::createActions()
   runAnimation->setEnabled(true);
   dataPresent = false;
 
+  createPicture = new QAction("image",
+                              "Create image",
+                              CTRL + Key_I,
+                              this);
+  createPicture->setStatusTip("create a picture from the current view and save it to file");
+  connect(createPicture, SIGNAL(activated()), this, SLOT(saveImage()));
+
   rectangularShape = new QAction ("rectangle",
                                   "rectangle",
                                   CTRL + Key_R ,
@@ -293,9 +302,9 @@ void CQLayoutMainWindow::createActions()
   connect(miMaNodeSizes, SIGNAL(activated()), this, SLOT(changeMinMaxNodeSizes()));
   miMaNodeSizes->setToolTip("Change Min/Max for node sizes within animation");
 
-  automaticRescaleToggle = new QAction ("autoresize",
+  automaticRescaleToggle = new QAction ("autorescale",
                                         "Automatic Rescaling of Graph",
-                                        CTRL + Key_R,
+                                        CTRL + Key_A,
                                         this);
 
   automaticRescaleToggle->setToggleAction(true);
@@ -317,6 +326,8 @@ void CQLayoutMainWindow::createMenus()
 
   actionsMenu = new QPopupMenu(this);
   runAnimation->addTo(actionsMenu);
+
+  createPicture->addTo(actionsMenu);
 
   labelShapeMenu = new QPopupMenu(this);
 
@@ -443,6 +454,17 @@ void CQLayoutMainWindow::startAnimation()
   else
     {
       QMessageBox::warning (this, "Missing Data", "No data found: \nYou first have to create a time course.", QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+    }
+}
+
+void CQLayoutMainWindow::saveImage()
+{
+  QImage img = glPainter->getImage();
+  QString filename = CopasiFileDialog::getSaveFileName(this, "Save Image Dialog", currentPlace, "PNG Files (*.png);;All Files (*.*);;", "Choose a filename to save the image under");
+  if (filename)
+    {
+      img.save(filename, "PNG");
+      currentPlace = filename;
     }
 }
 

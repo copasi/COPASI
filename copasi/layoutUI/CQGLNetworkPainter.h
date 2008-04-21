@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.58 $
+//   $Revision: 1.59 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/04/16 11:21:07 $
+//   $Date: 2008/04/21 11:12:54 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,6 +29,7 @@
 #include <qmainwindow.h>
 #include <qfont.h>
 #include <qfontmetrics.h>
+#include <qimage.h>
 
 #include <vector>
 #include <string>
@@ -96,6 +97,7 @@ class CQGLNetworkPainter : public QGLWidget
     void rescaleDataSetsWithNewMinMax(C_FLOAT64 oldMin, C_FLOAT64 oldMax, C_FLOAT64 newMin, C_FLOAT64 newMax, C_INT16 scaleMode);
 
     void zoomGraph(C_FLOAT64 zoomFactor);
+    QImage getImage();
 
   private slots:
     void zoomIn();

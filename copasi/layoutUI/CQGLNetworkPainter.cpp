@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.103 $
+//   $Revision: 1.104 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/04/21 09:01:01 $
+//   $Date: 2008/04/21 11:12:54 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,7 +21,7 @@
 #include <qrect.h>
 #include <qpoint.h>
 #include <qpixmap.h>
-#include <qimage.h>
+//#include <qimage.h>
 #include <qcolor.h>
 #include <qtimer.h>
 #include <qcanvas.h>
@@ -1853,19 +1853,17 @@ void CQGLNetworkPainter::zoom(C_FLOAT64 zoomFactor)
       pParentLayoutWindow->setMaxNodeSize(pParentLayoutWindow->getMaxNodeSize() * zoomFactor);
       unsigned int i;
 
-      if ((mDataPresentP) && (pParentLayoutWindow->getMappingMode() != CVisParameters::COLOR_MODE)) // only rescale in size mode and when data to be rescaled is present
+      if ((mDataPresentP) && (pParentLayoutWindow->getMappingMode() != CVisParameters::COLOR_MODE)) // only rescale data set values in size mode and when data to be rescaled is present
         {
           rescaleDataSetsWithNewMinMax(oldMin, oldMax, pParentLayoutWindow->getMinNodeSize(), pParentLayoutWindow->getMaxNodeSize(), pParentLayoutWindow->getScalingMode());
         }
-      //else {// just scale nodes and curves in graph (and not the whole data set)
-      //scale nodes if not in color mode
+      //scale node sizes if not in color mode
       for (i = 0;i < this->viewerNodes.size();i++)
         {
           std::map<std::string, CGraphNode>::iterator nodeIt;
           nodeIt = nodeMap.find(viewerNodes[i]);
           if (nodeIt != nodeMap.end())
             (*nodeIt).second.scale(zoomFactor, (pParentLayoutWindow->getMappingMode() != CVisParameters::COLOR_MODE)); // change position in any way, but size only when not in color mode
-          //this->viewerNodes[i].scale(zoomFactor);
         }
 
       //scale curves not directly pointing to a reactant/species node
@@ -1915,6 +1913,11 @@ void CQGLNetworkPainter::zoom(C_FLOAT64 zoomFactor)
     }
   createTextureForAllLabels();
   this->drawGraph();
+}
+
+QImage CQGLNetworkPainter::getImage()
+{
+  return this->grabFrameBuffer();
 }
 
 void CQGLNetworkPainter::contextMenuEvent(QContextMenuEvent *cme)
