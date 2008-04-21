@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.102 $
+//   $Revision: 1.103 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/04/21 08:36:30 $
+//   $Date: 2008/04/21 09:01:01 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1085,7 +1085,6 @@ int CQGLNetworkPainter::round2powN(double d)
 
 void CQGLNetworkPainter::rescaleDataSetsWithNewMinMax(C_FLOAT64 oldMin, C_FLOAT64 oldMax, C_FLOAT64 newMin, C_FLOAT64 newMax, C_INT16 scaleMode)
 {
-  std::cout << "rescale with min/max" << std::endl;
   CDataEntity dataSet;
   unsigned int s; // step number
   C_FLOAT64 val, val_new;
@@ -1125,20 +1124,12 @@ void CQGLNetworkPainter::rescaleDataSetsWithNewMinMax(C_FLOAT64 oldMin, C_FLOAT6
                   //std::cout << "orig val: " << orig_value  << "  recalculated val: " << val_orig << std::endl;
                   // now scale value
                   val_new = newMin + ((val_orig - a) / (b - a) * (newMax - newMin));
-                  // if (getNameForNodeKey(viewerNodes[i]) == "PER3+"){
-                  //       std::cout << ">>>>>" << "  step: " << s << std::endl;
-                  //       std::cout << "a: " << a << "  b: " << b << std::endl;
-
-                  //       printNodeInfoForKey(viewerNodes[i]);
-                  //       std::cout << "orig val: " << val_orig << "  new val.:  " << val_new << std::endl;
-                  //       std::cout << "-----" << std::endl;
-
-                  //}
                 }
               else
                 {// no scaling if differences are too small, just set mid value
                   val_new = (newMax + newMin) / 2.0;
-                  setOfConstantMetabolites.insert(viewerNodes[i]);
+                  if (s == 0) // only insert once into set
+                    setOfConstantMetabolites.insert(viewerNodes[i]);
                   //std::cout << "constant value  for: " << viewerNodes[i] << std::endl;
                 }
               //std::cout << "----------- " << std::endl;
@@ -1297,7 +1288,7 @@ bool CQGLNetworkPainter::createDataSets()
                   if (iter != keyMap.end())
                     {// if there is a node (key)
                       ndKey = (keyMap.find(objKey))->second;
-                      for (t = 0;t <= timeSer.getRecordedSteps() - 1;t++) // iterate on time steps t=0..n
+                      for (t = 0;t < timeSer.getRecordedSteps();t++) // iterate on time steps t=0..n
                         {
                           val = timeSer.getConcentrationData(t, i);
                           //std::cout << name << " : " << getNameForNodeKey(ndKey) << " : " << val << std::endl;
