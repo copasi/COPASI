@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CBiologicalDescriptionsWidget.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/03/24 16:25:07 $
+//   $Date: 2008/04/21 20:12:32 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,8 +13,8 @@
 
 #include <qlayout.h>
 #include <qpushbutton.h>
+#include <sstream>
 
-#include "model/CModel.h"
 #include "MIRIAM/CBiologicalDescription.h"
 #include "MIRIAM/CConstants.h"
 #include "utilities/CCopasiVector.h"
@@ -24,6 +24,7 @@
 #include "UI/qtUtilities.h"
 #include "UI/CQMessageBox.h"
 
+#include "CMIRIAMModelWidget.h"
 #include "CBiologicalDescriptionsWidget.h"
 
 #define COL_MARK               0
@@ -56,11 +57,14 @@ std::vector<const CCopasiObject*> CBiologicalDescriptionsWidget::getObjects() co
   {
     std::vector<const CCopasiObject*> ret;
 
-    const CCopasiVector<CBiologicalDescription>& tmp = CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getBiologicalDescriptions();
+    if (dynamic_cast <CMIRIAMModelWidget*> (parentWidget()))
+      {
+        const CCopasiVector<CBiologicalDescription>& tmp = dynamic_cast <CMIRIAMModelWidget*> (parentWidget())->getMIRIAMInfo().getBiologicalDescriptions();
 
-    C_INT32 i, imax = tmp.size();
-    for (i = 0; i < imax; ++i)
-      ret.push_back(tmp[i]);
+        C_INT32 i, imax = tmp.size();
+        for (i = 0; i < imax; ++i)
+          ret.push_back(tmp[i]);
+      }
 
     return ret;
   }
@@ -176,6 +180,8 @@ QString CBiologicalDescriptionsWidget::defaultObjectName() const
 
 CCopasiObject* CBiologicalDescriptionsWidget::createNewObject(const std::string & name)
 {
+  if (!dynamic_cast <CMIRIAMModelWidget*> (parentWidget()))
+    return NULL;
   std::string nname = name;
   int i = 0;
   CBiologicalDescription* pBiologicalDescription = NULL;
@@ -187,7 +193,7 @@ CCopasiObject* CBiologicalDescriptionsWidget::createNewObject(const std::string 
   const std::map<std::string, std::string> relationships = CConstants::getRelationships();
   std::string newTableName = CConstants::getKey(relationships, relationship);
 
-  while (!(pBiologicalDescription = CCopasiDataModel::Global->getModel()->getMIRIAMInfo().createBiologicalDescription(name, newTableName)))
+  while (!(pBiologicalDescription = dynamic_cast <CMIRIAMModelWidget*> (parentWidget())->getMIRIAMInfo().createBiologicalDescription(name, newTableName)))
     {
       i++;
       nname = name + "_";
@@ -199,6 +205,8 @@ CCopasiObject* CBiologicalDescriptionsWidget::createNewObject(const std::string 
 
 void CBiologicalDescriptionsWidget::deleteObjects(const std::vector<std::string> & keys)
 {
+  if (!dynamic_cast <CMIRIAMModelWidget*> (parentWidget()))
+    return;
 
   QString BiologicalDescriptionList = "Are you sure you want to delete listed BIOLOGICAL DESCRIPTION(S) ?\n";
   unsigned C_INT32 i, imax = keys.size();
@@ -227,7 +235,7 @@ void CBiologicalDescriptionsWidget::deleteObjects(const std::vector<std::string>
       {
         for (i = 0; i < imax; i++)
           {
-            CCopasiDataModel::Global->getModel()->getMIRIAMInfo().removeBiologicalDescription(keys[i]);
+            dynamic_cast <CMIRIAMModelWidget*> (parentWidget())->getMIRIAMInfo().removeBiologicalDescription(keys[i]);
           }
 
         for (i = 0; i < imax; i++)
@@ -243,6 +251,8 @@ void CBiologicalDescriptionsWidget::deleteObjects(const std::vector<std::string>
 
 void CBiologicalDescriptionsWidget::saveTable()
 {
+  if (!dynamic_cast <CMIRIAMModelWidget*> (parentWidget()))
+    return;
   CopasiTableWidget::saveTable();
 
   std::string oldKey, newKey, changeKey = "";
@@ -260,7 +270,7 @@ void CBiologicalDescriptionsWidget::saveTable()
                   const std::map<std::string, std::string> relationships = CConstants::getRelationships();
                   std::string newTableName = CConstants::getKey(relationships, relationship);
                   oldKey = pBiologicalDescription->getKey();
-                  newKey = CCopasiDataModel::Global->getModel()->getMIRIAMInfo().moveBiologicalDescription(oldKey, newTableName);
+                  newKey = dynamic_cast <CMIRIAMModelWidget*>(parentWidget())->getMIRIAMInfo().moveBiologicalDescription(oldKey, newTableName);
                   tableLineToObject(j, GlobalKeys.get(newKey));
                   mKeys[j] = newKey;
                   changeKey = newKey;
@@ -275,3 +285,23 @@ void CBiologicalDescriptionsWidget::saveTable()
 void CBiologicalDescriptionsWidget::slotDoubleClicked(int C_UNUSED(row), int C_UNUSED(col),
     int C_UNUSED(m), const QPoint & C_UNUSED(n))
 {}
+
+void CBiologicalDescriptionsWidget::slotValueChanged(int row, int col)
+{
+  if (col == COL_RELATIONSHIP || col == COL_RESOURCE)
+    {
+      int selectedItem = -1;
+      if (row == table->numRows() - 1) //new Object
+        {
+          if (dynamic_cast<QComboTableItem *>(table->item(row, col)))
+            {
+              selectedItem = static_cast<QComboTableItem *>(table->item(row, col))->currentItem();
+            }
+        }
+      CopasiTableWidget::slotValueChanged(row, col);
+      if (selectedItem > -1)
+      {static_cast<QComboTableItem *>(table->item(row, col))->setCurrentItem(selectedItem);}
+    }
+  else
+  {CopasiTableWidget::slotValueChanged(row, col);}
+}

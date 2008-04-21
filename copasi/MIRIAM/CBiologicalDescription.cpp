@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CBiologicalDescription.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/03/11 09:12:51 $
+//   $Author: aekamal $
+//   $Date: 2008/04/21 20:12:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,6 +15,7 @@
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "model/CModel.h"
 
+#include "CModelMIRIAMInfo.h"
 #include "CBiologicalDescription.h"
 #include "CConstants.h"
 
@@ -61,7 +62,7 @@ const std::string CBiologicalDescription::getRelationship() const
 
 const std::string CBiologicalDescription::getResource() const
   {
-    std::string fieldVal = CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getRDFGraph()->getFieldValue("rdf:_#", *mpRDFObj);
+    std::string fieldVal = dynamic_cast <CModelMIRIAMInfo*> (getObjectParent()->getObjectParent())->getRDFGraph()->getFieldValue("rdf:_#", *mpRDFObj);
     if (fieldVal.length())
       {
         std::string::size_type loc = fieldVal.find('#', 0);
@@ -76,7 +77,7 @@ const std::string CBiologicalDescription::getResource() const
 
 const std::string CBiologicalDescription::getId() const
   {
-    std::string fieldVal = CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getRDFGraph()->getFieldValue("rdf:_#", *mpRDFObj);
+    std::string fieldVal = dynamic_cast <CModelMIRIAMInfo*> (getObjectParent()->getObjectParent())->getRDFGraph()->getFieldValue("rdf:_#", *mpRDFObj);
     if (fieldVal.length())
       {
         std::string::size_type loc = fieldVal.find('#', 0);
@@ -100,7 +101,7 @@ void CBiologicalDescription::setId(const std::string Id, const std::string resou
   if (Id.length())
   {fieldVal = predicate + '#' + Id;}
 
-  CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getRDFGraph()->setFieldValue("rdf:_#", *mpRDFObj, fieldVal);
+  dynamic_cast <CModelMIRIAMInfo*> (getObjectParent()->getObjectParent())->getRDFGraph()->setFieldValue("rdf:_#", *mpRDFObj, fieldVal);
 }
 
 CRDFObject& CBiologicalDescription::getRDFObject()

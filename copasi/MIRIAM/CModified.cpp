@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CModified.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/03/10 15:49:56 $
+//   $Date: 2008/04/21 20:12:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,6 +15,7 @@
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "model/CModel.h"
 
+#include "CModelMIRIAMInfo.h"
 #include "CModified.h"
 
 CModified::CModified(const std::string & objectName, const CCopasiContainer * pParent,
@@ -50,12 +51,12 @@ const std::string CModified::getObjectName() const
   {return getDateModified();}
 
 const std::string CModified::getDateModified() const
-  {return CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getRDFGraph()->getFieldValue("dcterms:W3CDTF", *mpRDFObj);}
+  {return dynamic_cast <CModelMIRIAMInfo*> (getObjectParent()->getObjectParent())->getRDFGraph()->getFieldValue("dcterms:W3CDTF", *mpRDFObj);}
 
 CRDFObject& CModified::getRDFObject()
 {return *mpRDFObj;}
 
 void CModified::setDateModified(const std::string dateModified)
-{CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getRDFGraph()->setFieldValue("dcterms:W3CDTF", *mpRDFObj, dateModified);}
+{dynamic_cast <CModelMIRIAMInfo*> (getObjectParent()->getObjectParent())->getRDFGraph()->setFieldValue("dcterms:W3CDTF", *mpRDFObj, dateModified);}
 
 const std::string & CModified::getKey() const {return mKey;} //By G

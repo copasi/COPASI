@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CMIRIAMModelWidget.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/04/14 16:29:12 $
+//   $Date: 2008/04/21 20:12:32 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -38,7 +38,8 @@
 CMIRIAMModelWidget::CMIRIAMModelWidget(QWidget* parent, const char* name, WFlags f)
     : CopasiWidget(parent, name, f),
     mWidgets(),
-    mChanged(false)
+    mChanged(false),
+    mMIRIAMInfo()
 {
   if (!name)
     CopasiWidget::setName("CMIRIAMModelWidget");
@@ -47,27 +48,27 @@ CMIRIAMModelWidget::CMIRIAMModelWidget(QWidget* parent, const char* name, WFlags
 
   //Create new widgets
   QLabel *pLblCreators = new QLabel("Creators: ", this);
-  CopasiTableWidget* pCreatorsWidget = new CCreatorsWidget(this, "CreatorsWidgetForModel");
+  CopasiTableWidget* pCreatorsWidget = new CCreatorsWidget(this, "CreatorsWidget");
   pLblCreators->setBuddy(pCreatorsWidget);
   mWidgets.push_back(pCreatorsWidget);
 
   QLabel *pLblReferences = new QLabel("References: ", this);
-  CopasiTableWidget* pReferencesWidget = new CReferencesWidget(this, "ReferencesWidgetForModel");
+  CopasiTableWidget* pReferencesWidget = new CReferencesWidget(this, "ReferencesWidget");
   pLblReferences->setBuddy(pReferencesWidget);
   mWidgets.push_back(pReferencesWidget);
 
   QLabel *pLblCreated = new QLabel("Created: ", this);
-  mpCreatedWidget = new QDateTimeEdit(this, "CreatedWidgetForModel");
+  mpCreatedWidget = new QDateTimeEdit(this, "CreatedWidget");
   pLblCreated->setBuddy(mpCreatedWidget);
   mpCreatedWidget->dateEdit()->setRange(QDate(), QDate::currentDate());
 
   QLabel *pLblModified = new QLabel("Modified: ", this);
-  CopasiTableWidget* pModifiedsWidget = new CModifiedWidget(this, "ModifiedWidgetForModel");
+  CopasiTableWidget* pModifiedsWidget = new CModifiedWidget(this, "ModifiedWidget");
   pLblModified->setBuddy(pModifiedsWidget);
   mWidgets.push_back(pModifiedsWidget);
 
   QLabel *pLblBiologicalDescriptions = new QLabel("Biological Descriptions: ", this);
-  CopasiTableWidget* pBiologicalDescriptionsWidget = new CBiologicalDescriptionsWidget(this, "BiologicalDescriptionsWidgetForModel");
+  CopasiTableWidget* pBiologicalDescriptionsWidget = new CBiologicalDescriptionsWidget(this, "BiologicalDescriptionsWidget");
   pLblBiologicalDescriptions->setBuddy(pBiologicalDescriptionsWidget);
   mWidgets.push_back(pBiologicalDescriptionsWidget);
 
@@ -153,7 +154,7 @@ void CMIRIAMModelWidget::slotBtnOKClicked()
   if (mpCreatedWidget->dateTime().toString(Qt::ISODate).ascii())
   {dt = mpCreatedWidget->dateTime().toString(Qt::ISODate).ascii();}
   if (dt.length())
-  {CCopasiDataModel::Global->getModel()->getMIRIAMInfo().setCreatedDT(dt);}
+  {getMIRIAMInfo().setCreatedDT(dt);}
 
   //Now call the slotBtnOkClicked() for each widget
   for (it = mWidgets.begin(); it != end; it++)
@@ -229,7 +230,7 @@ bool CMIRIAMModelWidget::update(ListViews::ObjectType objectType, ListViews::Act
 
 bool CMIRIAMModelWidget::enter(const std::string & key)
 {
-  CCopasiDataModel::Global->getModel()->getMIRIAMInfo().loadGraph(key);
+  getMIRIAMInfo().loadGraph(key);
   updateCreatedWidget();
   std::vector<CopasiTableWidget*>::const_iterator it = mWidgets.begin();
   std::vector<CopasiTableWidget*>::const_iterator end = mWidgets.end();
@@ -246,13 +247,13 @@ bool CMIRIAMModelWidget::leave()
   std::vector<CopasiTableWidget*>::const_iterator end = mWidgets.end();
   for (; it != end; it++)
   {(*it)->leave();}
-  CCopasiDataModel::Global->getModel()->getMIRIAMInfo().saveGraph();
+  getMIRIAMInfo().saveGraph();
   return true;
 }
 
 void CMIRIAMModelWidget::updateCreatedWidget()
 {
-  const std::string strDT = CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getCreatedDT();
+  const std::string strDT = mMIRIAMInfo.getCreatedDT();
   if (strDT.length())
     {
       QDateTime dtWidget = mpCreatedWidget->dateTime();
@@ -305,3 +306,6 @@ void CMIRIAMModelWidget::showMessages()
         }
     }
 }
+
+CModelMIRIAMInfo& CMIRIAMModelWidget::getMIRIAMInfo()
+{return mMIRIAMInfo;}

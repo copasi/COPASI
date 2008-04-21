@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CReference.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/12 13:28:06 $
+//   $Author: aekamal $
+//   $Date: 2008/04/21 20:12:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,6 +15,7 @@
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "model/CModel.h"
 
+#include "CModelMIRIAMInfo.h"
 #include "CReference.h"
 #include "CConstants.h"
 
@@ -56,7 +57,7 @@ const std::string CReference::getPubmedId() const
   {
     std::map<std::string, std::string> referencePredicates = CConstants::getReferencePredicates();
     std::string predicate = referencePredicates["Pubmed"];
-    std::string fieldVal = CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getRDFGraph()->getFieldValue("PubmedId", *mpRDFObj);
+    std::string fieldVal = dynamic_cast <CModelMIRIAMInfo*> (getObjectParent()->getObjectParent())->getRDFGraph()->getFieldValue("PubmedId", *mpRDFObj);
     std::string::size_type loc = fieldVal.find(predicate, 0);
     if (loc == std::string::npos)
     {return "";}
@@ -71,14 +72,14 @@ void CReference::setPubmedId(const std::string pubmedId)
   {fieldVal = predicate + pubmedId;}
 
   if (mParentTag == "dcterms:references")
-  {CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getRDFGraph()->setFieldValue("PubmedId", *mpRDFObj, fieldVal);}
+  {dynamic_cast <CModelMIRIAMInfo*> (getObjectParent()->getObjectParent())->getRDFGraph()->setFieldValue("PubmedId", *mpRDFObj, fieldVal);}
 }
 
 const std::string CReference::getDOI() const
   {
     std::map<std::string, std::string> referencePredicates = CConstants::getReferencePredicates();
     std::string predicate = referencePredicates["DOI"];
-    std::string fieldVal = CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getRDFGraph()->getFieldValue("DOI", *mpRDFObj);
+    std::string fieldVal = dynamic_cast <CModelMIRIAMInfo*> (getObjectParent()->getObjectParent())->getRDFGraph()->getFieldValue("DOI", *mpRDFObj);
     std::string::size_type loc = fieldVal.find(predicate, 0);
     if (loc == std::string::npos)
     {return "";}
@@ -93,19 +94,19 @@ void CReference::setDOI(const std::string DOI)
   {fieldVal = predicate + DOI;}
 
   if (mParentTag == "dcterms:references")
-  {CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getRDFGraph()->setFieldValue("DOI", *mpRDFObj, fieldVal);}
+  {dynamic_cast <CModelMIRIAMInfo*> (getObjectParent()->getObjectParent())->getRDFGraph()->setFieldValue("DOI", *mpRDFObj, fieldVal);}
 }
 
 const std::string CReference::getDescription() const
   {
     if (mParentTag == "dcterms:references")
-    {return CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getRDFGraph()->getFieldValue("dcterms:description", *mpRDFObj);}
+    {return dynamic_cast <CModelMIRIAMInfo*> (getObjectParent()->getObjectParent())->getRDFGraph()->getFieldValue("dcterms:description", *mpRDFObj);}
     return "";
   }
 void CReference::setDescription(const std::string d)
 {
   if (mParentTag == "dcterms:references")
-  {CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getRDFGraph()->setFieldValue("dcterms:description", *mpRDFObj, d);}
+  {dynamic_cast <CModelMIRIAMInfo*> (getObjectParent()->getObjectParent())->getRDFGraph()->setFieldValue("dcterms:description", *mpRDFObj, d);}
 }
 
 CRDFObject& CReference::getRDFObject()

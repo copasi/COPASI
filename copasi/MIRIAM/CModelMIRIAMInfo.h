@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CModelMIRIAMInfo.h,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/03/10 15:49:56 $
+//   $Date: 2008/04/21 20:12:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,6 +26,7 @@
 #include <map>
 
 #include "utilities/CCopasiVector.h"
+#include "report/CCopasiContainer.h"
 
 #include "CCreator.h"
 #include "CReference.h"
@@ -34,7 +35,7 @@
 #include "CRDFGraph.h"
 #include "CRDFObject.h"
 
-class CModelMIRIAMInfo
+class CModelMIRIAMInfo : public CCopasiContainer
   {
     // Attributes
   private:
@@ -46,7 +47,7 @@ class CModelMIRIAMInfo
     CCopasiVector <CBiologicalDescription> mBiologicalDescriptions;
 
     CRDFGraph* mpRDFGraph;
-    CModelEntity* mpEntity;
+    CCopasiObject* mpCopasiObject;
 
   protected:
     bool fillInfoFromGraph();

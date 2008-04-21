@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CCreator.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/03/10 15:49:56 $
+//   $Date: 2008/04/21 20:12:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,6 +19,7 @@
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "model/CModel.h"
 
+#include "CModelMIRIAMInfo.h"
 #include "CCreator.h"
 
 CCreator::CCreator(const std::string & objectName, const CCopasiContainer * pParent,
@@ -51,31 +52,31 @@ CCreator::~CCreator()
 }
 
 const std::string CCreator::getFamilyName() const
-  {return CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getRDFGraph()->getFieldValue("vCard:Family", *mpRDFObj);}
+  {return dynamic_cast <CModelMIRIAMInfo*> (getObjectParent()->getObjectParent())->getRDFGraph()->getFieldValue("vCard:Family", *mpRDFObj);}
 
 const std::string CCreator::getGivenName() const
-  {return CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getRDFGraph()->getFieldValue("vCard:Given", *mpRDFObj);}
+  {return dynamic_cast <CModelMIRIAMInfo*> (getObjectParent()->getObjectParent())->getRDFGraph()->getFieldValue("vCard:Given", *mpRDFObj);}
 
 const std::string CCreator::getEmail() const
-  {return CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getRDFGraph()->getFieldValue("vCard:EMAIL", *mpRDFObj);}
+  {return dynamic_cast <CModelMIRIAMInfo*> (getObjectParent()->getObjectParent())->getRDFGraph()->getFieldValue("vCard:EMAIL", *mpRDFObj);}
 
 const std::string CCreator::getORG() const
-  {return CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getRDFGraph()->getFieldValue("vCard:Orgname", *mpRDFObj);}
+  {return dynamic_cast <CModelMIRIAMInfo*> (getObjectParent()->getObjectParent())->getRDFGraph()->getFieldValue("vCard:Orgname", *mpRDFObj);}
 
 CRDFObject& CCreator::getRDFObject()
 {return *mpRDFObj;}
 
 void CCreator::setFamilyName(const std::string familyName)
-{CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getRDFGraph()->setFieldValue("vCard:Family", *mpRDFObj, familyName);}
+{dynamic_cast <CModelMIRIAMInfo*> (getObjectParent()->getObjectParent())->getRDFGraph()->setFieldValue("vCard:Family", *mpRDFObj, familyName);}
 
 void CCreator::setGivenName(const std::string givenName)
-{CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getRDFGraph()->setFieldValue("vCard:Given", *mpRDFObj, givenName);}
+{dynamic_cast <CModelMIRIAMInfo*> (getObjectParent()->getObjectParent())->getRDFGraph()->setFieldValue("vCard:Given", *mpRDFObj, givenName);}
 
 void CCreator::setEmail(const std::string Email)
-{CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getRDFGraph()->setFieldValue("vCard:EMAIL", *mpRDFObj, Email);}
+{dynamic_cast <CModelMIRIAMInfo*> (getObjectParent()->getObjectParent())->getRDFGraph()->setFieldValue("vCard:EMAIL", *mpRDFObj, Email);}
 
 void CCreator::setORG(const std::string Orgname)
-{CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getRDFGraph()->setFieldValue("vCard:Orgname", *mpRDFObj, Orgname);}
+{dynamic_cast <CModelMIRIAMInfo*> (getObjectParent()->getObjectParent())->getRDFGraph()->setFieldValue("vCard:Orgname", *mpRDFObj, Orgname);}
 
 const std::string & CCreator::getKey() const {return mKey;} //By G
 

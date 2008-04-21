@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CConstants.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/03/10 15:49:56 $
+//   $Date: 2008/04/21 20:12:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,7 +22,8 @@ CConstants c;
 CConstants::CConstants()
 {
   referencePredicates["Pubmed"] = "http://www.pubmed.gov/#";
-  referencePredicates["DOI"] = "http://dx.doi.org/";
+  //referencePredicates["DOI"] = "http://dx.doi.org/";
+  referencePredicates["DOI"] = "http://www.doi.org/#";
 
   prefix2URI["rdf"] = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
   prefix2URI["dc"] = "http://purl.org/dc/elements/1.1/";
@@ -31,6 +32,7 @@ CConstants::CConstants()
   prefix2URI["bqbiol"] = "http://biomodels.net/biology-qualifiers/";
   prefix2URI["bqmodel"] = "http://biomodels.net/model-qualifiers/";
 
+  //relationships["--Select One--"] = "--Select One--";
   relationships["bqbiol:encodes"] = "encodes";
   relationships["bqbiol:hasPart"] = "has part";
   relationships["bqbiol:hasVersion"] = "has version";
@@ -40,6 +42,7 @@ CConstants::CConstants()
   relationships["bqbiol:isPartOf"] = "is part of";
   relationships["bqbiol:isVersionOf"] = "is version of";
 
+  //resources["--Select One--"] = "--Select One--";
   resources["ArrayExpress"] = "http://arrayexpress.org/";
   resources["arXiv"] = "http://arxiv.org/";
   resources["BIND"] = "http://www.bind.ca/";
@@ -62,7 +65,8 @@ CConstants::CConstants()
   resources["MIRIAM Resources"] = "http://biomodels.net/MIRIAM/";
   resources["Mouse Genome Database"] = "http://mousegenome.org/";
   resources["Nucleotide Sequence Database"] = "http://www.insdc.org/";
-  resources["OMIM"] = "http://www.ncbi.nlm.nih.gov/OMIM/";
+  //resources["OMIM"] = "http://www.ncbi.nlm.nih.gov/OMIM/";
+  resources["OMIM"] = "http://www.ncbi.nlm.nih.gov/Taxonomy/";
   resources["Pfam"] = "http://pfam.org/";
   resources["PIRSF"] = "http://pir.georgetown.edu/pirsf/";
   resources["PROSITE"] = "http://www.prosite.org/";

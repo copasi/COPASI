@@ -99,6 +99,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CRDFUtilities.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\CRDFWriter.cpp"
 				>
 			</File>
@@ -161,6 +165,10 @@
 			</File>
 			<File
 				RelativePath=".\CRDFSubject.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CRDFUtilities.h"
 				>
 			</File>
 			<File

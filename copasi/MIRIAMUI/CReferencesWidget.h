@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CReferencesWidget.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/03/24 16:25:08 $
+//   $Date: 2008/04/21 20:12:32 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,6 +16,7 @@
 
 #include <vector>
 #include "UI/CopasiTableWidget.h"
+#include "MIRIAM/CModelMIRIAMInfo.h"
 
 class CReferencesWidget : public CopasiTableWidget
   {

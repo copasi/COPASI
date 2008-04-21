@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CModifiedWidget.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/04/14 18:04:49 $
+//   $Date: 2008/04/21 20:12:32 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,7 +14,6 @@
 #include <qlayout.h>
 #include <qpushbutton.h>
 
-#include "model/CModel.h"
 #include "MIRIAM/CCreator.h"
 #include "utilities/CCopasiVector.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
@@ -24,6 +23,7 @@
 #include "UI/CQMessageBox.h"
 #include "UI/CQDateTimeEditTableItem.h"
 
+#include "CMIRIAMModelWidget.h"
 #include "CModifiedWidget.h"
 
 #define COL_MARK               0
@@ -54,11 +54,14 @@ std::vector<const CCopasiObject*> CModifiedWidget::getObjects() const
   {
     std::vector<const CCopasiObject*> ret;
 
-    const CCopasiVector<CModified>& tmp = CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getModifieds();
+    if (dynamic_cast <CMIRIAMModelWidget*> (parentWidget()))
+      {
+        const CCopasiVector<CModified>& tmp = dynamic_cast <CMIRIAMModelWidget*> (parentWidget())->getMIRIAMInfo().getModifieds();
 
-    C_INT32 i, imax = tmp.size();
-    for (i = 0; i < imax; ++i)
-      ret.push_back(tmp[i]);
+        C_INT32 i, imax = tmp.size();
+        for (i = 0; i < imax; ++i)
+          ret.push_back(tmp[i]);
+      }
 
     return ret;
   }
@@ -134,11 +137,13 @@ QString CModifiedWidget::defaultObjectName() const
 
 CCopasiObject* CModifiedWidget::createNewObject(const std::string & name)
 {
+  if (!dynamic_cast <CMIRIAMModelWidget*> (parentWidget()))
+    return NULL;
   std::string nname = name;
   int i = 0;
   CModified* pModified = NULL;
 
-  while (!(pModified = CCopasiDataModel::Global->getModel()->getMIRIAMInfo().createModified(name)))
+  while (!(pModified = dynamic_cast <CMIRIAMModelWidget*> (parentWidget())->getMIRIAMInfo().createModified(name)))
     {
       i++;
       nname = name + "_";
@@ -150,6 +155,8 @@ CCopasiObject* CModifiedWidget::createNewObject(const std::string & name)
 
 void CModifiedWidget::deleteObjects(const std::vector<std::string> & keys)
 {
+  if (!dynamic_cast <CMIRIAMModelWidget*> (parentWidget()))
+    return;
 
   QString modifiedList = "Are you sure you want to delete listed Modified Date(s) ?\n";
   unsigned C_INT32 i, imax = keys.size();
@@ -178,7 +185,7 @@ void CModifiedWidget::deleteObjects(const std::vector<std::string> & keys)
       {
         for (i = 0; i < imax; i++)
           {
-            CCopasiDataModel::Global->getModel()->getMIRIAMInfo().removeModified(keys[i]);
+            dynamic_cast <CMIRIAMModelWidget*> (parentWidget())->getMIRIAMInfo().removeModified(keys[i]);
           }
 
         for (i = 0; i < imax; i++)

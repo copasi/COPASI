@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CMIRIAMModelWidget.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/04/14 16:29:12 $
+//   $Date: 2008/04/21 20:12:32 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,6 +23,7 @@
 
 #include "UI/CopasiTableWidget.h"
 #include "UI/listviews.h"
+#include "MIRIAM/CModelMIRIAMInfo.h"
 
 class CModelMIRIAMInfo;
 class CCreatorsWidget;
@@ -35,6 +36,12 @@ class CMIRIAMModelWidget : public CopasiWidget
     Q_OBJECT
   public:
     CMIRIAMModelWidget(QWidget *parent, const char * name = 0, WFlags f = 0);
+
+  protected:
+    /**
+        *  Stores the MIRIAM info of Model.
+        */
+    CModelMIRIAMInfo mMIRIAMInfo;
 
   private:
     std::vector<CopasiTableWidget*> mWidgets;
@@ -66,6 +73,11 @@ class CMIRIAMModelWidget : public CopasiWidget
     virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
     virtual bool leave();
     virtual bool enter(const std::string & key = "");
+    /**
+       * Return the MIRIAM info of this model
+       * @return CModelMIRIAMInfo&
+       */
+    CModelMIRIAMInfo& getMIRIAMInfo();
   };
 
 #endif // COPASI_CMIRIAMMODELWIDGET

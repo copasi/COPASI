@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CModelMIRIAMInfo.cpp,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/03/18 05:05:07 $
+//   $Date: 2008/04/21 20:12:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,8 +29,13 @@
 #include "CConstants.h"
 
 CModelMIRIAMInfo::CModelMIRIAMInfo() :
+    CCopasiContainer("CModelMIRIAMInfoObject", NULL, "CModelMIRIAMInfo"),
+    mCreators("Creators", this),
+    mReferences("References", this),
+    mModifieds("Modifieds", this),
+    mBiologicalDescriptions("BiologicalDescriptions", this),
     mpRDFGraph(NULL),
-    mpEntity(NULL)
+    mpCopasiObject(NULL)
 {
   clearMembers();
   mpRDFGraph = new CRDFGraph();
@@ -272,12 +277,12 @@ void CModelMIRIAMInfo::clearMembers()
 
 void CModelMIRIAMInfo::loadGraph(const std::string& key)
 {
-  CModelEntity* pNewEntity = dynamic_cast< CModelEntity * >(GlobalKeys.get(key));
-  if (pNewEntity && mpEntity != pNewEntity)
+  CCopasiObject* pCopasiObject = dynamic_cast< CCopasiObject * >(GlobalKeys.get(key));
+  if (pCopasiObject && mpCopasiObject != pCopasiObject)
     {
-      mpEntity = pNewEntity;
+      mpCopasiObject = pCopasiObject;
       CRDFGraph* oldGraph = mpRDFGraph;
-      mpRDFGraph = mpRDFGraph->loadGraph(mpEntity);
+      mpRDFGraph = mpRDFGraph->loadGraph(mpCopasiObject);
       pdelete(oldGraph);
       fillInfoFromGraph();
     }
@@ -285,9 +290,9 @@ void CModelMIRIAMInfo::loadGraph(const std::string& key)
 
 bool CModelMIRIAMInfo::saveGraph()
 {
-  if (mpEntity && mpRDFGraph)
+  if (mpCopasiObject && mpRDFGraph)
     {
-      if (mpRDFGraph->saveGraph(mpEntity))
+      if (mpRDFGraph->saveGraph(mpCopasiObject))
         {
           fillInfoFromGraph();
           return true;

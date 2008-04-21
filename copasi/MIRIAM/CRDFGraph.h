@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraph.h,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/03/10 15:49:56 $
+//   $Date: 2008/04/21 20:12:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -139,8 +139,8 @@ class CRDFGraph
      */
     bool setFieldValue(const std::string& fieldName, CRDFObject& obj, const std::string& fieldValue);
 
-    CRDFGraph* loadGraph(CModelEntity* pEntity);
-    bool saveGraph(CModelEntity* pEntity);
+    CRDFGraph* loadGraph(CCopasiObject* pEntity);
+    bool saveGraph(CCopasiObject* pEntity);
     bool isChanged();
 
     // Attributes

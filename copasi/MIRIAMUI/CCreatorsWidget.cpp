@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CCreatorsWidget.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/03/24 16:25:07 $
+//   $Date: 2008/04/21 20:12:32 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,14 +19,16 @@
 #include <qpushbutton.h>
 
 #include "model/CModel.h"
-#include "MIRIAM/CCreator.h"
 #include "utilities/CCopasiVector.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiObject.h"
 #include "report/CKeyFactory.h"
 #include "UI/qtUtilities.h"
 #include "UI/CQMessageBox.h"
+#include "MIRIAM/CModelMIRIAMInfo.h"
+#include "MIRIAM/CCreator.h"
 
+#include "CMIRIAMModelWidget.h"
 #include "CCreatorsWidget.h"
 
 #define COL_MARK               0
@@ -60,12 +62,14 @@ std::vector<const CCopasiObject*> CCreatorsWidget::getObjects() const
   {
     std::vector<const CCopasiObject*> ret;
 
-    const CCopasiVector<CCreator>& tmp = CCopasiDataModel::Global->getModel()->getMIRIAMInfo().getCreators();
+    if (dynamic_cast <CMIRIAMModelWidget*> (parentWidget()))
+      {
+        const CCopasiVector<CCreator>& tmp = dynamic_cast <CMIRIAMModelWidget*>(parentWidget())->getMIRIAMInfo().getCreators();
 
-    C_INT32 i, imax = tmp.size();
-    for (i = 0; i < imax; ++i)
-      ret.push_back(tmp[i]);
-
+        C_INT32 i, imax = tmp.size();
+        for (i = 0; i < imax; ++i)
+          ret.push_back(tmp[i]);
+      }
     return ret;
   }
 
@@ -128,11 +132,13 @@ QString CCreatorsWidget::defaultObjectName() const
 
 CCopasiObject* CCreatorsWidget::createNewObject(const std::string & name)
 {
+  if (!dynamic_cast <CMIRIAMModelWidget*> (parentWidget()))
+    return NULL;
   std::string nname = name;
   int i = 0;
   CCreator* pCreator = NULL;
 
-  while (!(pCreator = CCopasiDataModel::Global->getModel()->getMIRIAMInfo().createCreator(name)))
+  while (!(pCreator = dynamic_cast <CMIRIAMModelWidget*> (parentWidget())->getMIRIAMInfo().createCreator(name)))
     {
       i++;
       nname = name + "_";
@@ -144,7 +150,8 @@ CCopasiObject* CCreatorsWidget::createNewObject(const std::string & name)
 
 void CCreatorsWidget::deleteObjects(const std::vector<std::string> & keys)
 {
-
+  if (!dynamic_cast <CMIRIAMModelWidget*> (parentWidget()))
+    return;
   QString authorList = "Are you sure you want to delete listed AUTHOR(S) ?\n";
   unsigned C_INT32 i, imax = keys.size();
   for (i = 0; i < imax; i++) //all compartments
@@ -172,7 +179,7 @@ void CCreatorsWidget::deleteObjects(const std::vector<std::string> & keys)
       {
         for (i = 0; i < imax; i++)
           {
-            CCopasiDataModel::Global->getModel()->getMIRIAMInfo().removeCreator(keys[i]);
+            dynamic_cast <CMIRIAMModelWidget*> (parentWidget())->getMIRIAMInfo().removeCreator(keys[i]);
           }
 
         for (i = 0; i < imax; i++)

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraph.cpp,v $
-//   $Revision: 1.27 $
+//   $Revision: 1.28 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/18 19:49:35 $
+//   $Author: aekamal $
+//   $Date: 2008/04/21 20:12:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1204,17 +1204,23 @@ std::string CRDFGraph::tagName2Predicate(const std::string& tableName)
   return predicate;
 }
 
-CRDFGraph* CRDFGraph::loadGraph(CModelEntity* pEntity)
+CRDFGraph* CRDFGraph::loadGraph(CCopasiObject* pCopasiObject)
 {
   mChanged = false;
-  return CRDFParser::graphFromXml(pEntity->getMiriamAnnotation());
+  if (dynamic_cast<CModelEntity*>(pCopasiObject))
+  {return CRDFParser::graphFromXml(dynamic_cast<CModelEntity*>(pCopasiObject)->getMiriamAnnotation());}
+  return NULL;
 }
-bool CRDFGraph::saveGraph(CModelEntity* pEntity)
+bool CRDFGraph::saveGraph(CCopasiObject* pCopasiObject)
 {
   if (mChanged)
     {
       compressGraph();
-      pEntity->setMiriamAnnotation(CRDFWriter::xmlFromGraph(this), pEntity->getKey());
+      if (dynamic_cast<CModelEntity*>(pCopasiObject))
+        {
+          CModelEntity* pModelEntity = dynamic_cast<CModelEntity*>(pCopasiObject);
+          pModelEntity->setMiriamAnnotation(CRDFWriter::xmlFromGraph(this), pModelEntity->getKey());
+        }
       mChanged = false;
       return true;
     }

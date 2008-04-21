@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CTabWidget.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/01/29 16:44:17 $
+//   $Date: 2008/04/21 20:12:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -42,10 +42,11 @@ CTabWidget::CTabWidget(const QString & label, CopasiWidget * pCopasiWidget,
   mPages.push_back(pCopasiWidget);
   mTabWidget->addTab(pCopasiWidget, label);
 
-  mPages.push_back(new CMIRIAMModelWidget(mTabWidget));
+  CMIRIAMModelWidget* pMIRIAMWidget = new CMIRIAMModelWidget(mTabWidget);
+  mPages.push_back(pMIRIAMWidget);
   mTabWidget->addTab(mPages[1], "Annotation");
 
-  mPages.push_back(new CQRDFListViewWidget(mTabWidget));
+  mPages.push_back(new CQRDFListViewWidget(pMIRIAMWidget, mTabWidget));
   mTabWidget->addTab(mPages[2], "RDF Browser");
 }
 
