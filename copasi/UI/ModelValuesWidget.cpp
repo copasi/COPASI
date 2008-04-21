@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModelValuesWidget.cpp,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.21.4.3 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/11/13 17:45:07 $
+//   $Author: shoops $
+//   $Date: 2008/02/27 21:09:46 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -34,7 +39,8 @@
 #define COL_INITIAL 3
 #define COL_TRANSIENT 4
 #define COL_RATE 5
-#define COL_EXPRESSION 6
+#define COL_IEXPRESSION 6
+#define COL_EXPRESSION 7
 
 std::vector<const CCopasiObject*> ModelValuesWidget::getObjects() const
   {
@@ -51,10 +57,11 @@ std::vector<const CCopasiObject*> ModelValuesWidget::getObjects() const
 void ModelValuesWidget::init()
 {
   mOT = ListViews::MODELVALUE;
-  numCols = 7; // + 1;
+  numCols = 8; // + 1;
   table->setNumCols(numCols);
   table->setColumnReadOnly (COL_TRANSIENT, true);
   table->setColumnReadOnly (COL_RATE, true);
+  table->setColumnReadOnly (COL_IEXPRESSION, true);
   table->setColumnReadOnly (COL_EXPRESSION, true);
 
   //table->QTable::setNumRows(1);
@@ -68,6 +75,7 @@ void ModelValuesWidget::init()
   tableHeader->setLabel(COL_INITIAL, "Initial Value");
   tableHeader->setLabel(COL_TRANSIENT, "Transient Value");
   tableHeader->setLabel(COL_RATE, "Rate");
+  tableHeader->setLabel(COL_IEXPRESSION, "Initial Expression");
   tableHeader->setLabel(COL_EXPRESSION, "Expression");
 
   //for sbml ids
@@ -114,11 +122,22 @@ void ModelValuesWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C
   table->setText(row, COL_RATE, QString::number(pMV->getRate()));
 
   // Expression
-  const CExpression * pExpression = pMV->getExpressionPtr();
+  const CExpression * pExpression = NULL;
+  if (pMV->getInitialExpression() != "")
+    {
+      pExpression = pMV->getInitialExpressionPtr();
+      if (pExpression != NULL)
+        table->setText(row, COL_IEXPRESSION, FROM_UTF8(pExpression->getDisplayString()));
+      else
+        table->clearCell(row, COL_IEXPRESSION);
+    }
+
+  // Expression
+  pExpression = pMV->getExpressionPtr();
   if (pExpression != NULL)
-    table->setText(row, COL_EXPRESSION, FROM_UTF8(pMV->getExpression()));
+    table->setText(row, COL_EXPRESSION, FROM_UTF8(pExpression->getDisplayString()));
   else
-    table->setText(row, COL_EXPRESSION, "");
+    table->clearCell(row, COL_EXPRESSION);
 }
 
 void ModelValuesWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj)
@@ -150,6 +169,9 @@ void ModelValuesWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C
 
   if (exc != COL_TRANSIENT)
     table->clearCell(row, COL_TRANSIENT);
+
+  if (exc != COL_IEXPRESSION)
+    table->clearCell(row, COL_IEXPRESSION);
 
   if (exc != COL_EXPRESSION)
     table->clearCell(row, COL_EXPRESSION);
@@ -186,7 +208,7 @@ void ModelValuesWidget::deleteObjects(const std::vector<std::string> & keys)
 
   QString valueList = "Are you sure you want to delete listed MODEL VALUE(S) ?\n";
   QString effectedCompartmentList = "Following COMPARTMENT(S) reference above MODEL VALUE(S) and will be deleted -\n";
-  QString effectedMetabList = "Following METABOLITE(S) reference above MODEL VALUE(S) and will be deleted -\n";
+  QString effectedMetabList = "Following SPECIES reference above MODEL VALUE(S) and will be deleted -\n";
   QString effectedReacList = "Following REACTION(S) reference above MODEL VALUE(S) and will be deleted -\n";
   QString effectedValueList = "Following MODEL VALUE(S) reference above MODEL VALUE(S) and will be deleted -\n";
 

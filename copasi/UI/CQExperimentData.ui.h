@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExperimentData.ui.h,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.32.6.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/24 18:40:20 $
+//   $Date: 2008/01/31 16:45:01 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -1169,6 +1174,46 @@ void CQExperimentData::slotTypeChanged(int row)
     }
 
   mpTable->setText(row, COL_TYPE_HIDDEN, QString::number(NewType));
+
+  // The default weights need to be recalculated and the table updated if the type change
+  // involves dependent values.
+  if (OldType == CExperiment::dependent ||
+      NewType == CExperiment::dependent)
+    {
+      saveExperiment(mpExperiment, true);
+
+      // Since the iterpretation of the data has changed we need read the file again
+      std::ifstream File;
+      File.open(utf8ToLocale(mpExperiment->getFileName()).c_str());
+
+      unsigned C_INT32 CurrentLine = 1;
+      mpExperiment->read(File, CurrentLine);
+      mpExperiment->compile();
+
+      // We can not simply use loadTable as this would destroy the two signal maps
+      // for the buttons and comboboxes leading to crashes in Qt.
+      CExperimentObjectMap & ObjectMap = mpExperiment->getObjectMap();
+      for (i = 0; i < imax; i++)
+        {
+          // COL_WEIGHT
+          if (ObjectMap.getRole(i) != CExperiment::dependent)
+            mpTable->setText(i, COL_WEIGHT, "");
+          else
+            {
+              QString WeightText = mpTable->text(i, COL_WEIGHT);
+
+              // Keep non default values
+              if (WeightText == "" || WeightText[0] == '(')
+                {
+
+                  C_FLOAT64 DefaultWeight = ObjectMap.getDefaultWeight(i);
+                  WeightText = "(" + QString::number(DefaultWeight) + ")";
+
+                  mpTable->setText(i, COL_WEIGHT, WeightText);
+                }
+            }
+        }
+    }
 
   return;
 }

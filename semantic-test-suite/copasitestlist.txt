@@ -93,6 +93,21 @@ TEST basicRules/differentialUsedInAssignmentConsistent-Species/basicRules-differ
 TEST basicRules/reactionUsedInAssignment-Species/basicRules-reactionUsedInAssignment-Species.test
 CATEGORY Stoichiometry
 TEST stoichiometry/floatingPoint/stoichiometry-floatingPoint.test
+CATEGORY Discontinuity, Time And Delays
+TEST discontinuityTimeAndDelays/and/discontinuityTimeAndDelay-and.test
+TEST discontinuityTimeAndDelays/ceiling/discontinuityTimeAndDelays-ceiling.test
+TEST discontinuityTimeAndDelays/discontinuity/discontinuityTimeAndDelay-discontinuity.test
+TEST discontinuityTimeAndDelays/factorial/discontinuityTimeAndDelays-factorial.test
+TEST discontinuityTimeAndDelays/false/discontinuityTimeAndDelay-false.test
+TEST discontinuityTimeAndDelays/floor/discontinuityTimeAndDelays-floor.test
+TEST discontinuityTimeAndDelays/geq/discontinuityTimeAndDelay-geq.test
+TEST discontinuityTimeAndDelays/leq/discontinuityTimeAndDelay-leq.test
+TEST discontinuityTimeAndDelays/lt/discontinuityTimeAndDelay-lt.test
+TEST discontinuityTimeAndDelays/not/discontinuityTimeAndDelay-not.test
+TEST discontinuityTimeAndDelays/or/discontinuityTimeAndDelay-or.test
+TEST discontinuityTimeAndDelays/time/discontinuityTimeAndDelays-time.test
+TEST discontinuityTimeAndDelays/true/discontinuityTimeAndDelay-true.test
+TEST discontinuityTimeAndDelays/xor/discontinuityTimeAndDelay-xor.test
 CATEGORY Functions
 TEST functions/kinetic-law/functions-kinetic-law.test
 TEST functions/basic-rules/functions-basic-rules.test

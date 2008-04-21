@@ -1,12 +1,17 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/sbml.pro,v $ 
-#   $Revision: 1.15 $ 
+#   $Revision: 1.15.2.1.2.1 $ 
 #   $Name:  $ 
-#   $Author: ssahle $ 
-#   $Date: 2007/11/15 13:56:22 $ 
+#   $Author: gauges $ 
+#   $Date: 2008/01/18 14:32:43 $ 
 # End CVS Header 
 
-# Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+# and The University of Manchester. 
+# All rights reserved. 
+
+# Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc. and EML Research, gGmbH. 
 # All rights reserved. 
 
@@ -22,17 +27,20 @@ contains(BUILD_OS, WIN32) {
 
 # Input
 HEADERS += StdException.h \
+           CSBMLExporter.h \
            ConverterASTNode.h \
            SBMLImporter.h \
            SBMLIncompatibility.h \
            SBMLExporter.h \
            SBMLReference.h \
            SBMLUtils.h \
-           UnitConversionFactory.hpp 
+           UnitConversionFactory.hpp \
+           incompatibilities.h 
            
            
            
 SOURCES += StdException.cpp \
+           CSBMLExporter.cpp \
            ConverterASTNode.cpp \
            SBMLImporter.cpp \
            SBMLIncompatibility.cpp \

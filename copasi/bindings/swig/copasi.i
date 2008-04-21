@@ -1,12 +1,17 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/copasi.i,v $ 
-//   $Revision: 1.22 $ 
+//   $Revision: 1.22.4.1 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2007/12/12 14:53:32 $ 
+//   $Date: 2008/04/02 07:50:04 $ 
 // End CVS Header 
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc. and EML Research, gGmbH. 
 // All rights reserved. 
 
@@ -40,6 +45,7 @@
 %include "CCopasiObject.i"
 %include "CCopasiContainer.i"
 %include "CAnnotatedMatrix.i"
+%include "CCopasiVector.i"
 %include "CEigen.i"
 %include "CFunctionParameter.i"
 %include "CFunctionParameters.i"
@@ -58,7 +64,6 @@
 %include "CChemEqElement.i"
 %include "CChemEq.i"
 %include "CReaction.i"
-%include "CCopasiVector.i"
 %include "CModel.i"
 %include "CVersion.i"
 %include "CCopasiMethod.i"

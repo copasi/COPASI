@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/COutputAssistant.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.14.4.1 $
 //   $Name:  $
-//   $Author: mendes $
-//   $Date: 2007/12/10 17:00:42 $
+//   $Author: shoops $
+//   $Date: 2008/01/22 18:51:24 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -162,7 +167,7 @@ bool COutputAssistant::initialize()
   //concentrations plot
   tmp.first = 0;
   tmp.second.name = "Concentrations, Volumes, and Global Quantity Values";
-  tmp.second.description = "A plot of the variable metabolite concentrations, variable compartment volumes, and variable global quantity values vs. time.";
+  tmp.second.description = "A plot of the variable species concentrations, variable compartment volumes, and variable global quantity values vs. time.";
   tmp.second.isPlot = true;
   tmp.second.mTaskType = CCopasiTask::timeCourse;
   mMap.insert(tmp);
@@ -170,7 +175,7 @@ bool COutputAssistant::initialize()
   //particle numbers plot
   tmp.first = 1;
   tmp.second.name = "Particle Numbers, Volumes, and Global Quantity Values";
-  tmp.second.description = "A plot of the variable metabolite particle numbers, variable compartment volumes, and variable global quantity values vs. time.";
+  tmp.second.description = "A plot of the variable species particle numbers, variable compartment volumes, and variable global quantity values vs. time.";
   tmp.second.isPlot = true;
   tmp.second.mTaskType = CCopasiTask::timeCourse;
   mMap.insert(tmp);
@@ -178,7 +183,7 @@ bool COutputAssistant::initialize()
   //complete concentrations plot
   tmp.first = 2;
   tmp.second.name = "Complete Concentrations, Volumes, and Global Quantity Values";
-  tmp.second.description = "A plot of all the metabolite concentrations, compartment volumes, and all global quantity values vs. time (includes fixed ones).";
+  tmp.second.description = "A plot of all the species concentrations, compartment volumes, and all global quantity values vs. time (includes fixed ones).";
   tmp.second.isPlot = true;
   tmp.second.mTaskType = CCopasiTask::timeCourse;
   mMap.insert(tmp);
@@ -186,7 +191,7 @@ bool COutputAssistant::initialize()
   //complete particle numbers plot
   tmp.first = 3;
   tmp.second.name = "Complete Particle Numbers, Volumes, and Global Quantity Values";
-  tmp.second.description = "A plot of all the metabolite particle numbers, compartment volumes, and global quantity values vs. time (includes fixed ones).";
+  tmp.second.description = "A plot of all the species particle numbers, compartment volumes, and global quantity values vs. time (includes fixed ones).";
   tmp.second.isPlot = true;
   tmp.second.mTaskType = CCopasiTask::timeCourse;
   mMap.insert(tmp);
@@ -194,7 +199,7 @@ bool COutputAssistant::initialize()
   //concentration rate plot
   tmp.first = 4;
   tmp.second.name = "Concentration Rates, Volume Rates, and Global Quantity Rates";
-  tmp.second.description = "A plot of the rate of change of concentrations of metabolites, compartment volume, and global quantities, which are determined by ODEs or reactions vs. time.";
+  tmp.second.description = "A plot of the rate of change of concentrations of species, compartment volume, and global quantities, which are determined by ODEs or reactions vs. time.";
   tmp.second.isPlot = true;
   tmp.second.mTaskType = CCopasiTask::timeCourse;
   mMap.insert(tmp);
@@ -202,7 +207,7 @@ bool COutputAssistant::initialize()
   //particle rate plot
   tmp.first = 5;
   tmp.second.name = "Particle Number Rates, Volume Rates, and Global Quantity Rates";
-  tmp.second.description = "A plot of the rate of change of particle numbers of all metabolites, compartment volume, and global quantities, which are determined by ODEs or reactions vs. time.";
+  tmp.second.description = "A plot of the rate of change of particle numbers of all species, compartment volume, and global quantities, which are determined by ODEs or reactions vs. time.";
   tmp.second.isPlot = true;
   tmp.second.mTaskType = CCopasiTask::timeCourse;
   mMap.insert(tmp);
@@ -274,42 +279,42 @@ bool COutputAssistant::initialize()
   //concentrations report
   tmp.first = 1000;
   tmp.second.name = "Time, Concentrations, Volumes, and Global Quantity Values";
-  tmp.second.description = "A table of time, variable metabolite concentrations, variable compartment volumes, and variable global quantity values.";
+  tmp.second.description = "A table of time, variable species concentrations, variable compartment volumes, and variable global quantity values.";
   tmp.second.isPlot = false; //report
   tmp.second.mTaskType = CCopasiTask::timeCourse;
   mMap.insert(tmp);
 
   tmp.first = 1001;
   tmp.second.name = "Time, Particle Numbers, Volumes, and Global Quantity Values";
-  tmp.second.description = "A table of time, variable metabolite particle numbers, variable compartment volumes, and variable global quantity values.";
+  tmp.second.description = "A table of time, variable species particle numbers, variable compartment volumes, and variable global quantity values.";
   tmp.second.isPlot = false; //report
   tmp.second.mTaskType = CCopasiTask::timeCourse;
   mMap.insert(tmp);
 
   tmp.first = 1002;
   tmp.second.name = "Complete Time, Concentrations, Volumes, and Global Quantity Values";
-  tmp.second.description = "A table of time, all metabolite concentrations, all compartment volumes, and all global quantity values (includes fixed ones).";
+  tmp.second.description = "A table of time, all species concentrations, all compartment volumes, and all global quantity values (includes fixed ones).";
   tmp.second.isPlot = false; //report
   tmp.second.mTaskType = CCopasiTask::timeCourse;
   mMap.insert(tmp);
 
   tmp.first = 1003;
   tmp.second.name = "Complete Time, Particle Numbers, Volumes, and Global Quantity Values";
-  tmp.second.description = "A table of time, all metabolite particle numbers, all compartment volumes, and all global quantity values (includes fixed ones).";
+  tmp.second.description = "A table of time, all species particle numbers, all compartment volumes, and all global quantity values (includes fixed ones).";
   tmp.second.isPlot = false; //report
   tmp.second.mTaskType = CCopasiTask::timeCourse;
   mMap.insert(tmp);
 
   tmp.first = 1004;
   tmp.second.name = "Time, Concentration Rates, Volume Rates, and Global Quantity Rates";
-  tmp.second.description = "A table of time and the rate of change of concentrations of metabolites, compartment volumes, and global quantities which are determined by reactions or ODEs.";
+  tmp.second.description = "A table of time and the rate of change of concentrations of species, compartment volumes, and global quantities which are determined by reactions or ODEs.";
   tmp.second.isPlot = false; //report
   tmp.second.mTaskType = CCopasiTask::timeCourse;
   mMap.insert(tmp);  //not possible at the moment
 
   tmp.first = 1005;
   tmp.second.name = "Time, Particle Numbers Rates, Volume Rates, and Global Quantity Rates";
-  tmp.second.description = "A table of time and the rate of change of particle numbers of metabolites, compartment volumes, and global quantities which are determined by reactions or ODEs.";
+  tmp.second.description = "A table of time and the rate of change of particle numbers of species, compartment volumes, and global quantities which are determined by reactions or ODEs.";
   tmp.second.isPlot = false; //report
   tmp.second.mTaskType = CCopasiTask::timeCourse;
   mMap.insert(tmp);
@@ -330,14 +335,14 @@ bool COutputAssistant::initialize()
 
   tmp.first = 1008;
   tmp.second.name = "Time and all Variable Values (Concentration Units)";
-  tmp.second.description = "This table includes all values which change over a time course. Metabolites are measured in concentration unit and fluxes are in concentration/time unit.";
+  tmp.second.description = "This table includes all values which change over a time course. Species are measured in concentration unit and fluxes are in concentration/time unit.";
   tmp.second.isPlot = false; //report
   tmp.second.mTaskType = CCopasiTask::timeCourse;
   mMap.insert(tmp);
 
   tmp.first = 1009;
   tmp.second.name = "Time and all Variable Values (Particle Number Units)";
-  tmp.second.description = "This table includes all values which change over a time course. Metabolites are measured in particle numbers and fluxes are in events/time unit.";
+  tmp.second.description = "This table includes all values which change over a time course. Species are measured in particle numbers and fluxes are in events/time unit.";
   tmp.second.isPlot = false; //report
   tmp.second.mTaskType = CCopasiTask::timeCourse;
   mMap.insert(tmp);

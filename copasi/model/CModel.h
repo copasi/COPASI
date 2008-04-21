@@ -1,14 +1,19 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.155 $
+//   $Revision: 1.155.4.3 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2007/10/31 23:24:27 $
+//   $Author: shoops $
+//   $Date: 2008/02/28 21:38:16 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.f
+// All rights reserved.
 
 #ifndef COPASI_CModel
 #define COPASI_CModel
@@ -437,6 +442,12 @@ class CModel : public CModelEntity
      * @return bool success
      */
     bool forceCompile(CProcessReport* pProcessReport);
+
+    /**
+     * Compile the default initial value dependencies, which is that the
+     * initial concentration is updated.
+     */
+    void compileDefaultMetabInitialValueDependencies();
 
     /**
      *  Build the Stoichiometry Matrix from the chemical equations of the steps
@@ -1067,17 +1078,11 @@ class CModel : public CModelEntity
     /**
      * Retrieve the list of objects which are up to date after a call
      * to apply assignment.
-     * @return std::set< const CCopasiObject * > & uptoDateObjects
-     */
-    std::set< const CCopasiObject * > & getUptoDateObjects();
-
-    /**
-     * Retrieve the list of objects which are up to date after a call
-     * to apply assignment.
      * @return const std::set< const CCopasiObject * > & uptoDateObjects
      */
     const std::set< const CCopasiObject * > & getUptoDateObjects() const;
 
+    const std::vector< Refresh * > & getListOfInitialRefreshes() const; //mInitialRefreshes;
     const std::vector< Refresh * > & getListOfSimulatedRefreshes() const; //mSimulatedRefreshes;
     const std::vector< Refresh * > & getListOfConstantRefreshes() const; //mConstantRefreshes;
     const std::vector< Refresh * > & getListOfNonSimulatedRefreshes() const; //mNonSimulatedRefreshes;

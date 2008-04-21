@@ -1,8 +1,10 @@
 # The following variables need to be adjusted to suit your installation
-# od dblatex:
+# of dblatex:
 
 # The dblatex installation directory
-DBLATEX_PATH=/home/usr
+# DBLATEX_PATH=/home/usr
+# DBLATEX_PATH=/sw
+
 
 # These should be correct after DBLATEX_PATH
 DBLATEX=$(DBLATEX_PATH)/bin/dblatex
@@ -22,6 +24,9 @@ IMAGES = images/Compartments_01.png \
          images/Compartments_02.png \
          images/Compartments_03.png \
          images/Compartments_04.png \
+         images/Compartments_05.png \
+         images/Compartments_06.png \
+         images/Compartments_07.png \
          images/ElementaryModesTask_01.png \
          images/Functions_01.png \
          images/Functions_02.png \
@@ -32,8 +37,14 @@ IMAGES = images/Compartments_01.png \
          images/MCATask_03.png \
          images/MassConservationTask_01.png \
          images/MassConservationTask_02.png \
-         images/Metabolites_01.png \
-         images/Metabolites_02.png \
+         images/Species_01.png \
+         images/Species_02.png \
+         images/Species_03.png \
+         images/Species_04.png \
+         images/Species_05.png \
+         images/GlobalQuantities_01.png \
+         images/GlobalQuantities_02.png \
+         images/GlobalQuantities_03.png \
          images/ParameterEstimation_01.png \
          images/ParameterEstimation_02.png \
          images/ParameterEstimation_05.png \

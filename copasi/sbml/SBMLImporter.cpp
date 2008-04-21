@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.189 $
+//   $Revision: 1.189.2.6.2.25 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/12/04 15:52:13 $
+//   $Author: gauges $
+//   $Date: 2008/03/10 08:26:39 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -43,7 +48,7 @@
 #include <sbml/InitialAssignment.h>
 #include <sbml/Rule.h>
 #include <sbml/FunctionDefinition.h>
-#include <sbml/units/Utils_UnitDefinition.h>
+#include <sbml/UnitDefinition.h>
 #include "report/CKeyFactory.h"
 
 #include "copasi.h"
@@ -75,11 +80,25 @@
 
 #include "utilities/CCopasiMessage.h"
 
-/**
- * This determines the relative difference two SBML Units can have for their
- * multiplier to be recognized as identical if everything else is the same.
- */
-const double SBMLImporter::UNIT_MULTIPLIER_TOLERANCE = 1e-9;
+// static
+C_FLOAT64 SBMLImporter::round(const C_FLOAT64 & x)
+{
+  return
+  fabs(x) < 0.0 ? -floor(-x + 0.5) : floor(x + 0.5);
+}
+
+// static
+bool SBMLImporter::areApproximatelyEqual(const double & x, const double & y, const double & t)
+{
+  double Scale =
+    (fabs(x) + fabs(y)) * t;
+
+  // Avoid underflow
+  if (Scale < 100.0 * DBL_MIN)
+    return true;
+
+  return 2 * fabs(x - y) < Scale;
+}
 
 /**
  * Creates and returns a Copasi CModel from the SBMLDocument given as argument.
@@ -94,6 +113,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   this->mpCopasiModel->setVolumeUnit(CModel::l);
   this->mpCopasiModel->setTimeUnit(CModel::s);
   this->mpCopasiModel->setQuantityUnit(CModel::Mol);
+  this->mpCopasiModel->setSBMLId(sbmlModel->getId());
   /* Set standard units to match the standard units of SBML files. */
 
   if (sbmlModel->getNumUnitDefinitions() != 0)
@@ -105,15 +125,48 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
           std::string unitId = uDef->getId();
           if (unitId == "substance")
             {
-              this->mpCopasiModel->setQuantityUnit(this->handleSubstanceUnit(uDef).first);
+              std::pair<CModel::QuantityUnit, bool> qUnit = this->handleSubstanceUnit(uDef);
+              if (qUnit.second == false)
+                {
+                  // the unit could not be handled, give an error message and
+                  // set the units to mole
+                  CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 66, "substance", "Mole");
+                  this->mpCopasiModel->setQuantityUnit(CModel::Mol);
+                }
+              else
+                {
+                  this->mpCopasiModel->setQuantityUnit(qUnit.first);
+                }
             }
           else if (unitId == "time")
             {
-              this->mpCopasiModel->setTimeUnit(this->handleTimeUnit(uDef).first);
+              std::pair<CModel::TimeUnit, bool> tUnit = this->handleTimeUnit(uDef);
+              if (tUnit.second == false)
+                {
+                  // the unit could not be handled, give an error message and
+                  // set the units to second
+                  CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 66, "time", "second");
+                  this->mpCopasiModel->setTimeUnit(CModel::s);
+                }
+              else
+                {
+                  this->mpCopasiModel->setTimeUnit(tUnit.first);
+                }
             }
           else if (unitId == "volume")
             {
-              this->mpCopasiModel->setVolumeUnit(this->handleVolumeUnit(uDef).first);
+              std::pair<CModel::VolumeUnit, bool> vUnit = this->handleVolumeUnit(uDef);
+              if (vUnit.second == false)
+                {
+                  // the unit could not be handled, give an error message and
+                  // set the units to litre
+                  CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 66, "volume", "litre");
+                  this->mpCopasiModel->setVolumeUnit(CModel::l);
+                }
+              else
+                {
+                  this->mpCopasiModel->setVolumeUnit(vUnit.first);
+                }
             }
           else if ((unitId == "area") || (unitId == "length"))
             {
@@ -133,13 +186,16 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
     {
       this->mpCopasiModel->setModelType(CModel::deterministic);
     }
-  const XMLNode* comment = sbmlModel->getNotes();
-  if (comment != NULL)
+  if (sbmlModel->isSetNotes() && sbmlModel->getNotes() != NULL)
     {
+
       std::ostringstream stream;
-      XMLOutputStream o(stream);
-      o << * comment;
+      for (unsigned int i = 0;i < sbmlModel->getNotes()->getNumChildren();++i)
+        {
+          stream << XMLNode::convertXMLNodeToString(&sbmlModel->getNotes()->getChild(i)) << std::endl;
+        }
       this->mpCopasiModel->setComments(stream.str());
+      //std::string notesString=XMLNode::convertXMLNodeToString(&sbmlModel->getNotes()->getChild(0));
     }
   title = sbmlModel->getName();
   if (title == "")
@@ -182,12 +238,16 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   for (counter = 0; counter < num;++counter)
     {
       FunctionDefinition* pSBMLFunDef = sbmlModel->getFunctionDefinition(counter);
-      CFunction* pFun = this->createCFunctionFromFunctionDefinition(pSBMLFunDef, pTmpFunctionDB);
+      CFunction* pFun = this->createCFunctionFromFunctionDefinition(pSBMLFunDef, pTmpFunctionDB, sbmlModel, copasi2sbmlmap);
       copasi2sbmlmap[pFun] = pSBMLFunDef;
       this->mFunctionNameMapping[pSBMLFunDef->getId()] = pFun->getObjectName();
       ++step;
       if (mpImportHandler && !mpImportHandler->progress(hStep)) return false;
     }
+
+  // try to find global parameters that represent avogadros number
+  this->findAvogadroConstant(sbmlModel, this->mpCopasiModel->getQuantity2NumberFactor());
+
   // now we go through all initial assignments, rules, constraints, kinetic
   // laws and events and replace function calls to functions in mExplicitelyTimeDependentFunctionDefinitions
   // by a call with the extra parameter that is the time.
@@ -218,9 +278,6 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
               this->replaceTimeDependentFunctionCalls(pMathNode);
             }
         }
-
-      // import the initial assignments
-      //importInitialAssignments(sbmlModel,copasi2sbmlmap);
 
       num = sbmlModel->getNumRules();
       for (counter = 0;counter < num;++counter)
@@ -367,10 +424,21 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       ++step;
       if (mpImportHandler && !mpImportHandler->progress(hStep)) return false;
     }
-  if (sbmlModel->getNumInitialAssignments() > 0)
+  if (!this->mIgnoredParameterUnits.empty())
     {
-      CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 48);
+      std::ostringstream os;
+      std::vector<std::string>::iterator errorIt = this->mIgnoredParameterUnits.begin();
+      while (errorIt != this->mIgnoredParameterUnits.end())
+        {
+          os << *errorIt << ", ";
+          ++errorIt;
+        }
+      std::string s = os.str();
+      CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 26, s.substr(0, s.size() - 2).c_str());
     }
+
+  // import the initial assignments
+  importInitialAssignments(sbmlModel, copasi2sbmlmap);
 
   /* Create the rules */
   this->areRulesUnique(sbmlModel);
@@ -394,7 +462,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
         {
           fatalError();
         }
-      this->importSBMLRule(sbmlRule, copasi2sbmlmap);
+      this->importSBMLRule(sbmlRule, copasi2sbmlmap, sbmlModel);
       ++step;
       if (mpImportHandler && !mpImportHandler->progress(hStep)) return false;
     }
@@ -456,8 +524,6 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       if (!mpImportHandler->progress(mhImportStep)) return false;
     }
 
-  this->removeUnusedFunctions(pTmpFunctionDB, copasi2sbmlmap);
-
   // unset the hasOnlySubstanceUnits flag on all such species
   std::map<Species*, Compartment*>::iterator it = this->mSubstanceOnlySpecies.begin();
   std::map<Species*, Compartment*>::iterator endIt = this->mSubstanceOnlySpecies.end();
@@ -467,19 +533,52 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       ++it;
     }
   setInitialValues(this->mpCopasiModel, copasi2sbmlmap);
-
+  // evaluate and apply the initial expressions
+  this->applyStoichiometricExpressions(copasi2sbmlmap, sbmlModel);
+  //this->createDelayFunctionDefinition();
+  this->removeUnusedFunctions(pTmpFunctionDB, copasi2sbmlmap);
+  // remove the temporary avogadro parameter if one was created
+  if (this->mAvogadroCreated == true)
+    {
+      const Parameter* pParameter = *this->mPotentialAvogadroNumbers.begin();
+      ListOf* pList = sbmlModel->getListOfParameters();
+      unsigned i, iMax = pList->size();
+      for (i = 0;i < iMax;++i)
+        {
+          if (pList->get(i)->getId() == pParameter->getId())
+            {
+              pList->remove(i);
+              break;
+            }
+        }
+    }
   delete pTmpFunctionDB;
 
   return this->mpCopasiModel;
 }
 
-CFunction* SBMLImporter::createCFunctionFromFunctionDefinition(const FunctionDefinition* sbmlFunction, CFunctionDB* pTmpFunctionDB)
+CFunction* SBMLImporter::createCFunctionFromFunctionDefinition(const FunctionDefinition* sbmlFunction, CFunctionDB* pTmpFunctionDB, Model* pSBMLModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
 {
 
-  CFunction* pTmpFunction = this->createCFunctionFromFunctionTree(sbmlFunction);
+  CFunction* pTmpFunction = this->createCFunctionFromFunctionTree(sbmlFunction, pSBMLModel, copasi2sbmlmap);
   if (pTmpFunction)
     {
-      pTmpFunction->setSBMLId(sbmlFunction->getId());
+      std::string sbmlId = sbmlFunction->getId();
+      pTmpFunction->setSBMLId(sbmlId);
+      // check if the id is already taken by another function definition, maybe
+      // from an earlier import, if this is the case, delete the id on the old
+      // function definition
+      // if we don't do this, two functions might have the same SBML id during
+      // export which makes the exporter code so much more difficult
+      unsigned int i, iMax = this->functionDB->loadedFunctions().size();
+      for (i = 0;i < iMax;++i)
+        {
+          CEvaluationTree* pFun = this->functionDB->loadedFunctions()[i];
+          if (pFun->getSBMLId() == sbmlId)
+            {
+              pFun->setSBMLId("");
+            }
+        }
       std::string functionName = sbmlFunction->getName();
       if (functionName == "")
         {
@@ -506,13 +605,13 @@ CFunction* SBMLImporter::createCFunctionFromFunctionDefinition(const FunctionDef
   return pTmpFunction;
 }
 
-CFunction* SBMLImporter::createCFunctionFromFunctionTree(const FunctionDefinition* pSBMLFunction)
+CFunction* SBMLImporter::createCFunctionFromFunctionTree(const FunctionDefinition* pSBMLFunction, Model* pSBMLModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
 {
   CFunction* pFun = NULL;
   if (pSBMLFunction->isSetMath())
     {
       ConverterASTNode root(*pSBMLFunction->getMath());
-      this->preprocessNode(&root);
+      this->preprocessNode(&root, pSBMLModel, copasi2sbmlmap);
       if (root.getType() == AST_LAMBDA)
         {
           // get the number of children.
@@ -553,6 +652,8 @@ CFunction* SBMLImporter::createCFunctionFromFunctionTree(const FunctionDefinitio
               ASTNode* pTmpNode = root.removeChild(iMax);
               root.addChild(pVarNode);
               root.addChild(pTmpNode);
+              // increase iMax since we now have one more child
+              ++iMax;
               pFun->addVariable(timeVariableName);
               this->mExplicitelyTimeDependentFunctionDefinitions.insert(pSBMLFunction->getId());
             }
@@ -613,29 +714,7 @@ SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartme
   if (sbmlCompartment->isSetUnits())
     {
       std::string cU = sbmlCompartment->getUnits();
-      // this is now check in checkElementUnits
-      //if (cU != "volume" /* && cU != "area" && cU != "length" */)
-      //  {
-      //    //fatalError();
-      //    CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 24, sbmlCompartment->getId().c_str());
-      //    const_cast<Compartment*>(sbmlCompartment)->unsetUnits();
-      //}
-      //else if (cU == "area" || cU == "length")
-      //  {
-      //    /* !!!! create a warning that the units will be ignored. */
-      //    CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 22, sbmlCompartment->getId().c_str());
-      //}
     }
-  /* those are now checked in checkElementUnits
-  if (sbmlCompartment->getSpatialDimensions() == 0)
-    {
-      CCopasiMessage Message(CCopasiMessage::EXCEPTION, MCSBML + 23, sbmlCompartment->getId().c_str());
-    }
-  if (sbmlCompartment->getSpatialDimensions() != 3)
-    {
-      CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 22, sbmlCompartment->getId().c_str());
-    }
-   */
   std::string name = sbmlCompartment->getName();
   if (name == "")
     {
@@ -653,89 +732,6 @@ SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartme
       appendix = numberStream.str();
     }
   double value;
-  /*
-  if (mLevel == 1)
-    {
-      value = sbmlCompartment->getVolume();
-    }
-  else
-    {
-      if (sbmlCompartment->isSetSize() && sbmlCompartment->getSize() == sbmlCompartment->getSize()) // make sure it is not set to NaN
-        {
-          value = sbmlCompartment->getSize();
-        }
-      else
-        {
-          // check if the size of the compartment is determined by a rule
-          std::string sbmlId = sbmlCompartment->getId();
-          bool ruleFound = false;
-          unsigned int k, kMax = pSBMLModel->getNumRules();
-          for (k = 0;k < kMax && !ruleFound;++k)
-            {
-              const Rule* pRule = pSBMLModel->getRule(k);
-              switch (pRule->getTypeCode())
-                {
-                case SBML_ASSIGNMENT_RULE:
-                  if (dynamic_cast<const AssignmentRule*>(pRule)->getVariable() == sbmlId)
-                    {
-                      ruleFound = true;
-                      break;
-                    }
-                  break;
-                case SBML_RATE_RULE:
-                  if (dynamic_cast<const RateRule*>(pRule)->getVariable() == sbmlId)
-                    {
-                      ruleFound = true;
-                      break;
-                    }
-                  break;
-                case SBML_ALGEBRAIC_RULE:
-                  break;
-                default:
-                  fatalError();
-                  break;
-                }
-            }
-          if (!ruleFound)
-            {
-              // go through all species of the model and check if the ones that are
-              // in this compartment have the hasOnlySubstanceUnits flag set.
-              const SBMLDocument* pSBMLDocument = sbmlCompartment->getSBMLDocument();
-              assert(pSBMLDocument != NULL);
-              const Model* pSBMLModel = pSBMLDocument->getModel();
-              assert(pSBMLModel != NULL);
-              bool onlySubstanceCompartment = true;
-              unsigned int i, iMax = pSBMLModel->getNumSpecies();
-              for (i = 0;i < iMax;++i)
-                {
-                  const Species* pSpecies = pSBMLModel->getSpecies(i);
-                  if (pSpecies->getCompartment() == sbmlCompartment->getId() && pSpecies->getHasOnlySubstanceUnits() == false)
-                    {
-                      onlySubstanceCompartment = false;
-                      break;
-                    }
-                }
-              // Set value to NaN and create a warning if it is the first time
-              // this happend
-              if (onlySubstanceCompartment)
-                {
-                  value = 1.0;
-                  CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 45, sbmlCompartment->getId().c_str());
-                }
-              else
-                {
-                  value = std::numeric_limits<C_FLOAT64>::quiet_NaN();
-                  if (!this->mIncompleteModel)
-                    {
-                      this->mIncompleteModel = true;
-                      CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 7, sbmlCompartment->getId().c_str());
-                    }
-                }
-            }
-        }
-    }
-  */
-
   CCompartment* copasiCompartment = copasiModel->createCompartment(name + appendix, value);
   if (this->mLevel == 1)
     {
@@ -759,14 +755,6 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
   if (sbmlSpecies->isSetSubstanceUnits())
     {
       std::string cU = sbmlSpecies->getSubstanceUnits();
-      /* this is now checked in checkElementUnits
-      if (cU != "substance")
-        {
-          //fatalError();
-          CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 25, sbmlSpecies->getId().c_str());
-          const_cast<Species*>(sbmlSpecies)->unsetUnits();
-        }
-        */
     }
   std::map<CCopasiObject*, SBase*>::iterator it = copasi2sbmlmap.find(copasiCompartment);
   if (it == copasi2sbmlmap.end())
@@ -797,7 +785,7 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
   CMetab* copasiMetabolite = copasiModel->createMetabolite(name + appendix, copasiCompartment->getObjectName());
   if (copasiMetabolite == NULL)
     {
-      //DebugFile << "Could not create Copasi metabolite." << std::endl;
+      //DebugFile << "Could not create Copasi species." << std::endl;
       fatalError();
     }
   if (sbmlSpecies->getConstant() || sbmlSpecies->getBoundaryCondition())
@@ -814,73 +802,7 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
       this->mSubstanceOnlySpecies.insert(std::make_pair(const_cast<Species*>(sbmlSpecies), pSBMLCompartment));
     }
 
-  /* The initial values are now set by a new routine after all other things
-   * have been done.
-  if (sbmlSpecies->isSetInitialAmount() && sbmlSpecies->getInitialAmount() == sbmlSpecies->getInitialAmount()) // make sure it's not set to NaN
-    {
-      if (sbmlSpecies->getInitialAmount() != 0.0)
-        {
-          copasiMetabolite->setInitialValue(sbmlSpecies->getInitialAmount()*copasiModel->getQuantity2NumberFactor()); // CHECK UNITS !!!
-        }
-      else
-        {
-          copasiMetabolite->setInitialConcentration(0.0);
-        }
-    }
-  else if (sbmlSpecies->isSetInitialConcentration() && sbmlSpecies->getInitialConcentration() == sbmlSpecies->getInitialConcentration()) // make sure it is not set to NaN
-    {
-      if (sbmlSpecies->getHasOnlySubstanceUnits())
-        {
-          pdelete(copasiMetabolite);
-          CCopasiMessage Message(CCopasiMessage::EXCEPTION, MCSBML + 20, sbmlSpecies->getId().c_str());
-        }
-      if (pSBMLCompartment->getSpatialDimensions() == 0)
-        {
-          pdelete(copasiMetabolite);
-          CCopasiMessage Message(CCopasiMessage::EXCEPTION, MCSBML + 21, sbmlSpecies->getId().c_str());
-        }
-      copasiMetabolite->setInitialConcentration(sbmlSpecies->getInitialConcentration());      // CHECK UNITS !!!
-    }
-  else
-    {
-      copasiMetabolite->setInitialConcentration(std::numeric_limits<C_FLOAT64>::quiet_NaN());      // CHECK UNITS !!!
-      std::string sbmlId = sbmlSpecies->getId();
-      bool ruleFound = false;
-      unsigned int k, kMax = pSBMLModel->getNumRules();
-      for (k = 0;k < kMax && !ruleFound;++k)
-        {
-          const Rule* pRule = pSBMLModel->getRule(k);
-          switch (pRule->getTypeCode())
-            {
-            case SBML_ASSIGNMENT_RULE:
-              if (dynamic_cast<const AssignmentRule*>(pRule)->getVariable() == sbmlId)
-                {
-                  ruleFound = true;
-                  break;
-                }
-              break;
-            case SBML_RATE_RULE:
-              if (dynamic_cast<const RateRule*>(pRule)->getVariable() == sbmlId)
-                {
-                  ruleFound = true;
-                  break;
-                }
-              break;
-            case SBML_ALGEBRAIC_RULE:
-              break;
-            default:
-              fatalError();
-              break;
-            }
-        }
-      if (!this->mIncompleteModel && !ruleFound)
-        {
-          this->mIncompleteModel = true;
-          CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 41, sbmlSpecies->getId().c_str());
-        }
-    }
-    */
-  //DebugFile << "Created metabolite: " << copasiMetabolite->getObjectName() << std::endl;
+  //DebugFile << "Created species: " << copasiMetabolite->getObjectName() << std::endl;
   copasi2sbmlmap[copasiMetabolite] = const_cast<Species*>(sbmlSpecies);
   if (this->mLevel == 1)
     {
@@ -898,7 +820,7 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
  * Reaction object.
  */
 CReaction*
-SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Model* C_UNUSED(pSBMLModel), CModel* copasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, CFunctionDB* pTmpFunctionDB)
+SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, Model* pSBMLModel, CModel* copasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, CFunctionDB* pTmpFunctionDB)
 {
   if (sbmlReaction == NULL)
     {
@@ -956,15 +878,15 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
       const SpeciesReference* sr = sbmlReaction->getReactant(counter);
       if (sr == NULL)
         {
+
           delete copasiReaction;
           fatalError();
         }
-      if (sr->isSetStoichiometryMath())
+      C_FLOAT64 stoi = 1.0;
+      if (!sr->isSetStoichiometryMath())
         {
-          delete copasiReaction;
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 10);
+          stoi = sr->getStoichiometry() / sr->getDenominator();
         }
-      float stoich = sr->getStoichiometry() / sr->getDenominator();
       std::map<std::string, CMetab*>::iterator pos;
       pos = this->speciesMap.find(sr->getSpecies());
       if (pos == this->speciesMap.end())
@@ -988,7 +910,28 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
               singleCompartment = false;
             }
         }
-      copasiReaction->addSubstrate(pos->second->getKey(), stoich);
+      copasiReaction->addSubstrate(pos->second->getKey(), stoi);
+      // find the CChemEqElement that belongs to the added substrate
+      if (sr->isSetStoichiometryMath())
+        {
+          CChemEq& chemEq = copasiReaction->getChemEq();
+          CCopasiVector < CChemEqElement >::const_iterator it = chemEq.getSubstrates().begin();
+          CCopasiVector < CChemEqElement >::const_iterator end = chemEq.getSubstrates().end();
+          CChemEqElement* pChemEqElement = NULL;
+          while (it != end)
+            {
+              if ((*it)->getMetabolite() == pos->second)
+                {
+                  pChemEqElement = (*it);
+                  break;
+                }
+              ++it;
+            }
+          assert(pChemEqElement != NULL);
+          mStoichiometricExpressionMap.insert(std::make_pair(sr->getStoichiometryMath()->getMath(), std::make_pair(pChemEqElement->getCN(), CChemEq::SUBSTRATE)));
+          //delete copasiReaction;
+          //CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 10);
+        }
     }
 
   /* Add all products to the reaction */
@@ -1001,12 +944,11 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
           delete copasiReaction;
           fatalError();
         }
-      if (sr->isSetStoichiometryMath())
+      C_FLOAT64 stoi = 1.0;
+      if (!sr->isSetStoichiometryMath())
         {
-          delete copasiReaction;
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 10);
+          stoi = sr->getStoichiometry() / sr->getDenominator();
         }
-      float stoich = sr->getStoichiometry() / sr->getDenominator();
       std::map<std::string, CMetab*>::iterator pos;
       pos = this->speciesMap.find(sr->getSpecies());
       if (pos == this->speciesMap.end())
@@ -1030,7 +972,27 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
               singleCompartment = false;
             }
         }
-      copasiReaction->addProduct(pos->second->getKey(), stoich);
+      copasiReaction->addProduct(pos->second->getKey(), stoi);
+      if (sr->isSetStoichiometryMath())
+        {
+          CChemEq& chemEq = copasiReaction->getChemEq();
+          CCopasiVector < CChemEqElement >::const_iterator it = chemEq.getProducts().begin();
+          CCopasiVector < CChemEqElement >::const_iterator end = chemEq.getProducts().end();
+          CChemEqElement* pChemEqElement = NULL;
+          while (it != end)
+            {
+              if ((*it)->getMetabolite() == pos->second)
+                {
+                  pChemEqElement = (*it);
+                  break;
+                }
+              ++it;
+            }
+          assert(pChemEqElement != NULL);
+          mStoichiometricExpressionMap.insert(std::make_pair(sr->getStoichiometryMath()->getMath(), std::make_pair(pChemEqElement->getCN(), CChemEq::PRODUCT)));
+          //delete copasiReaction;
+          //CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 10);
+        }
     }
 
   /* Add all modifiers to the reaction */
@@ -1055,17 +1017,20 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
       Species* pSBMLSpecies = dynamic_cast<Species*>(spos->second);
       assert(pSBMLSpecies != NULL);
       hasOnlySubstanceUnitPresent = (hasOnlySubstanceUnitPresent | (pSBMLSpecies->getHasOnlySubstanceUnits() == true));
+      /*
       if (compartment == NULL)
         {
           compartment = pos->second->getCompartment();
         }
       else
         {
+
           if (singleCompartment && compartment != pos->second->getCompartment())
             {
               singleCompartment = false;
             }
         }
+        */
       copasiReaction->addModifier(pos->second->getKey());
     }
 
@@ -1075,27 +1040,6 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
   const KineticLaw* kLaw = sbmlReaction->getKineticLaw();
   if (kLaw != NULL)
     {
-      /* this is now done in checkElementUnits
-      if (kLaw->isSetSubstanceUnits())
-        {
-          std::string cU = kLaw->getSubstanceUnits();
-          if (cU != "substance")
-            {
-              delete copasiReaction;
-              CCopasiMessage Message(CCopasiMessage::EXCEPTION, MCSBML + 44, sbmlReaction->getId().c_str());
-            }
-        }
-      if (kLaw->isSetTimeUnits())
-        {
-          std::string cU = kLaw->getTimeUnits();
-          if (cU != "time")
-            {
-              delete copasiReaction;
-              fatalError();
-            }
-        }
-        */
-
       for (counter = 0; counter < kLaw->getNumParameters();++counter)
         {
           const Parameter* pSBMLParameter = kLaw->getParameter(counter);
@@ -1140,15 +1084,17 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
       else
         {
           ConverterASTNode* node = new ConverterASTNode(*kLawMath);
-          this->preprocessNode(node);
+          this->preprocessNode(node, pSBMLModel, copasi2sbmlmap, true);
 
           if (node == NULL)
             {
               delete copasiReaction;
               fatalError();
             }
-
+          /**
+           * Removed because this no longer works for variable volumes
           this->replaceSubstanceOnlySpeciesNodes(node, mSubstanceOnlySpecies);
+          */
 
           /* if it is a single compartment reaction, we have to divide the whole kinetic
           ** equation by the compartment because copasi expects
@@ -1183,7 +1129,11 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                       tmpNode2->setName(compartment->getSBMLId().c_str());
                       tmpNode1->addChild(tmpNode2);
                       node = tmpNode1;
-                      if (!hasOnlySubstanceUnitPresent && compartment->getInitialValue() == 1.0)
+                      std::map<CCopasiObject*, SBase*>::const_iterator pos = copasi2sbmlmap.find(const_cast<CCompartment*>(compartment));
+                      assert(pos != copasi2sbmlmap.end());
+                      Compartment* pSBMLCompartment = dynamic_cast<Compartment*>(pos->second);
+                      assert(pSBMLCompartment != NULL);
+                      if (!hasOnlySubstanceUnitPresent && ((this->mLevel == 1 && pSBMLCompartment->isSetVolume()) || (this->mLevel >= 2 && pSBMLCompartment->isSetSize())) && pSBMLCompartment->getSize() == 1.0)
                         {
                           // we have to check if all species used in the reaction
                           // have the hasOnlySubstance flag set
@@ -1461,6 +1411,8 @@ SBMLImporter::SBMLImporter()
   this->mUnsupportedAssignmentRuleFound = false;
   this->mpImportHandler = NULL;
   this->mFastReactionsEncountered = false;
+  this->mDelayFound = false;
+  this->mAvogadroCreated = false;
   this->mIgnoredSBMLMessages.insert(10501);
   this->mIgnoredSBMLMessages.insert(10512);
   this->mIgnoredSBMLMessages.insert(10513);
@@ -1468,6 +1420,8 @@ SBMLImporter::SBMLImporter()
   this->mIgnoredSBMLMessages.insert(10541);
   this->mIgnoredSBMLMessages.insert(10551);
   this->mIgnoredSBMLMessages.insert(10562);
+  this->mIgnoredSBMLMessages.insert(80701);
+  this->mIgnoredSBMLMessages.insert(99505);
 }
 
 /**
@@ -1479,7 +1433,6 @@ SBMLImporter::~SBMLImporter()
 /**
  * This functions replaces all species nodes for species that are in the substanceOnlySpeciesVector.
  * With the node multiplied by the volume of the species compartment.
- */
 void SBMLImporter::replaceSubstanceOnlySpeciesNodes(ConverterASTNode* node, const std::map<Species*, Compartment*>& substanceOnlySpecies)
 {
   if (node != NULL)
@@ -1517,6 +1470,7 @@ void SBMLImporter::replaceSubstanceOnlySpeciesNodes(ConverterASTNode* node, cons
         }
     }
 }
+ */
 
 /**
  * Function reads an SBML file with libsbml and converts it to a Copasi CModel
@@ -1596,7 +1550,7 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
               CCopasiMessage::Type messageType = CCopasiMessage::RAW;
               switch (pSBMLError->getSeverity())
                 {
-                case SEVERITY_INFO:
+                case LIBSBML_SEV_INFO:
 
                   if (mIgnoredSBMLMessages.find(pSBMLError->getErrorId()) != mIgnoredSBMLMessages.end())
                     {
@@ -1608,7 +1562,7 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
                     }
                   CCopasiMessage(messageType, MCSBML + 40, "INFO", pSBMLError->getErrorId(), pSBMLError->getLine(), pSBMLError->getColumn(), pSBMLError->getMessage().c_str());
                   break;
-                case SEVERITY_WARNING:
+                case LIBSBML_SEV_WARNING:
                   if (mIgnoredSBMLMessages.find(pSBMLError->getErrorId()) != mIgnoredSBMLMessages.end())
                     {
                       messageType = CCopasiMessage::WARNING_FILTERED;
@@ -1619,18 +1573,28 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
                     }
                   CCopasiMessage(messageType, MCSBML + 40, "WARNING", pSBMLError->getErrorId(), pSBMLError->getLine(), pSBMLError->getColumn(), pSBMLError->getMessage().c_str());
                   break;
-                case SEVERITY_ERROR:
+                case LIBSBML_SEV_ERROR:
                   if (mIgnoredSBMLMessages.find(pSBMLError->getErrorId()) != mIgnoredSBMLMessages.end())
                     {
                       messageType = CCopasiMessage::ERROR_FILTERED;
                     }
                   CCopasiMessage(messageType, MCSBML + 40, "ERROR", pSBMLError->getErrorId(), pSBMLError->getLine(), pSBMLError->getColumn(), pSBMLError->getMessage().c_str());
                   break;
-                case SEVERITY_FATAL:
+                case LIBSBML_SEV_FATAL:
                   // treat unknown as fatal
                 default:
                   //CCopasiMessage(CCopasiMessage::TRACE, MCSBML + 40,"FATAL",pSBMLError->getLine(),pSBMLError->getColumn(),pSBMLError->getMessage().c_str());
-                  fatal = i;
+                  if (pSBMLError->getErrorId() == 10804)
+                    {
+                      // this error indicates a problem with a notes element
+                      // although libsbml flags this as fatal, we would still
+                      // like to read the model
+                      CCopasiMessage(messageType, MCSBML + 40, "ERROR", pSBMLError->getErrorId(), pSBMLError->getLine(), pSBMLError->getColumn(), pSBMLError->getMessage().c_str());
+                    }
+                  else
+                    {
+                      fatal = i;
+                    }
                   break;
                 }
               //std::cerr << pSBMLError->getMessage() << std::endl;
@@ -1639,7 +1603,7 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
           if (fatal != -1)
             {
               const XMLError* pSBMLError = sbmlDoc->getError(fatal);
-              CCopasiMessage Message(CCopasiMessage::RAW, MCXML + 2,
+              CCopasiMessage Message(CCopasiMessage::EXCEPTION, MCXML + 2,
                                      pSBMLError->getLine(),
                                      pSBMLError->getColumn(),
                                      pSBMLError->getMessage().c_str());
@@ -1647,34 +1611,6 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
               return NULL;
             }
         }
-      /*
-      else if (sbmlDoc->getNumErrors() > 0)
-          {
-          ParseMessage * pSBMLMessage = sbmlDoc->getError(0);
-          // some level 1 files have an annotation in the wrong place
-          // This is considered an error by libsbml, but
-          // it does not really affect the model, so we try to
-          // read it anyway.
-          //
-          if ((sbmlDoc->getNumErrors() > 1) ||
-              (strncmp(pSBMLMessage->getMessage().c_str(),
-                      "The <sbml> element cannot contain an <annotation>.  Use the <model> element instead."
-                      , 85) != 0))
-              {
-              CCopasiMessage Message(CCopasiMessage::RAW, MCXML + 2,
-                                      pSBMLMessage->getLine(),
-                                      pSBMLMessage->getColumn(),
-                                      pSBMLMessage->getMessage().c_str());
-
-              if (mpImportHandler) mpImportHandler->finish(mhImportStep);
-              return NULL;
-              }
-          else
-              {
-              CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 6);
-              }
-          }
-      */
       if (sbmlDoc->getModel() == NULL)
         {
           CCopasiMessage Message(CCopasiMessage::ERROR, MCSBML + 2);
@@ -1711,7 +1647,6 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
     }
   else
     {
-      //throw StdException("Error. readSBML needs a valid CFunctionDB object.");
       if (mpImportHandler) mpImportHandler->finish(mhImportStep);
       fatalError();
     }
@@ -1743,9 +1678,27 @@ SBMLImporter::handleSubstanceUnit(const UnitDefinition* uDef)
         }
       if ((u->getKind() == UNIT_KIND_MOLE))
         {
-          if ((u->getExponent() == 1) && (u->getMultiplier() == 1) && ((u->getScale() % 3) == 0) && (u->getScale() < 1) && (u->getScale() > -16))
+          double multiplier = u->getMultiplier();
+          int scale = u->getScale();
+          if (multiplier != 1)
             {
-              switch (u->getScale())
+              // check if the multiplier is a multiple of 10
+              // so that we might be able to convert it to a scale that makes
+              // sense
+              double tmp = log10(multiplier);
+              if (areApproximatelyEqual(tmp, round(tmp)))
+                {
+                  scale += (int) round(tmp);
+                  multiplier = 1;
+                }
+            }
+          if ((u->getExponent() == 1) &&
+              areApproximatelyEqual(multiplier, 1.0) &&
+              ((scale % 3) == 0) &&
+              (scale < 1) &&
+              (scale > -16))
+            {
+              switch (scale)
                 {
                 case 0:
                   qUnit = CModel::Mol;
@@ -1773,18 +1726,34 @@ SBMLImporter::handleSubstanceUnit(const UnitDefinition* uDef)
                   break;
                 default:
                   //DebugFile << "Error. This value should never have been reached for the scale of the liter unit." << std::endl;
-                  exit(1);
+                  fatalError();
                   break;
                 }
             }
           else
             {
-              fatalError();
+              result = false;
             }
         }
       else if ((u->getKind() == UNIT_KIND_ITEM))
         {
-          if ((u->getExponent() == 1) && (u->getMultiplier() == 1) && (u->getScale() == 0 || u->getScale() == 1))
+          double multiplier = u->getMultiplier();
+          int scale = u->getScale();
+          if (multiplier != 1)
+            {
+              // check if the multiplier is a multiple of 10
+              // so that we might be able to convert it to a scale that makes
+              // sense
+              double tmp = log10(multiplier);
+              if (areApproximatelyEqual(tmp, round(tmp)))
+                {
+                  scale += (int)round(tmp);
+                  multiplier = 1;
+                }
+            }
+          if ((u->getExponent() == 1) &&
+              areApproximatelyEqual(multiplier, 1.0) &&
+              (scale == 0 || scale == 1))
             {
               if (u->getScale() == 1)
                 {
@@ -1798,17 +1767,17 @@ SBMLImporter::handleSubstanceUnit(const UnitDefinition* uDef)
             }
           else
             {
-              fatalError();
+              result = false;
             }
         }
       else
         {
-          fatalError();
+          result = false;
         }
     }
   else
     {
-      fatalError();
+      result = false;
     }
   return std::make_pair(qUnit, result);
 }
@@ -1837,11 +1806,62 @@ SBMLImporter::handleTimeUnit(const UnitDefinition* uDef)
         }
       if ((u->getKind() == UNIT_KIND_SECOND))
         {
-          if ((u->getExponent() == 1) && ((u->getScale() % 3) == 0) && (u->getScale() < 1) && (u->getScale() > -16))
+          double multiplier = u->getMultiplier();
+          int scale = u->getScale();
+          // this is more difficult, we have to check several possible
+          // combinations of scales and multipliers.
+          // Valid multipliers are 60, 3600 and 86400 which correspond to a
+          // minute an hour and a day each of those has to have a scale of 0
+          if (scale == 0)
             {
-              if (u->getMultiplier() == 1.0)
+              // check if the multiplier is 1, 60, 3600 or 86400
+              // if not, try to make the multiplier 1
+              if (!areApproximatelyEqual(multiplier, 1.0) &&
+                  !areApproximatelyEqual(multiplier, 60.0) &&
+                  !areApproximatelyEqual(multiplier, 3600.0) &&
+                  !areApproximatelyEqual(multiplier, 86400.0))
                 {
-                  switch (u->getScale())
+                  double tmp = log10(multiplier);
+
+                  if (!areApproximatelyEqual(tmp, round(tmp)))
+                    {
+                      result = false;
+                    }
+                  else
+                    {
+                      multiplier = 1;
+                      scale += (int)round(tmp);
+                    }
+                }
+            }
+          else
+            {
+              // the multiplier must be 1
+              if (!areApproximatelyEqual(multiplier, 1.0))
+                {
+                  // make the multiplier 1 and check if the scale is an integer,
+                  // if not, try to make the 0 and check if the multiplier becomes one
+                  // of the valid multipliers 1,60, 3600 or 86400
+                  double tmp = log10(multiplier);
+                  if (!areApproximatelyEqual(tmp, round(tmp)))
+                    {
+                      // try to make the scale 0
+                      multiplier *= pow(10.0, (double)scale);
+                      scale = 0;
+                    }
+                  else
+                    {
+                      // make the multiplier 1
+                      multiplier = 1;
+                      scale += (int) round(tmp);
+                    }
+                }
+            }
+          if ((u->getExponent() == 1) && ((scale % 3) == 0) && (scale < 1) && (scale > -16))
+            {
+              if (areApproximatelyEqual(multiplier, 1.0))
+                {
+                  switch (scale)
                     {
                     case 0:
                       tUnit = CModel::s;
@@ -1869,43 +1889,46 @@ SBMLImporter::handleTimeUnit(const UnitDefinition* uDef)
                       break;
                     default:
                       //DebugFile << "Error. This value should never have been reached for the scale of the time unit." << std::endl;
-                      exit(1);
+                      fatalError();
                       break;
                     }
                 }
-              else if (u->getMultiplier() == 60.0)
+              else if ((scale == 0) &&
+                       areApproximatelyEqual(multiplier, 60.0))
                 {
                   tUnit = CModel::min;
                   result = true;
                 }
-              else if (u->getMultiplier() == 3600.0)
+              else if ((scale == 0) &&
+                       areApproximatelyEqual(multiplier, 3600.0))
                 {
                   tUnit = CModel::h;
                   result = true;
                 }
-              else if (u->getMultiplier() == 86400.0)
+              else if ((scale == 0) &&
+                       areApproximatelyEqual(multiplier, 86400.0))
                 {
                   tUnit = CModel::d;
                   result = true;
                 }
               else
                 {
-                  fatalError();
+                  result = false;
                 }
             }
           else
             {
-              fatalError();
+              result = false;
             }
         }
       else
         {
-          fatalError();
+          result = false;
         }
     }
   else
     {
-      fatalError();
+      result = false;
     }
   return std::make_pair(tUnit, result);
 }
@@ -1917,10 +1940,9 @@ SBMLImporter::handleTimeUnit(const UnitDefinition* uDef)
 std::pair<CModel::VolumeUnit, bool>
 SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef)
 {
-  // TODO maybe we should simplify the Unitdefiniton first if this normalizes
+  // simplify the Unitdefiniton first if this normalizes
   // the scale and the multiplier
   bool result = false;
-  const double TOLERANCE = 1e-25;
   CModel::VolumeUnit vUnit = CModel::l;
   if (uDef == NULL)
     {
@@ -1937,9 +1959,27 @@ SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef)
         }
       if ((u->getKind() == UNIT_KIND_LITER) || (u->getKind() == UNIT_KIND_LITRE))
         {
-          if ((u->getExponent() == 1) && (u->getMultiplier() - 1.0 < TOLERANCE) && ((u->getScale() % 3) == 0) && (u->getScale() < 1) && (u->getScale() > -16))
+          double multiplier = u->getMultiplier();
+          int scale = u->getScale();
+          if (multiplier != 1)
             {
-              switch (u->getScale())
+              // check if the multiplier is a multiple of 10
+              // so that we might be able to convert it to a scale that makes
+              // sense
+              double tmp = log10(multiplier);
+              if (areApproximatelyEqual(tmp, round(tmp)))
+                {
+                  scale += (int)round(tmp);
+                  multiplier = 1;
+                }
+            }
+          if ((u->getExponent() == 1) &&
+              areApproximatelyEqual(multiplier, 1.0) &&
+              ((scale % 3) == 0) &&
+              (scale < 1) &&
+              (scale > -16))
+            {
+              switch (scale)
                 {
                 case 0:
                   vUnit = CModel::l;
@@ -1967,21 +2007,35 @@ SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef)
                   break;
                 default:
                   //DebugFile << "Error. This value should never have been reached for the scale of the liter unit." << std::endl;
-                  exit(1);
+                  fatalError();
                   break;
                 }
             }
           else
             {
-              fatalError();
+              result = false;
             }
         }
       else if ((u->getKind() == UNIT_KIND_METER) || (u->getKind() == UNIT_KIND_METRE))
         {
           if (u->getExponent() == 3)
             {
-              if ((fabs(u->getMultiplier()) - 1.0 < TOLERANCE) &&
-                  (u->getScale() == 0))
+              double multiplier = u->getMultiplier();
+              int scale = u->getScale();
+              if (multiplier != 1)
+                {
+                  // check if the multiplier is a multiple of 10
+                  // so that we might be able to convert it to a scale that makes
+                  // sense
+                  double tmp = log10(multiplier);
+                  if (areApproximatelyEqual(tmp, round(tmp)))
+                    {
+                      scale += (int)round(tmp);
+                      multiplier = 1;
+                    }
+                }
+              if (areApproximatelyEqual(multiplier, 1.0) &&
+                  (scale == 0))
                 {
                   vUnit = CModel::m3;
                   result = true;
@@ -1995,7 +2049,7 @@ SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef)
                       (pLitreUnit->getScale() % 3 == 0) &&
                       (pLitreUnit->getScale() < 1) &&
                       (pLitreUnit->getScale() > -16) &&
-                      fabs(pLitreUnit->getMultiplier()) - 1.0 < TOLERANCE)
+                      areApproximatelyEqual(pLitreUnit->getMultiplier(), 1.0))
                     {
                       switch (pLitreUnit->getScale())
                         {
@@ -2053,7 +2107,8 @@ CModelValue* SBMLImporter::createCModelValueFromParameter(const Parameter* sbmlP
   if (sbmlParameter->isSetUnits())
     {
       /* !!!! create a warning that the units will be ignored. */
-      CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 26, sbmlParameter->getId().c_str());
+      //CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 26, sbmlParameter->getId().c_str());
+      mIgnoredParameterUnits.push_back(sbmlParameter->getId());
       const_cast<Parameter*>(sbmlParameter)->unsetUnits();
     }
   std::string name = sbmlParameter->getName();
@@ -2081,58 +2136,7 @@ CModelValue* SBMLImporter::createCModelValueFromParameter(const Parameter* sbmlP
     {
       sbmlId = sbmlParameter->getId();
     }
-  /*
-  double value;
-  if (sbmlParameter->isSetValue() && sbmlParameter->getValue() == sbmlParameter->getValue()) // make sure it is not set to NaN
-      {
-      value = sbmlParameter->getValue();
-      }
-  else
-      {
-      // check if there is an assignment rule for this entity
-      std::map<CCopasiObject*, SBase*>::iterator pos = copasi2sbmlmap.find(copasiModel);
-      if (pos == copasi2sbmlmap.end()) fatalError();
-      bool ruleFound = false;
-      Model* pSBMLModel = dynamic_cast<Model*>(pos->second);
-      unsigned int k, kMax = pSBMLModel->getNumRules();
-      for (k = 0;k < kMax && !ruleFound;++k)
-          {
-          Rule* pRule = pSBMLModel->getRule(k);
-          switch (pRule->getTypeCode())
-              {
-              case SBML_ASSIGNMENT_RULE:
-              if (dynamic_cast<AssignmentRule*>(pRule)->getVariable() == sbmlId)
-                  {
-                  ruleFound = true;
-                  break;
-                  }
-              break;
-              case SBML_RATE_RULE:
-              if (dynamic_cast<RateRule*>(pRule)->getVariable() == sbmlId)
-                  {
-                  ruleFound = true;
-                  break;
-                  }
-              break;
-              case SBML_ALGEBRAIC_RULE:
-              break;
-              default:
-              fatalError();
-              break;
-              }
-          }
-
-      // Set value to NaN and create a warning if it is the first time
-      // this happend
-      value = std::numeric_limits<C_FLOAT64>::quiet_NaN();
-      if ((!ruleFound) && (!this->mIncompleteModel))
-          {
-          this->mIncompleteModel = true;
-          CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 43, sbmlParameter->getId().c_str());
-          }
-      }
-      */
-  CModelValue* pMV = copasiModel->createModelValue(name + appendix, /*value*/ 0.0);
+  CModelValue* pMV = copasiModel->createModelValue(name + appendix, 0.0);
   copasi2sbmlmap[pMV] = const_cast<Parameter*>(sbmlParameter);
   pMV->setSBMLId(sbmlId);
   return pMV;
@@ -2279,18 +2283,216 @@ void SBMLImporter::restoreFunctionDB()
     {
       CEvaluationTree* pTree = this->functionDB->findFunction(*it2);
       assert(pTree);
-      this->functionDB->removeFunction(pTree->getKey());
+      if (pTree->getType() == CEvaluationTree::UserDefined)
+        {
+          this->functionDB->removeFunction(pTree->getKey());
+        }
       ++it2;
     }
 }
 
-void SBMLImporter::preprocessNode(ConverterASTNode* pNode)
+void SBMLImporter::preprocessNode(ConverterASTNode* pNode, Model* pSBMLModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, bool isKineticLaw)
 {
   // this function goes through the tree three times.
   // this can probably be handled more intelligently
-  this->isDelayFunctionUsed(pNode);
+  if (!this->mDelayFound)
+    {
+      this->isDelayFunctionUsed(pNode);
+    }
   this->replaceCallNodeNames(pNode);
   this->replaceTimeNodeNames(pNode);
+  if (isKineticLaw && !this->mSubstanceOnlySpecies.empty())
+    {
+      this->multiplySubstanceOnlySpeciesByVolume(pNode);
+    }
+  if (!this->mSubstanceOnlySpecies.empty() && this->mpCopasiModel->getQuantityUnitEnum() != CModel::number && !isKineticLaw)
+    {
+      this->replaceAmountReferences(pNode, pSBMLModel, this->mpCopasiModel->getQuantity2NumberFactor(), copasi2sbmlmap);
+    }
+}
+
+/**
+ * This method replaces references to the id of species which have the
+ * hasOnlySubstanceUnits flag set with the reference divided by avogadros
+ * number.
+ * The method tries to determine if there already is a multiplication with
+ * avogadros number and removes this multiplication rather than adding a new division.
+ */
+void SBMLImporter::replaceAmountReferences(ConverterASTNode* pNode, Model* pSBMLModel, double factor, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
+{
+  if (!pNode) return;
+  if (pNode->getType() == AST_NAME)
+    {
+      // check if pNode is a reference to a hasOnlySubstance species
+      std::string id = pNode->getName();
+      std::map<Species*, Compartment*>::const_iterator it = this->mSubstanceOnlySpecies.begin(), endit = this->mSubstanceOnlySpecies.end();
+      while (it != endit)
+        {
+          if (it->first->getId() == id)
+            {
+              break;
+            }
+          ++it;
+        }
+      if (it != endit)
+        {
+          // replace pNode by a division by the quantity to number
+          // factor
+          if (this->mPotentialAvogadroNumbers.empty())
+            {
+              this->createHasOnlySubstanceUnitFactor(pSBMLModel, factor, copasi2sbmlmap);
+            }
+          pNode->setType(AST_DIVIDE);
+          pNode->setCharacter('/');
+          ConverterASTNode* pChild = new ConverterASTNode(AST_NAME);
+          pChild->setName(id.c_str());
+          pNode->addChild(pChild);
+          id = (*this->mPotentialAvogadroNumbers.begin())->getId();
+          pChild = new ConverterASTNode(AST_NAME);
+          pChild->setName(id.c_str());
+          pNode->addChild(pChild);
+        }
+      return;
+    }
+  else if (pNode->getType() == AST_TIMES)
+    {
+      // for now we ignore multiplication nodes with more than two children
+      if (pNode->getNumChildren() == 2)
+        {
+          if ((pNode->getChild(0)->getType() == AST_NAME))
+            {
+              // check if child0 is a reference to a hasOnlySubstance species
+              std::string id = pNode->getChild(0)->getName();
+              std::map<Species*, Compartment*>::const_iterator it = this->mSubstanceOnlySpecies.begin(), endit = this->mSubstanceOnlySpecies.end();
+              while (it != endit)
+                {
+                  if (it->first->getId() == id)
+                    {
+                      break;
+                    }
+                  ++it;
+                }
+              if (it != endit)
+                {
+                  // check if child1 is a number that is equal to avogadros number
+                  if (pNode->getChild(1)->getType() == AST_REAL || pNode->getChild(1)->getType() == AST_REAL_E)
+                    {
+                      double value = pNode->getChild(1)->getMantissa() * pow(10.0, (double)pNode->getChild(1)->getExponent());
+                      if (areApproximatelyEqual(factor, value, 1e-3))
+                        {
+                          // replace the times node with child0
+                          delete pNode->removeChild(0);
+                          delete pNode->removeChild(1);
+                          pNode->setType(AST_NAME);
+                          pNode->setName(id.c_str());
+                          return;
+                        }
+                    }
+                  else if (pNode->getChild(1)->getType() == AST_NAME)
+                    {
+                      if (this->mPotentialAvogadroNumbers.empty())
+                        {
+                          this->createHasOnlySubstanceUnitFactor(pSBMLModel, factor, copasi2sbmlmap);
+                        }
+                      // check if child1 is a global parameter that is equal to avogadros number
+                      std::set<const Parameter*>::const_iterator sit = this->mPotentialAvogadroNumbers.begin(), sendit = this->mPotentialAvogadroNumbers.end();
+                      while (sit != sendit)
+                        {
+                          if ((*sit)->getId() == pNode->getChild(1)->getName())
+                            {
+                              // replace pNode by child0
+                              delete pNode->removeChild(0);
+                              delete pNode->removeChild(1);
+                              pNode->setType(AST_NAME);
+                              pNode->setName(id.c_str());
+                              return;
+                            }
+                          ++sit;
+                        }
+                    }
+                }
+              else
+                {
+                  // check if child1 is a reference to a hasOnlySubstanceUnits
+                  // species
+                  if (pNode->getChild(1)->getType() == AST_NAME)
+                    {
+                      id = pNode->getChild(1)->getName();
+                      std::map<Species*, Compartment*>::const_iterator it = this->mSubstanceOnlySpecies.begin(), endit = this->mSubstanceOnlySpecies.end();
+                      while (it != endit)
+                        {
+                          if (it->first->getId() == id)
+                            {
+                              break;
+                            }
+                          ++it;
+                        }
+                      if (it != endit)
+                        {
+                          if (this->mPotentialAvogadroNumbers.empty())
+                            {
+                              this->createHasOnlySubstanceUnitFactor(pSBMLModel, factor, copasi2sbmlmap);
+                            }
+                          // check if child0 is a parameter that represents avogadros
+                          // number
+                          std::set<const Parameter*>::const_iterator sit = this->mPotentialAvogadroNumbers.begin(), sendit = this->mPotentialAvogadroNumbers.end();
+                          while (sit != sendit)
+                            {
+                              if ((*sit)->getId() == pNode->getChild(0)->getName())
+                                {
+                                  // replace pNode by child1
+                                  delete pNode->removeChild(0);
+                                  delete pNode->removeChild(1);
+                                  pNode->setType(AST_NAME);
+                                  pNode->setName(id.c_str());
+                                  return;
+                                }
+                              ++sit;
+                            }
+                        }
+                    }
+                }
+            }
+          else if (pNode->getChild(1)->getType() == AST_NAME)
+            {
+              // check if child1 is a reference to a hasOnlySubstance species
+              std::string id = pNode->getChild(1)->getName();
+              std::map<Species*, Compartment*>::const_iterator it = this->mSubstanceOnlySpecies.begin(), endit = this->mSubstanceOnlySpecies.end();
+              while (it != endit)
+                {
+                  if (it->first->getId() == id)
+                    {
+                      break;
+                    }
+                  ++it;
+                }
+              if (it != endit)
+                {
+                  // check if child0 is a number that is equal to avogadros number
+                  if (pNode->getChild(0)->getType() == AST_REAL || pNode->getChild(0)->getType() == AST_REAL_E)
+                    {
+                      double value = pNode->getChild(0)->getMantissa() * pow(10.0, (double)pNode->getChild(0)->getExponent());
+                      if (areApproximatelyEqual(factor, value, 1e-3))
+                        {
+                          // replace pNode by child1
+                          delete pNode->removeChild(0);
+                          delete pNode->removeChild(1);
+                          pNode->setType(AST_NAME);
+                          pNode->setName(id.c_str());
+                        }
+                    }
+                }
+            }
+        }
+    }
+  // go through the children
+  unsigned int i, iMax = pNode->getNumChildren();
+  for (i = 0;i < iMax;++i)
+    {
+      ConverterASTNode* pChild = dynamic_cast<ConverterASTNode*>(pNode->getChild(i));
+      assert(pChild != NULL);
+      this->replaceAmountReferences(pChild, pSBMLModel, this->mpCopasiModel->getQuantity2NumberFactor(), copasi2sbmlmap);
+    }
 }
 
 void SBMLImporter::isDelayFunctionUsed(ConverterASTNode* pNode)
@@ -2298,11 +2500,12 @@ void SBMLImporter::isDelayFunctionUsed(ConverterASTNode* pNode)
   if (!pNode) return;
   if (pNode->getType() == AST_FUNCTION_DELAY)
     {
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 36);
+      CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 36);
+      this->mDelayFound = true;
     }
   else
     {
-      // go through all children and replace the time nodes names
+      // go through all children and check if the delay function is used there
       unsigned int i, iMax = pNode->getNumChildren();
       for (i = 0;i < iMax;++i)
         {
@@ -2316,7 +2519,7 @@ void SBMLImporter::replaceTimeNodeNames(ConverterASTNode* pNode)
   if (!pNode) return;
   if (pNode->getType() == AST_NAME_TIME)
     {
-      pNode->setName(this->mpCopasiModel->getCN().c_str());
+      pNode->setName(this->mpCopasiModel->getObject(CCopasiObjectName("Reference=Time"))->getCN().c_str());
     }
   else
     {
@@ -2667,14 +2870,15 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const 
           const CCopasiVector<CChemEqElement>& metabolites = chemicalEquation.getSubstrates();
           unsigned i, iMax = metabolites.size();
           // all metabolites must occur in the muliplicityMap so they have to have the same size
-          if (iMax != multiplicityMap.size()) result = false;
+          // and a mass action must have at least one metabolite
+          if (iMax == 0 || iMax != multiplicityMap.size()) result = false;
           for (i = 0;i < iMax && result;++i)
             {
               // the metabolite has to be present in the multiplicityMap, otherwise it is not a mass action
               // the stoichiometry also has to fit
               std::map<const CMetab*, C_FLOAT64>::iterator pos = multiplicityMap.find(metabolites[i]->getMetabolite());
               if (pos == multiplicityMap.end() ||
-                  fabs(pos->second - metabolites[i]->getMultiplicity()) >= 0.01)
+                  !areApproximatelyEqual(pos->second, metabolites[i]->getMultiplicity(), 0.01))
                 {
                   result = false;
                   break;
@@ -3219,15 +3423,6 @@ bool SBMLImporter::removeUnusedFunctions(CFunctionDB* pTmpFunctionDB, std::map<C
                                            & step,
                                            &totalSteps);
         }
-      /*
-      std::set<std::string>::iterator it=functionNameSet.begin();
-      std::cout << "used functions: " << std::endl;
-      while(it!=functionNameSet.end())
-      {
-          std::cout << (*it) << std::endl;
-          ++it;
-      }
-      */
       // here we could have a dialog asking the user if unused functions should
       // be removed.
       while (pTmpFunctionDB->loadedFunctions().size() != 0)
@@ -3263,7 +3458,7 @@ void SBMLImporter::findFunctionCalls(const CEvaluationNode* pNode, std::set<std:
       CCopasiTree<const CEvaluationNode>::iterator treeIt = pNode;
       while (treeIt != NULL)
         {
-          if (CEvaluationNode::type((*treeIt).getType()) == CEvaluationNode::CALL)
+          if (CEvaluationNode::type((*treeIt).getType()) == CEvaluationNode::CALL && ((CEvaluationNodeCall::SubType)CEvaluationNode::subType(treeIt->getType())) != CEvaluationNodeCall::DELAY)
             {
               // unQuote not necessary since getIndex in CCopasiVector takes care of this.
               CEvaluationTree* pTree = pFunctionDB->findFunction((*treeIt).getData());
@@ -3296,7 +3491,7 @@ bool SBMLImporter::isStochasticModel(const Model* pSBMLModel)
   return stochastic;
 }
 
-void SBMLImporter::importSBMLRule(const Rule* sbmlRule, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
+void SBMLImporter::importSBMLRule(const Rule* sbmlRule, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, Model* pSBMLModel)
 {
   // so far we only support assignment rules and rate rules
   SBMLTypeCode_t type = sbmlRule->getTypeCode();
@@ -3305,7 +3500,7 @@ void SBMLImporter::importSBMLRule(const Rule* sbmlRule, std::map<CCopasiObject*,
       const AssignmentRule* pAssignmentRule = dynamic_cast<const AssignmentRule*>(sbmlRule);
       if (pAssignmentRule && pAssignmentRule->isSetVariable())
         {
-          this->importRule(pAssignmentRule, CModelEntity::ASSIGNMENT, copasi2sbmlmap);
+          this->importRule(pAssignmentRule, CModelEntity::ASSIGNMENT, copasi2sbmlmap, pSBMLModel);
         }
       else
         {
@@ -3317,7 +3512,7 @@ void SBMLImporter::importSBMLRule(const Rule* sbmlRule, std::map<CCopasiObject*,
       const RateRule* pRateRule = dynamic_cast<const RateRule*>(sbmlRule);
       if (pRateRule && pRateRule->isSetVariable())
         {
-          this->importRule(pRateRule, CModelEntity::ODE, copasi2sbmlmap);
+          this->importRule(pRateRule, CModelEntity::ODE, copasi2sbmlmap, pSBMLModel);
         }
       else
         {
@@ -3330,7 +3525,7 @@ void SBMLImporter::importSBMLRule(const Rule* sbmlRule, std::map<CCopasiObject*,
     }
 }
 
-void SBMLImporter::importRule(const Rule* rule, CModelEntity::Status ruleType, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
+void SBMLImporter::importRule(const Rule* rule, CModelEntity::Status ruleType, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, Model* pSBMLModel)
 {
   std::string sbmlId;
   const AssignmentRule* pARule = dynamic_cast<const AssignmentRule*>(rule);
@@ -3398,11 +3593,11 @@ void SBMLImporter::importRule(const Rule* rule, CModelEntity::Status ruleType, s
                 {
                   if (ruleType == CModelEntity::ASSIGNMENT)
                     {
-                      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 34 , "AssignmentRule", "Metabolite", sbmlId.c_str());
+                      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 34 , "AssignmentRule", "Species", sbmlId.c_str());
                     }
                   else if (ruleType == CModelEntity::ODE)
                     {
-                      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 34 , "RateRule", "Metabolite", sbmlId.c_str());
+                      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 34 , "RateRule", "Species", sbmlId.c_str());
                     }
                   else
                     {
@@ -3453,8 +3648,6 @@ void SBMLImporter::importRule(const Rule* rule, CModelEntity::Status ruleType, s
       switch (type)
         {
         case SBML_PARAMETER:
-          // activate the next two lines if rules for compartments and
-          // metabolites should be imported.
         case SBML_SPECIES:
         case SBML_COMPARTMENT:
           // check if it really is a global parameter, a metabolite or a
@@ -3480,30 +3673,12 @@ void SBMLImporter::importRule(const Rule* rule, CModelEntity::Status ruleType, s
                   fatalError();
                 }
             }
-          this->importRuleForModelEntity(rule, pME, ruleType, copasi2sbmlmap);
+          this->importRuleForModelEntity(rule, pME, ruleType, copasi2sbmlmap, pSBMLModel);
           break;
         default:
           // now that compartments, metabolites and global parameters are
           // supported, everything else should produce a fatal error.
           fatalError();
-
-          // remove the rest of this block and activate the code above if rules
-          // for metabolites and compartments are supported.
-          /*
-          if (ruleType == CModelEntity::ASSIGNMENT)
-              {
-              mUnsupportedAssignmentRuleFound = true;
-              }
-          else if (ruleType == CModelEntity::ODE)
-              {
-              mUnsupportedRateRuleFound = true;
-              }
-          else
-              {
-              // should never happen
-              fatalError();
-              }
-          */
           break;
         }
     }
@@ -3558,7 +3733,7 @@ void SBMLImporter::areRulesUnique(const Model* sbmlModel)
     }
 }
 
-void SBMLImporter::importRuleForModelEntity(const Rule* rule, CModelEntity* pME, CModelEntity::Status status, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
+void SBMLImporter::importRuleForModelEntity(const Rule* rule, CModelEntity* pME, CModelEntity::Status status, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, Model* pSBMLModel)
 {
   if (rule->getTypeCode() == SBML_ASSIGNMENT_RULE)
     {
@@ -3567,8 +3742,8 @@ void SBMLImporter::importRuleForModelEntity(const Rule* rule, CModelEntity* pME,
   ConverterASTNode tmpNode(*rule->getMath());
   // replace all the nodes that represent species with the
   // hasOnlySubstanceUnits flag set with the node divided by the volume
-  replaceSubstanceOnlySpeciesNodes(&tmpNode, mSubstanceOnlySpecies);
-  this->preprocessNode(&tmpNode);
+  //replaceSubstanceOnlySpeciesNodes(&tmpNode, mSubstanceOnlySpecies);
+  this->preprocessNode(&tmpNode, pSBMLModel, copasi2sbmlmap);
   // replace the object names
   this->replaceObjectNames(&tmpNode, copasi2sbmlmap);
   // now we convert the node to a CEvaluationNode
@@ -3620,40 +3795,40 @@ void SBMLImporter::importRuleForModelEntity(const Rule* rule, CModelEntity* pME,
 
 void SBMLImporter::checkRuleMathConsistency(const Rule* pRule, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
 {
-  // only check if Level2 Version1 ?????
-  //if(this->mLevel==2 && this->mVersion==1)
-  {
-    // check if no nodes with ids of objects are used in an assignmet that are
-    // set in another assignment rule later on
-    std::set<std::string> idSet;
-    const ASTNode* pNode = pRule->getMath();
-    this->getIdsFromNode(pNode, idSet);
-    Model* sbmlModel = dynamic_cast<Model*>(copasi2sbmlmap[mpCopasiModel]);
-    if (!sbmlModel) fatalError();
-    unsigned int i, iMax = sbmlModel->getNumRules();
-    for (i = 0;i < iMax;++i)
-      {
-        if (sbmlModel->getRule(i) == pRule)
-          {
-            break;
-          }
-      }
-    Rule* pR;
-    SBMLTypeCode_t type;
-    while (i < iMax)
-      {
-        pR = sbmlModel->getRule(i);
-        type = pR->getTypeCode();
-        if (type == SBML_ASSIGNMENT_RULE)
-          {
-            if (idSet.find(dynamic_cast<AssignmentRule*>(pR)->getVariable()) != idSet.end())
-              {
-                CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 37, dynamic_cast<AssignmentRule*>(pR)->getVariable().c_str());
-              }
-          }
-        ++i;
-      }
-  }
+  // only check if Level2 Version1
+  if (this->mLevel == 2 && this->mVersion == 1)
+    {
+      // check if no nodes with ids of objects are used in an assignmet that are
+      // set in another assignment rule later on
+      std::set<std::string> idSet;
+      const ASTNode* pNode = pRule->getMath();
+      this->getIdsFromNode(pNode, idSet);
+      Model* sbmlModel = dynamic_cast<Model*>(copasi2sbmlmap[mpCopasiModel]);
+      if (!sbmlModel) fatalError();
+      unsigned int i, iMax = sbmlModel->getNumRules();
+      for (i = 0;i < iMax;++i)
+        {
+          if (sbmlModel->getRule(i) == pRule)
+            {
+              break;
+            }
+        }
+      Rule* pR;
+      SBMLTypeCode_t type;
+      while (i < iMax)
+        {
+          pR = sbmlModel->getRule(i);
+          type = pR->getTypeCode();
+          if (type == SBML_ASSIGNMENT_RULE)
+            {
+              if (idSet.find(dynamic_cast<AssignmentRule*>(pR)->getVariable()) != idSet.end())
+                {
+                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 37, dynamic_cast<AssignmentRule*>(pR)->getVariable().c_str());
+                }
+            }
+          ++i;
+        }
+    }
 }
 
 void SBMLImporter::getIdsFromNode(const ASTNode* pNode, std::set<std::string>& idSet)
@@ -3670,7 +3845,7 @@ void SBMLImporter::getIdsFromNode(const ASTNode* pNode, std::set<std::string>& i
     }
 }
 
-void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
+void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, bool initialExpression)
 {
   if (pNode->getType() == AST_NAME)
     {
@@ -3686,6 +3861,7 @@ void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<CCopasiObje
           CCopasiObject* pObject = it->first;
           pReaction = dynamic_cast<CReaction*>(pObject);
           pModelEntity = dynamic_cast<CModelEntity*>(pObject);
+          Species* pSpecies = dynamic_cast<Species*>(it->second);
           std::string sbmlId;
           if (pReaction)
             {
@@ -3701,17 +3877,53 @@ void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<CCopasiObje
               switch (it->second->getTypeCode())
                 {
                 case SBML_COMPARTMENT:
-                  pNode->setName((pObject->getCN() + ",Reference=Volume").c_str());
+                  if (!initialExpression)
+                    {
+                      pNode->setName((pObject->getCN() + ",Reference=Volume").c_str());
+                    }
+                  else
+                    {
+                      pNode->setName((pObject->getCN() + ",Reference=InitialVolume").c_str());
+                    }
                   break;
                 case SBML_SPECIES:
                   // !!!! Check if this is always correct. Maybe if
                   // hasOnlySubstanceUnits is set we have to use the amount
                   // instead. !!!!
-                  pNode->setName((pObject->getCN() + ",Reference=Concentration").c_str());
+                  assert(pSpecies != NULL);
+                  if (this->mSubstanceOnlySpecies.find(pSpecies) == this->mSubstanceOnlySpecies.end())
+                    {
+                      if (!initialExpression)
+                        {
+                          pNode->setName((pObject->getCN() + ",Reference=Concentration").c_str());
+                        }
+                      else
+                        {
+                          pNode->setName((pObject->getCN() + ",Reference=InitialConcentration").c_str());
+                        }
+                    }
+                  else
+                    {
+                      if (!initialExpression)
+                        {
+                          pNode->setName((pObject->getCN() + ",Reference=ParticleNumber").c_str());
+                        }
+                      else
+                        {
+                          pNode->setName((pObject->getCN() + ",Reference=InitialParticleNumber").c_str());
+                        }
+                    }
                   break;
                   //case SBML_REACTION:
                 case SBML_PARAMETER:
-                  pNode->setName((pObject->getCN() + ",Reference=Value").c_str());
+                  if (!initialExpression)
+                    {
+                      pNode->setName((pObject->getCN() + ",Reference=Value").c_str());
+                    }
+                  else
+                    {
+                      pNode->setName((pObject->getCN() + ",Reference=InitialValue").c_str());
+                    }
                   break;
                 default:
                   fatalError();
@@ -3722,14 +3934,17 @@ void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<CCopasiObje
           ++it;
         }
       // not found
-      if (it == endit) fatalError();
+      if (it == endit)
+        {
+          fatalError();
+        }
     }
   else
     {
       unsigned int i, iMax = pNode->getNumChildren();
       for (i = 0;i < iMax;++i)
         {
-          this->replaceObjectNames(pNode->getChild(i), copasi2sbmlmap);
+          this->replaceObjectNames(pNode->getChild(i), copasi2sbmlmap, initialExpression);
         }
     }
 }
@@ -4023,10 +4238,11 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
             }
         }
     }
-  if (!inconsistentUnits && lastUnit != "volume")
+  if (!inconsistentUnits && lastUnit != "" && lastUnit != "volume")
     {
       // try to set the default volume unit to the unit defined by lastUnit
-      const UnitDefinition* pUdef = pSBMLModel->getUnitDefinition(lastUnit);
+      //const UnitDefinition* pUdef = pSBMLModel->getUnitDefinition(lastUnit);
+      const UnitDefinition* pUdef = SBMLImporter::getSBMLUnitDefinitionForId(lastUnit, pSBMLModel);
       assert(pUdef != NULL);
       std::pair<CModel::VolumeUnit, bool> volume = this->handleVolumeUnit(pUdef);
       if (volume.second == true)
@@ -4047,11 +4263,14 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
       // report the actual units used
       // one warning for every entry in nonDefaultCompartment
       std::vector<std::string>::iterator errorIt = nonDefaultCompartments.begin(), errorEndit = nonDefaultCompartments.end();
+      std::ostringstream os;
       while (errorIt != errorEndit)
         {
-          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 24, (*errorIt).c_str());
+          os << *errorIt << ", ";
           ++errorIt;
         }
+      std::string s = os.str();
+      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 24 , s.substr(0, s.size() - 2).c_str());
     }
   inconsistentUnits = false;
   lastUnit = "";
@@ -4218,17 +4437,23 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
       // one warning SBML + 25 for each species in nonDefaultSpecies
       // and one for each KineticLaw in nonDefaultKineticSubstance
       std::vector<std::string>::iterator errorIt = nonDefaultSpecies.begin(), errorEndit = nonDefaultSpecies.end();
+      std::ostringstream os;
       while (errorIt != errorEndit)
         {
-          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 25, (*errorIt).c_str());
+          os << *errorIt << ", ";
           ++errorIt;
         }
+      std::string s = os.str();
+      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 25 , s.substr(0, s.size() - 2).c_str());
+      os.str("");
       errorIt = nonDefaultKineticSubstance.begin(), errorEndit = nonDefaultKineticSubstance.end();
       while (errorIt != errorEndit)
         {
-          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 44, (*errorIt).c_str());
+          os << *errorIt << ", ";
           ++errorIt;
         }
+      s = os.str();
+      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 44 , s.substr(0, s.size() - 2).c_str());
     }
   if (!inconsistentTimeUnits && lastTimeUnits != "" && lastTimeUnits != "time")
     {
@@ -4251,12 +4476,15 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
     {
       // warn about inconsistent time unit
       // one error for each entry in nonDefaultKineticTime
+      std::ostringstream os;
       std::vector<std::string>::iterator errorIt = nonDefaultKineticTime.begin(), errorEndit = nonDefaultKineticTime.end();
       while (errorIt != errorEndit)
         {
-          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 53, (*errorIt).c_str());
+          os << *errorIt << ", ";
           ++errorIt;
         }
+      std::string s = os.str();
+      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 53, s.substr(0, s.size() - 2).c_str());
     }
   // delete the units we created
   delete pTimeUnits;
@@ -4271,11 +4499,11 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
  */
 bool SBMLImporter::areSBMLUnitDefinitionsIdentical(const UnitDefinition* pUdef1, const UnitDefinition* pUdef2)
 {
-  UnitDefinition* pTmpUdef1 = convertToSI(pUdef1);
-  simplifyUnitDefinition(pTmpUdef1);
-  UnitDefinition* pTmpUdef2 = convertToSI(pUdef2);
-  simplifyUnitDefinition(pTmpUdef2);
-  bool result = areIdentical(pUdef1, pUdef2);
+  UnitDefinition* pTmpUdef1 = UnitDefinition::convertToSI(pUdef1);
+  UnitDefinition::simplify(pTmpUdef1);
+  UnitDefinition* pTmpUdef2 = UnitDefinition::convertToSI(pUdef2);
+  UnitDefinition::simplify(pTmpUdef2);
+  bool result = UnitDefinition::areIdentical(pUdef1, pUdef2);
   if (result == false)
     {
       // check if maybe everything is the same, only the multipliers are
@@ -4283,8 +4511,8 @@ bool SBMLImporter::areSBMLUnitDefinitionsIdentical(const UnitDefinition* pUdef1,
       bool newResult = true;
       if (pTmpUdef1->getNumUnits() == pTmpUdef2->getNumUnits())
         {
-          orderUnitDefinition(pTmpUdef1);
-          orderUnitDefinition(pTmpUdef2);
+          UnitDefinition::reorder(pTmpUdef1);
+          UnitDefinition::reorder(pTmpUdef2);
           unsigned int i = 0, iMax = pTmpUdef1->getNumUnits();
           const Unit *pU1, *pU2;
           while (newResult == true && i != iMax)
@@ -4294,7 +4522,7 @@ bool SBMLImporter::areSBMLUnitDefinitionsIdentical(const UnitDefinition* pUdef1,
               if (pU1->getKind() != pU2->getKind() ||
                   pU1->getExponent() != pU2->getExponent() ||
                   pU1->getScale() != pU2->getScale() ||
-                  fabs((pU2->getMultiplier() - pU1->getMultiplier()) / pU1->getMultiplier()) > UNIT_MULTIPLIER_TOLERANCE)
+                  !areApproximatelyEqual(pU2->getMultiplier(), pU1->getMultiplier()))
                 {
                   newResult = false;
                 }
@@ -4317,7 +4545,7 @@ Unit* SBMLImporter::convertSBMLCubicmetresToLitres(const Unit* pU)
         {
           pResult = dynamic_cast<Unit*>(pU->clone());
           assert(pResult != NULL);
-          removeScale(pResult);
+          Unit::removeScale(pResult);
           pResult->setExponent(pResult->getExponent() / 3);
           pResult->setKind(UNIT_KIND_LITRE);
           pResult->setMultiplier(pow(pResult->getMultiplier(), 3));
@@ -4666,7 +4894,7 @@ UnitDefinition* SBMLImporter::getSBMLUnitDefinitionForId(const std::string& unit
   return pUnitDefinition;
 }
 
-void SBMLImporter::importInitialAssignments(const Model* pSBMLModel, const std::map<CCopasiObject*, SBase*>& copasi2sbmlMap)
+void SBMLImporter::importInitialAssignments(Model* pSBMLModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlMap)
 {
   unsigned int i, iMax = pSBMLModel->getNumInitialAssignments();
   std::map<std::string, CCopasiObject*> id2copasiMap;
@@ -4696,12 +4924,15 @@ void SBMLImporter::importInitialAssignments(const Model* pSBMLModel, const std::
                   const ASTNode* pMath = pInitialAssignment->getMath();
                   assert(pMath != NULL);
                   ConverterASTNode tmpNode(*pMath);
+                  /**
+                   * Removed because this no longer works for variable volumes
                   // replace all the nodes that represent species with the
                   // hasOnlySubstanceUnits flag set with the node divided by the volume
                   replaceSubstanceOnlySpeciesNodes(&tmpNode, mSubstanceOnlySpecies);
-                  this->preprocessNode(&tmpNode);
+                  */
+                  this->preprocessNode(&tmpNode, pSBMLModel, copasi2sbmlMap);
                   // replace the object names
-                  this->replaceObjectNames(&tmpNode, copasi2sbmlMap);
+                  this->replaceObjectNames(&tmpNode, copasi2sbmlMap, true);
                   // now we convert the node to a CEvaluationNode
                   CExpression* pExpression = new CExpression;
                   pExpression->setTree(tmpNode);
@@ -4741,6 +4972,223 @@ void SBMLImporter::importInitialAssignments(const Model* pSBMLModel, const std::
             {
               CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 47 , symbol.c_str());
             }
+        }
+    }
+}
+
+void SBMLImporter::applyStoichiometricExpressions(std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, Model* pSBMLModel)
+{
+  bool warningDone = false;
+  std::map<const ASTNode*, std::pair<CCopasiObjectName, CChemEq::MetaboliteRole> >::iterator it = this->mStoichiometricExpressionMap.begin(), end = this->mStoichiometricExpressionMap.end();
+  std::vector<CCopasiContainer*> listOfContainers;
+  listOfContainers.push_back(this->mpCopasiModel);
+  while (it != end)
+    {
+      CCopasiObject* pObject = CCopasiContainer::ObjectFromName(listOfContainers, it->second.first);
+      assert(pObject != NULL);
+      CChemEqElement* pChemEqElement = dynamic_cast<CChemEqElement*>(pObject);
+      assert(pChemEqElement != NULL);
+      ConverterASTNode* pNode = new ConverterASTNode(*it->first);
+      this->preprocessNode(pNode, pSBMLModel, copasi2sbmlmap);
+      /**
+       * Removed because this no longer works for variable volumes
+       this->replaceSubstanceOnlySpeciesNodes(pNode, this->mSubstanceOnlySpecies);
+       */
+      this->replaceObjectNames(pNode, copasi2sbmlmap);
+      CExpression* pExpr = new CExpression();
+      pExpr->setTree(*pNode);
+      pExpr->compile(listOfContainers);
+      delete pNode;
+      if (pExpr->getRoot() == NULL)
+        {
+          const CReaction* pR = dynamic_cast<const CReaction*>(pChemEqElement->getObjectParent()->getObjectParent()->getObjectParent());
+          std::string id = pChemEqElement->getMetabolite()->getSBMLId();
+          // create an error message that some stoichiometric expression
+          // could not be evaluated that the value for the stoichiometry has
+          // been set to 1.0
+          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 65, id.c_str(), pR->getSBMLId().c_str());
+        }
+      else
+        {
+          double value = pExpr->calcValue();
+          value -= pChemEqElement->getMultiplicity();
+          // find out if the metabolite is a substrate or a product
+          delete pExpr;
+          CChemEq* pChemEq = dynamic_cast<CChemEq*>(pChemEqElement->getObjectParent()->getObjectParent());
+          assert(pChemEq != NULL);
+          if (pChemEq != NULL)
+            {
+              if (it->second.second == CChemEq::SUBSTRATE)
+                {
+                  pChemEq->addMetabolite(pChemEqElement->getMetaboliteKey(), value, CChemEq::SUBSTRATE);
+                }
+              else
+                {
+                  pChemEq->addMetabolite(pChemEqElement->getMetaboliteKey(), value, CChemEq::PRODUCT);
+                }
+              // give a warning that an stoichiometric expression has been
+              // converted into a constant
+              if (!warningDone && !this->mStoichiometricExpressionMap.empty())
+                {
+                  CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 64);
+                  warningDone = true;
+                }
+            }
+          else
+            {
+              fatalError();
+            }
+        }
+      ++it;
+    }
+}
+
+/*
+void SBMLImporter::createDelayFunctionDefinition()
+{
+  // TODO
+}
+ */
+
+void SBMLImporter::findAvogadroConstant(Model* pSBMLModel, double factor)
+{
+  unsigned int i, iMax = pSBMLModel->getListOfParameters()->size();
+  for (i = 0;i < iMax;++i)
+    {
+      const Parameter* pParameter = dynamic_cast<const Parameter*>(pSBMLModel->getListOfParameters()->get(i));
+      if (pParameter->getConstant() == true && pParameter->isSetValue() == true)
+        {
+          double value = pParameter->getValue();
+          if (areApproximatelyEqual(factor, value, 1e-3))
+            {
+              this->mPotentialAvogadroNumbers.insert(pParameter);
+            }
+        }
+    }
+  //  if (this->mPotentialAvogadroNumbers.empty())
+  //    {
+  //      // find an ID that is unique at least within the list of parameters
+  //      // since we remove this created parameter after import, it does not
+  //      // have to be unique within the whole model
+  //      std::set<std::string> ids;
+  //      for (i = 0;i < iMax;++i)
+  //        {
+  //          ids.insert(pSBMLModel->getListOfParameters()->get(i)->getId());
+  //}
+  //      std::ostringstream os;
+  //      i = 1;
+  //      os << "parameter_" << i;
+  //      while (ids.find(os.str()) != ids.end())
+  //        {
+  //          ++i;
+  //          os.str("");
+  //          os << "parameter_" << i;
+  //}
+  //      Parameter *pParameter = pSBMLModel->createParameter();
+  //      pParameter->setId(os.str());
+  //      pParameter->setName("amount to particle factor");
+  //      pParameter->setConstant(true);
+  //      pParameter->setValue(factor);
+  //      this->mAvogadroCreated = true;
+  //      this->mPotentialAvogadroNumbers.insert(pParameter);
+  //}
+}
+
+void SBMLImporter::createHasOnlySubstanceUnitFactor(Model* pSBMLModel, double factor, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
+{
+  // find an ID that is unique at least within the list of parameters
+  // since we remove this created parameter after import, it does not
+  // have to be unique within the whole model
+  std::set<std::string> ids;
+  unsigned int i, iMax = pSBMLModel->getListOfParameters()->size();
+  for (i = 0;i < iMax;++i)
+    {
+      ids.insert(pSBMLModel->getListOfParameters()->get(i)->getId());
+    }
+  std::ostringstream os;
+  i = 1;
+  os << "parameter_" << i;
+  while (ids.find(os.str()) != ids.end())
+    {
+      ++i;
+      os.str("");
+      os << "parameter_" << i;
+    }
+  Parameter *pParameter = pSBMLModel->createParameter();
+  pParameter->setId(os.str());
+  pParameter->setName("amount to particle factor");
+  pParameter->setConstant(true);
+  pParameter->setValue(factor);
+  this->mAvogadroCreated = true;
+  this->mPotentialAvogadroNumbers.insert(pParameter);
+  this->createCModelValueFromParameter(pParameter, this->mpCopasiModel, copasi2sbmlmap);
+}
+
+void SBMLImporter::multiplySubstanceOnlySpeciesByVolume(ConverterASTNode* pNode)
+{
+  if (!pNode) return;
+  if (pNode->getType() == AST_DIVIDE)
+    {
+      // check if it is a division of a hasOnlySubstanceUnits species by the volume
+      ASTNode* pChild1 = pNode->getChild(0);
+      if (pChild1->getType() == AST_NAME)
+        {
+          std::map<Species*, Compartment*>::iterator it = this->mSubstanceOnlySpecies.begin(), endit = this->mSubstanceOnlySpecies.end();
+          while (it != endit)
+            {
+              if (it->first->getId() == pChild1->getName())
+                {
+                  break;
+                }
+              ++it;
+            }
+          if (it != endit)
+            {
+              ASTNode* pChild2 = pNode->getChild(1);
+              if (pChild2->getType() == AST_NAME && pChild2->getName() == it->second->getId())
+                {
+                  delete pNode->removeChild(0);
+                  delete pNode->removeChild(1);
+                  pNode->setType(AST_NAME);
+                  pNode->setName(it->first->getId().c_str());
+                  return;
+                }
+            }
+        }
+    }
+  if (pNode->getType() == AST_NAME)
+    {
+      std::string id = pNode->getName();
+      std::map<Species*, Compartment*>::iterator it = this->mSubstanceOnlySpecies.begin(), endit = this->mSubstanceOnlySpecies.end();
+      while (it != endit)
+        {
+          if (it->first->getId() == id)
+            {
+              break;
+            }
+          ++it;
+        }
+      if (it != endit)
+        {
+          ConverterASTNode* pChild1 = new ConverterASTNode();
+          pChild1->setType(AST_NAME);
+          pChild1->setName(pNode->getName());
+          ConverterASTNode* pChild2 = new ConverterASTNode();
+          pChild2->setType(AST_NAME);
+          pChild2->setName(it->second->getId().c_str());
+          pNode->setType(AST_TIMES);
+          pNode->addChild(pChild1);
+          pNode->addChild(pChild2);
+        }
+    }
+  else
+    {
+      unsigned int i, iMax = pNode->getNumChildren();
+      for (i = 0;i < iMax;++i)
+        {
+          ConverterASTNode* pChild = dynamic_cast<ConverterASTNode*>(pNode->getChild(i));
+          assert(pChild != NULL);
+          this->multiplySubstanceOnlySpeciesByVolume(pChild);
         }
     }
 }

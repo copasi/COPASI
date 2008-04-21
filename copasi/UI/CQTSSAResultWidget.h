@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSAResultWidget.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.2.6.1 $
 //   $Name:  $
-//   $Author: akoenig $
-//   $Date: 2007/07/12 14:54:34 $
+//   $Author: shoops $
+//   $Date: 2008/02/27 19:02:09 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -34,17 +39,18 @@ class CQTSSAResultWidget : public CopasiWidget
     virtual bool leave();
     virtual bool enter(const std::string & key = "");
     CQTSSAResultSubWidget* getSubWidget(){return mCentralWidget;};
+
   protected slots:
     //virtual void slotBtnCancelClicked();
     //virtual void slotBtnOKClicked();
 
-  protected:
+  public:
     bool loadFromBackend();
     bool saveToBackend();
+
+  protected:
     std::string objKey;
-
     QGridLayout* mWidgetLayout;
-
     CQTSSAResultSubWidget* mCentralWidget;
   };
 

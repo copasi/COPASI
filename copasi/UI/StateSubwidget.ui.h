@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/StateSubwidget.ui.h,v $
-//   $Revision: 1.35 $
+//   $Revision: 1.35.4.2 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/12/05 20:16:26 $
+//   $Author: ssahle $
+//   $Date: 2008/03/03 00:27:06 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -71,7 +76,8 @@ void StateSubwidget::loadMetabolites()
   mpTblMetabolites->setNumRows(mpModel->getMetabolites().size());
 
   for (; it != end; ++it)
-    if ((*it)->isUsed())
+    if ((*it)->getStatus() == CModelEntity::ODE ||
+        ((*it)->getStatus() == CModelEntity::REACTIONS && (*it)->isUsed()))
       {
         mpTblMetabolites->setText(i, 0, FROM_UTF8(CMetabNameInterface::getDisplayName(mpModel, **it)));
         mpTblMetabolites->setText(i, 1, FROM_UTF8(CModelEntity::StatusName[(*it)->getStatus()]));
@@ -111,7 +117,7 @@ void StateSubwidget::loadCompartments()
   mpTblCompartments->setNumRows(mpModel->getCompartments().size());
 
   for (; it != end; ++it)
-    if ((*it)->isUsed())
+    if ((*it)->getStatus() == CModelEntity::ODE)
       {
         mpTblCompartments->setText(i, 0, FROM_UTF8((*it)->getObjectName()));
         mpTblCompartments->setText(i, 1, FROM_UTF8(CModelEntity::StatusName[(*it)->getStatus()]));
@@ -169,7 +175,7 @@ void StateSubwidget::loadModelValues()
 
   mpTblModelValues->setNumRows(mpModel->getModelValues().size());
   for (; it != end; ++it)
-    if ((*it)->isUsed())
+    if ((*it)->getStatus() == CModelEntity::ODE)
       {
         mpTblModelValues->setText(i, 0, FROM_UTF8((*it)->getObjectName()));
         mpTblModelValues->setText(i, 1, FROM_UTF8(CModelEntity::StatusName[(*it)->getStatus()]));
@@ -349,21 +355,15 @@ bool StateSubwidget::loadAll(const CSteadyStateTask * pTask)
     }
 
   // protocol
-  if (true /*pProblem->isJacobianRequested() ||
-                                          pProblem->isStabilityAnalysisRequested()*/)
+  if (true)
     {
       mpTabWidget->setTabEnabled(mpTabWidget->page(Last), true);
 
-      //stabilityTextEdit->setReadOnly(true);
-
-      //std::ostringstream ss;
-      //ss << mpTask->getEigenValuesReduced();
       const CSteadyStateMethod * pMethod =
         dynamic_cast<const CSteadyStateMethod *>(mpTask->getMethod());
       assert(pMethod);
       protocolTextEdit->setText(FROM_UTF8(pMethod->getMethodLog()));
     }
-
   else
     {
       mpTabWidget->setTabEnabled(mpTabWidget->page(Last), false);
@@ -388,6 +388,7 @@ void StateSubwidget::clear()
   tableEigenValuesX->setNumRows(0);
 
   stabilityTextEdit->setText("");
+  protocolTextEdit->setText("");
 }
 
 void StateSubwidget::setFramework(int framework)

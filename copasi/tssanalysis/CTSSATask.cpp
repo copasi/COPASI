@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSATask.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.4.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/12 18:40:21 $
+//   $Date: 2008/02/29 15:01:50 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -121,6 +126,7 @@ void CTSSATask::load(CReadConfig & configBuffer)
 }
 
 bool CTSSATask::initialize(const OutputFlag & of,
+                           COutputHandler * pOutputHandler,
                            std::ostream * pOstream)
 {
   assert(mpProblem && mpMethod);
@@ -139,8 +145,22 @@ bool CTSSATask::initialize(const OutputFlag & of,
   mpCurrentState = new CState(mpTSSAProblem->getModel()->getState());
   mpCurrentTime = &mpCurrentState->getTime();
 
-  if (!CCopasiTask::initialize(of, pOstream)) success = false;
+  // Handle the time series as a regular output.
   mTimeSeriesRequested = mpTSSAProblem->timeSeriesRequested();
+  if (pOutputHandler != NULL)
+    {
+      if (mTimeSeriesRequested)
+        {
+          mTimeSeries.allocate(mpTSSAProblem->getStepNumber());
+          pOutputHandler->addInterface(&mTimeSeries);
+        }
+      else
+        {
+          mTimeSeries.clear();
+        }
+    }
+
+  if (!CCopasiTask::initialize(of, pOutputHandler, pOstream)) success = false;
 
   return success;
 }
@@ -371,24 +391,3 @@ CState * CTSSATask::getState()
 
 const CTimeSeries & CTSSATask::getTimeSeries() const
   {return mTimeSeries;}
-
-void CTSSATask::output(const COutputInterface::Activity & activity)
-{
-  CCopasiTask::output(activity);
-
-  if (mTimeSeriesRequested && mDoOutput == OUTPUT_COMPLETE)
-    switch (activity)
-      {
-      case COutputInterface::BEFORE:
-        mTimeSeries.init(mpTSSAProblem->getStepNumber(), mpProblem->getModel());
-        break;
-
-      case COutputInterface::DURING:
-        mTimeSeries.add();
-        break;
-
-      case COutputInterface::AFTER:
-        mTimeSeries.finish();
-        break;
-      }
-}

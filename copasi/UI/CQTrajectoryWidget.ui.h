@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQTrajectoryWidget.ui.h,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.12.6.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/18 16:44:58 $
+//   $Date: 2008/02/27 19:02:09 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -30,6 +35,7 @@
 #include "UI/CQValidator.h"
 #include "UI/CQMessageBox.h"
 #include "UI/qtUtilities.h"
+#include "TimeSeriesWidget.h"
 
 #include "trajectory/CTrajectoryTask.h"
 #include "trajectory/CTrajectoryProblem.h"
@@ -282,6 +288,16 @@ bool CQTrajectoryWidget::runTask()
   if (!commonRunTask()) success = false;
 
   if (!commonAfterRunTask()) success = false;
+
+  // We need to load the result here as this is the only place where
+  // we know that it is correct.
+  TimeSeriesWidget * pResult =
+    dynamic_cast< TimeSeriesWidget * >(mpListView->findWidgetFromId(231));
+
+  if (pResult == NULL)
+    return false;
+
+  success &= pResult->loadFromBackend();
 
   return success;
 }

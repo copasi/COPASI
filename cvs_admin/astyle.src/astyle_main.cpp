@@ -1,3 +1,16 @@
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/cvs_admin/astyle.src/astyle_main.cpp,v $
+//   $Revision: 1.1.34.1 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2008/01/24 21:25:32 $
+// End CVS Header
+
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
 /*
  * Copyright (c) 1998,1999,2000,2001,2002 Tal Davidson. All rights reserved.
  *
@@ -9,8 +22,8 @@
  *
  * The "Artistic Style" project, including all files needed to compile it,
  * is free software; you can redistribute it and/or use it and/or modify it
- * under the terms of the GNU General Public License as published 
- * by the Free Software Foundation; either version 2 of the License, 
+ * under the terms of the GNU General Public License as published
+ * by the Free Software Foundation; either version 2 of the License,
  * or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -48,6 +61,8 @@ using namespace astyle;
 ostream *_err = &cerr;
 string _suffix = ".orig";
 bool _modeManuallySet;
+
+bool parseOption(ASFormatter &formatter, const string &arg, const string &errorInfo);
 
 const string _version = "1.15.3";
 
@@ -89,7 +104,7 @@ string ASStreamIterator::nextLine()
    char theInChar;
    char peekedChar;
    int  theBufferPosn = 0;
- 
+
    //
    // treat '\n', '\r', '\n\r' and '\r\n' as an endline.
    //
@@ -112,7 +127,7 @@ string ASStreamIterator::nextLine()
       }
    }
    buffer[theBufferPosn] = '\0';
- 
+
    return string(buffer);
 }
  */
@@ -675,8 +690,8 @@ int main(int argc, char *argv[])
           optionsFileName = GET_PARAM(arg, "--options=");
         }
       else if (IS_OPTION(arg, "-h")
-                || IS_OPTION(arg, "--help")
-                || IS_OPTION(arg, "-?"))
+               || IS_OPTION(arg, "--help")
+               || IS_OPTION(arg, "-?"))
         {
           shouldPrintHelp = true;
         }

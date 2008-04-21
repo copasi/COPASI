@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQCompartment.ui.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.7.4.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/13 14:46:02 $
+//   $Date: 2008/02/27 15:20:47 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -45,6 +50,10 @@ void CQCompartment::init()
 
   mpMetaboliteTable->header()->hide();
 
+  mExpressionValid = false;
+  mpEditExpression->setExpressionType(CCopasiSimpleSelectionTree::TRANSIENT_EXPRESSION);
+
+  mInitialExpressionValid = false;
   mpEditInitialExpression->setExpressionType(CCopasiSimpleSelectionTree::INITIAL_EXPRESSION);
 }
 
@@ -86,7 +95,7 @@ void CQCompartment::slotBtnDelete()
 
   QString compartmentList = "Are you sure you want to delete listed COMPARTMENT(S) ?\n";
   QString effectedCompartmentList = "Following COMPARTMENT(S) reference above COMPARTMENT(S) and will be deleted -\n";
-  QString effectedMetabList = "Following METABOLITE(S) reference above COMPARTMENT(S) and will be deleted -\n";
+  QString effectedMetabList = "Following SPECIES reference above COMPARTMENT(S) and will be deleted -\n";
   QString effectedReacList = "Following REACTION(S) reference above COMPARTMENT(S) and will be deleted -\n";
   QString effectedValueList = "Following MODEL VALUE(S) reference above COMPARTMENT(S) and will be deleted -\n";
 

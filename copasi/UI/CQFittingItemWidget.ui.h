@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQFittingItemWidget.ui.h,v $
-//   $Revision: 1.29 $
+//   $Revision: 1.29.6.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/24 18:40:20 $
+//   $Date: 2008/02/15 23:12:01 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -223,16 +228,30 @@ void CQFittingItemWidget::slotParamEdit()
 {
   std::vector< const CCopasiObject * > Selection;
 
+  CCopasiSimpleSelectionTree::SelectionFlag SelectionFlag;
+  switch (mItemType)
+    {
+    case OPT_ITEM:
+    case FIT_ITEM:
+      SelectionFlag = CCopasiSimpleSelectionTree::INITIAL_VALUE;
+      break;
+
+    case OPT_CONSTRAINT:
+    case FIT_CONSTRAINT:
+      SelectionFlag = CCopasiSimpleSelectionTree::TRANSIENT_EXPRESSION;
+      break;
+    }
+
   if (mSelection.size() > 1)
     {
       const CCopasiObject * pObject =
-        CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::INITIAL_VALUE);
+        CCopasiSelectionDialog::getObjectSingle(this, SelectionFlag);
       if (pObject)
         Selection.push_back(pObject);
     }
   else
     Selection =
-      CCopasiSelectionDialog::getObjectVector(this, CCopasiSimpleSelectionTree::INITIAL_VALUE);
+      CCopasiSelectionDialog::getObjectVector(this, SelectionFlag);
 
   if (Selection.size() != 0)
     {
@@ -1040,7 +1059,8 @@ void CQFittingItemWidget::setTableText(const int & row, const COptItem * pItem)
   else
     Item += "Not found: " + FROM_UTF8(pItem->getLowerBound());
 
-  Item += " < ";
+  // Insert less than character
+  Item += FROM_UTF8(std::string(" \xe2\x89\xa4 "));
 
   pObject = RootContainer.getObject(pItem->getObjectCN());
   if (pObject)
@@ -1056,7 +1076,8 @@ void CQFittingItemWidget::setTableText(const int & row, const COptItem * pItem)
         Item += "; {" + Experiments + "}";
     }
 
-  Item += " < ";
+  // Insert less than character
+  Item += FROM_UTF8(std::string(" \xe2\x89\xa4 "));
 
   if (pItem->getUpperBound() == "inf" ||
       isNumber(pItem->getUpperBound()))

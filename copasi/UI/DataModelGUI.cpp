@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-//   $Revision: 1.73 $
+//   $Revision: 1.73.2.1.2.2 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/12/06 20:47:30 $
+//   $Author: shoops $
+//   $Date: 2008/02/20 20:25:40 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -68,6 +73,8 @@ void DataModelGUI::linkDataModelToGUI()
   mTree.findNodeFromId(1)->setObjectKey(CCopasiDataModel::Global->getModel()->getKey());
   mTree.findNodeFromId(21)->setObjectKey((*CCopasiDataModel::Global->getTaskList())["Steady-State"]->getKey());
   mTree.findNodeFromId(221)->setObjectKey((*CCopasiDataModel::Global->getTaskList())["Elementary Flux Modes"]->getKey());
+  mTree.findNodeFromId(222)->setObjectKey((*CCopasiDataModel::Global->getTaskList())["Moieties"]->getKey());
+  mTree.findNodeFromId(2221)->setObjectKey((*CCopasiDataModel::Global->getTaskList())["Moieties"]->getKey());
 #ifdef COPASI_SSA
   mTree.findNodeFromId(223)->setObjectKey((*CCopasiDataModel::Global->getTaskList())["Stoichiometric Stability Analysis"]->getKey());
 #endif // COPASI_SSA
@@ -197,25 +204,6 @@ void DataModelGUI::updateModelValues()
   const CCopasiVectorN< CModelValue > & objects = CCopasiDataModel::Global->getModel()->getModelValues();
   C_INT32 j, jmax = objects.size();
   CModelValue *obj;
-  for (j = 0; j < jmax; j++)
-    {
-      obj = objects[j];
-      parent->addChild(-1,
-                        FROM_UTF8(obj->getObjectName()),
-                        obj->getKey());
-    }
-}
-
-void DataModelGUI::updateMoieties()
-{
-  IndexedNode * parent = mTree.findNodeFromId(222);
-
-  parent->removeChildren();
-
-  const CCopasiVector< CMoiety > & objects = CCopasiDataModel::Global->getModel()->getMoieties();
-
-  C_INT32 j, jmax = objects.size();
-  CMoiety *obj;
   for (j = 0; j < jmax; j++)
     {
       obj = objects[j];
@@ -407,10 +395,17 @@ bool DataModelGUI::importSBML(const std::string & fileName)
     {
       success = CCopasiDataModel::Global->importSBML(fileName, tmpBar);
     }
+
   catch (CCopasiException except)
     {
       pdelete(tmpBar);
       throw except;
+    }
+
+  catch (...)
+    {
+      pdelete(tmpBar);
+      fatalError();
     }
 
   if (success) CCopasiDataModel::Global->getConfiguration()->getRecentSBMLFiles().addFile(fileName);

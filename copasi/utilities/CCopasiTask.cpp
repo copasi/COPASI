@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-//   $Revision: 1.57 $
+//   $Revision: 1.57.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/12 18:40:20 $
+//   $Date: 2008/02/25 21:15:19 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -51,6 +56,7 @@ const std::string CCopasiTask::TypeName[] =
 #ifdef COPASI_SSA
     "Stoichiometric Stability Analysis",
 #endif // COPASI_SSA
+    "Moieties",
     ""
   };
 
@@ -74,6 +80,7 @@ const char* CCopasiTask::XMLType[] =
 #ifdef COPASI_SSA
     "stoichiometricStabilityAnalysis",
 #endif // COPASI_SSA
+    "moieties",
     NULL
   };
 
@@ -139,6 +146,7 @@ CCopasiTask::CCopasiTask(const CCopasiTask::Type & taskType,
     mpCallBack(NULL),
     mpSliders(NULL),
     mDoOutput(OUTPUT_COMPLETE),
+    mpOutputHandler(NULL),
     mOutputCounter(0)
 {initObjects();}
 
@@ -158,6 +166,7 @@ CCopasiTask::CCopasiTask(const CCopasiTask & src,
     mpCallBack(NULL),
     mpSliders(NULL),
     mDoOutput(OUTPUT_COMPLETE),
+    mpOutputHandler(NULL),
     mOutputCounter(0)
 {initObjects();}
 
@@ -202,6 +211,7 @@ CProcessReport * CCopasiTask::getCallBack() const
   }
 
 bool CCopasiTask::initialize(const OutputFlag & of,
+                             COutputHandler * pOutputHandler,
                              std::ostream * pOstream)
 {
   bool success = true;
@@ -235,19 +245,25 @@ bool CCopasiTask::initialize(const OutputFlag & of,
     }
 
   mDoOutput = of;
-  if (mDoOutput == NO_OUTPUT) return true;
+  mpOutputHandler = pOutputHandler;
+
+  if (mDoOutput == NO_OUTPUT ||
+      mpOutputHandler == NULL) return true;
 
   mOutputCounter = 0;
 
-  if (mReport.open(pOstream))
-    CCopasiDataModel::Global->addInterface(&mReport);
-  else
-    CCopasiMessage(CCopasiMessage::COMMANDLINE, MCCopasiTask + 5);
+  if (mDoOutput & REPORT)
+    {
+      if (mReport.open(pOstream))
+        mpOutputHandler->addInterface(&mReport);
+      else
+        CCopasiMessage(CCopasiMessage::COMMANDLINE, MCCopasiTask + 5);
+    }
 
   std::vector< CCopasiContainer * > ListOfContainer;
   ListOfContainer.push_back(this);
 
-  if (!CCopasiDataModel::Global->compile(ListOfContainer))
+  if (!mpOutputHandler->compile(ListOfContainer))
     {
       // Warning
       CCopasiMessage(CCopasiMessage::WARNING, MCCopasiTask + 7);
@@ -307,36 +323,38 @@ CCopasiParameterGroup * CCopasiTask::getSliders()
 
 void CCopasiTask::output(const COutputInterface::Activity & activity)
 {
-  switch (activity)
-    {
-    case COutputInterface::DURING:
-        if (mDoOutput != NO_OUTPUT)
-          CCopasiDataModel::Global->output(activity);
-      break;
+  if (mpOutputHandler != NULL)
+    switch (activity)
+      {
+      case COutputInterface::DURING:
+          if (mDoOutput != NO_OUTPUT)
+            mpOutputHandler->output(activity);
+        break;
 
-    case COutputInterface::BEFORE:
-    case COutputInterface::AFTER:
-      if (mDoOutput == OUTPUT_COMPLETE)
-        CCopasiDataModel::Global->output(activity);
-      break;
-    }
+      case COutputInterface::BEFORE:
+      case COutputInterface::AFTER:
+        if (mDoOutput == OUTPUT_COMPLETE)
+          mpOutputHandler->output(activity);
+        break;
+      }
 }
 
 void CCopasiTask::separate(const COutputInterface::Activity & activity)
 {
-  switch (activity)
-    {
-    case COutputInterface::DURING:
-      if (mDoOutput)
-        CCopasiDataModel::Global->separate(activity);
-      break;
+  if (mpOutputHandler != NULL)
+    switch (activity)
+      {
+      case COutputInterface::DURING:
+        if (mDoOutput)
+          mpOutputHandler->separate(activity);
+        break;
 
-    case COutputInterface::BEFORE:
-    case COutputInterface::AFTER:
-      if (mDoOutput == OUTPUT_COMPLETE)
-        CCopasiDataModel::Global->separate(activity);
-      break;
-    }
+      case COutputInterface::BEFORE:
+      case COutputInterface::AFTER:
+        if (mDoOutput == OUTPUT_COMPLETE)
+          mpOutputHandler->separate(activity);
+        break;
+      }
 }
 
 void CCopasiTask::initObjects()

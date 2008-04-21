@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CVersion.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.13.8.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/05/15 12:37:05 $
+//   $Date: 2008/01/11 14:30:54 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -68,7 +73,7 @@ const std::string & CVersion::getVersion() const
 void CVersion::setString()
 {
 #ifdef COPASI_DEBUG
-  mVersion = StringPrint("%d.%d.%d++ (Debug)", mMajor, mMinor, mDevel);
+  mVersion = StringPrint("%d.%d.%d (Debug)", mMajor, mMinor, mDevel);
 #else
   if (mComment == "stable")
     mVersion = StringPrint("%d.%d (Build %d)", mMajor, mMinor, mDevel);

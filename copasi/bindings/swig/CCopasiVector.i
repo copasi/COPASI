@@ -1,12 +1,17 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiVector.i,v $ 
-//   $Revision: 1.17 $ 
+//   $Revision: 1.17.4.2 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2007/12/12 14:53:31 $ 
+//   $Date: 2008/04/08 15:01:34 $ 
 // End CVS Header 
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc. and EML Research, gGmbH. 
 // All rights reserved. 
 
@@ -161,10 +166,13 @@ template < class CType > class CCopasiVectorNS: public CCopasiVectorN < CType >
 %template(IntStdVector) std::vector<C_INT32>;
 
 %template(StringStdVector) std::vector<std::string>;
+%template(VectorOfStringVectors) std::vector<std::vector<std::string> >;
 
 %template(FloatStdVector) std::vector<C_FLOAT64>;
 
 %template(OptItemStdVector) std::vector<COptItem*>;
+
+%template(ContainerStdVector) std::vector<CCopasiContainer*>;
 
 typedef CCopasiVectorN<CCopasiTask> TaskVectorN;
 
@@ -195,4 +203,7 @@ typedef std::vector<C_FLOAT64> FloatStdVector;
 typedef std::vector<COptItem*> OptItemStdVector;
 
 typedef std::vector<std::string> StringStdVector;
+typedef std::vector<std::vector<std::string> > VectorOfStringVectors;
+
+typedef std::vector<CCopasiContainer*> ContainerStdVector;
 

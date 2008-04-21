@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CCopasiSimpleSelectionTree.cpp,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.24.4.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/02 18:18:01 $
+//   $Date: 2008/02/28 18:51:19 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -31,51 +36,51 @@ CCopasiSimpleSelectionTree::CCopasiSimpleSelectionTree(QWidget* parent, const ch
   this->setRootIsDecorated(true);
   this->addColumn("");
   this->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)7, (QSizePolicy::SizeType)7, 0, 0, this->sizePolicy().hasHeightForWidth()));
-  this->mpExpertSubtree = new QListViewItem(this, "expert");
+  this->mpExpertSubtree = new QListViewItem(this, "Expert");
 
 #ifdef COPASI_DEBUG
-  this->matrixSubtree = new QListViewItem(this, "matrices");
+  this->matrixSubtree = new QListViewItem(this, "Matrices");
 #endif // COPASI_DEBUG
 
-  this->mpModelQuantitySubtree = new QListViewItem(this, "global quantities");
+  this->mpModelQuantitySubtree = new QListViewItem(this, "Global Quantities");
   this->mpModelQuantityRateSubtree =
-    new QListViewItem(this->mpModelQuantitySubtree, "rates");
+    new QListViewItem(this->mpModelQuantitySubtree, "Rates");
   this->mpModelQuantityTransientValueSubtree =
-    new QListViewItem(this->mpModelQuantitySubtree, "transient values");
+    new QListViewItem(this->mpModelQuantitySubtree, "Transient Values");
   this->mpModelQuantityInitialValueSubtree =
-    new QListViewItem(this->mpModelQuantitySubtree, "initial values");
+    new QListViewItem(this->mpModelQuantitySubtree, "Initial Values");
 
-  this->mpReactionSubtree = new QListViewItem(this, "reactions");
+  this->mpReactionSubtree = new QListViewItem(this, "Reactions");
   this->mpReactionFluxNumberSubtree =
-    new QListViewItem(this->mpReactionSubtree, "particle fluxes");
+    new QListViewItem(this->mpReactionSubtree, "Fluxes (Particle Numbers)");
   this->mpReactionFluxConcentrationSubtree =
-    new QListViewItem(this->mpReactionSubtree, "concentration fluxes");
+    new QListViewItem(this->mpReactionSubtree, "Fluxes (Concentration)");
   this->mpReactionParameterSubtree =
-    new QListViewItem(this->mpReactionSubtree, "reaction parameters");
+    new QListViewItem(this->mpReactionSubtree, "Reaction Parameters");
 
-  this->mpMetaboliteSubtree = new QListViewItem(this, "metabolites");
+  this->mpMetaboliteSubtree = new QListViewItem(this, "Species");
   this->mpMetaboliteRateNumberSubtree =
-    new QListViewItem(this->mpMetaboliteSubtree, "rates (particle numbers)");
+    new QListViewItem(this->mpMetaboliteSubtree, "Rates (Particle Numbers)");
   this->mpMetaboliteRateConcentrationSubtree =
-    new QListViewItem(this->mpMetaboliteSubtree, "rates (concentrations)");
+    new QListViewItem(this->mpMetaboliteSubtree, "Rates (Concentrations)");
   this->mpMetaboliteTransientNumberSubtree =
-    new QListViewItem(this->mpMetaboliteSubtree, "transient particle numbers");
+    new QListViewItem(this->mpMetaboliteSubtree, "Transient Particle Numbers");
   this->mpMetaboliteTransientConcentrationSubtree =
-    new QListViewItem(this->mpMetaboliteSubtree, "transient concentrations");
+    new QListViewItem(this->mpMetaboliteSubtree, "Transient Concentrations");
   this->mpMetaboliteInitialNumberSubtree =
-    new QListViewItem(this->mpMetaboliteSubtree, "initial particle numbers");
+    new QListViewItem(this->mpMetaboliteSubtree, "Initial Particle Numbers");
   this->mpMetaboliteInitialConcentrationSubtree =
-    new QListViewItem(this->mpMetaboliteSubtree, "initial concentrations");
+    new QListViewItem(this->mpMetaboliteSubtree, "Initial Concentrations");
 
-  this->mpCompartmentSubtree = new QListViewItem(this, "compartments");
+  this->mpCompartmentSubtree = new QListViewItem(this, "Compartments");
   this->mpCompartmentRateSubtree =
-    new QListViewItem(this->mpCompartmentSubtree, "rates");
+    new QListViewItem(this->mpCompartmentSubtree, "Rates");
   this->mpCompartmentTransientVolumeSubtree =
-    new QListViewItem(this->mpCompartmentSubtree, "transient volumes");
+    new QListViewItem(this->mpCompartmentSubtree, "Transient Volumes");
   this->mpCompartmentInitialVolumeSubtree =
-    new QListViewItem(this->mpCompartmentSubtree, "initial volumes");
+    new QListViewItem(this->mpCompartmentSubtree, "Initial Volumes");
 
-  this->mpTimeSubtree = new QListViewItem(this, "time");
+  this->mpTimeSubtree = new QListViewItem(this, "Time");
 
   //TODO enable initial values for compartments and global parameters when we need them.
 }
@@ -90,7 +95,6 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * pModel,
 
   const CCopasiObject * pObject;
   QListViewItem * pItem;
-
   pObject = pModel->getObject(CCopasiObjectName("Reference=Time"));
   if (filter(flag, pObject))
     {
@@ -321,6 +325,13 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * pModel,
   removeEmptySubTree(&mpCompartmentTransientVolumeSubtree);
   removeEmptySubTree(&mpCompartmentSubtree);
 
+  pObject = pModel->getObject(CCopasiObjectName("Reference=Quantity Conversion Factor"));
+  if (filter(flag, pObject))
+    {
+      pItem = new QListViewItem(this, "Quantity Conversion Factor");
+      treeItems[pItem] = pObject;
+    }
+
 #ifdef COPASI_DEBUG
 
   // experimental annotated matrix
@@ -548,9 +559,9 @@ bool CCopasiSimpleSelectionTree::filter(const SelectionFlag & flag, const CCopas
       if (!pObject->isValueDbl() && !pObject->isValueInt())
         return false;
     }
-  else if ((flag & DOUBLE) && !pObject->isValueDbl())
+  else if ((flag & BASE_DOUBLE) && !pObject->isValueDbl())
     return false;
-  else if ((flag & INTEGER) && !pObject->isValueInt())
+  else if ((flag & BASE_INTEGER) && !pObject->isValueInt())
     return false;
 
   if (pObject->isReference())
@@ -574,20 +585,21 @@ bool CCopasiSimpleSelectionTree::filter(const SelectionFlag & flag, const CCopas
 
           // CModelEntity are handled differently dependent on the type
           // of EXPRESSION.
-          if (flag & EXPRESSION)
+          if (flag & BASE_EXPRESSION)
             {
               // TRANSIENT_EXPRESSION
-              if (flag & TRANSIENT)
+              if (flag & BASE_TRANSIENT)
                 {
                   if (pEntity->getStatus() == CModelEntity::FIXED &&
                       pObject->getObjectName().compare(0, 7, "Initial") == 0)
                     return false;
                 }
               // INITIAL_EXPRESSION
-              else if (flag & INITIAL)
+              else if (flag & BASE_INITIAL)
                 {
                   if (pEntity->getStatus() != CModelEntity::ASSIGNMENT &&
-                      pObject->getObjectName().compare(0, 7, "Initial") != 0)
+                      (pObject->getObjectName().compare(0, 7, "Initial") != 0 &&
+                       pObject->getObjectName() != "Quantity Conversion Factor"))
                     return false;
                 }
 
@@ -596,12 +608,12 @@ bool CCopasiSimpleSelectionTree::filter(const SelectionFlag & flag, const CCopas
             }
 
           // INITIAL_VALUE
-          if ((flag & INITIAL)
+          if ((flag & BASE_INITIAL)
               && pObject->getObjectName().compare(0, 7, "Initial") != 0)
             return false;
 
           // TRANSIENT_VALUE
-          if ((flag & TRANSIENT)
+          if ((flag & BASE_TRANSIENT)
               && pObject->getObjectName().compare(0, 7, "Initial") == 0)
             return false;
 
@@ -615,9 +627,9 @@ bool CCopasiSimpleSelectionTree::filter(const SelectionFlag & flag, const CCopas
 
       if (pReaction)
         {
-          // INITIAL_VALUE
-          if ((flag & INITIAL) &&
-              !(flag & EXPRESSION))
+          // These are transient values which may be used in expressions.
+          if ((flag & BASE_INITIAL) &&
+              !(flag & BASE_EXPRESSION))
             return false;
 
           // Every other value of CReaction is valid.
@@ -630,17 +642,21 @@ bool CCopasiSimpleSelectionTree::filter(const SelectionFlag & flag, const CCopas
 
       if (pReaction)
         {
-          if (!(flag & EXPRESSION) &&
-              (flag & TRANSIENT))
+          // Local reaction parameters may not be used in any expression in the model.
+          if ((flag & BASE_MODEL))
+            return false;
+
+          // These are initial values which may be used in expressions.
+          if (!(flag & BASE_EXPRESSION) &&
+              (flag & BASE_TRANSIENT))
             return false;
 
           return true;
         }
     }
-  // CCopasiTimer may not be used for initial or transient values.
+  // CCopasiTimer may not be used in the model.
   else if (dynamic_cast< const CCopasiTimer * >(pObject) &&
-           !(flag & EXPRESSION) &&
-           ((flag & INITIAL) || (flag & TRANSIENT)))
+           (flag & BASE_MODEL))
     return false;
 
   // All tests passed :)

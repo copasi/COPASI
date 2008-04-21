@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-//   $Revision: 1.169 $
+//   $Revision: 1.169.2.1.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/15 21:18:07 $
+//   $Date: 2008/03/08 03:13:21 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -412,18 +417,21 @@ void CReaction::initializeParameters()
     }
 
   /* Remove parameters not fitting current function */
-  CCopasiParameterGroup::index_iterator begin = mParameters.beginIndex();
-  CCopasiParameterGroup::index_iterator it = mParameters.endIndex();
+  CCopasiParameterGroup::index_iterator it = mParameters.beginIndex();
+  CCopasiParameterGroup::index_iterator end = mParameters.endIndex();
   CFunctionParameter::DataType Type;
-
-  while (it != begin)
+  std::vector< std::string > ToBeDeleted;
+  for (; it != end; ++it)
     {
-      --it;
-
       name = (*it)->getObjectName();
       if (mMap.findParameterByName(name, Type) == C_INVALID_INDEX)
-        mParameters.removeParameter(name);
+        ToBeDeleted.push_back(name);
     }
+
+  std::vector< std::string >::const_iterator itToBeDeleted = ToBeDeleted.begin();
+  std::vector< std::string >::const_iterator endToBeDeleted = ToBeDeleted.end();
+  for (; itToBeDeleted != endToBeDeleted; ++itToBeDeleted)
+    mParameters.removeParameter(*itToBeDeleted);
 }
 
 void CReaction::initializeMetaboliteKeyMap()
@@ -951,6 +959,18 @@ CEvaluationNodeVariable* CReaction::object2variable(CEvaluationNodeObject* objec
                       replacementMap[id] = std::make_pair(object, pFunParam);
                     }
                 }
+              else if (dynamic_cast<CModel*>(object))
+                {
+                  id = object->getObjectName();
+                  id = this->escapeId(id);
+                  pVariableNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, id);
+                  if (replacementMap.find(id) == replacementMap.end())
+                    {
+                      CFunctionParameter* pFunParam = new CFunctionParameter(id, CFunctionParameter::FLOAT64,
+                                                      CFunctionParameter::TIME);
+                      replacementMap[id] = std::make_pair(object, pFunParam);
+                    }
+                }
               else
                 {
                   // error
@@ -970,6 +990,7 @@ CEvaluationNodeVariable* CReaction::object2variable(CEvaluationNodeObject* objec
               replacementMap[id] = std::make_pair(object, pFunParam);
             }
         }
+      /*
       else if (dynamic_cast<CModel*>(object))
         {
           // usage = "TIME"
@@ -982,6 +1003,12 @@ CEvaluationNodeVariable* CReaction::object2variable(CEvaluationNodeObject* objec
                                               CFunctionParameter::TIME);
               replacementMap[id] = std::make_pair(object, pFunParam);
             }
+        }
+        */
+      else
+        {
+          // error
+          CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 4);
         }
     }
   return pVariableNode;
@@ -1042,6 +1069,24 @@ CEvaluationNode* CReaction::objects2variables(CEvaluationNode* expression, std::
           delete pTmpNode;
           pTmpNode = NULL;
         }
+      // delay has a second child
+      /*
+      if((CEvaluationNodeFunction::SubType)CEvaluationNode::subType(expression->getType())==CEvaluationNodeFunction::DELAY)
+      {
+          pChildNode=dynamic_cast<CEvaluationNode*>(expression->getChild()->getSibling());
+          assert(pChildNode!=NULL);
+          pChildNode = this->objects2variables(pChildNode, replacementMap, copasi2sbmlmap);
+          if (pChildNode)
+          {
+              pTmpNode->addChild(pChildNode);
+          }
+          else
+          {
+              delete pTmpNode;
+              pTmpNode = NULL;
+          }
+      }
+      */
       break;
     case CEvaluationNode::CALL:
       pTmpNode = new CEvaluationNodeCall(static_cast<CEvaluationNodeCall::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
@@ -1063,7 +1108,7 @@ CEvaluationNode* CReaction::objects2variables(CEvaluationNode* expression, std::
       break;
     case CEvaluationNode::CHOICE:
       pTmpNode = new CEvaluationNodeChoice(static_cast<CEvaluationNodeChoice::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
-      // convert the two children as well
+      // convert the three children as well
       pChildNode = this->objects2variables(static_cast<CEvaluationNode*>(expression->getChild()), replacementMap, copasi2sbmlmap);
       if (pChildNode)
         {
@@ -1072,6 +1117,16 @@ CEvaluationNode* CReaction::objects2variables(CEvaluationNode* expression, std::
           if (pChildNode)
             {
               pTmpNode->addChild(pChildNode);
+              pChildNode = this->objects2variables(static_cast<CEvaluationNode*>(expression->getChild()->getSibling()->getSibling()), replacementMap, copasi2sbmlmap);
+              if (pChildNode)
+                {
+                  pTmpNode->addChild(pChildNode);
+                }
+              else
+                {
+                  delete pTmpNode;
+                  pTmpNode = NULL;
+                }
             }
           else
             {

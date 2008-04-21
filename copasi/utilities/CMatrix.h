@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CMatrix.h,v $
-//   $Revision: 1.31 $
+//   $Revision: 1.31.4.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/02 23:39:39 $
+//   $Date: 2008/02/27 19:35:49 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -152,7 +157,15 @@ class CMatrix
             }
           if (rows && cols)
             {
-              mArray = new CType[rows * cols];
+              try
+                {
+                  mArray = new CType[rows * cols];
+                }
+
+              catch (...)
+                {
+                  mArray = NULL;
+                }
 
               if (mArray == NULL)
                 {
@@ -339,7 +352,7 @@ class CMatrix
             Applied[to] = true;
           }
 
-      pdelete(pTmp);
+      pdeletev(pTmp);
       return true;
     }
 
@@ -349,7 +362,7 @@ class CMatrix
      * @param const CMatrix< CType > & A
      * @return ostream & os
      */
-#ifdef WIN32
+#if defined _MSC_VER && _MSC_VER < 1201 // 1200 Identifies Visual C++ 6.0
     friend std::ostream &operator <<(std::ostream &os,
                                      const CMatrix< CType > & A);
 #else

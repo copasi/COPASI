@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCATask.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.12.12.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/04/09 18:56:14 $
+//   $Date: 2008/02/25 21:15:16 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -68,6 +73,7 @@ void CMCATask::load(CReadConfig & configBuffer)
 }
 
 bool CMCATask::initialize(const OutputFlag & of,
+                          COutputHandler * pOutputHandler,
                           std::ostream * pOstream)
 {
   assert(mpProblem && mpMethod);
@@ -81,13 +87,13 @@ bool CMCATask::initialize(const OutputFlag & of,
   bool success = true;
 
   //initialize reporting
-  if (!CCopasiTask::initialize(of, pOstream)) success = false;
+  if (!CCopasiTask::initialize(of, pOutputHandler, pOstream)) success = false;
   if (!pProblem->getModel()->compileIfNecessary(mpCallBack)) success = false;
 
   CSteadyStateTask *pSubTask = pProblem->getSubTask();
 
   if (pSubTask)
-    success = pSubTask->initialize(CCopasiTask::NO_OUTPUT, mReport.getStream());
+    success = pSubTask->initialize(CCopasiTask::NO_OUTPUT, NULL, mReport.getStream());
   //success = pSubTask->initialize(of, mReport.getStream());
 
   return success;

@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/local.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.7.4.1 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/12/11 21:10:27 $
+//   $Date: 2008/04/02 07:50:03 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -34,14 +39,20 @@
 #include "steadystate/CSteadyStateProblem.h"
 #include "steadystate/CSteadyStateMethod.h"
 #include "steadystate/CNewtonMethod.h"
-/*
 #include "scan/CScanTask.h"
 #include "scan/CScanProblem.h"
 #include "scan/CScanMethod.h"
- */
+#include "lyap/CLyapTask.h"
+#include "lyap/CLyapProblem.h"
+#include "lyap/CLyapMethod.h"
+#include "optimization/COptItem.h"
+#include "optimization/COptTask.h"
+#include "optimization/COptProblem.h"
+#include "optimization/COptMethod.h"
 
 //#include <iostream>
 
+typedef CCopasiVector<CCopasiTask> TaskVector;
 typedef CCopasiVectorN<CCopasiTask> TaskVectorN;
 
 typedef CCopasiVectorN<CModelValue> ModelValueVectorN;
@@ -63,6 +74,15 @@ typedef CCopasiVectorN<CEvaluationTree> CEvaluationTreeVectorN;
 typedef std::vector<CFunction> CFunctionStdVector;
 
 typedef CCopasiVector<CChemEqElement> CChemEqElementVector;
+
+typedef CCopasiVector<CModelValue> ModelValueVector;
+typedef CCopasiVectorN<CReportDefinition> CReportDefinitionVectorN;
+typedef CCopasiVectorN<CMetab> MetabVectorN;
+typedef CCopasiVector<CCompartment> CompartmentVector;
+typedef CCopasiVectorN<CCompartment> CompartmentVectorN;
+typedef CCopasiVectorN<CReaction> ReactionVectorN;
+typedef CCopasiVector<CReaction> ReactionVector;
+typedef CCopasiVector<CEvaluationTree> CEvaluationTreeVector;
 
 typedef CCopasiMatrixInterface<CMatrix<C_FLOAT64> > AnnotatedFloatMatrix;
 
@@ -159,50 +179,48 @@ struct swig_type_info*
     struct swig_type_info* pInfo = SWIGTYPE_p_CCopasiMethod;
     switch (method->getSubType())
       {
-        /*
-              case CCopasiMethod::RandomSearch:
-                pInfo=SWIGTYPE_p_;
-                break;
-              case CCopasiMethod::RandomSearchMaster:
-                pInfo=SWIGTYPE_p_;
-                break;
-              case CCopasiMethod::SimulatedAnnealing:
-                pInfo=SWIGTYPE_p_;
-                break;
-              case CCopasiMethod::GeneticAlgorithm:
-                pInfo=SWIGTYPE_p_;
-                break;
-              case CCopasiMethod::EvolutionaryProgram:
-                pInfo=SWIGTYPE_p_;
-                break;
-              case CCopasiMethod::SteepestDescent:
-                pInfo=SWIGTYPE_p_;
-                break;
-              case CCopasiMethod::HybridGASA:
-                pInfo=SWIGTYPE_p_;
-                break;
-              case CCopasiMethod::GeneticAlgorithmSR:
-                pInfo=SWIGTYPE_p_;
-                break;
-              case CCopasiMethod::HookeJeeves:
-                pInfo=SWIGTYPE_p_;
-                break;
-              case CCopasiMethod::LevenbergMarquart:
-                pInfo=SWIGTYPE_p_;
-                break;
-              case CCopasiMethod::NelderMead:
-                pInfo=SWIGTYPE_p_;
-                break;
-              case CCopasiMethod::SRES:
-                pInfo=SWIGTYPE_p_;
-                break;
-              case CCopasiMethod::Statistics:
-                pInfo=SWIGTYPE_p_;
-                break;
-              case CCopasiMethod::ParicleSwarm:
-                pInfo=SWIGTYPE_p_;
-                break;
-            */
+      case CCopasiMethod::RandomSearch:
+        pInfo = SWIGTYPE_p_COptMethod;
+        break;
+      case CCopasiMethod::RandomSearchMaster:
+        pInfo = SWIGTYPE_p_COptMethod;
+        break;
+      case CCopasiMethod::SimulatedAnnealing:
+        pInfo = SWIGTYPE_p_COptMethod;
+        break;
+      case CCopasiMethod::GeneticAlgorithm:
+        pInfo = SWIGTYPE_p_COptMethod;
+        break;
+      case CCopasiMethod::EvolutionaryProgram:
+        pInfo = SWIGTYPE_p_COptMethod;
+        break;
+      case CCopasiMethod::SteepestDescent:
+        pInfo = SWIGTYPE_p_COptMethod;
+        break;
+      case CCopasiMethod::HybridGASA:
+        pInfo = SWIGTYPE_p_COptMethod;
+        break;
+      case CCopasiMethod::GeneticAlgorithmSR:
+        pInfo = SWIGTYPE_p_COptMethod;
+        break;
+      case CCopasiMethod::HookeJeeves:
+        pInfo = SWIGTYPE_p_COptMethod;
+        break;
+      case CCopasiMethod::LevenbergMarquardt:
+        pInfo = SWIGTYPE_p_COptMethod;
+        break;
+      case CCopasiMethod::NelderMead:
+        pInfo = SWIGTYPE_p_COptMethod;
+        break;
+      case CCopasiMethod::SRES:
+        pInfo = SWIGTYPE_p_COptMethod;
+        break;
+      case CCopasiMethod::Statistics:
+        pInfo = SWIGTYPE_p_COptMethod;
+        break;
+      case CCopasiMethod::ParticleSwarm:
+        pInfo = SWIGTYPE_p_COptMethod;
+        break;
       case CCopasiMethod::Newton:
         pInfo = SWIGTYPE_p_CNewtonMethod;
         break;

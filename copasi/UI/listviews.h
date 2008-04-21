@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-//   $Revision: 1.136 $
+//   $Revision: 1.136.2.1.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/12/05 20:16:26 $
+//   $Date: 2008/02/20 20:25:40 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -30,12 +35,17 @@ class CTabWidget;
 class ModelWidget;
 #endif
 
+class Refresh;
+class CCopasiObject;
+
 class DataModelGUI;
 class CQCompartment;
 class CompartmentsWidget;
 class CQDifferentialEquations;
+#ifdef COPASI_DEBUG
 class CQEventsWidget;
 class CQEventWidget1;
+#endif // COPASI_DEBUG
 class FunctionWidget1;
 class FunctionWidget;
 class CMathModel;
@@ -44,8 +54,8 @@ class MetabolitesWidget;
 class CQEFMWidget;
 //class ModelWidget;
 class ModelValuesWidget;
-class MoietyWidget1;
-class MoietyWidget;
+class CQMoietiesTaskResult;
+class CQMoietiesTaskWidget;
 class ParametersWidget;
 class ReactionsWidget1;
 class ReactionsWidget;
@@ -59,10 +69,13 @@ class TableDefinition;
 #ifdef COPASI_TSS
 class TSSWidget;
 #endif // COPASI_TSS
-#ifdef COPASI_DEBUG
+#ifdef COPASI_TSSA
 class CQTSSAWidget;
 class CQTSSAResultWidget;
 class CQTSSAResultSubWidget;
+#endif
+#ifdef COPASI_DEBUG
+class CQUpdatesWidget;
 #endif
 class CQOptimizationWidget;
 class OptimizationResultWidget;
@@ -153,6 +166,10 @@ class ListViews : public QSplitter
 
   private:
     static DataModelGUI* dataModel;
+    static std::vector< Refresh * > mUpdateVector;
+    static std::set< const CCopasiObject * > mChangedObjects;
+    static int mFramework;
+
     QListViewItem* lastSelection;
     CopasiWidget* currentWidget;
     std::string lastKey;
@@ -177,6 +194,7 @@ class ListViews : public QSplitter
                                       const std::string & key);
 
     static void refreshInitialValues();
+    static void buildChangedObjects();
 
     void setChildWidgetsFramework(int framework);
 
@@ -191,8 +209,10 @@ class ListViews : public QSplitter
     CQCompartment *compartmentsWidget1;
     CQSplashWidget *defaultWidget;
     CQDifferentialEquations *differentialEquations;
+#ifdef COPASI_DEBUG
     CQEventsWidget *eventsWidget;
     CQEventWidget1 *eventWidget1;
+#endif // COPASI_DEBUG
     FunctionWidget *functionWidget;
     FunctionWidget1 *functionWidget1;
     CQLyapWidget *lyapWidget;
@@ -207,8 +227,8 @@ class ListViews : public QSplitter
     ModelValuesWidget *modelValuesWidget;
     CQModelValue *mpModelValueWidget;
     CQEFMWidget *modesWidget;
-    MoietyWidget *moietyWidget;
-    MoietyWidget1 *moietyWidget1;
+    CQMoietiesTaskResult *mpMoietiesTaskResult;
+    CQMoietiesTaskWidget *mpMoietiesTaskWidget;
     CQOptimizationWidget *optimizationWidget;
     OptimizationResultWidget *optResultWidgetS;
     OptimizationResultWidget *optResultWidgetT;
@@ -231,9 +251,12 @@ class ListViews : public QSplitter
 #endif // COPASI_TSS
     TimeSeriesWidget *timeSeriesWidget;
     CQTrajectoryWidget *trajectoryWidget;
-#ifdef COPASI_DEBUG
+#ifdef COPASI_TSSA
     CQTSSAWidget *tssaWidget;
     CQTSSAResultWidget *tssaResultWidget;
+#endif // COPASI_DEBUG
+#ifdef COPASI_DEBUG
+    CQUpdatesWidget *mpUpdatesWidget;
 #endif // COPASI_DEBUG
 #ifdef COPASI_SSA
     SSAWidget * mSSAWidget;

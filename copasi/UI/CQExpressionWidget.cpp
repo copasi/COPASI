@@ -1,27 +1,28 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.cpp,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.19.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/12 21:06:11 $
+//   $Date: 2008/02/04 23:19:50 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #include <iostream>
 
-#include "copasi.h"
-
 #include "CQExpressionWidget.h"
-
-#ifdef Darwin
-# define FALSE false
-#endif
-
+#include "CQMessageBox.h"
 #include "CCopasiSelectionDialog.h"
 #include "qtUtilities.h"
+
+#include "copasi.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "function/CExpression.h"
@@ -414,10 +415,7 @@ std::string CQExpressionWidget::getExpression() const
 
 void CQExpressionWidget::setExpressionType(const CCopasiSimpleSelectionTree::SelectionFlag & expressionType)
 {
-  if (expressionType & CCopasiSimpleSelectionTree::INITIAL)
-    mExpressionType = CCopasiSimpleSelectionTree::INITIAL_EXPRESSION;
-  else
-    mExpressionType = CCopasiSimpleSelectionTree::TRANSIENT_EXPRESSION;
+  mExpressionType = expressionType;
 }
 
 void CQExpressionWidget::slotSelectObject()
@@ -427,6 +425,14 @@ void CQExpressionWidget::slotSelectObject()
 
   if (pObject)
     {
+      // Check whether the object is valid
+      if (!CCopasiSimpleSelectionTree::filter(mExpressionType, pObject))
+        {
+          CQMessageBox::critical(this, "Invalid Selection",
+                                 "The use of the selected object is not allowed in this type of expression.");
+          return;
+        }
+
       std::string Insert = pObject->getObjectDisplayName();
       mParseList[Insert] = pObject;
 

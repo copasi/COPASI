@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.cpp,v $
-//   $Revision: 1.37 $
+//   $Revision: 1.37.4.1 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/12/06 20:44:19 $
+//   $Author: shoops $
+//   $Date: 2008/02/08 13:51:43 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -95,6 +100,10 @@ CEvaluationNode * CEvaluationNode::create(const Type & type,
     case CEvaluationNode::WHITESPACE:
       pNode = new CEvaluationNodeWhiteSpace((CEvaluationNodeWhiteSpace::SubType) subType(type),
                                             contents);
+      break;
+
+    case CEvaluationNode::INVALID:
+    case CEvaluationNode::MV_FUNCTION:
       break;
     }
 

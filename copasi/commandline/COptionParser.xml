@@ -1,6 +1,19 @@
 <!--
     This file demostrates how to specify options to clo++
 -->
+<!-- Begin CVS Header -->
+<!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptionParser.xml,v $ -->
+<!--   $Revision: 1.14.14.5 $ -->
+<!--   $Name:  $ -->
+<!--   $Author: shoops $ -->
+<!--   $Date: 2008/03/07 18:27:52 $ -->
+<!-- End CVS Header -->
+
+<!-- Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Properties, Inc., EML Research, gGmbH, University of Heidelberg, -->
+<!-- and The University of Manchester. -->
+<!-- All rights reserved. -->
+
 <cloxx>
  <program>
    <comment>Program comment</comment>
@@ -10,7 +23,7 @@
    <autohelp/>
    <variable name="cxx_namespace" value="copasi"></variable>
    <variable name="cxx_header_file" value="COptionParser.h"></variable>
-   <variable name="cxx_header_def" value="COPASI_options"></variable>
+   <variable name="cxx_header_def" value="COPASI_COptionParser"></variable>
    <variable name="cxx_class" value="COptionParser"></variable>
    <variable name="cxx_source_file" value="COptionParser.cpp"></variable>
  </config>
@@ -20,6 +33,7 @@
            mandatory="no"
            strict="yes"
            location="commandline"
+           argname="dir"
            hidden="no">
     <name>configdir</name>
     <comment>
@@ -32,6 +46,7 @@
            mandatory="no"
            strict="yes"
            location="commandline"
+           argname="file"
            hidden="no">
     <name>configfile</name>
     <comment>
@@ -44,6 +59,7 @@
            mandatory="no"
            strict="yes"
            location="commandline"
+           argname="dir"
            hidden="no">
     <name>copasidir</name>
     <name>c</name>
@@ -56,6 +72,7 @@
            mandatory="no"
            strict="yes"
            location="commandline"
+           argname="dir"
            hidden="no">
     <name>home</name>
     <comment>
@@ -67,6 +84,7 @@
            mandatory="no"
            strict="yes"
            location="both"
+           argname="dir"
            hidden="no">
     <name>tmp</name>
     <name>t</name>
@@ -85,6 +103,18 @@
     <comment>
      Enable output of messages during runtime to std::error.
     </comment>
+   </option>
+   <option id="NoLogo"
+           type="flag"
+           mandatory="no"
+           strict="yes"
+           location="both"
+           default="false"
+           hidden="no">
+     <name>nologo</name>
+     <comment>
+       Surpresses the startup message.
+     </comment>
    </option>
    <option id="License"
            type="flag"
@@ -135,11 +165,24 @@
     </comment>
    </option>
 -->
+   <option id="Validate"
+           type="flag"
+           mandatory="no"
+           strict="yes"
+           location="both"
+           default="false"
+           hidden="no">
+     <name>validate</name>
+     <comment>
+       Validate the given input file (COPASI or SBML).
+     </comment>
+   </option>
    <option id="Save"
            type="string"
            mandatory="no"
            strict="yes"
            location="both"
+           argname="file"
            hidden="no">
     <name>save</name>
     <name>s</name>
@@ -152,6 +195,7 @@
            mandatory="no"
            strict="yes"
            location="commandline"
+           argname="file"
            hidden="no">
     <name>importSBML</name>
     <name>i</name>
@@ -162,16 +206,34 @@
            mandatory="no"
            strict="yes"
            location="commandline"
+           argname="file"
            hidden="no">
     <name>exportSBML</name>
     <name>e</name>
     <comment>The SBML file to export.</comment>
+   </option>
+   <option id="SBMLSchema"
+           type="enum"
+           mandatory="no"
+           strict="yes"
+           location="commandline"
+           hidden="no"
+           argname="schema"
+           default="L2V3">
+     <enum id="L1V1" name="L1V1" />
+     <enum id="L1V2" name="L1V2" />
+     <enum id="L2V1" name="L2V1" />
+     <enum id="L2V2" name="L2V2" />
+     <enum id="L2V3" name="L2V3" />
+     <name>SBMLSchema</name>
+     <comment>The Schema of the SBML file to export.</comment>
    </option>
    <option id="ExportBerkeleyMadonna"
            type="string"
            mandatory="no"
            strict="yes"
            location="commandline"
+           argname="file"
            hidden="no">
     <name>exportBerkeleyMadonna</name>
     <comment>The Berkeley Madonna file to export.</comment>
@@ -181,9 +243,20 @@
            mandatory="no"
            strict="yes"
            location="commandline"
+           argname="file"
            hidden="no">
     <name>exportC</name>
     <comment>The C code file to export.</comment>
+   </option>
+   <option id="ExportXPPAUT"
+           type="string"
+           mandatory="no"
+           strict="yes"
+           location="commandline"
+           argname="file"
+           hidden="no">
+    <name>exportXPPAUT</name>
+    <comment>The XPPAUT file to export.</comment>
    </option>
 <!--
    <option id="Default"
@@ -202,6 +275,7 @@
            mandatory="no"
            strict="yes"
            location="commandline"
+           argname="code"
            hidden="yes">
     <name>rCode</name>
     <comment>The License Registration Code.</comment>
@@ -211,6 +285,7 @@
            mandatory="no"
            strict="yes"
            location="commandline"
+           argname="email"
            hidden="yes">
     <name>rEmail</name>
     <comment>The Registered Email.</comment>
@@ -220,6 +295,7 @@
            mandatory="no"
            strict="yes"
            location="commandline"
+           argname="name"
            hidden="yes">
     <name>rUser</name>
     <comment>The Registered User.</comment>

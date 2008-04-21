@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CEigen.cpp,v $
-//   $Revision: 1.44 $
+//   $Revision: 1.44.4.1.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/25 18:32:09 $
+//   $Date: 2008/01/11 14:30:57 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -269,6 +274,12 @@ void CEigen::calcEigenValues(const CMatrix< C_FLOAT64 > & matrix)
          mpBWork, // NULL
          &mInfo);        // output
 
+  if (mInfo != 0)
+    {
+      // Exception
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCEigen + 1, -mInfo);
+    }
+
   mLWork = (C_INT) mWork[0];
   mWork.resize(mLWork);
 
@@ -400,7 +411,33 @@ void CEigen::calcEigenValues(const CMatrix< C_FLOAT64 > & matrix)
          mpBWork, // NULL
          &mInfo);        // output
 
-  if (mInfo) fatalError();
+  if (mInfo != 0)
+    {
+      if (mInfo < 0)
+        {
+          // Exception
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCEigen + 1, -mInfo);
+        }
+      else if (mInfo <= mN)
+        {
+          // Warning
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCEigen + 2, mInfo);
+        }
+      else if (mInfo == mN + 1)
+        {
+          // Warning
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCEigen + 3, mInfo);
+        }
+      else if (mInfo == mN + 2)
+        {
+          // Warning
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCEigen + 4, mInfo);
+        }
+      else // Catch all, should never happen.
+        fatalError();
+    }
+
+  return;
 }
 
 void CEigen::stabilityAnalysis(const C_FLOAT64 & resolution)

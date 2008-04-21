@@ -1,12 +1,17 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/unittests/Test_RunOptimization.java,v $ 
-//   $Revision: 1.2 $ 
+//   $Revision: 1.2.4.1 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2007/12/12 14:53:31 $ 
+//   $Date: 2008/04/02 07:50:04 $ 
 // End CVS Header 
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc. and EML Research, gGmbH. 
 // All rights reserved. 
 
@@ -143,7 +148,7 @@ public class Test_RunOptimization extends TestCase
         boolean result=false;
         try
         {
-            if(optTask.initialize(CCopasiTask.NO_OUTPUT,null)!=false)
+            if(optTask.initialize(CCopasiTask.NO_OUTPUT,CCopasiDataModel.getGlobal(),null)!=false)
             {
               result=optTask.process(true);
             }

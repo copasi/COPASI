@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.170 $
+//   $Revision: 1.170.2.1.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/15 21:18:50 $
+//   $Date: 2008/03/05 16:38:32 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -53,6 +58,7 @@
 #include "trajectory/CTrajectoryTask.h"
 #include "lyap/CLyapTask.h"
 #include "sensitivities/CSensTask.h"
+#include "moieties/CMoietiesTask.h"
 #include "plot/COutputDefinitionVector.h"
 #include "plot/CPlotSpecification.h"
 #include "plot/CPlotItem.h"
@@ -369,7 +375,7 @@ void CCopasiXMLParser::UnknownElement::end(const XML_Char *pszName)
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
       {
-        CCopasiMessage(CCopasiMessage::RAW, MCXML + 3,
+        CCopasiMessage(CCopasiMessage::WARNING, MCXML + 3,
                        pszName, mLineNumber);
       }
 
@@ -494,6 +500,8 @@ void CCopasiXMLParser::COPASIElement::end(const XML_Char * pszName)
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
     }
+  else if (!strcmp(pszName, "GUI") && mCommon.pGUI == NULL)
+    CCopasiMessage::getLastMessage();
   else
     pdelete(mpCurrentHandler);
 
@@ -772,6 +780,9 @@ void CCopasiXMLParser::FunctionElement::start(const XML_Char *pszName,
 
 void CCopasiXMLParser::FunctionElement::end(const XML_Char *pszName)
 {
+  if (mCurrentElement == MiriamAnnotation && !strcmp(pszName, "Function"))
+    mCurrentElement = Function;
+
   // It is possible that we have an Expression but no ListOfParameterDescriptions,
   // i.e., mCurrentElement = Expression and pszName = Function may occur
   // and is valid.
@@ -802,8 +813,6 @@ void CCopasiXMLParser::FunctionElement::end(const XML_Char *pszName)
 
       mCommon.pFunction->setMiriamAnnotation(mCommon.CharacterData);
       mCommon.CharacterData = "";
-
-      mpCurrentHandler = NULL;
       break;
 
     case Expression:
@@ -1253,6 +1262,8 @@ void CCopasiXMLParser::ModelElement::start(const XML_Char *pszName,
   CModel::QuantityUnit QuantityUnit;
   const char * StateVariable;
   CModel::ModelType ModelType;
+
+  mpCurrentHandler = NULL;
   mCurrentElement++; /* We should always be on the next element */
 
   switch (mCurrentElement)
@@ -1388,8 +1399,6 @@ void CCopasiXMLParser::ModelElement::end(const XML_Char *pszName)
 
       mCommon.pModel->setMiriamAnnotation(mCommon.CharacterData);
       mCommon.CharacterData = "";
-
-      mpCurrentHandler = NULL;
       break;
 
     case Comment:
@@ -1399,8 +1408,6 @@ void CCopasiXMLParser::ModelElement::end(const XML_Char *pszName)
 
       mCommon.pModel->setComments(mCommon.CharacterData);
       mCommon.CharacterData = "";
-
-      mpCurrentHandler = NULL;
       break;
 
     case InitialExpression:
@@ -1417,8 +1424,6 @@ void CCopasiXMLParser::ModelElement::end(const XML_Char *pszName)
         while (CCopasiMessage::size() > Size)
           CCopasiMessage::getLastMessage();
       }
-
-      mpCurrentHandler = NULL;
       break;
 
     case ListOfCompartments:
@@ -1720,6 +1725,7 @@ void CCopasiXMLParser::CompartmentElement::start(const XML_Char *pszName,
   const char * simulationType;
   CModelEntity::Status SimulationType;
 
+  mpCurrentHandler = NULL;
   mCurrentElement++; /* We should always be on the next element */
 
   switch (mCurrentElement)
@@ -1775,6 +1781,9 @@ void CCopasiXMLParser::CompartmentElement::start(const XML_Char *pszName,
 
 void CCopasiXMLParser::CompartmentElement::end(const XML_Char *pszName)
 {
+  if (mCurrentElement == MiriamAnnotation && !strcmp(pszName, "Compartment"))
+    mCurrentElement = Compartment;
+
   // It is possible that we have an Expression but no InitialExpression,
   // i.e., mCurrentElement = Expression and pszName = Compartment may occur
   // and is valid.
@@ -1953,6 +1962,7 @@ void CCopasiXMLParser::MetaboliteElement::start(const XML_Char *pszName,
   const char reactions[] = "reactions";
   const char * Compartment;
 
+  mpCurrentHandler = NULL;
   mCurrentElement++; /* We should always be on the next element */
 
   switch (mCurrentElement)
@@ -2026,6 +2036,9 @@ void CCopasiXMLParser::MetaboliteElement::start(const XML_Char *pszName,
 
 void CCopasiXMLParser::MetaboliteElement::end(const XML_Char *pszName)
 {
+  if (mCurrentElement == MiriamAnnotation && !strcmp(pszName, "Metabolite"))
+    mCurrentElement = Metabolite;
+
   // It is possible that we have an Expression but no InitialExpression,
   // i.e., mCurrentElement = Expression and pszName = Metabolite may occur
   // and is valid.
@@ -2252,7 +2265,7 @@ void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
         mpCurrentHandler = &mParser.mCharacterDataElement;
       break;
 
-    case MathML:                          // Old file format support
+    case MathML:                              // Old file format support
       if (!strcmp(pszName, "MathML"))
         {
           /* If we do not have a MathML element handler we create one. */
@@ -2280,6 +2293,9 @@ void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
 
 void CCopasiXMLParser::ModelValueElement::end(const XML_Char *pszName)
 {
+  if (mCurrentElement == MiriamAnnotation && !strcmp(pszName, "ModelValue"))
+    mCurrentElement = ModelValue;
+
   // It is possible that we have an Expression but no InitialExpression,
   // i.e., mCurrentElement = Expression and pszName = ModelValue may occur
   // and is valid.
@@ -2342,7 +2358,7 @@ void CCopasiXMLParser::ModelValueElement::end(const XML_Char *pszName)
       mCurrentElement = ModelValue;
       break;
 
-    case MathML:                          // Old file format support
+    case MathML:                              // Old file format support
       if (strcmp(pszName, "MathML"))
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                        pszName, "MathML", mParser.getCurrentLineNumber());
@@ -2627,8 +2643,6 @@ void CCopasiXMLParser::ReactionElement::end(const XML_Char *pszName)
 
       mCommon.pReaction->setMiriamAnnotation(mCommon.CharacterData);
       mCommon.CharacterData = "";
-
-      mpCurrentHandler = NULL;
       break;
 
     case ListOfSubstrates:
@@ -6791,6 +6805,9 @@ void CCopasiXMLParser::TaskElement::start(const XML_Char *pszName, const XML_Cha
           mCommon.pCurrentTask = new CTSSATask(mCommon.pTaskList);
           break;
 #endif // COPASI_TSSA
+        case CCopasiTask::moieties:
+          mCommon.pCurrentTask = new CMoietiesTask(Type, mCommon.pTaskList);
+          break;
         default:
           mParser.pushElementHandler(&mParser.mUnknownElement);
           mParser.onStartElement(pszName, papszAttrs);

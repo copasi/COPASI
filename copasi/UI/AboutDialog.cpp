@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/AboutDialog.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.12.6.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/20 18:35:42 $
+//   $Date: 2008/03/11 17:45:51 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -22,32 +27,40 @@
 #include "copasi.h"
 
 const char* AboutDialog::text =
-  "COPASI is a simulator for biochemical networks. It is a joint project\n"
-  "by the Mendes and Kummer groups at VBI and EML Research, respectively.\n"
-  "\n"
-  "This is COPASI %1. Please check for\n"
-  "new release at http://www.copasi.org where new releases will be made\n"
-  "available for download.\n"
-  "\n"
-  "Please report errors to bugs@copasi.org.\n"
-  "\n"
-  "COPASI is provided \"AS IS\" without warranty of any kind, either\n"
-  "express or implied, including but not limited to the implied\n"
-  "warranties of merchantability and fitness for a particular purpose. In\n"
-  "no event shall the Authors be liable for any damages whatsoever\n"
-  "including direct, indirect, incidental, consequential, loss of\n"
-  "business profits or special damages, even if the Authors have been\n"
-  "advised of the possibility of such damages.\n"
-  "\n"
-  "The following software and algorithms are being used by Copasi:\n"
-  "  - Qt3 GUI framework\n"
-  "  - QWT 5.0 Beta (Snapshot 2006-01-25)\n"
-  "  - Expat 1.95.7 XML parser\n"
-  "  - libsbml 2.3.4\n"
-  "  - CLAPACK 3.0, LAPACK 3.1.0, or Intel Math Kernel Library\n"
-  "  - LSODA from ODEPACK\n"
-  "  - Mersenne Twister random number generator,\n"
-  "    Copyright (C) 1997 - 2002, Makoto Matsumoto and Takuji Nishimura\n"
+  "<h2>COPASI %1</h2>"
+  "<p>"
+  "COPASI is a simulator for biochemical networks. It is a joint project "
+  "by the Mendes group (VBI and University of Manchester) and the Kummer group "
+  "(University of Heidelberg and EML Research)"
+  "</p><p>"
+  "Please check for new release at http://www.copasi.org, where new releases "
+  "will be made available for download."
+  "</p><p>"
+  "Should you have any questions regarding the use of COPASI please visit our "
+  "user support at http://www.copasi.org/UserSupportForum."
+  "</p><p>If you find any errors or problem you may email us at bugs@copasi.org or "
+  "use our issue tracker at http://www.copasi.org/tracker."
+  "</p><p>"
+  "COPASI is provided \"AS IS\" without warranty of any kind, either "
+  "expressed or implied, including but not limited to the implied "
+  "warranties of merchantability and fitness for a particular purpose. In "
+  "no event shall the Authors be liable for any damages whatsoever "
+  "including direct, indirect, incidental, consequential, loss of "
+  "business profits or special damages, even if the Authors have been "
+  "advised of the possibility of such damages."
+  "</p><p>"
+  "The following software and algorithms are being used by COPASI: "
+  "<ul>"
+  "<li>Qt3 GUI framework</li>"
+  "<li>QWT 5.0.2</li>"
+  "<li>Expat 2.0.1 XML parser</li>"
+  "<li>libsbml 3.1.1</li>"
+  "<li>CLAPACK 3.0, LAPACK 3.1.0, or Intel Math Kernel Library</li>"
+  "<li>LSODA from ODEPACK</li>"
+  "<li>Mersenne Twister random number generator, "
+  "    Copyright (C) 1997 - 2002, Makoto Matsumoto and Takuji Nishimura</li>"
+  "</ul>"
+  "</p>"
 ;
 
 AboutDialog::AboutDialog(QWidget* parent,

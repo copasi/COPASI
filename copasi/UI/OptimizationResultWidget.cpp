@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationResultWidget.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.7.4.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/12/05 20:16:26 $
+//   $Date: 2008/02/27 19:02:09 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -27,15 +32,15 @@
 #include "steadystate/CSteadyStateTask.h"
 #include "model/CModel.h"
 #include "trajectory/CTrajectoryTask.h"
-
-//#include "report/CKeyFactory.h"
+#include "trajectory/CTimeSeries.h"
 
 /*
  *  Constructs a OptimizationResultWidget which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
 OptimizationResultWidget::OptimizationResultWidget(QWidget* parent, const char* name, WFlags fl, const int comingFrom)
-    : CopasiWidget(parent, name, fl), objKey("")
+    : CopasiWidget(parent, name, fl), objKey(""),
+    mpTimeSeries(NULL)
 {
   if (!name)
     setName("OptimizationResultWidget");
@@ -68,7 +73,9 @@ OptimizationResultWidget::OptimizationResultWidget(QWidget* parent, const char* 
  *  Destroys the object and frees any allocated resources
  */
 OptimizationResultWidget::~OptimizationResultWidget()
-{}
+{
+  pdelete(mpTimeSeries);
+}
 
 /* This function loads the optimization result widget when its name is
   clicked in the tree   */
@@ -85,34 +92,21 @@ bool OptimizationResultWidget::loadFromBackend()
 
   // We need to use the solution and run Steady-State or Time-Course.
   const CVector< C_FLOAT64 > & Solution = pProblem->getSolutionVariables();
-  const std::vector< UpdateMethod * > & SetCalculateVariable =
-    pProblem->getCalculateVariableUpdateMethods();
 
-  const C_FLOAT64 * pIt = Solution.array();
-  const C_FLOAT64 * pEnd = pIt + Solution.size();
-  std::vector< UpdateMethod * >::const_iterator itUpdate = SetCalculateVariable.begin();
-
-  success = (pIt != pEnd);
-
-  for (; pIt != pEnd; ++pIt, ++itUpdate) (**itUpdate)(*pIt);
-
-  if (success)
-    {
-      pProblem->calculate();
-      success = (pProblem->getCalculateValue() != DBL_MAX);
-    }
+  success &= (pProblem->getSolutionValue() < DBL_MAX);
 
   if (success)
     pProblem->printResult(&os);
   else
     os << "<h2>No result available, please execute the optimization task.</h2>";
 
-  if (mCentralWidgetSteady == NULL)
+  if (mCentralWidgetTime != NULL)
     {
       mCentralWidgetTime->table()->setTimeSeries(dynamic_cast<CTrajectoryTask *>((*CCopasiDataModel::Global->getTaskList())["Time-Course"])->getTimeSeries());
       mCentralWidgetTime->optimizationResultText->setText(FROM_UTF8(os.str()));
     }
-  else
+
+  if (mCentralWidgetSteady != NULL)
     {
       CSteadyStateTask * pSteadyStateTask =
         dynamic_cast<CSteadyStateTask *>((*CCopasiDataModel::Global->getTaskList())["Steady-State"]);
@@ -143,13 +137,24 @@ bool OptimizationResultWidget::saveToBackend()
   return true;
 }
 
-bool OptimizationResultWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action
-                                      C_UNUSED(action), const std::string & C_UNUSED(key))
+bool OptimizationResultWidget::update(ListViews::ObjectType objectType,
+                                      ListViews::Action action,
+                                      const std::string & C_UNUSED(key))
 {
-  if (this->isShown())
-    return loadFromBackend();
-  else
-    return true;
+  if (objectType == ListViews::MODEL &&
+      action == ListViews::ADD)
+    {
+      if (mCentralWidgetTime != NULL)
+        {
+          mCentralWidgetTime->table()->setTimeSeries(CTimeSeries());
+          mCentralWidgetTime->optimizationResultText->setText("<h2>No result available, please execute the optimization task.</h2>");
+        }
+
+      if (mCentralWidgetSteady != NULL)
+        mCentralWidgetSteady->optimizationResultText->setText("<h2>No result available, please execute the optimization task.</h2>");
+    }
+
+  return true;
 }
 
 bool OptimizationResultWidget::leave()

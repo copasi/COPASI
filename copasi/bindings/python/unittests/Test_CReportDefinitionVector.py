@@ -1,6 +1,15 @@
-# Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
-# Properties, Inc. and EML Research, gGmbH.
-# All rights reserved.
+# -*- coding: utf-8 -*-
+# Begin CVS Header 
+#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/Test_CReportDefinitionVector.py,v $ 
+#   $Revision: 1.6.14.2 $ 
+#   $Name:  $ 
+#   $Author: gauges $ 
+#   $Date: 2008/04/14 08:19:40 $ 
+# End CVS Header 
+# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+# and The University of Manchester. 
+# All rights reserved. 
 
 import COPASI
 import unittest

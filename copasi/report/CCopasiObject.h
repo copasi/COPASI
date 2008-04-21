@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.h,v $
-//   $Revision: 1.69 $
+//   $Revision: 1.69.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/15 17:51:27 $
+//   $Date: 2008/01/18 04:19:32 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -279,14 +284,23 @@ class CCopasiObject
     void getAllDependencies(std::set< const CCopasiObject * > & dependencies) const;
 
     /**
+     * Check whether the current object depends on any objects in the candidates.
+     * @param std::set< const CCopasiObject * > & candidates
+     * @return bool dependsOn
+     */
+    bool dependsOn(std::set< const CCopasiObject * > & candidates) const;
+
+    /**
      * If called with an empty set it will check whether the current object and all its
      * dependencies (including all indirect) form a circular dependency.
      * If called with a non empty set it check whether the candidates plus the current object
      * and all its dependencies form a circular dependency.
      * @param std::set< const CCopasiObject * > & dependencies
+     * @param std::set< const CCopasiObject * > & verified
      * @return bool hasCircularDependencies
      */
-    bool hasCircularDependencies(std::set< const CCopasiObject * > & candidates) const;
+    bool hasCircularDependencies(std::set< const CCopasiObject * > & candidates,
+                                 std::set< const CCopasiObject * > & verified) const;
 
     /**
      * Build the update sequence for the given list of objects. The resulting sequence

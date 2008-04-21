@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.h,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.30.12.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/20 13:35:56 $
+//   $Date: 2008/02/15 20:54:59 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -34,7 +39,7 @@
 #include "utilities/COutputHandler.h"
 #include "utilities/CopasiTime.h"
 
-class CCopasiObjectName;
+// class CCopasiObjectName;
 
 // nan are ignored bounding rectangle
 class MyQwtCPointerData : public QwtCPointerData
@@ -213,9 +218,9 @@ class CopasiPlot : public QwtPlot, public COutputInterface
     std::vector<QwtPlotCurve*> mCurves;
 
     /**
-     * A map between a specification and a curve
+     * A map between a specification identified by its key and a curve
      */
-    std::map< CRegisteredObjectName, QwtPlotCurve * > mCurveMap;
+    std::map< std::string, QwtPlotCurve * > mCurveMap;
 
     /**
      * Vector of type of each item (curve)

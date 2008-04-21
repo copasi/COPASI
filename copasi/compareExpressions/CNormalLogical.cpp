@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLogical.cpp,v $
-//   $Revision: 1.29 $
+//   $Revision: 1.29.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/12/11 20:55:55 $
+//   $Date: 2008/02/05 01:16:35 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -564,108 +569,6 @@ bool CNormalLogical::simplify()
  * elements, the rersult will be a set of OR combined sets with AND combined
  * elements.
  */
-
-/**
- * This routine compares a set of sets and returns true if the first
- * argument is smaller than the second.
- */
-template<typename TYPE>
-bool CNormalLogical::SetOfSetsSorter<TYPE>::operator()(const std::pair<std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> >, bool>& lhs,
-    const std::pair<std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> >, bool>& rhs) const
-  {
-    bool result = false;
-    if (lhs.second == rhs.second)
-      {
-        if (lhs.first.size() == rhs.first.size())
-          {
-            typename std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> >::const_iterator it = lhs.first.begin(), endit = lhs.first.end(), it2 = rhs.first.begin();
-            SetSorter<TYPE> sorter;
-            while (it != endit && result == false)
-              {
-                result = sorter(*it, *it2);
-                ++it;
-                ++it2;
-              }
-          }
-        else if (lhs.first.size() < rhs.first.size())
-          {
-            result = true;
-          }
-      }
-    else if (lhs.second == true)
-      {
-        result = true;
-      }
-    return result;
-  }
-
-/**
- * This routine compares a set of sets and returns true if the first
- * argument is equal to the second argument
- */
-template<typename TYPE>
-bool CNormalLogical::SetOfSetsSorter<TYPE>::isEqual(const std::pair<std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> >, bool>& lhs,
-    const std::pair<std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> >, bool>& rhs) const
-  {
-    bool result = true;
-    if (lhs.second == rhs.second)
-      {
-        if (lhs.first.size() == rhs.first.size())
-          {
-            typename std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> >::const_iterator it = lhs.first.begin(), endit = lhs.first.end(), it2 = rhs.first.begin();
-            SetSorter<TYPE> sorter;
-            while (it != endit && result == true)
-              {
-                result = sorter.isEqual(*it, *it2);
-                ++it;
-                ++it2;
-              }
-          }
-        else
-          {
-            result = false;
-          }
-      }
-    else
-      {
-        result = false;
-      }
-    return result;
-  }
-
-/**
- * This routine compares a set and returns true if the first
- * argument is smaller than the second.
- */
-template<typename TYPE>
-bool CNormalLogical::SetSorter<TYPE>::operator()(const std::pair<TYPE*, bool>& lhs, const std::pair<TYPE*, bool>& rhs) const
-  {
-    bool result = false;
-    if (lhs.second == rhs.second)
-      {
-        result = ((*lhs.first) < (*rhs.first));
-      }
-    else if (lhs.second == true)
-      {
-        result = true;
-      }
-    return result;
-  }
-
-/**
- * This routine compares a set and returns true if the first
- * argument is equal to the second.
- */
-template<typename TYPE>
-bool CNormalLogical::SetSorter<TYPE>::isEqual(const std::pair<TYPE*, bool>& lhs, const std::pair<TYPE*, bool>& rhs) const
-  {
-    bool result = true;
-    if (!(lhs.second == rhs.second && (*lhs.first) == (*rhs.first)))
-      {
-        result = false;
-      }
-    return result;
-  }
 
 bool CNormalLogical::operator==(const CNormalLogical& rhs) const
   {

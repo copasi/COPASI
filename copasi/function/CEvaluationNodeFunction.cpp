@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.cpp,v $
-//   $Revision: 1.45 $
+//   $Revision: 1.45.4.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/12/10 02:44:30 $
+//   $Date: 2008/03/04 19:51:25 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -198,6 +203,10 @@ CEvaluationNodeFunction::CEvaluationNodeFunction(const SubType & subType,
         mpRandom = CRandom::createGenerator();
       break;
 
+      //    case DELAY:
+      //      mpFunction2 = delay;
+      //      break;
+
     default:
       mpFunction = NULL;
       fatalError();
@@ -239,6 +248,7 @@ std::string CEvaluationNodeFunction::getInfix() const
 
         case RUNIFORM:
         case RNORMAL:
+          //       case DELAY:
           return mData + "(" + mpLeft->getInfix() + "," + mpRight->getInfix() + ")";
 
         default:
@@ -376,9 +386,12 @@ std::string CEvaluationNodeFunction::getDisplay_C_String(const CEvaluationTree *
           case FACTORIAL:
             data = "factorial";
             break;
-            // case RUNIFORM:
-            // case RNORMAL:
-            // :TODO: Bug 895: Implement me
+          case RUNIFORM:
+            data = "user_provided_uniform";
+            break;
+          case RNORMAL:
+            data = "user_provided_normal";
+            break;
           default:
             data = "@";
             break;
@@ -389,10 +402,15 @@ std::string CEvaluationNodeFunction::getDisplay_C_String(const CEvaluationTree *
           case MINUS:
             return "(" + data + mpLeft->getDisplay_C_String(pTree) + ")";
             break;
+
           case PLUS:
             //return handleSign(mpLeft->getDisplay_C_String(pTree));
             return mpLeft->getDisplay_C_String(pTree);
             break;
+
+          case RUNIFORM:
+          case RNORMAL:
+            return data + "(" + mpLeft->getDisplay_C_String(pTree) + "," + mpRight->getDisplay_C_String(pTree) + ")";
 
           default:
             return data + "(" + mpLeft->getDisplay_C_String(pTree) + ")";
@@ -437,29 +455,27 @@ std::string CEvaluationNodeFunction::getDisplay_MMD_String(const CEvaluationTree
           case PLUS:
             data = "";
             break;
+
+          case SEC:
+          case CSC:
+          case COT:
+          case SECH:
+          case CSCH:
+          case COTH:
+          case ARCSEC:
+          case ARCCSC:
+          case ARCCOT:
+          case ARCSECH:
+          case ARCCSCH:
+          case ARCCOTH:
+          case FLOOR:
+          case CEIL:
+          case FACTORIAL:
+          case RUNIFORM:
+          case RNORMAL:
+            // case DELAY:
           default:
-            /*
-             * case SEC:
-             * case CSC:
-             * case COT:
-             * case SECH:
-             * case CSCH:
-             * case COTH:
-                    * case ARCSEC:
-                                  * case ARCCSC:
-                                  * case ARCCOT:
-                    * case ARCSECH:
-                                  * case ARCCSCH:
-                                  * case ARCCOTH:
-             * case FLOOR:
-             * case CEIL:
-                                  * case FACTORIAL:
-             */
-            //data = "@";
             data = "ILLEGAL FUNCTION";
-            // case RUNIFORM:
-            // case RNORMAL:
-            // :TODO: Bug 895: Implement me
             break;
           }
 
@@ -468,10 +484,16 @@ std::string CEvaluationNodeFunction::getDisplay_MMD_String(const CEvaluationTree
           case MINUS:
             return "(" + data + mpLeft->getDisplay_MMD_String(pTree) + ")";
             break;
+
           case PLUS:
             //return handleSign(mpLeft->getDisplay_MMD_String(pTree));
             return mpLeft->getDisplay_MMD_String(pTree);
             break;
+
+          case RUNIFORM:
+          case RNORMAL:
+            return data + "(" + mpLeft->getDisplay_MMD_String(pTree) + "," + mpRight->getDisplay_MMD_String(pTree) + ")";
+
           default:
             return data + "(" + mpLeft->getDisplay_MMD_String(pTree) + ")";
           }
@@ -515,27 +537,26 @@ std::string CEvaluationNodeFunction::getDisplay_XPP_String(const CEvaluationTree
           case CEIL:
             data = "ceil";
             break;
+          case ARCSINH:
+          case ARCCOSH:
+          case ARCTANH:
+          case SEC:
+          case CSC:
+          case COT:
+          case SECH:
+          case CSCH:
+          case COTH:
+          case ARCSEC:
+          case ARCCSC:
+          case ARCCOT:
+          case ARCSECH:
+          case ARCCSCH:
+          case ARCCOTH:
+          case FACTORIAL:
+          case RUNIFORM:
+          case RNORMAL:
+            // case DELAY:
           default:
-            /* case ARCSINH:
-            case ARCCOSH:
-               case ARCTANH:
-               case SEC:
-               case CSC:
-               case COT:
-               case SECH:
-               case CSCH:
-               case COTH:
-               case ARCSEC:
-               case ARCCSC:
-               case ARCCOT:
-               case ARCSECH:
-               case ARCCSCH:
-               case ARCCOTH:
-               case FACTORIAL: */
-
-            // case RUNIFORM:
-            // case RNORMAL:
-            // :TODO: Bug 895: Implement me
             data = "@"; //TODO
             break;
           }
@@ -545,9 +566,14 @@ std::string CEvaluationNodeFunction::getDisplay_XPP_String(const CEvaluationTree
           case MINUS:
             return "(" + data + mpLeft->getDisplay_XPP_String(pTree) + ")";
             break;
+
           case PLUS:
             return mpLeft->getDisplay_XPP_String(pTree);
             break;
+
+          case RUNIFORM:
+          case RNORMAL:
+            return data + "(" + mpLeft->getDisplay_XPP_String(pTree) + "," + mpRight->getDisplay_XPP_String(pTree) + ")";
 
           default:
             return data + "(" + mpLeft->getDisplay_XPP_String(pTree) + ")";
@@ -706,6 +732,10 @@ CEvaluationNode* CEvaluationNodeFunction::createNodeFromASTTree(const ASTNode& n
       subType = NOT;
       data = "not";
       break;
+      //    case AST_FUNCTION_DELAY:
+      //      subType = DELAY;
+      //      data = "delay";
+      //      break;
     default:
       subType = INVALID;
       break;
@@ -713,7 +743,20 @@ CEvaluationNode* CEvaluationNodeFunction::createNodeFromASTTree(const ASTNode& n
   // all functions have one child
   // convert child and add the converted node as child
   // to the current node.
-  if (subType != INVALID)
+  // delay has two children
+  /*
+  if(subType == DELAY)
+  {
+      CEvaluationNodeFunction* convertedNode = new CEvaluationNodeFunction(subType, data);
+      ASTNode* child = node.getLeftChild();
+      CEvaluationNode* convertedChildNode = CEvaluationTree::convertASTNode(*child);
+      convertedNode->addChild(convertedChildNode);
+      child = node.getRightChild();
+      convertedChildNode = CEvaluationTree::convertASTNode(*child);
+      convertedNode->addChild(convertedChildNode);
+      return convertedNode;
+  }
+  else*/ if    (subType !=    INVALID)
     {
       CEvaluationNodeFunction* convertedNode = new CEvaluationNodeFunction(subType, data);
       ASTNode* child = node.getLeftChild();
@@ -845,17 +888,28 @@ ASTNode* CEvaluationNodeFunction::toAST() const
       case NOT:
         node->setType(AST_LOGICAL_NOT);
         break;
+        //      case DELAY:
+        //        node->setType(AST_FUNCTION_DELAY);
+        //        break;
       case RUNIFORM:
       case RNORMAL:
         // :TODO: Bug 894: Implement me.
         fatalError();
         break;
       }
-    // for all but INVALID one child has to be converted
-    if (subType != INVALID)
+    // for all but INVALID and DELAY one child has to be converted
+    /*
+       if(subType == DELAY)
+       {
+           const CEvaluationNode* child = dynamic_cast<const CEvaluationNode*>(this->getChild());
+           node->addChild(child->toAST());
+           child = dynamic_cast<const CEvaluationNode*>(this->getChild()->getSibling());
+           node->addChild(child->toAST());
+       }
+       else*/ if    (subType !=    INVALID)
       {
-        const CEvaluationNode* child1 = dynamic_cast<const CEvaluationNode*>(this->getChild());
-        node->addChild(child1->toAST());
+        const CEvaluationNode* child = dynamic_cast<const CEvaluationNode*>(this->getChild());
+        node->addChild(child->toAST());
       }
     return node;
   }

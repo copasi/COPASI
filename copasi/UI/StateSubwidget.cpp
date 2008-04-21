@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/StateSubwidget.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.17.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/12/05 20:16:26 $
+//   $Date: 2008/01/22 18:51:21 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -14,7 +19,7 @@
  ** Form implementation generated from reading ui file 'StateSubwidget.ui'
  **
  ** Created: Wed Dec 5 15:07:10 2007
- **      by: The User Interface Compiler ($Id: StateSubwidget.cpp,v 1.17 2007/12/05 20:16:26 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: StateSubwidget.cpp,v 1.17.4.1 2008/01/22 18:51:21 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -265,7 +270,7 @@ void StateSubwidget::languageChange()
   mpTblMetabolites->horizontalHeader()->setLabel(2, tr("Concentration"));
   mpTblMetabolites->horizontalHeader()->setLabel(3, tr("Rate"));
   mpTblMetabolites->horizontalHeader()->setLabel(4, tr("Transition Time"));
-  mpTabWidget->changeTab(mpMetabolitesPage, tr("Metabolites"));
+  mpTabWidget->changeTab(mpMetabolitesPage, tr("Species"));
   mpTblCompartments->horizontalHeader()->setLabel(0, tr("Name"));
   mpTblCompartments->horizontalHeader()->setLabel(1, tr("Type"));
   mpTblCompartments->horizontalHeader()->setLabel(2, tr("Volume"));

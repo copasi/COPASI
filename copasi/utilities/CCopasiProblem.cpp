@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiProblem.cpp,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.20.6.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/24 18:40:22 $
+//   $Date: 2008/02/09 00:56:12 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -74,13 +79,7 @@ bool CCopasiProblem::setCallBack(CProcessReport * pCallBack)
 
 bool CCopasiProblem::initialize() {return true;}
 
-bool CCopasiProblem::calculate() {return true;}
-
 bool CCopasiProblem::restore(const bool & /* updateModel */) {return true;}
-
-bool CCopasiProblem::checkParametricConstraints() {return true;}
-
-bool CCopasiProblem::checkFunctionalConstraints() {return true;}
 
 void CCopasiProblem::print(std::ostream * ostream) const
   {*ostream << *this;}

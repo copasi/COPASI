@@ -1,14 +1,19 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLyapResultWidget.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.2.18.1 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/06/20 13:18:06 $
+   $Author: ssahle $
+   $Date: 2008/03/03 00:59:18 $
    End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 //#include <qpushbutton.h>
 #include <qlayout.h>
@@ -116,8 +121,11 @@ bool CQLyapResultWidget::loadFromBackend()
   if (!pTask->resultAvailable())
     {
       mTableExponents->setEnabled(false);
+      mTableExponents->setNumRows(0);
       mLineEditSum->setEnabled(false);
+      mLineEditSum->setText("");
       mLineEditDivergence->setEnabled(false);
+      mLineEditDivergence->setText("");
       mLabelComment->setText("No result available.");
       return false;
     }

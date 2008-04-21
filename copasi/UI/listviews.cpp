@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.237 $
+//   $Revision: 1.237.2.2.2.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/12/05 20:16:26 $
+//   $Date: 2008/02/28 21:38:16 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -30,8 +35,10 @@
 
 #include "CompartmentsWidget.h"
 #include "CQCompartment.h"
+#ifdef COPASI_DEBUG
 #include "CQEventsWidget.h"
 #include "CQEventWidget1.h"
+#endif // COAPSI_DEBUG
 #include "FunctionWidget.h"
 #include "FunctionWidget1.h"
 #ifdef HAVE_MML
@@ -45,8 +52,8 @@
 #include "ModelValuesWidget.h"
 #include "CQModelValue.h"
 #include "CQEFMWidget.h"
-#include "MoietyWidget.h"
-#include "MoietyWidget1.h"
+#include "CQMoietiesTaskResult.h"
+#include "CQMoietiesTaskWidget.h"
 #ifdef COPASI_SSA
 #include "SSAWidget.h"
 #endif
@@ -64,10 +71,13 @@
 #include "CQSplashWidget.h"
 #include "CQTrajectoryWidget.h"
 #include "TimeSeriesWidget.h"
-#ifdef COPASI_DEBUG
+#ifdef COPASI_TSSA
 #include "CQTSSAWidget.h"
 #include "CQTSSAResultWidget.h"
-#endif // COPASI_DEBUG
+#endif // COPASI_TSSA
+#ifdef COPASI_DEBUG
+#include "CQUpdatesWidget.h"
+#endif //COPASI_DEBUG
 #ifdef COPASI_TSS
 # include "TSSWidget.h"
 #endif
@@ -214,8 +224,10 @@ ListViews::ListViews(QWidget *parent, const char *name):
     compartmentsWidget1(NULL),
     defaultWidget(NULL),
     differentialEquations(NULL),
+#ifdef COPASI_DEBUG
     eventsWidget(NULL),
     eventWidget1(NULL),
+#endif // COPASI_DEBUG
     functionWidget(NULL),
     functionWidget1(NULL),
     lyapWidget(NULL),
@@ -226,8 +238,8 @@ ListViews::ListViews(QWidget *parent, const char *name):
     modelValuesWidget(NULL),
     mpModelValueWidget(NULL),
     modesWidget(NULL),
-    moietyWidget(NULL),
-    moietyWidget1(NULL),
+    mpMoietiesTaskResult(NULL),
+    mpMoietiesTaskWidget(NULL),
     optimizationWidget(NULL),
     optResultWidgetS(NULL),
     optResultWidgetT(NULL),
@@ -250,9 +262,12 @@ ListViews::ListViews(QWidget *parent, const char *name):
 #endif
     timeSeriesWidget(NULL),
     trajectoryWidget(NULL),
-#ifdef COPASI_DEBUG
+#ifdef COPASI_TSSA
     tssaWidget(NULL),
     tssaResultWidget(NULL),
+#endif
+#ifdef COPASI_DEBUG
+    mpUpdatesWidget(NULL),
 #endif
 #ifdef COPASI_SSA
     mSSAWidget(NULL),
@@ -354,11 +369,13 @@ void ListViews::ConstructNodeWidgets()
   differentialEquations->hide();
 #endif // HAVE_MML
 
+#ifdef COPASI_DEBUG
   if (!eventsWidget) eventsWidget = new CQEventsWidget(this);
   eventsWidget->hide();
 
   if (!eventWidget1) eventWidget1 = new CQEventWidget1(this);
   eventWidget1->hide();
+#endif // COPASI_DEBUG
 
   if (!functionWidget) functionWidget = new FunctionWidget(this);
   functionWidget->hide();
@@ -395,11 +412,13 @@ void ListViews::ConstructNodeWidgets()
   if (!modesWidget) modesWidget = new CQEFMWidget(this);
   modesWidget->hide();
 
-  if (!moietyWidget) moietyWidget = new MoietyWidget(this);
-  moietyWidget->hide();
+  if (!mpMoietiesTaskResult)
+    mpMoietiesTaskResult = new CQMoietiesTaskResult(this);
+  mpMoietiesTaskResult->hide();
 
-  if (!moietyWidget1) moietyWidget1 = new MoietyWidget1(this);
-  moietyWidget1->hide();
+  if (!mpMoietiesTaskWidget)
+    mpMoietiesTaskWidget = new CQMoietiesTaskWidget(this);
+  mpMoietiesTaskWidget->hide();
 
 #ifdef COPASI_SSA
   if (!mSSAWidget) mSSAWidget = new SSAWidget(this);
@@ -482,6 +501,11 @@ void ListViews::ConstructNodeWidgets()
   tssaResultWidget->hide();
 #endif // COPASI_TSSA
 
+#ifdef COPASI_DEBUG
+  if (!mpUpdatesWidget) mpUpdatesWidget = new CQUpdatesWidget(this);
+  mpUpdatesWidget->hide();
+#endif // COPASI_DEBUG
+
   if (!mpMathMatrixWidget) mpMathMatrixWidget = new CQMathMatrixWidget(this);
   mpMathMatrixWidget->hide();
 
@@ -516,21 +540,17 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 112:
         return metabolitesWidget1;
         break;
-      case 113:
-        return moietyWidget1;
-        break;
       case 114:
         return reactionsWidget1;
         break;
       case 115:
         return mpModelValueWidget;
         break;
+#ifdef COPASI_DEBUG
       case 116:
         return eventWidget1;
         break;
-      case 222:
-        return moietyWidget1;
-        break;
+#endif // COPASI_DEBUG
       case 43:
         return tableDefinition1;
         break;
@@ -564,18 +584,17 @@ CopasiWidget* ListViews::findWidgetFromId(const C_INT32 & id) const
       case 112:
         return metabolitesWidget;
         break;
-      case 113:
-        return moietyWidget;
-        break;
       case 114:
         return reactionsWidget;
         break;
       case 115:
         return modelValuesWidget;
         break;
+#ifdef COPASI_DEBUG
       case 116:
         return eventsWidget;
         break;
+#endif // COPASI_DEBUG
       case 117:
         return parametersWidget;
         break;
@@ -590,6 +609,11 @@ CopasiWidget* ListViews::findWidgetFromId(const C_INT32 & id) const
       case 127:
         return mpMathMatrixWidget;
         break;
+#ifdef COPASI_DEBUG
+      case 128:
+        return mpUpdatesWidget;
+        break;
+#endif
 #ifdef WITH_LAYOUT
       case 131:
         return mpCopasiLayoutWidget;
@@ -605,7 +629,10 @@ CopasiWidget* ListViews::findWidgetFromId(const C_INT32 & id) const
         return modesWidget;
         break;
       case 222:
-        return moietyWidget;
+        return mpMoietiesTaskWidget;
+        break;
+      case 2221:
+        return mpMoietiesTaskResult;
         break;
 #ifdef COPASI_SSA
       case 223:
@@ -635,14 +662,14 @@ CopasiWidget* ListViews::findWidgetFromId(const C_INT32 & id) const
       case 261:
         return lyapResultWidget;
         break;
-#ifdef COPASI_DEBUG
+#ifdef COPASI_TSSA
       case 27:
         return tssaWidget;
         break;
       case 271:
         return tssaResultWidget;
         break;
-#endif
+#endif // COPASI_TSSA
       case 31:
         return scanWidget;
         break;
@@ -683,7 +710,7 @@ CopasiWidget* ListViews::findWidgetFromId(const C_INT32 & id) const
 
 FolderListItem* ListViews::findListViewItem(C_INT32 id, std::string key) //should always return a valid item
 {
-  FolderListItem * item;
+  FolderListItem * item = NULL;
 
   QListViewItemIterator it(folders);
   for (; *it; ++it)
@@ -735,7 +762,7 @@ void ListViews::slotFolderChanged(QListViewItem *i)
   folders->ensureItemVisible(i);
 
   // get the qlistview item in form of folderlistitem...
-  FolderListItem *item = (FolderListItem*)i; //TODO dynamic cast?
+  FolderListItem *item = static_cast< FolderListItem * >(i); //TODO dynamic cast?
 
   // find the widget
   CopasiWidget* newWidget = findWidgetFromItem(item);
@@ -1046,11 +1073,10 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
   dataModel->updateModelValues();
   updateAllListviews(115);
 
+#ifdef COPASI_DEBUG
   dataModel->updateEvents();
   updateAllListviews(116);
-
-  dataModel->updateMoieties();
-  updateAllListviews(222);
+#endif // COPASI_DEBUG
 
   dataModel->updateFunctions();
   updateAllListviews(5);
@@ -1074,8 +1100,20 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
 
 //static members **************************
 
+// static
 std::set<ListViews *> ListViews::mListOfListViews;
+
+// static
 DataModelGUI* ListViews::dataModel;
+
+// static
+std::set< const CCopasiObject * > ListViews::mChangedObjects;
+
+// static
+std::vector< Refresh * > ListViews::mUpdateVector;
+
+// static
+int ListViews::mFramework;
 
 bool ListViews::attach()
 {
@@ -1196,6 +1234,8 @@ void ListViews::setChildWidgetsFramework(int framework)
 // static
 void ListViews::setFramework(int framework)
 {
+  mFramework = framework;
+
   std::set<ListViews *>::iterator it = mListOfListViews.begin();
   std::set<ListViews *>::iterator end = mListOfListViews.end();
 
@@ -1203,17 +1243,65 @@ void ListViews::setFramework(int framework)
     (*it)->setChildWidgetsFramework(framework);
 }
 
-void ListViews::refreshInitialValues()
+// static
+void ListViews::buildChangedObjects()
 {
-  std::set< const CCopasiObject * > All;
-
   CModel * pModel = CCopasiDataModel::Global->getModel();
   pModel->compileIfNecessary(NULL);
 
-  std::vector< Refresh * > UpdateVector;
+  mChangedObjects.clear();
+
+  CModelEntity **ppEntity = pModel->getStateTemplate().getEntities();
+  CModelEntity **ppEntityEnd = pModel->getStateTemplate().endFixed();
+
+  CMetab * pMetab;
+  std::set< const CCopasiObject * > Objects;
+
+  // The objects which are changed are all initial values of of all model entities including
+  // fixed and unused once. Additionally, all kinetic parameters are possibly changed.
+  // This is basically all the parameters in the parameter overview whose value is editable.
+
+  // :TODO: Theoretically, it is possible that also task parameters influence the initial
+  // state of a model but that is currently not handled.
+
+  for (; ppEntity != ppEntityEnd; ++ppEntity)
+    {
+      // If we have an initial expression we have no initial values
+      if ((*ppEntity)->getInitialExpression() != "" ||
+          (*ppEntity)->getStatus() == CModelEntity::ASSIGNMENT)
+        continue;
+
+      // Metabolites have two initial values
+      if (mFramework == 0 &&
+          (pMetab = dynamic_cast< CMetab * >(*ppEntity)) != NULL)
+        {
+          // The concentration is assumed to be fix accept when this would lead to circular dependencies,
+          // for the parent's compartment's initial volume.
+          if (pMetab->isInitialConcentrationChangeAllowed())
+            mChangedObjects.insert(pMetab->getInitialConcentrationReference());
+          else
+            mChangedObjects.insert(pMetab->getInitialValueReference());
+        }
+      else
+        mChangedObjects.insert((*ppEntity)->getInitialValueReference());
+    }
+
+  // The reaction parameters
+  CCopasiVector< CReaction >::const_iterator itReaction = pModel->getReactions().begin();
+  CCopasiVector< CReaction >::const_iterator endReaction = pModel->getReactions().end();
+  unsigned C_INT32 i, imax;
+
+  for (; itReaction != endReaction; ++itReaction)
+    {
+      const CCopasiParameterGroup & Group = (*itReaction)->getParameters();
+
+      for (i = 0, imax = Group.size(); i < imax; i++)
+        mChangedObjects.insert(Group.getParameter(i)->getObject(CCopasiObjectName("Reference=Value")));
+    }
+
   try
     {
-      UpdateVector = pModel->buildInitialRefreshSequence(All);
+      mUpdateVector = pModel->buildInitialRefreshSequence(mChangedObjects);
     }
 
   catch (...)
@@ -1225,11 +1313,18 @@ void ListViews::refreshInitialValues()
                              QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
       CCopasiMessage::clearDeque();
 
+      mUpdateVector.clear();
       return;
     }
+}
 
-  std::vector< Refresh * >::iterator it = UpdateVector.begin();
-  std::vector< Refresh * >::iterator end = UpdateVector.end();
+// static
+void ListViews::refreshInitialValues()
+{
+  buildChangedObjects();
+
+  std::vector< Refresh * >::iterator it = mUpdateVector.begin();
+  std::vector< Refresh * >::iterator end = mUpdateVector.end();
 
   for (; it != end; ++it)
     (**it)();

@@ -1,12 +1,17 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiTask.i,v $ 
-//   $Revision: 1.14 $ 
+//   $Revision: 1.14.6.2 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2007/06/19 15:49:36 $ 
+//   $Date: 2008/04/07 09:02:27 $ 
 // End CVS Header 
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc. and EML Research, gGmbH. 
 // All rights reserved. 
 
@@ -41,13 +46,17 @@ class CCopasiTask : public CCopasiContainer
       mca,
       lyap,
 #ifdef COPASI_DEBUG
-      tss,
-      sens,
+      tssAnalysis,
 #endif // COPASI_DEBUG
+#ifdef COPASI_TSS
+      tss,
+#endif // COPASI_TSS
+      sens,
 #ifdef COPASI_SSA
       ssa,
 #endif // COPASI_SSA
-      unset,
+      moieties,
+      unset
     };
 
     enum OutputFlag
@@ -172,7 +181,7 @@ class CCopasiTask : public CCopasiContainer
     virtual  bool process(bool useInitialValues) 
       {
         CCopasiMessage::clearDeque();
-        bool result=self->initialize(CCopasiTask::OUTPUT_COMPLETE,NULL);
+        bool result=self->initialize(CCopasiTask::OUTPUT_COMPLETE,CCopasiDataModel::Global, NULL);
         if(result)
         {
           result=self->process(useInitialValues);

@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CPraxis.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.4.2.1.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/12/13 20:20:16 $
+//   $Date: 2008/01/23 13:11:21 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -23,44 +28,18 @@
 
 #include "CPraxis.h"
 
-int min_(C_INT *, C_INT *, C_INT *,
-         C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, bool *, FPraxis *f,
-         C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *);
-C_FLOAT64 flin_(C_INT *, C_INT *, C_FLOAT64 *, FPraxis *,
-                C_FLOAT64 *, C_INT *);
+#include "randomGenerator/CRandom.h"
+
 int maprnt_(C_INT *, C_FLOAT64 *, C_INT *, C_INT *);
 int vcprnt_(C_INT *, C_FLOAT64 *, C_INT *);
-int minfit_(C_INT *, C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *);
-int print_(C_INT *, C_FLOAT64 *, C_INT *, C_FLOAT64 *);
 int sort_(C_INT *, C_INT *, C_FLOAT64 *, C_FLOAT64 *);
-int quad_(C_INT *, FPraxis *f, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *);
-
-/* TODO remove this dependency */
-C_FLOAT64 random_(C_INT *);
 
 /* Common Block Declarations */
 
-struct
-  {
-    C_FLOAT64 fx, ldt, dmin__;
-    C_INT nf, nl;
-  }
-global_;
-
-#define global_1 global_
 #define TRUE_ (1)
 #define FALSE_ (0)
 #define dmax(a1,a2) ((a1 > a2) ? a1 : a2)
 #define dmin(a1,a2) ((a1 < a2) ? a1 : a2)
-
-struct
-  {
-    C_FLOAT64 v[10000] /* was [100][100] */, q0[100], q1[100], qa, qb, qc, qd0,
-    qd1, qf1;
-  }
-q_;
-
-#define q_1 q_
 
 /* Table of constant values */
 
@@ -72,9 +51,19 @@ static bool c_true = TRUE_;
 static C_INT c__3 = 3;
 static C_INT c__0 = 0;
 
-C_FLOAT64 praxis_(C_FLOAT64 *t0, C_FLOAT64 *machep, C_FLOAT64 *h0,
-                  C_INT *n, C_INT *prin, C_FLOAT64 *x, FPraxis *f, C_FLOAT64 *fmin)
+CPraxis::CPraxis()
+{}
+
+CPraxis::~CPraxis()
+{}
+
+C_FLOAT64 CPraxis::praxis_(C_FLOAT64 *t0, C_FLOAT64 *machep, C_FLOAT64 *h0,
+                           C_INT *n, C_INT *prin, C_FLOAT64 *x, FPraxis *f, C_FLOAT64 *fmin)
 {
+
+  /* a pointer to the randomnumber generator */
+  CRandom *pRandom = CRandom::createGenerator(CRandom::r250, (unsigned C_INT32) * n);
+
   /* System generated locals */
   C_INT i__1, i__2, i__3;
   C_FLOAT64 ret_val, d__1;
@@ -293,8 +282,7 @@ L80:
       i__2 = *n;
       for (i__ = 1; i__ <= i__2; ++i__)
         {
-          s = (global_1.ldt * .1 + t2 * pow(10, (C_FLOAT64)kt)) * (random_(n)
-              - .5);
+          s = (global_1.ldt * .1 + t2 * pow(10.0, (C_FLOAT64)kt)) * (pRandom->getRandomCC() - 0.5);
           z__[i__ - 1] = s;
           i__3 = *n;
           for (j = 1; j <= i__3; ++j)
@@ -690,8 +678,8 @@ L400:
   return ret_val;
 } /* praxis_ */
 
-/* Subroutine */ int minfit_(C_INT *m, C_INT *n, C_FLOAT64 *machep,
-                             C_FLOAT64 *tol, C_FLOAT64 *ab, C_FLOAT64 *q)
+/* Subroutine */ int CPraxis::minfit_(C_INT *m, C_INT *n, C_FLOAT64 *machep,
+                                      C_FLOAT64 *tol, C_FLOAT64 *ab, C_FLOAT64 *q)
 {
   /* System generated locals */
   C_INT ab_dim1, ab_offset, i__1, i__2, i__3;
@@ -1129,9 +1117,9 @@ L200:
   return 0;
 } /* minfit_ */
 
-/* Subroutine */ int min_(C_INT *n, C_INT *j, C_INT *nits, C_FLOAT64 *
-                          d2, C_FLOAT64 *x1, C_FLOAT64 *f1, bool *fk, FPraxis *f, C_FLOAT64 *
-                          x, C_FLOAT64 *t, C_FLOAT64 *machep, C_FLOAT64 *h__)
+/* Subroutine */ int CPraxis::min_(C_INT *n, C_INT *j, C_INT *nits, C_FLOAT64 *
+                                   d2, C_FLOAT64 *x1, C_FLOAT64 *f1, bool *fk, FPraxis *f, C_FLOAT64 *
+                                   x, C_FLOAT64 *t, C_FLOAT64 *machep, C_FLOAT64 *h__)
 {
   /* System generated locals */
   C_INT i__1;
@@ -1346,8 +1334,8 @@ L17:
   return 0;
 } /* min_ */
 
-C_FLOAT64 flin_(C_INT *n, C_INT *j, C_FLOAT64 *l, FPraxis *f, C_FLOAT64 *x,
-                C_INT *nf)
+C_FLOAT64 CPraxis::flin_(C_INT *n, C_INT *j, C_FLOAT64 *l, FPraxis *f, C_FLOAT64 *x,
+                         C_INT *nf)
 {
   /* System generated locals */
   C_INT i__1;
@@ -1458,8 +1446,8 @@ L3:
   return 0;
 } /* sort_ */
 
-/* Subroutine */ int quad_(C_INT *n, FPraxis *f, C_FLOAT64 *x, C_FLOAT64 *t,
-                           C_FLOAT64 *machep, C_FLOAT64 *h__)
+/* Subroutine */ int CPraxis::quad_(C_INT *n, FPraxis *f, C_FLOAT64 *x, C_FLOAT64 *t,
+                                    C_FLOAT64 *machep, C_FLOAT64 *h__)
 {
   /* System generated locals */
   C_INT i__1;
@@ -1575,8 +1563,8 @@ L4:
   return 0;
 } /* vcprnt_ */
 
-/* Subroutine */ int print_(C_INT *n, C_FLOAT64 *x, C_INT *prin,
-                            C_FLOAT64 *fmin)
+/* Subroutine */ int CPraxis::print_(C_INT *n, C_FLOAT64 *x, C_INT *prin,
+                                     C_FLOAT64 *fmin)
 {
   /* System generated locals */
   C_INT i__1;
@@ -1682,58 +1670,3 @@ L3:
   upp += 5;
   goto L3;
 } /* maprnt_ */
-
-C_FLOAT64 random_(C_INT *naught)
-{
-  /* Initialized data */
-
-  static bool init = FALSE_;
-
-  /* System generated locals */
-  C_FLOAT64 ret_val;
-
-  /* Local variables */
-  static C_FLOAT64 half;
-  static C_INT i__, j, q, r__;
-  static C_FLOAT64 ran1;
-  static C_INT ran2;
-  static C_FLOAT64 ran3[127];
-
-  if (init)
-    {
-      goto L3;
-    }
-  r__ = *naught % 8190 + 1;
-  ran2 = 128;
-  for (i__ = 1; i__ <= 127; ++i__)
-    {
-      --ran2;
-      ran1 = -36028797018963968.;
-      for (j = 1; j <= 7; ++j)
-        {
-          r__ = r__ * 1756 % 8191;
-          q = r__ / 32;
-          /* L1: */
-          ran1 = (ran1 + q) * .00390625;
-        }
-      /* L2: */
-      ran3[ran2 - 1] = ran1;
-    }
-  init = TRUE_;
-L3:
-  if (ran2 == 1)
-    {
-      ran2 = 128;
-    }
-  --ran2;
-  ran1 += ran3[ran2 - 1];
-  half = .5;
-  if (ran1 >= 0.)
-    {
-      half = -half;
-    }
-  ran1 += half;
-  ran3[ran2 - 1] = ran1;
-  ret_val = ran1 + .5;
-  return ret_val;
-} /* random_ */

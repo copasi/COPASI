@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CObjectLists.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.17.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/02 18:18:05 $
+//   $Date: 2008/01/22 18:51:25 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -23,21 +28,21 @@ const std::string CObjectLists::ListTypeName[] =
     "Not Set", // EMPTY_LIST = 0
     "Single Object", // SINGLE_OBJECT
 
-    "Metabolites", // METABS
+    "Species", // METABS
     "Initial Concentrations", // METAB_INITIAL_CONCENTRATIONS
     "Initial Numbers", // METAB_INITIAL_NUMBERS
-    "Concentrations of Metabolites", // METAB_CONCENTRATIONS
-    "Numbers of Metabolites", // METAB_NUMBERS
-    "Non-Constant Concentrations of Metabolites", // NON_CONST_METAB_CONCENTRATIONS
-    "Non-Constant Numbers of Metabolites", // NON_CONST_METAB_NUMBERS,
-    "Constant Concentrations of Metabolites", // CONST_METAB_CONCENTRATIONS,
-    "Constant Numbers of Metabolites", // CONST_METAB_NUMBERS,
-    "Concentrations of Metabolites with ODE", // ODE_METAB_CONCENTRATIONS,
-    "Numbers of Metabolites with ODE", // ODE_METAB_NUMBERS,
-    "Concentrations of Metabolites determined by Reactions", // REACTION_METAB_CONCENTRATIONS,
-    "Numbers of Metabolites determined by Reactions", // REACTION_METAB_NUMBERS,
-    "Concentrations of Metabolites with Assignment", // ASS_METAB_CONCENTRATIONS,
-    "Numbers of Metabolites with Assignment", // ASS_METAB_NUMBERS,
+    "Concentrations of Species", // METAB_CONCENTRATIONS
+    "Numbers of Species", // METAB_NUMBERS
+    "Non-Constant Concentrations of Species", // NON_CONST_METAB_CONCENTRATIONS
+    "Non-Constant Numbers of Species", // NON_CONST_METAB_NUMBERS,
+    "Constant Concentrations of Species", // CONST_METAB_CONCENTRATIONS,
+    "Constant Numbers of Species", // CONST_METAB_NUMBERS,
+    "Concentrations of Species with ODE", // ODE_METAB_CONCENTRATIONS,
+    "Numbers of Species with ODE", // ODE_METAB_NUMBERS,
+    "Concentrations of Species determined by Reactions", // REACTION_METAB_CONCENTRATIONS,
+    "Numbers of Species determined by Reactions", // REACTION_METAB_NUMBERS,
+    "Concentrations of Species with Assignment", // ASS_METAB_CONCENTRATIONS,
+    "Numbers of Species with Assignment", // ASS_METAB_NUMBERS,
     "Concentration Rates", // METAB_CONC_RATES
     "Particle Rates", // METAB_PART_RATES
     "Transition Time", // METAB_TRANSITION_TIME,

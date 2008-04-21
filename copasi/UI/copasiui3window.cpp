@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.218 $
+//   $Revision: 1.218.4.5 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/12/08 13:10:09 $
+//   $Author: shoops $
+//   $Date: 2008/03/10 21:05:05 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -201,22 +206,22 @@ void CopasiUI3Window::createActions()
   mpaNew = new QAction(QPixmap(filenew), "&New", CTRL + Key_N, this, "new");
   connect(mpaNew, SIGNAL(activated()), this, SLOT(newDoc()));
 
-  mpaOpen = new QAction(QPixmap(fileopen), "&Open", CTRL + Key_O, this, "open");
+  mpaOpen = new QAction(QPixmap(fileopen), "&Open...", CTRL + Key_O, this, "open");
   connect(mpaOpen, SIGNAL(activated()), this, SLOT(slotFileOpen()));
 
   mpaSave = new QAction(QPixmap(filesave), "&Save", CTRL + Key_S, this, "save");
   connect(mpaSave, SIGNAL(activated()), this, SLOT(slotFileSave()));
 
-  mpaSaveAs = new QAction(QPixmap(filesave), "Save &As", CTRL + Key_A, this, "saveas");
+  mpaSaveAs = new QAction(QPixmap(filesave), "Save &As...", CTRL + Key_A, this, "saveas");
   connect(mpaSaveAs, SIGNAL(activated()), this, SLOT(slotFileSaveAs()));
 
-  mpaImportSBML = new QAction(QPixmap(fileopen), "&Import SBML", CTRL + Key_I, this, "importsbml");
+  mpaImportSBML = new QAction(QPixmap(fileopen), "&Import SBML...", CTRL + Key_I, this, "importsbml");
   connect(mpaImportSBML, SIGNAL(activated()), this, SLOT(slotImportSBML()));
 
-  mpaExportSBML = new QAction(QPixmap(filesave), "&Export SBML", CTRL + Key_E, this, "exportsbml");
+  mpaExportSBML = new QAction(QPixmap(filesave), "&Export SBML...", CTRL + Key_E, this, "exportsbml");
   connect(mpaExportSBML, SIGNAL(activated()), this, SLOT(slotExportSBML()));
 
-  mpaExportODE = new QAction(QPixmap(filesave), "Export ODEs", CTRL + Key_M, this, "exportode");
+  mpaExportODE = new QAction(QPixmap(filesave), "Export ODEs...", CTRL + Key_M, this, "exportode");
   connect(mpaExportODE, SIGNAL(activated()), this, SLOT(slotExportMathModel()));
 
   mpaSliders = new QAction(QPixmap(toggleSliderDialog), "Show sliders", 0, this, "showsliders");
@@ -264,9 +269,13 @@ void CopasiUI3Window::createToolBar()
   mpaApplyInitialState->addTo(tbMain);
   mpaUpdateInitialState->addTo(tbMain);
 
+  tbMain->addSeparator();
+
   mpBoxSelectFramework = new QComboBox(tbMain);
   mpBoxSelectFramework->insertItem("Concentrations");
   mpBoxSelectFramework->insertItem("Particle Numbers");
+
+  tbMain->setCloseMode(QDockWindow::Never);
 
   connect(mpBoxSelectFramework, SIGNAL(activated(int)), this, SLOT(slotFrameworkChanged(int)));
 
@@ -1020,9 +1029,9 @@ void CopasiUI3Window::slotImportSBML(QString file)
 
           dataModel->createModel();
         }
-
-      // We check in all case for warnings. This will help also for unsuccessful imports
-      this->checkPendingMessages();
+      else
+        // We check in all case for warnings. This will help also for unsuccessful imports
+        this->checkPendingMessages();
 
       ListViews::notify(ListViews::MODEL, ListViews::ADD,
                         CCopasiDataModel::Global->getModel()->getKey());
@@ -1095,14 +1104,16 @@ void CopasiUI3Window::slotExportSBML()
       catch (CCopasiException except)
         {
           success = false;
-          setCursor(oldCursor); resetMenus;
-          CQMessageBox::critical(this, QString("File Error"),
-                                 QString("Error. Could not export file ") + tmp + QString("!"),
-                                 QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+          setCursor(oldCursor);
+          resetMenus;
+          //CQMessageBox::critical(this, QString("File Error"),
+          //                       QString("Error. Could not export file ") + tmp + QString("!"),
+          //                       QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
         }
 
       setCursor(oldCursor); resetMenus;
 
+      /*
       if (!success)
         {
           QString Message = "Error while saving file " + tmp + QString("!\n\n");
@@ -1114,8 +1125,11 @@ void CopasiUI3Window::slotExportSBML()
         }
       else
         {
-          this->checkPendingMessages();
-        }
+        */
+      this->checkPendingMessages();
+      /*
+      }
+      */
       refreshRecentSBMLFileMenu();
     }
 }
@@ -1277,11 +1291,15 @@ void CopasiUI3Window::checkPendingMessages()
       if (numFilteredMessages != 0)
         {
           CQMessageBox box(this);
+          if (text.isEmpty())
+            text = "There were no serious issues encountered during the import of SBML. "
+                   "However some minor issues have occured, which can be viewed in the Minor "
+                   "Issues tab.";
           box.configure(QString("COPASI Message"), text, QMessageBox::Information, QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton, QMessageBox::NoButton);
           box.enableFilteredMessages(true);
           box.setFilteredMessageText(filteredText);
-          box.setMessageTabLabel(QString::number(numMessages) + QString(" messages"));
-          box.setFilteredTabLabel(QString::number(numFilteredMessages) + QString(" filtered messages"));
+          box.setMessageTabLabel(QString::number(numMessages) + QString(" Messages"));
+          box.setFilteredTabLabel(QString::number(numFilteredMessages) + QString(" Minor Issues"));
           box.exec();
         }
       else

@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.78 $
+//   $Revision: 1.78.4.3 $
 //   $Name:  $
-//   $Author: urost $
-//   $Date: 2007/12/10 12:18:58 $
+//   $Author: shoops $
+//   $Date: 2008/02/25 21:15:14 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -766,7 +771,7 @@ int CQGLNetworkPainter::getLabelWindowWidth(int width)
     {
       exponent = 6;
     }
-  width = static_cast<int>(pow(2, exponent + 1));
+  width = static_cast<int>(pow(2.0, exponent + 1));
   return width;
 }
 
@@ -783,13 +788,13 @@ RGTextureSpec* CQGLNetworkPainter::RG_createTextureForText(const std::string& te
     {
       exponent = 6;
     }
-  width = static_cast<int>(pow(2, exponent + 1));
+  width = static_cast<int>(pow(2.0, exponent + 1));
   exponent = static_cast<int>(ceil(log2(height + 2.0)));
   if (exponent < 6)
     {
       exponent = 6;
     }
-  height = static_cast<int>(pow(2, exponent + 1));
+  height = static_cast<int>(pow(2.0, exponent + 1));
 
   QPixmap pixmap(width, height);
   pixmap.fill(QColor(255, 255, 255));
@@ -900,10 +905,10 @@ int CQGLNetworkPainter::round2powN(double d)
   int n = (int)(ceil(d));
   int p = 1;
   int maxP = 12; // max size of images 2*12
-  while ((p <= maxP) && (n > pow(2, p)))
+  while ((p <= maxP) && (n > pow(2.0, p)))
     p++;
   //std::cout << "d: " << d << " p: " << p << std::endl;
-  return (int)pow(2, p);
+  return (int)pow(2.0, p);
 }
 
 // uses FTGL
@@ -1079,14 +1084,14 @@ bool CQGLNetworkPainter::createDataSets()
     {
       CTrajectoryTask *ptask = dynamic_cast< CTrajectoryTask * >((*CCopasiDataModel::Global->getTaskList())["Time-Course"]);
       const CTimeSeries & timeSer = ptask->getTimeSeries();
-      if (timeSer.getNumSteps() > 0)
+      if (timeSer.getRecordedSteps() > 0)
         {
           if (timeSer.getNumVariables() > 0)
             {
               dataSets.clear(); // remove old data sets
-              pSummaryInfo = new CSimSummaryInfo(timeSer.getNumSteps(), timeSer.getNumVariables(),
-                                                 timeSer.getConcentrationData(timeSer.getNumSteps() - 1, 0) - timeSer.getConcentrationData(0, 0));
-              //C_FLOAT64 tt = timeSer.getConcentrationData(timeSer.getNumSteps() - 1, 0) - timeSer.getConcentrationData(0, 0);
+              pSummaryInfo = new CSimSummaryInfo(timeSer.getRecordedSteps(), timeSer.getNumVariables(),
+                                                 timeSer.getConcentrationData(timeSer.getRecordedSteps() - 1, 0) - timeSer.getConcentrationData(0, 0));
+              //C_FLOAT64 tt = timeSer.getConcentrationData(timeSer.getRecordedSteps() - 1, 0) - timeSer.getConcentrationData(0, 0);
               //std::cout << "summary: no of steps: " << pSummaryInfo->getNumberOfSteps() << std::endl,
               //std::cout << "total time: " << tt << std::endl;
               //std::cout << "number of steps in time series: " << timeSer.getNumSteps() << std::endl;
@@ -1111,7 +1116,7 @@ bool CQGLNetworkPainter::createDataSets()
                   if (iter != keyMap.end())
                     {// if there is a node (key)
                       ndKey = (keyMap.find(objKey))->second;
-                      for (t = 0;t <= timeSer.getNumSteps();t++) // iterate on time steps t=0..n
+                      for (t = 0;t <= timeSer.getRecordedSteps();t++) // iterate on time steps t=0..n
                         {
                           val = timeSer.getConcentrationData(t, i);
                           if (val > maxR)
@@ -1129,7 +1134,7 @@ bool CQGLNetworkPainter::createDataSets()
               pSummaryInfo->setMaxOverallConcentration(maxAll);
               //std::cout << *pSummaryInfo;
               //this->printNodeMap();
-              //dataSets.resize(timeSer.getNumSteps());
+              //dataSets.resize(timeSer.getRecordedSteps());
               // now create data sets for visualization/animation
               // try to get VisParameters from parent (CQLayoutMainWindow)
               C_FLOAT64 minNodeSize = 10;
@@ -1139,7 +1144,7 @@ bool CQGLNetworkPainter::createDataSets()
                   minNodeSize = pParentLayoutWindow->getMinNodeSize();
                   maxNodeSize = pParentLayoutWindow->getMaxNodeSize();
                 }
-              for (t = 0; t < timeSer.getNumSteps(); t++)  // iterate on time steps t=0..n
+              for (t = 0; t < timeSer.getRecordedSteps(); t++)  // iterate on time steps t=0..n
                 {
                   CDataEntity dataSet;
                   for (i = 0;i < timeSer.getNumVariables();i++) // iterate on reactants
@@ -1743,7 +1748,7 @@ void CQGLNetworkPainter::testOpenGL()
   glVertex3f(1.5f, 0.5f, 0.0f); // rechte Ecke oben
   glVertex3f(1.5f, -0.5f, 0.0f); // rechte Ecke unten
 
-  glColor3f(0.0f, 1.0f, 0.0f); // grün
+  glColor3f(0.0f, 1.0f, 0.0f); // grï¿½n
   glVertex3f(0.5f, -1.5f, 0.0f); // untere Ecke rechts
   glVertex3f(-0.5f, -1.5f, 0.0f); // untere Ecke links
 

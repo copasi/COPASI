@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMetabolite.ui.h,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.14.4.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/13 14:47:40 $
+//   $Date: 2008/02/28 21:38:16 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -54,6 +59,10 @@ void CQMetabolite::init()
                                   ")");
   mpLblValue->setMinimumWidth(Width);
 
+  mExpressionValid = false;
+  mpEditExpression->setExpressionType(CCopasiSimpleSelectionTree::TRANSIENT_EXPRESSION);
+
+  mInitialExpressionValid = false;
   mpEditInitialExpression->setExpressionType(CCopasiSimpleSelectionTree::INITIAL_EXPRESSION);
 }
 
@@ -76,13 +85,13 @@ void CQMetabolite::slotBtnNew()
   if (CCopasiDataModel::Global->getModel()->getCompartments().size() == 0)
     CCopasiDataModel::Global->getModel()->createCompartment("compartment");
 
-  std::string name = "metabolite";
+  std::string name = "species";
   int i = 0;
 
   while (!(mpMetab = CCopasiDataModel::Global->getModel()->createMetabolite(name, "", 1.0, CModelEntity::REACTIONS)))
     {
       i++;
-      name = "metabolite_";
+      name = "species_";
       name += (const char *)QString::number(i).utf8();
     }
 
@@ -108,11 +117,11 @@ void CQMetabolite::slotBtnDelete()
 
   if (mpMetab == NULL) return;
 
-  QString metaboliteList = "Are you sure you want to delete listed METABOLITE(S) ?\n";
-  QString effectedCompartmentList = "Following COMPARTMENT(S) reference above METABOLITE(S) and will be deleted -\n";
-  QString effectedMetabList = "Following METABOLITE(S) reference above METABOLITE(S) and will be deleted -\n";
-  QString effectedReacList = "Following REACTION(S) reference above METABOLITE(S) and will be deleted -\n";
-  QString effectedValueList = "Following MODEL VALUE(S) reference above METABOLITE(S) and will be deleted -\n";
+  QString metaboliteList = "Are you sure you want to delete listed SPECIES ?\n";
+  QString effectedCompartmentList = "Following COMPARTMENT(S) reference above SPECIES and will be deleted -\n";
+  QString effectedMetabList = "Following METABOLITE(S) reference above SPECIES and will be deleted -\n";
+  QString effectedReacList = "Following REACTION(S) reference above SPECIES and will be deleted -\n";
+  QString effectedValueList = "Following MODEL VALUE(S) reference above SPECIES and will be deleted -\n";
 
   bool compartmentFound = false;
   bool metabFound = false;
@@ -523,11 +532,11 @@ void CQMetabolite::save()
       if (!mpMetab->setObjectName((const char *) mpEditName->text().utf8()))
         {
           QString msg;
-          msg = "Unable to rename metabolite '" + FROM_UTF8(mpMetab->getObjectName()) + "'\n"
-                + "to '" + mpEditName->text() + "' since a metabolites with that name already exists.\n";
+          msg = "Unable to rename species '" + FROM_UTF8(mpMetab->getObjectName()) + "'\n"
+                + "to '" + mpEditName->text() + "' since a species with that name already exists.\n";
 
           CQMessageBox::information(this,
-                                    "Unable to rename Metabolite",
+                                    "Unable to rename Species",
                                     msg,
                                     QMessageBox::Ok | QMessageBox::Default | QMessageBox::Escape, QMessageBox::NoButton, QMessageBox::NoButton);
 
@@ -549,12 +558,12 @@ void CQMetabolite::save()
       if (!CCopasiDataModel::Global->getModel()->getCompartments()[(const char *)Compartment.utf8()]->addMetabolite(mpMetab))
         {
           QString msg;
-          msg = "Unable to move metabolite '" + FROM_UTF8(mpMetab->getObjectName()) + "'\n"
+          msg = "Unable to move species '" + FROM_UTF8(mpMetab->getObjectName()) + "'\n"
                 + "from compartment '" + FROM_UTF8(CompartmentToRemove) + "' to compartment '" + Compartment + "'\n"
-                + "since a metabolite with that name already exist in the target compartment.";
+                + "since a species with that name already exist in the target compartment.";
 
           CQMessageBox::information(this,
-                                    "Unable to move Metabolite",
+                                    "Unable to move Species",
                                     msg,
                                     QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
 
@@ -747,11 +756,13 @@ void CQMetabolite::setFramework(int framework)
 
       if (mpMetab != NULL)
         {
+          mpEditInitialValue->setReadOnly(!mpMetab->isInitialConcentrationChangeAllowed());
           mpEditCurrentValue->setText(QString::number(mpMetab->getConcentration()));
           mpEditRate->setText(QString::number(mpMetab->getConcentrationRate()));
         }
       else
         {
+          mpEditInitialValue->setReadOnly(false);
           mpEditCurrentValue->setText("");
           mpEditRate->setText("");
         }
@@ -768,6 +779,8 @@ void CQMetabolite::setFramework(int framework)
       mpLblRate->setText("Rate (1/"
                          + FROM_UTF8(CCopasiDataModel::Global->getModel()->getTimeUnitName()) + ")");
       mpEditInitialValue->setText(QString::number(mInitialNumber, 'g', 10));
+      mpEditInitialValue->setReadOnly(false);
+
       if (mpMetab != NULL)
         {
           mpEditCurrentValue->setText(QString::number(mpMetab->getValue()));

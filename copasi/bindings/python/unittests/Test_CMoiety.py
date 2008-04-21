@@ -1,6 +1,15 @@
-# Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
-# Properties, Inc. and EML Research, gGmbH.
-# All rights reserved.
+# -*- coding: utf-8 -*-
+# Begin CVS Header 
+#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/Test_CMoiety.py,v $ 
+#   $Revision: 1.9.14.2 $ 
+#   $Name:  $ 
+#   $Author: gauges $ 
+#   $Date: 2008/04/14 08:19:40 $ 
+# End CVS Header 
+# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+# and The University of Manchester. 
+# All rights reserved. 
 
 import COPASI
 import unittest
@@ -9,7 +18,8 @@ from types import *
 
 class Test_CMoiety(unittest.TestCase):
   def setUp(self):
-    self.model=COPASI.CModel()
+    COPASI.CCopasiDataModel.GLOBAL.newModel()
+    self.model=COPASI.CCopasiDataModel.GLOBAL.getModel()
     self.model.createCompartment("comp1",1.0)
     self.model.createCompartment("comp2",2.0)
     m1=self.model.createMetabolite("A","comp1")
@@ -47,10 +57,6 @@ class Test_CMoiety(unittest.TestCase):
     key=self.moiety.getKey()
     self.assert_(type(key)==StringType)
 
-  def test_getDependentRate(self):
-    v=self.moiety.getDependentRate()
-    self.assert_(type(v)==FloatType)
-
   def test_getDependentNumber(self):
     v=self.moiety.getDependentNumber()
     self.assert_(type(v)==FloatType)
@@ -61,7 +67,6 @@ def suite():
          ,'test_getDependentNumber'
          ,'test_getNumber'
          ,'test_getKey'
-         ,'test_getDependentRate'
          ,'test_getDependentNumber'
         ]
   return unittest.TestSuite(map(Test_CMoiety,tests))

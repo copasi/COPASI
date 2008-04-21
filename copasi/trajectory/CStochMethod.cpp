@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-//   $Revision: 1.67 $
+//   $Revision: 1.67.4.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/10/02 18:18:03 $
+//   $Author: ssahle $
+//   $Date: 2008/01/21 10:22:17 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -369,10 +374,13 @@ C_INT32 CStochMethod::updateSystemState(C_INT32 rxn)
   const std::vector<CStochBalance> & bals = mLocalBalances[rxn];
 
   std::vector<CStochBalance>::const_iterator bi;
+  CMetab* pTmpMetab;
   for (bi = bals.begin(); bi != bals.end(); bi++)
     {
       mNumbers[bi->mIndex] = mNumbers[bi->mIndex] + bi->mMultiplicity;
-      mpModel->getMetabolitesX()[bi->mIndex]->setValue(mNumbers[bi->mIndex]);
+      pTmpMetab = mpModel->getMetabolitesX()[bi->mIndex];
+      pTmpMetab->setValue(mNumbers[bi->mIndex]);
+      pTmpMetab->refreshConcentration();
 
       //debug
       //if (mNumbers[bi->mIndex]<0)
@@ -427,12 +435,14 @@ C_INT32 CStochMethod::generateReactionIndex()
 
 C_FLOAT64 CStochMethod::generateReactionTime()
 {
+  if (mA0 == 0) return 2.0 * DBL_MAX;
   C_FLOAT64 rand2 = mpRandomGenerator->getRandomOO();
   return - 1 * log(rand2) / mA0;
 }
 
 C_FLOAT64 CStochMethod::generateReactionTime(C_INT32 reaction_index)
 {
+  if (mAmu[reaction_index] == 0) return 2.0 * DBL_MAX;
   C_FLOAT64 rand2 = mpRandomGenerator->getRandomOO();
   return - 1 * log(rand2) / mAmu[reaction_index];
 }

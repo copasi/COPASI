@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget.cpp,v $
-//   $Revision: 1.148 $
+//   $Revision: 1.148.4.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/13 15:08:15 $
+//   $Date: 2008/02/28 21:38:16 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -38,8 +43,9 @@
 #define COL_NUMBER             7
 #define COL_CRATE              8
 #define COL_NRATE              9
-#define COL_EXPRESSION        10
-#define COL_CURRENTCOMPARTMENT    11
+#define COL_IEXPRESSION       10
+#define COL_EXPRESSION        11
+#define COL_CURRENTCOMPARTMENT    12
 
 std::vector<const CCopasiObject*> MetabolitesWidget::getObjects() const
   {
@@ -56,7 +62,7 @@ std::vector<const CCopasiObject*> MetabolitesWidget::getObjects() const
 void MetabolitesWidget::init()
 {
   mOT = ListViews::METABOLITE;
-  numCols = 12; //+ 1; //+1 for sbml id
+  numCols = 13; //+ 1; //+1 for sbml id
   table->setNumCols(numCols);
 
   //Setting table headers
@@ -71,6 +77,7 @@ void MetabolitesWidget::init()
   tableHeader->setLabel(COL_NUMBER, "Number");
   // tableHeader->setLabel(COL_CRATE, "Rate");
   tableHeader->setLabel(COL_NRATE, "Number Rate");
+  tableHeader->setLabel(COL_IEXPRESSION, "Initial Expression");
   tableHeader->setLabel(COL_EXPRESSION, "Expression");
 
   // Hide columns
@@ -81,6 +88,7 @@ void MetabolitesWidget::init()
   table->setColumnReadOnly (COL_NUMBER, true);
   table->setColumnReadOnly (COL_CRATE, true);
   table->setColumnReadOnly (COL_NRATE, true);
+  table->setColumnReadOnly (COL_IEXPRESSION, true);
   table->setColumnReadOnly (COL_EXPRESSION, true);
 
   // We start with the concentration showing.
@@ -146,7 +154,7 @@ void MetabolitesWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C
     }
   else
     {
-      table->item(row, COL_ICONCENTRATION)->setEnabled(true);
+      table->item(row, COL_ICONCENTRATION)->setEnabled(const_cast< CMetab * >(pMetab)->isInitialConcentrationChangeAllowed());
       table->item(row, COL_INUMBER)->setEnabled(true);
     }
 
@@ -162,12 +170,23 @@ void MetabolitesWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C
   // Number Rate
   table->setText(row, COL_NRATE, QString::number(pMetab->getRate()));
 
+  const CExpression * pExpression = NULL;
+  // Initial Expression
+  if (pMetab->getInitialExpression() != "")
+    {
+      pExpression = pMetab->getInitialExpressionPtr();
+      if (pExpression != NULL)
+        table->setText(row, COL_IEXPRESSION, FROM_UTF8(pExpression->getDisplayString()));
+      else
+        table->clearCell(row, COL_IEXPRESSION);
+    }
+
   // Expression
-  const CExpression * pExpression = pMetab->getExpressionPtr();
+  pExpression = pMetab->getExpressionPtr();
   if (pExpression != NULL)
     table->setText(row, COL_EXPRESSION, FROM_UTF8(pExpression->getDisplayString()));
   else
-    table->setText(row, COL_EXPRESSION, "");
+    table->clearCell(row, COL_EXPRESSION);
 
   // Current Compartment
   table->setText(row, COL_CURRENTCOMPARTMENT,
@@ -190,12 +209,12 @@ void MetabolitesWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* o
       if (!CCopasiDataModel::Global->getModel()->getCompartments()[(const char *)Compartment.utf8()]->addMetabolite(pMetab))
         {
           QString msg;
-          msg = "Unable to move metabolite '" + FROM_UTF8(pMetab->getObjectName()) + "'\n"
+          msg = "Unable to move species '" + FROM_UTF8(pMetab->getObjectName()) + "'\n"
                 + "from compartment '" + FROM_UTF8(CompartmentToRemove) + "' to compartment '" + Compartment + "'\n"
-                + "since a metabolite with that name already exist in the target compartment.";
+                + "since a species with that name already exist in the target compartment.";
 
           CQMessageBox::information(this,
-                                    "Unable to move Metabolite",
+                                    "Unable to move Species",
                                     msg,
                                     QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
         }
@@ -266,34 +285,38 @@ void MetabolitesWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C
       if (exc != COL_INUMBER)
         table->setText(row, COL_INUMBER, QString::number(100.0));
 
-      table->setText(row, COL_ICONCENTRATION, "");
+      table->clearCell(row, COL_ICONCENTRATION);
       initialNumberChanged(row);
     }
 
   // Concentration
   if (exc != COL_CONCENTRATION)
-    table->setText(row, COL_CONCENTRATION, "");
+    table->clearCell(row, COL_CONCENTRATION);
 
   // Number
   if (exc != COL_NUMBER)
-    table->setText(row, COL_NUMBER, "");
+    table->clearCell(row, COL_NUMBER);
 
   // Concentration Rate
   if (exc != COL_CRATE)
-    table->setText(row, COL_CRATE, "");
+    table->clearCell(row, COL_CRATE);
 
   // Number Rate
   if (exc != COL_NRATE)
-    table->setText(row, COL_NRATE, "");
+    table->clearCell(row, COL_NRATE);
+
+  // Initial Expression
+  if (exc != COL_IEXPRESSION)
+    table->clearCell(row, COL_IEXPRESSION);
 
   // Expression
   if (exc != COL_EXPRESSION)
-    table->setText(row, COL_EXPRESSION, "");
+    table->clearCell(row, COL_EXPRESSION);
 }
 
 QString MetabolitesWidget::defaultObjectName() const
   {
-    return "metabolite";
+    return "species";
   }
 
 CCopasiObject* MetabolitesWidget::createNewObject(const std::string & name)
@@ -310,7 +333,7 @@ CCopasiObject* MetabolitesWidget::createNewObject(const std::string & name)
       nname = name + "_";
       nname += (const char *)QString::number(i).utf8();
     }
-  //std::cout << " *** created Metabolite: " << nname << " : " << pMetab->getKey() << std::endl;
+  //std::cout << " *** created Species: " << nname << " : " << pMetab->getKey() << std::endl;
   return pMetab;
 }
 
@@ -323,11 +346,11 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
   if (keys.size() == 0)
     return;
 
-  QString metaboliteList = "Are you sure you want to delete listed METABOLITE(S) ?\n";
-  QString effectedCompartmentList = "Following COMPARTMENT(S) reference above METABOLITE(S) and will be deleted -\n";
-  QString effectedMetabList = "Following METABOLITE(S) reference above METABOLITE(S) and will be deleted -\n";
-  QString effectedReacList = "Following REACTION(S) reference above METABOLITE(S) and will be deleted -\n";
-  QString effectedValueList = "Following MODEL VALUE(S) reference above METABOLITE(S) and will be deleted -\n";
+  QString metaboliteList = "Are you sure you want to delete listed SPECIES ?\n";
+  QString effectedCompartmentList = "Following COMPARTMENT(S) reference above SPECIES and will be deleted -\n";
+  QString effectedMetabList = "Following METABOLITE(S) reference above SPECIES and will be deleted -\n";
+  QString effectedReacList = "Following REACTION(S) reference above SPECIES and will be deleted -\n";
+  QString effectedValueList = "Following MODEL VALUE(S) reference above SPECIES and will be deleted -\n";
 
   bool compartmentFound = false;
   bool metabFound = false;

@@ -1,12 +1,17 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CModel.i,v $ 
-//   $Revision: 1.10 $ 
+//   $Revision: 1.10.6.3 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2007/06/23 12:45:47 $ 
+//   $Date: 2008/04/16 20:08:32 $ 
 // End CVS Header 
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc. and EML Research, gGmbH. 
 // All rights reserved. 
 
@@ -20,8 +25,12 @@
 
 %}
 
+%template(ObjectStdVector) std::vector<CCopasiObject*>;
+typedef std::vector<CCopasiObject*> ObjectStdVector;
+
 %ignore CModel::compileIfNecessary(CProcessReport* pProcessReport);
 %ignore CModel::forceCompile(CProcessReport* pProcessReport);
+%ignore _cpp_min;
 
 class CModel : public CModelEntity
 {
@@ -52,12 +61,6 @@ class CModel : public CModelEntity
      *  Default constructor
      */
     CModel();
-
-    /**
-     *  Copy construnctor
-     *  @param "const CModel &" src
-     */
-    CModel(const CModel & src);
 
     /**
      * Destructor
@@ -494,6 +497,28 @@ class CModel : public CModelEntity
     {
         return $self->compileIfNecessary(NULL);
     };
+
+    void applyInitialValues()
+    {
+        $self->compileIfNecessary(NULL);
+        $self->applyInitialValues();
+        $self->updateNonSimulatedValues();
+    }
+
+    void updateInitialValues(const std::vector<CCopasiObject*>& v)
+    {
+        std::set<const CCopasiObject*> changedObjects;
+        changedObjects.insert(v.begin(),v.end());
+        std::vector<Refresh*> refreshes=$self->buildInitialRefreshSequence(changedObjects);
+        std::vector<Refresh*>::iterator refreshIt = refreshes.begin(), refreshEndit = refreshes.end();
+        while (refreshIt != refreshEndit)
+            (**refreshIt++)();
+    };
+
+    CModelValue* getModelValue(const std::string& name)
+    {
+        return $self->getModelValues()[name];
+    }
 
 }
 

@@ -1,17 +1,22 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.69 $ 
+#   $Revision: 1.69.2.1.2.5 $ 
 #   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2007/12/13 18:22:43 $ 
+#   $Author: ssahle $ 
+#   $Date: 2008/01/18 14:32:39 $ 
 # End CVS Header 
 
-# Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
-# Properties, Inc. and EML Research, gGmbH. 
-# All rights reserved. 
+# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+# and The University of Manchester.
+# All rights reserved.
+
+# Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+# Properties, Inc. and EML Research, gGmbH.
+# All rights reserved.
 
 ######################################################################
-# $Revision: 1.69 $ $Author: shoops $ $Date: 2007/12/13 18:22:43 $  
+# $Revision: 1.69.2.1.2.5 $ $Author: ssahle $ $Date: 2008/01/18 14:32:39 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -47,11 +52,11 @@ QMAKE_LFLAGS  += $$(LDFLAGS)
 
 debug {
   DEFINES += COPASI_DEBUG
-  #DEFINES += WITH_LAYOUT
-  DEFINES += COPASI_TSSA
     
   isEmpty(COPASI_SRC_PACKAGE) {
-    DEFINES += COPASI_TSS
+    #DEFINES += COPASI_TSS
+    DEFINES += COPASI_TSSA
+    # DEFINES += WITH_LAYOUT
   }
 }
 
@@ -63,7 +68,6 @@ contains(STATIC_LINKAGE, yes) {
   DEFINES+=XML_STATIC
   DEFINES+=LIBSBML_STATIC
 }
-
 
 !contains(BUILD_OS, WIN32) {
   #Release code optimization
@@ -159,8 +163,11 @@ contains(BUILD_OS, WIN32) {
   QMAKE_YACC = C:\cygwin\bin\bash ../../admin/yacc.sh
 
   DEFINES -= UNICODE 
+   
   debug {
+    !win32-msvc2005 {
     QMAKE_LFLAGS += /NODEFAULTLIB:"libcmt.lib"
+    }
     QMAKE_LFLAGS += /NODEFAULTLIB:"msvcrt.lib"
   }
 
@@ -173,10 +180,9 @@ contains(BUILD_OS, WIN32) {
 
   !isEmpty(MKL_PATH) {
     DEFINES += USE_MKL
-    QMAKE_CXXFLAGS_DEBUG   += -I"$${MKL_PATH}\include"
-    QMAKE_CXXFLAGS_RELEASE += -I"$${MKL_PATH}\include"
-    QMAKE_LFLAGS_WINDOWS += /LIBPATH:"$${MKL_PATH}\32\lib"
-    QMAKE_LFLAGS_CONSOLE += /LIBPATH:"$${MKL_PATH}\32\lib"
+    QMAKE_CXXFLAGS += -I"$${MKL_PATH}\include"
+    QMAKE_LFLAGS += /LIBPATH:"$${MKL_PATH}\ia32\lib"
+    QMAKE_LFLAGS += /LIBPATH:"$${MKL_PATH}\..\Compiler\C++\9.0\IA32\Lib"
     LIBS += mkl_c.lib
   } else {
     !isEmpty(CLAPACK_PATH) {
@@ -195,16 +201,31 @@ contains(BUILD_OS, WIN32) {
     QMAKE_LFLAGS += /LIBPATH:"$${EXPAT_PATH}\StaticLibs"
     QMAKE_LFLAGS += /LIBPATH:"$${EXPAT_PATH}\bin"
     QMAKE_LFLAGS += /LIBPATH:"$${EXPAT_PATH}\lib"
-    LIBS += libexpatMT.lib
+    contains(STATIC_LINKAGE, yes) {
+      LIBS += libexpatMT.lib
+    } else {
+      LIBS += libexpat.lib
+    }
   } else {
     error( "EXPAT_PATH must be specified" )
   }
 
+  # Add libsbml
+  win32-msvc2005 {
+    release {
+      LIBS += libsbml.lib
+    }
+    debug {
+      LIBS += libsbmlD.lib
+    }
+  } else {
+    LIBS += libsbml.lib
+  }
+  
   !isEmpty(SBML_PATH) {
     QMAKE_CXXFLAGS   += -I"$${SBML_PATH}\include"
     QMAKE_LFLAGS += /LIBPATH:"$${SBML_PATH}\lib"
     QMAKE_LFLAGS += /LIBPATH:"$${SBML_PATH}\bin"
-    LIBS += libsbml.lib
   } else {
     error( "SBML_PATH must be specified" )
   }
@@ -264,6 +285,10 @@ contains(STATIC_LINKAGE, yes) {
 
   contains(DEFINES, COPASI_MIRIAM) {
     LIBS += -lraptor
+  !isEmpty(RAPTOR_PATH){
+      LIBS+=  -L$${RAPTOR_PATH}/lib
+      INCLUDEPATH += $${RAPTOR_PATH}/include
+      }
   }
   
   contains(CONFIG, qt) {

@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-//   $Revision: 1.132 $
+//   $Revision: 1.132.4.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/12/06 21:05:41 $
+//   $Date: 2008/02/28 21:38:16 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -172,7 +177,8 @@ void CMetab::refreshInitialValue()
 
 void CMetab::refreshInitialConcentration()
 {
-  if (getInitialExpression() != "")
+  if (mpInitialExpression != NULL &&
+      mpInitialExpression->getInfix() != "")
     mIConc = mpInitialExpression->calcValue();
   else
     mIConc =
@@ -333,6 +339,7 @@ bool CMetab::compile()
       // Implicit initial expression
       pdelete(mpInitialExpression);
       mpInitialExpression = CExpression::createInitialExpression(*mpExpression);
+      mpInitialExpression->setObjectName("InitialExpression");
 
       // Fixed values
       mRate = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
@@ -496,6 +503,21 @@ bool CMetab::compileInitialValueDependencies(const bool & updateConcentration)
     }
 
   return success;
+}
+
+bool CMetab::isInitialConcentrationChangeAllowed()
+{
+  compileInitialValueDependencies(false);
+
+  std::set< const CCopasiObject * > Candidates;
+  std::set< const CCopasiObject * > Verified;
+
+  bool Allowed = !mpIValueReference->hasCircularDependencies(Candidates, Verified);
+
+  if (!Allowed)
+    compileInitialValueDependencies(true);
+
+  return Allowed;
 }
 
 void CMetab::calculate()
@@ -728,7 +750,7 @@ C_INT32 CMetab::load(CReadConfig &configbuffer)
     {
       CCopasiMessage(CCopasiMessage::WARNING,
                      "The file specifies a non-existing type "
-                     "for '%s'.\nReset to internal metabolite.",
+                     "for '%s'.\nReset to internal species.",
                      getObjectName().c_str());
       setStatus(REACTIONS);
     }
@@ -824,7 +846,7 @@ C_INT32 CMetabOld::load(CReadConfig &configbuffer)
     {
       CCopasiMessage(CCopasiMessage::WARNING,
                      "The file specifies a non-existing type "
-                     "for '%s'.\nReset to internal metabolite.",
+                     "for '%s'.\nReset to internal species.",
                      getObjectName().c_str());
       mStatus = CModelEntity::REACTIONS;
     }

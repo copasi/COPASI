@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.334 $
+//   $Revision: 1.334.4.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/12/06 21:05:10 $
+//   $Date: 2008/03/03 17:12:44 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -383,17 +388,19 @@ bool CModel::compile()
   CompileStep = 5;
   if (mpCompileHandler && !mpCompileHandler->progress(hCompileStep)) return false;
 
+  bool success = true;
   try
     {
-      buildInitialSequence();
-      buildConstantSequence();
-      buildSimulatedSequence();
-      buildNonSimulatedSequence();
+      success &= buildInitialSequence();
+      success &= buildConstantSequence();
+      success &= buildSimulatedSequence();
+      success &= buildNonSimulatedSequence();
     }
   catch (...)
     {
-      return false;
+      success = false;
     }
+
   CompileStep = 6;
   if (mpCompileHandler && !mpCompileHandler->progress(hCompileStep)) return false;
 
@@ -403,11 +410,25 @@ bool CModel::compile()
   //update annotations
   updateMatrixAnnotations();
 
+  if (!success)
+    return false;
+
   mCompileIsNecessary = false;
 
   //writeDependenciesToDotFile();
 
   return true;
+}
+
+void CModel::compileDefaultMetabInitialValueDependencies()
+{
+  CCopasiVector< CMetab >::iterator it = mMetabolites.begin();
+  CCopasiVector< CMetab >::iterator end = mMetabolites.end();
+
+  for (; it != end; ++it)
+    (*it)->compileInitialValueDependencies(true);
+
+  return;
 }
 
 void CModel::setCompileFlag(bool flag)
@@ -429,7 +450,11 @@ bool CModel::compileIfNecessary(CProcessReport* pProcessReport)
     std::cout << " " << std::endl;
   */
 
-  if (!mCompileIsNecessary) return true;
+  if (!mCompileIsNecessary)
+    {
+      this->compileDefaultMetabInitialValueDependencies();
+      return true;
+    }
 
   mpCompileHandler = pProcessReport;
 
@@ -940,9 +965,6 @@ const CMatrix< C_FLOAT64 > & CModel::getL0() const
 CStateTemplate & CModel::getStateTemplate()
 {CCHECK return mStateTemplate;}
 
-std::set< const CCopasiObject * > & CModel::getUptoDateObjects()
-{CCHECK return mSimulatedUpToDateObjects;}
-
 const std::set< const CCopasiObject * > & CModel::getUptoDateObjects() const
   {return mSimulatedUpToDateObjects;}
 
@@ -1029,7 +1051,7 @@ void CModel::applyInitialValues()
     (**itRefresh++)();
 
   // Update all dependend objects needed for simulation.
-  updateSimulatedValues(true);
+  updateSimulatedValues(false);
 }
 
 void CModel::clearMoieties()
@@ -1116,7 +1138,7 @@ bool CModel::buildStateTemplate()
 
 bool CModel::buildUserOrder()
 {
-  CVector<CModelEntity *> Entities(mMetabolitesX.size() + mCompartments.size() + mValues.size());
+  CVector<CModelEntity *> Entities(mMetabolites.size() + mCompartments.size() + mValues.size());
   CModelEntity ** ppEntity = Entities.array();
 
   CCopasiVector< CMetab >::iterator itMetab = mMetabolites.begin();
@@ -1156,6 +1178,8 @@ bool CModel::buildUserOrder()
 
 bool CModel::buildInitialSequence()
 {
+  bool success = true;
+
   // The objects which are changed are all initial values of of all model entities including
   // fixed and unused once. Additionally, all kinetic parameters are possibly changed.
   // This is basically all the parameters in the parameter overview whose value is editable.
@@ -1187,9 +1211,17 @@ bool CModel::buildInitialSequence()
         Objects.insert(Group.getParameter(i)->getObject(CCopasiObjectName("Reference=Value")));
     }
 
-  mInitialRefreshes = buildInitialRefreshSequence(Objects);
+  try
+    {
+      mInitialRefreshes = buildInitialRefreshSequence(Objects);
+    }
+  catch (...)
+    {
+      mInitialRefreshes.clear();
+      success = false;
+    }
 
-  return true;
+  return success;
 }
 
 bool CModel::updateInitialValues()
@@ -1209,6 +1241,8 @@ bool CModel::updateInitialValues()
 
 bool CModel::buildSimulatedSequence()
 {
+  bool success = true;
+
   // We need to add each used model entity to the objects which need to be updated.
   std::set< const CCopasiObject * > Objects;
 
@@ -1270,7 +1304,7 @@ bool CModel::buildSimulatedSequence()
 
             for (it = Objects.begin(); it != end; ++it)
               if (*it != pObject &&
-                  (*it)->hasCircularDependencies(Candidate))
+                  (*it)->dependsOn(Candidate))
                 break;
 
             if (it == end)
@@ -1331,7 +1365,16 @@ bool CModel::buildSimulatedSequence()
 
   mSimulatedUpToDateObjects.clear();
   //std::cout << "Simulated: " ; //debug
-  mSimulatedRefreshes = CCopasiObject::buildUpdateSequence(Objects, mSimulatedUpToDateObjects);
+
+  try
+    {
+      mSimulatedRefreshes = CCopasiObject::buildUpdateSequence(Objects, mSimulatedUpToDateObjects);
+    }
+  catch (...)
+    {
+      mSimulatedRefreshes.clear();
+      success = false;
+    }
 
   // We have to remove the refresh calls already covered by mConstantRefreshes
   std::vector< Refresh * >::const_iterator itInitialRefresh = mConstantRefreshes.begin();
@@ -1353,11 +1396,13 @@ bool CModel::buildSimulatedSequence()
           }
     }
 
-  return true;
+  return success;
 }
 
 bool CModel::buildConstantSequence()
 {
+  bool success = true;
+
   // Now find all model entities which are assignments and which do
   // not depend on simulated values, i.e., on model entities of type
   // time, ode, reaction
@@ -1398,14 +1443,27 @@ bool CModel::buildConstantSequence()
     }
 
   mSimulatedUpToDateObjects.clear();
-  mConstantRefreshes = CCopasiObject::buildUpdateSequence(Objects, mSimulatedUpToDateObjects);
-  mSimulatedUpToDateObjects = Objects;
 
-  return true;
+  try
+    {
+      mConstantRefreshes = CCopasiObject::buildUpdateSequence(Objects, mSimulatedUpToDateObjects);
+    }
+  catch (...)
+    {
+      mConstantRefreshes.clear();
+      success = true;
+    }
+
+  if (success)
+    mSimulatedUpToDateObjects = Objects;
+
+  return success;
 }
 
 bool CModel::buildNonSimulatedSequence()
 {
+  bool success = true;
+
   std::set< const CCopasiObject * > Objects;
 
   // Compartments
@@ -1480,13 +1538,21 @@ bool CModel::buildNonSimulatedSequence()
     }
 
   //std::cout << "Non Simulated: " ; //debug
-  mNonSimulatedRefreshes = CCopasiObject::buildUpdateSequence(Objects, mSimulatedUpToDateObjects);
+  try
+    {
+      mNonSimulatedRefreshes = CCopasiObject::buildUpdateSequence(Objects, mSimulatedUpToDateObjects);
+    }
+  catch (...)
+    {
+      mNonSimulatedRefreshes.clear();
+      success = false;
+    }
 
-  return true;
+  return success;
 }
 
 const CState & CModel::getInitialState() const
-{return mInitialState;}
+  {return mInitialState;}
 
 const CState & CModel::getState() const
   {return mCurrentState;}
@@ -1670,10 +1736,14 @@ void CModel::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
     {
       Store = *pX;
 
-      if (fabs(Store * 2.0 * derivationFactor) < resolution)
+      // We only need to make sure that we do not have an underflow problem
+      if (fabs(Store) < 100 * DBL_MIN)
         {
-          X1 = resolution;
-          X2 = -resolution;
+          X1 = 0.0;
+          if (Store < 0.0)
+            X2 = -200.0 * DBL_MIN;
+          else
+            X2 = 200.0 * DBL_MIN;;
         }
       else
         {
@@ -1757,18 +1827,14 @@ void CModel::calculateJacobianX(CMatrix< C_FLOAT64 > & jacobianX,
     {
       Store = *pX;
 
-      if (fabs(Store * 2.0 * derivationFactor) < resolution)
+      // We only need to make sure that we do not have an underflow problem
+      if (fabs(Store) < 100 * DBL_MIN)
         {
-          /*          X1 = + resolution;
-                    X2 = - resolution;*/
-          X1 = Store + 0.5 * resolution;
-          X2 = Store - 0.5 * resolution;
-
-          if ((Store >= 0) && (Store < 0.5*resolution))
-            {
-              X1 = resolution;
-              X2 = 0;
-            }
+          X1 = 0.0;
+          if (Store < 0.0)
+            X2 = -200.0 * DBL_MIN;
+          else
+            X2 = 200.0 * DBL_MIN;;
         }
       else
         {
@@ -2082,7 +2148,7 @@ void CModel::appendDependentReactions(std::set< const CCopasiObject * > candidat
     for (; it != end; ++it)
       if (candidates.find(*it) == candidates.end())
         {
-          if ((*it)->hasCircularDependencies(candidates))
+          if ((*it)->dependsOn(candidates))
             {
               dependentReactions.insert((*it));
               continue;
@@ -2094,7 +2160,7 @@ void CModel::appendDependentReactions(std::set< const CCopasiObject * > candidat
 
           for (; itSet != endSet; ++itSet)
             if (candidates.find(*itSet) == candidates.end() &&
-                (*itSet)->hasCircularDependencies(candidates))
+                (*itSet)->dependsOn(candidates))
               {
                 dependentReactions.insert((*it));
                 break;
@@ -2129,7 +2195,7 @@ void CModel::appendDependentMetabolites(std::set< const CCopasiObject * > candid
           else if (candidates.find(*it) == candidates.end())
             {
               if (candidates.find((*it)->getCompartment()->getObject(CCopasiObjectName("Reference=Volume"))) != candidates.end() ||
-                  (*it)->hasCircularDependencies(candidates))
+                  (*it)->dependsOn(candidates))
                 {
                   dependentMetabolites.insert((*it));
                   continue;
@@ -2149,7 +2215,7 @@ void CModel::appendDependentMetabolites(std::set< const CCopasiObject * > candid
 
               for (; itSet != endSet; ++itSet)
                 if (candidates.find(*itSet) == candidates.end() &&
-                    (*itSet)->hasCircularDependencies(candidates))
+                    (*itSet)->dependsOn(candidates))
                   {
                     dependentMetabolites.insert((*it));
                     break;
@@ -2174,7 +2240,7 @@ void CModel::appendDependentCompartments(std::set< const CCopasiObject * > candi
     for (; it != end; ++it)
       if (candidates.find(*it) == candidates.end())
         {
-          if ((*it)->hasCircularDependencies(candidates))
+          if ((*it)->dependsOn(candidates))
             {
               dependentCompartments.insert((*it));
               continue;
@@ -2186,7 +2252,7 @@ void CModel::appendDependentCompartments(std::set< const CCopasiObject * > candi
 
           for (; itSet != endSet; ++itSet)
             if (candidates.find(*itSet) == candidates.end() &&
-                (*itSet)->hasCircularDependencies(candidates))
+                (*itSet)->dependsOn(candidates))
               {
                 dependentCompartments.insert((*it));
                 break;
@@ -2210,7 +2276,7 @@ void CModel::appendDependentModelValues(std::set< const CCopasiObject * > candid
     for (; it != end; ++it)
       if (candidates.find(*it) == candidates.end())
         {
-          if ((*it)->hasCircularDependencies(candidates))
+          if ((*it)->dependsOn(candidates))
             {
               dependentModelValues.insert((*it));
               continue;
@@ -2222,7 +2288,7 @@ void CModel::appendDependentModelValues(std::set< const CCopasiObject * > candid
 
           for (; itSet != endSet; ++itSet)
             if (candidates.find(*itSet) == candidates.end() &&
-                (*itSet)->hasCircularDependencies(candidates))
+                (*itSet)->dependsOn(candidates))
               {
                 dependentModelValues.insert((*it));
                 break;
@@ -2789,7 +2855,7 @@ void CModel::initObjects()
   mpStoiAnnotation = new CArrayAnnotation("Stoichiometry(ann)", this, new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mStoiReordered));
   mpStoiAnnotation->setDescription("Stoichiometry Matrix");
   mpStoiAnnotation->setMode(0, CArrayAnnotation::OBJECTS);
-  mpStoiAnnotation->setDimensionDescription(0, "Metabolites that are controlled by reactions");
+  mpStoiAnnotation->setDimensionDescription(0, "Species that are controlled by reactions");
   mpStoiAnnotation->setMode(1, CArrayAnnotation::VECTOR_ON_THE_FLY);
   mpStoiAnnotation->setDimensionDescription(1, "Reactions");
   mpStoiAnnotation->setCopasiVector(1, &mSteps);
@@ -2797,7 +2863,7 @@ void CModel::initObjects()
   mpRedStoiAnnotation = new CArrayAnnotation("Reduced stoichiometry(ann)", this, new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mRedStoi));
   mpRedStoiAnnotation->setDescription("Reduced stoichiometry Matrix");
   mpRedStoiAnnotation->setMode(0, CArrayAnnotation::OBJECTS);
-  mpRedStoiAnnotation->setDimensionDescription(0, "Metabolites (reduced system)");
+  mpRedStoiAnnotation->setDimensionDescription(0, "Species (reduced system)");
   mpRedStoiAnnotation->setMode(1, CArrayAnnotation::VECTOR_ON_THE_FLY);
   mpRedStoiAnnotation->setDimensionDescription(1, "Reactions");
   mpRedStoiAnnotation->setCopasiVector(1, &mSteps);
@@ -2805,9 +2871,9 @@ void CModel::initObjects()
   mpLinkMatrixAnnotation = new CArrayAnnotation("Link matrix(ann)", this, new CCopasiMatrixInterface<CLinkMatrixView>(&mLView));
   mpLinkMatrixAnnotation->setDescription("Link matrix");
   mpLinkMatrixAnnotation->setMode(0, CArrayAnnotation::OBJECTS);
-  mpLinkMatrixAnnotation->setDimensionDescription(0, "Metabolites that are controlled by reactions (full system)");
+  mpLinkMatrixAnnotation->setDimensionDescription(0, "Species that are controlled by reactions (full system)");
   mpLinkMatrixAnnotation->setMode(1, CArrayAnnotation::OBJECTS);
-  mpLinkMatrixAnnotation->setDimensionDescription(1, "Metabolites (reduced system)");
+  mpLinkMatrixAnnotation->setDimensionDescription(1, "Species (reduced system)");
 }
 
 bool CModel::hasReversibleReaction() const
@@ -3182,6 +3248,9 @@ bool CModel::isAutonomous() const
     return (TimeDependent.begin() == TimeDependent.end());
   }
 
+const std::vector< Refresh * > & CModel::getListOfInitialRefreshes() const
+  {return mInitialRefreshes;}
+
 const std::vector< Refresh * > & CModel::getListOfSimulatedRefreshes() const
   {return mSimulatedRefreshes;}
 
@@ -3230,15 +3299,10 @@ CModel::buildInitialRefreshSequence(std::set< const CCopasiObject * > & changedO
             {
               // The cocentration is assumed to be fix accept when this would lead to circular dependencies,
               // for the parent's compartment's initial volume.
-              Objects.insert(pMetab->getInitialConcentrationReference());
-              pMetab->compileInitialValueDependencies(false);
-
-              if (pMetab->getCompartment()->getInitialValueReference()->hasCircularDependencies(Objects))
-                changedObjects.insert(pMetab->getInitialValueReference());
-              else
+              if (pMetab->isInitialConcentrationChangeAllowed())
                 changedObjects.insert(pMetab->getInitialConcentrationReference());
-
-              Objects.clear();
+              else
+                changedObjects.insert(pMetab->getInitialValueReference());
             }
           else
             changedObjects.insert((*ppEntity)->getInitialValueReference());
@@ -3312,13 +3376,14 @@ CModel::buildInitialRefreshSequence(std::set< const CCopasiObject * > & changedO
     Objects.insert((*itMoiety)->getInitialValueReference());
 
   std::set< const CCopasiObject * > DependencySet;
+  std::set< const CCopasiObject * > VerifiedSet;
   std::pair<std::set< const CCopasiObject * >::iterator, bool> InsertedObject;
 
   assert (Objects.count(NULL) == 0);
 
   // Check whether we have any circular dependencies
   for (itSet = Objects.begin(), endSet = Objects.end(); itSet != endSet; ++itSet)
-    if ((*itSet)->hasCircularDependencies(DependencySet))
+    if ((*itSet)->hasCircularDependencies(DependencySet, VerifiedSet))
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCObject + 1, (*itSet)->getCN().c_str());
 
   // Build the complete set of dependencies
@@ -3346,7 +3411,7 @@ CModel::buildInitialRefreshSequence(std::set< const CCopasiObject * > & changedO
       else if (changedObjects.count(*itSet) != 0)
         Objects.insert(*itSet);
       // Not dependent on the changed objects.
-      else if (!(*itSet)->hasCircularDependencies(changedObjects))
+      else if (!(*itSet)->dependsOn(changedObjects))
         Objects.insert(*itSet);
     }
 

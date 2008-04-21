@@ -1,6 +1,15 @@
-# Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
-# Properties, Inc. and EML Research, gGmbH.
-# All rights reserved.
+# -*- coding: utf-8 -*-
+# Begin CVS Header 
+#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/Test_CCompartment.py,v $ 
+#   $Revision: 1.8.14.2 $ 
+#   $Name:  $ 
+#   $Author: gauges $ 
+#   $Date: 2008/04/14 08:19:39 $ 
+# End CVS Header 
+# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+# and The University of Manchester. 
+# All rights reserved. 
 
 import COPASI
 import unittest
@@ -9,7 +18,8 @@ import math
 
 class Test_CCompartment(unittest.TestCase):
   def setUp(self):
-    self.model=COPASI.CModel()
+    COPASI.CCopasiDataModel.GLOBAL.newModel()
+    self.model=COPASI.CCopasiDataModel.GLOBAL.getModel()
     self.compartment=self.model.createCompartment("Comp1")
     self.model.createMetabolite("metab1","Comp1")
     self.model.createMetabolite("metab2","Comp1")

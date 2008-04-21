@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-//   $Revision: 1.69 $
+//   $Revision: 1.69.4.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/12 18:40:21 $
+//   $Date: 2008/02/28 18:21:00 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -87,8 +92,8 @@ void CSteadyStateTask::initObjects()
                                        new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mJacobian));
   mpJacobianAnn->setMode(CArrayAnnotation::OBJECTS);
   mpJacobianAnn->setDescription("");
-  mpJacobianAnn->setDimensionDescription(0, "Variables of the system, including dependent metabolites");
-  mpJacobianAnn->setDimensionDescription(1, "Variables of the system, including dependent metabolites");
+  mpJacobianAnn->setDimensionDescription(0, "Variables of the system, including dependent species");
+  mpJacobianAnn->setDimensionDescription(1, "Variables of the system, including dependent species");
 
   mpJacobianXAnn = new CArrayAnnotation("Jacobian (reduced system)", this,
                                         new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mJacobianX));
@@ -138,6 +143,7 @@ const CEigen & CSteadyStateTask::getEigenValuesReduced() const
   }
 
 bool CSteadyStateTask::initialize(const OutputFlag & of,
+                                  COutputHandler * pOutputHandler,
                                   std::ostream * pOstream)
 {
   assert(mpProblem && mpMethod);
@@ -146,7 +152,7 @@ bool CSteadyStateTask::initialize(const OutputFlag & of,
 
   bool success = true;
 
-  success &= CCopasiTask::initialize(of, pOstream);
+  success &= CCopasiTask::initialize(of, pOutputHandler, pOstream);
 
   //init states
   if (!mpProblem->getModel()) return false;
@@ -176,7 +182,8 @@ bool CSteadyStateTask::initialize(const OutputFlag & of,
   for (i = 0; i < imax && pUserOrder != pUserOrderEnd; pUserOrder++)
     {
       const CModelEntity::Status & Status = ppEntities[*pUserOrder]->getStatus();
-      if (Status == CModelEntity::ODE || Status == CModelEntity::REACTIONS)
+      if (Status == CModelEntity::ODE ||
+          (Status == CModelEntity::REACTIONS && ppEntities[*pUserOrder]->isUsed()))
         {
           mpJacobianAnn->setAnnotationCN(0 , i, ppEntities[*pUserOrder]->getCN());
           mpJacobianAnn->setAnnotationCN(1 , i, ppEntities[*pUserOrder]->getCN());
@@ -329,7 +336,7 @@ std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
 
   unsigned C_INT32 i, imax = Metabolites.size();
 
-  os << "Metabolite" << "\t";
+  os << "Species" << "\t";
   os << "Concentration (" << pModel->getConcentrationUnitName() << ")" << "\t";
   os << "Concentration Rate (" << pModel->getConcentrationRateUnitName() << ")" << "\t";
   os << "Particle Number" << "\t";

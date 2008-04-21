@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodPraxis.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.4.2.1.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/12/10 19:41:45 $
+//   $Date: 2008/01/23 13:11:21 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -22,8 +27,8 @@
 
 COptMethodPraxis::COptMethodPraxis(const CCopasiContainer * pParent):
     COptMethod(CCopasiTask::optimization, CCopasiMethod::Praxis, pParent),
-    mpPraxis(new FPraxisTemplate<COptMethodPraxis>(this, &COptMethodPraxis::evaluateFunction))
-
+    mpPraxis(new FPraxisTemplate<COptMethodPraxis>(this, &COptMethodPraxis::evaluateFunction)),
+    mpCPraxis(new CPraxis())
 {
   addParameter("Tolerance", CCopasiParameter::DOUBLE, (C_FLOAT64) 1.e-005);
   initObjects();
@@ -32,13 +37,14 @@ COptMethodPraxis::COptMethodPraxis(const CCopasiContainer * pParent):
 COptMethodPraxis::COptMethodPraxis(const COptMethodPraxis & src,
                                    const CCopasiContainer * pParent):
     COptMethod(src, pParent),
-    mpPraxis(new FPraxisTemplate<COptMethodPraxis>(this, &COptMethodPraxis::evaluateFunction))
+    mpPraxis(new FPraxisTemplate<COptMethodPraxis>(this, &COptMethodPraxis::evaluateFunction)),
+    mpCPraxis(new CPraxis())
 {initObjects();}
 
 COptMethodPraxis::~COptMethodPraxis()
 {
-
   pdelete(mpPraxis);
+  pdelete(mpCPraxis);
   cleanup();
 }
 
@@ -86,6 +92,14 @@ bool COptMethodPraxis::optimise()
       (*(*mpSetCalculateVariable)[i])(mCurrent[i]);
     }
 
+  // Report the first value as the current best
+  mBestValue = evaluate();
+  mBest = mCurrent;
+  mContinue = mpOptProblem->setSolution(mBestValue, mBest);
+
+  // We found a new best value lets report it.
+  mpParentTask->output(COutputInterface::DURING);
+
   //estimate the machine epsilon
   d1 = 1.0;
   do
@@ -100,9 +114,14 @@ bool COptMethodPraxis::optimise()
   stepmx = 0.6;
 
   //carry out the minimisation
-  mBestValue = praxis_(&mTolerance, &machep, &stepmx, &mVariableSize, &prin, mCurrent.array(), mpPraxis, &tmp);
+  try
+    {
+      mpCPraxis->praxis_(&mTolerance, &machep, &stepmx, &mVariableSize, &prin, mCurrent.array(), mpPraxis, &tmp);
+    }
+  catch (bool)
+  {}
 
-  return true;
+  return mContinue;
 }
 
 bool COptMethodPraxis::initialize()
@@ -131,41 +150,20 @@ bool COptMethodPraxis::cleanup()
 // evaluate the value of the objective function
 const C_FLOAT64 COptMethodPraxis::evaluateFunction(C_FLOAT64 *x, C_INT *n)
 {
-
   C_INT i;
   for (i = 0; i < *n; i++)
-    {
-      const COptItem & OptItem = *(*mpOptItem)[i];
-
-      //force the new parameter values from the the praxis to be within the bounds
-
-      switch (OptItem.checkConstraint(x[i]))
-        {
-        case - 1:
-          x[i] = *OptItem.getLowerBoundValue() + DBL_EPSILON;
-          break;
-
-        case 1:
-          x[i] = *OptItem.getUpperBoundValue() - DBL_EPSILON;
-          break;
-
-        case 0:
-          break;
-        }
-
-      //set the values
-      (*(*mpSetCalculateVariable)[i])(x[i]);
-    }
+    (*(*mpSetCalculateVariable)[i])(x[i]);
 
   //carry out the function evaluation
-  mEvaluationValue = evaluate();
+  evaluate();
 
-  // We found a new best value lets report it.
-  mBest = mCurrent;
-
-  if (!isnan(mEvaluationValue))
+  if (mEvaluationValue < mBestValue)
     {
+      // We found a new best value lets report it.
       // and store that value
+      for (i = 0; i < *n; i++)
+        mBest[i] = x[i];
+
       mBestValue = mEvaluationValue;
       mContinue = mpOptProblem->setSolution(mBestValue, mBest);
 
@@ -173,7 +171,10 @@ const C_FLOAT64 COptMethodPraxis::evaluateFunction(C_FLOAT64 *x, C_INT *n)
       mpParentTask->output(COutputInterface::DURING);
     }
 
-  return mBestValue;
+  if (!mContinue)
+    throw bool(mContinue);
+
+  return mEvaluationValue;
 }
 
 const C_FLOAT64 & COptMethodPraxis::evaluate()

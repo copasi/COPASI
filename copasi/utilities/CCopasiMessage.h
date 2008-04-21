@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMessage.h,v $
-//   $Revision: 1.51 $
+//   $Revision: 1.51.2.1.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/29 13:17:19 $
+//   $Date: 2008/01/11 14:30:54 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -56,6 +61,7 @@ Message;
 #define MCRegistration           MCopasiBase + 2900
 #define MCTSSAMethod             MCopasiBase + 3000
 #define MCTSSAProblem            MCopasiBase + 3100
+#define MCEigen                  MCopasiBase + 3200
 
 /**
  *  This throws an exception with information where the error occured.
