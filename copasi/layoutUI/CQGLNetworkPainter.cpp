@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.101 $
+//   $Revision: 1.102 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/04/16 11:21:07 $
+//   $Date: 2008/04/21 08:36:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -528,8 +528,10 @@ void CQGLNetworkPainter::drawNode(CGraphNode &n) // draw node as filled circle
       (mappingMode == CVisParameters::SIZE_AREA_MODE))
     if (setOfConstantMetabolites.find(n.getOrigNodeKey()) == setOfConstantMetabolites.end())
       glColor3f(1.0f, 0.0f, 0.0f); // red as default color for all nodes in non-color modes
+  // which have a substantial range of values (max - min > epsilon)
     else
-      glColor3f(0.5f, 0.5f, 0.5f);
+      glColor3f(0.7f, 0.7f, 0.7f); // reatants with a smaller range of values (e.g. constant)
+  // are not scaled and marked in grey
   else
     {// color mapping
       QColor col = QColor();
@@ -1088,7 +1090,7 @@ void CQGLNetworkPainter::rescaleDataSetsWithNewMinMax(C_FLOAT64 oldMin, C_FLOAT6
   unsigned int s; // step number
   C_FLOAT64 val, val_new;
   setOfConstantMetabolites.clear();
-  std::cout << *pSummaryInfo << std::endl;
+  //std::cout << *pSummaryInfo << std::endl;
   for (s = 0; s < dataSets.size(); s++) // for all steps
     {
       //std:: cout << "rescale step: " << s << std::endl;
@@ -1295,15 +1297,17 @@ bool CQGLNetworkPainter::createDataSets()
                   if (iter != keyMap.end())
                     {// if there is a node (key)
                       ndKey = (keyMap.find(objKey))->second;
-                      for (t = 0;t <= timeSer.getRecordedSteps();t++) // iterate on time steps t=0..n
+                      for (t = 0;t <= timeSer.getRecordedSteps() - 1;t++) // iterate on time steps t=0..n
                         {
                           val = timeSer.getConcentrationData(t, i);
+                          //std::cout << name << " : " << getNameForNodeKey(ndKey) << " : " << val << std::endl;
+
                           if (val > maxR)
                             maxR = val;
                           if (val < minR)
                             minR = val;
                         }
-                      std::cout << name << " : " << getNameForNodeKey(ndKey) << " : " << val << std::endl;
+                      //std::cout << "min: " << minR << "   max: " << maxR << std::endl;
                       pSummaryInfo->storeMax(ndKey, maxR);
                       pSummaryInfo->storeMin(ndKey, minR);
                       if (maxR > maxAll)
