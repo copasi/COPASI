@@ -1,19 +1,15 @@
+# -*- coding: utf-8 -*-
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/Test_RunSimulations.py,v $ 
-#   $Revision: 1.5 $ 
+#   $Revision: 1.6 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2008/03/17 15:58:01 $ 
+#   $Date: 2008/04/21 10:27:07 $ 
 # End CVS Header 
-
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 # and The University of Manchester. 
 # All rights reserved. 
-
-# Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
-# Properties, Inc. and EML Research, gGmbH.
-# All rights reserved.
 
 import COPASI
 import unittest
@@ -50,17 +46,17 @@ def runSimulation(methodType,problemParameters,methodParameters):
     return task
 
 def runDeterministicSimulation():
-   problemParameters={"StepSize":0.001,"Duration":10.0,"TimeSeriesRequested":True,"OutputStartTime":0.0}
+   problemParameters={"StepNumber":10000,"StepSize":0.001,"Duration":10.0,"TimeSeriesRequested":True,"OutputStartTime":0.0}
    methodParameters={"Absolute Tolerance":1.0e-20}
    return runSimulation(COPASI.CCopasiMethod.deterministic,problemParameters,methodParameters)
 
 def runStochasticSimulation():
-   problemParameters={"StepSize":0.001,"Duration":10.0,"TimeSeriesRequested":True,"OutputStartTime":0.0}
+   problemParameters={"StepNumber":10000,"StepSize":0.001,"Duration":10.0,"TimeSeriesRequested":True,"OutputStartTime":0.0}
    methodParameters={}
    return runSimulation(COPASI.CCopasiMethod.stochastic,problemParameters,methodParameters)
 
 def runHybridSimulation():
-   problemParameters={"StepSize":0.001,"Duration":10.0,"TimeSeriesRequested":True,"OutputStartTime":0.0}
+   problemParameters={"StepNumber":10000,"StepSize":0.001,"Duration":10.0,"TimeSeriesRequested":True,"OutputStartTime":0.0}
    methodParameters={}
    return runSimulation(COPASI.CCopasiMethod.hybrid,problemParameters,methodParameters)
 
@@ -80,6 +76,8 @@ class Test_RunSimulations(unittest.TestCase):
       self.assert_(timeseries.__class__==COPASI.CTimeSeries)
       self.assert_(timeseries.getRecordedSteps()==10001)
       self.assert_(timeseries.getNumVariables()==3)
+      self.assert_(timeseries.getRecordedSteps()==10001)
+      self.assert_(timeseries.getNumVariables()==4)
       values.append([timeseries.getConcentrationData(1386,0),timeseries.getConcentrationData(1386,1),timeseries.getConcentrationData(1386,2)])
     average=[0.0,0.0,0.0]
     for x in range(0,len(values)):
@@ -104,6 +102,8 @@ class Test_RunSimulations(unittest.TestCase):
       self.assert_(timeseries.__class__==COPASI.CTimeSeries)
       self.assert_(timeseries.getRecordedSteps()==10001)
       self.assert_(timeseries.getNumVariables()==3)
+      self.assert_(timeseries.getRecordedSteps()==10001)
+      self.assert_(timeseries.getNumVariables()==4)
       values.append([timeseries.getConcentrationData(1386,0),timeseries.getConcentrationData(1386,1),timeseries.getConcentrationData(1386,2)])
     average=[0.0,0.0,0.0]
     for x in range(0,len(values)):
@@ -127,6 +127,8 @@ class Test_RunSimulations(unittest.TestCase):
     self.assert_(timeseries.__class__==COPASI.CTimeSeries)
     self.assert_(timeseries.getRecordedSteps()==10001)
     self.assert_(timeseries.getNumVariables()==3)
+    self.assert_(timeseries.getRecordedSteps()==10001)
+    self.assert_(timeseries.getNumVariables()==4)
     value=timeseries.getConcentrationData(1386,0)
     self.assert_(math.fabs((value-1.386)/1.386)<0.001)
     value=timeseries.getConcentrationData(1386,1)
@@ -147,6 +149,8 @@ class Test_RunSimulations(unittest.TestCase):
       self.assert_(timeseries.__class__==COPASI.CTimeSeries)
       self.assert_(timeseries.getRecordedSteps()==10001)
       self.assert_(timeseries.getNumVariables()==4)
+      self.assert_(timeseries.getRecordedSteps()==10001)
+      self.assert_(timeseries.getNumVariables()==5)
       values.append([timeseries.getConcentrationData(3574,0),timeseries.getConcentrationData(3574,1),timeseries.getConcentrationData(3574,3)])
     average=[0.0,0.0,0.0]
     for x in range(0,len(values)):
@@ -172,6 +176,8 @@ class Test_RunSimulations(unittest.TestCase):
       self.assert_(timeseries.__class__==COPASI.CTimeSeries)
       self.assert_(timeseries.getRecordedSteps()==10001)
       self.assert_(timeseries.getNumVariables()==4)
+      self.assert_(timeseries.getRecordedSteps()==10001)
+      self.assert_(timeseries.getNumVariables()==5)
       values.append([timeseries.getConcentrationData(3574,0),timeseries.getConcentrationData(3574,1),timeseries.getConcentrationData(3574,3)])
     average=[0.0,0.0,0.0]
     for x in range(0,len(values)):
@@ -195,6 +201,8 @@ class Test_RunSimulations(unittest.TestCase):
     self.assert_(timeseries.__class__==COPASI.CTimeSeries)
     self.assert_(timeseries.getRecordedSteps()==10001)
     self.assert_(timeseries.getNumVariables()==4)
+    self.assert_(timeseries.getRecordedSteps()==10001)
+    self.assert_(timeseries.getNumVariables()==5)
     value=timeseries.getConcentrationData(3574,0)
     self.assert_(math.fabs((value-3.574)/3.574)<0.001)
     value=timeseries.getConcentrationData(3574,1)

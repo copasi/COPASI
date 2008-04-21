@@ -1,6 +1,15 @@
-# Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
-# Properties, Inc. and EML Research, gGmbH.
-# All rights reserved.
+# -*- coding: utf-8 -*-
+# Begin CVS Header 
+#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/Test_CreateSimpleModel.py,v $ 
+#   $Revision: 1.4 $ 
+#   $Name:  $ 
+#   $Author: gauges $ 
+#   $Date: 2008/04/21 10:27:07 $ 
+# End CVS Header 
+# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+# and The University of Manchester. 
+# All rights reserved. 
 
 import COPASI
 import unittest
@@ -23,10 +32,16 @@ def createModel():
     react.setReversible(False)
     react.setFunction("Mass action (irreversible)")
     react.setParameterValue("k1",0.5)
-    mapping=COPASI.ParameterMapping()
+    mapping=COPASI.StringStdVector()
     mapping.append(react.getChemEq().getSubstrate(0).getMetabolite().getKey())
     react.setParameterMappingVector(react.getFunction().getVariables().getParameter(1).getObjectName(),mapping);
     model.compileIfNecessary()
+    changedObjects=COPASI.ObjectStdVector()
+    changedObjects.push_back(comp.getObject(COPASI.CCopasiObjectName("Reference=InitialVolume")))
+    changedObjects.push_back(A.getObject(COPASI.CCopasiObjectName("Reference=InitialConcentration")))
+    changedObjects.push_back(B.getObject(COPASI.CCopasiObjectName("Reference=InitialConcentration")))
+    changedObjects.push_back(react.getParameters().getParameter(0).getObject(COPASI.CCopasiObjectName("Reference=Value")))
+    model.updateInitialValues(changedObjects)
     return model
 
 def extendModel(model):
@@ -38,10 +53,14 @@ def extendModel(model):
     react.setReversible(False)
     react.setFunction("Mass action (irreversible)")
     react.getParameters().getParameter(0).setValue(0.1)
-    mapping=COPASI.ParameterMapping()
+    mapping=COPASI.StringStdVector()
     mapping.append(react.getChemEq().getSubstrate(0).getMetabolite().getKey())
     react.setParameterMappingVector(react.getFunction().getVariables().getParameter(1).getObjectName(),mapping);
     model.compileIfNecessary()
+    changedObjects=COPASI.ObjectStdVector()
+    changedObjects.push_back(metab.getObject(COPASI.CCopasiObjectName("Reference=InitialConcentration")))
+    changedObjects.push_back(react.getParameters().getParameter(0).getObject(COPASI.CCopasiObjectName("Reference=Value")))
+    model.updateInitialValues(changedObjects);
 
 
 class Test_CreateSimpleModel(unittest.TestCase):

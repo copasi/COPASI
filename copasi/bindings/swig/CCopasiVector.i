@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiVector.i,v $ 
-//   $Revision: 1.20 $ 
+//   $Revision: 1.21 $ 
 //   $Name:  $ 
-//   $Author: shoops $ 
-//   $Date: 2008/01/15 17:53:26 $ 
+//   $Author: gauges $ 
+//   $Date: 2008/04/21 10:27:08 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -161,12 +161,13 @@ template < class CType > class CCopasiVectorNS: public CCopasiVectorN < CType >
 %template(IntStdVector) std::vector<C_INT32>;
 
 %template(StringStdVector) std::vector<std::string>;
-
-%template(ParameterMappings) std::vector<std::vector<std::string> >;
+%template(VectorOfStringVectors) std::vector<std::vector<std::string> >;
 
 %template(FloatStdVector) std::vector<C_FLOAT64>;
 
 %template(OptItemStdVector) std::vector<COptItem*>;
+
+%template(ContainerStdVector) std::vector<CCopasiContainer*>;
 
 typedef CCopasiVectorN<CCopasiTask> TaskVectorN;
 
@@ -197,6 +198,7 @@ typedef std::vector<C_FLOAT64> FloatStdVector;
 typedef std::vector<COptItem*> OptItemStdVector;
 
 typedef std::vector<std::string> StringStdVector;
+typedef std::vector<std::vector<std::string> > VectorOfStringVectors;
 
-typedef std::vector<StringStdVector> ParameterMappings;
+typedef std::vector<CCopasiContainer*> ContainerStdVector;
 

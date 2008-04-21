@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/copasi.i,v $ 
-//   $Revision: 1.25 $ 
+//   $Revision: 1.26 $ 
 //   $Name:  $ 
-//   $Author: shoops $ 
-//   $Date: 2008/01/15 17:53:26 $ 
+//   $Author: gauges $ 
+//   $Date: 2008/04/21 10:27:08 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -16,6 +16,8 @@
 // All rights reserved. 
 
 %module COPASI
+
+
 
 %{
 
@@ -31,6 +33,8 @@
 
 %include "copasi.h"
 
+%include std_string.i
+%include std_vector.i
 
 //enum TriLogic
 //{
@@ -38,9 +42,6 @@
 //  TriFalse = 0,
 //  TriTrue = 1
 //};
-
-%include std_string.i
-%include std_vector.i
 
 %include "CVector.i"
 %include "CRandom.i"
@@ -51,6 +52,7 @@
 %include "CCopasiObject.i"
 %include "CCopasiContainer.i"
 %include "CAnnotatedMatrix.i"
+%include "CCopasiVector.i"
 %include "CEigen.i"
 %include "CFunctionParameter.i"
 %include "CFunctionParameters.i"
@@ -68,7 +70,6 @@
 %include "CState.i"
 %include "CChemEqElement.i"
 %include "CChemEq.i"
-%include "CCopasiVector.i"
 %include "CReaction.i"
 %include "CModel.i"
 %include "CVersion.i"

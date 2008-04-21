@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/bindings.pro,v $ 
-#   $Revision: 1.3 $ 
+#   $Revision: 1.4 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2008/01/13 16:47:46 $ 
+#   $Date: 2008/04/21 10:27:06 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -29,3 +29,5 @@ contains(ENABLE_JAVA,yes){
 contains(ENABLE_PYTHON,yes){
 SUBDIRS += python
 }
+
+

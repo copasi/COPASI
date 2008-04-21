@@ -1,25 +1,17 @@
+# -*- coding: utf-8 -*-
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/runTests.py,v $ 
-#   $Revision: 1.8 $ 
+#   $Revision: 1.9 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2007/06/23 12:45:47 $ 
+#   $Date: 2008/04/21 10:27:07 $ 
 # End CVS Header 
-
-# Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
-# Properties, Inc. and EML Research, gGmbH. 
+# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+# and The University of Manchester. 
 # All rights reserved. 
 
-#!/usr/bin/python
-
-# Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
-# Properties, Inc. and EML Research, gGmbH.
-# All rights reserved.
-
-
-
 import unittest
-
 import Test_CCopasiMessage
 import Test_CChemEq
 import Test_CChemEqElement
