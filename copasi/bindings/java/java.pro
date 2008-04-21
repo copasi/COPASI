@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/java.pro,v $ 
-#   $Revision: 1.29 $ 
+#   $Revision: 1.30 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2008/04/21 10:27:06 $ 
+#   $Date: 2008/04/21 12:41:10 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -55,7 +55,7 @@ contains(BUILD_OS,Linux){
 
 contains(BUILD_OS, Darwin) {
     LIBS += -framework JavaVM
-    LIBS += -framework Quicktime
+    LIBS += -framework QuickTime
     LIBS += -framework Carbon
     LIBS += -framework Accelerate
 
@@ -98,58 +98,6 @@ contains(BUILD_OS, WIN32) {
     INCLUDEPATH += $$JAVA_INCLUDE_PATH\win32
   }
   
-  !isEmpty(MKL_PATH) {
-    DEFINES += USE_MKL
-    QMAKE_CXXFLAGS_DEBUG   += -I"$${MKL_PATH}\include"
-    QMAKE_CXXFLAGS_RELEASE += -I"$${MKL_PATH}\include"
-    QMAKE_LFLAGS_WINDOWS += /LIBPATH:"$${MKL_PATH}\32\lib"
-    QMAKE_LFLAGS_CONSOLE += /LIBPATH:"$${MKL_PATH}\32\lib"
-#    LIBS += mkl_lapack.lib mkl_p3.lib mkl_c.lib
-    LIBS += mkl_lapack.lib mkl_ia32.lib guide.lib
-  } else {
-    !isEmpty(CLAPACK_PATH) {
-      DEFINES += USE_CLAPACK
-      QMAKE_CXXFLAGS_DEBUG   += -I"$${CLAPACK_PATH}\include"
-      QMAKE_CXXFLAGS_RELEASE += -I"$${CLAPACK_PATH}\include"
-      QMAKE_LFLAGS_WINDOWS += /LIBPATH:"$${CLAPACK_PATH}\lib"
-      QMAKE_LFLAGS_CONSOLE += /LIBPATH:"$${CLAPACK_PATH}\lib"
-      QMAKE_LFLAGS_CONSOLE_DLL += /LIBPATH:"$${CLAPACK_PATH}\lib"
-      LIBS += libI77.lib
-      LIBS += libF77.lib
-#      LIBS += blas.lib
-      LIBS += clapack.lib
-    } else {
-      error( "Either MKL_PATH or CLAPACK_PATH must be specified" )
-    }
-  }
-
-  !isEmpty(EXPAT_PATH) {
-    QMAKE_CXXFLAGS_DEBUG   += -I"$${EXPAT_PATH}\Source\lib"
-    QMAKE_CXXFLAGS_RELEASE += -I"$${EXPAT_PATH}\Source\lib"
-    QMAKE_LFLAGS_WINDOWS += /LIBPATH:"$${EXPAT_PATH}\StaticLibs"
-    QMAKE_LFLAGS_CONSOLE_DLL += /LIBPATH:"$${EXPAT_PATH}\StaticLibs"
-    LIBS += libexpat.lib
-  } else {
-    error( "EXPAT_PATH must be specified" )
-  }
-
-  !isEmpty(SBML_PATH) {
-    QMAKE_CXXFLAGS_DEBUG   += -I"$${SBML_PATH}\include"
-    QMAKE_CXXFLAGS_RELEASE += -I"$${SBML_PATH}\include"
-    QMAKE_CXXFLAGS_DEBUG   += -I"$${SBML_PATH}\include\sbml"
-    QMAKE_CXXFLAGS_RELEASE += -I"$${SBML_PATH}\include\sbml"
-    QMAKE_LFLAGS_WINDOWS += /LIBPATH:"$${SBML_PATH}\lib"
-    QMAKE_LFLAGS_CONSOLE_DLL += /LIBPATH:"$${SBML_PATH}\lib"
-    release{
-      LIBS += libsbml.lib
-    }
-    debug{
-      LIBS += libsbmlD.lib
-    }
-
-  } else {
-    error( "SBML_PATH must be specified" )
-  }
 }
 
 
@@ -224,7 +172,6 @@ SWIG_INTERFACE_FILES=../swig/CChemEq.i \
 #DISTFILES += unittests/Test_CreateSimpleModel.java 
 #DISTFILES += unittests/Test_RunSimulations.java
 #DISTFILES += unittests/Test_RunOptimization.java
-#DISTFILES += unittests/Test_RunSteadyStateCalculation.java
 
 isEmpty(SWIG_PATH){
     # check if the wrapper file is there

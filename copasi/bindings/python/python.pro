@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/python.pro,v $ 
-#   $Revision: 1.21 $ 
+#   $Revision: 1.22 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2008/04/21 10:27:06 $ 
+#   $Date: 2008/04/21 12:41:10 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -69,7 +69,7 @@ contains(BUILD_OS,Linux){
 
 contains(BUILD_OS, Darwin) {
     LIBS += -framework Python
-    LIBS += -framework Quicktime
+    LIBS += -framework QuickTime
     LIBS += -framework Carbon
     LIBS += -framework Accelerate
 
@@ -88,71 +88,30 @@ contains(BUILD_OS, WIN32) {
   CONFIG -= staticlib
   CONFIG += dll
   CONFIG += embed_manifest_dll
- 
-  QMAKE_POST_LINK = mt.exe -manifest $(TARGET).manifest -outputresource:$(TARGET);2
+  
+  release {
+    QMAKE_POST_LINK = mt.exe -manifest $(TARGET).manifest -outputresource:$(TARGET);2 && ren _COPASI.dll _COPASI.pyd
+  } else {
+    QMAKE_POST_LINK = mt.exe -manifest $(TARGET).manifest -outputresource:$(TARGET);2 && ren _COPASI.dll _COPASI_d.pyd
+  }
 
   !isEmpty(PYTHON_LIB_PATH){
     QMAKE_LFLAGS_WINDOWS += /LIBPATH:"$${PYTHON_LIB_PATH}"
     QMAKE_LFLAGS_CONSOLE_DLL += /LIBPATH:"$${PYTHON_LIB_PATH}"
-    LIBS += libpython25.a
+    debug{
+      LIBS += python25_d.lib
+    } else { 
+      LIBS += python25.lib
+    }
   }
 
   !isEmpty(PYTHON_INCLUDE_PATH){
     INCLUDEPATH += $$PYTHON_INCLUDE_PATH
-  }
-  
-  !isEmpty(MKL_PATH) {
-    DEFINES += USE_MKL
-    QMAKE_CXXFLAGS_DEBUG   += -I"$${MKL_PATH}\include"
-    QMAKE_CXXFLAGS_RELEASE += -I"$${MKL_PATH}\include"
-    QMAKE_LFLAGS_WINDOWS += /LIBPATH:"$${MKL_PATH}\32\lib"
-    QMAKE_LFLAGS_CONSOLE_DLL += /LIBPATH:"$${MKL_PATH}\32\lib"
-#    LIBS += mkl_lapack.lib mkl_p3.lib mkl_c.lib
-    LIBS += mkl_lapack.lib mkl_ia32.lib guide.lib
-  } else {
-    !isEmpty(CLAPACK_PATH) {
-      DEFINES += USE_CLAPACK
-      QMAKE_CXXFLAGS_DEBUG   += -I"$${CLAPACK_PATH}\include"
-      QMAKE_CXXFLAGS_RELEASE += -I"$${CLAPACK_PATH}\include"
-      QMAKE_LFLAGS_WINDOWS += /LIBPATH:"$${CLAPACK_PATH}\lib"
-      QMAKE_LFLAGS_CONSOLE += /LIBPATH:"$${CLAPACK_PATH}\lib"
-      QMAKE_LFLAGS_CONSOLE_DLL += /LIBPATH:"$${CLAPACK_PATH}\lib"
-      LIBS += libI77.lib
-      LIBS += libF77.lib
-#      LIBS += blas.lib
-      LIBS += clapack.lib
-    } else {
-      error( "Either MKL_PATH or CLAPACK_PATH must be specified" )
-    }
-  }
-
-  !isEmpty(EXPAT_PATH) {
-    QMAKE_CXXFLAGS_DEBUG   += -I"$${EXPAT_PATH}\Source\lib"
-    QMAKE_CXXFLAGS_RELEASE += -I"$${EXPAT_PATH}\Source\lib"
-    QMAKE_LFLAGS_WINDOWS += /LIBPATH:"$${EXPAT_PATH}\StaticLibs"
-    QMAKE_LFLAGS_CONSOLE_DLL += /LIBPATH:"$${EXPAT_PATH}\StaticLibs"
-    LIBS += libexpat.lib
-  } else {
-    error( "EXPAT_PATH must be specified" )
-  }
-
-  !isEmpty(SBML_PATH) {
-    QMAKE_CXXFLAGS_DEBUG   += -I"$${SBML_PATH}\include"
-    QMAKE_CXXFLAGS_RELEASE += -I"$${SBML_PATH}\include"
-    QMAKE_CXXFLAGS_DEBUG   += -I"$${SBML_PATH}\include\sbml"
-    QMAKE_CXXFLAGS_RELEASE += -I"$${SBML_PATH}\include\sbml"
-    QMAKE_LFLAGS_WINDOWS += /LIBPATH:"$${SBML_PATH}\lib"
-    QMAKE_LFLAGS_CONSOLE_DLL += /LIBPATH:"$${SBML_PATH}\lib"
-    release{
-      LIBS += libsbml.lib
-    }
     debug{
-      LIBS += libsbmlD.lib
+      INCLUDEPATH += $$PYTHON_INCLUDE_PATH/../PC/
     }
-
-  } else {
-    error( "SBML_PATH must be specified" )
   }
+
 }
 
 
