@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/java.pro,v $ 
-#   $Revision: 1.30 $ 
+#   $Revision: 1.31 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2008/04/21 12:41:10 $ 
+#   $Date: 2008/04/21 12:48:58 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -201,6 +201,7 @@ isEmpty(SWIG_PATH){
       wrapper_source.commands = $(DEL_FILE) copasi_wrapper.cpp && $(DEL_FILE) java_files\org\COPASI\*.java && $(DEL_FILE) java_files\org\COPASI\*.class && $(DEL_FILE) gui\org\COPASI\gui\*.class && $$SWIG_PATH\swig.exe $$DEFINE_COMMANDLINE -I..\.. -c++ -java -o $$wrapper_source.target -package org.COPASI -outdir java_files\org\COPASI\  java.i && cd java_files && $$JAVA_HOME\bin\javac.exe -classpath . -d . org\COPASI\*.java  && cd .. && $$JAVA_HOME\bin\jar.exe cvf copasi.jar -C java_files .\org && cd gui && $$JAVA_HOME\bin\javac.exe -classpath .;..\copasi.jar -d . org\COPASI\gui\*.java && $$JAVA_HOME\bin\jar.exe cvf ..\copasi_gui.jar -C . org\COPASI\gui\*.class org\COPASI\gui\*.java
       QMAKE_EXTRA_WIN_TARGETS += wrapper_source
       PRE_TARGETDEPS += ..\..\lib\COPASISE.lib
+
     }
     !contains(BUILD_OS, WIN32){
 
@@ -213,6 +214,11 @@ isEmpty(SWIG_PATH){
     PRE_TARGETDEPS += copasi_wrapper.cpp
 }
 
+QMAKE_CLEAN += copasi_wrapper.cpp 
+QMAKE_CLEAN += copasi.jar 
+QMAKE_CLEAN += copasi_gui.jar
+QMAKE_CLEAN += java_files/org/COPASI/*.java
+QMAKE_CLEAN += java_files/org/COPASI/*.class
 
 SOURCES += copasi_wrapper.cpp
 # under windows qmake seems to ignore the last line of progject files

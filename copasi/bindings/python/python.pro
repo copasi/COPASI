@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/python.pro,v $ 
-#   $Revision: 1.22 $ 
+#   $Revision: 1.23 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2008/04/21 12:41:10 $ 
+#   $Date: 2008/04/21 12:48:58 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -261,6 +261,8 @@ isEmpty(SWIG_PATH){
     PRE_TARGETDEPS += copasi_wrapper.cpp
 }
 
+QMAKE_CLEAN += copasi_wrapper.cpp 
+QMAKE_CLEAN += COPASI.py 
 
 SOURCES += copasi_wrapper.cpp
 # under windows qmake seems to ignore the last line of progject files
