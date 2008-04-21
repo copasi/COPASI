@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/04/21 15:10:35 $
+//   $Date: 2008/04/21 18:03:55 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -2209,18 +2209,22 @@ CEvaluationNode* CNormalTranslation::cancel(const CEvaluationNode* pOrig)
               //CEvaluationNode* pTmpNode = CNormalTranslation::eliminate(pair.first);
               //delete pair.first;
               // if simplified node is 0.0, we ignore this node
-              if (CEvaluationNode::type(/*pTmpNode*/pair.first->getType()) == CEvaluationNode::NUMBER &&
-                  fabs(dynamic_cast<CEvaluationNodeNumber*>(/*pTmpNode*/pair.first)->value()) < ZERO)
+              if (CEvaluationNode::type(pair.first->getType()) == CEvaluationNode::NUMBER &&
+                  fabs(dynamic_cast<CEvaluationNodeNumber*>(pair.first)->value()) < ZERO)
                 {
-                  //delete pTmpNode;
-
                   delete pair.first;
                   delete pair.second;
+                }
+              else if (CEvaluationNode::type(pair.first->getType()) == CEvaluationNode::NUMBER &&
+                       fabs(dynamic_cast<CEvaluationNodeNumber*>(pair.first)->value()) - 1.0 < ZERO)
+                {
+                  delete pair.first;
+                  chain.push_back(pair.second);
                 }
               else
                 {
                   CEvaluationNode* pMult = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
-                  pMult->addChild(/*pTmpNode*/pair.first);
+                  pMult->addChild(pair.first);
                   pMult->addChild(pair.second);
                   chain.push_back(pMult);
                 }
@@ -2265,18 +2269,23 @@ CEvaluationNode* CNormalTranslation::cancel(const CEvaluationNode* pOrig)
               //CEvaluationNode* pTmpNode = CNormalTranslation::eliminate(pair.first);
               //delete pair.first;
               // if simplified node is a 0.0, we ignore this node
-              if (CEvaluationNode::type(/*pTmpNode*/pair.first->getType()) == CEvaluationNode::NUMBER &&
-                  fabs(dynamic_cast<CEvaluationNodeNumber*>(/*pTmpNode*/pair.first)->value()) < ZERO)
+              if (CEvaluationNode::type(pair.first->getType()) == CEvaluationNode::NUMBER &&
+                  fabs(dynamic_cast<CEvaluationNodeNumber*>(pair.first)->value()) < ZERO)
                 {
-                  //delete pTmpNode;
                   delete pair.first;
                   delete pair.second;
+                }
+              else if (CEvaluationNode::type(pair.first->getType()) == CEvaluationNode::NUMBER &&
+                       fabs(dynamic_cast<CEvaluationNodeNumber*>(pair.first)->value()) - 1.0 < ZERO)
+                {
+                  delete pair.first;
+                  chain.push_back(pair.second);
                 }
               else
                 {
                   CEvaluationNode* pPower = new CEvaluationNodeOperator(CEvaluationNodeOperator::POWER, "^");
                   pPower->addChild(pair.second);
-                  pPower->addChild(/*pTmpNode*/pair.first);
+                  pPower->addChild(pair.first);
                   chain.push_back(pPower);
                 }
             }
