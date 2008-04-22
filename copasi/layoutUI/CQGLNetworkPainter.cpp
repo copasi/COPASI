@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.104 $
+//   $Revision: 1.105 $
 //   $Name:  $
-//   $Author: urost $
-//   $Date: 2008/04/21 11:12:54 $
+//   $Author: shoops $
+//   $Date: 2008/04/22 17:52:22 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -271,7 +271,7 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
 }
 
 // decides whether the direction of the curve has to be inverted (meaning the order of the line segments, start and end points and base points have to be inverted
-bool CQGLNetworkPainter::checkCurve(CGraphCurve *curve, CGraphCurve curveR, CLBoundingBox box)
+bool CQGLNetworkPainter::checkCurve(CGraphCurve * curve, CGraphCurve /* curveR */, CLBoundingBox box)
 {
   bool inverted = false;
   // first checks whether the start point or the end point of the curve is closer to the center of the box defining the reactant node
@@ -413,7 +413,6 @@ void CQGLNetworkPainter::drawGraph()
       for (i = 0;i < viewerLabels.size();i++)
         {
           C_FLOAT64 tWid = getTextWidth(viewerLabels[i].getText(), mFontname, static_cast<int>(floor(viewerLabels[i].getHeight())));
-          int labelWWid = getLabelWindowWidth(tWid);
           C_FLOAT64 nDiam = 0.0;
           C_FLOAT64 x, y;
 
@@ -424,8 +423,8 @@ void CQGLNetworkPainter::drawGraph()
               itNodeObj = nodeMap.find(nodeKey);
               if (itNodeObj != nodeMap.end())
                 nDiam = (*itNodeObj).second.getSize();
-              C_INT32 xNdCenter = (*itNodeObj).second.getX() + ((*itNodeObj).second.getWidth() / 2.0);
-              C_INT32 yNdCenter = (*itNodeObj).second.getY(); // + ((*itNodeObj).second.getHeight() / 2.0);
+              C_INT32 xNdCenter = (C_INT32) ((*itNodeObj).second.getX() + ((*itNodeObj).second.getWidth() / 2.0));
+              C_INT32 yNdCenter = (C_INT32) (*itNodeObj).second.getY(); // + ((*itNodeObj).second.getHeight() / 2.0);
               if (pParentLayoutWindow->getMappingMode() == CVisParameters::COLOR_MODE)
                 {
                   x = xNdCenter + (CVisParameters::DEFAULT_NODE_SIZE / 2.0 * this->currentZoom) + 2.0 - ((viewerLabels[i].getWidth() - tWid) / 2.0); // node center + circle radius + 2.0 - texture window overhead
@@ -1083,7 +1082,7 @@ int CQGLNetworkPainter::round2powN(double d)
 //}
 //}
 
-void CQGLNetworkPainter::rescaleDataSetsWithNewMinMax(C_FLOAT64 oldMin, C_FLOAT64 oldMax, C_FLOAT64 newMin, C_FLOAT64 newMax, C_INT16 scaleMode)
+void CQGLNetworkPainter::rescaleDataSetsWithNewMinMax(C_FLOAT64 /* oldMin */, C_FLOAT64 /* oldMax */, C_FLOAT64 newMin, C_FLOAT64 newMax, C_INT16 scaleMode)
 {
   CDataEntity dataSet;
   unsigned int s; // step number

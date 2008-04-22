@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.51 $
+//   $Revision: 1.52 $
 //   $Name:  $
-//   $Author: urost $
-//   $Date: 2008/04/21 11:12:54 $
+//   $Author: shoops $
+//   $Date: 2008/04/22 17:52:22 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -587,7 +587,7 @@ void CQLayoutMainWindow::toggleAutomaticRescaling(bool isChecked)
 }
 
 // when resize of panel occurs, the graph should be resized accordingly
-void CQLayoutMainWindow::resizeEvent(QResizeEvent *ev)
+void CQLayoutMainWindow::resizeEvent(QResizeEvent * /* ev */)
 {
   //std::cout << "event type: " << ev->type() << std::endl;
   if (resizeToggle)
@@ -596,7 +596,6 @@ void CQLayoutMainWindow::resizeEvent(QResizeEvent *ev)
       int h = scrollView->height(); // ev->size().height();
       //std::cout << "scroll view "  << w << "  "  << h << std::endl;
 
-      const CLPoint& c1 = glPainter->getGraphMin();
       const CLPoint& c2 = glPainter->getGraphMax();
 
       // now zoom graph according to new panel size

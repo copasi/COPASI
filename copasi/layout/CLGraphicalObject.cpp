@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGraphicalObject.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/02/01 08:14:57 $
+//   $Author: shoops $
+//   $Date: 2008/04/22 17:52:22 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -91,7 +91,7 @@ std::string CLGraphicalObject::getModelObjectName() const
       return "";
   }
 
-std::string CLGraphicalObject::getModelObjectDisplayName(bool regular, bool richtext) const
+std::string CLGraphicalObject::getModelObjectDisplayName(bool /* regular */, bool /* richtext */) const
   {
     CCopasiObject * tmp = getModelObject();
     if (tmp)

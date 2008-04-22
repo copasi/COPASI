@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CListOfLayouts.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/31 15:14:11 $
+//   $Date: 2008/04/22 17:52:22 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -35,7 +40,7 @@ const std::string& CListOfLayouts::getKey()
   return mKey;
 }
 
-void CListOfLayouts::addLayout(CLayout * layout, const std::map<std::string, std::string> & m)
+void CListOfLayouts::addLayout(CLayout * layout, const std::map<std::string, std::string> & /* m */)
 {
   if (layout)
     add(layout, true);
