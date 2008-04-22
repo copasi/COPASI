@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CPraxis.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/12 03:31:02 $
+//   $Author: gauges $
+//   $Date: 2008/04/22 11:06:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1580,9 +1580,9 @@ L4:
 
   /* Function Body */
   printf("AFTER ");
-  printf("%d", global_1.nl);
+  printf("%ld", global_1.nl);
   printf(" LINEAR SEARCHES, THE FUNCTION HAS BEEN EVALUATED ");
-  printf("%d TIMES.\n", global_1.nf);
+  printf("%ld TIMES.\n", global_1.nf);
   printf("THE SMALLEST VALUE FOUND IS F(X) = ");
   printf("%g\n", global_1.fx);
   if (global_1.fx <= *fmin)
@@ -1653,7 +1653,7 @@ L3:
   for (i = 1; i <= i__1; ++i)
     {
       /* L4: */
-      printf("%3d", i);
+      printf("%3ld", i);
       i__2 = upp;
       for (j = low; j <= i__2; ++j)
         {

@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalGeneralPower.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/12/11 20:55:55 $
+//   $Author: gauges $
+//   $Date: 2008/04/22 11:06:48 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -22,7 +27,7 @@
 #include "CNormalGeneralPower.h"
 #include "CNormalFraction.h"
 
-char* CNormalGeneralPower::SYMBOLS[] = {"^", "%"};
+const char* CNormalGeneralPower::SYMBOLS[] = {"^", "%"};
 
 CNormalGeneralPower::CNormalGeneralPower(): CNormalBase(), mType(CNormalGeneralPower::INVALID), mpLeft(NULL), mpRight(NULL)
 {}

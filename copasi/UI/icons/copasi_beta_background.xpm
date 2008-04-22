@@ -1,5 +1,5 @@
 /* XPM */
-static char * copasi_beta_background_xpm[] = {
+static const char * copasi_beta_background_xpm[] = {
 "360 384 8319 2",
 "  	c None",
 ". 	c #FEFFFE",

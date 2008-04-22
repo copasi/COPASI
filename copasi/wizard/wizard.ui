@@ -1,10 +1,10 @@
 <!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/wizard/wizard.ui,v $ </comment>
-<comment>   $Revision: 1.5 $ </comment>
+<comment>   $Revision: 1.6 $ </comment>
 <comment>   $Name:  $ </comment>
-<comment>   $Author: shoops $ </comment>
-<comment>   $Date: 2008/03/12 00:33:31 $ </comment>
+<comment>   $Author: gauges $ </comment>
+<comment>   $Date: 2008/04/22 11:06:48 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -450,9 +450,9 @@ Defining the Output</string>
     <include location="local" impldecl="in implementation">wizard.ui.h</include>
 </includes>
 <variables>
-    <variable>static char* Error;</variable>
+    <variable>static const char* Error;</variable>
     <variable>static QString helpPath;</variable>
-    <variable access="public">static char* texts[6];</variable>
+    <variable access="public">static const char* texts[6];</variable>
     <variable>QWidget* copasiMainWindow;</variable>
 </variables>
 <slots>

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExpressionMmlWidget.ui.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/04/18 08:32:22 $
+//   $Author: gauges $
+//   $Date: 2008/04/22 11:06:48 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -73,5 +73,5 @@ void CQExpressionMmlWidget::updateWidget()
   */
   mpMmlScrollView->updateWidget(mml);
 
-#endif HAVE_MML
+#endif /* HAVE_MML */
 }

@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalFunction.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/12/11 20:55:55 $
+//   $Author: gauges $
+//   $Date: 2008/04/22 11:06:48 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -22,39 +27,40 @@
 #include "CNormalFunction.h"
 #include "CNormalFraction.h"
 
-char* CNormalFunction::NAMES[] = {"LOG",
-                                  "LOG10",
-                                  "EXP",
-                                  "SIN",
-                                  "COS",
-                                  "TAN",
-                                  "SEC",
-                                  "CSC",
-                                  "COT",
-                                  "SIN",
-                                  "COS",
-                                  "TAN",
-                                  "SEC",
-                                  "CSC",
-                                  "COT",
-                                  "ARCSIN",
-                                  "ARCCOS",
-                                  "ARCTAN",
-                                  "ARCSEC",
-                                  "ARCCSC",
-                                  "ARCCOT",
-                                  "ARCSINH",
-                                  "ARCCOSH",
-                                  "ARCTANH",
-                                  "ARCSECH",
-                                  "ARCCSCH",
-                                  "ARCCOTH",
-                                  "SQRT",
-                                  "ABS",
-                                  "FLOOR",
-                                  "CEIL",
-                                  "FACTORIAL"
-                                 };
+const char* CNormalFunction::NAMES[] =
+  {"LOG",
+   "LOG10",
+   "EXP",
+   "SIN",
+   "COS",
+   "TAN",
+   "SEC",
+   "CSC",
+   "COT",
+   "SIN",
+   "COS",
+   "TAN",
+   "SEC",
+   "CSC",
+   "COT",
+   "ARCSIN",
+   "ARCCOS",
+   "ARCTAN",
+   "ARCSEC",
+   "ARCCSC",
+   "ARCCOT",
+   "ARCSINH",
+   "ARCCOSH",
+   "ARCTANH",
+   "ARCSECH",
+   "ARCCSCH",
+   "ARCCOTH",
+   "SQRT",
+   "ABS",
+   "FLOOR",
+   "CEIL",
+   "FACTORIAL"
+  };
 
 CNormalFunction::CNormalFunction(): CNormalBase(), mType(CNormalFunction::INVALID), mpFraction(NULL)
 {}

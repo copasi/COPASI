@@ -1,12 +1,17 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CTableCell.cpp,v $
-   $Revision: 1.11 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/12/06 16:46:35 $
-   End CVS Header */
+  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CTableCell.cpp,v $
+  $Revision: 1.12 $
+  $Name:  $
+  $Author: gauges $
+  $Date: 2008/04/22 11:06:47 $
+  End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -102,12 +107,12 @@ std::istream & operator >> (std::istream &is, CTableCell & cell)
     {
       cell.mIsValue = true;
     }
-  else if (cell.mName.c_str() == "INF")
+  else if (cell.mName == "INF")
     {
       cell.mIsValue = true;
       cell.mValue = DBL_MAX * 2;
     }
-  else if (cell.mName.c_str() == "-INF")
+  else if (cell.mName == "-INF")
     {
       cell.mIsValue = true;
       cell.mValue = - DBL_MAX * 2;

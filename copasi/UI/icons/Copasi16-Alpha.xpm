@@ -1,5 +1,5 @@
 /* XPM */
-static char * Copasi16_Alpha_xpm[] = {
+static const char * Copasi16_Alpha_xpm[] = {
 "16 16 125 2",
 "  	c None",
 ". 	c #B0AFDF",

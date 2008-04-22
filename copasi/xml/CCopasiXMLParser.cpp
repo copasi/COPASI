@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.174 $
+//   $Revision: 1.175 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/18 19:49:34 $
+//   $Author: gauges $
+//   $Date: 2008/04/22 11:06:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1144,7 +1144,7 @@ void CCopasiXMLParser::ParameterDescriptionElement::start(const XML_Char *pszNam
       MinOccurs = atoi(minOccurs);
 
       maxOccurs = mParser.getAttributeValue("maxOccurs", papszAttrs , "1");
-      if ("unbounded" == maxOccurs) MaxOccurs = (unsigned C_INT32) - 1;
+      if (std::string("unbounded") == std::string(maxOccurs)) MaxOccurs = (unsigned C_INT32) - 1;
       else MaxOccurs = atoi(maxOccurs);
 
       if (mCommon.mExistingFunction)
@@ -2260,7 +2260,7 @@ void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
         mpCurrentHandler = &mParser.mCharacterDataElement;
       break;
 
-    case MathML:                               // Old file format support
+    case MathML:                                // Old file format support
       if (!strcmp(pszName, "MathML"))
         {
           /* If we do not have a MathML element handler we create one. */
@@ -2353,7 +2353,7 @@ void CCopasiXMLParser::ModelValueElement::end(const XML_Char *pszName)
       mCurrentElement = ModelValue;
       break;
 
-    case MathML:                               // Old file format support
+    case MathML:                                // Old file format support
       if (strcmp(pszName, "MathML"))
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                        pszName, "MathML", mParser.getCurrentLineNumber());
@@ -2517,7 +2517,7 @@ void CCopasiXMLParser::ReactionElement::start(const XML_Char *pszName,
       mCommon.pReaction->setObjectName(Name);
       mCommon.pReaction->setReversible(Reversible);
       SBMLId = mParser.getAttributeValue("sbmlid", papszAttrs, "");
-      if (SBMLId != "")
+      if (std::string(SBMLId) != std::string(""))
         {
           mCommon.pReaction->setSBMLId(SBMLId);
         }

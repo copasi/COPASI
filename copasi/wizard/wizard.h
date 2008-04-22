@@ -1,12 +1,17 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/wizard/wizard.h,v $
-   $Revision: 1.9 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:32:54 $
-   End CVS Header */
+  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/wizard/wizard.h,v $
+  $Revision: 1.10 $
+  $Name:  $
+  $Author: gauges $
+  $Date: 2008/04/22 11:06:48 $
+  End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -14,7 +19,7 @@
  ** Form interface generated from reading ui file 'wizard.ui'
  **
  ** Created: Tue Sep 28 23:32:28 2004
- **      by: The User Interface Compiler ($Id: wizard.h,v 1.9 2006/04/27 01:32:54 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: wizard.h,v 1.10 2008/04/22 11:06:48 gauges Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -52,7 +57,7 @@ class WizardDialog : public QDialog
     QPushButton* forwardButton;
     QPushButton* cancelButton;
 
-    static char* texts[6];
+    static const char* texts[6];
 
     virtual void init();
     virtual void setCopasiMainWindow(QWidget * copasiMainWindow);
@@ -64,7 +69,7 @@ class WizardDialog : public QDialog
     virtual void textBrowser_anchorClicked(const QString & name, const QString & link);
 
   protected:
-    static char* Error;
+    static const char* Error;
     static QString helpPath;
     QWidget* copasiMainWindow;
 

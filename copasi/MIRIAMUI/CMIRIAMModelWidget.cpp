@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CMIRIAMModelWidget.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2008/04/21 20:12:32 $
+//   $Author: gauges $
+//   $Date: 2008/04/22 11:06:49 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -37,9 +37,9 @@
  */
 CMIRIAMModelWidget::CMIRIAMModelWidget(QWidget* parent, const char* name, WFlags f)
     : CopasiWidget(parent, name, f),
+    mMIRIAMInfo(),
     mWidgets(),
-    mChanged(false),
-    mMIRIAMInfo()
+    mChanged(false)
 {
   if (!name)
     CopasiWidget::setName("CMIRIAMModelWidget");
