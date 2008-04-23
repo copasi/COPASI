@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CReferencesWidget.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/04/21 20:12:32 $
+//   $Date: 2008/04/23 22:26:28 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -108,7 +108,7 @@ void CReferencesWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* o
 void CReferencesWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT32 exc)
 {
   if (exc != COL_PUBMED_ID)
-    table->clearCell(row, COL_DOI);
+    table->clearCell(row, COL_PUBMED_ID);
 
   if (exc != COL_DOI)
     table->clearCell(row, COL_DOI);
