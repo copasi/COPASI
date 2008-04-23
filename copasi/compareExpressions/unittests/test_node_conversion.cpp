@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_node_conversion.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/09 10:53:34 $
+//   $Date: 2008/04/23 15:03:22 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -28,7 +33,7 @@ void test_node_conversion::setUp(){}
 
 void test_node_conversion::tearDown(){}
 
-void test_node_conversion::test_convert_cnormalsum_1()
+void test_node_conversion::test_0001()
 {
   std::string expr("A+G+D+E");
   CEvaluationTree* pTree = new CEvaluationTree("tree", NULL, CEvaluationTree::Function);
@@ -75,7 +80,7 @@ void test_node_conversion::test_convert_cnormalsum_1()
   CPPUNIT_ASSERT(pVariable != NULL);
 }
 
-void test_node_conversion::test_convert_cnormalsum_2()
+void test_node_conversion::test_0002()
 {
   std::string expr("A*D+B*C");
   CEvaluationTree* pTree = new CEvaluationTree("tree", NULL, CEvaluationTree::Function);
@@ -105,4 +110,40 @@ void test_node_conversion::test_convert_cnormalsum_2()
   CPPUNIT_ASSERT(pVariable != NULL);
   pVariable = dynamic_cast<CEvaluationNodeVariable*>(pVariable->getSibling());
   CPPUNIT_ASSERT(pVariable != NULL);
+}
+
+void test_node_conversion::test_0003()
+{
+  std::string expr("1.0*3.0+1.0*5.0");
+  CEvaluationTree* pTree = new CEvaluationTree("tree", NULL, CEvaluationTree::Function);
+  pTree->setInfix(expr);
+  CNormalBase* pNormal = createNormalRepresentation(pTree->getRoot());
+  CNormalFraction* pFraction = dynamic_cast<CNormalFraction*>(pNormal);
+  CPPUNIT_ASSERT(pFraction != NULL);
+  // for now, we see if it can be converted to a string without crashing
+  std::string s = pFraction->toString();
+}
+
+void test_node_conversion::test_0004()
+{
+  std::string expr("5.0^1.0*7.0^1.0");
+  CEvaluationTree* pTree = new CEvaluationTree("tree", NULL, CEvaluationTree::Function);
+  pTree->setInfix(expr);
+  CNormalBase* pNormal = createNormalRepresentation(pTree->getRoot());
+  CNormalFraction* pFraction = dynamic_cast<CNormalFraction*>(pNormal);
+  CPPUNIT_ASSERT(pFraction != NULL);
+  // for now, we see if it can be converted to a string without crashing
+  std::string s = pFraction->toString();
+}
+
+void test_node_conversion::test_0005()
+{
+  std::string expr("A*(1/B)");
+  CEvaluationTree* pTree = new CEvaluationTree("tree", NULL, CEvaluationTree::Function);
+  pTree->setInfix(expr);
+  CNormalBase* pNormal = createNormalRepresentation(pTree->getRoot());
+  CNormalFraction* pFraction = dynamic_cast<CNormalFraction*>(pNormal);
+  CPPUNIT_ASSERT(pFraction != NULL);
+  // for now, we see if it can be converted to a string without crashing
+  std::string s = pFraction->toString();
 }

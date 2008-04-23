@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/ConvertToCEvaluationNode.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/04/21 15:10:35 $
+//   $Date: 2008/04/23 15:03:22 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -479,7 +479,8 @@ CNormalProduct * createProduct(const CEvaluationNode* node)
     case CEvaluationNode::OPERATOR:  // PLUS(->createSum), MINUS(translated as +(-..)) and DIVIDE(->createFraction) do not occur.
       if (node->getData() == "^")
         {
-          if (CEvaluationNode::type(static_cast<const CEvaluationNode*>(node->getChild()->getSibling())->getType()) == CEvaluationNode::NUMBER && node->getChild()->getChild() == NULL)
+          if (CEvaluationNode::type(static_cast<const CEvaluationNode*>(node->getChild()->getSibling())->getType()) == CEvaluationNode::NUMBER &&
+              (node->getChild()->getChild() == NULL || CEvaluationNode::type(static_cast<const CEvaluationNode*>(node->getChild())->getType()) == CEvaluationNode::CHOICE || CEvaluationNode::type(static_cast<const CEvaluationNode*>(node->getChild())->getType()) == CEvaluationNode::FUNCTION))
             {
               CNormalItemPower* power = createItemPower(node);
               product->multiply(*power);
@@ -496,19 +497,24 @@ CNormalProduct * createProduct(const CEvaluationNode* node)
         {
           CNormalProduct* product1 = createProduct(static_cast<const CEvaluationNode*>(node->getChild()));
           CNormalProduct* product2 = createProduct(static_cast<const CEvaluationNode*>(node->getChild()->getSibling()));
-          std::string s1 = product1->toString();
-          std::string s2 = product2->toString();
+          assert(product1 != NULL);
+          assert(product2 != NULL);
           product->multiply(*product1);
           product->multiply(*product2);
           delete product1;
           delete product2;
         }
-      else
+      else if (node->getData() == "%")
+
         {
-          //default (case MODULUS):
           CNormalGeneralPower* item = createGeneralPower(node);
           product->multiply(*item);
           delete item;
+        }
+      else
+        {
+          delete product;
+          product = NULL;
         }
       break;
     case CEvaluationNode::NUMBER:
@@ -519,12 +525,14 @@ CNormalProduct * createProduct(const CEvaluationNode* node)
         {
           product->multiply(-1.0);
           CNormalProduct * product2 = createProduct(dynamic_cast<const CEvaluationNode*>(node->getChild()));
+          assert(product2 != NULL);
           product->multiply(*product2);
           delete product2;
         }
       else if (((CEvaluationNodeFunction::SubType)CEvaluationNode::subType(node->getType())) == CEvaluationNodeFunction::PLUS)
         {
           CNormalProduct * product2 = createProduct(dynamic_cast<const CEvaluationNode*>(node->getChild()));
+          assert(product2 != NULL);
           product->multiply(*product2);
           delete product2;
         }
@@ -595,8 +603,17 @@ CNormalSum* createSum(const CEvaluationNode* node)
       else
         {
           CNormalProduct* product = createProduct(node);
-          sum->add(*product);
-          delete product;
+          if (product != NULL)
+            {
+              sum->add(*product);
+              delete product;
+            }
+          else
+            {
+              CNormalFraction* pFraction = createFraction(node);
+              sum->add(*pFraction);
+              delete pFraction;
+            }
           return sum;
         }
     }
