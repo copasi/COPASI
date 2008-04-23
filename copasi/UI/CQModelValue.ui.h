@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQModelValue.ui.h,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/04/18 08:37:47 $
+//   $Author: shoops $
+//   $Date: 2008/04/23 17:42:50 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -643,14 +643,7 @@ void CQModelValue::save()
 void CQModelValue::slotNameLostFocus()
 {
   if (mpEditName->text() != FROM_UTF8(mpModelValue->getObjectName()))
-    {
-      //  mpEditExpression->currentObjectRenamed(mpModelValue, mpEditName->text());
-      //      ((CQExpressionWidget *)mpEditExpression->widget(0))->currentObjectRenamed(mpModelValue, mpEditName->text());
-      mpExpressionEMW->mpExpressionWidget->currentObjectRenamed(mpModelValue, mpEditName->text());
-      //  mpEditInitialExpression->currentObjectRenamed(mpModelValue, mpEditName->text());
-      //      ((CQExpressionWidget *)mpEditInitialExpression->widget(0))->currentObjectRenamed(mpModelValue, mpEditName->text());
-      mpInitialExpressionEMW->mpExpressionWidget->currentObjectRenamed(mpModelValue, mpEditName->text());
-    }
+  {}
 }
 
 /*!

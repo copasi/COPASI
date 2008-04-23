@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQCompartment.ui.h,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/04/18 08:39:03 $
+//   $Author: shoops $
+//   $Date: 2008/04/23 17:42:50 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -325,10 +325,7 @@ void CQCompartment::slotInitialTypeChanged(bool useInitialAssignment)
 void CQCompartment::slotNameLostFocus()
 {
   if (mpEditName->text() != FROM_UTF8(mpCompartment->getObjectName()))
-    {
-      mpExpressionEMW->mpExpressionWidget->currentObjectRenamed(mpCompartment, mpEditName->text());
-      mpInitialExpressionEMW->mpExpressionWidget->currentObjectRenamed(mpCompartment, mpEditName->text());
-    }
+  {}
 }
 
 void CQCompartment::slotExpressionValid(bool valid)
