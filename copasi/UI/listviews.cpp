@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.243 $
+//   $Revision: 1.244 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/12 03:31:04 $
+//   $Author: aekamal $
+//   $Date: 2008/04/24 19:14:41 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -359,7 +359,8 @@ void ListViews::ConstructNodeWidgets()
   if (!compartmentsWidget) compartmentsWidget = new CompartmentsWidget(this);
   compartmentsWidget->hide();
 
-  if (!compartmentsWidget1) compartmentsWidget1 = new CQCompartment(this);
+  if (!compartmentsWidget1)
+    compartmentsWidget1 = new CTabWidget(QString ("Compartment"), new CQCompartment(this), this);
   compartmentsWidget1->hide();
 
 #ifdef HAVE_MML
@@ -378,7 +379,8 @@ void ListViews::ConstructNodeWidgets()
   if (!functionWidget) functionWidget = new FunctionWidget(this);
   functionWidget->hide();
 
-  if (!functionWidget1) functionWidget1 = new FunctionWidget1(this);
+  if (!functionWidget1)
+    functionWidget1 = new CTabWidget(QString ("Function"), new FunctionWidget1(this), this);
   functionWidget1->hide();
 
   if (!lyapWidget) lyapWidget = new CQLyapWidget(this);
@@ -390,14 +392,16 @@ void ListViews::ConstructNodeWidgets()
   if (!metabolitesWidget) metabolitesWidget = new MetabolitesWidget(this);
   metabolitesWidget->hide();
 
-  if (!metabolitesWidget1) metabolitesWidget1 = new CQMetabolite(this);
+  if (!metabolitesWidget1)
+    metabolitesWidget1 = new CTabWidget(QString ("Metabolite"), new CQMetabolite(this), this);
   metabolitesWidget1->hide();
 
   if (!modelWidget)
     modelWidget = new CTabWidget(QString ("Model"), new ModelWidget(this), this);
   modelWidget->hide();
 
-  if (!mpModelValueWidget) mpModelValueWidget = new CQModelValue(this);
+  if (!mpModelValueWidget)
+    mpModelValueWidget = new CTabWidget(QString ("ModelValue"), new CQModelValue(this), this);
   mpModelValueWidget->hide();
 
   if (!modelValuesWidget) modelValuesWidget = new ModelValuesWidget(this);
@@ -452,7 +456,8 @@ void ListViews::ConstructNodeWidgets()
   if (!reactionsWidget) reactionsWidget = new ReactionsWidget(this);
   reactionsWidget->hide();
 
-  if (!reactionsWidget1) reactionsWidget1 = new ReactionsWidget1(this);
+  if (!reactionsWidget1)
+    reactionsWidget1 = new CTabWidget(QString ("Reaction"), new ReactionsWidget1(this), this);
   reactionsWidget1->hide();
 
   if (!scanWidget) scanWidget = new ScanWidget(this);

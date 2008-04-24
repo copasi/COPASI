@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-//   $Revision: 1.140 $
+//   $Revision: 1.141 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/12 01:47:38 $
+//   $Author: aekamal $
+//   $Date: 2008/04/24 19:14:41 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -202,7 +202,7 @@ class ListViews : public QSplitter
     CMCAResultWidget* mpCMCAResultWidget;
     CQMCAWidget* mpCQMCAWidget;
     CompartmentsWidget *compartmentsWidget;
-    CQCompartment *compartmentsWidget1;
+    CTabWidget *compartmentsWidget1;
     CQSplashWidget *defaultWidget;
     CQDifferentialEquations *differentialEquations;
 #ifdef COPASI_DEBUG
@@ -210,14 +210,14 @@ class ListViews : public QSplitter
     CQEventWidget1 *eventWidget1;
 #endif // COPASI_DEBUG
     FunctionWidget *functionWidget;
-    FunctionWidget1 *functionWidget1;
+    CTabWidget *functionWidget1;
     CQLyapWidget *lyapWidget;
     CQLyapResultWidget *lyapResultWidget;
     MetabolitesWidget *metabolitesWidget;
-    CQMetabolite *metabolitesWidget1;
+    CTabWidget *metabolitesWidget1;
     CTabWidget *modelWidget;
     ModelValuesWidget *modelValuesWidget;
-    CQModelValue *mpModelValueWidget;
+    CTabWidget *mpModelValueWidget;
     CQEFMWidget *modesWidget;
     CQMoietiesTaskResult *mpMoietiesTaskResult;
     CQMoietiesTaskWidget *mpMoietiesTaskWidget;
@@ -230,7 +230,7 @@ class ListViews : public QSplitter
     PlotWidget *plotWidget;
     PlotWidget1 *plotWidget1;
     ReactionsWidget *reactionsWidget;
-    ReactionsWidget1 *reactionsWidget1;
+    CTabWidget *reactionsWidget1;
     ScanWidget *scanWidget;
     SensitivitiesWidget *sensWidget;
     CQSensResultWidget *sensResultWidget;
