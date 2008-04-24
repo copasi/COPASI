@@ -1,0 +1,68 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<comment> Begin CVS Header </comment>
+<comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CQRDFListViewWidget.ui,v $ </comment>
+<comment>   $Revision: 1.2 $ </comment>
+<comment>   $Name:  $ </comment>
+<comment>   $Author: aekamal $ </comment>
+<comment>   $Date: 2008/04/21 21:26:53 $ </comment>
+<comment> End CVS Header </comment>
+
+<comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., EML Research, gGmbH, University of Heidelberg, </comment>
+<comment> and The University of Manchester. </comment>
+<comment> All rights reserved. </comment>
+
+<class>CQRDFListViewWidget</class>
+<widget class="CopasiWidget">
+    <property name="name">
+        <cstring>CQRDFListViewWidget</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>600</width>
+            <height>480</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>CQRDFListViewWidget</string>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="CRDFListView">
+            <property name="name">
+                <cstring>mpListView</cstring>
+            </property>
+        </widget>
+    </vbox>
+</widget>
+<includes>
+    <include location="global" impldecl="in declaration">string</include>
+    <include location="local" impldecl="in declaration">copasi/UI/copasiWidget.h</include>
+    <include location="local" impldecl="in implementation">CRDFListView.h</include>
+    <include location="local" impldecl="in implementation">CQRDFListViewWidget.ui.h</include>
+</includes>
+<forwards>
+    <forward>class CRDFListView;</forward>
+    <forward>class CModelMIRIAMInfo;</forward>
+</forwards>
+<variables>
+    <variable access="private">std::string mKey;</variable>
+    <variable access="private">bool mChanged;</variable>
+    <variable access="private">CModelMIRIAMInfo* mpMIRIAMInfo</variable>;
+</variables>
+<functions>
+    <function access="private" specifier="non virtual">init()</function>
+    <function returnType="bool">enter( const std::string &amp; key )</function>
+    <function returnType="bool">leave()</function>
+    <function access="private" specifier="non virtual">load()</function>
+    <function access="private" specifier="non virtual">save()</function>
+    <function access="private" specifier="non virtual">destroy()</function>
+    <function returnType="bool">update( ListViews::ObjectType objectType, ListViews::Action action, const std::string &amp; key )</function>
+    <function access="public" specifier="non virtual">setMIRIAMInfo(CModelMIRIAMInfo* pMIRIAMInfo)</function>
+</functions>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

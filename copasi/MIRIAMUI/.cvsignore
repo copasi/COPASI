@@ -1,0 +1,4 @@
+Makefile
+CQRDFListViewWidget.cpp
+CQRDFListViewWidget.h
+moc_*.cpp
