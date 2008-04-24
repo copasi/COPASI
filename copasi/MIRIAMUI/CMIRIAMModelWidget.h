@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CMIRIAMModelWidget.h,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/04/21 20:12:32 $
+//   $Date: 2008/04/24 15:46:59 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,7 +35,7 @@ class CMIRIAMModelWidget : public CopasiWidget
   {
     Q_OBJECT
   public:
-    CMIRIAMModelWidget(QWidget *parent, const char * name = 0, WFlags f = 0);
+    CMIRIAMModelWidget(bool showAllSubWidgets, QWidget *parent, const char * name = 0, WFlags f = 0);
 
   protected:
     /**

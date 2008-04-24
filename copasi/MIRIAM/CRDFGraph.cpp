@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraph.cpp,v $
-//   $Revision: 1.28 $
+//   $Revision: 1.29 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/04/21 20:12:31 $
+//   $Date: 2008/04/24 15:46:59 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,6 +21,10 @@
 
 #include "copasi.h"
 
+#include "model/CReaction.h"
+#include "function/CFunction.h"
+#include "utilities/CCopasiMessage.h"
+
 #include "CRDFGraph.h"
 #include "CRDFNode.h"
 #include "CRDFSubject.h"
@@ -29,8 +33,6 @@
 #include "CRDFParser.h"
 #include "CRDFWriter.h"
 #include "CConstants.h"
-
-#include "utilities/CCopasiMessage.h"
 
 unsigned int CRDFGraph::nodeIDCounter = 0;
 
@@ -1209,6 +1211,10 @@ CRDFGraph* CRDFGraph::loadGraph(CCopasiObject* pCopasiObject)
   mChanged = false;
   if (dynamic_cast<CModelEntity*>(pCopasiObject))
   {return CRDFParser::graphFromXml(dynamic_cast<CModelEntity*>(pCopasiObject)->getMiriamAnnotation());}
+  else if (dynamic_cast<CReaction*>(pCopasiObject))
+  {return CRDFParser::graphFromXml(dynamic_cast<CReaction*>(pCopasiObject)->getMiriamAnnotation());}
+  else if (dynamic_cast<CFunction*>(pCopasiObject))
+  {return CRDFParser::graphFromXml(dynamic_cast<CFunction*>(pCopasiObject)->getMiriamAnnotation());}
   return NULL;
 }
 bool CRDFGraph::saveGraph(CCopasiObject* pCopasiObject)
@@ -1220,6 +1226,16 @@ bool CRDFGraph::saveGraph(CCopasiObject* pCopasiObject)
         {
           CModelEntity* pModelEntity = dynamic_cast<CModelEntity*>(pCopasiObject);
           pModelEntity->setMiriamAnnotation(CRDFWriter::xmlFromGraph(this), pModelEntity->getKey());
+        }
+      else if (dynamic_cast<CReaction*>(pCopasiObject))
+        {
+          CReaction* pReaction = dynamic_cast<CReaction*>(pCopasiObject);
+          pReaction->setMiriamAnnotation(CRDFWriter::xmlFromGraph(this), pReaction->getKey());
+        }
+      else if (dynamic_cast<CFunction*>(pCopasiObject))
+        {
+          CFunction* pFunction = dynamic_cast<CFunction*>(pCopasiObject);
+          pFunction->setMiriamAnnotation(CRDFWriter::xmlFromGraph(this), pFunction->getKey());
         }
       mChanged = false;
       return true;

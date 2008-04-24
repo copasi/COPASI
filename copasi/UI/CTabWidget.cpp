@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CTabWidget.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2008/04/21 21:26:53 $
+//   $Date: 2008/04/24 15:47:00 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,8 +25,8 @@
 
 /*
  *  Constructs a CTabWidget as a child of 'parent', with the
- *  name 'name' and widget flags set to 'f'. label1 and label2
- *  are the tab names.
+ *  name 'name' and widget flags set to 'f'. label is the first
+ *  tab name.
  */
 CTabWidget::CTabWidget(const QString & label, CopasiWidget * pCopasiWidget,
                        QWidget* parent, const char* name, WFlags f)
@@ -42,7 +42,10 @@ CTabWidget::CTabWidget(const QString & label, CopasiWidget * pCopasiWidget,
   mPages.push_back(pCopasiWidget);
   mTabWidget->addTab(pCopasiWidget, label);
 
-  CMIRIAMModelWidget* pMIRIAMWidget = new CMIRIAMModelWidget(mTabWidget);
+  bool showAllSubWidgets = false;
+  if (label == "Model")
+  {showAllSubWidgets = true;}
+  CMIRIAMModelWidget* pMIRIAMWidget = new CMIRIAMModelWidget(showAllSubWidgets, mTabWidget);
   mPages.push_back(pMIRIAMWidget);
   mTabWidget->addTab(mPages[1], "Annotation");
 

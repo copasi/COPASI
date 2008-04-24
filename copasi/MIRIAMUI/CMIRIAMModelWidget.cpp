@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CMIRIAMModelWidget.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/04/22 11:06:49 $
+//   $Author: aekamal $
+//   $Date: 2008/04/24 15:46:59 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,7 +35,7 @@
  *  Constructs a CMIRIAMModelWidget as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-CMIRIAMModelWidget::CMIRIAMModelWidget(QWidget* parent, const char* name, WFlags f)
+CMIRIAMModelWidget::CMIRIAMModelWidget(bool showAllSubWidgets, QWidget* parent, const char* name, WFlags f)
     : CopasiWidget(parent, name, f),
     mMIRIAMInfo(),
     mWidgets(),
@@ -47,28 +47,40 @@ CMIRIAMModelWidget::CMIRIAMModelWidget(QWidget* parent, const char* name, WFlags
   mOT = ListViews::MODEL;
 
   //Create new widgets
-  QLabel *pLblCreators = new QLabel("Creators: ", this);
-  CopasiTableWidget* pCreatorsWidget = new CCreatorsWidget(this, "CreatorsWidget");
-  pLblCreators->setBuddy(pCreatorsWidget);
-  mWidgets.push_back(pCreatorsWidget);
+  QLabel *pLblCreators = NULL, *pLblReferences = NULL, *pLblCreated = NULL,
+                         *pLblModified = NULL, *pLblBiologicalDescriptions = NULL;
+  CopasiTableWidget *pCreatorsWidget = NULL, *pReferencesWidget = NULL,
+                                       *pModifiedsWidget = NULL, *pBiologicalDescriptionsWidget = NULL;
+  mpCreatedWidget = NULL;
 
-  QLabel *pLblReferences = new QLabel("References: ", this);
-  CopasiTableWidget* pReferencesWidget = new CReferencesWidget(this, "ReferencesWidget");
+  if (showAllSubWidgets)
+    {
+      pLblCreators = new QLabel("Creators: ", this);
+      pCreatorsWidget = new CCreatorsWidget(this, "CreatorsWidget");
+      pLblCreators->setBuddy(pCreatorsWidget);
+      mWidgets.push_back(pCreatorsWidget);
+    }
+
+  pLblReferences = new QLabel("References: ", this);
+  pReferencesWidget = new CReferencesWidget(this, "ReferencesWidget");
   pLblReferences->setBuddy(pReferencesWidget);
   mWidgets.push_back(pReferencesWidget);
 
-  QLabel *pLblCreated = new QLabel("Created: ", this);
-  mpCreatedWidget = new QDateTimeEdit(this, "CreatedWidget");
-  pLblCreated->setBuddy(mpCreatedWidget);
-  mpCreatedWidget->dateEdit()->setRange(QDate(), QDate::currentDate());
+  if (showAllSubWidgets)
+    {
+      pLblCreated = new QLabel("Created: ", this);
+      mpCreatedWidget = new QDateTimeEdit(this, "CreatedWidget");
+      pLblCreated->setBuddy(mpCreatedWidget);
+      mpCreatedWidget->dateEdit()->setRange(QDate(), QDate::currentDate());
 
-  QLabel *pLblModified = new QLabel("Modified: ", this);
-  CopasiTableWidget* pModifiedsWidget = new CModifiedWidget(this, "ModifiedWidget");
-  pLblModified->setBuddy(pModifiedsWidget);
-  mWidgets.push_back(pModifiedsWidget);
+      pLblModified = new QLabel("Modified: ", this);
+      pModifiedsWidget = new CModifiedWidget(this, "ModifiedWidget");
+      pLblModified->setBuddy(pModifiedsWidget);
+      mWidgets.push_back(pModifiedsWidget);
+    }
 
-  QLabel *pLblBiologicalDescriptions = new QLabel("Biological Descriptions: ", this);
-  CopasiTableWidget* pBiologicalDescriptionsWidget = new CBiologicalDescriptionsWidget(this, "BiologicalDescriptionsWidget");
+  pLblBiologicalDescriptions = new QLabel("Biological Descriptions: ", this);
+  pBiologicalDescriptionsWidget = new CBiologicalDescriptionsWidget(this, "BiologicalDescriptionsWidget");
   pLblBiologicalDescriptions->setBuddy(pBiologicalDescriptionsWidget);
   mWidgets.push_back(pBiologicalDescriptionsWidget);
 
@@ -79,17 +91,23 @@ CMIRIAMModelWidget::CMIRIAMModelWidget(QWidget* parent, const char* name, WFlags
   btnClear = new QPushButton("Clear", this);
 
   QVBoxLayout *vBoxLayout = new QVBoxLayout(this, 0);
-  vBoxLayout->addWidget(pLblCreators);
-  vBoxLayout->addWidget(pCreatorsWidget);
+  if (showAllSubWidgets)
+    {
+      vBoxLayout->addWidget(pLblCreators);
+      vBoxLayout->addWidget(pCreatorsWidget);
+    }
   vBoxLayout->addWidget(pLblReferences);
   vBoxLayout->addWidget(pReferencesWidget);
 
-  mpHLayoutDT = new QHBoxLayout(vBoxLayout, 0);
-  mpHLayoutDT->addWidget(pLblCreated);
-  mpHLayoutDT->addWidget(mpCreatedWidget);
-  mpHLayoutDT->addStretch();
-  mpHLayoutDT->addWidget(pLblModified);
-  mpHLayoutDT->addWidget(pModifiedsWidget);
+  if (showAllSubWidgets)
+    {
+      mpHLayoutDT = new QHBoxLayout(vBoxLayout, 0);
+      mpHLayoutDT->addWidget(pLblCreated);
+      mpHLayoutDT->addWidget(mpCreatedWidget);
+      mpHLayoutDT->addStretch();
+      mpHLayoutDT->addWidget(pLblModified);
+      mpHLayoutDT->addWidget(pModifiedsWidget);
+    }
 
   vBoxLayout->addWidget(pLblBiologicalDescriptions);
   vBoxLayout->addWidget(pBiologicalDescriptionsWidget);
@@ -117,23 +135,29 @@ CMIRIAMModelWidget::CMIRIAMModelWidget(QWidget* parent, const char* name, WFlags
   connect(btnNew, SIGNAL(clicked ()), this,
           SLOT(slotBtnNewClicked()));
 
-  connect(pCreatorsWidget, SIGNAL(setEnableOKAndCancel(bool)), this,
-          SLOT(slotEnableOKAndCancel(bool)));
-  connect(pCreatorsWidget, SIGNAL(delKeyPressed()), this,
-          SLOT(slotBtnDeleteClicked()));
+  if (showAllSubWidgets)
+    {
+      connect(pCreatorsWidget, SIGNAL(setEnableOKAndCancel(bool)), this,
+              SLOT(slotEnableOKAndCancel(bool)));
+      connect(pCreatorsWidget, SIGNAL(delKeyPressed()), this,
+              SLOT(slotBtnDeleteClicked()));
+    }
 
   connect(pReferencesWidget, SIGNAL(setEnableOKAndCancel(bool)), this,
           SLOT(slotEnableOKAndCancel(bool)));
   connect(pReferencesWidget, SIGNAL(delKeyPressed()), this,
           SLOT(slotBtnDeleteClicked()));
 
-  connect(mpCreatedWidget, SIGNAL(valueChanged(const QDateTime &)), this,
-          SLOT(slotCreatedValueChanged(const QDateTime &)));
+  if (showAllSubWidgets)
+    {
+      connect(mpCreatedWidget, SIGNAL(valueChanged(const QDateTime &)), this,
+              SLOT(slotCreatedValueChanged(const QDateTime &)));
 
-  connect(pModifiedsWidget, SIGNAL(setEnableOKAndCancel(bool)), this,
-          SLOT(slotEnableOKAndCancel(bool)));
-  connect(pModifiedsWidget, SIGNAL(delKeyPressed()), this,
-          SLOT(slotBtnDeleteClicked()));
+      connect(pModifiedsWidget, SIGNAL(setEnableOKAndCancel(bool)), this,
+              SLOT(slotEnableOKAndCancel(bool)));
+      connect(pModifiedsWidget, SIGNAL(delKeyPressed()), this,
+              SLOT(slotBtnDeleteClicked()));
+    }
 
   connect(pBiologicalDescriptionsWidget, SIGNAL(setEnableOKAndCancel(bool)), this,
           SLOT(slotEnableOKAndCancel(bool)));
@@ -150,11 +174,14 @@ void CMIRIAMModelWidget::slotBtnOKClicked()
   for (; it != end; it++)
   {(*it)->setIgnoreUpdates(true);}
 
-  std::string dt = "";
-  if (mpCreatedWidget->dateTime().toString(Qt::ISODate).ascii())
-  {dt = mpCreatedWidget->dateTime().toString(Qt::ISODate).ascii();}
-  if (dt.length())
-  {getMIRIAMInfo().setCreatedDT(dt);}
+  if (mpCreatedWidget)
+    {
+      std::string dt = "";
+      if (mpCreatedWidget->dateTime().toString(Qt::ISODate).ascii())
+      {dt = mpCreatedWidget->dateTime().toString(Qt::ISODate).ascii();}
+      if (dt.length())
+      {getMIRIAMInfo().setCreatedDT(dt);}
+    }
 
   //Now call the slotBtnOkClicked() for each widget
   for (it = mWidgets.begin(); it != end; it++)
@@ -253,6 +280,8 @@ bool CMIRIAMModelWidget::leave()
 
 void CMIRIAMModelWidget::updateCreatedWidget()
 {
+  if (!mpCreatedWidget)
+  {return;}
   const std::string strDT = mMIRIAMInfo.getCreatedDT();
   if (strDT.length())
     {
