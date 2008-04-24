@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.105 $
+//   $Revision: 1.106 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/04/22 17:52:22 $
+//   $Author: urost $
+//   $Date: 2008/04/24 12:22:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1204,8 +1204,11 @@ void CQGLNetworkPainter::rescaleDataSets(C_INT16 scaleMode)
                                 + minNodeSize;
                     }
                   else
-                    val_new = (maxNodeSize + minNodeSize) / 2.0;
-                  setOfConstantMetabolites.insert(viewerNodes[i]);
+                    {
+                      val_new = (maxNodeSize + minNodeSize) / 2.0;
+                      if (s == 0) // only insert once into set
+                        setOfConstantMetabolites.insert(viewerNodes[i]);
+                    }
 
                   //std::cout << "new value: " << val_new << std::endl;
                 }
@@ -1377,6 +1380,12 @@ bool CQGLNetworkPainter::createDataSets()
   //std::cout << *pSummaryInfo << std::endl;
   //std::cout << "number of data sets created: " << dataSets.size() << std::endl;
   this->mDataPresentP = loadDataSuccessful;
+  if (loadDataSuccessful)
+    {// if loading was successful, parent should create data table to show it in its window
+      std::map<C_INT32, CDataEntity>::iterator iter = dataSets.find(0); // get data for first step
+      if (iter != dataSets.end())
+        pParentLayoutWindow->insertValueTable((*iter).second);
+    }
   return loadDataSuccessful;
 }
 
@@ -1441,6 +1450,21 @@ void CQGLNetworkPainter::triggerAnimationStep()
   //this->showStep(i);
 
   //this->drawGraph();
+}
+
+CDataEntity* CQGLNetworkPainter::getDataSetAt(C_INT32 stepNumber)
+{
+  CDataEntity* pDataSet;
+  if ((0 <= stepNumber) && (static_cast<unsigned int>(stepNumber) < dataSets.size()))
+    {
+      std::map<C_INT32, CDataEntity>::iterator iter = dataSets.find(stepNumber);
+      if (iter != dataSets.end())
+        {
+          //std::cout << "data entity: " << (*iter).second << std::endl;
+          pDataSet = &((*iter).second);
+        }
+    }
+  return pDataSet;
 }
 
 void CQGLNetworkPainter::showStep(C_INT32 stepNumber)
@@ -2101,6 +2125,14 @@ std::string CQGLNetworkPainter::getNameForNodeKey(std::string key)
   if (itNodeObj != nodeMap.end())
     s = (*itNodeObj).second.getLabelText();
   return s;
+}
+
+std::string CQGLNetworkPainter::getNodeNameEntry(int i)
+{
+  if (i < viewerNodes.size())
+    return viewerNodes[i];
+  else
+    return "";
 }
 
 void CQGLNetworkPainter::printAvailableFonts()

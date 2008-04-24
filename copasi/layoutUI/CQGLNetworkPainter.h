@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.59 $
+//   $Revision: 1.60 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/04/21 11:12:54 $
+//   $Date: 2008/04/24 12:22:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -86,6 +86,12 @@ class CQGLNetworkPainter : public QGLWidget
     void setNodeSize(std::string key, C_FLOAT64 val);
     void setNodeSizeWithoutChangingCurves(std::string key, C_FLOAT64 val);
     //void changeNodeSize(std::string viewerNodeKey, double newSize);
+
+    std::string getNodeNameEntry(int i);
+    std::string getNameForNodeKey(std::string key);
+
+    int getNumberOfNodeEntries(){return viewerNodes.size();}
+    CDataEntity* getDataSetAt(C_INT32 stepNumber);
 
     void mapLabelsToRectangles();
     void mapLabelsToCircles();
@@ -204,7 +210,6 @@ class CQGLNetworkPainter : public QGLWidget
     void paintGL();
 
     void printNodeInfoForKey(std::string key); // just for debugging
-    std::string getNameForNodeKey(std::string key); // just for debugging
   };
 
 #endif /*GLGRAPHPAINTER_H_*/

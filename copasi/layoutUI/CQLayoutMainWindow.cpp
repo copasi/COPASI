@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.52 $
+//   $Revision: 1.53 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/04/22 17:52:22 $
+//   $Author: urost $
+//   $Date: 2008/04/24 12:22:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -51,9 +51,12 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
   QSplitter *splitter = new QSplitter(Qt::Horizontal, mainBox);
   splitter->setCaption("Test");
 
+  infoBox = new QVBox(splitter);
+
   //QLabel *label = new QLabel(splitter, "Test Label", 0);
   //QTextEdit *testEditor = new QTextEdit(splitter);
-  paraPanel = new ParaPanel(splitter);
+  paraPanel = new ParaPanel(infoBox);
+  //valTable = new CQCurrentValueTable(infoBox);
 
   // create sroll view
   scrollView = new QScrollView(splitter);
@@ -95,16 +98,16 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
   // put OpenGL widget into scrollView
   scrollView->addChild(glPainter);
 
-  QValueList<int> sizeList = splitter->sizes();
-  if (sizeList.size() >= 2)
-    {
-      QValueList<int>::Iterator it = sizeList.begin();
-      (*it) = paraPanel->width();
-      ++it;
-      (*it) = scrollView->width();
-    }
-  splitter->setSizes(sizeList);
-  splitter->setResizeMode(paraPanel, QSplitter::KeepSize);
+  // QValueList<int> sizeList = splitter->sizes();
+  //   if (sizeList.size() >= 2)
+  //     {
+  //       QValueList<int>::Iterator it = sizeList.begin();
+  //       (*it) = infoBox->width();
+  //       ++it;
+  //       (*it) = scrollView->width();
+  //}
+  //   splitter->setSizes(sizeList);
+  splitter->setResizeMode(infoBox, QSplitter::KeepSize);
 
   frame = new QFrame(mainBox);
   //bottomBox = new QBox(mainBox);
@@ -429,6 +432,27 @@ void CQLayoutMainWindow::loadData()
     }
 }
 
+void CQLayoutMainWindow::insertValueTable(CDataEntity dataSet)
+{
+  int i = 0;
+  std::string key, name;
+  C_FLOAT64 val;
+  //valTable->setNumRows(dataSet.getNumberOfElements());
+  //valtable->setNumCols(2);
+  valTable = new CQCurrentValueTable(dataSet.getNumberOfElements(), 2, infoBox);
+
+  while ((key = glPainter->getNodeNameEntry(i)) != "")
+    {
+      name = glPainter->getNameForNodeKey(key);
+      val = dataSet.getOrigValueForSpecies(key); // would be (- DBL_MAX) if key not present
+      valTable->setRowInTable(i, name, val);
+      //std::cout << i << "   "  << key << "  " << val << std::endl;
+      i++;
+    }
+  paraPanel->update();
+  valTable->show();
+}
+
 void CQLayoutMainWindow::showAnimation()
 {
   startAnimation();
@@ -493,6 +517,7 @@ void CQLayoutMainWindow::showStep(double i)
   glPainter->showStep(static_cast<int>(i));
   glPainter->updateGL();
   paraPanel->setStepNumber(static_cast<int>(i));
+  valTable->setValues(glPainter->getDataSetAt(static_cast<int>(i)));
 }
 
 void CQLayoutMainWindow::changeStepValue(C_INT32 i)
