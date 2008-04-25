@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQCurrentValueTable.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: urost $
-//   $Date: 2008/04/24 12:22:30 $
+//   $Author: shoops $
+//   $Date: 2008/04/25 12:25:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,6 +16,8 @@
 #include <qheader.h>
 
 #include "copasi.h"
+
+#include "UI/qtUtilities.h"
 
 #include "CQCurrentValueTable.h"
 
@@ -44,8 +46,7 @@ CQCurrentValueTable::~CQCurrentValueTable()
 // sets complete row: 1. name of reactant 2. concentration (or number of particles) value
 void CQCurrentValueTable::setRowInTable(int row, std::string s, C_FLOAT64 val)
 {
-  std::string & t = s;
-  this->setItem(row, 0, new QCheckTableItem(this, QString(t)));
+  this->setItem(row, 0, new QCheckTableItem(this, FROM_UTF8(s)));
   this->setText(row, 1, QString::number(val));
 }
 
