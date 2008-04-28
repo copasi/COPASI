@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.53 $
+//   $Revision: 1.54 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/04/24 12:22:30 $
+//   $Date: 2008/04/28 12:05:00 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -53,10 +53,26 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
 
   infoBox = new QVBox(splitter);
 
-  //QLabel *label = new QLabel(splitter, "Test Label", 0);
-  //QTextEdit *testEditor = new QTextEdit(splitter);
   paraPanel = new ParaPanel(infoBox);
-  //valTable = new CQCurrentValueTable(infoBox);
+  // QTable *dummyTable = new QTable(infoBox);
+  //   dummyTable->setNumRows(1);
+  //   dummyTable->setNumCols(2);
+  //   QHeader *header = dummyTable->horizontalHeader();
+  //   header->setLabel(0, "Metabolite");
+  //   header->setLabel(1, "Concentration");
+  //   dummyTable->setText(0, 0, "*** no time series load ***");
+  //   dummyTable->setText(0, 1, "NaN");
+  //   dummyTable->setColumnReadOnly(1, TRUE);
+  valTable = new CQCurrentValueTable(infoBox);
+  //valTable->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+  //valTable->setFixedWidth()
+
+  // add two buttons in an horizontal box
+  QHBox *buttonBox = new QHBox(infoBox);
+  QPushButton *pcheckAllButton = new QPushButton("Check all", buttonBox);
+  QPushButton *puncheckAllButton = new QPushButton("Uncheck all", buttonBox);
+  connect(pcheckAllButton , SIGNAL(clicked()), this, SLOT(checkAllCheckboxesInTable()));
+  connect(puncheckAllButton , SIGNAL(clicked()), this, SLOT(uncheckAllCheckboxesInTable()));
 
   // create sroll view
   scrollView = new QScrollView(splitter);
@@ -437,10 +453,8 @@ void CQLayoutMainWindow::insertValueTable(CDataEntity dataSet)
   int i = 0;
   std::string key, name;
   C_FLOAT64 val;
-  //valTable->setNumRows(dataSet.getNumberOfElements());
-  //valtable->setNumCols(2);
-  valTable = new CQCurrentValueTable(dataSet.getNumberOfElements(), 2, infoBox);
-
+  valTable->setNumRows(dataSet.getNumberOfElements());
+  valTable->setNumCols(2);
   while ((key = glPainter->getNodeNameEntry(i)) != "")
     {
       name = glPainter->getNameForNodeKey(key);
@@ -449,8 +463,17 @@ void CQLayoutMainWindow::insertValueTable(CDataEntity dataSet)
       //std::cout << i << "   "  << key << "  " << val << std::endl;
       i++;
     }
-  paraPanel->update();
-  valTable->show();
+  //paraPanel->update();
+}
+
+void CQLayoutMainWindow::checkAllCheckboxesInTable()
+{
+  valTable->setAllBoxesChecked();
+}
+
+void CQLayoutMainWindow::uncheckAllCheckboxesInTable()
+{
+  valTable->setAllBoxesUnchecked();
 }
 
 void CQLayoutMainWindow::showAnimation()

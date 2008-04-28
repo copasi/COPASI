@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQCurrentValueTable.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/04/25 12:25:13 $
+//   $Author: urost $
+//   $Date: 2008/04/28 12:05:00 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,20 +24,23 @@
 CQCurrentValueTable::CQCurrentValueTable(QWidget *parent, const char *name)
 {
   QTable(parent, name);
-  setNumRows(1);
-  setNumCols(2);
-  setColumnReadOnly(1, TRUE);
+
+  init();
+  this->show();
 }
 
-CQCurrentValueTable::CQCurrentValueTable(int numRows, int numCols, QWidget *parent, const char *name)
+void CQCurrentValueTable::init()
 {
-  QTable(parent, name);
-  setNumRows(numRows);
+  setNumRows(1);
   setNumCols(2);
-  setColumnReadOnly(1, TRUE);
+  // set default entry
   QHeader *header = this->horizontalHeader();
   header->setLabel(0, "Metabolite");
   header->setLabel(1, "Concentration");
+  setText(0, 0, "*** no time series load ***");
+  setText(0, 1, "NaN");
+  setColumnReadOnly(1, TRUE);
+  connect(this, SIGNAL(clicked(int, int, int, const QPoint &)), this, SLOT(mouseClickedOverTable(int, int, int, const QPoint &)));
 }
 
 CQCurrentValueTable::~CQCurrentValueTable()
@@ -57,4 +60,39 @@ void CQCurrentValueTable::setValues(CDataEntity *dataSet)
 void CQCurrentValueTable::setValue(int row, C_FLOAT64 val)
 {
   this->setText(row, 1, QString::number(val));
+}
+
+void CQCurrentValueTable::setAllBoxesChecked()
+{
+  int i;
+  for (i = 0;i < numRows();i++)
+    {
+      QTableItem *cell = this->item(i, 0);
+      if (cell->rtti() == 2)
+        {// is cell a QCheckTableItem?
+          QCheckTableItem *checkItem = dynamic_cast<QCheckTableItem *> (cell);
+          // set checkbox item checked
+          checkItem->setChecked(true);
+        }
+    }
+}
+
+void CQCurrentValueTable::setAllBoxesUnchecked()
+{
+  int i;
+  for (i = 0;i < numRows();i++)
+    {
+      QTableItem *cell = this->item(i, 0);
+      if (cell->rtti() == 2)
+        {// is cell a QCheckTableItem?
+          QCheckTableItem *checkItem = dynamic_cast<QCheckTableItem *> (cell);
+          // set checkbox item checked
+          checkItem->setChecked(false);
+        }
+    }
+}
+
+void CQCurrentValueTable::mouseClickedOverTable(int row, int col , int button, const QPoint & mousepos)
+{
+  std::cout << "mouseClickedOverTable" << std::endl;
 }
