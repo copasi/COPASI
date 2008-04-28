@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/04/23 15:03:22 $
+//   $Date: 2008/04/28 16:39:51 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -2326,7 +2326,11 @@ CEvaluationNode* CNormalTranslation::cancel(const CEvaluationNode* pOrig)
                         {
                           CEvaluationNode* pPower = new CEvaluationNodeOperator(CEvaluationNodeOperator::POWER, "^");
                           pPower->addChild(pair.second);
-                          pPower->addChild(pair.first);
+                          std::ostringstream os;
+                          os.precision(18);
+                          os << fabs(dynamic_cast<const CEvaluationNodeNumber*>(pair.first)->value());
+                          pPower->addChild(new CEvaluationNodeNumber((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pair.first->getType()), os.str().c_str()));
+                          delete pair.first;
                           denominatorChain.push_back(pPower);
                         }
                     }
@@ -2334,9 +2338,43 @@ CEvaluationNode* CNormalTranslation::cancel(const CEvaluationNode* pOrig)
               else
                 {
                   CEvaluationNode* pPower = new CEvaluationNodeOperator(CEvaluationNodeOperator::POWER, "^");
-                  pPower->addChild(pair.second);
-                  pPower->addChild(pair.first);
-                  numeratorChain.push_back(pPower);
+                  // check if the node is -1.0 * SOMETHING
+                  if (CEvaluationNode::type(pair.first->getType()) == CEvaluationNode::OPERATOR && (CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pair.first->getType()) == CEvaluationNodeOperator::MULTIPLY
+                      && CEvaluationNode::type(dynamic_cast<const CEvaluationNode*>(pair.first->getChild())->getType()) == CEvaluationNode::NUMBER)
+                    {
+                      if (fabs(static_cast<const CEvaluationNodeNumber*>(pair.first->getChild())->value() + 1.0) < ZERO)
+                        {
+                          pPower->addChild(pair.second);
+                          pPower->addChild(dynamic_cast<const CEvaluationNode*>(pair.first->getChild()->getSibling())->copyBranch());
+                          delete pair.first;
+                          denominatorChain.push_back(pPower);
+                        }
+                      else if (fabs(static_cast<const CEvaluationNodeNumber*>(pair.first->getChild())->value()) < ZERO)
+                        {
+                          // delete the power node and add
+                          delete pPower;
+                          delete pair.first;
+                          numeratorChain.push_back(pair.second);
+                        }
+                      else if (static_cast<const CEvaluationNodeNumber*>(pair.first->getChild())->value() < 0.0)
+                        {
+                          pPower->addChild(pair.second);
+                          pPower->addChild(pair.first);
+                          denominatorChain.push_back(pPower);
+                        }
+                      else
+                        {
+                          pPower->addChild(pair.second);
+                          pPower->addChild(pair.first);
+                          numeratorChain.push_back(pPower);
+                        }
+                    }
+                  else
+                    {
+                      pPower->addChild(pair.second);
+                      pPower->addChild(pair.first);
+                      numeratorChain.push_back(pPower);
+                    }
                 }
             }
           pResult = CNormalTranslation::createOperatorChain(CEvaluationNodeOperator::MULTIPLY, "*", numeratorChain);
