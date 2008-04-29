@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.h,v $
-//   $Revision: 1.7.4.11 $
+//   $Revision: 1.7.4.11.2.1 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/03/08 09:31:42 $
+//   $Date: 2008/04/29 06:58:49 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -65,6 +65,7 @@ class CSBMLExporter
     bool mVariableVolumes;
     const CModelValue* mpAvogadro;
     bool mAvogadroCreated;
+    std::map<std::string, const SBase*> mMetaIdMap;
 
   public:
     /**
@@ -483,6 +484,12 @@ class CSBMLExporter
      * Try to find a global parameter that represents avogadros number.
      */
     void findAvogadro(const CCopasiDataModel& dataModel);
+
+    /**
+     * This method goes through the given SBML model and collects all ids and
+     * meta ids used in the model.
+     */
+    void collectIds(Model* pModel, std::map<std::string, const SBase*>& ids, std::map<std::string, const SBase*>& metaIds);
   };
 
 #endif // CSBLExporter_H__
