@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.cpp,v $
-//   $Revision: 1.19.4.2 $
+//   $Revision: 1.19.4.2.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/02/04 23:19:50 $
+//   $Date: 2008/04/29 17:33:41 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -312,12 +312,14 @@ void CQExpressionWidget::doKeyboardAction(QTextEdit::KeyboardAction action)
 
 void CQExpressionWidget::setExpression(const std::string & expression)
 {
-  std::string Expression = expression;
-
-  unsigned C_INT32 i = 0;
+  // Reset the parse list.
   mParseList.clear();
 
+  std::string Expression = expression;
   std::string out_str = "";
+
+  unsigned C_INT32 i = 0;
+
   while (i < Expression.length())
     {
       if (Expression[i] == '<')
@@ -403,8 +405,6 @@ std::string CQExpressionWidget::getExpression() const
 
             if (it != mParseList.end())
               InfixCN += it->second->getCN() + ">";
-            else if (mpCurrentObject != NULL)
-              InfixCN += mpCurrentObject->getCN() + ">";
             else
               InfixCN = InfixCN.substr(0, InfixCN.length() - 1);
           }
@@ -447,11 +447,4 @@ void CQExpressionWidget::slotSelectObject()
 
       insert(FROM_UTF8("<" + Insert + ">"));
     }
-}
-
-void CQExpressionWidget::currentObjectRenamed(const CCopasiObject * pObject,
-    const QString & newName)
-{
-  mpCurrentObject = pObject;
-  mNewName = newName;
 }

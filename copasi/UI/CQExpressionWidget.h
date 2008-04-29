@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.9.6.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/12 19:27:44 $
+//   $Date: 2008/04/29 17:33:41 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -97,14 +102,6 @@ class CQExpressionWidget: public QTextEdit
      * @return std::string expression
      */
     std::string getExpression() const;
-
-    /**
-     * This function must be called when the current object is renamed
-     * @param const CCopasiObject * pObject
-     * @param const QString & newName
-     */
-    void currentObjectRenamed(const CCopasiObject * pObject,
-                              const QString & newName);
 
     /**
      * Set the type of the current expression
