@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.155.4.3 $
+//   $Revision: 1.155.4.3.2.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/02/28 21:38:16 $
+//   $Author: gauges $
+//   $Date: 2008/04/29 07:09:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -381,18 +381,20 @@ class CModel : public CModelEntity
         */
     CModelMIRIAMInfo mMIRIAMInfo;
 #endif //COPASI_MIRIAM
+  private:
+    /**
+     *  Copy construnctor
+     *  @param "const CModel &" src
+     */
+    CModel(const CModel & src);
+
+    CModel& operator=(const CModel& src);
 
   public:
     /**
      *  Default constructor
      */
     CModel();
-
-    /**
-     *  Copy construnctor
-     *  @param "const CModel &" src
-     */
-    CModel(const CModel & src);
 
     /**
      * Destructor
