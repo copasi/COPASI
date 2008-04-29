@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFWriter.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/02/04 17:28:01 $
+//   $Date: 2008/04/29 15:30:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -51,6 +51,8 @@ CRDFWriter::CRDFWriter():
 
   // We do not want <?xml version="1.0" encoding="utf-8"?>
   raptor_serializer_set_feature(mpWriter, RAPTOR_FEATURE_WRITER_XML_DECLARATION, 0);
+  // Remove any empty elements
+  raptor_serializer_set_feature(mpWriter, RAPTOR_FEATURE_WRITER_AUTO_EMPTY, 1);
 }
 
 CRDFWriter::~CRDFWriter()
