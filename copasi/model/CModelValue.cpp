@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-//   $Revision: 1.53.4.4 $
+//   $Revision: 1.53.4.4.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/02/26 02:16:35 $
+//   $Date: 2008/04/29 17:46:04 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -129,12 +129,7 @@ const std::string & CModelEntity::getKey() const {return mKey;}
 const C_FLOAT64 & CModelEntity::getValue() const {return *mpValueAccess;}
 
 const C_FLOAT64 & CModelEntity::getInitialValue() const
-  {
-    if (mpInitialExpression != NULL)
-      const_cast< CModelEntity * >(this)->refreshInitialValue();
-
-    return *mpIValue;
-  }
+  {return *mpIValue;}
 
 const CModelEntity::Status & CModelEntity::getStatus() const {return mStatus;}
 
@@ -173,6 +168,11 @@ bool CModelEntity::compile()
     {
       success &= mpInitialExpression->compile(listOfContainer);
       mpIValueReference->setDirectDependencies(mpInitialExpression->getDirectDependencies());
+
+      // If we have constant initial expression, we update the initial value.
+      if (mpInitialExpression->isUsable() &&
+          mpIValueReference->getDirectDependencies().size() == 0)
+        *mpIValue = mpInitialExpression->calcValue();
     }
   else
     {
