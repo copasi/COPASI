@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.8.4.21.2.1 $
+//   $Revision: 1.8.4.21.2.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/04/29 06:58:49 $
+//   $Date: 2008/04/29 13:03:27 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -3667,34 +3667,34 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                 {
                   CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                 }
-              // all FunctionDefinitions
-              unsigned int i, iMax = pModel->getListOfFunctionDefinitions()->size();
-              for (i = 0;i < iMax;++i)
+            }
+          // all FunctionDefinitions
+          unsigned int i, iMax = pModel->getListOfFunctionDefinitions()->size();
+          for (i = 0;i < iMax;++i)
+            {
+              pSBase = pModel->getListOfFunctionDefinitions()->get(i);
+              if (pSBase->isSetId())
                 {
-                  pSBase = pModel->getListOfFunctionDefinitions()->get(i);
-                  if (pSBase->isSetId())
+                  id = pSBase->getId();
+                  if (ids.find(id) == ids.end())
                     {
-                      id = pSBase->getId();
-                      if (ids.find(id) == ids.end())
-                        {
-                          ids.insert(std::make_pair(id, pSBase));
-                        }
-                      else
-                        {
-                          CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
-                        }
+                      ids.insert(std::make_pair(id, pSBase));
                     }
-                  if (pSBase->isSetMetaId())
+                  else
                     {
-                      id = pSBase->getMetaId();
-                      if (metaIds.find(id) == metaIds.end())
-                        {
-                          metaIds.insert(std::make_pair(id, pSBase));
-                        }
-                      else
-                        {
-                          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
-                        }
+                      CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
+                    }
+                }
+              if (pSBase->isSetMetaId())
+                {
+                  id = pSBase->getMetaId();
+                  if (metaIds.find(id) == metaIds.end())
+                    {
+                      metaIds.insert(std::make_pair(id, pSBase));
+                    }
+                  else
+                    {
+                      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                     }
                 }
             }
@@ -3714,59 +3714,59 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                 {
                   CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                 }
-              // all UnitDefinitions
-              // for each UnitDefinition: ListOfUnits, each Unit in ListOfUnits
-              unsigned int i, iMax = pModel->getListOfUnitDefinitions()->size();
-              for (i = 0;i < iMax;++i)
+            }
+          // all UnitDefinitions
+          // for each UnitDefinition: ListOfUnits, each Unit in ListOfUnits
+          unsigned int i, iMax = pModel->getListOfUnitDefinitions()->size();
+          for (i = 0;i < iMax;++i)
+            {
+              /* UnitDefinitions have their ids in a different namespace
+                 so we only consider meta ids.
+                 */
+              UnitDefinition* pUDef = pModel->getUnitDefinition(i);
+              assert(pUDef != NULL);
+              if (pUDef->isSetMetaId())
                 {
-                  /* UnitDefinitions have their ids in a different namespace
-                     so we only consider meta ids.
-                     */
-                  UnitDefinition* pUDef = pModel->getUnitDefinition(i);
-                  assert(pUDef != NULL);
-                  if (pUDef->isSetMetaId())
+                  id = pUDef->getMetaId();
+                  if (metaIds.find(id) == metaIds.end())
                     {
-                      id = pUDef->getMetaId();
+                      metaIds.insert(std::make_pair(id, pUDef));
+                    }
+                  else
+                    {
+                      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
+                    }
+                }
+              ListOf* pList = pUDef->getListOfUnits();
+              if (pList != NULL)
+                {
+                  if (pList->isSetMetaId())
+                    {
+                      id = pList->getMetaId();
                       if (metaIds.find(id) == metaIds.end())
                         {
-                          metaIds.insert(std::make_pair(id, pUDef));
+                          metaIds.insert(std::make_pair(id, pList));
                         }
                       else
                         {
                           CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                         }
                     }
-                  ListOf* pList = pUDef->getListOfUnits();
-                  if (pList != NULL)
+                  unsigned j, jMax = pList->size();
+                  for (j = 0;j < jMax;++j)
                     {
-                      if (pList->isSetMetaId())
+                      pSBase = pList->get(j);
+                      assert(pSBase != NULL);
+                      if (pSBase->isSetMetaId())
                         {
-                          id = pList->getMetaId();
+                          id = pSBase->getMetaId();
                           if (metaIds.find(id) == metaIds.end())
                             {
-                              metaIds.insert(std::make_pair(id, pList));
+                              metaIds.insert(std::make_pair(id, pSBase));
                             }
                           else
                             {
                               CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
-                            }
-                        }
-                      unsigned j, jMax = pList->size();
-                      for (j = 0;j < jMax;++j)
-                        {
-                          pSBase = pList->get(j);
-                          assert(pSBase != NULL);
-                          if (pSBase->isSetMetaId())
-                            {
-                              id = pSBase->getMetaId();
-                              if (metaIds.find(id) == metaIds.end())
-                                {
-                                  metaIds.insert(std::make_pair(id, pSBase));
-                                }
-                              else
-                                {
-                                  CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
-                                }
                             }
                         }
                     }
@@ -4451,24 +4451,24 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                             {
                               CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                             }
-                          unsigned int j, jMax = pKLaw->getListOfParameters()->size();
-                          for (j = 0;j < jMax;++j)
+                        }
+                      unsigned int j, jMax = pKLaw->getListOfParameters()->size();
+                      for (j = 0;j < jMax;++j)
+                        {
+                          pSBase = pKLaw->getParameter(j);
+                          assert(pSBase != NULL);
+                          // local parameters have their ids in a
+                          // differerent namespace
+                          if (pSBase->isSetMetaId())
                             {
-                              pSBase = pKLaw->getParameter(j);
-                              assert(pSBase != NULL);
-                              // local parameters have their ids in a
-                              // differerent namespace
-                              if (pSBase->isSetMetaId())
+                              id = pSBase->getMetaId();
+                              if (metaIds.find(id) == metaIds.end())
                                 {
-                                  id = pSBase->getMetaId();
-                                  if (metaIds.find(id) == metaIds.end())
-                                    {
-                                      metaIds.insert(std::make_pair(id, pSBase));
-                                    }
-                                  else
-                                    {
-                                      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
-                                    }
+                                  metaIds.insert(std::make_pair(id, pSBase));
+                                }
+                              else
+                                {
+                                  CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                                 }
                             }
                         }
