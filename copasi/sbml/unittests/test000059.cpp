@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000059.cpp,v $
-//   $Revision: 1.1.2.1 $
+//   $Revision: 1.1.2.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/04/29 14:42:36 $
+//   $Date: 2008/04/30 08:30:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1127,6 +1127,218 @@ void test000059::test_unique_id_16()
   CPPUNIT_ASSERT(checkIfIdsUnique(pSBMLModel) == true);
 }
 
+void test000059::test_unique_id_17()
+{
+  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CPPUNIT_ASSERT(pDataModel->importSBMLFromString(test000059::MODEL_STRING17));
+  CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
+  const SBMLDocument* pDocument = pDataModel->getCurrentSBMLDocument();
+  const Model* pSBMLModel = pDocument->getModel();
+  CPPUNIT_ASSERT(pSBMLModel != NULL);
+  CPPUNIT_ASSERT(pSBMLModel->getNumFunctionDefinitions() == 1);
+  CPPUNIT_ASSERT(pSBMLModel->getNumCompartments() == 1);
+  CPPUNIT_ASSERT(pSBMLModel->getNumSpecies() == 1);
+  CPPUNIT_ASSERT(pSBMLModel->getNumReactions() == 1);
+  CPPUNIT_ASSERT(pSBMLModel->getNumRules() == 0);
+  CPPUNIT_ASSERT(pSBMLModel->getNumParameters() == 1);
+  // now we add a new parameter
+  CModel* pModel = pDataModel->getModel();
+  CPPUNIT_ASSERT(pModel != NULL);
+  // add a new function definition
+  CFunction* pFunctionDefinition = new CFunction("function_2");
+  CPPUNIT_ASSERT(pFunctionDefinition != NULL);
+  CPPUNIT_ASSERT(pFunctionDefinition->setInfix("3 * 5") == true);
+  pFunctionDefinition->compile();
+  // add the function definition to the function database
+  pDataModel->getFunctionList()->addAndAdaptName(pFunctionDefinition);
+  CModelValue* pModelValue = pModel->createModelValue("parameter_2");
+  CPPUNIT_ASSERT(pModelValue != NULL);
+  pModelValue->setStatus(CModelEntity::ASSIGNMENT);
+  CPPUNIT_ASSERT(pModelValue->setExpression(std::string(pFunctionDefinition->getObjectName() + "()")) == true);
+  // now create a rule for the parameter
+  pModel->compileIfNecessary(NULL);
+  std::set<const CCopasiObject*> changedObjects;
+  const CCopasiObject* pObject = pModelValue->getObject(CCopasiObjectName("Reference=InitialValue"));
+  CPPUNIT_ASSERT(pObject != NULL);
+  changedObjects.insert(pObject);
+  std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
+  std::vector<Refresh*>::iterator refreshIt = refreshes.begin(), refreshEndit = refreshes.end();
+  while (refreshIt != refreshEndit)
+    {
+      (**refreshIt++)();
+    }
+  CPPUNIT_ASSERT(pDataModel->exportSBMLToString(NULL, 2, 1).empty() == false);
+  pDocument = pDataModel->getCurrentSBMLDocument();
+  pSBMLModel = pDocument->getModel();
+  CPPUNIT_ASSERT(pSBMLModel != NULL);
+  CPPUNIT_ASSERT(pSBMLModel->getNumFunctionDefinitions() == 2);
+  CPPUNIT_ASSERT(pSBMLModel->getNumCompartments() == 1);
+  CPPUNIT_ASSERT(pSBMLModel->getNumSpecies() == 1);
+  CPPUNIT_ASSERT(pSBMLModel->getNumReactions() == 1);
+  CPPUNIT_ASSERT(pSBMLModel->getNumRules() == 1);
+  CPPUNIT_ASSERT(pSBMLModel->getNumParameters() == 2);
+  CPPUNIT_ASSERT(checkIfIdsUnique(pSBMLModel) == true);
+}
+
+void test000059::test_unique_id_18()
+{
+  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CPPUNIT_ASSERT(pDataModel->importSBMLFromString(test000059::MODEL_STRING18));
+  CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
+  const SBMLDocument* pDocument = pDataModel->getCurrentSBMLDocument();
+  const Model* pSBMLModel = pDocument->getModel();
+  CPPUNIT_ASSERT(pSBMLModel != NULL);
+  CPPUNIT_ASSERT(pSBMLModel->getNumFunctionDefinitions() == 1);
+  CPPUNIT_ASSERT(pSBMLModel->getNumCompartments() == 1);
+  CPPUNIT_ASSERT(pSBMLModel->getNumSpecies() == 1);
+  CPPUNIT_ASSERT(pSBMLModel->getNumReactions() == 1);
+  CPPUNIT_ASSERT(pSBMLModel->getNumRules() == 0);
+  CPPUNIT_ASSERT(pSBMLModel->getNumParameters() == 1);
+  // now we add a new parameter
+  CModel* pModel = pDataModel->getModel();
+  CPPUNIT_ASSERT(pModel != NULL);
+  // add a new function definition
+  CFunction* pFunctionDefinition = new CFunction("function_2");
+  CPPUNIT_ASSERT(pFunctionDefinition != NULL);
+  CPPUNIT_ASSERT(pFunctionDefinition->setInfix("3 * 5") == true);
+  pFunctionDefinition->compile();
+  // add the function definition to the function database
+  pDataModel->getFunctionList()->addAndAdaptName(pFunctionDefinition);
+  CModelValue* pModelValue = pModel->createModelValue("parameter_2");
+  CPPUNIT_ASSERT(pModelValue != NULL);
+  pModelValue->setStatus(CModelEntity::ASSIGNMENT);
+  CPPUNIT_ASSERT(pModelValue->setExpression(std::string(pFunctionDefinition->getObjectName() + "()")) == true);
+  // now create a rule for the parameter
+  pModel->compileIfNecessary(NULL);
+  std::set<const CCopasiObject*> changedObjects;
+  const CCopasiObject* pObject = pModelValue->getObject(CCopasiObjectName("Reference=InitialValue"));
+  CPPUNIT_ASSERT(pObject != NULL);
+  changedObjects.insert(pObject);
+  std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
+  std::vector<Refresh*>::iterator refreshIt = refreshes.begin(), refreshEndit = refreshes.end();
+  while (refreshIt != refreshEndit)
+    {
+      (**refreshIt++)();
+    }
+  CPPUNIT_ASSERT(pDataModel->exportSBMLToString(NULL, 2, 1).empty() == false);
+  pDocument = pDataModel->getCurrentSBMLDocument();
+  pSBMLModel = pDocument->getModel();
+  CPPUNIT_ASSERT(pSBMLModel != NULL);
+  CPPUNIT_ASSERT(pSBMLModel->getNumFunctionDefinitions() == 2);
+  CPPUNIT_ASSERT(pSBMLModel->getNumCompartments() == 1);
+  CPPUNIT_ASSERT(pSBMLModel->getNumSpecies() == 1);
+  CPPUNIT_ASSERT(pSBMLModel->getNumReactions() == 1);
+  CPPUNIT_ASSERT(pSBMLModel->getNumRules() == 1);
+  CPPUNIT_ASSERT(pSBMLModel->getNumParameters() == 2);
+  CPPUNIT_ASSERT(checkIfIdsUnique(pSBMLModel) == true);
+}
+
+void test000059::test_unique_id_19()
+{
+  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CPPUNIT_ASSERT(pDataModel->importSBMLFromString(test000059::MODEL_STRING19));
+  CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
+  const SBMLDocument* pDocument = pDataModel->getCurrentSBMLDocument();
+  const Model* pSBMLModel = pDocument->getModel();
+  CPPUNIT_ASSERT(pSBMLModel != NULL);
+  CPPUNIT_ASSERT(pSBMLModel->getNumFunctionDefinitions() == 1);
+  CPPUNIT_ASSERT(pSBMLModel->getNumCompartments() == 1);
+  CPPUNIT_ASSERT(pSBMLModel->getNumSpecies() == 1);
+  CPPUNIT_ASSERT(pSBMLModel->getNumReactions() == 1);
+  CPPUNIT_ASSERT(pSBMLModel->getNumRules() == 0);
+  CPPUNIT_ASSERT(pSBMLModel->getNumParameters() == 1);
+  // now we add a new parameter
+  CModel* pModel = pDataModel->getModel();
+  CPPUNIT_ASSERT(pModel != NULL);
+  // add a new function definition
+  CFunction* pFunctionDefinition = new CFunction("function_2");
+  CPPUNIT_ASSERT(pFunctionDefinition != NULL);
+  CPPUNIT_ASSERT(pFunctionDefinition->setInfix("3 * 5") == true);
+  pFunctionDefinition->compile();
+  // add the function definition to the function database
+  pDataModel->getFunctionList()->addAndAdaptName(pFunctionDefinition);
+  CModelValue* pModelValue = pModel->createModelValue("parameter_2");
+  CPPUNIT_ASSERT(pModelValue != NULL);
+  pModelValue->setStatus(CModelEntity::ASSIGNMENT);
+  CPPUNIT_ASSERT(pModelValue->setExpression(std::string(pFunctionDefinition->getObjectName() + "()")) == true);
+  // now create a rule for the parameter
+  pModel->compileIfNecessary(NULL);
+  std::set<const CCopasiObject*> changedObjects;
+  const CCopasiObject* pObject = pModelValue->getObject(CCopasiObjectName("Reference=InitialValue"));
+  CPPUNIT_ASSERT(pObject != NULL);
+  changedObjects.insert(pObject);
+  std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
+  std::vector<Refresh*>::iterator refreshIt = refreshes.begin(), refreshEndit = refreshes.end();
+  while (refreshIt != refreshEndit)
+    {
+      (**refreshIt++)();
+    }
+  CPPUNIT_ASSERT(pDataModel->exportSBMLToString(NULL, 2, 1).empty() == false);
+  pDocument = pDataModel->getCurrentSBMLDocument();
+  pSBMLModel = pDocument->getModel();
+  CPPUNIT_ASSERT(pSBMLModel != NULL);
+  CPPUNIT_ASSERT(pSBMLModel->getNumFunctionDefinitions() == 2);
+  CPPUNIT_ASSERT(pSBMLModel->getNumCompartments() == 1);
+  CPPUNIT_ASSERT(pSBMLModel->getNumSpecies() == 1);
+  CPPUNIT_ASSERT(pSBMLModel->getNumReactions() == 1);
+  CPPUNIT_ASSERT(pSBMLModel->getNumRules() == 1);
+  CPPUNIT_ASSERT(pSBMLModel->getNumParameters() == 2);
+  CPPUNIT_ASSERT(checkIfIdsUnique(pSBMLModel) == true);
+}
+
+void test000059::test_unique_id_20()
+{
+  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CPPUNIT_ASSERT(pDataModel->importSBMLFromString(test000059::MODEL_STRING20));
+  CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
+  const SBMLDocument* pDocument = pDataModel->getCurrentSBMLDocument();
+  const Model* pSBMLModel = pDocument->getModel();
+  CPPUNIT_ASSERT(pSBMLModel != NULL);
+  CPPUNIT_ASSERT(pSBMLModel->getNumFunctionDefinitions() == 1);
+  CPPUNIT_ASSERT(pSBMLModel->getNumCompartments() == 1);
+  CPPUNIT_ASSERT(pSBMLModel->getNumSpecies() == 1);
+  CPPUNIT_ASSERT(pSBMLModel->getNumReactions() == 1);
+  CPPUNIT_ASSERT(pSBMLModel->getNumRules() == 0);
+  CPPUNIT_ASSERT(pSBMLModel->getNumParameters() == 1);
+  // now we add a new parameter
+  CModel* pModel = pDataModel->getModel();
+  CPPUNIT_ASSERT(pModel != NULL);
+  // add a new function definition
+  CFunction* pFunctionDefinition = new CFunction("function_2");
+  CPPUNIT_ASSERT(pFunctionDefinition != NULL);
+  CPPUNIT_ASSERT(pFunctionDefinition->setInfix("3 * 5") == true);
+  pFunctionDefinition->compile();
+  // add the function definition to the function database
+  pDataModel->getFunctionList()->addAndAdaptName(pFunctionDefinition);
+  CModelValue* pModelValue = pModel->createModelValue("parameter_2");
+  CPPUNIT_ASSERT(pModelValue != NULL);
+  pModelValue->setStatus(CModelEntity::ASSIGNMENT);
+  CPPUNIT_ASSERT(pModelValue->setExpression(std::string(pFunctionDefinition->getObjectName() + "()")) == true);
+  // now create a rule for the parameter
+  pModel->compileIfNecessary(NULL);
+  std::set<const CCopasiObject*> changedObjects;
+  const CCopasiObject* pObject = pModelValue->getObject(CCopasiObjectName("Reference=InitialValue"));
+  CPPUNIT_ASSERT(pObject != NULL);
+  changedObjects.insert(pObject);
+  std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
+  std::vector<Refresh*>::iterator refreshIt = refreshes.begin(), refreshEndit = refreshes.end();
+  while (refreshIt != refreshEndit)
+    {
+      (**refreshIt++)();
+    }
+  CPPUNIT_ASSERT(pDataModel->exportSBMLToString(NULL, 2, 1).empty() == false);
+  pDocument = pDataModel->getCurrentSBMLDocument();
+  pSBMLModel = pDocument->getModel();
+  CPPUNIT_ASSERT(pSBMLModel != NULL);
+  CPPUNIT_ASSERT(pSBMLModel->getNumFunctionDefinitions() == 2);
+  CPPUNIT_ASSERT(pSBMLModel->getNumCompartments() == 1);
+  CPPUNIT_ASSERT(pSBMLModel->getNumSpecies() == 1);
+  CPPUNIT_ASSERT(pSBMLModel->getNumReactions() == 1);
+  CPPUNIT_ASSERT(pSBMLModel->getNumRules() == 1);
+  CPPUNIT_ASSERT(pSBMLModel->getNumParameters() == 2);
+  CPPUNIT_ASSERT(checkIfIdsUnique(pSBMLModel) == true);
+}
+
 const char* test000059::MODEL_STRING1 =
   "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
   "<sbml xmlns=\"http://www.sbml.org/sbml/level2\" metaid=\"_000000\" level=\"2\" version=\"1\">\n"
@@ -2247,4 +2459,280 @@ const char* test000059::MODEL_STRING16 =
   "    <SBMLMap SBMLid=\"species_1\" COPASIkey=\"Metabolite_0\"/>\n"
   "  </SBMLReference>\n"
   "</COPASI>\n"
+;
+
+const char* test000059::MODEL_STRING17 =
+  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+  "<sbml xmlns=\"http://www.sbml.org/sbml/level2\" metaid=\"_000000\" level=\"2\" version=\"1\">\n"
+  "  <model metaid=\"_000001\" id=\"model_1\" name=\"model_1\">\n"
+  "    <listOfFunctionDefinitions>\n"
+  "      <functionDefinition metaid=\"_000004\" id=\"function_1\" name=\"function_1\">\n"
+  "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+  "          <lambda>\n"
+  "            <bvar>\n"
+  "              <ci> k </ci>\n"
+  "            </bvar>\n"
+  "            <bvar>\n"
+  "              <ci> S </ci>\n"
+  "            </bvar>\n"
+  "            <apply>\n"
+  "              <times/>\n"
+  "              <ci> k </ci>\n"
+  "              <ci> S </ci>\n"
+  "            </apply>\n"
+  "          </lambda>\n"
+  "        </math>\n"
+  "      </functionDefinition>\n"
+  "    </listOfFunctionDefinitions>  \n"
+  "    <listOfUnitDefinitions>\n"
+  "      <unitDefinition metaid=\"_000002\" id=\"time\" name=\"time\">\n"
+  "        <listOfUnits>\n"
+  "          <unit kind=\"second\" scale=\"0\" multiplier=\"1\"/>\n"
+  "        </listOfUnits>\n"
+  "      </unitDefinition>\n"
+  "      <unitDefinition metaid=\"_000003\" id=\"unit_2\" name=\"unit_2\">\n"
+  "        <listOfUnits>\n"
+  "          <unit kind=\"second\" exponent=\"-1\" scale=\"0\" multiplier=\"1\"/>\n"
+  "        </listOfUnits>\n"
+  "      </unitDefinition>\n"
+  "    </listOfUnitDefinitions>  \n"
+  "    <listOfCompartments>\n"
+  "      <compartment metaid=\"_000005\" id=\"function_2\" name=\"compartment_1\" size=\"1e-16\">\n"
+  "      </compartment>\n"
+  "    </listOfCompartments>\n"
+  "    <listOfSpecies>\n"
+  "      <species metaid=\"_000006\" id=\"species_1\" name=\"species_1\" compartment=\"function_2\" initialAmount=\"1.0\"/>\n"
+  "    </listOfSpecies>  \n"
+  "    <listOfParameters>\n"
+  "      <parameter metaid=\"_000007\" id=\"parameter_1\" name=\"parameter_1\" value=\"3.0\" constant=\"false\" units=\"unit_2\"/>\n"
+  "    </listOfParameters>\n"
+  "    <listOfReactions>\n"
+  "      <reaction metaid=\"_000008\" id=\"reaction_1\" name=\"reaction_1\">\n"
+  "        <listOfReactants>\n"
+  "          <speciesReference species=\"species_1\"/>\n"
+  "        </listOfReactants>\n"
+  "        <kineticLaw>\n"
+  "          <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+  "            <apply>\n"
+  "              <times/>\n"
+  "              <ci> function_2 </ci>\n"
+  "              <apply>\n"
+  "                <ci> function_1 </ci>\n"
+  "                <ci> parameter_1 </ci>\n"
+  "                <ci> species_1 </ci>\n"
+  "              </apply>\n"
+  "            </apply>\n"
+  "          </math>\n"
+  "        </kineticLaw>\n"
+  "      </reaction>\n"
+  "    </listOfReactions>\n"
+  "  </model>\n"
+  "</sbml>\n"
+;
+
+const char* test000059::MODEL_STRING18 =
+  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+  "<sbml xmlns=\"http://www.sbml.org/sbml/level2\" metaid=\"_000000\" level=\"2\" version=\"1\">\n"
+  "  <model metaid=\"_000001\" id=\"model_1\" name=\"model_1\">\n"
+  "    <listOfFunctionDefinitions>\n"
+  "      <functionDefinition metaid=\"_000004\" id=\"function_1\" name=\"function_1\">\n"
+  "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+  "          <lambda>\n"
+  "            <bvar>\n"
+  "              <ci> k </ci>\n"
+  "            </bvar>\n"
+  "            <bvar>\n"
+  "              <ci> S </ci>\n"
+  "            </bvar>\n"
+  "            <apply>\n"
+  "              <times/>\n"
+  "              <ci> k </ci>\n"
+  "              <ci> S </ci>\n"
+  "            </apply>\n"
+  "          </lambda>\n"
+  "        </math>\n"
+  "      </functionDefinition>\n"
+  "    </listOfFunctionDefinitions>  \n"
+  "    <listOfUnitDefinitions>\n"
+  "      <unitDefinition metaid=\"_000002\" id=\"time\" name=\"time\">\n"
+  "        <listOfUnits>\n"
+  "          <unit kind=\"second\" scale=\"0\" multiplier=\"1\"/>\n"
+  "        </listOfUnits>\n"
+  "      </unitDefinition>\n"
+  "      <unitDefinition metaid=\"_000003\" id=\"unit_2\" name=\"unit_2\">\n"
+  "        <listOfUnits>\n"
+  "          <unit kind=\"second\" exponent=\"-1\" scale=\"0\" multiplier=\"1\"/>\n"
+  "        </listOfUnits>\n"
+  "      </unitDefinition>\n"
+  "    </listOfUnitDefinitions>  \n"
+  "    <listOfCompartments>\n"
+  "      <compartment metaid=\"_000005\" id=\"compartment_1\" name=\"compartment_1\" size=\"1e-16\">\n"
+  "      </compartment>\n"
+  "    </listOfCompartments>\n"
+  "    <listOfSpecies>\n"
+  "      <species metaid=\"_000006\" id=\"function_2\" name=\"species_1\" compartment=\"compartment_1\" initialAmount=\"1.0\"/>\n"
+  "    </listOfSpecies>  \n"
+  "    <listOfParameters>\n"
+  "      <parameter metaid=\"_000007\" id=\"parameter_1\" name=\"parameter_1\" value=\"3.0\" constant=\"false\" units=\"unit_2\"/>\n"
+  "    </listOfParameters>\n"
+  "    <listOfReactions>\n"
+  "      <reaction metaid=\"_000008\" id=\"reaction_1\" name=\"reaction_1\">\n"
+  "        <listOfReactants>\n"
+  "          <speciesReference species=\"function_2\"/>\n"
+  "        </listOfReactants>\n"
+  "        <kineticLaw>\n"
+  "          <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+  "            <apply>\n"
+  "              <times/>\n"
+  "              <ci> compartment_1 </ci>\n"
+  "              <apply>\n"
+  "                <ci> function_1 </ci>\n"
+  "                <ci> parameter_1 </ci>\n"
+  "                <ci> function_2 </ci>\n"
+  "              </apply>\n"
+  "            </apply>\n"
+  "          </math>\n"
+  "        </kineticLaw>\n"
+  "      </reaction>\n"
+  "    </listOfReactions>\n"
+  "  </model>\n"
+  "</sbml>\n"
+;
+
+const char* test000059::MODEL_STRING19 =
+  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+  "<sbml xmlns=\"http://www.sbml.org/sbml/level2\" metaid=\"_000000\" level=\"2\" version=\"1\">\n"
+  "  <model metaid=\"_000001\" id=\"model_1\" name=\"model_1\">\n"
+  "    <listOfFunctionDefinitions>\n"
+  "      <functionDefinition metaid=\"_000004\" id=\"function_1\" name=\"function_1\">\n"
+  "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+  "          <lambda>\n"
+  "            <bvar>\n"
+  "              <ci> k </ci>\n"
+  "            </bvar>\n"
+  "            <bvar>\n"
+  "              <ci> S </ci>\n"
+  "            </bvar>\n"
+  "            <apply>\n"
+  "              <times/>\n"
+  "              <ci> k </ci>\n"
+  "              <ci> S </ci>\n"
+  "            </apply>\n"
+  "          </lambda>\n"
+  "        </math>\n"
+  "      </functionDefinition>\n"
+  "    </listOfFunctionDefinitions>  \n"
+  "    <listOfUnitDefinitions>\n"
+  "      <unitDefinition metaid=\"_000002\" id=\"time\" name=\"time\">\n"
+  "        <listOfUnits>\n"
+  "          <unit kind=\"second\" scale=\"0\" multiplier=\"1\"/>\n"
+  "        </listOfUnits>\n"
+  "      </unitDefinition>\n"
+  "      <unitDefinition metaid=\"_000003\" id=\"unit_2\" name=\"unit_2\">\n"
+  "        <listOfUnits>\n"
+  "          <unit kind=\"second\" exponent=\"-1\" scale=\"0\" multiplier=\"1\"/>\n"
+  "        </listOfUnits>\n"
+  "      </unitDefinition>\n"
+  "    </listOfUnitDefinitions>  \n"
+  "    <listOfCompartments>\n"
+  "      <compartment metaid=\"_000005\" id=\"compartment_1\" name=\"compartment_1\" size=\"1e-16\">\n"
+  "      </compartment>\n"
+  "    </listOfCompartments>\n"
+  "    <listOfSpecies>\n"
+  "      <species metaid=\"_000006\" id=\"species_1\" name=\"species_1\" compartment=\"compartment_1\" initialAmount=\"1.0\"/>\n"
+  "    </listOfSpecies>  \n"
+  "    <listOfParameters>\n"
+  "      <parameter metaid=\"_000007\" id=\"function_2\" name=\"parameter_1\" value=\"3.0\" constant=\"false\" units=\"unit_2\"/>\n"
+  "    </listOfParameters>\n"
+  "    <listOfReactions>\n"
+  "      <reaction metaid=\"_000008\" id=\"reaction_1\" name=\"reaction_1\">\n"
+  "        <listOfReactants>\n"
+  "          <speciesReference species=\"species_1\"/>\n"
+  "        </listOfReactants>\n"
+  "        <kineticLaw>\n"
+  "          <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+  "            <apply>\n"
+  "              <times/>\n"
+  "              <ci> compartment_1 </ci>\n"
+  "              <apply>\n"
+  "                <ci> function_1 </ci>\n"
+  "                <ci> function_2 </ci>\n"
+  "                <ci> species_1 </ci>\n"
+  "              </apply>\n"
+  "            </apply>\n"
+  "          </math>\n"
+  "        </kineticLaw>\n"
+  "      </reaction>\n"
+  "    </listOfReactions>\n"
+  "  </model>\n"
+  "</sbml>\n"
+;
+
+const char* test000059::MODEL_STRING20 =
+  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+  "<sbml xmlns=\"http://www.sbml.org/sbml/level2\" metaid=\"_000000\" level=\"2\" version=\"1\">\n"
+  "  <model metaid=\"_000001\" id=\"model_1\" name=\"model_1\">\n"
+  "    <listOfFunctionDefinitions>\n"
+  "      <functionDefinition metaid=\"_000004\" id=\"function_1\" name=\"function_1\">\n"
+  "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+  "          <lambda>\n"
+  "            <bvar>\n"
+  "              <ci> k </ci>\n"
+  "            </bvar>\n"
+  "            <bvar>\n"
+  "              <ci> S </ci>\n"
+  "            </bvar>\n"
+  "            <apply>\n"
+  "              <times/>\n"
+  "              <ci> k </ci>\n"
+  "              <ci> S </ci>\n"
+  "            </apply>\n"
+  "          </lambda>\n"
+  "        </math>\n"
+  "      </functionDefinition>\n"
+  "    </listOfFunctionDefinitions>  \n"
+  "    <listOfUnitDefinitions>\n"
+  "      <unitDefinition metaid=\"_000002\" id=\"time\" name=\"time\">\n"
+  "        <listOfUnits>\n"
+  "          <unit kind=\"second\" scale=\"0\" multiplier=\"1\"/>\n"
+  "        </listOfUnits>\n"
+  "      </unitDefinition>\n"
+  "      <unitDefinition metaid=\"_000003\" id=\"unit_2\" name=\"unit_2\">\n"
+  "        <listOfUnits>\n"
+  "          <unit kind=\"second\" exponent=\"-1\" scale=\"0\" multiplier=\"1\"/>\n"
+  "        </listOfUnits>\n"
+  "      </unitDefinition>\n"
+  "    </listOfUnitDefinitions>  \n"
+  "    <listOfCompartments>\n"
+  "      <compartment metaid=\"_000005\" id=\"compartment_1\" name=\"compartment_1\" size=\"1e-16\">\n"
+  "      </compartment>\n"
+  "    </listOfCompartments>\n"
+  "    <listOfSpecies>\n"
+  "      <species metaid=\"_000006\" id=\"species_1\" name=\"species_1\" compartment=\"compartment_1\" initialAmount=\"1.0\"/>\n"
+  "    </listOfSpecies>  \n"
+  "    <listOfParameters>\n"
+  "      <parameter metaid=\"_000007\" id=\"parameter_1\" name=\"parameter_1\" value=\"3.0\" constant=\"false\" units=\"unit_2\"/>\n"
+  "    </listOfParameters>\n"
+  "    <listOfReactions>\n"
+  "      <reaction metaid=\"_000008\" id=\"function_2\" name=\"reaction_1\">\n"
+  "        <listOfReactants>\n"
+  "          <speciesReference species=\"species_1\"/>\n"
+  "        </listOfReactants>\n"
+  "        <kineticLaw>\n"
+  "          <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+  "            <apply>\n"
+  "              <times/>\n"
+  "              <ci> compartment_1 </ci>\n"
+  "              <apply>\n"
+  "                <ci> function_1 </ci>\n"
+  "                <ci> parameter_1 </ci>\n"
+  "                <ci> species_1 </ci>\n"
+  "              </apply>\n"
+  "            </apply>\n"
+  "          </math>\n"
+  "        </kineticLaw>\n"
+  "      </reaction>\n"
+  "    </listOfReactions>\n"
+  "  </model>\n"
+  "</sbml>\n"
 ;

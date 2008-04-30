@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000058.cpp,v $
-//   $Revision: 1.1.2.1 $
+//   $Revision: 1.1.2.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/04/29 13:24:40 $
+//   $Date: 2008/04/30 08:30:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -659,7 +659,7 @@ void test000058::test_bug1025_5()
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
   // add a new function definition
-  CFunction* pFunctionDefinition = new CFunction("MyNewFunction");
+  CFunction* pFunctionDefinition = new CFunction("function_2");
   CPPUNIT_ASSERT(pFunctionDefinition != NULL);
   CPPUNIT_ASSERT(pFunctionDefinition->setInfix("3 * 5") == true);
   pFunctionDefinition->compile();
@@ -855,7 +855,7 @@ void test000058::test_bug1025_10()
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
   // add a new function definition
-  CFunction* pFunctionDefinition = new CFunction("MyNewFunction");
+  CFunction* pFunctionDefinition = new CFunction("function_2");
   CPPUNIT_ASSERT(pFunctionDefinition != NULL);
   CPPUNIT_ASSERT(pFunctionDefinition->setInfix("3 * 5") == true);
   pFunctionDefinition->compile();
