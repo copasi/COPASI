@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.8.4.21.2.2 $
+//   $Revision: 1.8.4.21.2.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/04/29 13:03:27 $
+//   $Date: 2008/04/30 12:46:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -798,7 +798,7 @@ void CSBMLExporter::createInitialAssignment(const CModelEntity& modelEntity, CCo
       // contains variable volumes or if the quantity units are set to CModel::number
       pOrigNode = this->replaceSpeciesReferences(pOrigNode, dataModel);
       assert(pOrigNode != NULL);
-      ASTNode* pNode = pOrigNode->toAST();
+      ASTNode* pNode = this->convertToASTNode(pOrigNode, dataModel);
       delete pOrigNode;
       if (pNode != NULL)
         {
@@ -991,7 +991,7 @@ void CSBMLExporter::createRule(const CModelEntity& modelEntity, CCopasiDataModel
       // contains variable volumes or if the quantity units are set to CModel::number
       pOrigNode = this->replaceSpeciesReferences(pOrigNode, dataModel);
       assert(pOrigNode != NULL);
-      ASTNode* pNode = pOrigNode->toAST();
+      ASTNode* pNode = this->convertToASTNode(pOrigNode, dataModel);
       delete pOrigNode;
       if (pNode != NULL)
         {
@@ -1675,7 +1675,7 @@ void CSBMLExporter::createFunctionDefinitions(CCopasiDataModel& dataModel)
 /**
  * Create the SBML function definition from the given COPASI function.
  */
-void CSBMLExporter::createFunctionDefinition(CFunction& function, const CCopasiDataModel& dataModel)
+void CSBMLExporter::createFunctionDefinition(CFunction& function, CCopasiDataModel& dataModel)
 {
   // check the expression
   std::map<const CCopasiObject*, SBase*>::iterator pos = this->mCOPASI2SBMLMap.find(&function);
@@ -1723,7 +1723,7 @@ void CSBMLExporter::createFunctionDefinition(CFunction& function, const CCopasiD
       CSBMLExporter::isExpressionSBMLCompatible(function, dataModel, this->mSBMLLevel, this->mSBMLVersion, result, function.getObjectName(), "function");
       if (result.empty())
         {
-          ASTNode* pFunNode = function.getRoot()->toAST();
+          ASTNode* pFunNode = this->convertToASTNode(function.getRoot(), dataModel);
           // go through the AST tree and replace all function call nodes with with a call to the sbml id
           ASTNode* pLambda = new ASTNode(AST_LAMBDA);
           // add the parameters to the function definition
@@ -2197,7 +2197,7 @@ KineticLaw* CSBMLExporter::createKineticLaw(CReaction& reaction, CCopasiDataMode
       CEvaluationNode* pOrigNode = this->replaceSpeciesReferences(pExpression, dataModel);
       delete pExpression;
       assert(pOrigNode != NULL);
-      ASTNode* pNode = pOrigNode->toAST();
+      ASTNode* pNode = this->convertToASTNode(pOrigNode, dataModel);
       delete pOrigNode;
       assert(pNode != NULL);
       if (reaction.getCompartmentNumber() == 1)
@@ -4605,5 +4605,49 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                 }
             }
         }
+    }
+}
+
+ASTNode* CSBMLExporter::convertToASTNode(const CEvaluationNode* pOrig, CCopasiDataModel& dataModel)
+{
+  // first go through the tree and check that all function calls are to
+  // functions that have an SBML id
+  // if they don't, we have to set one
+  this->setFunctionSBMLIds(pOrig, dataModel);
+  ASTNode* pResult = pOrig->toAST();
+  return pResult;
+}
+
+void CSBMLExporter::setFunctionSBMLIds(const CEvaluationNode* pNode, CCopasiDataModel& dataModel)
+{
+  if (CEvaluationNode::type(pNode->getType()) == CEvaluationNode::CALL && (CEvaluationNodeCall::SubType)CEvaluationNode::subType(pNode->getType()) != CEvaluationNodeCall::DELAY)
+    {
+      std::string funName = dynamic_cast<const CEvaluationNodeCall*>(pNode)->getData();
+      CEvaluationTree* pFun = dataModel.getFunctionList()->findFunction(funName);
+      assert(pFun != NULL);
+      if (pFun == NULL) fatalError();
+
+      if (pFun->getSBMLId() == "")
+        {
+          if (CSBMLExporter::isValidSId(funName))
+            {
+              if (this->mIdMap.find(funName) != this->mIdMap.end())
+                {
+                  funName = CSBMLExporter::createUniqueId(this->mIdMap, funName);
+                }
+            }
+          else
+            {
+              funName = CSBMLExporter::createUniqueId(this->mIdMap, "function_");
+            }
+          this->mIdMap.insert(std::make_pair(funName, (const SBase*)NULL));
+          pFun->setSBMLId(funName);
+        }
+    }
+  const CEvaluationNode* pChild = dynamic_cast<const CEvaluationNode*>(pNode->getChild());
+  while (pChild != NULL)
+    {
+      this->setFunctionSBMLIds(pChild, dataModel);
+      pChild = dynamic_cast<const CEvaluationNode*>(pChild->getSibling());
     }
 }

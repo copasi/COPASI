@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/sbml.pro,v $ 
-#   $Revision: 1.15.2.1.2.1 $ 
+#   $Revision: 1.15.2.1.2.1.2.1 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2008/01/18 14:32:43 $ 
+#   $Date: 2008/04/30 12:46:11 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -31,7 +31,6 @@ HEADERS += StdException.h \
            ConverterASTNode.h \
            SBMLImporter.h \
            SBMLIncompatibility.h \
-           SBMLExporter.h \
            SBMLReference.h \
            SBMLUtils.h \
            UnitConversionFactory.hpp \
@@ -44,7 +43,6 @@ SOURCES += StdException.cpp \
            ConverterASTNode.cpp \
            SBMLImporter.cpp \
            SBMLIncompatibility.cpp \
-           SBMLExporter.cpp \
            SBMLReference.cpp \
            SBMLUtils.cpp \
            UnitConversionFactory.cpp 
