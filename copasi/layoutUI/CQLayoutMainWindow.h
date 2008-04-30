@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.h,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.31 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/04/28 12:05:00 $
+//   $Date: 2008/04/30 08:10:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -106,8 +106,8 @@ class CQLayoutMainWindow : public QMainWindow
     void showStep(double i);
     void startAnimation();
     void stopAnimation();
-    void markAllCheckboxesInTable();
-    void unmarkAllCheckboxesInTable();
+    void checkAllCheckboxesInTable();
+    void uncheckAllCheckboxesInTable();
 
   public slots:
     void changeStepValue(C_INT32 i);
