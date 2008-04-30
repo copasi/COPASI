@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.107.4.10 $
+//   $Revision: 1.107.4.10.2.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/05 16:38:31 $
+//   $Author: gauges $
+//   $Date: 2008/04/30 12:44:38 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,7 +34,6 @@
 #include "plot/COutputDefinitionVector.h"
 #include "report/CKeyFactory.h"
 #include "report/CReportDefinitionVector.h"
-#include "sbml/SBMLExporter.h"
 #include "sbml/CSBMLExporter.h"
 #include "sbml/SBMLImporter.h"
 #include "sbml/SBMLIncompatibility.h"
@@ -721,6 +720,7 @@ bool CCopasiDataModel::exportSBML(const std::string & fileName, bool overwriteFi
   return true;
 }
 
+/*
 bool CCopasiDataModel::oldExportSBML(const std::string & fileName, bool overwriteFile, int sbmlLevel, int sbmlVersion, bool exportIncomplete, CProcessReport* pExportHandler)
 {
   CCopasiMessage::clearDeque();
@@ -778,6 +778,7 @@ bool CCopasiDataModel::oldExportSBML(const std::string & fileName, bool overwrit
 
   return true;
 }
+ */
 
 bool CCopasiDataModel::exportMathModel(const std::string & fileName, CProcessReport* pProcessReport,
                                        const std::string & filter, bool overwriteFile)

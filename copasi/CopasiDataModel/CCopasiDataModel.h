@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.h,v $
-//   $Revision: 1.33.4.5 $
+//   $Revision: 1.33.4.5.2.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/04 17:10:41 $
+//   $Author: gauges $
+//   $Date: 2008/04/30 12:44:38 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -88,7 +88,7 @@ class CCopasiDataModel: public COutputHandler
     bool importSBMLFromString(const std::string & sbmlDocumentText, CProcessReport* pImportHandler = NULL);
     bool importSBML(const std::string & fileName, CProcessReport* pImportHandler = NULL);
     std::string exportSBMLToString(CProcessReport* pExportHandler = NULL, int sbmlLevel = 2, int sbmlVersion = 1);
-    bool oldExportSBML(const std::string & fileName, bool overwriteFile = false, int sbmlLevel = 2, int sbmlVersion = 1, bool exportIncomplete = false, CProcessReport* pExportHandler = NULL);
+    //bool oldExportSBML(const std::string & fileName, bool overwriteFile = false, int sbmlLevel = 2, int sbmlVersion = 1, bool exportIncomplete = false, CProcessReport* pExportHandler = NULL);
     bool exportSBML(const std::string & fileName, bool overwriteFile = false, int sbmlLevel = 2, int sbmlVersion = 1, bool exportIncomplete = false, CProcessReport* pExportHandler = NULL);
     bool exportMathModel(const std::string & fileName, CProcessReport* pProcessReport,
                          const std::string & filter, bool overwriteFile = false);
