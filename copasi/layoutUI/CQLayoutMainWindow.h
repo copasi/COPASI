@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.h,v $
-//   $Revision: 1.31 $
+//   $Revision: 1.32 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/04/30 08:10:30 $
+//   $Date: 2008/05/02 11:18:04 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -45,8 +45,8 @@
 //#include <qwt_slider.h>
 
 //#include "CQGLNetworkPainter.h"
-#include "ParaPanel.h"
-#include "CQCurrentValueTable.h"
+#include "layoutUI/ParaPanel.h"
+#include "layoutUI/CQCurrentValueTable.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "layoutUI/CVisParameters.h"
@@ -69,6 +69,7 @@ class CQLayoutMainWindow : public QMainWindow
     void setColorMode();
     void setValueOnSlider(C_INT32);
     void insertValueTable(CDataEntity dataSet);
+    void updateValueTable(CDataEntity dataSet);
 
     void setMinValue(C_INT32 minNdSize); // set minimum possible node size
     void setMaxValue(C_INT32 maxNdSize); // set maximum possible node size
@@ -85,6 +86,9 @@ class CQLayoutMainWindow : public QMainWindow
     void setStepsPerSecond(C_INT16 val);
     C_INT16 getScalingMode();
     C_INT16 getMappingMode();
+
+    void addItemInAnimation (std::string s);
+    void removeItemInAnimation (std::string s);
 
   protected:
     void closeEvent(QCloseEvent *event);
@@ -139,7 +143,7 @@ class CQLayoutMainWindow : public QMainWindow
 
     //CQParameterWindow *paraWin;
     ParaPanel *paraPanel;
-    CQCurrentValueTable * valTable;
+    CQCurrentValueTable *valTable;
     CQGLNetworkPainter *glPainter;
     QScrollView *scrollView;
     //QSlider *timeSlider;

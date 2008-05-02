@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.54 $
+//   $Revision: 1.55 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/04/28 12:05:00 $
+//   $Date: 2008/05/02 11:18:04 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -459,11 +459,25 @@ void CQLayoutMainWindow::insertValueTable(CDataEntity dataSet)
     {
       name = glPainter->getNameForNodeKey(key);
       val = dataSet.getOrigValueForSpecies(key); // would be (- DBL_MAX) if key not present
-      valTable->setRowInTable(i, name, val);
+      valTable->setRowInTable(i, key, name, val);
       //std::cout << i << "   "  << key << "  " << val << std::endl;
       i++;
     }
   //paraPanel->update();
+}
+
+void CQLayoutMainWindow::updateValueTable(CDataEntity dataSet)
+{
+  int i = 0;
+  std::string key, name;
+  C_FLOAT64 val;
+  while ((key = glPainter->getNodeNameEntry(i)) != "")
+    {
+      name = glPainter->getNameForNodeKey(key);
+      val = dataSet.getOrigValueForSpecies(key); // would be (- DBL_MAX) if key not present
+      valTable->updateRowInTable(i, val);
+      i++;
+    }
 }
 
 void CQLayoutMainWindow::checkAllCheckboxesInTable()
@@ -474,6 +488,18 @@ void CQLayoutMainWindow::checkAllCheckboxesInTable()
 void CQLayoutMainWindow::uncheckAllCheckboxesInTable()
 {
   valTable->setAllBoxesUnchecked();
+}
+
+// adds the item given by s to the list of items to animate (no change, if it is already present)
+void CQLayoutMainWindow::addItemInAnimation (std::string key)
+{
+  std::cout << "add " << key << std::endl;
+}
+
+// removes the item given by s from the list of items to animate (no change, if it is not present in the list)
+void CQLayoutMainWindow::removeItemInAnimation (std::string s)
+{
+  std::cout << "remove " << s << std::endl;
 }
 
 void CQLayoutMainWindow::showAnimation()
@@ -540,7 +566,7 @@ void CQLayoutMainWindow::showStep(double i)
   glPainter->showStep(static_cast<int>(i));
   glPainter->updateGL();
   paraPanel->setStepNumber(static_cast<int>(i));
-  valTable->setValues(glPainter->getDataSetAt(static_cast<int>(i)));
+  updateValueTable(*(glPainter->getDataSetAt(static_cast<int>(i))));
 }
 
 void CQLayoutMainWindow::changeStepValue(C_INT32 i)
