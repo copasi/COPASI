@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.155.4.3.2.1 $
+//   $Revision: 1.155.4.3.2.2 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/04/29 07:09:18 $
+//   $Author: shoops $
+//   $Date: 2008/05/04 14:20:27 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -577,6 +577,12 @@ class CModel : public CModelEntity
      * @return unsigned C_INT32 total steps;
      */
     unsigned C_INT32 getTotSteps() const;
+
+    /**
+     * Retreive the vector of particle fluxes from the model
+     * @return const CVector< C_FLOAT64 > & particleFlux
+     */
+    const CVector< C_FLOAT64 > & getParticleFlux() const;
 
     //********* Events **************************
 
