@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.107 $
+//   $Revision: 1.108 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/05/05 09:29:39 $
+//   $Date: 2008/05/05 20:16:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1097,12 +1097,12 @@ void CQGLNetworkPainter::setItemAnimated(std::string key, bool animatedP)
     {
       setOfDisabledMetabolites.insert(key);
       C_FLOAT64 midValue = (pParentLayoutWindow->getMinNodeSize() + pParentLayoutWindow->getMaxNodeSize()) / 2.0; // node size used here is set to mid between min and max node size (for reactants that are not animated)
-      setNodeSize(key, midValue);
+      setConstantNodeSize(key, midValue);
     }
   else
     {
       setOfDisabledMetabolites.erase(key);
-      //recomputeNodeSize(key,ZZZZZZ);
+      rescaleNode(key, pParentLayoutWindow->getMinNodeSize(), pParentLayoutWindow->getMaxNodeSize(), pParentLayoutWindow->getScalingMode());
     }
   this->drawGraph();
   this->updateGL();
@@ -1186,7 +1186,6 @@ void CQGLNetworkPainter::rescaleNode(std::string key, C_FLOAT64 newMin, C_FLOAT6
       if (iter != dataSets.end())
         {
           dataSet = (*iter).second;
-          unsigned int i;
           // get old value
           val = dataSet.getValueForSpecies(key);
           C_FLOAT64 a = 0.0, b = 1.0;
@@ -1225,12 +1224,32 @@ void CQGLNetworkPainter::rescaleNode(std::string key, C_FLOAT64 newMin, C_FLOAT6
     }
 }
 
+void CQGLNetworkPainter::setConstantNodeSize(std::string key, C_FLOAT64 val)
+{
+  CDataEntity dataSet;
+  unsigned int s; // step number
+  setOfConstantMetabolites.clear();
+  //std::cout << *pSummaryInfo << std::endl;
+  for (s = 0; s < dataSets.size(); s++) // for all steps
+    {
+      std::map<C_INT32, CDataEntity>::iterator iter = dataSets.find(s);
+      if (iter != dataSets.end())
+        {
+          dataSet = (*iter).second;
+          // get old value
+          dataSet.putValueForSpecies(key, val);
+        }
+      dataSets.erase(s);
+      dataSets.insert (std::pair<C_INT32, CDataEntity>
+                       (s, dataSet));
+    }
+}
+
 // INFO: to rescale an inteval [a..b] to another interval [x..y] the following formula is used: (val_old in [a..b]
 // val_new = x + ((val_old - a) * (y - x) / (b - a))
 
 void CQGLNetworkPainter::rescaleDataSets(C_INT16 scaleMode)
 {
-  std::cout << "rescale " << std::endl;
   CDataEntity dataSet;
   unsigned int s; // step number
   C_FLOAT64 val, val_new;
@@ -1507,6 +1526,7 @@ void CQGLNetworkPainter::triggerAnimationStep()
   bool animationRunning = true;
   if (pParentLayoutWindow != NULL)
     {
+      //check whether animation is running
       animationRunning = pParentLayoutWindow->getAnimationRunning();
       //numberOfSteps = pParentLayoutWindow->getNumberOfSteps();
     }

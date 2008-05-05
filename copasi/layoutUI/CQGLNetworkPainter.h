@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.61 $
+//   $Revision: 1.62 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/05/05 09:29:39 $
+//   $Date: 2008/05/05 20:16:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -102,6 +102,7 @@ class CQGLNetworkPainter : public QGLWidget
     void rescaleDataSets(C_INT16 scaleMode);
     void rescaleDataSetsWithNewMinMax(C_FLOAT64 oldMin, C_FLOAT64 oldMax, C_FLOAT64 newMin, C_FLOAT64 newMax, C_INT16 scaleMode);
     void rescaleNode(std::string key, C_FLOAT64 newMin, C_FLOAT64 newMax, C_INT16 scaleMode);
+    void setConstantNodeSize(std::string key, C_FLOAT64 val);
 
     void zoomGraph(C_FLOAT64 zoomFactor);
     QImage getImage();
