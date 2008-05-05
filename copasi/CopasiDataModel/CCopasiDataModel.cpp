@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.108 $
+//   $Revision: 1.109 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/11 23:31:51 $
+//   $Author: gauges $
+//   $Date: 2008/05/05 08:20:50 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -716,64 +716,6 @@ bool CCopasiDataModel::exportSBML(const std::string & fileName, bool overwriteFi
     pdelete(mpCurrentSBMLDocument);
 
   mpCurrentSBMLDocument = new SBMLDocument(*exporter.getSBMLDocument());
-  mSBMLFileName = FileName;
-
-  return true;
-}
-
-bool CCopasiDataModel::oldExportSBML(const std::string & fileName, bool overwriteFile, int sbmlLevel, int sbmlVersion, bool exportIncomplete, CProcessReport* pExportHandler)
-{
-  CCopasiMessage::clearDeque();
-
-  if (fileName == "") return false;
-
-  std::string PWD;
-  COptions::getValue("PWD", PWD);
-
-  std::string FileName = fileName;
-
-  if (CDirEntry::isRelativePath(FileName) &&
-      !CDirEntry::makePathAbsolute(FileName, PWD))
-    FileName = CDirEntry::fileName(FileName);
-
-  if (CDirEntry::exist(FileName))
-    {
-      if (!overwriteFile)
-        {
-          CCopasiMessage(CCopasiMessage::ERROR,
-                         MCDirEntry + 1,
-                         FileName.c_str());
-          return false;
-        }
-
-      if (!CDirEntry::isWritable(FileName))
-        {
-          CCopasiMessage(CCopasiMessage::ERROR,
-                         MCDirEntry + 2,
-                         FileName.c_str());
-          return false;
-        }
-    }
-
-  try
-    {
-      if (!mpModel->compileIfNecessary(pExportHandler))
-        return false;
-    }
-
-  catch (...)
-    {
-      return false;
-    }
-
-  SBMLExporter exporter;
-  exporter.setExportHandler(pExportHandler);
-  if (!exporter.exportSBML(this, FileName.c_str(), overwriteFile, sbmlLevel, sbmlVersion, exportIncomplete)) return false;
-
-  if (mpCurrentSBMLDocument != exporter.getSBMLDocument())
-    pdelete(mpCurrentSBMLDocument);
-
-  mpCurrentSBMLDocument = exporter.getSBMLDocument();
   mSBMLFileName = FileName;
 
   return true;
