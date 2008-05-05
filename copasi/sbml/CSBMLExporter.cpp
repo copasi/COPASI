@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.8.4.21.2.3 $
+//   $Revision: 1.8.4.21.2.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/04/30 12:46:11 $
+//   $Date: 2008/05/05 10:27:49 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -478,6 +478,8 @@ void CSBMLExporter::createMetabolite(CMetab& metab)
     }
   else if (status == CModelEntity::REACTIONS)
     {
+      pSBMLSpecies->setConstant(false);
+      pSBMLSpecies->setBoundaryCondition(false);
       if (metab.getInitialExpression() != "")
         {
           this->mInitialAssignmentVector.push_back(&metab);
