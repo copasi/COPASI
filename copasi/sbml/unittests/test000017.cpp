@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000017.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/11 23:38:21 $
+//   $Author: gauges $
+//   $Date: 2008/05/05 07:33:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -67,12 +67,16 @@ void test000017::test_references_to_species()
   std::string idSpeciesA = pSpecies->getId();
   CPPUNIT_ASSERT(pSpecies->getHasOnlySubstanceUnits() == true);
   CPPUNIT_ASSERT(pModel->getNumRules() == 2);
-  // there are two rules, the first is the one for the compartment
+  // there are two rules, one is for the compartment
   AssignmentRule* pRule = dynamic_cast<AssignmentRule*>(pModel->getRule(1));
   CPPUNIT_ASSERT(pRule != NULL);
   CPPUNIT_ASSERT(pModel->getNumParameters() == 1);
   Parameter* pParameter = pModel->getParameter(0);
   CPPUNIT_ASSERT(pParameter != NULL);
+  if (pRule->getVariable() != pParameter->getId())
+    {
+      pRule = dynamic_cast<AssignmentRule*>(pModel->getRule(1));
+    }
   CPPUNIT_ASSERT(pRule->getVariable() == pParameter->getId());
   const ASTNode* pMath = pRule->getMath();
   CPPUNIT_ASSERT(pMath != NULL);

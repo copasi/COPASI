@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.h,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/03/18 16:56:59 $
+//   $Date: 2008/05/05 07:33:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -190,7 +190,7 @@ class CSBMLExporter
     /**
      * Create the SBML function definition from the given COPASI function.
      */
-    void createFunctionDefinition(CFunction& function, const CCopasiDataModel& dataModel);
+    void createFunctionDefinition(CFunction& function, CCopasiDataModel& dataModel);
 
     /**
      * Create a unique id for an SBML object.
@@ -504,6 +504,19 @@ class CSBMLExporter
      * meta ids used in the model.
      */
     void collectIds(Model* pModel, std::map<std::string, const SBase*>& ids, std::map<std::string, const SBase*>& metaIds);
+
+    /**
+      * This converts an CEvaluationNode based tree to an ASTNode tree.
+      * It makes sure that all functions used in function calls already have a
+      * unique SBML id.
+      */
+    ASTNode* convertToASTNode(const CEvaluationNode* pOrig, CCopasiDataModel& dataModel);
+
+    /**
+     * This method traverse a CEvaluationTree and set the SBML id on all
+     * functions that are used in function calls in the tree.
+     */
+    void setFunctionSBMLIds(const CEvaluationNode* pNode, CCopasiDataModel& dataModel);
   };
 
 #endif // CSBLExporter_H__

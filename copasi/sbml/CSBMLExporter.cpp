@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/03/20 09:57:03 $
+//   $Date: 2008/05/05 07:33:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -286,12 +286,6 @@ void CSBMLExporter::createCompartment(CCompartment& compartment)
         {
           pSBMLCompartment = this->mpSBMLDocument->getModel()->createCompartment();
           this->mCOPASI2SBMLMap[&compartment] = pSBMLCompartment;
-          if (sbmlId == "")
-            {
-              sbmlId = CSBMLExporter::createUniqueId(this->mIdMap, "comparment");
-              compartment.setSBMLId(sbmlId);
-              this->mIdMap.insert(std::make_pair(sbmlId, pSBMLCompartment));
-            }
           pSBMLCompartment->setId(sbmlId);
         }
     }
@@ -301,9 +295,9 @@ void CSBMLExporter::createCompartment(CCompartment& compartment)
       this->mCOPASI2SBMLMap[&compartment] = pSBMLCompartment;
       sbmlId = CSBMLExporter::createUniqueId(this->mIdMap, "compartment_");
       compartment.setSBMLId(sbmlId);
-      this->mIdMap.insert(std::make_pair(sbmlId, pSBMLCompartment));
       pSBMLCompartment->setId(sbmlId);
     }
+  this->mIdMap.insert(std::make_pair(sbmlId, pSBMLCompartment));
   this->mHandledSBMLObjects.insert(pSBMLCompartment);
   pSBMLCompartment->setName(compartment.getObjectName().c_str());
   double value = compartment.getInitialValue();
@@ -397,7 +391,6 @@ void CSBMLExporter::createMetabolite(CMetab& metab)
           this->mCOPASI2SBMLMap[&metab] = pSBMLSpecies;
           pSBMLSpecies->setId(sbmlId);
         }
-      this->mIdMap.insert(std::make_pair(sbmlId, pSBMLSpecies));
     }
   else
     {
@@ -405,9 +398,9 @@ void CSBMLExporter::createMetabolite(CMetab& metab)
       this->mCOPASI2SBMLMap[&metab] = pSBMLSpecies;
       sbmlId = CSBMLExporter::createUniqueId(this->mIdMap, "species_");
       metab.setSBMLId(sbmlId);
-      this->mIdMap.insert(std::make_pair(sbmlId, pSBMLSpecies));
       pSBMLSpecies->setId(sbmlId);
     }
+  this->mIdMap.insert(std::make_pair(sbmlId, pSBMLSpecies));
   this->mHandledSBMLObjects.insert(pSBMLSpecies);
   pSBMLSpecies->setName(metab.getObjectName().c_str());
 
@@ -524,12 +517,6 @@ void CSBMLExporter::createParameter(CModelValue& modelValue)
         {
           pParameter = this->mpSBMLDocument->getModel()->createParameter();
           this->mCOPASI2SBMLMap[&modelValue] = pParameter;
-          if (sbmlId == "")
-            {
-              sbmlId = CSBMLExporter::createUniqueId(this->mIdMap, "parameter_");
-              modelValue.setSBMLId(sbmlId);
-              this->mIdMap.insert(std::make_pair(sbmlId, pParameter));
-            }
           pParameter->setId(sbmlId);
         }
     }
@@ -539,9 +526,9 @@ void CSBMLExporter::createParameter(CModelValue& modelValue)
       this->mCOPASI2SBMLMap[&modelValue] = pParameter;
       sbmlId = CSBMLExporter::createUniqueId(this->mIdMap, "parameter_");
       modelValue.setSBMLId(sbmlId);
-      this->mIdMap.insert(std::make_pair(sbmlId, pParameter));
       pParameter->setId(sbmlId);
     }
+  this->mIdMap.insert(std::make_pair(sbmlId, pParameter));
   this->mHandledSBMLObjects.insert(pParameter);
   pParameter->setName(modelValue.getObjectName());
   double value = modelValue.getInitialValue();
@@ -621,26 +608,27 @@ void CSBMLExporter::createReaction(CReaction& reaction, CCopasiDataModel& dataMo
   // if the reaction has nothing set but the name, we don't do anything
   if (reaction.getChemEq().getSubstrates().size() == 0 &&
       reaction.getChemEq().getProducts().size() == 0) return;
-  std::map<const CCopasiObject*, SBase*>::iterator pos = this->mCOPASI2SBMLMap.find(&reaction);
-  if (pos != this->mCOPASI2SBMLMap.end())
+  std::string sbmlId = reaction.getSBMLId();
+  if (!sbmlId.empty())
     {
-      pSBMLReaction = dynamic_cast<Reaction*>(pos->second);
-      assert(pSBMLReaction);
+      pSBMLReaction = this->mpSBMLDocument->getModel()->getReaction(sbmlId);
+      if (pSBMLReaction == NULL)
+        {
+          /* create a new reaction object */
+          pSBMLReaction = this->mpSBMLDocument->getModel()->createReaction();
+          mCOPASI2SBMLMap[&reaction] = pSBMLReaction;
+          pSBMLReaction->setId(sbmlId);
+        }
     }
   else
     {
-      /* create a new reaction object */
       pSBMLReaction = this->mpSBMLDocument->getModel()->createReaction();
-      mCOPASI2SBMLMap[&reaction] = pSBMLReaction;
-      std::string id = reaction.getSBMLId();
-      if (id == "")
-        {
-          id = CSBMLExporter::createUniqueId(this->mIdMap, "reaction_");
-          reaction.setSBMLId(id);
-          this->mIdMap.insert(std::make_pair(id, pSBMLReaction));
-        }
-      pSBMLReaction->setId(id);
+      this->mCOPASI2SBMLMap[&reaction] = pSBMLReaction;
+      sbmlId = CSBMLExporter::createUniqueId(this->mIdMap, "reaction_");
+      reaction.setSBMLId(sbmlId);
+      pSBMLReaction->setId(sbmlId);
     }
+  this->mIdMap.insert(std::make_pair(sbmlId, pSBMLReaction));
   this->mHandledSBMLObjects.insert(pSBMLReaction);
   pSBMLReaction->setName(reaction.getObjectName().c_str());
   pSBMLReaction->setReversible(reaction.isReversible());
@@ -815,7 +803,7 @@ void CSBMLExporter::createInitialAssignment(const CModelEntity& modelEntity, CCo
       // contains variable volumes or if the quantity units are set to CModel::number
       pOrigNode = this->replaceSpeciesReferences(pOrigNode, dataModel);
       assert(pOrigNode != NULL);
-      ASTNode* pNode = pOrigNode->toAST();
+      ASTNode* pNode = this->convertToASTNode(pOrigNode, dataModel);
       delete pOrigNode;
       if (pNode != NULL)
         {
@@ -1008,7 +996,7 @@ void CSBMLExporter::createRule(const CModelEntity& modelEntity, CCopasiDataModel
       // contains variable volumes or if the quantity units are set to CModel::number
       pOrigNode = this->replaceSpeciesReferences(pOrigNode, dataModel);
       assert(pOrigNode != NULL);
-      ASTNode* pNode = pOrigNode->toAST();
+      ASTNode* pNode = this->convertToASTNode(pOrigNode, dataModel);
       delete pOrigNode;
       if (pNode != NULL)
         {
@@ -1692,7 +1680,7 @@ void CSBMLExporter::createFunctionDefinitions(CCopasiDataModel& dataModel)
 /**
  * Create the SBML function definition from the given COPASI function.
  */
-void CSBMLExporter::createFunctionDefinition(CFunction& function, const CCopasiDataModel& dataModel)
+void CSBMLExporter::createFunctionDefinition(CFunction& function, CCopasiDataModel& dataModel)
 {
   // check the expression
   std::map<const CCopasiObject*, SBase*>::iterator pos = this->mCOPASI2SBMLMap.find(&function);
@@ -1716,14 +1704,13 @@ void CSBMLExporter::createFunctionDefinition(CFunction& function, const CCopasiD
                 {
                   id = CSBMLExporter::createUniqueId(this->mIdMap, id + "_");
                 }
-              this->mIdMap.insert(std::make_pair(id, pFunDef));
             }
           else
             {
               id = CSBMLExporter::createUniqueId(this->mIdMap, "function_");
-              this->mIdMap.insert(std::make_pair(id, pFunDef));
             }
         }
+      this->mIdMap.insert(std::make_pair(id, pFunDef));
       pFunDef->setId(id);
       function.setSBMLId(id);
       this->mCOPASI2SBMLMap[&function] = pFunDef;
@@ -1741,7 +1728,7 @@ void CSBMLExporter::createFunctionDefinition(CFunction& function, const CCopasiD
       CSBMLExporter::isExpressionSBMLCompatible(function, dataModel, this->mSBMLLevel, this->mSBMLVersion, result, function.getObjectName(), "function");
       if (result.empty())
         {
-          ASTNode* pFunNode = function.getRoot()->toAST();
+          ASTNode* pFunNode = this->convertToASTNode(function.getRoot(), dataModel);
           // go through the AST tree and replace all function call nodes with with a call to the sbml id
           ASTNode* pLambda = new ASTNode(AST_LAMBDA);
           // add the parameters to the function definition
@@ -1810,6 +1797,7 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
     {
       std::string id = CSBMLExporter::createUniqueId(this->mIdMap, "Model_");
       this->mpSBMLDocument->createModel(id);
+      this->mIdMap.insert(std::make_pair(id, this->mpSBMLDocument->getModel()));
     }
   else
     {
@@ -2168,7 +2156,7 @@ void CSBMLExporter::updateCOPASI2SBMLMap(const CCopasiDataModel& dataModel)
 
 KineticLaw* CSBMLExporter::createKineticLaw(CReaction& reaction, CCopasiDataModel& dataModel)
 {
-  KineticLaw * pKLaw = NULL;
+  KineticLaw* pKLaw = NULL;
   if (!pKLaw)
     {
       /* create a new KineticLaw */
@@ -2185,7 +2173,7 @@ KineticLaw* CSBMLExporter::createKineticLaw(CReaction& reaction, CCopasiDataMode
           // otherwise the parameter already has been created
           if (reaction.isLocalParameter(i))
             {
-              Parameter * pSBMLPara = pKLaw->createParameter();
+              Parameter* pSBMLPara = pKLaw->createParameter();
 
               pSBMLPara->setId(pPara->getObjectName().c_str());
               double value = reaction.getParameterValue(pPara->getObjectName());
@@ -2217,7 +2205,7 @@ KineticLaw* CSBMLExporter::createKineticLaw(CReaction& reaction, CCopasiDataMode
       CEvaluationNode* pOrigNode = this->replaceSpeciesReferences(pExpression, dataModel);
       delete pExpression;
       assert(pOrigNode != NULL);
-      ASTNode* pNode = pOrigNode->toAST();
+      ASTNode* pNode = this->convertToASTNode(pOrigNode, dataModel);
       delete pOrigNode;
       assert(pNode != NULL);
       if (reaction.getCompartmentNumber() == 1)
@@ -2334,13 +2322,12 @@ CEvaluationNode* CSBMLExporter::createKineticExpression(CFunction* pFun, const s
                 {
                   id = CSBMLExporter::createUniqueId(this->mIdMap, id + "_");
                 }
-              this->mIdMap.insert(std::make_pair(id, (const SBase*)NULL));
             }
           else
             {
               id = CSBMLExporter::createUniqueId(this->mIdMap, "function_");
-              this->mIdMap.insert(std::make_pair(id, (const SBase*)NULL));
             }
+          this->mIdMap.insert(std::make_pair(id, (const SBase*)NULL));
           pFun->setSBMLId(id);
         }
       CEvaluationNodeCall* pFunctionCall = new CEvaluationNodeCall(CEvaluationNodeCall::FUNCTION, pFun->getObjectName());
@@ -3007,7 +2994,7 @@ ASTNode* CSBMLExporter::convertASTTreeToLevel1(const ASTNode* pNode, const Model
   return pExpanded;
 }
 
-void CSBMLExporter::checkForPiecewiseFunctions(const CCopasiDataModel & dataModel, std::vector<SBMLIncompatibility>& result)
+void CSBMLExporter::checkForPiecewiseFunctions(const CCopasiDataModel& dataModel, std::vector<SBMLIncompatibility>& result)
 {
   std::set<std::string> usedFunctionNames;
   const CModel* pModel = dataModel.getModel();
@@ -3821,34 +3808,34 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                 {
                   CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                 }
-              // all FunctionDefinitions
-              unsigned int i, iMax = pModel->getListOfFunctionDefinitions()->size();
-              for (i = 0;i < iMax;++i)
+            }
+          // all FunctionDefinitions
+          unsigned int i, iMax = pModel->getListOfFunctionDefinitions()->size();
+          for (i = 0;i < iMax;++i)
+            {
+              pSBase = pModel->getListOfFunctionDefinitions()->get(i);
+              if (pSBase->isSetId())
                 {
-                  pSBase = pModel->getListOfFunctionDefinitions()->get(i);
-                  if (pSBase->isSetId())
+                  id = pSBase->getId();
+                  if (ids.find(id) == ids.end())
                     {
-                      id = pSBase->getId();
-                      if (ids.find(id) == ids.end())
-                        {
-                          ids.insert(std::make_pair(id, pSBase));
-                        }
-                      else
-                        {
-                          CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
-                        }
+                      ids.insert(std::make_pair(id, pSBase));
                     }
-                  if (pSBase->isSetMetaId())
+                  else
                     {
-                      id = pSBase->getMetaId();
-                      if (metaIds.find(id) == metaIds.end())
-                        {
-                          metaIds.insert(std::make_pair(id, pSBase));
-                        }
-                      else
-                        {
-                          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
-                        }
+                      CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
+                    }
+                }
+              if (pSBase->isSetMetaId())
+                {
+                  id = pSBase->getMetaId();
+                  if (metaIds.find(id) == metaIds.end())
+                    {
+                      metaIds.insert(std::make_pair(id, pSBase));
+                    }
+                  else
+                    {
+                      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                     }
                 }
             }
@@ -3868,59 +3855,59 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                 {
                   CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                 }
-              // all UnitDefinitions
-              // for each UnitDefinition: ListOfUnits, each Unit in ListOfUnits
-              unsigned int i, iMax = pModel->getListOfUnitDefinitions()->size();
-              for (i = 0;i < iMax;++i)
+            }
+          // all UnitDefinitions
+          // for each UnitDefinition: ListOfUnits, each Unit in ListOfUnits
+          unsigned int i, iMax = pModel->getListOfUnitDefinitions()->size();
+          for (i = 0;i < iMax;++i)
+            {
+              /* UnitDefinitions have their ids in a different namespace
+                 so we only consider meta ids.
+                 */
+              UnitDefinition* pUDef = pModel->getUnitDefinition(i);
+              assert(pUDef != NULL);
+              if (pUDef->isSetMetaId())
                 {
-                  /* UnitDefinitions have their ids in a different namespace
-                     so we only consider meta ids.
-                     */
-                  UnitDefinition* pUDef = pModel->getUnitDefinition(i);
-                  assert(pUDef != NULL);
-                  if (pUDef->isSetMetaId())
+                  id = pUDef->getMetaId();
+                  if (metaIds.find(id) == metaIds.end())
                     {
-                      id = pUDef->getMetaId();
+                      metaIds.insert(std::make_pair(id, pUDef));
+                    }
+                  else
+                    {
+                      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
+                    }
+                }
+              ListOf* pList = pUDef->getListOfUnits();
+              if (pList != NULL)
+                {
+                  if (pList->isSetMetaId())
+                    {
+                      id = pList->getMetaId();
                       if (metaIds.find(id) == metaIds.end())
                         {
-                          metaIds.insert(std::make_pair(id, pUDef));
+                          metaIds.insert(std::make_pair(id, pList));
                         }
                       else
                         {
                           CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                         }
                     }
-                  ListOf* pList = pUDef->getListOfUnits();
-                  if (pList != NULL)
+                  unsigned j, jMax = pList->size();
+                  for (j = 0;j < jMax;++j)
                     {
-                      if (pList->isSetMetaId())
+                      pSBase = pList->get(j);
+                      assert(pSBase != NULL);
+                      if (pSBase->isSetMetaId())
                         {
-                          id = pList->getMetaId();
+                          id = pSBase->getMetaId();
                           if (metaIds.find(id) == metaIds.end())
                             {
-                              metaIds.insert(std::make_pair(id, pList));
+                              metaIds.insert(std::make_pair(id, pSBase));
                             }
                           else
                             {
                               CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
-                            }
-                        }
-                      unsigned j, jMax = pList->size();
-                      for (j = 0;j < jMax;++j)
-                        {
-                          pSBase = pList->get(j);
-                          assert(pSBase != NULL);
-                          if (pSBase->isSetMetaId())
-                            {
-                              id = pSBase->getMetaId();
-                              if (metaIds.find(id) == metaIds.end())
-                                {
-                                  metaIds.insert(std::make_pair(id, pSBase));
-                                }
-                              else
-                                {
-                                  CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
-                                }
                             }
                         }
                     }
@@ -4605,24 +4592,24 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                             {
                               CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                             }
-                          unsigned int j, jMax = pKLaw->getListOfParameters()->size();
-                          for (j = 0;j < jMax;++j)
+                        }
+                      unsigned int j, jMax = pKLaw->getListOfParameters()->size();
+                      for (j = 0;j < jMax;++j)
+                        {
+                          pSBase = pKLaw->getParameter(j);
+                          assert(pSBase != NULL);
+                          // local parameters have their ids in a
+                          // differerent namespace
+                          if (pSBase->isSetMetaId())
                             {
-                              pSBase = pKLaw->getParameter(j);
-                              assert(pSBase != NULL);
-                              // local parameters have their ids in a
-                              // differerent namespace
-                              if (pSBase->isSetMetaId())
+                              id = pSBase->getMetaId();
+                              if (metaIds.find(id) == metaIds.end())
                                 {
-                                  id = pSBase->getMetaId();
-                                  if (metaIds.find(id) == metaIds.end())
-                                    {
-                                      metaIds.insert(std::make_pair(id, pSBase));
-                                    }
-                                  else
-                                    {
-                                      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
-                                    }
+                                  metaIds.insert(std::make_pair(id, pSBase));
+                                }
+                              else
+                                {
+                                  CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                                 }
                             }
                         }
@@ -4759,5 +4746,49 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                 }
             }
         }
+    }
+}
+
+ASTNode* CSBMLExporter::convertToASTNode(const CEvaluationNode* pOrig, CCopasiDataModel& dataModel)
+{
+  // first go through the tree and check that all function calls are to
+  // functions that have an SBML id
+  // if they don't, we have to set one
+  this->setFunctionSBMLIds(pOrig, dataModel);
+  ASTNode* pResult = pOrig->toAST();
+  return pResult;
+}
+
+void CSBMLExporter::setFunctionSBMLIds(const CEvaluationNode* pNode, CCopasiDataModel& dataModel)
+{
+  if (CEvaluationNode::type(pNode->getType()) == CEvaluationNode::CALL && (CEvaluationNodeCall::SubType)CEvaluationNode::subType(pNode->getType()) != CEvaluationNodeCall::DELAY)
+    {
+      std::string funName = dynamic_cast<const CEvaluationNodeCall*>(pNode)->getData();
+      CEvaluationTree* pFun = dataModel.getFunctionList()->findFunction(funName);
+      assert(pFun != NULL);
+      if (pFun == NULL) fatalError();
+
+      if (pFun->getSBMLId() == "")
+        {
+          if (CSBMLExporter::isValidSId(funName))
+            {
+              if (this->mIdMap.find(funName) != this->mIdMap.end())
+                {
+                  funName = CSBMLExporter::createUniqueId(this->mIdMap, funName);
+                }
+            }
+          else
+            {
+              funName = CSBMLExporter::createUniqueId(this->mIdMap, "function_");
+            }
+          this->mIdMap.insert(std::make_pair(funName, (const SBase*)NULL));
+          pFun->setSBMLId(funName);
+        }
+    }
+  const CEvaluationNode* pChild = dynamic_cast<const CEvaluationNode*>(pNode->getChild());
+  while (pChild != NULL)
+    {
+      this->setFunctionSBMLIds(pChild, dataModel);
+      pChild = dynamic_cast<const CEvaluationNode*>(pChild->getSibling());
     }
 }
