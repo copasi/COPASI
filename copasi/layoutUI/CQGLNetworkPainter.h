@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.60 $
+//   $Revision: 1.61 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/04/24 12:22:30 $
+//   $Date: 2008/05/05 09:29:39 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -101,9 +101,12 @@ class CQGLNetworkPainter : public QGLWidget
 
     void rescaleDataSets(C_INT16 scaleMode);
     void rescaleDataSetsWithNewMinMax(C_FLOAT64 oldMin, C_FLOAT64 oldMax, C_FLOAT64 newMin, C_FLOAT64 newMax, C_INT16 scaleMode);
+    void rescaleNode(std::string key, C_FLOAT64 newMin, C_FLOAT64 newMax, C_INT16 scaleMode);
 
     void zoomGraph(C_FLOAT64 zoomFactor);
     QImage getImage();
+
+    void setItemAnimated(std::string key, bool animatedP);
 
   private slots:
     void zoomIn();
@@ -150,6 +153,10 @@ class CQGLNetworkPainter : public QGLWidget
     //std::map<std::string, float> nodeSizeMap; // maps mKey of viewer node to size of this node in circular view
 
     std::set<std::string>setOfConstantMetabolites;
+    std::set<std::string>setOfDisabledMetabolites;
+
+    void addMetaboliteForAnimation(std::string key);
+    void removeMetaboliteForAnimation(std::string key);
 
     //CGraphNode* findNodeWithKey(std::string nodeKey);
     //void storeCurveInCorrespondingNode(std::string nodeKey, int indx);

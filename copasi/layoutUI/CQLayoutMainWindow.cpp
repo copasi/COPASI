@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.55 $
+//   $Revision: 1.56 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/05/02 11:18:04 $
+//   $Date: 2008/05/05 09:29:39 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -493,13 +493,15 @@ void CQLayoutMainWindow::uncheckAllCheckboxesInTable()
 // adds the item given by s to the list of items to animate (no change, if it is already present)
 void CQLayoutMainWindow::addItemInAnimation (std::string key)
 {
-  std::cout << "add " << key << std::endl;
+  //std::cout << "add " << key << std::endl;
+  glPainter->setItemAnimated(key, true);
 }
 
 // removes the item given by s from the list of items to animate (no change, if it is not present in the list)
-void CQLayoutMainWindow::removeItemInAnimation (std::string s)
+void CQLayoutMainWindow::removeItemInAnimation (std::string key)
 {
-  std::cout << "remove " << s << std::endl;
+  //std::cout << "remove " << key << std::endl;
+  glPainter->setItemAnimated(key, false);
 }
 
 void CQLayoutMainWindow::showAnimation()

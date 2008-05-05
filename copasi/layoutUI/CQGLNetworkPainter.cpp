@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.106 $
+//   $Revision: 1.107 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/04/24 12:22:30 $
+//   $Date: 2008/05/05 09:29:39 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -526,10 +526,19 @@ void CQGLNetworkPainter::drawNode(CGraphNode &n) // draw node as filled circle
   if ((mappingMode == CVisParameters::SIZE_DIAMETER_MODE) ||
       (mappingMode == CVisParameters::SIZE_AREA_MODE))
     if (setOfConstantMetabolites.find(n.getOrigNodeKey()) == setOfConstantMetabolites.end())
-      glColor3f(1.0f, 0.0f, 0.0f); // red as default color for all nodes in non-color modes
-  // which have a substantial range of values (max - min > epsilon)
+      {
+        if (setOfDisabledMetabolites.find(n.getOrigNodeKey()) == setOfDisabledMetabolites.end())
+          // red as default color for all nodes in non-color modes
+          // which have a substantial range of values (max - min > epsilon)
+          // and which are not disabled
+          glColor3f(1.0f, 0.0f, 0.0f);
+        else
+          {
+            glColor3f(0.75f, 0.75f, 1.0f); // color for disabled nodes (not to be animated)
+          }
+      }
     else
-      glColor3f(0.7f, 0.7f, 0.7f); // reatants with a smaller range of values (e.g. constant)
+      glColor3f(0.7f, 0.7f, 0.7f); // reactants with a smaller range of values (e.g. constant)
   // are not scaled and marked in grey
   else
     {// color mapping
@@ -1082,6 +1091,23 @@ int CQGLNetworkPainter::round2powN(double d)
 //}
 //}
 
+void CQGLNetworkPainter::setItemAnimated(std::string key, bool animatedP)
+{
+  if (!animatedP)
+    {
+      setOfDisabledMetabolites.insert(key);
+      C_FLOAT64 midValue = (pParentLayoutWindow->getMinNodeSize() + pParentLayoutWindow->getMaxNodeSize()) / 2.0; // node size used here is set to mid between min and max node size (for reactants that are not animated)
+      setNodeSize(key, midValue);
+    }
+  else
+    {
+      setOfDisabledMetabolites.erase(key);
+      //recomputeNodeSize(key,ZZZZZZ);
+    }
+  this->drawGraph();
+  this->updateGL();
+}
+
 void CQGLNetworkPainter::rescaleDataSetsWithNewMinMax(C_FLOAT64 /* oldMin */, C_FLOAT64 /* oldMax */, C_FLOAT64 newMin, C_FLOAT64 newMax, C_INT16 scaleMode)
 {
   CDataEntity dataSet;
@@ -1143,6 +1169,59 @@ void CQGLNetworkPainter::rescaleDataSetsWithNewMinMax(C_FLOAT64 /* oldMin */, C_
           dataSets.insert (std::pair<C_INT32, CDataEntity>
                            (s, dataSet));
         }
+    }
+}
+
+void CQGLNetworkPainter::rescaleNode(std::string key, C_FLOAT64 newMin, C_FLOAT64 newMax, C_INT16 scaleMode)
+{
+  CDataEntity dataSet;
+  unsigned int s; // step number
+  C_FLOAT64 val, val_new;
+  setOfConstantMetabolites.clear();
+  //std::cout << *pSummaryInfo << std::endl;
+  for (s = 0; s < dataSets.size(); s++) // for all steps
+    {
+      //std:: cout << "rescale step: " << s << std::endl;
+      std::map<C_INT32, CDataEntity>::iterator iter = dataSets.find(s);
+      if (iter != dataSets.end())
+        {
+          dataSet = (*iter).second;
+          unsigned int i;
+          // get old value
+          val = dataSet.getValueForSpecies(key);
+          C_FLOAT64 a = 0.0, b = 1.0;
+          if (pParentLayoutWindow != NULL)
+            {
+              if (scaleMode == CVisParameters::INDIVIDUAL_SCALING)
+                {
+                  a = pSummaryInfo->getMinForSpecies(key);
+                  b = pSummaryInfo->getMaxForSpecies(key);
+                }
+              else // scaleMode == CVisParameters::GLOBAL_SCALING
+                {
+                  a = pSummaryInfo->getMinOverallConcentration();
+                  b = pSummaryInfo->getMaxOverallConcentration();
+                }
+            }
+          C_FLOAT64 val_orig;
+          if ((b - a) > CVisParameters::EPSILON)
+            {
+              val_orig = dataSet.getOrigValueForSpecies(key); // get original value
+              // now scale value
+              val_new = newMin + ((val_orig - a) / (b - a) * (newMax - newMin));
+            }
+          else
+            {// no scaling if differences are too small, just set mid value
+              val_new = (newMax + newMin) / 2.0;
+              if (s == 0) // only insert once into set
+                setOfConstantMetabolites.insert(key);
+              //std::cout << "constant value  for: " << viewerNodes[i] << std::endl;
+            }
+          dataSet.putValueForSpecies(key, val_new);
+        }
+      dataSets.erase(s);
+      dataSets.insert (std::pair<C_INT32, CDataEntity>
+                       (s, dataSet));
     }
 }
 
@@ -2115,7 +2194,7 @@ void CQGLNetworkPainter::printNodeInfoForKey(std::string key)
 {
   std::map<std::string, CGraphNode>::iterator itNodeObj = nodeMap.find(key);
   if (itNodeObj != nodeMap.end())
-    std::cout << (*itNodeObj).second;
+    std::cout << (*itNodeObj).second << std::endl;
 }
 
 std::string CQGLNetworkPainter::getNameForNodeKey(std::string key)
