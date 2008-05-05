@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000009.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/05/05 07:33:03 $
+//   $Date: 2008/05/05 11:04:00 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -68,7 +68,7 @@ void test000009::test_references_to_species()
   CPPUNIT_ASSERT(pSpecies->getHasOnlySubstanceUnits() == true);
   CPPUNIT_ASSERT(pModel->getNumRules() == 2);
   // there are two rules, one is the rule for the compartment
-  AssignmentRule* pRule = dynamic_cast<AssignmentRule*>(pModel->getRule(1));
+  AssignmentRule* pRule = dynamic_cast<AssignmentRule*>(pModel->getRule(0));
   CPPUNIT_ASSERT(pRule != NULL);
   CPPUNIT_ASSERT(pModel->getNumParameters() == 1);
   Parameter* pParameter = pModel->getParameter(0);
