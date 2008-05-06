@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/05/06 11:58:12 $
+//   $Date: 2008/05/06 15:19:20 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -191,6 +191,17 @@ class CNormalTranslation
     static CEvaluationNode* eliminate(const CEvaluationNode* pOrig);
 
     static const double ZERO;
+
+    /**
+     * This method eliminates directly nested fractions. ((a/b)/(c/d)) -> (a*d)/(b*c)
+     */
+    static CEvaluationNode* eliminateDirectlyNestedFractions(const CEvaluationNode* pOrig);
+
+    /**
+     * This method gets rid of fractions within a power construct.
+     * (a/b)^3 -> a^3 / b^3
+     */
+    static CEvaluationNode* eliminatePowersOfFractions(const CEvaluationNode* pOrig);
   };
 
 #endif // COPASI_CNormalTranslation_H__

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/05/06 11:58:12 $
+//   $Date: 2008/05/06 15:19:20 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -392,6 +392,13 @@ CEvaluationNode* CNormalTranslation::eliminate(const CEvaluationNode* pOrig)
       delete pResult;
       // now get rid of nested powers a^b^c
       pResult = CNormalTranslation::eliminateNestedPowers(pTmp);
+      delete pTmp;
+      // eliminate fractions within powers
+      // (a/b)^3 -> a^3 / b^3
+      // now get rid of directly nested fractions
+      pTmp = CNormalTranslation::eliminatePowersOfFractions(pResult);
+      delete pResult;
+      pResult = CNormalTranslation::eliminateDirectlyNestedFractions(pTmp);
       delete pTmp;
       // now cancel since cancelation can lead to new nodes for which
       // elementary elimination would be possible, we might have to run
@@ -2471,12 +2478,14 @@ CEvaluationNode* CNormalTranslation::cancel(const CEvaluationNode* pOrig)
           for (i = 0;i < iMax;++i)
             {
               CEvaluationNode* pChild = CNormalTranslation::cancel(multiplications[i]);
+              delete multiplications[i];
               multiplications[i] = pChild;
             }
           iMax = divisions.size();
           for (i = 0;i < iMax;++i)
             {
               CEvaluationNode* pChild = CNormalTranslation::cancel(divisions[i]);
+              delete divisions[i];
               divisions[i] = pChild;
             }
           // find identical nodes in multiplications and divisions
@@ -2625,4 +2634,129 @@ CEvaluationNode* CNormalTranslation::cancel(const CEvaluationNode* pOrig)
   return pResult;
 }
 
+/**
+ * This method eliminates directly nested fractions.
+ */
+CEvaluationNode* CNormalTranslation::eliminateDirectlyNestedFractions(const CEvaluationNode* pOrig)
+{
+  if (pOrig == NULL) return NULL;
+  CEvaluationNode* pResult = NULL;
+  if (CEvaluationNode::type(pOrig->getType()) == CEvaluationNode::OPERATOR && (CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pOrig->getType()) == CEvaluationNodeOperator::DIVIDE)
+    {
+      std::vector<CEvaluationNode*> children;
+      const CEvaluationNode* pChild = dynamic_cast<const CEvaluationNode*>(pOrig->getChild());
+      while (pChild != NULL)
+        {
+          children.push_back(CNormalTranslation::eliminateDirectlyNestedFractions(pChild));
+          pChild = dynamic_cast<const CEvaluationNode*>(pChild->getSibling());
+        }
+      // check if one of the children (or both) are a division
+      assert(children.size() == 2);
+      if (CEvaluationNode::type(children[0]->getType()) == CEvaluationNode::OPERATOR && (CEvaluationNodeOperator::SubType)CEvaluationNode::subType(children[0]->getType()) == CEvaluationNodeOperator::DIVIDE)
+        {
+          if (CEvaluationNode::type(children[1]->getType()) == CEvaluationNode::OPERATOR && (CEvaluationNodeOperator::SubType)CEvaluationNode::subType(children[1]->getType()) == CEvaluationNodeOperator::DIVIDE)
+            {
+              // both children are division
+              pResult = new CEvaluationNodeOperator(CEvaluationNodeOperator::DIVIDE, "/");
+              CEvaluationNode* pTmp = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
+              pTmp->addChild(dynamic_cast<const CEvaluationNode*>(children[0]->getChild())->copyBranch());
+              pTmp->addChild(dynamic_cast<const CEvaluationNode*>(children[1]->getChild()->getSibling())->copyBranch());
+              pResult->addChild(pTmp);
+              pTmp = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
+              pTmp->addChild(dynamic_cast<const CEvaluationNode*>(children[0]->getChild()->getSibling())->copyBranch());
+              pTmp->addChild(dynamic_cast<const CEvaluationNode*>(children[1]->getChild())->copyBranch());
+              pResult->addChild(pTmp);
+              delete children[0];
+              delete children[1];
+            }
+          else
+            {
+              // only the first child is a division
+              pResult = new CEvaluationNodeOperator(CEvaluationNodeOperator::DIVIDE, "/");
+              pResult->addChild(dynamic_cast<const CEvaluationNode*>(children[0]->getChild())->copyBranch());
+              CEvaluationNode* pTmp = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
+              pTmp->addChild(dynamic_cast<const CEvaluationNode*>(children[0]->getChild()->getSibling())->copyBranch());
+              pTmp->addChild(children[1]);
+              pResult->addChild(pTmp);
+              delete children[0];
+            }
+        }
+      else if (CEvaluationNode::type(children[1]->getType()) == CEvaluationNode::OPERATOR && (CEvaluationNodeOperator::SubType)CEvaluationNode::subType(children[1]->getType()) == CEvaluationNodeOperator::DIVIDE)
+        {
+          // only the second child is a division
+          pResult = new CEvaluationNodeOperator(CEvaluationNodeOperator::DIVIDE, "/");
+          CEvaluationNode* pTmp = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
+          pTmp->addChild(children[0]);
+          pTmp->addChild(dynamic_cast<const CEvaluationNode*>(children[1]->getChild()->getSibling())->copyBranch());
+          pResult->addChild(pTmp);
+          pResult->addChild(dynamic_cast<const CEvaluationNode*>(children[1]->getChild())->copyBranch());
+          delete children[1];
+        }
+      else
+        {
+          pResult = pOrig->copyNode(children);
+        }
+    }
+  else
+    {
+      std::vector<CEvaluationNode*> children;
+      const CEvaluationNode* pChild = dynamic_cast<const CEvaluationNode*>(pOrig->getChild());
+      while (pChild != NULL)
+        {
+          children.push_back(CNormalTranslation::eliminateDirectlyNestedFractions(pChild));
+          pChild = dynamic_cast<const CEvaluationNode*>(pChild->getSibling());
+        }
+      pResult = pOrig->copyNode(children);
+    }
+  return pResult;
+}
+
+CEvaluationNode* CNormalTranslation::eliminatePowersOfFractions(const CEvaluationNode* pOrig)
+{
+  if (pOrig == NULL) return NULL;
+  CEvaluationNode* pResult = NULL;
+  if (CEvaluationNode::type(pOrig->getType()) == CEvaluationNode::OPERATOR && (CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pOrig->getType()) == CEvaluationNodeOperator::POWER)
+    {
+      std::vector<CEvaluationNode*> children;
+      const CEvaluationNode* pChild = dynamic_cast<const CEvaluationNode*>(pOrig->getChild());
+      while (pChild != NULL)
+        {
+          children.push_back(CNormalTranslation::eliminatePowersOfFractions(pChild));
+          pChild = dynamic_cast<const CEvaluationNode*>(pChild->getSibling());
+        }
+      // check if the first child is a fraction
+      assert(children.size() == 2);
+      if (CEvaluationNode::type(children[0]->getType()) == CEvaluationNode::OPERATOR && (CEvaluationNodeOperator::SubType)CEvaluationNode::subType(children[0]->getType()) == CEvaluationNodeOperator::DIVIDE)
+        {
+          // the first child is a division
+          pResult = new CEvaluationNodeOperator(CEvaluationNodeOperator::DIVIDE, "/");
+
+          CEvaluationNode* pTmp = new CEvaluationNodeOperator(CEvaluationNodeOperator::POWER, "^");
+          pTmp->addChild(dynamic_cast<const CEvaluationNode*>(children[0]->getChild())->copyBranch());
+          pTmp->addChild(children[1]->copyBranch());
+          pResult->addChild(pTmp);
+          pTmp = new CEvaluationNodeOperator(CEvaluationNodeOperator::POWER, "^");
+          pTmp->addChild(dynamic_cast<const CEvaluationNode*>(children[0]->getChild()->getSibling())->copyBranch());
+          pTmp->addChild(children[1]);
+          pResult->addChild(pTmp);
+          delete children[0];
+        }
+      else
+        {
+          pResult = pOrig->copyNode(children);
+        }
+    }
+  else
+    {
+      std::vector<CEvaluationNode*> children;
+      const CEvaluationNode* pChild = dynamic_cast<const CEvaluationNode*>(pOrig->getChild());
+      while (pChild != NULL)
+        {
+          children.push_back(CNormalTranslation::eliminatePowersOfFractions(pChild));
+          pChild = dynamic_cast<const CEvaluationNode*>(pChild->getSibling());
+        }
+      pResult = pOrig->copyNode(children);
+    }
+  return pResult;
+}
 // TODO for comparing in infix, it should be brought into a normalform first
