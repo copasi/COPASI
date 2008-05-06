@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_normalform.hpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/04/23 15:03:22 $
+//   $Date: 2008/05/06 11:58:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -89,28 +89,28 @@ class test_normalform : public CppUnit::TestFixture
     CPPUNIT_TEST(test_simple_stepwise_numbers);
     CPPUNIT_TEST(test_simple_stepwise_fractions);
     CPPUNIT_TEST(test_simple_nested_stepwise_numbers);
-    //CPPUNIT_TEST(test_simple_nested_stepwise_fractions);
+    CPPUNIT_TEST(test_simple_nested_stepwise_fractions);
     CPPUNIT_TEST(test_nested_stepwise_numbers_2levels_1);
     CPPUNIT_TEST(test_nested_stepwise_numbers_2levels_2);
     CPPUNIT_TEST(test_nested_stepwise_numbers_2levels_3);
-    //CPPUNIT_TEST(test_nested_stepwise_fractions_3levels);
+    CPPUNIT_TEST(test_nested_stepwise_fractions_3levels);
     CPPUNIT_TEST(test_nested_fractions_itempowers_1level);
 
+    CPPUNIT_TEST(test_nested_fractions_itempower_generalpower_1level);
+    CPPUNIT_TEST(test_nested_fractions_itempower_generalpower_1level_2);
+    CPPUNIT_TEST(test_nested_fractions_generalpower_itempower_1level);
+    //CPPUNIT_TEST(test_nested_fractions_generalpowers_1level);
+
     /*
-        CPPUNIT_TEST(test_nested_fractions_itempower_generalpower_1level);
-        CPPUNIT_TEST(test_nested_fractions_itempower_generalpower_1level_2);
-        CPPUNIT_TEST(test_nested_fractions_generalpower_itempower_1level);
-        CPPUNIT_TEST(test_nested_fractions_generalpowers_1level);
+    CPPUNIT_TEST(test_nested_fractions_itempowers_2level);
+    CPPUNIT_TEST(test_nested_fractions_itempower_generalpower_2level);
+    CPPUNIT_TEST(test_nested_fractions_generalpower_itempower_2level);
+    CPPUNIT_TEST(test_nested_fractions_generalpowers_2level);
 
-        CPPUNIT_TEST(test_nested_fractions_itempowers_2level);
-        CPPUNIT_TEST(test_nested_fractions_itempower_generalpower_2level);
-        CPPUNIT_TEST(test_nested_fractions_generalpower_itempower_2level);
-        CPPUNIT_TEST(test_nested_fractions_generalpowers_2level);
-
-        CPPUNIT_TEST(test_nested_fractions_itempowers_2level_complex);
-        CPPUNIT_TEST(test_nested_fractions_itempower_generalpower_2level_complex);
-        CPPUNIT_TEST(test_nested_fractions_generalpower_itempower_2level_complex);
-        CPPUNIT_TEST(test_nested_fractions_generalpowers_2level_complex);
+    CPPUNIT_TEST(test_nested_fractions_itempowers_2level_complex);
+    CPPUNIT_TEST(test_nested_fractions_itempower_generalpower_2level_complex);
+    CPPUNIT_TEST(test_nested_fractions_generalpower_itempower_2level_complex);
+    CPPUNIT_TEST(test_nested_fractions_generalpowers_2level_complex);
     */
     CPPUNIT_TEST_SUITE_END();
 

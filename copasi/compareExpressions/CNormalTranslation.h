@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/04/21 15:10:35 $
+//   $Date: 2008/05/06 11:58:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -66,7 +66,7 @@ class CNormalTranslation
      * Given a vector of nodes, this method creates a multiplication chain of
      * all the nodes. The chain contains the original nodes and not copies.
      */
-    static CEvaluationNode* createOperatorChain(CEvaluationNodeOperator::SubType type, const char* data, const std::vector<const CEvaluationNode*>& nodes);
+    static CEvaluationNode* createOperatorChain(CEvaluationNodeOperator::SubType type, const char* data, const std::vector<CEvaluationNode*>& nodes);
 
     /**
      * Given a root node, this method traverses the tree and expands sums in
@@ -156,7 +156,7 @@ class CNormalTranslation
     /**
      * This method splits a sum into the individual elements
      */
-    static void splitSum(const CEvaluationNode* pRoot, std::vector<const CEvaluationNode*>& additions, std::vector<const CEvaluationNode*>& substractions, bool minus);
+    static void splitSum(const CEvaluationNode* pRoot, std::vector<CEvaluationNode*>& additions, std::vector<CEvaluationNode*>& substractions, bool minus);
 
     /**
      * This method expands the exponents of power nodes, e.g. A^(x+y) -> A^x * A^y
@@ -173,7 +173,7 @@ class CNormalTranslation
      * The methods get a vector of addition elements and a vector of subtractions
      * elements and tries to find equal elements in those two vectors.
      */
-    static std::vector<std::pair<CEvaluationNode*, CEvaluationNode*> > matchSummands(const std::vector<const CEvaluationNode*>& additions, const std::vector<const CEvaluationNode*>& subtractions);
+    static std::vector<std::pair<CEvaluationNode*, CEvaluationNode*> > matchSummands(const std::vector<CEvaluationNode*>& additions, const std::vector<CEvaluationNode*>& subtractions);
 
     /**
      * Multiplies the two given nodes and returns the result.

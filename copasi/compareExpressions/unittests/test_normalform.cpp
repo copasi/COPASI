@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_normalform.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/04/21 15:10:36 $
+//   $Date: 2008/05/06 11:58:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -5161,6 +5161,7 @@ void test_normalform::test_nested_fractions_itempower_generalpower_1level()
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
   pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  std::string s = pFraction->toString();
   delete pTree;
   CPPUNIT_ASSERT(pFraction != NULL);
   const CNormalSum* pNumerator = &pFraction->getNumerator();
