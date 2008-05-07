@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/05/06 15:19:20 $
+//   $Date: 2008/05/07 14:53:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1525,7 +1525,7 @@ void CNormalTranslation::splitProduct(const CEvaluationNode* pRoot, std::vector<
               (((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pChild1->getType())) == CEvaluationNodeOperator::MULTIPLY ||
                ((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pChild1->getType())) == CEvaluationNodeOperator::DIVIDE))
             {
-              CNormalTranslation::splitProduct(pChild1, multiplications, divisions, !division);
+              CNormalTranslation::splitProduct(pChild1, multiplications, divisions, division);
             }
           else
             {
