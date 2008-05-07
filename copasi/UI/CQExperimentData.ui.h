@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExperimentData.ui.h,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.34 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/12 00:32:58 $
+//   $Date: 2008/05/07 20:03:29 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -319,6 +319,11 @@ void CQExperimentData::slotExprimentType(bool isSteadyState)
 {
   if (!mpExperiment) return;
 
+  if (isSteadyState)
+    mpBtnSteadystate->setFocus();
+  else
+    mpBtnTimeCourse->setFocus();
+
   saveTable(mpExperiment);
 
   unsigned C_INT32 i, imax = mpTable->numRows();
@@ -339,6 +344,11 @@ void CQExperimentData::slotExprimentType(bool isSteadyState)
 void CQExperimentData::slotCheckTab(bool checked)
 {
   mpEditSeparator->setEnabled(!checked);
+
+  if (checked)
+    mpCheckTab->setFocus();
+  else
+    mpEditSeparator->setFocus();
 
   if (mpEditSeparator->isEnabled() &&
       mpEditSeparator->text().isEmpty())
@@ -1295,6 +1305,8 @@ bool CQExperimentData::saveTable(CExperiment * pExperiment)
 
 void CQExperimentData::slotCheckFrom(bool checked)
 {
+  mpCheckFrom->setFocus();
+
   unsigned C_INT32 Current = this->mpBoxExperiment->currentItem();
 
   if (checked && Current && Current != C_INVALID_INDEX)
@@ -1364,6 +1376,8 @@ bool CQExperimentData::isLikePreviousExperiment(CExperiment * pExperiment)
 
 void CQExperimentData::slotCheckTo(bool checked)
 {
+  mpCheckTo->setFocus();
+
   if (!checked || !mpExperiment) return;
 
   unsigned C_INT32 Next =

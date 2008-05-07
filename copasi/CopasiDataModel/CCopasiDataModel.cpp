@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.109 $
+//   $Revision: 1.110 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/05/05 08:20:50 $
+//   $Author: shoops $
+//   $Date: 2008/05/07 20:03:29 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,7 +34,6 @@
 #include "plot/COutputDefinitionVector.h"
 #include "report/CKeyFactory.h"
 #include "report/CReportDefinitionVector.h"
-#include "sbml/SBMLExporter.h"
 #include "sbml/CSBMLExporter.h"
 #include "sbml/SBMLImporter.h"
 #include "sbml/SBMLIncompatibility.h"
