@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-//   $Revision: 1.76 $
+//   $Revision: 1.77 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/12 01:47:38 $
+//   $Date: 2008/05/07 20:37:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -424,7 +424,7 @@ std::string DataModelGUI::exportSBMLToString()
   std::string str;
   try
     {
-      str = CCopasiDataModel::Global->exportSBMLToString(tmpBar);
+      str = CCopasiDataModel::Global->exportSBMLToString(tmpBar, 2, 3);
     }
   catch (CCopasiException except)
     {
