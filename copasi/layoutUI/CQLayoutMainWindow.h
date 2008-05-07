@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.h,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.33 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/05/02 11:18:04 $
+//   $Date: 2008/05/07 09:49:22 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -86,6 +86,8 @@ class CQLayoutMainWindow : public QMainWindow
     void setStepsPerSecond(C_INT16 val);
     C_INT16 getScalingMode();
     C_INT16 getMappingMode();
+
+    C_INT32 getCurrentStep();
 
     void addItemInAnimation (std::string s);
     void removeItemInAnimation (std::string s);

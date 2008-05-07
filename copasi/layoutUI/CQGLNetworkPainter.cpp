@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.108 $
+//   $Revision: 1.109 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/05/05 20:16:16 $
+//   $Date: 2008/05/07 09:49:22 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1097,14 +1097,15 @@ void CQGLNetworkPainter::setItemAnimated(std::string key, bool animatedP)
     {
       setOfDisabledMetabolites.insert(key);
       C_FLOAT64 midValue = (pParentLayoutWindow->getMinNodeSize() + pParentLayoutWindow->getMaxNodeSize()) / 2.0; // node size used here is set to mid between min and max node size (for reactants that are not animated)
-      setConstantNodeSize(key, midValue);
+      setConstantNodeSizeForAllSteps(key, midValue);
     }
   else
     {
       setOfDisabledMetabolites.erase(key);
       rescaleNode(key, pParentLayoutWindow->getMinNodeSize(), pParentLayoutWindow->getMaxNodeSize(), pParentLayoutWindow->getScalingMode());
     }
-  this->drawGraph();
+  //this->drawGraph();
+  this->showStep(pParentLayoutWindow->getCurrentStep());
   this->updateGL();
 }
 
@@ -1217,6 +1218,25 @@ void CQGLNetworkPainter::rescaleNode(std::string key, C_FLOAT64 newMin, C_FLOAT6
               //std::cout << "constant value  for: " << viewerNodes[i] << std::endl;
             }
           dataSet.putValueForSpecies(key, val_new);
+        }
+      dataSets.erase(s);
+      dataSets.insert (std::pair<C_INT32, CDataEntity>
+                       (s, dataSet));
+    }
+}
+
+void CQGLNetworkPainter::setConstantNodeSizeForAllSteps(std::string key, C_FLOAT64 val)
+{
+  CDataEntity dataSet;
+  unsigned int s; // step number
+
+  for (s = 0; s < dataSets.size(); s++) // for all steps
+    {
+      std::map<C_INT32, CDataEntity>::iterator iter = dataSets.find(s);
+      if (iter != dataSets.end())
+        {
+          dataSet = (*iter).second;
+          dataSet.putValueForSpecies(key, val);
         }
       dataSets.erase(s);
       dataSets.insert (std::pair<C_INT32, CDataEntity>
