@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.57 $
+//   $Revision: 1.58 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/05/07 09:49:22 $
+//   $Date: 2008/05/08 12:26:52 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -54,16 +54,10 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
   infoBox = new QVBox(splitter);
 
   paraPanel = new ParaPanel(infoBox);
-  // QTable *dummyTable = new QTable(infoBox);
-  //   dummyTable->setNumRows(1);
-  //   dummyTable->setNumCols(2);
-  //   QHeader *header = dummyTable->horizontalHeader();
-  //   header->setLabel(0, "Metabolite");
-  //   header->setLabel(1, "Concentration");
-  //   dummyTable->setText(0, 0, "*** no time series load ***");
-  //   dummyTable->setText(0, 1, "NaN");
-  //   dummyTable->setColumnReadOnly(1, TRUE);
+
   valTable = new CQCurrentValueTable(infoBox);
+  valTable->setMinimumSize(150, 150);
+  valTable->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
   //valTable->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
   //valTable->setFixedWidth()
 
@@ -73,6 +67,21 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
   QPushButton *puncheckAllButton = new QPushButton("Uncheck all", buttonBox);
   connect(pcheckAllButton , SIGNAL(clicked()), this, SLOT(checkAllCheckboxesInTable()));
   connect(puncheckAllButton , SIGNAL(clicked()), this, SLOT(uncheckAllCheckboxesInTable()));
+
+  pcheckAllButton->setMinimumSize(40, 30);
+  puncheckAllButton->setMinimumSize(40, 30);
+
+  pcheckAllButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+  puncheckAllButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+
+  //buttonBox->setMinimumSize(pcheckAllButton->minimumWidth() + puncheckAllButton->minimumWidth()+ 15,
+  //       pcheckAllButton->minimumHeight() +  puncheckAllButton->minimumHeight());
+
+  //buttonBox->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+
+  //infoBox->setMinimumSize(paraPanel->minimumWidth()+valTable->minimumWidth()+buttonBox->minimumWidth(),
+  //     paraPanel->minimumHeight()+valTable->minimumHeight()+buttonBox->minimumHeight() + 100);
+  //infoBox->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
 
   // create sroll view
   scrollView = new QScrollView(splitter);
