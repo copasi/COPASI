@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.cpp,v $
-//   $Revision: 1.43 $
+//   $Revision: 1.44 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/12 00:31:45 $
+//   $Date: 2008/05/08 15:36:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -140,85 +140,90 @@ bool CMCAMethod::elevateChildren()
 
 //that caclulates the elasticities as d(particle flux)/d(particle number)
 //which is the same as d(flux of substance)/d(amount of substance)
-void CMCAMethod::calculateUnscaledElasticities(C_FLOAT64 res)
+void CMCAMethod::calculateUnscaledElasticities(C_FLOAT64 /* res */)
 {
   assert(mpModel);
 
   CCopasiVector<CMetab> & metabs = mpModel->getMetabolitesX();
   CCopasiVector<CReaction> & reacs = mpModel->getReactions();
+  const CVector< C_FLOAT64 > & ParticleFlux = mpModel->getParticleFlux();
 
-  //mUnscaledElasticities.setup(reacs, metabs);
   unsigned C_INT32 numReacs = reacs.size();
-  unsigned C_INT32 numMetabs = metabs.size();
+
+  // We need the number of metabolites determined by reactions.
+  unsigned C_INT32 numMetabs =
+    mpModel->getNumIndependentMetabs() + mpModel->getNumDependentMetabs();
+
   mUnscaledElasticities.resize(numReacs, numMetabs);
+  C_FLOAT64 * pElasticity;
+  C_FLOAT64 * pElasticityEnd = mUnscaledElasticities.array() + mUnscaledElasticities.size();
 
   //update annotated matrix
   mUnscaledElasticitiesAnn->resize();
   mUnscaledElasticitiesAnn->setCopasiVector(0, &reacs);
   mUnscaledElasticitiesAnn->setCopasiVector(1, &metabs);
 
-  unsigned C_INT32 i, j;
-  C_FLOAT64 store, temp;
-  C_FLOAT64 K1, K2, K3;
+  unsigned C_INT32 j;
 
-  // constants for differentiation by finite differences
-  K1 = 1 + mFactor;
-  K2 = 1 - mFactor;
-  K3 = 2 * mFactor;
+  C_FLOAT64 Store, InvDelta;
+  C_FLOAT64 X1, X2;
 
   // Arrays to store function value
-  std::vector<C_FLOAT64> f1; f1.resize(numReacs);
-  std::vector<C_FLOAT64> f2; f2.resize(numReacs);
+  CVector< C_FLOAT64 > Y1(numReacs);
+  C_FLOAT64 * pY1;
+  CVector< C_FLOAT64 > Y2(numReacs);
+  C_FLOAT64 * pY2;
 
   // calculate elasticities
   for (j = 0; j < numMetabs; j++)
     {
-      /**
-       * if src[i+1] (x_ss[i+1]) is zero, the derivative will be calculated at a small
-       * positive value (no point in considering negative values!).
-       * let's stick with res*K1 (SSRes)
-       */
-      store = metabs[j]->getValue();
+      Store = metabs[j]->getValue();
 
-      if (store < res)
-        temp = res * K1;
+      // We only need to make sure that we do not have an underflow problem
+      if (fabs(Store) < 100 * DBL_MIN)
+        {
+          X1 = 0.0;
+          if (Store < 0.0)
+            X2 = -200.0 * DBL_MIN;
+          else
+            X2 = 200.0 * DBL_MIN;;
+        }
       else
-        temp = store;
+        {
+          X1 = Store * (1.0 + mFactor);
+          X2 = Store * (1.0 - mFactor);
+        }
 
-      // let's take X_dx
-      metabs[j]->setValue(temp * K1);
-      mpModel->updateSimulatedValues(false); //TODO test if true or false shoudl be used
-      //mpModel->updateNonSimulatedValues();
+      InvDelta = 1.0 / (X1 - X2);
+
+      // let's take X+dx
+      metabs[j]->setValue(X1);
+      mpModel->updateSimulatedValues(false); // TODO test if true or false should be used.
 
       // get the fluxes
-      for (i = 0; i < numReacs; i++)
-        //f1[i] = reacs[i]->calculateParticleFlux();
-        f1[i] = reacs[i]->getParticleFlux();
+      Y1 = ParticleFlux;
 
       // now X-dx
-      metabs[j]->setValue(temp * K2);
-      mpModel->updateSimulatedValues(false); //TODO test if true or false shoudl be used
-      //mpModel->updateNonSimulatedValues();
+      metabs[j]->setValue(X2);
+      mpModel->updateSimulatedValues(false); // TODO test if true or false should be used.
 
       // get the fluxes
-      for (i = 0; i < numReacs; i++)
-        //f2[i] = reacs[i]->calculateParticleFlux();
-        f2[i] = reacs[i]->getParticleFlux();
+      Y2 = ParticleFlux;
 
       // set column j of Dxv
-      for (i = 0; i < numReacs; i++)
-        mUnscaledElasticities[i][j] = (f1[i] - f2[i]) / (temp * K3); //TODO optimize
+      pElasticity = mUnscaledElasticities.array() + j;
+      pY1 = Y1.array();
+      pY2 = Y2.array();
 
-      // restore the value of (src[i])ss_x[i]
-      metabs[j]->setValue(store);
+      for (; pElasticity < pElasticityEnd; pElasticity += numMetabs, ++pY1, ++pY2)
+        * pElasticity = (*pY1 - *pY2) * InvDelta;
+
+      // restore the value of the species
+      metabs[j]->setValue(Store);
     }
 
-  // make shure the fluxes are correct afterwords (needed for scaling of the MCA results)
-  for (i = 0; i < numReacs; i++)
-  {reacs[i]->calculateParticleFlux();}
-
-  //std::cout << "elasticities" << std::endl;
-  //std::cout << (CMatrix<C_FLOAT64>)mUnscaledElasticities << std::endl;
+  // make sure the fluxes are correct afterwords (needed for scaling of the MCA results)
+  mpModel->updateSimulatedValues(false);
 }
 
 int CMCAMethod::calculateUnscaledConcentrationCC()
@@ -243,9 +248,9 @@ int CMCAMethod::calculateUnscaledConcentrationCC()
   C_FLOAT64 Alpha = 1.0;
   C_FLOAT64 Beta = 1.0;
 
-  aux1.resize(N, LD);
-
-  memcpy(aux1.array(), mUnscaledElasticities.array(), N * LD * sizeof(C_FLOAT64));
+  aux1 = mUnscaledElasticities;
+  // aux1.resize(N, LD);
+  // memcpy(aux1.array(), mUnscaledElasticities.array(), N * LD * sizeof(C_FLOAT64));
 
   // aux1 = (E1, E2) (I, L0')' = E1 + E2 * L0
   dgemm_(&T, &T, &M, &N, &K, &Alpha, const_cast<C_FLOAT64 *>(L.array()), &M,
@@ -278,9 +283,8 @@ int CMCAMethod::calculateUnscaledConcentrationCC()
   if (info != 0)
     return MCA_SINGULAR;
 
-  // :TODO: Bug 774: This assumes that the number of variable metabs is the number
-  // of metabs determined by reaction.
-  aux1.resize(mpModel->getNumVariableMetabs(), M);
+  // M = independent species, K = dependent species
+  aux1.resize(M + K, M);
   aux1 = 0.0;
 
   // aux1 = - L * aux2 = (I, L0) * aux2 = (aux2, (L0 * aux2))
@@ -289,9 +293,8 @@ int CMCAMethod::calculateUnscaledConcentrationCC()
     for (j = 0; j < M; j++)
       aux1[i][j] = - aux2[i][j];
 
-  // :TODO: Bug 774: This assumes that the number of variable metabs is the number
-  // of metabs determined by reaction.
-  for (i = M ; i < (C_INT32)mpModel->getNumVariableMetabs(); i++)
+  // M = independent species, K = dependent species
+  for (i = M ; i < M + K; i++)
     for (j = 0; j < M; j++)
       {
         aux1[i][j] = 0.0;
@@ -301,10 +304,9 @@ int CMCAMethod::calculateUnscaledConcentrationCC()
 
   // mGamma = aux1 * RedStoi
   // :TODO: use dgemm
-  // :TODO: Bug 774: This assumes that the number of variable metabs is the number
-  // of metabs determined by reaction.
-  mUnscaledConcCC.resize(mpModel->getNumVariableMetabs(), N);
-  for (i = 0; i < (C_INT32)mpModel->getNumVariableMetabs(); i++)
+  // M = independent species, K = dependent species
+  mUnscaledConcCC.resize(M + K, N);
+  for (i = 0; i < M + K; i++)
     for (j = 0; j < N; j++)
       {
         mUnscaledConcCC[i][j] = 0;
@@ -364,89 +366,112 @@ void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
   // if previous calcutations failed return now
   if (condition != MCA_OK)
     return;
+  // The number of metabs determined by reaction.
+  unsigned C_INT32 numSpeciesReaction =
+    mpModel->getNumIndependentMetabs() + mpModel->getNumDependentMetabs();
+  CCopasiVector< CMetab > & metabs = mpModel->getMetabolitesX();
+  CCopasiVector< CMetab >::const_iterator itSpecies = metabs.begin();
+  CCopasiVector< CMetab >::const_iterator endSpecies = itSpecies + numSpeciesReaction;
 
-  unsigned C_INT32 i, j;
+  CCopasiVector< CReaction > & reacs = mpModel->getReactions();
+  CCopasiVector< CReaction >::const_iterator itReaction;
+  CCopasiVector< CReaction >::const_iterator endReaction = reacs.end();
+
+  unsigned C_INT32 col;
 
   // Scale Elasticities
   mScaledElasticities.resize(mUnscaledElasticities.numRows(), mUnscaledElasticities.numCols());
-  for (j = 0; j < mpModel->getNumMetabs(); j++)
+
+  C_FLOAT64 * pUnscaled;
+  C_FLOAT64 * pScaled;
+  // Reactions are rows, species are columnss
+  for (col = 0; itSpecies != endSpecies; ++itSpecies, col++)
     {
-      C_FLOAT64 VolumeInv = 1.0 / mpModel->getMetabolitesX()[j]->getCompartment()->getValue();
-      C_FLOAT64 Number = mpModel->getMetabolitesX()[j]->getValue();
+      C_FLOAT64 VolumeInv = 1.0 / (*itSpecies)->getCompartment()->getValue();
+      C_FLOAT64 Number = (*itSpecies)->getValue();
 
-      for (i = 0; i < mpModel->getTotSteps(); i++)
+      for (itReaction = reacs.begin(),
+           pUnscaled = mUnscaledElasticities.array() + col,
+           pScaled = mScaledElasticities.array() + col;
+           itReaction != endReaction;
+           ++itReaction,
+           pUnscaled += numSpeciesReaction,
+           pScaled += numSpeciesReaction)
         {
-          // change the use of Col[] and Row[] to mSteps and mMetabolites
-          // change the use of ICol[] and IRow[] to mStepsX and mMetabolitesX
-
-          if (fabs(mpModel->getReactions()[i]->getFlux() * VolumeInv) >= res)
-            {
-              mScaledElasticities[i][j] = mUnscaledElasticities[i][j] * Number
-                                          / mpModel->getReactions()[i]->getParticleFlux();
-              //                                        * mpModel->getMetabolites()[j]->getConcentration()
-              //                                        * mpModel->getMetabolites()[j]->getCompartment()->getValue()
-              //                                        / mpModel->getReactions()[i]->getFlux();
-            }
+          if (fabs((*itReaction)->getFlux() * VolumeInv) >= res)
+            * pScaled =
+              *pUnscaled * Number / (*itReaction)->getParticleFlux();
           else
-            mScaledElasticities[i][j] = ((mpModel->getReactions()[i]->getFlux() < 0.0) ? -2.0 : 2.0) * DBL_MAX;
+            *pScaled =
+              (((*itReaction)->getFlux() < 0.0) ? -2.0 : 2.0) * DBL_MAX;
         }
     }
 
   //update annotated matrix
   mScaledElasticitiesAnn->resize();
-  mScaledElasticitiesAnn->setCopasiVector(0, &mpModel->getReactions());
-  mScaledElasticitiesAnn->setCopasiVector(1, &mpModel->getMetabolitesX());
+  mScaledElasticitiesAnn->setCopasiVector(0, &reacs);
+  mScaledElasticitiesAnn->setCopasiVector(1, &metabs);
 
-  //std::cout << "scElas " << std::endl;
-  //std::cout << (CMatrix<C_FLOAT64>)mScaledElasticities << std::endl;
   if (mSSStatus != CSteadyStateMethod::found) return;
 
   // Scale ConcCC
+  // Reactions are columns, species are rows
   mScaledConcCC.resize(mUnscaledConcCC.numRows(), mUnscaledConcCC.numCols());
-  // :TODO: Bug 774: This assumes that the number of variable metabs is the number
-  // of metabs determined by reaction.
-  for (i = 0; i < mpModel->getNumVariableMetabs(); i++)
-    for (j = 0; j < mpModel->getTotSteps(); j++)
+
+  for (itSpecies = metabs.begin(),
+       pUnscaled = mUnscaledConcCC.array(),
+       pScaled = mScaledConcCC.array();
+       itSpecies != endSpecies;
+       ++itSpecies)
+    for (itReaction = reacs.begin();
+         itReaction != endReaction;
+         ++itReaction, ++pUnscaled, ++pScaled)
       {
-        if (fabs(mpModel->getMetabolitesX()[i]->getConcentration()) >= res)
-          mScaledConcCC[i][j] = mUnscaledConcCC[i][j]
-                                * mpModel->getReactions()[j]->getParticleFlux()
-                                / mpModel->getMetabolitesX()[i]->getValue();
-        //                                * mpModel->getReactions()[j]->getFlux()
-        //                                / (mpModel->getMetabolites()[i]->getConcentration()
-        //                                   *mpModel->getMetabolites()[j]->getCompartment()->getValue());
+        if (fabs((*itSpecies)->getConcentration()) >= res)
+          *pScaled =
+            *pUnscaled * (*itReaction)->getParticleFlux() / (*itSpecies)->getValue();
         else
-          mScaledConcCC[i][j] = 2.0 * DBL_MAX;
+          *pScaled = 2.0 * DBL_MAX;
       }
   //std::cout << "scConcCC " << std::endl;
   //std::cout << (CMatrix<C_FLOAT64>)mScaledConcCC << std::endl;
 
   //update annotations
   mScaledConcCCAnn->resize();
-  mScaledConcCCAnn->setCopasiVector(0, &mpModel->getMetabolitesX());
-  mScaledConcCCAnn->setCopasiVector(1, &mpModel->getReactions());
+  mScaledConcCCAnn->setCopasiVector(0, &metabs);
+  mScaledConcCCAnn->setCopasiVector(1, &reacs);
 
   // Scale FluxCC
+  // Reactions are columns and rows
   mScaledFluxCC.resize(mUnscaledFluxCC.numRows(), mUnscaledFluxCC.numCols());
-  for (i = 0; i < mpModel->getTotSteps(); i++)
-    for (j = 0; j < mpModel->getTotSteps(); j++)
-      {
-        C_FLOAT64 tmp = 1.0 / mpModel->getReactions()[i]->getLargestCompartment().getValue();
 
-        if (fabs(mpModel->getReactions()[i]->getFlux()*tmp) >= res)
-          mScaledFluxCC[i][j] = mUnscaledFluxCC[i][j]
-                                * mpModel->getReactions()[j]->getFlux()
-                                / mpModel->getReactions()[i]->getFlux();
-        else
-          mScaledFluxCC[i][j] = ((mpModel->getReactions()[i]->getFlux() < 0.0) ? -2.0 : 2.0) * DBL_MAX;
-      }
-  //std::cout << "scFluxCC " << std::endl;
-  //std::cout << (CMatrix<C_FLOAT64>)mScaledFluxCC << std::endl;
+  CCopasiVector< CReaction >::const_iterator itReactionCol;
+
+  for (itReaction = reacs.begin(),
+       pUnscaled = mUnscaledFluxCC.array(),
+       pScaled = mScaledFluxCC.array();
+       itReaction != endReaction;
+       ++itReaction)
+    {
+      C_FLOAT64 tmp =
+        fabs((*itReaction)->getFlux() / (*itReaction)->getLargestCompartment().getValue());
+
+      for (itReactionCol = reacs.begin();
+           itReactionCol != endReaction;
+           ++itReactionCol, ++pUnscaled, ++pScaled)
+        {
+          if (tmp >= res)
+            *pScaled =
+              *pUnscaled * (*itReactionCol)->getFlux() / (*itReaction)->getFlux();
+          else
+            *pScaled = (((*itReaction)->getFlux() < 0.0) ? -2.0 : 2.0) * DBL_MAX;
+        }
+    }
 
   //update annotations
   mScaledFluxCCAnn->resize();
-  mScaledFluxCCAnn->setCopasiVector(0, &mpModel->getReactions());
-  mScaledFluxCCAnn->setCopasiVector(1, &mpModel->getReactions());
+  mScaledFluxCCAnn->setCopasiVector(0, &reacs);
+  mScaledFluxCCAnn->setCopasiVector(1, &reacs);
 }
 
 #ifdef WIN32
@@ -551,6 +576,32 @@ bool CMCAMethod::isValidProblem(const CCopasiProblem * pProblem)
       CCopasiMessage(CCopasiMessage::EXCEPTION, "Problem is not an MCA problem.");
       return false;
     }
+
+  CModel * pModel = pP->getModel();
+
+  if (pModel == NULL)
+    return false;
+
+  // Check if the model contains an ODE.
+  unsigned C_INT32 NumODE =
+    pModel->getStateTemplate().endIndependent() - pModel->getStateTemplate().beginIndependent();
+
+  if (pModel->getNumIndependentMetabs() < NumODE)
+    {
+      CCopasiMessage(CCopasiMessage::EXCEPTION, "MCA is not applicable for a system with explicit ODEs.");
+      return false;
+    }
+
+  // Check if the model has a compartment with an assignment
+  CCopasiVector< CCompartment >::const_iterator it = pModel->getCompartments().begin();
+  CCopasiVector< CCompartment >::const_iterator end = pModel->getCompartments().end();
+
+  for (; it != end; ++it)
+    if ((*it)->getStatus() == CModelEntity::ASSIGNMENT)
+      {
+        CCopasiMessage(CCopasiMessage::EXCEPTION, "MCA is not applicable for a system with changing volumes.");
+        return false;
+      }
 
   return true;
 }

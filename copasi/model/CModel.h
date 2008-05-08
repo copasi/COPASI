@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.159 $
+//   $Revision: 1.160 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2008/04/21 20:12:33 $
+//   $Author: shoops $
+//   $Date: 2008/05/08 15:36:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -371,17 +371,20 @@ class CModel : public CModelEntity
      */
     bool mReorderNeeded;
 
-  public:
-    /**
-     *  Default constructor
-     */
-    CModel();
-
+  private:
     /**
      *  Copy construnctor
      *  @param "const CModel &" src
      */
     CModel(const CModel & src);
+
+    CModel& operator=(const CModel& src);
+
+  public:
+    /**
+     *  Default constructor
+     */
+    CModel();
 
     /**
      * Destructor
@@ -564,6 +567,12 @@ class CModel : public CModelEntity
      * @return unsigned C_INT32 total steps;
      */
     unsigned C_INT32 getTotSteps() const;
+
+    /**
+     * Retreive the vector of particle fluxes from the model
+     * @return const CVector< C_FLOAT64 > & particleFlux
+     */
+    const CVector< C_FLOAT64 > & getParticleFlux() const;
 
     //********* Events **************************
 

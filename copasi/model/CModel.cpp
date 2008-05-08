@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.341 $
+//   $Revision: 1.342 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2008/04/21 20:12:33 $
+//   $Author: shoops $
+//   $Date: 2008/05/08 15:36:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -875,6 +875,9 @@ CCopasiVectorNS < CReaction > & CModel::getReactions()
 
 const CCopasiVectorNS < CReaction > & CModel::getReactions() const
   {return mSteps;}
+
+const CVector< C_FLOAT64 > & CModel::getParticleFlux() const
+  {return mParticleFluxes;}
 
 CCopasiVector< CMetab > & CModel::getMetabolites()
 {return mMetabolites;}
