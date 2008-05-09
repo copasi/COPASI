@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.cpp,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.26 $
 //   $Name:  $
 //   $Author: akoenig $
-//   $Date: 2008/03/14 10:38:18 $
+//   $Date: 2008/05/09 13:23:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -966,10 +966,21 @@ void CQArrayAnnotationsWidget::fillBarChart()
             mIndex[mRowIndex] = i;
             if (!mOneDimensional)
               mIndex[mColIndex] = j;
-
-            data[j][i] = (double)(*mpArray->array())[mIndex];
-            if ((double)(*mpArray->array())[mIndex] > maxValue) maxValue = (double)(*mpArray->array())[mIndex];
-            if ((double)(*mpArray->array())[mIndex] < minValue) minValue = (double)(*mpArray->array())[mIndex];
+            if (isnan((double)(*mpArray->array())[mIndex]) ||
+                isinf((double)(*mpArray->array())[mIndex]))
+              {
+                data[j][i] = 0;
+                if (0 > maxValue) maxValue = 0;
+                if (0 < minValue) minValue = 0;
+              }
+            else
+              {
+                data[j][i] = (double)(*mpArray->array())[mIndex];
+                if ((double)(*mpArray->array())[mIndex] > maxValue)
+                  maxValue = (double)(*mpArray->array())[mIndex];
+                if ((double)(*mpArray->array())[mIndex] < minValue)
+                  minValue = (double)(*mpArray->array())[mIndex];
+              }
           }
 
       //figure out the min/max print section
