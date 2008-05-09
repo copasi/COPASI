@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.58 $
+//   $Revision: 1.59 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/05/08 12:26:52 $
+//   $Date: 2008/05/09 09:02:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -56,7 +56,7 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
   paraPanel = new ParaPanel(infoBox);
 
   valTable = new CQCurrentValueTable(infoBox);
-  valTable->setMinimumSize(150, 150);
+  valTable->setMinimumSize(100, 150);
   valTable->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
   //valTable->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
   //valTable->setFixedWidth()
@@ -71,8 +71,8 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
   pcheckAllButton->setMinimumSize(40, 30);
   puncheckAllButton->setMinimumSize(40, 30);
 
-  pcheckAllButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
-  puncheckAllButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+  pcheckAllButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
+  puncheckAllButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
 
   //buttonBox->setMinimumSize(pcheckAllButton->minimumWidth() + puncheckAllButton->minimumWidth()+ 15,
   //       pcheckAllButton->minimumHeight() +  puncheckAllButton->minimumHeight());
