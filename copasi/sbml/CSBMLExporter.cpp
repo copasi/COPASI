@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/05/05 10:53:19 $
+//   $Date: 2008/05/13 14:13:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -53,7 +53,7 @@
 #include "compareExpressions/compare_utilities.h"
 #include "MIRIAM/CRDFUtilities.h"
 
-CSBMLExporter::CSBMLExporter(): mpSBMLDocument(NULL), mSBMLLevel(2), mSBMLVersion(1), mVariableVolumes(false), mpAvogadro(NULL), mAvogadroCreated(false)
+CSBMLExporter::CSBMLExporter(): mpSBMLDocument(NULL), mSBMLLevel(2), mSBMLVersion(1), mVariableVolumes(false), mpAvogadro(NULL), mAvogadroCreated(false), mMIRIAMWarning(false)
 {}
 
 CSBMLExporter::~CSBMLExporter()
@@ -3667,22 +3667,28 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
   // we have to check if the SBase object has a meta id and if it doesn't we
   // have to create one
   // we have to change the meta ids within the MIRIAM annotation
+  /* !!! DISABLED !!!
   XMLNode* pAnnotation = NULL;
   if (pSBMLObject->isSetAnnotation())
     {
       pAnnotation = new XMLNode(*pSBMLObject->getAnnotation());
       // delete any old rdf annotations
+      // first delete all children
+      pAnnotation->removeChildren();
       unsigned int i, iMax = pAnnotation->getNumChildren();
       for (i = 0;i < iMax;++i)
         {
+          // readd the ones that are not from the rdf namespace
           if (pSBMLObject->getAnnotation()->getChild(i).getURI() != "http://www.w3.org/1999/02/22-rdf-syntax-ns#")
             {
               pAnnotation->addChild(pSBMLObject->getAnnotation()->getChild(i));
             }
         }
     }
+  */
   if (miriamAnnotation.find_first_not_of("\t\r\n ") != std::string::npos)
     {
+      /* !!! DISABLED !!!
       std::string metaId;
       if (pSBMLObject->isSetMetaId())
         {
@@ -3707,13 +3713,21 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
       pAnnotation->addChild(*pMIRIAMNode);
       // delete pMIRIAMNode since addChild made a copy
       delete pMIRIAMNode;
+      */
+      if (this->mMIRIAMWarning == false)
+        {
+          this->mMIRIAMWarning = true;
+          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 69);
+        }
     }
+  /*  !!! DISABLED !!!
   if (pAnnotation != NULL)
     {
       pSBMLObject->setAnnotation(pAnnotation);
       // delete the old annotation since it has been copied by setAnnotation
       delete pAnnotation;
     }
+  */
   return result;
 }
 

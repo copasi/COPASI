@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.h,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/05/05 07:33:02 $
+//   $Date: 2008/05/13 14:13:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -67,6 +67,7 @@ class CSBMLExporter
     const CModelValue* mpAvogadro;
     bool mAvogadroCreated;
     std::map<std::string, const SBase*> mMetaIdMap;
+    bool mMIRIAMWarning;
 
   public:
     /**

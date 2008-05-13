@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.114 $
+//   $Revision: 1.115 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/03/20 09:57:02 $
+//   $Date: 2008/05/13 14:13:01 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -218,6 +218,7 @@ const MESSAGES Messages[] =
     {MCSBML + 66, "SBML (66): COPASI was not able to import the global %s unit. Unit has been set to %s."},
     {MCSBML + 67, "SBML (67): Metaid \"%s\" is not unique, please check the metaids."},
     {MCSBML + 68, "SBML (68): Id \"%s\" is not unique, please check the ids in your SBML file."},
+    {MCSBML + 69, "SBML (69): MIRIAM annotations can't currently be exported to SBML.\nIf you have added new MIRIAM annotations to model elements or changed existing annotations, those changes will not be present in the exported SBML file.\nTo conserve your changes, please consider saving the model as a COPASI file."},
 
     {MCTrajectoryProblem + 1, "CTrajectoryProblem (1): Invalid step size = '%f'."},
     {MCTrajectoryProblem + 2, "CTrajectoryProblem (2): The step number '%f' "
