@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeCall.cpp,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/11 23:32:12 $
+//   $Author: gauges $
+//   $Date: 2008/05/13 13:28:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -299,16 +299,8 @@ ASTNode* CEvaluationNodeCall::toAST() const
         const std::string funName = this->getData();
         CEvaluationTree* pFun = CCopasiDataModel::Global->getFunctionList()->findFunction(funName);
         assert(pFun != NULL);
-        if (pFun == NULL) fatalError();
-        if (pFun->getSBMLId() != "")
-          {
-            pNode->setName(pFun->getSBMLId().c_str());
-          }
-        else
-          {
-            pNode->setName(funName.c_str());
-            pFun->setSBMLId(funName);
-          }
+        if (pFun == NULL && pFun->getSBMLId().empty()) fatalError();
+        pNode->setName(pFun->getSBMLId().c_str());
       }
     const CEvaluationNode* child = static_cast<const CEvaluationNode*>(this->getChild());
     while (child)
