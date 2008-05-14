@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/05/13 14:13:02 $
+//   $Date: 2008/05/14 12:33:22 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -3615,7 +3615,7 @@ void CSBMLExporter::findAvogadro(const CCopasiDataModel& dataModel)
     }
 }
 
-bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, SBase* pSBMLObject, std::map<std::string, const SBase*>& metaIds)
+bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, SBase* pSBMLObject, std::map<std::string, const SBase*>& /*metaIds*/)
 {
   bool result = true;
   if (pCOPASIObject == NULL || pSBMLObject == NULL) return false;
