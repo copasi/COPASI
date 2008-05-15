@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/ConvertToCEvaluationNode.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/04/23 15:03:22 $
+//   $Date: 2008/05/15 14:56:51 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -496,13 +496,25 @@ CNormalProduct * createProduct(const CEvaluationNode* node)
       else if (node->getData() == "*")
         {
           CNormalProduct* product1 = createProduct(static_cast<const CEvaluationNode*>(node->getChild()));
-          CNormalProduct* product2 = createProduct(static_cast<const CEvaluationNode*>(node->getChild()->getSibling()));
-          assert(product1 != NULL);
-          assert(product2 != NULL);
-          product->multiply(*product1);
-          product->multiply(*product2);
-          delete product1;
-          delete product2;
+          if (product1 != NULL)
+            {
+              CNormalProduct* product2 = createProduct(static_cast<const CEvaluationNode*>(node->getChild()->getSibling()));
+              if (product2 != NULL)
+                {
+                  product->multiply(*product1);
+                  product->multiply(*product2);
+                  delete product2;
+                }
+              else
+                {
+                  product = NULL;
+                }
+              delete product1;
+            }
+          else
+            {
+              product = NULL;
+            }
         }
       else if (node->getData() == "%")
 

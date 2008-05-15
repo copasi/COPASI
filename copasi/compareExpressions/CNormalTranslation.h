@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/05/06 15:19:20 $
+//   $Date: 2008/05/15 14:56:51 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -202,6 +202,11 @@ class CNormalTranslation
      * (a/b)^3 -> a^3 / b^3
      */
     static CEvaluationNode* eliminatePowersOfFractions(const CEvaluationNode* pOrig);
+
+    /**
+     * This methods converts a product of fractions into a fraction of products.
+     */
+    static CEvaluationNode* product2fraction(const CEvaluationNode* pOrig);
   };
 
 #endif // COPASI_CNormalTranslation_H__
