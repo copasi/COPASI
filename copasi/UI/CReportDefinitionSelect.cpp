@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CReportDefinitionSelect.cpp,v $
-//   $Revision: 1.44 $
+//   $Revision: 1.45 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/03/16 19:55:37 $
+//   $Author: pwilly $
+//   $Date: 2008/05/16 11:27:29 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -104,12 +109,12 @@ CReportDefinitionSelect::CReportDefinitionSelect(QWidget* parent, const char* na
   clearWState(WState_Polished);
 
   // tab order
-  setTabOrder(reportDefinitionNameList, jumpButton);
+  setTabOrder(reportDefinitionNameList, confirmButton);
+  setTabOrder(confirmButton, cancelButton);
+  setTabOrder(cancelButton, jumpButton);
   setTabOrder(jumpButton, targetEdit);
   setTabOrder(targetEdit, browseButton);
   setTabOrder(browseButton, appendChecked);
-  setTabOrder(appendChecked, confirmButton);
-  setTabOrder(confirmButton, cancelButton);
 
   connect(cancelButton, SIGNAL(clicked()), this, SLOT(cancelClicked()));
   connect(confirmButton, SIGNAL(clicked()), this, SLOT(confirmClicked()));
