@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.cpp,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/04/23 17:42:50 $
+//   $Author: pwilly $
+//   $Date: 2008/05/16 11:23:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -57,7 +57,7 @@ int CQExpressionHighlighter::highlightParagraph (const QString & text, int /* en
       else
         delta = pos - oldpos + 1;
 
-      setFormat(oldpos, delta, QColor(200, 0, 0));
+      setFormat(oldpos, delta, QColor(100, 0, 200));
       if (pos == -1) break;
       oldpos = pos;
     }
