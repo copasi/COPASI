@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/plotwidget1.cpp,v $
-//   $Revision: 1.50 $
+//   $Revision: 1.51 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/11/01 17:51:01 $
+//   $Author: pwilly $
+//   $Date: 2008/05/17 04:13:54 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -14,7 +19,7 @@
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.50 2007/11/01 17:51:01 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.51 2008/05/17 04:13:54 pwilly Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -378,6 +383,8 @@ void PlotWidget1::removeCurve()
 void PlotWidget1::startPlot()
 {
   saveToPlotSpec();
+
+  loadFromPlotSpec(dynamic_cast<CPlotSpecification*>(GlobalKeys.get(objKey)));
 
   //commented for testing
   //startPlotButton->setEnabled(false);
