@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/plotwidget1.cpp,v $
-//   $Revision: 1.51 $
+//   $Revision: 1.52 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2008/05/17 04:13:54 $
+//   $Date: 2008/05/17 04:50:59 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,7 +19,7 @@
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.51 2008/05/17 04:13:54 pwilly Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.52 2008/05/17 04:50:59 pwilly Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -147,7 +147,7 @@ PlotWidget1::PlotWidget1(QWidget* parent, const char* name, WFlags fl)
   layoutCurves->addWidget(addHistoButton);
 
   deleteCurveButton = new QToolButton(this, "deleteCurveButton");
-  deleteCurveButton->setText(tr("Delete curve"));
+  deleteCurveButton->setText(tr("Delete..."));
   layoutCurves->addWidget(deleteCurveButton);
 
   PlotWidget1Layout->addLayout(layoutCurves, 5, 1);
