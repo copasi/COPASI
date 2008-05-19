@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMetabolite.ui.h,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/04/23 17:42:51 $
+//   $Author: pwilly $
+//   $Date: 2008/05/19 07:52:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -376,8 +376,7 @@ void CQMetabolite::slotInitialTypeChanged(bool useInitialExpression)
 void CQMetabolite::slotNameLostFocus()
 {
   if (mpEditName->text() != FROM_UTF8(mpMetab->getObjectName()))
-  {}
-}
+    {}}
 
 void CQMetabolite::slotExpressionValid(bool valid)
 {
@@ -408,7 +407,6 @@ bool CQMetabolite::enter(const std::string & key)
 
 bool CQMetabolite::leave()
 {
-  std::cout << "CQM::leave" << std::endl;
   if (mpBtnCommit->isEnabled())
     {
       if ((CModelEntity::Status) mItemToType[mpComboBoxType->currentItem()] != CModelEntity::FIXED &&
@@ -515,13 +513,11 @@ void CQMetabolite::load()
 
   // Expression
   mpExpressionEMW->mpExpressionWidget->setExpression(mpMetab->getExpression());
-  std::cout << "EXP: " << mpExpressionEMW->mpExpressionWidget->getExpression() << std::endl;
   slotTypeChanged(mpComboBoxType->currentItem());
   mpExpressionEMW->updateWidget();
 
   // Initial Expression
   mpInitialExpressionEMW->mpExpressionWidget->setExpression(mpMetab->getInitialExpression());
-  std::cout << "INIT EXP: " << mpInitialExpressionEMW->mpExpressionWidget->getExpression() << std::endl;
   mpInitialExpressionEMW->updateWidget();
 
   // Use Initial Expression
@@ -548,7 +544,6 @@ void CQMetabolite::load()
 
 void CQMetabolite::save()
 {
-  std::cout << "CQM::save" << std::endl;
   if (mpMetab == NULL) return;
 
   // Name
