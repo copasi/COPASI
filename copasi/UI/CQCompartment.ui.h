@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQCompartment.ui.h,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/04/23 17:42:50 $
+//   $Author: pwilly $
+//   $Date: 2008/05/19 08:28:59 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -325,8 +325,7 @@ void CQCompartment::slotInitialTypeChanged(bool useInitialAssignment)
 void CQCompartment::slotNameLostFocus()
 {
   if (mpEditName->text() != FROM_UTF8(mpCompartment->getObjectName()))
-  {}
-}
+    {}}
 
 void CQCompartment::slotExpressionValid(bool valid)
 {
@@ -357,7 +356,6 @@ bool CQCompartment::enter(const std::string & key)
 
 bool CQCompartment::leave()
 {
-  std::cout << "CQC::leave" << std::endl;
   if (mpBtnCommit->isEnabled())
     {
       if ((CModelEntity::Status) mItemToType[mpComboBoxType->currentItem()] != CModelEntity::FIXED)
@@ -439,13 +437,11 @@ void CQCompartment::load()
 
   // Expression
   mpExpressionEMW->mpExpressionWidget->setExpression(mpCompartment->getExpression());
-  std::cout << "EXP: " << mpExpressionEMW->mpExpressionWidget->getExpression() << std::endl;
   slotTypeChanged(mpComboBoxType->currentItem());
   mpExpressionEMW->updateWidget();
 
   // Initial Expression
   mpInitialExpressionEMW->mpExpressionWidget->setExpression(mpCompartment->getInitialExpression());
-  std::cout << "INIT EXP: " << mpInitialExpressionEMW->mpExpressionWidget->getExpression() << std::endl;
   mpInitialExpressionEMW->updateWidget();
 
   // Use Initial Expression
@@ -469,7 +465,6 @@ void CQCompartment::load()
 
 void CQCompartment::save()
 {
-  std::cout << "CQC::save" << std::endl;
   if (mpCompartment == NULL) return;
 
   // Name
