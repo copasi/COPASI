@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.60 $
+//   $Revision: 1.61 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/05/19 12:06:23 $
+//   $Date: 2008/05/20 09:24:45 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -84,8 +84,9 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
   //infoBox->setMinimumSize(paraPanel->minimumWidth(),
   //     paraPanel->minimumHeight()+valTable->minimumHeight()+buttonBox->minimumHeight() + 50);
   paraPanel->setMinimumHeight(250);
+  paraPanel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
   infoBox->setMinimumHeight(paraPanel->minimumHeight() + valTable->minimumHeight() + buttonBox->minimumHeight() + 25);
-  infoBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+  //infoBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
   std::cout << "info box: min height: " << infoBox->minimumHeight() << std::endl;
 
   // create sroll view
