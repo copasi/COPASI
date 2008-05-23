@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.61 $
+//   $Revision: 1.62 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/05/20 09:24:45 $
+//   $Date: 2008/05/23 09:22:43 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -341,6 +341,14 @@ void CQLayoutMainWindow::createActions()
   connect(miMaNodeSizes, SIGNAL(activated()), this, SLOT(changeMinMaxNodeSizes()));
   miMaNodeSizes->setToolTip("Change Min/Max for node sizes within animation");
 
+  sFontSize = new QAction("fontsiz",
+                          "Set Font Size",
+                          CTRL + Key_F,
+                          this);
+
+  connect(sFontSize, SIGNAL(activated()), this, SLOT(changeFontSize()));
+  sFontSize->setToolTip("Change the font size of the node labels in the graph view");
+
   automaticRescaleToggle = new QAction ("autorescale",
                                         "Automatic Rescaling of Graph",
                                         CTRL + Key_A,
@@ -376,6 +384,7 @@ void CQLayoutMainWindow::createMenus()
   optionsMenu = new QPopupMenu(this);
   optionsMenu->insertItem("Shape of Label", labelShapeMenu);
   miMaNodeSizes->addTo(optionsMenu);
+  sFontSize->addTo(optionsMenu);
   automaticRescaleToggle->addTo(optionsMenu);
 
   menuBar()->insertItem("File", fileMenu);
@@ -446,6 +455,13 @@ void CQLayoutMainWindow::changeMinMaxNodeSizes()
   //std::cout << "change min/max values for node sizes" << std::endl;
   NodeSizePanel *panel = new NodeSizePanel(this);
   panel->exec();
+}
+
+void CQLayoutMainWindow::changeFontSize()
+{
+  // choose new font size and set it in glPainter
+  //C_INT16 fz = 10;
+  //glPainter->setFontSize(fz);
 }
 
 void CQLayoutMainWindow::loadData()

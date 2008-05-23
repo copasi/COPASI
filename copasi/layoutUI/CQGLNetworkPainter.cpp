@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.109 $
+//   $Revision: 1.110 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/05/07 09:49:22 $
+//   $Date: 2008/05/23 09:22:43 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -265,7 +265,6 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
   CLPoint p1 = CLPoint(0.0, 0.0);
   CLPoint p2 = CLPoint(lP->getDimensions().getWidth(), lP->getDimensions().getHeight());
   this->setGraphSize(p1, p2);
-  //CQGLNetworkPainter::drawGraph();
   if (numberOfInvertedCurves > 0)
     std::cout << "Number of curves which have been inverted: " << numberOfInvertedCurves << std::endl;
 }
@@ -895,7 +894,10 @@ void CQGLNetworkPainter::createTextureForAllLabels()
   unsigned int i = 0;
   for (i = 0;i < viewerLabels.size();i++)
     {
-      RGTextureSpec* pTexture = RG_createTextureForText(viewerLabels[i].getText(), mFontname, static_cast<C_INT32>(viewerLabels[i].getHeight()));
+      C_INT32 fontSize = static_cast<C_INT32>(viewerLabels[i].getHeight());
+      if (fontSize < 10)
+        fontSize = 10; // do not allow font size below 5
+      RGTextureSpec* pTexture = RG_createTextureForText(viewerLabels[i].getText(), mFontname, fontSize);
       labelTextureMap.insert(std::pair<std::string, RGTextureSpec*>
                              (viewerLabels[i].getText(),
                               pTexture));
@@ -904,14 +906,13 @@ void CQGLNetworkPainter::createTextureForAllLabels()
 
 RGTextureSpec* CQGLNetworkPainter::getTextureForText(const std::string& text, const std::string& fontName, unsigned int fontSize)
 {
-  //std::cout << "get texture for text: " << text <<std::endl;
   std::map<std::string, RGTextureSpec*>::iterator it;
   it = labelTextureMap.find(text);
   if (it != labelTextureMap.end())
     return ((*it).second);
   else
     return RG_createTextureForText(text, fontName, fontSize);
-  //return RG_createTextureForText(text, fontName,fontSize);
+  std::cout << "create new texture for: " << text << std::endl;
 }
 
 RGTextureSpec* CQGLNetworkPainter::RG_createTextureForText(const std::string& text, const std::string& fontName, unsigned int fontSize)
@@ -1104,9 +1105,8 @@ void CQGLNetworkPainter::setItemAnimated(std::string key, bool animatedP)
       setOfDisabledMetabolites.erase(key);
       rescaleNode(key, pParentLayoutWindow->getMinNodeSize(), pParentLayoutWindow->getMaxNodeSize(), pParentLayoutWindow->getScalingMode());
     }
-  //this->drawGraph();
   this->showStep(pParentLayoutWindow->getCurrentStep());
-  this->updateGL();
+  //X this->updateGL();
 }
 
 void CQGLNetworkPainter::rescaleDataSetsWithNewMinMax(C_FLOAT64 /* oldMin */, C_FLOAT64 /* oldMax */, C_FLOAT64 newMin, C_FLOAT64 newMax, C_INT16 scaleMode)
@@ -1565,10 +1565,7 @@ void CQGLNetworkPainter::triggerAnimationStep()
       regularTimer->stop();
       emit endOfAnimationReached();
     }
-  //updateGL();
   //this->showStep(i);
-
-  //this->drawGraph();
 }
 
 CDataEntity* CQGLNetworkPainter::getDataSetAt(C_INT32 stepNumber)
@@ -1761,7 +1758,7 @@ void CQGLNetworkPainter::mapLabelsToRectangles()
   //viewerNodes[i].adaptCurvesForRectangles(&viewerCurves);
   this->drawGraph(); // this function will draw the bounding box for each node
   //this->draw();
-  this->updateGL();
+  //X this->updateGL();
 }
 
 CLPoint CQGLNetworkPainter::getPointOnRectangle(CLBoundingBox r, CLPoint p)
@@ -1826,7 +1823,7 @@ void CQGLNetworkPainter::mapLabelsToCircles()
 
   this->drawGraph();
   // this->draw();
-  this->updateGL();
+  //X this->updateGL();
 }
 
 // get Point on Circle border on the line from the center of the given rectangle to the given point p
@@ -2057,6 +2054,18 @@ void CQGLNetworkPainter::zoom(C_FLOAT64 zoomFactor)
   this->drawGraph();
 }
 
+void CQGLNetworkPainter::setFontSize(C_INT16 fs)
+{
+  this->mFontsizeDouble = fs;
+  unsigned int i;
+  for (i = 0;i < viewerLabels.size();i++)
+    {
+      this->viewerLabels[i].setHeight(fs);
+    }
+  createTextureForAllLabels();
+  this->drawGraph();
+}
+
 QImage CQGLNetworkPainter::getImage()
 {
   return this->grabFrameBuffer();
@@ -2178,7 +2187,7 @@ void CQGLNetworkPainter::initializeGL()
   //glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST); // Really Nice Perspective Calculation
 
   graphObjList = glGenLists(256);
-  drawGraph(); // create display list with graph objects
+  //drawGraph(); // create display list with graph objects
   //glNewList(graphObjList, GL_COMPILE);
   //glEndList();
 

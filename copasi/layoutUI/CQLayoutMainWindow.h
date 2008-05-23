@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.h,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.34 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/05/07 09:49:22 $
+//   $Date: 2008/05/23 09:22:42 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -107,6 +107,7 @@ class CQLayoutMainWindow : public QMainWindow
     void mapLabelsToRectangles();
 
     void changeMinMaxNodeSizes();
+    void changeFontSize();
     void toggleAutomaticRescaling(bool isChecked);
 
     void showStep(double i);
@@ -139,6 +140,7 @@ class CQLayoutMainWindow : public QMainWindow
     QAction *circularShape;
 
     QAction *miMaNodeSizes;
+    QAction *sFontSize;
     QAction *automaticRescaleToggle;
 
     //QCheckBox *automaticRescaleToggle;
