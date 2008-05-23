@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGlyphs.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/03/02 14:51:32 $
+//   $Author: urost $
+//   $Date: 2008/05/23 09:20:30 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -142,6 +147,7 @@ class CLTextGlyph : public CLGraphicalObject
     void setGraphicalObjectKey(const std::string & k) {mGraphicalObjectKey = k;};
 
     virtual void scale (const double & scaleFactor){this->mBBox.scale(scaleFactor);}
+    void setHeight (const double & h){this->mBBox.scale(h / mBBox.getDimensions().getHeight());}
 
     /**
      * insert operator
