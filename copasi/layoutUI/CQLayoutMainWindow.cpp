@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.62 $
+//   $Revision: 1.63 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/05/23 09:22:43 $
+//   $Date: 2008/05/26 11:18:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,6 +26,7 @@
 #include "CQLayoutMainWindow.h"
 #include "CQGLNetworkPainter.h"
 #include "NodeSizePanel.h"
+#include "FontChooser.h"
 #include "UI/CopasiFileDialog.h"
 
 //#include "sbmlDocumentLoader.h"
@@ -235,6 +236,11 @@ void CQLayoutMainWindow::setMaxNodeSize(C_FLOAT64 maxNdSize)
 {
   if (pVisParameters != NULL)
     pVisParameters->maxNodeSize = maxNdSize;
+}
+
+C_INT16 CQLayoutMainWindow::getFontSize()
+{
+  return glPainter->getFontSize();
 }
 
 C_INT32 CQLayoutMainWindow::getStepsPerSecond()
@@ -459,9 +465,9 @@ void CQLayoutMainWindow::changeMinMaxNodeSizes()
 
 void CQLayoutMainWindow::changeFontSize()
 {
-  // choose new font size and set it in glPainter
-  //C_INT16 fz = 10;
-  //glPainter->setFontSize(fz);
+  // choose new font size (setting of size will be invoked from FontChooser panel
+  FontChooser *fCh = new FontChooser(this);
+  fCh->exec();
 }
 
 void CQLayoutMainWindow::loadData()
@@ -673,6 +679,11 @@ void CQLayoutMainWindow::setMinAndMaxValue(C_INT32 minNdSize, C_INT32 maxNdSize)
   setMinNodeSize(minNdSize);
   setMaxNodeSize(maxNdSize);
   showStep(this->timeSlider->value());
+}
+
+void CQLayoutMainWindow::setFontSizeForLabels(C_INT32 size)
+{
+  glPainter->setFontSizeForLabels((unsigned int) size);
 }
 
 void CQLayoutMainWindow::closeApplication()

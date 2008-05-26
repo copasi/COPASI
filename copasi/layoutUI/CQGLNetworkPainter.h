@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.64 $
+//   $Revision: 1.65 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/05/23 09:22:43 $
+//   $Date: 2008/05/26 11:18:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -111,7 +111,8 @@ class CQGLNetworkPainter : public QGLWidget
 
     void setItemAnimated(std::string key, bool animatedP);
 
-    void setFontSize(C_INT16 fs);
+    void setFontSizeForLabels(unsigned int fs);
+    C_INT16 getFontSize(){return mFontsize;}
 
   private slots:
     void zoomIn();

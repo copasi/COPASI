@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.h,v $
-//   $Revision: 1.34 $
+//   $Revision: 1.35 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/05/23 09:22:42 $
+//   $Date: 2008/05/26 11:18:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -75,6 +75,8 @@ class CQLayoutMainWindow : public QMainWindow
     void setMaxValue(C_INT32 maxNdSize); // set maximum possible node size
     void setMinAndMaxValue(C_INT32 minNdSize, C_INT32 maxNdSize);
 
+    void setFontSizeForLabels(C_INT32 size);
+
     CVisParameters *pVisParameters;
     bool getAnimationRunning();
     void setAnimationRunning(bool animationRunningP);
@@ -86,6 +88,7 @@ class CQLayoutMainWindow : public QMainWindow
     void setStepsPerSecond(C_INT16 val);
     C_INT16 getScalingMode();
     C_INT16 getMappingMode();
+    C_INT16 getFontSize();
 
     C_INT32 getCurrentStep();
 

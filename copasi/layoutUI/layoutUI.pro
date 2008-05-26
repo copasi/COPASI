@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/layoutUI.pro,v $ 
-#   $Revision: 1.18 $ 
+#   $Revision: 1.19 $ 
 #   $Name:  $ 
 #   $Author: urost $ 
-#   $Date: 2008/04/24 12:22:30 $ 
+#   $Date: 2008/05/26 11:18:16 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -52,7 +52,8 @@ SOURCES = CQLayoutMainWindow.cpp \
 
 
 FORMS = ParaPanel.ui \
-        NodeSizePanel.ui
+        NodeSizePanel.ui \
+        FontChooser.ui
 
        # CQCopasiLayoutWidget.ui
 

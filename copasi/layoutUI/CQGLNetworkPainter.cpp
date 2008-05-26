@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.110 $
+//   $Revision: 1.111 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/05/23 09:22:43 $
+//   $Date: 2008/05/26 11:18:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -108,6 +108,7 @@ void CQGLNetworkPainter::draw()
   glLoadIdentity();
 
   glCallList(graphObjList);
+  drawGraph();
 
   //  ******* test object *******
   //  glTranslatef(10.0f, 10.0f, 0.0f);
@@ -894,9 +895,11 @@ void CQGLNetworkPainter::createTextureForAllLabels()
   unsigned int i = 0;
   for (i = 0;i < viewerLabels.size();i++)
     {
-      C_INT32 fontSize = static_cast<C_INT32>(viewerLabels[i].getHeight());
-      if (fontSize < 10)
-        fontSize = 10; // do not allow font size below 5
+      //C_INT32 fontSize = static_cast<C_INT32>(viewerLabels[i].getHeight());
+      C_INT32 fontSize = mFontsize;
+      if (fontSize < 8)
+        fontSize = 8; // do not allow font size below 5
+      //std::cout << "font size: " << mFontsize << std::endl;
       RGTextureSpec* pTexture = RG_createTextureForText(viewerLabels[i].getText(), mFontname, fontSize);
       labelTextureMap.insert(std::pair<std::string, RGTextureSpec*>
                              (viewerLabels[i].getText(),
@@ -918,6 +921,7 @@ RGTextureSpec* CQGLNetworkPainter::getTextureForText(const std::string& text, co
 RGTextureSpec* CQGLNetworkPainter::RG_createTextureForText(const std::string& text, const std::string& fontName, unsigned int fontSize)
 {
   //std::cout << "create texture for: " << text << std::endl;
+  //std::cout << "              size: " << fontSize << std::endl;
   QFont font(QString(fontName.c_str()), fontSize);
   QFontMetrics fontMetrics = QFontMetrics(font);
 
@@ -2045,7 +2049,6 @@ void CQGLNetworkPainter::zoom(C_FLOAT64 zoomFactor)
               (*arrowIt).second.scale(zoomFactor); //scale arrow
               arrowIt++;
             }
-
           //this->viewerArrows[i].scale(zoomFactor);
         }
       //}
@@ -2054,16 +2057,18 @@ void CQGLNetworkPainter::zoom(C_FLOAT64 zoomFactor)
   this->drawGraph();
 }
 
-void CQGLNetworkPainter::setFontSize(C_INT16 fs)
+void CQGLNetworkPainter::setFontSizeForLabels(unsigned int fs)
 {
   this->mFontsizeDouble = fs;
+  this->mFontsize = (int)this->mFontsizeDouble;
   unsigned int i;
   for (i = 0;i < viewerLabels.size();i++)
     {
-      this->viewerLabels[i].setHeight(fs);
+      this->viewerLabels[i].adaptToHeight(fs);
     }
   createTextureForAllLabels();
   this->drawGraph();
+  this->update();
 }
 
 QImage CQGLNetworkPainter::getImage()
@@ -2225,6 +2230,7 @@ void CQGLNetworkPainter::paintGL()
   //std::cout << "paint GL" << std::endl;
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear The Screen And The Depth Buffer
   draw();
+  glFlush();
 }
 
 void CQGLNetworkPainter::printNodeMap()
