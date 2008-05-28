@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.65 $
+//   $Revision: 1.66 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/05/26 11:18:16 $
+//   $Date: 2008/05/28 11:57:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,6 +40,7 @@
 #include "copasi/layout/CLGlyphs.h"
 #include "copasi/layout/CLCurve.h"
 
+#include "copasi/layoutUI/CLabel.h"
 #include "copasi/layoutUI/CArrow.h"
 #include "copasi/layoutUI/CQLayoutMainWindow.h"
 #include "copasi/layoutUI/CSimSummaryInfo.h"
@@ -74,7 +75,7 @@ class CQGLNetworkPainter : public QGLWidget
     void drawGraph(); // create OpenGL display list with graph objects
     void drawNode(CGraphNode &n);
     void drawEdge(CGraphCurve &c);
-    void drawLabel(CLTextGlyph l);
+    void drawLabel(CLabel l);
     // void drawStringAt(string s, double x, double y);
     void drawArrow(CArrow a, CLMetabReferenceGlyph::Role role);
 
@@ -117,6 +118,7 @@ class CQGLNetworkPainter : public QGLWidget
   private slots:
     void zoomIn();
     void zoomOut();
+    void setFontSize();
 
   public slots:
     void triggerAnimationStep();
@@ -132,11 +134,14 @@ class CQGLNetworkPainter : public QGLWidget
     CLPoint mgraphMax;
 
     C_FLOAT64 currentZoom ; // current zoom factor
+    bool preserveMinLabelHeightP;
+    static const C_INT32 MIN_HEIGHT = 10; // min height for bounding boxes of labels (-> min font pt size)
 
     std::vector<std::string> viewerNodes; // contains node keys
     std::vector<CGraphCurve> viewerCurves; // contains curves defining a reaction (not directly associated with a node)
     //std::vector<CArrow> viewerArrows;
-    std::vector<CLTextGlyph> viewerLabels;
+    //std::vector<CLTextGlyph> viewerLabels;
+    std::vector<CLabel> viewerLabels;
     std::vector<CGraphCurve> curvesWithArrow;
 
     GLuint graphObjList;
@@ -181,6 +186,7 @@ class CQGLNetworkPainter : public QGLWidget
     CLPoint getPointNearCircle(CLBoundingBox r, CLPoint p, C_INT16 d);
     QAction *zoomInAction;
     QAction *zoomOutAction;
+    QAction *setFontSizeAction;
     void createActions();
     void zoom(double zoomFactor);
     //void renderBitmapString(double x, double y, std::string s, double w, double h);

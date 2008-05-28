@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.111 $
+//   $Revision: 1.112 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/05/26 11:18:16 $
+//   $Date: 2008/05/28 11:57:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -43,6 +43,8 @@
 #include <utility>
 
 #include "copasi.h"
+
+#include "FontChooser.h"
 
 #if (defined WIN32 && !defined log2)
 C_FLOAT64 log2(const C_FLOAT64 & __x)
@@ -244,7 +246,7 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
   CCopasiVector<CLTextGlyph> labels;
   labels = lP->getListOfTextGlyphs();
   std::cout << "number of labels " << labels.size() << std::endl;
-  viewerLabels = std::vector<CLTextGlyph>();
+  viewerLabels = std::vector<CLabel>();
   std::map<std::string, CGraphNode>::iterator itNode;
   for (i = 0;i < labels.size();i++)
     {
@@ -256,7 +258,7 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
       std::string s2 = labels[i]->getGraphicalObjectKey();
       //std::cout << "key1: " << s1 << "  key2: " << s2 << labels[i]->getText() << std::endl;
       //labels[i]->printLabel();
-      viewerLabels.push_back(*labels[i]);
+      viewerLabels.push_back(CLabel(*labels[i]));
       //std::cout << "label " << i << " : " << labels[i]->getGraphicalObjectKey() << std::endl;
       itNode = nodeMap.find(labels[i]->getGraphicalObjectKey());
       if (itNode != nodeMap.end())
@@ -389,11 +391,8 @@ void CQGLNetworkPainter::drawGraph()
     {
       drawEdge(viewerCurves[i]);
     }
-  //std::cout << "number of arrows: " << viewerArrows.size() << std::endl;
 
-  //glColor3f(0.0f,0.0f,0.5f); // arrows in dark blue
-  //  for (i = 0;i < viewerArrows.size();i++)
-  //    drawArrow(viewerArrows[i]);
+  // NOW DRAW LABELS
 
   if (this->mLabelShape == RECTANGLE)
     {
@@ -409,7 +408,7 @@ void CQGLNetworkPainter::drawGraph()
         drawLabel(viewerLabels[i]);
     }
   else
-    {// draw string next to circle (to the right)
+    {// draw string next to circle (to the right) or in the center if there is enough space
       for (i = 0;i < viewerLabels.size();i++)
         {
           C_FLOAT64 tWid = getTextWidth(viewerLabels[i].getText(), mFontname, static_cast<int>(floor(viewerLabels[i].getHeight())));
@@ -432,7 +431,6 @@ void CQGLNetworkPainter::drawGraph()
                 }
               else if ((tWid + 4) > nDiam)
                 {// label wider (+ k=4 to avoid crossing circle borders) than size of circle-> place next to circle
-
                   x = xNdCenter + (nDiam / 2.0) + 2.0 - ((viewerLabels[i].getWidth() - tWid) / 2.0); // + nDiam / 2.0 - ((labelWWid - (*itNodeObj).second.getWidth()) / 2.0); // node center + circle radius - texture window overhead
                   y = yNdCenter;
                 }
@@ -447,8 +445,7 @@ void CQGLNetworkPainter::drawGraph()
               x = viewerLabels[i].getX();
               y = viewerLabels[i].getY();
             }
-          //std::cout << viewerLabels[i].getText() << "  x: " << x << "   y: " << y << std::endl;
-          // drawStringAt(viewerLabels[i].getText(), x, y, viewerLabels[i].getWidth(), viewerLabels[i].getHeight(), QColor(219, 235, 255));
+          //           // drawStringAt(viewerLabels[i].getText(), x, y, viewerLabels[i].getWidth(), viewerLabels[i].getHeight(), QColor(219, 235, 255));
           RG_drawStringAt(viewerLabels[i].getText(), static_cast<C_INT32>(x), static_cast<C_INT32>(y), static_cast<C_INT32>(viewerLabels[i].getWidth()), static_cast<C_INT32>(viewerLabels[i].getHeight()));
         }
     }
@@ -744,7 +741,7 @@ void CQGLNetworkPainter::drawArrow(CArrow a, CLMetabReferenceGlyph::Role role)
 //}
 
 // draws label as a rectangular filled shape with a border and the text inside
-void CQGLNetworkPainter::drawLabel(CLTextGlyph l)
+void CQGLNetworkPainter::drawLabel(CLabel l)
 {
   //glColor3f(0.5f, 1.0f, 0.69f); // label background color somehow green
   glColor3f(0.7f, 0.8f, 1.0f); // label background color (61,237,181)
@@ -897,8 +894,8 @@ void CQGLNetworkPainter::createTextureForAllLabels()
     {
       //C_INT32 fontSize = static_cast<C_INT32>(viewerLabels[i].getHeight());
       C_INT32 fontSize = mFontsize;
-      if (fontSize < 8)
-        fontSize = 8; // do not allow font size below 5
+      //if (fontSize < 8)
+      //  fontSize = 8; // do not allow font size below 5
       //std::cout << "font size: " << mFontsize << std::endl;
       RGTextureSpec* pTexture = RG_createTextureForText(viewerLabels[i].getText(), mFontname, fontSize);
       labelTextureMap.insert(std::pair<std::string, RGTextureSpec*>
@@ -1963,6 +1960,18 @@ void CQGLNetworkPainter::createActions()
                                CTRL + Key_M,
                                this);
   connect(zoomOutAction, SIGNAL(activated()), this, SLOT(zoomOut()));
+
+  setFontSizeAction = new QAction("set font size",
+                                  "Set Font Size",
+                                  CTRL + Key_F,
+                                  this);
+  connect(setFontSizeAction, SIGNAL(activated()), this, SLOT(setFontSize()));
+}
+
+void CQGLNetworkPainter::setFontSize()
+{
+  FontChooser *fCh = new FontChooser(this);
+  fCh->exec();
 }
 
 void CQGLNetworkPainter::zoomIn()
@@ -1982,7 +1991,7 @@ void CQGLNetworkPainter::zoomGraph(C_FLOAT64 zoomFactor)
 
 void CQGLNetworkPainter::zoom(C_FLOAT64 zoomFactor)
 {
-  //cout << "zoom  "  << zoomFactor << std::endl;
+  //std::cout << "zoom  "  << zoomFactor << std::endl;
   this->currentZoom *= zoomFactor;
 
   CLPoint cMax = CLPoint(this->mgraphMax.getX() * zoomFactor, this->mgraphMax.getY() * zoomFactor);
@@ -2036,7 +2045,22 @@ void CQGLNetworkPainter::zoom(C_FLOAT64 zoomFactor)
       //std::cout << "new fontsize: " << this->mFontsize << std::endl;
       for (i = 0;i < viewerLabels.size();i++)
         {
-          this->viewerLabels[i].scale(zoomFactor);
+          this->viewerLabels[i].scale(currentZoom); // use original values of position/dimensions and current  zoom (absolute value wrt to original graph)
+          if (!preserveMinLabelHeightP)
+            this->viewerLabels[i].scale(zoomFactor);
+          else
+            {
+              if ((this->viewerLabels[i].getHeight() * zoomFactor) >= MIN_HEIGHT)
+                this->viewerLabels[i].scale(zoomFactor);
+              else
+                {
+                  this->viewerLabels[i].scale(zoomFactor);
+                  //this->mFontsizeDouble = (double) MIN_HEIGHT;
+                  //this->mFontsize = MIN_HEIGHT;
+                  //this->viewerLabels[i].adaptToHeight(MIN_HEIGHT);
+                  //this->viewerLabels[i].scalePosition(zoomFactor);
+                }
+            }
         }
       for (i = 0;i < viewerNodes.size();i++)
         {
@@ -2081,6 +2105,7 @@ void CQGLNetworkPainter::contextMenuEvent(QContextMenuEvent *cme)
   QPopupMenu *contextMenu = new QPopupMenu(this);
   zoomInAction->addTo(contextMenu);
   zoomOutAction->addTo(contextMenu);
+  setFontSizeAction->addTo(contextMenu);
   contextMenu->exec(cme->globalPos());
 }
 
@@ -2143,6 +2168,7 @@ void CQGLNetworkPainter::initializeGraphPainter(QWidget *viewportWidget)
   mFontsize = 12;
   mFontsizeDouble = 12.0; // to avoid rounding errors due to zooming in and out
   mDataPresentP = false;
+  preserveMinLabelHeightP = true;
 
   //mf(FROM_UTF8(this->mFontname));
   mf = QFont(FROM_UTF8(mFontname));
