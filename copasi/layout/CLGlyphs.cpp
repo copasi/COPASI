@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGlyphs.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/05/26 10:42:59 $
+//   $Date: 2008/05/28 11:48:59 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -196,15 +196,6 @@ void CLTextGlyph::clearText()
 {
   mIsTextSet = false;
   mText = "";
-}
-
-// set height of mBBox to new value given by the only parameter and scale width of box
-// so that ration is preserved
-void CLTextGlyph::adaptToHeight (const double & h)
-{
-  C_FLOAT64 scaleFactor = h / mBBox.getDimensions().getHeight();
-  C_FLOAT64 w = mBBox.getDimensions().getWidth() * scaleFactor;
-  mBBox.setDimensions(CLDimensions(w, h));
 }
 
 CLGraphicalObject* CLTextGlyph::getGraphicalObject() const
