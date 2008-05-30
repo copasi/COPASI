@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.113 $
+//   $Revision: 1.114 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/05/29 11:40:20 $
+//   $Date: 2008/05/30 11:32:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -245,7 +245,7 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
 
   CCopasiVector<CLTextGlyph> labels;
   labels = lP->getListOfTextGlyphs();
-  std::cout << "number of labels " << labels.size() << std::endl;
+  //std::cout << "number of labels " << labels.size() << std::endl;
   viewerLabels = std::vector<CLabel>();
   std::map<std::string, CGraphNode>::iterator itNode;
   for (i = 0;i < labels.size();i++)
@@ -1004,7 +1004,7 @@ void CQGLNetworkPainter::drawStringAt(std::string s, C_FLOAT64 x, C_FLOAT64 y, C
       bbox = mfm.boundingRect(FROM_UTF8(s));
       w2 = round2powN(bbox.width());
       h2 = round2powN(bbox.height() + 2);
-      std::cout << "fontsize reduced to " << mFontsize << std::endl;
+      //std::cout << "fontsize reduced to " << mFontsize << std::endl;
     }
 
   QRect c(0, 0, w2, h2);
@@ -2046,7 +2046,7 @@ void CQGLNetworkPainter::zoom(C_FLOAT64 zoomFactor)
       // common fontname and size for all labels are stored in this class
       // each label size is always computed from the labels original size value
       // and scaled byc urrentZoom (which is the product of all zoomFactors applied so far)
-      this->mFontsizeDouble = this->mFontsizeDouble * currentZoom;
+      this->mFontsizeDouble = this->mFontsizeDouble * zoomFactor;
       this->mFontsize = (int)this->mFontsizeDouble;
       std::cout << "new fontsize: " << this->mFontsize << std::endl;
       for (i = 0;i < viewerLabels.size();i++)
@@ -2056,6 +2056,8 @@ void CQGLNetworkPainter::zoom(C_FLOAT64 zoomFactor)
             this->viewerLabels[i].scale(currentZoom);
           else
             {
+              std::cout << "height of label: " << this->viewerLabels[i].getHeight() << " *  " << zoomFactor << std::endl;
+
               if ((this->viewerLabels[i].getHeight() * zoomFactor) >= MIN_HEIGHT)
                 this->viewerLabels[i].scale(currentZoom);
               else
@@ -2091,7 +2093,7 @@ void CQGLNetworkPainter::setFontSizeForLabels(unsigned int fs)
 {
   this->mFontsizeDouble = fs;
   this->mFontsize = (int)this->mFontsizeDouble;
-  std::cout << "in  setFontSizeForLabels, mFontsize = " << mFontsize << std::endl;
+  //std::cout << "in  setFontSizeForLabels, mFontsize = " << mFontsize << std::endl;
 
   unsigned int i;
   for (i = 0;i < viewerLabels.size();i++)
@@ -2176,9 +2178,9 @@ void CQGLNetworkPainter::initializeGraphPainter(QWidget *viewportWidget)
   mFontsize = 12;
   mFontsizeDouble = 12.0; // to avoid rounding errors due to zooming in and out
   mDataPresentP = false;
-  preserveMinLabelHeightP = false;
+  preserveMinLabelHeightP = true;
 
-  std::cout << "initially, mFontsize = " << mFontsize << std::endl;
+  //std::cout << "initially, mFontsize = " << mFontsize << std::endl;
 
   //mf(FROM_UTF8(this->mFontname));
   mf = QFont(FROM_UTF8(mFontname));
