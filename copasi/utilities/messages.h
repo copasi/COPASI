@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.115 $
+//   $Revision: 1.116 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/05/13 14:13:01 $
+//   $Date: 2008/06/02 10:10:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -178,7 +178,7 @@ const MESSAGES Messages[] =
     {MCSBML + 26, "SBML (26): Units for some parameters were ignored. Units might be displayed incorrectly.\nParameters: %s"},
     {MCSBML + 27, "SBML (27): Error in kinetic law for reaction '%s'."},
     {MCSBML + 28, "SBML (28): Error in function definition with id '%s'."},
-    {MCSBML + 29, "SBML (29): Unable to handle reactions with the 'fast' flag set.\nThe flag has been set to false."},
+    {MCSBML + 29, "SBML (29): Unable to handle reactions with the 'fast' flag set.\nThe flag has been set to false in the following reactions:\n%s"},
     {MCSBML + 30, "SBML (30): Can't handle units of type item with scale set to 1.\n If this file was created with COPASI RC1 or older please see the COPASI FAQ."},
     {MCSBML + 31, "SBML (31): %s are currently only supported for global parameters."}, // OBSOLETE
     {MCSBML + 32, "SBML (32): Error in %s variable id '%s' does not specify a compartment, species or global parameter."},

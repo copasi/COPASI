@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.197 $
+//   $Revision: 1.198 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/18 20:27:43 $
+//   $Author: gauges $
+//   $Date: 2008/06/02 10:10:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -487,6 +487,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
                                        &totalSteps);
     }
   this->mDivisionByCompartmentReactions.clear();
+  this->mFastReactions.clear();
   for (counter = 0; counter < num; counter++)
     {
       this->createCReactionFromReaction(sbmlModel->getReaction(counter), sbmlModel, this->mpCopasiModel, copasi2sbmlmap, pTmpFunctionDB);
@@ -507,6 +508,21 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
         }
       idList = idList.substr(0, idList.length() - 2);
       CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 17, idList.c_str());
+    }
+  if (!this->mFastReactions.empty())
+    {
+      // create the error message
+      std::string idList;
+      std::set<std::string>::const_iterator it = this->mFastReactions.begin();
+      std::set<std::string>::const_iterator endit = this->mFastReactions.end();
+      while (it != endit)
+        {
+          idList += (*it);
+          idList += ", ";
+          ++it;
+        }
+      idList = idList.substr(0, idList.length() - 2);
+      CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 29, idList.c_str());
     }
   this->mpCopasiModel->setCompileFlag();
   if (this->mUnsupportedRuleFound)
@@ -866,11 +882,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, Model* p
   if (sbmlReaction->isSetFast())
     {
       const_cast<Reaction*>(sbmlReaction)->setFast(false);
-      if (!this->mFastReactionsEncountered)
-        {
-          this->mFastReactionsEncountered = true;
-          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 29);
-        }
+      this->mFastReactions.insert(sbmlReaction->getId());
     }
   /* Add all substrates to the reaction */
   unsigned int num = sbmlReaction->getNumReactants();
@@ -1415,7 +1427,6 @@ SBMLImporter::SBMLImporter()
   this->mUnsupportedRateRuleFound = false;
   this->mUnsupportedAssignmentRuleFound = false;
   this->mpImportHandler = NULL;
-  this->mFastReactionsEncountered = false;
   this->mDelayFound = false;
   this->mAvogadroCreated = false;
   this->mIgnoredSBMLMessages.insert(10501);
@@ -1526,7 +1537,6 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
 #endif
 )
 {
-  this->mFastReactionsEncountered = false;
   this->mpCopasiModel = NULL;
   if (funDB != NULL)
     {

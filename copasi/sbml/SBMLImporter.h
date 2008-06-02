@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-//   $Revision: 1.67 $
+//   $Revision: 1.68 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/03/17 16:03:29 $
+//   $Date: 2008/06/02 10:10:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -77,7 +77,7 @@ class SBMLImporter
     unsigned C_INT32 mhImportStep;
     unsigned C_INT32 mTotalSteps;
     std::map<Species*, Compartment*> mSubstanceOnlySpecies;
-    bool mFastReactionsEncountered;
+    std::set<std::string> mFastReactions;
     std::set<std::string> mExplicitelyTimeDependentFunctionDefinitions;
     std::vector<std::string> mIgnoredParameterUnits;
     std::map<const ASTNode*, std::pair<CCopasiObjectName, CChemEq::MetaboliteRole> > mStoichiometricExpressionMap;
