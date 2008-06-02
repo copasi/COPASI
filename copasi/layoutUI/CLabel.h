@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CLabel.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/05/28 11:53:09 $
+//   $Date: 2008/06/02 09:07:49 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,6 +34,9 @@ class CLabel : public CLTextGlyph
     CLabel();
     CLabel(const CLTextGlyph & tg);
     CLabel(const CLabel & l);
+
+    C_FLOAT64 getOrigHeight(){return this->orig_height;}
+    C_FLOAT64 getOrigWidth(){return this->orig_width;}
 
     virtual void scale (const double & scaleFactor);
     void adaptToHeight (const double & h);

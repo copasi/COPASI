@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.114 $
+//   $Revision: 1.115 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/05/30 11:32:10 $
+//   $Date: 2008/06/02 09:07:49 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -2058,7 +2058,7 @@ void CQGLNetworkPainter::zoom(C_FLOAT64 zoomFactor)
             {
               std::cout << "height of label: " << this->viewerLabels[i].getHeight() << " *  " << zoomFactor << std::endl;
 
-              if ((this->viewerLabels[i].getHeight() * zoomFactor) >= MIN_HEIGHT)
+              if ((this->viewerLabels[i].getOrigHeight() * currentZoom) >= MIN_HEIGHT)
                 this->viewerLabels[i].scale(currentZoom);
               else
                 {
