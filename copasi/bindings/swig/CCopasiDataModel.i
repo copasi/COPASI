@@ -1,12 +1,17 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiDataModel.i,v $ 
-//   $Revision: 1.17 $ 
+//   $Revision: 1.18 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2007/12/11 21:10:27 $ 
+//   $Date: 2008/06/02 11:15:11 $ 
 // End CVS Header 
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc. and EML Research, gGmbH. 
 // All rights reserved. 
 
@@ -35,7 +40,7 @@
 %ignore CCopasiDataModel::importSBMLFromString(const std::string& sbmlDocumentText,CProcessReport* pImportHandler);
 %ignore CCopasiDataModel::importSBML(const std::string& fileName,CProcessReport* pImportHandler);
 %ignore CCopasiDataModel::exportSBML(const std::string& fileName,bool overwriteFile,int sbmlLevel, int sbmlVersion,bool exportIncomplete = false,CProcessReport* pExportHandler = NULL );
-%ignore CCopasiDataModel::exportSBMLToString(CProcessReport* pExportHandler);
+%ignore CCopasiDataModel::exportSBMLToString(CProcessReport* pExportHandler,int sbmlLevel, int sbmlVersion);
 %ignore CCopasiDataModel::exportMathModel(const std::string & fileName, CProcessReport* pProcessReport, const std::string & filter, bool overwriteFile = false);
 %ignore CCopasiDataModel::getModel() const;
 %ignore CCopasiDataModel::listTaskDependentOnReport(const std::string & key);
@@ -74,7 +79,7 @@
 %catches(CCopasiException) CCopasiDataModel::newModel();
 %catches(CCopasiException) CCopasiDataModel::importSBMLFromString(const std::string& sbmlDocumentText,CProcessReport* pImportHandler = NULL);
 %catches(CCopasiException) CCopasiDataModel::importSBML(const std::string&,CProcessReport*);
-%catches(CCopasiException) CCopasiDataModel::exportSBMLToString(CProcessReport* pExportHandler = NULL);
+%catches(CCopasiException) CCopasiDataModel::exportSBMLToString(CProcessReport* pExportHandler , int sbmlLevel,int sbmlVersion);
 %catches(CCopasiException) CCopasiDataModel::exportSBML(const std::string& fileName, bool overwriteFile=false, int sbmlLevel = 2, int sbmlVersion = 1, bool exportIncomplete = false, CProcessReport* pExportHandler = NULL);
 
 %include "CopasiDataModel/CCopasiDataModel.h"
@@ -91,9 +96,15 @@
         return $self->saveModel(fileName,NULL,overwriteFile,false);
     };
 
+    std::string exportSBMLToString(int sbmlLevel, int sbmlVersion)
+    {
+        return $self->exportSBMLToString(NULL,sbmlLevel,sbmlVersion);
+    };
+
+    /* this is for backwards compatibility. */  
     std::string exportSBMLToString()
     {
-        return $self->exportSBMLToString(NULL);
+        return $self->exportSBMLToString(NULL,2,1);
     };
 
     bool newModel()

@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/gui/org/COPASI/gui/TrajectoryTaskWidget.java,v $ 
-//   $Revision: 1.10 $ 
+//   $Revision: 1.11 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2008/03/17 19:12:44 $ 
+//   $Date: 2008/06/02 11:15:12 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -262,7 +262,7 @@ public class TrajectoryTaskWidget extends TaskWidget  implements FocusListener{
 					long v=(long)Math.ceil(Math.abs(p.getDblValue()/d));
 					p=this.mTask.getProblem().getParameter("StepNumber");
 					p.setUIntValue(v);
-					this.mProblemWidgetContent.mIntervalSizeInput.setText(new Long(v).toString());
+					this.mProblemWidgetContent.mNumIntervalsInput.setText(new Long(v).toString());
 					
 				}
 				
