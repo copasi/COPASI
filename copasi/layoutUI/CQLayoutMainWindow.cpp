@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.64 $
+//   $Revision: 1.65 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/05/28 11:57:09 $
+//   $Date: 2008/06/02 09:14:52 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -288,12 +288,12 @@ C_INT16 CQLayoutMainWindow::getMappingMode()
 
 void CQLayoutMainWindow::createActions()
 {
-  openSBMLFile = new QAction("SBML",
-                             "Load SBML file",
-                             CTRL + Key_F,
-                             this);
-  openSBMLFile->setStatusTip("Load SBML file with/without layout");
-  connect(openSBMLFile, SIGNAL(activated()) , this, SLOT(loadSBMLFile()));
+  //   openSBMLFile = new QAction("SBML",
+  //                              "Load SBML file",
+  //                              CTRL + Key_F,
+  //                              this);
+  //   openSBMLFile->setStatusTip("Load SBML file with/without layout");
+  //   connect(openSBMLFile, SIGNAL(activated()) , this, SLOT(loadSBMLFile()));
 
   //   openDataFile = new QAction("data",
   //                              "Load Simulation Data",
@@ -372,7 +372,7 @@ void CQLayoutMainWindow::createActions()
 void CQLayoutMainWindow::createMenus()
 {
   fileMenu = new QPopupMenu(this);
-  openSBMLFile->addTo(fileMenu);
+  //openSBMLFile->addTo(fileMenu);
   //openDataFile->addTo(fileMenu);
   fileMenu->insertSeparator();
   closeAction->addTo(fileMenu);
