@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraph.h,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2008/04/21 20:12:31 $
+//   $Author: shoops $
+//   $Date: 2008/06/03 13:20:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,14 +20,35 @@
 
 #include <map>
 #include <vector>
+#include <set>
 
-#include "model/CModelValue.h"
+#include "copasi/MIRIAM/CRDFPredicate.h"
 
-#include "MIRIAM/CRDFNode.h"
-#include "MIRIAM/CRDFObject.h"
+class CRDFNode;
+class CRDFObject;
+class CRDFSubject;
+class CRDFEdge;
 
 class CRDFGraph
   {
+  public:
+    class CTriplet
+      {
+      public:
+        CRDFNode * pSubject;
+        CRDFPredicate::ePredicateType Predicate;
+        CRDFNode * pObject;
+
+        CTriplet(CRDFNode * pSubject = NULL,
+                 const CRDFPredicate::ePredicateType & predicate = CRDFPredicate::end,
+                 CRDFNode * pObject = NULL);
+
+        bool operator < (const CTriplet & rhs) const;
+        bool operator ! () const;
+      };
+
+    static CTriplet Fail;
+
     // Operations
   public:
     /**
@@ -91,18 +112,97 @@ class CRDFGraph
      * @param const CRDFSubject & subject
      * @param const std::string & predicate
      * @param const CRDFObject & object
+     * @return CTriplet triplet
+     */
+    CTriplet addTriplet(const CRDFSubject & subject,
+                        const std::string & predicate,
+                        const CRDFObject & object);
+
+    /**
+     * Remove triplet from the graph. Please note, this will also remove all unreferenced
+     * local resources created by removing the edge.
+     * @param bCRDFNode * pSubject
+     * @param const std::string & predicate
+     * @param const CRDFNode * pObject
      * @return bool success
      */
-    bool addTriplet(const CRDFSubject & subject,
-                    const std::string & predicate,
-                    const CRDFObject & object);
+    bool removeTriplet(CRDFNode * pSubject,
+                       const std::string & predicate,
+                       const CRDFNode * pObject);
+
+  private:
+    /**
+     * Remove triplet from the graph. Please note, this will also remove all unreferenced
+     * local resources created by removing the edge.
+     * @param CRDFNode * pNode
+     * @param const CRDFEdge & Edge
+     * @return bool success
+     */
+    bool removeTriplet(CRDFNode * pNode, const CRDFEdge & Edge);
+
+  public:
+    /**
+     * Move a edge from one node to another
+     * @param CRDFNode * pFrom
+     * @param CRDFNode * pTo
+     * @param const CRDFEdge & Edge
+     * @return bool success
+     */
+    bool moveEdge(CRDFNode * pFrom, CRDFNode * pTo, const CRDFEdge & Edge);
+
+#ifdef XXXX
+  private:
+    /**
+     * Retreive all triplets with the specified predicate
+     * @param const CRDFPredicate::ePredicateType & predicate
+     * @return std::map< CRDFNode *, CRDFEdge * > &tripletsWithPredicate
+     */
+    std::map< CRDFNode *, CRDFEdge * > getTripletsWithPredicate(const CRDFPredicate::ePredicateType & predicate) const;
+#endif // XXXX
+
+  public:
+    /**
+     * Retreive the predicate path to the ginve node.
+     * @param const CRDFNode * pNode
+     * @return CRDFPredicate::Path
+     */
+    CRDFPredicate::Path getPredicatePath(const CRDFNode * pNode);
+
+  private:
+    /**
+     * Retreive the predicate path to the ginve node. The set visited should be empty on the initial call.
+     * @param const CRDFNode * pNode
+     * @param const CRDFNode * pCurrent
+     * @param CRDFPredicate::Path & path
+     * @param std::set< const CRDFNode * > & visited
+     * @return bool found;
+     */
+    bool getPredicatePath(const CRDFNode * pNode,
+                          const CRDFNode * pCurrent,
+                          CRDFPredicate::Path & path,
+                          std::set< const CRDFNode * > & visited);
+
+  public:
+    /**
+     * Generate a unique blank node id.
+     * @return std::string blankNodeId
+     */
+    std::string generatedBlankNodeId() const;
+
+    /**
+     * If no about node exists a node is created with the attribute:
+     * rdf:about="#key
+     * @param const std::string & key
+     * @return CRDFNode * pAbout
+     */
+    CRDFNode * createAboutNode(const std::string & key);
 
     /**
      * Add a child node to a table node.
      * @param const std::string tableName
      * @param const CRDFObject& childObj
      */
-    void addRecordToTable(const std::string& tableName, const CRDFObject& childObj);
+    // void addRecordToTable(const std::string& tableName, const CRDFObject& childObj);
 
     /**
      * Remove a child node from a table node.
@@ -111,16 +211,16 @@ class CRDFGraph
      * @param const CRDFObject& childObj
      * @return std::string success
      */
-    bool removeRecordFromTable(const std::string& tableName, const CRDFObject& childObj);
+    // bool removeRecordFromTable(const std::string& tableName, const CRDFObject& childObj);
 
     /**
-        * Get all objects corresponding to a given
-        * table name.
-        * @param const std::string& tableName
-        * @param std::vector<std::string> & nodeIds
-           * @return bool success
-        */
-    bool getNodeIDsForTable(const std::string& tableName, std::vector<CRDFObject>& objects);
+     * Get all objects corresponding to a given
+     * table name.
+     * @param const std::string& tableName
+     * @param std::vector<std::string> & nodeIds
+     * @return bool success
+     */
+    // bool getNodeIDsForTable(const std::string& tableName, std::vector<CRDFObject>& objects);
 
     /**
      *Get the value of the field for a given fieldName.
@@ -128,7 +228,7 @@ class CRDFGraph
      * @param const CRDFObject& obj
      * @return std::string fieldValue
      */
-    std::string getFieldValue(const std::string& fieldName, const CRDFObject& obj);
+    // std::string getFieldValue(const std::string& fieldName, const CRDFObject& obj);
 
     /**
      *Set the value of the field for a given fieldName.
@@ -137,11 +237,11 @@ class CRDFGraph
     * @param CRDFObject& obj
      * @return std::string success
      */
-    bool setFieldValue(const std::string& fieldName, CRDFObject& obj, const std::string& fieldValue);
+    // bool setFieldValue(const std::string& fieldName, CRDFObject& obj, const std::string& fieldValue);
 
-    CRDFGraph* loadGraph(CCopasiObject* pEntity);
-    bool saveGraph(CCopasiObject* pEntity);
-    bool isChanged();
+    // CRDFGraph* loadGraph(CCopasiObject* pEntity);
+    // bool saveGraph(CCopasiObject* pEntity);
+    // bool isChanged();
 
     // Attributes
   private:
@@ -164,7 +264,7 @@ class CRDFGraph
     std::map< std::string, CRDFNode * > mBlankNodeId2Node;
 
     /**
-     * A map of resource URIs to local resource nodes of the graph
+     * A map of resource URIs to local resource nodes of the graph, i
      */
     std::map< std::string, CRDFNode * > mLocalResource2Node;
 
@@ -177,70 +277,6 @@ class CRDFGraph
      * A vector of all literal nodes of the graph
      */
     std::vector< CRDFNode * > mLiteralNodes;
-
-    static unsigned int nodeIDCounter;
-
-  protected:
-    /**
-     * Add a Bag node to a table node.
-     * @param const std::string tableName
-     * @return std::string success
-     */
-    bool addBagNodeToTable(const std::string& tableName);
-
-    /**
-     * Remove a Bag node from a table node.
-     * @param const std::string tableName
-     * @return std::string success
-     */
-    bool removeBagNodeFromTable(const std::string& tableName);
-
-    void addObjectToBagNode(const std::string& tableName, CRDFNode* pTableNode, const CRDFObject& object);
-    void buildCreatorRecord(const CRDFNode * pObjNode);
-    void buildReferenceRecord(const CRDFNode * pObjNode);
-    void buildCreatedRecord(const CRDFNode * pObjNode);
-    void buildModifiedRecord(const CRDFNode * pObjNode);
-    void createAboutNode();
-    std::string getNameSpaceURI(const std::string& lookupStr);
-    CRDFNode* findFieldNodeFromObject(const std::string& fieldName, const CRDFObject& startObj);
-    /**
-       * Find a node in the graph which has attributes similar
-    * to the given object.
-       * @param CRDFObject& object
-       * @return CRDFNode* (NULL when not found)
-       */
-    CRDFNode* findNodeFromObject(const CRDFObject& object);
-
-    /**
-     * Find a node in the graph with a given predicate
-     * and a start node
-     * @param const std::string& predicate
-     * @param const CRDFNode * startNode
-     * @return CRDFNode* (NULL when not found)
-     */
-    CRDFNode* getNodeForPredicate(const std::string& predicate, const CRDFNode * startNode);
-
-    std::string tagName2Predicate(const std::string& tableName);
-    bool removeNode(CRDFNode * pNode);
-    /**
-       * Remove all empty Nodes from the graph;
-       */
-    void compressGraph();
-
-    /**
-    * Remove all nodes with empty values at
-    * and below this node.
-    * @param CRDFNode* pNode The node to compress
-    * @return bool success
-    */
-    bool compressNode(CRDFNode* pNode);
-
-    bool isBagNode(const CRDFNode* pNode);
-    bool isTypeNode(const CRDFNode * pNode, std::string typeResource = "");
-    void bagTheNode(CRDFNode* pNode, CRDFObject* pChildObj = NULL);
-    bool unbagTheNode(CRDFNode* pNode, CRDFObject* pChildObj = NULL);
-    std::string getGeneratedId();
-    unsigned int getNoOfObjectsInTable(const CRDFNode * pTableNode);
   };
 
 #endif // COPASI_CRDFGraph

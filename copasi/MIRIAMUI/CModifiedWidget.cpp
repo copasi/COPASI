@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CModifiedWidget.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2008/04/21 20:12:32 $
+//   $Author: shoops $
+//   $Date: 2008/06/03 13:21:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,7 +14,13 @@
 #include <qlayout.h>
 #include <qpushbutton.h>
 
-#include "MIRIAM/CCreator.h"
+#include "copasi.h"
+
+#include "CQMiriamWidget.h"
+#include "CModifiedWidget.h"
+
+#include "MIRIAM/CModelMIRIAMInfo.h"
+
 #include "utilities/CCopasiVector.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiObject.h"
@@ -22,9 +28,6 @@
 #include "UI/qtUtilities.h"
 #include "UI/CQMessageBox.h"
 #include "UI/CQDateTimeEditTableItem.h"
-
-#include "CMIRIAMModelWidget.h"
-#include "CModifiedWidget.h"
 
 #define COL_MARK               0
 #define COL_DUMMY              1
@@ -54,9 +57,9 @@ std::vector<const CCopasiObject*> CModifiedWidget::getObjects() const
   {
     std::vector<const CCopasiObject*> ret;
 
-    if (dynamic_cast <CMIRIAMModelWidget*> (parentWidget()))
+    if (dynamic_cast <CQMiriamWidget*> (parentWidget()))
       {
-        const CCopasiVector<CModified>& tmp = dynamic_cast <CMIRIAMModelWidget*> (parentWidget())->getMIRIAMInfo().getModifieds();
+        const CCopasiVector<CModification>& tmp = dynamic_cast <CQMiriamWidget*> (parentWidget())->getMIRIAMInfo().getModifications();
 
         C_INT32 i, imax = tmp.size();
         for (i = 0; i < imax; ++i)
@@ -85,7 +88,7 @@ void CModifiedWidget::init()
 void CModifiedWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_INT32 row)
 {
   if (!obj) return;
-  const CModified *pModified = (const CModified*)obj;
+  const CModification *pModified = (const CModification*)obj;
 
   CQDateTimeEditTableItem* pDTE = NULL;
   if (dynamic_cast<CQDateTimeEditTableItem *>(table->cellWidget(row, COL_DATE_MODIFIED)))
@@ -100,7 +103,7 @@ void CModifiedWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_I
     }
   if (pModified)
     {
-      const std::string strDT = pModified->getDateModified();
+      const std::string strDT = pModified->getDate();
       if (strDT.length())
       {pDTE->setDateTime(QDateTime::fromString(FROM_UTF8(strDT), Qt::ISODate));}
     }
@@ -109,15 +112,16 @@ void CModifiedWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_I
 void CModifiedWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj)
 {
   if (!obj) return;
-  CModified * pModified = static_cast< CModified * >(obj);
+  CModification * pModified = static_cast< CModification * >(obj);
 
   if (dynamic_cast<CQDateTimeEditTableItem *>(table->cellWidget(row, COL_DATE_MODIFIED)))
     {
       CQDateTimeEditTableItem * pDTE = static_cast<CQDateTimeEditTableItem *> (table->cellWidget(row, COL_DATE_MODIFIED));
       std::string dt = "";
-      if (pDTE->dateTime().toString(Qt::ISODate).ascii())
-      {dt = pDTE->dateTime().toString(Qt::ISODate).ascii();}
-      pModified->setDateModified(dt);
+      if (pDTE->dateTime().isValid())
+        dt = pDTE->dateTime().toString(Qt::ISODate).utf8();
+
+      pModified->setDate(dt);
     }
 }
 
@@ -137,13 +141,13 @@ QString CModifiedWidget::defaultObjectName() const
 
 CCopasiObject* CModifiedWidget::createNewObject(const std::string & name)
 {
-  if (!dynamic_cast <CMIRIAMModelWidget*> (parentWidget()))
+  if (!dynamic_cast <CQMiriamWidget*> (parentWidget()))
     return NULL;
   std::string nname = name;
   int i = 0;
-  CModified* pModified = NULL;
+  CModification* pModified = NULL;
 
-  while (!(pModified = dynamic_cast <CMIRIAMModelWidget*> (parentWidget())->getMIRIAMInfo().createModified(name)))
+  while (!(pModified = dynamic_cast <CQMiriamWidget*> (parentWidget())->getMIRIAMInfo().createModification(name)))
     {
       i++;
       nname = name + "_";
@@ -155,15 +159,15 @@ CCopasiObject* CModifiedWidget::createNewObject(const std::string & name)
 
 void CModifiedWidget::deleteObjects(const std::vector<std::string> & keys)
 {
-  if (!dynamic_cast <CMIRIAMModelWidget*> (parentWidget()))
+  if (!dynamic_cast <CQMiriamWidget*> (parentWidget()))
     return;
 
   QString modifiedList = "Are you sure you want to delete listed Modified Date(s) ?\n";
   unsigned C_INT32 i, imax = keys.size();
   for (i = 0; i < imax; i++) //all compartments
     {
-      CModified * pModified =
-        dynamic_cast< CModified *>(GlobalKeys.get(keys[i]));
+      CModification * pModified =
+        dynamic_cast< CModification *>(GlobalKeys.get(keys[i]));
 
       modifiedList.append(FROM_UTF8(pModified->getObjectName()));
       modifiedList.append(", ");
@@ -185,7 +189,7 @@ void CModifiedWidget::deleteObjects(const std::vector<std::string> & keys)
       {
         for (i = 0; i < imax; i++)
           {
-            dynamic_cast <CMIRIAMModelWidget*> (parentWidget())->getMIRIAMInfo().removeModified(keys[i]);
+            dynamic_cast <CQMiriamWidget*> (parentWidget())->getMIRIAMInfo().removeModification(keys[i]);
           }
 
         for (i = 0; i < imax; i++)

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CReferencesWidget.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2008/04/23 22:26:28 $
+//   $Author: shoops $
+//   $Date: 2008/06/03 13:21:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,6 +14,8 @@
 #include <qlayout.h>
 #include <qpushbutton.h>
 
+#include "copasi.h"
+
 #include "MIRIAM/CReference.h"
 #include "utilities/CCopasiVector.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
@@ -22,7 +24,7 @@
 #include "UI/qtUtilities.h"
 #include "UI/CQMessageBox.h"
 
-#include "CMIRIAMModelWidget.h"
+#include "CQMiriamWidget.h"
 #include "CReferencesWidget.h"
 
 #define COL_MARK               0
@@ -56,9 +58,9 @@ std::vector<const CCopasiObject*> CReferencesWidget::getObjects() const
   {
     std::vector<const CCopasiObject*> ret;
 
-    if (dynamic_cast <CMIRIAMModelWidget*> (parentWidget()))
+    if (dynamic_cast <CQMiriamWidget*> (parentWidget()))
       {
-        const CCopasiVector<CReference>& tmp = dynamic_cast <CMIRIAMModelWidget*> (parentWidget())->getMIRIAMInfo().getReferences();
+        const CCopasiVector<CReference>& tmp = dynamic_cast <CQMiriamWidget*> (parentWidget())->getMIRIAMInfo().getReferences();
 
         C_INT32 i, imax = tmp.size();
         for (i = 0; i < imax; ++i)
@@ -126,10 +128,10 @@ CCopasiObject* CReferencesWidget::createNewObject(const std::string & name)
   int i = 0;
   CReference* pReference = NULL;
 
-  if (!dynamic_cast <CMIRIAMModelWidget*> (parentWidget()))
+  if (!dynamic_cast <CQMiriamWidget*> (parentWidget()))
     return NULL;
 
-  while (!(pReference = dynamic_cast <CMIRIAMModelWidget*> (parentWidget())->getMIRIAMInfo().createReference(name)))
+  while (!(pReference = dynamic_cast <CQMiriamWidget*> (parentWidget())->getMIRIAMInfo().createReference(name)))
     {
       i++;
       nname = name + "_";
@@ -141,7 +143,7 @@ CCopasiObject* CReferencesWidget::createNewObject(const std::string & name)
 
 void CReferencesWidget::deleteObjects(const std::vector<std::string> & keys)
 {
-  if (!dynamic_cast <CMIRIAMModelWidget*> (parentWidget()))
+  if (!dynamic_cast <CQMiriamWidget*> (parentWidget()))
     return;
 
   QString ReferenceList = "Are you sure you want to delete listed REFERENCES(S) ?\n";
@@ -171,7 +173,7 @@ void CReferencesWidget::deleteObjects(const std::vector<std::string> & keys)
       {
         for (i = 0; i < imax; i++)
           {
-            dynamic_cast <CMIRIAMModelWidget*> (parentWidget())->getMIRIAMInfo().removeReference(keys[i]);
+            dynamic_cast <CQMiriamWidget*> (parentWidget())->getMIRIAMInfo().removeReference(keys[i]);
           }
 
         for (i = 0; i < imax; i++)
@@ -183,30 +185,6 @@ void CReferencesWidget::deleteObjects(const std::vector<std::string> & keys)
     default:                                           // No or Escape
       break;
     }
-}
-
-void CReferencesWidget::saveTable()
-{
-  if (!dynamic_cast <CMIRIAMModelWidget*> (parentWidget()))
-    return;
-
-  std::map<std::string, std::string> movedReferences;
-  if (isTableChanged())
-  {movedReferences = dynamic_cast <CMIRIAMModelWidget*> (parentWidget())->getMIRIAMInfo().moveOldReferences();}
-
-  if (movedReferences.size() > 0)
-    {
-      std::vector<std::string>::iterator it = mKeys.begin();
-      std::vector<std::string>::const_iterator end = mKeys.end();
-      for (; it != end; it++)
-        {
-          std::map<std::string, std::string>::const_iterator mit =
-            movedReferences.find(*it);
-          if (mit != movedReferences.end())
-          {*it = mit->second;}
-        }
-    }
-  CopasiTableWidget::saveTable();
 }
 
 void CReferencesWidget::slotDoubleClicked(int C_UNUSED(row), int C_UNUSED(col),

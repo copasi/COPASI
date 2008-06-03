@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CRDFListViewItem.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/02/04 17:28:00 $
+//   $Date: 2008/06/03 13:21:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -72,9 +72,9 @@ void CRDFListViewItem::setNode(const CRDFNode * pNode)
   for (; it != end; ++it)
     {
       CRDFListViewItem * pItem = new CRDFListViewItem(this, NULL);
-      pItem->setText(COL_PREDICATE, FROM_UTF8(it->first));
+      pItem->setText(COL_PREDICATE, FROM_UTF8(it->second.getPredicateURI()));
 
-      const CRDFObject & Object = it->second->getObject();
+      const CRDFObject & Object = it->second.getPropertyNode()->getObject();
       switch (Object.getType())
         {
         case CRDFObject::LITERAL:
@@ -93,8 +93,8 @@ void CRDFListViewItem::setNode(const CRDFNode * pNode)
         case CRDFObject::RESOURCE:
           pItem->setText(COL_OBJECT, FROM_UTF8(Object.getResource()));
         case CRDFObject::BLANK_NODE:
-          if (!static_cast< CRDFListView * >(listView())->visited(it->second))
-            pItem->setNode(it->second);
+          if (!static_cast< CRDFListView * >(listView())->visited(it->second.getPropertyNode()))
+            pItem->setNode(it->second.getPropertyNode());
           else
             pItem->setText(COL_OBJECT, pItem->text(COL_OBJECT) + " (recursive)");
           break;

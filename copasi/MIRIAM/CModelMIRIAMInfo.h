@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CModelMIRIAMInfo.h,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2008/04/21 20:12:31 $
+//   $Author: shoops $
+//   $Date: 2008/06/03 13:20:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 // All rights reserved.
 
 /**
- *  CModelMIRIAMInfo: Stores all MIRIAM info for a Model.
+ *  CMIRIAMInfo: Stores all MIRIAM info for a Model.
  *
  */
 
@@ -25,58 +25,62 @@
 
 #include <map>
 
-#include "utilities/CCopasiVector.h"
-#include "report/CCopasiContainer.h"
+#include "copasi/MIRIAM/CCreator.h"
+#include "copasi/MIRIAM/CReference.h"
+#include "copasi/MIRIAM/CModified.h"
+#include "copasi/MIRIAM/CBiologicalDescription.h"
+#include "copasi/MIRIAM/CRDFGraph.h"
+#include "copasi/MIRIAM/CRDFObject.h"
 
-#include "CCreator.h"
-#include "CReference.h"
-#include "CModified.h"
-#include "CBiologicalDescription.h"
-#include "CRDFGraph.h"
-#include "CRDFObject.h"
+#include "copasi/utilities/CCopasiVector.h"
+#include "copasi/report/CCopasiContainer.h"
 
-class CModelMIRIAMInfo : public CCopasiContainer
+class CMIRIAMInfo : public CCopasiContainer
   {
     // Attributes
   private:
     CCopasiVector <CCreator> mCreators;
     CCopasiVector <CReference> mReferences;
-    bool mOldReferencesMoved;
-    CRDFObject mCreatedObj;
-    CCopasiVector <CModified> mModifieds;
+    CCopasiVector <CModification> mModifications;
     CCopasiVector <CBiologicalDescription> mBiologicalDescriptions;
-
-    CRDFGraph* mpRDFGraph;
-    CCopasiObject* mpCopasiObject;
-
-  protected:
-    bool fillInfoFromGraph();
-    void fillObjects(std::string tableName);
-    void clearMembers();
+    CRDFObject mCreatedObj;
+    CRDFGraph * mpRDFGraph;
+    CRDFGraph::CTriplet mTriplet;
+    CRDFGraph::CTriplet mCreated;
+    CCopasiObject * mpCopasiObject;
 
     // Operations
   public:
-    CModelMIRIAMInfo();
-    ~CModelMIRIAMInfo();
-    void loadGraph(const std::string& key = "");
-    bool saveGraph();
+    CMIRIAMInfo();
+    ~CMIRIAMInfo();
+    void load(const std::string& key = "");
+    bool save();
     CRDFGraph* getRDFGraph();
+
     CCopasiVector <CCreator> & getCreators();
     CCreator* createCreator(const std::string& objectName);
     bool removeCreator(const std::string& key);
+    void loadCreators();
+
     CCopasiVector <CReference> & getReferences();
     CReference* createReference(const std::string& objectName);
     bool removeReference(const std::string& key);
+    void loadReferences();
+
     const std::string getCreatedDT() const;
     void setCreatedDT(const std::string& dt);
-    CCopasiVector <CModified> & getModifieds();
-    CModified* createModified(const std::string& objectName);
-    bool removeModified(const std::string& key);
+
+    CCopasiVector <CModification> & getModifications();
+    CModification* createModification(const std::string& objectName);
+    bool removeModification(const std::string& key);
+    void loadModifications();
+
     CCopasiVector <CBiologicalDescription> & getBiologicalDescriptions();
-    CBiologicalDescription* createBiologicalDescription(const std::string& objectName, std::string parentTable = "");
+    CBiologicalDescription* createBiologicalDescription();
     bool removeBiologicalDescription(const std::string& key);
-    std::map<std::string, std::string> moveOldReferences();
-    std::string moveBiologicalDescription(const std::string key, const std::string newTable);
+    void loadBiologicalDescriptions();
+
+    virtual const std::string & getKey() const;
   };
 
 #endif //COPASI_CMODELMIRIAMINFO

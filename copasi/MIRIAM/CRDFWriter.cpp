@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFWriter.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/04/29 15:30:40 $
+//   $Date: 2008/06/03 13:20:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -51,6 +51,7 @@ CRDFWriter::CRDFWriter():
 
   // We do not want <?xml version="1.0" encoding="utf-8"?>
   raptor_serializer_set_feature(mpWriter, RAPTOR_FEATURE_WRITER_XML_DECLARATION, 0);
+
   // Remove any empty elements
   raptor_serializer_set_feature(mpWriter, RAPTOR_FEATURE_WRITER_AUTO_EMPTY, 1);
 }
@@ -157,11 +158,11 @@ bool CRDFWriter::addSubjectNode(const CRDFNode * pSubjectNode)
     {
       // Set the predicate of the triplet
       Triplet.predicate_type = RAPTOR_IDENTIFIER_TYPE_RESOURCE;
-      pPredicateURI = raptor_new_uri((const unsigned char *) it->first.c_str());
+      pPredicateURI = raptor_new_uri((const unsigned char *) it->second.getPredicateURI().c_str());
       Triplet.predicate = pPredicateURI;
 
       // Set the object of the triplet
-      const CRDFNode * pProperty = it->second;
+      const CRDFNode * pProperty = it->second.getPropertyNode();
       if (!pProperty->isObjectNode())
         {
           success = false;

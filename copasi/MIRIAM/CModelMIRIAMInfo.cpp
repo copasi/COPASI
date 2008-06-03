@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CModelMIRIAMInfo.cpp,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2008/04/21 20:12:31 $
+//   $Author: shoops $
+//   $Date: 2008/06/03 13:20:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,86 +19,61 @@
 #include <fstream>
 #include <string>
 
-#include "model/CModelValue.h"
-#include "report/CKeyFactory.h"
+#include "copasi.h"
 
 #include "CModelMIRIAMInfo.h"
 #include "CRDFWriter.h"
 #include "CRDFLiteral.h"
 #include "CRDFParser.h"
 #include "CConstants.h"
+#include "CRDFObject.h"
+#include "CRDFPredicate.h"
+#include "CRDFNode.h"
 
-CModelMIRIAMInfo::CModelMIRIAMInfo() :
-    CCopasiContainer("CModelMIRIAMInfoObject", NULL, "CModelMIRIAMInfo"),
+#include "model/CModelValue.h"
+#include "model/CReaction.h"
+#include "function/CFunction.h"
+#include "report/CKeyFactory.h"
+
+CMIRIAMInfo::CMIRIAMInfo() :
+    CCopasiContainer("CMIRIAMInfoObject", NULL, "CMIRIAMInfo"),
     mCreators("Creators", this),
     mReferences("References", this),
-    mModifieds("Modifieds", this),
+    mModifications("Modifieds", this),
     mBiologicalDescriptions("BiologicalDescriptions", this),
+    mCreatedObj(),
     mpRDFGraph(NULL),
+    mTriplet(NULL, CRDFPredicate::about, NULL),
+    mCreated(),
     mpCopasiObject(NULL)
-{
-  clearMembers();
-  mpRDFGraph = new CRDFGraph();
+{}
 
-  /*std::string buf;
-  std::string line;
-  std::ifstream xmlFile("example.xml");
-  while (std::getline(xmlFile, line))
-    buf += line + '\n';
-
-  mpRDFGraph = CRDFParser::graphFromXml(buf);
-  if (mpRDFGraph)
-    {
-      fillInfoFromGraph();
-      std::string reprint = CRDFWriter::xmlFromGraph(mpRDFGraph);
-    }
-  xmlFile.close();*/
-}
-
-CModelMIRIAMInfo::~CModelMIRIAMInfo()
+CMIRIAMInfo::~CMIRIAMInfo()
 {pdelete(mpRDFGraph);}
 
-CRDFGraph * CModelMIRIAMInfo::getRDFGraph()
+CRDFGraph * CMIRIAMInfo::getRDFGraph()
 {return mpRDFGraph;}
 
-bool CModelMIRIAMInfo::fillInfoFromGraph()
-{
-  if (!mpRDFGraph)
-    return false;
-
-  clearMembers();
-  std::vector<CRDFObject> objects;
-
-  fillObjects("dc:creator");
-
-  fillObjects("dcterms:references");
-  fillObjects("bqmodel:isDescribedBy");
-  fillObjects("bqbiol:isDescribedBy");
-
-  const std::map<std::string, std::string> relationships = CConstants::getRelationships();
-  std::map<std::string, std::string>::const_iterator it = relationships.begin();
-  std::map<std::string, std::string>::const_iterator end = relationships.end();
-  for (; it != end; it++)
-  {fillObjects(it->first);}
-
-  mpRDFGraph->getNodeIDsForTable("dcterms:created", objects);
-  if (objects.size())
-    {
-      std::vector<CRDFObject>::const_iterator vit = objects.begin();
-      mCreatedObj = *vit;
-      objects.clear();
-    }
-
-  fillObjects("dcterms:modified");
-  return true;
-}
-
-CCopasiVector <CCreator> & CModelMIRIAMInfo::getCreators()
+CCopasiVector <CCreator> & CMIRIAMInfo::getCreators()
 {return mCreators;}
 
-CCreator* CModelMIRIAMInfo::createCreator(const std::string & objectName)
+CCreator* CMIRIAMInfo::createCreator(const std::string & /* objectName */)
 {
-  CCreator * pCreator = new CCreator(objectName);
+  const CRDFSubject & Subject = mpRDFGraph->getAboutNode()->getSubject();
+  CRDFObject Object;
+  Object.setType(CRDFObject::BLANK_NODE);
+  std::string Id = mpRDFGraph->generatedBlankNodeId();
+  Object.setBlankNodeId(Id);
+
+  CRDFGraph::CTriplet Triplet =
+    mpRDFGraph->addTriplet(Subject,
+                           CRDFPredicate::getURI(CRDFPredicate::dcterms_creator),
+                           Object);
+
+  if (!Triplet)
+    return NULL;
+
+  CCreator * pCreator = new CCreator(Triplet);
 
   if (!mCreators.add(pCreator, true))
     {
@@ -106,11 +81,10 @@ CCreator* CModelMIRIAMInfo::createCreator(const std::string & objectName)
       return NULL;
     }
 
-  mpRDFGraph->addRecordToTable("dc:creator", pCreator->getRDFObject());
   return pCreator;
 }
 
-bool CModelMIRIAMInfo::removeCreator(const std::string & key)
+bool CMIRIAMInfo::removeCreator(const std::string & key)
 {
   CCreator * pCreator =
     dynamic_cast< CCreator * >(GlobalKeys.get(key));
@@ -118,25 +92,67 @@ bool CModelMIRIAMInfo::removeCreator(const std::string & key)
   if (!pCreator)
     return false;
 
-  //Check if Creator exists
-  unsigned C_INT32 index =
-    mCreators.getIndex(pCreator);
+  const CRDFGraph::CTriplet & Triplet = pCreator->getTriplet();
 
-  if (index == C_INVALID_INDEX)
+  if (!mpRDFGraph->removeTriplet(Triplet.pSubject,
+                                 CRDFPredicate::getURI(Triplet.Predicate),
+                                 Triplet.pObject))
     return false;
 
-  if (mpRDFGraph->removeRecordFromTable("dc:creator", pCreator->getRDFObject()))
-  {mCreators.CCopasiVector< CCreator >::remove(index);}
-  return true;
+  return mCreators.remove(pCreator);
 }
 
-CCopasiVector <CReference> & CModelMIRIAMInfo::getReferences()
+void CMIRIAMInfo::loadCreators()
+{
+  mCreators.cleanup();
+
+  CRDFPredicate::ePredicateType Predicates[] =
+    {
+      CRDFPredicate::dcterms_creator,
+      CRDFPredicate::dc_creator,
+      CRDFPredicate::end
+    };
+
+  CRDFPredicate::Path Path = mTriplet.pObject->getPath();
+  std::set< CRDFGraph::CTriplet > Triples;
+
+  CRDFPredicate::ePredicateType * pPredicate = Predicates;
+  std::set< CRDFGraph::CTriplet >::iterator it;
+  std::set< CRDFGraph::CTriplet >::iterator end;
+  for (; *pPredicate != CRDFPredicate::end; ++pPredicate)
+    {
+      Triples =
+        mTriplet.pObject->getTripletsWithPredicate(Path, *pPredicate, mTriplet);
+      it = Triples.begin();
+      end = Triples.end();
+
+      for (; it != end; ++it)
+        mCreators.add(new CCreator(*it), true);
+    }
+
+  return;
+}
+
+CCopasiVector <CReference> & CMIRIAMInfo::getReferences()
 {return mReferences;}
 
-CReference* CModelMIRIAMInfo::createReference(const std::string & objectName)
+CReference* CMIRIAMInfo::createReference(const std::string & /* objectName */)
 {
-  CReference * pReference = new CReference(objectName);
-  pReference->setParentTag("dcterms:references");
+  const CRDFSubject & Subject = mpRDFGraph->getAboutNode()->getSubject();
+  CRDFObject Object;
+  Object.setType(CRDFObject::BLANK_NODE);
+  std::string Id = mpRDFGraph->generatedBlankNodeId();
+  Object.setBlankNodeId(Id);
+
+  CRDFGraph::CTriplet Triplet =
+    mpRDFGraph->addTriplet(Subject,
+                           CRDFPredicate::getURI(CRDFPredicate::dcterms_bibliographicCitation),
+                           Object);
+
+  if (!Triplet)
+    return NULL;
+
+  CReference * pReference = new CReference(Triplet);
 
   if (!mReferences.add(pReference, true))
     {
@@ -144,11 +160,10 @@ CReference* CModelMIRIAMInfo::createReference(const std::string & objectName)
       return NULL;
     }
 
-  mpRDFGraph->addRecordToTable("dcterms:references", pReference->getRDFObject());
   return pReference;
 }
 
-bool CModelMIRIAMInfo::removeReference(const std::string & key)
+bool CMIRIAMInfo::removeReference(const std::string & key)
 {
   CReference * pReference =
     dynamic_cast< CReference * >(GlobalKeys.get(key));
@@ -156,76 +171,160 @@ bool CModelMIRIAMInfo::removeReference(const std::string & key)
   if (!pReference)
     return false;
 
-  //Check if Reference exists
-  unsigned C_INT32 index =
-    mReferences.getIndex(pReference);
+  const CRDFGraph::CTriplet & Triplet = pReference->getTriplet();
 
-  if (index == C_INVALID_INDEX)
+  if (!mpRDFGraph->removeTriplet(Triplet.pSubject,
+                                 CRDFPredicate::getURI(Triplet.Predicate),
+                                 Triplet.pObject))
     return false;
 
-  std::string parentTag = pReference->getParentTag();
-  if (mpRDFGraph->removeRecordFromTable(parentTag, pReference->getRDFObject()))
-  {mReferences.CCopasiVector< CReference >::remove(index);}
-
-  return true;
+  return mReferences.remove(pReference);
 }
 
-const std::string CModelMIRIAMInfo::getCreatedDT() const
-  {return mpRDFGraph->getFieldValue("dcterms:created.dcterms:W3CDTF", mCreatedObj);}
-
-void CModelMIRIAMInfo::setCreatedDT(const std::string& dt)
-{mpRDFGraph->setFieldValue("dcterms:created.dcterms:W3CDTF", mCreatedObj, dt);}
-
-CCopasiVector <CModified> & CModelMIRIAMInfo::getModifieds()
-{return mModifieds;}
-
-CModified* CModelMIRIAMInfo::createModified(const std::string & objectName)
+void CMIRIAMInfo::loadReferences()
 {
-  CModified * pModified = new CModified(objectName);
+  mReferences.cleanup();
 
-  if (!mModifieds.add(pModified, true))
+  CRDFPredicate::ePredicateType Predicates[] =
     {
-      delete pModified;
+      CRDFPredicate::dcterms_bibliographicCitation,
+      CRDFPredicate::bqbiol_isDescribedBy,
+      CRDFPredicate::bqmodel_isDescribedBy,
+      CRDFPredicate::end
+    };
+
+  CRDFPredicate::Path Path = mTriplet.pObject->getPath();
+  std::set< CRDFGraph::CTriplet > Triples;
+
+  CRDFPredicate::ePredicateType * pPredicate = Predicates;
+  std::set< CRDFGraph::CTriplet >::iterator it;
+  std::set< CRDFGraph::CTriplet >::iterator end;
+  for (; *pPredicate != CRDFPredicate::end; ++pPredicate)
+    {
+      Triples =
+        mTriplet.pObject->getTripletsWithPredicate(Path, *pPredicate, mTriplet);
+      it = Triples.begin();
+      end = Triples.end();
+
+      for (; it != end; ++it)
+        mReferences.add(new CReference(*it), true);
+    }
+
+  return;
+}
+
+const std::string CMIRIAMInfo::getCreatedDT() const
+  {
+    if (!mCreated)
+      return "";
+
+    return mCreated.pObject->getFieldValue(CRDFPredicate::dcterms_W3CDTF, mCreated.pObject->getPath(), mCreated);
+  }
+
+void CMIRIAMInfo::setCreatedDT(const std::string& dt)
+{
+  std::string Date = dt;
+  if (Date == "0000-00-00T00:00:00")
+    Date = ""; // This causes deletion of the edge
+
+  if (!mCreated)
+    {
+      const CRDFSubject & Subject = mTriplet.pObject->getSubject();
+      CRDFObject Object;
+      Object.setType(CRDFObject::BLANK_NODE);
+      std::string Id = mpRDFGraph->generatedBlankNodeId();
+      Object.setBlankNodeId(Id);
+
+      mCreated = mpRDFGraph->addTriplet(Subject,
+                                        CRDFPredicate::getURI(CRDFPredicate::dcterms_created),
+                                        Object);
+      // Debugging
+      assert(!mCreated == false);
+    }
+
+  mCreated.pObject->setFieldValue(Date, CRDFPredicate::dcterms_W3CDTF, mCreated.pObject->getPath(), mCreated);
+}
+
+CCopasiVector <CModification> & CMIRIAMInfo::getModifications()
+{return mModifications;}
+
+CModification * CMIRIAMInfo::createModification(const std::string & /* objectName */)
+{
+  const CRDFSubject & Subject = mpRDFGraph->getAboutNode()->getSubject();
+  CRDFObject Object;
+  Object.setType(CRDFObject::BLANK_NODE);
+  std::string Id = mpRDFGraph->generatedBlankNodeId();
+  Object.setBlankNodeId(Id);
+
+  CRDFGraph::CTriplet Triplet =
+    mpRDFGraph->addTriplet(Subject,
+                           CRDFPredicate::getURI(CRDFPredicate::dcterms_modified),
+                           Object);
+
+  if (!Triplet)
+    return NULL;
+
+  CModification * pModification = new CModification(Triplet);
+
+  if (!mModifications.add(pModification, true))
+    {
+      delete pModification;
       return NULL;
     }
 
-  mpRDFGraph->addRecordToTable("dcterms:modified", pModified->getRDFObject());
-  return pModified;
+  return pModification;
 }
 
-bool CModelMIRIAMInfo::removeModified(const std::string & key)
+bool CMIRIAMInfo::removeModification(const std::string & key)
 {
-  CModified * pModified =
-    dynamic_cast< CModified * >(GlobalKeys.get(key));
+  CModification * pModified =
+    dynamic_cast< CModification * >(GlobalKeys.get(key));
 
   if (!pModified)
     return false;
 
-  //Check if Reference exists
-  unsigned C_INT32 index =
-    mModifieds.getIndex(pModified);
+  const CRDFGraph::CTriplet & Triplet = pModified->getTriplet();
 
-  if (index == C_INVALID_INDEX)
+  if (!mpRDFGraph->removeTriplet(Triplet.pSubject,
+                                 CRDFPredicate::getURI(Triplet.Predicate),
+                                 Triplet.pObject))
     return false;
 
-  if (mpRDFGraph->removeRecordFromTable("dcterms:modified", pModified->getRDFObject()))
-  {mModifieds.CCopasiVector< CModified >::remove(index);}
-  return true;
+  return mModifications.remove(pModified);
 }
 
-CCopasiVector <CBiologicalDescription> & CModelMIRIAMInfo::getBiologicalDescriptions()
+void CMIRIAMInfo::loadModifications()
+{
+  mModifications.cleanup();
+
+  std::set< CRDFGraph::CTriplet > Triples =
+    mTriplet.pObject->getTripletsWithPredicate(mTriplet.pObject->getPath(), CRDFPredicate::dcterms_modified, mTriplet);
+  std::set< CRDFGraph::CTriplet >::iterator it = Triples.begin();
+  std::set< CRDFGraph::CTriplet >::iterator end = Triples.end();
+
+  for (; it != end; ++it)
+    mModifications.add(new CModification(*it), true);
+
+  return;
+}
+
+CCopasiVector <CBiologicalDescription> & CMIRIAMInfo::getBiologicalDescriptions()
 {return mBiologicalDescriptions;}
 
-CBiologicalDescription* CModelMIRIAMInfo::createBiologicalDescription(const std::string & objectName, std::string parentTable)
+CBiologicalDescription* CMIRIAMInfo::createBiologicalDescription()
 {
-  CBiologicalDescription * pBiologicalDescription = new CBiologicalDescription(objectName);
+  const CRDFSubject & Subject = mpRDFGraph->getAboutNode()->getSubject();
+  CRDFObject Object;
+  Object.setType(CRDFObject::RESOURCE);
+  Object.setResource("", false);
 
-  const std::map<std::string, std::string> relationships = CConstants::getRelationships();
-  std::map<std::string, std::string>::const_iterator it = relationships.begin();
-  if (!parentTable.length())
-  {parentTable = it->first;}
+  CRDFGraph::CTriplet Triplet = mpRDFGraph->addTriplet(Subject, "---", Object);
 
-  pBiologicalDescription->setParentTag(parentTable);
+  if (!Triplet)
+    return NULL;
+
+  CBiologicalDescription * pBiologicalDescription =
+    new CBiologicalDescription(Triplet);
 
   if (!mBiologicalDescriptions.add(pBiologicalDescription, true))
     {
@@ -233,11 +332,10 @@ CBiologicalDescription* CModelMIRIAMInfo::createBiologicalDescription(const std:
       return NULL;
     }
 
-  mpRDFGraph->addRecordToTable(parentTable, pBiologicalDescription->getRDFObject());
   return pBiologicalDescription;
 }
 
-bool CModelMIRIAMInfo::removeBiologicalDescription(const std::string & key)
+bool CMIRIAMInfo::removeBiologicalDescription(const std::string & key)
 {
   CBiologicalDescription * pBiologicalDescription =
     dynamic_cast< CBiologicalDescription * >(GlobalKeys.get(key));
@@ -245,139 +343,137 @@ bool CModelMIRIAMInfo::removeBiologicalDescription(const std::string & key)
   if (!pBiologicalDescription)
     return false;
 
-  //Check if BiologicalDescription exists
-  unsigned C_INT32 index =
-    mBiologicalDescriptions.getIndex(pBiologicalDescription);
+  const CRDFGraph::CTriplet & Triplet = pBiologicalDescription->getTriplet();
 
-  if (index == C_INVALID_INDEX)
+  if (!mpRDFGraph->removeTriplet(Triplet.pSubject,
+                                 CRDFPredicate::getURI(Triplet.Predicate),
+                                 Triplet.pObject))
     return false;
 
-  std::string parentTag = pBiologicalDescription->getParentTag();
-  if (mpRDFGraph->removeRecordFromTable(parentTag, pBiologicalDescription->getRDFObject()))
-  {mBiologicalDescriptions.CCopasiVector< CBiologicalDescription >::remove(index);}
-
-  return true;
+  return mBiologicalDescriptions.remove(pBiologicalDescription);
 }
 
-void CModelMIRIAMInfo::clearMembers()
+void CMIRIAMInfo::loadBiologicalDescriptions()
 {
-  mOldReferencesMoved = false;
-  mCreators.cleanup();
-
-  mReferences.cleanup();
-
-  mCreatedObj.clearData();
-  mCreatedObj.setType(CRDFObject::BLANK_NODE);
-  mCreatedObj.setBlankNodeId("CreatedNode");
-
-  mModifieds.cleanup();
-
   mBiologicalDescriptions.cleanup();
-}
 
-void CModelMIRIAMInfo::loadGraph(const std::string& key)
-{
-  CCopasiObject* pCopasiObject = dynamic_cast< CCopasiObject * >(GlobalKeys.get(key));
-  if (pCopasiObject && mpCopasiObject != pCopasiObject)
+  CRDFPredicate::ePredicateType Predicates[] =
     {
-      mpCopasiObject = pCopasiObject;
-      CRDFGraph* oldGraph = mpRDFGraph;
-      mpRDFGraph = mpRDFGraph->loadGraph(mpCopasiObject);
-      pdelete(oldGraph);
-      fillInfoFromGraph();
+      CRDFPredicate::copasi_encodes,
+      CRDFPredicate::copasi_hasPart,
+      CRDFPredicate::copasi_hasVersion,
+      CRDFPredicate::copasi_is,
+      CRDFPredicate::copasi_isEncodedBy,
+      CRDFPredicate::copasi_isHomologTo,
+      CRDFPredicate::copasi_isPartOf,
+      CRDFPredicate::copasi_isVersionOf,
+      CRDFPredicate::copasi_occursIn,
+      CRDFPredicate::bqbiol_encodes,
+      CRDFPredicate::bqbiol_hasPart,
+      CRDFPredicate::bqbiol_hasVersion,
+      CRDFPredicate::bqbiol_is,
+      CRDFPredicate::bqbiol_isEncodedBy,
+      CRDFPredicate::bqbiol_isHomologTo,
+      CRDFPredicate::bqbiol_isPartOf,
+      CRDFPredicate::bqbiol_isVersionOf,
+      CRDFPredicate::bqbiol_occursIn,
+      CRDFPredicate::bqmodel_is,
+      CRDFPredicate::end
+    };
+
+  CRDFPredicate::Path Path = mTriplet.pObject->getPath();
+  std::set< CRDFGraph::CTriplet > Triples;
+
+  CRDFPredicate::ePredicateType * pPredicate = Predicates;
+  std::set< CRDFGraph::CTriplet >::iterator it;
+  std::set< CRDFGraph::CTriplet >::iterator end;
+  for (; *pPredicate != CRDFPredicate::end; ++pPredicate)
+    {
+      Triples =
+        mTriplet.pObject->getTripletsWithPredicate(Path, *pPredicate, mTriplet);
+      it = Triples.begin();
+      end = Triples.end();
+
+      for (; it != end; ++it)
+        mBiologicalDescriptions.add(new CBiologicalDescription(*it), true);
     }
 }
 
-bool CModelMIRIAMInfo::saveGraph()
+void CMIRIAMInfo::load(const std::string& key)
+{
+  pdelete(mpRDFGraph);
+
+  mpCopasiObject = dynamic_cast< CCopasiObject * >(GlobalKeys.get(key));
+
+  if (mpCopasiObject != NULL)
+    {
+      const std::string * pMiriamAnnotation = NULL;
+      if (dynamic_cast< CModelEntity * >(mpCopasiObject))
+        pMiriamAnnotation =
+          &dynamic_cast< CModelEntity * >(mpCopasiObject)->getMiriamAnnotation();
+      else if (dynamic_cast< CReaction * >(mpCopasiObject))
+        pMiriamAnnotation =
+          &dynamic_cast< CReaction * >(mpCopasiObject)->getMiriamAnnotation();
+      else if (dynamic_cast< CFunction * >(mpCopasiObject))
+        pMiriamAnnotation =
+          &dynamic_cast< CFunction * >(mpCopasiObject)->getMiriamAnnotation();
+
+      if (pMiriamAnnotation && *pMiriamAnnotation != "")
+        mpRDFGraph = CRDFParser::graphFromXml(*pMiriamAnnotation);
+    }
+
+  if (mpRDFGraph == NULL)
+    mpRDFGraph = new CRDFGraph;
+
+  // We make sure that we always have an about node.
+  mTriplet.pObject = mpRDFGraph->createAboutNode(mpCopasiObject->getKey());
+
+  // Load the created date if set;
+  CRDFPredicate::Path Path = mTriplet.pObject->getPath();
+  std::set< CRDFGraph::CTriplet > Triples =
+    mTriplet.pObject->getTripletsWithPredicate(Path, CRDFPredicate::dcterms_created, mTriplet);
+  if (Triples.size() > 0)
+    mCreated = *Triples.begin();
+  else
+    mCreated = CRDFGraph::CTriplet(); // This is an invalid triplet, i.e., !mCreated is true.
+
+  loadCreators();
+  loadReferences();
+  loadModifications();
+  loadBiologicalDescriptions();
+
+  return;
+}
+
+bool CMIRIAMInfo::save()
 {
   if (mpCopasiObject && mpRDFGraph)
     {
-      if (mpRDFGraph->saveGraph(mpCopasiObject))
-        {
-          fillInfoFromGraph();
-          return true;
-        }
+      std::string XML = CRDFWriter::xmlFromGraph(mpRDFGraph);
+
+      CModelEntity * pEntity = NULL;
+      CReaction * pReaction = NULL;
+      CFunction * pFunction = NULL;
+
+      if ((pEntity = dynamic_cast< CModelEntity * >(mpCopasiObject)) != NULL)
+        pEntity->setMiriamAnnotation(XML, pEntity->getKey());
+      else if ((pReaction = dynamic_cast< CReaction * >(mpCopasiObject)) != NULL)
+        pReaction->setMiriamAnnotation(XML, pReaction->getKey());
+      else if ((pFunction = dynamic_cast< CFunction * >(mpCopasiObject)) != NULL)
+        pFunction->setMiriamAnnotation(XML, pFunction->getKey());
+      else
+        return false;
+
+      return true;
     }
+
   return false;
 }
 
-void CModelMIRIAMInfo::fillObjects(std::string tableName)
-{
-  std::vector<CRDFObject> objects;
-  std::vector<CRDFObject>::iterator it;
+const std::string & CMIRIAMInfo::getKey() const
+  {
+    if (mpCopasiObject != NULL)
+      return mpCopasiObject->getKey();
 
-  if (tableName == "dc:creator" && mpRDFGraph->getNodeIDsForTable(tableName, objects))
-    {
-      for (it = objects.begin(); it != objects.end(); it++)
-      {mCreators.add(new CCreator((*it).getBlankNodeID(), NULL, new CRDFObject(*it)), true);}
-    }
-  else if ((tableName == "dcterms:references" || tableName == "bqmodel:isDescribedBy" || tableName == "bqbiol:isDescribedBy") && mpRDFGraph->getNodeIDsForTable(tableName, objects))
-    {
-      for (it = objects.begin(); it != objects.end(); it++)
-        {
-          CReference *pReference = new CReference((*it).getBlankNodeID(), NULL, new CRDFObject(*it));
-          pReference->setParentTag(tableName);
-          mReferences.add(pReference, true);
-        }
-    }
-  else if (tableName == "dcterms:modified" && mpRDFGraph->getNodeIDsForTable("dcterms:modified", objects))
-    {
-      for (it = objects.begin(); it != objects.end(); it++)
-      {mModifieds.add(new CModified((*it).getBlankNodeID(), NULL, new CRDFObject(*it)), true);}
-    }
-  else
-    {
-      const std::map<std::string, std::string> relationships = CConstants::getRelationships();
-      std::map<std::string, std::string>::const_iterator rit = relationships.find(tableName);
-      if (rit != relationships.end() && mpRDFGraph->getNodeIDsForTable(tableName, objects))
-        {
-          for (it = objects.begin(); it != objects.end(); it++)
-            {
-              CBiologicalDescription *pBiologicalDescription = new CBiologicalDescription((*it).getResource(), NULL, new CRDFObject(*it));
-              pBiologicalDescription->setParentTag(tableName);
-              mBiologicalDescriptions.add(pBiologicalDescription, true);
-            }
-        }
-    }
-}
-
-std::map<std::string, std::string> CModelMIRIAMInfo::moveOldReferences()
-{
-  std::map<std::string, std::string> movedReferencesMap;
-  std::vector <std::string> referencesToDelete;
-  if (mOldReferencesMoved)
-    return movedReferencesMap;
-
-  CCopasiVector<CReference>::iterator it = mReferences.begin();
-  CCopasiVector<CReference>::const_iterator end = mReferences.end();
-  for (; it != end; it++)
-    {
-      if ((*it)->getParentTag() != "dcterms:references")
-      {referencesToDelete.push_back((*it)->getKey());}
-    }
-
-  std::vector <std::string>::iterator vit = referencesToDelete.begin();
-  for (; vit != referencesToDelete.end(); vit++)
-    {
-      CReference* oldReference = dynamic_cast< CReference * >(GlobalKeys.get(*vit));
-      CReference* newReference = createReference("");
-      newReference->setPubmedId(oldReference->getPubmedId());
-      newReference->setDOI(oldReference->getDOI());
-      movedReferencesMap[oldReference->getKey()] = newReference->getKey();
-      removeReference(*vit);
-    }
-
-  mOldReferencesMoved = true;
-  return movedReferencesMap;
-}
-
-std::string CModelMIRIAMInfo::moveBiologicalDescription(const std::string key, const std::string newTable)
-{
-  std::string new_key = "";
-
-  CBiologicalDescription* newBiologicalDescription = createBiologicalDescription("", newTable);
-  new_key = newBiologicalDescription->getKey();
-  removeBiologicalDescription(key);
-
-  return new_key;
-}
+    return CCopasiObject::getKey();
+  }

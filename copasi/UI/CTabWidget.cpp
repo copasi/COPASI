@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CTabWidget.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2008/04/24 15:47:00 $
+//   $Author: shoops $
+//   $Date: 2008/06/03 13:21:22 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,7 +20,7 @@
 
 #include "CTabWidget.h"
 #include "ModelWidget.h"
-#include "MIRIAMUI/CMIRIAMModelWidget.h"
+#include "MIRIAMUI/CQMiriamWidget.h"
 #include "MIRIAMUI/CQRDFListViewWidget.h"
 
 /*
@@ -42,10 +42,7 @@ CTabWidget::CTabWidget(const QString & label, CopasiWidget * pCopasiWidget,
   mPages.push_back(pCopasiWidget);
   mTabWidget->addTab(pCopasiWidget, label);
 
-  bool showAllSubWidgets = false;
-  if (label == "Model")
-  {showAllSubWidgets = true;}
-  CMIRIAMModelWidget* pMIRIAMWidget = new CMIRIAMModelWidget(showAllSubWidgets, mTabWidget);
+  CQMiriamWidget* pMIRIAMWidget = new CQMiriamWidget(mTabWidget);
   mPages.push_back(pMIRIAMWidget);
   mTabWidget->addTab(mPages[1], "Annotation");
 
@@ -65,11 +62,12 @@ CTabWidget::~CTabWidget()
 
 bool CTabWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
 {
-  std::vector< CopasiWidget * >::iterator it = mPages.begin();
-  std::vector< CopasiWidget * >::iterator end = mPages.end();
+  // TODO This is unnecessary as ListViews::notifyChildWidgets takes care of this.
+  // std::vector< CopasiWidget * >::iterator it = mPages.begin();
+  // std::vector< CopasiWidget * >::iterator end = mPages.end();
 
-  for (; it != end; ++it)
-    (*it)->update(objectType, action, key);
+  // for (; it != end; ++it)
+  //   (*it)->update(objectType, action, key);
 
   return true;
 }

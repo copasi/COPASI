@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFObject.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2008/02/01 02:01:04 $
+//   $Author: shoops $
+//   $Date: 2008/06/03 13:20:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -49,6 +49,9 @@ CRDFObject& CRDFObject::operator =(const CRDFObject& rhs)
   return *this;
 }
 
+CRDFObject::~CRDFObject()
+{pdelete(mpLiteral);}
+
 bool CRDFObject::operator ==(const CRDFObject& rhs) const
   {
     if (mType == rhs.mType)
@@ -57,28 +60,24 @@ bool CRDFObject::operator ==(const CRDFObject& rhs) const
           {
           case CRDFObject::BLANK_NODE:
             if (mBlankNodeId == rhs.mBlankNodeId)
-            {return true;}
+              return true;
             break;
+
           case CRDFObject::RESOURCE:
             if (mResource == rhs.mResource && mIsLocalResource == rhs.mIsLocalResource)
-            {return true;}
+              return true;
             break;
+
           case CRDFObject::LITERAL:
-            if (mpLiteral && rhs.mpLiteral)
-              {
-                if (mpLiteral->getLexicalData() == rhs.mpLiteral->getLexicalData())
-                {return true;}
-              }
+            if (mpLiteral != NULL && rhs.mpLiteral != NULL)
+              return false; // TODO (*mpLiteral == *rhs.mpLiteral);
             else if (mpLiteral == NULL && rhs.mpLiteral == NULL)
-            {return true;}
+              return true;
             break;
           }
       }
     return false;
   }
-
-CRDFObject::~CRDFObject()
-{pdelete(mpLiteral);}
 
 void CRDFObject::setType(const CRDFObject::eObjectType & type)
 {mType = type;}
@@ -108,6 +107,14 @@ void CRDFObject::setLiteral(const CRDFLiteral & literal)
 {
   pdelete(mpLiteral);
   mpLiteral = new CRDFLiteral(literal);
+}
+
+CRDFLiteral & CRDFObject::getLiteral()
+{
+  if (mpLiteral == NULL)
+    mpLiteral = new CRDFLiteral;
+
+  return *mpLiteral;
 }
 
 const CRDFLiteral & CRDFObject::getLiteral() const

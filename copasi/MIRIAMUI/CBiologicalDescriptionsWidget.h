@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CBiologicalDescriptionsWidget.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2008/04/21 20:12:32 $
+//   $Author: shoops $
+//   $Date: 2008/06/03 13:21:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,7 +21,7 @@ class CBiologicalDescriptionsWidget : public CopasiTableWidget
   {
     Q_OBJECT
   private:
-    QStringList mRelationships;
+    QStringList mPredicates;
     QStringList mResources;
 
   public:
@@ -67,8 +67,6 @@ class CBiologicalDescriptionsWidget : public CopasiTableWidget
      * the prefix that is used to construct new object names
      */
     virtual QString defaultObjectName() const;
-
-    virtual void saveTable();
 
     virtual void slotDoubleClicked(int, int, int, const QPoint &);
     virtual void slotValueChanged(int row, int col);

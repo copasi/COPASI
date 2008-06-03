@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CConstants.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/03/11 09:06:08 $
+//   $Author: shoops $
+//   $Date: 2008/06/03 13:20:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,21 +16,75 @@
 
 #include <string>
 #include <map>
+#include <vector>
 
-class CConstants
+class CRDFNode;
+
+class CMIRIAMResource
   {
   public:
-    CConstants();
-    static std::map<std::string, std::string> getReferencePredicates();
-    static std::map<std::string, std::string> getPrefix2URI();
-    static std::map<std::string, std::string> getRelationships();
-    static std::map<std::string, std::string> getResources();
-    static std::string getKey(const std::map<std::string, std::string>& map, const std::string& value);
+    struct sResource
+      {
+        std::string MiriamId;
+        std::string DisplayName;
+        std::string URL;
+        std::string URI;
+        std::string Deprecated[4];
+        std::string Regexp;
+        bool Citation;
+      };
+
   private:
-    static std::map<std::string, std::string> referencePredicates;
-    static std::map<std::string, std::string> prefix2URI;
-    static std::map<std::string, std::string> relationships;
-    static std::map<std::string, std::string> resources;
+    static sResource Resources[];
+
+    static bool Initialized;
+    static std::map< std::string, unsigned C_INT32 > DisplayName2Resource;
+    // TODO when the URIBase is no longer unique we need to introduce a multi map.
+    static std::map< std::string, unsigned C_INT32 > URI2Resource;
+
+  private:
+    static void createDisplayNameMap();
+    static void createURIMap();
+
+  public:
+    static unsigned C_INT32 getResource(const std::string & URI);
+    static const sResource * getResourceList();
+
+  private:
+    CMIRIAMResource();
+
+  public:
+    CMIRIAMResource(CRDFNode * pNode);
+
+    CMIRIAMResource(const std::string & displayName, const std::string & id);
+
+    CMIRIAMResource(const CMIRIAMResource & src);
+
+    bool setId(const std::string & id);
+
+    const std::string & getId() const;
+
+    bool setURI(const std::string & URI);
+
+    std::string getURI() const;
+
+    bool setNode(CRDFNode * pNode);
+
+    CRDFNode * getNode() const;
+
+    std::string getDisplayName() const;
+
+    bool isValid() const;
+
+    bool isValid(const std::string & URI) const;
+
+  private:
+    void extractId(const std::string & URI);
+
+  private:
+    unsigned C_INT32 mResource;
+    std::string mId;
+    CRDFNode * mpNode;
   };
 
 #endif

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CModified.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2008/04/21 20:12:31 $
+//   $Author: shoops $
+//   $Date: 2008/06/03 13:20:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -11,52 +11,60 @@
 // and The University of Manchester.
 // All rights reserved.
 
-#include "report/CKeyFactory.h"
+#include "copasi.h"
+
+#include "CRDFNode.h"
+#include "CCreator.h"
+#include "CRDFLiteral.h"
+#include "CModelMIRIAMInfo.h"
+
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "model/CModel.h"
+#include "report/CKeyFactory.h"
 
-#include "CModelMIRIAMInfo.h"
-#include "CModified.h"
-
-CModified::CModified(const std::string & objectName, const CCopasiContainer * pParent,
-                     CRDFObject* pRDFObj) :
-    CCopasiContainer(objectName, pParent, "Modified"),
-    mKey(GlobalKeys.add("Modified", this)),
-    mpRDFObj(NULL)
-{
-  if (pRDFObj)
-  {mpRDFObj = pRDFObj;}
-  else
-    {
-      mpRDFObj = new CRDFObject();
-      mpRDFObj->setType(CRDFObject::BLANK_NODE);
-      mpRDFObj->setBlankNodeId(mKey);
-    }
-}
-
-CModified::CModified(const CModified & src,
-                     const CCopasiContainer * pParent):
-    CCopasiContainer(src, pParent),
-    mKey(GlobalKeys.add("Modified", this)),
-    mpRDFObj(src.mpRDFObj == NULL ? NULL : new CRDFObject(*src.mpRDFObj))
+CModification::CModification(const std::string & objectName,
+                             const CCopasiContainer * pParent):
+    CCopasiContainer(objectName, pParent, "Modification"),
+    mTriplet(),
+    mNodePath(),
+    mKey(GlobalKeys.add("Modification", this))
 {}
 
-CModified::~CModified()
+CModification::CModification(const CRDFGraph::CTriplet & triplet,
+                             const std::string & objectName,
+                             const CCopasiContainer * pParent):
+    CCopasiContainer(objectName, pParent, "Modification"),
+    mTriplet(triplet),
+    mNodePath(),
+    mKey(GlobalKeys.add("Modification", this))
 {
-  GlobalKeys.remove(mKey);
-  pdelete(mpRDFObj);
+  if (!mTriplet)
+    return;
+
+  mNodePath = mTriplet.pObject->getPath();
 }
 
-const std::string CModified::getObjectName() const
-  {return getDateModified();}
+CModification::CModification(const CModification & src,
+                             const CCopasiContainer * pParent):
+    CCopasiContainer(src, pParent),
+    mTriplet(src.mTriplet),
+    mNodePath(src.mNodePath),
+    mKey(GlobalKeys.add("Modification", this))
+{}
 
-const std::string CModified::getDateModified() const
-  {return dynamic_cast <CModelMIRIAMInfo*> (getObjectParent()->getObjectParent())->getRDFGraph()->getFieldValue("dcterms:W3CDTF", *mpRDFObj);}
+CModification::~CModification()
+{
+  GlobalKeys.remove(mKey);
+}
 
-CRDFObject& CModified::getRDFObject()
-{return *mpRDFObj;}
+const CRDFGraph::CTriplet & CModification::getTriplet() const
+  {return mTriplet;}
 
-void CModified::setDateModified(const std::string dateModified)
-{dynamic_cast <CModelMIRIAMInfo*> (getObjectParent()->getObjectParent())->getRDFGraph()->setFieldValue("dcterms:W3CDTF", *mpRDFObj, dateModified);}
+const std::string & CModification::getKey() const
+  {return mKey;}
 
-const std::string & CModified::getKey() const {return mKey;} //By G
+void CModification::setDate(const std::string & date)
+{mTriplet.pObject->setFieldValue(date, CRDFPredicate::dcterms_W3CDTF, mNodePath, mTriplet);}
+
+const std::string & CModification::getDate() const
+  {return mTriplet.pObject->getFieldValue(CRDFPredicate::dcterms_W3CDTF, mNodePath, mTriplet);}

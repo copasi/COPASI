@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CQRDFListViewWidget.ui.h,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Creator: aekamal $
-//   $Date: 2008/04/21 21:26:53 $
+//   $Date: 2008/06/03 13:21:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -53,11 +53,10 @@ void CQRDFListViewWidget::load()
   mpListView->clearVisitedNodes();
 
   CRDFGraph * pGraph = NULL;
+  CModelEntity *pEntity;
 
-  //if ((pEntity = dynamic_cast< CModelEntity * >(GlobalKeys.get(mKey))) != NULL)
-  //pGraph = CRDFParser::graphFromXml(pEntity->getMiriamAnnotation());
-  if (mpMIRIAMInfo)
-  {pGraph = mpMIRIAMInfo->getRDFGraph();}
+  if ((pEntity = dynamic_cast< CModelEntity * >(GlobalKeys.get(mKey))) != NULL)
+    pGraph = CRDFParser::graphFromXml(pEntity->getMiriamAnnotation());
 
   CCopasiMessage::clearDeque();
 
@@ -103,5 +102,5 @@ bool CQRDFListViewWidget::update(ListViews::ObjectType, ListViews::Action, const
   return FALSE;
 }
 
-void CQRDFListViewWidget::setMIRIAMInfo(CModelMIRIAMInfo* pMIRIAMInfo)
+void CQRDFListViewWidget::setMIRIAMInfo(CMIRIAMInfo* pMIRIAMInfo)
 {mpMIRIAMInfo = pMIRIAMInfo;}

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CCreator.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2008/04/21 20:12:31 $
+//   $Author: shoops $
+//   $Date: 2008/06/03 13:20:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,70 +15,78 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include "report/CKeyFactory.h"
+#include "copasi.h"
+
+#include "CRDFNode.h"
+#include "CCreator.h"
+#include "CRDFLiteral.h"
+#include "CModelMIRIAMInfo.h"
+
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "model/CModel.h"
+#include "report/CKeyFactory.h"
 
-#include "CModelMIRIAMInfo.h"
-#include "CCreator.h"
-
-CCreator::CCreator(const std::string & objectName, const CCopasiContainer * pParent,
-                   CRDFObject * pRDFObj) :
+CCreator::CCreator(const std::string & objectName,
+                   const CCopasiContainer * pParent):
     CCopasiContainer(objectName, pParent, "Creator"),
-    mKey(GlobalKeys.add("Creator", this)),
-    mpRDFObj(NULL)
+    mTriplet(),
+    mNodePath(),
+    mKey(GlobalKeys.add("Creator", this))
+{}
+
+CCreator::CCreator(const CRDFGraph::CTriplet & triplet,
+                   const std::string & objectName,
+                   const CCopasiContainer * pParent):
+    CCopasiContainer(objectName, pParent, "Creator"),
+    mTriplet(triplet),
+    mNodePath(),
+    mKey(GlobalKeys.add("Creator", this))
 {
-  if (pRDFObj)
-  {mpRDFObj = pRDFObj;}
-  else
-    {
-      mpRDFObj = new CRDFObject();
-      mpRDFObj->setType(CRDFObject::BLANK_NODE);
-      mpRDFObj->setBlankNodeId(mKey);
-    }
+  if (!mTriplet)
+    return;
+
+  mNodePath = mTriplet.pObject->getPath();
 }
 
 CCreator::CCreator(const CCreator & src,
                    const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
-    mKey(GlobalKeys.add("Creator", this)),
-    mpRDFObj(src.mpRDFObj == NULL ? NULL : new CRDFObject(*src.mpRDFObj))
+    mTriplet(src.mTriplet),
+    mNodePath(src.mNodePath),
+    mKey(GlobalKeys.add("Creator", this))
 {}
 
 CCreator::~CCreator()
 {
   GlobalKeys.remove(mKey);
-  pdelete(mpRDFObj);
 }
 
-const std::string CCreator::getFamilyName() const
-  {return dynamic_cast <CModelMIRIAMInfo*> (getObjectParent()->getObjectParent())->getRDFGraph()->getFieldValue("vCard:Family", *mpRDFObj);}
+const CRDFGraph::CTriplet & CCreator::getTriplet() const
+  {return mTriplet;}
 
-const std::string CCreator::getGivenName() const
-  {return dynamic_cast <CModelMIRIAMInfo*> (getObjectParent()->getObjectParent())->getRDFGraph()->getFieldValue("vCard:Given", *mpRDFObj);}
+const std::string & CCreator::getKey() const
+  {return mKey;}
 
-const std::string CCreator::getEmail() const
-  {return dynamic_cast <CModelMIRIAMInfo*> (getObjectParent()->getObjectParent())->getRDFGraph()->getFieldValue("vCard:EMAIL", *mpRDFObj);}
+const std::string & CCreator::getFamilyName() const
+  {return mTriplet.pObject->getFieldValue(CRDFPredicate::vcard_Family, mNodePath, mTriplet);}
 
-const std::string CCreator::getORG() const
-  {return dynamic_cast <CModelMIRIAMInfo*> (getObjectParent()->getObjectParent())->getRDFGraph()->getFieldValue("vCard:Orgname", *mpRDFObj);}
+const std::string & CCreator::getGivenName() const
+  {return mTriplet.pObject->getFieldValue(CRDFPredicate::vcard_Given, mNodePath, mTriplet);}
 
-CRDFObject& CCreator::getRDFObject()
-{return *mpRDFObj;}
+const std::string & CCreator::getEmail() const
+  {return mTriplet.pObject->getFieldValue(CRDFPredicate::vcard_EMAIL, mNodePath, mTriplet);}
 
-void CCreator::setFamilyName(const std::string familyName)
-{dynamic_cast <CModelMIRIAMInfo*> (getObjectParent()->getObjectParent())->getRDFGraph()->setFieldValue("vCard:Family", *mpRDFObj, familyName);}
+const std::string & CCreator::getORG() const
+  {return mTriplet.pObject->getFieldValue(CRDFPredicate::vcard_Orgname, mNodePath, mTriplet);}
 
-void CCreator::setGivenName(const std::string givenName)
-{dynamic_cast <CModelMIRIAMInfo*> (getObjectParent()->getObjectParent())->getRDFGraph()->setFieldValue("vCard:Given", *mpRDFObj, givenName);}
+void CCreator::setFamilyName(const std::string & familyName)
+{mTriplet.pObject->setFieldValue(familyName, CRDFPredicate::vcard_Family, mNodePath, mTriplet);}
 
-void CCreator::setEmail(const std::string Email)
-{dynamic_cast <CModelMIRIAMInfo*> (getObjectParent()->getObjectParent())->getRDFGraph()->setFieldValue("vCard:EMAIL", *mpRDFObj, Email);}
+void CCreator::setGivenName(const std::string & givenName)
+{mTriplet.pObject->setFieldValue(givenName, CRDFPredicate::vcard_Given, mNodePath, mTriplet);}
 
-void CCreator::setORG(const std::string Orgname)
-{dynamic_cast <CModelMIRIAMInfo*> (getObjectParent()->getObjectParent())->getRDFGraph()->setFieldValue("vCard:Orgname", *mpRDFObj, Orgname);}
+void CCreator::setEmail(const std::string & Email)
+{mTriplet.pObject->setFieldValue(Email, CRDFPredicate::vcard_EMAIL, mNodePath, mTriplet);}
 
-const std::string & CCreator::getKey() const {return mKey;} //By G
-
-const std::string CCreator::getObjectName() const
-  {return getFamilyName();}
+void CCreator::setORG(const std::string & Orgname)
+{mTriplet.pObject->setFieldValue(Orgname, CRDFPredicate::vcard_Orgname, mNodePath, mTriplet);}

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CBiologicalDescription.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2008/03/10 15:49:56 $
+//   $Author: shoops $
+//   $Date: 2008/06/03 13:20:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,33 +16,50 @@
 
 #include <string>
 
-#include "report/CCopasiContainer.h"
+#include "copasi/MIRIAM/CRDFGraph.h"
+#include "copasi/MIRIAM/CRDFPredicate.h"
+#include "copasi/MIRIAM/CConstants.h"
 
-#include "CRDFObject.h"
+#include "copasi/report/CCopasiContainer.h"
 
 class CBiologicalDescription : public CCopasiContainer
   {
     // Attributes
   private:
+    /**
+     * Triplet in the RDF graph representing the description.
+     */
+    CRDFGraph::CTriplet mTriplet;
 
+    /**
+     * The key of the object needed for the copasi tables.
+     */
     std::string mKey;
 
-    /** Object in RDF Graph corresponding to this object.*/
-    CRDFObject* mpRDFObj;
+    /**
+     * MIRIAM resource for holding the PubMed Id
+     */
+    CMIRIAMResource mResource;
 
-    /** The XML parent tag under which this object comes under.*/
-    std::string mParentTag;
-
-    // Operations
   public:
+    // Operations
     /**
      * Default constructor
      * @param const std::string & objectName
-     * @param CRDFObject* pRDFObj
      * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CBiologicalDescription(const std::string & objectName, const CCopasiContainer * pParent = NULL,
-                           CRDFObject* pRDFObj = NULL);
+    CBiologicalDescription(const std::string & objectName,
+                           const CCopasiContainer * pParent = NULL);
+
+    /**
+     * Specific constructor
+     * @param const CRDFGraph::CTriplet & triplet
+     * @param const std::string & objectName (default: "")
+     * @param const CCopasiContainer * pParent (default: NULL)
+     */
+    CBiologicalDescription(const CRDFGraph::CTriplet & triplet,
+                           const std::string & objectName = "",
+                           const CCopasiContainer * pParent = NULL);
 
     /**
      * Copy constructor
@@ -52,29 +69,26 @@ class CBiologicalDescription : public CCopasiContainer
     CBiologicalDescription(const CBiologicalDescription & src,
                            const CCopasiContainer * pParent = NULL);
 
-    ~CBiologicalDescription();
-    void initObjects();
-
-    const std::string getRelationship() const;
-    void setRelationship(const std::string r);
-
-    const std::string getResource() const;
-
-    const std::string getId() const;
-    void setId(const std::string Id, const std::string resource);
-
-    CRDFObject& getRDFObject();
-
-    const std::string getParentTag() const;
-    void setParentTag(const std::string pt);
-
-    const std::string getObjectName() const;
-
     /**
-        *  Returns a string with the name of this BiologicalDescription.
-        *  @return std::string key
-        */
+     * Destructor
+     */
+    ~CBiologicalDescription();
+
+    const CRDFGraph::CTriplet & getTriplet() const;
+
     virtual const std::string & getKey() const;
+
+    std::string getPredicate() const;
+
+    std::string getResource() const;
+
+    const std::string & getId() const;
+
+    void setPredicate(const std::string & predicate);
+
+    void setResource(const std::string & resource);
+
+    void setId(const std::string & id);
   };
 
-#endif //COPASI_CReference
+#endif //COPASI_CBiologicalDescription

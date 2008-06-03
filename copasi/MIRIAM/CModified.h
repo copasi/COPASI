@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CModified.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2008/03/10 15:49:56 $
+//   $Author: shoops $
+//   $Date: 2008/06/03 13:20:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,54 +20,69 @@
 
 #include <string>
 
-#include "report/CCopasiContainer.h"
+#include "copasi/MIRIAM/CRDFGraph.h"
+#include "copasi/MIRIAM/CRDFPredicate.h"
+#include "copasi/report/CCopasiContainer.h"
 
-#include "CRDFObject.h"
-
-class CModified : public CCopasiContainer
+class CModification : public CCopasiContainer
   {
     // Attributes
   private:
+    /**
+     * Triplet in the RDF graph representing the reference.
+     */
+    CRDFGraph::CTriplet mTriplet;
 
+    /**
+     * The predicate path to the node.
+     */
+    CRDFPredicate::Path mNodePath;
+
+    /**
+     * The key of the object needed for the copasi tables.
+     */
     std::string mKey;
-
-    /** Object in RDF Graph corresponding to this object.*/
-    CRDFObject* mpRDFObj;
 
     // Operations
   public:
     /**
      * Default constructor
      * @param const std::string & objectName
-     * @param CRDFObject* pRDFObj
      * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CModified(const std::string & objectName, const CCopasiContainer * pParent = NULL,
-              CRDFObject* pRDFObj = NULL);
+    CModification(const std::string & objectName,
+                  const CCopasiContainer * pParent = NULL);
+
+    /**
+     * Specific constructor
+     * @param const CRDFGraph::CTriplet & triplet
+     * @param const std::string & objectName (default: "")
+     * @param const CCopasiContainer * pParent (default: NULL)
+     */
+    CModification(const CRDFGraph::CTriplet & triplet,
+                  const std::string & objectName = "",
+                  const CCopasiContainer * pParent = NULL);
 
     /**
      * Copy constructor
-     * @param "const CModified &" src
+     * @param "const CModification &" src
      * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CModified(const CModified & src,
-              const CCopasiContainer * pParent = NULL);
-
-    ~CModified();
-
-    const std::string getDateModified() const;
-
-    void setDateModified(const std::string dateModified);
-
-    CRDFObject& getRDFObject();
-
-    const std::string getObjectName() const;
+    CModification(const CModification & src,
+                  const CCopasiContainer * pParent = NULL);
 
     /**
-        *  Returns a string with the name of this Modified.
-        *  @return std::string key
-        */
+     * Destructor
+     */
+    ~CModification();
+
+    const CRDFGraph::CTriplet & getTriplet() const;
+
     virtual const std::string & getKey() const;
+
+    void setDate(const std::string & date);
+
+    const std::string & getDate() const;
   };
 
 #endif //COPASI_CMODIFIED

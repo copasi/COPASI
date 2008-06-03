@@ -2,3 +2,5 @@ Makefile
 CQRDFListViewWidget.cpp
 CQRDFListViewWidget.h
 moc_*.cpp
+CQMiriamWidget.h
+CQMiriamWidget.cpp

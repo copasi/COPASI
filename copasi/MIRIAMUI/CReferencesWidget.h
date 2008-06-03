@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CReferencesWidget.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2008/04/21 20:12:32 $
+//   $Author: shoops $
+//   $Date: 2008/06/03 13:21:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,7 +15,11 @@
 #define COPASI_CReferencesWidget
 
 #include <vector>
+
 #include "UI/CopasiTableWidget.h"
+
+#include "copasi.h"
+
 #include "MIRIAM/CModelMIRIAMInfo.h"
 
 class CReferencesWidget : public CopasiTableWidget
@@ -64,8 +68,6 @@ class CReferencesWidget : public CopasiTableWidget
      * the prefix that is used to construct new object names
      */
     virtual QString defaultObjectName() const;
-
-    virtual void saveTable();
 
     virtual void slotDoubleClicked(int, int, int, const QPoint &);
   };

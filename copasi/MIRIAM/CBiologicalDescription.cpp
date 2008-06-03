@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CBiologicalDescription.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2008/04/21 20:12:31 $
+//   $Author: shoops $
+//   $Date: 2008/06/03 13:20:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -11,106 +11,82 @@
 // and The University of Manchester.
 // All rights reserved.
 
+#include "copasi.h"
+
+#include "CRDFNode.h"
+
+#include "CModelMIRIAMInfo.h"
+#include "CReference.h"
+
 #include "report/CKeyFactory.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "model/CModel.h"
 
-#include "CModelMIRIAMInfo.h"
-#include "CBiologicalDescription.h"
-#include "CConstants.h"
-
-CBiologicalDescription::CBiologicalDescription(const std::string & objectName, const CCopasiContainer * pParent,
-    CRDFObject* pRDFObj) :
+CBiologicalDescription::CBiologicalDescription(const std::string & objectName,
+    const CCopasiContainer * pParent):
     CCopasiContainer(objectName, pParent, "BiologicalDescription"),
+    mTriplet(),
     mKey(GlobalKeys.add("BiologicalDescription", this)),
-    mpRDFObj(NULL),
-    mParentTag("")
-{
-  if (pRDFObj)
-  {mpRDFObj = pRDFObj;}
-  else
-    {
-      mpRDFObj = new CRDFObject();
-      mpRDFObj->setType(CRDFObject::RESOURCE);
-      mpRDFObj->setResource(mKey, true);
-    }
-}
+    mResource(NULL)
+{}
+
+CBiologicalDescription::CBiologicalDescription(const CRDFGraph::CTriplet & triplet,
+    const std::string & objectName,
+    const CCopasiContainer * pParent):
+    CCopasiContainer(objectName, pParent, "BiologicalDescription"),
+    mTriplet(triplet),
+    mKey(GlobalKeys.add("BiologicalDescription", this)),
+    mResource(mTriplet.pObject)
+{}
 
 CBiologicalDescription::CBiologicalDescription(const CBiologicalDescription & src,
     const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
-    mKey(GlobalKeys.add("BiologicalDescription", this)),
-    mpRDFObj(src.mpRDFObj == NULL ? NULL : new CRDFObject(*src.mpRDFObj))
-{
-  mParentTag = src.mParentTag;
-}
+    mTriplet(src.mTriplet),
+    mKey(GlobalKeys.add("Creator", this)),
+    mResource(src.mResource)
+{}
 
 CBiologicalDescription::~CBiologicalDescription()
 {
   GlobalKeys.remove(mKey);
-  pdelete(mpRDFObj);
 }
 
-const std::string CBiologicalDescription::getObjectName() const
-  {return getId();}
+const CRDFGraph::CTriplet & CBiologicalDescription::getTriplet() const
+  {return mTriplet;}
 
-const std::string CBiologicalDescription::getRelationship() const
-  {
-    std::map<std::string, std::string> relationships = CConstants::getRelationships();
-    return relationships[getParentTag()];
-  }
+const std::string & CBiologicalDescription::getKey() const
+  {return mKey;}
 
-const std::string CBiologicalDescription::getResource() const
-  {
-    std::string fieldVal = dynamic_cast <CModelMIRIAMInfo*> (getObjectParent()->getObjectParent())->getRDFGraph()->getFieldValue("rdf:_#", *mpRDFObj);
-    if (fieldVal.length())
-      {
-        std::string::size_type loc = fieldVal.find('#', 0);
-        if (loc == std::string::npos)
-        {return "";}
-        const std::map<std::string, std::string> resources = CConstants::getResources();
-        return CConstants::getKey(resources, fieldVal.substr(0, loc));
-      }
-    else
-    {return "";}
-  }
+std::string CBiologicalDescription::getPredicate() const
+  {return CRDFPredicate::getDisplayName(mTriplet.Predicate);}
 
-const std::string CBiologicalDescription::getId() const
-  {
-    std::string fieldVal = dynamic_cast <CModelMIRIAMInfo*> (getObjectParent()->getObjectParent())->getRDFGraph()->getFieldValue("rdf:_#", *mpRDFObj);
-    if (fieldVal.length())
-      {
-        std::string::size_type loc = fieldVal.find('#', 0);
-        if (loc == std::string::npos)
-        {return "";}
-        return fieldVal.substr(loc + 1);
-      }
-    else
-    {return "";}
-  }
-void CBiologicalDescription::setId(const std::string Id, const std::string resource)
+std::string CBiologicalDescription::getResource() const
+  {return mResource.getDisplayName();}
+
+const std::string & CBiologicalDescription::getId() const
+  {return mResource.getId();}
+
+void CBiologicalDescription::setPredicate(const std::string & predicate)
 {
-  std::string predicate;
-  if (resource.length())
-    {
-      std::map<std::string, std::string> resources = CConstants::getResources();
-      predicate = resources[resource];
-    }
+  // Remove the edge with the predicate without destroying any objects.
+  mTriplet.pSubject->removeEdgeInternal(CRDFEdge(mTriplet.Predicate, mTriplet.pObject));
 
-  std::string fieldVal = "";
-  if (Id.length())
-  {fieldVal = predicate + '#' + Id;}
+  // Set the new predicate
+  mTriplet.Predicate = CRDFPredicate::getPredicateFromDisplayName(predicate);
 
-  dynamic_cast <CModelMIRIAMInfo*> (getObjectParent()->getObjectParent())->getRDFGraph()->setFieldValue("rdf:_#", *mpRDFObj, fieldVal);
+  // Add the edge with the new predicate without any object creation.
+  mTriplet.pSubject->addEdgeInternal(CRDFEdge(mTriplet.Predicate, mTriplet.pObject));
 }
 
-CRDFObject& CBiologicalDescription::getRDFObject()
-{return *mpRDFObj;}
+void CBiologicalDescription::setResource(const std::string & resource)
+{
+  mResource = CMIRIAMResource(resource, mResource.getId());
+  mTriplet.pObject->getObject().setResource(mResource.getURI(), false);
+}
 
-const std::string CBiologicalDescription::getParentTag() const
-  {return mParentTag;}
-
-void CBiologicalDescription::setParentTag(const std::string pt)
-{mParentTag = pt;}
-
-const std::string & CBiologicalDescription::getKey() const {return mKey;} //By G
+void CBiologicalDescription::setId(const std::string & id)
+{
+  mResource.setId(id);
+  mTriplet.pObject->getObject().setResource(mResource.getURI(), false);
+}

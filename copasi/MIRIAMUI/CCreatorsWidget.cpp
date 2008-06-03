@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CCreatorsWidget.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2008/04/21 20:12:32 $
+//   $Author: shoops $
+//   $Date: 2008/06/03 13:21:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,7 +28,7 @@
 #include "MIRIAM/CModelMIRIAMInfo.h"
 #include "MIRIAM/CCreator.h"
 
-#include "CMIRIAMModelWidget.h"
+#include "CQMiriamWidget.h"
 #include "CCreatorsWidget.h"
 
 #define COL_MARK               0
@@ -62,9 +62,9 @@ std::vector<const CCopasiObject*> CCreatorsWidget::getObjects() const
   {
     std::vector<const CCopasiObject*> ret;
 
-    if (dynamic_cast <CMIRIAMModelWidget*> (parentWidget()))
+    if (dynamic_cast <CQMiriamWidget*> (parentWidget()))
       {
-        const CCopasiVector<CCreator>& tmp = dynamic_cast <CMIRIAMModelWidget*>(parentWidget())->getMIRIAMInfo().getCreators();
+        const CCopasiVector<CCreator>& tmp = dynamic_cast <CQMiriamWidget*>(parentWidget())->getMIRIAMInfo().getCreators();
 
         C_INT32 i, imax = tmp.size();
         for (i = 0; i < imax; ++i)
@@ -93,7 +93,7 @@ void CCreatorsWidget::init()
 void CCreatorsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_INT32 row)
 {
   if (!obj) return;
-  const CCreator *pCreator = (const CCreator*)obj;
+  const CCreator *pCreator = static_cast< const CCreator * >(obj);
   table->setText(row, COL_FAMILY_NAME, FROM_UTF8(pCreator->getFamilyName()));
   table->setText(row, COL_GIVEN_NAME, FROM_UTF8(pCreator->getGivenName()));
   table->setText(row, COL_EMAIL, FROM_UTF8(pCreator->getEmail()));
@@ -124,21 +124,21 @@ void CCreatorsWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_I
     table->clearCell(row, COL_EMAIL);
 
   if (exc != COL_ORG)
-  {table->clearCell(row, COL_ORG);}
+    table->clearCell(row, COL_ORG);
 }
 
 QString CCreatorsWidget::defaultObjectName() const
-  {return "";}
+{return "";}
 
 CCopasiObject* CCreatorsWidget::createNewObject(const std::string & name)
 {
-  if (!dynamic_cast <CMIRIAMModelWidget*> (parentWidget()))
+  if (!dynamic_cast <CQMiriamWidget*> (parentWidget()))
     return NULL;
   std::string nname = name;
   int i = 0;
   CCreator* pCreator = NULL;
 
-  while (!(pCreator = dynamic_cast <CMIRIAMModelWidget*> (parentWidget())->getMIRIAMInfo().createCreator(name)))
+  while (!(pCreator = dynamic_cast <CQMiriamWidget*> (parentWidget())->getMIRIAMInfo().createCreator(name)))
     {
       i++;
       nname = name + "_";
@@ -150,7 +150,7 @@ CCopasiObject* CCreatorsWidget::createNewObject(const std::string & name)
 
 void CCreatorsWidget::deleteObjects(const std::vector<std::string> & keys)
 {
-  if (!dynamic_cast <CMIRIAMModelWidget*> (parentWidget()))
+  if (!dynamic_cast <CQMiriamWidget*> (parentWidget()))
     return;
   QString authorList = "Are you sure you want to delete listed AUTHOR(S) ?\n";
   unsigned C_INT32 i, imax = keys.size();
@@ -179,7 +179,7 @@ void CCreatorsWidget::deleteObjects(const std::vector<std::string> & keys)
       {
         for (i = 0; i < imax; i++)
           {
-            dynamic_cast <CMIRIAMModelWidget*> (parentWidget())->getMIRIAMInfo().removeCreator(keys[i]);
+            dynamic_cast <CQMiriamWidget*> (parentWidget())->getMIRIAMInfo().removeCreator(keys[i]);
           }
 
         for (i = 0; i < imax; i++)

@@ -1,0 +1,263 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<comment> Begin CVS Header </comment>
+<comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQMiriamWidget.ui,v $ </comment>
+<comment>   $Revision: 1.1 $ </comment>
+<comment>   $Name:  $ </comment>
+<comment>   $Author: shoops $ </comment>
+<comment>   $Date: 2008/06/03 13:21:21 $ </comment>
+<comment> End CVS Header </comment>
+
+<comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., EML Research, gGmbH, University of Heidelberg, </comment>
+<comment> and The University of Manchester. </comment>
+<comment> All rights reserved. </comment>
+
+<class>CQMiriamWidget</class>
+<widget class="CopasiWidget">
+    <property name="name">
+        <cstring>CQMiriamWidget</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>501</width>
+            <height>482</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>MIRIAM Annotation</string>
+    </property>
+    <grid>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QLabel" row="0" column="0">
+            <property name="name">
+                <cstring>mpLblCreated</cstring>
+            </property>
+            <property name="text">
+                <string>Created at</string>
+            </property>
+        </widget>
+        <widget class="QLabel" row="1" column="0">
+            <property name="name">
+                <cstring>mpLblAuthors</cstring>
+            </property>
+            <property name="text">
+                <string>Authors</string>
+            </property>
+        </widget>
+        <widget class="CCreatorsWidget" row="2" column="0" rowspan="1" colspan="3">
+            <property name="name">
+                <cstring>mpTblAuthors</cstring>
+            </property>
+        </widget>
+        <widget class="QLabel" row="5" column="0">
+            <property name="name">
+                <cstring>mpLblDescription</cstring>
+            </property>
+            <property name="text">
+                <string>Biological Description</string>
+            </property>
+        </widget>
+        <widget class="CBiologicalDescriptionsWidget" row="6" column="0" rowspan="1" colspan="3">
+            <property name="name">
+                <cstring>mpTblDescription</cstring>
+            </property>
+        </widget>
+        <widget class="QLabel" row="3" column="0">
+            <property name="name">
+                <cstring>mpLblReferences</cstring>
+            </property>
+            <property name="text">
+                <string>References</string>
+            </property>
+        </widget>
+        <widget class="CReferencesWidget" row="4" column="0" rowspan="1" colspan="3">
+            <property name="name">
+                <cstring>mpTblReferences</cstring>
+            </property>
+        </widget>
+        <widget class="QDateTimeEdit" row="0" column="1">
+            <property name="name">
+                <cstring>mpDTCreated</cstring>
+            </property>
+        </widget>
+        <spacer row="0" column="2">
+            <property name="name">
+                <cstring>mpSpcCreated</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>180</width>
+                    <height>20</height>
+                </size>
+            </property>
+        </spacer>
+        <widget class="QLayoutWidget" row="8" column="0" rowspan="1" colspan="3">
+            <property name="name">
+                <cstring>mpLayoutBtn</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>mpBtnCommit</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Commit</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>mpBtnRevert</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Revert</string>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>mpSpcBtn</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>136</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>mpBtnClear</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Clear</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>mpBtnDelete</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Delete/Undelete</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>mpBtnNew</cstring>
+                    </property>
+                    <property name="text">
+                        <string>New</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="CModifiedWidget" row="7" column="1" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>mpTblModified</cstring>
+            </property>
+        </widget>
+        <widget class="QLabel" row="7" column="0">
+            <property name="name">
+                <cstring>mpLblModified</cstring>
+            </property>
+            <property name="text">
+                <string>Modified at</string>
+            </property>
+            <property name="alignment">
+                <set>AlignTop</set>
+            </property>
+        </widget>
+    </grid>
+</widget>
+<connections>
+    <connection>
+        <sender>mpDTCreated</sender>
+        <signal>valueChanged(const QDateTime&amp;)</signal>
+        <receiver>CQMiriamWidget</receiver>
+        <slot>slotCreatedValueChanged(const QDateTime&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>mpBtnCommit</sender>
+        <signal>pressed()</signal>
+        <receiver>CQMiriamWidget</receiver>
+        <slot>slotBtnOKClicked()</slot>
+    </connection>
+    <connection>
+        <sender>mpBtnRevert</sender>
+        <signal>pressed()</signal>
+        <receiver>CQMiriamWidget</receiver>
+        <slot>slotBtnCancelClicked()</slot>
+    </connection>
+    <connection>
+        <sender>mpBtnClear</sender>
+        <signal>pressed()</signal>
+        <receiver>CQMiriamWidget</receiver>
+        <slot>slotBtnClearClicked()</slot>
+    </connection>
+    <connection>
+        <sender>mpBtnDelete</sender>
+        <signal>pressed()</signal>
+        <receiver>CQMiriamWidget</receiver>
+        <slot>slotBtnDeleteClicked()</slot>
+    </connection>
+    <connection>
+        <sender>mpBtnNew</sender>
+        <signal>pressed()</signal>
+        <receiver>CQMiriamWidget</receiver>
+        <slot>slotBtnNewClicked()</slot>
+    </connection>
+</connections>
+<includes>
+    <include location="global" impldecl="in declaration">vector</include>
+    <include location="local" impldecl="in declaration">copasi/UI/copasiWidget.h</include>
+    <include location="local" impldecl="in implementation">CCreatorsWidget.h</include>
+    <include location="local" impldecl="in implementation">CReferencesWidget.h</include>
+    <include location="local" impldecl="in implementation">CBiologicalDescriptionsWidget.h</include>
+    <include location="local" impldecl="in implementation">CModifiedWidget.h</include>
+    <include location="local" impldecl="in implementation">CQMiriamWidget.ui.h</include>
+</includes>
+<forwards>
+    <forward>class CMIRIAMInfo;</forward>
+    <forward>class CopasiTableWidget;</forward>
+</forwards>
+<variables>
+    <variable access="private">CMIRIAMInfo * mpMIRIAMInfo;</variable>
+    <variable access="private">std::vector&lt; CopasiTableWidget * &gt; mWidgets;</variable>
+</variables>
+<slots>
+    <slot access="private" specifier="non virtual">slotBtnOKClicked()</slot>
+    <slot access="private" specifier="non virtual">slotBtnCancelClicked()</slot>
+    <slot access="private" specifier="non virtual">slotBtnDeleteClicked()</slot>
+    <slot access="private" specifier="non virtual">slotBtnNewClicked()</slot>
+    <slot access="private" specifier="non virtual">slotBtnClearClicked()</slot>
+    <slot access="private" specifier="non virtual">slotEnableOKAndCancel( bool enable )</slot>
+    <slot access="private" specifier="non virtual">slotCreatedValueChanged( const QDateTime &amp; )</slot>
+</slots>
+<functions>
+    <function access="private" specifier="non virtual">init()</function>
+    <function access="private" specifier="non virtual">destroy()</function>
+    <function returnType="bool">update( ListViews::ObjectType objectType, ListViews::Action action, const std::string &amp; key )</function>
+    <function returnType="bool">leave()</function>
+    <function returnType="bool">enter( const std::string &amp; key = "" )</function>
+    <function access="private" specifier="non virtual">updateCreatedWidget()</function>
+    <function specifier="non virtual" returnType="CMIRIAMInfo &amp;"> getMIRIAMInfo()</function>
+</functions>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

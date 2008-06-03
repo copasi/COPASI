@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CCreator.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2008/03/10 15:49:56 $
+//   $Author: shoops $
+//   $Date: 2008/06/03 13:20:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,30 +22,49 @@
 
 #include <string>
 
-#include "report/CCopasiContainer.h"
+#include "copasi/MIRIAM/CRDFGraph.h"
+#include "copasi/MIRIAM/CRDFPredicate.h"
 
-#include "CRDFObject.h"
+#include "copasi/report/CCopasiContainer.h"
 
 class CCreator : public CCopasiContainer
   {
     // Attributes
   private:
+    /**
+     * Triplet in the RDF graph representing the reference.
+     */
+    CRDFGraph::CTriplet mTriplet;
 
+    /**
+     * The predicate path to the node.
+     */
+    CRDFPredicate::Path mNodePath;
+
+    /**
+     * The key of the object needed for the copasi tables.
+     */
     std::string mKey;
-
-    /** Object in RDF Graph corresponding to this Creator.*/
-    CRDFObject* mpRDFObj;
 
     // Operations
   public:
     /**
      * Default constructor
      * @param const std::string & objectName
-     * @param CRDFObject * pRDFObj
      * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CCreator(const std::string & objectName, const CCopasiContainer * pParent = NULL,
-             CRDFObject * pRDFObj = NULL);
+    CCreator(const std::string & objectName,
+             const CCopasiContainer * pParent = NULL);
+
+    /**
+     * Specific constructor
+     * @param const CRDFGraph::CTriplet & triplet
+     * @param const std::string & objectName (default: "")
+     * @param const CCopasiContainer * pParent (default: NULL)
+     */
+    CCreator(const CRDFGraph::CTriplet & triplet,
+             const std::string & objectName = "",
+             const CCopasiContainer * pParent = NULL);
 
     /**
      * Copy constructor
@@ -55,37 +74,33 @@ class CCreator : public CCopasiContainer
     CCreator(const CCreator & src,
              const CCopasiContainer * pParent = NULL);
 
+    /**
+     * Destructor
+     */
     ~CCreator();
 
-    /** Add the given name to Last name to get the full Name.
-            *
-            */
+    const CRDFGraph::CTriplet & getTriplet() const;
 
-    const std::string getFamilyName() const;
-
-    const std::string getGivenName() const;
-
-    const std::string getEmail() const;
-
-    const std::string getORG() const;
-
-    void setFamilyName(const std::string familyName);
-
-    void setGivenName(const std::string givenName);
-
-    void setEmail(const std::string Email);
-
-    void setORG(const std::string Orgname);
-
-    CRDFObject& getRDFObject();
-
-    const std::string getObjectName() const;
+    virtual const std::string & getKey() const;
 
     /**
-        *  Returns a string with the name of this Creator.
-        *  @return std::string key
-        */
-    virtual const std::string & getKey() const;
+     *  Add the given name to Last name to get the full Name.
+     */
+    const std::string & getFamilyName() const;
+
+    const std::string & getGivenName() const;
+
+    const std::string & getEmail() const;
+
+    const std::string & getORG() const;
+
+    void setFamilyName(const std::string & familyName);
+
+    void setGivenName(const std::string & givenName);
+
+    void setEmail(const std::string & Email);
+
+    void setORG(const std::string & Orgname);
   };
 
 #endif //COPASI_CCreator

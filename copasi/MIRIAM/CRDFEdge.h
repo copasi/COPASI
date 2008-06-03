@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/Attic/CRDFEdge.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2008/01/29 15:43:44 $
+//   $Author: shoops $
+//   $Date: 2008/06/03 13:20:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,17 +20,20 @@
 
 #include <string>
 
+#include "copasi/MIRIAM/CRDFPredicate.h"
+
 class CRDFNode;
 
 class CRDFEdge
   {
     // Operations
-  public:
+  private:
     /**
      * Default Constructor
      */
     CRDFEdge();
 
+  public:
     /**
      * Copy Constructor
      * @param const CRDFEdge & src
@@ -39,12 +42,19 @@ class CRDFEdge
 
     /**
      * Specific Constructor
-     * @param const std::string & predicate
-     * @param CRDFNode * pPropertyNode
+     * @param const CRDFPredicate::ePredicateType & predicate
+     * @param const CRDFNode * pPropertyNode
      */
-    CRDFEdge(const std::string & predicate,
-             CRDFNode * pPropertyNode);
+    CRDFEdge(const CRDFPredicate::ePredicateType & predicate,
+             const CRDFNode * pPropertyNode);
 
+    /**
+     * Specific Constructor
+     * @param const std::string & predicateURI
+     * @param const CRDFNode * pPropertyNode
+     */
+    CRDFEdge(const std::string & predicateURI,
+             const CRDFNode * pPropertyNode);
     /**
      * Destructor
      */
@@ -52,39 +62,63 @@ class CRDFEdge
 
     /**
      * Set the URI describing the predicate of the edge
-     * @param const std::string & predicate
+     * @param const CRDFPredicate::ePredicateType & predicate
      */
-    void setPredicate(const std::string & predicate);
+    void setPredicate(const CRDFPredicate::ePredicateType & predicate);
 
     /**
      * Retrieve the predicate of the of the edge
-     * @return const std::string & predicate
+     * @return const CRDFPredicate::ePredicateType & predicate
      */
-    const std::string & getPredicate() const;
+    const CRDFPredicate::ePredicateType & getPredicate() const;
+
+    /**
+     * Set the URI describing the predicate of the edge
+     * @param const std::string & predicateURI
+     */
+    void setPredicateURI(const std::string & predicateURI);
+
+    /**
+     * Retrieve the predicate of the of the edge
+     * @return const std::string & predicateURI
+     */
+    const std::string & getPredicateURI() const;
 
     /**
      * Set the pointer to the property node
      * @param CRDFNode * pPropertyNode
      */
-    void setPropertyNode(CRDFNode * pPropertyNode);
+    void setPropertyNode(const CRDFNode * pPropertyNode);
 
     /**
      * Retrieve the pointer to the property node
      * @return const CRDFNode * pPropertyNode
      */
-    CRDFNode * getPropertyNode() const;
+    const CRDFNode * getPropertyNode() const;
+
+    /**
+     * Comparison operator
+     * @param const CRDFEdge & rhs
+     * @return bool operator isEqual
+     */
+    bool operator == (const CRDFEdge & rhs) const;
 
     // Attributes
   private:
     /**
-     * The predicate of the edge
+     * The prdicate of the edge
      */
-    std::string mPredicate;
+    CRDFPredicate::ePredicateType mPredicate;
+
+    /**
+     * The URI predicate of the edge
+     */
+    std::string mPredicateURI;
 
     /**
      * A pointer to the property node
      */
-    CRDFNode * mpPropertyNode;
+    const CRDFNode * mpPropertyNode;
   };
 
 #endif // COPASI_CRDFEdge
