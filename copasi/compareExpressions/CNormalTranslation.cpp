@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.cpp,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/05/15 14:56:51 $
+//   $Date: 2008/06/03 14:01:56 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -382,7 +382,7 @@ CEvaluationNode* CNormalTranslation::eliminate(const CEvaluationNode* pOrig)
   //CNormalFraction* base = createNormalRepresentation(pOrig);
   //assert(base != NULL);
   std::string infix = pResult->getInfix(); //base->toString();
-  std::cout << "Eliminate start: " << infix << std::endl;
+  //std::cout << "Eliminate start: " << infix << std::endl;
   //delete base;
   bool changed = true;
   while (changed)
@@ -416,7 +416,7 @@ CEvaluationNode* CNormalTranslation::eliminate(const CEvaluationNode* pOrig)
       else
         {
           infix = pTmp->getInfix(); //base->toString();
-          std::cout << "Eliminate end: " << infix << std::endl;
+          //std::cout << "Eliminate end: " << infix << std::endl;
         }
       pResult = pTmp;
       //delete base;
@@ -437,7 +437,7 @@ CEvaluationNode* CNormalTranslation::simplify(const CEvaluationNode* pOrig)
   //assert(base != NULL);
   std::string infix = pOrig->getInfix(); //base->toString();
   std::string infix2 = infix;
-  std::cout << "Simplify start: " << infix << std::endl;
+  //std::cout << "Simplify start: " << infix << std::endl;
   //delete base;
   //base = NULL;
   CEvaluationNode* pTmp = pOrig->copyBranch();
@@ -500,7 +500,7 @@ CEvaluationNode* CNormalTranslation::simplify(const CEvaluationNode* pOrig)
       else
         {
           infix = pResult->getInfix(); //base->toString();
-          std::cout << "Simplify end: " << infix << std::endl;
+          //std::cout << "Simplify end: " << infix << std::endl;
         }
       //delete base;
       //base = NULL;
