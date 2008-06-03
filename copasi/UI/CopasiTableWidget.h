@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.h,v $
-//   $Revision: 1.27 $
+//   $Revision: 1.28 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2008/03/03 16:58:29 $
+//   $Author: shoops $
+//   $Date: 2008/06/03 13:20:32 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -53,6 +53,7 @@ class CopasiTableWidget : public CopasiWidget
     virtual bool enter(const std::string & key = "");
     bool isTableInFocus();
     bool isChanged();
+    virtual void saveTable();
 
   protected slots:
     virtual void slotTableSelectionChanged();
@@ -72,13 +73,12 @@ class CopasiTableWidget : public CopasiWidget
 
   protected:
     void fillTable();
-    virtual void saveTable();
     //void createNewObject();
     void updateRow(const C_INT32 row);
     void handleSBMLId(const CCopasiObject* obj, unsigned C_INT32 row);
     QString createNewName(const QString name);
     void resizeTable(const unsigned C_INT32 numRows);
-	bool isTableChanged();
+    bool isTableChanged();
 
     QTable* table;
 
