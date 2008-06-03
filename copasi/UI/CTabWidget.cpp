@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CTabWidget.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/03 13:21:22 $
+//   $Date: 2008/06/03 13:58:56 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -58,18 +58,6 @@ CTabWidget::CTabWidget(const QString & label, CopasiWidget * pCopasiWidget,
 CTabWidget::~CTabWidget()
 {
   // no need to delete child widgets, Qt does it all for us
-}
-
-bool CTabWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
-{
-  // TODO This is unnecessary as ListViews::notifyChildWidgets takes care of this.
-  // std::vector< CopasiWidget * >::iterator it = mPages.begin();
-  // std::vector< CopasiWidget * >::iterator end = mPages.end();
-
-  // for (; it != end; ++it)
-  //   (*it)->update(objectType, action, key);
-
-  return true;
 }
 
 bool CTabWidget::leave()
