@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-//   $Revision: 1.141 $
+//   $Revision: 1.142 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2008/04/24 19:14:41 $
+//   $Author: shoops $
+//   $Date: 2008/06/03 13:20:58 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -130,7 +130,7 @@ class ListViews : public QSplitter
 
     // CHANGE does not include RENAME
     enum Action {CHANGE = 0, ADD, DELETE, RENAME};
-    enum ObjectType {METABOLITE = 0, COMPARTMENT, REACTION, FUNCTION, MODEL, STATE, REPORT, PLOT, MODELVALUE, EVENT};
+    enum ObjectType {METABOLITE = 0, COMPARTMENT, REACTION, FUNCTION, MODEL, STATE, REPORT, PLOT, MODELVALUE, EVENT, MIRIAM};
 
     static void setDataModel(DataModelGUI* dm);
     static DataModelGUI* getDataModel() {return dataModel;};
