@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/ConvertToCEvaluationNode.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/06/04 14:47:29 $
+//   $Date: 2008/06/04 18:00:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -581,19 +581,27 @@ CNormalProduct * createProduct(const CEvaluationNode* node)
       // multiplication vector has entries
       std::vector<const CEvaluationNode*> multiplications, divisions;
       CNormalTranslation::splitProduct(node, multiplications, divisions, false);
+      double factor = 1.0;
       if (divisions.empty())
         {
           std::vector<const CEvaluationNode*>::const_iterator it = multiplications.begin(), endit = multiplications.end();
           CNormalItemPower* pItemPower = NULL;
           while (it != endit)
             {
-              // TODO check if the node is a pure number
-              // TODO if so, use it to update the factor
-              // TODO instead of creating an item for it
-              pItemPower = createItemPower(*it);
-              assert(pItemPower != NULL);
-              pProduct->multiply(*pItemPower);
-              delete pItemPower;
+              // check if the node is a pure number
+              // if so, use it to update the factor
+              // instead of creating an item for it
+              if (CEvaluationNode::type((*it)->getType()) == CEvaluationNode::NUMBER)
+                {
+                  factor *= dynamic_cast<const CEvaluationNodeNumber*>(*it)->value();
+                }
+              else
+                {
+                  pItemPower = createItemPower(*it);
+                  assert(pItemPower != NULL);
+                  pProduct->multiply(*pItemPower);
+                  delete pItemPower;
+                }
               ++it;
             }
         }
@@ -602,14 +610,25 @@ CNormalProduct * createProduct(const CEvaluationNode* node)
           CEvaluationNodeOperator* pTmpOperator = new CEvaluationNodeOperator(CEvaluationNodeOperator::DIVIDE, "/");
           std::vector<CEvaluationNode*> tmp;
           std::vector<const CEvaluationNode*>::const_iterator it = multiplications.begin(), endit = multiplications.end();
+          // check if the multiplications and divisions contain only numbers
+          // in that case, done create a general item
+          bool empty = false;
           while (it != endit)
             {
-              // TODO check if the node is a pure number
-              // TODO if so, use it to update the factor
-              // TODO instead of adding it to the factor
-              tmp.push_back((*it)->copyBranch());
+              // check if the node is a pure number
+              // if so, use it to update the factor
+              // instead of adding it to the factor
+              if (CEvaluationNode::type((*it)->getType()) == CEvaluationNode::NUMBER)
+                {
+                  factor *= dynamic_cast<const CEvaluationNodeNumber*>(*it)->value();
+                }
+              else
+                {
+                  tmp.push_back((*it)->copyBranch());
+                }
               ++it;
             }
+          empty = tmp.empty();
           CEvaluationNode* pTmpNode1 = CNormalTranslation::createOperatorChain(CEvaluationNodeOperator::MULTIPLY, "*", tmp);
           pTmpOperator->addChild(pTmpNode1);
           tmp.clear();
@@ -617,25 +636,39 @@ CNormalProduct * createProduct(const CEvaluationNode* node)
           endit = divisions.end();
           while (it != endit)
             {
-              // TODO check if the node is a pure number
-              // TODO if so, use it to update the factor
-              // TODO instead of adding it to the vector
-              tmp.push_back((*it)->copyBranch());
+              // check if the node is a pure number
+              // if so, use it to update the factor
+              // instead of adding it to the vector
+              if (CEvaluationNode::type((*it)->getType()) == CEvaluationNode::NUMBER)
+                {
+                  factor /= dynamic_cast<const CEvaluationNodeNumber*>(*it)->value();
+                }
+              else
+                {
+                  tmp.push_back((*it)->copyBranch());
+                }
               ++it;
             }
-          pTmpNode1 = CNormalTranslation::createOperatorChain(CEvaluationNodeOperator::MULTIPLY, "*", tmp);
-          pTmpOperator->addChild(pTmpNode1);
-          CNormalItemPower* pItemPower = createItemPower(pTmpOperator);
-          assert(pItemPower != NULL);
+          // if tmp was empty both times, empty must be true
+          empty = (empty & tmp.empty());
+          if (!empty)
+            {
+              pTmpNode1 = CNormalTranslation::createOperatorChain(CEvaluationNodeOperator::MULTIPLY, "*", tmp);
+              pTmpOperator->addChild(pTmpNode1);
+              CNormalItemPower* pItemPower = createItemPower(pTmpOperator);
+              assert(pItemPower != NULL);
+              pProduct->multiply(*pItemPower);
+              delete pItemPower;
+            }
           delete pTmpOperator;
-          pProduct->multiply(*pItemPower);
-          delete pItemPower;
         }
+      pProduct->setFactor(factor);
     }
   else if (CEvaluationNode::type(node->getType()) == CEvaluationNode::NUMBER)
     {
-      // TODO
+      double factor = dynamic_cast<const CEvaluationNodeNumber*>(node)->value();
       // set the factor
+      pProduct->setFactor(factor);
     }
   else
     {
