@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.h,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/06/04 13:23:42 $
+//   $Date: 2008/06/04 18:51:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -98,6 +98,11 @@ class CNormalTranslation
      */
     static void splitSum(const CEvaluationNode* pRoot, std::vector<CEvaluationNode*>& additions, std::vector<CEvaluationNode*>& substractions, bool minus);
 
+    /**
+     * This method evaluates operators acting on two numbers
+     */
+    static CEvaluationNode* evaluateNumbers(const CEvaluationNode* pOrig);
+
   protected:
     /**
      * This routine is responsible for recursively simplifying a given
@@ -147,11 +152,6 @@ class CNormalTranslation
      * This method makes the elementary elimination on a minus node.
      */
     static CEvaluationNode* elementaryEliminationMinus(const CEvaluationNode* pMinusNode, const std::vector<CEvaluationNode*>& children);
-
-    /**
-     * This method evaluates operators acting on two numbers
-     */
-    static CEvaluationNode* evaluateNumbers(const CEvaluationNode* pOrig);
 
     /**
      * This method removes nested power nodes, e.g. (a^b)^c -> a^(b*c)
