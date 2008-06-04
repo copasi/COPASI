@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraph.cpp,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.31 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/03 13:20:02 $
+//   $Date: 2008/06/04 14:17:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -57,9 +57,6 @@ bool CRDFGraph::CTriplet::operator ! () const
             pSubject == NULL ||
             pObject == NULL);
   }
-
-// static
-CRDFGraph::CTriplet CRDFGraph::Fail;
 
 CRDFGraph::CRDFGraph():
     mpAbout(NULL),
@@ -244,7 +241,7 @@ CRDFGraph::CTriplet CRDFGraph::addTriplet(const CRDFSubject & subject,
     }
 
   if (!pSubjectNode->addEdgeInternal(CRDFEdge(predicate, pObjectNode)))
-    return Fail;
+    return CTriplet();
 
   return CTriplet(pSubjectNode, CRDFPredicate::getPredicateFromURI(predicate), pObjectNode);
 }
@@ -388,7 +385,7 @@ bool CRDFGraph::removeTriplet(CRDFNode * pNode, const CRDFEdge & Edge)
   return success;
 }
 
-bool CRDFGraph::moveEdge(CRDFNode * pFrom, CRDFNode * pTo, const CRDFEdge & Edge)
+CRDFGraph::CTriplet CRDFGraph::moveEdge(CRDFNode * pFrom, CRDFNode * pTo, const CRDFEdge & Edge)
 {
   if (pFrom == NULL || pTo == NULL) return false;
 
@@ -397,7 +394,15 @@ bool CRDFGraph::moveEdge(CRDFNode * pFrom, CRDFNode * pTo, const CRDFEdge & Edge
   success &= pFrom->removeEdgeInternal(Edge);
   success &= pTo->addEdgeInternal(Edge);
 
-  return success;
+  CTriplet Triplet;
+  if (success)
+    {
+      Triplet.pSubject = pTo;
+      Triplet.Predicate = Edge.getPredicate();
+      Triplet.pObject = const_cast< CRDFNode * >(Edge.getPropertyNode());
+    }
+
+  return Triplet;
 }
 
 CRDFPredicate::Path CRDFGraph::getPredicatePath(const CRDFNode * pNode)
@@ -512,3 +517,32 @@ CRDFNode * CRDFGraph::createAboutNode(const std::string & key)
 
   return mpAbout;
 }
+
+std::set< CRDFGraph::CTriplet > CRDFGraph::getTripletsWithPredicate(const CRDFPredicate::ePredicateType & predicate) const
+  {
+    std::set< CTriplet > AllTriplets;
+    std::set< CTriplet > Triplets;
+    CRDFNode * pNode;
+    CRDFPredicate::Path Path;
+    CTriplet ParentTriplet;
+    ParentTriplet.Predicate = CRDFPredicate::about;
+
+    // We must iterate over all nodes which only have the role subject;
+    std::map< std::string, CRDFNode * >::const_iterator itMap = mLocalResource2Node.begin();
+    std::map< std::string, CRDFNode * >::const_iterator endMap = mLocalResource2Node.end();
+    for (;itMap != endMap; ++itMap)
+      {
+        pNode = itMap->second;
+
+        if (pNode->isSubjectNode() && !pNode->isObjectNode())
+          {
+            Path = pNode->getPath();
+            ParentTriplet.pObject = pNode;
+            Triplets = pNode->getTripletsWithPredicate(Path, predicate, ParentTriplet);
+
+            AllTriplets.insert(Triplets.begin(), Triplets.end());
+          }
+      }
+
+    return AllTriplets;
+  }

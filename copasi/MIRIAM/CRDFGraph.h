@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraph.h,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/03 13:20:02 $
+//   $Date: 2008/06/04 14:17:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -46,8 +46,6 @@ class CRDFGraph
         bool operator < (const CTriplet & rhs) const;
         bool operator ! () const;
       };
-
-    static CTriplet Fail;
 
     // Operations
   public:
@@ -146,19 +144,16 @@ class CRDFGraph
      * @param CRDFNode * pFrom
      * @param CRDFNode * pTo
      * @param const CRDFEdge & Edge
-     * @return bool success
+     * @return CRDFGraph::CTriplet triplet
      */
-    bool moveEdge(CRDFNode * pFrom, CRDFNode * pTo, const CRDFEdge & Edge);
+    CTriplet moveEdge(CRDFNode * pFrom, CRDFNode * pTo, const CRDFEdge & Edge);
 
-#ifdef XXXX
-  private:
     /**
      * Retreive all triplets with the specified predicate
      * @param const CRDFPredicate::ePredicateType & predicate
-     * @return std::map< CRDFNode *, CRDFEdge * > &tripletsWithPredicate
+     * @return std::set< CTriplet > triplets
      */
-    std::map< CRDFNode *, CRDFEdge * > getTripletsWithPredicate(const CRDFPredicate::ePredicateType & predicate) const;
-#endif // XXXX
+    std::set< CTriplet > getTripletsWithPredicate(const CRDFPredicate::ePredicateType & predicate) const;
 
   public:
     /**

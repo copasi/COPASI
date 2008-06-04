@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFNode.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/03 13:20:02 $
+//   $Date: 2008/06/04 14:17:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -492,15 +492,18 @@ bool CRDFNode::removeEdgeInternal(const CRDFEdge & edge)
       Edge.setPredicate(CRDFPredicate::rdf_li);
       success &= const_cast< CRDFNode * >(Range.first->second.getPropertyNode())->removeEdgeInternal(Edge);
 
-      // If the bag is empty we remove it too
-      std::pair< CRDFNode::const_iterator, CRDFNode::const_iterator > Bag =
-        Range.first->second.getPropertyNode()->getEdgesWithPredicate(CRDFPredicate::rdf_li);
-      if (Bag.first == Bag.second)
-        success &= mGraph.removeTriplet(this,
-                                        Range.first->second.getPredicateURI(),
-                                        Range.first->second.getPropertyNode());
+      if (success)
+        {
+          // If the bag is empty we remove it too
+          std::pair< CRDFNode::const_iterator, CRDFNode::const_iterator > Bag =
+            Range.first->second.getPropertyNode()->getEdgesWithPredicate(CRDFPredicate::rdf_li);
+          if (Bag.first == Bag.second)
+            success &= mGraph.removeTriplet(this,
+                                            Range.first->second.getPredicateURI(),
+                                            Range.first->second.getPropertyNode());
 
-      return true;
+          return true;
+        }
     }
 
   for (; Range.first != Range.second; ++Range.first)
