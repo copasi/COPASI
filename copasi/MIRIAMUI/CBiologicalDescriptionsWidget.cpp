@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CBiologicalDescriptionsWidget.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/06/03 13:21:21 $
+//   $Author: gauges $
+//   $Date: 2008/06/04 14:08:36 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -89,14 +89,14 @@ void CBiologicalDescriptionsWidget::init()
 
   //table->setColumnWidth(COL_ID, 200);
   // Build the list of supported predicates
-  mPredicates.push_back(CRDFPredicate::getDisplayName(CRDFPredicate::bqbiol_encodes));
-  mPredicates.push_back(CRDFPredicate::getDisplayName(CRDFPredicate::bqbiol_hasPart));
-  mPredicates.push_back(CRDFPredicate::getDisplayName(CRDFPredicate::bqbiol_hasVersion));
-  mPredicates.push_back(CRDFPredicate::getDisplayName(CRDFPredicate::bqbiol_is));
-  mPredicates.push_back(CRDFPredicate::getDisplayName(CRDFPredicate::bqbiol_isEncodedBy));
-  mPredicates.push_back(CRDFPredicate::getDisplayName(CRDFPredicate::bqbiol_isHomologTo));
-  mPredicates.push_back(CRDFPredicate::getDisplayName(CRDFPredicate::bqbiol_isPartOf));
-  mPredicates.push_back(CRDFPredicate::getDisplayName(CRDFPredicate::bqbiol_isVersionOf));
+  mPredicates.push_back(QString(CRDFPredicate::getDisplayName(CRDFPredicate::bqbiol_encodes).c_str()));
+  mPredicates.push_back(QString(CRDFPredicate::getDisplayName(CRDFPredicate::bqbiol_hasPart).c_str()));
+  mPredicates.push_back(QString(CRDFPredicate::getDisplayName(CRDFPredicate::bqbiol_hasVersion).c_str()));
+  mPredicates.push_back(QString(CRDFPredicate::getDisplayName(CRDFPredicate::bqbiol_is).c_str()));
+  mPredicates.push_back(QString(CRDFPredicate::getDisplayName(CRDFPredicate::bqbiol_isEncodedBy).c_str()));
+  mPredicates.push_back(QString(CRDFPredicate::getDisplayName(CRDFPredicate::bqbiol_isHomologTo).c_str()));
+  mPredicates.push_back(QString(CRDFPredicate::getDisplayName(CRDFPredicate::bqbiol_isPartOf).c_str()));
+  mPredicates.push_back(QString(CRDFPredicate::getDisplayName(CRDFPredicate::bqbiol_isVersionOf).c_str()));
 
   // Build the list of known resources
   const CMIRIAMResource::sResource * pResource = CMIRIAMResource::getResourceList();
