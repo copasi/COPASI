@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/ConvertToCEvaluationNode.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/06/04 13:23:42 $
+//   $Date: 2008/06/04 14:47:29 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -587,6 +587,9 @@ CNormalProduct * createProduct(const CEvaluationNode* node)
           CNormalItemPower* pItemPower = NULL;
           while (it != endit)
             {
+              // TODO check if the node is a pure number
+              // TODO if so, use it to update the factor
+              // TODO instead of creating an item for it
               pItemPower = createItemPower(*it);
               assert(pItemPower != NULL);
               pProduct->multiply(*pItemPower);
@@ -601,6 +604,9 @@ CNormalProduct * createProduct(const CEvaluationNode* node)
           std::vector<const CEvaluationNode*>::const_iterator it = multiplications.begin(), endit = multiplications.end();
           while (it != endit)
             {
+              // TODO check if the node is a pure number
+              // TODO if so, use it to update the factor
+              // TODO instead of adding it to the factor
               tmp.push_back((*it)->copyBranch());
               ++it;
             }
@@ -611,6 +617,9 @@ CNormalProduct * createProduct(const CEvaluationNode* node)
           endit = divisions.end();
           while (it != endit)
             {
+              // TODO check if the node is a pure number
+              // TODO if so, use it to update the factor
+              // TODO instead of adding it to the vector
               tmp.push_back((*it)->copyBranch());
               ++it;
             }
@@ -622,6 +631,11 @@ CNormalProduct * createProduct(const CEvaluationNode* node)
           pProduct->multiply(*pItemPower);
           delete pItemPower;
         }
+    }
+  else if (CEvaluationNode::type(node->getType()) == CEvaluationNode::NUMBER)
+    {
+      // TODO
+      // set the factor
     }
   else
     {
@@ -1264,6 +1278,7 @@ CNormalGeneralPower * createGeneralPower(const CEvaluationNode* node)
     }
   else
     {
+      assert(node->getChild() != NULL);
       // create a fraction for the base and a unit fraction for the exponent
       pPow = new CNormalGeneralPower();
       pPow->setType(CNormalGeneralPower::POWER);
