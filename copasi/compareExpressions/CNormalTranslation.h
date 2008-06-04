@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/05/15 14:56:51 $
+//   $Date: 2008/06/04 13:23:42 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -88,6 +88,16 @@ class CNormalTranslation
      */
     static CEvaluationNode* expandProducts(const CEvaluationNode* pOrig);
 
+    /**
+     * This method splits a product into the individual elements
+     */
+    static void splitProduct(const CEvaluationNode* pRoot, std::vector<const CEvaluationNode*>& multiplications, std::vector<const CEvaluationNode*>& divisions, bool division);
+
+    /**
+     * This method splits a sum into the individual elements
+     */
+    static void splitSum(const CEvaluationNode* pRoot, std::vector<CEvaluationNode*>& additions, std::vector<CEvaluationNode*>& substractions, bool minus);
+
   protected:
     /**
      * This routine is responsible for recursively simplifying a given
@@ -147,16 +157,6 @@ class CNormalTranslation
      * This method removes nested power nodes, e.g. (a^b)^c -> a^(b*c)
      */
     static CEvaluationNode* eliminateNestedPowers(const CEvaluationNode* pOrig);
-
-    /**
-     * This method splits a product into the individual elements
-     */
-    static void splitProduct(const CEvaluationNode* pRoot, std::vector<const CEvaluationNode*>& multiplications, std::vector<const CEvaluationNode*>& divisions, bool division);
-
-    /**
-     * This method splits a sum into the individual elements
-     */
-    static void splitSum(const CEvaluationNode* pRoot, std::vector<CEvaluationNode*>& additions, std::vector<CEvaluationNode*>& substractions, bool minus);
 
     /**
      * This method expands the exponents of power nodes, e.g. A^(x+y) -> A^x * A^y

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/ConvertToCEvaluationNode.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/05/15 14:56:51 $
+//   $Date: 2008/06/04 13:23:42 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -50,6 +50,7 @@
 #include "CNormalLogical.h"
 #include "CNormalLogicalItem.h"
 #include "CNormalFunction.h"
+#include "CNormalCall.h"
 #include "CNormalGeneralPower.h"
 #include "CNormalTranslation.h"
 
@@ -113,6 +114,7 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalItem& item)
       pNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, item.getName());
       break;
     }
+  // TODO what about object nodes ?????
   return pNode;
 }
 
@@ -327,33 +329,58 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalSum& sum)
  */
 CNormalFraction* createFraction(const CEvaluationNode* node)
 {
+  CNormalFraction* pFraction = new CNormalFraction();
   if (node->getData() == "/")
     {// always executed except on root node possibly not
-      CNormalFraction* fraction = new CNormalFraction();
-      CNormalSum* num = createSum(static_cast<const CEvaluationNode*>(node->getChild()));
-      CNormalSum* denom = createSum(static_cast<const CEvaluationNode*>(node->getChild()->getSibling()));
-      fraction->setNumerator(*num);
-      fraction->setDenominator(*denom);
-      fraction->cancel();
-      delete num;
-      delete denom;
-      return fraction;
+      // find a product chain and create new temporary nodes for the
+      // numerator and denominator which are then converted to sums
+      std::vector<const CEvaluationNode*> multiplications, divisions;
+      CNormalTranslation::splitProduct(node, multiplications, divisions, false);
+      std::vector<CEvaluationNode*> tmp;
+      std::vector<const CEvaluationNode*>::const_iterator it = multiplications.begin(), endit = multiplications.end();
+      while (it != endit)
+        {
+          tmp.push_back((*it)->copyBranch());
+          ++it;
+        }
+      CEvaluationNode* pTmpNode = CNormalTranslation::createOperatorChain(CEvaluationNodeOperator::MULTIPLY, "*", tmp);
+      assert(pTmpNode != NULL);
+      CNormalSum* pNum = createSum(pTmpNode);
+      assert(pNum != NULL);
+      delete pTmpNode;
+      tmp.clear();
+      it = divisions.begin();
+      endit = divisions.end();
+      while (it != endit)
+        {
+          tmp.push_back((*it)->copyBranch());
+          ++it;
+        }
+      pTmpNode = CNormalTranslation::createOperatorChain(CEvaluationNodeOperator::MULTIPLY, "*", tmp);
+      assert(pTmpNode != NULL);
+      CNormalSum* pDenom = createSum(pTmpNode);
+      assert(pDenom != NULL);
+      delete pTmpNode;
+      pFraction->setNumerator(*pNum);
+      pFraction->setDenominator(*pDenom);
+      pFraction->cancel();
+      delete pNum;
+      delete pDenom;
     }
   else
     {// only possible for root node
-      CNormalFraction* fraction = new CNormalFraction();
-      CNormalSum* num = createSum(node);
-      CNormalSum* denom = new CNormalSum();
-      CNormalProduct* product = new CNormalProduct();
-      denom->add(*product);
-      fraction->setNumerator(*num);
-      fraction->setDenominator(*denom);
-      fraction->cancel();
-      delete product;
-      delete num;
-      delete denom;
-      return fraction;
+      CNormalSum* pNum = createSum(node);
+      CNormalSum* pDenom = new CNormalSum();
+      CNormalProduct* pProduct = new CNormalProduct();
+      pDenom->add(*pProduct);
+      pFraction->setNumerator(*pNum);
+      pFraction->setDenominator(*pDenom);
+      pFraction->cancel();
+      delete pProduct;
+      delete pNum;
+      delete pDenom;
     }
+  return pFraction;
 };
 
 /**
@@ -453,124 +480,265 @@ CNormalItem* createItem(const CEvaluationNode* node)
 
 /**
  * Create an item power from an evaluation node.
- * Node MUST BE a POWER operator with second child (exponent) of type NUMBER !!
- * @return CNormalItemPower*, pointer to newly created item power.
+ * Depending on the given node, we have to create different items.
+ * Either we have to create a CNormalItem, a
+ * CNormalGeneralPower, a function or a choice.
  */
 CNormalItemPower * createItemPower(const CEvaluationNode* node)
 {
-  CNormalItemPower * itemPower = new CNormalItemPower();
-  CNormalBase* item = createItemPowerItem(static_cast<const CEvaluationNode*>(node->getChild()));
-  itemPower->setItem(*item);
-  itemPower->setExp(static_cast<const CEvaluationNode*>(node->getChild()->getSibling())->value());
-  delete item;
-  return itemPower;
+  // make sure we create the correct item for the given node
+  CNormalItemPower * pItemPower = new CNormalItemPower();
+  if (CEvaluationNode::type(node->getType()) == CEvaluationNode::OPERATOR && (CEvaluationNodeOperator::SubType)CEvaluationNode::subType(node->getType()) == CEvaluationNodeOperator::POWER)
+    {
+      // check if the second child is a number
+      if (CEvaluationNode::type(dynamic_cast<const CEvaluationNode*>(node->getChild()->getSibling())->getType()) == CEvaluationNode::NUMBER)
+        {
+          // we set the exponent to that number
+          pItemPower->setExp((C_FLOAT64)dynamic_cast<const CEvaluationNodeNumber*>(node->getChild()->getSibling())->value());
+          // check if we can create a CNormalItem object for the fist child, else we
+          // create a general power with exponent 1
+          if (CEvaluationNode::type(dynamic_cast<const CEvaluationNode*>(node->getChild())->getType()) == CEvaluationNode::CONSTANT || CEvaluationNode::type(dynamic_cast<const CEvaluationNode*>(node->getChild())->getType()) == CEvaluationNode::OBJECT || CEvaluationNode::type(dynamic_cast<const CEvaluationNode*>(node->getChild())->getType()) == CEvaluationNode::VARIABLE)
+            {
+              CNormalItem* pItem = createItem(dynamic_cast<const CEvaluationNode*>(node->getChild()));
+              assert(pItem != NULL);
+              pItemPower->setItem(*pItem);
+              delete pItem;
+            }
+          else
+            {
+              // create a general power for the child node
+              CNormalGeneralPower* pGeneralPower = createGeneralPower(dynamic_cast<const CEvaluationNode*>(node->getChild()));
+              assert(pGeneralPower != NULL);
+              pItemPower->setItem(*pGeneralPower);
+              delete pGeneralPower;
+            }
+        }
+      else
+        {
+          // create a general power for the node
+          CNormalGeneralPower* pGeneralPower = createGeneralPower(node);
+          assert(pGeneralPower != NULL);
+          pItemPower->setItem(*pGeneralPower);
+          pItemPower->setExp(1.0);
+          delete pGeneralPower;
+        }
+    }
+  else if (CEvaluationNode::type(node->getType()) == CEvaluationNode::FUNCTION)
+    {
+      CNormalFunction* pFunction = createFunction(node);
+      assert(pFunction != NULL);
+      pItemPower->setItem(*pFunction);
+      delete pFunction;
+      pItemPower->setExp(1.0);
+    }
+  else if (CEvaluationNode::type(node->getType()) == CEvaluationNode::CALL)
+    {
+      CNormalCall* pCall = createCall(node);
+      assert(pCall != NULL);
+      pItemPower->setItem(*pCall);
+      delete pCall;
+      pItemPower->setExp(1.0);
+    }
+  else if (CEvaluationNode::type(node->getType()) == CEvaluationNode::CHOICE)
+    {
+      CNormalChoice* pChoice = createChoice(node);
+      assert(pChoice != NULL);
+      pItemPower->setItem(*pChoice);
+      delete pChoice;
+      pItemPower->setExp(1.0);
+    }
+  else if (CEvaluationNode::type(node->getType()) == CEvaluationNode::CONSTANT || CEvaluationNode::type(node->getType()) == CEvaluationNode::OBJECT || CEvaluationNode::type(node->getType()) == CEvaluationNode::VARIABLE)
+    {
+      CNormalItem* pItem = createItem(node);
+      assert(pItem != NULL);
+      pItemPower->setItem(*pItem);
+      delete pItem;
+      pItemPower->setExp(1.0);
+    }
+  else
+    {
+      // create a general power for the node
+      CNormalGeneralPower* pGeneralPower = createGeneralPower(node);
+      assert(pGeneralPower != NULL);
+      pItemPower->setItem(*pGeneralPower);
+      pItemPower->setExp(1.0);
+      delete pGeneralPower;
+    }
+  return pItemPower;
 }
 
-/**
+/*
  * Create a product from an evaluation node that is not necessarily a multiply operator.
  * @return CNormalProduct*, pointer to newly created product.
  */
 CNormalProduct * createProduct(const CEvaluationNode* node)
 {
-  CNormalProduct * product = new CNormalProduct();
-  CNormalChoice * pChoice = NULL;
-  switch (CEvaluationNode::type(node->getType()))
+  CNormalProduct * pProduct = new CNormalProduct();
+  if (CEvaluationNode::type(node->getType()) == CEvaluationNode::OPERATOR && (CEvaluationNodeOperator::SubType)CEvaluationNode::subType(node->getType()) == CEvaluationNodeOperator::MULTIPLY)
     {
-    case CEvaluationNode::OPERATOR:  // PLUS(->createSum), MINUS(translated as +(-..)) and DIVIDE(->createFraction) do not occur.
-      if (node->getData() == "^")
+      // find the product chain, if there are divisions, we have to create a
+      // general power, else we create a product with as many items as the
+      // multiplication vector has entries
+      std::vector<const CEvaluationNode*> multiplications, divisions;
+      CNormalTranslation::splitProduct(node, multiplications, divisions, false);
+      if (divisions.empty())
         {
-          if (CEvaluationNode::type(static_cast<const CEvaluationNode*>(node->getChild()->getSibling())->getType()) == CEvaluationNode::NUMBER &&
-              (node->getChild()->getChild() == NULL || CEvaluationNode::type(static_cast<const CEvaluationNode*>(node->getChild())->getType()) == CEvaluationNode::CHOICE || CEvaluationNode::type(static_cast<const CEvaluationNode*>(node->getChild())->getType()) == CEvaluationNode::FUNCTION))
+          std::vector<const CEvaluationNode*>::const_iterator it = multiplications.begin(), endit = multiplications.end();
+          CNormalItemPower* pItemPower = NULL;
+          while (it != endit)
             {
-              CNormalItemPower* power = createItemPower(node);
-              product->multiply(*power);
-              delete power;
+              pItemPower = createItemPower(*it);
+              assert(pItemPower != NULL);
+              pProduct->multiply(*pItemPower);
+              delete pItemPower;
+              ++it;
             }
-          else
-            {
-              CNormalGeneralPower* item = createGeneralPower(node);
-              product->multiply(*item);
-              delete item;
-            }
-        }
-      else if (node->getData() == "*")
-        {
-          CNormalProduct* product1 = createProduct(static_cast<const CEvaluationNode*>(node->getChild()));
-          if (product1 != NULL)
-            {
-              CNormalProduct* product2 = createProduct(static_cast<const CEvaluationNode*>(node->getChild()->getSibling()));
-              if (product2 != NULL)
-                {
-                  product->multiply(*product1);
-                  product->multiply(*product2);
-                  delete product2;
-                }
-              else
-                {
-                  product = NULL;
-                }
-              delete product1;
-            }
-          else
-            {
-              product = NULL;
-            }
-        }
-      else if (node->getData() == "%")
-
-        {
-          CNormalGeneralPower* item = createGeneralPower(node);
-          product->multiply(*item);
-          delete item;
         }
       else
         {
-          delete product;
-          product = NULL;
+          CEvaluationNodeOperator* pTmpOperator = new CEvaluationNodeOperator(CEvaluationNodeOperator::DIVIDE, "/");
+          std::vector<CEvaluationNode*> tmp;
+          std::vector<const CEvaluationNode*>::const_iterator it = multiplications.begin(), endit = multiplications.end();
+          while (it != endit)
+            {
+              tmp.push_back((*it)->copyBranch());
+              ++it;
+            }
+          CEvaluationNode* pTmpNode1 = CNormalTranslation::createOperatorChain(CEvaluationNodeOperator::MULTIPLY, "*", tmp);
+          pTmpOperator->addChild(pTmpNode1);
+          tmp.clear();
+          it = divisions.begin();
+          endit = divisions.end();
+          while (it != endit)
+            {
+              tmp.push_back((*it)->copyBranch());
+              ++it;
+            }
+          pTmpNode1 = CNormalTranslation::createOperatorChain(CEvaluationNodeOperator::MULTIPLY, "*", tmp);
+          pTmpOperator->addChild(pTmpNode1);
+          CNormalItemPower* pItemPower = createItemPower(pTmpOperator);
+          assert(pItemPower != NULL);
+          delete pTmpOperator;
+          pProduct->multiply(*pItemPower);
+          delete pItemPower;
         }
-      break;
-    case CEvaluationNode::NUMBER:
-      product->multiply(node->value());
-      break;
-    case CEvaluationNode::FUNCTION:
-      if (((CEvaluationNodeFunction::SubType)CEvaluationNode::subType(node->getType())) == CEvaluationNodeFunction::MINUS)
-        {
-          product->multiply(-1.0);
-          CNormalProduct * product2 = createProduct(dynamic_cast<const CEvaluationNode*>(node->getChild()));
-          assert(product2 != NULL);
-          product->multiply(*product2);
-          delete product2;
-        }
-      else if (((CEvaluationNodeFunction::SubType)CEvaluationNode::subType(node->getType())) == CEvaluationNodeFunction::PLUS)
-        {
-          CNormalProduct * product2 = createProduct(dynamic_cast<const CEvaluationNode*>(node->getChild()));
-          assert(product2 != NULL);
-          product->multiply(*product2);
-          delete product2;
-        }
-      else
-        {
-          CNormalFunction * item = createFunction(node);
-          product->multiply(*item);
-          delete item;
-        }
-      break;
-    case CEvaluationNode::LOGICAL:
-      throw std::exception(/*"Error. Logical Nodes are not allowed here."*/);
-      break;
-    case CEvaluationNode::CHOICE:
-      pChoice = createChoice(dynamic_cast<const CEvaluationNode*>(node));
-      product->multiply(*pChoice);
-      delete pChoice;
-      break;
-    default:   //cases VARIABLE, CONSTANT, OBJECT, VECTOR
-      CNormalItem * item = createItem(node);
-      product->multiply(*item);
-      delete item;
-      break;
     }
-  return product;
+  else
+    {
+      // we create the appropriate item
+      CNormalItemPower* pItemPower = createItemPower(node);
+      assert(pItemPower != NULL);
+      pProduct->multiply(*pItemPower);
+      delete pItemPower;
+    }
+  return pProduct;
 }
+
+/** THIS CODE should be obsolete, RG (06/04/6.2008)
+ * Create a product from an evaluation node that is not necessarily a multiply operator.
+ * @return CNormalProduct*, pointer to newly created product.
+ */
+//CNormalProduct * createProduct(const CEvaluationNode* node)
+//{
+//  CNormalProduct * product = new CNormalProduct();
+//  CNormalChoice * pChoice = NULL;
+//  switch (CEvaluationNode::type(node->getType()))
+//    {
+//    case CEvaluationNode::OPERATOR: // PLUS(->createSum), MINUS(translated as +(-..)) and DIVIDE(->createFraction) do not occur.
+//      if (node->getData() == "^")
+//        {
+//          if (CEvaluationNode::type(static_cast<const CEvaluationNode*>(node->getChild()->getSibling())->getType()) == CEvaluationNode::NUMBER &&
+//              (node->getChild()->getChild() == NULL || CEvaluationNode::type(static_cast<const CEvaluationNode*>(node->getChild())->getType()) == CEvaluationNode::CHOICE || CEvaluationNode::type(static_cast<const CEvaluationNode*>(node->getChild())->getType()) == CEvaluationNode::FUNCTION))
+//            {
+//              CNormalItemPower* power = createItemPower(node);
+//              product->multiply(*power);
+//              delete power;
+//}
+//          else
+//            {
+//              CNormalGeneralPower* item = createGeneralPower(node);
+//              product->multiply(*item);
+//              delete item;
+//}
+//}
+//      else if (node->getData() == "*")
+//        {
+//          CNormalProduct* product1 = createProduct(static_cast<const CEvaluationNode*>(node->getChild()));
+//          if (product1 != NULL)
+//            {
+//              CNormalProduct* product2 = createProduct(static_cast<const CEvaluationNode*>(node->getChild()->getSibling()));
+//              if (product2 != NULL)
+//                {
+//                  product->multiply(*product1);
+//                  product->multiply(*product2);
+//                  delete product2;
+//}
+//              else
+//                {
+//                  product = NULL;
+//}
+//              delete product1;
+//}
+//          else
+//            {
+//              product = NULL;
+//}
+//}
+//      else if (node->getData() == "%")
+//
+//        {
+//          CNormalGeneralPower* item = createGeneralPower(node);
+//          product->multiply(*item);
+//          delete item;
+//}
+//      else
+//        {
+//          delete product;
+//          product = NULL;
+//}
+//      break;
+//    case CEvaluationNode::NUMBER:
+//      product->multiply(node->value());
+//      break;
+//    case CEvaluationNode::FUNCTION:
+//      if (((CEvaluationNodeFunction::SubType)CEvaluationNode::subType(node->getType())) == CEvaluationNodeFunction::MINUS)
+//        {
+//          product->multiply(-1.0);
+//          CNormalProduct * product2 = createProduct(dynamic_cast<const CEvaluationNode*>(node->getChild()));
+//          assert(product2 != NULL);
+//          product->multiply(*product2);
+//          delete product2;
+//}
+//      else if (((CEvaluationNodeFunction::SubType)CEvaluationNode::subType(node->getType())) == CEvaluationNodeFunction::PLUS)
+//        {
+//          CNormalProduct * product2 = createProduct(dynamic_cast<const CEvaluationNode*>(node->getChild()));
+//          assert(product2 != NULL);
+//          product->multiply(*product2);
+//          delete product2;
+//}
+//      else
+//        {
+//          CNormalFunction * item = createFunction(node);
+//          product->multiply(*item);
+//          delete item;
+//}
+//      break;
+//    case CEvaluationNode::LOGICAL:
+//      throw std::exception(/*"Error. Logical Nodes are not allowed here."*/);
+//      break;
+//    case CEvaluationNode::CHOICE:
+//      pChoice = createChoice(dynamic_cast<const CEvaluationNode*>(node));
+//      product->multiply(*pChoice);
+//      delete pChoice;
+//      break;
+//    default:   //cases VARIABLE, CONSTANT, OBJECT, VECTOR
+//      CNormalItem * item = createItem(node);
+//      product->multiply(*item);
+//      delete item;
+//      break;
+//}
+//  return product;
+//}
 
 /**
  * Create a sum from an evaluation node -node does not need to be a PLUS operator!
@@ -578,33 +746,46 @@ CNormalProduct * createProduct(const CEvaluationNode* node)
  */
 CNormalSum* createSum(const CEvaluationNode* node)
 {
-  CNormalSum* sum = new CNormalSum();
-  if (node->getData() == "+")
+  CNormalSum* pSum = new CNormalSum();
+  if (CEvaluationNode::type(node->getType()) == CEvaluationNode::OPERATOR && ((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(node->getType()) == CEvaluationNodeOperator::MINUS || (CEvaluationNodeOperator::SubType)CEvaluationNode::subType(node->getType()) == CEvaluationNodeOperator::PLUS))
     {
-      CNormalSum* sum1 = createSum(static_cast<const CEvaluationNode*>(node->getChild()));
-      CNormalSum* sum2 = createSum(static_cast<const CEvaluationNode*>(node->getChild()->getSibling()));
-      sum->add(*sum1);
-      sum->add(*sum2);
-      delete sum1;
-      delete sum2;
-      return sum;
-    }
-  else if (node->getData() == "-")
-    {
-      CNormalSum* sum1 = createSum(static_cast<const CEvaluationNode*>(node->getChild()));
-      CEvaluationNodeOperator* pOperatorNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
-      pOperatorNode->addChild(new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "-1.0"));
-      pOperatorNode->addChild(static_cast<const CEvaluationNode*>(node->getChild()->getSibling())->copyBranch());
-      CNormalSum* sum2 = createSum(pOperatorNode);
-      delete pOperatorNode;
-      sum->add(*sum1);
-      sum->add(*sum2);
-      delete sum1;
-      delete sum2;
-      return sum;
+      // find a summation chain and create a product node for each addition and
+      // subtraction node
+      std::vector<CEvaluationNode*> additions, subtractions;
+      CNormalTranslation::splitSum(node, additions, subtractions, false);
+      std::vector<CEvaluationNode*>::iterator it = additions.begin(), endit = additions.end();
+      CNormalProduct* pProduct = NULL;
+      while (it != endit)
+        {
+          pProduct = createProduct(*it);
+          delete *it;
+          assert(pProduct != NULL);
+          pSum->add(*pProduct);
+          delete pProduct;
+          ++it;
+        }
+      it = subtractions.begin(), endit = subtractions.end();
+      while (it != endit)
+        {
+          pProduct = createProduct(*it);
+          delete *it;
+          assert(pProduct != NULL);
+          // since these are subtractions, we need to set the factor the -1.0
+          // times the old factor
+          pProduct->setFactor(-1.0 * pProduct->getFactor());
+          pSum->add(*pProduct);
+          delete pProduct;
+          ++it;
+        }
     }
   else
     {
+      // create a sum and add the product made from the given node
+      CNormalProduct* pProduct = createProduct(node);
+      assert(pProduct != NULL);
+      pSum->add(*pProduct);
+      delete pProduct;
+      /* This code should be obsolete, RG (4.6.2008)
       if (node->getData() == "/")
         {
           CNormalFraction* fraction = createFraction(node);
@@ -628,7 +809,9 @@ CNormalSum* createSum(const CEvaluationNode* node)
             }
           return sum;
         }
+        */
     }
+  return pSum;
 }
 
 /**
@@ -795,6 +978,10 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalBase& base)
     {
       pNode = convertToCEvaluationNode(dynamic_cast<const CNormalFunction&>(base));
     }
+  else if (dynamic_cast<const CNormalCall*>(&base) != NULL)
+    {
+      pNode = convertToCEvaluationNode(dynamic_cast<const CNormalCall&>(base));
+    }
   else if (dynamic_cast<const CNormalFraction*>(&base) != NULL)
     {
       pNode = convertToCEvaluationNode(dynamic_cast<const CNormalFraction&>(base));
@@ -840,6 +1027,41 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalGeneralPower& pow)
       pResult->addChild(pChild);
     }
   return pResult;
+}
+
+CEvaluationNode* convertToCEvaluationNode(const CNormalCall& call)
+{
+  CEvaluationNodeCall* pCall = NULL;
+  // check if the name contains any non-whitespace characters at all
+  if (call.getName().find_first_not_of("\t\r\n ") != std::string::npos)
+    {
+      CEvaluationNodeCall::SubType type = CEvaluationNodeCall::INVALID;
+      switch (call.getType())
+        {
+        case CNormalCall::EXPRESSION:
+          type = CEvaluationNodeCall::EXPRESSION;
+          break;
+        case CNormalCall::FUNCTION:
+          type = CEvaluationNodeCall::FUNCTION;
+          break;
+        case CNormalCall::DELAY:
+          type = CEvaluationNodeCall::DELAY;
+          break;
+        case CNormalCall::INVALID:
+          break;
+        }
+      pCall = new CEvaluationNodeCall(type, call.getName());
+      const std::set<CNormalFraction*>& children = call.getFractions();
+      std::set<CNormalFraction*>::const_iterator it = children.begin(), endit = children.end();
+      while (it != endit)
+        {
+          CEvaluationNode* pChild = convertToCEvaluationNode(**it);
+          assert(pChild != NULL);
+          pCall->addChild(pChild);
+          ++it;
+        }
+    }
+  return pCall;
 }
 
 CEvaluationNode* convertToCEvaluationNode(const CNormalFunction& fun)
@@ -992,7 +1214,8 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalFunction& fun)
 
 /**
  * Create an general power from an evaluation node.
- * Node MUST BE a POWER operator with second child (exponent) of type not NUMBER !!
+ * if it is a power node, create a for each child and set base and exponent,
+ * else only create the base from the node and set the exponent to 1
  * @return CNormalItemPower*, pointer to newly created general power (or modulo).
  */
 CNormalGeneralPower * createGeneralPower(const CEvaluationNode* node)
@@ -1013,18 +1236,90 @@ CNormalGeneralPower * createGeneralPower(const CEvaluationNode* node)
       if (pPow != NULL)
         {
           // add the left and the right side
-          CNormalFraction* pChild1 = createNormalRepresentation(dynamic_cast<const CEvaluationNode*>(node->getChild()));
-          CNormalFraction* pChild2 = createNormalRepresentation(dynamic_cast<const CEvaluationNode*>(node->getChild()->getSibling()));
-          if (pChild1 != NULL && pChild2 != NULL)
-            {
-              pPow->setLeft(*pChild1);
-              pPow->setRight(*pChild2);
-            }
-          if (pChild1 != NULL) delete pChild1;
-          if (pChild2 != NULL) delete pChild2;
+          CNormalFraction* pBase = createNormalRepresentation(dynamic_cast<const CEvaluationNode*>(node->getChild()));
+          CNormalFraction* pExponent = createNormalRepresentation(dynamic_cast<const CEvaluationNode*>(node->getChild()->getSibling()));
+          assert(pBase != NULL);
+          assert(pExponent != NULL);
+          pPow->setLeft(*pBase);
+          pPow->setRight(*pExponent);
+          delete pBase;
+          delete pExponent;
+        }
+      else
+        {
+          // create a fraction for the base and a unit fraction for the exponent
+          pPow = new CNormalGeneralPower();
+          pPow->setType(CNormalGeneralPower::POWER);
+          CNormalFraction* pBase = createNormalRepresentation(dynamic_cast<const CEvaluationNode*>(node->getChild()));
+          CEvaluationNode* pTmpNode = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "1.0");
+          CNormalFraction* pExponent = createNormalRepresentation(pTmpNode);
+          delete pTmpNode;
+          assert(pBase != NULL);
+          assert(pExponent != NULL);
+          pPow->setLeft(*pBase);
+          pPow->setRight(*pExponent);
+          delete pBase;
+          delete pExponent;
         }
     }
+  else
+    {
+      // create a fraction for the base and a unit fraction for the exponent
+      pPow = new CNormalGeneralPower();
+      pPow->setType(CNormalGeneralPower::POWER);
+      CNormalFraction* pBase = createNormalRepresentation(dynamic_cast<const CEvaluationNode*>(node->getChild()));
+      CEvaluationNode* pTmpNode = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "1.0");
+      CNormalFraction* pExponent = createNormalRepresentation(pTmpNode);
+      delete pTmpNode;
+      assert(pBase != NULL);
+      assert(pExponent != NULL);
+      pPow->setLeft(*pBase);
+      pPow->setRight(*pExponent);
+      delete pBase;
+      delete pExponent;
+    }
   return pPow;
+}
+
+/**
+ * Create an function call from an evaluation node.
+ * @return CNormalCall*, pointer to newly created call
+ */
+CNormalCall * createCall(const CEvaluationNode* node)
+{
+  CNormalCall* pCall = NULL;
+  CEvaluationNode::Type type = CEvaluationNode::type(node->getType());
+  if (type == CEvaluationNode::CALL)
+    {
+      // create a call object and add all children
+      pCall = new CNormalCall();
+      const CEvaluationNode* pChild = dynamic_cast<const CEvaluationNode*>(node->getChild());
+      while (pChild != NULL)
+        {
+          CNormalFraction* pFraction = createNormalRepresentation(pChild);
+          assert(pFraction != NULL);
+          pCall->add(*pFraction);
+          delete pFraction;
+          pChild = dynamic_cast<const CEvaluationNode*>(pChild->getSibling());
+        }
+      CEvaluationNodeCall::SubType subType = (CEvaluationNodeCall::SubType)CEvaluationNode::subType(node->getType());
+      switch (subType)
+        {
+        case CEvaluationNodeCall::EXPRESSION:
+          pCall->setType(CNormalCall::EXPRESSION);
+          break;
+        case CEvaluationNodeCall::FUNCTION:
+          pCall->setType(CNormalCall::FUNCTION);
+          break;
+        case CEvaluationNodeCall::DELAY:
+          pCall->setType(CNormalCall::DELAY);
+          break;
+        case CEvaluationNodeCall::INVALID:
+          pCall->setType(CNormalCall::INVALID);
+          break;
+        }
+    }
+  return pCall;
 }
 
 /**

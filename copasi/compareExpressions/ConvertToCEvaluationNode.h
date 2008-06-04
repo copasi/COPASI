@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/ConvertToCEvaluationNode.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/12/12 09:11:51 $
+//   $Date: 2008/06/04 13:23:42 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -30,6 +35,7 @@ class CNormalLogical;
 class CNormalLogicalItem;
 class CNormalGeneralPower;
 class CNormalFunction;
+class CNormalCall;
 
 extern std::map<std::string, const CEvaluationNode*> str2eval;
 
@@ -84,6 +90,12 @@ CNormalItemPower * createItemPower(const CEvaluationNode* node);
  * @return CNormalItemPower*, pointer to newly created general power (or modulo).
  */
 CNormalGeneralPower * createGeneralPower(const CEvaluationNode* node);
+
+/**
+ * Create an function call from an evaluation node.
+ * @return CNormalCall*, pointer to newly created call
+ */
+CNormalCall * createCall(const CEvaluationNode* node);
 
 /**
  * Create an function from an evaluation node.
