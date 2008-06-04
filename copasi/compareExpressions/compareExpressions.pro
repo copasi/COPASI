@@ -1,17 +1,22 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/compareExpressions.pro,v $ 
-#   $Revision: 1.7 $ 
+#   $Revision: 1.8 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2007/11/13 15:30:16 $ 
+#   $Date: 2008/06/04 13:20:10 $ 
 # End CVS Header 
 
-# Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+# and The University of Manchester. 
+# All rights reserved. 
+
+# Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc. and EML Research, gGmbH. 
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.7 $ $Author: gauges $ $Date: 2007/11/13 15:30:16 $  
+# $Revision: 1.8 $ $Author: gauges $ $Date: 2008/06/04 13:20:10 $  
 ######################################################################
 
 LIB = compareExpressions
@@ -36,6 +41,7 @@ HEADERS +=  CNormalItem.h \
 	    CNormalLogical.h \
 	    CNormalLogicalItem.h \
 	    CNormalFunction.h \
+	    CNormalCall.h \
             CNormalGeneralPower.h \
             CNormalTranslation.h\
             ConvertToCEvaluationNode.h \
@@ -55,6 +61,7 @@ SOURCES +=  CNormalItem.cpp \
 	    CNormalLogical.cpp \
 	    CNormalLogicalItem.cpp \
       	    CNormalFunction.cpp \
+      	    CNormalCall.cpp \
             CNormalGeneralPower.cpp \
             CNormalTranslation.cpp \
             CNormalBase.cpp \
