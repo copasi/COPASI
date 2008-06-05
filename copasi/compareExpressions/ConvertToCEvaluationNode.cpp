@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/ConvertToCEvaluationNode.cpp,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/06/04 18:51:16 $
+//   $Date: 2008/06/05 07:36:49 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -497,9 +497,10 @@ CNormalItemPower * createItemPower(const CEvaluationNode* node)
           pItemPower->setExp((C_FLOAT64)dynamic_cast<const CEvaluationNodeNumber*>(node->getChild()->getSibling())->value());
           // check if we can create a CNormalItem object for the fist child, else we
           // create a general power with exponent 1
-          if (CEvaluationNode::type(dynamic_cast<const CEvaluationNode*>(node->getChild())->getType()) == CEvaluationNode::CONSTANT || CEvaluationNode::type(dynamic_cast<const CEvaluationNode*>(node->getChild())->getType()) == CEvaluationNode::OBJECT || CEvaluationNode::type(dynamic_cast<const CEvaluationNode*>(node->getChild())->getType()) == CEvaluationNode::VARIABLE)
+          CEvaluationNode::Type type = CEvaluationNode::type(dynamic_cast<const CEvaluationNode*>(node->getChild())->getType());
+          if (type == CEvaluationNode::CONSTANT || type == CEvaluationNode::OBJECT || type == CEvaluationNode::VARIABLE || type == CEvaluationNode::FUNCTION || type == CEvaluationNode::CHOICE || type == CEvaluationNode::CALL)
             {
-              CNormalItem* pItem = createItem(dynamic_cast<const CEvaluationNode*>(node->getChild()));
+              CNormalBase* pItem = createItemPowerItem(dynamic_cast<const CEvaluationNode*>(node->getChild()));
               assert(pItem != NULL);
               pItemPower->setItem(*pItem);
               delete pItem;
@@ -1299,7 +1300,7 @@ CNormalGeneralPower * createGeneralPower(const CEvaluationNode* node)
           // create a fraction for the base and a unit fraction for the exponent
           pPow = new CNormalGeneralPower();
           pPow->setType(CNormalGeneralPower::POWER);
-          CNormalFraction* pBase = createNormalRepresentation(dynamic_cast<const CEvaluationNode*>(node->getChild()));
+          CNormalFraction* pBase = createNormalRepresentation(dynamic_cast<const CEvaluationNode*>(node));
           CEvaluationNode* pTmpNode = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "1.0");
           CNormalFraction* pExponent = createNormalRepresentation(pTmpNode);
           delete pTmpNode;
@@ -1557,6 +1558,9 @@ CNormalBase* createItemPowerItem(const CEvaluationNode* pNode)
       break;
     case CEvaluationNode::FUNCTION:
       pResult = createFunction(pNode);
+      break;
+    case CEvaluationNode::CALL:
+      pResult = createCall(pNode);
       break;
       /*
       case CEvaluationNode::CHOICE:
