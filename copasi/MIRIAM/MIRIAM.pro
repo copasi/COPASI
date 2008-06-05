@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/MIRIAM.pro,v $ 
-#   $Revision: 1.10 $ 
+#   $Revision: 1.11 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2008/06/04 14:17:03 $ 
+#   $Date: 2008/06/05 15:34:56 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -42,6 +42,7 @@ HEADERS += CRDFObject.h
 HEADERS += CRDFParser.h
 HEADERS += CRDFPredicate.h
 HEADERS += CRDFSubject.h
+HEADERS += CRDFTriplet.h
 HEADERS += CRDFUtilities.h
 HEADERS += CRDFWriter.h
 
@@ -61,5 +62,6 @@ SOURCES += CRDFObject.cpp
 SOURCES += CRDFParser.cpp
 SOURCES += CRDFPredicate.cpp
 SOURCES += CRDFSubject.cpp
+SOURCES += CRDFTriplet.cpp
 SOURCES += CRDFUtilities.cpp
 SOURCES += CRDFWriter.cpp

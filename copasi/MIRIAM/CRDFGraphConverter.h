@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraphConverter.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/04 14:17:02 $
+//   $Date: 2008/06/05 15:34:56 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,7 +36,7 @@ class CRDFGraphConverter
     static bool convert(CRDFGraph * pGraph, const sChange * changes);
 
     static bool convert(CRDFGraph * pGraph,
-                        const CRDFGraph::CTriplet & triplet,
+                        const CRDFTriplet & triplet,
                         const CRDFPredicate::Path & newPath);
   };
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraph.h,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/04 14:17:03 $
+//   $Date: 2008/06/05 15:34:56 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,7 +22,7 @@
 #include <vector>
 #include <set>
 
-#include "copasi/MIRIAM/CRDFPredicate.h"
+#include "copasi/MIRIAM/CRDFTriplet.h"
 
 class CRDFNode;
 class CRDFObject;
@@ -32,6 +32,7 @@ class CRDFEdge;
 class CRDFGraph
   {
   public:
+#ifdef XXXX
     class CTriplet
       {
       public:
@@ -46,6 +47,7 @@ class CRDFGraph
         bool operator < (const CTriplet & rhs) const;
         bool operator ! () const;
       };
+#endif // XXXX
 
     // Operations
   public:
@@ -112,9 +114,9 @@ class CRDFGraph
      * @param const CRDFObject & object
      * @return CTriplet triplet
      */
-    CTriplet addTriplet(const CRDFSubject & subject,
-                        const std::string & predicate,
-                        const CRDFObject & object);
+    CRDFTriplet addTriplet(const CRDFSubject & subject,
+                           const std::string & predicate,
+                           const CRDFObject & object);
 
     /**
      * Remove triplet from the graph. Please note, this will also remove all unreferenced
@@ -127,6 +129,12 @@ class CRDFGraph
     bool removeTriplet(CRDFNode * pSubject,
                        const std::string & predicate,
                        const CRDFNode * pObject);
+
+    /**
+     * Destroy a CRDFNode
+     * @param CRDFNode * pNode
+     */
+    void destroyNode(CRDFNode * pNode);
 
   private:
     /**
@@ -146,14 +154,14 @@ class CRDFGraph
      * @param const CRDFEdge & Edge
      * @return CRDFGraph::CTriplet triplet
      */
-    CTriplet moveEdge(CRDFNode * pFrom, CRDFNode * pTo, const CRDFEdge & Edge);
+    CRDFTriplet moveEdge(CRDFNode * pFrom, CRDFNode * pTo, const CRDFEdge & Edge);
 
     /**
      * Retreive all triplets with the specified predicate
      * @param const CRDFPredicate::ePredicateType & predicate
      * @return std::set< CTriplet > triplets
      */
-    std::set< CTriplet > getTripletsWithPredicate(const CRDFPredicate::ePredicateType & predicate) const;
+    std::set< CRDFTriplet > getTripletsWithPredicate(const CRDFPredicate::ePredicateType & predicate) const;
 
   public:
     /**
@@ -193,50 +201,29 @@ class CRDFGraph
     CRDFNode * createAboutNode(const std::string & key);
 
     /**
-     * Add a child node to a table node.
-     * @param const std::string tableName
-     * @param const CRDFObject& childObj
+     * Removes empty blank nodes and unused name space declarations.
+     * This should be called before CRDFWriter::xmlFromGraph
      */
-    // void addRecordToTable(const std::string& tableName, const CRDFObject& childObj);
+    void clean();
+
+  private:
+    /**
+     * Removes all empty blank nodes. It returns true if a node was removed
+     * @return bool haveRemoved
+     */
+    bool removeEmptyNodes();
 
     /**
-     * Remove a child node from a table node.
-     * Both are assumed to be Blank nodes.
-     * @param const std::string tableName
-     * @param const CRDFObject& childObj
-     * @return std::string success
+     *  Removes all unused name spaces.
      */
-    // bool removeRecordFromTable(const std::string& tableName, const CRDFObject& childObj);
+    void removeUnusedNamespaces();
 
     /**
-     * Get all objects corresponding to a given
-     * table name.
-     * @param const std::string& tableName
-     * @param std::vector<std::string> & nodeIds
-     * @return bool success
+     * Recursively finds all used namespaces.
      */
-    // bool getNodeIDsForTable(const std::string& tableName, std::vector<CRDFObject>& objects);
-
-    /**
-     *Get the value of the field for a given fieldName.
-     * @param const std::string& fieldName
-     * @param const CRDFObject& obj
-     * @return std::string fieldValue
-     */
-    // std::string getFieldValue(const std::string& fieldName, const CRDFObject& obj);
-
-    /**
-     *Set the value of the field for a given fieldName.
-     * @param const std::string& fieldName
-     * @param const std::string& fieldValue
-    * @param CRDFObject& obj
-     * @return std::string success
-     */
-    // bool setFieldValue(const std::string& fieldName, CRDFObject& obj, const std::string& fieldValue);
-
-    // CRDFGraph* loadGraph(CCopasiObject* pEntity);
-    // bool saveGraph(CCopasiObject* pEntity);
-    // bool isChanged();
+    void findUsedNamespaces(const CRDFNode * pCurrent,
+                            std::vector< bool > & used,
+                            std::set< const CRDFNode * > & visited);
 
     // Attributes
   private:
@@ -244,9 +231,6 @@ class CRDFGraph
      * The subject node this RDF graph is about
      */
     CRDFNode * mpAbout;
-
-    /**Flag to track if the original graph changed from last save.*/
-    bool mChanged;
 
     /**
      * A map of prefixes to namespaces

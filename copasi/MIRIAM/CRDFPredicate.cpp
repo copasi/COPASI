@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFPredicate.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/03 13:20:02 $
+//   $Date: 2008/06/05 15:34:56 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -71,6 +71,7 @@ const std::string CRDFPredicate::PredicateURI[] =
 // static
 std::map< std::string, CRDFPredicate::ePredicateType > CRDFPredicate::URI2Predicate;
 
+// static
 void CRDFPredicate::createURI2Predicate()
 {
   int Predicate = 0;
@@ -138,6 +139,7 @@ const std::string CRDFPredicate::PredicateDisplayName[] =
 // static
 std::map< std::string, CRDFPredicate::ePredicateType > CRDFPredicate::DisplayName2Predicate;
 
+// static
 void CRDFPredicate::createDisplayName2Predicate()
 {
   int Predicate = 0;
@@ -149,6 +151,7 @@ void CRDFPredicate::createDisplayName2Predicate()
 // static
 std::vector< CRDFPredicate::AllowedLocationList > CRDFPredicate::Predicate2AllowedLocationsRelative;
 
+// static
 void CRDFPredicate::createAllowedLocationsRelative()
 {
   AllowedLocationList AboutUnboundedResource;
@@ -421,6 +424,7 @@ void CRDFPredicate::createAllowedLocationsRelative()
 // static
 std::vector< CRDFPredicate::AllowedLocationList > CRDFPredicate::Predicate2AllowedLocationsAbsolute;
 
+// static
 void CRDFPredicate::createAllowedLocationsAbsolute()
 {
   unsigned C_INT32 Predicate, PredicateMax = Predicate2AllowedLocationsRelative.size();
@@ -428,6 +432,7 @@ void CRDFPredicate::createAllowedLocationsAbsolute()
     createAllowedLocationsAbsolute((ePredicateType) Predicate);
 }
 
+// static
 void CRDFPredicate::createAllowedLocationsAbsolute(const CRDFPredicate::ePredicateType & predicate)
 {
   AllowedLocationList & RelativeList = Predicate2AllowedLocationsRelative[predicate];
@@ -499,11 +504,13 @@ void CRDFPredicate::createAllowedLocationsAbsolute(const CRDFPredicate::ePredica
     }
 }
 
-// static
-CRDFPredicate CRDFPredicate::Factory;
-
-CRDFPredicate::CRDFPredicate()
+void CRDFPredicate::initialize()
 {
+  static bool Initialized = false;
+
+  if (Initialized)
+    return;
+
   // Fill URI2Predicate
   createURI2Predicate();
 
@@ -517,8 +524,45 @@ CRDFPredicate::CRDFPredicate()
   createAllowedLocationsAbsolute();
 }
 
+// static
+CRDFPredicate CRDFPredicate::Factory;
+
+// Methods
+CRDFPredicate::CRDFPredicate(const ePredicateType & type):
+    mType(type),
+    mURI(getURI(type))
+{initialize();}
+
+CRDFPredicate::CRDFPredicate(const std::string & uri):
+    mType(getPredicateFromURI(uri)),
+    mURI(uri)
+{initialize();}
+
+CRDFPredicate::CRDFPredicate(const CRDFPredicate & src):
+    mType(src.mType),
+    mURI(src.mURI)
+{initialize();}
+
 CRDFPredicate::~CRDFPredicate()
 {}
+
+CRDFPredicate CRDFPredicate::operator = (const ePredicateType & type)
+{return CRDFPredicate(type);}
+
+CRDFPredicate::operator ePredicateType() const
+  {return mType;}
+
+void CRDFPredicate::setURI(const std::string & uri)
+{
+  mURI = uri;
+  mType = getPredicateFromURI(uri);
+}
+
+const std::string & CRDFPredicate::getURI() const
+  {return mURI;}
+
+bool CRDFPredicate::operator == (const CRDFPredicate & rhs) const
+  {return mURI == rhs.mURI;}
 
 // static
 const CRDFPredicate::AllowedLocationList & CRDFPredicate::getAllowedLocationList(const ePredicateType & predicate)
@@ -567,7 +611,7 @@ CRDFPredicate::ePredicateType CRDFPredicate::getPredicateFromDisplayName(const s
 }
 
 // static
-unsigned C_INT32 CRDFPredicate::getSubPathIndex(const CRDFPredicate::Path & fullPath,
+unsigned int CRDFPredicate::getSubPathIndex(const CRDFPredicate::Path & fullPath,
     const CRDFPredicate::Path & currentPath)
 {
   std::cout << "Full Path:    " << fullPath;

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CModified.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/03 13:20:02 $
+//   $Date: 2008/06/05 15:34:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,7 +31,7 @@ class CModification : public CCopasiContainer
     /**
      * Triplet in the RDF graph representing the reference.
      */
-    CRDFGraph::CTriplet mTriplet;
+    CRDFTriplet mTriplet;
 
     /**
      * The predicate path to the node.
@@ -55,11 +55,11 @@ class CModification : public CCopasiContainer
 
     /**
      * Specific constructor
-     * @param const CRDFGraph::CTriplet & triplet
+     * @param const CRDFTriplet & triplet
      * @param const std::string & objectName (default: "")
      * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CModification(const CRDFGraph::CTriplet & triplet,
+    CModification(const CRDFTriplet & triplet,
                   const std::string & objectName = "",
                   const CCopasiContainer * pParent = NULL);
 
@@ -76,7 +76,7 @@ class CModification : public CCopasiContainer
      */
     ~CModification();
 
-    const CRDFGraph::CTriplet & getTriplet() const;
+    const CRDFTriplet & getTriplet() const;
 
     virtual const std::string & getKey() const;
 

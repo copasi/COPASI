@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CReference.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/03 13:20:02 $
+//   $Date: 2008/06/05 15:34:56 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,7 +31,7 @@ CReference::CReference(const std::string & objectName,
     mDOI("DOI", "")
 {}
 
-CReference::CReference(const CRDFGraph::CTriplet & triplet,
+CReference::CReference(const CRDFTriplet & triplet,
                        const std::string & objectName,
                        const CCopasiContainer * pParent):
     CCopasiContainer(objectName, pParent, "Reference"),
@@ -54,11 +54,11 @@ CReference::CReference(const CRDFGraph::CTriplet & triplet,
       CRDFPredicate::end
     };
 
-  std::set< CRDFGraph::CTriplet > Triples;
+  std::set< CRDFTriplet > Triples;
 
   CRDFPredicate::ePredicateType * pPredicate = Predicates;
-  std::set< CRDFGraph::CTriplet >::iterator it;
-  std::set< CRDFGraph::CTriplet >::iterator end;
+  std::set< CRDFTriplet >::iterator it;
+  std::set< CRDFTriplet >::iterator end;
 
   for (; *pPredicate != CRDFPredicate::end; ++pPredicate)
     {
@@ -95,7 +95,7 @@ CReference::~CReference()
   GlobalKeys.remove(mKey);
 }
 
-const CRDFGraph::CTriplet & CReference::getTriplet() const
+const CRDFTriplet & CReference::getTriplet() const
   {return mTriplet;}
 
 const std::string & CReference::getKey() const

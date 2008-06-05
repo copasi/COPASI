@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFNode.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/04 14:17:03 $
+//   $Date: 2008/06/05 15:34:56 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -108,11 +108,11 @@ CRDFPredicate::Path CRDFNode::getPath() const
 
 const std::string & CRDFNode::getFieldValue(const CRDFPredicate::ePredicateType & predicate,
     const CRDFPredicate::Path & nodePath,
-    const CRDFGraph::CTriplet & parentTriplet) const
+    const CRDFTriplet & parentTriplet) const
   {
     static std::string Empty = "";
 
-    const std::set< CRDFGraph::CTriplet > Triplets =
+    const std::set< CRDFTriplet > Triplets =
       getTripletsWithPredicate(nodePath, predicate, parentTriplet);
 
     if (Triplets.size() > 0)
@@ -141,7 +141,7 @@ const std::string & CRDFNode::getFieldValue(const CRDFPredicate::ePredicateType 
 bool CRDFNode::setFieldValue(const CMIRIAMResource & value,
                              const CRDFPredicate::ePredicateType & predicate,
                              const CRDFPredicate::Path & nodePath,
-                             const CRDFGraph::CTriplet & parentTriplet)
+                             const CRDFTriplet & parentTriplet)
 {
   // If a node is associated with the resource we can just set the field value
   if (value.getNode() != NULL)
@@ -174,9 +174,9 @@ bool CRDFNode::setFieldValue(const CMIRIAMResource & value,
 bool CRDFNode::setFieldValue(const std::string & value,
                              const CRDFPredicate::ePredicateType & predicate,
                              const CRDFPredicate::Path & nodePath,
-                             const CRDFGraph::CTriplet & parentTriplet)
+                             const CRDFTriplet & parentTriplet)
 {
-  std::set< CRDFGraph::CTriplet > Triplets =
+  std::set< CRDFTriplet > Triplets =
     getTripletsWithPredicate(nodePath, predicate, parentTriplet);
 
   CRDFNode * pObject = NULL;
@@ -200,7 +200,7 @@ bool CRDFNode::setFieldValue(const std::string & value,
           if (object.getType() == CRDFObject::BLANK_NODE)
             object.setBlankNodeId(mGraph.generatedBlankNodeId());
 
-          CRDFGraph::CTriplet Triplet =
+          CRDFTriplet Triplet =
             mGraph.addTriplet(pParent->getSubject(), CRDFPredicate::getURI(predicate), object);
           if (!Triplet)
             return false;
@@ -296,7 +296,7 @@ bool CRDFNode::setFieldValue(const std::string & value,
 CRDFNode * CRDFNode::createMissingAncestors(const CRDFPredicate::Path & nodePath,
     const CRDFPredicate::ePredicateType & predicate,
     CRDFPredicate::sAllowedLocation const *& pLocation,
-    const CRDFGraph::CTriplet & parentTriplet)
+    const CRDFTriplet & parentTriplet)
 {
   pLocation = NULL;
 
@@ -334,14 +334,14 @@ CRDFNode * CRDFNode::createMissingAncestors(const CRDFPredicate::Path & nodePath
 CRDFNode * CRDFNode::createMissingAncestors(const CRDFPredicate::Path & predicatePath,
     const unsigned C_INT32 & level,
     const CRDFPredicate::Path & nodePath,
-    const CRDFGraph::CTriplet & parentTriplet)
+    const CRDFTriplet & parentTriplet)
 {
   CRDFNode * pNode = this;
 
   unsigned C_INT32 i, imax = predicatePath.size() - 1; // We only create the ancestors
   for (i = level; i < imax; i++)
     {
-      std::set< CRDFGraph::CTriplet > Triplets =
+      std::set< CRDFTriplet > Triplets =
         getTripletsWithPredicate(nodePath, predicatePath[i], parentTriplet);
 
       // Check whether the predicate exists.
@@ -355,7 +355,7 @@ CRDFNode * CRDFNode::createMissingAncestors(const CRDFPredicate::Path & predicat
           object.setType(CRDFObject::BLANK_NODE);
           object.setBlankNodeId(mGraph.generatedBlankNodeId());
 
-          CRDFGraph::CTriplet Triplet =
+          CRDFTriplet Triplet =
             mGraph.addTriplet(pNode->getSubject(), CRDFPredicate::getURI(predicatePath[i]), object);
           if (!Triplet)
             return NULL;
@@ -370,10 +370,10 @@ CRDFNode * CRDFNode::createMissingAncestors(const CRDFPredicate::Path & predicat
 bool CRDFNode::removeEmptyAncestors(const CRDFPredicate::Path & predicatePath,
                                     const unsigned C_INT32 & level,
                                     const CRDFPredicate::Path & nodePath,
-                                    const CRDFGraph::CTriplet & parentTriplet)
+                                    const CRDFTriplet & parentTriplet)
 {
-  std::set< CRDFGraph::CTriplet > Triplets;
-  std::set< CRDFGraph::CTriplet >::const_iterator it;
+  std::set< CRDFTriplet > Triplets;
+  std::set< CRDFTriplet >::const_iterator it;
   unsigned C_INT32 i;
 
   // We only create the ancestors
@@ -553,11 +553,11 @@ bool CRDFNode::isReadOnly() const
     return CRDFPredicate::isReadOnly(NodePath);
   }
 
-std::set< CRDFGraph::CTriplet > CRDFNode::getTripletsWithPredicate(const CRDFPredicate::Path & nodePath,
+std::set< CRDFTriplet > CRDFNode::getTripletsWithPredicate(const CRDFPredicate::Path & nodePath,
     const CRDFPredicate::ePredicateType & predicate,
-    const CRDFGraph::CTriplet & parentTriplet) const
+    const CRDFTriplet & parentTriplet) const
   {
-    std::set< CRDFGraph::CTriplet > Triplets;
+    std::set< CRDFTriplet > Triplets;
 
     // The current node cannot be accessed through any path.
     if (nodePath.size() == 0)
@@ -608,7 +608,7 @@ std::set< CRDFGraph::CTriplet > CRDFNode::getTripletsWithPredicate(const CRDFPre
 
 void CRDFNode::getTripletsWithPredicate(const std::vector < CRDFPredicate::ePredicateType > & predicatePath,
                                         unsigned C_INT32 level,
-                                        std::set< CRDFGraph::CTriplet > & triplets,
+                                        std::set< CRDFTriplet > & triplets,
                                         std::set< const CRDFNode * > visited,
                                         const CRDFNode * pParent) const
   {
@@ -640,13 +640,13 @@ void CRDFNode::getTripletsWithPredicate(const std::vector < CRDFPredicate::ePred
         else if (level == predicatePath.size() - 1)
           {
             if (Predicate == CRDFPredicate::rdf_li)
-              triplets.insert(CRDFGraph::CTriplet(const_cast< CRDFNode * >(pParent),
-                                                  predicatePath[level],
-                                                  const_cast< CRDFNode * >(pNext)));
+              triplets.insert(CRDFTriplet(const_cast< CRDFNode * >(pParent),
+                                          predicatePath[level],
+                                          const_cast< CRDFNode * >(pNext)));
             else
-              triplets.insert(CRDFGraph::CTriplet(const_cast< CRDFNode * >(this),
-                                                  predicatePath[level],
-                                                  const_cast< CRDFNode * >(pNext)));
+              triplets.insert(CRDFTriplet(const_cast< CRDFNode * >(this),
+                                          predicatePath[level],
+                                          const_cast< CRDFNode * >(pNext)));
           }
         else
           pNext->getTripletsWithPredicate(predicatePath, level + 1, triplets, visited, NULL);

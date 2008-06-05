@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CModified.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/03 13:20:02 $
+//   $Date: 2008/06/05 15:34:56 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,7 +30,7 @@ CModification::CModification(const std::string & objectName,
     mKey(GlobalKeys.add("Modification", this))
 {}
 
-CModification::CModification(const CRDFGraph::CTriplet & triplet,
+CModification::CModification(const CRDFTriplet & triplet,
                              const std::string & objectName,
                              const CCopasiContainer * pParent):
     CCopasiContainer(objectName, pParent, "Modification"),
@@ -57,7 +57,7 @@ CModification::~CModification()
   GlobalKeys.remove(mKey);
 }
 
-const CRDFGraph::CTriplet & CModification::getTriplet() const
+const CRDFTriplet & CModification::getTriplet() const
   {return mTriplet;}
 
 const std::string & CModification::getKey() const

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CBiologicalDescription.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/03 13:20:02 $
+//   $Date: 2008/06/05 15:34:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,7 +30,7 @@ CBiologicalDescription::CBiologicalDescription(const std::string & objectName,
     mResource(NULL)
 {}
 
-CBiologicalDescription::CBiologicalDescription(const CRDFGraph::CTriplet & triplet,
+CBiologicalDescription::CBiologicalDescription(const CRDFTriplet & triplet,
     const std::string & objectName,
     const CCopasiContainer * pParent):
     CCopasiContainer(objectName, pParent, "BiologicalDescription"),
@@ -52,7 +52,7 @@ CBiologicalDescription::~CBiologicalDescription()
   GlobalKeys.remove(mKey);
 }
 
-const CRDFGraph::CTriplet & CBiologicalDescription::getTriplet() const
+const CRDFTriplet & CBiologicalDescription::getTriplet() const
   {return mTriplet;}
 
 const std::string & CBiologicalDescription::getKey() const

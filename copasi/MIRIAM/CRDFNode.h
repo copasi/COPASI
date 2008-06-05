@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFNode.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/03 13:20:02 $
+//   $Date: 2008/06/05 15:34:56 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -117,33 +117,33 @@ class CRDFNode
      */
     const std::string & getFieldValue(const CRDFPredicate::ePredicateType & predicate,
                                       const CRDFPredicate::Path & nodePath,
-                                      const CRDFGraph::CTriplet & parentTriplet) const;
+                                      const CRDFTriplet & parentTriplet) const;
 
     /**
      * Set the field value for the property predicate
      * @param const CMIRIAMResource & value
      * @param const CRDFPredicate::ePredicateType & predicate
      * @param const CRDFPredicate::Path & nodePath
-     * @param const CRDFGraph::CTriplet & parentTriplet
+     * @param const CRDFTriplet & parentTriplet
      * @return bool success
      */
     bool setFieldValue(const CMIRIAMResource & value,
                        const CRDFPredicate::ePredicateType & predicate,
                        const CRDFPredicate::Path & nodePath,
-                       const CRDFGraph::CTriplet & parentTriplet);
+                       const CRDFTriplet & parentTriplet);
 
     /**
      * Set the field value for the property predicate
      * @param const std::string & value
      * @param const CRDFPredicate::ePredicateType & predicate
      * @param const CRDFPredicate::Path & nodePath
-     * @param const CRDFGraph::CTriplet & parentTriplet
+     * @param const CRDFTriplet & parentTriplet
      * @return bool success
      */
     bool setFieldValue(const std::string & value,
                        const CRDFPredicate::ePredicateType & predicate,
                        const CRDFPredicate::Path & nodePath,
-                       const CRDFGraph::CTriplet & parentTriplet);
+                       const CRDFTriplet & parentTriplet);
 
     /**
      * Add a property edge to the node.
@@ -183,12 +183,12 @@ class CRDFNode
      * Retreive all supported triplets with the given predicate which are reachable from this node.
      * @param const CRDFPredicate::ePredicateType & predicate
      * @param const CRDFPredicate::Path & nodePath,
-     * @param const CRDFGraph::CTriplet & parentTriplet
-     * @return std::set< CRDFGraph::CTriplet >
+     * @param const CRDFTriplet & parentTriplet
+     * @return std::set< CRDFTriplet >
      */
-    std::set< CRDFGraph::CTriplet > getTripletsWithPredicate(const CRDFPredicate::Path & nodePath,
+    std::set< CRDFTriplet > getTripletsWithPredicate(const CRDFPredicate::Path & nodePath,
         const CRDFPredicate::ePredicateType & predicate,
-        const CRDFGraph::CTriplet & parentTriplet) const;
+        const CRDFTriplet & parentTriplet) const;
 
     /**
      * Check whether this is a subject node
@@ -223,24 +223,24 @@ class CRDFNode
   private:
     void getTripletsWithPredicate(const CRDFPredicate::Path & predicatePath,
                                   unsigned C_INT32 level,
-                                  std::set< CRDFGraph::CTriplet > & triplets,
+                                  std::set< CRDFTriplet > & triplets,
                                   std::set< const CRDFNode * > visited,
                                   const CRDFNode * pParent) const;
 
     CRDFNode * createMissingAncestors(const CRDFPredicate::Path & nodePath,
                                       const CRDFPredicate::ePredicateType & predicate,
                                       CRDFPredicate::sAllowedLocation const *& pLocation,
-                                      const CRDFGraph::CTriplet & parentTriplet);
+                                      const CRDFTriplet & parentTriplet);
 
     CRDFNode * createMissingAncestors(const CRDFPredicate::Path & predicatePath,
                                       const unsigned C_INT32 & level,
                                       const CRDFPredicate::Path & nodePath,
-                                      const CRDFGraph::CTriplet & parentTriplet);
+                                      const CRDFTriplet & parentTriplet);
 
     bool removeEmptyAncestors(const CRDFPredicate::Path & predicatePath,
                               const unsigned C_INT32 & level,
                               const CRDFPredicate::Path & nodePath,
-                              const CRDFGraph::CTriplet & parentTriplet);
+                              const CRDFTriplet & parentTriplet);
 
     // Attributes
   private:

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CModelMIRIAMInfo.cpp,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/03 13:20:02 $
+//   $Date: 2008/06/05 15:34:56 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -37,6 +37,7 @@
 
 CMIRIAMInfo::CMIRIAMInfo() :
     CCopasiContainer("CMIRIAMInfoObject", NULL, "CMIRIAMInfo"),
+    mKey(""),
     mCreators("Creators", this),
     mReferences("References", this),
     mModifications("Modifieds", this),
@@ -44,8 +45,7 @@ CMIRIAMInfo::CMIRIAMInfo() :
     mCreatedObj(),
     mpRDFGraph(NULL),
     mTriplet(NULL, CRDFPredicate::about, NULL),
-    mCreated(),
-    mpCopasiObject(NULL)
+    mCreated()
 {}
 
 CMIRIAMInfo::~CMIRIAMInfo()
@@ -65,7 +65,7 @@ CCreator* CMIRIAMInfo::createCreator(const std::string & /* objectName */)
   std::string Id = mpRDFGraph->generatedBlankNodeId();
   Object.setBlankNodeId(Id);
 
-  CRDFGraph::CTriplet Triplet =
+  CRDFTriplet Triplet =
     mpRDFGraph->addTriplet(Subject,
                            CRDFPredicate::getURI(CRDFPredicate::dcterms_creator),
                            Object);
@@ -92,7 +92,7 @@ bool CMIRIAMInfo::removeCreator(const std::string & key)
   if (!pCreator)
     return false;
 
-  const CRDFGraph::CTriplet & Triplet = pCreator->getTriplet();
+  const CRDFTriplet & Triplet = pCreator->getTriplet();
 
   if (!mpRDFGraph->removeTriplet(Triplet.pSubject,
                                  CRDFPredicate::getURI(Triplet.Predicate),
@@ -114,11 +114,11 @@ void CMIRIAMInfo::loadCreators()
     };
 
   CRDFPredicate::Path Path = mTriplet.pObject->getPath();
-  std::set< CRDFGraph::CTriplet > Triples;
+  std::set< CRDFTriplet > Triples;
 
   CRDFPredicate::ePredicateType * pPredicate = Predicates;
-  std::set< CRDFGraph::CTriplet >::iterator it;
-  std::set< CRDFGraph::CTriplet >::iterator end;
+  std::set< CRDFTriplet >::iterator it;
+  std::set< CRDFTriplet >::iterator end;
   for (; *pPredicate != CRDFPredicate::end; ++pPredicate)
     {
       Triples =
@@ -144,7 +144,7 @@ CReference* CMIRIAMInfo::createReference(const std::string & /* objectName */)
   std::string Id = mpRDFGraph->generatedBlankNodeId();
   Object.setBlankNodeId(Id);
 
-  CRDFGraph::CTriplet Triplet =
+  CRDFTriplet Triplet =
     mpRDFGraph->addTriplet(Subject,
                            CRDFPredicate::getURI(CRDFPredicate::dcterms_bibliographicCitation),
                            Object);
@@ -171,7 +171,7 @@ bool CMIRIAMInfo::removeReference(const std::string & key)
   if (!pReference)
     return false;
 
-  const CRDFGraph::CTriplet & Triplet = pReference->getTriplet();
+  const CRDFTriplet & Triplet = pReference->getTriplet();
 
   if (!mpRDFGraph->removeTriplet(Triplet.pSubject,
                                  CRDFPredicate::getURI(Triplet.Predicate),
@@ -194,11 +194,11 @@ void CMIRIAMInfo::loadReferences()
     };
 
   CRDFPredicate::Path Path = mTriplet.pObject->getPath();
-  std::set< CRDFGraph::CTriplet > Triples;
+  std::set< CRDFTriplet > Triples;
 
   CRDFPredicate::ePredicateType * pPredicate = Predicates;
-  std::set< CRDFGraph::CTriplet >::iterator it;
-  std::set< CRDFGraph::CTriplet >::iterator end;
+  std::set< CRDFTriplet >::iterator it;
+  std::set< CRDFTriplet >::iterator end;
   for (; *pPredicate != CRDFPredicate::end; ++pPredicate)
     {
       Triples =
@@ -256,7 +256,7 @@ CModification * CMIRIAMInfo::createModification(const std::string & /* objectNam
   std::string Id = mpRDFGraph->generatedBlankNodeId();
   Object.setBlankNodeId(Id);
 
-  CRDFGraph::CTriplet Triplet =
+  CRDFTriplet Triplet =
     mpRDFGraph->addTriplet(Subject,
                            CRDFPredicate::getURI(CRDFPredicate::dcterms_modified),
                            Object);
@@ -283,7 +283,7 @@ bool CMIRIAMInfo::removeModification(const std::string & key)
   if (!pModified)
     return false;
 
-  const CRDFGraph::CTriplet & Triplet = pModified->getTriplet();
+  const CRDFTriplet & Triplet = pModified->getTriplet();
 
   if (!mpRDFGraph->removeTriplet(Triplet.pSubject,
                                  CRDFPredicate::getURI(Triplet.Predicate),
@@ -297,10 +297,10 @@ void CMIRIAMInfo::loadModifications()
 {
   mModifications.cleanup();
 
-  std::set< CRDFGraph::CTriplet > Triples =
+  std::set< CRDFTriplet > Triples =
     mTriplet.pObject->getTripletsWithPredicate(mTriplet.pObject->getPath(), CRDFPredicate::dcterms_modified, mTriplet);
-  std::set< CRDFGraph::CTriplet >::iterator it = Triples.begin();
-  std::set< CRDFGraph::CTriplet >::iterator end = Triples.end();
+  std::set< CRDFTriplet >::iterator it = Triples.begin();
+  std::set< CRDFTriplet >::iterator end = Triples.end();
 
   for (; it != end; ++it)
     mModifications.add(new CModification(*it), true);
@@ -318,7 +318,7 @@ CBiologicalDescription* CMIRIAMInfo::createBiologicalDescription()
   Object.setType(CRDFObject::RESOURCE);
   Object.setResource("", false);
 
-  CRDFGraph::CTriplet Triplet = mpRDFGraph->addTriplet(Subject, "---", Object);
+  CRDFTriplet Triplet = mpRDFGraph->addTriplet(Subject, "---", Object);
 
   if (!Triplet)
     return NULL;
@@ -343,7 +343,7 @@ bool CMIRIAMInfo::removeBiologicalDescription(const std::string & key)
   if (!pBiologicalDescription)
     return false;
 
-  const CRDFGraph::CTriplet & Triplet = pBiologicalDescription->getTriplet();
+  const CRDFTriplet & Triplet = pBiologicalDescription->getTriplet();
 
   if (!mpRDFGraph->removeTriplet(Triplet.pSubject,
                                  CRDFPredicate::getURI(Triplet.Predicate),
@@ -382,11 +382,11 @@ void CMIRIAMInfo::loadBiologicalDescriptions()
     };
 
   CRDFPredicate::Path Path = mTriplet.pObject->getPath();
-  std::set< CRDFGraph::CTriplet > Triples;
+  std::set< CRDFTriplet > Triples;
 
   CRDFPredicate::ePredicateType * pPredicate = Predicates;
-  std::set< CRDFGraph::CTriplet >::iterator it;
-  std::set< CRDFGraph::CTriplet >::iterator end;
+  std::set< CRDFTriplet >::iterator it;
+  std::set< CRDFTriplet >::iterator end;
   for (; *pPredicate != CRDFPredicate::end; ++pPredicate)
     {
       Triples =
@@ -403,20 +403,21 @@ void CMIRIAMInfo::load(const std::string& key)
 {
   pdelete(mpRDFGraph);
 
-  mpCopasiObject = dynamic_cast< CCopasiObject * >(GlobalKeys.get(key));
+  mKey = key;
+  CCopasiObject * pCopasiObject = dynamic_cast< CCopasiObject * >(GlobalKeys.get(mKey));
 
-  if (mpCopasiObject != NULL)
+  if (pCopasiObject != NULL)
     {
       const std::string * pMiriamAnnotation = NULL;
-      if (dynamic_cast< CModelEntity * >(mpCopasiObject))
+      if (dynamic_cast< CModelEntity * >(pCopasiObject))
         pMiriamAnnotation =
-          &dynamic_cast< CModelEntity * >(mpCopasiObject)->getMiriamAnnotation();
-      else if (dynamic_cast< CReaction * >(mpCopasiObject))
+          &dynamic_cast< CModelEntity * >(pCopasiObject)->getMiriamAnnotation();
+      else if (dynamic_cast< CReaction * >(pCopasiObject))
         pMiriamAnnotation =
-          &dynamic_cast< CReaction * >(mpCopasiObject)->getMiriamAnnotation();
-      else if (dynamic_cast< CFunction * >(mpCopasiObject))
+          &dynamic_cast< CReaction * >(pCopasiObject)->getMiriamAnnotation();
+      else if (dynamic_cast< CFunction * >(pCopasiObject))
         pMiriamAnnotation =
-          &dynamic_cast< CFunction * >(mpCopasiObject)->getMiriamAnnotation();
+          &dynamic_cast< CFunction * >(pCopasiObject)->getMiriamAnnotation();
 
       if (pMiriamAnnotation && *pMiriamAnnotation != "")
         mpRDFGraph = CRDFParser::graphFromXml(*pMiriamAnnotation);
@@ -426,16 +427,16 @@ void CMIRIAMInfo::load(const std::string& key)
     mpRDFGraph = new CRDFGraph;
 
   // We make sure that we always have an about node.
-  mTriplet.pObject = mpRDFGraph->createAboutNode(mpCopasiObject->getKey());
+  mTriplet.pObject = mpRDFGraph->createAboutNode(pCopasiObject->getKey());
 
   // Load the created date if set;
   CRDFPredicate::Path Path = mTriplet.pObject->getPath();
-  std::set< CRDFGraph::CTriplet > Triples =
+  std::set< CRDFTriplet > Triples =
     mTriplet.pObject->getTripletsWithPredicate(Path, CRDFPredicate::dcterms_created, mTriplet);
   if (Triples.size() > 0)
     mCreated = *Triples.begin();
   else
-    mCreated = CRDFGraph::CTriplet(); // This is an invalid triplet, i.e., !mCreated is true.
+    mCreated = CRDFTriplet(); // This is an invalid triplet, i.e., !mCreated is true.
 
   loadCreators();
   loadReferences();
@@ -447,19 +448,22 @@ void CMIRIAMInfo::load(const std::string& key)
 
 bool CMIRIAMInfo::save()
 {
-  if (mpCopasiObject && mpRDFGraph)
+  CCopasiObject * pCopasiObject = dynamic_cast< CCopasiObject * >(GlobalKeys.get(mKey));
+
+  if (pCopasiObject && mpRDFGraph)
     {
+      mpRDFGraph->clean();
       std::string XML = CRDFWriter::xmlFromGraph(mpRDFGraph);
 
       CModelEntity * pEntity = NULL;
       CReaction * pReaction = NULL;
       CFunction * pFunction = NULL;
 
-      if ((pEntity = dynamic_cast< CModelEntity * >(mpCopasiObject)) != NULL)
+      if ((pEntity = dynamic_cast< CModelEntity * >(pCopasiObject)) != NULL)
         pEntity->setMiriamAnnotation(XML, pEntity->getKey());
-      else if ((pReaction = dynamic_cast< CReaction * >(mpCopasiObject)) != NULL)
+      else if ((pReaction = dynamic_cast< CReaction * >(pCopasiObject)) != NULL)
         pReaction->setMiriamAnnotation(XML, pReaction->getKey());
-      else if ((pFunction = dynamic_cast< CFunction * >(mpCopasiObject)) != NULL)
+      else if ((pFunction = dynamic_cast< CFunction * >(pCopasiObject)) != NULL)
         pFunction->setMiriamAnnotation(XML, pFunction->getKey());
       else
         return false;
@@ -471,9 +475,4 @@ bool CMIRIAMInfo::save()
 }
 
 const std::string & CMIRIAMInfo::getKey() const
-  {
-    if (mpCopasiObject != NULL)
-      return mpCopasiObject->getKey();
-
-    return CCopasiObject::getKey();
-  }
+{return mKey;}

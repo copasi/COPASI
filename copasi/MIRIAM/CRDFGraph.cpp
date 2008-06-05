@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraph.cpp,v $
-//   $Revision: 1.31 $
+//   $Revision: 1.32 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/04 14:17:03 $
+//   $Date: 2008/06/05 15:34:56 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,6 +34,7 @@
 #include "CRDFWriter.h"
 #include "CConstants.h"
 
+#ifdef XXXX
 CRDFGraph::CTriplet::CTriplet(CRDFNode * pSubject, const CRDFPredicate::ePredicateType & predicate, CRDFNode * pObject):
     pSubject(pSubject),
     Predicate(predicate),
@@ -57,10 +58,10 @@ bool CRDFGraph::CTriplet::operator ! () const
             pSubject == NULL ||
             pObject == NULL);
   }
+#endif // XXXX
 
 CRDFGraph::CRDFGraph():
     mpAbout(NULL),
-    mChanged(false),
     mPrefix2Namespace(),
     mBlankNodeId2Node(),
     mLocalResource2Node(),
@@ -151,9 +152,9 @@ bool CRDFGraph::addNameSpace(const std::string & prefix, const std::string & uri
   return false;
 }
 
-CRDFGraph::CTriplet CRDFGraph::addTriplet(const CRDFSubject & subject,
-    const std::string & predicate,
-    const CRDFObject & object)
+CRDFTriplet CRDFGraph::addTriplet(const CRDFSubject & subject,
+                                  const std::string & predicate,
+                                  const CRDFObject & object)
 {
   // Find or create the subject node
   std::map< std::string, CRDFNode * >::iterator found;
@@ -241,9 +242,9 @@ CRDFGraph::CTriplet CRDFGraph::addTriplet(const CRDFSubject & subject,
     }
 
   if (!pSubjectNode->addEdgeInternal(CRDFEdge(predicate, pObjectNode)))
-    return CTriplet();
+    return CRDFTriplet();
 
-  return CTriplet(pSubjectNode, CRDFPredicate::getPredicateFromURI(predicate), pObjectNode);
+  return CRDFTriplet(pSubjectNode, CRDFPredicate::getPredicateFromURI(predicate), pObjectNode);
 }
 
 bool CRDFGraph::removeTriplet(CRDFNode * pSubject,
@@ -341,51 +342,12 @@ bool CRDFGraph::removeTriplet(CRDFNode * pNode, const CRDFEdge & Edge)
   for (; it != end; ++it)
     success &= removeTriplet(const_cast< CRDFNode * >(pObject), it->second);
 
-  // Remove the object from the appropriate container.
-  switch (Object.getType())
-    {
-    case CRDFObject::RESOURCE:
-      if (Object.isLocal())
-        mLocalResource2Node.count(Object.getResource());
-      else
-        {
-          // Check whether the pointer still exists mRemoteResourceNodes
-          std::vector< CRDFNode * >::iterator it = mRemoteResourceNodes.begin();
-          std::vector< CRDFNode * >::iterator end = mRemoteResourceNodes.end();
-          for (; it != end; ++it)
-            if (pObject == *it)
-              {
-                mRemoteResourceNodes.erase(it);
-                break;
-              }
-        }
-      break;
-
-    case CRDFObject::BLANK_NODE:
-      mBlankNodeId2Node.erase(Object.getBlankNodeID());
-      break;
-
-    case CRDFObject::LITERAL:
-      {
-        // Check whther the pointer still exists in mLiteralNodes
-        std::vector< CRDFNode * >::iterator it = mLiteralNodes.begin();
-        std::vector< CRDFNode * >::iterator end = mLiteralNodes.end();
-        for (; it != end; ++it)
-          if (pObject == *it)
-            {
-              mLiteralNodes.erase(it);
-              break;
-            }
-      }
-      break;
-    }
-  // Finally delete the object
-  delete pObject;
+  destroyNode(const_cast< CRDFNode * >(pObject));
 
   return success;
 }
 
-CRDFGraph::CTriplet CRDFGraph::moveEdge(CRDFNode * pFrom, CRDFNode * pTo, const CRDFEdge & Edge)
+CRDFTriplet CRDFGraph::moveEdge(CRDFNode * pFrom, CRDFNode * pTo, const CRDFEdge & Edge)
 {
   if (pFrom == NULL || pTo == NULL) return false;
 
@@ -394,7 +356,7 @@ CRDFGraph::CTriplet CRDFGraph::moveEdge(CRDFNode * pFrom, CRDFNode * pTo, const 
   success &= pFrom->removeEdgeInternal(Edge);
   success &= pTo->addEdgeInternal(Edge);
 
-  CTriplet Triplet;
+  CRDFTriplet Triplet;
   if (success)
     {
       Triplet.pSubject = pTo;
@@ -518,13 +480,13 @@ CRDFNode * CRDFGraph::createAboutNode(const std::string & key)
   return mpAbout;
 }
 
-std::set< CRDFGraph::CTriplet > CRDFGraph::getTripletsWithPredicate(const CRDFPredicate::ePredicateType & predicate) const
+std::set< CRDFTriplet > CRDFGraph::getTripletsWithPredicate(const CRDFPredicate::ePredicateType & predicate) const
   {
-    std::set< CTriplet > AllTriplets;
-    std::set< CTriplet > Triplets;
+    std::set< CRDFTriplet > AllTriplets;
+    std::set< CRDFTriplet > Triplets;
     CRDFNode * pNode;
     CRDFPredicate::Path Path;
-    CTriplet ParentTriplet;
+    CRDFTriplet ParentTriplet;
     ParentTriplet.Predicate = CRDFPredicate::about;
 
     // We must iterate over all nodes which only have the role subject;
@@ -546,3 +508,179 @@ std::set< CRDFGraph::CTriplet > CRDFGraph::getTripletsWithPredicate(const CRDFPr
 
     return AllTriplets;
   }
+
+void CRDFGraph::clean()
+{
+  //  while (removeEmptyNodes());
+
+  //  removeUnusedNamespaces();
+}
+
+bool CRDFGraph::removeEmptyNodes()
+{
+  CRDFNode * pNode;
+
+  std::map< std::string, CRDFNode * >::iterator it = mBlankNodeId2Node.begin();
+  std::map< std::string, CRDFNode * >::iterator end = mBlankNodeId2Node.end();
+
+  std::set< CRDFNode * > ToBeRemoved;
+
+  for (;it != end; ++it)
+    {
+      pNode = it->second;
+      if (pNode->getEdges().size() == 0 ||
+          (pNode->isBagNode() && pNode->getEdges().size() == 1))
+        ToBeRemoved.insert(pNode);
+    }
+
+  std::set< CRDFNode * >::iterator itRemove = ToBeRemoved.begin();
+  std::set< CRDFNode * >::iterator endRemove = ToBeRemoved.end();
+  unsigned C_INT32 Skipped = 0;
+
+  for (; itRemove != endRemove; ++itRemove)
+    {
+      CRDFPredicate::Path Path = getPredicatePath(*itRemove);
+
+      std::set< CRDFTriplet > Triplets;
+      CRDFEdge Edge(CRDFPredicate::end, *itRemove);
+
+      if (Path.size() > 0)
+        {
+          Triplets = getTripletsWithPredicate(Path[Path.size() - 1]);
+          Edge.setPredicate(Path[Path.size() - 1]);
+        }
+
+      std::set< CRDFTriplet >::iterator itTriplet = Triplets.begin();
+      std::set< CRDFTriplet >::iterator endTriplet = Triplets.end();
+      for (; itTriplet != endTriplet; ++itTriplet)
+        if (Edge == CRDFEdge(itTriplet->Predicate, itTriplet->pObject))
+          {
+            removeTriplet(itTriplet->pSubject, Edge);
+            break;
+          }
+
+      if (itTriplet == endTriplet)
+        Skipped++;
+    }
+
+  return ToBeRemoved.size() > Skipped;
+}
+
+void CRDFGraph::removeUnusedNamespaces()
+{
+  std::vector< bool > Used(mPrefix2Namespace.size(), false);
+  std::set< const CRDFNode * > Visited;
+
+  // We loop over all local resources as they may be roots of the graph
+  std::map< std::string, CRDFNode * >::const_iterator itMap = mLocalResource2Node.begin();
+  std::map< std::string, CRDFNode * >::const_iterator endMap = mLocalResource2Node.end();
+
+  const CRDFNode * pCurrent;
+  for (;itMap != endMap; ++itMap)
+    {
+      pCurrent = itMap->second;
+
+      // Check whether we have a root node
+      if (pCurrent && pCurrent->isSubjectNode() && !pCurrent->isObjectNode())
+        {
+          findUsedNamespaces(pCurrent, Used, Visited);
+        }
+    }
+
+  std::map< std::string, std::string >::iterator itNamespace = mPrefix2Namespace.begin();
+  std::map< std::string, std::string >::iterator endNamespace = mPrefix2Namespace.end();
+  std::vector< bool >::iterator itUsed = Used.begin();
+  std::vector< std::string > ToBeRemoved;
+  for (; itNamespace != endNamespace; ++itNamespace, ++itUsed)
+    if (!*itUsed)
+      ToBeRemoved.push_back(itNamespace->first);
+
+  std::vector< std::string >::iterator itRemove = ToBeRemoved.begin();
+  std::vector< std::string >::iterator endRemove = ToBeRemoved.end();
+  for (; itRemove != endRemove; ++itRemove)
+    mPrefix2Namespace.erase(*itRemove);
+}
+
+void CRDFGraph::findUsedNamespaces(const CRDFNode * pCurrent,
+                                   std::vector< bool > & used,
+                                   std::set< const CRDFNode * > & visited)
+{
+  // We need to avoid endless loops with the help of visited.
+  std::pair< std::set< const CRDFNode * >::iterator, bool > Insert;
+
+  // We need to iterate over the edges and insert each predicate
+  CRDFNode::const_iterator it = pCurrent->getEdges().begin();
+  CRDFNode::const_iterator end = pCurrent->getEdges().end();
+
+  const CRDFNode * pNext;
+  for (; it != end; ++it)
+    {
+      pNext = it->second.getPropertyNode();
+
+      // Check whether we have allready visited the node.
+      Insert = visited.insert(pNext);
+      if (!Insert.second)
+        return;
+
+      findUsedNamespaces(pNext, used, visited);
+
+      std::map< std::string, std::string >::iterator itNamespace = mPrefix2Namespace.begin();
+      std::map< std::string, std::string >::iterator endNamespace = mPrefix2Namespace.end();
+      std::vector< bool >::iterator itUsed = used.begin();
+      for (; itNamespace != endNamespace; ++itNamespace, ++itUsed)
+        if (!*itUsed)
+          {
+            const std::string & Predicate = it->second.getPredicateURI();
+            if (Predicate.compare(0, itNamespace->second.length(), itNamespace->second) == 0)
+              {
+                *itUsed = true;
+                break;
+              }
+          }
+    }
+}
+
+void CRDFGraph::destroyNode(CRDFNode * pNode)
+{
+  // Remove the object from the appropriate container.
+  switch (pNode->getObject().getType())
+    {
+    case CRDFObject::RESOURCE:
+      if (pNode->getObject().isLocal())
+        mLocalResource2Node.erase(pNode->getObject().getResource());
+      else
+        {
+          // Check whether the pointer still exists mRemoteResourceNodes
+          std::vector< CRDFNode * >::iterator it = mRemoteResourceNodes.begin();
+          std::vector< CRDFNode * >::iterator end = mRemoteResourceNodes.end();
+          for (; it != end; ++it)
+            if (pNode == *it)
+              {
+                mRemoteResourceNodes.erase(it);
+                break;
+              }
+        }
+      break;
+
+    case CRDFObject::BLANK_NODE:
+      mBlankNodeId2Node.erase(pNode->getObject().getBlankNodeID());
+      break;
+
+    case CRDFObject::LITERAL:
+      {
+        // Check whther the pointer still exists in mLiteralNodes
+        std::vector< CRDFNode * >::iterator it = mLiteralNodes.begin();
+        std::vector< CRDFNode * >::iterator end = mLiteralNodes.end();
+        for (; it != end; ++it)
+          if (pNode == *it)
+            {
+              mLiteralNodes.erase(it);
+              break;
+            }
+      }
+      break;
+    }
+
+  // Finally delete the object
+  delete pNode;
+}

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CCreator.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/03 13:20:02 $
+//   $Date: 2008/06/05 15:34:56 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,7 +34,7 @@ CCreator::CCreator(const std::string & objectName,
     mKey(GlobalKeys.add("Creator", this))
 {}
 
-CCreator::CCreator(const CRDFGraph::CTriplet & triplet,
+CCreator::CCreator(const CRDFTriplet & triplet,
                    const std::string & objectName,
                    const CCopasiContainer * pParent):
     CCopasiContainer(objectName, pParent, "Creator"),
@@ -61,7 +61,7 @@ CCreator::~CCreator()
   GlobalKeys.remove(mKey);
 }
 
-const CRDFGraph::CTriplet & CCreator::getTriplet() const
+const CRDFTriplet & CCreator::getTriplet() const
   {return mTriplet;}
 
 const std::string & CCreator::getKey() const

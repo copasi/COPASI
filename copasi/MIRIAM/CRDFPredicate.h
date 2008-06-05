@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFPredicate.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/03 13:20:02 $
+//   $Date: 2008/06/05 15:34:56 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -85,7 +85,7 @@ class CRDFPredicate
     struct sAllowedLocation
       {
 public:
-        unsigned C_INT32 MaxOccurance;
+        unsigned int MaxOccurance;
         bool ReadOnly;
         CRDFObject::eObjectType Type;
         Path Location;
@@ -93,7 +93,61 @@ public:
 
     typedef std::vector< sAllowedLocation > AllowedLocationList;
 
+  public:
+    // Methods
+    CRDFPredicate(const ePredicateType & type = end);
+
+    CRDFPredicate(const std::string & uri);
+
+    CRDFPredicate(const CRDFPredicate & src);
+
+    ~CRDFPredicate();
+
+    CRDFPredicate operator = (const ePredicateType & type);
+
+    const std::string & getURI() const;
+
+    void setURI(const std::string & uri);
+
+    bool operator == (const CRDFPredicate & rhs) const;
+
+    operator ePredicateType() const;
+
+    static const AllowedLocationList & getAllowedLocationList(const ePredicateType & predicate);
+
+    static const std::string & getURI(const ePredicateType & predicate);
+
+    static ePredicateType getPredicateFromURI(const std::string & URI);
+
+    static const std::string & getDisplayName(const ePredicateType & predicate);
+
+    static ePredicateType getPredicateFromDisplayName(const std::string & URI);
+
+    static unsigned int getSubPathIndex(const Path & fullPath, const Path & currentPath);
+
+    static bool isReadOnly(const Path & currentPath);
+
   private:
+    // Methods
+    static void initialize();
+
+    static void createURI2Predicate();
+
+    static void createDisplayName2Predicate();
+
+    static void createAllowedLocationsRelative();
+
+    static void createAllowedLocationsAbsolute();
+
+    static void createAllowedLocationsAbsolute(const ePredicateType & predicate);
+
+    // Attributes
+    ePredicateType mType;
+
+    std::string mURI;
+
+    static CRDFPredicate Factory;
+
     static const std::string PredicateURI[];
 
     static std::map< std::string, ePredicateType > URI2Predicate;
@@ -105,37 +159,6 @@ public:
     static std::vector< AllowedLocationList > Predicate2AllowedLocationsRelative;
 
     static std::vector< AllowedLocationList > Predicate2AllowedLocationsAbsolute;
-
-    static CRDFPredicate Factory;
-
-    CRDFPredicate();
-
-    ~CRDFPredicate();
-
-    void createURI2Predicate();
-
-    void createDisplayName2Predicate();
-
-    void createAllowedLocationsRelative();
-
-    void createAllowedLocationsAbsolute();
-
-    void createAllowedLocationsAbsolute(const ePredicateType & predicate);
-
-  public:
-    static const AllowedLocationList & getAllowedLocationList(const ePredicateType & predicate);
-
-    static const std::string & getURI(const ePredicateType & predicate);
-
-    static ePredicateType getPredicateFromURI(const std::string & URI);
-
-    static const std::string & getDisplayName(const ePredicateType & predicate);
-
-    static ePredicateType getPredicateFromDisplayName(const std::string & URI);
-
-    static unsigned C_INT32 getSubPathIndex(const Path & fullPath, const Path & currentPath);
-
-    static bool isReadOnly(const Path & currentPath);
   };
 
 std::ostream & operator << (std::ostream & os, const CRDFPredicate::Path & path);

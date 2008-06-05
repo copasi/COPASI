@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CModelMIRIAMInfo.h,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/03 13:20:02 $
+//   $Date: 2008/06/05 15:34:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -39,15 +39,15 @@ class CMIRIAMInfo : public CCopasiContainer
   {
     // Attributes
   private:
+    std::string mKey;
     CCopasiVector <CCreator> mCreators;
     CCopasiVector <CReference> mReferences;
     CCopasiVector <CModification> mModifications;
     CCopasiVector <CBiologicalDescription> mBiologicalDescriptions;
     CRDFObject mCreatedObj;
     CRDFGraph * mpRDFGraph;
-    CRDFGraph::CTriplet mTriplet;
-    CRDFGraph::CTriplet mCreated;
-    CCopasiObject * mpCopasiObject;
+    CRDFTriplet mTriplet;
+    CRDFTriplet mCreated;
 
     // Operations
   public:

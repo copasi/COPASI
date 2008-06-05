@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraphConverter.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/04 14:17:03 $
+//   $Date: 2008/06/05 15:34:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -117,8 +117,10 @@ bool CRDFGraphConverter::SBML2Copasi(std::string & XML)
 
   // Convert the graph.
   bool success = convert(pGraph, SBML2CopasiChanges);
+  pGraph->addNameSpace("CopasiMT", "http://www.copasi.org/RDF/MiriamTerms#");
 
   // Serialize the graph
+  pGraph->clean();
   XML = CRDFWriter::xmlFromGraph(pGraph);
 
   return success;
@@ -129,9 +131,9 @@ bool CRDFGraphConverter::convert(CRDFGraph * pGraph, const CRDFGraphConverter::s
 {
   bool success = true;
 
-  std::set< CRDFGraph::CTriplet> Triplets;
-  std::set< CRDFGraph::CTriplet>::iterator it;
-  std::set< CRDFGraph::CTriplet>::iterator end;
+  std::set< CRDFTriplet> Triplets;
+  std::set< CRDFTriplet>::iterator it;
+  std::set< CRDFTriplet>::iterator end;
 
   const sChange * pChange = changes;
 
@@ -159,7 +161,7 @@ bool CRDFGraphConverter::convert(CRDFGraph * pGraph, const CRDFGraphConverter::s
 
 // static
 bool CRDFGraphConverter::convert(CRDFGraph * pGraph,
-                                 const CRDFGraph::CTriplet & triplet,
+                                 const CRDFTriplet & triplet,
                                  const CRDFPredicate::Path & newPath)
 {
   CRDFPredicate::Path CurrentPath = triplet.pObject->getPath();
@@ -180,7 +182,7 @@ bool CRDFGraphConverter::convert(CRDFGraph * pGraph,
 
   bool success = true;
 
-  CRDFGraph::CTriplet Triplet;
+  CRDFTriplet Triplet;
 
   if (CurrentPath.size() < newPath.size())
     {
@@ -209,7 +211,7 @@ bool CRDFGraphConverter::convert(CRDFGraph * pGraph,
                                    CRDFPredicate::getURI(newPath[SubPathIndex]),
                                    object);
 
-      if (!Triplet == false)
+      if (Triplet)
         Triplet = pGraph->moveEdge(triplet.pSubject,
                                    Triplet.pObject,
                                    CRDFEdge(triplet.Predicate, triplet.pObject));

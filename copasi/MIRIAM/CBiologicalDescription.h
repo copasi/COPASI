@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CBiologicalDescription.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/03 13:20:02 $
+//   $Date: 2008/06/05 15:34:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,7 +29,7 @@ class CBiologicalDescription : public CCopasiContainer
     /**
      * Triplet in the RDF graph representing the description.
      */
-    CRDFGraph::CTriplet mTriplet;
+    CRDFTriplet mTriplet;
 
     /**
      * The key of the object needed for the copasi tables.
@@ -53,11 +53,11 @@ class CBiologicalDescription : public CCopasiContainer
 
     /**
      * Specific constructor
-     * @param const CRDFGraph::CTriplet & triplet
+     * @param const CRDFTriplet & triplet
      * @param const std::string & objectName (default: "")
      * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CBiologicalDescription(const CRDFGraph::CTriplet & triplet,
+    CBiologicalDescription(const CRDFTriplet & triplet,
                            const std::string & objectName = "",
                            const CCopasiContainer * pParent = NULL);
 
@@ -74,7 +74,7 @@ class CBiologicalDescription : public CCopasiContainer
      */
     ~CBiologicalDescription();
 
-    const CRDFGraph::CTriplet & getTriplet() const;
+    const CRDFTriplet & getTriplet() const;
 
     virtual const std::string & getKey() const;
 
