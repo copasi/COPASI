@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFPredicate.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/05 15:34:56 $
+//   $Date: 2008/06/05 16:43:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -66,6 +66,10 @@ const std::string CRDFPredicate::PredicateURI[] =
     "http://www.w3.org/1999/02/22-rdf-syntax-ns#li", // rdf_li
     "http://www.w3.org/1999/02/22-rdf-syntax-ns#_", // rdf__n
     "", // unknown
+    // For internal use
+    "about", // about
+    "any", // any
+    "end" // end
   };
 
 // static
@@ -76,8 +80,10 @@ void CRDFPredicate::createURI2Predicate()
 {
   int Predicate = 0;
 
-  for (; PredicateURI[Predicate] != ""; Predicate++)
+  for (; PredicateURI[Predicate] != "end"; Predicate++)
     URI2Predicate[PredicateURI[Predicate]] = (ePredicateType) Predicate;
+
+  URI2Predicate[PredicateURI[Predicate]] = (ePredicateType) Predicate;
 
   // Now we now the number of supported predicates.
   Predicate2AllowedLocationsRelative.resize(URI2Predicate.size());
@@ -134,6 +140,10 @@ const std::string CRDFPredicate::PredicateDisplayName[] =
     "*", // rdf_li
     "*", // rdf__n
     "", // unknown
+    // For internal use
+    "about", // about
+    "any", // any
+    "end" // end
   };
 
 // static
@@ -144,8 +154,10 @@ void CRDFPredicate::createDisplayName2Predicate()
 {
   int Predicate = 0;
 
-  for (; PredicateDisplayName[Predicate] != ""; Predicate++)
+  for (; PredicateDisplayName[Predicate] != "end"; Predicate++)
     DisplayName2Predicate.insert(std::map< std::string, ePredicateType >::value_type(PredicateDisplayName[Predicate], (ePredicateType) Predicate));
+
+  DisplayName2Predicate.insert(std::map< std::string, ePredicateType >::value_type(PredicateDisplayName[Predicate], (ePredicateType) Predicate));
 }
 
 // static
@@ -511,6 +523,8 @@ void CRDFPredicate::initialize()
   if (Initialized)
     return;
 
+  Initialized = true;
+
   // Fill URI2Predicate
   createURI2Predicate();
 
@@ -530,18 +544,24 @@ CRDFPredicate CRDFPredicate::Factory;
 // Methods
 CRDFPredicate::CRDFPredicate(const ePredicateType & type):
     mType(type),
-    mURI(getURI(type))
-{initialize();}
+    mURI()
+{
+  initialize();
+  mURI = getURI(mType);
+}
 
 CRDFPredicate::CRDFPredicate(const std::string & uri):
-    mType(getPredicateFromURI(uri)),
+    mType(),
     mURI(uri)
-{initialize();}
+{
+  initialize();
+  mType = CRDFPredicate::getPredicateFromURI(mURI);
+}
 
 CRDFPredicate::CRDFPredicate(const CRDFPredicate & src):
     mType(src.mType),
     mURI(src.mURI)
-{initialize();}
+{}
 
 CRDFPredicate::~CRDFPredicate()
 {}
