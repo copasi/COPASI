@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CQMiriamWidget.ui.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/03 13:21:22 $
+//   $Date: 2008/06/05 15:33:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -149,7 +149,7 @@ bool CQMiriamWidget::leave()
   // Created at
   std::string DT = "";
   if (mpDTCreated->dateTime().isValid())
-    DT = mpDTCreated->dateTime().toString(Qt::ISODate).utf8();
+    DT = mpDTCreated->dateTime().toString(Qt::ISODate).utf8() + "Z";
 
   if (DT != mpMIRIAMInfo->getCreatedDT())
     {
