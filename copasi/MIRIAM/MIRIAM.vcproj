@@ -79,6 +79,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CRDFGraphConverter.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\CRDFLiteral.cpp"
 				>
 			</File>
@@ -92,6 +96,10 @@
 			</File>
 			<File
 				RelativePath=".\CRDFParser.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CRDFPredicate.cpp"
 				>
 			</File>
 			<File
@@ -148,6 +156,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CRDFGraphConverter.h"
+				>
+			</File>
+			<File
 				RelativePath=".\CRDFLiteral.h"
 				>
 			</File>
@@ -161,6 +173,10 @@
 			</File>
 			<File
 				RelativePath=".\CRDFParser.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CRDFPredicate.h"
 				>
 			</File>
 			<File

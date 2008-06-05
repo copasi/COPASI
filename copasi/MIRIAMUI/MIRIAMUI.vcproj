@@ -53,15 +53,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\CMIRIAMModelWidget.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\CMIRIAMModelWidget.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\CModifiedWidget.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CQMiriamWidget.cpp"
 				>
 			</File>
 			<File
@@ -95,11 +91,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\CMIRIAMModelWidget.h"
+				RelativePath=".\CModifiedWidget.h"
 				>
 			</File>
 			<File
-				RelativePath=".\CModifiedWidget.h"
+				RelativePath=".\CQMiriamWidget.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CQMiriamWidget.ui.h"
 				>
 			</File>
 			<File
@@ -130,15 +130,15 @@
 			>
 		</Filter>
 		<File
+			RelativePath=".\CQMiriamWidget.ui"
+			>
+		</File>
+		<File
 			RelativePath=".\CQRDFListViewWidget.ui"
 			>
 		</File>
 		<File
 			RelativePath=".\MIRIAMUI.pro"
-			>
-		</File>
-		<File
-			RelativePath=".\readme.txt"
 			>
 		</File>
 	</Files>
