@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraphConverter.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/05 15:34:57 $
+//   $Date: 2008/06/05 16:58:19 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -225,7 +225,7 @@ bool CRDFGraphConverter::convert(CRDFGraph * pGraph,
     {
       // We just have to rename the predicate
       success &= triplet.pSubject->addEdgeInternal(CRDFEdge(newPath[SubPathIndex], triplet.pObject));
-      success &= triplet.pSubject->removeEdgeInternal(CRDFEdge(triplet.Predicate, triplet.pObject));
+      success &= triplet.pSubject->removeEdgeInternal(CRDFEdge(CurrentPath[SubPathIndex], triplet.pObject));
 
       if (success)
         {
