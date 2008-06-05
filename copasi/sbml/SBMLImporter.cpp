@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.198 $
+//   $Revision: 1.199 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/06/02 10:10:21 $
+//   $Author: shoops $
+//   $Date: 2008/06/05 15:31:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -49,18 +49,17 @@
 #include <sbml/Rule.h>
 #include <sbml/FunctionDefinition.h>
 #include <sbml/UnitDefinition.h>
-#include "report/CKeyFactory.h"
-
-#include "copasi.h"
 
 #include "mathematics.h"
 
+#include "copasi.h"
+
+#include "report/CKeyFactory.h"
 #include "model/CModel.h"
 #include "model/CCompartment.h"
 #include "model/CMetab.h"
 #include "model/CReaction.h"
 #include "model/CModelValue.h"
-#include "copasi.h"
 #include "function/CNodeK.h"
 #include "function/CFunctionDB.h"
 #include "function/CEvaluationTree.h"
@@ -68,6 +67,7 @@
 #include "report/CCopasiObjectReference.h"
 #include "utilities/CCopasiTree.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "MIRIAM/CRDFGraphConverter.h"
 
 #include "SBMLImporter.h"
 #include "ConverterASTNode.h"
@@ -5239,6 +5239,8 @@ bool SBMLImporter::importMIRIAM(const SBase* pSBMLObject, CCopasiObject* pCOPASI
           if (pSBMLObject->isSetMetaId())
             metaid = pSBMLObject->getMetaId();
           std::string miriamString = XMLNode::convertXMLNodeToString(pMIRIAMNode);
+          CRDFGraphConverter::SBML2Copasi(miriamString);
+
           switch (pSBMLObject->getTypeCode())
             {
             case SBML_MODEL:
