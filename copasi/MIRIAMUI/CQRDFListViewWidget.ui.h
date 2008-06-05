@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CQRDFListViewWidget.ui.h,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Creator: aekamal $
-//   $Date: 2008/06/03 13:21:21 $
+//   $Date: 2008/06/05 15:34:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -53,10 +53,26 @@ void CQRDFListViewWidget::load()
   mpListView->clearVisitedNodes();
 
   CRDFGraph * pGraph = NULL;
-  CModelEntity *pEntity;
 
-  if ((pEntity = dynamic_cast< CModelEntity * >(GlobalKeys.get(mKey))) != NULL)
-    pGraph = CRDFParser::graphFromXml(pEntity->getMiriamAnnotation());
+  CCopasiObject *pObject = dynamic_cast< CCopasiObject * >(GlobalKeys.get(mKey));
+
+  if (pObject != NULL)
+    {
+      CModelEntity * pEntity = NULL;
+      CReaction * pReaction = NULL;
+      CFunction * pFunction = NULL;
+      const std::string * pMiriamAnnotation = NULL;
+
+      if ((pEntity = dynamic_cast< CModelEntity * >(pObject)) != NULL)
+        pMiriamAnnotation = &pEntity->getMiriamAnnotation();
+      else if ((pReaction = dynamic_cast< CReaction * >(pObject)) != NULL)
+        pMiriamAnnotation = &pReaction->getMiriamAnnotation();
+      else if ((pFunction = dynamic_cast< CFunction * >(pObject)) != NULL)
+        pMiriamAnnotation = &pFunction->getMiriamAnnotation();
+
+      if (pMiriamAnnotation && *pMiriamAnnotation != "")
+        pGraph = CRDFParser::graphFromXml(*pMiriamAnnotation);
+    }
 
   CCopasiMessage::clearDeque();
 
@@ -68,7 +84,10 @@ void CQRDFListViewWidget::load()
     }
 
   if (pGraph == NULL)
-    return;
+    pGraph = new CRDFGraph;
+
+  // We make sure that we always have an about node.
+  pGraph->createAboutNode(mKey);
 
   std::map< std::string, CRDFNode * >::const_iterator itMap = pGraph->getLocalResourceNodeMap().begin();
   std::map< std::string, CRDFNode * >::const_iterator endMap = pGraph->getLocalResourceNodeMap().end();
