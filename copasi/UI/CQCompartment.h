@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartment.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2008/04/18 08:39:06 $
+//   $Date: 2008/06/06 10:25:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,8 +14,8 @@
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQCompartment.ui'
  **
- ** Created: Fri Apr 18 10:09:27 2008
- **      by: The User Interface Compiler ($Id: CQCompartment.h,v 1.6 2008/04/18 08:39:06 pwilly Exp $)
+ ** Created: Fri Jun 6 12:23:21 2008
+ **      by: The User Interface Compiler ($Id: CQCompartment.h,v 1.7 2008/06/06 10:25:10 pwilly Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
