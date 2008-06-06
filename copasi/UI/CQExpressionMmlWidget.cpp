@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExpressionMmlWidget.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2008/04/18 08:32:58 $
+//   $Date: 2008/06/06 12:01:56 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,8 +14,8 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQExpressionMmlWidget.ui'
  **
- ** Created: Thu Apr 17 14:37:52 2008
- **      by: The User Interface Compiler ($Id: CQExpressionMmlWidget.cpp,v 1.1 2008/04/18 08:32:58 pwilly Exp $)
+ ** Created: Fri May 2 12:23:38 2008
+ **      by: The User Interface Compiler ($Id: CQExpressionMmlWidget.cpp,v 1.2 2008/06/06 12:01:56 pwilly Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -203,7 +203,6 @@ CQExpressionMmlWidget::CQExpressionMmlWidget(QWidget* parent, const char* name, 
   layout4->addWidget(mpBtnExpressionObject);
 
   mpBtnViewExpression = new QToolButton(mpExpressionPage, "mpBtnViewExpression");
-  mpBtnViewExpression->setEnabled(FALSE);
   mpBtnViewExpression->setMaximumSize(QSize(20, 20));
   mpBtnViewExpression->setIconSet(QIconSet(image1));
   layout4->addWidget(mpBtnViewExpression);
@@ -242,6 +241,7 @@ CQExpressionMmlWidget::CQExpressionMmlWidget(QWidget* parent, const char* name, 
   connect(mpBtnExpressionObject, SIGNAL(clicked()), mpExpressionWidget, SLOT(slotSelectObject()));
   connect(mpBtnViewExpression, SIGNAL(clicked()), this, SLOT(updateWidget()));
   connect(mpExpressionWidget, SIGNAL(valid(bool)), mpBtnViewExpression, SLOT(setEnabled(bool)));
+  init();
 }
 
 /*

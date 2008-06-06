@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExpressionMmlWidget.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2008/04/18 08:33:21 $
+//   $Date: 2008/06/06 12:02:01 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,8 +14,8 @@
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQExpressionMmlWidget.ui'
  **
- ** Created: Fri Apr 18 10:02:15 2008
- **      by: The User Interface Compiler ($Id: CQExpressionMmlWidget.h,v 1.1 2008/04/18 08:33:21 pwilly Exp $)
+ ** Created: Fri May 2 12:23:36 2008
+ **      by: The User Interface Compiler ($Id: CQExpressionMmlWidget.h,v 1.2 2008/06/06 12:02:01 pwilly Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -61,6 +61,8 @@ class CQExpressionMmlWidget : public QWidget
     void signalCheckValidity(bool);
 
   protected:
+    void init();
+
     QGridLayout* CQExpressionMmlWidgetLayout;
     QGridLayout* mpExpressionPageLayout;
     QVBoxLayout* layout4;
