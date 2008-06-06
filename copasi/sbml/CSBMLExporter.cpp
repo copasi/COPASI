@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.26 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/05/14 12:33:22 $
+//   $Date: 2008/06/06 09:55:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -799,6 +799,10 @@ void CSBMLExporter::createInitialAssignment(const CModelEntity& modelEntity, CCo
       // set the math
       this->mHandledSBMLObjects.insert(pInitialAssignment);
       const CEvaluationNode* pOrigNode = modelEntity.getInitialExpressionPtr()->getRoot();
+      if (CEvaluationNode::type(pOrigNode->getType()) == CEvaluationNode::INVALID)
+        {
+          CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 70, "initial assignment", modelEntity.getObjectType().c_str(), modelEntity.getObjectName().c_str());
+        }
       // the next few lines replace references to species depending on whether
       // it is a reference to an amount or a reference to a concentration.
       // Other factors that influence this replacement are if the model
@@ -992,6 +996,10 @@ void CSBMLExporter::createRule(const CModelEntity& modelEntity, CCopasiDataModel
         }
       // set the math
       const CEvaluationNode* pOrigNode = modelEntity.getExpressionPtr()->getRoot();
+      if (CEvaluationNode::type(pOrigNode->getType()) == CEvaluationNode::INVALID)
+        {
+          CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 70, "assignment", modelEntity.getObjectType().c_str(), modelEntity.getObjectName().c_str());
+        }
       // the next few lines replace references to species depending on whether
       // it is a reference to an amount or a reference to a concentration.
       // Other factors that influence this replacement are if the model

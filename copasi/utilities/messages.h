@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.116 $
+//   $Revision: 1.117 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/06/02 10:10:21 $
+//   $Date: 2008/06/06 09:55:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -197,7 +197,7 @@ const MESSAGES Messages[] =
     {MCSBML + 45, "SBML (45): Compartment \"%s\" does not set the initial volume. Volume has been set to 1.0."},
     {MCSBML + 46, "SBML (46): COPASI has changed the following function definitions to take the time as an additional argument instead of the function being directly or indirectly dependent on time:\n \"%s\" ."},
     {MCSBML + 47, "SBML (47): COPASI found a call to the function \"%s\" which has not been defined."},
-    {MCSBML + 48, "SBML (48): Initial assignments ignored because they are not supported yet."},
+    {MCSBML + 48, "SBML (48): Initial assignments ignored because they are not supported yet."}, // OBSOLETE
     {MCSBML + 49, "SBML (49): Constraints ignored because they are not supported yet."},
     {MCSBML + 50, "SBML (50): Could not open file \"%s\"."},
     {MCSBML + 51, "SBML (51): The species \"%s\" is defined by a rate rule and its compartments volume is variable. COPASI will probably interpret this incorrectly."},
@@ -219,6 +219,7 @@ const MESSAGES Messages[] =
     {MCSBML + 67, "SBML (67): Metaid \"%s\" is not unique, please check the metaids."},
     {MCSBML + 68, "SBML (68): Id \"%s\" is not unique, please check the ids in your SBML file."},
     {MCSBML + 69, "SBML (69): MIRIAM annotations can't currently be exported to SBML.\nIf you have added new MIRIAM annotations to model elements or changed existing annotations, those changes will not be present in the exported SBML file.\nTo conserve your changes, please consider saving the model as a COPASI file."},
+    {MCSBML + 70, "SBML (70): Could not export mathematical expression for %s in %s with name \"%s\"."},
 
     {MCTrajectoryProblem + 1, "CTrajectoryProblem (1): Invalid step size = '%f'."},
     {MCTrajectoryProblem + 2, "CTrajectoryProblem (2): The step number '%f' "
