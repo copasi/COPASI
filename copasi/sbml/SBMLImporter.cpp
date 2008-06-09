@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.200 $
+//   $Revision: 1.201 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/06/09 09:15:56 $
+//   $Date: 2008/06/09 09:35:04 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1088,12 +1088,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, Model* p
         }
 
       const ASTNode* kLawMath = kLaw->getMath();
-      if (kLawMath == NULL)
-        {
-          copasiReaction->setFunction(NULL);
-          CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 27, sbmlReaction->getId().c_str());
-        }
-      else if (kLawMath->getType() == AST_UNKNOWN)
+      if (kLawMath == NULL || kLawMath->getType() == AST_UNKNOWN)
         {
           copasiReaction->setFunction(NULL);
           CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 56, sbmlReaction->getId().c_str());
