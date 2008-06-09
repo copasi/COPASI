@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-//   $Revision: 1.59 $
+//   $Revision: 1.60 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/18 19:49:34 $
+//   $Author: pwilly $
+//   $Date: 2008/06/09 07:47:05 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,6 +41,7 @@ class CMetab;
 class CModel;
 class CModelEntity;
 class CModelValue;
+class CEvent;
 class CReaction;
 class CEvaluationTree;
 class CFunctionParameter;
@@ -86,6 +87,12 @@ struct SCopasiXMLParserCommon
      * Storage for a comment.
      */
     std::string CharacterData;
+
+    /**
+     * Storage for assignments.
+     */
+    std::vector<std::pair<std::string, std::string> > mAssignments;
+    // std::pair<std::string, std::string> mAssignmentPair;
 
     /**
      * Pointer to a vector of functions which has been loaded or is to be saved.
@@ -1440,6 +1447,191 @@ class CCopasiXMLParser : public CExpat
         virtual void end(const XML_Char *pszName);
       };
 
+  class EventElement:
+          public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+        // Attributes
+      private:
+        /**
+         * Enum of invoked parsers
+         */
+        enum Element
+        {
+          Event = 0,
+          TriggerExpression,
+          DelayExpression,
+          ListOfAssignments
+        };
+
+        CEvent * mpEvent;
+
+        /**
+         * The key in the CopasiML file
+         */
+        std::string mKey;
+
+        // Operations
+      public:
+        /**
+         * Constructor
+         */
+        EventElement(CCopasiXMLParser & parser,
+                     SCopasiXMLParserCommon & common);
+
+        /**
+         * Destructor
+         */
+        virtual ~EventElement();
+
+        /**
+         * Start element handler
+         * @param const XML_Char *pszName
+         * @param const XML_Char **papszAttrs
+         */
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        /**
+         * End element handler
+         * @param const XML_Char *pszName
+         */
+        virtual void end(const XML_Char *pszName);
+      };
+
+  class ListOfEventsElement:
+          public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+        // Attributes
+      private:
+        /**
+         * Enum of invoked parsers
+         */
+        enum Element
+        {
+          ListOfEvents = 0,
+          Event
+        };
+
+        // Operations
+      public:
+        /**
+         * Constructor
+         */
+        ListOfEventsElement(CCopasiXMLParser & parser,
+                            SCopasiXMLParserCommon & common);
+
+        /**
+         * Destructor
+         */
+        virtual ~ListOfEventsElement();
+
+        /**
+         * Start element handler
+         * @param const XML_Char *pszName
+         * @param const XML_Char **papszAttrs
+         */
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        /**
+         * End element handler
+         * @param const XML_Char *pszName
+         */
+        virtual void end(const XML_Char *pszName);
+      };
+
+  class AssignmentElement:
+          public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+        // Attributes
+      private:
+        /**
+         * Enum of invoked parsers
+         */
+        enum Element
+        {
+          Assignment = 0,
+          Expression
+        };
+
+        /**
+         * The key in the CopasiML file
+         */
+        std::string mKey;
+
+        std::pair<std::string, std::string> mAssignmentPair;
+        // Operations
+      public:
+        /**
+         * Constructor
+         */
+        AssignmentElement(CCopasiXMLParser & parser,
+                          SCopasiXMLParserCommon & common);
+
+        /**
+         * Destructor
+         */
+        virtual ~AssignmentElement();
+
+        /**
+         * Start element handler
+         * @param const XML_Char *pszName
+         * @param const XML_Char **papszAttrs
+         */
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        /**
+         * End element handler
+         * @param const XML_Char *pszName
+         */
+        virtual void end(const XML_Char *pszName);
+      };
+
+  class ListOfAssignmentsElement:
+          public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+        // Attributes
+      private:
+        /**
+         * Enum of invoked parsers
+         */
+        enum Element
+        {
+          ListOfAssignments = 0,
+          Assignment
+        };
+
+        // Operations
+      public:
+        /**
+         * Constructor
+         */
+        ListOfAssignmentsElement(CCopasiXMLParser & parser,
+                                 SCopasiXMLParserCommon & common);
+
+        /**
+         * Destructor
+         */
+        virtual ~ListOfAssignmentsElement();
+
+        /**
+         * Start element handler
+         * @param const XML_Char *pszName
+         * @param const XML_Char **papszAttrs
+         */
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        /**
+         * End element handler
+         * @param const XML_Char *pszName
+         */
+        virtual void end(const XML_Char *pszName);
+
+        //        std::vector<std::pair<std::string, std::string> > mAssignments;
+      };
+
   class CommentElement:
           public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
       {
@@ -1523,6 +1715,7 @@ class CCopasiXMLParser : public CExpat
           ListOfMetabolites,
           ListOfModelValues,
           ListOfReactions,
+          ListOfEvents,
           StateTemplate,
           InitialState
         };
