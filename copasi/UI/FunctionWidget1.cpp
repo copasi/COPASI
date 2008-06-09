@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-//   $Revision: 1.154 $
+//   $Revision: 1.155 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/12 01:47:38 $
+//   $Author: pwilly $
+//   $Date: 2008/06/09 06:41:07 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -76,15 +76,20 @@
 #define COL_USAGE 1
 #define COL_UNIT 2
 
-/*
- *  Constructs a FunctionWidget1 which is a child of 'parent', with the
- *  name 'name' and widget flags set to 'f'.
+/*!
+   Constructor
+
+   Constructs a FunctionWidget1 which is a child of 'parent', with the
+   name 'name' and widget flags set to 'f'.
  */
 FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
     CopasiWidget(parent, name, fl),
     objKey(""),
     mpFunction(NULL)
 {
+  //  std::cout << "FunctionWidget1" << std::endl;
+  //  {int y; std::cin >> y;}
+
   if (!name)
     setName("FunctionWidget1");
   setCaption(trUtf8("FunctionWidget1"));
@@ -306,6 +311,7 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
   connect(textBrowser, SIGNAL(textChanged()), this, SLOT(slotFcnDescriptionChanged()));
 }
 
+//! Destructor
 FunctionWidget1::~FunctionWidget1()
 {
   //pdelete(mMmlWidget);
@@ -415,7 +421,7 @@ bool FunctionWidget1::loadParameterTable()
   return true;
 }
 
-//this generates the text reperesentation of the usage restrictions
+//! Function to generate the text reperesentation of the usage restrictions
 bool FunctionWidget1::loadUsageTable()
 {
   std::vector<std::string> stringlist;
@@ -772,7 +778,11 @@ bool FunctionWidget1::saveToFunction()
 
 //************** slots for changes in the widgets *************************************
 
-/*This function is called when the Function Description is changed.*/
+//! Slot for changing the function description
+
+/*!
+   This slot function is called whenever the function description is changed.
+ */
 void FunctionWidget1::slotFcnDescriptionChanged()
 {
   if (flagRO) return;
@@ -820,6 +830,7 @@ void FunctionWidget1::slotFcnDescriptionChanged()
   textBrowser->setFocus();
 }
 
+//! Slot for changing the table value
 void FunctionWidget1::slotTableValueChanged(int row, int col)
 {
   //std::cout << "table changed " << row << " " << col << std::endl;
@@ -841,6 +852,7 @@ void FunctionWidget1::slotTableValueChanged(int row, int col)
   loadUsageTable();
 }
 
+//! Slot for changing the reversibility of the function
 void FunctionWidget1::slotReversibilityChanged()
 {
   loadUsageTable();
@@ -848,11 +860,13 @@ void FunctionWidget1::slotReversibilityChanged()
 
 //**************** slots for buttons *********************************************
 
+//! Slot for being activated wehenver Cancel button is clicked
 void FunctionWidget1::slotCancelButtonClicked()
 {
   enter(objKey); // reload
 }
 
+//! Slot for being activated wehenver Commit button is clicked
 void FunctionWidget1::slotCommitButtonClicked()
 {
   CModel * pModel = CCopasiDataModel::Global->getModel();
@@ -1046,6 +1060,7 @@ void FunctionWidget1::slotCommitButtonClicked()
   textBrowser->setText(FROM_UTF8(desc));*/
 }
 
+//! Slot for being activated wehenver New button is clicked
 void FunctionWidget1::slotNewButtonClicked()
 {
   slotCommitButtonClicked();
@@ -1069,6 +1084,7 @@ void FunctionWidget1::slotNewButtonClicked()
   enter(pFunc->getKey());
 }
 
+//! Slot for being activated wehenver Delete button is clicked
 void FunctionWidget1::slotDeleteButtonClicked()
 {
   CModel * pModel = CCopasiDataModel::Global->getModel();
@@ -1274,11 +1290,14 @@ void FunctionWidget1::slotDeleteButtonClicked()
 }
 
 //***********  slot for editing requests on the function formula (mMmlWidget) *****
+
+//! Slot for being activated wehenver Edit button under Functions display is clicked
 void FunctionWidget1::slotToggleFcnDescriptionEdit()
 {
   mStack->raiseWidget(textBrowser);
 }
 
+//! Function to update the function formula
 void FunctionWidget1::updateMmlWidget()
 {
 #ifdef HAVE_MML
@@ -1309,6 +1328,7 @@ void FunctionWidget1::updateMmlWidget()
 
 //************************  standard interface to copasi widgets ******************
 
+//! Function to update the COPASI widgets
 bool FunctionWidget1::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {
   if (mIgnoreUpdates) return true;

@@ -1,12 +1,17 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/FunctionWidget.h,v $
-   $Revision: 1.23 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/28 00:20:16 $
-   End CVS Header */
+  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/FunctionWidget.h,v $
+  $Revision: 1.24 $
+  $Name:  $
+  $Author: pwilly $
+  $Date: 2008/06/09 06:41:42 $
+  End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -15,11 +20,20 @@
 
 #include "UI/CopasiTableWidget.h"
 
+/*!
+  \brief
+
+ */
+
 class FunctionWidget : public CopasiTableWidget
   {
     Q_OBJECT
 
   public:
+
+    /**
+     * Constructor
+     */
     FunctionWidget(QWidget *parent, const char * name = 0, WFlags f = 0)
         : CopasiTableWidget(parent, false, name, f)
     {init();}
