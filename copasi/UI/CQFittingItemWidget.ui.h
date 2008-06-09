@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQFittingItemWidget.ui.h,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.31 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/12 00:32:58 $
+//   $Author: pwilly $
+//   $Date: 2008/06/09 06:00:43 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,6 +14,14 @@
 // Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+
+/*!
+    \file CQFittingItemWidget.ui.h
+ \brief Implementation file of class CQFittingItemWidget
+
+ The class CQFittingItemWidget provides GUI interface of Paramaters and Constraints part
+ of Optimization and Parameter Estimation task. The interface is built by help of QtDesigner.
+ */
 
 #include <qapplication.h>
 
