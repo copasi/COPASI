@@ -1,12 +1,17 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.h,v $
-   $Revision: 1.52 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/28 00:20:16 $
-   End CVS Header */
+  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.h,v $
+  $Revision: 1.53 $
+  $Name:  $
+  $Author: pwilly $
+  $Date: 2008/06/09 06:08:45 $
+  End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -35,7 +40,6 @@ class QRadioButton;
 class QTable;
 class QTextEdit;
 class QWidgetStack;
-class CFunction;
 //class MyLineEdit;
 
 class QtMmlWidget;
@@ -45,6 +49,11 @@ class CFunctionParameters;
 class CUsageRange;
 template <class CType> class CCopasiVectorN;
 
+/*!
+  \brief A widget class for Functions branch
+
+  This widget shows detailed description of an individual function
+ */
 class FunctionWidget1 : public CopasiWidget
   {
     Q_OBJECT
