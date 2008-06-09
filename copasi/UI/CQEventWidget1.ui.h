@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQEventWidget1.ui.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2008/06/09 07:14:58 $
+//   $Date: 2008/06/09 08:36:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -45,8 +45,7 @@ void CQEventWidget1::slotBtnCommitClicked()
 
 /*! Slot to delete the active event widget */
 void CQEventWidget1::slotBtnDeleteClicked()
-{
-}
+{}
 
 /// Slot to create a new event; activated whenever the New button is clicked
 void CQEventWidget1::slotBtnNewClicked()
@@ -278,7 +277,7 @@ void CQEventWidget1::slotAddTarget()
   /*
     // add the new assignment to pEvent
     CEvent* pEvent = dynamic_cast< CEvent * >(GlobalKeys.get(mEventKey));
-  /*
+  */ /*
     if (!pEvent)
     {
    std::string errorMessage = std::string("There is no event with key " + mEventKey);
@@ -345,7 +344,7 @@ void CQEventWidget1::slotDeleteTarget()
       mDeletedAssign.second = text;
     }
   else
-    mPosDelete = -1;
+    mPosDelete = (unsigned C_INT32) - 1;
 
   /*  std::cout << "A - name = " << mDeleteAssignment.first
               << " - expression = " << mDeleteAssignment.second.getInfix() << std::endl;
@@ -623,20 +622,20 @@ bool CQEventWidget1::loadFromEvent()
             {
               std::cout << "Compartments: " << CCopasiDataModel::Global->getModel()->getCompartments()[sObjectIndex.toULong()]->getKey() << std::endl;
               //     std::cout << "Compartments: " << CCopasiDataModel::Global->getModel()->getCompartments()[sObjectIndex.toULong()]->getObjectDisplayName() << std::endl;
-              sName = CCopasiDataModel::Global->getModel()->getCompartments()[sObjectIndex.toULong()]->getObjectDisplayName() + ".Volume";
+              sName = FROM_UTF8(CCopasiDataModel::Global->getModel()->getCompartments()[sObjectIndex.toULong()]->getObjectDisplayName() + ".Volume");
               std::cout << "Compartments: " << sName << std::endl;
             }
           if (sObjectName == "Metabolite")
             {
               std::cout << "Metabolites: " << CCopasiDataModel::Global->getModel()->getMetabolites()[sObjectIndex.toULong()]->getKey() << std::endl;
               //     std::cout << "Metabolites: " << CCopasiDataModel::Global->getModel()->getMetabolites()[sObjectIndex.toULong()]->getObjectDisplayName() << std::endl;
-              sName = "[" + CCopasiDataModel::Global->getModel()->getMetabolites()[sObjectIndex.toULong()]->getObjectDisplayName() + "]";
+              sName = FROM_UTF8("[" + CCopasiDataModel::Global->getModel()->getMetabolites()[sObjectIndex.toULong()]->getObjectDisplayName() + "]");
               std::cout << "Metabolites: " << sName << std::endl;
             }
           if (sObjectName.contains("ModelValue"))
             {
               std::cout << "Global Quantities: " << CCopasiDataModel::Global->getModel()->getModelValues()[sObjectIndex.toULong()]->getKey() << std::endl;
-              sName = CCopasiDataModel::Global->getModel()->getModelValues()[sObjectIndex.toULong()]->getObjectDisplayName();
+              sName = FROM_UTF8(CCopasiDataModel::Global->getModel()->getModelValues()[sObjectIndex.toULong()]->getObjectDisplayName());
               std::cout << "Global Quantities: " << sName << std::endl;
             }
 
@@ -761,7 +760,7 @@ bool CQEventWidget1::loadFromEvent()
        << " -vs- mpEvent->getNumAssignments() = " << mpEvent->getNumAssignments() << std::endl;
       return false;
     }
-  /*
+  */ /*
     // actualize the EventAssignment by setting to the current entry
     mpCBTarget->setCurrentItem(mpCBTarget->currentItem());
     slotActualizeAssignmentExpression(mpCBTarget->currentItem());
@@ -860,7 +859,7 @@ void CQEventWidget1::saveToEvent()
 
   mpEvent->showAssignments();
   // first of all, permanently remove the deleted assignment
-  if (mPosDelete > -1)
+  if (mPosDelete > (unsigned C_INT32) - 1)
     mpEvent->deleteAssignment(mPosDelete);
   /*
     mCurrentAssignment = mpEvent->getAssignmentExpressionVector();
@@ -880,14 +879,14 @@ void CQEventWidget1::saveToEvent()
   std::string newKey = "";
   std::string newExpression = "";
 
-  if (mpCBTarget->count() != mObjectKeyDisplayName.size())
+  if (mpCBTarget->count() != (int) mObjectKeyDisplayName.size())
     {
       std::cout << "mpCBTarget->count() = " << mpCBTarget->count() << " - mObjectKeyDisplayName.size() = "
       << mObjectKeyDisplayName.size() << std::endl;
       std::cout << "Abort on L" << __LINE__ << std::endl;
     }
 
-  if (mpCBTarget->count() > mpEvent->getNumAssignments())
+  if (mpCBTarget->count() > (int) mpEvent->getNumAssignments())
     {
 
       // std::string Key = CCopasiDataModel::Global->getModel()->getKey();
@@ -1113,7 +1112,7 @@ void CQEventWidget1::slotSelectObject()
 
       // Check whether only allowable object (Transient Volumes, Transient Concentrations, Transient Values) has been selected
 
-      QString objectName = pObject->getObjectName();
+      QString objectName = FROM_UTF8(pObject->getObjectName());
       std::cout << "Get Object Name = " << objectName << std::endl;
 
       if (objectName != "Volume" && objectName != "Concentration" && objectName != "Value")
@@ -1153,7 +1152,7 @@ void CQEventWidget1::slotSelectObject()
 
       std::cout << "Insert object AFTER = " << Insert << std::endl;
 
-      newText = "<" + Insert + ">";
+      newText = FROM_UTF8("<" + Insert + ">");
       std::cout << "newText = " << newText << std::endl;
 
       // check duplicacy -> as single event cannot have multiple EventAssignment !!!
@@ -1186,7 +1185,7 @@ void CQEventWidget1::slotSelectObject()
 
       mAssignmentKey = pObject->getObjectParent()->getKey();
 
-      if (mpCBTarget->count() > mpEvent->getNumAssignments())
+      if (mpCBTarget->count() > (int) mpEvent->getNumAssignments())
         {
           // new assignment -> not able to add one more new assignment before the current new one is saved
           if (mObjectKeyDisplayName.size() == mpEvent->getNumAssignments() + 1)
@@ -1272,7 +1271,7 @@ void CQEventWidget1::slotActualizeAssignmentExpression(int index)
   //  std::cout << "mCurrentAssignment.size() = " << mCurrentAssignment.size() << std::endl;
   //  if (!mCurrentAssignment.size()) return;  // no assignment
 
-  if (index >= mpEvent->getNumAssignments()) // ">=" since index 0 represents the first event assignment
+  if (index >= (int) mpEvent->getNumAssignments()) // ">=" since index 0 represents the first event assignment
     //  if (index >= mCurrentAssignment.size()) // ">=" since index 0 represents the first event assignment
     {
       std::cout << "index = " << index << " > mpEvent->getNumAssignments() = " << mpEvent->getNumAssignments() << std::endl;
@@ -1345,7 +1344,8 @@ void CQEventWidget1::slotActualizeAssignmentExpression(int index)
   mpExpressionEA->show();
 
   // update expression widget wrt a chosen target
-  QString text = mpEvent->getAssignmentExpressionStr(index);
+  //  QString text = FROM_UTF8(mpEvent->getAssignmentExpressionStr(index));
+  std::string text = mpEvent->getAssignmentExpressionStr(index);
   //  QString text = mCurrentAssignment[index].second.getInfix();
   std::cout << "text = " << text << std::endl;
   /*  QString newText = text;
@@ -1466,7 +1466,7 @@ std::string CQEventWidget1::takeObjectName(QString text)
 
   text.remove("<");
   text.remove(">");
-  std::string key = text;
+  std::string key = text.latin1();
   std::cout << "CQEW1::takeObjectName - key = " << key << std::endl;
   return key;
 }
