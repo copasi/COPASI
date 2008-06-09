@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQModelValue.ui.h,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.27 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2008/05/19 08:34:13 $
+//   $Date: 2008/06/09 06:07:22 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -50,13 +50,18 @@ void CQModelValue::slotBtnRevert()
   load();
 }
 
+/// Slot to create a new quantity; activated whenever the New button is clicked
 void CQModelValue::slotBtnNew()
 {
+  // save the current setting values
   save();
 
+  // standard name
   std::string name = "quantity";
-  int i = 0;
 
+  // if the standard name already exists then creating the new event will fail
+  // thus, a growing index will automatically be added to the standard name
+  int i = 0;
   while (!(mpModelValue = CCopasiDataModel::Global->getModel()->createModelValue(name)))
     {
       i++;
@@ -64,6 +69,7 @@ void CQModelValue::slotBtnNew()
       name += (const char *) QString::number(i).utf8();
     }
 
+  std::cout << "CQMV::slotBtnNew - key = " << mpModelValue->getKey() << std::endl;
   enter(mpModelValue->getKey());
   protectedNotify(ListViews::MODELVALUE, ListViews::ADD);
 }
@@ -233,6 +239,7 @@ void CQModelValue::slotBtnDelete()
  */
 void CQModelValue::slotTypeChanged(int type)
 {
+  std::cout << "CQMV::slotTypeChanged" << std::endl;
   switch ((CModelEntity::Status) mItemToType[type])
     {
     case CModelEntity::FIXED:
@@ -359,6 +366,7 @@ bool CQModelValue::leave()
 
 bool CQModelValue::enter(const std::string & key)
 {
+  std::cout << "CQMV::enter(_) - key = " << key << std::endl;
   mKey = key;
   mpModelValue = dynamic_cast< CModelValue * >(GlobalKeys.get(key));
 
@@ -514,6 +522,7 @@ void CQModelValue::slotNameLostFocus()
  */
 void CQModelValue::slotInitialTypeChanged(bool useInitialAssignment)
 {
+  std::cout << "CQMV::slotInitialTypeChanged" << std::endl;
   if (useInitialAssignment)  // use Initial Expression (ie. the mpBoxUseInitialExpression is checked)
     {
       // add the layout of initial expression to the CQModelValueLayout

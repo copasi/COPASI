@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQModelValue.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2008/04/18 08:37:52 $
+//   $Date: 2008/06/09 06:03:27 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,8 +14,8 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQModelValue.ui'
  **
- ** Created: Fri Apr 18 10:02:51 2008
- **      by: The User Interface Compiler ($Id: CQModelValue.cpp,v 1.10 2008/04/18 08:37:52 pwilly Exp $)
+ ** Created: Mon Apr 21 11:35:10 2008
+ **      by: The User Interface Compiler ($Id: CQModelValue.cpp,v 1.11 2008/06/09 06:03:27 pwilly Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
