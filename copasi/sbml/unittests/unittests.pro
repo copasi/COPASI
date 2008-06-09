@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/unittests.pro,v $ 
-#   $Revision: 1.4 $ 
+#   $Revision: 1.5 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2008/05/05 10:50:51 $ 
+#   $Date: 2008/06/09 08:53:05 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -129,7 +129,8 @@ HEADERS += utilities.hpp \
            test000057.h \
            test000058.h \
            test000059.h \
-           test000060.h 
+           test000060.h \
+           test000061.h 
 
 
 SOURCES += utilities.cpp \
@@ -193,6 +194,7 @@ SOURCES += utilities.cpp \
            test000058.cpp \ 
            test000059.cpp \ 
            test000060.cpp \ 
+           test000061.cpp \ 
            test.cpp
 
 
