@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-//   $Revision: 1.105 $
+//   $Revision: 1.106 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/12 00:34:41 $
+//   $Author: pwilly $
+//   $Date: 2008/06/09 07:45:07 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,6 +14,11 @@
 // Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+
+/*!
+ \file CCopasiXML.cpp
+ \brief Impöementation file of class CCopasiXML.
+ */
 
 /**
  * CCopasiXML class.
@@ -135,6 +140,7 @@ bool CCopasiXML::save(std::ostream & os,
 bool CCopasiXML::load(std::istream & is,
                       const std::string & relativeTo)
 {
+  std::cout << "CCXML::load" << std::endl;
   mFilename = relativeTo;
 
   is.imbue(std::locale::classic());
@@ -167,6 +173,7 @@ bool CCopasiXML::load(std::istream & is,
       if (mpIstream->eof()) done = true;
       if (mpIstream->fail() && !done) fatalError();
 
+      std::cout << "CCXML::load A" << std::endl;
       if (!Parser.parse(pBuffer, -1, done))
         {
           CCopasiMessage Message(CCopasiMessage::RAW, MCXML + 2,
@@ -176,6 +183,7 @@ bool CCopasiXML::load(std::istream & is,
           done = true;
           success = false;
         }
+      std::cout << "CCXML::load B" << std::endl;
     }
   delete [] pBuffer;
 #undef BUFFER_SIZE
@@ -376,6 +384,7 @@ bool CCopasiXML::saveModel()
 
   unsigned C_INT32 i, imax;
 
+  // Compartment
   if ((imax = mpModel->getCompartments().size()) > 0)
     {
       startSaveElement("ListOfCompartments");
@@ -427,6 +436,7 @@ bool CCopasiXML::saveModel()
       endSaveElement("ListOfCompartments");
     }
 
+  // Metabolites (aka. Species)
   if ((imax = mpModel->getMetabolites().size()) > 0)
     {
       startSaveElement("ListOfMetabolites");
@@ -480,6 +490,7 @@ bool CCopasiXML::saveModel()
       endSaveElement("ListOfMetabolites");
     }
 
+  // Model Values (aka. Global Quantities)
   if ((imax = mpModel->getModelValues().size()) > 0)
     {
       startSaveElement("ListOfModelValues");
@@ -530,6 +541,7 @@ bool CCopasiXML::saveModel()
       endSaveElement("ListOfModelValues");
     }
 
+  // Reactions
   if ((imax = mpModel->getReactions().size()) > 0)
     {
       startSaveElement("ListOfReactions");
@@ -686,6 +698,86 @@ bool CCopasiXML::saveModel()
         }
       endSaveElement("ListOfReactions");
     }
+
+  // Events (added 07.04.08)
+  if ((imax = mpModel->getEvents().size()) > 0)
+    {
+      startSaveElement("ListOfEvents");
+
+      Attributes.erase();
+      Attributes.add("key", "");
+      Attributes.add("name", "");
+      //      Attributes.add("delay", "");
+
+      std::cout << "events number = " << imax << std::endl;
+      for (i = 0; i < imax; i++)
+        {
+          std::cout << "i = " << i << std::endl;
+          CEvent * pEvent = mpModel->getEvents()[i];
+
+          Attributes.setValue(0, pEvent->getKey());
+          Attributes.setValue(1, pEvent->getObjectName());
+          //          Attributes.setValue(2, pEvent->getDelay());
+          //          std::cout << pEvent->getKey() << " - " << pEvent->getObjectName() << " - " << pEvent->getDelay() << std::endl;
+          /*          CModelEntity::Status SimulationType = pMV->getStatus();
+                    Attributes.setValue(2, CModelEntity::XMLStatus[SimulationType]);
+          */
+          startSaveElement("Event", Attributes);
+          /*
+                    if (pEvent->getMiriamAnnotation() != "")
+                      {
+                        startSaveElement("MiriamAnnotation");
+                        *mpOstream << pEvent->getMiriamAnnotation() << std::endl;
+                        endSaveElement("MiriamAnnotation");
+                      }
+          */
+          if (pEvent->getExpressionTrigger() != "")
+            {
+              startSaveElement("TriggerExpression");
+              saveData(pEvent->getExpressionTrigger());
+              endSaveElement("TriggerExpression");
+            }
+
+          if (pEvent->getExpressionDelay() != "")
+            {
+              startSaveElement("DelayExpression");
+              saveData(pEvent->getExpressionDelay());
+              endSaveElement("DelayExpression");
+            }
+
+          CXMLAttributeList Attr;
+          std::cout << "CCXML::saveModel - mAssigns.size() = " << pEvent->getNumAssignments() << std::endl;
+          if (pEvent->getNumAssignments())
+            //          if (pEvent->getExpressionEA() != "")
+            {
+              startSaveElement("ListOfAssignments");
+
+              unsigned C_INT32 idxAct = 0;
+              for (; idxAct < pEvent->getNumAssignments(); idxAct++)
+                {
+                  Attr.erase();
+                  Attr.add("targetkey", "");
+                  Attr.setValue(0, pEvent->getAssignmentObjectKey(idxAct));
+
+                  startSaveElement("Assignment", Attr);
+                  startSaveElement("Expression");
+                  saveData(pEvent->getAssignmentExpressionStr(idxAct));
+                  //saveData(pEvent->getExpressionEA());
+                  endSaveElement("Expression");
+                  endSaveElement("Assignment");
+                }
+
+              endSaveElement("ListOfAssignments");
+            }
+
+          endSaveElement("Event");
+          if (pEvent->getSBMLId() != "")
+            mSBMLReference[pEvent->getSBMLId()] = pEvent->getKey();
+        }
+
+      endSaveElement("ListOfEvents");
+    }
+
   startSaveElement("StateTemplate");
 
   Attributes.erase();
