@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CEvent.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2008/06/09 07:19:00 $
+//   $Date: 2008/06/09 08:18:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,7 +40,7 @@ CEvent::CEvent(const std::string & name,
     mpExpressionTrigger(NULL),
     mpExpressionDelay(NULL),
     mpExpressionEA(NULL) /*,
-        mpModel(NULL)*/
+            mpModel(NULL)*/
 {
   std::cout << "CE::CE" << std::endl;
   CONSTRUCTOR_TRACE;
@@ -420,7 +420,7 @@ unsigned C_INT32 CEvent::getAssignmentIndex(const std::string & key)
         }
     }
 
-  return - 1;
+  return (unsigned C_INT32) - 1;
 }
 
 const std::string CEvent::getAssignmentObjectKey(unsigned C_INT32 i) const
