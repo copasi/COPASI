@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventsWidget.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2008/06/06 11:57:42 $
+//   $Date: 2008/06/09 08:10:56 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -94,11 +94,11 @@ void CQEventsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_IN
       QString sObjectIndex = sKeyDisplay[1];
 
       if (sObjectName == "Compartment")
-        assignmentTarget += CCopasiDataModel::Global->getModel()->getCompartments()[sObjectIndex.toULong()]->getObjectDisplayName() + ".Volume";
+        assignmentTarget += FROM_UTF8(CCopasiDataModel::Global->getModel()->getCompartments()[sObjectIndex.toULong()]->getObjectDisplayName() + ".Volume");
       else if (sObjectName == "Metabolite")
-        assignmentTarget += "[" + CCopasiDataModel::Global->getModel()->getMetabolites()[sObjectIndex.toULong()]->getObjectDisplayName() + "]";
+        assignmentTarget += FROM_UTF8("[" + CCopasiDataModel::Global->getModel()->getMetabolites()[sObjectIndex.toULong()]->getObjectDisplayName() + "]");
       else if (sObjectName == "ModelValue")
-        assignmentTarget += CCopasiDataModel::Global->getModel()->getModelValues()[sObjectIndex.toULong()]->getObjectDisplayName();
+        assignmentTarget += FROM_UTF8(CCopasiDataModel::Global->getModel()->getModelValues()[sObjectIndex.toULong()]->getObjectDisplayName());
       else
         {
           std::cout << "sObjectName = " << sObjectName << std::endl;
@@ -311,7 +311,7 @@ void CQEventsWidget::deleteObjects(const std::vector<std::string> & keys)
 
     switch (choice)
       {
-      case 0:                                          // Yes or Enter
+      case 0:                                         // Yes or Enter
         {
           for (i = 0; i < imax; i++)
             {
@@ -324,7 +324,7 @@ void CQEventsWidget::deleteObjects(const std::vector<std::string> & keys)
           mChanged = true;
           break;
         }
-      default:                                          // No or Escape
+      default:                                         // No or Escape
         break;
       }
   */
