@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CConstants.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/03 13:20:02 $
+//   $Date: 2008/06/10 20:31:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,7 +14,7 @@
 #include "copasi.h"
 
 #include "CConstants.h"
-#include "CRDFNode.h"
+#include "CRDFGraph.h"
 
 // static
 CMIRIAMResource::sResource CMIRIAMResource::Resources[] =
@@ -519,11 +519,6 @@ void CMIRIAMResource::createURIMap()
       while (*pDeprecated != "")
         URI2Resource[*pDeprecated++] = Index;
     }
-
-  std::map< std::string , unsigned C_INT32 >::const_iterator it = URI2Resource.begin();
-  std::map< std::string , unsigned C_INT32 >::const_iterator end = URI2Resource.end();
-  for (; it != end; ++it)
-    std::cout << it->first << std::endl;
 }
 
 // static

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CRDFListView.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/29 15:01:35 $
+//   $Date: 2008/06/10 20:31:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,6 +19,7 @@
 #include <qlistview.h>
 
 class CRDFNode;
+class CRDFListViewItem;
 
 class CRDFListView : public QListView
   {
@@ -38,25 +39,32 @@ class CRDFListView : public QListView
      */
     virtual ~CRDFListView();
 
+  public slots:
     /**
-     * Clear the set of visited nodes
+     * Clear the listeview
      */
-    void clearVisitedNodes();
+    virtual void clear();
 
     /**
-     * Checks wether a node has already been visited. If not
-     * the node is added to the set of visited nodes.
-     * @param const CRDFNode * pNode
-     * @return bool visited
+     * Returns the list view item for node if it exists otherwise NULL.
+     * @param const CRDFNode * pSubject
+     * @return CRDFListViewItem * listViewItem
      */
-    bool visited(const CRDFNode * pNode);
+    CRDFListViewItem * find(const CRDFNode * pNode);
+
+    /**
+     * Insert a map from a CRDFNode to a CRDFListView
+     * @param const CRDFNode * pSubject
+     * @param CRDFListViewItem * pItem
+     */
+    void insert(const CRDFNode * pNode, CRDFListViewItem * pItem);
 
     // Attributes
   private:
     /**
-     * A set of visited nodes to prevent infinite recursion in cyclic graphs
+     * A map to look up items associated with a node.
      */
-    std::set< const CRDFNode * > mVisitedNodes;
+    std::map< const CRDFNode *, CRDFListViewItem * > mNode2Item;
   };
 
 #endif // COPASI_CRDFListView

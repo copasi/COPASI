@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFPredicate.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/05 16:43:13 $
+//   $Date: 2008/06/10 20:31:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -480,7 +480,6 @@ void CRDFPredicate::createAllowedLocationsAbsolute(const CRDFPredicate::ePredica
           Absolute.Location.push_back(predicate);
           AbsoluteList.push_back(Absolute);
 
-          std::cout << Absolute << std::endl;
           continue;
         }
 
@@ -510,8 +509,6 @@ void CRDFPredicate::createAllowedLocationsAbsolute(const CRDFPredicate::ePredica
           // Add the predicate itself.
           Absolute.Location.push_back(predicate);
           AbsoluteList.push_back(Absolute);
-
-          std::cout << Absolute << std::endl;
         }
     }
 }
@@ -556,6 +553,9 @@ CRDFPredicate::CRDFPredicate(const std::string & uri):
 {
   initialize();
   mType = CRDFPredicate::getPredicateFromURI(mURI);
+
+  if (mType == rdf_li)
+    mURI = CRDFPredicate::PredicateURI[mType];
 }
 
 CRDFPredicate::CRDFPredicate(const CRDFPredicate & src):
@@ -574,12 +574,16 @@ CRDFPredicate::operator ePredicateType() const
 
 void CRDFPredicate::setURI(const std::string & uri)
 {
-  mURI = uri;
   mType = getPredicateFromURI(uri);
+
+  if (mType == rdf_li)
+    mURI = CRDFPredicate::PredicateURI[mType];
+  else
+    mURI = uri;
 }
 
 const std::string & CRDFPredicate::getURI() const
-  {return mURI;}
+{return mURI;}
 
 bool CRDFPredicate::operator == (const CRDFPredicate & rhs) const
   {return mURI == rhs.mURI;}
@@ -634,9 +638,6 @@ CRDFPredicate::ePredicateType CRDFPredicate::getPredicateFromDisplayName(const s
 unsigned int CRDFPredicate::getSubPathIndex(const CRDFPredicate::Path & fullPath,
     const CRDFPredicate::Path & currentPath)
 {
-  std::cout << "Full Path:    " << fullPath;
-  std::cout << "Current Path: " << currentPath;
-
   // If the current path is longer than the full path we fail
   if (currentPath.size() > fullPath.size())
     return C_INVALID_INDEX;

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraphConverter.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/05 16:58:19 $
+//   $Date: 2008/06/10 20:31:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 #include "CRDFGraphConverter.h"
 #include "CRDFParser.h"
 #include "CRDFWriter.h"
-#include "CRDFNode.h"
+#include "CRDFGraph.h"
 
 // static
 CRDFGraphConverter::sChange CRDFGraphConverter::SBML2CopasiChanges[] =
@@ -121,14 +121,18 @@ bool CRDFGraphConverter::SBML2Copasi(std::string & XML)
 
   // Serialize the graph
   pGraph->clean();
+  pGraph->removeUnusedNamespaces();
+
   XML = CRDFWriter::xmlFromGraph(pGraph);
 
+  std::cout << XML << std::endl;
   return success;
 }
 
 // static
 bool CRDFGraphConverter::convert(CRDFGraph * pGraph, const CRDFGraphConverter::sChange * changes)
 {
+  std::cout << std::endl << "Beginning Conversion: " << std::endl;
   bool success = true;
 
   std::set< CRDFTriplet> Triplets;
@@ -140,23 +144,31 @@ bool CRDFGraphConverter::convert(CRDFGraph * pGraph, const CRDFGraphConverter::s
   // We iterate over each predicate which needs to be changed.
   for (; pChange->Source != CRDFPredicate::end; ++pChange)
     {
-      Triplets = pGraph->getTripletsWithPredicate(pChange->Source);
-      it = Triplets.begin();
-      end = Triplets.end();
+      std::set< CRDFTriplet > Failed;
 
-      // Apply the needed changes
-      for (; it != end; ++it)
+      // Create the new path
+      CRDFPredicate::Path NewPath;
+      const CRDFPredicate::ePredicateType * pNewPath = pChange->Target;
+      while (*pNewPath != CRDFPredicate::end)
+        NewPath.push_back(*pNewPath++);
+
+      // Each change may break the triplets, i.e. we need to refresh every time
+      while ((Triplets = pGraph->getTriplets(pChange->Source)).size() > Failed.size())
         {
-          CRDFPredicate::Path NewPath;
-          const CRDFPredicate::ePredicateType * pNewPath = pChange->Target;
-          while (*pNewPath != CRDFPredicate::end)
-            NewPath.push_back(*pNewPath++);
+          // Skip all failed triplets
+          for (it = Triplets.begin(), end = Triplets.end(); it != end; ++it)
+            if (Failed.find(*it) == Failed.end())
+              break;
 
-          success &= convert(pGraph, *it, NewPath);
+          if (!convert(pGraph, *it, NewPath))
+            {
+              Failed.insert(*it);
+              success = false;
+            }
         }
     }
 
-  return false;
+  return success;
 }
 
 // static
@@ -164,6 +176,8 @@ bool CRDFGraphConverter::convert(CRDFGraph * pGraph,
                                  const CRDFTriplet & triplet,
                                  const CRDFPredicate::Path & newPath)
 {
+  std::cout << "Converting Triplet: " << triplet;
+
   CRDFPredicate::Path CurrentPath = triplet.pObject->getPath();
 
   unsigned SubPathIndex = C_INVALID_INDEX;
@@ -203,18 +217,16 @@ bool CRDFGraphConverter::convert(CRDFGraph * pGraph,
         return false;
 
       // We are now sure that the new predicate points to a blank node.
-      CRDFObject object;
-      object.setType(CRDFObject::BLANK_NODE);
-      object.setBlankNodeId(pGraph->generatedBlankNodeId());
+      CRDFObject Object;
+      Object.setType(CRDFObject::BLANK_NODE);
+      Object.setBlankNodeId(pGraph->generatedBlankNodeId());
 
       Triplet = pGraph->addTriplet(triplet.pSubject->getSubject(),
                                    CRDFPredicate::getURI(newPath[SubPathIndex]),
-                                   object);
+                                   Object);
 
       if (Triplet)
-        Triplet = pGraph->moveEdge(triplet.pSubject,
-                                   Triplet.pObject,
-                                   CRDFEdge(triplet.Predicate, triplet.pObject));
+        Triplet = pGraph->moveTriplet(Triplet.pObject, triplet);
     }
   else if (CurrentPath.size() > newPath.size())
     {
@@ -224,8 +236,8 @@ bool CRDFGraphConverter::convert(CRDFGraph * pGraph,
   else
     {
       // We just have to rename the predicate
-      success &= triplet.pSubject->addEdgeInternal(CRDFEdge(newPath[SubPathIndex], triplet.pObject));
-      success &= triplet.pSubject->removeEdgeInternal(CRDFEdge(CurrentPath[SubPathIndex], triplet.pObject));
+      success &= triplet.pSubject->addEdge(newPath[SubPathIndex], triplet.pObject);
+      triplet.pSubject->removeEdge(CurrentPath[SubPathIndex], triplet.pObject);
 
       if (success)
         {

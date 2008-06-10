@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraph.h,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/05 15:34:56 $
+//   $Date: 2008/06/10 20:31:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,34 +23,26 @@
 #include <set>
 
 #include "copasi/MIRIAM/CRDFTriplet.h"
+#include "copasi/MIRIAM/CRDFNode.h"
 
-class CRDFNode;
 class CRDFObject;
 class CRDFSubject;
-class CRDFEdge;
 
 class CRDFGraph
   {
   public:
-#ifdef XXXX
-    class CTriplet
-      {
-      public:
-        CRDFNode * pSubject;
-        CRDFPredicate::ePredicateType Predicate;
-        CRDFNode * pObject;
+    typedef std::set< CRDFTriplet >::iterator iterator;
+    typedef std::set< CRDFTriplet >::const_iterator const_iterator;
 
-        CTriplet(CRDFNode * pSubject = NULL,
-                 const CRDFPredicate::ePredicateType & predicate = CRDFPredicate::end,
-                 CRDFNode * pObject = NULL);
+    typedef std::multimap< CRDFNode *, CRDFTriplet > Node2Triplet;
+    typedef std::pair< Node2Triplet::iterator, Node2Triplet::iterator> Node2TripletRange;
+    typedef std::pair< Node2Triplet::const_iterator, Node2Triplet::const_iterator> Node2TripletConstRange;
 
-        bool operator < (const CTriplet & rhs) const;
-        bool operator ! () const;
-      };
-#endif // XXXX
+    typedef std::multimap< CRDFPredicate, CRDFTriplet > Predicate2Triplet;
+    typedef std::pair< Predicate2Triplet::iterator, Predicate2Triplet::iterator> Predicate2TripletRange;
+    typedef std::pair< Predicate2Triplet::const_iterator, Predicate2Triplet::const_iterator> Predicate2TripletConstRange;
 
     // Operations
-  public:
     /**
      * Default Constructor
      */
@@ -86,7 +78,7 @@ class CRDFGraph
     const std::map< std::string, CRDFNode * > & getLocalResourceNodeMap() const;
 
     /**
-     * Retreive the vector of remote resource nodes
+     * Retrieve the vector of remote resource nodes
      * @return const std::vector< CRDFNode * > & remoteResourceNodes
      */
     const std::vector< CRDFNode * > & getRemoteResourceNodes() const;
@@ -110,80 +102,111 @@ class CRDFGraph
     /**
      * Add a triplet to the graph
      * @param const CRDFSubject & subject
-     * @param const std::string & predicate
+     * @param const CRDFPredicate & predicate
      * @param const CRDFObject & object
-     * @return CTriplet triplet
+     * @return CRDFTriplet triplet
      */
     CRDFTriplet addTriplet(const CRDFSubject & subject,
-                           const std::string & predicate,
+                           const CRDFPredicate & predicate,
                            const CRDFObject & object);
 
+  private:
+    /**
+     * Add a triplet to the graph. This method should only be used by CRDFNode
+     * @param const CRDFTriplet & triplet
+     * @return bool success
+     */
+    bool addTriplet(const CRDFTriplet & triplet);
+    friend bool CRDFNode::addTripletToGraph(const CRDFTriplet & triplet) const;
+
+  public:
     /**
      * Remove triplet from the graph. Please note, this will also remove all unreferenced
      * local resources created by removing the edge.
-     * @param bCRDFNode * pSubject
-     * @param const std::string & predicate
-     * @param const CRDFNode * pObject
-     * @return bool success
+     * @param CRDFNode * pSubject
+     * @param const CRDFPredicate & predicate
+     * @param CRDFNode * pObject
      */
-    bool removeTriplet(CRDFNode * pSubject,
-                       const std::string & predicate,
-                       const CRDFNode * pObject);
+    void removeTriplet(CRDFNode * pSubject,
+                       const CRDFPredicate & predicate,
+                       CRDFNode * pObject);
 
     /**
      * Destroy a CRDFNode
      * @param CRDFNode * pNode
      */
-    void destroyNode(CRDFNode * pNode);
+    void destroyUnreferencedNode(CRDFNode * pNode);
 
   private:
     /**
-     * Remove triplet from the graph. Please note, this will also remove all unreferenced
+     * Remove triplet from the graph. This method should only be used by CRDFNode
+     * Please note, this will also remove all unreferenced
      * local resources created by removing the edge.
-     * @param CRDFNode * pNode
-     * @param const CRDFEdge & Edge
+     * @param const CRDFTriplet & triplet
      * @return bool success
      */
-    bool removeTriplet(CRDFNode * pNode, const CRDFEdge & Edge);
+    void removeTriplet(const CRDFTriplet & triplet);
+    friend void CRDFNode::removeTripletFromGraph(const CRDFTriplet & triplet) const;
 
   public:
     /**
      * Move a edge from one node to another
-     * @param CRDFNode * pFrom
-     * @param CRDFNode * pTo
-     * @param const CRDFEdge & Edge
-     * @return CRDFGraph::CTriplet triplet
+     * @param CRDFNode * pNewSubject
+     * @param CRDFNode * const CRDFTriplet & triplet
+     * @return CRDFGraph::CRDFTriplet triplet
      */
-    CRDFTriplet moveEdge(CRDFNode * pFrom, CRDFNode * pTo, const CRDFEdge & Edge);
+    CRDFTriplet moveTriplet(CRDFNode * pNewSubject, const CRDFTriplet & triplet);
 
     /**
-     * Retreive all triplets with the specified predicate
-     * @param const CRDFPredicate::ePredicateType & predicate
-     * @return std::set< CTriplet > triplets
+     * Retrieve all triplets.
+     * @return const std::set< CRDFTriplet > & triplets
      */
-    std::set< CRDFTriplet > getTripletsWithPredicate(const CRDFPredicate::ePredicateType & predicate) const;
+    const std::set< CRDFTriplet > & getTriplets() const;
 
-  public:
     /**
-     * Retreive the predicate path to the ginve node.
+     * Retrieve all triplets with the specified predicate, this will collapse
+     * predicate.rdf:li to predicate.
+     * @param const CRDFPredicate & predicate
+     * @return std::set< CRDFTriplet > triplets
+     */
+    std::set< CRDFTriplet > getTriplets(const CRDFPredicate & predicate) const;
+
+    /**
+     * Retrieve all triplets with the specified subject
+     * @param const CRDFNode * pSubject
+     * @return std::set< CRDFTriplet > triplets
+     */
+    std::set< CRDFTriplet > getTriplets(const CRDFNode * pSubject) const;
+
+    /**
+     * Retrieve all triplets with the specified subject and predicate
+     * @param const CRDFNode * pSubject
+     * @param const CRDFPredicate & predicate
+     * @return std::set< CRDFTriplet > triplets
+     */
+    std::set< CRDFTriplet > getTriplets(const CRDFNode * pSubject,
+                                        const CRDFPredicate & predicate) const;
+
+    /**
+     * Retrieve all triples pointing to the object
+     * @param const CRDFNode * pObject
+     * @return std::set< CRDFTriplet > triplets
+     */
+    std::set< CRDFTriplet > getIncomingTriplets(const CRDFNode * pObject) const;
+
+    /**
+     * Retrieve all parent subjects of the object
+     * @param const CRDFNode * pObject
+     * @return std::set< const CRDFNode * > nodes
+     */
+    std::set< const CRDFNode * > getParentSubjects(const CRDFNode * pObject) const;
+
+    /**
+     * Retrieve the predicate path to the ginve node.
      * @param const CRDFNode * pNode
      * @return CRDFPredicate::Path
      */
     CRDFPredicate::Path getPredicatePath(const CRDFNode * pNode);
-
-  private:
-    /**
-     * Retreive the predicate path to the ginve node. The set visited should be empty on the initial call.
-     * @param const CRDFNode * pNode
-     * @param const CRDFNode * pCurrent
-     * @param CRDFPredicate::Path & path
-     * @param std::set< const CRDFNode * > & visited
-     * @return bool found;
-     */
-    bool getPredicatePath(const CRDFNode * pNode,
-                          const CRDFNode * pCurrent,
-                          CRDFPredicate::Path & path,
-                          std::set< const CRDFNode * > & visited);
 
   public:
     /**
@@ -201,10 +224,15 @@ class CRDFGraph
     CRDFNode * createAboutNode(const std::string & key);
 
     /**
-     * Removes empty blank nodes and unused name space declarations.
+     * Removes empty blank nodes .
      * This should be called before CRDFWriter::xmlFromGraph
      */
     void clean();
+
+    /**
+     *  Removes all unused name spaces.
+     */
+    void removeUnusedNamespaces();
 
   private:
     /**
@@ -212,18 +240,6 @@ class CRDFGraph
      * @return bool haveRemoved
      */
     bool removeEmptyNodes();
-
-    /**
-     *  Removes all unused name spaces.
-     */
-    void removeUnusedNamespaces();
-
-    /**
-     * Recursively finds all used namespaces.
-     */
-    void findUsedNamespaces(const CRDFNode * pCurrent,
-                            std::vector< bool > & used,
-                            std::set< const CRDFNode * > & visited);
 
     // Attributes
   private:
@@ -256,6 +272,26 @@ class CRDFGraph
      * A vector of all literal nodes of the graph
      */
     std::vector< CRDFNode * > mLiteralNodes;
+
+    /**
+     * All the triplets of the graph
+     */
+    std::set< CRDFTriplet > mTriplets;
+
+    /**
+     *
+     */
+    Node2Triplet mSubject2Triplet;
+
+    /**
+     *
+     */
+    Node2Triplet mObject2Triplet;
+
+    /**
+     *
+     */
+    Predicate2Triplet mPredicate2Triplet;
   };
 
 #endif // COPASI_CRDFGraph

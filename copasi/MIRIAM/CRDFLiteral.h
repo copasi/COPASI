@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFLiteral.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/21 16:15:07 $
+//   $Date: 2008/06/10 20:31:11 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -112,5 +117,7 @@ class CRDFLiteral
      */
     std::string mLexicalData;
   };
+
+std::ostream & operator << (std::ostream & os, const CRDFLiteral & literal);
 
 #endif // COPASI_CRDFLiteral

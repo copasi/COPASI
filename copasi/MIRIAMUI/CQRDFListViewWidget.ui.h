@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CQRDFListViewWidget.ui.h,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Creator: aekamal $
-//   $Date: 2008/06/05 15:34:09 $
+//   $Date: 2008/06/10 20:31:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,7 +17,6 @@
 #include "UI/qtUtilities.h"
 
 #include "MIRIAM/CRDFGraph.h"
-#include "MIRIAM/CRDFNode.h"
 #include "MIRIAM/CRDFParser.h"
 #include "MIRIAM/CRDFWriter.h"
 
@@ -27,10 +26,16 @@
 #include "model/CModelValue.h"
 #include "utilities/CCopasiMessage.h"
 
-#include "MIRIAM/CModelMIRIAMInfo.h"
+#include "MIRIAM/CRDFSubject.h"
+
+#define COL_SUBJECT    0
+#define COL_PREDICATE  1
+#define COL_OBJECT     2
 
 void CQRDFListViewWidget::init()
-{}
+{
+  mpGraph = NULL;
+}
 
 bool CQRDFListViewWidget::enter(const std::string & key)
 {
@@ -50,9 +55,7 @@ bool CQRDFListViewWidget::leave()
 void CQRDFListViewWidget::load()
 {
   mpListView->clear();
-  mpListView->clearVisitedNodes();
-
-  CRDFGraph * pGraph = NULL;
+  pdelete(mpGraph);
 
   CCopasiObject *pObject = dynamic_cast< CCopasiObject * >(GlobalKeys.get(mKey));
 
@@ -71,7 +74,7 @@ void CQRDFListViewWidget::load()
         pMiriamAnnotation = &pFunction->getMiriamAnnotation();
 
       if (pMiriamAnnotation && *pMiriamAnnotation != "")
-        pGraph = CRDFParser::graphFromXml(*pMiriamAnnotation);
+        mpGraph = CRDFParser::graphFromXml(*pMiriamAnnotation);
     }
 
   CCopasiMessage::clearDeque();
@@ -83,43 +86,80 @@ void CQRDFListViewWidget::load()
                             QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
     }
 
-  if (pGraph == NULL)
-    pGraph = new CRDFGraph;
+  if (mpGraph == NULL)
+    mpGraph = new CRDFGraph;
 
   // We make sure that we always have an about node.
-  pGraph->createAboutNode(mKey);
+  mpGraph->createAboutNode(mKey);
 
-  std::map< std::string, CRDFNode * >::const_iterator itMap = pGraph->getLocalResourceNodeMap().begin();
-  std::map< std::string, CRDFNode * >::const_iterator endMap = pGraph->getLocalResourceNodeMap().end();
-
-  const CRDFNode * pNode;
-  for (;itMap != endMap; ++itMap)
+  // We iterate of all triplets
+  std::set< CRDFTriplet >::const_iterator it = mpGraph->getTriplets().begin();
+  std::set< CRDFTriplet >::const_iterator end = mpGraph->getTriplets().end();
+  for (; it != end; ++it)
     {
-      pNode = itMap->second;
-      if (pNode && pNode->isSubjectNode() && !pNode->isObjectNode())
+      CRDFListViewItem * pSubjectItem = mpListView->find(it->pSubject);
+      if (pSubjectItem == NULL)
         {
-          CRDFListViewItem * pItem = new CRDFListViewItem(mpListView, NULL);
-          pItem->setNode(pNode);
-        }
-    }
+          pSubjectItem = new CRDFListViewItem(mpListView, NULL);
+          mpListView->insert(it->pSubject, pSubjectItem);
+          // Display the subject information
 
-  //pdelete(pGraph);
+          const CRDFSubject & Subject = it->pSubject->getSubject();
+          switch (Subject.getType())
+            {
+            case CRDFSubject::RESOURCE:
+              pSubjectItem->setText(COL_SUBJECT, FROM_UTF8(Subject.getResource()));
+              break;
+
+            case CRDFSubject::BLANK_NODE:
+              pSubjectItem->setText(COL_SUBJECT, FROM_UTF8(Subject.getBlankNodeID()));
+              break;
+            }
+        }
+
+      CRDFListViewItem * pObjectItem = mpListView->find(it->pObject);
+      if (pObjectItem == NULL)
+        {
+          pObjectItem = new CRDFListViewItem(pSubjectItem, NULL);
+          mpListView->insert(it->pObject, pObjectItem);
+        }
+      else
+        {
+          QListViewItem * pParent = pObjectItem->parent();
+
+          if (pParent == NULL)
+            {
+              mpListView->takeItem(pObjectItem);
+              pSubjectItem->insertItem(pObjectItem);
+            }
+          else
+            {
+              pParent->takeItem(pObjectItem);
+              pSubjectItem->insertItem(pObjectItem);
+            }
+        }
+
+      pObjectItem->setTriplet(*it);
+    }
 }
 
 void CQRDFListViewWidget::save()
 {
-  qWarning("CQRDFListViewWidget::save(): Not implemented yet");
+  pdelete(mpGraph);
 }
 
 void CQRDFListViewWidget::destroy()
 {}
 
-bool CQRDFListViewWidget::update(ListViews::ObjectType, ListViews::Action, const std::string&)
+bool CQRDFListViewWidget::update(ListViews::ObjectType objectType, ListViews::Action, const std::string & key)
 {
-  load();
-  //qWarning("CQRDFListViewWidget::update(ListViews::ObjectType,ListViews::Action,const std::string&): Not implemented yet");
-  return FALSE;
-}
+  if (objectType != ListViews::MIRIAM)
+    return true;
 
-void CQRDFListViewWidget::setMIRIAMInfo(CMIRIAMInfo* pMIRIAMInfo)
-{mpMIRIAMInfo = pMIRIAMInfo;}
+  if (key != mKey)
+    return true;
+
+  load();
+
+  return true;
+}

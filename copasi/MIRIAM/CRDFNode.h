@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFNode.h,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/05 15:34:56 $
+//   $Date: 2008/06/10 20:31:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,27 +23,23 @@
 #include <vector>
 #include <set>
 
-#include "copasi/MIRIAM/CRDFEdge.h"
-#include "copasi/MIRIAM/CRDFGraph.h"
-
+class CRDFGraph;
 class CRDFSubject;
 class CRDFObject;
 class CMIRIAMResource;
 
 class CRDFNode
   {
-  public:
-    typedef std::multimap< CRDFPredicate::ePredicateType, CRDFEdge > multimap;
-    typedef std::multimap< CRDFPredicate::ePredicateType, CRDFEdge >::iterator iterator;
-    typedef std::multimap< CRDFPredicate::ePredicateType, CRDFEdge >::const_iterator const_iterator;
-    typedef std::multimap< CRDFPredicate::ePredicateType, CRDFEdge >::value_type value_type;
-
     // Operations
   private:
     /**
      * Default Constructor
      */
     CRDFNode();
+
+    CRDFNode(const CRDFNode & CRDFNode);
+
+    CRDFNode & operator = (const CRDFNode & rhs);
 
   public:
     /**
@@ -147,48 +143,40 @@ class CRDFNode
 
     /**
      * Add a property edge to the node.
-     * @param const CRDFEdge & edge
-     * @return bool success
+     * @param const CRDFPredicate & edge
+     * @param CRDFNode * pObject
+     * @return CRDFTriplet triplet
      */
-    bool addEdgeInternal(const CRDFEdge & edge);
+    CRDFTriplet addEdge(const CRDFPredicate & predicate, CRDFNode * pObject);
+
+    /**
+     * This method is for internal use only.
+     * The method is declared public since friend declarations may not refer to public methods.
+     * @param const CRDFTriplet & triplet
+     * @return bool success.
+     */
+    bool addTripletToGraph(const CRDFTriplet & triplet) const;
 
     /**
      * Remove a property edge from the node.
-     * @param const CRDFEdge & edge
-     * @return std::string success
+     * @param const CRDFPredicate & edge
+     * @param CRDFNode * pObject
+     * @return bool success
      */
-    bool removeEdgeInternal(const CRDFEdge & edge);
+    void removeEdge(const CRDFPredicate & predicate, CRDFNode * pObject);
 
     /**
-     * Retrieve the property edges of the node
-     * @return const CRDFNode::multimap & edges
+     * This method is for internal use only.
+     * The method is declared public since friend declarations may not refer to public methods.
+     * @param const CRDFTriplet & triplet
      */
-    const multimap & getEdges() const;
+    void removeTripletFromGraph(const CRDFTriplet & triplet) const;
 
     /**
-     * Retreive all object nodes with the given predicate
-     * @param const CRDFPredicate::ePredicateType & predicate
-     * @return std::pair<CRDFNode::iterator, CRDFNode::iterator> edges
+     *
+     *
      */
-    std::pair< iterator, iterator > getEdgesWithPredicate(const CRDFPredicate::ePredicateType & predicate);
-
-    /**
-     * Retreive all object nodes with the given predicate
-     * @param const CRDFPredicate::ePredicateType & predicate
-     * @return std::pair<CRDFNode::const_iterator, CRDFNode::const_iterator> edges
-     */
-    std::pair< const_iterator, const_iterator > getEdgesWithPredicate(const CRDFPredicate::ePredicateType & predicate) const;
-
-    /**
-     * Retreive all supported triplets with the given predicate which are reachable from this node.
-     * @param const CRDFPredicate::ePredicateType & predicate
-     * @param const CRDFPredicate::Path & nodePath,
-     * @param const CRDFTriplet & parentTriplet
-     * @return std::set< CRDFTriplet >
-     */
-    std::set< CRDFTriplet > getTripletsWithPredicate(const CRDFPredicate::Path & nodePath,
-        const CRDFPredicate::ePredicateType & predicate,
-        const CRDFTriplet & parentTriplet) const;
+    std::set< CRDFTriplet > getDescendantsWithPredicate(const CRDFPredicate & predicate) const;
 
     /**
      * Check whether this is a subject node
@@ -220,9 +208,17 @@ class CRDFNode
      */
     bool isReadOnly() const;
 
+    /**
+     * Check whether the given node is in the path, i.e., has the given node
+     * as an ancestor
+     * @param const CRDFNode * pNode
+     * @return bool hasAncestor
+     */
+    bool hasAncestor(const CRDFNode * pNode) const;
+
   private:
     void getTripletsWithPredicate(const CRDFPredicate::Path & predicatePath,
-                                  unsigned C_INT32 level,
+                                  unsigned int level,
                                   std::set< CRDFTriplet > & triplets,
                                   std::set< const CRDFNode * > visited,
                                   const CRDFNode * pParent) const;
@@ -233,14 +229,9 @@ class CRDFNode
                                       const CRDFTriplet & parentTriplet);
 
     CRDFNode * createMissingAncestors(const CRDFPredicate::Path & predicatePath,
-                                      const unsigned C_INT32 & level,
+                                      const unsigned int & level,
                                       const CRDFPredicate::Path & nodePath,
                                       const CRDFTriplet & parentTriplet);
-
-    bool removeEmptyAncestors(const CRDFPredicate::Path & predicatePath,
-                              const unsigned C_INT32 & level,
-                              const CRDFPredicate::Path & nodePath,
-                              const CRDFTriplet & parentTriplet);
 
     // Attributes
   private:
@@ -263,11 +254,6 @@ class CRDFNode
      * A pointer to the object if of type OBJECT or BOTH
      */
     mutable CRDFObject * mpObject;
-
-    /**
-     * A map between the predicates and property nodes
-     */
-    multimap mEdges;
 
     /**
      * Stores whether this is a blank node

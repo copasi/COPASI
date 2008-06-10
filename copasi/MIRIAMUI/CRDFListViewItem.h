@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CRDFListViewItem.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/29 20:16:42 $
+//   $Date: 2008/06/10 20:31:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,6 +15,8 @@
 #define COPASI_CRDFListViewItem
 
 #include <qlistview.h>
+
+#include "copasi/MIRIAM/CRDFTriplet.h"
 
 class CRDFListView;
 class CRDFNode;
@@ -44,22 +46,17 @@ class CRDFListViewItem: public QListViewItem
     virtual ~CRDFListViewItem();
 
     /**
-     * Set the RDF node represented by this item
-     * @param const CRDFNode * pNode
+     * Set the RDF triplet represented by this item
+     * @param const CRDFTriplet & triplet
      */
-    void setNode(const CRDFNode * pNode);
+    void setTriplet(const CRDFTriplet & triplet);
 
     // Attributes
   private:
     /**
-     * The node presented by this item
+     * The triplet represneted by this item.
      */
-    CRDFNode * mpNode;
-
-    /**
-     * The edge connecting this item to its parent
-     */
-    CRDFEdge * mpEdge;
+    CRDFTriplet mTriplet;
   };
 
 #endif // COPASI_CRDFListViewItem

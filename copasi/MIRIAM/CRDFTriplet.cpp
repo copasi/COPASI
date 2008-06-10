@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFTriplet.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/05 15:34:56 $
+//   $Date: 2008/06/10 20:31:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -11,7 +11,8 @@
 // and The University of Manchester.
 // All rights reserved.
 
-#include "CRDFTriplet.h"
+#include "CRDFGraph.h"
+#include "CRDFSubject.h"
 
 CRDFTriplet::CRDFTriplet(CRDFNode * pSubject,
                          const CRDFPredicate & predicate,
@@ -44,3 +45,17 @@ bool CRDFTriplet::operator < (const CRDFTriplet & rhs) const
 
     return pObject < rhs.pObject;
   }
+
+std::ostream & operator << (std::ostream & os, const CRDFTriplet & triplet)
+{
+  if (triplet)
+    {
+      os << triplet.pSubject->getSubject() << ", ";
+      os << triplet.Predicate << ", ";
+      os << triplet.pObject->getObject() << std::endl;
+    }
+  else
+    os << "Invalid Triplet" << std::endl;
+
+  return os;
+}

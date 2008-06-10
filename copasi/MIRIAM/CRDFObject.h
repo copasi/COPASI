@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFObject.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/03 13:20:02 $
+//   $Date: 2008/06/10 20:31:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -148,5 +148,7 @@ class CRDFObject
      */
     mutable CRDFLiteral * mpLiteral;
   };
+
+std::ostream & operator << (std::ostream & os, const CRDFObject & object);
 
 #endif // COPASI_CRDFObject

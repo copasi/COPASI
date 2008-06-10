@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CCreator.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/05 15:34:56 $
+//   $Date: 2008/06/10 20:31:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,7 +17,7 @@
 
 #include "copasi.h"
 
-#include "CRDFNode.h"
+#include "CRDFGraph.h"
 #include "CCreator.h"
 #include "CRDFLiteral.h"
 #include "CModelMIRIAMInfo.h"

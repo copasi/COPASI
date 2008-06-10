@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CModelMIRIAMInfo.cpp,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/05 15:34:56 $
+//   $Date: 2008/06/10 20:31:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,7 +28,7 @@
 #include "CConstants.h"
 #include "CRDFObject.h"
 #include "CRDFPredicate.h"
-#include "CRDFNode.h"
+#include "CRDFGraph.h"
 
 #include "model/CModelValue.h"
 #include "model/CReaction.h"
@@ -94,10 +94,9 @@ bool CMIRIAMInfo::removeCreator(const std::string & key)
 
   const CRDFTriplet & Triplet = pCreator->getTriplet();
 
-  if (!mpRDFGraph->removeTriplet(Triplet.pSubject,
-                                 CRDFPredicate::getURI(Triplet.Predicate),
-                                 Triplet.pObject))
-    return false;
+  mpRDFGraph->removeTriplet(Triplet.pSubject,
+                            CRDFPredicate::getURI(Triplet.Predicate),
+                            Triplet.pObject);
 
   return mCreators.remove(pCreator);
 }
@@ -122,7 +121,7 @@ void CMIRIAMInfo::loadCreators()
   for (; *pPredicate != CRDFPredicate::end; ++pPredicate)
     {
       Triples =
-        mTriplet.pObject->getTripletsWithPredicate(Path, *pPredicate, mTriplet);
+        mTriplet.pObject->getDescendantsWithPredicate(*pPredicate);
       it = Triples.begin();
       end = Triples.end();
 
@@ -173,10 +172,9 @@ bool CMIRIAMInfo::removeReference(const std::string & key)
 
   const CRDFTriplet & Triplet = pReference->getTriplet();
 
-  if (!mpRDFGraph->removeTriplet(Triplet.pSubject,
-                                 CRDFPredicate::getURI(Triplet.Predicate),
-                                 Triplet.pObject))
-    return false;
+  mpRDFGraph->removeTriplet(Triplet.pSubject,
+                            CRDFPredicate::getURI(Triplet.Predicate),
+                            Triplet.pObject);
 
   return mReferences.remove(pReference);
 }
@@ -201,8 +199,7 @@ void CMIRIAMInfo::loadReferences()
   std::set< CRDFTriplet >::iterator end;
   for (; *pPredicate != CRDFPredicate::end; ++pPredicate)
     {
-      Triples =
-        mTriplet.pObject->getTripletsWithPredicate(Path, *pPredicate, mTriplet);
+      Triples = mTriplet.pObject->getDescendantsWithPredicate(*pPredicate);
       it = Triples.begin();
       end = Triples.end();
 
@@ -285,10 +282,9 @@ bool CMIRIAMInfo::removeModification(const std::string & key)
 
   const CRDFTriplet & Triplet = pModified->getTriplet();
 
-  if (!mpRDFGraph->removeTriplet(Triplet.pSubject,
-                                 CRDFPredicate::getURI(Triplet.Predicate),
-                                 Triplet.pObject))
-    return false;
+  mpRDFGraph->removeTriplet(Triplet.pSubject,
+                            CRDFPredicate::getURI(Triplet.Predicate),
+                            Triplet.pObject);
 
   return mModifications.remove(pModified);
 }
@@ -298,7 +294,7 @@ void CMIRIAMInfo::loadModifications()
   mModifications.cleanup();
 
   std::set< CRDFTriplet > Triples =
-    mTriplet.pObject->getTripletsWithPredicate(mTriplet.pObject->getPath(), CRDFPredicate::dcterms_modified, mTriplet);
+    mTriplet.pObject->getDescendantsWithPredicate(CRDFPredicate::dcterms_modified);
   std::set< CRDFTriplet >::iterator it = Triples.begin();
   std::set< CRDFTriplet >::iterator end = Triples.end();
 
@@ -318,7 +314,7 @@ CBiologicalDescription* CMIRIAMInfo::createBiologicalDescription()
   Object.setType(CRDFObject::RESOURCE);
   Object.setResource("", false);
 
-  CRDFTriplet Triplet = mpRDFGraph->addTriplet(Subject, "---", Object);
+  CRDFTriplet Triplet = mpRDFGraph->addTriplet(Subject, std::string("---"), Object);
 
   if (!Triplet)
     return NULL;
@@ -345,10 +341,9 @@ bool CMIRIAMInfo::removeBiologicalDescription(const std::string & key)
 
   const CRDFTriplet & Triplet = pBiologicalDescription->getTriplet();
 
-  if (!mpRDFGraph->removeTriplet(Triplet.pSubject,
-                                 CRDFPredicate::getURI(Triplet.Predicate),
-                                 Triplet.pObject))
-    return false;
+  mpRDFGraph->removeTriplet(Triplet.pSubject,
+                            CRDFPredicate::getURI(Triplet.Predicate),
+                            Triplet.pObject);
 
   return mBiologicalDescriptions.remove(pBiologicalDescription);
 }
@@ -389,8 +384,7 @@ void CMIRIAMInfo::loadBiologicalDescriptions()
   std::set< CRDFTriplet >::iterator end;
   for (; *pPredicate != CRDFPredicate::end; ++pPredicate)
     {
-      Triples =
-        mTriplet.pObject->getTripletsWithPredicate(Path, *pPredicate, mTriplet);
+      Triples = mTriplet.pObject->getDescendantsWithPredicate(*pPredicate);
       it = Triples.begin();
       end = Triples.end();
 
@@ -432,7 +426,7 @@ void CMIRIAMInfo::load(const std::string& key)
   // Load the created date if set;
   CRDFPredicate::Path Path = mTriplet.pObject->getPath();
   std::set< CRDFTriplet > Triples =
-    mTriplet.pObject->getTripletsWithPredicate(Path, CRDFPredicate::dcterms_created, mTriplet);
+    mTriplet.pObject->getDescendantsWithPredicate(CRDFPredicate::dcterms_created);
   if (Triples.size() > 0)
     mCreated = *Triples.begin();
   else
@@ -453,6 +447,8 @@ bool CMIRIAMInfo::save()
   if (pCopasiObject && mpRDFGraph)
     {
       mpRDFGraph->clean();
+      mpRDFGraph->removeUnusedNamespaces();
+
       std::string XML = CRDFWriter::xmlFromGraph(mpRDFGraph);
 
       CModelEntity * pEntity = NULL;

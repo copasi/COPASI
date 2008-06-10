@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFObject.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/03 13:20:02 $
+//   $Date: 2008/06/10 20:31:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -132,4 +132,24 @@ void CRDFObject::clearData()
   mBlankNodeId = "";
   mIsLocalResource = false;
   mpLiteral = NULL;
+}
+
+std::ostream & operator << (std::ostream & os, const CRDFObject & object)
+{
+  switch (object.getType())
+    {
+    case CRDFObject::BLANK_NODE:
+      os << object.getBlankNodeID();
+      break;
+
+    case CRDFObject::RESOURCE:
+      os << object.getResource();
+      break;
+
+    case CRDFObject::LITERAL:
+      os << object.getLiteral();
+      break;
+    }
+
+  return os;
 }

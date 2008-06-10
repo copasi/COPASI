@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CRDFListViewItem.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/03 13:21:21 $
+//   $Date: 2008/06/10 20:31:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,10 +15,8 @@
 
 #include "CRDFListViewItem.h"
 #include "CRDFListView.h"
-#include "MIRIAM/CRDFNode.h"
-#include "MIRIAM/CRDFSubject.h"
+#include "MIRIAM/CRDFGraph.h"
 #include "MIRIAM/CRDFObject.h"
-#include "MIRIAM/CRDFEdge.h"
 #include "MIRIAM/CRDFLiteral.h"
 
 #define COL_SUBJECT    0
@@ -27,8 +25,7 @@
 
 CRDFListViewItem::CRDFListViewItem(CRDFListView * pParent, CRDFListViewItem * pAfter):
     QListViewItem(pParent, pAfter),
-    mpNode(NULL),
-    mpEdge(NULL)
+    mTriplet()
 {
   assert(pParent != NULL);
   setOpen(true);
@@ -36,8 +33,7 @@ CRDFListViewItem::CRDFListViewItem(CRDFListView * pParent, CRDFListViewItem * pA
 
 CRDFListViewItem::CRDFListViewItem(CRDFListViewItem * pParent, CRDFListViewItem * pAfter):
     QListViewItem(pParent, pAfter),
-    mpNode(NULL),
-    mpEdge(NULL)
+    mTriplet()
 {
   assert(pParent != NULL);
   setOpen(true);
@@ -46,58 +42,35 @@ CRDFListViewItem::CRDFListViewItem(CRDFListViewItem * pParent, CRDFListViewItem 
 CRDFListViewItem::~CRDFListViewItem()
 {}
 
-void CRDFListViewItem::setNode(const CRDFNode * pNode)
+void CRDFListViewItem::setTriplet(const CRDFTriplet & triplet)
 {
-  mpNode = const_cast< CRDFNode * >(pNode);
+  mTriplet = triplet;
 
-  if (mpNode->isSubjectNode())
+  // Set the predicate
+  setText(COL_PREDICATE, FROM_UTF8(mTriplet.Predicate.getURI()));
+
+  const CRDFObject & Object = mTriplet.pObject->getObject();
+  switch (Object.getType())
     {
-      const CRDFSubject & Subject = mpNode->getSubject();
-      switch (Subject.getType())
-        {
-        case CRDFSubject::RESOURCE:
-          setText(COL_SUBJECT, FROM_UTF8(Subject.getResource()));
-          break;
-
-        case CRDFSubject::BLANK_NODE:
-          setText(COL_SUBJECT, FROM_UTF8(Subject.getBlankNodeID()));
-          break;
-        }
-    }
-
-  // TODO We need to iterate over the edges and insert each predicate
-  CRDFNode::const_iterator it = pNode->getEdges().begin();
-  CRDFNode::const_iterator end = pNode->getEdges().end();
-
-  for (; it != end; ++it)
-    {
-      CRDFListViewItem * pItem = new CRDFListViewItem(this, NULL);
-      pItem->setText(COL_PREDICATE, FROM_UTF8(it->second.getPredicateURI()));
-
-      const CRDFObject & Object = it->second.getPropertyNode()->getObject();
-      switch (Object.getType())
-        {
-        case CRDFObject::LITERAL:
+    case CRDFObject::LITERAL:
+      {
+        const CRDFLiteral & Literal = Object.getLiteral();
+        switch (Literal.getType())
           {
-            const CRDFLiteral & Literal = Object.getLiteral();
-            switch (Literal.getType())
-              {
-              case CRDFLiteral::PLAIN:
-              case CRDFLiteral::TYPED:
-                pItem->setText(COL_OBJECT, FROM_UTF8(Literal.getLexicalData()));
-                break;
-              }
+          case CRDFLiteral::PLAIN:
+          case CRDFLiteral::TYPED:
+            setText(COL_OBJECT, FROM_UTF8(Literal.getLexicalData()));
+            break;
           }
-          break;
+      }
+      break;
 
-        case CRDFObject::RESOURCE:
-          pItem->setText(COL_OBJECT, FROM_UTF8(Object.getResource()));
-        case CRDFObject::BLANK_NODE:
-          if (!static_cast< CRDFListView * >(listView())->visited(it->second.getPropertyNode()))
-            pItem->setNode(it->second.getPropertyNode());
-          else
-            pItem->setText(COL_OBJECT, pItem->text(COL_OBJECT) + " (recursive)");
-          break;
-        }
+    case CRDFObject::RESOURCE:
+      setText(COL_OBJECT, FROM_UTF8(Object.getResource()));
+      break;
+
+    case CRDFObject::BLANK_NODE:
+      setText(COL_SUBJECT, FROM_UTF8(Object.getBlankNodeID()));
+      break;
     }
 }

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CBiologicalDescription.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/05 15:34:57 $
+//   $Date: 2008/06/10 20:31:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,7 +13,7 @@
 
 #include "copasi.h"
 
-#include "CRDFNode.h"
+#include "CRDFGraph.h"
 
 #include "CModelMIRIAMInfo.h"
 #include "CReference.h"
@@ -69,14 +69,16 @@ const std::string & CBiologicalDescription::getId() const
 
 void CBiologicalDescription::setPredicate(const std::string & predicate)
 {
-  // Remove the edge with the predicate without destroying any objects.
-  mTriplet.pSubject->removeEdgeInternal(CRDFEdge(mTriplet.Predicate, mTriplet.pObject));
-
-  // Set the new predicate
-  mTriplet.Predicate = CRDFPredicate::getPredicateFromDisplayName(predicate);
+  CRDFPredicate Predicate(CRDFPredicate::getPredicateFromDisplayName(predicate));
 
   // Add the edge with the new predicate without any object creation.
-  mTriplet.pSubject->addEdgeInternal(CRDFEdge(mTriplet.Predicate, mTriplet.pObject));
+  mTriplet.pSubject->addEdge(Predicate, mTriplet.pObject);
+
+  // Remove the edge with the predicate without destroying any objects.
+  mTriplet.pSubject->removeEdge(mTriplet.Predicate, mTriplet.pObject);
+
+  // Set the new predicate
+  mTriplet.Predicate = Predicate;
 }
 
 void CBiologicalDescription::setResource(const std::string & resource)

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFNode.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/05 15:34:56 $
+//   $Date: 2008/06/10 20:31:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,7 +17,7 @@
 
 #include "copasi.h"
 
-#include "CRDFNode.h"
+#include "CRDFGraph.h"
 
 #include "CRDFSubject.h"
 #include "CRDFObject.h"
@@ -29,7 +29,6 @@ CRDFNode::CRDFNode(CRDFGraph & graph):
     mId(""),
     mpSubject(NULL),
     mpObject(NULL),
-    mEdges(),
     mIsBlankNode(false)
 {}
 
@@ -112,8 +111,7 @@ const std::string & CRDFNode::getFieldValue(const CRDFPredicate::ePredicateType 
   {
     static std::string Empty = "";
 
-    const std::set< CRDFTriplet > Triplets =
-      getTripletsWithPredicate(nodePath, predicate, parentTriplet);
+    const std::set< CRDFTriplet > Triplets = getDescendantsWithPredicate(predicate);
 
     if (Triplets.size() > 0)
       {
@@ -177,7 +175,7 @@ bool CRDFNode::setFieldValue(const std::string & value,
                              const CRDFTriplet & parentTriplet)
 {
   std::set< CRDFTriplet > Triplets =
-    getTripletsWithPredicate(nodePath, predicate, parentTriplet);
+    getDescendantsWithPredicate(predicate);
 
   CRDFNode * pObject = NULL;
   if (Triplets.size() > 0)
@@ -210,38 +208,6 @@ bool CRDFNode::setFieldValue(const std::string & value,
           // Debugging
           assert(pObject != NULL);
         }
-      else if (pObject->isReadOnly())
-        {
-          // If this is not a subject node we are not able to do anything.
-          if (!isSubjectNode()) return false;
-
-          // Determine the path leading to the field
-          const CRDFPredicate::AllowedLocationList & Locations = CRDFPredicate::getAllowedLocationList(predicate);
-          unsigned C_INT32 i, imax = Locations.size();
-          unsigned C_INT32 SubPathIndex = C_INVALID_INDEX;
-          for (i = 0; i < imax; i++)
-            {
-              // We ignore read only locations.
-              if (Locations[i].ReadOnly)
-                continue;
-
-              SubPathIndex = CRDFPredicate::getSubPathIndex(Locations[i].Location, nodePath);
-              if (SubPathIndex != C_INVALID_INDEX)
-                break;
-            }
-
-          // The value can not be inserted
-          if (SubPathIndex == C_INVALID_INDEX)
-            return false;
-
-          // Now we build each missing ancestor as a blank node.
-          CRDFNode * pParent = createMissingAncestors(Locations[i].Location, SubPathIndex, nodePath, parentTriplet);
-          if (pParent == NULL) return false;
-
-          // We move the object to the new location.
-          if (!mGraph.moveEdge(Triplets.begin()->pSubject, pParent, CRDFEdge(predicate, pObject)))
-            return false;
-        }
 
       // Now we finally can save the information.
       CRDFObject & Object = pObject->getObject();
@@ -267,27 +233,10 @@ bool CRDFNode::setFieldValue(const std::string & value,
     }
   else if (pObject != NULL)
     {
-      mGraph.removeTriplet(this, CRDFPredicate::getURI(predicate), pObject);
+      removeTripletFromGraph(*Triplets.begin());
 
-      // Delete obsolete parent objects
-      // Determine the path leading to the field
-      const CRDFPredicate::AllowedLocationList & Locations = CRDFPredicate::getAllowedLocationList(predicate);
-      unsigned C_INT32 i, imax = Locations.size();
-      unsigned C_INT32 SubPathIndex = C_INVALID_INDEX;
-      for (i = 0; i < imax; i++)
-        {
-          SubPathIndex = CRDFPredicate::getSubPathIndex(Locations[i].Location, nodePath);
-          if (SubPathIndex != C_INVALID_INDEX)
-            break;
-        }
-
-      // Since we had an object this should never happen.
-      if (SubPathIndex == C_INVALID_INDEX)
-        return false;
-
-      // Now we remove each empty ancestor.
-      if (!removeEmptyAncestors(Locations[i].Location, SubPathIndex, nodePath, parentTriplet))
-        return false;
+      // Delete obsolete parent nodes
+      mGraph.clean();
     }
 
   return true;
@@ -305,8 +254,8 @@ CRDFNode * CRDFNode::createMissingAncestors(const CRDFPredicate::Path & nodePath
 
   // Determine the path leading to the field
   const CRDFPredicate::AllowedLocationList & Locations = CRDFPredicate::getAllowedLocationList(predicate);
-  unsigned C_INT32 i, imax = Locations.size();
-  unsigned C_INT32 SubPathIndex = C_INVALID_INDEX;
+  unsigned int i, imax = Locations.size();
+  unsigned int SubPathIndex = C_INVALID_INDEX;
   for (i = 0; i < imax; i++)
     {
       // We ignore read only locations.
@@ -332,17 +281,17 @@ CRDFNode * CRDFNode::createMissingAncestors(const CRDFPredicate::Path & nodePath
 }
 
 CRDFNode * CRDFNode::createMissingAncestors(const CRDFPredicate::Path & predicatePath,
-    const unsigned C_INT32 & level,
+    const unsigned int & level,
     const CRDFPredicate::Path & nodePath,
     const CRDFTriplet & parentTriplet)
 {
   CRDFNode * pNode = this;
 
-  unsigned C_INT32 i, imax = predicatePath.size() - 1; // We only create the ancestors
+  unsigned int i, imax = predicatePath.size() - 1; // We only create the ancestors
   for (i = level; i < imax; i++)
     {
       std::set< CRDFTriplet > Triplets =
-        getTripletsWithPredicate(nodePath, predicatePath[i], parentTriplet);
+        getDescendantsWithPredicate(predicatePath[i]);
 
       // Check whether the predicate exists.
       if (Triplets.size() > 0)
@@ -367,166 +316,160 @@ CRDFNode * CRDFNode::createMissingAncestors(const CRDFPredicate::Path & predicat
   return pNode;
 }
 
-bool CRDFNode::removeEmptyAncestors(const CRDFPredicate::Path & predicatePath,
-                                    const unsigned C_INT32 & level,
-                                    const CRDFPredicate::Path & nodePath,
-                                    const CRDFTriplet & parentTriplet)
+CRDFTriplet CRDFNode::addEdge(const CRDFPredicate & predicate, CRDFNode * pObject)
 {
-  std::set< CRDFTriplet > Triplets;
-  std::set< CRDFTriplet >::const_iterator it;
-  unsigned C_INT32 i;
+  CRDFTriplet Failed;
+  CRDFTriplet Triplet(this, predicate, pObject);
 
-  // We only create the ancestors
-  for (i = predicatePath.size() - 1; i >= level; i--)
+  // We do not want any duplicate triplets;
+  if (mGraph.getTriplets().count(Triplet) > 0)
+    return Failed;
+
+  // If this is a bag node the only predicate allowed is rdf_li.
+  if (isBagNode() && predicate != CRDFPredicate::rdf_li)
+    return Failed;
+
+  // If the predicate is rdf:li and this is not a bag node we bagify it.
+  if (!isBagNode() && CRDFPredicate::rdf_li == predicate)
     {
-      Triplets = getTripletsWithPredicate(nodePath, predicatePath[i], parentTriplet);
-      if (Triplets.size() > 0 &&
-          (it = Triplets.begin())->pObject->getEdges().size() == 0)
-        if (!mGraph.removeTriplet(it->pSubject, CRDFPredicate::getURI(it->Predicate), it->pObject))
-          return false;
+      // Bagify the node.
+      CRDFObject Object;
+      Object.setType(CRDFObject::RESOURCE);
+      Object.setResource("http://www.w3.org/1999/02/22-rdf-syntax-ns#Bag", false);
+
+      if (!mGraph.addTriplet(this->getSubject(), CRDFPredicate(CRDFPredicate::rdf_type), Object))
+        return Failed;
     }
 
-  return true;
-}
-
-bool CRDFNode::addEdgeInternal(const CRDFEdge & edge)
-{
-  std::pair<iterator, iterator> Range;
-
-  // If this is a bag node the only predicate allowed is rdf:li.
-  // This also prevents a duplicate type bag.
-  if (isBagNode() &&
-      edge.getPredicate() != CRDFPredicate::rdf_li)
-    return false;
-
-  // If the predicate is rdf:li we should check whether the node is a bag node, however the
-  // order of edges can not be guarantied
-  // if (!isBagNode() &&
-  //     edge.getPredicate() == CRDFPredicate::rdf_li)
-  //   return false;
-
-  // We need to make sure that we have no duplicate edges;
-  Range = mEdges.equal_range(edge.getPredicate());
-
-  for (; Range.first != Range.second; ++Range.first)
-    if (edge == Range.first->second) break;
-
-  // We found an existing edge with the same predicate and object.
-  if (Range.first != Range.second)
-    return false;
-
-  if (isBagNode() ||
-      edge.getPredicate() == CRDFPredicate::rdf_li)
+  // We now can safely insert any edge with the predicate rdf_li
+  if (CRDFPredicate::rdf_li == predicate)
     {
-      // We have already checked that this is a rdf:li edge, i.e.,
-      // we can savely insert the edge.
-      mEdges.insert(value_type(edge.getPredicate(), edge));
-      return true;
+      if (!addTripletToGraph(Triplet))
+        return Failed;
+
+      return Triplet;
     }
 
   // Check whether the predicate exists
-  Range = mEdges.equal_range(edge.getPredicate());
-  if (Range.first != Range.second)
+  std::set< CRDFTriplet > Triplets = mGraph.getTriplets(this, predicate);
+  if (Triplets.size() > 0)
     {
-      const CRDFNode * pNode = Range.first->second.getPropertyNode();
+      // We have at most 1 triplet with the same predicate since rdf_li is
+      // already dealt with.
+      const CRDFTriplet & ExistingTriplet = *Triplets.begin();
 
-      // Is it already a bag node.
-      if (!pNode->isBagNode())
+      // Check whether the predicate points to a bag node
+      CRDFNode * pBagNode = ExistingTriplet.pObject;
+      if (!pBagNode->isBagNode())
         {
-          // Remember the existing edge with the predicate.
-          CRDFEdge ExistingEdge = Range.first->second;
+          // We need to create a bag node, i.e., a blank node of type bag.
+          CRDFSubject Subject;
+          Subject.setType(CRDFSubject::BLANK_NODE);
+          Subject.setBlankNodeId(mGraph.generatedBlankNodeId());
 
-          // Remove the existing edge locally. All objects are preserved
-          mEdges.erase(Range.first);
+          // We add the existing object to the bag node with predicate rdf_li.
+          // This automatically bagifies the node.
+          CRDFTriplet Bag =
+            mGraph.addTriplet(Subject, CRDFPredicate::rdf_li, ExistingTriplet.pObject->getObject());
 
-          // Debugging: assure that no more edges with the predicate exist.
-          assert(mEdges.count(edge.getPredicate()) == 0);
+          if (!Bag)
+            return Failed;
 
-          // Insert a triplet into the graph
-          CRDFObject Object;
-          Object.setType(CRDFObject::BLANK_NODE);
-          Object.setBlankNodeId(mGraph.generatedBlankNodeId());
+          // We now have the bag node.
+          pBagNode = Bag.pSubject;
 
-          mGraph.addTriplet(getSubject(), edge.getPredicateURI(), Object);
+          // We remove the existing triplet
+          removeTripletFromGraph(ExistingTriplet);
 
-          Range = mEdges.equal_range(edge.getPredicate());
-          // Debugging: assure that we have exactly one edge with the predicate.
-          assert(Range.first != Range.second);
-          pNode = Range.first->second.getPropertyNode();
-
-          Object.setType(CRDFObject::RESOURCE);
-          Object.setResource("http://www.w3.org/1999/02/22-rdf-syntax-ns#Bag", false);
-
-          // set the rdf:type of the newly created node to rdf:Bag
-          mGraph.addTriplet(pNode->getSubject(), CRDFPredicate::getURI(CRDFPredicate::rdf_type), Object);
-
-          // Add the existing edge to the bag node.
-          ExistingEdge.setPredicate(CRDFPredicate::rdf_li);
-          const_cast< CRDFNode * >(pNode)->addEdgeInternal(ExistingEdge);
+          // Add the bag node
+          addEdge(predicate, pBagNode);
         }
 
-      // pNode points to a bag node we therefore can insert an edge with predicate rdf:li
-      CRDFEdge Edge(edge);
-      Edge.setPredicate(CRDFPredicate::rdf_li);
-      return const_cast< CRDFNode * >(pNode)->addEdgeInternal(Edge);
+      if (!addTripletToGraph(CRDFTriplet(pBagNode, CRDFPredicate::rdf_li, pObject)))
+        return Failed;
+
+      return Triplet;
     }
 
-  mEdges.insert(value_type(edge.getPredicate(), edge));
-  return true;
+  if (!addTripletToGraph(Triplet))
+    return Failed;
+
+  return Triplet;
 }
 
-bool CRDFNode::removeEdgeInternal(const CRDFEdge & edge)
+void CRDFNode::removeEdge(const CRDFPredicate & predicate, CRDFNode * pObject)
 {
-  bool success = true;
-  // Find all edges with the same predicate;
-  std::pair<iterator, iterator> Range = mEdges.equal_range(edge.getPredicate());
+  // Determine whether the predicate points to a bag node
+  std::set< CRDFTriplet > Triplets = mGraph.getTriplets(this, predicate);
 
-  // Predicate not found;
-  if (Range.first == Range.second)
-    return false;
+  // Debugging
+  assert(Triplets.size() > 0);
 
-  // Check whether the edge points to a bag node
-  if (Range.first->second.getPropertyNode()->isBagNode())
+  CRDFNode * pTarget = Triplets.begin()->pObject;
+  if (pTarget->isBagNode() && pTarget != pObject)
     {
-      CRDFEdge Edge(edge);
-      Edge.setPredicate(CRDFPredicate::rdf_li);
-      success &= const_cast< CRDFNode * >(Range.first->second.getPropertyNode())->removeEdgeInternal(Edge);
+      pTarget->removeEdge(CRDFPredicate::rdf_li, pObject);
 
-      if (success)
+      unsigned int LiCount = mGraph.getTriplets(pTarget, CRDFPredicate::rdf_li).size();
+      Triplets = mGraph.getTriplets(pTarget, CRDFPredicate::rdf_li);
+      switch (Triplets.size())
         {
-          // If the bag is empty we remove it too
-          std::pair< CRDFNode::const_iterator, CRDFNode::const_iterator > Bag =
-            Range.first->second.getPropertyNode()->getEdgesWithPredicate(CRDFPredicate::rdf_li);
-          if (Bag.first == Bag.second)
-            success &= mGraph.removeTriplet(this,
-                                            Range.first->second.getPredicateURI(),
-                                            Range.first->second.getPropertyNode());
+        case 0:
+          // If pTarget is an empty bag node we remove it.
+          // Note, this will destroy pTarget, i.e., no need to unbag
+          removeEdge(predicate, pTarget);
+          break;
 
-          return true;
+        case 1:
+          // If we have only one rdf_li element we unbag the target
+          {
+            CRDFNode * pNode = Triplets.begin()->pObject;
+
+            // We can not use the real predicate as this would fail.
+            // Removing the edge first does not work either as this
+            // would destroy the object.
+            addEdge(CRDFPredicate::any, pNode);
+
+            // Note, this will destroy pTarget, i.e., no need to unbag
+            removeEdge(predicate, pTarget);
+
+            // Fix the predicate
+            addEdge(predicate, pNode);
+            removeEdge(CRDFPredicate::any, pNode);
+          }
+          break;
+
+        default:
+          // We have more than 1 rdf_li element left.
+          break;
         }
+
+      return;
     }
 
-  for (; Range.first != Range.second; ++Range.first)
-    if (edge == Range.first->second)
-      {
-        mEdges.erase(Range.first);
-        return true;
-      }
+  removeTripletFromGraph(CRDFTriplet(this, predicate, pObject));
 
-  return false;
+  return;
 }
 
-const CRDFNode::multimap & CRDFNode::getEdges() const
-  {return mEdges;}
+std::set< CRDFTriplet > CRDFNode::getDescendantsWithPredicate(const CRDFPredicate & predicate) const
+  {
+    std::set< CRDFTriplet > Triplets;
+    CRDFPredicate::Path NodePath = mGraph.getPredicatePath(this);
 
-std::pair< CRDFNode::iterator, CRDFNode::iterator > CRDFNode::getEdgesWithPredicate(const CRDFPredicate::ePredicateType & predicate)
-{return mEdges.equal_range(predicate);}
+    std::set< CRDFTriplet > Predicates = mGraph.getTriplets(predicate);
+    std::set< CRDFTriplet >::const_iterator it = Predicates.begin();
+    std::set< CRDFTriplet >::const_iterator end = Predicates.end();
 
-std::pair< CRDFNode::const_iterator, CRDFNode::const_iterator > CRDFNode::getEdgesWithPredicate(const CRDFPredicate::ePredicateType & predicate) const
-  {return mEdges.equal_range(predicate);}
+    for (; it != end; ++it)
+      if (it->pObject->hasAncestor(this))
+        Triplets.insert(*it);
+
+    return Triplets;
+  }
 
 bool CRDFNode::isSubjectNode() const
-  {return mpSubject != NULL;}
+{return mpSubject != NULL;}
 
 bool CRDFNode::isObjectNode() const
   {return mpObject != NULL;}
@@ -536,15 +479,14 @@ bool CRDFNode::isBlankNode() const
 
 bool CRDFNode::isBagNode() const
   {
-    std::pair<const_iterator, const_iterator> Range = mEdges.equal_range(CRDFPredicate::rdf_type);
+    std::set< CRDFTriplet > Triplets = mGraph.getTriplets(this, CRDFPredicate::rdf_type);
+    std::set< CRDFTriplet >::const_iterator it = Triplets.begin();
+    std::set< CRDFTriplet >::const_iterator end = Triplets.end();
+    for (; it != end; ++it)
+      if (Triplets.begin()->pObject->getObject().getResource() == "http://www.w3.org/1999/02/22-rdf-syntax-ns#Bag")
+        return true;
 
-    // Note, this assumes that we only have rdf:type attribute.
-    if (Range.first != Range.second &&
-        Range.first->second.getPropertyNode()->getObject().getResource() ==
-        "http://www.w3.org/1999/02/22-rdf-syntax-ns#Bag")
-      return true;
-    else
-      return false;
+    return false;
   }
 
 bool CRDFNode::isReadOnly() const
@@ -553,104 +495,20 @@ bool CRDFNode::isReadOnly() const
     return CRDFPredicate::isReadOnly(NodePath);
   }
 
-std::set< CRDFTriplet > CRDFNode::getTripletsWithPredicate(const CRDFPredicate::Path & nodePath,
-    const CRDFPredicate::ePredicateType & predicate,
-    const CRDFTriplet & parentTriplet) const
+bool CRDFNode::hasAncestor(const CRDFNode * pNode) const
   {
-    std::set< CRDFTriplet > Triplets;
+    // We consider each node to be its own ancestor.
+    if (pNode == this)
+      return true;
 
-    // The current node cannot be accessed through any path.
-    if (nodePath.size() == 0)
-      return Triplets;
+    bool hasAncestor = false;
 
-    // First retreive all absolute pathes which lead to the desired predicate.
-    const CRDFPredicate::AllowedLocationList & PathList =
-      CRDFPredicate::getAllowedLocationList(predicate);
+    std::set< const CRDFNode * > Parents = mGraph.getParentSubjects(this);
+    std::set< const CRDFNode * >::const_iterator it = Parents.begin();
+    std::set< const CRDFNode * >::const_iterator end = Parents.end();
 
-    unsigned C_INT32 i, imax = PathList.size();
-    unsigned C_INT32 SubPathIndex;
-    for (i = 0; i < imax; i++)
-      {
-        std::set< const CRDFNode * > Visited;
-        const CRDFPredicate::Path & Path = PathList[i].Location;
+    for (; it != end && !hasAncestor; ++it)
+      hasAncestor = (*it)->hasAncestor(pNode);
 
-        SubPathIndex = CRDFPredicate::getSubPathIndex(Path, nodePath);
-        std::cout << "Index: " << SubPathIndex << std::endl;
-
-        // We need to remove the predicate pathes, which do not go through this node.
-        if (SubPathIndex == C_INVALID_INDEX)
-          continue;
-
-        // Check whether we are at right object.
-        if (SubPathIndex == Path.size())
-          {
-            // This means that we have the correct predicate.
-            if (isBagNode())
-              {
-                // If this is a bag node we need to add all li elements.
-                // This is done by calling getTripletsWithPredicate with the current level.
-                getTripletsWithPredicate(Path, SubPathIndex - 1, Triplets, Visited, parentTriplet.pSubject);
-              }
-            else
-              Triplets.insert(parentTriplet);
-          }
-        else
-          {
-            // We are now sure that the PredicatePath is the same as the nodePath for
-            // (SubPathIndex - 1) predicates. We travers the tree starting with the
-            // remaining predicate path.
-            getTripletsWithPredicate(Path, SubPathIndex, Triplets, Visited, NULL);
-          }
-      }
-
-    return Triplets;
-  }
-
-void CRDFNode::getTripletsWithPredicate(const std::vector < CRDFPredicate::ePredicateType > & predicatePath,
-                                        unsigned C_INT32 level,
-                                        std::set< CRDFTriplet > & triplets,
-                                        std::set< const CRDFNode * > visited,
-                                        const CRDFNode * pParent) const
-  {
-    // We need to avoid endless loops with the help of visited.
-    std::pair< std::set< const CRDFNode * >::iterator, bool > Insert;
-
-    // We need to iterate over the edges matching predicate
-    std::pair< const_iterator, const_iterator > Range;
-    CRDFPredicate::ePredicateType Predicate = predicatePath[level];
-
-    if (isBagNode())
-      Predicate = CRDFPredicate::rdf_li;
-
-    Range = getEdgesWithPredicate(Predicate);
-
-    const CRDFNode * pNext;
-    for (; Range.first != Range.second; ++Range.first)
-      {
-        pNext = Range.first->second.getPropertyNode();
-
-        // Check whether we have allready visited this node.
-        Insert = visited.insert(pNext);
-        if (!Insert.second) return;
-
-        std::cout << predicatePath.size() << std::endl;
-
-        if (pNext->isBagNode())
-          pNext->getTripletsWithPredicate(predicatePath, level, triplets, visited, this);
-        else if (level == predicatePath.size() - 1)
-          {
-            if (Predicate == CRDFPredicate::rdf_li)
-              triplets.insert(CRDFTriplet(const_cast< CRDFNode * >(pParent),
-                                          predicatePath[level],
-                                          const_cast< CRDFNode * >(pNext)));
-            else
-              triplets.insert(CRDFTriplet(const_cast< CRDFNode * >(this),
-                                          predicatePath[level],
-                                          const_cast< CRDFNode * >(pNext)));
-          }
-        else
-          pNext->getTripletsWithPredicate(predicatePath, level + 1, triplets, visited, NULL);
-      }
-
-    return;
+    return hasAncestor;
   }

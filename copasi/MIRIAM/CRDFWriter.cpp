@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFWriter.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/03 13:20:02 $
+//   $Date: 2008/06/10 20:31:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,8 +21,6 @@
 
 #include "CRDFWriter.h"
 #include "CRDFGraph.h"
-#include "CRDFNode.h"
-#include "CRDFEdge.h"
 #include "CRDFSubject.h"
 #include "CRDFObject.h"
 #include "CRDFLiteral.h"
@@ -93,40 +91,9 @@ char * CRDFWriter::write(const CRDFGraph * pGraph)
   if (raptor_serialize_start_to_string(mpWriter, pURI, (void **) & XML, & Length))
     fatalError();
 
-  // We need do add all subject nodes.
-  // This means we need to iterate over all Resource and BlankID nodes
-  std::map< std::string, CRDFNode * >::const_iterator itMap;
-  std::map< std::string, CRDFNode * >::const_iterator endMap;
-
-  itMap = pGraph->getBlankNodeMap().begin();
-  endMap = pGraph->getBlankNodeMap().end();
-  for (; itMap != endMap; ++itMap)
-    if (itMap->second->isSubjectNode())
-      success &= addSubjectNode(itMap->second);
-
-  itMap = pGraph->getLocalResourceNodeMap().begin();
-  endMap = pGraph->getLocalResourceNodeMap().end();
-  for (; itMap != endMap; ++itMap)
-    if (itMap->second->isSubjectNode())
-      success &= addSubjectNode(itMap->second);
-
-  // We might be describing a remote resource
-  std::vector< CRDFNode *>::const_iterator itVector;
-  std::vector< CRDFNode *>::const_iterator endVector;
-  for (itVector = pGraph->getRemoteResourceNodes().begin(), endVector = pGraph->getRemoteResourceNodes().end();
-       itVector != endVector; ++itVector)
-    if ((*itVector)->isSubjectNode())
-      success &= addSubjectNode((*itVector));
-
-  if (raptor_serialize_end(mpWriter))
-    fatalError();
-
-  return XML;
-}
-
-bool CRDFWriter::addSubjectNode(const CRDFNode * pSubjectNode)
-{
-  bool success = true;
+  // We need to add all triplets
+  std::set< CRDFTriplet >::const_iterator it = pGraph->getTriplets().begin();
+  std::set< CRDFTriplet >::const_iterator end = pGraph->getTriplets().end();
 
   raptor_uri * pSubjectURI = NULL;
   raptor_uri * pPredicateURI = NULL;
@@ -135,41 +102,31 @@ bool CRDFWriter::addSubjectNode(const CRDFNode * pSubjectNode)
 
   raptor_statement Triplet;
 
-  // Set the subject of the triplet
-  const CRDFSubject & Subject = pSubjectNode->getSubject();
-  switch (Subject.getType())
-    {
-    case CRDFSubject::RESOURCE:
-      Triplet.subject_type = RAPTOR_IDENTIFIER_TYPE_RESOURCE;
-      pSubjectURI = raptor_new_uri((const unsigned char *) Subject.getResource().c_str());
-      Triplet.subject = pSubjectURI;
-      break;
-
-    case CRDFSubject::BLANK_NODE:
-      Triplet.subject_type = RAPTOR_IDENTIFIER_TYPE_ANONYMOUS;
-      Triplet.subject = Subject.getBlankNodeID().c_str();
-      break;
-    }
-
-  CRDFNode::const_iterator it = pSubjectNode->getEdges().begin();
-  CRDFNode::const_iterator end = pSubjectNode->getEdges().end();
-
   for (; it != end; ++it)
     {
+      // Set the subject of the triplet
+      const CRDFSubject & Subject = it->pSubject->getSubject();
+      switch (Subject.getType())
+        {
+        case CRDFSubject::RESOURCE:
+          Triplet.subject_type = RAPTOR_IDENTIFIER_TYPE_RESOURCE;
+          pSubjectURI = raptor_new_uri((const unsigned char *) Subject.getResource().c_str());
+          Triplet.subject = pSubjectURI;
+          break;
+
+        case CRDFSubject::BLANK_NODE:
+          Triplet.subject_type = RAPTOR_IDENTIFIER_TYPE_ANONYMOUS;
+          Triplet.subject = Subject.getBlankNodeID().c_str();
+          break;
+        }
+
       // Set the predicate of the triplet
       Triplet.predicate_type = RAPTOR_IDENTIFIER_TYPE_RESOURCE;
-      pPredicateURI = raptor_new_uri((const unsigned char *) it->second.getPredicateURI().c_str());
+      pPredicateURI = raptor_new_uri((const unsigned char *) it->Predicate.getURI().c_str());
       Triplet.predicate = pPredicateURI;
 
       // Set the object of the triplet
-      const CRDFNode * pProperty = it->second.getPropertyNode();
-      if (!pProperty->isObjectNode())
-        {
-          success = false;
-          continue;
-        }
-
-      const CRDFObject & Object = pProperty->getObject();
+      const CRDFObject & Object = it->pObject->getObject();
       switch (Object.getType())
         {
         case CRDFObject::RESOURCE:
@@ -214,9 +171,11 @@ bool CRDFWriter::addSubjectNode(const CRDFNode * pSubjectNode)
       pRaptorFreeUri(pPredicateURI);
       pRaptorFreeUri(pObjectURI);
       pRaptorFreeUri(pLiteralDataTypeURI);
+      pRaptorFreeUri(pSubjectURI);
     }
 
-  pRaptorFreeUri(pSubjectURI);
+  if (raptor_serialize_end(mpWriter))
+    fatalError();
 
-  return success;
+  return XML;
 }

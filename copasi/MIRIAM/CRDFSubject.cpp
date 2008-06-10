@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFSubject.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2008/02/07 18:58:16 $
+//   $Author: shoops $
+//   $Date: 2008/06/10 20:31:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -97,4 +97,19 @@ void CRDFSubject::clearData()
   mResource = "";
   mType = CRDFSubject::RESOURCE;
   mIsLocalResource = false;
+}
+
+std::ostream & operator << (std::ostream & os, const CRDFSubject & subject)
+{
+  switch (subject.getType())
+    {
+    case CRDFSubject::BLANK_NODE:
+      os << subject.getBlankNodeID();
+      break;
+    case CRDFSubject::RESOURCE:
+      os << subject.getResource();
+      break;
+    }
+
+  return os;
 }
