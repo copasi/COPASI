@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExpressionMmlWidget.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2008/06/06 12:02:01 $
+//   $Date: 2008/06/10 08:08:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,8 +14,8 @@
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQExpressionMmlWidget.ui'
  **
- ** Created: Fri May 2 12:23:36 2008
- **      by: The User Interface Compiler ($Id: CQExpressionMmlWidget.h,v 1.2 2008/06/06 12:02:01 pwilly Exp $)
+ ** Created: Tue Jun 10 09:53:19 2008
+ **      by: The User Interface Compiler ($Id: CQExpressionMmlWidget.h,v 1.3 2008/06/10 08:08:46 pwilly Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/

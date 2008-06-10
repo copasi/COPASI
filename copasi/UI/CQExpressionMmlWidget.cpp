@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExpressionMmlWidget.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2008/06/06 12:01:56 $
+//   $Date: 2008/06/10 08:08:41 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,8 +14,8 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQExpressionMmlWidget.ui'
  **
- ** Created: Fri May 2 12:23:38 2008
- **      by: The User Interface Compiler ($Id: CQExpressionMmlWidget.cpp,v 1.2 2008/06/06 12:01:56 pwilly Exp $)
+ ** Created: Tue Jun 10 09:53:52 2008
+ **      by: The User Interface Compiler ($Id: CQExpressionMmlWidget.cpp,v 1.3 2008/06/10 08:08:41 pwilly Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -199,7 +199,6 @@ CQExpressionMmlWidget::CQExpressionMmlWidget(QWidget* parent, const char* name, 
   mpBtnExpressionObject = new QToolButton(mpExpressionPage, "mpBtnExpressionObject");
   mpBtnExpressionObject->setMaximumSize(QSize(20, 20));
   mpBtnExpressionObject->setIconSet(QIconSet(image0));
-  mpBtnExpressionObject->setProperty("IconSet", QIconSet(image0));
   layout4->addWidget(mpBtnExpressionObject);
 
   mpBtnViewExpression = new QToolButton(mpExpressionPage, "mpBtnViewExpression");
