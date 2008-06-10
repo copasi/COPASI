@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.201 $
+//   $Revision: 1.202 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/06/09 09:35:04 $
+//   $Date: 2008/06/10 08:46:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -60,6 +60,7 @@
 #include "model/CMetab.h"
 #include "model/CReaction.h"
 #include "model/CModelValue.h"
+#include "model/CEvent.h"
 #include "function/CNodeK.h"
 #include "function/CFunctionDB.h"
 #include "function/CEvaluationTree.h"
@@ -524,6 +525,12 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       idList = idList.substr(0, idList.length() - 2);
       CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 29, idList.c_str());
     }
+
+#ifdef COPASI_DEBUG
+  // import all event
+  this->importEvents(sbmlModel, this->mpCopasiModel, copasi2sbmlmap);
+#endif // COPASI_DEBUG
+
   this->mpCopasiModel->setCompileFlag();
   if (this->mUnsupportedRuleFound)
     {
@@ -4184,6 +4191,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
   std::vector<std::string> nonDefaultSpecies;
   std::vector<std::string> nonDefaultKineticTime;
   std::vector<std::string> nonDefaultKineticSubstance;
+  std::vector<std::string> nonDefaultEventTime;
   const Compartment* pCompartment;
   const Species* pSpecies;
   const Reaction* pReaction;
@@ -4499,9 +4507,88 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
       CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 53, s.substr(0, s.size() - 2).c_str());
     }
   // delete the units we created
-  delete pTimeUnits;
   delete pSubstanceUnits;
   delete pVolumeUnits;
+#ifdef COPASI_DEBUG
+  const Event* pEvent = NULL;
+  inconsistentTimeUnits = false;
+  iMax = pSBMLModel->getNumEvents();
+  for (i = 0;i < iMax;++i)
+    {
+      pEvent = pSBMLModel->getEvent(i);
+      std::string unitId;
+      if (pEvent->isSetTimeUnits())
+        {
+          unitId = pEvent->getTimeUnits();
+          UnitDefinition* pUdef1 = getSBMLUnitDefinitionForId(unitId, pSBMLModel);
+          if (pUdef1 == NULL)
+            {
+              // error message
+              CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 55, unitId.c_str(), "timeUnits", "kinetic law of the reaction", pReaction->getId().c_str());
+            }
+          if (unitId != "time" && !areSBMLUnitDefinitionsIdentical(pTimeUnits, pUdef1))
+            {
+              if (pEvent->isSetId())
+                {
+                  nonDefaultEventTime.push_back(pEvent->getId());
+                }
+            }
+          if (lastTimeUnits == "")
+            {
+              lastTimeUnits = unitId;
+            }
+          else if (unitId != lastTimeUnits)
+            {
+              // check if the two units have identical definitions
+              UnitDefinition* pUdef2 = getSBMLUnitDefinitionForId(lastTimeUnits, pSBMLModel);
+              assert(pUdef2 != NULL);
+              if (!areSBMLUnitDefinitionsIdentical(pUdef1, pUdef2))
+                {
+                  inconsistentTimeUnits = true;
+                }
+              delete pUdef2;
+            }
+          delete pUdef1;
+        }
+      else if (lastTimeUnits == "") // set the last time unit to time
+        {
+          lastTimeUnits = "time";
+        }
+    }
+  if (!inconsistentTimeUnits && lastTimeUnits != "" && lastTimeUnits != "time")
+    {
+      // try to set the default time units
+      UnitDefinition* pUdef = getSBMLUnitDefinitionForId(lastTimeUnits, pSBMLModel);
+      assert(pUdef != NULL);
+      std::pair<CModel::TimeUnit, bool> time = this->handleTimeUnit(pUdef);
+      delete pUdef;
+      if (time.second == true)
+        {
+          // set the default volume unit
+          pCopasiModel->setTimeUnit(time.first);
+        }
+      else
+        {
+          inconsistentTimeUnits = true;
+        }
+    }
+  if (inconsistentTimeUnits)
+    {
+      // warn about inconsistent time unit
+      // one error for each entry in nonDefaultKineticTime
+      std::ostringstream os;
+      std::vector<std::string>::iterator errorIt = nonDefaultEventTime.begin(), errorEndit = nonDefaultEventTime.end();
+      while (errorIt != errorEndit)
+        {
+          os << *errorIt << ", ";
+          ++errorIt;
+        }
+      std::string s = os.str();
+      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 53, s.substr(0, s.size() - 2).c_str());
+    }
+  // delete the units we created
+  delete pTimeUnits;
+#endif // COPASI_DEBUG
 }
 
 /**
@@ -4927,7 +5014,7 @@ void SBMLImporter::importInitialAssignments(Model* pSBMLModel, std::map<CCopasiO
             {
               if (!pInitialAssignment->isSetMath())
                 {
-                  CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 58, symbol.c_str());
+                  CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 58, "Initialassignment", symbol.c_str());
                 }
               else
                 {
@@ -4982,7 +5069,7 @@ void SBMLImporter::importInitialAssignments(Model* pSBMLModel, std::map<CCopasiO
             }
           else
             {
-              CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 47 , symbol.c_str());
+              CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 57 , "Initialassignment", symbol.c_str());
             }
         }
     }
@@ -5277,3 +5364,138 @@ bool SBMLImporter::importMIRIAM(const SBase* pSBMLObject, CCopasiObject* pCOPASI
     }
   return result;
 }
+
+#ifdef COPASI_DEBUG
+void SBMLImporter::importEvents(Model* pSBMLModel, CModel* pCopasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
+{
+  unsigned int i, iMax = pSBMLModel->getNumEvents();
+  for (i = 0;i < iMax;++i)
+    {
+      this->importEvent(pSBMLModel->getEvent(i), pSBMLModel, pCopasiModel, copasi2sbmlmap);
+    }
+}
+
+void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* pCopasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
+{
+  if (pEvent == NULL) return;
+  std::string eventName = "Event";
+  if (pEvent->isSetName())
+    {
+      eventName = pEvent->getName();
+    }
+  else if (pEvent->isSetId())
+    {
+      eventName = pEvent->getId();
+    }
+  CEvent* pCOPASIEvent = pCopasiModel->createEvent(eventName);
+  if (pEvent->isSetId())
+    {
+      pCOPASIEvent->setSBMLId(pEvent->getId());
+    }
+  // import the trigger
+  const Trigger* pTrigger = pEvent->getTrigger();
+  assert(pTrigger != NULL);
+  if (!pTrigger->isSetMath())
+    {
+      fatalError();
+    }
+  const ASTNode* pMath = pTrigger->getMath();
+  assert(pMath != NULL);
+  // convert and set math expression
+  ConverterASTNode* pTmpNode = new ConverterASTNode(*pMath);
+  this->preprocessNode(pTmpNode, pSBMLModel, copasi2sbmlmap);
+  // replace the object names
+  this->replaceObjectNames(pTmpNode, copasi2sbmlmap);
+  // now we convert the node to a CEvaluationNode
+  CExpression* pExpression = new CExpression;
+  pExpression->setTree(*pTmpNode);
+  delete pTmpNode;
+  pCOPASIEvent->setTriggerExpressionPtr(pExpression);
+
+  // import the delay
+  if (pEvent->isSetDelay())
+    {
+      const Delay* pDelay = pEvent->getDelay();
+      if (!pDelay->isSetMath())
+        {
+          fatalError();
+        }
+      pMath = pDelay->getMath();
+      assert(pMath != NULL);
+      // convert and set math expression
+      pTmpNode = new ConverterASTNode(*pMath);
+      this->preprocessNode(pTmpNode, pSBMLModel, copasi2sbmlmap);
+      // replace the object names
+      this->replaceObjectNames(pTmpNode, copasi2sbmlmap);
+      // now we convert the node to a CEvaluationNode
+      CExpression* pExpression = new CExpression;
+      pExpression->setTree(*pTmpNode);
+      delete pTmpNode;
+      pCOPASIEvent->setDelayExpressionPtr(pExpression);
+    }
+
+  // the check if the time units are correct has already been made elsewhere
+
+  // import all assignments
+  std::map<std::string, CCopasiObject*> id2copasiMap;
+  std::map<CCopasiObject*, SBase*>::const_iterator it = copasi2sbmlmap.begin(), endit = copasi2sbmlmap.end();
+  while (it != endit)
+    {
+      id2copasiMap[it->second->getId()] = it->first;
+      ++it;
+    }
+  unsigned int i, iMax = pEvent->getNumEventAssignments();
+  for (i = 0;i < iMax;++i)
+    {
+      const EventAssignment* pEventAssignment = pEvent->getEventAssignment(i);
+      if (!pEventAssignment->isSetVariable())
+        {
+          fatalError();
+        }
+      // the COPASI object that corresponds to the variable
+      const std::string& variable = pEventAssignment->getVariable();
+      std::map<std::string, CCopasiObject*>::iterator pos = id2copasiMap.find(variable);
+      if (pos == id2copasiMap.end())
+        {
+          //  issue an error message and ignore the assignment
+          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 57, "Eventassignment", variable.c_str());
+          continue;
+        }
+      CCopasiObject* pObject = pos->second;
+      if (pObject->getObjectType() != "Compartment" && pObject->getObjectType() != "Metabolite" && pObject->getObjectType() != "ModelValue")
+        {
+          // issue an error and ignore the assignment
+          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 72, "Eventassignment", variable.c_str());
+          continue;
+        }
+      if (!pEventAssignment->isSetMath())
+        {
+          fatalError();
+        }
+      // import the assignment math expression
+      if (!pEventAssignment->isSetMath())
+        {
+          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 58, "Eventassignment", variable.c_str());
+          continue;
+        }
+      pMath = pEventAssignment->getMath();
+      assert(pMath != NULL);
+      // convert and set math expression
+      pTmpNode = new ConverterASTNode(*pMath);
+      this->preprocessNode(pTmpNode, pSBMLModel, copasi2sbmlmap);
+      // replace the object names
+      this->replaceObjectNames(pTmpNode, copasi2sbmlmap);
+      // now we convert the node to a CEvaluationNode
+      CExpression* pExpression = new CExpression;
+      pExpression->setTree(*pTmpNode);
+      delete pTmpNode;
+      pCOPASIEvent->setAssignmentExpressionPtr(pObject->getKey(), pExpression);
+    }
+  // make sure there have been event assignment and if not, delete the
+  // event
+  if (pCOPASIEvent->getAssignmentExpressionVector().size() == 0)
+    {
+      pCopasiModel->removeEvent(pCOPASIEvent->getKey());
+    }
+}
+#endif // COPASI_DEBUG

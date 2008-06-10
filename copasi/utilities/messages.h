@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.117 $
+//   $Revision: 1.118 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/06/06 09:55:10 $
+//   $Date: 2008/06/10 08:46:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -206,8 +206,8 @@ const MESSAGES Messages[] =
     {MCSBML + 54, "SBML (54): Error while importing volume unit with id \"%s\"."},
     {MCSBML + 55, "SBML (55): Could not find unit definition for unit with id \"%s\" used in \"%s\" attribute of %s with id \"%s\"."},
     {MCSBML + 56, "SBML (56): There was a problem with the kinetic law in reaction \"%s\". Make sure the math element is not empty."},
-    {MCSBML + 57, "SBML (57): InitialAssignment defined for object with id \"%s\", but the corresponding object could not be found. Ignoring assignment."},
-    {MCSBML + 58, "SBML (58): InitialAssignment for object with id \"%s\" does not set a mathematical expression. Ignoring assignment."},
+    {MCSBML + 57, "SBML (57): %s defined for object with id \"%s\", but the corresponding object could not be found. Ignoring assignment."},
+    {MCSBML + 58, "SBML (58): %s for object with id \"%s\" does not set a mathematical expression. Ignoring assignment."},
     {MCSBML + 59, "SBML (59): Error while importing InitialAssignment for object with id \"%s\". Ignoring assignment."},
     {MCSBML + 60, "SBML (60): Error while exporting %s for %s with name \"%s\"."},
     {MCSBML + 61, "SBML (61): Error while expanding function calls in mathematical expression for %s."},
@@ -220,6 +220,8 @@ const MESSAGES Messages[] =
     {MCSBML + 68, "SBML (68): Id \"%s\" is not unique, please check the ids in your SBML file."},
     {MCSBML + 69, "SBML (69): MIRIAM annotations can't currently be exported to SBML.\nIf you have added new MIRIAM annotations to model elements or changed existing annotations, those changes will not be present in the exported SBML file.\nTo conserve your changes, please consider saving the model as a COPASI file."},
     {MCSBML + 70, "SBML (70): Could not export mathematical expression for %s in %s with name \"%s\"."},
+    {MCSBML + 71, "SBML (71): The time units of some events were ignored. Since ids on event are optional, only those events with ids are listed below. Units might be displayed incorrectly.\nEvents: %s"},
+    {MCSBML + 72, "SBML (72): Error in eventassignment. Eventassignments may only assign values to compartments, species or global parameters, object with id \"%s\" is neither compartment, species or global parameter. Ignoring assignment."},
 
     {MCTrajectoryProblem + 1, "CTrajectoryProblem (1): Invalid step size = '%f'."},
     {MCTrajectoryProblem + 2, "CTrajectoryProblem (2): The step number '%f' "

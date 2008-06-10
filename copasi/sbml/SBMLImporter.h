@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-//   $Revision: 1.68 $
+//   $Revision: 1.69 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/06/02 10:10:21 $
+//   $Date: 2008/06/10 08:46:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -123,6 +123,18 @@ class SBMLImporter
      * Imports the given AssignmentRule which is for a global parameter.
      */
     void importRuleForModelEntity(const Rule* rule, CModelEntity* pMV, CModelEntity::Status ruleType, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, Model* pSBMLModel);
+
+#ifdef COPASI_DEBUG
+    /**
+     * Imports all events
+     */
+    void importEvents(Model* pSBMLModel, CModel* pCopasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+
+    /**
+     * Imports the given event.
+     */
+    void importEvent(const Event* pEvent, Model* pSBMLModel, CModel* pCopasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+#endif // COPASI_DEBUG
 
     /**
      * Imports the given RateRule if Copasi supports this kind of RateRule, otherwise a warning is created.

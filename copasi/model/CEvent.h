@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CEvent.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/06/09 07:17:49 $
+//   $Author: gauges $
+//   $Date: 2008/06/10 08:46:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -125,16 +125,34 @@ class CEvent : public CCopasiContainer
     bool setExpressionTrigger(const std::string & expression);
 
     /**
+     * set the expression of trigger from an expression.
+     * @param CExpression* pExpression
+     */
+    void setTriggerExpressionPtr(CExpression* pExpression);
+
+    /**
      * retrieve the expression of trigger as a string.
      * @return std::string expression
      */
     std::string getExpressionTrigger() const;
 
     /**
-     * retrieve the pointer to the expression.
-     * @return CExpression *
+     * retrieve the pointer to the expression of trigger.
+     * @return CExpression* pExpression
      */
-    //    const CExpression & getExpression() const;
+    const CExpression* getTriggerExpressionPtr() const;
+
+    /**
+     * retrieve the pointer to the expression of trigger.
+     * @return CExpression* pExpression
+     */
+    CExpression* getTriggerExpressionPtr();
+
+    /**
+     * set the expression of delay from an expression.
+     * @param CExpression* pExpression
+     */
+    void setDelayExpressionPtr(CExpression* pExpression);
 
     /**
      * set the expression of delay from a string. The return value indicates if
@@ -150,6 +168,18 @@ class CEvent : public CCopasiContainer
      */
     std::string getExpressionDelay() const;
 
+    /**
+     * retrieve the pointer to the expression of delay.
+     * @return CExpression* pExpression
+     */
+    CExpression* getDelayExpressionPtr();
+
+    /**
+     * retrieve the pointer to the expression of delay.
+     * @return CExpression* pExpression
+     */
+    const CExpression* getDelayExpressionPtr() const;
+
     /**************************************************************************************/
 
     /**
@@ -159,6 +189,12 @@ class CEvent : public CCopasiContainer
      * @return bool success
      */
     bool setAssignmentExpression(const std::string & key, const std::string & expression);
+
+    /**
+     * set the expression of event assignment from an expression object.
+     * @param CExpression* pExpression
+     */
+    void setAssignmentExpressionPtr(const std::string & key, CExpression* pExpression);
 
     /**
      * retrieve the expression of event assignment as a string.
@@ -187,7 +223,10 @@ class CEvent : public CCopasiContainer
     std::string getAssignmentExpressionStr(unsigned C_INT32 i) const;
 
     /// retrieve the expression of the i-th assignment
-    const CExpression & getAssignmentExpression(unsigned C_INT32 i) const;
+    const CExpression* getAssignmentExpressionPtr(unsigned C_INT32 i) const;
+
+    /// retrieve the expression of the i-th assignment
+    CExpression* getAssignmentExpressionPtr(unsigned C_INT32 i);
 
     /// retrieve the vector of assignment expression
     // const std::vector<std::pair<std::string, CExpression> > getAssignmentExpressionVector() const;
@@ -248,12 +287,12 @@ class CEvent : public CCopasiContainer
     /**
      * Expression to the event
      */
-    CExpression *mpExpressionTrigger;
+    CExpression *mpTriggerExpression;
 
     /**
      * Expression to the event
      */
-    CExpression *mpExpressionDelay;
+    CExpression *mpDelayExpression;
 
     /**
      * Expression to the event assignment
@@ -277,7 +316,7 @@ class CEvent : public CCopasiContainer
      *  The std::string is the key of a copasi object, the expression is an assignment expression
      *  to this object.
      */
-    std::vector < std::pair <std::string, CExpression> > mAssignsExpression;
+    std::vector < std::pair <std::string, CExpression*> > mAssignsExpression;
 
     /**
      *  List of assignment names that need to be applied after the event triggers.

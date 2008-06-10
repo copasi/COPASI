@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CEvent.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/06/09 08:18:33 $
+//   $Author: gauges $
+//   $Date: 2008/06/10 08:46:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -37,10 +37,10 @@ CEvent::CEvent(const std::string & name,
                const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Event"),
     mKey(GlobalKeys.add("Event", this)),
-    mpExpressionTrigger(NULL),
-    mpExpressionDelay(NULL),
+    mpTriggerExpression(NULL),
+    mpDelayExpression(NULL),
     mpExpressionEA(NULL) /*,
-            mpModel(NULL)*/
+                mpModel(NULL)*/
 {
   std::cout << "CE::CE" << std::endl;
   CONSTRUCTOR_TRACE;
@@ -51,8 +51,8 @@ CEvent::CEvent(const CEvent & src,
                const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
     mKey(GlobalKeys.add("Event", this)),
-    mpExpressionTrigger(NULL),
-    mpExpressionDelay(NULL),
+    mpTriggerExpression(NULL),
+    mpDelayExpression(NULL),
     mpExpressionEA(NULL)
 {
   CONSTRUCTOR_TRACE;
@@ -184,10 +184,10 @@ bool CEvent::setExpressionTrigger(const std::string &expression)
 {
   std::cout << "CE::setExpressionTrigger - expression: " << expression << std::endl;
 
-  if (mpExpressionTrigger == NULL)
-    mpExpressionTrigger = new CExpression;
+  if (mpTriggerExpression == NULL)
+    mpTriggerExpression = new CExpression;
 
-  if (!mpExpressionTrigger->setInfix(expression)) return false;
+  if (!mpTriggerExpression->setInfix(expression)) return false;
 
   return compile();
 
@@ -200,26 +200,26 @@ std::string CEvent::getExpressionTrigger() const
   {
     std::cout << "CE::getExpressionTrigger" << std::endl;
 
-    if (mpExpressionTrigger == NULL)
+    if (mpTriggerExpression == NULL)
       return "";
 
     std::cout << "B - CE::getExpressionTrigger" << std::endl;
 
-    mpExpressionTrigger->updateInfix();
+    mpTriggerExpression->updateInfix();
 
     std::cout << "C - CE::getExpressionTrigger" << std::endl;
 
-    return mpExpressionTrigger->getInfix();
+    return mpTriggerExpression->getInfix();
   }
 
 bool CEvent::setExpressionDelay(const std::string &expression)
 {
   std::cout << "CE::setExpressionDelay - expression: " << expression << std::endl;
 
-  if (mpExpressionDelay == NULL)
-    mpExpressionDelay = new CExpression;
+  if (mpDelayExpression == NULL)
+    mpDelayExpression = new CExpression;
 
-  if (!mpExpressionDelay->setInfix(expression)) return false;
+  if (!mpDelayExpression->setInfix(expression)) return false;
 
   return compile();
 
@@ -232,12 +232,12 @@ std::string CEvent::getExpressionDelay() const
   {
     std::cout << "CE::getExpressionDelay" << std::endl;
 
-    if (mpExpressionDelay == NULL)
+    if (mpDelayExpression == NULL)
       return "";
 
-    mpExpressionDelay->updateInfix();
+    mpDelayExpression->updateInfix();
 
-    return mpExpressionDelay->getInfix();
+    return mpDelayExpression->getInfix();
   }
 
 unsigned C_INT32 CEvent::getNumAssignments() const
@@ -386,7 +386,7 @@ bool CEvent::setAssignmentExpression(const std::string & key, const std::string 
 
     std::cout << "CE::setAssignmentExpression B - key: " << key << std::endl;
 
-  /*  std::vector<std::pair<std::string, CExpression *> >::const_iterator it = mAssigns.begin();
+    std::vector<std::pair<std::string, CExpression *> >::const_iterator it = mAssigns.begin();
     std::vector<std::pair<std::string, CExpression *> >::const_iterator end = mAssigns.end();
     for (; it!=end; ++it)
   */
@@ -549,4 +549,81 @@ std::vector<std::pair<std::string, CExpression> > CEvent::getAssignmentExpressio
 void CEvent::setAssignmentExpressionVector(std::vector<std::pair<std::string, CExpression> > &vector)
 {
   mAssigns = vector;
+}
+
+/**
+ * retrieve the pointer to the expression of trigger.
+ * @return CExpression* pExpression
+ */
+const CExpression* CEvent::getTriggerExpressionPtr() const
+  {
+    return this->mpTriggerExpression;
+  }
+
+/**
+ * retrieve the pointer to the expression of trigger.
+ * @return CExpression* pExpression
+ */
+CExpression* CEvent::getTriggerExpressionPtr()
+{
+  return this->mpTriggerExpression;
+}
+
+void CEvent::setTriggerExpressionPtr(CExpression* pExpression)
+{
+  this->mpTriggerExpression = pExpression;
+}
+
+void CEvent::setAssignmentExpressionPtr(const std::string & key, CExpression* pExpression)
+{
+  this->mAssignsExpression.push_back(std::make_pair(key, pExpression));
+}
+
+/// retrieve the expression of the i-th assignment
+const CExpression* CEvent::getAssignmentExpressionPtr(unsigned C_INT32 i) const
+  {
+    CExpression* pResult = NULL;
+    if (i < this->mAssignsExpression.size())
+      {
+        pResult = this->mAssignsExpression[i].second;
+      }
+    return pResult;
+  }
+
+/// retrieve the expression of the i-th assignment
+CExpression* CEvent::getAssignmentExpressionPtr(unsigned C_INT32 i)
+{
+  CExpression* pResult = NULL;
+  if (i < this->mAssignsExpression.size())
+    {
+      pResult = this->mAssignsExpression[i].second;
+    }
+  return pResult;
+}
+
+/**
+ * retrieve the pointer to the expression of delay.
+ * @return CExpression* pExpression
+ */
+CExpression* CEvent::getDelayExpressionPtr()
+{
+  return this->mpDelayExpression;
+}
+
+/**
+ * retrieve the pointer to the expression of delay.
+ * @return CExpression* pExpression
+ */
+const CExpression* CEvent::getDelayExpressionPtr() const
+  {
+    return this->mpDelayExpression;
+  }
+
+/**
+ * set the expression of delay from an expression.
+ * @param CExpression* pExpression
+ */
+void CEvent::setDelayExpressionPtr(CExpression* pExpression)
+{
+  this->mpDelayExpression = pExpression;
 }
