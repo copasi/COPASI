@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-//   $Revision: 1.106 $
+//   $Revision: 1.107 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/06/09 07:45:07 $
+//   $Author: shoops $
+//   $Date: 2008/06/11 19:16:51 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -140,7 +140,6 @@ bool CCopasiXML::save(std::ostream & os,
 bool CCopasiXML::load(std::istream & is,
                       const std::string & relativeTo)
 {
-  std::cout << "CCXML::load" << std::endl;
   mFilename = relativeTo;
 
   is.imbue(std::locale::classic());
@@ -173,7 +172,6 @@ bool CCopasiXML::load(std::istream & is,
       if (mpIstream->eof()) done = true;
       if (mpIstream->fail() && !done) fatalError();
 
-      std::cout << "CCXML::load A" << std::endl;
       if (!Parser.parse(pBuffer, -1, done))
         {
           CCopasiMessage Message(CCopasiMessage::RAW, MCXML + 2,
@@ -183,7 +181,6 @@ bool CCopasiXML::load(std::istream & is,
           done = true;
           success = false;
         }
-      std::cout << "CCXML::load B" << std::endl;
     }
   delete [] pBuffer;
 #undef BUFFER_SIZE
