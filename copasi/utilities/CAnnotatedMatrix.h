@@ -1,14 +1,24 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CAnnotatedMatrix.h,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/04/01 12:40:45 $
+//   $Author: pwilly $
+//   $Date: 2008/06/11 10:53:05 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+
+/*!
+    \file CAnnotatedMatrix.h
+    \brief Header file of class CCopasiArray and CArrayAnnotation
+ */
 
 #ifndef CANNOTATEDMATRIX_H
 #define CANNOTATEDMATRIX_H
@@ -176,7 +186,7 @@ class CCopasiVectorInterface: public CCopasiAbstractArray
     const index_type & size() const
       {
         //CCopasiMatrixInterface * tmp = const_cast<CCopasiMatrixInterface*>(this);
-        /*tmp->*/mSizes[0] =  mVector->size();
+        /*tmp->*/mSizes[0] =   mVector->size();
         return mSizes;
       }
 
