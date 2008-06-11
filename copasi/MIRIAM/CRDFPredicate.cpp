@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFPredicate.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/11 19:18:05 $
+//   $Date: 2008/06/11 19:42:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -125,6 +125,7 @@ const std::string CRDFPredicate::PredicateDisplayName[] =
     "bibliographic citation", // dcterms_bibliographicCitation
     // "contributor", // dcterms_contributor
     "created at", // dcterms_created
+    "description", // dcterms_description
     // "license", // dcterms_license
     "modified at", // dcterms_modified
     // "rights", // dcterms_rights
