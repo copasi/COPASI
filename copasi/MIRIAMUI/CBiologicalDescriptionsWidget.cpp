@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CBiologicalDescriptionsWidget.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/06/04 14:08:36 $
+//   $Author: shoops $
+//   $Date: 2008/06/11 13:56:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -147,9 +147,7 @@ void CBiologicalDescriptionsWidget::tableLineToObject(unsigned C_INT32 row, CCop
   if (dynamic_cast<QComboTableItem *>(table->item(row, COL_RELATIONSHIP)))
     {
       const std::string relationship = (const char *) static_cast<QComboTableItem *>(table->item(row, COL_RELATIONSHIP))->currentText().utf8();
-      //Don't handle this and return if relationship is changed.
-      if (pBiologicalDescription->getPredicate() != relationship)
-        return;
+      pBiologicalDescription->setPredicate(relationship);
     }
 
   if (dynamic_cast<QComboTableItem *>(table->item(row, COL_RESOURCE)))
