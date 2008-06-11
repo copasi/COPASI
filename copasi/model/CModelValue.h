@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.h,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.34 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/18 19:49:34 $
+//   $Author: pwilly $
+//   $Date: 2008/06/11 10:22:19 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,6 +14,11 @@
 // Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+
+/*!
+    \file CModelValue.h
+    \brief Header file of class CModelEntity and CModelValue
+ */
 
 #ifndef COPASI_CModelValue
 #define COPASI_CModelValue
@@ -26,12 +31,13 @@
 class CModel;
 class CExpression;
 
-/**
- * CModelEntity is a base class for CCompartment, CMetab and CModelValue.
- * These three classes have in common that (in the long run) they can each be model variables
- * (subject to ODEs), constant, or subject to algebraic assignments.
- * In addition, the CMetab objects can also be subject to reactions, and conservation rules.
- *
+/*!
+    \brief The base class for CCompartment, CMetab and CModelValue.
+
+    CModelEntity is a base class for CCompartment, CMetab and CModelValue.
+    These three classes have in common that (in the long run) they can each be model variables
+    (subject to ODEs), constant, or subject to algebraic assignments.
+    In addition, the CMetab objects can also be subject to reactions, and conservation rules.
  */
 class CModelEntity : public CCopasiContainer
   {
@@ -118,15 +124,16 @@ class CModelEntity : public CCopasiContainer
      */
     virtual void calculate();
 
+    /// Retrieve the type status whether FIXED or not
     inline bool isFixed() const {return mStatus == FIXED;}
 
     /**
-     * Retreive the value
+     * Retrieve the value
      */
     const C_FLOAT64 & getValue() const;
 
     /**
-     * Retreive the initial value
+     * Retrieve the initial value
      */
     const C_FLOAT64 & getInitialValue() const;
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-//   $Revision: 1.61 $
+//   $Revision: 1.62 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/18 19:49:34 $
+//   $Author: pwilly $
+//   $Date: 2008/06/11 10:21:54 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,6 +14,11 @@
 // Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+
+/*!
+    \file CModelValue.cpp
+    \brief Implementation file of class CModelEntity and CModelValue
+ */
 
 #include <iostream>
 #include <string>

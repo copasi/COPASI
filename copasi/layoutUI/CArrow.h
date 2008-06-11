@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CArrow.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: urost $
-//   $Date: 2008/01/31 13:58:42 $
+//   $Author: pwilly $
+//   $Date: 2008/06/11 10:18:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,6 +14,11 @@
 // Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+
+/*!
+    \file CArrow.h
+    \brief Header file of class CArrow
+ */
 
 #ifndef ARROW_H_
 #define ARROW_H_

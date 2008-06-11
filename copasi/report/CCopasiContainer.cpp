@@ -1,14 +1,24 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiContainer.cpp,v $
-//   $Revision: 1.44 $
+//   $Revision: 1.45 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/02/15 17:30:50 $
+//   $Author: pwilly $
+//   $Date: 2008/06/11 10:26:46 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+
+/*!
+    \file CCopasiContainer.cpp
+    \brief Implementation file of class CCopasiContainer
+ */
 
 /**
  * Class CCopasiContainer

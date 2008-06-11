@@ -1,14 +1,24 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/BezierCurve.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: urost $
-//   $Date: 2007/09/14 10:12:54 $
+//   $Author: pwilly $
+//   $Date: 2008/06/11 10:13:58 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+
+/*!
+    \file BezierCurve.cpp
+    \brief Implementation file of class BezierCurve
+ */
 
 #include <math.h>
 
