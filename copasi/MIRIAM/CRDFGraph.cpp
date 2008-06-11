@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraph.cpp,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.34 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/10 20:31:11 $
+//   $Date: 2008/06/11 13:57:14 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -468,7 +468,7 @@ bool CRDFGraph::removeEmptyNodes()
       std::set< CRDFTriplet >::const_iterator endTriplet = Triplets.end();
 
       if (itTriplet == endTriplet)
-        this->destroyUnreferencedNode(*itRemove);
+        destroyUnreferencedNode(*itRemove);
 
       for (; itTriplet != endTriplet; ++itTriplet)
         itTriplet->pSubject->removeEdge(itTriplet->Predicate,
