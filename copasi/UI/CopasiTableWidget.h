@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.h,v $
-//   $Revision: 1.28 $
+//   $Revision: 1.29 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/03 13:20:32 $
+//   $Date: 2008/06/11 18:54:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -54,6 +54,7 @@ class CopasiTableWidget : public CopasiWidget
     bool isTableInFocus();
     bool isChanged();
     virtual void saveTable();
+    virtual QSize sizeHint() const;
 
   protected slots:
     virtual void slotTableSelectionChanged();
@@ -87,8 +88,6 @@ class CopasiTableWidget : public CopasiWidget
     QPushButton* btnDelete;
     QPushButton* btnNew;
     QPushButton* btnClear;
-    //    QHBoxLayout* mHLayout;
-    QHBoxLayout* mExtraLayout;
     std::vector<std::string> mKeys;
 
     C_INT32 numCols;

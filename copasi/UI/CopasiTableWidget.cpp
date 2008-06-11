@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.cpp,v $
-//   $Revision: 1.61 $
+//   $Revision: 1.62 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2008/03/03 16:58:29 $
+//   $Author: shoops $
+//   $Date: 2008/06/11 18:54:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -42,6 +42,7 @@ CopasiTableWidget::CopasiTableWidget(QWidget *parent, bool ro, const char * name
   //here the table is initialized
   table = new QTable(this, "table");
   QVBoxLayout *vBoxLayout = new QVBoxLayout(this, 6);
+  vBoxLayout->setMargin(0);
   vBoxLayout->addWidget(table);
 
   //table->sortColumn (0, true, true);
@@ -62,25 +63,18 @@ CopasiTableWidget::CopasiTableWidget(QWidget *parent, bool ro, const char * name
 
   flagtoAdjust = true;
 
-  //here the buttons are defined
   if (!mRO && mShowButtons)
     {
+      //here the buttons are defined
       btnOK = new QPushButton("Commit", this);
       btnCancel = new QPushButton("Revert", this);
       btnDelete = new QPushButton("Delete/Undelete", this);
       btnNew = new QPushButton("New", this);
       btnClear = new QPushButton("Clear", this);
-    }
 
-  //vBoxLayout->addSpacing(5);
-  mExtraLayout = new QHBoxLayout(vBoxLayout, 0);
-  //vBoxLayout->addSpacing(5);
+      QHBoxLayout* mHLayout = new QHBoxLayout(vBoxLayout, 0);
+      mHLayout->setMargin(6);
 
-  QHBoxLayout* mHLayout = new QHBoxLayout(vBoxLayout, 0);
-  if (!mRO && mShowButtons)
-    {
-      //mHLayout->addSpacing(32);
-      //mHLayout->addSpacing(50);
       mHLayout->addWidget(btnOK);
       mHLayout->addSpacing(5);
       mHLayout->addWidget(btnCancel);
@@ -90,6 +84,17 @@ CopasiTableWidget::CopasiTableWidget(QWidget *parent, bool ro, const char * name
       mHLayout->addWidget(btnDelete);
       mHLayout->addSpacing(5);
       mHLayout->addWidget(btnNew);
+
+      connect(btnOK, SIGNAL(clicked ()), this,
+              SLOT(slotBtnOKClicked()));
+      connect(btnCancel, SIGNAL(clicked ()), this,
+              SLOT(slotBtnCancelClicked()));
+      connect(btnDelete, SIGNAL(clicked ()), this,
+              SLOT(slotBtnDeleteClicked()));
+      connect(btnClear, SIGNAL(clicked ()), this,
+              SLOT(slotBtnClearClicked()));
+      connect(btnNew, SIGNAL(clicked ()), this,
+              SLOT(slotBtnNewClicked()));
     }
 
   // signals and slots connections
@@ -112,19 +117,6 @@ CopasiTableWidget::CopasiTableWidget(QWidget *parent, bool ro, const char * name
   //connect(table, SIGNAL(delKeyPressed()), this, SLOT(slotTableDelKey()));
   //<update_comment>
 
-  if (!mRO && mShowButtons)
-    {
-      connect(btnOK, SIGNAL(clicked ()), this,
-              SLOT(slotBtnOKClicked()));
-      connect(btnCancel, SIGNAL(clicked ()), this,
-              SLOT(slotBtnCancelClicked()));
-      connect(btnDelete, SIGNAL(clicked ()), this,
-              SLOT(slotBtnDeleteClicked()));
-      connect(btnClear, SIGNAL(clicked ()), this,
-              SLOT(slotBtnClearClicked()));
-      connect(btnNew, SIGNAL(clicked ()), this,
-              SLOT(slotBtnNewClicked()));
-    }
   mIgnoreUpdates = false;
 
   //call the specific initializations
@@ -608,13 +600,13 @@ bool CopasiTableWidget::isTableChanged()
   for (j = 0; j < jmax; ++j)
     {
       if (mFlagNew[j] && !mFlagDelete[j])
-	  {	changeMade = true;	}
+      {changeMade = true;}
       else if (mFlagDelete[j])
-        {	changeMade = true;	}
+      {changeMade = true;}
       else
         {
           if (mFlagChanged[j] || mFlagRenamed[j])
-            {	changeMade = true;	}
+          {changeMade = true;}
         }
     }
   return changeMade;
@@ -622,3 +614,11 @@ bool CopasiTableWidget::isTableChanged()
 
 void CopasiTableWidget::updateHeaderUnits()
 {}
+
+// virtual
+QSize CopasiTableWidget::sizeHint() const
+  {
+    QSize SizeHint = QWidget::sizeHint();
+    SizeHint.setHeight((table->numRows() + 2) * table->rowHeight(0));
+    return SizeHint;
+  }
