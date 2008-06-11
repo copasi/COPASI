@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFNode.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/10 20:31:11 $
+//   $Date: 2008/06/11 13:56:50 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -232,12 +232,7 @@ bool CRDFNode::setFieldValue(const std::string & value,
         }
     }
   else if (pObject != NULL)
-    {
-      removeTripletFromGraph(*Triplets.begin());
-
-      // Delete obsolete parent nodes
-      mGraph.clean();
-    }
+    removeTripletFromGraph(*Triplets.begin());
 
   return true;
 }
@@ -410,7 +405,6 @@ void CRDFNode::removeEdge(const CRDFPredicate & predicate, CRDFNode * pObject)
     {
       pTarget->removeEdge(CRDFPredicate::rdf_li, pObject);
 
-      unsigned int LiCount = mGraph.getTriplets(pTarget, CRDFPredicate::rdf_li).size();
       Triplets = mGraph.getTriplets(pTarget, CRDFPredicate::rdf_li);
       switch (Triplets.size())
         {
