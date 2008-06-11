@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.h,v $
-//   $Revision: 1.49 $
+//   $Revision: 1.50 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/18 19:49:33 $
+//   $Author: pwilly $
+//   $Date: 2008/06/11 10:04:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,6 +23,12 @@
 #include "function/CCallParameters.h"
 #include "utilities/CCopasiVector.h"
 
+/*!
+    \brief The class for handling a chemical kinetic function
+
+ This class is designed to handle all about a given chemical kinetic function from
+ editing and displaying (with help of MathML) the function to calculating the function value.
+ */
 class CFunction:
       public CEvaluationTree
   {
@@ -40,7 +46,7 @@ class CFunction:
 
     /**
      * Copy constructor
-     * @param "const CFunction &" src
+     * @param const CFunction & src
      * @param const CCopasiContainer * pParent (default: NULL)
      */
     CFunction(const CFunction & src,
@@ -52,37 +58,38 @@ class CFunction:
     virtual ~CFunction();
 
     /**
-     * Set the infix description of the tree and compile it.
+     * Function to set the infix description of the tree and compile it.
      * @param const std::string & infix
      * @return bool success
      */
     virtual bool setInfix(const std::string & infix);
 
     /**
-     * Calculates the value of the function
+     * Function to calculate the value of the function
      * @param const CCallParameters<C_FLOAT64> & callParameters
      * @return const C_FLOAT64 & result
      */
     virtual const C_FLOAT64 & calcValue(const CCallParameters<C_FLOAT64> & callParameters);
 
     /**
-     * Returns whether the function depends on the given parameter
-     * &param const void * parameter
-     * &param const CCallParameters<C_FLOAT64> & callParameters
-     * &param bool dependsOn
+     * Function to return whether it depends on the given parameter
+     * @param const void * parameter
+     * @param const CCallParameters<C_FLOAT64> & callParameters
+     * @param bool dependsOn
      */
     virtual bool dependsOn(const C_FLOAT64 * parameter,
                            const CCallParameters<C_FLOAT64> & callParameters) const;
 
     /**
-     * Retrieve the index to the value of the named variable.
+     * Function to retrieve the index to the value of the named variable.
      * @param const std::string & name
      * @return unsigned C_INT32 index
      */
     virtual unsigned C_INT32 getVariableIndex(const std::string & name) const;
 
     /**
-     * Retrieve the value of the indexed variable.
+     * Function to retrieve the value of the indexed variable.
+    *
      * Note this function is only usable during calcValue, since the values
      * of the call parameters are only defined during that time.
      * @param const unsigned C_INT32 & index
@@ -91,29 +98,29 @@ class CFunction:
     virtual const C_FLOAT64 & getVariableValue(const unsigned C_INT32 & index) const;
 
     /**
-     *  Set whether the function is reversible.
+     *  Function to set whether it is reversible.
      */
     void setReversible(const TriLogic & reversible);
 
     /**
-     *  Retrieves whether the function is reversible.
+     *  Function to retrieve whether it is reversible.
      */
     const TriLogic & isReversible() const;
 
     /**
-     * Retrives the definition of the parameters
+     * Function to retrive the definition of the parameters
      * @return CFunctionParameters & variables
      */
     CFunctionParameters & getVariables();
 
     /**
-     * Retrives the definition of the parameters
+     * Function to retrive the definition of the parameters
      * @return const CFunctionParameters & variables
      */
     const CFunctionParameters & getVariables() const;
 
     /**
-     * Adds the description of a variable.
+     * Function to add the description of a variable.
      * @param const string & name
      * @param const string & usage (Default: VARIABLE)
      * @param const CFunctionParameters::DataType & type (Default: value)
@@ -124,7 +131,7 @@ class CFunction:
                      const CFunctionParameter::DataType & type = CFunctionParameter::FLOAT64);
 
     /**
-     *  Loads an object with data coming from a CReadConfig object.
+     *  Function to load an object with data coming from a CReadConfig object.
      *  (CReadConfig object reads an input stream)
      *  @param "CReadConfig &" configBuffer
      *  @param "CReadConfig::Mode" mode (default: CReadConfig::SEARCH)
@@ -134,7 +141,7 @@ class CFunction:
                       CReadConfig::Mode mode = CReadConfig::SEARCH);
 
     /**
-     * determines whether the function is suitable for a reaction with
+     * Function to determine whether it is suitable for a reaction with
      * the given number of substrates and products and reversibility
      */
     bool isSuitable(const unsigned C_INT32 noSubstrates,
@@ -142,6 +149,10 @@ class CFunction:
                     const TriLogic reversible);
 
   protected:
+    /**
+     *  Function to initialize the parameters
+    *  @return bool success
+     */
     bool initVariables();
 
     // Attributes
@@ -165,26 +176,52 @@ class CFunction:
     TriLogic mReversible;
 
   public:
+    /**
+     *  This is an overloaded member function, provided for convenience.
+     *  It behaves essentially like the above function.
+    *  @param std::ostream & out
+    *  @param unsigned C_INT32 l
+     */
     virtual void writeMathML(std::ostream & out, unsigned C_INT32 l = 0) const;
 
+    /**
+     *  Function to write the mathematical formula in format of MathML.
+     *  @param std::ostream & out
+     *  @param const std::vector<std::vector<std::string> > & env
+     *  @param bool expand = true
+    *  @param bool fullExpand
+     *  @param unsigned C_INT32 l
+    */
     virtual void writeMathML(std::ostream & out,
                              const std::vector<std::vector<std::string> > & env,
                              bool expand = true, bool fullExpand = true,
                              unsigned C_INT32 l = 0) const;
 
     /**
-     *  create a list of the names of the function parameters in mathml format.
-     *  this list can be passed as the env argument to the writeMathML() method
-     */
+     *  Function to create a list of the names of the function parameters in MathML format.
+    *
+     *  This list can be passed as the env argument to the writeMathML() method.
+     *  @param std::vector<std::vector<std::string> > & env
+    */
     void createListOfParametersForMathML(std::vector<std::vector<std::string> > & env);
 
     /**
-     * insert operator
+     * Insert operator
      */
     friend std::ostream& operator<<(std::ostream &os, const CFunction & f);
 
+    /**
+     * Function to duplicate itself
+     */
     CFunction * createCopy() const;
 
+    /**
+     *  Function to split
+    *
+     *  @param const CEvaluationNode* node
+    *  @param const std::string & name1
+    *  @param const std::string & name2
+    */
     std::pair<CFunction *, CFunction *> splitFunction(const CEvaluationNode* node,
         const std::string & name1,
         const std::string & name2) const;
