@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CEvent.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/06/10 08:46:15 $
+//   $Date: 2008/06/11 12:42:38 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,7 +40,7 @@ CEvent::CEvent(const std::string & name,
     mpTriggerExpression(NULL),
     mpDelayExpression(NULL),
     mpExpressionEA(NULL) /*,
-                mpModel(NULL)*/
+                    mpModel(NULL)*/
 {
   std::cout << "CE::CE" << std::endl;
   CONSTRUCTOR_TRACE;
@@ -243,7 +243,7 @@ std::string CEvent::getExpressionDelay() const
 unsigned C_INT32 CEvent::getNumAssignments() const
   {
     //  std::cout << "CE::getNumAssignments - mActions.size() = " << mAssigns.size() << std::endl;
-    return mAssigns.size();
+    return mAssignsExpression.size();
   }
 
 void CEvent::setAssignment(std::vector<std::pair<std::string, std::string> > &vector)
@@ -535,15 +535,15 @@ bool CEvent::deleteAssignment(unsigned C_INT32 i)
 }
 
 //const std::vector<std::pair<std::string, CExpression> > CEvent::getAssignmentExpressionVector() const
-std::vector<std::pair<std::string, CExpression> > CEvent::getAssignmentExpressionVector()
+std::vector<std::pair<std::string, CExpression*> > CEvent::getAssignmentExpressionVector()
 //std::vector<std::pair<std::string, CExpression> > * CEvent::getAssignmentExpressionVector()
 {
-  if (!mAssigns.size()) // empty
+  if (!mAssignsExpression.size()) // empty
     {
       std::cout << "CE ERROR on L" << __LINE__ << ": mAssigns is empty" << std::endl;
-      return std::vector<std::pair<std::string, CExpression> > ();
+      return std::vector<std::pair<std::string, CExpression*> > ();
     }
-  return mAssigns;
+  return mAssignsExpression;
 }
 
 void CEvent::setAssignmentExpressionVector(std::vector<std::pair<std::string, CExpression> > &vector)
@@ -571,6 +571,7 @@ CExpression* CEvent::getTriggerExpressionPtr()
 
 void CEvent::setTriggerExpressionPtr(CExpression* pExpression)
 {
+  if (this->mpTriggerExpression != NULL) delete this->mpTriggerExpression;
   this->mpTriggerExpression = pExpression;
 }
 
@@ -625,5 +626,6 @@ const CExpression* CEvent::getDelayExpressionPtr() const
  */
 void CEvent::setDelayExpressionPtr(CExpression* pExpression)
 {
+  if (this->mpDelayExpression != NULL) delete this->mpDelayExpression;
   this->mpDelayExpression = pExpression;
 }

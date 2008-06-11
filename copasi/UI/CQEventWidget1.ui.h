@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQEventWidget1.ui.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/06/09 08:36:12 $
+//   $Author: gauges $
+//   $Date: 2008/06/11 12:42:38 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,7 +23,7 @@
  ** destructor.
  *****************************************************************************/
 
-#include <pair.h>
+#include <utility>
 
 #include "UI/qtUtilities.h"
 
@@ -597,7 +597,7 @@ bool CQEventWidget1::loadFromEvent()
   //   << " -vs- mCurrentAssignment.size() = " << mCurrentAssignment.size() << std::endl;
 
   //  mCurrentAssignment = *(mpEvent->getAssignmentExpressionVector());
-  std::vector<std::pair<std::string, CExpression> > currentAssignment;
+  std::vector<std::pair<std::string, CExpression*> > currentAssignment;
   currentAssignment.reserve(100);
   currentAssignment = mpEvent->getAssignmentExpressionVector();
 
@@ -606,7 +606,7 @@ bool CQEventWidget1::loadFromEvent()
   << " -vs- currentAssignment.size() = " << currentAssignment.size() << std::endl;
 
   mpEvent->showAssignments();
-  std::vector<std::pair<std::string, CExpression> >::iterator it;
+  std::vector<std::pair<std::string, CExpression*> >::iterator it;
 
   if (mObjectKeyDisplayName.size() != currentAssignment.size()) // happens only at the first time after loading a cps file
     {

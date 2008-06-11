@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.202 $
+//   $Revision: 1.203 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/06/10 08:46:16 $
+//   $Date: 2008/06/11 12:42:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -3777,11 +3777,32 @@ void SBMLImporter::importRuleForModelEntity(const Rule* rule, CModelEntity* pME,
       // check if the compartment is fixed
       const CCompartment* pCompartment = static_cast<CMetab*>(pME)->getCompartment();
       assert(pCompartment != NULL);
-      if (pCompartment->getStatus() == CModelValue::FIXED)
+      if (pSBMLSpecies->getHasOnlySubstanceUnits() == true)
         {
-          if (pSBMLSpecies->getHasOnlySubstanceUnits() == true)
+          // divide the expression by the volume
+          // check if the top level node is a multiplication and one
+          // of the children is the volume of the compartment the species
+          // is in. If this is the case, just drop the mutliplication
+          // instead of dividing
+          bool multiplication = false;
+          if (CEvaluationNode::type(pExpression->getRoot()->getType()) == CEvaluationNode::OPERATOR &&
+              (CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pExpression->getRoot()->getType()) == CEvaluationNodeOperator::MULTIPLY)
             {
-              // divide the expression by the volume
+              const CEvaluationNode* pChild1 = dynamic_cast<const CEvaluationNode*>(pExpression->getRoot()->getChild());
+              const CEvaluationNode* pChild2 = dynamic_cast<const CEvaluationNode*>(pChild1->getSibling());
+              if (CEvaluationNode::type(pChild1->getType()) == CEvaluationNode::OBJECT && dynamic_cast<const CEvaluationNodeObject*>(pChild1)->getData() == std::string("<" + pCompartment->getValueReference()->getCN() + ">"))
+                {
+                  pExpression->setRoot(pChild2->copyBranch());
+                  multiplication = true;
+                }
+              else if (CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::OBJECT && dynamic_cast<const CEvaluationNodeObject*>(pChild2)->getData() == std::string("<" + pCompartment->getValueReference()->getCN() + ">"))
+                {
+                  pExpression->setRoot(pChild1->copyBranch());
+                  multiplication = true;
+                }
+            }
+          if (multiplication == false)
+            {
               CEvaluationNodeObject* pVolumeNode = new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + pCompartment->getValueReference()->getCN() + ">");
               CEvaluationNodeOperator* pOperatorNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::DIVIDE, "/");
               pOperatorNode->addChild(pExpression->getRoot()->copyBranch());
@@ -3789,23 +3810,11 @@ void SBMLImporter::importRuleForModelEntity(const Rule* rule, CModelEntity* pME,
               pExpression->setRoot(pOperatorNode);
             }
         }
-      else
+      if (pCompartment->getStatus() != CModelValue::FIXED && pME->getStatus() == CModelValue::ODE)
         {
-          if (pSBMLSpecies->getHasOnlySubstanceUnits() == true)
-            {
-              // if it is an divide by the volume
-              CEvaluationNodeObject* pVolumeNode = new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + pCompartment->getValueReference()->getCN() + ">");
-              CEvaluationNodeOperator* pOperatorNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::DIVIDE, "/");
-              pOperatorNode->addChild(pExpression->getRoot()->copyBranch());
-              pOperatorNode->addChild(pVolumeNode);
-              pExpression->setRoot(pOperatorNode);
-            }
-          else
-            {
-              // if it is an assignment rule we do nothing, if it is an ode rule,
-              // we need to issue a warning or an error
-              CCopasiMessage::CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 51 , pSBMLSpecies->getId().c_str());
-            }
+          // if it is an assignment rule we do nothing, if it is an ode rule,
+          // we need to issue a warning or an error
+          CCopasiMessage::CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 51 , pSBMLSpecies->getId().c_str());
         }
     }
   pME->setStatus(status);
@@ -5485,10 +5494,55 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
       this->preprocessNode(pTmpNode, pSBMLModel, copasi2sbmlmap);
       // replace the object names
       this->replaceObjectNames(pTmpNode, copasi2sbmlmap);
+      // check if the model entity is a species and if it has the
+      // hasOnlySubstanceUnits flag set
+      // if so, we have to divide the expression by the volume of the species
+      // compartment
       // now we convert the node to a CEvaluationNode
+      std::map<CCopasiObject*, SBase*>::const_iterator pos2 = copasi2sbmlmap.find(pObject);
+      // we should always end up with an object, otherwise there is something
+      // wrong
+      if (pos2 == copasi2sbmlmap.end()) fatalError();
       CExpression* pExpression = new CExpression;
       pExpression->setTree(*pTmpNode);
       delete pTmpNode;
+      if (pos2->second->getTypeCode() == SBML_SPECIES && dynamic_cast<const Species*>(pos2->second)->getHasOnlySubstanceUnits() == true)
+        {
+          // divide the expression by the volume
+          // check if the top level node is a multiplication and one
+          // of the children is the volume of the compartment the species
+          // is in. If this is the case, just drop the mutliplication
+          // instead of dividing
+          bool multiplication = false;
+          const CMetab* pMetab = dynamic_cast<const CMetab*>(pObject);
+          assert(pMetab != NULL);
+          const CCompartment* pCompartment = pMetab->getCompartment();
+          if (CEvaluationNode::type(pExpression->getRoot()->getType()) == CEvaluationNode::OPERATOR &&
+              (CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pExpression->getRoot()->getType()) == CEvaluationNodeOperator::MULTIPLY)
+            {
+              const CEvaluationNode* pChild1 = dynamic_cast<const CEvaluationNode*>(pExpression->getRoot()->getChild());
+              const CEvaluationNode* pChild2 = dynamic_cast<const CEvaluationNode*>(pChild1->getSibling());
+              if (CEvaluationNode::type(pChild1->getType()) == CEvaluationNode::OBJECT && dynamic_cast<const CEvaluationNodeObject*>(pChild1)->getData() == std::string("<" + pCompartment->getValueReference()->getCN() + ">"))
+                {
+
+                  pExpression->setRoot(pChild2->copyBranch());
+                  multiplication = true;
+                }
+              else if (CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::OBJECT && dynamic_cast<const CEvaluationNodeObject*>(pChild2)->getData() == std::string("<" + pCompartment->getValueReference()->getCN() + ">"))
+                {
+                  pExpression->setRoot(pChild1->copyBranch());
+                  multiplication = true;
+                }
+            }
+          if (multiplication == false)
+            {
+              CEvaluationNodeObject* pVolumeNode = new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + pCompartment->getValueReference()->getCN() + ">");
+              CEvaluationNodeOperator* pOperatorNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::DIVIDE, "/");
+              pOperatorNode->addChild(pExpression->getRoot()->copyBranch());
+              pOperatorNode->addChild(pVolumeNode);
+              pExpression->setRoot(pOperatorNode);
+            }
+        }
       pCOPASIEvent->setAssignmentExpressionPtr(pObject->getKey(), pExpression);
     }
   // make sure there have been event assignment and if not, delete the
@@ -5496,6 +5550,10 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
   if (pCOPASIEvent->getAssignmentExpressionVector().size() == 0)
     {
       pCopasiModel->removeEvent(pCOPASIEvent->getKey());
+    }
+  else
+    {
+      copasi2sbmlmap[pCOPASIEvent] = const_cast<Event*>(pEvent);
     }
 }
 #endif // COPASI_DEBUG

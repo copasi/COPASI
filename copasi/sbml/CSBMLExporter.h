@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.h,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/05/13 14:13:02 $
+//   $Date: 2008/06/11 12:42:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -47,6 +47,7 @@ class CChemEqElement;
 class CFunctionDB;
 class Rule;
 class XMLNode;
+class Event;
 
 class CSBMLExporter
   {
@@ -260,7 +261,7 @@ class CSBMLExporter
      * contain a number of messages that specify why it can't be exported.
      */
     static void isExpressionSBMLCompatible(const CEvaluationTree& expr, const CCopasiDataModel& dataModel, int sbmlLevel, int sbmlVersion, std::vector<SBMLIncompatibility>& result,
-                                           const std::string& objectName, const std::string& objectType, bool initialExression = false);
+                                           const std::string& objectDescription, bool initialExression = false);
 
     /**
      * Checks wether the rule in the given model entity can be exported to SBML Level2 Version1.
@@ -300,7 +301,7 @@ class CSBMLExporter
     static void checkForUnsupportedFunctionCalls(const CEvaluationNode& node,
         const std::set<CEvaluationNodeFunction::SubType>& unsupportedFunctions,
         std::vector<SBMLIncompatibility>& result,
-        const std::string& objectName, const std::string& objectType);
+        const std::string& objectDescription);
 
     /**
      * This method checks wether the given model contains any initial assignments.
@@ -390,7 +391,27 @@ class CSBMLExporter
     /**
      * Creates an SBML Event for the given COPASI event.
      */
-    void createEvent(CEvent& event);
+    void createEvent(CEvent& event, Event* pSBMLEvent, CCopasiDataModel& dataModel);
+
+#ifdef COPASI_DEBUG
+    /**
+     * This method creates the individual event assignments for the given
+     * event.
+     */
+    void exportEventAssignments(const CEvent& event, Event* pSBMLEvent, CCopasiDataModel& dataModel);
+
+    /**
+     * This method checks if the given event assignment object is SBML
+     * compatible.
+     */
+    static void isEventAssignmentSBMLCompatible(std::string& key, const CExpression* pExpression, const CCopasiDataModel& dataModel, unsigned int sbmlLevel, unsigned int sbmlVersion, const std::string& eventName, std::vector<SBMLIncompatibility>& result);
+
+    /**
+     * This method checks if the given event object is SBML
+     * compatible.
+     */
+    static void isEventSBMLCompatible(const CEvent* pEvent, const CCopasiDataModel& dataModel, unsigned int sbmlLevel, unsigned int sbmlVersion, std::vector<SBMLIncompatibility>& result);
+#endif // COPASI_DEBUG
 
     /**
      * This method creates an ASTNode tree where all the species specified in

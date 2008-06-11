@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.27 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/06/06 09:55:11 $
+//   $Date: 2008/06/11 12:42:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,6 +52,13 @@
 #include <sbml/xml/XMLInputStream.h>
 #include "compareExpressions/compare_utilities.h"
 #include "MIRIAM/CRDFUtilities.h"
+
+// !!!TODO!!!
+// when exporting assignments for rules or events, we have to check if the
+// object that is assigned to is a metabolite and if this metabolite has the
+// hasOnlySubstanceUnits flag set on export.
+// If this is the case, the assignment expression has to be multiplied by the
+// compartment volume
 
 CSBMLExporter::CSBMLExporter(): mpSBMLDocument(NULL), mSBMLLevel(2), mSBMLVersion(1), mVariableVolumes(false), mpAvogadro(NULL), mAvogadroCreated(false), mMIRIAMWarning(false)
 {}
@@ -767,9 +774,7 @@ void CSBMLExporter::createInitialAssignment(const CModelEntity& modelEntity, CCo
 {
   // check the expression
   std::vector<SBMLIncompatibility> result;
-  std::string type = "initial expression for ";
-  type += modelEntity.getObjectType();
-  CSBMLExporter::isExpressionSBMLCompatible(*modelEntity.getInitialExpressionPtr(), dataModel, this->mSBMLLevel, this->mSBMLVersion, result, modelEntity.getObjectName(), type, true);
+  CSBMLExporter::isExpressionSBMLCompatible(*modelEntity.getInitialExpressionPtr(), dataModel, this->mSBMLLevel, this->mSBMLVersion, result, std::string("initial expression for object named \"" + modelEntity.getObjectName() + "\"").c_str(), true);
   // collect directly used functions
   if (result.empty())
     {
@@ -944,9 +949,7 @@ void CSBMLExporter::createRule(const CModelEntity& modelEntity, CCopasiDataModel
 {
   // check the expression
   std::vector<SBMLIncompatibility> result;
-  std::string type = "rule for ";
-  type += modelEntity.getObjectType();
-  CSBMLExporter::isExpressionSBMLCompatible(*modelEntity.getExpressionPtr(), dataModel, this->mSBMLLevel, this->mSBMLVersion, result, modelEntity.getObjectName(), type);
+  CSBMLExporter::isExpressionSBMLCompatible(*modelEntity.getExpressionPtr(), dataModel, this->mSBMLLevel, this->mSBMLVersion, result, std::string("rule for object named \"" + modelEntity.getObjectName() + "\"").c_str());
   // collect directly used functions
   if (result.empty())
     {
@@ -968,6 +971,7 @@ void CSBMLExporter::createRule(const CModelEntity& modelEntity, CCopasiDataModel
 
       // create the actual rule
       //Rule* pRule = this->mpSBMLDocument->getModel()->getRule(modelEntity.getSBMLId());
+      const CMetab* pMetab = dynamic_cast<const CMetab*>(&modelEntity);
       if (pOldRule == NULL)
         {
           if (modelEntity.getStatus() == CModelEntity::ASSIGNMENT)
@@ -976,7 +980,6 @@ void CSBMLExporter::createRule(const CModelEntity& modelEntity, CCopasiDataModel
             }
           else
             {
-              const CMetab* pMetab = dynamic_cast<const CMetab*>(&modelEntity);
               if (pMetab != NULL)
                 {
                   // check if the compartment is fixed
@@ -1006,6 +1009,44 @@ void CSBMLExporter::createRule(const CModelEntity& modelEntity, CCopasiDataModel
       // contains variable volumes or if the quantity units are set to CModel::number
       pOrigNode = this->replaceSpeciesReferences(pOrigNode, dataModel);
       assert(pOrigNode != NULL);
+      // check if the rule is for an amount species
+      // if this is the case, we have to multiply the expression by the volume
+      // of the compartment the species is in
+      if (pMetab != NULL)
+        {
+          std::map<const CCopasiObject*, SBase*>::const_iterator pos = this->mCOPASI2SBMLMap.find(&modelEntity);
+          assert(pos != this->mCOPASI2SBMLMap.end());
+          if (dynamic_cast<const Species*>(pos->second)->getHasOnlySubstanceUnits() == true)
+            {
+              const CCompartment* pCompartment = pMetab->getCompartment();
+              bool division = false;
+              // first we check if this is a division with the compartment volume
+              // if so, we just drop the division, otherwise we multiply with the
+              // compartment volume
+              if (CEvaluationNode::type(pOrigNode->getType()) == CEvaluationNode::OPERATOR &&
+                  (CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pOrigNode->getType()) == CEvaluationNodeOperator::DIVIDE)
+                {
+                  const CEvaluationNode* pChild = dynamic_cast<const CEvaluationNode*>(pOrigNode->getChild()->getSibling());
+                  if (CEvaluationNode::type(pChild->getType()) == CEvaluationNode::OBJECT && dynamic_cast<const CEvaluationNodeObject*>(pChild)->getData() == std::string("<" + pCompartment->getValueReference()->getCN() + ">"))
+                    {
+
+                      CEvaluationNode* pTmpNode = dynamic_cast<const CEvaluationNode*>(pOrigNode->getChild())->copyBranch();
+                      delete pOrigNode;
+                      pOrigNode = pTmpNode;
+                      division = true;
+                    }
+                }
+              if (division == false)
+                {
+                  CEvaluationNodeObject* pVolumeNode = new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + pCompartment->getValueReference()->getCN() + ">");
+                  CEvaluationNodeOperator* pOperatorNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
+                  pOperatorNode->addChild(pOrigNode->copyBranch());
+                  pOperatorNode->addChild(pVolumeNode);
+                  delete pOrigNode;
+                  pOrigNode = pOperatorNode;
+                }
+            }
+        }
       ASTNode* pNode = this->convertToASTNode(pOrigNode, dataModel);
       delete pOrigNode;
       if (pNode != NULL)
@@ -1015,24 +1056,7 @@ void CSBMLExporter::createRule(const CModelEntity& modelEntity, CCopasiDataModel
         }
       else
         {
-          if (this->mIncompleteExport == true)
-            {
-              // remove the rule from the SBML model
-              /* This is no longer necessary since we already remove all rules
-               * prior to calling createRules.
-              unsigned int i = 0, iMax = this->mpSBMLDocument->getModel()->getNumRules();
-              while (i < iMax)
-                {
-                  if (this->mpSBMLDocument->getModel()->getRule(i)->getVariable() == modelEntity.getSBMLId())
-                    {
-                      this->mpSBMLDocument->getModel()->getListOfRules()->remove(i);
-                      break;
-                    }
-                  ++i;
-                }
-               */
-            }
-          else
+          if (this->mIncompleteExport != true)
             {
               CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 60, "rule", modelEntity.getObjectType().c_str(), modelEntity.getObjectName().c_str());
             }
@@ -1431,11 +1455,11 @@ void CSBMLExporter::checkForODESpeciesInNonfixedCompartment(const CCopasiDataMod
  * contain a number of messages that specify why it can't be exported.
  */
 void CSBMLExporter::isExpressionSBMLCompatible(const CEvaluationTree& expr, const CCopasiDataModel& dataModel, int sbmlLevel, int sbmlVersion, std::vector<SBMLIncompatibility>& result,
-    const std::string& objectName, const std::string& objectType, bool initialExpression)
+    const std::string& objectDescription, bool initialExpression)
 {
   checkForUnsupportedObjectReferences(expr, dataModel, sbmlLevel, sbmlVersion, result, initialExpression);
   std::set<CEvaluationNodeFunction::SubType> unsupportedFunctionTypes = CSBMLExporter::createUnsupportedFunctionTypeSet(sbmlLevel);
-  checkForUnsupportedFunctionCalls(*expr.getRoot(), unsupportedFunctionTypes, result, objectName, objectType);
+  checkForUnsupportedFunctionCalls(*expr.getRoot(), unsupportedFunctionTypes, result, objectDescription);
 }
 
 /**
@@ -1462,7 +1486,7 @@ void CSBMLExporter::checkForUnsupportedFunctionCalls(const CCopasiDataModel& dat
       assert(pME != NULL);
       if (pME != NULL)
         {
-          checkForUnsupportedFunctionCalls(*pME->getExpressionPtr()->getRoot(), unsupportedFunctionTypes, result, pME->getObjectName(), pME->getObjectType());
+          checkForUnsupportedFunctionCalls(*pME->getExpressionPtr()->getRoot(), unsupportedFunctionTypes, result, std::string(pME->getObjectType() + " called \"" + pME->getObjectName() + "\""));
         }
     }
   // check ode rules
@@ -1473,7 +1497,7 @@ void CSBMLExporter::checkForUnsupportedFunctionCalls(const CCopasiDataModel& dat
       assert(pME != NULL);
       if (pME != NULL)
         {
-          checkForUnsupportedFunctionCalls(*pME->getExpressionPtr()->getRoot(), unsupportedFunctionTypes, result, pME->getObjectName(), pME->getObjectType());
+          checkForUnsupportedFunctionCalls(*pME->getExpressionPtr()->getRoot(), unsupportedFunctionTypes, result, std::string(pME->getObjectType() + " called \"" + pME->getObjectName() + "\""));
         }
     }
   // check initial assignments
@@ -1484,7 +1508,7 @@ void CSBMLExporter::checkForUnsupportedFunctionCalls(const CCopasiDataModel& dat
       assert(pME != NULL);
       if (pME != NULL)
         {
-          checkForUnsupportedFunctionCalls(*pME->getInitialExpressionPtr()->getRoot(), unsupportedFunctionTypes, result, pME->getObjectName(), pME->getObjectType());
+          checkForUnsupportedFunctionCalls(*pME->getInitialExpressionPtr()->getRoot(), unsupportedFunctionTypes, result, std::string(pME->getObjectType() + " called \"" + pME->getObjectName() + "\""));
         }
     }
   // if we already have a list of used functions, we can go through this here
@@ -1497,7 +1521,7 @@ void CSBMLExporter::checkForUnsupportedFunctionCalls(const CCopasiDataModel& dat
       assert(*it != NULL);
       if (*it != NULL)
         {
-          checkForUnsupportedFunctionCalls(*(*it)->getRoot(), unsupportedFunctionTypes, result, (*it)->getObjectName(), "function");
+          checkForUnsupportedFunctionCalls(*(*it)->getRoot(), unsupportedFunctionTypes, result, std::string("function called \"" + (*it)->getObjectName() + "\""));
         }
       ++it;
     }
@@ -1510,20 +1534,20 @@ void CSBMLExporter::checkForUnsupportedFunctionCalls(const CCopasiDataModel& dat
  */
 void CSBMLExporter::checkForUnsupportedFunctionCalls(const CEvaluationNode& node,
     const std::set<CEvaluationNodeFunction::SubType>& unsupportedFunctions,
-    std::vector<SBMLIncompatibility>& result, const std::string& objectName, const std::string& objectType)
+    std::vector<SBMLIncompatibility>& result, const std::string& objectDescription)
 {
   if (CEvaluationNode::type(node.getType()) == CEvaluationNode::FUNCTION)
     {
       CEvaluationNodeFunction::SubType subtype = (CEvaluationNodeFunction::SubType)CEvaluationNode::subType(node.getType());
       if (unsupportedFunctions.find(subtype) != unsupportedFunctions.end())
         {
-          result.push_back(SBMLIncompatibility(2, node.getData().c_str(), objectType.c_str(), objectName.c_str()));
+          result.push_back(SBMLIncompatibility(2, node.getData().c_str(), objectDescription.c_str()));
         }
     }
   const CEvaluationNode* pChild = dynamic_cast<const CEvaluationNode*>(node.getChild());
   while (pChild != NULL)
     {
-      checkForUnsupportedFunctionCalls(*pChild, unsupportedFunctions, result, objectType, objectName);
+      checkForUnsupportedFunctionCalls(*pChild, unsupportedFunctions, result, objectDescription);
       pChild = dynamic_cast<const CEvaluationNode*>(pChild->getSibling());
     }
 }
@@ -1735,7 +1759,7 @@ void CSBMLExporter::createFunctionDefinition(CFunction& function, CCopasiDataMod
   else
     {
       std::vector<SBMLIncompatibility> result;
-      CSBMLExporter::isExpressionSBMLCompatible(function, dataModel, this->mSBMLLevel, this->mSBMLVersion, result, function.getObjectName(), "function");
+      CSBMLExporter::isExpressionSBMLCompatible(function, dataModel, this->mSBMLLevel, this->mSBMLVersion, result, std::string("function with name \"" + function.getObjectName() + "\"").c_str());
       if (result.empty())
         {
           ASTNode* pFunNode = this->convertToASTNode(function.getRoot(), dataModel);
@@ -1992,7 +2016,8 @@ const std::vector<SBMLIncompatibility> CSBMLExporter::isModelSBMLCompatible(cons
             {
               // check for unsupported object references and unsupported function
               // calls
-              CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, (*compIt)->getObjectName(), "compartment");
+              usedFunctionNames.clear();
+              CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, std::string("compartment with name \"" + (*compIt)->getObjectName() + "\"").c_str());
               CSBMLExporter::findDirectlyUsedFunctions(pExpression->getRoot(), usedFunctionNames);
             }
         }
@@ -2001,7 +2026,8 @@ const std::vector<SBMLIncompatibility> CSBMLExporter::isModelSBMLCompatible(cons
         {
           // check for unsupported object references and unsupported function
           // calls
-          CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, (*compIt)->getObjectName(), "initial expression for compartment");
+          CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, std::string("initial expression for compartment named \"" + (*compIt)->getObjectName() + "\"").c_str());
+          usedFunctionNames.clear();
           CSBMLExporter::findDirectlyUsedFunctions(pExpression->getRoot(), usedFunctionNames);
         }
       ++compIt;
@@ -2020,7 +2046,8 @@ const std::vector<SBMLIncompatibility> CSBMLExporter::isModelSBMLCompatible(cons
             {
               // check for unsupported object references and unsupported function
               // calls
-              CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, (*metabIt)->getObjectName(), "rule for compartment");
+              CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, std::string("rule for species named \"" + (*metabIt)->getObjectName() + "\"").c_str());
+              usedFunctionNames.clear();
               CSBMLExporter::findDirectlyUsedFunctions(pExpression->getRoot(), usedFunctionNames);
             }
         }
@@ -2029,7 +2056,8 @@ const std::vector<SBMLIncompatibility> CSBMLExporter::isModelSBMLCompatible(cons
         {
           // check for unsupported object references and unsupported function
           // calls
-          CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, (*metabIt)->getObjectName(), "initial expression for metabolite");
+          CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, std::string("initial species for metabolite named \"" + (*metabIt)->getObjectName() + "\"").c_str());
+          usedFunctionNames.clear();
           CSBMLExporter::findDirectlyUsedFunctions(pExpression->getRoot(), usedFunctionNames);
         }
       ++metabIt;
@@ -2048,7 +2076,8 @@ const std::vector<SBMLIncompatibility> CSBMLExporter::isModelSBMLCompatible(cons
             {
               // check for unsupported object references and unsupported function
               // calls
-              CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, (*mvIt)->getObjectName(), "rule for global parameter");
+              CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, std::string("rule for global parameter named \"" + (*mvIt)->getObjectName() + "\"").c_str());
+              usedFunctionNames.clear();
               CSBMLExporter::findDirectlyUsedFunctions(pExpression->getRoot(), usedFunctionNames);
             }
         }
@@ -2057,7 +2086,8 @@ const std::vector<SBMLIncompatibility> CSBMLExporter::isModelSBMLCompatible(cons
         {
           // check for unsupported object references and unsupported function
           // calls
-          CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, (*mvIt)->getObjectName(), "initial expression for global parameter");
+          CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, std::string("initial expression for global parameter named \"" + (*mvIt)->getObjectName() + "\"").c_str());
+          usedFunctionNames.clear();
           CSBMLExporter::findDirectlyUsedFunctions(pExpression->getRoot(), usedFunctionNames);
         }
       ++mvIt;
@@ -2075,17 +2105,16 @@ const std::vector<SBMLIncompatibility> CSBMLExporter::isModelSBMLCompatible(cons
   switch (sbmlLevel)
     {
     case 2:
-      /*
       // check all events
       eventIt = pModel->getEvents().begin();
       eventEndit = pModel->getEvents().end();
       while (eventIt != eventEndit)
         {
-          // TODO add code to check event expressions
-          // TODO this has to be done once events are funktional
+#ifdef COPASI_DEBUG
+          CSBMLExporter::isEventSBMLCompatible(*eventIt, dataModel, sbmlLevel, sbmlVersion, result);
+#endif // COPASI_DEBUG
           ++eventIt;
         }
-        */
       switch (sbmlVersion)
         {
         case 1:
@@ -2118,23 +2147,423 @@ void CSBMLExporter::createEvents(CCopasiDataModel& dataModel)
     }
   else
     {
+#ifdef COPASI_DEBUG
+      // remove all events from the SBML model
+      // and put them in a set
+      std::set<Event*> eventSet;
+      Model* pSBMLModel = this->mpSBMLDocument->getModel();
+      assert(pSBMLModel != NULL);
+      while (pSBMLModel->getNumEvents() != 0)
+        {
+          Event* pEvent = pSBMLModel->getEvent(pSBMLModel->getNumEvents() - 1);
+          assert(pEvent != NULL);
+          eventSet.insert(pEvent);
+          pSBMLModel->getListOfEvents()->remove(pSBMLModel->getNumEvents() - 1);
+        }
       if (dataModel.getModel() == 0) return;
       const CCopasiVectorN<CEvent>& events = dataModel.getModel()->getEvents();
       CCopasiVectorN<CEvent>::const_iterator it = events.begin(), endit = events.end();
+      Event* pSBMLEvent = NULL;
+      std::map<const CCopasiObject*, SBase*>::const_iterator pos;
       while (it != endit)
         {
-          createEvent(**it);
+          // find the old event if there is one
+          pos = this->mCOPASI2SBMLMap.find(*it);
+          if (pos != this->mCOPASI2SBMLMap.end())
+            {
+              pSBMLEvent = dynamic_cast<Event*>(pos->second);
+              assert(pSBMLEvent != NULL);
+            }
+          else
+            {
+              pSBMLEvent = NULL;
+            }
+          // remove the event from the set
+          if (pSBMLEvent) eventSet.erase(pSBMLEvent);
+          this->createEvent(**it, pSBMLEvent, dataModel);
           ++it;
         }
+      // make sure events that have already been deleted do not get
+      // exported
+      std::set<Event*>::iterator it2 = eventSet.begin(), endit2 = eventSet.end();
+      while (it2 != endit2)
+        {
+          delete *it2;
+          ++it2;
+        }
+#endif // COPASI_DEBUG
     }
 }
 
-void CSBMLExporter::createEvent(CEvent& /*event*/)
+void CSBMLExporter::createEvent(CEvent& event, Event* pSBMLEvent, CCopasiDataModel& dataModel)
 {
-  // TODO once events are functional, we create them here
-  // TODO don't forget to call replaceSpeciesReferences
-  // TODO on all mathematical expressions
+  // once events are functional, we create them here
+  // don't forget to call replaceSpeciesReferences
+  // on all mathematical expressions
+#ifdef COPASI_DEBUG
+  // first check if we already have a corresponding event from an earlier
+  // import or export
+  // if none is found, we create a new event object
+  if (pSBMLEvent == NULL)
+    {
+      pSBMLEvent = this->mpSBMLDocument->getModel()->createEvent();
+    }
+  else
+    {
+      // readd the event to the model
+      this->mpSBMLDocument->getModel()->getListOfEvents()->appendAndOwn(pSBMLEvent);
+    }
+  // add the object to the COPASI2SBMLMap
+  this->mCOPASI2SBMLMap[&event] = pSBMLEvent;
+  // a)  we set the name and the id
+  if (!pSBMLEvent->isSetId())
+    {
+      std::string sbmlId = CSBMLExporter::createUniqueId(this->mIdMap, "event_");
+      this->mIdMap.insert(std::make_pair(sbmlId, pSBMLEvent));
+      pSBMLEvent->setId(sbmlId);
+      event.setSBMLId(sbmlId);
+    }
+  // if the name doesn't consists of whitespace only, we set the name
+  if (event.getObjectName().find_first_not_of("\t\r\n ") != std::string::npos)
+    {
+      pSBMLEvent->setName(event.getObjectName());
+    }
+  // b) we check the trigger expression and export the trigger
+  const CExpression* pExpression = event.getTriggerExpressionPtr();
+  assert(pExpression != NULL);
+  std::vector<SBMLIncompatibility> result;
+  CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, this->mSBMLLevel, this->mSBMLVersion, result, std::string("event trigger for event with id\"+" + event.getSBMLId() + "\""));
+  // collect directly used functions
+  if (result.empty())
+    {
+      std::set<std::string> directlyUsedFunctionNames;
+      CSBMLExporter::findDirectlyUsedFunctions(pExpression->getRoot(), directlyUsedFunctionNames);
+      std::set<CFunction*> usedFunctions = CSBMLExporter::createFunctionSetFromFunctionNames(directlyUsedFunctionNames, dataModel.getFunctionList());
+
+# if defined _MSC_VER && _MSC_VER < 1201 // 1200 Identifies Visual C++ 6.0
+      {
+        std::set<CFunction*>::const_iterator it = usedFunctions.begin();
+        std::set<CFunction*>::const_iterator end = usedFunctions.end();
+
+        for (; it != end; ++it)
+          this->mUsedFunctions.insert(*it);
+      }
+#else
+      this->mUsedFunctions.insert(usedFunctions.begin(), usedFunctions.end());
+#endif
+    }
+  else
+    {
+      if (this->mIncompleteExport)
+        {
+          this->mIncompatibilities.insert(this->mIncompatibilities.end(), result.begin(), result.end());
+        }
+      else
+        {
+          CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 60, "trigger expression", "event", event.getObjectName().c_str());
+        }
+    }
+  const CEvaluationNode* pOrigNode = pExpression->getRoot();
+  if (CEvaluationNode::type(pOrigNode->getType()) == CEvaluationNode::INVALID)
+    {
+      CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 70, "trigger", "event", event.getObjectName().c_str());
+    }
+  // the next few lines replace references to species depending on whether
+  // it is a reference to an amount or a reference to a concentration.
+  // Other factors that influence this replacement are if the model
+  // contains variable volumes or if the quantity units are set to CModel::number
+  pOrigNode = this->replaceSpeciesReferences(pOrigNode, dataModel);
+  assert(pOrigNode != NULL);
+  ASTNode* pNode = this->convertToASTNode(pOrigNode, dataModel);
+  delete pOrigNode;
+  if (pNode != NULL)
+    {
+      Trigger* pTrigger = new Trigger(pNode);
+      pSBMLEvent->setTrigger(pTrigger);
+      delete pNode;
+      delete pTrigger;
+    }
+  else
+    {
+      if (this->mIncompleteExport != true)
+        {
+          CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 60, "trigger", "event", event.getObjectName().c_str());
+        }
+    }
+
+  // c) we check the delay expression and export it if it is set
+  pExpression = event.getDelayExpressionPtr();
+  if (pExpression != NULL)
+    {
+      result.clear();
+      CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, this->mSBMLLevel, this->mSBMLVersion, result, std::string("event delay for event with id\"+" + event.getSBMLId() + "\"").c_str());
+      // collect directly used functions
+      if (result.empty())
+        {
+          std::set<std::string> directlyUsedFunctionNames;
+          CSBMLExporter::findDirectlyUsedFunctions(pExpression->getRoot(), directlyUsedFunctionNames);
+          std::set<CFunction*> usedFunctions = CSBMLExporter::createFunctionSetFromFunctionNames(directlyUsedFunctionNames, dataModel.getFunctionList());
+
+# if defined _MSC_VER && _MSC_VER < 1201 // 1200 Identifies Visual C++ 6.0
+          {
+            it = usedFunctions.begin();
+            usedFunctions.end();
+
+            for (; it != end; ++it)
+              this->mUsedFunctions.insert(*it);
+          }
+#else
+          this->mUsedFunctions.insert(usedFunctions.begin(), usedFunctions.end());
+#endif
+        }
+      else
+        {
+          if (this->mIncompleteExport)
+            {
+              this->mIncompatibilities.insert(this->mIncompatibilities.end(), result.begin(), result.end());
+            }
+          else
+            {
+              CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 60, "delay expression", "event", event.getObjectName().c_str());
+            }
+        }
+      pOrigNode = pExpression->getRoot();
+      if (CEvaluationNode::type(pOrigNode->getType()) == CEvaluationNode::INVALID)
+        {
+          CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 70, "delay", "event", event.getObjectName().c_str());
+        }
+      // the next few lines replace references to species depending on whether
+      // it is a reference to an amount or a reference to a concentration.
+      // Other factors that influence this replacement are if the model
+      // contains variable volumes or if the quantity units are set to CModel::number
+      pOrigNode = this->replaceSpeciesReferences(pOrigNode, dataModel);
+      assert(pOrigNode != NULL);
+      pNode = this->convertToASTNode(pOrigNode, dataModel);
+      delete pOrigNode;
+      if (pNode != NULL)
+        {
+          Delay* pDelay = new Delay(pNode);
+          pSBMLEvent->setDelay(pDelay);
+          delete pNode;
+          delete pDelay;
+        }
+      else
+        {
+          if (this->mIncompleteExport != true)
+            {
+              CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 60, "delay", "event", event.getObjectName().c_str());
+            }
+        }
+    }
+  // export all event assignments
+  this->exportEventAssignments(event, pSBMLEvent, dataModel);
+  // check if the event has event assignments, if not, we have to delete
+  // the event and create an error message
+  if (pSBMLEvent->getNumEventAssignments() == 0)
+    {
+      unsigned int i, iMax = this->mpSBMLDocument->getModel()->getNumEvents();
+      // the following code does not check if the corrct pointer is found
+      // but this should not be a problem
+      for (i = 0;i < iMax;++i)
+        {
+          if (this->mpSBMLDocument->getModel()->getEvent(i) == pSBMLEvent)
+            {
+              this->mpSBMLDocument->getModel()->getListOfEvents()->remove(i);
+            }
+        }
+      delete pSBMLEvent;
+      this->mCOPASI2SBMLMap.erase(&event);
+    }
+#endif // COPASI_DEBUG
 }
+
+#ifdef COPASI_DEBUG
+void CSBMLExporter::exportEventAssignments(const CEvent& event, Event* pSBMLEvent, CCopasiDataModel& dataModel)
+{
+  //  we export all event assignments
+  //    i) delete all event assignments and add them to a vector (see rules)
+  std::map<std::string, EventAssignment*> assignmentMap;
+  while (pSBMLEvent->getNumEventAssignments() != 0)
+    {
+      EventAssignment* pAssignment = pSBMLEvent->getEventAssignment(pSBMLEvent->getNumEventAssignments() - 1);
+      assert(pAssignment != NULL);
+      assignmentMap[pAssignment->getVariable()] = pAssignment;
+      pSBMLEvent->getListOfEventAssignments()->remove(pSBMLEvent->getNumEventAssignments() - 1);
+    }
+  unsigned int i, iMax = event.getNumAssignments();
+  for (i = 0;i < iMax;++i)
+    {
+      //    ii) for each assignment, check if there already is an old assignment
+      //        for this variable
+      std::string key = event.getAssignmentObjectKey(i);
+      //        now we have to get the object for the key, check if the object is a
+      //        compartment, species or global parameter,
+      const CCopasiObject* pObject = GlobalKeys.get(key);
+      std::string objectType = pObject->getObjectType();
+      if (objectType == "Reference")
+        {
+          pObject = pObject->getObjectParent();
+          objectType = pObject->getObjectType();
+        }
+      if (objectType != "Compartment" && objectType != "Metabolite" && objectType != "ModelValue")
+        {
+          // create an error message that only compartment, species and
+          // global parameters can be used in an event assignment
+          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 32, std::string("event assignment for event called \"" + event.getObjectName() + "\"").c_str(), pObject->getObjectName().c_str());
+        }
+      std::map<const CCopasiObject*, SBase*>::const_iterator pos = this->mCOPASI2SBMLMap.find(pObject);
+      if (pos == this->mCOPASI2SBMLMap.end())
+        {
+          // create a general error message that the export of an event
+          // assignment failed and continue
+          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 73, std::string("event assignment for object called \"" + pObject->getObjectName() + "\" in evend named \"" + event.getObjectName() + "\"").c_str(), "event assignment");
+          continue;
+        }
+      //  iii) for each assignment, check if the object that variable points to has been exported
+      SBase* pSBase = pos->second;
+      assert(pSBase != NULL);
+      if (this->mHandledSBMLObjects.find(pSBase) == this->mHandledSBMLObjects.end())
+        {
+          // create an error message that the event assignment is for an object
+          // that is no longer part of the model
+          // ignore it and continue
+          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 57, std::string("event assignment in event called \"" + event.getObjectName() + "\"").c_str(), pSBase->getId().c_str());
+          continue;
+        }
+      std::string sbmlId = pSBase->getId();
+      assert(sbmlId.find_first_not_of("\t\r\n ") != std::string::npos);
+      std::map<std::string, EventAssignment*>::iterator pos2 = assignmentMap.find(sbmlId);
+      EventAssignment* pAssignment = NULL;
+      if (pos2 != assignmentMap.end())
+        {
+          pAssignment = dynamic_cast<EventAssignment*>(pos->second);
+          assert(pAssignment != NULL);
+          pSBMLEvent->getListOfEventAssignments()->appendAndOwn(pAssignment);
+        }
+      if (pAssignment == NULL)
+        {
+          pAssignment = pSBMLEvent->createEventAssignment();
+        }
+      pAssignment->setVariable(sbmlId);
+      //    iv) for each assignment, check the assignment expression if it is valid
+      const CExpression* pExpression = event.getAssignmentExpressionPtr(i);
+      if (pExpression != NULL)
+        {
+          std::vector<SBMLIncompatibility> result;
+          CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, this->mSBMLLevel, this->mSBMLVersion, result, std::string("event assignment for variable \"" + sbmlId + "\" in event with id\"+" + event.getSBMLId() + "\""));
+          // collect directly used functions
+          if (result.empty())
+            {
+              std::set<std::string> directlyUsedFunctionNames;
+              CSBMLExporter::findDirectlyUsedFunctions(pExpression->getRoot(), directlyUsedFunctionNames);
+              std::set<CFunction*> usedFunctions = CSBMLExporter::createFunctionSetFromFunctionNames(directlyUsedFunctionNames, dataModel.getFunctionList());
+
+# if defined _MSC_VER && _MSC_VER < 1201 // 1200 Identifies Visual C++ 6.0
+              {
+                it = usedFunctions.begin();
+                usedFunctions.end();
+
+                for (; it != end; ++it)
+                  this->mUsedFunctions.insert(*it);
+              }
+#else
+              this->mUsedFunctions.insert(usedFunctions.begin(), usedFunctions.end());
+#endif
+            }
+          else
+            {
+              if (this->mIncompleteExport)
+                {
+                  this->mIncompatibilities.insert(this->mIncompatibilities.end(), result.begin(), result.end());
+                }
+              else
+                {
+                  CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 60, std::string("event assignment for variable with id \"" + sbmlId + "\"").c_str(), "event", event.getObjectName().c_str());
+                }
+            }
+          const CEvaluationNode* pOrigNode = pExpression->getRoot();
+          if (CEvaluationNode::type(pOrigNode->getType()) == CEvaluationNode::INVALID)
+            {
+              CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 70, std::string("event assignment for variable with id \"" + sbmlId + "\"").c_str(), "event", event.getObjectName().c_str());
+            }
+          // the next few lines replace references to species depending on whether
+          // it is a reference to an amount or a reference to a concentration.
+          // Other factors that influence this replacement are if the model
+          // contains variable volumes or if the quantity units are set to CModel::number
+          pOrigNode = this->replaceSpeciesReferences(pOrigNode, dataModel);
+          assert(pOrigNode != NULL);
+          // check if the assignment belongs to an amount species
+          // if so, multiply the expression be the volume of the compartment that
+          // the species belongs to.
+          const CMetab* pMetab = dynamic_cast<const CMetab*>(pObject);
+          if (pMetab != NULL)
+            {
+              std::map<const CCopasiObject*, SBase*>::const_iterator pos = this->mCOPASI2SBMLMap.find(pObject);
+              assert(pos != this->mCOPASI2SBMLMap.end());
+              if (dynamic_cast<const Species*>(pos->second)->getHasOnlySubstanceUnits() == true)
+                {
+                  const CCompartment* pCompartment = pMetab->getCompartment();
+                  bool division = false;
+                  // first we check if this is a division with the compartment volume
+                  // if so, we just drop the division, otherwise we multiply with the
+                  // compartment volume
+                  if (CEvaluationNode::type(pOrigNode->getType()) == CEvaluationNode::OPERATOR &&
+                      (CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pOrigNode->getType()) == CEvaluationNodeOperator::DIVIDE)
+                    {
+                      const CEvaluationNode* pChild = dynamic_cast<const CEvaluationNode*>(pOrigNode->getChild()->getSibling());
+                      if (CEvaluationNode::type(pChild->getType()) == CEvaluationNode::OBJECT && dynamic_cast<const CEvaluationNodeObject*>(pChild)->getData() == std::string("<" + pCompartment->getValueReference()->getCN() + ">"))
+                        {
+
+                          CEvaluationNode* pTmpNode = dynamic_cast<const CEvaluationNode*>(pOrigNode->getChild())->copyBranch();
+                          delete pOrigNode;
+                          pOrigNode = pTmpNode;
+                          division = true;
+                        }
+                    }
+                  if (division == false)
+                    {
+                      CEvaluationNodeObject* pVolumeNode = new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + pCompartment->getValueReference()->getCN() + ">");
+                      CEvaluationNodeOperator* pOperatorNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
+                      pOperatorNode->addChild(pOrigNode->copyBranch());
+                      pOperatorNode->addChild(pVolumeNode);
+                      delete pOrigNode;
+                      pOrigNode = pOperatorNode;
+                    }
+                }
+            }
+
+          ASTNode* pNode = this->convertToASTNode(pOrigNode, dataModel);
+          delete pOrigNode;
+          if (pNode != NULL)
+            {
+              pAssignment->setMath(pNode);
+              delete pNode;
+            }
+          else
+            {
+              if (this->mIncompleteExport != true)
+                {
+                  CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 60, std::string("event assignment for variable with id \"" + sbmlId + "\"").c_str(), "event", event.getObjectName().c_str());
+                }
+            }
+        }
+      else
+        {
+          // create an error message that the event assignment could not be
+          // created and continue
+          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 73, std::string("event assignment for variable with id \"" + sbmlId + "\"").c_str(), "event assignment");
+          continue;
+        }
+    }
+  //    v) delete the old unused assignments
+  std::map<std::string, EventAssignment*>::iterator it = assignmentMap.begin(), endit = assignmentMap.end();
+  while (it != endit)
+    {
+      delete it->second;
+      ++it;
+    }
+}
+#endif // COPASI_DEBUG
 
 void CSBMLExporter::checkForEvents(const CCopasiDataModel& dataModel, std::vector<SBMLIncompatibility>& result)
 {
@@ -4816,3 +5245,115 @@ void CSBMLExporter::setFunctionSBMLIds(const CEvaluationNode* pNode, CCopasiData
       pChild = dynamic_cast<const CEvaluationNode*>(pChild->getSibling());
     }
 }
+
+#ifdef COPASI_DEBUG
+void CSBMLExporter::isEventSBMLCompatible(const CEvent* pEvent, const CCopasiDataModel& dataModel, unsigned int sbmlLevel, unsigned int sbmlVersion, std::vector<SBMLIncompatibility>& result)
+{
+  if (pEvent == NULL) return;
+  // check if the trigger and the delay expression only reference allowed
+  // model entities
+  // make sure no two event assignments assign to the same variable
+  std::set<std::string> usedFunctionNames;
+  const CExpression* pExpression = pEvent->getTriggerExpressionPtr();
+  if (pExpression != NULL)
+    {
+      // check for unsupported object references and unsupported function
+      // calls
+      CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, std::string("trigger expression for event named \"" + pEvent->getObjectName() + "\"").c_str());
+      usedFunctionNames.clear();
+      CSBMLExporter::findDirectlyUsedFunctions(pExpression->getRoot(), usedFunctionNames);
+    }
+  pExpression = pEvent->getDelayExpressionPtr();
+  if (pExpression != NULL)
+    {
+      // check for unsupported object references and unsupported function
+      // calls
+      CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, std::string("delay expression for event named \"" + pEvent->getObjectName() + "\"").c_str());
+      usedFunctionNames.clear();
+      CSBMLExporter::findDirectlyUsedFunctions(pExpression->getRoot(), usedFunctionNames);
+    }
+  std::set<std::string> objectKeys;
+  std::set<std::string> nonUniqueObjectKeys;
+  unsigned int i, iMax = pEvent->getNumAssignments();
+  for (i = 0;i < iMax;++i)
+    {
+      std::string key = pEvent->getAssignmentObjectKey(i);
+      if (objectKeys.find(key) == objectKeys.end())
+        {
+          objectKeys.insert(key);
+        }
+      else
+        {
+          // This should never happen since I assume that COPASI will have
+          // the same restiction as SBML with respect to unique assignments
+          // within an event
+          if (nonUniqueObjectKeys.find(key) == nonUniqueObjectKeys.end())
+            {
+              nonUniqueObjectKeys.insert(key);
+              const CCopasiObject* pObject = GlobalKeys.get(key);
+              assert(pObject != NULL);
+              CCopasiMessage::CCopasiMessage(CCopasiMessage::RAW, std::string("Error. Event called \"" + pEvent->getObjectName() + "\" has several assignments to the same object called \"" + pObject->getObjectName() + "\".").c_str());
+            }
+        }
+      CSBMLExporter::isEventAssignmentSBMLCompatible(key, pEvent->getAssignmentExpressionPtr(i), dataModel, sbmlLevel, sbmlVersion, pEvent->getObjectName(), result);
+    }
+}
+
+void CSBMLExporter::isEventAssignmentSBMLCompatible(std::string& key, const CExpression* pExpression, const CCopasiDataModel& dataModel, unsigned int sbmlLevel, unsigned int sbmlVersion, const std::string& eventName, std::vector<SBMLIncompatibility>& result)
+{
+  // check if the key points to a compartment, species or global value
+  const CCopasiObject* pObject = GlobalKeys.get(key);
+  assert(pObject != NULL);
+  const CModelEntity* pME = dynamic_cast<const CModelEntity*>(pObject);
+  if (pME == NULL)
+    {
+      // create an error message since the object is not a
+      // compartment, species or model value
+    }
+  else
+    {
+      std::string objectType = pME->getObjectType();
+      if (objectType != "Compartment" && objectType != "Metabolite" && objectType != "ModelValue")
+        {
+          // create an error message since the object is not a
+          // compartment, species or model value
+          result.push_back(SBMLIncompatibility(9, pObject->getObjectName().c_str(), std::string("event called \"" + eventName + "\"").c_str()));
+        }
+      else
+        {
+          // make sure the component that is assigned to is not constant
+          if (pME->getStatus() == CModelEntity::FIXED)
+            {
+              // create an nerror message since the entity may not be
+              // constant
+              // This is a raw message since I do expect COPASI to have the same
+              // restriction as SBML, so this should never happen
+              CCopasiMessage::CCopasiMessage(CCopasiMessage::RAW, std::string("Error. Event assignment to constant object named \"" + pObject->getObjectName() + "\" in event named \"" + eventName + "\".").c_str());
+            }
+          // make sure there is no assignment rule for the variable
+          else if (pME->getStatus() == CModelEntity::ASSIGNMENT)
+            {
+              // create an nerror message since the entity may not be
+              // determined by an assignment
+              // This is a raw message since I do expect COPASI to have the same
+              // restriction as SBML, so this should never happen
+              CCopasiMessage::CCopasiMessage(CCopasiMessage::RAW, std::string("Error. Event assignment to object called \"" + pObject->getObjectName() + "\" in event named \"" + eventName + "\", which is determined by an assignment rule.").c_str());
+            }
+          // check if the expression only references allowed model entities
+          if (pExpression != NULL && CEvaluationNode::type(pExpression->getRoot()->getType()) != CEvaluationNode::INVALID)
+            {
+
+              std::set<std::string> usedFunctionNames;
+              CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, std::string("assignment expression for variable named \"" + pObject->getObjectName() + "\" in event named \"" + eventName + "\"").c_str());
+              CSBMLExporter::findDirectlyUsedFunctions(pExpression->getRoot(), usedFunctionNames);
+            }
+          else
+            {
+              // This is a raw message since I do expect COPASI to always have
+              // an assignment expression
+              CCopasiMessage::CCopasiMessage(CCopasiMessage::RAW, std::string("Error. No expression set for event assignment to object called \"" + pObject->getObjectName() + "\" in event named \"" + eventName + "\".").c_str());
+            }
+        }
+    }
+}
+#endif // COPASI_DEBUG

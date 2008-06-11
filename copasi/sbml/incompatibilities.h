@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/incompatibilities.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/01/11 15:12:25 $
+//   $Author: gauges $
+//   $Date: 2008/06/11 12:42:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,7 +22,7 @@ const INCOMPATIBILITY Incompatibilities[] =
   {
     {0, 0, 0, SBMLIncompatibility::UNDEFINED, "", ""},
     {1, 0, 0, SBMLIncompatibility::ERROR, "SBML Incompatibility (1): Object that refers to the \"%s\" of %s \"%s\" has been referenced in a mathematical expression that can not be expressed in SBML.", "Mathematical Expressions in SBML files can only reference the transient values of compartments, species, global parameters and reaction fluxes. In COPASI references to other objects, e.g. the initial value of a species, are also allowed and these references can not be expressed in an SBML file."},
-    {2, 0, 0, SBMLIncompatibility::ERROR, "SBML Incompatibility (2): Call to function \"%s\" used in mathematical expression for %s \"%s\" which can not be exported to SBML."
+    {2, 0, 0, SBMLIncompatibility::ERROR, "SBML Incompatibility (2): Call to function \"%s\" used in mathematical expression for %s which can not be exported to SBML."
      , "Some functions that can be used in mathematical expressions in COPASI models do not have equivalents in MathML or the subset of MathML used by SBML and there is not easy way to convert the function call to something that is SBML compatible. The random distribution functions available in COPASI are an example for this."},
     {3, 0, 0, SBMLIncompatibility::WARNING, "SBMLIncompatibility (3): Species \"%s\" is defined via an ODE Rule and it is located in compartment \"%s\" which has a variable volume."
      , "The interpretation of ODE rules for metabolites in compartments with variable volume is slightly different between COPASI and SBML. Those rules can be exported, but another Simulation programm will likely come up with different results."},
@@ -31,6 +31,7 @@ const INCOMPATIBILITY Incompatibilities[] =
     {6, 0, 0, SBMLIncompatibility::ERROR, "SBMLIncompatibility (6): SBML Level %d Version %d is not supported.", "COPASI only supports export to SBML Level 1 Version 2, SBML Level 2 Version 1 and SBML Level 2 Version 3."},
     {7, 2, 1, SBMLIncompatibility::ERROR, "SBMLIncompatibility (7): One or more events found.", "Events were introduced to SBML Level 2 Version 1. Prior versions of SBML do not support this feature and therefore models using events can not be fully exported to SBML Level 1"},
     {8, 2, 1, SBMLIncompatibility::ERROR, "SBMLIncompatibility (8): Piecewise function definition found in %s with name \"%s\".", "Piecewise function definitions were introduced in SBML Level 2 Version 1. Expressions using them can not be exported to SBML Level 1."},
+    {9, 0, 0, SBMLIncompatibility::ERROR, "SBMLIncompatibility (9): Assignment to object called \"%s\" found in %s, which is not a compartment, species or global parameter. Since SBML only allows assignments (rules and events) to compartments, species and global parameters, the assignment can not be exported to SBML."},
     // This must be the last element of the message list! Do not delete!
     {9999, 0, 0, SBMLIncompatibility::UNDEFINED, NULL, NULL}
   };

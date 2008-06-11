@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CEvent.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/06/10 08:46:15 $
+//   $Date: 2008/06/11 12:42:38 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -230,7 +230,7 @@ class CEvent : public CCopasiContainer
 
     /// retrieve the vector of assignment expression
     // const std::vector<std::pair<std::string, CExpression> > getAssignmentExpressionVector() const;
-    std::vector<std::pair<std::string, CExpression> > getAssignmentExpressionVector();
+    std::vector<std::pair<std::string, CExpression*> > getAssignmentExpressionVector();
     // std::vector<std::pair<std::string, CExpression> > * getAssignmentExpressionVector();
 
     /// set the vector of assignment expression
