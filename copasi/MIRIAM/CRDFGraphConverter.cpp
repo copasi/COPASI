@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraphConverter.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/10 20:31:11 $
+//   $Date: 2008/06/11 19:18:05 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -117,22 +117,19 @@ bool CRDFGraphConverter::SBML2Copasi(std::string & XML)
 
   // Convert the graph.
   bool success = convert(pGraph, SBML2CopasiChanges);
-  pGraph->addNameSpace("CopasiMT", "http://www.copasi.org/RDF/MiriamTerms#");
 
   // Serialize the graph
   pGraph->clean();
-  pGraph->removeUnusedNamespaces();
+  pGraph->updateNamespaces();
 
   XML = CRDFWriter::xmlFromGraph(pGraph);
 
-  std::cout << XML << std::endl;
   return success;
 }
 
 // static
 bool CRDFGraphConverter::convert(CRDFGraph * pGraph, const CRDFGraphConverter::sChange * changes)
 {
-  std::cout << std::endl << "Beginning Conversion: " << std::endl;
   bool success = true;
 
   std::set< CRDFTriplet> Triplets;
@@ -176,8 +173,6 @@ bool CRDFGraphConverter::convert(CRDFGraph * pGraph,
                                  const CRDFTriplet & triplet,
                                  const CRDFPredicate::Path & newPath)
 {
-  std::cout << "Converting Triplet: " << triplet;
-
   CRDFPredicate::Path CurrentPath = triplet.pObject->getPath();
 
   unsigned SubPathIndex = C_INVALID_INDEX;

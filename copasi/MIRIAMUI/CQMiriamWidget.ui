@@ -1,10 +1,10 @@
 <!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQMiriamWidget.ui,v $ </comment>
-<comment>   $Revision: 1.1 $ </comment>
+<comment>   $Revision: 1.2 $ </comment>
 <comment>   $Name:  $ </comment>
 <comment>   $Author: shoops $ </comment>
-<comment>   $Date: 2008/06/03 13:21:21 $ </comment>
+<comment>   $Date: 2008/06/11 19:18:05 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -22,7 +22,7 @@
             <x>0</x>
             <y>0</y>
             <width>501</width>
-            <height>482</height>
+            <height>410</height>
         </rect>
     </property>
     <property name="caption">
@@ -38,45 +38,6 @@
             </property>
             <property name="text">
                 <string>Created at</string>
-            </property>
-        </widget>
-        <widget class="QLabel" row="1" column="0">
-            <property name="name">
-                <cstring>mpLblAuthors</cstring>
-            </property>
-            <property name="text">
-                <string>Authors</string>
-            </property>
-        </widget>
-        <widget class="CCreatorsWidget" row="2" column="0" rowspan="1" colspan="3">
-            <property name="name">
-                <cstring>mpTblAuthors</cstring>
-            </property>
-        </widget>
-        <widget class="QLabel" row="5" column="0">
-            <property name="name">
-                <cstring>mpLblDescription</cstring>
-            </property>
-            <property name="text">
-                <string>Biological Description</string>
-            </property>
-        </widget>
-        <widget class="CBiologicalDescriptionsWidget" row="6" column="0" rowspan="1" colspan="3">
-            <property name="name">
-                <cstring>mpTblDescription</cstring>
-            </property>
-        </widget>
-        <widget class="QLabel" row="3" column="0">
-            <property name="name">
-                <cstring>mpLblReferences</cstring>
-            </property>
-            <property name="text">
-                <string>References</string>
-            </property>
-        </widget>
-        <widget class="CReferencesWidget" row="4" column="0" rowspan="1" colspan="3">
-            <property name="name">
-                <cstring>mpTblReferences</cstring>
             </property>
         </widget>
         <widget class="QDateTimeEdit" row="0" column="1">
@@ -101,7 +62,7 @@
                 </size>
             </property>
         </spacer>
-        <widget class="QLayoutWidget" row="8" column="0" rowspan="1" colspan="3">
+        <widget class="QLayoutWidget" row="5" column="0" rowspan="1" colspan="3">
             <property name="name">
                 <cstring>mpLayoutBtn</cstring>
             </property>
@@ -168,12 +129,20 @@
                 </widget>
             </hbox>
         </widget>
-        <widget class="CModifiedWidget" row="7" column="1" rowspan="1" colspan="2">
+        <widget class="CModifiedWidget" row="4" column="1" rowspan="1" colspan="2">
             <property name="name">
                 <cstring>mpTblModified</cstring>
             </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>7</hsizetype>
+                    <vsizetype>5</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
         </widget>
-        <widget class="QLabel" row="7" column="0">
+        <widget class="QLabel" row="4" column="0">
             <property name="name">
                 <cstring>mpLblModified</cstring>
             </property>
@@ -184,15 +153,81 @@
                 <set>AlignTop</set>
             </property>
         </widget>
+        <widget class="CCreatorsWidget" row="1" column="1" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>mpTblAuthors</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>7</hsizetype>
+                    <vsizetype>5</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+        </widget>
+        <widget class="QLabel" row="1" column="0">
+            <property name="name">
+                <cstring>mpLblAuthors</cstring>
+            </property>
+            <property name="text">
+                <string>Authors</string>
+            </property>
+            <property name="alignment">
+                <set>AlignTop</set>
+            </property>
+        </widget>
+        <widget class="CReferencesWidget" row="2" column="1" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>mpTblReferences</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>7</hsizetype>
+                    <vsizetype>5</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+        </widget>
+        <widget class="QLabel" row="2" column="0">
+            <property name="name">
+                <cstring>mpLblReferences</cstring>
+            </property>
+            <property name="text">
+                <string>References</string>
+            </property>
+            <property name="alignment">
+                <set>AlignTop</set>
+            </property>
+        </widget>
+        <widget class="CBiologicalDescriptionsWidget" row="3" column="1" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>mpTblDescription</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>7</hsizetype>
+                    <vsizetype>5</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+        </widget>
+        <widget class="QLabel" row="3" column="0">
+            <property name="name">
+                <cstring>mpLblDescription</cstring>
+            </property>
+            <property name="text">
+                <string>Description</string>
+            </property>
+            <property name="alignment">
+                <set>AlignTop</set>
+            </property>
+        </widget>
     </grid>
 </widget>
 <connections>
-    <connection>
-        <sender>mpDTCreated</sender>
-        <signal>valueChanged(const QDateTime&amp;)</signal>
-        <receiver>CQMiriamWidget</receiver>
-        <slot>slotCreatedValueChanged(const QDateTime&amp;)</slot>
-    </connection>
     <connection>
         <sender>mpBtnCommit</sender>
         <signal>pressed()</signal>
@@ -247,8 +282,6 @@
     <slot access="private" specifier="non virtual">slotBtnDeleteClicked()</slot>
     <slot access="private" specifier="non virtual">slotBtnNewClicked()</slot>
     <slot access="private" specifier="non virtual">slotBtnClearClicked()</slot>
-    <slot access="private" specifier="non virtual">slotEnableOKAndCancel( bool enable )</slot>
-    <slot access="private" specifier="non virtual">slotCreatedValueChanged( const QDateTime &amp; )</slot>
 </slots>
 <functions>
     <function access="private" specifier="non virtual">init()</function>

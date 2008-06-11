@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CReferencesWidget.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/03 13:21:21 $
+//   $Date: 2008/06/11 19:18:05 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -72,6 +72,7 @@ std::vector<const CCopasiObject*> CReferencesWidget::getObjects() const
 
 void CReferencesWidget::init()
 {
+  mOT = ListViews::MIRIAM;
   //flagtoAdjust = false;
   mShowNewObjectWarning = false;
   numCols = 5;
@@ -143,48 +144,18 @@ CCopasiObject* CReferencesWidget::createNewObject(const std::string & name)
 
 void CReferencesWidget::deleteObjects(const std::vector<std::string> & keys)
 {
-  if (!dynamic_cast <CQMiriamWidget*> (parentWidget()))
+  CQMiriamWidget * pMiriamWidget = dynamic_cast <CQMiriamWidget*> (parentWidget());
+  if (pMiriamWidget == NULL)
     return;
 
-  QString ReferenceList = "Are you sure you want to delete listed REFERENCES(S) ?\n";
   unsigned C_INT32 i, imax = keys.size();
-  for (i = 0; i < imax; i++) //all compartments
-    {
-      CReference * pReference =
-        dynamic_cast< CReference *>(GlobalKeys.get(keys[i]));
+  for (i = 0; i < imax; i++)
+    pMiriamWidget->getMIRIAMInfo().removeReference(keys[i]);
 
-      ReferenceList.append(FROM_UTF8(pReference->getObjectName()));
-      ReferenceList.append(", ");
-    }
+  for (i = 0; i < imax; i++)
+    protectedNotify(mOT, ListViews::DELETE, keys[i]);
 
-  ReferenceList.remove(ReferenceList.length() - 2, 2);
-
-  QString msg = ReferenceList;
-
-  C_INT32 choice = 0;
-  choice = CQMessageBox::question(this,
-                                  "CONFIRM DELETE",
-                                  msg,
-                                  "Continue", "Cancel", 0, 1, 1);
-
-  switch (choice)
-    {
-    case 0:                                           // Yes or Enter
-      {
-        for (i = 0; i < imax; i++)
-          {
-            dynamic_cast <CQMiriamWidget*> (parentWidget())->getMIRIAMInfo().removeReference(keys[i]);
-          }
-
-        for (i = 0; i < imax; i++)
-          protectedNotify(mOT, ListViews::DELETE, keys[i]);
-
-        mChanged = true;
-        break;
-      }
-    default:                                           // No or Escape
-      break;
-    }
+  mChanged = true;
 }
 
 void CReferencesWidget::slotDoubleClicked(int C_UNUSED(row), int C_UNUSED(col),

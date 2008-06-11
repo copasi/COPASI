@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraph.cpp,v $
-//   $Revision: 1.34 $
+//   $Revision: 1.35 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/11 13:57:14 $
+//   $Date: 2008/06/11 19:18:05 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -219,8 +219,6 @@ CRDFTriplet CRDFGraph::addTriplet(const CRDFSubject & subject,
 
 bool CRDFGraph::addTriplet(const CRDFTriplet & triplet)
 {
-  std::cout << "Adding Triplet: " << triplet;
-
   if (!triplet)
     return false;
 
@@ -243,8 +241,6 @@ void CRDFGraph::removeTriplet(CRDFNode * pSubject,
 
 void CRDFGraph::removeTriplet(const CRDFTriplet & triplet)
 {
-  std::cout << "Removing Triplet: " << triplet;
-
   if (!triplet)
     return;
 
@@ -478,8 +474,14 @@ bool CRDFGraph::removeEmptyNodes()
   return ToBeRemoved.size();
 }
 
-void CRDFGraph::removeUnusedNamespaces()
+void CRDFGraph::updateNamespaces()
 {
+  // We make sure that all namespaces COPASI uses are known.
+  addNameSpace("CopasiMT", "http://www.copasi.org/RDF/MiriamTerms#");
+  addNameSpace("dcterms", "http://purl.org/dc/terms/");
+  addNameSpace("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
+  addNameSpace("vCard", "http://www.w3.org/2001/vcard-rdf/3.0#");
+
   std::vector< bool > Used(mPrefix2Namespace.size(), false);
   std::vector< bool >::iterator itUsed;
 
@@ -525,8 +527,6 @@ void CRDFGraph::destroyUnreferencedNode(CRDFNode * pNode)
   // We only can remove nodes which are no longer objects.
   if (mObject2Triplet.count(pNode) > 0)
     return;
-
-  std::cout << "Destroying: " << pNode->getObject() << std::endl;
 
   // Remove all triplets where the node is subject
   std::pair< Node2Triplet::iterator, Node2Triplet::iterator> Range = mSubject2Triplet.equal_range(pNode);

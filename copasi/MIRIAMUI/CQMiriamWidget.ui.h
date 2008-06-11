@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CQMiriamWidget.ui.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/05 15:33:18 $
+//   $Date: 2008/06/11 19:18:05 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,19 +36,15 @@ void CQMiriamWidget::init()
 
   // Connect the table widgets
   mWidgets.push_back(mpTblAuthors);
-  connect(mpTblAuthors, SIGNAL(setEnableOKAndCancel(bool)), this, SLOT(slotEnableOKAndCancel(bool)));
   connect(mpTblAuthors, SIGNAL(delKeyPressed()), this, SLOT(slotBtnDeleteClicked()));
 
   mWidgets.push_back(mpTblReferences);
-  connect(mpTblReferences, SIGNAL(setEnableOKAndCancel(bool)), this, SLOT(slotEnableOKAndCancel(bool)));
   connect(mpTblReferences, SIGNAL(delKeyPressed()), this, SLOT(slotBtnDeleteClicked()));
 
   mWidgets.push_back(mpTblDescription);
-  connect(mpTblDescription, SIGNAL(setEnableOKAndCancel(bool)), this, SLOT(slotEnableOKAndCancel(bool)));
   connect(mpTblDescription, SIGNAL(delKeyPressed()), this, SLOT(slotBtnDeleteClicked()));
 
   mWidgets.push_back(mpTblModified);
-  connect(mpTblModified, SIGNAL(setEnableOKAndCancel(bool)), this, SLOT(slotEnableOKAndCancel(bool)));
   connect(mpTblModified, SIGNAL(delKeyPressed()), this, SLOT(slotBtnDeleteClicked()));
 }
 
@@ -91,22 +87,21 @@ void CQMiriamWidget::slotBtnNewClicked()
 
 void CQMiriamWidget::slotBtnClearClicked()
 {
+  if (mpDTCreated->hasFocus())
+    {
+      delete mpDTCreated;
+
+      mpDTCreated = new QDateTimeEdit(this, "mpDTCreated");
+      CQMiriamWidgetLayout->addWidget(mpDTCreated, 0, 1);
+      mpDTCreated->show();
+      return;
+    }
+
   std::vector<CopasiTableWidget*>::const_iterator it = mWidgets.begin();
   std::vector<CopasiTableWidget*>::const_iterator end = mWidgets.end();
   for (; it != end; it++)
     if ((*it)->isTableInFocus())
       (*it)->slotBtnClearClicked();
-}
-
-void CQMiriamWidget::slotEnableOKAndCancel(bool enable)
-{
-  mpBtnCommit->setEnabled(enable);
-  mpBtnRevert->setEnabled(enable);
-}
-
-void CQMiriamWidget::slotCreatedValueChanged(const QDateTime &)
-{
-  slotEnableOKAndCancel(true);
 }
 
 bool CQMiriamWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
@@ -127,8 +122,6 @@ bool CQMiriamWidget::update(ListViews::ObjectType objectType, ListViews::Action 
 
   for (; it != end; it++)
     (*it)->update(objectType, action, key);
-
-  slotEnableOKAndCancel(false);
 
   return success;
 }
@@ -183,15 +176,23 @@ bool CQMiriamWidget::enter(const std::string & key)
   bool success = true;
   mpMIRIAMInfo->load(key);
 
-  mpDTCreated->setDateTime(QDateTime::fromString(FROM_UTF8(mpMIRIAMInfo->getCreatedDT()), Qt::ISODate));
+  QDateTime DTCreated = QDateTime::fromString(FROM_UTF8(mpMIRIAMInfo->getCreatedDT()), Qt::ISODate);
+  if (DTCreated.isValid())
+    mpDTCreated->setDateTime(DTCreated);
+  else
+    {
+      delete mpDTCreated;
+
+      mpDTCreated = new QDateTimeEdit(this, "mpDTCreated");
+      CQMiriamWidgetLayout->addWidget(mpDTCreated, 0, 1);
+      mpDTCreated->show();
+    }
 
   std::vector< CopasiTableWidget * >::const_iterator it = mWidgets.begin();
   std::vector< CopasiTableWidget * >::const_iterator end = mWidgets.end();
 
   for (; it != end; it++)
     success &= (*it)->enter(key);
-
-  slotEnableOKAndCancel(false);
 
   return success;
 }

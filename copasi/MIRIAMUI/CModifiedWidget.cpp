@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CModifiedWidget.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/05 15:33:18 $
+//   $Date: 2008/06/11 19:18:05 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -71,6 +71,7 @@ std::vector<const CCopasiObject*> CModifiedWidget::getObjects() const
 
 void CModifiedWidget::init()
 {
+  mOT = ListViews::MIRIAM;
   mShowNewObjectWarning = false;
   numCols = 3;
   table->setNumCols(numCols);
@@ -159,48 +160,18 @@ CCopasiObject* CModifiedWidget::createNewObject(const std::string & name)
 
 void CModifiedWidget::deleteObjects(const std::vector<std::string> & keys)
 {
-  if (!dynamic_cast <CQMiriamWidget*> (parentWidget()))
+  CQMiriamWidget * pMiriamWidget = dynamic_cast <CQMiriamWidget*> (parentWidget());
+  if (pMiriamWidget == NULL)
     return;
 
-  QString modifiedList = "Are you sure you want to delete listed Modified Date(s) ?\n";
   unsigned C_INT32 i, imax = keys.size();
-  for (i = 0; i < imax; i++) //all compartments
-    {
-      CModification * pModified =
-        dynamic_cast< CModification *>(GlobalKeys.get(keys[i]));
+  for (i = 0; i < imax; i++)
+    pMiriamWidget->getMIRIAMInfo().removeModification(keys[i]);
 
-      modifiedList.append(FROM_UTF8(pModified->getObjectName()));
-      modifiedList.append(", ");
-    }
+  for (i = 0; i < imax; i++)
+    protectedNotify(mOT, ListViews::DELETE, keys[i]);
 
-  modifiedList.remove(modifiedList.length() - 2, 2);
-
-  QString msg = modifiedList;
-
-  C_INT32 choice = 0;
-  choice = CQMessageBox::question(this,
-                                  "CONFIRM DELETE",
-                                  msg,
-                                  "Continue", "Cancel", 0, 1, 1);
-
-  switch (choice)
-    {
-    case 0:                                           // Yes or Enter
-      {
-        for (i = 0; i < imax; i++)
-          {
-            dynamic_cast <CQMiriamWidget*> (parentWidget())->getMIRIAMInfo().removeModification(keys[i]);
-          }
-
-        for (i = 0; i < imax; i++)
-          protectedNotify(mOT, ListViews::DELETE, keys[i]);
-
-        mChanged = true;
-        break;
-      }
-    default:                                           // No or Escape
-      break;
-    }
+  mChanged = true;
 }
 
 void CModifiedWidget::slotDoubleClicked(int C_UNUSED(row), int C_UNUSED(col),

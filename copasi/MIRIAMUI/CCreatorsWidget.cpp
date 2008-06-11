@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CCreatorsWidget.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/03 13:21:21 $
+//   $Date: 2008/06/11 19:18:05 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -75,6 +75,7 @@ std::vector<const CCopasiObject*> CCreatorsWidget::getObjects() const
 
 void CCreatorsWidget::init()
 {
+  mOT = ListViews::MIRIAM;
   mShowNewObjectWarning = false;
   numCols = 6;
   table->setNumCols(numCols);
@@ -150,47 +151,18 @@ CCopasiObject* CCreatorsWidget::createNewObject(const std::string & name)
 
 void CCreatorsWidget::deleteObjects(const std::vector<std::string> & keys)
 {
-  if (!dynamic_cast <CQMiriamWidget*> (parentWidget()))
+  CQMiriamWidget * pMiriamWidget = dynamic_cast <CQMiriamWidget*> (parentWidget());
+  if (pMiriamWidget == NULL)
     return;
-  QString authorList = "Are you sure you want to delete listed AUTHOR(S) ?\n";
+
   unsigned C_INT32 i, imax = keys.size();
-  for (i = 0; i < imax; i++) //all compartments
-    {
-      CCreator * pCreator =
-        dynamic_cast< CCreator *>(GlobalKeys.get(keys[i]));
+  for (i = 0; i < imax; i++)
+    pMiriamWidget->getMIRIAMInfo().removeCreator(keys[i]);
 
-      authorList.append(FROM_UTF8(pCreator->getObjectName()));
-      authorList.append(", ");
-    }
+  for (i = 0; i < imax; i++)
+    protectedNotify(mOT, ListViews::DELETE, keys[i]);
 
-  authorList.remove(authorList.length() - 2, 2);
-
-  QString msg = authorList;
-
-  C_INT32 choice = 0;
-  choice = CQMessageBox::question(this,
-                                  "CONFIRM DELETE",
-                                  msg,
-                                  "Continue", "Cancel", 0, 1, 1);
-
-  switch (choice)
-    {
-    case 0:                                           // Yes or Enter
-      {
-        for (i = 0; i < imax; i++)
-          {
-            dynamic_cast <CQMiriamWidget*> (parentWidget())->getMIRIAMInfo().removeCreator(keys[i]);
-          }
-
-        for (i = 0; i < imax; i++)
-          protectedNotify(mOT, ListViews::DELETE, keys[i]);
-
-        mChanged = true;
-        break;
-      }
-    default:                                           // No or Escape
-      break;
-    }
+  mChanged = true;
 }
 
 void CCreatorsWidget::slotDoubleClicked(int C_UNUSED(row), int C_UNUSED(col),

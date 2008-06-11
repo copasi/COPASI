@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFPredicate.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/10 20:31:11 $
+//   $Date: 2008/06/11 19:18:05 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -627,9 +627,6 @@ CRDFPredicate::ePredicateType CRDFPredicate::getPredicateFromDisplayName(const s
 
   if (it != DisplayName2Predicate.end())
     return it->second;
-  // Handle rdf:_n and map it to rdf:li
-  else if (displayName.compare(0, PredicateDisplayName[rdf__n].length(), PredicateDisplayName[rdf__n]) == 0)
-    return rdf_li;
   else
     return unknown;
 }

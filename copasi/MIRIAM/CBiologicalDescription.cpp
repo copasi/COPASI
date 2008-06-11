@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CBiologicalDescription.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/10 20:31:11 $
+//   $Date: 2008/06/11 19:18:05 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -71,6 +71,10 @@ void CBiologicalDescription::setPredicate(const std::string & predicate)
 {
   CRDFPredicate Predicate(CRDFPredicate::getPredicateFromDisplayName(predicate));
 
+  if (Predicate == mTriplet.Predicate ||
+      CRDFPredicate::unknown == Predicate)
+    return;
+
   // Add the edge with the new predicate without any object creation.
   mTriplet.pSubject->addEdge(Predicate, mTriplet.pObject);
 
@@ -83,7 +87,11 @@ void CBiologicalDescription::setPredicate(const std::string & predicate)
 
 void CBiologicalDescription::setResource(const std::string & resource)
 {
-  mResource = CMIRIAMResource(resource, mResource.getId());
+  CMIRIAMResource NewResource(resource, mResource.getId());
+  if (!NewResource.isValid())
+    return;
+
+  mResource = NewResource;
   mTriplet.pObject->getObject().setResource(mResource.getURI(), false);
 }
 

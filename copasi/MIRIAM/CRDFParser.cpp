@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFParser.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/10 20:31:11 $
+//   $Date: 2008/06/11 19:18:05 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -124,8 +124,6 @@ void CRDFParser::TripleHandler(void * pGraph, const raptor_statement * pTriple)
   CRDFObject Object;
   CRDFLiteral Literal;
 
-  raptor_print_statement(pTriple, stdout);
-
   switch (pTriple->subject_type)
     {
     case RAPTOR_IDENTIFIER_TYPE_RESOURCE:
@@ -190,8 +188,6 @@ void CRDFParser::TripleHandler(void * pGraph, const raptor_statement * pTriple)
     }
 
   // Add the triplet to the graph
-  std::cout << "-> Adding raw Triplet: " << Subject << ", " << CRDFPredicate(Predicate) << ", " << Object << std::endl;
-
   static_cast<CRDFGraph *>(pGraph)->addTriplet(Subject, Predicate, Object);
 }
 

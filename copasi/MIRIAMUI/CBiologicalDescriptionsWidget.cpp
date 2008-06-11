@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CBiologicalDescriptionsWidget.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/11 13:56:03 $
+//   $Date: 2008/06/11 19:18:05 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -73,6 +73,7 @@ std::vector<const CCopasiObject*> CBiologicalDescriptionsWidget::getObjects() co
 
 void CBiologicalDescriptionsWidget::init()
 {
+  mOT = ListViews::MIRIAM;
   //flagtoAdjust = false;
   mShowNewObjectWarning = false;
   numCols = 5;
@@ -89,17 +90,19 @@ void CBiologicalDescriptionsWidget::init()
 
   //table->setColumnWidth(COL_ID, 200);
   // Build the list of supported predicates
-  mPredicates.push_back(QString(CRDFPredicate::getDisplayName(CRDFPredicate::bqbiol_encodes).c_str()));
-  mPredicates.push_back(QString(CRDFPredicate::getDisplayName(CRDFPredicate::bqbiol_hasPart).c_str()));
-  mPredicates.push_back(QString(CRDFPredicate::getDisplayName(CRDFPredicate::bqbiol_hasVersion).c_str()));
-  mPredicates.push_back(QString(CRDFPredicate::getDisplayName(CRDFPredicate::bqbiol_is).c_str()));
-  mPredicates.push_back(QString(CRDFPredicate::getDisplayName(CRDFPredicate::bqbiol_isEncodedBy).c_str()));
-  mPredicates.push_back(QString(CRDFPredicate::getDisplayName(CRDFPredicate::bqbiol_isHomologTo).c_str()));
-  mPredicates.push_back(QString(CRDFPredicate::getDisplayName(CRDFPredicate::bqbiol_isPartOf).c_str()));
-  mPredicates.push_back(QString(CRDFPredicate::getDisplayName(CRDFPredicate::bqbiol_isVersionOf).c_str()));
+  mPredicates.push_back("-- select --");
+  mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::copasi_encodes)));
+  mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::copasi_hasPart)));
+  mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::copasi_hasVersion)));
+  mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::copasi_is)));
+  mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::copasi_isEncodedBy)));
+  mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::copasi_isHomologTo)));
+  mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::copasi_isPartOf)));
+  mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::copasi_isVersionOf)));
 
   // Build the list of known resources
   const CMIRIAMResource::sResource * pResource = CMIRIAMResource::getResourceList();
+  mResources.push_back("-- select --");
   for (; pResource->MiriamId != ""; ++pResource)
     mResources.push_back(FROM_UTF8(pResource->DisplayName));
 }
@@ -196,48 +199,19 @@ CCopasiObject* CBiologicalDescriptionsWidget::createNewObject(const std::string 
 
 void CBiologicalDescriptionsWidget::deleteObjects(const std::vector<std::string> & keys)
 {
-  if (!dynamic_cast <CQMiriamWidget*> (parentWidget()))
+  CQMiriamWidget * pMiriamWidget = dynamic_cast <CQMiriamWidget*> (parentWidget());
+  if (pMiriamWidget == NULL)
     return;
 
-  QString BiologicalDescriptionList = "Are you sure you want to delete listed BIOLOGICAL DESCRIPTION(S) ?\n";
   unsigned C_INT32 i, imax = keys.size();
-  for (i = 0; i < imax; i++) //all compartments
-    {
-      CBiologicalDescription * pBiologicalDescription =
-        dynamic_cast< CBiologicalDescription *>(GlobalKeys.get(keys[i]));
 
-      BiologicalDescriptionList.append(FROM_UTF8(pBiologicalDescription->getObjectName()));
-      BiologicalDescriptionList.append(", ");
-    }
+  for (i = 0; i < imax; i++)
+    pMiriamWidget->getMIRIAMInfo().removeBiologicalDescription(keys[i]);
 
-  BiologicalDescriptionList.remove(BiologicalDescriptionList.length() - 2, 2);
+  for (i = 0; i < imax; i++)
+    protectedNotify(mOT, ListViews::DELETE, keys[i]);
 
-  QString msg = BiologicalDescriptionList;
-
-  C_INT32 choice = 0;
-  choice = CQMessageBox::question(this,
-                                  "CONFIRM DELETE",
-                                  msg,
-                                  "Continue", "Cancel", 0, 1, 1);
-
-  switch (choice)
-    {
-    case 0:                                           // Yes or Enter
-      {
-        for (i = 0; i < imax; i++)
-          {
-            dynamic_cast <CQMiriamWidget*> (parentWidget())->getMIRIAMInfo().removeBiologicalDescription(keys[i]);
-          }
-
-        for (i = 0; i < imax; i++)
-          protectedNotify(mOT, ListViews::DELETE, keys[i]);
-
-        mChanged = true;
-        break;
-      }
-    default:                                           // No or Escape
-      break;
-    }
+  mChanged = true;
 }
 
 void CBiologicalDescriptionsWidget::slotDoubleClicked(int C_UNUSED(row), int C_UNUSED(col),
