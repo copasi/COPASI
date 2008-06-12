@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000064.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/06/12 08:16:55 $
+//   $Date: 2008/06/12 08:56:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -260,10 +260,6 @@ void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_3()
   // check the expression
   const CEvaluationNode* pNode = pExpr->getRoot();
   CPPUNIT_ASSERT(pNode != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::OPERATOR);
-  CPPUNIT_ASSERT((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pNode->getType()) == CEvaluationNodeOperator::DIVIDE);
-  pNode = dynamic_cast<const CEvaluationNode*>(pNode->getChild());
-  CPPUNIT_ASSERT(pNode != NULL);
   CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::OBJECT);
   const CEvaluationNodeObject* pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pNode);
   CPPUNIT_ASSERT(pObjectNode != NULL);
@@ -276,18 +272,6 @@ void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_3()
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Value"));
   CPPUNIT_ASSERT(pObject->getObjectParent() == pModelValue);
-  pNode = dynamic_cast<const CEvaluationNode*>(pNode->getSibling());
-  CPPUNIT_ASSERT(pNode != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::OBJECT);
-  pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pNode);
-  CPPUNIT_ASSERT(pObjectNode != NULL);
-  objectCN = pObjectNode->getObjectCN();
-  CPPUNIT_ASSERT(!objectCN.empty());
-  pObject = CCopasiContainer::ObjectFromName(listOfContainers, objectCN);
-  CPPUNIT_ASSERT(pObject != NULL);
-  CPPUNIT_ASSERT(pObject->isReference() == true);
-  CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Volume"));
-  CPPUNIT_ASSERT(pObject->getObjectParent() == pCompartment);
 }
 
 const char* test000064::MODEL_STRING3 =
@@ -361,6 +345,10 @@ void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_4()
   // check the expression
   const CEvaluationNode* pNode = pExpr->getRoot();
   CPPUNIT_ASSERT(pNode != NULL);
+  CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::OPERATOR);
+  CPPUNIT_ASSERT((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pNode->getType()) == CEvaluationNodeOperator::DIVIDE);
+  pNode = dynamic_cast<const CEvaluationNode*>(pNode->getChild());
+  CPPUNIT_ASSERT(pNode != NULL);
   CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::OBJECT);
   const CEvaluationNodeObject* pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pNode);
   CPPUNIT_ASSERT(pObjectNode != NULL);
@@ -373,6 +361,18 @@ void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_4()
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Value"));
   CPPUNIT_ASSERT(pObject->getObjectParent() == pModelValue);
+  pNode = dynamic_cast<const CEvaluationNode*>(pNode->getSibling());
+  CPPUNIT_ASSERT(pNode != NULL);
+  CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::OBJECT);
+  pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pNode);
+  CPPUNIT_ASSERT(pObjectNode != NULL);
+  objectCN = pObjectNode->getObjectCN();
+  CPPUNIT_ASSERT(!objectCN.empty());
+  pObject = CCopasiContainer::ObjectFromName(listOfContainers, objectCN);
+  CPPUNIT_ASSERT(pObject != NULL);
+  CPPUNIT_ASSERT(pObject->isReference() == true);
+  CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Volume"));
+  CPPUNIT_ASSERT(pObject->getObjectParent() == pCompartment);
 }
 
 const char* test000064::MODEL_STRING4 =
@@ -765,10 +765,6 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   CPPUNIT_ASSERT(pExpression != NULL);
   pNode = pExpression->getRoot();
   CPPUNIT_ASSERT(pNode != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::OPERATOR);
-  CPPUNIT_ASSERT((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pNode->getType()) == CEvaluationNodeOperator::DIVIDE);
-  pNode = dynamic_cast<const CEvaluationNode*>(pNode->getChild());
-  CPPUNIT_ASSERT(pNode != NULL);
   CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::OBJECT);
   pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pNode);
   CPPUNIT_ASSERT(pObjectNode != NULL);
@@ -779,18 +775,6 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Value"));
   CPPUNIT_ASSERT(pObject->getObjectParent() == pModelValue);
-  pNode = dynamic_cast<const CEvaluationNode*>(pNode->getSibling());
-  CPPUNIT_ASSERT(pNode != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::OBJECT);
-  pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pNode);
-  CPPUNIT_ASSERT(pObjectNode != NULL);
-  objectCN = pObjectNode->getObjectCN();
-  CPPUNIT_ASSERT(!objectCN.empty());
-  pObject = CCopasiContainer::ObjectFromName(listOfContainers, objectCN);
-  CPPUNIT_ASSERT(pObject != NULL);
-  CPPUNIT_ASSERT(pObject->isReference() == true);
-  CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Volume"));
-  CPPUNIT_ASSERT(pObject->getObjectParent() == pCompartment);
 }
 
 const char* test000064::MODEL_STRING7 =
@@ -914,6 +898,10 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   CPPUNIT_ASSERT(pExpression != NULL);
   pNode = pExpression->getRoot();
   CPPUNIT_ASSERT(pNode != NULL);
+  CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::OPERATOR);
+  CPPUNIT_ASSERT((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pNode->getType()) == CEvaluationNodeOperator::DIVIDE);
+  pNode = dynamic_cast<const CEvaluationNode*>(pNode->getChild());
+  CPPUNIT_ASSERT(pNode != NULL);
   CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::OBJECT);
   pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pNode);
   CPPUNIT_ASSERT(pObjectNode != NULL);
@@ -924,6 +912,18 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Value"));
   CPPUNIT_ASSERT(pObject->getObjectParent() == pModelValue);
+  pNode = dynamic_cast<const CEvaluationNode*>(pNode->getSibling());
+  CPPUNIT_ASSERT(pNode != NULL);
+  CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::OBJECT);
+  pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pNode);
+  CPPUNIT_ASSERT(pObjectNode != NULL);
+  objectCN = pObjectNode->getObjectCN();
+  CPPUNIT_ASSERT(!objectCN.empty());
+  pObject = CCopasiContainer::ObjectFromName(listOfContainers, objectCN);
+  CPPUNIT_ASSERT(pObject != NULL);
+  CPPUNIT_ASSERT(pObject->isReference() == true);
+  CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Volume"));
+  CPPUNIT_ASSERT(pObject->getObjectParent() == pCompartment);
 }
 
 const char* test000064::MODEL_STRING8 =
