@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.27 $
+//   $Revision: 1.28 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/06/11 12:42:37 $
+//   $Date: 2008/06/12 14:39:04 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,13 +52,6 @@
 #include <sbml/xml/XMLInputStream.h>
 #include "compareExpressions/compare_utilities.h"
 #include "MIRIAM/CRDFUtilities.h"
-
-// !!!TODO!!!
-// when exporting assignments for rules or events, we have to check if the
-// object that is assigned to is a metabolite and if this metabolite has the
-// hasOnlySubstanceUnits flag set on export.
-// If this is the case, the assignment expression has to be multiplied by the
-// compartment volume
 
 CSBMLExporter::CSBMLExporter(): mpSBMLDocument(NULL), mSBMLLevel(2), mSBMLVersion(1), mVariableVolumes(false), mpAvogadro(NULL), mAvogadroCreated(false), mMIRIAMWarning(false)
 {}
