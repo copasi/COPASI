@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000064.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/06/12 11:08:39 $
+//   $Date: 2008/06/12 12:24:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1977,14 +1977,19 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_1()
   CPPUNIT_ASSERT(pModel != NULL);
   // check the units
   UnitDefinition* pUDef = pModel->getUnitDefinition("time");
-  CPPUNIT_ASSERT(pUDef != NULL);
-  CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
-  Unit* pUnit = pUDef->getUnit(0);
-  CPPUNIT_ASSERT(pUnit != NULL);
-  CPPUNIT_ASSERT(pUnit->getKind() == UNIT_KIND_SECOND);
-  CPPUNIT_ASSERT(pUnit->getScale() == 0);
-  CPPUNIT_ASSERT(pUnit->getExponent() == 1);
-  CPPUNIT_ASSERT(fabs((pUnit->getMultiplier() - 1.0) / 1.0) < 1e-6);
+  Unit* pUnit = NULL;
+  // since second is the default time unit, it does not have to be exported and
+  // might be NULL
+  if (pUDef != NULL)
+    {
+      CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
+      pUnit = pUDef->getUnit(0);
+      CPPUNIT_ASSERT(pUnit != NULL);
+      CPPUNIT_ASSERT(pUnit->getKind() == UNIT_KIND_SECOND);
+      CPPUNIT_ASSERT(pUnit->getScale() == 0);
+      CPPUNIT_ASSERT(pUnit->getExponent() == 1);
+      CPPUNIT_ASSERT(fabs((pUnit->getMultiplier() - 1.0) / 1.0) < 1e-6);
+    }
   pUDef = pModel->getUnitDefinition("substance");
   CPPUNIT_ASSERT(pUDef != NULL);
   CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
@@ -2089,14 +2094,19 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_2()
   CPPUNIT_ASSERT(pModel != NULL);
   // check the units
   UnitDefinition* pUDef = pModel->getUnitDefinition("time");
-  CPPUNIT_ASSERT(pUDef != NULL);
-  CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
-  Unit* pUnit = pUDef->getUnit(0);
-  CPPUNIT_ASSERT(pUnit != NULL);
-  CPPUNIT_ASSERT(pUnit->getKind() == UNIT_KIND_SECOND);
-  CPPUNIT_ASSERT(pUnit->getScale() == 0);
-  CPPUNIT_ASSERT(pUnit->getExponent() == 1);
-  CPPUNIT_ASSERT(fabs((pUnit->getMultiplier() - 1.0) / 1.0) < 1e-6);
+  Unit* pUnit = NULL;
+  // since second is the default time unit, it does not have to be exported and
+  // might be NULL
+  if (pUDef != NULL)
+    {
+      CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
+      pUnit = pUDef->getUnit(0);
+      CPPUNIT_ASSERT(pUnit != NULL);
+      CPPUNIT_ASSERT(pUnit->getKind() == UNIT_KIND_SECOND);
+      CPPUNIT_ASSERT(pUnit->getScale() == 0);
+      CPPUNIT_ASSERT(pUnit->getExponent() == 1);
+      CPPUNIT_ASSERT(fabs((pUnit->getMultiplier() - 1.0) / 1.0) < 1e-6);
+    }
   pUDef = pModel->getUnitDefinition("substance");
   CPPUNIT_ASSERT(pUDef != NULL);
   CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
@@ -2139,10 +2149,10 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_2()
   CPPUNIT_ASSERT(pParameter2->getName() == "P");
   CPPUNIT_ASSERT(pModel->getNumSpecies() == 2);
   Species* pSpecies1 = pModel->getSpecies(0);
-  CPPUNIT_ASSERT(pSpecies1->getHasOnlySubstanceUnits() == false);
+  CPPUNIT_ASSERT(pSpecies1->getHasOnlySubstanceUnits() == true);
   std::string idSpeciesA = pSpecies1->getId();
   Species* pSpecies2 = pModel->getSpecies(1);
-  CPPUNIT_ASSERT(pSpecies2->getHasOnlySubstanceUnits() == false);
+  CPPUNIT_ASSERT(pSpecies2->getHasOnlySubstanceUnits() == true);
   CPPUNIT_ASSERT(pModel->getNumRules() == 2);
   AssignmentRule* pRule1 = dynamic_cast<AssignmentRule*>(pModel->getRule(0));
   AssignmentRule* pRule2 = NULL;
@@ -2243,14 +2253,19 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_3()
   CPPUNIT_ASSERT(pModel != NULL);
   // check the units
   UnitDefinition* pUDef = pModel->getUnitDefinition("time");
-  CPPUNIT_ASSERT(pUDef != NULL);
-  CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
-  Unit* pUnit = pUDef->getUnit(0);
-  CPPUNIT_ASSERT(pUnit != NULL);
-  CPPUNIT_ASSERT(pUnit->getKind() == UNIT_KIND_SECOND);
-  CPPUNIT_ASSERT(pUnit->getScale() == 0);
-  CPPUNIT_ASSERT(pUnit->getExponent() == 1);
-  CPPUNIT_ASSERT(fabs((pUnit->getMultiplier() - 1.0) / 1.0) < 1e-6);
+  Unit* pUnit = NULL;
+  // since second is the default time unit, it does not have to be exported and
+  // might be NULL
+  if (pUDef != NULL)
+    {
+      CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
+      pUnit = pUDef->getUnit(0);
+      CPPUNIT_ASSERT(pUnit != NULL);
+      CPPUNIT_ASSERT(pUnit->getKind() == UNIT_KIND_SECOND);
+      CPPUNIT_ASSERT(pUnit->getScale() == 0);
+      CPPUNIT_ASSERT(pUnit->getExponent() == 1);
+      CPPUNIT_ASSERT(fabs((pUnit->getMultiplier() - 1.0) / 1.0) < 1e-6);
+    }
   pUDef = pModel->getUnitDefinition("substance");
   CPPUNIT_ASSERT(pUDef != NULL);
   CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
@@ -2355,14 +2370,19 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_4()
   CPPUNIT_ASSERT(pModel != NULL);
   // check the units
   UnitDefinition* pUDef = pModel->getUnitDefinition("time");
-  CPPUNIT_ASSERT(pUDef != NULL);
-  CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
-  Unit* pUnit = pUDef->getUnit(0);
-  CPPUNIT_ASSERT(pUnit != NULL);
-  CPPUNIT_ASSERT(pUnit->getKind() == UNIT_KIND_SECOND);
-  CPPUNIT_ASSERT(pUnit->getScale() == 0);
-  CPPUNIT_ASSERT(pUnit->getExponent() == 1);
-  CPPUNIT_ASSERT(fabs((pUnit->getMultiplier() - 1.0) / 1.0) < 1e-6);
+  Unit* pUnit = NULL;
+  // since second is the default time unit, it does not have to be exported and
+  // might be NULL
+  if (pUDef != NULL)
+    {
+      CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
+      pUnit = pUDef->getUnit(0);
+      CPPUNIT_ASSERT(pUnit != NULL);
+      CPPUNIT_ASSERT(pUnit->getKind() == UNIT_KIND_SECOND);
+      CPPUNIT_ASSERT(pUnit->getScale() == 0);
+      CPPUNIT_ASSERT(pUnit->getExponent() == 1);
+      CPPUNIT_ASSERT(fabs((pUnit->getMultiplier() - 1.0) / 1.0) < 1e-6);
+    }
   pUDef = pModel->getUnitDefinition("substance");
   CPPUNIT_ASSERT(pUDef != NULL);
   CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
@@ -2405,10 +2425,10 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_4()
   CPPUNIT_ASSERT(pParameter2->getName() == "P");
   CPPUNIT_ASSERT(pModel->getNumSpecies() == 2);
   Species* pSpecies1 = pModel->getSpecies(0);
-  CPPUNIT_ASSERT(pSpecies1->getHasOnlySubstanceUnits() == false);
+  CPPUNIT_ASSERT(pSpecies1->getHasOnlySubstanceUnits() == true);
   std::string idSpeciesA = pSpecies1->getId();
   Species* pSpecies2 = pModel->getSpecies(1);
-  CPPUNIT_ASSERT(pSpecies2->getHasOnlySubstanceUnits() == false);
+  CPPUNIT_ASSERT(pSpecies2->getHasOnlySubstanceUnits() == true);
   CPPUNIT_ASSERT(pModel->getNumRules() == 2);
   AssignmentRule* pRule1 = dynamic_cast<AssignmentRule*>(pModel->getRule(0));
   AssignmentRule* pRule2 = NULL;
@@ -2508,14 +2528,19 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_5()
   CPPUNIT_ASSERT(pModel != NULL);
   // check the units
   UnitDefinition* pUDef = pModel->getUnitDefinition("time");
-  CPPUNIT_ASSERT(pUDef != NULL);
-  CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
-  Unit* pUnit = pUDef->getUnit(0);
-  CPPUNIT_ASSERT(pUnit != NULL);
-  CPPUNIT_ASSERT(pUnit->getKind() == UNIT_KIND_SECOND);
-  CPPUNIT_ASSERT(pUnit->getScale() == 0);
-  CPPUNIT_ASSERT(pUnit->getExponent() == 1);
-  CPPUNIT_ASSERT(fabs((pUnit->getMultiplier() - 1.0) / 1.0) < 1e-6);
+  Unit* pUnit = NULL;
+  // since second is the default time unit, it does not have to be exported and
+  // might be NULL
+  if (pUDef != NULL)
+    {
+      CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
+      pUnit = pUDef->getUnit(0);
+      CPPUNIT_ASSERT(pUnit != NULL);
+      CPPUNIT_ASSERT(pUnit->getKind() == UNIT_KIND_SECOND);
+      CPPUNIT_ASSERT(pUnit->getScale() == 0);
+      CPPUNIT_ASSERT(pUnit->getExponent() == 1);
+      CPPUNIT_ASSERT(fabs((pUnit->getMultiplier() - 1.0) / 1.0) < 1e-6);
+    }
   pUDef = pModel->getUnitDefinition("substance");
   CPPUNIT_ASSERT(pUDef != NULL);
   CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
@@ -2555,9 +2580,15 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_5()
   const ASTNode* pMath = pRule->getMath();
   CPPUNIT_ASSERT(pMath != NULL);
   // make sure the mathematical expression contains only one node that is a
-  // reference to the global parameter
-  CPPUNIT_ASSERT(pMath->getType() == AST_NAME);
-  CPPUNIT_ASSERT(pMath->getName() == pParameter->getId());
+  // reference to the global parameter divided by the compartment volume
+  CPPUNIT_ASSERT(pMath->getType() == AST_DIVIDE);
+  CPPUNIT_ASSERT(pMath->getNumChildren() == 2);
+  ASTNode* pChild = pMath->getChild(0);
+  CPPUNIT_ASSERT(pChild->getType() == AST_NAME);
+  CPPUNIT_ASSERT(pChild->getName() == pParameter->getId());
+  pChild = pMath->getChild(1);
+  CPPUNIT_ASSERT(pChild->getType() == AST_NAME);
+  CPPUNIT_ASSERT(pChild->getName() == pCompartment->getId());
   CPPUNIT_ASSERT(pModel->getNumReactions() == 0);
 }
 
@@ -2570,7 +2601,7 @@ const char* test000064::MODEL_STRING105 =
   "      <html xmlns=\"http://www.w3.org/1999/xhtml\"><head><meta name=\"qrichtext\" content=\"1\" /></head><body style=\"font-size:9pt;font-family:Sans Serif\">\n"
   "<p>Simple model with two species and a global parameter. The compartment is fixed and one species is determined by an assignment rule.</p>\n"
   "<p>The substance unit is set to mmol.</p>\n"
-  "<p>On export both species should be exported with the hasOnlySubstanceUnits flag set to false and the expression for the assignment should contain only a reference to the global parameter.</p>\n"
+  "<p>On export both species should be exported with the hasOnlySubstanceUnits flag set to false and the expression for the assignment should contain the global parameter divided by the compartment volume.</p>\n"
   "</body></html>\n"
   "    </Comment>\n"
   "    <ListOfCompartments>\n"
@@ -2580,7 +2611,7 @@ const char* test000064::MODEL_STRING105 =
   "    <ListOfMetabolites>\n"
   "      <Metabolite key=\"Metabolite_0\" name=\"A\" simulationType=\"assignment\" compartment=\"Compartment_0\">\n"
   "        <Expression>\n"
-  "          &lt;CN=Root,Model=New Model,Vector=Values[K],Reference=Value&gt;\n"
+  "          &lt;CN=Root,Model=New Model,Vector=Values[K],Reference=Value&gt;/&lt;CN=Root,Model=New Model,Vector=Compartments[compartment],Reference=Volume&gt;\n"
   "        </Expression>\n"
   "      </Metabolite>\n"
   "      <Metabolite key=\"Metabolite_1\" name=\"B\" simulationType=\"reactions\" compartment=\"Compartment_0\">\n"
@@ -2620,14 +2651,19 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_6()
   CPPUNIT_ASSERT(pModel != NULL);
   // check the units
   UnitDefinition* pUDef = pModel->getUnitDefinition("time");
-  CPPUNIT_ASSERT(pUDef != NULL);
-  CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
-  Unit* pUnit = pUDef->getUnit(0);
-  CPPUNIT_ASSERT(pUnit != NULL);
-  CPPUNIT_ASSERT(pUnit->getKind() == UNIT_KIND_SECOND);
-  CPPUNIT_ASSERT(pUnit->getScale() == 0);
-  CPPUNIT_ASSERT(pUnit->getExponent() == 1);
-  CPPUNIT_ASSERT(fabs((pUnit->getMultiplier() - 1.0) / 1.0) < 1e-6);
+  Unit* pUnit = NULL;
+  // since second is the default time unit, it does not have to be exported and
+  // might be NULL
+  if (pUDef != NULL)
+    {
+      CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
+      pUnit = pUDef->getUnit(0);
+      CPPUNIT_ASSERT(pUnit != NULL);
+      CPPUNIT_ASSERT(pUnit->getKind() == UNIT_KIND_SECOND);
+      CPPUNIT_ASSERT(pUnit->getScale() == 0);
+      CPPUNIT_ASSERT(pUnit->getExponent() == 1);
+      CPPUNIT_ASSERT(fabs((pUnit->getMultiplier() - 1.0) / 1.0) < 1e-6);
+    }
   pUDef = pModel->getUnitDefinition("substance");
   CPPUNIT_ASSERT(pUDef != NULL);
   CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
@@ -2670,10 +2706,10 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_6()
   CPPUNIT_ASSERT(pParameter2->getName() == "P");
   CPPUNIT_ASSERT(pModel->getNumSpecies() == 2);
   Species* pSpecies1 = pModel->getSpecies(0);
-  CPPUNIT_ASSERT(pSpecies1->getHasOnlySubstanceUnits() == false);
+  CPPUNIT_ASSERT(pSpecies1->getHasOnlySubstanceUnits() == true);
   std::string idSpeciesA = pSpecies1->getId();
   Species* pSpecies2 = pModel->getSpecies(1);
-  CPPUNIT_ASSERT(pSpecies2->getHasOnlySubstanceUnits() == false);
+  CPPUNIT_ASSERT(pSpecies2->getHasOnlySubstanceUnits() == true);
   CPPUNIT_ASSERT(pModel->getNumRules() == 2);
   AssignmentRule* pRule1 = dynamic_cast<AssignmentRule*>(pModel->getRule(0));
   AssignmentRule* pRule2 = NULL;
@@ -2698,14 +2734,8 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_6()
   CPPUNIT_ASSERT(pMath != NULL);
   // make sure the mathematical expression contains a multiplication of the
   // global parameter K and the compartment volume
-  CPPUNIT_ASSERT(pMath->getType() == AST_TIMES);
-  CPPUNIT_ASSERT(pMath->getNumChildren() == 2);
-  ASTNode* pChild1 = pMath->getChild(0);
-  ASTNode* pChild2 = pMath->getChild(1);
-  CPPUNIT_ASSERT(pChild1->getType() == AST_NAME);
-  CPPUNIT_ASSERT(pChild2->getType() == AST_NAME);
-  CPPUNIT_ASSERT(pChild1->getName() == pParameter1->getId() || pChild2->getName() == pParameter1->getId());
-  CPPUNIT_ASSERT(pChild1->getName() == pCompartment->getId() || pChild2->getName() == pCompartment->getId());
+  CPPUNIT_ASSERT(pMath->getType() == AST_NAME);
+  CPPUNIT_ASSERT(pMath->getName() == pParameter1->getId());
   CPPUNIT_ASSERT(pModel->getNumReactions() == 0);
 }
 
@@ -2718,7 +2748,7 @@ const char* test000064::MODEL_STRING106 =
   "      <html xmlns=\"http://www.w3.org/1999/xhtml\"><head><meta name=\"qrichtext\" content=\"1\" /></head><body style=\"font-size:9pt;font-family:Sans Serif\">\n"
   "<p>Simple model with two species and two global parameters. The compartment is variable and one species is determined by an assignment rule.</p>\n"
   "<p>The substance unit is set to mmol.</p>\n"
-  "<p>On export both species should be exported with the hasOnlySubstanceUnits flag set to true and the expression for the assignment should contain a reference to the global parameter multiplied by the volume of the compartment.</p>\n"
+  "<p>On export both species should be exported with the hasOnlySubstanceUnits flag set to true and the expression for the assignment should contain a reference to the global parameter.</p>\n"
   "</body></html>\n"
   "    </Comment>\n"
   "    <ListOfCompartments>\n"
@@ -2731,7 +2761,7 @@ const char* test000064::MODEL_STRING106 =
   "    <ListOfMetabolites>\n"
   "      <Metabolite key=\"Metabolite_0\" name=\"A\" simulationType=\"assignment\" compartment=\"Compartment_0\">\n"
   "        <Expression>\n"
-  "          &lt;CN=Root,Model=New Model,Vector=Values[K],Reference=Value&gt;\n"
+  "          &lt;CN=Root,Model=New Model,Vector=Values[K],Reference=Value&gt;/&lt;CN=Root,Model=New Model,Vector=Compartments[compartment],Reference=Volume&gt;\n"
   "        </Expression>\n"
   "      </Metabolite>\n"
   "      <Metabolite key=\"Metabolite_1\" name=\"B\" simulationType=\"reactions\" compartment=\"Compartment_0\">\n"
@@ -2774,14 +2804,19 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_7()
   CPPUNIT_ASSERT(pModel != NULL);
   // check the units
   UnitDefinition* pUDef = pModel->getUnitDefinition("time");
-  CPPUNIT_ASSERT(pUDef != NULL);
-  CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
-  Unit* pUnit = pUDef->getUnit(0);
-  CPPUNIT_ASSERT(pUnit != NULL);
-  CPPUNIT_ASSERT(pUnit->getKind() == UNIT_KIND_SECOND);
-  CPPUNIT_ASSERT(pUnit->getScale() == 0);
-  CPPUNIT_ASSERT(pUnit->getExponent() == 1);
-  CPPUNIT_ASSERT(fabs((pUnit->getMultiplier() - 1.0) / 1.0) < 1e-6);
+  Unit* pUnit = NULL;
+  // since second is the default time unit, it does not have to be exported and
+  // might be NULL
+  if (pUDef != NULL)
+    {
+      CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
+      pUnit = pUDef->getUnit(0);
+      CPPUNIT_ASSERT(pUnit != NULL);
+      CPPUNIT_ASSERT(pUnit->getKind() == UNIT_KIND_SECOND);
+      CPPUNIT_ASSERT(pUnit->getScale() == 0);
+      CPPUNIT_ASSERT(pUnit->getExponent() == 1);
+      CPPUNIT_ASSERT(fabs((pUnit->getMultiplier() - 1.0) / 1.0) < 1e-6);
+    }
   pUDef = pModel->getUnitDefinition("substance");
   CPPUNIT_ASSERT(pUDef != NULL);
   CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
@@ -2822,8 +2857,14 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_7()
   CPPUNIT_ASSERT(pMath != NULL);
   // make sure the mathematical expression contains only one node that is a
   // reference to the global parameter
-  CPPUNIT_ASSERT(pMath->getType() == AST_NAME);
-  CPPUNIT_ASSERT(pMath->getName() == pParameter->getId());
+  CPPUNIT_ASSERT(pMath->getType() == AST_DIVIDE);
+  CPPUNIT_ASSERT(pMath->getNumChildren() == 2);
+  ASTNode* pChild = pMath->getChild(0);
+  CPPUNIT_ASSERT(pChild != NULL);
+  CPPUNIT_ASSERT(pChild->getName() == pParameter->getId());
+  pChild = pMath->getChild(1);
+  CPPUNIT_ASSERT(pChild != NULL);
+  CPPUNIT_ASSERT(pChild->getName() == pCompartment->getId());
   CPPUNIT_ASSERT(pModel->getNumReactions() == 0);
 }
 
@@ -2836,7 +2877,7 @@ const char* test000064::MODEL_STRING107 =
   "      <html xmlns=\"http://www.w3.org/1999/xhtml\"><head><meta name=\"qrichtext\" content=\"1\" /></head><body style=\"font-size:9pt;font-family:Sans Serif\">\n"
   "<p>Simple model with two species and a global parameter. The compartment is fixed and one species is determined by an assignment rule.</p>\n"
   "<p>The substance unit is set to particle number.</p>\n"
-  "<p>On export both species should be exported with the hasOnlySubstanceUnits flag set to false and the expression for the assignment should contain only a reference to the global parameter.</p>\n"
+  "<p>On export both species should be exported with the hasOnlySubstanceUnits flag set to false and the expression for the assignment should contain a reference to the global parameter divided by the compartment volume.</p>\n"
   "</body></html>\n"
   "    </Comment>\n"
   "    <ListOfCompartments>\n"
@@ -2846,7 +2887,7 @@ const char* test000064::MODEL_STRING107 =
   "    <ListOfMetabolites>\n"
   "      <Metabolite key=\"Metabolite_0\" name=\"A\" simulationType=\"assignment\" compartment=\"Compartment_0\">\n"
   "        <Expression>\n"
-  "          &lt;CN=Root,Model=New Model,Vector=Values[K],Reference=Value&gt;\n"
+  "          &lt;CN=Root,Model=New Model,Vector=Values[K],Reference=Value&gt;/&lt;CN=Root,Model=New Model,Vector=Compartments[compartment],Reference=Volume&gt;\n"
   "        </Expression>\n"
   "      </Metabolite>\n"
   "      <Metabolite key=\"Metabolite_1\" name=\"B\" simulationType=\"reactions\" compartment=\"Compartment_0\">\n"
@@ -2886,14 +2927,19 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_8()
   CPPUNIT_ASSERT(pModel != NULL);
   // check the units
   UnitDefinition* pUDef = pModel->getUnitDefinition("time");
-  CPPUNIT_ASSERT(pUDef != NULL);
-  CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
-  Unit* pUnit = pUDef->getUnit(0);
-  CPPUNIT_ASSERT(pUnit != NULL);
-  CPPUNIT_ASSERT(pUnit->getKind() == UNIT_KIND_SECOND);
-  CPPUNIT_ASSERT(pUnit->getScale() == 0);
-  CPPUNIT_ASSERT(pUnit->getExponent() == 1);
-  CPPUNIT_ASSERT(fabs((pUnit->getMultiplier() - 1.0) / 1.0) < 1e-6);
+  Unit* pUnit = NULL;
+  // since second is the default time unit, it does not have to be exported and
+  // might be NULL
+  if (pUDef != NULL)
+    {
+      CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
+      pUnit = pUDef->getUnit(0);
+      CPPUNIT_ASSERT(pUnit != NULL);
+      CPPUNIT_ASSERT(pUnit->getKind() == UNIT_KIND_SECOND);
+      CPPUNIT_ASSERT(pUnit->getScale() == 0);
+      CPPUNIT_ASSERT(pUnit->getExponent() == 1);
+      CPPUNIT_ASSERT(fabs((pUnit->getMultiplier() - 1.0) / 1.0) < 1e-6);
+    }
   pUDef = pModel->getUnitDefinition("substance");
   CPPUNIT_ASSERT(pUDef != NULL);
   CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
@@ -2936,10 +2982,10 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_8()
   CPPUNIT_ASSERT(pParameter2->getName() == "P");
   CPPUNIT_ASSERT(pModel->getNumSpecies() == 2);
   Species* pSpecies1 = pModel->getSpecies(0);
-  CPPUNIT_ASSERT(pSpecies1->getHasOnlySubstanceUnits() == false);
+  CPPUNIT_ASSERT(pSpecies1->getHasOnlySubstanceUnits() == true);
   std::string idSpeciesA = pSpecies1->getId();
   Species* pSpecies2 = pModel->getSpecies(1);
-  CPPUNIT_ASSERT(pSpecies2->getHasOnlySubstanceUnits() == false);
+  CPPUNIT_ASSERT(pSpecies2->getHasOnlySubstanceUnits() == true);
   CPPUNIT_ASSERT(pModel->getNumRules() == 2);
   AssignmentRule* pRule1 = dynamic_cast<AssignmentRule*>(pModel->getRule(0));
   AssignmentRule* pRule2 = NULL;
@@ -2964,14 +3010,8 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_8()
   CPPUNIT_ASSERT(pMath != NULL);
   // make sure the mathematical expression contains a multiplication of the
   // global parameter K and the compartment volume
-  CPPUNIT_ASSERT(pMath->getType() == AST_TIMES);
-  CPPUNIT_ASSERT(pMath->getNumChildren() == 2);
-  ASTNode* pChild1 = pMath->getChild(0);
-  ASTNode* pChild2 = pMath->getChild(1);
-  CPPUNIT_ASSERT(pChild1->getType() == AST_NAME);
-  CPPUNIT_ASSERT(pChild2->getType() == AST_NAME);
-  CPPUNIT_ASSERT(pChild1->getName() == pParameter1->getId() || pChild2->getName() == pParameter1->getId());
-  CPPUNIT_ASSERT(pChild1->getName() == pCompartment->getId() || pChild2->getName() == pCompartment->getId());
+  CPPUNIT_ASSERT(pMath->getType() == AST_NAME);
+  CPPUNIT_ASSERT(pMath->getName() == pParameter1->getId());
   CPPUNIT_ASSERT(pModel->getNumReactions() == 0);
 }
 
@@ -2984,7 +3024,7 @@ const char* test000064::MODEL_STRING108 =
   "      <html xmlns=\"http://www.w3.org/1999/xhtml\"><head><meta name=\"qrichtext\" content=\"1\" /></head><body style=\"font-size:9pt;font-family:Sans Serif\">\n"
   "<p>Simple model with two species and two global parameters. The compartment is variable and one species is determined by an assignment rule.</p>\n"
   "<p>The substance unit is set to particle number.</p>\n"
-  "<p>On export both species should be exported with the hasOnlySubstanceUnits flag set to true and the expression for the assignment should contain a reference to the global parameter multiplied by the volume of the compartment.</p>\n"
+  "<p>On export both species should be exported with the hasOnlySubstanceUnits flag set to true and the expression for the assignment should contain a reference to the global parameter.</p>\n"
   "</body></html>\n"
   "    </Comment>\n"
   "    <ListOfCompartments>\n"
@@ -2997,7 +3037,7 @@ const char* test000064::MODEL_STRING108 =
   "    <ListOfMetabolites>\n"
   "      <Metabolite key=\"Metabolite_0\" name=\"A\" simulationType=\"assignment\" compartment=\"Compartment_0\">\n"
   "        <Expression>\n"
-  "          &lt;CN=Root,Model=New Model,Vector=Values[K],Reference=Value&gt;\n"
+  "          &lt;CN=Root,Model=New Model,Vector=Values[K],Reference=Value&gt;/&lt;CN=Root,Model=New Model,Vector=Compartments[compartment],Reference=Volume&gt;\n"
   "        </Expression>\n"
   "      </Metabolite>\n"
   "      <Metabolite key=\"Metabolite_1\" name=\"B\" simulationType=\"reactions\" compartment=\"Compartment_0\">\n"
