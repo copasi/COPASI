@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationParser_yacc.cpp,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/11 23:32:12 $
+//   $Date: 2008/06/12 14:32:08 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -407,18 +407,18 @@ union yyalloc
 #endif
 
 /* YYFINAL -- State number of the termination state.  */
-#define YYFINAL  18
+#define YYFINAL  27
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   262
+#define YYLAST   270
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  30
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  7
+#define YYNNTS  8
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  44
+#define YYNRULES  46
 /* YYNRULES -- Number of states.  */
-#define YYNSTATES  98
+#define YYNSTATES  100
 
 /* YYTRANSLATE(YYLEX) -- Bison symbol number corresponding to YYLEX.  */
 #define YYUNDEFTOK  2
@@ -466,44 +466,44 @@ static const yytype_uint8 yytranslate[] =
    YYRHS.  */
 static const yytype_uint8 yyprhs[] =
   {
-    0, 0, 3, 5, 7, 11, 15, 19, 23, 27,
-    32, 39, 42, 51, 53, 55, 64, 68, 72, 76,
-    80, 84, 88, 92, 96, 100, 104, 108, 112, 116,
-    120, 124, 128, 131, 134, 137, 140, 143, 147, 151,
-    154, 158, 162, 164, 168
+    0, 0, 3, 5, 7, 9, 11, 15, 19, 23,
+    27, 31, 36, 43, 46, 55, 57, 59, 68, 72,
+    76, 80, 84, 88, 92, 96, 100, 104, 108, 112,
+    116, 120, 124, 128, 132, 135, 138, 141, 144, 147,
+    151, 155, 158, 162, 166, 168, 172
   };
 
 /* YYRHS -- A `-1'-separated list of the rules' RHS.  */
 static const yytype_int8 yyrhs[] =
   {
-    31, 0, -1, 3, -1, 4, -1, 31, 12, 31,
-    -1, 31, 11, 31, -1, 31, 10, 31, -1, 31,
-    9, 31, -1, 25, 31, 28, -1, 6, 25, 31,
-    28, -1, 7, 25, 31, 27, 31, 28, -1, 8,
-    31, -1, 13, 25, 32, 27, 31, 27, 31, 28,
-    -1, 35, -1, 14, -1, 13, 25, 32, 27, 32,
-    27, 32, 28, -1, 31, 19, 31, -1, 31, 19,
-    32, -1, 32, 19, 31, -1, 32, 19, 32, -1,
-    31, 20, 31, -1, 31, 20, 32, -1, 32, 20,
-    31, -1, 32, 20, 32, -1, 31, 21, 31, -1,
-    31, 22, 31, -1, 31, 23, 31, -1, 31, 24,
-    31, -1, 32, 16, 32, -1, 32, 17, 32, -1,
-    32, 18, 32, -1, 25, 32, 28, -1, 15, 32,
-    -1, 26, 29, -1, 34, 29, -1, 26, 31, -1,
-    26, 33, -1, 34, 27, 31, -1, 34, 27, 33,
-    -1, 5, 28, -1, 36, 31, 28, -1, 36, 33,
-    28, -1, 5, -1, 36, 31, 27, -1, 36, 33,
-    27, -1
+    31, 0, -1, 32, -1, 33, -1, 3, -1, 4,
+    -1, 32, 12, 32, -1, 32, 11, 32, -1, 32,
+    10, 32, -1, 32, 9, 32, -1, 25, 32, 28,
+    -1, 6, 25, 32, 28, -1, 7, 25, 32, 27,
+    32, 28, -1, 8, 32, -1, 13, 25, 33, 27,
+    32, 27, 32, 28, -1, 36, -1, 14, -1, 13,
+    25, 33, 27, 33, 27, 33, 28, -1, 32, 19,
+    32, -1, 32, 19, 33, -1, 33, 19, 32, -1,
+    33, 19, 33, -1, 32, 20, 32, -1, 32, 20,
+    33, -1, 33, 20, 32, -1, 33, 20, 33, -1,
+    32, 21, 32, -1, 32, 22, 32, -1, 32, 23,
+    32, -1, 32, 24, 32, -1, 33, 16, 33, -1,
+    33, 17, 33, -1, 33, 18, 33, -1, 25, 33,
+    28, -1, 15, 33, -1, 26, 29, -1, 35, 29,
+    -1, 26, 32, -1, 26, 34, -1, 35, 27, 32,
+    -1, 35, 27, 34, -1, 5, 28, -1, 37, 32,
+    28, -1, 37, 34, 28, -1, 5, -1, 37, 32,
+    27, -1, 37, 34, 27, -1
   };
 
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
   {
-    0, 84, 84, 88, 92, 99, 106, 113, 120, 125,
-    131, 138, 144, 152, 158, 162, 170, 177, 184, 191,
-    198, 205, 212, 219, 226, 233, 240, 247, 254, 261,
-    268, 275, 280, 287, 292, 298, 304, 310, 314, 319,
-    323, 328, 334, 338, 343
+    0, 83, 83, 88, 94, 98, 102, 109, 116, 123,
+    130, 135, 141, 148, 154, 162, 168, 172, 180, 187,
+    194, 201, 208, 215, 222, 229, 236, 243, 250, 257,
+    264, 271, 278, 285, 290, 297, 302, 308, 314, 320,
+    324, 329, 333, 338, 344, 348, 353
   };
 #endif
 
@@ -522,7 +522,7 @@ static const char *const yytname[] =
     "TOKEN_LOGICAL_LT", "TOKEN_LOGICAL_LE", "TOKEN_STRUCTURE_OPEN",
     "TOKEN_STRUCTURE_VECTOR_OPEN", "TOKEN_STRUCTURE_COMMA",
     "TOKEN_STRUCTURE_CLOSE", "TOKEN_STRUCTURE_VECTOR_CLOSE", "$accept",
-    "exp", "bool", "vector", "vstart", "call", "cstart", 0
+    "result", "exp", "bool", "vector", "vstart", "call", "cstart", 0
   };
 #endif
 
@@ -540,21 +540,21 @@ static const yytype_uint16 yytoknum[] =
 /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_uint8 yyr1[] =
   {
-    0, 30, 31, 31, 31, 31, 31, 31, 31, 31,
-    31, 31, 31, 31, 32, 32, 32, 32, 32, 32,
-    32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
-    32, 32, 32, 33, 33, 34, 34, 34, 34, 35,
-    35, 35, 36, 36, 36
+    0, 30, 31, 31, 32, 32, 32, 32, 32, 32,
+    32, 32, 32, 32, 32, 32, 33, 33, 33, 33,
+    33, 33, 33, 33, 33, 33, 33, 33, 33, 33,
+    33, 33, 33, 33, 33, 34, 34, 35, 35, 35,
+    35, 36, 36, 36, 37, 37, 37
   };
 
 /* YYR2[YYN] -- Number of symbols composing right hand side of rule YYN.  */
 static const yytype_uint8 yyr2[] =
   {
-    0, 2, 1, 1, 3, 3, 3, 3, 3, 4,
-    6, 2, 8, 1, 1, 8, 3, 3, 3, 3,
+    0, 2, 1, 1, 1, 1, 3, 3, 3, 3,
+    3, 4, 6, 2, 8, 1, 1, 8, 3, 3,
     3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-    3, 3, 2, 2, 2, 2, 2, 3, 3, 2,
-    3, 3, 1, 3, 3
+    3, 3, 3, 3, 2, 2, 2, 2, 2, 3,
+    3, 2, 3, 3, 1, 3, 3
   };
 
 /* YYDEFACT[STATE-NAME] -- Default rule to reduce with in state
@@ -562,45 +562,45 @@ static const yytype_uint8 yyr2[] =
    means the default is an error.  */
 static const yytype_uint8 yydefact[] =
   {
-    0, 2, 3, 42, 0, 0, 0, 0, 0, 0,
-    13, 0, 39, 0, 0, 11, 0, 0, 1, 0,
+    0, 4, 5, 44, 0, 0, 0, 0, 16, 0,
+    0, 0, 2, 3, 15, 0, 41, 0, 0, 0,
+    0, 13, 0, 0, 34, 0, 0, 1, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    14, 0, 0, 0, 0, 8, 7, 6, 5, 4,
-    33, 35, 36, 43, 40, 44, 41, 0, 34, 9,
-    0, 0, 32, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 37, 38, 0,
-    0, 31, 16, 17, 20, 21, 24, 25, 26, 27,
-    28, 29, 30, 18, 19, 22, 23, 0, 10, 0,
-    0, 0, 0, 0, 0, 12, 0, 15
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 10, 33, 9, 8, 7, 6, 18, 19,
+    22, 23, 26, 27, 28, 29, 30, 31, 32, 20,
+    21, 24, 25, 35, 37, 38, 45, 42, 46, 43,
+    0, 36, 11, 0, 0, 0, 39, 40, 0, 0,
+    0, 0, 12, 0, 0, 0, 0, 0, 14, 17
   };
 
 /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
   {
-    -1, 33, 34, 25, 26, 10, 11
+    -1, 11, 23, 13, 45, 46, 14, 15
   };
 
 /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
    STATE-NUM.  */
-#define YYPACT_NINF -28
+#define YYPACT_NINF -42
 static const yytype_int16 yypact[] =
   {
-    94, -28, -28, -18, -13, 14, 94, 15, 94, 232,
-    -28, 80, -28, 94, 94, -28, 38, 125, -28, 94,
-    94, 94, 94, 66, 105, -25, -20, 129, 6, 23,
-    -28, 38, 38, 180, 218, -28, 40, 40, 17, 71,
-    -28, 249, -28, -28, -28, -28, -28, 80, -28, -28,
-    94, 38, 11, 101, 198, 38, 38, 94, 94, 94,
-    94, 38, 38, 38, 38, 38, 94, 249, -28, 133,
-    230, -28, 185, 34, 201, -28, 249, 249, 249, 249,
-    58, 108, 11, 185, 34, 201, -28, 161, -28, 38,
-    94, 157, 235, 137, 38, -28, 211, -28
+    113, -42, -42, -27, -9, 39, 126, 59, -42, 113,
+    113, 19, 190, 154, -42, 99, -42, 126, 126, 63,
+    126, -42, 113, 190, 47, 133, 208, -42, 126, 126,
+    126, 126, 113, 113, 126, 126, 126, 126, 113, 113,
+    113, 113, 113, 66, 35, 54, 32, 12, 41, 113,
+    87, 226, -42, -42, 18, 18, 77, -6, 195, 40,
+    211, -42, 2, 2, 2, 2, 58, -11, 47, 195,
+    40, 211, -42, -42, 2, -42, -42, -42, -42, -42,
+    99, -42, -42, 126, 238, 113, 2, -42, 137, 126,
+    167, 243, -42, 171, 126, 113, 157, 221, -42, -42
   };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
   {
-    -28, 0, -27, -22, -28, -28, -28
+    -42, -42, 0, 16, -41, -42, -42, -42
   };
 
 /* YYTABLE[YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
@@ -610,80 +610,82 @@ static const yytype_int8 yypgoto[] =
 #define YYTABLE_NINF -1
 static const yytype_uint8 yytable[] =
   {
-    9, 42, 45, 46, 52, 54, 15, 47, 17, 48,
-    12, 24, 13, 27, 28, 19, 20, 21, 22, 36,
-    37, 38, 39, 41, 70, 68, 19, 20, 73, 75,
-    64, 65, 53, 50, 80, 81, 82, 84, 86, 14,
-    16, 1, 2, 3, 4, 5, 6, 67, 51, 19,
-    69, 29, 30, 31, 65, 72, 74, 76, 77, 78,
-    79, 0, 92, 32, 83, 85, 87, 96, 0, 1,
-    2, 3, 4, 5, 6, 62, 63, 64, 65, 7,
-    19, 20, 21, 1, 2, 3, 4, 5, 6, 91,
-    93, 8, 23, 7, 0, 40, 0, 1, 2, 3,
-    4, 5, 6, 0, 0, 8, 23, 7, 0, 0,
-    19, 20, 21, 22, 19, 20, 21, 22, 0, 8,
-    55, 56, 57, 58, 59, 60, 63, 64, 65, 35,
-    0, 0, 43, 44, 19, 20, 21, 22, 19, 20,
-    21, 22, 19, 20, 21, 22, 19, 20, 21, 22,
-    0, 0, 0, 35, 0, 0, 0, 49, 0, 0,
-    0, 88, 0, 0, 0, 95, 19, 20, 21, 22,
-    19, 20, 21, 22, 0, 0, 55, 56, 57, 58,
-    59, 60, 0, 0, 90, 0, 0, 0, 90, 19,
-    20, 21, 22, 0, 19, 20, 21, 22, 0, 55,
-    56, 57, 58, 59, 60, 56, 57, 58, 59, 60,
-    19, 20, 21, 22, 61, 62, 63, 64, 65, 0,
-    0, 0, 57, 58, 59, 60, 71, 61, 62, 63,
-    64, 65, 18, 0, 61, 62, 63, 64, 65, 97,
-    0, 19, 20, 21, 22, 66, 61, 62, 63, 64,
-    65, 61, 62, 63, 64, 65, 0, 89, 19, 20,
-    21, 22, 94
+    12, 16, 75, 28, 29, 30, 21, 40, 41, 42,
+    25, 28, 29, 30, 31, 44, 17, 47, 48, 27,
+    50, 28, 29, 30, 31, 24, 26, 28, 54, 55,
+    56, 57, 58, 60, 62, 63, 64, 65, 51, 87,
+    82, 69, 71, 74, 28, 29, 30, 31, 59, 61,
+    28, 29, 30, 31, 66, 67, 68, 70, 72, 80,
+    42, 81, 76, 77, 18, 84, 41, 42, 83, 1,
+    2, 3, 4, 5, 6, 39, 40, 41, 42, 19,
+    86, 78, 79, 88, 22, 90, 28, 29, 49, 93,
+    0, 20, 43, 0, 96, 73, 28, 29, 30, 31,
+    0, 91, 1, 2, 3, 4, 5, 6, 0, 0,
+    0, 97, 19, 0, 0, 52, 1, 2, 3, 4,
+    5, 6, 0, 0, 20, 43, 7, 8, 9, 1,
+    2, 3, 4, 5, 6, 0, 0, 0, 10, 19,
+    0, 0, 28, 29, 30, 31, 28, 29, 30, 31,
+    0, 20, 32, 33, 34, 35, 36, 37, 0, 0,
+    0, 52, 0, 0, 0, 92, 28, 29, 30, 31,
+    38, 39, 40, 41, 42, 0, 28, 29, 30, 31,
+    28, 29, 30, 31, 0, 98, 32, 33, 34, 35,
+    36, 37, 0, 0, 94, 0, 0, 0, 94, 28,
+    29, 30, 31, 0, 28, 29, 30, 31, 0, 32,
+    33, 34, 35, 36, 37, 33, 34, 35, 36, 37,
+    28, 29, 30, 31, 38, 39, 40, 41, 42, 0,
+    0, 0, 34, 35, 36, 37, 53, 38, 39, 40,
+    41, 42, 38, 39, 40, 41, 42, 0, 0, 99,
+    0, 0, 0, 85, 38, 39, 40, 41, 42, 38,
+    39, 40, 41, 42, 0, 89, 0, 0, 0, 0,
+    95
   };
 
 static const yytype_int8 yycheck[] =
   {
-    0, 23, 27, 28, 31, 32, 6, 27, 8, 29,
-    28, 11, 25, 13, 14, 9, 10, 11, 12, 19,
-    20, 21, 22, 23, 51, 47, 9, 10, 55, 56,
-    19, 20, 32, 27, 61, 62, 63, 64, 65, 25,
-    25, 3, 4, 5, 6, 7, 8, 47, 25, 9,
-    50, 13, 14, 15, 20, 55, 56, 57, 58, 59,
-    60, -1, 89, 25, 64, 65, 66, 94, -1, 3,
+    0, 28, 43, 9, 10, 11, 6, 18, 19, 20,
+    10, 9, 10, 11, 12, 15, 25, 17, 18, 0,
+    20, 9, 10, 11, 12, 9, 10, 9, 28, 29,
+    30, 31, 32, 33, 34, 35, 36, 37, 22, 80,
+    28, 41, 42, 43, 9, 10, 11, 12, 32, 33,
+    9, 10, 11, 12, 38, 39, 40, 41, 42, 27,
+    20, 29, 27, 28, 25, 49, 19, 20, 27, 3,
     4, 5, 6, 7, 8, 17, 18, 19, 20, 13,
-    9, 10, 11, 3, 4, 5, 6, 7, 8, 89,
-    90, 25, 26, 13, -1, 29, -1, 3, 4, 5,
-    6, 7, 8, -1, -1, 25, 26, 13, -1, -1,
-    9, 10, 11, 12, 9, 10, 11, 12, -1, 25,
-    19, 20, 21, 22, 23, 24, 18, 19, 20, 28,
-    -1, -1, 27, 28, 9, 10, 11, 12, 9, 10,
-    11, 12, 9, 10, 11, 12, 9, 10, 11, 12,
-    -1, -1, -1, 28, -1, -1, -1, 28, -1, -1,
+    80, 27, 28, 83, 25, 85, 9, 10, 25, 89,
+    -1, 25, 26, -1, 94, 29, 9, 10, 11, 12,
+    -1, 85, 3, 4, 5, 6, 7, 8, -1, -1,
+    -1, 95, 13, -1, -1, 28, 3, 4, 5, 6,
+    7, 8, -1, -1, 25, 26, 13, 14, 15, 3,
+    4, 5, 6, 7, 8, -1, -1, -1, 25, 13,
+    -1, -1, 9, 10, 11, 12, 9, 10, 11, 12,
+    -1, 25, 19, 20, 21, 22, 23, 24, -1, -1,
     -1, 28, -1, -1, -1, 28, 9, 10, 11, 12,
-    9, 10, 11, 12, -1, -1, 19, 20, 21, 22,
+    16, 17, 18, 19, 20, -1, 9, 10, 11, 12,
+    9, 10, 11, 12, -1, 28, 19, 20, 21, 22,
     23, 24, -1, -1, 27, -1, -1, -1, 27, 9,
     10, 11, 12, -1, 9, 10, 11, 12, -1, 19,
     20, 21, 22, 23, 24, 20, 21, 22, 23, 24,
     9, 10, 11, 12, 16, 17, 18, 19, 20, -1,
     -1, -1, 21, 22, 23, 24, 28, 16, 17, 18,
-    19, 20, 0, -1, 16, 17, 18, 19, 20, 28,
-    -1, 9, 10, 11, 12, 27, 16, 17, 18, 19,
-    20, 16, 17, 18, 19, 20, -1, 27, 9, 10,
-    11, 12, 27
+    19, 20, 16, 17, 18, 19, 20, -1, -1, 28,
+    -1, -1, -1, 27, 16, 17, 18, 19, 20, 16,
+    17, 18, 19, 20, -1, 27, -1, -1, -1, -1,
+    27
   };
 
 /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
    symbol of state STATE-NUM.  */
 static const yytype_uint8 yystos[] =
   {
-    0, 3, 4, 5, 6, 7, 8, 13, 25, 31,
-    35, 36, 28, 25, 25, 31, 25, 31, 0, 9,
-    10, 11, 12, 26, 31, 33, 34, 31, 31, 13,
-    14, 15, 25, 31, 32, 28, 31, 31, 31, 31,
-    29, 31, 33, 27, 28, 27, 28, 27, 29, 28,
-    27, 25, 32, 31, 32, 19, 20, 21, 22, 23,
-    24, 16, 17, 18, 19, 20, 27, 31, 33, 31,
-    32, 28, 31, 32, 31, 32, 31, 31, 31, 31,
-    32, 32, 32, 31, 32, 31, 32, 31, 28, 27,
-    27, 31, 32, 31, 27, 28, 32, 28
+    0, 3, 4, 5, 6, 7, 8, 13, 14, 15,
+    25, 31, 32, 33, 36, 37, 28, 25, 25, 13,
+    25, 32, 25, 32, 33, 32, 33, 0, 9, 10,
+    11, 12, 19, 20, 21, 22, 23, 24, 16, 17,
+    18, 19, 20, 26, 32, 34, 35, 32, 32, 25,
+    32, 33, 28, 28, 32, 32, 32, 32, 32, 33,
+    32, 33, 32, 32, 32, 32, 33, 33, 33, 32,
+    33, 32, 33, 29, 32, 34, 27, 28, 27, 28,
+    27, 29, 28, 27, 33, 27, 32, 34, 32, 27,
+    32, 33, 28, 32, 27, 27, 32, 33, 28, 28
   };
 
 #define yyerrok  (yyerrstatus = 0)
@@ -1473,41 +1475,37 @@ yyreduce:
   switch (yyn)
     {
     case 2:
-#line 85 "CEvaluationParser.ypp"
+#line 84 "CEvaluationParser.ypp"
       {
-        mpRootNode = (yyvsp[(1) - (1)]);
+        mBoolean = false;
+        mpRootNode = (yyval);
       }
       break;
 
     case 3:
 #line 89 "CEvaluationParser.ypp"
       {
-        mpRootNode = (yyvsp[(1) - (1)]);
+        mBoolean = true;
+        mpRootNode = (yyval);
       }
       break;
 
     case 4:
-#line 93 "CEvaluationParser.ypp"
+#line 95 "CEvaluationParser.ypp"
       {
-        (yyval) = (yyvsp[(2) - (3)]);
-        (yyval)->addChild((yyvsp[(1) - (3)]));
-        (yyval)->addChild((yyvsp[(3) - (3)]));
-        mpRootNode = (yyval);
+        mpRootNode = (yyvsp[(1) - (1)]);
       }
       break;
 
     case 5:
-#line 100 "CEvaluationParser.ypp"
+#line 99 "CEvaluationParser.ypp"
       {
-        (yyval) = (yyvsp[(2) - (3)]);
-        (yyval)->addChild((yyvsp[(1) - (3)]));
-        (yyval)->addChild((yyvsp[(3) - (3)]));
-        mpRootNode = (yyval);
+        mpRootNode = (yyvsp[(1) - (1)]);
       }
       break;
 
     case 6:
-#line 107 "CEvaluationParser.ypp"
+#line 103 "CEvaluationParser.ypp"
       {
         (yyval) = (yyvsp[(2) - (3)]);
         (yyval)->addChild((yyvsp[(1) - (3)]));
@@ -1517,7 +1515,7 @@ yyreduce:
       break;
 
     case 7:
-#line 114 "CEvaluationParser.ypp"
+#line 110 "CEvaluationParser.ypp"
       {
         (yyval) = (yyvsp[(2) - (3)]);
         (yyval)->addChild((yyvsp[(1) - (3)]));
@@ -1527,15 +1525,35 @@ yyreduce:
       break;
 
     case 8:
-#line 121 "CEvaluationParser.ypp"
+#line 117 "CEvaluationParser.ypp"
+      {
+        (yyval) = (yyvsp[(2) - (3)]);
+        (yyval)->addChild((yyvsp[(1) - (3)]));
+        (yyval)->addChild((yyvsp[(3) - (3)]));
+        mpRootNode = (yyval);
+      }
+      break;
+
+    case 9:
+#line 124 "CEvaluationParser.ypp"
+      {
+        (yyval) = (yyvsp[(2) - (3)]);
+        (yyval)->addChild((yyvsp[(1) - (3)]));
+        (yyval)->addChild((yyvsp[(3) - (3)]));
+        mpRootNode = (yyval);
+      }
+      break;
+
+    case 10:
+#line 131 "CEvaluationParser.ypp"
       {
         (yyval) = (yyvsp[(2) - (3)]);
         mpRootNode = (yyval);
       }
       break;
 
-    case 9:
-#line 126 "CEvaluationParser.ypp"
+    case 11:
+#line 136 "CEvaluationParser.ypp"
       {
         (yyval) = (yyvsp[(1) - (4)]);
         (yyval)->addChild((yyvsp[(3) - (4)]));
@@ -1543,8 +1561,8 @@ yyreduce:
       }
       break;
 
-    case 10:
-#line 132 "CEvaluationParser.ypp"
+    case 12:
+#line 142 "CEvaluationParser.ypp"
       {
         (yyval) = (yyvsp[(1) - (6)]);
         (yyval)->addChild((yyvsp[(3) - (6)]));
@@ -1553,8 +1571,8 @@ yyreduce:
       }
       break;
 
-    case 11:
-#line 139 "CEvaluationParser.ypp"
+    case 13:
+#line 149 "CEvaluationParser.ypp"
       {
         (yyval) = (yyvsp[(1) - (2)]);
         (yyval)->addChild((yyvsp[(2) - (2)]));
@@ -1562,35 +1580,35 @@ yyreduce:
       }
       break;
 
-    case 12:
-#line 145 "CEvaluationParser.ypp"
+    case 14:
+#line 155 "CEvaluationParser.ypp"
       {
         (yyval) = (yyvsp[(1) - (8)]);
         (yyval)->addChild((yyvsp[(3) - (8)]));
         (yyval)->addChild((yyvsp[(5) - (8)]));
         (yyval)->addChild((yyvsp[(7) - (8)]));
         mpRootNode = (yyval);
-      }
-      break;
-
-    case 13:
-#line 153 "CEvaluationParser.ypp"
-      {
-        (yyval) = (yyvsp[(1) - (1)]);
-        mpRootNode = (yyval);
-      }
-      break;
-
-    case 14:
-#line 159 "CEvaluationParser.ypp"
-      {
-        mpRootNode = (yyvsp[(1) - (1)]);
       }
       break;
 
     case 15:
 #line 163 "CEvaluationParser.ypp"
       {
+        (yyval) = (yyvsp[(1) - (1)]);
+        mpRootNode = (yyval);
+      }
+      break;
+
+    case 16:
+#line 169 "CEvaluationParser.ypp"
+      {
+        mpRootNode = (yyvsp[(1) - (1)]);
+      }
+      break;
+
+    case 17:
+#line 173 "CEvaluationParser.ypp"
+      {
         (yyval) = (yyvsp[(1) - (8)]);
         (yyval)->addChild((yyvsp[(3) - (8)]));
         (yyval)->addChild((yyvsp[(5) - (8)]));
@@ -1599,28 +1617,8 @@ yyreduce:
       }
       break;
 
-    case 16:
-#line 171 "CEvaluationParser.ypp"
-      {
-        (yyval) = (yyvsp[(2) - (3)]);
-        (yyval)->addChild((yyvsp[(1) - (3)]));
-        (yyval)->addChild((yyvsp[(3) - (3)]));
-        mpRootNode = (yyval);
-      }
-      break;
-
-    case 17:
-#line 178 "CEvaluationParser.ypp"
-      {
-        (yyval) = (yyvsp[(2) - (3)]);
-        (yyval)->addChild((yyvsp[(1) - (3)]));
-        (yyval)->addChild((yyvsp[(3) - (3)]));
-        mpRootNode = (yyval);
-      }
-      break;
-
     case 18:
-#line 185 "CEvaluationParser.ypp"
+#line 181 "CEvaluationParser.ypp"
       {
         (yyval) = (yyvsp[(2) - (3)]);
         (yyval)->addChild((yyvsp[(1) - (3)]));
@@ -1630,7 +1628,7 @@ yyreduce:
       break;
 
     case 19:
-#line 192 "CEvaluationParser.ypp"
+#line 188 "CEvaluationParser.ypp"
       {
         (yyval) = (yyvsp[(2) - (3)]);
         (yyval)->addChild((yyvsp[(1) - (3)]));
@@ -1640,7 +1638,7 @@ yyreduce:
       break;
 
     case 20:
-#line 199 "CEvaluationParser.ypp"
+#line 195 "CEvaluationParser.ypp"
       {
         (yyval) = (yyvsp[(2) - (3)]);
         (yyval)->addChild((yyvsp[(1) - (3)]));
@@ -1650,7 +1648,7 @@ yyreduce:
       break;
 
     case 21:
-#line 206 "CEvaluationParser.ypp"
+#line 202 "CEvaluationParser.ypp"
       {
         (yyval) = (yyvsp[(2) - (3)]);
         (yyval)->addChild((yyvsp[(1) - (3)]));
@@ -1660,7 +1658,7 @@ yyreduce:
       break;
 
     case 22:
-#line 213 "CEvaluationParser.ypp"
+#line 209 "CEvaluationParser.ypp"
       {
         (yyval) = (yyvsp[(2) - (3)]);
         (yyval)->addChild((yyvsp[(1) - (3)]));
@@ -1670,7 +1668,7 @@ yyreduce:
       break;
 
     case 23:
-#line 220 "CEvaluationParser.ypp"
+#line 216 "CEvaluationParser.ypp"
       {
         (yyval) = (yyvsp[(2) - (3)]);
         (yyval)->addChild((yyvsp[(1) - (3)]));
@@ -1680,7 +1678,7 @@ yyreduce:
       break;
 
     case 24:
-#line 227 "CEvaluationParser.ypp"
+#line 223 "CEvaluationParser.ypp"
       {
         (yyval) = (yyvsp[(2) - (3)]);
         (yyval)->addChild((yyvsp[(1) - (3)]));
@@ -1690,7 +1688,7 @@ yyreduce:
       break;
 
     case 25:
-#line 234 "CEvaluationParser.ypp"
+#line 230 "CEvaluationParser.ypp"
       {
         (yyval) = (yyvsp[(2) - (3)]);
         (yyval)->addChild((yyvsp[(1) - (3)]));
@@ -1700,7 +1698,7 @@ yyreduce:
       break;
 
     case 26:
-#line 241 "CEvaluationParser.ypp"
+#line 237 "CEvaluationParser.ypp"
       {
         (yyval) = (yyvsp[(2) - (3)]);
         (yyval)->addChild((yyvsp[(1) - (3)]));
@@ -1710,7 +1708,7 @@ yyreduce:
       break;
 
     case 27:
-#line 248 "CEvaluationParser.ypp"
+#line 244 "CEvaluationParser.ypp"
       {
         (yyval) = (yyvsp[(2) - (3)]);
         (yyval)->addChild((yyvsp[(1) - (3)]));
@@ -1720,7 +1718,7 @@ yyreduce:
       break;
 
     case 28:
-#line 255 "CEvaluationParser.ypp"
+#line 251 "CEvaluationParser.ypp"
       {
         (yyval) = (yyvsp[(2) - (3)]);
         (yyval)->addChild((yyvsp[(1) - (3)]));
@@ -1730,7 +1728,7 @@ yyreduce:
       break;
 
     case 29:
-#line 262 "CEvaluationParser.ypp"
+#line 258 "CEvaluationParser.ypp"
       {
         (yyval) = (yyvsp[(2) - (3)]);
         (yyval)->addChild((yyvsp[(1) - (3)]));
@@ -1740,7 +1738,7 @@ yyreduce:
       break;
 
     case 30:
-#line 269 "CEvaluationParser.ypp"
+#line 265 "CEvaluationParser.ypp"
       {
         (yyval) = (yyvsp[(2) - (3)]);
         (yyval)->addChild((yyvsp[(1) - (3)]));
@@ -1750,15 +1748,35 @@ yyreduce:
       break;
 
     case 31:
-#line 276 "CEvaluationParser.ypp"
+#line 272 "CEvaluationParser.ypp"
+      {
+        (yyval) = (yyvsp[(2) - (3)]);
+        (yyval)->addChild((yyvsp[(1) - (3)]));
+        (yyval)->addChild((yyvsp[(3) - (3)]));
+        mpRootNode = (yyval);
+      }
+      break;
+
+    case 32:
+#line 279 "CEvaluationParser.ypp"
+      {
+        (yyval) = (yyvsp[(2) - (3)]);
+        (yyval)->addChild((yyvsp[(1) - (3)]));
+        (yyval)->addChild((yyvsp[(3) - (3)]));
+        mpRootNode = (yyval);
+      }
+      break;
+
+    case 33:
+#line 286 "CEvaluationParser.ypp"
       {
         (yyval) = (yyvsp[(2) - (3)]);
         mpRootNode = (yyval);
       }
       break;
 
-    case 32:
-#line 281 "CEvaluationParser.ypp"
+    case 34:
+#line 291 "CEvaluationParser.ypp"
       {
         (yyval) = (yyvsp[(1) - (2)]);
         (yyval)->addChild((yyvsp[(2) - (2)]));
@@ -1766,80 +1784,65 @@ yyreduce:
       }
       break;
 
-    case 33:
-#line 288 "CEvaluationParser.ypp"
+    case 35:
+#line 298 "CEvaluationParser.ypp"
       {
         (yyval) = new CEvaluationNodeVector();
         mpNodeList->push_back((yyval));
       }
       break;
 
-    case 34:
-#line 293 "CEvaluationParser.ypp"
+    case 36:
+#line 303 "CEvaluationParser.ypp"
       {
         (yyval) = (yyvsp[(1) - (2)]);
       }
       break;
 
-    case 35:
-#line 299 "CEvaluationParser.ypp"
-      {
-        (yyval) = new CEvaluationNodeVector();
-        mpNodeList->push_back((yyval));
-        (yyval)->addChild((yyvsp[(2) - (2)]));
-      }
-      break;
-
-    case 36:
-#line 305 "CEvaluationParser.ypp"
-      {
-        (yyval) = new CEvaluationNodeVector();
-        mpNodeList->push_back((yyval));
-        (yyval)->addChild((yyvsp[(2) - (2)]));
-      }
-      break;
-
     case 37:
-#line 311 "CEvaluationParser.ypp"
+#line 309 "CEvaluationParser.ypp"
       {
-        (yyval)->addChild((yyvsp[(3) - (3)]));
+        (yyval) = new CEvaluationNodeVector();
+        mpNodeList->push_back((yyval));
+        (yyval)->addChild((yyvsp[(2) - (2)]));
       }
       break;
 
     case 38:
 #line 315 "CEvaluationParser.ypp"
       {
-        (yyval)->addChild((yyvsp[(3) - (3)]));
+        (yyval) = new CEvaluationNodeVector();
+        mpNodeList->push_back((yyval));
+        (yyval)->addChild((yyvsp[(2) - (2)]));
       }
       break;
 
     case 39:
-#line 320 "CEvaluationParser.ypp"
+#line 321 "CEvaluationParser.ypp"
+      {
+        (yyval)->addChild((yyvsp[(3) - (3)]));
+      }
+      break;
+
+    case 40:
+#line 325 "CEvaluationParser.ypp"
+      {
+        (yyval)->addChild((yyvsp[(3) - (3)]));
+      }
+      break;
+
+    case 41:
+#line 330 "CEvaluationParser.ypp"
       {
         (yyval) = (yyvsp[(1) - (2)]);
       }
       break;
 
-    case 40:
-#line 324 "CEvaluationParser.ypp"
-      {
-        (yyval) = (yyvsp[(1) - (3)]);
-        (yyval)->addChild((yyvsp[(2) - (3)]));
-      }
-      break;
-
-    case 41:
-#line 329 "CEvaluationParser.ypp"
-      {
-        (yyval) = (yyvsp[(1) - (3)]);
-        (yyval)->addChild((yyvsp[(2) - (3)]));
-      }
-      break;
-
     case 42:
-#line 335 "CEvaluationParser.ypp"
+#line 334 "CEvaluationParser.ypp"
       {
-        (yyval) = (yyvsp[(1) - (1)]);
+        (yyval) = (yyvsp[(1) - (3)]);
+        (yyval)->addChild((yyvsp[(2) - (3)]));
       }
       break;
 
@@ -1852,7 +1855,22 @@ yyreduce:
       break;
 
     case 44:
-#line 344 "CEvaluationParser.ypp"
+#line 345 "CEvaluationParser.ypp"
+      {
+        (yyval) = (yyvsp[(1) - (1)]);
+      }
+      break;
+
+    case 45:
+#line 349 "CEvaluationParser.ypp"
+      {
+        (yyval) = (yyvsp[(1) - (3)]);
+        (yyval)->addChild((yyvsp[(2) - (3)]));
+      }
+      break;
+
+    case 46:
+#line 354 "CEvaluationParser.ypp"
       {
         (yyval) = (yyvsp[(1) - (3)]);
         (yyval)->addChild((yyvsp[(2) - (3)]));
@@ -1860,7 +1878,7 @@ yyreduce:
       break;
 
       /* Line 1267 of yacc.c.  */
-#line 1887 "CEvaluationParser_yacc.cpp"
+#line 1905 "CEvaluationParser_yacc.cpp"
     default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2064,4 +2082,4 @@ yyreturn:
   return YYID (yyresult);
 }
 
-#line 350 "CEvaluationParser.ypp"
+#line 360 "CEvaluationParser.ypp"

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationLexer.h,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/11 23:32:11 $
+//   $Date: 2008/06/12 14:32:08 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,6 +48,7 @@ class yyYaccParser
     yyYaccParser():
         mpNode(NULL),
         mpRootNode(NULL),
+        mBoolean(false),
         mpNodeList(NULL),
         mPosition(0)
     {}
@@ -95,11 +96,14 @@ class yyYaccParser
 
   CEvaluationNode * getRootNode() {return mpRootNode;}
 
+    bool isBoolean() const {return mBoolean;}
+
     unsigned C_INT32 getErrorPosition() {return mPosition;}
 
   protected:
     CEvaluationNode * mpNode;
     CEvaluationNode * mpRootNode;
+    bool mBoolean;
     std::vector< CEvaluationNode * > * mpNodeList;
     unsigned C_INT32 mPosition;
 

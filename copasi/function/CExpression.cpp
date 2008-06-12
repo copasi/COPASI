@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.cpp,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.27 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/06/11 09:54:35 $
+//   $Author: shoops $
+//   $Date: 2008/06/12 14:32:08 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,6 +52,12 @@ void CExpression::initObjects()
   assert (pObject != NULL);
 
   pObject->setRefresh(this, &CExpression::refresh);
+}
+
+void CExpression::setBoolean(const bool & boolean)
+{
+  mBoolean = boolean;
+  mType = Boolean;
 }
 
 bool CExpression::setInfix(const std::string & infix)

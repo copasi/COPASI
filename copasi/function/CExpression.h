@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.h,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/06/11 09:43:56 $
+//   $Author: shoops $
+//   $Date: 2008/06/12 14:32:08 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -66,6 +66,11 @@ class CExpression: public CEvaluationTree
     void initObjects();
 
   public:
+    /**
+     * Set whether this a boolean expression or not
+     */
+    void setBoolean(const bool & boolean);
+
     /**
      * Set the infix description of the tree and compile it.
      * @param const std::string & infix

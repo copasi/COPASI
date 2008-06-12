@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-//   $Revision: 1.53 $
+//   $Revision: 1.54 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/18 19:49:33 $
+//   $Date: 2008/06/12 14:32:08 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,10 +36,10 @@
 #include "CopasiDataModel/CCopasiDataModel.h"
 
 const std::string CEvaluationTree::TypeName[] =
-  {"userdefined", "predefined", "predefined", "userdefined", "userdefined", ""};
+  {"userdefined", "predefined", "predefined", "userdefined", "userdefined", "userdefined", ""};
 
 const char* CEvaluationTree::XMLType[] =
-  {"Function", "MassAction", "PreDefined", "UserDefined", "Expression", NULL};
+  {"Function", "MassAction", "PreDefined", "UserDefined", "Expression", "Boolean", NULL};
 
 CEvaluationTree *
 CEvaluationTree::create(CEvaluationTree::Type type)
@@ -67,6 +67,11 @@ CEvaluationTree::create(CEvaluationTree::Type type)
 
     case Expression:
       pNew = new CExpression();
+      break;
+
+    case Boolean:
+      pNew = new CExpression();
+      static_cast< CExpression * >(pNew)->setBoolean(true);
       break;
 
     default:
@@ -97,6 +102,7 @@ CEvaluationTree::copy(const CEvaluationTree & src)
       break;
 
     case Expression:
+    case Boolean:
       pNew = new CExpression(*static_cast<const CExpression *>(&src));
       break;
 
@@ -120,7 +126,8 @@ CEvaluationTree::CEvaluationTree(const std::string & name,
     mMiriamAnnotation(""),
     mpNodeList(NULL),
     mpRoot(NULL),
-    mValue(std::numeric_limits<C_FLOAT64>::quiet_NaN())
+    mValue(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
+    mBoolean(false)
 {
   initObjects();
   setInfix("");
@@ -138,7 +145,8 @@ CEvaluationTree::CEvaluationTree(const CEvaluationTree & src,
     mMiriamAnnotation(""),
     mpNodeList(NULL),
     mpRoot(NULL),
-    mValue(src.mValue)
+    mValue(src.mValue),
+    mBoolean(src.mBoolean)
 {
   setMiriamAnnotation(src.mMiriamAnnotation, src.mKey);
   initObjects();
@@ -218,6 +226,9 @@ bool CEvaluationTree::parse()
   CEvaluationLexer Parser(&buffer);
 
   success = (Parser.yyparse() == 0);
+
+  // Check whether the expression has the expected type.
+  success &= (mBoolean == Parser.isBoolean());
 
   mpNodeList = Parser.getNodeList();
   mpRoot = Parser.getRootNode();

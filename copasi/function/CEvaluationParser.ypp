@@ -80,7 +80,17 @@
 
 /* Grammar follows */
 %%
-
+result:   exp
+          {
+            mBoolean = false;
+            mpRootNode = $$; 
+          }
+        | bool
+          {
+            mBoolean = true;
+            mpRootNode = $$; 
+          }
+          
 exp:      TOKEN_NUMBER
           {
             mpRootNode = $1;

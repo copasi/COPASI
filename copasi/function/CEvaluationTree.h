@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.h,v $
-//   $Revision: 1.28 $
+//   $Revision: 1.29 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/18 19:49:33 $
+//   $Date: 2008/06/12 14:32:08 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -39,7 +39,8 @@ class CEvaluationTree:
       MassAction,
       PreDefined,
       UserDefined,
-      Expression
+      Expression,
+      Boolean
     };
 
     /**
@@ -288,12 +289,13 @@ class CEvaluationTree:
     void initObjects();
 
     // Attributes
-  private:
+  protected:
     /**
      * The type of the function
      */
     CEvaluationTree::Type mType;
 
+  private:
     /**
      * The key of the function
      */
@@ -337,6 +339,11 @@ class CEvaluationTree:
      * The last computed value of the tree;
      */
     C_FLOAT64 mValue;
+
+    /**
+     * Indicates whether the tree shall evaluate to a boolean value.
+     */
+    bool mBoolean;
   };
 
 #endif // COPASI_CEvaluationTree
