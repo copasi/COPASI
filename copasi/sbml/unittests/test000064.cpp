@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000064.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/06/12 10:12:34 $
+//   $Date: 2008/06/12 11:08:39 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,6 +23,17 @@
 #include "copasi/model/CReaction.h"
 #include "copasi/function/CEvaluationNode.h"
 #include "copasi/function/CExpression.h"
+
+#include "sbml/math/ASTNode.h"
+#include "sbml/SBMLDocument.h"
+#include "sbml/Model.h"
+#include "sbml/Compartment.h"
+#include "sbml/Species.h"
+#include "sbml/Parameter.h"
+#include "sbml/Rule.h"
+#include "sbml/UnitDefinition.h"
+#include "sbml/Unit.h"
+#include "sbml/UnitKind.h"
 
 /**
  * These tests are supposed to make sure that assignments on a species with the
@@ -1950,6 +1961,75 @@ const char* test000064::MODEL_STRING16 =
   "</sbml>"
 ;
 
+void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_1()
+{
+  // load the CPS file
+  // export to SBML
+  // check the resulting SBML model
+  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  std::istringstream iss(test000064::MODEL_STRING101);
+  CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
+  CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
+  CPPUNIT_ASSERT(pDataModel->exportSBMLToString(NULL, 2, 3).empty() == false);
+  SBMLDocument* pDocument = pDataModel->getCurrentSBMLDocument();
+  CPPUNIT_ASSERT(pDocument != NULL);
+  Model* pModel = pDocument->getModel();
+  CPPUNIT_ASSERT(pModel != NULL);
+  // check the units
+  UnitDefinition* pUDef = pModel->getUnitDefinition("time");
+  CPPUNIT_ASSERT(pUDef != NULL);
+  CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
+  Unit* pUnit = pUDef->getUnit(0);
+  CPPUNIT_ASSERT(pUnit != NULL);
+  CPPUNIT_ASSERT(pUnit->getKind() == UNIT_KIND_SECOND);
+  CPPUNIT_ASSERT(pUnit->getScale() == 0);
+  CPPUNIT_ASSERT(pUnit->getExponent() == 1);
+  CPPUNIT_ASSERT(fabs((pUnit->getMultiplier() - 1.0) / 1.0) < 1e-6);
+  pUDef = pModel->getUnitDefinition("substance");
+  CPPUNIT_ASSERT(pUDef != NULL);
+  CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
+  pUnit = pUDef->getUnit(0);
+  CPPUNIT_ASSERT(pUnit != NULL);
+  CPPUNIT_ASSERT(pUnit->getKind() == UNIT_KIND_MOLE);
+  CPPUNIT_ASSERT(pUnit->getScale() == -3);
+  CPPUNIT_ASSERT(pUnit->getExponent() == 1);
+  CPPUNIT_ASSERT(fabs((pUnit->getMultiplier() - 1.0) / 1.0) < 1e-6);
+  pUDef = pModel->getUnitDefinition("volume");
+  CPPUNIT_ASSERT(pUDef != NULL);
+  CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
+  pUnit = pUDef->getUnit(0);
+  CPPUNIT_ASSERT(pUnit != NULL);
+  CPPUNIT_ASSERT(pUnit->getKind() == UNIT_KIND_LITRE);
+  CPPUNIT_ASSERT(pUnit->getScale() == -3);
+  CPPUNIT_ASSERT(pUnit->getExponent() == 1);
+  CPPUNIT_ASSERT(fabs((pUnit->getMultiplier() - 1.0) / 1.0) < 1e-6);
+  // assert that there is only one compartment and
+  // assert the compartment is constant
+  CPPUNIT_ASSERT(pModel->getNumCompartments() == 1);
+  Compartment* pCompartment = pModel->getCompartment(0);
+  CPPUNIT_ASSERT(pCompartment->getConstant() == true);
+  CPPUNIT_ASSERT(pModel->getNumParameters() == 1);
+  Parameter* pParameter = pModel->getParameter(0);
+  CPPUNIT_ASSERT(pParameter != NULL);
+  CPPUNIT_ASSERT(pModel->getNumSpecies() == 2);
+  Species* pSpecies1 = pModel->getSpecies(0);
+  CPPUNIT_ASSERT(pSpecies1->getHasOnlySubstanceUnits() == false);
+  std::string idSpeciesA = pSpecies1->getId();
+  Species* pSpecies2 = pModel->getSpecies(1);
+  CPPUNIT_ASSERT(pSpecies2->getHasOnlySubstanceUnits() == false);
+  CPPUNIT_ASSERT(pModel->getNumRules() == 1);
+  AssignmentRule* pRule = dynamic_cast<AssignmentRule*>(pModel->getRule(0));
+  CPPUNIT_ASSERT(pRule != NULL);
+  CPPUNIT_ASSERT(pRule->getVariable() == pSpecies1->getId());
+  const ASTNode* pMath = pRule->getMath();
+  CPPUNIT_ASSERT(pMath != NULL);
+  // make sure the mathematical expression contains only one node that is a
+  // reference to the global parameter
+  CPPUNIT_ASSERT(pMath->getType() == AST_NAME);
+  CPPUNIT_ASSERT(pMath->getName() == pParameter->getId());
+  CPPUNIT_ASSERT(pModel->getNumReactions() == 0);
+}
+
 const char* test000064::MODEL_STRING101 =
   "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
   "<!-- generated with COPASI 4.4.26 (Debug) (http://www.copasi.org) at 2008-06-12 09:00:21 UTC -->\n"
@@ -1992,6 +2072,111 @@ const char* test000064::MODEL_STRING101 =
   "  </Model>\n"
   "</COPASI>\n"
 ;
+
+void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_2()
+{
+  // load the CPS file
+  // export to SBML
+  // check the resulting SBML model
+  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  std::istringstream iss(test000064::MODEL_STRING102);
+  CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
+  CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
+  CPPUNIT_ASSERT(pDataModel->exportSBMLToString(NULL, 2, 3).empty() == false);
+  SBMLDocument* pDocument = pDataModel->getCurrentSBMLDocument();
+  CPPUNIT_ASSERT(pDocument != NULL);
+  Model* pModel = pDocument->getModel();
+  CPPUNIT_ASSERT(pModel != NULL);
+  // check the units
+  UnitDefinition* pUDef = pModel->getUnitDefinition("time");
+  CPPUNIT_ASSERT(pUDef != NULL);
+  CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
+  Unit* pUnit = pUDef->getUnit(0);
+  CPPUNIT_ASSERT(pUnit != NULL);
+  CPPUNIT_ASSERT(pUnit->getKind() == UNIT_KIND_SECOND);
+  CPPUNIT_ASSERT(pUnit->getScale() == 0);
+  CPPUNIT_ASSERT(pUnit->getExponent() == 1);
+  CPPUNIT_ASSERT(fabs((pUnit->getMultiplier() - 1.0) / 1.0) < 1e-6);
+  pUDef = pModel->getUnitDefinition("substance");
+  CPPUNIT_ASSERT(pUDef != NULL);
+  CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
+  pUnit = pUDef->getUnit(0);
+  CPPUNIT_ASSERT(pUnit != NULL);
+  CPPUNIT_ASSERT(pUnit->getKind() == UNIT_KIND_MOLE);
+  CPPUNIT_ASSERT(pUnit->getScale() == -3);
+  CPPUNIT_ASSERT(pUnit->getExponent() == 1);
+  CPPUNIT_ASSERT(fabs((pUnit->getMultiplier() - 1.0) / 1.0) < 1e-6);
+  pUDef = pModel->getUnitDefinition("volume");
+  CPPUNIT_ASSERT(pUDef != NULL);
+  CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
+  pUnit = pUDef->getUnit(0);
+  CPPUNIT_ASSERT(pUnit != NULL);
+  CPPUNIT_ASSERT(pUnit->getKind() == UNIT_KIND_LITRE);
+  CPPUNIT_ASSERT(pUnit->getScale() == -3);
+  CPPUNIT_ASSERT(pUnit->getExponent() == 1);
+  CPPUNIT_ASSERT(fabs((pUnit->getMultiplier() - 1.0) / 1.0) < 1e-6);
+  // assert that there is only one compartment and
+  // assert the compartment is not constant
+  CPPUNIT_ASSERT(pModel->getNumCompartments() == 1);
+  Compartment* pCompartment = pModel->getCompartment(0);
+  CPPUNIT_ASSERT(pCompartment->getConstant() == false);
+  CPPUNIT_ASSERT(pModel->getNumParameters() == 2);
+  Parameter* pParameter1 = pModel->getParameter(0);
+  CPPUNIT_ASSERT(pParameter1 != NULL);
+  Parameter* pParameter2 = NULL;
+  if (pParameter1->getName() == "K")
+    {
+      pParameter2 = pModel->getParameter(1);
+      CPPUNIT_ASSERT(pParameter2 != NULL);
+    }
+  else
+    {
+      pParameter2 = pParameter1;
+      pParameter1 = pModel->getParameter(1);
+      CPPUNIT_ASSERT(pParameter1 != NULL);
+    }
+  CPPUNIT_ASSERT(pParameter1->getName() == "K");
+  CPPUNIT_ASSERT(pParameter2->getName() == "P");
+  CPPUNIT_ASSERT(pModel->getNumSpecies() == 2);
+  Species* pSpecies1 = pModel->getSpecies(0);
+  CPPUNIT_ASSERT(pSpecies1->getHasOnlySubstanceUnits() == false);
+  std::string idSpeciesA = pSpecies1->getId();
+  Species* pSpecies2 = pModel->getSpecies(1);
+  CPPUNIT_ASSERT(pSpecies2->getHasOnlySubstanceUnits() == false);
+  CPPUNIT_ASSERT(pModel->getNumRules() == 2);
+  AssignmentRule* pRule1 = dynamic_cast<AssignmentRule*>(pModel->getRule(0));
+  AssignmentRule* pRule2 = NULL;
+  CPPUNIT_ASSERT(pRule1 != NULL);
+  if (pRule1->getVariable() == pSpecies1->getId())
+    {
+      pRule2 = pRule1;
+      pRule1 = dynamic_cast<AssignmentRule*>(pModel->getRule(1));
+    }
+  else
+    {
+      pRule2 = dynamic_cast<AssignmentRule*>(pModel->getRule(1));
+    }
+  // check the rule for the compartment
+  const ASTNode* pMath = pRule1->getMath();
+  CPPUNIT_ASSERT(pMath != NULL);
+  // make sure the mathematical expression contains only one node that is a
+  // reference to the global parameter P
+  CPPUNIT_ASSERT(pMath->getType() == AST_NAME);
+  CPPUNIT_ASSERT(pMath->getName() == pParameter2->getId());
+  pMath = pRule2->getMath();
+  CPPUNIT_ASSERT(pMath != NULL);
+  // make sure the mathematical expression contains a multiplication of the
+  // global parameter K and the compartment volume
+  CPPUNIT_ASSERT(pMath->getType() == AST_TIMES);
+  CPPUNIT_ASSERT(pMath->getNumChildren() == 2);
+  ASTNode* pChild1 = pMath->getChild(0);
+  ASTNode* pChild2 = pMath->getChild(1);
+  CPPUNIT_ASSERT(pChild1->getType() == AST_NAME);
+  CPPUNIT_ASSERT(pChild2->getType() == AST_NAME);
+  CPPUNIT_ASSERT(pChild1->getName() == pParameter1->getId() || pChild2->getName() == pParameter1->getId());
+  CPPUNIT_ASSERT(pChild1->getName() == pCompartment->getId() || pChild2->getName() == pCompartment->getId());
+  CPPUNIT_ASSERT(pModel->getNumReactions() == 0);
+}
 
 const char* test000064::MODEL_STRING102 =
   "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -2042,6 +2227,75 @@ const char* test000064::MODEL_STRING102 =
   "</COPASI>\n"
 ;
 
+void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_3()
+{
+  // load the CPS file
+  // export to SBML
+  // check the resulting SBML model
+  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  std::istringstream iss(test000064::MODEL_STRING103);
+  CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
+  CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
+  CPPUNIT_ASSERT(pDataModel->exportSBMLToString(NULL, 2, 3).empty() == false);
+  SBMLDocument* pDocument = pDataModel->getCurrentSBMLDocument();
+  CPPUNIT_ASSERT(pDocument != NULL);
+  Model* pModel = pDocument->getModel();
+  CPPUNIT_ASSERT(pModel != NULL);
+  // check the units
+  UnitDefinition* pUDef = pModel->getUnitDefinition("time");
+  CPPUNIT_ASSERT(pUDef != NULL);
+  CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
+  Unit* pUnit = pUDef->getUnit(0);
+  CPPUNIT_ASSERT(pUnit != NULL);
+  CPPUNIT_ASSERT(pUnit->getKind() == UNIT_KIND_SECOND);
+  CPPUNIT_ASSERT(pUnit->getScale() == 0);
+  CPPUNIT_ASSERT(pUnit->getExponent() == 1);
+  CPPUNIT_ASSERT(fabs((pUnit->getMultiplier() - 1.0) / 1.0) < 1e-6);
+  pUDef = pModel->getUnitDefinition("substance");
+  CPPUNIT_ASSERT(pUDef != NULL);
+  CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
+  pUnit = pUDef->getUnit(0);
+  CPPUNIT_ASSERT(pUnit != NULL);
+  CPPUNIT_ASSERT(pUnit->getKind() == UNIT_KIND_ITEM);
+  CPPUNIT_ASSERT(pUnit->getScale() == 0);
+  CPPUNIT_ASSERT(pUnit->getExponent() == 1);
+  CPPUNIT_ASSERT(fabs((pUnit->getMultiplier() - 1.0) / 1.0) < 1e-6);
+  pUDef = pModel->getUnitDefinition("volume");
+  CPPUNIT_ASSERT(pUDef != NULL);
+  CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
+  pUnit = pUDef->getUnit(0);
+  CPPUNIT_ASSERT(pUnit != NULL);
+  CPPUNIT_ASSERT(pUnit->getKind() == UNIT_KIND_LITRE);
+  CPPUNIT_ASSERT(pUnit->getScale() == -3);
+  CPPUNIT_ASSERT(pUnit->getExponent() == 1);
+  CPPUNIT_ASSERT(fabs((pUnit->getMultiplier() - 1.0) / 1.0) < 1e-6);
+  // assert that there is only one compartment and
+  // assert the compartment is constant
+  CPPUNIT_ASSERT(pModel->getNumCompartments() == 1);
+  Compartment* pCompartment = pModel->getCompartment(0);
+  CPPUNIT_ASSERT(pCompartment->getConstant() == true);
+  CPPUNIT_ASSERT(pModel->getNumParameters() == 1);
+  Parameter* pParameter = pModel->getParameter(0);
+  CPPUNIT_ASSERT(pParameter != NULL);
+  CPPUNIT_ASSERT(pModel->getNumSpecies() == 2);
+  Species* pSpecies1 = pModel->getSpecies(0);
+  CPPUNIT_ASSERT(pSpecies1->getHasOnlySubstanceUnits() == false);
+  std::string idSpeciesA = pSpecies1->getId();
+  Species* pSpecies2 = pModel->getSpecies(1);
+  CPPUNIT_ASSERT(pSpecies2->getHasOnlySubstanceUnits() == false);
+  CPPUNIT_ASSERT(pModel->getNumRules() == 1);
+  AssignmentRule* pRule = dynamic_cast<AssignmentRule*>(pModel->getRule(0));
+  CPPUNIT_ASSERT(pRule != NULL);
+  CPPUNIT_ASSERT(pRule->getVariable() == pSpecies1->getId());
+  const ASTNode* pMath = pRule->getMath();
+  CPPUNIT_ASSERT(pMath != NULL);
+  // make sure the mathematical expression contains only one node that is a
+  // reference to the global parameter
+  CPPUNIT_ASSERT(pMath->getType() == AST_NAME);
+  CPPUNIT_ASSERT(pMath->getName() == pParameter->getId());
+  CPPUNIT_ASSERT(pModel->getNumReactions() == 0);
+}
+
 const char* test000064::MODEL_STRING103 =
   "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
   "<!-- generated with COPASI 4.4.26 (Debug) (http://www.copasi.org) at 2008-06-12 09:00:21 UTC -->\n"
@@ -2085,7 +2339,643 @@ const char* test000064::MODEL_STRING103 =
   "</COPASI>\n"
 ;
 
+void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_4()
+{
+  // load the CPS file
+  // export to SBML
+  // check the resulting SBML model
+  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  std::istringstream iss(test000064::MODEL_STRING104);
+  CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
+  CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
+  CPPUNIT_ASSERT(pDataModel->exportSBMLToString(NULL, 2, 3).empty() == false);
+  SBMLDocument* pDocument = pDataModel->getCurrentSBMLDocument();
+  CPPUNIT_ASSERT(pDocument != NULL);
+  Model* pModel = pDocument->getModel();
+  CPPUNIT_ASSERT(pModel != NULL);
+  // check the units
+  UnitDefinition* pUDef = pModel->getUnitDefinition("time");
+  CPPUNIT_ASSERT(pUDef != NULL);
+  CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
+  Unit* pUnit = pUDef->getUnit(0);
+  CPPUNIT_ASSERT(pUnit != NULL);
+  CPPUNIT_ASSERT(pUnit->getKind() == UNIT_KIND_SECOND);
+  CPPUNIT_ASSERT(pUnit->getScale() == 0);
+  CPPUNIT_ASSERT(pUnit->getExponent() == 1);
+  CPPUNIT_ASSERT(fabs((pUnit->getMultiplier() - 1.0) / 1.0) < 1e-6);
+  pUDef = pModel->getUnitDefinition("substance");
+  CPPUNIT_ASSERT(pUDef != NULL);
+  CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
+  pUnit = pUDef->getUnit(0);
+  CPPUNIT_ASSERT(pUnit != NULL);
+  CPPUNIT_ASSERT(pUnit->getKind() == UNIT_KIND_ITEM);
+  CPPUNIT_ASSERT(pUnit->getScale() == 0);
+  CPPUNIT_ASSERT(pUnit->getExponent() == 1);
+  CPPUNIT_ASSERT(fabs((pUnit->getMultiplier() - 1.0) / 1.0) < 1e-6);
+  pUDef = pModel->getUnitDefinition("volume");
+  CPPUNIT_ASSERT(pUDef != NULL);
+  CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
+  pUnit = pUDef->getUnit(0);
+  CPPUNIT_ASSERT(pUnit != NULL);
+  CPPUNIT_ASSERT(pUnit->getKind() == UNIT_KIND_LITRE);
+  CPPUNIT_ASSERT(pUnit->getScale() == -3);
+  CPPUNIT_ASSERT(pUnit->getExponent() == 1);
+  CPPUNIT_ASSERT(fabs((pUnit->getMultiplier() - 1.0) / 1.0) < 1e-6);
+  // assert that there is only one compartment and
+  // assert the compartment is not constant
+  CPPUNIT_ASSERT(pModel->getNumCompartments() == 1);
+  Compartment* pCompartment = pModel->getCompartment(0);
+  CPPUNIT_ASSERT(pCompartment->getConstant() == false);
+  CPPUNIT_ASSERT(pModel->getNumParameters() == 2);
+  Parameter* pParameter1 = pModel->getParameter(0);
+  CPPUNIT_ASSERT(pParameter1 != NULL);
+  Parameter* pParameter2 = NULL;
+  if (pParameter1->getName() == "K")
+    {
+      pParameter2 = pModel->getParameter(1);
+      CPPUNIT_ASSERT(pParameter2 != NULL);
+    }
+  else
+    {
+      pParameter2 = pParameter1;
+      pParameter1 = pModel->getParameter(1);
+      CPPUNIT_ASSERT(pParameter1 != NULL);
+    }
+  CPPUNIT_ASSERT(pParameter1->getName() == "K");
+  CPPUNIT_ASSERT(pParameter2->getName() == "P");
+  CPPUNIT_ASSERT(pModel->getNumSpecies() == 2);
+  Species* pSpecies1 = pModel->getSpecies(0);
+  CPPUNIT_ASSERT(pSpecies1->getHasOnlySubstanceUnits() == false);
+  std::string idSpeciesA = pSpecies1->getId();
+  Species* pSpecies2 = pModel->getSpecies(1);
+  CPPUNIT_ASSERT(pSpecies2->getHasOnlySubstanceUnits() == false);
+  CPPUNIT_ASSERT(pModel->getNumRules() == 2);
+  AssignmentRule* pRule1 = dynamic_cast<AssignmentRule*>(pModel->getRule(0));
+  AssignmentRule* pRule2 = NULL;
+  CPPUNIT_ASSERT(pRule1 != NULL);
+  if (pRule1->getVariable() == pSpecies1->getId())
+    {
+      pRule2 = pRule1;
+      pRule1 = dynamic_cast<AssignmentRule*>(pModel->getRule(1));
+    }
+  else
+    {
+      pRule2 = dynamic_cast<AssignmentRule*>(pModel->getRule(1));
+    }
+  // check the rule for the compartment
+  const ASTNode* pMath = pRule1->getMath();
+  CPPUNIT_ASSERT(pMath != NULL);
+  // make sure the mathematical expression contains only one node that is a
+  // reference to the global parameter P
+  CPPUNIT_ASSERT(pMath->getType() == AST_NAME);
+  CPPUNIT_ASSERT(pMath->getName() == pParameter2->getId());
+  pMath = pRule2->getMath();
+  CPPUNIT_ASSERT(pMath != NULL);
+  // make sure the mathematical expression contains a multiplication of the
+  // global parameter K and the compartment volume
+  CPPUNIT_ASSERT(pMath->getType() == AST_TIMES);
+  CPPUNIT_ASSERT(pMath->getNumChildren() == 2);
+  ASTNode* pChild1 = pMath->getChild(0);
+  ASTNode* pChild2 = pMath->getChild(1);
+  CPPUNIT_ASSERT(pChild1->getType() == AST_NAME);
+  CPPUNIT_ASSERT(pChild2->getType() == AST_NAME);
+  CPPUNIT_ASSERT(pChild1->getName() == pParameter1->getId() || pChild2->getName() == pParameter1->getId());
+  CPPUNIT_ASSERT(pChild1->getName() == pCompartment->getId() || pChild2->getName() == pCompartment->getId());
+  CPPUNIT_ASSERT(pModel->getNumReactions() == 0);
+}
+
 const char* test000064::MODEL_STRING104 =
+  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+  "<!-- generated with COPASI 4.4.26 (Debug) (http://www.copasi.org) at 2008-06-12 09:00:21 UTC -->\n"
+  "<COPASI xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"http://www.copasi.org/static/schema.xsd\" versionMajor=\"1\" versionMinor=\"0\" versionDevel=\"26\">\n"
+  "  <Model key=\"Model_0\" name=\"New Model\" timeUnit=\"s\" volumeUnit=\"ml\" quantityUnit=\"#\" type=\"deterministic\">\n"
+  "    <Comment>\n"
+  "      <html xmlns=\"http://www.w3.org/1999/xhtml\"><head><meta name=\"qrichtext\" content=\"1\" /></head><body style=\"font-size:9pt;font-family:Sans Serif\">\n"
+  "<p>Simple model with two species and two global parameters. The compartment is variable and one species is determined by an assignment rule.</p>\n"
+  "<p>The substance unit is set to particle number.</p>\n"
+  "<p>On export both species should be exported with the hasOnlySubstanceUnits flag set to true and the expression for the assignment should contain a reference to the global parameter multiplied by the volume of the compartment.</p>\n"
+  "</body></html>\n"
+  "    </Comment>\n"
+  "    <ListOfCompartments>\n"
+  "      <Compartment key=\"Compartment_0\" name=\"compartment\" simulationType=\"assignment\">\n"
+  "        <Expression>\n"
+  "          &lt;CN=Root,Model=New Model,Vector=Values[P],Reference=Value&gt;\n"
+  "        </Expression>\n"
+  "      </Compartment>\n"
+  "    </ListOfCompartments>\n"
+  "    <ListOfMetabolites>\n"
+  "      <Metabolite key=\"Metabolite_0\" name=\"A\" simulationType=\"assignment\" compartment=\"Compartment_0\">\n"
+  "        <Expression>\n"
+  "          &lt;CN=Root,Model=New Model,Vector=Values[K],Reference=Value&gt;\n"
+  "        </Expression>\n"
+  "      </Metabolite>\n"
+  "      <Metabolite key=\"Metabolite_1\" name=\"B\" simulationType=\"reactions\" compartment=\"Compartment_0\">\n"
+  "      </Metabolite>\n"
+  "    </ListOfMetabolites>\n"
+  "    <ListOfModelValues>\n"
+  "      <ModelValue key=\"ModelValue_0\" name=\"K\" simulationType=\"fixed\">\n"
+  "      </ModelValue>\n"
+  "      <ModelValue key=\"ModelValue_1\" name=\"P\" simulationType=\"fixed\">\n"
+  "      </ModelValue>\n"
+  "    </ListOfModelValues>\n"
+  "    <StateTemplate>\n"
+  "      <StateTemplateVariable objectReference=\"Model_0\"/>\n"
+  "      <StateTemplateVariable objectReference=\"Metabolite_0\"/>\n"
+  "      <StateTemplateVariable objectReference=\"Metabolite_1\"/>\n"
+  "      <StateTemplateVariable objectReference=\"ModelValue_0\"/>\n"
+  "      <StateTemplateVariable objectReference=\"ModelValue_1\"/>\n"
+  "      <StateTemplateVariable objectReference=\"Compartment_0\"/>\n"
+  "    </StateTemplate>\n"
+  "    <InitialState type=\"initialState\">\n"
+  "      0 1.2044283e+21 6.022141500000001e+20 2 3 1\n"
+  "    </InitialState>\n"
+  "  </Model>\n"
+  "</COPASI>\n"
+;
+void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_5()
+{
+  // load the CPS file
+  // export to SBML
+  // check the resulting SBML model
+  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  std::istringstream iss(test000064::MODEL_STRING105);
+  CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
+  CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
+  CPPUNIT_ASSERT(pDataModel->exportSBMLToString(NULL, 2, 3).empty() == false);
+  SBMLDocument* pDocument = pDataModel->getCurrentSBMLDocument();
+  CPPUNIT_ASSERT(pDocument != NULL);
+  Model* pModel = pDocument->getModel();
+  CPPUNIT_ASSERT(pModel != NULL);
+  // check the units
+  UnitDefinition* pUDef = pModel->getUnitDefinition("time");
+  CPPUNIT_ASSERT(pUDef != NULL);
+  CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
+  Unit* pUnit = pUDef->getUnit(0);
+  CPPUNIT_ASSERT(pUnit != NULL);
+  CPPUNIT_ASSERT(pUnit->getKind() == UNIT_KIND_SECOND);
+  CPPUNIT_ASSERT(pUnit->getScale() == 0);
+  CPPUNIT_ASSERT(pUnit->getExponent() == 1);
+  CPPUNIT_ASSERT(fabs((pUnit->getMultiplier() - 1.0) / 1.0) < 1e-6);
+  pUDef = pModel->getUnitDefinition("substance");
+  CPPUNIT_ASSERT(pUDef != NULL);
+  CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
+  pUnit = pUDef->getUnit(0);
+  CPPUNIT_ASSERT(pUnit != NULL);
+  CPPUNIT_ASSERT(pUnit->getKind() == UNIT_KIND_MOLE);
+  CPPUNIT_ASSERT(pUnit->getScale() == -3);
+  CPPUNIT_ASSERT(pUnit->getExponent() == 1);
+  CPPUNIT_ASSERT(fabs((pUnit->getMultiplier() - 1.0) / 1.0) < 1e-6);
+  pUDef = pModel->getUnitDefinition("volume");
+  CPPUNIT_ASSERT(pUDef != NULL);
+  CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
+  pUnit = pUDef->getUnit(0);
+  CPPUNIT_ASSERT(pUnit != NULL);
+  CPPUNIT_ASSERT(pUnit->getKind() == UNIT_KIND_LITRE);
+  CPPUNIT_ASSERT(pUnit->getScale() == -3);
+  CPPUNIT_ASSERT(pUnit->getExponent() == 1);
+  CPPUNIT_ASSERT(fabs((pUnit->getMultiplier() - 1.0) / 1.0) < 1e-6);
+  // assert that there is only one compartment and
+  // assert the compartment is constant
+  CPPUNIT_ASSERT(pModel->getNumCompartments() == 1);
+  Compartment* pCompartment = pModel->getCompartment(0);
+  CPPUNIT_ASSERT(pCompartment->getConstant() == true);
+  CPPUNIT_ASSERT(pModel->getNumParameters() == 1);
+  Parameter* pParameter = pModel->getParameter(0);
+  CPPUNIT_ASSERT(pParameter != NULL);
+  CPPUNIT_ASSERT(pModel->getNumSpecies() == 2);
+  Species* pSpecies1 = pModel->getSpecies(0);
+  CPPUNIT_ASSERT(pSpecies1->getHasOnlySubstanceUnits() == false);
+  std::string idSpeciesA = pSpecies1->getId();
+  Species* pSpecies2 = pModel->getSpecies(1);
+  CPPUNIT_ASSERT(pSpecies2->getHasOnlySubstanceUnits() == false);
+  CPPUNIT_ASSERT(pModel->getNumRules() == 1);
+  AssignmentRule* pRule = dynamic_cast<AssignmentRule*>(pModel->getRule(0));
+  CPPUNIT_ASSERT(pRule != NULL);
+  CPPUNIT_ASSERT(pRule->getVariable() == pSpecies1->getId());
+  const ASTNode* pMath = pRule->getMath();
+  CPPUNIT_ASSERT(pMath != NULL);
+  // make sure the mathematical expression contains only one node that is a
+  // reference to the global parameter
+  CPPUNIT_ASSERT(pMath->getType() == AST_NAME);
+  CPPUNIT_ASSERT(pMath->getName() == pParameter->getId());
+  CPPUNIT_ASSERT(pModel->getNumReactions() == 0);
+}
+
+const char* test000064::MODEL_STRING105 =
+  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+  "<!-- generated with COPASI 4.4.26 (Debug) (http://www.copasi.org) at 2008-06-12 09:00:21 UTC -->\n"
+  "<COPASI xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"http://www.copasi.org/static/schema.xsd\" versionMajor=\"1\" versionMinor=\"0\" versionDevel=\"26\">\n"
+  "  <Model key=\"Model_0\" name=\"New Model\" timeUnit=\"s\" volumeUnit=\"ml\" quantityUnit=\"mmol\" type=\"deterministic\">\n"
+  "    <Comment>\n"
+  "      <html xmlns=\"http://www.w3.org/1999/xhtml\"><head><meta name=\"qrichtext\" content=\"1\" /></head><body style=\"font-size:9pt;font-family:Sans Serif\">\n"
+  "<p>Simple model with two species and a global parameter. The compartment is fixed and one species is determined by an assignment rule.</p>\n"
+  "<p>The substance unit is set to mmol.</p>\n"
+  "<p>On export both species should be exported with the hasOnlySubstanceUnits flag set to false and the expression for the assignment should contain only a reference to the global parameter.</p>\n"
+  "</body></html>\n"
+  "    </Comment>\n"
+  "    <ListOfCompartments>\n"
+  "      <Compartment key=\"Compartment_0\" name=\"compartment\" simulationType=\"fixed\">\n"
+  "      </Compartment>\n"
+  "    </ListOfCompartments>\n"
+  "    <ListOfMetabolites>\n"
+  "      <Metabolite key=\"Metabolite_0\" name=\"A\" simulationType=\"assignment\" compartment=\"Compartment_0\">\n"
+  "        <Expression>\n"
+  "          &lt;CN=Root,Model=New Model,Vector=Values[K],Reference=Value&gt;\n"
+  "        </Expression>\n"
+  "      </Metabolite>\n"
+  "      <Metabolite key=\"Metabolite_1\" name=\"B\" simulationType=\"reactions\" compartment=\"Compartment_0\">\n"
+  "      </Metabolite>\n"
+  "    </ListOfMetabolites>\n"
+  "    <ListOfModelValues>\n"
+  "      <ModelValue key=\"ModelValue_0\" name=\"K\" simulationType=\"fixed\">\n"
+  "      </ModelValue>\n"
+  "    </ListOfModelValues>\n"
+  "    <StateTemplate>\n"
+  "      <StateTemplateVariable objectReference=\"Model_0\"/>\n"
+  "      <StateTemplateVariable objectReference=\"Metabolite_0\"/>\n"
+  "      <StateTemplateVariable objectReference=\"Metabolite_1\"/>\n"
+  "      <StateTemplateVariable objectReference=\"ModelValue_0\"/>\n"
+  "      <StateTemplateVariable objectReference=\"Compartment_0\"/>\n"
+  "    </StateTemplate>\n"
+  "    <InitialState type=\"initialState\">\n"
+  "      0 1.2044283e+21 6.022141500000001e+20 2 1\n"
+  "    </InitialState>\n"
+  "  </Model>\n"
+  "</COPASI>\n"
+;
+
+void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_6()
+{
+  // load the CPS file
+  // export to SBML
+  // check the resulting SBML model
+  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  std::istringstream iss(test000064::MODEL_STRING106);
+  CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
+  CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
+  CPPUNIT_ASSERT(pDataModel->exportSBMLToString(NULL, 2, 3).empty() == false);
+  SBMLDocument* pDocument = pDataModel->getCurrentSBMLDocument();
+  CPPUNIT_ASSERT(pDocument != NULL);
+  Model* pModel = pDocument->getModel();
+  CPPUNIT_ASSERT(pModel != NULL);
+  // check the units
+  UnitDefinition* pUDef = pModel->getUnitDefinition("time");
+  CPPUNIT_ASSERT(pUDef != NULL);
+  CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
+  Unit* pUnit = pUDef->getUnit(0);
+  CPPUNIT_ASSERT(pUnit != NULL);
+  CPPUNIT_ASSERT(pUnit->getKind() == UNIT_KIND_SECOND);
+  CPPUNIT_ASSERT(pUnit->getScale() == 0);
+  CPPUNIT_ASSERT(pUnit->getExponent() == 1);
+  CPPUNIT_ASSERT(fabs((pUnit->getMultiplier() - 1.0) / 1.0) < 1e-6);
+  pUDef = pModel->getUnitDefinition("substance");
+  CPPUNIT_ASSERT(pUDef != NULL);
+  CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
+  pUnit = pUDef->getUnit(0);
+  CPPUNIT_ASSERT(pUnit != NULL);
+  CPPUNIT_ASSERT(pUnit->getKind() == UNIT_KIND_MOLE);
+  CPPUNIT_ASSERT(pUnit->getScale() == -3);
+  CPPUNIT_ASSERT(pUnit->getExponent() == 1);
+  CPPUNIT_ASSERT(fabs((pUnit->getMultiplier() - 1.0) / 1.0) < 1e-6);
+  pUDef = pModel->getUnitDefinition("volume");
+  CPPUNIT_ASSERT(pUDef != NULL);
+  CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
+  pUnit = pUDef->getUnit(0);
+  CPPUNIT_ASSERT(pUnit != NULL);
+  CPPUNIT_ASSERT(pUnit->getKind() == UNIT_KIND_LITRE);
+  CPPUNIT_ASSERT(pUnit->getScale() == -3);
+  CPPUNIT_ASSERT(pUnit->getExponent() == 1);
+  CPPUNIT_ASSERT(fabs((pUnit->getMultiplier() - 1.0) / 1.0) < 1e-6);
+  // assert that there is only one compartment and
+  // assert the compartment is not constant
+  CPPUNIT_ASSERT(pModel->getNumCompartments() == 1);
+  Compartment* pCompartment = pModel->getCompartment(0);
+  CPPUNIT_ASSERT(pCompartment->getConstant() == false);
+  CPPUNIT_ASSERT(pModel->getNumParameters() == 2);
+  Parameter* pParameter1 = pModel->getParameter(0);
+  CPPUNIT_ASSERT(pParameter1 != NULL);
+  Parameter* pParameter2 = NULL;
+  if (pParameter1->getName() == "K")
+    {
+      pParameter2 = pModel->getParameter(1);
+      CPPUNIT_ASSERT(pParameter2 != NULL);
+    }
+  else
+    {
+      pParameter2 = pParameter1;
+      pParameter1 = pModel->getParameter(1);
+      CPPUNIT_ASSERT(pParameter1 != NULL);
+    }
+  CPPUNIT_ASSERT(pParameter1->getName() == "K");
+  CPPUNIT_ASSERT(pParameter2->getName() == "P");
+  CPPUNIT_ASSERT(pModel->getNumSpecies() == 2);
+  Species* pSpecies1 = pModel->getSpecies(0);
+  CPPUNIT_ASSERT(pSpecies1->getHasOnlySubstanceUnits() == false);
+  std::string idSpeciesA = pSpecies1->getId();
+  Species* pSpecies2 = pModel->getSpecies(1);
+  CPPUNIT_ASSERT(pSpecies2->getHasOnlySubstanceUnits() == false);
+  CPPUNIT_ASSERT(pModel->getNumRules() == 2);
+  AssignmentRule* pRule1 = dynamic_cast<AssignmentRule*>(pModel->getRule(0));
+  AssignmentRule* pRule2 = NULL;
+  CPPUNIT_ASSERT(pRule1 != NULL);
+  if (pRule1->getVariable() == pSpecies1->getId())
+    {
+      pRule2 = pRule1;
+      pRule1 = dynamic_cast<AssignmentRule*>(pModel->getRule(1));
+    }
+  else
+    {
+      pRule2 = dynamic_cast<AssignmentRule*>(pModel->getRule(1));
+    }
+  // check the rule for the compartment
+  const ASTNode* pMath = pRule1->getMath();
+  CPPUNIT_ASSERT(pMath != NULL);
+  // make sure the mathematical expression contains only one node that is a
+  // reference to the global parameter P
+  CPPUNIT_ASSERT(pMath->getType() == AST_NAME);
+  CPPUNIT_ASSERT(pMath->getName() == pParameter2->getId());
+  pMath = pRule2->getMath();
+  CPPUNIT_ASSERT(pMath != NULL);
+  // make sure the mathematical expression contains a multiplication of the
+  // global parameter K and the compartment volume
+  CPPUNIT_ASSERT(pMath->getType() == AST_TIMES);
+  CPPUNIT_ASSERT(pMath->getNumChildren() == 2);
+  ASTNode* pChild1 = pMath->getChild(0);
+  ASTNode* pChild2 = pMath->getChild(1);
+  CPPUNIT_ASSERT(pChild1->getType() == AST_NAME);
+  CPPUNIT_ASSERT(pChild2->getType() == AST_NAME);
+  CPPUNIT_ASSERT(pChild1->getName() == pParameter1->getId() || pChild2->getName() == pParameter1->getId());
+  CPPUNIT_ASSERT(pChild1->getName() == pCompartment->getId() || pChild2->getName() == pCompartment->getId());
+  CPPUNIT_ASSERT(pModel->getNumReactions() == 0);
+}
+
+const char* test000064::MODEL_STRING106 =
+  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+  "<!-- generated with COPASI 4.4.26 (Debug) (http://www.copasi.org) at 2008-06-12 09:00:21 UTC -->\n"
+  "<COPASI xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"http://www.copasi.org/static/schema.xsd\" versionMajor=\"1\" versionMinor=\"0\" versionDevel=\"26\">\n"
+  "  <Model key=\"Model_0\" name=\"New Model\" timeUnit=\"s\" volumeUnit=\"ml\" quantityUnit=\"mmol\" type=\"deterministic\">\n"
+  "    <Comment>\n"
+  "      <html xmlns=\"http://www.w3.org/1999/xhtml\"><head><meta name=\"qrichtext\" content=\"1\" /></head><body style=\"font-size:9pt;font-family:Sans Serif\">\n"
+  "<p>Simple model with two species and two global parameters. The compartment is variable and one species is determined by an assignment rule.</p>\n"
+  "<p>The substance unit is set to mmol.</p>\n"
+  "<p>On export both species should be exported with the hasOnlySubstanceUnits flag set to true and the expression for the assignment should contain a reference to the global parameter multiplied by the volume of the compartment.</p>\n"
+  "</body></html>\n"
+  "    </Comment>\n"
+  "    <ListOfCompartments>\n"
+  "      <Compartment key=\"Compartment_0\" name=\"compartment\" simulationType=\"assignment\">\n"
+  "        <Expression>\n"
+  "          &lt;CN=Root,Model=New Model,Vector=Values[P],Reference=Value&gt;\n"
+  "        </Expression>\n"
+  "      </Compartment>\n"
+  "    </ListOfCompartments>\n"
+  "    <ListOfMetabolites>\n"
+  "      <Metabolite key=\"Metabolite_0\" name=\"A\" simulationType=\"assignment\" compartment=\"Compartment_0\">\n"
+  "        <Expression>\n"
+  "          &lt;CN=Root,Model=New Model,Vector=Values[K],Reference=Value&gt;\n"
+  "        </Expression>\n"
+  "      </Metabolite>\n"
+  "      <Metabolite key=\"Metabolite_1\" name=\"B\" simulationType=\"reactions\" compartment=\"Compartment_0\">\n"
+  "      </Metabolite>\n"
+  "    </ListOfMetabolites>\n"
+  "    <ListOfModelValues>\n"
+  "      <ModelValue key=\"ModelValue_0\" name=\"K\" simulationType=\"fixed\">\n"
+  "      </ModelValue>\n"
+  "      <ModelValue key=\"ModelValue_1\" name=\"P\" simulationType=\"fixed\">\n"
+  "      </ModelValue>\n"
+  "    </ListOfModelValues>\n"
+  "    <StateTemplate>\n"
+  "      <StateTemplateVariable objectReference=\"Model_0\"/>\n"
+  "      <StateTemplateVariable objectReference=\"Metabolite_0\"/>\n"
+  "      <StateTemplateVariable objectReference=\"Metabolite_1\"/>\n"
+  "      <StateTemplateVariable objectReference=\"ModelValue_0\"/>\n"
+  "      <StateTemplateVariable objectReference=\"ModelValue_1\"/>\n"
+  "      <StateTemplateVariable objectReference=\"Compartment_0\"/>\n"
+  "    </StateTemplate>\n"
+  "    <InitialState type=\"initialState\">\n"
+  "      0 1.2044283e+21 6.022141500000001e+20 2 3 1\n"
+  "    </InitialState>\n"
+  "  </Model>\n"
+  "</COPASI>\n"
+;
+
+void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_7()
+{
+  // load the CPS file
+  // export to SBML
+  // check the resulting SBML model
+  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  std::istringstream iss(test000064::MODEL_STRING107);
+  CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
+  CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
+  CPPUNIT_ASSERT(pDataModel->exportSBMLToString(NULL, 2, 3).empty() == false);
+  SBMLDocument* pDocument = pDataModel->getCurrentSBMLDocument();
+  CPPUNIT_ASSERT(pDocument != NULL);
+  Model* pModel = pDocument->getModel();
+  CPPUNIT_ASSERT(pModel != NULL);
+  // check the units
+  UnitDefinition* pUDef = pModel->getUnitDefinition("time");
+  CPPUNIT_ASSERT(pUDef != NULL);
+  CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
+  Unit* pUnit = pUDef->getUnit(0);
+  CPPUNIT_ASSERT(pUnit != NULL);
+  CPPUNIT_ASSERT(pUnit->getKind() == UNIT_KIND_SECOND);
+  CPPUNIT_ASSERT(pUnit->getScale() == 0);
+  CPPUNIT_ASSERT(pUnit->getExponent() == 1);
+  CPPUNIT_ASSERT(fabs((pUnit->getMultiplier() - 1.0) / 1.0) < 1e-6);
+  pUDef = pModel->getUnitDefinition("substance");
+  CPPUNIT_ASSERT(pUDef != NULL);
+  CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
+  pUnit = pUDef->getUnit(0);
+  CPPUNIT_ASSERT(pUnit != NULL);
+  CPPUNIT_ASSERT(pUnit->getKind() == UNIT_KIND_ITEM);
+  CPPUNIT_ASSERT(pUnit->getScale() == 0);
+  CPPUNIT_ASSERT(pUnit->getExponent() == 1);
+  CPPUNIT_ASSERT(fabs((pUnit->getMultiplier() - 1.0) / 1.0) < 1e-6);
+  pUDef = pModel->getUnitDefinition("volume");
+  CPPUNIT_ASSERT(pUDef != NULL);
+  CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
+  pUnit = pUDef->getUnit(0);
+  CPPUNIT_ASSERT(pUnit != NULL);
+  CPPUNIT_ASSERT(pUnit->getKind() == UNIT_KIND_LITRE);
+  CPPUNIT_ASSERT(pUnit->getScale() == -3);
+  CPPUNIT_ASSERT(pUnit->getExponent() == 1);
+  CPPUNIT_ASSERT(fabs((pUnit->getMultiplier() - 1.0) / 1.0) < 1e-6);
+  // assert that there is only one compartment and
+  // assert the compartment is constant
+  CPPUNIT_ASSERT(pModel->getNumCompartments() == 1);
+  Compartment* pCompartment = pModel->getCompartment(0);
+  CPPUNIT_ASSERT(pCompartment->getConstant() == true);
+  CPPUNIT_ASSERT(pModel->getNumParameters() == 1);
+  Parameter* pParameter = pModel->getParameter(0);
+  CPPUNIT_ASSERT(pParameter != NULL);
+  CPPUNIT_ASSERT(pModel->getNumSpecies() == 2);
+  Species* pSpecies1 = pModel->getSpecies(0);
+  CPPUNIT_ASSERT(pSpecies1->getHasOnlySubstanceUnits() == false);
+  std::string idSpeciesA = pSpecies1->getId();
+  Species* pSpecies2 = pModel->getSpecies(1);
+  CPPUNIT_ASSERT(pSpecies2->getHasOnlySubstanceUnits() == false);
+  CPPUNIT_ASSERT(pModel->getNumRules() == 1);
+  AssignmentRule* pRule = dynamic_cast<AssignmentRule*>(pModel->getRule(0));
+  CPPUNIT_ASSERT(pRule != NULL);
+  CPPUNIT_ASSERT(pRule->getVariable() == pSpecies1->getId());
+  const ASTNode* pMath = pRule->getMath();
+  CPPUNIT_ASSERT(pMath != NULL);
+  // make sure the mathematical expression contains only one node that is a
+  // reference to the global parameter
+  CPPUNIT_ASSERT(pMath->getType() == AST_NAME);
+  CPPUNIT_ASSERT(pMath->getName() == pParameter->getId());
+  CPPUNIT_ASSERT(pModel->getNumReactions() == 0);
+}
+
+const char* test000064::MODEL_STRING107 =
+  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+  "<!-- generated with COPASI 4.4.26 (Debug) (http://www.copasi.org) at 2008-06-12 09:00:21 UTC -->\n"
+  "<COPASI xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"http://www.copasi.org/static/schema.xsd\" versionMajor=\"1\" versionMinor=\"0\" versionDevel=\"26\">\n"
+  "  <Model key=\"Model_0\" name=\"New Model\" timeUnit=\"s\" volumeUnit=\"ml\" quantityUnit=\"#\" type=\"deterministic\">\n"
+  "    <Comment>\n"
+  "      <html xmlns=\"http://www.w3.org/1999/xhtml\"><head><meta name=\"qrichtext\" content=\"1\" /></head><body style=\"font-size:9pt;font-family:Sans Serif\">\n"
+  "<p>Simple model with two species and a global parameter. The compartment is fixed and one species is determined by an assignment rule.</p>\n"
+  "<p>The substance unit is set to particle number.</p>\n"
+  "<p>On export both species should be exported with the hasOnlySubstanceUnits flag set to false and the expression for the assignment should contain only a reference to the global parameter.</p>\n"
+  "</body></html>\n"
+  "    </Comment>\n"
+  "    <ListOfCompartments>\n"
+  "      <Compartment key=\"Compartment_0\" name=\"compartment\" simulationType=\"fixed\">\n"
+  "      </Compartment>\n"
+  "    </ListOfCompartments>\n"
+  "    <ListOfMetabolites>\n"
+  "      <Metabolite key=\"Metabolite_0\" name=\"A\" simulationType=\"assignment\" compartment=\"Compartment_0\">\n"
+  "        <Expression>\n"
+  "          &lt;CN=Root,Model=New Model,Vector=Values[K],Reference=Value&gt;\n"
+  "        </Expression>\n"
+  "      </Metabolite>\n"
+  "      <Metabolite key=\"Metabolite_1\" name=\"B\" simulationType=\"reactions\" compartment=\"Compartment_0\">\n"
+  "      </Metabolite>\n"
+  "    </ListOfMetabolites>\n"
+  "    <ListOfModelValues>\n"
+  "      <ModelValue key=\"ModelValue_0\" name=\"K\" simulationType=\"fixed\">\n"
+  "      </ModelValue>\n"
+  "    </ListOfModelValues>\n"
+  "    <StateTemplate>\n"
+  "      <StateTemplateVariable objectReference=\"Model_0\"/>\n"
+  "      <StateTemplateVariable objectReference=\"Metabolite_0\"/>\n"
+  "      <StateTemplateVariable objectReference=\"Metabolite_1\"/>\n"
+  "      <StateTemplateVariable objectReference=\"ModelValue_0\"/>\n"
+  "      <StateTemplateVariable objectReference=\"Compartment_0\"/>\n"
+  "    </StateTemplate>\n"
+  "    <InitialState type=\"initialState\">\n"
+  "      0 1.2044283e+21 6.022141500000001e+20 2 1\n"
+  "    </InitialState>\n"
+  "  </Model>\n"
+  "</COPASI>\n"
+;
+
+void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_8()
+{
+  // load the CPS file
+  // export to SBML
+  // check the resulting SBML model
+  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  std::istringstream iss(test000064::MODEL_STRING108);
+  CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
+  CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
+  CPPUNIT_ASSERT(pDataModel->exportSBMLToString(NULL, 2, 3).empty() == false);
+  SBMLDocument* pDocument = pDataModel->getCurrentSBMLDocument();
+  CPPUNIT_ASSERT(pDocument != NULL);
+  Model* pModel = pDocument->getModel();
+  CPPUNIT_ASSERT(pModel != NULL);
+  // check the units
+  UnitDefinition* pUDef = pModel->getUnitDefinition("time");
+  CPPUNIT_ASSERT(pUDef != NULL);
+  CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
+  Unit* pUnit = pUDef->getUnit(0);
+  CPPUNIT_ASSERT(pUnit != NULL);
+  CPPUNIT_ASSERT(pUnit->getKind() == UNIT_KIND_SECOND);
+  CPPUNIT_ASSERT(pUnit->getScale() == 0);
+  CPPUNIT_ASSERT(pUnit->getExponent() == 1);
+  CPPUNIT_ASSERT(fabs((pUnit->getMultiplier() - 1.0) / 1.0) < 1e-6);
+  pUDef = pModel->getUnitDefinition("substance");
+  CPPUNIT_ASSERT(pUDef != NULL);
+  CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
+  pUnit = pUDef->getUnit(0);
+  CPPUNIT_ASSERT(pUnit != NULL);
+  CPPUNIT_ASSERT(pUnit->getKind() == UNIT_KIND_ITEM);
+  CPPUNIT_ASSERT(pUnit->getScale() == 0);
+  CPPUNIT_ASSERT(pUnit->getExponent() == 1);
+  CPPUNIT_ASSERT(fabs((pUnit->getMultiplier() - 1.0) / 1.0) < 1e-6);
+  pUDef = pModel->getUnitDefinition("volume");
+  CPPUNIT_ASSERT(pUDef != NULL);
+  CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
+  pUnit = pUDef->getUnit(0);
+  CPPUNIT_ASSERT(pUnit != NULL);
+  CPPUNIT_ASSERT(pUnit->getKind() == UNIT_KIND_LITRE);
+  CPPUNIT_ASSERT(pUnit->getScale() == -3);
+  CPPUNIT_ASSERT(pUnit->getExponent() == 1);
+  CPPUNIT_ASSERT(fabs((pUnit->getMultiplier() - 1.0) / 1.0) < 1e-6);
+  // assert that there is only one compartment and
+  // assert the compartment is not constant
+  CPPUNIT_ASSERT(pModel->getNumCompartments() == 1);
+  Compartment* pCompartment = pModel->getCompartment(0);
+  CPPUNIT_ASSERT(pCompartment->getConstant() == false);
+  CPPUNIT_ASSERT(pModel->getNumParameters() == 2);
+  Parameter* pParameter1 = pModel->getParameter(0);
+  CPPUNIT_ASSERT(pParameter1 != NULL);
+  Parameter* pParameter2 = NULL;
+  if (pParameter1->getName() == "K")
+    {
+      pParameter2 = pModel->getParameter(1);
+      CPPUNIT_ASSERT(pParameter2 != NULL);
+    }
+  else
+    {
+      pParameter2 = pParameter1;
+      pParameter1 = pModel->getParameter(1);
+      CPPUNIT_ASSERT(pParameter1 != NULL);
+    }
+  CPPUNIT_ASSERT(pParameter1->getName() == "K");
+  CPPUNIT_ASSERT(pParameter2->getName() == "P");
+  CPPUNIT_ASSERT(pModel->getNumSpecies() == 2);
+  Species* pSpecies1 = pModel->getSpecies(0);
+  CPPUNIT_ASSERT(pSpecies1->getHasOnlySubstanceUnits() == false);
+  std::string idSpeciesA = pSpecies1->getId();
+  Species* pSpecies2 = pModel->getSpecies(1);
+  CPPUNIT_ASSERT(pSpecies2->getHasOnlySubstanceUnits() == false);
+  CPPUNIT_ASSERT(pModel->getNumRules() == 2);
+  AssignmentRule* pRule1 = dynamic_cast<AssignmentRule*>(pModel->getRule(0));
+  AssignmentRule* pRule2 = NULL;
+  CPPUNIT_ASSERT(pRule1 != NULL);
+  if (pRule1->getVariable() == pSpecies1->getId())
+    {
+      pRule2 = pRule1;
+      pRule1 = dynamic_cast<AssignmentRule*>(pModel->getRule(1));
+    }
+  else
+    {
+      pRule2 = dynamic_cast<AssignmentRule*>(pModel->getRule(1));
+    }
+  // check the rule for the compartment
+  const ASTNode* pMath = pRule1->getMath();
+  CPPUNIT_ASSERT(pMath != NULL);
+  // make sure the mathematical expression contains only one node that is a
+  // reference to the global parameter P
+  CPPUNIT_ASSERT(pMath->getType() == AST_NAME);
+  CPPUNIT_ASSERT(pMath->getName() == pParameter2->getId());
+  pMath = pRule2->getMath();
+  CPPUNIT_ASSERT(pMath != NULL);
+  // make sure the mathematical expression contains a multiplication of the
+  // global parameter K and the compartment volume
+  CPPUNIT_ASSERT(pMath->getType() == AST_TIMES);
+  CPPUNIT_ASSERT(pMath->getNumChildren() == 2);
+  ASTNode* pChild1 = pMath->getChild(0);
+  ASTNode* pChild2 = pMath->getChild(1);
+  CPPUNIT_ASSERT(pChild1->getType() == AST_NAME);
+  CPPUNIT_ASSERT(pChild2->getType() == AST_NAME);
+  CPPUNIT_ASSERT(pChild1->getName() == pParameter1->getId() || pChild2->getName() == pParameter1->getId());
+  CPPUNIT_ASSERT(pChild1->getName() == pCompartment->getId() || pChild2->getName() == pCompartment->getId());
+  CPPUNIT_ASSERT(pModel->getNumReactions() == 0);
+}
+
+const char* test000064::MODEL_STRING108 =
   "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
   "<!-- generated with COPASI 4.4.26 (Debug) (http://www.copasi.org) at 2008-06-12 09:00:21 UTC -->\n"
   "<COPASI xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"http://www.copasi.org/static/schema.xsd\" versionMajor=\"1\" versionMinor=\"0\" versionDevel=\"26\">\n"
