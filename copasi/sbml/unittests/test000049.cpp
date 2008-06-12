@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000049.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/11 23:38:21 $
+//   $Author: gauges $
+//   $Date: 2008/06/12 08:49:05 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -69,7 +69,7 @@ void test000049::test_bug894()
       message = CCopasiMessage::getLastMessage();
       CPPUNIT_ASSERT(message.getType() == CCopasiMessage::RAW);
       s = message.getText();
-      CPPUNIT_ASSERT(s.find(std::string("Call to function \"normal\" used in mathematical expression for initial expression for ModelValue \"K\" which can not be exported to SBML")) != std::string::npos);
+      CPPUNIT_ASSERT(s.find(std::string("Call to function \"normal\" used in mathematical expression for initial expression for object named \"K\" which can not be exported to SBML")) != std::string::npos);
       return;
     }
   // we should not get this far
