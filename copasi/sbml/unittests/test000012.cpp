@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000012.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/05/05 07:33:03 $
+//   $Date: 2008/06/12 08:45:32 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -75,7 +75,7 @@ void test000012::test_references_to_species()
   CPPUNIT_ASSERT(pParameter != NULL);
   if (pRule->getVariable() != pParameter->getId())
     {
-      pRule = dynamic_cast<AssignmentRule*>(pModel->getRule(1));
+      pRule = dynamic_cast<AssignmentRule*>(pModel->getRule(0));
     }
   CPPUNIT_ASSERT(pRule->getVariable() == pParameter->getId());
   const ASTNode* pMath = pRule->getMath();
