@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CEvent.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/06/11 12:42:38 $
+//   $Date: 2008/06/12 14:25:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,7 +40,7 @@ CEvent::CEvent(const std::string & name,
     mpTriggerExpression(NULL),
     mpDelayExpression(NULL),
     mpExpressionEA(NULL) /*,
-                    mpModel(NULL)*/
+                        mpModel(NULL)*/
 {
   std::cout << "CE::CE" << std::endl;
   CONSTRUCTOR_TRACE;
@@ -57,6 +57,24 @@ CEvent::CEvent(const CEvent & src,
 {
   CONSTRUCTOR_TRACE;
   initObjects();
+  if (src.mpTriggerExpression != NULL)
+    {
+      this->mpTriggerExpression = new CExpression(*src.mpTriggerExpression);
+    }
+  if (src.mpDelayExpression != NULL)
+    {
+      this->mpDelayExpression = new CExpression(*src.mpDelayExpression);
+    }
+  if (src.mpExpressionEA != NULL)
+    {
+      this->mpExpressionEA = new CExpression(*src.mpExpressionEA);
+    }
+  std::vector<std::pair<std::string, CExpression*> >::const_iterator it = src.mAssignsExpression.begin(), endit = src.mAssignsExpression.end();
+  while (it != endit)
+    {
+      this->mAssignsExpression.push_back(std::make_pair(it->first, new CExpression(*it->second)));
+      ++it;
+    }
 }
 
 CEvent::~CEvent()
@@ -67,7 +85,17 @@ CEvent::~CEvent()
 }
 
 void CEvent::cleanup()
-{}
+{
+  if (mpDelayExpression != NULL) delete mpDelayExpression;
+  if (mpExpressionEA != NULL) delete mpExpressionEA;
+  if (mpTriggerExpression != NULL) delete mpTriggerExpression;
+  std::vector<std::pair<std::string, CExpression*> >::const_iterator it = this->mAssignsExpression.begin(), endit = this->mAssignsExpression.end();
+  while (it != endit)
+    {
+      delete it->second;
+      ++it;
+    }
+}
 
 const std::string & CEvent::getKey() const {return mKey;}
 
@@ -130,8 +158,8 @@ void CEvent::initObjects()
 {
   std::cout << "CE::initObject" << std::endl;
   //  mAssigns.clear();
-  mAssigns.resize(0);
-  mAssigns.reserve(100);
+  mAssignsExpression.resize(0);
+  mAssignsExpression.reserve(100);
   //  {int y; std::cout << "L: " << __LINE__ << std::endl; std::cin >> y;}
   /*  mpFluxReference =
       static_cast<CCopasiObjectReference<C_FLOAT64> *>(addObjectReference("Flux", mFlux, CCopasiObject::ValueDbl));
@@ -185,7 +213,9 @@ bool CEvent::setExpressionTrigger(const std::string &expression)
   std::cout << "CE::setExpressionTrigger - expression: " << expression << std::endl;
 
   if (mpTriggerExpression == NULL)
-    mpTriggerExpression = new CExpression;
+    {
+      mpTriggerExpression = new CExpression;
+    }
 
   if (!mpTriggerExpression->setInfix(expression)) return false;
 
@@ -264,18 +294,18 @@ bool CEvent::addAssignment(const std::string & key, const std::string & expressi
 
   unsigned C_INT32 Sum;
 
-  Sum = mAssigns.size();
+  Sum = mAssignsExpression.size();
 
   //  std::pair<std::string, CExpression> insert;
   //  insert.first = key;
 
   //  CExpression *pExpression = new CExpression;
-  CExpression expr(expression, this);
+  CExpression* pExpr = new CExpression;
 
   //  std::cout << __FILE__ << " A: mAssigns.size() = " << mAssigns.size() << std::endl;
 
   //  if (!pExpression->setInfix(expression)) return false;
-  if (!expr.setInfix(expression)) return false;
+  if (!pExpr->setInfix(expression)) return false;
 
   //  std::cout << __FILE__ << " B: mAssigns.size() = " << mAssigns.size() << std::endl;
 
@@ -291,7 +321,7 @@ bool CEvent::addAssignment(const std::string & key, const std::string & expressi
   //  pdelete(pExpression);
 
   //  mAssigns.push_back(insert);
-  std::pair<std::string, CExpression> pair(key, expr);
+  std::pair<std::string, CExpression*> pair(key, pExpr);
 
   //  std::pair <std::string, CExpression> pair = make_pair(key, expr);
 
@@ -301,14 +331,14 @@ bool CEvent::addAssignment(const std::string & key, const std::string & expressi
 
   //  std::cout << __FILE__ << " C: mAssigns.size() = " << mAssigns.size() << std::endl;
 
-  mAssigns.push_back(pair);
+  mAssignsExpression.push_back(pair);
   //  mAssigns.push_back(make_pair(key, expr));
 
   msg = CCopasiMessage::getLastMessage();
   //  std::cout << "msg.getText() = " << msg.getText() << std::endl;
   //  {int y; std::cout << "CE L" << __LINE__ << std::endl; std::cin >> y;}
 
-  std::cout << __FILE__ << " D: mAssigns.size() = " << mAssigns.size() << std::endl;
+  std::cout << __FILE__ << " D: mAssigns.size() = " << mAssignsExpression.size() << std::endl;
 
   //  std::cout << "current assignment expression = " << mAssigns[0].second.getInfix() << std::endl;
   /*  std::cout << "current assignment expression: " << std::endl;
@@ -324,7 +354,7 @@ bool CEvent::addAssignment(const std::string & key, const std::string & expressi
   //  std::cout << "msg.getText() = " << msg.getText() << std::endl;
   //  {int y; std::cout << "CE L" << __LINE__ << std::endl; std::cin >> y;}
 
-  if (mAssigns.size() == Sum) // the size is not changed
+  if (mAssignsExpression.size() == Sum) // the size is not changed
     return false;
 
   msg = CCopasiMessage::getLastMessage();
@@ -341,10 +371,10 @@ bool CEvent::updateAssignment(unsigned C_INT32 i, const std::string & key, const
     std::cout << "old : (" << mAssigns[i].first << ", " << mAssigns[i].second.getInfix() << ")" << std::endl;
     std::cout << "new : (" << key << ", " << expression << ")" << std::endl;
   */
-  if (mAssigns[i].first != key)
-    mAssigns[i].first = key;
+  if (mAssignsExpression[i].first != key)
+    mAssignsExpression[i].first = key;
 
-  if (mAssigns[i].second.getInfix() != expression)
+  if (mAssignsExpression[i].second->getInfix() != expression)
     setAssignmentExpression(key, expression);
 
   //  std::cout << "-NOW- : (" << mAssigns[i].first << ", " << mAssigns[i].second.getInfix() << ")" << std::endl;
@@ -390,11 +420,11 @@ bool CEvent::setAssignmentExpression(const std::string & key, const std::string 
     std::vector<std::pair<std::string, CExpression *> >::const_iterator end = mAssigns.end();
     for (; it!=end; ++it)
   */
-  std::vector<std::pair<std::string, CExpression> >::iterator it;
-  for (it = mAssigns.begin(); it != mAssigns.end(); ++it)
+  std::vector<std::pair<std::string, CExpression*> >::iterator it;
+  for (it = mAssignsExpression.begin(); it != mAssignsExpression.end(); ++it)
     {
       if (it->first == key)
-        it->second = expr;
+        it->second = new CExpression(expr);
     }
 
   //  std::cout << "CE::setAssignmentExpression C - key: " << key << std::endl;
@@ -411,8 +441,8 @@ unsigned C_INT32 CEvent::getAssignmentIndex(const std::string & key)
   std::cout << "CE::getAssignmentExpressionStr - key = " << key << std::endl;
 
   unsigned C_INT32 index = 0;
-  std::vector<std::pair<std::string, CExpression> >::iterator it;
-  for (it = mAssigns.begin(); it != mAssigns.end(); ++it, index++)
+  std::vector<std::pair<std::string, CExpression*> >::iterator it;
+  for (it = mAssignsExpression.begin(); it != mAssignsExpression.end(); ++it, index++)
     {
       if (it->first == key)
         {
@@ -426,28 +456,28 @@ unsigned C_INT32 CEvent::getAssignmentIndex(const std::string & key)
 const std::string CEvent::getAssignmentObjectKey(unsigned C_INT32 i) const
   {
     std::cout << "CE::getAssignmentObjectKey - index: " << i << std::endl;
-    std::cout << "-> key: " << mAssigns[i].first << std::endl;
+    std::cout << "-> key: " << mAssignsExpression[i].first << std::endl;
 
-    return mAssigns[i].first;
+    return mAssignsExpression[i].first;
   }
 
 std::string CEvent::getAssignmentExpressionStr(const std::string & key)
 {
   std::cout << "CE::getAssignmentExpressionStr - key = " << key << std::endl;
 
-  std::vector<std::pair<std::string, CExpression> >::iterator it;
-  for (it = mAssigns.begin(); it != mAssigns.end(); ++it)
+  std::vector<std::pair<std::string, CExpression*> >::iterator it;
+  for (it = mAssignsExpression.begin(); it != mAssignsExpression.end(); ++it)
     {
       if (it->first == key)
         {
-          CExpression pExpression = it->second;
+          CExpression* pExpression = it->second;
           /*
              if (pExpression == NULL)
                return "";
           */
-          pExpression.updateInfix();
-          std::cout << "expression of key = " << key << " = " << pExpression.getInfix() << std::endl;
-          return pExpression.getInfix();
+          pExpression->updateInfix();
+          std::cout << "expression of key = " << key << " = " << pExpression->getInfix() << std::endl;
+          return pExpression->getInfix();
         }
     }
 
@@ -461,7 +491,7 @@ void CEvent::showAssignments()
   std::cout << "---------------------------------------------" << std::endl;
   for (unsigned C_INT32 j = 0; j < getNumAssignments(); j++)
     std::cout << "the " << j << "-th assignment : "
-    << "name = " << mAssigns[j].first << " - expression = " << mAssigns[j].second.getInfix() << std::endl;
+    << "name = " << mAssignsExpression[j].first << " - expression = " << mAssignsExpression[j].second->getInfix() << std::endl;
   std::cout << "---------------------------------------------" << std::endl;
 }
 
@@ -479,13 +509,13 @@ std::string CEvent::getAssignmentExpressionStr(unsigned C_INT32 i) const
                << "name = " << mAssigns[j].first << " - expression = " << mAssigns[j].second.getInfix() << std::endl;
       std::cout << "---------------------------------------------" << std::endl;
     */
-    std::cout << "the " << i << "-th assignment expression A = " << mAssigns[i].second.getInfix() << std::endl;
+    std::cout << "the " << i << "-th assignment expression A = " << mAssignsExpression[i].second->getInfix() << std::endl;
 
-    CExpression expr = mAssigns[i].second;
-    std::cout << "the " << i << "-th assignment expression B = " << expr.getInfix() << std::endl;
+    CExpression* pExpr = mAssignsExpression[i].second;
+    std::cout << "the " << i << "-th assignment expression B = " << pExpr->getInfix() << std::endl;
 
     //  return mAssigns[i].second.getInfix(); // 2*4 * 5
-    return expr.getInfix();     // 2*4*5
+    return pExpr->getInfix();     // 2*4*5
     /*
       if (mpExpressionEA == NULL)
         return "";
@@ -498,11 +528,11 @@ std::string CEvent::getAssignmentExpressionStr(unsigned C_INT32 i) const
 
 void CEvent::clearAssignment()
 {
-  std::cout << "CE::clearAssignment ... START ... mAssigns.size() = " << mAssigns.size() << std::endl;
+  std::cout << "CE::clearAssignment ... START ... mAssigns.size() = " << mAssignsExpression.size() << std::endl;
   //  mAssigns.resize(0);
   //  mAssigns.reserve(100);
-  if (!mAssigns.empty())
-    mAssigns.clear();
+  if (!mAssignsExpression.empty())
+    mAssignsExpression.clear();
 
   //  std::cout << "CE::clearAssignment ... END ... mAssigns.size() = " << mAssigns.size() << std::endl;
   //  {int y; std::cout << "L: " << __LINE__ << std::endl; std::cin >> y;}
@@ -512,10 +542,10 @@ bool CEvent::deleteAssignment(unsigned C_INT32 i)
 {
   std::cout << "CE::deleteAssignment - index = " << i << std::endl;
 
-  std::vector<std::pair<std::string, CExpression> >::iterator itA = mAssigns.begin();
+  std::vector<std::pair<std::string, CExpression*> >::iterator itA = mAssignsExpression.begin();
   itA += i;
 
-  std::cout << "(" << itA->first << ", " << itA->second.getInfix() << ") will be deleted from event." << std::endl;
+  std::cout << "(" << itA->first << ", " << itA->second->getInfix() << ") will be deleted from event." << std::endl;
   /*
     std::vector<std::pair<std::string, CExpression *> >::const_iterator it = mAssigns.begin();
     std::vector<std::pair<std::string, CExpression *> >::const_iterator end = mAssigns.end();
@@ -528,7 +558,7 @@ bool CEvent::deleteAssignment(unsigned C_INT32 i)
      it->second = expr;
     }
   */
-  mAssigns.erase(itA);
+  mAssignsExpression.erase(itA);
 
   // update the key of EventAssignment
   return compile();

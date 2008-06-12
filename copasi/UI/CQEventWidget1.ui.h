@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQEventWidget1.ui.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/06/11 12:42:38 $
+//   $Date: 2008/06/12 14:25:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -564,15 +564,25 @@ bool CQEventWidget1::loadFromEvent()
   mpLineEditName->setText(FROM_UTF8(mpEvent->getObjectName()));
 
   // *** Expression of Trigger
-  mpExpressionTrigger->mpExpressionWidget->setExpression(mpEvent->getExpressionTrigger());
-  std::cout << "EXP of Trigger: " << mpEvent->getExpressionTrigger() << std::endl;
+  std::string expr;
+  if (mpEvent->getTriggerExpressionPtr() != NULL)
+    {
+      expr = mpEvent->getTriggerExpressionPtr()->getInfix();
+    }
+  mpExpressionTrigger->mpExpressionWidget->setExpression(expr);
+  std::cout << "EXP of Trigger: " << expr << std::endl;
   //  if (mpEvent->getExpressionTrigger() == " ")
-  if (mpEvent->getExpressionTrigger().empty())
+  if (expr.empty())
     mpExpressionTrigger->mpBtnViewExpression->setEnabled(false);
 
   // *** Expression of Delay
-  mpExpressionDelay->mpExpressionWidget->setExpression(mpEvent->getExpressionDelay());
-  std::cout << "EXP of Delay: " << mpEvent->getExpressionDelay() << std::endl;
+  expr = "";
+  if (mpEvent->getDelayExpressionPtr() != NULL)
+    {
+      expr = mpEvent->getDelayExpressionPtr()->getInfix();
+    }
+  mpExpressionDelay->mpExpressionWidget->setExpression(expr);
+  std::cout << "EXP of Delay: " << expr << std::endl;
   //  if (mpEvent->getExpressionDelay() == "")
   //    mpExpressionDelay->mpBtnViewExpression->setEnabled(false);
 
@@ -696,7 +706,7 @@ bool CQEventWidget1::loadFromEvent()
     {
       //    mpCBTarget->insertItem(FROM_UTF8("<" + it->first + ">")); // the combo box
       mpCBTarget->insertItem(FROM_UTF8("<" + mObjectKeyDisplayName[idx].second + ">")); // the combo box
-      mpExpressionEA->mpExpressionWidget->setExpression(mpEvent->getAssignmentExpressionStr(idx)); // the expression widget
+      mpExpressionEA->mpExpressionWidget->setExpression(mpEvent->getAssignmentExpressionPtr(idx)->getInfix()); // the expression widget
       idx++;
     }
 
@@ -827,10 +837,16 @@ void CQEventWidget1::saveToEvent()
 
   // set expression of Trigger
   std::cout << "Expression Trigger: " << mpExpressionTrigger->mpExpressionWidget->getExpression() << std::endl;
-
-  if (mpEvent->getExpressionTrigger() != mpExpressionTrigger->mpExpressionWidget->getExpression())
+  std::string expr;
+  if (mpEvent->getTriggerExpressionPtr() != NULL)
     {
-      mpEvent->setExpressionTrigger(mpExpressionTrigger->mpExpressionWidget->getExpression());
+      expr = mpEvent->getTriggerExpressionPtr()->getInfix();
+    }
+  if (expr != mpExpressionTrigger->mpExpressionWidget->getExpression())
+    {
+      CExpression* pNewExpression = new CExpression;
+      pNewExpression->setInfix(mpExpressionTrigger->mpExpressionWidget->getExpression());
+      mpEvent->setTriggerExpressionPtr(pNewExpression);
       mChanged = true;
     }
 
@@ -842,10 +858,16 @@ void CQEventWidget1::saveToEvent()
   //    mpExpressionDelay->mpBtnViewExpression->setEnabled(false);
 
   std::cout << "Expression Delay: " << (mpExpressionDelay->mpExpressionWidget->getExpression()) << std::endl;
-
-  if (mpEvent->getExpressionDelay() != mpExpressionDelay->mpExpressionWidget->getExpression())
+  expr = "";
+  if (mpEvent->getDelayExpressionPtr() != NULL)
     {
-      mpEvent->setExpressionDelay(mpExpressionDelay->mpExpressionWidget->getExpression());
+      expr = mpEvent->getDelayExpressionPtr()->getInfix();
+    }
+  if (expr != mpExpressionDelay->mpExpressionWidget->getExpression())
+    {
+      CExpression* pNewExpression = new CExpression;
+      pNewExpression->setInfix(mpExpressionDelay->mpExpressionWidget->getExpression());
+      mpEvent->setDelayExpressionPtr(pNewExpression);
       mChanged = true;
     }
 
