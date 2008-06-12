@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CEvent.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/06/12 14:25:33 $
+//   $Date: 2008/06/12 20:13:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,7 +40,7 @@ CEvent::CEvent(const std::string & name,
     mpTriggerExpression(NULL),
     mpDelayExpression(NULL),
     mpExpressionEA(NULL) /*,
-                        mpModel(NULL)*/
+                            mpModel(NULL)*/
 {
   std::cout << "CE::CE" << std::endl;
   CONSTRUCTOR_TRACE;
@@ -214,7 +214,7 @@ bool CEvent::setExpressionTrigger(const std::string &expression)
 
   if (mpTriggerExpression == NULL)
     {
-      mpTriggerExpression = new CExpression;
+      mpTriggerExpression = static_cast< CExpression*>(CEvaluationTree::create(CEvaluationTree::Boolean));
     }
 
   if (!mpTriggerExpression->setInfix(expression)) return false;
@@ -601,6 +601,7 @@ CExpression* CEvent::getTriggerExpressionPtr()
 
 void CEvent::setTriggerExpressionPtr(CExpression* pExpression)
 {
+  if ((pExpression->getType()) != CEvaluationTree::Boolean) return;
   if (this->mpTriggerExpression != NULL) delete this->mpTriggerExpression;
   this->mpTriggerExpression = pExpression;
 }
