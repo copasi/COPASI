@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQEventWidget1.ui.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/06/12 14:25:33 $
+//   $Author: pwilly $
+//   $Date: 2008/06/13 11:02:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -38,23 +38,175 @@
 /*! Slot to save all current values of the active event widget whenever the Commit button is clicked */
 void CQEventWidget1::slotBtnCommitClicked()
 {
-  std::cout << "CQEW1::slotBtnCommitClicked" << std::endl;
   saveToEvent();
   loadFromEvent();
 }
 
 /*! Slot to delete the active event widget */
 void CQEventWidget1::slotBtnDeleteClicked()
-{}
+{
+  CModel * pModel = CCopasiDataModel::Global->getModel();
+  if (pModel == NULL)
+    return;
+  /*
+    CEvent * pEvent = dynamic_cast< CEvent * >(GlobalKeys.get(mEventKey));
+    if (pEvent == NULL) return;
+  */
+  QString eventList = "Are you sure you want to delete listed EVENT(S) ?\n";
+  QString effectedCompartmentList = "Following COMPARTMENT(S) reference above EVENT(S) and will be deleted -\n";
+  QString effectedMetabList = "Following SPECIES reference above EVENT(S) and will be deleted -\n";
+  QString effectedReacList = "Following REACTION(S) reference above EVENT(S) and will be deleted -\n";
+  QString effectedValueList = "Following MODEL VALUE(S) reference above EVENT(S) and will be deleted -\n";
+
+  bool compartmentFound = false;
+  bool metabFound = false;
+  bool reacFound = false;
+  bool valueFound = false;
+
+  eventList.append(FROM_UTF8(mpEvent->getObjectName()));
+  eventList.append(", ");
+
+  std::set< const CCopasiObject * > Reactions;
+  std::set< const CCopasiObject * > Metabolites;
+  std::set< const CCopasiObject * > Values;
+  std::set< const CCopasiObject * > Compartments;
+
+  pModel->appendDependentModelObjects(mpEvent->getDeletedObjects(),
+                                      Reactions, Metabolites, Compartments, Values);
+
+  if (Reactions.size() > 0)
+    {
+      reacFound = true;
+      std::set< const CCopasiObject * >::const_iterator it, itEnd = Reactions.end();
+      for (it = Reactions.begin(); it != itEnd; ++it)
+        {
+          effectedReacList.append(FROM_UTF8((*it)->getObjectName()));
+          effectedReacList.append(", ");
+        }
+
+      effectedReacList.remove(effectedReacList.length() - 2, 2);
+      effectedReacList.append("  ---> ");
+      effectedReacList.append(FROM_UTF8(mpEvent->getObjectName()));
+      effectedReacList.append("\n");
+    }
+
+  if (Metabolites.size() > 0)
+    {
+      metabFound = true;
+      std::set< const CCopasiObject * >::const_iterator it, itEnd = Metabolites.end();
+      for (it = Metabolites.begin(); it != itEnd; ++it)
+        {
+          effectedMetabList.append(FROM_UTF8((*it)->getObjectName()));
+          effectedMetabList.append(", ");
+        }
+
+      effectedMetabList.remove(effectedMetabList.length() - 2, 2);
+      effectedMetabList.append("  ---> ");
+      effectedMetabList.append(FROM_UTF8(mpEvent->getObjectName()));
+      effectedMetabList.append("\n");
+    }
+
+  if (Values.size() > 0)
+    {
+      valueFound = true;
+      std::set< const CCopasiObject * >::const_iterator it, itEnd = Values.end();
+      for (it = Values.begin(); it != itEnd; ++it)
+        {
+          effectedValueList.append(FROM_UTF8((*it)->getObjectName()));
+          effectedValueList.append(", ");
+        }
+
+      effectedValueList.remove(effectedValueList.length() - 2, 2);
+      effectedValueList.append("  ---> ");
+      effectedValueList.append(FROM_UTF8(mpEvent->getObjectName()));
+      effectedValueList.append("\n");
+    }
+
+  if (Compartments.size() > 0)
+    {
+      compartmentFound = true;
+      std::set< const CCopasiObject * >::const_iterator it, itEnd = Compartments.end();
+      for (it = Compartments.begin(); it != itEnd; ++it)
+        {
+          effectedCompartmentList.append(FROM_UTF8((*it)->getObjectName()));
+          effectedCompartmentList.append(", ");
+        }
+
+      effectedCompartmentList.remove(effectedCompartmentList.length() - 2, 2);
+      effectedCompartmentList.append("  ---> ");
+      effectedCompartmentList.append(FROM_UTF8(mpEvent->getObjectName()));
+      effectedCompartmentList.append("\n");
+    }
+
+  eventList.remove(eventList.length() - 2, 2);
+
+  QString msg = eventList;
+
+  if (compartmentFound)
+    {
+      msg.append("\n \n");
+      msg.append(effectedCompartmentList);
+    }
+
+  if (metabFound)
+    {
+      msg.append("\n \n");
+      msg.append(effectedMetabList);
+    }
+
+  if (reacFound)
+    {
+      msg.append("\n \n");
+      msg.append(effectedReacList);
+    }
+
+  if (valueFound)
+    {
+      msg.append("\n \n");
+      msg.append(effectedValueList);
+    }
+
+  C_INT32 choice = 0;
+  if (metabFound || reacFound || valueFound || valueFound)
+    choice = CQMessageBox::question(this,
+                                    "CONFIRM DELETE",
+                                    msg,
+                                    "Continue", "Cancel", 0, 1, 1);
+
+  switch (choice)
+    {
+    case 0:                                                     // Yes or Enter
+      {
+        unsigned C_INT32 index
+        = static_cast<CCopasiVector< CEvent > *>(&CCopasiDataModel::Global->getModel()->getEvents())->getIndex(GlobalKeys.get(mEventKey));
+        //        = CCopasiDataModel::Global->getModel()->getEvents().getIndex(mpRi->getReactionName());
+
+        CCopasiDataModel::Global->getModel()->removeEvent(mEventKey);
+        unsigned C_INT32 size
+        = CCopasiDataModel::Global->getModel()->getEvents().size();
+
+        mpEvent = NULL;
+
+        if (size > 0)
+          enter(CCopasiDataModel::Global->getModel()->getEvents()[std::min(index, size - 1)]->getKey());
+        else
+          enter("");
+
+        protectedNotify(ListViews::EVENT, ListViews::DELETE, mEventKey);
+        break;
+      }
+    default:                                                     // No or Escape
+      break;
+    }
+}
 
 /// Slot to create a new event; activated whenever the New button is clicked
 void CQEventWidget1::slotBtnNewClicked()
 {
   std::cout << "CQEW1::slotBtnNewClicked()" << std::endl;
-  //  slotBtnCommitClicked();
 
   // save the current setting values
-  //  saveToEvent();
+  saveToEvent();
 
   // standard name
   std::string name = "event";
@@ -66,33 +218,30 @@ void CQEventWidget1::slotBtnNewClicked()
     {
       i++;
       name = "event_";
-      name += QString::number(i).utf8();
+      name += (const char *) QString::number(i).utf8();
       std::cout << "NAME = " << name << std::endl;
     }
-  std::cout << "CQEW1::slotBtnNewClicked() - CCopasiDataModel::Global->getModel()->getEvents()[name]->getKey() = "
-  << CCopasiDataModel::Global->getModel()->getEvents()[name]->getKey()
-  << " - name = " << name << std::endl;
+  /*
+    std::cout << "CQEW1::slotBtnNewClicked() - CCopasiDataModel::Global->getModel()->getEvents()[name]->getKey() = "
+     << CCopasiDataModel::Global->getModel()->getEvents()[name]->getKey()
+     << " - name = " << name << std::endl;
+  */
   protectedNotify(ListViews::EVENT, ListViews::ADD);
-  std::cout << "CQEW1::slotBtnNewClicked() - CCopasiDataModel::Global->getModel()->getEvents()[name]->getKey() = "
-  << CCopasiDataModel::Global->getModel()->getEvents()[name]->getKey()
-  << " - name = " << name << std::endl;
+  /*
+    std::cout << "CQEW1::slotBtnNewClicked() - CCopasiDataModel::Global->getModel()->getEvents()[name]->getKey() = "
+     << CCopasiDataModel::Global->getModel()->getEvents()[name]->getKey()
+     << " - name = " << name << std::endl;
+
+    std::cout << "mpEvent->getKey() = " << mpEvent->getKey()
+     << " - name = " << name << std::endl;
+  */
   enter(CCopasiDataModel::Global->getModel()->getEvents()[name]->getKey());
 }
 
 /*! Slot to go back to the previous values of the active event widget whenever the Revert button is clicked */
 void CQEventWidget1::slotBtnRevertClicked()
 {
-  /*  std::cout << "CQEW1::slotBtnRevertClicked - mEventKey = " << mEventKey << std::endl;
-    enter(mEventKey);*/
-  std::cout << "CQEW1::slotBtnRevertClicked " << std::endl;
   loadFromEvent();
-
-  /*
-    mpBtnAddTarget->setEnabled(true);
-
-    if (mpCBTarget->count()) // non-empty
-      mpBtnDeleteTarget->setEnabled(true);
-  */
 }
 
 /*! Slot to change the event name */
