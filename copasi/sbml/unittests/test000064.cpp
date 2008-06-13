@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000064.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/06/12 20:11:43 $
+//   $Date: 2008/06/13 11:36:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -3127,9 +3127,10 @@ void test000064::test_export_event_assignment_expression_and_hasOnlySubstanceUni
   CPPUNIT_ASSERT(pModel->getNumSpecies() == 2);
   Species* pSpecies1 = pModel->getSpecies(0);
   CPPUNIT_ASSERT(pSpecies1->getHasOnlySubstanceUnits() == false);
-  std::string idSpeciesA = pSpecies1->getId();
+  CPPUNIT_ASSERT(pSpecies1->getName() == "A");
   Species* pSpecies2 = pModel->getSpecies(1);
   CPPUNIT_ASSERT(pSpecies2->getHasOnlySubstanceUnits() == false);
+  CPPUNIT_ASSERT(pSpecies2->getName() == "B");
   CPPUNIT_ASSERT(pModel->getNumRules() == 0);
   CPPUNIT_ASSERT(pModel->getNumReactions() == 0);
   CPPUNIT_ASSERT(pModel->getNumEvents() == 1);
@@ -3361,8 +3362,6 @@ void test000064::test_export_event_assignment_expression_and_hasOnlySubstanceUni
   CPPUNIT_ASSERT(pChild2->getType() == AST_NAME);
   CPPUNIT_ASSERT(pChild1->getName() == pParameter1->getId() || pChild2->getName() == pParameter1->getId());
   CPPUNIT_ASSERT(pChild1->getName() == pCompartment->getId() || pChild2->getName() == pCompartment->getId());
-
-  CPPUNIT_ASSERT(pMath->getName() == pParameter1->getId());
 }
 
 const char* test000064::MODEL_STRING110 =

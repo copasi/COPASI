@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CEvent.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/06/12 20:13:40 $
+//   $Date: 2008/06/13 11:36:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,7 +40,7 @@ CEvent::CEvent(const std::string & name,
     mpTriggerExpression(NULL),
     mpDelayExpression(NULL),
     mpExpressionEA(NULL) /*,
-                            mpModel(NULL)*/
+                                mpModel(NULL)*/
 {
   std::cout << "CE::CE" << std::endl;
   CONSTRUCTOR_TRACE;
@@ -60,19 +60,25 @@ CEvent::CEvent(const CEvent & src,
   if (src.mpTriggerExpression != NULL)
     {
       this->mpTriggerExpression = new CExpression(*src.mpTriggerExpression);
+      this->mpTriggerExpression->compile();
     }
   if (src.mpDelayExpression != NULL)
     {
       this->mpDelayExpression = new CExpression(*src.mpDelayExpression);
+      this->mpDelayExpression->compile();
     }
   if (src.mpExpressionEA != NULL)
     {
       this->mpExpressionEA = new CExpression(*src.mpExpressionEA);
+      this->mpExpressionEA->compile();
     }
   std::vector<std::pair<std::string, CExpression*> >::const_iterator it = src.mAssignsExpression.begin(), endit = src.mAssignsExpression.end();
+  CExpression* pTmpExpression = NULL;
   while (it != endit)
     {
-      this->mAssignsExpression.push_back(std::make_pair(it->first, new CExpression(*it->second)));
+      pTmpExpression = new CExpression(*it->second);
+      pTmpExpression->compile();
+      this->mAssignsExpression.push_back(std::make_pair(it->first, pTmpExpression));
       ++it;
     }
 }
@@ -321,6 +327,7 @@ bool CEvent::addAssignment(const std::string & key, const std::string & expressi
   //  pdelete(pExpression);
 
   //  mAssigns.push_back(insert);
+  pExpr->compile();
   std::pair<std::string, CExpression*> pair(key, pExpr);
 
   //  std::pair <std::string, CExpression> pair = make_pair(key, expr);
@@ -425,6 +432,7 @@ bool CEvent::setAssignmentExpression(const std::string & key, const std::string 
     {
       if (it->first == key)
         it->second = new CExpression(expr);
+      it->second->compile();
     }
 
   //  std::cout << "CE::setAssignmentExpression C - key: " << key << std::endl;
@@ -604,10 +612,12 @@ void CEvent::setTriggerExpressionPtr(CExpression* pExpression)
   if ((pExpression->getType()) != CEvaluationTree::Boolean) return;
   if (this->mpTriggerExpression != NULL) delete this->mpTriggerExpression;
   this->mpTriggerExpression = pExpression;
+  this->mpTriggerExpression->compile();
 }
 
 void CEvent::setAssignmentExpressionPtr(const std::string & key, CExpression* pExpression)
 {
+  pExpression->compile();
   this->mAssignsExpression.push_back(std::make_pair(key, pExpression));
 }
 
@@ -659,4 +669,5 @@ void CEvent::setDelayExpressionPtr(CExpression* pExpression)
 {
   if (this->mpDelayExpression != NULL) delete this->mpDelayExpression;
   this->mpDelayExpression = pExpression;
+  this->mpDelayExpression->compile();
 }
