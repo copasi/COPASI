@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.177 $
+//   $Revision: 1.178 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/06/13 12:32:15 $
+//   $Date: 2008/06/13 12:36:43 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -2272,7 +2272,7 @@ void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
         mpCurrentHandler = &mParser.mCharacterDataElement;
       break;
 
-    case MathML:                                  // Old file format support
+    case MathML:                                   // Old file format support
       if (!strcmp(pszName, "MathML"))
         {
           /* If we do not have a MathML element handler we create one. */
@@ -2370,7 +2370,7 @@ void CCopasiXMLParser::ModelValueElement::end(const XML_Char *pszName)
       mCurrentElement = ModelValue;
       break;
 
-    case MathML:                                  // Old file format support
+    case MathML:                                   // Old file format support
       if (strcmp(pszName, "MathML"))
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                        pszName, "MathML", mParser.getCurrentLineNumber());
@@ -2855,7 +2855,7 @@ void CCopasiXMLParser::AssignmentElement::start(const XML_Char *pszName,
 {
   mpCurrentHandler = NULL;
   mCurrentElement++; /* We should always be on the next element */
-
+  const CModelEntity* pME = NULL;
   switch (mCurrentElement)
     {
     case Assignment:
@@ -2865,7 +2865,7 @@ void CCopasiXMLParser::AssignmentElement::start(const XML_Char *pszName,
 
       mKey = mParser.getAttributeValue("targetkey", papszAttrs);
 
-      const CModelEntity* pME = dynamic_cast<const CModelEntity*>(mCommon.KeyMap.get(mKey));
+      pME = dynamic_cast<const CModelEntity*>(mCommon.KeyMap.get(mKey));
       if (pME == NULL) fatalError();
       mAssignmentPair.first = pME->getKey();
       //std::cout << "mKey = " << mKey << std::endl;
