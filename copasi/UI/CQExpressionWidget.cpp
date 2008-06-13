@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.cpp,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/05/16 11:23:02 $
+//   $Author: gauges $
+//   $Date: 2008/06/13 15:23:50 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -66,10 +66,12 @@ int CQExpressionHighlighter::highlightParagraph (const QString & text, int /* en
 
 //***********************************************************************
 
-CQValidatorExpression::CQValidatorExpression(QTextEdit * parent, const char * name):
+CQValidatorExpression::CQValidatorExpression(QTextEdit * parent, const char * name, bool isBoolean):
     CQValidator< QTextEdit >(parent, name),
     mExpression()
-{}
+{
+  mExpression.setBoolean(isBoolean);
+}
 
 /**
   *  This function ensures that any characters on Expression Widget are validated
@@ -102,7 +104,7 @@ CExpression *CQValidatorExpression::getExpression()
 
 //***********************************************************************
 
-CQExpressionWidget::CQExpressionWidget(QWidget * parent, const char * name)
+CQExpressionWidget::CQExpressionWidget(QWidget * parent, const char * name, bool isBoolean)
     : QTextEdit(parent, name),
     mOldPar(0),
     mOldPos(0),
@@ -123,7 +125,7 @@ CQExpressionWidget::CQExpressionWidget(QWidget * parent, const char * name)
   if (s < 20) s = 20;
   mChangedColor.setHsv(240, s, v);
 
-  mpValidator = new CQValidatorExpression(this);
+  mpValidator = new CQValidatorExpression(this, "", isBoolean);
   mpValidator->revalidate();
 
   connect(this, SIGNAL(cursorPositionChanged(int, int)),

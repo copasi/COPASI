@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.178 $
+//   $Revision: 1.179 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/06/13 12:36:43 $
+//   $Date: 2008/06/13 15:23:50 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -2272,7 +2272,7 @@ void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
         mpCurrentHandler = &mParser.mCharacterDataElement;
       break;
 
-    case MathML:                                   // Old file format support
+    case MathML:                                    // Old file format support
       if (!strcmp(pszName, "MathML"))
         {
           /* If we do not have a MathML element handler we create one. */
@@ -2370,7 +2370,7 @@ void CCopasiXMLParser::ModelValueElement::end(const XML_Char *pszName)
       mCurrentElement = ModelValue;
       break;
 
-    case MathML:                                   // Old file format support
+    case MathML:                                    // Old file format support
       if (strcmp(pszName, "MathML"))
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                        pszName, "MathML", mParser.getCurrentLineNumber());
@@ -2597,7 +2597,7 @@ void CCopasiXMLParser::EventElement::end(const XML_Char *pszName)
       {
         unsigned C_INT32 Size = CCopasiMessage::size();
 
-        mpEvent->setExpressionTrigger(mCommon.CharacterData);
+        if (!mpEvent->setExpressionTrigger(mCommon.CharacterData)) fatalError();
 
         // Remove error messages created by setExpression as this may fail
         // due to incomplete model specification at this time.

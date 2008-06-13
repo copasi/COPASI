@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.h,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/04/23 17:42:51 $
+//   $Author: gauges $
+//   $Date: 2008/06/13 15:23:50 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -49,7 +49,7 @@ class CQExpressionHighlighter: public QSyntaxHighlighter
 class CQValidatorExpression: public CQValidator< QTextEdit >
   {
   public:
-    CQValidatorExpression(QTextEdit * parent, const char * name = 0);
+    CQValidatorExpression(QTextEdit * parent, const char * name = 0, bool isBoolean = false);
 
     /**
      * Function to validate a string input
@@ -60,6 +60,8 @@ class CQValidatorExpression: public CQValidator< QTextEdit >
      * Function to get CExpression object
      */
     virtual CExpression *getExpression();
+
+    void setBoolean(bool isBoolean){mExpression.setBoolean(isBoolean);};
 
   protected:
     CExpression mExpression;
@@ -72,7 +74,7 @@ class CQExpressionWidget: public QTextEdit
   {
     Q_OBJECT
   public:
-    CQExpressionWidget(QWidget * parent = 0, const char * name = 0);
+    CQExpressionWidget(QWidget * parent = 0, const char * name = 0, bool isBoolean = false);
 
     CQValidatorExpression * mpValidator;
 
@@ -125,6 +127,8 @@ class CQExpressionWidget: public QTextEdit
      * @param const CCopasiSimpleSelectionTree::SelectionFlag & expressionType
      */
     void setExpressionType(const CCopasiSimpleSelectionTree::SelectionFlag & expressionType);
+
+    void setBoolean(bool isBoolean){mpValidator->setBoolean(isBoolean);};
 
   protected slots:
     void slotCursorPositionChanged(int para, int pos);

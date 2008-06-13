@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQEventWidget1.ui.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/06/13 11:02:35 $
+//   $Author: gauges $
+//   $Date: 2008/06/13 15:23:50 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -263,7 +263,7 @@ void CQEventWidget1::init()
   connect(mpExpressionEA->mpExpressionWidget, SIGNAL(valid(bool)), this, SLOT(slotExpressionEAValid(bool)));
 
   connect(mpCBTarget, SIGNAL(activated(int)), this, SLOT(slotActualizeAssignmentExpression(int)));
-
+  mpExpressionTrigger->mpExpressionWidget->setBoolean(true);
   mExpressionDelayValid = true;
   mpExpressionDelay->mpExpressionWidget->setExpressionType(CCopasiSimpleSelectionTree::TRANSIENT_EXPRESSION);
 
@@ -993,7 +993,7 @@ void CQEventWidget1::saveToEvent()
     }
   if (expr != mpExpressionTrigger->mpExpressionWidget->getExpression())
     {
-      CExpression* pNewExpression = new CExpression;
+      CExpression* pNewExpression = dynamic_cast<CExpression*>(CEvaluationTree::create(CEvaluationTree::Boolean));
       pNewExpression->setInfix(mpExpressionTrigger->mpExpressionWidget->getExpression());
       mpEvent->setTriggerExpressionPtr(pNewExpression);
       mChanged = true;
