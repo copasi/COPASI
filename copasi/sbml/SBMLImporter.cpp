@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.203 $
+//   $Revision: 1.204 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/06/11 12:42:37 $
+//   $Date: 2008/06/13 12:59:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -5416,7 +5416,7 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
   // replace the object names
   this->replaceObjectNames(pTmpNode, copasi2sbmlmap);
   // now we convert the node to a CEvaluationNode
-  CExpression* pExpression = new CExpression;
+  CExpression* pExpression = dynamic_cast<CExpression*>(CEvaluationTree::create(CEvaluationTree::Boolean));
   pExpression->setTree(*pTmpNode);
   delete pTmpNode;
   pCOPASIEvent->setTriggerExpressionPtr(pExpression);
