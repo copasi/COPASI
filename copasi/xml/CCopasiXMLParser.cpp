@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.176 $
+//   $Revision: 1.177 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/06/09 07:47:17 $
+//   $Author: gauges $
+//   $Date: 2008/06/13 12:32:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -2272,7 +2272,7 @@ void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
         mpCurrentHandler = &mParser.mCharacterDataElement;
       break;
 
-    case MathML:                                 // Old file format support
+    case MathML:                                  // Old file format support
       if (!strcmp(pszName, "MathML"))
         {
           /* If we do not have a MathML element handler we create one. */
@@ -2370,7 +2370,7 @@ void CCopasiXMLParser::ModelValueElement::end(const XML_Char *pszName)
       mCurrentElement = ModelValue;
       break;
 
-    case MathML:                                 // Old file format support
+    case MathML:                                  // Old file format support
       if (strcmp(pszName, "MathML"))
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                        pszName, "MathML", mParser.getCurrentLineNumber());
@@ -2865,8 +2865,10 @@ void CCopasiXMLParser::AssignmentElement::start(const XML_Char *pszName,
 
       mKey = mParser.getAttributeValue("targetkey", papszAttrs);
 
-      mAssignmentPair.first = mKey;
-      std::cout << "mKey = " << mKey << std::endl;
+      const CModelEntity* pME = dynamic_cast<const CModelEntity*>(mCommon.KeyMap.get(mKey));
+      if (pME == NULL) fatalError();
+      mAssignmentPair.first = pME->getKey();
+      //std::cout << "mKey = " << mKey << std::endl;
 
       /*
             mpMV = new CModelValue();
