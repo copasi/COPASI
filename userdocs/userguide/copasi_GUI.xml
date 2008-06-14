@@ -1,10 +1,10 @@
 <chapter id="modelCreation" xreflabel="Model Creation">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_GUI.xml,v $ -->
-<!--   $Revision: 1.53 $ -->
+<!--   $Revision: 1.54 $ -->
 <!--   $Name:  $ -->
-<!--   $Author: shoops $ -->
-<!--   $Date: 2008/06/03 13:23:09 $ -->
+<!--   $Author: gauges $ -->
+<!--   $Date: 2008/06/14 17:42:03 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -1256,6 +1256,64 @@ Even so COPASI does not support building models from ordinary
 differential equations, one can specify a model as a set of
 differential equations using a set of global parameters which have the
 type ode.
+</para>
+</sect1>
+
+<sect1 id="events" xreflabel="Events">
+<title>Events</title>
+<para>An event in COPASI sets the values of one or more model elements at a certain point in time. The exact timepoint at which the assignments are executed depends on a condition called trigger and on an optional time delay.</para>
+<para>
+In order to be usable, an event needs a trigger expression that determines when an event takes place. The trigger expression is a mathematical expression which returns a boolean value. In order to return a boolean value (true, false), the expression must use comparison operators lt, le, eq, gt or ge. Theoretically a boolean expression can also consists of just the constants true or false, this does not make much sense as well be explained shortly.
+Naturally the trigger expression can also be a combination of boolean subexpressions that are combined by logical operators <emphasis>and</emphasis>, <emphasis>or</emphasis>, <emphasis>not</emphasis> and <emphasis>xor</emphasis>. 
+</para>
+<para>
+<!--
+Expression Examples
+-->
+</para>
+<para>
+As described above, the trigger expression determines when an event is triggered. The exact point when the event is triggered is that point in time where the result of the evaluated trigger expression changes from false to true. The event is triggered each time this happens, so an event can be triggered more than once. If the result of the trigger expression is true at the start of a simulation, the event is not triggered since the result of the expression did not make a transition from true to false.
+</para>
+<para>
+Since an event is only triggered when the trigger expression makes a transition from true to false, it does not make much sense to use the constants <emphasis>true/TRUE</emphasis> or <emphasis>false/FALSE</emphasis> within the trigger expression.
+</para>
+<para>
+Since computers usually calculate numbers with limited precission, it is not always easy to for a program to find out if an event has been triggered or not. But in most cases it is possible to come up with trigger expressions that make this takes a bit easier.
+</para>
+<para>
+Even so, as has been described above, one can build trigger expressions, using all comparison operators, only <emphasis>lt</emphasis> and <emphasis>gt</emphasis> make sense. One could also use <emphasis>le</emphasis> and <emphasis>ge</emphasis> respectively to build trigger expressions, but due to the limited proecision of the calculations, this is numerically the same as using <emphasis>lt</emphasis> and <emphasis>gt</emphasis>. While using <emphasis>le</emphasis> and <emphasis>ge</emphasis> is just redundant, using <emphasis>eq</emphasis> or <emphasis>ne</emphasis> to build trigger expressions will most likely lead to undesirable effects, meaning that the program will mostl likely not be able to find out that the trigger expression has changed from false to true. Why is this?
+</para>
+<para>
+The algorithms that are used to calculate a time course in COPASI  do not calculate values for all possible time points between the start time and the endtime because there is an infinity number of those. All the algorithm can do is calculate values for all model entities for a finite number of steps between the start and the endtime. "Smart" algorithms even go one step further and try to limit the number of steps to the necessary minimum. But exactly herin lies the problem if <emphasis>eq</emphasis> and <emphasis>ne</emphasis> are used to build trigger expressions. The trigger expressions are calculated for each time step that the solver makes, that means that the trigger expressions are evaluated at discrete time points. So if a trigger expression evaluates to false at timepoint n and evaluatates to true at timepoint n+1, the solver knows that the event has been triggered and can now try to located the exact timepoint where the event has been triggered which must be located somewere between timepoint n and timepoint n+1. Now lets assume that we have a trigger expression "time eq 3.1", this expression evaluates to true when the simulation time is exactly 3.1, everywhere else, this expression evaluates to false. So lets also assume that the solver calculates one time step at t=3.0 and the next time step after that at t=3.2. At both of those time steps, the trigger expression above would evaluate to <emphasis>false</emphasis> and the algorithm would assume that the event has not been triggered at all. So it is very important to think about how to build trigger expressions. If you wanted to express that the event should fire once when the simulation has reached time=3.1 you could have written "time gt 3.1" instead "time eq 3.1". 
+</para>
+<para>
+This problem is not restricted to the logical operators <emphasis>eq</emphasis> and <emphasis>ne</emphasis>, but it is generaly also a bad idea to use the logical <emphasis>and</emphasis> to build logical expressions in COPASI. E.g. the expression "(time gt 3.05) and (time lt 3.06)" suffers from the same general problem. The time span in which the expression is <emphasis>true</emphasis> might be to short for the simulation algorithm to recognize that the event has been triggered. 
+</para>
+<para>
+While most event triggers can be expressed in COPASI without problems, some can't be expressed in a safe way and you should be aware of this problem when you use logical expressions anywhere in COPASI, e.g. in an <emphasis>if</emphasis> statement within a algebraic expression.
+</para>
+<para>
+In addition to the trigger, the user can set a so called delay expression. This expresion is evaluated when the event is triggered and the numerical result from evaluating the expression is the time delay from the time point when the event was triggered until the assignments actually happen. The delay expression is a normal mathematical expression and it has to evaluate to a positive number or zero. Negative numbers are not allowed because this would mean that the assignments would have to be made before the event has even been triggered.
+</para>
+<para>
+Last but not least, each event can have one or more assignments which consists of a model entity (compartment, species or global parameter) that is the target for the assignment and an expression that determines the value that the target is set to. This is very similar to setting an assignment on a model entity as described in , the only difference is that the event assignment is only executed if the event has been triggered whereas the normal assignment is done in each timestep of a simulation.
+</para>
+<para>
+There are a few more things one has to be aware of when working with events in COPASI. Firstly, the values for the event assignments are calculated when an event is fired, that is if an event assignment references some model entity in the assignment expression, the value taken to evaluate the assignment expression is the value that the model entity has at the time the event is triggered. So if the same event also has a delay that is not zero, the assignment values are calculated when the event is triggered, but they are only applied once the delay time has passed.
+</para>
+<para>
+The seond thing one has to be aware of is the fact that event assignments within the same event do no influence each other and that the order of the event assignments is irrelevant for the calculations. All values that are referenced in an event assignment are taken prior to applying any event assignments. That is if there is an event assignment for species A which references species B and vice versa within the same event, it does not matter which event assignment is applied first, the result is always the same since the referenced values are taken before any of the two events is applied.
+</para>
+<para>
+Last but not least, it is possible that applying the assignments of an event triggers one or more other events. The order in which those events are fired is the order in which they have been defined in the model since this is the order in which the solver will find that they have fired. The values referenced in those events fired by other events are taken after all assignments from the event that has lead the other event(s) to fire, have been applied.
+</para>
+<para>
+Since the assignments in one event can lead to the triggering of other events, a whole cascade of events can be triggered by one event bying fired and sometimes this can lead to infinity loops whithin the event cascade. It is not trivial to find out if an event cascade is actually infinite or only very long. If any event within a cascade is fired a second time with exactly the same state of the model, we can assume that the cascade would be infinite (I am not sure if this is actually true due to the branching that can happen in the cascade) and COPASI will stop evaluating the events and interrupt the simulation with an error message. COPASI will also stop to evaluate event if the number of events in the event cascade has exceded a certain limit (10000). 
+</para>
+<para>
+<!--
+Do we excecute events depth first or breadth first? This might make a difference!
+-->
 </para>
 </sect1>
 
