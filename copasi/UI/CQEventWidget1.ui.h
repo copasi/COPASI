@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQEventWidget1.ui.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/06/13 15:23:50 $
+//   $Author: pwilly $
+//   $Date: 2008/06/14 12:34:49 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -767,6 +767,8 @@ bool CQEventWidget1::loadFromEvent()
   mpEvent->showAssignments();
   std::vector<std::pair<std::string, CExpression*> >::iterator it;
 
+  const CModelEntity* pME = NULL;
+
   if (mObjectKeyDisplayName.size() != currentAssignment.size()) // happens only at the first time after loading a cps file
     {
       for (it = currentAssignment.begin(); it != currentAssignment.end(); ++it)
@@ -775,26 +777,37 @@ bool CQEventWidget1::loadFromEvent()
           QString sObjectName = sKeyDisplay[0];
           QString sObjectIndex = sKeyDisplay[1];
           QString sName;
+          std::cout << "it->first = " << it->first << std::endl;
           std::cout << sObjectName << " - " << sObjectIndex << std::endl;
           //   std::cout << sKeyDisplay[0] << " - " << sKeyDisplay[1] << std::endl;
+          /*
+                pME = dynamic_cast<const CModelEntity*>(mCommon.KeyMap.get(mKey));
+                if (pME == NULL) fatalError();
+                mAssignmentPair.first = pME->getKey();
+          */
           if (sObjectName == "Compartment")
             {
-              std::cout << "Compartments: " << CCopasiDataModel::Global->getModel()->getCompartments()[sObjectIndex.toULong()]->getKey() << std::endl;
+              //              std::cout << "Compartments: " << CCopasiDataModel::Global->getModel()->getCompartments()[sObjectIndex.toULong()]->getKey() << std::endl;
               //     std::cout << "Compartments: " << CCopasiDataModel::Global->getModel()->getCompartments()[sObjectIndex.toULong()]->getObjectDisplayName() << std::endl;
-              sName = FROM_UTF8(CCopasiDataModel::Global->getModel()->getCompartments()[sObjectIndex.toULong()]->getObjectDisplayName() + ".Volume");
+              //              sName = FROM_UTF8(CCopasiDataModel::Global->getModel()->getCompartments()[sObjectIndex.toULong()]->getObjectDisplayName() + ".Volume");
+
+              sName = FROM_UTF8(GlobalKeys.get(it->first)->getObjectDisplayName() + ".Volume");
               std::cout << "Compartments: " << sName << std::endl;
             }
           if (sObjectName == "Metabolite")
             {
-              std::cout << "Metabolites: " << CCopasiDataModel::Global->getModel()->getMetabolites()[sObjectIndex.toULong()]->getKey() << std::endl;
+              //              std::cout << "Metabolites: " << CCopasiDataModel::Global->getModel()->getMetabolites()[sObjectIndex.toULong()]->getKey() << std::endl;
               //     std::cout << "Metabolites: " << CCopasiDataModel::Global->getModel()->getMetabolites()[sObjectIndex.toULong()]->getObjectDisplayName() << std::endl;
-              sName = FROM_UTF8("[" + CCopasiDataModel::Global->getModel()->getMetabolites()[sObjectIndex.toULong()]->getObjectDisplayName() + "]");
+              //              sName = FROM_UTF8("[" + CCopasiDataModel::Global->getModel()->getMetabolites()[sObjectIndex.toULong()]->getObjectDisplayName() + "]");
+              sName = FROM_UTF8("[" + GlobalKeys.get(it->first)->getObjectDisplayName() + "]");
               std::cout << "Metabolites: " << sName << std::endl;
+              //              std::cout << "Metabolites: " << std::endl;
             }
           if (sObjectName.contains("ModelValue"))
             {
-              std::cout << "Global Quantities: " << CCopasiDataModel::Global->getModel()->getModelValues()[sObjectIndex.toULong()]->getKey() << std::endl;
-              sName = FROM_UTF8(CCopasiDataModel::Global->getModel()->getModelValues()[sObjectIndex.toULong()]->getObjectDisplayName());
+              //              std::cout << "Global Quantities: " << CCopasiDataModel::Global->getModel()->getModelValues()[sObjectIndex.toULong()]->getKey() << std::endl;
+              //              sName = FROM_UTF8(CCopasiDataModel::Global->getModel()->getModelValues()[sObjectIndex.toULong()]->getObjectDisplayName());
+              sName = FROM_UTF8(GlobalKeys.get(it->first)->getObjectDisplayName());
               std::cout << "Global Quantities: " << sName << std::endl;
             }
 

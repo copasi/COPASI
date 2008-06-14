@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventsWidget.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2008/06/09 08:10:56 $
+//   $Date: 2008/06/14 12:34:34 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -93,12 +93,17 @@ void CQEventsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_IN
       QString sObjectName = sKeyDisplay[0];
       QString sObjectIndex = sKeyDisplay[1];
 
+      std::cout << "pEv->getAssignmentObjectKey(" << i << ") = " << pEv->getAssignmentObjectKey(i) << std::endl;
+
       if (sObjectName == "Compartment")
-        assignmentTarget += FROM_UTF8(CCopasiDataModel::Global->getModel()->getCompartments()[sObjectIndex.toULong()]->getObjectDisplayName() + ".Volume");
+        //        assignmentTarget += FROM_UTF8(CCopasiDataModel::Global->getModel()->getCompartments()[sObjectIndex.toULong()]->getObjectDisplayName() + ".Volume");
+        assignmentTarget += FROM_UTF8(GlobalKeys.get(pEv->getAssignmentObjectKey(i))->getObjectDisplayName() + ".Volume");
       else if (sObjectName == "Metabolite")
-        assignmentTarget += FROM_UTF8("[" + CCopasiDataModel::Global->getModel()->getMetabolites()[sObjectIndex.toULong()]->getObjectDisplayName() + "]");
+        //        assignmentTarget += FROM_UTF8("[" + CCopasiDataModel::Global->getModel()->getMetabolites()[sObjectIndex.toULong()]->getObjectDisplayName() + "]");
+        assignmentTarget += FROM_UTF8("[" + GlobalKeys.get(pEv->getAssignmentObjectKey(i))->getObjectDisplayName() + "]");
       else if (sObjectName == "ModelValue")
-        assignmentTarget += FROM_UTF8(CCopasiDataModel::Global->getModel()->getModelValues()[sObjectIndex.toULong()]->getObjectDisplayName());
+        //        assignmentTarget += FROM_UTF8(CCopasiDataModel::Global->getModel()->getModelValues()[sObjectIndex.toULong()]->getObjectDisplayName());
+        assignmentTarget += FROM_UTF8(GlobalKeys.get(pEv->getAssignmentObjectKey(i))->getObjectDisplayName());
       else
         {
           std::cout << "sObjectName = " << sObjectName << std::endl;
@@ -311,7 +316,7 @@ void CQEventsWidget::deleteObjects(const std::vector<std::string> & keys)
 
     switch (choice)
       {
-      case 0:                                         // Yes or Enter
+      case 0:                                        // Yes or Enter
         {
           for (i = 0; i < imax; i++)
             {
@@ -324,7 +329,7 @@ void CQEventsWidget::deleteObjects(const std::vector<std::string> & keys)
           mChanged = true;
           break;
         }
-      default:                                         // No or Escape
+      default:                                        // No or Escape
         break;
       }
   */
