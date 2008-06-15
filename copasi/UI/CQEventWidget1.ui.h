@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQEventWidget1.ui.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2008/06/14 12:34:49 $
+//   $Date: 2008/06/15 12:39:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -732,6 +732,8 @@ bool CQEventWidget1::loadFromEvent()
     }
   mpExpressionDelay->mpExpressionWidget->setExpression(expr);
   std::cout << "EXP of Delay: " << expr << std::endl;
+  if (expr.empty())
+    mpExpressionDelay->mpExpressionWidget->setExpression("0");
   //  if (mpEvent->getExpressionDelay() == "")
   //    mpExpressionDelay->mpBtnViewExpression->setEnabled(false);
 
