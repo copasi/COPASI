@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/copasi.xsd,v $ -->
-<!--   $Revision: 1.50 $ -->
+<!--   $Revision: 1.51 $ -->
 <!--   $Name:  $ -->
-<!--   $Author: shoops $ -->
-<!--   $Date: 2008/03/12 00:34:41 $ -->
+<!--   $Author: gauges $ -->
+<!--   $Date: 2008/06/16 09:29:53 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -187,6 +187,44 @@
 											<xs:field xpath="@compartment"/>
 										</xs:unique>
 									</xs:element>
+									<xs:element name="ListOfEvents" id="copasi.Model.ListOfEvents" minOccurs="0">
+                                                                               <xs:complexType mixed="true">
+                                                                                        <xs:sequence>
+												<xs:element name="Event" id="copasi.Model.Event" maxOccurs="unbounded">
+                                                                                                                <xs:complexType>
+                                                                                                                          <xs:sequence>
+                                                                                                                                <xs:element name="TriggerExpression" type="sEXPRESSION" />
+                                                                                                                                <xs:element name="DelayExpression" type="sEXPRESSION" />
+                                                                                                                                <xs:element name="ListOfAssignments" id="copasi.Model.ListOfEventAssignments">
+                                                                                                                                          <xs:complexType mixed="true">
+                                                                                                                                                   <xs:sequence>
+                                                                                                                                                           <xs:element name="Assignment" id="copasi.Model.EventAssignment" maxOccurs="unbounded">
+                                                                                                                                                                   <xs:complexType>
+                                                                                                                                                                            <xs:sequence>
+                                                                                                                                                                                  <xs:element name="Expression" type="sEXPRESSION" />
+                                                                                                                                                                            </xs:sequence>      
+                                                                                                                                                                            <xs:attribute name="targetkey" type="cEVENT_ASSIGNMENT_TARGET_KEYREF" use="required" />
+                                                                                                                                                                   </xs:complexType>
+                                                                                                                                                           </xs:element>
+                                                                                                                                                   </xs:sequence>
+                                                                                                                                          </xs:complexType>
+																          <xs:unique name="AssignmentTarget">
+																	         <xs:selector xpath="Assignment"/>
+																	         <xs:field xpath="@targetkey"/>
+																          </xs:unique>
+                                                                                                                                </xs:element>
+                                                                                                                          </xs:sequence>      
+														          <xs:attribute name="key" type="cEVENT_KEY" use="required" id="copasi.Model.Event.key"/>
+														          <xs:attribute name="name" type="cNAME" use="required" id="copasi.Model.Event.name"/>
+                                                                                                                </xs:complexType>             
+                                                                                                </xs:element>
+                                                                                        </xs:sequence>
+                                                                               </xs:complexType>
+										<xs:unique name="EventName">
+											<xs:selector xpath="Event"/>
+											<xs:field xpath="@name"/>
+										</xs:unique>
+                                                                        </xs:element>
 									<xs:element name="StateTemplate" id="copasi.Model.StateTemplate" minOccurs="0">
 										<xs:complexType>
 											<xs:sequence>
@@ -765,6 +803,11 @@
 			<xs:pattern value="Reaction_\d+"/>
 		</xs:restriction>
 	</xs:simpleType>
+	<xs:simpleType name="cEVENT_KEY" id="copasi.EVENT_KEY">
+		<xs:restriction base="cKEY">
+			<xs:pattern value="Event_\d+"/>
+		</xs:restriction>
+	</xs:simpleType>
 	<xs:simpleType name="cFUNCTION_KEY" id="copasi.FUNCTION_KEY" final="restriction">
 		<xs:restriction base="cKEY">
 			<xs:pattern value="Function_\d+"/>
@@ -818,6 +861,11 @@
 	<xs:simpleType name="cMETABOLITE_KEYREF" id="copasi.METABOLITE_KEYREF">
 		<xs:restriction base="cKEYREF">
 			<xs:pattern value="Metabolite_\d+"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="cEVENT_ASSIGNMENT_TARGET_KEYREF" id="copasi.EVENT_ASSIGNMENT_TARGET_KEYREF">
+		<xs:restriction base="cKEYREF">
+			<xs:pattern value="(Metabolite|Compartment|ModelValue)_\d+"/>
 		</xs:restriction>
 	</xs:simpleType>
 	<xs:simpleType name="cREACTION_KEYREF" id="copasi.REACTION_KEYREF">
@@ -877,7 +925,7 @@
 	</xs:simpleType>
 	<xs:simpleType name="cNAME" id="copasi.NAME">
 		<xs:restriction base="xs:string">
-			<xs:pattern value="[^\t\r\n]+"/>
+			<xs:pattern value="[\S| ]+"/>
 		</xs:restriction>
 	</xs:simpleType>
 	<xs:simpleType name="sEXPRESSION" final="restriction">
