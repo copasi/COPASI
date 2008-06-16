@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/FunctionWidget.cpp,v $
-//   $Revision: 1.73 $
+//   $Revision: 1.74 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/12 00:32:59 $
+//   $Date: 2008/06/16 14:06:58 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -85,6 +85,7 @@ void FunctionWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_IN
     case CEvaluationTree::UserDefined:
     case CEvaluationTree::Function:
     case CEvaluationTree::Expression:
+    case CEvaluationTree::Boolean:
       mFlagRO[row] = false;
       break;
     }

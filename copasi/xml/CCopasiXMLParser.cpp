@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.179 $
+//   $Revision: 1.180 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/06/13 15:23:50 $
+//   $Author: shoops $
+//   $Date: 2008/06/16 14:06:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -718,6 +718,7 @@ void CCopasiXMLParser::FunctionElement::start(const XML_Char *pszName,
             case CEvaluationTree::UserDefined:
             case CEvaluationTree::Function:
             case CEvaluationTree::Expression:
+            case CEvaluationTree::Boolean:
               mCommon.pFunctionList->remove(Name);
               mCommon.pFunctionList->add(mCommon.pFunction, true);
               break;
@@ -2272,7 +2273,7 @@ void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
         mpCurrentHandler = &mParser.mCharacterDataElement;
       break;
 
-    case MathML:                                    // Old file format support
+    case MathML:                                     // Old file format support
       if (!strcmp(pszName, "MathML"))
         {
           /* If we do not have a MathML element handler we create one. */
@@ -2370,7 +2371,7 @@ void CCopasiXMLParser::ModelValueElement::end(const XML_Char *pszName)
       mCurrentElement = ModelValue;
       break;
 
-    case MathML:                                    // Old file format support
+    case MathML:                                     // Old file format support
       if (strcmp(pszName, "MathML"))
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                        pszName, "MathML", mParser.getCurrentLineNumber());
@@ -2675,7 +2676,8 @@ void CCopasiXMLParser::EventElement::end(const XML_Char *pszName)
 
       mpEvent->clearAssignment();
 
-      for (int idx = 0; idx < mCommon.mAssignments.size(); idx++)
+      unsigned C_INT32 idx;
+      for (idx = 0; idx < mCommon.mAssignments.size(); idx++)
         {
           std::cout << "Key = " << mCommon.mAssignments[idx].first << " - Expression = " << mCommon.mAssignments[idx].second << std::endl;
 
