@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CEvent.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/06/11 12:42:38 $
+//   $Author: pwilly $
+//   $Date: 2008/06/16 09:43:00 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -234,10 +234,10 @@ class CEvent : public CCopasiContainer
     // std::vector<std::pair<std::string, CExpression> > * getAssignmentExpressionVector();
 
     /// set the vector of assignment expression
-    void setAssignmentExpressionVector(std::vector<std::pair<std::string, CExpression> > &vector);
+    //    void setAssignmentExpressionVector(std::vector<std::pair<std::string, CExpression> > &vector);
 
     /// set the vector of assignments
-    void setAssignment(std::vector<std::pair<std::string, std::string> > &vector);
+    //    void setAssignment(std::vector<std::pair<std::string, std::string> > &vector);
 
     /// show all assignments saved in the event object
     void showAssignments();
@@ -247,6 +247,8 @@ class CEvent : public CCopasiContainer
     /**
      * add an assignment to the event. The assignment is described by the key of a copasi
      * object and a mathematical expression, given as a string.
+     * @param const std::string & key
+     * @param const std::string & expression
      */
     bool addAssignment(const std::string & key, const std::string & expression);
     //    bool addAssignment(const std::string & key);
@@ -254,12 +256,16 @@ class CEvent : public CCopasiContainer
     /**
      * update the i-th assignment of the event. The assignment is described by the key of a copasi
      * object and a mathematical expression, given as a string.
+     * @param unsigned C_INT32 i
+     * @param const std::string & key
+     * @param const std::string & expression
      */
     bool updateAssignment(unsigned C_INT32 i, const std::string & key, const std::string & expression);
 
     /**
      * delete the i-th assignment from the vector.
-    */
+     * @param unsigned C_INT32 i
+     */
     bool deleteAssignment(unsigned C_INT32 i);
 
     /**
@@ -282,34 +288,34 @@ class CEvent : public CCopasiContainer
     /**
      * Expression to trigger the event
      */
-    CExpression mTriggerExpression;
+    //    CExpression mTriggerExpression;
 
     /**
-     * Expression to the event
+     * Pointer to the Trigger Expression of the event
      */
     CExpression *mpTriggerExpression;
 
     /**
-     * Expression to the event
+     * Pointer to the Delay Expression of the event
      */
     CExpression *mpDelayExpression;
 
     /**
      * Expression to the event assignment
      */
-    CExpression *mpExpressionEA;
+    //    CExpression *mpExpressionEA;
 
     /**
      * Delay before the action takes place.
      */
-    C_FLOAT64 mDelay;
+    //    C_FLOAT64 mDelay;
 
     /**
      *  List of assignment expressions that need to be applied after the event triggers.
      *  The std::string is the key of a copasi object, the expression is an assignment expression
      *  to this object.
      */
-    std::vector < std::pair <std::string, CExpression> > mAssigns;
+    //    std::vector < std::pair <std::string, CExpression> > mAssigns;
 
     /**
      *  List of assignment expressions that need to be applied after the event triggers.
@@ -323,7 +329,7 @@ class CEvent : public CCopasiContainer
      *  The std::string is the key of a copasi object, the expression is an assignment name
      *  to this object.
      */
-    std::vector < std::pair <std::string, std::string> > mAssignsName;
+    //    std::vector < std::pair <std::string, std::string> > mAssignsName;
 
   public:
 
