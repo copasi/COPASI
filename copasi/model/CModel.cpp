@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.342 $
+//   $Revision: 1.343 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/05/08 15:36:12 $
+//   $Author: pwilly $
+//   $Date: 2008/06/17 09:55:07 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1163,7 +1163,8 @@ bool CModel::buildUserOrder()
   const unsigned C_INT32 * pUserOrderEnd = pUserOrder + mStateTemplate.getUserOrder().size();
   ppEntity = mStateTemplate.getEntities();
 
-  for (unsigned C_INT32 i = 0; pUserOrder != pUserOrderEnd; ++pUserOrder)
+  unsigned C_INT32 i;
+  for (i = 0; pUserOrder != pUserOrderEnd; ++pUserOrder)
     {
       const Status & Status = ppEntity[*pUserOrder]->getStatus();
       if (Status == ODE ||
@@ -2619,8 +2620,7 @@ CEvent* CModel::createEvent(const std::string & name)
 bool CModel::removeEvent(const std::string & key,
                          const bool & /* recursive */)
 {
-  CEvent * pEvent =
-    dynamic_cast< CEvent * >(GlobalKeys.get(key));
+  CEvent * pEvent = dynamic_cast< CEvent * >(GlobalKeys.get(key));
 
   if (!pEvent)
     return false;
@@ -2636,7 +2636,7 @@ bool CModel::removeEvent(const std::string & key,
 
   mEvents.CCopasiVector< CEvent >::remove(index);
 
-  //clearMoieties();
+  clearMoieties();
   mCompileIsNecessary = true;
 
   return true;

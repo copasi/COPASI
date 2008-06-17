@@ -1,12 +1,17 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObjectName.cpp,v $
-   $Revision: 1.11 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:31:09 $
-   End CVS Header */
+  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObjectName.cpp,v $
+  $Revision: 1.12 $
+  $Name:  $
+  $Author: pwilly $
+  $Date: 2008/06/17 09:54:25 $
+  End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -103,7 +108,8 @@ std::string CCopasiObjectName::getElementName(const unsigned C_INT32 & pos,
     CCopasiObjectName Primary = getPrimary();
 
     std::string::size_type open = findEx("[");
-    for (unsigned C_INT32 i = 0; i < pos && open != std::string::npos; i++)
+    unsigned C_INT32 i;
+    for (i = 0; i < pos && open != std::string::npos; i++)
       open = findEx("[", open + 1);
 
     std::string::size_type close = findEx("]", open + 1);
