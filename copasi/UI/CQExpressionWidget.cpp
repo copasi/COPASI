@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.cpp,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/06/13 15:23:50 $
+//   $Author: pwilly $
+//   $Date: 2008/06/17 10:03:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -407,7 +407,8 @@ std::string CQExpressionWidget::getExpression() const
     std::string InfixDispayName = (const char *)text().utf8();
     std::map< std::string, const CCopasiObject *>::const_iterator it;
 
-    for (unsigned int i = 0; i < InfixDispayName.length(); i++)
+    unsigned int i;
+    for (i = 0; i < InfixDispayName.length(); i++)
       {
         InfixCN += InfixDispayName[i];
         DisplayName = "";
