@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/ConvertToCEvaluationNode.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/06/04 13:23:42 $
+//   $Date: 2008/06/19 19:36:00 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,7 +27,6 @@ class CNormalItemPower;
 class CNormalLcm;
 class CNormalSum;
 class CNormalProduct;
-class CNormalFraction;
 class CNormalBase;
 class CNormalChoice;
 class CNormalChoiceLogical;
@@ -36,6 +35,8 @@ class CNormalLogicalItem;
 class CNormalGeneralPower;
 class CNormalFunction;
 class CNormalCall;
+
+#include "copasi/compareExpressions/CNormalFraction.h"
 
 extern std::map<std::string, const CEvaluationNode*> str2eval;
 
@@ -69,7 +70,7 @@ CNormalItem* createItem(const CEvaluationNode* node);
  * Create a product from an evaluation node that is not necessarily a multiply operator.
  * @return CNormalProduct*, pointer to newly created product.
  */
-CNormalProduct * createProduct(const CEvaluationNode* node);
+CNormalProduct * createProduct(const CEvaluationNode* node) throw(CNormalFraction*);
 
 /**
  * Create a sum from an evaluation node -node does not need to be a PLUS operator!
@@ -89,7 +90,7 @@ CNormalItemPower * createItemPower(const CEvaluationNode* node);
  * Node MUST BE a POWER operator with second child (exponent) of type not NUMBER !!
  * @return CNormalItemPower*, pointer to newly created general power (or modulo).
  */
-CNormalGeneralPower * createGeneralPower(const CEvaluationNode* node);
+CNormalGeneralPower * createGeneralPower(const CEvaluationNode* node) throw(CNormalFraction*);
 
 /**
  * Create an function call from an evaluation node.
