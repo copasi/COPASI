@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQEventWidget1.ui.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2008/06/20 10:03:41 $
+//   $Date: 2008/06/20 10:16:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1763,7 +1763,7 @@ bool CQEventWidget1::checkAllExpressionsOK()
 
   if (mpLBTarget->count() && mExpressionEAValid)
     {
-      int index = mpLBTarget->currentItem();
+      unsigned int index = mpLBTarget->currentItem();
 
       if (index + 1 != mpLBTarget->count())  // the current highlighted item is not the last one
         {

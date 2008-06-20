@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventWidget1.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2008/06/20 10:02:58 $
+//   $Date: 2008/06/20 10:16:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,8 +14,8 @@
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQEventWidget1.ui'
  **
- ** Created: Fri Jun 20 11:53:14 2008
- **      by: The User Interface Compiler ($Id: CQEventWidget1.h,v 1.3 2008/06/20 10:02:58 pwilly Exp $)
+ ** Created: Fri Jun 20 12:07:07 2008
+ **      by: The User Interface Compiler ($Id: CQEventWidget1.h,v 1.4 2008/06/20 10:16:47 pwilly Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
