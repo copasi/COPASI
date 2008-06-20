@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/ConvertToCEvaluationNode.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/06/19 19:36:00 $
+//   $Date: 2008/06/20 13:45:48 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -70,7 +70,7 @@ CNormalItem* createItem(const CEvaluationNode* node);
  * Create a product from an evaluation node that is not necessarily a multiply operator.
  * @return CNormalProduct*, pointer to newly created product.
  */
-CNormalProduct * createProduct(const CEvaluationNode* node) throw(CNormalFraction*);
+CNormalProduct * createProduct(const CEvaluationNode* node);
 
 /**
  * Create a sum from an evaluation node -node does not need to be a PLUS operator!
@@ -90,7 +90,7 @@ CNormalItemPower * createItemPower(const CEvaluationNode* node);
  * Node MUST BE a POWER operator with second child (exponent) of type not NUMBER !!
  * @return CNormalItemPower*, pointer to newly created general power (or modulo).
  */
-CNormalGeneralPower * createGeneralPower(const CEvaluationNode* node) throw(CNormalFraction*);
+CNormalGeneralPower * createGeneralPower(const CEvaluationNode* node);
 
 /**
  * Create an function call from an evaluation node.
