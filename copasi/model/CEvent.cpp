@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CEvent.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2008/06/16 09:48:12 $
+//   $Date: 2008/06/20 09:51:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -39,8 +39,8 @@ CEvent::CEvent(const std::string & name,
     mKey(GlobalKeys.add("Event", this)),
     mpTriggerExpression(NULL),
     mpDelayExpression(NULL) /*,
-        mpExpressionEA(NULL),
-                                    mpModel(NULL)*/
+            mpExpressionEA(NULL),
+                                        mpModel(NULL)*/
 {
   std::cout << "CE::CE" << std::endl;
   CONSTRUCTOR_TRACE;
@@ -53,7 +53,7 @@ CEvent::CEvent(const CEvent & src,
     mKey(GlobalKeys.add("Event", this)),
     mpTriggerExpression(NULL),
     mpDelayExpression(NULL) /*,
-        mpExpressionEA(NULL)*/
+            mpExpressionEA(NULL)*/
 {
   CONSTRUCTOR_TRACE;
   initObjects();
@@ -309,6 +309,9 @@ unsigned C_INT32 CEvent::getAssignmentIndex(const std::string & key)
 {
   std::cout << "CE::getAssignmentExpressionStr - key = " << key << std::endl;
 
+  if (key == "")
+    return (unsigned C_INT32) - 1;
+
   unsigned C_INT32 index = 0;
   std::vector<std::pair<std::string, CExpression*> >::iterator it;
   for (it = mAssignsExpression.begin(); it != mAssignsExpression.end(); ++it, index++)
@@ -333,7 +336,8 @@ void CEvent::showAssignments()
   std::cout << "---------------------------------------------" << std::endl;
   std::cout << "CE::showAssignments - getNumAssignments() = " << getNumAssignments() << std::endl;
   std::cout << "---------------------------------------------" << std::endl;
-  for (unsigned C_INT32 j = 0; j < getNumAssignments(); j++)
+  unsigned C_INT32 j;
+  for (j = 0; j < getNumAssignments(); j++)
     std::cout << "the " << j << "-th assignment : "
     << "name = " << mAssignsExpression[j].first << " - expression = " << mAssignsExpression[j].second->getInfix() << std::endl;
   std::cout << "---------------------------------------------" << std::endl;
