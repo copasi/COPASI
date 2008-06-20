@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventsWidget.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2008/06/14 12:34:34 $
+//   $Date: 2008/06/20 10:06:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -85,7 +85,8 @@ void CQEventsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_IN
   QString assignmentTarget = "";
   QString assignmentExpression = "";
 
-  for (unsigned C_INT32 i = 0; i < pEv->getNumAssignments(); i++)
+  unsigned C_INT32 i;
+  for (i = 0; i < pEv->getNumAssignments(); i++)
     {
       //    assignmentTarget += FROM_UTF8(pEv->getAssignmentObjectKey(i));
       // QString sDisplayName = FROM_UTF8(pEv->getAssignmentObjectKey(i));
@@ -316,7 +317,7 @@ void CQEventsWidget::deleteObjects(const std::vector<std::string> & keys)
 
     switch (choice)
       {
-      case 0:                                        // Yes or Enter
+      case 0:                                       // Yes or Enter
         {
           for (i = 0; i < imax; i++)
             {
@@ -329,7 +330,7 @@ void CQEventsWidget::deleteObjects(const std::vector<std::string> & keys)
           mChanged = true;
           break;
         }
-      default:                                        // No or Escape
+      default:                                       // No or Escape
         break;
       }
   */
