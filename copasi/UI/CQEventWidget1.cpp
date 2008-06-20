@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventWidget1.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2008/06/06 11:55:32 $
+//   $Date: 2008/06/20 10:02:54 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,8 +14,8 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQEventWidget1.ui'
  **
- ** Created: Mon Jun 2 11:10:26 2008
- **      by: The User Interface Compiler ($Id: CQEventWidget1.cpp,v 1.3 2008/06/06 11:55:32 pwilly Exp $)
+ ** Created: Fri Jun 20 11:53:19 2008
+ **      by: The User Interface Compiler ($Id: CQEventWidget1.cpp,v 1.4 2008/06/20 10:02:54 pwilly Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -25,8 +25,9 @@
 #include <qvariant.h>
 #include <qpushbutton.h>
 #include <qlabel.h>
+#include <qcheckbox.h>
 #include <qframe.h>
-#include <qcombobox.h>
+#include <qlistbox.h>
 #include <qtoolbutton.h>
 #include <qlayout.h>
 #include <qtooltip.h>
@@ -34,8 +35,8 @@
 #include <qimage.h>
 #include <qpixmap.h>
 
-#include "CQExpressionMmlWidget.h"
 #include "MyLineEdit.h"
+#include "CQExpressionMmlWidget.h"
 #include "CQExpressionWidget.h"
 #include "CQEventWidget1.ui.h"
 static const unsigned char image0_data[] =
@@ -169,54 +170,6 @@ static const unsigned char image2_data[] =
     0x44, 0xae, 0x42, 0x60, 0x82
   };
 
-static const unsigned char image3_data[] =
-  {
-    0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d,
-    0x49, 0x48, 0x44, 0x52, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x10,
-    0x08, 0x06, 0x00, 0x00, 0x00, 0x1f, 0xf3, 0xff, 0x61, 0x00, 0x00, 0x01,
-    0xd7, 0x49, 0x44, 0x41, 0x54, 0x38, 0x8d, 0x8d, 0x93, 0xbf, 0x6b, 0x93,
-    0x51, 0x14, 0x86, 0x9f, 0x73, 0x73, 0xbf, 0xef, 0xcb, 0x8f, 0xa2, 0xd2,
-    0x45, 0xb4, 0x36, 0x9b, 0x2e, 0x15, 0x04, 0x5d, 0xd2, 0x16, 0x3a, 0x54,
-    0x1c, 0x5c, 0xdc, 0x8b, 0x8b, 0x83, 0x8a, 0x8b, 0x9b, 0x92, 0x51, 0xc5,
-    0x49, 0x10, 0x17, 0xc1, 0x45, 0xfc, 0x13, 0x9c, 0x14, 0x3a, 0x74, 0xd5,
-    0x50, 0x1a, 0x4b, 0x44, 0x70, 0x10, 0xa1, 0x56, 0xc1, 0x58, 0x15, 0x0b,
-    0x36, 0xd5, 0xe4, 0x4b, 0x72, 0xef, 0x71, 0xb8, 0x29, 0x89, 0x41, 0x93,
-    0xde, 0xed, 0x70, 0xcf, 0x79, 0xcf, 0xf3, 0x9e, 0x7b, 0xae, 0x70, 0xe5,
-    0x95, 0xd2, 0xee, 0xf0, 0xf5, 0x68, 0x89, 0xdf, 0xca, 0xbe, 0x4e, 0x5e,
-    0xe0, 0x70, 0x7d, 0x15, 0xe2, 0x08, 0x8b, 0xf3, 0x2c, 0x3f, 0x28, 0x91,
-    0x9f, 0x84, 0xc6, 0xfe, 0xea, 0xc9, 0x03, 0xcb, 0xdb, 0x25, 0xce, 0xdf,
-    0xac, 0x22, 0x5c, 0x5d, 0x57, 0x9e, 0xad, 0xa0, 0xf5, 0x32, 0x9d, 0x6e,
-    0x07, 0x41, 0x46, 0x16, 0x2b, 0x4a, 0x64, 0x23, 0xe4, 0xc8, 0x3d, 0xb8,
-    0x70, 0x0e, 0x8b, 0x73, 0x9c, 0x79, 0x5c, 0x06, 0xa0, 0xba, 0x16, 0x91,
-    0x31, 0xa3, 0xbb, 0x3b, 0x0f, 0x73, 0x73, 0x70, 0xfd, 0x79, 0x99, 0x87,
-    0x8f, 0xaa, 0x58, 0x54, 0xf1, 0x9d, 0x70, 0x79, 0xea, 0x74, 0x0b, 0x19,
-    0x0d, 0x80, 0x2a, 0x40, 0x96, 0x77, 0x3f, 0x42, 0x60, 0x07, 0x2f, 0xdf,
-    0xd4, 0xb2, 0x98, 0x31, 0x04, 0xde, 0xc3, 0xec, 0x2c, 0x6c, 0xfc, 0x04,
-    0x84, 0xbf, 0x05, 0x8e, 0xcf, 0xec, 0x62, 0xc6, 0x20, 0x78, 0x55, 0x60,
-    0x82, 0x8d, 0xc6, 0x80, 0xc0, 0x5e, 0xd3, 0x1c, 0x3a, 0x66, 0x84, 0x61,
-    0x88, 0x00, 0xbe, 0x19, 0x62, 0x0b, 0x90, 0xb3, 0x90, 0x7d, 0x02, 0xe9,
-    0xb6, 0x05, 0x9b, 0xe1, 0xbf, 0x3e, 0xbc, 0x07, 0x85, 0xe9, 0xad, 0xb7,
-    0x30, 0x7d, 0x02, 0x44, 0x7a, 0x04, 0x02, 0x05, 0x0b, 0xa9, 0xb6, 0xe1,
-    0xc5, 0x3a, 0xd4, 0x6a, 0x20, 0x43, 0x22, 0xaa, 0x70, 0x76, 0x01, 0xba,
-    0x8e, 0xcb, 0x4b, 0x27, 0xb9, 0xf5, 0xba, 0xd9, 0x27, 0x80, 0xe0, 0x87,
-    0x9d, 0x26, 0xfa, 0x74, 0x11, 0x58, 0xfc, 0x27, 0x80, 0x5c, 0xaa, 0x82,
-    0x08, 0x33, 0xc5, 0x02, 0xac, 0x7e, 0x1b, 0x12, 0x00, 0x48, 0xd3, 0x90,
-    0x38, 0x75, 0x1f, 0x2e, 0x2e, 0xf1, 0xe9, 0xda, 0x14, 0xf5, 0xef, 0x10,
-    0x27, 0x9e, 0xc9, 0x83, 0xfd, 0x3d, 0xf7, 0x0a, 0xa4, 0xed, 0x9e, 0x05,
-    0x63, 0x02, 0xad, 0x00, 0x69, 0x2b, 0x64, 0x14, 0x2c, 0xd0, 0x66, 0xb7,
-    0x01, 0xb9, 0xbc, 0x27, 0x4a, 0x1c, 0x49, 0x76, 0xe8, 0xa3, 0xb4, 0x42,
-    0xae, 0x91, 0x8f, 0x1f, 0xd8, 0xac, 0xbe, 0xc7, 0xd8, 0x40, 0xa0, 0x4d,
-    0xa0, 0xdd, 0x85, 0x9d, 0x5f, 0x44, 0x31, 0x44, 0x89, 0x23, 0x8a, 0x1d,
-    0x49, 0xd6, 0x0f, 0x78, 0xe9, 0x09, 0x88, 0x60, 0x5f, 0xde, 0x39, 0x26,
-    0x0b, 0xb7, 0x6b, 0x9a, 0x74, 0x2c, 0xa8, 0xa7, 0xd1, 0x80, 0xcd, 0x95,
-    0x1b, 0x24, 0x31, 0xb8, 0x0c, 0x4c, 0xc4, 0x86, 0x24, 0x81, 0x43, 0x07,
-    0x3c, 0x64, 0x32, 0x60, 0x94, 0x38, 0x01, 0x5c, 0x17, 0x8c, 0x41, 0x2a,
-    0x95, 0x0a, 0x00, 0xf3, 0x77, 0xbf, 0xa8, 0x7e, 0xde, 0x02, 0xa7, 0x7b,
-    0xfb, 0xda, 0x9b, 0xbe, 0xf4, 0xbb, 0x46, 0xbd, 0x97, 0x71, 0x3e, 0x2c,
-    0x4f, 0xb1, 0xc8, 0x1f, 0x9e, 0x09, 0xa8, 0x8c, 0xc0, 0x44, 0x13, 0x6b,
-    0x00, 0x00, 0x00, 0x00, 0x49, 0x45, 0x4e, 0x44, 0xae, 0x42, 0x60, 0x82
-  };
-
 /*
  *  Constructs a CQEventWidget1 which is a child of 'parent', with the
  *  name 'name'.'
@@ -231,57 +184,119 @@ CQEventWidget1::CQEventWidget1(QWidget* parent, const char* name)
   image1 = img;
   img.loadFromData(image2_data, sizeof(image2_data), "PNG");
   image2 = img;
-  img.loadFromData(image3_data, sizeof(image3_data), "PNG");
-  image3 = img;
   if (!name)
     setName("CQEventWidget1");
   setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)5, 0, 0, sizePolicy().hasHeightForWidth()));
-  CQEventWidget1Layout = new QGridLayout(this, 1, 1, 11, 6, "CQEventWidget1Layout");
+  CQEventWidget1Layout = new QVBoxLayout(this, 11, 6, "CQEventWidget1Layout");
 
-  mpLabelTrigger = new QLabel(this, "mpLabelTrigger");
-  mpLabelTrigger->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)1, 0, 0, mpLabelTrigger->sizePolicy().hasHeightForWidth()));
-  mpLabelTrigger->setAlignment(int(QLabel::AlignTop | QLabel::AlignRight));
-
-  CQEventWidget1Layout->addWidget(mpLabelTrigger, 1, 0);
-
-  mpLabelEventName = new QLabel(this, "mpLabelEventName");
-  mpLabelEventName->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)1, 0, 0, mpLabelEventName->sizePolicy().hasHeightForWidth()));
-  mpLabelEventName->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignRight));
-
-  CQEventWidget1Layout->addWidget(mpLabelEventName, 0, 0);
-
-  mpExpressionTrigger = new CQExpressionMmlWidget(this, "mpExpressionTrigger");
-  mpExpressionTrigger->setMinimumSize(QSize(300, 60));
-
-  CQEventWidget1Layout->addWidget(mpExpressionTrigger, 1, 1);
-
-  mpExpressionDelay = new CQExpressionMmlWidget(this, "mpExpressionDelay");
-  mpExpressionDelay->setMinimumSize(QSize(300, 60));
-
-  CQEventWidget1Layout->addWidget(mpExpressionDelay, 2, 1);
+  layout31 = new QGridLayout(0, 1, 1, 0, 6, "layout31");
 
   mpLabelDelay = new QLabel(this, "mpLabelDelay");
   mpLabelDelay->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)1, 0, 0, mpLabelDelay->sizePolicy().hasHeightForWidth()));
   mpLabelDelay->setAlignment(int(QLabel::AlignTop | QLabel::AlignRight));
 
-  CQEventWidget1Layout->addWidget(mpLabelDelay, 2, 0);
+  layout31->addWidget(mpLabelDelay, 3, 0);
 
   mpLineEditName = new MyLineEdit(this, "mpLineEditName");
-  mpLineEditName->setMaximumSize(QSize(32767, 20));
+  mpLineEditName->setMinimumSize(QSize(380, 20));
+  mpLineEditName->setMaximumSize(QSize(32767, 32767));
 
-  CQEventWidget1Layout->addWidget(mpLineEditName, 0, 1);
+  layout31->addWidget(mpLineEditName, 0, 1);
 
-  mpLabelEA = new QLabel(this, "mpLabelEA");
-  mpLabelEA->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)1, 0, 0, mpLabelEA->sizePolicy().hasHeightForWidth()));
-  mpLabelEA->setAlignment(int(QLabel::AlignTop | QLabel::AlignRight));
+  mpExpressionDelay = new CQExpressionMmlWidget(this, "mpExpressionDelay");
+  mpExpressionDelay->setMinimumSize(QSize(380, 100));
 
-  CQEventWidget1Layout->addWidget(mpLabelEA, 5, 0);
+  layout31->addWidget(mpExpressionDelay, 3, 1);
+
+  mpExpressionTrigger = new CQExpressionMmlWidget(this, "mpExpressionTrigger");
+  mpExpressionTrigger->setMinimumSize(QSize(380, 120));
+  mpExpressionTrigger->setMaximumSize(QSize(32767, 32767));
+
+  layout31->addWidget(mpExpressionTrigger, 1, 1);
+
+  mpLabelEventName = new QLabel(this, "mpLabelEventName");
+  mpLabelEventName->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)1, 0, 0, mpLabelEventName->sizePolicy().hasHeightForWidth()));
+  mpLabelEventName->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignRight));
+
+  layout31->addWidget(mpLabelEventName, 0, 0);
+
+  mpLabelTrigger = new QLabel(this, "mpLabelTrigger");
+  mpLabelTrigger->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)1, 0, 0, mpLabelTrigger->sizePolicy().hasHeightForWidth()));
+  mpLabelTrigger->setAlignment(int(QLabel::AlignTop | QLabel::AlignRight));
+
+  layout31->addWidget(mpLabelTrigger, 1, 0);
+
+  mpCheckBoxDelay = new QCheckBox(this, "mpCheckBoxDelay");
+
+  layout31->addMultiCellWidget(mpCheckBoxDelay, 2, 2, 0, 1);
+  CQEventWidget1Layout->addLayout(layout31);
+
+  mpLine1 = new QFrame(this, "mpLine1");
+  mpLine1->setFrameShape(QFrame::HLine);
+  mpLine1->setFrameShadow(QFrame::Sunken);
+  mpLine1->setFrameShape(QFrame::HLine);
+  CQEventWidget1Layout->addWidget(mpLine1);
+
+  layout13 = new QGridLayout(0, 1, 1, 0, 6, "layout13");
+
+  layout12 = new QHBoxLayout(0, 0, 6, "layout12");
+
+  mpLBTarget = new QListBox(this, "mpLBTarget");
+  layout12->addWidget(mpLBTarget);
+
+  layout11 = new QVBoxLayout(0, 0, 6, "layout11");
+
+  mpBtnSelectObject = new QToolButton(this, "mpBtnSelectObject");
+  mpBtnSelectObject->setMaximumSize(QSize(20, 20));
+  mpBtnSelectObject->setIconSet(QIconSet(image0));
+  layout11->addWidget(mpBtnSelectObject);
+
+  mpBtnAddTarget = new QToolButton(this, "mpBtnAddTarget");
+  mpBtnAddTarget->setMaximumSize(QSize(20, 20));
+  mpBtnAddTarget->setIconSet(QIconSet(image1));
+  layout11->addWidget(mpBtnAddTarget);
+
+  mpBtnDeleteTarget = new QToolButton(this, "mpBtnDeleteTarget");
+  mpBtnDeleteTarget->setMaximumSize(QSize(20, 20));
+  mpBtnDeleteTarget->setIconSet(QIconSet(image2));
+  layout11->addWidget(mpBtnDeleteTarget);
+  spacerTargetIcons = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+  layout11->addItem(spacerTargetIcons);
+  layout12->addLayout(layout11);
+
+  layout13->addLayout(layout12, 1, 0);
+
+  mpExpressionEA = new CQExpressionMmlWidget(this, "mpExpressionEA");
+  mpExpressionEA->setMinimumSize(QSize(300, 60));
+
+  layout13->addWidget(mpExpressionEA, 1, 1);
+
+  layout13_2 = new QHBoxLayout(0, 0, 6, "layout13_2");
 
   mpLabelTarget = new QLabel(this, "mpLabelTarget");
-  mpLabelTarget->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)1, 0, 0, mpLabelTarget->sizePolicy().hasHeightForWidth()));
   mpLabelTarget->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignRight));
+  layout13_2->addWidget(mpLabelTarget);
+  spacerTarget = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+  layout13_2->addItem(spacerTarget);
 
-  CQEventWidget1Layout->addWidget(mpLabelTarget, 4, 0);
+  layout13->addLayout(layout13_2, 0, 0);
+
+  layout17 = new QHBoxLayout(0, 0, 6, "layout17");
+
+  mpLabelEA = new QLabel(this, "mpLabelEA");
+  mpLabelEA->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignRight));
+  layout17->addWidget(mpLabelEA);
+  spacerExpression = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+  layout17->addItem(spacerExpression);
+
+  layout13->addLayout(layout17, 0, 1);
+  CQEventWidget1Layout->addLayout(layout13);
+
+  mpLine2 = new QFrame(this, "mpLine2");
+  mpLine2->setFrameShape(QFrame::HLine);
+  mpLine2->setFrameShadow(QFrame::Sunken);
+  mpLine2->setFrameShape(QFrame::HLine);
+  CQEventWidget1Layout->addWidget(mpLine2);
 
   mpBtnLayout = new QHBoxLayout(0, 0, 6, "mpBtnLayout");
 
@@ -296,57 +311,7 @@ CQEventWidget1::CQEventWidget1(QWidget* parent, const char* name)
 
   mpBtnDelete = new QPushButton(this, "mpBtnDelete");
   mpBtnLayout->addWidget(mpBtnDelete);
-
-  CQEventWidget1Layout->addMultiCellLayout(mpBtnLayout, 7, 7, 0, 1);
-
-  mpLine1 = new QFrame(this, "mpLine1");
-  mpLine1->setFrameShape(QFrame::HLine);
-  mpLine1->setFrameShadow(QFrame::Sunken);
-  mpLine1->setFrameShape(QFrame::HLine);
-
-  CQEventWidget1Layout->addMultiCellWidget(mpLine1, 3, 3, 0, 1);
-
-  mpLine2 = new QFrame(this, "mpLine2");
-  mpLine2->setFrameShape(QFrame::HLine);
-  mpLine2->setFrameShadow(QFrame::Sunken);
-  mpLine2->setFrameShape(QFrame::HLine);
-
-  CQEventWidget1Layout->addMultiCellWidget(mpLine2, 6, 6, 0, 1);
-
-  mpExpressionEA = new CQExpressionMmlWidget(this, "mpExpressionEA");
-  mpExpressionEA->setMinimumSize(QSize(300, 60));
-
-  CQEventWidget1Layout->addWidget(mpExpressionEA, 5, 1);
-
-  layout3 = new QHBoxLayout(0, 0, 6, "layout3");
-
-  mpCBTarget = new QComboBox(FALSE, this, "mpCBTarget");
-  mpCBTarget->setMinimumSize(QSize(180, 0));
-  layout3->addWidget(mpCBTarget);
-
-  mpBtnSelectObject = new QToolButton(this, "mpBtnSelectObject");
-  mpBtnSelectObject->setMaximumSize(QSize(20, 20));
-  mpBtnSelectObject->setIconSet(QIconSet(image0));
-  layout3->addWidget(mpBtnSelectObject);
-  mpSpacerOnTarget = new QSpacerItem(60, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  layout3->addItem(mpSpacerOnTarget);
-
-  mpBtnAddTarget = new QToolButton(this, "mpBtnAddTarget");
-  mpBtnAddTarget->setMaximumSize(QSize(20, 20));
-  mpBtnAddTarget->setIconSet(QIconSet(image1));
-  layout3->addWidget(mpBtnAddTarget);
-
-  mpBtnDeleteTarget = new QToolButton(this, "mpBtnDeleteTarget");
-  mpBtnDeleteTarget->setMaximumSize(QSize(20, 20));
-  mpBtnDeleteTarget->setIconSet(QIconSet(image2));
-  layout3->addWidget(mpBtnDeleteTarget);
-
-  mpBtnSaveTarget = new QToolButton(this, "mpBtnSaveTarget");
-  mpBtnSaveTarget->setMaximumSize(QSize(20, 20));
-  mpBtnSaveTarget->setIconSet(QIconSet(image3));
-  layout3->addWidget(mpBtnSaveTarget);
-
-  CQEventWidget1Layout->addLayout(layout3, 4, 1);
+  CQEventWidget1Layout->addLayout(mpBtnLayout);
   languageChange();
   resize(QSize(513, 498).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
@@ -359,13 +324,12 @@ CQEventWidget1::CQEventWidget1(QWidget* parent, const char* name)
   connect(mpBtnAddTarget, SIGNAL(clicked()), this, SLOT(slotAddTarget()));
   connect(mpBtnDeleteTarget, SIGNAL(clicked()), this, SLOT(slotDeleteTarget()));
   connect(mpBtnSelectObject, SIGNAL(clicked()), this, SLOT(slotSelectObject()));
-  connect(mpBtnSaveTarget, SIGNAL(clicked()), this, SLOT(slotSaveTarget()));
+  connect(mpCheckBoxDelay, SIGNAL(toggled(bool)), this, SLOT(slotApplyDelay(bool)));
 
   // tab order
   setTabOrder(mpBtnCommit, mpBtnRevert);
   setTabOrder(mpBtnRevert, mpBtnNew);
   setTabOrder(mpBtnNew, mpBtnDelete);
-  setTabOrder(mpBtnDelete, mpCBTarget);
   init();
 }
 
@@ -384,21 +348,20 @@ CQEventWidget1::~CQEventWidget1()
 void CQEventWidget1::languageChange()
 {
   setCaption(tr("Event Widget"));
-  mpLabelTrigger->setText(tr("Condition Trigger"));
+  mpLabelDelay->setText(tr("Delay Expression"));
   mpLabelEventName->setText(tr("Event Name"));
-  mpLabelDelay->setText(tr("Delay"));
-  mpLabelEA->setText(tr("Expression"));
-  mpLabelTarget->setText(tr("Assignment Target"));
-  mpBtnCommit->setText(tr("Commit"));
-  mpBtnRevert->setText(tr("Revert"));
-  mpBtnNew->setText(tr("New"));
-  mpBtnDelete->setText(tr("Delete"));
+  mpLabelTrigger->setText(tr("Condition Trigger"));
+  mpCheckBoxDelay->setText(tr("enabled delay"));
   mpBtnSelectObject->setText(QString::null);
   QToolTip::add(mpBtnSelectObject, tr("edit target"));
   mpBtnAddTarget->setText(QString::null);
   QToolTip::add(mpBtnAddTarget, tr("add target"));
   mpBtnDeleteTarget->setText(QString::null);
   QToolTip::add(mpBtnDeleteTarget, tr("delete target"));
-  mpBtnSaveTarget->setText(QString::null);
-  QToolTip::add(mpBtnSaveTarget, tr("save target"));
+  mpLabelTarget->setText(tr("Target"));
+  mpLabelEA->setText(tr("Expression"));
+  mpBtnCommit->setText(tr("Commit"));
+  mpBtnRevert->setText(tr("Revert"));
+  mpBtnNew->setText(tr("New"));
+  mpBtnDelete->setText(tr("Delete"));
 }

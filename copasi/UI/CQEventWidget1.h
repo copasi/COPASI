@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventWidget1.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2008/06/06 11:55:37 $
+//   $Date: 2008/06/20 10:02:58 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,8 +14,8 @@
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQEventWidget1.ui'
  **
- ** Created: Mon Jun 2 11:10:24 2008
- **      by: The User Interface Compiler ($Id: CQEventWidget1.h,v 1.2 2008/06/06 11:55:37 pwilly Exp $)
+ ** Created: Fri Jun 20 11:53:14 2008
+ **      by: The User Interface Compiler ($Id: CQEventWidget1.h,v 1.3 2008/06/20 10:02:58 pwilly Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -36,10 +36,12 @@ class QSpacerItem;
 class CQExpressionMmlWidget;
 class MyLineEdit;
 class QLabel;
-class QPushButton;
+class QCheckBox;
 class QFrame;
-class QComboBox;
+class QListBox;
+class QListBoxItem;
 class QToolButton;
+class QPushButton;
 class CQExpressionWidget;
 class CCompartment;
 class CExpression;
@@ -53,26 +55,26 @@ class CQEventWidget1 : public CopasiWidget
     CQEventWidget1(QWidget* parent = 0, const char* name = 0);
     ~CQEventWidget1();
 
-    QLabel* mpLabelTrigger;
-    QLabel* mpLabelEventName;
-    CQExpressionMmlWidget* mpExpressionTrigger;
-    CQExpressionMmlWidget* mpExpressionDelay;
     QLabel* mpLabelDelay;
     MyLineEdit* mpLineEditName;
-    QLabel* mpLabelEA;
+    CQExpressionMmlWidget* mpExpressionDelay;
+    CQExpressionMmlWidget* mpExpressionTrigger;
+    QLabel* mpLabelEventName;
+    QLabel* mpLabelTrigger;
+    QCheckBox* mpCheckBoxDelay;
+    QFrame* mpLine1;
+    QListBox* mpLBTarget;
+    QToolButton* mpBtnSelectObject;
+    QToolButton* mpBtnAddTarget;
+    QToolButton* mpBtnDeleteTarget;
+    CQExpressionMmlWidget* mpExpressionEA;
     QLabel* mpLabelTarget;
+    QLabel* mpLabelEA;
+    QFrame* mpLine2;
     QPushButton* mpBtnCommit;
     QPushButton* mpBtnRevert;
     QPushButton* mpBtnNew;
     QPushButton* mpBtnDelete;
-    QFrame* mpLine1;
-    QFrame* mpLine2;
-    CQExpressionMmlWidget* mpExpressionEA;
-    QComboBox* mpCBTarget;
-    QToolButton* mpBtnSelectObject;
-    QToolButton* mpBtnAddTarget;
-    QToolButton* mpBtnDeleteTarget;
-    QToolButton* mpBtnSaveTarget;
 
     virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
     virtual bool enter(const std::string & key);
@@ -83,11 +85,19 @@ class CQEventWidget1 : public CopasiWidget
     bool loadFromEvent();
     void saveToEvent();
     void enableBtnCommit();
+    bool checkAllExpressionsOK();
 
-    QGridLayout* CQEventWidget1Layout;
+    QVBoxLayout* CQEventWidget1Layout;
+    QGridLayout* layout31;
+    QGridLayout* layout13;
+    QHBoxLayout* layout12;
+    QVBoxLayout* layout11;
+    QSpacerItem* spacerTargetIcons;
+    QHBoxLayout* layout13_2;
+    QSpacerItem* spacerTarget;
+    QHBoxLayout* layout17;
+    QSpacerItem* spacerExpression;
     QHBoxLayout* mpBtnLayout;
-    QHBoxLayout* layout3;
-    QSpacerItem* mpSpacerOnTarget;
 
   protected slots:
     virtual void languageChange();
@@ -114,11 +124,10 @@ class CQEventWidget1 : public CopasiWidget
     QPixmap image1;
     QPixmap image2;
     QPixmap image3;
-    QPixmap image4;
 
     void init();
-    void writeExpressionAsText();
     std::string takeObjectName(QString text);
+    std::string getAssignmentKeyFromDisplayName(const std::string displayName);
 
   private slots:
     void slotBtnCommitClicked();
@@ -134,6 +143,7 @@ class CQEventWidget1 : public CopasiWidget
     void slotSaveTarget();
     void slotSelectObject();
     void slotActualizeAssignmentExpression(int index);
+    void slotApplyDelay(bool display);
   };
 
 #endif // CQEVENTWIDGET1_H
