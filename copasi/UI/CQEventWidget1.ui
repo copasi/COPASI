@@ -1,10 +1,10 @@
 <!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventWidget1.ui,v $ </comment>
-<comment>   $Revision: 1.1 $ </comment>
+<comment>   $Revision: 1.2 $ </comment>
 <comment>   $Name:  $ </comment>
 <comment>   $Author: pwilly $ </comment>
-<comment>   $Date: 2008/06/06 11:56:12 $ </comment>
+<comment>   $Date: 2008/06/20 09:54:58 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -37,139 +37,358 @@
     <property name="caption">
         <string>Event Widget</string>
     </property>
-    <grid>
+    <vbox>
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QLabel" row="1" column="0">
+        <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>mpLabelTrigger</cstring>
+                <cstring>layout31</cstring>
             </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>5</hsizetype>
-                    <vsizetype>1</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel" row="3" column="0">
+                    <property name="name">
+                        <cstring>mpLabelDelay</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>5</hsizetype>
+                            <vsizetype>1</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>Delay Expression</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignTop|AlignRight</set>
+                    </property>
+                </widget>
+                <widget class="MyLineEdit" row="0" column="1">
+                    <property name="name">
+                        <cstring>mpLineEditName</cstring>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>380</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                    <property name="maximumSize">
+                        <size>
+                            <width>32767</width>
+                            <height>32767</height>
+                        </size>
+                    </property>
+                </widget>
+                <widget class="CQExpressionMmlWidget" row="3" column="1">
+                    <property name="name">
+                        <cstring>mpExpressionDelay</cstring>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>380</width>
+                            <height>100</height>
+                        </size>
+                    </property>
+                </widget>
+                <widget class="CQExpressionMmlWidget" row="1" column="1">
+                    <property name="name">
+                        <cstring>mpExpressionTrigger</cstring>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>380</width>
+                            <height>120</height>
+                        </size>
+                    </property>
+                    <property name="maximumSize">
+                        <size>
+                            <width>32767</width>
+                            <height>32767</height>
+                        </size>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="0" column="0">
+                    <property name="name">
+                        <cstring>mpLabelEventName</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>5</hsizetype>
+                            <vsizetype>1</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>Event Name</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignVCenter|AlignRight</set>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="1" column="0">
+                    <property name="name">
+                        <cstring>mpLabelTrigger</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>5</hsizetype>
+                            <vsizetype>1</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>Condition Trigger</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignTop|AlignRight</set>
+                    </property>
+                </widget>
+                <widget class="QCheckBox" row="2" column="0" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>mpCheckBoxDelay</cstring>
+                    </property>
+                    <property name="text">
+                        <string>enabled delay</string>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+        <widget class="Line">
+            <property name="name">
+                <cstring>mpLine1</cstring>
             </property>
-            <property name="text">
-                <string>Condition Trigger</string>
+            <property name="frameShape">
+                <enum>HLine</enum>
             </property>
-            <property name="alignment">
-                <set>AlignTop|AlignRight</set>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
             </property>
         </widget>
-        <widget class="QLabel" row="0" column="0">
+        <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>mpLabelEventName</cstring>
+                <cstring>layout13</cstring>
             </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>5</hsizetype>
-                    <vsizetype>1</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLayoutWidget" row="1" column="0">
+                    <property name="name">
+                        <cstring>layout12</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QListBox">
+                            <property name="name">
+                                <cstring>mpLBTarget</cstring>
+                            </property>
+                        </widget>
+                        <widget class="QLayoutWidget">
+                            <property name="name">
+                                <cstring>layout11</cstring>
+                            </property>
+                            <vbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="QToolButton">
+                                    <property name="name">
+                                        <cstring>mpBtnSelectObject</cstring>
+                                    </property>
+                                    <property name="maximumSize">
+                                        <size>
+                                            <width>20</width>
+                                            <height>20</height>
+                                        </size>
+                                    </property>
+                                    <property name="text">
+                                        <string></string>
+                                    </property>
+                                    <property name="iconSet">
+                                        <iconset>image0</iconset>
+                                    </property>
+                                    <property name="toolTip" stdset="0">
+                                        <string>edit target</string>
+                                    </property>
+                                </widget>
+                                <widget class="QToolButton">
+                                    <property name="name">
+                                        <cstring>mpBtnAddTarget</cstring>
+                                    </property>
+                                    <property name="maximumSize">
+                                        <size>
+                                            <width>20</width>
+                                            <height>20</height>
+                                        </size>
+                                    </property>
+                                    <property name="text">
+                                        <string></string>
+                                    </property>
+                                    <property name="iconSet">
+                                        <iconset>image1</iconset>
+                                    </property>
+                                    <property name="toolTip" stdset="0">
+                                        <string>add target</string>
+                                    </property>
+                                </widget>
+                                <widget class="QToolButton">
+                                    <property name="name">
+                                        <cstring>mpBtnDeleteTarget</cstring>
+                                    </property>
+                                    <property name="maximumSize">
+                                        <size>
+                                            <width>20</width>
+                                            <height>20</height>
+                                        </size>
+                                    </property>
+                                    <property name="text">
+                                        <string></string>
+                                    </property>
+                                    <property name="iconSet">
+                                        <iconset>image2</iconset>
+                                    </property>
+                                    <property name="toolTip" stdset="0">
+                                        <string>delete target</string>
+                                    </property>
+                                </widget>
+                                <spacer>
+                                    <property name="name">
+                                        <cstring>spacerTargetIcons</cstring>
+                                    </property>
+                                    <property name="orientation">
+                                        <enum>Vertical</enum>
+                                    </property>
+                                    <property name="sizeType">
+                                        <enum>Expanding</enum>
+                                    </property>
+                                    <property name="sizeHint">
+                                        <size>
+                                            <width>20</width>
+                                            <height>40</height>
+                                        </size>
+                                    </property>
+                                </spacer>
+                            </vbox>
+                        </widget>
+                    </hbox>
+                </widget>
+                <widget class="CQExpressionMmlWidget" row="1" column="1">
+                    <property name="name">
+                        <cstring>mpExpressionEA</cstring>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>300</width>
+                            <height>60</height>
+                        </size>
+                    </property>
+                </widget>
+                <widget class="QLayoutWidget" row="0" column="0">
+                    <property name="name">
+                        <cstring>layout13</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>mpLabelTarget</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Target</string>
+                            </property>
+                            <property name="alignment">
+                                <set>AlignVCenter|AlignRight</set>
+                            </property>
+                        </widget>
+                        <spacer>
+                            <property name="name">
+                                <cstring>spacerTarget</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Horizontal</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Expanding</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>40</width>
+                                    <height>20</height>
+                                </size>
+                            </property>
+                        </spacer>
+                    </hbox>
+                </widget>
+                <widget class="QLayoutWidget" row="0" column="1">
+                    <property name="name">
+                        <cstring>layout17</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>mpLabelEA</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Expression</string>
+                            </property>
+                            <property name="alignment">
+                                <set>AlignVCenter|AlignRight</set>
+                            </property>
+                        </widget>
+                        <spacer>
+                            <property name="name">
+                                <cstring>spacerExpression</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Horizontal</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Expanding</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>40</width>
+                                    <height>20</height>
+                                </size>
+                            </property>
+                        </spacer>
+                    </hbox>
+                </widget>
+            </grid>
+        </widget>
+        <widget class="Line">
+            <property name="name">
+                <cstring>mpLine2</cstring>
             </property>
-            <property name="text">
-                <string>Event Name</string>
+            <property name="frameShape">
+                <enum>HLine</enum>
             </property>
-            <property name="alignment">
-                <set>AlignVCenter|AlignRight</set>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
             </property>
         </widget>
-        <widget class="CQExpressionMmlWidget" row="1" column="1">
-            <property name="name">
-                <cstring>mpExpressionTrigger</cstring>
-            </property>
-            <property name="minimumSize">
-                <size>
-                    <width>300</width>
-                    <height>60</height>
-                </size>
-            </property>
-        </widget>
-        <widget class="CQExpressionMmlWidget" row="2" column="1">
-            <property name="name">
-                <cstring>mpExpressionDelay</cstring>
-            </property>
-            <property name="minimumSize">
-                <size>
-                    <width>300</width>
-                    <height>60</height>
-                </size>
-            </property>
-        </widget>
-        <widget class="QLabel" row="2" column="0">
-            <property name="name">
-                <cstring>mpLabelDelay</cstring>
-            </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>5</hsizetype>
-                    <vsizetype>1</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
-            </property>
-            <property name="text">
-                <string>Delay</string>
-            </property>
-            <property name="alignment">
-                <set>AlignTop|AlignRight</set>
-            </property>
-        </widget>
-        <widget class="MyLineEdit" row="0" column="1">
-            <property name="name">
-                <cstring>mpLineEditName</cstring>
-            </property>
-            <property name="maximumSize">
-                <size>
-                    <width>32767</width>
-                    <height>20</height>
-                </size>
-            </property>
-        </widget>
-        <widget class="QLabel" row="5" column="0">
-            <property name="name">
-                <cstring>mpLabelEA</cstring>
-            </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>5</hsizetype>
-                    <vsizetype>1</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
-            </property>
-            <property name="text">
-                <string>Expression</string>
-            </property>
-            <property name="alignment">
-                <set>AlignTop|AlignRight</set>
-            </property>
-        </widget>
-        <widget class="QLabel" row="4" column="0">
-            <property name="name">
-                <cstring>mpLabelTarget</cstring>
-            </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>5</hsizetype>
-                    <vsizetype>1</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
-            </property>
-            <property name="text">
-                <string>Assignment Target</string>
-            </property>
-            <property name="alignment">
-                <set>AlignVCenter|AlignRight</set>
-            </property>
-        </widget>
-        <widget class="QLayoutWidget" row="7" column="0" rowspan="1" colspan="2">
+        <widget class="QLayoutWidget">
             <property name="name">
                 <cstring>mpBtnLayout</cstring>
             </property>
@@ -211,164 +430,7 @@
                 </widget>
             </hbox>
         </widget>
-        <widget class="Line" row="3" column="0" rowspan="1" colspan="2">
-            <property name="name">
-                <cstring>mpLine1</cstring>
-            </property>
-            <property name="frameShape">
-                <enum>HLine</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Sunken</enum>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
-        </widget>
-        <widget class="Line" row="6" column="0" rowspan="1" colspan="2">
-            <property name="name">
-                <cstring>mpLine2</cstring>
-            </property>
-            <property name="frameShape">
-                <enum>HLine</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Sunken</enum>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
-        </widget>
-        <widget class="CQExpressionMmlWidget" row="5" column="1">
-            <property name="name">
-                <cstring>mpExpressionEA</cstring>
-            </property>
-            <property name="minimumSize">
-                <size>
-                    <width>300</width>
-                    <height>60</height>
-                </size>
-            </property>
-        </widget>
-        <widget class="QLayoutWidget" row="4" column="1">
-            <property name="name">
-                <cstring>layout3</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QComboBox">
-                    <property name="name">
-                        <cstring>mpCBTarget</cstring>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>180</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                </widget>
-                <widget class="QToolButton">
-                    <property name="name">
-                        <cstring>mpBtnSelectObject</cstring>
-                    </property>
-                    <property name="maximumSize">
-                        <size>
-                            <width>20</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                    <property name="text">
-                        <string></string>
-                    </property>
-                    <property name="iconSet">
-                        <iconset>image0</iconset>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>edit target</string>
-                    </property>
-                </widget>
-                <spacer>
-                    <property name="name">
-                        <cstring>mpSpacerOnTarget</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>60</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                </spacer>
-                <widget class="QToolButton">
-                    <property name="name">
-                        <cstring>mpBtnAddTarget</cstring>
-                    </property>
-                    <property name="maximumSize">
-                        <size>
-                            <width>20</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                    <property name="text">
-                        <string></string>
-                    </property>
-                    <property name="iconSet">
-                        <iconset>image1</iconset>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>add target</string>
-                    </property>
-                </widget>
-                <widget class="QToolButton">
-                    <property name="name">
-                        <cstring>mpBtnDeleteTarget</cstring>
-                    </property>
-                    <property name="maximumSize">
-                        <size>
-                            <width>20</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                    <property name="text">
-                        <string></string>
-                    </property>
-                    <property name="iconSet">
-                        <iconset>image2</iconset>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>delete target</string>
-                    </property>
-                </widget>
-                <widget class="QToolButton">
-                    <property name="name">
-                        <cstring>mpBtnSaveTarget</cstring>
-                    </property>
-                    <property name="maximumSize">
-                        <size>
-                            <width>20</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                    <property name="text">
-                        <string></string>
-                    </property>
-                    <property name="iconSet">
-                        <iconset>image3</iconset>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>save target</string>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-    </grid>
+    </vbox>
 </widget>
 <customwidgets>
     <customwidget>
@@ -385,7 +447,7 @@
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
         </sizepolicy>
-        <pixmap>image4</pixmap>
+        <pixmap>image3</pixmap>
     </customwidget>
     <customwidget>
         <class>MyLineEdit</class>
@@ -401,7 +463,7 @@
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
         </sizepolicy>
-        <pixmap>image4</pixmap>
+        <pixmap>image3</pixmap>
     </customwidget>
 </customwidgets>
 <images>
@@ -415,9 +477,6 @@
         <data format="PNG" length="341">89504e470d0a1a0a0000000d49484452000000100000001008060000001ff3ff610000011c49444154388da592b16ac33014458f8cdb82e9da31058f9d8d28f81bf20b8640862eddfa1ddd327608f80f42c17ff02094ccdeb3063a1543da507550acca96d252fa403ca4fbcec53c5f2522fca712ff92ce4b93ce4b736a38a627bea86b83ae0d3193537ae28b3439347930f4939e02ac5bd04d6ea73f0eb09aa06bc34ba50c80ae0dac26563f4ba1c959b75000aa5fe2a62ccdfdc3b51dda77b6cf76b62faf6cbfc800583c6e294414be8133991d87dfbbe112ce8ff072e7e0c0c0994c2fc73bb4f0f3db00763bf0ebf60678edc6cf4e3b8cde821ce8dac0fe337a62bf38c801d5e00b8755a95f723082171b7b5c65a1490236070ecebee1424415222a30b95396e90d0a11f5d48670cf8c4d7c3dc8410fc45610d3831cfcb5be0040cea4e3146f5ea80000000049454e44ae426082</data>
     </image>
     <image name="image3">
-        <data format="PNG" length="528">89504e470d0a1a0a0000000d49484452000000100000001008060000001ff3ff61000001d749444154388d8d93bf6b935114869f7373bfefcb8fa2d245b4369b2e15045dd2163a541c5cdc8b8b838a8b9b9251c5491017c145fc139c143a74d5501a4b447010a156c158150b36d5e44b72ef71b829894193deed70cf79cff39e7bae70e595d2eef0f56889dfcabe4e5ee0707d15e2088bf32c3f28919f84c6feeac903cbdb25cedfac225c5d579eada0f5329d6e074146162b4a6423e4c83db8700e8b739c795c06a0ba169131a3bb3b0f737370fd7999878faa5854f19d7079ea740b190d802a4096773f4260072fdfd4b2983104dec3ec2c6cfc0484bf058ecfec62c620785560828dc680c05ed31c3a6684618800be19620b90b3907d02e9b6059be1bf3ebc0785e9adb7307d02447a0402050ba9b6e1c53ad46a204322aa707601ba8ecb4b27b9f5bad92780e0879d26fa741158fc27805caa820833c502ac7e1b120048d39038751f2e2ef1e9da14f5ef10279ec983fd3df70aa4ed9e056302ad00692b64142cd066b701b9bc274a1c4976e8a3b442ae918f1fd8acbec7d840a04da0dd859d5f44314489238a1d49d60f78e90988605fde39260bb76b9a742ca8a7d180cd951b2431b80c4cc486248143073c6432609438015c178c412a950a00f377bfa87ede02a77bfbda9bbef4bb46bd97713e2c4fb1c81f9e09a88cc044136b0000000049454e44ae426082</data>
-    </image>
-    <image name="image4">
         <data format="PNG" length="1002">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b000003b149444154388dad945f4c5b551cc73fe7dc4b7b4bcba0762d45c43114323599ee6192609c51d883892ce083f1718b3ebb185f8dc91e972cf39d2d2a2f1af664b6f1e0fe3863a0718969700eb0c52142da0242a1bd6d696f7bcff101585203ceb8fd9ece39f99dcff9fe7edf939f88c562ec465f5f9fe609442c161362173c3e3eae7b7a7ac8e7f36432196cdbfe4f907c3e4f2291201e8fe338cec3737357e9e8e828aded1e229d650e1f2d51754b082110124c13a4dc5ea341eb9dc284c0558a853f3ce8cb0677ef500fde7d39d2596679e326597b8e9abb85d7a770ab16ab6983ec5a05b487a70e36f0f4e10afe408d6a558310980108478dba4a1e8233990c5d474b64ed39aa3a8fe5f3317fbf81dbd70bccfeb205947632fd74f6589c1c6ea2f70d03a58ba0c1f2c9bdc1b66de3b8256a6e11cbe7e3ee1d181b590124fe2693aeee08d223c82c3a2c24b7b874bec8f26288774f7bd054504aef0dde6e99c0eb83f9fb266323cb80a27fb0958141836044605a2ee5523393371cc646fee2da37195aa35d0c0c5b4859ac03d7e91712dcaac5adab3650a3ff9d08ef7dd8404bb48869e5d958b5b87dadc4c9a1464e9f0d0326df7ebd86bd2e310cb1bf62d384d59441f2d70a070e1c60e09489929b988681bdd9cc97170bcc4c65595f71f8e0e3301337fc24a7732467831875a47f289652b0be5e4151e6d07316c1b0c0340d8ab92023e76d66a6b2840e36d2fb7a13fee632475e6edc367ea98a90fb98b7dd6310ca0328a44761582e1bab41befabcc0ec940d28bc5e93b68e064cab84e1d9beaeb48934eac1f53b01c1b000fca496aa54b61a99fcde61662a4b4b4b23d1680be9d426173e4df3602a48ea411989a4fd590f52a8fd156b05ed9d350e3defe3cfdf4b4c7ce770ea7d3fb9f520afbe1620daeee5c26735d20b9b9cfb6811a754a439e4e5c5639a4caa1e5caf586bfc0197b78702005cb9b4cae4cd3267ce8638fe964bd72b393e39d74928d242617303a756a37f284447770dcdbffc6384a05a85de1306e9a52057c7527c7131c3c42d3f475eb2303c82d4fc3276d6811db37efeb148723082d9b08f79f97c1e5729109a9a28307cc622d2d6cdf52b2b24efe548dedb00142009862cfa879ee1a71f6cec928353511472fbf4389148b0b0e0c108081412458dfe21c9f11351e67e7358595468246d1d1e5e38a6e9e851bc39d84ab502a669331dafec0d8ec7e3e8cb06e1a881d727d1ae40180a434a8c9db129a54126ad48a7358c2b4c5352c8c374bcccdab2bb37d8719cba79fab8211f9df218e0582c261e95f8bfc04f1a1e8bc5c4dfe0a190172af6a9690000000049454e44ae426082</data>
     </image>
 </images>
@@ -465,10 +524,10 @@
         <slot>slotSelectObject()</slot>
     </connection>
     <connection>
-        <sender>mpBtnSaveTarget</sender>
-        <signal>clicked()</signal>
+        <sender>mpCheckBoxDelay</sender>
+        <signal>toggled(bool)</signal>
         <receiver>CQEventWidget1</receiver>
-        <slot>slotSaveTarget()</slot>
+        <slot>slotApplyDelay(bool)</slot>
     </connection>
 </connections>
 <tabstops>
@@ -476,7 +535,6 @@
     <tabstop>mpBtnRevert</tabstop>
     <tabstop>mpBtnNew</tabstop>
     <tabstop>mpBtnDelete</tabstop>
-    <tabstop>mpCBTarget</tabstop>
 </tabstops>
 <includes>
     <include location="global" impldecl="in declaration">string</include>
@@ -523,24 +581,26 @@
     <slot access="private" specifier="non virtual">slotSaveTarget()</slot>
     <slot access="private" specifier="non virtual">slotSelectObject()</slot>
     <slot access="private" specifier="non virtual">slotActualizeAssignmentExpression( int index )</slot>
+    <slot access="private" specifier="non virtual">slotApplyDelay( bool display )</slot>
 </slots>
 <functions>
     <function access="private" specifier="non virtual">init()</function>
-    <function access="private" specifier="non virtual" returnType="void">writeExpressionAsText()</function>
-    <function access="private" specifier="non virtual" returnType="std::string">takeObjectName(QString text)</function>
     <function access="protected" specifier="non virtual" returnType="bool">loadFromEvent( const CEvent * pEvent )</function>
     <function access="protected" specifier="non virtual" returnType="bool">loadFromEvent()</function>
-    <function access="protected" specifier="non virtual" returnType="void">saveToEvent()</function>
+    <function access="protected" specifier="non virtual">saveToEvent()</function>
     <function returnType="bool">update( ListViews::ObjectType objectType, ListViews::Action action, const std::string &amp; key )</function>
     <function returnType="bool">enter( const std::string &amp; key )</function>
     <function returnType="bool">leave()</function>
     <function access="protected" specifier="non virtual">enableBtnCommit()</function>
+    <function access="protected" specifier="non virtual" returnType="bool">checkAllExpressionsOK()</function>
+    <function access="private" specifier="non virtual" returnType="std::string">takeObjectName( QString text )</function>
+    <function access="private" specifier="non virtual" returnType="std::string">getAssignmentKeyFromDisplayName( const std::string displayName )</function>
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
-    <includehint>CQExpressionMmlWidget.h</includehint>
-    <includehint>CQExpressionMmlWidget.h</includehint>
     <includehint>MyLineEdit.h</includehint>
+    <includehint>CQExpressionMmlWidget.h</includehint>
+    <includehint>CQExpressionMmlWidget.h</includehint>
     <includehint>CQExpressionMmlWidget.h</includehint>
 </includehints>
 </UI>
