@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQEventWidget1.ui.h,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2008/06/20 10:16:02 $
+//   $Date: 2008/06/21 05:53:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -38,11 +38,12 @@
 /*! Slot to save all current values of the active event widget whenever the Commit button is clicked */
 void CQEventWidget1::slotBtnCommitClicked()
 {
+  // check whether no empty expression widget exists
   if (!checkAllExpressionsOK())
     {
       QString msg = "There is at least one empty expression widget. Please check it.";
 
-      CQMessageBox::critical(this, "Unable to save model with an empty expression widget", msg,
+      CQMessageBox::critical(this, "Unable to save model with empty expression widget", msg,
                              QMessageBox::Ok | QMessageBox::Default | QMessageBox::Escape, QMessageBox::NoButton, QMessageBox::NoButton);
       return;
     }
@@ -230,20 +231,7 @@ void CQEventWidget1::slotBtnNewClicked()
       name += (const char *) QString::number(i).utf8();
       std::cout << "NAME = " << name << std::endl;
     }
-  /*
-    std::cout << "CQEW1::slotBtnNewClicked() - CCopasiDataModel::Global->getModel()->getEvents()[name]->getKey() = "
-     << CCopasiDataModel::Global->getModel()->getEvents()[name]->getKey()
-     << " - name = " << name << std::endl;
-  */
   protectedNotify(ListViews::EVENT, ListViews::ADD);
-  /*
-    std::cout << "CQEW1::slotBtnNewClicked() - CCopasiDataModel::Global->getModel()->getEvents()[name]->getKey() = "
-     << CCopasiDataModel::Global->getModel()->getEvents()[name]->getKey()
-     << " - name = " << name << std::endl;
-
-    std::cout << "mpEvent->getKey() = " << mpEvent->getKey()
-     << " - name = " << name << std::endl;
-  */
   enter(CCopasiDataModel::Global->getModel()->getEvents()[name]->getKey());
 }
 
@@ -267,16 +255,15 @@ void CQEventWidget1::init()
   mpCheckBoxDelay->setChecked(false);
   slotApplyDelay(false);
 
-  // SIGNAL-SLOT connection
+  // SIGNAL-SLOT connections
+
   connect(mpLineEditName, SIGNAL(edited()), this, SLOT(slotNameChanged()));
 
   connect(mpExpressionTrigger->mpExpressionWidget, SIGNAL(valid(bool)), this, SLOT(slotExpressionTriggerValid(bool)));
   connect(mpExpressionDelay->mpExpressionWidget, SIGNAL(valid(bool)), this, SLOT(slotExpressionDelayValid(bool)));
   connect(mpExpressionEA->mpExpressionWidget, SIGNAL(valid(bool)), this, SLOT(slotExpressionEAValid(bool)));
 
-  //  connect(mpCBTarget, SIGNAL(activated(int)), this, SLOT(slotActualizeAssignmentExpression(int)));
   connect(mpLBTarget, SIGNAL(highlighted(int)), this, SLOT(slotActualizeAssignmentExpression(int)));
-  //  connect(mpLBTarget, SIGNAL(highlighted(int)), this, SLOT(slotHighlightAssignment(int)));
   mpExpressionTrigger->mpExpressionWidget->setBoolean(true);
   mExpressionDelayValid = true;
   mpExpressionDelay->mpExpressionWidget->setExpressionType(CCopasiSimpleSelectionTree::TRANSIENT_EXPRESSION);
@@ -290,21 +277,16 @@ void CQEventWidget1::init()
   // ----- correlated to GUI layout of the event assignment ----
 
   // enable unneccessary buttons
+
   mpBtnAddTarget->setEnabled(true);
 
   // disable neccessary buttons
-  //  mpBtnSelectObject->setDisabled(true);
   mpBtnDeleteTarget->setDisabled(true);
-  //  mpBtnSaveTarget->setDisabled(true);
   mpBtnRevert->setEnabled(false);
-  //  std::cout << "L" << __LINE__ << " - mpBtnRevert->setEnabled(false)" << std::cout;
-  //  {int y; std::cin >> y;}
 
   // hide the label and widget wrt expression
   mpLabelEA->hide();
   mpExpressionEA->hide();
-
-  //  mpBtnSaveTarget->hide();
 
   // ----- end ----
 
@@ -317,25 +299,9 @@ void CQEventWidget1::init()
 void CQEventWidget1::slotExpressionDelayValid(bool valid)
 {
   std::cout << "CQEW1::slotExpressionDelayValid - valid = " << std::endl;
+
   mExpressionDelayValid = valid;
-  /*
-    if (mpExpressionDelay->mpExpressionWidget->text() == "")
-  //    mpExpressionDelay->mpExpressionWidget->setText("0");
-      mpExpressionDelay->mpBtnViewExpression->setEnabled(true);
-  */
-  //  mExpressionTriggerValid = mpExpressionTrigger->mpBtnViewExpression->isEnabled();
-  //  mExpressionDelayValid = mpExpressionDelay->mpBtnViewExpression->isEnabled();
-  //  mExpressionEAValid = mpExpressionEA->mpBtnViewExpression->isEnabled();
-  /*
-    std::cout << "mExpressionTriggerValid = " << mExpressionTriggerValid
-     << " - mExpressionEAValid = " << mExpressionEAValid
-     << " - (mExpressionTriggerValid && mExpressionEAValid) = " << (mExpressionTriggerValid && mExpressionEAValid)
-              << " !! mExpressionDelayValid = " << mExpressionDelayValid
-     << " --> (mExpressionDelayValid && (mExpressionTriggerValid && mExpressionEAValid)) = "
-     << (mExpressionDelayValid && (mExpressionTriggerValid && mExpressionEAValid)) << std::endl;
-    std::cout << "mObjectOK = " << mObjectOK << std::endl;
-    mpBtnCommit->setEnabled((mObjectOK && mExpressionDelayValid) && (mExpressionTriggerValid && mExpressionEAValid));
-  */
+
   enableBtnCommit();
 }
 
@@ -343,25 +309,12 @@ void CQEventWidget1::slotExpressionDelayValid(bool valid)
 void CQEventWidget1::slotExpressionTriggerValid(bool valid)
 {
   std::cout << "CQEW1::slotExpressionTriggerValid - valid = " << valid << std::endl;
-  //  mExpressionTriggerValid = valid;
 
   if (mpExpressionTrigger->mpExpressionWidget->getExpression() == "")
     mpExpressionTrigger->mpBtnViewExpression->setEnabled(false);
 
   mExpressionTriggerValid = mpExpressionTrigger->mpBtnViewExpression->isEnabled();
-  //  mExpressionDelayValid = mpExpressionDelay->mpBtnViewExpression->isEnabled();
-  //  mExpressionEAValid = mpExpressionEA->mpBtnViewExpression->isEnabled();
 
-  /*
-    std::cout << "mExpressionDelayValid = " << mExpressionDelayValid
-     << " - mExpressionEAValid = " << mExpressionEAValid
-     << " - (mExpressionDelayValid && mExpressionEAValid) = " << (mExpressionDelayValid && mExpressionEAValid)
-              << " !! mExpressionTriggerValid = " << mExpressionTriggerValid
-     << " --> (mExpressionTriggerValid && (mExpressionDelayValid && mExpressionEAValid)) = "
-     << (mExpressionTriggerValid && (mExpressionDelayValid && mExpressionEAValid)) << std::endl;
-    std::cout << "mObjectOK = " << mObjectOK << std::endl;
-  */
-  //  mpBtnCommit->setEnabled((mObjectOK && mExpressionTriggerValid) && (mExpressionDelayValid && mExpressionEAValid));
   enableBtnCommit();
 }
 
@@ -369,29 +322,12 @@ void CQEventWidget1::slotExpressionTriggerValid(bool valid)
 void CQEventWidget1::slotExpressionEAValid(bool valid)
 {
   std::cout << "CQEW1::slotExpressionEAValid - valid = " << valid << std::endl;
-  //  mExpressionEAValid = valid;
-
-  //  if (valid)
-  //    mpExpressionEA->mpExpressionWidgte->setColor(Valid);
-  //    mpExpressionEA->mpExpressionWidgte->setColor(Valid);
 
   if (mpExpressionEA->mpExpressionWidget->getExpression() == "")
     mpExpressionEA->mpBtnViewExpression->setEnabled(false);
 
-  //  mExpressionTriggerValid = mpExpressionTrigger->mpBtnViewExpression->isEnabled();
-  //  mExpressionDelayValid = mpExpressionDelay->mpBtnViewExpression->isEnabled();
   mExpressionEAValid = mpExpressionEA->mpBtnViewExpression->isEnabled();
-  /*
-    std::cout << "mExpressionTriggerValid = " << mExpressionTriggerValid
-              << " - mExpressionDelayValid = " << mExpressionDelayValid
-     << " - (mExpressionTriggerValid && mExpressionDelayValid) = " << (mExpressionTriggerValid && mExpressionDelayValid)
-     << " !! mExpressionEAValid = " << mExpressionEAValid
-     << " --> (mExpressionEAValid && (mExpressionTriggerValid && mExpressionDelayValid)) = "
-     << (mExpressionEAValid && (mExpressionTriggerValid && mExpressionDelayValid)) << std::endl;
-    std::cout << "mObjectOK = " << mObjectOK << std::endl;
 
-    mpBtnCommit->setEnabled((mObjectOK && mExpressionEAValid) && (mExpressionTriggerValid && mExpressionDelayValid));
-  */
   enableBtnCommit();
 }
 
@@ -400,9 +336,6 @@ void CQEventWidget1::slotExpressionEAValid(bool valid)
  */
 void CQEventWidget1::slotAddTarget()
 {
-  // save current setting before taking the new one
-  //  slotBtnNewClicked();  --> this is for creating a new event
-
   std::cout << "CQEW1::slotaddTarget - mEventKey = " << mEventKey << std::endl;
 
   // ----- correlated to GUI layout of the event assignment ----
@@ -417,16 +350,10 @@ void CQEventWidget1::slotAddTarget()
 
   // enable neccessary buttons
   mpBtnSelectObject->setEnabled(true);
-  //  mpBtnDeleteTarget->setEnabled(true);
-  //  mpBtnSaveTarget->setEnabled(true);
   mpBtnRevert->setEnabled(true);
 
   mObjectOK = false;
-  /*
-    // show the label and widget wrt expression
-    mpLabelEA->show();
-    mpExpressionEA->show();
-  */
+
   // clear the widget of assignment expression
   mpExpressionEA->mpExpressionWidget->clear();
 
@@ -437,36 +364,6 @@ void CQEventWidget1::slotAddTarget()
   std::cout << "CQEW1::slotAddTarget - after #item = " << mpLBTarget->count() << std::endl;
 
   // ---- end of EA GUI layout ---
-  /*
-    // add the new assignment to pEvent
-    CEvent* pEvent = dynamic_cast< CEvent * >(GlobalKeys.get(mEventKey));
-  */ /*
-    if (!pEvent)
-    {
-   std::string errorMessage = std::string("There is no event with key " + mEventKey);
-   std::cout << "ERROR: There is no event with key " << mEventKey << std::endl;
-   CCopasiMessage(CCopasiMessage::EXCEPTION, errorMessage.c_str());
-    }
-
-    // name of the target
-    std::string assignKey = "Assignment_" + QString::number(pEvent->getNumAssignments()); // index starts from 0
-    std::cout << "pEvent->getNumAssignments() = " << pEvent->getNumAssignments() << std::endl;
-
-    pEvent->addAssignment(assignKey, "");
-    pdelete(pEvent);
-  */
-  /*
-    // if the standard name already exists then creating the new event will fail
-    // thus, a growing index will automatically be added to the standard name
-    int i=0;
-    while (!CCopasiDataModel::Global->getModel()->createEvent(name))
-    {
-      i++;
-      name = "event_";
-      name += QString::number(i).utf8();
-   std::cout << "NAME = " << name << std::endl;
-    }
-  */
 }
 
 /*! Slot to remove the active target from the appearance
@@ -474,9 +371,8 @@ void CQEventWidget1::slotAddTarget()
  */
 void CQEventWidget1::slotDeleteTarget()
 {
-  // disable add/delete buttons until the newly deleted assignment is saved
+  // disable delete buttons until the newly deleted assignment is saved
   mpBtnDeleteTarget->setEnabled(false);
-  //  mpBtnAddTarget->setEnabled(false);
 
   mpBtnSelectObject->setEnabled(true);
   mpBtnRevert->setEnabled(true);
@@ -486,12 +382,9 @@ void CQEventWidget1::slotDeleteTarget()
   std::cout << "mpCBTarget->currentItem() = " << mpLBTarget->currentItem() << " will be deleted!!" << std::endl;
   std::cout << "correlated name = " << mpLBTarget->currentText() << std::endl;
   std::cout << "correlated expression on the widget = " << mpExpressionEA->mpExpressionWidget->getExpression() << std::endl;
-  //  mDeletedAssignment = make_pair(mpCBTarget->currentText().utf8(), mpExpressionEA->mpExpressionWidget->text().utf8());
 
   // save the position of deleting assignment
   unsigned C_INT32 posDelete = mpLBTarget->currentItem();
-  /*  mPosDelete = posDelete;
-    std::cout << "posDelete = " << posDelete << std::endl;*/
 
   std::string text = takeObjectName(mpLBTarget->currentText());
 
@@ -502,67 +395,21 @@ void CQEventWidget1::slotDeleteTarget()
       mPosDelete = mpEvent->getAssignmentIndex(getAssignmentKeyFromDisplayName(text));
       std::cout << "mPosDelete = " << mPosDelete << std::endl;
       mObjectKeyDisplayName.erase(mObjectKeyDisplayName.begin() + mPosDelete);
-      /*
-          mDeleteAssignment.first = text;
-          mDeleteAssignment.second = mpEvent->getAssignmentExpressionVector().second;
-      */
-      // mDeletedAssign.first = mpLBTarget->currentItem();
-      // mDeletedAssign.second = text;
     }
   else
     mPosDelete = (unsigned C_INT32) - 1;
 
-  /*  std::cout << "A - name = " << mDeleteAssignment.first
-              << " - expression = " << mDeleteAssignment.second.getInfix() << std::endl;
-  */
-
-  //  std::cout << "A - name = " << mDeletedAssign.first
-  //  << " - expression = " << mDeletedAssign.second << std::endl;
-
-  std::cout << "B - mPosDelete = " << mPosDelete << " - posDelete = " << posDelete << std::endl;
-
-  //  std::cout << "mCurrentAssignment.size() B = " << mCurrentAssignment.size() << std::endl;
-
-  // delete the assignment from mCurrentAssignment
-  //  std::vector<std::pair<std::string, CExpression> >::iterator it = mCurrentAssignment.begin();
-
-  //  std::cout << "A - name = " << mCurrentAssignment[0+posDelete].first
-  //            << " - expression = " << mCurrentAssignment[0+posDelete].second.getInfix() << std::endl;
-
-  //  std::cout << "B - name = " << (it+posDelete)->first
-  //            << " - expression = " << (it+posDelete)->second.getInfix() << std::endl;
-
-  //  mCurrentAssignment.erase(it+posDelete, it+posDelete+1);
-
-  //  std::cout << "mCurrentAssignment.size() A = " << mCurrentAssignment.size() << std::endl;
+  std::cout << __FILE__ << " L" << __LINE__ << " - mPosDelete = " << mPosDelete << " - posDelete = " << posDelete << std::endl;
 
   // delete the highlighted item from appearance
   std::cout << "mpLBTarget->count() = " << mpLBTarget->count() << std::endl;
 
   mpLBTarget->removeItem(posDelete);
 
-  /*
-    mpLBTarget->clear();
-
-    std::vector<std::pair<std::string, std::string> >::iterator it = mObjectKeyDisplayName.begin();
-    for (; it != mObjectKeyDisplayName.end(); ++it)
-    {
-   mpLBTarget->insertItem("<" + it->second + ">");
-    }
-  */
   std::cout << "mpLBTarget->count() = " << mpLBTarget->count() << std::endl;
   std::cout << "mObjectKeyDisplayName.size() = " << mObjectKeyDisplayName.size() << std::endl;
   std::cout << "current: mpLBTarget->currentItem() = " << mpLBTarget->currentItem() << std::endl;
 
-  /*
-    // copy ...
-    mDeletedAssignment = mpEvent->getAssignmentExpressionVector();
-    // ... delete the corresponding item from the vector
-    mpEvent->deleteAssignment(posDelete);
-
-    std::cout << "AFTER DELETE: mpEvent->getNumAssignments() = " << mpEvent->getNumAssignments() << std::endl;
-    std::cout << "AFTER DELETE: mDeletedAssignment.size() = " << mDeletedAssignment.size() << std::endl;
-  */
   if (!mpLBTarget->count())  // the last item has been removed -> no target more on the combo box
     {
       // hide the label and widget wrt expression
@@ -601,7 +448,6 @@ void CQEventWidget1::slotDeleteTarget()
       else
         {
           // actualize the expression widget to the next one since the assignment is not really deleted from event
-          //    slotActualizeAssignmentExpression(mpCBTarget->currentItem());
           int pos = mpEvent->getAssignmentIndex(getAssignmentKeyFromDisplayName(takeObjectName(mpLBTarget->currentText())));
           slotActualizeAssignmentExpression(pos);
 
@@ -612,13 +458,6 @@ void CQEventWidget1::slotDeleteTarget()
         }
     }
 
-  //  {int y; std::cin >> y;}
-  // ... and swap
-  /*  mpEvent->setAssignmentExpressionVector(mDeletedAssignment);
-
-    std::cout << "AFTER SWAP: mpEvent->getNumAssignments() = " << mpEvent->getNumAssignments() << std::endl;
-    std::cout << "AFTER SWAP: mDeletedAssignment.size() = " << mDeletedAssignment.size() << std::endl;
-  */
   std::cout << "CQEW1::slotDeleteTarget - after #item = " << mpLBTarget->count() << std::endl;
 
   std::cout << "mPosDelete = " << mPosDelete << std::endl;
@@ -652,95 +491,28 @@ void CQEventWidget1::slotSaveTarget()
       return;
     }
 
-  // work with object of class CEvent
-  //  CEvent* pEvent = dynamic_cast< CEvent * >(GlobalKeys.get(mEventKey));
-  //  if (!pEvent) return;
-
   // name of the target
-  //  std::string assignKey = "Assignment_" + QString::number(pEvent->getNumAssignments()); // index starts from 0
-  //  std::string assignKey = mpCBTarget->currentText();
   std::string assignKey = mAssignmentKey;
   std::cout << "assignKey = " << assignKey << std::endl;
   std::cout << "pEvent->getNumAssignments() = " << mpEvent->getNumAssignments() << std::endl;
   std::cout << "mpExpressionEA->mpExpressionWidget->getExpression() = "
   << mpExpressionEA->mpExpressionWidget->getExpression() << std::endl;
-  //  {int y; std::cout << "L: " << __LINE__ << std::endl; std::cin >> y;}
 
-  //  pEvent->addAssignment(assignKey, mpExpressionEA->mpExpressionWidget->text());
   mpEvent->addAssignment(assignKey, mpExpressionEA->mpExpressionWidget->getExpression());
-  //  pdelete(pEvent);
 
   std::cout << "mpExpressionEA->mpExpressionWidget->getExpression() = "
   << mpExpressionEA->mpExpressionWidget->getExpression() << std::endl;
 
   // ----- correlated to GUI layout of the event assignment ----
 
-  // disable unneccessary buttons
-  //  mpBtnSaveTarget->setDisabled(true);
-
   // enable neccessary buttons
   mpBtnAddTarget->setEnabled(true);
   mpBtnSelectObject->setEnabled(true);
   mpBtnDeleteTarget->setEnabled(true);
-  //  mpBtnCommit->setEnabled(true);
 
   // ---- end of EA GUI layout ---
 
-  /*
-    if (!pEvent)
-    {
-   std::string errorMessage = std::string("There is no event with key " + mEventKey);
-   std::cout << "ERROR: There is no event with key " << mEventKey << std::endl;
-   CCopasiMessage(CCopasiMessage::EXCEPTION, errorMessage.c_str());
-    }
-
-    // name of the target
-    std::string assignKey = "Assignment_" + QString::number(pEvent->getNumAssignments()); // index starts from 0
-    std::cout << "pEvent->getNumAssignments() = " << pEvent->getNumAssignments() << std::endl;
-
-    pEvent->addAssignment(assignKey, "");
-    pdelete(pEvent);
-  */
-
   std::cout << "CQEW1::slotSaveTarget ... END" << std::endl << std::endl;
-}
-
-/* Slot to load all values wrt the active event widget */
-bool CQEventWidget1::loadFromEvent(const CEvent *pEvent)
-{
-  std::cout << "CQEW1::loadFromEvent" << std::endl;
-
-  if (!pEvent) return false;
-
-  // Name
-  mpLineEditName->setText(FROM_UTF8(pEvent->getObjectName()));
-
-  // Expression of Trigger
-  //  ((CQExpressionWidget *)mpEditExpressionTrigger->widget(0))->setExpression(pEvent->getExpression());
-  mpExpressionTrigger->mpExpressionWidget->setExpression(pEvent->getExpressionTrigger());
-  std::cout << "EXP of Trigger: " << pEvent->getExpressionTrigger() << std::endl;
-  if (pEvent->getExpressionTrigger() == "")
-    mpExpressionTrigger->mpBtnViewExpression->setEnabled(false);
-
-  // Expression of Delay
-  //  ((CQExpressionWidget *)mpEditExpressionDelay->widget(0))->setExpression(pEvent->getExpression());
-  mpExpressionDelay->mpExpressionWidget->setExpression(pEvent->getExpressionDelay());
-  std::cout << "EXP of Delay: " << pEvent->getExpressionDelay() << std::endl;
-  if (pEvent->getExpressionDelay() == "")
-    mpExpressionDelay->mpBtnViewExpression->setEnabled(false);
-
-  // Expression of EventAssignment
-  //  ((CQExpressionWidget *)mpEditExpressionEA->widget(0))->setExpression(pEvent->getExpression());
-  /* temporary
-    mpExpressionEA->mpExpressionWidget->setExpression(pEvent->getAssignmentExpressionStr());
-    std::cout << "EXP of EA: " << pEvent->getAssignmentExpressionStr() << std::endl;
-    if (pEvent->getAssignmentExpressionStr() == "")
-      mpExpressionEA->mpBtnViewExpression->setEnabled(false);
-  */
-  //  mChangedTrigger = mChangedDelay = mChangedEA = false;
-  mChanged = false;
-
-  return true; //TODO: really check
 }
 
 /*! Load all values wrt a chosen saved event */
@@ -761,7 +533,7 @@ bool CQEventWidget1::loadFromEvent()
     }
   mpExpressionTrigger->mpExpressionWidget->setExpression(expr);
   std::cout << "EXP of Trigger: " << expr << std::endl;
-  //  if (mpEvent->getExpressionTrigger() == " ")
+
   if (expr.empty())
     mpExpressionTrigger->mpBtnViewExpression->setEnabled(false);
 
@@ -771,6 +543,7 @@ bool CQEventWidget1::loadFromEvent()
     {
       expr = mpEvent->getDelayExpressionPtr()->getInfix();
     }
+
   mpExpressionDelay->mpExpressionWidget->setExpression(expr);
   std::cout << "EXP of Delay: " << expr << std::endl;
   if (expr.empty())
@@ -786,86 +559,25 @@ bool CQEventWidget1::loadFromEvent()
       mpCheckBoxDelay->setChecked(true);
       slotApplyDelay(true);
     }
-  //  if (mpEvent->getExpressionDelay() == "")
-  //    mpExpressionDelay->mpBtnViewExpression->setEnabled(false);
 
   // TODO: *** Expression of EventAssignment ***
 
   mPosDelete = -1; // by default -> means: no item will be deleted
 
-  //  std::cout << "AA -vs- mpEvent->getNumAssignments() = " << mpEvent->getNumAssignments()
-  //   << " -vs- mCurrentAssignment.size() = " << mCurrentAssignment.size() << std::endl;
   std::cout << "AA -vs- mpEvent->getNumAssignments() = " << mpEvent->getNumAssignments() << std::endl;
 
   // copy assignment from event
-  //  mCurrentAssignment.resize(0);
-  //  mCurrentAssignment.clear();
-  //  if (!mCurrentAssignment.empty())
-  //    mCurrentAssignment.clear();
-
-  //  std::vector<std::pair<std::string, CExpression
-
-  //  mCurrentAssignment.reserve(100);
-  //  std::cout << "BB -vs- mpEvent->getNumAssignments() = " << mpEvent->getNumAssignments()
-  //   << " -vs- mCurrentAssignment.size() = " << mCurrentAssignment.size() << std::endl;
-
-  //  mCurrentAssignment = *(mpEvent->getAssignmentExpressionVector());
   std::vector<std::pair<std::string, CExpression*> > currentAssignment;
   currentAssignment.reserve(100);
   currentAssignment = mpEvent->getAssignmentExpressionVector();
 
   std::cout << "CC -vs- mpEvent->getNumAssignments() = " << mpEvent->getNumAssignments()
-  //   << " -vs- mCurrentAssignment.size() = " << mCurrentAssignment.size() << std::endl;
   << " -vs- currentAssignment.size() = " << currentAssignment.size() << std::endl;
 
   mpEvent->showAssignments();
+
+  // (re-)create mObjectKeyDisplayName
   std::vector<std::pair<std::string, CExpression*> >::iterator it;
-
-  /*
-    if (mObjectKeyDisplayName.size() != currentAssignment.size()) // happens only at the first time after loading a cps file
-      {
-        for (it = currentAssignment.begin(); it != currentAssignment.end(); ++it)
-          {
-            QStringList sKeyDisplay = QStringList::split("_", FROM_UTF8(it->first));
-            QString sObjectName = sKeyDisplay[0];
-            QString sObjectIndex = sKeyDisplay[1];
-            QString sName;
-            std::cout << "it->first = " << it->first << std::endl;
-            std::cout << sObjectName << " - " << sObjectIndex << std::endl;
-            //   std::cout << sKeyDisplay[0] << " - " << sKeyDisplay[1] << std::endl;
-            if (sObjectName == "Compartment")
-              {
-                //              std::cout << "Compartments: " << CCopasiDataModel::Global->getModel()->getCompartments()[sObjectIndex.toULong()]->getKey() << std::endl;
-                //     std::cout << "Compartments: " << CCopasiDataModel::Global->getModel()->getCompartments()[sObjectIndex.toULong()]->getObjectDisplayName() << std::endl;
-                //              sName = FROM_UTF8(CCopasiDataModel::Global->getModel()->getCompartments()[sObjectIndex.toULong()]->getObjectDisplayName() + ".Volume");
-
-                sName = FROM_UTF8(GlobalKeys.get(it->first)->getObjectDisplayName() + ".Volume");
-                std::cout << "Compartments: " << sName << std::endl;
-              }
-            if (sObjectName == "Metabolite")
-              {
-                //              std::cout << "Metabolites: " << CCopasiDataModel::Global->getModel()->getMetabolites()[sObjectIndex.toULong()]->getKey() << std::endl;
-                //     std::cout << "Metabolites: " << CCopasiDataModel::Global->getModel()->getMetabolites()[sObjectIndex.toULong()]->getObjectDisplayName() << std::endl;
-                //              sName = FROM_UTF8("[" + CCopasiDataModel::Global->getModel()->getMetabolites()[sObjectIndex.toULong()]->getObjectDisplayName() + "]");
-                sName = FROM_UTF8("[" + GlobalKeys.get(it->first)->getObjectDisplayName() + "]");
-                std::cout << "Metabolites: " << sName << std::endl;
-                //              std::cout << "Metabolites: " << std::endl;
-              }
-            if (sObjectName.contains("ModelValue"))
-              {
-                //              std::cout << "Global Quantities: " << CCopasiDataModel::Global->getModel()->getModelValues()[sObjectIndex.toULong()]->getKey() << std::endl;
-                //              sName = FROM_UTF8(CCopasiDataModel::Global->getModel()->getModelValues()[sObjectIndex.toULong()]->getObjectDisplayName());
-                sName = FROM_UTF8(GlobalKeys.get(it->first)->getObjectDisplayName());
-                std::cout << "Global Quantities: " << sName << std::endl;
-              }
-
-            //   mObjectKeyDisplayName.push_back(std::make_pair(it->first, std::string((const char *)sName.local8Bit())));
-            mObjectKeyDisplayName.push_back(std::make_pair(it->first, sName.latin1()));
-          }
-      }
-    else
-      std::cout << "mObjectKeyDisplayName.size() = " << mObjectKeyDisplayName.size() << std::endl;
-  */
 
   mObjectKeyDisplayName.resize(0);
   int ijk = 0;
@@ -895,16 +607,6 @@ bool CQEventWidget1::loadFromEvent()
         }
 
       mObjectKeyDisplayName.push_back(std::make_pair(it->first, sName.latin1()));
-      /*
-       if (mObjectKeyDisplayName.size() < currentAssignment.size())
-         // happens at the first time after loading a cps file OR after deleting a target without saving
-         mObjectKeyDisplayName.push_back(std::make_pair(it->first, sName.latin1()));
-       else // mObjectKeyDisplayName is changed in slotSelectObject()
-       {
-         mObjectKeyDisplayName[ijk].first = it->first;
-         mObjectKeyDisplayName[ijk].second = sName.latin1();
-       }
-      */
     }
 
   std::vector<std::pair<std::string, std::string> >::iterator itA = mObjectKeyDisplayName.begin();
@@ -915,47 +617,12 @@ bool CQEventWidget1::loadFromEvent()
   std::cout << "Assignment" << std::endl;
   mpEvent->showAssignments();
 
-  //  {int y; std::cout << "L" << __LINE__ << std::endl; std::cin >> y;}
-
-  /*
-    //swap process
-    std::vector<std::pair<std::string, CExpression> > mAssignmentAux;
-    std::vector<std::pair<std::string, CExpression> >::iterator it = mCurrentAssignment.end();
-  //  std::vector<std::pair<std::string, CExpression> >::iterator itB = mAssignmentAux.begin();
-    for (; it != mCurrentAssignment.begin(); --it)
-    {
-      mAssignmentAux.push_back(*it);
-    }
-
-    std::cout << "DD -vs- mAssignmentAux.size() = " << mAssignmentAux.size()
-     << " -vs- mCurrentAssignment.size() = " << mCurrentAssignment.size() << std::endl;
-
-    if (!mCurrentAssignment.empty())
-      mCurrentAssignment.clear();
-
-    std::cout << "EE -vs- mAssignmentAux.size() = " << mAssignmentAux.size()
-     << " -vs- mCurrentAssignment.size() = " << mCurrentAssignment.size() << std::endl;
-
-    mCurrentAssignment = mAssignmentAux;
-  */
-  /*  std::vector<std::pair<std::string, CExpression> >::iterator it = mpEvent
-    for (int j=0; j<mpEvent->getnumAssignments(); j++)
-      mCurrentAssignment->push_back()
-  */
-  //  std::cout << "mpCBTarget->count() = " << mpCBTarget->count()
-  //  std::cout << "FF -vs- mpEvent->getNumAssignments() = " << mpEvent->getNumAssignments()
-  //   << " -vs- mCurrentAssignment.size() = " << mCurrentAssignment.size() << std::endl;
-  //  {int y; std::cin >> y;}
-
   // fill the list box and the expression widget with correct assignments
   mpLBTarget->clear();
 
   unsigned C_INT32 idx = 0;
-  //  std::vector<std::pair<std::string, CExpression> >::iterator it;
-  //  for (it = mCurrentAssignment.begin(); it != mCurrentAssignment.end(); ++it)
   for (it = currentAssignment.begin(); it != currentAssignment.end(); ++it)
     {
-      //    mpCBTarget->insertItem(FROM_UTF8("<" + it->first + ">")); // the combo box
       mpLBTarget->insertItem(FROM_UTF8("<" + mObjectKeyDisplayName[idx].second + ">")); // the list box
       mpExpressionEA->mpExpressionWidget->setExpression(mpEvent->getAssignmentExpressionPtr(idx)->getInfix()); // the expression widget
       idx++;
@@ -968,8 +635,7 @@ bool CQEventWidget1::loadFromEvent()
       mObjectOK = true; // at least one object target exists
       mpBtnDeleteTarget->setEnabled(true);
       mpBtnSelectObject->setEnabled(true);
-      //    mpLBTarget->setCurrentItem(0);
-      //    slotActualizeAssignmentExpression(0);
+
       mpLBTarget->setCurrentItem(mpLBTarget->count() - 1);
       slotActualizeAssignmentExpression(mpLBTarget->count() - 1);
     }
@@ -986,57 +652,12 @@ bool CQEventWidget1::loadFromEvent()
       mpExpressionEA->hide();
     }
 
-  /*
-    // an item has been added and the user will cancel the change
-    if (mpCBTarget->count() == mpEvent->getNumAssignments()+1)
-    {
-      std::cout << "Adding is cancelled" << std::endl;
-      // just remove the last one since the candidate new one must be there
-  //    mpCBTarget->setCurrentItem(mpCBTarget->count()-1);
-      slotDeleteTarget();
-    }
-    // an item has been deleted and the user will cancel the change
-    else if (mpCBTarget->count() == mpEvent->getNumAssignments()-1)
-    {
-      std::cout << "Deleting is cancelled" << std::endl;
-      // add the removed assignment by taking the correlated values from event
-   std::cout << "====== mpCBTarget->currentItem() BEFORE = " << mpCBTarget->currentItem() << std::endl;
-   std::cout << "mpCBTarget->count() = " << mpCBTarget->count() << std::endl;
-  // mpCBTarget->insertItem(mEAName, mpCBTarget->currentItem());  // it will automatically be the current item
-  // mpCBTarget->insertItem(mDeletedAssignment.first, mpCBTarget->currentItem());  // it will automatically be the current item
-
-   if (mpCBTarget->count() == 1)
-     mpCBTarget->setCurrentItem(0);
-
-   std::cout << "mpCBTarget->currentItem() AFTER = " << mpCBTarget->currentItem() << std::endl;
-   std::cout << "mpCBTarget->count() = " << mpCBTarget->count() << std::endl;
-
-  // mpExpressionEA->mpExpressionWidget->setText(mDeletedAssignment.second);
-  //    slotActualizeAssignmentExpression(mpCBTarget->currentItem());
-    }
-    else if (mpCBTarget->count() != mpEvent->getNumAssignments())
-    {
-      std::cout << "ERROR on L" << __LINE__ << " in " << __FILE__ << std::endl;
-      std::cout << "mpCBTarget->count() = " << mpCBTarget->count()
-       << " -vs- mpEvent->getNumAssignments() = " << mpEvent->getNumAssignments() << std::endl;
-      return false;
-    }
-  */ /*
-    // actualize the EventAssignment by setting to the current entry
-    mpCBTarget->setCurrentItem(mpCBTarget->currentItem());
-    slotActualizeAssignmentExpression(mpCBTarget->currentItem());
-
-    // actualize the EventAssignment by setting to the current entry
-    mpCBTarget->setCurrentItem(0);
-    slotActualizeAssignmentExpression(0);
-  */
   // disable commit button -> re-activate the button whenever there is something new on the event
   mpBtnCommit->setEnabled(false);
   mpBtnAddTarget->setEnabled(true);
 
   mpBtnRevert->setEnabled(false);
 
-  //  mChangedTrigger = mChangedDelay = mChangedEA = false;
   mChanged = false;
 
   mpEvent->showAssignments();
@@ -1065,10 +686,8 @@ void CQEventWidget1::saveToEvent()
           msg = "Unable to rename event '" + FROM_UTF8(mpEvent->getObjectName()) + "'\n"
                 + "to '" + mpLineEditName->text() + "' since an event with that name already exists.\n";
 
-          QMessageBox::information(this,
-                                   "Unable to rename Event",
-                                   msg,
-                                   QMessageBox::Ok | QMessageBox::Default | QMessageBox::Escape, QMessageBox::NoButton, QMessageBox::NoButton);
+          QMessageBox::information(this, "Unable to rename Event", msg,
+                                    QMessageBox::Ok | QMessageBox::Default | QMessageBox::Escape, QMessageBox::NoButton, QMessageBox::NoButton);
 
           mpLineEditName->setText(FROM_UTF8(mpEvent->getObjectName()));
         }
@@ -1080,11 +699,6 @@ void CQEventWidget1::saveToEvent()
     }
 
   std::cout << "-> B mEventKey = " << mEventKey << std::endl;
-
-  //  update(pEvent->getActionObjectKey, objKey);
-  //  pEvent->setObjectName((const char *)mpLineEditName->text().utf8());
-
-  //mpRi->setReactionName((const char *)mpLineEditName->text().utf8());
 
   // set expression of Trigger
   std::cout << "Expression Trigger: " << mpExpressionTrigger->mpExpressionWidget->getExpression() << std::endl;
@@ -1106,7 +720,6 @@ void CQEventWidget1::saveToEvent()
   // set expression of Delay
   if (mpExpressionDelay->mpExpressionWidget->getExpression() == "")
     mpExpressionDelay->mpExpressionWidget->setExpression("0");
-  //    mpExpressionDelay->mpBtnViewExpression->setEnabled(false);
 
   std::cout << "Expression Delay: " << (mpExpressionDelay->mpExpressionWidget->getExpression()) << std::endl;
   expr = "";
@@ -1131,21 +744,15 @@ void CQEventWidget1::saveToEvent()
   bool success = true;
 
   mpEvent->showAssignments();
+
   // first of all, permanently remove the deleted assignment
   if (mPosDelete > (unsigned C_INT32) - 1)
     mpEvent->deleteAssignment(mPosDelete);
-  /*
-    mCurrentAssignment = mpEvent->getAssignmentExpressionVector();
-
-    std::cout << "CC -vs- mpEvent->getNumAssignments() = " << mpEvent->getNumAssignments()
-     << " -vs- mCurrentAssignment.size() = " << mCurrentAssignment.size() << std::endl;
-  */
 
   std::cout << "L" << __LINE__ << " B mpLBTarget->count() = " << mpLBTarget->count()
   << " -vs- mpEvent->getNumAssignments() = " << mpEvent->getNumAssignments() << std::endl;
 
   mpEvent->showAssignments();
-  //  {int y; std::cout << "CQEW1 L: " << __LINE__ << std::endl; std::cin >> y;}
 
   // if new/modify assignment exists then the current position must be on it; otherwise, the expression cannot be saved
   int newPosition = -1;
@@ -1161,18 +768,12 @@ void CQEventWidget1::saveToEvent()
 
   if (mpLBTarget->count() > mpEvent->getNumAssignments())
     {
-
-      // std::string Key = CCopasiDataModel::Global->getModel()->getKey();
-      // std::cout << "Key = " << Key << std::endl;
-
       newPosition = mpLBTarget->currentItem();
-      //    newKey = takeObjectName(mpLBTarget->currentText());
       newKey = mObjectKeyDisplayName[newPosition].first;
       newExpression = mpExpressionEA->mpExpressionWidget->getExpression();
     }
 
   std::cout << "New position: " << newPosition << " - key: " << newKey << " - expression: " << newExpression << std::endl;
-  //  {int y; std::cout << "L: " << __LINE__ << std::endl; std::cin >> y;}
 
   int modPosition = -1;
   std::string modExpression = "";
@@ -1185,7 +786,6 @@ void CQEventWidget1::saveToEvent()
 
   std::cout << "Mod position: " << modPosition << " - expression: " << modExpression << std::endl;
 
-  //  {int y; std::cout << "L: " << __LINE__ << std::endl; std::cin >> y;}
   int i;
   for (i = 0; i < (int) mpLBTarget->count(); i++)
     {
@@ -1194,9 +794,6 @@ void CQEventWidget1::saveToEvent()
           // new assignment exists
           std::cout << "i: " << i << " --> new key " << newKey << " - new expression " << newExpression << std::endl;
           success = mpEvent->addAssignment(newKey, newExpression);
-          //      mpLBTarget->setCurrentItem(i);
-          //   slotActualizeAssignmentExpression(i);
-          //   {int y; std::cout << "AA" << std::endl; std::cin >> y;}
         }
       else
         {
@@ -1204,7 +801,6 @@ void CQEventWidget1::saveToEvent()
           mpLBTarget->setCurrentItem(i);
           slotActualizeAssignmentExpression(i);
 
-          //   std::string assignKey = takeObjectName(mpLBTarget->currentText());
           std::string assignKey = mObjectKeyDisplayName[i].first;
           std::string assignExpression = "";
 
@@ -1214,74 +810,11 @@ void CQEventWidget1::saveToEvent()
             assignExpression = mpExpressionEA->mpExpressionWidget->getExpression();
 
           std::cout << "i: " << i << " --> assignKey = " << assignKey << " - assignExpression = " << assignExpression << std::endl;
-          //      {int y; std::cout << "BB - 1" << std::endl; std::cin >> y;}
+
           success = mpEvent->updateAssignment(mpLBTarget->currentItem(), assignKey, assignExpression);
-          //   {int y; std::cout << "BB - 2" << std::endl; std::cin >> y;}
         }
-      // {int y; std::cout << "CC" << std::endl; std::cin >> y;}
     }
 
-  /*
-    std::pair<std::string, CExpression> newAssignment;
-    std::pair<std::string, CExpression> modifyAssignment;
-
-    // check whether the currently highlighted assignment is new, modify, or as before.
-    // deleted assignment is not longer on the combo box; it is then impossible to be chosen.
-    if (mpCBTarget->currentItem() == mpEvent->getNumAssignments())
-    {
-      // new assignment since index starts from 0
-      newAssignment.first = takeObjectName(mpCBTarget->currentText());
-   newAssignment.second =
-   mpExpressionEA->mpExpressionWidget->setExpression(mpEvent->getAssignmentExpressionStr(idx));
-    }
-
-    // save last expression, either new or modification
-    std::string lastExpression = mpExpressionEA->mpExpressionWidget->getExpression();
-    int posExpression = mpCBTarget->currentItem();
-    std::cout << "new expression " << newExpression << " on position " << posExpression << std::endl;
-  */
-  /*
-    // remove all assignments from event
-    mpEvent->clearAssignment();
-
-    std::cout << "mCurrentAssignment.size() = " << mCurrentAssignment.size() << std::endl;
-
-    // save new expression, either new or modification
-    std::string newExpression = mpExpressionEA->mpExpressionWidget->getExpression();
-    int posExpression = mpCBTarget->currentItem();
-    std::cout << "new expression " << newExpression << " on position " << posExpression << std::endl;
-
-    {int y; std::cout << "AA" << std::endl; std::cin >> y;}
-
-    for (int i=0; i<mpCBTarget->count(); i++)
-  //  for (int i=mpCBTarget->count(); i>0; i--)
-    {
-      QString tmp = mpCBTarget->text(i);
-   tmp.remove("<");
-   tmp.remove(">");
-   std::string assignKey = tmp;
-
-   std::cout << "i : " << i << " - assignKey = " << assignKey << std::endl;
-
-  //    if (i==mCurrentAssignment.size()) // there is a new assignment !!
-      if (i==posExpression) // there is a new expression !!
-   {
-     std::cout << "newExpression = " << newExpression << std::endl;
-        {int y; std::cout << "BB" << std::endl; std::cin >> y;}
-     success = mpEvent->addAssignment(assignKey, newExpression);
-      }
-   else
-   {
-        mpCBTarget->setCurrentItem(i);
-     slotActualizeAssignmentExpression(i);
-     std::cout << "mpExpressionEA->mpExpressionWidget->getExpression() = " << mpExpressionEA->mpExpressionWidget->getExpression() << std::endl;
-        {int y; std::cout << "CC" << std::endl; std::cin >> y;}
-        success = mpEvent->addAssignment(assignKey, mpExpressionEA->mpExpressionWidget->getExpression());
-      }
-   {int y; std::cout << "DD" << std::endl; std::cin >> y;}
-    }
-    {int y; std::cout << "EE" << std::endl; std::cin >> y;}
-  */
   if (!success)
     {
       QString msg;
@@ -1294,21 +827,6 @@ void CQEventWidget1::saveToEvent()
 
   mChanged = true;
 
-  //  pdelete(pEvent);
-  /*
-    std::cout << "mpExpressionEA->mpExpressionWidget->getExpression() = "
-              << mpExpressionEA->mpExpressionWidget->getExpression() << std::endl;
-
-    // ----- correlated to GUI layout of the event assignment ----
-
-    // disable unneccessary buttons
-    mpBtnSaveTarget->setDisabled(true);
-  */
-  /*  // enable neccessary buttons
-    mpBtnAddTarget->setEnabled(true);
-  //  mpBtnSelectObject->setEnabled(true);
-    mpBtnDeleteTarget->setEnabled(true);
-  */
   // :TODO Bug 322: This should only be called when actual changes have been saved.
   //  CCopasiDataModel::Global->changed(); --> what does it do ??
 
@@ -1328,7 +846,6 @@ void CQEventWidget1::saveToEvent()
 /*! The slot to update the active event widget */
 bool CQEventWidget1::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string &key)
 {
-  //  std::cout << "CQEW1::update - mEventKey = " << mEventKey << std::endl;
   return true;
 }
 
@@ -1337,13 +854,10 @@ bool CQEventWidget1::enter(const std::string & key)
 {
   std::cout << "CQEW1::enter - key = " << key << std::endl;
   mEventKey = key;
-  //  CEvent* pEvent = dynamic_cast< CEvent * >(GlobalKeys.get(key));
   mpEvent = dynamic_cast< CEvent * >(GlobalKeys.get(key));
 
   if (mpEvent)
     {
-      //    load();
-      //    return loadFromEvent(mpEvent);
       return loadFromEvent();
     }
 
@@ -1389,7 +903,6 @@ void CQEventWidget1::slotSelectObject()
 
       if (objectName != "Volume" && objectName != "Concentration" && objectName != "Value")
         {
-
           QString msg = "The selected object " + objectName + " is not allowed.";
           msg += "\nPlease choose one of Transient Volumes, Transient Concentrations, or Transient Values.\n";
 
@@ -1402,14 +915,6 @@ void CQEventWidget1::slotSelectObject()
       std::string Insert = pObject->getObjectDisplayName();
       std::cout << "Insert object BEFORE = " << Insert << std::endl;
 
-      /*
-         std::cout << "Get Display Name = " << pObject->getObjectDisplayName() << std::endl;
-         std::cout << "Get Object Type = " << pObject->getObjectType() << std::endl;
-         std::cout << "Get Object Parent = " << pObject->getObjectParent()->getKey() << std::endl;
-         std::cout << "Get CN = " << pObject->getCN() << std::endl;
-      */
-      //      mParseList[Insert] = pObject;
-
       // We need to escape >
       std::string::size_type pos = Insert.find_first_of("\\>");
       while (pos != std::string::npos)
@@ -1418,9 +923,6 @@ void CQEventWidget1::slotSelectObject()
           pos += 2;
           pos = Insert.find_first_of("\\>", pos);
         }
-
-      //   CCopasiDataModel::Global->getModel()->getEvents()[name]->getKey()
-      //   getModel->getEvents()[mEventKey]
 
       std::cout << "Insert object AFTER = " << Insert << std::endl;
 
@@ -1434,7 +936,6 @@ void CQEventWidget1::slotSelectObject()
         {
           if (mpLBTarget->text(i) == newText)
             {
-
               QString msg = "A single event cannot have multiple EventAssignment assigning the same object.";
               msg += "\nThe selected object " + newText + ", however, has been listed on Target list box.";
               msg += "\nPlease select another object.\n";
@@ -1445,10 +946,8 @@ void CQEventWidget1::slotSelectObject()
             }
         }
 
-      //      insert(FROM_UTF8("<" + Insert + ">"));
       std::cout << FROM_UTF8("<" + Insert + ">") << std::endl;
 
-      //      mpLBTarget->changeItem(FROM_UTF8("<" + Insert + ">"), mpLBTarget->currentItem());
       mpLBTarget->changeItem(FROM_UTF8("<" + Insert + ">"), mpLBTarget->currentItem());
 
       std::vector<std::pair<std::string, std::string> >::iterator it = mObjectKeyDisplayName.begin();
@@ -1467,32 +966,11 @@ void CQEventWidget1::slotSelectObject()
           mObjectKeyDisplayName[index].first = mAssignmentKey;
           mObjectKeyDisplayName[index].second = Insert;
         }
-      /*
-            if (mpLBTarget->count() > mpEvent->getNumAssignments())
-              {
-                // new assignment -> not able to add one more new assignment before the current new one is saved
-                if (mObjectKeyDisplayName.size() == mpEvent->getNumAssignments() + 1)
-                  mObjectKeyDisplayName.pop_back();
-                mObjectKeyDisplayName.push_back(std::make_pair(mAssignmentKey, Insert));
-              }
-            else
-              {
-      //          mObjectKeyDisplayName[index].first = mAssignmentKey;
-      //          mObjectKeyDisplayName[index].second = Insert;
-              }
-      */
+
       std::cout << "A F T E R" << std::endl;
       for (it = mObjectKeyDisplayName.begin(); it != mObjectKeyDisplayName.end(); ++it)
         std::cout << it->first << " - " << it->second << std::endl;
 
-      //   {int y; std::cout << "L: " << __LINE__ << std::endl; std::cin >> y;}
-
-      // enable Commit button
-      //   mObjectOK = true;
-      //      mpBtnCommit->setEnabled((mObjectOK && mExpressionEAValid) && (mExpressionTriggerValid && mExpressionDelayValid));
-
-      //  if (mpLBTarget->currentText().contains("No Object"))
-      //  {
       // show the label and widget wrt expression
       mpLabelEA->show();
       mpExpressionEA->show();
@@ -1509,37 +987,17 @@ void CQEventWidget1::slotSelectObject()
             }
         }
 
-      // std::cout << "A - mpLBTarget->currentItem() = " <<  mpLBTarget->currentItem() << std::endl;
       // save object if neccessary
 
-      /*    if (newText != oldText)
-
-         mpEvent->updateAssignment(mpLBTarget->currentItem(), newText, mpExpressionEA->mpExpressionWidget->getExpression());
-      */
-      //    if (newText != oldText && !mpLBTarget->currentText().contains("No Object"))
       if (newText != oldText && !containNoObject)
         {
-          //    mpBtnCommit->setEnabled(true);
-          //    mpBtnSaveTarget->setEnabled(true);
           mObjectOK = true;
           enableBtnCommit();
-          /*
-             std::cout << "B - mpLBTarget->currentItem() = " <<  mpLBTarget->currentItem() << std::endl;
-             std::cout << "BA - index = " <<  index << std::endl;
-             mpLBTarget->removeItem(index);
-             mpLBTarget->insertItem(FROM_UTF8("<" + Insert + ">"), index);
-             std::cout << "C - mpLBTarget->currentItem() = " <<  mpLBTarget->currentItem() << std::endl;
-             mpLBTarget->setCurrentItem(index);
-             std::cout << "D - mpLBTarget->currentItem() = " <<  mpLBTarget->currentItem() << std::endl;
-          */
         }
 
       // just a trick
-      //      mpLBTarget->changeItem(FROM_UTF8("<" + Insert + ">"), mpLBTarget->currentItem());
       mpLBTarget->changeItem(mpLBTarget->currentText(), mpLBTarget->currentItem());
     }
-
-  //    slotSaveTarget();
 }
 
 /// Slot to actualize the assignment expression widget of event assignment according to the target
@@ -1549,8 +1007,6 @@ void CQEventWidget1::slotActualizeAssignmentExpression(int index)
 
   std::cout << "mpEvent->getNumAssignments() = " << mpEvent->getNumAssignments() << std::endl;
   if (!mpEvent->getNumAssignments()) return; // no assignment
-  //  std::cout << "mCurrentAssignment.size() = " << mCurrentAssignment.size() << std::endl;
-  //  if (!mCurrentAssignment.size()) return;  // no assignment
 
   if (index == -1) // no target anymore
     {
@@ -1564,7 +1020,6 @@ void CQEventWidget1::slotActualizeAssignmentExpression(int index)
     }
 
   if (index >= (int) mpEvent->getNumAssignments()) // ">=" since index 0 represents the first event assignment
-    //  if (index >= mCurrentAssignment.size()) // ">=" since index 0 represents the first event assignment
     {
       std::cout << "index = " << index << " > mpEvent->getNumAssignments() = " << mpEvent->getNumAssignments() << std::endl;
 
@@ -1579,12 +1034,6 @@ void CQEventWidget1::slotActualizeAssignmentExpression(int index)
           mpLabelEA->hide();
           mpExpressionEA->hide();
 
-          /*
-                msg = "No object is selected as shown on Assignment Target combo box.\nPlease select one object first.\n";
-
-                CQMessageBox::critical(this, "Unable to save target without object", msg,
-                                       QMessageBox::Ok | QMessageBox::Default | QMessageBox::Escape, QMessageBox::NoButton, QMessageBox::NoButton);
-          */
           return;
         }
 
@@ -1593,9 +1042,9 @@ void CQEventWidget1::slotActualizeAssignmentExpression(int index)
         {
           /*          msg = "There is no expression defined on Assignment Expression widget.\nPlease fill the widget first.\n";
 
-                    CQMessageBox::critical(this, "Unable to save target without expression", msg,
-                                           QMessageBox::Ok | QMessageBox::Default | QMessageBox::Escape, QMessageBox::NoButton, QMessageBox::NoButton);
-          */          return;
+            CQMessageBox::critical(this, "Unable to save target without expression", msg,
+                                               QMessageBox::Ok | QMessageBox::Default | QMessageBox::Escape, QMessageBox::NoButton, QMessageBox::NoButton);
+              */          return;
         }
 
       // never happens with new structure -> it will be deleted (15.05.08)
@@ -1607,36 +1056,13 @@ void CQEventWidget1::slotActualizeAssignmentExpression(int index)
       return;
     }
 
-  /*
-    std::cout << "AAA" << std::endl;
-    if (mpLBTarget->currentText().contains("No Object"))
-    {
-      // hide the label and widget wrt expression
-      mpLabelEA->hide();
-      mpExpressionEA->hide();
-      return;
-    }
-
-    std::cout << "BBB" << std::endl;
-
-    // empty expression widget
-    if (!mpExpressionEA->mpExpressionWidget->length())
-    {
-      mpExpressionEA->mpExpressionWidget->clear();
-      return;
-    }
-  */
-  //  std::cout << "expression = " << mpEvent->getAssignmentExpressionStr(index) << std::endl;
   std::cout << "expression = " << mpEvent->getAssignmentExpressionStr(index) << std::endl;
-  //  std::cout << "expression = " << mCurrentAssignment[index].second.getInfix() << std::endl;
-  //    std::cout << "expression = " << CCopasiDataModel::Global->getModel()->getEvents()[mEventKey]->getAssignmentExpressionStr(index) << std::endl;
 
   // show the label and widget wrt expression
   mpLabelEA->show();
   mpExpressionEA->show();
 
   // update expression widget wrt a chosen target
-  //  QString text = FROM_UTF8(mpEvent->getAssignmentExpressionStr(index));
   std::string text = "";
   std::string objName = takeObjectName(mpLBTarget->currentText());
 
@@ -1648,104 +1074,15 @@ void CQEventWidget1::slotActualizeAssignmentExpression(int index)
     std::cout << "Key = " << mpEvent->getAssignmentObjectKey(jk) << " - Expression = " << mpEvent->getAssignmentExpressionStr(jk) << std::endl;
 
   unsigned C_INT32 indexPos = mpEvent->getAssignmentIndex(getAssignmentKeyFromDisplayName(objName));
-  //  unsigned C_INT32 indexPos = mpEvent->getAssignmentIndex(mObjectKeyDisplayName[index].first);
 
   if (indexPos != (unsigned C_INT32) - 1)
     text = mpEvent->getAssignmentExpressionStr(indexPos);
 
-  //  QString text = mCurrentAssignment[index].second.getInfix();
-  //  std::cout << "text = " << text << std::endl;
-  /*  QString newText = text;
-    QString newTextAux;
-    while (text.contains("<CN"))
-    {
-      unsigned C_INT32 posStart = text.find("<CN");
-      unsigned C_INT32 posEnd = text.find("Reference");
-  // std::cout << "start: " << posStart << " - end: " << posEnd << std::endl;
-   newTextAux = text.remove(posStart, (posEnd+9) - posStart +1);
-  //    std::cout << "newTextAux = " << newTextAux << std::endl;
-   newTextAux = newTextAux.insert(posStart, "<");
-  //    std::cout << "newTextAux = " << newTextAux << std::endl;
-    text = newTextAux;
-   newText = text;
-  //    std::cout << "text new = " << text << std::endl;
-    }
-    std::cout << "L" << __LINE__ << " - newText = " << newText << std::endl;
-    {int y; std::cout << "L: " << __LINE__ << std::endl; std::cin >> y;}
-  */
   mpExpressionEA->mpExpressionWidget->clear();
-  //  mpExpressionEA->mpExpressionWidget->setText(newText);
 
   if (!mpLBTarget->currentText().contains("No Object"))
     mpExpressionEA->mpExpressionWidget->setExpression(text);
-
-  // disable commit button -> re-activate the button whenever there is something new on the EventAssignment expression
-  //  mpBtnCommit->setEnabled(false);
-  // so do the button Revert
-  //  mpBtnRevert->setEnabled(false);
 }
-/*
-/// Slot to actualize the assignment expression widget of event assignment according to the target
-void CQEventWidget1::slotActualizeAssignmentExpression(std::string & key)
-{
-  std::cout << "CQEW1::slotActualizeAssignmentExpression - key = " << key << std::endl;
-
-//  std::string name = "Assignment_" + QString::number(index);
-
-//  std::cout << "name = " << name << std::endl;
-
-//  if (!mpEvent) return;
-
-  std::cout << "mpEvent->getNumAssignments() = " << mpEvent->getNumAssignments() << std::endl;
-  if (!mpEvent->getNumAssignments()) return; // no assignment
-//  std::cout << "mCurrentAssignment.size() = " << mCurrentAssignment.size() << std::endl;
-//  if (!mCurrentAssignment.size()) return;  // no assignment
-
-//  if (text.contains("No Object")) return; // no specific object target
-
-  // save the deleted text without character "<" and ">"
-  std::string key = takeObjectName(text);
-  if (key == "") return;
-
-  std::cout << "key = " << key << std::endl;
-
-  std::cout << "expression = " << mpEvent->getAssignmentExpressionStr(key) << std::endl;
-
-  // show the label and widget wrt expression
-  mpLabelEA->show();
-  mpExpressionEA->show();
-
-  // update expression widget wrt a chosen target
-//  QString text = mpEvent->getAssignmentExpressionStr(index);
-//  QString text = mCurrentAssignment[index].second.getInfix();
-  QString text = FROM_UTF8(mpEvent->getAssignmentExpressionStr(key));
-  std::cout << "text = " << text << std::endl;
-  QString newText = text;
-  QString newTextAux;
-  while (text.contains("<CN"))
-  {
-    unsigned C_INT32 posStart = text.find("<CN");
-    unsigned C_INT32 posEnd = text.find("Reference");
-// std::cout << "start: " << posStart << " - end: " << posEnd << std::endl;
- newTextAux = text.remove(posStart, (posEnd+9) - posStart +1);
-//    std::cout << "newTextAux = " << newTextAux << std::endl;
- newTextAux = newTextAux.insert(posStart, "<");
-//    std::cout << "newTextAux = " << newTextAux << std::endl;
-  text = newTextAux;
- newText = text;
-//    std::cout << "text new = " << text << std::endl;
-  }
-  std::cout << "newText = " << newText << std::endl;
-
-  mpExpressionEA->mpExpressionWidget->clear();
-  mpExpressionEA->mpExpressionWidget->setText(newText);
-
-  // disable commit button -> re-activate the button whenever there is something new on the EventAssignment expression
-  mpBtnCommit->setEnabled(false);
-  // so do the button Revert
-//  mpBtnRevert->setEnabled(false);
-}
- */
 
 /*! Function to check whether all expressions (trigger, delay, assignment(s)) is OK
  *  \brief Current scenario: ONLY ONE new assignment is allowed to be exist at a time.
@@ -1796,14 +1133,6 @@ void CQEventWidget1::enableBtnCommit()
   else
     mpBtnCommit->setEnabled(false);
 
-  /*
-    bool allExpressionsOK = checkAllExpressionsOK();
-    std::cout << "allExpressionsOK = " << allExpressionsOK
-     << " - mObjectOK = " << mObjectOK
-     << " -> (checkAllExpressionsOK() && mObjectOK) = " << (allExpressionsOK && mObjectOK) << std::endl;
-
-    mpBtnCommit->setEnabled(allExpressionsOK && mObjectOK);
-  */
   if (mExpressionEAValid || mExpressionTriggerValid) // trick to trigger the button Revert
     mpBtnRevert->setEnabled(true);
 }
@@ -1821,6 +1150,7 @@ std::string CQEventWidget1::takeObjectName(QString text)
   return key;
 }
 
+/*! Slot to apply the Delay Expression Widget */
 void CQEventWidget1::slotApplyDelay(bool display)
 {
   if (display)
@@ -1834,22 +1164,8 @@ void CQEventWidget1::slotApplyDelay(bool display)
       mpExpressionDelay->hide();
     }
 }
-/*
-unsigned C_INT32 CQEventWidget1::findAssignmentIndexFromDisplayName(const std::string displayName)
-{
-  unsigned C_INT32 indexAux = 0;
 
-  std::vector<std::pair<std::string, std::string> >::iterator itA = mObjectKeyDisplayName.begin();
-  for (; itA != mObjectKeyDisplayName.end(); ++itA)
-  {
-    if (displayName == itA->second)
-   return indexAux;
- indexAux++;
-  }
-
-  return (unsigned C_INT32) -1;
-}
- */
+/*! Function to get the Assignment Key from the Display Name */
 std::string CQEventWidget1::getAssignmentKeyFromDisplayName(const std::string displayName)
 {
   std::vector<std::pair<std::string, std::string> >::iterator itA = mObjectKeyDisplayName.begin();
