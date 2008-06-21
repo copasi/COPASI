@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_normalform.hpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/06/05 20:32:59 $
+//   $Date: 2008/06/21 16:36:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -105,12 +105,16 @@ class test_normalform : public CppUnit::TestFixture
     CPPUNIT_TEST(test_nested_fractions_itempower_generalpower_2level);
     CPPUNIT_TEST(test_nested_fractions_generalpower_itempower_2level);
     CPPUNIT_TEST(test_nested_fractions_generalpowers_2level);
-    /*
+
     CPPUNIT_TEST(test_nested_fractions_itempowers_2level_complex);
     CPPUNIT_TEST(test_nested_fractions_itempower_generalpower_2level_complex);
     CPPUNIT_TEST(test_nested_fractions_generalpower_itempower_2level_complex);
     CPPUNIT_TEST(test_nested_fractions_generalpowers_2level_complex);
-    */
+
+    CPPUNIT_TEST(test_sum_with_nested_fractions_1);
+    CPPUNIT_TEST(test_product_of_sums_1);
+    CPPUNIT_TEST(test_product_of_sums_2);
+
     CPPUNIT_TEST_SUITE_END();
 
   protected:
