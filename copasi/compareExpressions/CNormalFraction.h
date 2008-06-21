@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalFraction.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/12/12 09:11:50 $
+//   $Date: 2008/06/21 14:40:37 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -72,6 +77,12 @@ class CNormalFraction : public CNormalBase
      * @return true.
      */
     bool setDenominator(const CNormalSum& denominator);
+
+    /**
+     * Check if the numerator of this fraction equals 1.
+     * @return bool
+     */
+    bool checkNumeratorOne() const;
 
     /**
      * Check if the denominator of this fraction equals 1.

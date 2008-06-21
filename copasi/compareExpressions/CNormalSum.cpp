@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalSum.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/12/11 20:55:55 $
+//   $Author: gauges $
+//   $Date: 2008/06/21 14:40:37 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -28,6 +33,7 @@
 #include "CNormalLcm.h"
 #include "CNormalFraction.h"
 #include "CNormalSum.h"
+#include "CNormalGeneralPower.h"
 
 bool compareProducts::operator()(const CNormalProduct* product1, const CNormalProduct* product2)
 {
@@ -503,14 +509,49 @@ void CNormalSum::setFractions(const std::set<CNormalFraction*>& set)
 bool CNormalSum::simplify()
 {
   bool result = true;
-  std::set<CNormalFraction*>::iterator it = this->mFractions.begin(), endit = this->mFractions.end();
-  while (it != endit && result == true)
+  std::set<CNormalProduct*, compareProducts>::iterator it = this->mProducts.begin(), endit = this->mProducts.end();
+  while (it != endit)
     {
       (*it)->simplify();
       ++it;
     }
-  std::set<CNormalProduct*, compareProducts>::iterator it2 = this->mProducts.begin(), endit2 = this->mProducts.end();
-  while (it2 != endit2 && result == true)
+  it = this->mProducts.begin(), endit = this->mProducts.end();
+  // TODO add code to find general power items with exponent 1 where the parent
+  // TODO power item also has exponent 1
+  // TODO if the base of those has a denominator of 1, we add the products of
+  // TODO the numerator to this sum, otherwise, we have to add the whole base
+  // TODO to the fractions of this sum
+  // TODO afterwards, we have to simplify all products and all fractions again
+  std::vector<CNormalProduct*> remainingProducts;
+  while (it != endit)
+    {
+      if ((*it)->getItemPowers().size() == 1 &&
+          fabs(((*(*it)->getItemPowers().begin())->getExp() - 1.0) / 1.0) < 1e-12 &&
+          (*(*it)->getItemPowers().begin())->getItemType() == CNormalItemPower::POWER &&
+          ((CNormalGeneralPower&)(*(*it)->getItemPowers().begin())->getItem()).getRight().checkNumeratorOne() &&
+          ((CNormalGeneralPower&)(*(*it)->getItemPowers().begin())->getItem()).getRight().checkDenominatorOne()
+)
+        {
+          if (((CNormalGeneralPower&)(*(*it)->getItemPowers().begin())->getItem()).getLeft().checkDenominatorOne())
+            {
+              this->add(((CNormalGeneralPower&)(*(*it)->getItemPowers().begin())->getItem()).getLeft().getNumerator());
+            }
+          else
+            {
+              this->add(((CNormalGeneralPower&)(*(*it)->getItemPowers().begin())->getItem()).getLeft());
+            }
+          delete (*it);
+        }
+      else
+        {
+          remainingProducts.push_back((*it));
+        }
+      ++it;
+    }
+  this->mProducts.clear();
+  this->mProducts.insert(remainingProducts.begin(), remainingProducts.end());
+  std::set<CNormalFraction*>::iterator it2 = this->mFractions.begin(), endit2 = this->mFractions.end();
+  while (it2 != endit2)
     {
       (*it2)->simplify();
       ++it2;

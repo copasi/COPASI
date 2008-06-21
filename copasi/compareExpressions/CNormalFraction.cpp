@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalFraction.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/12/12 14:59:37 $
+//   $Date: 2008/06/21 14:40:37 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -90,6 +95,23 @@ bool CNormalFraction::setDenominator(const CNormalSum& denominator)
     return false;
   return true;
 }
+
+/**
+ * Check if the denominator of this fraction equals 1.
+ * @return bool
+ */
+bool CNormalFraction::checkNumeratorOne() const
+  {
+    if ((mpNumerator->getProducts().size() == 1)
+        && (mpNumerator->getFractions().size() == 0)
+        && ((*mpNumerator->getProducts().begin())->getItemPowers().size() == 0)
+        && (fabs((*mpNumerator->getProducts().begin())->getFactor() - 1.0) < 1.E-100)
+)
+      {
+        return true;
+      }
+    return false;
+  }
 
 /**
  * Check if the denominator of this fraction equals 1.
