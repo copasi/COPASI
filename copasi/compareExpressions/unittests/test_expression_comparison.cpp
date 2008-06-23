@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_expression_comparison.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/10/25 08:25:22 $
+//   $Date: 2008/06/23 14:04:54 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -68,19 +73,17 @@ void test_expression_comparison::test_allosteric_inhibition()
       CPPUNIT_ASSERT(firstBase != NULL);
       CNormalFraction* firstFraction = dynamic_cast<CNormalFraction*>(firstBase);
       CPPUNIT_ASSERT(firstFraction != NULL);
+      std::string s1 = firstFraction->toString();
       CNormalBase * secondBase = dynamic_cast<CNormalFraction*>(CNormalTranslation::normAndSimplifyReptdly(secondTree->getRoot()));
       CPPUNIT_ASSERT(secondBase != NULL);
       CNormalFraction* secondFraction = dynamic_cast<CNormalFraction*>(secondBase);
       CPPUNIT_ASSERT(secondFraction != NULL);
+      std::string s2 = secondFraction->toString();
       CPPUNIT_ASSERT(*firstFraction == *secondFraction);
       delete secondFraction;
       delete firstFraction;
       delete secondTree;
       delete firstTree;
-    }
-  catch (std::exception e)
-    {
-      std::cout << "An exception." << std::endl;
     }
   catch (CCopasiException cce)
     {
@@ -188,11 +191,13 @@ void test_expression_comparison::test_reversible_hill()
       CPPUNIT_ASSERT(firstBase != NULL);
       CNormalFraction* firstFraction = dynamic_cast<CNormalFraction*>(firstBase);
       CPPUNIT_ASSERT(firstFraction != NULL);
+      std::string s1 = firstFraction->toString();
       //std::cout << "<p>Normalizing second tree.</p>" << std::endl;
       CNormalBase * secondBase = dynamic_cast<CNormalFraction*>(CNormalTranslation::normAndSimplifyReptdly(secondTree->getRoot()));
       CPPUNIT_ASSERT(secondBase != NULL);
       CNormalFraction* secondFraction = dynamic_cast<CNormalFraction*>(secondBase);
       CPPUNIT_ASSERT(secondFraction != NULL);
+      std::string s2 = secondFraction->toString();
       //std::cout << "<p>first: " << std::endl;
       //std::cout << *firstFraction << "</p>" << std::endl;
       //std::cout << "<p>second: " << std::endl;
@@ -249,10 +254,12 @@ void test_expression_comparison::test_reversible_hill_two_modifiers()
   CPPUNIT_ASSERT(firstBase != NULL);
   CNormalFraction* firstFraction = dynamic_cast<CNormalFraction*>(firstBase);
   CPPUNIT_ASSERT(firstFraction != NULL);
+  std::string s1 = firstFraction->toString();
   CNormalBase * secondBase = dynamic_cast<CNormalFraction*>(CNormalTranslation::normAndSimplifyReptdly(secondTree->getRoot()));
   CPPUNIT_ASSERT(secondBase != NULL);
   CNormalFraction* secondFraction = dynamic_cast<CNormalFraction*>(secondBase);
   CPPUNIT_ASSERT(secondFraction != NULL);
+  std::string s2 = secondFraction->toString();
   CPPUNIT_ASSERT(*firstFraction == *secondFraction);
   delete secondFraction;
   delete firstFraction;
