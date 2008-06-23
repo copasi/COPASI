@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalSum.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/06/21 14:40:37 $
+//   $Date: 2008/06/23 14:02:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -166,16 +166,20 @@ bool CNormalSum::add(const CNormalFraction& fraction)
  */
 bool CNormalSum::add(const CNormalSum& sum)
 {
-  std::set<CNormalProduct*, compareProducts >::const_iterator itProduct;
-  std::set<CNormalProduct*, compareProducts >::const_iterator itProductEnd = sum.getProducts().end();
-  for (itProduct = sum.getProducts().begin(); itProduct != itProductEnd; ++itProduct)
-    add(**itProduct);
-
-  std::set<CNormalFraction*>::const_iterator itFraction;
+  std::set<CNormalProduct*, compareProducts >::const_iterator itProduct = sum.mProducts.begin();
+  std::set<CNormalProduct*, compareProducts >::const_iterator itProductEnd = sum.mProducts.end();
+  while (itProduct != itProductEnd)
+    {
+      add(**itProduct);
+      ++itProduct;
+    }
+  std::set<CNormalFraction*>::const_iterator itFraction = sum.getFractions().begin();
   std::set<CNormalFraction*>::const_iterator itFractionEnd = sum.getFractions().end();
-  for (itFraction = sum.getFractions().begin(); itFraction != itFractionEnd; ++itFraction)
-    add(**itFraction);
-
+  while (itFraction != itFractionEnd)
+    {
+      add(**itFraction);
+      ++itFraction;
+    }
   return true;
 }
 
@@ -274,6 +278,7 @@ bool CNormalSum::multiply(const CNormalLcm& lcm)
   for (it = mFractions.begin(); it != itEnd; ++it)
     {
       const CNormalSum* summand2 = (*it)->multiply(lcm);
+      assert(summand2 != NULL);
       add(*summand2);
       delete summand2;
       delete *it;

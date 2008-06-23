@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalFraction.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/06/21 14:40:37 $
+//   $Date: 2008/06/23 14:02:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -234,31 +234,34 @@ bool CNormalFraction::cancel()
 
       if (checkForFractions() == false)
         {
-          std::set<CNormalItemPower*, compareItemPowers >::const_iterator it = (*mpDenominator->getProducts().begin())->getItemPowers().begin();
-          std::set<CNormalItemPower*, compareItemPowers >::const_iterator itEnd = (*mpDenominator->getProducts().begin())->getItemPowers().end();
-          std::vector<CNormalItemPower*> tmpV;
-          while (it != itEnd)
-            {//runs through all item powers in the first product of the denominator
-              C_FLOAT64 exp = mpNumerator->checkFactor(**it);
-              if (fabs(exp) >= 1.0E-100)
-                {
-                  exp = mpDenominator->checkFactor(**it) < exp ? mpDenominator->checkFactor(**it) : exp;
+          if (mpDenominator->getProducts().size() != 0 && (*mpDenominator->getProducts().begin())->getItemPowers().size() != 0)
+            {
+              std::set<CNormalItemPower*, compareItemPowers >::const_iterator it = (*mpDenominator->getProducts().begin())->getItemPowers().begin();
+              std::set<CNormalItemPower*, compareItemPowers >::const_iterator itEnd = (*mpDenominator->getProducts().begin())->getItemPowers().end();
+              std::vector<CNormalItemPower*> tmpV;
+              while (it != itEnd)
+                {//runs through all item powers in the first product of the denominator
+                  C_FLOAT64 exp = mpNumerator->checkFactor(**it);
                   if (fabs(exp) >= 1.0E-100)
                     {
-                      CNormalItemPower* itemPower = new CNormalItemPower((*it)->getItem(), exp);
-                      tmpV.push_back(itemPower);
+                      exp = mpDenominator->checkFactor(**it) < exp ? mpDenominator->checkFactor(**it) : exp;
+                      if (fabs(exp) >= 1.0E-100)
+                        {
+                          CNormalItemPower* itemPower = new CNormalItemPower((*it)->getItem(), exp);
+                          tmpV.push_back(itemPower);
+                        }
                     }
+                  ++it;
                 }
-              ++it;
-            }
-          std::vector<CNormalItemPower*>::iterator it2 = tmpV.begin();
-          std::vector<CNormalItemPower*>::iterator itEnd2 = tmpV.end();
-          while (it2 != itEnd2)
-            {
-              mpNumerator->divide(**it2);
-              mpDenominator->divide(**it2);
-              delete *it2;
-              ++it2;
+              std::vector<CNormalItemPower*>::iterator it2 = tmpV.begin();
+              std::vector<CNormalItemPower*>::iterator itEnd2 = tmpV.end();
+              while (it2 != itEnd2)
+                {
+                  mpNumerator->divide(**it2);
+                  mpDenominator->divide(**it2);
+                  delete *it2;
+                  ++it2;
+                }
             }
         }
     }
@@ -339,9 +342,13 @@ const CNormalLcm* CNormalFraction::findLcm() const
 const CNormalSum* CNormalFraction::multiply(CNormalLcm lcm)
 {
   if (mpDenominator->getFractions().size() != 0)
-    return false;
+    {
+      return NULL;
+    }
   if (lcm.remove(*mpDenominator) == false)
-    return false;
+    {
+      return NULL;
+    }
   mpNumerator->multiply(lcm);
   CNormalSum * sum = new CNormalSum(*mpNumerator);
   return sum;
@@ -376,6 +383,7 @@ bool CNormalFraction::simplify()
             {
               (*it2)->simplify();
             }
+          // TODO  the following code does not work if there are fractions left.
           const CNormalLcm* lcm = findLcm();
           expand(*lcm);
           delete lcm;
