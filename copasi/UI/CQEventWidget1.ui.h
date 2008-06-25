@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQEventWidget1.ui.h,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2008/06/21 05:53:11 $
+//   $Date: 2008/06/25 07:34:45 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -38,16 +38,16 @@
 /*! Slot to save all current values of the active event widget whenever the Commit button is clicked */
 void CQEventWidget1::slotBtnCommitClicked()
 {
-  // check whether no empty expression widget exists
-  if (!checkAllExpressionsOK())
-    {
-      QString msg = "There is at least one empty expression widget. Please check it.";
+  /*  // check whether no empty expression widget exists
+    if (!checkAllExpressionsOK())
+      {
+        QString msg = "There is at least one empty expression widget. Please check it.";
 
-      CQMessageBox::critical(this, "Unable to save model with empty expression widget", msg,
-                             QMessageBox::Ok | QMessageBox::Default | QMessageBox::Escape, QMessageBox::NoButton, QMessageBox::NoButton);
-      return;
-    }
-
+        CQMessageBox::critical(this, "Unable to save model with empty expression widget", msg,
+                               QMessageBox::Ok | QMessageBox::Default | QMessageBox::Escape, QMessageBox::NoButton, QMessageBox::NoButton);
+        return;
+      }
+  */
   saveToEvent();
   loadFromEvent();
 }
@@ -532,10 +532,13 @@ bool CQEventWidget1::loadFromEvent()
       expr = mpEvent->getTriggerExpressionPtr()->getInfix();
     }
   mpExpressionTrigger->mpExpressionWidget->setExpression(expr);
+
   std::cout << "EXP of Trigger: " << expr << std::endl;
 
   if (expr.empty())
     mpExpressionTrigger->mpBtnViewExpression->setEnabled(false);
+
+  mpExpressionTrigger->updateWidget();    // bring into view mode
 
   // *** Expression of Delay
   expr = "";
@@ -546,8 +549,11 @@ bool CQEventWidget1::loadFromEvent()
 
   mpExpressionDelay->mpExpressionWidget->setExpression(expr);
   std::cout << "EXP of Delay: " << expr << std::endl;
+
   if (expr.empty())
     mpExpressionDelay->mpExpressionWidget->setExpression("0");
+
+  mpExpressionDelay->updateWidget();    // bring into view mode
 
   if (expr.empty() || expr == "0")
     {
@@ -687,7 +693,7 @@ void CQEventWidget1::saveToEvent()
                 + "to '" + mpLineEditName->text() + "' since an event with that name already exists.\n";
 
           QMessageBox::information(this, "Unable to rename Event", msg,
-                                    QMessageBox::Ok | QMessageBox::Default | QMessageBox::Escape, QMessageBox::NoButton, QMessageBox::NoButton);
+                                   QMessageBox::Ok | QMessageBox::Default | QMessageBox::Escape, QMessageBox::NoButton, QMessageBox::NoButton);
 
           mpLineEditName->setText(FROM_UTF8(mpEvent->getObjectName()));
         }
@@ -746,7 +752,7 @@ void CQEventWidget1::saveToEvent()
   mpEvent->showAssignments();
 
   // first of all, permanently remove the deleted assignment
-  if (mPosDelete > (unsigned C_INT32) - 1)
+  if (mPosDelete != (unsigned C_INT32) - 1)
     mpEvent->deleteAssignment(mPosDelete);
 
   std::cout << "L" << __LINE__ << " B mpLBTarget->count() = " << mpLBTarget->count()
@@ -869,8 +875,28 @@ bool CQEventWidget1::enter(const std::string & key)
 bool CQEventWidget1::leave()
 {
   std::cout << "CQEW1::leave" << std::endl;
-  saveToEvent();
-  mObjectKeyDisplayName.resize(0);
+
+  if (mpBtnCommit->isEnabled())
+    {
+      mpExpressionTrigger->updateWidget();
+
+      if (mpCheckBoxDelay->isChecked())
+        mpExpressionDelay->updateWidget();
+
+      saveToEvent();
+      //  mObjectKeyDisplayName.resize(0);
+
+      // enable/disable buttons
+      mpBtnAddTarget->setEnabled(true);
+      mpBtnCommit->setEnabled(false);
+      mpBtnRevert->setEnabled(false);
+
+      if (mpLBTarget->count()) // not empty
+        mpBtnDeleteTarget->setEnabled(true);
+      else      // empty
+        mpBtnDeleteTarget->setEnabled(false);
+    }
+
   return true;
 }
 
@@ -883,6 +909,9 @@ void CQEventWidget1::slotSelectObject()
   QString newText = mpLBTarget->currentText();
 
   std::cout << "CQEW1::slotSelectObject" << std::endl;
+
+  std::cout << "mpLBTarget->currentItem() = " << mpLBTarget->currentItem() << std::endl;
+
   const CCopasiObject * pObject =
     CCopasiSelectionDialog::getObjectSingle(this, mExpressionType);
 
@@ -948,6 +977,8 @@ void CQEventWidget1::slotSelectObject()
 
       std::cout << FROM_UTF8("<" + Insert + ">") << std::endl;
 
+      // the following call automatically slotActualizeAssignmentExpression
+      std::cout << "mpLBTarget->currentItem() = " << mpLBTarget->currentItem() << std::endl;
       mpLBTarget->changeItem(FROM_UTF8("<" + Insert + ">"), mpLBTarget->currentItem());
 
       std::vector<std::pair<std::string, std::string> >::iterator it = mObjectKeyDisplayName.begin();
@@ -995,7 +1026,8 @@ void CQEventWidget1::slotSelectObject()
           enableBtnCommit();
         }
 
-      // just a trick
+      // just a trick -> the following call automatically slotActualizeAssignmentExpression
+      std::cout << "mpLBTarget->currentItem() = " << mpLBTarget->currentItem() << std::endl;
       mpLBTarget->changeItem(mpLBTarget->currentText(), mpLBTarget->currentItem());
     }
 }
@@ -1040,11 +1072,13 @@ void CQEventWidget1::slotActualizeAssignmentExpression(int index)
       // check existency of the expression
       if (mpExpressionEA->mpExpressionWidget->getExpression() == "")
         {
-          /*          msg = "There is no expression defined on Assignment Expression widget.\nPlease fill the widget first.\n";
+          /*   msg = "There is no expression defined on Assignment Expression widget.\nPlease fill the widget first.\n";
 
-            CQMessageBox::critical(this, "Unable to save target without expression", msg,
-                                               QMessageBox::Ok | QMessageBox::Default | QMessageBox::Escape, QMessageBox::NoButton, QMessageBox::NoButton);
-              */          return;
+                CQMessageBox::critical(this, "Unable to save target without expression", msg,
+                                       QMessageBox::Ok | QMessageBox::Default | QMessageBox::Escape, QMessageBox::NoButton, QMessageBox::NoButton);
+          */
+          mpExpressionEA->updateWidget();
+          return;
         }
 
       // never happens with new structure -> it will be deleted (15.05.08)
@@ -1081,36 +1115,57 @@ void CQEventWidget1::slotActualizeAssignmentExpression(int index)
   mpExpressionEA->mpExpressionWidget->clear();
 
   if (!mpLBTarget->currentText().contains("No Object"))
-    mpExpressionEA->mpExpressionWidget->setExpression(text);
+    {
+      mpExpressionEA->mpExpressionWidget->setExpression(text);
+      mpExpressionEA->updateWidget();
+    }
 }
 
 /*! Function to check whether all expressions (trigger, delay, assignment(s)) is OK
  *  \brief Current scenario: ONLY ONE new assignment is allowed to be exist at a time.
- *  THus, only the last assignments, which may be the new one, should be checked its validities.
+ *  Thus, 1) its index is the last; 2) it must currently be highlighted, otherwise its expression could not be saved.
+ *  If one deletes the expression of one saved target, and highlights other targets without saving the modification,
+ *  then the modification will be ignored. The modification itself cannot be saved unless a new expression is given.
  */
 bool CQEventWidget1::checkAllExpressionsOK()
 {
-  bool expressionEAValid = mExpressionEAValid; // capture the boolean value from current item
+  /*  bool expressionEAValid = mExpressionEAValid; // capture the boolean value from current item
 
-  std::cout << std::endl;
-  std::cout << "mExpressionTriggerValid = " << mExpressionTriggerValid
-  << " - mExpressionDelayValid = " << mExpressionDelayValid
-  << " -> (mExpressionTriggerValid && mExpressionDelayValid) = " << (mExpressionTriggerValid && mExpressionDelayValid) << std::endl;
-  std::cout << " - mExpressionEAValid = " << mExpressionEAValid << std::endl;
+    std::cout << std::endl;
+    std::cout << "mExpressionTriggerValid = " << mExpressionTriggerValid
+    << " - mExpressionDelayValid = " << mExpressionDelayValid
+    << " -> (mExpressionTriggerValid && mExpressionDelayValid) = " << (mExpressionTriggerValid && mExpressionDelayValid) << std::endl;
+    std::cout << " - mExpressionEAValid = " << mExpressionEAValid << std::endl;
 
-  if (mpLBTarget->count() && mExpressionEAValid)
-    {
-      unsigned int index = mpLBTarget->currentItem();
+    std::vector<std::pair<std::string, CExpression *> >::iterator itA = mAssignsExpression.begin();
+    std::vector<std::pair<std::string, std::string> >::iterator itB;
+  */
+  std::cout << "mpLBTarget->count() = " << mpLBTarget->count() << " - mpEvent->getNumAssignments() = "
+  << mpEvent->getNumAssignments() << std::endl;
 
-      if (index + 1 != mpLBTarget->count())  // the current highlighted item is not the last one
-        {
-          mpLBTarget->setCurrentItem(mpLBTarget->count() - 1); // set to the last one
-          expressionEAValid = mExpressionEAValid;    // capture the boolean value from the last one
-          mpLBTarget->setCurrentItem(index);     // set back to the previous item
-        }
-    }
+  if (mpLBTarget->count() == mpEvent->getNumAssignments()) // no new assignment exists
+    return mExpressionEAValid;
 
-  return ((mExpressionTriggerValid && mExpressionDelayValid) && expressionEAValid);
+  if (mpLBTarget->currentItem() == int(mpLBTarget->count()) - 1)  // check whether the last assignment target
+    return mExpressionEAValid;
+  else
+    return false;
+
+  /*
+    if (mpLBTarget->count() && mExpressionEAValid)
+      {
+        unsigned int index = mpLBTarget->currentItem();
+
+        if (index + 1 != mpLBTarget->count())  // the current highlighted item is not the last one
+          {
+            mpLBTarget->setCurrentItem(mpLBTarget->count() - 1); // set to the last one
+            expressionEAValid = mExpressionEAValid;    // capture the boolean value from the last one
+            mpLBTarget->setCurrentItem(index);     // set back to the previous item
+          }
+      }
+
+    return ((mExpressionTriggerValid && mExpressionDelayValid) && expressionEAValid);
+  */
 }
 
 /*! Function to enable/disable the button Commit */
@@ -1118,17 +1173,22 @@ void CQEventWidget1::enableBtnCommit()
 {
   std::cout << "CQEW1::enableBtnCommit" << std::endl;
 
+  bool bExpressionsOK = checkAllExpressionsOK();
+  bool bObjectAndExpressionsOK = (mObjectOK && bExpressionsOK);
+
   std::cout << "mExpressionTriggerValid = " << mExpressionTriggerValid
   << " - mExpressionDelayValid = " << mExpressionDelayValid
   << " -> (mExpressionTriggerValid && mExpressionDelayValid) = " << (mExpressionTriggerValid && mExpressionDelayValid)
   << " - mObjectOK = " << mObjectOK
+  << " - bExpressionsOK = " << bExpressionsOK
+  << " -> bObjectAndExpressionsOK = " << bObjectAndExpressionsOK
   << " - mExpressionEAValid = " << mExpressionEAValid
-  << " -> (mObjectOK && mExpressionEAValid) = "
-  << (mObjectOK && mExpressionEAValid)
+  << " -> (bObjectAndExpressionsOK && mExpressionEAValid) = "
+  << (bObjectAndExpressionsOK && mExpressionEAValid)
   << " ==> mpBtnCommit is enabled ? "
-  << ((mObjectOK && mExpressionEAValid) && (mExpressionTriggerValid && mExpressionDelayValid)) << std::endl;
+  << ((bObjectAndExpressionsOK && mExpressionEAValid) && (mExpressionTriggerValid && mExpressionDelayValid)) << std::endl;
 
-  if ((mObjectOK && mExpressionEAValid) && (mExpressionTriggerValid && mExpressionDelayValid))
+  if ((bObjectAndExpressionsOK && mExpressionEAValid) && (mExpressionTriggerValid && mExpressionDelayValid))
     mpBtnCommit->setEnabled(true);
   else
     mpBtnCommit->setEnabled(false);

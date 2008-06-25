@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventWidget1.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2008/06/20 10:16:47 $
+//   $Date: 2008/06/25 07:34:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,8 +14,8 @@
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQEventWidget1.ui'
  **
- ** Created: Fri Jun 20 12:07:07 2008
- **      by: The User Interface Compiler ($Id: CQEventWidget1.h,v 1.4 2008/06/20 10:16:47 pwilly Exp $)
+ ** Created: Tue Jun 24 08:52:37 2008
+ **      by: The User Interface Compiler ($Id: CQEventWidget1.h,v 1.5 2008/06/25 07:34:37 pwilly Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -81,12 +81,6 @@ class CQEventWidget1 : public CopasiWidget
     virtual bool leave();
 
   protected:
-    bool loadFromEvent(const CEvent * pEvent);
-    bool loadFromEvent();
-    void saveToEvent();
-    void enableBtnCommit();
-    bool checkAllExpressionsOK();
-
     QVBoxLayout* CQEventWidget1Layout;
     QGridLayout* layout31;
     QGridLayout* layout13;
@@ -117,7 +111,6 @@ class CQEventWidget1 : public CopasiWidget
     std::vector< int > mItemToType;
     std::vector<std::pair<std::string, CExpression> > mCurrentAssignment;
     std::vector<std::pair<std::string, std::string> > mObjectKeyDisplayName;
-    std::pair<unsigned C_INT32, std::string> mDeletedAssign;
     std::vector<std::string> mTargetList;
 
     QPixmap image0;
@@ -126,6 +119,10 @@ class CQEventWidget1 : public CopasiWidget
     QPixmap image3;
 
     void init();
+    bool loadFromEvent();
+    void saveToEvent();
+    void enableBtnCommit();
+    bool checkAllExpressionsOK();
     std::string takeObjectName(QString text);
     std::string getAssignmentKeyFromDisplayName(const std::string displayName);
 

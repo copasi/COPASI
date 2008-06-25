@@ -1,10 +1,10 @@
 <!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventWidget1.ui,v $ </comment>
-<comment>   $Revision: 1.2 $ </comment>
+<comment>   $Revision: 1.3 $ </comment>
 <comment>   $Name:  $ </comment>
 <comment>   $Author: pwilly $ </comment>
-<comment>   $Date: 2008/06/20 09:54:58 $ </comment>
+<comment>   $Date: 2008/06/25 07:34:28 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -564,7 +564,6 @@
     <variable access="private">std::vector&lt; int &gt; mItemToType;</variable>
     <variable access="private">std::vector&lt;std::pair&lt;std::string, CExpression&gt; &gt; mCurrentAssignment;</variable>
     <variable access="private">std::vector&lt;std::pair&lt;std::string, std::string&gt; &gt; mObjectKeyDisplayName;</variable>
-    <variable access="private">std::pair&lt;unsigned C_INT32, std::string&gt; mDeletedAssign;</variable>
     <variable access="private">std::vector&lt;std::string&gt; mTargetList;</variable>
 </variables>
 <slots>
@@ -585,14 +584,13 @@
 </slots>
 <functions>
     <function access="private" specifier="non virtual">init()</function>
-    <function access="protected" specifier="non virtual" returnType="bool">loadFromEvent( const CEvent * pEvent )</function>
-    <function access="protected" specifier="non virtual" returnType="bool">loadFromEvent()</function>
-    <function access="protected" specifier="non virtual">saveToEvent()</function>
+    <function access="private" specifier="non virtual" returnType="bool">loadFromEvent()</function>
+    <function access="private" specifier="non virtual">saveToEvent()</function>
     <function returnType="bool">update( ListViews::ObjectType objectType, ListViews::Action action, const std::string &amp; key )</function>
     <function returnType="bool">enter( const std::string &amp; key )</function>
     <function returnType="bool">leave()</function>
-    <function access="protected" specifier="non virtual">enableBtnCommit()</function>
-    <function access="protected" specifier="non virtual" returnType="bool">checkAllExpressionsOK()</function>
+    <function access="private" specifier="non virtual">enableBtnCommit()</function>
+    <function access="private" specifier="non virtual" returnType="bool">checkAllExpressionsOK()</function>
     <function access="private" specifier="non virtual" returnType="std::string">takeObjectName( QString text )</function>
     <function access="private" specifier="non virtual" returnType="std::string">getAssignmentKeyFromDisplayName( const std::string displayName )</function>
 </functions>
