@@ -1,10 +1,10 @@
 <!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQPrintAsDialog.ui,v $ </comment>
-<comment>   $Revision: 1.1 $ </comment>
+<comment>   $Revision: 1.2 $ </comment>
 <comment>   $Name:  $ </comment>
 <comment>   $Author: pwilly $ </comment>
-<comment>   $Date: 2008/06/27 12:02:39 $ </comment>
+<comment>   $Date: 2008/06/27 18:41:49 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -13,6 +13,7 @@
 <comment> All rights reserved. </comment>
 
 <class>CQPrintAsDialog</class>
+<comment> All rights reserved. </comment>
 <widget class="QDialog">
     <property name="name">
         <cstring>CQPrintAsDialog</cstring>
@@ -163,7 +164,7 @@
         <sender>mpBtnConfirm</sender>
         <signal>clicked()</signal>
         <receiver>CQPrintAsDialog</receiver>
-        <slot>accept()</slot>
+        <slot>confirm()</slot>
     </connection>
     <connection>
         <sender>mpBtnCancel</sender>
@@ -178,8 +179,12 @@
         <slot>openFileDialog()</slot>
     </connection>
 </connections>
+<includes>
+    <include location="local" impldecl="in implementation">CQPrintAsDialog.ui.h</include>
+</includes>
 <slots>
     <slot access="protected" specifier="non virtual">openFileDialog()</slot>
+    <slot access="protected" specifier="non virtual">confirm()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQPrintAsDialog.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2008/06/27 12:02:46 $
+//   $Date: 2008/06/27 18:42:45 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,8 +14,8 @@
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQPrintAsDialog.ui'
  **
- ** Created: Thu Jun 26 14:26:44 2008
- **      by: The User Interface Compiler ($Id: CQPrintAsDialog.h,v 1.1 2008/06/27 12:02:46 pwilly Exp $)
+ ** Created: Fri Jun 27 14:47:48 2008
+ **      by: The User Interface Compiler ($Id: CQPrintAsDialog.h,v 1.2 2008/06/27 18:42:45 pwilly Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -66,6 +66,7 @@ class CQPrintAsDialog : public QDialog
     virtual void languageChange();
 
     void openFileDialog();
+    void confirm();
   };
 
 #endif // CQPRINTASDIALOG_H

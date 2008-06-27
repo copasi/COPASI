@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQPrintAsDialog.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2008/06/27 12:02:43 $
+//   $Date: 2008/06/27 18:42:41 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,8 +14,8 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQPrintAsDialog.ui'
  **
- ** Created: Thu Jun 26 14:26:46 2008
- **      by: The User Interface Compiler ($Id: CQPrintAsDialog.cpp,v 1.1 2008/06/27 12:02:43 pwilly Exp $)
+ ** Created: Fri Jun 27 14:47:50 2008
+ **      by: The User Interface Compiler ($Id: CQPrintAsDialog.cpp,v 1.2 2008/06/27 18:42:41 pwilly Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -31,6 +31,7 @@
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
+#include "CQPrintAsDialog.ui.h"
 
 /*
  *  Constructs a CQPrintAsDialog as a child of 'parent', with the
@@ -91,11 +92,11 @@ CQPrintAsDialog::CQPrintAsDialog(QWidget* parent, const char* name, bool modal, 
   layout6->addWidget(mpBtnCancel);
   CQPrintAsDialogLayout->addLayout(layout6);
   languageChange();
-  resize(QSize(562, 159).expandedTo(minimumSizeHint()));
+  resize(QSize(514, 161).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
 
   // signals and slots connections
-  connect(mpBtnConfirm, SIGNAL(clicked()), this, SLOT(accept()));
+  connect(mpBtnConfirm, SIGNAL(clicked()), this, SLOT(confirm()));
   connect(mpBtnCancel, SIGNAL(clicked()), this, SLOT(reject()));
   connect(mpBtnBrowse, SIGNAL(clicked()), this, SLOT(openFileDialog()));
 }
@@ -122,9 +123,4 @@ void CQPrintAsDialog::languageChange()
   mpCBSVG->setText(tr("svg"));
   mpBtnConfirm->setText(tr("Confirm"));
   mpBtnCancel->setText(tr("Cancel"));
-}
-
-void CQPrintAsDialog::openFileDialog()
-{
-  qWarning("CQPrintAsDialog::openFileDialog(): Not implemented yet");
 }
