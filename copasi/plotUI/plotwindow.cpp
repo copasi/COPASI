@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotwindow.cpp,v $
-//   $Revision: 1.34 $
+//   $Revision: 1.35 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2008/06/27 11:50:53 $
+//   $Date: 2008/06/27 18:45:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -130,9 +130,12 @@ void PlotWindow::printAsImage()
 
   if (pDialog->exec() == QDialog::Accepted)
     {
-      QString sFileName = pDialog->mpEditFileName->text();
-      QFileInfo fileInfo(sFileName);
-      QString sName = fileInfo.baseName();
+      /*
+            QString sFileName = pDialog->mpEditFileName->text();
+            QFileInfo fileInfo(sFileName);
+            QString sName = fileInfo.baseName();
+      */
+      QString sName = pDialog->mpEditFileName->text();
 
       if (pDialog->mpCBPNG->isChecked()) // true
         {

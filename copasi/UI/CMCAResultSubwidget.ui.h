@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CMCAResultSubwidget.ui.h,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2008/06/27 11:55:41 $
+//   $Date: 2008/06/27 18:47:04 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -281,9 +281,12 @@ void CMCAResultSubwidget::printAsImage()
 
   if (pDialog->exec() == QDialog::Accepted)
     {
-      QString sFileName = pDialog->mpEditFileName->text();
-      QFileInfo fileInfo(sFileName);
-      QString sName = fileInfo.baseName();
+      /*
+            QString sFileName = pDialog->mpEditFileName->text();
+            QFileInfo fileInfo(sFileName);
+            QString sName = fileInfo.baseName();
+      */
+      QString sName = pDialog->mpEditFileName->text();
 
       QPixmap pixmap = QPixmap::grabWidget(mTabWidget->currentPage());
 
